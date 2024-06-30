@@ -1,28 +1,28 @@
 <script setup lang="ts">
+import { ApiOutput } from '@directus/extensions';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ExtensionType } from '@directus/extensions';
-import { ExtensionStatus } from '../types';
+import { ExtensionState, ExtensionType } from '../types';
 
 const props = defineProps<{
-	status: ExtensionStatus;
-	type?: ExtensionType;
+	extension: ApiOutput;
+	type: ExtensionType;
+	state: ExtensionState;
+	stateLocked: boolean;
 }>();
 
-defineEmits<{ toggleStatus: [enabled: boolean] }>();
+defineEmits<{ toggleState: [enabled: boolean]; uninstall: []; reinstall: []; remove: [] }>();
 
 const { t } = useI18n();
 
-const actions = computed(() => {
-	const enabled = props.status === 'enabled';
+const uninstallLocked = computed(() => props.extension.meta.source !== 'registry');
 
-	if (props.type !== 'bundle') {
-		return [{ text: enabled ? t('disable') : t('enable'), enabled }];
-	}
+const stateActions = computed(() => {
+	const enabled = props.state === 'enabled';
 
-	if (props.status !== 'partial') {
-		return [{ text: enabled ? t('disable_all') : t('enable_all'), enabled }];
-	}
+	if (props.type !== 'bundle') return [{ text: enabled ? t('disable') : t('enable'), enabled }];
+
+	if (props.state !== 'partial') return [{ text: enabled ? t('disable_all') : t('enable_all'), enabled }];
 
 	return [
 		{ text: t('enable_all'), enabled: false },
@@ -32,32 +32,73 @@ const actions = computed(() => {
 </script>
 
 <template>
-	<div class="options">
-		<v-menu placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
-				<v-icon name="more_vert" clickable class="ctx-toggle" @click.prevent="toggle" />
-			</template>
-			<v-list>
+	<v-menu placement="bottom-start" show-arrow>
+		<template #activator="{ toggle }">
+			<v-icon name="more_vert" clickable class="menu-toggle" @click.prevent="toggle" />
+		</template>
+		<v-list>
+			<template v-if="type !== 'missing'">
 				<v-list-item
-					v-for="(action, index) in actions"
+					v-for="(action, index) in stateActions"
 					:key="index"
+					v-tooltip.left="stateLocked ? t('enabled_dev_tooltip') : null"
+					:disabled="stateLocked"
 					clickable
-					@click="$emit('toggleStatus', action.enabled)"
+					@click="$emit('toggleState', action.enabled)"
 				>
 					<v-list-item-icon>
-						<v-icon name="mode_off_on" :color="action.enabled ? 'var(--theme--danger)' : 'var(--theme--success)'" />
+						<v-icon name="mode_off_on" />
 					</v-list-item-icon>
 					<v-list-item-content>
 						{{ action.text }}
 					</v-list-item-content>
 				</v-list-item>
-			</v-list>
-		</v-menu>
-	</div>
+				<template v-if="!extension.bundle">
+					<v-divider />
+					<v-list-item
+						v-tooltip.left="uninstallLocked ? t('uninstall_locked') : null"
+						:disabled="uninstallLocked"
+						class="uninstall"
+						clickable
+						@click="$emit('uninstall')"
+					>
+						<v-list-item-icon>
+							<v-icon name="delete" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('uninstall') }}
+						</v-list-item-content>
+					</v-list-item>
+				</template>
+			</template>
+
+			<template v-else>
+				<template v-if="props.extension.meta.source === 'registry'">
+					<v-list-item clickable @click="$emit('reinstall')">
+						<v-list-item-icon>
+							<v-icon name="download" />
+						</v-list-item-icon>
+						<v-list-item-content>
+							{{ t('reinstall') }}
+						</v-list-item-content>
+					</v-list-item>
+					<v-divider />
+				</template>
+				<v-list-item clickable @click="$emit('remove')">
+					<v-list-item-icon>
+						<v-icon name="delete" />
+					</v-list-item-icon>
+					<v-list-item-content>
+						{{ t('remove') }}
+					</v-list-item-content>
+				</v-list-item>
+			</template>
+		</v-list>
+	</v-menu>
 </template>
 
 <style lang="scss" scoped>
-.ctx-toggle {
+.menu-toggle {
 	--v-icon-color: var(--theme--foreground-subdued);
 
 	&:hover {

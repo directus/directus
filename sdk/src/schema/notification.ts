@@ -1,7 +1,7 @@
 import type { MergeCoreCollection } from '../index.js';
 import type { DirectusUser } from './user.js';
 
-export type DirectusNotification<Schema extends object> = MergeCoreCollection<
+export type DirectusNotification<Schema> = MergeCoreCollection<
 	Schema,
 	'directus_notifications',
 	{

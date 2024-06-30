@@ -3,11 +3,10 @@ import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors'
 import type { Accountability } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
 import type { IncomingMessage, Server as httpServer } from 'http';
-import type { ParsedUrlQuery } from 'querystring';
+import { randomUUID } from 'node:crypto';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import type internal from 'stream';
 import { parse } from 'url';
-import { v4 as uuid } from 'uuid';
 import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
@@ -22,6 +21,7 @@ import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
 import { registerWebSocketEvents } from './hooks.js';
+import cookie from 'cookie';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -132,10 +132,20 @@ export default abstract class SocketController {
 			return;
 		}
 
+		const env = useEnv();
+		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
 		const context: UpgradeContext = { request, socket, head };
+		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
+
+		if (cookies[sessionCookieName]) {
+			const token = cookies[sessionCookieName] as string;
+			await this.handleTokenUpgrade(context, token);
+			return;
+		}
 
 		if (this.authentication.mode === 'strict') {
-			await this.handleStrictUpgrade(context, query);
+			const token = query['access_token'] as string;
+			await this.handleTokenUpgrade(context, token);
 			return;
 		}
 
@@ -151,11 +161,10 @@ export default abstract class SocketController {
 		});
 	}
 
-	protected async handleStrictUpgrade({ request, socket, head }: UpgradeContext, query: ParsedUrlQuery) {
+	protected async handleTokenUpgrade({ request, socket, head }: UpgradeContext, token: string) {
 		let accountability: Accountability | null, expires_at: number | null;
 
 		try {
-			const token = query['access_token'] as string;
 			accountability = await getAccountabilityForToken(token);
 			expires_at = getExpiresAtForToken(token);
 		} catch {
@@ -201,7 +210,7 @@ export default abstract class SocketController {
 		const client = ws as WebSocketClient;
 		client.accountability = accountability;
 		client.expires_at = expires_at;
-		client.uid = uuid();
+		client.uid = randomUUID();
 		client.auth_timer = null;
 
 		ws.on('message', async (data: WebSocket.RawData) => {

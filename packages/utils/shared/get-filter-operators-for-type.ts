@@ -44,17 +44,16 @@ export function getFilterOperatorsForType(
 				'nbetween',
 				...validationOnlyStringFilterOperators,
 			];
-		// Hash
+
 		case 'hash':
 			return ['empty', 'nempty', 'null', 'nnull'];
-		// JSON
-		// UUID
+
 		case 'uuid':
 			return ['eq', 'neq', 'null', 'nnull', 'in', 'nin'];
+
 		case 'json':
 			return ['null', 'nnull'];
 
-		// Boolean
 		case 'boolean':
 			return ['eq', 'neq', 'null', 'nnull'];
 

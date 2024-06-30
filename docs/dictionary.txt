@@ -24,6 +24,7 @@
 (D|d)atacenter
 (D|d)atastores
 (D|d)atetimes?
+(D|d)elisting
 (D|d)ev
 (D|d)onut
 (D|d)ropdown
@@ -46,6 +47,7 @@
 (M|m)isconfigured
 (M|m)ultitenancy
 (N|n)atively
+(N|n)on-(S|s)andboxed
 (P|p)olyfill
 (Q|q)uickstart
 (R|r)eal-(T|t)ime
@@ -132,6 +134,7 @@ cardinality
 CDNs?
 changelogs
 CIDR
+cjs
 CLA
 CLI
 CloudFront
@@ -197,6 +200,7 @@ Entrypoint
 env
 ENV
 ESM
+esm
 Exif
 fallbacks
 falsy
@@ -249,7 +253,7 @@ JPG
 JS
 JS-SDK
 json
-JSON
+JSON\.?
 JWT
 kanban
 Kanban
@@ -292,7 +296,6 @@ nitty-gritty
 no-brainer
 node[^\s]*
 NodeJS
-non-sandboxed
 NoSQL
 npm
 NPM
@@ -302,7 +305,8 @@ Nuxt
 O2M
 O2Ms
 O2O
-OAuth
+OAuth2?
+OpenAI
 Okta
 omnichannel
 on-prem
@@ -350,6 +354,7 @@ pub/sub
 px
 px.
 reactively
+readme
 readonly
 readTime
 rebase

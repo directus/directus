@@ -9,6 +9,22 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
+test('Returns true if REDIS_ENABLED is true', () => {
+	vi.mocked(useEnv).mockReturnValue({
+		REDIS_ENABLED: true,
+	});
+
+	expect(redisConfigAvailable()).toBe(true);
+});
+
+test('Returns false if REDIS_ENABLED is false', () => {
+	vi.mocked(useEnv).mockReturnValue({
+		REDIS_ENABLED: false,
+	});
+
+	expect(redisConfigAvailable()).toBe(false);
+});
+
 test('Returns true if REDIS exists in environment', () => {
 	vi.mocked(useEnv).mockReturnValue({
 		REDIS: 'redis://test',

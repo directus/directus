@@ -1,7 +1,7 @@
-import { useEnv } from '@directus/env';
 import type { CookieOptions } from 'express';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
+import { useEnv } from '@directus/env';
 
 const env = useEnv();
 
@@ -63,12 +63,20 @@ export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-c
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
-export const COOKIE_OPTIONS: CookieOptions = {
+export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 	httpOnly: true,
 	domain: env['REFRESH_TOKEN_COOKIE_DOMAIN'] as string,
-	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL']),
-	secure: (env['REFRESH_TOKEN_COOKIE_SECURE'] as boolean) ?? false,
-	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] as 'lax' | 'strict' | 'none') || 'strict',
+	maxAge: getMilliseconds(env['REFRESH_TOKEN_TTL'] as string),
+	secure: Boolean(env['REFRESH_TOKEN_COOKIE_SECURE']),
+	sameSite: (env['REFRESH_TOKEN_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
+};
+
+export const SESSION_COOKIE_OPTIONS: CookieOptions = {
+	httpOnly: true,
+	domain: env['SESSION_COOKIE_DOMAIN'] as string,
+	maxAge: getMilliseconds(env['SESSION_COOKIE_TTL'] as string),
+	secure: Boolean(env['SESSION_COOKIE_SECURE']),
+	sameSite: (env['SESSION_COOKIE_SAME_SITE'] || 'strict') as 'lax' | 'strict' | 'none',
 };
 
 export const OAS_REQUIRED_SCHEMAS = ['Query', 'x-metadata'];

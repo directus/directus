@@ -1,6 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { ForeignKey, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { systemRelationRows } from '@directus/system-data';
 import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -13,10 +14,9 @@ import emitter from '../emitter.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
-import type { QueryOptions } from './items.js';
-import { ItemsService } from './items.js';
-import { PermissionsService } from './permissions.js';
-import { systemRelationRows } from '@directus/system-data';
+import { transaction } from '../utils/transaction.js';
+import { ItemsService, type QueryOptions } from './items.js';
+import { PermissionsService } from './permissions/index.js';
 
 export class RelationsService {
 	knex: Knex;
@@ -192,7 +192,7 @@ export class RelationsService {
 				one_collection: relation.related_collection || null,
 			};
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				if (relation.related_collection) {
 					await trx.schema.alterTable(relation.collection!, async (table) => {
 						this.alterType(table, relation, fieldSchema.nullable);
@@ -207,6 +207,10 @@ export class RelationsService {
 
 						if (relation.schema?.on_delete) {
 							builder.onDelete(relation.schema.on_delete);
+						}
+
+						if (relation.schema?.on_update) {
+							builder.onUpdate(relation.schema.on_update);
 						}
 					});
 				}
@@ -287,7 +291,7 @@ export class RelationsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				if (existingRelation.related_collection) {
 					await trx.schema.alterTable(collection, async (table) => {
 						let constraintName: string = getDefaultIndexName('foreign', collection, field);
@@ -313,6 +317,10 @@ export class RelationsService {
 
 						if (relation.schema?.on_delete) {
 							builder.onDelete(relation.schema.on_delete);
+						}
+
+						if (relation.schema?.on_update) {
+							builder.onUpdate(relation.schema.on_update);
 						}
 					});
 				}
@@ -397,7 +405,7 @@ export class RelationsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const existingConstraints = await this.schemaInspector.foreignKeys();
 				const constraintNames = existingConstraints.map((key) => key.constraint_name);
 

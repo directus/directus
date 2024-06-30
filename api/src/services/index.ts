@@ -18,7 +18,7 @@ export * from './notifications.js';
 export * from './operations.js';
 export * from './panels.js';
 export * from './payload.js';
-export * from './permissions.js';
+export * from './permissions/index.js';
 export * from './presets.js';
 export * from './relations.js';
 export * from './revisions.js';

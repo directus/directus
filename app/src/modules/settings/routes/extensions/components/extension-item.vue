@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import api from '@/api';
 import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import { APP_OR_HYBRID_EXTENSION_TYPES, type ApiOutput, type ExtensionType } from '@directus/extensions';
+import { useExtensionsStore } from '@/stores/extensions';
+import { unexpectedError } from '@/utils/unexpected-error';
+import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { iconMap } from '../constants/icons';
+import { extensionTypeIconMap } from '../constants';
+import { ExtensionState } from '../types';
 import ExtensionItemOptions from './extension-item-options.vue';
-import { ExtensionStatus } from '../types';
 
 const props = withDefaults(
 	defineProps<{
@@ -19,138 +20,149 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits<{ refresh: [data: { enabled: boolean; extension: ApiOutput; children: ApiOutput[] }] }>();
-
 const { t } = useI18n();
+const extensionsStore = useExtensionsStore();
 
-const devMode = import.meta.env.DEV;
+const loading = ref(false);
 
-const changingEnabledState = ref(false);
+const name = computed(() => props.extension.schema?.name ?? props.extension.meta.folder);
+const type = computed(() => props.extension.schema?.type ?? 'missing');
+const icon = computed(() => extensionTypeIconMap[type.value]);
 
-const type = computed(() => props.extension.schema?.type);
-const icon = computed(() => (type.value ? iconMap[type.value] : 'warning'));
-const isLocked = computed(() => devMode && isOrHasAppExtension.value);
+const version = computed(() => {
+	if (!props.extension.schema || !('version' in props.extension.schema) || !props.extension.schema.version) return null;
 
-const isPartialEnabled = computed(() => {
-	if (props.extension.schema?.type !== 'bundle') {
-		return false;
-	}
+	return props.extension.schema.version;
+});
+
+const stateLocked = computed(() => {
+	if (!import.meta.env.DEV) return false;
+
+	if (props.extension.schema?.type === 'bundle')
+		return props.children.some((extension) => isAppExtension(extension.schema?.type));
+
+	return isAppExtension(props.extension.schema?.type);
+});
+
+const disabled = computed(() => {
+	if (type.value === 'missing') return true;
+	if (stateLocked.value) return false;
+
+	return !props.extension.meta.enabled;
+});
+
+const isPartialAllowed = computed(() => {
+	if (props.extension.schema?.type !== 'bundle') return false;
 
 	return props.extension.schema.partial !== false;
 });
 
 const isPartiallyEnabled = computed(() => {
-	if (props.extension.schema?.type !== 'bundle') {
-		return false;
-	}
+	if (props.extension.schema?.type !== 'bundle') return false;
 
-	const enabledExtensionCount = props.children.filter((e) => e.meta.enabled);
+	const enabledExtensionCount = props.children.filter((extension) => extension.meta.enabled);
 	return enabledExtensionCount.length !== 0 && enabledExtensionCount.length !== props.children.length;
 });
 
-const isOrHasAppExtension = computed(() => {
-	if (type.value === 'bundle') {
-		return props.children.some((e) => isAppExtension(e.schema?.type));
-	}
+const state = computed<{ text: string; value: ExtensionState }>(() => {
+	if (type.value === 'bundle' && isPartiallyEnabled.value) return { text: t('partially_enabled'), value: 'partial' };
 
-	return isAppExtension(type.value);
+	if (props.extension.meta.enabled) return { text: t('enabled'), value: 'enabled' };
+
+	return { text: t('disabled'), value: 'disabled' };
 });
 
-const state = computed<{ text: string; status: ExtensionStatus }>(() => {
-	if (type.value === 'bundle' && isPartiallyEnabled.value) {
-		return { text: t('partially_enabled'), status: 'partial' };
-	}
+const requestHandler = (requestCallback: () => Promise<any>) => async () => {
+	loading.value = true;
 
-	if (props.extension.meta.enabled) {
-		return { text: t('enabled'), status: 'enabled' };
+	try {
+		await requestCallback();
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
 	}
+};
 
-	return { text: t('disabled'), status: 'disabled' };
-});
+const toggleState = requestHandler(() => extensionsStore.toggleState(props.extension.id));
+const uninstall = requestHandler(() => extensionsStore.uninstall(props.extension.id));
+const reinstall = requestHandler(() => extensionsStore.reinstall(props.extension.id));
+const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 
 function isAppExtension(type?: ExtensionType) {
 	if (!type) return false;
 	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
 }
-
-async function toggleExtensionStatus(enabled: boolean) {
-	if (changingEnabledState.value === true) return;
-
-	changingEnabledState.value = true;
-	const status = !enabled;
-
-	try {
-		const endpoint = props.extension.bundle
-			? `/extensions/${props.extension.bundle}/${props.extension.name}`
-			: `/extensions/${props.extension.name}`;
-
-		await api.patch(endpoint, { meta: { enabled: status } });
-	} finally {
-		changingEnabledState.value = false;
-		emit('refresh', { enabled: status, extension: props.extension, children: props.children });
-	}
-}
 </script>
 
 <template>
-	<v-list-item block :class="{ disabled: devMode ? false : !extension.meta.enabled }">
+	<v-list-item block>
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
-			<span class="monospace">
-				{{ extension.name }}
-				<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
+			<span class="meta" :class="{ disabled }">
+				<router-link
+					v-if="extension.meta.source === 'registry' && !extension.bundle"
+					v-tooltip="t('open_in_marketplace')"
+					class="marketplace-link"
+					:to="`/settings/marketplace/extension/${extension.id}`"
+				>
+					{{ name }}
+				</router-link>
+				<span v-else>{{ name }}</span>
+				{{ ' ' }}
+				<v-chip v-if="version" class="version" small>
+					{{ version }}
+				</v-chip>
 			</span>
 		</v-list-item-content>
 
-		<v-progress-circular v-if="changingEnabledState" indeterminate />
-		<v-chip v-if="isLocked" v-tooltip.top="t('enabled_dev_tooltip')" class="state" :class="state.status" small>
+		<span v-if="loading" class="spinner">
+			<v-progress-circular indeterminate small />
+		</span>
+
+		<v-chip v-if="type !== 'missing'" class="state" :class="state.value" small>
 			{{ state.text }}
-			<v-icon name="lock" right small />
 		</v-chip>
-		<v-chip v-else class="state" :class="state.status" small>
-			{{ state.text }}
-		</v-chip>
+
 		<extension-item-options
-			v-if="!isLocked"
 			class="options"
-			:type="type"
-			:status="state.status"
-			@toggle-status="toggleExtensionStatus"
+			:extension
+			:type
+			:state="state.value"
+			:state-locked
+			@toggle-state="toggleState"
+			@uninstall="uninstall"
+			@reinstall="reinstall"
+			@remove="remove"
 		/>
 	</v-list-item>
 
-	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialEnabled }">
-		<extension-item
-			v-for="item in children"
-			:key="item.bundle + '__' + item.name"
-			:extension="item"
-			@refresh="$emit('refresh', $event)"
-		/>
+	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialAllowed }">
+		<extension-item v-for="item in children" :key="item.id" :extension="item" />
 	</v-list>
 </template>
 
 <style lang="scss" scoped>
-.monospace {
+.meta {
 	font-family: var(--theme--fonts--monospace--font-family);
-}
 
-.nested {
-	margin-left: 20px;
+	.marketplace-link {
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 
-	&:not(.partial) .options {
-		display: none;
+	.version {
+		margin-right: 8px;
+	}
+
+	&.disabled {
+		color: var(--theme--foreground-subdued);
+		--v-chip-color: var(--theme--foreground-subdued);
 	}
 }
 
-.disabled {
-	--v-list-item-color: var(--theme--foreground-subdued);
-}
-
-.options {
-	margin-left: 12px;
-}
-
-.version {
+.spinner {
 	margin-right: 8px;
 }
 
@@ -166,6 +178,18 @@ async function toggleExtensionStatus(enabled: boolean) {
 	&.partial {
 		--v-chip-color: var(--theme--warning);
 		--v-chip-background-color: var(--theme--warning-background);
+	}
+}
+
+.options {
+	margin-left: 12px;
+}
+
+.nested {
+	margin-left: 20px;
+
+	&:not(.partial) .options {
+		display: none;
 	}
 }
 </style>

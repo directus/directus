@@ -7,9 +7,7 @@ const value = ref('Shut up and take my money. 💸');
 
 <template>
 	<Story title="VInput">
-		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-input v-model="value" v-bind="state" />
-		</template>
+		<v-input v-model="value" />
 
 		<template #controls>
 			<HstText v-model="value" title="Value" />

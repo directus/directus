@@ -2,6 +2,7 @@
 import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import { jwtPayload } from '@/utils/jwt-payload';
+import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -46,6 +47,10 @@ async function onSubmit() {
 		resetting.value = false;
 	}
 }
+
+useHead({
+	title: t('reset_password'),
+});
 </script>
 
 <template>

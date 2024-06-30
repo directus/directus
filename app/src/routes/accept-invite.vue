@@ -2,6 +2,7 @@
 import api, { RequestError } from '@/api';
 import { translateAPIError } from '@/lang';
 import { jwtPayload } from '@/utils/jwt-payload';
+import { useHead } from '@unhead/vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -47,6 +48,10 @@ async function onSubmit() {
 		creating.value = false;
 	}
 }
+
+useHead({
+	title: t('create_account'),
+});
 </script>
 
 <template>

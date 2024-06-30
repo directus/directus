@@ -26,7 +26,7 @@ const props = withDefaults(
 		defaultLanguage?: string | null;
 		defaultOpenSplitView?: boolean;
 		userLanguage?: boolean;
-		value: (number | string | Record<string, any>)[] | Record<string, any>;
+		value: (number | string | Record<string, any>)[] | Record<string, any> | null;
 		autofocus?: boolean;
 		disabled?: boolean;
 	}>(),
@@ -285,13 +285,16 @@ const {
 	<div class="translations" :class="{ split: splitViewEnabled }">
 		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
 			<language-select v-if="showLanguageSelect" v-model="firstLang" :items="languageOptions">
-				<template #append>
+				<template #append="{ active, toggle }">
 					<v-icon
 						v-if="splitViewAvailable && !splitViewEnabled"
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="flip"
 						clickable
-						@click.stop="splitView = true"
+						@click.stop="
+							if (active) toggle();
+							splitView = true;
+						"
 					/>
 				</template>
 			</language-select>
@@ -323,7 +326,7 @@ const {
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
 						name="close"
 						clickable
-						@click.stop="splitView = !splitView"
+						@click="splitView = false"
 					/>
 				</template>
 			</language-select>

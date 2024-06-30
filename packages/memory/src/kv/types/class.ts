@@ -36,7 +36,7 @@ export interface Kv {
 	 * @param [amount=1] Amount to increment. Defaults to 1
 	 * @returns Updated value
 	 */
-	increment(key: string, amount: number): Promise<number>;
+	increment(key: string, amount?: number): Promise<number>;
 
 	/**
 	 * Save the given value to the store if the given value is larger than the existing value

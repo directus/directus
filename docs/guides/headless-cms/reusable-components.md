@@ -227,11 +227,24 @@ const pages = await directus.request(
 		filter: {
 			slug: { _eq: slug },
 		},
-		fields: ['*', { blocks: ['*', { item: [{ collection_a: ['*'], collection_b: ['*'] }] }] }],
+		fields: [
+			'*',
+			{
+				blocks: [
+					'*',
+					{
+						item: {
+							block_hero: ['*'],
+							block_cardgroup: ['*'],
+							block_richtext: ['*'],
+						},
+					},
+				],
+			},
+		],
 		limit: 1,
 	})
 );
-
 const page = page[0];
 ```
 

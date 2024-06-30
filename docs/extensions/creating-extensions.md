@@ -1,7 +1,7 @@
 ---
 description: A guide on how to scaffold your Directus Extension.
 readTime: 5 min read
-contributors: Rijk Van Zanten, Esther Agbaje
+contributors: Rijk Van Zanten, Esther Agbaje, Kevin Lewis
 ---
 
 # Creating Extensions
@@ -105,6 +105,13 @@ The generated `package.json` file contains an additional `directus:extension` fi
 
 The CLI will use those fields by default to determine the input and output file paths and how the extension should be
 built.
+
+## Marketplace Requirements
+
+By default, App Extensions and [Sandboxed Extensions](/extensions/sandbox/introduction) are available from the
+[Directus Marketplace](/user-guide/marketplace/overview) in all Directus projects (Directus Professional and Enterprise
+Cloud, and self-hosted). If you are building an API or Hybrid extension and want to publish it to the Marketplace, it
+must use the Sandbox SDK.
 
 ## Developing Your Extension
 

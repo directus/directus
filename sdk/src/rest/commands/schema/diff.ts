@@ -14,7 +14,7 @@ export type SchemaDiffOutput = {
  * @returns Returns the differences between the current instance's schema and the schema passed in the request body.
  */
 export const schemaDiff =
-	<Schema extends object>(snapshot: SchemaSnapshotOutput, force = false): RestCommand<SchemaDiffOutput, Schema> =>
+	<Schema>(snapshot: SchemaSnapshotOutput, force = false): RestCommand<SchemaDiffOutput, Schema> =>
 	() => ({
 		method: 'POST',
 		path: '/schema/diff',

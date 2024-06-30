@@ -4,7 +4,7 @@ import type { DirectusFile } from './file.js';
 /**
  * directus_users type
  */
-export type DirectusUser<Schema extends object> = MergeCoreCollection<
+export type DirectusUser<Schema> = MergeCoreCollection<
 	Schema,
 	'directus_users',
 	{

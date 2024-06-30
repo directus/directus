@@ -12,11 +12,7 @@ import { isSystemCollection } from '@directus/system-data';
  * @throws Will throw if collection is empty
  */
 export const aggregate =
-	<
-		Schema extends object,
-		Collection extends AllCollections<Schema>,
-		Options extends AggregationOptions<Schema, Collection>,
-	>(
+	<Schema, Collection extends AllCollections<Schema>, Options extends AggregationOptions<Schema, Collection>>(
 		collection: Collection,
 		options: Options,
 	): RestCommand<AggregationOutput<Schema, Collection, Options>, Schema> =>

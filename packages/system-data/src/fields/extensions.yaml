@@ -2,7 +2,18 @@ table: directus_extensions
 
 fields:
   - collection: directus_extensions
-    field: name
+    field: id
+    special:
+      - uuid
+
+  - collection: directus_extensions
+    field: folder
+
+  - collection: directus_extensions
+    field: source
+
+  - collection: directus_extensions
+    field: bundle
 
   - collection: directus_extensions
     field: enabled

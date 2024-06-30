@@ -56,7 +56,7 @@ const { basemap } = toRefs(appStore);
 
 	<div class="field">
 		<div class="type-label">{{ t('display_template') }}</div>
-		<v-field-template
+		<v-collection-field-template
 			v-model="displayTemplateWritable"
 			:collection="collection"
 			:placeholder="t('layouts.map.default_template')"

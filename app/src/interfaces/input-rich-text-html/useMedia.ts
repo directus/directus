@@ -1,4 +1,3 @@
-import { getToken } from '@/api';
 import { i18n } from '@/lang';
 import { getPublicURL } from '@/utils/get-root-path';
 import { computed, Ref, ref, watch } from 'vue';
@@ -81,7 +80,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 				sourceUrl: newSource,
 			};
 
-			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, imageToken.value || getToken());
+			mediaSelection.value.previewUrl = replaceUrlAccessToken(newSource, imageToken.value);
 		},
 	});
 
@@ -133,7 +132,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 			if (sourceUrl === undefined) return;
 
 			// Add temporarily access token for preview
-			const previewUrl = replaceUrlAccessToken(sourceUrl, imageToken.value || getToken());
+			const previewUrl = replaceUrlAccessToken(sourceUrl, imageToken.value);
 
 			mediaSelection.value = {
 				tag,
@@ -179,7 +178,7 @@ export default function useMedia(editor: Ref<any>, imageToken: Ref<string | unde
 			height: media.height || 150,
 			tag,
 			type: media.type,
-			previewUrl: replaceUrlAccessToken(sourceUrl, imageToken.value || getToken()),
+			previewUrl: replaceUrlAccessToken(sourceUrl, imageToken.value),
 		};
 	}
 

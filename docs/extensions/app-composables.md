@@ -12,8 +12,8 @@ Rather than needing to rewrite logic from scratch, extension developers can leve
 
 ## `useApi()`
 
-The `useApi` composable is a wrapper around the `axios` library that adds the `Authorization` header and provides
-concurrency control when making multiple requests.
+The `useApi` composable is a wrapper around the `axios` library that uses the session cookie and provides concurrency
+control when making multiple requests.
 
 Use the `useApi` composable when you need to make authorized API requests from your App extension.
 

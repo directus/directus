@@ -1,6 +1,6 @@
 import { createError, ErrorCode } from '../index.js';
 
-interface ContainsNullValuesErrorExtensions {
+export interface ContainsNullValuesErrorExtensions {
 	collection: string;
 	field: string;
 }

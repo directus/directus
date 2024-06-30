@@ -3,11 +3,12 @@ import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { v4 as uuid } from 'uuid';
 import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
 import { collectionFirst, collectionIgnored, seedDBValues } from './cache.seed';
 
@@ -60,10 +61,10 @@ describe('App Caching Tests', () => {
 			envRedisPurge[vendor]['CACHE_AUTO_PURGE'] = 'true';
 			envRedisPurge[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_redis_purge`;
 
-			const newServerPortMem = Number(envMem[vendor].PORT) + 150;
-			const newServerPortMemPurge = Number(envMemPurge[vendor].PORT) + 200;
-			const newServerPortRedis = Number(envRedis[vendor].PORT) + 250;
-			const newServerPortRedisPurge = Number(envRedisPurge[vendor].PORT) + 300;
+			const newServerPortMem = await getPort();
+			const newServerPortMemPurge = await getPort();
+			const newServerPortRedis = await getPort();
+			const newServerPortRedisPurge = await getPort();
 
 			envMem[vendor].PORT = String(newServerPortMem);
 			envMemPurge[vendor].PORT = String(newServerPortMemPurge);
@@ -78,10 +79,12 @@ describe('App Caching Tests', () => {
 			directusInstances[vendor] = [serverMem, serverMemPurge, serverRedis, serverRedisPurge];
 			envs[vendor] = { envMem, envMemPurge, envRedis, envRedisPurge };
 
-			promises.push(awaitDirectusConnection(newServerPortMem));
-			promises.push(awaitDirectusConnection(newServerPortMemPurge));
-			promises.push(awaitDirectusConnection(newServerPortRedis));
-			promises.push(awaitDirectusConnection(newServerPortRedisPurge));
+			promises.push(
+				awaitDirectusConnection(newServerPortMem),
+				awaitDirectusConnection(newServerPortMemPurge),
+				awaitDirectusConnection(newServerPortRedis),
+				awaitDirectusConnection(newServerPortRedisPurge),
+			);
 		}
 
 		// Give the server some time to start
@@ -228,7 +231,7 @@ describe('App Caching Tests', () => {
 
 					await request(getUrl(vendor, env))
 						.post(`/items/${collection}`)
-						.send({ string_field: uuid() })
+						.send({ string_field: randomUUID() })
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					const response = await request(getUrl(vendor, env))
@@ -270,7 +273,7 @@ describe('App Caching Tests', () => {
 
 					await request(getUrl(vendor, env))
 						.post(`/items/${collection}`)
-						.send({ string_field: uuid() })
+						.send({ string_field: randomUUID() })
 						.set('Referer', referer)
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -307,7 +310,7 @@ describe('App Caching Tests', () => {
 
 					await request(getUrl(vendor, env))
 						.post(`/items/${collection}`)
-						.send({ string_field: uuid() })
+						.send({ string_field: randomUUID() })
 						.set('Referer', referer)
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 

@@ -3,7 +3,7 @@ import { useRequestsStore } from '@/stores/requests';
 import { useSettingsStore } from '@/stores/settings';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 
 const { t } = useI18n();
 
@@ -13,7 +13,7 @@ const settingsStore = useSettingsStore();
 const customLogoPath = computed<string | null>(() => {
 	if (settingsStore.settings === null) return null;
 	if (!settingsStore.settings?.project_logo) return null;
-	return `${getRootPath()}assets/${settingsStore.settings.project_logo}`;
+	return getAssetUrl(`${settingsStore.settings.project_logo}`);
 });
 
 const showLoader = ref(false);

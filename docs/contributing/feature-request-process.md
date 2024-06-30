@@ -15,10 +15,9 @@ less ambiguity around _how_ a feature should work, the easier it is to review, t
 
 ## Review Process
 
-Once a feature request gets 15 or more upvotes, it will be moved to the "Under Review" status at which point the
-Directus Core team will review it, and decide if it will be approved, denied, or if changes are required. If the feature
-request is accepted, it will be moved to the "Approved Requests" status, at which point the feature is ready to be
-implemented.
+Once a draft feature request gets 15 or more upvotes, it will be moved to the "Open Feature Requests" category, at which
+point the feature will be considered for inclusion into the project. Once we go over to active development for the
+feature, a new Issue will be created to track the progress of implementation.
 
 However, if a feature request doesn't reach at least 15 upvotes within 3 months of it being created, it will be closed
 due to a lack of community interest.
@@ -30,3 +29,6 @@ Even though we strive to prioritize what's being worked on based on community fe
 times when a feature request is blocked by something else that's prioritized by the team. The implementation of accepted
 feature request is triaged based on a combination of popularity, team availability, timelines, scope of the feature, and
 overall project goals.
+
+If you'd like to implement and open a PR for one of the open feature requests yourself, please leave a comment on the
+feature request so we can create an Issue to assign and track accordingly.

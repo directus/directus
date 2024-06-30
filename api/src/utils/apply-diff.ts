@@ -20,6 +20,7 @@ import type {
 	SnapshotField,
 } from '../types/index.js';
 import { DiffKind } from '../types/index.js';
+import { transaction } from '../utils/transaction.js';
 import { getSchema } from './get-schema.js';
 
 type CollectionDelta = {
@@ -48,7 +49,7 @@ export async function applyDiff(
 
 	const runPostColumnChange = await helpers.schema.preColumnChange();
 
-	await database.transaction(async (trx) => {
+	await transaction(database, async (trx) => {
 		const collectionsService = new CollectionsService({ knex: trx, schema });
 
 		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>

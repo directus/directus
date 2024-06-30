@@ -22,12 +22,12 @@ post:
               example: password
             mode:
               type: string
-              enum: ['json', cookie]
-              default: 'json'
-              description: Choose between retrieving the token as a string, or setting it as a cookie.
+              enum: [json, cookie, session]
+              default: json
+              description: Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie.
             otp:
               type: string
-              description: If 2FA is enabled, you need to pass the one time password.
+              description: The user's one-time-password (if MFA is enabled).
   responses:
     '200':
       description: Successful authentification

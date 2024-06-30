@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -23,7 +23,7 @@ const hasCustomBackground = computed(() => {
 });
 
 const customBackgroundIsVideo = computed(() => info.value?.project?.public_background?.type?.startsWith('video/'));
-const customBackgroundUrl = computed(() => getRootPath() + `assets/${info.value!.project?.public_background?.id}`);
+const customBackgroundUrl = computed(() => getAssetUrl(info.value?.project?.public_background?.id ?? ''));
 
 const artStyles = computed(() => {
 	if (!hasCustomBackground.value) return {};
@@ -37,12 +37,12 @@ const artStyles = computed(() => {
 
 const foregroundURL = computed(() => {
 	if (!info.value?.project?.public_foreground) return null;
-	return '/assets/' + info.value.project?.public_foreground;
+	return getAssetUrl(info.value.project?.public_foreground);
 });
 
 const logoURL = computed<string | null>(() => {
 	if (!info.value?.project?.project_logo) return null;
-	return '/assets/' + info.value.project?.project_logo;
+	return getAssetUrl(info.value.project?.project_logo);
 });
 </script>
 

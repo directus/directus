@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed, onUnmounted, ref, watch } from 'vue';
@@ -22,7 +23,7 @@ const avatarSrc = computed(() => {
 	if (data.value === null) return null;
 
 	if (data.value.avatar?.id) {
-		return `/assets/${data.value.avatar.id}?key=system-medium-cover`;
+		return getAssetUrl(`${data.value.avatar.id}?key=system-medium-cover`);
 	}
 
 	return null;

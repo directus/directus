@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import emitter, { Events } from '@/events';
+import { emitter, Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';

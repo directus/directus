@@ -158,10 +158,6 @@ List the available collections.
 
 `SEARCH /collections`
 
-If using SEARCH you can provide a [query object](/reference/query) as the body of your request.
-
-[Learn more about SEARCH ->](/reference/introduction#search-http-method)
-
 </template>
 <template #graphql>
 

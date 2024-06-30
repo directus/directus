@@ -1,15 +1,16 @@
 import config, { getUrl, paths, type Env } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql } from '@common/transport';
-import type { WebSocketUID, WebSocketResponse } from '@common/types';
+import type { WebSocketResponse, WebSocketUID } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import knex, { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { v4 as uuid } from 'uuid';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { collectionFirst } from './general.seed';
 
@@ -26,12 +27,11 @@ describe('WebSocket General Tests', () => {
 
 			const env1 = cloneDeep(config.envs);
 			env1[vendor]['REDIS'] = `redis://localhost:6108/4`;
-			env1[vendor]['MESSENGER_NAMESPACE'] = `directus-ws-${vendor}`;
 
 			const env2 = cloneDeep(env1);
 
-			const newServerPort1 = Number(env1[vendor]!.PORT) + 250;
-			const newServerPort2 = Number(env2[vendor]!.PORT) + 300;
+			const newServerPort1 = await getPort();
+			const newServerPort2 = await getPort();
 
 			env1[vendor].PORT = String(newServerPort1);
 			env2[vendor].PORT = String(newServerPort2);
@@ -42,8 +42,7 @@ describe('WebSocket General Tests', () => {
 			directusInstances[vendor] = [server1, server2];
 			envs[vendor] = [env1, env2];
 
-			promises.push(awaitDirectusConnection(newServerPort1));
-			promises.push(awaitDirectusConnection(newServerPort2));
+			promises.push(awaitDirectusConnection(newServerPort1), awaitDirectusConnection(newServerPort2));
 		}
 
 		// Give the server some time to start
@@ -124,12 +123,12 @@ describe('WebSocket General Tests', () => {
 						});
 					}
 
-					const insertedName = uuid();
+					const insertedName = randomUUID();
 
 					const insertedId = (
 						await request(getUrl(vendor, env1))
 							.post(`/items/${localCollectionFirst}`)
-							.send({ id: pkType === 'string' ? uuid() : undefined, name: insertedName })
+							.send({ id: pkType === 'string' ? randomUUID() : undefined, name: insertedName })
 							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					).body.data.id;
 
@@ -244,7 +243,7 @@ describe('WebSocket General Tests', () => {
 
 					await request(getUrl(vendor, env1))
 						.post(`/items/${localCollectionFirst}`)
-						.send({ id: pkType === 'string' ? uuid() : undefined, name: uuid() })
+						.send({ id: pkType === 'string' ? randomUUID() : undefined, name: randomUUID() })
 						.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 					ws.conn.close();
@@ -315,13 +314,13 @@ describe('WebSocket General Tests', () => {
 						});
 					}
 
-					const insertedName = uuid();
-					const updatedName = `updated_${uuid()}`;
+					const insertedName = randomUUID();
+					const updatedName = `updated_${randomUUID()}`;
 
 					const insertedId = (
 						await request(getUrl(vendor, env))
 							.post(`/items/${localCollectionFirst}`)
-							.send({ id: pkType === 'string' ? uuid() : undefined, name: insertedName })
+							.send({ id: pkType === 'string' ? randomUUID() : undefined, name: insertedName })
 							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					).body.data.id;
 

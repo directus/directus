@@ -211,7 +211,7 @@ for await (const item of subscription) {
 			</p>
 		</div>
 		<div :class="[$style.grid4, $style.m60, $style.frameworks]">
-			<a href="/guides/headless-cms/build-static-website/next-13">
+			<a href="/guides/headless-cms/build-static-website/next">
 				<div :class="[$style.image]">
 					<img src="/assets/frameworks/next.png" alt="Next.js" />
 				</div>

@@ -1,7 +1,7 @@
 import { CreateCollection, CreateField, CreateFieldO2M, CreateItem, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { PRIMARY_KEY_TYPES } from '@common/variables';
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from 'node:crypto';
 import { expect, it } from 'vitest';
 
 export const collectionFirst = 'test_items_conceal_filter_first';
@@ -91,12 +91,12 @@ export const seedDBValues = async () => {
 				await CreateItem(vendor, {
 					collection: localCollectionFirst,
 					item: {
-						id: pkType === 'string' ? uuid() : undefined,
-						string_field: uuid(),
+						id: pkType === 'string' ? randomUUID() : undefined,
+						string_field: randomUUID(),
 						second_ids: [
 							{
-								id: pkType === 'string' ? uuid() : undefined,
-								string_field: uuid(),
+								id: pkType === 'string' ? randomUUID() : undefined,
+								string_field: randomUUID(),
 							},
 						],
 					},
@@ -106,10 +106,10 @@ export const seedDBValues = async () => {
 				await CreateItem(vendor, {
 					collection: localCollectionFirst,
 					item: {
-						id: pkType === 'string' ? uuid() : undefined,
+						id: pkType === 'string' ? randomUUID() : undefined,
 						second_ids: [
 							{
-								id: pkType === 'string' ? uuid() : undefined,
+								id: pkType === 'string' ? randomUUID() : undefined,
 							},
 						],
 					},

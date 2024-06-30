@@ -4,11 +4,11 @@ import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql, requestGraphQL } from '@common/transport';
 import type { PrimaryKeyType } from '@common/types';
 import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
-import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
 import { without } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import request from 'supertest';
-import { v4 as uuid } from 'uuid';
 import { beforeAll, describe, expect, it, test } from 'vitest';
+import { CheckQueryFilters, type CachedTestsSchema, type TestsSchemaVendorValues } from '../../query/filter';
 import {
 	collectionCities,
 	collectionCountries,
@@ -22,11 +22,11 @@ import {
 
 function createCountry(pkType: PrimaryKeyType) {
 	const item: Country = {
-		name: 'country-' + uuid(),
+		name: 'country-' + randomUUID(),
 	};
 
 	if (pkType === 'string') {
-		item.id = 'country-' + uuid();
+		item.id = 'country-' + randomUUID();
 	}
 
 	return item;
@@ -34,11 +34,11 @@ function createCountry(pkType: PrimaryKeyType) {
 
 function createState(pkType: PrimaryKeyType) {
 	const item: State = {
-		name: 'state-' + uuid(),
+		name: 'state-' + randomUUID(),
 	};
 
 	if (pkType === 'string') {
-		item.id = 'state-' + uuid();
+		item.id = 'state-' + randomUUID();
 	}
 
 	return item;
@@ -46,11 +46,11 @@ function createState(pkType: PrimaryKeyType) {
 
 function createCity(pkType: PrimaryKeyType) {
 	const item: City = {
-		name: 'city-' + uuid(),
+		name: 'city-' + randomUUID(),
 	};
 
 	if (pkType === 'string') {
-		item.id = 'city-' + uuid();
+		item.id = 'city-' + randomUUID();
 	}
 
 	return item;
@@ -134,7 +134,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const state = createState(pkType);
-						state.name = 'state-m2o-top-' + uuid();
+						state.name = 'state-m2o-top-' + randomUUID();
 
 						const insertedState = await CreateItem(vendor, {
 							collection: localCollectionStates,
@@ -209,7 +209,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const country = createCountry(pkType);
-						country.name = 'country-m2o-' + uuid();
+						country.name = 'country-m2o-' + randomUUID();
 
 						const insertedCountry = await CreateItem(vendor, {
 							collection: localCollectionCountries,
@@ -217,7 +217,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						});
 
 						const state = createState(pkType);
-						state.name = 'state-m2o-' + uuid();
+						state.name = 'state-m2o-' + randomUUID();
 						state.country_id = insertedCountry.id;
 						const insertedState = await CreateItem(vendor, { collection: localCollectionStates, item: state });
 
@@ -291,7 +291,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						for (const year of years) {
 							const state = createState(pkType);
-							state.name = 'state-m2o-top-fn-' + uuid();
+							state.name = 'state-m2o-top-fn-' + randomUUID();
 							state.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
 							states.push(state);
 						}
@@ -374,7 +374,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 						for (const year of years) {
 							const country = createCountry(pkType);
-							country.name = 'country-m2o-fn-' + uuid();
+							country.name = 'country-m2o-fn-' + randomUUID();
 							country.test_datetime = new Date(new Date().setFullYear(year)).toISOString().slice(0, 19);
 
 							const insertedCountry = await CreateItem(vendor, {
@@ -383,7 +383,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							});
 
 							const state = createState(pkType);
-							state.name = 'state-m2o-fn-' + uuid();
+							state.name = 'state-m2o-fn-' + randomUUID();
 							state.country_id = insertedCountry.id;
 							states.push(state);
 							await CreateItem(vendor, { collection: localCollectionStates, item: state });
@@ -660,7 +660,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								});
 
 								const state = createState(pkType);
-								state.name = 'state-m2o-sort-' + uuid();
+								state.name = 'state-m2o-sort-' + randomUUID();
 								state.country_id = insertedCountry.id;
 								await CreateItem(vendor, { collection: localCollectionStates, item: state });
 							}
@@ -838,7 +838,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const val of sortValues) {
 								const state = createState(pkType);
-								state.name = 'state-m2o-top-sort-fn-' + uuid();
+								state.name = 'state-m2o-top-sort-fn-' + randomUUID();
 
 								state.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
@@ -1022,7 +1022,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 							for (const val of sortValues) {
 								const country = createCountry(pkType);
-								country.name = 'country-m2o-sort-fn-' + uuid();
+								country.name = 'country-m2o-sort-fn-' + randomUUID();
 
 								country.test_datetime = new Date(new Date().setFullYear(parseInt(`202${val}`)))
 									.toISOString()
@@ -1034,7 +1034,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								});
 
 								const state = createState(pkType);
-								state.name = 'state-m2o-sort-fn-' + uuid();
+								state.name = 'state-m2o-sort-fn-' + randomUUID();
 								state.country_id = insertedCountry.id;
 								await CreateItem(vendor, { collection: localCollectionStates, item: state });
 							}

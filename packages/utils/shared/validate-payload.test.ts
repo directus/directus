@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
 import type { Filter } from '@directus/types';
+import { describe, expect, it, test } from 'vitest';
 import { validatePayload } from './validate-payload.js';
 
 describe('validatePayload', () => {
@@ -86,5 +86,118 @@ describe('validatePayload', () => {
 
 		expect(errors).toHaveLength(1);
 		expect(errors[0]!.message).toBe(`"field" is required`);
+	});
+
+	describe('validates operator: _contains', () => {
+		const mockFilter = {
+			_and: [
+				{
+					value: {
+						_contains: 'MATCH-EXACT',
+					},
+				},
+			],
+		};
+
+		const options = { requireAll: true };
+
+		test('string values', () => {
+			expect(validatePayload(mockFilter, { value: 'MATCH-EXACT' }, options)).toHaveLength(0);
+			expect(validatePayload(mockFilter, { value: 'substring-MATCH-EXACT' }, options)).toHaveLength(0);
+
+			expect(validatePayload(mockFilter, { value: 'match-exact' }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: 'mismatch' }, options)).toHaveLength(1);
+		});
+
+		test('array values', () => {
+			expect(validatePayload(mockFilter, { value: [123, 'MATCH-EXACT'] }, options)).toHaveLength(0);
+
+			expect(validatePayload(mockFilter, { value: [123, 'match-exact'] }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: [] }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: ['mismatch'] }, options)).toHaveLength(1);
+		});
+
+		test('other values', () => {
+			expect(validatePayload(mockFilter, { value: null }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: undefined }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: 123 }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: {} }, options)).toHaveLength(1);
+		});
+	});
+
+	describe('validates operator: _icontains', () => {
+		const mockFilter = {
+			_and: [
+				{
+					value: {
+						_icontains: 'match-insensitive',
+					},
+				},
+			],
+		};
+
+		const options = { requireAll: true };
+
+		test('string values', () => {
+			expect(validatePayload(mockFilter, { value: 'MATCH-insensitive' }, options)).toHaveLength(0);
+			expect(validatePayload(mockFilter, { value: 'match-insensitive' }, options)).toHaveLength(0);
+			expect(validatePayload(mockFilter, { value: 'substring-match-insensitive' }, options)).toHaveLength(0);
+
+			expect(validatePayload(mockFilter, { value: 'mismatch' }, options)).toHaveLength(1);
+		});
+
+		test('array values', () => {
+			expect(validatePayload(mockFilter, { value: [123, 'match-insensitive'] }, options)).toHaveLength(0);
+			expect(validatePayload(mockFilter, { value: [123, 'MATCH-insensitive'] }, options)).toHaveLength(0);
+			expect(validatePayload(mockFilter, { value: [123, 'substring-MATCH-insensitive'] }, options)).toHaveLength(0);
+
+			expect(validatePayload(mockFilter, { value: [] }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: ['mismatch'] }, options)).toHaveLength(1);
+		});
+
+		test('other values', () => {
+			expect(validatePayload(mockFilter, { value: null }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: undefined }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: 123 }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: {} }, options)).toHaveLength(1);
+		});
+	});
+
+	describe('validates operator: _ncontains', () => {
+		const mockFilter = {
+			_and: [
+				{
+					value: {
+						_ncontains: 'match',
+					},
+				},
+			],
+		};
+
+		const options = { requireAll: true };
+
+		test('string values', () => {
+			expect(validatePayload(mockFilter, { value: 'foo' }, options)).toHaveLength(0);
+			expect(validatePayload(mockFilter, { value: 'MATCH' }, options)).toHaveLength(0);
+
+			expect(validatePayload(mockFilter, { value: 'match' }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: 'substring-match' }, options)).toHaveLength(1);
+		});
+
+		test('array values', () => {
+			expect(validatePayload(mockFilter, { value: [] }, options)).toHaveLength(0);
+			expect(validatePayload(mockFilter, { value: ['foo'] }, options)).toHaveLength(0);
+			expect(validatePayload(mockFilter, { value: ['MATCH'] }, options)).toHaveLength(0);
+
+			expect(validatePayload(mockFilter, { value: ['foo', 'match'] }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: ['substring-match'] }, options)).toHaveLength(1);
+		});
+
+		test('other values', () => {
+			expect(validatePayload(mockFilter, { value: null }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: undefined }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: 123 }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: {} }, options)).toHaveLength(1);
+		});
 	});
 });

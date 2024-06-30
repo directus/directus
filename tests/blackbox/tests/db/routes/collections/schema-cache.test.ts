@@ -4,12 +4,12 @@ import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import getPort from 'get-port';
 
 const newCollectionName = 'schema-caching-test';
 
@@ -33,7 +33,6 @@ describe('Schema Caching Tests', () => {
 					env1[vendor]['CACHE_STORE'] = 'memory';
 					env1[vendor]['CACHE_NAMESPACE'] = 'directus-schema-cache';
 					env1[vendor]['REDIS'] = `redis://localhost:6108/4`;
-					env1[vendor]['MESSENGER_NAMESPACE'] = `directus-${vendor}`;
 
 					const env2 = cloneDeep(env1);
 					env2[vendor]['CACHE_NAMESPACE'] = env1[vendor]['CACHE_NAMESPACE'] + '2';
@@ -50,8 +49,7 @@ describe('Schema Caching Tests', () => {
 					tzDirectus[vendor] = [server1, server2];
 					envs[vendor] = [env1, env2];
 
-					promises.push(awaitDirectusConnection(newServerPort1));
-					promises.push(awaitDirectusConnection(newServerPort2));
+					promises.push(awaitDirectusConnection(newServerPort1), awaitDirectusConnection(newServerPort2));
 				}
 
 				// Give the server some time to start
@@ -151,8 +149,7 @@ describe('Schema Caching Tests', () => {
 					tzDirectus[vendor] = [server3, server4];
 					envs[vendor] = [env3, env4];
 
-					promises.push(awaitDirectusConnection(newServerPort3));
-					promises.push(awaitDirectusConnection(newServerPort4));
+					promises.push(awaitDirectusConnection(newServerPort3), awaitDirectusConnection(newServerPort4));
 				}
 
 				// Give the server some time to start

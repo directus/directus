@@ -8,6 +8,7 @@ import { Dashboard } from '@/types/insights';
 import { getPublicURL } from '@/utils/get-root-path';
 import { unexpectedError } from '@/utils/unexpected-error';
 import BasicImportSidebarDetail from '@/views/private/components/basic-import-sidebar-detail.vue';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { getEndpoint } from '@directus/utils';
 import { sortBy } from 'lodash';
 import { computed, ref } from 'vue';
@@ -118,7 +119,6 @@ function exportDasboard(ids: string[]) {
 	const url = getPublicURL() + endpoint.substring(1);
 
 	const params: Record<string, unknown> = {
-		access_token: (api.defaults.headers.common['Authorization'] as string).substring(7),
 		export: 'json',
 		fields: [
 			'name',
@@ -205,21 +205,13 @@ async function batchDelete() {
 		</template>
 
 		<template #actions>
-			<v-input
+			<search-input
+				v-if="insightsStore.dashboards.length > 0"
 				v-model="search"
-				class="search"
+				:show-filter="false"
 				:autofocus="insightsStore.dashboards.length > 25"
-				type="search"
 				:placeholder="t('search_dashboard')"
-				:full-width="false"
-			>
-				<template #prepend>
-					<v-icon name="search" outline />
-				</template>
-				<template #append>
-					<v-icon v-if="search" clickable class="clear" name="close" @click.stop="search = null" />
-				</template>
-			</v-input>
+			/>
 
 			<v-button
 				v-if="selection.length > 0"
@@ -367,10 +359,18 @@ async function batchDelete() {
 			</template>
 		</v-table>
 
-		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
-			{{ search ? t('no_dashboards_copy_search') : t('no_dashboards_copy') }}
+		<v-info v-else-if="search" icon="search" :title="t('no_results')" center>
+			{{ t('no_results_copy') }}
 
-			<template v-if="createAllowed && !search" #append>
+			<template #append>
+				<v-button @click="search = null">{{ t('clear_filters') }}</v-button>
+			</template>
+		</v-info>
+
+		<v-info v-else icon="space_dashboard" :title="t('no_dashboards')" center>
+			{{ t('no_dashboards_copy') }}
+
+			<template v-if="createAllowed" #append>
 				<dashboard-dialog v-model="createDialogActive">
 					<template #activator="{ on }">
 						<v-button v-tooltip.bottom="createAllowed ? t('create_dashboard') : t('not_allowed')" @click="on">
@@ -405,19 +405,6 @@ async function batchDelete() {
 </template>
 
 <style scoped lang="scss">
-.v-input {
-	&.search {
-		--v-input-border-radius: calc(44px / 2);
-		height: 44px;
-		width: 200px;
-		margin-left: auto;
-
-		@media (min-width: 600px) {
-			width: 300px;
-			margin-top: 0px;
-		}
-	}
-}
 .action-delete {
 	--v-button-background-color-hover: var(--danger) !important;
 	--v-button-color-hover: var(--white) !important;

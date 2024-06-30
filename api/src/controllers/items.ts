@@ -1,15 +1,15 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
+import { isSystemCollection } from '@directus/system-data';
+import type { PrimaryKey } from '@directus/types';
 import express from 'express';
-import { ErrorCode, ForbiddenError, RouteNotFoundError } from '@directus/errors';
 import collectionExists from '../middleware/collection-exists.js';
+import { mergeContentVersions } from '../middleware/merge-content-versions.js';
 import { respond } from '../middleware/respond.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { ItemsService } from '../services/items.js';
 import { MetaService } from '../services/meta.js';
-import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
-import { isSystemCollection } from '@directus/system-data';
 
 const router = express.Router();
 
@@ -93,7 +93,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 });
 
 router.search('/:collection', collectionExists, validateBatch('read'), readHandler, respond);
-router.get('/:collection', collectionExists, readHandler, respond);
+router.get('/:collection', collectionExists, readHandler, mergeContentVersions, respond);
 
 router.get(
 	'/:collection/:pk',
@@ -114,6 +114,7 @@ router.get(
 
 		return next();
 	}),
+	mergeContentVersions,
 	respond,
 );
 

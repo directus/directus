@@ -54,6 +54,8 @@ export class ServerService {
 				'public_favicon',
 				'public_note',
 				'custom_css',
+				'public_registration',
+				'public_registration_verify_email',
 			],
 		});
 
@@ -77,6 +79,10 @@ export class ServerService {
 			} else {
 				info['rateLimitGlobal'] = false;
 			}
+
+			info['extensions'] = {
+				limit: env['EXTENSIONS_LIMIT'] ?? null,
+			};
 
 			info['queryLimit'] = {
 				default: env['QUERY_LIMIT_DEFAULT'],
@@ -140,7 +146,7 @@ export class ServerService {
 		const data: HealthData = {
 			status: 'ok',
 			releaseId: version,
-			serviceId: env['KEY'] as string,
+			serviceId: env['PUBLIC_URL'] as string,
 			checks: merge(
 				...(await Promise.all([
 					testDatabase(),

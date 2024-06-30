@@ -190,6 +190,28 @@ const result = await client.request(
 );
 ```
 
+#### Custom endpoints
+
+To call custom endpoints using the SDK, you can either manually write a command or use the `customEndpoint` helper,
+which allows you to type the output of the custom endpoint.
+
+```ts
+import { createDirectus, rest, customEndpoint } from '@directus/sdk';
+
+const client = createDirectus('http://directus.example.com').with(rest());
+
+const result = await client.request(customEndpoint<OutputType>({
+	path: '/custom/endpoint',
+	method: 'GET',
+}));
+
+// or manually without types
+const manualResult = await client.request(() => ({
+	path: '/custom/endpoint',
+	method: 'GET',
+}));
+```
+
 ### Using GraphQL
 
 Add the `graphql()` composable to the client, this enables the `.query(...)` method to query the collection.

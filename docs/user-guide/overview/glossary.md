@@ -169,8 +169,8 @@ proprietary options, such as seating charts, QR codes, or Stripe customer info.
 
 ## Items
 
-Items are objects within a Collection which contain values for one or more fields. Each collection represents a
-**record** in your database.
+Items are objects within a Collection which contain values for one or more fields. Each item represents a **record** in
+your database.
 
 Items are the primary building blocks of your project content. Similar to a "row" within a spreadsheet, all data within
 the platform is accessed via these "atomic" data units. Items themselves are fairly straightforward, however their real

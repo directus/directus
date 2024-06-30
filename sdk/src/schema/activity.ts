@@ -2,7 +2,7 @@ import type { MergeCoreCollection } from '../index.js';
 import type { DirectusRevision } from './revision.js';
 import type { DirectusUser } from './user.js';
 
-export type DirectusActivity<Schema extends object> = MergeCoreCollection<
+export type DirectusActivity<Schema> = MergeCoreCollection<
 	Schema,
 	'directus_activity',
 	{

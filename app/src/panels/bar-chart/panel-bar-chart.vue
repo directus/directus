@@ -2,11 +2,17 @@
 import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction, StringConditionalFillOperators } from '@/types/panels';
 import type { Filter } from '@directus/types';
-import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { isNil, snakeCase } from 'lodash';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+type ConditionalFillFormat = {
+	axis: 'X' | 'Y';
+	operator: StringConditionalFillOperators;
+	color: string;
+	value: number;
+};
 
 const props = withDefaults(
 	defineProps<{
@@ -19,23 +25,18 @@ const props = withDefaults(
 		function?: PanelFunction;
 		yAxis: string;
 		decimals?: number;
-		color?: string;
+		color?: string | null;
 		filter?: Filter;
 		showAxisLabels?: string;
 		showDataLabel?: boolean;
-		conditionalFill?: {
-			axis: 'X' | 'Y';
-			operator: StringConditionalFillOperators;
-			color: string;
-			value: number;
-		}[];
+		conditionalFill?: ConditionalFillFormat[] | null;
 	}>(),
 	{
 		showHeader: false,
 		data: () => [],
 		horizontal: false,
 		decimals: 2,
-		color: cssVar('--primary'),
+		color: 'var(--theme--primary)',
 		function: 'max',
 		filter: () => ({}),
 		showAxisLabels: 'both',
@@ -236,8 +237,8 @@ function setUpChart() {
 	chart.value.render();
 
 	function getFillColor(x: string | number, y: string | number) {
-		if (isNil(x) || isNil(y) || props.conditionalFill.length === 0) return props.color;
-		let fillColor = props.color;
+		let fillColor = props.color || 'var(--theme--primary)';
+		if (isNil(x) || isNil(y) || !props.conditionalFill?.length) return fillColor;
 
 		for (const format of props.conditionalFill) {
 			const shouldChangeFillColor = checkMatchingConditionalFill(format);
@@ -246,7 +247,7 @@ function setUpChart() {
 
 		return fillColor;
 
-		function checkMatchingConditionalFill(format: (typeof props)['conditionalFill'][number]): boolean {
+		function checkMatchingConditionalFill(format: ConditionalFillFormat): boolean {
 			let value: string | number;
 			let compareValue: string | number;
 

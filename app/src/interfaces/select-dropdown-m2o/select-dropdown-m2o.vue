@@ -25,6 +25,7 @@ const props = withDefaults(
 		filter?: Filter | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
+		loading?: boolean;
 	}>(),
 	{
 		value: null,
@@ -93,7 +94,10 @@ const query = computed<RelationQuerySingle>(() => ({
 	fields: requiredFields.value,
 }));
 
-const { update, remove, displayItem, loading } = useRelationSingle(value, query, relationInfo);
+const { update, remove, displayItem, loading } = useRelationSingle(value, query, relationInfo, {
+	enabled: computed(() => !props.loading),
+});
+
 const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const currentPrimaryKey = computed<string | number>(() => {

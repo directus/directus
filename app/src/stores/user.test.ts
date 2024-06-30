@@ -4,7 +4,6 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { RouteLocationNormalized } from 'vue-router';
 
 import { User } from '@directus/types';
-import { useLatencyStore } from './latency';
 import { useUserStore } from './user';
 
 beforeEach(() => {
@@ -132,9 +131,6 @@ describe('actions', () => {
 		const page = '/test';
 
 		test('should not set last_page if there is no current user', async () => {
-			const latencyStore = useLatencyStore();
-			vi.spyOn(latencyStore, 'save').mockReturnValue();
-
 			const userStore = useUserStore();
 			await userStore.trackPage({ path: page, fullPath: page } as RouteLocationNormalized);
 
@@ -142,9 +138,6 @@ describe('actions', () => {
 		});
 
 		test('should set last_page if there is current user', async () => {
-			const latencyStore = useLatencyStore();
-			vi.spyOn(latencyStore, 'save').mockReturnValue();
-
 			const userStore = useUserStore();
 			await userStore.hydrate();
 			await userStore.trackPage({ path: page, fullPath: page } as RouteLocationNormalized);

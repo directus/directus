@@ -15,9 +15,12 @@ describe('/auth/login/saml', () => {
 						.get(`/simplesaml/module.php/core/authenticate.php?as=example-userpass`)
 						.expect(302);
 
-					const cookies = loginPage.headers['set-cookie'].map((cookie: string) => cookie.split(';')[0]).join(';');
+					const cookies = loginPage
+						.get('Set-Cookie')!
+						.map((cookie) => cookie.split(';')[0])
+						.join(';');
 
-					const AuthState = decodeURIComponent(String(loginPage.headers.location)).split('AuthState=')[1];
+					const AuthState = decodeURIComponent(String(loginPage.headers['location'])).split('AuthState=')[1];
 
 					const response = await request('http://127.0.0.1:8880')
 						.post(`/simplesaml/module.php/core/loginuserpass.php?`)
@@ -30,7 +33,10 @@ describe('/auth/login/saml', () => {
 						})
 						.expect(200);
 
-					authCookies[vendor] = response.headers['set-cookie'].map((cookie: string) => cookie.split(';')[0]).join(';');
+					authCookies[vendor] = response
+						.get('Set-Cookie')!
+						.map((cookie) => cookie.split(';')[0])
+						.join(';');
 
 					// Assert
 					expect(authCookies[vendor]).toMatch(/PHPSESSIDIDP/);
@@ -47,9 +53,12 @@ describe('/auth/login/saml', () => {
 						.get(`/simplesaml/module.php/core/authenticate.php?as=example-userpass`)
 						.expect(302);
 
-					const cookies = loginPage.headers['set-cookie'].map((cookie: string) => cookie.split(';')[0]).join(';');
+					const cookies = loginPage
+						.get('Set-Cookie')!
+						.map((cookie) => cookie.split(';')[0])
+						.join(';');
 
-					const AuthState = decodeURIComponent(String(loginPage.headers.location)).split('AuthState=')[1];
+					const AuthState = decodeURIComponent(String(loginPage.headers['location'])).split('AuthState=')[1];
 
 					const response = await request('http://127.0.0.1:8880')
 						.post(`/simplesaml/module.php/core/loginuserpass.php?`)
@@ -62,7 +71,10 @@ describe('/auth/login/saml', () => {
 						})
 						.expect(303);
 
-					authCookies[vendor] = response.headers['set-cookie'].map((cookie: string) => cookie.split(';')[0]).join(';');
+					authCookies[vendor] = response
+						.get('Set-Cookie')!
+						.map((cookie) => cookie.split(';')[0])
+						.join(';');
 
 					// Assert
 					expect(authCookies[vendor]).toMatch(/PHPSESSIDIDP/);
@@ -78,9 +90,9 @@ describe('/auth/login/saml', () => {
 				it.each(vendors)('%s', async (vendor) => {
 					// Action
 					const samlLogin = await request(getUrl(vendor)).get('/auth/login/saml').expect(302);
-					const samlRedirectUrl = String(samlLogin.headers.location).split('/simplesaml/');
+					const samlRedirectUrl = String(samlLogin.headers['location']).split('/simplesaml/');
 
-					const authResponse = await request(samlRedirectUrl[0])
+					const authResponse = await request(samlRedirectUrl[0]!)
 						.get(`/simplesaml/${samlRedirectUrl[1]}`)
 						.set('Cookie', authCookies[vendor]);
 
@@ -117,9 +129,9 @@ describe('/auth/login/saml', () => {
 						.get(`/auth/login/saml?redirect=${getUrl(vendor)}/admin/login?continue`)
 						.expect(302);
 
-					const samlRedirectUrl = String(samlLogin.headers.location).split('/simplesaml/');
+					const samlRedirectUrl = String(samlLogin.headers['location']).split('/simplesaml/');
 
-					const authResponse = await request(samlRedirectUrl[0])
+					const authResponse = await request(samlRedirectUrl[0]!)
 						.get(`/simplesaml/${samlRedirectUrl[1]}`)
 						.set('Cookie', authCookies[vendor]);
 
@@ -141,10 +153,25 @@ describe('/auth/login/saml', () => {
 						})
 						.expect(302);
 
-					const cookies = acsResponse.headers['set-cookie'].map((cookie: string) => cookie.split(';')[0]).join(';');
+					const cookies = acsResponse
+						.get('Set-Cookie')!
+						.map((cookie) => cookie.split(';')[0])
+						.join(';');
 
 					// Assert
-					expect(cookies).toMatch(/directus_refresh_token/);
+					expect(cookies).toMatch(/directus_session_token/);
+				});
+			});
+
+			describe('blocks unlisted redirect URLs', () => {
+				it.each(vendors)('%s', async (vendor) => {
+					// Action
+					const samlLogin = await request(getUrl(vendor)).get(
+						`/auth/login/saml?redirect=https://example.org/admin/login?continue`,
+					);
+
+					// Assert
+					expect(samlLogin.statusCode).toBe(400);
 				});
 			});
 		});

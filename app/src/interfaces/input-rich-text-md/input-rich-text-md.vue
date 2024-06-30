@@ -8,7 +8,7 @@ import 'codemirror/mode/markdown/markdown';
 
 import { useShortcut } from '@/composables/use-shortcut';
 import { useWindowSize } from '@/composables/use-window-size';
-import { getPublicURL } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { Alteration, CustomSyntax, applyEdit } from './edits';
@@ -183,7 +183,7 @@ useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface
 function onImageUpload(image: any) {
 	if (!codemirror) return;
 
-	let url = getPublicURL() + `assets/` + image.id;
+	let url = getAssetUrl(image.id);
 
 	if (props.imageToken) {
 		url += '?access_token=' + props.imageToken;
@@ -398,7 +398,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 			@esc="imageDialogOpen = false"
 			@update:model-value="imageDialogOpen = false"
 		>
-			<v-card>
+			<v-card class="allow-drawer">
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />

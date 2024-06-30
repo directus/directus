@@ -1071,6 +1071,192 @@ const result = await client.request(
 </template>
 </SnippetToggler>
 
+## Register a new User
+
+Register a new user.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /users/register`
+
+```json
+{
+	"email": user_email,
+	"password": user_password
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	users_register(email: String!, password: String!): True
+}
+```
+
+Note: This mutation always returns true.
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUser } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+await client.request(registerUser(user_email, user_password));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`email` **Required**\
+Email for the new user.
+
+`password` **Required**\
+Password for the new user.
+
+`first_name`\
+First name for the new user.
+
+`last_name`\
+Last name for the new user.
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /users/register`
+
+```json
+{
+	"email": "another@example.com",
+	"password": "d1r3ctus"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	users_register(email: "another@example.com", password: "d1r3ctu5")
+}
+```
+
+Note: This mutation always returns true.
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUser } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+await client.request(registerUser('another@example.com', 'd1r3ctu5'));
+```
+
+</template>
+</SnippetToggler>
+
+## Verify Registered Email
+
+Verify the registered email address. The [register user endpoint](#register-a-new-user) sends the email a link for
+verification.
+
+This link includes a token, which is then used to activate the registered user.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /users/register/verify-email?token=token`
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+type Mutation {
+	users_register_verify(token: String!): True
+}
+```
+
+Note: This mutation always returns true.
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, verifyUserEmail } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+await client.request(registerUserVerify(emailed_token));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+`token` **Required**\
+Emailed registration token.
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`GET /users/register/verify-email?token=eyJh...KmUk`
+
+</template>
+<template #graphql>
+
+```graphql
+mutation {
+	users_register_verify(token: "eyJh...KmUk")
+}
+```
+
+Note: This mutation always returns true.
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUserVerify } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+await client.request(registerUserVerify('eyJh...KmUk'));
+```
+
+</template>
+</SnippetToggler>
+
 ## Invite a new User
 
 Invite a new user by email.

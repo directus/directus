@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
 import { useClipboard } from '@/composables/use-clipboard';
+import { Role } from '@directus/types';
+import { useI18n } from 'vue-i18n';
 
-interface Props {
-	role?: Record<string, any> | null;
-}
-
-withDefaults(defineProps<Props>(), {
-	role: null,
-});
+defineProps<{
+	role: Role | null;
+}>();
 
 const { t } = useI18n();
 

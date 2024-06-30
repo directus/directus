@@ -1,16 +1,17 @@
-import { getToken } from '@/api';
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import mime from 'mime/lite';
 import { Ref, ref, watch } from 'vue';
-import { SettingsStorageAssetPreset } from '@directus/types';
+import { SettingsStorageAssetPreset, File } from '@directus/types';
 
 type ImageSelection = {
 	imageUrl: string;
 	alt: string;
 	lazy?: boolean;
-	width?: number;
-	height?: number;
+	width?: number | null;
+	height?: number | null;
 	transformationKey?: string | null;
 	previewUrl?: string;
 };
@@ -26,7 +27,7 @@ type UsableImage = {
 	imageDrawerOpen: Ref<boolean>;
 	imageSelection: Ref<ImageSelection | null>;
 	closeImageDrawer: () => void;
-	onImageSelect: (image: Record<string, any>) => void;
+	onImageSelect: (image: File) => void;
 	saveImage: () => void;
 	imageButton: ImageButton;
 };
@@ -90,7 +91,7 @@ export default function useImage(
 					width: selectedPreset.value ? selectedPreset.value.width ?? undefined : width,
 					height: selectedPreset.value ? selectedPreset.value.height ?? undefined : height,
 					transformationKey,
-					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value ?? getToken()),
+					previewUrl: replaceUrlAccessToken(imageUrl, imageToken.value),
 				};
 			} else {
 				imageSelection.value = null;
@@ -116,16 +117,20 @@ export default function useImage(
 		imageDrawerOpen.value = false;
 	}
 
-	function onImageSelect(image: Record<string, any>) {
-		const assetUrl = getPublicURL() + 'assets/' + image.id;
+	function onImageSelect(image: File) {
+		const fileExtension = image.type
+			? readableMimeType(image.type, true)
+			: readableMimeType(mime.getType(image.filename_download) as string, true);
+
+		const assetUrl = getPublicURL() + 'assets/' + image.id + '.' + fileExtension;
 
 		imageSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
-			alt: image.title,
+			alt: image.title!,
 			lazy: false,
 			width: image.width,
 			height: image.height,
-			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value ?? getToken()),
+			previewUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
 		};
 	}
 

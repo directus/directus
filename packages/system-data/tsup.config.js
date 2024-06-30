@@ -6,7 +6,7 @@ const env = process.env.NODE_ENV;
 export default defineConfig({
 	esbuildPlugins: [YAMLPlugin()],
 	entry: ['src/index.ts'],
-	format: 'esm',
+	format: ['cjs', 'esm'],
 	target: 'es2020',
 	minify: env === 'production',
 	watch: env === 'development',

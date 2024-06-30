@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
-import type { BusboyFileStream, File } from '@directus/types';
+import type { BusboyFileStream, File, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
@@ -22,7 +22,7 @@ import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '../types/index.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
 import { ItemsService } from './items.js';
 
@@ -86,7 +86,7 @@ export class FilesService extends ItemsService {
 			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
 
 		// The filename_disk is the FINAL filename on disk
-		payload.filename_disk = primaryKey + (fileExtension || '');
+		payload.filename_disk ||= primaryKey + (fileExtension || '');
 
 		// Temp filename is used for replacements
 		const tempFilenameDisk = 'temp_' + payload.filename_disk;
@@ -407,14 +407,6 @@ export class FilesService extends ItemsService {
 		}
 
 		const key = await super.createOne(data, opts);
-		return key;
-	}
-
-	/**
-	 * Delete a file
-	 */
-	override async deleteOne(key: PrimaryKey): Promise<PrimaryKey> {
-		await this.deleteMany([key]);
 		return key;
 	}
 

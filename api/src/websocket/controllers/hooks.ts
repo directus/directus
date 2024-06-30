@@ -149,7 +149,7 @@ function registerSortHooks() {
 function registerAction(event: string, transform: (args: Record<string, any>) => WebSocketEvent) {
 	const messenger = useBus();
 
-	emitter.onAction(event, async (data: Record<string, any>) => {
+	emitter.onAction(event, (data: Record<string, any>) => {
 		// push the event through the Redis pub/sub
 		messenger.publish('websocket.event', transform(data) as Record<string, any>);
 	});

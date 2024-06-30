@@ -1,10 +1,16 @@
 import * as validator from '@authenio/samlify-node-xmllint';
 import { useEnv } from '@directus/env';
-import { ErrorCode, InvalidCredentialsError, InvalidProviderError, isDirectusError } from '@directus/errors';
+import {
+	ErrorCode,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	InvalidProviderError,
+	isDirectusError,
+} from '@directus/errors';
 import express, { Router } from 'express';
 import * as samlify from 'samlify';
 import { getAuthProvider } from '../../auth.js';
-import { COOKIE_OPTIONS } from '../../constants.js';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger.js';
@@ -15,6 +21,7 @@ import type { AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { LocalAuthDriver } from './local.js';
+import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 
 // Register the samlify schema validator
 samlify.setSchemaValidator(validator);
@@ -51,7 +58,12 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		const { provider, emailKey, identifierKey, givenNameKey, familyNameKey, allowPublicRegistration } = this.config;
 
 		const email = payload[emailKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
-		const identifier = payload[identifierKey ?? 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+		const identifier = payload[identifierKey || 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+
+		if (!identifier) {
+			logger.warn(`[SAML] Failed to find user identifier for provider "${provider}"`);
+			throw new InvalidCredentialsError();
+		}
 
 		const userID = await this.fetchUserID(identifier);
 
@@ -121,7 +133,13 @@ export function createSAMLAuthRouter(providerName: string) {
 			const parsedUrl = new URL(url);
 
 			if (req.query['redirect']) {
-				parsedUrl.searchParams.append('RelayState', req.query['redirect'] as string);
+				const redirect = req.query['redirect'] as string;
+
+				if (isLoginRedirectAllowed(redirect, providerName) === false) {
+					throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
+				}
+
+				parsedUrl.searchParams.append('RelayState', redirect);
 			}
 
 			return res.redirect(parsedUrl.toString());
@@ -135,14 +153,11 @@ export function createSAMLAuthRouter(providerName: string) {
 			const { context } = sp.createLogoutRequest(idp, 'redirect', req.body);
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
+			const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
-			if (req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string]) {
-				const currentRefreshToken = req.cookies[env['REFRESH_TOKEN_COOKIE_NAME'] as string];
-
-				if (currentRefreshToken) {
-					await authService.logout(currentRefreshToken);
-					res.clearCookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, COOKIE_OPTIONS);
-				}
+			if (req.cookies[sessionCookieName]) {
+				await authService.logout(req.cookies[sessionCookieName]);
+				res.clearCookie(sessionCookieName, SESSION_COOKIE_OPTIONS);
 			}
 
 			return res.redirect(context);
@@ -157,12 +172,17 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			const relayState: string | undefined = req.body?.RelayState;
 
+			const authMode = (env[`AUTH_${providerName.toUpperCase()}_MODE`] ?? 'session') as string;
+
 			try {
 				const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
 				const { extract } = await sp.parseLoginResponse(idp, 'post', req);
 
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
-				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes);
+
+				const { accessToken, refreshToken, expires } = await authService.login(providerName, extract.attributes, {
+					session: authMode === 'session',
+				});
 
 				res.locals['payload'] = {
 					data: {
@@ -173,12 +193,17 @@ export function createSAMLAuthRouter(providerName: string) {
 				};
 
 				if (relayState) {
-					res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, COOKIE_OPTIONS);
+					if (authMode === 'session') {
+						res.cookie(env['SESSION_COOKIE_NAME'] as string, accessToken, SESSION_COOKIE_OPTIONS);
+					} else {
+						res.cookie(env['REFRESH_TOKEN_COOKIE_NAME'] as string, refreshToken, REFRESH_COOKIE_OPTIONS);
+					}
+
 					return res.redirect(relayState);
 				}
 
 				return next();
-			} catch (error: any) {
+			} catch (error) {
 				if (relayState) {
 					let reason = 'UNKNOWN_EXCEPTION';
 

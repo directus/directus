@@ -372,8 +372,6 @@ components:
       $ref: './parameters/filter.yaml'
     Fields:
       $ref: './parameters/fields.yaml'
-    Mode:
-      $ref: './parameters/mode.yaml'
     Export:
       $ref: './parameters/export.yaml'
     Version:

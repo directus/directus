@@ -294,6 +294,52 @@ const Rules = Type.Object({
 			),
 		}),
 	),
+
+	banner: Type.Optional(
+		Type.Object({
+			background: Type.Optional(Type.Ref(Color)),
+			padding: Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)])),
+			borderRadius: Type.Optional(Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)]))),
+
+			avatar: Type.Optional(
+				Type.Object({
+					background: Type.Optional(Type.Ref(Color)),
+					foreground: Type.Optional(Type.Ref(Color)),
+					borderRadius: Type.Optional(Type.Optional(Type.Union([Type.Ref(Length), Type.Ref(Percentage)]))),
+				}),
+			),
+
+			headline: Type.Optional(
+				Type.Object({
+					foreground: Type.Optional(Type.Ref(Color)),
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				}),
+			),
+
+			title: Type.Optional(
+				Type.Object({
+					foreground: Type.Optional(Type.Ref(Color)),
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				}),
+			),
+
+			subtitle: Type.Optional(
+				Type.Object({
+					foreground: Type.Optional(Type.Ref(Color)),
+					fontFamily: Type.Optional(Type.Ref(FamilyName)),
+					fontWeight: Type.Optional(Type.Ref(FontWeight)),
+				}),
+			),
+
+			art: Type.Optional(
+				Type.Object({
+					foreground: Type.Optional(Type.Ref(Color)),
+				}),
+			),
+		}),
+	),
 });
 
 export const ThemeSchema = Type.Object({
