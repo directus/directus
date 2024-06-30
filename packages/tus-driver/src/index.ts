@@ -69,11 +69,17 @@ export class TusDataStore extends DataStore {
 	public override async create(upload: Upload): Promise<Upload> {
 		upload.creation_date = new Date().toISOString();
 
-		upload.metadata ??= {};
-		const fileName = upload.metadata['filename']!;
+		if (!upload.metadata || !upload.metadata['filename']) {
+			throw new Error('Invalid payload');
+		}
+
+		const fileName = upload.metadata['filename'];
 		const fileType = upload.metadata['filetype'] ?? 'application/octet-stream';
+		const fileInfo = Object.fromEntries(Object.entries(upload.metadata)
+			.filter(([key]) => !['filename', 'filetype'].includes(key)));
 
 		const fileData: Partial<File> = {
+			...fileInfo,
 			tus_id: upload.id,
 			tus_data: upload,
 			type: fileType,

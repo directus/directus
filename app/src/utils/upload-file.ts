@@ -24,16 +24,16 @@ export async function uploadFile(
 	let notified = false;
 
 	if (server.info.uploads) {
-		const fileInfo: Record<string, any> = {
-			filename: file.name,
-			filetype: file.type,
-		};
+		const fileInfo: Record<string, any> = {};
 
 		if (options?.preset) {
 			for (const [key, value] of Object.entries(options.preset)) {
 				fileInfo[key] = value;
 			}
 		}
+
+		fileInfo.filename = file.name;
+		fileInfo.filetype = file.type;
 
 		return new Promise((resolve, reject) => {
 			//-------------------------------
