@@ -103,6 +103,12 @@ describe('', () => {
 			'nnull',
 			'in',
 			'nin',
+			'lt',
+			'lte',
+			'gt',
+			'gte',
+			'between',
+			'nbetween',
 		]);
 	});
 

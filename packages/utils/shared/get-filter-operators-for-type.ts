@@ -36,6 +36,12 @@ export function getFilterOperatorsForType(
 				'nnull',
 				'in',
 				'nin',
+				'lt',
+				'lte',
+				'gt',
+				'gte',
+				'between',
+				'nbetween',
 				...validationOnlyStringFilterOperators,
 			];
 		// Hash
