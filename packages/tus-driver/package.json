@@ -25,6 +25,7 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
+		"@directus/format-title": "workspace:*",
 		"@tus/utils": "0.2.0",
 		"mime-types": "2.1.35"
 	},

@@ -26,11 +26,13 @@
 	},
 	"dependencies": {
 		"@directus/tus-driver": "workspace:*",
-		"@tus/utils": "0.2.0"
+		"@tus/utils": "0.2.0",
+		"mime-types": "2.1.35"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
+		"@types/mime-types": "2.1.4",
 		"@types/node": "18.19.33",
 		"@vitest/coverage-v8": "1.5.3",
 		"tsup": "8.1.0",
