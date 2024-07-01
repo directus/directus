@@ -29,7 +29,7 @@
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@supabase/storage-js": "2.5.5",
-		"undici": "6.18.2"
+		"undici": "6.19.2"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
