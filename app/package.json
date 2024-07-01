@@ -140,6 +140,7 @@
 		"sass": "1.77.5",
 		"semver": "7.6.2",
 		"tinymce": "7.1.1",
+		"tus-js-client": "4.1.0",
 		"typescript": "5.4.5",
 		"vite": "5.2.11",
 		"vitest": "1.5.3",
@@ -149,8 +150,5 @@
 		"vue-tsc": "2.0.22",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
-	},
-	"dependencies": {
-		"tus-js-client": "4.1.0"
 	}
 }
