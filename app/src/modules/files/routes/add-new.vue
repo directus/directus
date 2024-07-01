@@ -27,13 +27,11 @@ function close() {
 }
 
 function pause() {
-	console.log('pause', uploadController);
 	uploadController?.abort();
 	isPaused.value = true;
 }
 
 function resume() {
-	console.log('resume', uploadController);
 	uploadController?.start();
 	isUploading.value = true;
 	isPaused.value = false;

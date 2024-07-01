@@ -7,7 +7,6 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { emitter, Events } from '@/events';
 import ResumeUploads from '@/modules/files/components/resume-uploads.vue';
-import { useResumableUploads } from '@/modules/files/composables/use-resumable-uploads';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getFolderFilter } from '@/utils/get-folder-filter';

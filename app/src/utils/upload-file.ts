@@ -39,9 +39,7 @@ export async function uploadFile(
 			//-------------------------------
 			// Create a new tus upload
 			const upload = new tus.Upload(file, {
-				// urlStorage: getReactiveUrlStorage(),
 				endpoint: '/files/tus',
-				// retryDelays: [0, 3000, 5000, 10000, 20000],
 				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
 				metadata: fileInfo,
 				// Allow user to re-upload of the same file
@@ -52,14 +50,12 @@ export async function uploadFile(
 					xml.withCredentials = true;
 				},
 				onError(error) {
-					// console.log('Failed because: ' + error);
 					reject(error);
 					emitter.emit(Events.tusResumableUploadsChanged);
 				},
 				onProgress(bytesUploaded, bytesTotal) {
 					const percentage = Number(((bytesUploaded / bytesTotal) * 100).toFixed(2));
 					progressHandler(percentage);
-					//   console.log(bytesUploaded, bytesTotal, percentage + '%')
 
 					if (!notified) {
 						emitter.emit(Events.tusResumableUploadsChanged);
@@ -67,8 +63,6 @@ export async function uploadFile(
 					}
 				},
 				onSuccess() {
-					//   console.log('Download %s from %s', upload.file.name, upload.url)
-
 					if (options?.notifications) {
 						notify({
 							title: i18n.global.t('upload_file_success'),
@@ -98,8 +92,6 @@ export async function uploadFile(
 
 			// Check if there are any previous uploads to continue.
 			upload.findPreviousUploads().then((previousUploads: tus.PreviousUpload[]) => {
-				console.log('prev', previousUploads);
-
 				// Found previous uploads so we select the first one.
 				if (previousUploads.length > 0) {
 					upload.resumeFromPreviousUpload(previousUploads[0]!);

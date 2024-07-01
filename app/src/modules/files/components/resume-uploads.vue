@@ -28,7 +28,6 @@ const sortedUploads = computed(() => {
 function close() {
 	dialogActive.value = false;
 	error.value = null;
-	console.log(dialogActive.value);
 }
 
 watch(dialogActive, () => {
