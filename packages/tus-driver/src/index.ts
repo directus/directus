@@ -75,8 +75,10 @@ export class TusDataStore extends DataStore {
 
 		const fileName = upload.metadata['filename'];
 		const fileType = upload.metadata['filetype'] ?? 'application/octet-stream';
-		const fileInfo = Object.fromEntries(Object.entries(upload.metadata)
-			.filter(([key]) => !['filename', 'filetype'].includes(key)));
+
+		const fileInfo = Object.fromEntries(
+			Object.entries(upload.metadata).filter(([key]) => !['filename', 'filetype'].includes(key)),
+		);
 
 		const fileData: Partial<File> = {
 			...fileInfo,
@@ -88,10 +90,6 @@ export class TusDataStore extends DataStore {
 			title: formatTitle(fileName),
 			storage: this.location,
 		};
-
-		if (upload.metadata['folder']) {
-			fileData.folder = upload.metadata['folder'];
-		}
 
 		const primaryKey = await this.getService().createOne(fileData);
 
