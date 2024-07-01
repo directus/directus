@@ -1,4 +1,4 @@
-import type { Driver, TusDriver, ChunkedUploadContext, Range } from '@directus/storage';
+import type { TusDriver, ChunkedUploadContext, Range } from '@directus/storage';
 import fsProm from 'fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
@@ -10,8 +10,8 @@ export type DriverLocalConfig = {
 	root: string;
 };
 
-export class DriverLocal implements Driver, TusDriver {
-	private root: string;
+export class DriverLocal implements TusDriver {
+	private readonly root: string;
 
 	constructor(config: DriverLocalConfig) {
 		this.root = resolve(config.root);

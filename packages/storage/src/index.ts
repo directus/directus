@@ -59,13 +59,17 @@ export declare class Driver {
 	list(prefix?: string): AsyncIterable<string>;
 }
 
-export interface TusDriver {
+export interface TusDriver extends Driver {
 	get tusExtensions(): string[];
 
 	createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext>;
 	finishChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<void>;
 	deleteChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<void>;
 	writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext): Promise<number>;
+}
+
+export function supportsTus(driver: Driver): driver is TusDriver {
+	return 'tusExtensions' in driver;
 }
 
 export type DriverConfig = {

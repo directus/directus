@@ -4,7 +4,8 @@
  * https://tus.io/
  */
 import { useEnv } from '@directus/env';
-import type { TusDriver } from '@directus/storage';
+import type { TusDriver, Driver } from '@directus/storage';
+import { supportsTus } from '@directus/storage';
 import { toArray } from '@directus/utils';
 import { Server } from '@tus/server';
 import type { Request } from 'express';
@@ -23,7 +24,11 @@ async function getTusStore() {
 		const env = useEnv();
 		const storage = await getStorage();
 		const location = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
-		const driver = storage.location(location) as TusDriver;
+		const driver: Driver | TusDriver = storage.location(location);
+
+		if (!supportsTus(driver)) {
+			throw new Error(`Storage location ${location} does not support the TUS protocol`);
+		}
 
 		_store = new TusDataStore({
 			constants: RESUMABLE_UPLOADS,

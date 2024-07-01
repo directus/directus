@@ -24,7 +24,7 @@ import {
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import type { ChunkedUploadContext, Driver, Range, TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, Range, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import { Permit, Semaphore } from '@shopify/semaphore';
@@ -52,14 +52,14 @@ export type DriverS3Config = {
 	};
 };
 
-export class DriverS3 implements Driver, TusDriver {
+export class DriverS3 implements TusDriver {
 	private config: DriverS3Config;
-	private client: S3Client;
-	private root: string;
+	private readonly client: S3Client;
+	private readonly root: string;
 
 	// TUS specific members
 	private partUploadSemaphore: Semaphore;
-	private preferredPartSize: number;
+	private readonly preferredPartSize: number;
 	public maxMultipartParts = 10_000 as const;
 	public minPartSize = 5_242_880 as const; // 5MiB
 	public maxUploadSize = 5_497_558_138_880 as const; // 5TiB
