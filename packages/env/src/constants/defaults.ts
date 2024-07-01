@@ -125,7 +125,7 @@ export const DEFAULTS = {
 
 	TUS_ENABLED: false,
 	TUS_CHUNK_SIZE: '10mb',
-	TUS_UPLOAD_EXPIRATION: 600_000, // 10 minutes
+	TUS_UPLOAD_EXPIRATION: '10m',
 	TUS_CLEANUP_SCHEDULE: '0 * * * *', // every hour
 
 	GRAPHQL_INTROSPECTION: true,
