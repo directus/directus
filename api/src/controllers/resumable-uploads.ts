@@ -1,6 +1,8 @@
 import { Router, type Application } from 'express';
+import { ItemsService } from '../services/index.js';
+import { getSchema } from '../utils/get-schema.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { getTusServer } from '../services/tus/index.js';
+import { getTusServer, getTusStore } from '../services/tus/index.js';
 import { AuthorizationService } from '../services/authorization.js';
 import asyncHandler from '../utils/async-handler.js';
 import type { PermissionsAction } from '@directus/types';
@@ -73,6 +75,12 @@ export function scheduleTusCleanup() {
 
 	if (validateCron(RESUMABLE_UPLOADS.SCHEDULE)) {
 		scheduleSynchronizedJob('tus-cleanup', RESUMABLE_UPLOADS.SCHEDULE, async () => {
+			const store = await getTusStore();
+
+			store.sudoItemsService = new ItemsService('directus_files', {
+				schema: await getSchema(),
+			});
+
 			const tusServer = await getTusServer();
 
 			await tusServer.cleanUpExpiredUploads();
