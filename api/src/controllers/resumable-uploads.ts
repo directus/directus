@@ -1,48 +1,55 @@
-import { Router, type Application } from "express";
-import { scheduleSynchronizedJob, validateCron } from "../utils/schedule.js";
-import { getTusServer } from "../services/tus/index.js";
-import { AuthorizationService } from "../services/authorization.js";
-import asyncHandler from "../utils/async-handler.js";
-import type { PermissionsAction } from "@directus/types";
-import { ForbiddenError } from "@directus/errors";
-import { RESUMABLE_UPLOADS } from "../constants.js";
+import { Router, type Application } from 'express';
+import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { getTusServer } from '../services/tus/index.js';
+import { AuthorizationService } from '../services/authorization.js';
+import asyncHandler from '../utils/async-handler.js';
+import type { PermissionsAction } from '@directus/types';
+import { ForbiddenError } from '@directus/errors';
+import { RESUMABLE_UPLOADS } from '../constants.js';
 
 const mapAction = (method: string): PermissionsAction => {
 	switch (method) {
-		case 'POST': return 'create';
-		case 'PATCH': return 'update';
-		case 'DELETE': return 'delete';
-		default: return 'read';
+		case 'POST':
+			return 'create';
+		case 'PATCH':
+			return 'update';
+		case 'DELETE':
+			return 'delete';
+		default:
+			return 'read';
 	}
-}
+};
 
-const checkFileAccess = () => asyncHandler(async (req, _res, next) => {
-	const auth = new AuthorizationService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
+const checkFileAccess = () =>
+	asyncHandler(async (req, _res, next) => {
+		const auth = new AuthorizationService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
 
-	if (!req.accountability?.admin) {
-		const action = mapAction(req.method);
+		if (!req.accountability?.admin) {
+			const action = mapAction(req.method);
 
-		if (action === 'create') {
-			// checkAccess doesnt seem to work as expected for "create" actions
-			const hasPermission = Boolean(req.accountability?.permissions?.find((permission) => {
-				return permission.collection === 'directus_files' && permission.action === action;
-			}));
+			if (action === 'create') {
+				// checkAccess doesnt seem to work as expected for "create" actions
+				const hasPermission = Boolean(
+					req.accountability?.permissions?.find((permission) => {
+						return permission.collection === 'directus_files' && permission.action === action;
+					}),
+				);
 
-			if (!hasPermission) throw new ForbiddenError();
-		} else {
-			try {
-				await auth.checkAccess(action, 'directus_files');
-			} catch(e) {
-				throw new ForbiddenError();
+				if (!hasPermission) throw new ForbiddenError();
+			} else {
+				try {
+					await auth.checkAccess(action, 'directus_files');
+				} catch (e) {
+					throw new ForbiddenError();
+				}
 			}
 		}
-	}
 
-	return next();
-});
+		return next();
+	});
 
 export async function registerTusEndpoints(app: Application) {
 	if (!RESUMABLE_UPLOADS.ENABLED) return;

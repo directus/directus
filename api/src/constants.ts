@@ -101,6 +101,6 @@ export const RESUMABLE_UPLOADS = {
 	ENABLED: toBoolean(env['RESUMABLE_UPLOADS_ENABLED']),
 	CHUNK_SIZE: bytes(String(env['RESUMABLE_UPLOADS_CHUNK_SIZE'] ?? '10mb')),
 	MAX_SIZE: bytes(env['FILES_MAX_UPLOAD_SIZE'] as string),
-	EXPIRATION_TIME: getMilliseconds(env['RESUMABLE_UPLOADS_EXPIRATION'], 86_400_000/* 1 day */),
+	EXPIRATION_TIME: getMilliseconds(env['RESUMABLE_UPLOADS_EXPIRATION'], 86_400_000 /* 1 day */),
 	SCHEDULE: String(env['RESUMABLE_UPLOADS_CLEANUP_SCHEDULE'] ?? '0 * * * *'),
 };

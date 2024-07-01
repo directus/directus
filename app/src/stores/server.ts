@@ -57,7 +57,7 @@ export type Info = {
 	};
 	uploads?: {
 		chunkSize: number;
-	}
+	};
 };
 
 export type Auth = {
@@ -71,7 +71,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
-		uploads: undefined
+		uploads: undefined,
 	});
 
 	const auth = reactive<Auth>({
