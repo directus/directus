@@ -10,6 +10,7 @@ import express from 'express';
 import Joi from 'joi';
 import { minimatch } from 'minimatch';
 import path from 'path';
+import { cloneDeep } from 'lodash-es';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
@@ -232,16 +233,28 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	});
 
 	let result;
+	const filteredQuery = cloneDeep(req.sanitizedQuery);
+	const filterPartialUploads = { tus_id: { _null: true } };
 
-	if (req.singleton) {
-		result = await service.readSingleton(req.sanitizedQuery);
-	} else if (req.body.keys) {
-		result = await service.readMany(req.body.keys, req.sanitizedQuery);
+	if (!filteredQuery.filter) {
+		filteredQuery.filter = filterPartialUploads;
+	} else if ('_and' in filteredQuery.filter && Array.isArray(filteredQuery.filter['_and'])) {
+		filteredQuery.filter['_and'].push(filterPartialUploads);
 	} else {
-		result = await service.readByQuery(req.sanitizedQuery);
+		filteredQuery.filter = {
+			_and: [filteredQuery.filter, filterPartialUploads],
+		};
 	}
 
-	const meta = await metaService.getMetaForQuery('directus_files', req.sanitizedQuery);
+	if (req.singleton) {
+		result = await service.readSingleton(filteredQuery);
+	} else if (req.body.keys) {
+		result = await service.readMany(req.body.keys, filteredQuery);
+	} else {
+		result = await service.readByQuery(filteredQuery);
+	}
+
+	const meta = await metaService.getMetaForQuery('directus_files', filteredQuery);
 
 	res.locals['payload'] = { data: result, meta };
 	return next();
