@@ -26,6 +26,7 @@ export class TusDataStore extends DataStore {
 	protected expirationTime: number;
 	protected location: string;
 	protected _service: ItemsService | undefined;
+	protected _sudoService: ItemsService | undefined;
 	protected storageDriver: TusDriver;
 
 	constructor(config: TusDataStoreConfig) {
@@ -46,6 +47,15 @@ export class TusDataStore extends DataStore {
 
 	set itemsService(service: ItemsService) {
 		this._service = service;
+	}
+
+	get sudoItemService(): ItemsService {
+		if (!this._sudoService) throw new Error('no sudo service set');
+		return this._sudoService;
+	}
+
+	set sudoItemService(service: ItemsService) {
+		this._sudoService = service;
 	}
 
 	public override async create(upload: Upload): Promise<Upload> {
@@ -100,7 +110,7 @@ export class TusDataStore extends DataStore {
 				fileData.tus_data as ChunkedUploadContext,
 			);
 
-			await this.itemsService.updateOne(fileData.id!, {
+			await this.sudoItemService.updateOne(fileData.id!, {
 				tus_data: {
 					...fileData.tus_data,
 					offset: newOffset,
@@ -120,7 +130,7 @@ export class TusDataStore extends DataStore {
 	override async remove(tus_id: string): Promise<void> {
 		const fileData = await this.getFileById(tus_id);
 		await this.storageDriver.deleteChunkedUpload(fileData.filename_disk!, fileData.tus_data as ChunkedUploadContext);
-		await this.itemsService.deleteOne(fileData.id!);
+		await this.sudoItemService.deleteOne(fileData.id!);
 	}
 
 	override async deleteExpired(): Promise<number> {
@@ -175,7 +185,9 @@ export class TusDataStore extends DataStore {
 		const results = await this.itemsService.readByQuery({
 			filter: {
 				tus_id: { _eq: tus_id },
-				// uploaded_by: { _eq: this.service.accountability!.user! }
+				...(this.itemsService.accountability?.user
+					? { uploaded_by: { _eq: this.itemsService.accountability.user } }
+					: {}),
 			},
 		}); /*
 		.catch((e) => { console.error(e)})*/

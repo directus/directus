@@ -14,7 +14,7 @@ import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
 import type { IncomingMessage } from 'node:http';
 import { RESUMABLE_UPLOADS } from '../../constants.js';
-import { ItemsService } from '../index.js';
+import { FilesService, ItemsService } from '../index.js';
 
 let _store: TusDataStore | undefined = undefined;
 
@@ -52,17 +52,14 @@ export async function getTusServer() {
 				// Make sure that the schema modification does not influence anything else
 				const schema = cloneDeep(req.schema);
 
-				// set the services
-				store.setServices(
-					new ItemsService('directus_files', {
-						accountability: req.accountability,
-						schema: schema,
-					}),
-					// sudo service
-					new ItemsService('directus_files',({
-						schema: schema,
-					}),
-				));
+				store.itemsService = new ItemsService('directus_files', {
+					accountability: req.accountability,
+					schema: schema,
+				});
+
+				store.sudoItemService = new ItemsService('directus_files', {
+					schema,
+				});
 			},
 			async onUploadFinish(req: any, res, upload) {
 				const service = new FilesService({

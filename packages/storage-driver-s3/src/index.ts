@@ -263,6 +263,8 @@ export class DriverS3 implements Driver, TusDriver {
 		} while (continuationToken);
 	}
 
+	// TUS implementation based on https://github.com/tus/tus-node-server
+
 	get tusExtensions() {
 		return ['creation', 'termination', 'expiration'];
 	}
@@ -372,9 +374,6 @@ export class DriverS3 implements Driver, TusDriver {
 		return data.ETag as string;
 	}
 
-	/**
-	 * Uploads a stream to s3 using multiple parts
-	 */
 	private async uploadParts(
 		key: string,
 		uploadId: string,
@@ -461,10 +460,6 @@ export class DriverS3 implements Driver, TusDriver {
 		return bytesUploaded;
 	}
 
-	/**
-	 * Gets the number of complete parts/chunks already uploaded to S3.
-	 * Retrieves only consecutive parts.
-	 */
 	private async retrieveParts(key: string, uploadId: string, partNumberMarker?: string): Promise<Part[]> {
 		const data = await this.client.send(
 			new ListPartsCommand({
@@ -489,10 +484,6 @@ export class DriverS3 implements Driver, TusDriver {
 		return parts;
 	}
 
-	/**
-	 * Completes a multipart upload on S3.
-	 * This is where S3 concatenates all the uploaded parts.
-	 */
 	private async finishMultipartUpload(key: string, uploadId: string, parts: Part[]) {
 		const command = new CompleteMultipartUploadCommand({
 			Bucket: this.config.bucket,
