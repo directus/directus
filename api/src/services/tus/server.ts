@@ -12,7 +12,6 @@ import { getTusAdapter } from './adapters.js';
 import { getTusLocker } from './lockers.js';
 import type { IncomingMessage } from 'node:http';
 import { RESUMABLE_UPLOADS } from '../../constants.js';
-import { ItemsService } from '../index.js';
 import { FilesService } from '../files.js';
 
 let _store: TusDataStore | undefined = undefined;
