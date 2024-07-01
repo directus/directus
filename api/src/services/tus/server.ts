@@ -42,22 +42,20 @@ export async function getTusServer() {
 				// Make sure that the schema modification does not influence anything else
 				const schema = cloneDeep(req.schema);
 
-				if (req.method === 'PATCH' && schema.collections['directus_files']) {
-					// dont add revisions for each individual chunks
-					schema.collections['directus_files'].accountability = null;
-				}
-
-				// set the sudo service
-				store.setService(
-					new ItemsService('directus_files', {
-						accountability: { ...req.accountability!, admin: true },
+				// set the services
+				store.setServices(
+					new FilesService({
+						accountability: req.accountability,
+						schema: schema,
+					}),
+					// sudo service
+					new FilesService({
 						schema: schema,
 					}),
 				);
 			},
 			async onUploadFinish(req: any, res, upload) {
 				const service = new FilesService({
-					// accountability: req.accountability,
 					schema: req.schema,
 				});
 

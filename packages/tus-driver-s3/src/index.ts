@@ -26,39 +26,7 @@ export type MetadataValue = {
 	'tus-version': string;
 };
 
-// Implementation (based on https://github.com/tus/tusd/blob/master/s3store/s3store.go)
-//
-// Once a new tus upload is initiated, multiple objects in S3 are created:
-//
-// First of all, a new info object is stored which contains (as Metadata) a JSON-encoded
-// blob of general information about the upload including its size and meta data.
-// This kind of objects have the suffix ".info" in their key.
-//
-// In addition a new multipart upload
-// (http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html) is
-// created. Whenever a new chunk is uploaded to tus-node-server using a PATCH request, a
-// new part is pushed to the multipart upload on S3.
-//
-// If meta data is associated with the upload during creation, it will be added
-// to the multipart upload and after finishing it, the meta data will be passed
-// to the final object. However, the metadata which will be attached to the
-// final object can only contain ASCII characters and every non-ASCII character
-// will be replaced by a question mark (for example, "Menü" will be "Men?").
-// However, this does not apply for the metadata returned by the `_getMetadata`
-// function since it relies on the info object for reading the metadata.
-// Therefore, HEAD responses will always contain the unchanged metadata, Base64-
-// encoded, even if it contains non-ASCII characters.
-//
-// Once the upload is finished, the multipart upload is completed, resulting in
-// the entire file being stored in the bucket. The info object, containing
-// meta data is not deleted.
-//
-// Considerations
-//
-// In order to support tus' principle of resumable upload, S3's Multipart-Uploads
-// are internally used.
-// For each incoming PATCH request (a call to `write`), a new part is uploaded
-// to S3.
+// Implementation based on https://github.com/tus/tus-node-server
 export class S3FileStore extends TusDataStore {
 	private bucket: string;
 	private root: string;
@@ -129,7 +97,6 @@ export class S3FileStore extends TusDataStore {
 		this.bucket = bucket as string;
 		this.preferredPartSize = config.constants.CHUNK_SIZE;
 		this.client = new S3(s3ClientConfig);
-		// TODO do we need this?
 		this.partUploadSemaphore = new Semaphore(60);
 	}
 
@@ -167,9 +134,6 @@ export class S3FileStore extends TusDataStore {
 		return data.ETag as string;
 	}
 
-	/**
-	 * Uploads a stream to s3 using multiple parts
-	 */
 	private async uploadParts(
 		file: File,
 		metadata: MetadataValue,
@@ -215,7 +179,7 @@ export class S3FileStore extends TusDataStore {
 							await this.uploadPart(file, metadata, readable, partNumber);
 						} else {
 							// This can happen if the upload is aborted by the user mid chunk or a network issue happens
-							// await this.uploadIncompletePart(metadata.file.id, readable);
+							// TODO throw error
 						}
 
 						bytesUploaded += partSize;
@@ -256,10 +220,6 @@ export class S3FileStore extends TusDataStore {
 		return bytesUploaded;
 	}
 
-	/**
-	 * Completes a multipart upload on S3.
-	 * This is where S3 concatenates all the uploaded parts.
-	 */
 	private async finishMultipartUpload(file: File, metadata: MetadataValue, parts: Array<AWS.Part>) {
 		const response = await this.client.completeMultipartUpload({
 			Bucket: this.bucket,
@@ -278,10 +238,6 @@ export class S3FileStore extends TusDataStore {
 		return response.Location;
 	}
 
-	/**
-	 * Gets the number of complete parts/chunks already uploaded to S3.
-	 * Retrieves only consecutive parts.
-	 */
 	private async retrieveParts(file: File, partNumberMarker?: string): Promise<Array<AWS.Part>> {
 		const uploadId = file.tus_data!['metadata']['upload-id'] as string;
 
@@ -332,11 +288,6 @@ export class S3FileStore extends TusDataStore {
 		return optimalPartSize;
 	}
 
-	/**
-	 * Creates a multipart upload on S3 attaching any metadata to it.
-	 * Also, a `${file_id}.info` file is created which holds some information
-	 * about the upload itself like: `upload-id`, `upload-length`, etc.
-	 */
 	public override async create(upload: Upload) {
 		await super.create(upload);
 
@@ -375,9 +326,6 @@ export class S3FileStore extends TusDataStore {
 		}
 	}
 
-	/**
-	 * Write to the file, starting at the provided offset
-	 */
 	public override async write(src: stream.Readable, id: string, offset: number): Promise<number> {
 		const fileData = await this.getFileById(id);
 		const data = new Upload(fileData.tus_data as any);
@@ -388,8 +336,6 @@ export class S3FileStore extends TusDataStore {
 			'tus-version': TUS_RESUMABLE,
 		};
 
-		// Metadata request needs to happen first
-		// const metadata = await this.getMetadata(id);
 		const parts = await this.retrieveParts(fileData);
 		// @ts-expect-error
 		const partNumber: number = parts.length > 0 ? parts[parts.length - 1].PartNumber! : 0;
@@ -397,23 +343,19 @@ export class S3FileStore extends TusDataStore {
 		const requestedOffset = offset;
 
 		const bytesUploaded = await this.uploadParts(fileData, metadata, src, nextPartNumber, offset);
-
-		// The size of the incomplete part should not be counted, because the
-		// process of the incomplete part should be fully transparent to the user.
 		const newOffset = requestedOffset + bytesUploaded;
 
 		if (data.size === newOffset) {
 			try {
 				const parts = await this.retrieveParts(fileData);
 				await this.finishMultipartUpload(fileData, metadata, parts);
-				// await this.completeMetadata(metadata.file);
 			} catch (error) {
 				this.logger.error(`[${id}] failed to finish upload`, error);
 				throw error;
 			}
 		}
 
-		await this.getService().updateOne(fileData.id, {
+		await this.getSudoService().updateOne(fileData.id, {
 			tus_data: {
 				...fileData.tus_data,
 				offset: newOffset,

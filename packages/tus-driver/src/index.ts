@@ -45,6 +45,7 @@ export class TusDataStore extends DataStore {
 	protected logger: Logger<never>;
 	protected location: string;
 	protected service: AbstractService | undefined;
+	protected sudoService: AbstractService | undefined;
 
 	constructor(config: TusDataStoreConfig) {
 		super();
@@ -55,6 +56,7 @@ export class TusDataStore extends DataStore {
 		this.logger = config.logger;
 		this.location = config.location;
 		this.service = undefined;
+		this.sudoService = undefined;
 	}
 
 	getService(): AbstractService {
@@ -62,8 +64,14 @@ export class TusDataStore extends DataStore {
 		return this.service;
 	}
 
-	setService(service: AbstractService) {
+	getSudoService(): AbstractService {
+		if (!this.sudoService) throw new Error('no service set');
+		return this.sudoService;
+	}
+
+	setServices(service: AbstractService, sudoService: AbstractService) {
 		this.service = service;
+		this.sudoService = sudoService;
 	}
 
 	public override async create(upload: Upload): Promise<Upload> {
@@ -107,10 +115,10 @@ export class TusDataStore extends DataStore {
 		const results = await this.getService().readByQuery({
 			filter: {
 				tus_id: { _eq: tus_id },
-				// uploaded_by: { _eq: this.service.accountability!.user! }
+				// @ts-expect-error
+				uploaded_by: { _eq: this.getService().accountability?.user },
 			},
-		}); /*
-		.catch((e) => { console.error(e)})*/
+		});
 
 		if (!results || !results[0]) {
 			throw ERRORS.FILE_NOT_FOUND;
@@ -123,7 +131,7 @@ export class TusDataStore extends DataStore {
 		const now = new Date();
 		const toDelete: Promise<void>[] = [];
 
-		const uploadFiles = (await this.getService().readByQuery({
+		const uploadFiles = (await this.getSudoService().readByQuery({
 			filter: { tus_id: { _null: false } },
 		})) as undefined | File[];
 

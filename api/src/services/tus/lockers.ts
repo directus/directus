@@ -4,13 +4,8 @@ import type { Kv } from '@directus/memory';
 import { waitTimeout } from './utils/wait-timeout.js';
 
 /**
- * MemoryLocker is an implementation of the Locker interface that manages locks in memory.
+ * TusLocker is an implementation of the Locker interface that manages locks in memory or using Redis.
  * This class is designed for exclusive access control over resources, often used in scenarios like upload management.
- *
- * Key Features:
- * - Ensures exclusive resource access by using a memory-based map to track locks.
- * - Implements timeout for lock acquisition, mitigating deadlock situations.
- * - Facilitates both immediate and graceful release of locks through different mechanisms.
  *
  * Locking Behavior:
  * - When the `lock` method is invoked for an already locked resource, the `cancelReq` callback is called.

@@ -84,7 +84,7 @@ export class LocalFileStore extends TusDataStore {
 				return resolve(offset);
 			});
 		}).then(async (offset) => {
-			await this.getService().updateOne(fileData.id, {
+			await this.getSudoService().updateOne(fileData.id, {
 				tus_data: {
 					...fileData.tus_data,
 					offset,
