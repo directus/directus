@@ -123,8 +123,10 @@ export const DEFAULTS = {
 
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
-	RESUMABLE_UPLOADS_ENABLED: false,
-	RESUMABLE_UPLOADS_CHUNK_SIZE: '10mb',
+	TUS_ENABLED: false,
+	TUS_CHUNK_SIZE: '10mb',
+	TUS_UPLOAD_EXPIRATION: 600_000, // 10 minutes
+	TUS_CLEANUP_SCHEDULE: '0 * * * *', // every hour
 
 	GRAPHQL_INTROSPECTION: true,
 	GRAPHQL_QUERY_TOKEN_LIMIT: 5000,

@@ -98,9 +98,9 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 
 /** Resumable uploads */
 export const RESUMABLE_UPLOADS = {
-	ENABLED: toBoolean(env['RESUMABLE_UPLOADS_ENABLED']),
-	CHUNK_SIZE: bytes(String(env['RESUMABLE_UPLOADS_CHUNK_SIZE'] ?? '10mb')),
+	ENABLED: toBoolean(env['TUS_ENABLED']),
+	CHUNK_SIZE: bytes(env['TUS_CHUNK_SIZE'] as string),
 	MAX_SIZE: bytes(env['FILES_MAX_UPLOAD_SIZE'] as string),
-	EXPIRATION_TIME: getMilliseconds(env['RESUMABLE_UPLOADS_EXPIRATION'], 86_400_000 /* 1 day */),
-	SCHEDULE: String(env['RESUMABLE_UPLOADS_CLEANUP_SCHEDULE'] ?? '0 * * * *'),
+	EXPIRATION_TIME: getMilliseconds(env['TUS_UPLOAD_EXPIRATION'], 600_000/* 10min */),
+	SCHEDULE: String(env['TUS_CLEANUP_SCHEDULE'] as string),
 };
