@@ -1,14 +1,14 @@
 import { useEnv } from '@directus/env';
 import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
-import type { BusboyFileStream, File, PrimaryKey } from '@directus/types';
+import type { BusboyFileStream, File, Item, PrimaryKey, Query } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
 import exif, { type GPSInfoTags, type ImageTags, type IopTags, type PhotoTags } from 'exif-reader';
 import type { IccProfile } from 'icc';
 import { parse as parseIcc } from 'icc';
-import { clone, pick } from 'lodash-es';
+import { clone, cloneDeep, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
 import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
@@ -24,7 +24,7 @@ import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
-import { ItemsService } from './items.js';
+import { ItemsService, type QueryOptions } from './items.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -434,6 +434,23 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions | undefined): Promise<Item[]> {
+		const filteredQuery = cloneDeep(query);
+		const filterPartialUploads = { tus_id: { _null: true } };
+
+		if (!filteredQuery.filter) {
+			filteredQuery.filter = filterPartialUploads;
+		} else if ('_and' in filteredQuery.filter && Array.isArray(filteredQuery.filter['_and'])) {
+			filteredQuery.filter['_and'].push(filterPartialUploads);
+		} else {
+			filteredQuery.filter = {
+				_and: [filteredQuery.filter, filterPartialUploads],
+			};
+		}
+
+		return super.readByQuery(filteredQuery, opts);
 	}
 }
 
