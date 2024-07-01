@@ -293,12 +293,12 @@ export class DriverS3 implements TusDriver {
 		return context;
 	}
 
-	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
+	async deleteChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<void> {
 		const key = this.fullPath(filepath);
 
 		try {
 			// @ts-expect-error
-			const { 'upload-id': uploadId } = file.tus_data.metadata;
+			const { 'upload-id': uploadId } = context.metadata;
 
 			if (uploadId) {
 				await this.client.send(
