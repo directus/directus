@@ -77,6 +77,10 @@ export function scheduleTusCleanup() {
 		scheduleSynchronizedJob('tus-cleanup', RESUMABLE_UPLOADS.SCHEDULE, async () => {
 			const store = await getTusStore();
 
+			store.itemsService = new ItemsService('directus_files', {
+				schema: await getSchema(),
+			});
+
 			store.sudoItemsService = new ItemsService('directus_files', {
 				schema: await getSchema(),
 			});
