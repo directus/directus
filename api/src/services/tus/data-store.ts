@@ -147,7 +147,7 @@ export class TusDataStore extends DataStore {
 
 		const uploadFiles = await this.sudoItemsService.readByQuery({
 			fields: ['modified_on', 'tus_id', 'tus_data'],
-			filter: { tus_id: { _null: false } },
+			filter: { tus_id: { _nnull: true } },
 		});
 
 		if (!uploadFiles) return 0;
