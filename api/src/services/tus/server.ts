@@ -3,22 +3,33 @@
  *
  * https://tus.io/
  */
-import type { TusDataStore } from '@directus/tus-driver';
 import { useEnv } from '@directus/env';
+import type { TusDriver } from '@directus/storage';
+import { toArray } from '@directus/utils';
 import { Server } from '@tus/server';
 import type { Request } from 'express';
 import { cloneDeep } from 'lodash-es';
-import { getTusAdapter } from './adapters.js';
+import { getStorage } from '../../storage/index.js';
+import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
 import type { IncomingMessage } from 'node:http';
 import { RESUMABLE_UPLOADS } from '../../constants.js';
-import { FilesService } from '../files.js';
+import { ItemsService } from '../index.js';
 
 let _store: TusDataStore | undefined = undefined;
 
-export async function getTusStore() {
+async function getTusStore() {
 	if (!_store) {
-		_store = await getTusAdapter();
+		const env = useEnv();
+		const storage = await getStorage();
+		const location = toArray(env['STORAGE_LOCATIONS'] as string)[0]!;
+		const driver = storage.location(location) as TusDriver;
+
+		_store = new TusDataStore({
+			constants: RESUMABLE_UPLOADS,
+			location,
+			driver,
+		});
 	}
 
 	return _store;
@@ -43,15 +54,15 @@ export async function getTusServer() {
 
 				// set the services
 				store.setServices(
-					new FilesService({
+					new ItemsService('directus_files', {
 						accountability: req.accountability,
 						schema: schema,
 					}),
 					// sudo service
-					new FilesService({
+					new ItemsService('directus_files',({
 						schema: schema,
 					}),
-				);
+				));
 			},
 			async onUploadFinish(req: any, res, upload) {
 				const service = new FilesService({
