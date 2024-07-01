@@ -528,10 +528,6 @@ importers:
         version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0)
 
   app:
-    dependencies:
-      tus-js-client:
-        specifier: 4.1.0
-        version: 4.1.0
     devDependencies:
       '@directus/composables':
         specifier: workspace:*
@@ -863,6 +859,9 @@ importers:
       tinymce:
         specifier: 7.1.1
         version: 7.1.1
+      tus-js-client:
+        specifier: 4.1.0
+        version: 4.1.0
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1884,132 +1883,6 @@ importers:
         version: 3.4.27(typescript@5.4.5)
 
   packages/tsconfig: {}
-
-  packages/tus-driver:
-    dependencies:
-      '@directus/format-title':
-        specifier: workspace:*
-        version: link:../format-title
-      '@tus/utils':
-        specifier: 0.2.0
-        version: 0.2.0
-      mime-types:
-        specifier: 2.1.35
-        version: 2.1.35
-    devDependencies:
-      '@directus/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../types
-      '@types/mime-types':
-        specifier: 2.1.4
-        version: 2.1.4
-      '@types/node':
-        specifier: 18.19.33
-        version: 18.19.33
-      '@vitest/coverage-v8':
-        specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0))
-      knex:
-        specifier: 3.1.0
-        version: 3.1.0(mysql@2.18.1)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
-      pino:
-        specifier: 9.2.0
-        version: 9.2.0
-      tsup:
-        specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.1)(postcss@8.4.38)(typescript@5.4.5)
-      typescript:
-        specifier: 5.4.5
-        version: 5.4.5
-      vitest:
-        specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0)
-
-  packages/tus-driver-local:
-    dependencies:
-      '@directus/tus-driver':
-        specifier: workspace:*
-        version: link:../tus-driver
-      '@tus/utils':
-        specifier: 0.2.0
-        version: 0.2.0
-      mime-types:
-        specifier: 2.1.35
-        version: 2.1.35
-    devDependencies:
-      '@directus/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../types
-      '@types/mime-types':
-        specifier: 2.1.4
-        version: 2.1.4
-      '@types/node':
-        specifier: 18.19.33
-        version: 18.19.33
-      '@vitest/coverage-v8':
-        specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0))
-      tsup:
-        specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.1)(postcss@8.4.38)(typescript@5.4.5)
-      typescript:
-        specifier: 5.4.5
-        version: 5.4.5
-      vitest:
-        specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0)
-
-  packages/tus-driver-s3:
-    dependencies:
-      '@aws-sdk/client-s3':
-        specifier: 3.569.0
-        version: 3.569.0
-      '@directus/tus-driver':
-        specifier: workspace:*
-        version: link:../tus-driver
-      '@directus/utils':
-        specifier: workspace:*
-        version: link:../utils
-      '@shopify/semaphore':
-        specifier: 3.1.0
-        version: 3.1.0
-      '@smithy/node-http-handler':
-        specifier: 2.5.0
-        version: 2.5.0
-      '@tus/utils':
-        specifier: 0.2.0
-        version: 0.2.0
-    devDependencies:
-      '@directus/tsconfig':
-        specifier: workspace:*
-        version: link:../tsconfig
-      '@directus/types':
-        specifier: workspace:*
-        version: link:../types
-      '@ngneat/falso':
-        specifier: 7.2.0
-        version: 7.2.0
-      '@types/multistream':
-        specifier: 4.1.3
-        version: 4.1.3
-      '@vitest/coverage-v8':
-        specifier: 1.5.3
-        version: 1.5.3(vitest@1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0))
-      tsup:
-        specifier: 8.1.0
-        version: 8.1.0(@microsoft/api-extractor@7.43.1)(postcss@8.4.38)(typescript@5.4.5)
-      typescript:
-        specifier: 5.4.5
-        version: 5.4.5
-      vitest:
-        specifier: 1.5.3
-        version: 1.5.3(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0)
 
   packages/types:
     dependencies:
@@ -5210,9 +5083,6 @@ packages:
 
   '@types/ms@0.7.34':
     resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
-
-  '@types/multistream@4.1.3':
-    resolution: {integrity: sha512-t57vmDEJOZuC0M3IrZYfCd9wolTcr3ZTCGk1iwHNosvgBX+7/SMvCGcR8wP9lidpelBZQ12crSuINOxkk0azPA==}
 
   '@types/nlcst@1.0.4':
     resolution: {integrity: sha512-ABoYdNQ/kBSsLvZAekMhIPMQ3YUZvavStpKYs7BjLLuKVmIMA0LUgZ7b54zzuWJRbHF80v1cNf4r90Vd6eMQDg==}
@@ -16195,10 +16065,6 @@ snapshots:
   '@types/minimist@1.2.5': {}
 
   '@types/ms@0.7.34': {}
-
-  '@types/multistream@4.1.3':
-    dependencies:
-      '@types/node': 18.19.33
 
   '@types/nlcst@1.0.4':
     dependencies:
