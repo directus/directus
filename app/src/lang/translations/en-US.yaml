@@ -1688,9 +1688,6 @@ remove_item: Remove Item
 delete_item: Delete Item
 pause: Pause
 resume: Resume
-resume_uploads: Resume Uploads
-resumable_uploads_info: You have uploads that can be resumed. To resume you must select the same file again.
-no_resumable_uploads: You don't have any resumable uploads.
 interfaces:
   list-m2a:
     prefix_note: Uses the related item's collection name by default.

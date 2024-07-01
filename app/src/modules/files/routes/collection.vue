@@ -6,7 +6,6 @@ import { Folder, useFolders } from '@/composables/use-folders';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { emitter, Events } from '@/events';
-import ResumeUploads from '@/modules/files/components/resume-uploads.vue';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getFolderFilter } from '@/utils/get-folder-filter';
@@ -380,8 +379,6 @@ function useFileUpload() {
 				<search-input v-model="search" v-model:filter="filter" collection="directus_files" />
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
-
-				<resume-uploads />
 
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
