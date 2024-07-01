@@ -137,12 +137,6 @@ export default abstract class SocketController {
 		const context: UpgradeContext = { request, socket, head };
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
-		if (cookies[sessionCookieName]) {
-			const token = cookies[sessionCookieName] as string;
-			await this.handleTokenUpgrade(context, token);
-			return;
-		}
-
 		if (this.authentication.mode === 'strict') {
 			const token = query['access_token'] as string;
 			await this.handleTokenUpgrade(context, token);
@@ -151,6 +145,12 @@ export default abstract class SocketController {
 
 		if (this.authentication.mode === 'handshake') {
 			await this.handleHandshakeUpgrade(context);
+			return;
+		}
+
+		if (cookies[sessionCookieName]) {
+			const token = cookies[sessionCookieName] as string;
+			await this.handleTokenUpgrade(context, token);
 			return;
 		}
 
