@@ -108,7 +108,7 @@ fields:
     display: user
     readonly: true
     options:
-      template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
+      template: "{{avatar.$thumbnail}} {{first_name}} {{last_name}}"
 
   - field: modified_on
     interface: datetime
@@ -133,6 +133,8 @@ fields:
     display: datetime
     width: half
     hidden: true
+    special:
+      - date-created
 
   - field: folder
     width: half
@@ -141,7 +143,7 @@ fields:
       - m2o
     display: related-values
     display_options:
-      template: '{{ name }}'
+      template: "{{ name }}"
 
   - field: width
     width: half
