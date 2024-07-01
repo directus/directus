@@ -7,6 +7,7 @@ import stream from 'node:stream';
 import { DataStore, ERRORS, Upload } from '@tus/utils';
 import type { ItemsService } from '../items.js';
 import { useLogger } from '../../logger.js';
+import { omit } from 'lodash-es';
 
 export type TusDataStoreConfig = {
 	constants: {
@@ -69,10 +70,7 @@ export class TusDataStore extends DataStore {
 
 		const fileName = upload.metadata['filename'];
 		const fileType = upload.metadata['filetype'] ?? 'application/octet-stream';
-
-		const fileInfo = Object.fromEntries(
-			Object.entries(upload.metadata).filter(([key]) => !['filename', 'filetype'].includes(key)),
-		);
+		const fileInfo = omit(upload.metadata, ['filename', 'filetype']);
 
 		const fileData: Partial<File> = {
 			...fileInfo,
