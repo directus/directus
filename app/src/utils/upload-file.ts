@@ -5,13 +5,14 @@ import { useServerStore } from '@/stores/server';
 import { notify } from '@/utils/notify';
 import type { AxiosProgressEvent } from 'axios';
 import { unexpectedError } from './unexpected-error';
-import * as tus from 'tus-js-client';
+import type { PreviousUpload } from 'tus-js-client';
+import { Upload } from 'tus-js-client';
 
 export async function uploadFile(
 	file: File,
 	options?: {
 		onProgressChange?: (percentage: number) => void;
-		onChunkedUpload?: (controller: tus.Upload) => void;
+		onChunkedUpload?: (controller: Upload) => void;
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		fileId?: string;
@@ -38,7 +39,7 @@ export async function uploadFile(
 		return new Promise((resolve, reject) => {
 			//-------------------------------
 			// Create a new tus upload
-			const upload = new tus.Upload(file, {
+			const upload = new Upload(file, {
 				endpoint: '/files/tus',
 				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
 				metadata: fileInfo,
@@ -91,7 +92,7 @@ export async function uploadFile(
 			});
 
 			// Check if there are any previous uploads to continue.
-			upload.findPreviousUploads().then((previousUploads: tus.PreviousUpload[]) => {
+			upload.findPreviousUploads().then((previousUploads: PreviousUpload[]) => {
 				// Found previous uploads so we select the first one.
 				if (previousUploads.length > 0) {
 					upload.resumeFromPreviousUpload(previousUploads[0]!);
