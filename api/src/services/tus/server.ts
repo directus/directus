@@ -9,7 +9,6 @@ import { supportsTus } from '@directus/storage';
 import { toArray } from '@directus/utils';
 import { Server } from '@tus/server';
 import type { Request } from 'express';
-import { cloneDeep } from 'lodash-es';
 import { getStorage } from '../../storage/index.js';
 import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
@@ -19,7 +18,7 @@ import { FilesService, ItemsService } from '../index.js';
 
 let _store: TusDataStore | undefined = undefined;
 
-async function getTusStore() {
+export async function getTusStore() {
 	if (!_store) {
 		const env = useEnv();
 		const storage = await getStorage();
@@ -54,15 +53,14 @@ export async function getTusServer() {
 			maxSize: RESUMABLE_UPLOADS.MAX_SIZE,
 			async onIncomingRequest(msg: IncomingMessage) {
 				const req = msg as Request;
-				// Make sure that the schema modification does not influence anything else
-				const schema = cloneDeep(req.schema);
+				const schema = req.schema;
 
 				store.itemsService = new ItemsService('directus_files', {
 					accountability: req.accountability,
-					schema: schema,
+					schema,
 				});
 
-				store.sudoItemService = new ItemsService('directus_files', {
+				store.sudoItemsService = new ItemsService('directus_files', {
 					schema,
 				});
 			},

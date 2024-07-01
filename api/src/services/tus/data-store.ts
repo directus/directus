@@ -6,6 +6,7 @@ import { extname } from 'node:path';
 import stream from 'node:stream';
 import { DataStore, ERRORS, Upload } from '@tus/utils';
 import type { ItemsService } from '../items.js';
+import { useLogger } from '../../logger.js';
 
 export type TusDataStoreConfig = {
 	constants: {
@@ -25,8 +26,8 @@ export class TusDataStore extends DataStore {
 	protected maxSize: number;
 	protected expirationTime: number;
 	protected location: string;
-	protected _service: ItemsService | undefined;
-	protected _sudoService: ItemsService | undefined;
+	protected _service: ItemsService<File> | undefined;
+	protected _sudoService: ItemsService<File> | undefined;
 	protected storageDriver: TusDriver;
 
 	constructor(config: TusDataStoreConfig) {
@@ -40,25 +41,26 @@ export class TusDataStore extends DataStore {
 		this.extensions = this.storageDriver.tusExtensions;
 	}
 
-	get itemsService(): ItemsService {
+	get itemsService(): ItemsService<File> {
 		if (!this._service) throw new Error('no service set');
 		return this._service;
 	}
 
-	set itemsService(service: ItemsService) {
+	set itemsService(service: ItemsService<File>) {
 		this._service = service;
 	}
 
-	get sudoItemService(): ItemsService {
+	get sudoItemsService(): ItemsService<File> {
 		if (!this._sudoService) throw new Error('no sudo service set');
 		return this._sudoService;
 	}
 
-	set sudoItemService(service: ItemsService) {
+	set sudoItemsService(service: ItemsService<File>) {
 		this._sudoService = service;
 	}
 
 	public override async create(upload: Upload): Promise<Upload> {
+		const logger = useLogger();
 		upload.creation_date = new Date().toISOString();
 
 		if (!upload.metadata || !upload.metadata['filename']) {
@@ -88,14 +90,22 @@ export class TusDataStore extends DataStore {
 		const fileExtension = extname(fileName!) || (fileType && '.' + extension(fileType)) || '';
 		const diskFileName = primaryKey + (fileExtension || '');
 
-		upload = (await this.storageDriver.createChunkedUpload(diskFileName, upload)) as Upload;
+		try {
+			upload = (await this.storageDriver.createChunkedUpload(diskFileName, upload)) as Upload;
 
-		await this.itemsService.updateOne(primaryKey!, {
-			filename_disk: diskFileName,
-			tus_data: upload,
-		});
+			await this.itemsService.updateOne(primaryKey!, {
+				filename_disk: diskFileName,
+				tus_data: upload,
+			});
 
-		return upload;
+			return upload;
+		} catch (err) {
+			// Clean up the database entry
+			await this.itemsService.deleteOne(primaryKey!);
+
+			logger.warn(err, "Couldn't create chunked upload.");
+			throw ERRORS.UNKNOWN_ERROR;
+		}
 	}
 
 	public override async write(readable: stream.Readable, tus_id: string, offset: number): Promise<number> {
@@ -110,7 +120,7 @@ export class TusDataStore extends DataStore {
 				fileData.tus_data as ChunkedUploadContext,
 			);
 
-			await this.sudoItemService.updateOne(fileData.id!, {
+			await this.sudoItemsService.updateOne(fileData.id!, {
 				tus_data: {
 					...fileData.tus_data,
 					offset: newOffset,
@@ -130,39 +140,33 @@ export class TusDataStore extends DataStore {
 	override async remove(tus_id: string): Promise<void> {
 		const fileData = await this.getFileById(tus_id);
 		await this.storageDriver.deleteChunkedUpload(fileData.filename_disk!, fileData.tus_data as ChunkedUploadContext);
-		await this.sudoItemService.deleteOne(fileData.id!);
+		await this.sudoItemsService.deleteOne(fileData.id!);
 	}
 
 	override async deleteExpired(): Promise<number> {
 		const now = new Date();
 		const toDelete: Promise<void>[] = [];
 
-		const uploadFiles = (await this.itemsService.readByQuery({
+		const uploadFiles = await this.sudoItemsService.readByQuery({
+			fields: ['modified_on', 'tus_id', 'tus_data'],
 			filter: { tus_id: { _null: false } },
-		})) as undefined | File[];
+		});
 
 		if (!uploadFiles) return 0;
 
 		for (const fileData of uploadFiles) {
-			try {
-				if (
-					fileData &&
-					fileData.tus_data &&
-					'creation_date' in fileData.tus_data &&
-					this.getExpiration() > 0 &&
-					fileData.tus_data['size'] !== fileData.tus_data['offset'] &&
-					fileData.tus_data['creation_date']
-				) {
-					const creation = new Date(fileData.tus_data['creation_date']);
-					const expires = new Date(creation.getTime() + this.getExpiration());
+			if (
+				fileData &&
+				fileData.tus_data &&
+				this.getExpiration() > 0 &&
+				fileData.tus_data['size'] !== fileData.tus_data['offset'] &&
+				fileData.modified_on
+			) {
+				const modified = new Date(fileData.modified_on);
+				const expires = new Date(modified.getTime() + this.getExpiration());
 
-					if (now > expires) {
-						toDelete.push(this.remove(fileData.tus_id!));
-					}
-				}
-			} catch (error) {
-				if (error !== ERRORS.FILE_NO_LONGER_EXISTS) {
-					throw error;
+				if (now > expires) {
+					toDelete.push(this.remove(fileData.tus_id!));
 				}
 			}
 		}
@@ -189,8 +193,7 @@ export class TusDataStore extends DataStore {
 					? { uploaded_by: { _eq: this.itemsService.accountability.user } }
 					: {}),
 			},
-		}); /*
-		.catch((e) => { console.error(e)})*/
+		});
 
 		if (!results || !results[0]) {
 			throw ERRORS.FILE_NOT_FOUND;
