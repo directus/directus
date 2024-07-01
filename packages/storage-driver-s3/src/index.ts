@@ -1,13 +1,13 @@
-import {
-	type CompletedPart,
-	type CopyObjectCommandInput,
-	type GetObjectCommandInput,
-	type ListObjectsV2CommandInput,
-	type ObjectCannedACL,
-	type Part,
-	type PutObjectCommandInput,
-	type S3ClientConfig,
-	type ServerSideEncryption,
+import type {
+	CompletedPart,
+	CopyObjectCommandInput,
+	GetObjectCommandInput,
+	ListObjectsV2CommandInput,
+	ObjectCannedACL,
+	Part,
+	PutObjectCommandInput,
+	S3ClientConfig,
+	ServerSideEncryption,
 } from '@aws-sdk/client-s3';
 import {
 	AbortMultipartUploadCommand,
