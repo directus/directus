@@ -1686,6 +1686,8 @@ navigate_to_item: Navigate to Item
 undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
+pause: Pause
+resume: Resume
 interfaces:
   list-m2a:
     prefix_note: Uses the related item's collection name by default.

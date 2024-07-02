@@ -141,7 +141,7 @@ export default function useImage(
 		if (img === null) return;
 
 		const queries: Record<string, any> = {};
-		const newURL = new URL(img.imageUrl);
+		const newURL = new URL(img.imageUrl, 'file://');
 
 		newURL.searchParams.delete('width');
 		newURL.searchParams.delete('height');
@@ -160,7 +160,7 @@ export default function useImage(
 			}
 		}
 
-		const resizedImageUrl = addQueryToPath(newURL.toString(), queries);
+		const resizedImageUrl = addQueryToPath(newURL.toString().replace('file://', ''), queries);
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" ${img.lazy ? 'loading="lazy" ' : ''}/>`;
 		editor.value.selection.setContent(imageHtml);
 		editor.value.undoManager.add();

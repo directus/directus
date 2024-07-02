@@ -2,6 +2,8 @@ import type { CookieOptions } from 'express';
 import type { TransformationParams } from './types/index.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
+import bytes from 'bytes';
 
 const env = useEnv();
 
@@ -93,3 +95,12 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 	'image/tiff',
 	'image/avif',
 ];
+
+/** Resumable uploads */
+export const RESUMABLE_UPLOADS = {
+	ENABLED: toBoolean(env['TUS_ENABLED']),
+	CHUNK_SIZE: bytes(env['TUS_CHUNK_SIZE'] as string),
+	MAX_SIZE: bytes(env['FILES_MAX_UPLOAD_SIZE'] as string),
+	EXPIRATION_TIME: getMilliseconds(env['TUS_UPLOAD_EXPIRATION'], 600_000 /* 10min */),
+	SCHEDULE: String(env['TUS_CLEANUP_SCHEDULE'] as string),
+};
