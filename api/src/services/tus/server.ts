@@ -70,7 +70,7 @@ export async function createTusServer(context: Context) {
 				const metadata = await extractMetadata(newFile.storage, newFile);
 
 				const updateData = {
-					...pick(file, ['filename_download', 'type', 'metadata']),
+					...pick(file, ['filename_download', 'filesize', 'type']),
 					...metadata,
 				};
 
