@@ -178,7 +178,12 @@ export class TusDataStore extends DataStore {
 			});
 
 			if (Number(fileData.filesize) === newOffset) {
-				await this.storageDriver.finishChunkedUpload(filePath, fileData.tus_data as ChunkedUploadContext);
+				try {
+					await this.storageDriver.finishChunkedUpload(filePath, fileData.tus_data as ChunkedUploadContext);
+				} catch (err) {
+					await this.remove(filePath);
+					throw err;
+				}
 
 				const isReplacement = Boolean(fileData.tus_data?.['metadata']?.['replace_id']);
 
