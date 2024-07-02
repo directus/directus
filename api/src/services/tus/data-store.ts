@@ -154,7 +154,6 @@ export class TusDataStore extends DataStore {
 	public override async write(readable: stream.Readable, tus_id: string, offset: number): Promise<number> {
 		const fileData = await this.getFileById(tus_id);
 		const filePath = fileData.filename_disk!;
-		console.log('uploading', filePath)
 
 		const sudoService = new ItemsService<File>('directus_files', {
 			schema: this.schema,
@@ -190,7 +189,6 @@ export class TusDataStore extends DataStore {
 						await this.storageDriver.delete(partPath);
 					}
 
-					console.log('move', filePath, replaceData.filename_disk);
 					// Upgrade the temp file to the final filename
 					await this.storageDriver.move(filePath, replaceData.filename_disk);
 				}

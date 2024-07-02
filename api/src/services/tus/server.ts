@@ -64,21 +64,23 @@ export async function createTusServer(context: Context) {
 
 			if (!file) return res;
 
-			const metadata = await extractMetadata(file.storage, file);
-
 			// update metadata when file is replaced
 			if (file.tus_data?.['metadata']?.['replace_id']) {
+				const newFile = await service.readOne(file.tus_data['metadata']['replace_id']);
+				const metadata = await extractMetadata(newFile.storage, newFile);
+
 				const updateData = {
 					...pick(file, ['filename_download', 'type', 'metadata']),
 					...metadata,
 				};
 
-				console.log('update', file.tus_data['metadata']['replace_id'], updateData);
-				console.log('delete', file.id);
-
 				await service.updateOne(file.tus_data['metadata']['replace_id'], updateData);
 				await service.deleteOne(file.id);
 			} else {
+
+
+				const metadata = await extractMetadata(file.storage, file);
+
 				await service.updateOne(file.id, {
 					...metadata,
 					tus_id: null,
