@@ -278,6 +278,12 @@ function useURLImport() {
 function openFileBrowser() {
 	input.value?.click();
 }
+
+function abort() {
+	uploadController?.abort();
+}
+
+defineExpose({ abort });
 </script>
 
 <template>

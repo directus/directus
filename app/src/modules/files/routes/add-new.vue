@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { UploadController } from '@/components/v-upload.vue';
+import VUpload, { UploadController } from '@/components/v-upload.vue';
 import { useDialogRoute } from '@/composables/use-dialog-route';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -14,20 +14,11 @@ const { t } = useI18n();
 const router = useRouter();
 
 const isOpen = useDialogRoute();
-
-let uploadController: any = null;
-const isUploading = ref(false);
+const uploadRef = ref<InstanceType<typeof VUpload> | null>(null);
 
 function close() {
-	uploadController?.abort();
-	uploadController = null;
-	isUploading.value = false;
+	uploadRef.value?.abort();
 	router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
-}
-
-function start(controller: UploadController) {
-	uploadController = controller;
-	isUploading.value = true;
 }
 </script>
 
@@ -36,7 +27,7 @@ function start(controller: UploadController) {
 		<v-card>
 			<v-card-title>{{ t('add_file') }}</v-card-title>
 			<v-card-text>
-				<v-upload :folder="props.folder" multiple from-url @input="close" @start="start" />
+				<v-upload ref="uploadRef" :folder="props.folder" multiple from-url @input="close" />
 			</v-card-text>
 			<v-card-actions>
 				<v-button secondary @click="close">{{ t('done') }}</v-button>
