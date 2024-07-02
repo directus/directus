@@ -33,12 +33,14 @@ export async function uploadFile(
 			}
 		}
 
-		fileInfo.filename = file.name;
-		fileInfo.filetype = file.type;
+		if (options?.fileId) {
+			fileInfo.id = options?.fileId;
+		}
+
+		fileInfo.filename_download = file.name;
+		fileInfo.type = file.type;
 
 		return new Promise((resolve, reject) => {
-			//-------------------------------
-			// Create a new tus upload
 			const upload = new Upload(file, {
 				endpoint: '/files/tus',
 				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,

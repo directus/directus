@@ -65,11 +65,18 @@ export async function createTusServer(context: Context) {
 
 			const metadata = await extractMetadata(file.storage, file);
 
-			await service.updateOne(file.id, {
+			const payload: Partial<File> = {
+				...metadata,
 				tus_id: null,
 				tus_data: null,
-				...metadata,
-			});
+			};
+
+			// update metadata when file is replaced
+			if (file.tus_data?.['metadata']?.['temp_file']) {
+				payload.filename_download = file.tus_data['metadata']['filename_download'];
+			}
+
+			await service.updateOne(file.id, payload);
 
 			return res;
 		},
