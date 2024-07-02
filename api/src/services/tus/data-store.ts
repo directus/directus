@@ -1,6 +1,6 @@
 import formatTitle from '@directus/format-title';
 import type { TusDriver, ChunkedUploadContext } from '@directus/storage';
-import type { Accountability, File, PrimaryKey, SchemaOverview } from '@directus/types';
+import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { extension } from 'mime-types';
 import { extname } from 'node:path';
 import stream from 'node:stream';
