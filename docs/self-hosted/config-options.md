@@ -687,14 +687,14 @@ purposes, collection of additional metadata must be configured:
 | `FILES_MAX_UPLOAD_SIZE`      | Maximum file upload size allowed. For example `10mb`, `1gb`, `10kb`              | --            |
 | `FILES_MIME_TYPE_ALLOW_LIST` | Allow list of mime types that are allowed to be uploaded. Supports `glob` syntax | `*/*`         |
 
-### Resumable Uploads
+### Chunked Uploads
 
 Large files can be uploaded in chunks to improve reliability and efficiency, especially in scenarios with network
-instability or limited bandwidth.
+instability or limited bandwidth. This is implemented using the [TUS protocol](https://tus.io/).
 
 | Variable                | Description                                                       | Default Value |
 | ----------------------- | ----------------------------------------------------------------- | ------------- |
-| `TUS_ENABLED`           | Whether or not to enable the resumable uploads                    | `false`       |
+| `TUS_ENABLED`           | Whether or not to enable the chunked uploads                      | `false`       |
 | `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `10mb`        |
 | `TUS_UPLOAD_EXPIRATION` | The expiry duration for uncompleted files with no upload activity | `10m`         |
 | `TUS_CLEANUP_SCHEDULE`  | Cron schedule to clean up the expired uncompleted uploads         | `0 * * * *`   |
