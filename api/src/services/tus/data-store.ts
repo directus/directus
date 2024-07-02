@@ -127,7 +127,11 @@ export class TusDataStore extends DataStore {
 			}
 
 			return newOffset;
-		} catch (err) {
+		} catch (err: any) {
+			if ('status_code' in err && err.status_code === 500) {
+				throw err;
+			}
+
 			throw ERRORS.FILE_WRITE_ERROR;
 		}
 	}

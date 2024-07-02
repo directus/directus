@@ -331,7 +331,29 @@ export class DriverS3 implements TusDriver {
 		const key = this.fullPath(filepath);
 		const uploadId = context.metadata!['upload-id'] as string;
 
-		const parts = await this.retrieveParts(key, uploadId);
+		const size = context.size!;
+		const chunkSize = this.calcOptimalPartSize(size);
+		const expectedParts = Math.ceil(size / chunkSize);
+
+		let parts = await this.retrieveParts(key, uploadId);
+		let retries = 0;
+
+		while (parts.length !== expectedParts && retries < 3) {
+			// Did not receive the expected number of parts from the S3 API, retry with incremental sleeps until the number
+			// of parts matches or the max number of retries is reached.
+			++retries;
+
+			await new Promise((resolve) => setTimeout(resolve, 500 * retries));
+			parts = await this.retrieveParts(key, uploadId);
+		}
+
+		if (parts.length !== expectedParts) {
+			throw {
+				status_code: 500,
+				body: 'Failed to upload all parts to S3.',
+			};
+		}
+
 		await this.finishMultipartUpload(key, uploadId, parts);
 	}
 
