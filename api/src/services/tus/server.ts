@@ -15,6 +15,7 @@ import { extractMetadata } from '../files/lib/extract-metadata.js';
 import { ItemsService } from '../index.js';
 import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
+import { pick } from 'lodash-es';
 
 type Context = {
 	schema: SchemaOverview;
@@ -65,18 +66,25 @@ export async function createTusServer(context: Context) {
 
 			const metadata = await extractMetadata(file.storage, file);
 
-			const payload: Partial<File> = {
-				...metadata,
-				tus_id: null,
-				tus_data: null,
-			};
-
 			// update metadata when file is replaced
-			if (file.tus_data?.['metadata']?.['temp_file']) {
-				payload.filename_download = file.tus_data['metadata']['filename_download'];
-			}
+			if (file.tus_data?.['metadata']?.['replace_id']) {
+				const updateData = {
+					...pick(file, ['filename_download', 'type', 'metadata']),
+					...metadata,
+				};
 
-			await service.updateOne(file.id, payload);
+				console.log('update', file.tus_data['metadata']['replace_id'], updateData);
+				console.log('delete', file.id);
+
+				await service.updateOne(file.tus_data['metadata']['replace_id'], updateData);
+				await service.deleteOne(file.id);
+			} else {
+				await service.updateOne(file.id, {
+					...metadata,
+					tus_id: null,
+					tus_data: null,
+				});
+			}
 
 			return res;
 		},

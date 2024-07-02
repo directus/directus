@@ -8,6 +8,7 @@ import { DataStore, ERRORS, Upload } from '@tus/utils';
 import { ItemsService } from '../items.js';
 import { useLogger } from '../../logger.js';
 import getDatabase from '../../database/index.js';
+import { omit } from 'lodash-es';
 
 export type TusDataStoreConfig = {
 	constants: {
@@ -71,17 +72,16 @@ export class TusDataStore extends DataStore {
 			upload.metadata['title'] = formatTitle(upload.metadata['filename_download']);
 		}
 
-		let primaryKey: PrimaryKey | undefined = upload.metadata['id'] ?? undefined;
 		let existingFile: Record<string, any> | null = null;
 
 		// If the payload contains a primary key, we'll check if the file already exists
-		if (primaryKey !== undefined) {
+		if (upload.metadata['id']) {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await knex
 					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata', 'tus_id')
 					.from('directus_files')
-					.andWhere({ id: primaryKey })
+					.andWhere({ id: upload.metadata['id'] })
 					.first()) ?? null;
 
 			if (existingFile && existingFile['tus_id'] !== null) {
@@ -89,9 +89,15 @@ export class TusDataStore extends DataStore {
 			}
 		}
 
+		// Is this file a replacement? if the file data already exists and we have a primary key
+		const isReplacement = existingFile !== null && !!upload.metadata['id'];
+
+		if (isReplacement === true && upload.metadata['id']) {
+			upload.metadata['replace_id'] = upload.metadata['id'];
+		}
+
 		const fileData: Partial<File> = {
-			...upload.metadata,
-			...(existingFile ?? {}),
+			...omit(upload.metadata, ['id']),
 			tus_id: upload.id,
 			tus_data: upload,
 			filesize: upload.size,
@@ -107,13 +113,8 @@ export class TusDataStore extends DataStore {
 			}
 		}
 
-		// Is this file a replacement? if the file data already exists and we have a primary key
-		const isReplacement = existingFile !== null && primaryKey !== undefined;
-
 		// If this is a new file upload, we need to generate a new primary key and DB record
-		if (isReplacement === false || primaryKey === undefined) {
-			primaryKey = await itemsService.createOne(fileData, { emitEvents: false });
-		}
+		const primaryKey = await itemsService.createOne(fileData, { emitEvents: false });
 
 		const fileExtension = extname(upload.metadata['filename_download']) || (upload.metadata['type'] && '.' + extension(upload.metadata['type'])) || '';
 
@@ -121,15 +122,15 @@ export class TusDataStore extends DataStore {
 		fileData.filename_disk ||= primaryKey + (fileExtension || '');
 
 		// Temp filename is used for replacements
-		const tempFilenameDisk = fileData.tus_id! + (fileExtension || '');
+		// const tempFilenameDisk = fileData.tus_id! + (fileExtension || '');
 
-		if (isReplacement) {
-			upload.metadata['temp_file'] = tempFilenameDisk;
-		}
+		// if (isReplacement) {
+		// 	upload.metadata['temp_file'] = tempFilenameDisk;
+		// }
 
 		try {
 			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
-			upload = (await this.storageDriver.createChunkedUpload(isReplacement === true ? tempFilenameDisk : fileData.filename_disk, upload)) as Upload;
+			upload = (await this.storageDriver.createChunkedUpload(fileData.filename_disk, upload)) as Upload;
 
 			fileData.tus_data = upload;
 
@@ -152,8 +153,8 @@ export class TusDataStore extends DataStore {
 
 	public override async write(readable: stream.Readable, tus_id: string, offset: number): Promise<number> {
 		const fileData = await this.getFileById(tus_id);
-		const isReplacement = Boolean(fileData.tus_data?.['metadata']?.['temp_file']);
-		const filePath = isReplacement ? fileData.tus_data!['metadata']!['temp_file']! : fileData.filename_disk!;
+		const filePath = fileData.filename_disk!;
+		console.log('uploading', filePath)
 
 		const sudoService = new ItemsService<File>('directus_files', {
 			schema: this.schema,
@@ -177,15 +178,21 @@ export class TusDataStore extends DataStore {
 			if (Number(fileData.filesize) === newOffset) {
 				await this.storageDriver.finishChunkedUpload(filePath, fileData.tus_data as ChunkedUploadContext);
 
+				const isReplacement = Boolean(fileData.tus_data?.['metadata']?.['replace_id']);
+
 				// If the file is a replacement, delete the old files, and upgrade the temp file
 				if (isReplacement === true) {
+					const replaceId = fileData.tus_data!['metadata']!['replace_id'] as string;
+					const replaceData = await sudoService.readOne(replaceId, { fields: [ 'filename_disk' ]});
+
 					// delete the previously saved file and thumbnails to ensure they're generated fresh
-					for await (const partPath of this.storageDriver.list(fileData.id)) {
+					for await (const partPath of this.storageDriver.list(replaceId)) {
 						await this.storageDriver.delete(partPath);
 					}
 
+					console.log('move', filePath, replaceData.filename_disk);
 					// Upgrade the temp file to the final filename
-					await this.storageDriver.move(filePath, fileData.id + extname(filePath));
+					await this.storageDriver.move(filePath, replaceData.filename_disk);
 				}
 			}
 
