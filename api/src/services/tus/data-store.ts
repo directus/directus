@@ -116,7 +116,10 @@ export class TusDataStore extends DataStore {
 		// If this is a new file upload, we need to generate a new primary key and DB record
 		const primaryKey = await itemsService.createOne(fileData, { emitEvents: false });
 
-		const fileExtension = extname(upload.metadata['filename_download']) || (upload.metadata['type'] && '.' + extension(upload.metadata['type'])) || '';
+		const fileExtension =
+			extname(upload.metadata['filename_download']) ||
+			(upload.metadata['type'] && '.' + extension(upload.metadata['type'])) ||
+			'';
 
 		// The filename_disk is the FINAL filename on disk
 		fileData.filename_disk ||= primaryKey + (fileExtension || '');
@@ -182,7 +185,7 @@ export class TusDataStore extends DataStore {
 				// If the file is a replacement, delete the old files, and upgrade the temp file
 				if (isReplacement === true) {
 					const replaceId = fileData.tus_data!['metadata']!['replace_id'] as string;
-					const replaceData = await sudoService.readOne(replaceId, { fields: [ 'filename_disk' ]});
+					const replaceData = await sudoService.readOne(replaceId, { fields: ['filename_disk'] });
 
 					// delete the previously saved file and thumbnails to ensure they're generated fresh
 					for await (const partPath of this.storageDriver.list(replaceId)) {

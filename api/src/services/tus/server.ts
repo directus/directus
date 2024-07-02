@@ -77,8 +77,6 @@ export async function createTusServer(context: Context) {
 				await service.updateOne(file.tus_data['metadata']['replace_id'], updateData);
 				await service.deleteOne(file.id);
 			} else {
-
-
 				const metadata = await extractMetadata(file.storage, file);
 
 				await service.updateOne(file.id, {
