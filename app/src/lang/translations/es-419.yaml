@@ -595,7 +595,10 @@ allow_duplicates: Permitir duplicados
 comments: Comentarios
 no_comments: Aún sin comentarios
 expand: Expandir
+expand_all: Desplegar todo
+expand_none: Contraer todo
 collapse: Contraer
+collapse_all: Contraer todo
 select_item: Seleccionar Elemento
 no_items: Sin Registros
 search_items: Buscar Elementos...
