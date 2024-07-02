@@ -17,7 +17,6 @@ const isOpen = useDialogRoute();
 
 let uploadController: any = null;
 const isUploading = ref(false);
-const isPaused = ref(false);
 
 function close() {
 	uploadController?.abort();
@@ -26,21 +25,9 @@ function close() {
 	router.push(props.folder ? { path: `/files/folders/${props.folder}` } : { path: '/files' });
 }
 
-function pause() {
-	uploadController?.abort();
-	isPaused.value = true;
-}
-
-function resume() {
-	uploadController?.start();
-	isUploading.value = true;
-	isPaused.value = false;
-}
-
 function start(controller: UploadController) {
 	uploadController = controller;
 	isUploading.value = true;
-	isPaused.value = false;
 }
 </script>
 
@@ -52,8 +39,6 @@ function start(controller: UploadController) {
 				<v-upload :folder="props.folder" multiple from-url @input="close" @start="start" />
 			</v-card-text>
 			<v-card-actions>
-				<v-button v-show="isUploading && !isPaused" secondary @click="pause">{{ t('pause') }}</v-button>
-				<v-button v-show="isUploading && isPaused" secondary @click="resume">{{ t('resume') }}</v-button>
 				<v-button secondary @click="close">{{ t('done') }}</v-button>
 			</v-card-actions>
 		</v-card>
