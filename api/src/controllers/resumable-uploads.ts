@@ -1,8 +1,7 @@
 import { Router, type Application } from 'express';
-import { ItemsService } from '../services/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { getTusServer, getTusStore } from '../services/tus/index.js';
+import { createTusServer } from '../services/tus/index.js';
 import { AuthorizationService } from '../services/authorization.js';
 import asyncHandler from '../utils/async-handler.js';
 import type { PermissionsAction } from '@directus/types';
@@ -52,11 +51,18 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 	return next();
 });
 
+const handler = asyncHandler(async (req, res) => {
+	const tusServer = await createTusServer({
+		schema: req.schema,
+		accountability: req.accountability,
+	});
+
+	await tusServer.handle(req, res);
+});
+
 export async function registerTusEndpoints(app: Application) {
 	if (!RESUMABLE_UPLOADS.ENABLED) return;
 
-	const tusServer = await getTusServer();
-	const handler = tusServer.handle.bind(tusServer);
 	const router = Router();
 
 	router.post('/', checkFileAccess, handler);
@@ -74,17 +80,9 @@ export function scheduleTusCleanup() {
 
 	if (validateCron(RESUMABLE_UPLOADS.SCHEDULE)) {
 		scheduleSynchronizedJob('tus-cleanup', RESUMABLE_UPLOADS.SCHEDULE, async () => {
-			const store = await getTusStore();
-
-			store.itemsService = new ItemsService('directus_files', {
+			const tusServer = await createTusServer({
 				schema: await getSchema(),
 			});
-
-			store.sudoItemsService = new ItemsService('directus_files', {
-				schema: await getSchema(),
-			});
-
-			const tusServer = await getTusServer();
 
 			await tusServer.cleanUpExpiredUploads();
 		});

@@ -1,11 +1,11 @@
 import formatTitle from '@directus/format-title';
 import type { TusDriver, ChunkedUploadContext } from '@directus/storage';
-import type { File } from '@directus/types';
+import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { extension } from 'mime-types';
 import { extname } from 'node:path';
 import stream from 'node:stream';
 import { DataStore, ERRORS, Upload } from '@tus/utils';
-import type { ItemsService } from '../items.js';
+import { ItemsService } from '../items.js';
 import { useLogger } from '../../logger.js';
 import { omit } from 'lodash-es';
 
@@ -20,6 +20,9 @@ export type TusDataStoreConfig = {
 	/** Storage location name **/
 	location: string;
 	driver: TusDriver;
+
+	schema: SchemaOverview;
+	accountability: Accountability | undefined;
 };
 
 export class TusDataStore extends DataStore {
@@ -27,9 +30,9 @@ export class TusDataStore extends DataStore {
 	protected maxSize: number;
 	protected expirationTime: number;
 	protected location: string;
-	protected _service: ItemsService<File> | undefined;
-	protected _sudoService: ItemsService<File> | undefined;
 	protected storageDriver: TusDriver;
+	protected schema: SchemaOverview;
+	protected accountability: Accountability | undefined;
 
 	constructor(config: TusDataStoreConfig) {
 		super();
@@ -40,28 +43,18 @@ export class TusDataStore extends DataStore {
 		this.location = config.location;
 		this.storageDriver = config.driver;
 		this.extensions = this.storageDriver.tusExtensions;
-	}
-
-	get itemsService(): ItemsService<File> {
-		if (!this._service) throw new Error('no service set');
-		return this._service;
-	}
-
-	set itemsService(service: ItemsService<File>) {
-		this._service = service;
-	}
-
-	get sudoItemsService(): ItemsService<File> {
-		if (!this._sudoService) throw new Error('no sudo service set');
-		return this._sudoService;
-	}
-
-	set sudoItemsService(service: ItemsService<File>) {
-		this._sudoService = service;
+		this.schema = config.schema;
+		this.accountability = config.accountability;
 	}
 
 	public override async create(upload: Upload): Promise<Upload> {
 		const logger = useLogger();
+
+		const itemsService = new ItemsService<File>('directus_files', {
+			accountability: this.accountability,
+			schema: this.schema,
+		});
+
 		upload.creation_date = new Date().toISOString();
 
 		if (!upload.metadata || !upload.metadata['filename']) {
@@ -83,7 +76,7 @@ export class TusDataStore extends DataStore {
 			storage: this.location,
 		};
 
-		const primaryKey = await this.itemsService.createOne(fileData);
+		const primaryKey = await itemsService.createOne(fileData);
 
 		const fileExtension = extname(fileName!) || (fileType && '.' + extension(fileType)) || '';
 		const diskFileName = primaryKey + (fileExtension || '');
@@ -91,7 +84,7 @@ export class TusDataStore extends DataStore {
 		try {
 			upload = (await this.storageDriver.createChunkedUpload(diskFileName, upload)) as Upload;
 
-			await this.itemsService.updateOne(primaryKey!, {
+			await itemsService.updateOne(primaryKey!, {
 				filename_disk: diskFileName,
 				tus_data: upload,
 			});
@@ -99,7 +92,7 @@ export class TusDataStore extends DataStore {
 			return upload;
 		} catch (err) {
 			// Clean up the database entry
-			await this.itemsService.deleteOne(primaryKey!);
+			await itemsService.deleteOne(primaryKey!);
 
 			logger.warn(err, "Couldn't create chunked upload.");
 			throw ERRORS.UNKNOWN_ERROR;
@@ -110,6 +103,10 @@ export class TusDataStore extends DataStore {
 		const fileData = await this.getFileById(tus_id);
 		const filePath = fileData.filename_disk!;
 
+		const sudoService = new ItemsService<File>('directus_files', {
+			schema: this.schema,
+		});
+
 		try {
 			const newOffset = await this.storageDriver.writeChunk(
 				filePath,
@@ -118,7 +115,7 @@ export class TusDataStore extends DataStore {
 				fileData.tus_data as ChunkedUploadContext,
 			);
 
-			await this.sudoItemsService.updateOne(fileData.id!, {
+			await sudoService.updateOne(fileData.id!, {
 				tus_data: {
 					...fileData.tus_data,
 					offset: newOffset,
@@ -136,16 +133,24 @@ export class TusDataStore extends DataStore {
 	}
 
 	override async remove(tus_id: string): Promise<void> {
+		const sudoService = new ItemsService<File>('directus_files', {
+			schema: this.schema,
+		});
+
 		const fileData = await this.getFileById(tus_id);
 		await this.storageDriver.deleteChunkedUpload(fileData.filename_disk!, fileData.tus_data as ChunkedUploadContext);
-		await this.sudoItemsService.deleteOne(fileData.id!);
+		await sudoService.deleteOne(fileData.id!);
 	}
 
 	override async deleteExpired(): Promise<number> {
+		const sudoService = new ItemsService<File>('directus_files', {
+			schema: this.schema,
+		});
+
 		const now = new Date();
 		const toDelete: Promise<void>[] = [];
 
-		const uploadFiles = await this.sudoItemsService.readByQuery({
+		const uploadFiles = await sudoService.readByQuery({
 			fields: ['modified_on', 'tus_id', 'tus_data'],
 			filter: { tus_id: { _nnull: true } },
 		});
@@ -184,12 +189,14 @@ export class TusDataStore extends DataStore {
 	}
 
 	protected async getFileById(tus_id: string) {
-		const results = await this.itemsService.readByQuery({
+		const itemsService = new ItemsService<File>('directus_files', {
+			schema: this.schema,
+		});
+
+		const results = await itemsService.readByQuery({
 			filter: {
 				tus_id: { _eq: tus_id },
-				...(this.itemsService.accountability?.user
-					? { uploaded_by: { _eq: this.itemsService.accountability.user } }
-					: {}),
+				...(this.accountability?.user ? { uploaded_by: { _eq: this.accountability.user } } : {}),
 			},
 		});
 
