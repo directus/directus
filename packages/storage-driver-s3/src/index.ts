@@ -417,12 +417,12 @@ export class DriverS3 implements TusDriver {
 
 						if (partSize >= this.minPartSize || isFinalPart) {
 							await this.uploadPart(key, uploadId, readable, partNumber);
+							bytesUploaded += partSize;
 						} else {
 							// This can happen if the upload is aborted by the user mid chunk or a network issue happens
 							// await this.uploadIncompletePart(metadata.file.id, readable);
 						}
 
-						bytesUploaded += partSize;
 						resolve();
 					} catch (error) {
 						reject(error);
