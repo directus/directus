@@ -11,8 +11,6 @@ const storages = ['local', 'minio'];
 
 const imageFile = {
 	name: 'directus.png',
-	type: 'image/png',
-	filesize: '7136',
 };
 
 const imageFilePath = join(...assetsDirectory, imageFile.name);
