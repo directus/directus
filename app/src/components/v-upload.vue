@@ -47,14 +47,6 @@ const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
 
-function abortUpload() {
-	uploadController?.abort();
-}
-
-defineExpose({
-	abort: abortUpload,
-});
-
 function validFiles(files: FileList) {
 	if (files.length === 0) return false;
 
@@ -286,6 +278,12 @@ function useURLImport() {
 function openFileBrowser() {
 	input.value?.click();
 }
+
+function abort() {
+	uploadController?.abort();
+}
+
+defineExpose({ abort });
 </script>
 
 <template>

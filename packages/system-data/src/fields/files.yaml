@@ -133,6 +133,8 @@ fields:
     display: datetime
     width: half
     hidden: true
+    special:
+      - date-created
 
   - field: folder
     width: half

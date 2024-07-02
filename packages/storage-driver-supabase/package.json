@@ -28,7 +28,7 @@
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@supabase/storage-js": "2.5.5",
+		"@supabase/storage-js": "2.6.0",
 		"undici": "6.19.2"
 	},
 	"devDependencies": {
