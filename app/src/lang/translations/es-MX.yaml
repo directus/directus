@@ -81,7 +81,7 @@ extension_operations: Operaciones
 extension_bundles: Paquetes
 extension_missing: Faltan
 extension_reload_required: Recarga de página requerida
-extension_reload_required_copy: Es necesario recargar una página para ver los cambios después de activar o desactivar las extensiones.
+extension_reload_required_copy: Es necesario recargar la página para ver los cambios después de activar o desactivar las extensiones.
 extension_reload_now: Recargar ahora
 published_relative: Publicado {relativeTime}
 compatible_with_your_project: Compatible con tu proyecto
@@ -93,7 +93,7 @@ homepage: Inicio
 repository: Repositorio
 reload_page: Recargar Página
 reload_required: Recarga Requerida
-report_an_issue: Reportar un Problema
+report_an_issue: Informar de un Problema
 website: Sitio Web
 github: GitHub
 beta: Beta
@@ -341,7 +341,7 @@ geometry:
 theme_auto: Automático (basado en el sistema)
 theme_light: Modo claro
 theme_dark: Modo oscuro
-theme_directus_default: Directus Default
+theme_directus_default: Directus Por Defecto
 theme_directus_minimal: Directus Minimal
 theme_directus_colormatch: Directus coincidencia de color
 not_available_for_type: No disponible para este tipo
@@ -527,9 +527,9 @@ months:
   november: Noviembre
   december: Diciembre
 drag_mode: Modo de arrastre
-move_tool: Herramienta para mover
-crop_tool: Herramienta de recorte
-focal_point_tool: Herramienta de Punto Focal
+move_tool: Herramienta Mover
+crop_tool: Herramienta Recorte
+focal_point_tool: Herramienta Punto Focal
 cancel_crop: Cancelar Recorte
 cancel_selection: Cancelar selección
 original: Original
@@ -567,7 +567,7 @@ exporting_all_items_in_collection: Exportando los {total} elementos dentro de {c
 exporting_limited_items_in_collection: '{count} de {total} elementos en {collection} serán exportados.'
 exporting_no_items_to_export: No hay elementos para exportar. Ajuste la configuración de exportación y/o añada elementos a la colección.
 exporting_download_hint: Una vez creado el archivo {format}, se descargará a tu dispositivo.
-exporting_library_hint: Una vez creado el archivo {format}, se guardará en la biblioteca de archivos.
+exporting_library_hint: Una vez creado el archivo {format}, se guardará en la Biblioteca de Archivos.
 exporting_library_hint_forced: Esta exportación se procesará por lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
@@ -595,7 +595,10 @@ allow_duplicates: Permitir duplicados
 comments: Comentarios
 no_comments: Aún Sin Comentarios
 expand: Expandir
+expand_all: Desplegar todo
+expand_none: Contraer todo
 collapse: Contraer
+collapse_all: Contraer todo
 select_item: Seleccionar elemento
 no_items: Sin elementos
 search_items: Buscar elementos...
