@@ -9,10 +9,12 @@ vi.mock('@directus/env');
 
 vi.mock('../utils/get-config-from-env.js');
 
+vi.mock('../constants.js', () => ({ RESUMABLE_UPLOADS: { CHUNK_SIZE: 9999 } }));
+
 let sample: {
 	options: {
 		[location: string]: {
-			[key: string]: string;
+			[key: string]: any;
 		};
 	};
 	locations: string[];
@@ -32,6 +34,7 @@ beforeEach(() => {
 
 		sample.options[`STORAGE_${location.toUpperCase()}_`] = {
 			driver: randWord(),
+			tus: { chunkSize: 9999 },
 		};
 
 		keys.forEach((key, index) => (sample.options[`STORAGE_${location.toUpperCase()}_`]![key] = values[index]!));

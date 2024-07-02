@@ -30,7 +30,9 @@
 		"@aws-sdk/lib-storage": "3.569.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@smithy/node-http-handler": "2.5.0"
+		"@shopify/semaphore": "3.1.0",
+		"@smithy/node-http-handler": "2.5.0",
+		"@tus/utils": "0.2.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
