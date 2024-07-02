@@ -1,4 +1,4 @@
-import { Router, type Application } from 'express';
+import { Router } from 'express';
 import { getSchema } from '../utils/get-schema.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { createTusServer } from '../services/tus/index.js';
@@ -60,21 +60,6 @@ const handler = asyncHandler(async (req, res) => {
 	await tusServer.handle(req, res);
 });
 
-export async function registerTusEndpoints(app: Application) {
-	if (!RESUMABLE_UPLOADS.ENABLED) return;
-
-	const router = Router();
-
-	router.post('/', checkFileAccess, handler);
-	router.patch('/:id', checkFileAccess, handler);
-	router.delete('/:id', checkFileAccess, handler);
-
-	router.options('/:id', checkFileAccess, handler);
-	router.head('/:id', checkFileAccess, handler);
-
-	app.use('/files/tus', router);
-}
-
 export function scheduleTusCleanup() {
 	if (!RESUMABLE_UPLOADS.ENABLED) return;
 
@@ -88,3 +73,14 @@ export function scheduleTusCleanup() {
 		});
 	}
 }
+
+const router = Router();
+
+router.post('/', checkFileAccess, handler);
+router.patch('/:id', checkFileAccess, handler);
+router.delete('/:id', checkFileAccess, handler);
+
+router.options('/:id', checkFileAccess, handler);
+router.head('/:id', checkFileAccess, handler);
+
+export default router;

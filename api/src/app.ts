@@ -37,6 +37,7 @@ import serverRouter from './controllers/server.js';
 import settingsRouter from './controllers/settings.js';
 import sharesRouter from './controllers/shares.js';
 import translationsRouter from './controllers/translations.js';
+import { default as tusRouter, scheduleTusCleanup } from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
@@ -66,7 +67,6 @@ import { initTelemetry } from './telemetry/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
-import { registerTusEndpoints, scheduleTusCleanup } from './controllers/resumable-uploads.js';
 
 const require = createRequire(import.meta.url);
 
@@ -284,7 +284,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
-	await registerTusEndpoints(app);
+
+	if (env['TUS_ENABLED'] === true) {
+		app.use('/files/tus', tusRouter);
+	}
+
 	app.use('/files', filesRouter);
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
