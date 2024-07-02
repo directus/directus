@@ -6,12 +6,13 @@
 import { useEnv } from '@directus/env';
 import type { Driver, TusDriver } from '@directus/storage';
 import { supportsTus } from '@directus/storage';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { Server } from '@tus/server';
 import { RESUMABLE_UPLOADS } from '../../constants.js';
 import { getStorage } from '../../storage/index.js';
-import { FilesService } from '../index.js';
+import { extractMetadata } from '../files/lib/extract-metadata.js';
+import { ItemsService } from '../index.js';
 import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
 
@@ -49,19 +50,26 @@ export async function createTusServer(context: Context) {
 		locker: getTusLocker(),
 		maxSize: RESUMABLE_UPLOADS.MAX_SIZE,
 		async onUploadFinish(req: any, res, upload) {
-			const service = new FilesService({
+			const service = new ItemsService<File>('directus_files', {
 				schema: req.schema,
 			});
 
-			await service.updateByQuery(
-				{
+			const file = (
+				await service.readByQuery({
 					filter: { tus_id: { _eq: upload.id } },
-				},
-				{
-					tus_id: null,
-					tus_data: null,
-				},
-			);
+					limit: 1,
+				})
+			)[0];
+
+			if (!file) return res;
+
+			const metadata = await extractMetadata(file.storage, file);
+
+			await service.updateOne(file.id, {
+				tus_id: null,
+				tus_data: null,
+				...metadata,
+			});
 
 			return res;
 		},
