@@ -9,4 +9,4 @@
 "@directus/types": minor
 ---
 
-Implemented support for the TUS protocol
+Implemented support for chunked uploads using the TUS protocol
