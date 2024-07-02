@@ -8,7 +8,7 @@ import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import { sum } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import * as tus from 'tus-js-client';
+import type { Upload } from 'tus-js-client';
 
 export type UploadController = {
 	start(): void;
@@ -38,7 +38,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-let uploader: tus.Upload | null = null;
+let uploadController: Upload | null = null;
 
 const { uploading, progress, upload, onBrowseSelect, done, numberOfFiles } = useUpload();
 const { onDragEnter, onDragLeave, onDrop, dragging } = useDragging();
@@ -48,7 +48,7 @@ const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
 
 function abortUpload() {
-	uploader?.abort();
+	uploadController?.abort();
 }
 
 defineExpose({
@@ -123,7 +123,7 @@ function useUpload() {
 					},
 					onChunkedUpload: (controllers) => {
 						controllers.forEach((controller, i) => (fileControllers[i] = controller));
-						uploader = controller;
+						uploadController = controller as Upload;
 
 						if (controllers.every((c) => c !== null)) {
 							// Only emit start once every upload started
@@ -140,16 +140,16 @@ function useUpload() {
 						progress.value = percentage;
 						done.value = percentage === 100 ? 1 : 0;
 					},
-					onChunkedUpload: (tusUpload) => {
-						uploader = tusUpload;
-						emit('start', tusUpload);
+					onChunkedUpload: (controller) => {
+						uploadController = controller;
+						emit('start', controller);
 					},
 					fileId: props.fileId,
 					preset,
 				});
 
 				uploadedFile && emit('input', uploadedFile);
-				uploader = null;
+				uploadController = null;
 			}
 		} catch (error) {
 			unexpectedError(error);

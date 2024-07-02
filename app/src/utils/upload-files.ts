@@ -2,13 +2,13 @@ import { i18n } from '@/lang';
 import { notify } from '@/utils/notify';
 import { uploadFile } from '@/utils/upload-file';
 import { unexpectedError } from './unexpected-error';
-import * as tus from 'tus-js-client';
+import type { Upload } from 'tus-js-client';
 
 export async function uploadFiles(
 	files: File[],
 	options?: {
 		onProgressChange?: (percentages: number[]) => void;
-		onChunkedUpload?: (controllers: (tus.Upload | null)[]) => void;
+		onChunkedUpload?: (controllers: (Upload | null)[]) => void;
 		notifications?: boolean;
 		preset?: Record<string, any>;
 		folder?: string;
@@ -16,7 +16,7 @@ export async function uploadFiles(
 ): Promise<File[] | undefined> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 	const progressForFiles = files.map(() => 0);
-	const uploadControllers: tus.Upload | null = Array(files.length).fill(null);
+	const uploadControllers: (Upload | null)[] = Array(files.length).fill(null);
 
 	try {
 		const uploadedFiles = (
@@ -28,7 +28,7 @@ export async function uploadFiles(
 							progressForFiles[index] = percentage;
 							progressHandler(progressForFiles);
 						},
-						onChunkedUpload: (controller: tus.Upload) => {
+						onChunkedUpload: (controller: Upload) => {
 							uploadControllers[index] = controller;
 							options?.onChunkedUpload?.(uploadControllers);
 						},
