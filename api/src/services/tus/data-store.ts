@@ -181,7 +181,7 @@ export class TusDataStore extends DataStore {
 				try {
 					await this.storageDriver.finishChunkedUpload(filePath, fileData.tus_data as ChunkedUploadContext);
 				} catch (err) {
-					await this.remove(filePath);
+					await this.remove(fileData.tus_id!);
 					throw err;
 				}
 
