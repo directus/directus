@@ -11,6 +11,7 @@ export type DirectusFile<Schema> = MergeCoreCollection<
 		storage: string;
 		filename_disk: string | null;
 		filename_download: string;
+		hash: string | null;
 		title: string | null;
 		type: string | null;
 		folder: DirectusFolder<Schema> | string | null;

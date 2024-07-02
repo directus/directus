@@ -1275,6 +1275,7 @@ fields:
     metadata: Metadata
     type: Mime Type
     filesize: Filesize
+    hash: Hash (SHA-256)
     modified_by: Modified By
     modified_on: Modified On
     created_on: Created On

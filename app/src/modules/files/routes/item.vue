@@ -68,6 +68,7 @@ const fieldsDenyList: string[] = [
 	'width',
 	'height',
 	'filesize',
+	'hash',
 	'uploaded_by',
 	'uploaded_on',
 	'modified_by',

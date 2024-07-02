@@ -5,6 +5,7 @@ export type File = {
 	storage: string;
 	filename_disk: string;
 	filename_download: string;
+	hash: string | null;
 	title: string | null;
 	type: string | null;
 	folder: string | null;

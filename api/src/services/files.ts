@@ -4,12 +4,14 @@ import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, File, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
+import cloneable from 'cloneable-readable';
 import encodeURL from 'encodeurl';
 import exif, { type GPSInfoTags, type ImageTags, type IopTags, type PhotoTags } from 'exif-reader';
 import type { IccProfile } from 'icc';
 import { parse as parseIcc } from 'icc';
 import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
+import { createHash } from 'node:crypto';
 import type { Readable } from 'node:stream';
 import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
@@ -120,19 +122,44 @@ export class FilesService extends ItemsService {
 			}
 		};
 
+		const cloneableStream = cloneable(stream);
+
+		let hashError;
+
+		const hashPromise = this.getHash(cloneableStream.clone()).catch((error) => {
+			hashError = error;
+		});
+
+		let metadataPromise;
+
+		if (SUPPORTED_IMAGE_METADATA_FORMATS.includes(payload.type)) {
+			metadataPromise = this.getMetadata(cloneableStream.clone()).catch((error) => {
+				logger.warn(`Couldn't extract metadata`);
+				logger.warn(error);
+			});
+		}
+
 		try {
 			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
 			if (isReplacement === true) {
-				await disk.write(tempFilenameDisk, stream, payload.type);
+				await disk.write(tempFilenameDisk, cloneableStream, payload.type);
 			} else {
 				// If this is a new file upload, we'll write the file to the final location
-				await disk.write(payload.filename_disk, stream, payload.type);
+				await disk.write(payload.filename_disk, cloneableStream, payload.type);
 			}
 
 			// Check if the file was truncated (if the stream ended early) and throw limit error if it was
 			if ('truncated' in stream && stream.truncated === true) {
 				throw new ContentTooLargeError();
 			}
+
+			const hash = await hashPromise;
+
+			if (!hash || hashError) {
+				throw new Error(`Couldn't generate file hash`, { cause: hashError });
+			}
+
+			payload.hash = hash;
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
@@ -162,35 +189,38 @@ export class FilesService extends ItemsService {
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		if (SUPPORTED_IMAGE_METADATA_FORMATS.includes(payload.type)) {
-			const stream = await storage.location(data.storage).read(payload.filename_disk);
-			const { height, width, description, title, tags, metadata } = await this.getMetadata(stream);
+		if (metadataPromise) {
+			const result = await metadataPromise;
 
-			if (!payload.height && height) {
-				payload.height = height;
-			}
+			if (result) {
+				const { height, width, description, title, tags, metadata } = result;
 
-			if (!payload.width && width) {
-				payload.width = width;
-			}
+				if (!payload.height && height) {
+					payload.height = height;
+				}
 
-			if (!payload.metadata && metadata) {
-				payload.metadata = metadata;
-			}
+				if (!payload.width && width) {
+					payload.width = width;
+				}
 
-			// Note that if this is a replace file upload, the below properties are fetched and included in the payload above
-			// in the `existingFile` variable... so this will ONLY set the values if they're not already set
+				if (!payload.metadata && metadata) {
+					payload.metadata = metadata;
+				}
 
-			if (!payload.description && description) {
-				payload.description = description;
-			}
+				// Note that if this is a replace file upload, the below properties are fetched and included in the payload above
+				// in the `existingFile` variable... so this will ONLY set the values if they're not already set
 
-			if (!payload.title && title) {
-				payload.title = title;
-			}
+				if (!payload.description && description) {
+					payload.description = description;
+				}
 
-			if (!payload.tags && tags) {
-				payload.tags = tags;
+				if (!payload.title && title) {
+					payload.title = title;
+				}
+
+				if (!payload.tags && tags) {
+					payload.tags = tags;
+				}
 			}
 		}
 
@@ -223,9 +253,20 @@ export class FilesService extends ItemsService {
 	}
 
 	/**
-	 * Extract metadata from a buffer's content
+	 * Generate the sha256 hash sum of the file stream
 	 */
-	async getMetadata(
+	async getHash(stream: Readable) {
+		const hasher = createHash('sha256');
+
+		await pipeline(stream, hasher);
+
+		return hasher.digest('hex');
+	}
+
+	/**
+	 * Extract metadata from the file stream
+	 */
+	getMetadata(
 		stream: Readable,
 		allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
 	): Promise<Metadata> {

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import api from '@/api';
+import { useClipboard } from '@/composables/use-clipboard';
 import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { localizedFormat } from '@/utils/localized-format';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { userName } from '@/utils/user-name';
+import type { File } from '@directus/types';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { File } from '@directus/types';
 
 const props = defineProps<{
 	file: File | null;
@@ -17,6 +18,7 @@ const props = defineProps<{
 const { t, n } = useI18n();
 const { userCreated, userModified } = useUser();
 const { folder, folderLink } = useFolder();
+const { isCopySupported, copyToClipboard } = useClipboard();
 
 const size = computed(() => {
 	if (props.isNew) return;
@@ -186,6 +188,21 @@ function useFolder() {
 				<dd>{{ size }}</dd>
 			</div>
 
+			<div v-if="file.hash">
+				<dt>{{ t('fields.directus_files.hash') }}</dt>
+				<dd v-tooltip:left="file.hash">
+					{{ file.hash }}
+				</dd>
+				<v-icon
+					v-if="isCopySupported"
+					name="content_copy"
+					small
+					clickable
+					class="clipboard-icon"
+					@click="copyToClipboard(file.hash)"
+				/>
+			</div>
+
 			<div v-if="file.charset">
 				<dt>{{ t('charset') }}</dt>
 				<dd>{{ file.charset }}</dd>
@@ -283,5 +300,10 @@ button {
 
 .v-divider {
 	margin: 20px 0;
+}
+
+.clipboard-icon {
+	--v-icon-color: var(--theme--foreground-subdued);
+	--v-icon-color-hover: var(--theme--foreground);
 }
 </style>
