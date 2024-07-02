@@ -13,7 +13,7 @@ import { clone, pick } from 'lodash-es';
 import { extension } from 'mime-types';
 import { createHash } from 'node:crypto';
 import type { Readable } from 'node:stream';
-import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
+import { PassThrough as PassThroughStream, Transform as TransformStream, pipeline as pipelineSync } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import zlib from 'node:zlib';
 import path from 'path';
@@ -140,12 +140,17 @@ export class FilesService extends ItemsService {
 		}
 
 		try {
+			// Convert to normal ReadableStream, see
+			// - https://github.com/mcollina/cloneable-readable/issues/46
+			// - https://github.com/aws/aws-sdk-js-v3/issues/6153
+			const writeStream = pipelineSync(cloneableStream, new PassThroughStream(), () => {});
+
 			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
 			if (isReplacement === true) {
-				await disk.write(tempFilenameDisk, cloneableStream, payload.type);
+				await disk.write(tempFilenameDisk, writeStream, payload.type);
 			} else {
 				// If this is a new file upload, we'll write the file to the final location
-				await disk.write(payload.filename_disk, cloneableStream, payload.type);
+				await disk.write(payload.filename_disk, writeStream, payload.type);
 			}
 
 			// Check if the file was truncated (if the stream ended early) and throw limit error if it was
