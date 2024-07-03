@@ -21,6 +21,7 @@ const props = withDefaults(
 		icon?: string;
 		border?: boolean;
 		masked?: boolean;
+		translate?: boolean;
 		conditionalFormatting?: {
 			operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
 			value: string;
@@ -96,6 +97,10 @@ const displayValue = computed(() => {
 	if (isNil(props.value) || props.value === '') return null;
 
 	let value = String(props.value);
+
+	if (props.translate && value.startsWith('$t:')) {
+		value = t(value.slice(3));
+	}
 
 	// Strip out all HTML tags
 	value = dompurify.sanitize(value, { ALLOWED_TAGS: [] });

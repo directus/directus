@@ -37,6 +37,7 @@ import serverRouter from './controllers/server.js';
 import settingsRouter from './controllers/settings.js';
 import sharesRouter from './controllers/shares.js';
 import translationsRouter from './controllers/translations.js';
+import { default as tusRouter, scheduleTusCleanup } from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
@@ -283,6 +284,11 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/dashboards', dashboardsRouter);
 	app.use('/extensions', extensionsRouter);
 	app.use('/fields', fieldsRouter);
+
+	if (env['TUS_ENABLED'] === true) {
+		app.use('/files/tus', tusRouter);
+	}
+
 	app.use('/files', filesRouter);
 	app.use('/flows', flowsRouter);
 	app.use('/folders', foldersRouter);
@@ -316,6 +322,7 @@ export default async function createApp(): Promise<express.Application> {
 	await emitter.emitInit('routes.after', { app });
 
 	initTelemetry();
+	scheduleTusCleanup();
 
 	await emitter.emitInit('app.after', { app });
 

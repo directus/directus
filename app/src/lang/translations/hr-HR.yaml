@@ -91,6 +91,7 @@ n_files: '{n} Datoteka'
 verified: Provjereno
 homepage: Naslovna Stranica
 repository: Repozitorij
+reload_page: Osvježite stranicu
 reload_required: Ponovi Učitavanje Stranice
 report_an_issue: Prijavi Problem
 website: Web stranica
@@ -361,6 +362,7 @@ fields_group: Grupno polje
 no_collections_found: Nije pronađena nijedna zbirka.
 new_data_alert: 'Sljedeće će se stvoriti unutar vašeg podatkovnog modela:'
 search_collection: Pretraži zbirku...
+search_role: Pretraga Role...
 search_field: Pretraga Polja...
 new_field: 'Novo polje'
 new_collection: 'Nova zbirka'
@@ -557,6 +559,7 @@ replace_from_url: Zamijenite datoteku s URL-a
 no_image_selected: Nije Odabrana Slika
 no_file_selected: Niti jedna datoteka nije odabrana
 download_file: Preuzmi datoteku
+open_file_in_tab: Otvori datoteku u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
@@ -591,7 +594,9 @@ allow_duplicates: Dopusti duplikate
 comments: Komentari
 no_comments: Još nema komentara
 expand: Proširi
+expand_all: Proširi sve
 collapse: Sažmi
+collapse_all: Sažmi sve
 select_item: Odaberi stavku
 no_items: Nema stavki
 search_items: Pretraži Stavke...
@@ -1160,6 +1165,7 @@ install_extension: Instaliraj Proširenje
 uninstall_locked: Nije moguće deinstalirati proširenja koja nisu instalirana putem tržnice
 uninstall: Deinstaliraj
 installed: Instalirano
+reinstall: Ponovno instaliraj
 open_in_marketplace: Otvori u Tržnici
 source_registry: Market
 source_local: Lokalno
@@ -1328,6 +1334,8 @@ fields:
     custom_aspect_ratios: Prilagođeni omjeri
     theme_light_overrides: Prilagodba Svijetle Teme
     theme_dark_overrides: Prilagodba Tamne Teme
+    public_registration: Registracija korisnika
+    public_registration_verify_email: Potvrdi adresu e-pošte
   directus_shares:
     name: Ime
     role: Uloge
@@ -1575,6 +1583,7 @@ authenticated: Autentificirano
 options: Opcije
 otp: Jednokratna lozinka
 password: Lozinka
+confirm_password: Potvrdi lozinku
 permissions: Dopuštenja
 relationship: Odnos
 reset: Ponovno postavi
@@ -1591,6 +1600,14 @@ select_field_type: Odaberite vrstu polja
 select_interface: Odaberite sučelje
 select_display: Odaberi prikaz
 settings: Postavke
+register: Registracija
+registration_successful_headline: Uspješno!
+registration_successful_note: Sada možete otići na stranicu za prijavu.
+registration_successful_check_email_note: |
+  Prije nego što se možete prijaviti, bit će potrebno potvrditi vašu e-adresu klikom na poveznicu koja je poslana na vašu e-adresu.
+dont_have_an_account: Nemate korisnički račun?
+already_have_an_account: Već imate korisnički račun?
+sign_up_now: Prijavite se odmah
 sign_in: Prijava
 sign_out: Odjava
 sign_out_confirm: Jeste li sigurni da se želite odjaviti?
@@ -1623,6 +1640,7 @@ delete_item: Obriši stavku
 interfaces:
   list-m2a:
     prefix_note: Koristi ime kolekcije povezane stavke kao zadano.
+    sorting_disabled: Sortiranje je onemogućeno jer postoji više stavki koje mogu stati na jednu stranicu.
   filter:
     name: Filter
     description: Konfiguriraj objekt filtera.
@@ -2161,6 +2179,7 @@ layouts:
     not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 horizontal: Horizontalno
 vertical: Uspravno
+axis: Os
 x_axis: X-Os
 y_axis: Y-Os
 y_axis_function: Funkcija Y-Osi
