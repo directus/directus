@@ -143,14 +143,14 @@ export default abstract class SocketController {
 			return;
 		}
 
-		if (this.authentication.mode === 'handshake') {
-			await this.handleHandshakeUpgrade(context);
-			return;
-		}
-
 		if (cookies[sessionCookieName]) {
 			const token = cookies[sessionCookieName] as string;
 			await this.handleTokenUpgrade(context, token);
+			return;
+		}
+
+		if (this.authentication.mode === 'handshake') {
+			await this.handleHandshakeUpgrade(context);
 			return;
 		}
 
