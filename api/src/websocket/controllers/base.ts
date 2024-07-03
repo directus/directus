@@ -137,14 +137,14 @@ export default abstract class SocketController {
 		const context: UpgradeContext = { request, socket, head };
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
-		if (cookies[sessionCookieName]) {
-			const token = cookies[sessionCookieName] as string;
+		if (this.authentication.mode === 'strict' || query['access_token']) {
+			const token = query['access_token'] as string;
 			await this.handleTokenUpgrade(context, token);
 			return;
 		}
 
-		if (this.authentication.mode === 'strict') {
-			const token = query['access_token'] as string;
+		if (cookies[sessionCookieName]) {
+			const token = cookies[sessionCookieName] as string;
 			await this.handleTokenUpgrade(context, token);
 			return;
 		}
