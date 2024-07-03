@@ -1043,6 +1043,7 @@ variables to automatically configure the first user:
 | ---------------- | ------------------------------------------------------------------------------------------------- | ------------- |
 | `ADMIN_EMAIL`    | The email address of the first user that's automatically created when using `directus bootstrap`. | --            |
 | `ADMIN_PASSWORD` | The password of the first user that's automatically created when using `directus bootstrap`.      | --            |
+| `ADMIN_TOKEN`    | The API token of the first user that's automatically created when using `directus bootstrap`.     | --            |
 
 ## Telemetry
 
