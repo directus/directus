@@ -194,7 +194,7 @@
 		"@types/destroy": "1.0.3",
 		"@types/encodeurl": "1.0.2",
 		"@types/express": "4.17.21",
-		"@types/express-serve-static-core": "4.19.3",
+		"@types/express-serve-static-core": "4.19.5",
 		"@types/fs-extra": "11.0.4",
 		"@types/glob-to-regexp": "0.4.4",
 		"@types/inquirer": "9.0.7",
