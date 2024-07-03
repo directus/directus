@@ -12,6 +12,7 @@ import { Server } from '@tus/server';
 import { pick } from 'lodash-es';
 import { RESUMABLE_UPLOADS } from '../../constants.js';
 import { getStorage } from '../../storage/index.js';
+import { getHashFinal } from '../files/lib/get-hash-state.js';
 import { getImageMetadata } from '../files/lib/get-image-metadata.js';
 import { ItemsService } from '../index.js';
 import { TusDataStore } from './data-store.js';
@@ -64,6 +65,17 @@ export async function createTusServer(context: Context) {
 
 			if (!file) return res;
 
+			let hash = null;
+			const hashState = file.tus_data?.['metadata']?.['hash_state'];
+
+			if (!hashState) throw new Error(`Couldn't obtain hash state`);
+
+			try {
+				hash = await getHashFinal(hashState);
+			} catch (error) {
+				throw new Error(`Couldn't generate file hash`, { cause: error });
+			}
+
 			// update metadata when file is replaced
 			if (file.tus_data?.['metadata']?.['replace_id']) {
 				const newFile = await service.readOne(file.tus_data['metadata']['replace_id']);
@@ -80,6 +92,7 @@ export async function createTusServer(context: Context) {
 				await service.updateOne(file.tus_data['metadata']['replace_id'], {
 					...updateFields,
 					...metadata,
+					hash,
 				});
 
 				await service.deleteOne(file.id);
@@ -93,6 +106,7 @@ export async function createTusServer(context: Context) {
 					...metadata,
 					tus_id: null,
 					tus_data: null,
+					hash,
 				});
 			}
 

@@ -1,14 +1,16 @@
 import formatTitle from '@directus/format-title';
-import type { TusDriver, ChunkedUploadContext } from '@directus/storage';
+import type { ChunkedUploadContext, TusDriver } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
+import { DataStore, ERRORS, Upload } from '@tus/utils';
+import cloneable from 'cloneable-readable';
+import { omit } from 'lodash-es';
 import { extension } from 'mime-types';
 import { extname } from 'node:path';
 import stream from 'node:stream';
-import { DataStore, ERRORS, Upload } from '@tus/utils';
-import { ItemsService } from '../items.js';
-import { useLogger } from '../../logger.js';
 import getDatabase from '../../database/index.js';
-import { omit } from 'lodash-es';
+import { useLogger } from '../../logger.js';
+import { getHashState } from '../files/lib/get-hash-state.js';
+import { ItemsService } from '../items.js';
 
 export type TusDataStoreConfig = {
 	constants: {
@@ -162,17 +164,38 @@ export class TusDataStore extends DataStore {
 			schema: this.schema,
 		});
 
+		const cloneableReadable = cloneable(readable);
+
 		try {
+			let hashError;
+
+			const hashPromise = getHashState(
+				cloneableReadable.clone(),
+				fileData.tus_data?.['metadata']?.['hash_state'],
+			).catch((error) => {
+				hashError = error;
+			});
+
 			const newOffset = await this.storageDriver.writeChunk(
 				filePath,
-				readable,
+				cloneableReadable,
 				offset,
 				fileData.tus_data as ChunkedUploadContext,
 			);
 
+			const hashState = await hashPromise;
+
+			if (!hashState || hashError) {
+				throw new Error(`Couldn't generate file hash`, { cause: hashError });
+			}
+
 			await sudoService.updateOne(fileData.id!, {
 				tus_data: {
 					...fileData.tus_data,
+					metadata: {
+						...fileData.tus_data?.['metadata'],
+						hash_state: hashState,
+					},
 					offset: newOffset,
 				},
 			});

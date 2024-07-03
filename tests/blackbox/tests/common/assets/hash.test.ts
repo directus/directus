@@ -10,7 +10,7 @@ const assetsDirectory = [paths.cwd, 'assets'];
 
 const imageFile = {
 	name: 'directus.png',
-	hash: '4ab0c2c539a2a721b486dc7a63e05c49562429fd991193fd69b2a5148b0c407c',
+	hash: '3a02abb7e82b91bbac1f252eb3d430d854dd35f4c8e2381f33ff81bb9c86f4ae',
 };
 
 const imageFilePath = join(...assetsDirectory, imageFile.name);

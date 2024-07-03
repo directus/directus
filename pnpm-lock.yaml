@@ -224,6 +224,9 @@ importers:
       graphql-ws:
         specifier: 5.16.0
         version: 5.16.0(graphql@16.9.0)
+      hash-wasm:
+        specifier: 4.11.0
+        version: 4.11.0
       helmet:
         specifier: 7.1.0
         version: 7.1.0
@@ -368,6 +371,9 @@ importers:
       tsx:
         specifier: 4.12.0
         version: 4.12.0
+      uint8array-extras:
+        specifier: 1.2.0
+        version: 1.2.0
       wellknown:
         specifier: 0.5.0
         version: 0.5.0
@@ -7644,6 +7650,9 @@ packages:
   has-unicode@2.0.1:
     resolution: {integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ==}
 
+  hash-wasm@4.11.0:
+    resolution: {integrity: sha512-HVusNXlVqHe0fzIzdQOGolnFN6mX/fqcrSAOcTBXdvzrXVHwTz11vXeKRmkR5gTuwVpvHZEIyKoePDvuAR+XwQ==}
+
   hasown@2.0.2:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
@@ -11336,6 +11345,10 @@ packages:
 
   ufo@1.5.3:
     resolution: {integrity: sha512-Y7HYmWaFwPUmkoQCUIAYpKqkOf+SbVj/2fJJZ4RJMCfZp0rTGwRbzQD+HghfnhKOjL9E01okqz+ncJskGYfBNw==}
+
+  uint8array-extras@1.2.0:
+    resolution: {integrity: sha512-+J8XoVf9Y/vyCz8Xp7kGRb6dVuC5qIIWibNrpIoYVcjJqBzdb+tbS2XunRO4dxPj0YGy1G+TvrQU2EYjF0LiBA==}
+    engines: {node: '>=18'}
 
   unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
@@ -18998,6 +19011,8 @@ snapshots:
   has-unicode@2.0.1:
     optional: true
 
+  hash-wasm@4.11.0: {}
+
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
@@ -23424,6 +23439,8 @@ snapshots:
   uc.micro@1.0.6: {}
 
   ufo@1.5.3: {}
+
+  uint8array-extras@1.2.0: {}
 
   unbox-primitive@1.0.2:
     dependencies:
