@@ -3,16 +3,12 @@ import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnava
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, File, PrimaryKey, Query } from '@directus/types';
 import { toArray } from '@directus/utils';
-import type { AxiosResponse } from 'axios';
 import cloneable from 'cloneable-readable';
 import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
 import { extension } from 'mime-types';
-import { createHash } from 'node:crypto';
 import type { Readable } from 'node:stream';
-import { PassThrough as PassThroughStream, Transform as TransformStream, pipeline as pipelineSync } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
-import zlib from 'node:zlib';
+import { PassThrough, pipeline } from 'node:stream';
 import path from 'path';
 import url from 'url';
 import emitter from '../emitter.js';
@@ -20,6 +16,7 @@ import { useLogger } from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { decompressResponse } from './files/lib/decompress-response.js';
 import { getHash } from './files/lib/get-hash.js';
 import { getImageMetadata } from './files/lib/get-image-metadata.js';
 import { ItemsService, type QueryOptions } from './items.js';
@@ -138,7 +135,7 @@ export class FilesService extends ItemsService<File> {
 			// Convert to normal ReadableStream, see
 			// - https://github.com/mcollina/cloneable-readable/issues/46
 			// - https://github.com/aws/aws-sdk-js-v3/issues/6153
-			const writeStream = pipelineSync(cloneableStream, new PassThroughStream(), () => {});
+			const writeStream = pipeline(cloneableStream, new PassThrough(), () => {});
 
 			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
 			if (isReplacement === true) {
@@ -217,18 +214,6 @@ export class FilesService extends ItemsService<File> {
 		}
 
 		return primaryKey;
-	}
-
-	/**
-	 * Generate the sha256 hash sum of the file stream
-	 */
-
-	async getHash(stream: Readable) {
-		const hasher = createHash('sha256');
-
-		await pipeline(stream, hasher);
-
-		return hasher.digest('hex');
 	}
 
 	/**
@@ -330,76 +315,5 @@ export class FilesService extends ItemsService<File> {
 		}
 
 		return super.readByQuery(filteredQuery, opts);
-	}
-}
-
-function decompressResponse(stream: Readable, headers: AxiosResponse['headers']) {
-	const contentEncoding = (headers['content-encoding'] || '').toLowerCase();
-
-	if (!['gzip', 'deflate', 'br'].includes(contentEncoding)) {
-		return stream;
-	}
-
-	let isEmpty = true;
-
-	const checker = new TransformStream({
-		transform(data, _encoding, callback) {
-			if (isEmpty === false) {
-				callback(null, data);
-				return;
-			}
-
-			isEmpty = false;
-
-			handleContentEncoding(data);
-
-			callback(null, data);
-		},
-
-		flush(callback) {
-			callback();
-		},
-	});
-
-	const finalStream = new PassThroughStream({
-		autoDestroy: false,
-		destroy(error, callback) {
-			stream.destroy();
-
-			callback(error);
-		},
-	});
-
-	stream.pipe(checker);
-
-	return finalStream;
-
-	function handleContentEncoding(data: any) {
-		let decompressStream;
-
-		if (contentEncoding === 'br') {
-			decompressStream = zlib.createBrotliDecompress();
-		} else if (contentEncoding === 'deflate' && isDeflateAlgorithm(data)) {
-			decompressStream = zlib.createInflateRaw();
-		} else {
-			decompressStream = zlib.createUnzip();
-		}
-
-		decompressStream.once('error', (error) => {
-			if (isEmpty && !stream.readable) {
-				finalStream.end();
-				return;
-			}
-
-			finalStream.destroy(error);
-		});
-
-		checker.pipe(decompressStream).pipe(finalStream);
-	}
-
-	function isDeflateAlgorithm(data: any) {
-		const DEFLATE_ALGORITHM_HEADER = 0x08;
-
-		return data.length > 0 && (data[0] & DEFLATE_ALGORITHM_HEADER) === 0;
 	}
 }
