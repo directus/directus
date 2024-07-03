@@ -1651,6 +1651,8 @@ navigate_to_item: 항목으로 이동
 undo_removed_item: 제거된 항목 취소
 remove_item: 항목 제거
 delete_item: 항목 삭제
+pause: 일시 정지
+resume: 재개
 interfaces:
   list-m2a:
     prefix_note: 기본적으로 관련 항목의 컬렉션 이름을 사용합니다.
