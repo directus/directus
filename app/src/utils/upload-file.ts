@@ -3,6 +3,7 @@ import { emitter, Events } from '@/events';
 import { i18n } from '@/lang';
 import { useServerStore } from '@/stores/server';
 import { notify } from '@/utils/notify';
+import { getRootPath } from '@/utils/get-root-path';
 import type { AxiosProgressEvent } from 'axios';
 import { unexpectedError } from './unexpected-error';
 import type { PreviousUpload } from 'tus-js-client';
@@ -42,7 +43,7 @@ export async function uploadFile(
 
 		return new Promise((resolve, reject) => {
 			const upload = new Upload(file, {
-				endpoint: '/files/tus',
+				endpoint: getRootPath() + `files/tus`,
 				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
 				metadata: fileInfo,
 				// Allow user to re-upload of the same file
