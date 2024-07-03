@@ -1,15 +1,12 @@
 import { useEnv } from '@directus/env';
 import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
-import type { BusboyFileStream, File, PrimaryKey } from '@directus/types';
+import type { BusboyFileStream, File, PrimaryKey, Query } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import cloneable from 'cloneable-readable';
 import encodeURL from 'encodeurl';
-import exif, { type GPSInfoTags, type ImageTags, type IopTags, type PhotoTags } from 'exif-reader';
-import type { IccProfile } from 'icc';
-import { parse as parseIcc } from 'icc';
-import { clone, pick } from 'lodash-es';
+import { clone, cloneDeep } from 'lodash-es';
 import { extension } from 'mime-types';
 import { createHash } from 'node:crypto';
 import type { Readable } from 'node:stream';
@@ -17,23 +14,20 @@ import { PassThrough as PassThroughStream, Transform as TransformStream, pipelin
 import { pipeline } from 'node:stream/promises';
 import zlib from 'node:zlib';
 import path from 'path';
-import sharp from 'sharp';
 import url from 'url';
-import { SUPPORTED_IMAGE_METADATA_FORMATS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
-import { parseIptc, parseXmp } from '../utils/parse-image-metadata.js';
-import { ItemsService } from './items.js';
+import { getHash } from './files/lib/get-hash.js';
+import { getImageMetadata } from './files/lib/get-image-metadata.js';
+import { ItemsService, type QueryOptions } from './items.js';
 
 const env = useEnv();
 const logger = useLogger();
 
-type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | 'title' | 'tags' | 'metadata'>>;
-
-export class FilesService extends ItemsService {
+export class FilesService extends ItemsService<File> {
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
 	}
@@ -62,17 +56,17 @@ export class FilesService extends ItemsService {
 					.first()) ?? null;
 		}
 
-		// Merge the existing file's folder and filename_download with the new payload
-		const payload = { ...(existingFile ?? {}), ...clone(data) };
+		// Merge the existing file's data with the new payload
+		const mergedData = { ...(existingFile ?? {}), ...clone(data) };
 
-		const disk = storage.location(payload.storage);
+		const disk = storage.location(data.storage);
 
 		// If no folder is specified, we'll use the default folder from the settings if it exists
-		if ('folder' in payload === false) {
+		if ('folder' in mergedData === false) {
 			const settings = await this.knex.select('storage_default_folder').from('directus_settings').first();
 
 			if (settings?.storage_default_folder) {
-				payload.folder = settings.storage_default_folder;
+				mergedData.folder = settings.storage_default_folder;
 			}
 		}
 
@@ -81,21 +75,24 @@ export class FilesService extends ItemsService {
 
 		// If this is a new file upload, we need to generate a new primary key and DB record
 		if (isReplacement === false || primaryKey === undefined) {
-			primaryKey = await this.createOne(payload, { emitEvents: false });
+			primaryKey = await this.createOne(mergedData, { emitEvents: false });
 		}
 
 		const fileExtension =
-			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
+			path.extname(mergedData.filename_download!) || (mergedData.type && '.' + extension(mergedData.type)) || '';
 
 		// The filename_disk is the FINAL filename on disk
-		payload.filename_disk ||= primaryKey + (fileExtension || '');
+		mergedData.filename_disk ||= primaryKey + (fileExtension || '');
 
 		// Temp filename is used for replacements
-		const tempFilenameDisk = 'temp_' + payload.filename_disk;
+		const tempFilenameDisk = 'temp_' + mergedData.filename_disk;
 
-		if (!payload.type) {
-			payload.type = 'application/octet-stream';
-		}
+		mergedData.type ||= 'application/octet-stream';
+
+		const payload = mergedData as Partial<File> & {
+			filename_disk: NonNullable<File['filename_disk']>;
+			type: NonNullable<File['type']>;
+		};
 
 		// Used to clean up if something goes wrong
 		const cleanUp = async () => {
@@ -106,10 +103,10 @@ export class FilesService extends ItemsService {
 				} else {
 					// If this is a new file that failed
 					// delete the DB record
-					await super.deleteMany([primaryKey!]);
+					await super.deleteMany([primaryKey]);
 
 					// delete the final file
-					await disk.delete(payload.filename_disk!);
+					await disk.delete(payload.filename_disk);
 				}
 			} catch (err: any) {
 				if (isReplacement === true) {
@@ -126,18 +123,16 @@ export class FilesService extends ItemsService {
 
 		let hashError;
 
-		const hashPromise = this.getHash(cloneableStream.clone()).catch((error) => {
+		const hashPromise = getHash(cloneableStream.clone()).catch((error) => {
 			hashError = error;
 		});
 
-		let metadataPromise;
-
-		if (SUPPORTED_IMAGE_METADATA_FORMATS.includes(payload.type)) {
-			metadataPromise = this.getMetadata(cloneableStream.clone()).catch((error) => {
+		const metadataPromise = getImageMetadata({ streamFactory: () => cloneableStream.clone() }, payload).catch(
+			(error) => {
 				logger.warn(`Couldn't extract metadata`);
 				logger.warn(error);
-			});
-		}
+			},
+		);
 
 		try {
 			// Convert to normal ReadableStream, see
@@ -194,40 +189,7 @@ export class FilesService extends ItemsService {
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		if (metadataPromise) {
-			const result = await metadataPromise;
-
-			if (result) {
-				const { height, width, description, title, tags, metadata } = result;
-
-				if (!payload.height && height) {
-					payload.height = height;
-				}
-
-				if (!payload.width && width) {
-					payload.width = width;
-				}
-
-				if (!payload.metadata && metadata) {
-					payload.metadata = metadata;
-				}
-
-				// Note that if this is a replace file upload, the below properties are fetched and included in the payload above
-				// in the `existingFile` variable... so this will ONLY set the values if they're not already set
-
-				if (!payload.description && description) {
-					payload.description = description;
-				}
-
-				if (!payload.title && title) {
-					payload.title = title;
-				}
-
-				if (!payload.tags && tags) {
-					payload.tags = tags;
-				}
-			}
-		}
+		const metadata = await metadataPromise;
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
@@ -236,7 +198,7 @@ export class FilesService extends ItemsService {
 			schema: this.schema,
 		});
 
-		await sudoService.updateOne(primaryKey, payload, { emitEvents: false });
+		await sudoService.updateOne(primaryKey, { ...payload, ...metadata }, { emitEvents: false });
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
@@ -260,142 +222,13 @@ export class FilesService extends ItemsService {
 	/**
 	 * Generate the sha256 hash sum of the file stream
 	 */
+
 	async getHash(stream: Readable) {
 		const hasher = createHash('sha256');
 
 		await pipeline(stream, hasher);
 
 		return hasher.digest('hex');
-	}
-
-	/**
-	 * Extract metadata from the file stream
-	 */
-	getMetadata(
-		stream: Readable,
-		allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
-	): Promise<Metadata> {
-		return new Promise((resolve, reject) => {
-			pipeline(
-				stream,
-				sharp().metadata(async (err, sharpMetadata) => {
-					if (err) {
-						reject(err);
-						return;
-					}
-
-					const metadata: Metadata = {};
-
-					if (sharpMetadata.orientation && sharpMetadata.orientation >= 5) {
-						metadata.height = sharpMetadata.width ?? null;
-						metadata.width = sharpMetadata.height ?? null;
-					} else {
-						metadata.width = sharpMetadata.width ?? null;
-						metadata.height = sharpMetadata.height ?? null;
-					}
-
-					// Backward-compatible layout as it used to be with 'exifr'
-					const fullMetadata: {
-						ifd0?: Partial<ImageTags>;
-						ifd1?: Partial<ImageTags>;
-						exif?: Partial<PhotoTags>;
-						gps?: Partial<GPSInfoTags>;
-						interop?: Partial<IopTags>;
-						icc?: IccProfile;
-						iptc?: Record<string, unknown>;
-						xmp?: Record<string, unknown>;
-					} = {};
-
-					if (sharpMetadata.exif) {
-						try {
-							const { Image, ThumbnailTags, Iop, GPSInfo, Photo } = (exif as unknown as typeof exif.default)(
-								sharpMetadata.exif,
-							);
-
-							if (Image) {
-								fullMetadata.ifd0 = Image;
-							}
-
-							if (ThumbnailTags) {
-								fullMetadata.ifd1 = ThumbnailTags;
-							}
-
-							if (Iop) {
-								fullMetadata.interop = Iop;
-							}
-
-							if (GPSInfo) {
-								fullMetadata.gps = GPSInfo;
-							}
-
-							if (Photo) {
-								fullMetadata.exif = Photo;
-							}
-						} catch (err) {
-							logger.warn(`Couldn't extract Exif metadata from file`);
-							logger.warn(err);
-						}
-					}
-
-					if (sharpMetadata.icc) {
-						try {
-							fullMetadata.icc = parseIcc(sharpMetadata.icc);
-						} catch (err) {
-							logger.warn(`Couldn't extract ICC profile data from file`);
-							logger.warn(err);
-						}
-					}
-
-					if (sharpMetadata.iptc) {
-						try {
-							fullMetadata.iptc = parseIptc(sharpMetadata.iptc);
-						} catch (err) {
-							logger.warn(`Couldn't extract IPTC Photo Metadata from file`);
-							logger.warn(err);
-						}
-					}
-
-					if (sharpMetadata.xmp) {
-						try {
-							fullMetadata.xmp = parseXmp(sharpMetadata.xmp);
-						} catch (err) {
-							logger.warn(`Couldn't extract XMP data from file`);
-							logger.warn(err);
-						}
-					}
-
-					if (fullMetadata?.iptc?.['Caption'] && typeof fullMetadata.iptc['Caption'] === 'string') {
-						metadata.description = fullMetadata.iptc?.['Caption'];
-					}
-
-					if (fullMetadata?.iptc?.['Headline'] && typeof fullMetadata.iptc['Headline'] === 'string') {
-						metadata.title = fullMetadata.iptc['Headline'];
-					}
-
-					if (fullMetadata?.iptc?.['Keywords']) {
-						metadata.tags = fullMetadata.iptc['Keywords'] as string;
-					}
-
-					if (allowList === '*' || allowList?.[0] === '*') {
-						metadata.metadata = fullMetadata;
-					} else {
-						metadata.metadata = pick(fullMetadata, allowList);
-					}
-
-					// Fix (incorrectly parsed?) values starting / ending with spaces,
-					// limited to one level and string values only
-					for (const section of Object.keys(metadata.metadata)) {
-						for (const [key, value] of Object.entries(metadata.metadata[section])) {
-							if (typeof value === 'string') {
-								metadata.metadata[section][key] = value.trim();
-							}
-						}
-					}
-
-					resolve(metadata);
-				}),
-			);
-		});
 	}
 
 	/**
@@ -480,6 +313,23 @@ export class FilesService extends ItemsService {
 		}
 
 		return keys;
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions | undefined) {
+		const filteredQuery = cloneDeep(query);
+		const filterPartialUploads = { tus_id: { _null: true } };
+
+		if (!filteredQuery.filter) {
+			filteredQuery.filter = filterPartialUploads;
+		} else if ('_and' in filteredQuery.filter && Array.isArray(filteredQuery.filter['_and'])) {
+			filteredQuery.filter['_and'].push(filterPartialUploads);
+		} else {
+			filteredQuery.filter = {
+				_and: [filteredQuery.filter, filterPartialUploads],
+			};
+		}
+
+		return super.readByQuery(filteredQuery, opts);
 	}
 }
 
