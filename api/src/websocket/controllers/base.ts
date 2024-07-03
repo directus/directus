@@ -140,9 +140,9 @@ export default abstract class SocketController {
 		if (this.authentication.mode === 'strict' || query['access_token'] || cookies[sessionCookieName]) {
 			let token: string | null = null;
 
-			if (typeof query['access_token'] === "string") {
+			if (typeof query['access_token'] === 'string') {
 				token = query['access_token'];
-			} else if (typeof cookies[sessionCookieName] === "string") {
+			} else if (typeof cookies[sessionCookieName] === 'string') {
 				token = cookies[sessionCookieName] ?? null;
 			}
 
