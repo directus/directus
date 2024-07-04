@@ -21,7 +21,7 @@
 		"autocannon": "7.15.0",
 		"axios": "1.7.2",
 		"get-port": "7.1.0",
-		"globby": "14.0.1",
+		"globby": "14.0.2",
 		"graphql-ws": "5.16.0",
 		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.2.5",
