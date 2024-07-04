@@ -400,7 +400,7 @@ Fields are database columns, but with a twist.
 
 Remember, SQL database columns store pure, raw data. From there, developers build out custom logic and UIs to determine
 how this data is displayed and interacted with. In Directus, fields encompass column configurations, as well as custom
-configuration over how to the data is displayed and interacted with in the Data Studio. Directus also has
+configuration over how the data is displayed and interacted with in the Data Studio. Directus also has
 [alias fields](/user-guide/overview/glossary#alias), which are virtual and do not match directly to a column. To learn
 more, see our guide on [fields](/app/data-model/fields).
 
