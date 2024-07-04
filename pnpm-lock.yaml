@@ -336,8 +336,8 @@ importers:
         specifier: 11.2.1
         version: 11.2.1
       qs:
-        specifier: 6.12.1
-        version: 6.12.1
+        specifier: 6.12.2
+        version: 6.12.2
       rate-limiter-flexible:
         specifier: 5.0.3
         version: 5.0.3
@@ -10013,8 +10013,8 @@ packages:
     resolution: {integrity: sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==}
     engines: {node: '>=0.6'}
 
-  qs@6.12.1:
-    resolution: {integrity: sha512-zWmv4RSuB9r2mYQw3zxQuHWeU+42aKi1wWig/j4ele4ygELZ7PEO6MM7rim9oAQH2A5MWfsAVf/jPvTPgCbvUQ==}
+  qs@6.12.2:
+    resolution: {integrity: sha512-x+NLUpx9SYrcwXtX7ob1gnkSems4i/mGZX5SlYxwIau6RrUSODO89TR/XDGGpn5RPWSYIB+aSfuSlV5+CmbTBg==}
     engines: {node: '>=0.6'}
 
   qs@6.5.3:
@@ -18619,7 +18619,7 @@ snapshots:
       dezalgo: 1.0.4
       hexoid: 1.0.0
       once: 1.4.0
-      qs: 6.12.1
+      qs: 6.12.2
 
   formidable@3.5.1:
     dependencies:
@@ -21741,7 +21741,7 @@ snapshots:
     dependencies:
       side-channel: 1.0.6
 
-  qs@6.12.1:
+  qs@6.12.2:
     dependencies:
       side-channel: 1.0.6
 
@@ -22891,7 +22891,7 @@ snapshots:
       formidable: 2.1.2
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.12.1
+      qs: 6.12.2
       readable-stream: 3.6.2
       semver: 7.6.2
     transitivePeerDependencies:
@@ -22907,7 +22907,7 @@ snapshots:
       formidable: 3.5.1
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.12.1
+      qs: 6.12.2
       semver: 7.6.2
     transitivePeerDependencies:
       - supports-color
