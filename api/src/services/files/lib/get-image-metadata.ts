@@ -6,11 +6,11 @@ import type { Readable } from 'stream';
 
 type SourceStorage = {
 	storage: { location: string; filename: string };
-	streamFactory?: never;
+	streamFn?: never;
 };
 type SourceStream = {
 	storage?: never;
-	streamFactory: () => Readable;
+	streamFn: () => Readable;
 };
 type Source = SourceStorage | SourceStream;
 
@@ -28,7 +28,7 @@ export async function getImageMetadata(source: Source, data: Partial<File> & Pic
 			const storage = await getStorage();
 			stream = await storage.location(location).read(filename);
 		} else {
-			stream = source.streamFactory();
+			stream = source.streamFn();
 		}
 
 		const { height, width, description, title, tags, metadata } = await extractImageMetadata(stream);

@@ -10,6 +10,7 @@ import stream from 'node:stream';
 import getDatabase from '../../database/index.js';
 import { useLogger } from '../../logger.js';
 import { getHashState } from '../files/lib/get-hash-state.js';
+import { cloneableReadableFn } from '../files/utils/cloneable-readable-fn.js';
 import { ItemsService } from '../items.js';
 
 export type TusDataStoreConfig = {
@@ -164,17 +165,12 @@ export class TusDataStore extends DataStore {
 			schema: this.schema,
 		});
 
-		const cloneableReadable = cloneable(readable);
-
 		try {
-			let hashError;
+			const cloneableReadable = cloneable(readable);
 
-			const hashPromise = getHashState(
-				cloneableReadable.clone(),
-				fileData.tus_data?.['metadata']?.['hash_state'],
-			).catch((error) => {
-				hashError = error;
-			});
+			const hashStateFn = cloneableReadableFn(cloneableReadable, (cloneFn) =>
+				getHashState(cloneFn(), fileData.tus_data?.['metadata']?.['hash_state']),
+			);
 
 			const newOffset = await this.storageDriver.writeChunk(
 				filePath,
@@ -183,10 +179,10 @@ export class TusDataStore extends DataStore {
 				fileData.tus_data as ChunkedUploadContext,
 			);
 
-			const hashState = await hashPromise;
+			const hashState = await hashStateFn;
 
-			if (!hashState || hashError) {
-				throw new Error(`Couldn't generate file hash`, { cause: hashError });
+			if (hashState.error) {
+				throw new Error(`Couldn't generate file hash`, { cause: hashState.error });
 			}
 
 			await sudoService.updateOne(fileData.id!, {
@@ -194,7 +190,7 @@ export class TusDataStore extends DataStore {
 					...fileData.tus_data,
 					metadata: {
 						...fileData.tus_data?.['metadata'],
-						hash_state: hashState,
+						hash_state: hashState.value,
 					},
 					offset: newOffset,
 				},
@@ -226,9 +222,14 @@ export class TusDataStore extends DataStore {
 			}
 
 			return newOffset;
-		} catch (err: any) {
-			if ('status_code' in err && err.status_code === 500) {
-				throw err;
+		} catch (error: any) {
+			const logger = useLogger();
+
+			logger.warn(`Couldn't write file ${fileData.id}`);
+			logger.warn(error);
+
+			if (error && 'status_code' in error && error.status_code === 500) {
+				throw error;
 			}
 
 			throw ERRORS.FILE_WRITE_ERROR;

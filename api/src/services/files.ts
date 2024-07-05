@@ -19,6 +19,7 @@ import type { AbstractServiceOptions, MutationOptions } from '../types/index.js'
 import { decompressResponse } from './files/lib/decompress-response.js';
 import { getHash } from './files/lib/get-hash.js';
 import { getImageMetadata } from './files/lib/get-image-metadata.js';
+import { cloneableReadableFn } from './files/utils/cloneable-readable-fn.js';
 import { ItemsService, type QueryOptions } from './items.js';
 
 const env = useEnv();
@@ -118,17 +119,12 @@ export class FilesService extends ItemsService<File> {
 
 		const cloneableStream = cloneable(stream);
 
-		let hashError;
+		const hashPromise = cloneableReadableFn(cloneableStream, (cloneFn) => getHash(cloneFn()));
 
-		const hashPromise = getHash(cloneableStream.clone()).catch((error) => {
-			hashError = error;
-		});
-
-		const metadataPromise = getImageMetadata({ streamFactory: () => cloneableStream.clone() }, payload).catch(
-			(error) => {
-				logger.warn(`Couldn't extract metadata`);
-				logger.warn(error);
-			},
+		const metadataFn = cloneableReadableFn(
+			cloneableStream,
+			(cloneFn) => getImageMetadata({ streamFn: cloneFn }, payload),
+			{ destroyClone: true },
 		);
 
 		try {
@@ -152,11 +148,11 @@ export class FilesService extends ItemsService<File> {
 
 			const hash = await hashPromise;
 
-			if (!hash || hashError) {
-				throw new Error(`Couldn't generate file hash`, { cause: hashError });
+			if (hash.error) {
+				throw new Error(`Couldn't generate file hash`, { cause: hash.error });
 			}
 
-			payload.hash = hash;
+			payload.hash = hash.value;
 		} catch (err: any) {
 			logger.warn(`Couldn't save file ${payload.filename_disk}`);
 			logger.warn(err);
@@ -186,7 +182,12 @@ export class FilesService extends ItemsService<File> {
 		const { size } = await storage.location(data.storage).stat(payload.filename_disk);
 		payload.filesize = size;
 
-		const metadata = await metadataPromise;
+		const metadata = await metadataFn;
+
+		if (metadata.error) {
+			logger.warn(`Couldn't extract metadata`);
+			logger.warn(metadata.error);
+		}
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
@@ -195,7 +196,7 @@ export class FilesService extends ItemsService<File> {
 			schema: this.schema,
 		});
 
-		await sudoService.updateOne(primaryKey, { ...payload, ...metadata }, { emitEvents: false });
+		await sudoService.updateOne(primaryKey, { ...payload, ...metadata.value }, { emitEvents: false });
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
