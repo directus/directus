@@ -20,7 +20,7 @@ export async function _fetchPolicies(
 
 	if (roles.length === 0) {
 		// Users without role assumes the Public role permissions along with their attached policies
-		roleFilter = { role: { _null: true }, user: { _null: true } };
+		roleFilter = { _and: [{ role: { _null: true } }, { user: { _null: true } }] };
 	} else {
 		roleFilter = { role: { _in: roles } };
 	}
