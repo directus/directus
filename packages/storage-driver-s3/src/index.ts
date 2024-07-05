@@ -24,7 +24,7 @@ import {
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import type { ChunkedUploadContext, Range, TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, Range, TusDriver, DriverConfig } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import { Permit, Semaphore } from '@shopify/semaphore';
@@ -54,6 +54,7 @@ export type DriverS3Config = {
 
 export class DriverS3 implements TusDriver {
 	private config: DriverS3Config;
+	private logger: DriverConfig['logger'];
 	private readonly client: S3Client;
 	private readonly root: string;
 
@@ -64,8 +65,9 @@ export class DriverS3 implements TusDriver {
 	public minPartSize = 5_242_880 as const; // 5MiB
 	public maxUploadSize = 5_497_558_138_880 as const; // 5TiB
 
-	constructor(config: DriverS3Config) {
+	constructor(config: DriverS3Config, logger: DriverConfig['logger']) {
 		this.config = config;
+		this.logger = logger;
 		this.client = this.getClient();
 		this.root = this.config.root ? normalizePath(this.config.root, { removeLeading: true }) : '';
 
@@ -270,6 +272,8 @@ export class DriverS3 implements TusDriver {
 	}
 
 	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
+		this.logger.trace('[S3.createChunkedUpload]: %s, %o', filepath, context);
+
 		const command = new CreateMultipartUploadCommand({
 			Bucket: this.config.bucket,
 			Key: this.fullPath(filepath),
@@ -288,12 +292,16 @@ export class DriverS3 implements TusDriver {
 
 		const res = await this.client.send(command);
 
+		this.logger.trace('[S3.createChunkedUpload]: Response %o', res);
+
 		context.metadata!['upload-id'] = res.UploadId!;
 
 		return context;
 	}
 
 	async deleteChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<void> {
+		this.logger.trace('[S3.deleteChunkedUpload]: %s, %o', filepath, context);
+
 		const key = this.fullPath(filepath);
 
 		try {
@@ -309,6 +317,13 @@ export class DriverS3 implements TusDriver {
 					}),
 				);
 			}
+
+			this.logger.trace(
+				'[S3.deleteChunkedUpload]: AbortMultipartUploadCommand DONE, %s, %s %o',
+				filepath,
+				uploadId,
+				context,
+			);
 		} catch (error: any) {
 			if (error?.code && ['NotFound', 'NoSuchKey', 'NoSuchUpload'].includes(error.Code)) {
 				throw ERRORS.FILE_NOT_FOUND;
@@ -325,9 +340,13 @@ export class DriverS3 implements TusDriver {
 				},
 			}),
 		);
+
+		this.logger.trace('[S3.deleteChunkedUpload]: DeleteObjectsCommand DONE, %s, %o', filepath, context);
 	}
 
 	async finishChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<void> {
+		this.logger.trace('[S3.finishChunkedUpload]: %s, %o', filepath, context);
+
 		const key = this.fullPath(filepath);
 		const uploadId = context.metadata!['upload-id'] as string;
 
@@ -363,17 +382,21 @@ export class DriverS3 implements TusDriver {
 		offset: number,
 		context: ChunkedUploadContext,
 	): Promise<number> {
+		this.logger.trace('[S3.writeChunk]: %s, %o', filepath, context);
+
 		const key = this.fullPath(filepath);
 		const uploadId = context.metadata!['upload-id'] as string;
 		const size = context.size!;
 
 		const parts = await this.retrieveParts(key, uploadId);
+		this.logger.trace('[S3.writeChunk]: After retrieveParts %s, %o', filepath, context);
 		const partNumber: number = parts.length > 0 ? parts[parts.length - 1]!.PartNumber! : 0;
 		const nextPartNumber = partNumber + 1;
 		const requestedOffset = offset;
 
 		const bytesUploaded = await this.uploadParts(key, uploadId, size, content, nextPartNumber, offset);
 
+		this.logger.trace('[S3.writeChunk]: After uploadParts %s, %o', filepath, context);
 		return requestedOffset + bytesUploaded;
 	}
 
@@ -383,6 +406,8 @@ export class DriverS3 implements TusDriver {
 		readStream: fs.ReadStream | Readable,
 		partNumber: number,
 	): Promise<string> {
+		this.logger.trace('[S3.uploadPart] %s, %d', key, partNumber);
+
 		const data = await this.client.send(
 			new UploadPartCommand({
 				Bucket: this.config.bucket,
@@ -392,6 +417,8 @@ export class DriverS3 implements TusDriver {
 				Body: readStream,
 			}),
 		);
+
+		this.logger.trace('[S3.uploadPart] UploadPartCommand DONE %s, %d', key, partNumber);
 
 		return data.ETag as string;
 	}
@@ -404,6 +431,8 @@ export class DriverS3 implements TusDriver {
 		currentPartNumber: number,
 		offset: number,
 	): Promise<number> {
+		this.logger.trace('[S3.uploadParts] %s', key);
+
 		const promises: Promise<void>[] = [];
 		let pendingChunkFilepath: string | null = null;
 		let bytesUploaded = 0;
@@ -447,6 +476,7 @@ export class DriverS3 implements TusDriver {
 
 						resolve();
 					} catch (error) {
+						this.logger.error(error, '[S3.uploadParts] %s', key);
 						reject(error);
 					} finally {
 						fsProm.rm(path).catch(() => {
@@ -460,6 +490,7 @@ export class DriverS3 implements TusDriver {
 				promises.push(deferred);
 			})
 			.on('chunkError', () => {
+				this.logger.error('[S3.uploadParts] chunkError', key);
 				permit?.release();
 			});
 
@@ -470,7 +501,7 @@ export class DriverS3 implements TusDriver {
 				try {
 					await fsProm.rm(pendingChunkFilepath);
 				} catch {
-					// this.logger.error(`[${metadata.file.id}] failed to remove chunk ${pendingChunkFilepath}`);
+					// this.logger.error(`[S3.uploadParts] %s ${pendingChunkFilepath}`);
 				}
 			}
 
@@ -507,6 +538,8 @@ export class DriverS3 implements TusDriver {
 	}
 
 	private async finishMultipartUpload(key: string, uploadId: string, parts: Part[]) {
+		this.logger.trace('[S3.finishMultipartUpload]: %s', key);
+
 		const command = new CompleteMultipartUploadCommand({
 			Bucket: this.config.bucket,
 			Key: key,
@@ -522,6 +555,8 @@ export class DriverS3 implements TusDriver {
 		});
 
 		const response = await this.client.send(command);
+
+		this.logger.trace('[S3.finishMultipartUpload]: DONE %s', key);
 
 		return response.Location;
 	}

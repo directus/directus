@@ -2,7 +2,10 @@ import { useEnv } from '@directus/env';
 import type { StorageManager } from '@directus/storage';
 import { toArray } from '@directus/utils';
 import { RESUMABLE_UPLOADS } from '../constants.js';
+import { useLogger } from '../logger.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+
+const logger = useLogger();
 
 export const registerLocations = async (storage: StorageManager) => {
 	const env = useEnv();
@@ -17,6 +20,6 @@ export const registerLocations = async (storage: StorageManager) => {
 		location = location.trim();
 		const driverConfig = getConfigFromEnv(`STORAGE_${location.toUpperCase()}_`);
 		const { driver, ...options } = driverConfig;
-		storage.registerLocation(location, { driver, options: { ...options, tus } });
+		storage.registerLocation(location, { driver, options: { ...options, tus }, logger });
 	});
 };

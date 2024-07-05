@@ -1,4 +1,5 @@
 import type { Readable } from 'node:stream';
+import type { Logger } from 'pino';
 
 export class StorageManager {
 	private drivers = new Map<string, typeof Driver>();
@@ -17,7 +18,7 @@ export class StorageManager {
 			throw new Error(`Driver "${driverName}" isn't registered.`);
 		}
 
-		this.locations.set(name, new Driver(config.options));
+		this.locations.set(name, new Driver(config.options, config.logger));
 	}
 
 	location(name: string) {
@@ -47,7 +48,7 @@ export type ChunkedUploadContext = {
 };
 
 export declare class Driver {
-	constructor(config: Record<string, unknown>);
+	constructor(config: Record<string, unknown>, logger: Logger);
 
 	read(filepath: string, range?: Range): Promise<Readable>;
 	write(filepath: string, content: Readable, type?: string): Promise<void>;
@@ -75,4 +76,5 @@ export function supportsTus(driver: Driver): driver is TusDriver {
 export type DriverConfig = {
 	driver: string;
 	options: Record<string, unknown>;
+	logger: Logger;
 };

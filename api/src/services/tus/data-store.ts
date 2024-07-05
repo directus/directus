@@ -10,6 +10,8 @@ import { useLogger } from '../../logger.js';
 import getDatabase from '../../database/index.js';
 import { omit } from 'lodash-es';
 
+const logger = useLogger();
+
 export type TusDataStoreConfig = {
 	constants: {
 		ENABLED: boolean;
@@ -49,7 +51,6 @@ export class TusDataStore extends DataStore {
 	}
 
 	public override async create(upload: Upload): Promise<Upload> {
-		const logger = useLogger();
 		const knex = getDatabase();
 
 		const itemsService = new ItemsService<File>('directus_files', {
@@ -204,6 +205,8 @@ export class TusDataStore extends DataStore {
 
 			return newOffset;
 		} catch (err: any) {
+			logger.error(err, 'Error writing chunk');
+
 			if ('status_code' in err && err.status_code === 500) {
 				throw err;
 			}
