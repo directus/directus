@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-s3",
-	"version": "10.0.24-rc.0",
+	"version": "10.1.0",
 	"description": "S3 file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -30,7 +30,9 @@
 		"@aws-sdk/lib-storage": "3.569.0",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@smithy/node-http-handler": "2.5.0"
+		"@shopify/semaphore": "3.1.0",
+		"@smithy/node-http-handler": "2.5.0",
+		"@tus/utils": "0.2.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",

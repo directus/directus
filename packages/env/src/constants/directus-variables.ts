@@ -220,6 +220,7 @@ export const DIRECTUS_VARIABLES = [
 	// admin account
 	'ADMIN_EMAIL',
 	'ADMIN_PASSWORD',
+	'ADMIN_TOKEN',
 
 	// telemetry
 	'TELEMETRY',

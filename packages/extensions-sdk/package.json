@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "11.0.9-rc.0",
+	"version": "11.0.9",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -49,7 +49,7 @@
 		"esbuild": "0.17.19",
 		"execa": "7.2.0",
 		"fs-extra": "11.2.0",
-		"inquirer": "9.2.23",
+		"inquirer": "9.3.2",
 		"ora": "6.3.1",
 		"rollup": "3.29.4",
 		"rollup-plugin-esbuild": "5.0.0",

@@ -21,12 +21,12 @@
 		"autocannon": "7.15.0",
 		"axios": "1.7.2",
 		"get-port": "7.1.0",
-		"globby": "14.0.1",
+		"globby": "14.0.2",
 		"graphql-ws": "5.16.0",
 		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.2.5",
 		"knex": "3.1.0",
-		"listr2": "8.2.1",
+		"listr2": "8.2.3",
 		"lodash-es": "4.17.21",
 		"seedrandom": "3.0.5",
 		"supertest": "7.0.0",
@@ -34,6 +34,6 @@
 		"uuid": "9.0.1",
 		"vite-tsconfig-paths": "4.3.2",
 		"vitest": "1.6.0",
-		"ws": "8.17.0"
+		"ws": "8.18.0"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/validation",
-	"version": "0.0.18-rc.0",
+	"version": "0.0.18",
 	"type": "module",
 	"sideEffects": false,
 	"scripts": {
@@ -36,6 +36,6 @@
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"joi": "17.13.1"
+		"joi": "17.13.3"
 	}
 }

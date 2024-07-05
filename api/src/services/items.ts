@@ -43,15 +43,15 @@ export type MutationTracker = {
 	getCount: () => number;
 };
 
-export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
-	collection: string;
+export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string> implements AbstractService {
+	collection: Collection;
 	knex: Knex;
 	accountability: Accountability | null;
 	eventScope: string;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 
-	constructor(collection: string, options: AbstractServiceOptions) {
+	constructor(collection: Collection, options: AbstractServiceOptions) {
 		this.collection = collection;
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
