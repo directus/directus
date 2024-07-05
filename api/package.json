@@ -223,7 +223,7 @@
 		"vitest": "1.5.3"
 	},
 	"optionalDependencies": {
-		"@keyv/redis": "2.8.4",
+		"@keyv/redis": "2.8.5",
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
