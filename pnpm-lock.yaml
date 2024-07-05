@@ -342,8 +342,8 @@ importers:
         specifier: 11.2.1
         version: 11.2.1
       qs:
-        specifier: 6.12.1
-        version: 6.12.1
+        specifier: 6.12.2
+        version: 6.12.2
       rate-limiter-flexible:
         specifier: 5.0.3
         version: 5.0.3
@@ -378,8 +378,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       ws:
-        specifier: 8.17.1
-        version: 8.17.1
+        specifier: 8.18.0
+        version: 8.18.0
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -388,8 +388,8 @@ importers:
         version: 3.3.0(zod@3.23.8)
     optionalDependencies:
       '@keyv/redis':
-        specifier: 2.8.4
-        version: 2.8.4
+        specifier: 2.8.5
+        version: 2.8.5
       mysql:
         specifier: 2.18.1
         version: 2.18.1
@@ -2132,8 +2132,8 @@ importers:
         specifier: 7.1.0
         version: 7.1.0
       globby:
-        specifier: 14.0.1
-        version: 14.0.1
+        specifier: 14.0.2
+        version: 14.0.2
       graphql-ws:
         specifier: 5.16.0
         version: 5.16.0(graphql@16.9.0)
@@ -2171,8 +2171,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0)
       ws:
-        specifier: 8.17.1
-        version: 8.17.1
+        specifier: 8.18.0
+        version: 8.18.0
 
 packages:
 
@@ -3771,8 +3771,8 @@ packages:
   '@json2csv/plainjs@7.0.6':
     resolution: {integrity: sha512-4Md7RPDCSYpmW1HWIpWBOqCd4vWfIqm53S3e/uzQ62iGi7L3r34fK/8nhOMEe+/eVfCx8+gdSCt1d74SlacQHw==}
 
-  '@keyv/redis@2.8.4':
-    resolution: {integrity: sha512-osO4C+i+Gi844wHjvXuHwhl+sDx3289Of309ZlLcj6SJReTLmPXzNiVR81N88wOu5aC+lVFdmx9FUQkkjdbPRQ==}
+  '@keyv/redis@2.8.5':
+    resolution: {integrity: sha512-e9W1faN32A1Wy5726qtorAvPu1Xffh75ngfQQtETQ0hIN/FQtK0RcBTz/OH/vwDvLX8zrzdu0sWq/KoSHDYfVw==}
     engines: {node: '>= 14'}
 
   '@lezer/common@1.1.2':
@@ -7536,8 +7536,8 @@ packages:
     resolution: {integrity: sha512-Y1zNGV+pzQdh7H39l9zgB4PJqjRNqydvdYCDG4HFXM4XuvSaQQlEc91IU1yALL8gUTDomgBAfz3XJdmUS+oo0w==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  globby@14.0.1:
-    resolution: {integrity: sha512-jOMLD2Z7MAhyG8aJpNOpmziMOP4rPLcc95oQPKXBazW82z+CEgPFBQvEpRUa1KeIMUJo4Wsm+q6uzO/Q/4BksQ==}
+  globby@14.0.2:
+    resolution: {integrity: sha512-s3Fq41ZVh7vbbe2PN3nrW7yC7U7MFVc5c98/iTl9c2GawNMKx/J648KQRW6WKkuU8GIbbh2IXfIRQjOZnXcTnw==}
     engines: {node: '>=18'}
 
   globrex@0.1.2:
@@ -10034,8 +10034,8 @@ packages:
     resolution: {integrity: sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==}
     engines: {node: '>=0.6'}
 
-  qs@6.12.1:
-    resolution: {integrity: sha512-zWmv4RSuB9r2mYQw3zxQuHWeU+42aKi1wWig/j4ele4ygELZ7PEO6MM7rim9oAQH2A5MWfsAVf/jPvTPgCbvUQ==}
+  qs@6.12.2:
+    resolution: {integrity: sha512-x+NLUpx9SYrcwXtX7ob1gnkSems4i/mGZX5SlYxwIau6RrUSODO89TR/XDGGpn5RPWSYIB+aSfuSlV5+CmbTBg==}
     engines: {node: '>=0.6'}
 
   qs@6.5.3:
@@ -11967,8 +11967,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.17.1:
-    resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
+  ws@8.18.0:
+    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -14302,7 +14302,7 @@ snapshots:
       '@json2csv/formatters': 7.0.6
       '@streamparser/json': 0.0.20
 
-  '@keyv/redis@2.8.4':
+  '@keyv/redis@2.8.5':
     dependencies:
       ioredis: 5.4.1
     transitivePeerDependencies:
@@ -18657,7 +18657,7 @@ snapshots:
       dezalgo: 1.0.4
       hexoid: 1.0.0
       once: 1.4.0
-      qs: 6.12.1
+      qs: 6.12.2
 
   formidable@3.5.1:
     dependencies:
@@ -18884,7 +18884,7 @@ snapshots:
       merge2: 1.4.1
       slash: 4.0.0
 
-  globby@14.0.1:
+  globby@14.0.2:
     dependencies:
       '@sindresorhus/merge-streams': 2.3.0
       fast-glob: 3.3.2
@@ -19593,7 +19593,7 @@ snapshots:
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
-      ws: 8.17.1
+      ws: 8.18.0
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -19621,7 +19621,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.0.0
-      ws: 8.17.1
+      ws: 8.18.0
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -21781,7 +21781,7 @@ snapshots:
     dependencies:
       side-channel: 1.0.6
 
-  qs@6.12.1:
+  qs@6.12.2:
     dependencies:
       side-channel: 1.0.6
 
@@ -22931,7 +22931,7 @@ snapshots:
       formidable: 2.1.2
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.12.1
+      qs: 6.12.2
       readable-stream: 3.6.2
       semver: 7.6.2
     transitivePeerDependencies:
@@ -22947,7 +22947,7 @@ snapshots:
       formidable: 3.5.1
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.12.1
+      qs: 6.12.2
       semver: 7.6.2
     transitivePeerDependencies:
       - supports-color
@@ -24185,7 +24185,7 @@ snapshots:
 
   ws@8.11.0: {}
 
-  ws@8.17.1: {}
+  ws@8.18.0: {}
 
   xml-crypto@3.2.0:
     dependencies:

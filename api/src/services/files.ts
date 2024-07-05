@@ -11,6 +11,7 @@ import type { Readable } from 'node:stream';
 import { PassThrough, pipeline } from 'node:stream';
 import path from 'path';
 import url from 'url';
+import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger.js';
 import { getAxios } from '../request/index.js';
@@ -303,16 +304,19 @@ export class FilesService extends ItemsService<File> {
 
 	override async readByQuery(query: Query, opts?: QueryOptions | undefined) {
 		const filteredQuery = cloneDeep(query);
-		const filterPartialUploads = { tus_id: { _null: true } };
 
-		if (!filteredQuery.filter) {
-			filteredQuery.filter = filterPartialUploads;
-		} else if ('_and' in filteredQuery.filter && Array.isArray(filteredQuery.filter['_and'])) {
-			filteredQuery.filter['_and'].push(filterPartialUploads);
-		} else {
-			filteredQuery.filter = {
-				_and: [filteredQuery.filter, filterPartialUploads],
-			};
+		if (RESUMABLE_UPLOADS.ENABLED === true) {
+			const filterPartialUploads = { tus_id: { _null: true } };
+
+			if (!filteredQuery.filter) {
+				filteredQuery.filter = filterPartialUploads;
+			} else if ('_and' in filteredQuery.filter && Array.isArray(filteredQuery.filter['_and'])) {
+				filteredQuery.filter['_and'].push(filterPartialUploads);
+			} else {
+				filteredQuery.filter = {
+					_and: [filteredQuery.filter, filterPartialUploads],
+				};
+			}
 		}
 
 		return super.readByQuery(filteredQuery, opts);
