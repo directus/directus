@@ -27,12 +27,18 @@ test('Fetches policies for public role and user when user is given without role'
 			_or: [
 				{ user: { _eq: 'user-a' } },
 				{
-					role: {
-						_null: true,
-					},
-					user: {
-						_null: true,
-					},
+					_and: [
+						{
+							role: {
+								_null: true,
+							},
+						},
+						{
+							user: {
+								_null: true,
+							},
+						},
+					],
 				},
 			],
 		},
@@ -50,12 +56,18 @@ test('Fetches policies for public role when no roles and user are given', async 
 
 	expect(AccessService.prototype.readByQuery).toHaveBeenCalledWith({
 		filter: {
-			role: {
-				_null: true,
-			},
-			user: {
-				_null: true,
-			},
+			_and: [
+				{
+					role: {
+						_null: true,
+					},
+				},
+				{
+					user: {
+						_null: true,
+					},
+				},
+			],
 		},
 		fields: ['policy.id', 'policy.ip_access'],
 		limit: -1,

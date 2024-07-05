@@ -12,6 +12,11 @@ export function reduceSchema(schema: SchemaOverview, fieldMap: FieldMap): Schema
 	};
 
 	for (const [collectionName, collection] of Object.entries(schema.collections)) {
+		if (!fieldMap[collectionName]) {
+			// Collection is not allowed at all
+			continue;
+		}
+
 		const fields: SchemaOverview['collections'][string]['fields'] = {};
 
 		for (const [fieldName, field] of Object.entries(schema.collections[collectionName]!.fields)) {
