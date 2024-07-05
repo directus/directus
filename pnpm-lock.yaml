@@ -379,8 +379,8 @@ importers:
         version: 3.3.0(zod@3.23.8)
     optionalDependencies:
       '@keyv/redis':
-        specifier: 2.8.4
-        version: 2.8.4
+        specifier: 2.8.5
+        version: 2.8.5
       mysql:
         specifier: 2.18.1
         version: 2.18.1
@@ -3759,8 +3759,8 @@ packages:
   '@json2csv/plainjs@7.0.6':
     resolution: {integrity: sha512-4Md7RPDCSYpmW1HWIpWBOqCd4vWfIqm53S3e/uzQ62iGi7L3r34fK/8nhOMEe+/eVfCx8+gdSCt1d74SlacQHw==}
 
-  '@keyv/redis@2.8.4':
-    resolution: {integrity: sha512-osO4C+i+Gi844wHjvXuHwhl+sDx3289Of309ZlLcj6SJReTLmPXzNiVR81N88wOu5aC+lVFdmx9FUQkkjdbPRQ==}
+  '@keyv/redis@2.8.5':
+    resolution: {integrity: sha512-e9W1faN32A1Wy5726qtorAvPu1Xffh75ngfQQtETQ0hIN/FQtK0RcBTz/OH/vwDvLX8zrzdu0sWq/KoSHDYfVw==}
     engines: {node: '>= 14'}
 
   '@lezer/common@1.1.2':
@@ -14272,7 +14272,7 @@ snapshots:
       '@json2csv/formatters': 7.0.6
       '@streamparser/json': 0.0.20
 
-  '@keyv/redis@2.8.4':
+  '@keyv/redis@2.8.5':
     dependencies:
       ioredis: 5.4.1
     transitivePeerDependencies:
