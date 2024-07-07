@@ -687,6 +687,18 @@ purposes, collection of additional metadata must be configured:
 | `FILES_MAX_UPLOAD_SIZE`      | Maximum file upload size allowed. For example `10mb`, `1gb`, `10kb`              | --            |
 | `FILES_MIME_TYPE_ALLOW_LIST` | Allow list of mime types that are allowed to be uploaded. Supports `glob` syntax | `*/*`         |
 
+### Chunked Uploads
+
+Large files can be uploaded in chunks to improve reliability and efficiency, especially in scenarios with network
+instability or limited bandwidth. This is implemented using the [TUS protocol](https://tus.io/).
+
+| Variable                | Description                                                       | Default Value |
+| ----------------------- | ----------------------------------------------------------------- | ------------- |
+| `TUS_ENABLED`           | Whether or not to enable the chunked uploads                      | `false`       |
+| `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `10mb`        |
+| `TUS_UPLOAD_EXPIRATION` | The expiry duration for uncompleted files with no upload activity | `10m`         |
+| `TUS_CLEANUP_SCHEDULE`  | Cron schedule to clean up the expired uncompleted uploads         | `0 * * * *`   |
+
 ## Assets
 
 | Variable                                 | Description                                                                                                                         | Default Value |
@@ -1031,6 +1043,7 @@ variables to automatically configure the first user:
 | ---------------- | ------------------------------------------------------------------------------------------------- | ------------- |
 | `ADMIN_EMAIL`    | The email address of the first user that's automatically created when using `directus bootstrap`. | --            |
 | `ADMIN_PASSWORD` | The password of the first user that's automatically created when using `directus bootstrap`.      | --            |
+| `ADMIN_TOKEN`    | The API token of the first user that's automatically created when using `directus bootstrap`.     | --            |
 
 ## Telemetry
 
@@ -1052,7 +1065,7 @@ Allows you to configure hard technical limits, to prevent abuse and optimize for
 | `RELATIONAL_BATCH_SIZE`     | How many rows are read into memory at a time when constructing nested relational datasets                                       | 25000         |
 | `EXPORT_BATCH_SIZE`         | How many rows are read into memory at a time when constructing exports                                                          | 5000          |
 | `USERS_ADMIN_ACCESS_LIMIT`  | How many active users with admin privilege are allowed                                                                          | `Infinity`    |
-| `USERS_APP_ACCESS_LIMIT`    | How many active users with app access are allowed                                                                               | `Infinity`    |
+| `USERS_APP_ACCESS_LIMIT`    | How many active users with access to the Data Studio are allowed                                                                | `Infinity`    |
 | `USERS_API_ACCESS_LIMIT`    | How many active API access users are allowed                                                                                    | `Infinity`    |
 | `GRAPHQL_QUERY_TOKEN_LIMIT` | How many GraphQL query tokens will be parsed. [More details here](https://graphql-js.org/api/interface/parseoptions/#maxTokens) | 5000          |
 

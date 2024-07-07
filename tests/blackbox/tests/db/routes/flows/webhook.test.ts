@@ -4,6 +4,7 @@ import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
@@ -25,8 +26,8 @@ describe('/flows', () => {
 			env[vendor]['CACHE_ENABLED'] = 'true';
 			env[vendor]['CACHE_STORE'] = 'memory';
 
-			const newServerPort = Number(env[vendor]!.PORT) + 150;
-			env[vendor]!.PORT = String(newServerPort);
+			const newServerPort = await getPort();
+			env[vendor].PORT = String(newServerPort);
 
 			const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 
@@ -38,7 +39,7 @@ describe('/flows', () => {
 
 		// Give the server some time to start
 		await Promise.all(promises);
-	}, 180000);
+	}, 180_000);
 
 	afterAll(async () => {
 		for (const [vendor, connection] of databases) {

@@ -6,6 +6,7 @@ import { PRIMARY_KEY_TYPES, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import knex, { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
@@ -29,8 +30,8 @@ describe('WebSocket General Tests', () => {
 
 			const env2 = cloneDeep(env1);
 
-			const newServerPort1 = Number(env1[vendor]!.PORT) + 250;
-			const newServerPort2 = Number(env2[vendor]!.PORT) + 300;
+			const newServerPort1 = await getPort();
+			const newServerPort2 = await getPort();
 
 			env1[vendor].PORT = String(newServerPort1);
 			env2[vendor].PORT = String(newServerPort2);
@@ -41,8 +42,7 @@ describe('WebSocket General Tests', () => {
 			directusInstances[vendor] = [server1, server2];
 			envs[vendor] = [env1, env2];
 
-			promises.push(awaitDirectusConnection(newServerPort1));
-			promises.push(awaitDirectusConnection(newServerPort2));
+			promises.push(awaitDirectusConnection(newServerPort1), awaitDirectusConnection(newServerPort2));
 		}
 
 		// Give the server some time to start

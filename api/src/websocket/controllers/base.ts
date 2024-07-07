@@ -137,14 +137,15 @@ export default abstract class SocketController {
 		const context: UpgradeContext = { request, socket, head };
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
-		if (cookies[sessionCookieName]) {
-			const token = cookies[sessionCookieName] as string;
-			await this.handleTokenUpgrade(context, token);
-			return;
-		}
+		if (this.authentication.mode === 'strict' || query['access_token'] || cookies[sessionCookieName]) {
+			let token: string | null = null;
 
-		if (this.authentication.mode === 'strict') {
-			const token = query['access_token'] as string;
+			if (typeof query['access_token'] === 'string') {
+				token = query['access_token'];
+			} else if (typeof cookies[sessionCookieName] === 'string') {
+				token = cookies[sessionCookieName] ?? null;
+			}
+
 			await this.handleTokenUpgrade(context, token);
 			return;
 		}
@@ -161,18 +162,21 @@ export default abstract class SocketController {
 		});
 	}
 
-	protected async handleTokenUpgrade({ request, socket, head }: UpgradeContext, token: string) {
-		let accountability: Accountability | null, expires_at: number | null;
+	protected async handleTokenUpgrade({ request, socket, head }: UpgradeContext, token: string | null) {
+		let accountability: Accountability | null = null;
+		let expires_at: number | null = null;
 
-		try {
-			accountability = await getAccountabilityForToken(token);
-			expires_at = getExpiresAtForToken(token);
-		} catch {
-			accountability = null;
-			expires_at = null;
+		if (token) {
+			try {
+				accountability = await getAccountabilityForToken(token);
+				expires_at = getExpiresAtForToken(token);
+			} catch {
+				accountability = null;
+				expires_at = null;
+			}
 		}
 
-		if (!accountability || !accountability.user) {
+		if (!token || !accountability || !accountability.user) {
 			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
 			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
 			socket.destroy();

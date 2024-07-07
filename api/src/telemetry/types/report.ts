@@ -83,4 +83,9 @@ export interface TelemetryReport {
 	 * Size of the database in bytes
 	 */
 	database_size: number;
+
+	/**
+	 * Total size of the files in bytes
+	 */
+	files_size_total: number;
 }

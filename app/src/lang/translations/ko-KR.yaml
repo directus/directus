@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: 앱 정보
 identifier: 식별자
 avatar: 아바타
 application: 애플리케이션
@@ -7,14 +28,18 @@ method: 방식
 published: 발행됨
 draft: 초안
 archived: 보관됨
+marketplace: 마켓플레이스
+extensions: 확장 기능
 modules: 모듈
 module_bar: 모듈 바
 logs: 로그
+unknown: 알 수 없음
 reset_width: 너비 재설정
 tile_size: 타일 크기
 edit_field: 필드 편집
 conditions: 상태
 location: 위치
+collection_names_are_case_sensitive: 컬렉션 이름은 대소문자를 구분합니다
 condition_rules: 조건식
 input: 입력
 maps: 지도
@@ -26,6 +51,8 @@ duplicate_field: 중복 필드
 half_width: 1/2 폭
 full_width: 전체 폭
 group: 그룹
+popular: 인기 있는
+recent: 최근
 export_items: 내보내기
 and: 그리고
 or: 또는
@@ -35,10 +62,47 @@ modifier: 추가 항목
 extension_interface: 인터페이스
 extension_display: 표시하다
 extension_layout: 표시 방법
+extension_module: 모듈
 extension_panel: 패널
+extension_theme: 테마
 extension_hook: 후크
+extension_endpoint: 엔드포인트
+extension_operation: 작업
+extension_bundle: 번들
+extension_interfaces: 인터페이스
+extension_displays: 디스플레이
+extension_layouts: 레이아웃
 extension_modules: 모듈
+extension_panels: 패널
+extension_themes: 테마
+extension_hooks: 훅
+extension_endpoints: 엔드포인트
+extension_operations: 작업
+extension_bundles: 번들
+extension_missing: 누락됨
+extension_reload_required: 페이지 새로고침 필요
+extension_reload_required_copy: 앱 확장 기능을 활성화하거나 비활성화한 후 변경 사항을 확인하려면 페이지를 새로고침해야 합니다.
+extension_reload_now: 지금 새로고침
+published_relative: 게시됨 {relativeTime}
+compatible_with_your_project: 프로젝트와 호환 가능
+compatible_with_your_project_copy: 작성자가 이 확장 기능이 {hostVersion} 버전과 호환된다고 표시했으며, 이는 프로젝트의 버전 ({currentVersion})과 일치합니다.
+last_updated_relative: 마지막 업데이트 {relativeTime}
+n_files: '{n} 파일'
+verified: 검증됨
+homepage: 홈페이지
+repository: 저장소
+reload_page: 페이지 새로고침
+reload_required: 새로고침 필요
+report_an_issue: 문제 보고
+website: 웹사이트
+github: 깃허브
+beta: 베타
+n_downloads: '{n} 다운로드'
+downloads: 다운로드
+compatibility_not_guaranteed: 호환성 보장되지 않음
+compatibility_not_guaranteed_copy: 작성자가 이 확장 기능이 {hostVersion} 버전과 호환된다고 표시했으나, 이는 프로젝트의 버전 ({currentVersion})과 일치하지 않습니다.
 enable: 활성화
+disable: 비활성화
 custom: 사용자 정의
 hook: 후크
 fill_width: 전체 폭
@@ -67,6 +131,10 @@ create_user: 사용자 생성
 message: 메시지
 delete_panel: 판넬 삭제
 create_webhook: 웹훅 생성
+create_custom_translation: 사용자 정의 번역 생성
+edit_custom_translation: 사용자 정의 번역 수정
+no_custom_translations: 사용자 정의 번역 없음
+no_custom_translations_copy: 아직 사용자 정의 번역이 없습니다.
 invite_users: 사용자 초대
 invite: 초대
 email_already_invited: 이메일주소 "{email}" 로 이미 초대하였습니다.
@@ -82,7 +150,31 @@ rename_folder: 폴더 이름 변경
 delete_folder: 폴더 삭제
 prefix: 접두사
 suffix: 접미사
+keep: 유지
+version: 버전
+version_key: 버전 키
+version_name: 버전 이름
+main_version: 메인
+switch_version: 버전 전환
+switch_version_copy: '"{version}" 버전으로 전환하시겠습니까? 저장되지 않은 변경 사항은 손실됩니다.'
+create_version: 버전 생성
+rename_version: 버전 이름 변경
+compare_version: 버전 비교
+save_version: 버전 저장
+promote_version: 버전 승격
+promote_version_disabled: 변경 사항 없음
+promote_version_drawer_title: '{version}을(를) 메인으로 승격'
+promote_version_changes: 변경 사항
 promote_version_preview: 미리보기
+outdated_notice: >-
+  이 버전이 생성된 이후 메인 항목이 업데이트되었습니다. 아래의 모든 필드 값을 검토하고 이 버전을 메인 항목으로 승격할 때 사용할 버전을 확인하세요.
+promote_notice: >-
+  아래의 모든 필드 값을 검토하고 이 버전을 메인 항목으로 승격할 때 사용할 버전을 확인하세요.
+delete_version: 버전 삭제
+delete_version_copy: >-
+  "{version}" 버전을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.
+delete_on_promote_copy: >-
+  승격 후 "{version}" 버전을 삭제하거나 유지하시겠습니까?
 reset_bookmark: 북마크 초기화
 update_bookmark: 북마크 업데이트
 delete_bookmark: 북마크 삭제
@@ -97,6 +189,8 @@ logoutReason:
 public_label: 공개
 public_description: 인증 없이 사용할 수 있는 API 데이터를 제어합니다.
 admin_description: 제한 없는 앱/API 액세스 권한이 있는 초기 관리자 역할입니다.
+no_description: 설명 없음...
+reached_maximum_number_of_extensions: 이 프로젝트에 대한 확장 한도에 도달했습니다 ({n}). 자세한 내용은 시스템 관리자에게 문의하십시오.
 not_allowed: 허용되지 않음
 archive: 보관
 archive_confirm: 이 항목을 사용하지 않고 보관하시겠습니까?
@@ -128,7 +222,16 @@ validationError:
   nnull: 값은 비어 있을 수 없습니다.
   required: 값이 필요합니다.
   unique: 생산Key는 유일해야만 합니다.
+  email: 값은 유효한 이메일 주소여야 합니다.
   regex: 값의 형식이 올바르지 않습니다.
+  starts_with: 값은 {substring}(으)로 시작해야 합니다.
+  istarts_with: 값은 {substring}(으)로 시작해야 합니다.
+  nstarts_with: 값은 {substring}(으)로 시작할 수 없습니다.
+  nistarts_with: 값은 {substring}(으)로 시작할 수 없습니다.
+  ends_with: 값은 {substring}(으)로 끝나야 합니다.
+  iends_with: 값은 {substring}(으)로 끝나야 합니다.
+  nends_with: 값은 {substring}(으)로 끝날 수 없습니다.
+  niends_with: 값은 {substring}(으)로 끝날 수 없습니다.
 all_access: 모든 액세스
 no_access: 접근 불가
 use_custom: 직접 설정
@@ -155,6 +258,7 @@ permissions_for_role: '{role} 역할이 있는 항목은 {action}할 수 있습�
 fields_for_role: '{role} 역할을 입력하면 {action}할 수 있습니다.'
 validation_for_role: '필드 {action} 규칙은 {role} 역할이 준수해야 합니다.'
 presets_for_role: '{role} 역할에 대한 필드 값 기본값입니다.'
+presets_field_warning: '"{field}" 필드의 관계형 프리셋은 "상세" 구문으로 구성해야 합니다.'
 presentation_and_aliases: 프레젠테이션
 revision_post_create: 이 항목이 생성되었을 때의 모습은 다음과 같습니다.
 revision_post_update: 업데이트 후 이 항목의 모습은 다음과 같습니다.
@@ -210,6 +314,7 @@ bigInteger: 큰 정수형
 boolean: 부울형
 date: 날짜형
 date_range: 날짜 범위
+translation_key_placeholder: 키 입력...
 datetime: 날짜/시간
 dateTime: 날짜/시간
 precision: 소수자리수
@@ -225,6 +330,20 @@ time: 시간
 timestamp: 타임스탬프
 uuid: UUID
 hash: 해시
+geometry:
+  All: 지리정보 (All)
+  Point: 포인트
+  LineString: 줄 문자열
+  Polygon: 다각형
+  MultiPoint: 멀티포인트
+  MultiLineString: 여러 줄 문자열
+  MultiPolygon: 다중 다각형
+theme_auto: 자동 (시스템 기준)
+theme_light: 라이트 모드
+theme_dark: 다크 모드
+theme_directus_default: Directus 기본
+theme_directus_minimal: Directus 최소화
+theme_directus_colormatch: Directus 색상 매치
 not_available_for_type: 형식이 유효하지 않습니다.
 create_translations: 번역 문구 추가
 auto_refresh: 자동 갱신
@@ -236,12 +355,14 @@ auto_generate: 자동 생성
 this_will_auto_setup_fields_relations: 필수 필드 및 관련된 부분은 자동으로 생성 및 설정됩니다.
 click_here: 여기를 클릭하세요
 to_manually_setup_translations: 수동으로 번역 설정하기
+manage: 관리
 click_to_manage_translated_fields: >-
   필드명이 아직 번역되지 않았습니다. 번역 문구를 추가하려면 여기를 클릭하세요. | 필드명 번역 문구가 하나 있습니다. 번역 문구를 관리하려면 여기를 클릭하세요. | 필드명 번역 문구가 {count}개 있습니다. 번역 문구를 관리하려면 여기를 클릭하세요.
 fields_group: 필드 그룹
 no_collections_found: 컬렉션 없음
 new_data_alert: '데이터 모델 내에 다음이 생성됩니다.'
 search_collection: 컬렉션 검색
+search_role: 역할 검색...
 search_field: 검색 필드...
 new_field: '새 필드'
 new_collection: '새 컬렉션'
@@ -307,6 +428,7 @@ clear_items: 선택 해제
 reset_to_default: 기본값으로 재설정
 undo_changes: 변경 취소
 notifications: 알림
+archive_all: 모두 보관하기
 show_all_activity: 전체 활동기록 보기
 page_not_found: 페이지를 찾을 수 없음
 page_not_found_body: 요청하신 페이지는 존재하지 않습니다.
@@ -319,12 +441,14 @@ revision_delta_created: 만들어진
 revision_delta_created_externally: 외부에서 생성됨
 revision_delta_updated: '업데이트 된 1개의 필드 | 업데이트 된 {count}개의 필드'
 revision_delta_deleted: 삭제됨
+revision_delta_version_saved: '버전 저장 (1개 필드 업데이트) | 버전 저장 ({count} 필드 업데이트)'
 revision_delta_reverted: 되돌림
 revision_delta_update_message: 이 필드는 업데이트되었지만 보안상의 이유로 해당 값이 숨겨져 있습니다.
 revision_delta_other: 리비전
 revision_delta_by: '{user}의 {date}'
 presentation_text_values_cannot_be_reimported: '프레젠테이션 텍스트를 사용합니다. 값을 다시 가져올 수 없습니다.'
 download_page_as_csv: '페이지를 CSV로 다운로드'
+download_page_as_csv_unsupported: 이 레이아웃은 현재 페이지 다운로드를 지원하지 않습니다.
 private_user: 비공개 사용자
 creation_preview: 생성 미리보기
 revision_preview: 개정판 미리보기
@@ -403,7 +527,11 @@ months:
   november: 11월
   december: 12월
 drag_mode: 끌기 모드
+move_tool: 이동 도구
+crop_tool: 자르기 도구
+focal_point_tool: 초점 도구
 cancel_crop: 자르기 취소
+cancel_selection: 선택 취소
 original: 원본
 url: URL
 import_label: 가져오기
@@ -415,6 +543,7 @@ modified: 수정됨
 owner: 소유자
 edited_by: 편집자
 folder: 폴더
+folders: 폴더
 zoom: 줌
 download: 다운로드
 open: 열려 있는
@@ -428,11 +557,18 @@ import_from_url: URL로부터 파일 가져오기
 replace_from_device: 장치에서 파일 바꾸기
 replace_from_library: 라이브러리에서 파일 바꾸기
 replace_from_url: URL에서 파일 바꾸기
+no_image_selected: 선택된 이미지 없음
 no_file_selected: 파일이 선택되지 않았습니다
 download_file: 파일 다운로드
+open_file_in_tab: 새 탭에서 파일 열기
 start_export: 내보내기 시작
 not_available_for_local_downloads: 로컬 다운로드에 사용할 수 없음
 exporting_all_items_in_collection: '{collection}의 전체 데이터({total}개 항목) 내보내기 '
+exporting_limited_items_in_collection: '{collection} 내의 {total}개 중 {count}개의 항목이 내보내집니다.'
+exporting_no_items_to_export: 내보낼 항목이 없습니다. 내보내기 구성을 조정하거나 컬렉션에 항목을 추가하세요.
+exporting_download_hint: '{format} 파일이 생성되면 장치에 다운로드됩니다.'
+exporting_library_hint: '{format} 파일이 생성되면 파일 라이브러리에 저장됩니다.'
+exporting_library_hint_forced: 이 내보내기는 일괄 처리되어야 합니다. 완료되면 {format} 파일이 파일 라이브러리에 저장됩니다.
 collection_key: 컬렉션 키
 name: 이름
 primary_key_field: 기본키 필드
@@ -448,6 +584,7 @@ generated_uuid: 생성되는 UUID
 manual_string: 수동으로 입력한 문자열
 save_and_create_new: 저장하고 새로 만들기
 save_and_stay: 저장 및 유지
+save_and_quit: 저장하고 종료
 save_as_copy: 사본으로 저장
 add_existing: 데이터 선택
 creating_items: 데이터 추가
@@ -457,8 +594,15 @@ enable_select_button: 선택 버튼 활성화
 allow_duplicates: 중복 허용
 comments: 코멘트
 no_comments: 아직 코멘트가 없습니다
+expand: 확장
+expand_all: 모두 확장
+expand_none: 모두 축소
+collapse: 축소
+collapse_all: 모두 축소
 select_item: 항목 선택
 no_items: 항목 없음
+search_items: 항목 검색...
+search_extensions: 확장 기능 검색...
 disabled: 비활성화 됨
 information: 정보
 report_bug: 버그 제보
@@ -477,6 +621,8 @@ no_files_copy: 표시할 파일이 없습니다.
 user_count: '사용자 없음 | 한명의 사용자 | {count}명의 사용자'
 no_users_copy: 이 역할(role)의 사용자가 아직 없습니다.
 webhooks_count: '웹훅 없음 | 한개의 웹훅 | {count}개의 웹훅'
+webhooks_deprecation_notice: |
+  웹훅은 더 이상 사용하지 않으며, **Flows**와 [Webhook / Request URL 작업](https://docs.directus.io/app/flows/operations.html#webhook-request-url)을 대신 사용하세요.
 no_webhooks_copy: 아직 웹훅이 구성되지 않았습니다. 아래 버튼을 통해 시작해 보세요.
 no_notifications: 알림 없음
 no_notifications_copy: 모든 알림을 확인하셨습니다!
@@ -538,7 +684,12 @@ bookmark_doesnt_exist_copy: 열려고 하는 북마크를 찾을 수 없습니�
 bookmark_doesnt_exist_cta: 컬렉션으로 돌아가기
 select_an_item: 목록에서 선택...
 edit: 수정
+edit_item: 항목 편집
 enabled: 활성화 됨
+partially_enabled: 부분적으로 활성화됨
+enable_all: 모두 활성화
+disable_all: 모두 비활성화
+enabled_dev_tooltip: 앱 확장 기능은 개발 모드에서 항상 활성화됩니다
 disable_tfa: 2FA 비활성화
 admin_disable_tfa_text: 이 사용자에 대해 2FA를 비활성화하시겠습니까?
 tfa_setup: 2FA 설정
@@ -551,8 +702,10 @@ corresponding_field: 해당하는 필드
 errors:
   COLLECTION_NOT_FOUND: "목록이 존재하지 않습니다."
   CONTAINS_NULL_VALUES: 필드에 null 값이 포함되어 있습니다.
+  CONTENT_TOO_LARGE: 제출한 항목/파일이 너무 큽니다.
   FIELD_NOT_FOUND: 필드가 존재하지 않습니다.
   FORBIDDEN: 접근이 허용되지 않음.
+  GRAPHQL_VALIDATION: GraphQL 유효성 검사
   ILLEGAL_ASSET_TRANSFORMATION: 이미지 소스가 너무 커서 미리보기 불가
   INTERNAL_SERVER_ERROR: 예기치 않은 오류
   INVALID_CONFIG: 잘못된 구성
@@ -567,6 +720,7 @@ errors:
   INVALID_USER: 사용자 인증에 실패하였습니다.
   ITEM_LIMIT_REACHED: 항목 한도 도달
   ITEM_NOT_FOUND: 항목을 찾을 수 없음
+  LIMIT_EXCEEDED: '제한 한도 초과'
   METHOD_NOT_ALLOWED: 허가되지 않은 메소드
   NOT_NULL_VIOLATION: 값은 비어 있을 수 없습니다.
   RANGE_NOT_SATISFIABLE: 잘못된 범위
@@ -577,6 +731,7 @@ errors:
   TOKEN_EXPIRED: 토큰 만료
   UNEXPECTED_RESPONSE: 예상치 못한 응답
   UNKNOWN: 예기치 않은 오류
+  UNPROCESSABLE_CONTENT: 처리할 수 없는 콘텐츠
   UNSUPPORTED_MEDIA_TYPE: 지원되지 않는 미디어 유형
   USER_SUSPENDED: 사용자 일시중지됨
   VALUE_OUT_OF_RANGE: 값이 범위를 벗어났습니다.
@@ -594,6 +749,7 @@ cannot_edit_global_bookmarks: 글로벌 북마크를 편집할 수 없음
 bookmarks: 북마크
 presets: 프리셋
 unexpected_error: 예기치 않은 오류
+unexpected_error_copy: 예기치 않은 오류가 발생했습니다. 다시 시도하세요.
 copy_details: 세부정보 복사
 no_app_access: 앱 액세스 없음
 no_app_access_copy: 이 사용자는 관리 앱을 사용할 수 없습니다.
@@ -641,7 +797,7 @@ count_other_revisions: '{count} 기타 개정'
 font: 폰트
 sans_serif: 산세 리프
 serif: 가는 장식 선
-monospace: MPV
+monospace: 고정 폭 글꼴
 divider: 구분선
 color: 색상
 circle: 원
@@ -669,8 +825,12 @@ operators:
   icontains: '이(가) 포함(구분) :'
   starts_with: '이(가) 시작 :'
   nstarts_with: '이(가) 다음으로 시작하지 않음 :'
+  istarts_with: 시작 문자의 대, 소문자를 구분
+  nistarts_with: 시작 문자의 대, 소문자를 구분하지 않음
   ends_with: '이(가) 다음으로 끝남 :'
   nends_with: '이(가) 다음으로 끝나지 않음 :'
+  iends_with: 끝 문자의 대, 소문자를 구분
+  niends_with: 끝 문자의 대, 소문자를 구분하지 않음
   between: '이(가) 사이임 :'
   nbetween: '이(가) 사이가 아님 :'
   empty: 비었다
@@ -684,6 +844,7 @@ operators:
   regex: '이(가) 정규표현식과 일치 :'
 custom_validation_message: 사용자 지정 유효성 검사 메시지
 loading: 로드 중...
+extension_readme_missing: 이 확장 기능에는 README 파일이 없습니다.
 drop_to_upload: 드롭하여 업로드
 item: 항목
 items: 항목
@@ -696,10 +857,12 @@ upload_pending: 업로드 대기 중
 drag_file_here: 여기에 파일 끌어서 놓기
 click_to_browse: 찾아보려면 클릭
 interface_options: 인터페이스 옵션
+display_options: 디스플레이 옵션
 layout_options: 표시방법 선택
 rows: 행
 columns: 열
 collection_setup: 컬렉션 설정
+optional_system_fields: 선택적 필드
 value_unique: 생산Key는 유일해야만 합니다.
 all_activity: 전체 활동
 create_item: 추가
@@ -897,11 +1060,19 @@ wysiwyg_options:
   source_code: 소스 코드 편집
   fullscreen: 전체화면
   directionality: 방향성
+  lazy_loading: 이미지 지연 로드
+  lazy_loading_label: 지연 로드 활성화하기
 dropdown: 드롭다운
 choices: 선택
 choices_option_configured_incorrectly: 잘못 구성된 선택 사항
 deselect: 선택 취소
 deselect_all: 모두 선택 취소
+theme: 테마
+select_a_theme: 테마 선택
+default_sync_with_project: 기본값 (프로젝트와 동기화)
+appearance_auto: 자동 (시스템과 동기화)
+appearance_light: 밝음
+appearance_dark: 어두움
 other: 기타
 adding_user: 사용자 추가
 unknown_user: 알 수 없는 사용자
@@ -913,12 +1084,15 @@ editing_unit: '편집 {unit}'
 editing_in_batch: '일괄 편집 {count} 항목'
 no_options_available: 사용 가능한 옵션 없음
 settings_data_model: 데이터 모델
+settings_permissions: 권한 설정
 settings_project: 설정
+settings_appearance: 외관
 settings_webhooks: 웹후크
 settings_flows: 플로우
 settings_presets: 북마크
 settings_translations: 번역
 one_or_more_options_are_missing: 하나 이상의 옵션이 없습니다.
+configure_field_key_to_continue: 계속하려면 필드 키를 구성하십시오
 scope: 범위
 actions: 액션
 select: 선택하다...
@@ -931,6 +1105,7 @@ editing_preset: 사전 설정 편집
 layout_preview: 레이아웃 미리보기
 layout_setup: 레이아웃 설정
 data: 데이터
+theme-overrides: 테마 재정의
 unsaved_changes: 변경 내용이 저장되지 않았습니다
 unsaved_changes_copy: 이 페이지에서 나가시겠습니까?
 discard_changes: 변경 내용 취소
@@ -952,6 +1127,9 @@ page_help_files_collection: >-
   **파일 라이브러리** — 이 프로젝트에 업로드된 모든 파일 자산을 나열합니다. 레이아웃, 필터 및 정렬을 사용자 지정하여 보기를 맞춤화하고 이러한 다양한 구성의 책갈피를 저장하여 빠르게 액세스할 수도 있습니다.
 page_help_files_item: >-
   **파일 세부 정보** — 파일 메타데이터 관리, 원본 자산 편집 및 액세스 설정 업데이트를 위한 양식입니다.
+page_help_settings_project: "**설정** — 프로젝트의 전역 구성 옵션입니다."
+page_help_settings_appearance: "**외형** - 프로젝트의 외형과 테마 옵션입니다."
+page_help_settings_extensions: '**확장 프로그램** - 프로젝트에 설치된 확장 프로그램입니다.'
 page_help_settings_datamodel_collections: >-
   **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
 page_help_settings_datamodel_fields: >-
@@ -966,11 +1144,16 @@ page_help_settings_webhooks_collection: '**웹훅 찾아보기** — 프로젝�
 page_help_settings_webhooks_item: '**Webhook 세부 정보** — 프로젝트 Webhook 생성 및 관리를 위한 양식입니다.'
 page_help_settings_flows_collection: '**플로우 찾아보기** — 프로젝트 내의 모든 플로우을 나열합니다.'
 page_help_settings_flows_item: '**Flow Detail** — 하나 이상의 작업을 관리하기 위한 작업 공간입니다.'
+page_help_settings_translations_collection: '**사용자 정의 번역** - 프로젝트 내의 모든 사용자 지정 번역을 나열합니다.'
+page_help_settings_translations_item: '**사용자 정의 번역 세부 정보** - 이 항목을 보고 관리하기 위한 양식입니다.'
 page_help_users_collection: '**사용자 디렉터리** — 이 프로젝트 내의 모든 시스템 사용자를 나열합니다.'
 page_help_users_item: >-
   **사용자 세부 정보** — 계정 정보를 관리하거나 다른 사용자의 세부 정보를 봅니다.
 page_help_insights_overview: '**Insights** — 액세스 권한이 있는 대시보드 목록입니다.'
 page_help_insights_dashboard: '**대시보드** — 하나 이상의 패널을 관리하기 위한 작업 공간'
+page_help_marketplace_account: '**계정** - 게시된 확장 프로그램의 게시자 또는 관리자입니다.'
+page_help_marketplace_registry: '**레지스트리** - Directus 마켓플레이스에서 사용할 수 있는 확장 기능입니다.'
+page_help_marketplace_extension: '**확장** - Directus 마켓플레이스의 확장 기능입니다.'
 activity_feed: 활동 내역
 add_new: 새로운 걸 더하다
 create_new: 새로 만들기
@@ -981,6 +1164,17 @@ batch_delete_confirm: >-
   선택한 항목이 없습니다. | 선택한 항목을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다. | 선택한 {count}개 항목을 을 삭제하시겠습니까? 한번 삭제하면 복구할 수 없습니다.
 cancel: 취소
 no_upscale: 이미지를 확대하지 마세요.
+no_extensions: 확장 기능 없음
+no_extensions_copy: 아직 설치된 확장 기능이 없습니다.
+install_extension: 확장 기능 설치
+uninstall_locked: 마켓플레이스를 통해 설치되지 않은 확장 기능은 제거할 수 없습니다.
+uninstall: 제거
+installed: 설치됨
+reinstall: 재설치
+open_in_marketplace: 마켓플레이스에서 열기
+source_registry: 마켓플레이스
+source_local: 로컬
+source_module: 노드 모듈
 collection: 컬렉션
 collections: 컬렉션
 content: 데이터 및 컨텐츠 관리
@@ -1009,6 +1203,9 @@ directus_collection:
   directus_shares: 외부 공유 항목 추적
   directus_users: 플랫폼의 시스템 사용자
   directus_webhooks: 이벤트 기반 HTTP 요청 구성
+  directus_translations: 사용자 정의 번역 생성
+  directus_versions: 항목의 콘텐츠 버전
+  directus_extensions: 확장 기능 구성
 fields:
   directus_activity:
     item: 기본키
@@ -1035,6 +1232,7 @@ fields:
     unarchive_value: 아카이브 취소 값
     sort_field: 정렬 기준
     accountability: 활동 및 개정 추적
+    versioning: 버전 관리
     archive_field: 아카이브 필드
     item_duplication_fields: 항목 중복 필드
   directus_files:
@@ -1061,6 +1259,8 @@ fields:
     height: 세로(높이)
     charset: 문자셋
     duration: 기간
+    focal_point_x: X 좌표
+    focal_point_y: Y 좌표
   directus_users:
     first_name: 이름/별명
     last_name: 성
@@ -1078,6 +1278,7 @@ fields:
     status: 상태
     status_draft: 초안
     status_invited: 초대
+    status_unverified: 확인되지 않음
     status_active: 활성화
     status_suspended: 정지됨
     status_archived: 보관됨
@@ -1088,12 +1289,18 @@ fields:
     last_page: 마지막 페이지
     last_access: 최근 접속
     email_notifications: 이메일 알림
+    appearance: 외관
+    theme_light: 밝은 테마
+    theme_dark: 어두운 테마
+    theme_light_overrides: 밝은 테마 사용자 정의
+    theme_dark_overrides: 어두운 테마 사용자 정의
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: 보고
     mapping: 매핑
     basemaps: 베이스맵
     basemaps_raster: 래스터
@@ -1111,9 +1318,14 @@ fields:
     project_color: 테마컬러
     project_logo: 로고
     default_language: 기본 언어 설정
+    branding: 브랜딩
     public_foreground: 공개화면 전경(foreground)
     public_background: 공개화면 배경(background)
     public_note: 공개화면 표시글
+    theming: 테마 기본값
+    default_appearance: 기본 외형
+    default_theme_light: 기본 밝은 테마
+    default_theme_dark: 기본 어두운 테마
     auth_password_policy: 비밀번호 정책
     auth_login_attempts: 로그인 시도 횟수 제한
     files_and_thumbnails: 파일 및 저장폴더
@@ -1128,6 +1340,16 @@ fields:
     transformations_presets: 아래 사전 설정으로 변환 제한
     image_editor: 이미지 에디터
     custom_aspect_ratios: 가로세로 비율 조정
+    theme_light_overrides: 밝은 테마 사용자 정의
+    theme_dark_overrides: 어두운 테마 사용자 정의
+    public_registration: 사용자 등록
+    public_registration_note: 사용자가 [등록 경로](/admin/register) 를 통해 등록할 수 있도록 허용합니다.
+    public_registration_role: 사용자 역할
+    public_registration_role_note: 이 역할은 이 방법을 사용하여 등록하는 사용자에게 할당됩니다. 이미 등록된 사용자에게는 영향을 주지 않습니다.
+    public_registration_email_filter: 이메일 주소 필터
+    public_registration_email_filter_note: 이 필터와 일치하는 이메일 주소만 등록할 수 있습니다.
+    public_registration_verify_email: 이메일 인증
+    public_registration_verify_email_note: 등록하는 사용자에게 로그인하기 전에 인증 링크를 클릭하도록 요청하는 이메일을 보냅니다.
   directus_shares:
     name: 이름
     role: 역할
@@ -1170,6 +1392,8 @@ field_options:
   directus_settings:
     project_name_placeholder: 내 프로젝트...
     project_color_note: 로그인/로고 화면 배경
+    project_logo_note: 백색 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: 마크다운 서식을 지원하는 짧은 공개 메시지...
     security_divider_title: 보안
     auth_password_policy:
@@ -1224,16 +1448,20 @@ field_options:
     accountability_divider: 책임
     duplication_divider: 복사
     preview_divider: 미리보기
+    content_versioning_divider: 콘텐츠 버전 관리
+    enable_versioning: 버전 관리 활성화
   directus_files:
     title: 고유한 제목...
     description: 선택적 설명...
     location: 선택적 위치...
     storage_divider: 파일 이름 지정
+    focal_point_divider: 초점
     filename_disk: 디스크 저장소의 이름...
     filename_download: 다운로드 시 이름...
   directus_roles:
     name: 이 역할의 고유한 이름...
     description: 이 역할에 대한 설명...
+    ip_access: 허용된 IP 주소, IP 범위 및 CIDR 블록을 추가합니다. 모두 허용하려면 비워 두세요...
     fields:
       icon_name: 아이콘
       name_name: 이름
@@ -1281,7 +1509,13 @@ block: 차단하다
 inline: 인라인
 comment: 코멘트
 live_preview:
+  enable: 미리보기 활성화
+  disable: 미리보기 비활성화
+  change_size: 디스플레이 크기 변경하기
+  refresh: 미리 보기 새로 고침
   new_window: 새 창에서 열기
+  close_window: 분할 화면에서 열기
+  toggle_3d: 토글 3D
 shares: 공유
 unlimited_usage: 무제한 사용
 uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
@@ -1293,6 +1527,7 @@ share: 공유하다
 share_item: 항목 공유
 shared_with_you: 항목이 나와 공유되었습니다.
 shared_enter_passcode: 계속하려면 비밀번호를 입력하세요...
+shared_leave_blank_for_passwordless_access: 비밀번호 없이 액세스하려면 비워두세요
 shared_leave_blank_for_unlimited: 무제한으로 하려면 비워두세요
 shared_times_remaining: 이 링크는 {n}번만 사용할 수 있습니다.
 shared_last_remaining: 이 링크는 한 번만 사용할 수 있습니다.
@@ -1362,6 +1597,7 @@ authenticated: 인증됨
 options: 옵션
 otp: 일회성 암호
 password: 비밀번호
+confirm_password: 비밀번호 확인
 permissions: 사용 권한
 relationship: 관계
 reset: 초기화
@@ -1376,7 +1612,16 @@ search: 검색
 select_existing: 기존 선택
 select_field_type: 필드 유형 선택
 select_interface: 인터페이스 선택
+select_display: 디스플레이 선택
 settings: 설정
+register: 등록
+registration_successful_headline: 성공!
+registration_successful_note: 이제 로그인 페이지로 이동할 수 있습니다.
+registration_successful_check_email_note: |
+  로그인하기 전에 이메일 주소를 확인하기 위해 발송된 확인 링크를 클릭해야 합니다. 
+dont_have_an_account: 계정이 없으신가요?
+already_have_an_account: 이미 계정이 있으신가요?
+sign_up_now: 지금 가입
 sign_in: 로그인
 sign_out: 로그아웃
 sign_out_confirm: 로그아웃 하시겠습니까?
@@ -1407,6 +1652,9 @@ undo_removed_item: 제거된 항목 취소
 remove_item: 항목 제거
 delete_item: 항목 삭제
 interfaces:
+  list-m2a:
+    prefix_note: 기본적으로 관련 항목의 컬렉션 이름을 사용합니다.
+    sorting_disabled: 한 페이지에 들어갈 수 있는 항목보다 많은 항목이 있으므로 정렬이 비활성화됩니다.
   filter:
     name: 필터
     description: 필터 개체를 구성합니다.
@@ -1544,6 +1792,11 @@ interfaces:
     description: 인터페이스 옵션을 선택하기 위한 모달
   system-display:
     display: 표시하다
+    description: 기존 인터페이스 선택
+    placeholder: 디스플레이 선택...
+  system-display-options:
+    display-options: 디스플레이 옵션
+    description: 디스플레이 옵션을 선택하기 위한 모달
   list-m2m:
     many-to-many: 다대다
     description: 여러 개의 관련 접합 항목 선택
@@ -1590,11 +1843,13 @@ interfaces:
     notice: 공지
     description: 간단한 알림 표시
     text: 내용을 입력하세요...
+    no_text: 구성된 텍스트가 없습니다...
   list-o2m:
     one-to-many: 일대다
     description: 여러 관련 항목 선택
     no_collection: 컬렉션을 찾을 수 없습니다.
   system-folder:
+    folder: 최상위 폴더
     description: 폴더 선택
     field_hint: 폴더를 지정하지 않고 업로드된 파일의 기본 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     root_name: 파일 라이브러리 루트
@@ -1612,6 +1867,7 @@ interfaces:
     field_note_placeholder: 필드 메모 입력...
     incompatible_data: 현재 데이터는 리피터 레이아웃과 호환되지 않으며 리피터 레이아웃에 항목을 추가할 때 재정의됩니다.
     interface_group: 인터페이스 옵션
+    display_group: 디스플레이 옵션
   slider:
     slider: 슬라이더
     description: 슬라이더를 사용하여 숫자 선택
@@ -1651,6 +1907,7 @@ interfaces:
     input-translated-string: 번역된 문자열
     description: 번역 문자열 선택 또는 추가
     search_placeholder: 검색...
+    new_custom_translation: 사용자 정의 번역 생성
   boolean:
     toggle: 토글
     description: 켜기와 끄기 간 전환
@@ -1663,6 +1920,7 @@ interfaces:
     no_collection: 컬렉션 없음
     toggle_split_view: 분할 보기 전환
     enable: 활성화
+    default_split_view_state: 기본 분할 뷰 상태
     user_language: 현재 사용자와 같은 언어 사용
     default_language: 기본 설정 언어
     language_field: 언어 표시 필드
@@ -1683,20 +1941,33 @@ interfaces:
     description: HTML 형식으로 작성할 수 있는 리치텍스트 에디터
     toolbar: 툴바
     custom_formats: 맞춤 형식
+    custom_formats_note: TinyMCE 콘텐츠 형식의 목록은 다음과 같습니다. 자세한 내용은 TinyMCE의 [사용자 서식 문서](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/)를 참조하십시오.
     options_override: 옵션 재정의
+    options_override_note: TinyMCE 사용자 서식 키와 그 값들은 다음과 같습니다. 자세한 내용은 TinyMCE의 [사용자 서식 문서](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/)를 참조하십시오.
     folder_note: 업로드된 파일의 폴더입니다. 기존 파일에는 영향을 주지 않습니다.
     imageToken: 정적 액세스 토큰
     imageToken_label: 정적 액세스 토큰이 자산의 URL에 추가됩니다.
   input-block-editor:
+    input-block-editor: 블록 편집기
+    description: Editor.js를 사용하여 리치 미디어 스토리를 위한 블록 스타일 편집기, JSON 형식의 깨끗한 데이터를 출력합니다.
     tools: 툴바
     tools_options:
       header: 머리글
       nestedlist: 목록
       embed: 포함시키다
+      paragraph: 단락
       code: 코드
       image: 이미지
+      attaches: 첨부
       table: 테이블
+      quote: 인용
       underline: 밑줄
+      inlinecode: 인라인 코드
+      delimiter: 구분자
+      checklist: 체크리스트
+      toggle: 블록 토글
+      alignment: 정렬
+      raw: Raw HTML
   input-autocomplete-api:
     input-autocomplete-api: 자동 완성 입력(API)
     description: 외부 API 값에 대한 미리 검색.
@@ -1813,6 +2084,7 @@ displays:
     description: 객체의 형식화된 버전 표시
   hash:
     hash: 해시
+    description: 값의 수정된 버전 표시
   icon:
     icon: 아이콘
     description: 아이콘 표시
@@ -1921,6 +2193,7 @@ layouts:
     not_all_loaded: 처음 1000개 항목만 로드할 수 있습니다.
 horizontal: 수평의
 vertical: 수직의
+axis: 축
 x_axis: X축
 y_axis: Y축
 y_axis_function: Y축 기능
@@ -1947,6 +2220,9 @@ panels:
     name: 미터법
     description: 쿼리를 기반으로 단일 값 표시
     field: 필드
+  metric_list:
+    name: 메트릭 목록
+    description: 컬렉션에서 집계 메트릭을 나열하고 시각화하십시오.
   time_series:
     name: 시계열
     description: 시간 경과에 따른 값을 기반으로 꺾은선형 차트 렌더링
@@ -2060,9 +2336,19 @@ operations:
     payload: 유효 탑재량
     query: 질문
   json-web-token:
+    name: JSON 웹 토큰 (JWT)
+    description: JSON 웹 토큰 서명 및 검증
+    operation: 운영
+    secret: 비밀키
+    secret_placeholder: 비밀키를 입력하세요...
     payload: 유효 탑재량
     token: 접속 인증 토큰
+    token_placeholder: eyJhbGciOi......
     options: 옵션
+    options_placeholder: '사용 가능한 옵션에 대해서는 https://www.npmjs.com/package/jsonwebtoken#usage 사용법을 참조하십시오.'
+    sign: 토큰 서명
+    verify: 토큰 검증
+    decode: 토큰 복호화
   log:
     name: 콘솔에 로그인
     description: 콘솔에 출력
@@ -2082,6 +2368,7 @@ operations:
     recipient: 사용자
     recipient_placeholder: UUID를 입력하세요...
     recipient_note: 사용자 UUID를 추가하고 Enter 키를 누릅니다...
+    item_note: 아이템 키 또는 관련된 URL
     message: 메시지
     subject: 제목
   request:
@@ -2115,14 +2402,44 @@ operations:
     batch: 일괄
     batch_size: 배치 크기
     cache: 캐시
+unit: 단위
 standard: 표준
+scientific: 과학적
+engineering: 공학적
 compact: 좁게
+currency: 통화
+notation: 표기법
 style: 스타일
 fonts:
   thin: 얇은
+  extra_light: 매우 얇게
+  light: 밝은
   normal: 정상
   medium: 중간
+  semi_bold: 약간 굵게
   bold: 굵게
+  extra_bold: 매우 굵게
   black: 검은색
   italic: 이탤릭체
+  oblique: 기울임
+  small: 작게
+  large: 크게
   auto: 자동
+text_wrap: 텍스트 줄 바꿈
+center: 가운데 정렬
+justify: 양쪽 정렬
+text_align: 텍스트 정렬
+font_weight: 글꼴 굵기
+font_style: 글꼴 스타일
+font_size: 글꼴 크기
+minimum_fraction_digits: 최소 소수 자릿수
+maximum_fraction_digits: 최대 소수 자릿수
+show_percentage: 백분율 표시
+aggregation: 집계
+series_grouping: 시리즈 그룹화
+date_precision: 날짜 정밀도
+export_dashboard: 대시보드 내보내기
+duplicate_dashboard: 대시보드 복제
+search_dashboard: 대시보드 검색...
+search_flow: 흐름 검색...
+percent: 퍼센트
