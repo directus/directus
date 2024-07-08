@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage",
-	"version": "10.0.13",
+	"version": "10.1.0",
 	"description": "Object storage abstraction layer for Directus",
 	"homepage": "https://directus.io",
 	"repository": {

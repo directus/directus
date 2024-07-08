@@ -16,6 +16,7 @@ import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { SettingsService } from './settings.js';
+import { RESUMABLE_UPLOADS } from '../constants.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -111,6 +112,12 @@ export class ServerService {
 					: false;
 			} else {
 				info['websocket'] = false;
+			}
+
+			if (RESUMABLE_UPLOADS.ENABLED) {
+				info['uploads'] = {
+					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
+				};
 			}
 
 			info['version'] = version;
