@@ -19,6 +19,14 @@
 		"eslint-plugin-vue": "9.26.0",
 		"prettier": "3.1.0"
 	},
+	"pnpm": {
+		"overrides": {
+			"ip": "2.0.1",
+			"ws": "8.18.0",
+			"tar": "6.2.1",
+			"braces": "3.0.3"
+		}
+	},
 	"packageManager": "pnpm@9.4.0",
 	"engines": {
 		"node": ">=18.18.0",
