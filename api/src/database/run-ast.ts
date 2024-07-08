@@ -337,10 +337,11 @@ async function getDBQuery(
 				// ordered by the sort fields within every primary key partition. Since the only relevant result is the first
 				// row of this partition, the order by here ensures that all rows with a directus_row_number = 1 show up first
 				// in the inner query result, and are correctly truncated by the limit, but not earlier.
-				dbQuery.orderBy('directus_row_number', 'asc');
-			} else {
-				dbQuery.orderByRaw(orderByString, orderByFields);
+				orderByString = `?? asc, ${orderByString}`;
+				orderByFields.unshift(knex.ref('directus_row_number'));
 			}
+
+			dbQuery.orderByRaw(orderByString, orderByFields);
 		} else {
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
