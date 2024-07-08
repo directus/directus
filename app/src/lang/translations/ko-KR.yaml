@@ -381,7 +381,7 @@ multiple_files: 여러 파일들
 m2o_relationship: 다대일 관계
 o2m_relationship: 일대다 관계
 m2m_relationship: 다대다 관계
-m2a_relationship: 다대다 관계
+m2a_relationship: 다대다 관계 (M2A)
 invalid_item: 비정상적인 아이템
 require_confirmation: 확인 요청
 dialog: 대화상자
