@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"esbuild": "0.20.2",
+		"esbuild": "0.23.0",
 		"esbuild-yaml": "1.1.1",
 		"tsup": "8.1.0",
 		"typescript": "5.4.5"
