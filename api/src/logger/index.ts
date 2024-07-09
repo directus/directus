@@ -6,6 +6,7 @@ import { URL } from 'node:url';
 import { pino, type Logger, type LoggerOptions } from 'pino';
 import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { redactQuery } from './redact-query.js';
 
 export const _cache: {
 	logger: Logger<never> | undefined;
