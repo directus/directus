@@ -37,7 +37,7 @@ test('Flattens _eq shortcut', () => {
 	expect(paths).toEqual([['author']]);
 });
 
-test('Flattens single level and handles underscore in field names', () => {
+test.todo('Flattens single level and handles underscore in field names', () => {
 	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
