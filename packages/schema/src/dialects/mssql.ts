@@ -284,7 +284,6 @@ export default class MSSQL implements SchemaInspector {
 		}
 
 		const records: RawColumn[] = await this.knex.transaction(async (trx) => {
-
 			await trx.raw(`IF OBJECT_ID('tempdb..##IndexInfo') IS NOT NULL DROP TABLE #IndexInfo;`);
 
 			await trx.raw(`
@@ -302,7 +301,10 @@ export default class MSSQL implements SchemaInspector {
 			FROM sys.index_columns ic
 			JOIN sys.indexes ix ON ix.object_id = ic.object_id AND ix.index_id = ic.index_id;`);
 
-			const query = trx.with("FilteredIndexInfo", this.knex.raw(`
+			const query = trx
+				.with(
+					'FilteredIndexInfo',
+					this.knex.raw(`
 				SELECT
 					[object_id],
 					[column_id],
@@ -311,7 +313,8 @@ export default class MSSQL implements SchemaInspector {
 					[index_priority],
 					[index_column_count]
 				FROM ##IndexInfo
-				WHERE ISNULL(index_column_count, 1) = 1 AND ISNULL(index_priority, 1) = 1`))
+				WHERE ISNULL(index_column_count, 1) = 1 AND ISNULL(index_priority, 1) = 1`),
+				)
 				.select(
 					trx.raw(`
 				[o].[name] AS [table],
@@ -351,7 +354,8 @@ export default class MSSQL implements SchemaInspector {
 					`LEFT JOIN [sys].[foreign_key_columns] AS [fk] ON [fk].[parent_object_id] = [c].[object_id] AND [fk].[parent_column_id] = [c].[column_id]`,
 				)
 				.joinRaw(
-					`LEFT JOIN FilteredIndexInfo [i] ON [i].[object_id] = [c].[object_id] AND [i].[column_id] = [c].[column_id]`)
+					`LEFT JOIN FilteredIndexInfo [i] ON [i].[object_id] = [c].[object_id] AND [i].[column_id] = [c].[column_id]`,
+				)
 				.where({ 's.schema_id': schemaId });
 
 			if (table) {
@@ -367,7 +371,7 @@ export default class MSSQL implements SchemaInspector {
 			await trx.raw(`DROP TABLE ##IndexInfo;`);
 
 			return result;
-		})
+		});
 
 		if (records.length === 1 && records[0]) {
 			return rawColumnToColumn(records[0]);
