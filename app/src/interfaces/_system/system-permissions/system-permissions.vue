@@ -6,6 +6,7 @@ import { RelationO2M, useRelationO2M } from '@/composables/use-relation-o2m';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PERMISSION_ACTIONS } from '@directus/constants';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
 import { Filter, Permission, PermissionsAction, type Alterations } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -16,8 +17,6 @@ import AddCollectionRow from './add-collection-row.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
 import PermissionsRow from './permissions-row.vue';
-
-const ACTIONS = ['create', 'read', 'update', 'delete', 'share'] as const;
 
 type PermissionGroup = {
 	collection: Collection;
@@ -114,8 +113,8 @@ function editItem(collection: string, action: PermissionsAction) {
 	currentlyEditingItem.value = existingPermission ?? null;
 }
 
-function stageEdits(item: Record<string, any>) {
-	if (newItem.value) {
+function stageEdits(item: Permission | null) {
+	if (newItem.value && item !== null) {
 		create(item);
 	} else if (item) {
 		update(item);
@@ -135,13 +134,13 @@ function removeCollection(collection: string) {
 }
 
 function setFullAccessAll(collection: string) {
-	for (const action of ACTIONS) {
+	for (const action of PERMISSION_ACTIONS) {
 		setFullAccess(collection, action);
 	}
 }
 
 function setNoAccessAll(collection: string) {
-	for (const action of ACTIONS) {
+	for (const action of PERMISSION_ACTIONS) {
 		setNoAccess(collection, action);
 	}
 }
