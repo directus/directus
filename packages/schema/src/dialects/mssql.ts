@@ -326,8 +326,8 @@ export default class MSSQL implements SchemaInspector {
 					'YES'
 				END AS [is_nullable],
 				object_definition ([c].[default_object_id]) AS [default_value],
-				[fi].[is_primary_key],
-				[fi].[is_unique],
+				[i].[is_primary_key],
+				[i].[is_unique],
 				CASE [c].[is_identity]
 					WHEN 1 THEN
 						'YES'
@@ -351,7 +351,7 @@ export default class MSSQL implements SchemaInspector {
 					`LEFT JOIN [sys].[foreign_key_columns] AS [fk] ON [fk].[parent_object_id] = [c].[object_id] AND [fk].[parent_column_id] = [c].[column_id]`,
 				)
 				.joinRaw(
-					`LEFT JOIN FilteredIndexInfo fi ON [fi].[object_id] = [c].[object_id] AND [fi].[column_id] = [c].[column_id]`)
+					`LEFT JOIN FilteredIndexInfo [i] ON [i].[object_id] = [c].[object_id] AND [i].[column_id] = [c].[column_id]`)
 				.where({ 's.schema_id': schemaId });
 
 			if (table) {
