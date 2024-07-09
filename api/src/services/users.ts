@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 import { isEmpty, mergeWith } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import getDatabase from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
 import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
 import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';

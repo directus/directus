@@ -8,7 +8,7 @@ import type { SendMailOptions, Transporter } from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
 import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
