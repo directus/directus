@@ -49,8 +49,8 @@ export class TusDataStore extends DataStore {
 	}
 
 	public override async create(upload: Upload): Promise<Upload> {
-		const knex = getDatabase();
 		const logger = useLogger();
+		const knex = getDatabase();
 
 		const itemsService = new ItemsService<File>('directus_files', {
 			accountability: this.accountability,
