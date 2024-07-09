@@ -47,7 +47,7 @@ export default defineConfig({
 	resolve: {
 		alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
 	},
-	base: process.env.NODE_ENV === 'production' ? '' : '/admin/',
+	base: process.env.NODE_ENV === 'production' ? '' : '/admin',
 	...(!process.env.HISTOIRE && {
 		server: {
 			port: 8080,
