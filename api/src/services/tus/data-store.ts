@@ -6,7 +6,7 @@ import { extname } from 'node:path';
 import stream from 'node:stream';
 import { DataStore, ERRORS, Upload } from '@tus/utils';
 import { ItemsService } from '../items.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import getDatabase from '../../database/index.js';
 import { omit } from 'lodash-es';
 

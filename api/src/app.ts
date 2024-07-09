@@ -51,7 +51,7 @@ import {
 import emitter from './emitter.js';
 import { getExtensionManager } from './extensions/index.js';
 import { getFlowManager } from './flows.js';
-import { createExpressLogger, useLogger } from './logger.js';
+import { createExpressLogger, useLogger } from './logger/index.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
 import { checkIP } from './middleware/check-ip.js';

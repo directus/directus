@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import type { Notification, PrimaryKey } from '@directus/types';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';

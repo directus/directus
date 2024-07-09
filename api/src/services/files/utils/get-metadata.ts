@@ -6,7 +6,7 @@ import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 import sharp from 'sharp';
 import { useEnv } from '@directus/env';
-import { useLogger } from '../../../logger.js';
+import { useLogger } from '../../../logger/index.js';
 import { parseIptc, parseXmp } from './parse-image-metadata.js';
 
 const env = useEnv();

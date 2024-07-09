@@ -10,7 +10,7 @@ import { parse } from 'url';
 import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';

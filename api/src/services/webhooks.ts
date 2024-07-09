@@ -2,7 +2,7 @@ import { ErrorCode, createError, type DirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
 import type { PrimaryKey } from '@directus/types';
 import { useBus } from '../bus/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import type { AbstractServiceOptions, MutationOptions, Webhook } from '../types/index.js';
 import { ItemsService } from './items.js';
 
