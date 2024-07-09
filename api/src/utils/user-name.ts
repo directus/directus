@@ -1,6 +1,6 @@
 import type { User } from '@directus/types';
 
-export function userName(user: Partial<User>): string {
+export function userName(user?: Partial<User>): string {
 	if (!user) {
 		return 'Unknown User';
 	}

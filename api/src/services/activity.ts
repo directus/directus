@@ -33,61 +33,66 @@ export class ActivityService extends ItemsService {
 
 			const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
 
-			const sender = await this.usersService.readOne(this.accountability!.user!, {
-				fields: ['id', 'first_name', 'last_name', 'email'],
-			});
+			if (mentions.length > 0) {
+				let sender;
 
-			for (const mention of mentions) {
-				const userID = mention.substring(1);
-
-				const user = await this.usersService.readOne(userID, {
-					fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
-				});
-
-				const accountability: Accountability = {
-					user: userID,
-					role: user['role']?.id ?? null,
-					admin: user['role']?.admin_access ?? null,
-					app: user['role']?.app_access ?? null,
-				};
-
-				accountability.permissions = await getPermissions(accountability, this.schema);
-
-				const authorizationService = new AuthorizationService({ schema: this.schema, accountability });
-				const usersService = new UsersService({ schema: this.schema, accountability });
-
-				try {
-					await authorizationService.checkAccess('read', data['collection'], data['item']);
-
-					const templateData = await usersService.readByQuery({
+				if (this.accountability?.user) {
+					sender = await this.usersService.readOne(this.accountability.user, {
 						fields: ['id', 'first_name', 'last_name', 'email'],
-						filter: { id: { _in: mentions.map((mention) => mention.substring(1)) } },
+					});
+				}
+
+				for (const mention of mentions) {
+					const userID = mention.substring(1);
+
+					const user = await this.usersService.readOne(userID, {
+						fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
 					});
 
-					const userPreviews = templateData.reduce(
-						(acc, user) => {
-							acc[user['id']] = `<em>${userName(user)}</em>`;
-							return acc;
-						},
-						{} as Record<string, string>,
-					);
+					const accountability: Accountability = {
+						user: userID,
+						role: user['role']?.id ?? null,
+						admin: user['role']?.admin_access ?? null,
+						app: user['role']?.app_access ?? null,
+					};
 
-					let comment = data['comment'];
+					accountability.permissions = await getPermissions(accountability, this.schema);
 
-					for (const mention of mentions) {
-						const uuid = mention.substring(1);
-						// We only match on UUIDs in the first place. This is just an extra sanity check.
-						if (isValidUuid(uuid) === false) continue;
-						comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
-					}
+					const authorizationService = new AuthorizationService({ schema: this.schema, accountability });
+					const usersService = new UsersService({ schema: this.schema, accountability });
 
-					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
+					try {
+						await authorizationService.checkAccess('read', data['collection'], data['item']);
 
-					const href = new Url(env['PUBLIC_URL'] as string)
-						.addPath('admin', 'content', data['collection'], data['item'])
-						.toString();
+						const templateData = await usersService.readByQuery({
+							fields: ['id', 'first_name', 'last_name', 'email'],
+							filter: { id: { _in: mentions.map((mention) => mention.substring(1)) } },
+						});
 
-					const message = `
+						const userPreviews = templateData.reduce(
+							(acc, user) => {
+								acc[user['id']] = `<em>${userName(user)}</em>`;
+								return acc;
+							},
+							{} as Record<string, string>,
+						);
+
+						let comment = data['comment'];
+
+						for (const mention of mentions) {
+							const uuid = mention.substring(1);
+							// We only match on UUIDs in the first place. This is just an extra sanity check.
+							if (isValidUuid(uuid) === false) continue;
+							comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
+						}
+
+						comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
+
+						const href = new Url(env['PUBLIC_URL'] as string)
+							.addPath('admin', 'content', data['collection'], data['item'])
+							.toString();
+
+						const message = `
 Hello ${userName(user)},
 
 ${userName(sender)} has mentioned you in a comment:
@@ -97,19 +102,20 @@ ${comment}
 <a href="${href}">Click here to view.</a>
 `;
 
-					await this.notificationsService.createOne({
-						recipient: userID,
-						sender: sender['id'],
-						subject: `You were mentioned in ${data['collection']}`,
-						message,
-						collection: data['collection'],
-						item: data['item'],
-					});
-				} catch (err: any) {
-					if (isDirectusError(err, ErrorCode.Forbidden)) {
-						logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
-					} else {
-						throw err;
+						await this.notificationsService.createOne({
+							recipient: userID,
+							sender: sender?.['id'] ?? null,
+							subject: `You were mentioned in ${data['collection']}`,
+							message,
+							collection: data['collection'],
+							item: data['item'],
+						});
+					} catch (err: any) {
+						if (isDirectusError(err, ErrorCode.Forbidden)) {
+							logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
+						} else {
+							throw err;
+						}
 					}
 				}
 			}
