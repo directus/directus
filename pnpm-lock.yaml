@@ -369,8 +369,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       ws:
-        specifier: 8.17.1
-        version: 8.17.1
+        specifier: 8.18.0
+        version: 8.18.0
       zod:
         specifier: 3.23.8
         version: 3.23.8
@@ -379,8 +379,8 @@ importers:
         version: 3.3.0(zod@3.23.8)
     optionalDependencies:
       '@keyv/redis':
-        specifier: 2.8.4
-        version: 2.8.4
+        specifier: 2.8.5
+        version: 2.8.5
       mysql:
         specifier: 2.18.1
         version: 2.18.1
@@ -857,8 +857,8 @@ importers:
         specifier: 7.6.2
         version: 7.6.2
       tinymce:
-        specifier: 7.1.1
-        version: 7.1.1
+        specifier: 7.2.1
+        version: 7.2.1
       tus-js-client:
         specifier: 4.1.0
         version: 4.1.0
@@ -2159,8 +2159,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0(@types/node@18.19.33)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.5)(terser@5.31.0)
       ws:
-        specifier: 8.17.1
-        version: 8.17.1
+        specifier: 8.18.0
+        version: 8.18.0
 
 packages:
 
@@ -3759,8 +3759,8 @@ packages:
   '@json2csv/plainjs@7.0.6':
     resolution: {integrity: sha512-4Md7RPDCSYpmW1HWIpWBOqCd4vWfIqm53S3e/uzQ62iGi7L3r34fK/8nhOMEe+/eVfCx8+gdSCt1d74SlacQHw==}
 
-  '@keyv/redis@2.8.4':
-    resolution: {integrity: sha512-osO4C+i+Gi844wHjvXuHwhl+sDx3289Of309ZlLcj6SJReTLmPXzNiVR81N88wOu5aC+lVFdmx9FUQkkjdbPRQ==}
+  '@keyv/redis@2.8.5':
+    resolution: {integrity: sha512-e9W1faN32A1Wy5726qtorAvPu1Xffh75ngfQQtETQ0hIN/FQtK0RcBTz/OH/vwDvLX8zrzdu0sWq/KoSHDYfVw==}
     engines: {node: '>= 14'}
 
   '@lezer/common@1.1.2':
@@ -11055,8 +11055,8 @@ packages:
   tinymce@6.8.3:
     resolution: {integrity: sha512-3fCHKAeqT+xNwBVESf6iDbDV0VNwZNmfrkx9c/6Gz5iB8piMfaO6s7FvoiTrj1hf1gVbfyLTnz1DooI6DhgINQ==}
 
-  tinymce@7.1.1:
-    resolution: {integrity: sha512-QQJKsEiM+jUfrlxNivuVUiv1jsHv4a27rub4oqajtsYQ4mFukN3hkWQrZnzVNtnPOIUsOGU2Ycem0DnEU/JKcA==}
+  tinymce@7.2.1:
+    resolution: {integrity: sha512-ADd1cvdIuq6NWyii0ZOZRuu+9sHIdQfcRNWBcBps2K8vy7OjlRkX6iw7zz1WlL9kY4z4L1DvIP+xOrVX/46aHA==}
 
   tinypool@0.8.4:
     resolution: {integrity: sha512-i11VH5gS6IFeLY3gMBQ00/MmLncVP7JLXOw1vlgkytLmJK7QnEr7NXf0LBdxfmNPAeyetukOk0bOYrJrFGjYJQ==}
@@ -11937,8 +11937,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.17.1:
-    resolution: {integrity: sha512-6XQFvXTkbfUOZOKKILFG1PDK2NDQs4azKQl26T0YS5CxqWLgXajbPZ+h4gZekJyRqFU8pvnbAbbs/3TgRPy+GQ==}
+  ws@8.18.0:
+    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -14272,7 +14272,7 @@ snapshots:
       '@json2csv/formatters': 7.0.6
       '@streamparser/json': 0.0.20
 
-  '@keyv/redis@2.8.4':
+  '@keyv/redis@2.8.5':
     dependencies:
       ioredis: 5.4.1
     transitivePeerDependencies:
@@ -19553,7 +19553,7 @@ snapshots:
       whatwg-encoding: 2.0.0
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
-      ws: 8.17.1
+      ws: 8.18.0
       xml-name-validator: 4.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -19581,7 +19581,7 @@ snapshots:
       whatwg-encoding: 3.1.1
       whatwg-mimetype: 4.0.0
       whatwg-url: 14.0.0
-      ws: 8.17.1
+      ws: 8.18.0
       xml-name-validator: 5.0.0
     transitivePeerDependencies:
       - bufferutil
@@ -23149,7 +23149,7 @@ snapshots:
 
   tinymce@6.8.3: {}
 
-  tinymce@7.1.1: {}
+  tinymce@7.2.1: {}
 
   tinypool@0.8.4: {}
 
@@ -24141,7 +24141,7 @@ snapshots:
 
   ws@8.11.0: {}
 
-  ws@8.17.1: {}
+  ws@8.18.0: {}
 
   xml-crypto@3.2.0:
     dependencies:

@@ -175,7 +175,7 @@
 		"tar": "7.4.0",
 		"tsx": "4.12.0",
 		"wellknown": "0.5.0",
-		"ws": "8.17.1",
+		"ws": "8.18.0",
 		"zod": "3.23.8",
 		"zod-validation-error": "3.3.0"
 	},
@@ -223,7 +223,7 @@
 		"vitest": "1.5.3"
 	},
 	"optionalDependencies": {
-		"@keyv/redis": "2.8.4",
+		"@keyv/redis": "2.8.5",
 		"mysql": "2.18.1",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
