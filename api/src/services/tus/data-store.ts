@@ -10,8 +10,6 @@ import { useLogger } from '../../logger.js';
 import getDatabase from '../../database/index.js';
 import { omit } from 'lodash-es';
 
-const logger = useLogger();
-
 export type TusDataStoreConfig = {
 	constants: {
 		ENABLED: boolean;
@@ -52,6 +50,7 @@ export class TusDataStore extends DataStore {
 
 	public override async create(upload: Upload): Promise<Upload> {
 		const knex = getDatabase();
+		const logger = useLogger();
 
 		const itemsService = new ItemsService<File>('directus_files', {
 			accountability: this.accountability,
@@ -156,6 +155,7 @@ export class TusDataStore extends DataStore {
 	}
 
 	public override async write(readable: stream.Readable, tus_id: string, offset: number): Promise<number> {
+		const logger = useLogger();
 		const fileData = await this.getFileById(tus_id);
 		const filePath = fileData.filename_disk!;
 
