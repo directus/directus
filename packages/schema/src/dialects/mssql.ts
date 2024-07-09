@@ -359,11 +359,11 @@ export default class MSSQL implements SchemaInspector {
 				.where({ 's.schema_id': schemaId });
 
 			if (table) {
-				query.andWhere({ 'o.name': table }).first();
+				query.andWhere({ 'o.name': table });
 			}
 
 			if (column) {
-				query.andWhere({ 'c.name': column });
+				query.andWhere({ 'c.name': column }).first();
 			}
 
 			const result = await query;
@@ -373,7 +373,7 @@ export default class MSSQL implements SchemaInspector {
 			return result;
 		});
 
-		if (records.length === 1 && records[0]) {
+		if (column && records.length === 1 && records[0]) {
 			return rawColumnToColumn(records[0]);
 		}
 
