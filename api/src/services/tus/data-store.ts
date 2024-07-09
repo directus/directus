@@ -155,6 +155,7 @@ export class TusDataStore extends DataStore {
 	}
 
 	public override async write(readable: stream.Readable, tus_id: string, offset: number): Promise<number> {
+		const logger = useLogger();
 		const fileData = await this.getFileById(tus_id);
 		const filePath = fileData.filename_disk!;
 
@@ -204,6 +205,8 @@ export class TusDataStore extends DataStore {
 
 			return newOffset;
 		} catch (err: any) {
+			logger.error(err, 'Error writing chunk for upload "%s" at offset %d', tus_id, offset);
+
 			if ('status_code' in err && err.status_code === 500) {
 				throw err;
 			}
