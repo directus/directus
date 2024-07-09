@@ -8,7 +8,7 @@ export function cloneableReadableFn<T extends (cloneFn: () => Cloneable<Readable
 	cloneableReadable: Cloneable<Readable>,
 	fn: T,
 	options?: {
-		/** Whether to destroy only the cloned readable instead of the original on error */
+		/** Whether to destroy only the cloned readable instead of the original one on error */
 		destroyClone?: boolean;
 	},
 ) {

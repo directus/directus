@@ -120,7 +120,7 @@ export class FilesService extends ItemsService<File> {
 
 		const cloneableStream = cloneable(stream);
 
-		const hashPromise = cloneableReadableFn(cloneableStream, (cloneFn) => getHash(cloneFn()));
+		const hashFn = cloneableReadableFn(cloneableStream, (cloneFn) => getHash(cloneFn()));
 
 		const metadataFn = cloneableReadableFn(
 			cloneableStream,
@@ -147,7 +147,7 @@ export class FilesService extends ItemsService<File> {
 				throw new ContentTooLargeError();
 			}
 
-			const hash = await hashPromise;
+			const hash = await hashFn;
 
 			if (hash.error) {
 				throw new Error(`Couldn't generate file hash`, { cause: hash.error });
