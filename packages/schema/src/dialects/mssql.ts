@@ -283,7 +283,7 @@ export default class MSSQL implements SchemaInspector {
 			throw new Error(`Schema '${this.schema}' not found.`);
 		}
 
-		const dbResult: (RawColumn[] | RawColumn) = await this.knex.transaction(async (trx) => {
+		const dbResult: RawColumn[] | RawColumn = await this.knex.transaction(async (trx) => {
 			await trx.raw(`IF OBJECT_ID('tempdb..##IndexInfo') IS NOT NULL DROP TABLE #IndexInfo;`);
 
 			await trx.raw(`
