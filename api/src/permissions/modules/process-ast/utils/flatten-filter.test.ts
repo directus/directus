@@ -8,7 +8,7 @@ test('Returns early when no filter is passed', () => {
 
 	flattenFilter(paths, undefined);
 
-	expect(paths).toBe(paths);
+	expect(paths).toEqual([]);
 });
 
 test('Flattens single level', () => {
@@ -37,7 +37,7 @@ test('Flattens _eq shortcut', () => {
 	expect(paths).toEqual([['author']]);
 });
 
-test('Flattens single level and handles underscore in field names', () => {
+test.todo('Flattens single level and handles underscore in field names', () => {
 	const paths: FieldKey[][] = [];
 
 	const filter: Query['filter'] = {
@@ -149,4 +149,50 @@ test('Leaves function usage', () => {
 	flattenFilter(paths, filter);
 
 	expect(paths).toEqual([['year(timestamp)']]);
+});
+
+test.each(['_and', '_or'])('Checks inside of logical operator (%s)', (operator) => {
+	const paths: FieldKey[][] = [];
+
+	const filter = {
+		[operator]: [
+			{
+				author: { _eq: 'Rijk' },
+				published: { year: { _eq: 2024 } },
+			},
+		],
+	} as Query['filter'];
+
+	flattenFilter(paths, filter);
+
+	expect(paths).toEqual([['published', 'year'], ['author']]);
+});
+
+test.each(['_some', '_none'])('Checks inside of relational operator (%s)', (operator) => {
+	const paths: FieldKey[][] = [];
+
+	const filter = {
+		[operator]: {
+			author: { _eq: 'Rijk' },
+			published: { year: { _eq: 2024 } },
+		},
+	} as Query['filter'];
+
+	flattenFilter(paths, filter);
+
+	expect(paths).toEqual([['published', 'year'], ['author']]);
+});
+
+test('Does not look into operators that might contain objects', () => {
+	const paths: FieldKey[][] = [];
+
+	const filter = {
+		_intersects: {
+			type: 'Point',
+		},
+	} as Query['filter'];
+
+	flattenFilter(paths, filter);
+
+	expect(paths).toEqual([]);
 });

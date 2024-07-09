@@ -215,7 +215,15 @@ export function getDBQuery(
 		// based on the case/when of that field.
 		dbQuery.select(o2mNodes.map(innerPreprocess).filter((x) => x !== null));
 
-		dbQuery.groupByRaw(`${table}.${primaryKey}`);
+		const groupByFields = [knex.raw('??.??', [table, primaryKey])];
+
+		if (hasMultiRelationalSort) {
+			// Sort fields that are not directly in the table the primary key is from need to be included in the group
+			// by clause, otherwise this causes problems on some DBs
+			groupByFields.push(...innerQuerySortRecords.map(({ alias }) => knex.raw('??', alias)));
+		}
+
+		dbQuery.groupBy(groupByFields);
 	}
 
 	const wrapperQuery = knex

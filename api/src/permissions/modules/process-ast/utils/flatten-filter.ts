@@ -14,17 +14,23 @@ export function flattenFilter(paths: FieldKey[][], filter: Query['filter']) {
 			// nested objects
 			const isArray = Array.isArray(current);
 
-			for (const key in current as Query) {
-				stack.push({
-					current: current[key] as Record<string, unknown> | string,
-					path: isArray ? path : [...path, key],
-				});
+			for (const key in current) {
+				if (!key.startsWith('_') || key === '_and' || key === '_or' || key === '_some' || key === '_none') {
+					// Only deepen the path if the current value can contain more keys
+					stack.push({
+						current: current[key] as Record<string, unknown> | string,
+						path: isArray ? path : [...path, key],
+					});
+				} else {
+					// Ignore all operators and logical grouping in the field paths
+					const parts = path.filter((part) => part.startsWith('_') === false);
+					if (parts.length > 0) paths.push(parts);
+				}
 			}
 		} else {
-			paths.push(
-				// Ignore all operators and logical grouping in the field paths
-				path.filter((part) => part.startsWith('_') === false),
-			);
+			// Ignore all operators and logical grouping in the field paths
+			const parts = path.filter((part) => part.startsWith('_') === false);
+			if (parts.length > 0) paths.push(parts);
 		}
 	}
 }
