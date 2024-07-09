@@ -192,3 +192,20 @@ The configuration disables secured cookies and should only be used in local envi
 your instance to CSRF attacks.
 
 :::
+
+::: tip SSO with Directus-Server running behind a Proxy
+
+If you are running the Directus server behind a HTTP(S)-proxy to access your SSO provider you need to use global-agent
+for the proxy configuration, e.g.:
+
+```sh
+ENV GLOBAL_AGENT_HTTP_PROXY=${HTTP_PROXY}
+ENV GLOBAL_AGENT_HTTPS_PROXY=${HTTPS_PROXY}
+
+CMD : \
+	&& node cli.js bootstrap \
+	&& node -r 'global-agent/bootstrap' cli.js start \
+	;
+```
+
+:::
