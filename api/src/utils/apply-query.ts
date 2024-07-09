@@ -34,7 +34,7 @@ export default function applyQuery(
 	knex: Knex,
 	collection: string,
 	dbQuery: Knex.QueryBuilder,
-	query: Query,
+	query: Omit<Query, 'sort'> & { sort?: (string | { field: string; nulls?: 'first' | 'last' })[] | null },
 	schema: SchemaOverview,
 	cases: Filter[],
 	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined },
@@ -266,13 +266,13 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 	}
 }
 
-export type ColumnSortRecord = { order: 'asc' | 'desc'; column: string };
+export type ColumnSortRecord = { order: 'asc' | 'desc'; column: string; nulls?: 'first' | 'last' };
 
 export function applySort(
 	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
-	query: Query,
+	query: Omit<Query, 'sort'> & { sort?: (string | { field: string; nulls?: 'first' | 'last' })[] | null },
 	collection: string,
 	aliasMap: AliasMap,
 	returnRecords = false,
@@ -283,7 +283,17 @@ export function applySort(
 	let hasJoins = false;
 	let hasMultiRelationalSort = false;
 
-	const sortRecords = rootSort.map((sortField) => {
+	const sortRecords = rootSort.map((sortEntry) => {
+		let sortField: string;
+		let nulls: 'first' | 'last' | undefined;
+
+		if (typeof sortEntry === 'string') {
+			sortField = sortEntry;
+		} else {
+			sortField = sortEntry.field;
+			nulls = sortEntry.nulls;
+		}
+
 		const column: string[] = sortField.split('.');
 		let order: 'asc' | 'desc' = 'asc';
 
@@ -308,6 +318,7 @@ export function applySort(
 				return {
 					order,
 					column: 'countAll',
+					...(nulls && { nulls }),
 				};
 			}
 
@@ -316,6 +327,7 @@ export function applySort(
 				return {
 					order,
 					column: 'count',
+					...(nulls && { nulls }),
 				};
 			}
 
@@ -323,6 +335,7 @@ export function applySort(
 			return {
 				order,
 				column: returnRecords ? column[0] : `${operation}->${field}`,
+				...(nulls && { nulls }),
 			};
 		}
 
@@ -334,6 +347,7 @@ export function applySort(
 				return {
 					order,
 					column: returnRecords ? column[0] : (getColumn(knex, collection, column[0]!, false, schema) as any),
+					...(nulls && { nulls }),
 				};
 			}
 		}
@@ -369,6 +383,7 @@ export function applySort(
 		return {
 			order,
 			column: returnRecords ? columnPath : (getColumn(knex, alias!, field!, false, schema) as any),
+			...(nulls && { nulls }),
 		};
 	});
 

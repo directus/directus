@@ -31,6 +31,8 @@ export async function _fetchPolicies(
 	const accessRows = (await accessService.readByQuery({
 		filter,
 		fields: ['policy.id', 'policy.ip_access'],
+		// Proritize policies attached to users
+		sort: [{ field: 'user', nulls: 'last' }],
 		limit: -1,
 	})) as AccessRow[];
 

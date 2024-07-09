@@ -2,16 +2,16 @@
  * Generate an AST based on a given collection and query
  */
 
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, uniq } from 'lodash-es';
 import { fetchAllowedFields } from '../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import type { AST } from '../../types/index.js';
+import type { AST, InternalQuery } from '../../types/index.js';
 import { parseFields } from './lib/parse-fields.js';
 
 export interface GetAstFromQueryOptions {
 	collection: string;
-	query: Query;
+	query: InternalQuery;
 	accountability: Accountability | null;
 }
 

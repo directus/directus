@@ -23,7 +23,13 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import type {
+	AbstractService,
+	AbstractServiceOptions,
+	ActionEventParams,
+	InternalQuery,
+	MutationOptions,
+} from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
@@ -464,7 +470,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	/**
 	 * Get items by query.
 	 */
-	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
+	async readByQuery(query: InternalQuery, opts?: QueryOptions): Promise<Item[]> {
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(

@@ -1,4 +1,5 @@
-import type { Query, SchemaOverview } from '@directus/types';
+import type { SchemaOverview } from '@directus/types';
+import type { InternalQuery } from '../../../../types/query.js';
 import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
 import type { CollectionKey, FieldKey, FieldMap } from '../types.js';
 import { extractPathsFromQuery } from '../utils/extract-paths-from-query.js';
@@ -7,7 +8,7 @@ import { getInfoForPath } from '../utils/get-info-for-path.js';
 
 export function extractFieldsFromQuery(
 	collection: CollectionKey,
-	query: Query,
+	query: InternalQuery,
 	fieldMap: FieldMap,
 	schema: SchemaOverview,
 	pathPrefix: FieldKey[] = [],

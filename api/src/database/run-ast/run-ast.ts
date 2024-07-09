@@ -1,8 +1,9 @@
 import { useEnv } from '@directus/env';
-import type { Filter, Item, Query, SchemaOverview } from '@directus/types';
+import type { Filter, Item, SchemaOverview } from '@directus/types';
 import { cloneDeep, merge } from 'lodash-es';
 import { PayloadService } from '../../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../types/ast.js';
+import type { InternalQuery } from '../../types/query.js';
 import getDatabase from '../index.js';
 import { getDBQuery } from './lib/get-db-query.js';
 import { parseCurrentLevel } from './lib/parse-current-level.js';
@@ -43,7 +44,7 @@ export async function runAst(
 	async function run(
 		collection: string,
 		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-		query: Query,
+		query: InternalQuery,
 		cases: Filter[],
 	) {
 		const env = useEnv();

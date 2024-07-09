@@ -1,12 +1,13 @@
-import type { Query, SchemaOverview } from '@directus/types';
+import type { SchemaOverview } from '@directus/types';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/ast.js';
+import type { InternalQuery } from '../../../types/query.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 
 export async function parseCurrentLevel(
 	schema: SchemaOverview,
 	collection: string,
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
-	query: Query,
+	query: InternalQuery,
 ) {
 	const primaryKeyField = schema.collections[collection]!.primary;
 	const columnsInCollection = Object.keys(schema.collections[collection]!.fields);

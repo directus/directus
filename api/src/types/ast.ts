@@ -1,4 +1,5 @@
 import type { Filter, Query, Relation } from '@directus/types';
+import type { InternalQuery } from './query.js';
 
 export type M2ONode = {
 	type: 'm2o';
@@ -106,7 +107,7 @@ export type AST = {
 	type: 'root';
 	name: string;
 	children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[];
-	query: Query;
+	query: InternalQuery;
 
 	/**
 	 * Permissions rules for the item access of the children of this item.

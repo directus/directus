@@ -1,10 +1,10 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
+import type { FieldNode, FunctionFieldNode, InternalQuery, NestedCollectionNode } from '../../../types/index.js';
 import { getRelationType } from '../../../utils/get-relation-type.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
@@ -19,7 +19,7 @@ export interface ParseFieldsOptions {
 	accountability: Accountability | null;
 	parentCollection: string;
 	fields: string[] | null;
-	query: Query;
+	query: InternalQuery;
 	deep?: Record<string, any>;
 }
 

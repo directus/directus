@@ -1,13 +1,14 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import type { InternalQuery } from '../../../types/query.js';
 import { getRelation } from '../utils/get-relation.js';
 
 export interface ConvertWildcardsOptions {
 	parentCollection: string;
 	fields: string[];
-	query: Query;
+	query: InternalQuery;
 	accountability: Accountability | null;
 }
 

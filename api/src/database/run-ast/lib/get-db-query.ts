@@ -1,8 +1,9 @@
 import { useEnv } from '@directus/env';
-import type { Filter, Query, SchemaOverview } from '@directus/types';
+import type { Filter, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
+import type { InternalQuery } from '../../../types/query.js';
 import type { ColumnSortRecord } from '../../../utils/apply-query.js';
 import applyQuery, { applyLimit, applySort, generateAlias } from '../../../utils/apply-query.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
@@ -20,7 +21,7 @@ export function getDBQuery(
 	table: string,
 	fieldNodes: (FieldNode | FunctionFieldNode)[],
 	o2mNodes: O2MNode[],
-	query: Query,
+	query: InternalQuery,
 	cases: Filter[],
 ): Knex.QueryBuilder {
 	const aliasMap: AliasMap = Object.create(null);
@@ -44,7 +45,7 @@ export function getDBQuery(
 	const primaryKey = schema.collections[table]!.primary;
 	let dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
-	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc' }[] = [];
+	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc'; nulls: 'first' | 'last' | undefined }[] = [];
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
@@ -122,7 +123,7 @@ export function getDBQuery(
 					orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
 				}
 
-				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
+				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order, nulls: sortRecord.nulls });
 			});
 
 			dbQuery.orderByRaw(orderByString, orderByFields);
