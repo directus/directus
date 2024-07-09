@@ -43,6 +43,7 @@ test('Fetches policies for public role and user when user is given without role'
 			],
 		},
 		fields: ['policy.id', 'policy.ip_access'],
+		sort: [{ field: 'user', nulls: 'last' }],
 		limit: -1,
 	});
 
@@ -70,6 +71,7 @@ test('Fetches policies for public role when no roles and user are given', async 
 			],
 		},
 		fields: ['policy.id', 'policy.ip_access'],
+		sort: [{ field: 'user', nulls: 'last' }],
 		limit: -1,
 	});
 
@@ -88,6 +90,8 @@ test('Fetched policies for user roles', async () => {
 			},
 		},
 		fields: ['policy.id', 'policy.ip_access'],
+		sort: [{ field: 'user', nulls: 'last' }],
+
 		limit: -1,
 	});
 
@@ -115,6 +119,7 @@ test('Fetches policies for user roles and user if user is passed', async () => {
 			],
 		},
 		fields: ['policy.id', 'policy.ip_access'],
+		sort: [{ field: 'user', nulls: 'last' }],
 		limit: -1,
 	});
 
