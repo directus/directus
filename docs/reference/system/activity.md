@@ -229,7 +229,7 @@ const result = await client.request(
 
 ## Create a Comment
 
-Creates a new comment on a given item.
+Creates a new comment on a given item. This endpoint is only available to authenticated users.
 
 ### Request
 
@@ -342,7 +342,7 @@ const result = await client.request(
 
 ## Update a Comment
 
-Updates an existing comment by activity action primary key.
+Updates an existing comment by activity action primary key. This endpoint is only available to authenticated users.
 
 ### Response
 
@@ -441,7 +441,7 @@ const result = await client.request(
 
 ## Delete a Comment
 
-Deletes a comment.
+Deletes a comment. This endpoint is only available to authenticated users.
 
 ### Request
 
