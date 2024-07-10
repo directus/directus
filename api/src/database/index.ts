@@ -136,6 +136,8 @@ export function getDatabase(): Knex {
 	}
 
 	if (client === 'mysql') {
+		Object.assign(knexConfig, { client: 'mysql2' });
+
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
 			logger.trace('Retrieving database version');
 			const run = promisify(conn.query.bind(conn));
