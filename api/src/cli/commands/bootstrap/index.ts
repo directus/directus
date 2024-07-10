@@ -8,7 +8,7 @@ import getDatabase, {
 } from '../../../database/index.js';
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
-import { useLogger } from '../../../logger.js';
+import { useLogger } from '../../../logger/index.js';
 import { AccessService } from '../../../services/access.js';
 import { PoliciesService } from '../../../services/policies.js';
 import { RolesService } from '../../../services/roles.js';

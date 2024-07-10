@@ -14,7 +14,7 @@ import path from 'path';
 import url from 'url';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';

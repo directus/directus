@@ -3,7 +3,7 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';

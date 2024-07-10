@@ -1,6 +1,6 @@
 import { createInspector } from '@directus/schema';
 import type { Knex } from 'knex';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
