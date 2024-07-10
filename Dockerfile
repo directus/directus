@@ -53,12 +53,15 @@ EXPOSE 8055
 
 ENV \
 	DB_CLIENT="sqlite3" \
-	DB_FILENAME="/directus/database/database.sqlite" \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
 COPY --from=builder --chown=node:node /directus/ecosystem.config.cjs .
 COPY --from=builder --chown=node:node /directus/dist .
+
+RUN if [ "$DB_CLIENT" = "sqlite3" ]; then \
+    export DB_FILENAME="/directus/database/database.sqlite"; \
+fi
 
 CMD : \
 	&& node cli.js bootstrap \
