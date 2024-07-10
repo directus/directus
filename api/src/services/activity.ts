@@ -1,6 +1,6 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
@@ -28,19 +28,17 @@ export class ActivityService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!this.accountability?.user) throw new ForbiddenError();
+
 		if (data['action'] === Action.COMMENT && typeof data['comment'] === 'string') {
 			const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 
 			const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
 
 			if (mentions.length > 0) {
-				let sender;
-
-				if (this.accountability?.user) {
-					sender = await this.usersService.readOne(this.accountability.user, {
-						fields: ['id', 'first_name', 'last_name', 'email'],
-					});
-				}
+				const sender = await this.usersService.readOne(this.accountability.user, {
+					fields: ['id', 'first_name', 'last_name', 'email'],
+				});
 
 				for (const mention of mentions) {
 					const userID = mention.substring(1);
@@ -104,7 +102,7 @@ ${comment}
 
 						await this.notificationsService.createOne({
 							recipient: userID,
-							sender: sender?.['id'] ?? null,
+							sender: sender['id'],
 							subject: `You were mentioned in ${data['collection']}`,
 							message,
 							collection: data['collection'],
@@ -122,5 +120,17 @@ ${comment}
 		}
 
 		return super.createOne(data, opts);
+	}
+
+	override updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!this.accountability?.user) throw new ForbiddenError();
+
+		return super.updateOne(key, data, opts);
+	}
+
+	override deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!this.accountability?.user) throw new ForbiddenError();
+
+		return super.deleteOne(key, opts);
 	}
 }
