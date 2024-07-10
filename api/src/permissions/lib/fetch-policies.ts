@@ -32,7 +32,7 @@ export async function _fetchPolicies(
 		filter,
 		fields: ['policy.id', 'policy.ip_access'],
 		// Proritize policies attached to users
-		sort: [{ field: 'user', nulls: 'last' }],
+		sort: [{ field: 'user', nulls: 'last' }, 'sort'],
 		limit: -1,
 	})) as AccessRow[];
 
