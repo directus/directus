@@ -1,5 +1,6 @@
 ---
-'@directus/api': patch
+'@directus/api': major
+'docs': patch
 ---
 
-Fixed creating a comment as a public user
+Restricted comment create, update and delete to authenticated user
