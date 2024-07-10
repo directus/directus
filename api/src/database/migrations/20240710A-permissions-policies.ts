@@ -10,6 +10,12 @@ const PUBLIC_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 
 export async function up(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// If the policies table already exists the migration has already run
+	if (await knex.schema.hasTable('directus_policies')) {
+		return;
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Create new policies table that mirrors previous Roles
 
 	await knex.schema.createTable('directus_policies', (table) => {
