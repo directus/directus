@@ -1,11 +1,11 @@
 name: Suggest new docs or enhancements
 description: Suggest new docs that don't currently exist, or enhancements to existing docs.
-labels: Documentation
+labels: [':file_folder: Documentation']
 body:
   - type: markdown
     attributes:
       value: |
-        Hi, thank you for taking the time to create an issue! If you're reporting a documentation inaccuracy or bug, please open [a docs inaccuracy](https://github.com/directus/directus/discussions/new?category=docs-problem) instead!
+        Hi, thank you for taking the time to create an issue! If you're reporting a documentation inaccuracy or bug, please open [a docs inaccuracy](https://github.com/directus/directus/issues/new?assignees=&labels=:file_folder:%20Documentation&projects=&template=docs_problem.yml) instead!
   - type: textarea
     attributes:
       label: Describe the Request
@@ -14,7 +14,7 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: Maintainence Strategy
+      label: Maintenance Strategy
       description: Docs need to be kept up to date. How often would this the resulting change require maintenance?
     validations:
       required: true

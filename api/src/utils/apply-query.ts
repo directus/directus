@@ -561,7 +561,9 @@ export function applyFilter(
 
 				validateFilterOperator(type, filterOperator, special);
 
-				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+				const aliasedCollection = aliasMap['']?.alias || collection;
+
+				applyFilterToQuery(`${aliasedCollection}.${filterPath[0]}`, filterOperator, filterValue, logical, collection);
 			}
 		}
 

@@ -35,6 +35,24 @@ export const updateTranslations =
 	};
 
 /**
+ * Update multiple translations as batch.
+ * @param items
+ * @param query
+ * @returns Returns the translation objects for the updated translations.
+ */
+export const updateTranslationsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusTranslation<Schema>>>(
+		items: Partial<DirectusTranslation<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateTranslationOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/translations`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
+
+/**
  * Update an existing translation.
  * @param key
  * @param item

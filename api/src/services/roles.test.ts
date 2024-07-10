@@ -1,4 +1,5 @@
 import { ForbiddenError, UnprocessableContentError } from '@directus/errors';
+import { randomUUID } from '@directus/random';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -15,11 +16,29 @@ import {
 	type MockedFunction,
 } from 'vitest';
 
+import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
+import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
+import { getUserCountsByRoles } from '../telemetry/utils/get-user-counts-by-roles.js';
+import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
 import { ItemsService, PermissionsService, PresetsService, RolesService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
 });
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		EMAIL_TEMPLATES_PATH: './templates',
+		USERS_ADMIN_ACCESS_LIMIT: 3,
+		USERS_APP_ACCESS_LIMIT: 3,
+		USERS_API_ACCESS_LIMIT: 3,
+	}),
+}));
+
+vi.mock('../telemetry/utils/check-increased-user-limits.js');
+vi.mock('../telemetry/utils/get-role-counts-by-users.js');
+vi.mock('../telemetry/utils/get-user-counts-by-roles.js');
+vi.mock('../telemetry/utils/should-check-user-limits.js');
 
 const testSchema = {
 	collections: {
@@ -66,6 +85,16 @@ describe('Integration Tests', () => {
 		tracker.on
 			.select(/"directus_roles"."id" from "directus_roles" order by "directus_roles"."id" asc limit .*/)
 			.response([]);
+
+		tracker.on
+			.select(
+				/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
+			)
+			.response([{ count: 0, admin_access: true, app_access: true }]);
+
+		vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 0, api: 0, app: 0 });
+		vi.mocked(getUserCountsByRoles).mockResolvedValueOnce({ admin: 0, app: 0, api: 0 });
+		vi.mocked(shouldCheckUserLimits).mockReturnValue(true);
 	});
 
 	afterEach(() => {
@@ -680,11 +709,11 @@ describe('Integration Tests', () => {
 			// "as any" are needed since these are private methods
 			checkForOtherAdminRolesSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminRoles')
-				.mockResolvedValueOnce(true);
+				.mockResolvedValue(true);
 
 			checkForOtherAdminUsersSpy = vi
 				.spyOn(RolesService.prototype as any, 'checkForOtherAdminUsers')
-				.mockResolvedValueOnce(true);
+				.mockResolvedValue(true);
 		});
 
 		afterEach(() => {
@@ -821,6 +850,294 @@ describe('Integration Tests', () => {
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 				await service.deleteByQuery({});
 				expect(checkForOtherAdminRolesSpy).toBeCalledTimes(1);
+			});
+		});
+	});
+
+	describe('User Limits Tests', () => {
+		let service: RolesService;
+		let checkForOtherAdminRolesSpy: MockInstance;
+		let checkForOtherAdminUsersSpy: MockInstance;
+
+		beforeEach(() => {
+			service = new RolesService({
+				knex: db,
+				schema: testSchema,
+			});
+
+			vi.mocked(checkIncreasedUserLimits).mockReset();
+			vi.mocked(getRoleCountsByUsers).mockReset();
+			vi.mocked(getUserCountsByRoles).mockReset();
+
+			// "as any" are needed since these are private methods
+			checkForOtherAdminRolesSpy = vi
+				.spyOn(RolesService.prototype as any, 'checkForOtherAdminRoles')
+				.mockResolvedValueOnce(true);
+
+			checkForOtherAdminUsersSpy = vi
+				.spyOn(RolesService.prototype as any, 'checkForOtherAdminUsers')
+				.mockResolvedValueOnce(true);
+		});
+
+		afterEach(() => {
+			checkForOtherAdminRolesSpy.mockRestore();
+			checkForOtherAdminUsersSpy.mockRestore();
+		});
+
+		describe('createOne', () => {
+			it('calculates the number of increased admin users', async () => {
+				await service.createOne({ admin_access: true, app_access: true, users: [1, 2, 3] });
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 }, []);
+			});
+
+			it('calculates the number of increased app users', async () => {
+				await service.createOne({ admin_access: false, app_access: true, users: [1, 2, 3] });
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 }, []);
+			});
+
+			it('calculates the number of increased api users', async () => {
+				await service.createOne({ admin_access: false, app_access: false, users: [1, 2, 3] });
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
+			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.createOne({ admin_access: true, app_access: true, users: [1, 2, 3] });
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
+			});
+		});
+
+		describe('createMany', () => {
+			it('calculates the number of increased admin users', async () => {
+				await service.createMany([
+					{ admin_access: true, app_access: true, users: [1] },
+					{ admin_access: true, app_access: true, users: [2, 3] },
+					{ admin_access: true, app_access: true, users: [4, 5, 6] },
+				]);
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 6, app: 0, api: 0 }, []);
+			});
+
+			it('calculates the number of increased app users', async () => {
+				await service.createMany([
+					{ admin_access: false, app_access: true, users: [1] },
+					{ admin_access: false, app_access: true, users: [2, 3] },
+					{ admin_access: false, app_access: true, users: [4, 5, 6] },
+				]);
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 6, api: 0 }, []);
+			});
+
+			it('calculates the number of increased api users', async () => {
+				await service.createMany([
+					{ admin_access: false, app_access: false, users: [1] },
+					{ admin_access: false, app_access: false, users: [2, 3] },
+					{ admin_access: false, app_access: false, users: [4, 5, 6] },
+				]);
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 6 }, []);
+			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.createMany([
+					{ admin_access: true, app_access: true, users: [1] },
+					{ admin_access: true, app_access: true, users: [2, 3] },
+					{ admin_access: true, app_access: true, users: [4, 5, 6] },
+				]);
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
+			});
+		});
+
+		describe('updateOne', () => {
+			it('calculates the number of increased admin users', async () => {
+				tracker.resetHandlers();
+
+				tracker.on
+					.select(
+						/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
+					)
+					.responseOnce([{ count: 2, admin_access: true, app_access: true }]);
+
+				vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 2, app: 0, api: 0 });
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 11, app: 0, api: 0 });
+
+				await service.updateOne(randomUUID(), {
+					admin_access: true,
+					app_access: true,
+					users: [1, 2, 3, 4, 5],
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 }, []);
+			});
+
+			it('calculates the number of increased admin users with access change', async () => {
+				tracker.resetHandlers();
+
+				tracker.on
+					.select(
+						/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
+					)
+					.responseOnce([{ count: 2, admin_access: false, app_access: true }]);
+
+				vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 2, app: 0, api: 0 });
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 11, app: 0, api: 0 });
+
+				await service.updateOne(randomUUID(), {
+					admin_access: true,
+					app_access: true,
+					users: [1, 2, 3, 4, 5],
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 5, app: 0, api: 0 }, []);
+			});
+
+			it('calculates the number of increased app users', async () => {
+				tracker.resetHandlers();
+
+				tracker.on
+					.select(
+						/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
+					)
+					.responseOnce([{ count: 2, admin_access: false, app_access: true }]);
+
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 0, app: 22, api: 0 });
+
+				await service.updateOne(randomUUID(), {
+					admin_access: false,
+					app_access: true,
+					users: [1, 2, 3, 4, 5],
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 }, []);
+			});
+
+			it('calculates the number of increased app users with access change', async () => {
+				tracker.resetHandlers();
+
+				tracker.on
+					.select(
+						/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
+					)
+					.responseOnce([{ count: 2, admin_access: false, app_access: false }]);
+
+				vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 0, app: 2, api: 0 });
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 0, app: 22, api: 0 });
+
+				await service.updateOne(randomUUID(), {
+					admin_access: false,
+					app_access: true,
+					users: [1, 2, 3, 4, 5],
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 5, api: 0 }, []);
+			});
+
+			it('calculates the number of increased api users', async () => {
+				tracker.resetHandlers();
+
+				tracker.on
+					.select(
+						/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
+					)
+					.responseOnce([{ count: 2, admin_access: false, app_access: false }]);
+
+				vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 0, app: 0, api: 2 });
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 0, app: 0, api: 33 });
+
+				await service.updateOne(randomUUID(), {
+					admin_access: false,
+					app_access: false,
+					users: [1, 2, 3, 4, 5],
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 }, []);
+			});
+
+			it('calculates the number of increased api users with access change', async () => {
+				tracker.resetHandlers();
+
+				tracker.on
+					.select(
+						/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(where "directus_roles"\."id" = \?).*/,
+					)
+					.responseOnce([{ count: 2, admin_access: false, app_access: true }]);
+
+				vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 0, app: 0, api: 2 });
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 0, app: 0, api: 33 });
+
+				await service.updateOne(randomUUID(), {
+					admin_access: false,
+					app_access: false,
+					users: [1, 2, 3, 4, 5],
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 5 }, []);
+			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.updateOne(randomUUID(), {
+					admin_access: false,
+					app_access: true,
+					users: [1, 2, 3, 4, 5],
+				});
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
+			});
+		});
+
+		describe('updateMany', () => {
+			it('calculates the number of increased admin users', async () => {
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 11, app: 22, api: 33 });
+
+				await service.updateMany([randomUUID(), randomUUID(), randomUUID()], {
+					admin_access: true,
+					app_access: true,
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 55, app: 0, api: 0 });
+			});
+
+			it('calculates the number of increased app users', async () => {
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 11, app: 22, api: 33 });
+
+				await service.updateMany([randomUUID(), randomUUID(), randomUUID()], {
+					admin_access: false,
+					app_access: true,
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 44, api: 0 });
+			});
+
+			it('calculates the number of increased api users', async () => {
+				vi.mocked(getUserCountsByRoles).mockResolvedValue({ admin: 11, app: 22, api: 33 });
+
+				await service.updateMany([randomUUID(), randomUUID(), randomUUID()], {
+					admin_access: false,
+					app_access: false,
+				});
+
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 33 });
+			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.updateMany([randomUUID(), randomUUID(), randomUUID()], {
+					admin_access: false,
+					app_access: true,
+				});
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
 			});
 		});
 	});

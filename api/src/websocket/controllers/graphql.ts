@@ -3,7 +3,7 @@ import type { Server } from 'graphql-ws';
 import { CloseCode, MessageType, makeServer } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
 import type { WebSocket } from 'ws';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
 import { GraphQLService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';

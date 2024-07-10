@@ -275,6 +275,14 @@ export default class MSSQL implements SchemaInspector {
 	async columnInfo(table?: string, column?: string) {
 		const dbName = this.knex.client.database();
 
+		const schemaIdResult = await this.knex.select('schema_id').from('sys.schemas').where({ name: this.schema }).first();
+
+		const schemaId = schemaIdResult.schema_id;
+
+		if (!schemaId) {
+			throw new Error(`Schema '${this.schema}' not found.`);
+		}
+
 		const query = this.knex
 			.select(
 				this.knex.raw(`
@@ -336,7 +344,7 @@ export default class MSSQL implements SchemaInspector {
         AND ISNULL([i].[index_column_count], 1) = 1
         AND ISNULL([i].[index_priority], 1) = 1`,
 			)
-			.where({ 's.name': this.schema });
+			.where({ 's.schema_id': schemaId });
 
 		if (table) {
 			query.andWhere({ 'o.name': table });

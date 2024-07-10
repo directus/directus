@@ -6,7 +6,7 @@ import hash from 'object-hash';
 import { getCache, getCacheValue, getSystemCache, setCacheValue, setSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import { appAccessMinimalPermissions } from '@directus/system-data';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { RolesService } from '../services/roles.js';
 import { UsersService } from '../services/users.js';
 import { mergePermissionsForShare } from './merge-permissions-for-share.js';

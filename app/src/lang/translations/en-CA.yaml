@@ -497,7 +497,6 @@ edit_bookmark: Edit Bookmark
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
-unexpected_error_copy: An unexpected error has occurred. Please try again later.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.

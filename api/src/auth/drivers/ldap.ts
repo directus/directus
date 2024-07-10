@@ -16,7 +16,7 @@ import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } f
 import ldap from 'ldapjs';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { respond } from '../../middleware/respond.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
