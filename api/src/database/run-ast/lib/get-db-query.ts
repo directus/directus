@@ -102,7 +102,7 @@ export function getDBQuery(
 			let orderByString = '';
 			const orderByFields: Knex.Raw[] = [];
 
-			sortRecords.map((sortRecord) => {
+			for (const sortRecord of sortRecords) {
 				if (orderByString.length !== 0) {
 					orderByString += ', ';
 				}
@@ -124,7 +124,7 @@ export function getDBQuery(
 				}
 
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order, nulls: sortRecord.nulls });
-			});
+			}
 
 			dbQuery.orderByRaw(orderByString, orderByFields);
 
@@ -139,7 +139,7 @@ export function getDBQuery(
 				);
 			}
 		} else {
-			sortRecords.map((sortRecord) => {
+			for (const sortRecord of sortRecords) {
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
 
@@ -149,9 +149,14 @@ export function getDBQuery(
 				} else {
 					sortRecord.column = getColumn(knex, table, sortRecord.column, false, schema) as any;
 				}
-			});
 
-			dbQuery.orderBy(sortRecords);
+				if (!sortRecord.nulls) {
+					dbQuery.orderBy([sortRecord]);
+				} else {
+					// Manually apply `nulls` order due to https://github.com/knex/knex/issues/5723
+					dbQuery.orderByRaw(`?? ${sortRecord.order} nulls ${sortRecord.nulls}`, sortRecord.column);
+				}
+			}
 		}
 	}
 

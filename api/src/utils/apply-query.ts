@@ -318,7 +318,6 @@ export function applySort(
 				return {
 					order,
 					column: 'countAll',
-					...(nulls && { nulls }),
 				};
 			}
 
@@ -327,7 +326,6 @@ export function applySort(
 				return {
 					order,
 					column: 'count',
-					...(nulls && { nulls }),
 				};
 			}
 
@@ -335,7 +333,6 @@ export function applySort(
 			return {
 				order,
 				column: returnRecords ? column[0] : `${operation}->${field}`,
-				...(nulls && { nulls }),
 			};
 		}
 
