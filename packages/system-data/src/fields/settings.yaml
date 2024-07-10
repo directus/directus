@@ -224,9 +224,6 @@ fields:
     note: $t:fields.directus_settings.public_registration_role_note
     options:
       template: '{{ name }}'
-      filter:
-        admin_access:
-          _eq: false
     special:
       - m2o
     width: half

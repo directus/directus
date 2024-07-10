@@ -24,7 +24,7 @@ import Draggable from 'vuedraggable';
 const props = withDefaults(
 	defineProps<{
 		value?: (number | string | Record<string, any>)[] | Record<string, any>;
-		primaryKey: string | number;
+		primaryKey: string | number | null;
 		collection: string;
 		field: string;
 		width: string;
@@ -41,6 +41,7 @@ const props = withDefaults(
 		limit?: number;
 		allowDuplicates?: boolean;
 		junctionFieldLocation?: string;
+		junctionFilter?: Filter | null;
 	}>(),
 	{
 		value: () => [],
@@ -123,6 +124,7 @@ const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
 const sort = ref<Sort>();
+const junctionFilter = ref<Filter | null>(props.junctionFilter ?? null);
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
@@ -137,6 +139,14 @@ const query = computed<RelationQueryMultiple>(() => {
 
 	if (searchFilter.value) {
 		q.filter = searchFilter.value;
+	}
+
+	if (junctionFilter.value) {
+		if (q.filter) {
+			q.filter = { _and: [q.filter, junctionFilter.value] };
+		} else {
+			q.filter = junctionFilter.value;
+		}
 	}
 
 	if (search.value) {
@@ -221,7 +231,9 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true },
+	{
+		immediate: true,
+	},
 );
 
 const spacings = {

@@ -18,7 +18,7 @@ Action that was performed.
 Collection identifier in which the item resides.
 
 `comment` **string**\
-User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin app.
+User comment. This will store the comments that show up in the right sidebar of the item edit page in the Data Studio.
 
 `id` **integer**\
 Unique identifier for the object.

@@ -260,14 +260,14 @@ Each panel exists within a [Dashboard](#dashboards) and can be positioned and re
 
 ![Panels](https://marketing.directus.app/assets/2af5a9ce-ddfb-44ca-a8fc-afa18018841f.png)
 
-### Relevant Guides
-
-- [Creating a Custom Panel](/extensions/panels)
-
 ## Permissions
 
-Permissions are attached directly to a Role, defining what a user can create, read, update, and delete within the
+Permissions are attached directly to a Policy, defining what a user can create, read, update, and delete within the
 platform. Extremely granular, these filter-based permissions control access for the entire system.
+
+## Policies
+
+Policies define a specific set of access permissions, and can be attached directly to users or to roles.
 
 ## Presets
 
@@ -316,22 +316,16 @@ to the activity event where it was created.
 
 ## Roles
 
-Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
-platform. You can create an unlimited number of roles, so organize your users in whatever way feels most appropriate.
+Roles define a specific set of Policies, and are the primary organizational structure for Users within the platform. You
+can create an unlimited number of roles, so organize your users in whatever way feels most appropriate.
+
+Roles can also contain any number of additional roles, each containing their own set of Policies.
 
 During the installation process, Directus automatically creates an "Administrators" Role, which is used to provide the
 initial admin user with full platform access. However this is just a _normal_ role, and so it can still be updated,
 renamed, or even deleted. Keep in mind that your project must maintain at least one role with Admin Access at all times.
 
 There is also a "Public" role that determines access for unauthenticated access.
-
-### Relevant Guides
-
-- [Creating a Role](/user-guide/user-management/users-roles-permissions#creating-a-role)
-- [Configuring a Role](/user-guide/user-management/users-roles-permissions#configure-a-role)
-- [Configuring Role Permissions](/user-guide/user-management/users-roles-permissions#configure-permissions)
-- [Configuring System Permissions](/user-guide/user-management/users-roles-permissions#configure-system-permissions)
-- [Deleting a Role](/user-guide/user-management/users-roles-permissions#deleting-a-role)
 
 ## Singleton
 
@@ -359,7 +353,7 @@ a Pull Request to the codebase, otherwise you can update this in your instance.
 
 ## Translations
 
-The platform supports internationalization across its entire Admin App. Many languages are currently supported, with
+The platform supports internationalization across its entire Data Studio. Many languages are currently supported, with
 more being added all the time. Anyone can add or refine any languages through the integration with
 [Crowdin](https://locales.directus.io).
 
@@ -408,6 +402,6 @@ For **SQLite**, the **Timestamp** type is stored as a **DateTime**.
 
 ## Users
 
-An active User is required to access a project. Each user is assigned to a [Role](#roles) that determines what they have
-access to see and do. This means that the experience of users may vary significantly depending on their role's
-permissions.
+An active User is required to access a project. Each user is assigned to a [Role](#roles) that determines their policies
+what they have access to see and do. This means that the experience of users may vary significantly depending on their
+role's permissions. Users can also have policies directly attached to them.

@@ -81,7 +81,27 @@ const systemDefaults: Record<string, Partial<Preset>> = {
 		layout: 'tabular',
 		layout_query: {
 			tabular: {
+				sort: ['name'],
 				fields: ['icon', 'name', 'description'],
+			},
+		},
+		layout_options: {
+			tabular: {
+				widths: {
+					icon: 36,
+					name: 248,
+					description: 500,
+				},
+			},
+		},
+	},
+	directus_policies: {
+		collection: 'directus_policies',
+		layout: 'tabular',
+		layout_query: {
+			tabular: {
+				sort: ['name'],
+				fields: ['icon', 'name', 'app_access', 'admin_access', 'description'],
 			},
 		},
 		layout_options: {
@@ -169,13 +189,14 @@ export const usePresetsStore = defineStore({
 						'filter[user][_eq]': id,
 					},
 				}),
-				// All role saved bookmarks and presets
-				fetchAll<any>(`/presets`, {
-					params: {
-						'filter[role][_eq]': role.id,
-						'filter[user][_null]': true,
-					},
-				}),
+				role?.id // All role saved bookmarks and presets
+					? fetchAll<any>(`/presets`, {
+							params: {
+								'filter[role][_eq]': role.id,
+								'filter[user][_null]': true,
+							},
+					  })
+					: Promise.resolve([]),
 				// All global saved bookmarks and presets
 				fetchAll<any>(`/presets`, {
 					params: {
@@ -259,7 +280,7 @@ export const usePresetsStore = defineStore({
 
 			const availablePresets = this.collectionPresets.filter((preset) => {
 				const userMatches = preset.user === userID || preset.user === null;
-				const roleMatches = preset.role === userRole.id || preset.role === null;
+				const roleMatches = preset.role === userRole?.id || preset.role === null;
 				const collectionMatches = preset.collection === collection;
 
 				// Filter out all bookmarks
@@ -277,7 +298,7 @@ export const usePresetsStore = defineStore({
 			const userPreset = availablePresets.find((preset) => preset.user === userID);
 			if (userPreset) return userPreset;
 
-			const rolePreset = availablePresets.find((preset) => preset.role === userRole.id);
+			const rolePreset = availablePresets.find((preset) => preset.role === userRole?.id);
 			if (rolePreset) return rolePreset;
 
 			// If the other two already came up empty, we can assume there's only one preset. That

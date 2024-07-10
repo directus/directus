@@ -10,6 +10,7 @@ import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
+import { clearCache as clearPermissionCache } from './permissions/cache.js';
 
 import { createRequire } from 'node:module';
 
@@ -109,6 +110,10 @@ export async function clearSystemCache(opts?: {
 
 	await sharedSchemaCache.clear();
 	await localSchemaCache.clear();
+
+	// Since a lot of cached permission function rely on the schema it needs to be cleared as well
+	await clearPermissionCache();
+
 	messenger.publish<CacheMessage>('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
 

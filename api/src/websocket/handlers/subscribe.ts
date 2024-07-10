@@ -4,7 +4,6 @@ import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
-import { refreshAccountability } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import type { WebSocketEvent } from '../messages.js';
 import { WebSocketSubscribeMessage } from '../messages.js';
@@ -124,8 +123,6 @@ export class SubscribeHandler {
 			}
 
 			try {
-				client.accountability = await refreshAccountability(client.accountability);
-
 				const result = await getPayload(subscription, client.accountability, schema, event);
 
 				if (Array.isArray(result?.['data']) && result?.['data']?.length === 0) continue;

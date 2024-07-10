@@ -95,4 +95,18 @@ export class KvRedis implements Kv {
 		const wasSet = await this.redis.setMax(withNamespace(key, this.namespace), value);
 		return wasSet !== 0;
 	}
+
+	async clear() {
+		const keysStream = this.redis.scanStream({
+			match: withNamespace('*', this.namespace),
+		});
+
+		const pipeline = this.redis.pipeline();
+
+		for await (const keys of keysStream) {
+			pipeline.unlink(keys);
+		}
+
+		await pipeline.exec();
+	}
 }

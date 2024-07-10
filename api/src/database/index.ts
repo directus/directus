@@ -232,7 +232,7 @@ export function getDatabaseClient(database?: Knex): DatabaseClient {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
-		case 'Client_MySQL':
+		case 'Client_MySQL2':
 			return 'mysql';
 		case 'Client_PG':
 			return 'postgres';

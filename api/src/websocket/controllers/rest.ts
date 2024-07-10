@@ -4,7 +4,6 @@ import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
-import { refreshAccountability } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
@@ -29,7 +28,6 @@ export class WebSocketController extends SocketController {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
 			try {
 				message = WebSocketMessage.parse(await emitter.emitFilter('websocket.message', message, { client }));
-				client.accountability = await refreshAccountability(client.accountability);
 				emitter.emitAction('websocket.message', { message, client });
 			} catch (error) {
 				handleWebSocketError(client, error, 'server');
