@@ -3,4 +3,4 @@
 'docs': patch
 ---
 
-Restricted comment create, update and delete to authenticated user
+Restricted comment create, update and delete to authenticated users
