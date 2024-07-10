@@ -608,8 +608,8 @@ importers:
         specifier: 1.4.2
         version: 1.4.2
       '@editorjs/paragraph':
-        specifier: 2.11.5
-        version: 2.11.5
+        specifier: 2.11.6
+        version: 2.11.6
       '@editorjs/quote':
         specifier: 2.6.0
         version: 2.6.0
@@ -2858,8 +2858,8 @@ packages:
   '@editorjs/nested-list@1.4.2':
     resolution: {integrity: sha512-qb1dAoJ+bihqmlR3822TC2GuIxEjTCLTZsZVWNces3uJIZ+W4019G3IJKBt/MOOgz4Evzad/RvUEKwPCPe6YOQ==}
 
-  '@editorjs/paragraph@2.11.5':
-    resolution: {integrity: sha512-ZcUKnVOoFPuMdVJJXMo2odmsjxeZQOUxmOwOiZktRuFkRDMq9qCqkmzqE1BH5VR6YyyMLKV4ZBEwedwggDH8iA==}
+  '@editorjs/paragraph@2.11.6':
+    resolution: {integrity: sha512-i9B50Ylvh+0ZzUGWIba09PfUXsA00Y//zFZMwqsyaXXKxMluSIJ6ADFJbbK0zaV9Ijx49Xocrlg+CEPRqATk9w==}
 
   '@editorjs/quote@2.6.0':
     resolution: {integrity: sha512-8DiCMBT4n4UDV5bgzvfRH26HmL6YWddGC4+twvjhR+PzX0gwrnY8nFifvro79EeSqxwRtFjjlGnu5I0VTfw5aQ==}
@@ -13605,7 +13605,7 @@ snapshots:
     dependencies:
       '@codexteam/icons': 0.0.2
 
-  '@editorjs/paragraph@2.11.5':
+  '@editorjs/paragraph@2.11.6':
     dependencies:
       '@codexteam/icons': 0.0.4
 
