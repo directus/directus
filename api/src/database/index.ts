@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -136,6 +137,9 @@ export function getDatabase(): Knex {
 	}
 
 	if (client === 'mysql') {
+		// Remove the conflicting `filename` option, defined by default in the Docker Image
+		if (isObject(knexConfig.connection)) delete knexConfig.connection['filename'];
+
 		Object.assign(knexConfig, { client: 'mysql2' });
 
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
