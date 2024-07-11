@@ -65,7 +65,7 @@
 	},
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
-		"@aws-sdk/client-ses": "3.600.0",
+		"@aws-sdk/client-ses": "3.614.0",
 		"@directus/app": "workspace:*",
 		"@directus/constants": "workspace:*",
 		"@directus/env": "workspace:*",
