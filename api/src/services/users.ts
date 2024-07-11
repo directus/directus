@@ -165,7 +165,7 @@ export class UsersService extends ItemsService {
 		const payload = { email, scope: 'invite' };
 
 		const token = jwt.sign(payload, getSecret(), {
-			expiresIn: (env['USER_INVITE_TOKEN_TTL'] as string) ?? '7d',
+			expiresIn: env['USER_INVITE_TOKEN_TTL'] as string,
 			issuer: 'directus',
 		});
 
