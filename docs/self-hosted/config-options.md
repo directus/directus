@@ -766,6 +766,7 @@ AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
 AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
 AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
 AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
+AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION=true
 ```
 
 More example SSO configurations [can be found here](/self-hosted/sso-examples).
