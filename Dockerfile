@@ -53,7 +53,7 @@ EXPOSE 8055
 
 ENV \
 	DB_CLIENT="sqlite3" \
- 	DB_FILENAME="/directus/database/database.sqlite" \
+	DB_FILENAME="/directus/database/database.sqlite" \
 	NODE_ENV="production" \
 	NPM_CONFIG_UPDATE_NOTIFIER="false"
 
