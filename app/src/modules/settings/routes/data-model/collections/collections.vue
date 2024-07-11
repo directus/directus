@@ -208,13 +208,6 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		</template>
 
 		<div class="padding-box">
-			<div class="expand-collapse-button">
-				{{ t('expand') }}
-				<button @click="expandAll">{{ t('all') }}</button>
-				/
-				<button @click="collapseAll">{{ t('none') }}</button>
-			</div>
-
 			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}
 
@@ -223,30 +216,39 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				</template>
 			</v-info>
 
-			<v-list v-else class="draggable-list">
-				<draggable
-					:model-value="rootCollections"
-					:group="{ name: 'collections' }"
-					:swap-threshold="0.3"
-					class="root-drag-container"
-					item-key="collection"
-					handle=".drag-handle"
-					v-bind="{ 'force-fallback': true }"
-					@update:model-value="onSort($event, true)"
-				>
-					<template #item="{ element }">
-						<collection-item
-							:collection="element"
-							:collections="collections"
-							:is-collapsed="element.isCollapsed"
-							:visibility-tree="findVisibilityChild(element.collection)!"
-							@edit-collection="editCollection = $event"
-							@set-nested-sort="onSort"
-							@toggle-collapse="toggleCollapse"
-						/>
-					</template>
-				</draggable>
-			</v-list>
+			<template v-else>
+				<div class="expand-collapse-button">
+					{{ t('expand') }}
+					<button @click="expandAll">{{ t('all') }}</button>
+					/
+					<button @click="collapseAll">{{ t('none') }}</button>
+				</div>
+
+				<v-list class="draggable-list">
+					<draggable
+						:model-value="rootCollections"
+						:group="{ name: 'collections' }"
+						:swap-threshold="0.3"
+						class="root-drag-container"
+						item-key="collection"
+						handle=".drag-handle"
+						v-bind="{ 'force-fallback': true }"
+						@update:model-value="onSort($event, true)"
+					>
+						<template #item="{ element }">
+							<collection-item
+								:collection="element"
+								:collections="collections"
+								:is-collapsed="element.isCollapsed"
+								:visibility-tree="findVisibilityChild(element.collection)!"
+								@edit-collection="editCollection = $event"
+								@set-nested-sort="onSort"
+								@toggle-collapse="toggleCollapse"
+							/>
+						</template>
+					</draggable>
+				</v-list>
+			</template>
 
 			<v-list class="db-only">
 				<v-list-item
