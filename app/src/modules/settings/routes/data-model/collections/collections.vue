@@ -208,13 +208,11 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		</template>
 
 		<div class="padding-box">
-			<div class="inline-header">
-				<span class="expand-collapse-button">
-					{{ t('expand') }}
-					<button @click="expandAll">{{ t('all') }}</button>
-					/
-					<button @click="collapseAll">{{ t('none') }}</button>
-				</span>
+			<div class="expand-collapse-button">
+				{{ t('expand') }}
+				<button @click="expandAll">{{ t('all') }}</button>
+				/
+				<button @click="collapseAll">{{ t('none') }}</button>
 			</div>
 
 			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
@@ -358,23 +356,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 	margin-bottom: 16px;
 }
 
-.inline-header {
-	position: sticky;
-	top: var(--layout-offset-top);
-	z-index: 4;
-	display: flex;
-	align-items: center;
-	justify-content: end;
-	width: 100%;
-	height: 44px;
-	padding: 0 8px;
-	background-color: var(--theme--background);
-	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	box-shadow: 0 0 0 2px var(--theme--background);
-}
-
 .expand-collapse-button {
+	padding-top: 4px;
+	text-align: right;
 	color: var(--theme--foreground-subdued);
 
 	button {
@@ -386,5 +370,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		color: var(--theme--foreground);
 		transition: none;
 	}
+}
+
+.v-list.draggable-list {
+	padding-top: 0;
 }
 </style>
