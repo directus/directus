@@ -4,4 +4,4 @@
 '@directus/api': minor
 ---
 
-Added support for the USER_INVITE_TOKEN_TTL environment variable
+Introduced the `USER_INVITE_TOKEN_TTL` option, allowing to configure the expiration of user invitations
