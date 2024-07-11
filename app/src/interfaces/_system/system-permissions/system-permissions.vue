@@ -574,18 +574,16 @@ function useGroupedPermissions() {
 		{{ t('admins_have_all_permissions') }}
 	</v-notice>
 
-	<div v-else class="permissions-list">
-		<table v-if="!loading || allPermissions.length > 0">
+	<div v-else-if="!loading || allPermissions.length > 0" class="permissions-list">
+		<table>
 			<permissions-header />
 
 			<tbody>
-				<template v-if="allPermissions.length === 0">
-					<tr>
-						<td class="empty-state" colspan="7">
-							{{ t('no_permissions') }}
-						</td>
-					</tr>
-				</template>
+				<tr v-if="allPermissions.length === 0">
+					<td class="empty-state" colspan="7">
+						{{ t('no_permissions') }}
+					</td>
+				</tr>
 
 				<permissions-row
 					v-for="group in regularPermissions"
@@ -600,9 +598,9 @@ function useGroupedPermissions() {
 					@set-no-access="setNoAccess(group.collection.collection, $event)"
 				/>
 
-				<tr>
+				<tr v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
 					<td colspan="7" class="system-divider">
-						<v-divider v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
+						<v-divider>
 							{{ t('system_collections') }}
 						</v-divider>
 					</td>
@@ -629,7 +627,9 @@ function useGroupedPermissions() {
 					@set-full-access="setFullAccess(group.collection.collection, $event)"
 					@set-no-access="setNoAccess(group.collection.collection, $event)"
 				/>
+			</tbody>
 
+			<tfoot>
 				<tr v-if="appAccess">
 					<td colspan="7" class="reset-toggle">
 						<span>
@@ -647,7 +647,7 @@ function useGroupedPermissions() {
 					"
 					@select="addEmptyPermission($event)"
 				/>
-			</tbody>
+			</tfoot>
 		</table>
 	</div>
 
@@ -678,9 +678,10 @@ function useGroupedPermissions() {
 
 <style scoped lang="scss">
 .permissions-list {
+	overflow: auto;
+
 	table {
 		width: 100%;
-		max-width: 792px;
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		border-spacing: 0;
