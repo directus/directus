@@ -6,6 +6,12 @@ export default defineConfig({
 	plugins: [tsconfigPaths()],
 	test: {
 		pool: 'forks',
+		poolOptions: {
+			forks: {
+				minForks: 1,
+				maxForks: 6,
+			},
+		},
 		environment: './setup/environment.ts',
 		sequence: {
 			sequencer: Sequencer,

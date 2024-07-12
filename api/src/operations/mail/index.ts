@@ -2,7 +2,7 @@ import { defineOperationApi } from '@directus/extensions';
 import type { EmailOptions } from '../../services/mail/index.js';
 import { MailService } from '../../services/mail/index.js';
 import { md } from '../../utils/md.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 
 export type Options = {
 	body?: string;

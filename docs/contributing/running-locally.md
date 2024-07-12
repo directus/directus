@@ -76,7 +76,7 @@ which will create the database (file) for you.
 ::: tip Admin Account
 
 Adding the `ADMIN_EMAIL` & `ADMIN_PASSWORD` to the `.env` file before running the `bootstrap` command, will populate the
-admin user with the provided credentials instead of random values.
+admin user with the provided credentials instead of random values. `ADMIN_TOKEN` sets the API token for the admin user.
 
 :::
 

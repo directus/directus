@@ -1,7 +1,7 @@
 import { InvalidIpError } from '@directus/errors';
 import type { RequestHandler } from 'express';
 import getDatabase from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';
 
