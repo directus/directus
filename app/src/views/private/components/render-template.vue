@@ -40,8 +40,6 @@ const parts = computed(() =>
 
 			const value = get(props.item, fieldKeyBefore);
 
-			console.log(value, fieldKeyBefore);
-
 			return Array.isArray(value) ? handleArray(fieldKeyBefore, fieldKeyAfter) : handleObject(fieldKey);
 		})
 		.map((p) => p ?? null),
@@ -90,6 +88,16 @@ function handleObject(fieldKey: string) {
 
 	if (props.collection) {
 		field = fieldsStore.getField(props.collection, fieldKey);
+	}
+
+	const keyPrefix = fieldKey.split('.')[0]!;
+
+	// Check if the first part of the key is a M2A key
+	if (keyPrefix.includes(':')) {
+		// Strip out the :collection part from the field key, so that it can be used to access
+		// the correct field value in the item object
+		const fieldName = keyPrefix.split(':')[0];
+		fieldKey = `${fieldName}.${fieldKey.split('.').slice(1).join('.')}`;
 	}
 
 	/**
