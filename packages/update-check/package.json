@@ -41,7 +41,7 @@
 		"@vitest/coverage-v8": "1.5.3",
 		"strip-ansi": "7.1.0",
 		"tsup": "8.1.0",
-		"typescript": "5.4.5",
+		"typescript": "5.5.3",
 		"vitest": "1.5.3"
 	}
 }
