@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useLocalStorage } from '@/composables/use-local-storage';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
@@ -15,6 +14,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
+import { useExpandCollapse } from './composables/use-expand-collapse';
 
 const { t } = useI18n();
 
@@ -23,28 +23,7 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
-
-const { data: collapsedIds } = useLocalStorage<string[]>('collapsed-collection-ids', []);
-
-function collapseAll() {
-	collapsedIds.value = collectionsStore.collections.map((c) => c.collection);
-}
-
-function expandAll() {
-	collapsedIds.value = [];
-}
-
-function toggleCollapse(collection: string) {
-	if (!collapsedIds.value) return;
-
-	const isCollapsed = collapsedIds.value.includes(collection);
-
-	if (isCollapsed) {
-		collapsedIds.value = collapsedIds.value.filter((c) => c !== collection);
-	} else {
-		collapsedIds.value = [...collapsedIds.value, collection];
-	}
-}
+const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
 	return translate(
@@ -217,12 +196,14 @@ async function onSort(updates: Collection[], removeGroup = false) {
 			</v-info>
 
 			<template v-else>
-				<div class="expand-collapse-button">
-					{{ t('expand') }}
-					<button @click="expandAll">{{ t('all') }}</button>
-					/
-					<button @click="collapseAll">{{ t('none') }}</button>
-				</div>
+				<transition-expand>
+					<div v-if="hasExpandableCollections" class="expand-collapse-button">
+						{{ t('expand') }}
+						<button @click="expandAll">{{ t('all') }}</button>
+						/
+						<button @click="collapseAll">{{ t('none') }}</button>
+					</div>
+				</transition-expand>
 
 				<v-list class="draggable-list">
 					<draggable
