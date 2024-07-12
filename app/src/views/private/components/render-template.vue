@@ -38,8 +38,9 @@ const parts = computed(() =>
 			const fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
 			const fieldKeyAfter = fieldKey.split('.').slice(-1)[0];
 
-			// Try getting the value from the item, return some question marks if it doesn't exist
 			const value = get(props.item, fieldKeyBefore);
+
+			console.log(value, fieldKeyBefore);
 
 			return Array.isArray(value) ? handleArray(fieldKeyBefore, fieldKeyAfter) : handleObject(fieldKey);
 		})
@@ -119,14 +120,14 @@ function handleObject(fieldKey: string) {
 
 	const displayInfo = useExtension(
 		'display',
-		computed(() => field?.meta?.display ?? null),
+		computed(() => display),
 	);
 
 	// If used display doesn't exist in the current project, return raw value
 	if (!displayInfo.value) return value;
 
 	return {
-		component: field.meta?.display,
+		component: display,
 		options: field.meta?.display_options,
 		value: value,
 		interface: field.meta?.interface,
