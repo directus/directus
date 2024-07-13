@@ -2415,6 +2415,7 @@ export class GraphQLService {
 				args: {
 					email: new GraphQLNonNull(GraphQLString),
 					reset_url: GraphQLString,
+					subject: GraphQLString,
 				},
 				resolve: async (_, args, { req }) => {
 					const accountability: Accountability = { role: null };
@@ -2429,7 +2430,7 @@ export class GraphQLService {
 					const service = new UsersService({ accountability, schema: this.schema });
 
 					try {
-						await service.requestPasswordReset(args['email'], args['reset_url'] || null);
+						await service.requestPasswordReset(args['email'], args['reset_url'] || null, args['subject'] || null);
 					} catch (err: any) {
 						if (isDirectusError(err, ErrorCode.InvalidPayload)) {
 							throw err;
