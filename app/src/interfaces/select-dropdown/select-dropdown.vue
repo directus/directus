@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { i18n } from '@/lang';
 import { useI18n } from 'vue-i18n';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 
 type Option = {
 	text: string;
@@ -21,13 +21,14 @@ const props = withDefaults(
 		allowNone?: boolean;
 		placeholder?: string;
 		allowOther?: boolean;
+		resetValueOnOptionsUpdate?: boolean;
 	}>(),
 	{
 		placeholder: () => i18n.global.t('select_an_item'),
 	},
 );
 
-defineEmits(['input']);
+const emit = defineEmits(['input']);
 
 const { t } = useI18n();
 
@@ -66,6 +67,18 @@ const showGlobalIcon = computed(() => {
 
 	return false;
 });
+
+if (props.resetValueOnOptionsUpdate) {
+	watch(
+		() => props.choices,
+		(newChoices, oldChoices) => {
+			if (newChoices && oldChoices && !isEqual(oldChoices, newChoices)) {
+				emit('input', null);
+			}
+		},
+		{ immediate: true },
+	);
+}
 </script>
 
 <template>

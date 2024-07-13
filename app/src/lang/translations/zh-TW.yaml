@@ -1470,6 +1470,8 @@ interfaces:
     allow_other_label: 允許其他值
     allow_none: 可不選
     allow_none_label: 可以不選擇
+    reset_value_on_options_update: 當選項清單更新時重置值
+    reset_value_on_options_update_label: 當選項清單更新時重置值
     choices_name_placeholder: 輸入名稱...
     choices_value_placeholder: 請輸入...
     preview_threshold: 預覽限制

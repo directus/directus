@@ -103,6 +103,21 @@ export default defineInterface({
 			},
 		},
 		{
+			field: 'resetValueOnOptionsUpdate',
+			name: '$t:interfaces.select-dropdown.reset_value_on_options_update',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+				options: {
+					label: '$t:interfaces.select-dropdown.reset_value_on_options_update_label',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		},
+		{
 			field: 'icon',
 			name: '$t:icon',
 			type: 'string',

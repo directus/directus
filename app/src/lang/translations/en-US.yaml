@@ -1794,6 +1794,8 @@ interfaces:
     allow_other_label: Allow Other Values
     allow_none: Allow None
     allow_none_label: Allow No Selection
+    reset_value_on_options_update: Reset Value On Options Update
+    reset_value_on_options_update_label: Reset Value On Options Update
     choices_name_placeholder: Enter a name...
     choices_value_placeholder: Enter a value...
     preview_threshold: Preview Threshold
