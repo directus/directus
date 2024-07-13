@@ -666,6 +666,9 @@ Provide a custom reset url which the link in the email will lead to. The reset t
 **Note**: You need to configure the
 [`PASSWORD_RESET_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
 
+`subject`\
+Provide a custom subject for the email title.
+
 ### Example
 
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
