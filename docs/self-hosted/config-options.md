@@ -687,19 +687,35 @@ purposes, collection of additional metadata must be configured:
 | `FILES_MAX_UPLOAD_SIZE`      | Maximum file upload size allowed. For example `10mb`, `1gb`, `10kb`              | --            |
 | `FILES_MIME_TYPE_ALLOW_LIST` | Allow list of mime types that are allowed to be uploaded. Supports `glob` syntax | `*/*`         |
 
+### Chunked Uploads
+
+Large files can be uploaded in chunks to improve reliability and efficiency, especially in scenarios with network
+instability or limited bandwidth. This is implemented using the [TUS protocol](https://tus.io/).
+
+| Variable                | Description                                                       | Default Value |
+| ----------------------- | ----------------------------------------------------------------- | ------------- |
+| `TUS_ENABLED`           | Whether or not to enable the chunked uploads                      | `false`       |
+| `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `10mb`        |
+| `TUS_UPLOAD_EXPIRATION` | The expiry duration for uncompleted files with no upload activity | `10m`         |
+| `TUS_CLEANUP_SCHEDULE`  | Cron schedule to clean up the expired uncompleted uploads         | `0 * * * *`   |
+
 ## Assets
 
 | Variable                                 | Description                                                                                                                         | Default Value |
 | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `ASSETS_CACHE_TTL`                       | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header.                          | `30d`         |
 | `ASSETS_TRANSFORM_MAX_CONCURRENT`        | How many file transformations can be done simultaneously                                                                            | `25`          |
-| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION`   | The max pixel dimensions size (width/height) that is allowed to be transformed                                                      | `6000`        |
+| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION`   | The max pixel dimensions size (width/height) that is allowed to be transformed[^1]                                                  | `6000`        |
 | `ASSETS_TRANSFORM_TIMEOUT`               | Max time spent trying to transform an asset                                                                                         | `7500ms`      |
 | `ASSETS_TRANSFORM_MAX_OPERATIONS`        | The max number of transform operations that is allowed to be processed (excludes saved presets)                                     | `5`           |
 | `ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL` | Level of sensitivity to invalid images. See the [`sharp.failOn`](https://sharp.pixelplumbing.com/api-constructor#parameters) option | `warning`     |
 
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
+
+[^1]:
+    The maximum value is the square root of Node's `Number.MAX_SAFE_INTEGER`, or 95,906,265 at time of writing. Be
+    advised: transforming gigantic files can hurt your server performance and cause outages.
 
 ## Authentication
 
@@ -1031,6 +1047,7 @@ variables to automatically configure the first user:
 | ---------------- | ------------------------------------------------------------------------------------------------- | ------------- |
 | `ADMIN_EMAIL`    | The email address of the first user that's automatically created when using `directus bootstrap`. | --            |
 | `ADMIN_PASSWORD` | The password of the first user that's automatically created when using `directus bootstrap`.      | --            |
+| `ADMIN_TOKEN`    | The API token of the first user that's automatically created when using `directus bootstrap`.     | --            |
 
 ## Telemetry
 

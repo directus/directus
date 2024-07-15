@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "16.2.0-rc.0",
+	"version": "16.2.0-rc.1",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {

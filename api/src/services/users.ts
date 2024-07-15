@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
 import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';

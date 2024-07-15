@@ -1140,6 +1140,11 @@ First name for the new user.
 `last_name`\
 Last name for the new user.
 
+`verification_url`\
+Provide a custom verification url which the link in the email will lead to. The verification token will be passed as a parameter.\
+**Note**: You need to configure the
+[`USER_REGISTER_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
+
 ### Response
 
 Empty body.

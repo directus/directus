@@ -11,7 +11,7 @@ import {
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
 import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
 import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../services/authentication.js';

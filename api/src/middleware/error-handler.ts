@@ -4,7 +4,7 @@ import { getNodeEnv } from '@directus/utils/node';
 import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 
 // Note: keep all 4 parameters here. That's how Express recognizes it's the error handler, even if
 // we don't use next

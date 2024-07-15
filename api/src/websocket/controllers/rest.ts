@@ -3,7 +3,7 @@ import { parseJSON } from '@directus/utils';
 import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';

@@ -8,7 +8,7 @@ import getDatabase, {
 } from '../../../database/index.js';
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
-import { useLogger } from '../../../logger.js';
+import { useLogger } from '../../../logger/index.js';
 import { AccessService } from '../../../services/access.js';
 import { PoliciesService } from '../../../services/policies.js';
 import { RolesService } from '../../../services/roles.js';
@@ -110,5 +110,7 @@ async function createDefaultAdmin(schema: SchemaOverview) {
 		logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
 	}
 
-	await usersService.createOne({ ...defaultAdminUser, email: adminEmail, password: adminPassword, role });
+	const token = env['ADMIN_TOKEN'] ?? null;
+
+	await usersService.createOne({ ...defaultAdminUser, email: adminEmail, password: adminPassword, token, role });
 }

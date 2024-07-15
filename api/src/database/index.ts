@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -11,7 +12,7 @@ import path from 'path';
 import { performance } from 'perf_hooks';
 import { promisify } from 'util';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
@@ -136,6 +137,9 @@ export function getDatabase(): Knex {
 	}
 
 	if (client === 'mysql') {
+		// Remove the conflicting `filename` option, defined by default in the Docker Image
+		if (isObject(knexConfig.connection)) delete knexConfig.connection['filename'];
+
 		Object.assign(knexConfig, { client: 'mysql2' });
 
 		poolConfig.afterCreate = async (conn: any, callback: any) => {

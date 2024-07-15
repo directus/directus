@@ -3,7 +3,7 @@ import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import type { Item, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type {
 	AbstractServiceOptions,

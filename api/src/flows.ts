@@ -11,7 +11,7 @@ import { get } from 'micromustache';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import { useLogger } from './logger.js';
+import { useLogger } from './logger/index.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
 import * as services from './services/index.js';

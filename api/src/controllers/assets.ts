@@ -7,7 +7,7 @@ import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';

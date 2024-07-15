@@ -133,6 +133,8 @@ fields:
     display: datetime
     width: half
     hidden: true
+    special:
+      - date-created
 
   - field: folder
     width: half
@@ -158,3 +160,13 @@ fields:
   - field: duration
     width: half
     readonly: true
+
+  - field: tus_id
+    width: half
+    hidden: true
+
+  - field: tus_data
+    width: half
+    hidden: true
+    special:
+      - cast-json

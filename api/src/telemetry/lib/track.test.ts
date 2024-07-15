@@ -1,7 +1,7 @@
 import { getNodeEnv } from '@directus/utils/node';
 import { setTimeout } from 'timers/promises';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getRandomWaitTime } from '../utils/get-random-wait-time.js';
 import { getReport } from './get-report.js';
@@ -12,7 +12,7 @@ vi.mock('./get-report.js');
 vi.mock('./send-report.js');
 vi.mock('timers/promises');
 vi.mock('../utils/get-random-wait-time.js');
-vi.mock('../../logger.js');
+vi.mock('../../logger/index.js');
 vi.mock('@directus/utils/node');
 
 // This is required because logger uses global env which is imported before the tests run. Can be

@@ -17,7 +17,7 @@ import type { FailOnOptions } from 'sharp';
 import sharp from 'sharp';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, Transformation, TransformationSet } from '../types/index.js';

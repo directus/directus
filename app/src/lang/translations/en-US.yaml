@@ -627,7 +627,10 @@ allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
 expand: Expand
+expand_all: Expand All
+expand_none: Expand None
 collapse: Collapse
+collapse_all: Collapse All
 select_item: Select Item
 no_items: No items
 search_items: Search Items...
@@ -1720,6 +1723,8 @@ navigate_to_item: Navigate to Item
 undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
+pause: Pause
+resume: Resume
 interfaces:
   list-m2a:
     prefix_note: Uses the related item's collection name by default.

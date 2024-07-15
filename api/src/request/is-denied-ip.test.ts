@@ -3,13 +3,13 @@ import { randIp, randUrl } from '@ngneat/falso';
 import os from 'node:os';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';
 import { isDeniedIp } from './is-denied-ip.js';
 
 vi.mock('node:os');
 vi.mock('@directus/env');
-vi.mock('../logger.js');
+vi.mock('../logger/index.js');
 vi.mock('../utils/ip-in-networks.js');
 
 let sample: {

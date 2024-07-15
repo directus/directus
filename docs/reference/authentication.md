@@ -76,7 +76,7 @@ project.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /register`
+`POST /users/register`
 
 ```json
 {
@@ -135,7 +135,7 @@ parameter.\
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /register`
+`POST /users/register`
 
 ```json
 {
@@ -179,7 +179,7 @@ URL) to allow the user to finish their registration.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /register/verify-email`
+`POST /users/register/verify-email`
 
 ```json
 {
@@ -222,7 +222,7 @@ Verification token, as provided in the verification email sent by the registrati
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /register/verify-email`
+`POST /users/register/verify-email`
 
 ```json
 {
