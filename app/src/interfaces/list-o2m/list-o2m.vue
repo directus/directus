@@ -113,7 +113,7 @@ const query = computed<RelationQueryMultiple>(() => {
 		return q;
 	}
 
-	if (props.sort) {
+	if (props.sort && !relationInfo.value?.sortField) {
 		const direction = props.sort_direction ? props.sort_direction : '';
 		q.sort = [direction + props.sort];
 	}
