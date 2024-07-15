@@ -1,8 +1,12 @@
 import type { Accountability, Filter } from '@directus/types';
-import type { AccessRow } from '../modules/process-ast/types.js';
 import type { Context } from '../types.js';
 import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
 import { withCache } from '../utils/with-cache.js';
+
+export interface AccessRow {
+	policy: { id: string; ip_access: string[] | null };
+	role: string | null;
+}
 
 export const fetchPolicies = withCache('policies', _fetchPolicies, ({ roles, user, ip }) => ({ roles, user, ip }));
 
