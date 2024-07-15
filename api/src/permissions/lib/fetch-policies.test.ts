@@ -1,9 +1,8 @@
 import type { Accountability } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { AccessService } from '../../services/access.js';
-import type { AccessRow } from '../modules/process-ast/types.js';
 import type { Context } from '../types.js';
-import { _fetchPolicies as fetchPolicies } from './fetch-policies.js';
+import { _fetchPolicies as fetchPolicies, type AccessRow } from './fetch-policies.js';
 
 vi.mock('../../services/access.js', () => ({
 	AccessService: vi.fn(),
@@ -42,7 +41,7 @@ test('Fetches policies for public role and user when user is given without role'
 				},
 			],
 		},
-		fields: ['policy.id', 'policy.ip_access'],
+		fields: ['policy.id', 'policy.ip_access', 'role'],
 		limit: -1,
 	});
 
@@ -69,7 +68,7 @@ test('Fetches policies for public role when no roles and user are given', async 
 				},
 			],
 		},
-		fields: ['policy.id', 'policy.ip_access'],
+		fields: ['policy.id', 'policy.ip_access', 'role'],
 		limit: -1,
 	});
 
@@ -87,7 +86,7 @@ test('Fetched policies for user roles', async () => {
 				_in: ['role-a', 'role-b'],
 			},
 		},
-		fields: ['policy.id', 'policy.ip_access'],
+		fields: ['policy.id', 'policy.ip_access', 'role'],
 		limit: -1,
 	});
 
@@ -114,7 +113,7 @@ test('Fetches policies for user roles and user if user is passed', async () => {
 				},
 			],
 		},
-		fields: ['policy.id', 'policy.ip_access'],
+		fields: ['policy.id', 'policy.ip_access', 'role'],
 		limit: -1,
 	});
 
@@ -130,16 +129,57 @@ test('Filters policies based on ip access on access row', async () => {
 				id: 'policy-a',
 				ip_access: ['127.0.0.0/29'],
 			},
+			role: null,
 		},
 		{
 			policy: {
 				id: 'policy-b',
 				ip_access: ['1.1.1.1/32'],
 			},
+			role: null,
 		},
 	);
 
 	const policies = await fetchPolicies(acc, {} as Context);
 
 	expect(policies).toEqual(['policy-a']);
+});
+
+test('Sorts policies by priority', async () => {
+	const acc = { roles: ['role-a', 'role-b'], user: 'user-a' } as unknown as Accountability;
+
+	rows.push(
+		{
+			policy: {
+				id: 'policy-c',
+				ip_access: null,
+			},
+			role: null,
+		},
+		{
+			policy: {
+				id: 'policy-d',
+				ip_access: null,
+			},
+			role: null,
+		},
+		{
+			policy: {
+				id: 'policy-b',
+				ip_access: null,
+			},
+			role: 'role-b',
+		},
+		{
+			policy: {
+				id: 'policy-a',
+				ip_access: null,
+			},
+			role: 'role-a',
+		},
+	);
+
+	const policies = await fetchPolicies(acc, {} as Context);
+
+	expect(policies).toEqual(['policy-a', 'policy-b', 'policy-c', 'policy-d']);
 });

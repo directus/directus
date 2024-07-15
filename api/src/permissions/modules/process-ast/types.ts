@@ -15,7 +15,3 @@ export type FieldMap = {
 	read: FieldMapEntries;
 	other: FieldMapEntries;
 };
-
-export interface AccessRow {
-	policy: { id: string; ip_access: string[] | null };
-}
