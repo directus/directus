@@ -19,6 +19,7 @@ import {
 	createLogsController,
 	createSubscriptionController,
 	createWebSocketController,
+	getLogsController,
 	getSubscriptionController,
 	getWebSocketController,
 } from './websocket/controllers/index.js';
@@ -130,6 +131,7 @@ export async function createServer(): Promise<http.Server> {
 	async function onSignal() {
 		getSubscriptionController()?.terminate();
 		getWebSocketController()?.terminate();
+		getLogsController()?.terminate();
 
 		const database = getDatabase();
 		await database.destroy();
