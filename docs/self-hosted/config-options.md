@@ -1109,6 +1109,16 @@ https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 | `WEBSOCKETS_GRAPHQL_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
 | `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |
 
+### Logs
+
+| Variable                       | Description                                                                                                                                                                                             | Default Value |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `WEBSOCKETS_LOGS_ENABLED`      | Whether or not to enable the Logs Subscriptions.                                                                                                                                                        | `true`        |
+| `WEBSOCKETS_LOGS_PATH`         | The URL path at which the WebSocket Logs endpoint will be available.                                                                                                                                    | `/logs`       |
+| `WEBSOCKETS_LOGS_CONN_LIMIT`   | How many simultaneous connections are allowed.                                                                                                                                                          | `Infinity`    |
+| `WEBSOCKETS_LOGS_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
+| `WEBSOCKETS_LOGS_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |
+
 ---
 
 ## PM2
