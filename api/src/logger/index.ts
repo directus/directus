@@ -176,18 +176,15 @@ export const createExpressLogger = () => {
 		streams.push({ level: mergedHttpOptions.level!, stream: _cache.logsStream });
 	}
 
-	return pinoHttp(
-		{
-			logger: pino(mergedHttpOptions, pino.multistream(streams)),
-			...httpLoggerEnvConfig,
-			serializers: {
-				req(request: Request) {
-					const output = stdSerializers.req(request);
-					output.url = redactQuery(output.url);
-					return output;
-				},
+	return pinoHttp({
+		logger: pino(mergedHttpOptions, pino.multistream(streams)),
+		...httpLoggerEnvConfig,
+		serializers: {
+			req(request: Request) {
+				const output = stdSerializers.req(request);
+				output.url = redactQuery(output.url);
+				return output;
 			},
 		},
-		// _cache.httpLogsStream,
-	) as RequestHandler;
+	}) as RequestHandler;
 };
