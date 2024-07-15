@@ -82,3 +82,13 @@ test('Returns only unique filter paths', () => {
 
 	expect(extractPathsFromQuery(query).readOnlyPaths).toEqual([['author']]);
 });
+
+test('Does not include wildcard field from aggregate', () => {
+	const query: Query = {
+		aggregate: {
+			count: ['*'],
+		},
+	};
+
+	expect(extractPathsFromQuery(query).paths).toEqual([]);
+});
