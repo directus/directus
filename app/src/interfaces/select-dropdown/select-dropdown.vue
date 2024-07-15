@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
 import { i18n } from '@/lang';
-import { useI18n } from 'vue-i18n';
 import { isEmpty, isEqual } from 'lodash';
+import { computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
@@ -70,17 +70,15 @@ const showGlobalIcon = computed(() => {
 watch(
 	() => props.choices,
 	(newChoices, oldChoices) => {
-		if (props.value === null) return;
-
 		if (
 			props.value !== null &&
 			!isEqual(newChoices, oldChoices) &&
 			!newChoices?.some((choice) => choice.value === props.value)
 		) {
+			// Reset if the options have dynamically changed and the current value is not available anymore
 			emit('input', null);
 		}
 	},
-	{ immediate: true },
 );
 </script>
 
