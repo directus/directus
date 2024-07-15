@@ -1,6 +1,7 @@
 export type ShareScope = {
 	collection: string;
 	item: string;
+	fields: string[];
 };
 
 export type Accountability = {
@@ -10,7 +11,6 @@ export type Accountability = {
 	admin: boolean;
 	app: boolean;
 	share?: string;
-	share_scope?: ShareScope;
 	ip: string | null;
 	userAgent?: string;
 	origin?: string;
