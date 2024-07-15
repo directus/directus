@@ -12,6 +12,7 @@ import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
 import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
+import emitter from '../../emitter.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -53,7 +54,16 @@ export class MailService {
 	}
 
 	async send<T>(options: EmailOptions): Promise<T> {
-		const { template, ...emailOptions } = options;
+		const payload = await emitter.emitFilter(`email.send`, options, {
+			database: getDatabase(),
+			schema: null,
+			accountability: null,
+		});
+
+		if (!payload) return null as T;
+
+		const { template, ...emailOptions } = payload;
+
 		let { html } = options;
 
 		const defaultTemplateData = await this.getDefaultTemplateData();
