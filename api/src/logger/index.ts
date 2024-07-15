@@ -1,16 +1,19 @@
 import { useEnv } from '@directus/env';
-import { REDACTED_TEXT, toArray } from '@directus/utils';
+import { REDACTED_TEXT, toArray, toBoolean } from '@directus/utils';
 import type { Request, RequestHandler } from 'express';
 import { merge } from 'lodash-es';
 import { URL } from 'node:url';
 import { pino, type Logger, type LoggerOptions } from 'pino';
 import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
+import { build as pinoPretty } from 'pino-pretty';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { redactQuery } from './redact-query.js';
+import { LogsStream } from './stream.js';
 
 export const _cache: {
 	logger: Logger<never> | undefined;
-} = { logger: undefined };
+	logsStream: LogsStream;
+} = { logger: undefined, logsStream: new LogsStream() };
 
 export const useLogger = () => {
 	if (_cache.logger) {
@@ -32,16 +35,6 @@ export const createLogger = () => {
 			censor: REDACTED_TEXT,
 		},
 	};
-
-	if (env['LOG_STYLE'] !== 'raw') {
-		pinoOptions.transport = {
-			target: 'pino-pretty',
-			options: {
-				ignore: 'hostname,pid',
-				sync: true,
-			},
-		};
-	}
 
 	const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
 
@@ -66,7 +59,28 @@ export const createLogger = () => {
 		delete loggerEnvConfig['levels'];
 	}
 
-	return pino(merge(pinoOptions, loggerEnvConfig));
+	const mergedOptions = merge(pinoOptions, loggerEnvConfig);
+	const streams = [];
+
+	// Console Logs
+	if (env['LOG_STYLE'] !== 'raw') {
+		streams.push({
+			level: mergedOptions.level!,
+			stream: pinoPretty({
+				ignore: 'hostname,pid',
+				sync: true,
+			}),
+		});
+	} else {
+		streams.push({ level: mergedOptions.level!, stream: process.stdout });
+	}
+
+	// WebSocket Logs
+	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
+		streams.push({ level: mergedOptions.level!, stream: _cache.logsStream });
+	}
+
+	return pino(mergedOptions, pino.multistream(streams));
 };
 
 export const createExpressLogger = () => {
@@ -83,20 +97,21 @@ export const createExpressLogger = () => {
 		},
 	};
 
-	if (env['LOG_STYLE'] !== 'raw') {
-		httpLoggerOptions.transport = {
-			target: 'pino-http-print',
-			options: {
-				all: true,
-				translateTime: 'SYS:HH:MM:ss',
-				relativeUrl: true,
-				prettyOptions: {
-					ignore: 'hostname,pid',
-					sync: true,
-				},
-			},
-		};
-	}
+	// @TODO Fix prettier for express logs as it does not work with multistream
+	// if (env['LOG_STYLE'] !== 'raw') {
+	// 	httpLoggerOptions.transport = {
+	// 		target: 'pino-http-print',
+	// 		options: {
+	// 			all: true,
+	// 			translateTime: 'SYS:HH:MM:ss',
+	// 			relativeUrl: true,
+	// 			prettyOptions: {
+	// 				ignore: 'hostname,pid',
+	// 				sync: true,
+	// 			},
+	// 		},
+	// 	};
+	// }
 
 	if (env['LOG_STYLE'] === 'raw') {
 		httpLoggerOptions.redact = {
@@ -150,15 +165,29 @@ export const createExpressLogger = () => {
 		} as AutoLoggingOptions;
 	}
 
-	return pinoHttp({
-		logger: pino(merge(httpLoggerOptions, loggerEnvConfig)),
-		...httpLoggerEnvConfig,
-		serializers: {
-			req(request: Request) {
-				const output = stdSerializers.req(request);
-				output.url = redactQuery(output.url);
-				return output;
+	const mergedHttpOptions = merge(httpLoggerOptions, loggerEnvConfig);
+	const streams = [];
+
+	// Console Logs
+	streams.push({ level: mergedHttpOptions.level!, stream: process.stdout });
+
+	// WebSocket Logs
+	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
+		streams.push({ level: mergedHttpOptions.level!, stream: _cache.logsStream });
+	}
+
+	return pinoHttp(
+		{
+			logger: pino(mergedHttpOptions, pino.multistream(streams)),
+			...httpLoggerEnvConfig,
+			serializers: {
+				req(request: Request) {
+					const output = stdSerializers.req(request);
+					output.url = redactQuery(output.url);
+					return output;
+				},
 			},
 		},
-	}) as RequestHandler;
+		// _cache.httpLogsStream,
+	) as RequestHandler;
 };

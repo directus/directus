@@ -33,3 +33,7 @@ export type UpgradeContext = {
 export type GraphQLSocket = {
 	client: WebSocketClient;
 };
+
+export type LogsSubscription = {
+	client: WebSocketClient;
+};

@@ -16,6 +16,7 @@ import { useLogger } from './logger/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getIPFromReq } from './utils/get-ip-from-req.js';
 import {
+	createLogsController,
 	createSubscriptionController,
 	createWebSocketController,
 	getSubscriptionController,
@@ -98,6 +99,7 @@ export async function createServer(): Promise<http.Server> {
 	if (toBoolean(env['WEBSOCKETS_ENABLED']) === true) {
 		createSubscriptionController(server);
 		createWebSocketController(server);
+		createLogsController(server);
 		startWebSocketHandlers();
 	}
 

@@ -110,6 +110,13 @@ export class ServerService {
 				info['websocket'].heartbeat = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED'])
 					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
 					: false;
+
+				info['websocket'].logs = toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])
+					? {
+							authentication: env['WEBSOCKETS_LOGS_AUTH'],
+							path: env['WEBSOCKETS_LOGS_PATH'],
+					  }
+					: false;
 			} else {
 				info['websocket'] = false;
 			}

@@ -56,6 +56,16 @@ export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 ]);
 export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage>;
 
+export const WebSocketLogsMessage = z.union([
+	z.object({
+		type: z.literal('subscribe_logs'),
+	}),
+	WebSocketMessage.extend({
+		type: z.literal('unsubscribe_logs'),
+	}),
+]);
+export type WebSocketLogsMessage = z.infer<typeof WebSocketLogsMessage>;
+
 const ZodItem = z.custom<Partial<Item>>();
 
 const PartialItemsMessage = z.object({
