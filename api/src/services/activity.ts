@@ -30,67 +30,75 @@ export class ActivityService extends ItemsService {
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
-		if (data['action'] === Action.COMMENT && typeof data['comment'] === 'string') {
-			const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
+		const activity = await super.createOne(data, opts);
 
-			const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
+		if (data['action'] !== Action.COMMENT || typeof data['comment'] !== 'string') {
+			return activity;
+		}
 
-			if (mentions.length > 0) {
-				const sender = await this.usersService.readOne(this.accountability.user, {
+		const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
+
+		const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
+
+		if (mentions.length > 0) {
+			return activity;
+		}
+
+		const sender = await this.usersService.readOne(this.accountability.user, {
+			fields: ['id', 'first_name', 'last_name', 'email'],
+		});
+
+		for (const mention of mentions) {
+			const userID = mention.substring(1);
+
+			const user = await this.usersService.readOne(userID, {
+				fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
+			});
+
+			const accountability: Accountability = {
+				user: userID,
+				role: user['role']?.id ?? null,
+				admin: user['role']?.admin_access ?? null,
+				app: user['role']?.app_access ?? null,
+			};
+
+			accountability.permissions = await getPermissions(accountability, this.schema);
+
+			const authorizationService = new AuthorizationService({ schema: this.schema, accountability });
+			const usersService = new UsersService({ schema: this.schema, accountability });
+
+			try {
+				await authorizationService.checkAccess('read', data['collection'], data['item']);
+
+				const templateData = await usersService.readByQuery({
 					fields: ['id', 'first_name', 'last_name', 'email'],
+					filter: { id: { _in: mentions.map((mention) => mention.substring(1)) } },
 				});
 
+				const userPreviews = templateData.reduce(
+					(acc, user) => {
+						acc[user['id']] = `<em>${userName(user)}</em>`;
+						return acc;
+					},
+					{} as Record<string, string>,
+				);
+
+				let comment = data['comment'];
+
 				for (const mention of mentions) {
-					const userID = mention.substring(1);
+					const uuid = mention.substring(1);
+					// We only match on UUIDs in the first place. This is just an extra sanity check.
+					if (isValidUuid(uuid) === false) continue;
+					comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
+				}
 
-					const user = await this.usersService.readOne(userID, {
-						fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
-					});
+				comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
-					const accountability: Accountability = {
-						user: userID,
-						role: user['role']?.id ?? null,
-						admin: user['role']?.admin_access ?? null,
-						app: user['role']?.app_access ?? null,
-					};
+				const href = new Url(env['PUBLIC_URL'] as string)
+					.addPath('admin', 'content', data['collection'], data['item'])
+					.toString();
 
-					accountability.permissions = await getPermissions(accountability, this.schema);
-
-					const authorizationService = new AuthorizationService({ schema: this.schema, accountability });
-					const usersService = new UsersService({ schema: this.schema, accountability });
-
-					try {
-						await authorizationService.checkAccess('read', data['collection'], data['item']);
-
-						const templateData = await usersService.readByQuery({
-							fields: ['id', 'first_name', 'last_name', 'email'],
-							filter: { id: { _in: mentions.map((mention) => mention.substring(1)) } },
-						});
-
-						const userPreviews = templateData.reduce(
-							(acc, user) => {
-								acc[user['id']] = `<em>${userName(user)}</em>`;
-								return acc;
-							},
-							{} as Record<string, string>,
-						);
-
-						let comment = data['comment'];
-
-						for (const mention of mentions) {
-							const uuid = mention.substring(1);
-							// We only match on UUIDs in the first place. This is just an extra sanity check.
-							if (isValidUuid(uuid) === false) continue;
-							comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
-						}
-
-						comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
-
-						const href = new Url(env['PUBLIC_URL'] as string)
-							.addPath('admin', 'content', data['collection'], data['item'])
-							.toString();
-
-						const message = `
+				const message = `
 Hello ${userName(user)},
 
 ${userName(sender)} has mentioned you in a comment:
@@ -100,26 +108,24 @@ ${comment}
 <a href="${href}">Click here to view.</a>
 `;
 
-						await this.notificationsService.createOne({
-							recipient: userID,
-							sender: sender['id'],
-							subject: `You were mentioned in ${data['collection']}`,
-							message,
-							collection: data['collection'],
-							item: data['item'],
-						});
-					} catch (err: any) {
-						if (isDirectusError(err, ErrorCode.Forbidden)) {
-							logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
-						} else {
-							throw err;
-						}
-					}
+				await this.notificationsService.createOne({
+					recipient: userID,
+					sender: sender['id'],
+					subject: `You were mentioned in ${data['collection']}`,
+					message,
+					collection: data['collection'],
+					item: data['item'],
+				});
+			} catch (err: any) {
+				if (isDirectusError(err, ErrorCode.Forbidden)) {
+					logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
+				} else {
+					throw err;
 				}
 			}
 		}
 
-		return super.createOne(data, opts);
+		return activity;
 	}
 
 	override updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
