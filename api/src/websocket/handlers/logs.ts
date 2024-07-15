@@ -2,20 +2,19 @@ import { ErrorCode, ServiceUnavailableError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
 import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
-import { getWebSocketController } from '../controllers/index.js';
-import type { WebSocketController } from '../controllers/rest.js';
+import { getLogsController, LogsController } from '../controllers/index.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketLogsMessage } from '../messages.js';
 import type { LogsSubscription, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
 
 export class LogsHandler {
-	controller: WebSocketController;
+	controller: LogsController;
 	messenger: Bus;
 	subscriptions: Set<LogsSubscription>;
 
-	constructor(controller?: WebSocketController) {
-		controller = controller ?? getWebSocketController();
+	constructor(controller?: LogsController) {
+		controller = controller ?? getLogsController();
 
 		if (!controller) {
 			throw new ServiceUnavailableError({ service: 'ws', reason: 'WebSocket server is not initialized' });
