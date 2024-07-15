@@ -1,6 +1,9 @@
+import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { getDatabaseVersion } from '../../../index.js';
 import { SchemaHelper } from '../types.js';
+
+const env = useEnv();
 
 export class SchemaHelperMySQL extends SchemaHelper {
 	override applyMultiRelationalSort(
@@ -27,5 +30,23 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		}
 
 		return super.applyMultiRelationalSort(knex, dbQuery, table, primaryKey, orderByString, orderByFields);
+	}
+
+	override async getDatabaseSize(): Promise<number | null> {
+		try {
+			const result = (await this.knex
+				.sum('size AS size')
+				.from(
+					this.knex
+						.select(this.knex.raw('data_length + index_length AS size'))
+						.from('information_schema.TABLES')
+						.where('table_schema', '=', String(env['DB_DATABASE']))
+						.as('size'),
+				)) as Record<string, any>[];
+
+			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
+		} catch {
+			return null;
+		}
 	}
 }

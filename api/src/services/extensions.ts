@@ -71,7 +71,7 @@ export class ExtensionsService {
 			const afterInstallCount = currentlyInstalledCount + points;
 
 			if (afterInstallCount >= limit) {
-				throw new LimitExceededError();
+				throw new LimitExceededError({ category: 'Extensions' });
 			}
 		}
 
@@ -245,18 +245,22 @@ export class ExtensionsService {
 	 *    - Entry status change resulted in all children being disabled then the parent bundle is disabled
 	 *    - Entry status change resulted in at least one child being enabled then the parent bundle is enabled
 	 */
-	private async checkBundleAndSyncStatus(trx: Knex, bundleId: string, extension: ApiOutput) {
+	private async checkBundleAndSyncStatus(trx: Knex, extensionId: string, extension: ApiOutput) {
 		if (extension.bundle === null && extension.schema?.type === 'bundle') {
 			// If extension is the parent bundle, set it and all nested extensions to enabled
 			await trx('directus_extensions')
 				.update({ enabled: extension.meta.enabled })
-				.where({ bundle: bundleId })
-				.orWhere({ id: bundleId });
+				.where({ bundle: extensionId })
+				.orWhere({ id: extensionId });
 
 			return;
 		}
 
-		const parent = await this.readOne(bundleId);
+		const parentId = extension.bundle ?? extension.meta.bundle;
+
+		if (!parentId) return;
+
+		const parent = await this.readOne(parentId);
 
 		if (parent.schema?.type !== 'bundle') {
 			return;
@@ -269,14 +273,14 @@ export class ExtensionsService {
 		}
 
 		const hasEnabledChildren = !!(await trx('directus_extensions')
-			.where({ bundle: bundleId })
+			.where({ bundle: parentId })
 			.where({ enabled: true })
 			.first());
 
 		if (hasEnabledChildren) {
-			await trx('directus_extensions').update({ enabled: true }).where({ id: bundleId });
+			await trx('directus_extensions').update({ enabled: true }).where({ id: parentId });
 		} else {
-			await trx('directus_extensions').update({ enabled: false }).where({ id: bundleId });
+			await trx('directus_extensions').update({ enabled: false }).where({ id: parentId });
 		}
 	}
 }

@@ -19,16 +19,13 @@ const { currentVersion } = useVersions(collection, isSingleton, primaryKey);
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
-const { templateData: previewData } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
+const { templateData: previewData } = useTemplateData(collectionInfo, primaryKey, {
+	template: previewTemplate,
+	injectData: computed(() => ({ $version: currentVersion.value?.key ?? 'main' })),
+});
 
 const previewUrl = computed(() => {
-	const enrichedPreviewData = {
-		...previewData.value,
-		$version: currentVersion.value?.key ?? 'main',
-	};
-
-	const { displayValue } = renderStringTemplate(previewTemplate.value, enrichedPreviewData);
-
+	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData.value);
 	return displayValue.value || null;
 });
 

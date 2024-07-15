@@ -7,20 +7,19 @@ import { Field } from '@directus/types';
 import { get } from 'lodash';
 import { computed, ref } from 'vue';
 
-interface Props {
-	template: string;
-	collection?: string;
-	fields?: Field[];
-	item?: Record<string, any>;
-	direction?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	collection: undefined,
-	fields: () => [],
-	item: () => ({}),
-	direction: undefined,
-});
+const props = withDefaults(
+	defineProps<{
+		template: string;
+		collection?: string;
+		fields?: Field[];
+		item?: Record<string, any>;
+		direction?: string;
+	}>(),
+	{
+		fields: () => [],
+		item: () => ({}),
+	},
+);
 
 const fieldsStore = useFieldsStore();
 

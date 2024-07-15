@@ -1,5 +1,5 @@
 import type { DirectusPanel } from '../../../schema/panel.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -33,6 +33,24 @@ export const updatePanels =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update multiple panels as batch.
+ * @param items
+ * @param query
+ * @returns Returns the panel objects for the updated panels.
+ */
+export const updatePanelsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusPanel<Schema>>>(
+		items: NestedPartial<DirectusPanel<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdatePanelOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/panels`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing panel.

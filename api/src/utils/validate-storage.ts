@@ -4,7 +4,7 @@ import { constants } from 'fs';
 import { access } from 'node:fs/promises';
 import path from 'path';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 
 export async function validateStorage(): Promise<void> {
 	const env = useEnv();

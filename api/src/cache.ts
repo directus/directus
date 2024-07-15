@@ -4,7 +4,7 @@ import { getSimpleHash } from '@directus/utils';
 import type { Options } from 'keyv';
 import Keyv from 'keyv';
 import { useBus } from './bus/index.js';
-import { useLogger } from './logger.js';
+import { useLogger } from './logger/index.js';
 import { redisConfigAvailable } from './redis/index.js';
 import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';

@@ -47,6 +47,7 @@ export type User = {
 export type RegisterUserInput = {
 	email: NonNullable<User['email']>;
 	password: NonNullable<User['password']>;
+	verification_url?: string | null;
 	first_name?: User['first_name'];
 	last_name?: User['last_name'];
 };

@@ -538,7 +538,6 @@ edit_bookmark: Muuda järjehoidjat
 bookmarks: Järjehoidjad
 presets: Eelseadistused
 unexpected_error: Ootamatu viga
-unexpected_error_copy: Ilmnes tõrge. Palun proovi hiljem uuesti.
 copy_details: Kopeeri detailid
 no_app_access: Rakenduse ligipääs puudub
 no_app_access_copy: Sel kasutajal pole lubatud kasutada admin rakendust.
