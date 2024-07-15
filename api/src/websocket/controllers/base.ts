@@ -20,7 +20,6 @@ import type { AuthenticationState, UpgradeContext, WebSocketClient } from '../ty
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
-import { registerWebSocketEvents } from './hooks.js';
 import cookie from 'cookie';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
@@ -58,7 +57,6 @@ export default abstract class SocketController {
 
 		httpServer.on('upgrade', this.handleUpgrade.bind(this));
 		this.checkClientTokens();
-		registerWebSocketEvents();
 	}
 
 	protected getEnvironmentConfig(configPrefix: string): {
