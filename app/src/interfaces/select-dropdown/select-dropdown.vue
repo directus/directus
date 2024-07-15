@@ -21,7 +21,6 @@ const props = withDefaults(
 		allowNone?: boolean;
 		placeholder?: string;
 		allowOther?: boolean;
-		resetValueOnOptionsUpdate?: boolean;
 	}>(),
 	{
 		placeholder: () => i18n.global.t('select_an_item'),
@@ -68,17 +67,21 @@ const showGlobalIcon = computed(() => {
 	return false;
 });
 
-if (props.resetValueOnOptionsUpdate) {
-	watch(
-		() => props.choices,
-		(newChoices, oldChoices) => {
-			if (newChoices && oldChoices && !isEqual(oldChoices, newChoices)) {
-				emit('input', null);
-			}
-		},
-		{ immediate: true },
-	);
-}
+watch(
+	() => props.choices,
+	(newChoices, oldChoices) => {
+		if (props.value === null) return;
+
+		if (
+			props.value !== null &&
+			!isEqual(newChoices, oldChoices) &&
+			!newChoices?.some((choice) => choice.value === props.value)
+		) {
+			emit('input', null);
+		}
+	},
+	{ immediate: true },
+);
 </script>
 
 <template>

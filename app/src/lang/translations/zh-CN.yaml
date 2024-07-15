@@ -1756,8 +1756,6 @@ interfaces:
     allow_other_label: 允许其他值
     allow_none: 不允许
     allow_none_label: 不允许选择
-    reset_value_on_options_update: 当选项清单更新时重置值
-    reset_value_on_options_update_label: 当选项清单更新时重置值
     choices_name_placeholder: 输入名称...
     choices_value_placeholder: 请输入值...
     preview_threshold: 预览阈值
