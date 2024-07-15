@@ -39,6 +39,8 @@ const props = withDefaults(
 		enableSearchFilter?: boolean;
 		enableLink?: boolean;
 		limit?: number;
+		sort?: string;
+		sort_direction: '+' | '-' | undefined;
 	}>(),
 	{
 		value: () => [],
@@ -109,6 +111,11 @@ const query = computed<RelationQueryMultiple>(() => {
 
 	if (!relationInfo.value) {
 		return q;
+	}
+
+	if (props.sort) {
+		const direction = props.sort_direction ? props.sort_direction : '';
+		q.sort = [direction + props.sort];
 	}
 
 	if (searchFilter.value) {
