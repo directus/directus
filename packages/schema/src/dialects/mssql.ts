@@ -284,7 +284,7 @@ export default class MSSQL implements SchemaInspector {
 		}
 
 		const dbResult = await this.knex.transaction<RawColumn[] | RawColumn>(async (trx) => {
-			await trx.raw(`IF OBJECT_ID('tempdb..##IndexInfo') IS NOT NULL DROP TABLE #IndexInfo;`);
+			await trx.raw(`IF OBJECT_ID('tempdb..##IndexInfo') IS NOT NULL DROP TABLE ##IndexInfo;`);
 
 			await trx.raw(`
 			SELECT
@@ -363,7 +363,7 @@ export default class MSSQL implements SchemaInspector {
 			}
 
 			if (column) {
-				// if a column is specified, return only a single RawColumn object
+				// if a specific column is requested, return only the first record
 				query.andWhere({ 'c.name': column }).first();
 			}
 
@@ -375,7 +375,7 @@ export default class MSSQL implements SchemaInspector {
 		});
 
 		if (column) {
-			// if a column was specified, the db result is an object not an array
+			// if a specific column is requested, the db result is a single object
 			return rawColumnToColumn(dbResult as RawColumn);
 		}
 
