@@ -53,14 +53,14 @@ export class MailService {
 		}
 	}
 
-	async send<T>(options: EmailOptions): Promise<T> {
+	async send<T>(options: EmailOptions): Promise<T | null> {
 		const payload = await emitter.emitFilter(`email.send`, options, {
 			database: getDatabase(),
 			schema: null,
 			accountability: null,
 		});
 
-		if (!payload) return null as T;
+		if (!payload) return null;
 
 		const { template, ...emailOptions } = payload;
 
