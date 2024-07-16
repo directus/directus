@@ -36,6 +36,11 @@ export function extractPathsFromQuery(query: Query) {
 	if (query.aggregate) {
 		for (const fields of Object.values(query.aggregate)) {
 			for (const field of fields) {
+				if (field === '*') {
+					// Don't add wildcard field to the paths
+					continue;
+				}
+
 				// Aggregate doesn't currently support aggregating on nested fields, but it doesn't hurt
 				// to standardize it in the validation layer
 				paths.push(field.split('.'));
