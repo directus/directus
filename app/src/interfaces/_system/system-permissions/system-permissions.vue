@@ -51,8 +51,6 @@ const values = inject<Ref<Record<string, any>>>('values');
 const appAccess = computed(() => values?.value.app_access ?? false);
 const adminAccess = computed(() => values?.value.admin_access ?? false);
 
-const systemVisible = ref(false);
-
 const value = computed({
 	get: () => props.value,
 	set: (val) => {
@@ -552,11 +550,6 @@ function useGroupedPermissions() {
 			collection: info,
 			permissions: [],
 		});
-
-		// Check if the added permissions is a system collection, if so expand the system permissions
-		if (isSystemCollection(collection)) {
-			systemVisible.value = true;
-		}
 	}
 
 	function removeEmptyCollection(collection: string) {
