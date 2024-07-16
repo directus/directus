@@ -8,6 +8,7 @@ import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { WebSocketLogsMessage } from '../messages.js';
 import type { LogsSubscription, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
+import { nanoid } from 'nanoid';
 
 const logLevelValues = Object.values(LOG_LEVELS);
 
@@ -18,6 +19,7 @@ function isValidLogLevel(level: string): level is keyof typeof LOG_LEVELS {
 export class LogsHandler {
 	controller: LogsController;
 	messenger: Bus;
+	nodeId: string;
 	subscriptions: LogsSubscription;
 
 	constructor(controller?: LogsController) {
@@ -29,6 +31,7 @@ export class LogsHandler {
 
 		this.controller = controller;
 		this.messenger = useBus();
+		this.nodeId = nanoid(8);
 
 		this.subscriptions = {
 			[LOG_LEVEL.TRACE]: new Set(),
@@ -47,7 +50,7 @@ export class LogsHandler {
 
 			if (logLevel) {
 				this.subscriptions[logLevel as LOG_LEVEL].forEach((subscription) =>
-					subscription.send(fmtMessage('logs', { data: log })),
+					subscription.send(fmtMessage('logs', { data: log }, this.nodeId)),
 				);
 			}
 		});
