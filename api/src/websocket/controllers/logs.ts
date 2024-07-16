@@ -25,11 +25,10 @@ export class LogsController extends SocketController {
 	}
 
 	private bindEvents(client: WebSocketClient) {
-		client.on('parsed-message', async (_message: WebSocketMessage) => {
+		client.on('parsed-message', async (message: WebSocketMessage) => {
 			try {
-				// message = WebSocketMessage.parse(await emitter.emitFilter('websocket.message', message, { client }));
 				client.accountability = await refreshAccountability(client.accountability);
-				// emitter.emitAction('websocket.message', { message, client });
+				emitter.emitAction('websocket.logs', { message, client });
 			} catch (error) {
 				handleWebSocketError(client, error, 'server');
 				return;

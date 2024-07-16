@@ -58,10 +58,10 @@ export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage
 
 export const WebSocketLogsMessage = z.union([
 	z.object({
-		type: z.literal('subscribe_logs'),
+		type: z.literal('subscribe'),
 	}),
 	WebSocketMessage.extend({
-		type: z.literal('unsubscribe_logs'),
+		type: z.literal('unsubscribe'),
 	}),
 ]);
 export type WebSocketLogsMessage = z.infer<typeof WebSocketLogsMessage>;

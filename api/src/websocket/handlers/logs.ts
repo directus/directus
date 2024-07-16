@@ -36,8 +36,8 @@ export class LogsHandler {
 	 */
 	bindWebSocket() {
 		// listen to incoming messages on the connected websockets
-		emitter.onAction('websocket.message', ({ client, message }) => {
-			if (!['subscribe_logs', 'unsubscribe_logs'].includes(getMessageType(message))) return;
+		emitter.onAction('websocket.logs', ({ client, message }) => {
+			if (!['subscribe', 'unsubscribe'].includes(getMessageType(message))) return;
 
 			try {
 				const parsedMessage = WebSocketLogsMessage.parse(message);
@@ -86,21 +86,21 @@ export class LogsHandler {
 			throw new WebSocketError('logs', ErrorCode.Forbidden, `You don't have permission to access this.`);
 		}
 
-		if (message.type === 'subscribe_logs') {
+		if (message.type === 'subscribe') {
 			try {
 				this.subscribe({ client });
 
-				client.send(fmtMessage('logs', { event: 'subscribe_logs' }));
+				client.send(fmtMessage('logs', { event: 'subscribe' }));
 			} catch (err) {
-				handleWebSocketError(client, err, 'subscribe_logs');
+				handleWebSocketError(client, err, 'subscribe');
 			}
-		} else if (message.type === 'unsubscribe_logs') {
+		} else if (message.type === 'unsubscribe') {
 			try {
 				this.unsubscribe(client);
 
-				client.send(fmtMessage('logs', { event: 'unsubscribe_logs' }));
+				client.send(fmtMessage('logs', { event: 'unsubscribe' }));
 			} catch (err) {
-				handleWebSocketError(client, err, 'unsubscribe_logs');
+				handleWebSocketError(client, err, 'unsubscribe');
 			}
 		}
 	}
