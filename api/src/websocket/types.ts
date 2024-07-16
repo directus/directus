@@ -1,3 +1,4 @@
+import type { LOG_LEVEL, LOG_LEVELS } from '@directus/constants';
 import type { Accountability, Query } from '@directus/types';
 import type { IncomingMessage } from 'http';
 import type internal from 'stream';
@@ -34,6 +35,4 @@ export type GraphQLSocket = {
 	client: WebSocketClient;
 };
 
-export type LogsSubscription = {
-	client: WebSocketClient;
-};
+export type LogsSubscription = Record<LOG_LEVEL, Set<WebSocketClient>>;
