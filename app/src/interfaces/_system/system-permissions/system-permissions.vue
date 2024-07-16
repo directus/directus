@@ -677,6 +677,11 @@ function useGroupedPermissions() {
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		border-spacing: 0;
+
+		th,
+		td {
+			padding: 0;
+		}
 	}
 
 	.monospace {
