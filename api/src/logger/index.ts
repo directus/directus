@@ -12,8 +12,8 @@ import { LogsStream } from './stream.js';
 
 export const _cache: {
 	logger: Logger<never> | undefined;
-	logsStream: LogsStream;
-} = { logger: undefined, logsStream: new LogsStream() };
+	logsStream: LogsStream | undefined;
+} = { logger: undefined, logsStream: undefined };
 
 export const useLogger = () => {
 	if (_cache.logger) {
@@ -23,6 +23,16 @@ export const useLogger = () => {
 	_cache.logger = createLogger();
 
 	return _cache.logger;
+};
+
+export const getLogsStream = () => {
+	if (_cache.logsStream) {
+		return _cache.logsStream;
+	}
+
+	_cache.logsStream = new LogsStream();
+
+	return _cache.logsStream;
 };
 
 export const createLogger = () => {
@@ -77,7 +87,7 @@ export const createLogger = () => {
 
 	// WebSocket Logs
 	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
-		streams.push({ level: mergedOptions.level!, stream: _cache.logsStream });
+		streams.push({ level: mergedOptions.level!, stream: getLogsStream() });
 	}
 
 	return pino(mergedOptions, pino.multistream(streams));
@@ -173,7 +183,7 @@ export const createExpressLogger = () => {
 
 	// WebSocket Logs
 	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
-		streams.push({ level: mergedHttpOptions.level!, stream: _cache.logsStream });
+		streams.push({ level: mergedHttpOptions.level!, stream: getLogsStream() });
 	}
 
 	return pinoHttp({
