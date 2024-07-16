@@ -26,7 +26,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-	<tr class="permissions-row">
+	<tr class="permissions-row" :data-collection="collection.collection">
 		<td>
 			<span v-tooltip.left="collection.name" class="name">{{ collection.collection }}</span>
 			<span class="shortcuts">

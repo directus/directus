@@ -44,6 +44,9 @@ const emit = defineEmits<{
 const { collection, primaryKey, field } = toRefs(props);
 const { t } = useI18n();
 
+const contentEl = inject<Ref<Element | null>>('main-element');
+const permissionsTable = ref<HTMLTableElement | null>(null);
+
 const collectionsStore = useCollectionsStore();
 const { relationInfo } = useRelationO2M(collection, field);
 
@@ -550,6 +553,25 @@ function useGroupedPermissions() {
 			collection: info,
 			permissions: [],
 		});
+
+		nextTick(() => {
+			if (!contentEl?.value) return;
+
+			const tableRow = permissionsTable.value?.querySelector(`tr[data-collection=${collection}]`);
+
+			if (!tableRow) return;
+
+			/** Header height + additional spacing */
+			const TOP_SPACING = 80;
+			const tableRowTop = tableRow.getBoundingClientRect().top - TOP_SPACING;
+
+			// Only scroll to row if it is out of view
+			if (tableRowTop > 0) return;
+
+			const top = tableRowTop + contentEl.value.scrollTop;
+
+			contentEl.value.scrollTo({ top, behavior: 'smooth' });
+		});
 	}
 
 	function removeEmptyCollection(collection: string) {
@@ -567,8 +589,8 @@ function useGroupedPermissions() {
 		{{ t('admins_have_all_permissions') }}
 	</v-notice>
 
-	<div v-else class="permissions-list">
-		<table v-if="!loading || allPermissions.length > 0">
+	<div v-else-if="!loading || allPermissions.length > 0" class="permissions-list">
+		<table ref="permissionsTable">
 			<permissions-header />
 
 			<tbody>
