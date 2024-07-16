@@ -1,4 +1,4 @@
-import type { LOG_LEVEL, LOG_LEVELS } from '@directus/constants';
+import type { LOG_LEVEL } from '@directus/constants';
 import type { Accountability, Query } from '@directus/types';
 import type { IncomingMessage } from 'http';
 import type internal from 'stream';
