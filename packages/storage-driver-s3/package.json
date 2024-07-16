@@ -32,7 +32,7 @@
 		"@directus/utils": "workspace:*",
 		"@shopify/semaphore": "3.1.0",
 		"@smithy/node-http-handler": "2.5.0",
-		"@tus/utils": "0.2.0"
+		"@tus/utils": "0.3.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
