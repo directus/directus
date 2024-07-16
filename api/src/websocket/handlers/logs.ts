@@ -119,7 +119,7 @@ export class LogsHandler {
 
 				if (isValidLogLevel(logLevel)) {
 					this.subscribe(LOG_LEVELS[logLevel], client);
-					client.send(fmtMessage('logs', { event: 'subscribe' }));
+					client.send(fmtMessage('logs', { event: 'subscribe', log_level: logLevel }));
 				}
 			} catch (err) {
 				handleWebSocketError(client, err, 'subscribe');
