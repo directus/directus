@@ -101,6 +101,7 @@ export async function createServer(): Promise<http.Server> {
 		createSubscriptionController(server);
 		createWebSocketController(server);
 		createLogsController(server);
+
 		startWebSocketHandlers();
 	}
 

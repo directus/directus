@@ -5,7 +5,7 @@ import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
 import { refreshAccountability } from '../authenticate.js';
 import { handleWebSocketError } from '../errors.js';
-import { WebSocketMessage } from '../messages.js';
+import { AuthMode, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
 
@@ -22,6 +22,25 @@ export class LogsController extends SocketController {
 		});
 
 		logger.info(`Logs WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+	}
+
+	override getEnvironmentConfig(configPrefix: string) {
+		const env = useEnv();
+
+		const endpoint = String(env[`${configPrefix}_PATH`]);
+
+		const maxConnections =
+			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
+
+		return {
+			endpoint,
+			maxConnections,
+			// require strict auth
+			authentication: {
+				mode: 'strict' as AuthMode,
+				timeout: 0,
+			},
+		};
 	}
 
 	private bindEvents(client: WebSocketClient) {
