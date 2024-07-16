@@ -3,6 +3,7 @@ import type { Accountability, Query } from '@directus/types';
 import type { IncomingMessage } from 'http';
 import type internal from 'stream';
 import type { WebSocket } from 'ws';
+import type { AuthMode } from './messages.js';
 
 export type AuthenticationState = {
 	accountability: Accountability | null;
@@ -13,6 +14,11 @@ export type AuthenticationState = {
 export type WebSocketClient = WebSocket &
 	AuthenticationState & { uid: string | number; auth_timer: NodeJS.Timeout | null };
 export type UpgradeRequest = IncomingMessage & AuthenticationState;
+export type WebSocketAuthentication = {
+	mode: AuthMode;
+	timeout: number;
+	requireAdmin: boolean;
+};
 
 export type SubscriptionEvent = 'create' | 'update' | 'delete';
 

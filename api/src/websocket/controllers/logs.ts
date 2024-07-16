@@ -39,6 +39,7 @@ export class LogsController extends SocketController {
 			authentication: {
 				mode: 'strict' as AuthMode,
 				timeout: 0,
+				requireAdmin: true,
 			},
 		};
 	}
