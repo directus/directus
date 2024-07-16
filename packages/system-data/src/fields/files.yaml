@@ -170,3 +170,10 @@ fields:
     hidden: true
     special:
       - cast-json
+
+  - field: replaced_on
+    width: half
+    display: datetime
+    interface: datetime
+    readonly: true
+    hidden: true

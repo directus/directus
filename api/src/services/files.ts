@@ -8,6 +8,7 @@ import encodeURL from 'encodeurl';
 import { clone, cloneDeep } from 'lodash-es';
 import { extension } from 'mime-types';
 import type { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { PassThrough as PassThroughStream, Transform as TransformStream } from 'node:stream';
 import zlib from 'node:zlib';
 import path from 'path';
@@ -20,13 +21,19 @@ import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { ItemsService, type QueryOptions } from './items.js';
+import { createHash } from 'node:crypto';
+import { getHelpers } from '../database/helpers/index.js';
+import type { Helpers } from '../database/helpers/index.js';
 
 const env = useEnv();
 const logger = useLogger();
 
 export class FilesService extends ItemsService<File> {
+	helpers: Helpers;
+
 	constructor(options: AbstractServiceOptions) {
 		super('directus_files', options);
+		this.helpers = getHelpers(this.knex);
 	}
 
 	/**
@@ -40,17 +47,26 @@ export class FilesService extends ItemsService<File> {
 	): Promise<PrimaryKey> {
 		const storage = await getStorage();
 
-		let existingFile: Record<string, any> | null = null;
+		let existingFile: Pick<
+			File,
+			'folder' | 'filename_download' | 'filename_disk' | 'title' | 'description' | 'metadata' | 'replaced_on'
+		> | null = null;
 
 		// If the payload contains a primary key, we'll check if the file already exists
 		if (primaryKey !== undefined) {
 			// If the file you're uploading already exists, we'll consider this upload a replace so we'll fetch the existing file's folder and filename_download
 			existingFile =
 				(await this.knex
-					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata')
+					.select('folder', 'filename_download', 'filename_disk', 'title', 'description', 'metadata', 'replaced_on')
 					.from('directus_files')
 					.where({ id: primaryKey })
 					.first()) ?? null;
+		}
+
+		if (existingFile) {
+			existingFile.replaced_on = `${new Date(
+				this.helpers.date.writeTimestamp(new Date().toISOString()),
+			).toISOString()}`;
 		}
 
 		// Merge the existing file's folder and filename_download with the new payload
@@ -76,10 +92,20 @@ export class FilesService extends ItemsService<File> {
 		}
 
 		const fileExtension =
-			path.extname(payload.filename_download!) || (payload.type && '.' + extension(payload.type)) || '';
+			path.extname(payload.filename_download!) || (payload?.type && '.' + extension(payload.type)) || '';
+
+		// Append the file extension to the filename_download if it is missing
+		if (!path.extname(payload.filename_download!) && payload?.type) {
+			payload.filename_download = payload.filename_download + '.' + extension(payload.type);
+		}
 
 		// The filename_disk is the FINAL filename on disk
 		payload.filename_disk ||= primaryKey + (fileExtension || '');
+
+		// Append the file extension to the filename_disk if it is missing
+		if (existingFile && path.extname(payload.filename_disk!) !== fileExtension) {
+			payload.filename_disk = primaryKey + (fileExtension || '');
+		}
 
 		// Temp filename is used for replacements
 		const tempFilenameDisk = 'temp_' + payload.filename_disk;
@@ -186,8 +212,19 @@ export class FilesService extends ItemsService<File> {
 	}
 
 	/**
-	 * Extract metadata from a buffer's content
+	 * Extract file hash from stream content
 	 */
+	async getHash(stream: Readable): Promise<string> {
+		let hash = '';
+
+		await pipeline(stream, createHash('md5').setEncoding('hex'), async function (source) {
+			for await (const chunk of source) {
+				hash = chunk;
+			}
+		});
+
+		return hash;
+	}
 
 	/**
 	 * Import a single file from an external URL

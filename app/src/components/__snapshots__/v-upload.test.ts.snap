@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`V-Upload > Mount component 1`] = `
+"<div data-v-88c1425a="" data-dropzone="" class="v-upload">
+  <div data-v-88c1425a="" class="actions">
+    <div data-v-28d526fe="" data-v-88c1425a="" class="v-button secondary rounded"><button data-v-28d526fe="" class="button align-center icon normal" type="button"><span data-v-28d526fe="" class="content"><input data-v-88c1425a="" class="browse" type="file"><v-icon-stub data-v-88c1425a="" name="file_upload"></v-icon-stub></span>
+        <div data-v-28d526fe="" class="spinner">
+          <!--v-if-->
+        </div>
+      </button></div>
+    <!--v-if-->
+    <!--v-if-->
+  </div>
+  <p data-v-88c1425a="" class="type-label">Drag & Drop a File Here</p>
+  <!--v-if-->
+</div>"
+`;

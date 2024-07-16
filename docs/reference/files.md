@@ -276,6 +276,9 @@ When the file was uploaded.
 `modified_by` **many-to-one**\
 Who updated the file last. Many-to-one to [users](/reference/system/users).
 
+`replaced_on` **datetime**\
+When the file was last overwritten/replaced.
+
 `filesize` **number**\
 Size of the file in bytes.
 
@@ -322,6 +325,7 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 	"uploaded_on": "2021-02-04T11:37:41-05:00",
 	"modified_by": null,
 	"modified_on": "2021-02-04T11:37:42-05:00",
+	"replaced_on": null,
 	"filesize": 3442252,
 	"width": 3456,
 	"height": 5184,

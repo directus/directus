@@ -33,6 +33,7 @@ test('Returns the file id and file extension from the file type as the imageUrl'
 		metadata: null,
 		focal_point_x: null,
 		focal_point_y: null,
+		hash: null,
 	};
 
 	const { imageSelection, onImageSelect } = useImage(editorRef, imageToken, {
@@ -63,6 +64,7 @@ test('Returns the file id and file extension from the filename_download as the i
 		uploaded_on: '2024-06-14T23:59:59.000Z',
 		modified_by: null,
 		modified_on: '2024-06-14T23:59:59.001Z',
+		replaced_on: null,
 		charset: null,
 		filesize: 100,
 		width: null,
