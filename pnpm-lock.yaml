@@ -228,8 +228,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       inquirer:
-        specifier: 9.3.2
-        version: 9.3.2
+        specifier: 9.3.5
+        version: 9.3.5
       ioredis:
         specifier: 5.4.1
         version: 5.4.1
@@ -264,8 +264,8 @@ importers:
         specifier: 2.3.3
         version: 2.3.3
       liquidjs:
-        specifier: 10.14.0
-        version: 10.14.0
+        specifier: 10.15.0
+        version: 10.15.0
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -1087,8 +1087,8 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 9.3.2
-        version: 9.3.2
+        specifier: 9.3.5
+        version: 9.3.5
 
   packages/create-directus-project:
     dependencies:
@@ -1355,8 +1355,8 @@ importers:
         specifier: 11.2.0
         version: 11.2.0
       inquirer:
-        specifier: 9.3.2
-        version: 9.3.2
+        specifier: 9.3.5
+        version: 9.3.5
       ora:
         specifier: 6.3.1
         version: 6.3.1
@@ -7824,8 +7824,8 @@ packages:
     resolution: {integrity: sha512-it4HyVAUTKBc6m8e1iXWvXSTdndF7HbdN713+kvLrymxTaU4AUBWrJ4vEooP+V7fexnVD3LKcBshjGGPefSMUQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
 
-  inquirer@9.3.2:
-    resolution: {integrity: sha512-+ynEbhWKhyomnaX0n2aLIMSkgSlGB5RrWbNXnEqj6mdaIydu6y40MdBjL38SAB0JcdmOaIaMua1azdjLEr3sdw==}
+  inquirer@9.3.5:
+    resolution: {integrity: sha512-SVRCRovA7KaT6nqWB2mCNpTvU4cuZ0hOXo5KPyiyOcNNUIZwq/JKtvXuDJNaxfuJKabBYRu1ecHze0YEwDYoRQ==}
     engines: {node: '>=18'}
 
   internal-slot@1.0.7:
@@ -8379,8 +8379,8 @@ packages:
   linkify-it@3.0.3:
     resolution: {integrity: sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==}
 
-  liquidjs@10.14.0:
-    resolution: {integrity: sha512-Zjg35Yo3L/2aNy7QkICha/ulbXRtZS7oRenWyDDfw+J34Xy3fOKWWHxASC9r0gbxN661nrwmG/kOIKHfYcVk4Q==}
+  liquidjs@10.15.0:
+    resolution: {integrity: sha512-u5lYWhW8ioT+O3FdCcp5U+hiPEGNO4xASCFlCHA+k5rMTJwDIa2c2KF111ZDKc2xGM7LXPvMoNRIrBfbLNpRBg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -12038,8 +12038,8 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
 
-  yoctocolors-cjs@2.1.1:
-    resolution: {integrity: sha512-c6T13b6qYcJZvck7QbEFXrFX/Mu2KOjvAGiKHmYMUg96jxNpfP6i+psGW72BOPxOIDUJrORG+Kyu7quMX9CQBQ==}
+  yoctocolors-cjs@2.1.2:
+    resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
   z-schema@5.0.5:
@@ -19205,7 +19205,7 @@ snapshots:
 
   ini@3.0.1: {}
 
-  inquirer@9.3.2:
+  inquirer@9.3.5:
     dependencies:
       '@inquirer/figures': 1.0.3
       ansi-escapes: 4.3.2
@@ -19218,7 +19218,7 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
-      yoctocolors-cjs: 2.1.1
+      yoctocolors-cjs: 2.1.2
 
   internal-slot@1.0.7:
     dependencies:
@@ -19808,7 +19808,7 @@ snapshots:
     dependencies:
       uc.micro: 1.0.6
 
-  liquidjs@10.14.0:
+  liquidjs@10.15.0:
     dependencies:
       commander: 10.0.1
 
@@ -24217,7 +24217,7 @@ snapshots:
 
   yocto-queue@1.0.0: {}
 
-  yoctocolors-cjs@2.1.1: {}
+  yoctocolors-cjs@2.1.2: {}
 
   z-schema@5.0.5:
     dependencies:

@@ -56,12 +56,22 @@ export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 ]);
 export type WebSocketSubscribeMessage = z.infer<typeof WebSocketSubscribeMessage>;
 
+const logLevelParam = z.union([
+	z.literal('trace'),
+	z.literal('debug'),
+	z.literal('info'),
+	z.literal('warn'),
+	z.literal('error'),
+	z.literal('fatal'),
+]);
+
 export const WebSocketLogsMessage = z.union([
 	z.object({
-		type: z.literal('subscribe_logs'),
+		type: z.literal('subscribe'),
+		log_level: logLevelParam,
 	}),
 	WebSocketMessage.extend({
-		type: z.literal('unsubscribe_logs'),
+		type: z.literal('unsubscribe'),
 	}),
 ]);
 export type WebSocketLogsMessage = z.infer<typeof WebSocketLogsMessage>;
