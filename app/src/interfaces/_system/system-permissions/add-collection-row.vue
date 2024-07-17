@@ -31,7 +31,7 @@ const systemCollections = computed(() =>
 );
 
 const displayItems = computed(() => {
-	const items: any[] = availableCollections.value;
+	const items: any[] = [...availableCollections.value];
 
 	// Don't use a separate group for system collections, since the v-select search does not open groups,
 	// so the experience is rather unpleasant
