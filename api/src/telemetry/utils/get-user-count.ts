@@ -34,6 +34,7 @@ export const getUserCount = async (db: Knex, ignoreIds: PrimaryKey[] = []): Prom
 
 		if (adminAccess) {
 			counts.admin += count;
+			counts.app += count;
 		} else if (appAccess) {
 			counts.app += count;
 		} else {
