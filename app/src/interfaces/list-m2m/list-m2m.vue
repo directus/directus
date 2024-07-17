@@ -565,7 +565,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+						<v-pagination
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 1 : 2"
+							show-first-last
+						/>
 
 						<div class="spacer" />
 
@@ -583,7 +588,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 				</template>
 			</div>
 		</div>
