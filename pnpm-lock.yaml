@@ -228,8 +228,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       inquirer:
-        specifier: 9.3.2
-        version: 9.3.2
+        specifier: 9.3.5
+        version: 9.3.5
       ioredis:
         specifier: 5.4.1
         version: 5.4.1
@@ -264,8 +264,8 @@ importers:
         specifier: 2.3.3
         version: 2.3.3
       liquidjs:
-        specifier: 10.14.0
-        version: 10.14.0
+        specifier: 10.15.0
+        version: 10.15.0
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -746,8 +746,8 @@ importers:
         specifier: 10.9.0
         version: 10.9.0(vue-router@4.4.0(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
       apexcharts:
-        specifier: 3.49.2
-        version: 3.49.2
+        specifier: 3.50.0
+        version: 3.50.0
       axios:
         specifier: 1.7.2
         version: 1.7.2
@@ -779,8 +779,8 @@ importers:
         specifier: 5.2.0
         version: 5.2.0
       dompurify:
-        specifier: 3.1.5
-        version: 3.1.5
+        specifier: 3.1.6
+        version: 3.1.6
       editorjs-toggle-block:
         specifier: 0.3.16
         version: 0.3.16
@@ -1087,8 +1087,8 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 9.3.2
-        version: 9.3.2
+        specifier: 9.3.5
+        version: 9.3.5
 
   packages/create-directus-project:
     dependencies:
@@ -1355,8 +1355,8 @@ importers:
         specifier: 11.2.0
         version: 11.2.0
       inquirer:
-        specifier: 9.3.2
-        version: 9.3.2
+        specifier: 9.3.5
+        version: 9.3.5
       ora:
         specifier: 6.3.1
         version: 6.3.1
@@ -5613,8 +5613,8 @@ packages:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
 
-  apexcharts@3.49.2:
-    resolution: {integrity: sha512-vBB8KgwfD9rSObA7s4kY2rU6DeaN67gTR3JN7r32ztgKVf8lKkdFQ6iUhk6oIHrV7W8PoHhr5EwKymn0z5Fz6A==}
+  apexcharts@3.50.0:
+    resolution: {integrity: sha512-LJT1PNAm+NoIU3aogL2P+ViC0y/Cjik54FdzzGV54UNnGQLBoLe5ok3fxsJDTgyez45BGYT8gqNpYKqhdfy5sg==}
 
   aproba@2.0.0:
     resolution: {integrity: sha512-lYe4Gx7QT+MKGbDsA+Z+he/Wtef0BiwDOlK/XkBrdfsh9J/jPPXbX0tE9x9cl27Tmu5gg3QUbUrQYa/y+KOHPQ==}
@@ -6779,8 +6779,8 @@ packages:
     resolution: {integrity: sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w==}
     engines: {node: '>= 4'}
 
-  dompurify@3.1.5:
-    resolution: {integrity: sha512-lwG+n5h8QNpxtyrJW/gJWckL+1/DQiYMX8f7t8Z2AZTPw1esVrqjI63i7Zc2Gz0aKzLVMYC1V1PL/ky+aY/NgA==}
+  dompurify@3.1.6:
+    resolution: {integrity: sha512-cTOAhc36AalkjtBpfG6O8JimdTMWNXjiePT2xQH/ppBGi/4uIpmj8eKyIkMJErXWARyINV/sB38yf8JCLF5pbQ==}
 
   domutils@2.8.0:
     resolution: {integrity: sha512-w96Cjofp72M5IIhpjgobBimYEfoPjx1Vx0BSX9P30WBdZW2WIKU0T1Bd0kz2eNZ9ikjKgHbEyKx8BB6H1L3h3A==}
@@ -7824,8 +7824,8 @@ packages:
     resolution: {integrity: sha512-it4HyVAUTKBc6m8e1iXWvXSTdndF7HbdN713+kvLrymxTaU4AUBWrJ4vEooP+V7fexnVD3LKcBshjGGPefSMUQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
 
-  inquirer@9.3.2:
-    resolution: {integrity: sha512-+ynEbhWKhyomnaX0n2aLIMSkgSlGB5RrWbNXnEqj6mdaIydu6y40MdBjL38SAB0JcdmOaIaMua1azdjLEr3sdw==}
+  inquirer@9.3.5:
+    resolution: {integrity: sha512-SVRCRovA7KaT6nqWB2mCNpTvU4cuZ0hOXo5KPyiyOcNNUIZwq/JKtvXuDJNaxfuJKabBYRu1ecHze0YEwDYoRQ==}
     engines: {node: '>=18'}
 
   internal-slot@1.0.7:
@@ -8379,8 +8379,8 @@ packages:
   linkify-it@3.0.3:
     resolution: {integrity: sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==}
 
-  liquidjs@10.14.0:
-    resolution: {integrity: sha512-Zjg35Yo3L/2aNy7QkICha/ulbXRtZS7oRenWyDDfw+J34Xy3fOKWWHxASC9r0gbxN661nrwmG/kOIKHfYcVk4Q==}
+  liquidjs@10.15.0:
+    resolution: {integrity: sha512-u5lYWhW8ioT+O3FdCcp5U+hiPEGNO4xASCFlCHA+k5rMTJwDIa2c2KF111ZDKc2xGM7LXPvMoNRIrBfbLNpRBg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -12038,8 +12038,8 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
 
-  yoctocolors-cjs@2.1.1:
-    resolution: {integrity: sha512-c6T13b6qYcJZvck7QbEFXrFX/Mu2KOjvAGiKHmYMUg96jxNpfP6i+psGW72BOPxOIDUJrORG+Kyu7quMX9CQBQ==}
+  yoctocolors-cjs@2.1.2:
+    resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
   z-schema@5.0.5:
@@ -16674,7 +16674,7 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  apexcharts@3.49.2:
+  apexcharts@3.50.0:
     dependencies:
       '@yr/monotone-cubic-spline': 1.0.3
       svg.draggable.js: 2.2.2
@@ -17783,7 +17783,7 @@ snapshots:
     dependencies:
       domelementtype: 2.3.0
 
-  dompurify@3.1.5: {}
+  dompurify@3.1.6: {}
 
   domutils@2.8.0:
     dependencies:
@@ -19205,7 +19205,7 @@ snapshots:
 
   ini@3.0.1: {}
 
-  inquirer@9.3.2:
+  inquirer@9.3.5:
     dependencies:
       '@inquirer/figures': 1.0.3
       ansi-escapes: 4.3.2
@@ -19218,7 +19218,7 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
-      yoctocolors-cjs: 2.1.1
+      yoctocolors-cjs: 2.1.2
 
   internal-slot@1.0.7:
     dependencies:
@@ -19808,7 +19808,7 @@ snapshots:
     dependencies:
       uc.micro: 1.0.6
 
-  liquidjs@10.14.0:
+  liquidjs@10.15.0:
     dependencies:
       commander: 10.0.1
 
@@ -24217,7 +24217,7 @@ snapshots:
 
   yocto-queue@1.0.0: {}
 
-  yoctocolors-cjs@2.1.1: {}
+  yoctocolors-cjs@2.1.2: {}
 
   z-schema@5.0.5:
     dependencies:
