@@ -1,6 +1,8 @@
 import { LOG_LEVEL, LOG_LEVELS } from '@directus/constants';
 import { ErrorCode, ServiceUnavailableError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
+import { isValidLogLevel } from '@directus/utils';
+import { nanoid } from 'nanoid';
 import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
 import { getLogsController, LogsController } from '../controllers/index.js';
@@ -8,13 +10,8 @@ import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { WebSocketLogsMessage } from '../messages.js';
 import type { LogsSubscription, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
-import { nanoid } from 'nanoid';
 
 const logLevelValues = Object.values(LOG_LEVELS);
-
-function isValidLogLevel(level: string): level is keyof typeof LOG_LEVELS {
-	return level in LOG_LEVELS;
-}
 
 export class LogsHandler {
 	controller: LogsController;
