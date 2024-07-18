@@ -114,8 +114,6 @@ export class ServerService {
 
 				info['websocket'].logs = toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])
 					? {
-							authentication: env['WEBSOCKETS_LOGS_AUTH'],
-							path: env['WEBSOCKETS_LOGS_PATH'],
 							allowedLogLevels: getAllowedLogLevels((env['LOG_LEVEL'] as string) || 'info'),
 					  }
 					: false;
