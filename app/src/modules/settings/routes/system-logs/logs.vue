@@ -23,6 +23,7 @@ const search = ref<string | null>('');
 const maxLogLevelName = ref('');
 const activeFilterLevels: Ref<Set<LOG_LEVEL>> = ref(new Set());
 const streamStarted = ref(false);
+const maxLogs = 10_000;
 
 if (serverStore.info?.websocket) {
 	if (serverStore.info.websocket.logs) {
@@ -75,6 +76,8 @@ client.onWebSocket('message', function (message) {
 
 	if (type == 'logs' && data) {
 		logs.value.push({ uid, data });
+
+		if (logs.value.length > maxLogs) logs.value.splice(0, 1);
 	}
 });
 

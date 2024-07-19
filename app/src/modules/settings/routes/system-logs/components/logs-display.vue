@@ -7,12 +7,9 @@ import { nextTick } from 'vue';
 
 interface Props {
 	logs: Log[];
-	maxLogs?: number;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-	maxLogs: 10_000,
-});
+const props = defineProps<Props>();
 
 const logs = computed(() => {
 	return props.logs;
