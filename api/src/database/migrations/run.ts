@@ -7,7 +7,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { flushCaches } from '../../cache.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import type { Migration } from '../../types/index.js';
 import getModuleDefault from '../../utils/get-module-default.js';
 

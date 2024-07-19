@@ -5,6 +5,7 @@ import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
+import { isSystemCollection } from '@directus/system-data';
 import { merge, sortBy } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -13,7 +14,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
-import { isSystemCollection } from '@directus/system-data';
+import { useExpandCollapse } from './composables/use-expand-collapse';
 
 const { t } = useI18n();
 
@@ -22,6 +23,7 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
+const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
 	return translate(
@@ -31,7 +33,10 @@ const collections = computed(() => {
 			),
 			['meta.sort', 'collection'],
 		),
-	);
+	).map((collection) => ({
+		...collection,
+		isCollapsed: collapsedIds.value?.includes(collection.collection),
+	}));
 });
 
 const rootCollections = computed(() => {
@@ -190,28 +195,41 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				</template>
 			</v-info>
 
-			<v-list v-else class="draggable-list">
-				<draggable
-					:model-value="rootCollections"
-					:group="{ name: 'collections' }"
-					:swap-threshold="0.3"
-					class="root-drag-container"
-					item-key="collection"
-					handle=".drag-handle"
-					v-bind="{ 'force-fallback': true }"
-					@update:model-value="onSort($event, true)"
-				>
-					<template #item="{ element }">
-						<collection-item
-							:collection="element"
-							:collections="collections"
-							:visibility-tree="findVisibilityChild(element.collection)!"
-							@edit-collection="editCollection = $event"
-							@set-nested-sort="onSort"
-						/>
-					</template>
-				</draggable>
-			</v-list>
+			<template v-else>
+				<transition-expand>
+					<div v-if="hasExpandableCollections" class="expand-collapse-button">
+						{{ t('expand') }}
+						<button @click="expandAll">{{ t('all') }}</button>
+						/
+						<button @click="collapseAll">{{ t('none') }}</button>
+					</div>
+				</transition-expand>
+
+				<v-list class="draggable-list">
+					<draggable
+						:model-value="rootCollections"
+						:group="{ name: 'collections' }"
+						:swap-threshold="0.3"
+						class="root-drag-container"
+						item-key="collection"
+						handle=".drag-handle"
+						v-bind="{ 'force-fallback': true }"
+						@update:model-value="onSort($event, true)"
+					>
+						<template #item="{ element }">
+							<collection-item
+								:collection="element"
+								:collections="collections"
+								:is-collapsed="element.isCollapsed"
+								:visibility-tree="findVisibilityChild(element.collection)!"
+								@edit-collection="editCollection = $event"
+								@set-nested-sort="onSort"
+								@toggle-collapse="toggleCollapse"
+							/>
+						</template>
+					</draggable>
+				</v-list>
+			</template>
 
 			<v-list class="db-only">
 				<v-list-item
@@ -247,6 +265,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					:collection="collection"
 					:collections="systemCollections"
 					:visibility-tree="findVisibilityChild(collection.collection)!"
+					:is-collapsed="false"
 					disable-drag
 				/>
 			</v-detail>
@@ -318,5 +337,25 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 .db-only {
 	margin-bottom: 16px;
+}
+
+.expand-collapse-button {
+	padding-top: 4px;
+	text-align: right;
+	color: var(--theme--foreground-subdued);
+
+	button {
+		color: var(--theme--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+	}
+
+	button:hover {
+		color: var(--theme--foreground);
+		transition: none;
+	}
+}
+
+.v-list.draggable-list {
+	padding-top: 0;
 }
 </style>

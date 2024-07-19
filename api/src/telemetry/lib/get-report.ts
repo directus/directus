@@ -5,6 +5,7 @@ import { getDatabase, getDatabaseClient } from '../../database/index.js';
 import type { TelemetryReport } from '../types/report.js';
 import { getExtensionCount } from '../utils/get-extension-count.js';
 import { getFieldCount } from '../utils/get-field-count.js';
+import { getFilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserCount } from '../utils/get-user-count.js';
 import { getUserItemCount } from '../utils/get-user-item-count.js';
@@ -28,14 +29,16 @@ export const getReport = async (): Promise<TelemetryReport> => {
 	const env = useEnv();
 	const helpers = getHelpers(db);
 
-	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize] = await Promise.all([
-		getItemCount(db, basicCountTasks),
-		getUserCount(db),
-		getUserItemCount(db),
-		getFieldCount(db),
-		getExtensionCount(db),
-		helpers.schema.getDatabaseSize(),
-	]);
+	const [basicCounts, userCounts, userItemCount, fieldsCounts, extensionsCounts, databaseSize, filesizes] =
+		await Promise.all([
+			getItemCount(db, basicCountTasks),
+			getUserCount(db),
+			getUserItemCount(db),
+			getFieldCount(db),
+			getExtensionCount(db),
+			helpers.schema.getDatabaseSize(),
+			getFilesizeSum(db),
+		]);
 
 	return {
 		url: env['PUBLIC_URL'] as string,
@@ -61,5 +64,6 @@ export const getReport = async (): Promise<TelemetryReport> => {
 		extensions: extensionsCounts.totalEnabled,
 
 		database_size: databaseSize ?? 0,
+		files_size_total: filesizes.total,
 	};
 };

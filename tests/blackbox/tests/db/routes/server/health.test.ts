@@ -21,17 +21,6 @@ describe('/server', () => {
 						},
 					});
 
-					// TODO temporarily in place to find cause of flaky test
-					if (response.body?.status !== 'ok') {
-						// eslint-disable-next-line no-console
-						console.log(response.body);
-					}
-
-					if (gqlResponse.body?.data?.server_health?.status !== 'ok') {
-						// eslint-disable-next-line no-console
-						console.log(gqlResponse.body);
-					}
-
 					// Assert
 					expect(response.statusCode).toBe(200);
 					expect(gqlResponse.statusCode).toBe(200);

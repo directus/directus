@@ -1,3 +1,4 @@
+import { ForbiddenError } from '@directus/errors';
 import {
 	ActivityService,
 	DashboardsService,
@@ -14,6 +15,7 @@ import {
 	RolesService,
 	SettingsService,
 	SharesService,
+	TranslationsService,
 	UsersService,
 	VersionsService,
 	WebhooksService,
@@ -22,18 +24,14 @@ import type { AbstractServiceOptions } from '../types/services.js';
 
 /**
  * Select the correct service for the given collection. This allows the individual services to run
- * their custom checks (f.e. it allows UsersService to prevent updating TFA secret from outside)
+ * their custom checks (f.e. it allows `UsersService` to prevent updating TFA secret from outside).
  */
 export function getService(collection: string, opts: AbstractServiceOptions): ItemsService {
 	switch (collection) {
 		case 'directus_activity':
 			return new ActivityService(opts);
-		// case 'directus_collections':
-		// 	return new CollectionsService(opts);
 		case 'directus_dashboards':
 			return new DashboardsService(opts);
-		// case 'directus_fields':
-		// 	return new FieldsService(opts);
 		case 'directus_files':
 			return new FilesService(opts);
 		case 'directus_flows':
@@ -50,8 +48,6 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new PermissionsService(opts);
 		case 'directus_presets':
 			return new PresetsService(opts);
-		// case 'directus_relations':
-		// 	return new RelationsService(opts);
 		case 'directus_revisions':
 			return new RevisionsService(opts);
 		case 'directus_roles':
@@ -60,13 +56,18 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new SettingsService(opts);
 		case 'directus_shares':
 			return new SharesService(opts);
+		case 'directus_translations':
+			return new TranslationsService(opts);
 		case 'directus_users':
 			return new UsersService(opts);
-		case 'directus_webhooks':
-			return new WebhooksService(opts);
 		case 'directus_versions':
 			return new VersionsService(opts);
+		case 'directus_webhooks':
+			return new WebhooksService(opts);
 		default:
+			// Deny usage of other system collections via ItemsService
+			if (collection.startsWith('directus_')) throw new ForbiddenError();
+
 			return new ItemsService(collection, opts);
 	}
 }

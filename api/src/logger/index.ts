@@ -5,7 +5,8 @@ import { merge } from 'lodash-es';
 import { URL } from 'node:url';
 import { pino, type Logger, type LoggerOptions } from 'pino';
 import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
-import { getConfigFromEnv } from './utils/get-config-from-env.js';
+import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { redactQuery } from './redact-query.js';
 
 export const _cache: {
 	logger: Logger<never> | undefined;
@@ -161,13 +162,3 @@ export const createExpressLogger = () => {
 		},
 	}) as RequestHandler;
 };
-
-function redactQuery(originalPath: string) {
-	const url = new URL(originalPath, 'http://example.com/');
-
-	if (url.searchParams.has('access_token')) {
-		url.searchParams.set('access_token', REDACTED_TEXT);
-	}
-
-	return url.pathname + url.search;
-}

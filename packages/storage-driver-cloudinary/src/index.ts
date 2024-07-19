@@ -84,7 +84,7 @@ export class DriverCloudinary implements Driver {
 	 * @see https://cloudinary.com/documentation/image_transformations#image_upload_note
 	 */
 	private getResourceType(filepath: string) {
-		const fileExtension = extname(filepath);
+		const fileExtension = extname(filepath)?.toLowerCase();
 		if (IMAGE_EXTENSIONS.includes(fileExtension)) return 'image';
 		if (VIDEO_EXTENSIONS.includes(fileExtension)) return 'video';
 		return 'raw';

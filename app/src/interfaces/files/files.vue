@@ -363,7 +363,7 @@ const allowDrag = computed(
 			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
-			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 		</div>
 
 		<drawer-item
@@ -434,6 +434,8 @@ const allowDrag = computed(
 .actions {
 	margin-top: 8px;
 	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
