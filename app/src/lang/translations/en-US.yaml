@@ -1002,6 +1002,10 @@ no_data_in_flow: No data was produced or accessed within this Flow
 accountability: Accountability
 payload: Payload
 details: Details
+start_streaming_logs: Start Streaming Logs
+stop_streaming_logs: Stop Streaming Logs
+clear_logs: Clear Logs
+search_logs: Search Logs...
 full_screen: Full Screen
 full_text_search: Full-Text Search
 edit_panels: Edit Panels
@@ -1110,6 +1114,7 @@ settings_project: Settings
 settings_appearance: Appearance
 settings_webhooks: Webhooks
 settings_flows: Flows
+settings_system_logs: System Logs
 settings_presets: Bookmarks
 settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
@@ -1159,6 +1164,7 @@ page_help_settings_datamodel_collections: >-
   as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
+page_help_settings_system_logs: '**System Logs** — Access a live stream of the system logs.'
 page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-

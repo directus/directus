@@ -25,6 +25,7 @@ import RolesCollection from './routes/roles/collection.vue';
 import RolesItem from './routes/roles/item/item.vue';
 import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
 import RolesPublicItem from './routes/roles/public-item.vue';
+import SystemLogs from './routes/system-logs/logs.vue';
 import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
@@ -274,12 +275,17 @@ export default defineModule({
 			],
 		},
 		{
+			name: 'settings-system-logs',
+			path: 'system-logs',
+			component: SystemLogs,
+		},
+		{
 			name: 'settings-not-found',
 			path: ':_(.+)+',
 			component: NotFound,
 		},
 	],
 	preRegisterCheck: (user) => {
-		return user.role.admin_access === true;
+		return user.role?.admin_access === true;
 	},
 });
