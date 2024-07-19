@@ -29,7 +29,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.1.0",
+		"tsup": "8.1.2",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3"
 	},
