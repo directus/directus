@@ -1,0 +1,37 @@
+import { useEnv } from '@directus/env';
+import { useSharp } from './use-sharp';
+
+import { beforeAll, expect, test, vi } from 'vitest';
+
+vi.mock('@directus/env');
+
+vi.mock('sharp', () => {
+	const sharp = {
+		// using object with default property to mock default import
+		default: vi.fn(),
+	};
+
+	return sharp;
+});
+
+const ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION = 94906265;
+const ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL = 'error';
+
+beforeAll(() => {
+	vi.mocked(useEnv).mockReturnValue({
+		ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION,
+		ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL,
+	});
+});
+
+test('useSharp should apply the correct options', async () => {
+	const sharp = await import('sharp');
+
+	useSharp();
+
+	expect(sharp.default).toHaveBeenCalledWith({
+		limitInputPixels: Math.pow(ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),
+		sequentialRead: true,
+		failOn: ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL,
+	});
+});

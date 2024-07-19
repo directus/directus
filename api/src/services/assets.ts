@@ -13,8 +13,6 @@ import { contentType } from 'mime-types';
 import type { Readable } from 'node:stream';
 import hash from 'object-hash';
 import path from 'path';
-import type { FailOnOptions } from 'sharp';
-import sharp from 'sharp';
 import { SUPPORTED_IMAGE_TRANSFORM_FORMATS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -25,6 +23,7 @@ import { isValidUuid } from '../utils/is-valid-uuid.js';
 import * as TransformationUtils from '../utils/transformations.js';
 import { AuthorizationService } from './authorization.js';
 import { FilesService } from './files.js';
+import { useSharp, sharp } from '../utils/use-sharp.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -162,11 +161,7 @@ export class AssetsService {
 
 			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
 
-			const transformer = sharp({
-				limitInputPixels: Math.pow(env['ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION'] as number, 2),
-				sequentialRead: true,
-				failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'] as FailOnOptions,
-			});
+			const transformer = useSharp();
 
 			transformer.timeout({
 				seconds: clamp(Math.round(getMilliseconds(env['ASSETS_TRANSFORM_TIMEOUT'], 0) / 1000), 1, 3600),
