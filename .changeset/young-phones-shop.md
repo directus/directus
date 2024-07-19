@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Show first and last pages on pagination of relationship interfaces
+Added first and last page buttons to pagination in relational interfaces
