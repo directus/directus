@@ -434,6 +434,7 @@ const allowDrag = computed(
 .actions {
 	margin-top: 8px;
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 

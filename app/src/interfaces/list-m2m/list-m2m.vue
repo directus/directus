@@ -672,10 +672,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
+		margin-left: auto;
 		:deep(.v-button) {
 			display: inline-flex;
 		}
