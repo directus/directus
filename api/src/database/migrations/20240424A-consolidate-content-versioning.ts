@@ -1,5 +1,5 @@
 import type { Knex } from 'knex';
-import { assign, sortBy } from 'lodash-es';
+import { assign } from 'lodash-es';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_versions', (table) => {
@@ -9,9 +9,8 @@ export async function up(knex: Knex): Promise<void> {
 	const versions = await knex.select('id').from('directus_versions');
 
 	for (const version of versions) {
-		const deltas = sortBy(
-			await knex.select('id', 'delta').from('directus_revisions').where('version', '=', version.id),
-			'id',
+		const deltas = (
+			await knex.select('delta').from('directus_revisions').where('version', '=', version.id).orderBy('id')
 		).map((revision) => (typeof revision.delta === 'string' ? JSON.parse(revision.delta) : revision.delta));
 
 		const finalVersionDelta = assign({}, ...deltas);
