@@ -1,4 +1,8 @@
+import type { AuthenticationClient } from '../auth/types.js';
+import type { ConsoleInterface, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
+import { auth } from './commands/auth.js';
+import { pong } from './commands/pong.js';
 import type {
 	ConnectionState,
 	ReconnectState,
@@ -11,12 +15,8 @@ import type {
 	WebSocketEventHandler,
 	WebSocketEvents,
 } from './types.js';
-import { messageCallback } from './utils/message-callback.js';
 import { generateUid } from './utils/generate-uid.js';
-import { pong } from './commands/pong.js';
-import { auth } from './commands/auth.js';
-import type { AuthenticationClient } from '../auth/types.js';
-import type { ConsoleInterface, WebSocketInterface } from '../index.js';
+import { messageCallback } from './utils/message-callback.js';
 
 type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
@@ -50,6 +50,9 @@ export function realtime(config: WebSocketConfig = {}) {
 			attempts: 0,
 			active: false,
 		};
+
+		// Disable reconnection after manual disconnection
+		let wasManuallyDisconnected = false;
 
 		const subscriptions = new Set<Record<string, any>>();
 
@@ -87,7 +90,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 		const reconnect = (self: WebSocketClient<Schema>) => {
 			const reconnectPromise = new Promise<WebSocketInterface>((resolve, reject) => {
-				if (!config.reconnect) return reject();
+				if (!config.reconnect || wasManuallyDisconnected) return reject();
 
 				debug(
 					'info',
@@ -217,6 +220,8 @@ export function realtime(config: WebSocketConfig = {}) {
 
 		return {
 			async connect() {
+				wasManuallyDisconnected = false;
+
 				if (state.code === 'connecting') {
 					// wait for the current connection to open
 					return await state.connection;
@@ -301,6 +306,8 @@ export function realtime(config: WebSocketConfig = {}) {
 				return connectPromise;
 			},
 			disconnect() {
+				wasManuallyDisconnected = true;
+
 				if (state.code === 'open') {
 					state.connection.close();
 				}
