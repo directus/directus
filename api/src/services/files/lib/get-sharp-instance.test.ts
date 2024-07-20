@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { useSharp } from './use-sharp';
+import { getSharpInstance } from './get-sharp-instance';
 
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -24,10 +24,10 @@ beforeAll(() => {
 	});
 });
 
-test('useSharp should apply the correct options', async () => {
+test('getSharpInstance should apply the correct options', async () => {
 	const sharp = await import('sharp');
 
-	useSharp();
+	getSharpInstance();
 
 	expect(sharp.default).toHaveBeenCalledWith({
 		limitInputPixels: Math.pow(ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION, 2),

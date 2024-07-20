@@ -7,7 +7,7 @@ import { pipeline } from 'node:stream/promises';
 import { useEnv } from '@directus/env';
 import { useLogger } from '../../../logger/index.js';
 import { parseIptc, parseXmp } from './parse-image-metadata.js';
-import { useSharp } from '../../../utils/use-sharp.js';
+import { getSharpInstance } from '../lib/get-sharp-instance.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -18,7 +18,7 @@ export async function getMetadata(
 	stream: Readable,
 	allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
 ): Promise<Metadata> {
-	const transformer = useSharp();
+	const transformer = getSharpInstance();
 
 	return new Promise((resolve, reject) => {
 		pipeline(

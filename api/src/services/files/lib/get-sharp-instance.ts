@@ -1,7 +1,7 @@
 import sharp, { type Sharp, type FailOnOptions } from 'sharp';
 import { useEnv } from '@directus/env';
 
-function useSharp(): Sharp {
+function getSharpInstance(): Sharp {
 	const env = useEnv();
 
 	return sharp({
@@ -11,4 +11,4 @@ function useSharp(): Sharp {
 	});
 }
 
-export { sharp, useSharp };
+export { getSharpInstance };
