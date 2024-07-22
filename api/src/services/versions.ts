@@ -1,5 +1,5 @@
 import { Action } from '@directus/constants';
-import { InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
+import { ForbiddenError, InvalidPayloadError, UnprocessableContentError } from '@directus/errors';
 import type { ContentVersion, Filter, Item, PrimaryKey, Query } from '@directus/types';
 import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
@@ -41,10 +41,15 @@ export class VersionsService extends ItemsService {
 		// Reserves the "main" version key for the version query parameter
 		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
 
+		try {
+			await this.authorizationService.checkAccess('read', data['collection'], data['item']);
+		} catch {
+			throw new ForbiddenError();
+		}
+
 		const { CollectionsService } = await import('./collections.js');
 
 		const collectionsService = new CollectionsService({
-			accountability: null,
 			knex: this.knex,
 			schema: this.schema,
 		});
@@ -57,7 +62,12 @@ export class VersionsService extends ItemsService {
 			});
 		}
 
-		const existingVersions = await super.readByQuery({
+		const sudoService = new VersionsService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const existingVersions = await sudoService.readByQuery({
 			aggregate: { count: ['*'] },
 			filter: { key: { _eq: data['key'] }, collection: { _eq: data['collection'] }, item: { _eq: data['item'] } },
 		});
@@ -67,9 +77,6 @@ export class VersionsService extends ItemsService {
 				reason: `Version "${data['key']}" already exists for item "${data['item']}" in collection "${data['collection']}"`,
 			});
 		}
-
-		// will throw an error if the accountability does not have permission to read the item
-		await this.authorizationService.checkAccess('read', data['collection'], data['item']);
 	}
 
 	async getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
