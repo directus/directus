@@ -1,13 +1,13 @@
+import { useEnv } from '@directus/env';
 import type { File } from '@directus/types';
 import exif, { type GPSInfoTags, type ImageTags, type IopTags, type PhotoTags } from 'exif-reader';
 import { type IccProfile, parse as parseIcc } from 'icc';
 import { pick } from 'lodash-es';
 import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import { useEnv } from '@directus/env';
 import { useLogger } from '../../../logger/index.js';
-import { parseIptc, parseXmp } from './parse-image-metadata.js';
 import { getSharpInstance } from '../lib/get-sharp-instance.js';
+import { parseIptc, parseXmp } from './parse-image-metadata.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -20,13 +20,13 @@ export async function getMetadata(
 ): Promise<Metadata> {
 	const transformer = getSharpInstance();
 
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		pipeline(
 			stream,
 			transformer.metadata(async (err, sharpMetadata) => {
 				if (err) {
-					reject(err);
-					return;
+					logger.error(err);
+					return resolve({});
 				}
 
 				const metadata: Metadata = {};
