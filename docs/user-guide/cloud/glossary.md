@@ -61,7 +61,7 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <th>Professional</th>
   </tr>
   <tr>
-    <td>United States, East</td>
+    <td>United States, N. Virginia</td>
     <td>✅</td>
     <td>✅</td>
   </tr>
@@ -76,7 +76,17 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <td>✅</td>
   </tr>
   <tr>
-    <td>United States, West</td>
+    <td>United States, Ohio</td>
+    <td>✅</td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td>United States, N. California</td>
+    <td>✅</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>United States, Oregon</td>
     <td>✅</td>
     <td></td>
   </tr>
@@ -86,37 +96,7 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <td></td>
   </tr>
   <tr>
-    <td>Asia Pacific, Hong Kong</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Jakarta</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Mumbai</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Osaka</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Seoul</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
     <td>Asia Pacific, Sydney</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Tokyo</td>
     <td>✅</td>
     <td></td>
   </tr>
@@ -126,12 +106,12 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <td></td>
   </tr>
   <tr>
-    <td>Europe, Ireland</td>
+    <td>Europe, London</td>
     <td>✅</td>
     <td></td>
   </tr>
   <tr>
-    <td>Europe, London</td>
+    <td>Europe, Milan</td>
     <td>✅</td>
     <td></td>
   </tr>
@@ -146,7 +126,7 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <td></td>
   </tr>
   <tr>
-    <td>Middle East, Bahrain</td>
+    <td>Europe, Zurich</td>
     <td>✅</td>
     <td></td>
   </tr>
@@ -253,15 +233,16 @@ from only one tenant. In multi-tenancy architecture, a database stores data from
 place to protect data privacy. In the context of Directus Cloud, each Project represents a tenant.
 
 **Professional**\
-Professional Projects are created using a multi-tenant architecture. However, if your neighbor's Project gets busy, it will
-not impact your Project, because each Professional Project is scoped to one container per Project with dedicated minimum
-resources. Projects also have the ability to scale beyond this minimum allocation based on currently available resources
-within the multitenant pool. However, these additional resources are not guaranteed and are offered on a dynamic first-come,
-first-serve basis. For end-to-end, single-tenant infrastructure with fully dedicated resources, [contact us about our Enterprise Tier](https://directus.io/contact)
+Professional Projects are created using a multi-tenant architecture. However, if your neighbor's Project gets busy, it
+will not impact your Project, because each Professional Project is scoped to one container per Project with dedicated
+minimum resources. Projects also have the ability to scale beyond this minimum allocation based on currently available
+resources within the multitenant pool. However, these additional resources are not guaranteed and are offered on a
+dynamic first-come, first-serve basis. For end-to-end, single-tenant infrastructure with fully dedicated resources,
+[contact us about our Enterprise Tier](https://directus.io/contact)
 
 **Enterprise**\
-Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project - no neighbors! Ready to upgrade to Enterprise?
-[Contact us](https://directus.io/contact)
+Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project - no neighbors! Ready to upgrade to
+Enterprise? [Contact us](https://directus.io/contact)
 
 ::: tip
 
