@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import type { File } from '@directus/types';
 import { emitter, Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
@@ -125,9 +126,13 @@ function useUpload() {
 					preset,
 				});
 
-				uploadedFiles && emit('input', uploadedFiles);
+				uploadedFiles &&
+					emit(
+						'input',
+						uploadedFiles.filter((f): f is File => !!f),
+					);
 			} else {
-				const uploadedFile = await uploadFile(Array.from(files)[0] as File, {
+				const uploadedFile = await uploadFile(Array.from(files)[0]!, {
 					onProgressChange: (percentage) => {
 						progress.value = percentage;
 						done.value = percentage === 100 ? 1 : 0;
