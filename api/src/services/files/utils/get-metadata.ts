@@ -4,10 +4,10 @@ import { type IccProfile, parse as parseIcc } from 'icc';
 import { pick } from 'lodash-es';
 import type { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
-import sharp from 'sharp';
 import { useEnv } from '@directus/env';
 import { useLogger } from '../../../logger/index.js';
 import { parseIptc, parseXmp } from './parse-image-metadata.js';
+import { getSharpInstance } from '../lib/get-sharp-instance.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -18,10 +18,12 @@ export async function getMetadata(
 	stream: Readable,
 	allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
 ): Promise<Metadata> {
+	const transformer = getSharpInstance();
+
 	return new Promise((resolve, reject) => {
 		pipeline(
 			stream,
-			sharp().metadata(async (err, sharpMetadata) => {
+			transformer.metadata(async (err, sharpMetadata) => {
 				if (err) {
 					reject(err);
 					return;
