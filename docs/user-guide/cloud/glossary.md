@@ -233,16 +233,15 @@ from only one tenant. In multi-tenancy architecture, a database stores data from
 place to protect data privacy. In the context of Directus Cloud, each Project represents a tenant.
 
 **Professional**\
-Professional Projects are created using a multi-tenant architecture. However, if your neighbor's Project gets busy, it
-will not impact your Project, because each Professional Project is scoped to one container per Project with dedicated
-minimum resources. Projects also have the ability to scale beyond this minimum allocation based on currently available
-resources within the multitenant pool. However, these additional resources are not guaranteed and are offered on a
-dynamic first-come, first-serve basis. For end-to-end, single-tenant infrastructure with fully dedicated resources,
-[contact us about our Enterprise Tier](https://directus.io/contact)
+Professional Projects are created using a multi-tenant architecture. However, if your neighbor's Project gets busy, it will
+not impact your Project, because each Professional Project is scoped to one container per Project with dedicated minimum
+resources. Projects also have the ability to scale beyond this minimum allocation based on currently available resources
+within the multitenant pool. However, these additional resources are not guaranteed and are offered on a dynamic first-come,
+first-serve basis. For end-to-end, single-tenant infrastructure with fully dedicated resources, [contact us about our Enterprise Tier](https://directus.io/contact)
 
 **Enterprise**\
-Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project - no neighbors! Ready to upgrade to
-Enterprise? [Contact us](https://directus.io/contact)
+Databases on Enterprise Projects are single-tenant, 100% dedicated to your Project - no neighbors! Ready to upgrade to Enterprise?
+[Contact us](https://directus.io/contact)
 
 ::: tip
 
