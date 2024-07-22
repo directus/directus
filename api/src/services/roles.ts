@@ -218,6 +218,10 @@ export class RolesService extends ItemsService {
 				const type = this.getRoleAccessType(data);
 				increasedCounts[type] += data['users'].length;
 
+				if (type === 'admin') {
+					increasedCounts['app'] += data['users'].length;
+				}
+
 				for (const user of data['users']) {
 					if (typeof user === 'string') {
 						existingIds.push(user);
@@ -250,6 +254,10 @@ export class RolesService extends ItemsService {
 			if (needsUserLimitCheck && 'users' in partialItem) {
 				const type = this.getRoleAccessType(partialItem);
 				increasedCounts[type] += partialItem['users'].length;
+
+				if (type === 'admin') {
+					increasedCounts['app'] += partialItem['users'].length;
+				}
 
 				for (const user of partialItem['users']) {
 					if (typeof user === 'string') {
@@ -388,9 +396,17 @@ export class RolesService extends ItemsService {
 
 				if (isAccessChanged) {
 					increasedCounts[accessType] += Number(existingRole.count);
+
+					if (accessType === 'admin') {
+						increasedCounts['app'] += Number(existingRole.count);
+					}
 				}
 
 				increasedCounts[accessType] += increasedUsers;
+
+				if (accessType === 'admin') {
+					increasedCounts['app'] += increasedUsers;
+				}
 
 				await checkIncreasedUserLimits(this.knex, increasedCounts, existingIds);
 			}
@@ -458,6 +474,10 @@ export class RolesService extends ItemsService {
 				for (const [existingType, existingCount] of Object.entries(existingCounts)) {
 					if (existingType === type) continue;
 					increasedCounts[type] += existingCount;
+
+					if (type === 'admin') {
+						increasedCounts['app'] += existingCount;
+					}
 				}
 
 				await checkIncreasedUserLimits(this.knex, increasedCounts);

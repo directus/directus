@@ -215,6 +215,7 @@ export class UsersService extends ItemsService {
 				if (typeof data['role'] === 'object') {
 					if ('admin_access' in data['role'] && data['role']['admin_access'] === true) {
 						increasedCounts.admin++;
+						increasedCounts.app++;
 					} else if ('app_access' in data['role'] && data['role']['app_access'] === true) {
 						increasedCounts.app++;
 					} else {
@@ -265,6 +266,7 @@ export class UsersService extends ItemsService {
 					if (typeof role === 'object') {
 						if ('admin_access' in role && role['admin_access'] === true) {
 							increasedCounts.admin++;
+							increasedCounts.app++;
 						} else if ('app_access' in role && role['app_access'] === true) {
 							increasedCounts.app++;
 						} else {
@@ -331,6 +333,7 @@ export class UsersService extends ItemsService {
 
 					if (toBoolean(newRole.admin_access)) {
 						increasedCounts.admin = keys.length - existingCounts.admin;
+						increasedCounts.app = keys.length - existingCounts.app;
 					} else if (toBoolean(newRole.app_access)) {
 						increasedCounts.app = keys.length - existingCounts.app;
 					} else {

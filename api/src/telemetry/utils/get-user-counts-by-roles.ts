@@ -31,6 +31,7 @@ export async function getUserCountsByRoles(db: Knex, roleIds: PrimaryKey[]): Pro
 
 		if (adminAccess) {
 			counts.admin += count;
+			counts.app += count;
 		} else if (appAccess) {
 			counts.app += count;
 		} else {

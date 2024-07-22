@@ -22,6 +22,7 @@ export async function getRoleCountsByRoles(db: Knex, roles: string[]): Promise<A
 
 		if (adminAccess) {
 			counts.admin++;
+			counts.app++;
 		} else if (appAccess) {
 			counts.app++;
 		} else {

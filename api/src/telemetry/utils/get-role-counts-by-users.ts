@@ -37,6 +37,7 @@ export async function getRoleCountsByUsers(
 
 		if (adminAccess) {
 			counts.admin += count;
+			counts.app += count;
 		} else if (appAccess) {
 			counts.app += count;
 		} else {
