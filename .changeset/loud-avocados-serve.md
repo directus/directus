@@ -1,7 +1,9 @@
 ---
+'@directus/api': patch
+'@directus/specs': patch
 '@directus/system-data': patch
 '@directus/types': patch
-'@directus/api': patch
+'@directus/sdk': patch
 ---
 
-Consolidated content versioning with a new `delta` field in `directus_versions`
+Consolidated Content Versions with a new `delta` field under `directus_versions`
