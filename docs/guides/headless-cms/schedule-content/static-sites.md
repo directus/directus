@@ -88,8 +88,8 @@ field `status` that controls the published state.
 
    **Examples**
 
-   - `* 1 * * * *` - Would trigger this flow every minute
-   - `* 15 * * * *` – Would trigger this flow every 15 minutes
+   - `* */1 * * * *` - Would trigger this flow every minute
+   - `* */15 * * * *` – Would trigger this flow every 15 minutes
 
 ### Add an Operation to Check The Published Date and Update Data
 
