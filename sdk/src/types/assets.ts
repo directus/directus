@@ -11,5 +11,7 @@ export type AssetsQuery =
 			quality?: number;
 			withoutEnlargement?: boolean;
 			format?: 'auto' | 'jpg' | 'png' | 'webp' | 'tiff';
+			focal_point_x?: number;
+			focal_point_y?: number;
 			transforms?: [string, ...any[]][];
 	  };

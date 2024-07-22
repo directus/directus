@@ -1,4 +1,5 @@
-import type { NestedPartial, ExtensionItem } from '../../../types/index.js';
+import type { DirectusExtension } from '../../../schema/extension.js';
+import type { NestedPartial } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
@@ -10,11 +11,11 @@ import { throwIfEmpty } from '../../utils/index.js';
  * @returns Returns the extension that was updated
  */
 export const updateExtension =
-	<Schema extends object>(
+	<Schema>(
 		bundle: string | null,
 		name: string,
-		data: NestedPartial<ExtensionItem>,
-	): RestCommand<ExtensionItem, Schema> =>
+		data: NestedPartial<DirectusExtension<Schema>>,
+	): RestCommand<DirectusExtension<Schema>, Schema> =>
 	() => {
 		if (bundle !== null) throwIfEmpty(bundle, 'Bundle cannot be an empty string');
 		throwIfEmpty(name, 'Name cannot be empty');

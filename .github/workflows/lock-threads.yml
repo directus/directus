@@ -1,0 +1,20 @@
+name: Lock Threads
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+
+permissions:
+  issues: write
+  pull-requests: write
+  discussions: write
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/lock-threads@v5
+        with:
+          issue-inactive-days: 60
+          pr-inactive-days: 60
+          discussion-inactive-days: 60

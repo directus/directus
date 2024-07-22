@@ -1,7 +1,8 @@
 import { defineTheme } from '../../utils/define-theme.js';
 
 export default defineTheme({
-	name: 'Directus Color Match',
+	id: 'Directus Color Match',
+	name: '$t:theme_directus_colormatch',
 	appearance: 'light',
 	rules: {
 		background: 'color-mix(in srgb, #FFFFFF, var(--theme--primary) 7%)',

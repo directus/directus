@@ -1,7 +1,8 @@
 import { defineTheme } from '../../utils/define-theme.js';
 
 export default defineTheme({
-	name: 'Directus Default',
+	id: 'Directus Default',
+	name: '$t:theme_directus_default',
 	appearance: 'dark',
 	rules: {
 		borderRadius: '6px',
@@ -273,6 +274,40 @@ export default defineTheme({
 				background: '#161b22',
 				borderRadius: 'var(--theme--border-radius)',
 				boxShadow: '0px 0px 6px 0px rgb(0, 0, 0, 0.2)',
+			},
+		},
+
+		banner: {
+			background: '#0e1c2f',
+			padding: '40px',
+			borderRadius: 'var(--theme--border-radius)',
+
+			avatar: {
+				borderRadius: '50%',
+				foreground: 'var(--theme--primary)',
+				background: '#ffffff',
+			},
+
+			headline: {
+				foreground: '#ffffff',
+				fontFamily: 'var(--theme--fonts--sans--font-family)',
+				fontWeight: 'var(--theme--fonts--sans--font-weight)',
+			},
+
+			title: {
+				foreground: '#ffffff',
+				fontFamily: 'var(--theme--fonts--display--font-family)',
+				fontWeight: 'var(--theme--fonts--display--font-weight)',
+			},
+
+			subtitle: {
+				foreground: '#a2b5cd',
+				fontFamily: 'var(--theme--fonts--monospace--font-family)',
+				fontWeight: 'var(--theme--fonts--monospace--font-weight)',
+			},
+
+			art: {
+				foreground: '#2e3a4d',
 			},
 		},
 	},

@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { AppTile } from '@/components/v-workspace-tile.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
+import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useExtensions } from '@/extensions';
 import { router } from '@/router';
 import { useInsightsStore } from '@/stores/insights';
-import { usePermissionsStore } from '@/stores/permissions';
 import { pointOnLine } from '@/utils/point-on-line';
+import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import { useAppStore } from '@directus/stores';
 import { applyOptionsData } from '@directus/utils';
@@ -15,7 +16,6 @@ import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InsightsNavigation from '../components/navigation.vue';
 import InsightsNotFound from './not-found.vue';
-import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 
 const props = withDefaults(
 	defineProps<{
@@ -31,16 +31,13 @@ const { panels: panelsInfo } = useExtensions();
 
 const insightsStore = useInsightsStore();
 const appStore = useAppStore();
-const permissionsStore = usePermissionsStore();
 
 const { fullScreen } = toRefs(appStore);
 const { loading, errors, data, saving, hasEdits, refreshIntervals, variables } = toRefs(insightsStore);
 
 const zoomToFit = ref(false);
 
-const updateAllowed = computed<boolean>(() => {
-	return permissionsStore.hasPermission('directus_panels', 'update');
-});
+const { updateAllowed } = useItemPermissions('directus_panels', props.primaryKey, false);
 
 const now = new Date();
 

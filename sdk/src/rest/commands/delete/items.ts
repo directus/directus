@@ -14,7 +14,7 @@ import type { RestCommand } from '../../types.js';
  * @throws Will throw if keysOrQuery is empty
  */
 export const deleteItems =
-	<Schema extends object, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
+	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
 		keysOrQuery: string[] | number[] | TQuery,
 	): RestCommand<void, Schema> =>
@@ -51,10 +51,7 @@ export const deleteItems =
  * @throws Will throw if key is empty
  */
 export const deleteItem =
-	<Schema extends object, Collection extends keyof Schema>(
-		collection: Collection,
-		key: string | number,
-	): RestCommand<void, Schema> =>
+	<Schema, Collection extends keyof Schema>(collection: Collection, key: string | number): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use deleteItem for core collections');

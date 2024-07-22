@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { useEventListener } from '@vueuse/core';
 import { position } from 'caret-pos';
+import { onMounted, ref, watch } from 'vue';
 
 interface Props {
 	captureGroup: string;
@@ -19,7 +20,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['update:modelValue', 'trigger', 'deactivate', 'up', 'down', 'enter']);
 
-const input = ref<HTMLDivElement>();
+type HTMLEditableDivElement = HTMLDivElement & Pick<HTMLInputElement, 'value'>;
+
+const input = ref<HTMLEditableDivElement | null>(null);
 
 let hasTriggered = false;
 let matchedPositions: number[] = [];
@@ -38,27 +41,37 @@ watch(
 );
 
 onMounted(() => {
-	if (props.modelValue && props.modelValue !== input.value!.innerText) {
+	if (props.modelValue && props.modelValue !== input.value?.innerText) {
 		parseHTML(props.modelValue);
 	}
-
-	if (input.value) {
-		input.value.addEventListener('click', checkClick);
-		input.value.addEventListener('keydown', checkKeyDown);
-		input.value.addEventListener('keyup', checkKeyUp);
-	}
 });
 
-onUnmounted(() => {
-	if (input.value) {
-		input.value.removeEventListener('click', checkClick);
-		input.value.removeEventListener('keydown', checkKeyDown);
-		input.value.removeEventListener('keyup', checkKeyUp);
-	}
-});
+useEventListener(input, 'click', checkClick);
+useEventListener(input, 'keydown', checkKeyDown);
+useEventListener(input, 'keyup', checkKeyUp);
 
-function checkKeyDown(event: any) {
-	const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+function checkClick(event: MouseEvent) {
+	const input = event.target as HTMLEditableDivElement;
+
+	const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
+
+	const checkCaretPos = matchedPositions.indexOf(caretPos);
+
+	if (checkCaretPos !== -1) {
+		if (checkCaretPos % 2 === 0) {
+			position(input, caretPos - 1);
+		} else {
+			position(input, caretPos + 1);
+		}
+
+		event.preventDefault();
+	}
+}
+
+function checkKeyDown(event: KeyboardEvent) {
+	const input = event.target as HTMLEditableDivElement;
+
+	const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
 
 	if (event.code === 'Enter') {
 		event.preventDefault();
@@ -67,15 +80,13 @@ function checkKeyDown(event: any) {
 			emit('enter');
 		} else {
 			parseHTML(
-				input.value!.innerText.substring(0, caretPos) +
-					(caretPos === input.value!.innerText.length && input.value!.innerText.charAt(caretPos - 1) !== '\n'
-						? '\n\n'
-						: '\n') +
-					input.value!.innerText.substring(caretPos),
+				input.innerText.substring(0, caretPos) +
+					(caretPos === input.innerText.length && input.innerText.charAt(caretPos - 1) !== '\n' ? '\n\n' : '\n') +
+					input.innerText.substring(caretPos),
 				true,
 			);
 
-			position(input.value!, caretPos + 1);
+			position(input, caretPos + 1);
 		}
 	} else if (event.code === 'ArrowUp' && !event.shiftKey) {
 		if (hasTriggered) {
@@ -95,7 +106,7 @@ function checkKeyDown(event: any) {
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
 			event.preventDefault();
 
-			position(input.value!, matchedPositions[checkCaretPos - 1] - 1);
+			position(input, matchedPositions[checkCaretPos - 1]! - 1);
 		}
 	} else if (event.code === 'ArrowRight' && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
@@ -103,7 +114,7 @@ function checkKeyDown(event: any) {
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
 			event.preventDefault();
 
-			position(input.value!, matchedPositions[checkCaretPos + 1] + 1);
+			position(input, matchedPositions[checkCaretPos + 1]! + 1);
 		}
 	} else if (event.code === 'Backspace') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos - 1);
@@ -114,15 +125,15 @@ function checkKeyDown(event: any) {
 			const newCaretPos = matchedPositions[checkCaretPos - 1];
 
 			parseHTML(
-				(input.value!.innerText.substring(0, newCaretPos) + input.value!.innerText.substring(caretPos)).replaceAll(
+				(input.innerText.substring(0, newCaretPos) + input.innerText.substring(caretPos)).replaceAll(
 					String.fromCharCode(160),
 					' ',
 				),
 				true,
 			);
 
-			position(input.value!, newCaretPos);
-			emit('update:modelValue', input.value!.innerText);
+			position(input, newCaretPos);
+			emit('update:modelValue', input.innerText);
 		}
 	} else if (event.code === 'Delete') {
 		const checkCaretPos = matchedPositions.indexOf(caretPos + 1);
@@ -132,50 +143,35 @@ function checkKeyDown(event: any) {
 
 			parseHTML(
 				(
-					input.value!.innerText.substring(0, caretPos) +
-					input.value!.innerText.substring(matchedPositions[checkCaretPos + 1])
+					input.innerText.substring(0, caretPos) + input.innerText.substring(matchedPositions[checkCaretPos + 1]!)
 				).replaceAll(String.fromCharCode(160), ' '),
 				true,
 			);
 
-			position(input.value!, caretPos);
-			emit('update:modelValue', input.value!.innerText);
+			position(input, caretPos);
+			emit('update:modelValue', input.innerText);
 		}
 	}
 }
 
-function checkKeyUp(event: any) {
-	const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
+function checkKeyUp(event: KeyboardEvent) {
+	const input = event.target as HTMLEditableDivElement;
+
+	const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
 
 	if ((event.code === 'ArrowUp' || event.code === 'ArrowDown') && !event.shiftKey) {
 		const checkCaretPos = matchedPositions.indexOf(caretPos);
 
 		if (checkCaretPos !== -1 && checkCaretPos % 2 === 1) {
-			position(input.value!, matchedPositions[checkCaretPos] + 1);
+			position(input, matchedPositions[checkCaretPos]! + 1);
 		} else if (checkCaretPos !== -1 && checkCaretPos % 2 === 0) {
-			position(input.value!, matchedPositions[checkCaretPos] - 1);
+			position(input, matchedPositions[checkCaretPos]! - 1);
 		}
-	}
-}
-
-function checkClick(event: any) {
-	const caretPos = window.getSelection()?.rangeCount ? position(input.value as Element).pos : 0;
-
-	const checkCaretPos = matchedPositions.indexOf(caretPos);
-
-	if (checkCaretPos !== -1) {
-		if (checkCaretPos % 2 === 0) {
-			position(input.value!, caretPos - 1);
-		} else {
-			position(input.value!, caretPos + 1);
-		}
-
-		event.preventDefault();
 	}
 }
 
 function processText(event: Event) {
-	const input = event.target as HTMLDivElement;
+	const input = event.target as HTMLEditableDivElement;
 
 	const caretPos = window.getSelection()?.rangeCount ? position(input).pos : 0;
 

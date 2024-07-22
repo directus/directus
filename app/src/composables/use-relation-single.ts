@@ -3,21 +3,34 @@ import { RelationM2O } from '@/composables/use-relation-m2o';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { merge } from 'lodash';
-import { ref, Ref, watch } from 'vue';
+import { computed, MaybeRefOrGetter, ref, Ref, toValue, watch } from 'vue';
 
 export type RelationQuerySingle = {
 	fields: string[];
+};
+
+export type UseRelationSingleOptions = {
+	enabled?: MaybeRefOrGetter<boolean>;
 };
 
 export function useRelationSingle<T extends Record<string, any>>(
 	value: Ref<number | string | Record<string, any> | null>,
 	previewQuery: Ref<RelationQuerySingle>,
 	relation: Ref<RelationM2O | undefined>,
+	options?: UseRelationSingleOptions,
 ) {
 	const displayItem: Ref<T | null> = ref(null);
 	const loading = ref(false);
 
-	watch([value, previewQuery, relation], getDisplayItem, { immediate: true });
+	const enabled = computed(() => (options?.enabled === undefined ? true : toValue(options?.enabled)));
+
+	watch(
+		[value, previewQuery, relation, enabled],
+		() => {
+			if (enabled.value) getDisplayItem();
+		},
+		{ immediate: true },
+	);
 
 	return { update, remove, refresh, displayItem, loading };
 

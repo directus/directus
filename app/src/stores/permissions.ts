@@ -1,7 +1,7 @@
 import api from '@/api';
 import { parseFilter } from '@/utils/parse-filter';
 import { parsePreset } from '@/utils/parse-preset';
-import { Permission } from '@directus/types';
+import { Permission, PermissionsAction } from '@directus/types';
 import { deepMap } from '@directus/utils';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
@@ -65,21 +65,21 @@ export const usePermissionsStore = defineStore({
 		dehydrate() {
 			this.$reset();
 		},
-		getPermissionsForUser(collection: string, action: Permission['action']) {
-			const userStore = useUserStore();
-			return (
-				this.permissions.find(
-					(permission) =>
-						permission.action === action &&
-						permission.collection === collection &&
-						permission.role === userStore.currentUser?.role?.id,
-				) || null
+		getPermission(collection: string, action: PermissionsAction) {
+			const permission = this.permissions.find(
+				(permission) => permission.action === action && permission.collection === collection,
 			);
+
+			return permission || null;
 		},
-		hasPermission(collection: string, action: Permission['action']) {
+		hasPermission(collection: string, action: PermissionsAction) {
 			const userStore = useUserStore();
-			if (userStore.currentUser?.role?.admin_access === true) return true;
-			return !!this.getPermissionsForUser(collection, action);
+
+			if (userStore.isAdmin) return true;
+
+			return this.permissions.some(
+				(permission) => permission.action === action && permission.collection === collection,
+			);
 		},
 	},
 });

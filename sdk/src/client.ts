@@ -7,6 +7,7 @@ const defaultGlobals: ClientGlobals = {
 	fetch: globalThis.fetch,
 	WebSocket: globalThis.WebSocket,
 	URL: globalThis.URL,
+	logger: globalThis.console,
 };
 
 /**
@@ -17,10 +18,7 @@ const defaultGlobals: ClientGlobals = {
  *
  * @returns A Directus client.
  */
-export const createDirectus = <Schema extends object = any>(
-	url: string,
-	options: ClientOptions = {},
-): DirectusClient<Schema> => {
+export const createDirectus = <Schema = any>(url: string, options: ClientOptions = {}): DirectusClient<Schema> => {
 	const globals = options.globals ? { ...defaultGlobals, ...options.globals } : defaultGlobals;
 	return {
 		globals,

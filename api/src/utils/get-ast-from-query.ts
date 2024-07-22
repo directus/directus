@@ -116,7 +116,7 @@ export default async function getASTFromQuery(
 			let name = fieldKey;
 
 			if (query.alias) {
-				// check for field alias (is is one of the key)
+				// check for field alias (is one of the key)
 				if (name in query.alias) {
 					name = query.alias[fieldKey]!;
 				}

@@ -23,6 +23,48 @@ Descriptor of the project, shown in the Admin App.
 `project_url` **string**\
 Link to the (public) website that goes with this project.
 
+`report_feature_url` **string**\
+Link to the feature request page.
+
+`report_bug_url` **string**\
+Link to the bug report page.
+
+`report_error_url` **string**\
+Link to the error report page. This is a template URL that has access to the following object
+
+```ts
+{
+  error: {
+    name?: string;
+    message?: string;
+  };
+  route: {
+    fullPath: string;
+    hash: string;
+    name: string;
+    path: string;
+    query: string;
+  };
+  navigator: {
+    language: string;
+    userAgent: string;
+  };
+  user: {
+    id?: string | number;
+    first_name?: string;
+    last_name?: string;
+    title?: string;
+    description?: string;
+    location?: string;
+    status?: string;
+  };
+  role: {
+    id?: string;
+    name?: string;
+  };
+}
+```
+
 `project_color` **string**\
 Brand color for the current project.
 
@@ -94,6 +136,9 @@ Custom aspect ratios in the [image editor](/user-guide/file-library/files#edit-a
 		"project_name": "Directus",
 		"project_descriptor": "Application",
 		"project_url": null,
+		"report_error_url": null,
+		"report_bug_url": null,
+		"report_feature_url": null,
 		"project_color": null,
 		"project_logo": null,
 		"public_foreground": null,

@@ -157,6 +157,13 @@ select-icon, which provides a searchable dropdown of the icon library.
 
 ## Work With Images
 
+::: warning DEPRECATED
+
+Since [Directus version 10.10.0](/releases/breaking-changes.html#version-10-10-0) this is no longer required and you can
+rely on [session cookies](/reference/authentication.html#access-tokens) instead.
+
+:::
+
 When working with images inside Directus, you need an access token. Rather than use a static token, create a new file
 called `use-directus-token.js` and use the following script that fetches the current user’s access token:
 
@@ -312,9 +319,9 @@ After the `input` field, add the buttons by looping through the `choices` array.
 	:key="choice.value"
 	class="v-icon-radio block"
 	type="button"
-	:aria-pressed="isChecked(value, item.value) ? 'true' : 'false'"
+	:aria-pressed="isChecked(value, choice.value) ? 'true' : 'false'"
 	:disabled="disabled"
-	:class="{ checked: isChecked(value, item.value), block }"
+	:class="{ checked: isChecked(value, choice.value), block }"
 	@click="selectOption(choice.value, field)"
 >
 	<span class="label type-text">
@@ -596,14 +603,14 @@ export default {
 			@input="handleChange($event.target.value, field)"
 		/>
 		<button
-			v-for="item in choices"
-			:key="item.value"
+			v-for="choice in choices"
+			:key="choice.value"
 			class="v-icon-radio block"
 			type="button"
-			:aria-pressed="isChecked(value, item.value) ? 'true' : 'false'"
+			:aria-pressed="isChecked(value, choice.value) ? 'true' : 'false'"
 			:disabled="disabled"
-			:class="{ checked: isChecked(value, item.value), block }"
-			@click="selectOption(item.value, field)"
+			:class="{ checked: isChecked(value, choice.value), block }"
+			@click="selectOption(choice.value, field)"
 		>
 			<span class="label type-text">
 				<v-icon v-if="choice.icon" :name="choice.icon" filled />

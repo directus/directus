@@ -1,4 +1,4 @@
-# Custom Operations <small></small>
+# Custom Operations
 
 > Custom Operations allow you to create new types of steps for flows. They are developed using JavaScript / Node.js.
 > [Learn more about Operations](/app/flows/operations).
@@ -106,5 +106,5 @@ Learn how to build operations with our official guides:
 <GuidesListExtensions type="Operations" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

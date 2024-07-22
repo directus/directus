@@ -20,7 +20,7 @@ test('Mount component', () => {
 });
 
 test('style props', async () => {
-	const types = ['info', 'success', 'warning', 'danger', 'center'];
+	const types = ['info', 'success', 'warning', 'danger'] as const;
 
 	for (const type of types) {
 		const wrapper = mount(VInfo, {

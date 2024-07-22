@@ -118,7 +118,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 			<template #append>
 				<template v-if="displayItem">
-					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', undefined)" />
+					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="value = null" />
 				</template>
 				<template v-else>
 					<v-icon class="expand" name="expand_more" />

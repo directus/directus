@@ -89,7 +89,7 @@ router.delete('/', async (req, res) => {
 });
 ```
 
-::: tip Explore ItemsService In-depth
+::: tip Explore ItemsService In-Depth
 
 Refer to the full list of methods
 [in our codebase](https://github.com/directus/directus/blob/main/api/src/services/items.ts).

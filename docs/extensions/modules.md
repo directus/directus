@@ -3,7 +3,7 @@ description: A guide on how to build custom Modules in Directus.
 readTime: 5 min read
 ---
 
-# Custom Modules <small></small>
+# Custom Modules
 
 > Custom Modules are completely open-ended components that allow you to create new experiences within the Directus
 > platform. They are developed using Vue.js. [Learn more about Modules](/user-guide/overview/glossary#modules).
@@ -85,7 +85,8 @@ sidebar, the header and the main content area.
 
 ::: warning Enable the Module
 
-Before a module appears in the module bar, it has to be enabled inside the project settings.
+Before a module appears in the module bar, the extension has to be enabled under Settings > Extensions, and the module
+has to be enabled under Settings > Settings > Module Bar.
 
 :::
 
@@ -120,3 +121,13 @@ export default {
 If you prefer to use the Vue Options API, you can inject the `api` and `stores` properties directly.
 
 :::
+
+## Guides
+
+Learn how to build modules with our official guides:
+
+<GuidesListExtensions type="Modules" />
+
+<script setup>
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
+</script>

@@ -1,5 +1,5 @@
 ---
-contributors: Kevin Lewis
+contributors: Kevin Lewis, Esther Agbaje
 description: Learn how to build a real-time multi-user chat with WebSockets and Vue.js.
 ---
 
@@ -17,7 +17,7 @@ You will need a Directus project. If you don’t already have one, the easiest w
 [managed Directus Cloud service](https://directus.cloud).
 
 Create a new collection called `messages`, with `date_created` and `user_created` fields enabled in the _Optional System
-Fields_ pane on collection creation. Create a text field called `text`.
+Fields_ pane on collection creation. Create an input field called `text`.
 
 Create a new Role called `Users`, and give Create and Read access to the `Messages` collection, and Read access to the
 `Directus Users` system collection. Create a new user with this role. Make note of the password you set.
@@ -29,7 +29,7 @@ Create a new Role called `Users`, and give Create and Read access to the `Messag
 <html>
 	<body>
 		<div id="app">
-			<form>
+			<form @submit.prevent="loginSubmit">
 				<label for="email">Email</label>
 				<input type="email" id="email" />
 				<label for="password">Password</label>
@@ -39,23 +39,15 @@ Create a new Role called `Users`, and give Create and Read access to the `Messag
 
 			<ol></ol>
 
-			<form>
+			<form @submit.prevent="messageSubmit">
 				<label for="message">Message</label>
-				<input type="text" id="message" />
+				<input type="text" id="text" />
 				<input type="submit" />
 			</form>
 		</div>
 
-		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-		<script>
-			const { createApp } = Vue;
+		<script setup>
 
-			createApp({
-				data() {
-					return {};
-				},
-				methods: {},
-			}).mount('#app');
 		</script>
 	</body>
 </html>
@@ -64,216 +56,131 @@ Create a new Role called `Users`, and give Create and Read access to the `Messag
 The first form will handle user login and the second will handle new message submissions. The empty `<ol>` will be
 populated with messages.
 
-Inside of Vue's `data` object, create a `url` property being sure to replace `your-directus-url` with your project’s
-URL:
+Inside the setup `script`, create a `url` property being sure to replace `your-directus-url` with your project’s URL:
 
 ```js
-data() {
-	return {
-		url: 'wss://your-directus-url/websocket', // [!code ++]
-		connection: null, // [!code ++]
-	};
-},
+const url = 'https://your-directus-url';
 ```
 
-The `connection` property will later contain a WebSocket instance.
+## Import the Required Composables and Methods
+
+At the top of your setup `script`, import the SDK composables and vue hooks needed for this project
+
+```js
+import { onMounted, ref, onBeforeUnmount } from 'vue';
+import { authentication, createDirectus, realtime } from '@directus/sdk';
+```
+
+- `createDirectus` is a function that initializes a Directus client.
+- `authentication` provides methods to authenticate a user.
+- `realtime` provides methods to establish a WebSocket connection.
+
+## Establish and Authenticate a WebSocket Client
+
+```js
+const client = createDirectus(url)
+  .with(authentication())
+  .with(realtime());
+```
 
 ## Set Up Form Submission Methods
 
 Create the methods for form submissions:
 
 ```js
-methods: {
-	loginSubmit() { // [!code ++]
-	}, // [!code ++]
-	messageSubmit() { // [!code ++]
-	}, // [!code ++]
+const loginSubmit = (event) => {};
+
+const messageSubmit = (event) => {};
+```
+
+Now, extract the `email` and `password` values from the login form.
+
+```js
+const loginSubmit = (event) => {
+  const email = event.target.elements.email.value; // [!code ++]
+  const password = event.target.elements.password.value; // [!code ++]
+};
+```
+
+Once the client is authenticated, immediately create a WebSocket connection:
+
+```js
+client.connect();
+```
+
+## Subscribe To Messages
+
+As soon as you have successfully authenticated, a message will be sent. When this happens, within `onMounted` hook,
+subscribe to updates on the `Messages` collection.
+
+```js
+onMounted(() => {
+  const cleanup = client.onWebSocket('message', function (message) {
+    if (message.type == 'auth' && message.status == 'ok') {
+      subscribe('create');
+    }
+  });
+
+  client.connect();
+  onBeforeUnmount(cleanup);
+});
+```
+
+Create a `subscribe` function that subscribes to events.
+
+```js
+async function subscribe(event) {
+  const { subscription } = await client.subscribe('messages', {
+    event,
+    query: {
+      fields: ['*', 'user_created.first_name'],
+    },
+  });
+
+  for await (const message of subscription) {
+    receiveMessage(message);
+  }
 }
 ```
 
-Then, ensure these methods are called on form submissions by using the `@submit.prevent` directive:
-
-```vue-html
-<!-- Login form -->
-<form> // [!code --]
-<form @submit.prevent="loginSubmit"> // [!code ++]
-	<label for="email">Email</label>
-
-<!-- Message form -->
-<form> // [!code --]
-<form @submit.prevent="messageSubmit"> // [!code ++]
-	<label for="message">Message</label>
-```
-
-## Establish WebSocket Connection
-
-First, create a new `login` object in your Vue application's `data` object. It will contain form data:
+When a subscription is started, a message will be sent to confirm. Create a `receiveMessage` function with the
+following:
 
 ```js
-data() {
-	return {
-		url: 'wss://your-directus-url/websocket',
-		connection: null,
-		form: {}, // [!code ++]
-	};
-},
-```
-
-Then, bind the login form's inputs to `form`:
-
-```vue-html
-<form>
-	<label for="email">Email</label>
-	<input type="email" id="email">  // [!code --]
-	<input v-model="form.email" type="email" id="email">  // [!code ++]
-	<label for="password">Password</label>
-	<input type="password" id="password">  // [!code --]
-	<input v-model="form.password" type="password" id="password">  // [!code ++]
-	<input type="submit">
-</form>
-```
-
-Within the `loginSubmit` method, create a new WebSocket, which will immediately attempt connection:
-
-```js
-loginSubmit() {
-	this.connection = new WebSocket(this.url); // [!code ++]
-},
-```
-
-On connection, you must [send an authentication message before the timeout](/guides/real-time/authentication). Add an
-event handler for the connection's `open` event:
-
-```js
-loginSubmit() {
-	this.connection = new WebSocket(this.url);
-	this.connection.addEventListener('open', () => this.authenticate(this.form)); // [!code ++]
-},
-```
-
-Then, create a new `authenticate` method:
-
-```js
-authenticate(opts) {
-	const { email, password } = opts;
-	this.connection.send(JSON.stringify({ type: 'auth', email, password }));
-},
-```
-
-### Subscribe to messages
-
-In a WebSocket connection, all data sent from the server will trigger the connection’s `message` event. Inside
-`loginSubmit`, add an event handler:
-
-```js
-loginSubmit() {
-	this.connection = new WebSocket(this.url);
-	this.connection.addEventListener('open', () => this.authenticate(this.form));
-	this.connection.addEventListener('message', (message) => this.receiveMessage(message)); // [!code ++]
-},
-```
-
-Then, create a new `receiveMessage` method:
-
-```js
-receiveMessage(message) {
-	const data = JSON.parse(message.data);
+function receiveMessage() {
+  if (data.type == 'subscription' && data.event == 'init') {
+	  console.log('subscription started');
+  }
 }
 ```
 
-As soon as you have successfully authenticated, a message will be sent. When this happens, subscribe to updates on the
-`Messages` collection. Add this inside of the `receiveMessage` method:
-
-```js
-receiveMessage(message) {
-	const data = JSON.parse(message.data);
-// [!code ++]
-	if (data.type == 'auth' && data.status == 'ok') { // [!code ++]
-		connection.send(JSON.stringify({ // [!code ++]
-			type: 'subscribe', // [!code ++]
-			collection: 'messages', // [!code ++]
-			query: { // [!code ++]
-				fields: ['text', 'user_created.first_name'], // [!code ++]
-				sort: 'date_created' // [!code ++]
-			} // [!code ++]
-		})); // [!code ++]
-	} // [!code ++]
-}
-```
-
-When a subscription is started, a message will be sent to confirm. Add this inside of the `receiveMessage` method:
-
-```js
-receiveMessage(message) {
-	const data = JSON.parse(message.data);
-
-	if (data.type == 'auth' && data.status == 'ok') {
-		this.connection.send(
-			JSON.stringify({
-				type: 'subscribe',
-				collection: 'messages',
-				query: {
-					fields: ['text', 'user_created.first_name'],
-					sort: 'date_created',
-				},
-			})
-		);
-	}
-// [!code ++]
-	if (data.type == 'subscription' && data.event == 'init') { // [!code ++]
-		console.log('subscription started'); // [!code ++]
-	} // [!code ++]
-}
-```
-
-_Open your `index.html` file in your browser, enter your user’s email and password, submit, and check the browser
-console for this console log._
+Open your browser, enter your user’s email and password, and hit submit. Check the browser console. You should see
+“subscription started”
 
 ## Create New Messages
 
-First, create a new `messages` object in your Vue application's `data` object with two properties: a `new` string to be
-bound to the input, and a `history` array to contain existing messages:
+At the top of your component, set up a ref to store an array of previous message history.
 
 ```js
-data() {
-	return {
-		url: 'wss://your-directus-url/websocket',
-		connection: null,
-		form: {},
-		messages: { // [!code ++]
-			new: '', // [!code ++]
-			history: [], // [!code ++]
-		}, // [!code ++]
-	};
-},
-```
-
-Then, bind the login form's inputs to `form` properties:
-
-```vue-html
-<form @submit.prevent="messageSubmit">
-	<label for="message">Message</label>
-	<input type="text" id="message"> // [!code --]
-	<input v-model="messages.new" type="text" id="message"> // [!code ++]
-	<input type="submit">
-</form>
+const messageHistory = ref([]);
 ```
 
 Within the `messageSubmit` method, send a new message to create the item in your Directus collection:
 
 ```js
-messageSubmit() {
-	this.connection.send( // [!code ++]
-		JSON.stringify({ // [!code ++]
-			type: 'items', // [!code ++]
-			collection: 'messages', // [!code ++]
-			action: 'create', // [!code ++]
-			data: { text: this.messages.new }, // [!code ++]
-		}) // [!code ++]
-	); // [!code ++]
-// [!code ++]
-	this.messages.new = ''; // [!code ++]
-}
+const messageSubmit = (event) => {
+
+  const text = event.target.elements.text.value;
+
+  client.sendMessage({
+    type: 'items',
+    collection: 'messages',
+    action: 'create',
+    data: { text },
+  });
+
+  event.target.reset();
+};
 ```
 
 _Refresh your browser, login, and submit a new message. Check the `Messages` collection in your Directus project and you
@@ -284,21 +191,29 @@ should see a new item._
 ## Display New Messages
 
 In your `receiveMessage` function, listen for new `create` events on the `Messages` collection, and add them to
-`messages.history`:
+`messageHistory`:
 
 ```js
 if (data.type == 'subscription' && data.event == 'create') {
-	this.messages.history.push(data.data[0]);
+    addMessageToList(message.data[0]);
+  }
+```
+
+Create an `addMessageToList` function that adds new messages to list:
+
+```js
+function addMessageToList(message) {
+  messageHistory.value.push(message);
 }
 ```
 
-Update your `<ol>` to display items in the array:
+Update your `<ol>` to display items in the array by mapping over `messageHistory`
 
-```vue-html
+```js
 <ol>
-	<li v-for="message in messages.history" :key="message.id"> // [!code ++]
-		{{ message.user_created.first_name }}: {{ message.text }} // [!code ++]
-	</li> // [!code ++]
+  <li v-for="message in messageHistory" :key="message.id">
+    {{ message.user_created.first_name }}: {{ message.text }}
+  </li>
 </ol>
 ```
 
@@ -309,15 +224,49 @@ and navigate to your index.html file, login and submit a message there and both 
 
 ## Display Historical Messages
 
-Replace the `console.log()` you created when the subscription is initialized:
+To display the list of all existing messages, create a function `readAllMessages` with the following:
 
 ```js
-if (data.type == 'subscription' && data.event == 'init') {
-	console.log('subscription started'); // [!code --]
-	for (const message of data.data) { // [!code ++]
-		this.messages.history.push(message); // [!code ++]
-	} // [!code ++]
+function readAllMessages() {
+  client.sendMessage({
+    type: 'items',
+    collection: 'messages',
+    action: 'read',
+    query: {
+      limit: 10,
+      sort: '-date_created',
+      fields: ['*', 'user_created.first_name'],
+    },
+  });
 }
+```
+
+Invoke this function directly before subscribing to any events
+
+```js
+const cleanup = client.onWebSocket('message', function (data) {
+  if (data.type == 'auth' && data.status == 'ok') {
+    readAllMessages(); // [!code ++]
+    subscribe('create');
+  }
+});
+```
+
+Within the connection, listen for "items" message to update the user interface with message history.
+
+```js
+const cleanup = client.onWebSocket('message', function (data) {
+  if (data.type == 'auth' && data.status == 'ok') {
+    readAllMessages();
+    subscribe('create');
+  }
+
+  if (data.type == 'items') { // [!code ++]
+    for (const item of data.data) { // [!code ++]
+      addMessageToList(item); // [!code ++]
+    } // [!code ++]
+  } // [!code ++]
+});
 ```
 
 Refresh your browser, login, and you should see the existing messages shown in your browser.
@@ -336,96 +285,119 @@ This guide covers authentication, item creation, and subscription using WebSocke
 ```html
 <!DOCTYPE html>
 <html>
-	<body>
-		<div id="app">
-			<form @submit.prevent="loginSubmit">
-				<label for="email">Email</label>
-				<input v-model="form.email" type="email" id="email" />
-				<label for="password">Password</label>
-				<input v-model="form.password" type="password" id="password" />
-				<input type="submit" />
-			</form>
+  <body>
+    <div id="app">
+      <form @submit.prevent="loginSubmit">
+        <label for="email">Email</label>
+        <input v-model="form.email" type="email" id="email" />
+        <label for="password">Password</label>
+        <input v-model="form.password" type="password" id="password" />
+        <input type="submit" />
+      </form>
 
-			<ol>
-				<li v-for="message in messages.history" :key="message.id">
-					{{ message.user_created.first_name }}: {{ message.text }}
-				</li>
-			</ol>
+      <ol>
+        <li v-for="message in messages.history" :key="message.id">
+          {{ message.user_created.first_name }}: {{ message.text }}
+        </li>
+      </ol>
 
-			<form @submit.prevent="messageSubmit">
-				<label for="message">Message</label>
-				<input v-model="messages.new" type="text" id="message" />
-				<input type="submit" />
-			</form>
-		</div>
+      <form @submit.prevent="messageSubmit">
+        <label for="message">Message</label>
+        <input v-model="messages.new" type="text" id="text" />
+        <input type="submit" />
+      </form>
+    </div>
 
-		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-		<script>
-			const { createApp } = Vue;
+    <script>
+      import { onMounted, ref, onBeforeUnmount } from 'vue';
+      import { authentication, createDirectus, realtime } from '@directus/sdk';
 
-			createApp({
-				data() {
-					return {
-						url: 'wss://your-directus-url/websocket',
-						connection: null,
-						form: {},
-						messages: {
-							new: '',
-							history: [],
-						},
-					};
-				},
-				methods: {
-					loginSubmit() {
-						this.connection = new WebSocket(this.url);
-						this.connection.addEventListener('open', () => this.authenticate(this.form));
-						this.connection.addEventListener('message', (message) => this.receiveMessage(message));
-					},
-					messageSubmit() {
-						this.connection.send(
-							JSON.stringify({
-								type: 'items',
-								collection: 'messages',
-								action: 'create',
-								data: { text: this.messages.new },
-							})
-						);
+      const messageHistory = ref([]);
 
-						this.messages.new = '';
-					},
-					authenticate(opts) {
-						const { email, password } = opts;
-						this.connection.send(JSON.stringify({ type: 'auth', email, password }));
-					},
-					receiveMessage(message) {
-						const data = JSON.parse(message.data);
+      const url = 'https://your-directus-url';
 
-						if (data.type == 'auth' && data.status == 'ok') {
-							this.connection.send(
-								JSON.stringify({
-									type: 'subscribe',
-									collection: 'messages',
-									query: {
-										fields: ['text', 'user_created.first_name'],
-										sort: 'date_created',
-									},
-								})
-							);
-						}
+      const client = createDirectus(url)
+        .with(authentication())
+        .with(realtime());
 
-						if (data.type == 'subscription' && data.event == 'init') {
-							for (const message of data.data) {
-								this.messages.history.push(message);
-							}
-						}
+      onMounted(() => {
+        const cleanup = client.onWebSocket('message', function (data) {
+          if (data.type == 'auth' && data.status == 'ok') {
+            readAllMessages();
+            subscribe('create');
+          }
 
-						if (data.type == 'subscription' && data.event == 'create') {
-							this.messages.history.push(data.data[0]);
-						}
-					},
-				},
-			}).mount('#app');
-		</script>
-	</body>
+          if (data.type == 'items') {
+            for (const item of data.data) {
+              addMessageToList(item);
+            }
+          }
+          console.log(message);
+        });
+
+        client.connect();
+        onBeforeUnmount(cleanup);
+      });
+
+      const loginSubmit = (event) => {
+        const email = event.target.elements.email.value;
+        const password = event.target.elements.password.value;
+        client.login(email, password);
+      };
+
+      async function subscribe(event) {
+        const { subscription } = await client.subscribe('messages', {
+          event,
+          query: {
+            fields: ['*', 'user_created.first_name'],
+          },
+        });
+
+        for await (const message of subscription) {
+          console.log('receiveMessage', message);
+          receiveMessage(message);
+        }
+      }
+
+      function readAllMessages() {
+        client.sendMessage({
+          type: 'items',
+          collection: 'messages',
+          action: 'read',
+          query: {
+            limit: 10,
+            sort: '-date_created',
+            fields: ['*', 'user_created.first_name'],
+          },
+        });
+      }
+
+      function receiveMessage(data) {
+        if (data.type == 'subscription' && data.event == 'init') {
+          console.log('subscription started');
+        }
+        if (data.type == 'subscription' && data.event == 'create') {
+          addMessageToList(message.data[0]);
+        }
+      }
+
+      function addMessageToList(message) {
+        messageHistory.value.push(message);
+      }
+
+      const messageSubmit = (event) => {
+        const text = event.target.elements.text.value;
+
+        client.sendMessage({
+          type: 'items',
+          collection: 'messages',
+          action: 'create',
+          data: { text },
+        });
+
+        event.target.reset();
+      };
+    </script>
+  </body>
 </html>
 ```

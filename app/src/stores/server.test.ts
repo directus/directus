@@ -3,7 +3,7 @@ import * as setLanguageDefault from '@/lang/set-language';
 import { User } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, SpyInstance, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi, type MockInstance } from 'vitest';
 import { Auth, Info, useServerStore } from './server';
 import { useUserStore } from './user';
 
@@ -51,9 +51,9 @@ const mockAdminUserWithLanguage = {
 	language: 'zh-CN',
 } as User;
 
-let apiGetSpy: SpyInstance;
-let replaceQueueSpy: SpyInstance;
-let setLanguageSpy: SpyInstance;
+let apiGetSpy: MockInstance;
+let replaceQueueSpy: MockInstance;
+let setLanguageSpy: MockInstance;
 
 beforeEach(() => {
 	apiGetSpy = vi.spyOn(api, 'get');
@@ -76,7 +76,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -97,7 +97,7 @@ describe('hydrate action', async () => {
 				return Promise.resolve({ data: {} });
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				return Promise.resolve({
 					data: {
 						data: mockAuthProviders,
@@ -128,7 +128,7 @@ describe('hydrate action', async () => {
 				return Promise.resolve({ data: {} });
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -152,7 +152,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -176,7 +176,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -203,7 +203,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -230,7 +230,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -257,7 +257,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -281,7 +281,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -312,7 +312,7 @@ describe('hydrate action', async () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				// stub as auth is not tested here
 				return Promise.resolve({ data: {} });
 			}
@@ -324,9 +324,9 @@ describe('hydrate action', async () => {
 		await serverStore.hydrate();
 
 		expect(replaceQueueSpy).toHaveBeenCalledWith({
-			intervalCap: mockRateLimit.points - 10,
-			interval: mockRateLimit.duration * 1000,
-			carryoverConcurrencyCount: true,
+			intervalCap: 1,
+			// Interval for 1 point (duration * 1000(ms) / points)
+			interval: 500,
 		});
 	});
 });
@@ -342,7 +342,7 @@ describe('dehydrate action', () => {
 				});
 			}
 
-			if (path === '/auth') {
+			if (path.startsWith('/auth')) {
 				return Promise.resolve({
 					data: {
 						data: mockAuthProviders,

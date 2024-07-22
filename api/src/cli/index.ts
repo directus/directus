@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
+import { version } from 'directus/version';
 import emitter from '../emitter.js';
 import { startServer } from '../server.js';
-import * as pkg from '../utils/package.js';
 import bootstrap from './commands/bootstrap/index.js';
 import count from './commands/count/index.js';
 import dbInstall from './commands/database/install.js';
@@ -24,7 +24,7 @@ export async function createCli(): Promise<Command> {
 	await emitter.emitInit('cli.before', { program });
 
 	program.name('directus').usage('[command] [options]');
-	program.version(pkg.version, '-v, --version');
+	program.version(version, '-v, --version');
 
 	program.command('start').description('Start the Directus API').action(startServer);
 	program.command('init').description('Create a new Directus Project').action(init);

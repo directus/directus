@@ -8,9 +8,9 @@ import useUpdatePermissions from '../composables/use-update-permissions';
 
 const props = defineProps<{
 	collection: Collection;
-	action: string;
-	role?: string;
-	permissions?: Permission[];
+	action: 'create' | 'read' | 'update' | 'delete' | 'share';
+	role: string | null;
+	permissions: Permission[];
 	loading?: boolean;
 	appMinimal?: Partial<Permission>;
 }>();
@@ -44,7 +44,14 @@ const refresh = inject<() => Promise<void>>('refresh-permissions');
 
 const appMinimalLevel = computed(() => {
 	if (!props.appMinimal) return null;
-	if (Object.keys(props.appMinimal).length === 2) return 'full';
+
+	if (
+		props.appMinimal.fields?.includes('*') &&
+		Object.keys(props.appMinimal.permissions || {}).length === 0 &&
+		Object.keys(props.appMinimal.validation || {}).length === 0
+	)
+		return 'full';
+
 	return 'partial';
 });
 

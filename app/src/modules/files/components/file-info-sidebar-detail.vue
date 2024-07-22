@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { formatFilesize } from '@/utils/format-filesize';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { localizedFormat } from '@/utils/localized-format';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { userName } from '@/utils/user-name';
@@ -28,7 +28,7 @@ const size = computed(() => {
 const fileLink = computed(() => {
 	if (!props.file?.id) return;
 
-	return addTokenToURL(`${getRootPath()}assets/${props.file.id}`);
+	return getAssetUrl(props.file.id);
 });
 
 const creationDate = computed(() => {
@@ -41,6 +41,23 @@ const modificationDate = computed(() => {
 	if (!props.file?.modified_on) return;
 
 	return localizedFormat(new Date(props.file.modified_on), String(t('date-fns_date_short')));
+});
+
+const imageMetadata = computed(() => {
+	const metadata = props.file?.metadata;
+
+	if (!metadata) return;
+
+	const { ifd0, exif } = metadata;
+
+	return {
+		Make: ifd0?.Make,
+		Model: ifd0?.Model,
+		FNumber: exif?.FNumber,
+		ExposureTime: exif?.ExposureTime,
+		FocalLength: exif?.FocalLength,
+		ISO: exif?.ISO ?? exif?.ISOSpeedRatings,
+	};
 });
 
 function useUser() {
@@ -223,41 +240,32 @@ function useFolder() {
 				</dd>
 			</div>
 
-			<template
-				v-if="
-					file.metadata?.ifd0?.Make ||
-					file.metadata?.ifd0?.Model ||
-					file.metadata?.exif?.FNumber ||
-					file.metadata?.exif?.ExposureTime ||
-					file.metadata?.exif?.FocalLength ||
-					file.metadata?.exif?.ISO
-				"
-			>
+			<template v-if="imageMetadata">
 				<v-divider />
 
-				<div v-if="file.metadata.ifd0?.Make && file.metadata.ifd0?.Model">
+				<div v-if="imageMetadata.Make && imageMetadata.Model">
 					<dt>{{ t('camera') }}</dt>
-					<dd>{{ file.metadata.ifd0.Make }} {{ file.metadata.ifd0.Model }}</dd>
+					<dd>{{ imageMetadata.Make }} {{ imageMetadata.Model }}</dd>
 				</div>
 
-				<div v-if="file.metadata.exif?.FNumber">
+				<div v-if="imageMetadata.FNumber">
 					<dt>{{ t('exposure') }}</dt>
-					<dd>ƒ/{{ file.metadata.exif.FNumber }}</dd>
+					<dd>ƒ/{{ imageMetadata.FNumber }}</dd>
 				</div>
 
-				<div v-if="file.metadata.exif?.ExposureTime">
+				<div v-if="imageMetadata.ExposureTime">
 					<dt>{{ t('shutter') }}</dt>
-					<dd>1/{{ Math.round(1 / +file.metadata.exif.ExposureTime) }} {{ t('second') }}</dd>
+					<dd>1/{{ Math.round(1 / +imageMetadata.ExposureTime) }} {{ t('second') }}</dd>
 				</div>
 
-				<div v-if="file.metadata.exif?.FocalLength">
+				<div v-if="imageMetadata.FocalLength">
 					<dt>{{ t('focal_length') }}</dt>
-					<dd>{{ file.metadata.exif.FocalLength }}mm</dd>
+					<dd>{{ imageMetadata.FocalLength }}mm</dd>
 				</div>
 
-				<div v-if="file.metadata.exif?.ISO">
+				<div v-if="imageMetadata.ISO">
 					<dt>{{ t('iso') }}</dt>
-					<dd>{{ file.metadata.exif.ISO }}</dd>
+					<dd>{{ imageMetadata.ISO }}</dd>
 				</div>
 			</template>
 		</dl>

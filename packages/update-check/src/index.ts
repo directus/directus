@@ -1,42 +1,36 @@
 import type { Manifest } from '@npm/types';
+import Axios from 'axios';
+import { setupCache } from 'axios-cache-interceptor';
 import boxen, { type Options as BoxenOptions } from 'boxen';
 import chalk from 'chalk';
-import got from 'got';
 import { gte, prerelease } from 'semver';
 import { getCache } from './cache.js';
 
 const cache = await getCache();
+const instance = Axios.create();
+const axios = cache ? setupCache(instance, { storage: cache }) : instance;
 
 export async function updateCheck(currentVersion: string) {
-	let packageManifest: Manifest | undefined;
+	let packageManifest: Partial<Manifest> | null;
 
 	try {
-		packageManifest = await got('https://registry.npmjs.org/directus', {
+		const response = await axios.get('https://registry.npmjs.org/directus', {
 			headers: { accept: 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*' },
-			cache,
-			retry: {
-				limit: 0,
-			},
-			timeout: {
-				request: 8_000,
-			},
-		}).json<Manifest>();
-	} catch (error) {
-		// Any errors are intentionally ignored & update message simply not printed
+			timeout: 8_000,
+		});
+
+		packageManifest = response.data;
+	} catch {
+		// Errors are intentionally ignored and update check is skipped
 		return;
 	}
 
-	if (!packageManifest) {
-		return;
-	}
+	const latestVersion = packageManifest?.['dist-tags']?.['latest'];
+	const versions = packageManifest?.versions;
 
-	const latestVersion = packageManifest['dist-tags']['latest'];
+	if (!latestVersion || !versions || gte(currentVersion, latestVersion)) return;
 
-	if (!latestVersion || gte(currentVersion, latestVersion)) {
-		return;
-	}
-
-	const allVersions = Object.keys(packageManifest.versions).filter((version) => !prerelease(version));
+	const allVersions = Object.keys(versions).filter((version) => !prerelease(version));
 	const indexOfCurrent = allVersions.indexOf(currentVersion);
 	const indexOfLatest = allVersions.indexOf(latestVersion);
 

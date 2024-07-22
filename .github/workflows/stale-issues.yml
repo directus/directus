@@ -1,0 +1,22 @@
+name: Close Stale Issues
+
+on:
+  schedule:
+    - cron: '30 1 * * *'
+
+permissions:
+  issues: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: -1
+          days-before-close: 7
+          remove-stale-when-updated: false
+          stale-issue-label: ':detective: Needs More Info'
+          close-issue-message:
+            "Heya! There isn't enough information available to keep investigating this issue at present time, so it'll
+            be closed until more information becomes available. Thanks!"

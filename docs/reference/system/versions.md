@@ -231,7 +231,7 @@ Create a new Content Version for an item.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /version`
+`POST /versions`
 
 Provide a [Content Version object](#the-content-version-object) as the body of your request.
 

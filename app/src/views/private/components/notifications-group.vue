@@ -19,6 +19,7 @@ const queue = toRefs(notificationsStore).queue;
 			:id="notification.id"
 			:key="notification.id"
 			:title="notification.title"
+			:text="notification.text"
 			:icon="notification.icon"
 			:type="notification.type"
 			:loading="notification.loading"
@@ -26,6 +27,10 @@ const queue = toRefs(notificationsStore).queue;
 			:tail="index === queue.length - 1"
 			:dense="sidebarOpen === false"
 			:show-close="notification.persist === true && notification.closeable !== false"
+			:always-show-text="notification.alwaysShowText"
+			:dismiss-icon="notification.dismissIcon"
+			:dismiss-text="notification.dismissText"
+			:dismiss-action="notification.dismissAction"
 		/>
 	</transition-group>
 </template>

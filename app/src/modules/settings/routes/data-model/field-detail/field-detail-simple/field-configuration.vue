@@ -33,7 +33,7 @@ const typeOptions = computed(() => {
 	if (!chosenInterfaceConfig.value) return [];
 
 	return chosenInterfaceConfig.value.types.map((type) => ({
-		text: t(type),
+		text: t(type === 'geometry' ? 'geometry.All' : type),
 		value: type,
 	}));
 });
@@ -72,11 +72,12 @@ const options = computed({
 		return fieldDetailStore.field.meta?.options ?? {};
 	},
 	set(newOptions: Record<string, any>) {
-		fieldDetailStore.$patch((state) => {
-			state.field.meta = {
-				...(state.field.meta ?? {}),
-				options: newOptions,
-			};
+		fieldDetailStore.update({
+			field: {
+				meta: {
+					options: newOptions,
+				},
+			},
 		});
 	},
 });

@@ -1,11 +1,11 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import { flushCaches, getCache } from '../cache.js';
-import getDatabase from '../database/index.js';
-import { systemCollectionRows } from '../database/system-data/collections/index.js';
-import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
+import { systemCollectionRows } from '@directus/system-data';
+import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { clearSystemCache, getCache } from '../cache.js';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import type { AbstractServiceOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 
 export class UtilsService {
@@ -148,11 +148,17 @@ export class UtilsService {
 		);
 	}
 
-	async clearCache(): Promise<void> {
+	async clearCache({ system }: { system: boolean }): Promise<void> {
 		if (this.accountability?.admin !== true) {
 			throw new ForbiddenError();
 		}
 
-		return flushCaches(true);
+		const { cache } = getCache();
+
+		if (system) {
+			await clearSystemCache({ forced: true });
+		}
+
+		return cache?.clear();
 	}
 }

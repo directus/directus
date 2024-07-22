@@ -18,11 +18,11 @@ test('modelValue prop', async () => {
 		},
 	});
 
-	expect(wrapper.get('input').element.value).toBe(20);
+	expect(wrapper.get('input').element.value).toBe('20');
 
 	await wrapper.get('input').setValue(30);
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual([30]);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([30]);
 });
 
 test('min prop', async () => {
@@ -34,7 +34,7 @@ test('min prop', async () => {
 
 	await wrapper.get('input').setValue(30);
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual([40]);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([40]);
 });
 
 test('max prop', async () => {
@@ -46,5 +46,5 @@ test('max prop', async () => {
 
 	await wrapper.get('input').setValue(50);
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual([40]);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([40]);
 });

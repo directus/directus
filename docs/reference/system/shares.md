@@ -843,10 +843,12 @@ const result = await client.request(
 
 ## Authenticate a Share
 
-Shares work by publicly giving you an access/refresh token combination (as you would get with the regular /auth/login
-endpoints). These tokens are limited to a permissions set that only allows access to the item that was shared, and any
-relationally linked items that that associated role has access to. This means that all regular endpoints can be used
-with the credentials set returned by this endpoint.
+Authenticate as a share user.
+
+> Shares work by returning a token, as it is the case with the regular login endpoint. These tokens are limited to a
+> permissions set that only allows access to the item that was shared, and any relationally linked items that that
+> associated role has access to. This means that all regular endpoints can be used with the token returned by this
+> endpoint.
 
 ### Request
 
@@ -889,17 +891,22 @@ Primary key of the share you're authenticating against.
 `password` **string**\
 Password for the share, if one is configured.
 
+`mode`\
+Whether to retrieve the refresh token in the JSON response, or in a `httpOnly` cookie. One of `json`, `cookie` or `session`.
+Defaults to `json`.
+
 ### Response
 
 `access_token` **string**\
-Temporary access token to be used in follow-up requests.
+Temporary access token to be used in follow-up requests. Note: if you used `session` as the mode in the request, the access
+token won't be returned in the JSON.
 
 `expires` **integer**\
 How long before the access token will expire. Value is in milliseconds.
 
 `refresh_token` **string**\
 The token that can be used to retrieve a new access token through [`/auth/refresh`](#refresh). Note: if you used `cookie`
-as the mode in the request, the refresh token won't be returned in the JSON.
+or `session` as the mode in the request, the refresh token won't be returned in the JSON.
 
 ### Example
 

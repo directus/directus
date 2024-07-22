@@ -57,8 +57,8 @@ need. The client starts as an empty wrapper without any functionality. To add fe
 - `authentication()`: Authentication functions including refresh logic, adds `.login(...)`, `.logout()`, and
   .`refresh()` to the client.
 - `staticToken()`: Authentication functions for static tokens.
-- `realtime()`: WebSocket connectivity, adds `.subscribe(...)`, `.sendMessage(...)` and `.onWebSocket(...)` to the
-  client.
+- `realtime()`: WebSocket connectivity, adds `.connect()`, `.subscribe(...)`, `.sendMessage(...)` and
+  `.onWebSocket(...)` to the client.
 
 For example, to create a client with REST or GraphQL support, use the following:
 
@@ -190,6 +190,28 @@ const result = await client.request(
 );
 ```
 
+#### Custom endpoints
+
+To call custom endpoints using the SDK, you can either manually write a command or use the `customEndpoint` helper,
+which allows you to type the output of the custom endpoint.
+
+```ts
+import { createDirectus, rest, customEndpoint } from '@directus/sdk';
+
+const client = createDirectus('http://directus.example.com').with(rest());
+
+const result = await client.request(customEndpoint<OutputType>({
+	path: '/custom/endpoint',
+	method: 'GET',
+}));
+
+// or manually without types
+const manualResult = await client.request(() => ({
+	path: '/custom/endpoint',
+	method: 'GET',
+}));
+```
+
 ### Using GraphQL
 
 Add the `graphql()` composable to the client, this enables the `.query(...)` method to query the collection.
@@ -252,6 +274,11 @@ often do not ship with an implementation of WebSockets.
 
 - [`ws`](https://www.npmjs.com/package/ws)
 - [`isomorphic-ws`](https://www.npmjs.com/package/isomorphic-ws)
+
+#### The `logger` API
+
+This API is optional and currently only used for debugging the `realtime()` features. This will default to the `Console`
+however in environments where this isn't shipped you can overwrite this with any logger.
 
 ### Polyfilling
 

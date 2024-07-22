@@ -25,7 +25,7 @@ const iconIsImage = computed(() => props.icon.startsWith('/'));
 	<component :is="tagType" :href="url" class="card" :class="{ margin: addMargin }">
 		<div v-if="icon" class="icon">
 			<img v-if="iconIsImage" :src="icon" alt="" />
-			<span v-else mi>{{ icon }}</span>
+			<span v-else mi translate="no">{{ icon }}</span>
 		</div>
 
 		<div class="text">

@@ -4,10 +4,13 @@
 		"../../packages/constants",
 		"../../packages/errors",
 		"../../packages/extensions-sdk",
+		"../../packages/format-title",
+		"../../packages/memory",
 		"../../packages/pressure",
 		"../../packages/random",
 		"../../sdk",
 		"../../packages/stores",
+		"../../packages/system-data",
 		"../../packages/themes",
 		"../../packages/types",
 		"../../packages/update-check"

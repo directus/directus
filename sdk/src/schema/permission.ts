@@ -1,7 +1,7 @@
 import type { MergeCoreCollection } from '../index.js';
 import type { DirectusRole } from './role.js';
 
-export type DirectusPermission<Schema extends object> = MergeCoreCollection<
+export type DirectusPermission<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_permissions',
 	{

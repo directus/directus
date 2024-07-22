@@ -1,4 +1,5 @@
 export default {
+	id: 'custom',
 	name: 'My Custom Theme',
 	appearance: 'light',
 	rules: {
