@@ -381,7 +381,7 @@ multiple_files: 여러 파일들
 m2o_relationship: 다대일 관계
 o2m_relationship: 일대다 관계
 m2m_relationship: 다대다 관계
-m2a_relationship: 다대다 관계
+m2a_relationship: 다대다 관계 (M2A)
 invalid_item: 비정상적인 아이템
 require_confirmation: 확인 요청
 dialog: 대화상자
@@ -437,7 +437,7 @@ confirm_revert_body: 항목이 선택한 상태로 되돌아갑니다.
 display: 표시하다
 settings_update_success: 설정이 수정됨.
 title: 제목
-revision_delta_created: 만들어진
+revision_delta_created: 생성됨
 revision_delta_created_externally: 외부에서 생성됨
 revision_delta_updated: '업데이트 된 1개의 필드 | 업데이트 된 {count}개의 필드'
 revision_delta_deleted: 삭제됨
@@ -1401,7 +1401,7 @@ field_options:
       weak_text: 약함 – 최소 8자
       strong_text: 강함 – 대문자 / 소문자 / 숫자 / 특수
     storage_asset_presets:
-      fit_label: 맞다
+      fit_label: 맞춤
       upscaling: 업스케일링
       fit:
         contain_text: 포함(가로 세로 비율 유지)
@@ -1651,6 +1651,8 @@ navigate_to_item: 항목으로 이동
 undo_removed_item: 제거된 항목 취소
 remove_item: 항목 제거
 delete_item: 항목 삭제
+pause: 일시 정지
+resume: 재개
 interfaces:
   list-m2a:
     prefix_note: 기본적으로 관련 항목의 컬렉션 이름을 사용합니다.
@@ -2355,11 +2357,11 @@ operations:
     message: 메시지
     message_placeholder: 콘솔에 표시할 메시지를 입력하세요...
   mail:
-    name: 이메일을 보내
+    name: 이메일 전송
     description: 한 명 이상의 사람에게 이메일 보내기
     to: 에게
     to_placeholder: 이메일 주소를 추가하고 엔터를 누르세요...
-    body: 몸
+    body: 본문
     template: 템플릿
     data: 데이터
   notification:

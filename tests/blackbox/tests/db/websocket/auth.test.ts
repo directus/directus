@@ -252,23 +252,9 @@ describe('WebSocket Auth Tests', () => {
 						let error;
 
 						try {
-							switch (authMethod) {
-								case 'public':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.OPEN);
-									break;
-								case 'handshake':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.CLOSED);
-									break;
-								case 'strict':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.OPEN);
-									break;
-							}
+							await ws.waitForState(ws.conn.OPEN);
+							await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+							await ws.waitForState(ws.conn.OPEN);
 						} catch (err) {
 							error = err;
 						}
@@ -295,23 +281,9 @@ describe('WebSocket Auth Tests', () => {
 						let error;
 
 						try {
-							switch (authMethod) {
-								case 'public':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.OPEN);
-									break;
-								case 'handshake':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.CLOSED);
-									break;
-								case 'strict':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.OPEN);
-									break;
-							}
+							await ws.waitForState(ws.conn.OPEN);
+							await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+							await ws.waitForState(ws.conn.OPEN);
 						} catch (err) {
 							error = err;
 						}
@@ -425,35 +397,19 @@ describe('WebSocket Auth Tests', () => {
 							respondToPing: false,
 						});
 
-						let wsMessages: WebSocketResponse[] | undefined;
-						let error;
-
-						try {
-							await ws.sendMessage({ type: 'ping' });
-							wsMessages = await ws.getMessages(1);
-						} catch (err) {
-							error = err;
-						}
+						await ws.sendMessage({ type: 'ping' });
+						const wsMessages = await ws.getMessages(1);
 
 						ws.conn.close();
 
 						// Assert
-						switch (authMethod) {
-							case 'public':
-							case 'strict':
-								expect(wsMessages?.length).toBe(1);
+						expect(wsMessages?.length).toBe(1);
 
-								expect(wsMessages![0]).toEqual(
-									expect.objectContaining({
-										type: 'pong',
-									}),
-								);
-
-								break;
-							case 'handshake':
-								expect(error).toBeDefined();
-								break;
-						}
+						expect(wsMessages![0]).toEqual(
+							expect.objectContaining({
+								type: 'pong',
+							}),
+						);
 					});
 				});
 			});

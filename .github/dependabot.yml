@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    labels: []
+    labels: [':robot: Dependency']
     directory: '/'
     schedule:
       interval: daily

@@ -601,10 +601,13 @@ Based on your configured driver, you must also provide the following configurati
 | `STORAGE_<LOCATION>_SECRET`                 | User secret               | --                 |
 | `STORAGE_<LOCATION>_BUCKET`                 | S3 Bucket                 | --                 |
 | `STORAGE_<LOCATION>_REGION`                 | S3 Region                 | --                 |
-| `STORAGE_<LOCATION>_ENDPOINT`               | S3 Endpoint               | `s3.amazonaws.com` |
+| `STORAGE_<LOCATION>_ENDPOINT`<sup>[1]</sup> | S3 Endpoint               | `s3.amazonaws.com` |
 | `STORAGE_<LOCATION>_ACL`                    | S3 ACL                    | --                 |
 | `STORAGE_<LOCATION>_SERVER_SIDE_ENCRYPTION` | S3 Server Side Encryption | --                 |
 | `STORAGE_<LOCATION>_FORCE_PATH_STYLE`       | S3 Force Path Style       | false              |
+
+<sup>[1]</sup> When overriding this variable for S3, make sure to add your bucket's region in the endpoint:
+`s3.{region}.amazonaws.com`.
 
 ### Azure (`azure`)
 
@@ -705,13 +708,17 @@ instability or limited bandwidth. This is implemented using the [TUS protocol](h
 | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------- |
 | `ASSETS_CACHE_TTL`                       | How long assets will be cached for in the browser. Sets the `max-age` value of the `Cache-Control` header.                          | `30d`         |
 | `ASSETS_TRANSFORM_MAX_CONCURRENT`        | How many file transformations can be done simultaneously                                                                            | `25`          |
-| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION`   | The max pixel dimensions size (width/height) that is allowed to be transformed                                                      | `6000`        |
+| `ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION`   | The max pixel dimensions size (width/height) that is allowed to be transformed[^1]                                                  | `6000`        |
 | `ASSETS_TRANSFORM_TIMEOUT`               | Max time spent trying to transform an asset                                                                                         | `7500ms`      |
 | `ASSETS_TRANSFORM_MAX_OPERATIONS`        | The max number of transform operations that is allowed to be processed (excludes saved presets)                                     | `5`           |
 | `ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL` | Level of sensitivity to invalid images. See the [`sharp.failOn`](https://sharp.pixelplumbing.com/api-constructor#parameters) option | `warning`     |
 
 Image transformations can be fairly heavy on memory usage. If you're using a system with 1GB or less available memory,
 we recommend lowering the allowed concurrent transformations to prevent you from overflowing your server.
+
+[^1]:
+    The maximum value is the square root of Node's `Number.MAX_SAFE_INTEGER`, or 95,906,265 at time of writing. Be
+    advised: transforming gigantic files can hurt your server performance and cause outages.
 
 ## Authentication
 
@@ -759,6 +766,7 @@ AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
 AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
 AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
 AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
+AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION=true
 ```
 
 More example SSO configurations [can be found here](/self-hosted/sso-examples).

@@ -323,8 +323,6 @@ async function getDBQuery(
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 			});
 
-			dbQuery.orderByRaw(orderByString, orderByFields);
-
 			if (hasMultiRelationalSort) {
 				dbQuery = helpers.schema.applyMultiRelationalSort(
 					knex,
@@ -334,7 +332,18 @@ async function getDBQuery(
 					orderByString,
 					orderByFields,
 				);
+
+				// Start order by with directus_row_number. The directus_row_number is derived from a window function that
+				// is ordered by the sort fields within every primary key partition. That ensures that the result with the
+				// row number = 1 is the top-most row of every partition, according to the selected sort fields.
+				// Since the only relevant result is the first row of this partition, adding the directus_row_number to the
+				// order by here ensures that all rows with a directus_row_number = 1 show up first in the inner query result,
+				// and are correctly truncated by the limit, but not earlier.
+				orderByString = `?? asc, ${orderByString}`;
+				orderByFields.unshift(knex.ref('directus_row_number'));
 			}
+
+			dbQuery.orderByRaw(orderByString, orderByFields);
 		} else {
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
@@ -359,7 +368,7 @@ async function getDBQuery(
 		.from(table)
 		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
-	if (sortRecords && needsInnerQuery) {
+	if (sortRecords) {
 		innerQuerySortRecords.map((innerQuerySortRecord) => {
 			wrapperQuery.orderBy(`inner.${innerQuerySortRecord.alias}`, innerQuerySortRecord.order);
 		});

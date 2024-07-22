@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import os from 'node:os';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';
 
 export function isDeniedIp(ip: string): boolean {

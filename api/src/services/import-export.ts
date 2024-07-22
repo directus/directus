@@ -22,7 +22,7 @@ import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getService } from '../utils/get-service.js';
