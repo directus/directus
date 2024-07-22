@@ -1,7 +1,7 @@
-import sharp, { type Sharp, type FailOnOptions } from 'sharp';
 import { useEnv } from '@directus/env';
+import sharp, { type FailOnOptions, type Sharp } from 'sharp';
 
-function getSharpInstance(): Sharp {
+export function getSharpInstance(): Sharp {
 	const env = useEnv();
 
 	return sharp({
@@ -10,5 +10,3 @@ function getSharpInstance(): Sharp {
 		failOn: env['ASSETS_INVALID_IMAGE_SENSITIVITY_LEVEL'] as FailOnOptions,
 	});
 }
-
-export { getSharpInstance };
