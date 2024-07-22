@@ -29,16 +29,18 @@ export class VersionsService extends ItemsService {
 	}
 
 	private async validateCreateData(data: Partial<Item>): Promise<void> {
-		if (!data['key']) throw new InvalidPayloadError({ reason: `"key" is required` });
+		const versionCreateSchema = Joi.object({
+			key: Joi.string().required(),
+			name: Joi.string().allow(null),
+			collection: Joi.string().required(),
+			item: Joi.string().required(),
+		});
+
+		const { error } = versionCreateSchema.validate(data);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
 
 		// Reserves the "main" version key for the version query parameter
 		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
-
-		if (!data['collection']) {
-			throw new InvalidPayloadError({ reason: `"collection" is required` });
-		}
-
-		if (!data['item']) throw new InvalidPayloadError({ reason: `"item" is required` });
 
 		const { CollectionsService } = await import('./collections.js');
 
@@ -150,8 +152,6 @@ export class VersionsService extends ItemsService {
 		const keyCombos = new Set();
 
 		for (const item of data) {
-			await this.validateCreateData(item);
-
 			const keyCombo = `${item['key']}-${item['collection']}-${item['item']}`;
 
 			if (keyCombos.has(keyCombo)) {
@@ -161,21 +161,16 @@ export class VersionsService extends ItemsService {
 			}
 
 			keyCombos.add(keyCombo);
-
-			const mainItem = await this.getMainItem(item['collection'], item['item']);
-
-			item['hash'] = objectHash(mainItem);
 		}
 
 		return super.createMany(data, opts);
 	}
 
 	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		// Only allow updates on "key", "name" and "delta" fields
+		// Only allow updates on "key" and "name" fields
 		const versionUpdateSchema = Joi.object({
 			key: Joi.string(),
-			name: Joi.string().allow(null).optional(),
-			delta: Joi.object().optional(),
+			name: Joi.string().allow(null),
 		});
 
 		const { error } = versionUpdateSchema.validate(data);
@@ -268,7 +263,7 @@ export class VersionsService extends ItemsService {
 
 		const finalVersionDelta = assign({}, existingDelta, revisionDelta ? JSON.parse(revisionDelta) : null);
 
-		await this.updateOne(key, { delta: finalVersionDelta });
+		await super.updateMany([key], { delta: finalVersionDelta });
 
 		const { cache } = getCache();
 
