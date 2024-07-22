@@ -244,7 +244,7 @@ router.post(
 
 		const updatedVersion = await service.save(req.params['pk']!, req.body);
 
-		const result = assign(mainItem, updatedVersion['delta']);
+		const result = assign(mainItem, updatedVersion);
 
 		res.locals['payload'] = { data: result || null };
 

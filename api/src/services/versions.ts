@@ -211,7 +211,7 @@ export class VersionsService extends ItemsService {
 		return super.updateMany(keys, data, opts);
 	}
 
-	async save(key: PrimaryKey, data: Partial<Item>) {
+	async save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>> {
 		const version = await super.readOne(key);
 
 		const payloadService = new PayloadService(this.collection, {
