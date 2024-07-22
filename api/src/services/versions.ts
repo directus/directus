@@ -5,7 +5,6 @@ import Joi from 'joi';
 import { assign, pick } from 'lodash-es';
 import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
-import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
@@ -260,7 +259,12 @@ export class VersionsService extends ItemsService {
 
 		const finalVersionDelta = assign({}, existingDelta, revisionDelta ? JSON.parse(revisionDelta) : null);
 
-		await super.updateMany([key], { delta: finalVersionDelta });
+		const sudoService = new ItemsService(this.collection, {
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		await sudoService.updateOne(key, { delta: finalVersionDelta });
 
 		const { cache } = getCache();
 
@@ -299,6 +303,7 @@ export class VersionsService extends ItemsService {
 
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
+			knex: this.knex,
 			schema: this.schema,
 		});
 
@@ -311,7 +316,7 @@ export class VersionsService extends ItemsService {
 				version,
 			},
 			{
-				database: getDatabase(),
+				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
 			},
@@ -328,7 +333,7 @@ export class VersionsService extends ItemsService {
 				version,
 			},
 			{
-				database: getDatabase(),
+				database: this.knex,
 				schema: this.schema,
 				accountability: this.accountability,
 			},
