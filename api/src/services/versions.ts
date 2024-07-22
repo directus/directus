@@ -74,9 +74,6 @@ export class VersionsService extends ItemsService {
 	}
 
 	async getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
-		// will throw an error if the accountability does not have permission to read the item
-		await this.authorizationService.checkAccess('read', collection, item);
-
 		const itemsService = new ItemsService(collection, {
 			knex: this.knex,
 			accountability: this.accountability,
