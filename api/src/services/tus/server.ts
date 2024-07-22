@@ -41,7 +41,7 @@ async function createTusStore(context: Context) {
 	});
 }
 
-export async function createTusServer(context: Context) {
+export async function createTusServer(context: Context): Promise<[Server, () => void]> {
 	const env = useEnv();
 	const store = await createTusStore(context);
 
@@ -102,5 +102,9 @@ export async function createTusServer(context: Context) {
 		res.setHeader('Directus-File-Id', upload.metadata!['id']!);
 	});
 
-	return server;
+	return [server, cleanup];
+
+	function cleanup() {
+		server.removeAllListeners();
+	}
 }
