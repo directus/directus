@@ -5,9 +5,10 @@ export type Role = {
 	icon: string;
 	enforce_tfa: null | boolean;
 	external_id: null | string;
-	ip_whitelist: string[];
+	ip_access: string[];
 	app_access: boolean;
 	admin_access: boolean;
+	users: string[];
 };
 
 export type Avatar = {
@@ -16,7 +17,7 @@ export type Avatar = {
 
 export type User = {
 	id: string;
-	status: 'draft' | 'invited' | 'active' | 'suspended' | 'archived';
+	status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived';
 	first_name: string | null;
 	last_name: string | null;
 	email: string | null;
@@ -41,4 +42,12 @@ export type User = {
 	location: string | null;
 	tags: string[] | null;
 	email_notifications: boolean;
+};
+
+export type RegisterUserInput = {
+	email: NonNullable<User['email']>;
+	password: NonNullable<User['password']>;
+	verification_url?: string | null;
+	first_name?: User['first_name'];
+	last_name?: User['last_name'];
 };

@@ -20,6 +20,8 @@ const props = withDefaults(
 		background?: string;
 		icon?: string;
 		border?: boolean;
+		masked?: boolean;
+		translate?: boolean;
 		conditionalFormatting?: {
 			operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'contains' | 'starts_with' | 'ends_with';
 			value: string;
@@ -37,8 +39,8 @@ const props = withDefaults(
 
 const { t, n } = useI18n();
 
-const matchedConditions = computed(() => {
-	return (props.conditionalFormatting || []).filter(({ operator, value }) => {
+const matchedConditions = computed(() =>
+	(props.conditionalFormatting || []).filter(({ operator, value }) => {
 		if (['string', 'text'].includes(props.type)) {
 			const left = String(props.value);
 			const right = String(value);
@@ -52,8 +54,8 @@ const matchedConditions = computed(() => {
 			const right = parseInt(String(value));
 			return matchNumber(left, right, operator);
 		}
-	});
-});
+	}),
+);
 
 const computedFormat = computed(() => {
 	const { color, background, icon } = props;
@@ -85,6 +87,8 @@ const computedStyle = computed(() => {
 });
 
 const displayValue = computed(() => {
+	if (props.masked) return '**********';
+
 	if (computedFormat.value.text) {
 		const { text } = computedFormat.value;
 		return text.startsWith('$t:') ? t(text.slice(3)) : text;
@@ -93,6 +97,10 @@ const displayValue = computed(() => {
 	if (isNil(props.value) || props.value === '') return null;
 
 	let value = String(props.value);
+
+	if (props.translate && value.startsWith('$t:')) {
+		value = t(value.slice(3));
+	}
 
 	// Strip out all HTML tags
 	value = dompurify.sanitize(value, { ALLOWED_TAGS: [] });
@@ -129,6 +137,8 @@ function matchString(left: string, right: string, operator: string) {
 		case 'ends_with':
 			return left.endsWith(right);
 	}
+
+	return;
 }
 
 function matchNumber(left: number, right: number, operator: string) {
@@ -146,6 +156,8 @@ function matchNumber(left: number, right: number, operator: string) {
 		case 'lte':
 			return left <= right;
 	}
+
+	return;
 }
 </script>
 

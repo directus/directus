@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getCurrentLanguage } from '@/lang/get-current-language';
 import type { Translation } from '@/stores/translations';
 import { useTranslationsStore } from '@/stores/translations';
 import { fetchAll } from '@/utils/fetch-all';
@@ -83,6 +84,7 @@ const localValue = computed<string | null>({
 const create = async (item: Translation) => {
 	await translationsStore.create(item);
 	await fetchTranslationsKeys();
+	setValue(`${translationPrefix}${item.key}`);
 };
 
 watch(
@@ -204,6 +206,7 @@ function openNewCustomTranslationDrawer() {
 			v-model:active="isCustomTranslationDrawerOpen"
 			collection="directus_translations"
 			primary-key="+"
+			:edits="{ language: getCurrentLanguage() }"
 			@input="create"
 		/>
 	</div>

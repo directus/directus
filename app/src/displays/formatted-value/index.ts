@@ -165,6 +165,21 @@ export default defineDisplay({
 				},
 			},
 			{
+				field: 'masked',
+				name: '$t:displays.formatted-value.mask',
+				type: 'boolean',
+				meta: {
+					width: 'half',
+					interface: 'boolean',
+					options: {
+						label: '$t:displays.formatted-value.mask_label',
+					},
+				},
+				schema: {
+					default_value: false,
+				},
+			},
+			{
 				field: 'conditionalFormatting',
 				type: 'json',
 				name: '$t:conditional_styles',

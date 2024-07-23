@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import api, { addTokenToURL } from '@/api';
+import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
@@ -8,6 +8,8 @@ import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
+import { useBus } from './bus';
+import { useRouter } from 'vue-router';
 
 const props = withDefaults(
 	defineProps<{
@@ -28,6 +30,8 @@ const props = withDefaults(
 	},
 );
 
+const bus = useBus();
+
 const emit = defineEmits<{ input: [value: EditorJS.OutputData | null] }>();
 
 const { t } = useI18n();
@@ -43,10 +47,10 @@ const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
 const haveValuesChanged = ref(false);
+const router = useRouter();
 
 const tools = getTools(
 	{
-		addTokenToURL,
 		baseURL: api.defaults.baseURL,
 		setFileHandler,
 		setCurrentPreview,
@@ -55,6 +59,12 @@ const tools = getTools(
 	props.tools,
 	haveFilesAccess,
 );
+
+bus.on(async (event) => {
+	if (event.type === 'open-url') {
+		router.push(event.payload);
+	}
+});
 
 onMounted(async () => {
 	editorjsRef.value = new EditorJS({
@@ -83,6 +93,8 @@ onMounted(async () => {
 
 onUnmounted(() => {
 	editorjsRef.value?.destroy();
+
+	bus.reset();
 });
 
 watch(
@@ -198,8 +210,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 .bordered {
-	padding: var(--theme--form--field--input--padding) 4px var(--theme--form--field--input--padding)
-		calc(var(--theme--form--field--input--padding) + 8px) !important;
+	padding: var(--theme--form--field--input--padding) max(32px, calc(var(--theme--form--field--input--padding) + 16px));
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);

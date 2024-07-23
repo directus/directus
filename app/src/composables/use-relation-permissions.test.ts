@@ -1,435 +1,229 @@
-import { test, expect, vi } from 'vitest';
-import { defineComponent, h, ref } from 'vue';
-import { mount } from '@vue/test-utils';
-
 import {
 	useRelationPermissionsM2A,
 	useRelationPermissionsM2M,
 	useRelationPermissionsM2O,
 	useRelationPermissionsO2M,
 } from '@/composables/use-relation-permissions';
-import { RelationO2M } from './use-relation-o2m';
-import { createTestingPinia } from '@pinia/testing';
-import { merge } from 'lodash';
-import { RelationM2O } from './use-relation-m2o';
-import { RelationM2M } from './use-relation-m2m';
+import { afterEach, expect, test, vi } from 'vitest';
+import { ref, unref } from 'vue';
+import {
+	UsableCollectionPermissions,
+	useCollectionPermissions,
+} from './use-permissions/collection/use-collection-permissions';
 import { RelationM2A } from './use-relation-m2a';
+import { RelationM2M } from './use-relation-m2m';
+import { RelationM2O } from './use-relation-m2o';
+import { RelationO2M } from './use-relation-o2m';
 
-const currentUser = {
-	id: '9ff55949-9f97-4fa7-a09e-db81585d6c52',
-	first_name: 'Admin',
-	last_name: 'User',
-	email: 'admin@example.com',
-	role: {
-		admin_access: true,
-		app_access: true,
-		id: 'd5c4be68-627f-4082-a8c2-5d1f3ebce2f2',
-	},
-};
+vi.mock('./use-permissions/collection/use-collection-permissions');
 
-const permissions = [
-	{
-		role: 'd5c4be68-627f-4082-a8c2-5d1f3ebce2f2',
-		permissions: {},
-		validation: null,
-		presets: null,
-		fields: ['*'],
-		system: false,
-		collection: 'a_b',
-		action: 'update',
-	},
-	{
-		role: 'd5c4be68-627f-4082-a8c2-5d1f3ebce2f2',
-		permissions: {},
-		validation: null,
-		presets: null,
-		fields: ['*'],
-		system: false,
-		collection: 'b',
-		action: 'update',
-	},
-];
-
-const relationO2M = ref({
-	relation: {
-		meta: {
-			one_deselect_action: 'nullify',
-		},
-	},
-	relatedCollection: {
-		collection: 'b',
-	},
-	type: 'o2m',
-} as RelationO2M);
-
-test('useRelationPermissionsO2M as admin', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsO2M(relationO2M);
-		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser },
-						permissionsStore: { permissions },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
-
-	expect(wrapper.vm.createAllowed).toBeTruthy();
-	expect(wrapper.vm.updateAllowed).toBeTruthy();
-	expect(wrapper.vm.deleteAllowed).toBeTruthy();
+afterEach(() => {
+	vi.clearAllMocks();
 });
 
-test('useRelationPermissionsO2M with no permissions', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsO2M(relationO2M);
+test('useRelationPermissionsM2O', () => {
+	const relationM2O = {
+		relatedCollection: {
+			collection: 'b',
 		},
-		render: () => h('div'),
-	});
+		type: 'm2o',
+	} as RelationM2O;
 
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser: merge({}, currentUser, { role: { admin_access: false } }) },
-						permissionsStore: { permissions: [] },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
+	const related = {
+		createAllowed: ref(false),
+		updateAllowed: ref(false),
+	};
 
-	expect(wrapper.vm.createAllowed).toBeFalsy();
-	expect(wrapper.vm.updateAllowed).toBeFalsy();
-	expect(wrapper.vm.deleteAllowed).toBeFalsy();
+	vi.mocked(useCollectionPermissions).mockReturnValue(related as UsableCollectionPermissions);
+
+	const permissions = useRelationPermissionsM2O(ref(relationM2O));
+
+	expect(unref(vi.mocked(useCollectionPermissions).mock.lastCall?.[0])).toEqual(
+		relationM2O.relatedCollection.collection,
+	);
+
+	expect(permissions.createAllowed.value).toBe(false);
+	related.createAllowed.value = true;
+	expect(permissions.createAllowed.value).toBe(true);
+
+	expect(permissions.updateAllowed.value).toBe(false);
+	related.updateAllowed.value = true;
+	expect(permissions.updateAllowed.value).toBe(true);
 });
 
-test('useRelationPermissionsO2M with update permissions', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsO2M(relationO2M);
+test('useRelationPermissionsO2M', () => {
+	const relationO2M = ref({
+		relation: {
+			meta: {
+				one_deselect_action: 'nullify',
+			},
 		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser: merge({}, currentUser, { role: { admin_access: false } }) },
-						permissionsStore: { permissions },
-					},
-					createSpy: vi.fn,
-				}),
-			],
+		relatedCollection: {
+			collection: 'b',
 		},
-	});
+		type: 'o2m',
+	} as RelationO2M);
 
-	expect(wrapper.vm.createAllowed).toBeFalsy();
-	expect(wrapper.vm.updateAllowed).toBeTruthy();
-	expect(wrapper.vm.deleteAllowed).toBeTruthy();
+	const related = {
+		createAllowed: ref(false),
+		updateAllowed: ref(false),
+		deleteAllowed: ref(false),
+	};
+
+	vi.mocked(useCollectionPermissions).mockReturnValue(related as UsableCollectionPermissions);
+
+	const permissions = useRelationPermissionsO2M(relationO2M);
+
+	expect(unref(vi.mocked(useCollectionPermissions).mock.lastCall?.[0])).toEqual(
+		relationO2M.value.relatedCollection.collection,
+	);
+
+	expect(permissions.createAllowed.value).toBe(false);
+	related.createAllowed.value = true;
+	expect(permissions.createAllowed.value).toBe(true);
+
+	expect(permissions.updateAllowed.value).toBe(false);
+	// corresponds to update value
+	expect(permissions.deleteAllowed.value).toBe(false);
+	related.updateAllowed.value = true;
+	expect(permissions.updateAllowed.value).toBe(true);
+	expect(permissions.deleteAllowed.value).toBe(true);
+
+	relationO2M.value.relation.meta!.one_deselect_action = 'delete';
+	// now corresponds to delete value
+	expect(permissions.deleteAllowed.value).toBe(false);
+	related.deleteAllowed.value = true;
+	expect(permissions.deleteAllowed.value).toBe(true);
 });
 
-const relationM2O = ref({
-	relatedCollection: {
-		collection: 'b',
-	},
-	type: 'm2o',
-} as RelationM2O);
-
-test('useRelationPermissionsM2O as admin', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2O(relationM2O);
+test('useRelationPermissionsM2M', () => {
+	const relationM2M = ref({
+		junctionCollection: {
+			collection: 'a_b',
 		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser },
-						permissionsStore: { permissions },
-					},
-					createSpy: vi.fn,
-				}),
-			],
+		relatedCollection: {
+			collection: 'b',
 		},
-	});
+		junction: {
+			meta: {
+				one_deselect_action: 'nullify',
+			},
+		},
+	} as RelationM2M);
 
-	expect(wrapper.vm.createAllowed).toBeTruthy();
-	expect(wrapper.vm.updateAllowed).toBeTruthy();
+	const related = {
+		createAllowed: ref(false),
+		updateAllowed: ref(false),
+		deleteAllowed: ref(false),
+	};
+
+	const junction = {
+		createAllowed: ref(false),
+		updateAllowed: ref(false),
+		deleteAllowed: ref(false),
+	};
+
+	vi.mocked(useCollectionPermissions).mockImplementation(
+		(collection) => (unref(collection) === 'a_b' ? junction : related) as UsableCollectionPermissions,
+	);
+
+	const permissions = useRelationPermissionsM2M(relationM2M);
+
+	expect(permissions.createAllowed.value).toBe(false);
+	expect(permissions.selectAllowed.value).toBe(false);
+	related.createAllowed.value = true;
+	expect(permissions.createAllowed.value).toBe(false);
+	expect(permissions.selectAllowed.value).toBe(false);
+	related.createAllowed.value = false;
+	junction.createAllowed.value = true;
+	expect(permissions.createAllowed.value).toBe(false);
+	expect(permissions.selectAllowed.value).toBe(true);
+	related.createAllowed.value = true;
+	expect(permissions.createAllowed.value).toBe(true);
+	expect(permissions.selectAllowed.value).toBe(true);
+
+	expect(permissions.updateAllowed.value).toBe(false);
+	// deleteAllowed corresponds to junction updateAllowed value
+	expect(permissions.deleteAllowed.value).toBe(false);
+	related.updateAllowed.value = true;
+	expect(permissions.updateAllowed.value).toBe(false);
+	expect(permissions.deleteAllowed.value).toBe(false);
+	related.updateAllowed.value = false;
+	junction.updateAllowed.value = true;
+	expect(permissions.updateAllowed.value).toBe(false);
+	expect(permissions.deleteAllowed.value).toBe(true);
+	related.updateAllowed.value = true;
+	expect(permissions.updateAllowed.value).toBe(true);
+	expect(permissions.deleteAllowed.value).toBe(true);
+
+	relationM2M.value.junction.meta!.one_deselect_action = 'delete';
+	// deleteAllowed now corresponds to junction deleteAllowed value
+	expect(permissions.deleteAllowed.value).toBe(false);
+	junction.deleteAllowed.value = true;
+	expect(permissions.deleteAllowed.value).toBe(true);
 });
 
-test('useRelationPermissionsM2O with no permissions', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2O(relationM2O);
+test('useRelationPermissionsM2A', () => {
+	const relationM2A = ref({
+		junctionCollection: {
+			collection: 'a_b',
 		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser: merge({}, currentUser, { role: { admin_access: false } }) },
-						permissionsStore: { permissions: [] },
-					},
-					createSpy: vi.fn,
-				}),
-			],
+		allowedCollections: [{ collection: 'a' }],
+		junction: {
+			meta: {
+				one_deselect_action: 'nullify',
+			},
 		},
-	});
+	} as RelationM2A);
 
-	expect(wrapper.vm.createAllowed).toBeFalsy();
-	expect(wrapper.vm.updateAllowed).toBeFalsy();
-});
+	const junction = {
+		createAllowed: ref(false),
+		updateAllowed: ref(false),
+		deleteAllowed: ref(false),
+	};
 
-test('useRelationPermissionsM2O with update permissions', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2O(relationM2O);
-		},
-		render: () => h('div'),
-	});
+	const a = {
+		createAllowed: ref(false),
+		updateAllowed: ref(false),
+		deleteAllowed: ref(false),
+	};
 
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser: merge({}, currentUser, { role: { admin_access: false } }) },
-						permissionsStore: { permissions },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
+	vi.mocked(useCollectionPermissions).mockImplementation(
+		(collection) => (unref(collection) === 'a_b' ? junction : a) as UsableCollectionPermissions,
+	);
 
-	expect(wrapper.vm.createAllowed).toBeFalsy();
-	expect(wrapper.vm.updateAllowed).toBeTruthy();
-});
+	const permissions = useRelationPermissionsM2A(relationM2A);
 
-const relationM2M = ref({
-	junctionCollection: {
-		collection: 'a_b',
-	},
-	relatedCollection: {
-		collection: 'b',
-	},
-	junction: {
-		meta: {
-			one_deselect_action: 'nullify',
-		},
-	},
-} as RelationM2M);
+	expect(permissions.createAllowed.value.a).toBe(false);
+	expect(permissions.selectAllowed.value).toBe(false);
+	a.createAllowed.value = true;
+	expect(permissions.createAllowed.value.a).toBe(false);
+	expect(permissions.selectAllowed.value).toBe(false);
+	a.createAllowed.value = false;
+	junction.createAllowed.value = true;
+	expect(permissions.createAllowed.value.a).toBe(false);
+	expect(permissions.selectAllowed.value).toBe(true);
+	a.createAllowed.value = true;
+	expect(permissions.createAllowed.value.a).toBe(true);
+	expect(permissions.selectAllowed.value).toBe(true);
 
-test('useRelationPermissionsM2M as admin', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2M(relationM2M);
-		},
-		render: () => h('div'),
-	});
+	expect(permissions.updateAllowed.value.a).toBe(false);
+	// deleteAllowed corresponds to collection + junction updateAllowed value
+	expect(permissions.deleteAllowed.value.a).toBe(false);
+	a.updateAllowed.value = true;
+	expect(permissions.updateAllowed.value.a).toBe(false);
+	expect(permissions.deleteAllowed.value.a).toBe(false);
+	a.updateAllowed.value = false;
+	junction.updateAllowed.value = true;
+	expect(permissions.updateAllowed.value.a).toBe(false);
+	expect(permissions.deleteAllowed.value.a).toBe(false);
+	a.updateAllowed.value = true;
+	expect(permissions.updateAllowed.value.a).toBe(true);
+	expect(permissions.deleteAllowed.value.a).toBe(true);
 
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser },
-						permissionsStore: { permissions },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
-
-	expect(wrapper.vm.createAllowed).toBeTruthy();
-	expect(wrapper.vm.updateAllowed).toBeTruthy();
-	expect(wrapper.vm.deleteAllowed).toBeTruthy();
-	expect(wrapper.vm.selectAllowed).toBeTruthy();
-});
-
-test('useRelationPermissionsM2M with no permissions', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2M(relationM2M);
-		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser: merge({}, currentUser, { role: { admin_access: false } }) },
-						permissionsStore: { permissions: [] },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
-
-	expect(wrapper.vm.createAllowed).toBeFalsy();
-	expect(wrapper.vm.updateAllowed).toBeFalsy();
-	expect(wrapper.vm.deleteAllowed).toBeFalsy();
-	expect(wrapper.vm.selectAllowed).toBeFalsy();
-});
-
-test('useRelationPermissionsM2M with update permissions', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2M(relationM2M);
-		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser: merge({}, currentUser, { role: { admin_access: false } }) },
-						permissionsStore: { permissions },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
-
-	expect(wrapper.vm.createAllowed).toBeFalsy();
-	expect(wrapper.vm.updateAllowed).toBeTruthy();
-	expect(wrapper.vm.deleteAllowed).toBeTruthy();
-	expect(wrapper.vm.selectAllowed).toBeFalsy();
-});
-
-const relationM2A = ref({
-	junctionCollection: {
-		collection: 'a_b',
-	},
-	allowedCollections: [{ collection: 'a' }, { collection: 'b' }],
-	junction: {
-		meta: {
-			one_deselect_action: 'nullify',
-		},
-	},
-} as RelationM2A);
-
-test('useRelationPermissionsM2A as admin', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2A(relationM2A);
-		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser },
-						permissionsStore: { permissions },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
-
-	expect(wrapper.vm.createAllowed).toEqual({ a: true, b: true });
-	expect(wrapper.vm.updateAllowed).toEqual({ a: true, b: true });
-	expect(wrapper.vm.deleteAllowed).toEqual({ a: true, b: true });
-	expect(wrapper.vm.selectAllowed).toBeTruthy();
-});
-
-test('useRelationPermissionsM2A with no permissions', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2A(relationM2A);
-		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser: merge({}, currentUser, { role: { admin_access: false } }) },
-						permissionsStore: { permissions: [] },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
-
-	expect(wrapper.vm.createAllowed).toEqual({ a: false, b: false });
-	expect(wrapper.vm.updateAllowed).toEqual({ a: false, b: false });
-	expect(wrapper.vm.deleteAllowed).toEqual({ a: false, b: false });
-	expect(wrapper.vm.selectAllowed).toBeFalsy();
-});
-
-test('useRelationPermissionsM2A with update permissions', () => {
-	// eslint-disable-next-line vue/one-component-per-file
-	const TestComponent = defineComponent({
-		setup() {
-			return useRelationPermissionsM2A(relationM2A);
-		},
-		render: () => h('div'),
-	});
-
-	const wrapper = mount(TestComponent, {
-		global: {
-			plugins: [
-				createTestingPinia({
-					initialState: {
-						userStore: { currentUser: merge({}, currentUser, { role: { admin_access: false } }) },
-						permissionsStore: { permissions },
-					},
-					createSpy: vi.fn,
-				}),
-			],
-		},
-	});
-
-	expect(wrapper.vm.createAllowed).toEqual({ a: false, b: false });
-	expect(wrapper.vm.updateAllowed).toEqual({ a: false, b: true });
-	expect(wrapper.vm.deleteAllowed).toEqual({ a: false, b: true });
-	expect(wrapper.vm.selectAllowed).toBeFalsy();
+	relationM2A.value.junction.meta!.one_deselect_action = 'delete';
+	// deleteAllowed now corresponds to junction deleteAllowed value
+	expect(permissions.deleteAllowed.value.a).toBe(false);
+	junction.deleteAllowed.value = true;
+	expect(permissions.deleteAllowed.value.a).toBe(true);
 });

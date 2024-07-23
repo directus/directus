@@ -18,6 +18,7 @@ type Comparison = {
 interface Props {
 	active: boolean;
 	currentVersion: ContentVersion;
+	deleteVersionsAllowed: boolean;
 }
 
 const { t } = useI18n();
@@ -26,7 +27,7 @@ const fieldsStore = useFieldsStore();
 
 const props = defineProps<Props>();
 
-const { active, currentVersion } = toRefs(props);
+const { active, currentVersion, deleteVersionsAllowed } = toRefs(props);
 
 const selectedFields = ref<string[]>([]);
 
@@ -36,7 +37,7 @@ const loading = ref(false);
 
 const { tabs, currentTab } = useTab();
 
-const { confirmDeleteOnPromoteDialogActive, promoting, promote } = usePromoteDialog();
+const { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote } = usePromoteDialog();
 
 const emit = defineEmits<{
 	cancel: [];
@@ -120,7 +121,15 @@ function usePromoteDialog() {
 	const confirmDeleteOnPromoteDialogActive = ref(false);
 	const promoting = ref(false);
 
-	return { confirmDeleteOnPromoteDialogActive, promoting, promote };
+	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
+
+	function onPromoteClick() {
+		if (deleteVersionsAllowed.value) {
+			confirmDeleteOnPromoteDialogActive.value = true;
+		} else {
+			promote(false);
+		}
+	}
 
 	async function promote(deleteOnPromote: boolean) {
 		promoting.value = true;
@@ -243,7 +252,8 @@ function useTab() {
 				:disabled="selectedFields.length === 0"
 				icon
 				rounded
-				@click="confirmDeleteOnPromoteDialogActive = true"
+				:loading="promoting"
+				@click="onPromoteClick"
 			>
 				<v-icon name="check" />
 			</v-button>

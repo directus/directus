@@ -13,3 +13,9 @@ export type Permission = {
 	fields: string[] | null;
 	system?: true;
 };
+
+export type ItemPermissions = {
+	update: { access: boolean; presets?: Permission['presets']; fields?: Permission['fields'] };
+	delete: { access: boolean };
+	share: { access: boolean };
+};

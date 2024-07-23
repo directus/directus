@@ -30,7 +30,7 @@ test('active prop', async () => {
 
 	await wrapper.get('.close-outline').trigger('click');
 
-	expect(wrapper.emitted()['update:active'][0]).toEqual([false]);
+	expect(wrapper.emitted()['update:active']?.[0]).toEqual([false]);
 });
 
 test('close prop', async () => {

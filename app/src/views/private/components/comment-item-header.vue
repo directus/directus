@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import api from '@/api';
 import { Activity } from '@/types/activity';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { userName } from '@/utils/user-name';
 import type { User } from '@directus/types';
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -32,7 +33,7 @@ const formattedTime = computed(() => {
 const avatarSource = computed(() => {
 	if (!props.activity.user?.avatar) return null;
 
-	return `/assets/${props.activity.user.avatar.id}?key=system-small-cover`;
+	return getAssetUrl(`${props.activity.user.avatar.id}?key=system-small-cover`);
 });
 
 const { confirmDelete, deleting, remove } = useDelete();

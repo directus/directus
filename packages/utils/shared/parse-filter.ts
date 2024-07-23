@@ -42,6 +42,8 @@ function shiftLogicalOperatorsUp(filter: any): any {
 		}
 
 		return filter;
+	} else if (key.startsWith('_')) {
+		return filter;
 	} else {
 		const childKey = Object.keys(filter[key])[0];
 		if (!childKey) return filter;

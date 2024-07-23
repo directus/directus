@@ -3,7 +3,7 @@ import type { RestCommand } from '../../types.js';
 import { throwIfCoreCollection, throwIfEmpty } from '../../utils/index.js';
 
 export type UpdateItemOutput<
-	Schema extends object,
+	Schema,
 	Collection extends keyof Schema,
 	TQuery extends Query<Schema, Schema[Collection]>,
 > = ApplyQueryFields<Schema, CollectionType<Schema, Collection>, TQuery['fields']>;
@@ -12,31 +12,70 @@ export type UpdateItemOutput<
  * Update multiple items at the same time.
  *
  * @param collection The collection of the items
- * @param keys The primary key of the items
+ * @param keysOrQuery The primary keys or a query
  * @param item The item data to update
  * @param query Optional return data query
  *
  * @returns Returns the item objects for the updated items.
- * @throws Will throw if keys is empty
+ * @throws Will throw if keysOrQuery is empty
  * @throws Will throw if collection is empty
  * @throws Will throw if collection is a core collection
  */
 export const updateItems =
-	<Schema extends object, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
+	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
 		collection: Collection,
-		keys: string[] | number[],
+		keysOrQuery: string[] | number[] | Query<Schema, Schema[Collection]>,
 		item: Partial<UnpackList<Schema[Collection]>>,
 		query?: TQuery,
 	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>[], Schema> =>
 	() => {
-		throwIfEmpty(keys, 'Keys cannot be empty');
+		let payload: Record<string, any> = {};
+		throwIfEmpty(String(collection), 'Collection cannot be empty');
+		throwIfCoreCollection(collection, 'Cannot use updateItems for core collections');
+
+		if (Array.isArray(keysOrQuery)) {
+			throwIfEmpty(keysOrQuery, 'keysOrQuery cannot be empty');
+			payload = { keys: keysOrQuery };
+		} else {
+			throwIfEmpty(Object.keys(keysOrQuery), 'keysOrQuery cannot be empty');
+			payload = { query: keysOrQuery };
+		}
+
+		payload['data'] = item;
+
+		return {
+			path: `/items/${collection as string}`,
+			params: query ?? {},
+			body: JSON.stringify(payload),
+			method: 'PATCH',
+		};
+	};
+
+/**
+ * Update multiple items as batch.
+ *
+ * @param collection The collection of the items
+ * @param items The items to update
+ * @param query Optional return data query
+ *
+ * @returns Returns the item objects for the updated items.
+ * @throws Will throw if collection is empty
+ * @throws Will throw if collection is a core collection
+ */
+export const updateItemsBatch =
+	<Schema, Collection extends keyof Schema, const TQuery extends Query<Schema, Schema[Collection]>>(
+		collection: Collection,
+		items: Partial<UnpackList<Schema[Collection]>>[],
+		query?: TQuery,
+	): RestCommand<UpdateItemOutput<Schema, Collection, TQuery>[], Schema> =>
+	() => {
 		throwIfEmpty(String(collection), 'Collection cannot be empty');
 		throwIfCoreCollection(collection, 'Cannot use updateItems for core collections');
 
 		return {
 			path: `/items/${collection as string}`,
 			params: query ?? {},
-			body: JSON.stringify({ keys, data: item }),
+			body: JSON.stringify(items),
 			method: 'PATCH',
 		};
 	};
@@ -56,7 +95,7 @@ export const updateItems =
  */
 export const updateItem =
 	<
-		Schema extends object,
+		Schema,
 		Collection extends keyof Schema,
 		const TQuery extends Query<Schema, Schema[Collection]>,
 		Item = UnpackList<Schema[Collection]>,

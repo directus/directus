@@ -36,7 +36,7 @@ export default defineEndpoint((router, context) => {
 });
 ```
 
-- **Schema\*:** Schema refers to the underlying Knex database schema used within Directus. The `getSchema` function is
+- **Schema:** Schema refers to the underlying Knex database schema used within Directus. The `getSchema` function is
   provided in the context and is required for each service to work.
 
 - **Accountability:** Accountability is used for authorization and auditing logs. When initializing a service, pass the

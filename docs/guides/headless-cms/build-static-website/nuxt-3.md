@@ -9,8 +9,9 @@ author: Kevin Lewis
 > {{ $frontmatter.description }}
 
 [Nuxt](https://nuxt.com/) is a popular JavaScript framework based on Vue.js. In this tutorial, you will learn how to
-build a website using Directus as a CMS. You will store, retrieve, and use global metadata such as the site title,
-create new pages dynamically based on Directus items, and build a blog.
+build a website using Directus as a [Headless CMS](https://directus.io/solutions/headless-cms). You will store,
+retrieve, and use global metadata such as the site title, create new pages dynamically based on Directus items, and
+build a blog.
 
 ## Before You Start
 
@@ -32,7 +33,7 @@ npm install @directus/sdk
 ```
 
 Open `my-website` in your code editor and type `npm run dev` in your terminal to start the Nuxt development server and
-open `http://localhost:3000` in your browser.
+open http://localhost:3000 in your browser.
 
 ## Create a Plugin for the SDK
 
@@ -81,8 +82,8 @@ hit save.
 
 ![A form named "Global" has two inputs - a title and a description, each filled with some text.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/nuxt-global-config.webp)
 
-By default, new collections are not accessible to the public. Navigate to Settings -> Roles & Permissions -> Public and
-give Read access to the Global collection.
+By default, new collections are not accessible to the public. Navigate to Settings -> Access Control -> Public and give
+Read access to the Global collection.
 
 In `app.vue`, remove `<NuxtWelcome />` and replace it with `<NuxtPage />`. This tells Nuxt to use file-based routing.
 
@@ -110,9 +111,9 @@ Refresh your browser. You should see data from your Directus Global collection i
 Create a new collection called `pages` - make the Primary ID Field a "Manually Entered String" called `slug`, which will
 correlate with the URL for the page. For example `about` will later correlate to the page `localhost:3000/about`.
 
-Create a text input field called `title` and a WYSIWYG input field called `content`. In Roles & Permissions, give the
-Public role read access to the new collection. Create 3 items in the new collection -
-[here's some sample data](https://github.com/directus/examples/blob/main/website-nuxt3/demo-data).
+Create a text input field called `title` and a WYSIWYG input field called `content`. In Access Control, give the Public
+role read access to the new collection. Create 3 items in the new collection -
+[here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
 Inside of `pages`, create a new file called `[slug].vue`. This is a dynamic route, so a single file can be used for all
 of the top-level pages.
@@ -138,12 +139,12 @@ if (!page.value) throw createError({
 </script>
 ```
 
-Go to `http://localhost:3000/about`, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK,
-the single item with that slug is retrieved, and the page should show your data. `readOne()` only checks against your
+Go to http://localhost:3000/about, replacing `about` with any of your item slugs. Using the Directus JavaScript SDK, the
+single item with that slug is retrieved, and the page should show your data. `readItem()` only checks against your
 `slug` Primary ID Field.
 
 _Note that we check if a returned value exists, and return a 404 if not. Please also note that
-[`v-html` should only be used for trusted content.](https://vuejs.org/api/built-in-directives.html#v-html)_
+[`v-html` should only be used for trusted content](https://vuejs.org/api/built-in-directives.html#v-html)._
 
 ## Creating Blog Posts With Directus
 
@@ -161,10 +162,10 @@ Create the following fields in your `posts` data model:
 - a datetime selection field called `publish_date` - set the type to 'date'
 - a many-to-one relational field called `author` with the related collection set to `authors`
 
-In Roles & Permissions, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
+In Access Control, give the Public role read access to the `authors`, `posts`, and `directus_files` collections.
 
 Create 3 items in the posts collection -
-[here's some sample data](https://github.com/directus/examples/blob/main/website-nuxt3/demo-data).
+[here's some sample data](https://github.com/directus-community/getting-started-demo-data).
 
 ### Create Blog Post Listing
 
@@ -209,7 +210,7 @@ Update the `<template>` section:
 </template>
 ```
 
-Visit `http://localhost:3000` and you should now see a blog post listing, with latest items first.
+Visit http://localhost:3000 and you should now see a blog post listing, with latest items first.
 
 ![A page with a title of "Blog". On it is a list of three items - each with a title, author, and date. The title is a link.](https://cdn.directus.io/docs/v9/headless-cms/how-to-packet-20220222A/nuxt-blog-listing.webp)
 

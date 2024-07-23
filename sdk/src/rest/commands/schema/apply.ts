@@ -7,7 +7,7 @@ import type { SchemaDiffOutput } from './diff.js';
  * @returns Empty body.
  */
 export const schemaApply =
-	<Schema extends object>(diff: SchemaDiffOutput): RestCommand<void, Schema> =>
+	<Schema>(diff: SchemaDiffOutput): RestCommand<void, Schema> =>
 	() => ({
 		method: 'POST',
 		path: '/schema/apply',

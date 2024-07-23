@@ -2,14 +2,15 @@
 import { FieldTree } from './types';
 import formatTitle from '@directus/format-title';
 
-interface Props {
-	field: FieldTree;
-	depth?: number;
-}
-
-withDefaults(defineProps<Props>(), {
-	depth: undefined,
-});
+withDefaults(
+	defineProps<{
+		field: FieldTree;
+		depth?: number;
+	}>(),
+	{
+		depth: undefined,
+	},
+);
 
 defineEmits(['add']);
 </script>

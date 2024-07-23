@@ -126,3 +126,23 @@ export default {
 ```
 
 The handler function receives the data payload of the current in-flight flow.
+
+### TypeScript
+
+You can import the `SandboxOperationConfig` type from `directus:api` to type the operation object:
+
+```ts
+/// <reference types="@directus/extensions/api.d.ts" />
+
+import { log } from "directus:api";
+import type { SandboxOperationConfig } from "directus:api";
+
+const operation: SandboxOperationConfig = {
+	id: 'custom',
+	handler: ({ text }) => {
+		log(text);
+	},
+};
+
+export default operation;
+```

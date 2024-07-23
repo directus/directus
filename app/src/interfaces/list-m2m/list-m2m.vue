@@ -47,11 +47,11 @@ const props = withDefaults(
 		layout: LAYOUTS.LIST,
 		tableSpacing: 'cozy',
 		fields: () => ['id'],
-		template: () => null,
+		template: null,
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
-		filter: () => null,
+		filter: null,
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
@@ -510,17 +510,17 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 				/>
 			</template>
 
-			<v-notice v-else-if="displayItems.length === 0">
-				{{ t('no_items') }}
-			</v-notice>
-
 			<v-list v-else>
+				<v-notice v-if="displayItems.length === 0">
+					{{ t('no_items') }}
+				</v-notice>
+
 				<draggable
-					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">
@@ -565,7 +565,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+						<v-pagination
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 1 : 2"
+							show-first-last
+						/>
 
 						<div class="spacer" />
 
@@ -583,7 +588,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 				</template>
 			</div>
 		</div>
@@ -665,16 +670,14 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 	}
 }
 
-.v-notice {
-	margin-top: 8px;
-}
-
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
+		margin-left: auto;
 		:deep(.v-button) {
 			display: inline-flex;
 		}

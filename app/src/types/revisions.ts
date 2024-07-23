@@ -1,7 +1,7 @@
 export type Revision = {
 	id: number;
-	data: Record<string, any>;
-	delta: Record<string, any>;
+	data: Record<string, any> | null;
+	delta: Record<string, any> | null;
 	collection: string;
 	item: string | number;
 	activity: {

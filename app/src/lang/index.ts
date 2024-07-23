@@ -30,11 +30,12 @@ export function translateAPIError(error: RequestError | string): string {
 		code = error?.response?.data?.errors?.[0]?.extensions?.code;
 	}
 
-	if (!error) return defaultMsg;
-	if (!code === undefined) return defaultMsg;
-	const key = `errors.${code}`;
+	if (!error || !code) return defaultMsg;
 
+	const key = `errors.${code}`;
 	const exists = i18n.global.te(key);
+
 	if (exists === false) return defaultMsg;
+
 	return i18n.global.t(key);
 }

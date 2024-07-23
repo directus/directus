@@ -8,7 +8,7 @@ export type OpenApiSpecOutput = Record<string, any>;
  * @returns Object conforming to the OpenAPI Specification
  */
 export const readOpenApiSpec =
-	<Schema extends object>(): RestCommand<OpenApiSpecOutput, Schema> =>
+	<Schema>(): RestCommand<OpenApiSpecOutput, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/server/specs/oas',

@@ -4,7 +4,6 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
-import { v4 as uuid } from 'uuid';
 import type { Credentials } from '../create-db-connection.js';
 import type { drivers } from '../drivers.js';
 
@@ -28,7 +27,6 @@ export default async function createEnv(
 
 	const config: Record<string, any> = {
 		security: {
-			KEY: uuid(),
 			SECRET: nanoid(32),
 		},
 		database: {

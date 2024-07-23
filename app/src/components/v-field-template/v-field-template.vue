@@ -1,33 +1,30 @@
 <script setup lang="ts">
-import { useFieldTree } from '@/composables/use-field-tree';
+import type { FieldNode } from '@/composables/use-field-tree';
 import { flattenFieldGroups } from '@/utils/flatten-field-groups';
-import { Field, Relation } from '@directus/types';
-import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
 
-interface Props {
-	disabled?: boolean;
-	modelValue?: string | null;
-	nullable?: boolean;
-	collection?: string | null;
-	depth?: number;
-	placeholder?: string | null;
-	inject?: {
-		fields: Field[];
-		relations: Relation[];
-	} | null;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	disabled: false,
-	modelValue: null,
-	nullable: true,
-	collection: null,
-	depth: undefined,
-	placeholder: null,
-	inject: null,
-});
+const props = withDefaults(
+	defineProps<{
+		disabled?: boolean;
+		modelValue?: string | null;
+		nullable?: boolean;
+		tree: FieldNode[];
+		loadPathLevel?: (fieldPath: string, root?: FieldNode | undefined) => void;
+		depth?: number;
+		placeholder?: string | null;
+	}>(),
+	{
+		disabled: false,
+		modelValue: null,
+		nullable: true,
+		collection: null,
+		depth: undefined,
+		placeholder: null,
+		inject: null,
+	},
+);
 
 const emit = defineEmits(['update:modelValue']);
 
@@ -35,13 +32,10 @@ const contentEl = ref<HTMLElement | null>(null);
 
 const menuActive = ref(false);
 
-const { collection, inject } = toRefs(props);
-const { treeList, loadFieldRelations } = useFieldTree(collection, inject);
-
 watch(() => props.modelValue, setContent, { immediate: true });
 
 const grouplessTree = computed(() => {
-	return flattenFieldGroups(treeList.value);
+	return flattenFieldGroups(props.tree);
 });
 
 onMounted(() => {
@@ -117,7 +111,7 @@ function onSelect() {
 		for (let i = 0; i < contentEl.value.childNodes.length || !textSpan; i++) {
 			const child = contentEl.value.children[i];
 
-			if (child.classList.contains('text')) {
+			if (child?.classList.contains('text')) {
 				textSpan = child;
 			}
 		}
@@ -246,7 +240,7 @@ function setContent() {
 				const fieldPath = fieldKey.split('.');
 
 				for (let i = 0; i < fieldPath.length; i++) {
-					loadFieldRelations(fieldPath.slice(0, i).join('.'));
+					props.loadPathLevel?.(fieldPath.slice(0, i).join('.'));
 				}
 
 				const field = findTree(grouplessTree.value, fieldPath);
@@ -288,8 +282,8 @@ function setContent() {
 			</v-input>
 		</template>
 
-		<v-list v-if="!disabled" :mandatory="false" @toggle="loadFieldRelations($event.value)">
-			<field-list-item v-for="field in treeList" :key="field.field" :field="field" :depth="depth" @add="addField" />
+		<v-list v-if="!disabled" :mandatory="false" @toggle="loadPathLevel?.($event.value)">
+			<field-list-item v-for="field in tree" :key="field.field" :field="field" :depth="depth" @add="addField" />
 		</v-list>
 	</v-menu>
 </template>

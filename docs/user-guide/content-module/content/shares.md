@@ -138,8 +138,8 @@ then inherit permissions of that Role.
 ### Creating / Editing a Role
 
 _If your Role has the correct permissions configured_, you can create a new Role and assign it to a Share _"on the fly"_
-in the Share Options Menu. However, you will still need to navigate to **Settings > Roles and Permissions > [Role
-Name]** to configure any read permissions.
+in the Share Options Menu. However, you will still need to navigate to **Settings > Access Control > [Role Name]** to
+configure any read permissions.
 
 ![Creating / Editing a Role within Shares](https://cdn.directus.io/docs/v9/app-guide/content/data-sharing/data-sharing-20220217A/creating-and-edit-roles-menu-20220217A.webp)
 
@@ -168,7 +168,7 @@ of the Share.
 
 You can limit which Collections a Role is allowed to share:
 
-1. Navigate to **Settings > Roles and Permissions**.
+1. Navigate to **Settings > Access Control**.
 2. Select the **[Role Name]** that will be responsible for creating the Share.
 3. Find the **[Collection]** you wish to set Filter(s) for, then click the icon in the column under
    <span mi icon>share</span> and a small menu will appear.
@@ -179,7 +179,7 @@ You can limit which Collections a Role is allowed to share:
 Sometimes you may want a given Role to be able to share some Items but not others. Filters allow you to control exactly
 which Items a Role will be able to share, for example, _only share reports that are marked as 'Done'_. To use Filters:
 
-1. Navigate to **Settings > Roles and Permissions**.
+1. Navigate to **Settings > Access Control**.
 2. Select the **[Role Name]** that will be responsible for creating the Share.
 3. Find the **[Collection]** you wish to set the Filter(s) for, then click the icon in the column under
    <span mi icon>share</span> and a small menu will appear.
@@ -192,7 +192,7 @@ When you create a Share on some Item, you associate a Role _(and thus the Role's
 you to set read permissions for the exact fields _(including relational fields)_ that get shared. To limit sharing by
 Field:
 
-1. Navigate to **Settings > Roles and Permissions**.
+1. Navigate to **Settings > Access Control**.
 2. Select the **[Role Name]** that is assigned to the Share.
 3. Find the **[Collection]** then click the icon in the column under the <span mi icon>visibility</span> icon and a
    small menu will appear.

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useServerStore } from '@/stores/server';
+import { translate } from '@/utils/translate-literal';
 import { useThemeStore } from '@directus/themes';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -22,12 +23,15 @@ const serverStore = useServerStore();
 const themeStore = useThemeStore();
 
 const systemTheme = computed(() => {
-	return props.appearance === 'dark'
-		? serverStore.info.project!.default_theme_dark
-		: serverStore.info.project!.default_theme_light;
+	const theme =
+		props.appearance === 'dark'
+			? serverStore.info.project?.default_theme_dark
+			: serverStore.info.project?.default_theme_light;
+
+	return theme ?? null;
 });
 
-const items = computed(() => themeStore.themes[props.appearance].map((theme) => theme.name));
+const items = computed(() => themeStore.themes[props.appearance].map((theme) => ({ id: theme.id, name: theme.name })));
 
 const valueWithDefault = computed(() => {
 	if (props.includeNull) {
@@ -53,16 +57,16 @@ const valueWithDefault = computed(() => {
 
 		<button
 			v-for="theme of items"
-			:key="theme"
-			:class="{ active: theme === valueWithDefault }"
+			:key="theme.id"
+			:class="{ active: theme.id === valueWithDefault }"
 			class="theme"
-			@click="$emit('input', theme)"
+			@click="$emit('input', theme.id)"
 		>
-			<ThemePreview :dark-mode="appearance === 'dark'" :theme="theme" />
+			<ThemePreview :dark-mode="appearance === 'dark'" :theme="theme.id" />
 
 			<div class="label">
-				<v-icon :name="theme === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
-				<v-text-overflow :text="theme" />
+				<v-icon :name="theme.id === valueWithDefault ? 'radio_button_checked' : 'radio_button_unchecked'" />
+				<v-text-overflow :text="translate(theme.name)" />
 			</div>
 		</button>
 	</div>

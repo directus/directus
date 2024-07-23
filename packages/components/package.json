@@ -1,6 +1,6 @@
 {
 	"name": "@directus/components",
-	"version": "0.0.3",
+	"version": "0.0.9",
 	"description": "Component for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -26,26 +26,28 @@
 		"dev": "vite build --watch",
 		"story:build": "histoire build",
 		"story:dev": "histoire dev",
-		"story:preview": "histoire preview",
-		"test": "vitest --watch=false"
+		"story:preview": "histoire preview"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@histoire/plugin-vue": "0.16.1",
-		"@histoire/shared": "0.16.1",
-		"@vitejs/plugin-vue": "4.2.3",
-		"@vitest/coverage-v8": "0.34.6",
-		"histoire": "0.16.1",
-		"rollup-plugin-node-externals": "6.1.1",
-		"typescript": "5.2.2",
-		"vite": "4.3.7",
-		"vite-plugin-dts": "2.3.0",
-		"vitest": "0.34.6"
+		"@histoire/plugin-vue": "0.17.17",
+		"@vitejs/plugin-vue": "5.0.4",
+		"@vitest/coverage-v8": "1.5.3",
+		"histoire": "0.17.17",
+		"pinia": "2.1.7",
+		"rollup-plugin-node-externals": "7.1.2",
+		"typescript": "5.4.5",
+		"vite": "5.2.11",
+		"vite-plugin-dts": "3.9.1",
+		"vitest": "1.5.3",
+		"vue": "3.4.27",
+		"vue-i18n": "9.13.1",
+		"vue-router": "4.4.0"
 	},
 	"peerDependencies": {
-		"pinia": "2.1.1",
-		"vue": "3.3.4",
-		"vue-i18n": "9.2.2",
-		"vue-router": "4.2.0"
+		"pinia": "2",
+		"vue": "^3.4",
+		"vue-i18n": "9",
+		"vue-router": "4"
 	}
 }

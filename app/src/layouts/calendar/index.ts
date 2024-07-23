@@ -11,7 +11,7 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { useAppStore } from '@directus/stores';
 import { Field, Item } from '@directus/types';
-import { getEndpoint, getFieldsFromTemplate } from '@directus/utils';
+import { getEndpoint, getFieldsFromTemplate, mergeFilters } from '@directus/utils';
 import { Calendar, CssDimValue, EventInput, CalendarOptions as FullCalendarOptions } from '@fullcalendar/core';
 import { EventImpl } from '@fullcalendar/core/internal';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -59,8 +59,11 @@ export default defineLayout<LayoutOptions>({
 
 		const calendarFilter = computed(() => {
 			if (!calendar.value || !startDateField.value) {
-				return;
+				return null;
 			}
+
+			// Subscribe to 'view' updates to get latest start/end dates
+			void viewInfo.value;
 
 			const start = formatISO(calendar.value.view.activeStart);
 			const end = formatISO(calendar.value.view.activeEnd);
@@ -77,14 +80,7 @@ export default defineLayout<LayoutOptions>({
 			return { _or: [startsHere, endsHere, overlapsHere] };
 		});
 
-		const filterWithCalendarView = computed(() => {
-			if (!calendarFilter.value) return filter.value;
-			if (!filter.value) return null;
-
-			return {
-				_and: [filter.value, calendarFilter.value],
-			};
-		});
+		const filterWithCalendarView = computed(() => mergeFilters(filter.value, calendarFilter.value));
 
 		const template = syncRefProperty(layoutOptions, 'template', undefined);
 		const viewInfo = syncRefProperty(layoutOptions, 'viewInfo', undefined);
@@ -261,8 +257,19 @@ export default defineLayout<LayoutOptions>({
 			showingCount,
 			createCalendar,
 			destroyCalendar,
+			resetPresetAndRefresh,
+			refresh,
 			download,
 		};
+
+		async function resetPresetAndRefresh() {
+			await props?.resetPreset?.();
+			refresh();
+		}
+
+		function refresh() {
+			getItems();
+		}
 
 		function download() {
 			if (!collection.value) return;

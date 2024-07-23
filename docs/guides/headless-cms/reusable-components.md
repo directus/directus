@@ -171,7 +171,10 @@ To keep things organized, we recommend that you namespace each collection with a
    - Gallery / Cards
    - Article
 
-   c. Save the field. Directus will create a new, hidden
+   c. Enter the Advanced Field Creation Mode. In the Relationship section add a Sort Field (you can just type the word
+   'sort'). This will allow you to sort the blocks in the editor.
+
+   d. Save the field. Directus will create a new, hidden
    [junction collection](/app/data-model/relationships#many-to-any-m2a) for you automatically.
 
 ::: tip
@@ -224,11 +227,24 @@ const pages = await directus.request(
 		filter: {
 			slug: { _eq: slug },
 		},
-		fields: ['*', { blocks: ['*', { item: [{ collection_a: ['*'], collection_b: ['*'] }] }] }],
+		fields: [
+			'*',
+			{
+				blocks: [
+					'*',
+					{
+						item: {
+							block_hero: ['*'],
+							block_cardgroup: ['*'],
+							block_richtext: ['*'],
+						},
+					},
+				],
+			},
+		],
 		limit: 1,
 	})
 );
-
 const page = page[0];
 ```
 

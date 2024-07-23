@@ -30,6 +30,8 @@ export const TYPES = [
 	'unknown',
 ] as const;
 
+export const NUMERIC_TYPES = ['bigInteger', 'decimal', 'float', 'integer'] as const;
+
 export const GEOMETRY_TYPES = [
 	'Point',
 	'LineString',

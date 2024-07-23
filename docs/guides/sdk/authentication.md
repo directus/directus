@@ -20,7 +20,7 @@ import { createDirectus, authentication } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(authentication());
 
-await client.login(email, password);
+await client.login(email, password, options);
 await client.refresh();
 await client.logout();
 ```
@@ -35,13 +35,13 @@ import { createDirectus, rest, login, refresh, logout } from '@directus/sdk';
 
 const client = createDirectus('http://directus.example.com').with(rest());
 
-const user = await client.request(login(email, password));
+const user = await client.request(login(email, password, options));
 const authData = await client.request(refresh(mode, refresh_token));
-await client.request(logout(refresh_token));
+await client.request(logout(refresh_token, mode));
 ```
 
-The `mode` will either be `'json'` or `'cookie'`. If cookies are used, you don't need to set the second parameter, as
-the token in your cookie will automatically be used.
+The `mode` will either be `'json'`, `'cookie'` or `'session'`. If cookies are used, you don't need to set the second
+parameter, as the token in your cookie will automatically be used.
 
 This approach is manually sending API requests, the SDK does not store the returned tokens. You must store the access
 token and provide it to following requests and the same for the refresh token if using authentication mode `'json'`.
@@ -60,6 +60,22 @@ When using Directus Realtime's [default 'handshake' authentication strategy](/gu
 first message sent must include authentication details. This example uses the `email` & `password` combination, but
 tokens can be used as well (see
 [Authenticate Realtime Connection with a Token](#authenticate-realtime-connection-with-a-token)).
+
+### Login Options
+
+Both the `authentication` and `rest` composable `login` functions accept a login options object, which has the following
+signature:
+
+```ts
+type LoginOptions = {
+	/** The user's one-time-password (if MFA is enabled). */
+	otp?: string;
+	/** Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`, `cookie` or `session`. Defaults to `cookie`. */
+	mode?: AuthenticationMode;
+	/** Use a specific authentication provider (does not work for SSO that relies on browser redirects). */
+	provider?: string;
+};
+```
 
 ## Set a Token
 
@@ -152,10 +168,19 @@ class LocalStorage {
   }
 }
 
+const storage = new LocalStorage();
 const client = createDirectus('http://directus.example.com')
-  .with(authentication('json', { storage: new LocalStorage() }));
+  .with(authentication('json', { storage }));
 
+// set a long term or static token without expiry information
 client.setToken('TOKEN');
+
+// set custom credentials to the storage
+storage.set({
+	access_token: 'token',
+	refresh_token: 'token',
+	expires_at: 123456789
+});
 ```
 
 Note that the `LocalStorage` class is for demonstration purposes only, in production it is not recommended to store

@@ -5,9 +5,8 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { addTokenToURL } from '@/api';
 import { getItemRoute } from '@/utils/get-route';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import type { Field } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -33,6 +32,8 @@ const props = withDefaults(
 		userField?: string | null;
 		groupsSortField?: string | null;
 		layoutOptions: LayoutOptions;
+		resetPresetAndRefresh: () => Promise<void>;
+		error?: any;
 	}>(),
 	{
 		collection: null,
@@ -65,8 +66,8 @@ function parseAvatar(file: Record<string, any>) {
 	if (!file || !file.type) return;
 	if (file.type.startsWith('image') === false) return;
 
-	const url = getRootPath() + `assets/${file.id}?modified=${file.modified_on}&key=system-small-cover`;
-	return addTokenToURL(url);
+	const url = getAssetUrl(`${file.id}?modified=${file.modified_on}&key=system-small-cover`);
+	return url;
 }
 
 function cancelChanges() {
@@ -91,7 +92,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 </script>
 
 <template>
-	<div class="kanban">
+	<div v-if="!error" class="kanban">
 		<draggable
 			:model-value="groupedItems"
 			group="groups"
@@ -181,9 +182,6 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 				</div>
 			</template>
 		</draggable>
-		<!-- <div v-if="isRelational" class="add-group" @click="editDialogOpen = '+'">
-			<v-icon name="add_box" />
-		</div> -->
 
 		<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()">
 			<v-card>
@@ -200,13 +198,14 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			</v-card>
 		</v-dialog>
 	</div>
+	<slot v-else name="error" :error="error" :reset="resetPresetAndRefresh" />
 </template>
 
 <style lang="scss" scoped>
 .kanban {
 	display: flex;
 	height: calc(100% - 65px - 2 * 24px);
-	padding: 0px 32px 24px 32px;
+	padding: 0 32px 24px 32px;
 	overflow-x: auto;
 	overflow-y: hidden;
 	--user-spacing: 16px;

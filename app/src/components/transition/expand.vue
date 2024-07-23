@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import ExpandMethods from './expand-methods';
 
-interface Props {
-	/** Expand on the horizontal instead vertical axis */
-	xAxis?: boolean;
-	/** Add a custom class to the element that is expanded */
-	expandedParentClass?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-	xAxis: false,
-	expandedParentClass: '',
-});
+const props = withDefaults(
+	defineProps<{
+		/** Expand on the horizontal instead vertical axis */
+		xAxis?: boolean;
+		/** Add a custom class to the element that is expanded */
+		expandedParentClass?: string;
+	}>(),
+	{
+		xAxis: false,
+		expandedParentClass: '',
+	},
+);
 
 const emit = defineEmits([
 	'beforeEnter',

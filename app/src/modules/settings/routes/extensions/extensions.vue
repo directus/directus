@@ -1,41 +1,37 @@
 <script setup lang="ts">
-import api from '@/api';
-import { ApiOutput, EXTENSION_TYPES } from '@directus/extensions';
+import { useExtensionsStore } from '@/stores/extensions';
+import { ApiOutput } from '@directus/extensions';
 import { groupBy } from 'lodash';
-import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
+import { ExtensionType } from './types';
+
+type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;
 
 const { t } = useI18n();
 
-const error = ref();
-const loading = ref(false);
-const extensions = ref<ApiOutput[]>([]);
+const extensionsStore = useExtensionsStore();
+const { extensions, loading } = storeToRefs(extensionsStore);
 
-const bundled = computed(() => extensions.value.filter(({ bundle }) => !!bundle));
-const regular = computed(() => extensions.value.filter(({ bundle }) => !!bundle === false));
+const bundled = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle !== null));
 
-const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
+const regular = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle === null));
 
-const fetchExtensions = async () => {
-	loading.value = true;
+const extensionsByType = computed(() => {
+	const groups = groupBy(regular.value, 'schema.type');
 
-	try {
-		const response = await api.get<{ data: ApiOutput[] }>('/extensions');
-
-		// Only render extensions that are both installed _and_ configured
-		extensions.value = response.data.data.filter((extension) => extension?.schema?.type !== undefined);
-	} catch (err) {
-		error.value = err;
-	} finally {
-		loading.value = false;
+	if ('undefined' in groups) {
+		groups['missing'] = groups['undefined'];
+		delete groups['undefined'];
 	}
-};
 
-fetchExtensions();
+	return groups as ExtensionsMap;
+});
 </script>
 
 <template>
@@ -59,16 +55,15 @@ fetchExtensions();
 		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
-					<extension-group-divider class="group-divider" :type="type as (typeof EXTENSION_TYPES)[number]" />
+					<extension-group-divider class="group-divider" :type="type" />
 
 					<v-list>
 						<template v-for="extension in list" :key="extension.name">
 							<extension-item
-								:extension="extension"
+								:extension
 								:children="
-									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.name) : []
+									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.id) : []
 								"
-								@refresh="fetchExtensions"
 							/>
 						</template>
 					</v-list>
@@ -91,8 +86,9 @@ fetchExtensions();
 }
 
 .page-container {
-	padding-top: 0;
 	padding: var(--content-padding);
+	padding-top: 0;
+	max-width: 1200px;
 }
 
 .group-divider {

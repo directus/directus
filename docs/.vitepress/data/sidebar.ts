@@ -1,11 +1,14 @@
 import { formatTitle } from '@directus/format-title';
+import { readItems } from '@directus/sdk';
 import type { DefaultTheme } from 'vitepress';
 import typeDocSidebar from '../../packages/typedoc-sidebar.json';
+import { client } from '../lib/directus.js';
 import { sections as guideSections } from './guides.js';
 
 export default {
 	'/': sidebarDeveloperReference(),
 	'/user-guide/': sidebarUserGuide(),
+	'/plus/': await sidebarDirectusPlus(),
 	'/packages/': sidebarTypedocs(),
 } as DefaultTheme.Sidebar;
 
@@ -90,10 +93,6 @@ function sidebarDeveloperReference() {
 							text: 'Relationships',
 						},
 					],
-				},
-				{
-					link: '/app/webhooks',
-					text: 'Webhooks',
 				},
 				{
 					link: '/app/flows',
@@ -231,10 +230,6 @@ function sidebarDeveloperReference() {
 					link: '/reference/system/utilities',
 					text: 'Utilities',
 				},
-				{
-					link: '/reference/system/webhooks',
-					text: 'Webhooks',
-				},
 			],
 		},
 		{
@@ -279,114 +274,140 @@ function sidebarDeveloperReference() {
 			collapsed: true,
 			items: [
 				{
-					link: '/extensions/introduction',
-					text: 'Introduction',
-				},
-				{
-					link: '/extensions/installing-extensions',
-					text: 'Installing Extensions',
-				},
-				{
-					link: '/extensions/creating-extensions',
-					text: 'Creating Extensions',
+					text: 'Fundamentals',
+					collapsed: true,
+					items: [
+						{
+							link: '/extensions/introduction',
+							text: 'Introduction',
+						},
+						{
+							link: '/extensions/installing-extensions',
+							text: 'Installing Extensions',
+						},
+					],
 				},
 				{
 					text: 'Developing Extensions',
 					collapsed: true,
 					items: [
 						{
-							link: '/extensions/displays',
-							text: 'Displays',
+							link: '/extensions/creating-extensions',
+							text: 'Creating Extensions',
 						},
 						{
-							link: '/extensions/email-templates',
-							text: 'Email Templates',
+							text: 'Extension Types',
+							collapsed: true,
+							items: [
+								{
+									link: '/extensions/displays',
+									text: 'Displays',
+								},
+								{
+									link: '/extensions/endpoints',
+									text: 'Endpoints',
+								},
+								{
+									link: '/extensions/hooks',
+									text: 'Hooks',
+								},
+								{
+									link: '/extensions/interfaces',
+									text: 'Interfaces',
+								},
+								{
+									link: '/extensions/layouts',
+									text: 'Layouts',
+								},
+								{
+									link: '/extensions/modules',
+									text: 'Modules',
+								},
+								{
+									link: '/extensions/operations',
+									text: 'Operations',
+								},
+								{
+									link: '/extensions/panels',
+									text: 'Panels',
+								},
+								{
+									link: '/extensions/themes',
+									text: 'Themes',
+								},
+								{
+									link: '/extensions/bundles',
+									text: 'Bundles',
+								},
+							],
 						},
 						{
-							link: '/extensions/endpoints',
-							text: 'Endpoints',
+							text: 'Sandboxed Extensions',
+							collapsed: true,
+							items: [
+								{
+									link: '/extensions/sandbox/introduction',
+									text: 'Introduction',
+								},
+								{
+									link: '/extensions/sandbox/register',
+									text: 'Registering Extensions',
+								},
+								{
+									link: '/extensions/sandbox/sandbox-sdk',
+									text: 'Sandbox SDK',
+								},
+							],
 						},
 						{
-							link: '/extensions/hooks',
-							text: 'Hooks',
-						},
-						{
-							link: '/extensions/interfaces',
-							text: 'Interfaces',
-						},
-						{
-							link: '/extensions/layouts',
-							text: 'Layouts',
-						},
-						{
-							link: '/extensions/migrations',
-							text: 'Migrations',
-						},
-						{
-							link: '/extensions/modules',
-							text: 'Modules',
-						},
-						{
-							link: '/extensions/operations',
-							text: 'Operations',
-						},
-						{
-							link: '/extensions/panels',
-							text: 'Panels',
-						},
-						{
-							link: '/extensions/bundles',
-							text: 'Bundles',
+							text: 'Extension Services',
+							collapsed: true,
+							items: [
+								{
+									link: '/extensions/services/introduction',
+									text: 'Introduction',
+								},
+								{
+									link: '/extensions/services/accessing-items',
+									text: 'Accessing Items',
+								},
+								{
+									link: '/extensions/services/configuring-collections',
+									text: 'Configuring Collections, Fields, and Relations',
+								},
+								{
+									link: '/extensions/services/accessing-files',
+									text: 'Accessing Files',
+								},
+								{
+									link: '/extensions/services/working-with-users',
+									text: 'Working with Users',
+								},
+							],
 						},
 					],
 				},
 				{
-					text: 'Secure Extensions',
+					text: 'Resources',
 					collapsed: true,
 					items: [
 						{
-							link: '/extensions/sandbox/introduction',
-							text: 'Introduction',
+							link: '/extensions/using-ui-components',
+							text: 'Components',
 						},
 						{
-							link: '/extensions/sandbox/register',
-							text: 'Registering Extensions',
+							link: '/extensions/app-composables',
+							text: 'Composables',
 						},
 						{
-							link: '/extensions/sandbox/sandbox-sdk',
-							text: 'Sandbox SDK',
+							link: '/contributing/codebase-overview.html#packages-packages',
+							text: 'Packages',
 						},
 					],
 				},
 				{
-					text: 'Extension Services',
-					collapsed: true,
-					items: [
-						{
-							link: '/extensions/services/introduction',
-							text: 'Introduction',
-						},
-						{
-							link: '/extensions/services/accessing-items',
-							text: 'Accessing Items',
-						},
-						{
-							link: '/extensions/services/configuring-collections',
-							text: 'Configuring Collections, Fields, and Relations',
-						},
-						{
-							link: '/extensions/services/accessing-files',
-							text: 'Accessing Files',
-						},
-						{
-							link: '/extensions/services/working-with-users',
-							text: 'Working with Users',
-						},
-					],
-				},
-				{
-					text: 'Internal Packages',
-					link: '/contributing/codebase-overview.html#packages-packages',
+					text: 'Marketplace <span class="badge">Beta</span>',
+					link: '/extensions/marketplace/publishing',
 				},
 			],
 		},
@@ -428,6 +449,14 @@ function sidebarDeveloperReference() {
 				{
 					link: '/self-hosted/cli',
 					text: 'CLI',
+				},
+				{
+					link: '/self-hosted/migrations',
+					text: 'Migrations',
+				},
+				{
+					link: '/self-hosted/email-templates',
+					text: 'Email Templates',
 				},
 				{
 					text: 'Single Sign-On (SSO)',
@@ -587,6 +616,16 @@ function sidebarUserGuide() {
 			],
 		},
 		{
+			text: 'Marketplace <span class="badge">Beta</span>',
+			collapsed: true,
+			items: [
+				{
+					text: 'Introduction',
+					link: '/user-guide/marketplace/overview',
+				},
+			],
+		},
+		{
 			text: 'Directus Cloud',
 			collapsed: true,
 			items: [
@@ -678,4 +717,30 @@ function typeDocSidebarFormat(item: DefaultTheme.SidebarItem) {
 	}
 
 	return item;
+}
+
+async function sidebarDirectusPlus() {
+	const sections = await client.request(
+		readItems('dplus_docs_sections', {
+			fields: ['*', { articles: ['title', 'slug'] }],
+			filter: {
+				articles: {
+					status: { _eq: 'published' },
+				},
+			},
+		}),
+	);
+
+	const sidebar = sections.map((section) => {
+		return {
+			text: section.title,
+			collapsed: section.slug === 'overview' ? false : true,
+			items: section.articles.map((article) => ({
+				text: article.title,
+				link: `/plus/${article.slug}`,
+			})),
+		};
+	});
+
+	return sidebar;
 }

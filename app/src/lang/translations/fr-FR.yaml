@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: À propos
 identifier: Identifiant
 avatar: Avatar
 application: Application
@@ -27,15 +28,18 @@ method: Méthode
 published: Publié
 draft: Brouillon
 archived: Archivé
+marketplace: Marketplace
 extensions: Extensions
 modules: Modules
 module_bar: Barre de modules
 logs: Journaux
+unknown: Inconnu
 reset_width: Réinitialiser la largeur
 tile_size: Taille des tuiles
 edit_field: Modifier le champ
 conditions: Conditions
 location: Emplacement
+collection_names_are_case_sensitive: Le nom des collections est sensible à la casse
 condition_rules: Règles de conditions
 input: Texte simple
 maps: Cartes
@@ -47,6 +51,8 @@ duplicate_field: Dupliquer le champ
 half_width: Demi-colonne
 full_width: Toute la largeur
 group: Groupe
+popular: Popularité
+recent: Récent
 export_items: Exporter
 and: Et
 or: Ou
@@ -56,9 +62,44 @@ modifier: Modificateur
 extension_interface: Interface
 extension_display: Affichage
 extension_layout: Mise en page
+extension_module: Module
 extension_panel: Panneau
+extension_theme: Thème
 extension_hook: Crochet
+extension_endpoint: Point d'accès
+extension_operation: Opération
+extension_bundle: Pack
+extension_interfaces: Interfaces
+extension_displays: Affichages
+extension_layouts: Mises en page
 extension_modules: Modules
+extension_panels: Panneaux
+extension_themes: Thèmes
+extension_hooks: Hooks
+extension_endpoints: Points d'accès
+extension_operations: Opérations
+extension_bundles: Lots
+extension_missing: Manquant
+extension_reload_required: Rechargement de la page requis
+extension_reload_required_copy: Un rechargement de la page est nécessaire pour voir les changements après l'activation ou la désactivation des extensions d'application.
+extension_reload_now: Recharger maintenant
+published_relative: Publié {relativeTime}
+compatible_with_your_project: Compatible avec votre projet
+compatible_with_your_project_copy: L'auteur a indiqué la compatibilité de cette extension avec la version {hostVersion}, qui correspond à la version de votre projet ({currentVersion})
+last_updated_relative: Dernière mise à jour {relativeTime}
+n_files: '{n} Fichiers'
+verified: Vérifié
+homepage: Page d’accueil
+repository: Dépôt
+reload_required: Rechargement requis
+report_an_issue: Signaler un problème
+website: Site internet
+github: GitHub
+beta: Bêta
+n_downloads: '{n} Téléchargements'
+downloads: Téléchargements
+compatibility_not_guaranteed: Compatibilité non garantie
+compatibility_not_guaranteed_copy: L'auteur a indiqué la compatibilité de cette extension avec la version {hostVersion}, qui ne correspond pas à la version de votre projet ({currentVersion})
 enable: Activer
 disable: Désactiver
 custom: Personnalisé
@@ -89,6 +130,10 @@ create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
 create_webhook: Créer un webhook
+create_custom_translation: Créer une traduction personnalisée
+edit_custom_translation: Modifier la traduction personnalisée
+no_custom_translations: Aucune traduction personnalisée
+no_custom_translations_copy: Il n'y a pas encore de traductions personnalisées.
 invite_users: Inviter des utilisateurs
 invite: Inviter
 email_already_invited: '"{email}" a déjà été invité'
@@ -104,9 +149,31 @@ rename_folder: Renommer le fichier
 delete_folder: Supprimer le fichier
 prefix: Préfixe
 suffix: Suffixe
+keep: Conserver
 version: Version
+version_key: Identifiant de la version
+version_name: Nom De la Version
+main_version: Principal
+switch_version: Changer de version
+switch_version_copy: Êtes-vous sûr de vouloir basculer vers la version "{version}" ? Les modifications non enregistrées seront perdues.
+create_version: Créer une version
+rename_version: Renommer la version
+compare_version: Comparer la version
+save_version: Enregistrer la version
+promote_version: Promouvoir la version
+promote_version_disabled: Aucun changement
+promote_version_drawer_title: Mettre {version} en Main
 promote_version_changes: Changements
 promote_version_preview: Prévisualiser
+outdated_notice: >-
+  L'élément principal a été mis à jour depuis la création de cette version. Veuillez vérifier toutes les valeurs de champ ci-dessous et confirmer quelle version doit être utilisée lors de la sélection de cette version dans l'élément principal.
+promote_notice: >-
+  Veuillez vérifier toutes les valeurs de champ ci-dessous, et confirmer quelle version doit être utilisée lors de la promotion de cette version dans l'élément principal.
+delete_version: Supprimer la version
+delete_version_copy: >-
+  Êtes-vous sûr de vouloir supprimer la version "{version}"? Cette action est irréversible.
+delete_on_promote_copy: >-
+  Voulez-vous supprimer ou conserver la version "{version}" après la promotion ?
 reset_bookmark: Réinitialiser le favori
 update_bookmark: Modifier un favori
 delete_bookmark: Retirer des favoris
@@ -121,6 +188,8 @@ logoutReason:
 public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
 admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
+no_description: Aucune description...
+reached_maximum_number_of_extensions: Vous avez atteint le nombre maximum d'extensions pour ce projet ({n}). Contactez votre administrateur système pour plus d'informations.
 not_allowed: Non autorisé
 archive: Archiver
 archive_confirm: Êtes-vous sûr de vouloir archiver cet élément ?
@@ -152,7 +221,16 @@ validationError:
   nnull: La valeur ne peut pas être nulle
   required: Une valeur est obligatoire
   unique: La valeur doit être unique
+  email: La valeur doit être une adresse e-mail valide
   regex: La valeur n'a pas le bon format
+  starts_with: La valeur doit commencer par {substring}
+  istarts_with: La valeur doit commencer par {substring}
+  nstarts_with: La valeur ne peut pas commencer par {substring}
+  nistarts_with: La valeur ne peut pas commencer par {substring}
+  ends_with: La valeur doit se terminer par {substring}
+  iends_with: La valeur doit se terminer par {substring}
+  nends_with: La valeur ne peut pas se terminer par {substring}
+  niends_with: La valeur ne peut pas se terminer par {substring}
 all_access: Accès total
 no_access: Aucun accès
 use_custom: Personnalisé
@@ -235,6 +313,7 @@ bigInteger: Grand entier
 boolean: Booléen
 date: Date
 date_range: Plage de dates
+translation_key_placeholder: Saisissez un identifiant...
 datetime: Date et heure
 dateTime: Date et heure
 precision: Précision
@@ -250,13 +329,20 @@ time: Heure
 timestamp: Horodatage
 uuid: UUID (IDentifiant Unique Universel)
 hash: Hash
-geometry: Géométrie (tous)
-geometry.Point: Point
-geometry.LineString: Chaîne ligne simple
-geometry.Polygon: Polygone
-geometry.MultiPoint: Multi points
-geometry.MultiLineString: Chaîne multi-lignes
-geometry.MultiPolygon: Polygone multiple
+geometry:
+  All: Géométrie (Tous)
+  Point: Point
+  LineString: Chaîne ligne simple
+  Polygon: Polygone
+  MultiPoint: Multi points
+  MultiLineString: Chaîne multi-lignes
+  MultiPolygon: Multiples Polygones
+theme_auto: Automatique (basé sur le système)
+theme_light: Mode Clair
+theme_dark: Mode Sombre
+theme_directus_default: Directus par défaut
+theme_directus_minimal: Directus Minimale
+theme_directus_colormatch: Correspondance de couleur de Directus
 not_available_for_type: Non disponible pour ce type
 create_translations: Créer des traductions
 auto_refresh: Actualisation automatique
@@ -268,12 +354,14 @@ auto_generate: Générer automatiquement
 this_will_auto_setup_fields_relations: Tous les champs et relations obligatoires seront configurés automatiquement.
 click_here: Cliquer ici
 to_manually_setup_translations: pour configurer manuellement les traductions.
+manage: Gérer
 click_to_manage_translated_fields: >-
   Il n'y a pas encore de champ traduit. Cliquez-ici pour en créer un. | Il y a un champ traduit. Cliquez ici pour le gérer. | Il y a {count} champs traduits. Cliquez ici pour les gérer.
 fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
 search_collection: Rechercher une collection...
+search_role: Recherche de Rôle...
 search_field: Champ de recherche...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
@@ -352,12 +440,14 @@ revision_delta_created: Créé
 revision_delta_created_externally: Créé en externe
 revision_delta_updated: '1 champ mis à jour | {count} champs mis à jour'
 revision_delta_deleted: Supprimé
+revision_delta_version_saved: 'Sauvegarde de la version (1 champ mis à jour) | Sauvegarde de la version ({count} champs mis à jour)'
 revision_delta_reverted: Restauré
 revision_delta_update_message: Ce champ a été mis à jour, mais sa valeur a été cachée pour des raisons de sécurité.
 revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 presentation_text_values_cannot_be_reimported: 'Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées.'
 download_page_as_csv: 'Télécharger la page au format CSV'
+download_page_as_csv_unsupported: Cette mise en page ne prend pas en charge le téléchargement de la page actuelle.
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
 revision_preview: Aperçu de la révision
@@ -436,7 +526,11 @@ months:
   november: Novembre
   december: Décembre
 drag_mode: Mode Glisser/Déposer
+move_tool: Déplacer
+crop_tool: Recadrer
+focal_point_tool: Point focal
 cancel_crop: Annuler le recadrage
+cancel_selection: Annuler la sélection
 original: Initial
 url: URL
 import_label: Importer
@@ -448,6 +542,7 @@ modified: Modifié
 owner: Propriétaire
 edited_by: Modifié par
 folder: Dossier
+folders: Dossiers
 zoom: Zoom
 download: Télécharger
 open: Ouvrir
@@ -461,12 +556,18 @@ import_from_url: Importer un fichier à partir d’une URL
 replace_from_device: Remplacer le fichier par un fichier de l'appareil
 replace_from_library: Remplacer le fichier par un fichier de la bibliothèque
 replace_from_url: Remplacer le fichier à partir d'une URL
+no_image_selected: Aucune image sélectionnée
 no_file_selected: Aucun fichier sélectionné
 download_file: Télécharger le fichier
 open_file_in_tab: Ouvrir le fichier dans un nouvel onglet
 start_export: Démarrer l'export
 not_available_for_local_downloads: Indisponible pour les téléchargements en local
 exporting_all_items_in_collection: Export de la totalité des {total} éléments dans la collection {collection}.
+exporting_limited_items_in_collection: '{count} sur {total} éléments dans {collection} seront exportés.'
+exporting_no_items_to_export: Aucun élément à exporter. Ajustez la configuration d'export et/ou ajoutez des éléments à la collection.
+exporting_download_hint: Une fois le fichier {format} créé, il sera sauvegardé dans la bibliothèque de fichiers.
+exporting_library_hint: Une fois le fichier {format} créé, il sera sauvegardé dans la bibliothèque de fichiers.
+exporting_library_hint_forced: Cet export sera traité en lots et, une fois terminé, le fichier {format} sera sauvegardé dans la bibliothèque de fichiers.
 collection_key: Clé de la collection
 name: Nom
 primary_key_field: Champ de clé primaire
@@ -492,8 +593,12 @@ enable_select_button: Activer le bouton de sélection
 allow_duplicates: Autoriser les doublons
 comments: Commentaires
 no_comments: Pas encore de commentaires
+expand: Agrandir
+collapse: Replier
 select_item: Sélectionner un élément
 no_items: Aucun élément
+search_items: Rechercher des éléments...
+search_extensions: Rechercher des extensions...
 disabled: Désactivé
 information: Information
 report_bug: Signaler un bug
@@ -573,7 +678,12 @@ bookmark_doesnt_exist_copy: Le favori que vous essayez d'ouvrir est introuvable.
 bookmark_doesnt_exist_cta: Retourner à la collection
 select_an_item: Sélectionnez un élément...
 edit: Modifier
+edit_item: Modifier l'élément
 enabled: Activé
+partially_enabled: Partiellement activé
+enable_all: Tout activer
+disable_all: Tout désactiver
+enabled_dev_tooltip: Les extensions d'applications sont toujours activées en mode développeur
 disable_tfa: Désactiver l'A2F
 admin_disable_tfa_text: Voulez-vous vraiment désactiver 2FA pour cet utilisateur ?
 tfa_setup: Configurer 2FA
@@ -585,38 +695,41 @@ auto_fill: Remplissage automatique
 corresponding_field: Champ correspondant
 errors:
   COLLECTION_NOT_FOUND: "La collection n'existe pas"
+  CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
+  CONTENT_TOO_LARGE: L'élément/fichier soumis est trop volumineux
   FIELD_NOT_FOUND: Champ introuvable
   FORBIDDEN: Non autorisé
+  GRAPHQL_VALIDATION: Validation GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
+  INTERNAL_SERVER_ERROR: Erreur inconnue
+  INVALID_CONFIG: Configuration non valide
   INVALID_CREDENTIALS: Mauvais nom d'utilisateur ou mot de passe
+  INVALID_FOREIGN_KEY: Clé étrangère invalide
+  INVALID_IP: Adresse IP non autorisée
   INVALID_OTP: Mauvais mot de passe unique
   INVALID_PAYLOAD: Données invalides
   INVALID_PROVIDER: L'utilisateur appartient à un autre fournisseur d'authentification
   INVALID_QUERY: Requête invalide
-  INVALID_CONFIG: Configuration non valide
   INVALID_TOKEN: Jeton non valide
-  INVALID_IP: Adresse IP non autorisée
   INVALID_USER: Échec de l'authentification utilisateur
   ITEM_LIMIT_REACHED: Nombre d'éléments max atteint
   ITEM_NOT_FOUND: Élément introuvable
-  ROUTE_NOT_FOUND: Introuvable
-  RECORD_NOT_UNIQUE: Valeur dupliquée détecté
-  USER_SUSPENDED: Utilisateur suspendu
-  CONTAINS_NULL_VALUES: Le champ contient des valeurs nulles
-  INTERNAL_SERVER_ERROR: Erreur inconnue
-  NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
-  ILLEGAL_ASSET_TRANSFORMATION: Source de l'image trop grande pour prévisualiser
-  VALUE_TOO_LONG: La valeur est trop longue
-  VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
-  INVALID_FOREIGN_KEY: Clé étrangère invalide
-  UNKNOWN: Erreur inconnue
-  GRAPHQL_VALIDATION_EXCEPTION: Exception de validation de GraphQL
-  SERVICE_UNAVAILABLE: Service indisponible
-  UNSUPPORTED_MEDIA_TYPE: Type de format non pris en charge
-  UNEXPECTED_RESPONSE: Réponse inattendue
-  TOKEN_EXPIRED: Jeton expiré
-  RANGE_NOT_SATISFIABLE: Plage non valide
+  LIMIT_EXCEEDED: 'Limite dépassée'
   METHOD_NOT_ALLOWED: Méthode non autorisée
+  NOT_NULL_VIOLATION: La valeur ne peut pas être nulle
+  RANGE_NOT_SATISFIABLE: Plage non valide
+  RECORD_NOT_UNIQUE: Valeur dupliquée détecté
   REQUESTS_EXCEEDED: Limite de requêtes atteinte
+  ROUTE_NOT_FOUND: Introuvable
+  SERVICE_UNAVAILABLE: Service indisponible
+  TOKEN_EXPIRED: Jeton expiré
+  UNEXPECTED_RESPONSE: Réponse inattendue
+  UNKNOWN: Erreur inconnue
+  UNPROCESSABLE_CONTENT: Contenu non traitable
+  UNSUPPORTED_MEDIA_TYPE: Type de format non pris en charge
+  USER_SUSPENDED: Utilisateur suspendu
+  VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
+  VALUE_TOO_LONG: La valeur est trop longue
 security: Sécurité
 value_hashed: Valeur cryptée sécurisée
 bookmark_name: Nom du favori...
@@ -630,7 +743,6 @@ cannot_edit_global_bookmarks: Impossible de modifier les signets globaux
 bookmarks: Favoris
 presets: Pré-réglages
 unexpected_error: Erreur inconnue
-unexpected_error_copy: Une erreur inconnue s'est produite. Veuillez réessayer plus tard.
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
@@ -706,8 +818,12 @@ operators:
   icontains: Contient (insensible)
   starts_with: Commence par
   nstarts_with: Ne commence pas par
+  istarts_with: Commence par (insensible à la casse)
+  nistarts_with: Ne commence pas par (insensible à la casse)
   ends_with: Termine par
   nends_with: Ne finit pas par
+  iends_with: Se termine par (insensible à la casse)
+  niends_with: Ne se termine pas par (insensible à la casse)
   between: Est entre
   nbetween: N'est pas entre
   empty: Est vide
@@ -721,6 +837,7 @@ operators:
   regex: Correspondances RegExp
 custom_validation_message: Message de validation personnalisé
 loading: Chargement…
+extension_readme_missing: Cette extension n'a pas de fichier README.
 drop_to_upload: Déposer pour téléverser
 item: Élément
 items: Éléments
@@ -733,10 +850,12 @@ upload_pending: Envoi en attente
 drag_file_here: Glisser-déposer un fichier ici
 click_to_browse: Cliquer pour rechercher
 interface_options: Options d'interface
+display_options: Options d’affichage
 layout_options: Options d'affichage
 rows: Lignes
 columns: Colonnes
 collection_setup: Configuration de la collection
+optional_system_fields: Champs optionnels
 value_unique: La valeur doit être unique
 all_activity: Toutes les activités
 create_item: Créer un élément
@@ -934,6 +1053,8 @@ wysiwyg_options:
   source_code: Modifier le code source
   fullscreen: Plein écran
   directionality: Sens de lecture
+  lazy_loading: Image à chargement différée
+  lazy_loading_label: Autoriser le chargement différé
 dropdown: Liste déroulante
 choices: Liste de choix
 choices_option_configured_incorrectly: Choix configurés incorrectement
@@ -941,6 +1062,8 @@ deselect: Dé-sélectionner
 deselect_all: Tout dé-sélectionner
 theme: Thème
 select_a_theme: Sélectionner un thème
+default_sync_with_project: Par défaut (Synchronisation avec le projet)
+appearance_auto: Automatique (Synchronisation avec le système)
 appearance_light: Clair
 appearance_dark: Sombre
 other: Autre...
@@ -954,12 +1077,15 @@ editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
+settings_permissions: Rôles et Autorisations
 settings_project: Réglages
+settings_appearance: Personnalisation du Thème
 settings_webhooks: Webhooks
 settings_flows: Flux
 settings_presets: Favoris
 settings_translations: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
+configure_field_key_to_continue: Configurer la clé de champ pour continuer
 scope: Utilisateurs ou rôles
 actions: Actions
 select: Sélectionner...
@@ -972,6 +1098,7 @@ editing_preset: Modifier le préréglage
 layout_preview: Aperçu de la mise en page
 layout_setup: Configuration de la mise en page
 data: Données
+theme-overrides: Éditeur de thème
 unsaved_changes: Modifications non enregistrées
 unsaved_changes_copy: Êtes-vous sûr de vouloir quitter cette page?
 discard_changes: Annuler les modifications
@@ -993,6 +1120,9 @@ page_help_files_collection: >-
   **Bibliothèque de fichiers** — Liste tous les fichiers transférés vers ce projet. Personnalisez la mise en page, les filtres et le tri pour adapter votre vue, et même enregistrer en favoris différentes configurations pour un accès rapide.
 page_help_files_item: >-
   **Détail du fichier** — Un formulaire de gestion des métadonnées de fichiers, de modification du fichier original et de mise à jour des paramètres d'accès.
+page_help_settings_project: "**Paramètres** — Les options de configuration globale de votre projet."
+page_help_settings_appearance: "**Apparence** — Les options d'apparence et de thème de votre projet."
+page_help_settings_extensions: '**Extensions** — Les extensions installées dans votre projet.'
 page_help_settings_datamodel_collections: >-
   **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
@@ -1007,11 +1137,16 @@ page_help_settings_webhooks_collection: '**Parcourez les Webhooks** — Liste to
 page_help_settings_webhooks_item: '**Détail du Webhook** — Un formulaire pour créer et gérer les webhooks du projet.'
 page_help_settings_flows_collection: '**Parcourir les Flux** — Liste tous les Flux du projet.'
 page_help_settings_flows_item: '**Détail du Flux** - Espace de travail permettant de gérer une ou plusieurs opérations.'
+page_help_settings_translations_collection: '**Parcourir les traductions personnalisées** — Liste toutes les traductions personnalisées du projet.'
+page_help_settings_translations_item: '**Détail des traductions personnalisées** — Un formulaire pour visualiser et gérer cet élément.'
 page_help_users_collection: '**Répertoire utilisateur** — Liste tous les utilisateurs système de ce projet.'
 page_help_users_item: >-
   **Détail de l'utilisateur** — Gérez les informations de votre compte ou consultez les détails des autres utilisateurs.
 page_help_insights_overview: '**Aperçus** — Liste des tableaux de bord auxquels vous avez accès.'
 page_help_insights_dashboard: '**Tableau de bord** — Espace de travail pour gérer un ou plusieurs panneaux'
+page_help_marketplace_account: '**Compte** — Éditeur ou mainteneur d''une extension publiée.'
+page_help_marketplace_registry: '**Enregistrement** — Extensions disponibles sur le Marketplace Directus.'
+page_help_marketplace_extension: '**Extension** — Extension sur le Marketplace Directus.'
 activity_feed: Flux d'activité
 add_new: Nouveau
 create_new: Nouveau
@@ -1022,6 +1157,17 @@ batch_delete_confirm: >-
   Aucun élément n’a été sélectionné | Êtes-vous sûr de bien vouloir supprimer cet élément ? Vous ne pourrez pas revenir en arrière ! | Êtes-vous sûr de bien vouloir supprimer ces {count} éléments ?  Vous ne pourrez pas revenir en arrière !
 cancel: Annuler
 no_upscale: Ne pas agrandir les images
+no_extensions: Aucune extension
+no_extensions_copy: Aucune extension n'a encore été installée.
+install_extension: Installer l'extension
+uninstall_locked: Impossible de désinstaller les extensions qui n'ont pas été installées via le Marketplace
+uninstall: Désinstaller
+installed: Installé
+reinstall: Réinstaller
+open_in_marketplace: Ouvrir dans la Marketplace
+source_registry: Marketplace
+source_local: Local
+source_module: Module Node
 collection: Collection
 collections: Collections
 content: Contenu
@@ -1050,6 +1196,9 @@ directus_collection:
   directus_shares: Trace les éléments externes partagés
   directus_users: Utilisateurs du système pour la plateforme
   directus_webhooks: Configuration des requêtes HTTP basées sur des événements
+  directus_translations: Traductions personnalisées
+  directus_versions: Versions de contenu pour les éléments
+  directus_extensions: Configuration des extensions
 fields:
   directus_activity:
     item: Clé principale de l'élément
@@ -1076,6 +1225,7 @@ fields:
     unarchive_value: Valeur lors du désarchivage
     sort_field: Champ de tri
     accountability: Enregistrement de l'activité et de l'historique
+    versioning: Versionnement
     archive_field: Champ d'archivage
     item_duplication_fields: Champs de duplication d'éléments
   directus_files:
@@ -1129,12 +1279,18 @@ fields:
     last_page: Dernière page
     last_access: Dernier accès
     email_notifications: Notifications par e-mail
+    appearance: Personnalisation du Thème
+    theme_light: Thème jour
+    theme_dark: Thème Sombre
+    theme_light_overrides: Personnalisation du thème clair
+    theme_dark_overrides: Personnalisation du thème sombre
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Compte rendu
     mapping: Cartographie
     basemaps: Cartes de base
     basemaps_raster: Raster
@@ -1152,9 +1308,14 @@ fields:
     project_color: Couleur du projet
     project_logo: Logo du projet
     default_language: Langue par défaut
+    branding: Image de marque (Logo)
     public_foreground: Image au premier plan de l'accueil
     public_background: Image en arrière-plan de l'accueil
     public_note: Message sur la page d'accueil
+    theming: Valeurs par défaut du Thème
+    default_appearance: Apparence par défaut
+    default_theme_light: Thème jour par défaut
+    default_theme_dark: Thème sombre par défaut
     auth_password_policy: Politique des mots de passe
     auth_login_attempts: Tentatives de connexion
     files_and_thumbnails: Fichiers et stockage
@@ -1169,6 +1330,8 @@ fields:
     transformations_presets: Limiter les transformations aux présélections ci-dessous
     image_editor: Éditeur d'Image
     custom_aspect_ratios: Personnaliser le rapport d'aspect
+    theme_light_overrides: Personnalisation du thème clair
+    theme_dark_overrides: Personnalisation du thème sombre
   directus_shares:
     name: Nom
     role: Rôle
@@ -1211,6 +1374,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Mon projet...
     project_color_note: Fond de connexion et de logo
+    project_logo_note: SVG/PNG de 40×40 Blanc
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Un message public court qui prend en charge le formatage des démarques...
     security_divider_title: Sécurité
     auth_password_policy:
@@ -1265,17 +1430,20 @@ field_options:
     accountability_divider: Traçabilité
     duplication_divider: Duplication
     preview_divider: Prévisualiser
+    content_versioning_divider: Versionnement du contenu
+    enable_versioning: Activer la gestion des versions
   directus_files:
     title: Un titre unique...
     description: Une description optionnelle...
     location: Un emplacement optionnel...
     storage_divider: Nommage des fichiers
+    focal_point_divider: Point focal
     filename_disk: Nom du fichier sur le disque...
     filename_download: Nom du fichier téléchargé...
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
-    ip_access: Ajoutez des adresses IP autorisées, laissez vide pour tout autoriser...
+    ip_access: Ajouter les adresses IP autorisées, les plages IP et les blocs CIDR. Laisser vide pour tout autoriser...
     fields:
       icon_name: Icône
       name_name: Nom
@@ -1323,7 +1491,13 @@ block: Bloc
 inline: En ligne
 comment: Commentaire
 live_preview:
+  enable: Activer l'aperçu
+  disable: Désactiver l'aperçu
+  change_size: Modifier les dimensions d'affichage
+  refresh: Actualiser l'aperçu
   new_window: Ouvrir dans une nouvelle fenêtre
+  close_window: Ouvrir en mode écran partagé
+  toggle_3d: Alterner 3D
 shares: Partages
 unlimited_usage: Utilisation illimitée
 uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
@@ -1335,6 +1509,7 @@ share: Partage
 share_item: Partager l'élément
 shared_with_you: Un élément a été partagé avec vous
 shared_enter_passcode: Saisir le mot de passe pour poursuivre...
+shared_leave_blank_for_passwordless_access: Laisser vide pour un accès sans mot de passe
 shared_leave_blank_for_unlimited: Laisser vide pour illimité
 shared_times_remaining: Ce lien ne peut être utilisé que {n} fois
 shared_last_remaining: Ce lien ne peut être utilisé qu'une seule fois
@@ -1418,6 +1593,7 @@ search: Recherche
 select_existing: Sélectionner un élément existant
 select_field_type: Sélectionnez un type de champ
 select_interface: Sélectionner une interface
+select_display: Sélectionnez un affichage
 settings: Réglages
 sign_in: Se connecter
 sign_out: Déconnexion
@@ -1449,6 +1625,9 @@ undo_removed_item: Annuler Supprimer l'élément
 remove_item: Retirer l'élément
 delete_item: Supprimer l'élément
 interfaces:
+  list-m2a:
+    prefix_note: Utilise le nom de la collection de l'élément lié par défaut .
+    sorting_disabled: Le tri est désactivé car il y a plus d'éléments que sur une seule page.
   filter:
     name: Filtre
     description: Configurer un objet filtre.
@@ -1586,6 +1765,11 @@ interfaces:
     description: Une popup pour sélectionner les options d'une interface
   system-display:
     display: Affichage
+    description: Sélectionnez un affichage existant
+    placeholder: Sélectionnez un affichage...
+  system-display-options:
+    display-options: Options d’affichage
+    description: Une popup pour sélectionner les options d'un affichage
   list-m2m:
     many-to-many: Plusieurs à plusieurs
     description: Sélectionner plusieurs éléments de jonction liés
@@ -1632,11 +1816,13 @@ interfaces:
     notice: Remarque
     description: Afficher une courte remarque
     text: Entrez le contenu de la remarque ici...
+    no_text: Aucun texte configuré...
   list-o2m:
     one-to-many: Un à plusieurs
     description: Sélectionner plusieurs éléments liés
     no_collection: La collection est introuvable
   system-folder:
+    folder: Répertoire racine
     description: Sélectionner un dossier
     field_hint: Dossier par défaut pour les fichiers téléchargés sans dossier spécifié. N'affecte pas les fichiers existants.
     root_name: Bibliothèque de fichiers racine
@@ -1694,6 +1880,7 @@ interfaces:
     input-translated-string: Chaînes traduites
     description: Sélectionner ou ajouter une traduction
     search_placeholder: Rechercher...
+    new_custom_translation: Nouvelle traduction personnalisée
   boolean:
     toggle: Case à cocher
     description: Basculer entre l'activation et la désactivation
@@ -1726,11 +1913,15 @@ interfaces:
     description: Un éditeur de texte avancé pour écrire du contenu HTML
     toolbar: Barre d’outils
     custom_formats: Formats personnalisés
+    custom_formats_note: Liste des formats de contenu TinyMCE. Voir la documentation TinyMCE à propos du [Formatage de contenu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) pour plus d'informations.
     options_override: Remplacement des options
+    options_override_note: Les clés de mise en forme TinyMCE et leurs valeurs. Voir la documentation de TinyMCE sur le [Formatage des utilisateurs](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) pour plus d'informations.
     folder_note: Dossier pour les fichiers téléchargés. Cela n'affecte pas les fichiers existants.
     imageToken: Jeton d'accès statique
     imageToken_label: Le jeton d’accès statique est ajouté à l’URL des ressources
   input-block-editor:
+    input-block-editor: Éditeur de blocs
+    description: Éditeur de style avancé, produit des données propres en JSON à l'aide de Editor.js
     tools: Barre d’outils
     tools_options:
       header: En-tête
@@ -1739,8 +1930,16 @@ interfaces:
       paragraph: Paragraphe
       code: Code
       image: Image
+      attaches: Pièces jointes
       table: Tableau
+      quote: Citation
       underline: Souligner
+      inlinecode: Code en ligne
+      delimiter: Séparateur
+      checklist: Check-list
+      toggle: Activer/désactiver le bloc
+      alignment: Alignement
+      raw: HTML Brut
   input-autocomplete-api:
     input-autocomplete-api: Autocomplétion (API)
     description: Un type de recherche pour les valeurs d'API externes.
@@ -1848,11 +2047,16 @@ displays:
     icon: Icône
     border: Bordure
     border_label: Afficher une bordure
+    mask: Masqué
+    mask_label: Cacher la valeur réelle
     text: Texte
     text_placeholder: Valeur Optionnelle Surchargée...
   formatted-json-value:
     formatted-json-value: Valeur JSON formatée
     description: Afficher une version formatée de l'objet
+  hash:
+    hash: Hash
+    description: Afficher une version formatée de la valeur
   icon:
     icon: Icône
     description: Afficher une icône
@@ -1987,6 +2191,9 @@ panels:
     name: Indicateurs
     description: Afficher une seule valeur basée sur une requête
     field: Champ
+  metric_list:
+    name: Liste métrique
+    description: Lister et visualiser les métriques d'agrégats à partir d'une collection
   time_series:
     name: Échelle de temps
     description: Rendre un graphique de ligne basé sur les valeurs au fil du temps
@@ -2100,9 +2307,19 @@ operations:
     payload: Données utiles
     query: Requête
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Signer et vérifier les tokens Web JSON
+    operation: Opération
+    secret: Mot de passe
+    secret_placeholder: Entrez un mot de passe...
     payload: Données utiles
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Paramètres
+    options_placeholder: 'Reportez-vous à https://www.npmjs.com/package/jsonwebtoken#usage pour les options disponibles'
+    sign: JSON Web Token
+    verify: Vérifier le jeton
+    decode: Décoder le jeton
   log:
     name: Log dans la console
     description: Afficher quelque chose sur la console
@@ -2122,6 +2339,7 @@ operations:
     recipient: Utilisateur
     recipient_placeholder: Saisir un UUID...
     recipient_note: Ajouter un UUID utilisateur et appuyez sur entrée...
+    item_note: Identifiant de l'élément ou URL relative
     message: Message
     subject: Sujet
   request:
@@ -2155,16 +2373,44 @@ operations:
     batch: Par lots
     batch_size: Taille de chaque lot
     cache: Cache
+unit: Unité
 standard: Standard
+scientific: Scientifique
+engineering: Ingénierie
 compact: Compact
+currency: Devise
+notation: Notation
 style: Style
 fonts:
   thin: Fin
+  extra_light: Très léger
+  light: Léger
   normal: Normal
   medium: Moyen
+  semi_bold: Semi-Gras
   bold: Gras
+  extra_bold: Très gras
   black: Black
   italic: Italique
+  oblique: Oblique
   small: Petit
+  large: Grande
   auto: Auto
+text_wrap: Habillage du texte
+center: Centré
 justify: Justifier
+text_align: Alignement du texte
+font_weight: Graisse de Police (Épaisseur)
+font_style: Style de police
+font_size: Taille de la police
+minimum_fraction_digits: Nombre minimum de décimales
+maximum_fraction_digits: Nombre maximum de décimales
+show_percentage: Afficher le pourcentage
+aggregation: Agrégation
+series_grouping: Groupement de séries
+date_precision: Précision de la date
+export_dashboard: Exporter le tableau de bord
+duplicate_dashboard: Dupliquer le tableau de bord
+search_dashboard: Rechercher le tableau de bord...
+search_flow: Rechercher le flux...
+percent: Pourcent

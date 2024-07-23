@@ -3,7 +3,7 @@ description: A guide on how to build custom Layouts in Directus.
 readTime: 4 min read
 ---
 
-# Custom Layouts <small></small>
+# Custom Layouts
 
 > Custom Layouts allow for building new ways to view or interact with Items via the Collection Detail pages. They are
 > developed using Vue.js. [Learn more about Layouts](/user-guide/overview/glossary#layouts).
@@ -160,5 +160,5 @@ Learn how to build layouts with our official guides:
 <GuidesListExtensions type="Layouts" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

@@ -75,7 +75,7 @@ const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	},
 	{ divider: true },
 	{
-		text: '$t:geometry',
+		text: '$t:geometry.All',
 		value: 'geometry',
 	},
 	{
@@ -439,7 +439,7 @@ function useOnUpdate() {
 
 			<div v-if="!isAlias" class="field half-left">
 				<div class="label type-label">{{ t('nullable') }}</div>
-				<v-checkbox v-model="nullable" :disabled="isGenerated" :label="t('allow_null_value')" block />
+				<v-checkbox v-model="nullable" :disabled="isGenerated || isPrimaryKey" :label="t('allow_null_value')" block />
 			</div>
 
 			<div v-if="!isAlias" class="field half-right">

@@ -26,7 +26,7 @@ export type FieldTreeContext = {
 
 export function useFieldTree(
 	collection: Ref<string | null>,
-	inject?: Ref<{ fields: Field[]; relations: Relation[] } | null>,
+	inject?: Ref<{ fields: Field[]; relations?: Relation[] } | null>,
 	filter: (field: Field, parent?: FieldNode) => boolean = () => true,
 ): FieldTreeContext {
 	const fieldsStore = useFieldsStore();
@@ -35,7 +35,10 @@ export function useFieldTree(
 	const treeList = ref<FieldNode[]>([]);
 	const visitedPaths = ref<Set<string>>(new Set());
 
-	watch(() => collection.value, refresh, { immediate: true });
+	// Refresh when collection or fields of the collection are updated
+	watch([collection, () => collection.value && fieldsStore.getFieldsForCollectionSorted(collection.value)], refresh, {
+		immediate: true,
+	});
 
 	return { treeList, loadFieldRelations, refresh };
 
@@ -196,7 +199,7 @@ export function useFieldTree(
 
 			const node = getNodeAtPath(path.split('.'), treeList.value);
 
-			if (node && node.children?.length === 1 && node.children[0]._loading) {
+			if (node && node.children?.length === 1 && (node.children as [FieldNode])[0]._loading) {
 				node.children = getTree(node.relatedCollection, node);
 			}
 

@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Identificator
 avatar: Avatar
 application: Aplicație
@@ -27,6 +7,7 @@ method: Metodă
 published: Publicat
 draft: Ciornă
 archived: Arhivat
+extensions: Extensii
 modules: Module
 module_bar: Bară module
 logs: Log-uri
@@ -35,6 +16,7 @@ tile_size: Dimensiune titlu
 edit_field: Editează câmp
 conditions: Condiții
 location: Locație
+collection_names_are_case_sensitive: Numele colecțiilor sunt sensibile la distincția dintre majuscule și minuscule
 condition_rules: Reguli
 input: Input
 maps: Hărți
@@ -55,10 +37,25 @@ modifier: Modificator
 extension_interface: Interfață
 extension_display: Afişare
 extension_layout: Aspect
+extension_module: Compartiment
 extension_panel: Panou
 extension_hook: Cârlig
+extension_endpoint: Punct final
+extension_operation: Operațiune
+extension_bundle: Pachet
+extension_interfaces: Interfețe
+extension_displays: Afișaje
+extension_layouts: Aranjamente
 extension_modules: Module
+extension_panels: Panouri
+extension_hooks: Cârlige
+extension_endpoints: Puncte finale
+extension_operations: Operațiuni
+extension_bundles: Pachete
+extension_reload_required_copy: Este necesară o reîncărcare a paginii pentru a vedea modificările după activarea sau dezactivarea extensiilor aplicației.
+extension_reload_now: Reîncarcă acum
 enable: Activare
+disable: Dezactivează
 custom: Personalizat
 hook: Cârlig
 fill_width: Umple lățimea
@@ -87,6 +84,10 @@ create_user: Creează utilizator
 message: Mesaj
 delete_panel: Șterge panou
 create_webhook: Creează Webhook
+create_custom_translation: Creați traducere personalizată
+edit_custom_translation: Editați traducerea personalizată
+no_custom_translations: Fără Traduceri Personalizate
+no_custom_translations_copy: Nu există incă nicio traducere personalizată.
 invite_users: Invită utilizatori
 invite: Invită
 email_already_invited: Adresa "{email}" a fost deja invitată
@@ -102,7 +103,31 @@ rename_folder: Redenumește dosarul
 delete_folder: Șterge dosarul
 prefix: Prefix
 suffix: Sufix
+keep: Păstrează
+version: Versiune
+version_key: Cheie de versiune
+version_name: Nume Versiune
+main_version: Principal
+switch_version: Schimbă versiunea
+switch_version_copy: Ești sigur că vrei să treci la versiunea “{version}”? Modificările nesalvate vor fi pierdute.
+create_version: Creați versiune
+rename_version: Redenumiți versiunea
+compare_version: Comparați versiunile
+save_version: Salvează versiunea
+promote_version: Promovați versiunea
+promote_version_disabled: Fără modificări
+promote_version_drawer_title: Promovează {version} ca versiunea principală
+promote_version_changes: Modificări
 promote_version_preview: Previzualizare
+outdated_notice: >-
+  Elementul principal a fost actualizat de când a fost creată această versiune. Vă rugăm să revizuiți toate valorile câmpurilor de mai jos și să confirmați care versiune ar trebui utilizată atunci când promovați această versiune în elementul principal.
+promote_notice: >-
+  Vă rugăm să revizuiți toate valorile câmpurilor de mai jos și să confirmați care versiune ar trebui utilizată atunci când promovați această versiune în elementul principal.
+delete_version: Ștergeți versiunea
+delete_version_copy: >-
+  Ești sigur că vrei să ștergi versiunea "{version}"? Această acțiune nu poate fi anulată.
+delete_on_promote_copy: >-
+  Vrei să ștergi sau să păstrezi versiunea "{version}" după promovare?
 reset_bookmark: Resetează semnul de carte
 update_bookmark: Actualizează semnul de carte
 delete_bookmark: Șterge semnul de carte
@@ -124,6 +149,7 @@ archive_confirm_count: >-
   Niciun element selectat | Sigur doriți să arhivați acest element? | Sigur doriți să arhivați aceste {count} elemente?
 reset_system_permissions_to: 'Resetează permisiunile de sistem la:'
 reset_system_permissions_copy: Această acțiune va suprascrie orice permisiuni personalizate ale colecțiilor de sistem. Sigur doriți să continuați?
+the_following_are_minimum_permissions: Următoarele permisiuni minime sunt aplicate automat când "Acces aplicație" este activată. Puteți acorda permisiuni suplimentare dacă este necesar, dar nu puteți reduce permisiunile sub acest nivel.
 app_access_minimum: Minimul necesar pt. acces aplicație
 recommended_defaults: Valorile implicite recomandate
 unarchive: Dezarhivează
@@ -147,7 +173,12 @@ validationError:
   nnull: Valoarea nu poate fi nulă
   required: Valoarea este obligatorie
   unique: Valoarea trebuie să fie unică
+  email: Valoarea trebuie să fie o adresă de e-mail validă
   regex: Valoarea nu are formatul corect
+  starts_with: Valoarea trebuie să înceapă cu {substring}
+  istarts_with: Valoarea trebuie să înceapă cu {substring}
+  nstarts_with: Valoarea nu poate începe cu {substring}
+  nistarts_with: Valoarea nu poate începe cu {substring}
 all_access: Acces complet
 no_access: Fără acces
 use_custom: Acces personalizat
@@ -243,13 +274,6 @@ time: Timp
 timestamp: Marcă temporală
 uuid: UUID
 hash: Hash
-geometry: Geometrie (toate)
-geometry.Point: Punct
-geometry.LineString: Șir de linii (LineString)
-geometry.Polygon: Poligon
-geometry.MultiPoint: Multi-punct
-geometry.MultiLineString: Șir multiplu de linii (MultiLineString)
-geometry.MultiPolygon: Multipoligon
 not_available_for_type: Indisponibil pentru acest tip
 create_translations: Creare traduceri
 auto_refresh: Actualizare automată
@@ -444,7 +468,6 @@ replace_from_library: Înlocuiește fișierul din bibliotecă
 replace_from_url: Înlocuiţi fişierul din url
 no_file_selected: Niciun fișier selectat
 download_file: Descarcă fișier
-open_file_in_tab: Deschideți în filă nouă
 start_export: Începe exportul
 collection_key: Cheie colecție
 name: Nume
@@ -555,25 +578,25 @@ auto_fill: Completare automată
 corresponding_field: Câmp corespondent
 errors:
   COLLECTION_NOT_FOUND: "Colecția nu există"
+  CONTAINS_NULL_VALUES: Câmpul conține valori null
   FIELD_NOT_FOUND: Câmpul nu a fost găsit
   FORBIDDEN: Interzis
+  ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
+  INTERNAL_SERVER_ERROR: Eroare neașteptată
   INVALID_CREDENTIALS: Nume utilizator sau parolă greșite
+  INVALID_FOREIGN_KEY: Cheie străină nevalidă
   INVALID_OTP: Parolă de unică folosință greșită
   INVALID_PAYLOAD: Conținut invalid
   INVALID_QUERY: Interogare invalidă
   ITEM_LIMIT_REACHED: S-a atins limita de elemente
   ITEM_NOT_FOUND: Elementul nu a fost găsit
-  ROUTE_NOT_FOUND: Nu a fost găsit
-  RECORD_NOT_UNIQUE: Valoare duplicat detectată
-  USER_SUSPENDED: Utilizator suspendat
-  CONTAINS_NULL_VALUES: Câmpul conține valori null
-  INTERNAL_SERVER_ERROR: Eroare neașteptată
   NOT_NULL_VIOLATION: Valoarea nu poate fi nulă
-  ILLEGAL_ASSET_TRANSFORMATION: Sursa imaginii este prea mare pentru a fi previzualizată
-  VALUE_TOO_LONG: Valoarea este prea lungă
-  VALUE_OUT_OF_RANGE: Valoarea este în afara intervalului
-  INVALID_FOREIGN_KEY: Cheie străină nevalidă
+  RECORD_NOT_UNIQUE: Valoare duplicat detectată
+  ROUTE_NOT_FOUND: Nu a fost găsit
   UNKNOWN: Eroare neașteptată
+  USER_SUSPENDED: Utilizator suspendat
+  VALUE_OUT_OF_RANGE: Valoarea este în afara intervalului
+  VALUE_TOO_LONG: Valoarea este prea lungă
 security: Securitate
 value_hashed: Valoare criptată în mod securizat
 bookmark_name: Denumirea semnului de carte...
@@ -582,7 +605,6 @@ edit_bookmark: Editează semn de carte
 bookmarks: Semne de carte
 presets: Presetări
 unexpected_error: Eroare neașteptată
-unexpected_error_copy: A apărut o eroare neașteptată. Te rugăm să încerci din nou mai târziu.
 copy_details: Copiază detaliile
 no_app_access: Fără acces la aplicație
 no_app_access_copy: Acest utilizator nu are permisiunea de a utiliza aplicația de administrare.
@@ -1150,7 +1172,6 @@ field_options:
   directus_roles:
     name: Numele unic pentru acest rol...
     description: O descriere a acestui rol...
-    ip_access: Adaugă adresele IP permise, lasă gol pentru a le permite pe toate...
     fields:
       icon_name: Pictogramă
       name_name: Nume
@@ -1674,11 +1695,15 @@ displays:
     icon: Pictogramă
     border: Chenar
     border_label: Arată chenarul
+    mask: Mascat
+    mask_label: Ascunde valoarea reală
     text: Text
     text_placeholder: Suprascrie valoarea opțională...
   formatted-json-value:
     formatted-json-value: Valoare JSON formatată
     description: Afișează o versiune formatată a obiectului
+  hash:
+    hash: Hash
   icon:
     icon: Pictogramă
     description: Afișează o pictogramă

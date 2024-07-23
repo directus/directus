@@ -1,20 +1,18 @@
+import { useEnv } from '@directus/env';
+import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { parseJSON } from '@directus/utils';
+import { parseJSON, toBoolean } from '@directus/utils';
 import type { IncomingMessage, Server as httpServer } from 'http';
-import type { ParsedUrlQuery } from 'querystring';
+import { randomUUID } from 'node:crypto';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import type internal from 'stream';
 import { parse } from 'url';
-import { v4 as uuid } from 'uuid';
 import WebSocket, { WebSocketServer } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
-import env from '../../env.js';
-import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
-import { toBoolean } from '../../utils/to-boolean.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
@@ -23,8 +21,11 @@ import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
 import { registerWebSocketEvents } from './hooks.js';
+import cookie from 'cookie';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
+
+const logger = useLogger();
 
 export default abstract class SocketController {
 	server: WebSocket.Server;
@@ -37,10 +38,15 @@ export default abstract class SocketController {
 	endpoint: string;
 	maxConnections: number;
 	private rateLimiter: RateLimiterAbstract | null;
-	private authInterval: NodeJS.Timer | null;
+	private authInterval: NodeJS.Timeout | null;
 
 	constructor(httpServer: httpServer, configPrefix: string) {
-		this.server = new WebSocketServer({ noServer: true });
+		this.server = new WebSocketServer({
+			noServer: true,
+			// @ts-ignore TODO Remove once @types/ws has been updated
+			autoPong: false,
+		});
+
 		this.clients = new Set();
 		this.authInterval = null;
 
@@ -63,6 +69,8 @@ export default abstract class SocketController {
 		};
 		maxConnections: number;
 	} {
+		const env = useEnv();
+
 		const endpoint = String(env[`${configPrefix}_PATH`]);
 		const authMode = AuthMode.safeParse(String(env[`${configPrefix}_AUTH`]).toLowerCase());
 		const authTimeout = Number(env[`${configPrefix}_AUTH_TIMEOUT`]) * 1000;
@@ -88,6 +96,8 @@ export default abstract class SocketController {
 	}
 
 	protected getRateLimiter() {
+		const env = useEnv();
+
 		if (toBoolean(env['RATE_LIMITER_ENABLED']) === true) {
 			return createRateLimiter('RATE_LIMITER', {
 				keyPrefix: 'websocket',
@@ -122,10 +132,21 @@ export default abstract class SocketController {
 			return;
 		}
 
+		const env = useEnv();
+		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
 		const context: UpgradeContext = { request, socket, head };
+		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
-		if (this.authentication.mode === 'strict') {
-			await this.handleStrictUpgrade(context, query);
+		if (this.authentication.mode === 'strict' || query['access_token'] || cookies[sessionCookieName]) {
+			let token: string | null = null;
+
+			if (typeof query['access_token'] === 'string') {
+				token = query['access_token'];
+			} else if (typeof cookies[sessionCookieName] === 'string') {
+				token = cookies[sessionCookieName] ?? null;
+			}
+
+			await this.handleTokenUpgrade(context, token);
 			return;
 		}
 
@@ -141,19 +162,21 @@ export default abstract class SocketController {
 		});
 	}
 
-	protected async handleStrictUpgrade({ request, socket, head }: UpgradeContext, query: ParsedUrlQuery) {
-		let accountability: Accountability | null, expires_at: number | null;
+	protected async handleTokenUpgrade({ request, socket, head }: UpgradeContext, token: string | null) {
+		let accountability: Accountability | null = null;
+		let expires_at: number | null = null;
 
-		try {
-			const token = query['access_token'] as string;
-			accountability = await getAccountabilityForToken(token);
-			expires_at = getExpiresAtForToken(token);
-		} catch {
-			accountability = null;
-			expires_at = null;
+		if (token) {
+			try {
+				accountability = await getAccountabilityForToken(token);
+				expires_at = getExpiresAtForToken(token);
+			} catch {
+				accountability = null;
+				expires_at = null;
+			}
 		}
 
-		if (!accountability || !accountability.user) {
+		if (!token || !accountability || !accountability.user) {
 			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
 			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
 			socket.destroy();
@@ -191,7 +214,7 @@ export default abstract class SocketController {
 		const client = ws as WebSocketClient;
 		client.accountability = accountability;
 		client.expires_at = expires_at;
-		client.uid = uuid();
+		client.uid = randomUUID();
 		client.auth_timer = null;
 
 		ws.on('message', async (data: WebSocket.RawData) => {

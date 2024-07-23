@@ -1,27 +1,25 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
-import { usePermissionsStore } from '@/stores/permissions';
 import { usePresetsStore } from '@/stores/presets';
-import { useUserStore } from '@/stores/user';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detail.vue';
 import RefreshSidebarDetail from '@/views/private/components/refresh-sidebar-detail.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useCollection, useLayout } from '@directus/composables';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../../components/navigation.vue';
 import PresetsInfoSidebarDetail from './components/presets-info-sidebar-detail.vue';
 
 const layout = ref('tabular');
 const collection = ref('directus_presets');
+
 const { layoutOptions, layoutQuery, filter, search, refreshInterval } = usePreset(collection);
 
 const { t } = useI18n();
 
-const userStore = useUserStore();
-const permissionsStore = usePermissionsStore();
 const layoutRef = ref();
 
 const { selection } = useSelection();
@@ -33,7 +31,11 @@ const { confirmDelete, deleting, batchDelete, error: deleteError, batchEditActiv
 
 const currentLayout = useExtension('layout', layout);
 
-const { batchEditAllowed, batchDeleteAllowed, createAllowed } = usePermissions();
+const {
+	updateAllowed: batchEditAllowed,
+	deleteAllowed: batchDeleteAllowed,
+	createAllowed,
+} = useCollectionPermissions(collection);
 
 const presetsStore = usePresetsStore();
 
@@ -84,43 +86,6 @@ function useBatch() {
 function clearFilters() {
 	filter.value = null;
 	search.value = null;
-}
-
-function usePermissions() {
-	const batchEditAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const updatePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'update' && permission.collection === collection.value,
-		);
-
-		return !!updatePermissions;
-	});
-
-	const batchDeleteAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const deletePermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'delete' && permission.collection === collection.value,
-		);
-
-		return !!deletePermissions;
-	});
-
-	const createAllowed = computed(() => {
-		const admin = userStore?.currentUser?.role.admin_access === true;
-		if (admin) return true;
-
-		const createPermissions = permissionsStore.permissions.find(
-			(permission) => permission.action === 'create' && permission.collection === collection.value,
-		);
-
-		return !!createPermissions;
-	});
-
-	return { batchEditAllowed, batchDeleteAllowed, createAllowed };
 }
 </script>
 

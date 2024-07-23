@@ -3,8 +3,8 @@ import { execa } from 'execa';
 import inquirer from 'inquirer';
 import Joi from 'joi';
 import type { Knex } from 'knex';
+import { randomUUID } from 'node:crypto';
 import ora from 'ora';
-import { v4 as uuid } from 'uuid';
 import runMigrations from '../../../database/migrations/run.js';
 import runSeed from '../../../database/seeds/run.js';
 import { generateHash } from '../../../utils/generate-hash.js';
@@ -98,8 +98,8 @@ export default async function init(): Promise<void> {
 
 	firstUser.password = await generateHash(firstUser.password);
 
-	const userID = uuid();
-	const roleID = uuid();
+	const userID = randomUUID();
+	const roleID = randomUUID();
 
 	await db('directus_roles').insert({
 		id: roleID,

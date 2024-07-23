@@ -102,18 +102,6 @@ function setValueAt(index: number, newVal: any) {
 	newArray[index] = newVal;
 	value.value = newArray;
 }
-
-function setListValue(index: number, newVal: any) {
-	if (typeof newVal === 'string' && newVal.includes(',')) {
-		const parts = newVal.split(',');
-
-		for (let i = 0; i < parts.length; i++) {
-			setValueAt(index + i, parts[i]);
-		}
-	} else {
-		setValueAt(index, newVal);
-	}
-}
 </script>
 
 <template>
@@ -153,11 +141,7 @@ function setListValue(index: number, newVal: any) {
 		/>
 	</template>
 
-	<div
-		v-else-if="['_in', '_nin'].includes(comparator)"
-		class="list"
-		:class="{ moveComma: interfaceType === 'interface-input' }"
-	>
+	<div v-else-if="['_in', '_nin'].includes(comparator)" class="list">
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
@@ -165,7 +149,7 @@ function setListValue(index: number, newVal: any) {
 				:value="val"
 				:focus="false"
 				:choices="choices"
-				@input="setListValue(index, $event)"
+				@input="setValueAt(index, $event)"
 			/>
 		</div>
 	</div>
@@ -213,13 +197,9 @@ function setListValue(index: number, newVal: any) {
 		margin-right: 6px;
 		content: ',';
 	}
-
-	&.moveComma .value:not(:last-child)::after {
-		margin: 0 8px 0 -6px;
-	}
 }
 
 .and {
-	margin: 0px 8px;
+	margin: 0 8px;
 }
 </style>

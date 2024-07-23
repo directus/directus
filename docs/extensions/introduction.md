@@ -55,6 +55,11 @@ new modules are added, they appear as new icons in the main module side bar.
 
 ![Modules](https://marketing.directus.app/assets/f761a496-f49b-4fcc-a09e-d074b6cbf8a5.png)
 
+### Themes
+
+[Themes](/extensions/themes) allow you to create a new app design that's tailored to your brand or aesthetic. They allow
+configuration of colors, typography, forms, and more.
+
 ## API Extensions
 
 API extensions (also known as backend extensions) modify Directus server-side related functionalities such as APIs, data

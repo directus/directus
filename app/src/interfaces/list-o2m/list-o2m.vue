@@ -45,11 +45,11 @@ const props = withDefaults(
 		layout: LAYOUTS.LIST,
 		tableSpacing: 'cozy',
 		fields: () => ['id'],
-		template: () => null,
+		template: null,
 		disabled: false,
 		enableCreate: true,
 		enableSelect: true,
-		filter: () => null,
+		filter: null,
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
@@ -471,17 +471,17 @@ function getLinkForItem(item: DisplayItem) {
 				/>
 			</template>
 
-			<v-notice v-else-if="displayItems.length === 0">
-				{{ t('no_items') }}
-			</v-notice>
-
 			<v-list v-else>
+				<v-notice v-if="displayItems.length === 0">
+					{{ t('no_items') }}
+				</v-notice>
+
 				<draggable
-					force-fallback
 					:model-value="displayItems"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
+					v-bind="{ 'force-fallback': true }"
 					@update:model-value="sortItems($event)"
 				>
 					<template #item="{ element }">
@@ -526,7 +526,12 @@ function getLinkForItem(item: DisplayItem) {
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+						<v-pagination
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 1 : 2"
+							show-first-last
+						/>
 
 						<div class="spacer" />
 
@@ -544,7 +549,7 @@ function getLinkForItem(item: DisplayItem) {
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 				</template>
 			</div>
 		</div>
@@ -588,6 +593,7 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
+				background: var(--theme--background);
 				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
@@ -618,17 +624,14 @@ function getLinkForItem(item: DisplayItem) {
 	}
 }
 
-.v-skeleton-loader,
-.v-notice {
-	margin-top: 8px;
-}
-
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
+		margin-left: auto;
 		:deep(.v-button) {
 			display: inline-flex;
 		}
@@ -645,6 +648,16 @@ function getLinkForItem(item: DisplayItem) {
 	.search {
 		position: relative;
 		z-index: 1;
+		align-self: stretch;
+
+		:deep(.search-input) {
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		:deep(.search-badge) {
+			height: 100%;
+		}
 	}
 
 	.item-count {

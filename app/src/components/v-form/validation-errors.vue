@@ -5,12 +5,11 @@ import { ValidationError, Field } from '@directus/types';
 import { formatFieldFunction } from '@/utils/format-field-function';
 import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 
-interface Props {
+const props = defineProps<{
 	validationErrors: ValidationError[];
 	fields: Field[];
-}
+}>();
 
-const props = defineProps<Props>();
 defineEmits(['scroll-to-field']);
 
 const { t } = useI18n();
