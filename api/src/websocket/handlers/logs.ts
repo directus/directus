@@ -2,7 +2,6 @@ import { LOG_LEVEL, LOG_LEVELS } from '@directus/constants';
 import { ErrorCode, ServiceUnavailableError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
 import { isValidLogLevel } from '@directus/utils';
-import { nanoid } from 'nanoid';
 import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
 import { getLogsController, LogsController } from '../controllers/index.js';
@@ -16,7 +15,6 @@ const logLevelValues = Object.values(LOG_LEVELS);
 export class LogsHandler {
 	controller: LogsController;
 	messenger: Bus;
-	nodeId: string;
 	subscriptions: LogsSubscription;
 
 	constructor(controller?: LogsController) {
@@ -28,7 +26,6 @@ export class LogsHandler {
 
 		this.controller = controller;
 		this.messenger = useBus();
-		this.nodeId = nanoid(8);
 
 		this.subscriptions = {
 			[LOG_LEVEL.TRACE]: new Set(),
@@ -42,12 +39,12 @@ export class LogsHandler {
 		this.bindWebSocket();
 
 		this.messenger.subscribe('logs', (message: string) => {
-			const log = JSON.parse(message);
+			const { log, nodeId } = JSON.parse(message);
 			const logLevel = log['level'];
 
 			if (logLevel) {
 				this.subscriptions[logLevel as LOG_LEVEL].forEach((subscription) =>
-					subscription.send(fmtMessage('logs', { data: log }, this.nodeId)),
+					subscription.send(fmtMessage('logs', { data: log }, nodeId)),
 				);
 			}
 		});
