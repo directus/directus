@@ -17,6 +17,9 @@ import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService, type QueryOptions } from './items.js';
 import { PermissionsService } from './permissions/index.js';
+import { useEnv } from '@directus/env';
+
+const env = useEnv();
 
 export class RelationsService {
 	knex: Knex;
@@ -48,11 +51,20 @@ export class RelationsService {
 	}
 
 	async foreignKeys(collection?: string) {
-		let foreignKeys: ForeignKey[] = await getCacheValue(this.systemCache, 'foreignKeys');
+		const cacheIsEnabled = Boolean(env['CACHE_ENABLED']);
+
+		let foreignKeys: ForeignKey[] | null = null;
+
+		if (cacheIsEnabled) {
+			foreignKeys = await getCacheValue(this.systemCache, 'foreignKeys');
+		}
 
 		if (!foreignKeys) {
 			foreignKeys = await this.schemaInspector.foreignKeys();
-			setCacheValue(this.systemCache, 'foreignKeys', foreignKeys);
+
+			if (cacheIsEnabled) {
+				setCacheValue(this.systemCache, 'foreignKeys', foreignKeys);
+			}
 		}
 
 		if (collection) {
