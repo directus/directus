@@ -57,6 +57,8 @@ const {
 	Pick<File, 'id' | 'title' | 'width' | 'height' | 'filesize' | 'type' | 'filename_download' | 'modified_on'>
 >(value, query, relationInfo, { enabled: computed(() => !props.loading) });
 
+const isImage = ref(true);
+
 const { t, n, te } = useI18n();
 
 const lightboxActive = ref(false);
@@ -96,6 +98,7 @@ const editImageDetails = ref(false);
 const editImageEditor = ref(false);
 
 async function imageErrorHandler() {
+	isImage.value = false;
 	if (!src.value) return;
 
 	try {
@@ -149,16 +152,8 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</span>
 			</div>
 
-			<div v-else-if="!image.height && !image.width" class="image-error">
-				<v-icon large name="error" />
-
-				<span class="message">
-					{{ t('errors.UNSUPPORTED_MEDIA_TYPE') }}
-				</span>
-			</div>
-
 			<v-image
-				v-else-if="image.type?.startsWith('image')"
+				v-else-if="image.type?.startsWith('image') && isImage"
 				:src="src"
 				:width="image.width"
 				:height="image.height"
