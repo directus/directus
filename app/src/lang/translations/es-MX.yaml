@@ -1653,6 +1653,8 @@ navigate_to_item: Navegar al elemento
 undo_removed_item: Deshacer elemento eliminado
 remove_item: Quitar elemento
 delete_item: Eliminar elemento
+pause: Pausar
+resume: Reanudar
 interfaces:
   list-m2a:
     prefix_note: Utiliza el nombre de la colección del elemento relacionado de forma predeterminada.
