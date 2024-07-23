@@ -1,11 +1,16 @@
-import { LOG_LEVELS } from '@directus/constants';
+import { useLogger } from '../logger/index.js';
+
+const logger = useLogger();
 
 export const getAllowedLogLevels = (level: string) => {
-	const levelValue = LOG_LEVELS[level as keyof typeof LOG_LEVELS];
+	const levelValue = logger.levels.values[level];
 
 	if (levelValue === undefined) {
-		throw new Error(`Invalid log level: ${level}`);
+		throw new Error(`Invalid "${level}" log level`);
 	}
 
-	return Object.keys(LOG_LEVELS).filter((logLevel) => LOG_LEVELS[logLevel as keyof typeof LOG_LEVELS] >= levelValue);
+	return Object.entries(logger.levels.values)
+		.filter(([_, value]) => value >= levelValue)
+		.sort((a, b) => a[1] - b[1])
+		.map(([key]) => key);
 };

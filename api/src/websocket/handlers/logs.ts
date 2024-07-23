@@ -1,16 +1,18 @@
-import { LOG_LEVEL, LOG_LEVELS } from '@directus/constants';
 import { ErrorCode, ServiceUnavailableError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
-import { isValidLogLevel } from '@directus/utils';
 import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
+import { useLogger } from '../../logger/index.js';
+import { getAllowedLogLevels } from '../../utils/get-allowed-log-levels.js';
 import { getLogsController, LogsController } from '../controllers/index.js';
 import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { WebSocketLogsMessage } from '../messages.js';
 import type { LogsSubscription, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
 
-const logLevelValues = Object.values(LOG_LEVELS);
+const logger = useLogger();
+const availableLogLevels = Object.keys(logger.levels.values);
+const logLevelValueMap = Object.fromEntries(Object.entries(logger.levels.values).map(([key, value]) => [value, key]));
 
 export class LogsHandler {
 	controller: LogsController;
@@ -27,23 +29,19 @@ export class LogsHandler {
 		this.controller = controller;
 		this.messenger = useBus();
 
-		this.subscriptions = {
-			[LOG_LEVEL.TRACE]: new Set(),
-			[LOG_LEVEL.DEBUG]: new Set(),
-			[LOG_LEVEL.INFO]: new Set(),
-			[LOG_LEVEL.WARN]: new Set(),
-			[LOG_LEVEL.ERROR]: new Set(),
-			[LOG_LEVEL.FATAL]: new Set(),
-		};
+		this.subscriptions = availableLogLevels.reduce((acc, logLevel) => {
+			acc[logLevel] = new Set();
+			return acc;
+		}, {} as LogsSubscription);
 
 		this.bindWebSocket();
 
 		this.messenger.subscribe('logs', (message: string) => {
 			const { log, nodeId } = JSON.parse(message);
-			const logLevel = log['level'];
+			const logLevel = logLevelValueMap[log['level']];
 
-			if (logLevel) {
-				this.subscriptions[logLevel as LOG_LEVEL].forEach((subscription) =>
+			if (logLevel && this.subscriptions[logLevel]) {
+				this.subscriptions[logLevel].forEach((subscription) =>
 					subscription.send(fmtMessage('logs', { data: log }, nodeId)),
 				);
 			}
@@ -80,12 +78,20 @@ export class LogsHandler {
 	 * @param logLevel
 	 * @param client
 	 */
-	subscribe(logLevel: LOG_LEVEL, client: WebSocketClient) {
-		for (const value of logLevelValues) {
-			if (value >= logLevel) {
-				this.subscriptions[value].add(client);
+	subscribe(logLevel: string, client: WebSocketClient) {
+		let allowedLogLevels = [];
+
+		try {
+			allowedLogLevels = getAllowedLogLevels(logLevel);
+		} catch (error) {
+			throw new WebSocketError('logs', ErrorCode.InvalidPayload, (error as Error).message);
+		}
+
+		for (const availableLogLevel of availableLogLevels) {
+			if (allowedLogLevels.includes(availableLogLevel)) {
+				this.subscriptions[availableLogLevel]?.add(client);
 			} else {
-				this.subscriptions[value].delete(client);
+				this.subscriptions[availableLogLevel]?.delete(client);
 			}
 		}
 	}
@@ -95,8 +101,8 @@ export class LogsHandler {
 	 * @param client WebSocketClient
 	 */
 	unsubscribe(client: WebSocketClient) {
-		for (const value of logLevelValues) {
-			this.subscriptions[value].delete(client);
+		for (const availableLogLevel of availableLogLevels) {
+			this.subscriptions[availableLogLevel]?.delete(client);
 		}
 	}
 
@@ -114,10 +120,8 @@ export class LogsHandler {
 			try {
 				const logLevel = message.log_level;
 
-				if (isValidLogLevel(logLevel)) {
-					this.subscribe(LOG_LEVELS[logLevel], client);
-					client.send(fmtMessage('logs', { event: 'subscribe', log_level: logLevel }));
-				}
+				this.subscribe(logLevel, client);
+				client.send(fmtMessage('logs', { event: 'subscribe', log_level: logLevel }));
 			} catch (err) {
 				handleWebSocketError(client, err, 'subscribe');
 			}
