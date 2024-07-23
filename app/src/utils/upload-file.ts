@@ -103,6 +103,7 @@ export async function uploadFile(
 				// Found previous uploads so we select the first one.
 				if (previousUploads.length > 0) {
 					upload.resumeFromPreviousUpload(previousUploads[0]!);
+					fileInfo.id = previousUploads[0]!.metadata['id'];
 				}
 
 				// Start the upload

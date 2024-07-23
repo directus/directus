@@ -31,7 +31,7 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 		const action = mapAction(req.method);
 
 		if (action === 'create') {
-			// checkAccess doesnt seem to work as expected for "create" actions
+			// checkAccess doesn't seem to work as expected for "create" actions
 			const hasPermission = Boolean(
 				req.accountability?.permissions?.find((permission) => {
 					return permission.collection === 'directus_files' && permission.action === action;
