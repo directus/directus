@@ -40,8 +40,8 @@ export class LogsHandler {
 			const { log, nodeId } = JSON.parse(message);
 			const logLevel = logLevelValueMap[log['level']];
 
-			if (logLevel && this.subscriptions[logLevel]) {
-				this.subscriptions[logLevel].forEach((subscription) =>
+			if (logLevel) {
+				this.subscriptions[logLevel]?.forEach((subscription) =>
 					subscription.send(fmtMessage('logs', { data: log }, nodeId)),
 				);
 			}
