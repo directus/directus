@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.timestamp('uploaded_on');
 	});
 
-	await knex.raw('UPDATE directus_files SET uploaded_on = created_on');
+	await knex('directus_files').update('uploaded_on', knex.ref('created_on'));
 }
 
 export async function down(knex: Knex): Promise<void> {
