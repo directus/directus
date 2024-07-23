@@ -7,7 +7,7 @@ import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import { sum } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Upload } from 'tus-js-client';
 
@@ -47,6 +47,10 @@ const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
+
+onUnmounted(() => {
+	uploadController?.abort();
+});
 
 function validFiles(files: FileList) {
 	if (files.length === 0) return false;
