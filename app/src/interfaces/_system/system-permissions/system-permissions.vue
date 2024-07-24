@@ -6,6 +6,7 @@ import { RelationO2M, useRelationO2M } from '@/composables/use-relation-o2m';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
+import { PERMISSION_ACTIONS } from '@directus/constants';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
 import { Filter, Permission, PermissionsAction, type Alterations } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
@@ -16,8 +17,6 @@ import AddCollectionRow from './add-collection-row.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
 import PermissionsRow from './permissions-row.vue';
-
-const ACTIONS = ['create', 'read', 'update', 'delete', 'share'] as const;
 
 type PermissionGroup = {
 	collection: Collection;
@@ -44,14 +43,15 @@ const emit = defineEmits<{
 const { collection, primaryKey, field } = toRefs(props);
 const { t } = useI18n();
 
+const contentEl = inject<Ref<Element | null>>('main-element');
+const permissionsTable = ref<HTMLTableElement | null>(null);
+
 const collectionsStore = useCollectionsStore();
 const { relationInfo } = useRelationO2M(collection, field);
 
 const values = inject<Ref<Record<string, any>>>('values');
 const appAccess = computed(() => values?.value.app_access ?? false);
 const adminAccess = computed(() => values?.value.admin_access ?? false);
-
-const systemVisible = ref(false);
 
 const value = computed({
 	get: () => props.value,
@@ -113,8 +113,8 @@ function editItem(collection: string, action: PermissionsAction) {
 	currentlyEditingItem.value = existingPermission ?? null;
 }
 
-function stageEdits(item: Record<string, any>) {
-	if (newItem.value) {
+function stageEdits(item: Permission | null) {
+	if (newItem.value && item !== null) {
 		create(item);
 	} else if (item) {
 		update(item);
@@ -134,13 +134,13 @@ function removeCollection(collection: string) {
 }
 
 function setFullAccessAll(collection: string) {
-	for (const action of ACTIONS) {
+	for (const action of PERMISSION_ACTIONS) {
 		setFullAccess(collection, action);
 	}
 }
 
 function setNoAccessAll(collection: string) {
-	for (const action of ACTIONS) {
+	for (const action of PERMISSION_ACTIONS) {
 		setNoAccess(collection, action);
 	}
 }
@@ -553,10 +553,24 @@ function useGroupedPermissions() {
 			permissions: [],
 		});
 
-		// Check if the added permissions is a system collection, if so expand the system permissions
-		if (isSystemCollection(collection)) {
-			systemVisible.value = true;
-		}
+		nextTick(() => {
+			if (!contentEl?.value) return;
+
+			const tableRow = permissionsTable.value?.querySelector(`tr[data-collection=${collection}]`);
+
+			if (!tableRow) return;
+
+			/** Header height + additional spacing */
+			const TOP_SPACING = 80;
+			const tableRowTop = tableRow.getBoundingClientRect().top - TOP_SPACING;
+
+			// Only scroll to row if it is out of view
+			if (tableRowTop > 0) return;
+
+			const top = tableRowTop + contentEl.value.scrollTop;
+
+			contentEl.value.scrollTo({ top, behavior: 'smooth' });
+		});
 	}
 
 	function removeEmptyCollection(collection: string) {
@@ -570,110 +584,112 @@ function useGroupedPermissions() {
 </script>
 
 <template>
-	<v-notice v-if="adminAccess">
-		{{ t('admins_have_all_permissions') }}
-	</v-notice>
+	<div>
+		<v-notice v-if="adminAccess">
+			{{ t('admins_have_all_permissions') }}
+		</v-notice>
 
-	<div v-else class="permissions-list">
-		<table v-if="!loading || allPermissions.length > 0">
-			<permissions-header />
+		<div v-else-if="!loading || allPermissions.length > 0" class="permissions-list">
+			<table ref="permissionsTable">
+				<permissions-header />
 
-			<tbody>
-				<template v-if="allPermissions.length === 0">
+				<tbody>
+					<template v-if="allPermissions.length === 0">
+						<tr>
+							<td class="empty-state" colspan="7">
+								{{ t('no_permissions') }}
+							</td>
+						</tr>
+					</template>
+
+					<permissions-row
+						v-for="group in regularPermissions"
+						:key="group.collection.collection"
+						:permissions="group.permissions"
+						:collection="group.collection"
+						@edit-item="editItem(group.collection.collection, $event)"
+						@remove-row="removeCollection(group.collection.collection)"
+						@set-full-access-all="setFullAccessAll(group.collection.collection)"
+						@set-no-access-all="setNoAccessAll(group.collection.collection)"
+						@set-full-access="setFullAccess(group.collection.collection, $event)"
+						@set-no-access="setNoAccess(group.collection.collection, $event)"
+					/>
+
 					<tr>
-						<td class="empty-state" colspan="7">
-							{{ t('no_permissions') }}
+						<td colspan="7" class="system-divider">
+							<v-divider v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
+								{{ t('system_collections') }}
+							</v-divider>
 						</td>
 					</tr>
-				</template>
 
-				<permissions-row
-					v-for="group in regularPermissions"
-					:key="group.collection.collection"
-					:permissions="group.permissions"
-					:collection="group.collection"
-					@edit-item="editItem(group.collection.collection, $event)"
-					@remove-row="removeCollection(group.collection.collection)"
-					@set-full-access-all="setFullAccessAll(group.collection.collection)"
-					@set-no-access-all="setNoAccessAll(group.collection.collection)"
-					@set-full-access="setFullAccess(group.collection.collection, $event)"
-					@set-no-access="setNoAccess(group.collection.collection, $event)"
-				/>
+					<permissions-row
+						v-for="group in systemPermissions"
+						:key="group.collection.collection"
+						:permissions="group.permissions"
+						:collection="group.collection"
+						:policy="primaryKey"
+						:disabled-actions="disabledActions[group.collection.collection]"
+						:app-minimal="
+							appAccess
+								? appAccessMinimalPermissions.filter(
+										(permission) => permission.collection === group.collection.collection,
+								  )
+								: undefined
+						"
+						@edit-item="editItem(group.collection.collection, $event)"
+						@remove-row="removeCollection(group.collection.collection)"
+						@set-full-access-all="setFullAccessAll(group.collection.collection)"
+						@set-no-access-all="setNoAccessAll(group.collection.collection)"
+						@set-full-access="setFullAccess(group.collection.collection, $event)"
+						@set-no-access="setNoAccess(group.collection.collection, $event)"
+					/>
 
-				<tr>
-					<td colspan="7" class="system-divider">
-						<v-divider v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
-							{{ t('system_collections') }}
-						</v-divider>
-					</td>
-				</tr>
+					<tr v-if="appAccess">
+						<td colspan="7" class="reset-toggle">
+							<span>
+								{{ t('reset_system_permissions_to') }}
+								<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
+								/
+								<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
+							</span>
+						</td>
+					</tr>
 
-				<permissions-row
-					v-for="group in systemPermissions"
-					:key="group.collection.collection"
-					:permissions="group.permissions"
-					:collection="group.collection"
-					:policy="primaryKey"
-					:disabled-actions="disabledActions[group.collection.collection]"
-					:app-minimal="
-						appAccess
-							? appAccessMinimalPermissions.filter(
-									(permission) => permission.collection === group.collection.collection,
-							  )
-							: undefined
-					"
-					@edit-item="editItem(group.collection.collection, $event)"
-					@remove-row="removeCollection(group.collection.collection)"
-					@set-full-access-all="setFullAccessAll(group.collection.collection)"
-					@set-no-access-all="setNoAccessAll(group.collection.collection)"
-					@set-full-access="setFullAccess(group.collection.collection, $event)"
-					@set-no-access="setNoAccess(group.collection.collection, $event)"
-				/>
+					<add-collection-row
+						:exclude-collections="
+							[...regularPermissions, ...systemPermissions].map(({ collection }) => collection.collection)
+						"
+						@select="addEmptyPermission($event)"
+					/>
+				</tbody>
+			</table>
+		</div>
 
-				<tr v-if="appAccess">
-					<td colspan="7" class="reset-toggle">
-						<span>
-							{{ t('reset_system_permissions_to') }}
-							<button @click="resetActive = 'minimum'">{{ t('app_access_minimum') }}</button>
-							/
-							<button @click="resetActive = 'recommended'">{{ t('recommended_defaults') }}</button>
-						</span>
-					</td>
-				</tr>
+		<permissions-detail
+			:active="currentlyEditingKey !== null"
+			:edits="editsAtStart"
+			:permission-key="currentlyEditingKey"
+			:policy-key="primaryKey"
+			:policy-edits="values"
+			@input="stageEdits"
+			@update:active="cancelEdit"
+		/>
 
-				<add-collection-row
-					:exclude-collections="
-						[...regularPermissions, ...systemPermissions].map(({ collection }) => collection.collection)
-					"
-					@select="addEmptyPermission($event)"
-				/>
-			</tbody>
-		</table>
+		<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
+			<v-card>
+				<v-card-title>
+					{{ t('reset_system_permissions_copy') }}
+				</v-card-title>
+				<v-card-actions>
+					<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
+					<v-button @click="resetSystemPermissions(resetActive === 'recommended')">
+						{{ t('reset') }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 	</div>
-
-	<permissions-detail
-		:active="currentlyEditingKey !== null"
-		:edits="editsAtStart"
-		:permission-key="currentlyEditingKey"
-		:policy-key="primaryKey"
-		:policy-edits="values"
-		@input="stageEdits"
-		@update:active="cancelEdit"
-	/>
-
-	<v-dialog :model-value="!!resetActive" @update:model-value="resetActive = false" @esc="resetActive = false">
-		<v-card>
-			<v-card-title>
-				{{ t('reset_system_permissions_copy') }}
-			</v-card-title>
-			<v-card-actions>
-				<v-button secondary @click="resetActive = false">{{ t('cancel') }}</v-button>
-				<v-button @click="resetSystemPermissions(resetActive === 'recommended')">
-					{{ t('reset') }}
-				</v-button>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
 </template>
 
 <style scoped lang="scss">
@@ -684,6 +700,11 @@ function useGroupedPermissions() {
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		border-spacing: 0;
+
+		th,
+		td {
+			padding: 0;
+		}
 	}
 
 	.monospace {
