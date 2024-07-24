@@ -43,7 +43,7 @@ watch(
 	() => props.loading,
 	(newVal) => {
 		if (!newVal && isFirstLoading.value) {
-			if(isFirstLoading.value) isFirstLoading.value = false;
+			if (isFirstLoading.value) isFirstLoading.value = false;
 
 			detailOpen.value = props.start === 'open';
 		}
