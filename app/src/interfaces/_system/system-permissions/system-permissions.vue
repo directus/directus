@@ -11,7 +11,7 @@ import { appAccessMinimalPermissions, isSystemCollection } from '@directus/syste
 import { type Alterations, Filter, Permission, PermissionsAction } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
-import { computed, inject, nextTick, Ref, ref, toRefs, watch } from 'vue';
+import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AddCollectionRow from './add-collection-row.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
