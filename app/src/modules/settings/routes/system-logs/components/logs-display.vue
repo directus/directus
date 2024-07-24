@@ -7,6 +7,7 @@ import { nextTick } from 'vue';
 
 interface Props {
 	logs: Log[];
+	logLevels: Record<string, number>;
 }
 
 const props = defineProps<Props>();
@@ -35,7 +36,12 @@ defineExpose({ scrollToIndex, scrollToBottom });
 <template>
 	<div v-bind="containerProps" class="log-container">
 		<div v-bind="wrapperProps">
-			<log-entry v-for="{ index, data } in list" :key="index" :log="data" />
+			<log-entry
+				v-for="{ data } in list"
+				:key="data.data.level + data.data.time + data.data.msg"
+				:log="data"
+				:log-levels="logLevels"
+			/>
 		</div>
 	</div>
 </template>

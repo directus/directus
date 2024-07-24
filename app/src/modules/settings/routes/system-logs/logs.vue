@@ -2,9 +2,7 @@
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { LOG_LEVEL, LOG_LEVELS } from '@directus/constants';
 import { realtime } from '@directus/sdk';
-import { isValidLogLevel } from '@directus/utils';
 import { upperFirst } from 'lodash';
 import { computed, nextTick, ref, Ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -18,28 +16,24 @@ const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
 const client = sdk.with(realtime({ authMode: 'strict', url: `ws://${sdk.url.host}/websocket/logs` }));
 const logs = ref<Log[]>([]);
 const serverStore = useServerStore();
-const allowedLogLevels: { label: string; value: LOG_LEVEL }[] = [];
+let allowedLogLevels: Record<string, number> = {};
+const allowedLogLevelNames: string[] = [];
 const search = ref<string | null>('');
 const maxLogLevelName = ref('');
-const activeFilterLevels: Ref<Set<LOG_LEVEL>> = ref(new Set());
+const activeFilterLevels: Ref<Set<number>> = ref(new Set());
 const streamStarted = ref(false);
 const maxLogs = 10_000;
 
 if (serverStore.info?.websocket) {
 	if (serverStore.info.websocket.logs) {
-		for (const logLevel of serverStore.info.websocket.logs.allowedLogLevels) {
-			if (!isValidLogLevel(logLevel)) continue;
+		allowedLogLevels = serverStore.info.websocket.logs.allowedLogLevels;
 
+		for (const [logLevelName, logLevelValue] of Object.entries(serverStore.info.websocket.logs.allowedLogLevels)) {
 			if (!maxLogLevelName.value) {
-				maxLogLevelName.value = logLevel;
+				maxLogLevelName.value = logLevelName;
 			}
 
-			const logLevelValue = LOG_LEVELS[logLevel];
-
-			allowedLogLevels.push({
-				label: upperFirst(logLevel),
-				value: logLevelValue,
-			});
+			allowedLogLevelNames.push(logLevelName);
 
 			activeFilterLevels.value.add(logLevelValue);
 		}
@@ -59,11 +53,15 @@ watch([search, activeFilterLevels.value], async () => {
 	logsDisplay.value?.scrollToBottom();
 });
 
-const toggleLogLevel = (logLevel: LOG_LEVEL) => {
-	if (activeFilterLevels.value.has(logLevel)) {
-		activeFilterLevels.value.delete(logLevel);
+const toggleLogLevel = (logLevel: string) => {
+	const logLevelValue = allowedLogLevels[logLevel];
+
+	if (logLevelValue === undefined) return;
+
+	if (activeFilterLevels.value.has(logLevelValue)) {
+		activeFilterLevels.value.delete(logLevelValue);
 	} else {
-		activeFilterLevels.value.add(logLevel);
+		activeFilterLevels.value.add(logLevelValue);
 	}
 };
 
@@ -149,17 +147,17 @@ function clearLogs() {
 		<div class="logs-container">
 			<div class="controls">
 				<v-chip
-					v-for="logLevel in allowedLogLevels"
-					:key="logLevel.value"
-					:outlined="!activeFilterLevels.has(logLevel.value)"
+					v-for="logLevelName in allowedLogLevelNames"
+					:key="logLevelName"
+					:outlined="allowedLogLevels[logLevelName] && !activeFilterLevels.has(allowedLogLevels[logLevelName])"
 					large
 					class="log-level-chip clickable"
-					@click="toggleLogLevel(logLevel.value)"
+					@click="toggleLogLevel(logLevelName)"
 				>
-					{{ logLevel.label }}
+					{{ upperFirst(logLevelName) }}
 				</v-chip>
 			</div>
-			<logs-display ref="logsDisplay" :logs="filteredLogs" class="logs-display" />
+			<logs-display ref="logsDisplay" :logs="filteredLogs" :log-levels="allowedLogLevels" class="logs-display" />
 		</div>
 
 		<template #sidebar>

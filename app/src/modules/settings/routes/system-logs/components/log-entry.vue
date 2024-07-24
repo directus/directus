@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { LOG_LEVELS } from '@directus/constants';
 import { ref } from 'vue';
 import { Log } from '../types';
 import { upperFirst } from 'lodash';
 
 interface Props {
 	log: Log;
+	logLevels: Record<string, number>;
 }
 
 const props = withDefaults(defineProps<Props>(), {});
 const expanded = ref(false);
 const rawData = JSON.stringify(props.log.data, null, '\t');
-const logLevelLabel = upperFirst(Object.entries(LOG_LEVELS).find(([_, val]) => val === props.log.data.level)?.[0]);
+const logLevelLabel = upperFirst(Object.entries(props.logLevels).find(([_, val]) => val === props.log.data.level)?.[0]);
 </script>
 
 <template>

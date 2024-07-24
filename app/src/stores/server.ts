@@ -57,7 +57,7 @@ export type Info = {
 				logs?:
 					| false
 					| {
-							allowedLogLevels: string[];
+							allowedLogLevels: Record<string, number>;
 					  };
 				rest?:
 					| false
