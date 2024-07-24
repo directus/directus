@@ -9,8 +9,9 @@ export const getAllowedLogLevels = (level: string) => {
 		throw new Error(`Invalid "${level}" log level`);
 	}
 
-	return Object.entries(logger.levels.values)
-		.filter(([_, value]) => value >= levelValue)
-		.sort((a, b) => a[1] - b[1])
-		.map(([key]) => key);
+	return Object.fromEntries(
+		Object.entries(logger.levels.values)
+			.filter(([_, value]) => value >= levelValue)
+			.sort((a, b) => a[1] - b[1]),
+	);
 };
