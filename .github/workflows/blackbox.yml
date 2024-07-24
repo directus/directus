@@ -1,7 +1,7 @@
 name: Blackbox Tests
 
 on:
-   pull_request:
+  pull_request:
     branches:
       - main
   push:
