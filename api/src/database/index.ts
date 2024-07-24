@@ -17,6 +17,13 @@ import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
 import { getHelpers } from './helpers/index.js';
 
+type QueryInfo = Partial<Knex.Sql> & {
+	sql: Knex.Sql['sql'];
+	__knexUid: string;
+	__knexTxId: string;
+	[key: string | number | symbol]: any;
+};
+
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
 let databaseVersion: string | null = null;
@@ -160,12 +167,12 @@ export function getDatabase(): Knex {
 	const times: Record<string, number> = {};
 
 	database
-		.on('query', (queryInfo) => {
+		.on('query', (queryInfo: QueryInfo) => {
 			times[queryInfo.__knexUid] = performance.now();
 		})
-		.on('query-response', (_response, queryInfo) => {
+		.on('query-response', (_response, queryInfo: QueryInfo) => {
 			const delta = performance.now() - times[queryInfo.__knexUid]!;
-			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
+			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings?.join(', ')}]`);
 			delete times[queryInfo.__knexUid];
 		});
 
