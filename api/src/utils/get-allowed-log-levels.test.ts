@@ -18,5 +18,5 @@ test('should return an empty array for "fatal"', () => {
 
 test('should error when an invalid log level is provided', () => {
 	const invalidLogLevel = 'invalid-level';
-	expect(() => getAllowedLogLevels(invalidLogLevel as any)).toThrowError(`Invalid log level: ${invalidLogLevel}`);
+	expect(() => getAllowedLogLevels(invalidLogLevel as any)).toThrowError(`Invalid "${invalidLogLevel}" log level`);
 });

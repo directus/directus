@@ -11,12 +11,12 @@ import type { LogsSubscription, WebSocketClient } from '../types.js';
 import { fmtMessage, getMessageType } from '../utils/message.js';
 
 const logger = useLogger();
-const availableLogLevels = Object.keys(logger.levels.values);
-const logLevelValueMap = Object.fromEntries(Object.entries(logger.levels.values).map(([key, value]) => [value, key]));
 
 export class LogsHandler {
 	controller: LogsController;
 	messenger: Bus;
+	availableLogLevels: string[];
+	logLevelValueMap: Record<string, string>;
 	subscriptions: LogsSubscription;
 
 	constructor(controller?: LogsController) {
@@ -28,8 +28,13 @@ export class LogsHandler {
 
 		this.controller = controller;
 		this.messenger = useBus();
+		this.availableLogLevels = Object.keys(logger.levels.values);
 
-		this.subscriptions = availableLogLevels.reduce((acc, logLevel) => {
+		this.logLevelValueMap = Object.fromEntries(
+			Object.entries(logger.levels.values).map(([key, value]) => [value, key]),
+		);
+
+		this.subscriptions = this.availableLogLevels.reduce((acc, logLevel) => {
 			acc[logLevel] = new Set();
 			return acc;
 		}, {} as LogsSubscription);
@@ -38,7 +43,7 @@ export class LogsHandler {
 
 		this.messenger.subscribe('logs', (message: string) => {
 			const { log, nodeId } = JSON.parse(message);
-			const logLevel = logLevelValueMap[log['level']];
+			const logLevel = this.logLevelValueMap[log['level']];
 
 			if (logLevel) {
 				this.subscriptions[logLevel]?.forEach((subscription) =>
@@ -87,7 +92,7 @@ export class LogsHandler {
 			throw new WebSocketError('logs', ErrorCode.InvalidPayload, (error as Error).message);
 		}
 
-		for (const availableLogLevel of availableLogLevels) {
+		for (const availableLogLevel of this.availableLogLevels) {
 			if (allowedLogLevels.includes(availableLogLevel)) {
 				this.subscriptions[availableLogLevel]?.add(client);
 			} else {
@@ -101,7 +106,7 @@ export class LogsHandler {
 	 * @param client WebSocketClient
 	 */
 	unsubscribe(client: WebSocketClient) {
-		for (const availableLogLevel of availableLogLevels) {
+		for (const availableLogLevel of this.availableLogLevels) {
 			this.subscriptions[availableLogLevel]?.delete(client);
 		}
 	}
