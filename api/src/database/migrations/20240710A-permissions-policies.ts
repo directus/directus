@@ -328,25 +328,31 @@ export async function down(knex: Knex) {
 	const context = { knex, schema: await getSchema() };
 
 	// fetch all roles
-	const roles: Array<{ id: string }> = await knex.select('id').from('directus_roles');
+	const roles: Array<{ id: string | null }> = await knex.select('id').from('directus_roles');
+
+	// simulate Public Role
+	roles.push({ id: null });
 
 	// role permissions to be inserted once all processing is completed
-	const rolePermissions: Array<Omit<Permission, 'id' | 'system' | 'policy'> | { role: string }> = [];
+	const rolePermissions: Array<Omit<Permission, 'id' | 'system' | 'policy'> | { role: string | null }> = [];
 
 	for (const role of roles) {
 		const roleTree = await fetchRolesTree(role.id, knex);
 
-		const roleAccess = await fetchRoleAccess(roleTree, context);
+		let roleAccess = null;
 
-		await knex('directus_roles').update(roleAccess).where({ id: role.id });
+		if (role.id !== null) {
+			roleAccess = await fetchRoleAccess(roleTree, context);
+			await knex('directus_roles').update(roleAccess).where({ id: role.id });
+		}
 
-		if (!roleAccess.admin_access) {
+		if (roleAccess === null || !roleAccess.admin_access) {
 			// fetch all of the roles policies
 			const policies = await fetchPolicies({ roles: roleTree, user: null, ip: null }, context);
 
 			//  fetch all of the policies permissions
 			const rawPermissions = await fetchPermissions(
-				{ accountability: { role: null, roles: roleTree, user: null, app: roleAccess.app_access }, policies },
+				{ accountability: { role: null, roles: roleTree, user: null, app: roleAccess?.app_access || false }, policies },
 				context,
 			);
 
