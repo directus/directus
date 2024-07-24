@@ -63,7 +63,6 @@ each system collection is responsible for, as well as where to find relevant App
 | Settings          | Stores all configurations made within **Settings > Project Settings**.                                                               | [Project Settings](/user-guide/settings/project-settings)                                                                       | [settings](/reference/system/settings)           |
 | Shares            | Stores all information regarding data shares.                                                                                        | [Data Sharing](/user-guide/content-module/content/shares)                                                                       |                                                  |
 | Users             | Stores information about each user within the platform.                                                                              | [User Directory](/user-guide/user-management/user-directory)                                                                    | [Users](/reference/system/relations)             |
-| Webhooks          | Stores all information about configured webhooks.                                                                                    | [Webhooks](/app/webhooks)                                                                                                       | [Webhooks](/reference/system/relations)          |
 
 ## Create a Collection
 

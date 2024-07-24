@@ -40,7 +40,9 @@ export type MutationTracker = {
 	getCount: () => number;
 };
 
-export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string> implements AbstractService {
+export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
+	implements AbstractService
+{
 	collection: Collection;
 	knex: Knex;
 	accountability: Accountability | null;

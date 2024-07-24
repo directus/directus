@@ -41,6 +41,9 @@
   permissions:
     user:
       _eq: $CURRENT_USER
+  validation:
+    user:
+      _eq: $CURRENT_USER
 
 - collection: directus_presets
   action: delete
