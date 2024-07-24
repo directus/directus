@@ -8,10 +8,10 @@ import { Collection } from '@/types/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PERMISSION_ACTIONS } from '@directus/constants';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
-import { Filter, Permission, PermissionsAction, type Alterations } from '@directus/types';
+import { type Alterations, Filter, Permission, PermissionsAction } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
-import { Ref, computed, inject, nextTick, ref, toRefs, watch } from 'vue';
+import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AddCollectionRow from './add-collection-row.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
@@ -594,13 +594,11 @@ function useGroupedPermissions() {
 				<permissions-header />
 
 				<tbody>
-					<template v-if="allPermissions.length === 0">
-						<tr>
-							<td class="empty-state" colspan="7">
-								{{ t('no_permissions') }}
-							</td>
-						</tr>
-					</template>
+					<tr v-if="allPermissions.length === 0">
+						<td class="empty-state" colspan="7">
+							{{ t('no_permissions') }}
+						</td>
+					</tr>
 
 					<permissions-row
 						v-for="group in regularPermissions"
@@ -615,9 +613,9 @@ function useGroupedPermissions() {
 						@set-no-access="setNoAccess(group.collection.collection, $event)"
 					/>
 
-					<tr>
+					<tr v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
 						<td colspan="7" class="system-divider">
-							<v-divider v-if="regularPermissions.length > 0 && systemPermissions.length > 0">
+							<v-divider>
 								{{ t('system_collections') }}
 							</v-divider>
 						</td>
@@ -644,7 +642,9 @@ function useGroupedPermissions() {
 						@set-full-access="setFullAccess(group.collection.collection, $event)"
 						@set-no-access="setNoAccess(group.collection.collection, $event)"
 					/>
+				</tbody>
 
+				<tfoot>
 					<tr v-if="appAccess">
 						<td colspan="7" class="reset-toggle">
 							<span>
@@ -662,7 +662,7 @@ function useGroupedPermissions() {
 						"
 						@select="addEmptyPermission($event)"
 					/>
-				</tbody>
+				</tfoot>
 			</table>
 		</div>
 
@@ -694,9 +694,10 @@ function useGroupedPermissions() {
 
 <style scoped lang="scss">
 .permissions-list {
+	overflow: auto;
+
 	table {
 		width: 100%;
-		max-width: 792px;
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		border-spacing: 0;
