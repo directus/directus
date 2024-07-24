@@ -112,11 +112,12 @@ export class ServerService {
 					? env['WEBSOCKETS_HEARTBEAT_PERIOD']
 					: false;
 
-				info['websocket'].logs = toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])
-					? {
-							allowedLogLevels: getAllowedLogLevels((env['LOG_LEVEL'] as string) || 'info'),
-					  }
-					: false;
+				info['websocket'].logs =
+					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
+						? {
+								allowedLogLevels: getAllowedLogLevels((env['LOG_LEVEL'] as string) || 'info'),
+						  }
+						: false;
 			} else {
 				info['websocket'] = false;
 			}
