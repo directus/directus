@@ -298,9 +298,9 @@ function useDisplayValue() {
 				<v-divider />
 			</template>
 
-			<v-list-item v-if="internalItemsCount <= 0 && !allowOther">
+			<v-list-item v-if="internalItemsCount === 0 && !allowOther">
 				<v-list-item-content>
-					{{ t("no_options_available") }}
+					{{ t('no_options_available') }}
 				</v-list-item-content>
 			</v-list-item>
 
