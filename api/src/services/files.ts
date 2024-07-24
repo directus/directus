@@ -13,7 +13,6 @@ import zlib from 'node:zlib';
 import path from 'path';
 import url from 'url';
 import { RESUMABLE_UPLOADS } from '../constants.js';
-import { getHelpers } from '../database/helpers/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { getAxios } from '../request/index.js';
@@ -158,7 +157,7 @@ export class FilesService extends ItemsService<File> {
 
 		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
 
-		payload.uploaded_on = getHelpers(this.knex).date.writeTimestamp(new Date().toISOString()).toISOString();
+		payload.uploaded_on = new Date().toISOString();
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
