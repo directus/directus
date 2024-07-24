@@ -35,10 +35,10 @@ const applyGlobalIcon = computed(() => props.choices?.some((choice) => choice.ic
 
 const items = computed(() => {
 	if (!applyGlobalIcon.value) {
-		return props.choices;
+		return props.choices || [];
 	}
 
-	return props.choices?.map((choice) => {
+	return (props.choices || [])?.map((choice) => {
 		if (choice.icon) {
 			return choice;
 		}
