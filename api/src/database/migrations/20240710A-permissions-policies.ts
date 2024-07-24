@@ -358,9 +358,21 @@ export async function down(knex: Knex) {
 
 			// merge all permissions to single version (v10) and save for later use
 			mergePermissions('or', rawPermissions).forEach((permission) => {
-				// fields must be a comma seperated string for storage
+				// convert merged permissions to storage ready format
 				if (Array.isArray(permission.fields)) {
 					permission.fields = permission.fields.join(',');
+				}
+
+				if (permission.permission) {
+					permission.permission = JSON.stringify(permission.permission);
+				}
+
+				if (permission.validation) {
+					permission.validation = JSON.stringify(permission.validation);
+				}
+
+				if (permission.presets) {
+					permission.presets = JSON.stringify(permission.presets);
 				}
 
 				rolePermissions.push({ role: role.id, ...omit(permission, ['id', 'policy']) });
