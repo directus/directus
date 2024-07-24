@@ -8,7 +8,7 @@ import type { Driver, TusDriver } from '@directus/storage';
 import { supportsTus } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
-import { Server } from '@tus/server';
+import { Server, EVENTS } from '@tus/server';
 import { RESUMABLE_UPLOADS } from '../../constants.js';
 import { getStorage } from '../../storage/index.js';
 import { extractMetadata } from '../files/lib/extract-metadata.js';
@@ -41,11 +41,11 @@ async function createTusStore(context: Context) {
 	});
 }
 
-export async function createTusServer(context: Context) {
+export async function createTusServer(context: Context): Promise<[Server, () => void]> {
 	const env = useEnv();
 	const store = await createTusStore(context);
 
-	return new Server({
+	const server = new Server({
 		path: '/files/tus',
 		datastore: store,
 		locker: getTusLocker(),
@@ -97,4 +97,14 @@ export async function createTusServer(context: Context) {
 		},
 		relativeLocation: String(env['PUBLIC_URL']).startsWith('http'),
 	});
+
+	server.on(EVENTS.POST_CREATE, async (_req, res, upload) => {
+		res.setHeader('Directus-File-Id', upload.metadata!['id']!);
+	});
+
+	return [server, cleanup];
+
+	function cleanup() {
+		server.removeAllListeners();
+	}
 }

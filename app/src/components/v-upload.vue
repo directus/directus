@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import api from '@/api';
+import type { File } from '@directus/types';
 import { emitter, Events } from '@/events';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import { sum } from 'lodash';
-import { computed, ref } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Upload } from 'tus-js-client';
 
@@ -46,6 +47,10 @@ const { url, isValidURL, loading: urlLoading, importFromURL } = useURLImport();
 const { setSelection } = useSelection();
 const activeDialog = ref<'choose' | 'url' | null>(null);
 const input = ref<HTMLInputElement>();
+
+onUnmounted(() => {
+	uploadController?.abort();
+});
 
 function validFiles(files: FileList) {
 	if (files.length === 0) return false;
@@ -125,9 +130,13 @@ function useUpload() {
 					preset,
 				});
 
-				uploadedFiles && emit('input', uploadedFiles);
+				uploadedFiles &&
+					emit(
+						'input',
+						uploadedFiles.filter((f): f is File => !!f),
+					);
 			} else {
-				const uploadedFile = await uploadFile(Array.from(files)[0] as File, {
+				const uploadedFile = await uploadFile(Array.from(files)[0]!, {
 					onProgressChange: (percentage) => {
 						progress.value = percentage;
 						done.value = percentage === 100 ? 1 : 0;
