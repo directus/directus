@@ -8,10 +8,10 @@ import { Collection } from '@/types/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { PERMISSION_ACTIONS } from '@directus/constants';
 import { appAccessMinimalPermissions, isSystemCollection } from '@directus/system-data';
-import { Filter, Permission, PermissionsAction, type Alterations } from '@directus/types';
+import { type Alterations, Filter, Permission, PermissionsAction } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
-import { Ref, computed, inject, nextTick, ref, toRefs, watch } from 'vue';
+import { computed, inject, nextTick, Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AddCollectionRow from './add-collection-row.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
@@ -589,16 +589,16 @@ function useGroupedPermissions() {
 			{{ t('admins_have_all_permissions') }}
 		</v-notice>
 
-	<div v-else-if="!loading || allPermissions.length > 0" class="permissions-list">
-		<table>
-			<permissions-header />
+		<div v-else-if="!loading || allPermissions.length > 0" class="permissions-list">
+			<table ref="permissionsTable">
+				<permissions-header />
 
 				<tbody>
 					<tr v-if="allPermissions.length === 0">
-            <td class="empty-state" colspan="7">
-              {{ t('no_permissions') }}
-            </td>
-          </tr>
+						<td class="empty-state" colspan="7">
+							{{ t('no_permissions') }}
+						</td>
+					</tr>
 
 					<permissions-row
 						v-for="group in regularPermissions"
@@ -642,10 +642,10 @@ function useGroupedPermissions() {
 						@set-full-access="setFullAccess(group.collection.collection, $event)"
 						@set-no-access="setNoAccess(group.collection.collection, $event)"
 					/>
-			</tbody>
+				</tbody>
 
-			<tfoot>
-				<tr v-if="appAccess">
+				<tfoot>
+					<tr v-if="appAccess">
 						<td colspan="7" class="reset-toggle">
 							<span>
 								{{ t('reset_system_permissions_to') }}
