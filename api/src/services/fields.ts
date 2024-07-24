@@ -70,18 +70,18 @@ export class FieldsService {
 	async columnInfo(collection?: string): Promise<Column[]>;
 	async columnInfo(collection: string, field: string): Promise<Column>;
 	async columnInfo(collection?: string, field?: string): Promise<Column | Column[]> {
-		const cacheIsEnabled = Boolean(env['CACHE_ENABLED']);
+		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
 
 		let columnInfo: Column[] | null = null;
 
-		if (cacheIsEnabled) {
+		if (schemaCacheIsEnabled) {
 			columnInfo = await getCacheValue(this.systemCache, 'columnInfo');
 		}
 
 		if (!columnInfo) {
 			columnInfo = await this.schemaInspector.columnInfo();
 
-			if (cacheIsEnabled) {
+			if (schemaCacheIsEnabled) {
 				setCacheValue(this.systemCache, 'columnInfo', columnInfo);
 			}
 		}
