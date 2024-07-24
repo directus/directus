@@ -35,13 +35,18 @@ defineEmits(['apply']);
 const { t } = useI18n();
 
 const detailOpen = ref(props.start === 'open');
+const isFirstLoading = ref(true);
 
 // In case that conditions change the start prop after the group already got rendered
 // caused by the async loading of data to run the conditions against
 watch(
 	() => props.loading,
 	(newVal) => {
-		if (!newVal) detailOpen.value = props.start === 'open';
+		if (!newVal && isFirstLoading.value) {
+			if(isFirstLoading.value) isFirstLoading.value = false;
+
+			detailOpen.value = props.start === 'open';
+		}
 	},
 );
 
