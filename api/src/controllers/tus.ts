@@ -31,7 +31,7 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 		const action = mapAction(req.method);
 
 		if (action === 'create') {
-			// checkAccess doesnt seem to work as expected for "create" actions
+			// checkAccess doesn't seem to work as expected for "create" actions
 			const hasPermission = Boolean(
 				req.accountability?.permissions?.find((permission) => {
 					return permission.collection === 'directus_files' && permission.action === action;
@@ -52,12 +52,14 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 });
 
 const handler = asyncHandler(async (req, res) => {
-	const tusServer = await createTusServer({
+	const [tusServer, cleanupServer] = await createTusServer({
 		schema: req.schema,
 		accountability: req.accountability,
 	});
 
 	await tusServer.handle(req, res);
+
+	cleanupServer();
 });
 
 export function scheduleTusCleanup() {
@@ -65,11 +67,13 @@ export function scheduleTusCleanup() {
 
 	if (validateCron(RESUMABLE_UPLOADS.SCHEDULE)) {
 		scheduleSynchronizedJob('tus-cleanup', RESUMABLE_UPLOADS.SCHEDULE, async () => {
-			const tusServer = await createTusServer({
+			const [tusServer, cleanupServer] = await createTusServer({
 				schema: await getSchema(),
 			});
 
 			await tusServer.cleanUpExpiredUploads();
+
+			cleanupServer();
 		});
 	}
 }

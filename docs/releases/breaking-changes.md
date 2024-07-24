@@ -13,6 +13,16 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 10.14.0
+
+### Updated Date Fields for Files
+
+In order to make it possible to recognize when a file was last replaced, the following changes have been made to the
+date fields:
+
+- A new `created_on` field has been introduced, which contains the initial date of creation
+- The `uploaded_on` field is now updated with every file upload/replacement
+
 ## Version 10.12.2
 
 ### Disallowed Mutation of Special System Collections via Relations
