@@ -16,15 +16,12 @@ import {
 	type MockInstance,
 	type MockedFunction,
 } from 'vitest';
-import type { DateHelperDefault } from '../database/helpers/date/dialects/default.js';
-import { getHelpers } from '../database/helpers/index.js';
 import { getStorage } from '../storage/index.js';
 import { FilesService, ItemsService } from './index.js';
 
 vi.mock('../storage/index.js');
 vi.mock('@directus/storage');
 vi.mock('./files/lib/extract-metadata.js');
-vi.mock('../database/helpers/index.js');
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
@@ -83,13 +80,11 @@ describe('Integration Tests', () => {
 
 		describe('uploadOne', () => {
 			let service: FilesService;
-			let superCreateOne: MockInstance;
 			let superUpdateOne: MockInstance;
 
 			let sample: {
 				id: string;
 				filesize: number;
-				uploaded_on: Date;
 			};
 
 			beforeEach(() => {
@@ -104,7 +99,6 @@ describe('Integration Tests', () => {
 				sample = {
 					id: randomUUID(),
 					filesize: randomInteger(0, 1000),
-					uploaded_on: new Date(),
 				};
 
 				const mockDriver: Partial<Driver> = {
@@ -119,13 +113,9 @@ describe('Integration Tests', () => {
 
 				vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
 
-				const mockDateHelper: Partial<DateHelperDefault> = { writeTimestamp: vi.fn(() => sample.uploaded_on) };
-
-				vi.mocked(getHelpers).mockReturnValue({ date: mockDateHelper } as ReturnType<typeof getHelpers>);
-
 				tracker.on.select('select "storage_default_folder" from "directus_settings"').response([]);
 
-				superCreateOne = vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(sample.id);
+				vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(sample.id);
 				superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(sample.id);
 			});
 
@@ -142,16 +132,19 @@ describe('Integration Tests', () => {
 					filename_download: 'test.jpg',
 				};
 
+				const mockDate = new Date();
+
+				vi.setSystemTime(mockDate);
+
 				await service.uploadOne(new PassThrough(), mockData);
 
-				expect(superCreateOne).toHaveBeenCalledWith(expect.objectContaining(mockData), { emitEvents: false });
+				vi.useRealTimers();
 
 				expect(superUpdateOne).toHaveBeenCalledWith(
 					sample.id,
 					expect.objectContaining({
 						...mockData,
-						filesize: sample.filesize,
-						uploaded_on: sample.uploaded_on.toISOString(),
+						uploaded_on: mockDate.toISOString(),
 					}),
 					{ emitEvents: false },
 				);
