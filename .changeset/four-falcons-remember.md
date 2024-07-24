@@ -2,4 +2,4 @@
 '@directus/api': minor
 ---
 
-Caching foreign keys as part of schema caching
+Enabled caching of foreign keys as part of schema caching
