@@ -164,16 +164,22 @@ export function getDatabase(): Knex {
 	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
-	const times: Record<string, number> = {};
+	const times = new Map<string, number>();
 
 	database
-		.on('query', (queryInfo: QueryInfo) => {
-			times[queryInfo.__knexUid] = performance.now();
+		.on('query', ({ __knexUid }: QueryInfo) => {
+			times.set(__knexUid, performance.now());
 		})
 		.on('query-response', (_response, queryInfo: QueryInfo) => {
-			const delta = performance.now() - times[queryInfo.__knexUid]!;
-			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings?.join(', ')}]`);
-			delete times[queryInfo.__knexUid];
+			const time = times.get(queryInfo.__knexUid);
+			let delta;
+
+			if (time) {
+				delta = performance.now() - time;
+				times.delete(queryInfo.__knexUid);
+			}
+
+			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${(queryInfo.bindings ?? []).join(', ')}]`);
 		});
 
 	return database;
