@@ -2,4 +2,4 @@
 '@directus/api': minor
 ---
 
-Caching field information as part of schema caching
+Enabled caching of field information as part of schema caching
