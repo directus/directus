@@ -84,16 +84,16 @@ export class LogsHandler {
 	 * @param client
 	 */
 	subscribe(logLevel: string, client: WebSocketClient) {
-		let allowedLogLevels = [];
+		let allowedLogLevelNames = [];
 
 		try {
-			allowedLogLevels = getAllowedLogLevels(logLevel);
+			allowedLogLevelNames = Object.keys(getAllowedLogLevels(logLevel));
 		} catch (error) {
 			throw new WebSocketError('logs', ErrorCode.InvalidPayload, (error as Error).message);
 		}
 
 		for (const availableLogLevel of this.availableLogLevels) {
-			if (allowedLogLevels.includes(availableLogLevel)) {
+			if (allowedLogLevelNames.includes(availableLogLevel)) {
 				this.subscriptions[availableLogLevel]?.add(client);
 			} else {
 				this.subscriptions[availableLogLevel]?.delete(client);
