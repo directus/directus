@@ -51,18 +51,18 @@ export class RelationsService {
 	}
 
 	async foreignKeys(collection?: string) {
-		const cacheIsEnabled = Boolean(env['CACHE_ENABLED']);
+		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
 
 		let foreignKeys: ForeignKey[] | null = null;
 
-		if (cacheIsEnabled) {
+		if (schemaCacheIsEnabled) {
 			foreignKeys = await getCacheValue(this.systemCache, 'foreignKeys');
 		}
 
 		if (!foreignKeys) {
 			foreignKeys = await this.schemaInspector.foreignKeys();
 
-			if (cacheIsEnabled) {
+			if (schemaCacheIsEnabled) {
 				setCacheValue(this.systemCache, 'foreignKeys', foreignKeys);
 			}
 		}
