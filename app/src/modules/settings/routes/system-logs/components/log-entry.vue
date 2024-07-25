@@ -24,12 +24,12 @@ const { t } = useI18n();
 			<v-icon v-if="expanded" name="expand_more" />
 			<v-icon v-else name="chevron_right" />
 			<span class="timestamp">
-				{{ localizedFormat(props.log.data.time, `${t('date-fns_date')} ${t('date-fns_time_24hour')}`) }}
+				{{ localizedFormat(props.log.data.time, `${t('date-fns_time_24hour')}`) }}
 			</span>
+			<v-chip small class="instance">{{ instances.indexOf(props.log.instance) + 1 }}</v-chip>
 			<span class="message">{{ props.log.data.msg }}</span>
 			<div class="labels">
-				<v-chip small>{{ instances.indexOf(props.log.instance) + 1 }}</v-chip>
-				<v-chip small>{{ logLevelLabel }}</v-chip>
+				<v-chip small class="log-level">{{ logLevelLabel }}</v-chip>
 			</div>
 		</div>
 		<div v-if="expanded" class="raw-log">
@@ -62,7 +62,6 @@ const { t } = useI18n();
 
 .timestamp {
 	flex-shrink: 0;
-	margin-right: 6px;
 	color: var(--theme--foreground-subdued);
 }
 
@@ -94,7 +93,16 @@ const { t } = useI18n();
 	flex-shrink: 0;
 }
 
+.log-level {
+	--v-chip-background-color: var(--theme--primary);
+}
+
+.instance {
+	--v-chip-background-color: var(--theme--background-accent);
+}
+
 .v-chip {
 	margin-left: 6px;
+	margin-right: 6px;
 }
 </style>

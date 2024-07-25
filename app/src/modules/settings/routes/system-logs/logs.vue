@@ -73,7 +73,8 @@ const filteredLogs = computed(() => {
 	return logs.value.filter((log) => {
 		return (
 			filterOptions.value.logLevelValues.includes(log.data.level) &&
-			(!filterOptions.value.nodeIds || filterOptions.value.nodeIds.includes(log.instance)) &&
+			filterOptions.value.nodeIds &&
+			filterOptions.value.nodeIds.includes(log.instance) &&
 			JSON.stringify(log).toLowerCase().includes(filterOptions.value.search.toLowerCase())
 		);
 	});
@@ -107,7 +108,7 @@ const fields = computed(() => {
 				interface: 'select-multiple-dropdown',
 				options: {
 					choices: instances.value.map((nodeId, index) => ({
-						text: `${index + 1} (${nodeId})`,
+						text: `Instance ${index + 1}`,
 						value: nodeId,
 					})),
 					allowNone: true,
