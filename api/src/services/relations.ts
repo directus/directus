@@ -49,7 +49,7 @@ export class RelationsService {
 
 		const cache = getCache();
 		this.systemCache = cache.systemCache;
-		this.schemaCache = cache.sharedSchemaCache;
+		this.schemaCache = cache.localSchemaCache;
 		this.helpers = getHelpers(this.knex);
 	}
 
