@@ -45,6 +45,7 @@ export class FieldsService {
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
+	schemaCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -55,10 +56,11 @@ export class FieldsService {
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
 
-		const { cache, systemCache } = getCache();
+		const { cache, systemCache, localSchemaCache } = getCache();
 
 		this.cache = cache;
 		this.systemCache = systemCache;
+		this.schemaCache = localSchemaCache;
 	}
 
 	private get hasReadAccess() {
@@ -75,14 +77,14 @@ export class FieldsService {
 		let columnInfo: Column[] | null = null;
 
 		if (schemaCacheIsEnabled) {
-			columnInfo = await getCacheValue(this.systemCache, 'columnInfo');
+			columnInfo = await getCacheValue(this.schemaCache, 'columnInfo');
 		}
 
 		if (!columnInfo) {
 			columnInfo = await this.schemaInspector.columnInfo();
 
 			if (schemaCacheIsEnabled) {
-				setCacheValue(this.systemCache, 'columnInfo', columnInfo);
+				setCacheValue(this.schemaCache, 'columnInfo', columnInfo);
 			}
 		}
 
