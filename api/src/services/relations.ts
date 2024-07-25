@@ -29,6 +29,7 @@ export class RelationsService {
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
 	systemCache: Keyv<any>;
+	schemaCache: Keyv<any>;
 	helpers: Helpers;
 
 	constructor(options: AbstractServiceOptions) {
@@ -46,7 +47,9 @@ export class RelationsService {
 			// happens in `filterForbidden` down below
 		});
 
-		this.systemCache = getCache().systemCache;
+		const cache = getCache();
+		this.systemCache = cache.systemCache;
+		this.schemaCache = cache.sharedSchemaCache;
 		this.helpers = getHelpers(this.knex);
 	}
 
@@ -56,14 +59,14 @@ export class RelationsService {
 		let foreignKeys: ForeignKey[] | null = null;
 
 		if (schemaCacheIsEnabled) {
-			foreignKeys = await getCacheValue(this.systemCache, 'foreignKeys');
+			foreignKeys = await getCacheValue(this.schemaCache, 'foreignKeys');
 		}
 
 		if (!foreignKeys) {
 			foreignKeys = await this.schemaInspector.foreignKeys();
 
 			if (schemaCacheIsEnabled) {
-				setCacheValue(this.systemCache, 'foreignKeys', foreignKeys);
+				setCacheValue(this.schemaCache, 'foreignKeys', foreignKeys);
 			}
 		}
 
