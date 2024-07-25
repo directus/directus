@@ -4,12 +4,18 @@ import { useServerStore } from '@/stores/server';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { realtime } from '@directus/sdk';
 import { upperFirst } from 'lodash';
-import { computed, nextTick, ref, Ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import LogsDisplay from './components/logs-display.vue';
 import SystemLogsSidebarDetail from './components/system-logs-sidebar-detail.vue';
 import { Log } from './types';
+
+type LogsFilter = {
+	logLevelNames: string[] | null;
+	logLevelValues: number[];
+	nodeIds: string[] | null;
+};
 
 const { t } = useI18n();
 const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
@@ -18,9 +24,12 @@ const logs = ref<Log[]>([]);
 const serverStore = useServerStore();
 let allowedLogLevels: Record<string, number> = {};
 const allowedLogLevelNames: string[] = [];
+const instances = ref<string[]>([]);
 const search = ref<string | null>('');
 const maxLogLevelName = ref('');
-const activeFilterLevels: Ref<Set<number>> = ref(new Set());
+const activeLogLevelValues = ref<number[]>([]);
+const activeInstances = ref<string[]>([]);
+const filterOptions = ref<LogsFilter>({ logLevelNames: [], logLevelValues: [], nodeIds: [] });
 const streamStarted = ref(false);
 const maxLogs = 10_000;
 
@@ -34,36 +43,85 @@ if (serverStore.info?.websocket) {
 			}
 
 			allowedLogLevelNames.push(logLevelName);
-
-			activeFilterLevels.value.add(logLevelValue);
+			(filterOptions.value.logLevelNames || (filterOptions.value.logLevelNames = [])).push(logLevelName);
+			filterOptions.value.logLevelValues.push(logLevelValue);
 		}
 	}
 }
 
+const filterOptionsUpdated = ({ logLevelNames, nodeIds }: LogsFilter) => {
+	if (logLevelNames) {
+		if (logLevelNames?.length === 0) {
+			filterOptions.value.logLevelNames = null;
+		}
+
+		filterOptions.value.logLevelValues = logLevelNames
+			.map((level) => allowedLogLevels[level])
+			.filter((level) => level !== undefined);
+	}
+
+	if (nodeIds) {
+		if (nodeIds.length === 0) {
+			filterOptions.value.nodeIds = null;
+		}
+
+		activeInstances.value = nodeIds;
+	}
+};
+
 const filteredLogs = computed(() => {
 	return logs.value.filter((log) => {
 		return (
-			activeFilterLevels.value.has(log.data.level) && JSON.stringify(log).includes(search.value?.toLowerCase() || '')
+			filterOptions.value.logLevelValues.includes(log.data.level) &&
+			(!filterOptions.value.nodeIds || filterOptions.value.nodeIds.includes(log.uid)) &&
+			JSON.stringify(log).includes(search.value?.toLowerCase() || '')
 		);
 	});
 });
 
-watch([search, activeFilterLevels.value], async () => {
+const fields = computed(() => {
+	return [
+		{
+			field: 'logLevelNames',
+			name: 'Log Level',
+			type: 'string',
+			meta: {
+				interface: 'select-multiple-dropdown',
+				options: {
+					choices: allowedLogLevelNames
+						? allowedLogLevelNames.map((logLevel) => ({
+								text: upperFirst(logLevel),
+								value: logLevel,
+						  }))
+						: [],
+					allowNone: true,
+				},
+				width: 'half',
+			},
+		},
+		{
+			field: 'nodeIds',
+			name: 'Instance',
+			type: 'string',
+			meta: {
+				interface: 'select-multiple-dropdown',
+				options: {
+					choices: instances.value.map((nodeId, index) => ({
+						text: `${index + 1} (${nodeId})`,
+						value: nodeId,
+					})),
+					allowNone: true,
+				},
+				width: 'half',
+			},
+		},
+	];
+});
+
+watch([search, activeLogLevelValues.value], async () => {
 	await nextTick();
 	logsDisplay.value?.scrollToBottom();
 });
-
-const toggleLogLevel = (logLevel: string) => {
-	const logLevelValue = allowedLogLevels[logLevel];
-
-	if (logLevelValue === undefined) return;
-
-	if (activeFilterLevels.value.has(logLevelValue)) {
-		activeFilterLevels.value.delete(logLevelValue);
-	} else {
-		activeFilterLevels.value.add(logLevelValue);
-	}
-};
 
 client.onWebSocket('open', () => {
 	client.sendMessage({ type: 'subscribe', log_level: maxLogLevelName.value });
@@ -74,6 +132,14 @@ client.onWebSocket('message', function (message) {
 
 	if (type == 'logs' && data) {
 		logs.value.push({ uid, data });
+
+		if (!instances.value.includes(uid)) {
+			if (filterOptions.value.nodeIds?.length === instances.value.length) {
+				filterOptions.value.nodeIds.push(uid);
+			}
+
+			instances.value.push(uid);
+		}
 
 		if (logs.value.length > maxLogs) logs.value.splice(0, 1);
 	}
@@ -133,7 +199,7 @@ function clearLogs() {
 				rounded
 				icon
 				:disabled="logs.length === 0"
-				class="action-delete"
+				class="action-clear"
 				@click="clearLogs"
 			>
 				<v-icon name="delete" />
@@ -145,18 +211,7 @@ function clearLogs() {
 		</template>
 
 		<div class="logs-container">
-			<div class="controls">
-				<v-chip
-					v-for="logLevelName in allowedLogLevelNames"
-					:key="logLevelName"
-					:outlined="allowedLogLevels[logLevelName] && !activeFilterLevels.has(allowedLogLevels[logLevelName])"
-					large
-					class="log-level-chip clickable"
-					@click="toggleLogLevel(logLevelName)"
-				>
-					{{ upperFirst(logLevelName) }}
-				</v-chip>
-			</div>
+			<v-form v-model="filterOptions" :fields="fields" @update:model-value="filterOptionsUpdated"></v-form>
 			<logs-display ref="logsDisplay" :logs="filteredLogs" :log-levels="allowedLogLevels" class="logs-display" />
 		</div>
 
@@ -167,12 +222,6 @@ function clearLogs() {
 </template>
 
 <style lang="scss" scoped>
-.controls {
-	display: flex;
-	padding-bottom: var(--content-padding);
-	width: 100%;
-}
-
 .log-level-chip {
 	margin-right: 8px;
 	--v-chip-background-color: var(--theme--background-normal);
@@ -187,11 +236,8 @@ function clearLogs() {
 	padding-bottom: var(--content-padding-bottom);
 }
 
-.center {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
+.v-form {
+	padding-bottom: var(--content-padding);
 }
 
 .logs-display {
@@ -206,7 +252,7 @@ function clearLogs() {
 	--v-button-color-hover-disabled: var(--theme--primary);
 }
 
-.action-delete {
+.action-clear {
 	--v-button-background-color: var(--danger-10);
 	--v-button-color: var(--theme--danger);
 	--v-button-background-color-hover: var(--danger-25);
