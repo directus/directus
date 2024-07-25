@@ -17,6 +17,13 @@ import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
 import { getHelpers } from './helpers/index.js';
 
+type QueryInfo = Partial<Knex.Sql> & {
+	sql: Knex.Sql['sql'];
+	__knexUid: string;
+	__knexTxId: string;
+	[key: string | number | symbol]: any;
+};
+
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
 let databaseVersion: string | null = null;
@@ -157,16 +164,22 @@ export function getDatabase(): Knex {
 	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
-	const times: Record<string, number> = {};
+	const times = new Map<string, number>();
 
 	database
-		.on('query', (queryInfo) => {
-			times[queryInfo.__knexUid] = performance.now();
+		.on('query', ({ __knexUid }: QueryInfo) => {
+			times.set(__knexUid, performance.now());
 		})
-		.on('query-response', (_response, queryInfo) => {
-			const delta = performance.now() - times[queryInfo.__knexUid]!;
-			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
-			delete times[queryInfo.__knexUid];
+		.on('query-response', (_response, queryInfo: QueryInfo) => {
+			const time = times.get(queryInfo.__knexUid);
+			let delta;
+
+			if (time) {
+				delta = performance.now() - time;
+				times.delete(queryInfo.__knexUid);
+			}
+
+			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${(queryInfo.bindings ?? []).join(', ')}]`);
 		});
 
 	return database;

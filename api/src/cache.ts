@@ -1,6 +1,5 @@
 import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
-import { getSimpleHash } from '@directus/utils';
 import type { Options } from 'keyv';
 import Keyv from 'keyv';
 import { useBus } from './bus/index.js';
@@ -21,7 +20,6 @@ const require = createRequire(import.meta.url);
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
 let localSchemaCache: Keyv | null = null;
-let sharedSchemaCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
 let messengerSubscribed = false;
 
@@ -37,20 +35,21 @@ interface CacheMessage {
 	autoPurgeCache: boolean | undefined;
 }
 
-if (redisConfigAvailable() && env['CACHE_STORE'] === 'memory' && env['CACHE_AUTO_PURGE'] && !messengerSubscribed) {
+if (redisConfigAvailable() && !messengerSubscribed) {
 	messengerSubscribed = true;
 
 	messenger.subscribe<CacheMessage>('schemaChanged', async (opts) => {
-		if (cache && opts?.['autoPurgeCache'] !== false) {
+		if (env['CACHE_STORE'] === 'memory' && env['CACHE_AUTO_PURGE'] && cache && opts?.['autoPurgeCache'] !== false) {
 			await cache.clear();
 		}
+
+		await localSchemaCache?.clear();
 	});
 }
 
 export function getCache(): {
 	cache: Keyv | null;
 	systemCache: Keyv;
-	sharedSchemaCache: Keyv;
 	localSchemaCache: Keyv;
 	lockCache: Keyv;
 } {
@@ -65,16 +64,6 @@ export function getCache(): {
 		systemCache.on('error', (err) => logger.warn(err, `[system-cache] ${err}`));
 	}
 
-	if (sharedSchemaCache === null) {
-		sharedSchemaCache = getKeyvInstance(
-			env['CACHE_STORE'] as Store,
-			getMilliseconds(env['CACHE_SYSTEM_TTL']),
-			'_schema_shared',
-		);
-
-		sharedSchemaCache.on('error', (err) => logger.warn(err, `[shared-schema-cache] ${err}`));
-	}
-
 	if (localSchemaCache === null) {
 		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema');
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
@@ -85,7 +74,7 @@ export function getCache(): {
 		lockCache.on('error', (err) => logger.warn(err, `[lock-cache] ${err}`));
 	}
 
-	return { cache, systemCache, sharedSchemaCache, localSchemaCache, lockCache };
+	return { cache, systemCache, localSchemaCache, lockCache };
 }
 
 export async function flushCaches(forced?: boolean): Promise<void> {
@@ -98,7 +87,7 @@ export async function clearSystemCache(opts?: {
 	forced?: boolean | undefined;
 	autoPurgeCache?: false | undefined;
 }): Promise<void> {
-	const { systemCache, localSchemaCache, lockCache, sharedSchemaCache } = getCache();
+	const { systemCache, localSchemaCache, lockCache } = getCache();
 
 	// Flush system cache when forced or when system cache lock not set
 	if (opts?.forced || !(await lockCache.get('system-cache-lock'))) {
@@ -107,7 +96,6 @@ export async function clearSystemCache(opts?: {
 		await lockCache.delete('system-cache-lock');
 	}
 
-	await sharedSchemaCache.clear();
 	await localSchemaCache.clear();
 	messenger.publish<CacheMessage>('schemaChanged', { autoPurgeCache: opts?.autoPurgeCache });
 }
@@ -127,23 +115,13 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 }
 
 export async function setSchemaCache(schema: SchemaOverview): Promise<void> {
-	const { localSchemaCache, sharedSchemaCache } = getCache();
-	const schemaHash = getSimpleHash(JSON.stringify(schema));
-
-	await sharedSchemaCache.set('hash', schemaHash);
+	const { localSchemaCache } = getCache();
 
 	await localSchemaCache.set('schema', schema);
-	await localSchemaCache.set('hash', schemaHash);
 }
 
 export async function getSchemaCache(): Promise<SchemaOverview | undefined> {
-	const { localSchemaCache, sharedSchemaCache } = getCache();
-
-	const sharedSchemaHash = await sharedSchemaCache.get('hash');
-	if (!sharedSchemaHash) return;
-
-	const localSchemaHash = await localSchemaCache.get('hash');
-	if (!localSchemaHash || localSchemaHash !== sharedSchemaHash) return;
+	const { localSchemaCache } = getCache();
 
 	return await localSchemaCache.get('schema');
 }
