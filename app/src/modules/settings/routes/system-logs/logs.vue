@@ -15,6 +15,7 @@ type LogsFilter = {
 	logLevelNames: string[] | null;
 	logLevelValues: number[];
 	nodeIds: string[] | null;
+	search: string;
 };
 
 const { t } = useI18n();
@@ -25,11 +26,9 @@ const serverStore = useServerStore();
 let allowedLogLevels: Record<string, number> = {};
 const allowedLogLevelNames: string[] = [];
 const instances = ref<string[]>([]);
-const search = ref<string | null>('');
 const maxLogLevelName = ref('');
-const activeLogLevelValues = ref<number[]>([]);
 const activeInstances = ref<string[]>([]);
-const filterOptions = ref<LogsFilter>({ logLevelNames: [], logLevelValues: [], nodeIds: [] });
+const filterOptions = ref<LogsFilter>({ logLevelNames: [], logLevelValues: [], nodeIds: [], search: '' });
 const streamStarted = ref(false);
 const maxLogs = 10_000;
 
@@ -74,7 +73,7 @@ const filteredLogs = computed(() => {
 		return (
 			filterOptions.value.logLevelValues.includes(log.data.level) &&
 			(!filterOptions.value.nodeIds || filterOptions.value.nodeIds.includes(log.uid)) &&
-			JSON.stringify(log).includes(search.value?.toLowerCase() || '')
+			JSON.stringify(log).includes(filterOptions.value.search.toLowerCase() || '')
 		);
 	});
 });
@@ -118,7 +117,7 @@ const fields = computed(() => {
 	];
 });
 
-watch([search, activeLogLevelValues.value], async () => {
+watch([filterOptions.value], async () => {
 	await nextTick();
 	logsDisplay.value?.scrollToBottom();
 });
@@ -180,7 +179,7 @@ function clearLogs() {
 		</template>
 
 		<template #actions>
-			<search-input v-model="search" :placeholder="t('search_logs')" :show-filter="false" />
+			<search-input v-model="filterOptions.search" :placeholder="t('search_logs')" :show-filter="false" />
 
 			<v-button
 				v-if="!streamStarted"
