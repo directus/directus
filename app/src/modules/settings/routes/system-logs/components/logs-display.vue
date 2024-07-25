@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useVirtualList } from '@vueuse/core';
+import { computed, nextTick } from 'vue';
 import { Log } from '../types';
-import { computed } from 'vue';
 import LogEntry from './log-entry.vue';
-import { nextTick } from 'vue';
 
 interface Props {
 	logs: Log[];
 	logLevels: Record<string, number>;
+	instances: string[];
 }
 
 const props = defineProps<Props>();
@@ -41,12 +41,13 @@ defineExpose({ scrollToIndex, scrollToBottom });
 				:key="data.data.level + data.data.time + data.data.msg"
 				:log="data"
 				:log-levels="logLevels"
+				:instances="instances"
 			/>
 		</div>
 	</div>
 </template>
 
-<style>
+<style lang="scss" scoped>
 .log-container {
 	min-height: 300px;
 	overflow-y: auto;

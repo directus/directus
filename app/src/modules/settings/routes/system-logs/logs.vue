@@ -212,7 +212,13 @@ function clearLogs() {
 
 		<div class="logs-container">
 			<v-form v-model="filterOptions" :fields="fields" @update:model-value="filterOptionsUpdated"></v-form>
-			<logs-display ref="logsDisplay" :logs="filteredLogs" :log-levels="allowedLogLevels" class="logs-display" />
+			<logs-display
+				ref="logsDisplay"
+				:logs="filteredLogs"
+				:log-levels="allowedLogLevels"
+				:instances="instances"
+				class="logs-display"
+			/>
 		</div>
 
 		<template #sidebar>

@@ -1,34 +1,44 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Log } from '../types';
+import { localizedFormat } from '@/utils/localized-format';
 import { upperFirst } from 'lodash';
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Log } from '../types';
 
 interface Props {
 	log: Log;
 	logLevels: Record<string, number>;
+	instances: string[];
 }
 
 const props = withDefaults(defineProps<Props>(), {});
 const expanded = ref(false);
 const rawData = JSON.stringify(props.log.data, null, '\t');
 const logLevelLabel = upperFirst(Object.entries(props.logLevels).find(([_, val]) => val === props.log.data.level)?.[0]);
+const { t } = useI18n();
 </script>
 
 <template>
 	<div :class="['log-entry', { expanded }]" @click="expanded = !expanded">
-		<span class="log-overview">
+		<div class="log-overview">
 			<v-icon v-if="expanded" name="expand_more" />
 			<v-icon v-else name="chevron_right" />
-			<v-chip small>{{ logLevelLabel }}</v-chip>
-			{{ props.log.uid }}: {{ props.log.data.msg }}
-		</span>
+			<span class="timestamp">
+				{{ localizedFormat(props.log.data.time, `${t('date-fns_date')} ${t('date-fns_time_24hour')}`) }}
+			</span>
+			<span class="message">{{ props.log.data.msg }}</span>
+			<div class="labels">
+				<v-chip small>{{ instances.indexOf(props.log.uid) + 1 }}</v-chip>
+				<v-chip small>{{ logLevelLabel }}</v-chip>
+			</div>
+		</div>
 		<div v-if="expanded" class="raw-log">
 			<pre>{{ rawData }}</pre>
 		</div>
 	</div>
 </template>
 
-<style>
+<style lang="scss" scoped>
 .log-entry {
 	padding: 4px;
 	min-height: 30px;
@@ -44,7 +54,24 @@ const logLevelLabel = upperFirst(Object.entries(props.logLevels).find(([_, val])
 }
 
 .log-overview {
-	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%; /* Or specify a fixed width if needed */
+}
+
+.timestamp {
+	flex-shrink: 0;
+	margin-right: 6px;
+	color: var(--theme--foreground-subdued);
+}
+
+.message {
+	flex-grow: 1;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	margin-right: 10px; /* Optional: space between text and button */
 }
 
 .expanded {
@@ -61,5 +88,13 @@ const logLevelLabel = upperFirst(Object.entries(props.logLevels).find(([_, val])
 	transition-property: border-color, box-shadow;
 	box-shadow: var(--theme--form--field--input--box-shadow);
 	overflow-x: scroll;
+}
+
+.labels {
+	flex-shrink: 0;
+}
+
+.v-chip {
+	margin-left: 6px;
 }
 </style>
