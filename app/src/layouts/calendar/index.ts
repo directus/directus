@@ -310,7 +310,7 @@ export default defineLayout<LayoutOptions>({
 			// last all day
 			const allDay = endDateFieldInfo.value && endDateFieldInfo.value.type === 'date';
 
-			if (endDateField.value) {
+			if (endDateField.value && item[endDateField.value]) {
 				const date = parse(item[endDateField.value], 'yyyy-MM-dd', new Date());
 
 				if (allDay && isValid(date)) {
