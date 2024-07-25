@@ -4,6 +4,7 @@ import { useServerStore } from '@/stores/server';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { realtime } from '@directus/sdk';
 import { upperFirst } from 'lodash';
+import { nanoid } from 'nanoid';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
@@ -72,8 +73,8 @@ const filteredLogs = computed(() => {
 	return logs.value.filter((log) => {
 		return (
 			filterOptions.value.logLevelValues.includes(log.data.level) &&
-			(!filterOptions.value.nodeIds || filterOptions.value.nodeIds.includes(log.uid)) &&
-			JSON.stringify(log).includes(filterOptions.value.search.toLowerCase() || '')
+			(!filterOptions.value.nodeIds || filterOptions.value.nodeIds.includes(log.instance)) &&
+			JSON.stringify(log).toLowerCase().includes(filterOptions.value.search.toLowerCase())
 		);
 	});
 });
@@ -130,7 +131,7 @@ client.onWebSocket('message', function (message) {
 	const { type, data, uid } = message;
 
 	if (type == 'logs' && data) {
-		logs.value.push({ uid, data });
+		logs.value.push({ id: nanoid(), instance: uid, data });
 
 		if (!instances.value.includes(uid)) {
 			if (filterOptions.value.nodeIds?.length === instances.value.length) {

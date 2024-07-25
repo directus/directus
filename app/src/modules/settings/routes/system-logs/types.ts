@@ -1,5 +1,6 @@
 export type Log = {
-	uid: string;
+	id: string;
+	instance: string;
 	data: Record<string, any> & {
 		level: number;
 		time: number;

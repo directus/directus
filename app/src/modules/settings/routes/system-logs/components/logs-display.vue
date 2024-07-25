@@ -36,13 +36,7 @@ defineExpose({ scrollToIndex, scrollToBottom });
 <template>
 	<div v-bind="containerProps" class="log-container">
 		<div v-bind="wrapperProps">
-			<log-entry
-				v-for="{ data } in list"
-				:key="data.data.level + data.data.time + data.data.msg"
-				:log="data"
-				:log-levels="logLevels"
-				:instances="instances"
-			/>
+			<log-entry v-for="{ data } in list" :key="data.id" :log="data" :log-levels="logLevels" :instances="instances" />
 		</div>
 	</div>
 </template>

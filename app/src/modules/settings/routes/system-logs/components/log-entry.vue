@@ -28,7 +28,7 @@ const { t } = useI18n();
 			</span>
 			<span class="message">{{ props.log.data.msg }}</span>
 			<div class="labels">
-				<v-chip small>{{ instances.indexOf(props.log.uid) + 1 }}</v-chip>
+				<v-chip small>{{ instances.indexOf(props.log.instance) + 1 }}</v-chip>
 				<v-chip small>{{ logLevelLabel }}</v-chip>
 			</div>
 		</div>
