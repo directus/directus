@@ -360,8 +360,8 @@ importers:
         specifier: 1.8.0
         version: 1.8.0
       tar:
-        specifier: 7.4.0
-        version: 7.4.0
+        specifier: 7.4.2
+        version: 7.4.2
       tsx:
         specifier: 4.12.0
         version: 4.12.0
@@ -8994,10 +8994,6 @@ packages:
     resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
     engines: {node: '>=8'}
 
-  minipass@7.1.1:
-    resolution: {integrity: sha512-UZ7eQ+h8ywIRAW1hIEl2AqdwzJucU/Kp59+8kkZeSvafXhZjul247BvIJjEVFVeON6d7lM46XX1HXCduKAS8VA==}
-    engines: {node: '>=16 || 14 >=14.17'}
-
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -11097,8 +11093,8 @@ packages:
     resolution: {integrity: sha512-/Wo7DcT0u5HUV486xg675HtjNd3BXZ6xDbzsCUZPt5iw8bTQ63bP0Raut3mvro9u+CUyq7YQd8Cx55fsZXxqLQ==}
     engines: {node: '>=10'}
 
-  tar@7.4.0:
-    resolution: {integrity: sha512-XQs0S8fuAkQWuqhDeCdMlJXDX80D7EOVLDPVFkna9yQfzS+PHKgfxcei0jf6/+QAWcjqrnC8uM3fSAnrQl+XYg==}
+  tar@7.4.2:
+    resolution: {integrity: sha512-pP4ToLATHpXOrbxOZudW6rnfyPWJZoyERNrpTpQEtW6LkvpXw+WDnpj2GBQX9tyQ6teUyPESyyiOCFgp6HnGdw==}
     engines: {node: '>=18'}
 
   tarn@3.0.2:
@@ -20662,8 +20658,6 @@ snapshots:
   minipass@5.0.0:
     optional: true
 
-  minipass@7.1.1: {}
-
   minipass@7.1.2: {}
 
   minisearch@6.3.0: {}
@@ -22906,7 +22900,7 @@ snapshots:
 
   ssri@10.0.5:
     dependencies:
-      minipass: 7.1.1
+      minipass: 7.1.2
 
   ssri@8.0.1:
     dependencies:
@@ -23262,7 +23256,7 @@ snapshots:
       yallist: 4.0.0
     optional: true
 
-  tar@7.4.0:
+  tar@7.4.2:
     dependencies:
       '@isaacs/fs-minipass': 4.0.0
       chownr: 3.0.0
