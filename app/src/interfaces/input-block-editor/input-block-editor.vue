@@ -43,6 +43,7 @@ const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFil
 
 const editorjsRef = ref<EditorJS>();
 const editorjsIsReady = ref(false);
+const isOnMounted = ref(false);
 const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
@@ -73,6 +74,7 @@ onMounted(async () => {
 		readOnly: false,
 		placeholder: props.placeholder,
 		minHeight: 72,
+		onReady: observeChangeEvent,
 		onChange: (api) => emitValue(api),
 		tools: tools,
 	});
@@ -89,6 +91,8 @@ onMounted(async () => {
 	if (props.autofocus) {
 		editorjsRef.value.focus();
 	}
+
+	isOnMounted.value = true;
 });
 
 onUnmounted(() => {
@@ -124,7 +128,7 @@ watch(
 	},
 );
 
-async function emitValue(context: EditorJS.API) {
+async function emitValue(context: EditorJS.API | EditorJS) {
 	if (props.disabled || !context || !context.saver) return;
 
 	try {
@@ -152,6 +156,21 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 		time: value?.time || Date.now(),
 		version: value?.version || '0.0.0',
 		blocks: value.blocks,
+	});
+}
+
+function observeChangeEvent() {
+	const observer = new MutationObserver(() => {
+		if (isOnMounted.value) emitValue(editorjsRef.value);
+	});
+
+	const redactor = editorElement.value.querySelector('.codex-editor__redactor');
+
+	observer.observe(redactor, {
+		childList: true,
+		subtree: true,
+		characterData: true,
+		attributes: true,
 	});
 }
 </script>
