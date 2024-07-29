@@ -16,7 +16,7 @@ type RoleAccess = {
 	enforce_tfa: boolean;
 };
 
-// Addapted from https://github.com/directus/directus/blob/141b8adbf4dd8e06530a7929f34e3fc68a522053/api/src/utils/merge-permissions.ts#L4
+// Adapted from https://github.com/directus/directus/blob/141b8adbf4dd8e06530a7929f34e3fc68a522053/api/src/utils/merge-permissions.ts#L4
 export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permission[][]) {
 	const allPermissions = flatten(permissions);
 
