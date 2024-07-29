@@ -40,7 +40,7 @@ const props = withDefaults(
 		enableLink?: boolean;
 		limit?: number;
 		sort?: string;
-		sort_direction: '+' | '-' | undefined;
+		sortDirection: '+' | '-' | undefined;
 	}>(),
 	{
 		value: () => [],
@@ -100,7 +100,7 @@ const limit = ref(props.limit);
 const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
-const sort = ref<Sort>();
+const manualSort = ref<Sort>();
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
@@ -114,8 +114,7 @@ const query = computed<RelationQueryMultiple>(() => {
 	}
 
 	if (props.sort && !relationInfo.value?.sortField) {
-		const direction = props.sort_direction ? props.sort_direction : '';
-		q.sort = [direction + props.sort];
+		q.sort = [`${props.sortDirection ?? ''}${props.sort}`];
 	}
 
 	if (searchFilter.value) {
@@ -126,8 +125,8 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.search = search.value;
 	}
 
-	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
+	if (manualSort.value) {
+		q.sort = [`${manualSort.value.desc ? '-' : ''}${manualSort.value.by}`];
 	}
 
 	return q;
