@@ -1,7 +1,7 @@
 import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
 import { processChunk, toBoolean } from '@directus/utils';
-import { flatten, intersection, isEqual, merge, omit } from 'lodash-es';
+import { flatten, intersection, isEqual, merge, omit, uniq } from 'lodash-es';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -91,7 +91,7 @@ export function mergePermission(
 
 	if (newPerm.fields) {
 		if (Array.isArray(currentPerm.fields) && strategy === 'or') {
-			fields = [...new Set([...currentPerm.fields, ...newPerm.fields])];
+			fields = uniq([...currentPerm.fields, ...newPerm.fields]);
 		} else if (Array.isArray(currentPerm.fields) && strategy === 'and') {
 			fields = intersection(currentPerm.fields, newPerm.fields);
 		} else {
