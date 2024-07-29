@@ -140,17 +140,9 @@ async function fetchRoleAccess(roles: string[], context: { knex: Knex }) {
 	const ipAccess = new Set();
 
 	for (const { admin_access, app_access, ip_access, enforce_tfa } of accessRows) {
-		if (toBoolean(admin_access)) {
-			roleAccess.admin_access = true;
-		}
-
-		if (toBoolean(app_access)) {
-			roleAccess.app_access = true;
-		}
-
-		if (toBoolean(enforce_tfa)) {
-			roleAccess.enforce_tfa = true;
-		}
+		roleAccess.admin_access ||= toBoolean(admin_access);
+		roleAccess.app_access ||= toBoolean(app_access);
+		roleAccess.enforce_tfa ||= toBoolean(enforce_tfa);
 
 		if (ip_access && ip_access.length) {
 			ip_access.split(',').forEach((ip: string) => ipAccess.add(ip));
