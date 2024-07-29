@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
-import { getAssetUrl } from '@/utils/get-asset-url';
 import { generateFavicon } from '@/utils/generate-favicon';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
@@ -75,6 +75,10 @@ const customCSS = computed(() => {
 
 const error = computed(() => appStore.error);
 
+const reload = () => {
+	window.location.reload();
+};
+
 useSystem();
 </script>
 
@@ -98,7 +102,9 @@ useSystem();
 			{{ t('unexpected_error_copy') }}
 
 			<template #append>
-				<v-error :error="error" />
+				<v-error class="error" :error="error" />
+
+				<v-button small @click="reload">{{ t('reload_page') }}</v-button>
 			</template>
 		</v-info>
 
@@ -136,5 +142,9 @@ useSystem();
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.error {
+	margin-bottom: 24px;
 }
 </style>

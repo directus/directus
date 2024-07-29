@@ -1,3 +1,4 @@
+// https://cloudinary.com/documentation/image_transformations#supported_image_formats
 export const IMAGE_EXTENSIONS = [
 	'.ai',
 	'.avif',
@@ -6,6 +7,7 @@ export const IMAGE_EXTENSIONS = [
 	'.bmp',
 	'.bw',
 	'.dfvu',
+	'.dng',
 	'.ps',
 	'.ept',
 	'.eps',
@@ -42,6 +44,7 @@ export const IMAGE_EXTENSIONS = [
 	'.webp',
 ];
 
+// https://cloudinary.com/documentation/video_manipulation_and_delivery#supported_video_formats
 export const VIDEO_EXTENSIONS = [
 	'.3g2',
 	'.3gp',

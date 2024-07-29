@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import type { Notification, PrimaryKey } from '@directus/types';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
@@ -25,16 +25,6 @@ export class NotificationsService extends ItemsService {
 		const response = await super.createOne(data, opts);
 
 		await this.sendEmail(data);
-
-		return response;
-	}
-
-	override async createMany(data: Partial<Notification>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const response = await super.createMany(data, opts);
-
-		for (const notification of data) {
-			await this.sendEmail(notification);
-		}
 
 		return response;
 	}

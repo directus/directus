@@ -1,6 +1,7 @@
 import type { Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { applyFilter, generateAlias } from '../../../utils/apply-query.js';
+import type { AliasMap } from '../../../utils/get-column-path.js';
 import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
@@ -41,6 +42,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			throw new Error(`Field ${collectionName}.${column} isn't a nested relational collection`);
 		}
 
+		// generate a unique alias for the relation collection, to prevent collisions in self referencing relations
 		const alias = generateAlias();
 
 		let countQuery = this.knex
@@ -49,7 +51,22 @@ export abstract class FnHelper extends DatabaseHelper {
 			.where(this.knex.raw(`??.??`, [alias, relation.field]), '=', this.knex.raw(`??.??`, [table, currentPrimary]));
 
 		if (options?.query?.filter) {
-			countQuery = applyFilter(this.knex, this.schema, countQuery, options.query.filter, relation.collection, {}).query;
+			// set the newly aliased collection in the alias map as the default parent collection, indicated by '', for any nested filters
+			const aliasMap: AliasMap = {
+				'': {
+					alias,
+					collection: relation.collection,
+				},
+			};
+
+			countQuery = applyFilter(
+				this.knex,
+				this.schema,
+				countQuery,
+				options.query.filter,
+				relation.collection,
+				aliasMap,
+			).query;
 		}
 
 		return this.knex.raw('(' + countQuery.toQuery() + ')');

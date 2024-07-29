@@ -81,6 +81,7 @@ extension_bundles: Πακέτα
 extension_reload_required: Απαιτείται Επαναφόρτωση Σελίδας
 extension_reload_required_copy: Απαιτείται επαναφόρτωση σελίδας για να δείτε τις αλλαγές μετά την ενεργοποίηση ή απενεργοποίηση των επεκτάσεων εφαρμογών.
 extension_reload_now: Επαναφόρτωση τώρα
+published_relative: Δημοσιεύτηκε
 homepage: Αρχική σελίδα
 github: GitHub
 beta: Beta (Δοκιμαστική)

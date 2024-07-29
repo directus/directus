@@ -625,7 +625,6 @@ cannot_edit_global_bookmarks: No es pot editar marcadors globals
 bookmarks: Favorits
 presets: Predefinits
 unexpected_error: Error inesperat
-unexpected_error_copy: Hi ha hagut un error inesperat. Si us plau, prova més tard.
 copy_details: Copia detalls
 no_app_access: Sense accés a l'aplicació
 no_app_access_copy: Aquest usuari no pot administrar l'aplicació.

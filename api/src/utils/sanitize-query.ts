@@ -3,7 +3,7 @@ import { InvalidQueryError } from '@directus/errors';
 import type { Accountability, Aggregate, Query } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {

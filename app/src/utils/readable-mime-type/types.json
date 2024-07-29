@@ -692,5 +692,7 @@
 	"application/vnd.zul": "Z.U.L. Geometry",
 	"application/zip": "Zip Archive",
 	"application/vnd.handheld-entertainment+xml": "ZVUE Media Manager",
-	"application/vnd.zzazz.deck+xml": "Zzazz Deck"
+	"application/vnd.zzazz.deck+xml": "Zzazz Deck",
+	"image/heic": "High Efficiency Image Container",
+	"image/heif": "High Efficiency Image Format"
 }

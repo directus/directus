@@ -1,54 +1,153 @@
 import api from '@/api';
+import type { File } from '@directus/types';
 import { emitter, Events } from '@/events';
 import { i18n } from '@/lang';
+import { useServerStore } from '@/stores/server';
 import { notify } from '@/utils/notify';
+import { getRootPath } from '@/utils/get-root-path';
 import type { AxiosProgressEvent } from 'axios';
 import { unexpectedError } from './unexpected-error';
+import type { PreviousUpload } from 'tus-js-client';
+import { Upload } from 'tus-js-client';
 
 export async function uploadFile(
-	file: File,
+	file: globalThis.File,
 	options?: {
 		onProgressChange?: (percentage: number) => void;
+		onChunkedUpload?: (controller: Upload) => void;
 		notifications?: boolean;
-		preset?: Record<string, any>;
+		preset?: Partial<File>;
 		fileId?: string;
+		requirePreviousUpload?: boolean;
 	},
-): Promise<any> {
+): Promise<File | undefined> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
-	const formData = new FormData();
 
-	if (options?.preset) {
-		for (const [key, value] of Object.entries(options.preset)) {
-			formData.append(key, value);
-		}
-	}
+	const server = useServerStore();
+	let notified = false;
 
-	formData.append('file', file);
-
-	try {
-		let response = null;
+	if (server.info.uploads) {
+		const fileInfo: Partial<File> = { ...(options?.preset ?? {}) };
 
 		if (options?.fileId) {
-			response = await api.patch(`/files/${options.fileId}`, formData, {
-				onUploadProgress,
-			});
-		} else {
-			response = await api.post(`/files`, formData, {
-				onUploadProgress,
-			});
+			fileInfo.id = options?.fileId;
 		}
 
-		if (options?.notifications) {
-			notify({
-				title: i18n.global.t('upload_file_success'),
+		fileInfo.filename_download = file.name;
+		fileInfo.type = file.type;
+
+		return new Promise((resolve, reject) => {
+			const upload = new Upload(file, {
+				endpoint: getRootPath() + `files/tus`,
+				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
+				metadata: fileInfo as Record<string, string>,
+				// Allow user to re-upload of the same file
+				// https://github.com/tus/tus-js-client/blob/main/docs/api.md#removefingerprintonsuccess
+				removeFingerprintOnSuccess: true,
+				onBeforeRequest(req) {
+					const xml = req.getUnderlyingObject();
+					xml.withCredentials = true;
+				},
+				onError(error) {
+					reject(error);
+					emitter.emit(Events.tusResumableUploadsChanged);
+				},
+				onProgress(bytesUploaded, bytesTotal) {
+					const percentage = Number(((bytesUploaded / bytesTotal) * 100).toFixed(2));
+					progressHandler(percentage);
+
+					if (!notified) {
+						emitter.emit(Events.tusResumableUploadsChanged);
+						notified = true;
+					}
+				},
+				async onSuccess() {
+					if (options?.notifications) {
+						notify({
+							title: i18n.global.t('upload_file_success'),
+						});
+					}
+
+					emitter.emit(Events.upload);
+					emitter.emit(Events.tusResumableUploadsChanged);
+
+					const response = await api.get(`files/${fileInfo.id}`);
+
+					if (response) {
+						resolve(response.data.data);
+					} else {
+						resolve(fileInfo as File);
+					}
+				},
+				onShouldRetry() {
+					return false;
+				},
+				onAfterResponse(_req, res) {
+					fileInfo.id ??= res.getHeader('Directus-File-Id');
+				},
 			});
+
+			options?.onChunkedUpload?.({
+				start() {
+					upload.start();
+				},
+				abort: () => {
+					upload.abort();
+					// Notify listeners that the upload was aborted/paused
+					emitter.emit(Events.tusResumableUploadsChanged);
+				},
+			});
+
+			// Check if there are any previous uploads to continue.
+			upload.findPreviousUploads().then((previousUploads: PreviousUpload[]) => {
+				// Found previous uploads so we select the first one.
+				if (previousUploads.length > 0) {
+					upload.resumeFromPreviousUpload(previousUploads[0]!);
+					fileInfo.id = previousUploads[0]!.metadata['id'];
+				}
+
+				// Start the upload
+				upload.start();
+			});
+		});
+	} else {
+		const formData = new FormData();
+
+		if (options?.preset) {
+			for (const [key, value] of Object.entries(options.preset)) {
+				formData.append(key, value);
+			}
 		}
 
-		emitter.emit(Events.upload);
+		formData.append('file', file);
 
-		return response.data.data;
-	} catch (error) {
-		unexpectedError(error);
+		try {
+			let response = null;
+
+			if (options?.fileId) {
+				response = await api.patch(`/files/${options.fileId}`, formData, {
+					onUploadProgress,
+				});
+			} else {
+				response = await api.post(`/files`, formData, {
+					onUploadProgress,
+				});
+			}
+
+			if (options?.notifications) {
+				notify({
+					title: i18n.global.t('upload_file_success'),
+				});
+			}
+
+			emitter.emit(Events.upload);
+
+			return response.data.data;
+		} catch (error) {
+			unexpectedError(error);
+		}
+
+		return;
 	}
 
 	function onUploadProgress(progressEvent: AxiosProgressEvent) {

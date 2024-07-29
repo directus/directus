@@ -649,7 +649,6 @@ cannot_edit_global_bookmarks: Kan niet globale bladwijzers bewerken
 bookmarks: Bladwijzers
 presets: Voorkeuren
 unexpected_error: Onverwachte fout
-unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opnieuw.
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
 no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.

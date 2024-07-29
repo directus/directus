@@ -1,5 +1,5 @@
 import getDatabase from '../database/index.js';
-import { InvalidTokenError } from '@directus/errors';
+import { InvalidCredentialsError } from '@directus/errors';
 import type { DirectusTokenPayload } from '../types/index.js';
 
 /**
@@ -15,12 +15,13 @@ export async function verifySessionJWT(payload: DirectusTokenPayload) {
 		.from('directus_sessions')
 		.where({
 			token: payload['session'],
-			user: payload['id'],
+			user: payload['id'] || null,
+			share: payload['share'] || null,
 		})
 		.andWhere('expires', '>=', new Date())
 		.first();
 
 	if (!session) {
-		throw new InvalidTokenError();
+		throw new InvalidCredentialsError();
 	}
 }

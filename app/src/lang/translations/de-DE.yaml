@@ -91,10 +91,15 @@ n_files: '{n} Dateien'
 verified: Verifiziert
 homepage: Hello world
 repository: Repository
+reload_page: Seite neu laden
 reload_required: Erneutes Laden erforderlich
 report_an_issue: Problem melden
 website: Webseite
 github: GitHub
+beta: Beta
+n_downloads: '{n} downloads'
+downloads: Downloads
+compatibility_not_guaranteed: Kompatibilität nicht garantiert
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
@@ -728,7 +733,6 @@ cannot_edit_global_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 bookmarks: Lesezeichen
 presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
-unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.

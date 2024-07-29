@@ -38,7 +38,7 @@ export const useFieldDetailStore = defineStore({
 		/** What field we're currently editing ("+"" for new)  */
 		editing: '+' as string,
 
-		/** Full field data with edits  */
+		/** Full field data with edits */
 		field: {
 			field: undefined,
 			type: undefined,
@@ -165,14 +165,9 @@ export const useFieldDetailStore = defineStore({
 					alterations[localType].applyChanges(updates, state, { hasChanged, getCurrent });
 				}
 
-				const { field: fieldUpdates, ...restUpdates } = updates;
+				const { field: fieldUpdates, items: itemUpdates, ...restUpdates } = updates;
 
-				mergeWith(state, restUpdates, (_, srcValue, key, object) => {
-					if (Array.isArray(srcValue)) return srcValue;
-					if (srcValue === undefined) object[key] = undefined;
-					return;
-				});
-
+				// Handle `field` updates, shallow merge and mirror to `fieldUpdates`
 				if (fieldUpdates) {
 					const { schema: schemaUpdates, meta: metaUpdates, ...restFieldUpdates } = fieldUpdates;
 
@@ -189,6 +184,20 @@ export const useFieldDetailStore = defineStore({
 						Object.assign((state.fieldUpdates.meta ??= {}), metaUpdates);
 					}
 				}
+
+				// Handle `item` updates, allowing full replacements
+				if (itemUpdates) {
+					state.items = itemUpdates as (typeof this.$state)['items'];
+				}
+
+				// Handle remaining updates, deep merge
+				mergeWith(state, restUpdates, (_, srcValue, key, object) => {
+					// Override arrays instead of merging
+					if (Array.isArray(srcValue)) return srcValue;
+					// Allow properties to be resettable
+					if (srcValue === undefined) object[key] = undefined;
+					return;
+				});
 			});
 		},
 		async save() {

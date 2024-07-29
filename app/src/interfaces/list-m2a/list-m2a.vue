@@ -460,7 +460,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 					/>
 				</div>
 
-				<v-pagination v-model="page" :length="pageCount" :total-visible="5" />
+				<v-pagination v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 			</div>
 		</div>
 

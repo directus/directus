@@ -298,6 +298,12 @@ function useDisplayValue() {
 				<v-divider />
 			</template>
 
+			<v-list-item v-if="internalItemsCount === 0 && !allowOther">
+				<v-list-item-content>
+					{{ t('no_options_available') }}
+				</v-list-item-content>
+			</v-list-item>
+
 			<v-list-item v-if="internalItemsCount > 10 || search">
 				<v-list-item-content>
 					<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop.prevent>

@@ -1,6 +1,6 @@
 import { type Knex } from 'knex';
 import { getDatabaseClient } from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 
 /**
  * Execute the given handler within the current transaction or a newly created one
