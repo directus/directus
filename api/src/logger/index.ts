@@ -5,6 +5,7 @@ import { merge } from 'lodash-es';
 import { URL } from 'node:url';
 import { pino, type Logger, type LoggerOptions } from 'pino';
 import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
+import { httpPrintFactory } from 'pino-http-print';
 import { build as pinoPretty } from 'pino-pretty';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { redactQuery } from './redact-query.js';
@@ -88,7 +89,7 @@ export const createLogger = () => {
 	}
 
 	// WebSocket Logs
-	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
+	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
 		streams.push({ level: mergedOptions.level!, stream: getLogsStream() });
 	}
 
@@ -109,27 +110,7 @@ export const createExpressLogger = () => {
 		},
 	};
 
-	// @TODO Fix prettier for express logs as it does not work with multistream
-	// if (env['LOG_STYLE'] !== 'raw') {
-	// 	httpLoggerOptions.transport = {
-	// 		target: 'pino-http-print',
-	// 		options: {
-	// 			all: true,
-	// 			translateTime: 'SYS:HH:MM:ss',
-	// 			relativeUrl: true,
-	// 			prettyOptions: {
-	// 				ignore: 'hostname,pid',
-	// 				sync: true,
-	// 			},
-	// 		},
-	// 	};
-	// }
-
-	if (env['LOG_STYLE'] !== 'raw') {
-		httpLoggerOptions.base = null;
-	}
-
-	if (env['LOG_STYLE'] === 'raw') {
+	if (env['LOG_STYLE'] === 'raw' || toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
 		httpLoggerOptions.redact = {
 			paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
 			censor: (value, pathParts) => {
@@ -184,11 +165,24 @@ export const createExpressLogger = () => {
 	const mergedHttpOptions = merge(httpLoggerOptions, loggerEnvConfig);
 	const streams = [];
 
-	// Console Logs
-	streams.push({ level: mergedHttpOptions.level!, stream: process.stdout });
+	if (env['LOG_STYLE'] !== 'raw') {
+		const pinoHttpPretty = httpPrintFactory({
+			all: true,
+			translateTime: 'SYS:HH:MM:ss',
+			relativeUrl: true,
+			prettyOptions: {
+				ignore: 'hostname,pid',
+				sync: true,
+			},
+		});
+
+		streams.push({ level: mergedHttpOptions.level!, stream: pinoHttpPretty(process.stdout) });
+	} else {
+		streams.push({ level: mergedHttpOptions.level!, stream: process.stdout });
+	}
 
 	// WebSocket Logs
-	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
+	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
 		streams.push({ level: mergedHttpOptions.level!, stream: getLogsStream() });
 	}
 
