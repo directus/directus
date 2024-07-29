@@ -7,10 +7,12 @@ method: Метод
 published: Опубликовано
 draft: Черновик
 archived: Архивировано
+marketplace: Магазин
 extensions: Расширения
 modules: Модули
 module_bar: Панель модулей
 logs: Журналы
+unknown: Неизвестно
 reset_width: Сбросить ширину
 tile_size: Размер плитки
 edit_field: Редактировать поле
@@ -28,6 +30,8 @@ duplicate_field: Дублировать поле
 half_width: Полширины
 full_width: Полная ширина
 group: Группа
+popular: Популярное
+recent: Недавнее
 export_items: Экспорт элементов
 and: и
 or: или
@@ -54,9 +58,15 @@ extension_hooks: Хуки
 extension_endpoints: Эндпоинты
 extension_operations: Операции
 extension_bundles: Пакеты
+extension_missing: Пропавшее
 extension_reload_required: Требуется перезагрузка страницы
 extension_reload_required_copy: Перезагрузка страницы необходима, чтобы увидеть изменения после включения или отключения расширений приложений.
 extension_reload_now: Перезагрузить сейчас
+published_relative: Опубликовано {relativeTime}
+compatible_with_your_project: Совместимо с вашим проектом
+compatible_with_your_project_copy: Автор указал на совместимость этого расширения с {hostVersion}, что соответствует версии вашего проекта ({currentVersion})
+last_updated_relative: Последнее обновление {relativeTime}
+n_files: '{n} файлов'
 enable: Включить
 disable: Отключить
 custom: Пользовательский
@@ -1056,6 +1066,7 @@ batch_delete_confirm: >-
 cancel: Отмена
 no_upscale: Не масштабировать изображения
 no_extensions: Нет расширений
+source_registry: Магазин
 collection: Коллекция
 collections: Коллекции
 content: Контент
