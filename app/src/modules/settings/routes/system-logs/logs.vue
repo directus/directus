@@ -5,7 +5,7 @@ import SearchInput from '@/views/private/components/search-input.vue';
 import { realtime } from '@directus/sdk';
 import { upperFirst } from 'lodash';
 import { nanoid } from 'nanoid';
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import LogsDisplay from './components/logs-display.vue';
@@ -49,7 +49,7 @@ if (serverStore.info?.websocket) {
 	}
 }
 
-const filterOptionsUpdated = ({ logLevelNames, nodeIds }: LogsFilter) => {
+const filterOptionsUpdated = async ({ logLevelNames, nodeIds }: LogsFilter) => {
 	if (logLevelNames) {
 		if (logLevelNames?.length === 0) {
 			filterOptions.value.logLevelNames = null;
@@ -67,6 +67,8 @@ const filterOptionsUpdated = ({ logLevelNames, nodeIds }: LogsFilter) => {
 
 		activeInstances.value = nodeIds;
 	}
+
+	logsDisplay.value?.scrollToBottom();
 };
 
 const filteredLogs = computed(() => {
@@ -119,11 +121,6 @@ const fields = computed(() => {
 	];
 });
 
-watch([filterOptions.value], async () => {
-	await nextTick();
-	logsDisplay.value?.scrollToBottom();
-});
-
 client.onWebSocket('open', () => {
 	client.sendMessage({ type: 'subscribe', log_level: maxLogLevelName.value });
 });
@@ -164,6 +161,14 @@ async function stopLogsStreaming() {
 	streamStarted.value = false;
 
 	client.disconnect();
+}
+
+async function expandLog(id: string) {
+	const index = filteredLogs.value.findIndex((log) => log.id === id);
+
+	if (filteredLogs.value[index]) {
+		filteredLogs.value[index].expanded = !filteredLogs.value[index].expanded;
+	}
 }
 
 function clearLogs() {
@@ -219,6 +224,7 @@ function clearLogs() {
 				:log-levels="allowedLogLevels"
 				:instances="instances"
 				class="logs-display"
+				@expandLog="expandLog"
 			/>
 		</div>
 
