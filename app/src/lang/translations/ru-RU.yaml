@@ -2227,6 +2227,7 @@ panels:
     field: Поле
   metric_list:
     name: Список показателей
+    description: Перечислите и визуализируйте агрегированные показатели из коллекции
   time_series:
     name: Последовательности
     description: Отображение линейного графика на основе значений по времени
@@ -2242,12 +2243,15 @@ panels:
     description: Фильтр и список полей из коллекции
   barchart:
     name: Гистограмма
+    description: Столбцы или столбцы для сравнения групп значений
     horizontal: Горизонтально
     select_collection: Необходимо выбрать коллекцию.
   linechart:
     name: Линейный график
+    description: Линейная диаграмма для сравнения изменения поля
     disabled_grouping: Отключено при выборе группировки.
     disabled_no_grouping: Отключено, если не выбрана ни одна группировка.
+    show_marker: Показать маркер подсказки
     curve_type: Тип кривой
     smooth: Гладкий
     straight: Прямой
@@ -2255,8 +2259,10 @@ panels:
     show_legend: Показать легенду
   meter:
     name: Счётчик
+    description: Счетчик для отслеживания значений
   piechart:
     name: Круговая или пончиковая диаграмма
+    description: Круговая диаграмма, показывающая соотношение групп в столбце
   variable:
     name: Глобальная переменная
     description: Установить глобальное значение для использования в других фильтрах Панелей
@@ -2274,6 +2280,7 @@ triggers:
     response_body_last: Данные последней операции
   event:
     name: Хук события
+    description: Триггеры на платформе или событиях данных
     action: 'Действие (не блокирующее)'
     filter: 'Фильтр (блокирующий)'
   webhook:
@@ -2299,6 +2306,7 @@ triggers:
     require_selection: Требуется выбор
 a_flow_uuid: Выберите процесс для запуска...
 any_string_or_json: Любая строка или JSON...
+item_payload_placeholder: Это JSON, используемый для обновления значений полей элемента...
 operation_variables_note: Вы можете получить доступ к данным процесса с такими переменными как **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или ссылаться на предыдущие операции, используя **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
@@ -2306,30 +2314,46 @@ operations:
     description: Маршрутизировать процесс на основе логики If / Else
   exec:
     name: Выполнить скрипт
+    description: Выполнить произвольный код для изменения полезной нагрузки
     modules: 'Можно использовать следующие **Node модули**:'
   item-create:
     name: Создать данные
     description: Создать элементы в базе данных
     payload: Содержимое
+    emit_events: Генерировать события
   item-delete:
     name: Удалить данные
     description: Удалить элементы в базе данных
+    emit_events: Генерировать события
+    key: Идентификаторы
     query: Запрос
   item-read:
     name: Читать данные
     description: Чтение элементов из базы данных
+    key: Идентификаторы
     query: Запрос
+    emit_events: Генерировать события
   item-update:
     name: Обновить данные
     description: Обновить элементы в базе данных
+    emit_events: Генерировать события
+    key: Идентификаторы
     payload: Содержимое
     query: Запрос
   json-web-token:
+    name: Веб-токен JSON (JWT)
+    description: Подписать и проверить Веб-токен JSON
     operation: Действие
     secret: Секрет
+    secret_placeholder: Введите секрет...
     payload: Содержимое
     token: Ключ доступа
+    token_placeholder: eyJhbGciOi......
     options: Параметры
+    options_placeholder: 'См. https://www.npmjs.com/package/jsonwebtoken#usage для всех доступных параметров'
+    sign: Подписать токен
+    verify: Проверить токен
+    decode: Расшифровать токен
   log:
     name: Лог в консоли
     description: Вывод какой-либо информации в консоль
@@ -2338,6 +2362,7 @@ operations:
   mail:
     name: Отправить эл. письмо
     description: Отправить письмо одному или нескольким людям
+    to: Кому
     to_placeholder: Добавьте адреса эл. почты и нажмите Enter...
     body: Тело
     template: Шаблон
@@ -2348,6 +2373,7 @@ operations:
     recipient: Пользователь
     recipient_placeholder: Введите UUID...
     recipient_note: Добавьте пользовательский UUID и нажмите Enter...
+    item_note: Ключ элемента или относительный URL
     message: Сообщение
     subject: Тема
   request:
@@ -2360,6 +2386,7 @@ operations:
     headers: Заголовки
     header: HTTP-заголовок
     header_placeholder: Авторизация...
+    value_placeholder: Bearer eyJhbGciOi...
   sleep:
     name: Сон
     description: Ожидать заданное количество миллисекунд
@@ -2373,6 +2400,8 @@ operations:
     flows: Процессы
     flow: Процесс
     data: Данные
+    iteration_mode: Режим итерации
+    iteration_mode_note: Режим для итерации массивов.
     serial: Серийный
     parallel: Параллельно
     batch: Пакет
