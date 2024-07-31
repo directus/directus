@@ -325,9 +325,10 @@ export class ExportService {
 					if (result.length) {
 						await appendFile(
 							tmpFile.path,
-							this.transform(result, format, query.fields, {
+							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
+								fields: query.fields,
 							}),
 						);
 					}
@@ -412,10 +413,10 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 	transform(
 		input: Record<string, any>[],
 		format: ExportFormat,
-		fields: string[] | null | undefined,
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
+			fields: string[] | null | undefined;
 		},
 	): string {
 		if (format === 'json') {
@@ -451,7 +452,10 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 
 			const transforms = [CSVTransforms.flatten({ separator: '.' })];
 			const header = options?.includeHeader !== false;
-			const transformOptions = fields ? { transforms, header, fields } : { transforms, header };
+
+			const transformOptions = options?.fields
+				? { transforms, header, fields: options?.fields }
+				: { transforms, header };
 
 			let string = new CSVParser(transformOptions).parse(input);
 
