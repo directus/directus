@@ -33,6 +33,7 @@ import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
+import { convertWildcards } from '../database/get-ast-from-query/lib/convert-wildcards.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -337,12 +338,30 @@ export class ExportService {
 
 					readCount += result.length;
 
+					if (!query.fields) {
+						query.fields = ['*'];
+					}
+
 					if (result.length) {
+						const convertedField = await convertWildcards(
+							{
+								parentCollection: collection,
+								fields: query.fields,
+								query: query,
+								accountability: this.accountability,
+							},
+							{
+								schema: this.schema,
+								knex: database,
+							},
+						);
+
 						await appendFile(
 							tmpFile.path,
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
+								fields: convertedField,
 							}),
 						);
 					}
@@ -430,6 +449,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
+			fields: string[] | null | undefined;
 		},
 	): string {
 		if (format === 'json') {
@@ -463,12 +483,14 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		if (format === 'csv') {
 			if (input.length === 0) return '';
 
-			const parser = new CSVParser({
-				transforms: [CSVTransforms.flatten({ separator: '.' })],
-				header: options?.includeHeader !== false,
-			});
+			const transforms = [CSVTransforms.flatten({ separator: '.' })];
+			const header = options?.includeHeader !== false;
 
-			let string = parser.parse(input);
+			const transformOptions = options?.fields
+				? { transforms, header, fields: options?.fields }
+				: { transforms, header };
+
+			let string = new CSVParser(transformOptions).parse(input);
 
 			if (options?.includeHeader === false) {
 				string = '\n' + string;
