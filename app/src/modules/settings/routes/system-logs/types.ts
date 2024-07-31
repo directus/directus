@@ -1,7 +1,7 @@
 export type Log = {
-	id: string;
+	index: number;
 	instance: string;
-	expanded?: boolean;
+	selected?: boolean;
 	data: Record<string, any> & {
 		level: number;
 		time: number;

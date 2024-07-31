@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { localizedFormat } from '@/utils/localized-format';
-import { upperFirst } from 'lodash';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
@@ -21,6 +20,14 @@ defineExpose({ scrollToIndex, scrollToBottom });
 const { t } = useI18n();
 const scroller = ref();
 
+const logLevelMap = Object.entries(props.logLevels).reduce(
+	(acc, [logLevelName, logLevelValue]) => {
+		acc[logLevelValue] = logLevelName;
+		return acc;
+	},
+	{} as Record<number, string>,
+);
+
 async function scrollToIndex(index: number) {
 	scroller.value.scrollToItem(index);
 }
@@ -31,7 +38,7 @@ async function scrollToBottom() {
 </script>
 
 <template>
-	<dynamic-scroller ref="scroller" :items="logs" key-field="id" :min-item-size="30" class="logs-display">
+	<dynamic-scroller ref="scroller" :items="logs" key-field="index" :min-item-size="30" class="logs-display" x>
 		<template #before>
 			<div class="notice">This is the beginning of your logs session...</div>
 		</template>
@@ -46,24 +53,13 @@ async function scrollToBottom() {
 				:data-index="index"
 				:data-active="active"
 			>
-				<div :class="['log-entry', { expanded: item.expanded }]" @click="emit('expandLog', item.id)">
-					<div class="log-overview">
-						<v-icon v-if="item.expanded" name="expand_more" />
-						<v-icon v-else name="chevron_right" />
-						<span class="timestamp">
-							{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}
-						</span>
-						<v-chip small class="instance">{{ instances.indexOf(item.instance) + 1 }}</v-chip>
-						<span class="message">{{ item.data.msg }}</span>
-						<div class="labels">
-							<v-chip small class="log-level">
-								{{ upperFirst(Object.entries(props.logLevels).find(([_, val]) => val === item.data.level)?.[0]) }}
-							</v-chip>
-						</div>
-					</div>
-					<div v-if="item.expanded" class="raw-log">
-						<pre>{{ JSON.stringify(item.data, null, '\t') }}</pre>
-					</div>
+				<div :class="['log-entry', { expanded: item.selected }]" @click="emit('expandLog', item.index)">
+					<span class="timestamp">[{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}]</span>
+					<span class="instance">[#{{ instances.indexOf(item.instance) + 1 }}]</span>
+					<span :class="['log-level', logLevelMap[item.data.level]]">
+						{{ logLevelMap[item.data.level]?.toLocaleUpperCase() }}
+					</span>
+					<span class="message">{{ item.data.msg }}</span>
 				</div>
 			</dynamic-scroller-item>
 		</template>
@@ -71,81 +67,64 @@ async function scrollToBottom() {
 </template>
 
 <style lang="scss" scoped>
-.logs-display {
-	min-height: 300px;
-	background-color: var(--theme--background-subdued);
-	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
-	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
-	transition: var(--fast) var(--transition);
-	transition-property: border-color, box-shadow;
-	box-shadow: var(--theme--form--field--input--box-shadow);
-	overflow-y: scroll;
+.notice {
+	margin: 6px;
+	padding-left: 6px;
+	font-family: var(--theme--fonts--monospace--font-family);
+	color: var(--theme--foreground-subdued);
 }
 
-.log-entry {
-	padding: 4px;
-	min-height: 30px;
-	cursor: pointer;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	--v-chip-background-color: var(--theme--primary);
+.logs-display {
+	min-height: 300px;
+	height: 100%;
 }
 
 .log-entry:hover {
 	background-color: var(--theme--background-normal);
 }
 
-.log-overview {
+.log-entry {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%; /* Or specify a fixed width if needed */
+	font-family: var(--theme--fonts--monospace--font-family);
+	color: var(--theme--foreground);
+	padding: 6px;
 }
 
-.timestamp {
-	flex-shrink: 0;
-	color: var(--theme--foreground-subdued);
+.log-entry > span {
+	padding: 0 6px 0 6px;
 }
 
 .message {
-	flex-grow: 1;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-	margin-right: 10px; /* Optional: space between text and button */
+	flex-grow: 1;
 }
 
 .expanded {
 	background-color: var(--theme--background-normal);
 }
 
-.raw-log {
-	margin: 4px;
-	background-color: var(--theme--background);
-	padding: 20px;
-	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
-	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
-	transition: var(--fast) var(--transition);
-	transition-property: border-color, box-shadow;
-	box-shadow: var(--theme--form--field--input--box-shadow);
-	overflow-x: scroll;
-}
-
-.labels {
-	flex-shrink: 0;
-}
-
 .log-level {
-	--v-chip-background-color: var(--theme--primary);
+	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
 }
 
-.instance {
-	--v-chip-background-color: var(--theme--background-accent);
+.info {
+	color: var(--blue);
 }
 
-.v-chip {
-	margin-left: 6px;
-	margin-right: 6px;
+.warn {
+	color: var(--yellow);
+}
+
+.error {
+	color: var(--red);
+}
+
+.fatal {
+	color: var(--red);
+	background-color: var(--red-25);
 }
 </style>
