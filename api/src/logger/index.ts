@@ -75,8 +75,6 @@ export const createLogger = () => {
 
 	// Console Logs
 	if (env['LOG_STYLE'] !== 'raw') {
-		pinoOptions.base = null;
-
 		streams.push({
 			level: mergedOptions.level!,
 			stream: pinoPretty({
