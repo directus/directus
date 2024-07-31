@@ -829,13 +829,29 @@ export class FieldsService {
 
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
-		} else if (field.schema?.is_unique === true) {
-			if (!alter || alter.is_unique === false) {
-				column.unique();
+		} else if (!alter?.is_primary_key) {
+			// primary key will already have unique/index constraints
+			if (field.schema?.is_unique === true) {
+				if (!alter || alter.is_unique === false) {
+					column.unique();
+				}
+			} else if (field.schema?.is_unique === false) {
+				if (alter && alter.is_unique === true) {
+					table.dropUnique([field.field]);
+				}
 			}
-		} else if (field.schema?.is_unique === false) {
-			if (alter && alter.is_unique === true) {
-				table.dropUnique([field.field]);
+
+			if (field.schema?.is_indexed === true && !alter?.is_indexed) {
+				column.index();
+			} else if (field.schema?.is_indexed === false && alter?.is_indexed) {
+				let indexName;
+
+				// account for custom indexes from BYODB
+				if (indexName) {
+					indexName = '';
+				}
+
+				table.dropIndex(field.field, indexName);
 			}
 		}
 
