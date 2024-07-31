@@ -466,8 +466,18 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.columnInfo(collection, hookAdjustedField.field);
 
-				if (hookAdjustedField.schema?.is_nullable === true && existingColumn.is_primary_key) {
-					throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
+				if (existingColumn.is_primary_key) {
+					if (hookAdjustedField.schema?.is_nullable === true) {
+						throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
+					}
+
+					if (hookAdjustedField.schema?.is_unique === false) {
+						throw new InvalidPayloadError({ reason: 'Primary key must be unique' });
+					}
+
+					if (hookAdjustedField.schema?.is_indexed === true) {
+						throw new InvalidPayloadError({ reason: 'Primary key cannot be indexed' });
+					}
 				}
 
 				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
