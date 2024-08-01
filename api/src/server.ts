@@ -156,7 +156,7 @@ export async function startServer(): Promise<void> {
 
 	const host = env['HOST'] as string;
 	const port = env['PORT'];
-
+	
 	server
 		.listen(port, host, () => {
 			logger.info(`Server started at http://${host}:${port}`);
