@@ -443,7 +443,7 @@ export default class CockroachDB implements SchemaInspector {
 				...col,
 				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
 				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
-				is_indexed: !!(col.index_name?.length && col.index_name?.length > 0),
+				is_indexed: !!col.index_name?.length && col.index_name.length > 0,
 				has_auto_increment:
 					['integer', 'bigint'].includes(col.data_type) && (col.default_value?.startsWith('nextval(') ?? false),
 				default_value: parseDefaultValue(col.default_value),

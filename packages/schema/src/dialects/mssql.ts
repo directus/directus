@@ -38,7 +38,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		generation_expression: rawColumn.generation_expression || null,
 		is_generated: !!rawColumn.is_generated,
 		is_unique: rawColumn.is_unique === true,
-		is_indexed: !!(rawColumn.index_name && rawColumn.index_name.length > 0),
+		is_indexed: !!rawColumn.index_name && rawColumn.index_name.length > 0,
 		is_primary_key: rawColumn.is_primary_key === true,
 		is_nullable: rawColumn.is_nullable === 'YES',
 		has_auto_increment: rawColumn.has_auto_increment === 'YES',

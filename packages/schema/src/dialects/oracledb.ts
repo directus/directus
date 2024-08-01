@@ -45,7 +45,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		is_generated: rawColumn.VIRTUAL_COLUMN === 'YES',
 		is_nullable: rawColumn.NULLABLE === 'Y',
 		is_unique: rawColumn.CONSTRAINT_TYPE === 'U',
-		is_indexed: !!(rawColumn.INDEX_NAME && rawColumn.INDEX_NAME.length > 0),
+		is_indexed: !!rawColumn.INDEX_NAME && rawColumn.INDEX_NAME.length > 0,
 		is_primary_key: rawColumn.CONSTRAINT_TYPE === 'P',
 		has_auto_increment: rawColumn.IDENTITY_COLUMN === 'YES',
 		foreign_key_column: rawColumn.REFERENCED_COLUMN_NAME,

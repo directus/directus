@@ -465,7 +465,7 @@ export default class Postgres implements SchemaInspector {
 			return {
 				...col,
 				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
-				is_indexed: !!(col.index_name && col.index_name.length > 0),
+				is_indexed: !!col.index_name && col.index_name.length > 0,
 				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
 				has_auto_increment: constraintsForColumn.some((constraint) => constraint.has_auto_increment),
 				default_value: parseDefaultValue(col.default_value),

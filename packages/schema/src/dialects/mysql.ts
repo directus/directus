@@ -55,7 +55,7 @@ export function rawColumnToColumn(rawColumn: RawColumn): Column {
 		is_generated: !!rawColumn.EXTRA?.endsWith('GENERATED'),
 		is_nullable: rawColumn.IS_NULLABLE === 'YES',
 		is_unique: rawColumn.COLUMN_KEY === 'UNI',
-		is_indexed: !!(rawColumn.INDEX_NAME && rawColumn.INDEX_NAME.length > 0),
+		is_indexed: !!rawColumn.INDEX_NAME && rawColumn.INDEX_NAME.length > 0,
 		is_primary_key: rawColumn.CONSTRAINT_NAME === 'PRIMARY' || rawColumn.COLUMN_KEY === 'PRI',
 		has_auto_increment: rawColumn.EXTRA === 'auto_increment',
 		foreign_key_column: rawColumn.REFERENCED_COLUMN_NAME,
