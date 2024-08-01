@@ -803,32 +803,28 @@ export class FieldsService {
 			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
-		if (field.schema?.default_value !== undefined) {
-			if (
-				typeof field.schema.default_value === 'string' &&
-				(field.schema.default_value.toLowerCase() === 'now()' || field.schema.default_value === 'CURRENT_TIMESTAMP')
-			) {
-				column.defaultTo(this.knex.fn.now());
-			} else if (
-				typeof field.schema.default_value === 'string' &&
-				field.schema.default_value.includes('CURRENT_TIMESTAMP(') &&
-				field.schema.default_value.includes(')')
-			) {
-				const precision = field.schema.default_value.match(REGEX_BETWEEN_PARENS)![1];
-				column.defaultTo(this.knex.fn.now(Number(precision)));
-			} else {
-				column.defaultTo(field.schema.default_value);
-			}
+		const newSchema = { ...existing, ...field.schema };
+
+		if (
+			typeof newSchema.default_value === 'string' &&
+			(newSchema.default_value.toLowerCase() === 'now()' || newSchema.default_value === 'CURRENT_TIMESTAMP')
+		) {
+			column.defaultTo(this.knex.fn.now());
+		} else if (
+			typeof newSchema.default_value === 'string' &&
+			newSchema.default_value.includes('CURRENT_TIMESTAMP(') &&
+			newSchema.default_value.includes(')')
+		) {
+			const precision = newSchema.default_value.match(REGEX_BETWEEN_PARENS)![1];
+			column.defaultTo(this.knex.fn.now(Number(precision)));
+		} else {
+			column.defaultTo(newSchema.default_value ?? null);
 		}
 
-		if (field.schema?.is_nullable === false) {
-			if (!existing || existing.is_nullable === true) {
-				column.notNullable();
-			}
+		if (newSchema.is_nullable) {
+			column.nullable();
 		} else {
-			if (!existing || existing.is_nullable === false) {
-				column.nullable();
-			}
+			column.notNullable();
 		}
 
 		if (field.schema?.is_primary_key) {
