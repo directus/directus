@@ -761,7 +761,11 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
+	public addColumnToTable(
+		table: Knex.CreateTableBuilder,
+		field: RawField | Field,
+		existing: Column | null = null,
+	): void {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -818,11 +822,11 @@ export class FieldsService {
 		}
 
 		if (field.schema?.is_nullable === false) {
-			if (!alter || alter.is_nullable === true) {
+			if (!existing || existing.is_nullable === true) {
 				column.notNullable();
 			}
 		} else {
-			if (!alter || alter.is_nullable === false) {
+			if (!existing || existing.is_nullable === false) {
 				column.nullable();
 			}
 		}
@@ -830,16 +834,16 @@ export class FieldsService {
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
 		} else if (field.schema?.is_unique === true) {
-			if (!alter || alter.is_unique === false) {
+			if (!existing || existing.is_unique === false) {
 				column.unique();
 			}
 		} else if (field.schema?.is_unique === false) {
-			if (alter && alter.is_unique === true) {
+			if (existing && existing.is_unique === true) {
 				table.dropUnique([field.field]);
 			}
 		}
 
-		if (alter) {
+		if (existing) {
 			column.alter();
 		}
 	}
