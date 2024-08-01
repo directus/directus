@@ -854,14 +854,7 @@ export class FieldsService {
 			if (field.schema?.is_indexed === true && !alter?.is_indexed) {
 				column.index();
 			} else if (field.schema?.is_indexed === false && alter?.is_indexed) {
-				let indexName;
-
-				// account for custom indexes from BYODB
-				if (indexName) {
-					indexName = '';
-				}
-
-				table.dropIndex(field.field, indexName);
+				table.dropIndex([field.field]);
 			}
 		}
 
