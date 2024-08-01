@@ -28,7 +28,7 @@ export default defineConfig(() => ({
 	entry: ['src/index.ts'],
 	esbuildPlugins: [
 		replace({
-			'__SYSTEM_COLLECTION_NAMES__': JSON.stringify(systemCollectionNames),
-		})
-	]
+			__SYSTEM_COLLECTION_NAMES__: JSON.stringify(systemCollectionNames),
+		}),
+	],
 }));
