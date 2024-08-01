@@ -24,7 +24,13 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
+import type {
+	AbstractServiceOptions,
+	ActionEventParams,
+	FunctionFieldNode,
+	FieldNode,
+	NestedCollectionNode,
+} from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
@@ -33,7 +39,7 @@ import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
-import { convertWildcards } from '../database/get-ast-from-query/lib/convert-wildcards.js';
+import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -343,25 +349,31 @@ export class ExportService {
 					}
 
 					if (result.length) {
-						const convertedField = await convertWildcards(
-							{
-								parentCollection: collection,
-								fields: query.fields,
-								query: query,
-								accountability: this.accountability,
-							},
-							{
-								schema: this.schema,
-								knex: database,
-							},
-						);
+						let flattenedFields = null;
+
+						if (format === 'csv') {
+							const parsedFields = await parseFields(
+								{
+									parentCollection: collection,
+									fields: query.fields,
+									query: query,
+									accountability: this.accountability,
+								},
+								{
+									schema: this.schema,
+									knex: database,
+								},
+							);
+
+							flattenedFields = getAllFieldNames(parsedFields);
+						}
 
 						await appendFile(
 							tmpFile.path,
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
-								fields: convertedField,
+								fields: flattenedFields,
 							}),
 						);
 					}
@@ -449,7 +461,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
-			fields: string[] | null | undefined;
+			fields: string[] | null;
 		},
 	): string {
 		if (format === 'json') {
@@ -505,4 +517,42 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 
 		throw new ServiceUnavailableError({ service: 'export', reason: `Illegal export type used: "${format}"` });
 	}
+}
+
+export function getAllFieldNames(
+	nodes: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] | undefined,
+	prefix: string = '',
+) {
+	let fieldNames: string[] = [];
+
+	if (!nodes) return fieldNames;
+
+	nodes.forEach((node) => {
+		switch (node.type) {
+			case 'field':
+			case 'functionField':
+				fieldNames.push(prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey);
+				break;
+			case 'm2o':
+			case 'o2m':
+				fieldNames = fieldNames.concat(
+					getAllFieldNames(node.children, prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey),
+				);
+
+				break;
+			case 'a2o':
+				for (const collection in node.children) {
+					fieldNames = fieldNames.concat(
+						getAllFieldNames(
+							node.children[collection],
+							prefix ? `${prefix}.${node.fieldKey}.${collection}` : `${node.fieldKey}.${collection}`,
+						),
+					);
+				}
+
+				break;
+		}
+	});
+
+	return fieldNames;
 }
