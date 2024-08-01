@@ -145,6 +145,8 @@ Comment as stored in the database.
 		"numeric_precision": 32,
 		"numeric_scale": 0,
 		"is_nullable": false,
+		"is_unique": false,
+		"is_indexed": true,
 		"is_primary_key": true,
 		"has_auto_increment": true,
 		"foreign_key_column": null,
