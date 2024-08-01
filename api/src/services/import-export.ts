@@ -534,11 +534,13 @@ export function getAllFieldNames(
 				fieldNames.push(prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey);
 				break;
 			case 'm2o':
-			case 'o2m':
 				fieldNames = fieldNames.concat(
 					getAllFieldNames(node.children, prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey),
 				);
 
+				break;
+			case 'o2m':
+				fieldNames.push(prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey);
 				break;
 			case 'a2o':
 				for (const collection in node.children) {

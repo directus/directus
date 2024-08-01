@@ -130,6 +130,59 @@ test('getAllFieldNames', () => {
 			cases: [],
 			whenCase: [],
 		},
+		{
+			type: 'o2m',
+			name: 'headlines',
+			fieldKey: 'headings',
+			parentKey: 'id',
+			relatedKey: 'id',
+			relation: {
+				collection: 'headlines',
+				field: 'article',
+				related_collection: 'articles',
+				schema: {
+					constraint_name: 'headlines_article_foreign',
+					table: 'headlines',
+					column: 'article',
+					foreign_key_schema: 'public',
+					foreign_key_table: 'articles',
+					foreign_key_column: 'id',
+					on_update: 'NO ACTION',
+					on_delete: 'SET NULL',
+				},
+				meta: {
+					id: 3,
+					many_collection: 'headlines',
+					many_field: 'article',
+					one_collection: 'articles',
+					one_field: 'headings',
+					one_collection_field: null,
+					one_allowed_collections: null,
+					junction_field: null,
+					sort_field: null,
+					one_deselect_action: 'nullify',
+				},
+			},
+			query: {
+				sort: ['id'],
+			},
+			children: [
+				{
+					type: 'field',
+					name: 'id',
+					fieldKey: 'id',
+					whenCase: [],
+				},
+				{
+					type: 'field',
+					name: 'title',
+					fieldKey: 'title',
+					whenCase: [],
+				},
+			],
+			cases: [],
+			whenCase: [],
+		},
 	];
 
 	const res = getAllFieldNames(parsedFields);
@@ -143,5 +196,6 @@ test('getAllFieldNames', () => {
 		'author.address.id',
 		'author.address.street',
 		'author.address.city',
+		'headings',
 	]);
 });
