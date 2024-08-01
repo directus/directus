@@ -348,7 +348,7 @@ export default class CockroachDB implements SchemaInspector {
            rel.relname AS table,
            rel.relnamespace::regnamespace::text AS schema,
            format_type(att.atttypid, null) AS data_type,
-		   ix_rel.relname as index_name,
+           ix_rel.relname as index_name,
            NOT att.attnotnull AS is_nullable,
            CASE WHEN att.attgenerated = '' THEN pg_get_expr(ad.adbin, ad.adrelid) ELSE null END AS default_value,
            att.attgenerated = 's' AS is_generated,
@@ -384,19 +384,19 @@ export default class CockroachDB implements SchemaInspector {
            LEFT JOIN pg_class rel ON att.attrelid = rel.oid
            LEFT JOIN pg_attrdef ad ON (att.attrelid, att.attnum) = (ad.adrelid, ad.adnum)
            LEFT JOIN pg_description des ON (att.attrelid, att.attnum) = (des.objoid, des.objsubid)
-		   LEFT JOIN LATERAL (
-			 SELECT
-			   indexrelid
-			 FROM
-			   pg_index ix
-			 WHERE
-			   att.attrelid = ix.indrelid
-			   AND att.attnum = ALL(ix.indkey)
-			   AND ix.indisunique = false
-			 LIMIT 1
-     	   ) ix ON true
-		   LEFT JOIN pg_class ix_rel ON ix_rel.oid=ix.indexrelid
-		   WHERE
+           LEFT JOIN LATERAL (
+              SELECT
+                indexrelid
+              FROM
+                pg_index ix
+              WHERE
+                att.attrelid = ix.indrelid
+                AND att.attnum = ALL(ix.indkey)
+                AND ix.indisunique = false
+              LIMIT 1
+           ) ix ON true
+           LEFT JOIN pg_class ix_rel ON ix_rel.oid=ix.indexrelid
+         WHERE
            rel.relnamespace IN (${schemaIn})
            ${table ? 'AND rel.relname = ?' : ''}
            ${column ? 'AND att.attname = ?' : ''}
