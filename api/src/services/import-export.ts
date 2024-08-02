@@ -344,14 +344,14 @@ export class ExportService {
 
 					readCount += result.length;
 
-					if (!query.fields) {
-						query.fields = ['*'];
-					}
-
 					if (result.length) {
 						let flattenedFields = null;
 
 						if (format === 'csv') {
+							if (!query.fields) query.fields = ['*'];
+
+							// to ensure the all headings are included in the CSV file, all possible fields need to be determined.
+
 							const parsedFields = await parseFields(
 								{
 									parentCollection: collection,
@@ -365,7 +365,7 @@ export class ExportService {
 								},
 							);
 
-							flattenedFields = getAllFieldNames(parsedFields);
+							flattenedFields = getHeadingsForCsvExport(parsedFields);
 						}
 
 						await appendFile(
@@ -519,12 +519,13 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 	}
 }
 /*
- * Recursive function to traverse all field nodes to get the heading names for CSV export.
+ * Recursive function to traverse the field nodes, to determine the headings for the CSV export file.
  *
- * Nested field names for o2m and a2o are not going to be revolved.
- * Instead, when those relationships are resolved, the resulting list of items will be stored as a single value/cell of the CSV file.
+ * Relational nodes which target a single item get expanded, which means that their nested fields get their own column in the csv file.
+ * For relational nodes which target a multiple items, the nested field names are not going to be expanded.
+ * Instead they will be stored as a single value/cell of the CSV file.
  */
-export function getAllFieldNames(
+export function getHeadingsForCsvExport(
 	nodes: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] | undefined,
 	prefix: string = '',
 ) {
@@ -536,28 +537,14 @@ export function getAllFieldNames(
 		switch (node.type) {
 			case 'field':
 			case 'functionField':
+			case 'o2m':
+			case 'a2o':
 				fieldNames.push(prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey);
 				break;
 			case 'm2o':
 				fieldNames = fieldNames.concat(
-					getAllFieldNames(node.children, prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey),
+					getHeadingsForCsvExport(node.children, prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey),
 				);
-
-				break;
-			case 'o2m':
-				fieldNames.push(prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey);
-				break;
-			// case 'a2o':
-			// 	for (const collection in node.children) {
-			// 		fieldNames = fieldNames.concat(
-			// 			getAllFieldNames(
-			// 				node.children[collection],
-			// 				prefix ? `${prefix}.${node.fieldKey}.${collection}` : `${node.fieldKey}.${collection}`,
-			// 			),
-			// 		);
-			// 	}
-
-			// 	break;
 		}
 	});
 

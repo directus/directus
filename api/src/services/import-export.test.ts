@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { getAllFieldNames } from './import-export.js';
+import { getHeadingsForCsvExport } from './import-export.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
 
 test('getAllFieldNames', () => {
@@ -250,7 +250,7 @@ test('getAllFieldNames', () => {
 		},
 	];
 
-	const res = getAllFieldNames(parsedFields);
+	const res = getHeadingsForCsvExport(parsedFields);
 
 	expect(res).toEqual([
 		'id',
