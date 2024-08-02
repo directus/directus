@@ -115,7 +115,7 @@ export class ServerService {
 				info['websocket'].logs =
 					toBoolean(env['WEBSOCKETS_LOGS_ENABLED']) && this.accountability.admin
 						? {
-								allowedLogLevels: getAllowedLogLevels((env['LOG_LEVEL'] as string) || 'info'),
+								allowedLogLevels: getAllowedLogLevels((env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info'),
 						  }
 						: false;
 			} else {

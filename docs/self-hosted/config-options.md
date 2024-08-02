@@ -1115,10 +1115,12 @@ The WebSocket Logs endpoint is accessible at `/websocket/logs`. The method of au
 the connection will be disconnected when the authentication expires. Refer to the
 [authentication guide](/guides/real-time/authentication.html) for more information.
 
-| Variable                     | Description                                      | Default Value |
-| ---------------------------- | ------------------------------------------------ | ------------- |
-| `WEBSOCKETS_LOGS_ENABLED`    | Whether or not to enable the Logs Subscriptions. | `true`        |
-| `WEBSOCKETS_LOGS_CONN_LIMIT` | How many simultaneous connections are allowed.   | `Infinity`    |
+| Variable                     | Description                                                                                            | Default Value |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
+| `WEBSOCKETS_LOGS_ENABLED`    | Whether or not to enable the Logs Subscriptions.                                                       | `true`        |
+| `WEBSOCKETS_LOGS_LEVEL`      | What level of detail to stream. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
+| `WEBSOCKETS_LOGS_STYLE`      | Stream just the message (pretty) or the full JSON log. One of `pretty`, `raw`.                         | `pretty`      |
+| `WEBSOCKETS_LOGS_CONN_LIMIT` | How many simultaneous connections are allowed.                                                         | `Infinity`    |
 
 ---
 
