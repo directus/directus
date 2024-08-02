@@ -183,6 +183,71 @@ test('getAllFieldNames', () => {
 			cases: [],
 			whenCase: [],
 		},
+		{
+			type: 'o2m',
+			name: 'articles_m2a',
+			fieldKey: 'some-m2a',
+			parentKey: 'id',
+			relatedKey: 'id',
+			relation: {
+				collection: 'articles_m2a',
+				field: 'articles_id',
+				related_collection: 'articles',
+				schema: {
+					constraint_name: 'articles_m2a_articles_id_foreign',
+					table: 'articles_m2a',
+					column: 'articles_id',
+					foreign_key_schema: 'public',
+					foreign_key_table: 'articles',
+					foreign_key_column: 'id',
+					on_update: 'NO ACTION',
+					on_delete: 'SET NULL',
+				},
+				meta: {
+					id: 5,
+					many_collection: 'articles_m2a',
+					many_field: 'articles_id',
+					one_collection: 'articles',
+					one_field: 'some-m2a',
+					one_collection_field: null,
+					one_allowed_collections: null,
+					junction_field: 'item',
+					sort_field: null,
+					one_deselect_action: 'nullify',
+				},
+			},
+			query: {
+				sort: ['id'],
+			},
+			children: [
+				{
+					type: 'field',
+					name: 'id',
+					fieldKey: 'id',
+					whenCase: [],
+				},
+				{
+					type: 'field',
+					name: 'articles_id',
+					fieldKey: 'articles_id',
+					whenCase: [],
+				},
+				{
+					type: 'field',
+					name: 'item',
+					fieldKey: 'item',
+					whenCase: [],
+				},
+				{
+					type: 'field',
+					name: 'collection',
+					fieldKey: 'collection',
+					whenCase: [],
+				},
+			],
+			cases: [],
+			whenCase: [],
+		},
 	];
 
 	const res = getAllFieldNames(parsedFields);
@@ -197,5 +262,6 @@ test('getAllFieldNames', () => {
 		'author.address.street',
 		'author.address.city',
 		'headings',
+		'some-m2a',
 	]);
 });

@@ -518,7 +518,12 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		throw new ServiceUnavailableError({ service: 'export', reason: `Illegal export type used: "${format}"` });
 	}
 }
-
+/*
+ * Recursive function to traverse all field nodes to get the heading names for CSV export.
+ *
+ * Nested field names for o2m and a2o are not going to be revolved.
+ * Instead, when those relationships are resolved, the resulting list of items will be stored as a single value/cell of the CSV file.
+ */
 export function getAllFieldNames(
 	nodes: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] | undefined,
 	prefix: string = '',
@@ -542,17 +547,17 @@ export function getAllFieldNames(
 			case 'o2m':
 				fieldNames.push(prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey);
 				break;
-			case 'a2o':
-				for (const collection in node.children) {
-					fieldNames = fieldNames.concat(
-						getAllFieldNames(
-							node.children[collection],
-							prefix ? `${prefix}.${node.fieldKey}.${collection}` : `${node.fieldKey}.${collection}`,
-						),
-					);
-				}
+			// case 'a2o':
+			// 	for (const collection in node.children) {
+			// 		fieldNames = fieldNames.concat(
+			// 			getAllFieldNames(
+			// 				node.children[collection],
+			// 				prefix ? `${prefix}.${node.fieldKey}.${collection}` : `${node.fieldKey}.${collection}`,
+			// 			),
+			// 		);
+			// 	}
 
-				break;
+			// 	break;
 		}
 	});
 
