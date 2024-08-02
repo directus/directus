@@ -359,24 +359,25 @@ onUnmounted(() => {
 						@scroll="onScroll"
 					/>
 				</div>
-
-				<div v-if="logDetailVisible" class="log-detail">
-					<div class="log-detail-controls">
-						<v-button class="close-button" large secondary icon @click="logDetailVisible = false">
-							<v-icon name="close" />
-						</v-button>
-						<log-detail-filtering-input
-							:value="logDetailSearch"
-							class="full"
-							placeholder="Filter Paths (eg: req.method, res.statusCode)"
-							icon-right="search"
-							@input="logDetailSearch = $event"
-						/>
+				<transition name="fade">
+					<div v-if="logDetailVisible" class="log-detail">
+						<div class="log-detail-controls">
+							<v-button class="close-button" large secondary icon @click="logDetailVisible = false">
+								<v-icon name="close" />
+							</v-button>
+							<log-detail-filtering-input
+								:value="logDetailSearch"
+								class="full"
+								placeholder="Filter Paths (eg: req.method, res.statusCode)"
+								icon-right="search"
+								@input="logDetailSearch = $event"
+							/>
+						</div>
+						<div class="raw-log">
+							<pre>{{ filteredRawLog || 'No Log Selected' }}</pre>
+						</div>
 					</div>
-					<div class="raw-log">
-						<pre>{{ filteredRawLog || 'No Log Selected' }}</pre>
-					</div>
-				</div>
+				</transition>
 			</div>
 		</div>
 
@@ -422,6 +423,7 @@ onUnmounted(() => {
 	transition: var(--fast) var(--transition);
 	transition-property: border-color, box-shadow;
 	box-shadow: var(--theme--form--field--input--box-shadow);
+	overflow: hidden;
 }
 
 .split-view > div {
@@ -442,8 +444,6 @@ onUnmounted(() => {
 	border-top: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
-	transition: var(--fast) var(--transition);
-	transition-property: border-color, box-shadow;
 	box-shadow: var(--sidebar-shadow);
 }
 
@@ -466,9 +466,17 @@ onUnmounted(() => {
 	color: var(--theme--foreground-accent);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
-	transition: var(--fast) var(--transition);
-	transition-property: border-color, box-shadow;
 	box-shadow: var(--theme--form--field--input--box-shadow);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--fast) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 
 @media (min-width: 960px) {
