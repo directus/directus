@@ -3,6 +3,15 @@ import { getHeadingsForCsvExport } from './import-export.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
 
 test('Get the headings for CSV export from the field node tree', () => {
+	/**
+	 * this is an example result from parseFields
+	 * It includes the following:
+	 * - a field node
+	 * - a m2o node with a nested m2o node
+	 * - a o2m node
+	 * - a o2m node which is the parsing result of a m2a relationship
+	 */
+
 	const parsedFields: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [
 		{
 			type: 'field',
@@ -252,16 +261,22 @@ test('Get the headings for CSV export from the field node tree', () => {
 
 	const res = getHeadingsForCsvExport(parsedFields);
 
-	expect(res).toEqual([
+	const expectedHeadlinesForCsvExport = [
 		'id',
 		'title',
+
+		// headings for m2o node with another nested m2o node
 		'author.id',
 		'author.first_name',
 		'author.last_name',
 		'author.address.id',
 		'author.address.street',
 		'author.address.city',
+
+		// headings for the o2m nodes
 		'headings',
 		'some-m2a',
-	]);
+	];
+
+	expect(res).toEqual(expectedHeadlinesForCsvExport);
 });
