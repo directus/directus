@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 import { getHeadingsForCsvExport } from './import-export.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../types/ast.js';
 
-test('getAllFieldNames', () => {
+test('Get the headings for CSV export from the field node tree', () => {
 	const parsedFields: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] = [
 		{
 			type: 'field',
