@@ -75,7 +75,7 @@
 		"@mapbox/mapbox-gl-draw-static-mode": "1.0.1",
 		"@mapbox/mapbox-gl-geocoder": "5.0.2",
 		"@ngneat/falso": "7.2.0",
-		"@pinia/testing": "0.1.3",
+		"@pinia/testing": "0.1.4",
 		"@popperjs/core": "2.11.8",
 		"@rollup/plugin-yaml": "4.1.2",
 		"@sindresorhus/slugify": "2.2.1",
