@@ -345,7 +345,7 @@ export class ExportService {
 					readCount += result.length;
 
 					if (result.length) {
-						let flattenedFields = null;
+						let csvHeadings = null;
 
 						if (format === 'csv') {
 							if (!query.fields) query.fields = ['*'];
@@ -365,7 +365,7 @@ export class ExportService {
 								},
 							);
 
-							flattenedFields = getHeadingsForCsvExport(parsedFields);
+							csvHeadings = getHeadingsForCsvExport(parsedFields);
 						}
 
 						await appendFile(
@@ -373,7 +373,7 @@ export class ExportService {
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
-								fields: flattenedFields,
+								fields: csvHeadings,
 							}),
 						);
 					}
@@ -461,7 +461,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
-			fields: string[] | null;
+			fields?: string[] | null;
 		},
 	): string {
 		if (format === 'json') {
