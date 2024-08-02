@@ -10,15 +10,17 @@ interface Props {
 	logs: Log[];
 	logLevels: Record<string, number>;
 	instances: string[];
+	unreadLogsCount: number;
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['expandLog']);
+const emit = defineEmits(['expandLog', 'scrolledToBottom', 'scroll']);
 
 defineExpose({ scrollToIndex, scrollToBottom });
 
 const { t } = useI18n();
 const scroller = ref();
+const unreadLogsChipVisible = ref(true);
 
 const logLevelMap = Object.entries(props.logLevels).reduce(
 	(acc, [logLevelName, logLevelValue]) => {
@@ -29,16 +31,29 @@ const logLevelMap = Object.entries(props.logLevels).reduce(
 );
 
 async function scrollToIndex(index: number) {
-	scroller.value.scrollToItem(index);
+	if (index >= props.logs.length - 1) {
+		scrollToBottom();
+	} else {
+		scroller.value.scrollToItem(index);
+	}
 }
 
 async function scrollToBottom() {
 	scroller.value.scrollToBottom();
+	unreadLogsChipVisible.value = true;
+	emit('scrolledToBottom');
 }
 </script>
 
 <template>
-	<dynamic-scroller ref="scroller" :items="logs" key-field="index" :min-item-size="30" class="logs-display" x>
+	<dynamic-scroller
+		ref="scroller"
+		:items="logs"
+		key-field="index"
+		:min-item-size="30"
+		class="logs-display"
+		@scroll="emit('scroll', $event)"
+	>
 		<template #before>
 			<div class="notice">This is the beginning of your logs session...</div>
 		</template>
@@ -53,7 +68,7 @@ async function scrollToBottom() {
 				:data-index="index"
 				:data-active="active"
 			>
-				<div :class="['log-entry', { expanded: item.selected }]" @click="emit('expandLog', item.index)">
+				<div :class="['log-entry', { maximized: item.selected }]" @click="emit('expandLog', item.index)">
 					<span class="timestamp">[{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}]</span>
 					<span class="instance">[#{{ instances.indexOf(item.instance) + 1 }}]</span>
 					<span :class="['log-level', logLevelMap[item.data.level]]">
@@ -71,9 +86,27 @@ async function scrollToBottom() {
 			</dynamic-scroller-item>
 		</template>
 	</dynamic-scroller>
+	<div class="unread-logs">
+		<v-chip
+			class="unread-chip"
+			:active="unreadLogsChipVisible && unreadLogsCount > 0"
+			small
+			close
+			@click="scrollToBottom"
+			@close="unreadLogsChipVisible = false"
+		>
+			<v-icon name="arrow_downward" small />
+			{{ unreadLogsCount }} unread log(s)
+		</v-chip>
+	</div>
 </template>
 
 <style lang="scss" scoped>
+.wrapper {
+	width: 100%;
+	height: 100%;
+}
+
 .notice {
 	margin: 6px;
 	padding-left: 6px;
@@ -97,6 +130,7 @@ async function scrollToBottom() {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--foreground);
 	padding: 6px;
+	cursor: pointer;
 }
 
 .log-entry > span {
@@ -110,8 +144,31 @@ async function scrollToBottom() {
 	flex-grow: 1;
 }
 
-.expanded {
+.maximized {
 	background-color: var(--theme--background-normal);
+}
+
+.unread-logs {
+	position: relative;
+	width: 100%;
+	bottom: 40px;
+	text-align: center;
+}
+
+.unread-chip {
+	--v-chip-color: var(--theme--foreground-accent);
+	--v-chip-background-color: var(--theme--primary);
+	--v-chip-close-color: var(--theme--primary);
+
+	cursor: pointer;
+
+	.v-icon {
+		margin: 0 4px 0 4px;
+	}
+
+	span .close {
+		--v-icon-color: red !important;
+	}
 }
 
 .log-level {

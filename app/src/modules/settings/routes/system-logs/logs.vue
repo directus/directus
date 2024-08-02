@@ -39,6 +39,7 @@ const selectedLog = ref<Log>();
 const autoScroll = ref(true);
 const logsCount = ref(0);
 const purgedLogsCount = ref(0);
+const unreadLogsCount = ref(0);
 
 if (serverStore.info?.websocket) {
 	if (serverStore.info.websocket.logs) {
@@ -75,7 +76,7 @@ const filterOptionsUpdated = async ({ logLevelNames, nodeIds }: LogsFilter) => {
 		activeInstances.value = nodeIds;
 	}
 
-	logsDisplay.value?.scrollToBottom();
+	scrollLogsToBottom();
 };
 
 const filteredLogs = computed(() => {
@@ -231,7 +232,9 @@ client.onWebSocket('message', function (message) {
 		}
 
 		if (autoScroll.value) {
-			logsDisplay.value?.scrollToBottom();
+			scrollLogsToBottom();
+		} else {
+			unreadLogsCount.value++;
 		}
 
 		logsCount.value++;
@@ -258,7 +261,7 @@ async function stopLogsStreaming() {
 	client.disconnect();
 }
 
-async function expandLog(index: number) {
+async function maximizeLog(index: number) {
 	const correctedIndex = index - purgedLogsCount.value;
 
 	if (logs.value[correctedIndex]) {
@@ -274,9 +277,21 @@ async function expandLog(index: number) {
 	logDetailVisible.value = true;
 }
 
+async function minimizeLog() {
+	logDetailVisible.value = false;
+
+	if (selectedLog.value) {
+		selectedLog.value.selected = false;
+	}
+}
+
 function clearLogs() {
 	logs.value.length = 0;
 	logsCount.value = 0;
+}
+
+function scrollLogsToBottom() {
+	logsDisplay.value?.scrollToBottom();
 }
 
 async function onScroll(event: Event) {
@@ -284,17 +299,15 @@ async function onScroll(event: Event) {
 
 	if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1) {
 		autoScroll.value = true;
+		unreadLogsCount.value = 0;
+		scrollLogsToBottom();
 	} else {
 		autoScroll.value = false;
 	}
 }
 
 useShortcut('escape', () => {
-	logDetailVisible.value = false;
-
-	if (selectedLog.value) {
-		selectedLog.value.selected = false;
-	}
+	minimizeLog();
 });
 
 onMounted(() => {
@@ -355,14 +368,15 @@ onUnmounted(() => {
 						:logs="filteredLogs"
 						:log-levels="allowedLogLevels"
 						:instances="instances"
-						@expand-log="expandLog"
+						:unread-logs-count="unreadLogsCount"
+						@expand-log="maximizeLog"
 						@scroll="onScroll"
 					/>
 				</div>
 				<transition name="fade">
 					<div v-if="logDetailVisible" class="log-detail">
 						<div class="log-detail-controls">
-							<v-button class="close-button" large secondary icon @click="logDetailVisible = false">
+							<v-button class="close-button" large secondary icon @click="minimizeLog">
 								<v-icon name="close" />
 							</v-button>
 							<log-detail-filtering-input
@@ -433,6 +447,7 @@ onUnmounted(() => {
 
 .logs-display {
 	flex: 2;
+	min-height: 300px;
 }
 
 .log-detail {
@@ -440,6 +455,7 @@ onUnmounted(() => {
 	display: flex;
 	flex-direction: column;
 	padding: 6px;
+	min-height: 400px;
 	background-color: var(--theme--background-subdued);
 	border-top: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
