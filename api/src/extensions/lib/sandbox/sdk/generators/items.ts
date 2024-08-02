@@ -4,6 +4,7 @@ import { isSystemCollection } from '@directus/system-data';
 import type { Query } from '@directus/types';
 import type { Reference } from 'isolated-vm';
 import { ItemsService } from '../../../../../services/index.js';
+import { getSchema } from '../../../../../utils/get-schema.js';
 
 export function readItemsGenerator(
 	requestedScopes: ExtensionSandboxRequestedScopes,
@@ -25,16 +26,14 @@ export function readItemsGenerator(
 
 		if (isSystemCollection(collectionCopied)) throw new ForbiddenError();
 
+		const schema = await getSchema();
+
 		const service = new ItemsService(collectionCopied, {
 			// TODO: Check accountability
 			// accountability: {
 			// 	role: null,
 			// },
-			// TODO: Do I need a schema object?
-			schema: {
-				collections: {},
-				relations: [],
-			},
+			schema,
 		});
 
 		return await service.readByQuery(queryCopied);
