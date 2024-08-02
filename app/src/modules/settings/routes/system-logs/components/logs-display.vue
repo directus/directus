@@ -59,7 +59,14 @@ async function scrollToBottom() {
 					<span :class="['log-level', logLevelMap[item.data.level]]">
 						{{ logLevelMap[item.data.level]?.toLocaleUpperCase() }}
 					</span>
-					<span class="message">{{ item.data.msg }}</span>
+					<span
+						v-if="item.data.req?.method && item.data.req?.url && item.data.res?.statusCode && item.data.responseTime"
+						class="message"
+					>
+						{{ item.data.req.method }} {{ item.data.req.url }} {{ item.data.res.statusCode }}
+						{{ item.data.responseTime }}ms
+					</span>
+					<span v-else class="message">{{ item.data.msg }}</span>
 				</div>
 			</dynamic-scroller-item>
 		</template>
