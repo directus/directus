@@ -672,7 +672,7 @@ importers:
         version: 2.11.8
       '@rollup/plugin-yaml':
         specifier: 4.1.2
-        version: 4.1.2(rollup@4.19.0)
+        version: 4.1.2(rollup@4.19.2)
       '@sindresorhus/slugify':
         specifier: 2.2.1
         version: 2.2.1
@@ -729,7 +729,7 @@ importers:
         version: 0.5.8
       '@unhead/addons':
         specifier: 1.9.9
-        version: 1.9.9(rollup@4.19.0)
+        version: 1.9.9(rollup@4.19.2)
       '@unhead/vue':
         specifier: 1.9.9
         version: 1.9.9(vue@3.4.27(typescript@5.4.5))
@@ -991,7 +991,7 @@ importers:
         version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       rollup-plugin-node-externals:
         specifier: 7.1.2
-        version: 7.1.2(rollup@4.19.0)
+        version: 7.1.2(rollup@4.19.2)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1000,7 +1000,7 @@ importers:
         version: 5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0)
       vite-plugin-dts:
         specifier: 3.9.1
-        version: 3.9.1(@types/node@18.19.42)(rollup@4.19.0)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0))
+        version: 3.9.1(@types/node@18.19.42)(rollup@4.19.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0))
       vitest:
         specifier: 1.5.3
         version: 1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0)
@@ -1055,7 +1055,7 @@ importers:
         version: 2.4.6
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1073,7 +1073,7 @@ importers:
         version: link:../tsconfig
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1143,7 +1143,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1174,7 +1174,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1238,7 +1238,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1290,7 +1290,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1402,7 +1402,7 @@ importers:
         version: link:../tsconfig
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1439,7 +1439,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1467,7 +1467,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1488,7 +1488,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1544,7 +1544,7 @@ importers:
         version: link:../tsconfig
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1578,7 +1578,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1609,7 +1609,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1643,7 +1643,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1674,7 +1674,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1702,7 +1702,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1745,7 +1745,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1779,7 +1779,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1804,7 +1804,7 @@ importers:
         version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1825,7 +1825,7 @@ importers:
         version: 1.1.1(esbuild@0.20.2)
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1868,7 +1868,7 @@ importers:
         version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       rollup-plugin-node-externals:
         specifier: 7.1.2
-        version: 7.1.2(rollup@4.19.0)
+        version: 7.1.2(rollup@4.19.2)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1877,7 +1877,7 @@ importers:
         version: 5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0)
       vite-plugin-dts:
         specifier: 3.9.1
-        version: 3.9.1(@types/node@18.19.42)(rollup@4.19.0)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0))
+        version: 3.9.1(@types/node@18.19.42)(rollup@4.19.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0))
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -1950,7 +1950,7 @@ importers:
         version: 7.1.0
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2014,7 +2014,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2048,7 +2048,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2057,20 +2057,22 @@ importers:
         version: 1.5.3(@types/node@18.19.42)(happy-dom@14.12.3)(jsdom@24.0.0)(sass@1.77.8)(terser@5.31.0)
 
   sdk:
-    dependencies:
+    devDependencies:
       '@directus/system-data':
         specifier: workspace:*
         version: link:../packages/system-data
-    devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../packages/tsconfig
       '@types/node-fetch':
         specifier: 2.6.11
         version: 2.6.11
+      esbuild-plugin-replace:
+        specifier: 1.4.0
+        version: 1.4.0
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5)
+        version: 8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -4478,8 +4480,8 @@ packages:
     cpu: [arm]
     os: [android]
 
-  '@rollup/rollup-android-arm-eabi@4.19.0':
-    resolution: {integrity: sha512-JlPfZ/C7yn5S5p0yKk7uhHTTnFlvTgLetl2VxqE518QgyM7C9bSfFTYvB/Q/ftkq0RIPY4ySxTz+/wKJ/dXC0w==}
+  '@rollup/rollup-android-arm-eabi@4.19.2':
+    resolution: {integrity: sha512-OHflWINKtoCFSpm/WmuQaWW4jeX+3Qt3XQDepkkiFTsoxFc5BpF3Z5aDxFZgBqRjO6ATP5+b1iilp4kGIZVWlA==}
     cpu: [arm]
     os: [android]
 
@@ -4488,8 +4490,8 @@ packages:
     cpu: [arm64]
     os: [android]
 
-  '@rollup/rollup-android-arm64@4.19.0':
-    resolution: {integrity: sha512-RDxUSY8D1tWYfn00DDi5myxKgOk6RvWPxhmWexcICt/MEC6yEMr4HNCu1sXXYLw8iAsg0D44NuU+qNq7zVWCrw==}
+  '@rollup/rollup-android-arm64@4.19.2':
+    resolution: {integrity: sha512-k0OC/b14rNzMLDOE6QMBCjDRm3fQOHAL8Ldc9bxEWvMo4Ty9RY6rWmGetNTWhPo+/+FNd1lsQYRd0/1OSix36A==}
     cpu: [arm64]
     os: [android]
 
@@ -4498,8 +4500,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@rollup/rollup-darwin-arm64@4.19.0':
-    resolution: {integrity: sha512-emvKHL4B15x6nlNTBMtIaC9tLPRpeA5jMvRLXVbl/W9Ie7HhkrE7KQjvgS9uxgatL1HmHWDXk5TTS4IaNJxbAA==}
+  '@rollup/rollup-darwin-arm64@4.19.2':
+    resolution: {integrity: sha512-IIARRgWCNWMTeQH+kr/gFTHJccKzwEaI0YSvtqkEBPj7AshElFq89TyreKNFAGh5frLfDCbodnq+Ye3dqGKPBw==}
     cpu: [arm64]
     os: [darwin]
 
@@ -4508,8 +4510,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@rollup/rollup-darwin-x64@4.19.0':
-    resolution: {integrity: sha512-fO28cWA1dC57qCd+D0rfLC4VPbh6EOJXrreBmFLWPGI9dpMlER2YwSPZzSGfq11XgcEpPukPTfEVFtw2q2nYJg==}
+  '@rollup/rollup-darwin-x64@4.19.2':
+    resolution: {integrity: sha512-52udDMFDv54BTAdnw+KXNF45QCvcJOcYGl3vQkp4vARyrcdI/cXH8VXTEv/8QWfd6Fru8QQuw1b2uNersXOL0g==}
     cpu: [x64]
     os: [darwin]
 
@@ -4518,8 +4520,8 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.19.0':
-    resolution: {integrity: sha512-2Rn36Ubxdv32NUcfm0wB1tgKqkQuft00PtM23VqLuCUR4N5jcNWDoV5iBC9jeGdgS38WK66ElncprqgMUOyomw==}
+  '@rollup/rollup-linux-arm-gnueabihf@4.19.2':
+    resolution: {integrity: sha512-r+SI2t8srMPYZeoa1w0o/AfoVt9akI1ihgazGYPQGRilVAkuzMGiTtexNZkrPkQsyFrvqq/ni8f3zOnHw4hUbA==}
     cpu: [arm]
     os: [linux]
 
@@ -4528,8 +4530,8 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@rollup/rollup-linux-arm-musleabihf@4.19.0':
-    resolution: {integrity: sha512-gJuzIVdq/X1ZA2bHeCGCISe0VWqCoNT8BvkQ+BfsixXwTOndhtLUpOg0A1Fcx/+eA6ei6rMBzlOz4JzmiDw7JQ==}
+  '@rollup/rollup-linux-arm-musleabihf@4.19.2':
+    resolution: {integrity: sha512-+tYiL4QVjtI3KliKBGtUU7yhw0GMcJJuB9mLTCEauHEsqfk49gtUBXGtGP3h1LW8MbaTY6rSFIQV1XOBps1gBA==}
     cpu: [arm]
     os: [linux]
 
@@ -4538,8 +4540,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@rollup/rollup-linux-arm64-gnu@4.19.0':
-    resolution: {integrity: sha512-0EkX2HYPkSADo9cfeGFoQ7R0/wTKb7q6DdwI4Yn/ULFE1wuRRCHybxpl2goQrx4c/yzK3I8OlgtBu4xvted0ug==}
+  '@rollup/rollup-linux-arm64-gnu@4.19.2':
+    resolution: {integrity: sha512-OR5DcvZiYN75mXDNQQxlQPTv4D+uNCUsmSCSY2FolLf9W5I4DSoJyg7z9Ea3TjKfhPSGgMJiey1aWvlWuBzMtg==}
     cpu: [arm64]
     os: [linux]
 
@@ -4548,8 +4550,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@rollup/rollup-linux-arm64-musl@4.19.0':
-    resolution: {integrity: sha512-GlIQRj9px52ISomIOEUq/IojLZqzkvRpdP3cLgIE1wUWaiU5Takwlzpz002q0Nxxr1y2ZgxC2obWxjr13lvxNQ==}
+  '@rollup/rollup-linux-arm64-musl@4.19.2':
+    resolution: {integrity: sha512-Hw3jSfWdUSauEYFBSFIte6I8m6jOj+3vifLg8EU3lreWulAUpch4JBjDMtlKosrBzkr0kwKgL9iCfjA8L3geoA==}
     cpu: [arm64]
     os: [linux]
 
@@ -4558,8 +4560,8 @@ packages:
     cpu: [ppc64]
     os: [linux]
 
-  '@rollup/rollup-linux-powerpc64le-gnu@4.19.0':
-    resolution: {integrity: sha512-N6cFJzssruDLUOKfEKeovCKiHcdwVYOT1Hs6dovDQ61+Y9n3Ek4zXvtghPPelt6U0AH4aDGnDLb83uiJMkWYzQ==}
+  '@rollup/rollup-linux-powerpc64le-gnu@4.19.2':
+    resolution: {integrity: sha512-rhjvoPBhBwVnJRq/+hi2Q3EMiVF538/o9dBuj9TVLclo9DuONqt5xfWSaE6MYiFKpo/lFPJ/iSI72rYWw5Hc7w==}
     cpu: [ppc64]
     os: [linux]
 
@@ -4568,8 +4570,8 @@ packages:
     cpu: [riscv64]
     os: [linux]
 
-  '@rollup/rollup-linux-riscv64-gnu@4.19.0':
-    resolution: {integrity: sha512-2DnD3mkS2uuam/alF+I7M84koGwvn3ZVD7uG+LEWpyzo/bq8+kKnus2EVCkcvh6PlNB8QPNFOz6fWd5N8o1CYg==}
+  '@rollup/rollup-linux-riscv64-gnu@4.19.2':
+    resolution: {integrity: sha512-EAz6vjPwHHs2qOCnpQkw4xs14XJq84I81sDRGPEjKPFVPBw7fwvtwhVjcZR6SLydCv8zNK8YGFblKWd/vRmP8g==}
     cpu: [riscv64]
     os: [linux]
 
@@ -4578,8 +4580,8 @@ packages:
     cpu: [s390x]
     os: [linux]
 
-  '@rollup/rollup-linux-s390x-gnu@4.19.0':
-    resolution: {integrity: sha512-D6pkaF7OpE7lzlTOFCB2m3Ngzu2ykw40Nka9WmKGUOTS3xcIieHe82slQlNq69sVB04ch73thKYIWz/Ian8DUA==}
+  '@rollup/rollup-linux-s390x-gnu@4.19.2':
+    resolution: {integrity: sha512-IJSUX1xb8k/zN9j2I7B5Re6B0NNJDJ1+soezjNojhT8DEVeDNptq2jgycCOpRhyGj0+xBn7Cq+PK7Q+nd2hxLA==}
     cpu: [s390x]
     os: [linux]
 
@@ -4588,8 +4590,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@rollup/rollup-linux-x64-gnu@4.19.0':
-    resolution: {integrity: sha512-HBndjQLP8OsdJNSxpNIN0einbDmRFg9+UQeZV1eiYupIRuZsDEoeGU43NQsS34Pp166DtwQOnpcbV/zQxM+rWA==}
+  '@rollup/rollup-linux-x64-gnu@4.19.2':
+    resolution: {integrity: sha512-OgaToJ8jSxTpgGkZSkwKE+JQGihdcaqnyHEFOSAU45utQ+yLruE1dkonB2SDI8t375wOKgNn8pQvaWY9kPzxDQ==}
     cpu: [x64]
     os: [linux]
 
@@ -4598,8 +4600,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@rollup/rollup-linux-x64-musl@4.19.0':
-    resolution: {integrity: sha512-HxfbvfCKJe/RMYJJn0a12eiOI9OOtAUF4G6ozrFUK95BNyoJaSiBjIOHjZskTUffUrB84IPKkFG9H9nEvJGW6A==}
+  '@rollup/rollup-linux-x64-musl@4.19.2':
+    resolution: {integrity: sha512-5V3mPpWkB066XZZBgSd1lwozBk7tmOkKtquyCJ6T4LN3mzKENXyBwWNQn8d0Ci81hvlBw5RoFgleVpL6aScLYg==}
     cpu: [x64]
     os: [linux]
 
@@ -4608,8 +4610,8 @@ packages:
     cpu: [arm64]
     os: [win32]
 
-  '@rollup/rollup-win32-arm64-msvc@4.19.0':
-    resolution: {integrity: sha512-HxDMKIhmcguGTiP5TsLNolwBUK3nGGUEoV/BO9ldUBoMLBssvh4J0X8pf11i1fTV7WShWItB1bKAKjX4RQeYmg==}
+  '@rollup/rollup-win32-arm64-msvc@4.19.2':
+    resolution: {integrity: sha512-ayVstadfLeeXI9zUPiKRVT8qF55hm7hKa+0N1V6Vj+OTNFfKSoUxyZvzVvgtBxqSb5URQ8sK6fhwxr9/MLmxdA==}
     cpu: [arm64]
     os: [win32]
 
@@ -4618,8 +4620,8 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@rollup/rollup-win32-ia32-msvc@4.19.0':
-    resolution: {integrity: sha512-xItlIAZZaiG/u0wooGzRsx11rokP4qyc/79LkAOdznGRAbOFc+SfEdfUOszG1odsHNgwippUJavag/+W/Etc6Q==}
+  '@rollup/rollup-win32-ia32-msvc@4.19.2':
+    resolution: {integrity: sha512-Mda7iG4fOLHNsPqjWSjANvNZYoW034yxgrndof0DwCy0D3FvTjeNo+HGE6oGWgvcLZNLlcp0hLEFcRs+UGsMLg==}
     cpu: [ia32]
     os: [win32]
 
@@ -4628,8 +4630,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@rollup/rollup-win32-x64-msvc@4.19.0':
-    resolution: {integrity: sha512-xNo5fV5ycvCCKqiZcpB65VMR11NJB+StnxHz20jdqRAktfdfzhgjTiJ2doTDQE/7dqGaV5I7ZGqKpgph6lCIag==}
+  '@rollup/rollup-win32-x64-msvc@4.19.2':
+    resolution: {integrity: sha512-DPi0ubYhSow/00YqmG1jWm3qt1F8aXziHc/UNy8bo9cpCacqhuWu+iSq/fp2SyEQK7iYTZ60fBU9cat3MXTjIQ==}
     cpu: [x64]
     os: [win32]
 
@@ -7161,6 +7163,9 @@ packages:
     resolution: {integrity: sha512-QCOllgZJtaUo9miYBcLChTUaHNjJF3PYs1VidD7AwiEj1kYxKeQTctLAezAOH5ZKRH0g2IgPn6KwB4IT8iRpvA==}
     engines: {node: '>= 0.4'}
 
+  esbuild-plugin-replace@1.4.0:
+    resolution: {integrity: sha512-lP3ZAyzyRa5JXoOd59lJbRKNObtK8pJ/RO7o6vdjwLi71GfbL32NR22ZuS7/cLZkr10/L1lutoLma8E4DLngYg==}
+
   esbuild-yaml@1.1.1:
     resolution: {integrity: sha512-eiYWoTAeV1YBZ/BtaRksgp51LvLZvqJkBtKTYlqIjDYvJYddkXmmjBAT3uAln/+TVjVsM3tzMPjOF7m0gNmyxQ==}
     peerDependencies:
@@ -8813,6 +8818,9 @@ packages:
     resolution: {integrity: sha512-0shqecEPgdFpnI3AP90epXyxZy9g6CRZ+SZ7BcqFwYmtFEnZ1jpevcV5HoyVnlDS9gCnc1UIg3Rsvp3Ci7r8OA==}
     engines: {node: '>=16.14.0'}
 
+  magic-string@0.25.9:
+    resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
+
   magic-string@0.30.10:
     resolution: {integrity: sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==}
 
@@ -9133,6 +9141,10 @@ packages:
   minipass@5.0.0:
     resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
     engines: {node: '>=8'}
+
+  minipass@7.1.1:
+    resolution: {integrity: sha512-UZ7eQ+h8ywIRAW1hIEl2AqdwzJucU/Kp59+8kkZeSvafXhZjul247BvIJjEVFVeON6d7lM46XX1HXCduKAS8VA==}
+    engines: {node: '>=16 || 14 >=14.17'}
 
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
@@ -10592,8 +10604,8 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  rollup@4.19.0:
-    resolution: {integrity: sha512-5r7EYSQIowHsK4eTZ0Y81qpZuJz+MUuYeqmmYmRMl1nwhdmbiYqt5jwzf6u7wyOzJgYqtCRMtVRKOtHANBz7rA==}
+  rollup@4.19.2:
+    resolution: {integrity: sha512-6/jgnN1svF9PjNYJ4ya3l+cqutg49vOZ4rVgsDKxdl+5gpGPnByFXWGyfH9YGx9i3nfBwSu1Iyu6vGwFFA0BdQ==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
@@ -10882,6 +10894,10 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+
+  sourcemap-codec@1.4.8:
+    resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
+    deprecated: Please use @jridgewell/sourcemap-codec instead
 
   spawndamnit@2.0.0:
     resolution: {integrity: sha512-j4JKEcncSjFlqIwU5L/rp2N5SIPsdxaRsIv678+TZxZ0SRDJTm8JrxJMjE/XuiEZNEir3S8l0Fa3Ke339WI4qA==}
@@ -12261,8 +12277,8 @@ packages:
     resolution: {integrity: sha512-8aAvwVUSHpfEqTQ4w/KMlf3HcRdt50E5ODIQJBw1fQ5RL34xabzxtUlzTXVqc4rkZsPbvrXKWnABCD7kWSmocA==}
     engines: {node: '>= 14'}
 
-  yaml@2.4.5:
-    resolution: {integrity: sha512-aBx2bnqDzVOyNKfsysjA2ms5ZlnjSAW2eG3/L5G/CSujfjLJTJsEw1bGw8kCf04KodQWk1pxlGnZ56CRxiawmg==}
+  yaml@2.5.0:
+    resolution: {integrity: sha512-2wWLbGbYDiSqqIKoPjar3MPgB94ErzCtrNE1FdqGuaO0pi2JGjmE8aW8TDZwzU7vuxcGRdL/4gPQwQ7hD5AMSw==}
     engines: {node: '>= 14'}
     hasBin: true
 
@@ -12567,10 +12583,10 @@ snapshots:
       '@aws-crypto/sha1-browser': 3.0.0
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.569.0
-      '@aws-sdk/client-sts': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)
+      '@aws-sdk/client-sso-oidc': 3.569.0(@aws-sdk/client-sts@3.569.0)
+      '@aws-sdk/client-sts': 3.569.0
       '@aws-sdk/core': 3.567.0
-      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
+      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))(@aws-sdk/client-sts@3.569.0)
       '@aws-sdk/middleware-bucket-endpoint': 3.568.0
       '@aws-sdk/middleware-expect-continue': 3.567.0
       '@aws-sdk/middleware-flexible-checksums': 3.567.0
@@ -12672,13 +12688,13 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sso-oidc@3.569.0':
+  '@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0)':
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sts': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)
+      '@aws-sdk/client-sts': 3.569.0
       '@aws-sdk/core': 3.567.0
-      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
+      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))(@aws-sdk/client-sts@3.569.0)
       '@aws-sdk/middleware-host-header': 3.567.0
       '@aws-sdk/middleware-logger': 3.568.0
       '@aws-sdk/middleware-recursion-detection': 3.567.0
@@ -12715,6 +12731,7 @@ snapshots:
       '@smithy/util-utf8': 2.3.0
       tslib: 2.6.2
     transitivePeerDependencies:
+      - '@aws-sdk/client-sts'
       - aws-crt
 
   '@aws-sdk/client-sso-oidc@3.614.0(@aws-sdk/client-sts@3.614.0)':
@@ -12848,13 +12865,13 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0)':
+  '@aws-sdk/client-sts@3.569.0':
     dependencies:
       '@aws-crypto/sha256-browser': 3.0.0
       '@aws-crypto/sha256-js': 3.0.0
-      '@aws-sdk/client-sso-oidc': 3.569.0
+      '@aws-sdk/client-sso-oidc': 3.569.0(@aws-sdk/client-sts@3.569.0)
       '@aws-sdk/core': 3.567.0
-      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
+      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))(@aws-sdk/client-sts@3.569.0)
       '@aws-sdk/middleware-host-header': 3.567.0
       '@aws-sdk/middleware-logger': 3.568.0
       '@aws-sdk/middleware-recursion-detection': 3.567.0
@@ -12891,7 +12908,6 @@ snapshots:
       '@smithy/util-utf8': 2.3.0
       tslib: 2.6.2
     transitivePeerDependencies:
-      - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
   '@aws-sdk/client-sts@3.614.0':
@@ -12997,13 +13013,13 @@ snapshots:
       '@smithy/util-stream': 3.0.6
       tslib: 2.6.2
 
-  '@aws-sdk/credential-provider-ini@3.568.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))':
+  '@aws-sdk/credential-provider-ini@3.568.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))(@aws-sdk/client-sts@3.569.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)
+      '@aws-sdk/client-sts': 3.569.0
       '@aws-sdk/credential-provider-env': 3.568.0
       '@aws-sdk/credential-provider-process': 3.568.0
-      '@aws-sdk/credential-provider-sso': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0)
-      '@aws-sdk/credential-provider-web-identity': 3.568.0(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
+      '@aws-sdk/credential-provider-sso': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))
+      '@aws-sdk/credential-provider-web-identity': 3.568.0(@aws-sdk/client-sts@3.569.0)
       '@aws-sdk/types': 3.567.0
       '@smithy/credential-provider-imds': 2.3.0
       '@smithy/property-provider': 2.2.0
@@ -13032,14 +13048,14 @@ snapshots:
       - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
-  '@aws-sdk/credential-provider-node@3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))':
+  '@aws-sdk/credential-provider-node@3.569.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))(@aws-sdk/client-sts@3.569.0)':
     dependencies:
       '@aws-sdk/credential-provider-env': 3.568.0
       '@aws-sdk/credential-provider-http': 3.568.0
-      '@aws-sdk/credential-provider-ini': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
+      '@aws-sdk/credential-provider-ini': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))(@aws-sdk/client-sts@3.569.0)
       '@aws-sdk/credential-provider-process': 3.568.0
-      '@aws-sdk/credential-provider-sso': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0)
-      '@aws-sdk/credential-provider-web-identity': 3.568.0(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
+      '@aws-sdk/credential-provider-sso': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))
+      '@aws-sdk/credential-provider-web-identity': 3.568.0(@aws-sdk/client-sts@3.569.0)
       '@aws-sdk/types': 3.567.0
       '@smithy/credential-provider-imds': 2.3.0
       '@smithy/property-provider': 2.2.0
@@ -13086,10 +13102,10 @@ snapshots:
       '@smithy/types': 3.3.0
       tslib: 2.6.2
 
-  '@aws-sdk/credential-provider-sso@3.568.0(@aws-sdk/client-sso-oidc@3.569.0)':
+  '@aws-sdk/credential-provider-sso@3.568.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))':
     dependencies:
       '@aws-sdk/client-sso': 3.568.0
-      '@aws-sdk/token-providers': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0)
+      '@aws-sdk/token-providers': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))
       '@aws-sdk/types': 3.567.0
       '@smithy/property-provider': 2.2.0
       '@smithy/shared-ini-file-loader': 2.4.0
@@ -13112,9 +13128,9 @@ snapshots:
       - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
-  '@aws-sdk/credential-provider-web-identity@3.568.0(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))':
+  '@aws-sdk/credential-provider-web-identity@3.568.0(@aws-sdk/client-sts@3.569.0)':
     dependencies:
-      '@aws-sdk/client-sts': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)
+      '@aws-sdk/client-sts': 3.569.0
       '@aws-sdk/types': 3.567.0
       '@smithy/property-provider': 2.2.0
       '@smithy/types': 2.12.0
@@ -13284,9 +13300,9 @@ snapshots:
       '@smithy/types': 2.12.0
       tslib: 2.6.2
 
-  '@aws-sdk/token-providers@3.568.0(@aws-sdk/client-sso-oidc@3.569.0)':
+  '@aws-sdk/token-providers@3.568.0(@aws-sdk/client-sso-oidc@3.569.0(@aws-sdk/client-sts@3.569.0))':
     dependencies:
-      '@aws-sdk/client-sso-oidc': 3.569.0
+      '@aws-sdk/client-sso-oidc': 3.569.0(@aws-sdk/client-sts@3.569.0)
       '@aws-sdk/types': 3.567.0
       '@smithy/property-provider': 2.2.0
       '@smithy/shared-ini-file-loader': 2.4.0
@@ -14914,7 +14930,7 @@ snapshots:
       fast-glob: 3.3.2
       is-glob: 4.0.3
       open: 9.1.0
-      picocolors: 1.0.1
+      picocolors: 1.0.0
       tslib: 2.6.2
 
   '@pnpm/cli-meta@5.0.1':
@@ -15321,13 +15337,13 @@ snapshots:
     optionalDependencies:
       rollup: 4.17.2
 
-  '@rollup/plugin-yaml@4.1.2(rollup@4.19.0)':
+  '@rollup/plugin-yaml@4.1.2(rollup@4.19.2)':
     dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.19.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.19.2)
       js-yaml: 4.1.0
       tosource: 2.0.0-alpha.3
     optionalDependencies:
-      rollup: 4.19.0
+      rollup: 4.19.2
 
   '@rollup/pluginutils@4.2.1':
     dependencies:
@@ -15350,108 +15366,108 @@ snapshots:
     optionalDependencies:
       rollup: 4.17.2
 
-  '@rollup/pluginutils@5.1.0(rollup@4.19.0)':
+  '@rollup/pluginutils@5.1.0(rollup@4.19.2)':
     dependencies:
       '@types/estree': 1.0.5
       estree-walker: 2.0.2
       picomatch: 2.3.1
     optionalDependencies:
-      rollup: 4.19.0
+      rollup: 4.19.2
 
   '@rollup/rollup-android-arm-eabi@4.17.2':
     optional: true
 
-  '@rollup/rollup-android-arm-eabi@4.19.0':
+  '@rollup/rollup-android-arm-eabi@4.19.2':
     optional: true
 
   '@rollup/rollup-android-arm64@4.17.2':
     optional: true
 
-  '@rollup/rollup-android-arm64@4.19.0':
+  '@rollup/rollup-android-arm64@4.19.2':
     optional: true
 
   '@rollup/rollup-darwin-arm64@4.17.2':
     optional: true
 
-  '@rollup/rollup-darwin-arm64@4.19.0':
+  '@rollup/rollup-darwin-arm64@4.19.2':
     optional: true
 
   '@rollup/rollup-darwin-x64@4.17.2':
     optional: true
 
-  '@rollup/rollup-darwin-x64@4.19.0':
+  '@rollup/rollup-darwin-x64@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-arm-gnueabihf@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-arm-gnueabihf@4.19.0':
+  '@rollup/rollup-linux-arm-gnueabihf@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-arm-musleabihf@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-arm-musleabihf@4.19.0':
+  '@rollup/rollup-linux-arm-musleabihf@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-arm64-gnu@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-arm64-gnu@4.19.0':
+  '@rollup/rollup-linux-arm64-gnu@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-arm64-musl@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-arm64-musl@4.19.0':
+  '@rollup/rollup-linux-arm64-musl@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-powerpc64le-gnu@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-powerpc64le-gnu@4.19.0':
+  '@rollup/rollup-linux-powerpc64le-gnu@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-riscv64-gnu@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-riscv64-gnu@4.19.0':
+  '@rollup/rollup-linux-riscv64-gnu@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-s390x-gnu@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-s390x-gnu@4.19.0':
+  '@rollup/rollup-linux-s390x-gnu@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-x64-gnu@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-x64-gnu@4.19.0':
+  '@rollup/rollup-linux-x64-gnu@4.19.2':
     optional: true
 
   '@rollup/rollup-linux-x64-musl@4.17.2':
     optional: true
 
-  '@rollup/rollup-linux-x64-musl@4.19.0':
+  '@rollup/rollup-linux-x64-musl@4.19.2':
     optional: true
 
   '@rollup/rollup-win32-arm64-msvc@4.17.2':
     optional: true
 
-  '@rollup/rollup-win32-arm64-msvc@4.19.0':
+  '@rollup/rollup-win32-arm64-msvc@4.19.2':
     optional: true
 
   '@rollup/rollup-win32-ia32-msvc@4.17.2':
     optional: true
 
-  '@rollup/rollup-win32-ia32-msvc@4.19.0':
+  '@rollup/rollup-win32-ia32-msvc@4.19.2':
     optional: true
 
   '@rollup/rollup-win32-x64-msvc@4.17.2':
     optional: true
 
-  '@rollup/rollup-win32-x64-msvc@4.19.0':
+  '@rollup/rollup-win32-x64-msvc@4.19.2':
     optional: true
 
   '@rushstack/node-core-library@4.0.2(@types/node@18.19.42)':
@@ -16607,16 +16623,16 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@unhead/addons@1.9.9(rollup@4.19.0)':
+  '@unhead/addons@1.9.9(rollup@4.19.2)':
     dependencies:
-      '@rollup/pluginutils': 5.1.0(rollup@4.19.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.19.2)
       '@unhead/schema': 1.9.9
       '@unhead/shared': 1.9.9
       magic-string: 0.30.10
       mlly: 1.7.0
       ufo: 1.5.3
       unplugin: 1.10.1
-      unplugin-ast: 0.9.0(rollup@4.19.0)
+      unplugin-ast: 0.9.0(rollup@4.19.2)
     transitivePeerDependencies:
       - rollup
 
@@ -18382,6 +18398,10 @@ snapshots:
       is-date-object: 1.0.5
       is-symbol: 1.0.4
 
+  esbuild-plugin-replace@1.4.0:
+    dependencies:
+      magic-string: 0.25.9
+
   esbuild-yaml@1.1.1(esbuild@0.20.2):
     dependencies:
       esbuild: 0.20.2
@@ -19864,7 +19884,7 @@ snapshots:
   istanbul-lib-source-maps@5.0.4:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.4
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -20396,6 +20416,10 @@ snapshots:
     dependencies:
       magic-string: 0.30.10
 
+  magic-string@0.25.9:
+    dependencies:
+      sourcemap-codec: 1.4.8
+
   magic-string@0.30.10:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
@@ -20885,6 +20909,8 @@ snapshots:
   minipass@5.0.0:
     optional: true
 
+  minipass@7.1.1: {}
+
   minipass@7.1.2: {}
 
   minisearch@6.3.0: {}
@@ -21349,7 +21375,7 @@ snapshots:
 
   openapi3-ts@4.3.3:
     dependencies:
-      yaml: 2.4.5
+      yaml: 2.5.0
 
   openid-client@5.6.5:
     dependencies:
@@ -21839,14 +21865,14 @@ snapshots:
     dependencies:
       postcss: 8.4.32
 
-  postcss-load-config@6.0.1(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(yaml@2.4.5):
+  postcss-load-config@6.0.1(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(yaml@2.5.0):
     dependencies:
       lilconfig: 3.1.1
     optionalDependencies:
       jiti: 1.21.0
       postcss: 8.4.38
       tsx: 4.16.5
-      yaml: 2.4.5
+      yaml: 2.5.0
 
   postcss-merge-longhand@5.1.7(postcss@8.4.32):
     dependencies:
@@ -21991,7 +22017,7 @@ snapshots:
   postcss@8.4.32:
     dependencies:
       nanoid: 3.3.7
-      picocolors: 1.0.1
+      picocolors: 1.0.0
       source-map-js: 1.2.0
 
   postcss@8.4.35:
@@ -22576,9 +22602,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  rollup-plugin-node-externals@7.1.2(rollup@4.19.0):
+  rollup-plugin-node-externals@7.1.2(rollup@4.19.2):
     dependencies:
-      rollup: 4.19.0
+      rollup: 4.19.2
 
   rollup-plugin-styles@4.0.0(rollup@3.29.4):
     dependencies:
@@ -22628,26 +22654,26 @@ snapshots:
       '@rollup/rollup-win32-x64-msvc': 4.17.2
       fsevents: 2.3.3
 
-  rollup@4.19.0:
+  rollup@4.19.2:
     dependencies:
       '@types/estree': 1.0.5
     optionalDependencies:
-      '@rollup/rollup-android-arm-eabi': 4.19.0
-      '@rollup/rollup-android-arm64': 4.19.0
-      '@rollup/rollup-darwin-arm64': 4.19.0
-      '@rollup/rollup-darwin-x64': 4.19.0
-      '@rollup/rollup-linux-arm-gnueabihf': 4.19.0
-      '@rollup/rollup-linux-arm-musleabihf': 4.19.0
-      '@rollup/rollup-linux-arm64-gnu': 4.19.0
-      '@rollup/rollup-linux-arm64-musl': 4.19.0
-      '@rollup/rollup-linux-powerpc64le-gnu': 4.19.0
-      '@rollup/rollup-linux-riscv64-gnu': 4.19.0
-      '@rollup/rollup-linux-s390x-gnu': 4.19.0
-      '@rollup/rollup-linux-x64-gnu': 4.19.0
-      '@rollup/rollup-linux-x64-musl': 4.19.0
-      '@rollup/rollup-win32-arm64-msvc': 4.19.0
-      '@rollup/rollup-win32-ia32-msvc': 4.19.0
-      '@rollup/rollup-win32-x64-msvc': 4.19.0
+      '@rollup/rollup-android-arm-eabi': 4.19.2
+      '@rollup/rollup-android-arm64': 4.19.2
+      '@rollup/rollup-darwin-arm64': 4.19.2
+      '@rollup/rollup-darwin-x64': 4.19.2
+      '@rollup/rollup-linux-arm-gnueabihf': 4.19.2
+      '@rollup/rollup-linux-arm-musleabihf': 4.19.2
+      '@rollup/rollup-linux-arm64-gnu': 4.19.2
+      '@rollup/rollup-linux-arm64-musl': 4.19.2
+      '@rollup/rollup-linux-powerpc64le-gnu': 4.19.2
+      '@rollup/rollup-linux-riscv64-gnu': 4.19.2
+      '@rollup/rollup-linux-s390x-gnu': 4.19.2
+      '@rollup/rollup-linux-x64-gnu': 4.19.2
+      '@rollup/rollup-linux-x64-musl': 4.19.2
+      '@rollup/rollup-win32-arm64-msvc': 4.19.2
+      '@rollup/rollup-win32-ia32-msvc': 4.19.2
+      '@rollup/rollup-win32-x64-msvc': 4.19.2
       fsevents: 2.3.3
 
   rrweb-cssom@0.6.0:
@@ -23023,6 +23049,8 @@ snapshots:
     dependencies:
       whatwg-url: 7.1.0
 
+  sourcemap-codec@1.4.8: {}
+
   spawndamnit@2.0.0:
     dependencies:
       cross-spawn: 5.1.0
@@ -23121,7 +23149,7 @@ snapshots:
 
   ssri@10.0.5:
     dependencies:
-      minipass: 7.1.2
+      minipass: 7.1.1
 
   ssri@8.0.1:
     dependencies:
@@ -23411,7 +23439,7 @@ snapshots:
       css-select: 4.3.0
       css-tree: 1.1.3
       csso: 4.2.0
-      picocolors: 1.0.1
+      picocolors: 1.0.0
       stable: 0.1.8
 
   swagger-cli@4.0.4(openapi-types@12.1.3):
@@ -23673,7 +23701,7 @@ snapshots:
 
   tslib@2.6.2: {}
 
-  tsup@8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.4.5):
+  tsup@8.2.2(@microsoft/api-extractor@7.43.1)(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.23.0)
       cac: 6.7.14
@@ -23685,9 +23713,9 @@ snapshots:
       globby: 11.1.0
       joycon: 3.1.1
       picocolors: 1.0.1
-      postcss-load-config: 6.0.1(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(yaml@2.4.5)
+      postcss-load-config: 6.0.1(jiti@1.21.0)(postcss@8.4.38)(tsx@4.16.5)(yaml@2.5.0)
       resolve-from: 5.0.0
-      rollup: 4.19.0
+      rollup: 4.19.2
       source-map: 0.8.0-beta.0
       sucrase: 3.35.0
       tree-kill: 1.2.2
@@ -23935,12 +23963,12 @@ snapshots:
 
   unpipe@1.0.0: {}
 
-  unplugin-ast@0.9.0(rollup@4.19.0):
+  unplugin-ast@0.9.0(rollup@4.19.2):
     dependencies:
       '@antfu/utils': 0.7.7
       '@babel/generator': 7.23.6
       '@babel/parser': 7.24.4
-      '@rollup/pluginutils': 5.1.0(rollup@4.19.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.19.2)
       ast-kit: 0.12.1
       magic-string-ast: 0.3.0
       unplugin: 1.10.1
@@ -23960,7 +23988,7 @@ snapshots:
     dependencies:
       browserslist: 4.22.2
       escalade: 3.1.2
-      picocolors: 1.0.1
+      picocolors: 1.0.0
 
   update-check@1.5.4:
     dependencies:
@@ -24090,7 +24118,7 @@ snapshots:
   vite-node@0.34.7(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.4
       mlly: 1.6.1
       pathe: 1.1.2
       picocolors: 1.0.0
@@ -24108,7 +24136,7 @@ snapshots:
   vite-node@1.5.3(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.4
       pathe: 1.1.2
       picocolors: 1.0.0
       vite: 5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0)
@@ -24139,10 +24167,10 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@3.9.1(@types/node@18.19.42)(rollup@4.19.0)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0)):
+  vite-plugin-dts@3.9.1(@types/node@18.19.42)(rollup@4.19.2)(typescript@5.4.5)(vite@5.2.11(@types/node@18.19.42)(sass@1.77.8)(terser@5.31.0)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@18.19.42)
-      '@rollup/pluginutils': 5.1.0(rollup@4.19.0)
+      '@rollup/pluginutils': 5.1.0(rollup@4.19.2)
       '@vue/language-core': 1.8.27(typescript@5.4.5)
       debug: 4.3.4
       kolorist: 1.8.0
@@ -24615,7 +24643,7 @@ snapshots:
 
   yaml@2.3.4: {}
 
-  yaml@2.4.5: {}
+  yaml@2.5.0: {}
 
   yargs-parser@18.1.3:
     dependencies:
