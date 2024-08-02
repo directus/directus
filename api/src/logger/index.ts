@@ -14,7 +14,8 @@ import { LogsStream } from './stream.js';
 export const _cache: {
 	logger: Logger<never> | undefined;
 	logsStream: LogsStream | undefined;
-} = { logger: undefined, logsStream: undefined };
+	httpLogsStream: LogsStream | undefined;
+} = { logger: undefined, logsStream: undefined, httpLogsStream: undefined };
 
 export const useLogger = () => {
 	if (_cache.logger) {
@@ -26,14 +27,28 @@ export const useLogger = () => {
 	return _cache.logger;
 };
 
-export const getLogsStream = () => {
+export const getLogsStream = (pretty: boolean) => {
 	if (_cache.logsStream) {
 		return _cache.logsStream;
 	}
 
-	_cache.logsStream = new LogsStream();
+	_cache.logsStream = new LogsStream(pretty ? 'basic' : false);
 
 	return _cache.logsStream;
+};
+
+export const getHttpLogsStream = (pretty: boolean) => {
+	if (_cache.httpLogsStream) {
+		return _cache.httpLogsStream;
+	}
+
+	_cache.httpLogsStream = new LogsStream(pretty ? 'http' : false);
+
+	return _cache.httpLogsStream;
+};
+
+export const getLoggerLevelValue = (level: string): number => {
+	return pino.levels.values[level] || pino.levels.values['info']!;
 };
 
 export const createLogger = () => {
@@ -75,8 +90,6 @@ export const createLogger = () => {
 
 	// Console Logs
 	if (env['LOG_STYLE'] !== 'raw') {
-		pinoOptions.base = null;
-
 		streams.push({
 			level: mergedOptions.level!,
 			stream: pinoPretty({
@@ -90,7 +103,16 @@ export const createLogger = () => {
 
 	// WebSocket Logs
 	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
-		streams.push({ level: mergedOptions.level!, stream: getLogsStream() });
+		const wsLevel = (env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info';
+
+		if (getLoggerLevelValue(wsLevel) < getLoggerLevelValue(mergedOptions.level!)) {
+			mergedOptions.level = wsLevel;
+		}
+
+		streams.push({
+			level: wsLevel,
+			stream: getLogsStream(env['WEBSOCKETS_LOGS_STYLE'] !== 'raw'),
+		});
 	}
 
 	return pino(mergedOptions, pino.multistream(streams));
@@ -183,7 +205,16 @@ export const createExpressLogger = () => {
 
 	// WebSocket Logs
 	if (toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
-		streams.push({ level: mergedHttpOptions.level!, stream: getLogsStream() });
+		const wsLevel = (env['WEBSOCKETS_LOGS_LEVEL'] as string) || 'info';
+
+		if (getLoggerLevelValue(wsLevel) < getLoggerLevelValue(mergedHttpOptions.level!)) {
+			mergedHttpOptions.level = wsLevel;
+		}
+
+		streams.push({
+			level: wsLevel,
+			stream: getHttpLogsStream(env['WEBSOCKETS_LOGS_STYLE'] !== 'raw'),
+		});
 	}
 
 	return pinoHttp({
