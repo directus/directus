@@ -1,7 +1,7 @@
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { defineDisplay } from '@directus/extensions';
 import mime from 'mime/lite';
-import { h } from 'vue';
+import { h, defineComponent } from 'vue';
 
 export default defineDisplay({
 	id: 'mime-type',
@@ -25,13 +25,31 @@ export default defineDisplay({
 		},
 	],
 	types: ['string'],
-	component: ({ value, showAsExtension }: { value: string; showAsExtension: boolean }) => {
-		if (showAsExtension) {
-			return h('span', mime.getExtension(value) as string);
-		}
+	component: defineComponent({
+		props: {
+			value: {
+				type: String,
+				required: true,
+			},
+			showAsExtension: {
+				type: Boolean,
+				required: true,
+			},
+		},
+		setup(props, { slots }) {
+			if (props.showAsExtension) {
+				return () => [
+					h('span', mime.getExtension(props.value) as string),
+					slots.default && slots.default({ copyValue: mime.getExtension(props.value) }),
+				];
+			}
 
-		return h('span', readableMimeType(value) as string);
-	},
+			return () => [
+				h('span', readableMimeType(props.value) as string),
+				slots.default && slots.default({ copyValue: readableMimeType(props.value) }),
+			];
+		},
+	}),
 	handler: (value, options) => {
 		if (options.showAsExtension) {
 			return mime.getExtension(value);

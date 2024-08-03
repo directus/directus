@@ -40,6 +40,7 @@ const styles = computed(() => {
 		<template v-else>
 			<v-icon v-if="iconOn !== null && iconOff !== null" :name="value ? iconOn : iconOff"></v-icon>
 			<span v-if="labelOn !== null && labelOff !== null">{{ value ? labelOn : labelOff }}</span>
+			<slot :copy-value="value ? labelOn : labelOff" />
 		</template>
 	</div>
 </template>

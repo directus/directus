@@ -61,5 +61,6 @@ function renderValue(input: Record<string, any> | Record<string, any>[]) {
 	</v-menu>
 	<span v-else>
 		{{ displayValue[0] }}
+		<slot :copy-value="displayValue[0]" />
 	</span>
 </template>

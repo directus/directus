@@ -179,6 +179,8 @@ function matchNumber(left: number, right: number, operator: string) {
 		<span class="value">
 			{{ displayValue }}
 		</span>
+
+		<slot :copy-value="displayValue" />
 	</div>
 </template>
 

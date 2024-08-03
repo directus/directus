@@ -146,6 +146,7 @@ function handleObject(fieldKey: string) {
 			<v-error-boundary v-else-if="typeof part === 'object' && part.component" :name="`display-${part.component}`">
 				<component
 					:is="`display-${part.component}`"
+					v-slot="{ copyValue }"
 					v-bind="part.options"
 					:value="part.value"
 					:interface="part.interface"
@@ -153,14 +154,22 @@ function handleObject(fieldKey: string) {
 					:type="part.type"
 					:collection="part.collection"
 					:field="part.field"
-				/>
+				>
+					<slot :copy-value="copyValue" />
+				</component>
 
 				<template #fallback>
 					<span>{{ part.value }}</span>
 				</template>
 			</v-error-boundary>
-			<span v-else-if="typeof part === 'string'" :dir="direction">{{ translate(part) }}</span>
-			<span v-else>{{ part }}</span>
+			<span v-else-if="typeof part === 'string'" :dir="direction">
+				{{ translate(part) }}
+				<slot :copy-value="translate(part)" />
+			</span>
+			<span v-else>
+				{{ part }}
+				<slot :copy-value="part" />
+			</span>
 		</template>
 	</div>
 </template>

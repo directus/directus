@@ -13,6 +13,8 @@ withDefaults(defineProps<Props>(), {
 <template>
 	<use-datetime v-slot="{ datetime }" v-bind="$props">
 		<span class="datetime">{{ datetime }}</span>
+
+		<slot :copy-value="datetime" />
 	</use-datetime>
 </template>
 

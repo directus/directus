@@ -22,5 +22,6 @@ const { info } = useCollection(collection);
 	<div v-else>
 		<v-icon v-if="icon" :name="info.icon" left small />
 		{{ info.name }}
+		<slot :copy-value="info.name" />
 	</div>
 </template>
