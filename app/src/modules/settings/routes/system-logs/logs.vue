@@ -217,6 +217,8 @@ const filteredRawLog = computed(() => {
 });
 
 client.onWebSocket('open', () => {
+	reconnectionCount = 0;
+
 	client.sendMessage({ type: 'subscribe', log_level: maxLogLevelName.value });
 });
 
@@ -270,13 +272,13 @@ client.onWebSocket('error', function (_error) {
 	reconnectionCount++;
 
 	if (reconnectionCount >= reconnectionParams.retries) {
-		reconnectionCount = -1;
 		shouldStream.value = false;
 	}
 });
 
 async function resumeLogsStreaming() {
 	shouldStream.value = true;
+	reconnectionCount = -1;
 
 	try {
 		await client.connect();
@@ -286,6 +288,7 @@ async function resumeLogsStreaming() {
 }
 
 async function pauseLogsStreaming() {
+	shouldStream.value = false;
 	client.disconnect();
 }
 
