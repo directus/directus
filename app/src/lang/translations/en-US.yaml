@@ -1002,8 +1002,8 @@ no_data_in_flow: No data was produced or accessed within this Flow
 accountability: Accountability
 payload: Payload
 details: Details
-start_streaming_logs: Start Streaming Logs
-stop_streaming_logs: Stop Streaming Logs
+resume_streaming_logs: Resume Streaming Logs
+pause_streaming_logs: Pause Streaming Logs
 clear_logs: Clear Logs
 search_logs: Search Logs...
 full_screen: Full Screen

@@ -16,12 +16,18 @@ type LogsFilter = {
 	logLevelNames: string[] | null;
 	logLevelValues: number[];
 	nodeIds: string[] | null;
-	search: string;
+	search: string | null;
 };
 
 const { t } = useI18n();
+const reconnectionParams = { delay: 1000, retries: 10 };
+let reconnectionCount = 0;
 const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
-const client = sdk.with(realtime({ authMode: 'strict', url: `ws://${sdk.url.host}/websocket/logs` }));
+
+const client = sdk.with(
+	realtime({ authMode: 'strict', url: `ws://${sdk.url.host}/websocket/logs`, reconnect: reconnectionParams }),
+);
+
 const logs = ref<Log[]>([]);
 const serverStore = useServerStore();
 let allowedLogLevels: Record<string, number> = {};
@@ -29,8 +35,9 @@ const allowedLogLevelNames: string[] = [];
 const instances = ref<string[]>([]);
 const maxLogLevelName = ref('');
 const activeInstances = ref<string[]>([]);
-const filterOptions = ref<LogsFilter>({ logLevelNames: [], logLevelValues: [], nodeIds: [], search: '' });
-const streamStarted = ref(false);
+const filterOptions = ref<LogsFilter>({ logLevelNames: null, logLevelValues: [], nodeIds: null, search: '' });
+const shouldStream = ref(false);
+const streamConnected = ref(false);
 const maxLogs = 10_000;
 const logDetailSearch = ref('');
 const logDetailVisible = ref(false);
@@ -85,7 +92,9 @@ const filteredLogs = computed(() => {
 			filterOptions.value.logLevelValues.includes(log.data.level) &&
 			filterOptions.value.nodeIds &&
 			filterOptions.value.nodeIds.includes(log.instance) &&
-			JSON.stringify(log).toLowerCase().includes(filterOptions.value.search.toLowerCase())
+			JSON.stringify(log)
+				.toLowerCase()
+				.includes(filterOptions.value.search?.toLowerCase() || '')
 		);
 	});
 });
@@ -212,52 +221,71 @@ client.onWebSocket('open', () => {
 });
 
 client.onWebSocket('message', function (message) {
-	const { type, data, uid } = message;
+	const { type, data, uid, event } = message;
 
-	if (type == 'logs' && data) {
-		logs.value.push({ index: logsCount.value, instance: uid, data });
+	if (type == 'logs') {
+		if (event === 'subscribe') {
+			streamConnected.value = true;
+		}
 
-		if (!instances.value.includes(uid)) {
-			if (filterOptions.value.nodeIds?.length === instances.value.length) {
-				filterOptions.value.nodeIds.push(uid);
+		if (data) {
+			logs.value.push({ index: logsCount.value, instance: uid, data });
+
+			if (!instances.value.includes(uid)) {
+				if (!filterOptions.value.nodeIds) {
+					filterOptions.value.nodeIds = [];
+				}
+
+				if (filterOptions.value.nodeIds.length === instances.value.length) {
+					filterOptions.value.nodeIds.push(uid);
+				}
+
+				instances.value.push(uid);
 			}
 
-			instances.value.push(uid);
-		}
+			if (logs.value.length > maxLogs) {
+				logs.value.splice(0, 1);
+				purgedLogsCount.value++;
+				logDetailIndex.value--;
+			}
 
-		if (logs.value.length > maxLogs) {
-			logs.value.splice(0, 1);
-			purgedLogsCount.value++;
-			logDetailIndex.value--;
-		}
+			if (autoScroll.value) {
+				scrollLogsToBottom();
+			} else {
+				unreadLogsCount.value++;
+			}
 
-		if (autoScroll.value) {
-			scrollLogsToBottom();
-		} else {
-			unreadLogsCount.value++;
+			logsCount.value++;
 		}
-
-		logsCount.value++;
 	}
 });
 
 client.onWebSocket('close', function () {
-	streamStarted.value = false;
+	streamConnected.value = false;
 });
 
 client.onWebSocket('error', function (_error) {
-	streamStarted.value = false;
+	streamConnected.value = false;
+
+	reconnectionCount++;
+
+	if (reconnectionCount >= reconnectionParams.retries) {
+		reconnectionCount = -1;
+		shouldStream.value = false;
+	}
 });
 
-async function startLogsStreaming() {
-	streamStarted.value = true;
+async function resumeLogsStreaming() {
+	shouldStream.value = true;
 
-	await client.connect();
+	try {
+		await client.connect();
+	} catch {
+		// Error processed in the websocket error event
+	}
 }
 
-async function stopLogsStreaming() {
-	streamStarted.value = false;
-
+async function pauseLogsStreaming() {
 	client.disconnect();
 }
 
@@ -299,7 +327,6 @@ async function onScroll(event: Event) {
 
 	if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1) {
 		autoScroll.value = true;
-		unreadLogsCount.value = 0;
 		scrollLogsToBottom();
 	} else {
 		autoScroll.value = false;
@@ -311,11 +338,11 @@ useShortcut('escape', () => {
 });
 
 onMounted(() => {
-	startLogsStreaming();
+	resumeLogsStreaming();
 });
 
 onUnmounted(() => {
-	stopLogsStreaming();
+	pauseLogsStreaming();
 });
 </script>
 
@@ -331,16 +358,19 @@ onUnmounted(() => {
 		<template #actions>
 			<search-input v-model="filterOptions.search" :placeholder="t('search_logs')" :show-filter="false" />
 
+			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="t('loading')" rounded icon disabled>
+				<v-progress-circular small indeterminate />
+			</v-button>
 			<v-button
-				v-if="!streamStarted"
-				v-tooltip.bottom="t('start_streaming_logs')"
+				v-else-if="!shouldStream"
+				v-tooltip.bottom="t('resume_streaming_logs')"
 				rounded
 				icon
-				@click="startLogsStreaming"
+				@click="resumeLogsStreaming"
 			>
 				<v-icon name="play_arrow" />
 			</v-button>
-			<v-button v-else v-tooltip.bottom="t('stop_streaming_logs')" rounded icon @click="stopLogsStreaming">
+			<v-button v-else v-tooltip.bottom="t('pause_streaming_logs')" rounded icon @click="pauseLogsStreaming">
 				<v-icon name="pause" />
 			</v-button>
 			<v-button
@@ -371,6 +401,7 @@ onUnmounted(() => {
 						:unread-logs-count="unreadLogsCount"
 						@expand-log="maximizeLog"
 						@scroll="onScroll"
+						@scrolled-to-bottom="unreadLogsCount = 0"
 					/>
 				</div>
 				<transition name="fade">
