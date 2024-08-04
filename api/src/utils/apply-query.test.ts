@@ -277,4 +277,63 @@ describe('applyFilter', () => {
 		expect(resultingSelectQuery?.sql).toEqual(expectedSql);
 		expect(resultingSelectQuery?.bindings[0]).toEqual(bigintId.toString());
 	});
+
+	test.each([
+		{ operator: '_eq', replacement: '_null', sqlOutput: 'null' },
+		{ operator: '_neq', replacement: '_nnull', sqlOutput: 'not null' },
+	])('$operator = null should behave as $replacement = true', async ({ operator, sqlOutput: sql }) => {
+		const collection = 'test';
+		const field = 'string';
+
+		const sampleSchema: SchemaOverview = {
+			collections: {
+				[collection]: {
+					collection,
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					fields: {
+						[field]: {
+							field,
+							defaultValue: null,
+							nullable: false,
+							generated: false,
+							type: 'string',
+							dbType: null,
+							precision: null,
+							scale: null,
+							special: [],
+							note: null,
+							validation: null,
+							alias: false,
+						},
+					},
+				},
+			},
+			relations: [],
+		};
+
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
+
+		const rootFilter = {
+			[field]: {
+				[operator]: null,
+			},
+		};
+
+		const { query } = applyFilter(db, sampleSchema, queryBuilder, rootFilter, collection, {});
+
+		const tracker = createTracker(db);
+		tracker.on.select('*').response([]);
+
+		await query;
+
+		const resultingSelectQuery = tracker.history.select[0];
+		const expectedSql = `select * where "${collection}"."${field}" is ${sql}`;
+
+		expect(resultingSelectQuery?.sql).toEqual(expectedSql);
+	});
 });

@@ -630,12 +630,22 @@ export function applyFilter(
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
 			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
-			if ((operator === '_null' && compareValue !== false) || (operator === '_nnull' && compareValue === false)) {
+			if (
+				(operator === '_null' && compareValue !== false) ||
+				(operator === '_nnull' && compareValue === false) ||
+				(operator === '_eq' && compareValue === null)
+			) {
 				dbQuery[logical].whereNull(selectionRaw);
+				return;
 			}
 
-			if ((operator === '_nnull' && compareValue !== false) || (operator === '_null' && compareValue === false)) {
+			if (
+				(operator === '_nnull' && compareValue !== false) ||
+				(operator === '_null' && compareValue === false) ||
+				(operator === '_neq' && compareValue === null)
+			) {
 				dbQuery[logical].whereNotNull(selectionRaw);
+				return;
 			}
 
 			if ((operator === '_empty' && compareValue !== false) || (operator === '_nempty' && compareValue === false)) {
