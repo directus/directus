@@ -133,6 +133,12 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 				}
 			}
 
+			if (name.includes(':')) {
+				const [key, scope] = name.split(':');
+				relationalStructure[key!] = { [scope!]: [] };
+				continue;
+			}
+
 			children.push({ type: 'field', name, fieldKey, whenCase: [] });
 		}
 	}
