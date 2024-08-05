@@ -13,7 +13,7 @@ export function getUserCountQuery(knex: Knex, options: GetUserCountOptions) {
 		return Promise.resolve({ count: 0 });
 	}
 
-	let query = knex('directus_users').count({ count: '*' }).as('count').where('status', 'active');
+	let query = knex('directus_users').count({ count: '*' }).as('count').where('status', '=', 'active');
 
 	if (options.excludeIds && options.excludeIds.length > 0) {
 		query = query.whereNotIn('id', options.excludeIds);
