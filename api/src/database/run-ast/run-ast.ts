@@ -10,6 +10,7 @@ import type { RunASTOptions } from './types.js';
 import { applyParentFilters } from './utils/apply-parent-filters.js';
 import { mergeWithParentItems } from './utils/merge-with-parent-items.js';
 import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
+import { withPreprocessBindings } from './utils/with-preprocess-bindings.js';
 
 /**
  * Execute a given AST using Knex. Returns array of items based on requested AST.
@@ -60,6 +61,8 @@ export async function runAst(
 
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
 		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, o2mNodes, query, cases);
+
+		withPreprocessBindings(knex, dbQuery);
 
 		const rawItems: Item | Item[] = await dbQuery;
 

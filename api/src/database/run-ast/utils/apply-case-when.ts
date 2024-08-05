@@ -54,5 +54,5 @@ export function applyCaseWhen(
 		bindings.push(alias);
 	}
 
-	return knex.raw(knex.raw(rawCase, bindings) + '');
+	return knex.raw(rawCase, bindings);
 }
