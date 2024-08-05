@@ -1505,8 +1505,8 @@ importers:
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.0.0)
       '@pnpm/workspace.pkgs-graph':
-        specifier: 3.0.5
-        version: 3.0.5(@pnpm/logger@5.0.0)
+        specifier: 3.0.6
+        version: 3.0.6(@pnpm/logger@5.0.0)
       semver:
         specifier: 7.6.2
         version: 7.6.2
@@ -4205,8 +4205,8 @@ packages:
     resolution: {integrity: sha512-yQosGUvYPpAjb1jOFcdbwekRjZRVxN6C0hHzfRCZrMKbxGjt/E0g0RcFlEDNVZ95tm4oMMcr7nEPa7H7LX3emw==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/core-loggers@10.0.1':
-    resolution: {integrity: sha512-u4fVBKK1scEmcQcZj2T4+N4ugRB6Zlrf1p3vHDLXjoETWDimtFybHsKxjwzwBmoAXk76Ewr2GXPAQ879C5nA7Q==}
+  '@pnpm/core-loggers@10.0.2':
+    resolution: {integrity: sha512-UUqWV0wUrMvlNWMe8Ch+XFRI3u3K35T2rS5jofhCsqtZa9UlsJAFW4jjVzOBWkV0uVbt6mdy7IMBHvJsYaU94w==}
     engines: {node: '>=18.12'}
     peerDependencies:
       '@pnpm/logger': ^5.0.0
@@ -4307,8 +4307,8 @@ packages:
     resolution: {integrity: sha512-oQYP08exi6mOPdAZZWcNIGS+KKPsnNwUBzSuAEGWuCcqwMAt3k/WVCqVIXzBxhO5sP2b43og69VHmPj6IroKqw==}
     engines: {node: '>=14.6'}
 
-  '@pnpm/npm-resolver@20.0.0':
-    resolution: {integrity: sha512-lH3hrln2jjKOgs0Uidu+hJE3vSVufnrRFwlW6CN9HnD+wMqsVYmURa1cIrqaCUOUdHL5PiWndL8d+6P/uw2BMw==}
+  '@pnpm/npm-resolver@20.0.1':
+    resolution: {integrity: sha512-iuLGIk+FYULB40zgmmow2DoYA8jDUxt0/CXaQUJHzyQaUnsJEO/BtoHvvxuuOCh0bsGvd3Vlpr2a5ESu0eRmQg==}
     engines: {node: '>=18.12'}
     peerDependencies:
       '@pnpm/logger': ^5.0.0
@@ -4344,8 +4344,8 @@ packages:
     resolution: {integrity: sha512-2yufLOpiPKQyNVLbL3dgoytkDuuURB5yBOrFtafiuZieGZJid2AeHmFfPhU9hNc/ZM1+wqH3EuVHe/1DdEgm4Q==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/resolver-base@12.0.1':
-    resolution: {integrity: sha512-EobGNigWvWSPNIZaA5GZFzq2ENutyVYmyTobz2vg6KPH2RLvVo3hO2VYTZ8ARPKOfsFLLFei90ncrm7k+Z5U1g==}
+  '@pnpm/resolver-base@12.0.2':
+    resolution: {integrity: sha512-6Ged4cfUI+2RR6b/quphvuN8Tu+Sp0giMp9tqxqd8ls7P+A9qXGX6ATHUTl3jGfuOERYUWeYWrRrvxMmnYLy/g==}
     engines: {node: '>=18.12'}
 
   '@pnpm/store-controller-types@15.0.1':
@@ -4356,8 +4356,8 @@ packages:
     resolution: {integrity: sha512-DRWtTmmxQQtuWHf1xPt9bqzCSq8d0MQF5x1kdpCDMLd7xk3nP4To2/OGkPrb8MKbrWsgCNDwXyKCFlEKrAg7fg==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/types@10.1.0':
-    resolution: {integrity: sha512-cM2UhtQJs06zWm3wsXoVVi4b1P8rA7xioZCct/Q4sR5GAUq0VUReZMd9TkPEVdNlAiitctTAi9EM8D5hrO937A==}
+  '@pnpm/types@10.1.1':
+    resolution: {integrity: sha512-xF8/Trk+ucZa2rUwEk1WgMtlfWUQN5bu6bGHCho+suN2pYrTy+vN+HgZ2SO1oa+6WoyuN5yllMMADOEXaHTOmA==}
     engines: {node: '>=18.12'}
 
   '@pnpm/types@9.1.0':
@@ -4368,8 +4368,8 @@ packages:
     resolution: {integrity: sha512-3aBQPHntVgk5AweBWZn+1I/fqZ9krK/w01197aYVkAJQGftb+BVWgEepxY5GChjSW12j52XX+CmfynYZ/p0DFQ==}
     engines: {node: '>=12.22.0'}
 
-  '@pnpm/workspace.pkgs-graph@3.0.5':
-    resolution: {integrity: sha512-dCjeG47dkVWMLwj15g8ffuMt4R4+L4uBbhckYZ9Na22hHIAZzEIHp6bdGnBkljyF52p8Sd1WniovipmklDX1tg==}
+  '@pnpm/workspace.pkgs-graph@3.0.6':
+    resolution: {integrity: sha512-IhNOcgu/XoHsVuTiRxGVplxJs/YmXd/jlzrgKnn6k81Pm3rBtZFkrJ6e/fH5CPCgs0yGjlmlM0QVW5df8fEqnQ==}
     engines: {node: '>=18.12'}
 
   '@pnpm/workspace.spec-parser@1.0.0':
@@ -9141,10 +9141,6 @@ packages:
   minipass@5.0.0:
     resolution: {integrity: sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==}
     engines: {node: '>=8'}
-
-  minipass@7.1.1:
-    resolution: {integrity: sha512-UZ7eQ+h8ywIRAW1hIEl2AqdwzJucU/Kp59+8kkZeSvafXhZjul247BvIJjEVFVeON6d7lM46XX1HXCduKAS8VA==}
-    engines: {node: '>=16 || 14 >=14.17'}
 
   minipass@7.1.2:
     resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
@@ -14985,10 +14981,10 @@ snapshots:
 
   '@pnpm/constants@8.0.0': {}
 
-  '@pnpm/core-loggers@10.0.1(@pnpm/logger@5.0.0)':
+  '@pnpm/core-loggers@10.0.2(@pnpm/logger@5.0.0)':
     dependencies:
       '@pnpm/logger': 5.0.0
-      '@pnpm/types': 10.1.0
+      '@pnpm/types': 10.1.1
 
   '@pnpm/core-loggers@9.0.1(@pnpm/logger@5.0.0)':
     dependencies:
@@ -15133,16 +15129,16 @@ snapshots:
       semver: 7.6.2
       validate-npm-package-name: 4.0.0
 
-  '@pnpm/npm-resolver@20.0.0(@pnpm/logger@5.0.0)':
+  '@pnpm/npm-resolver@20.0.1(@pnpm/logger@5.0.0)':
     dependencies:
-      '@pnpm/core-loggers': 10.0.1(@pnpm/logger@5.0.0)
+      '@pnpm/core-loggers': 10.0.2(@pnpm/logger@5.0.0)
       '@pnpm/error': 6.0.1
       '@pnpm/fetching-types': 6.0.0
       '@pnpm/graceful-fs': 4.0.0
       '@pnpm/logger': 5.0.0
       '@pnpm/resolve-workspace-range': 6.0.0
-      '@pnpm/resolver-base': 12.0.1
-      '@pnpm/types': 10.1.0
+      '@pnpm/resolver-base': 12.0.2
+      '@pnpm/types': 10.1.1
       '@pnpm/workspace.spec-parser': 1.0.0
       '@zkochan/retry': 0.2.0
       encode-registry: 3.0.1
@@ -15217,9 +15213,9 @@ snapshots:
     dependencies:
       '@pnpm/types': 9.1.0
 
-  '@pnpm/resolver-base@12.0.1':
+  '@pnpm/resolver-base@12.0.2':
     dependencies:
-      '@pnpm/types': 10.1.0
+      '@pnpm/types': 10.1.1
 
   '@pnpm/store-controller-types@15.0.1':
     dependencies:
@@ -15231,18 +15227,18 @@ snapshots:
     dependencies:
       strip-comments-strings: 1.2.0
 
-  '@pnpm/types@10.1.0': {}
+  '@pnpm/types@10.1.1': {}
 
   '@pnpm/types@9.1.0': {}
 
   '@pnpm/util.lex-comparator@1.0.0': {}
 
-  '@pnpm/workspace.pkgs-graph@3.0.5(@pnpm/logger@5.0.0)':
+  '@pnpm/workspace.pkgs-graph@3.0.6(@pnpm/logger@5.0.0)':
     dependencies:
       '@pnpm/npm-package-arg': 1.0.0
-      '@pnpm/npm-resolver': 20.0.0(@pnpm/logger@5.0.0)
+      '@pnpm/npm-resolver': 20.0.1(@pnpm/logger@5.0.0)
       '@pnpm/resolve-workspace-range': 6.0.0
-      '@pnpm/types': 10.1.0
+      '@pnpm/types': 10.1.1
       ramda: '@pnpm/ramda@0.28.1'
     transitivePeerDependencies:
       - '@pnpm/logger'
@@ -20909,8 +20905,6 @@ snapshots:
   minipass@5.0.0:
     optional: true
 
-  minipass@7.1.1: {}
-
   minipass@7.1.2: {}
 
   minisearch@6.3.0: {}
@@ -23149,7 +23143,7 @@ snapshots:
 
   ssri@10.0.5:
     dependencies:
-      minipass: 7.1.1
+      minipass: 7.1.2
 
   ssri@8.0.1:
     dependencies:
