@@ -103,7 +103,7 @@
 		"@vueuse/core": "10.9.0",
 		"@vueuse/router": "10.9.0",
 		"apexcharts": "3.50.0",
-		"axios": "1.7.2",
+		"axios": "1.7.3",
 		"base-64": "1.0.0",
 		"caret-pos": "2.0.0",
 		"chroma-js": "2.4.2",
