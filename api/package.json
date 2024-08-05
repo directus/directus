@@ -98,7 +98,7 @@
 		"@types/cookie": "0.6.0",
 		"argon2": "0.40.3",
 		"async": "3.2.5",
-		"axios": "1.7.2",
+		"axios": "1.7.3",
 		"busboy": "1.6.0",
 		"bytes": "3.1.2",
 		"camelcase": "8.0.0",
