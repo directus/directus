@@ -61,7 +61,7 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <th>Professional</th>
   </tr>
   <tr>
-    <td>United States, East</td>
+    <td>United States, N. Virginia</td>
     <td>✅</td>
     <td>✅</td>
   </tr>
@@ -76,7 +76,17 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <td>✅</td>
   </tr>
   <tr>
-    <td>United States, West</td>
+    <td>United States, Ohio</td>
+    <td>✅</td>
+    <td>✅</td>
+  </tr>
+  <tr>
+    <td>United States, N. California</td>
+    <td>✅</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>United States, Oregon</td>
     <td>✅</td>
     <td></td>
   </tr>
@@ -86,37 +96,7 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <td></td>
   </tr>
   <tr>
-    <td>Asia Pacific, Hong Kong</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Jakarta</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Mumbai</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Osaka</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Seoul</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
     <td>Asia Pacific, Sydney</td>
-    <td>✅</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Asia Pacific, Tokyo</td>
     <td>✅</td>
     <td></td>
   </tr>
@@ -126,12 +106,12 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <td></td>
   </tr>
   <tr>
-    <td>Europe, Ireland</td>
+    <td>Europe, London</td>
     <td>✅</td>
     <td></td>
   </tr>
   <tr>
-    <td>Europe, London</td>
+    <td>Europe, Milan</td>
     <td>✅</td>
     <td></td>
   </tr>
@@ -146,7 +126,7 @@ There are 19 regions available for Enterprise Projects, and 3 for Professional P
     <td></td>
   </tr>
   <tr>
-    <td>Middle East, Bahrain</td>
+    <td>Europe, Zurich</td>
     <td>✅</td>
     <td></td>
   </tr>

@@ -1,7 +1,10 @@
 import { InvalidPayloadError } from '@directus/errors';
+import { randomInteger, randomUUID } from '@directus/random';
+import { Driver, StorageManager } from '@directus/storage';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { createTracker, MockClient, Tracker } from 'knex-mock-client';
+import { MockClient, Tracker, createTracker } from 'knex-mock-client';
+import { PassThrough } from 'node:stream';
 import {
 	afterEach,
 	beforeAll,
@@ -10,10 +13,15 @@ import {
 	expect,
 	it,
 	vi,
-	type MockedFunction,
 	type MockInstance,
+	type MockedFunction,
 } from 'vitest';
+import { getStorage } from '../storage/index.js';
 import { FilesService, ItemsService } from './index.js';
+
+vi.mock('../storage/index.js');
+vi.mock('@directus/storage');
+vi.mock('./files/lib/extract-metadata.js');
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
@@ -67,6 +75,79 @@ describe('Integration Tests', () => {
 				});
 
 				expect(superCreateOne).toHaveBeenCalled();
+			});
+		});
+
+		describe('uploadOne', () => {
+			let service: FilesService;
+			let superUpdateOne: MockInstance;
+
+			let sample: {
+				id: string;
+				filesize: number;
+			};
+
+			beforeEach(() => {
+				service = new FilesService({
+					knex: db,
+					schema: {
+						collections: {},
+						relations: [],
+					},
+				});
+
+				sample = {
+					id: randomUUID(),
+					filesize: randomInteger(0, 1000),
+				};
+
+				const mockDriver: Partial<Driver> = {
+					read: vi.fn().mockResolvedValue(new PassThrough()),
+					write: vi.fn(),
+					stat: vi.fn().mockReturnValue({ size: sample.filesize }),
+				};
+
+				const mockStorage: Partial<StorageManager> = {
+					location: vi.fn(() => mockDriver as Driver),
+				};
+
+				vi.mocked(getStorage).mockResolvedValue(mockStorage as StorageManager);
+
+				tracker.on.select('select "storage_default_folder" from "directus_settings"').response([]);
+
+				vi.spyOn(ItemsService.prototype, 'createOne').mockResolvedValue(sample.id);
+				superUpdateOne = vi.spyOn(ItemsService.prototype, 'updateOne').mockResolvedValue(sample.id);
+			});
+
+			it('should set the `uploaded_on` field to the current date', async () => {
+				tracker.on
+					.select(
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
+					)
+					.response(null);
+
+				const mockData = {
+					storage: 'local',
+					type: 'image/jpeg',
+					filename_download: 'test.jpg',
+				};
+
+				const mockDate = new Date();
+
+				vi.setSystemTime(mockDate);
+
+				await service.uploadOne(new PassThrough(), mockData);
+
+				vi.useRealTimers();
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						...mockData,
+						uploaded_on: mockDate.toISOString(),
+					}),
+					{ emitEvents: false },
+				);
 			});
 		});
 	});

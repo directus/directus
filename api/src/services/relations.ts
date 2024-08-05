@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { ForeignKey, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -6,7 +7,7 @@ import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } fr
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
-import { clearSystemCache, getCache } from '../cache.js';
+import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
@@ -20,6 +21,8 @@ import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
 import { ItemsService, type QueryOptions } from './items.js';
 
+const env = useEnv();
+
 export class RelationsService {
 	knex: Knex;
 	schemaInspector: SchemaInspector;
@@ -27,6 +30,7 @@ export class RelationsService {
 	schema: SchemaOverview;
 	relationsItemService: ItemsService<RelationMeta>;
 	systemCache: Keyv<any>;
+	schemaCache: Keyv<any>;
 	helpers: Helpers;
 
 	constructor(options: AbstractServiceOptions) {
@@ -43,8 +47,34 @@ export class RelationsService {
 			// happens in `filterForbidden` down below
 		});
 
-		this.systemCache = getCache().systemCache;
+		const cache = getCache();
+		this.systemCache = cache.systemCache;
+		this.schemaCache = cache.localSchemaCache;
 		this.helpers = getHelpers(this.knex);
+	}
+
+	async foreignKeys(collection?: string) {
+		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
+
+		let foreignKeys: ForeignKey[] | null = null;
+
+		if (schemaCacheIsEnabled) {
+			foreignKeys = await getCacheValue(this.schemaCache, 'foreignKeys');
+		}
+
+		if (!foreignKeys) {
+			foreignKeys = await this.schemaInspector.foreignKeys();
+
+			if (schemaCacheIsEnabled) {
+				setCacheValue(this.schemaCache, 'foreignKeys', foreignKeys);
+			}
+		}
+
+		if (collection) {
+			return foreignKeys.filter((row) => row.table === collection);
+		}
+
+		return foreignKeys;
 	}
 
 	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
@@ -82,7 +112,7 @@ export class RelationsService {
 			return metaRow.many_collection === collection;
 		});
 
-		const schemaRows = await this.schemaInspector.foreignKeys(collection);
+		const schemaRows = await this.foreignKeys(collection);
 		const results = this.stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}
@@ -129,9 +159,7 @@ export class RelationsService {
 			},
 		});
 
-		const schemaRow = (await this.schemaInspector.foreignKeys(collection)).find(
-			(foreignKey) => foreignKey.column === field,
-		);
+		const schemaRow = (await this.foreignKeys(collection)).find((foreignKey) => foreignKey.column === field);
 
 		const stitched = this.stitchRelations(metaRow, schemaRow ? [schemaRow] : []);
 		const results = await this.filterForbidden(stitched);
@@ -422,7 +450,7 @@ export class RelationsService {
 
 		try {
 			await transaction(this.knex, async (trx) => {
-				const existingConstraints = await this.schemaInspector.foreignKeys();
+				const existingConstraints = await this.foreignKeys();
 				const constraintNames = existingConstraints.map((key) => key.constraint_name);
 
 				if (

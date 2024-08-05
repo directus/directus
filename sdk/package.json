@@ -27,13 +27,12 @@
 		"dev": "NODE_ENV=development tsup",
 		"test": "vitest --typecheck --watch=false"
 	},
-	"dependencies": {
-		"@directus/system-data": "workspace:*"
-	},
 	"devDependencies": {
+		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
 		"@types/node-fetch": "2.6.11",
-		"tsup": "8.1.0",
+		"tsup": "8.2.2",
+		"esbuild-plugin-replace": "1.4.0",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3"
 	},

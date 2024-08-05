@@ -68,6 +68,18 @@ If you're using MySQL/MariaDB, please note that:
 - Values of type "Decimal" are now returned as a `string` instead of a `number`, which ensures that the precision is
   preserved.
 
+## Version 10.14.0
+
+### Updated Date Fields for Files
+
+In order to make it possible to recognize when a file was last replaced, the following changes have been made to the
+date fields:
+
+- A new `created_on` field has been introduced, which contains the initial date of creation
+- The `uploaded_on` field is now updated with every file upload/replacement
+
+## Version 10.12.2
+
 ### Disallowed Mutation of Special System Collections via Relations
 
 For security reasons, mutations of the following system collections via relations are no longer permitted:

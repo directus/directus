@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { useLocalStorage } from '@/composables/use-local-storage';
 import { useCollectionsStore } from '@/stores/collections';
 import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
@@ -15,6 +14,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
+import { useExpandCollapse } from './composables/use-expand-collapse';
 
 const { t } = useI18n();
 
@@ -23,28 +23,7 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
-
-const { data: collapsedIds } = useLocalStorage<string[]>('collapsed-collection-ids', []);
-
-function collapseAll() {
-	collapsedIds.value = collectionsStore.collections.map((c) => c.collection);
-}
-
-function expandAll() {
-	collapsedIds.value = [];
-}
-
-function toggleCollapse(collection: string) {
-	if (!collapsedIds.value) return;
-
-	const isCollapsed = collapsedIds.value.includes(collection);
-
-	if (isCollapsed) {
-		collapsedIds.value = collapsedIds.value.filter((c) => c !== collection);
-	} else {
-		collapsedIds.value = [...collapsedIds.value, collection];
-	}
-}
+const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
 	return translate(
@@ -208,15 +187,6 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		</template>
 
 		<div class="padding-box">
-			<div class="inline-header">
-				<span class="expand-collapse-button">
-					{{ t('expand') }}
-					<button @click="expandAll">{{ t('all') }}</button>
-					/
-					<button @click="collapseAll">{{ t('none') }}</button>
-				</span>
-			</div>
-
 			<v-info v-if="collections.length === 0" icon="box" :title="t('no_collections')">
 				{{ t('no_collections_copy_admin') }}
 
@@ -225,30 +195,41 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				</template>
 			</v-info>
 
-			<v-list v-else class="draggable-list">
-				<draggable
-					:model-value="rootCollections"
-					:group="{ name: 'collections' }"
-					:swap-threshold="0.3"
-					class="root-drag-container"
-					item-key="collection"
-					handle=".drag-handle"
-					v-bind="{ 'force-fallback': true }"
-					@update:model-value="onSort($event, true)"
-				>
-					<template #item="{ element }">
-						<collection-item
-							:collection="element"
-							:collections="collections"
-							:is-collapsed="element.isCollapsed"
-							:visibility-tree="findVisibilityChild(element.collection)!"
-							@edit-collection="editCollection = $event"
-							@set-nested-sort="onSort"
-							@toggle-collapse="toggleCollapse"
-						/>
-					</template>
-				</draggable>
-			</v-list>
+			<template v-else>
+				<transition-expand>
+					<div v-if="hasExpandableCollections" class="expand-collapse-button">
+						{{ t('expand') }}
+						<button @click="expandAll">{{ t('all') }}</button>
+						/
+						<button @click="collapseAll">{{ t('none') }}</button>
+					</div>
+				</transition-expand>
+
+				<v-list class="draggable-list">
+					<draggable
+						:model-value="rootCollections"
+						:group="{ name: 'collections' }"
+						:swap-threshold="0.3"
+						class="root-drag-container"
+						item-key="collection"
+						handle=".drag-handle"
+						v-bind="{ 'force-fallback': true }"
+						@update:model-value="onSort($event, true)"
+					>
+						<template #item="{ element }">
+							<collection-item
+								:collection="element"
+								:collections="collections"
+								:is-collapsed="element.isCollapsed"
+								:visibility-tree="findVisibilityChild(element.collection)!"
+								@edit-collection="editCollection = $event"
+								@set-nested-sort="onSort"
+								@toggle-collapse="toggleCollapse"
+							/>
+						</template>
+					</draggable>
+				</v-list>
+			</template>
 
 			<v-list class="db-only">
 				<v-list-item
@@ -358,23 +339,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 	margin-bottom: 16px;
 }
 
-.inline-header {
-	position: sticky;
-	top: var(--layout-offset-top);
-	z-index: 4;
-	display: flex;
-	align-items: center;
-	justify-content: end;
-	width: 100%;
-	height: 44px;
-	padding: 0 8px;
-	background-color: var(--theme--background);
-	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
-	box-shadow: 0 0 0 2px var(--theme--background);
-}
-
 .expand-collapse-button {
+	padding-top: 4px;
+	text-align: right;
 	color: var(--theme--foreground-subdued);
 
 	button {
@@ -386,5 +353,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 		color: var(--theme--foreground);
 		transition: none;
 	}
+}
+
+.v-list.draggable-list {
+	padding-top: 0;
 }
 </style>

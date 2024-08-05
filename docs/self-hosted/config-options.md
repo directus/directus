@@ -601,10 +601,13 @@ Based on your configured driver, you must also provide the following configurati
 | `STORAGE_<LOCATION>_SECRET`                 | User secret               | --                 |
 | `STORAGE_<LOCATION>_BUCKET`                 | S3 Bucket                 | --                 |
 | `STORAGE_<LOCATION>_REGION`                 | S3 Region                 | --                 |
-| `STORAGE_<LOCATION>_ENDPOINT`               | S3 Endpoint               | `s3.amazonaws.com` |
+| `STORAGE_<LOCATION>_ENDPOINT`<sup>[1]</sup> | S3 Endpoint               | `s3.amazonaws.com` |
 | `STORAGE_<LOCATION>_ACL`                    | S3 ACL                    | --                 |
 | `STORAGE_<LOCATION>_SERVER_SIDE_ENCRYPTION` | S3 Server Side Encryption | --                 |
 | `STORAGE_<LOCATION>_FORCE_PATH_STYLE`       | S3 Force Path Style       | false              |
+
+<sup>[1]</sup> When overriding this variable for S3, make sure to add your bucket's region in the endpoint:
+`s3.{region}.amazonaws.com`.
 
 ### Azure (`azure`)
 
@@ -763,6 +766,7 @@ AUTH_GITHUB_CLIENT_SECRET="34ae...f963"
 AUTH_GITHUB_AUTHORIZE_URL="https://github.com/login/oauth/authorize"
 AUTH_GITHUB_ACCESS_URL="https://github.com/login/oauth/access_token"
 AUTH_GITHUB_PROFILE_URL="https://api.github.com/user"
+AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION=true
 ```
 
 More example SSO configurations [can be found here](/self-hosted/sso-examples).
