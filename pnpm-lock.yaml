@@ -605,8 +605,8 @@ importers:
         specifier: 1.5.0
         version: 1.5.0
       '@editorjs/nested-list':
-        specifier: 1.4.2
-        version: 1.4.2
+        specifier: 1.4.3
+        version: 1.4.3
       '@editorjs/paragraph':
         specifier: 2.11.5
         version: 2.11.5
@@ -2859,8 +2859,8 @@ packages:
   '@editorjs/inline-code@1.5.0':
     resolution: {integrity: sha512-5i6BCOG8eOg4/6qGoLJuL6XSZZg834zIByDW8K80doM1L7ss/VqtLY0nrB2Q5bfs1KA0tOlVHOfjE4JD4438FQ==}
 
-  '@editorjs/nested-list@1.4.2':
-    resolution: {integrity: sha512-qb1dAoJ+bihqmlR3822TC2GuIxEjTCLTZsZVWNces3uJIZ+W4019G3IJKBt/MOOgz4Evzad/RvUEKwPCPe6YOQ==}
+  '@editorjs/nested-list@1.4.3':
+    resolution: {integrity: sha512-3jTJd6H2Zwe8SeiI9li9AolkCxFVitEnCpJjDI6+la/HslSJC827fHivc9hue6JmC8esA4yri0KCMyp8N4ykww==}
 
   '@editorjs/paragraph@2.11.5':
     resolution: {integrity: sha512-ZcUKnVOoFPuMdVJJXMo2odmsjxeZQOUxmOwOiZktRuFkRDMq9qCqkmzqE1BH5VR6YyyMLKV4ZBEwedwggDH8iA==}
@@ -13866,7 +13866,7 @@ snapshots:
     dependencies:
       '@codexteam/icons': 0.0.5
 
-  '@editorjs/nested-list@1.4.2':
+  '@editorjs/nested-list@1.4.3':
     dependencies:
       '@codexteam/icons': 0.0.2
 
