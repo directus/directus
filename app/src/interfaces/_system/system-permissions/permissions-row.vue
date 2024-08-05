@@ -26,8 +26,8 @@ const { t } = useI18n();
 </script>
 
 <template>
-	<tr class="permissions-row">
-		<td>
+	<tr class="permissions-row" :data-collection="collection.collection">
+		<td class="collection">
 			<span v-tooltip.left="collection.name" class="name">{{ collection.collection }}</span>
 			<span class="shortcuts">
 				<span class="all" @click="emit('setFullAccessAll')">{{ t('all') }}</span>
@@ -59,6 +59,10 @@ const { t } = useI18n();
 .permissions-row {
 	td:first-child {
 		width: 100%;
+	}
+
+	.collection {
+		white-space: nowrap;
 	}
 
 	.name {
