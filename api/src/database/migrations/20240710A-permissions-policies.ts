@@ -1,11 +1,11 @@
-import type { Knex } from 'knex';
-import { randomUUID } from 'node:crypto';
 import { processChunk, toBoolean } from '@directus/utils';
+import type { Knex } from 'knex';
 import { flatten, intersection, isEqual, merge, omit, uniq } from 'lodash-es';
-import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
+import { randomUUID } from 'node:crypto';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
-import { getSchema } from '../../utils/get-schema.js';
+import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
+import { getSchema } from '../../utils/get-schema.js';
 
 import type { LogicalFilterAND, LogicalFilterOR, Permission } from '@directus/types';
 
