@@ -228,10 +228,10 @@ validationError:
   istarts_with: Hodnota musí začínat s {substring}
   nstarts_with: Hodnota nemůže začínat s {substring}
   nistarts_with: Hodnota nemůže začínat s {substring}
-  ends_with: Hodnota musí skončit s {substring}
-  iends_with: Hodnota musí skončit s {substring}
-  nends_with: Hodnota nemůže skončit s {substring}
-  niends_with: Hodnota nemůže skončit s {substring}
+  ends_with: Hodnota musí končit s {substring}
+  iends_with: Hodnota musí končit s {substring}
+  nends_with: Hodnota nemůže končit s {substring}
+  niends_with: Hodnota nemůže končit s {substring}
 all_access: Veškerý přístup
 no_access: Žádný přístup
 use_custom: Použít vlastní
