@@ -357,8 +357,8 @@ export async function down(knex: Knex) {
 					permission.fields = permission.fields.join(',');
 				}
 
-				if (permission.permission) {
-					permission.permission = JSON.stringify(permission.permission);
+				if (permission.permissions) {
+					permission.permissions = JSON.stringify(permission.permissions);
 				}
 
 				if (permission.validation) {
