@@ -20,9 +20,9 @@ export default [
 		color: 'var(--section--dev-docs)'
 	},
 	{
-		type: 'user-guide',
-		icon: 'material-symbols:account-circle',
-		color: 'var(--section--user-guide)'
+		type: 'cloud',
+		icon: 'material-symbols:cloud',
+		color: 'var(--section--cloud)'
 	},
 	{
 		type: 'api-reference',

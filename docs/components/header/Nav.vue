@@ -12,6 +12,11 @@ const nav = ref([
 		color: 'var(--section--api-reference)',
 	},
 	{
+		label: 'Directus Cloud',
+		href: '/directus-cloud',
+		color: 'var(--section--cloud)',
+	},
+	{
 		label: 'Tutorials',
 		href: '/tutorials',
 		color: 'var(--section--tutorials)',
@@ -20,16 +25,6 @@ const nav = ref([
 		label: 'Community',
 		href: '/community',
 		color: 'var(--section--community)',
-	},
-	{
-		label: 'Directus TV',
-		href: 'https://directus.io/tv',
-		external: true
-	},
-	{
-		label: 'Starter Kits',
-		href: 'https://directus.io/plus',
-		external: true
 	},
 ])
 </script>
