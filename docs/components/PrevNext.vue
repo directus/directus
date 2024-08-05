@@ -16,8 +16,8 @@ const [prevLink, nextLink] = surround.value.map(link => {
 	return exception ? { ...link, _path: exception.path } : link
 })
 
-const prev = prevLink._path.includes('_partials') ? null : prevLink
-const next = nextLink._path.includes('_partials') ? null : nextLink
+const prev = prevLink?._path.includes('_partials') ? null : prevLink
+const next = nextLink?._path.includes('_partials') ? null : nextLink
 </script>
 
 <template>
