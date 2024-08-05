@@ -529,6 +529,7 @@ months:
 drag_mode: Režim přetáhnutí
 move_tool: Přesunout
 crop_tool: Ořezat
+focal_point_tool: Nástroj pro ohnisko
 cancel_crop: Zrušit oříznutí
 cancel_selection: Zrušit výběr
 original: Originál
@@ -564,7 +565,11 @@ open_file_in_tab: Otevřít soubor v nové kartě
 start_export: Zahájit export
 not_available_for_local_downloads: Není k dispozici pro lokální stahování
 exporting_all_items_in_collection: Exportuji všech {total} položek z {collection}.
+exporting_limited_items_in_collection: '{count} z {total} položek v rámci {collection} bude exportováno.'
 exporting_no_items_to_export: Žádné položky k exportu. Upravte konfiguraci a/nebo přidejte položky do kolekce.
+exporting_download_hint: Po vytvoření souboru {format} bude soubor stažen do vašeho zařízení.
+exporting_library_hint: Po vytvoření souboru {format} bude soubor uložen do knihovny.
+exporting_library_hint_forced: Tento export bude zpracován v dávkách a po dokončení bude soubor {format} uložen do knihovny souborů.
 collection_key: Klíč kolekce
 name: Jméno
 primary_key_field: Pole primárního klíče
@@ -592,6 +597,7 @@ comments: Komentáře
 no_comments: Zatím bez komentářů
 expand: Rozbalit
 expand_all: Rozbalit vše
+expand_none: Nerozbalit nic
 collapse: Sbalit
 collapse_all: Sbalit vše
 select_item: Vybrat položku
@@ -616,6 +622,10 @@ no_files_copy: Nejsou zde žádné soubory.
 user_count: 'Žádní uživatelé | Jeden uživatel | {count} uživatelů'
 no_users_copy: V této roli zatím nejsou žádní uživatelé.
 webhooks_count: 'Žádné webhooky | 1 webhook | {count} webhooků'
+webhooks_deprecation_notice: |
+  Webové háčky jsou zastaralé, další použití nedoporučujeme.
+
+  Prosím, použijte **toky** s [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Zatím nebyly nakonfigurovány žádné webhooky. Začněte vytvořením jednoho níže.
 no_notifications: Žádná oznámení
 no_notifications_copy: Jste v obraze!
@@ -628,6 +638,7 @@ create_collection: Vytvořit kategorii
 no_collections_copy_admin: Zatím nemáte žádné kolekce. Začněte kliknutím na tlačítko níže.
 no_collections_copy: Zatím nemáte žádné kolekce. Obraťte se na správce systému.
 relationship_not_setup: Vztah nebyl správně nakonfigurován
+no_singleton_relations: Vztahy se singletony nejsou podporovány
 display_template_not_setup: Šablona zobrazení je špatně nakonfigurována
 collection_field_not_setup: Volba pole kolekce je špatně nastavena
 select_a_collection: Vyberte kolekci
@@ -697,6 +708,7 @@ errors:
   CONTENT_TOO_LARGE: Odeslaná položka/soubor je příliš velká/ý
   FIELD_NOT_FOUND: Pole nenalezeno
   FORBIDDEN: Zakázáno
+  GRAPHQL_VALIDATION: Validace GraphQL
   ILLEGAL_ASSET_TRANSFORMATION: Zdroj obrázku je příliš velký pro náhled
   INTERNAL_SERVER_ERROR: Neočekávaná chyba
   INVALID_CONFIG: Neplatná konfigurace
@@ -985,6 +997,7 @@ media: Média
 quality: Kvalita
 width: Šířka
 height: Výška
+transformation_preset_key: Předvolby transformace
 source: Zdroj
 url_placeholder: Zadejte adresu url...
 display_text: Zobrazený text
@@ -1050,6 +1063,8 @@ wysiwyg_options:
   source_code: Upravit zdrojový kód
   fullscreen: Celá obrazovka
   directionality: Směr
+  lazy_loading: Líné načítání obrázků
+  lazy_loading_label: Povolit líné načítání
 dropdown: Rozbalovací nabídka
 choices: Volby
 choices_option_configured_incorrectly: Volby nastaveny nesprávně
@@ -1080,6 +1095,7 @@ settings_flows: Toky
 settings_presets: Záložky
 settings_translations: Překlady
 one_or_more_options_are_missing: Chybí jedna nebo více možností
+configure_field_key_to_continue: Než budete pokračovat, nastavte klíč pole
 scope: Rozsah
 actions: Akce
 select: Vybrat...
@@ -1131,12 +1147,16 @@ page_help_settings_webhooks_collection: '**Procházet webhooky** — Zobrazuje v
 page_help_settings_webhooks_item: '**Detail webhooku** — Formulář pro tvorbu a správu webhooků projektu.'
 page_help_settings_flows_collection: '**Procházet toky** — Zobrazuje všechny toky v rámci projektu.'
 page_help_settings_flows_item: '**Detail toku** – Pracovní prostor pro správu jedné nebo více operací.'
+page_help_settings_translations_collection: '**Procházet vlastní překlady** – Seznam všech vlastních překladů v rámci projektu.'
+page_help_settings_translations_item: '**Detail vlastních překladů** — Formulář pro zobrazení a správu této položky.'
 page_help_users_collection: '**Uživatelé** — Zobrazuje všechny systémové uživatele v rámci tohoto projektu.'
 page_help_users_item: >-
   **Detaily uživatele** — Správa informací o Vašem účtu nebo zobrazení detailů ostatních uživatelů.
 page_help_insights_overview: '**Přehledy** — Seznam nástěnek, ke kterým máte přístup.'
 page_help_insights_dashboard: '**Nástěnka** – Pracovní prostor pro správu jednoho nebo více panelů'
+page_help_marketplace_account: '**Účet** – Vydavatel nebo správce publikovaného rozšíření.'
 page_help_marketplace_registry: '**Registr** — Rozšíření k dispozici na tržišti Directusu.'
+page_help_marketplace_extension: '**Rozšíření** — Dostupná rozšíření na tržišti Directusu.'
 activity_feed: Kanál aktivit
 add_new: Přidat nový
 create_new: Vytvořit
@@ -1149,6 +1169,7 @@ cancel: Zrušit
 no_upscale: Nerozšiřovat obrázky
 no_extensions: Žádná rozšíření
 no_extensions_copy: Dosud nebyla nainstalována žádná rozšíření.
+install_extension: Instalovat rozšíření
 uninstall_locked: Nelze odinstalovat rozšíření, která nebyla nainstalována přes tržiště
 uninstall: Odinstalovat
 installed: Nainstalováno
@@ -1156,6 +1177,7 @@ reinstall: Přeinstalovat
 open_in_marketplace: Otevřít v tržišti
 source_registry: Tržiště
 source_local: Místní
+source_module: Modul pro Node
 collection: Kategorie
 collections: Kategorie
 content: Obsah
@@ -1326,8 +1348,11 @@ fields:
     public_registration: Registrace uživatele
     public_registration_note: Umožňuje uživatelům registrovat se prostřednictvím [registration route](/admin/register).
     public_registration_role: Uživatelská role
+    public_registration_role_note: Tato role je přiřazena uživatelům, kteří se zaregistrují pomocí této metody. Neovlivní již registrované uživatele.
     public_registration_email_filter: Filtr e-mailové adresy
+    public_registration_email_filter_note: Pouze e-mailové adresy odpovídající tomuto filtru se mohou zaregistrovat.
     public_registration_verify_email: Ověřit e-mail
+    public_registration_verify_email_note: Zašle registrovanému uživateli e-mail a požádá ho, aby klikl na ověřovací odkaz, než se bude moci přihlásit.
   directus_shares:
     name: Jméno
     role: Role
@@ -1433,11 +1458,13 @@ field_options:
     description: Volitelný popis...
     location: Volitelné umístění...
     storage_divider: Pojmenování souborů
+    focal_point_divider: Ohnisko
     filename_disk: Název na diskovém úložišti...
     filename_download: Název při stahování...
   directus_roles:
     name: Jedinečný název této role...
     description: Popis této role...
+    ip_access: Přidat povolené IP adresy, rozsah IP a CIDR bloky. Ponechte prázdné, pokud chcete povolit vše...
     fields:
       icon_name: Ikona
       name_name: Jméno
@@ -1487,7 +1514,10 @@ comment: Komentář
 live_preview:
   enable: Povolit náhled
   disable: Zakázat náhled
+  change_size: Změnit rozměry zobrazení
+  refresh: Obnovit náhled
   new_window: Otevřít v novém okně
+  close_window: Otevřít ve rozděleném zobrazení
   toggle_3d: Přepnout 3D
 shares: Sdílení
 unlimited_usage: Neomezené použití
@@ -1585,12 +1615,15 @@ search: Vyhledat
 select_existing: Vybrat z uložených
 select_field_type: Vyberte typ pole
 select_interface: Vyberte rozhraní
+select_display: Vyberte zobrazení
 settings: Nastavení
 register: Registrovat
 registration_successful_headline: Úspěch!
 registration_successful_note: Nyní můžete pokračovat na přihlašovací stránku.
 registration_successful_check_email_note: |
   Vezměte prosím na vědomí, že před přihlášením, musíte ověřit svou e-mailovou adresu kliknutím na ověřovací odkaz, který vám byl zaslán.
+dont_have_an_account: Ještě nemáte účet?
+already_have_an_account: Už máte svůj účet?
 sign_up_now: Zaregistrujte se nyní
 sign_in: Přihlásit se
 sign_out: Odhlásit se
@@ -1613,13 +1646,20 @@ report_error: Nahlásit chybu
 start: Začátek
 table: Tabulka
 list: Seznam
+search_filter: Hledat a filtrovat
+enable_search_filter: Povolit vyhledávání a filtrování
 item_link: Odkaz na položku
+show_link_to_item: Zobrazit odkaz na položku
 navigate_to_item: Přejít na položku
+undo_removed_item: Vrátit zpět odstraněnou položku
 remove_item: Odstranit položku
 delete_item: Smazat položku
 pause: Pozastavit
 resume: Pokračovat
 interfaces:
+  list-m2a:
+    prefix_note: Ve výchozím nastavení používá jméno související kolekce.
+    sorting_disabled: Řazení je zakázáno, protože existuje více položek, než se vejde na jednu stránku.
   filter:
     name: Filtr
     description: Konfigurace objektu filtru.
@@ -1724,6 +1764,7 @@ interfaces:
     allow_none_label: Povolit žádný výběr
     choices_name_placeholder: Zadejte název...
     choices_value_placeholder: Zadejte hodnotu...
+    preview_threshold: Limit náhledu
   select-multiple-dropdown:
     select-multiple-dropdown: Rozbalovací nabídka (Více možností)
     description: Vyberte více hodnot z rozevíracího seznamu
@@ -1756,11 +1797,15 @@ interfaces:
     description: Modal pro výběr možností rozhraní
   system-display:
     display: Zobrazení
+    description: Vyberte existující zobrazení
+    placeholder: Vyberte zobrazení...
   system-display-options:
     display-options: Volby zobrazení
+    description: Modální okno pro výběr možností rozhraní
   list-m2m:
     many-to-many: M:N
     description: Vyberte více souvisejících položek
+    columns_configure_notice: Sloupce můžete nastavit až po vytvoření tohoto pole.
     display_template_configure_notice: Po vytvoření tohoto pole můžete nakonfigurovat šablonu zobrazení.
   select-dropdown-m2o:
     many-to-one: N:1
@@ -1811,6 +1856,7 @@ interfaces:
   system-folder:
     folder: Kořenová složka
     description: Vyberte složku
+    field_hint: Výchozí složka pro nahrané soubory, pokud není vybrána jiná. Neovlivní existující soubory.
     root_name: Kořenový adresář knihovny souborů
     system_default: Výchozí nastavení systému
   select-radio:
@@ -1879,9 +1925,11 @@ interfaces:
     no_collection: Žádná kolekce
     toggle_split_view: Přepnout rozdělené zobrazení
     enable: Povolit
+    default_split_view_state: Výchozí stav rozděleného zobrazení
     user_language: Použít aktuální jazyk uživatele
     default_language: Výchozí jazyk
     language_field: Pole indikátoru jazyka
+    language_direction_field: Pole pro řízení jazyka
   list-o2m-tree-view:
     description: Zobrazení stromu pro vnořené rekurentní položky 1:N
     recursive_only: Rozhraní stromového pohledu funguje pouze pro rekurentní vztahy.
@@ -1898,12 +1946,15 @@ interfaces:
     description: Bohatý textový editor, který píše HTML obsah
     toolbar: Nástrojová lišta
     custom_formats: Vlastní formáty
+    custom_formats_note: Seznam formátů TinyMCE. Pro více informací navštivte dokumentaci [Formátů obsahu](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/).
     options_override: Přetížení nastavení
+    options_override_note: Seznam formátů TinyMCE. Pro více informací navštivte dokumentaci [Formátů obsahu](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/).
     folder_note: Složka pro nahrané soubory. Nemá vliv na existující soubory.
     imageToken: Statický přístupový token
     imageToken_label: Statický přístupový token je připojen k URL aktiva
   input-block-editor:
     input-block-editor: Editor bloků
+    description: Editor bloků bohatého meidálního obsahu s čistým JSON výstupem díky Editor.js
     tools: Nástrojová lišta
     tools_options:
       header: Hlavička
@@ -1952,6 +2003,7 @@ interfaces:
     remove_token: Odstranit token
   system-raw-editor:
     system-raw-editor: Editor surových hodnot
+    description: Povolit zadávání syrových hodnot nebo mustache šablon
 displays:
   translations:
     translations: Překlady
@@ -1993,6 +2045,7 @@ displays:
     suffix_label: Zobrazit indikátor vztahu
     suffix_note: Používá slova jako 'v' a 'před'
     strict: Striktní
+    strict_label: Použít striktní zápis
     strict_note: Odstraní slova jako 'téměř', 'přes', 'méně než'
     round: Zaokrouhlený
     round_note: Vyberte funkci zaokrouhlování
@@ -2036,6 +2089,7 @@ displays:
     description: Zobrazit formátovanou verzi objektu
   hash:
     hash: Hash
+    description: Zobrazit upravenou verzi hodnoty
   icon:
     icon: Ikona
     description: Zobrazit ikonu
@@ -2118,10 +2172,13 @@ layouts:
     group_field: Seskupit podle
     group_field_placeholder: Pole pro skupinu podle...
     group_title: Název skupiny
+    group_title_placeholder: Pole pro názvy skupin...
     title: Název karty
     title_placeholder: Volitelné pole názvu...
     text: Text karty
+    text_placeholder: Volitelné textové pole...
     date: Datum karty
+    date_placeholder: Volitelné pole data...
     tags: Štítky karty
     tags_placeholder: Volitelné pole štítků...
     user: Uživatel karty
@@ -2168,6 +2225,9 @@ panels:
     name: Metrika
     description: Zobrazit jednu hodnotu založenou na dotazu
     field: Pole
+  metric_list:
+    name: Metrický seznam
+    description: Vytvořit seznam a vizualizovat agregované metriky z kolekce
   time_series:
     name: Časová řada
     description: Vykreslit čárový graf založený na hodnotách v průběhu času
@@ -2188,6 +2248,8 @@ panels:
     select_collection: Musíte vybrat kolekci.
   linechart:
     name: Čárový graf
+    description: Čárový graf pro porovnání změny pole
+    disabled_grouping: Zakázáno při výběru seskupení.
     disabled_no_grouping: Zakázáno, pokud není vybrána žádná skupina.
     show_marker: Zobrazit značku popisku
     curve_type: Typ křivky
@@ -2200,18 +2262,25 @@ panels:
     description: Měřič pro sledování hodnot
   piechart:
     name: Koláčový nebo prstencový graf
+    description: Kruhový graf zobrazující poměry skupin ve sloupci
   variable:
     name: Globální proměnná
+    description: Nastavit globáloní hodnotu pro použití ve filtrech jiných panelů
     variable_key: Klíč proměnné
   relational-variable:
+    name: Globální relační proměnná
+    description: Nastavit globální relační hodnotu pro použití ve filtrech jiných panelů
     variable_key: Klíč proměnné
     multiple: Vícenásobný
+    multiple-label: Vybrat více položek
 triggers:
   common:
+    response_body: Tělo odpovědi
     response_body_all: Všechna data
     response_body_last: Data poslední operace
   event:
     name: Hook událost
+    description: Spuští události na platformě nebo mezi daty
     action: 'Akce (neblokující)'
     filter: 'Filtr (blokující)'
   webhook:
@@ -2221,23 +2290,32 @@ triggers:
     async: Asynchronní
   operation:
     name: Další tok
+    description: Spuštěno jiným tokem, pro řetězové zpracování
+    preview: Spuštěno operací v jiném toku
   schedule:
     name: Plán (CRON)
     description: Spouštět v pravidelných intervalech
     cron: Interval
   manual:
     name: Manuálně
+    description: Spuští se při ručním spuštění ve vybraných kolekcích
     collection_and_item: Stránka kolekce a položek
     collection_only: Pouze stránka kolekce
     item_only: Pouze stránka položek
     collection_page: Stránka kolekce
+    require_selection: Vyžaduje výběr
+a_flow_uuid: Vyberte tok pro spuštění...
 any_string_or_json: Jakýkoliv řetězec nebo JSON...
 item_payload_placeholder: Toto je JSON používaný k aktualizaci hodnot polí položky...
+operation_variables_note: Můžete přistupovat k datům toku s proměnnými jako **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** a **{'{'}{'{'}$accountability{'}'}{'}'}**, nebo odkázovat na předchozí operace s **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Podmínka
+    description: Trasovat tok založený na If / Else logice
   exec:
     name: Spustit skript
+    description: Spusťte libovolný kód pro změnu datového balíku
+    modules: 'Lze použít následující **Moduly pro Node**:'
   item-create:
     name: Vytvořit data
     description: Vytvořit položky v databázi
