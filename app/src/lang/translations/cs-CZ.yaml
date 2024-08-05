@@ -7,9 +7,12 @@ method: Metoda
 published: Zveřejněno
 draft: Návrh
 archived: Archivováno
+marketplace: Tržiště
+extensions: Rozšíření
 modules: Moduly
 module_bar: Panel modulů
 logs: Logy
+unknown: Neznámý
 reset_width: Obnovit šířku
 tile_size: Velikost dlaždice
 edit_field: Upravit pole
@@ -27,6 +30,8 @@ duplicate_field: Duplikovat pole
 half_width: Poloviční šířka
 full_width: Plná šířka
 group: Skupina
+popular: Populární
+recent: Nedávné
 export_items: Exportovat položky
 and: A
 or: Nebo
@@ -36,10 +41,42 @@ modifier: Modifikátor
 extension_interface: Rozhraní
 extension_display: Zobrazení
 extension_layout: Rozvržení
+extension_module: Modul
 extension_panel: Panel
+extension_theme: Motiv
 extension_hook: Hook
+extension_endpoint: Koncový bod
+extension_operation: Operace
+extension_bundle: Balíček
+extension_interfaces: Rozhraní
+extension_displays: Zobrazení
+extension_layouts: Rozvržení
 extension_modules: Moduly
+extension_panels: Panely
+extension_themes: Motivy
+extension_hooks: Zavěšení
+extension_endpoints: Koncové body
+extension_operations: Operace
+extension_bundles: Balíčky
+extension_missing: Chybějící
+extension_reload_required: Vyžadováno obnovení stránky
+extension_reload_required_copy: Pro zobrazení změn po aktivaci nebo deaktivaci rozšíření je vyžadováno obnovení stránky aplikace.
+extension_reload_now: Znovu načíst
+published_relative: Publikováno {relativeTime}
+compatible_with_your_project: Kompatibilní s vaším projektem
+compatible_with_your_project_copy: Autor uvedl, že kompatibilita rozšíření {hostVersion} neodpovídá verzi vašeho projektu ({currentVersion})
+n_files: '{n} Souborů'
+verified: Ověřeno
+homepage: Domovská stránka
+repository: Repozitář
+github: GitHub
+beta: Beta
+n_downloads: '{n} Stahování'
+downloads: Stahování
+compatibility_not_guaranteed: Kompatibilita není zaručena
+compatibility_not_guaranteed_copy: Autor uvedl, že kompatibilita rozšíření {hostVersion} neodpovídá verzi vašeho projektu ({currentVersion})
 enable: Povolit
+disable: Deaktivovat
 custom: Vlastní
 hook: Hook
 fill_width: Celá šířka
@@ -87,6 +124,13 @@ rename_folder: Přejmenovat složku
 delete_folder: Smazat složku
 prefix: Prefix
 suffix: Přípona
+keep: Ponechat
+version: Verze
+version_key: Klíč verze
+version_name: Název verze
+main_version: Hlavní
+switch_version: Přepnout verzi
+switch_version_copy: Opravdu chcete přepnout na verzi "{version}"? Neuložené změny budou ztraceny.
 promote_version_preview: Náhled
 reset_bookmark: Obnovit záložku
 update_bookmark: Aktualizovat záložku
@@ -102,6 +146,8 @@ logoutReason:
 public_label: Veřejný
 public_description: Určuje, která API data jsou dostupná bez ověřování.
 admin_description: Počáteční administrativní role s neomezeným přístupem k Aplikaci/API.
+no_description: Bez popisu...
+reached_maximum_number_of_extensions: Dosáhli jste maximálního počtu rozšíření pro tento projekt ({n}). Pro více informací kontaktujte správce systému.
 not_allowed: Nepovoleno
 archive: Archivovat
 archive_confirm: Skutečně chcete tuto položku archivovat?
@@ -239,6 +285,15 @@ time: Čas
 timestamp: Časové razítko
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometrie (vše)
+  Point: Bod
+  Polygon: Mnohoúhelník
+  MultiPoint: Více bodů
+theme_dark: Tmavý režim
+theme_directus_default: Výchozí téma
+theme_directus_minimal: Minimal
+theme_directus_colormatch: Podle barvy projektu
 not_available_for_type: Pro tento typ není k dispozici
 create_translations: Vytvořit překlady
 auto_refresh: Automatické obnovení
@@ -250,6 +305,7 @@ auto_generate: Auto-generování
 this_will_auto_setup_fields_relations: Toto automaticky nastaví všechna povinná pole a vztahy.
 click_here: Klikněte zde
 to_manually_setup_translations: pro ruční nastavení překladů.
+manage: Spravovat
 click_to_manage_translated_fields: >-
   Zatím nejsou žádná přeložená pole. Klikněte zde pro jejich vytvoření. | Je zde jedno přeložené pole. Klikněte zde pro jeho správu. | K dispozici je {count} přeložených polí. Klikněte zde pro jejich správu.
 fields_group: Skupina polí
@@ -453,6 +509,7 @@ generated_uuid: Generované UUID
 manual_string: Ručně zadaný řetězec
 save_and_create_new: Uložit a vytvořit nový
 save_and_stay: Uložit a zůstat
+save_and_quit: Uložit a zavřít
 save_as_copy: Uložit jako kopii
 add_existing: Přidat existující
 creating_items: Vytváření položek
@@ -462,6 +519,8 @@ enable_select_button: Povolit tlačítko Vybrat
 allow_duplicates: Povolit duplicity
 comments: Komentáře
 no_comments: Zatím bez komentářů
+expand: Rozbalit
+expand_all: Rozbalit vše
 select_item: Vybrat položku
 no_items: Žádné položky
 disabled: Zakázáno
@@ -884,6 +943,9 @@ choices: Volby
 choices_option_configured_incorrectly: Volby nastaveny nesprávně
 deselect: Zrušit výběr
 deselect_all: Zrušit celý výběr
+appearance_auto: Automaticky (synchronizovat se systémem)
+appearance_light: Světlý
+appearance_dark: Tmavý
 other: Ostatní...
 adding_user: Přidávání uživatele
 unknown_user: Neznámý uživatel
@@ -896,6 +958,7 @@ editing_in_batch: 'Hromadná úprava {count} položek'
 no_options_available: Žádné možnosti nejsou k dispozici
 settings_data_model: Datový model
 settings_project: Nastavení
+settings_appearance: Vzhled
 settings_webhooks: Webhooky
 settings_flows: Toky
 settings_presets: Záložky
@@ -934,6 +997,7 @@ page_help_files_collection: >-
   **Knihovna souborů** — Zobrazí všechny soubory nahrané do tohoto projektu. Přizpůsobte si rozvržení, filtry a třídění, abyste mohli přizpůsobit zobrazení a dokonce uložit záložky z těchto různých konfigurací pro rychlý přístup.
 page_help_files_item: >-
   **Detail souboru** – Formulář pro správu metadat souboru, úpravu původního aktiva a aktualizaci nastavení přístupu.
+page_help_settings_appearance: "**Vzhled** – Nastavení vzhledu a motivů vašeho projektu."
 page_help_settings_datamodel_collections: >-
   **Datový model: Kolekce** – Zobrazí všechny dostupné kolekce. To zahrnuje viditelné, skryté a systémové kolekce, stejně jako nespravované databázové tabulky, které lze přidat.
 page_help_settings_datamodel_fields: >-
@@ -963,6 +1027,7 @@ batch_delete_confirm: >-
   Nebyly vybrány žádné položky | Opravdu chcete smazat tuto položku? Operace je nevratná. | Jste si jist(a) smazáním těchto {count} položek? Operace je nevratná.
 cancel: Zrušit
 no_upscale: Nerozšiřovat obrázky
+source_registry: Tržiště
 collection: Kategorie
 collections: Kategorie
 content: Obsah
@@ -1069,6 +1134,7 @@ fields:
     last_page: Poslední stránka
     last_access: Poslední přístup
     email_notifications: E-mailová upozornění
+    appearance: Vzhled
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1094,6 +1160,7 @@ fields:
     public_foreground: Veřejné popředí
     public_background: Veřejné pozadí
     public_note: Veřejná poznámka
+    default_appearance: Výchozí vzhled
     auth_password_policy: Zásady ověřování hesla
     auth_login_attempts: Pokusy o přihlášení
     files_and_thumbnails: Soubory a úložiště
