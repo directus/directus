@@ -1,6 +1,160 @@
+import { processChunk, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import { flatten, intersection, isEqual, merge, omit, uniq } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
-import { processChunk } from '@directus/utils';
+import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
+import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
+import { getSchema } from '../../utils/get-schema.js';
+
+import type { LogicalFilterAND, LogicalFilterOR, Permission } from '@directus/types';
+
+type RoleAccess = {
+	app_access: boolean;
+	admin_access: boolean;
+	ip_access: string | null;
+	enforce_tfa: boolean;
+};
+
+// Adapted from https://github.com/directus/directus/blob/141b8adbf4dd8e06530a7929f34e3fc68a522053/api/src/utils/merge-permissions.ts#L4
+export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permission[][]) {
+	const allPermissions = flatten(permissions);
+
+	const mergedPermissions = allPermissions
+		.reduce((acc, val) => {
+			const key = `${val.collection}__${val.action}`;
+			const current = acc.get(key);
+			acc.set(key, current ? mergePermission(strategy, current, val) : val);
+			return acc;
+		}, new Map())
+		.values();
+
+	return Array.from(mergedPermissions);
+}
+
+export function mergePermission(
+	strategy: 'and' | 'or',
+	currentPerm: Permission,
+	newPerm: Permission,
+): Omit<Permission, 'id' | 'system'> {
+	const logicalKey = `_${strategy}` as keyof LogicalFilterOR | keyof LogicalFilterAND;
+
+	let { permissions, validation, fields, presets } = currentPerm;
+
+	if (newPerm.permissions) {
+		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === logicalKey) {
+			permissions = {
+				[logicalKey]: [
+					...(currentPerm.permissions as LogicalFilterOR & LogicalFilterAND)[logicalKey],
+					newPerm.permissions,
+				],
+			} as LogicalFilterAND | LogicalFilterOR;
+		} else if (currentPerm.permissions) {
+			// Empty {} supersedes other permissions in _OR merge
+			if (strategy === 'or' && (isEqual(currentPerm.permissions, {}) || isEqual(newPerm.permissions, {}))) {
+				permissions = {};
+			} else {
+				permissions = {
+					[logicalKey]: [currentPerm.permissions, newPerm.permissions],
+				} as LogicalFilterAND | LogicalFilterOR;
+			}
+		} else {
+			permissions = {
+				[logicalKey]: [newPerm.permissions],
+			} as LogicalFilterAND | LogicalFilterOR;
+		}
+	}
+
+	if (newPerm.validation) {
+		if (currentPerm.validation && Object.keys(currentPerm.validation)[0] === logicalKey) {
+			validation = {
+				[logicalKey]: [
+					...(currentPerm.validation as LogicalFilterOR & LogicalFilterAND)[logicalKey],
+					newPerm.validation,
+				],
+			} as LogicalFilterAND | LogicalFilterOR;
+		} else if (currentPerm.validation) {
+			// Empty {} supersedes other validations in _OR merge
+			if (strategy === 'or' && (isEqual(currentPerm.validation, {}) || isEqual(newPerm.validation, {}))) {
+				validation = {};
+			} else {
+				validation = {
+					[logicalKey]: [currentPerm.validation, newPerm.validation],
+				} as LogicalFilterAND | LogicalFilterOR;
+			}
+		} else {
+			validation = {
+				[logicalKey]: [newPerm.validation],
+			} as LogicalFilterAND | LogicalFilterOR;
+		}
+	}
+
+	if (newPerm.fields) {
+		if (Array.isArray(currentPerm.fields) && strategy === 'or') {
+			fields = uniq([...currentPerm.fields, ...newPerm.fields]);
+		} else if (Array.isArray(currentPerm.fields) && strategy === 'and') {
+			fields = intersection(currentPerm.fields, newPerm.fields);
+		} else {
+			fields = newPerm.fields;
+		}
+
+		if (fields.includes('*')) fields = ['*'];
+	}
+
+	if (newPerm.presets) {
+		presets = merge({}, presets, newPerm.presets);
+	}
+
+	return omit(
+		{
+			...currentPerm,
+			permissions,
+			validation,
+			fields,
+			presets,
+		},
+		['id', 'system'],
+	);
+}
+
+async function fetchRoleAccess(roles: string[], context: { knex: Knex }) {
+	const roleAccess: RoleAccess = {
+		admin_access: false,
+		app_access: false,
+		ip_access: null,
+		enforce_tfa: false,
+	};
+
+	const accessRows = await context
+		.knex('directus_access')
+		.select(
+			'directus_policies.id',
+			'directus_policies.admin_access',
+			'directus_policies.app_access',
+			'directus_policies.ip_access',
+			'directus_policies.enforce_tfa',
+		)
+		.where('role', 'in', roles)
+		.leftJoin('directus_policies', 'directus_policies.id', 'directus_access.policy');
+
+	const ipAccess = new Set();
+
+	for (const { admin_access, app_access, ip_access, enforce_tfa } of accessRows) {
+		roleAccess.admin_access ||= toBoolean(admin_access);
+		roleAccess.app_access ||= toBoolean(app_access);
+		roleAccess.enforce_tfa ||= toBoolean(enforce_tfa);
+
+		if (ip_access && ip_access.length) {
+			ip_access.split(',').forEach((ip: string) => ipAccess.add(ip));
+		}
+	}
+
+	if (ipAccess.size > 0) {
+		roleAccess.ip_access = Array.from(ipAccess).join(',');
+	}
+
+	return roleAccess;
+}
 
 /**
  * The public role used to be `null`, we gotta create a single new policy for the permissions
@@ -138,36 +292,95 @@ export async function up(knex: Knex) {
 
 export async function down(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
-	// Reinstate access control fields on directus roles + remove nesting
+	// Reinstate access control fields on directus roles
 
 	await knex.schema.alterTable('directus_roles', (table) => {
 		table.text('ip_access');
 		table.boolean('enforce_tfa').defaultTo(false).notNullable();
 		table.boolean('admin_access').defaultTo(false).notNullable();
 		table.boolean('app_access').defaultTo(true).notNullable();
-
-		table.dropForeign('parent');
-		table.dropColumn('parent');
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Copy policy access control rules back to roles
 
-	const policies = await knex
-		.select('id', 'ip_access', 'enforce_tfa', 'admin_access', 'app_access')
-		.from('directus_policies')
-		.whereNot({ id: PUBLIC_POLICY_ID });
+	const originalPermissions = await knex
+		.select('id')
+		.from('directus_permissions')
+		.whereNot({ policy: PUBLIC_POLICY_ID });
 
-	for (const policy of policies) {
-		await knex('directus_roles')
-			.update({
-				ip_access: policy.ip_access,
-				enforce_tfa: policy.enforce_tfa,
-				admin_access: policy.admin_access,
-				app_access: policy.app_access,
-			})
-			.where({ id: policy.id });
+	await knex.schema.alterTable('directus_permissions', (table) => {
+		table.uuid('role').nullable();
+		table.setNullable('policy');
+	});
+
+	const context = { knex, schema: await getSchema() };
+
+	// fetch all roles
+	const roles: Array<{ id: string | null }> = await knex.select('id').from('directus_roles');
+
+	// simulate Public Role
+	roles.push({ id: null });
+
+	// role permissions to be inserted once all processing is completed
+	const rolePermissions: Array<Omit<Permission, 'id' | 'system' | 'policy'> | { role: string | null }> = [];
+
+	for (const role of roles) {
+		const roleTree = await fetchRolesTree(role.id, knex);
+
+		let roleAccess = null;
+
+		if (role.id !== null) {
+			roleAccess = await fetchRoleAccess(roleTree, context);
+			await knex('directus_roles').update(roleAccess).where({ id: role.id });
+		}
+
+		if (roleAccess === null || !roleAccess.admin_access) {
+			// fetch all of the roles policies
+			const policies = await fetchPolicies({ roles: roleTree, user: null, ip: null }, context);
+
+			//  fetch all of the policies permissions
+			const rawPermissions = await fetchPermissions(
+				{ accountability: { role: null, roles: roleTree, user: null, app: roleAccess?.app_access || false }, policies },
+				context,
+			);
+
+			// merge all permissions to single version (v10) and save for later use
+			mergePermissions('or', rawPermissions).forEach((permission) => {
+				// System permissions are automatically populated
+				if (permission.system) {
+					return;
+				}
+
+				// convert merged permissions to storage ready format
+				if (Array.isArray(permission.fields)) {
+					permission.fields = permission.fields.join(',');
+				}
+
+				if (permission.permissions) {
+					permission.permissions = JSON.stringify(permission.permissions);
+				}
+
+				if (permission.validation) {
+					permission.validation = JSON.stringify(permission.validation);
+				}
+
+				if (permission.presets) {
+					permission.presets = JSON.stringify(permission.presets);
+				}
+
+				rolePermissions.push({ role: role.id, ...omit(permission, ['id', 'policy']) });
+			});
+		}
 	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////
+	// Remove role nesting support
+
+	await knex.schema.alterTable('directus_roles', (table) => {
+		table.dropForeign('parent');
+		table.dropColumn('parent');
+	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Drop all permissions that are only attached to a user
@@ -184,19 +397,21 @@ export async function down(knex: Knex) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// Reattach permissions to roles instead of policies
 
-	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.uuid('role').nullable();
-	});
-
-	await knex('directus_permissions').update({
-		role: knex.ref('policy'),
-	});
-
 	await knex('directus_permissions')
 		.update({
 			role: null,
 		})
 		.where({ role: PUBLIC_POLICY_ID });
+
+	// remove all v11 permissions
+	await processChunk(originalPermissions, 100, async (chunk) => {
+		await knex('directus_permissions').delete(chunk);
+	});
+
+	// insert all v10 permissions
+	await processChunk(rolePermissions, 100, async (chunk) => {
+		await knex('directus_permissions').insert(chunk);
+	});
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.uuid('role').references('directus_roles.id').alter();
