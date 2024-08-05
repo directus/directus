@@ -9,11 +9,12 @@ import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 export const fetchPermissions = withCache(
 	'permissions',
 	_fetchPermissions,
-	({ action, policies, collections, accountability }) => ({
+	({ action, policies, collections, accountability, bypassDynamicVariableProcessing }) => ({
 		policies, // we assume that policies always come from the same source, so they should be in the same order
 		...(action && { action }),
 		...(collections && { collections: sortBy(collections) }),
 		...(accountability && { accountability: pick(accountability, ['user', 'role', 'roles', 'app']) }),
+		...(bypassDynamicVariableProcessing && { bypassDynamicVariableProcessing }),
 	}),
 );
 
@@ -22,6 +23,7 @@ export interface FetchPermissionsOptions {
 	policies: string[];
 	collections?: string[];
 	accountability?: Pick<Accountability, 'user' | 'role' | 'roles' | 'app'>;
+	bypassDynamicVariableProcessing?: boolean;
 }
 
 export async function _fetchPermissions(options: FetchPermissionsOptions, context: Context) {
@@ -50,7 +52,7 @@ export async function _fetchPermissions(options: FetchPermissionsOptions, contex
 	// which is necessary for correctly applying the presets in order
 	permissions = sortBy(permissions, (permission) => options.policies.indexOf(permission.policy!));
 
-	if (options.accountability) {
+	if (options.accountability && !options.bypassDynamicVariableProcessing) {
 		// Add app minimal permissions for the request accountability, if applicable.
 		// Normally this is done in the permissions service readByQuery, but it also needs to do it here
 		// since the permissions service is created without accountability.
