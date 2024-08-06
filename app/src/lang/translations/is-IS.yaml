@@ -363,6 +363,8 @@ fields:
   directus_roles:
     name: Hlutverks Nafn
     description: Lýsing
+  directus_policies:
+    description: Lýsing
   directus_webhooks:
     name: Nafn
     status: Staða
