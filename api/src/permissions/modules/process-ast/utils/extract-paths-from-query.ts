@@ -34,7 +34,7 @@ export function extractPathsFromQuery(query: Query) {
 
 			if (query.aggregate && parts.length > 0 && parts[0]! in query.aggregate) {
 				// If query is an aggregate query and the first part is a requested aggregate operation ignore the whole field
-				// The field is correctly accounted for in the aggregate operation
+				// The correct field is extracted into the field map when procession the `query.aggregate` fields.
 				continue;
 			}
 
