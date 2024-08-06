@@ -40,4 +40,7 @@ const { data: navigation } = await useAsyncData('navigation', () => fetchContent
 		}
 	}
 }
+:deep(ol ol) {
+	display: none;
+}
 </style>

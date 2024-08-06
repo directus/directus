@@ -2,8 +2,8 @@ export default {
 	connect: {
 		name: 'Connect',
 		paths: {
-			quickstart: '/connect/quickstart',
-			overview: '#'
+			path: '/connect/quickstart',
+			name: 'Quickstart'
 		},
 		icons: {
 			color: '/img/products/connect.svg',
@@ -15,8 +15,8 @@ export default {
 	auth: {
 		name: 'Auth',
 		paths: {
-			quickstart: '/auth/quickstart',
-			overview: '#'
+			path: '/auth/quickstart',
+			name: 'Quickstart'
 		},
 		icons: {
 			color: '/img/products/auth.svg',
@@ -28,8 +28,8 @@ export default {
 	realtime: {
 		name: 'Realtime',
 		paths: {
-			quickstart: '/realtime/quickstart',
-			overview: '#'
+			path: '/realtime/quickstart',
+			name: 'Quickstart'
 		},
 		icons: {
 			color: '/img/products/realtime.svg',
@@ -41,8 +41,8 @@ export default {
 	automate: {
 		name: 'Automate',
 		paths: {
-			quickstart: '/automate/quickstart',
-			overview: '#'
+			path: '/automate/quickstart',
+			name: 'Quickstart'
 		},
 		icons: {
 			color: '/img/products/automate.svg',
@@ -54,8 +54,8 @@ export default {
 	explore: {
 		name: 'Explore',
 		paths: {
-			quickstart: '/user-guide/explore/quickstart',
-			overview: '#'
+			path: '/content/explore',
+			name: 'Overview'
 		},
 		icons: {
 			color: '/img/products/explore.svg',
@@ -67,8 +67,8 @@ export default {
 	editor: {
 		name: 'Editor',
 		paths: {
-			quickstart: '/user-guide/editor/quickstart',
-			overview: '#'
+			path: '/content/editor',
+			name: 'Overview'
 		},
 		icons: {
 			color: '/img/products/editor.svg',
@@ -80,8 +80,8 @@ export default {
 	files: {
 		name: 'Files',
 		paths: {
-			quickstart: '/user-guide/files/quickstart',
-			overview: '#'
+			path: '/files/quickstart',
+			name: 'Quickstart'
 		},
 		icons: {
 			color: '/img/products/files.svg',
@@ -93,8 +93,8 @@ export default {
 	insights: {
 		name: 'Insights',
 		paths: {
-			quickstart: '/user-guide/insights/quickstart',
-			overview: '#'
+			path: '/insights/overview',
+			name: 'Overview'
 		},
 		icons: {
 			color: '/img/products/insights.svg',

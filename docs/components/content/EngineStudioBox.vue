@@ -25,8 +25,7 @@ const boxes = [
 			<div v-for="product in box.products" :key="product" class="prod">
 				<ProductLink :product="product" :link="false" :color="box.color" />
 				<div class="links">
-					<NuxtLink :to="products[product].paths.overview">Overview</NuxtLink>
-					<NuxtLink :to="products[product].paths.quickstart">Quickstart</NuxtLink>
+					<NuxtLink :to="products[product].paths.path">{{products[product].name}} {{ products[product].paths.name }}</NuxtLink>
 				</div>
 			</div>
 		</div>
