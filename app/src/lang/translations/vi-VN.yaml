@@ -915,6 +915,8 @@ fields:
   directus_roles:
     name: Tên Quyền
     description: Mô tả
+  directus_policies:
+    description: Mô tả
   directus_webhooks:
     name: Tên
     method: Phương thức
