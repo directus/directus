@@ -29,7 +29,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"axios": "1.7.2",
+		"axios": "1.7.3",
 		"lodash-es": "4.17.21",
 		"nanoid": "5.0.7"
 	},
@@ -41,7 +41,7 @@
 		"@types/lodash-es": "4.17.12",
 		"@vitest/coverage-v8": "1.5.3",
 		"@vue/test-utils": "2.4.6",
-		"tsup": "8.1.0",
+		"tsup": "8.2.2",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3",
 		"vue": "3.4.27"

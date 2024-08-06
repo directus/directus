@@ -266,11 +266,14 @@ Mimetype of the file.
 `folder` **many-to-one**\
 What (virtual) folder the file is in. Many-to-one to [folders](/reference/system/folders).
 
+`created_on` **datetime**\
+When the file was created.
+
 `uploaded_by` **many-to-one**\
 Who uploaded the file. Many-to-one to [users](/reference/system/users).
 
 `uploaded_on` **datetime**\
-When the file was uploaded.
+When the file was last uploaded/replaced.
 
 `modified_by` **many-to-one**\
 Who updated the file last. Many-to-one to [users](/reference/system/users).
@@ -317,6 +320,7 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 	"title": "Paulo Silva (via Unsplash)",
 	"type": "image/jpeg",
 	"folder": null,
+	"created_on": "2021-02-04T11:37:41-05:00",
 	"uploaded_by": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
 	"uploaded_on": "2021-02-04T11:37:41-05:00",
 	"modified_by": null,

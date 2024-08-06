@@ -24,7 +24,13 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, ActionEventParams } from '../types/index.js';
+import type {
+	AbstractServiceOptions,
+	ActionEventParams,
+	FunctionFieldNode,
+	FieldNode,
+	NestedCollectionNode,
+} from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
@@ -33,6 +39,7 @@ import { userName } from '../utils/user-name.js';
 import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
+import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -338,11 +345,35 @@ export class ExportService {
 					readCount += result.length;
 
 					if (result.length) {
+						let csvHeadings = null;
+
+						if (format === 'csv') {
+							if (!query.fields) query.fields = ['*'];
+
+							// to ensure the all headings are included in the CSV file, all possible fields need to be determined.
+
+							const parsedFields = await parseFields(
+								{
+									parentCollection: collection,
+									fields: query.fields,
+									query: query,
+									accountability: this.accountability,
+								},
+								{
+									schema: this.schema,
+									knex: database,
+								},
+							);
+
+							csvHeadings = getHeadingsForCsvExport(parsedFields);
+						}
+
 						await appendFile(
 							tmpFile.path,
 							this.transform(result, format, {
 								includeHeader: batch === 0,
 								includeFooter: batch + 1 === batchesRequired,
+								fields: csvHeadings,
 							}),
 						);
 					}
@@ -430,6 +461,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		options?: {
 			includeHeader?: boolean;
 			includeFooter?: boolean;
+			fields?: string[] | null;
 		},
 	): string {
 		if (format === 'json') {
@@ -463,12 +495,14 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		if (format === 'csv') {
 			if (input.length === 0) return '';
 
-			const parser = new CSVParser({
-				transforms: [CSVTransforms.flatten({ separator: '.' })],
-				header: options?.includeHeader !== false,
-			});
+			const transforms = [CSVTransforms.flatten({ separator: '.' })];
+			const header = options?.includeHeader !== false;
 
-			let string = parser.parse(input);
+			const transformOptions = options?.fields
+				? { transforms, header, fields: options?.fields }
+				: { transforms, header };
+
+			let string = new CSVParser(transformOptions).parse(input);
 
 			if (options?.includeHeader === false) {
 				string = '\n' + string;
@@ -483,4 +517,36 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 
 		throw new ServiceUnavailableError({ service: 'export', reason: `Illegal export type used: "${format}"` });
 	}
+}
+/*
+ * Recursive function to traverse the field nodes, to determine the headings for the CSV export file.
+ *
+ * Relational nodes which target a single item get expanded, which means that their nested fields get their own column in the csv file.
+ * For relational nodes which target a multiple items, the nested field names are not going to be expanded.
+ * Instead they will be stored as a single value/cell of the CSV file.
+ */
+export function getHeadingsForCsvExport(
+	nodes: (NestedCollectionNode | FieldNode | FunctionFieldNode)[] | undefined,
+	prefix: string = '',
+) {
+	let fieldNames: string[] = [];
+
+	if (!nodes) return fieldNames;
+
+	nodes.forEach((node) => {
+		switch (node.type) {
+			case 'field':
+			case 'functionField':
+			case 'o2m':
+			case 'a2o':
+				fieldNames.push(prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey);
+				break;
+			case 'm2o':
+				fieldNames = fieldNames.concat(
+					getHeadingsForCsvExport(node.children, prefix ? `${prefix}.${node.fieldKey}` : node.fieldKey),
+				);
+		}
+	});
+
+	return fieldNames;
 }

@@ -158,6 +158,8 @@ export class FilesService extends ItemsService<File> {
 
 		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
 
+		payload.uploaded_on = new Date().toISOString();
+
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
 		const sudoService = new ItemsService('directus_files', {

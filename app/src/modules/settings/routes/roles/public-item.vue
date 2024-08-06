@@ -39,9 +39,16 @@ policiesField!.meta!.options = {
 	filter: {
 		'$FOLLOW(directus_access,policy)': {
 			_none: {
-				role: {
-					_null: true,
-				},
+				_and: [
+					{
+						role: {
+							_null: true,
+						},
+					},
+					{
+						user: { _null: true },
+					},
+				],
 			},
 		},
 	},

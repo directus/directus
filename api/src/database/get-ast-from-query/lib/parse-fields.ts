@@ -28,7 +28,10 @@ export interface ParseFieldsContext {
 	knex: Knex;
 }
 
-export async function parseFields(options: ParseFieldsOptions, context: ParseFieldsContext) {
+export async function parseFields(
+	options: ParseFieldsOptions,
+	context: ParseFieldsContext,
+): Promise<[] | (NestedCollectionNode | FieldNode | FunctionFieldNode)[]> {
 	let { fields } = options;
 	if (!fields) return [];
 
@@ -131,6 +134,18 @@ export async function parseFields(options: ParseFieldsOptions, context: ParseFie
 						continue;
 					}
 				}
+			}
+
+			if (name.includes(':')) {
+				const [key, scope] = name.split(':') as [string, string];
+
+				if (key in relationalStructure === false) {
+					relationalStructure[key] = { [scope]: [] };
+				} else if (scope in (relationalStructure[key] as CollectionScope) === false) {
+					(relationalStructure[key] as CollectionScope)[scope] = [];
+				}
+
+				continue;
 			}
 
 			children.push({ type: 'field', name, fieldKey, whenCase: [] });
