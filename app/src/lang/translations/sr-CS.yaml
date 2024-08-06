@@ -683,7 +683,6 @@ page_help_settings_datamodel_collections: >-
   **Model Podataka: Kolekcije** — Lista svih dostupnih kolekcija. Ovo uključuje vidljive, sakrivene, i sistemske kolekcije, kao i neuređene tabele baze podataka koje mogu biti dodane.
 page_help_settings_datamodel_fields: >-
   **Model Podataka: Kolekcija** — Forma za uređivanje ove kolekcije i njenih odgovarajućih polja.
-page_help_settings_roles_collection: '**Pregled Uloga** — Prikazuje Administratorske, Javne i prilagođene Korisničke Uloge.'
 page_help_settings_roles_item: "**Detalji Uloge** — Upravljanje dozvolama uloga i druga podešavanja."
 page_help_settings_presets_collection: >-
   **Pregled Izgleda** — Lista svih kreiranih setova izgleda u sklopu projekta, uključujući: korisnik, uloga, i globalne oznake, kao i podrazumijevane preglede.
@@ -803,12 +802,9 @@ fields:
     name: Naziv uloge
     icon: Ikonica Uloge
     description: Opis
-    app_access: Potpun Pristup aplikaciji
-    admin_access: Administratorski pristup
-    ip_access: IP pristup
-    enforce_tfa: Traži 2FA
     users: Svi korisnici ove Uloge
-    module_list: Navigacija Modula
+  directus_policies:
+    description: Opis
   directus_webhooks:
     name: Ime
     status: Status
