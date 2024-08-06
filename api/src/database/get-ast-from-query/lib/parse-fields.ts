@@ -136,6 +136,12 @@ export async function parseFields(
 				}
 			}
 
+			if (name.includes(':')) {
+				const [key, scope] = name.split(':');
+				relationalStructure[key!] = { [scope!]: [] };
+				continue;
+			}
+
 			children.push({ type: 'field', name, fieldKey, whenCase: [] });
 		}
 	}
