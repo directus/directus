@@ -943,7 +943,6 @@ page_help_settings_datamodel_collections: >-
   **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
 page_help_settings_datamodel_fields: >-
   **Datamodel: Kollektion** — Ett formulär för att hantera denna kollektion och dess fält.
-page_help_settings_roles_collection: '**Bläddra bland roller** — Listar administratörer, offentliga och anpassade användarroller.'
 page_help_settings_roles_item: "**Detaljvy roll** — Hantera en rolls rättigheter och andra inställningar."
 page_help_settings_presets_collection: >-
   **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
@@ -1099,12 +1098,9 @@ fields:
     name: Rollens namn
     icon: Ikon roll
     description: Beskrivning
-    app_access: Åtkomst till appen
-    admin_access: Åtkomst admin
-    ip_access: Åtkomst med IP
-    enforce_tfa: Kräv 2FA
     users: Användare i rollen
-    module_list: Navigering för modul
+  directus_policies:
+    description: Beskrivning
   directus_webhooks:
     name: Namn
     method: Metod
