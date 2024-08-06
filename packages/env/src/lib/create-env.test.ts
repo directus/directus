@@ -110,7 +110,7 @@ test('Reads value from file if key is a file key', () => {
 
 	expect(env).toEqual({
 		PROCESS: 'test-process',
-		TEST: 'file-contents',
+		TEST: 'string:file-contents',
 		DEFAULT: 'test-default',
 		DEFAULT_ARRAY: 'one,two,three',
 	});
