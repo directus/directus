@@ -1087,7 +1087,6 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
-settings_permissions: Controle de acesso
 settings_project: Configurações
 settings_appearance: Aparência
 settings_webhooks: Webhooks
@@ -1137,7 +1136,6 @@ page_help_settings_datamodel_collections: >-
   **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
-page_help_settings_roles_collection: '**Navegando em cargos** - Lista os cargos de administrador, público e também personalizados.'
 page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
 page_help_settings_presets_collection: >-
   **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
@@ -1196,7 +1194,6 @@ directus_collection:
   directus_notifications: Notificações enviadas aos usuários
   directus_operations: Operações executadas em fluxos
   directus_panels: Painéis individuais nos dashboards de Visões
-  directus_permissions: Permissões de acesso para cada papel
   directus_presets: Predefinições para padrões de coleção e favoritos
   directus_relations: Configurações e metadados do relacionamento
   directus_revisions: Cópia de dados de todas as atividades
@@ -1373,12 +1370,9 @@ fields:
     name: Nome do Cargo
     icon: Ícone do cargo
     description: Descrição
-    app_access: Acesso ao app
-    admin_access: Acesso de administrador
-    ip_access: Acesso IP
-    enforce_tfa: Exigir 2FA
     users: Usuários no cargo
-    module_list: Navegação do Módulo
+  directus_policies:
+    description: Descrição
   directus_webhooks:
     name: Nome
     method: Método
@@ -1464,7 +1458,6 @@ field_options:
   directus_roles:
     name: O nome único para este papel...
     description: Uma descrição deste papel...
-    ip_access: Adicionar endereços IP, intervalos de IP e blocos CIDR. Deixe este campo em branco para permitir todos...
     fields:
       icon_name: Ícone
       name_name: Nome
