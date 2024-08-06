@@ -9,7 +9,7 @@ import { cast } from './cast.js';
 
 vi.mock('@directus/utils');
 vi.mock('lodash-es');
-vi.mock('../utils/get-type-from-map.js');
+vi.mock('../utils/get-default-type.js');
 vi.mock('../utils/guess-type.js');
 vi.mock('../utils/has-cast-prefix.js');
 vi.mock('../utils/try-json.js');

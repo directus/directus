@@ -17,7 +17,7 @@ vi.mock('../utils/read-configuration-from-process.js');
 vi.mock('../utils/remove-file-suffix.js');
 vi.mock('./cast.js');
 vi.mock('./read-configuration-from-file.js');
-vi.mock('../utils/get-type-from-map.js');
+vi.mock('../utils/get-default-type.js');
 vi.mock('node:fs');
 
 vi.mock('../constants/defaults.js', () => ({
