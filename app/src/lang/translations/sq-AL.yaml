@@ -1084,7 +1084,6 @@ editing_unit: 'Po modifikohet {unit}'
 editing_in_batch: 'Modifikim në masë i {count} artikujve'
 no_options_available: Nuk ka opsione të disponueshme
 settings_data_model: Modeli i të Dhënave
-settings_permissions: Kontrolli i Qasjes
 settings_project: Parametra
 settings_appearance: Pamja
 settings_webhooks: Webhooks
@@ -1134,7 +1133,6 @@ page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
 page_help_settings_datamodel_fields: >-
   **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
-page_help_settings_roles_collection: '**Shfleto Rolet** — Liston rolet e Administratorit, Publikut dhe rolet e personalizuara të Përdoruesit.'
 page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
 page_help_settings_presets_collection: >-
   **Shfleto Cilësimet e Paracaktuara** — Liston të gjitha cilësimet e paracaktuara në projekt, duke përfshirë: faqerojtësit e përdoruesit, rolit dhe globalë, si dhe pamjet e paracaktuara.
@@ -1193,7 +1191,6 @@ directus_collection:
   directus_notifications: Njoftimet e dërguara për përdoruesit
   directus_operations: Operacionet që drejtohen në Flujot
   directus_panels: Panelet individuale brenda kokpitëve të Insights
-  directus_permissions: Lejet e qasjes për çdo rol
   directus_presets: Cilësimet e paracaktuara për parazgjedhjet e koleksionit dhe faqerojtësit
   directus_relations: Konfigurimi i marrëdhënieve dhe metadata
   directus_revisions: Instantanet e të dhënave për të gjithë aktivitetin
@@ -1370,12 +1367,9 @@ fields:
     name: Emri i Rolit
     icon: Ikona e Rolit
     description: Përshkrim
-    app_access: Qasja në Aplikacion
-    admin_access: Qasja Admin
-    ip_access: Qasja IP
-    enforce_tfa: Kërko 2FA
     users: Përdoruesit në Rol
-    module_list: Navigacioni i Moduleve
+  directus_policies:
+    description: Përshkrim
   directus_webhooks:
     name: Emri
     method: Metoda
@@ -1461,7 +1455,6 @@ field_options:
   directus_roles:
     name: Emri unik për këtë rol...
     description: Përshkrimi i këtij roli...
-    ip_access: Shto adresat e lejuara të IP-së, gamat e IP-së dhe blloqet CIDR. Lëre bosh për të lejuar të gjitha...
     fields:
       icon_name: Ikonë
       name_name: Emri
