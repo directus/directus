@@ -139,12 +139,10 @@ export async function parseFields(
 			if (name.includes(':')) {
 				const [key, scope] = name.split(':') as [string, string];
 
-				if (key in relationalStructure) {
-					if (scope in relationalStructure[key]! === false) {
-						(relationalStructure[key] as CollectionScope)[scope] = [];
-					}
-				} else {
+				if (key in relationalStructure === false) {
 					relationalStructure[key] = { [scope]: [] };
+				} else if (scope in (relationalStructure[key] as CollectionScope) === false) {
+					(relationalStructure[key] as CollectionScope)[scope] = [];
 				}
 
 				continue;
