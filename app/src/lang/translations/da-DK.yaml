@@ -1008,7 +1008,6 @@ page_help_settings_datamodel_collections: >-
   **Datamodel: Samlinger** — Viser alle tilgængelige samlinger. Dette omfatter synlige, skjulte og systemsamlinger, samt uhåndterede databasetabeller, der kan tilføjes.
 page_help_settings_datamodel_fields: >-
   **Datamodel: Samling** — En formular til håndtering af denne indsamling og dens felter.
-page_help_settings_roles_collection: '**Gennemse roller** — Viser en liste over administratorer, offentlige og brugerdefinerede brugerroller.'
 page_help_settings_roles_item: "**Rolle Detaljer** — Administrer en rolles tilladelser og andre indstillinger."
 page_help_settings_presets_collection: >-
   **Gennemse forudindstillinger** — Viser alle forudindstillinger i projektet, herunder: bruger, rolle og globale bogmærker samt standardvisninger.
@@ -1051,7 +1050,6 @@ directus_collection:
   directus_notifications: Notifikationer sendt til brugere
   directus_operations: Operationer, der kører i Flows
   directus_panels: Individuelle paneler i Insights dashboards
-  directus_permissions: Adgangstilladelser for hver rolle
   directus_presets: Forudindstillinger for opsamling standardindstillinger og bogmærker
   directus_relations: Sammenhæng konfiguration og metadata
   directus_revisions: Data snapshots for al aktivitet
@@ -1196,12 +1194,9 @@ fields:
     name: Rollenavn
     icon: Rolle ikon
     description: Beskrivelse
-    app_access: App adgang
-    admin_access: Admin adgang
-    ip_access: Ip adgang
-    enforce_tfa: Kræver 2FA
     users: Brugere i rolle
-    module_list: Modul navigation
+  directus_policies:
+    description: Beskrivelse
   directus_webhooks:
     name: Navn
     method: Metode
