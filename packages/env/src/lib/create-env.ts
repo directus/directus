@@ -27,7 +27,7 @@ export const createEnv = (): Env => {
 		if (isFileKey(key) && isDirectusVariable(key) && typeof value === 'string') {
 			try {
 				const castFlag = getCastFlag(value);
-				const castPrefix = (castFlag ? castFlag : 'string') + ':';
+				const castPrefix = castFlag ? castFlag + ':' : '';
 				const filePath = castFlag ? value.replace(castPrefix, '') : value;
 				value = castPrefix + readFileSync(filePath, { encoding: 'utf8' });
 				key = removeFileSuffix(key);
