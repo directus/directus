@@ -962,7 +962,6 @@ page_help_settings_datamodel_collections: >-
   **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
 page_help_settings_datamodel_fields: >-
   **Model Data: Collection** — Formulir untuk mengelola Collection ini dan fieldnya.
-page_help_settings_roles_collection: '**Jelajahi Peran** — Mencantumkan Peran Admin, Publik, dan Pengguna khusus.'
 page_help_settings_roles_item: "**Detail Peran** — Mengelola izin peran dan pengaturan lainnya."
 page_help_settings_presets_collection: >-
   **Jelajahi Preset** — Mencantumkan semua preset dalam proyek, termasuk: pengguna, peran, dan bookmark global, serta tampilan default.
@@ -1005,7 +1004,6 @@ directus_collection:
   directus_notifications: Notifikasi dikirim ke pengguna
   directus_operations: Operasi yang berjalan di Flow
   directus_panels: Panel individual dalam dasbor Wawasan
-  directus_permissions: Izin akses untuk setiap peran
   directus_presets: Preset untuk default koleksi dan bookmark
   directus_relations: Konfigurasi relasi dan metadata
   directus_revisions: Snapshot data untuk semua aktivitas
@@ -1137,6 +1135,8 @@ fields:
     display_template: Templat
   directus_roles:
     name: Nama Peran
+    description: Deskripsi
+  directus_policies:
     description: Deskripsi
   directus_webhooks:
     name: Nama
