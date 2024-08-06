@@ -45,7 +45,7 @@ function processChildren(
 		}
 
 		// If there's one or more permissions that allow full access to this field, we can safe some
-		// query perf overhead by ignoring the whole case/where system
+		// query perf overhead by ignoring the whole case/when system
 		if (!allowedFields.has('*') && !allowedFields.has(fieldKey)) {
 			// Global and field can't both be undefined as per the error check prior
 			child.whenCase = [...(globalWhenCase ?? []), ...(fieldWhenCase ?? [])];
