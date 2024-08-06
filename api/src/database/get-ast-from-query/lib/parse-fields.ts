@@ -137,8 +137,14 @@ export async function parseFields(
 			}
 
 			if (name.includes(':')) {
-				const [key, scope] = name.split(':');
-				relationalStructure[key!] = { [scope!]: [] };
+				const [key, scope] = name.split(':') as [string, string];
+
+				if (key in relationalStructure === false) {
+					relationalStructure[key] = { [scope]: [] };
+				} else if (scope in (relationalStructure[key] as CollectionScope) === false) {
+					(relationalStructure[key] as CollectionScope)[scope] = [];
+				}
+
 				continue;
 			}
 
