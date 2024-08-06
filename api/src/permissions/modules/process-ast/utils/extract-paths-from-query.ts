@@ -33,8 +33,8 @@ export function extractPathsFromQuery(query: Query) {
 			const parts = field.split('.').map((field) => (field.startsWith('-') ? field.substring(1) : field));
 
 			if (query.aggregate && parts.length > 0 && parts[0]! in query.aggregate) {
-				// If query is an aggregate query and the first part is a requested aggregate operation ignore the whole field
-				// The correct field is extracted into the field map when procession the `query.aggregate` fields.
+				// If query is an aggregate query and the first part is a requested aggregate operation, ignore the whole field.
+				// The correct field is extracted into the field map when processing the `query.aggregate` fields.
 				continue;
 			}
 
