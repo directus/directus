@@ -110,10 +110,41 @@ test('Reads value from file if key is a file key', () => {
 
 	expect(env).toEqual({
 		PROCESS: 'test-process',
-		TEST: 'string:file-contents',
+		TEST: 'file-contents',
 		DEFAULT: 'test-default',
 		DEFAULT_ARRAY: 'one,two,three',
 	});
+
+});
+
+test('Reads value from file if key is a file key', () => {
+	vi.mocked(readConfigurationFromFile).mockReturnValue({
+		TEST_FILE: 'array:./test/path',
+	});
+
+	vi.mocked(isFileKey).mockImplementation((key) => {
+		return key === 'TEST_FILE';
+	});
+
+	vi.mocked(isDirectusVariable).mockImplementation((key) => {
+		return key === 'TEST_FILE';
+	});
+
+	vi.mocked(removeFileSuffix).mockReturnValue('TEST');
+	vi.mocked(readFileSync).mockReturnValue('1,2,3');
+
+	const env = createEnv();
+
+	expect(removeFileSuffix).toHaveBeenCalledWith('TEST_FILE');
+	expect(readFileSync).toHaveBeenCalledWith('./test/path', { encoding: 'utf8' });
+
+	expect(env).toEqual({
+		PROCESS: 'test-process',
+		TEST: 'array:1,2,3',
+		DEFAULT: 'test-default',
+		DEFAULT_ARRAY: 'one,two,three',
+	});
+
 });
 
 test('Passthrough file variables that are not Directus configuration flags', () => {
