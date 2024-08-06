@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Om
 identifier: Identifier
 avatar: Profilbillede
 application: Anvendelse
@@ -7,9 +28,11 @@ method: Metode
 published: Publiceret
 draft: Kladde
 archived: Arkiveret
+extensions: Udvidelser
 modules: Moduler
 module_bar: Modulbar
 logs: Logger
+unknown: Ukendt
 reset_width: Tilbagestil bredde
 tile_size: Title størrelse
 edit_field: Rediger felt
@@ -27,6 +50,8 @@ duplicate_field: Dupliker felt
 half_width: Halv bredde
 full_width: Fuld bredde
 group: Gruppe
+popular: Populære
+recent: Seneste
 export_items: Eksportér elementer
 and: og
 or: eller
@@ -36,15 +61,47 @@ modifier: Modifikator
 extension_interface: Grænseflade
 extension_display: Vis
 extension_layout: Sideopsætning
+extension_module: Modul
 extension_panel: Stykke
+extension_theme: Tema
 extension_hook: Krog
+extension_endpoint: Slutpunkt
+extension_operation: Operation
 extension_bundle: Bundt
 extension_interfaces: Grænseflader
 extension_displays: Viser
 extension_layouts: Layout
 extension_modules: Moduler
 extension_panels: Paneler
+extension_themes: Temaer
+extension_hooks: Hooks
+extension_endpoints: Slutpunkter
+extension_operations: Opgaver
+extension_bundles: Pakker
+extension_missing: Mangler
+extension_reload_required: Genindlæsning af side påkrævet
+extension_reload_required_copy: En genindlæsning af siden er nødvendig for at se ændringerne efter aktivering eller deaktivering af appudvidelser.
+extension_reload_now: Genindlæs nu
+published_relative: Offentliggjort {relativeTime}
+compatible_with_your_project: Kompatibel med dit projekt
+compatible_with_your_project_copy: Forfatteren har angivet kompatibiliteten af denne udvidelse til at være {hostVersion}, som matcher dit projekts version ({currentVersion})
+last_updated_relative: Sidst opdateret {relativeTime}
+n_files: '{n} Filer'
+verified: Verificeret
+homepage: Hjemmeside
+repository: Repository
+reload_page: Genindlæs side
+reload_required: Genindlæsning af side påkrævet
+report_an_issue: Rapportér et problem
+website: Hjemmeside
+github: GitHub
+beta: Beta
+n_downloads: '{n} Downloads'
+downloads: Downloads
+compatibility_not_guaranteed: Kompatibilitet er ikke garanteret
+compatibility_not_guaranteed_copy: Forfatteren har angivet kompatibiliteten af denne udvidelse til at være {hostVersion}, som matcher dit projekts version ({currentVersion})
 enable: Aktiver
+disable: Deaktivér
 custom: Brugertilpasset
 hook: Krog
 fill_width: Fuld bredde
@@ -73,6 +130,10 @@ create_user: Opret bruger
 message: Besked
 delete_panel: Slet panel
 create_webhook: Opret webhook
+create_custom_translation: Opret tilpasset Oversættelse
+edit_custom_translation: Rediger Brugerdefineret Oversættelse
+no_custom_translations: Ingen tilpassede Oversættelser
+no_custom_translations_copy: Der er endnu ingen tilpassede oversættelser.
 invite_users: Inviter brugere
 invite: Inviter
 email_already_invited: Email "{email}" er allerede blevet inviteret
@@ -88,7 +149,13 @@ rename_folder: Omdøb mappe
 delete_folder: Slet mappe
 prefix: Præfiks
 suffix: Suffiks
+keep: Behold
+version: Version
+main_version: Primær
+switch_version: Skift Version
 switch_version_copy: Er du sikker på, at du vil skifte til "{version}"-versionen? Ændringer, der ikke er gemt, går tabt.
+create_version: Opret Version
+rename_version: Omdøb Version
 promote_version_preview: Eksempelvisning
 reset_bookmark: Nustil bogmærke
 update_bookmark: Opdater bogmærke
@@ -413,6 +480,7 @@ modified: Ændret
 owner: Ejer
 edited_by: Redigeret af
 folder: Mappe
+folders: Mapper
 zoom: Zoom
 download: Download
 open: Åbn
