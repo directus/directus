@@ -199,6 +199,58 @@ describe('Integration Tests', () => {
 
 				vi.useRealTimers();
 			});
+
+			it('should not append the extension to `filename_disk` if extension is present', async () => {
+				tracker.on
+					.select(
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
+					)
+					.response(null);
+
+				const mockDataJPG = {
+					storage: 'local',
+					type: 'image/jpeg',
+					filename_download: 'test.jpg',
+					filename_disk: 'test.jpg',
+				};
+
+				const mockDataPNG = {
+					storage: 'local',
+					type: 'image/png',
+					filename_download: 'test.png',
+					filename_disk: 'test.png',
+				};
+
+				const mockDate = new Date();
+
+				vi.setSystemTime(mockDate);
+
+				await service.uploadOne(new PassThrough(), mockDataJPG);
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						...mockDataJPG,
+						uploaded_on: mockDate.toISOString(),
+						filename_disk: 'test.jpg',
+					}),
+					{ emitEvents: false },
+				);
+
+				await service.uploadOne(new PassThrough(), mockDataPNG);
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						...mockDataPNG,
+						uploaded_on: mockDate.toISOString(),
+						filename_disk: 'test.png',
+					}),
+					{ emitEvents: false },
+				);
+
+				vi.useRealTimers();
+			});
 		});
 	});
 });
