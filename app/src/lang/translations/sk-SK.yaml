@@ -1072,7 +1072,6 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položiek'
 no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
-settings_permissions: Riadenie prístupu
 settings_project: Nastavenia
 settings_appearance: Vzhľad
 settings_webhooks: Webhooky
@@ -1122,7 +1121,6 @@ page_help_settings_datamodel_collections: >-
   **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
 page_help_settings_datamodel_fields: >-
   **Data Model: Zbierka** — Formulár na správu tejto zbierky a jej polí.
-page_help_settings_roles_collection: '**Prehliadanie rolí** — Vypíše role adminov, verejné a vlastné používateľské role.'
 page_help_settings_roles_item: "**Podrobnosti role** — Spravuje oprávnenia rolí a iné nastavenia."
 page_help_settings_presets_collection: >-
   **Prehliadanie presetov** — Vypíše všetky presety v projekte vrátane: používateľských, rolových a globálnych záložiek, a taktiež predvolené pohľady.
@@ -1180,7 +1178,6 @@ directus_collection:
   directus_notifications: Notifikácie poslané používateľom
   directus_operations: Operácie, ktoré bežia v tokoch
   directus_panels: Jednotlivé panely na tabuliach
-  directus_permissions: Prístupové práva pre kažú rolu
   directus_presets: Presety pre predvolené hodnoty zbierok a záložky
   directus_relations: Nastavenia vzťahov a metadát
   directus_revisions: Snímky dát pre všetky aktivity
@@ -1344,12 +1341,9 @@ fields:
     name: Názov role
     icon: Ikona role
     description: Popis
-    app_access: Prístup k aplikácii
-    admin_access: Administrátorský prístup
-    ip_access: IP prístup
-    enforce_tfa: Vyžadovať 2FA
     users: Používatelia v roli
-    module_list: Navigácia modulu
+  directus_policies:
+    description: Popis
   directus_webhooks:
     name: Názov
     method: Metóda
@@ -1434,7 +1428,6 @@ field_options:
   directus_roles:
     name: Unikátny názov tejto role...
     description: Popis tejto role...
-    ip_access: Pridajte IP adresy, IP rozsahy a CIDR bloky. Nechajte prázdne pre povolenie všetkých...
     fields:
       icon_name: Ikona
       name_name: Názov
