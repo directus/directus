@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getConfigPath } from '../utils/get-config-path.js';
 import { getTypeFromMap } from '../utils/get-type-from-map.js';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';
@@ -87,64 +87,57 @@ test('Reads file configuration from config path', () => {
 	expect(readConfigurationFromFile).toHaveBeenCalledWith('./test/config/path');
 });
 
-test('Reads value from file if key is a file key', () => {
-	vi.mocked(readConfigurationFromFile).mockReturnValue({
-		TEST_FILE: './test/path',
+describe('File based configuration', () => {
+	beforeEach(() => {
+		vi.mocked(isFileKey).mockImplementation((key) => {
+			return key === 'PROCESS_FILE';
+		});
+
+		vi.mocked(isDirectusVariable).mockImplementation((key) => {
+			return key === 'PROCESS_FILE';
+		});
+
+		vi.mocked(removeFileSuffix).mockReturnValue('PROCESS');
+		vi.mocked(readFileSync).mockReturnValue('file-content');
 	});
 
-	vi.mocked(isFileKey).mockImplementation((key) => {
-		return key === 'TEST_FILE';
+	test('Reads values from file via process value', () => {
+		vi.mocked(readConfigurationFromFile).mockReturnValue({});
+
+		vi.mocked(readConfigurationFromProcess).mockReturnValue({
+			PROCESS_FILE: './test/path',
+		});
+
+		const env = createEnv();
+
+		expect(removeFileSuffix).toHaveBeenCalledWith('PROCESS_FILE');
+		expect(readFileSync).toHaveBeenCalledWith('./test/path', { encoding: 'utf8' });
+
+		expect(env).toEqual({
+			PROCESS: 'file-content',
+			DEFAULT: 'test-default',
+			DEFAULT_ARRAY: 'one,two,three',
+		});
 	});
 
-	vi.mocked(isDirectusVariable).mockImplementation((key) => {
-		return key === 'TEST_FILE';
+	test('Reads values from file via process value with casting', () => {
+		vi.mocked(readConfigurationFromFile).mockReturnValue({});
+
+		vi.mocked(readConfigurationFromProcess).mockReturnValue({
+			PROCESS_FILE: 'array:./test/path',
+		});
+
+		const env = createEnv();
+
+		expect(removeFileSuffix).toHaveBeenCalledWith('PROCESS_FILE');
+		expect(readFileSync).toHaveBeenCalledWith('./test/path', { encoding: 'utf8' });
+
+		expect(env).toEqual({
+			PROCESS: 'array:file-content',
+			DEFAULT: 'test-default',
+			DEFAULT_ARRAY: 'one,two,three',
+		});
 	});
-
-	vi.mocked(removeFileSuffix).mockReturnValue('TEST');
-	vi.mocked(readFileSync).mockReturnValue('file-contents');
-
-	const env = createEnv();
-
-	expect(removeFileSuffix).toHaveBeenCalledWith('TEST_FILE');
-	expect(readFileSync).toHaveBeenCalledWith('./test/path', { encoding: 'utf8' });
-
-	expect(env).toEqual({
-		PROCESS: 'test-process',
-		TEST: 'file-contents',
-		DEFAULT: 'test-default',
-		DEFAULT_ARRAY: 'one,two,three',
-	});
-
-});
-
-test('Reads value from file if key is a file key', () => {
-	vi.mocked(readConfigurationFromFile).mockReturnValue({
-		TEST_FILE: 'array:./test/path',
-	});
-
-	vi.mocked(isFileKey).mockImplementation((key) => {
-		return key === 'TEST_FILE';
-	});
-
-	vi.mocked(isDirectusVariable).mockImplementation((key) => {
-		return key === 'TEST_FILE';
-	});
-
-	vi.mocked(removeFileSuffix).mockReturnValue('TEST');
-	vi.mocked(readFileSync).mockReturnValue('1,2,3');
-
-	const env = createEnv();
-
-	expect(removeFileSuffix).toHaveBeenCalledWith('TEST_FILE');
-	expect(readFileSync).toHaveBeenCalledWith('./test/path', { encoding: 'utf8' });
-
-	expect(env).toEqual({
-		PROCESS: 'test-process',
-		TEST: 'array:1,2,3',
-		DEFAULT: 'test-default',
-		DEFAULT_ARRAY: 'one,two,three',
-	});
-
 });
 
 test('Passthrough file variables that are not Directus configuration flags', () => {
