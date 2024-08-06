@@ -61,7 +61,8 @@
 		"build": "tsc --project tsconfig.prod.json && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=true tsx watch --ignore extensions --clear-screen=false src/start.ts",
-		"test": "vitest --watch=false"
+		"test": "vitest run",
+		"test:watch": "vitest"
 	},
 	"dependencies": {
 		"@authenio/samlify-node-xmllint": "2.0.0",
@@ -224,7 +225,7 @@
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.8.5",
-		"mysql": "2.18.1",
+		"mysql2": "3.10.0",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
 		"oracledb": "6.5.1",

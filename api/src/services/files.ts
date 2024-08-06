@@ -15,6 +15,7 @@ import url from 'url';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
@@ -200,12 +201,18 @@ export class FilesService extends ItemsService<File> {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		const fileCreatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === 'directus_files' && permission.action === 'create',
-		);
-
-		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'create',
+					collection: 'directus_files',
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
+			);
 		}
 
 		let fileResponse;

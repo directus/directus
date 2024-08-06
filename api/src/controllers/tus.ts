@@ -1,12 +1,12 @@
+import type { PermissionsAction } from '@directus/types';
 import { Router } from 'express';
+import { RESUMABLE_UPLOADS } from '../constants.js';
+import getDatabase from '../database/index.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { createTusServer } from '../services/tus/index.js';
+import asyncHandler from '../utils/async-handler.js';
 import { getSchema } from '../utils/get-schema.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import { createTusServer } from '../services/tus/index.js';
-import { AuthorizationService } from '../services/authorization.js';
-import asyncHandler from '../utils/async-handler.js';
-import type { PermissionsAction } from '@directus/types';
-import { ForbiddenError } from '@directus/errors';
-import { RESUMABLE_UPLOADS } from '../constants.js';
 
 const mapAction = (method: string): PermissionsAction => {
 	switch (method) {
@@ -22,30 +22,20 @@ const mapAction = (method: string): PermissionsAction => {
 };
 
 const checkFileAccess = asyncHandler(async (req, _res, next) => {
-	const auth = new AuthorizationService({
-		accountability: req.accountability,
-		schema: req.schema,
-	});
-
-	if (!req.accountability?.admin) {
+	if (req.accountability) {
 		const action = mapAction(req.method);
 
-		if (action === 'create') {
-			// checkAccess doesn't seem to work as expected for "create" actions
-			const hasPermission = Boolean(
-				req.accountability?.permissions?.find((permission) => {
-					return permission.collection === 'directus_files' && permission.action === action;
-				}),
-			);
-
-			if (!hasPermission) throw new ForbiddenError();
-		} else {
-			try {
-				await auth.checkAccess(action, 'directus_files');
-			} catch (e) {
-				throw new ForbiddenError();
-			}
-		}
+		await validateAccess(
+			{
+				action,
+				collection: 'directus_files',
+				accountability: req.accountability,
+			},
+			{
+				schema: req.schema,
+				knex: getDatabase(),
+			},
+		);
 	}
 
 	return next();

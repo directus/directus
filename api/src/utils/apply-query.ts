@@ -17,6 +17,7 @@ import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../database/helpers/index.js';
+import { applyCaseWhen } from '../database/run-ast/utils/apply-case-when.js';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
@@ -27,6 +28,13 @@ import { parseNumericString } from './parse-numeric-string.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
 
+type ApplyQueryOptions = {
+	aliasMap?: AliasMap;
+	isInnerQuery?: boolean;
+	hasMultiRelationalSort?: boolean | undefined;
+	groupWhenCases?: number[][] | undefined;
+};
+
 /**
  * Apply the Query to a given Knex query builder instance
  */
@@ -36,7 +44,8 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined },
+	cases: Filter[],
+	options?: ApplyQueryOptions,
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasJoins = false;
@@ -64,18 +73,64 @@ export default function applyQuery(
 		applySearch(knex, schema, dbQuery, query.search, collection);
 	}
 
-	if (query.group) {
-		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false, schema)));
-	}
+	// `cases` are the permissions cases that are required for the current data set. We're
+	// dynamically adding those into the filters that the user provided to enforce the permission
+	// rules. You should be able to read an item if one or more of the cases matches. The actual case
+	// is reused in the column selection case/when to dynamically return or nullify the field values
+	// you're actually allowed to read
 
-	if (query.filter) {
-		const filterResult = applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap);
+	const filter: Filter | null = joinFilterWithCases(query.filter, cases);
+
+	if (filter) {
+		const filterResult = applyFilter(knex, schema, dbQuery, filter, collection, aliasMap, cases);
 
 		if (!hasJoins) {
 			hasJoins = filterResult.hasJoins;
 		}
 
 		hasMultiRelationalFilter = filterResult.hasMultiRelationalFilter;
+	}
+
+	if (query.group) {
+		const rawColumns = query.group.map((column) => getColumn(knex, collection, column, false, schema));
+		let columns;
+
+		if (options?.groupWhenCases) {
+			columns = rawColumns.map((column, index) =>
+				applyCaseWhen(
+					{
+						columnCases: options.groupWhenCases![index]!.map((caseIndex) => cases[caseIndex]!),
+						column,
+						aliasMap,
+						cases,
+						table: collection,
+					},
+					{
+						knex,
+						schema,
+					},
+				),
+			);
+
+			if (query.sort && query.sort.length === 1 && query.sort[0] === query.group[0]) {
+				// Special case, where the sort query is injected by the group by operation
+				dbQuery.clear('order');
+
+				let order = 'asc';
+
+				if (query.sort[0]!.startsWith('-')) {
+					order = 'desc';
+				}
+
+				// @ts-expect-error (orderBy does not accept Knex.Raw for some reason, even though it is handled correctly)
+				// https://github.com/knex/knex/issues/5711
+				dbQuery.orderBy([{ column: columns[0]!, order }]);
+			}
+		} else {
+			columns = rawColumns;
+		}
+
+		dbQuery.groupBy(columns);
 	}
 
 	if (query.aggregate) {
@@ -392,6 +447,7 @@ export function applyFilter(
 	rootFilter: Filter,
 	collection: string,
 	aliasMap: AliasMap,
+	cases: Filter[],
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
@@ -404,12 +460,22 @@ export function applyFilter(
 	return { query: rootQuery, hasJoins, hasMultiRelationalFilter };
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
-		for (const [key, value] of Object.entries(filter)) {
+		// eslint-disable-next-line prefer-const
+		for (let [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
 				// permission checks, as {} already matches full permissions.
 				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
-					continue;
+					// But only do so, if the value is not equal to `cases` (since then this is not permission related at all)
+					// or the length of value is 1, ie. only the empty filter.
+					// If the length is more than one it means that some items (and fields) might now be available, so
+					// the joins are required for the case/when construction.
+					if (value !== cases || value.length === 1) {
+						continue;
+					} else {
+						// Otherwise we can at least filter out all empty filters that would not add joins anyway
+						value = value.filter((subFilter: Record<string, any>) => Object.keys(subFilter).length > 0);
+					}
 				}
 
 				value.forEach((subFilter: Record<string, any>) => {
@@ -511,7 +577,7 @@ export function applyFilter(
 							.from(collection)
 							.whereNotNull(column);
 
-						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema);
+						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases);
 					};
 
 					const childKey = Object.keys(value)?.[0];
@@ -837,13 +903,13 @@ export function applyFilter(
 	}
 }
 
-export async function applySearch(
+export function applySearch(
 	knex: Knex,
 	schema: SchemaOverview,
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
-): Promise<void> {
+) {
 	const { number: numberHelper } = getHelpers(knex);
 	const fields = Object.entries(schema.collections[collection]!.fields);
 
@@ -934,6 +1000,18 @@ export function applyAggregate(
 			}
 		}
 	}
+}
+
+export function joinFilterWithCases(filter: Filter | null | undefined, cases: Filter[]) {
+	if (cases.length > 0 && !filter) {
+		return { _or: cases };
+	} else if (filter && cases.length === 0) {
+		return filter ?? null;
+	} else if (filter && cases.length > 0) {
+		return { _and: [filter, { _or: cases }] };
+	}
+
+	return null;
 }
 
 function getFilterPath(key: string, value: Record<string, any>) {

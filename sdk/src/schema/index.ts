@@ -11,6 +11,7 @@ export * from './notification.js';
 export * from './operation.js';
 export * from './panel.js';
 export * from './permission.js';
+export * from './policy.js';
 export * from './preset.js';
 export * from './relation.js';
 export * from './revision.js';

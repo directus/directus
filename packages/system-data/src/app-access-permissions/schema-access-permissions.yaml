@@ -7,11 +7,5 @@
 - collection: directus_fields
   action: read
 
-- collection: directus_permissions
-  action: read
-  permissions:
-    role:
-      _eq: $CURRENT_ROLE
-
 - collection: directus_relations
   action: read

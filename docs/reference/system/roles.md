@@ -6,8 +6,15 @@ pageClass: page-reference
 
 # Roles
 
-> Roles define a specific set of access permissions, and are the primary organizational structure for Users within the
-> platform. [Learn more about Roles](/user-guide/overview/glossary#roles).
+> Roles are the primary organizational structure for Users within the platform.
+> [Learn more about Roles](/user-guide/overview/glossary#roles).
+
+:::tip Directus 11 RC
+
+This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
+data structure and relations.
+
+:::
 
 ## The Role Object
 
@@ -18,25 +25,22 @@ Primary key of the role.
 Name of the role.
 
 `icon` **string**\
-Icon for the role. Displayed in the Admin App.
+Icon for the role. Displayed in the Data Studio.
 
 `description` **string**\
-Description for the role. Displayed in the Admin App.
-
-`ip_access` **csv**\
-A CSV of IP addresses that have access to this role. Allows you to configure an allowlist of IP addresses.
-
-`enforce_tfa` **boolean**\
-Whether or not Two-Factor Authentication is required for users in this role.
-
-`admin_access` **boolean**\
-If this role is considered an admin role. This means that users in this role have full permissions to everything.
-
-`app_access` **boolean**\
-Whether or not users in this role have access to use the Admin App.
+Description for the role. Displayed in the Data Studio.
 
 `users` **one-to-many**\
 The users in this role. One-to-many to [users](/reference/system/users).
+
+`policies` **many-to-many**\
+The policies in this role. Many-to-many to [policies](/reference/system/policies).
+
+`parent` **many-to-one**\
+The parent for this role. Many-to-one to roles.
+
+`children` **one-to-many**\
+The roles in this role. One-to-many to roles.
 
 ```json
 {
@@ -44,10 +48,9 @@ The users in this role. One-to-many to [users](/reference/system/users).
 	"name": "Admin",
 	"icon": "supervised_user_circle",
 	"description": null,
-	"ip_access": null,
-	"enforce_tfa": false,
-	"admin_access": true,
-	"app_access": true,
+	"policies": ["3a4b131d-34f8-46e8-b128-5212aa9b7f72"],
+	"parent": "7fdbad2a-890d-4d8a-ad1d-97ff86bc254d",
+	"children": ["1d5cba05-2d9e-47a2-9594-e00b55ffdb3e"],
 	"users": ["0bc7b36a-9ba9-4ce0-83f0-0a526f354e07"]
 }
 ```
@@ -292,9 +295,7 @@ Returns the [role object](#the-role-object) for the created role.
 {
 	"name": "Interns",
 	"icon": "verified_user",
-	"description": null,
-	"admin_access": false,
-	"app_access": true
+	"description": null
 }
 ```
 
@@ -306,7 +307,7 @@ Returns the [role object](#the-role-object) for the created role.
 ```graphql
 mutation {
 	create_roles_item(
-		data: { name: "Interns", icon: "verified_user", description: null, admin_access: false, app_access: true }
+		data: { name: "Interns", icon: "verified_user", description: null }
 	) {
 		id
 		name
@@ -329,9 +330,7 @@ const result = await client.request(
 	createRole({
 		name: 'Interns',
 		icon: 'verified_user',
-		description: null,
-		admin_access: false,
-		app_access: true,
+		description: null
 	})
 );
 ```
@@ -401,16 +400,12 @@ Returns the [role objects](#the-role-object) for the created roles.
 	{
 		"name": "Interns",
 		"icon": "verified_user",
-		"description": null,
-		"admin_access": false,
-		"app_access": true
+		"description": null
 	},
 	{
 		"name": "Customers",
 		"icon": "person",
-		"description": null,
-		"admin_access": false,
-		"app_access": false
+		"description": null
 	}
 ]
 ```
@@ -424,8 +419,8 @@ Returns the [role objects](#the-role-object) for the created roles.
 mutation {
 	create_roles_items(
 		data: [
-			{ name: "Interns", icon: "verified_user", description: null, admin_access: false, app_access: true }
-			{ name: "Customers", icon: "person", description: null, admin_access: false, app_access: false }
+			{ name: "Interns", icon: "verified_user", description: null }
+			{ name: "Customers", icon: "person", description: null }
 		]
 	) {
 		id
@@ -450,16 +445,12 @@ const result = await client.request(
 		{
 			name: 'Interns',
 			icon: 'verified_user',
-			description: null,
-			admin_access: false,
-			app_access: true,
+			description: null
 		},
 		{
 			name: 'Customers',
 			icon: 'person',
-			description: null,
-			admin_access: false,
-			app_access: false,
+			description: null
 		},
 	])
 );
@@ -558,7 +549,7 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	updateRole('a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658', {
-		admin_access: true,
+		icon: "attractions",
 	})
 );
 ```
@@ -671,7 +662,7 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	updateRoles(['a262a7f6-9ed4-423d-8cd2-3ee3b2d2a658', '1792dc2c-6142-4723-ae40-698d082ddc5e'], {
-		admin_access: true,
+		icon: "attractions"
 	})
 );
 ```
