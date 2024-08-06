@@ -1083,7 +1083,6 @@ editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
-settings_permissions: Controllo Accessi
 settings_project: Impostazioni
 settings_appearance: Aspetto
 settings_webhooks: Webhooks
@@ -1133,7 +1132,6 @@ page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
 page_help_settings_datamodel_fields: >-
   **Modello dei dati: Raccolta** — Un modulo per la gestione di questa raccolta e dei suoi campi.
-page_help_settings_roles_collection: '**Consulta i Ruoli** — Elenca i ruoli amministratore, pubblico e personalizzati.'
 page_help_settings_roles_item: "**Dettagli del ruolo** — Gestisce i permessi di un ruolo e altre impostazioni."
 page_help_settings_presets_collection: >-
   **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
@@ -1192,7 +1190,6 @@ directus_collection:
   directus_notifications: Notifiche inviate agli utenti
   directus_operations: Operazioni che vengono eseguite nei flussi
   directus_panels: Singoli pannelli nelle bacheche di approfondimento
-  directus_permissions: Autorizzazioni di accesso per ciascun ruolo
   directus_presets: Preset per i default della raccolta e i segnalibri
   directus_relations: Configurazione e metadati della relazione
   directus_revisions: Snapshot dei dati per tutte le attività
@@ -1369,12 +1366,9 @@ fields:
     name: Nome ruolo
     icon: Icona Ruolo
     description: Descrizione
-    app_access: Accesso App
-    admin_access: Accesso Amministratore
-    ip_access: Accesso IP
-    enforce_tfa: Richiede 2FA
     users: Utenti nel ruolo
-    module_list: Navigazione del modulo
+  directus_policies:
+    description: Descrizione
   directus_webhooks:
     name: Nome
     method: Metodo
@@ -1460,7 +1454,6 @@ field_options:
   directus_roles:
     name: Nome unico per questo ruolo...
     description: Una descrizione per questo ruolo...
-    ip_access: Aggiungi indirizzi IP consentiti, intervalli di IP e blocchi CIDR. Lascia vuoto per consentire tutti...
     fields:
       icon_name: Icona
       name_name: Nome
