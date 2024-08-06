@@ -13,6 +13,7 @@ import { applyCaseWhen } from '../utils/apply-case-when.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
+import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
 
 export function getDBQuery(
 	schema: SchemaOverview,
@@ -37,8 +38,20 @@ export function getDBQuery(
 
 	// Queries with aggregates and groupBy will not have duplicate result
 	if (queryCopy.aggregate || queryCopy.group) {
-		const flatQuery = knex.from(table).select(fieldNodes.map((node) => preProcess(node)));
-		return applyQuery(knex, table, flatQuery, queryCopy, schema, cases).query;
+		const flatQuery = knex.from(table);
+
+		// Map the group fields to their respective field nodes
+		const groupWhenCases = hasCaseWhen
+			? queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)?.whenCase ?? [])
+			: undefined;
+
+		const dbQuery = applyQuery(knex, table, flatQuery, queryCopy, schema, cases, { aliasMap, groupWhenCases }).query;
+
+		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
+
+		withPreprocessBindings(knex, dbQuery);
+
+		return dbQuery;
 	}
 
 	const primaryKey = schema.collections[table]!.primary;
@@ -179,6 +192,8 @@ export function getDBQuery(
 
 		   SELECT DISTINCT ...,
 		     CASE WHEN <condition> THEN <actual-column> END AS <alias>
+
+		   a group-by query is generated.
 
 			 Another problem is that all not all rows with the same primary key are guaranteed to have the same value for
 			 the columns with the case/when, so we to `or` those together, but counting the number of flags in a group by

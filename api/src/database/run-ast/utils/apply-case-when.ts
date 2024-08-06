@@ -45,13 +45,14 @@ export function applyCaseWhen(
 	}
 
 	const sql = sqlParts.join(' ');
-	const bindings = caseQuery.toSQL().bindings;
+	const bindings = [...caseQuery.toSQL().bindings, column];
 
-	const result = knex.raw(`(CASE WHEN ${sql} THEN ?? END)`, [...bindings, column]);
+	let rawCase = `(CASE WHEN ${sql} THEN ?? END)`;
 
 	if (alias) {
-		return knex.raw(result + ' AS ??', [alias]);
+		rawCase += ' AS ??';
+		bindings.push(alias);
 	}
 
-	return result;
+	return knex.raw(rawCase, bindings);
 }

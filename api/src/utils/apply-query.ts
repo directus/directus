@@ -17,6 +17,7 @@ import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../database/helpers/index.js';
+import { applyCaseWhen } from '../database/run-ast/utils/apply-case-when.js';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
@@ -26,6 +27,13 @@ import { parseFilterKey } from './parse-filter-key.js';
 import { parseNumericString } from './parse-numeric-string.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+
+type ApplyQueryOptions = {
+	aliasMap?: AliasMap;
+	isInnerQuery?: boolean;
+	hasMultiRelationalSort?: boolean | undefined;
+	groupWhenCases?: number[][] | undefined;
+};
 
 /**
  * Apply the Query to a given Knex query builder instance
@@ -37,7 +45,7 @@ export default function applyQuery(
 	query: Query,
 	schema: SchemaOverview,
 	cases: Filter[],
-	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined },
+	options?: ApplyQueryOptions,
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasJoins = false;
@@ -65,10 +73,6 @@ export default function applyQuery(
 		applySearch(knex, schema, dbQuery, query.search, collection);
 	}
 
-	if (query.group) {
-		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false, schema)));
-	}
-
 	// `cases` are the permissions cases that are required for the current data set. We're
 	// dynamically adding those into the filters that the user provided to enforce the permission
 	// rules. You should be able to read an item if one or more of the cases matches. The actual case
@@ -85,6 +89,48 @@ export default function applyQuery(
 		}
 
 		hasMultiRelationalFilter = filterResult.hasMultiRelationalFilter;
+	}
+
+	if (query.group) {
+		const rawColumns = query.group.map((column) => getColumn(knex, collection, column, false, schema));
+		let columns;
+
+		if (options?.groupWhenCases) {
+			columns = rawColumns.map((column, index) =>
+				applyCaseWhen(
+					{
+						columnCases: options.groupWhenCases![index]!.map((caseIndex) => cases[caseIndex]!),
+						column,
+						aliasMap,
+						cases,
+						table: collection,
+					},
+					{
+						knex,
+						schema,
+					},
+				),
+			);
+
+			if (query.sort && query.sort.length === 1 && query.sort[0] === query.group[0]) {
+				// Special case, where the sort query is injected by the group by operation
+				dbQuery.clear('order');
+
+				let order = 'asc';
+
+				if (query.sort[0]!.startsWith('-')) {
+					order = 'desc';
+				}
+
+				// @ts-expect-error (orderBy does not accept Knex.Raw for some reason, even though it is handled correctly)
+				// https://github.com/knex/knex/issues/5711
+				dbQuery.orderBy([{ column: columns[0]!, order }]);
+			}
+		} else {
+			columns = rawColumns;
+		}
+
+		dbQuery.groupBy(columns);
 	}
 
 	if (query.aggregate) {
