@@ -44,8 +44,8 @@ function processChildren(
 			throw new Error(`Cannot extract access permissions for field "${fieldKey}" in collection "${collection}"`);
 		}
 
-		// If there's one or more permissions that allow full access to this field, we can safe some
-		// query perf overhead by ignoring the whole case/when system
+		// The case/when system only needs to take place if no full access is given on this field,
+		// otherwise we can skip and thus safe some query perf overhead
 		if (!allowedFields.has('*') && !allowedFields.has(fieldKey)) {
 			// Global and field can't both be undefined as per the error check prior
 			child.whenCase = [...(globalWhenCase ?? []), ...(fieldWhenCase ?? [])];
