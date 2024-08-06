@@ -1,7 +1,7 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { isEmpty, merge } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
@@ -140,7 +140,9 @@ export async function parseFields(
 				const [key, scope] = name.split(':') as [string, string];
 
 				if (key in relationalStructure) {
-					relationalStructure[key] = merge(relationalStructure[key], { [scope]: [] });
+					if (scope in relationalStructure[key]! === false) {
+						(relationalStructure[key] as CollectionScope)[scope] = [];
+					}
 				} else {
 					relationalStructure[key] = { [scope]: [] };
 				}
