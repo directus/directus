@@ -1087,7 +1087,6 @@ editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
 no_options_available: Нет доступных вариантов
 settings_data_model: Модель данных
-settings_permissions: Контроль доступа
 settings_project: Настройки
 settings_appearance: Внешний вид
 settings_webhooks: Веб-хуки
@@ -1137,7 +1136,6 @@ page_help_settings_datamodel_collections: >-
   **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
   **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
-page_help_settings_roles_collection: '**Просмотр ролей** — список администраторских, общедоступных и пользовательских ролей.'
 page_help_settings_roles_item: "**Карточка роли** — управление разрешениями роли и другими настройками."
 page_help_settings_presets_collection: >-
   **Просмотр шаблонов** — список всех шаблонов в проекте, включая: пользователей, роли и глобальные закладки, а также представления по умолчанию.
@@ -1196,7 +1194,6 @@ directus_collection:
   directus_notifications: Уведомления, отправленные пользователям
   directus_operations: Операции, которые выполняются в процессах
   directus_panels: Панели в досках модуля Аналитика
-  directus_permissions: Права доступа для каждой роли
   directus_presets: Шаблоны для коллекций по умолчанию и закладки
   directus_relations: Настройки отношений и метаданные
   directus_revisions: Снимки данных для всех действий
@@ -1373,12 +1370,9 @@ fields:
     name: Название роли
     icon: Иконка роли
     description: Описание
-    app_access: Доступ к приложению
-    admin_access: Доступ администратора
-    ip_access: IP-адреса
-    enforce_tfa: Требуется 2FA
     users: Пользователи в роли
-    module_list: Навигация по модулям
+  directus_policies:
+    description: Описание
   directus_webhooks:
     name: Название
     method: Метод
@@ -1464,7 +1458,6 @@ field_options:
   directus_roles:
     name: Уникальное название для этой роли...
     description: Описание этой роли...
-    ip_access: Добавьте разрешенные IP-адреса, диапазоны IP и блоки CIDR. Оставьте пустым, чтобы разрешить любые...
     fields:
       icon_name: Иконка
       name_name: Название
