@@ -4,6 +4,7 @@ import AcceptInviteRoute from '@/routes/accept-invite.vue';
 import LoginRoute from '@/routes/login/login.vue';
 import LogoutRoute from '@/routes/logout.vue';
 import PrivateNotFoundRoute from '@/routes/private-not-found.vue';
+import RegisterRoute from '@/routes/register/register.vue';
 import ResetPasswordRoute from '@/routes/reset-password/reset-password.vue';
 import ShareRoute from '@/routes/shared/shared.vue';
 import TFASetup from '@/routes/tfa-setup.vue';
@@ -34,6 +35,14 @@ export const defaultRoutes: RouteRecordRaw[] = [
 		name: 'reset-password',
 		path: '/reset-password',
 		component: ResetPasswordRoute,
+		meta: {
+			public: true,
+		},
+	},
+	{
+		name: 'register',
+		path: '/register',
+		component: RegisterRoute,
 		meta: {
 			public: true,
 		},

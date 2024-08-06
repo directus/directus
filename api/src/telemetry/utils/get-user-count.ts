@@ -1,14 +1,15 @@
+import type { PrimaryKey } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import { type Knex } from 'knex';
 
-export interface UserCount {
+export interface AccessTypeCount {
 	admin: number;
 	app: number;
 	api: number;
 }
 
-export const getUserCount = async (db: Knex): Promise<UserCount> => {
-	const counts: UserCount = {
+export const getUserCount = async (db: Knex, ignoreIds: PrimaryKey[] = []): Promise<AccessTypeCount> => {
+	const counts: AccessTypeCount = {
 		admin: 0,
 		app: 0,
 		api: 0,
@@ -19,7 +20,10 @@ export const getUserCount = async (db: Knex): Promise<UserCount> => {
 			.count('directus_users.id', { as: 'count' })
 			.select('directus_roles.admin_access', 'directus_roles.app_access')
 			.from('directus_users')
+			.whereNotIn('directus_users.id', ignoreIds)
+			.andWhere('directus_users.status', 'active')
 			.leftJoin('directus_roles', 'directus_users.role', '=', 'directus_roles.id')
+			.where('directus_users.status', '=', 'active')
 			.groupBy('directus_roles.admin_access', 'directus_roles.app_access')
 	);
 
@@ -29,11 +33,11 @@ export const getUserCount = async (db: Knex): Promise<UserCount> => {
 		const count = Number(record.count);
 
 		if (adminAccess) {
-			counts.admin = count;
+			counts.admin += count;
 		} else if (appAccess) {
-			counts.app = count;
+			counts.app += count;
 		} else {
-			counts.api = count;
+			counts.api += count;
 		}
 	}
 

@@ -112,10 +112,10 @@ migrations to promote data between them.
 
 ## Extensions
 
-The platform has been built to be modular and extensible. This helps keep the core codebase simple and clean (see the
-[80/20 Rule](/contributing/introduction#feature-requests)), while allowing the flexibility needed to satisfy all
-use-cases... no matter how complex. There are many different types of supported extensions, each offering a way to
-deeply customize, override, or extend the core platform. [Learn more about Extensions](/extensions/introduction).
+The platform has been built to be modular and extensible. This helps keep the core codebase simple and clean, while
+allowing the flexibility needed to satisfy all use-cases... no matter how complex. There are many different types of
+supported extensions, each offering a way to deeply customize, override, or extend the core platform.
+[Learn more about Extensions](/extensions/introduction).
 
 ## Fields
 
@@ -169,8 +169,8 @@ proprietary options, such as seating charts, QR codes, or Stripe customer info.
 
 ## Items
 
-Items are objects within a Collection which contain values for one or more fields. Each collection represents a
-**record** in your database.
+Items are objects within a Collection which contain values for one or more fields. Each item represents a **record** in
+your database.
 
 Items are the primary building blocks of your project content. Similar to a "row" within a spreadsheet, all data within
 the platform is accessed via these "atomic" data units. Items themselves are fairly straightforward, however their real
@@ -353,9 +353,8 @@ following drivers:
 ## Title Formatter
 
 Special Casing — If you are trying to update the specific casing (uppercase/lowercase) for a word (e.g., `Dna` to `DNA`)
-you will want to add the edge-case to the [Format Title package](https://github.com/directus/format-title). If you feel
-the case passes our [80/20 rule](https://docs.directus.io/contributing/introduction#feature-requests) you should submit
-a Pull Request to the codebase, otherwise you can update this in your instance.
+you will want to add the edge-case to the [Format Title package](https://github.com/directus/format-title) in a Pull
+Request.
 
 ## Translations
 

@@ -11,7 +11,7 @@ import { getSchemaCache, setSchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLock } from '../lock/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
@@ -35,10 +35,6 @@ export async function getSchema(
 
 	const env = useEnv();
 
-	if (attempt >= MAX_ATTEMPTS) {
-		throw new Error(`Failed to get Schema information: hit infinite loop`);
-	}
-
 	if (options?.bypassCache || env['CACHE_SCHEMA'] === false) {
 		const database = options?.database || getDatabase();
 		const schemaInspector = createInspector(database);
@@ -52,6 +48,10 @@ export async function getSchema(
 		return cached;
 	}
 
+	if (attempt >= MAX_ATTEMPTS) {
+		throw new Error(`Failed to get Schema information: hit infinite loop`);
+	}
+
 	const lock = useLock();
 	const bus = useBus();
 
@@ -59,30 +59,37 @@ export async function getSchema(
 	const messageKey = 'schemaCache--done';
 	const processId = await lock.increment(lockKey);
 
+	if (processId >= (env['CACHE_SCHEMA_MAX_ITERATIONS'] as number)) {
+		await lock.delete(lockKey);
+	}
+
 	const currentProcessShouldHandleOperation = processId === 1;
 
 	if (currentProcessShouldHandleOperation === false) {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			const TIMEOUT = 10000;
 
-			let timeout: NodeJS.Timeout;
-
-			const callback = async () => {
-				if (timeout) clearTimeout(timeout);
-
-				const schema = await getSchema(options, attempt + 1);
-				resolve(schema);
-				bus.unsubscribe(messageKey, callback);
-			};
+			const timeout: NodeJS.Timeout = setTimeout(() => {
+				logger.trace('Did not receive schema callback message in time. Pulling schema...');
+				callback().catch(reject);
+			}, TIMEOUT);
 
 			bus.subscribe(messageKey, callback);
 
-			timeout = setTimeout(async () => {
-				logger.trace('Did not receive schema callback message in time. Pulling schema...');
-				callback();
-			}, TIMEOUT);
+			async function callback() {
+				try {
+					if (timeout) clearTimeout(timeout);
+
+					const schema = await getSchema(options, attempt + 1);
+					resolve(schema);
+				} catch (error) {
+					reject(error);
+				} finally {
+					bus.unsubscribe(messageKey, callback);
+				}
+			}
 		});
 	}
 

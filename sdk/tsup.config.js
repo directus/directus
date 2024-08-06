@@ -2,6 +2,8 @@ import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'tsup';
+import { replace } from 'esbuild-plugin-replace';
+import { systemCollectionNames } from '@directus/system-data';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -20,8 +22,13 @@ export default defineConfig(() => ({
 	dts: true, // generate dts file for main module
 	format: ['cjs', 'esm'], // generate cjs and esm files
 	minify: env === 'production',
-	bundle: env === 'production',
 	watch: env === 'development',
+	bundle: true,
 	target: 'es2020',
 	entry: ['src/index.ts'],
+	esbuildPlugins: [
+		replace({
+			__SYSTEM_COLLECTION_NAMES__: JSON.stringify(systemCollectionNames),
+		}),
+	],
 }));

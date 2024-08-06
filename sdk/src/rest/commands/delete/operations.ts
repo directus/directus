@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @throws Will throw if keys is empty
  */
 export const deleteOperations =
-	<Schema extends object>(keys: DirectusOperation<Schema>['id'][]): RestCommand<void, Schema> =>
+	<Schema>(keys: DirectusOperation<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
 
@@ -27,7 +27,7 @@ export const deleteOperations =
  * @throws Will throw if key is empty
  */
 export const deleteOperation =
-	<Schema extends object>(key: DirectusOperation<Schema>['id']): RestCommand<void, Schema> =>
+	<Schema>(key: DirectusOperation<Schema>['id']): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(key, 'Key cannot be empty');
 

@@ -24,7 +24,7 @@ import type {
 	NestedCollectionNode,
 } from '../types/index.js';
 import { getRelationInfo } from '../utils/get-relation-info.js';
-import { stripFunction } from '../utils/strip-function.js';
+import { parseFilterKey } from '../utils/parse-filter-key.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 
@@ -148,9 +148,9 @@ export class AuthorizationService {
 
 					if (allowedFields.includes('*')) continue;
 
-					const fieldKey = stripFunction(childNode.name);
+					const { fieldName } = parseFilterKey(childNode.name);
 
-					if (allowedFields.includes(fieldKey) === false) {
+					if (allowedFields.includes(fieldName) === false) {
 						throw new ForbiddenError();
 					}
 				}
@@ -405,7 +405,7 @@ export class AuthorizationService {
 
 					for (const field of requiredPermissions[collection]!) {
 						if (field.startsWith('$FOLLOW')) continue;
-						const fieldName = stripFunction(field);
+						const { fieldName } = parseFilterKey(field);
 						let originalFieldName = fieldName;
 
 						if (collection === rootCollection && aliasMap?.[fieldName]) {

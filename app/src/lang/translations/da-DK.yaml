@@ -428,7 +428,6 @@ replace_from_library: Erstat fil fra enhed
 replace_from_url: Erstat fil fra URL
 no_file_selected: Ingen fil Valgt
 download_file: Download fil
-open_file_in_tab: Åbn fil i nyt faneblad
 start_export: Start eksport
 not_available_for_local_downloads: Ikke tilgængelig for lokale downloads
 exporting_all_items_in_collection: Eksporterer alle {total} elementer inden for {collection}.
@@ -592,7 +591,6 @@ cannot_edit_global_bookmarks: Kan ikke redigere globale bogmærker
 bookmarks: Foretrukne
 presets: Forudindstillinger
 unexpected_error: Uventet fejl
-unexpected_error_copy: Der opstod en uventet fejl. Prøv igen senere.
 copy_details: Kopiér detaljer
 no_app_access: Ingen app adgang
 no_app_access_copy: Denne bruger har ikke tilladelse til at bruge admin appen.

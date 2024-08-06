@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, RouteNotFoundError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
 import { EXTENSION_TYPES } from '@directus/extensions';
 import {
 	account,
@@ -10,8 +10,10 @@ import {
 	type ListOptions,
 	type ListQuery,
 } from '@directus/extensions-registry';
+import type { FieldFilter } from '@directus/types';
 import { isIn } from '@directus/utils';
 import express from 'express';
+import { isNil } from 'lodash-es';
 import { UUID_REGEX } from '../constants.js';
 import { getExtensionManager } from '../extensions/index.js';
 import { respond } from '../middleware/respond.js';
@@ -48,36 +50,47 @@ router.get(
 			throw new ForbiddenError();
 		}
 
-		const { search, limit, offset, type, by, sort } = req.query;
+		const { search, limit, offset, sort, filter } = req.sanitizedQuery;
 
 		const query: ListQuery = {};
 
-		if (typeof search === 'string') {
+		if (!isNil(search)) {
 			query.search = search;
 		}
 
-		if (typeof limit === 'string') {
-			query.limit = Number(limit);
+		if (!isNil(limit)) {
+			query.limit = limit;
 		}
 
-		if (typeof offset === 'string') {
-			query.offset = Number(offset);
+		if (!isNil(offset)) {
+			query.offset = offset;
 		}
 
-		if (typeof by === 'string') {
-			query.by = by;
-		}
+		if (filter) {
+			const getFilterValue = (key: string) => {
+				const field = (filter as FieldFilter)[key];
+				if (!field || !('_eq' in field) || typeof field._eq !== 'string') return;
+				return field._eq;
+			};
 
-		if (typeof sort === 'string' && isIn(sort, ['popular', 'recent', 'downloads'] as const)) {
-			query.sort = sort;
-		}
+			const by = getFilterValue('by');
+			const type = getFilterValue('type');
 
-		if (typeof type === 'string') {
-			if (isIn(type, EXTENSION_TYPES) === false) {
-				throw new ForbiddenError();
+			if (by) {
+				query.by = by;
 			}
 
-			query.type = type;
+			if (type) {
+				if (isIn(type, EXTENSION_TYPES) === false) {
+					throw new ForbiddenError();
+				}
+
+				query.type = type;
+			}
+		}
+
+		if (!isNil(sort) && sort[0] && isIn(sort[0], ['popular', 'recent', 'downloads'] as const)) {
+			query.sort = sort[0];
 		}
 
 		if (env['MARKETPLACE_TRUST'] === 'sandbox') {

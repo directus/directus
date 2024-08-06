@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @throws Will throw if keys is empty
  */
 export const deletePresets =
-	<Schema extends object>(keys: DirectusPreset<Schema>['id'][]): RestCommand<void, Schema> =>
+	<Schema>(keys: DirectusPreset<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
 
@@ -27,7 +27,7 @@ export const deletePresets =
  * @throws Will throw if key is empty
  */
 export const deletePreset =
-	<Schema extends object>(key: DirectusPreset<Schema>['id']): RestCommand<void, Schema> =>
+	<Schema>(key: DirectusPreset<Schema>['id']): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');
 

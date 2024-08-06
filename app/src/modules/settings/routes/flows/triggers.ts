@@ -134,6 +134,7 @@ export function getTriggers() {
 									'auth.create',
 									'auth.update',
 									'authenticate',
+									'email.send',
 								],
 								font: 'monospace',
 							},

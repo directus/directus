@@ -18,7 +18,7 @@ export interface AuthenticationData {
 
 export interface AuthenticationStorage {
 	get: () => Promise<AuthenticationData | null> | AuthenticationData | null;
-	set: (value: AuthenticationData | null) => Promise<void> | void;
+	set: (value: AuthenticationData | null) => Promise<unknown> | unknown;
 }
 
 export interface AuthenticationConfig {
@@ -28,7 +28,7 @@ export interface AuthenticationConfig {
 	storage?: AuthenticationStorage;
 }
 
-export interface AuthenticationClient<_Schema extends object> {
+export interface AuthenticationClient<_Schema> {
 	login(email: string, password: string, options?: LoginOptions): Promise<AuthenticationData>;
 	refresh(): Promise<AuthenticationData>;
 	logout(): Promise<void>;
@@ -36,10 +36,10 @@ export interface AuthenticationClient<_Schema extends object> {
 	stopRefreshing(): void;
 
 	getToken(): Promise<string | null>;
-	setToken(access_token: string | null): void;
+	setToken(access_token: string | null): Promise<unknown>;
 }
 
-export interface StaticTokenClient<_Schema extends object> {
+export interface StaticTokenClient<_Schema> {
 	getToken(): Promise<string | null>;
-	setToken(access_token: string | null): void;
+	setToken(access_token: string | null): Promise<unknown>;
 }

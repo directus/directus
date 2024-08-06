@@ -392,7 +392,7 @@ return more in-depth information about the current health status of the system.
 {
 	"status": "ok",
 	"releaseId": "10.0.0",
-	"serviceId": "3292c816-ae02-43b4-ba91-f0bb549f040c",
+	"serviceId": "https://directus.example.com",
 	"checks": {
 		"pg:responseTime": [
 			{
@@ -479,7 +479,7 @@ Authenticated admin users also get the following information:
 Directus version in use.
 
 `serviceId` **string**\
-UUID of the current Directus instance.
+Public URL of the current Directus instance.
 
 `checks` **array**\
 Array with the status of all individually connected services.

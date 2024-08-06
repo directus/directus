@@ -5,23 +5,18 @@ import { requestGraphQL } from '@common/transport';
 import { TEST_USERS, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import { EnumType } from 'json-to-graphql-query';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
-import { beforeAll, afterAll, expect, describe, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 describe('Logger Redact Tests', () => {
 	const databases = new Map<Vendor, Knex>();
 	const directusInstances = {} as Record<Vendor, ChildProcess>;
 	const env = cloneDeep(config.envs);
-
-	for (const vendor of vendors) {
-		env[vendor]['LOG_STYLE'] = 'raw';
-		env[vendor]['LOG_LEVEL'] = 'info';
-		env[vendor].PORT = String(Number(env[vendor].PORT) + 500);
-	}
 
 	beforeAll(async () => {
 		const promises = [];
@@ -29,10 +24,16 @@ describe('Logger Redact Tests', () => {
 		for (const vendor of vendors) {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
+			const newServerPort = await getPort();
+
+			env[vendor]['LOG_STYLE'] = 'raw';
+			env[vendor]['LOG_LEVEL'] = 'info';
+			env[vendor].PORT = String(newServerPort);
+
 			const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 			directusInstances[vendor] = server;
 
-			promises.push(awaitDirectusConnection(Number(env[vendor].PORT)));
+			promises.push(awaitDirectusConnection(newServerPort));
 		}
 
 		// Give the server some time to start
@@ -147,7 +148,7 @@ describe('Logger Redact Tests', () => {
 							.send({ email: USER[userKey].EMAIL, password: USER[userKey].PASSWORD, mode })
 							.expect('Content-Type', /application\/json/);
 
-						const cookie = loginResponse.get('Set-Cookie');
+						const cookie = loginResponse.get('Set-Cookie')!;
 
 						const gqlLoginResponse = await requestGraphQL(getUrl(vendor, env), true, null, {
 							mutation: {
@@ -162,7 +163,7 @@ describe('Logger Redact Tests', () => {
 							},
 						});
 
-						const gqlCookie = gqlLoginResponse.get('Set-Cookie')[0]!;
+						const gqlCookie = gqlLoginResponse.get('Set-Cookie')![0]!;
 
 						// Action
 						const logger = new TestLogger(directusInstances[vendor], '/auth/refresh', true);

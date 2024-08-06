@@ -1,5 +1,6 @@
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type { SchemaOverview } from '@directus/types';
+import { randomUUID } from 'crypto';
 import knex, { type Knex } from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import {
@@ -13,6 +14,10 @@ import {
 	type MockInstance,
 	type MockedFunction,
 } from 'vitest';
+import { checkIncreasedUserLimits } from '../telemetry/utils/check-increased-user-limits.js';
+import { getRoleCountsByRoles } from '../telemetry/utils/get-role-counts-by-roles.js';
+import { getRoleCountsByUsers } from '../telemetry/utils/get-role-counts-by-users.js';
+import { shouldCheckUserLimits } from '../telemetry/utils/should-check-user-limits.js';
 import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
@@ -26,6 +31,20 @@ vi.mock('./mail', () => {
 
 	return { MailService };
 });
+
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		EMAIL_TEMPLATES_PATH: './templates',
+		USERS_ADMIN_ACCESS_LIMIT: 3,
+		USERS_APP_ACCESS_LIMIT: 3,
+		USERS_API_ACCESS_LIMIT: 3,
+	}),
+}));
+
+vi.mock('../telemetry/utils/check-increased-user-limits.js');
+vi.mock('../telemetry/utils/get-role-counts-by-roles.js');
+vi.mock('../telemetry/utils/get-role-counts-by-users.js');
+vi.mock('../telemetry/utils/should-check-user-limits.js');
 
 const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 
@@ -76,6 +95,17 @@ describe('Integration Tests', () => {
 
 		// mock versions update query in deleteOne/deleteMany/deleteByQuery methods
 		tracker.on.update('directus_versions').response({});
+
+		// mock user counts in updateOne/updateMany/updateByQuery methods
+		tracker.on
+			.select(
+				/(select count\("directus_users"\."id"\) as "count", "directus_roles"\."admin_access", "directus_roles"\."app_access" from "directus_users").*(group by "directus_roles"\."admin_access", "directus_roles"\."app_access")/,
+			)
+			.response([{ count: 0, admin_access: true, app_access: true }]);
+
+		vi.mocked(getRoleCountsByRoles).mockResolvedValueOnce({ admin: 0, app: 0, api: 0 });
+		vi.mocked(getRoleCountsByUsers).mockResolvedValue({ admin: 0, api: 0, app: 0 });
+		vi.mocked(shouldCheckUserLimits).mockResolvedValue(true);
 	});
 
 	afterEach(() => {
@@ -85,7 +115,7 @@ describe('Integration Tests', () => {
 	describe('Services / Users', () => {
 		let service: UsersService;
 		let mailService: MailService;
-		let superCreateManySpy: MockInstance;
+		let superCreateOneSpy: MockInstance;
 		let superUpdateManySpy: MockInstance;
 		let checkUniqueEmailsSpy: MockInstance;
 		let checkPasswordPolicySpy: MockInstance;
@@ -126,7 +156,7 @@ describe('Integration Tests', () => {
 				},
 			});
 
-			superCreateManySpy = vi.spyOn(ItemsService.prototype as any, 'createMany');
+			superCreateOneSpy = vi.spyOn(ItemsService.prototype as any, 'createOne');
 			superUpdateManySpy = vi.spyOn(ItemsService.prototype as any, 'updateMany');
 
 			// "as any" are needed since these are private methods
@@ -187,7 +217,7 @@ describe('Integration Tests', () => {
 
 			it('should checkUniqueEmails once', async () => {
 				await service.createMany([{ email: 'test@example.com' }]);
-				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
+				expect(checkUniqueEmailsSpy).toBeCalledTimes(2);
 			});
 
 			it('should not checkPasswordPolicy', async () => {
@@ -197,14 +227,55 @@ describe('Integration Tests', () => {
 
 			it('should checkPasswordPolicy once', async () => {
 				await service.createMany([{ password: 'testpassword' }]);
-				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
+				expect(checkPasswordPolicySpy).toBeCalledTimes(2);
+			});
+
+			it('should process user limits for new roles', async () => {
+				await service.createMany([{ role: { admin_access: true } }, { role: { app_access: true } }, { role: {} }]);
+				expect(getRoleCountsByRoles).toBeCalledWith(db, []);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 1, app: 1, api: 1 });
+			});
+
+			it('should process user limits for existing roles', async () => {
+				vi.mocked(getRoleCountsByRoles).mockReset();
+				vi.mocked(getRoleCountsByRoles).mockResolvedValue({ admin: 1, app: 2, api: 3 });
+				await service.createMany([{ role: randomUUID() }, { role: randomUUID() }, { role: randomUUID() }]);
+				expect(getRoleCountsByRoles).toBeCalledWith(db, expect.any(Array<string>));
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 1, app: 2, api: 3 });
+			});
+
+			it('should process user limits for new and existing roles', async () => {
+				vi.mocked(getRoleCountsByRoles).mockReset();
+				vi.mocked(getRoleCountsByRoles).mockResolvedValue({ admin: 1, app: 2, api: 3 });
+
+				await service.createMany([
+					{ role: randomUUID() },
+					{ role: randomUUID() },
+					{ role: randomUUID() },
+					{ role: { admin_access: true } },
+					{ role: { app_access: true } },
+					{ role: {} },
+				]);
+
+				expect(getRoleCountsByRoles).toBeCalledWith(db, expect.any(Array<string>));
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 2, app: 3, api: 4 });
+			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				await service.createMany([{ role: randomUUID() }, { role: randomUUID() }, { role: randomUUID() }]);
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
 			});
 		});
 
 		describe('updateOne', () => {
 			it('should not checkRemainingAdminExistence', async () => {
 				// mock newRole query in updateMany (called by ItemsService updateOne)
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
 
 				await service.updateOne(1, { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).not.toBeCalled();
@@ -212,7 +283,9 @@ describe('Integration Tests', () => {
 
 			it('should checkRemainingAdminExistence once', async () => {
 				// mock newRole query in updateMany (called by ItemsService updateOne)
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: false });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false });
 
 				await service.updateOne(1, { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
@@ -310,7 +383,9 @@ describe('Integration Tests', () => {
 		describe('updateMany', () => {
 			it('should not checkRemainingAdminExistence', async () => {
 				// mock newRole query in updateMany
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
 
 				await service.updateMany([1], { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).not.toBeCalled();
@@ -318,7 +393,9 @@ describe('Integration Tests', () => {
 
 			it('should checkRemainingAdminExistence once', async () => {
 				// mock newRole query in updateMany
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: false });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false });
 
 				await service.updateMany([1], { role: testRoleId });
 				expect(checkRemainingAdminExistenceSpy).toBeCalledTimes(1);
@@ -432,12 +509,77 @@ describe('Integration Tests', () => {
 					expect(superUpdateManySpy).toBeCalledWith([1], expect.objectContaining({ auth_data: null }), undefined);
 				},
 			);
+
+			it('should process user limits for new admin role', async () => {
+				await service.updateMany([1, 2, 3], { role: { admin_access: true } });
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
+			});
+
+			it('should process user limits for existing admin role', async () => {
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
+
+				await service.updateMany([1, 2, 3], { role: randomUUID() });
+
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 3, app: 0, api: 0 });
+			});
+
+			it('should process user limits for new app role', async () => {
+				await service.updateMany([1, 2, 3], { role: { app_access: true } });
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
+			});
+
+			it('should process user limits for existing app role', async () => {
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false, app_access: true });
+
+				await service.updateMany([1, 2, 3], { role: randomUUID() });
+
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 3, api: 0 });
+			});
+
+			it('should process user limits for new api role', async () => {
+				await service.updateMany([1, 2, 3], { role: {} });
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
+			});
+
+			it('should process user limits for existing api role', async () => {
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false, app_access: false });
+
+				await service.updateMany([1, 2, 3], { role: randomUUID() });
+
+				expect(getRoleCountsByUsers).toBeCalledWith(db, [1, 2, 3]);
+				expect(checkIncreasedUserLimits).toBeCalledWith(db, { admin: 0, app: 0, api: 3 });
+			});
+
+			it('skips user limits check when no limit is set', async () => {
+				vi.mocked(shouldCheckUserLimits).mockReturnValue(false);
+
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
+
+				await service.updateMany([1, 2, 3], { role: randomUUID() });
+
+				expect(checkIncreasedUserLimits).not.toBeCalled();
+			});
 		});
 
 		describe('updateByQuery', () => {
 			it('should not checkRemainingAdminExistence', async () => {
 				// mock newRole query in updateMany (called by ItemsService updateByQuery)
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
 
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
@@ -447,7 +589,9 @@ describe('Integration Tests', () => {
 
 			it('should checkRemainingAdminExistence once', async () => {
 				// mock newRole query in updateMany (called by ItemsService updateByQuery)
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: false });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: false });
 
 				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValue([1]);
 
@@ -630,7 +774,7 @@ describe('Integration Tests', () => {
 				});
 
 				// mock return value for the following empty query
-				vi.spyOn(ItemsService.prototype, 'readByQuery').mockResolvedValueOnce([{ id: 1 }]);
+				vi.spyOn(ItemsService.prototype, 'getKeysByQuery').mockResolvedValueOnce([1]);
 
 				const promise = service.deleteByQuery({ filter: { id: { _eq: 1 } } });
 
@@ -649,6 +793,11 @@ describe('Integration Tests', () => {
 
 		describe('invite', () => {
 			it('should invite new users', async () => {
+				// mock newRole query in updateMany
+				tracker.on
+					.select(/select "id", "admin_access", "app_access" from "directus_roles"/)
+					.response({ id: 'invite-role', admin_access: false, app_access: true });
+
 				const service = new UsersService({
 					knex: db,
 					schema: testSchema,
@@ -659,13 +808,13 @@ describe('Integration Tests', () => {
 
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy.mock.lastCall![0]).toEqual([
+				expect(superCreateOneSpy.mock.lastCall![0]).toEqual(
 					expect.objectContaining({
 						email: 'user@example.com',
 						status: 'invited',
 						role: 'invite-role',
 					}),
-				]);
+				);
 
 				expect(mailService.send).toBeCalledTimes(1);
 			});
@@ -686,7 +835,7 @@ describe('Integration Tests', () => {
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy).not.toBeCalled();
+				expect(superCreateOneSpy).not.toBeCalled();
 				expect(mailService.send).toBeCalledTimes(1);
 			});
 
@@ -706,7 +855,7 @@ describe('Integration Tests', () => {
 				const promise = service.inviteUser('user@example.com', 'invite-role', null);
 				await expect(promise).resolves.not.toThrow();
 
-				expect(superCreateManySpy).not.toBeCalled();
+				expect(superCreateOneSpy).not.toBeCalled();
 				expect(mailService.send).not.toBeCalled();
 			});
 
@@ -717,7 +866,9 @@ describe('Integration Tests', () => {
 					accountability: { role: 'test', admin: true },
 				});
 
-				tracker.on.select(/select "admin_access" from "directus_roles"/).response({ admin_access: true });
+				tracker.on
+					.select(/select "admin_access", "app_access" from "directus_roles"/)
+					.response({ admin_access: true, app_access: true });
 
 				// mock an invited user with different role
 				vi.spyOn(UsersService.prototype as any, 'getUserByEmail').mockResolvedValueOnce({

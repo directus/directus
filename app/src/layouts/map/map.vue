@@ -92,15 +92,7 @@ limitWritable.value = selectedSize;
 		</transition>
 
 		<transition name="fade">
-			<v-info v-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-				{{ t('unexpected_error_copy') }}
-				<template #append>
-					<v-error :error="error" />
-					<v-button small class="reset-preset" @click="resetPresetAndRefresh">
-						{{ t('reset_page_preferences') }}
-					</v-button>
-				</template>
-			</v-info>
+			<slot v-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 			<v-info
 				v-else-if="geojsonError"
 				type="warning"
@@ -215,10 +207,6 @@ limitWritable.value = selectedSize;
 .v-progress-circular {
 	--v-progress-circular-background-color: var(--theme--primary-background);
 	--v-progress-circular-color: var(--theme--primary);
-}
-
-.reset-preset {
-	margin-top: 24px;
 }
 
 .footer {

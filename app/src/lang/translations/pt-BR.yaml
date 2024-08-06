@@ -28,7 +28,7 @@ method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
-marketplace: marketplace
+marketplace: Marketplace
 extensions: Extensões
 modules: Módulos
 module_bar: Barra de Módulos
@@ -70,7 +70,7 @@ extension_endpoint: Endpoint
 extension_operation: Operação
 extension_bundle: Pacote
 extension_interfaces: Interfaces
-extension_displays: Telas
+extension_displays: Displays
 extension_layouts: Layouts
 extension_modules: Módulos
 extension_panels: Painéis
@@ -79,7 +79,7 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operações
 extension_bundles: Pacotes
-extension_missing: Faltando
+extension_missing: Não encontrado
 extension_reload_required: Atualização de página necessária
 extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões de aplicativo.
 extension_reload_now: Recarregar agora
@@ -91,6 +91,7 @@ n_files: '{n} Arquivos'
 verified: Verificado
 homepage: Página inicial
 repository: Repositório
+reload_page: Atualizar Página
 reload_required: Atualização de página necessária
 report_an_issue: Reportar um problema
 website: Site
@@ -131,8 +132,8 @@ message: Mensagem
 delete_panel: Excluir Painel
 create_webhook: Criar Webhook
 create_custom_translation: Criar tradução personalizada
-edit_custom_translation: Criar tradução personalizada
-no_custom_translations: Traduções personalizadas
+edit_custom_translation: Editar tradução personalizada
+no_custom_translations: Nenhuma tradução personalizada
 no_custom_translations_copy: Ainda não há traduções personalizadas.
 invite_users: Convidar Usuários
 invite: Convidar
@@ -154,13 +155,13 @@ version: Versão
 version_key: Chave da Versão
 version_name: Nome da Versão
 main_version: Main
-switch_version: Trocar versão
-switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? As alterações não salvas serão perdidas.
-create_version: Criar versão
-rename_version: Renomear versão
-compare_version: Comparar versão
-save_version: Salvar versão
-promote_version: Promover versão
+switch_version: Trocar Versão
+switch_version_copy: Tem certeza que deseja mudar para a versão "{version}"? Alterações não salvas serão perdidas.
+create_version: Criar Versão
+rename_version: Renomear Versão
+compare_version: Comparar Versão
+save_version: Salvar Versão
+promote_version: Promover Versão
 promote_version_disabled: Sem alterações
 promote_version_drawer_title: Promover {version} para a Main
 promote_version_changes: Mudanças
@@ -335,6 +336,8 @@ geometry:
   LineString: Linha de Texto
   Polygon: Polígono
   MultiPoint: Multiponto
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: Automático (Baseado no Sistema)
 theme_light: Modo Claro
 theme_dark: Modo Escuro
@@ -359,6 +362,7 @@ fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado em seu modelo de dados:'
 search_collection: Pesquisar Coleção...
+search_role: Buscar Cargo...
 search_field: Campo de pesquisa...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
@@ -444,6 +448,7 @@ revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
 presentation_text_values_cannot_be_reimported: 'Usa texto de apresentação, valores não podem ser importados novamente.'
 download_page_as_csv: 'Baixar página como CSV'
+download_page_as_csv_unsupported: Este layout não suporta o download da página atual.
 private_user: Usuário privado
 creation_preview: Pré-visualização da criação
 revision_preview: Pré-visualização de revisão
@@ -555,7 +560,7 @@ replace_from_url: Substituir Arquivo da URL
 no_image_selected: Nenhuma imagem selecionada
 no_file_selected: Nenhum arquivo selecionado
 download_file: Baixar arquivo
-open_file_in_tab: Abrir em nova guia
+open_file_in_tab: Abrir arquivo em uma nova aba
 start_export: Iniciar Exportação
 not_available_for_local_downloads: Não disponível para downloads locais
 exporting_all_items_in_collection: Exportando todos os {total} itens dentro de {collection}.
@@ -594,7 +599,7 @@ collapse: Recolher
 select_item: Selecionar item
 no_items: Nenhum item
 search_items: Pesquisar Itens...
-search_extensions: Pesquisar extensões
+search_extensions: Pesquisar extensões...
 disabled: Desabilitado
 information: Informação
 report_bug: Relatar erro
@@ -613,6 +618,10 @@ no_files_copy: Ainda não há arquivos aqui.
 user_count: 'Nenhum usuário | Um usuário | {count} usuários'
 no_users_copy: Não há usuários neste cargo ainda.
 webhooks_count: 'Nenhum Webhook | Um Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks foram depreciados e a sua utilização não é recomendada.
+
+  Por favor, utilize **Fluxos** com [Webhook / Request URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Nenhum webhook foi configurado ainda. Comece criando um abaixo.
 no_notifications: Sem Notificações
 no_notifications_copy: Você está em dia!
@@ -739,7 +748,7 @@ cannot_edit_global_bookmarks: Não é possível editar favoritos globais
 bookmarks: Favoritos
 presets: Predefinições
 unexpected_error: Erro inesperado
-unexpected_error_copy: Um erro inesperado ocorreu. Tente novamente mais tarde.
+unexpected_error_copy: Ocorreu um erro inesperado. Por favor, tente novamente.
 copy_details: Copiar detalhes
 no_app_access: Sem acesso ao app
 no_app_access_copy: Este usuário não tem permissão para usar o admin app.
@@ -1117,6 +1126,9 @@ page_help_files_collection: >-
   **Biblioteca de Arquivos** - Lista todos os arquivos enviados para este projeto. Personalize o layout, os filtros e a ordenação para personalizar a sua vista e até mesmo salve marcadores dessas diferentes configurações para acesso rápido.
 page_help_files_item: >-
   **Detalhe do Arquivo** — Um formulário para gerenciar os metadados do arquivo, editar o asset original e atualizar as configurações de acesso.
+page_help_settings_project: "**Configurações** — Opções de configuração globais do seu projeto."
+page_help_settings_appearance: "**Aparência** — Opções de aparência do seu projeto."
+page_help_settings_extensions: '**Extensões** — Extensões instaladas no seu projeto.'
 page_help_settings_datamodel_collections: >-
   **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
 page_help_settings_datamodel_fields: >-
@@ -1131,11 +1143,16 @@ page_help_settings_webhooks_collection: '**Navegando em Webhooks** — Lista tod
 page_help_settings_webhooks_item: '**Detalhe de Webhook** — Um formulário para criar e gerenciar os webhooks do projeto.'
 page_help_settings_flows_collection: '**Navegue fluxos** — Lista todos os fluxos dentro do projeto.'
 page_help_settings_flows_item: '**Detalhes do fluxo** — Área para gerenciar uma ou mais operações.'
+page_help_settings_translations_collection: '**Ver Traduções Personalizadas** — Lista todas as traduções personalizadas no projeto.'
+page_help_settings_translations_item: '**Detalhe de Tradução Personalizado** — Uma maneira de visualizar e gerenciar este item.'
 page_help_users_collection: '**Diretório do Usuário** — Lista todos os usuários do sistema neste projeto.'
 page_help_users_item: >-
   **Detalhe do Usuário** — Gerencie as informações da sua conta, ou veja os detalhes de outros usuários.
 page_help_insights_overview: '**Visões** — Lista de painéis que aos quais você tem acesso.'
 page_help_insights_dashboard: '**Dashboard** — Área de trabalho para gerenciar um ou mais painéis'
+page_help_marketplace_account: '**Conta** — Criador ou atual desenvolvedor de uma extensão publicada.'
+page_help_marketplace_registry: '**Registro** — Extensões disponíveis no Directus Marketplace.'
+page_help_marketplace_extension: '**Extensão** — Extensão do Directus.'
 activity_feed: Feed de atividade
 add_new: Adicionar Novo
 create_new: Criar novo
@@ -1146,9 +1163,17 @@ batch_delete_confirm: >-
   Nenhum item foi selecionado | Você tem certeza que deseja deletar esse item? Essa ação não pode ser desfeita. | Você tem certeza que deseja deletar esses {count} itens? Essa ação não pode ser desfeita.
 cancel: Cancelar
 no_upscale: Não ampliar imagens
+no_extensions: Sem extensões
+no_extensions_copy: Nenhuma extensão foi instalada.
+install_extension: Instalar Extensão
+uninstall_locked: Não é possível desinstalar as extensões que não foram instaladas através do Marketplace
 uninstall: Desinstalar
 installed: Instalado
-source_registry: marketplace
+reinstall: Reinstalar
+open_in_marketplace: Abrir no Marketplace
+source_registry: Marketplace
+source_local: Local
+source_module: Módulo Node
 collection: Coleção
 collections: Coleções
 content: Conteúdo
@@ -1177,6 +1202,9 @@ directus_collection:
   directus_shares: Rastreia itens compartilhados externamente
   directus_users: Usuários do sistema para a plataforma
   directus_webhooks: Configuração para solicitações HTTP baseadas em eventos
+  directus_translations: Traduções personalizadas
+  directus_versions: Versionamento de Conteúdo para Items
+  directus_extensions: Configuração de extensões
 fields:
   directus_activity:
     item: Chave Primária do Item
@@ -1203,6 +1231,7 @@ fields:
     unarchive_value: Valor quando Desarquivado
     sort_field: Campo de Ordenação
     accountability: Rastreamento de Atividades e Revisões
+    versioning: Versionamento
     archive_field: Campo de Arquivação
     item_duplication_fields: Campos de item duplicado
   directus_files:
@@ -1229,6 +1258,8 @@ fields:
     height: Altura
     charset: Codificação de caracteres
     duration: Duração
+    focal_point_x: Ponto Focal X
+    focal_point_y: Ponto Focal Y
   directus_users:
     first_name: Primeiro Nome
     last_name: Sobrenome
@@ -1246,6 +1277,7 @@ fields:
     status: Status
     status_draft: Rascunho
     status_invited: Convidado
+    status_unverified: Não verificado
     status_active: Ativo
     status_suspended: Suspenso
     status_archived: Arquivado
@@ -1259,6 +1291,8 @@ fields:
     appearance: Aparência
     theme_light: Tema Claro
     theme_dark: Tema Escuro
+    theme_light_overrides: Customização do Tema Claro
+    theme_dark_overrides: Customização do Tema Escuro
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1307,6 +1341,14 @@ fields:
     custom_aspect_ratios: Proporção de tela personalizada
     theme_light_overrides: Personalização de tema claro
     theme_dark_overrides: Personalização de tema escuro
+    public_registration: Cadastro de usuário
+    public_registration_note: Permite que usuários se registrem através da [página de registro](/admin/register).
+    public_registration_role: Função de Usuário
+    public_registration_role_note: Esta função é atribuída aos usuários que se registram usando este método. Não afeta usuários já registrados.
+    public_registration_email_filter: Filtro de endereço de e-mail
+    public_registration_email_filter_note: Apenas endereços de e-mail que passarem por esse filtro podem se registrar.
+    public_registration_verify_email: Verificar E-mail
+    public_registration_verify_email_note: Envia um e-mail para o usuário que se registrou pedindo que clique em um link de verificação antes de fazer o login.
   directus_shares:
     name: Nome
     role: Função
@@ -1349,7 +1391,7 @@ field_options:
   directus_settings:
     project_name_placeholder: Meu projeto...
     project_color_note: Fundo de Login & Logo
-    project_logo_note: 40x40 SVG/PNG (Branco)
+    project_logo_note: SVG/PNG 40x40 Branco
     project_favicon_note: 32×32 ICO
     public_note_placeholder: Uma mensagem pública curta que suporta a formatação markdown...
     security_divider_title: Segurança
@@ -1412,11 +1454,13 @@ field_options:
     description: Uma descrição opcional...
     location: Uma localização opcional...
     storage_divider: Nomeação de Arquivos
+    focal_point_divider: Ponto Focal
     filename_disk: Nome no armazenamento do disco...
     filename_download: Nome ao baixar...
   directus_roles:
     name: O nome único para este papel...
     description: Uma descrição deste papel...
+    ip_access: Adicionar endereços IP, intervalos de IP e blocos CIDR. Deixe este campo em branco para permitir todos...
     fields:
       icon_name: Ícone
       name_name: Nome
@@ -1464,7 +1508,13 @@ block: Bloco
 inline: Em linha
 comment: Comentário
 live_preview:
+  enable: Habilitar Pré-visualização
+  disable: Desabilitar Pré-visualização
+  change_size: Alterar Dimensões de Exibição
+  refresh: Atualizar Pré-visualização
   new_window: Abrir em nova janela
+  close_window: Abrir na visualização dividida
+  toggle_3d: Alternar 3D
 shares: Compartilhar
 unlimited_usage: Uso Ilimitado
 uses_left: Não há usos restante | 1 uso restante | {n} usos restantes
@@ -1476,6 +1526,7 @@ share: Compartilhar
 share_item: Compartilhar item
 shared_with_you: Um item foi compartilhado com você
 shared_enter_passcode: Insira sua senha para continuar...
+shared_leave_blank_for_passwordless_access: Deixe em branco para acesso sem senha
 shared_leave_blank_for_unlimited: Deixe em branco para ilimitado
 shared_times_remaining: Este link só pode ser usado {n} vezes
 shared_last_remaining: Este link só pode ser usado uma vez
@@ -1545,6 +1596,7 @@ authenticated: Autenticado
 options: Opções
 otp: Senha de uso único
 password: Senha
+confirm_password: Confirmar Senha
 permissions: Permissões
 relationship: Relacionamento
 reset: Redefinir
@@ -1559,7 +1611,16 @@ search: Buscar
 select_existing: Selecionar existente
 select_field_type: Selecionar tipo de campo
 select_interface: Selecione uma interface
+select_display: Selecionar uma exibição
 settings: Configurações
+register: Cadastrar
+registration_successful_headline: Sucesso!
+registration_successful_note: Agora você pode prosseguir para a página de login.
+registration_successful_check_email_note: |
+  Por favor, lembre-se que antes de fazer o login, você precisará verificar seu endereço de e-mail clicando no link de verificação enviado para você.
+dont_have_an_account: Não possui uma conta?
+already_have_an_account: Já tem uma conta?
+sign_up_now: Cadastre-se agora
 sign_in: Entrar
 sign_out: Sair
 sign_out_confirm: Tem certeza que deseja sair?
@@ -1570,6 +1631,7 @@ export_started: Exportação iniciada
 export_started_copy: A exportação foi iniciada. Você será notificado quando estiver pronto para download.
 sort_asc: Ordenação Crescente
 sort_desc: Ordenação Decrescente
+disable_sort: Desativar Ordenação
 template: Template
 require_value_to_be_set: Requer que o valor seja definido na criação
 translation: Tradução
@@ -1589,6 +1651,9 @@ undo_removed_item: Desfazer Item Removido
 remove_item: Remover Item
 delete_item: Excluir item
 interfaces:
+  list-m2a:
+    prefix_note: Utiliza o nome da coleção do item relacionado por padrão.
+    sorting_disabled: Ordenação está desabilitada por não haver mais itens que caibam em uma página.
   filter:
     name: Filtro
     description: Configurar um filtro de objeto.
@@ -1726,8 +1791,11 @@ interfaces:
     description: Um modal para selecionar opções de uma interface
   system-display:
     display: Exibir
+    description: Selecione uma exibição existente
+    placeholder: Selecione uma exibição...
   system-display-options:
     display-options: Opções de exibição
+    description: Um modal para selecionar opções de exibição
   list-m2m:
     many-to-many: Muitos para muitos
     description: Selecione vários itens de junção relacionados
@@ -1737,6 +1805,9 @@ interfaces:
     many-to-one: Muitos para um
     description: Selecione um único item relacionado
     display_template: Modelo de exibição
+  collection-item-dropdown:
+    collection-item-dropdown: Dropdown de Itens de Coleção
+    description: Selecionar um item de uma coleção em formato JSON
   input-rich-text-md:
     markdown: Markdown
     description: Inserir e pré-visualizar markdown
@@ -1771,12 +1842,15 @@ interfaces:
     notice: Aviso
     description: Mostrar um breve aviso
     text: Digite o conteúdo do aviso aqui...
+    no_text: Nenhum texto configurado...
   list-o2m:
     one-to-many: Um para muitos
     description: Selecione vários itens relacionados
     no_collection: A coleção não pôde ser encontrada
   system-folder:
+    folder: Pasta Raíz
     description: Selecionar uma pasta
+    field_hint: Pasta padrão para arquivos enviados que não especifiquem uma pasta. Não afeta os arquivos existentes.
     root_name: Raiz da biblioteca de arquivos
     system_default: Padrões do sistema
   select-radio:
@@ -1832,6 +1906,7 @@ interfaces:
     input-translated-string: Textos traduzidos
     description: Selecione ou adicione texto de tradução
     search_placeholder: Pesquisar...
+    new_custom_translation: Nova Tradução Personalizada
   boolean:
     toggle: Alternar
     description: Alternar entre ligado e desligado
@@ -1844,6 +1919,7 @@ interfaces:
     no_collection: Nenhuma coleção
     toggle_split_view: Alternar Visualização Dividida
     enable: Habilitar
+    default_split_view_state: Estado Padrão da Visualização Dividida
     user_language: Usar o Idioma do Usuário Atual
     default_language: Idioma padrão
     language_field: Campo Indicador de Idioma
@@ -1864,20 +1940,33 @@ interfaces:
     description: Um editor de rich-text que gera HTML
     toolbar: Barra de ferramentas
     custom_formats: Formatos Personalizados
+    custom_formats_note: Lista de formatos do TinyMCE. Consulte a documentação do TinyMCE sobre [Formatação de Conteúdo](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) para mais informações.
     options_override: Sobrescrever opções
+    options_override_note: Chaves e valores da formatação de usuário do TinyMCE. Consulte a documentação sobre [Formatação do Usuário](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) para mais informações.
     folder_note: Pasta para arquivos carregados. Não afeta os arquivos existentes.
     imageToken: Token de Acesso Estático
     imageToken_label: Token de acesso estático é adicionado à URL dos conteúdos
   input-block-editor:
+    input-block-editor: Editor em Blocos
+    description: Editor baseado em blocos para conteúdos focados em mídia que produz dados em JSON utilizando Editor.js
     tools: Barra de ferramentas
     tools_options:
       header: Cabeçalho
       nestedlist: Lista
       embed: Incorporar
+      paragraph: Parágrafo
       code: Código
       image: Imagem
+      attaches: Anexos
       table: Tabela
+      quote: Citação
       underline: Sublinhado
+      inlinecode: Código embutido
+      delimiter: Delimitador
+      checklist: Lista de controle
+      toggle: Alternar Bloco
+      alignment: Alinhamento
+      raw: HTML puro
   input-autocomplete-api:
     input-autocomplete-api: Entrada de preenchimento automático (API)
     description: Um tipo de pesquisa para valores de API externos.
@@ -1952,7 +2041,11 @@ displays:
     strict: Estrito
     strict_label: Usar unidades rigorosas
     strict_note: Remove palavras como 'quase', 'sobre', 'menos que'
+    round: Arredondamento
     round_note: Escolha uma função de arredondamento para usar
+    down: Baixo
+    nearest: Mais próximo
+    up: Cima
   file:
     file: Arquivo
     description: Exibir arquivos
@@ -1975,7 +2068,9 @@ displays:
     prefix: Prefixo
     prefix_label: Texto prefixo
     suffix: Sufixo
+    suffix_label: Texto Anexado
     color: Cor
+    background: Plano de fundo
     icon: Ícone
     border: Borda
     border_label: Mostrar bordas
@@ -1988,6 +2083,7 @@ displays:
     description: Exibe uma versão formatada do objeto
   hash:
     hash: Hash
+    description: Exibe uma versão redigida do valor
   icon:
     icon: Ícone
     description: Exibir um ícone
@@ -2050,19 +2146,89 @@ layouts:
     start_date_field: Campo de Data de Início
     end_date_field: Campo de Data Final
     optional: Opcional
+    first_day: Primeiro Dia da Semana
   map:
     map: Mapa
+    basemap: Basemap
+    layers: Camadas
+    cluster_options: Opções de agrupamento
+    cluster: Agrupar Dados Próximos
+    cluster_radius: Raio de agrupamento
+    cluster_minpoints: Quantidade mínima para agrupamento
+    cluster_maxzoom: Zoom máximo para agrupamento
+    field: Campo Geo-espacial
     invalid_geometry: Geometria inválida
     find_location: Encontrar localização...
+    default_template: Utilizando Padrão da Coleção...
+    no_compatible_fields: Não há campos compatíveis
   kanban:
+    name: Kanban
+    group_field: Agrupar Por
+    group_field_placeholder: Campo para agrupamento...
+    group_title: Título do Grupo
+    group_title_placeholder: Campo para título de grupos...
+    title: Título do Cartão
+    title_placeholder: Campo optional de título...
+    text: Texto do Cartão
+    text_placeholder: Campo opcional de texto...
+    date: Data do Cartão
+    date_placeholder: Campo optional de data...
+    tags: Tags do Cartão
+    tags_placeholder: Campo optional de tags...
+    user: Usuário do Cartão
+    user_placeholder: Campo opcional de usuário...
+    image: Imagem do Cartão
+    image_placeholder: Campo opcional de imagem...
+    image_fit: Ajuste de imagem do Cartão
     crop: Recortar
     advanced: Avançado
+    edit_group: Editar Grupo
+    delete_group: Deletar Grupo
+    add_group: Adicionar Grupo
+    add_group_placeholder: Digite um novo título do grupo...
+    show_ungrouped: Mostrar os não agrupados
+    show: Mostrar
+    no_group: Sem Grupo
+    not_all_loaded: Só foi possível carregar os primeiros 1000 itens.
 horizontal: Horizontal
+vertical: Vertical
+axis: Eixo
+x_axis: Eixo X
+y_axis: Eixo Y
+y_axis_function: Função do Eixo Y
+show_x_only: Mostrar Apenas o Eixo X
+show_y_only: Mostrar Apenas o Eixo Y
+show_data_label: Mostrar rótulo de dados
 both: Ambos
+show_axis_labels: Mostrar rótulo de eixos
+function: Função
+half_circle: Meio Círculo
+full_circle: Círculo Completo
+stroke_width: Espessura do traço
+rounded_stroke: Traço Arredondado
+thin: Fino
+medium: Médio
+broad: Largo
+show_labels: Mostrar Rótulos
+show_legend: Mostrar Legenda
+right: Direita
+left: Esquerda
+donut: Rosca
 panels:
   metric:
     name: Métrico
+    description: Mostrar valor único baseado em uma query
     field: Campo
+  metric_list:
+    name: Lista de Métricas
+    description: Listar e visualizar métricas agregadas de uma coleção
+  time_series:
+    name: Série Temporal
+    description: Renderizar gráfico baseado em valores de série temporal
+    date_field: Campo de Data
+    value_field: Campo de Valor
+    fill_type: Tipo de Preenchimento
+    curve_type: Tipo de Curva
   label:
     name: Rótulo
     description: Exibir algum texto
@@ -2071,19 +2237,79 @@ panels:
     description: Filtrar e listar campos de uma coleção
   barchart:
     name: Gráfico de barras
+    description: Gráfico de barra ou coluna para comparar grupos de valores
     horizontal: Horizontal
     select_collection: Você deve selecionar uma coleção.
+  linechart:
+    name: Gráfico de Linha
+    description: Gráfico de linha parar comparar alterações de um campo
+    disabled_grouping: Desabilitar quando houver agrupamento.
+    disabled_no_grouping: Desabilitar quando não houver agrupamento.
+    show_marker: Mostrar Criador de Tooltip
+    curve_type: Tipo de Curva
+    smooth: Suave
+    straight: Reto
+    step_line: Linha Escalonada
+    show_legend: Mostrar Legenda
   meter:
     name: Metro
+    description: Métrica de acompanhamento de valores
+  piechart:
+    name: Gráfico de Torta ou Rosca
+    description: Gráfico circular mostrando proporções de grupos em uma coluna
+  variable:
+    name: Variável Global
+    description: Definir uma variável global para ser utilizada no filtro de outros painéis
+    variable_key: Chave da Variável
   relational-variable:
+    name: Variável Relacional Global
+    description: Definir o valor de uma variável relacional para ser utilizada no filtro de outros painéis
+    variable_key: Chave da Variável
     multiple: Múltiplo
     multiple-label: Selecionar Múltiplos Itens
 triggers:
   common:
+    response_body: Corpo da Resposta
     response_body_all: Todos os Dados
+    response_body_last: Retorno da última operação
+  event:
+    name: Eventos
+    description: Acionado quando eventos da plataforma ou dados forem disparados
+    action: 'Ação (Não bloqueante)'
+    filter: 'Filtro (bloqueante)'
   webhook:
+    name: Webhook
+    description: Acionado ao receber uma requisição HTTP
     method: Método
+    async: Assíncrono
+  operation:
+    name: Outro Fluxo
+    description: Acionado por outro fluxo, utilizado para encadeamento
+    preview: Acionado por uma operação presente em outro fluxo
+  schedule:
+    name: Agendado (CRON)
+    description: Acionado em intervalos de tempo
+    cron: Intervalo
+  manual:
+    name: Manual
+    description: Acionado manualmente nas coleções selecionadas
+    collection_and_item: Página de Coleção & Item
+    collection_only: Somente página de Coleção
+    item_only: Somente página de Item
+    collection_page: Página de Coleção
+    require_selection: Requer Seleção
+a_flow_uuid: Selecione um Fluxo para acionamento...
+any_string_or_json: Qualquer texto ou JSON...
+item_payload_placeholder: Este é o JSON utilizado para atualizar os campos do item...
+operation_variables_note: Você pode acessar dados do fluxo com variáveis como **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** e **{'{'}{'{'}$accountability{'}'}{'}'}**, ou referenciar operações prévias utilizando **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Condição
+    description: Direciona um fluxo utilizando lógica Se / Se não
+  exec:
+    name: Executar Script
+    description: Executa código arbitrário para modificação do payload
+    modules: 'Módulos **node** que podem ser utilizados:'
   item-create:
     name: Criar Dados
     description: Criar itens no banco de dados
@@ -2094,18 +2320,36 @@ operations:
     description: Apagar itens no banco de dados
     emit_events: Emitir eventos
     key: IDs
+    query: Query
   item-read:
+    name: Ler Dados
+    description: Realiza leitura de itens do banco de dados
     key: IDs
+    query: Query
     emit_events: Emitir eventos
   item-update:
+    name: Atualizar Dados
+    description: Atualiza itens no banco de dados
     emit_events: Emitir eventos
     key: IDs
     payload: Payload
+    query: Query
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Assina e valida JSON Web Tokens
+    operation: Operação
+    secret: Secreto
+    secret_placeholder: Especifique um segredo...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opções
+    options_placeholder: 'Consulte https://www.npmjs.com/package/jsonwebtoken#usage para mais opções disponíveis'
+    sign: Assinar Token
+    verify: Verificar Token
+    decode: Decodificar Token
   log:
+    name: Escrever no Console
     description: Emita algo para o console
     message: Mensagem
     message_placeholder: Digite uma mensagem a ser exibida no console...
@@ -2123,6 +2367,7 @@ operations:
     recipient: Usuário
     recipient_placeholder: Digite um UUID...
     recipient_note: Adicione o UUID do usuário e pressione Enter...
+    item_note: Chave do Item ou URL relativa
     message: Mensagem
     subject: Assunto
   request:
@@ -2156,12 +2401,44 @@ operations:
     batch: Lote
     batch_size: Tamanho do lote
     cache: Cache
+unit: Unidade
 standard: Padrão
+scientific: Científica
+engineering: Engenharia
 compact: Compacto
+currency: Unidade monetária
+notation: Notação
 style: Estilo
 fonts:
+  thin: Fino
+  extra_light: Muito leve
+  light: Leve
   normal: Normal
+  medium: Médio
+  semi_bold: Negrito Leve
   bold: Negrito
+  extra_bold: Negrito Espesso
   black: Preto
   italic: Itálico
+  oblique: Oblíquo
+  small: Pequeno
+  large: Grande
   auto: Automático
+text_wrap: Quebra de Texto
+center: Centralizado
+justify: Justificado
+text_align: Alinhamento de Texto
+font_weight: Espessura da Fonte
+font_style: Estilo da Fonte
+font_size: Tamanho da Fonte
+minimum_fraction_digits: Mínimo de casas decimais
+maximum_fraction_digits: Máximo de casas decimais
+show_percentage: Mostrar Percentual
+aggregation: Agregação
+series_grouping: Agrupamento de Série
+date_precision: Precisão de Data
+export_dashboard: Exportar Painel
+duplicate_dashboard: Duplicar Painel
+search_dashboard: Procurar Painel...
+search_flow: Procurar Fluxo...
+percent: Porcentagem

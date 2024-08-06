@@ -16,7 +16,7 @@ export interface WebSocketConfig {
 	url?: string;
 }
 
-export interface SubscribeOptions<Schema extends object, Collection extends keyof Schema> {
+export interface SubscribeOptions<Schema, Collection extends keyof Schema> {
 	event?: SubscriptionOptionsEvents;
 	query?: Query<Schema, Schema[Collection]>;
 	uid?: string;
@@ -26,7 +26,7 @@ export type WebSocketEvents = 'open' | 'close' | 'error' | 'message';
 export type RemoveEventHandler = () => void;
 export type WebSocketEventHandler = (this: WebSocketInterface, ev: Event | CloseEvent | any) => any;
 
-export interface WebSocketClient<Schema extends object> {
+export interface WebSocketClient<Schema> {
 	connect(): Promise<WebSocketInterface>;
 	disconnect(): void;
 	onWebSocket(event: 'open', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;
@@ -69,7 +69,7 @@ export type SubscriptionOptionsEvents = 'create' | 'update' | 'delete';
 export type SubscriptionEvents = 'init' | SubscriptionOptionsEvents;
 
 export type SubscriptionOutput<
-	Schema extends object,
+	Schema,
 	Collection extends keyof Schema,
 	TQuery extends Query<Schema, Schema[Collection]> | undefined,
 	Events extends SubscriptionEvents,

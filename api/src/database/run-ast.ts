@@ -6,12 +6,11 @@ import { clone, cloneDeep, isNil, merge, pick, uniq } from 'lodash-es';
 import { PayloadService } from '../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, M2ONode, NestedCollectionNode } from '../types/ast.js';
 import { applyFunctionToColumnName } from '../utils/apply-function-to-column-name.js';
-import type { ColumnSortRecord } from '../utils/apply-query.js';
-import applyQuery, { applyLimit, applySort, generateAlias } from '../utils/apply-query.js';
+import applyQuery, { applyLimit, applySort, generateAlias, type ColumnSortRecord } from '../utils/apply-query.js';
 import { getCollectionFromAlias } from '../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../utils/get-column-path.js';
 import { getColumn } from '../utils/get-column.js';
-import { stripFunction } from '../utils/strip-function.js';
+import { parseFilterKey } from '../utils/parse-filter-key.js';
 import { getHelpers } from './helpers/index.js';
 import getDatabase from './index.js';
 
@@ -85,7 +84,7 @@ export default async function runAST(
 
 		// Run the items through the special transforms
 		const payloadService = new PayloadService(collection, { knex, schema });
-		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems);
+		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems, query.alias ?? {});
 
 		if (!items || (Array.isArray(items) && items.length === 0)) return items;
 
@@ -161,7 +160,7 @@ async function parseCurrentLevel(
 
 	for (const child of children) {
 		if (child.type === 'field' || child.type === 'functionField') {
-			const fieldName = stripFunction(child.name);
+			const { fieldName } = parseFilterKey(child.name);
 
 			if (columnsInCollection.includes(fieldName)) {
 				columnsToSelectInternal.push(child.fieldKey);
@@ -224,7 +223,8 @@ function getColumnPreprocessor(knex: Knex, schema: SchemaOverview, table: string
 		let field;
 
 		if (fieldNode.type === 'field' || fieldNode.type === 'functionField') {
-			field = schema.collections[table]!.fields[stripFunction(fieldNode.name)];
+			const { fieldName } = parseFilterKey(fieldNode.name);
+			field = schema.collections[table]!.fields[fieldName];
 		} else {
 			field = schema.collections[fieldNode.relation.collection]!.fields[fieldNode.relation.field];
 		}
@@ -323,8 +323,6 @@ async function getDBQuery(
 				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
 			});
 
-			dbQuery.orderByRaw(orderByString, orderByFields);
-
 			if (hasMultiRelationalSort) {
 				dbQuery = helpers.schema.applyMultiRelationalSort(
 					knex,
@@ -334,7 +332,18 @@ async function getDBQuery(
 					orderByString,
 					orderByFields,
 				);
+
+				// Start order by with directus_row_number. The directus_row_number is derived from a window function that
+				// is ordered by the sort fields within every primary key partition. That ensures that the result with the
+				// row number = 1 is the top-most row of every partition, according to the selected sort fields.
+				// Since the only relevant result is the first row of this partition, adding the directus_row_number to the
+				// order by here ensures that all rows with a directus_row_number = 1 show up first in the inner query result,
+				// and are correctly truncated by the limit, but not earlier.
+				orderByString = `?? asc, ${orderByString}`;
+				orderByFields.unshift(knex.ref('directus_row_number'));
 			}
+
+			dbQuery.orderByRaw(orderByString, orderByFields);
 		} else {
 			sortRecords.map((sortRecord) => {
 				if (sortRecord.column.includes('.')) {
@@ -359,7 +368,7 @@ async function getDBQuery(
 		.from(table)
 		.innerJoin(knex.raw('??', dbQuery.as('inner')), `${table}.${primaryKey}`, `inner.${primaryKey}`);
 
-	if (sortRecords && needsInnerQuery) {
+	if (sortRecords) {
 		innerQuerySortRecords.map((innerQuerySortRecord) => {
 			wrapperQuery.orderBy(`inner.${innerQuerySortRecord.alias}`, innerQuerySortRecord.order);
 		});
@@ -476,21 +485,18 @@ function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey].push(...itemChildren);
 
+			const limit = nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']);
+
 			if (nestedNode.query.page && nestedNode.query.page > 1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					(nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT'])) * (nestedNode.query.page - 1),
-				);
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(limit * (nestedNode.query.page - 1));
 			}
 
 			if (nestedNode.query.offset && nestedNode.query.offset >= 0) {
 				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(nestedNode.query.offset);
 			}
 
-			if (nestedNode.query.limit !== -1) {
-				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(
-					0,
-					nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']),
-				);
+			if (limit !== -1) {
+				parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].slice(0, limit);
 			}
 
 			parentItem[nestedNode.fieldKey] = parentItem[nestedNode.fieldKey].sort((a: Item, b: Item) => {

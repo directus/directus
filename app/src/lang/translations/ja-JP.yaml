@@ -467,7 +467,6 @@ replace_from_library: ライブラリからファイルを置き換え
 replace_from_url: URLからファイルを置き換え
 no_file_selected: ファイルが選択されていません
 download_file: ファイルをダウンロード
-open_file_in_tab: 新規タブで開く
 start_export: エクスポートを開始
 not_available_for_local_downloads: ローカルダウンロードはできません
 exporting_all_items_in_collection: '{collection} 内のすべての{total} アイテムをエクスポート中'
@@ -622,7 +621,6 @@ cannot_edit_global_bookmarks: グローバルブックマークを編集でき�
 bookmarks: ブックマーク
 presets: プリセット
 unexpected_error: 予期しないエラーが発生しました
-unexpected_error_copy: 予期せぬエラーが発生しました。しばらくたってからもう一度お試しください。
 copy_details: 詳細をコピー
 no_app_access: アプリにアクセスできません
 no_app_access_copy: このユーザーは管理者用アプリを使用できません

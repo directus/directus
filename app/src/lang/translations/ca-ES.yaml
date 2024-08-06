@@ -464,7 +464,6 @@ replace_from_url: Reemplaça el fitxer des d'una URL
 no_image_selected: Cap imatge seleccionada
 no_file_selected: Cap fitxer seleccionat
 download_file: Descarrega el fitxer
-open_file_in_tab: Obre el fitxer en una nova pestanya
 start_export: Comença l'exportació
 not_available_for_local_downloads: No disponible per a descàrregues locals
 exporting_all_items_in_collection: Exportant tots els {total} elements de {collection}.
@@ -626,7 +625,6 @@ cannot_edit_global_bookmarks: No es pot editar marcadors globals
 bookmarks: Favorits
 presets: Predefinits
 unexpected_error: Error inesperat
-unexpected_error_copy: Hi ha hagut un error inesperat. Si us plau, prova més tard.
 copy_details: Copia detalls
 no_app_access: Sense accés a l'aplicació
 no_app_access_copy: Aquest usuari no pot administrar l'aplicació.

@@ -6,16 +6,12 @@ import type { IfNever, UnpackList } from './utils.js';
 /**
  * Fields querying, including nested relational fields
  */
-export type QueryFields<Schema extends object, Item> = WrapQueryFields<
-	Schema,
-	Item,
-	QueryFieldsRelational<Schema, UnpackList<Item>>
->;
+export type QueryFields<Schema, Item> = WrapQueryFields<Schema, Item, QueryFieldsRelational<Schema, UnpackList<Item>>>;
 
 /**
  * Wrap array of fields
  */
-export type WrapQueryFields<Schema extends object, Item, NestedFields> = readonly (
+export type WrapQueryFields<Schema, Item, NestedFields> = readonly (
 	| '*'
 	| keyof UnpackList<Item>
 	| NestedFields
@@ -25,26 +21,24 @@ export type WrapQueryFields<Schema extends object, Item, NestedFields> = readonl
 /**
  * Object of nested relational fields in a given Item with it's own fields available for selection
  */
-export type QueryFieldsRelational<Schema extends object, Item> = RelationalFields<Schema, Item> extends infer Relations
-	? IfNever<
-			Relations,
-			never,
-			{
-				[Key in RelationalFields<Schema, Item>]?: Extract<Item[Key], ItemType<Schema>> extends infer RelatedCollection
-					? RelatedCollection extends any[]
-						? HasManyToAnyRelation<RelatedCollection> extends never
-							? QueryFields<Schema, RelatedCollection> // many-to-many or one-to-many
-							: ManyToAnyFields<Schema, RelatedCollection> // many to any
-						: QueryFields<Schema, RelatedCollection> // many-to-one
-					: never;
-			}
-	  >
-	: never;
+export type QueryFieldsRelational<Schema, Item> = IfNever<
+	RelationalFields<Schema, Item>,
+	never,
+	{
+		[Key in RelationalFields<Schema, Item>]?: Extract<Item[Key], ItemType<Schema>> extends infer RelatedCollection
+			? RelatedCollection extends any[]
+				? HasManyToAnyRelation<RelatedCollection> extends never
+					? QueryFields<Schema, RelatedCollection> // many-to-many or one-to-many
+					: ManyToAnyFields<Schema, RelatedCollection> // many to any
+				: QueryFields<Schema, RelatedCollection> // many-to-one
+			: never;
+	}
+>;
 
 /**
  * Deal with many-to-any relational fields
  */
-export type ManyToAnyFields<Schema extends object, Item> = ExtractItem<Schema, Item> extends infer TItem
+export type ManyToAnyFields<Schema, Item> = ExtractItem<Schema, Item> extends infer TItem
 	? TItem extends object
 		? 'collection' extends keyof TItem
 			? 'item' extends keyof TItem
@@ -120,7 +114,7 @@ type AllKeys<T> = T extends any ? keyof T : never;
 /**
  * Extract the required fields from an item
  */
-export type PickFlatFields<Schema extends object, Item, Fields> = Extract<Fields, keyof Item> extends never
+export type PickFlatFields<Schema, Item, Fields> = Extract<Fields, keyof Item> extends never
 	? never
 	: Pick<RemoveRelationships<Schema, Item>, Extract<Fields, keyof Item>>;
 

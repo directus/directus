@@ -286,11 +286,11 @@ export default definePanel({
 									options: {
 										choices: [
 											{
-												text: 'X-Axis',
+												text: '$t:x_axis',
 												value: 'X',
 											},
 											{
-												text: 'Y-Axis',
+												text: '$t:y_axis',
 												value: 'Y',
 											},
 										],

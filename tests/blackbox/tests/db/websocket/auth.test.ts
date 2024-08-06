@@ -6,6 +6,7 @@ import { TEST_USERS, USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { sleep } from '@utils/sleep';
 import { ChildProcess, spawn } from 'child_process';
+import getPort from 'get-port';
 import knex, { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
@@ -22,32 +23,32 @@ describe('WebSocket Auth Tests', () => {
 		const directusInstances = {} as { [vendor: string]: ChildProcess };
 		const env = cloneDeep(config.envs);
 
-		for (const vendor of vendors) {
-			env[vendor]['WEBSOCKETS_REST_AUTH'] = authMethod;
-			env[vendor]['WEBSOCKETS_REST_AUTH_TIMEOUT'] = String(authenticationTimeoutSeconds);
-			env[vendor]['WEBSOCKETS_REST_PATH'] = `/${pathREST}`;
-			env[vendor].PORT = String(Number(env[vendor].PORT) + 500);
-		}
-
 		beforeAll(async () => {
 			const promises = [];
 
 			for (const vendor of vendors) {
-				databases.set(vendor, knex(config.knexConfig[vendor]!));
+				databases.set(vendor, knex(config.knexConfig[vendor]));
+
+				const newServerPort = await getPort();
+
+				env[vendor]['WEBSOCKETS_REST_AUTH'] = authMethod;
+				env[vendor]['WEBSOCKETS_REST_AUTH_TIMEOUT'] = String(authenticationTimeoutSeconds);
+				env[vendor]['WEBSOCKETS_REST_PATH'] = `/${pathREST}`;
+				env[vendor].PORT = String(newServerPort);
 
 				const server = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 				directusInstances[vendor] = server;
 
-				promises.push(awaitDirectusConnection(Number(env[vendor].PORT)));
+				promises.push(awaitDirectusConnection(newServerPort));
 			}
 
 			// Give the server some time to start
 			await Promise.all(promises);
-		}, 180000);
+		}, 180_000);
 
 		afterAll(async () => {
 			for (const [vendor, connection] of databases) {
-				directusInstances[vendor]!.kill();
+				directusInstances[vendor]?.kill();
 
 				await connection.destroy();
 			}
@@ -251,23 +252,9 @@ describe('WebSocket Auth Tests', () => {
 						let error;
 
 						try {
-							switch (authMethod) {
-								case 'public':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.OPEN);
-									break;
-								case 'handshake':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.CLOSED);
-									break;
-								case 'strict':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.OPEN);
-									break;
-							}
+							await ws.waitForState(ws.conn.OPEN);
+							await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+							await ws.waitForState(ws.conn.OPEN);
 						} catch (err) {
 							error = err;
 						}
@@ -294,23 +281,9 @@ describe('WebSocket Auth Tests', () => {
 						let error;
 
 						try {
-							switch (authMethod) {
-								case 'public':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.OPEN);
-									break;
-								case 'handshake':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.CLOSED);
-									break;
-								case 'strict':
-									await ws.waitForState(ws.conn.OPEN);
-									await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
-									await ws.waitForState(ws.conn.OPEN);
-									break;
-							}
+							await ws.waitForState(ws.conn.OPEN);
+							await sleep(authenticationTimeoutSeconds * 1000 + slightDelay);
+							await ws.waitForState(ws.conn.OPEN);
 						} catch (err) {
 							error = err;
 						}
@@ -424,35 +397,19 @@ describe('WebSocket Auth Tests', () => {
 							respondToPing: false,
 						});
 
-						let wsMessages: WebSocketResponse[] | undefined;
-						let error;
-
-						try {
-							await ws.sendMessage({ type: 'ping' });
-							wsMessages = await ws.getMessages(1);
-						} catch (err) {
-							error = err;
-						}
+						await ws.sendMessage({ type: 'ping' });
+						const wsMessages = await ws.getMessages(1);
 
 						ws.conn.close();
 
 						// Assert
-						switch (authMethod) {
-							case 'public':
-							case 'strict':
-								expect(wsMessages?.length).toBe(1);
+						expect(wsMessages?.length).toBe(1);
 
-								expect(wsMessages![0]).toEqual(
-									expect.objectContaining({
-										type: 'pong',
-									}),
-								);
-
-								break;
-							case 'handshake':
-								expect(error).toBeDefined();
-								break;
-						}
+						expect(wsMessages![0]).toEqual(
+							expect.objectContaining({
+								type: 'pong',
+							}),
+						);
 					});
 				});
 			});

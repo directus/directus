@@ -10,11 +10,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Result of the flow, if any.
  */
 export const triggerFlow =
-	<Schema extends object>(
-		method: 'GET' | 'POST',
-		id: string,
-		data?: Record<string, string>,
-	): RestCommand<unknown, Schema> =>
+	<Schema>(method: 'GET' | 'POST', id: string, data?: Record<string, string>): RestCommand<unknown, Schema> =>
 	() => {
 		if (method === 'GET') {
 			return {

@@ -408,7 +408,6 @@ replace_from_library: Zamijenite fajl iz biblioteke
 replace_from_url: Zamijenite fajl s URL-a
 no_file_selected: Niti jedan fajl nije odabran
 download_file: Preuzmi fajl
-open_file_in_tab: Otvori fajl u novoj kartici
 start_export: Pokreni izvoz
 not_available_for_local_downloads: Nije dostupno za lokalna preuzimanja
 exporting_all_items_in_collection: Izvoz svih {total} stavki unutar {collection}.
@@ -568,7 +567,6 @@ cannot_edit_role_bookmarks: Nije moguće uređivati bookmarke rola
 cannot_edit_global_bookmarks: Nije moguće uređivati globalne bookmarke
 presets: Unaprijed postavljene postavke
 unexpected_error: Neočekivana greška
-unexpected_error_copy: Došlo je do neočekivane greške, molimo pokušajte ponovo kasnije.
 copy_details: Kopiraj detalje
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.

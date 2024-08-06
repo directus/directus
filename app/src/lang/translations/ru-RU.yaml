@@ -488,7 +488,6 @@ replace_from_library: Заменить файл из библиотеки
 replace_from_url: Заменить файл из URL-адреса
 no_file_selected: Файл не выбран
 download_file: Скачать файл
-open_file_in_tab: Открыть файл в новой вкладке
 start_export: Начать экспорт
 not_available_for_local_downloads: Недоступно для локальных скачиваний
 exporting_all_items_in_collection: Экспортирование всех {total} элементов в {collection}.
@@ -657,7 +656,6 @@ cannot_edit_global_bookmarks: Невозможно редактировать г
 bookmarks: Закладки
 presets: Шаблоны
 unexpected_error: Неожиданная ошибка
-unexpected_error_copy: Произошла неожиданная ошибка. Пожалуйста, попробуйте позже.
 copy_details: Скопировать подробности
 no_app_access: Нет доступа к приложению
 no_app_access_copy: Этому пользователю не разрешено использовать приложение администратора.

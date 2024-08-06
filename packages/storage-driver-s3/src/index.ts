@@ -1,29 +1,41 @@
 import type {
+	CompletedPart,
 	CopyObjectCommandInput,
 	GetObjectCommandInput,
 	ListObjectsV2CommandInput,
 	ObjectCannedACL,
+	Part,
 	PutObjectCommandInput,
 	S3ClientConfig,
 	ServerSideEncryption,
 } from '@aws-sdk/client-s3';
 import {
+	AbortMultipartUploadCommand,
+	CompleteMultipartUploadCommand,
 	CopyObjectCommand,
+	CreateMultipartUploadCommand,
 	DeleteObjectCommand,
+	DeleteObjectsCommand,
 	GetObjectCommand,
 	HeadObjectCommand,
 	ListObjectsV2Command,
+	ListPartsCommand,
 	S3Client,
+	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import type { Driver, Range } from '@directus/storage';
+import type { ChunkedUploadContext, Range, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
+import { Permit, Semaphore } from '@shopify/semaphore';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
+import { ERRORS, StreamSplitter, TUS_RESUMABLE } from '@tus/utils';
+import fs, { promises as fsProm } from 'node:fs';
 import { Agent as HttpAgent } from 'node:http';
 import { Agent as HttpsAgent } from 'node:https';
+import os from 'node:os';
 import { join } from 'node:path';
-import type { Readable } from 'node:stream';
+import stream, { promises as streamProm, type Readable } from 'node:stream';
 
 export type DriverS3Config = {
 	root?: string;
@@ -35,17 +47,30 @@ export type DriverS3Config = {
 	endpoint?: string;
 	region?: string;
 	forcePathStyle?: boolean;
+	tus?: {
+		chunkSize?: number;
+	};
 };
 
-export class DriverS3 implements Driver {
+export class DriverS3 implements TusDriver {
 	private config: DriverS3Config;
-	private client: S3Client;
-	private root: string;
+	private readonly client: S3Client;
+	private readonly root: string;
+
+	// TUS specific members
+	private partUploadSemaphore: Semaphore;
+	private readonly preferredPartSize: number;
+	public maxMultipartParts = 10_000 as const;
+	public minPartSize = 5_242_880 as const; // 5MiB
+	public maxUploadSize = 5_497_558_138_880 as const; // 5TiB
 
 	constructor(config: DriverS3Config) {
 		this.config = config;
 		this.client = this.getClient();
 		this.root = this.config.root ? normalizePath(this.config.root, { removeLeading: true }) : '';
+
+		this.preferredPartSize = config.tus?.chunkSize ?? this.minPartSize;
+		this.partUploadSemaphore = new Semaphore(60);
 	}
 
 	private getClient() {
@@ -236,6 +261,293 @@ export class DriverS3 implements Driver {
 				}
 			}
 		} while (continuationToken);
+	}
+
+	// TUS implementation based on https://github.com/tus/tus-node-server
+
+	get tusExtensions() {
+		return ['creation', 'termination', 'expiration'];
+	}
+
+	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
+		const command = new CreateMultipartUploadCommand({
+			Bucket: this.config.bucket,
+			Key: this.fullPath(filepath),
+			Metadata: { 'tus-version': TUS_RESUMABLE },
+			...(context.metadata?.['contentType']
+				? {
+						ContentType: context.metadata['contentType'],
+				  }
+				: {}),
+			...(context.metadata?.['cacheControl']
+				? {
+						CacheControl: context.metadata['cacheControl'],
+				  }
+				: {}),
+		});
+
+		const res = await this.client.send(command);
+
+		context.metadata!['upload-id'] = res.UploadId!;
+
+		return context;
+	}
+
+	async deleteChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<void> {
+		const key = this.fullPath(filepath);
+
+		try {
+			// @ts-expect-error
+			const { 'upload-id': uploadId } = context.metadata;
+
+			if (uploadId) {
+				await this.client.send(
+					new AbortMultipartUploadCommand({
+						Bucket: this.config.bucket,
+						Key: key,
+						UploadId: uploadId,
+					}),
+				);
+			}
+		} catch (error: any) {
+			if (error?.code && ['NotFound', 'NoSuchKey', 'NoSuchUpload'].includes(error.Code)) {
+				throw ERRORS.FILE_NOT_FOUND;
+			}
+
+			throw error;
+		}
+
+		await this.client.send(
+			new DeleteObjectsCommand({
+				Bucket: this.config.bucket,
+				Delete: {
+					Objects: [{ Key: key }],
+				},
+			}),
+		);
+	}
+
+	async finishChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<void> {
+		const key = this.fullPath(filepath);
+		const uploadId = context.metadata!['upload-id'] as string;
+
+		const size = context.size!;
+		const chunkSize = this.calcOptimalPartSize(size);
+		const expectedParts = Math.ceil(size / chunkSize);
+
+		let parts = await this.retrieveParts(key, uploadId);
+		let retries = 0;
+
+		while (parts.length !== expectedParts && retries < 3) {
+			// Did not receive the expected number of parts from the S3 API, retry with incremental sleeps until the number
+			// of parts matches or the max number of retries is reached.
+			++retries;
+
+			await new Promise((resolve) => setTimeout(resolve, 500 * retries));
+			parts = await this.retrieveParts(key, uploadId);
+		}
+
+		if (parts.length !== expectedParts) {
+			throw {
+				status_code: 500,
+				body: 'Failed to upload all parts to S3.',
+			};
+		}
+
+		await this.finishMultipartUpload(key, uploadId, parts);
+	}
+
+	async writeChunk(
+		filepath: string,
+		content: Readable,
+		offset: number,
+		context: ChunkedUploadContext,
+	): Promise<number> {
+		const key = this.fullPath(filepath);
+		const uploadId = context.metadata!['upload-id'] as string;
+		const size = context.size!;
+
+		const parts = await this.retrieveParts(key, uploadId);
+		const partNumber: number = parts.length > 0 ? parts[parts.length - 1]!.PartNumber! : 0;
+		const nextPartNumber = partNumber + 1;
+		const requestedOffset = offset;
+
+		const bytesUploaded = await this.uploadParts(key, uploadId, size, content, nextPartNumber, offset);
+
+		return requestedOffset + bytesUploaded;
+	}
+
+	private async uploadPart(
+		key: string,
+		uploadId: string,
+		readStream: fs.ReadStream | Readable,
+		partNumber: number,
+	): Promise<string> {
+		const data = await this.client.send(
+			new UploadPartCommand({
+				Bucket: this.config.bucket,
+				Key: key,
+				UploadId: uploadId,
+				PartNumber: partNumber,
+				Body: readStream,
+			}),
+		);
+
+		return data.ETag as string;
+	}
+
+	private async uploadParts(
+		key: string,
+		uploadId: string,
+		size: number,
+		readStream: stream.Readable,
+		currentPartNumber: number,
+		offset: number,
+	): Promise<number> {
+		const promises: Promise<void>[] = [];
+		let pendingChunkFilepath: string | null = null;
+		let bytesUploaded = 0;
+		let permit: Permit | undefined = undefined;
+
+		const splitterStream = new StreamSplitter({
+			chunkSize: this.calcOptimalPartSize(size),
+			directory: os.tmpdir(),
+		})
+			.on('beforeChunkStarted', async () => {
+				permit = await this.partUploadSemaphore.acquire();
+			})
+			.on('chunkStarted', (filepath) => {
+				pendingChunkFilepath = filepath;
+			})
+			.on('chunkFinished', ({ path, size: partSize }) => {
+				pendingChunkFilepath = null;
+
+				const partNumber = currentPartNumber++;
+				const acquiredPermit = permit;
+
+				offset += partSize;
+
+				const isFinalPart = size === offset;
+
+				// eslint-disable-next-line no-async-promise-executor
+				const deferred = new Promise<void>(async (resolve, reject) => {
+					try {
+						// Only the first chunk of each PATCH request can prepend
+						// an incomplete part (last chunk) from the previous request.
+						const readable = fs.createReadStream(path);
+						readable.on('error', reject);
+
+						if (partSize >= this.minPartSize || isFinalPart) {
+							await this.uploadPart(key, uploadId, readable, partNumber);
+							bytesUploaded += partSize;
+						} else {
+							// This can happen if the upload is aborted by the user mid chunk or a network issue happens
+							// await this.uploadIncompletePart(metadata.file.id, readable);
+						}
+
+						resolve();
+					} catch (error) {
+						reject(error);
+					} finally {
+						fsProm.rm(path).catch(() => {
+							/* ignore */
+						});
+
+						acquiredPermit?.release();
+					}
+				});
+
+				promises.push(deferred);
+			})
+			.on('chunkError', () => {
+				permit?.release();
+			});
+
+		try {
+			await streamProm.pipeline(readStream, splitterStream);
+		} catch (error) {
+			if (pendingChunkFilepath !== null) {
+				try {
+					await fsProm.rm(pendingChunkFilepath);
+				} catch {
+					// this.logger.error(`[${metadata.file.id}] failed to remove chunk ${pendingChunkFilepath}`);
+				}
+			}
+
+			promises.push(Promise.reject(error));
+		} finally {
+			await Promise.all(promises);
+		}
+
+		return bytesUploaded;
+	}
+
+	private async retrieveParts(key: string, uploadId: string, partNumberMarker?: string): Promise<Part[]> {
+		const data = await this.client.send(
+			new ListPartsCommand({
+				Bucket: this.config.bucket,
+				Key: key,
+				UploadId: uploadId,
+				PartNumberMarker: partNumberMarker!,
+			}),
+		);
+
+		let parts = data.Parts ?? [];
+
+		if (data.IsTruncated) {
+			const rest = await this.retrieveParts(key, uploadId, data.NextPartNumberMarker);
+			parts = [...parts, ...rest];
+		}
+
+		if (!partNumberMarker) {
+			parts.sort((a, b) => a.PartNumber! - b.PartNumber!);
+		}
+
+		return parts;
+	}
+
+	private async finishMultipartUpload(key: string, uploadId: string, parts: Part[]) {
+		const command = new CompleteMultipartUploadCommand({
+			Bucket: this.config.bucket,
+			Key: key,
+			UploadId: uploadId,
+			MultipartUpload: {
+				Parts: parts.map((part) => {
+					return {
+						ETag: part.ETag,
+						PartNumber: part.PartNumber,
+					} as CompletedPart;
+				}),
+			},
+		});
+
+		const response = await this.client.send(command);
+
+		return response.Location;
+	}
+
+	private calcOptimalPartSize(size?: number): number {
+		// When upload size is not know we assume largest possible value (`maxUploadSize`)
+		if (size === undefined) {
+			size = this.maxUploadSize;
+		}
+
+		let optimalPartSize: number;
+
+		// When upload is smaller or equal to PreferredPartSize, we upload in just one part.
+		if (size <= this.preferredPartSize) {
+			optimalPartSize = size;
+		}
+		// Does the upload fit in MaxMultipartParts parts or less with PreferredPartSize.
+		else if (size <= this.preferredPartSize * this.maxMultipartParts) {
+			optimalPartSize = this.preferredPartSize;
+			// The upload is too big for the preferred size.
+			// We divide the size with the max amount of parts and round it up.
+		} else {
+			optimalPartSize = Math.ceil(size / this.maxMultipartParts);
+		}
+
+		return optimalPartSize;
 	}
 }
 

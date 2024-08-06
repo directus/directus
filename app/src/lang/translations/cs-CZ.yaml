@@ -435,7 +435,6 @@ replace_from_library: Nahradit soubor z knihovny
 replace_from_url: Nahradit soubor z URL
 no_file_selected: Nebyl vybrán žádný soubor
 download_file: Stáhnout soubor
-open_file_in_tab: Otevřít soubor v nové kartě
 start_export: Zahájit export
 not_available_for_local_downloads: Není k dispozici pro lokální stahování
 exporting_all_items_in_collection: Exportuji všech {total} položek z {collection}.
@@ -591,7 +590,6 @@ cannot_edit_global_bookmarks: Globální záložky nelze upravit
 bookmarks: Záložky
 presets: Předvolby
 unexpected_error: Neočekávaná chyba
-unexpected_error_copy: Došlo k neočekávané chybě. Opakujte akci později.
 copy_details: Kopírovat podrobnosti
 no_app_access: Žádný přístup k aplikaci
 no_app_access_copy: Tento uživatel nemá oprávnění používat aplikaci pro správu.

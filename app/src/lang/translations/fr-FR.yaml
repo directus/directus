@@ -79,6 +79,7 @@ extension_hooks: Hooks
 extension_endpoints: Points d'accès
 extension_operations: Opérations
 extension_bundles: Lots
+extension_missing: Manquant
 extension_reload_required: Rechargement de la page requis
 extension_reload_required_copy: Un rechargement de la page est nécessaire pour voir les changements après l'activation ou la désactivation des extensions d'application.
 extension_reload_now: Recharger maintenant
@@ -360,6 +361,7 @@ fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
 search_collection: Rechercher une collection...
+search_role: Recherche de Rôle...
 search_field: Champ de recherche...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
@@ -445,6 +447,7 @@ revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 presentation_text_values_cannot_be_reimported: 'Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées.'
 download_page_as_csv: 'Télécharger la page au format CSV'
+download_page_as_csv_unsupported: Cette mise en page ne prend pas en charge le téléchargement de la page actuelle.
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
 revision_preview: Aperçu de la révision
@@ -740,7 +743,6 @@ cannot_edit_global_bookmarks: Impossible de modifier les signets globaux
 bookmarks: Favoris
 presets: Pré-réglages
 unexpected_error: Erreur inconnue
-unexpected_error_copy: Une erreur inconnue s'est produite. Veuillez réessayer plus tard.
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
@@ -1164,6 +1166,8 @@ installed: Installé
 reinstall: Réinstaller
 open_in_marketplace: Ouvrir dans la Marketplace
 source_registry: Marketplace
+source_local: Local
+source_module: Module Node
 collection: Collection
 collections: Collections
 content: Contenu
@@ -1286,6 +1290,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Compte rendu
     mapping: Cartographie
     basemaps: Cartes de base
     basemaps_raster: Raster
@@ -1622,6 +1627,7 @@ delete_item: Supprimer l'élément
 interfaces:
   list-m2a:
     prefix_note: Utilise le nom de la collection de l'élément lié par défaut .
+    sorting_disabled: Le tri est désactivé car il y a plus d'éléments que sur une seule page.
   filter:
     name: Filtre
     description: Configurer un objet filtre.

@@ -39,6 +39,9 @@ const fields = computed({
 		const fields = new Set([...(props.appMinimal ?? []), ...(permissionSync.value.fields ?? [])]);
 
 		if (fields.has('*')) {
+			fields.delete('*');
+
+			// Show all available fields as selected
 			for (const field of fieldsInCollection.value) {
 				fields.add(field.value);
 			}
@@ -53,11 +56,12 @@ const fields = computed({
 		const previousFields = new Set(permissionSync.value.fields ?? []);
 
 		for (const field of newFields ?? []) {
+			// Ignore fields coming from app minimal permissions only
 			if (appMinimal.has(field) && !previousFields.has(field)) continue;
 			fields.push(field);
 		}
 
-		if (fields && fields.length > 0) {
+		if (fields.length > 0) {
 			permissionSync.value = {
 				...permissionSync.value,
 				fields,

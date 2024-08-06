@@ -27,7 +27,7 @@ export function ClearCaches() {
 
 				// Assert
 				const response = await request(getUrl(vendor))
-					.post(`/utils/cache/clear`)
+					.post(`/utils/cache/clear?system`)
 					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 				const response2 = await request(getUrl(vendor))

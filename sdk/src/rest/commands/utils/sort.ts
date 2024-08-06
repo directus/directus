@@ -5,7 +5,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Nothing
  */
 export const utilitySort =
-	<Schema extends object>(collection: keyof Schema, item: string, to: number): RestCommand<void, Schema> =>
+	<Schema>(collection: keyof Schema, item: string, to: number): RestCommand<void, Schema> =>
 	() => ({
 		method: 'POST',
 		path: `/utils/sort/${collection as string}`,

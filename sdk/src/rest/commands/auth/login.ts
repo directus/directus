@@ -12,11 +12,7 @@ import { getAuthEndpoint } from '../../utils/get-auth-endpoint.js';
  * @returns Authentication data.
  */
 export const login =
-	<Schema extends object>(
-		email: string,
-		password: string,
-		options: LoginOptions = {},
-	): RestCommand<AuthenticationData, Schema> =>
+	<Schema>(email: string, password: string, options: LoginOptions = {}): RestCommand<AuthenticationData, Schema> =>
 	() => {
 		const path = getAuthEndpoint(options.provider);
 		const data: Record<string, string> = { email, password };

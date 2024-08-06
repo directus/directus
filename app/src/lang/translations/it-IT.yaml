@@ -91,6 +91,7 @@ n_files: '{n} File'
 verified: Verificata
 homepage: Pagina iniziale
 repository: Repository
+reload_page: Ricarica la pagina
 reload_required: Ricaricamento necessario
 report_an_issue: Segnala un problema
 website: Sito web
@@ -361,6 +362,7 @@ fields_group: Gruppo campi
 no_collections_found: Nessuna raccolta trovata.
 new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca raccolta...
+search_role: Cerca ruolo...
 search_field: Campo di ricerca...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
@@ -446,6 +448,7 @@ revision_delta_other: Revisione
 revision_delta_by: '{date} da {user}'
 presentation_text_values_cannot_be_reimported: 'Usa il testo di presentazione, i valori non possono essere reimportati.'
 download_page_as_csv: 'Scarica la pagina in formato CSV'
+download_page_as_csv_unsupported: Questo layout non supporta il download della pagina corrente.
 private_user: Utenti privati
 creation_preview: Anteprima della creazione
 revision_preview: Anteprima Revisione
@@ -745,7 +748,7 @@ cannot_edit_global_bookmarks: Impossibile modificare i segnalibri globali
 bookmarks: Segnalibri
 presets: Preset
 unexpected_error: Errore Imprevisto
-unexpected_error_copy: Si è verificato un errore imprevisto. Riprova più tardi.
+unexpected_error_copy: Si è verificato un errore imprevisto. Per favore riprova.
 copy_details: Copia Dettagli
 no_app_access: Nessun Accesso all'App
 no_app_access_copy: Questo utente non è autorizzato ad utilizzare l'app amministratore.
@@ -1255,6 +1258,8 @@ fields:
     height: Altezza
     charset: Set di caratteri
     duration: Durata
+    focal_point_x: Coordinata X
+    focal_point_y: Coordinata Y
   directus_users:
     first_name: Nome
     last_name: Cognome
@@ -1272,6 +1277,7 @@ fields:
     status: Stato
     status_draft: Bozza
     status_invited: Invitato
+    status_unverified: Non verificato
     status_active: Attivo
     status_suspended: Sospeso
     status_archived: Archiviato
@@ -1335,6 +1341,14 @@ fields:
     custom_aspect_ratios: Rapporti d'aspetto personalizzati
     theme_light_overrides: Personalizzazione del tema chiaro
     theme_dark_overrides: Personalizzazione del tema scuro
+    public_registration: Registrazione utente
+    public_registration_note: Consente agli utenti di registrarsi tramite il [percorso di registrazione](/admin/register).
+    public_registration_role: Ruolo utente
+    public_registration_role_note: Questo ruolo è assegnato agli utenti che si registrano utilizzando questo metodo. Non influisce sugli utenti già registrati.
+    public_registration_email_filter: Filtro indirizzo email
+    public_registration_email_filter_note: Solo gli indirizzi email che corrispondono a questo filtro possono registrarsi.
+    public_registration_verify_email: Verifica email
+    public_registration_verify_email_note: Invia un'email all'utente che effettua la registrazione chiedendogli di cliccare su un link di verifica prima di accedere.
   directus_shares:
     name: Nome
     role: Ruolo
@@ -1582,6 +1596,7 @@ authenticated: Autenticato
 options: Opzioni
 otp: Password monouso
 password: Password
+confirm_password: Conferma password
 permissions: permessi
 relationship: Relazione
 reset: Resetta
@@ -1598,6 +1613,14 @@ select_field_type: Seleziona un tipo di campo
 select_interface: Seleziona un'interfaccia
 select_display: Seleziona una visualizzazione
 settings: impostazioni
+register: Registrati
+registration_successful_headline: Fatto!
+registration_successful_note: Ora puoi andare alla pagina di accesso.
+registration_successful_check_email_note: |
+  Prima di poter effettuare l'accesso dovrai verificare il tuo indirizzo email cliccando sul link di verifica che ti è stato inviato.
+dont_have_an_account: Non hai un account?
+already_have_an_account: Ha già un account?
+sign_up_now: Registrati ora
 sign_in: Accedi
 sign_out: Disconnessione
 sign_out_confirm: Sei sicuro di voler uscire?
@@ -1630,6 +1653,7 @@ delete_item: Elimina l'elemento
 interfaces:
   list-m2a:
     prefix_note: Usa il nome della raccolta dell'elemento correlato come predefinito.
+    sorting_disabled: L'ordinamento è disabilitato perché sono presenti più elementi di quelli che possono stare in una pagina.
   filter:
     name: Filtro
     description: Configura un oggetto filtro.
@@ -2168,6 +2192,7 @@ layouts:
     not_all_loaded: È stato possibile caricare solo i primi 1000 elementi.
 horizontal: Orizzontale
 vertical: Verticale
+axis: Asse
 x_axis: Asse X
 y_axis: Asse Y
 y_axis_function: Funzione asse Y

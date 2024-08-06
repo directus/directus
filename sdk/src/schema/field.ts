@@ -1,6 +1,6 @@
 import type { MergeCoreCollection } from '../index.js';
 
-export type DirectusField<Schema extends object> = {
+export type DirectusField<Schema = any> = {
 	collection: string; // TODO keyof complete schema
 	field: string;
 	type: string;

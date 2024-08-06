@@ -424,7 +424,6 @@ replace_from_library: Replace File from Library
 replace_from_url: Replace File from URL
 no_file_selected: No File Selected
 download_file: Download File
-open_file_in_tab: Open file in new tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_all_items_in_collection: Exporting all {total} items within {collection}.
@@ -588,7 +587,6 @@ cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
-unexpected_error_copy: An unexpected error has occurred. Please try again later.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.

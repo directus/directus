@@ -200,6 +200,60 @@ fields:
       placeholder: $t:unlimited
     width: half
 
+  - field: public_registration_divider
+    interface: presentation-divider
+    options:
+      icon: person_add
+      title: $t:fields.directus_settings.public_registration
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: public_registration
+    interface: boolean
+    note: $t:fields.directus_settings.public_registration_note
+    width: half
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
+
+  - field: public_registration_role
+    interface: select-dropdown-m2o
+    note: $t:fields.directus_settings.public_registration_role_note
+    options:
+      template: '{{ name }}'
+      filter:
+        admin_access:
+          _eq: false
+    special:
+      - m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: public_registration_verify_email
+    interface: boolean
+    note: $t:fields.directus_settings.public_registration_verify_email_note
+    width: half
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
+
+  - field: public_registration_email_filter
+    interface: system-filter
+    note: $t:fields.directus_settings.public_registration_email_filter_note
+    options:
+      collectionName: directus_users
+      collectionField: email
+      fieldName: email
+    special:
+      - cast-json
+    width: half
+
   - field: files_divider
     interface: presentation-divider
     options:

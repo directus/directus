@@ -1,4 +1,9 @@
-import { KNEX_TYPES, REGEX_BETWEEN_PARENS } from '@directus/constants';
+import {
+	KNEX_TYPES,
+	REGEX_BETWEEN_PARENS,
+	DEFAULT_NUMERIC_PRECISION,
+	DEFAULT_NUMERIC_SCALE,
+} from '@directus/constants';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -7,7 +12,7 @@ import { addFieldFlag, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
-import { clearSystemCache, getCache } from '../cache.js';
+import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
@@ -21,11 +26,14 @@ import getLocalType from '../utils/get-local-type.js';
 import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+import { useEnv } from '@directus/env';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
+const env = useEnv();
 
 export class FieldsService {
 	knex: Knex;
@@ -37,6 +45,7 @@ export class FieldsService {
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
+	schemaCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -47,16 +56,47 @@ export class FieldsService {
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
 
-		const { cache, systemCache } = getCache();
+		const { cache, systemCache, localSchemaCache } = getCache();
 
 		this.cache = cache;
 		this.systemCache = systemCache;
+		this.schemaCache = localSchemaCache;
 	}
 
 	private get hasReadAccess() {
 		return !!this.accountability?.permissions?.find((permission) => {
 			return permission.collection === 'directus_fields' && permission.action === 'read';
 		});
+	}
+
+	async columnInfo(collection?: string): Promise<Column[]>;
+	async columnInfo(collection: string, field: string): Promise<Column>;
+	async columnInfo(collection?: string, field?: string): Promise<Column | Column[]> {
+		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
+
+		let columnInfo: Column[] | null = null;
+
+		if (schemaCacheIsEnabled) {
+			columnInfo = await getCacheValue(this.schemaCache, 'columnInfo');
+		}
+
+		if (!columnInfo) {
+			columnInfo = await this.schemaInspector.columnInfo();
+
+			if (schemaCacheIsEnabled) {
+				setCacheValue(this.schemaCache, 'columnInfo', columnInfo);
+			}
+		}
+
+		if (collection) {
+			columnInfo = columnInfo.filter((column) => column.table === collection);
+		}
+
+		if (field) {
+			return columnInfo.find((column) => column.name === field) as Column;
+		}
+
+		return columnInfo;
 	}
 
 	async readAll(collection?: string): Promise<Field[]> {
@@ -83,7 +123,7 @@ export class FieldsService {
 			fields.push(...systemFieldRows);
 		}
 
-		const columns = (await this.schemaInspector.columnInfo(collection)).map((column) => ({
+		const columns = (await this.columnInfo(collection)).map((column) => ({
 			...column,
 			default_value: getDefaultValue(
 				column,
@@ -221,7 +261,7 @@ export class FieldsService {
 			systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field);
 
 		try {
-			column = await this.schemaInspector.columnInfo(collection, field);
+			column = await this.columnInfo(collection, field);
 		} catch {
 			// Do nothing
 		}
@@ -282,7 +322,7 @@ export class FieldsService {
 				addFieldFlag(field, flagToAdd);
 			}
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const itemsService = new ItemsService('directus_fields', {
 					knex: trx,
 					accountability: this.accountability,
@@ -424,7 +464,7 @@ export class FieldsService {
 			}
 
 			if (hookAdjustedField.schema) {
-				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
+				const existingColumn = await this.columnInfo(collection, hookAdjustedField.field);
 
 				if (hookAdjustedField.schema?.is_nullable === true && existingColumn.is_primary_key) {
 					throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
@@ -436,7 +476,7 @@ export class FieldsService {
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
 					try {
-						await this.knex.transaction(async (trx) => {
+						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
 								this.addColumnToTable(table, field, existingColumn);
@@ -577,7 +617,7 @@ export class FieldsService {
 				);
 			}
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const relations = this.schema.relations.filter((relation) => {
 					return (
 						(relation.collection === collection && relation.field === field) ||
@@ -737,7 +777,12 @@ export class FieldsService {
 			column = table.string(field.field, field.schema?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
-			column = table[type](field.field, field.schema?.numeric_precision ?? 10, field.schema?.numeric_scale ?? 5);
+
+			column = table[type](
+				field.field,
+				field.schema?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
+				field.schema?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
+			);
 		} else if (field.type === 'csv') {
 			column = table.text(field.field);
 		} else if (field.type === 'hash') {

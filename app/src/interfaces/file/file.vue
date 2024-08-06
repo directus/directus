@@ -21,6 +21,7 @@ type FileInfo = {
 const props = defineProps<{
 	value: string | Record<string, any> | null;
 	disabled?: boolean;
+	loading?: boolean;
 	folder?: string;
 	collection: string;
 	field: string;
@@ -43,7 +44,16 @@ const query = ref<RelationQuerySingle>({
 
 const { collection, field } = toRefs(props);
 const { relationInfo } = useRelationM2O(collection, field);
-const { displayItem: file, loading, update, remove } = useRelationSingle(value, query, relationInfo);
+
+const {
+	displayItem: file,
+	loading,
+	update,
+	remove,
+} = useRelationSingle(value, query, relationInfo, {
+	enabled: computed(() => !props.loading),
+});
+
 const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const { t } = useI18n();

@@ -8,7 +8,7 @@ import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
 import getDatabase, { hasDatabaseConnection } from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import getMailer from '../mailer.js';
 import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
@@ -16,6 +16,7 @@ import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { SettingsService } from './settings.js';
+import { RESUMABLE_UPLOADS } from '../constants.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -54,6 +55,8 @@ export class ServerService {
 				'public_favicon',
 				'public_note',
 				'custom_css',
+				'public_registration',
+				'public_registration_verify_email',
 			],
 		});
 
@@ -111,6 +114,12 @@ export class ServerService {
 				info['websocket'] = false;
 			}
 
+			if (RESUMABLE_UPLOADS.ENABLED) {
+				info['uploads'] = {
+					chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
+				};
+			}
+
 			info['version'] = version;
 		}
 
@@ -144,7 +153,7 @@ export class ServerService {
 		const data: HealthData = {
 			status: 'ok',
 			releaseId: version,
-			serviceId: env['KEY'] as string,
+			serviceId: env['PUBLIC_URL'] as string,
 			checks: merge(
 				...(await Promise.all([
 					testDatabase(),

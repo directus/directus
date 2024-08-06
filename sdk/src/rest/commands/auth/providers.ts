@@ -12,7 +12,7 @@ export interface ReadProviderOutput {
  * @returns Array of configured auth providers.
  */
 export const readProviders =
-	<Schema extends object>(sessionOnly = false): RestCommand<ReadProviderOutput[], Schema> =>
+	<Schema>(sessionOnly = false): RestCommand<ReadProviderOutput[], Schema> =>
 	() => ({
 		path: sessionOnly ? '/auth?sessionOnly' : '/auth',
 		method: 'GET',

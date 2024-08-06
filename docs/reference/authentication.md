@@ -53,6 +53,209 @@ The query parameter option is not recommended in production setups as the parame
 
 :::
 
+## Register
+
+Register a new user.
+
+::: warning Disabled by Default
+
+The user registration feature is disabled by default. To make use of it, it must first be enabled via
+[Project Settings](/user-guide/user-management/users.html#enable-user-registration).
+
+:::
+
+::: tip Register vs Create User
+
+You can also use the [create user](/reference/system/users.html#create-a-user) endpoint, but this will require the
+correct permissions on the `directus_users` collection. The register endpoint is publicly available if enabled in your
+project.
+
+:::
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /users/register`
+
+```json
+{
+	"email": user_email,
+	"password": user_password
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	users_register(email: "user_email", password: "user_password")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUser } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(registerUser(email, password));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`email` **Required**\
+Email address of the user.
+
+`password` **Required**\
+Password of the user.
+
+`first_name`\
+First name of the user.
+
+`last_name`\
+Last name of the user.
+
+`verification_url`\
+Provide a custom verification URL for the verification email. The verification token will be appended to this URL as a query
+parameter.\
+**Note**: Only URLs that are configured via the
+[`USER_REGISTER_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) will be accepted.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /users/register`
+
+```json
+{
+	"email": "user@example.com",
+	"password": "d1r3ctu5"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	users_register(email: "user@example.com", password: "d1r3ctu5")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUser } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(registerUser('user@example.com', 'd1r3ctu5'));
+```
+
+</template>
+</SnippetToggler>
+
+## Verify a Registration
+
+If enabled in project settings, registering a user sends a verification email with a link to this endpoint (or a custom
+URL) to allow the user to finish their registration.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /users/register/verify-email`
+
+```json
+{
+	"token": token
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	users_register_verify(token: "token")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUserVerify } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(registerUserVerify(token));
+```
+
+</template>
+</SnippetToggler>
+
+#### Request Body
+
+`token` **Required**\
+Verification token, as provided in the verification email sent by the registration endpoint.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`POST /users/register/verify-email`
+
+```json
+{
+	"token": "eyJh...KmUk"
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql/system`
+
+```graphql
+mutation {
+	users_register_verify(token: "eyJh...KmUk")
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, registerUserVerify } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(registerUserVerify('eyJh...KmUk'));
+```
+
+</template>
+</SnippetToggler>
+
 ## Login
 
 Authenticate as a user.

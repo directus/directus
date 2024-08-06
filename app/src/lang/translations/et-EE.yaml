@@ -401,7 +401,6 @@ replace_from_library: Asenda Fail teegist
 replace_from_url: Asenda Fail aadressilt
 no_file_selected: Faili pole valitud
 download_file: Lae fail alla
-open_file_in_tab: Ava file uues tabis
 start_export: Alusta Eksporti
 collection_key: Kogumi võti
 name: Nimi
@@ -539,7 +538,6 @@ edit_bookmark: Muuda järjehoidjat
 bookmarks: Järjehoidjad
 presets: Eelseadistused
 unexpected_error: Ootamatu viga
-unexpected_error_copy: Ilmnes tõrge. Palun proovi hiljem uuesti.
 copy_details: Kopeeri detailid
 no_app_access: Rakenduse ligipääs puudub
 no_app_access_copy: Sel kasutajal pole lubatud kasutada admin rakendust.

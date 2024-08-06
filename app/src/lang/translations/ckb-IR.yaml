@@ -455,7 +455,6 @@ replace_from_library: جێگرتنەوەی پەڕگە لە پێشانگاوە
 replace_from_url: جێگرتنەوەی پەڕگە لە ڕێگای بەستەرەوە
 no_file_selected: هیچ پەڕگەیەک دیاری نەکراوە
 download_file: داگرتنی پەڕگە
-open_file_in_tab: کردنەوەی پەڕگە لە پەنجەرەی نوێدا
 start_export: دەستپێکردنی هەناردەکردن
 not_available_for_local_downloads: بەردەست نییە بۆ داگرتنە نێوخۆیەکان
 exporting_all_items_in_collection: هەناردەکردنی سەرجەم {total} مادەکان لە کۆمەڵەی {collection}.
@@ -619,7 +618,6 @@ cannot_edit_global_bookmarks: ناتوانرێت دەستکاری نیشانکە
 bookmarks: نیشانکراوەکان
 presets: پێشسێتەکان
 unexpected_error: هەڵەی پێشبینی نەکراو
-unexpected_error_copy: هەڵەیەکی چاوەڕوان نەکراو ڕویدا. تکایە دواتر دووبارە هەوڵبدەرەوە.
 copy_details: لەبەرگرتنەوەی وردەکاریەکان
 no_app_access: نەبوونی دەسەڵاتی پێگە
 no_app_access_copy: ئەم بەکارهێنەرە ڕێگەپێنەدراوە بۆ بەکارهێنانی پێگەی بەڕێوبەر.

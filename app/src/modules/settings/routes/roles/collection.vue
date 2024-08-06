@@ -3,6 +3,7 @@ import { Header as TableHeader } from '@/components/v-table/types';
 import { fetchAll } from '@/utils/fetch-all';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
+import SearchInput from '@/views/private/components/search-input.vue';
 import { Role } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -31,6 +32,17 @@ const loading = ref(false);
 const lastAdminRoleId = computed(() => {
 	const adminRoles = roles.value.filter((role) => role.admin_access === true);
 	return adminRoles.length === 1 ? (adminRoles[0] as RoleItem).id : null;
+});
+
+const search = ref<string | null>(null);
+
+const filteredRoles = computed(() => {
+	const normalizedSearch = search.value?.toLowerCase();
+	if (!normalizedSearch) return roles.value;
+	return roles.value.filter(
+		(role) =>
+			role.name?.toLowerCase().includes(normalizedSearch) || role.description?.toLowerCase().includes(normalizedSearch),
+	);
 });
 
 const tableHeaders = ref<TableHeader[]>([
@@ -139,6 +151,14 @@ function navigateToRole({ item }: { item: Role }) {
 		</template>
 
 		<template #actions>
+			<search-input
+				v-if="!loading"
+				v-model="search"
+				:autofocus="roles.length > 25"
+				:placeholder="t('search_role')"
+				:show-filter="false"
+			/>
+
 			<v-button v-tooltip.bottom="t('create_role')" rounded icon :to="addNewLink">
 				<v-icon name="add" />
 			</v-button>
@@ -154,11 +174,11 @@ function navigateToRole({ item }: { item: Role }) {
 			</sidebar-detail>
 		</template>
 
-		<div class="roles">
+		<div v-if="!search || filteredRoles.length > 0" class="roles">
 			<v-table
 				v-model:headers="tableHeaders"
 				show-resize
-				:items="roles"
+				:items="filteredRoles"
 				fixed-header
 				item-key="id"
 				:loading="loading"
@@ -169,7 +189,7 @@ function navigateToRole({ item }: { item: Role }) {
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" />
+					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
@@ -177,10 +197,19 @@ function navigateToRole({ item }: { item: Role }) {
 				</template>
 
 				<template #[`item.description`]="{ item }">
-					<v-text-overflow :text="item.description" class="description" />
+					<v-text-overflow :text="item.description" class="description" :highlight="search" />
 				</template>
 			</v-table>
 		</div>
+
+		<v-info v-else icon="search" :title="t('no_results')" center>
+			{{ t('no_results_copy') }}
+
+			<template #append>
+				<v-button @click="search = null">{{ t('clear_filters') }}</v-button>
+			</template>
+		</v-info>
+
 		<router-view name="add" />
 	</private-view>
 </template>
@@ -206,6 +235,8 @@ function navigateToRole({ item }: { item: Role }) {
 }
 
 .description {
+	--v-highlight-color: var(--theme--background-accent);
+
 	color: var(--theme--foreground-subdued);
 }
 

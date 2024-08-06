@@ -1,9 +1,8 @@
-import { useEnv } from '@directus/env';
 import { InvalidCredentialsError } from '@directus/errors';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterEach, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import '../types/express.d.ts';
@@ -13,14 +12,20 @@ vi.mock('../database/index');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
-vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
-
-beforeEach(() => {
-	vi.mocked(useEnv).mockReturnValue({
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
 		SECRET: 'test',
 		EXTENSIONS_PATH: './extensions',
-	});
-});
+		SESSION_COOKIE_NAME: 'directus_session',
+		// needed for constants.ts top level mocking
+		REFRESH_TOKEN_COOKIE_DOMAIN: '',
+		REFRESH_TOKEN_TTL: 0,
+		REFRESH_TOKEN_COOKIE_SECURE: false,
+		SESSION_COOKIE_DOMAIN: '',
+		SESSION_COOKIE_TTL: 0,
+		SESSION_COOKIE_SECURE: false,
+	}),
+}));
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -29,6 +34,7 @@ afterEach(() => {
 test('Short-circuits when authenticate filter is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn(),
 	} as unknown as Request;
 
@@ -48,6 +54,7 @@ test('Short-circuits when authenticate filter is used', async () => {
 test('Uses default public accountability when no token is given', async () => {
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
@@ -108,6 +115,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
@@ -184,6 +192,7 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
@@ -207,6 +216,7 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 test('Sets accountability to user information when static token is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
+		cookies: {},
 		get: vi.fn((string) => {
 			switch (string) {
 				case 'user-agent':
@@ -265,4 +275,80 @@ test('Sets accountability to user information when static token is used', async 
 	await handler(req, res, next);
 	expect(req.accountability).toEqual(expectedAccountability);
 	expect(next).toHaveBeenCalledTimes(1);
+});
+
+test('Invalid session token responds with error and clears the cookie', async () => {
+	const req = {
+		ip: '127.0.0.1',
+		cookies: {
+			directus_session: 'session-token',
+		},
+		get: vi.fn((string) => {
+			switch (string) {
+				case 'user-agent':
+					return 'fake-user-agent';
+				case 'origin':
+					return 'fake-origin';
+				default:
+					return null;
+			}
+		}),
+		token: 'session-token',
+	} as unknown as Request;
+
+	const res = {
+		clearCookie: vi.fn(),
+	} as unknown as Response;
+
+	const next = vi.fn();
+
+	vi.mocked(getDatabase).mockReturnValue({
+		select: vi.fn().mockReturnThis(),
+		from: vi.fn().mockReturnThis(),
+		leftJoin: vi.fn().mockReturnThis(),
+		where: vi.fn().mockReturnThis(),
+		first: vi.fn().mockResolvedValue(null),
+	} as unknown as Knex);
+
+	await expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
+	expect(res.clearCookie).toHaveBeenCalledTimes(1);
+	expect(next).toHaveBeenCalledTimes(0);
+});
+
+test('Invalid query token responds with error but does not clear the session cookie', async () => {
+	const req = {
+		ip: '127.0.0.1',
+		cookies: {
+			directus_session: 'session-token',
+		},
+		get: vi.fn((string) => {
+			switch (string) {
+				case 'user-agent':
+					return 'fake-user-agent';
+				case 'origin':
+					return 'fake-origin';
+				default:
+					return null;
+			}
+		}),
+		token: 'static-token',
+	} as unknown as Request;
+
+	const res = {
+		clearCookie: vi.fn(),
+	} as unknown as Response;
+
+	const next = vi.fn();
+
+	vi.mocked(getDatabase).mockReturnValue({
+		select: vi.fn().mockReturnThis(),
+		from: vi.fn().mockReturnThis(),
+		leftJoin: vi.fn().mockReturnThis(),
+		where: vi.fn().mockReturnThis(),
+		first: vi.fn().mockResolvedValue(null),
+	} as unknown as Knex);
+
+	await expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
+	expect(next).toHaveBeenCalledTimes(0);
+	expect(res.clearCookie).toHaveBeenCalledTimes(0);
 });

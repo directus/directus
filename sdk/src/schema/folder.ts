@@ -1,6 +1,6 @@
 import type { MergeCoreCollection } from '../index.js';
 
-export type DirectusFolder<Schema extends object> = MergeCoreCollection<
+export type DirectusFolder<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_folders',
 	{

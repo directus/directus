@@ -1,6 +1,6 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type {
 	Accountability,
@@ -22,6 +22,7 @@ import emitter from '../emitter.js';
 import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import getASTFromQuery from '../utils/get-ast-from-query.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { AuthorizationService } from './authorization.js';
 import { PayloadService } from './payload.js';
@@ -39,15 +40,17 @@ export type MutationTracker = {
 	getCount: () => number;
 };
 
-export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractService {
-	collection: string;
+export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
+	implements AbstractService
+{
+	collection: Collection;
 	knex: Knex;
 	accountability: Accountability | null;
 	eventScope: string;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 
-	constructor(collection: string, options: AbstractServiceOptions) {
+	constructor(collection: Collection, options: AbstractServiceOptions) {
 		this.collection = collection;
 		this.knex = options.knex || getDatabase();
 		this.accountability = options.accountability || null;
@@ -56,6 +59,25 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		this.cache = getCache().cache;
 
 		return this;
+	}
+
+	/**
+	 * Create a fork of the current service, allowing instantiation with different options.
+	 */
+	private fork(options?: Partial<AbstractServiceOptions>): ItemsService<AnyItem> {
+		const Service = this.constructor;
+
+		// ItemsService expects `collection` and `options` as parameters,
+		// while the other services only expect `options`
+		const isItemsService = Service.length === 2;
+
+		const newOptions = { knex: this.knex, accountability: this.accountability, schema: this.schema, ...options };
+
+		if (isItemsService) {
+			return new ItemsService(this.collection, newOptions);
+		}
+
+		return new (Service as new (options: AbstractServiceOptions) => this)(newOptions);
 	}
 
 	createMutationTracker(initialCount = 0): MutationTracker {
@@ -119,7 +141,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		// changes in the DB if any of the parts contained within throws an error. This also means
 		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
 		// update tree
-		const primaryKey: PrimaryKey = await this.knex.transaction(async (trx) => {
+		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
 			// We're creating new services instances so they can use the transaction as their Knex interface
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
@@ -216,7 +238,17 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 					primaryKey = primaryKey ?? returnedKey;
 				}
 			} catch (err: any) {
-				throw await translateDatabaseError(err);
+				const dbError = await translateDatabaseError(err);
+
+				if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
+					// This is a MySQL specific thing we need to handle here, since MySQL does not return the field name
+					// if the unique constraint is the primary key
+					dbError.extensions.field = pkField?.field ?? null;
+
+					delete dbError.extensions.primaryKey;
+				}
+
+				throw dbError;
 			}
 
 			// Most database support returning, those who don't tend to return the PK anyways
@@ -340,16 +372,14 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 
 	/**
 	 * Create multiple new items at once. Inserts all provided records sequentially wrapped in a transaction.
+	 *
+	 * Uses `this.createOne` under the hood.
 	 */
 	async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
-		const { primaryKeys, nestedActionEvents } = await this.knex.transaction(async (trx) => {
-			const service = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				schema: this.schema,
-				knex: trx,
-			});
+		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
+			const service = this.fork({ knex });
 
 			const primaryKeys: PrimaryKey[] = [];
 			const nestedActionEvents: ActionEventParams[] = [];
@@ -397,7 +427,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Get items by query
+	 * Get items by query.
 	 */
 	async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
 		const updatedQuery =
@@ -484,7 +514,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Get single item by primary key
+	 * Get single item by primary key.
+	 *
+	 * Uses `this.readByQuery` under the hood.
 	 */
 	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -503,7 +535,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Get multiple items by primary keys
+	 * Get multiple items by primary keys.
+	 *
+	 * Uses `this.readByQuery` under the hood.
 	 */
 	async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Item[]> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -523,7 +557,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Update multiple items by query
+	 * Update multiple items by query.
+	 *
+	 * Uses `this.updateMany` under the hood.
 	 */
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
@@ -535,7 +571,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Update a single item by primary key
+	 * Update a single item by primary key.
+	 *
+	 * Uses `this.updateMany` under the hood.
 	 */
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -546,7 +584,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Update multiple items in a single transaction
+	 * Update multiple items in a single transaction.
+	 *
+	 * Uses `this.updateOne` under the hood.
 	 */
 	async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!Array.isArray(data)) {
@@ -560,17 +600,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 		const keys: PrimaryKey[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
-				const service = new ItemsService(this.collection, {
-					accountability: this.accountability,
-					knex: trx,
-					schema: this.schema,
-				});
+			await transaction(this.knex, async (knex) => {
+				const service = this.fork({ knex });
 
 				for (const item of data) {
-					if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
+					const primaryKey = item[primaryKeyField];
+					if (!primaryKey) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
+
 					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
-					keys.push(await service.updateOne(item[primaryKeyField]!, omit(item, primaryKeyField), combinedOpts));
+					keys.push(await service.updateOne(primaryKey, omit(item, primaryKeyField), combinedOpts));
 				}
 			});
 		} finally {
@@ -583,7 +621,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Update many items by primary key, setting all items to the same change
+	 * Update many items by primary key, setting all items to the same change.
 	 */
 	async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
@@ -649,7 +687,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			throw opts.preMutationError;
 		}
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
 				knex: trx,
@@ -805,7 +843,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Upsert a single item
+	 * Upsert a single item.
+	 *
+	 * Uses `this.createOne` / `this.updateOne` under the hood.
 	 */
 	async upsertOne(payload: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -831,17 +871,15 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Upsert many items
+	 * Upsert many items.
+	 *
+	 * Uses `this.upsertOne` under the hood.
 	 */
 	async upsertMany(payloads: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
-		const primaryKeys = await this.knex.transaction(async (trx) => {
-			const service = new ItemsService(this.collection, {
-				accountability: this.accountability,
-				schema: this.schema,
-				knex: trx,
-			});
+		const primaryKeys = await transaction(this.knex, async (knex) => {
+			const service = this.fork({ knex });
 
 			const primaryKeys: PrimaryKey[] = [];
 
@@ -861,7 +899,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Delete multiple items by query
+	 * Delete multiple items by query.
+	 *
+	 * Uses `this.deleteMany` under the hood.
 	 */
 	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
@@ -873,7 +913,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Delete a single item by primary key
+	 * Delete a single item by primary key.
+	 *
+	 * Uses `this.deleteMany` under the hood.
 	 */
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
@@ -884,7 +926,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Delete multiple items by primary key
+	 * Delete multiple items by primary key.
 	 */
 	async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
@@ -927,7 +969,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 			);
 		}
 
-		await this.knex.transaction(async (trx) => {
+		await transaction(this.knex, async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
 
 			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
@@ -984,7 +1026,7 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Read/treat collection as singleton
+	 * Read/treat collection as singleton.
 	 */
 	async readSingleton(query: Query, opts?: QueryOptions): Promise<Partial<Item>> {
 		query = clone(query);
@@ -1020,7 +1062,9 @@ export class ItemsService<Item extends AnyItem = AnyItem> implements AbstractSer
 	}
 
 	/**
-	 * Upsert/treat collection as singleton
+	 * Upsert/treat collection as singleton.
+	 *
+	 * Uses `this.createOne` / `this.updateOne` under the hood.
 	 */
 	async upsertSingleton(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
