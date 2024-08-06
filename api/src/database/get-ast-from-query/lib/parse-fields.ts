@@ -28,7 +28,10 @@ export interface ParseFieldsContext {
 	knex: Knex;
 }
 
-export async function parseFields(options: ParseFieldsOptions, context: ParseFieldsContext) {
+export async function parseFields(
+	options: ParseFieldsOptions,
+	context: ParseFieldsContext,
+): Promise<[] | (NestedCollectionNode | FieldNode | FunctionFieldNode)[]> {
 	let { fields } = options;
 	if (!fields) return [];
 
