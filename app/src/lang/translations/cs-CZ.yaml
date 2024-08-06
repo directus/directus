@@ -1087,7 +1087,6 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položek'
 no_options_available: Žádné možnosti nejsou k dispozici
 settings_data_model: Datový model
-settings_permissions: Správa přístupu
 settings_project: Nastavení
 settings_appearance: Vzhled
 settings_webhooks: Webhooky
@@ -1137,7 +1136,6 @@ page_help_settings_datamodel_collections: >-
   **Datový model: Kolekce** – Zobrazí všechny dostupné kolekce. To zahrnuje viditelné, skryté a systémové kolekce, stejně jako nespravované databázové tabulky, které lze přidat.
 page_help_settings_datamodel_fields: >-
   **Model dat: Kolekce** – Formulář pro správu této kolekce a jejích polí.
-page_help_settings_roles_collection: '**Procházet role** — Zobrazuje správce, veřejné a vlastní uživatelské role.'
 page_help_settings_roles_item: "**Detail role** — Správa oprávnění role a dalších nastavení."
 page_help_settings_presets_collection: >-
   **Procházet předvolby** – Zobrazuje všechny předvolby v projektu, včetně: uživatelů, rolí a globálních záložek, stejně jako výchozích pohledů.
@@ -1196,7 +1194,6 @@ directus_collection:
   directus_notifications: Oznámení zaslaná uživatelům
   directus_operations: Operace, které probíhají v tocích
   directus_panels: Jednotlivé panely uvnitř nástěnek
-  directus_permissions: Přístupová práva pro každou roli
   directus_presets: Předvolby pro výchozí nastavení kolekce a záložky
   directus_relations: Konfigurace vztahů a metadata
   directus_revisions: Snímky dat pro všechny aktivity
@@ -1373,12 +1370,9 @@ fields:
     name: Jméno role
     icon: Ikona role
     description: Popis
-    app_access: Přístup k aplikaci
-    admin_access: Přístup k administraci
-    ip_access: IP adresa
-    enforce_tfa: Vyžadovat 2FA
     users: Uživatelé v roli
-    module_list: Navigace modulu
+  directus_policies:
+    description: Popis
   directus_webhooks:
     name: Jméno
     method: Metoda
@@ -1464,7 +1458,6 @@ field_options:
   directus_roles:
     name: Jedinečný název této role...
     description: Popis této role...
-    ip_access: Přidat povolené IP adresy, rozsah IP a CIDR bloky. Ponechte prázdné, pokud chcete povolit vše...
     fields:
       icon_name: Ikona
       name_name: Jméno
