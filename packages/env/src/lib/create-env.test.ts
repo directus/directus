@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getConfigPath } from '../utils/get-config-path.js';
-import { getTypeFromMap } from '../utils/get-type-from-map.js';
+import { getDefaultType } from '../utils/get-type-from-map.js';
 import { isDirectusVariable } from '../utils/is-directus-variable.js';
 import { isFileKey } from '../utils/is-file-key.js';
 import { readConfigurationFromProcess } from '../utils/read-configuration-from-process.js';
@@ -45,7 +45,7 @@ afterEach(() => {
 });
 
 test('Defaults that have a type set is casted', () => {
-	vi.mocked(getTypeFromMap).mockImplementation((key) => {
+	vi.mocked(getDefaultType).mockImplementation((key) => {
 		if (key === 'DEFAULT_ARRAY') return 'array';
 		return null;
 	});
@@ -64,7 +64,7 @@ test('Defaults that have a type set is casted', () => {
 		DEFAULT_ARRAY: ['one', 'two', 'three'],
 	});
 
-	expect(getTypeFromMap).toHaveBeenCalledTimes(2);
+	expect(getDefaultType).toHaveBeenCalledTimes(2);
 	expect(cast).toHaveBeenCalledTimes(3);
 });
 

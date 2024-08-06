@@ -1,7 +1,7 @@
 import { toArray, toBoolean } from '@directus/utils';
 import { toNumber, toString } from 'lodash-es';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { getTypeFromMap } from '../utils/get-type-from-map.js';
+import { getDefaultType } from '../utils/get-type-from-map.js';
 import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
 import { tryJson } from '../utils/try-json.js';
@@ -52,17 +52,17 @@ describe('Type extraction', () => {
 
 	test('Uses type map entry if cast flag does not exist', () => {
 		vi.mocked(getCastFlag).mockReturnValue(null);
-		vi.mocked(getTypeFromMap).mockReturnValue('string');
+		vi.mocked(getDefaultType).mockReturnValue('string');
 
 		cast('value', 'key');
 
-		expect(getTypeFromMap).toHaveBeenCalledWith('key');
+		expect(getDefaultType).toHaveBeenCalledWith('key');
 		expect(toString).toHaveBeenCalledWith('value');
 	});
 
 	test('Uses guessed type if no flag or type map entry exist', () => {
 		vi.mocked(getCastFlag).mockReturnValue(null);
-		vi.mocked(getTypeFromMap).mockReturnValue(null);
+		vi.mocked(getDefaultType).mockReturnValue(null);
 		vi.mocked(guessType).mockReturnValue('string');
 
 		cast('value', 'key');
