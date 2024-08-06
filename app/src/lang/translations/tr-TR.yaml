@@ -1018,7 +1018,6 @@ editing_unit: '{unit} Düzenleniyor'
 editing_in_batch: '{count} Öge Toplu Olarak Düzenleniyor'
 no_options_available: Hiç seçenek yok
 settings_data_model: Veri Modeli
-settings_permissions: Erişim Kontrolleri
 settings_project: Ayarlar
 settings_webhooks: Webhooklar
 settings_flows: Akışlar
@@ -1062,7 +1061,6 @@ page_help_settings_datamodel_collections: >-
   **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
 page_help_settings_datamodel_fields: >-
   **Veri Modeli: Koleksiyon** — Bu koleksiyonu ve alanlarını yönetmek için bir form/sayfa.
-page_help_settings_roles_collection: '**Rollere Göz At** — Herkese açık, yönetici ve özel kullanıcı rollerini listeler.'
 page_help_settings_roles_item: "**Rol Detayı** — Bir rolün yetki ve diğer ayarlarını yönet."
 page_help_settings_presets_collection: >-
   **Ön Ayarlara Göz At** — Projedeki tüm ön ayarları listeler. Buna kullanıcı, rol, genel yer işaretleri ve varsayılan görünüm/yerleşimler dahildir.
@@ -1106,7 +1104,6 @@ directus_collection:
   directus_notifications: Bildirimler kullanıcılara gönderildi
   directus_operations: Akışların içerisindeki operasyonlar
   directus_panels: Panolar modülündeki panolardaki tekil paneller
-  directus_permissions: Her bir rol için yetkilere eriş
   directus_presets: Koleksiyon varsayılanları ve yer işaretleri için ön ayarlar
   directus_relations: İlişki ayarı ve metaveri
   directus_revisions: Tüm etkinlikler için anlık veri görüntüleri
@@ -1256,12 +1253,9 @@ fields:
     name: Rol Adı
     icon: Rol İkonu
     description: Açıklama
-    app_access: Uygulama Erişimi
-    admin_access: Yönetici Erişimi
-    ip_access: IP Erişimi
-    enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
-    module_list: Modül Navigasyonu
+  directus_policies:
+    description: Açıklama
   directus_webhooks:
     name: İsim
     method: Metod
