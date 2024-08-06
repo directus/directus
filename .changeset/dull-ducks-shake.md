@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Update filename_disk extension to match current mimetype on uploaded images
+Fixed filename_disk extension not getting updated when replacing an image with another file extension 
