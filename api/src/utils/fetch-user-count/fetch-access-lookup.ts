@@ -6,6 +6,8 @@ export interface AccessLookup {
 	user: string | null;
 	app_access: boolean | number;
 	admin_access: boolean | number;
+	user_status: 'active' | string;
+	user_role: string | null;
 }
 
 export interface FetchAccessLookupOptions {
@@ -24,9 +26,12 @@ export async function fetchAccessLookup(options: FetchAccessLookupOptions): Prom
 			'directus_access.user',
 			'directus_policies.app_access',
 			'directus_policies.admin_access',
+			'directus_users.status as user_status',
+			'directus_users.role as user_role',
 		)
 		.from('directus_access')
-		.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id');
+		.leftJoin('directus_policies', 'directus_access.policy', 'directus_policies.id')
+		.leftJoin('directus_users', 'directus_access.user', 'directus_users.id');
 
 	if (options.excludeAccessRows && options.excludeAccessRows.length > 0) {
 		query = query.whereNotIn('directus_access.id', options.excludeAccessRows);
