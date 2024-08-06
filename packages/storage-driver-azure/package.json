@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-azure",
-	"version": "10.0.24",
+	"version": "11.0.0",
 	"description": "Azure file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/system-data",
-	"version": "1.1.1",
+	"version": "2.0.0",
 	"description": "Definitions and types for Directus system collections",
 	"homepage": "https://directus.io",
 	"repository": {
