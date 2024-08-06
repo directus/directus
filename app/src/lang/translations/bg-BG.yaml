@@ -1078,7 +1078,6 @@ editing_unit: 'Редактиране на {unit}'
 editing_in_batch: 'Множествено редактиране на {count} записи'
 no_options_available: Не са налични настройки
 settings_data_model: Модел на данните
-settings_permissions: Контрол на достъпа
 settings_project: Настройки
 settings_appearance: Външен вид
 settings_webhooks: Уеб-куки
@@ -1128,7 +1127,6 @@ page_help_settings_datamodel_collections: >-
   **Модел на данните: Колекции** — Показват се всички налични колекции. Това включва всички видими, невидими, системни, както и все още не конфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
   **Модел на данните: Колекция** — Формуляр за управление на тази колекция и нейните полета.
-page_help_settings_roles_collection: '**Преглед на роли** — Показват се администраторската, публичната и всички собствени роли.'
 page_help_settings_roles_item: "**Детайли за роля** — Управление на позволенията на ролята, както и някои други настройки."
 page_help_settings_presets_collection: >-
   **Преглед на заготовките** — Показват се всички заготовки от изгледи, включително за отделните: потребител, роля, и глобални отметки, както и изгледите по подразбиране.
@@ -1187,7 +1185,6 @@ directus_collection:
   directus_notifications: Известия, изпратени до потребителите
   directus_operations: Задачи които се изпълняват в автоматизиран процес
   directus_panels: Панели в таблото на задълбочения анализ
-  directus_permissions: Позволения за роли
   directus_presets: Заготовки на началните стойности и отметките за колекциите
   directus_relations: Релационни настройки и мета данни
   directus_revisions: Моментни данни за цялата активност
@@ -1353,12 +1350,9 @@ fields:
     name: Име на ролята
     icon: Икона на ролята
     description: Описание
-    app_access: Достъп до приложението
-    admin_access: Администраторски достъп
-    ip_access: IP адрес
-    enforce_tfa: Изискване за 2FA
     users: Потребители към ролята
-    module_list: Модули
+  directus_policies:
+    description: Описание
   directus_webhooks:
     name: Име
     method: Метод
@@ -1444,7 +1438,6 @@ field_options:
   directus_roles:
     name: Уникално име за ролята...
     description: Описание на ролята...
-    ip_access: Добавете разрешени IP адреси, IP диапазони и CIDR блокове. Оставете празно, за да разрешите всички...
     fields:
       icon_name: Икона
       name_name: Име
