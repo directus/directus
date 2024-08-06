@@ -177,7 +177,9 @@ following API request limits:
 
 | Tier         | Limit                          |
 | ------------ | ------------------------------ |
+| Starter      | 50 requests per second per IP  |
 | Professional | 50 requests per second per IP  |
+| Business     | 50 requests per second per IP  |
 | Enterprise   | 100 requests per second per IP |
 
 ::: tip Learn More
