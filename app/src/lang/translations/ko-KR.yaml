@@ -1084,7 +1084,6 @@ editing_unit: '편집 {unit}'
 editing_in_batch: '일괄 편집 {count} 항목'
 no_options_available: 사용 가능한 옵션 없음
 settings_data_model: 데이터 모델
-settings_permissions: 권한 설정
 settings_project: 설정
 settings_appearance: 외관
 settings_webhooks: 웹후크
@@ -1134,7 +1133,6 @@ page_help_settings_datamodel_collections: >-
   **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
 page_help_settings_datamodel_fields: >-
   **데이터 모델: 컬렉션** — 이 컬렉션과 해당 필드를 관리하기 위한 양식입니다.
-page_help_settings_roles_collection: '**역할 찾아보기** — 관리자, 공개 및 사용자 지정 사용자 역할을 나열합니다.'
 page_help_settings_roles_item: "**역할 세부 정보** — 역할의 권한 및 기타 설정을 관리합니다."
 page_help_settings_presets_collection: >-
   **사전 설정 찾아보기** — 사용자, 역할, 전역 책갈피 및 기본 보기를 포함하여 프로젝트의 모든 사전 설정을 나열합니다.
@@ -1193,7 +1191,6 @@ directus_collection:
   directus_notifications: 사용자에게 전송된 알림
   directus_operations: 플로우에서 실행되는 작업
   directus_panels: Insights 대시보드 내의 개별 패널
-  directus_permissions: 역할별 접근 권한
   directus_presets: 컬렉션 기본값 및 책갈피에 대한 사전 설정
   directus_relations: 관계 구성 및 메타데이터
   directus_revisions: 모든 활동에 대한 데이터 스냅샷
@@ -1370,12 +1367,9 @@ fields:
     name: 역할명
     icon: 역할 아이콘
     description: 설명
-    app_access: 앱 액세스
-    admin_access: 관리자 액세스
-    ip_access: IP 액세스
-    enforce_tfa: 2FA 필요
     users: 이 역할의 사용자 목록
-    module_list: '모듈 탐색:'
+  directus_policies:
+    description: 설명
   directus_webhooks:
     name: 이름
     method: 방법
@@ -1461,7 +1455,6 @@ field_options:
   directus_roles:
     name: 이 역할의 고유한 이름...
     description: 이 역할에 대한 설명...
-    ip_access: 허용된 IP 주소, IP 범위 및 CIDR 블록을 추가합니다. 모두 허용하려면 비워 두세요...
     fields:
       icon_name: 아이콘
       name_name: 이름
