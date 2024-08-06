@@ -7,6 +7,7 @@ import { tryJson } from '../utils/try-json.js';
 
 export const cast = (value: unknown, key?: string): unknown => {
 	const castFlag = getCastFlag(value);
+
 	const type = castFlag ?? getDefaultType(key) ?? guessType(value);
 
 	if (typeof value === 'string' && castFlag) {

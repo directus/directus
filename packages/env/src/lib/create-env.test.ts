@@ -44,28 +44,46 @@ afterEach(() => {
 	vi.resetAllMocks();
 });
 
-test('Defaults that have a type set is casted', () => {
-	vi.mocked(getDefaultType).mockImplementation((key) => {
-		if (key === 'DEFAULT_ARRAY') return 'array';
-		return null;
+describe('Casting of default configuration', () => {
+	test('Default config with default type gets casted', () => {
+		vi.mocked(getDefaultType).mockImplementation((key) => {
+			if (key === 'DEFAULT_ARRAY') return 'array';
+			return null;
+		});
+
+		vi.mocked(cast).mockImplementation((value, key) => {
+			if (key === 'DEFAULT_ARRAY') return String(value).split(',');
+			return value;
+		});
+
+		const env = createEnv();
+
+		expect(env).toEqual({
+			PROCESS: 'test-process',
+			FILE: 'test-file',
+			DEFAULT: 'test-default',
+			DEFAULT_ARRAY: ['one', 'two', 'three'],
+		});
+
+		expect(getDefaultType).toHaveBeenCalledTimes(2);
+		expect(cast).toHaveBeenCalledTimes(3);
 	});
 
-	vi.mocked(cast).mockImplementation((value, key) => {
-		if (key === 'DEFAULT_ARRAY') return String(value).split(',');
-		return value;
+	test('Default config without default type gets not casted', () => {
+		vi.mocked(getDefaultType).mockReturnValue(null);
+
+		const env = createEnv();
+
+		expect(env).toEqual({
+			PROCESS: 'test-process',
+			FILE: 'test-file',
+			DEFAULT: 'test-default',
+			DEFAULT_ARRAY: 'one,two,three',
+		});
+
+		expect(getDefaultType).toHaveBeenCalledTimes(2);
+		expect(cast).toHaveBeenCalledTimes(2);
 	});
-
-	const env = createEnv();
-
-	expect(env).toEqual({
-		PROCESS: 'test-process',
-		FILE: 'test-file',
-		DEFAULT: 'test-default',
-		DEFAULT_ARRAY: ['one', 'two', 'three'],
-	});
-
-	expect(getDefaultType).toHaveBeenCalledTimes(2);
-	expect(cast).toHaveBeenCalledTimes(3);
 });
 
 test('Combines process/file based config with defaults', () => {
