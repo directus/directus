@@ -28,7 +28,7 @@ body:
   - type: input
     attributes:
       label: Directus Version
-      placeholder: v10.x.x
+      placeholder: v11.x.x
     validations:
       required: true
   - type: dropdown

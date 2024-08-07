@@ -11,7 +11,7 @@ import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
-import { debounce } from 'lodash';
+import { debounce, flatten } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
@@ -47,11 +47,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { aliasedFields, aliasQuery, aliasedKeys } = useAliasFields(fields, collection);
 
-		const fieldsWithRelationalAliased = computed(() => {
-			return Object.values(aliasedFields.value).reduce<string[]>((acc, value) => {
-				return [...acc, ...value.fields];
-			}, []);
-		});
+		const fieldsWithRelationalAliased = computed(() =>
+			flatten(Object.values(aliasedFields.value).map(({ fields }) => fields)),
+		);
 
 		const {
 			items,
@@ -166,9 +164,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fieldsDefaultValue = computed(() => {
 				return fieldsInCollection.value
-					.filter((field: Field) => !field.meta?.hidden)
+					.filter((field) => !field.meta?.hidden && !field.meta?.special?.includes('no-data'))
 					.slice(0, 4)
-					.map(({ field }: Field) => field)
+					.map(({ field }) => field)
 					.sort();
 			});
 

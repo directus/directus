@@ -3,7 +3,6 @@ import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
-import { refreshAccountability } from '../authenticate.js';
 import { handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
@@ -47,7 +46,6 @@ export class LogsController extends SocketController {
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
 			try {
-				client.accountability = await refreshAccountability(client.accountability);
 				emitter.emitAction('websocket.logs', { message, client });
 			} catch (error) {
 				handleWebSocketError(client, error, 'server');
