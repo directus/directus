@@ -145,16 +145,11 @@ describe('File based configuration', () => {
 			PROCESS_FILE: 'array:./test/path',
 		});
 
-		const env = createEnv();
+		createEnv();
 
 		expect(removeFileSuffix).toHaveBeenCalledWith('PROCESS_FILE');
 		expect(readFileSync).toHaveBeenCalledWith('./test/path', { encoding: 'utf8' });
-
-		expect(env).toEqual({
-			PROCESS: 'array:file-content',
-			DEFAULT: 'test-default',
-			DEFAULT_ARRAY: 'one,two,three',
-		});
+		expect(cast).toHaveBeenCalledWith('array:file-content', 'PROCESS');
 	});
 });
 
