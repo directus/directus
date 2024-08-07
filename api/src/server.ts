@@ -161,6 +161,7 @@ export async function startServer(): Promise<void> {
 	const port = env['PORT'] as string | undefined;
 
 	let listenOptions: ListenOptions;
+
 	if (path) {
 		listenOptions = { path };
 	} else {
