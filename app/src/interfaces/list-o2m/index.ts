@@ -171,7 +171,7 @@ export default defineInterface({
 				},
 			},
 			{
-				field: 'sort_direction',
+				field: 'sortDirection',
 				name: '$t:sort_direction',
 				schema: {
 					default_value: '+',
