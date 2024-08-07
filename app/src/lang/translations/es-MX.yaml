@@ -79,8 +79,8 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operaciones
 extension_bundles: Paquetes
-extension_missing: Faltan
-extension_reload_required: Recarga de página requerida
+extension_missing: Perdida
+extension_reload_required: Se requiere actualizar la página
 extension_reload_required_copy: Es necesario recargar la página para ver los cambios después de activar o desactivar las extensiones.
 extension_reload_now: Recargar ahora
 published_relative: Publicado {relativeTime}
@@ -1653,6 +1653,8 @@ navigate_to_item: Navegar al elemento
 undo_removed_item: Deshacer elemento eliminado
 remove_item: Quitar elemento
 delete_item: Eliminar elemento
+pause: Pausar
+resume: Reanudar
 interfaces:
   list-m2a:
     prefix_note: Utiliza el nombre de la colección del elemento relacionado de forma predeterminada.

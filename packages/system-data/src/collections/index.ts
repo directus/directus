@@ -1,4 +1,4 @@
-import { BaseCollectionMeta, DataCollectionMeta } from '../types.js';
+import type { BaseCollectionMeta, DataCollectionMeta } from '../types.js';
 import systemData from './collections.yaml';
 
 export const systemCollectionRows = (systemData['data'] as DataCollectionMeta[]).map(

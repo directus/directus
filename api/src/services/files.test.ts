@@ -149,6 +149,56 @@ describe('Integration Tests', () => {
 					{ emitEvents: false },
 				);
 			});
+
+			it('should update the `filename_disk` extension to the correct mimetype', async () => {
+				tracker.on
+					.select(
+						'select "folder", "filename_download", "filename_disk", "title", "description", "metadata" from "directus_files" where "id" = ?',
+					)
+					.response(null);
+
+				const mockDataJPG = {
+					storage: 'local',
+					type: 'image/jpeg',
+					filename_download: 'test.jpg',
+				};
+
+				const mockDataPNG = {
+					storage: 'local',
+					type: 'image/png',
+					filename_download: 'test.png',
+				};
+
+				const mockDate = new Date();
+
+				vi.setSystemTime(mockDate);
+
+				await service.uploadOne(new PassThrough(), mockDataJPG);
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						...mockDataJPG,
+						uploaded_on: mockDate.toISOString(),
+						filename_disk: `${sample.id}.jpg`,
+					}),
+					{ emitEvents: false },
+				);
+
+				await service.uploadOne(new PassThrough(), mockDataPNG);
+
+				expect(superUpdateOne).toHaveBeenCalledWith(
+					sample.id,
+					expect.objectContaining({
+						...mockDataPNG,
+						uploaded_on: mockDate.toISOString(),
+						filename_disk: `${sample.id}.png`,
+					}),
+					{ emitEvents: false },
+				);
+
+				vi.useRealTimers();
+			});
 		});
 	});
 });

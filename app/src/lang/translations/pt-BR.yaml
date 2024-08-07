@@ -39,7 +39,7 @@ tile_size: Tamanho do Ladrilho
 edit_field: Editar campo
 conditions: Condições
 location: Local
-collection_names_are_case_sensitive: Os nomes das coleções diferenciam maiúsculas e minúsculas
+collection_names_are_case_sensitive: Os nomes das coleções diferenciam maiúsculas de minúsculas
 condition_rules: Regras da condição
 input: Entrada
 maps: Mapas
@@ -51,8 +51,8 @@ duplicate_field: Duplicar Campo
 half_width: Meia Largura
 full_width: Largura Total
 group: Grupo
-popular: Popular
-recent: Recente
+popular: Populares
+recent: Recentes
 export_items: Exportar itens
 and: E
 or: Ou
@@ -539,6 +539,7 @@ file_details: Detalhes do Arquivo
 dimensions: Dimensões
 size: Tamanho
 created: Criado
+uploaded: Enviado
 modified: Modificado
 owner: Proprietário
 edited_by: Editado por
@@ -595,7 +596,10 @@ allow_duplicates: Permitir duplicatas
 comments: Comentários
 no_comments: Nenhum comentário ainda
 expand: Expandir
+expand_all: Expandir Tudo
+expand_none: Expandir Nenhum
 collapse: Recolher
+collapse_all: Fechar Tudo
 select_item: Selecionar item
 no_items: Nenhum item
 search_items: Pesquisar Itens...
@@ -1650,6 +1654,8 @@ navigate_to_item: Navegar para o item
 undo_removed_item: Desfazer Item Removido
 remove_item: Remover Item
 delete_item: Excluir item
+pause: Pausar
+resume: Retomar
 interfaces:
   list-m2a:
     prefix_note: Utiliza o nome da coleção do item relacionado por padrão.

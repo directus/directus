@@ -15,16 +15,19 @@ import type { Knex } from 'knex';
 import { assign, clone, cloneDeep, omit, pick, without } from 'lodash-es';
 import { getCache } from '../cache.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
+import { getAstFromQuery } from '../database/get-ast-from-query/get-ast-from-query.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import runAST from '../database/run-ast.js';
+import { runAst } from '../database/run-ast/run-ast.js';
 import emitter from '../emitter.js';
+import { processAst } from '../permissions/modules/process-ast/process-ast.js';
+import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
-import getASTFromQuery from '../utils/get-ast-from-query.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
-import { AuthorizationService } from './authorization.js';
+import { UserIntegrityCheckFlag, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { PayloadService } from './payload.js';
 
 const env = useEnv();
@@ -142,18 +145,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
 		// update tree
 		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
-			// We're creating new services instances so they can use the transaction as their Knex interface
-			const payloadService = new PayloadService(this.collection, {
+			const serviceOptions: AbstractServiceOptions = {
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
-			});
+			};
 
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
+			// We're creating new services instances so they can use the transaction as their Knex interface
+			const payloadService = new PayloadService(this.collection, serviceOptions);
 
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
@@ -176,7 +175,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					: payload;
 
 			const payloadWithPresets = this.accountability
-				? authorizationService.validatePayload('create', this.collection, payloadAfterHooks)
+				? await processPayload(
+						{
+							accountability: this.accountability,
+							action: 'create',
+							collection: this.collection,
+							payload: payloadAfterHooks,
+						},
+						{
+							knex: trx,
+							schema: this.schema,
+						},
+				  )
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -187,12 +197,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				payload: payloadWithM2O,
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
 			} = await payloadService.processM2O(payloadWithPresets, opts);
 
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
 				nestedActionEvents: nestedActionEventsA2O,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
 			} = await payloadService.processA2O(payloadWithM2O, opts);
 
 			const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases));
@@ -266,15 +278,29 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			// At this point, the primary key is guaranteed to be set.
 			primaryKey = primaryKey as PrimaryKey;
 
-			const { revisions: revisionsO2M, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
-				payloadWithPresets,
-				primaryKey,
-				opts,
-			);
+			const {
+				revisions: revisionsO2M,
+				nestedActionEvents: nestedActionEventsO2M,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsO2M,
+			} = await payloadService.processO2M(payloadWithPresets, primaryKey, opts);
 
 			nestedActionEvents.push(...nestedActionEventsM2O);
 			nestedActionEvents.push(...nestedActionEventsA2O);
 			nestedActionEvents.push(...nestedActionEventsO2M);
+
+			const userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) |
+				userIntegrityCheckFlagsM2O |
+				userIntegrityCheckFlagsA2O |
+				userIntegrityCheckFlagsO2M;
+
+			if (userIntegrityCheckFlags) {
+				if (opts.onRequireUserIntegrityCheck) {
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+				} else {
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+				}
+			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
 			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
@@ -381,6 +407,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const { primaryKeys, nestedActionEvents } = await transaction(this.knex, async (knex) => {
 			const service = this.fork({ knex });
 
+			let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+
 			const primaryKeys: PrimaryKey[] = [];
 			const nestedActionEvents: ActionEventParams[] = [];
 
@@ -398,12 +426,21 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const primaryKey = await service.createOne(payload, {
 					...(opts || {}),
 					autoPurgeCache: false,
+					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 					bypassEmitAction: (params) => nestedActionEvents.push(params),
 					mutationTracker: opts.mutationTracker,
 					bypassAutoIncrementSequenceReset,
 				});
 
 				primaryKeys.push(primaryKey);
+			}
+
+			if (userIntegrityCheckFlags) {
+				if (opts.onRequireUserIntegrityCheck) {
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+				} else {
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+				}
 			}
 
 			return { primaryKeys, nestedActionEvents };
@@ -448,31 +485,30 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				  )
 				: query;
 
-		let ast = await getASTFromQuery(this.collection, updatedQuery, this.schema, {
-			accountability: this.accountability,
-			// By setting the permissions action, you can read items using the permissions for another
-			// operation's permissions. This is used to dynamically check if you have update/delete
-			// access to (a) certain item(s)
-			action: opts?.permissionsAction || 'read',
-			knex: this.knex,
-		});
-
-		if (this.accountability && this.accountability.admin !== true) {
-			const authorizationService = new AuthorizationService({
+		let ast = await getAstFromQuery(
+			{
+				collection: this.collection,
+				query: updatedQuery,
 				accountability: this.accountability,
-				knex: this.knex,
+			},
+			{
 				schema: this.schema,
-			});
+				knex: this.knex,
+			},
+		);
 
-			ast = await authorizationService.processAST(ast, opts?.permissionsAction);
-		}
+		ast = await processAst(
+			{ ast, action: 'read', accountability: this.accountability },
+			{ knex: this.knex, schema: this.schema },
+		);
 
-		const records = await runAST(ast, this.schema, {
+		const records = await runAst(ast, this.schema, {
 			knex: this.knex,
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
 		});
 
+		// TODO when would this happen?
 		if (records === null) {
 			throw new ForbiddenError();
 		}
@@ -603,12 +639,27 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			await transaction(this.knex, async (knex) => {
 				const service = this.fork({ knex });
 
+				let userIntegrityCheckFlags = opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None;
+
 				for (const item of data) {
 					const primaryKey = item[primaryKeyField];
 					if (!primaryKey) throw new InvalidPayloadError({ reason: `Item in update misses primary key` });
 
-					const combinedOpts = Object.assign({ autoPurgeCache: false }, opts);
+					const combinedOpts: MutationOptions = {
+						autoPurgeCache: false,
+						...opts,
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+					};
+
 					keys.push(await service.updateOne(primaryKey, omit(item, primaryKeyField), combinedOpts));
+				}
+
+				if (userIntegrityCheckFlags) {
+					if (opts.onRequireUserIntegrityCheck) {
+						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+					} else {
+						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex });
+					}
 				}
 			});
 		} finally {
@@ -645,12 +696,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const payload: Partial<AnyItem> = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		const authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
-
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
 		const payloadAfterHooks =
@@ -676,11 +721,33 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		keys.sort();
 
 		if (this.accountability) {
-			await authorizationService.checkAccess('update', this.collection, keys);
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection: this.collection,
+					primaryKeys: keys,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
 		}
 
 		const payloadWithPresets = this.accountability
-			? authorizationService.validatePayload('update', this.collection, payloadAfterHooks)
+			? await processPayload(
+					{
+						accountability: this.accountability,
+						action: 'update',
+						collection: this.collection,
+						payload: payloadAfterHooks,
+					},
+					{
+						knex: this.knex,
+						schema: this.schema,
+					},
+			  )
 			: payloadAfterHooks;
 
 		if (opts.preMutationError) {
@@ -698,12 +765,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				payload: payloadWithM2O,
 				revisions: revisionsM2O,
 				nestedActionEvents: nestedActionEventsM2O,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
 			} = await payloadService.processM2O(payloadWithPresets, opts);
 
 			const {
 				payload: payloadWithA2O,
 				revisions: revisionsA2O,
 				nestedActionEvents: nestedActionEventsA2O,
+				userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
 			} = await payloadService.processA2O(payloadWithM2O, opts);
 
 			const payloadWithoutAliasAndPK = pick(payloadWithA2O, without(fields, primaryKeyField, ...aliases));
@@ -719,18 +788,33 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			const childrenRevisions = [...revisionsM2O, ...revisionsA2O];
 
+			let userIntegrityCheckFlags =
+				opts.userIntegrityCheckFlags ??
+				UserIntegrityCheckFlag.None | userIntegrityCheckFlagsM2O | userIntegrityCheckFlagsA2O;
+
 			nestedActionEvents.push(...nestedActionEventsM2O);
 			nestedActionEvents.push(...nestedActionEventsA2O);
 
 			for (const key of keys) {
-				const { revisions, nestedActionEvents: nestedActionEventsO2M } = await payloadService.processO2M(
-					payloadWithA2O,
-					key,
-					opts,
-				);
+				const {
+					revisions,
+					nestedActionEvents: nestedActionEventsO2M,
+					userIntegrityCheckFlags: userIntegrityCheckFlagsO2M,
+				} = await payloadService.processO2M(payloadWithA2O, key, opts);
 
 				childrenRevisions.push(...revisions);
 				nestedActionEvents.push(...nestedActionEventsO2M);
+				userIntegrityCheckFlags |= userIntegrityCheckFlagsO2M;
+			}
+
+			if (userIntegrityCheckFlags) {
+				if (opts?.onRequireUserIntegrityCheck) {
+					opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+				} else {
+					// Having no onRequireUserIntegrityCheck callback indicates that
+					// this is the top level invocation of the nested updates, so perform the user integrity check
+					await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+				}
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
@@ -940,14 +1024,19 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
-		if (this.accountability && this.accountability.admin !== true) {
-			const authorizationService = new AuthorizationService({
-				accountability: this.accountability,
-				schema: this.schema,
-				knex: this.knex,
-			});
-
-			await authorizationService.checkAccess('delete', this.collection, keys);
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'delete',
+					collection: this.collection,
+					primaryKeys: keys,
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
+			);
 		}
 
 		if (opts.preMutationError) {
@@ -971,6 +1060,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		await transaction(this.knex, async (trx) => {
 			await trx(this.collection).whereIn(primaryKeyField, keys).delete();
+
+			if (opts.userIntegrityCheckFlags) {
+				if (opts.onRequireUserIntegrityCheck) {
+					opts.onRequireUserIntegrityCheck(opts.userIntegrityCheckFlags);
+				} else {
+					await validateUserCountIntegrity({ flags: opts.userIntegrityCheckFlags, knex: trx });
+				}
+			}
 
 			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
 				const activityService = new ActivityService({
