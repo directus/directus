@@ -1,5 +1,5 @@
 ---
-'@directus/api': patch
+'@directus/api': minor
 ---
 
-Fixed an issue that would cause sockets not to be accepted as a valid port
+Added support for listening on unix sockets via a new `UNIX_SOCKET_PATH` variable
