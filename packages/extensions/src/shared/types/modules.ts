@@ -1,5 +1,7 @@
-import type { Permission, User } from '@directus/types';
+import type { CollectionAccess, User } from '@directus/types';
 import type { RouteRecordRaw } from 'vue-router';
+
+type AppUser = User & { app_access: boolean; admin_access: boolean };
 
 export interface ModuleConfig {
 	id: string;
@@ -8,5 +10,5 @@ export interface ModuleConfig {
 
 	routes: RouteRecordRaw[];
 	hidden?: boolean;
-	preRegisterCheck?: (user: User, permissions: Permission[]) => Promise<boolean> | boolean;
+	preRegisterCheck?: (user: AppUser, permissions: CollectionAccess) => Promise<boolean> | boolean;
 }

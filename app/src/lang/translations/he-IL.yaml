@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: אודות
 identifier: מזהה
 avatar: צלמית
 application: יישום
@@ -7,15 +28,18 @@ method: פונקציה
 published: פורסם
 draft: טיוטה
 archived: ארכיון
+marketplace: חנות
 extensions: הרחבות
 modules: מודולים
 module_bar: סרגל מודולים
 logs: לוגים
+unknown: לא ידוע
 reset_width: אפס רוחב
 tile_size: גודל צלמית
 edit_field: ערוך שדה
 conditions: תנאים
 location: מיקום
+collection_names_are_case_sensitive: יש חשיבות לגודל אותיות בשמות
 condition_rules: תנאי כלל
 input: קלט
 maps: מפות
@@ -27,6 +51,8 @@ duplicate_field: שדה כפול
 half_width: חצי עמוד
 full_width: רוחב מלא
 group: קבוצה
+popular: פופולרי
+recent: אחרון
 export_items: יצא פריטים
 and: ו
 or: או
@@ -37,16 +63,43 @@ extension_display: תצוגה
 extension_layout: פריסה
 extension_module: מודול
 extension_panel: לוח
+extension_theme: ערכת נושא
 extension_hook: נקודת השחלה
 extension_endpoint: כתובת קצה
 extension_operation: פעולה
 extension_bundle: חבילה
 extension_interfaces: ממשקים
+extension_displays: תצוגה
+extension_layouts: פריסה
 extension_modules: מודולים
 extension_panels: לוחות
+extension_themes: ערכות נושא
+extension_hooks: נקודת השחלה
+extension_endpoints: נקודת גישה
 extension_operations: תהליכים
 extension_bundles: חבילות
+extension_missing: חסרים
+extension_reload_required: יש לטעון את הדף מחדש
+extension_reload_required_copy: יש לטעון את הדף מחדש לאחר הפעלה או נטרול של תוסף.
+extension_reload_now: טען מחדש כעת
+published_relative: פורסם ב{relativeTime}
+compatible_with_your_project: תואם את הפרויקט שלך
+last_updated_relative: תאריך עדכון {relativeTime}
+n_files: '{n} קבצים'
+verified: מאומת
+homepage: דף הבית
+repository: מאגר
+reload_page: רענן דף
+reload_required: יש לטעון את הדף מחדש
+report_an_issue: דווח על תקלה
+website: אתר
+github: גיטהאב
+beta: בטא
+n_downloads: '{n} הורדות'
+downloads: הורדות
+compatibility_not_guaranteed: תאימות לא מובטחת
 enable: אפשר
+disable: מושבת
 custom: מותאם אישית
 hook: נקודת השחלה
 fill_width: עמוד מלא
@@ -60,6 +113,7 @@ indeterminate: לא מוגדר
 edit_collection: ערוך אוסף
 exclusive: בלעדי
 children: ילדים
+db_only_click_to_configure: 'דאטהבייס בלבד: יש ללחץ כאן על מנת להגדיר'
 show_active_items: הצג פריטים פעילים
 show_archived_items: הצג פריטי ארכיון
 show_all_items: הצג את כל הפריטים
@@ -109,6 +163,11 @@ promote_version_disabled: ללא שינויים
 promote_version_drawer_title: לקדם {version} לענף הראשי
 promote_version_changes: שינויים
 promote_version_preview: תצוגה מקדימה
+delete_version: מחיקת גרסא
+delete_version_copy: >-
+  האם ברצונך למחוק את גרסה {version}? הפעולה אינה ניתנת לביטול.
+delete_on_promote_copy: >-
+  האם ברצונך לשמור או למחוק את גרסה {version} לאחר הקידום?
 not_allowed: לא מורשה
 validationError:
   eq: הערך צריך להיות {valid}
@@ -187,6 +246,7 @@ role: תפקיד
 width: רוחב
 height: גובה
 settings_translations: תרגומים
+source_registry: חנות
 collection: מאגר
 fields:
   directus_activity:

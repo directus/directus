@@ -1,6 +1,6 @@
 {
 	"name": "@directus/components",
-	"version": "0.0.9",
+	"version": "1.0.0",
 	"description": "Component for Directus",
 	"homepage": "https://directus.io",
 	"repository": {

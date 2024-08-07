@@ -21,7 +21,7 @@ const checkCacheMiddleware: RequestHandler = asyncHandler(async (req, res, next)
 		return next();
 	}
 
-	const key = getCacheKey(req);
+	const key = await getCacheKey(req);
 
 	let cachedData;
 

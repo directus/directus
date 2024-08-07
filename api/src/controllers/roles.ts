@@ -1,4 +1,4 @@
-import { ErrorCode, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
 import { respond } from '../middleware/respond.js';
@@ -72,6 +72,36 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 router.get('/', validateBatch('read'), readHandler, respond);
 router.search('/', validateBatch('read'), readHandler, respond);
+
+router.get(
+	'/me',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user && !req.accountability?.role) throw new ForbiddenError();
+
+		const service = new RolesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const query = { ...req.sanitizedQuery, limit: -1 };
+
+		try {
+			const roles = await service.readMany(req.accountability.roles, query);
+
+			res.locals['payload'] = { data: roles || null };
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
+				res.locals['payload'] = { data: req.accountability.roles.map((id) => ({ id })) };
+				return next();
+			}
+
+			throw error;
+		}
+
+		return next();
+	}),
+	respond,
+);
 
 router.get(
 	'/:pk',
