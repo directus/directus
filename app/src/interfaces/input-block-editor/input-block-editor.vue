@@ -61,6 +61,10 @@ const tools = getTools(
 	haveFilesAccess,
 );
 
+const observer = new MutationObserver(() => {
+	if (editorjsRef.value && isOnMounted.value) emitValue(editorjsRef.value);
+});
+
 bus.on(async (event) => {
 	if (event.type === 'open-url') {
 		router.push(event.payload);
@@ -96,8 +100,8 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
+	observer.disconnect();
 	editorjsRef.value?.destroy();
-
 	bus.reset();
 });
 
@@ -160,10 +164,6 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 function observeChangeEvent() {
-	const observer = new MutationObserver(() => {
-		if (isOnMounted.value) emitValue(editorjsRef.value);
-	});
-
 	const redactor = editorElement.value.querySelector('.codex-editor__redactor');
 
 	observer.observe(redactor, {
