@@ -1,9 +1,6 @@
 import * as http from 'http';
-import * as https from 'https';
 
 export function getAddress(server: http.Server) {
-	const protocol = server instanceof https.Server ? 'https' : 'http';
-
 	const address = server.address();
 
 	if (address === null) {
@@ -16,5 +13,5 @@ export function getAddress(server: http.Server) {
 		return address;
 	}
 
-	return `${protocol}://${address.address}:${address.port}`;
+	return `${address.address}:${address.port}`;
 }

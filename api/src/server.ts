@@ -174,7 +174,9 @@ export async function startServer(): Promise<void> {
 
 	server
 		.listen(listenOptions, () => {
-			logger.info(`Server started at ${getAddress(server)}`);
+			const protocol = server instanceof https.Server ? 'https' : 'http';
+
+			logger.info(`Server started at ${protocol}://${getAddress(server)}`);
 
 			process.send?.('ready');
 
