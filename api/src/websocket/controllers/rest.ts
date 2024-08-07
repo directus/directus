@@ -1,9 +1,9 @@
-import { useEnv } from '@directus/env';
 import { parseJSON } from '@directus/utils';
 import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
+import { getAddress } from '../../utils/get-address.js';
 import { refreshAccountability } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketMessage } from '../messages.js';
@@ -16,13 +16,11 @@ export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_REST');
 
-		const env = useEnv();
-
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
 
-		logger.info(`WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+		logger.info(`WebSocket Server started at ws://${getAddress(httpServer)}${this.endpoint}`);
 	}
 
 	private bindEvents(client: WebSocketClient) {
