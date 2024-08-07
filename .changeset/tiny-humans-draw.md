@@ -1,4 +1,6 @@
 ---
+'@directus/env': major
+'docs': minor
 '@directus/api': minor
 ---
 
