@@ -464,7 +464,7 @@ onUnmounted(() => {
 .split-view {
 	display: flex;
 	flex-direction: column;
-	height: calc(100% - 110px);
+	height: calc(100% - 120px);
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));

@@ -30,6 +30,10 @@ const logLevelMap = Object.entries(props.logLevels).reduce(
 	{} as Record<number, string>,
 );
 
+function getMessageClasses(existingClasses: string[], item: Log) {
+	return [...existingClasses, { subdued: logLevelMap[item.data.level] === 'trace' }];
+}
+
 async function scrollToIndex(index: number) {
 	if (index >= props.logs.length - 1) {
 		scrollToBottom();
@@ -58,7 +62,7 @@ async function scrollToBottom() {
 			<div class="notice">This is the beginning of your logs session...</div>
 		</template>
 		<template #after>
-			<div class="notice">Awaiting for more logs...</div>
+			<div class="notice">Awaiting more logs...</div>
 		</template>
 		<template #default="{ item, index, active }">
 			<dynamic-scroller-item
@@ -70,18 +74,20 @@ async function scrollToBottom() {
 			>
 				<div :class="['log-entry', { maximized: item.selected }]" @click="emit('expandLog', item.index)">
 					<span class="timestamp">[{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}]</span>
-					<span class="instance">[#{{ instances.indexOf(item.instance) + 1 }}]</span>
-					<span :class="['log-level', logLevelMap[item.data.level]]">
+					<span :class="getMessageClasses(['instance'], item)">[#{{ instances.indexOf(item.instance) + 1 }}]</span>
+					<span :class="getMessageClasses(['log-level', logLevelMap[item.data.level] || ''], item)">
 						{{ logLevelMap[item.data.level]?.toLocaleUpperCase() }}
 					</span>
 					<span
 						v-if="item.data.req?.method && item.data.req?.url && item.data.res?.statusCode && item.data.responseTime"
-						class="message"
+						:class="getMessageClasses(['message'], item)"
 					>
 						{{ item.data.req.method }} {{ item.data.req.url }} {{ item.data.res.statusCode }}
 						{{ item.data.responseTime }}ms
 					</span>
-					<span v-else class="message">{{ item.data.msg }}</span>
+					<span v-else :class="getMessageClasses(['message'], item)">
+						{{ item.data.msg }}
+					</span>
 				</div>
 			</dynamic-scroller-item>
 		</template>
@@ -96,7 +102,7 @@ async function scrollToBottom() {
 			@close="unreadLogsChipVisible = false"
 		>
 			<v-icon name="arrow_downward" small />
-			{{ unreadLogsCount }} unread log(s)
+			{{ unreadLogsCount }} UNREAD
 		</v-chip>
 	</div>
 </template>
@@ -119,7 +125,7 @@ async function scrollToBottom() {
 	height: 100%;
 }
 
-.log-entry:hover {
+.log-entry:hover:not(.maximized) {
 	background-color: var(--theme--background-normal);
 }
 
@@ -145,7 +151,7 @@ async function scrollToBottom() {
 }
 
 .maximized {
-	background-color: var(--theme--background-normal);
+	background-color: var(--theme--background-accent);
 }
 
 .unread-logs {
@@ -161,6 +167,7 @@ async function scrollToBottom() {
 	--v-chip-close-color: var(--theme--primary);
 
 	cursor: pointer;
+	box-shadow: var(--sidebar-shadow);
 
 	.v-icon {
 		margin: 0 4px 0 4px;
@@ -173,6 +180,10 @@ async function scrollToBottom() {
 
 .log-level {
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
+}
+
+.trace {
+	color: var(--theme--foreground-subdued);
 }
 
 .info {
@@ -190,5 +201,9 @@ async function scrollToBottom() {
 .fatal {
 	color: var(--red);
 	background-color: var(--red-25);
+}
+
+.subdued {
+	color: var(--theme--foreground-subdued);
 }
 </style>
