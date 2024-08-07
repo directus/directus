@@ -160,12 +160,10 @@ export async function startServer(): Promise<void> {
 	const path = env['UNIX_SOCKET_PATH'] as string | undefined;
 	const port = env['PORT'] as string | undefined;
 
-	let listenOptions: ListenOptions = {
-		path,
-	};
-
-	if (port || !path) {
-		// if port is present we ignore socket path
+	let listenOptions: ListenOptions;
+	if (path) {
+		listenOptions = { path };
+	} else {
 		listenOptions = {
 			host,
 			port: parseInt(port || '8055'),
