@@ -522,13 +522,14 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 				/>
 			</template>
 
-			<v-list v-else>
+			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
 					{{ t('no_items') }}
 				</v-notice>
 
 				<draggable
 					:model-value="displayItems"
+					tag="v-list"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
@@ -572,7 +573,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 						</v-list-item>
 					</template>
 				</draggable>
-			</v-list>
+			</template>
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
