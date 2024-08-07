@@ -184,6 +184,15 @@ fields:
     display_options:
       template: '{{ name }}'
 
+  - field: policies
+    interface: list-m2m
+    options:
+      layout: list
+    display: related-values
+    special:
+      - m2m
+    width: full
+
   - field: token
     interface: system-token
     special:

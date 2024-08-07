@@ -16,28 +16,28 @@ Name of the collection. This matches the table name in the database.
 
 #### Meta
 
-Directus metadata, primarily used in the Admin App.
+Directus metadata, primarily used in the Data Studio.
 
 `collection` **string**\
 Name of the collection. This matches the table name in the database.
 
 `icon` **string**\
-Icon displayed in the Admin App when working with this collection.
+Icon displayed in the Data Studio when working with this collection.
 
 `note` **string**\
-Short description displayed in the Admin App.
+Short description displayed in the Data Studio.
 
 `display_template` **string**\
-How items in this collection should be displayed when viewed relationally in the Admin App.
+How items in this collection should be displayed when viewed relationally in the Data Studio.
 
 `hidden` **boolean**\
-Whether or not this collection is hidden in the Admin App.
+Whether or not this collection is hidden in the Data Studio.
 
 `singleton` **boolean**\
 Whether or not this collection is treated as a singleton.
 
 `translations` **array**\
-How this collection's name is displayed in the different languages in the Admin App.
+How this collection's name is displayed in the different languages in the Data Studio.
 
 `archive_field` **string**\
 What field in the collection holds the archived state.
@@ -49,10 +49,10 @@ What value the archive field should be set to when archiving an item.
 What value the archive field should be set to when unarchiving an item.
 
 `archive_app_filter` **boolean**\
-Whether or not the Admin App should allow the user to view archived items.
+Whether or not the Data Studio should allow the user to view archived items.
 
 `sort_field` **boolean**\
-What field holds the sort value on the collection. The Admin App uses this to allow drag-and-drop manual sorting.
+What field holds the sort value on the collection. The Data Studio uses this to allow drag-and-drop manual sorting.
 
 `accountability` **string**\
 What data is tracked. One of `all`, `activity`. See [Accountability](/app/data-model#accountability) for more information.

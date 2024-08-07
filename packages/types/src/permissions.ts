@@ -1,10 +1,11 @@
+import { PERMISSION_ACTIONS } from '@directus/constants';
 import type { Filter } from './filter.js';
 
-export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'comment' | 'explain' | 'share';
+export type PermissionsAction = (typeof PERMISSION_ACTIONS)[number];
 
 export type Permission = {
 	id?: number;
-	role: string | null;
+	policy: string | null;
 	collection: string;
 	action: PermissionsAction;
 	permissions: Filter | null;
@@ -18,4 +19,16 @@ export type ItemPermissions = {
 	update: { access: boolean; presets?: Permission['presets']; fields?: Permission['fields'] };
 	delete: { access: boolean };
 	share: { access: boolean };
+};
+
+export type CollectionPermissions = {
+	[action in PermissionsAction]: {
+		access: 'none' | 'partial' | 'full';
+		fields?: string[];
+		presets?: Record<string, any>;
+	};
+};
+
+export type CollectionAccess = {
+	[collection: string]: CollectionPermissions;
 };
