@@ -29,7 +29,8 @@ export const createEnv = (): Env => {
 				const castFlag = getCastFlag(value);
 				const castPrefix = castFlag ? castFlag + ':' : '';
 				const filePath = castFlag ? value.replace(castPrefix, '') : value;
-				value = castPrefix + readFileSync(filePath, { encoding: 'utf8' });
+				const fileContent = readFileSync(filePath, { encoding: 'utf8' });
+				value = castPrefix + fileContent;
 				key = removeFileSuffix(key);
 			} catch {
 				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
