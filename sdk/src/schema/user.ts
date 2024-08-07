@@ -1,5 +1,7 @@
-import type { DirectusRole, MergeCoreCollection } from '../index.js';
+import type { MergeCoreCollection } from '../index.js';
+import type { DirectusRole } from './role.js';
 import type { DirectusFile } from './file.js';
+import type { DirectusPolicy } from './policy.js';
 
 /**
  * directus_users type
@@ -30,5 +32,11 @@ export type DirectusUser<Schema = any> = MergeCoreCollection<
 		external_identifier: string | null;
 		auth_data: Record<string, any> | null;
 		email_notifications: boolean | null;
+		appearance: string | null;
+		theme_dark: string | null;
+		theme_light: string | null;
+		theme_light_overrides: Record<string, unknown> | null;
+		theme_dark_overrides: Record<string, unknown> | null;
+		policies: string[] | DirectusPolicy<Schema>[];
 	}
 >;

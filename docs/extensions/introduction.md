@@ -76,7 +76,7 @@ triggered during Directus' startup, when data is changed, or on schedules.
 
 ## Hybrid Extensions
 
-Hybrid extensions modify both frontend and backend functionality. Hence, they allow expanding upon both the admin app
+Hybrid extensions modify both frontend and backend functionality. Hence, they allow expanding upon both the Data Studio
 interface and the API.
 
 ### Flow Operations

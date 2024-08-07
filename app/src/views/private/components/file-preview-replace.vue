@@ -13,7 +13,6 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const dialogActive = ref(false);
-const uploadRef = ref<InstanceType<typeof VUpload> | null>(null);
 
 function onInput() {
 	dialogActive.value = false;
@@ -22,7 +21,6 @@ function onInput() {
 
 function close() {
 	dialogActive.value = false;
-	uploadRef.value?.abort();
 }
 </script>
 
@@ -38,7 +36,7 @@ function close() {
 			<v-card>
 				<v-card-title>{{ t('replace_file') }}</v-card-title>
 				<v-card-text>
-					<v-upload ref="uploadRef" :file-id="file.id" from-url @input="onInput" />
+					<v-upload :file-id="file.id" from-url @input="onInput" />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="close">{{ t('done') }}</v-button>

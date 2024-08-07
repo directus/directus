@@ -34,11 +34,15 @@ const { t } = useI18n();
 const applyGlobalIcon = computed(() => props.choices?.some((choice) => choice.icon));
 
 const items = computed(() => {
+	if (!props.choices) {
+		return [];
+	}
+
 	if (!applyGlobalIcon.value) {
 		return props.choices;
 	}
 
-	return props.choices?.map((choice) => {
+	return props.choices.map((choice) => {
 		if (choice.icon) {
 			return choice;
 		}

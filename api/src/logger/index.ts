@@ -134,7 +134,7 @@ export const createExpressLogger = () => {
 
 	if (env['LOG_STYLE'] === 'raw' || toBoolean(env['WEBSOCKETS_LOGS_ENABLED'])) {
 		httpLoggerOptions.redact = {
-			paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers'],
+			paths: ['req.headers.authorization', 'req.headers.cookie', 'res.headers', 'req.query.access_token'],
 			censor: (value, pathParts) => {
 				const path = pathParts.join('.');
 
