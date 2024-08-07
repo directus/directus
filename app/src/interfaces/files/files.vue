@@ -298,11 +298,14 @@ const allowDrag = computed(
 			/>
 		</template>
 
-		<v-list v-else class="files">
+		<template v-else>
 			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
 
 			<draggable
+				v-else
 				:model-value="displayItems"
+				tag="v-list"
+				class="files"
 				item-key="id"
 				handle=".drag-handle"
 				:disabled="!allowDrag"
@@ -354,7 +357,7 @@ const allowDrag = computed(
 					</v-list-item>
 				</template>
 			</draggable>
-		</v-list>
+		</template>
 
 		<div class="actions">
 			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
