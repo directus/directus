@@ -1,3 +1,5 @@
+export const socialPrefix = 'social-';
+
 export const socialIcons: string[] = [
 	'42_group',
 	'500px',

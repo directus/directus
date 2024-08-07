@@ -3,7 +3,7 @@ import formatTitle from '@directus/format-title';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import icons from './icons.json';
-import { socialIcons } from '@/components/v-icon/social-icons';
+import { socialIcons, socialPrefix } from '@/components/v-icon/social-icons';
 
 withDefaults(
 	defineProps<{
@@ -26,7 +26,7 @@ const mergedIcons = [
 	...icons,
 	{
 		name: 'Social',
-		icons: socialIcons,
+		icons: socialIcons.map((icon) => `${socialPrefix}${icon}`),
 	},
 ];
 
