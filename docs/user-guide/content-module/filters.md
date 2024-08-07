@@ -90,8 +90,8 @@ The following video shows how to filter for Blog posts written within the past 6
 </video>
 
 The following Dynamic Variables are built into Directus to make Filtering easier: `$CURRENT_USER`, `$CURRENT_ROLE`,
-`$NOW` and `$NOW(<adjustment>)`. For more information, please see the Dynamic Variables section in
-[Filter Rules](/reference/filter-rules).
+`$CURRENT_ROLES`, `$CURRENT_POLICIES`, `$NOW` and `$NOW(<adjustment>)`. For more information, please see the Dynamic
+Variables section in [Filter Rules](/reference/filter-rules).
 
 ## Filtering by Related Collections
 

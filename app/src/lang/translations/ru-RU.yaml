@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: О программе
 identifier: Индентификатор
 avatar: Аватар
 application: Приложение
@@ -7,10 +28,12 @@ method: Метод
 published: Опубликовано
 draft: Черновик
 archived: Архивировано
+marketplace: Магазин
 extensions: Расширения
 modules: Модули
 module_bar: Панель модулей
 logs: Журналы
+unknown: Неизвестно
 reset_width: Сбросить ширину
 tile_size: Размер плитки
 edit_field: Редактировать поле
@@ -28,6 +51,8 @@ duplicate_field: Дублировать поле
 half_width: Полширины
 full_width: Полная ширина
 group: Группа
+popular: Популярное
+recent: Недавнее
 export_items: Экспорт элементов
 and: и
 or: или
@@ -54,9 +79,28 @@ extension_hooks: Хуки
 extension_endpoints: Эндпоинты
 extension_operations: Операции
 extension_bundles: Пакеты
+extension_missing: Пропавшее
 extension_reload_required: Требуется перезагрузка страницы
 extension_reload_required_copy: Перезагрузка страницы необходима, чтобы увидеть изменения после включения или отключения расширений приложений.
 extension_reload_now: Перезагрузить сейчас
+published_relative: Опубликовано {relativeTime}
+compatible_with_your_project: Совместимо с вашим проектом
+compatible_with_your_project_copy: Автор указал на совместимость этого расширения с {hostVersion}, что соответствует версии вашего проекта ({currentVersion})
+last_updated_relative: Последнее обновление {relativeTime}
+n_files: '{n} файлов'
+verified: Проверено
+homepage: Главная
+repository: Репозиторий
+reload_page: Обновить страницу
+reload_required: Требуется обновить страницу
+report_an_issue: Сообщить об ошибке
+website: Веб-сайт
+github: GitHub
+beta: Бета
+n_downloads: '{n} загрузок'
+downloads: Загрузки
+compatibility_not_guaranteed: Совместимость не гарантирована
+compatibility_not_guaranteed_copy: Автор указал на совместимость этого расширения с {hostVersion}, что не соответствует версии вашего проекта ({currentVersion})
 enable: Включить
 disable: Отключить
 custom: Пользовательский
@@ -127,6 +171,10 @@ outdated_notice: >-
 promote_notice: >-
   .
 delete_version: Удалить версию
+delete_version_copy: >-
+  Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
+delete_on_promote_copy: >-
+  Вы хотите удалить или сохранить версию "{version}" после продвижения?
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -141,6 +189,8 @@ logoutReason:
 public_label: Публичный
 public_description: Контролирует, какие данные API доступны без входа в личный кабинет.
 admin_description: Начальная административная роль с неограниченным доступом к приложениям/API.
+no_description: Нет описания...
+reached_maximum_number_of_extensions: Вы достигли максимального количества расширений для этого проекта ({n}). Обратитесь к системному администратору для получения дополнительной информации.
 not_allowed: Не разрешено
 archive: Архив
 archive_confirm: Вы уверены, что хотите архивировать этот элемент?
@@ -208,6 +258,7 @@ permissions_for_role: 'Элементы, для которых роль «{role}
 fields_for_role: 'Поля, для которых роль «{role}» имеет разрешение {action}.'
 validation_for_role: 'Правила, которым должна следовать роль «{role}» для {action} в поле.'
 presets_for_role: 'Значения поля по умолчанию для роли «{role}».'
+presets_field_warning: 'Реляционные предустановки для поля «{field}» должны быть настроены с использованием «подробного» синтаксиса.'
 presentation_and_aliases: Оформление и псевдонимы
 revision_post_create: Вот как этот элемент выглядел, когда он был создан.
 revision_post_update: Вот как этот элемент выглядел после обновления.
@@ -279,8 +330,20 @@ time: Время
 timestamp: Отметка времени
 uuid: UUID
 hash: Хэш
+geometry:
+  All: Геометрия (все)
+  Point: Точка
+  LineString: Линейная строка
+  Polygon: Многоугольник
+  MultiPoint: Многоточечный
+  MultiLineString: Строковый Многострочный блок
+  MultiPolygon: Мультиполигон
+theme_auto: Автоматически (в зависимости от системы)
 theme_light: Светлая тема
 theme_dark: Тёмная тема
+theme_directus_default: Директус - По умолчанию
+theme_directus_minimal: Директус - Минимальная
+theme_directus_colormatch: Директус - Соответствие цветов
 not_available_for_type: Недоступно для этого типа
 create_translations: Создать переводы
 auto_refresh: Автообновление
@@ -292,12 +355,14 @@ auto_generate: Генерировать автоматически
 this_will_auto_setup_fields_relations: Это автоматически настроит все необходимые поля и отношения.
 click_here: Нажмите здесь
 to_manually_setup_translations: для ручной настройки переводов.
+manage: Управлять
 click_to_manage_translated_fields: >-
   Полей перевода пока нет. Нажмите здесь, чтобы создать их. | Есть одно поле перевода. Нажмите здесь, чтобы управлять им. | Есть {count} полей перевода. Нажмите здесь, чтобы управлять ими.
 fields_group: Группа полей
 no_collections_found: Нет найденных коллекций.
 new_data_alert: 'В вашей модели данных будет создано следующее:'
 search_collection: Поиск коллекций...
+search_role: Поиск роли...
 search_field: Поиск полей...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
@@ -376,12 +441,14 @@ revision_delta_created: Создано
 revision_delta_created_externally: Создано извне
 revision_delta_updated: 'Обновлено 1 поле | Обновлено {count} полей'
 revision_delta_deleted: Удалено
+revision_delta_version_saved: 'Версия Сохранена (Обновлено 1 поле) | Версия Сохранена (Обновлено {count} полей)'
 revision_delta_reverted: Восстановлено
 revision_delta_update_message: Это поле было обновлено, но его значение скрывается по соображениям безопасности.
 revision_delta_other: Редакция
 revision_delta_by: '{date} пользователем {user}'
 presentation_text_values_cannot_be_reimported: 'Используется текст для оформления, значения не могут быть повторно импортированы.'
 download_page_as_csv: 'Скачать страницу в формате CSV'
+download_page_as_csv_unsupported: Этот макет не поддерживает загрузку текущей страницы.
 private_user: Скрытый пользователь
 creation_preview: Предпросмотр
 revision_preview: Предпросмотр редакции
@@ -460,7 +527,11 @@ months:
   november: Ноябрь
   december: Декабрь
 drag_mode: Режим перетаскивания
+move_tool: Инструмент - Перемещение
+crop_tool: Инструмент - Обрезание
+focal_point_tool: Инструмент - Фокусная точка
 cancel_crop: Отменить обрезку
+cancel_selection: Отменить выбор
 original: Исходный
 url: URL-адрес
 import_label: Импорт
@@ -468,6 +539,7 @@ file_details: Информация о файле
 dimensions: Размеры
 size: Размер
 created: Создано
+uploaded: Загружено
 modified: Изменено
 owner: Владелец
 edited_by: Изменено
@@ -486,11 +558,18 @@ import_from_url: Импортировать файл из URL-адреса
 replace_from_device: Заменить файл с устройства
 replace_from_library: Заменить файл из библиотеки
 replace_from_url: Заменить файл из URL-адреса
+no_image_selected: Изображение не выбрано
 no_file_selected: Файл не выбран
 download_file: Скачать файл
+open_file_in_tab: Открыть файл в новой вкладке
 start_export: Начать экспорт
 not_available_for_local_downloads: Недоступно для локальных скачиваний
 exporting_all_items_in_collection: Экспортирование всех {total} элементов в {collection}.
+exporting_limited_items_in_collection: '{count} из {total} позиций в пределах {collection} будет экспортировано.'
+exporting_no_items_to_export: Нет элементов для экспорта. Настройте экспортируемую конфигурацию и/или добавьте элементы в коллекцию.
+exporting_download_hint: После создания {format} файл будет загружен на ваше устройство.
+exporting_library_hint: После создания {format} файл будет сохранен в библиотеку файлов.
+exporting_library_hint_forced: Этот экспорт должен быть обработан партиями. После завершения файл {format} будет сохранен в библиотеке файлов.
 collection_key: Ключ коллекции
 name: Название
 primary_key_field: Поле основного ключа
@@ -517,9 +596,14 @@ allow_duplicates: Разрешить дубликаты
 comments: Комментарии
 no_comments: Комментариев пока нет
 expand: Развернуть
+expand_all: Развернуть все
+expand_none: Развернуть нет
 collapse: Свернуть
+collapse_all: Свернуть все
 select_item: Выбрать элемент
 no_items: Нет элементов
+search_items: Поиск элементов...
+search_extensions: Поиск расширений...
 disabled: Отключено
 information: Информация
 report_bug: Сообщить об ошибке
@@ -538,6 +622,10 @@ no_files_copy: Здесь нет файлов.
 user_count: 'Нет пользователей | Один пользователь | {count} пользователей'
 no_users_copy: В этой роли пока нет пользователей.
 webhooks_count: 'Нет веб-хуков | Один веб-хук | {count} веб-хуков'
+webhooks_deprecation_notice: |
+  Webhooks устарели и не рекомендуется дальнейшее использование.
+
+  Пожалуйста, используйте **Потоки** с помощью [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Веб-хуки ещё не настроены. Начните с создания одного из них ниже.
 no_notifications: Нет уведомлений
 no_notifications_copy: Ничего нового!
@@ -599,7 +687,12 @@ bookmark_doesnt_exist_copy: Закладка, которую вы пытаете
 bookmark_doesnt_exist_cta: Вернуться в коллекцию
 select_an_item: Выбрать элемент...
 edit: Редактирование
+edit_item: Редактировать элемент
 enabled: Включено
+partially_enabled: Частично включено
+enable_all: Включить всё
+disable_all: Отключить всё
+enabled_dev_tooltip: Расширения приложений всегда включены в режиме dev
 disable_tfa: Отключить 2FA
 admin_disable_tfa_text: Вы уверены, что хотите отключить 2FA для этого пользователя?
 tfa_setup: Настроить двухфакторную аутентификацию (2FA)
@@ -615,6 +708,7 @@ errors:
   CONTENT_TOO_LARGE: Отправленный файл слишком большой
   FIELD_NOT_FOUND: Поле не найдено
   FORBIDDEN: Запрещено
+  GRAPHQL_VALIDATION: Проверка GraphQL
   ILLEGAL_ASSET_TRANSFORMATION: Исходное изображение слишком большое для предпросмотра
   INTERNAL_SERVER_ERROR: Неожиданная ошибка
   INVALID_CONFIG: Недействительная конфигурация
@@ -629,6 +723,7 @@ errors:
   INVALID_USER: Не удалось аутентифицировать пользователя
   ITEM_LIMIT_REACHED: Достигнуто максимальное количество элементов
   ITEM_NOT_FOUND: Элемент не найден
+  LIMIT_EXCEEDED: 'Превышен лимит'
   METHOD_NOT_ALLOWED: Метод не разрешён
   NOT_NULL_VIOLATION: Значение не может быть NULL
   RANGE_NOT_SATISFIABLE: Недопустимый диапазон
@@ -639,6 +734,7 @@ errors:
   TOKEN_EXPIRED: Токен с истёкшим сроком действия
   UNEXPECTED_RESPONSE: Неожиданный ответ
   UNKNOWN: Неожиданная ошибка
+  UNPROCESSABLE_CONTENT: Необрабатываемый объект
   UNSUPPORTED_MEDIA_TYPE: Неподдерживаемый тип медиа
   USER_SUSPENDED: Пользователь заблокирован
   VALUE_OUT_OF_RANGE: Значение вне допустимого диапазона
@@ -656,6 +752,7 @@ cannot_edit_global_bookmarks: Невозможно редактировать г
 bookmarks: Закладки
 presets: Шаблоны
 unexpected_error: Неожиданная ошибка
+unexpected_error_copy: Произошла непредвиденная ошибка. Пожалуйста, повторите попытку.
 copy_details: Скопировать подробности
 no_app_access: Нет доступа к приложению
 no_app_access_copy: Этому пользователю не разрешено использовать приложение администратора.
@@ -750,6 +847,7 @@ operators:
   regex: Соответствует RegExp
 custom_validation_message: Пользовательское сообщение проверки
 loading: Загрузка...
+extension_readme_missing: Это расширение не имеет файла README.
 drop_to_upload: Перетащите для загрузки
 item: Элемент
 items: Элементы
@@ -767,6 +865,7 @@ layout_options: Параметры макета
 rows: Записи
 columns: Колонки
 collection_setup: Настройки коллекции
+optional_system_fields: Необязательные поля
 value_unique: Значение должно быть уникальным
 all_activity: История всех действий
 create_item: Создать элемент
@@ -964,14 +1063,19 @@ wysiwyg_options:
   source_code: Редактировать исходный код
   fullscreen: Во весь экран
   directionality: Направленность
+  lazy_loading: Отложенная загрузка изображения
+  lazy_loading_label: Включить отложенную загрузку
 dropdown: Выпадающий список
 choices: Варианты
 choices_option_configured_incorrectly: Варианты настроены неправильно
 deselect: Снять выделение
 deselect_all: Снять всё выделение
 theme: Тема
+select_a_theme: Выберите шаблон
 default_sync_with_project: По умолчанию (Синхронизация с проектом)
 appearance_auto: Автоматически (Синхронизировать с системой)
+appearance_light: Светлый
+appearance_dark: Темный
 other: Другой...
 adding_user: Добавление пользователя
 unknown_user: Неизвестный пользователь
@@ -991,6 +1095,7 @@ settings_flows: Процессы
 settings_presets: Закладки
 settings_translations: Переводы
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
+configure_field_key_to_continue: Настроить ключ поля для продолжения
 scope: Область применения
 actions: Действия
 select: Выбрать...
@@ -1003,6 +1108,7 @@ editing_preset: Редактирование шаблона
 layout_preview: Предпросмотр макета
 layout_setup: Настройка макета
 data: Данные
+theme-overrides: Переопределения шаблона
 unsaved_changes: Несохранённые изменения
 unsaved_changes_copy: Вы уверены, что хотите покинуть эту страницу?
 discard_changes: Отменить изменения
@@ -1024,6 +1130,9 @@ page_help_files_collection: >-
   **Библиотека файлов** — список всех файлов, загруженных в этот проект. Настройте макет, фильтры и сортировку под себя, и даже сохраните закладки в разных конфигурациях для быстрого доступа.
 page_help_files_item: >-
   **Карточка файла** — форма для управления метаданными файла, редактирования исходного файла и обновления настроек доступа.
+page_help_settings_project: "**Настройки проекта** — глобальные параметры конфигурации проекта."
+page_help_settings_appearance: "**Вид** — внешний вид вашего проекта и возможности его оформления."
+page_help_settings_extensions: '**Расширения** — расширения, установленные в вашем проекте.'
 page_help_settings_datamodel_collections: >-
   **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
@@ -1045,6 +1154,9 @@ page_help_users_item: >-
   **Карточка пользователя** — управляйте данными вашей учётной записи или просматривайте данные других пользователей.
 page_help_insights_overview: '**Аналитика** — список досок, к которым у вас есть доступ.'
 page_help_insights_dashboard: '**Доска** — рабочее пространство для управления одной или несколькими панелями'
+page_help_marketplace_account: '**Учётная запись** — издатель или разработчик опубликованного расширения.'
+page_help_marketplace_registry: '**Реестр** — расширения, доступные в Магазине Директус.'
+page_help_marketplace_extension: '**Расширение** — расширения, доступные в Магазине Директус.'
 activity_feed: Лента действий
 add_new: Создать
 create_new: Создать
@@ -1056,6 +1168,16 @@ batch_delete_confirm: >-
 cancel: Отмена
 no_upscale: Не масштабировать изображения
 no_extensions: Нет расширений
+no_extensions_copy: Расширения еще не установлены.
+install_extension: Установка расширений
+uninstall_locked: Невозможно удалить расширения, которые не были установлены через Магазин
+uninstall: Деинсталлировать
+installed: Установлено
+reinstall: Переустановить
+open_in_marketplace: Открыть в Магазине
+source_registry: Магазин
+source_local: Локальный
+source_module: Библиотека Node
 collection: Коллекция
 collections: Коллекции
 content: Контент
@@ -1085,6 +1207,8 @@ directus_collection:
   directus_users: Системные пользователи для платформы
   directus_webhooks: Конфигурация для HTTP-запросов на основе событий
   directus_translations: Пользовательские переводы
+  directus_versions: Версии содержимого для элементов
+  directus_extensions: Настройка расширений
 fields:
   directus_activity:
     item: Ключ элемента
@@ -1138,6 +1262,8 @@ fields:
     height: Высота
     charset: Кодировка
     duration: Продолжительность
+    focal_point_x: Координата X
+    focal_point_y: Координата Y
   directus_users:
     first_name: Имя
     last_name: Фамилия
@@ -1155,6 +1281,7 @@ fields:
     status: Статус
     status_draft: Черновик
     status_invited: Приглашен(а)
+    status_unverified: Непроверенный
     status_active: Активный
     status_suspended: Заблокирован
     status_archived: В архиве
@@ -1176,6 +1303,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Отчеты
     mapping: Картография
     basemaps: Базовые карты
     basemaps_raster: Растр
@@ -1193,9 +1321,11 @@ fields:
     project_color: Цвет проекта
     project_logo: Логотип проекта
     default_language: Язык по умолчанию
+    branding: Фирменное оформление
     public_foreground: Изображение на переднем плане
     public_background: Фоновое изображение
     public_note: Заметка
+    theming: Настройки по умолчанию
     default_appearance: Внешний вид по умолчанию
     default_theme_light: Светлая тема по умолчанию
     default_theme_dark: Тёмная тема по умолчанию
@@ -1215,6 +1345,14 @@ fields:
     custom_aspect_ratios: Пользовательские пропорции
     theme_light_overrides: Настройка Светлой Темы
     theme_dark_overrides: Настройка Тёмной Темы
+    public_registration: Регистрация пользователя
+    public_registration_note: Позволяет пользователям регистрироваться через [регистрационный маршрут](/admin/register).
+    public_registration_role: Роль пользователя
+    public_registration_role_note: Эта роль назначается пользователям, которые регистрируются с помощью этого метода. Не влияет на уже зарегистрированных пользователей.
+    public_registration_email_filter: Фильтр адреса электронной почты
+    public_registration_email_filter_note: Только адреса электронной почты, соответствующие этому фильтру, могут регистрироваться.
+    public_registration_verify_email: Подтвердить эл. почту
+    public_registration_verify_email_note: Отправить письмо регистрирующему пользователю с просьбой нажать на ссылку подтверждения, прежде чем они смогут войти.
   directus_shares:
     name: Название
     role: Роль
@@ -1257,6 +1395,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Мой проект...
     project_color_note: Фон страницы входа и логотипа
+    project_logo_note: Белый 40х40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Короткое сообщение, видимое для всех (поддерживается форматирование с помощью Markdown)...
     security_divider_title: Безопасность
     auth_password_policy:
@@ -1311,16 +1451,20 @@ field_options:
     accountability_divider: Подотчетность
     duplication_divider: Дублирование
     preview_divider: Предпросмотр
+    content_versioning_divider: Версия документа
+    enable_versioning: Активировать управление версиями
   directus_files:
     title: Уникальное название...
     description: Описание (необязательно)...
     location: Расположение (необязательно)...
     storage_divider: Именование файлов
+    focal_point_divider: Точка фокуса
     filename_disk: Имя на диске...
     filename_download: Имя при скачивании...
   directus_roles:
     name: Уникальное название для этой роли...
     description: Описание этой роли...
+    ip_access: Добавьте разрешенные IP-адреса, диапазоны IP и блоки CIDR. Оставьте пустым, чтобы разрешить любые...
     fields:
       icon_name: Иконка
       name_name: Название
@@ -1456,6 +1600,7 @@ authenticated: Аутентифицирован
 options: Параметры
 otp: Одноразовый пароль
 password: Пароль
+confirm_password: Подтвердите пароль
 permissions: Права доступа
 relationship: Отношения
 reset: Сбросить
@@ -1472,6 +1617,14 @@ select_field_type: Выберите тип поля
 select_interface: Выберите интерфейс
 select_display: Выберите отображение
 settings: Настройки
+register: Регистрация
+registration_successful_headline: Успешно!
+registration_successful_note: Теперь вы можете перейти на страницу входа.
+registration_successful_check_email_note: |
+  Пожалуйста, обратите внимание, что прежде чем вы сможете войти в систему, вам нужно подтвердить ваш адрес электронной почты, нажав на ссылку подтверждения, отправленную вам.
+dont_have_an_account: У вас нет аккаунта?
+already_have_an_account: Уже зарегистрированы?
+sign_up_now: Зарегистрироваться
 sign_in: Войти
 sign_out: Выйти
 sign_out_confirm: Вы уверены, что хотите выйти?
@@ -1501,7 +1654,12 @@ navigate_to_item: Перейти к Элементу
 undo_removed_item: Отменить удаление элемента
 remove_item: Удалить элемент
 delete_item: Удалить элемент
+pause: Приостановить
+resume: Возобновить
 interfaces:
+  list-m2a:
+    prefix_note: Использует по умолчанию имя коллекции связанных элементов.
+    sorting_disabled: Сортировка отключена, так как на одной странице больше элементов, чем может поместиться.
   filter:
     name: Фильтр
     description: Настроить фильтр
@@ -1517,6 +1675,7 @@ interfaces:
     no_rules: Правила не установлены
     change_value: Нажмите, чтобы изменить значение
     placeholder: Перетащите правила сюда
+    add_key_placeholder: Добавьте ключ и нажмите Enter...
   fields:
     name: Поля
   group-accordion:
@@ -1638,8 +1797,11 @@ interfaces:
     description: Окно выбора параметров интерфейса
   system-display:
     display: Отображение
+    description: Выберите существующий дисплей
+    placeholder: Выберите дисплей...
   system-display-options:
     display-options: Параметры отображения
+    description: Модальное окно для выбора параметров отображения
   list-m2m:
     many-to-many: Многие ко Многим
     description: Выберите несколько связанных элементов
@@ -1692,6 +1854,7 @@ interfaces:
     description: Выберите связанные элементы
     no_collection: Коллекция не найдена
   system-folder:
+    folder: Корневой каталог
     description: Выбрать папку
     field_hint: Папка по умолчанию для загруженных файлов без указания папки. Не влияет на существующие файлы.
     root_name: Корень файловой библиотеки
@@ -1762,6 +1925,7 @@ interfaces:
     no_collection: Нет Коллекций
     toggle_split_view: Включить/отключить раздельный вид
     enable: Включить
+    default_split_view_state: По умолчанию разделенный вид состояния
     user_language: Использовать текущий язык пользователя
     default_language: Язык по умолчанию
     language_field: Языковое поле
@@ -1782,7 +1946,9 @@ interfaces:
     description: Расширенный редактор, генерирующий HTML
     toolbar: Панель инструментов
     custom_formats: Пользовательские форматы
+    custom_formats_note: Список форматов контента TinyMCE. Смотрите документацию TinyMCE о [форматировании контента](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) для получения дополнительной информации.
     options_override: Переопределение параметров
+    options_override_note: Ключи форматирования пользователей TinyMCE и их значения. Смотрите документацию TinyMCE о [Форматировании пользователей](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) для получения дополнительной информации.
     folder_note: Папка для загруженных файлов. Не влияет на существующие файлы.
     imageToken: Токен Статического Доступа
     imageToken_label: Статический токен доступа добавляется после URL-адреса файла
@@ -1804,6 +1970,7 @@ interfaces:
       inlinecode: Встроенный код
       delimiter: Разделитель
       checklist: Список
+      toggle: Переключить блок
       alignment: Выравнивание
       raw: HTML код
   input-autocomplete-api:
@@ -1811,6 +1978,7 @@ interfaces:
     description: Автодополнение значений поиска через внешний API.
     results_path: Путь к результатам
     value_path: Путь значения
+    text_path: Путь к тексту
     trigger: Триггер
     rate: Рейтинг
   group-raw:
@@ -1828,12 +1996,14 @@ interfaces:
     system-token: Ключ доступа
     description: Управление токеном статического доступа
     placeholder: Нажмите "Сгенерировать Токен", чтобы создать новый Токен статического доступа
+    value_securely_saved: Значение сохранено безопасным способом
     generate: Сгенерировать Токен
     regenerate: Перевыпустить Токен
     generate_success_copy: Обязательно создайте резервную копию и скопируйте токен выше. Из соображений безопасности вы не сможете просмотреть токен снова после сохранения и перехода с этой страницы.
     remove_token: Удалить Токен
   system-raw-editor:
     system-raw-editor: Редактор сырых данных
+    description: Разрешить ввод простых или шаблонных значений без логики
 displays:
   translations:
     translations: Переводы
@@ -1872,9 +2042,16 @@ displays:
     relative: Относительный
     relative_label: 'Показывать относительное время, прим.: 5 минут назад'
     suffix: Суффикс
+    suffix_label: Показать относительный индикатор
+    suffix_note: Использует слова "in" и "ago"
+    strict: Точное
     strict_label: Использовать строгие единицы измерения
     strict_note: Удаляет слова типа 'almost', 'over', 'less than'
+    round: Округлить
     round_note: Выберите округляющую функцию
+    down: Вниз
+    nearest: Ближайшие
+    up: Вверх
   file:
     file: Файл
     description: Показать файлы
@@ -1893,9 +2070,11 @@ displays:
     bold: Жирный
     bold_label: Использовать жирный шрифт
     italic: Наклонный
+    italic_label: Использовать курсив
     prefix: Префикс
     prefix_label: Подготовить текст
     suffix: Суффикс
+    suffix_label: Добавленный текст
     color: Цвет
     background: Фон
     icon: Иконка
@@ -1910,6 +2089,7 @@ displays:
     description: Показывать форматированную версию объекта
   hash:
     hash: Хэш
+    description: Показать отредактированную версию значения
   icon:
     icon: Иконка
     description: Отображать иконку
@@ -1989,6 +2169,10 @@ layouts:
     no_compatible_fields: Нет совместимых полей
   kanban:
     name: Канбан
+    group_field: Сгруппировать по
+    group_field_placeholder: Поле для группировки по...
+    group_title: Название группы
+    group_title_placeholder: Поле для заголовков группы...
     title: Заголовок Карточки
     title_placeholder: Название (необязательно)...
     text: Текст Карточки
@@ -2014,6 +2198,7 @@ layouts:
     not_all_loaded: Загружены только первые 1000 элементов.
 horizontal: Горизонтально
 vertical: Вертикально
+axis: Ось
 x_axis: Ось X
 y_axis: Ось Y
 y_axis_function: Функция оси Y
@@ -2040,6 +2225,9 @@ panels:
     name: Метрика
     description: Показать одно значение на основе запроса
     field: Поле
+  metric_list:
+    name: Список показателей
+    description: Перечислите и визуализируйте агрегированные показатели из коллекции
   time_series:
     name: Последовательности
     description: Отображение линейного графика на основе значений по времени
@@ -2055,12 +2243,15 @@ panels:
     description: Фильтр и список полей из коллекции
   barchart:
     name: Гистограмма
+    description: Столбцы или столбцы для сравнения групп значений
     horizontal: Горизонтально
     select_collection: Необходимо выбрать коллекцию.
   linechart:
     name: Линейный график
+    description: Линейная диаграмма для сравнения изменения поля
     disabled_grouping: Отключено при выборе группировки.
     disabled_no_grouping: Отключено, если не выбрана ни одна группировка.
+    show_marker: Показать маркер подсказки
     curve_type: Тип кривой
     smooth: Гладкий
     straight: Прямой
@@ -2068,8 +2259,10 @@ panels:
     show_legend: Показать легенду
   meter:
     name: Счётчик
+    description: Счетчик для отслеживания значений
   piechart:
     name: Круговая или пончиковая диаграмма
+    description: Круговая диаграмма, показывающая соотношение групп в столбце
   variable:
     name: Глобальная переменная
     description: Установить глобальное значение для использования в других фильтрах Панелей
@@ -2087,6 +2280,7 @@ triggers:
     response_body_last: Данные последней операции
   event:
     name: Хук события
+    description: Триггеры на платформе или событиях данных
     action: 'Действие (не блокирующее)'
     filter: 'Фильтр (блокирующий)'
   webhook:
@@ -2112,6 +2306,7 @@ triggers:
     require_selection: Требуется выбор
 a_flow_uuid: Выберите процесс для запуска...
 any_string_or_json: Любая строка или JSON...
+item_payload_placeholder: Это JSON, используемый для обновления значений полей элемента...
 operation_variables_note: Вы можете получить доступ к данным процесса с такими переменными как **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** и **{'{'}{'{'}$accountability{'}'}{'}'}**, или ссылаться на предыдущие операции, используя **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
@@ -2119,30 +2314,46 @@ operations:
     description: Маршрутизировать процесс на основе логики If / Else
   exec:
     name: Выполнить скрипт
+    description: Выполнить произвольный код для изменения полезной нагрузки
     modules: 'Можно использовать следующие **Node модули**:'
   item-create:
     name: Создать данные
     description: Создать элементы в базе данных
     payload: Содержимое
+    emit_events: Генерировать события
   item-delete:
     name: Удалить данные
     description: Удалить элементы в базе данных
+    emit_events: Генерировать события
+    key: Идентификаторы
     query: Запрос
   item-read:
     name: Читать данные
     description: Чтение элементов из базы данных
+    key: Идентификаторы
     query: Запрос
+    emit_events: Генерировать события
   item-update:
     name: Обновить данные
     description: Обновить элементы в базе данных
+    emit_events: Генерировать события
+    key: Идентификаторы
     payload: Содержимое
     query: Запрос
   json-web-token:
+    name: Веб-токен JSON (JWT)
+    description: Подписать и проверить Веб-токен JSON
     operation: Действие
     secret: Секрет
+    secret_placeholder: Введите секрет...
     payload: Содержимое
     token: Ключ доступа
+    token_placeholder: eyJhbGciOi......
     options: Параметры
+    options_placeholder: 'См. https://www.npmjs.com/package/jsonwebtoken#usage для всех доступных параметров'
+    sign: Подписать токен
+    verify: Проверить токен
+    decode: Расшифровать токен
   log:
     name: Лог в консоли
     description: Вывод какой-либо информации в консоль
@@ -2151,6 +2362,7 @@ operations:
   mail:
     name: Отправить эл. письмо
     description: Отправить письмо одному или нескольким людям
+    to: Кому
     to_placeholder: Добавьте адреса эл. почты и нажмите Enter...
     body: Тело
     template: Шаблон
@@ -2161,6 +2373,7 @@ operations:
     recipient: Пользователь
     recipient_placeholder: Введите UUID...
     recipient_note: Добавьте пользовательский UUID и нажмите Enter...
+    item_note: Ключ элемента или относительный URL
     message: Сообщение
     subject: Тема
   request:
@@ -2173,6 +2386,7 @@ operations:
     headers: Заголовки
     header: HTTP-заголовок
     header_placeholder: Авторизация...
+    value_placeholder: Bearer eyJhbGciOi...
   sleep:
     name: Сон
     description: Ожидать заданное количество миллисекунд
@@ -2186,28 +2400,51 @@ operations:
     flows: Процессы
     flow: Процесс
     data: Данные
+    iteration_mode: Режим итерации
+    iteration_mode_note: Режим для итерации массивов.
+    serial: Серийный
     parallel: Параллельно
+    batch: Пакет
+    batch_size: Размер пакета
     cache: Кэш
+unit: Единица измерения
 standard: Стандартный
 scientific: Научный
+engineering: Инжиниринг
 compact: Компактный
 currency: Валюта
+notation: Обозначение
 style: Стиль
 fonts:
   thin: Тонкий
+  extra_light: Сверхсветлый
+  light: Светлый
   normal: Нормальный
   medium: Средний
   semi_bold: Полужирный
   bold: Жирный
+  extra_bold: Очень жирный
   black: Чёрный
   italic: Наклонный
+  oblique: Наклонный
   small: Маленький
   large: Большой
   auto: Авто
+text_wrap: Перенос текста
 center: По центру
 justify: По ширине
 text_align: Выравнивание Текста
 font_weight: Толщина Шрифта
 font_style: Стиль Шрифта
 font_size: Размер Шрифта
+minimum_fraction_digits: Минимальное количество десятичных знаков
+maximum_fraction_digits: Максимальное количество десятичных знаков
+show_percentage: Показать в процентах
+aggregation: Агрегация
+series_grouping: Группировка серий
+date_precision: Точность даты
+export_dashboard: Экспорт панели инструментов
+duplicate_dashboard: Дублировать панель инструментов
+search_dashboard: Поиск панели инструментов...
+search_flow: Последовательность поиска...
 percent: Процент

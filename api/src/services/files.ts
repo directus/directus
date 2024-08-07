@@ -15,6 +15,7 @@ import url from 'url';
 import { RESUMABLE_UPLOADS } from '../constants.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
@@ -80,6 +81,11 @@ export class FilesService extends ItemsService<File> {
 
 		// The filename_disk is the FINAL filename on disk
 		payload.filename_disk ||= primaryKey + (fileExtension || '');
+
+		// If the filename_disk extension doesn't match the new mimetype, update it
+		if (isReplacement === true && path.extname(payload.filename_disk!) !== fileExtension) {
+			payload.filename_disk = primaryKey + (fileExtension || '');
+		}
 
 		// Temp filename is used for replacements
 		const tempFilenameDisk = 'temp_' + payload.filename_disk;
@@ -157,6 +163,8 @@ export class FilesService extends ItemsService<File> {
 
 		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
 
+		payload.uploaded_on = new Date().toISOString();
+
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
 		const sudoService = new ItemsService('directus_files', {
@@ -193,12 +201,18 @@ export class FilesService extends ItemsService<File> {
 	 * Import a single file from an external URL
 	 */
 	async importOne(importURL: string, body: Partial<File>): Promise<PrimaryKey> {
-		const fileCreatePermissions = this.accountability?.permissions?.find(
-			(permission) => permission.collection === 'directus_files' && permission.action === 'create',
-		);
-
-		if (this.accountability && this.accountability?.admin !== true && !fileCreatePermissions) {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'create',
+					collection: 'directus_files',
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
+			);
 		}
 
 		let fileResponse;

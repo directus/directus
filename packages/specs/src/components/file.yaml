@@ -33,6 +33,11 @@ properties:
       - type: string
       - $ref: '../openapi.yaml#/components/schemas/Folders'
     nullable: true
+  created_on:
+    description: When the file was created.
+    example: '2019-12-03T00:10:15+00:00'
+    type: string
+    format: date-time
   uploaded_by:
     description: Who uploaded the file.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
@@ -40,7 +45,7 @@ properties:
       - type: string
       - $ref: '../openapi.yaml#/components/schemas/Users'
   uploaded_on:
-    description: When the file was uploaded.
+    description: When the file was last uploaded/replaced.
     example: '2019-12-03T00:10:15+00:00'
     type: string
     format: date-time

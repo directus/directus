@@ -8,8 +8,9 @@ export type File = {
 	title: string | null;
 	type: string | null;
 	folder: string | null;
+	created_on: string;
 	uploaded_by: string | null;
-	uploaded_on: string;
+	uploaded_on: string | null;
 	modified_by: string | null;
 	modified_on: string;
 	charset: string | null;
