@@ -135,7 +135,7 @@ delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
 create_custom_translation: Vytvořit Vlastní Překlad
 edit_custom_translation: Upravit Vlastní Překlad
-no_custom_translations: Žadné Vlastní Překlady
+no_custom_translations: Žádné Vlastní Překlady
 no_custom_translations_copy: Zatím neexistují žádné vlastní překlady.
 invite_users: Pozvat uživatele
 invite: Pozvat
