@@ -30,7 +30,8 @@ test('Defaults that have a type set is casted', () => {
 		PROCESS4: 'array:string:hey,number:1',
 		PROCESS5_FILE: './file.txt',
 		PROCESS6_FILE: 'array:./file.txt',
-		PROCESS7: 'string:ran,d0m'
+		PROCESS7: 'string:ran,d0m',
+		PROCESS8_FILE: 'string:./file.txt',
 	};
 
 	const fileConfigs = {
@@ -44,6 +45,7 @@ test('Defaults that have a type set is casted', () => {
 	vi.mocked(isDirectusVariable).mockReturnValue(true);
 	vi.mocked(readFileSync).mockReturnValueOnce('file-content');
 	vi.mocked(readFileSync).mockReturnValueOnce('one,two,three');
+	vi.mocked(readFileSync).mockReturnValueOnce('ran,d0m,from-file');
 	vi.mocked(readFileSync).mockReturnValueOnce('file-from-file-content');
 	vi.mocked(readFileSync).mockReturnValueOnce('elem1,elem2');
 
@@ -57,6 +59,7 @@ test('Defaults that have a type set is casted', () => {
 		PROCESS5: 'file-content',
 		PROCESS6: ['one', 'two', 'three'],
 		PROCESS7: 'ran,d0m',
+		PROCESS8: 'ran,d0m,from-file',
 		FILE1: 'test-file',
 		FILE2: 'file-from-file-content',
 		FILE3: ['elem1', 'elem2'],
