@@ -28,7 +28,23 @@ export const transaction = async <T = unknown>(knex: Knex, handler: (knex: Knex)
 			 */
 			const COCKROACH_RETRY_ERROR_CODE = '40001';
 
-			if (client !== 'cockroachdb' || error?.code !== COCKROACH_RETRY_ERROR_CODE) throw error;
+			/**
+			 * SQLITE_BUSY is an error code returned by SQLite when an operation can't be
+			 * performed due to a locked database file. This often arises due to multiple
+			 * processes trying to simultaneously access the database, causing potential
+			 * data inconsistencies. To handle this, one can utilize a retry mechanism
+			 * where the operation is attempted again after a short delay. Further
+			 * solutions include using serialized or Write-Ahead Logging (WAL) modes
+			 * in SQLite, both facilitating simultaneous access by multiple applications.
+			 *
+			 * @link https://www.sqlite.org/rescode.html#busy
+			 */
+			const SQLITE_BUSY_ERROR_CODE = 'SQLITE_BUSY';
+
+			if (
+				(client === 'cockroachdb' && error?.code !== COCKROACH_RETRY_ERROR_CODE) ||
+				(client === 'sqlite' && error?.code !== SQLITE_BUSY_ERROR_CODE)
+			) throw error;
 
 			const MAX_ATTEMPTS = 3;
 			const BASE_DELAY = 100;
@@ -45,7 +61,7 @@ export const transaction = async <T = unknown>(knex: Knex, handler: (knex: Knex)
 				try {
 					return await knex.transaction((trx) => handler(trx));
 				} catch (error: any) {
-					if (error?.code !== COCKROACH_RETRY_ERROR_CODE) throw error;
+					if (error?.code !== COCKROACH_RETRY_ERROR_CODE && error?.code !== SQLITE_BUSY_ERROR_CODE) throw error;
 				}
 			}
 
