@@ -25,10 +25,12 @@ afterEach(() => {
 test('Defaults that have a type set is casted', () => {
 	const processConfigs = {
 		PROCESS1: 'test-process',
-		PROCESS2: 'array:1,2',
-		PROCESS3: 'array:string:hey,number:1',
-		PROCESS4_FILE: './file.txt',
-		PROCESS5_FILE: 'array:./file.txt',
+		PROCESS2: 'array:one,two',
+		PROCESS3: 'one,two,three',
+		PROCESS4: 'array:string:hey,number:1',
+		PROCESS5_FILE: './file.txt',
+		PROCESS6_FILE: 'array:./file.txt',
+		PROCESS7: 'string:ran,d0m'
 	};
 
 	const fileConfigs = {
@@ -49,10 +51,12 @@ test('Defaults that have a type set is casted', () => {
 
 	expect(env).toEqual({
 		PROCESS1: 'test-process',
-		PROCESS2: [1, 2],
-		PROCESS3: ['hey', 1],
-		PROCESS4: 'file-content',
-		PROCESS5: ['one', 'two', 'three'],
+		PROCESS2: ['one', 'two'],
+		PROCESS3: ['one', 'two', 'three'],
+		PROCESS4: ['hey', 1],
+		PROCESS5: 'file-content',
+		PROCESS6: ['one', 'two', 'three'],
+		PROCESS7: 'ran,d0m',
 		FILE1: 'test-file',
 		FILE2: 'file-from-file-content',
 		FILE3: ['elem1', 'elem2'],
