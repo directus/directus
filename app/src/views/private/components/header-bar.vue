@@ -119,6 +119,7 @@ onUnmounted(() => {
 		position: relative;
 		display: flex;
 		align-items: center;
+		gap: 16px;
 		width: 100%;
 		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;

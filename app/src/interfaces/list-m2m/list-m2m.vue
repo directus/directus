@@ -24,7 +24,7 @@ import Draggable from 'vuedraggable';
 const props = withDefaults(
 	defineProps<{
 		value?: (number | string | Record<string, any>)[] | Record<string, any>;
-		primaryKey: string | number;
+		primaryKey: string | number | null;
 		collection: string;
 		field: string;
 		width: string;
@@ -41,6 +41,7 @@ const props = withDefaults(
 		limit?: number;
 		allowDuplicates?: boolean;
 		junctionFieldLocation?: string;
+		junctionFilter?: Filter | null;
 	}>(),
 	{
 		value: () => [],
@@ -123,6 +124,7 @@ const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
 const sort = ref<Sort>();
+const junctionFilter = ref<Filter | null>(props.junctionFilter ?? null);
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
@@ -137,6 +139,14 @@ const query = computed<RelationQueryMultiple>(() => {
 
 	if (searchFilter.value) {
 		q.filter = searchFilter.value;
+	}
+
+	if (junctionFilter.value) {
+		if (q.filter) {
+			q.filter = { _and: [q.filter, junctionFilter.value] };
+		} else {
+			q.filter = junctionFilter.value;
+		}
 	}
 
 	if (search.value) {
@@ -216,7 +226,9 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true },
+	{
+		immediate: true,
+	},
 );
 
 const spacings = {
@@ -560,7 +572,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+						<v-pagination
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 1 : 2"
+							show-first-last
+						/>
 
 						<div class="spacer" />
 
@@ -578,7 +595,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 				</template>
 			</div>
 		</div>
@@ -662,10 +679,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
+		margin-left: auto;
 		:deep(.v-button) {
 			display: inline-flex;
 		}

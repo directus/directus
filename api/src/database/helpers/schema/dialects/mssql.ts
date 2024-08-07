@@ -1,5 +1,6 @@
 import type { Knex } from 'knex';
-import { SchemaHelper } from '../types.js';
+import { SchemaHelper, type Sql } from '../types.js';
+import { preprocessBindings } from '../utils/preprocess-bindings.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
 	override applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
@@ -29,5 +30,9 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		} catch {
 			return null;
 		}
+	}
+
+	override preprocessBindings(queryParams: Sql): Sql {
+		return preprocessBindings(queryParams, { format: (index) => `@p${index}` });
 	}
 }

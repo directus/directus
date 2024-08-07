@@ -1,6 +1,6 @@
 {
 	"name": "create-directus-project",
-	"version": "10.0.6",
+	"version": "11.0.0",
 	"description": "A small installer util that will create a directory, add boilerplate folders, and install Directus through npm",
 	"keywords": [
 		"directus",

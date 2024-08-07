@@ -1,8 +1,6 @@
-import type { Accountability } from '@directus/types';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import { AuthenticationService } from '../services/index.js';
 import { getAccountabilityForToken } from '../utils/get-accountability-for-token.js';
-import { getPermissions } from '../utils/get-permissions.js';
 import { getSchema } from '../utils/get-schema.js';
 import { WebSocketError } from './errors.js';
 import type { BasicAuthMessage, WebSocketResponse } from './messages.js';
@@ -40,22 +38,6 @@ export async function authenticateConnection(
 	} catch (error) {
 		throw new WebSocketError('auth', 'AUTH_FAILED', 'Authentication failed.', message['uid']);
 	}
-}
-
-export async function refreshAccountability(
-	accountability: Accountability | null | undefined,
-): Promise<Accountability> {
-	accountability = accountability ?? {
-		role: null,
-		user: null,
-		admin: false,
-		app: false,
-	};
-
-	const schema = await getSchema();
-	const permissions = await getPermissions(accountability, schema);
-
-	return { ...accountability, permissions };
 }
 
 export function authenticationSuccess(uid?: string | number, refresh_token?: string): string {

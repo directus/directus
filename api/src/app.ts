@@ -12,6 +12,7 @@ import path from 'path';
 import qs from 'qs';
 import { registerAuthProviders } from './auth.js';
 import activityRouter from './controllers/activity.js';
+import accessRouter from './controllers/access.js';
 import assetsRouter from './controllers/assets.js';
 import authRouter from './controllers/auth.js';
 import collectionsRouter from './controllers/collections.js';
@@ -28,6 +29,7 @@ import notificationsRouter from './controllers/notifications.js';
 import operationsRouter from './controllers/operations.js';
 import panelsRouter from './controllers/panels.js';
 import permissionsRouter from './controllers/permissions.js';
+import policiesRouter from './controllers/policies.js';
 import presetsRouter from './controllers/presets.js';
 import relationsRouter from './controllers/relations.js';
 import revisionsRouter from './controllers/revisions.js';
@@ -54,11 +56,9 @@ import { getFlowManager } from './flows.js';
 import { createExpressLogger, useLogger } from './logger/index.js';
 import authenticate from './middleware/authenticate.js';
 import cache from './middleware/cache.js';
-import { checkIP } from './middleware/check-ip.js';
 import cors from './middleware/cors.js';
 import { errorHandler } from './middleware/error-handler.js';
 import extractToken from './middleware/extract-token.js';
-import getPermissions from './middleware/get-permissions.js';
 import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
@@ -260,15 +260,11 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(authenticate);
 
-	app.use(checkIP);
-
 	app.use(sanitizeQuery);
 
 	app.use(cache);
 
 	app.use(schema);
-
-	app.use(getPermissions);
 
 	await emitter.emitInit('middlewares.after', { app });
 
@@ -279,6 +275,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/graphql', graphqlRouter);
 
 	app.use('/activity', activityRouter);
+	app.use('/access', accessRouter);
 	app.use('/assets', assetsRouter);
 	app.use('/collections', collectionsRouter);
 	app.use('/dashboards', dashboardsRouter);
@@ -297,6 +294,7 @@ export default async function createApp(): Promise<express.Application> {
 	app.use('/operations', operationsRouter);
 	app.use('/panels', panelsRouter);
 	app.use('/permissions', permissionsRouter);
+	app.use('/policies', policiesRouter);
 	app.use('/presets', presetsRouter);
 	app.use('/translations', translationsRouter);
 	app.use('/relations', relationsRouter);

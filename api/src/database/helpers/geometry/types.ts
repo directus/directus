@@ -22,8 +22,9 @@ export abstract class GeometryHelper extends DatabaseHelper {
 		return table.specificType(field.field, type);
 	}
 
-	asText(table: string, column: string): Knex.Raw {
-		return this.knex.raw('st_astext(??.??) as ??', [table, column, column]);
+	asText(table: string, column: string, alias: string | false): Knex.Raw {
+		if (alias) return this.knex.raw('st_astext(??.??) as ??', [table, column, alias]);
+		return this.knex.raw('st_astext(??.??)', [table, column]);
 	}
 
 	fromText(text: string): Knex.Raw {

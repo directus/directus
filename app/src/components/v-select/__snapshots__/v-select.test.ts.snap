@@ -5,6 +5,7 @@ exports[`should hide items not matching search value > object items 1`] = `
   <div data-v-cdcb6889="" id="v-input-stub" full-width="true" readonly="" clickable="" disabled="false"></div>
   <ul data-v-ff20e609="" data-v-cdcb6889="" class="v-list list">
     <!--v-if-->
+    <!--v-if-->
     <div data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub">
       <div data-v-cdcb6889="" id="v-list-item-content-stub">
         <div data-v-cdcb6889="" id="v-input-stub" autofocus="" small="" placeholder="search" modelvalue="Item 1"></div>
@@ -64,6 +65,7 @@ exports[`should hide items not matching search value > string items 1`] = `
 "<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
   <div data-v-cdcb6889="" id="v-input-stub" full-width="true" readonly="" clickable="" disabled="false"></div>
   <ul data-v-ff20e609="" data-v-cdcb6889="" class="v-list list">
+    <!--v-if-->
     <!--v-if-->
     <div data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub">
       <div data-v-cdcb6889="" id="v-list-item-content-stub">
@@ -126,6 +128,7 @@ exports[`should render with object items 1`] = `
   <ul data-v-ff20e609="" data-v-cdcb6889="" class="v-list list">
     <!--v-if-->
     <!--v-if-->
+    <!--v-if-->
     <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item1">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 1</span></div>
@@ -148,6 +151,7 @@ exports[`should render with string items 1`] = `
 "<div data-v-cdcb6889="" id="v-menu-stub" class="v-select" disabled="false" attached="true" show-arrow="false" close-on-content-click="true" placement="bottom" full-height="false">
   <v-input-stub data-v-cdcb6889="" full-width="true" readonly="" clickable="" disabled="false"></v-input-stub>
   <ul data-v-ff20e609="" data-v-cdcb6889="" class="v-list list">
+    <!--v-if-->
     <!--v-if-->
     <!--v-if-->
     <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 1">
