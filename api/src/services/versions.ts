@@ -33,10 +33,23 @@ export class VersionsService extends ItemsService {
 		// Reserves the "main" version key for the version query parameter
 		if (data['key'] === 'main') throw new InvalidPayloadError({ reason: `"main" is a reserved version key` });
 
-		try {
-			await this.authorizationService.checkAccess('read', data['collection'], data['item']);
-		} catch {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			try {
+				await validateAccess(
+					{
+						accountability: this.accountability,
+						action: 'read',
+						collection: data['collection'],
+						primaryKeys: [data['item']],
+					},
+					{
+						schema: this.schema,
+						knex: this.knex,
+					},
+				);
+			} catch {
+				throw new ForbiddenError();
+			}
 		}
 
 		const { CollectionsService } = await import('./collections.js');
