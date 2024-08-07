@@ -39,13 +39,10 @@ export default defineModule({
 		},
 	],
 	preRegisterCheck(user, permissions) {
-		const admin = user.role.admin_access;
+		const admin = user.admin_access;
 		if (admin) return true;
 
-		const permission = permissions.find(
-			(permission) => permission.collection === 'directus_users' && permission.action === 'read',
-		);
-
-		return !!permission;
+		const access = permissions['directus_users']?.['read']?.access;
+		return access === 'partial' || access === 'full';
 	},
 });

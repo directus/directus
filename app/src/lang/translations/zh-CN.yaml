@@ -595,7 +595,10 @@ allow_duplicates: 允许重复项
 comments: 注释
 no_comments: 暂无注释
 expand: 展开
+expand_all: 展开全部
+expand_none: 展开无
 collapse: 收起
+collapse_all: 全部折叠
 select_item: 选择条目
 no_items: 无条目
 search_items: 搜索项
@@ -1650,6 +1653,8 @@ navigate_to_item: 导航到项目
 undo_removed_item: 撤消删除的项目
 remove_item: 删除项目
 delete_item: 删除项目
+pause: 暂停
+resume: 恢复
 interfaces:
   list-m2a:
     prefix_note: 默认情况下使用相关项目的收藏名称

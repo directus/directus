@@ -35,7 +35,7 @@ export function useRelationMultiple(
 	value: Ref<Record<string, any> | any[] | undefined>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
-	itemId: Ref<string | number>,
+	itemId: Ref<string | number | null>,
 ) {
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
@@ -313,7 +313,7 @@ export function useRelationMultiple(
 	async function updateFetchedItems() {
 		if (!relation.value) return;
 
-		if (!itemId.value || itemId.value === '+') {
+		if (itemId.value === undefined || itemId.value === '+') {
 			fetchedItems.value = [];
 			return;
 		}

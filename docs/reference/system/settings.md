@@ -15,10 +15,10 @@ pageClass: page-reference
 Primary key of the setting.
 
 `project_name` **string**\
-Name of the project, shown in the Admin App.
+Name of the project, shown in the Data Studio.
 
 `project_descriptor` **string**\
-Descriptor of the project, shown in the Admin App.
+Descriptor of the project, shown in the Data Studio.
 
 `project_url` **string**\
 Link to the (public) website that goes with this project.
@@ -72,16 +72,16 @@ Brand color for the current project.
 Primary logo for the current project. Many-to-one to [files](/reference/files).
 
 `public_foreground` **many-to-one**\
-Foreground image for the Admin App's public pages. Many-to-one to [files](/reference/files).
+Foreground image for the Data Studio's public pages. Many-to-one to [files](/reference/files).
 
 `public_background` **many-to-one**\
-Background image for the Admin App's public pages. Many-to-one to [files](/reference/files).
+Background image for the Data Studio's public pages. Many-to-one to [files](/reference/files).
 
 `public_favicon` **many-to-one**\
 Favicon for the Data Studio. Many-to-one to [files](/reference/files).
 
 `public_note` **string**\
-Note shown on the Admin App's public pages. Supports Markdown.
+Note shown on the Data Studio's public pages. Supports Markdown.
 
 `default_appearance` **string**\
 One of `auto`, `light`, `dark`.

@@ -1446,7 +1446,7 @@ field_options:
     sort_divider: 정렬
     sort_field: 필드 선택...
     accountability_divider: 책임
-    duplication_divider: 복사
+    duplication_divider: 복제
     preview_divider: 미리보기
     content_versioning_divider: 콘텐츠 버전 관리
     enable_versioning: 버전 관리 활성화

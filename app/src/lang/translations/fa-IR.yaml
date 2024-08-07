@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: درباره
 identifier: شناساگر
 avatar: آواتار
 application: برنامه
@@ -7,15 +28,18 @@ method: شیوه
 published: منتشر شد
 draft: پیش‌نویس
 archived: بایگانی‌شده
+marketplace: بازار
 extensions: افزونه ها
 modules: ماژول‌ها
 module_bar: نوار ماژول ها
 logs: تاریخچه رخدادها
+unknown: نامشخص
 reset_width: تنظیم مجدد عرض
 tile_size: اندازه هر مربع در نقشه
 edit_field: ویرایش فیلد
 conditions: شرایط
 location: موقعیت
+collection_names_are_case_sensitive: نام مجموعه ها حساس به حروف کوچک و بزرگ هستند
 condition_rules: استایل شرطی
 input: ورودی
 maps: نقشه‌ها
@@ -46,8 +70,15 @@ extension_endpoint: نقطه اتصال
 extension_operation: عملیات
 extension_bundle: پکیج ها
 extension_interfaces: رابط‌های کاربری
+extension_layouts: چیدمان ها
 extension_modules: ماژول‌ها
+extension_panels: پنل‌ها
+extension_themes: پوسته‌ها
+last_updated_relative: آخرین به روزرسانی {relativeTime}
+homepage: صفحه اصلی
+website: وب سایت
 enable: فعال سازی
+disable: غیرفعال کردن
 custom: سفارشی
 hook: هوک
 fill_width: عرض کامل
@@ -95,6 +126,9 @@ rename_folder: تغییر نام پوشه
 delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
+version: نسخه
+promote_version_disabled: بدون تغییر
+promote_version_changes: تغییرات
 promote_version_preview: پيش نمايش
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
@@ -142,6 +176,9 @@ validationError:
   required: مقدار الزامی است
   unique: مقدار باید یکتا باشد
   regex: این مقدار، فرمت صحیحی ندارد
+  iends_with: مقدار باید با {substring} پایان یابد
+  nends_with: مقدار نمی‌تواند با {substring} پایان یابد
+  niends_with: مقدار نمی‌تواند با {substring} پایان یابد
 all_access: دسترسی کامل
 no_access: بدون دسترسی
 use_custom: استفاده از حالت سفارشی
@@ -239,6 +276,10 @@ time: زمان
 timestamp: الگوی زمانی
 uuid: شماره شناسایی یکتا (UUID)
 hash: هش
+geometry:
+  All: هندسی (همه)
+theme_light: حالت روشن
+theme_dark: حالت تاریک
 not_available_for_type: برای این نوع در دسترس نیست
 create_translations: ایجاد ترجمه
 auto_refresh: تازه نمودن خودکار
@@ -250,6 +291,7 @@ auto_generate: تولید خودکار
 this_will_auto_setup_fields_relations: کلیه فیلدها و روابط مورد نیاز بدینوسیله بروزرسانی خواهد شد.
 click_here: اینجا کلیک کنید
 to_manually_setup_translations: راه اندازی دستی ترجمه ها.
+manage: مدیریت
 click_to_manage_translated_fields: >-
   هنوز هیچ فیلد ترجمه شده ای وجود ندارد. برای ساخت آن، اینجا را کلیک کنید. | هیچ فیلد ترجمه شده ای وجود ندارد. برای مدیرت آن، اینجا را کلیک کنید. | تعداد {count} فیلد ترجمه شده وجود دارد. برای مدیریت آنها اینجا را کلیک کنید.
 fields_group: گروه فیلدها
@@ -418,6 +460,7 @@ months:
   december: دسامبر
 drag_mode: حالت کشیدن
 cancel_crop: لغو برش
+cancel_selection: لغو انتخاب
 original: مقدار اولیه
 url: URL
 import_label: وارد کردن
@@ -443,6 +486,7 @@ import_from_url: استخراج فایل از URL
 replace_from_device: جایگزینی فایل از دستگاه
 replace_from_library: جایگزینی فایل از مجموعه
 replace_from_url: جایگزینی فایل از URL
+no_image_selected: تصویری انتخاب نشده است
 no_file_selected: هیچ فایلی انتخاب نشده است
 download_file: دانلود فایل
 start_export: شروع برون بری
@@ -999,6 +1043,7 @@ batch_delete_confirm: >-
   هیچ آیتمی انتخاب نشده است | آیا مطمئنید که میخواهید این آیتم را حذف کنید؟ این عمل غیرقابل بازگشت است. | آیا مطمئنید که میخواهید این {count} آیتم را پاک کنید؟ این عمل غیر قابل بازگشت است.
 cancel: انصراف
 no_upscale: تصاویر را بالا نبرید
+source_registry: بازار
 collection: مجموعه
 collections: مجموعه‌ها
 content: محتوا

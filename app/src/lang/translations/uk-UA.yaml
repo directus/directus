@@ -539,6 +539,7 @@ file_details: Подробиці файлу
 dimensions: Розміри
 size: Розмір
 created: Створено
+uploaded: Відвантажено
 modified: Змінено
 owner: Власник
 edited_by: Відредагували
@@ -595,7 +596,10 @@ allow_duplicates: Дозволити дублікати
 comments: Коментарі
 no_comments: Коментарів ще немає
 expand: Розгорнути
+expand_all: Розгорнути все
+expand_none: Розгорнути нічого
 collapse: Згорнути
+collapse_all: Закрити все
 select_item: Обрати об'єкт
 no_items: Об'єктів немає
 search_items: Пошук об'єктів...
@@ -1650,6 +1654,8 @@ navigate_to_item: Перейти до елемента
 undo_removed_item: Повернути видалений Об'єкт
 remove_item: Вилучити елемент
 delete_item: Видалити елемент
+pause: Пауза
+resume: Продовжити
 interfaces:
   list-m2a:
     prefix_note: За замовчуванням використовується назва колекції відповідного елемента.
