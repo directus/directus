@@ -44,7 +44,8 @@ export const transaction = async <T = unknown>(knex: Knex, handler: (knex: Knex)
 			if (
 				(client === 'cockroachdb' && error?.code !== COCKROACH_RETRY_ERROR_CODE) ||
 				(client === 'sqlite' && error?.code !== SQLITE_BUSY_ERROR_CODE)
-			) throw error;
+			)
+				throw error;
 
 			const MAX_ATTEMPTS = 3;
 			const BASE_DELAY = 100;
