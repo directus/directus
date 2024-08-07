@@ -232,6 +232,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `CONFIG_PATH`                   | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
 | `HOST`                          | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
 | `PORT`                          | What port to run the API under.                                                                                             | `8055`                       |
+| `UNIX_SOCKET_PATH`              | The Unix socket the API listens on, `PORT` and `HOST` will be ignored if this is provided.                                  | --                           |
 | `PUBLIC_URL`<sup>[1]</sup>      | URL where your API can be reached on the web.                                                                               | `/`                          |
 | `LOG_LEVEL`                     | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
 | `LOG_STYLE`                     | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
