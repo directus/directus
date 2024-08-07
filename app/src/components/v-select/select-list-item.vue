@@ -71,8 +71,9 @@ const isActive = computed(() => {
 </template>
 
 <style scoped>
+.item-text,
 .checkbox :deep(.type-text) {
-	font-family: v-bind('$props.itemLabelFontFamily');
+	font-family: v-bind('itemLabelFontFamily');
 }
 
 .item-text-margin {

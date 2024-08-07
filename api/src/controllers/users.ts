@@ -5,7 +5,7 @@ import {
 	InvalidPayloadError,
 	isDirectusError,
 } from '@directus/errors';
-import type { PrimaryKey, RegisterUserInput, Role } from '@directus/types';
+import type { PrimaryKey, RegisterUserInput } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
 import checkRateLimit from '../middleware/rate-limiter-registration.js';
@@ -14,7 +14,6 @@ import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { MetaService } from '../services/meta.js';
-import { RolesService } from '../services/roles.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -376,38 +375,6 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"otp" is required` });
 		}
 
-		// Override permissions only when enforce TFA is enabled in role
-		if (req.accountability.role) {
-			const rolesService = new RolesService({
-				schema: req.schema,
-			});
-
-			const role = (await rolesService.readOne(req.accountability.role)) as Role;
-
-			if (role && role.enforce_tfa) {
-				const existingPermission = await req.accountability.permissions?.find(
-					(p) => p.collection === 'directus_users' && p.action === 'update',
-				);
-
-				if (existingPermission) {
-					existingPermission.fields = ['tfa_secret'];
-					existingPermission.permissions = { id: { _eq: req.accountability.user } };
-					existingPermission.presets = null;
-					existingPermission.validation = null;
-				} else {
-					(req.accountability.permissions || (req.accountability.permissions = [])).push({
-						action: 'update',
-						collection: 'directus_users',
-						fields: ['tfa_secret'],
-						permissions: { id: { _eq: req.accountability.user } },
-						presets: null,
-						role: req.accountability.role,
-						validation: null,
-					});
-				}
-			}
-		}
-
 		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -429,38 +396,6 @@ router.post(
 
 		if (!req.body.otp) {
 			throw new InvalidPayloadError({ reason: `"otp" is required` });
-		}
-
-		// Override permissions only when enforce TFA is enabled in role
-		if (req.accountability.role) {
-			const rolesService = new RolesService({
-				schema: req.schema,
-			});
-
-			const role = (await rolesService.readOne(req.accountability.role)) as Role;
-
-			if (role && role.enforce_tfa) {
-				const existingPermission = await req.accountability.permissions?.find(
-					(p) => p.collection === 'directus_users' && p.action === 'update',
-				);
-
-				if (existingPermission) {
-					existingPermission.fields = ['tfa_secret'];
-					existingPermission.permissions = { id: { _eq: req.accountability.user } };
-					existingPermission.presets = null;
-					existingPermission.validation = null;
-				} else {
-					(req.accountability.permissions || (req.accountability.permissions = [])).push({
-						action: 'update',
-						collection: 'directus_users',
-						fields: ['tfa_secret'],
-						permissions: { id: { _eq: req.accountability.user } },
-						presets: null,
-						role: req.accountability.role,
-						validation: null,
-					});
-				}
-			}
 		}
 
 		const service = new TFAService({
