@@ -70,7 +70,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			// Don't show count if there are no items
 			if (!totalCount.value || !itemCount.value) return;
 
-			return formatItemsCountPaged(itemCount.value, page.value, limit.value, !!filterUser.value, totalCount.value);
+			return formatItemsCountPaged({
+				currentItems: itemCount.value,
+				currentPage: page.value,
+				perPage: limit.value,
+				isFiltered: !!filterUser.value,
+				totalItems: totalCount.value,
+			});
 		});
 
 		const width = ref(0);

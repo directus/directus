@@ -1,12 +1,20 @@
 import { useI18n } from 'vue-i18n';
 
-export function formatItemsCountPaged(
-	currentItems: number,
-	currentPage: number,
-	perPage: number,
-	isFiltered?: boolean,
-	totalItems?: number,
-) {
+export type FormatItemsCountOptions = {
+	currentItems: number;
+	currentPage: number;
+	perPage: number;
+	isFiltered?: boolean;
+	totalItems?: number;
+};
+
+export function formatItemsCountPaged({
+	currentItems,
+	currentPage,
+	perPage,
+	isFiltered,
+	totalItems,
+}: FormatItemsCountOptions) {
 	const { t, n } = useI18n();
 
 	const values = {
@@ -27,7 +35,17 @@ export function formatItemsCountPaged(
 	return t('item_count', values, currentItems);
 }
 
-export function formatItemsCountRelative(totalItems: number, currentItems: number, isFiltered = false) {
+export type FormatItemsCountRelativeOptions = {
+	totalItems: number;
+	currentItems: number;
+	isFiltered?: boolean;
+};
+
+export function formatItemsCountRelative({
+	totalItems,
+	currentItems,
+	isFiltered = false,
+}: FormatItemsCountRelativeOptions) {
 	const { t, n } = useI18n();
 
 	const values = {

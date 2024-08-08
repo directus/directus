@@ -34,7 +34,12 @@ watchDebounced(
 const { t } = useI18n();
 
 const showingCount = computed(() =>
-	formatItemsCountPaged(props.filterCount, props.page, props.perPage, !!search.value),
+	formatItemsCountPaged({
+		currentItems: props.filterCount,
+		currentPage: props.page,
+		perPage: props.perPage,
+		isFiltered: !!search.value,
+	}),
 );
 
 const typeOptions = [

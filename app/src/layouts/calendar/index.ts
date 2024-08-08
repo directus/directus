@@ -249,7 +249,11 @@ export default defineLayout<LayoutOptions>({
 			// Return total count if no start date field is selected
 			if (!startDateField.value) return t('item_count', { count: n(totalCount.value) }, totalCount.value);
 
-			return formatItemsCountRelative(totalCount.value, itemCount.value, !!props.filterUser);
+			return formatItemsCountRelative({
+				totalItems: totalCount.value,
+				currentItems: itemCount.value,
+				isFiltered: !!props.filterUser,
+			});
 		});
 
 		return {

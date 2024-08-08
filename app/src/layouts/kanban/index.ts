@@ -233,7 +233,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const displayedCount = groupedItems.value.reduce((sum, { items }) => sum + items.length, 0);
 
-			return formatItemsCountRelative(totalCount.value, displayedCount, !!props.filterUser);
+			return formatItemsCountRelative({
+				totalItems: totalCount.value,
+				currentItems: displayedCount,
+				isFiltered: !!props.filterUser,
+			});
 		});
 
 		return {

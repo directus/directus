@@ -242,9 +242,19 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (!geometryOptions.value) return t('item_count', { count: n(totalCount.value) }, totalCount.value);
 
 			if (totalPages.value > 1)
-				return formatItemsCountPaged(itemCount.value, page.value, limit.value, !!props.filterUser, totalCount.value);
+				return formatItemsCountPaged({
+					currentItems: itemCount.value,
+					currentPage: page.value,
+					perPage: limit.value,
+					isFiltered: !!props.filterUser,
+					totalItems: totalCount.value,
+				});
 
-			return formatItemsCountRelative(totalCount.value, itemCount.value, !!props.filterUser);
+			return formatItemsCountRelative({
+				totalItems: totalCount.value,
+				currentItems: itemCount.value,
+				isFiltered: !!props.filterUser,
+			});
 		});
 
 		type ItemPopup = { item?: any; position?: { x: number; y: number } };
