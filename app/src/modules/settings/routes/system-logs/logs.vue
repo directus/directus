@@ -5,7 +5,7 @@ import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { realtime } from '@directus/sdk';
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import LogsDisplay from './components/logs-display.vue';
@@ -36,6 +36,7 @@ const instances = ref<string[]>([]);
 const maxLogLevelName = ref('');
 const activeInstances = ref<string[]>([]);
 const filterOptions = ref<LogsFilter>({ logLevelNames: null, logLevelValues: [], nodeIds: null, search: '' });
+let isFilterOptionsUpdated = false;
 const shouldStream = ref(false);
 const streamConnected = ref(false);
 const maxLogs = 10_000;
@@ -83,6 +84,7 @@ const filterOptionsUpdated = async ({ logLevelNames, nodeIds }: LogsFilter) => {
 		activeInstances.value = nodeIds;
 	}
 
+	isFilterOptionsUpdated = true;
 	scrollLogsToBottom();
 };
 
@@ -97,6 +99,17 @@ const filteredLogs = computed(() => {
 				.includes(filterOptions.value.search?.toLowerCase() || '')
 		);
 	});
+});
+
+watch(filteredLogs, (cur, prev) => {
+	if (autoScroll.value) return;
+
+	if (isFilterOptionsUpdated) {
+		unreadLogsCount.value = 0;
+		isFilterOptionsUpdated = false;
+	} else {
+		unreadLogsCount.value += cur.length - prev.length;
+	}
 });
 
 const fields = computed(() => {
@@ -253,8 +266,6 @@ client.onWebSocket('message', function (message) {
 
 			if (autoScroll.value) {
 				scrollLogsToBottom();
-			} else {
-				unreadLogsCount.value++;
 			}
 
 			logsCount.value++;

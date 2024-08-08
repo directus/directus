@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { localizedFormat } from '@/utils/localized-format';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
@@ -41,7 +41,7 @@ async function scrollToBottom() {
 
 	function scrollStepFn() {
 		const totalHeight = scrollerEl.scrollHeight;
-		const scrollStep = totalHeight / 50;
+		const scrollStep = totalHeight / 20;
 
 		if (scrollerEl.scrollTop + scrollerEl.clientHeight < totalHeight) {
 			scrollerEl.scrollTop += scrollStep;
@@ -56,6 +56,7 @@ async function scrollToBottom() {
 		}
 	}
 
+	await nextTick();
 	scrollStepFn();
 }
 </script>
