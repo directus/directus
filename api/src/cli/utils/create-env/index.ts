@@ -4,8 +4,8 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { promisify } from 'util';
+import type { Driver } from '../../../types/index.js';
 import type { Credentials } from '../create-db-connection.js';
-import type { drivers } from '../drivers.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -18,19 +18,18 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-export default async function createEnv(
-	client: keyof typeof drivers,
-	credentials: Credentials,
-	directory: string,
-): Promise<void> {
+export default async function createEnv(client: Driver, credentials: Credentials, directory: string): Promise<void> {
 	const { nanoid } = await import('nanoid');
+
+	// For backwards-compatibility, DB_CLIENT is still 'mysql'
+	const dbClient = client === 'mysql2' ? 'mysql' : client;
 
 	const config: Record<string, any> = {
 		security: {
 			SECRET: nanoid(32),
 		},
 		database: {
-			DB_CLIENT: client,
+			DB_CLIENT: dbClient,
 		},
 	};
 

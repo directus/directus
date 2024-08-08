@@ -780,7 +780,6 @@ page_help_settings_datamodel_collections: >-
   **คอลเลกชัน** — แสดงทุกคอลเลกชัน รวมถึงคอลเลกชันที่ซ่อน คอลเลกชันของระบบ และตารางในฐานข้อมูลที่ถูกเพิ่มเข้ามาภายหลัง
 page_help_settings_datamodel_fields: >-
   **คอลเลกชัน** — ฟอร์มสำหรับการจัดการคอลเลกชันและฟิลด์ต่างๆ
-page_help_settings_roles_collection: '**เรียกดูบทบาท** — แสดงแอดมิน, บทบาทเมื่อเข้าถึงแบบสาธารณะ และบทบาทของผู้ใช้'
 page_help_settings_roles_item: "**รายละเอียดบทบาท** — จัดการบทบาทของสิทธิ์และการตั้งค่าต่างๆ"
 page_help_settings_presets_collection: >-
   **เรียกดูการตั้งค่าล่วงหน้า** — แสดงการตั้งค่าล่วงหน้าทั้งหมดในโปรเจ็ค รวมถึงการตั้งค่าล่วงหน้าของผู้ใช้ บทบาท บุ๊คมาร์ก และรูปแบบการมองเห็น
@@ -912,12 +911,9 @@ fields:
     name: ชื่อบทบาท
     icon: ไอคอนของบทบาท
     description: รายละเอียด
-    app_access: การเข้าถึงแอป
-    admin_access: ผู้ดูแลเท่านั้น
-    ip_access: IP ที่เข้าถึง
-    enforce_tfa: ต้องการ 2FA
     users: ผู้ใช้ในบทบาทนี้
-    module_list: รายการโมดูล
+  directus_policies:
+    description: รายละเอียด
   directus_webhooks:
     name: ชื่อ
     method: เมธอด

@@ -1,11 +1,8 @@
 import type { Knex } from 'knex';
-import { getHelpers } from '../helpers/index.js';
+import { getDatabaseClient } from '../index.js';
 
 export async function up(knex: Knex): Promise<void> {
-	const helper = getHelpers(knex).schema;
-	const isMysql = helper.isOneOfClients(['mysql']);
-
-	if (isMysql) {
+	if (getDatabaseClient(knex) === 'mysql') {
 		// Knex creates invalid statement on MySQL, see https://github.com/knex/knex/issues/1888
 		await knex.schema.raw(
 			'ALTER TABLE `directus_files` CHANGE `uploaded_on` `created_on` TIMESTAMP NOT NULL DEFAULT current_timestamp();',
@@ -28,10 +25,7 @@ export async function down(knex: Knex): Promise<void> {
 		table.dropColumn('uploaded_on');
 	});
 
-	const helper = getHelpers(knex).schema;
-	const isMysql = helper.isOneOfClients(['mysql']);
-
-	if (isMysql) {
+	if (getDatabaseClient(knex) === 'mysql') {
 		await knex.schema.raw(
 			'ALTER TABLE `directus_files` CHANGE `created_on` `uploaded_on` TIMESTAMP NOT NULL DEFAULT current_timestamp();',
 		);

@@ -19,8 +19,7 @@ import { data as packages } from '@/data/packages.data.js';
 Data and permissions around files are associated to the `directus_files` collection.
 
 It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public'
-folder), rather than making the whole collection public. Read more on
-[custom access permissions](/user-guide/user-management/permissions.html#configure-custom-permissions).
+folder), rather than making the whole collection public. Read more on custom access permissions.
 
 ::: warning Exporting Data Creates Files
 
@@ -78,7 +77,7 @@ download will work on the _same_ domain, however it will have the file's "id" as
 
 ## Requesting a Thumbnail
 
-Fetching thumbnails is as easy as adding a `key` query parameter to the original file's URL. In the Admin App, you can
+Fetching thumbnails is as easy as adding a `key` query parameter to the original file's URL. In the Data Studio, you can
 configure different asset presets that control the output of any given image. If a requested thumbnail doesn't yet
 exist, it is dynamically generated and immediately returned.
 

@@ -1,4 +1,3 @@
-import { Permission } from '@directus/types';
+import { ActionPermission } from '@/types/permissions';
 
-export const isFullPermission = (permission: Permission) =>
-	permission.permissions === null || Object.keys(permission.permissions).length === 0;
+export const isFullPermission = (permission: ActionPermission) => permission.access === 'full';

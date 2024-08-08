@@ -223,6 +223,8 @@ prefixing the value with `{type}:`. The following types are available:
 | `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", /\.example3\.com$/]` |
 | `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                |
 
+Explicit casting is also available when reading from a file with the `_FILE` suffix.
+
 ---
 
 ## General
@@ -232,13 +234,14 @@ prefixing the value with `{type}:`. The following types are available:
 | `CONFIG_PATH`                   | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
 | `HOST`                          | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
 | `PORT`                          | What port to run the API under.                                                                                             | `8055`                       |
+| `UNIX_SOCKET_PATH`              | The Unix socket the API listens on, `PORT` and `HOST` will be ignored if this is provided.                                  | --                           |
 | `PUBLIC_URL`<sup>[1]</sup>      | URL where your API can be reached on the web.                                                                               | `/`                          |
 | `LOG_LEVEL`                     | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
 | `LOG_STYLE`                     | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
 | `LOG_HTTP_IGNORE_PATHS`         | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
 | `MAX_PAYLOAD_SIZE`              | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
 | `ROOT_REDIRECT`                 | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                     | Whether or not to serve the Admin application                                                                               | `true`                       |
+| `SERVE_APP`                     | Whether or not to serve the Data Studio                                                                                     | `true`                       |
 | `GRAPHQL_INTROSPECTION`         | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
 | `GRAPHQL_SCHEMA_CACHE_CAPACITY` | How many user GraphQL schemas to store in memory                                                                            | `100`                        |
 | `MAX_BATCH_MUTATION`            | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
@@ -285,20 +288,20 @@ into unexpected behaviors.
 
 ## Database
 
-| Variable                   | Description                                                                                                                                        | Default Value                 |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `DB_CLIENT`                | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, `sqlite3`, `cockroachdb`.                      | --                            |
-| `DB_HOST`                  | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
-| `DB_PORT`                  | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
-| `DB_DATABASE`              | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
-| `DB_USER`                  | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
-| `DB_PASSWORD`              | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                            |
-| `DB_FILENAME`              | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                            |
-| `DB_CONNECTION_STRING`     | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                            |
-| `DB_EXCLUDE_TABLES`        | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
-| `DB_CHARSET`               | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
-| `DB_VERSION`               | Database version, in case you use the PostgreSQL adapter to connect a non-standard database. Not normally required.                                | --                            |
-| `DB_HEALTHCHECK_THRESHOLD` | Healthcheck timeout threshold in ms.                                                                                                               | `150`                         |
+| Variable                           | Description                                                                                                                                        | Default Value                 |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `DB_CLIENT`                        | **Required**. What database client to use. One of `pg` or `postgres`, `mysql`, `oracledb`, `mssql`, `sqlite3`, `cockroachdb`.                      | --                            |
+| `DB_HOST`                          | Database host. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_PORT`                          | Database port. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_DATABASE`                      | Database name. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_USER`                          | Database user. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                                      | --                            |
+| `DB_PASSWORD`                      | Database user's password. **Required** when using `pg`, `mysql`, `oracledb`, or `mssql`.                                                           | --                            |
+| `DB_FILENAME`                      | Where to read/write the SQLite database. **Required** when using `sqlite3`.                                                                        | --                            |
+| `DB_CONNECTION_STRING`             | When using `pg`, you can submit a connection string instead of individual properties. Using this will ignore any of the other connection settings. | --                            |
+| `DB_EXCLUDE_TABLES`                | CSV of tables you want Directus to ignore completely                                                                                               | `spatial_ref_sys,sysdiagrams` |
+| `DB_CHARSET` / `DB_CHARSET_NUMBER` | Charset/collation to use in the connection to MySQL/MariaDB                                                                                        | `UTF8_GENERAL_CI`             |
+| `DB_VERSION`                       | Database version, in case you use the PostgreSQL adapter to connect a non-standard database. Not normally required.                                | --                            |
+| `DB_HEALTHCHECK_THRESHOLD`         | Healthcheck timeout threshold in ms.                                                                                                               | `150`                         |
 
 ::: tip Additional Database Variables
 
@@ -539,7 +542,7 @@ Instead, you can use the above `CACHE_STORE` environment variable to use `redis`
 
 By default, Directus stores all uploaded files locally on disk. However, you can also configure Directus to use S3,
 Google Cloud Storage, Azure, Cloudinary or Supabase. You can also configure _multiple_ storage adapters at the same
-time. This allows you to choose where files are being uploaded on a file-by-file basis. In the Admin App, files will
+time. This allows you to choose where files are being uploaded on a file-by-file basis. In the Data Studio, files will
 automatically be uploaded to the first configured storage location (in this case `local`). The used storage location is
 saved under `storage` in `directus_files`.
 

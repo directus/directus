@@ -15,6 +15,18 @@ export type ReadItemPermissionsOutput = {
 	share: { access: boolean };
 };
 
+export type ReadUserPermissionsOutput = Record<
+	string,
+	Record<
+		'create' | 'update' | 'delete' | 'read' | 'share',
+		{
+			access: 'none' | 'partial' | 'full';
+			fields?: string[];
+			presets?: Record<string, any>;
+		}
+	>
+>;
+
 /**
  * List all Permissions that exist in Directus.
  * @param query The query parameters
@@ -73,3 +85,13 @@ export const readItemPermissions =
 			method: 'GET',
 		};
 	};
+
+/**
+ * Check the current user's permissions.
+ */
+export const readUserPermissions =
+	<Schema>(): RestCommand<ReadUserPermissionsOutput, Schema> =>
+	() => ({
+		path: `/permissions/me`,
+		method: 'GET',
+	});
