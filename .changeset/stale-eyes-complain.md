@@ -1,5 +1,5 @@
 ---
-'@directus/api': patch
+'@directus/api': minor
 ---
 
-For `sqlite` retry a failed transaction when SQLITE_BUSY happens.
+Added transaction retry mechanism for SQLite if a `SQLITE_BUSY` errors occurs
