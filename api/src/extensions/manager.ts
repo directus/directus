@@ -209,7 +209,7 @@ export class ExtensionManager {
 		}
 
 		if (this.options.watch && !wasWatcherInitialized) {
-			this.updateWatchedExtensions([...this.localExtensions.values(), ...this.moduleExtensions.values()]);
+			this.updateWatchedExtensions([...this.extensions]);
 		}
 
 		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
