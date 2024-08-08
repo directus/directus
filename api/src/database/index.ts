@@ -196,7 +196,7 @@ export function getSchemaInspector(database?: Knex): SchemaInspector {
 		return inspector;
 	}
 
-	database = database ?? getDatabase();
+	database ??= getDatabase();
 
 	inspector = createInspector(database);
 
