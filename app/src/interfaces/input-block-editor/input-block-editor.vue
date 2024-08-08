@@ -2,7 +2,7 @@
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
-import EditorJS from '@editorjs/editorjs';
+import EditorJS, { API } from '@editorjs/editorjs';
 import { cloneDeep, isEqual } from 'lodash';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -164,7 +164,11 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 }
 
 function observeChangeEvent() {
-	const redactor = editorElement.value.querySelector('.codex-editor__redactor');
+	if (!editorjsRef.value) return;
+
+	const redactor = (editorjsRef.value as unknown as API).ui.nodes.redactor;
+
+	if (!redactor) return;
 
 	observer.observe(redactor, {
 		childList: true,
