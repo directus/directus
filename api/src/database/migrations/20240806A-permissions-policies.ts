@@ -2,6 +2,7 @@ import { processChunk, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
 import { flatten, intersection, isEqual, merge, omit, uniq } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
+import { useLogger } from '../../logger/index.js';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
@@ -163,6 +164,8 @@ async function fetchRoleAccess(roles: string[], context: { knex: Knex }) {
 const PUBLIC_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 
 export async function up(knex: Knex) {
+	const logger = useLogger();
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// If the policies table already exists the migration has already run
 	if (await knex.schema.hasTable('directus_policies')) {
@@ -230,9 +233,16 @@ export async function up(knex: Knex) {
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.uuid('policy').references('directus_policies.id').onDelete('CASCADE');
-		// Drop the foreign key constraint here in order to update `null` role to public policy ID
-		table.dropForeign('role');
 	});
+
+	try {
+		await knex.schema.alterTable('directus_permissions', (table) => {
+			// Drop the foreign key constraint here in order to update `null` role to public policy ID
+			table.dropForeign('role');
+		});
+	} catch (err) {
+		logger.warn('Failed to drop foreign key constraint on `role` column in `directus_permissions` table');
+	}
 
 	await knex('directus_permissions')
 		.update({

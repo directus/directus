@@ -210,41 +210,41 @@ function remove(id: string) {
 
 <template>
 	<div class="system-modules">
-		<v-list class="list">
-			<draggable
-				v-model="valuesWithData"
-				:set-data="hideDragImage"
-				item-key="id"
-				handle=".drag-handle"
-				:animation="150"
-				v-bind="{ 'force-fallback': true }"
-			>
-				<template #item="{ element }">
-					<v-list-item
-						block
-						:class="{ enabled: element.enabled }"
-						:clickable="element.type === 'link'"
-						@click="element.type === 'link' ? edit(element.id) : undefined"
-					>
-						<v-icon class="drag-handle" name="drag_handle" />
-						<v-icon class="icon" :name="element.icon" />
-						<div class="info">
-							<div class="name">{{ element.name }}</div>
-							<div class="to">{{ element.to }}</div>
-						</div>
-						<div class="spacer" />
-						<v-icon v-if="element.locked === true" name="lock" />
-						<v-icon v-else-if="element.type === 'link'" name="clear" @click.stop="remove(element.id)" />
-						<v-icon
-							v-else
-							:name="element.enabled ? 'check_box' : 'check_box_outline_blank'"
-							clickable
-							@click.stop="updateItem(element, { enabled: !element.enabled })"
-						/>
-					</v-list-item>
-				</template>
-			</draggable>
-		</v-list>
+		<draggable
+			v-model="valuesWithData"
+			tag="v-list"
+			class="list"
+			:set-data="hideDragImage"
+			item-key="id"
+			handle=".drag-handle"
+			:animation="150"
+			v-bind="{ 'force-fallback': true }"
+		>
+			<template #item="{ element }">
+				<v-list-item
+					block
+					:class="{ enabled: element.enabled }"
+					:clickable="element.type === 'link'"
+					@click="element.type === 'link' ? edit(element.id) : undefined"
+				>
+					<v-icon class="drag-handle" name="drag_handle" />
+					<v-icon class="icon" :name="element.icon" />
+					<div class="info">
+						<div class="name">{{ element.name }}</div>
+						<div class="to">{{ element.to }}</div>
+					</div>
+					<div class="spacer" />
+					<v-icon v-if="element.locked === true" name="lock" />
+					<v-icon v-else-if="element.type === 'link'" name="clear" @click.stop="remove(element.id)" />
+					<v-icon
+						v-else
+						:name="element.enabled ? 'check_box' : 'check_box_outline_blank'"
+						clickable
+						@click.stop="updateItem(element, { enabled: !element.enabled })"
+					/>
+				</v-list-item>
+			</template>
+		</draggable>
 
 		<v-button @click="edit('+')">{{ t('add_link') }}</v-button>
 
