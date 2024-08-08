@@ -166,7 +166,6 @@ const PUBLIC_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 
 export async function up(knex: Knex) {
 	const logger = useLogger();
-	const inspector = await getSchemaInspector();
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// If the policies table already exists the migration has already run
@@ -238,6 +237,7 @@ export async function up(knex: Knex) {
 	});
 
 	try {
+		const inspector = await getSchemaInspector();
 		const foreignKeys = await inspector.foreignKeys('directus_permissions');
 		const foreignConstraint =
 			foreignKeys.find((foreign) => foreign.foreign_key_table === 'directus_roles')?.constraint_name || undefined;
