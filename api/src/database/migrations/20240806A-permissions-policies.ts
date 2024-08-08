@@ -239,6 +239,7 @@ export async function up(knex: Knex) {
 	try {
 		const inspector = await getSchemaInspector();
 		const foreignKeys = await inspector.foreignKeys('directus_permissions');
+
 		const foreignConstraint =
 			foreignKeys.find((foreign) => foreign.foreign_key_table === 'directus_roles' && foreign.column === 'role')
 				?.constraint_name || undefined;
