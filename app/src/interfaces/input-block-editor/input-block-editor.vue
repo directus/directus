@@ -92,7 +92,9 @@ onMounted(async () => {
 		editorjsRef.value.focus();
 	}
 
-	editorjsRef.value.on(RedactorDomChanged, () => emitValue(editorjsRef.value!));
+	editorjsRef.value.on(RedactorDomChanged, () => {
+		emitValue(editorjsRef.value!);
+	});
 
 	editorjsIsReady.value = true;
 });
