@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Improved permission migration to handle a missing foreign key more gracefully
+Improved policies migration to handle a missing foreign key on `directus_permissions.role` more gracefully
