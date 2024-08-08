@@ -1,4 +1,4 @@
-import { isSystemCollection } from '@directus/system-data';
+import { isSystemCollection } from '../../utils/is-system-collection.js';
 import type { ApplyQueryFields, CollectionType, Query, UnpackList } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 

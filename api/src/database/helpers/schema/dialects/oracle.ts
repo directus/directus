@@ -1,7 +1,8 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Field, Relation, Type } from '@directus/types';
-import type { Options } from '../types.js';
+import type { Options, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
+import { preprocessBindings } from '../utils/preprocess-bindings.js';
 
 export class SchemaHelperOracle extends SchemaHelper {
 	override async changeToType(
@@ -49,5 +50,9 @@ export class SchemaHelperOracle extends SchemaHelper {
 		} catch {
 			return null;
 		}
+	}
+
+	override preprocessBindings(queryParams: Sql): Sql {
+		return preprocessBindings(queryParams, { format: (index) => `:${index + 1}` });
 	}
 }

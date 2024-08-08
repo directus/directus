@@ -12,15 +12,14 @@ import SettingsNavigation from '../../components/navigation.vue';
 
 type RoleBaseFields = 'id' | 'name' | 'description' | 'icon';
 
-type RoleResponse = Pick<Role, RoleBaseFields | 'admin_access'> & {
+type RoleResponse = Pick<Role, RoleBaseFields> & {
 	users: [{ count: { id: number } }];
 };
 
-type RoleItem = Pick<Role, RoleBaseFields> &
-	Partial<Pick<Role, 'admin_access'>> & {
-		public?: boolean;
-		count?: number;
-	};
+type RoleItem = Pick<Role, RoleBaseFields> & {
+	public?: boolean;
+	count?: number;
+};
 
 const { t } = useI18n();
 
@@ -28,11 +27,6 @@ const router = useRouter();
 
 const roles = ref<RoleItem[]>([]);
 const loading = ref(false);
-
-const lastAdminRoleId = computed(() => {
-	const adminRoles = roles.value.filter((role) => role.admin_access === true);
-	return adminRoles.length === 1 ? (adminRoles[0] as RoleItem).id : null;
-});
 
 const search = ref<string | null>(null);
 
@@ -71,6 +65,20 @@ const tableHeaders = ref<TableHeader[]>([
 		description: null,
 	},
 	{
+		text: t('fields.directus_roles.children'),
+		display: 'related-values',
+		displayOptions: {
+			template: '{{ name }}',
+		},
+		field: 'children',
+		collection: 'directus_roles',
+		value: 'children',
+		sortable: false,
+		width: 140,
+		align: 'left',
+		description: null,
+	},
+	{
 		text: t('description'),
 		value: 'description',
 		sortable: false,
@@ -93,7 +101,7 @@ async function fetchRoles() {
 		const response = await fetchAll<RoleResponse>(`/roles`, {
 			params: {
 				limit: -1,
-				fields: ['id', 'name', 'description', 'icon', 'admin_access', 'users'],
+				fields: ['id', 'name', 'description', 'icon', 'users', 'children.name', 'children.id'],
 				deep: {
 					users: {
 						_aggregate: { count: 'id' },
@@ -108,11 +116,11 @@ async function fetchRoles() {
 
 		roles.value = [
 			{
-				public: true,
-				name: t('public_label'),
-				icon: 'public',
-				description: t('public_description'),
 				id: 'public',
+				name: t('public_label'),
+				description: t('public_description'),
+				icon: 'public',
+				public: true,
 			},
 			...response.map((role) => {
 				return {
@@ -129,24 +137,25 @@ async function fetchRoles() {
 }
 
 function navigateToRole({ item }: { item: Role }) {
-	if (item.id !== 'public' && lastAdminRoleId.value) {
+	if (item.id === 'public') {
+		router.push({ name: 'settings-roles-public-item' });
+		return;
+	} else {
 		router.push({
 			name: 'settings-roles-item',
-			params: { primaryKey: item.id, lastAdminRoleId: lastAdminRoleId.value },
+			params: { primaryKey: item.id },
 		});
-	} else {
-		router.push(`/settings/roles/${item.id}`);
 	}
 }
 </script>
 
 <template>
-	<private-view :title="t('settings_permissions')">
+	<private-view :title="t('settings_roles')">
 		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
-				<v-icon name="admin_panel_settings" />
+				<v-icon name="group" />
 			</v-button>
 		</template>
 
@@ -189,7 +198,7 @@ function navigateToRole({ item }: { item: Role }) {
 				</template>
 
 				<template #[`item.name`]="{ item }">
-					<v-text-overflow :text="item.name" class="name" :class="{ public: item.public }" :highlight="search" />
+					<v-text-overflow :text="item.name" class="name" :highlight="search" :class="{ public: item.public }" />
 				</template>
 
 				<template #[`item.count`]="{ item }">
@@ -198,6 +207,18 @@ function navigateToRole({ item }: { item: Role }) {
 
 				<template #[`item.description`]="{ item }">
 					<v-text-overflow :text="item.description" class="description" :highlight="search" />
+				</template>
+
+				<template #[`item.children`]="{ item }">
+					<value-null v-if="item.public || item.children.length === 0" />
+					<render-display
+						v-else
+						:value="item.children"
+						:display="tableHeaders[3]!.display"
+						:options="tableHeaders[3]!.displayOptions"
+						:field="tableHeaders[3]!.field"
+						:collection="tableHeaders[3]!.collection"
+					/>
 				</template>
 			</v-table>
 		</div>

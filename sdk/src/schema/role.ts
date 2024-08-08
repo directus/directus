@@ -1,4 +1,6 @@
 import type { MergeCoreCollection } from '../index.js';
+import type { DirectusUser } from './user.js';
+import type { DirectusPolicy } from './policy.js';
 
 export type DirectusRole<Schema = any> = MergeCoreCollection<
 	Schema,
@@ -8,9 +10,9 @@ export type DirectusRole<Schema = any> = MergeCoreCollection<
 		name: string;
 		icon: string;
 		description: string | null;
-		ip_access: string | null;
-		enforce_tfa: boolean;
-		admin_access: boolean;
-		app_access: boolean;
+		parent: string | DirectusRole<Schema>;
+		children: string[] | DirectusRole<Schema>[];
+		policies: string[] | DirectusPolicy<Schema>[];
+		users: string[] | DirectusUser<Schema>[];
 	}
 >;

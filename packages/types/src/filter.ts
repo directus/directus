@@ -44,8 +44,8 @@ export type FieldFilter = {
 };
 
 export type FieldFilterOperator = {
-	_eq?: string | number | boolean;
-	_neq?: string | number | boolean;
+	_eq?: string | number | boolean | null;
+	_neq?: string | number | boolean | null;
 	_lt?: string | number;
 	_lte?: string | number;
 	_gt?: string | number;
