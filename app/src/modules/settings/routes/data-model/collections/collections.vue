@@ -25,9 +25,7 @@ const collectionsStore = useCollectionsStore();
 const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
-	return translate(
-		collectionsStore.configuredCollections
-	).map((collection) => ({
+	return translate(collectionsStore.configuredCollections).map((collection) => ({
 		...collection,
 		isCollapsed: collapsedIds.value?.includes(collection.collection),
 	}));
@@ -134,7 +132,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 <template>
 	<private-view :title="t('settings_data_model')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+		</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
