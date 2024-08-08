@@ -240,7 +240,8 @@ export async function up(knex: Knex) {
 		const inspector = await getSchemaInspector();
 		const foreignKeys = await inspector.foreignKeys('directus_permissions');
 		const foreignConstraint =
-			foreignKeys.find((foreign) => foreign.foreign_key_table === 'directus_roles')?.constraint_name || undefined;
+			foreignKeys.find((foreign) => foreign.foreign_key_table === 'directus_roles' && foreign.column === 'role')
+				?.constraint_name || undefined;
 
 		await knex.schema.alterTable('directus_permissions', (table) => {
 			// Drop the foreign key constraint here in order to update `null` role to public policy ID
