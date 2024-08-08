@@ -850,21 +850,22 @@ export class FieldsService {
 		}
 
 		const newSchema = { ...existing, ...field.schema };
+		const defaultValue = newSchema.default_value;
+		const newDefaultValueIsString = typeof defaultValue === 'string';
+		const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
+		const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
+		const newDefaultIsSetToCurrentTime = newDefaultIsNowFunction || newDefaultIsCurrentTimestamp;
 
-		if (
-			typeof newSchema.default_value === 'string' &&
-			(newSchema.default_value.toLowerCase() === 'now()' || newSchema.default_value === 'CURRENT_TIMESTAMP')
-		) {
+		const newDefaultIsTimestampWithPrecision =
+			newDefaultValueIsString && defaultValue.includes('CURRENT_TIMESTAMP(') && defaultValue.includes(')');
+
+		if (newDefaultIsSetToCurrentTime) {
 			column.defaultTo(this.knex.fn.now());
-		} else if (
-			typeof newSchema.default_value === 'string' &&
-			newSchema.default_value.includes('CURRENT_TIMESTAMP(') &&
-			newSchema.default_value.includes(')')
-		) {
-			const precision = newSchema.default_value.match(REGEX_BETWEEN_PARENS)![1];
+		} else if (newDefaultIsTimestampWithPrecision) {
+			const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
 			column.defaultTo(this.knex.fn.now(Number(precision)));
 		} else {
-			column.defaultTo(newSchema.default_value ?? null);
+			column.defaultTo(defaultValue ?? null);
 		}
 
 		if (newSchema.is_nullable) {
