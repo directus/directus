@@ -26,12 +26,17 @@ export const createEnv = (): Env => {
 	for (let [key, value] of Object.entries(rawConfiguration)) {
 		if (isFileKey(key) && isDirectusVariable(key) && typeof value === 'string') {
 			try {
+				// get the path to the file
 				const castFlag = getCastFlag(value);
 				const castPrefix = castFlag ? castFlag + ':' : '';
 				const filePath = castFlag ? value.replace(castPrefix, '') : value;
+
+				// read file content
 				const fileContent = readFileSync(filePath, { encoding: 'utf8' });
-				value = castPrefix + fileContent;
+
+				// override key value pair
 				key = removeFileSuffix(key);
+				value = castPrefix + fileContent;
 			} catch {
 				throw new Error(`Failed to read value from file "${value}", defined in environment variable "${key}".`);
 			}
