@@ -91,6 +91,7 @@ n_files: '{n} súborov'
 verified: Overené
 homepage: Domovská stránka
 repository: Repozitár
+reload_page: Obnoviť stránku
 reload_required: Treba obnoviť stránku
 report_an_issue: Nahlásiť problém
 website: Webstránka
@@ -109,6 +110,7 @@ field_name_translations: Preklady názvov polí
 enter_password_to_enable_tfa: Na zapnutie dvoj-faktorovej autentifikácie zadajte svoje heslo
 add_field: Pridať pole
 role_name: Názov role
+policy_name: Názov politiky
 branch: Vetva
 leaf: List
 indeterminate: Neurčité
@@ -126,6 +128,7 @@ requires_value: Vyžaduje hodnotu
 create_preset: Vytvoriť preset
 create_panel: Vytvoriť panel
 create_role: Vytvoriť rolu
+create_policy: Vytvoriť politiku
 create_user: Vytvoriť používateľa
 message: Správa
 delete_panel: Odstrániť panel
@@ -187,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Relácia vypršala
 public_label: Verejné
 public_description: Určuje, ktoré údaje z API sú dostupné bez overovania.
+public_role_info: >-
+  Verejná rola určuje, ktoré údaje z API sú dostupné pre neoverených používateľov alebo používateľov bez role. Požiadavky s verejnou rolou nemôžu mať prístup k appke admin práva. Ak sú práva na appku alebo admin nastavené pravidlu s verejnou rolou, ignorujú sa.
 admin_description: Počiatočná administratívna rola s neobmedzeným prístupom k Appke/API.
+admin_policy_description: Počiatočné administratívna politika s neobmedzeným prístupom k appke/API.
 no_description: Žiadny popis...
 reached_maximum_number_of_extensions: Dosiahli ste maximálny počet rozšírení pre váš projekt ({n}). Kontaktujte správcu tohoto systému pre viac informácií.
 not_allowed: Nepovolené
@@ -254,9 +260,13 @@ field_permissions: Práva na pole
 field_validation: Validácia poľa
 field_presets: Presety poľa
 permissions_for_role: 'Položky, ktoré rola {role} môže {action}.'
+permissions_for_policy: 'Položky v politike {policy} môžu {action}.'
 fields_for_role: 'Polia, ktoré rola {role} môže {action}.'
+fields_for_policy: 'Polia, ktoré politika {policy} môže {action}.'
 validation_for_role: 'Pravidlá {action}, ktoré rola {role} musí poslúchať.'
+validation_for_policy: 'Pravidlá {action} poľa, ktoré politika {policy} musí poslúchať.'
 presets_for_role: 'Predvolená hodnota poľa pre rolu {role}.'
+presets_for_policy: 'Predvolené hodnoty poľa pre politiku {policy}.'
 presets_field_warning: 'Relačné presety pre pole "{field}" by sa mali konfigurovať "detailnou" syntaxou.'
 presentation_and_aliases: Prezentácia a aliasy
 revision_post_create: Takto vyzerala táto položka pri vytvorení.
@@ -359,6 +369,8 @@ fields_group: Skupina polí
 no_collections_found: Nenašli sa žiadne zbierky.
 new_data_alert: 'Vo vašom dátovom modeli sa vytvoria nasledujúce:'
 search_collection: Hľadať v zbierke...
+search_role: Hľadať role...
+search_policy: Hľadať politiky...
 search_field: Vyhľadávacie pole...
 new_field: 'Nové pole'
 new_collection: 'Nová zbierka'
@@ -444,6 +456,7 @@ revision_delta_other: Revízia
 revision_delta_by: '{date} od {user}'
 presentation_text_values_cannot_be_reimported: 'Používa prezentačný text, hodnoty sa nedajú preimportovať.'
 download_page_as_csv: 'Stiahnuť stranu ako CSV'
+download_page_as_csv_unsupported: Toto rozloženia nepodporuje stiahnutie aktuálnej stránky.
 private_user: Súkromný používateľ
 creation_preview: Náhľad výtvoru
 revision_preview: Náhľad revízie
@@ -508,6 +521,11 @@ hours: Hodiny
 month: Mesiac
 year: Rok
 select_all: Vybrať všetko
+permissionsLevel:
+  all: Plný prístup {action}
+  partial: Čiastočný prístup {action}
+  custom: Čiastočný prístup {action}
+  none: Žiadny prístup {action}
 months:
   january: Január
   february: Február
@@ -534,6 +552,7 @@ file_details: Podrobnosti
 dimensions: Rozmery
 size: Veľkosť
 created: Vytvorené
+uploaded: Nahraté
 modified: Upravené
 owner: Vlastník
 edited_by: Upravil
@@ -555,6 +574,7 @@ replace_from_url: Nahradiť súbor z URL
 no_image_selected: Nie je vybratý žiadny obrázok
 no_file_selected: Nevybrali ste žiadny súbor
 download_file: Stiahnuť súbor
+open_file_in_tab: Otvoriť súbor v novom tabe
 start_export: Spustiť export
 not_available_for_local_downloads: Nedostupné na lokálne stiahnutie
 exporting_all_items_in_collection: Exportuje sa všetkých {total} položiek z {collection}.
@@ -589,7 +609,10 @@ allow_duplicates: Povoliť duplicity
 comments: Komentáre
 no_comments: Zatiaľ žiadne komentáre
 expand: Rozbaliť
+expand_all: Rozbaliť všetko
+expand_none: Rozbaliť žiadne
 collapse: Zbaliť
+collapse_all: Zbaliť všetko
 select_item: Vybrať položku
 no_items: Žiadne položky
 search_items: Hľadať položky...
@@ -612,6 +635,10 @@ no_files_copy: Nie sú tu žiadne súbory.
 user_count: 'Žiadni používatelia | Jeden používateľ | {count} používateľov'
 no_users_copy: Pod touto rolou zatiaľ nie sú žiadni používatelia.
 webhooks_count: 'Žiadne webhooky | Jeden webhook | {count} webhookov'
+webhooks_deprecation_notice: |
+  Webhooky sú zastaral a ich použitie sa neodporúča.
+
+  Namiesto nich použite **Toky** s [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Zatiaľ neboli nastavené žiadne webhooky. Začnite vytvorením niektorého nižšie.
 no_notifications: Žiadne oznámenie
 no_notifications_copy: Všetko ste dohnali!
@@ -636,6 +663,7 @@ copy_to: Kopírovať do...
 no_other_dashboards_copy: Zatiaľ nemáte žiadne panely.
 inactive: Neaktívne
 users: Použivatelia
+roles: Role
 activity: Aktivita
 activity_item: Položka aktivity
 action: Akcia
@@ -738,6 +766,7 @@ cannot_edit_global_bookmarks: Nadá sa upraviť globálna záložka
 bookmarks: Záložky
 presets: Presety
 unexpected_error: Neočakávaná chyba
+unexpected_error_copy: Vyskytla sa neočakávaná chyba. Prosím skúste znova.
 copy_details: Kopírovať podrobnosti
 no_app_access: Žiadny prístup applikácie
 no_app_access_copy: Tento používateľ nemôže používať admin.
@@ -1072,7 +1101,8 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položiek'
 no_options_available: Žiadne dostupné možnosti
 settings_data_model: Dátový model
-settings_permissions: Riadenie prístupu
+settings_roles: Role používateľa
+settings_permissions: Prístupové politiky
 settings_project: Nastavenia
 settings_appearance: Vzhľad
 settings_webhooks: Webhooky
@@ -1122,7 +1152,9 @@ page_help_settings_datamodel_collections: >-
   **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
 page_help_settings_datamodel_fields: >-
   **Data Model: Zbierka** — Formulár na správu tejto zbierky a jej polí.
-page_help_settings_roles_collection: '**Prehliadanie rolí** — Vypíše role adminov, verejné a vlastné používateľské role.'
+page_help_settings_policies_collection: '**Prehliadať politiky** - Zoznam všetkých politík v projekte.'
+page_help_settings_policies_item: "**Detaily politiky** - Spravuje povolenia politiky a iné nastavenia."
+page_help_settings_roles_collection: '**Prehliadať role** - Zoznam všetkých rolí v projekte.'
 page_help_settings_roles_item: "**Podrobnosti role** — Spravuje oprávnenia rolí a iné nastavenia."
 page_help_settings_presets_collection: >-
   **Prehliadanie presetov** — Vypíše všetky presety v projekte vrátane: používateľských, rolových a globálnych záložiek, a taktiež predvolené pohľady.
@@ -1158,6 +1190,7 @@ install_extension: Inštalovať rozšírenie
 uninstall_locked: Nedá sa odinštalovať rozšírenie, ktoré nebolo nainštalované cez Trhovisko
 uninstall: Odinštalovať
 installed: Nainštalované
+reinstall: Preinštalovať
 open_in_marketplace: Otvoriť na Trhovisku
 source_registry: Trhovisko
 source_local: Lokálny
@@ -1169,6 +1202,7 @@ singleton: Jeden objekt
 singleton_label: Považovať za jeden objekt
 system_fields_locked: Systémové polia sú zamknuté a nedajú sa upravovať
 directus_collection:
+  directus_access: Prílohy politiky
   directus_activity: Logovať zodpovednosti za všetky aktivity
   directus_collections: Dodatočné nastavenia zbierky a metadát
   directus_dashboards: Tabule v module prehľadov
@@ -1180,7 +1214,8 @@ directus_collection:
   directus_notifications: Notifikácie poslané používateľom
   directus_operations: Operácie, ktoré bežia v tokoch
   directus_panels: Jednotlivé panely na tabuliach
-  directus_permissions: Prístupové práva pre kažú rolu
+  directus_permissions: Prístupové práva pre každú politiky
+  directus_policies: Politiky prístupových práv
   directus_presets: Presety pre predvolené hodnoty zbierok a záložky
   directus_relations: Nastavenia vzťahov a metadát
   directus_revisions: Snímky dát pre všetky aktivity
@@ -1246,6 +1281,8 @@ fields:
     height: Výška
     charset: Znaková sada
     duration: Trvanie
+    focal_point_x: X súradnica
+    focal_point_y: Y súradnica
   directus_users:
     first_name: Meno
     last_name: Priezvisko
@@ -1263,6 +1300,7 @@ fields:
     status: Stav
     status_draft: Koncept
     status_invited: Pozvaný
+    status_unverified: Neoverená
     status_active: Aktívne
     status_suspended: Pozastavený
     status_archived: Archivovaný
@@ -1284,6 +1322,7 @@ fields:
     webP: WebP
     tiff: TIFF
     avif: AVIF
+    reporting: Hlásenie
     mapping: Mapovanie
     basemaps: Podkladové mapy
     basemaps_raster: Raster
@@ -1324,6 +1363,14 @@ fields:
     custom_aspect_ratios: Vlastné pomery strán
     theme_light_overrides: Úpravy svetlej témy
     theme_dark_overrides: Úpravy tmavej témy
+    public_registration: Registrácia používateľa
+    public_registration_note: Dovoľuje používateľovi registrovať sa na [registračnej ceste](/admin/register).
+    public_registration_role: Rola používateľa
+    public_registration_role_note: Táto rola je priradená používateľovi, ktorý sa zaregistroval použitím tejto metódy. Neovplyvňí doteraz registrovaných používateľov.
+    public_registration_email_filter: Filter emailových adries
+    public_registration_email_filter_note: Len adersy vyhovujúce tomuto filtru sa môžu zaregistrovať.
+    public_registration_verify_email: Overiť Email
+    public_registration_verify_email_note: Pošle email registrovanému používateľovi so žiadosťou o kliknutie na verifikačný odkaz pred prihlásením.
   directus_shares:
     name: Názov
     role: Rola
@@ -1344,12 +1391,16 @@ fields:
     name: Názov role
     icon: Ikona role
     description: Popis
-    app_access: Prístup k aplikácii
-    admin_access: Administrátorský prístup
-    ip_access: IP prístup
-    enforce_tfa: Vyžadovať 2FA
     users: Používatelia v roli
-    module_list: Navigácia modulu
+    parent: Nadradená rola
+    children: Podradené role
+  directus_policies:
+    name: Názov politiky
+    description: Popis
+    app_access: Prístup k aplikácii
+    admin_access: Admin prístup
+    ip_access: IP prístup
+    enforce_tfa: Vyžaduje 2FA
   directus_webhooks:
     name: Názov
     method: Metóda
@@ -1431,16 +1482,23 @@ field_options:
     focal_point_divider: Ústredný bod
     filename_disk: Názov na diskovom úložisku...
     filename_download: Názov pri sťahovaní...
+  directus_policies:
+    name: Unikátny názov tejto politiky...
+    description: Popis tejto politiky...
+    ip_access: Pridajte povolené IP adresy, IP rozsahy a CIDR bloky. Prázdne znamená povolené pre všetkých...
+    enforce_tfa: Vynúti 2-faktorovú autentifikáciu
+    assigned_to: Priradené k
   directus_roles:
     name: Unikátny názov tejto role...
     description: Popis tejto role...
-    ip_access: Pridajte IP adresy, IP rozsahy a CIDR bloky. Nechajte prázdne pre povolenie všetkých...
     fields:
       icon_name: Ikona
       name_name: Názov
       name_placeholder: Zadajte nadpis...
       link_name: Odkaz
       link_placeholder: Relatívna alebo absolútna URL...
+    parent_note: Voliteľná nadradená rola, z ktorej sa dedia práva
+    children_note: Podradené role, ktoré dedia práva z tejto role
     collections_name: Zbierky
     collections_addLabel: Pridať zbierku...
   directus_users:
@@ -1525,6 +1583,9 @@ continue_label: Pokračovať
 continue_as: >-
   {name} je aktuálne overený. Ak spoznávate túto aktivitu, stlačte pokračovať.
 editing_role: 'Rola {role}'
+editing_policy: 'Politika {policy}'
+no_permissions: Žiadne práva
+permission_add_collection: Pridať zbierku
 creating_webhook: Tvorba webhooku
 default_label: Predvolené
 delete_label: Odstrániť
@@ -1570,6 +1631,7 @@ authenticated: Prihlásený
 options: Možnosti
 otp: Jednorazové heslo
 password: Heslo
+confirm_password: Potvrdenie hesla
 permissions: Oprávnenia
 relationship: Vzťah
 reset: Resetovať
@@ -1586,6 +1648,14 @@ select_field_type: Vyberte typ poľa
 select_interface: Vybrať rozhranie
 select_display: Vyberte zobrazenie
 settings: Nastavenia
+register: Registrácia
+registration_successful_headline: Hotovo!
+registration_successful_note: Teraz môžete pokračovať na prihlásovaciu stránku.
+registration_successful_check_email_note: |
+  Prosím nezabudnite, že pred prihlásením musíte overiť svoju emailovú adresu kliknutím na odkaz, ktorý sme vám poslali.
+dont_have_an_account: Ešte nemáte účet?
+already_have_an_account: Už máte účet?
+sign_up_now: Zaregistrujte sa teraz
 sign_in: Prihlásiť sa
 sign_out: Odhlásiť sa
 sign_out_confirm: Naozaj sa chcete odhlásiť?
@@ -1615,9 +1685,12 @@ navigate_to_item: Navigovať na položku
 undo_removed_item: Vrátiť odstránenie položky
 remove_item: Odstrániť položku
 delete_item: Odstrániť položku
+pause: Pozastaviť
+resume: Obnoviť
 interfaces:
   list-m2a:
     prefix_note: Predvolene sa použije názov súvisiacej zbierky.
+    sorting_disabled: Zoraďovanie je vypnuté lebo je tu viac položiek ako sa zmestí na jednu stránku.
   filter:
     name: Filter
     description: Konfigurácia objektu filtra.
@@ -1883,6 +1956,7 @@ interfaces:
     no_collection: Žiadna zbierka
     toggle_split_view: Prepnúť rozdelené zobrazenie
     enable: Zapnúť
+    default_split_view_state: Predvolený stav rozdeleného pohľadu
     user_language: Použiť jazyk aktuálneho používateľa
     default_language: Predvolený jazyk
     language_field: Pole jazyka
@@ -2155,6 +2229,7 @@ layouts:
     not_all_loaded: Načítalo sa len prvých 1000 položiek.
 horizontal: Horizontálne
 vertical: Vertikálne
+axis: Os
 x_axis: Os X
 y_axis: Os Y
 y_axis_function: Funkcia osi Y

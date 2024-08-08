@@ -1086,7 +1086,6 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando {count} Elementos por lote'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de Datos
-settings_permissions: Control de Acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
 settings_webhooks: Webhooks
@@ -1136,7 +1135,6 @@ page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
-page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
 page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
   **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
@@ -1195,7 +1193,6 @@ directus_collection:
   directus_notifications: Notificaciones enviadas a usuarios
   directus_operations: Operaciones que funcionan en flujos
   directus_panels: Paneles individuales dentro de los paneles de Individual
-  directus_permissions: Permisos de acceso para cada rol
   directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
   directus_revisions: Capturas de datos para toda la actividad
@@ -1372,12 +1369,9 @@ fields:
     name: Nombre del rol
     icon: Ícono del Rol
     description: Descripción
-    app_access: Acceso a App
-    admin_access: Acceso Admin
-    ip_access: Acceso IP
-    enforce_tfa: Requiere 2FA
     users: Usuarios en el Rol
-    module_list: Navegación en Módulo
+  directus_policies:
+    description: Descripción
   directus_webhooks:
     name: Nombre
     method: Método
@@ -1463,7 +1457,6 @@ field_options:
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
-    ip_access: Añadir direcciones IP, rangos IP y bloques CIDR. Dejar en blanco para permitir todos...
     fields:
       icon_name: Ícono
       name_name: Nombre

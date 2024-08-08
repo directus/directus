@@ -972,7 +972,6 @@ page_help_settings_datamodel_collections: >-
   **مۆدێلی داتا: کۆمەڵەکان** — لیستی هەموو کۆمەڵەکان بەردەستە. ئەمە دیار و نادیار و کۆمەڵەکانی سیستەمیش لەخۆ دەگرێت، هەروەها خشتە بەڕێوەنەبراوەکانی بنکەدراویش دەتوانرێت زیادبکرێن.
 page_help_settings_datamodel_fields: >-
   **مۆدێلی داتا: کۆمەڵەکان** —شێوەیەکە بۆ بەڕێوەبردنی کۆمەڵەکان و خانەکانیان.
-page_help_settings_roles_collection: '**گەڕانی پلەکان** — لیستی پلەکانی بەڕێوبەر و گشتی و پلە تایبەتەکانی بەکارهێنەران.'
 page_help_settings_roles_item: "**وردەکاری پلە** — بەڕێوەبردنی دەسەڵاتەکانی پلە و ڕێکخستنەکانی تر."
 page_help_settings_presets_collection: >-
   **گەڕانی پێشسێتەکان** — لیستی هەموو پێشسێتەکان لە پڕۆژەکەدا، لەوانە: بەکارهێنەر، پلە، و نیشانکردنە گشتیەکان، هەروەها بینینە بنەڕەتیەکان.
@@ -1016,7 +1015,6 @@ directus_collection:
   directus_notifications: ئاگادارکەرەوەکان نێردران بۆ بەکارهێنەران
   directus_operations: کردارەکان کە لە لێشاوەکاندا جێبەجێدەبن
   directus_panels: پانێڵی تاکەکەسی لە نێو داشبۆردی تێڕوانینەکان
-  directus_permissions: دەسەڵاتی دەستگەیشتن بۆ هەر پلەیەک
   directus_presets: پێشسێت بۆ بنەڕەتی کۆمەڵە و نیشانکردنەکان
   directus_relations: ڕێکخستنی پەیوەندی و مێتادەیتا
   directus_revisions: خێراوێنەی داتا بۆ هەموو چالاکیەکان
@@ -1164,12 +1162,9 @@ fields:
     name: ناوی پلە
     icon: ئایکۆنی پلە
     description: وەسف
-    app_access: دەستگەیشتن بە پێگە
-    admin_access: دەستگەیشتنی بەڕێوبەر
-    ip_access: دەستگەیشتنی IP
-    enforce_tfa: 2FA ـی داواکراوە
     users: بەکارهێنەران لە پلەی
-    module_list: ڕێدۆزی یەکە
+  directus_policies:
+    description: وەسف
   directus_webhooks:
     name: ناو
     method: ڕێگە

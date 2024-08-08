@@ -681,6 +681,8 @@ fields:
   directus_roles:
     name: Rollenavn
     description: Beskrivelse
+  directus_policies:
+    description: Beskrivelse
   directus_webhooks:
     name: Navn
     status: Status

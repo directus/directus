@@ -790,7 +790,6 @@ page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
   **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default views.
@@ -829,7 +828,6 @@ directus_collection:
   directus_migrations: What version of the database you're using
   directus_notifications: Notifications sent to users
   directus_panels: Individual panels within Insights dashboards
-  directus_permissions: Access permissions for each role
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -972,12 +970,9 @@ fields:
     name: Role Name
     icon: Role Icon
     description: Description
-    app_access: App Access
-    admin_access: Admin Access
-    ip_access: IP Access
-    enforce_tfa: Require 2FA
     users: Users in Role
-    module_list: Module Navigation
+  directus_policies:
+    description: Description
   directus_webhooks:
     name: Name
     method: Method
