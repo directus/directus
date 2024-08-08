@@ -9,6 +9,7 @@ import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
 import { getSchema } from '../../utils/get-schema.js';
 
 import type { LogicalFilterAND, LogicalFilterOR, Permission } from '@directus/types';
+import { getSchemaInspector } from '../index.js';
 
 type RoleAccess = {
 	app_access: boolean;
@@ -236,9 +237,16 @@ export async function up(knex: Knex) {
 	});
 
 	try {
+		const inspector = await getSchemaInspector();
+		const foreignKeys = await inspector.foreignKeys('directus_permissions');
+
+		const foreignConstraint =
+			foreignKeys.find((foreign) => foreign.foreign_key_table === 'directus_roles' && foreign.column === 'role')
+				?.constraint_name || undefined;
+
 		await knex.schema.alterTable('directus_permissions', (table) => {
 			// Drop the foreign key constraint here in order to update `null` role to public policy ID
-			table.dropForeign('role');
+			table.dropForeign('role', foreignConstraint);
 		});
 	} catch (err) {
 		logger.warn('Failed to drop foreign key constraint on `role` column in `directus_permissions` table');
