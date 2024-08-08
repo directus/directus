@@ -223,6 +223,8 @@ prefixing the value with `{type}:`. The following types are available:
 | `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", /\.example3\.com$/]` |
 | `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                |
 
+Explicit casting is also available when reading from a file with the `_FILE` suffix.
+
 ---
 
 ## General

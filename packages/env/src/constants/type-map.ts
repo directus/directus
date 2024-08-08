@@ -33,4 +33,6 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	LOG_HTTP_IGNORE_PATHS: 'array',
 
 	REDIS_ENABLED: 'boolean',
+
+	DB_SSL__CA_FILE: 'string',
 } as const;
