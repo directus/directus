@@ -1,6 +1,6 @@
 import { useI18n } from 'vue-i18n';
 
-export type FormatItemsCountOptions = {
+export type FormatItemsCountPaginatedOptions = {
 	currentItems: number;
 	currentPage: number;
 	perPage: number;
@@ -8,13 +8,13 @@ export type FormatItemsCountOptions = {
 	totalItems?: number;
 };
 
-export function formatItemsCountPaged({
+export function formatItemsCountPaginated({
 	currentItems,
 	currentPage,
 	perPage,
 	isFiltered,
 	totalItems,
-}: FormatItemsCountOptions) {
+}: FormatItemsCountPaginatedOptions) {
 	const { t, n } = useI18n();
 
 	const values = {

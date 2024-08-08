@@ -7,7 +7,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountPaged } from '@/utils/format-items-count';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -181,7 +181,7 @@ const {
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 const showingCount = computed(() =>
-	formatItemsCountPaged({
+	formatItemsCountPaginated({
 		currentItems: totalItemCount.value,
 		currentPage: page.value,
 		perPage: limit.value,

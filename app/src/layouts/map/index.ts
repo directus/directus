@@ -1,4 +1,4 @@
-import { formatItemsCountPaged, formatItemsCountRelative } from '@/utils/format-items-count';
+import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
@@ -242,7 +242,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			if (!geometryOptions.value) return t('item_count', { count: n(totalCount.value) }, totalCount.value);
 
 			if (totalPages.value > 1)
-				return formatItemsCountPaged({
+				return formatItemsCountPaginated({
 					currentItems: itemCount.value,
 					currentPage: page.value,
 					perPage: limit.value,

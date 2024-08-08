@@ -1,6 +1,6 @@
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountPaged } from '@/utils/format-items-count';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
@@ -70,7 +70,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			// Don't show count if there are no items
 			if (!totalCount.value || !itemCount.value) return;
 
-			return formatItemsCountPaged({
+			return formatItemsCountPaginated({
 				currentItems: itemCount.value,
 				currentPage: page.value,
 				perPage: limit.value,

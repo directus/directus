@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatItemsCountPaged } from '@/utils/format-items-count';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { EXTENSION_TYPES } from '@directus/extensions';
 import { watchDebounced } from '@vueuse/core';
 import { computed, ref } from 'vue';
@@ -34,7 +34,7 @@ watchDebounced(
 const { t } = useI18n();
 
 const showingCount = computed(() =>
-	formatItemsCountPaged({
+	formatItemsCountPaginated({
 		currentItems: props.filterCount,
 		currentPage: props.page,
 		perPage: props.perPage,
