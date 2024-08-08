@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from 'vitest';
-import { getTypeFromMap } from './get-type-from-map.js';
+import { getDefaultType } from './get-default-type.js';
 
 vi.mock('../constants/type-map.js', () => ({
 	TYPE_MAP: {
@@ -12,16 +12,16 @@ afterEach(() => {
 });
 
 test('Returns type from map if exists', () => {
-	const res = getTypeFromMap('test-key');
+	const res = getDefaultType('test-key');
 	expect(res).toBe('string');
 });
 
 test('Returns null if key does not exist', () => {
-	const res = getTypeFromMap('non-existing');
+	const res = getDefaultType('non-existing');
 	expect(res).toBe(null);
 });
 
 test('Returns null if key is undefined', () => {
-	const res = getTypeFromMap(undefined);
+	const res = getDefaultType(undefined);
 	expect(res).toBe(null);
 });
