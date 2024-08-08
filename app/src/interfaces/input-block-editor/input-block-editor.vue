@@ -161,22 +161,6 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 		blocks: value.blocks,
 	});
 }
-
-// function observeChangeEvent() {
-// 	console.log('ready');
-// 	if (!editorjsRef.value) return;
-//
-// 	const redactor = (editorjsRef.value as unknown as API).ui.nodes.redactor;
-//
-// 	if (!redactor) return;
-//
-// 	observer.observe(redactor, {
-// 		childList: true,
-// 		subtree: true,
-// 		characterData: true,
-// 		attributes: true,
-// 	});
-// }
 </script>
 
 <template>
