@@ -2,14 +2,17 @@
 import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
-import EditorJS, { API } from '@editorjs/editorjs';
+import EditorJS from '@editorjs/editorjs';
 import { cloneDeep, isEqual } from 'lodash';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
+import { useBus } from './bus';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
-import { useBus } from './bus';
-import { useRouter } from 'vue-router';
+
+// https://github.com/codex-team/editor.js/blob/057bf17a6fc2d5e05c662107918d7c3e943d077c/src/components/events/RedactorDomChanged.ts#L4
+const RedactorDomChanged = 'redactor dom changed';
 
 const props = withDefaults(
 	defineProps<{
@@ -43,7 +46,6 @@ const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFil
 
 const editorjsRef = ref<EditorJS>();
 const editorjsIsReady = ref(false);
-const isOnMounted = ref(false);
 const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
@@ -61,10 +63,6 @@ const tools = getTools(
 	haveFilesAccess,
 );
 
-const observer = new MutationObserver(() => {
-	if (editorjsRef.value && isOnMounted.value) emitValue(editorjsRef.value);
-});
-
 bus.on(async (event) => {
 	if (event.type === 'open-url') {
 		router.push(event.payload);
@@ -78,13 +76,11 @@ onMounted(async () => {
 		readOnly: false,
 		placeholder: props.placeholder,
 		minHeight: 72,
-		onReady: observeChangeEvent,
 		onChange: (api) => emitValue(api),
 		tools: tools,
 	});
 
 	await editorjsRef.value.isReady;
-	editorjsIsReady.value = true;
 
 	const sanitizedValue = sanitizeValue(props.value);
 
@@ -96,11 +92,12 @@ onMounted(async () => {
 		editorjsRef.value.focus();
 	}
 
-	isOnMounted.value = true;
+	editorjsRef.value.on(RedactorDomChanged, () => emitValue(editorjsRef.value!));
+
+	editorjsIsReady.value = true;
 });
 
 onUnmounted(() => {
-	observer.disconnect();
 	editorjsRef.value?.destroy();
 	bus.reset();
 });
@@ -163,20 +160,21 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	});
 }
 
-function observeChangeEvent() {
-	if (!editorjsRef.value) return;
-
-	const redactor = (editorjsRef.value as unknown as API).ui.nodes.redactor;
-
-	if (!redactor) return;
-
-	observer.observe(redactor, {
-		childList: true,
-		subtree: true,
-		characterData: true,
-		attributes: true,
-	});
-}
+// function observeChangeEvent() {
+// 	console.log('ready');
+// 	if (!editorjsRef.value) return;
+//
+// 	const redactor = (editorjsRef.value as unknown as API).ui.nodes.redactor;
+//
+// 	if (!redactor) return;
+//
+// 	observer.observe(redactor, {
+// 		childList: true,
+// 		subtree: true,
+// 		characterData: true,
+// 		attributes: true,
+// 	});
+// }
 </script>
 
 <template>
