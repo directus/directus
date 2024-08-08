@@ -2275,7 +2275,6 @@ layouts:
     show_ungrouped: Show Ungrouped
     show: Show
     no_group: No Group
-    not_all_loaded: Could only load the first 1000 items.
 
 horizontal: Horizontal
 vertical: Vertical
