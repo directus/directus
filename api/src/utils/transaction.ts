@@ -1,3 +1,4 @@
+import { isObject } from '@directus/utils';
 import { type Knex } from 'knex';
 import { getDatabaseClient } from '../database/index.js';
 import { useLogger } from '../logger/index.js';
@@ -15,7 +16,7 @@ export const transaction = async <T = unknown>(knex: Knex, handler: (knex: Knex)
 	} else {
 		try {
 			return await knex.transaction((trx) => handler(trx));
-		} catch (error: any) {
+		} catch (error) {
 			const client = getDatabaseClient(knex);
 
 			/**
@@ -42,8 +43,9 @@ export const transaction = async <T = unknown>(knex: Knex, handler: (knex: Knex)
 			const SQLITE_BUSY_ERROR_CODE = 'SQLITE_BUSY';
 
 			if (
-				(client === 'cockroachdb' && error?.code !== COCKROACH_RETRY_ERROR_CODE) ||
-				(client === 'sqlite' && error?.code !== SQLITE_BUSY_ERROR_CODE)
+				!isObject(error) ||
+				(client === 'cockroachdb' && error['code'] !== COCKROACH_RETRY_ERROR_CODE) ||
+				(client === 'sqlite' && error['code'] !== SQLITE_BUSY_ERROR_CODE)
 			)
 				throw error;
 
