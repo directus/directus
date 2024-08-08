@@ -16,7 +16,7 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits(['expandLog', 'scrolledToBottom', 'scroll']);
 
-defineExpose({ scrollToIndex, scrollToBottom });
+defineExpose({ scrollToBottom });
 
 const { t } = useI18n();
 const scroller = ref();
@@ -34,18 +34,29 @@ function getMessageClasses(existingClasses: string[], item: Log) {
 	return [...existingClasses, { subdued: logLevelMap[item.data.level] === 'trace' }];
 }
 
-async function scrollToIndex(index: number) {
-	if (index >= props.logs.length - 1) {
-		scrollToBottom();
-	} else {
-		scroller.value.scrollToItem(index);
-	}
-}
-
 async function scrollToBottom() {
-	scroller.value.scrollToBottom();
-	unreadLogsChipVisible.value = true;
-	emit('scrolledToBottom');
+	const scrollerEl = scroller.value.$el;
+	const scrollInterval = 10;
+	unreadLogsChipVisible.value = false;
+
+	function scrollStepFn() {
+		const totalHeight = scrollerEl.scrollHeight;
+		const scrollStep = totalHeight / 50;
+
+		if (scrollerEl.scrollTop + scrollerEl.clientHeight < totalHeight) {
+			scrollerEl.scrollTop += scrollStep;
+
+			setTimeout(() => {
+				requestAnimationFrame(scrollStepFn);
+			}, scrollInterval);
+		} else {
+			scrollerEl.scrollTop = totalHeight;
+			unreadLogsChipVisible.value = true;
+			emit('scrolledToBottom');
+		}
+	}
+
+	scrollStepFn();
 }
 </script>
 
@@ -157,7 +168,7 @@ async function scrollToBottom() {
 .unread-logs {
 	position: relative;
 	width: 100%;
-	bottom: 40px;
+	bottom: 60px;
 	text-align: center;
 }
 
