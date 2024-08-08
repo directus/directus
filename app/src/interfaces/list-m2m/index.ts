@@ -210,6 +210,43 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'sort',
+				name: '$t:sort',
+				type: 'string',
+				meta: {
+					interface: 'system-field',
+					options: {
+						collectionName: collection,
+						allowForeignKeys: true,
+					},
+					width: 'half',
+				},
+			},
+			{
+				field: 'sortDirection',
+				name: '$t:sort_direction',
+				schema: {
+					default_value: '+',
+				},
+				type: 'string',
+				meta: {
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{
+								text: '$t:sort_asc',
+								value: '+',
+							},
+							{
+								text: '$t:sort_desc',
+								value: '-',
+							},
+						],
+					},
+					width: 'half',
+				},
+			},
+			{
 				field: 'enableSearchFilter',
 				name: '$t:search_filter',
 				schema: {

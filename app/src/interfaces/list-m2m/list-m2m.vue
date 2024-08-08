@@ -42,6 +42,8 @@ const props = withDefaults(
 		allowDuplicates?: boolean;
 		junctionFieldLocation?: string;
 		junctionFilter?: Filter | null;
+		sort?: string;
+		sortDirection?: '+' | '-';
 	}>(),
 	{
 		value: () => [],
@@ -123,8 +125,8 @@ const limit = ref(props.limit);
 const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
-const sort = ref<Sort>();
 const junctionFilter = ref<Filter | null>(props.junctionFilter ?? null);
+const tableSort = ref<Sort | null>(props.sort ? { by: props.sort, desc: props.sortDirection === '-' } : null);
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
@@ -153,8 +155,12 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.search = search.value;
 	}
 
-	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
+	if (props.sort && !relationInfo.value?.sortField) {
+		q.sort = [`${props.sortDirection ?? ''}${props.sort}`];
+	}
+
+	if (tableSort.value) {
+		q.sort = [`${tableSort.value.desc ? '-' : ''}${tableSort.value.by}`];
 	}
 
 	return q;
@@ -470,7 +476,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 			<v-table
 				v-if="layout === LAYOUTS.TABLE"
-				v-model:sort="sort"
+				v-model:sort="tableSort"
 				v-model:headers="headers"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"

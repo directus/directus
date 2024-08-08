@@ -40,7 +40,7 @@ const props = withDefaults(
 		enableLink?: boolean;
 		limit?: number;
 		sort?: string;
-		sortDirection: '+' | '-' | undefined;
+		sortDirection?: '+' | '-';
 	}>(),
 	{
 		value: () => [],
@@ -100,7 +100,7 @@ const limit = ref(props.limit);
 const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
-const manualSort = ref<Sort>();
+const tableSort = ref<Sort | null>(props.sort ? { by: props.sort, desc: props.sortDirection === '-' } : null);
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
@@ -125,9 +125,9 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.sort = [`${props.sortDirection ?? ''}${props.sort}`];
 	}
 
-	if (manualSort.value) {
+	if (tableSort.value) {
 		// Override sort if the user manually selects a sort order in the table layout
-		q.sort = [`${manualSort.value.desc ? '-' : ''}${manualSort.value.by}`];
+		q.sort = [`${tableSort.value.desc ? '-' : ''}${tableSort.value.by}`];
 	}
 
 	return q;
@@ -428,7 +428,7 @@ function getLinkForItem(item: DisplayItem) {
 
 			<v-table
 				v-if="layout === LAYOUTS.TABLE"
-				v-model:sort="manualSort"
+				v-model:sort="tableSort"
 				v-model:headers="headers"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
