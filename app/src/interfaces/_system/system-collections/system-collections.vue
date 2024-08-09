@@ -23,7 +23,7 @@ const { t } = useI18n();
 const collectionsStore = useCollectionsStore();
 
 const collections = computed(() => {
-	let collections = collectionsStore.collections.filter((collection) => collection.type === 'table');
+	let collections = collectionsStore.sortedCollections.filter((collection) => collection.type === 'table');
 
 	if (!props.includeSingleton) {
 		collections = collections.filter((collection) => collection?.meta?.singleton === false);

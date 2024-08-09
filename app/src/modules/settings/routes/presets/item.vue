@@ -369,7 +369,7 @@ function useForm() {
 			meta: {
 				interface: 'select-dropdown',
 				options: {
-					choices: collectionsStore.collections
+					choices: collectionsStore.sortedCollections
 						.map((collection) => ({
 							text: collection.collection,
 							value: collection.collection,
