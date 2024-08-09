@@ -97,6 +97,12 @@ Scale for integer/float/decimal type fields.
 `is_nullable` **boolean**\
 Whether or not the column is nullable. This is what is used as the "required" state in Directus.
 
+`is_unique` **boolean**\
+Whether or not the column has a unique constraint.
+
+`is_indexed` **boolean**\
+Whether or not the column is indexed.
+
 `is_primary_key` **boolean**\
 Whether or not the field is the primary key of the table.
 
@@ -139,6 +145,8 @@ Comment as stored in the database.
 		"numeric_precision": 32,
 		"numeric_scale": 0,
 		"is_nullable": false,
+		"is_unique": false,
+		"is_indexed": true,
 		"is_primary_key": true,
 		"has_auto_increment": true,
 		"foreign_key_column": null,

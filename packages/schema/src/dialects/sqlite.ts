@@ -197,6 +197,7 @@ export default class SQLite implements SchemaInspector {
 					generation_expression: null,
 					is_nullable: raw.notnull === 0,
 					is_unique: !!index?.unique && indexInfo?.length === 1,
+					is_indexed: !!index?.name && index.name.length > 0 && indexInfo?.length === 1,
 					is_primary_key: raw.pk === 1,
 					has_auto_increment: raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table),
 					foreign_key_column: foreignKey?.to || null,

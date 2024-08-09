@@ -512,8 +512,18 @@ export class FieldsService {
 			if (hookAdjustedField.schema) {
 				const existingColumn = await this.columnInfo(collection, hookAdjustedField.field);
 
-				if (hookAdjustedField.schema?.is_nullable === true && existingColumn.is_primary_key) {
-					throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
+				if (existingColumn.is_primary_key) {
+					if (hookAdjustedField.schema?.is_nullable === true) {
+						throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
+					}
+
+					if (hookAdjustedField.schema?.is_unique === false) {
+						throw new InvalidPayloadError({ reason: 'Primary key must be unique' });
+					}
+
+					if (hookAdjustedField.schema?.is_indexed === true) {
+						throw new InvalidPayloadError({ reason: 'Primary key cannot be indexed' });
+					}
 				}
 
 				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
@@ -875,13 +885,22 @@ export class FieldsService {
 
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
-		} else if (field.schema?.is_unique === true) {
-			if (!alter || alter.is_unique === false) {
-				column.unique();
+		} else if (!alter?.is_primary_key) {
+			// primary key will already have unique/index constraints
+			if (field.schema?.is_unique === true) {
+				if (!alter || alter.is_unique === false) {
+					column.unique();
+				}
+			} else if (field.schema?.is_unique === false) {
+				if (alter && alter.is_unique === true) {
+					table.dropUnique([field.field]);
+				}
 			}
-		} else if (field.schema?.is_unique === false) {
-			if (alter && alter.is_unique === true) {
-				table.dropUnique([field.field]);
+
+			if (field.schema?.is_indexed === true && !alter?.is_indexed) {
+				column.index();
+			} else if (field.schema?.is_indexed === false && alter?.is_indexed) {
+				table.dropIndex([field.field]);
 			}
 		}
 
