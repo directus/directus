@@ -87,6 +87,11 @@ export class FilesService extends ItemsService<File> {
 			payload.filename_disk = primaryKey + (fileExtension || '');
 		}
 
+		// If the filename_disk doesn't include an extension, append it
+		if (!path.extname(payload.filename_disk!)) {
+			payload.filename_disk += fileExtension || '';
+		}
+
 		// Temp filename is used for replacements
 		const tempFilenameDisk = 'temp_' + payload.filename_disk;
 
