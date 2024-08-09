@@ -227,11 +227,24 @@ const pages = await directus.request(
 		filter: {
 			slug: { _eq: slug },
 		},
-		fields: ['*', { blocks: ['*', { item: [{ collection_a: ['*'], collection_b: ['*'] }] }] }],
+		fields: [
+			'*',
+			{
+				blocks: [
+					'*',
+					{
+						item: {
+							block_hero: ['*'],
+							block_cardgroup: ['*'],
+							block_richtext: ['*'],
+						},
+					},
+				],
+			},
+		],
 		limit: 1,
 	})
 );
-
 const page = page[0];
 ```
 
@@ -339,9 +352,8 @@ Directus returns for Many To Any (M2A) relationships.
 
 ### Check Your Permissions
 
-If you notice you aren't receiving the data that you expect,
-[check the Permissions settings](/user-guide/user-management/permissions) for your Public or chosen role. You'll have to
-enable Read access for each collection using in the Pages > Blocks Many-To-Any field.
+If you notice you aren't receiving the data that you expect, check the Permissions settings for your Public or chosen
+role. You'll have to enable Read access for each collection using in the Pages > Blocks Many-To-Any field.
 
 ### Use Typescript
 

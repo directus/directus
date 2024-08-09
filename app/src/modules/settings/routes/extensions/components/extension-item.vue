@@ -1,20 +1,19 @@
 <script setup lang="ts">
 import VChip from '@/components/v-chip.vue';
 import VProgressCircular from '@/components/v-progress-circular.vue';
-import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
 import { useExtensionsStore } from '@/stores/extensions';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { APP_OR_HYBRID_EXTENSION_TYPES, type ApiOutput, type ExtensionType } from '@directus/extensions';
+import { APP_OR_HYBRID_EXTENSION_TYPES, ApiOutput, ExtensionType } from '@directus/extensions';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { ExtensionStatus } from '../types';
+import { extensionTypeIconMap } from '../constants';
+import { ExtensionState } from '../types';
 import ExtensionItemOptions from './extension-item-options.vue';
 
 const props = withDefaults(
 	defineProps<{
 		extension: ApiOutput;
 		children?: ApiOutput[];
-		bundleEntry?: boolean;
 	}>(),
 	{
 		children: () => [],
@@ -22,169 +21,148 @@ const props = withDefaults(
 );
 
 const { t } = useI18n();
-
 const extensionsStore = useExtensionsStore();
 
-const devMode = import.meta.env.DEV;
+const loading = ref(false);
 
-const saving = ref(false);
-
+const name = computed(() => props.extension.schema?.name ?? props.extension.meta.folder);
 const type = computed(() => props.extension.schema?.type ?? 'missing');
 const icon = computed(() => extensionTypeIconMap[type.value]);
 
+const version = computed(() => {
+	if (!props.extension.schema || !('version' in props.extension.schema) || !props.extension.schema.version) return null;
+
+	return props.extension.schema.version;
+});
+
+const stateLocked = computed(() => {
+	if (!import.meta.env.DEV) return false;
+
+	if (props.extension.schema?.type === 'bundle')
+		return props.children.some((extension) => isAppExtension(extension.schema?.type));
+
+	return isAppExtension(props.extension.schema?.type);
+});
+
 const disabled = computed(() => {
 	if (type.value === 'missing') return true;
-	if (devMode) return false;
+	if (stateLocked.value) return false;
 
 	return !props.extension.meta.enabled;
 });
 
-const disableLocked = computed(() => devMode && isOrHasAppExtension.value);
-const uninstallLocked = computed(() => props.extension.meta.source !== 'registry');
-
-const isPartialEnabled = computed(() => {
-	if (props.extension.schema?.type !== 'bundle') {
-		return false;
-	}
+const isPartialAllowed = computed(() => {
+	if (props.extension.schema?.type !== 'bundle') return false;
 
 	return props.extension.schema.partial !== false;
 });
 
 const isPartiallyEnabled = computed(() => {
-	if (props.extension.schema?.type !== 'bundle') {
-		return false;
-	}
+	if (props.extension.schema?.type !== 'bundle') return false;
 
-	const enabledExtensionCount = props.children.filter((e) => e.meta.enabled);
+	const enabledExtensionCount = props.children.filter((extension) => extension.meta.enabled);
 	return enabledExtensionCount.length !== 0 && enabledExtensionCount.length !== props.children.length;
 });
 
-const isOrHasAppExtension = computed(() => {
-	const type = props.extension.schema?.type;
+const state = computed<{ text: string; value: ExtensionState }>(() => {
+	if (type.value === 'bundle' && isPartiallyEnabled.value) return { text: t('partially_enabled'), value: 'partial' };
 
-	if (type === 'bundle') {
-		return props.children.some((e) => isAppExtension(e.schema?.type));
-	}
+	if (props.extension.meta.enabled) return { text: t('enabled'), value: 'enabled' };
 
-	return isAppExtension(type);
+	return { text: t('disabled'), value: 'disabled' };
 });
 
-const state = computed<{ text: string; status: ExtensionStatus }>(() => {
-	if (type.value === 'bundle' && isPartiallyEnabled.value) {
-		return { text: t('partially_enabled'), status: 'partial' };
-	}
+const requestHandler = (requestCallback: () => Promise<any>) => async () => {
+	loading.value = true;
 
-	if (props.extension.meta.enabled) {
-		return { text: t('enabled'), status: 'enabled' };
+	try {
+		await requestCallback();
+	} catch (err) {
+		unexpectedError(err);
+	} finally {
+		loading.value = false;
 	}
+};
 
-	return { text: t('disabled'), status: 'disabled' };
-});
+const toggleState = requestHandler(() => extensionsStore.toggleState(props.extension.id));
+const uninstall = requestHandler(() => extensionsStore.uninstall(props.extension.id));
+const reinstall = requestHandler(() => extensionsStore.reinstall(props.extension.id));
+const remove = requestHandler(() => extensionsStore.remove(props.extension.id));
 
 function isAppExtension(type?: ExtensionType) {
 	if (!type) return false;
 	return (APP_OR_HYBRID_EXTENSION_TYPES as readonly string[]).includes(type);
 }
-
-const toggleState = async () => {
-	saving.value = true;
-
-	try {
-		await extensionsStore.toggleState(props.extension.id);
-	} catch (err) {
-		unexpectedError(err);
-	} finally {
-		saving.value = false;
-	}
-};
-
-const uninstall = async () => {
-	saving.value = true;
-
-	try {
-		await extensionsStore.uninstall(props.extension.id);
-	} catch (err) {
-		unexpectedError(err);
-	} finally {
-		saving.value = false;
-	}
-};
 </script>
 
 <template>
-	<v-list-item block :class="{ disabled }">
+	<v-list-item block>
 		<v-list-item-icon v-tooltip="t(`extension_${type}`)"><v-icon :name="icon" small /></v-list-item-icon>
 		<v-list-item-content>
-			<span class="monospace">
+			<span class="meta" :class="{ disabled }">
 				<router-link
-					v-if="extension.schema?.name && extension.meta.source === 'registry'"
+					v-if="extension.meta.source === 'registry' && !extension.bundle"
 					v-tooltip="t('open_in_marketplace')"
-					class="link"
+					class="marketplace-link"
 					:to="`/settings/marketplace/extension/${extension.id}`"
 				>
-					{{ extension.schema?.name }}
+					{{ name }}
 				</router-link>
-				<span v-else>{{ extension.schema?.name ?? extension.meta.folder }}</span>
+				<span v-else>{{ name }}</span>
 				{{ ' ' }}
-				<v-chip v-if="extension.schema?.version" class="version" small>{{ extension.schema.version }}</v-chip>
+				<v-chip v-if="version" class="version" small>
+					{{ version }}
+				</v-chip>
 			</span>
 		</v-list-item-content>
 
-		<template v-if="type !== 'missing'">
-			<span v-if="saving" class="spinner">
-				<v-progress-circular indeterminate small />
-			</span>
+		<span v-if="loading" class="spinner">
+			<v-progress-circular indeterminate small />
+		</span>
 
-			<v-chip class="state" :class="state.status" small>
-				{{ state.text }}
-			</v-chip>
+		<v-chip v-if="type !== 'missing'" class="state" :class="state.value" small>
+			{{ state.text }}
+		</v-chip>
 
-			<extension-item-options
-				class="options"
-				:type="type"
-				:status="state.status"
-				:disable-locked="disableLocked"
-				:uninstall-locked="uninstallLocked"
-				:bundle-entry="bundleEntry"
-				@toggle-status="toggleState"
-				@uninstall="uninstall"
-			/>
-		</template>
+		<extension-item-options
+			class="options"
+			:extension
+			:type
+			:state="state.value"
+			:state-locked
+			@toggle-state="toggleState"
+			@uninstall="uninstall"
+			@reinstall="reinstall"
+			@remove="remove"
+		/>
 	</v-list-item>
 
-	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialEnabled }">
-		<extension-item v-for="item in children" :key="item.id" :extension="item" bundle-entry />
+	<v-list v-if="children.length > 0" class="nested" :class="{ partial: isPartialAllowed }">
+		<extension-item v-for="item in children" :key="item.id" :extension="item" />
 	</v-list>
 </template>
 
 <style lang="scss" scoped>
-.monospace {
+.meta {
 	font-family: var(--theme--fonts--monospace--font-family);
-}
 
-.nested {
-	margin-left: 20px;
+	.marketplace-link {
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 
-	&:not(.partial) .options {
-		display: none;
+	.version {
+		margin-right: 8px;
+	}
+
+	&.disabled {
+		color: var(--theme--foreground-subdued);
+		--v-chip-color: var(--theme--foreground-subdued);
 	}
 }
 
-.disabled {
-	--v-list-item-color: var(--theme--foreground-subdued);
-}
-
-.options {
-	margin-left: 12px;
-}
-
-.link {
-	&:hover {
-		text-decoration: underline;
-	}
-}
-
-.version {
+.spinner {
 	margin-right: 8px;
 }
 
@@ -203,7 +181,15 @@ const uninstall = async () => {
 	}
 }
 
-.spinner {
-	margin-right: 8px;
+.options {
+	margin-left: 12px;
+}
+
+.nested {
+	margin-left: 20px;
+
+	&:not(.partial) .options {
+		display: none;
+	}
 }
 </style>

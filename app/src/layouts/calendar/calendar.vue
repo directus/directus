@@ -10,6 +10,8 @@ interface Props {
 	createCalendar: (calendarElement: HTMLElement) => void;
 	destroyCalendar: () => void;
 	itemCount?: number;
+	resetPresetAndRefresh: () => Promise<void>;
+	error?: any;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -43,7 +45,8 @@ export default defineComponent({
 		<v-notice v-if="atLimit" type="warning">
 			{{ t('dataset_too_large_currently_showing_n_items', { n: n(10000) }) }}
 		</v-notice>
-		<div ref="calendarElement" />
+		<div v-if="!error" ref="calendarElement" />
+		<slot v-else name="error" :error="error" :reset="resetPresetAndRefresh" />
 	</div>
 </template>
 

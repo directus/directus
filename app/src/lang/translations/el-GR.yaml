@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: Σχετικά
 identifier: Ταυτοποιητής
 avatar: Άβαταρ
 application: Εφαρμογή
@@ -31,6 +32,7 @@ extensions: Επεκτάσεις
 modules: Ενότητες
 module_bar: Γραμμή Ενθεμάτων
 logs: Αρχεία καταγραφής (Logs)
+unknown: Άγνωστο
 reset_width: Επαναφορά πλάτους
 tile_size: Μέγεθος πλακιδίων
 edit_field: Επεξεργασία Πεδίου
@@ -48,6 +50,8 @@ duplicate_field: Αντίγραφο Πεδίου
 half_width: Μισό Πλάτος
 full_width: Πλήρες Πλάτος
 group: Ομάδα
+popular: Δημοφιλές
+recent: Πρόσφατο
 export_items: Εξαγωγή στοιχείων
 and: Και
 or: Ή
@@ -59,16 +63,32 @@ extension_display: Προβολή
 extension_layout: Διάταξη
 extension_module: Ενότητα
 extension_panel: Πίνακας Διαχείρισης
+extension_theme: Θέμα
 extension_hook: Άγκιστρο
 extension_endpoint: Endpoint
 extension_operation: Λειτουργία
 extension_bundle: Δέσμη
 extension_interfaces: Διεπαφές
+extension_displays: Προβολές
 extension_layouts: Διατάξεις
 extension_modules: Ενότητες
 extension_panels: Πίνακες Διαχείρισης
+extension_themes: Θέματα
 extension_hooks: Hooks
 extension_endpoints: Endpoints
+extension_operations: Λειτουργίες
+extension_bundles: Πακέτα
+extension_reload_required: Απαιτείται Επαναφόρτωση Σελίδας
+extension_reload_required_copy: Απαιτείται επαναφόρτωση σελίδας για να δείτε τις αλλαγές μετά την ενεργοποίηση ή απενεργοποίηση των επεκτάσεων εφαρμογών.
+extension_reload_now: Επαναφόρτωση τώρα
+published_relative: Δημοσιεύτηκε
+homepage: Αρχική σελίδα
+github: GitHub
+beta: Beta (Δοκιμαστική)
+n_downloads: '{n} Λήψεις'
+downloads: Λήψεις
+compatibility_not_guaranteed: Μη εγγυημένη συμβατότητα
+compatibility_not_guaranteed_copy: Ο συγγραφέας έχει υποδείξει τη συμβατότητα αυτής της επέκτασης να είναι η{hostVersion}, η οποία δεν ταιριάζει με την τρέχουσα έκδοση σας ({currentVersion})
 enable: Ενεργοποίηση
 disable: Απενεργοποίηση
 custom: Προσαρμοσμένο
@@ -99,6 +119,10 @@ create_user: Δημιουργία Χρήστη
 message: Μήνυμα
 delete_panel: Διαγραφή Πίνακα
 create_webhook: Δημιουργία Webhook
+create_custom_translation: Δημιουργία Προσαρμοσμένης Μετάφρασης
+edit_custom_translation: Επεξεργασία Προσαρμοσμένης Μετάφρασης
+no_custom_translations: Καμία Προσαρμοσμένη Μετάφραση
+no_custom_translations_copy: Δεν υπάρχουν ακόμα προσαρμοσμένες μεταφράσεις.
 invite_users: Πρόσκληση Χρηστών
 invite: Πρόσκληση
 email_already_invited: To email "{email}" έχει ήδη προσκληθεί
@@ -114,12 +138,19 @@ rename_folder: Μετονομασία Φακέλου
 delete_folder: Διαγραφή Φακέλου
 prefix: Πρόθεμα
 suffix: Επίθεμα
+keep: Διατήρηση
 version: Έκδοση
+version_key: Κλειδί Έκδοσης
+version_name: Όνομα έκδοσης
+main_version: Αρχή
+switch_version: Εναλλαγή Έκδοσης
+create_version: Δημιουργία Έκδοσης
 rename_version: Μετονομασία Έκδοσης
 compare_version: Σύγκριση Έκδοσης
 save_version: Αποθήκευση Έκδοσης
 promote_version: Προώθηση Έκδοσης
 promote_version_disabled: Καμία Αλλαγή
+promote_version_drawer_title: Προώθηση του {version} στον Κύριο
 promote_version_changes: Αλλαγές
 promote_version_preview: Προεπισκόπηση
 reset_bookmark: Επαναφορά Σελιδοδείκτη
@@ -154,13 +185,18 @@ validationError:
   required: Η τιμή είναι απαραίτητη
   unique: Η τιμή πρέπει να είναι μοναδική
   regex: Η τιμή δεν έχει τη σωστή μορφή
+  nistarts_with: Η τιμή δεν μπορεί να ξεκινάει με {substring}
 all_access: Όλη Η Πρόσβαση
 no_access: Καμία Πρόσβαση
+use_custom: Χρήση προσαρμοσμένου
 nullable: Κενό
 allow_null_value: Επέτρεψε κενές τιμές
+allow_multiple: Επιτρέπονται πολλαπλές
+allow_multiple_to_be_open: Επιτρέπονται πολλαπλά για άνοιγμα
 field_standard: Τυπικό
 field_presentation: Παρουσίαση & Συνώνυμα
 field_file: Μονό Αρχείο
+field_m2a: Σχέση M2A
 field_translations: Μεταφράσεις
 field_group: Ομάδα πεδίων
 item_permissions: Δικαιώματα Στοιχείου
@@ -362,6 +398,8 @@ fields:
     translation: Μεταφράσεις Ονόματος Πεδίου
   directus_roles:
     name: Όνομα Ρόλου
+    description: Περιγραφή
+  directus_policies:
     description: Περιγραφή
   directus_webhooks:
     name: Όνομα

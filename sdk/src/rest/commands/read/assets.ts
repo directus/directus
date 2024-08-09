@@ -11,10 +11,7 @@ import type { RestCommand } from '../../types.js';
  * @returns {ReadableStream<Uint8Array>}
  */
 export const readAssetRaw =
-	<Schema extends object>(
-		key: DirectusFile<Schema>['id'],
-		query?: AssetsQuery,
-	): RestCommand<ReadableStream<Uint8Array>, Schema> =>
+	<Schema>(key: DirectusFile<Schema>['id'], query?: AssetsQuery): RestCommand<ReadableStream<Uint8Array>, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');
 
@@ -34,7 +31,7 @@ export const readAssetRaw =
  * @returns {Blob}
  */
 export const readAssetBlob =
-	<Schema extends object>(key: DirectusFile<Schema>['id'], query?: AssetsQuery): RestCommand<Blob, Schema> =>
+	<Schema>(key: DirectusFile<Schema>['id'], query?: AssetsQuery): RestCommand<Blob, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');
 
@@ -54,7 +51,7 @@ export const readAssetBlob =
  * @returns {ArrayBuffer}
  */
 export const readAssetArrayBuffer =
-	<Schema extends object>(key: DirectusFile<Schema>['id'], query?: AssetsQuery): RestCommand<ArrayBuffer, Schema> =>
+	<Schema>(key: DirectusFile<Schema>['id'], query?: AssetsQuery): RestCommand<ArrayBuffer, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');
 

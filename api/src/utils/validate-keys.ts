@@ -1,6 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
-import type { SchemaOverview } from '@directus/types';
-import type { PrimaryKey } from '../types/index.js';
+import type { PrimaryKey, SchemaOverview } from '@directus/types';
 import { isValidUuid } from './is-valid-uuid.js';
 
 /**

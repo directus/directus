@@ -38,7 +38,7 @@ import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
 import { getFlowManager } from '../flows.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import * as services from '../services/index.js';
 import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
@@ -225,12 +225,16 @@ export class ExtensionManager {
 	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
 		await this.reload({ forceSync: true });
-		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
+		await this.broadcastReloadNotification();
 	}
 
 	public async uninstall(folder: string) {
 		await this.installationManager.uninstall(folder);
 		await this.reload({ forceSync: true });
+		await this.broadcastReloadNotification();
+	}
+
+	public async broadcastReloadNotification() {
 		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 

@@ -18,6 +18,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	CACHE_SKIP_ALLOWED: 'boolean',
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'array',
+	CACHE_SCHEMA_MAX_ITERATIONS: 'number',
 
 	IMPORT_IP_DENY_LIST: 'array',
 
@@ -32,4 +33,6 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	LOG_HTTP_IGNORE_PATHS: 'array',
 
 	REDIS_ENABLED: 'boolean',
+
+	DB_SSL__CA_FILE: 'string',
 } as const;

@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadUserOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusUser<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -17,7 +17,7 @@ export type ReadUserOutput<
  * @returns An array of up to limit user objects. If no items are available, data will be an empty array.
  */
 export const readUsers =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		query?: TQuery,
 	): RestCommand<ReadUserOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -36,7 +36,7 @@ export const readUsers =
  * @throws Will throw if key is empty
  */
 export const readUser =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		key: DirectusUser<Schema>['id'],
 		query?: TQuery,
 	): RestCommand<ReadUserOutput<Schema, TQuery>, Schema> =>
@@ -58,7 +58,7 @@ export const readUser =
  * @returns Returns the user object for the currently authenticated user.
  */
 export const readMe =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusUser<Schema>>>(
 		query?: TQuery,
 	): RestCommand<ReadUserOutput<Schema, TQuery>, Schema> =>
 	() => ({

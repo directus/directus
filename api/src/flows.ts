@@ -2,15 +2,16 @@ import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
+import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
 import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
-import { omit, pick } from 'lodash-es';
+import { pick } from 'lodash-es';
 import { get } from 'micromustache';
 import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
-import { useLogger } from './logger.js';
+import { useLogger } from './logger/index.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
 import * as services from './services/index.js';
@@ -22,7 +23,6 @@ import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
-import { isSystemCollection } from '@directus/system-data';
 
 let flowManager: FlowManager | undefined;
 
@@ -371,7 +371,7 @@ class FlowManager {
 					data: {
 						steps: steps.map((step) => redactObject(step, { values: this.envs }, getRedactedString)),
 						data: redactObject(
-							omit(keyedData, '$accountability.permissions'), // Permissions is a ton of data, and is just a copy of what's in the directus_permissions table
+							keyedData,
 							{
 								keys: [
 									['**', 'headers', 'authorization'],

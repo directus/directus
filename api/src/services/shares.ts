@@ -1,44 +1,50 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
+import type { Item, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import { useLogger } from '../logger/index.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type {
 	AbstractServiceOptions,
 	DirectusTokenPayload,
-	Item,
 	LoginResult,
 	MutationOptions,
-	PrimaryKey,
 	ShareData,
 } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { getSecret } from '../utils/get-secret.js';
 import { md } from '../utils/md.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
-import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
-import { useLogger } from '../logger.js';
 
 const env = useEnv();
 const logger = useLogger();
 
 export class SharesService extends ItemsService {
-	authorizationService: AuthorizationService;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_shares', options);
-
-		this.authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.authorizationService.checkAccess('share', data['collection'], data['item']);
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'share',
+					collection: data['collection'],
+					primaryKeys: [data['item']],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
+		}
+
 		return super.createOne(data, opts);
 	}
 
@@ -107,7 +113,7 @@ export class SharesService extends ItemsService {
 
 		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
 
-		const accessToken = jwt.sign(tokenPayload, env['SECRET'] as string, {
+		const accessToken = jwt.sign(tokenPayload, getSecret(), {
 			expiresIn: TTL,
 			issuer: 'directus',
 		});

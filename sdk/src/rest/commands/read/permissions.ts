@@ -4,7 +4,7 @@ import type { RestCommand } from '../../types.js';
 import { throwIfEmpty } from '../../utils/index.js';
 
 export type ReadPermissionOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusPermission<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -15,13 +15,25 @@ export type ReadItemPermissionsOutput = {
 	share: { access: boolean };
 };
 
+export type ReadUserPermissionsOutput = Record<
+	string,
+	Record<
+		'create' | 'update' | 'delete' | 'read' | 'share',
+		{
+			access: 'none' | 'partial' | 'full';
+			fields?: string[];
+			presets?: Record<string, any>;
+		}
+	>
+>;
+
 /**
  * List all Permissions that exist in Directus.
  * @param query The query parameters
  * @returns An array of up to limit Permission objects. If no items are available, data will be an empty array.
  */
 export const readPermissions =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		query?: TQuery,
 	): RestCommand<ReadPermissionOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +50,7 @@ export const readPermissions =
  * @throws Will throw if key is empty
  */
 export const readPermission =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusPermission<Schema>>>(
 		key: DirectusPermission<Schema>['id'],
 		query?: TQuery,
 	): RestCommand<ReadPermissionOutput<Schema, TQuery>, Schema> =>
@@ -59,7 +71,7 @@ export const readPermission =
  * @returns Returns a ItemPermissions object if a valid collection / primary key was provided.
  */
 export const readItemPermissions =
-	<Schema extends object, Collection extends AllCollections<Schema>>(
+	<Schema, Collection extends AllCollections<Schema>>(
 		collection: Collection,
 		key?: string | number,
 	): RestCommand<ReadItemPermissionsOutput, Schema> =>
@@ -73,3 +85,13 @@ export const readItemPermissions =
 			method: 'GET',
 		};
 	};
+
+/**
+ * Check the current user's permissions.
+ */
+export const readUserPermissions =
+	<Schema>(): RestCommand<ReadUserPermissionsOutput, Schema> =>
+	() => ({
+		path: `/permissions/me`,
+		method: 'GET',
+	});

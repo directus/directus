@@ -7,7 +7,7 @@ import type { IfAny, UnpackList } from './utils.js';
 /**
  * All query options available
  */
-export interface Query<Schema extends object, Item> {
+export interface Query<Schema, Item> {
 	readonly fields?: IfAny<Schema, (string | Record<string, any>)[], QueryFields<Schema, Item>> | undefined;
 	filter?: IfAny<Schema, Record<string, any>, QueryFilter<Schema, Item>> | undefined;
 	search?: string | undefined;
@@ -22,7 +22,7 @@ export interface Query<Schema extends object, Item> {
 /**
  * All query options with an additional version query option for readItem and readSingleton
  */
-export interface QueryItem<Schema extends object, Item> extends Query<Schema, Item> {
+export interface QueryItem<Schema, Item> extends Query<Schema, Item> {
 	readonly version?: string | undefined;
 	readonly versionRaw?: boolean | undefined;
 }
@@ -30,12 +30,12 @@ export interface QueryItem<Schema extends object, Item> extends Query<Schema, It
 /**
  * Returns Item types that are available in the root Schema
  */
-export type ExtractItem<Schema extends object, Item> = Extract<UnpackList<Item>, ItemType<Schema>>;
+export type ExtractItem<Schema, Item> = Extract<UnpackList<Item>, ItemType<Schema>>;
 
 /**
  * Returns the relation type from the current item by key
  */
-export type ExtractRelation<Schema extends object, Item extends object, Key> = Key extends keyof Item
+export type ExtractRelation<Schema, Item extends object, Key> = Key extends keyof Item
 	? ExtractItem<Schema, Item[Key]>
 	: never;
 
@@ -59,7 +59,7 @@ export type MergeFields<FieldList> = HasNestedFields<FieldList> extends never
  * Query sort
  * TODO expand to relational sorting (same object notation as fields i guess)
  */
-export type QuerySort<_Schema extends object, Item> = UnpackList<Item> extends infer FlatItem
+export type QuerySort<_Schema, Item> = UnpackList<Item> extends infer FlatItem
 	? {
 			[Field in keyof FlatItem]: Field | `-${Field & string}`;
 	  }[keyof FlatItem]
@@ -72,4 +72,4 @@ export type MergeObjects<A, B> = object extends A ? (object extends B ? A & B : 
  *
  * TODO somehow include these aliases in the Field Types!!
  */
-export type QueryAlias<_Schema extends object, Item> = Record<string, keyof Item>;
+export type QueryAlias<_Schema, Item> = Record<string, keyof Item>;

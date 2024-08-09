@@ -15,7 +15,7 @@ folder relative to your project. Every template is a [`liquid`](https://liquidjs
 want!
 
 ```
-/extensions/templates/<template-name>.liquid
+/templates/<template-name>.liquid
 ```
 
 To replace a system template with your own, simply name it `password-reset` or `user-invitation` for the password reset

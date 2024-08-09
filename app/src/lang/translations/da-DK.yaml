@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: Om
 identifier: Identifier
 avatar: Profilbillede
 application: Anvendelse
@@ -27,9 +28,11 @@ method: Metode
 published: Publiceret
 draft: Kladde
 archived: Arkiveret
+extensions: Udvidelser
 modules: Moduler
 module_bar: Modulbar
 logs: Logger
+unknown: Ukendt
 reset_width: Tilbagestil bredde
 tile_size: Title størrelse
 edit_field: Rediger felt
@@ -47,6 +50,8 @@ duplicate_field: Dupliker felt
 half_width: Halv bredde
 full_width: Fuld bredde
 group: Gruppe
+popular: Populære
+recent: Seneste
 export_items: Eksportér elementer
 and: og
 or: eller
@@ -56,15 +61,47 @@ modifier: Modifikator
 extension_interface: Grænseflade
 extension_display: Vis
 extension_layout: Sideopsætning
+extension_module: Modul
 extension_panel: Stykke
+extension_theme: Tema
 extension_hook: Krog
+extension_endpoint: Slutpunkt
+extension_operation: Operation
 extension_bundle: Bundt
 extension_interfaces: Grænseflader
 extension_displays: Viser
 extension_layouts: Layout
 extension_modules: Moduler
 extension_panels: Paneler
+extension_themes: Temaer
+extension_hooks: Hooks
+extension_endpoints: Slutpunkter
+extension_operations: Opgaver
+extension_bundles: Pakker
+extension_missing: Mangler
+extension_reload_required: Genindlæsning af side påkrævet
+extension_reload_required_copy: En genindlæsning af siden er nødvendig for at se ændringerne efter aktivering eller deaktivering af appudvidelser.
+extension_reload_now: Genindlæs nu
+published_relative: Offentliggjort {relativeTime}
+compatible_with_your_project: Kompatibel med dit projekt
+compatible_with_your_project_copy: Forfatteren har angivet kompatibiliteten af denne udvidelse til at være {hostVersion}, som matcher dit projekts version ({currentVersion})
+last_updated_relative: Sidst opdateret {relativeTime}
+n_files: '{n} Filer'
+verified: Verificeret
+homepage: Hjemmeside
+repository: Repository
+reload_page: Genindlæs side
+reload_required: Genindlæsning af side påkrævet
+report_an_issue: Rapportér et problem
+website: Hjemmeside
+github: GitHub
+beta: Beta
+n_downloads: '{n} Downloads'
+downloads: Downloads
+compatibility_not_guaranteed: Kompatibilitet er ikke garanteret
+compatibility_not_guaranteed_copy: Forfatteren har angivet kompatibiliteten af denne udvidelse til at være {hostVersion}, som matcher dit projekts version ({currentVersion})
 enable: Aktiver
+disable: Deaktivér
 custom: Brugertilpasset
 hook: Krog
 fill_width: Fuld bredde
@@ -93,6 +130,10 @@ create_user: Opret bruger
 message: Besked
 delete_panel: Slet panel
 create_webhook: Opret webhook
+create_custom_translation: Opret tilpasset Oversættelse
+edit_custom_translation: Rediger Brugerdefineret Oversættelse
+no_custom_translations: Ingen tilpassede Oversættelser
+no_custom_translations_copy: Der er endnu ingen tilpassede oversættelser.
 invite_users: Inviter brugere
 invite: Inviter
 email_already_invited: Email "{email}" er allerede blevet inviteret
@@ -108,7 +149,13 @@ rename_folder: Omdøb mappe
 delete_folder: Slet mappe
 prefix: Præfiks
 suffix: Suffiks
+keep: Behold
+version: Version
+main_version: Primær
+switch_version: Skift Version
 switch_version_copy: Er du sikker på, at du vil skifte til "{version}"-versionen? Ændringer, der ikke er gemt, går tabt.
+create_version: Opret Version
+rename_version: Omdøb Version
 promote_version_preview: Eksempelvisning
 reset_bookmark: Nustil bogmærke
 update_bookmark: Opdater bogmærke
@@ -433,6 +480,7 @@ modified: Ændret
 owner: Ejer
 edited_by: Redigeret af
 folder: Mappe
+folders: Mapper
 zoom: Zoom
 download: Download
 open: Åbn
@@ -448,7 +496,6 @@ replace_from_library: Erstat fil fra enhed
 replace_from_url: Erstat fil fra URL
 no_file_selected: Ingen fil Valgt
 download_file: Download fil
-open_file_in_tab: Åbn fil i nyt faneblad
 start_export: Start eksport
 not_available_for_local_downloads: Ikke tilgængelig for lokale downloads
 exporting_all_items_in_collection: Eksporterer alle {total} elementer inden for {collection}.
@@ -568,37 +615,37 @@ auto_fill: Udfyld automatisk
 corresponding_field: Tilsvarende felt
 errors:
   COLLECTION_NOT_FOUND: "Samlingen findes ikke"
+  CONTAINS_NULL_VALUES: Feltet indeholder null værdier
   FIELD_NOT_FOUND: Felt ikke fundet
   FORBIDDEN: Forbudt
+  ILLEGAL_ASSET_TRANSFORMATION: Billedkilde for stor til forhåndsvisning
+  INTERNAL_SERVER_ERROR: Uventet Fejl
+  INVALID_CONFIG: Ugyldig config
   INVALID_CREDENTIALS: Forkert brugernavn eller adgangskode
+  INVALID_FOREIGN_KEY: Ugyldig fremmed nøgle
+  INVALID_IP: Ugyldig IP adresse
   INVALID_OTP: Forkert engangskodeord
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: Bruger tilhører en anden autoritets udbyder
   INVALID_QUERY: Ugyldig forespørgsel
-  INVALID_CONFIG: Ugyldig config
   INVALID_TOKEN: Ugyldig token
-  INVALID_IP: Ugyldig IP adresse
   INVALID_USER: Kunne ikke godkende bruger
   ITEM_LIMIT_REACHED: Element grænse nået
   ITEM_NOT_FOUND: Element ikke fundet
-  ROUTE_NOT_FOUND: Ikke fundet
-  RECORD_NOT_UNIQUE: Duplikeret værdi detekteret
-  USER_SUSPENDED: Bruger Suspenderet
-  CONTAINS_NULL_VALUES: Feltet indeholder null værdier
-  INTERNAL_SERVER_ERROR: Uventet Fejl
-  NOT_NULL_VIOLATION: Værdien kan ikke være null
-  ILLEGAL_ASSET_TRANSFORMATION: Billedkilde for stor til forhåndsvisning
-  VALUE_TOO_LONG: Værdien er for lang
-  VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
-  INVALID_FOREIGN_KEY: Ugyldig fremmed nøgle
-  UNKNOWN: Uventet Fejl
-  SERVICE_UNAVAILABLE: Tjenesten er ikke tilgængelig
-  UNSUPPORTED_MEDIA_TYPE: Ikke-understøttet filtype
-  UNEXPECTED_RESPONSE: Uventet serversvar
-  TOKEN_EXPIRED: Token udløbet
-  RANGE_NOT_SATISFIABLE: Ugyldigt interval
   METHOD_NOT_ALLOWED: Metode ikke tilladt
+  NOT_NULL_VIOLATION: Værdien kan ikke være null
+  RANGE_NOT_SATISFIABLE: Ugyldigt interval
+  RECORD_NOT_UNIQUE: Duplikeret værdi detekteret
   REQUESTS_EXCEEDED: Kvota overskredet
+  ROUTE_NOT_FOUND: Ikke fundet
+  SERVICE_UNAVAILABLE: Tjenesten er ikke tilgængelig
+  TOKEN_EXPIRED: Token udløbet
+  UNEXPECTED_RESPONSE: Uventet serversvar
+  UNKNOWN: Uventet Fejl
+  UNSUPPORTED_MEDIA_TYPE: Ikke-understøttet filtype
+  USER_SUSPENDED: Bruger Suspenderet
+  VALUE_OUT_OF_RANGE: Værdien er uden for rækkevidde
+  VALUE_TOO_LONG: Værdien er for lang
 security: Sikkerhed
 value_hashed: Værdi sikker hashed
 bookmark_name: Bogmærke navn...
@@ -612,7 +659,6 @@ cannot_edit_global_bookmarks: Kan ikke redigere globale bogmærker
 bookmarks: Foretrukne
 presets: Forudindstillinger
 unexpected_error: Uventet fejl
-unexpected_error_copy: Der opstod en uventet fejl. Prøv igen senere.
 copy_details: Kopiér detaljer
 no_app_access: Ingen app adgang
 no_app_access_copy: Denne bruger har ikke tilladelse til at bruge admin appen.
@@ -962,7 +1008,6 @@ page_help_settings_datamodel_collections: >-
   **Datamodel: Samlinger** — Viser alle tilgængelige samlinger. Dette omfatter synlige, skjulte og systemsamlinger, samt uhåndterede databasetabeller, der kan tilføjes.
 page_help_settings_datamodel_fields: >-
   **Datamodel: Samling** — En formular til håndtering af denne indsamling og dens felter.
-page_help_settings_roles_collection: '**Gennemse roller** — Viser en liste over administratorer, offentlige og brugerdefinerede brugerroller.'
 page_help_settings_roles_item: "**Rolle Detaljer** — Administrer en rolles tilladelser og andre indstillinger."
 page_help_settings_presets_collection: >-
   **Gennemse forudindstillinger** — Viser alle forudindstillinger i projektet, herunder: bruger, rolle og globale bogmærker samt standardvisninger.
@@ -1005,7 +1050,6 @@ directus_collection:
   directus_notifications: Notifikationer sendt til brugere
   directus_operations: Operationer, der kører i Flows
   directus_panels: Individuelle paneler i Insights dashboards
-  directus_permissions: Adgangstilladelser for hver rolle
   directus_presets: Forudindstillinger for opsamling standardindstillinger og bogmærker
   directus_relations: Sammenhæng konfiguration og metadata
   directus_revisions: Data snapshots for al aktivitet
@@ -1150,12 +1194,9 @@ fields:
     name: Rollenavn
     icon: Rolle ikon
     description: Beskrivelse
-    app_access: App adgang
-    admin_access: Admin adgang
-    ip_access: Ip adgang
-    enforce_tfa: Kræver 2FA
     users: Brugere i rolle
-    module_list: Modul navigation
+  directus_policies:
+    description: Beskrivelse
   directus_webhooks:
     name: Navn
     method: Metode

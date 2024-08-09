@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { RouteLocation, useLink, useRoute } from 'vue-router';
-import { computed } from 'vue';
 import { useGroupable } from '@directus/composables';
-import { isEqual } from 'lodash';
+import { isMatch } from 'lodash';
+import { computed } from 'vue';
+import { RouteLocation, useLink, useRoute } from 'vue-router';
 
 interface Props {
 	block?: boolean;
@@ -95,7 +95,11 @@ const isActiveRoute = computed(() => {
 	if (props.active !== undefined) return props.active;
 
 	if (props.to) {
-		const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
+		const queryMatch = Object.values(linkRoute.value.query).length
+			? isMatch(route.query, linkRoute.value.query)
+			: !Object.values(route.query).length;
+
+		const isQueryActive = !props.query || queryMatch;
 
 		if (!props.exact) {
 			return isActive.value && isQueryActive;

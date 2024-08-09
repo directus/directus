@@ -1,9 +1,7 @@
 import { formatFields } from '../index.js';
 import type { RestCommand } from '../types.js';
 
-export function withSearch<Schema extends object, Output>(
-	getOptions: RestCommand<Output, Schema>,
-): RestCommand<Output, Schema> {
+export function withSearch<Schema, Output>(getOptions: RestCommand<Output, Schema>): RestCommand<Output, Schema> {
 	return () => {
 		const options = getOptions();
 

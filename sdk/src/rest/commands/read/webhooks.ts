@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadWebhookOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusWebhook<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -15,7 +15,7 @@ export type ReadWebhookOutput<
  * @returns An array of up to limit Webhook objects. If no items are available, data will be an empty array.
  */
 export const readWebhooks =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
 		query?: TQuery,
 	): RestCommand<ReadWebhookOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -32,7 +32,7 @@ export const readWebhooks =
  * @throws Will throw if key is empty
  */
 export const readWebhook =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusWebhook<Schema>>>(
 		key: DirectusWebhook<Schema>['id'],
 		query?: TQuery,
 	): RestCommand<ReadWebhookOutput<Schema, TQuery>, Schema> =>

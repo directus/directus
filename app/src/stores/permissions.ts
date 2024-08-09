@@ -1,23 +1,22 @@
 import api from '@/api';
-import { parseFilter } from '@/utils/parse-filter';
+import { CollectionPermission } from '@/types/permissions';
 import { parsePreset } from '@/utils/parse-preset';
-import { Permission, PermissionsAction } from '@directus/types';
+import { CollectionAccess, PermissionsAction } from '@directus/types';
 import { deepMap } from '@directus/utils';
+import { mapValues } from 'lodash';
 import { defineStore } from 'pinia';
 import { useUserStore } from '../stores/user';
 
 export const usePermissionsStore = defineStore({
 	id: 'permissionsStore',
 	state: () => ({
-		permissions: [] as Permission[],
+		permissions: {} as CollectionAccess,
 	}),
 	actions: {
 		async hydrate() {
 			const userStore = useUserStore();
 
-			const response = await api.get('/permissions', {
-				params: { filter: { role: { _eq: userStore.currentUser!.role.id } } },
-			});
+			const response = await api.get('/permissions/me');
 
 			const fields = getNestedDynamicVariableFields(response.data.data);
 
@@ -25,23 +24,20 @@ export const usePermissionsStore = defineStore({
 				await userStore.hydrateAdditionalFields(fields);
 			}
 
-			this.permissions = response.data.data.map((rawPermission: Permission) => {
-				if (rawPermission.permissions) {
-					rawPermission.permissions = parseFilter(rawPermission.permissions);
-				}
+			this.permissions = mapValues(
+				response.data.data as CollectionAccess,
+				(collectionPermission: CollectionPermission) => {
+					Object.values(collectionPermission).forEach((actionPermission) => {
+						if (actionPermission.presets) {
+							actionPermission.presets = parsePreset(actionPermission.presets);
+						}
+					});
 
-				if (rawPermission.validation) {
-					rawPermission.validation = parseFilter(rawPermission.validation);
-				}
+					return collectionPermission;
+				},
+			) as CollectionAccess;
 
-				if (rawPermission.presets) {
-					rawPermission.presets = parsePreset(rawPermission.presets);
-				}
-
-				return rawPermission;
-			});
-
-			function getNestedDynamicVariableFields(rawPermissions: Permission[]) {
+			function getNestedDynamicVariableFields(rawPermissions: Record<string, CollectionPermission>) {
 				const fields = new Set<string>();
 
 				const checkDynamicVariable = (value: string) => {
@@ -54,9 +50,10 @@ export const usePermissionsStore = defineStore({
 					}
 				};
 
-				rawPermissions.forEach((rawPermission: Permission) => {
-					deepMap(rawPermission.presets, checkDynamicVariable);
-					deepMap(rawPermission.permissions, checkDynamicVariable);
+				Object.values(rawPermissions).forEach((collectionPermission: CollectionPermission) => {
+					Object.values(collectionPermission).forEach((actionPermission) => {
+						deepMap(actionPermission.presets, checkDynamicVariable);
+					});
 				});
 
 				return Array.from(fields);
@@ -66,20 +63,14 @@ export const usePermissionsStore = defineStore({
 			this.$reset();
 		},
 		getPermission(collection: string, action: PermissionsAction) {
-			const permission = this.permissions.find(
-				(permission) => permission.action === action && permission.collection === collection,
-			);
-
-			return permission || null;
+			return this.permissions[collection]?.[action] ?? null;
 		},
 		hasPermission(collection: string, action: PermissionsAction) {
 			const userStore = useUserStore();
 
 			if (userStore.isAdmin) return true;
 
-			return this.permissions.some(
-				(permission) => permission.action === action && permission.collection === collection,
-			);
+			return (this.getPermission(collection, action)?.access ?? 'none') !== 'none';
 		},
 	},
 });

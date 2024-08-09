@@ -3,7 +3,7 @@ import type { ConsoleInterface, FetchInterface, UrlInterface, WebSocketConstruct
 /**
  * empty directus client
  */
-export interface DirectusClient<Schema extends object> {
+export interface DirectusClient<Schema> {
 	url: URL;
 	globals: ClientGlobals;
 	with: <Extension extends object>(createExtension: (client: DirectusClient<Schema>) => Extension) => this & Extension;

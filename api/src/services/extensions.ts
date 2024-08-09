@@ -9,6 +9,7 @@ import getDatabase from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
 import type { ExtensionManager } from '../extensions/manager.js';
 import type { AbstractServiceOptions } from '../types/index.js';
+import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 
 export class ExtensionReadError extends Error {
@@ -39,7 +40,7 @@ export class ExtensionsService {
 		});
 	}
 
-	async install(extensionId: string, versionId: string) {
+	private async preInstall(extensionId: string, versionId: string) {
 		const env = useEnv();
 
 		const describeOptions: DescribeOptions = {};
@@ -70,9 +71,15 @@ export class ExtensionsService {
 			const afterInstallCount = currentlyInstalledCount + points;
 
 			if (afterInstallCount >= limit) {
-				throw new LimitExceededError();
+				throw new LimitExceededError({ category: 'Extensions' });
 			}
 		}
+
+		return { extension, version };
+	}
+
+	async install(extensionId: string, versionId: string) {
+		const { extension, version } = await this.preInstall(extensionId, versionId);
 
 		await this.extensionsItemService.createOne({
 			id: extensionId,
@@ -93,6 +100,47 @@ export class ExtensionsService {
 			);
 		}
 
+		await this.extensionsManager.install(versionId);
+	}
+
+	async uninstall(id: string) {
+		const settings = await this.extensionsItemService.readOne(id);
+
+		if (settings.source !== 'registry') {
+			throw new InvalidPayloadError({
+				reason: 'Cannot uninstall extensions that were not installed via marketplace',
+			});
+		}
+
+		if (settings.bundle !== null) {
+			throw new InvalidPayloadError({
+				reason: 'Cannot uninstall sub extensions of bundles separately',
+			});
+		}
+
+		await this.deleteOne(id);
+		await this.extensionsManager.uninstall(settings.folder);
+	}
+
+	async reinstall(id: string) {
+		const settings = await this.extensionsItemService.readOne(id);
+
+		if (settings.source !== 'registry') {
+			throw new InvalidPayloadError({
+				reason: 'Cannot reinstall extensions that were not installed via marketplace',
+			});
+		}
+
+		if (settings.bundle !== null) {
+			throw new InvalidPayloadError({
+				reason: 'Cannot reinstall sub extensions of bundles separately',
+			});
+		}
+
+		const extensionId = settings.id;
+		const versionId = settings.folder;
+
+		await this.preInstall(extensionId, versionId);
 		await this.extensionsManager.install(versionId);
 	}
 
@@ -148,7 +196,7 @@ export class ExtensionsService {
 	}
 
 	async updateOne(id: string, data: DeepPartial<ApiOutput>) {
-		const result = await this.knex.transaction(async (trx) => {
+		const result = await transaction(this.knex, async (trx) => {
 			if (!isObject(data.meta)) {
 				throw new InvalidPayloadError({ reason: `"meta" is required` });
 			}
@@ -176,23 +224,16 @@ export class ExtensionsService {
 			return extension;
 		});
 
-		this.extensionsManager.reload();
+		this.extensionsManager.reload().then(() => {
+			this.extensionsManager.broadcastReloadNotification();
+		});
 
 		return result;
 	}
 
 	async deleteOne(id: string) {
-		const settings = await this.extensionsItemService.readOne(id);
-
-		if (settings.source !== 'registry') {
-			throw new InvalidPayloadError({
-				reason: 'Cannot uninstall extensions that were not installed from the marketplace registry',
-			});
-		}
-
 		await this.extensionsItemService.deleteOne(id);
 		await this.extensionsItemService.deleteByQuery({ filter: { bundle: { _eq: id } } });
-		await this.extensionsManager.uninstall(settings.folder);
 	}
 
 	/**
@@ -204,18 +245,22 @@ export class ExtensionsService {
 	 *    - Entry status change resulted in all children being disabled then the parent bundle is disabled
 	 *    - Entry status change resulted in at least one child being enabled then the parent bundle is enabled
 	 */
-	private async checkBundleAndSyncStatus(trx: Knex, bundleId: string, extension: ApiOutput) {
+	private async checkBundleAndSyncStatus(trx: Knex, extensionId: string, extension: ApiOutput) {
 		if (extension.bundle === null && extension.schema?.type === 'bundle') {
 			// If extension is the parent bundle, set it and all nested extensions to enabled
 			await trx('directus_extensions')
 				.update({ enabled: extension.meta.enabled })
-				.where({ bundle: bundleId })
-				.orWhere({ id: bundleId });
+				.where({ bundle: extensionId })
+				.orWhere({ id: extensionId });
 
 			return;
 		}
 
-		const parent = await this.readOne(bundleId);
+		const parentId = extension.bundle ?? extension.meta.bundle;
+
+		if (!parentId) return;
+
+		const parent = await this.readOne(parentId);
 
 		if (parent.schema?.type !== 'bundle') {
 			return;
@@ -228,14 +273,14 @@ export class ExtensionsService {
 		}
 
 		const hasEnabledChildren = !!(await trx('directus_extensions')
-			.where({ bundle: bundleId })
+			.where({ bundle: parentId })
 			.where({ enabled: true })
 			.first());
 
 		if (hasEnabledChildren) {
-			await trx('directus_extensions').update({ enabled: true }).where({ id: bundleId });
+			await trx('directus_extensions').update({ enabled: true }).where({ id: parentId });
 		} else {
-			await trx('directus_extensions').update({ enabled: false }).where({ id: bundleId });
+			await trx('directus_extensions').update({ enabled: false }).where({ id: parentId });
 		}
 	}
 }

@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Empty body.
  */
 export const passwordRequest =
-	<Schema extends object>(email: string, reset_url?: string): RestCommand<void, Schema> =>
+	<Schema>(email: string, reset_url?: string): RestCommand<void, Schema> =>
 	() => ({
 		path: '/auth/password/request',
 		method: 'POST',

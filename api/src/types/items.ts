@@ -1,16 +1,7 @@
 import type { DirectusError } from '@directus/errors';
-import type { EventContext } from '@directus/types';
+import type { EventContext, PrimaryKey } from '@directus/types';
 import type { MutationTracker } from '../services/items.js';
-
-export type Item = Record<string, any>;
-
-export type PrimaryKey = string | number;
-
-export type Alterations<T extends Item = Item, K extends keyof T | undefined = undefined> = {
-	create: Partial<T>[];
-	update: (K extends keyof T ? Partial<T> & Pick<T, K> : Partial<T>)[];
-	delete: (K extends keyof T ? T[K] : PrimaryKey)[];
-};
+import type { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 
 export type MutationOptions = {
 	/**
@@ -55,6 +46,18 @@ export type MutationOptions = {
 	preMutationError?: DirectusError | undefined;
 
 	bypassAutoIncrementSequenceReset?: boolean;
+
+	/**
+	 * Indicate that the top level mutation needs to perform a user integrity check before commiting the transaction
+	 * This is a combination of flags
+	 * @see UserIntegrityCheckFlag
+	 */
+	userIntegrityCheckFlags?: UserIntegrityCheckFlag;
+
+	/**
+	 * Callback function that is called whenever a mutation requires a user integrity check to be made
+	 */
+	onRequireUserIntegrityCheck?: ((flags: UserIntegrityCheckFlag) => void) | undefined;
 };
 
 export type ActionEventParams = {

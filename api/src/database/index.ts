@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
@@ -11,11 +12,18 @@ import path from 'path';
 import { performance } from 'perf_hooks';
 import { promisify } from 'util';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
 import { getHelpers } from './helpers/index.js';
+
+type QueryInfo = Partial<Knex.Sql> & {
+	sql: Knex.Sql['sql'];
+	__knexUid: string;
+	__knexTxId: string;
+	[key: string | number | symbol]: any;
+};
 
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
@@ -136,6 +144,11 @@ export function getDatabase(): Knex {
 	}
 
 	if (client === 'mysql') {
+		// Remove the conflicting `filename` option, defined by default in the Docker Image
+		if (isObject(knexConfig.connection)) delete knexConfig.connection['filename'];
+
+		Object.assign(knexConfig, { client: 'mysql2' });
+
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
 			logger.trace('Retrieving database version');
 			const run = promisify(conn.query.bind(conn));
@@ -157,27 +170,33 @@ export function getDatabase(): Knex {
 	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
-	const times: Record<string, number> = {};
+	const times = new Map<string, number>();
 
 	database
-		.on('query', (queryInfo) => {
-			times[queryInfo.__knexUid] = performance.now();
+		.on('query', ({ __knexUid }: QueryInfo) => {
+			times.set(__knexUid, performance.now());
 		})
-		.on('query-response', (_response, queryInfo) => {
-			const delta = performance.now() - times[queryInfo.__knexUid]!;
-			logger.trace(`[${delta.toFixed(3)}ms] ${queryInfo.sql} [${queryInfo.bindings.join(', ')}]`);
-			delete times[queryInfo.__knexUid];
+		.on('query-response', (_response, queryInfo: QueryInfo) => {
+			const time = times.get(queryInfo.__knexUid);
+			let delta;
+
+			if (time) {
+				delta = performance.now() - time;
+				times.delete(queryInfo.__knexUid);
+			}
+
+			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${(queryInfo.bindings ?? []).join(', ')}]`);
 		});
 
 	return database;
 }
 
-export function getSchemaInspector(): SchemaInspector {
+export function getSchemaInspector(database?: Knex): SchemaInspector {
 	if (inspector) {
 		return inspector;
 	}
 
-	const database = getDatabase();
+	database ??= getDatabase();
 
 	inspector = createInspector(database);
 
@@ -230,7 +249,7 @@ export function getDatabaseClient(database?: Knex): DatabaseClient {
 	database = database ?? getDatabase();
 
 	switch (database.client.constructor.name) {
-		case 'Client_MySQL':
+		case 'Client_MySQL2':
 			return 'mysql';
 		case 'Client_PG':
 			return 'postgres';

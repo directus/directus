@@ -1,12 +1,18 @@
 <script setup lang="ts">
-import { useServerStore } from '@/stores/server';
-import { storeToRefs } from 'pinia';
-import { useI18n } from 'vue-i18n';
-import { useSettingsStore } from '@/stores/settings';
 import { DEFAULT_REPORT_BUG_URL, DEFAULT_REPORT_FEATURE_URL } from '@/constants.js';
+import { useServerStore } from '@/stores/server';
+import { useSettingsStore } from '@/stores/settings';
+import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-type Link = { icon: string; name: string; to?: string; href?: string; chip?: string };
+type Link = {
+	icon: string;
+	name: string;
+	to?: string;
+	href?: string;
+	chip?: string;
+};
 
 const { t } = useI18n();
 const { info } = storeToRefs(useServerStore());
@@ -20,19 +26,21 @@ const links = computed<Link[][]>(() => [
 			to: `/settings/data-model`,
 		},
 		{
-			icon: 'admin_panel_settings',
-			name: t('settings_permissions'),
-			to: `/settings/roles`,
-		},
-		{
-			icon: 'anchor',
-			name: t('settings_webhooks'),
-			to: `/settings/webhooks`,
-		},
-		{
 			icon: 'bolt',
 			name: t('settings_flows'),
 			to: `/settings/flows`,
+		},
+	],
+	[
+		{
+			icon: 'group',
+			name: t('settings_roles'),
+			to: `/settings/roles`,
+		},
+		{
+			icon: 'admin_panel_settings',
+			name: t('settings_permissions'),
+			to: `/settings/policies`,
 		},
 	],
 	[

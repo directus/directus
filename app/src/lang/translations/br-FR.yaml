@@ -380,21 +380,21 @@ auto_fill: Leuniañ emgefreek
 corresponding_field: Maezienn liammet
 errors:
   COLLECTION_NOT_FOUND: "N'eus ket eus an dastumad"
+  CONTAINS_NULL_VALUES: E-barzh ar vaezienn ez eus talvoudoù null
   FIELD_NOT_FOUND: N'haller ket kavout ar vaezienn-se
   FORBIDDEN: Difennet
+  INTERNAL_SERVER_ERROR: Fazi dianav
   INVALID_CREDENTIALS: N'eo ket mat an anv implijer pe ar ger-tremen
   INVALID_OTP: Direizh eo ar ger-tremen nemetañ
   INVALID_PAYLOAD: Payload direizh
   INVALID_QUERY: N'eus ket eus an dibab-se
   ITEM_LIMIT_REACHED: Ne c'heller kaout muioc'h a elfennoù
   ITEM_NOT_FOUND: N'haller ket kavout an elfenn-se
-  ROUTE_NOT_FOUND: Dibosupl da gavout
-  RECORD_NOT_UNIQUE: Talvoud eilet kavet
-  USER_SUSPENDED: Implijer lakaet a gostez
-  CONTAINS_NULL_VALUES: E-barzh ar vaezienn ez eus talvoudoù null
-  INTERNAL_SERVER_ERROR: Fazi dianav
   NOT_NULL_VIOLATION: Arabat e vije null an talvoud
+  RECORD_NOT_UNIQUE: Talvoud eilet kavet
+  ROUTE_NOT_FOUND: Dibosupl da gavout
   UNKNOWN: Fazi dianav
+  USER_SUSPENDED: Implijer lakaet a gostez
 value_hashed: Talvoud hashet en un doare sur
 bookmark_name: Anv ar pennroll
 create_bookmark: Ouzhpenn e-giz pennroll
@@ -402,7 +402,6 @@ edit_bookmark: Kemm ar pennroll
 bookmarks: Pennrolloù
 presets: Rak-reoliñ
 unexpected_error: Fazi dianav
-unexpected_error_copy: Ur fazi dianv zo bet. Klaskit diwezhatoc'h mar plij.
 copy_details: Eilañ ar munudoù
 no_app_access: Ne c'heller ket implijout an arload
 no_app_access_copy: An implijer-mañ, n'eus ket ar gwir da implijout an arload mererezh.
@@ -638,7 +637,6 @@ page_help_settings_datamodel_collections: >-
   **Patrom roadennoù : Dastumadoù** — Roll an holl dastumadoù hegerz. Da lâret eo an dastumadoù a c'heller gwelet, ar re kuzhet ha sistem, hag an taolennoù gant diazoù roadennoù nann meret a c'hell bezañ ouzhpennet.
 page_help_settings_datamodel_fields: >-
   **Patrom roadennoù : Dastumadoù** — Furmskrid evit merañ an dastumad hag e vaeziennoù.
-page_help_settings_roles_collection: '**Mont a-dreuz ar rolloù** — Roll ar rolloù Merour, Foran hag ar rolloù implijerien personelaet.'
 page_help_settings_roles_item: "**Mundoù ar roll** — Merañ an aotreoù hag arventennoù all ur roll."
 page_help_settings_presets_collection: >-
   **Mont a-dreuz ar rakreoliñ** - Roll holl rakreoliñ ar raktres gant : an implijer, ar roll, ar pennrolloù hollek hag ar gweloù dre ziouer.
@@ -752,12 +750,9 @@ fields:
     name: Anv ar roll
     icon: Arlun ar roll
     description: Deskrivadur
-    app_access: Aksed en arload
-    admin_access: Aksed Merour
-    ip_access: Aksed IP
-    enforce_tfa: Ret eo kaout A2F
     users: Izili gant ar roll
-    module_list: Modulenn ar Merdeiñ
+  directus_policies:
+    description: Deskrivadur
   directus_webhooks:
     name: Anv
     status: Stad

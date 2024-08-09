@@ -132,7 +132,7 @@ function useItems() {
 				selectable: get(item, props.itemSelectable),
 				children: children
 					? children.filter((childItem: Record<string, any>) =>
-							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children),
+							filterItem(childItem.text, childItem.value, childItem.children),
 					  )
 					: children,
 				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
@@ -297,6 +297,12 @@ function useDisplayValue() {
 				</v-list-item>
 				<v-divider />
 			</template>
+
+			<v-list-item v-if="internalItemsCount === 0 && !allowOther">
+				<v-list-item-content>
+					{{ t('no_options_available') }}
+				</v-list-item-content>
+			</v-list-item>
 
 			<v-list-item v-if="internalItemsCount > 10 || search">
 				<v-list-item-content>

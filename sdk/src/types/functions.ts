@@ -26,7 +26,7 @@ export type PermuteFields<Fields, Funcs> = Fields extends string
 /**
  * Get all many relations on an item
  */
-type RelationalFunctions<Schema extends object, Item> = keyof {
+type RelationalFunctions<Schema, Item> = keyof {
 	[Key in RelationalFields<Schema, Item> as Extract<Item[Key], ItemType<Schema>> extends any[] ? Key : never]: Key;
 };
 
@@ -40,7 +40,7 @@ type TranslateFunctionFields<Fields, Funcs> = {
 /**
  * Combine the various function types
  */
-export type FunctionFields<Schema extends object, Item> =
+export type FunctionFields<Schema, Item> =
 	| {
 			[Type in keyof QueryFunctions]: TypeFunctionFields<Item, Type>;
 	  }[keyof QueryFunctions]
@@ -57,7 +57,7 @@ export type TypeFunctionFields<Item, Type extends keyof QueryFunctions> = keyof 
 /**
  * Map all possible function fields on an item
  */
-export type MappedFunctionFields<Schema extends object, Item> = Merge<
+export type MappedFunctionFields<Schema, Item> = Merge<
 	TranslateFunctionFields<RelationalFunctions<Schema, Item>, ArrayFunctions>,
 	TranslateFunctionFields<LiteralFields<Item, 'datetime'>, DateTimeFunctions> &
 		TranslateFunctionFields<LiteralFields<Item, 'json' | 'csv'>, ArrayFunctions>
@@ -73,7 +73,7 @@ type FunctionFieldNames<Fields, Funcs> = {
 /**
  * Map all possible function fields to name on an item
  */
-export type MappedFieldNames<Schema extends object, Item> = Merge<
+export type MappedFieldNames<Schema, Item> = Merge<
 	FunctionFieldNames<RelationalFunctions<Schema, Item>, ArrayFunctions>,
 	FunctionFieldNames<LiteralFields<Item, 'datetime'>, DateTimeFunctions> &
 		FunctionFieldNames<LiteralFields<Item, 'json' | 'csv'>, ArrayFunctions>

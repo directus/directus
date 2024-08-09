@@ -1,12 +1,11 @@
-import { isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, isDirectusError } from '@directus/errors';
+import type { PrimaryKey } from '@directus/types';
 import express from 'express';
-import { ErrorCode } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
 import { RolesService } from '../services/roles.js';
-import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
@@ -73,6 +72,36 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 router.get('/', validateBatch('read'), readHandler, respond);
 router.search('/', validateBatch('read'), readHandler, respond);
+
+router.get(
+	'/me',
+	asyncHandler(async (req, res, next) => {
+		if (!req.accountability?.user && !req.accountability?.role) throw new ForbiddenError();
+
+		const service = new RolesService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const query = { ...req.sanitizedQuery, limit: -1 };
+
+		try {
+			const roles = await service.readMany(req.accountability.roles, query);
+
+			res.locals['payload'] = { data: roles || null };
+		} catch (error: any) {
+			if (isDirectusError(error, ErrorCode.Forbidden)) {
+				res.locals['payload'] = { data: req.accountability.roles.map((id) => ({ id })) };
+				return next();
+			}
+
+			throw error;
+		}
+
+		return next();
+	}),
+	respond,
+);
 
 router.get(
 	'/:pk',

@@ -1,7 +1,7 @@
 import type { MergeCoreCollection } from '../index.js';
 import type { DirectusFolder } from './folder.js';
 
-export type DirectusSettings<Schema extends object> = MergeCoreCollection<
+export type DirectusSettings<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_settings',
 	{

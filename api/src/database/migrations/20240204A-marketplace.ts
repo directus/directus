@@ -17,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
 	const installedExtensions = await knex.select('name').from('directus_extensions');
 
 	// name: id
-	const idMap = new Map<string, string>();
+	const idMap = new Map<string, { id: string; source: 'local' | 'module' }>();
 
 	for (const { name } of installedExtensions) {
 		// Delete extension meta status that used the legacy `${name}:${type}` name syntax for
@@ -27,7 +27,7 @@ export async function up(knex: Knex): Promise<void> {
 		} else {
 			const id = randomUUID();
 
-			let source;
+			let source: 'local' | 'module';
 
 			try {
 				// The NPM package name is the name used in the database. If we can resolve the
@@ -39,7 +39,7 @@ export async function up(knex: Knex): Promise<void> {
 			}
 
 			await knex('directus_extensions').update({ id, source, folder: name }).where({ name });
-			idMap.set(name, id);
+			idMap.set(name, { id, source });
 		}
 	}
 
@@ -57,18 +57,32 @@ export async function up(knex: Knex): Promise<void> {
 		const bundleParentName =
 			isScopedModuleBundleParent || isScopedModuleBundleChild ? splittedName.slice(0, 2).join('/') : splittedName[0];
 
-		const bundleParentId = idMap.get(bundleParentName);
+		const bundleParent = idMap.get(bundleParentName);
 
-		if (!bundleParentId) continue;
+		if (!bundleParent) continue;
 
 		await knex('directus_extensions')
-			.update({ bundle: bundleParentId, folder: name.substring(bundleParentName.length + 1) })
+			.update({
+				bundle: bundleParent.id,
+				folder: name.substring(bundleParentName.length + 1),
+				source: bundleParent.source,
+			})
 			.where({ folder: name });
 	}
 
 	await knex.schema.alterTable('directus_extensions', (table) => {
+		table.uuid('id').alter().notNullable();
+	});
+
+	await knex.transaction(async (trx) => {
+		await trx.schema.alterTable('directus_extensions', (table) => {
+			table.dropPrimary();
+			table.primary(['id']);
+		});
+	});
+
+	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.dropColumn('name');
-		table.uuid('id').alter().primary().notNullable();
 		table.string('source').alter().notNullable();
 		table.string('folder').alter().notNullable();
 	});

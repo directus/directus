@@ -15,6 +15,10 @@ export function getField(node: Record<string, any>): string {
 	return subFields !== '' ? `${name}.${subFields}` : name;
 }
 
+export function fieldHasFunction(field: string) {
+	return field.includes('(') && field.includes(')');
+}
+
 export function getComparator(node: Record<string, any>): string {
 	return getNodeName(get(node, getField(node)));
 }

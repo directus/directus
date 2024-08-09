@@ -14,3 +14,6 @@ fields:
   - field: origin
     width: half
   - field: share
+    width: half
+  - field: next_token
+    width: half

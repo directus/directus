@@ -101,6 +101,16 @@ export const useExtensionsStore = defineStore('extensions', () => {
 	};
 
 	const uninstall = async (extensionId: string) => {
+		await api.delete(`/extensions/registry/uninstall/${extensionId}`);
+		await refresh();
+	};
+
+	const reinstall = async (extensionId: string) => {
+		await api.post(`/extensions/registry/reinstall`, { extension: extensionId });
+		await refresh();
+	};
+
+	const remove = async (extensionId: string) => {
 		await api.delete(`/extensions/${extensionId}`);
 		await refresh();
 	};
@@ -109,5 +119,5 @@ export const useExtensionsStore = defineStore('extensions', () => {
 
 	refresh(false);
 
-	return { extensions, extensionIds, loading, error, refresh, toggleState, install, uninstall };
+	return { extensions, extensionIds, loading, error, refresh, toggleState, install, uninstall, reinstall, remove };
 });

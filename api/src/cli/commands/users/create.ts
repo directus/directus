@@ -1,5 +1,5 @@
 import getDatabase from '../../../database/index.js';
-import { useLogger } from '../../../logger.js';
+import { useLogger } from '../../../logger/index.js';
 import { UsersService } from '../../../services/users.js';
 import { getSchema } from '../../../utils/get-schema.js';
 

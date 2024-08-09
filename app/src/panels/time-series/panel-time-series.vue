@@ -3,7 +3,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { PanelFunction } from '@/types/panels';
 import type { Filter } from '@directus/types';
 import { abbreviateNumber, adjustDate } from '@directus/utils';
-import { cssVar } from '@directus/utils/browser';
 import ApexCharts from 'apexcharts';
 import { addWeeks } from 'date-fns';
 import { isNil, orderBy, snakeCase } from 'lodash';
@@ -33,7 +32,7 @@ const props = withDefaults(
 		function: PanelFunction;
 		precision?: string;
 		range?: string;
-		color?: string;
+		color?: string | null;
 		fillType?: string;
 		curveType?: string;
 		decimals?: number;
@@ -47,7 +46,7 @@ const props = withDefaults(
 		showHeader: false,
 		data: () => [],
 		precision: 'hour',
-		color: cssVar('--primary'),
+		color: 'var(--theme--primary)',
 		range: '1 week',
 		fillType: 'gradient',
 		curveType: 'smooth',
@@ -136,7 +135,7 @@ function setupChart() {
 	);
 
 	chart.value = new ApexCharts(chartEl.value, {
-		colors: [props.color ? props.color : cssVar('--primary')],
+		colors: [props.color ? props.color : 'var(--theme--primary)'],
 		chart: {
 			type: props.fillType === 'disabled' ? 'line' : 'area',
 			height: '100%',
@@ -179,12 +178,12 @@ function setupChart() {
 					[
 						{
 							offset: 0,
-							color: props.color ? props.color : cssVar('--primary'),
+							color: props.color ? props.color : 'var(--theme--primary)',
 							opacity: 0.25,
 						},
 						{
 							offset: 100,
-							color: props.color ? props.color : cssVar('--primary'),
+							color: props.color ? props.color : 'var(--theme--primary)',
 							opacity: 0,
 						},
 					],

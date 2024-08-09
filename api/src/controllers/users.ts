@@ -1,17 +1,21 @@
-import { isDirectusError } from '@directus/errors';
-import type { Role } from '@directus/types';
+import {
+	ErrorCode,
+	ForbiddenError,
+	InvalidCredentialsError,
+	InvalidPayloadError,
+	isDirectusError,
+} from '@directus/errors';
+import type { PrimaryKey, RegisterUserInput } from '@directus/types';
 import express from 'express';
 import Joi from 'joi';
-import { ErrorCode, ForbiddenError, InvalidCredentialsError, InvalidPayloadError } from '@directus/errors';
+import checkRateLimit from '../middleware/rate-limiter-registration.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { MetaService } from '../services/meta.js';
-import { RolesService } from '../services/roles.js';
 import { TFAService } from '../services/tfa.js';
 import { UsersService } from '../services/users.js';
-import type { PrimaryKey } from '../types/index.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
@@ -371,38 +375,6 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"otp" is required` });
 		}
 
-		// Override permissions only when enforce TFA is enabled in role
-		if (req.accountability.role) {
-			const rolesService = new RolesService({
-				schema: req.schema,
-			});
-
-			const role = (await rolesService.readOne(req.accountability.role)) as Role;
-
-			if (role && role.enforce_tfa) {
-				const existingPermission = await req.accountability.permissions?.find(
-					(p) => p.collection === 'directus_users' && p.action === 'update',
-				);
-
-				if (existingPermission) {
-					existingPermission.fields = ['tfa_secret'];
-					existingPermission.permissions = { id: { _eq: req.accountability.user } };
-					existingPermission.presets = null;
-					existingPermission.validation = null;
-				} else {
-					(req.accountability.permissions || (req.accountability.permissions = [])).push({
-						action: 'update',
-						collection: 'directus_users',
-						fields: ['tfa_secret'],
-						permissions: { id: { _eq: req.accountability.user } },
-						presets: null,
-						role: req.accountability.role,
-						validation: null,
-					});
-				}
-			}
-		}
-
 		const service = new TFAService({
 			accountability: req.accountability,
 			schema: req.schema,
@@ -424,38 +396,6 @@ router.post(
 
 		if (!req.body.otp) {
 			throw new InvalidPayloadError({ reason: `"otp" is required` });
-		}
-
-		// Override permissions only when enforce TFA is enabled in role
-		if (req.accountability.role) {
-			const rolesService = new RolesService({
-				schema: req.schema,
-			});
-
-			const role = (await rolesService.readOne(req.accountability.role)) as Role;
-
-			if (role && role.enforce_tfa) {
-				const existingPermission = await req.accountability.permissions?.find(
-					(p) => p.collection === 'directus_users' && p.action === 'update',
-				);
-
-				if (existingPermission) {
-					existingPermission.fields = ['tfa_secret'];
-					existingPermission.permissions = { id: { _eq: req.accountability.user } };
-					existingPermission.presets = null;
-					existingPermission.validation = null;
-				} else {
-					(req.accountability.permissions || (req.accountability.permissions = [])).push({
-						action: 'update',
-						collection: 'directus_users',
-						fields: ['tfa_secret'],
-						permissions: { id: { _eq: req.accountability.user } },
-						presets: null,
-						role: req.accountability.role,
-						validation: null,
-					});
-				}
-			}
 		}
 
 		const service = new TFAService({
@@ -493,6 +433,48 @@ router.post(
 
 		await service.disableTFA(req.params['pk']);
 		return next();
+	}),
+	respond,
+);
+
+const registerSchema = Joi.object<RegisterUserInput>({
+	email: Joi.string().email().required(),
+	password: Joi.string().required(),
+	verification_url: Joi.string().uri(),
+	first_name: Joi.string(),
+	last_name: Joi.string(),
+});
+
+router.post(
+	'/register',
+	checkRateLimit,
+	asyncHandler(async (req, _res, next) => {
+		const { error, value } = registerSchema.validate(req.body);
+		if (error) throw new InvalidPayloadError({ reason: error.message });
+
+		const usersService = new UsersService({ accountability: null, schema: req.schema });
+		await usersService.registerUser(value);
+
+		return next();
+	}),
+	respond,
+);
+
+const verifyRegistrationSchema = Joi.string();
+
+router.get(
+	'/register/verify-email',
+	asyncHandler(async (req, res, _next) => {
+		const { error, value } = verifyRegistrationSchema.validate(req.query['token']);
+
+		if (error) {
+			return res.redirect('/admin/login');
+		}
+
+		const service = new UsersService({ accountability: null, schema: req.schema });
+		const id = await service.verifyRegistration(value);
+
+		return res.redirect(`/admin/users/${id}`);
 	}),
 	respond,
 );

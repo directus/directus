@@ -1,6 +1,6 @@
+import { notify } from '@/utils/notify';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { notify } from '@/utils/notify';
 
 type Message = {
 	success?: string;
@@ -23,7 +23,7 @@ export function useClipboard() {
 	async function copyToClipboard(value: any, message?: Message): Promise<boolean> {
 		try {
 			const valueString = typeof value === 'string' ? value : JSON.stringify(value);
-			await navigator?.clipboard?.writeText(valueString);
+			await navigator.clipboard.writeText(valueString);
 
 			notify({
 				title: message?.success ?? t('copy_raw_value_success'),

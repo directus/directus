@@ -5,7 +5,7 @@ import { useExtension } from '@/composables/use-extension';
 import { Folder, useFolders } from '@/composables/use-folders';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
-import emitter, { Events } from '@/events';
+import { emitter, Events } from '@/events';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getFolderFilter } from '@/utils/get-folder-filter';
@@ -447,7 +447,7 @@ function useFileUpload() {
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					v-tooltip.bottom="createAllowed ? t('upload_file') : t('not_allowed')"
 					rounded
 					icon
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"

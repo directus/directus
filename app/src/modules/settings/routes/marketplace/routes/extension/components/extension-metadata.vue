@@ -89,6 +89,10 @@ const maintainers = computed(() => {
 	container-name: metadata;
 }
 
+.metadata .list:first-child {
+	padding-top: 0;
+}
+
 .grid {
 	@container metadata (width > 580px) {
 		--v-list-item-margin: 0;

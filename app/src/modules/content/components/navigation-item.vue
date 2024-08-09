@@ -10,6 +10,8 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import NavigationBookmark from './navigation-bookmark.vue';
 import NavigationItemContent from './navigation-item-content.vue';
+import { useRoute } from 'vue-router';
+import { useGroupable } from '@directus/composables';
 
 const props = defineProps<{
 	collection: Collection;
@@ -18,6 +20,7 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
+const route = useRoute();
 
 const { isAdmin } = useUserStore();
 const collectionsStore = useCollectionsStore();
@@ -28,6 +31,16 @@ const childCollections = computed(() => getChildCollections(props.collection));
 const childBookmarks = computed(() => getChildBookmarks(props.collection));
 
 const isGroup = computed(() => childCollections.value.length > 0 || childBookmarks.value.length > 0);
+
+const groupScope = 'content-navigation';
+const groupValue = props.collection.collection;
+
+const { active: isGroupOpen } = useGroupable({
+	group: groupScope,
+	value: groupValue,
+});
+
+const isBookmarkActive = computed(() => 'bookmark' in route.query);
 
 const to = computed(() => (props.collection.schema ? getCollectionRoute(props.collection.collection) : ''));
 
@@ -82,9 +95,9 @@ function getChildBookmarks(collection: Collection) {
 		v-if="isGroup && matchesSearch"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
 		:to="to"
-		scope="content-navigation"
-		:value="collection.collection"
-		query
+		:scope="groupScope"
+		:value="groupValue"
+		:query="isGroupOpen && isBookmarkActive"
 		:open="collection.meta?.collapse === 'locked'"
 		:arrow-placement="collection.meta?.collapse === 'locked' ? false : 'after'"
 	>
@@ -112,7 +125,6 @@ function getChildBookmarks(collection: Collection) {
 		:to="to"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
-		query
 	>
 		<navigation-item-content
 			:search="search"

@@ -1,5 +1,6 @@
 import type { Knex } from 'knex';
-import { SchemaHelper } from '../types.js';
+import { SchemaHelper, type Sql } from '../types.js';
+import { preprocessBindings } from '../utils/preprocess-bindings.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
 	override applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
@@ -19,5 +20,19 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 
 	override formatUUID(uuid: string): string {
 		return uuid.toUpperCase();
+	}
+
+	override async getDatabaseSize(): Promise<number | null> {
+		try {
+			const result = await this.knex.raw('SELECT SUM(size) * 8192 AS size FROM sys.database_files;');
+
+			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
+		} catch {
+			return null;
+		}
+	}
+
+	override preprocessBindings(queryParams: Sql): Sql {
+		return preprocessBindings(queryParams, { format: (index) => `@p${index}` });
 	}
 }
