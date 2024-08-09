@@ -771,10 +771,6 @@ make_collection_hidden: Spraw, aby kolekcja była ukryta
 make_folder_visible: Uwidocznij folder
 make_folder_hidden: Ukryj folder
 goto_collection_content: Zobacz zawartość
-start_end_of_count_items: '{start}-{end} z {count} elementów'
-start_end_of_count_filtered_items: '{start}-{end} z {count} przefiltrowanych przedmiotów'
-one_item: '1 element'
-one_filtered_item: '1 przefiltrowany element'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć kolekcję "{collection}"? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. To działanie jest nieodwracalne.
 delete_folder_are_you_sure: Czy na pewno chcesz usunąć folder "{folder}"? Zagnieżdżone foldery i kolekcje zostaną przeniesione do najwyższego poziomu.
@@ -866,7 +862,6 @@ create_item: Utwórz element
 display_template: Wyświetl szablon
 language_display_template: Szablon wyświetlanego języka
 translations_display_template: Szablon wyświetlania tłumaczeń
-n_items_selected: 'Nie wybrano elementów | 1 wybrany element | {n} wybranych elementów'
 per_page: Na stronę
 all_files: Wszystkie pliki
 my_files: Moje pliki
@@ -1506,7 +1501,6 @@ live_preview:
   toggle_3d: Przełącz 3D
 shares: Udostępnienia
 unlimited_usage: Nieograniczone użycie
-uses_left: Brak pozostałych zastosowań | 1 zastosowanie | {n} zastosowań pozostało
 no_shares: Brak udostępnień do wyświetlenia
 new_share: Nowe udostępnianie
 expired: Wygasły
@@ -2177,7 +2171,6 @@ layouts:
     show_ungrouped: Pokaż nie pogrupowane
     show: Pokaż
     no_group: Brak grupy
-    not_all_loaded: Można załadować tylko pierwszych 1000 elementów.
 horizontal: Poziomy
 vertical: Pionowo
 axis: Oś
