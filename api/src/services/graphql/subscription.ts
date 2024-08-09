@@ -1,4 +1,3 @@
-import { EventEmitter, on } from 'events';
 import { useBus } from '../../bus/index.js';
 import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -6,23 +5,27 @@ import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { getPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
-
-const messages = createPubSub(new EventEmitter());
+import { useSubscriptionIterator } from './utils/subscription-iterator.js';
 
 export function bindPubSub() {
 	const messenger = useBus();
+	const subscriptions = useSubscriptionIterator();
 
 	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
-		messages.publish(`${message['collection']}_mutated`, message);
+		subscriptions.publish(message);
 	});
 }
 
-export function createSubscriptionGenerator(self: GraphQLService, event: string) {
+export function createSubscriptionGenerator(self: GraphQLService, collection: string) {
+	const subscriptions = useSubscriptionIterator();
+
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: GraphQLResolveInfo) {
+		const event = collection + '_mutated';
 		const fields = parseFields(self, request);
 		const args = parseArguments(request);
+		const messages = subscriptions.subscribe(collection);
 
-		for await (const payload of messages.subscribe(event)) {
+		for await (const payload of messages) {
 			const eventData = payload as WebSocketEvent;
 
 			if ('event' in args && eventData['action'] !== args['event']) {
@@ -80,20 +83,6 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				}
 			}
 		}
-	};
-}
-
-function createPubSub<P extends { [key: string]: unknown }>(emitter: EventEmitter) {
-	return {
-		publish: <T extends Extract<keyof P, string>>(event: T, payload: P[T]) =>
-			void emitter.emit(event as string, payload),
-		subscribe: async function* <T extends Extract<keyof P, string>>(event: T): AsyncIterableIterator<P[T]> {
-			const asyncIterator = on(emitter, event);
-
-			for await (const [value] of asyncIterator) {
-				yield value;
-			}
-		},
 	};
 }
 
