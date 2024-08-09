@@ -610,10 +610,6 @@ make_collection_hidden: A Gyűjtemény legyen rejtett
 make_folder_visible: Mappa láthatóvá tétele
 make_folder_hidden: Mappa elrejtése
 goto_collection_content: Tartalom megtekintése
-start_end_of_count_items: '{start}-{end} {count} elemből'
-start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
-one_item: '1 elem'
-one_filtered_item: '1 szűrt elem'
 delete_collection_are_you_sure: >-
   Biztos, hogy törölni szeretné ezt a gyűjteményt"{collection}"? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
 delete_folder_are_you_sure: Biztosan törli a(z) "{folder}" mappát? A beágyazott mappák és gyűjtemények a legfelső szintre kerülnek.
@@ -697,7 +693,6 @@ create_item: Elem létrehozása
 display_template: Megjelenítési sablon
 language_display_template: Nyelvi megjelenítés sablon
 translations_display_template: Fordítások megjelenítése sablon
-n_items_selected: 'Nincs elem kiválasztva | 1 elem van kiválasztva | {n} elem van kiválasztva'
 per_page: oldalanként
 all_files: Minden fájl
 my_files: A saját fájljaim
@@ -1266,7 +1261,6 @@ live_preview:
   new_window: Megnyitás új ablakban
 shares: Megosztások
 unlimited_usage: Korlátlan használat
-uses_left: Nincs használat hátra | 1 használat maradt | {n} használat maradt
 no_shares: Nincs megjeleníthető megosztás
 new_share: Új megosztás
 expired: Lejárt
@@ -1895,7 +1889,6 @@ layouts:
     show_ungrouped: Mutasd a csoport nélkülieket
     show: Mutasd
     no_group: Keresés és szűrés engedélyezése
-    not_all_loaded: Csak az első 100 elemet sikerült betölteni.
 horizontal: Horizontális
 vertical: Függőleges
 x_axis: X-tengely
