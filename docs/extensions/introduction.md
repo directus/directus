@@ -50,8 +50,8 @@ input.
 ### Modules
 
 [Modules](/extensions/modules) introduce a whole new level of extensibility to Directus by allowing you to add an
-entirely new page your Directus app. For example, a page solely containing an integration with an external service. When
-new modules are added, they appear as new icons in the main module side bar.
+entirely new page to your Directus app. For example, a page solely containing an integration with an external service.
+When new modules are added, they appear as new icons in the main module side bar.
 
 ![Modules](https://marketing.directus.app/assets/f761a496-f49b-4fcc-a09e-d074b6cbf8a5.png)
 
