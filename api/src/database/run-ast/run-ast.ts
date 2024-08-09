@@ -1,6 +1,8 @@
 import { useEnv } from '@directus/env';
-import type { Filter, Item, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Filter, Item, Permission, Query, SchemaOverview } from '@directus/types';
 import { cloneDeep, merge } from 'lodash-es';
+import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { PayloadService } from '../../services/payload.js';
 import type { AST, FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../types/ast.js';
 import getDatabase from '../index.js';
@@ -17,6 +19,7 @@ import { removeTemporaryFields } from './utils/remove-temporary-fields.js';
 export async function runAst(
 	originalAST: AST | NestedCollectionNode,
 	schema: SchemaOverview,
+	accountability: Accountability | null,
 	options?: RunASTOptions,
 ): Promise<null | Item | Item[]> {
 	const ast = cloneDeep(originalAST);
@@ -32,12 +35,13 @@ export async function runAst(
 				ast.children[collection]!,
 				ast.query[collection]!,
 				ast.cases[collection] ?? [],
+				accountability,
 			);
 		}
 
 		return results;
 	} else {
-		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases);
+		return await run(ast.name, ast.children, options?.query || ast.query, ast.cases, accountability);
 	}
 
 	async function run(
@@ -45,6 +49,7 @@ export async function runAst(
 		children: (NestedCollectionNode | FieldNode | FunctionFieldNode)[],
 		query: Query,
 		cases: Filter[],
+		accountability: Accountability | null,
 	) {
 		const env = useEnv();
 
@@ -58,8 +63,15 @@ export async function runAst(
 
 		const o2mNodes = nestedCollectionNodes.filter((node): node is O2MNode => node.type === 'o2m');
 
+		let permissions: Permission[] = [];
+
+		if (accountability && !accountability.admin) {
+			const policies = await fetchPolicies(accountability, { schema, knex });
+			permissions = await fetchPermissions({ action: 'read', accountability, policies }, { schema, knex });
+		}
+
 		// The actual knex query builder instance. This is a promise that resolves with the raw items from the db
-		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, o2mNodes, query, cases);
+		const dbQuery = getDBQuery(schema, knex, collection, fieldNodes, o2mNodes, query, cases, permissions);
 
 		const rawItems: Item | Item[] = await dbQuery;
 
@@ -112,7 +124,7 @@ export async function runAst(
 						},
 					});
 
-					nestedItems = (await runAst(node, schema, { knex, nested: true })) as Item[] | null;
+					nestedItems = (await runAst(node, schema, accountability, { knex, nested: true })) as Item[] | null;
 
 					if (nestedItems) {
 						items = mergeWithParentItems(schema, nestedItems, items!, nestedNode, fieldAllowed)!;
@@ -129,7 +141,7 @@ export async function runAst(
 					query: { limit: -1 },
 				});
 
-				nestedItems = (await runAst(node, schema, { knex, nested: true })) as Item[] | null;
+				nestedItems = (await runAst(node, schema, accountability, { knex, nested: true })) as Item[] | null;
 
 				if (nestedItems) {
 					// Merge all fetched nested records with the parent items

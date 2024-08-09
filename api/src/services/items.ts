@@ -502,7 +502,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			{ knex: this.knex, schema: this.schema },
 		);
 
-		const records = await runAst(ast, this.schema, {
+		const records = await runAst(ast, this.schema, this.accountability, {
 			knex: this.knex,
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,

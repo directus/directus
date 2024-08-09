@@ -44,7 +44,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 
 	await processAst({ ast, ...options }, context);
 
-	const items = await runAst(ast, context.schema, { knex: context.knex });
+	const items = await runAst(ast, context.schema, options.accountability, { knex: context.knex });
 
 	if (items && items.length === options.primaryKeys.length) {
 		return true;
