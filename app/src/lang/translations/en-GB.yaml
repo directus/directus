@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: About
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -941,7 +962,6 @@ page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
   **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default views.
@@ -984,7 +1004,6 @@ directus_collection:
   directus_notifications: Notifications sent to users
   directus_operations: Operations that run in Flows
   directus_panels: Individual panels within Insights dashboards
-  directus_permissions: Access permissions for each role
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -1133,12 +1152,9 @@ fields:
     name: Role Name
     icon: Role Icon
     description: Description
-    app_access: App Access
-    admin_access: Admin Access
-    ip_access: IP Access
-    enforce_tfa: Require 2FA
     users: Users in Role
-    module_list: Module Navigation
+  directus_policies:
+    description: Description
   directus_webhooks:
     name: Name
     method: Method

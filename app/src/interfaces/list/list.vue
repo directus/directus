@@ -215,30 +215,30 @@ function closeDrawer() {
 			<p>{{ t('interfaces.list.incompatible_data') }}</p>
 		</v-notice>
 
-		<v-list v-if="Array.isArray(internalValue) && internalValue.length > 0">
-			<draggable
-				:disabled="disabled"
-				:model-value="internalValue"
-				item-key="id"
-				handle=".drag-handle"
-				v-bind="{ 'force-fallback': true }"
-				@update:model-value="$emit('input', $event)"
-			>
-				<template #item="{ element, index }">
-					<v-list-item :dense="internalValue.length > 4" block @click="openItem(index)">
-						<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
-						<render-template
-							:fields="fields"
-							:item="{ ...defaults, ...element }"
-							:direction="direction"
-							:template="templateWithDefaults"
-						/>
-						<div class="spacer" />
-						<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
-					</v-list-item>
-				</template>
-			</draggable>
-		</v-list>
+		<draggable
+			v-if="Array.isArray(internalValue) && internalValue.length > 0"
+			tag="v-list"
+			:disabled="disabled"
+			:model-value="internalValue"
+			item-key="id"
+			handle=".drag-handle"
+			v-bind="{ 'force-fallback': true }"
+			@update:model-value="$emit('input', $event)"
+		>
+			<template #item="{ element, index }">
+				<v-list-item :dense="internalValue.length > 4" block @click="openItem(index)">
+					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+					<render-template
+						:fields="fields"
+						:item="{ ...defaults, ...element }"
+						:direction="direction"
+						:template="templateWithDefaults"
+					/>
+					<div class="spacer" />
+					<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
+				</v-list-item>
+			</template>
+		</draggable>
 		<v-button v-if="showAddNew" class="add-new" @click="addNew">
 			{{ addLabel }}
 		</v-button>

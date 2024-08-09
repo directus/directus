@@ -87,7 +87,7 @@ onBeforeUpdate(() => {
 	formFieldEls.value = {};
 });
 
-const { fieldNames, fieldsMap, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
+const { fields: finalFields, fieldNames, fieldsMap, getFieldsForGroup, fieldsForGroup, isDisabled } = useForm();
 const { toggleBatchField, batchActiveFields } = useBatch();
 const { toggleRawField, rawActiveFields } = useRawEditor();
 
@@ -179,7 +179,7 @@ function useForm() {
 		return fieldNames.value.map((name) => getFieldsForGroup(fieldsMap.value[name]?.meta?.field || null));
 	});
 
-	return { fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
+	return { fields, fieldNames, fieldsMap, isDisabled, getFieldsForGroup, fieldsForGroup };
 
 	function isDisabled(field: TFormField | undefined) {
 		if (!field) return true;
@@ -334,7 +334,7 @@ function useRawEditor() {
 		<validation-errors
 			v-if="showValidationErrors && validationErrors.length > 0"
 			:validation-errors="validationErrors"
-			:fields="fields ? fields : []"
+			:fields="finalFields"
 			@scroll-to-field="scrollToField"
 		/>
 		<v-info

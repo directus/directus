@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
-import { SchemaHelper } from '../types.js';
+import { SchemaHelper, type Sql } from '../types.js';
+import { preprocessBindings } from '../utils/preprocess-bindings.js';
 
 const env = useEnv();
 
@@ -12,5 +13,9 @@ export class SchemaHelperPostgres extends SchemaHelper {
 		} catch {
 			return null;
 		}
+	}
+
+	override preprocessBindings(queryParams: Sql): Sql {
+		return preprocessBindings(queryParams, { format: (index) => `$${index + 1}` });
 	}
 }

@@ -944,7 +944,6 @@ page_help_settings_datamodel_collections: >-
   **Adatmodell: Gyűjtemények** - Az összes elérhető gyűjtemény listája. Ide tartoznak a látható, rejtett és rendszergyűjtemények, valamint a hozzáadható nem kezelt adatbázis táblák.
 page_help_settings_datamodel_fields: >-
   **Adatmodell: Gyűjtemény** - Egy űrlap, ezen gyűjtemény és mezőinek kezelésére.
-page_help_settings_roles_collection: '**Szerepkörök böngészése** - A Rendszergazda, a Nyilvános és az egyéni Felhasználói Szerepkörök listája.'
 page_help_settings_roles_item: "**Szerepkör Részletei** - A szerepkörök jogosultságainak és egyéb beállításainak kezelése."
 page_help_settings_presets_collection: >-
   **Alapbeállítások Böngészése** - A projektben lévő összes alapbeállítás listázása, beleértve: a felhasználói, szerepköri és globális könyvjelzőket, valamint az alapértelmezett nézeteket.
@@ -987,7 +986,6 @@ directus_collection:
   directus_notifications: A felhasználóknak küldött értesítések
   directus_operations: A folyamatok műveletei
   directus_panels: Egyedi panelek a kimutatások irányítópultjain belül
-  directus_permissions: Hozzáférési engedélyek a szerepkörökhöz
   directus_presets: Gyűjtemény és könyvjelzők alapértelmezései
   directus_relations: Reláció konfigurációja és metaadatok
   directus_revisions: Pillanatkép minden tevékenységhez
@@ -1135,12 +1133,9 @@ fields:
     name: Szerepkör neve
     icon: Szerep ikonja
     description: Leírás
-    app_access: Alkalmazás hozzáférés
-    admin_access: Admin hozzáférés
-    ip_access: IP cím
-    enforce_tfa: 2FA megkövetelése
     users: Felhasználók a szerepkörben
-    module_list: Modul navigáció felülbírálása
+  directus_policies:
+    description: Leírás
   directus_webhooks:
     name: Név
     method: Metódus

@@ -1,5 +1,5 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { FieldFunction, Query, SchemaOverview } from '@directus/types';
+import type { FieldFunction, Filter, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getFunctions } from '../database/helpers/index.js';
@@ -8,6 +8,7 @@ import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 type GetColumnOptions = {
 	query?: Query | undefined;
+	cases?: Filter[];
 	originalCollectionName?: string | undefined;
 };
 
@@ -49,6 +50,7 @@ export function getColumn(
 			const result = fn[functionName as keyof typeof fn](table, columnName!, {
 				type,
 				query: options?.query,
+				cases: options?.cases,
 				originalCollectionName: options?.originalCollectionName,
 			}) as Knex.Raw;
 

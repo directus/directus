@@ -953,7 +953,6 @@ page_help_settings_datamodel_collections: >-
   **データモデル: コレクション** — 利用可能なすべてのコレクション一覧です。表示、非表示、システムコレクション、および追加可能な管理されていないデータベーステーブルを含みます。
 page_help_settings_datamodel_fields: >-
   **データモデル: コレクション** — このコレクションとそのフィールドを管理するためのフォーム。
-page_help_settings_roles_collection: '**ロールの検索** — 管理者、公開およびカスタムユーザーロールの一覧です。'
 page_help_settings_roles_item: "**ロールの詳細** : ロールの権限とその他の設定を管理します。"
 page_help_settings_presets_collection: >-
   **プリセットの検索** — プリセットの一覧です。ユーザー、ロール、ブックマーク、デフォルトのビューなどを含みます。
@@ -1084,8 +1083,8 @@ fields:
   directus_roles:
     name: 権限名
     description: 説明
-    ip_access: IP アクセス
-    enforce_tfa: 二段階認証が必要
+  directus_policies:
+    description: 説明
   directus_webhooks:
     name: 名前
     status: ステータス

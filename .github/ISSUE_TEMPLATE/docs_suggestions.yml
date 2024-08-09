@@ -1,6 +1,6 @@
 name: Suggest new docs or enhancements
 description: Suggest new docs that don't currently exist, or enhancements to existing docs.
-labels: [':file_folder: Documentation']
+labels: [':elevator: DX', ':file_folder: Documentation']
 body:
   - type: markdown
     attributes:

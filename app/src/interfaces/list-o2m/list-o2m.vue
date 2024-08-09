@@ -471,13 +471,14 @@ function getLinkForItem(item: DisplayItem) {
 				/>
 			</template>
 
-			<v-list v-else>
+			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
 					{{ t('no_items') }}
 				</v-notice>
 
 				<draggable
 					:model-value="displayItems"
+					tag="v-list"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
@@ -521,12 +522,17 @@ function getLinkForItem(item: DisplayItem) {
 						</v-list-item>
 					</template>
 				</draggable>
-			</v-list>
+			</template>
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+						<v-pagination
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 1 : 2"
+							show-first-last
+						/>
 
 						<div class="spacer" />
 
@@ -544,7 +550,7 @@ function getLinkForItem(item: DisplayItem) {
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 				</template>
 			</div>
 		</div>
@@ -621,10 +627,12 @@ function getLinkForItem(item: DisplayItem) {
 
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
+		margin-left: auto;
 		:deep(.v-button) {
 			display: inline-flex;
 		}

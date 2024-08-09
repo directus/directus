@@ -1,9 +1,10 @@
 import {
-	KNEX_TYPES,
-	REGEX_BETWEEN_PARENS,
 	DEFAULT_NUMERIC_PRECISION,
 	DEFAULT_NUMERIC_SCALE,
+	KNEX_TYPES,
+	REGEX_BETWEEN_PARENS,
 } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -12,13 +13,16 @@ import { addFieldFlag, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
-import { clearSystemCache, getCache } from '../cache.js';
+import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
@@ -32,6 +36,7 @@ import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
+const env = useEnv();
 
 export class FieldsService {
 	knex: Knex;
@@ -43,6 +48,7 @@ export class FieldsService {
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
 	systemCache: Keyv<any>;
+	schemaCache: Keyv<any>;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -53,23 +59,58 @@ export class FieldsService {
 		this.payloadService = new PayloadService('directus_fields', options);
 		this.schema = options.schema;
 
-		const { cache, systemCache } = getCache();
+		const { cache, systemCache, localSchemaCache } = getCache();
 
 		this.cache = cache;
 		this.systemCache = systemCache;
+		this.schemaCache = localSchemaCache;
 	}
 
-	private get hasReadAccess() {
-		return !!this.accountability?.permissions?.find((permission) => {
-			return permission.collection === 'directus_fields' && permission.action === 'read';
-		});
+	async columnInfo(collection?: string): Promise<Column[]>;
+	async columnInfo(collection: string, field: string): Promise<Column>;
+	async columnInfo(collection?: string, field?: string): Promise<Column | Column[]> {
+		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
+
+		let columnInfo: Column[] | null = null;
+
+		if (schemaCacheIsEnabled) {
+			columnInfo = await getCacheValue(this.schemaCache, 'columnInfo');
+		}
+
+		if (!columnInfo) {
+			columnInfo = await this.schemaInspector.columnInfo();
+
+			if (schemaCacheIsEnabled) {
+				setCacheValue(this.schemaCache, 'columnInfo', columnInfo);
+			}
+		}
+
+		if (collection) {
+			columnInfo = columnInfo.filter((column) => column.table === collection);
+		}
+
+		if (field) {
+			return columnInfo.find((column) => column.name === field) as Column;
+		}
+
+		return columnInfo;
 	}
 
 	async readAll(collection?: string): Promise<Field[]> {
 		let fields: FieldMeta[];
 
-		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: 'directus_fields',
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
 		}
 
 		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
@@ -89,7 +130,7 @@ export class FieldsService {
 			fields.push(...systemFieldRows);
 		}
 
-		const columns = (await this.schemaInspector.columnInfo(collection)).map((column) => ({
+		const columns = (await this.columnInfo(collection)).map((column) => ({
 			...column,
 			default_value: getDefaultValue(
 				column,
@@ -161,14 +202,34 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.accountability.permissions!.filter((permission) => {
-				return permission.action === 'read';
-			});
+			const policies = await fetchPolicies(this.accountability, { knex: this.knex, schema: this.schema });
 
-			const allowedFieldsInCollection: Record<string, string[]> = {};
+			const permissions = await fetchPermissions(
+				collection
+					? {
+							action: 'read',
+							policies,
+							collections: [collection],
+							accountability: this.accountability,
+					  }
+					: {
+							action: 'read',
+							policies,
+							accountability: this.accountability,
+					  },
+				{ knex: this.knex, schema: this.schema },
+			);
+
+			const allowedFieldsInCollection: Record<string, Set<string>> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
+				if (!allowedFieldsInCollection[permission.collection]) {
+					allowedFieldsInCollection[permission.collection] = new Set();
+				}
+
+				for (const field of permission.fields ?? []) {
+					allowedFieldsInCollection[permission.collection]!.add(field);
+				}
 			});
 
 			if (collection && collection in allowedFieldsInCollection === false) {
@@ -178,8 +239,8 @@ export class FieldsService {
 			return result.filter((field) => {
 				if (field.collection in allowedFieldsInCollection === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection]!;
-				if (allowedFields[0] === '*') return true;
-				return allowedFields.includes(field.field);
+				if (allowedFields.has('*')) return true;
+				return allowedFields.has(field.field);
 			});
 		}
 
@@ -199,19 +260,38 @@ export class FieldsService {
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
 		if (this.accountability && this.accountability.admin !== true) {
-			if (this.hasReadAccess === false) {
-				throw new ForbiddenError();
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
+
+			const policies = await fetchPolicies(this.accountability, { knex: this.knex, schema: this.schema });
+
+			const permissions = await fetchPermissions(
+				{ action: 'read', policies, collections: [collection], accountability: this.accountability },
+				{ knex: this.knex, schema: this.schema },
+			);
+
+			let hasAccess = false;
+
+			for (const permission of permissions) {
+				if (permission.fields) {
+					if (permission.fields.includes('*') || permission.fields.includes(field)) {
+						hasAccess = true;
+						break;
+					}
+				}
 			}
 
-			const permissions = this.accountability.permissions!.find((permission) => {
-				return permission.action === 'read' && permission.collection === collection;
-			});
-
-			if (!permissions || !permissions.fields) throw new ForbiddenError();
-
-			if (permissions.fields.includes('*') === false) {
-				const allowedFields = permissions.fields;
-				if (allowedFields.includes(field) === false) throw new ForbiddenError();
+			if (!hasAccess) {
+				throw new ForbiddenError();
 			}
 		}
 
@@ -227,7 +307,7 @@ export class FieldsService {
 			systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field);
 
 		try {
-			column = await this.schemaInspector.columnInfo(collection, field);
+			column = await this.columnInfo(collection, field);
 		} catch {
 			// Do nothing
 		}
@@ -430,7 +510,7 @@ export class FieldsService {
 			}
 
 			if (hookAdjustedField.schema) {
-				const existingColumn = await this.schemaInspector.columnInfo(collection, hookAdjustedField.field);
+				const existingColumn = await this.columnInfo(collection, hookAdjustedField.field);
 
 				if (hookAdjustedField.schema?.is_nullable === true && existingColumn.is_primary_key) {
 					throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });

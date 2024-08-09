@@ -1077,7 +1077,6 @@ editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
-settings_permissions: Rôles et Autorisations
 settings_project: Réglages
 settings_appearance: Personnalisation du Thème
 settings_webhooks: Webhooks
@@ -1127,7 +1126,6 @@ page_help_settings_datamodel_collections: >-
   **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
-page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
   **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
@@ -1186,7 +1184,6 @@ directus_collection:
   directus_notifications: Notifications envoyées aux utilisateurs
   directus_operations: Opérations qui s'exécutent dans les Flux
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
-  directus_permissions: Sélectionner les permissions pour chaque groupe
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
   directus_revisions: Instantanés de données pour toutes les activités
@@ -1352,12 +1349,9 @@ fields:
     name: Nom de rôle
     icon: Icône de rôle
     description: Description
-    app_access: Accès à l'application
-    admin_access: Accès Administrateur
-    ip_access: Accès IP
-    enforce_tfa: Nécessite A2F
     users: Membres avec le rôle
-    module_list: Module de Navigation
+  directus_policies:
+    description: Description
   directus_webhooks:
     name: Nom
     method: Méthode
@@ -1443,7 +1437,6 @@ field_options:
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
-    ip_access: Ajouter les adresses IP autorisées, les plages IP et les blocs CIDR. Laisser vide pour tout autoriser...
     fields:
       icon_name: Icône
       name_name: Nom

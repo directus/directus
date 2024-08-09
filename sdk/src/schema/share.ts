@@ -2,7 +2,7 @@ import type { MergeCoreCollection } from '../index.js';
 import type { DirectusRole } from './role.js';
 import type { DirectusUser } from './user.js';
 
-export type DirectusShare<Schema> = MergeCoreCollection<
+export type DirectusShare<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_shares',
 	{

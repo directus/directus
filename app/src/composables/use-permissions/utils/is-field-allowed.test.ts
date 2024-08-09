@@ -1,7 +1,7 @@
+import { ActionPermission } from '@/types/permissions';
 import { beforeEach, expect, it } from 'vitest';
 
 import { randomIdentifier } from '@directus/random';
-import { Permission } from '@directus/types';
 import { isFieldAllowed } from './is-field-allowed';
 
 let sample: {
@@ -14,10 +14,8 @@ beforeEach(() => {
 	};
 });
 
-it('should be disallowed if permission contains no fields (null)', () => {
-	const mockPermission = {
-		fields: null,
-	} as Permission;
+it('should be disallowed if permission contains no fields (undefined)', () => {
+	const mockPermission = {} as ActionPermission;
 
 	const result = isFieldAllowed(mockPermission, sample.field);
 
@@ -27,7 +25,7 @@ it('should be disallowed if permission contains no fields (null)', () => {
 it('should be disallowed if permission contains no fields ([])', () => {
 	const mockPermission = {
 		fields: [] as string[],
-	} as Permission;
+	} as ActionPermission;
 
 	const result = isFieldAllowed(mockPermission, sample.field);
 
@@ -37,7 +35,7 @@ it('should be disallowed if permission contains no fields ([])', () => {
 it('should be allowed if permission includes all fields', () => {
 	const mockPermission = {
 		fields: ['*'],
-	} as Permission;
+	} as ActionPermission;
 
 	const result = isFieldAllowed(mockPermission, sample.field);
 
@@ -47,7 +45,7 @@ it('should be allowed if permission includes all fields', () => {
 it('should be allowed if permission includes field', () => {
 	const mockPermission = {
 		fields: [sample.field],
-	} as Permission;
+	} as ActionPermission;
 
 	const result = isFieldAllowed(mockPermission, sample.field);
 

@@ -28,4 +28,9 @@ export interface Cache {
 	 * @param key Key to check
 	 */
 	has(key: string): Promise<boolean>;
+
+	/**
+	 * Remove all keys from the cache
+	 */
+	clear(): Promise<void>;
 }
