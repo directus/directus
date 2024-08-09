@@ -27,8 +27,16 @@ export class CommentsService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
-		if (!data['collection'] || !data['item'] || !data['comment']) {
-			throw new InvalidPayloadError({ reason: 'Missing required fields' });
+		if (!data['comment']) {
+			throw new InvalidPayloadError({ reason: `"comment" is required` });
+		}
+
+		if (!data['collection']) {
+			throw new InvalidPayloadError({ reason: `"collection" is required` });
+		}
+
+		if (!data['item']) {
+			throw new InvalidPayloadError({ reason: `"item" is required` });
 		}
 
 		if (this.accountability) {
