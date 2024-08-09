@@ -540,10 +540,6 @@ delete_collection: Remover coleção
 update_collection_success: Coleção atualizada
 delete_collection_success: Coleção removida
 make_collection_visible: Tornar Coleção Visível
-start_end_of_count_items: '{start}-{end} de {count} documentos'
-start_end_of_count_filtered_items: '{start}-{end} de {count} documentos filtrados'
-one_item: '1 documento'
-one_filtered_item: '1 documento filtrado'
 collections_shown: Coleções visíveis
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
@@ -614,7 +610,6 @@ create_item: Criar item
 display_template: Templates de Exibição
 language_display_template: Modelo de Exibição do Idioma
 translations_display_template: Modelo de exibição de traduções
-n_items_selected: 'Não há itens selecionados |1 item selecionado, {n} itens selecionados'
 per_page: Por página
 all_files: Todos os ficheiros
 my_files: Meus ficheiros
