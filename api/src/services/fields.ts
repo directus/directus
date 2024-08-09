@@ -849,26 +849,32 @@ export class FieldsService {
 			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
-		const newSchema = { ...existing, ...field.schema };
-		const defaultValue = newSchema.default_value;
-		const newDefaultValueIsString = typeof defaultValue === 'string';
-		const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
-		const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
-		const newDefaultIsSetToCurrentTime = newDefaultIsNowFunction || newDefaultIsCurrentTimestamp;
+		const defaultValue = field.schema?.default_value ? field.schema?.default_value : existing?.default_value;
 
-		const newDefaultIsTimestampWithPrecision =
-			newDefaultValueIsString && defaultValue.includes('CURRENT_TIMESTAMP(') && defaultValue.includes(')');
+		if (defaultValue !== undefined) {
+			const newDefaultValueIsString = typeof defaultValue === 'string';
+			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
+			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
+			const newDefaultIsSetToCurrentTime = newDefaultIsNowFunction || newDefaultIsCurrentTimestamp;
 
-		if (newDefaultIsSetToCurrentTime) {
-			column.defaultTo(this.knex.fn.now());
-		} else if (newDefaultIsTimestampWithPrecision) {
-			const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
-			column.defaultTo(this.knex.fn.now(Number(precision)));
+			const newDefaultIsTimestampWithPrecision =
+				newDefaultValueIsString && defaultValue.includes('CURRENT_TIMESTAMP(') && defaultValue.includes(')');
+
+			if (newDefaultIsSetToCurrentTime) {
+				column.defaultTo(this.knex.fn.now());
+			} else if (newDefaultIsTimestampWithPrecision) {
+				const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
+				column.defaultTo(this.knex.fn.now(Number(precision)));
+			} else {
+				column.defaultTo(defaultValue);
+			}
 		} else {
-			column.defaultTo(defaultValue ?? null);
+			column.defaultTo(null);
 		}
 
-		if (newSchema.is_nullable) {
+		const isNullable = field.schema?.is_nullable ? field.schema?.is_nullable : existing?.is_nullable;
+
+		if (isNullable === true) {
 			column.nullable();
 		} else {
 			column.notNullable();
