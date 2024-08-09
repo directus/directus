@@ -1,4 +1,4 @@
-import { useEnv } from '@directus/env';
+import { useEnv, useExtensionsEnv } from '@directus/env';
 import type {
 	ApiExtension,
 	BundleExtension,
@@ -66,6 +66,7 @@ const nodeResolve = nodeResolveDefault as unknown as typeof nodeResolveDefault.d
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const env = useEnv();
+const extensionsEnv = useExtensionsEnv();
 
 const defaultOptions: ExtensionManagerOptions = {
 	schedule: true,
@@ -671,7 +672,7 @@ export class ExtensionManager {
 
 				const config = getModuleDefault(operationInstance);
 
-				const unregister = this.registerOperation(config);
+				const unregister = this.registerOperation({ config, isInternal: false });
 
 				this.unregisterFunctionMap.set(operation.name, async () => {
 					await unregister();
@@ -732,7 +733,7 @@ export class ExtensionManager {
 			for (const { config, name } of configs.operations) {
 				if (!extensionEnabled(name)) continue;
 
-				const unregister = this.registerOperation(config);
+				const unregister = this.registerOperation({ config, isInternal: false });
 
 				unregisterFunctions.push(unregister);
 			}
@@ -761,7 +762,7 @@ export class ExtensionManager {
 
 			const config = getModuleDefault(operationInstance);
 
-			this.registerOperation(config);
+			this.registerOperation({ config, isInternal: true });
 		}
 	}
 
@@ -847,7 +848,7 @@ export class ExtensionManager {
 
 		hookRegistrationCallback(hookRegistrationContext, {
 			services,
-			env,
+			env: { ...extensionsEnv },
 			database: getDatabase(),
 			emitter: this.localEmitter,
 			logger,
@@ -873,7 +874,7 @@ export class ExtensionManager {
 
 		endpointRegistrationCallback(scopedRouter, {
 			services,
-			env,
+			env: { ...extensionsEnv },
 			database: getDatabase(),
 			emitter: this.localEmitter,
 			logger,
@@ -890,10 +891,16 @@ export class ExtensionManager {
 	/**
 	 * Register an individual operation
 	 */
-	private registerOperation(config: OperationApiConfig): PromiseCallback {
+	private registerOperation({
+		config,
+		isInternal,
+	}: {
+		config: OperationApiConfig;
+		isInternal: boolean;
+	}): PromiseCallback {
 		const flowManager = getFlowManager();
 
-		flowManager.addOperation(config.id, config.handler);
+		flowManager.addOperation(config.id, config.handler, isInternal);
 
 		const unregisterFunction = () => {
 			flowManager.removeOperation(config.id);

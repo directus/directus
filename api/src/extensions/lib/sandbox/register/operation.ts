@@ -24,7 +24,7 @@ export function registerOperationGenerator() {
 			return response.copy();
 		};
 
-		flowManager.addOperation(idCopied, handler);
+		flowManager.addOperation(idCopied, handler, false);
 
 		unregisterFunctions.push(() => {
 			flowManager.removeOperation(idCopied);

@@ -53,7 +53,7 @@ interface FlowMessage {
 class FlowManager {
 	private isLoaded = false;
 
-	private operations: Map<string, OperationHandler> = new Map();
+	private operations: Map<string, { handler: OperationHandler; isInternal: boolean }> = new Map();
 
 	private triggerHandlers: TriggerHandler[] = [];
 	private operationFlowHandlers: Record<string, any> = {};
@@ -97,8 +97,8 @@ class FlowManager {
 		messenger.publish<FlowMessage>('flows', { type: 'reload' });
 	}
 
-	public addOperation(id: string, operation: OperationHandler): void {
-		this.operations.set(id, operation);
+	public addOperation(id: string, handler: OperationHandler, isInternal: boolean): void {
+		this.operations.set(id, { handler, isInternal });
 	}
 
 	public removeOperation(id: string): void {
@@ -419,14 +419,14 @@ class FlowManager {
 			return { successor: null, status: 'unknown', data: null, options: null };
 		}
 
-		const handler = this.operations.get(operation.type)!;
+		const { handler: handler, isInternal } = this.operations.get(operation.type)!;
 
 		const options = applyOptionsData(operation.options, keyedData);
 
 		try {
 			let result = await handler(options, {
 				services,
-				env: useEnv(),
+				env: isInternal ? useEnv() : this.envs,
 				database: getDatabase(),
 				logger,
 				getSchema,
