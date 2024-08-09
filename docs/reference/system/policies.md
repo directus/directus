@@ -9,7 +9,6 @@ pageClass: page-reference
 > Policies define a specific set of access permissions, and are a composable unit that can be assigned to both roles and
 > users. [Learn more about Policies](/user-guide/overview/glossary#policies).
 
-
 ## The Policy Object
 
 `id` **uuid**\
