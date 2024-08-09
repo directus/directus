@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Filter, Query, SchemaOverview } from '@directus/types';
+import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
@@ -23,10 +23,11 @@ export function getDBQuery(
 	o2mNodes: O2MNode[],
 	query: Query,
 	cases: Filter[],
+	permissions: Permission[],
 ): Knex.QueryBuilder {
 	const aliasMap: AliasMap = Object.create(null);
 	const env = useEnv();
-	const preProcess = getColumnPreprocessor(knex, schema, table, cases, aliasMap);
+	const preProcess = getColumnPreprocessor(knex, schema, table, cases, permissions, aliasMap);
 	const queryCopy = cloneDeep(query);
 	const helpers = getHelpers(knex);
 
@@ -45,7 +46,10 @@ export function getDBQuery(
 			? queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)?.whenCase ?? [])
 			: undefined;
 
-		const dbQuery = applyQuery(knex, table, flatQuery, queryCopy, schema, cases, { aliasMap, groupWhenCases }).query;
+		const dbQuery = applyQuery(knex, table, flatQuery, queryCopy, schema, cases, permissions, {
+			aliasMap,
+			groupWhenCases,
+		}).query;
 
 		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
 
@@ -69,7 +73,7 @@ export function getDBQuery(
 		}
 	}
 
-	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, cases, {
+	const { hasMultiRelationalFilter } = applyQuery(knex, table, dbQuery, queryCopy, schema, cases, permissions, {
 		aliasMap,
 		isInnerQuery: true,
 		hasMultiRelationalSort,
@@ -99,6 +103,7 @@ export function getDBQuery(
 							cases,
 							table,
 							alias: node.fieldKey,
+							permissions,
 						},
 						{ knex, schema },
 					);
@@ -218,6 +223,7 @@ export function getDBQuery(
 			schema,
 			table,
 			cases,
+			permissions,
 			aliasMap,
 			innerCaseWhenAliasPrefix,
 		);

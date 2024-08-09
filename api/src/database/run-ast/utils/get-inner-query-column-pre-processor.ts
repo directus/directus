@@ -1,4 +1,4 @@
-import type { Filter, SchemaOverview } from '@directus/types';
+import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { FieldNode, FunctionFieldNode, M2ONode, O2MNode } from '../../../types/index.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
@@ -10,6 +10,7 @@ export function getInnerQueryColumnPreProcessor(
 	schema: SchemaOverview,
 	table: string,
 	cases: Filter[],
+	permissions: Permission[],
 	aliasMap: AliasMap,
 	aliasPrefix: string,
 ) {
@@ -31,6 +32,7 @@ export function getInnerQueryColumnPreProcessor(
 					aliasMap,
 					cases,
 					table,
+					permissions,
 				},
 				{ knex, schema },
 			);
