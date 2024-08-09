@@ -36,3 +36,7 @@ fields:
   - field: user_updated
     special:
       - user-updated
+
+  - field: delta
+    special:
+      - cast-json

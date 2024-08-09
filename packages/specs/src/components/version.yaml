@@ -29,7 +29,7 @@ properties:
     format: date-time
     nullable: true
   date_updated:
-    description: When the Content Version was updated.
+    description: When the Content Version was last updated.
     type: string
     example: '2022-05-11T13:14:53Z'
     format: date-time
@@ -41,8 +41,13 @@ properties:
       - type: string
       - $ref: '../openapi.yaml#/components/schemas/Users'
   user_updated:
-    description: User that updated the Content Version.
+    description: User that last updated the Content Version.
     example: 63716273-0f29-4648-8a2a-2af2948f6f78
     oneOf:
       - type: string
       - $ref: '../openapi.yaml#/components/schemas/Users'
+  delta:
+    description: The current changes compared to the main version of the item.
+    example:
+      my_field: Updated Value
+    type: object
