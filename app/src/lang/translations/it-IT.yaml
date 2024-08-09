@@ -262,8 +262,11 @@ field_presets: Preset di Campo
 permissions_for_role: 'Oggetti per cui è abilitata l''azione {action} per il ruolo {role}.'
 permissions_for_policy: 'Voci per cui è abilitata l''azione {action} per il ruolo {policy}.'
 fields_for_role: 'Campi per cui è abilitata l''azione {action} per il ruolo {role}.'
+fields_for_policy: 'Campi per cui è abilitata l''azione {action} per il ruolo {policy}.'
 validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare all''azione {action}.'
+validation_for_policy: 'Regole per il campo che la policy {policy} deve rispettare all''azione {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
+presets_for_policy: 'Valore predefinito del campo per la policy {policy}.'
 presets_field_warning: 'Le preimpostazioni relazionali per il campo "{field}" dovrebbero essere configurate con la sintassi "dettagliata".'
 presentation_and_aliases: Presentazione e Alias
 revision_post_create: Ecco come appariva questo elemento quando è stato creato.
@@ -369,6 +372,7 @@ no_collections_found: Nessuna raccolta trovata.
 new_data_alert: 'Verranno creati i seguenti dati all''interno del tuo modello:'
 search_collection: Cerca raccolta...
 search_role: Cerca ruolo...
+search_policy: Cerca Policy...
 search_field: Campo di ricerca...
 new_field: 'Nuovo campo'
 new_collection: 'Nuova Raccolta'
@@ -519,6 +523,11 @@ hours: Ore
 month: Mese
 year: Anno
 select_all: Seleziona tutto
+permissionsLevel:
+  all: Accesso completo {action}
+  partial: Accesso parziale {action}
+  custom: Accesso parziale {action}
+  none: Nessun accesso {action}
 months:
   january: Gennaio
   february: Febbraio
@@ -545,6 +554,7 @@ file_details: Dettagli File
 dimensions: Dimensioni
 size: Dimensione
 created: Creato
+uploaded: Caricato
 modified: Modificato
 owner: Proprietario
 edited_by: Modificato da
@@ -601,7 +611,10 @@ allow_duplicates: Consenti duplicati
 comments: Commenti
 no_comments: Non ci sono ancora commenti
 expand: Espandi
+expand_all: Espandi tutto
+expand_none: Non espandere
 collapse: Chiudi
+collapse_all: Comprimi tutto
 select_item: Seleziona Elemento
 no_items: Nessun elemento
 search_items: Cerca Elementi...
@@ -618,6 +631,7 @@ display_not_found: 'Display "{display}" non trovato.'
 reset_display: Ripristina il Display
 list-m2a: Costruttore (M2A)
 item_count: 'Nessun elemento | Un elemento | {count} elementi'
+filtered_item_count: 'Nessuna voce filtrata | Una voce filtrata | {count} voci filtrate'
 no_items_copy: Non ci sono ancora elementi in questa raccolta.
 file_count: 'Nessun File | Un File | {count} File'
 no_files_copy: Non ci sono file qui.
@@ -652,6 +666,7 @@ copy_to: Copia in...
 no_other_dashboards_copy: Non hai altre bacheche per ora.
 inactive: Disattivato
 users: Utenti
+roles: Ruoli
 activity: Attività
 activity_item: Elemento attività
 action: Azioni
@@ -779,6 +794,9 @@ make_collection_hidden: Rendi nascosta la raccolta
 make_folder_visible: Rendi visibile la cartella
 make_folder_hidden: Rendi nascosta la cartella
 goto_collection_content: Visualizza contenuto
+count_of_total_items: '{count} di {total} voci'
+start_end_of_count_items: '{start}-{end} di {count} voci'
+start_end_of_count_filtered_items: '{start}-{end} di {count} voci filtrate'
 delete_collection_are_you_sure: >-
   Sei sicuro di voler eliminare la raccolta "{collection}"? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione non può essere annullata.
 delete_folder_are_you_sure: Sei sicuro di voler eliminare la cartella "{folder}"? Le cartelle e le raccolte annidate saranno spostate al livello più alto.
@@ -870,6 +888,7 @@ create_item: Crea Elemento
 display_template: Display Template
 language_display_template: Modello di visualizzazione della lingua
 translations_display_template: Modello Visualizzazione Traduzioni
+n_items_selected: 'Nessuna voce filtrata | 1 voce filtrata | {n} voci filtrate'
 per_page: Per Pagina
 all_files: Tutti i File
 my_files: I Miei File
@@ -1084,6 +1103,8 @@ editing_unit: 'Modifica {unit}'
 editing_in_batch: 'Modifica batch {count} Articoli'
 no_options_available: Nessuna opzione disponibile
 settings_data_model: Modello dei dati
+settings_roles: Ruoli utente
+settings_permissions: Policy di accesso
 settings_project: Impostazioni
 settings_appearance: Aspetto
 settings_webhooks: Webhooks
@@ -1133,6 +1154,9 @@ page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
 page_help_settings_datamodel_fields: >-
   **Modello dei dati: Raccolta** — Un modulo per la gestione di questa raccolta e dei suoi campi.
+page_help_settings_policies_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
+page_help_settings_policies_item: "**Dettagli della policy** — Gestisci i permessi dio una policy e altre impostazioni."
+page_help_settings_roles_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
 page_help_settings_roles_item: "**Dettagli del ruolo** — Gestisce i permessi di un ruolo e altre impostazioni."
 page_help_settings_presets_collection: >-
   **Sfoglia Preset** — Elenca tutti i preset del progetto, tra cui: utente, ruolo, segnalibri globali e viste predefinite.
@@ -1180,6 +1204,7 @@ singleton: Singleton
 singleton_label: Tratta come oggetto singolo
 system_fields_locked: I campi di sistema sono bloccati e non possono essere modificati
 directus_collection:
+  directus_access: Allegati alle policy
   directus_activity: Log autorizzazioni per tutti gli eventi
   directus_collections: Configurazione e metadati aggiuntivi della raccolta
   directus_dashboards: Bacheche nel modulo approfondimenti
@@ -1191,6 +1216,8 @@ directus_collection:
   directus_notifications: Notifiche inviate agli utenti
   directus_operations: Operazioni che vengono eseguite nei flussi
   directus_panels: Singoli pannelli nelle bacheche di approfondimento
+  directus_permissions: Autorizzazioni accesso per ogni policy
+  directus_policies: Politiche controllo accesso
   directus_presets: Preset per i default della raccolta e i segnalibri
   directus_relations: Configurazione e metadati della relazione
   directus_revisions: Snapshot dei dati per tutte le attività
@@ -1368,9 +1395,15 @@ fields:
     icon: Icona Ruolo
     description: Descrizione
     users: Utenti nel ruolo
+    parent: Ruolo genitore
+    children: Ruoli figlio
   directus_policies:
     name: Nome Policy
     description: Descrizione
+    app_access: Accesso App
+    admin_access: Accesso amministratore
+    ip_access: Accesso IP
+    enforce_tfa: Richiede 2FA
   directus_webhooks:
     name: Nome
     method: Metodo
@@ -1453,6 +1486,12 @@ field_options:
     focal_point_divider: Punto Focale
     filename_disk: Nome sul disco...
     filename_download: Nome al download...
+  directus_policies:
+    name: Nome unico per questa policy...
+    description: Una descrizione per questa policy...
+    ip_access: Aggiungi indirizzi IP consentiti, intervalli di IP e blocchi CIDR. Lascia vuoto per consentire tutti...
+    enforce_tfa: Forza autenticazione a due fattori
+    assigned_to: Assegnato a
   directus_roles:
     name: Nome unico per questo ruolo...
     description: Una descrizione per questo ruolo...
@@ -1462,6 +1501,8 @@ field_options:
       name_placeholder: Inserisci un titolo...
       link_name: Link
       link_placeholder: URL relativo o assoluto...
+    parent_note: Ruolo genitore opzionale da cui questo ruolo eredita i permessi
+    children_note: Ruoli figli annidati che ereditano i permessi di questi ruoli
     collections_name: Raccolte
     collections_addLabel: Aggiungi raccolta...
   directus_users:
@@ -1512,6 +1553,7 @@ live_preview:
   toggle_3d: Attiva/disattiva 3D
 shares: Condivisioni
 unlimited_usage: Utilizzo illimitato
+uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
 no_shares: Nessuna condivisione da mostrare
 new_share: Nuova condivisione
 expired: Scaduto
@@ -1545,6 +1587,9 @@ continue_label: Continua
 continue_as: >-
   {name} è attualmente autenticato. Se riconosci questo account, premi continua.
 editing_role: 'Ruolo {role}'
+editing_policy: 'Policy {policy}'
+no_permissions: Nessun permesso
+permission_add_collection: Aggiungi raccolta
 creating_webhook: Creazione Webhook
 default_label: Predefinito
 delete_label: Elimina
@@ -1644,6 +1689,8 @@ navigate_to_item: Vai all'elemento
 undo_removed_item: Annulla la rimozione dell'elemento
 remove_item: Rimuovi l'elemento
 delete_item: Elimina l'elemento
+pause: Pausa
+resume: Riprendi
 interfaces:
   list-m2a:
     prefix_note: Usa il nome della raccolta dell'elemento correlato come predefinito.
