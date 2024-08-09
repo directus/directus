@@ -1112,6 +1112,19 @@ https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 | `WEBSOCKETS_GRAPHQL_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
 | `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |
 
+### Logs
+
+The WebSocket Logs endpoint is accessible at `/websocket/logs`. The method of authentication is limited to `strict` and
+the connection will be disconnected when the authentication expires. Refer to the
+[authentication guide](/guides/real-time/authentication.html) for more information.
+
+| Variable                     | Description                                                                                            | Default Value |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
+| `WEBSOCKETS_LOGS_ENABLED`    | Whether or not to enable the Logs Subscriptions.                                                       | `true`        |
+| `WEBSOCKETS_LOGS_LEVEL`      | What level of detail to stream. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
+| `WEBSOCKETS_LOGS_STYLE`      | Stream just the message (pretty) or the full JSON log. One of `pretty`, `raw`.                         | `pretty`      |
+| `WEBSOCKETS_LOGS_CONN_LIMIT` | How many simultaneous connections are allowed.                                                         | `Infinity`    |
+
 ---
 
 ## PM2

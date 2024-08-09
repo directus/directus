@@ -101,7 +101,11 @@ export function realtime(config: WebSocketConfig = {}) {
 				);
 
 				if (reconnectState.active) return reconnectState.active;
-				if (reconnectState.attempts >= config.reconnect.retries) return reject();
+
+				if (reconnectState.attempts >= config.reconnect.retries) {
+					reconnectState.attempts = -1;
+					return reject();
+				}
 
 				setTimeout(
 					() =>

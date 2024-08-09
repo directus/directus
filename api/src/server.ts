@@ -18,8 +18,10 @@ import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getIPFromReq } from './utils/get-ip-from-req.js';
 import { getAddress } from './utils/get-address.js';
 import {
+	createLogsController,
 	createSubscriptionController,
 	createWebSocketController,
+	getLogsController,
 	getSubscriptionController,
 	getWebSocketController,
 } from './websocket/controllers/index.js';
@@ -100,6 +102,8 @@ export async function createServer(): Promise<http.Server> {
 	if (toBoolean(env['WEBSOCKETS_ENABLED']) === true) {
 		createSubscriptionController(server);
 		createWebSocketController(server);
+		createLogsController(server);
+
 		startWebSocketHandlers();
 	}
 
@@ -129,6 +133,7 @@ export async function createServer(): Promise<http.Server> {
 	async function onSignal() {
 		getSubscriptionController()?.terminate();
 		getWebSocketController()?.terminate();
+		getLogsController()?.terminate();
 
 		const database = getDatabase();
 		await database.destroy();
