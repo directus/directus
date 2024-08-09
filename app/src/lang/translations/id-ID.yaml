@@ -624,10 +624,6 @@ make_collection_hidden: Buat Koleksi Tersembunyi
 make_folder_visible: Buat Folder Terlihat
 make_folder_hidden: Buat Folder Tersembunyi
 goto_collection_content: Tampilkan konten
-start_end_of_count_items: '{start}-{end} dari {count} item'
-start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
-one_item: '1 item'
-one_filtered_item: '1 item yang di filter'
 delete_collection_are_you_sure: >-
   Apakah anda yakin ingin menghapus koleksi "{collection}"? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
 delete_folder_are_you_sure: Anda yakin ingin menghapus folder "{folder}"? Susunan folder dan koleksi akan dipindahkan ke level paling atas.
@@ -712,7 +708,6 @@ create_item: Buat item
 display_template: Tampilan Template
 language_display_template: Templat Tampilan Bahasa
 translations_display_template: Templat Tampilan Terjemahan
-n_items_selected: 'Tidak ada Item yang Dipilih | 1 Item Dipilih | {n} Item Dipilih'
 per_page: Per Halaman
 all_files: Semua Berkas
 my_files: Berkas Saya
