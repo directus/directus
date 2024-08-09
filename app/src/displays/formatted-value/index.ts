@@ -27,7 +27,6 @@ export default defineDisplay({
 
 		return `${prefix}${formattedValue}${suffix}`;
 	},
-	fields: ['id', 'string'],
 	options: ({ field }) => {
 		const isString = ['string', 'text'].includes(field.type ?? 'unknown');
 		const stringOperators = ['eq', 'neq', 'contains', 'starts_with', 'ends_with'];

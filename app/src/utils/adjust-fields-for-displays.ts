@@ -37,8 +37,6 @@ export function adjustFieldsForDisplays(fields: readonly string[], parentCollect
 					.map((relatedFieldKey: string) => `${fieldKey}.${relatedFieldKey}`);
 			}
 
-			console.log(fieldKeys, display.value.fields);
-
 			if (fieldKeys) {
 				return fieldKeys.map((fieldKey) => {
 					/**
