@@ -237,7 +237,7 @@ export async function up(knex: Knex) {
 	});
 
 	try {
-		const inspector = await getSchemaInspector();
+		const inspector = await getSchemaInspector(knex);
 		const foreignKeys = await inspector.foreignKeys('directus_permissions');
 
 		const foreignConstraint =
