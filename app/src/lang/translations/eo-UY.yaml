@@ -424,10 +424,6 @@ make_collection_hidden: Igi la kolekton kaŝita
 make_folder_visible: Igi la dosierujon videbla
 make_folder_hidden: Igi la dosierujon kaŝita
 goto_collection_content: Vidi la enhavon
-start_end_of_count_items: '{start}-{end} de {count} eroj'
-start_end_of_count_filtered_items: '{start}-{end} de {count} filtritaj eroj'
-one_item: '1 ero'
-one_filtered_item: '1 filtrita ero'
 visible_collections: Videblaj kolektoj
 hidden_collections: Kaŝitaj kolektoj
 show_hidden_collections: Montri kaŝitajn kolektojn
