@@ -110,6 +110,7 @@ field_name_translations: Traduzioni nome del campo
 enter_password_to_enable_tfa: Inserisci la tua password per abilitare l'autenticazione a due fattori
 add_field: Aggiungi campo
 role_name: Nome ruolo
+policy_name: Nome Policy
 branch: Ramo
 leaf: Foglia
 indeterminate: Indeterminato
@@ -127,6 +128,7 @@ requires_value: Richiede un valore
 create_preset: Crea Preset
 create_panel: Crea pannello
 create_role: Crea ruolo
+create_policy: Crea Policy
 create_user: Crea utente
 message: Messaggio
 delete_panel: Elimina Pannello
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Sessione scaduta
 public_label: Pubblico
 public_description: Controlla quali dati API sono disponibili senza autenticarsi.
+public_role_info: >-
+  Il ruolo pubblico controlla quali dati API sono disponibili per gli utenti non autenticati o per gli utenti senza un ruolo assegnato. Le richieste con il ruolo pubblico non possono avere accesso all'app o all'area amministrativa. Se vengono concessi accessi all'app o all'area amministrativa in una policy assegnata al ruolo pubblico, questi verranno ignorati.
 admin_description: Ruolo amministrativo iniziale con accesso illimitato ad App/API.
+admin_policy_description: Policy amministrativa iniziale con accesso illimitato ad App/API.
 no_description: Nessuna descrizione...
 reached_maximum_number_of_extensions: Hai raggiunto il numero massimo di estensioni per questo progetto ({n}). Contatta l'amministratore di sistema per maggiori informazioni.
 not_allowed: Non consentito
@@ -255,6 +260,7 @@ field_permissions: Permessi di Campo
 field_validation: Convalida di Campo
 field_presets: Preset di Campo
 permissions_for_role: 'Oggetti per cui è abilitata l''azione {action} per il ruolo {role}.'
+permissions_for_policy: 'Voci per cui è abilitata l''azione {action} per il ruolo {policy}.'
 fields_for_role: 'Campi per cui è abilitata l''azione {action} per il ruolo {role}.'
 validation_for_role: 'Regole per il campo che il ruolo {role} deve rispettare all''azione {action}.'
 presets_for_role: 'Valore predefinito del campo per il ruolo {role}.'
@@ -1363,6 +1369,7 @@ fields:
     description: Descrizione
     users: Utenti nel ruolo
   directus_policies:
+    name: Nome Policy
     description: Descrizione
   directus_webhooks:
     name: Nome
