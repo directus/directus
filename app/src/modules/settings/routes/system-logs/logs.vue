@@ -3,26 +3,23 @@ import { useShortcut } from '@/composables/use-shortcut';
 import LogDetailFilteringInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
-import SearchInput from '@/views/private/components/search-input.vue';
 import { realtime } from '@directus/sdk';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
+import InlineFilter from './components/inline-filter.vue';
 import LogsDisplay from './components/logs-display.vue';
 import SystemLogsSidebarDetail from './components/system-logs-sidebar-detail.vue';
 import { Log } from './types';
-
-type LogsFilter = {
-	logLevelNames: string[] | null;
-	logLevelValues: number[];
-	nodeIds: string[] | null;
-	search: string | null;
-};
 
 const { t } = useI18n();
 const reconnectionParams = { delay: 1000, retries: 10 };
 let reconnectionCount = 0;
 const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
+
+const search = ref<string>();
+const logLevelNames = ref<string[]>();
+const nodeIds = ref<string[]>();
 
 const client = sdk.with(
 	realtime({ authMode: 'strict', url: `ws://${sdk.url.host}/websocket/logs`, reconnect: reconnectionParams }),
@@ -34,8 +31,6 @@ let allowedLogLevels: Record<string, number> = {};
 const allowedLogLevelNames: string[] = [];
 const instances = ref<string[]>([]);
 const maxLogLevelName = ref('');
-const activeInstances = ref<string[]>([]);
-const filterOptions = ref<LogsFilter>({ logLevelNames: null, logLevelValues: [], nodeIds: null, search: '' });
 let isFilterOptionsUpdated = false;
 const shouldStream = ref(false);
 const streamConnected = ref(false);
@@ -53,52 +48,39 @@ if (serverStore.info?.websocket) {
 	if (serverStore.info.websocket.logs) {
 		allowedLogLevels = serverStore.info.websocket.logs.allowedLogLevels;
 
-		for (const [logLevelName, logLevelValue] of Object.entries(serverStore.info.websocket.logs.allowedLogLevels)) {
+		for (const [logLevelName] of Object.entries(serverStore.info.websocket.logs.allowedLogLevels)) {
 			if (!maxLogLevelName.value) {
 				maxLogLevelName.value = logLevelName;
 			}
 
 			allowedLogLevelNames.push(logLevelName);
-			(filterOptions.value.logLevelNames || (filterOptions.value.logLevelNames = [])).push(logLevelName);
-			filterOptions.value.logLevelValues.push(logLevelValue);
+			(logLevelNames.value || (logLevelNames.value = [])).push(logLevelName);
 		}
 	}
 }
 
-const filterOptionsUpdated = async ({ logLevelNames, nodeIds }: LogsFilter) => {
-	if (logLevelNames) {
-		if (logLevelNames?.length === 0) {
-			filterOptions.value.logLevelNames = null;
-		}
-
-		filterOptions.value.logLevelValues = logLevelNames
-			.map((level) => allowedLogLevels[level])
-			.filter((level) => level !== undefined);
-	}
-
-	if (nodeIds) {
-		if (nodeIds.length === 0) {
-			filterOptions.value.nodeIds = null;
-		}
-
-		activeInstances.value = nodeIds;
-	}
-
-	isFilterOptionsUpdated = true;
-	scrollLogsToBottom();
-};
+const logLevelValues = computed(() =>
+	logLevelNames.value
+		? logLevelNames.value.map((level) => allowedLogLevels[level]).filter((level) => level !== undefined)
+		: [],
+);
 
 const filteredLogs = computed(() => {
 	return logs.value.filter((log) => {
 		return (
-			filterOptions.value.logLevelValues.includes(log.data.level) &&
-			filterOptions.value.nodeIds &&
-			filterOptions.value.nodeIds.includes(log.instance) &&
+			logLevelValues.value.includes(log.data.level) &&
+			nodeIds.value &&
+			nodeIds.value.includes(log.instance) &&
 			JSON.stringify(log)
 				.toLowerCase()
-				.includes(filterOptions.value.search?.toLowerCase() || '')
+				.includes(search.value?.toLowerCase() || '')
 		);
 	});
+});
+
+watch([logLevelNames, nodeIds, search], () => {
+	isFilterOptionsUpdated = true;
+	scrollLogsToBottom();
 });
 
 watch(filteredLogs, (cur, prev) => {
@@ -110,45 +92,6 @@ watch(filteredLogs, (cur, prev) => {
 	} else {
 		unreadLogsCount.value += cur.length - prev.length;
 	}
-});
-
-const fields = computed(() => {
-	return [
-		{
-			field: 'logLevelNames',
-			name: 'Log Level',
-			type: 'string',
-			meta: {
-				interface: 'select-multiple-dropdown',
-				options: {
-					choices: allowedLogLevelNames
-						? allowedLogLevelNames.map((logLevel) => ({
-								text: logLevel.toLocaleUpperCase(),
-								value: logLevel,
-						  }))
-						: [],
-					allowNone: true,
-				},
-				width: 'half',
-			},
-		},
-		{
-			field: 'nodeIds',
-			name: 'Instance',
-			type: 'string',
-			meta: {
-				interface: 'select-multiple-dropdown',
-				options: {
-					choices: instances.value.map((nodeId, index) => ({
-						text: `Instance ${index + 1}`,
-						value: nodeId,
-					})),
-					allowNone: true,
-				},
-				width: 'half',
-			},
-		},
-	];
 });
 
 function filterObjectBySortedPaths(obj: Log['data'], paths: string[]) {
@@ -247,12 +190,12 @@ client.onWebSocket('message', function (message) {
 			logs.value.push({ index: logsCount.value, instance: uid, data });
 
 			if (!instances.value.includes(uid)) {
-				if (!filterOptions.value.nodeIds) {
-					filterOptions.value.nodeIds = [];
+				if (!nodeIds.value) {
+					nodeIds.value = [];
 				}
 
-				if (filterOptions.value.nodeIds.length === instances.value.length) {
-					filterOptions.value.nodeIds.push(uid);
+				if (nodeIds.value.length === instances.value.length) {
+					nodeIds.value.push(uid);
 				}
 
 				instances.value.push(uid);
@@ -370,8 +313,6 @@ onUnmounted(() => {
 		</template>
 
 		<template #actions>
-			<search-input v-model="filterOptions.search" :placeholder="t('search_logs')" :show-filter="false" />
-
 			<v-button v-if="shouldStream && !streamConnected" v-tooltip.bottom="t('loading')" rounded icon disabled>
 				<v-progress-circular small indeterminate />
 			</v-button>
@@ -404,7 +345,14 @@ onUnmounted(() => {
 		</template>
 
 		<div class="logs-container">
-			<v-form v-model="filterOptions" :fields="fields" @update:model-value="filterOptionsUpdated"></v-form>
+			<InlineFilter
+				v-model:type="logLevelNames"
+				v-model:sort="nodeIds"
+				v-model:search="search"
+				:allowed-log-level-names="allowedLogLevelNames"
+				:instances="instances"
+				class="filter"
+			/>
 			<div class="split-view">
 				<div class="logs-display">
 					<logs-display
@@ -464,8 +412,14 @@ onUnmounted(() => {
 .logs-container {
 	width: 100%;
 	height: calc(100% - 110px);
+	min-height: 800px;
 	padding: var(--content-padding);
-	margin-bottom: var(--content-padding-bottom);
+	padding-top: 0;
+}
+
+.filter {
+	margin-block-start: 24px;
+	margin-block-end: 20px;
 }
 
 .v-form {
@@ -475,7 +429,7 @@ onUnmounted(() => {
 .split-view {
 	display: flex;
 	flex-direction: column;
-	height: calc(100% - 120px);
+	height: calc(100% - 50px);
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));

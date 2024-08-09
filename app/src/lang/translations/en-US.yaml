@@ -1025,6 +1025,10 @@ resume_streaming_logs: Resume Streaming Logs
 pause_streaming_logs: Pause Streaming Logs
 clear_logs: Clear Logs
 search_logs: Search Logs...
+all_instances: All Instances
+instance_count: 'No Instance | One Instance | {count} Instances'
+all_log_levels: All Log Levels
+log_level_count: 'No Log Level | One Log Level | {count} Log Levels'
 full_screen: Full Screen
 full_text_search: Full-Text Search
 edit_panels: Edit Panels
