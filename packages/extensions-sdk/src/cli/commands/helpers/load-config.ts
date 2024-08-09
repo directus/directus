@@ -7,14 +7,17 @@ import type { Config } from '../../types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default async function loadConfig(): Promise<Config> {
+export default async function loadConfig(mode: 'browser' | 'node'): Promise<Config> {
 	for (const ext of JAVASCRIPT_FILE_EXTS) {
-		const fileName = `extension.config.${ext}`;
+		// Try to find a config file for the given mode first, then default to the generic one
+		for (const modeSuffix of [`.${mode}`, '']) {
+			const fileName = `extension.config${modeSuffix}.${ext}`;
 
-		if (await fse.pathExists(fileName)) {
-			const configFile = await import(pathToRelativeUrl(path.resolve(fileName), __dirname));
+			if (await fse.pathExists(fileName)) {
+				const configFile = await import(pathToRelativeUrl(path.resolve(fileName), __dirname));
 
-			return configFile.default;
+				return configFile.default;
+			}
 		}
 	}
 
