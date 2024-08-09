@@ -102,6 +102,10 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	}
 
 	processFieldType(field: Field): Type {
+		if (field.schema && field.schema.data_type === 'char' && field.schema.max_length === 36) {
+			return 'uuid';
+		}
+
 		return field.type;
 	}
 
