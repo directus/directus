@@ -849,9 +849,10 @@ export class FieldsService {
 			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
-		const defaultValue = field.schema?.default_value ? field.schema?.default_value : existing?.default_value;
+		const defaultValue =
+			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
 
-		if (defaultValue !== undefined) {
+		if (defaultValue) {
 			const newDefaultValueIsString = typeof defaultValue === 'string';
 			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
 			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
