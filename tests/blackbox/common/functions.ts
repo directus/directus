@@ -1,4 +1,4 @@
-import type { Query, Permission } from '@directus/types';
+import type { Permission, Query } from '@directus/types';
 import { omit } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
@@ -48,8 +48,6 @@ export function EnableTestCaching() {
 
 export type OptionsCreateRole = {
 	name: string;
-	appAccessEnabled: boolean;
-	adminAccessEnabled: boolean;
 };
 
 export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
@@ -68,7 +66,40 @@ export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 	const response = await request(getUrl(vendor))
 		.post(`/roles`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send({ name: options.name, app_access: options.appAccessEnabled, admin_access: options.adminAccessEnabled });
+		.send({ name: options.name });
+
+	return response.body.data;
+}
+
+export type OptionsCreatePolicy = {
+	name: string;
+	appAccessEnabled: boolean;
+	adminAccessEnabled: boolean;
+	role: string;
+};
+
+export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy) {
+	// Action
+	const roleResponse = await request(getUrl(vendor))
+		.get(`/policies`)
+		.query({
+			filter: { name: { _eq: options.name } },
+		})
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
+
+	if (roleResponse.body.data.length > 0) {
+		return roleResponse.body.data[0];
+	}
+
+	const response = await request(getUrl(vendor))
+		.post(`/policies`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send({
+			name: options.name,
+			app_access: options.appAccessEnabled,
+			admin_access: options.adminAccessEnabled,
+			roles: [{ role: options.role }],
+		});
 
 	return response.body.data;
 }
