@@ -761,8 +761,8 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
       codemirror:
-        specifier: 5.65.16
-        version: 5.65.16
+        specifier: 5.65.17
+        version: 5.65.17
       color:
         specifier: 4.2.3
         version: 4.2.3
@@ -6230,8 +6230,8 @@ packages:
     resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
 
-  codemirror@5.65.16:
-    resolution: {integrity: sha512-br21LjYmSlVL0vFCPWPfhzUCT34FM/pAdK7rRIZwa0rrtrIdotvP4Oh4GUHsu2E3IrQMCfRkL/fN3ytMNxVQvg==}
+  codemirror@5.65.17:
+    resolution: {integrity: sha512-1zOsUx3lzAOu/gnMAZkQ9kpIHcPYOc9y1Fbm2UVk5UBPkdq380nhkelG0qUwm1f7wPvTbndu9ZYlug35EwAZRQ==}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -17324,7 +17324,7 @@ snapshots:
 
   cluster-key-slot@1.1.2: {}
 
-  codemirror@5.65.16: {}
+  codemirror@5.65.17: {}
 
   color-convert@1.9.3:
     dependencies:
