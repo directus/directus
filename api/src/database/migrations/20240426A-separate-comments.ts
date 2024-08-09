@@ -1,4 +1,5 @@
 import { Action } from '@directus/constants';
+import { processChunk } from '@directus/utils';
 import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
 
@@ -23,21 +24,14 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('user_updated').references('id').inTable('directus_users');
 	});
 
-	let lastId = 0;
-	let commentsFound = 0;
+	const comments = await knex
+		.select('id', 'collection', 'item', 'comment', 'user', 'timestamp')
+		.from('directus_activity')
+		.whereNotNull('comment')
+		.orderBy('id');
 
-	do {
-		const comments = await knex
-			.select('id', 'collection', 'item', 'comment', 'user', 'timestamp')
-			.from('directus_activity')
-			.whereNotNull('comment')
-			.andWhere('id', '>', lastId)
-			.orderBy('id')
-			.limit(100);
-
-		commentsFound = comments.length;
-
-		for (const comment of comments) {
+	await processChunk(comments, 100, async (commentChunk) => {
+		for (const comment of commentChunk) {
 			await knex.transaction(async (trx) => {
 				const newCommentId = randomUUID();
 
@@ -59,10 +53,8 @@ export async function up(knex: Knex): Promise<void> {
 					})
 					.where('id', '=', comment.id);
 			});
-
-			lastId = comment.id;
 		}
-	} while (commentsFound > 0);
+	});
 }
 
 export async function down(knex: Knex): Promise<void> {
@@ -70,53 +62,55 @@ export async function down(knex: Knex): Promise<void> {
 		.select('id', 'collection', 'item', 'comment', 'date_created', 'user_created')
 		.from('directus_comments');
 
-	for (const comment of comments) {
-		const migratedRecords = await knex('directus_activity')
-			.select('id')
-			.where('collection', '=', 'directus_comments')
-			.andWhere('item', '=', comment.id)
-			.andWhere('action', '=', Action.CREATE)
-			.limit(1);
+	await processChunk(comments, 100, async (commentChunk) => {
+		for (const comment of commentChunk) {
+			const migratedRecords = await knex('directus_activity')
+				.select('id')
+				.where('collection', '=', 'directus_comments')
+				.andWhere('item', '=', comment.id)
+				.andWhere('action', '=', Action.CREATE)
+				.limit(1);
 
-		if (migratedRecords[0]) {
-			await knex('directus_activity')
-				.update({
-					action: Action.COMMENT,
-					collection: comment.collection,
-					item: comment.item,
-					comment: comment.comment,
-				})
-				.where('id', '=', migratedRecords[0].id);
+			if (migratedRecords[0]) {
+				await knex('directus_activity')
+					.update({
+						action: Action.COMMENT,
+						collection: comment.collection,
+						item: comment.item,
+						comment: comment.comment,
+					})
+					.where('id', '=', migratedRecords[0].id);
 
-			continue;
+				continue;
+			}
+
+			const unmigratedRecords = await knex('directus_activity')
+				.select('id')
+				.where('collection', '=', comment.collection)
+				.andWhere('item', '=', comment.item)
+				.andWhere('action', '=', Action.COMMENT)
+				.limit(1);
+
+			if (unmigratedRecords[0]) {
+				await knex('directus_activity')
+					.update({
+						comment: comment.comment,
+					})
+					.where('id', '=', unmigratedRecords[0].id);
+
+				continue;
+			}
+
+			await knex('directus_activity').insert({
+				action: Action.COMMENT,
+				collection: comment.collection,
+				item: comment.item,
+				comment: comment.comment,
+				user: comment.user_created,
+				timestamp: comment.date_created,
+			});
 		}
-
-		const unmigratedRecords = await knex('directus_activity')
-			.select('id')
-			.where('collection', '=', comment.collection)
-			.andWhere('item', '=', comment.item)
-			.andWhere('action', '=', Action.COMMENT)
-			.limit(1);
-
-		if (unmigratedRecords[0]) {
-			await knex('directus_activity')
-				.update({
-					comment: comment.comment,
-				})
-				.where('id', '=', unmigratedRecords[0].id);
-
-			continue;
-		}
-
-		await knex('directus_activity').insert({
-			action: Action.COMMENT,
-			collection: comment.collection,
-			item: comment.item,
-			comment: comment.comment,
-			user: comment.user_created,
-			timestamp: comment.date_created,
-		});
-	}
+	});
 
 	await knex.schema.dropTable('directus_comments');
 }
