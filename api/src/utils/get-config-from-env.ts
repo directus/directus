@@ -26,7 +26,9 @@ export function getConfigFromEnv(
 			if (matches) continue;
 		}
 
-		if (key.includes('__')) {
+		if (key.includes('___')) {
+			config[key.slice(prefix.length).replace('___', '_').toLowerCase()] = value;
+		} else if (key.includes('__')) {
 			const path = key
 				.split('__')
 				.map((key, index) => (index === 0 ? transform(transform(key.slice(prefix.length))) : transform(key)));

@@ -321,6 +321,9 @@ This includes:
     Note: `DB_SSL__CA_FILE` may be preferred to load the CA directly from a file, see
     [Environment Variable Files](#environment-variable-files) for more information.
 
+- Options including triple underscores `___` will be transformed to single underscores, enabling setting options like
+  `application_name` via `DB_APPLICATION___NAME`.
+
 :::
 
 ## Redis

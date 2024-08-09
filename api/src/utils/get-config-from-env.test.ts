@@ -10,6 +10,7 @@ beforeEach(() => {
 		OBJECT_BRAND__HEX: '#6644FF',
 		CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
 		CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
+		TRIPLE_APPLICATION___NAME: 'directus',
 	});
 });
 
@@ -26,5 +27,10 @@ describe('get config from env', () => {
 		expect(getConfigFromEnv('CAMELCASE_')).toStrictEqual({
 			object: { firstKey: 'firstValue', secondKey: 'secondValue' },
 		});
+	});
+
+	test('Keys with triple underscore should transform to single underscore', () => {
+		expect(getConfigFromEnv('TRIPLE_', 'camelcase')).toStrictEqual({ application_name: 'directus' });
+		expect(getConfigFromEnv('TRIPLE_', 'underscore')).toStrictEqual({ application_name: 'directus' });
 	});
 });
