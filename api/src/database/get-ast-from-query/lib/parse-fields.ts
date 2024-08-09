@@ -6,6 +6,7 @@ import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js'
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
 import { getRelationType } from '../../../utils/get-relation-type.js';
+import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
 import { getRelation } from '../utils/get-relation.js';
@@ -253,7 +254,10 @@ export async function parseFields(
 			};
 
 			if (relationType === 'o2m' && !child!.query.sort) {
-				child!.query.sort = [relation.meta?.sort_field || context.schema.collections[relation.collection]!.primary];
+				child!.query.sort = await getAllowedSort(
+					{ collection: relation.collection, relation, accountability: options.accountability },
+					context,
+				);
 			}
 		}
 
