@@ -228,8 +228,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       inquirer:
-        specifier: 9.3.5
-        version: 9.3.5
+        specifier: 9.3.6
+        version: 9.3.6
       ioredis:
         specifier: 5.4.1
         version: 5.4.1
@@ -761,8 +761,8 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
       codemirror:
-        specifier: 5.65.16
-        version: 5.65.16
+        specifier: 5.65.17
+        version: 5.65.17
       color:
         specifier: 4.2.3
         version: 4.2.3
@@ -1087,8 +1087,8 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 9.3.5
-        version: 9.3.5
+        specifier: 9.3.6
+        version: 9.3.6
 
   packages/create-directus-project:
     dependencies:
@@ -1355,8 +1355,8 @@ importers:
         specifier: 11.2.0
         version: 11.2.0
       inquirer:
-        specifier: 9.3.5
-        version: 9.3.5
+        specifier: 9.3.6
+        version: 9.3.6
       ora:
         specifier: 6.3.1
         version: 6.3.1
@@ -6230,8 +6230,8 @@ packages:
     resolution: {integrity: sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA==}
     engines: {node: '>=0.10.0'}
 
-  codemirror@5.65.16:
-    resolution: {integrity: sha512-br21LjYmSlVL0vFCPWPfhzUCT34FM/pAdK7rRIZwa0rrtrIdotvP4Oh4GUHsu2E3IrQMCfRkL/fN3ytMNxVQvg==}
+  codemirror@5.65.17:
+    resolution: {integrity: sha512-1zOsUx3lzAOu/gnMAZkQ9kpIHcPYOc9y1Fbm2UVk5UBPkdq380nhkelG0qUwm1f7wPvTbndu9ZYlug35EwAZRQ==}
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -7920,8 +7920,8 @@ packages:
     resolution: {integrity: sha512-it4HyVAUTKBc6m8e1iXWvXSTdndF7HbdN713+kvLrymxTaU4AUBWrJ4vEooP+V7fexnVD3LKcBshjGGPefSMUQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
 
-  inquirer@9.3.5:
-    resolution: {integrity: sha512-SVRCRovA7KaT6nqWB2mCNpTvU4cuZ0hOXo5KPyiyOcNNUIZwq/JKtvXuDJNaxfuJKabBYRu1ecHze0YEwDYoRQ==}
+  inquirer@9.3.6:
+    resolution: {integrity: sha512-riK/iQB2ctwkpWYgjjWIRv3MBLt2gzb2Sj0JNQNbyTXgyXsLWcDPJ5WS5ZDTCx7BRFnJsARtYh+58fjP5M2Y0Q==}
     engines: {node: '>=18'}
 
   internal-slot@1.0.7:
@@ -17324,7 +17324,7 @@ snapshots:
 
   cluster-key-slot@1.1.2: {}
 
-  codemirror@5.65.16: {}
+  codemirror@5.65.17: {}
 
   color-convert@1.9.3:
     dependencies:
@@ -19187,7 +19187,7 @@ snapshots:
 
   ini@3.0.1: {}
 
-  inquirer@9.3.5:
+  inquirer@9.3.6:
     dependencies:
       '@inquirer/figures': 1.0.5
       ansi-escapes: 4.3.2

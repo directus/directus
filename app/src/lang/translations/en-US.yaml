@@ -648,6 +648,7 @@ display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display
 list-m2a: Builder (M2A)
 item_count: 'No Items | One Item | {count} Items'
+filtered_item_count: 'No Filtered Items | One Filtered Item | {count} Filtered Items'
 no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
@@ -810,10 +811,9 @@ make_collection_hidden: Make Collection Hidden
 make_folder_visible: Make Folder Visible
 make_folder_hidden: Make Folder Hidden
 goto_collection_content: View Content
-start_end_of_count_items: '{start}-{end} of {count} items'
-start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
-one_item: '1 item'
-one_filtered_item: '1 filtered item'
+count_of_total_items: '{count} of {total} Items'
+start_end_of_count_items: '{start}-{end} of {count} Items'
+start_end_of_count_filtered_items: '{start}-{end} of {count} Filtered Items'
 delete_collection_are_you_sure: >-
   Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it.
   This action is permanent.
@@ -909,7 +909,7 @@ create_item: Create Item
 display_template: Display Template
 language_display_template: Language Display Template
 translations_display_template: Translations Display Template
-n_items_selected: 'No Items Selected | 1 Item Selected | {n} Items Selected'
+n_items_selected: 'No Items Selected | One Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
 my_files: My Files
@@ -1585,7 +1585,7 @@ live_preview:
   toggle_3d: Toggle 3D
 shares: Shares
 unlimited_usage: Unlimited usage
-uses_left: No uses left | 1 use left | {n} uses left
+uses_left: No uses left | One use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
 expired: Expired
@@ -2275,7 +2275,6 @@ layouts:
     show_ungrouped: Show Ungrouped
     show: Show
     no_group: No Group
-    not_all_loaded: Could only load the first 1000 items.
 
 horizontal: Horizontal
 vertical: Vertical
