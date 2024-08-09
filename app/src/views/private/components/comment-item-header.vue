@@ -75,15 +75,12 @@ function useDelete() {
 		<div class="name">
 			<user-popover v-if="comment.user_created && comment.user_created.id" :user="comment.user_created.id">
 				<span>
-					<template v-if="comment.user_created && comment.user_created">
-						{{ userName(comment.user_created) }}
-					</template>
-
-					<template v-else>
-						{{ t('private_user') }}
-					</template>
+					{{ userName(comment.user_created) }}
 				</span>
 			</user-popover>
+			<span v-else>
+				{{ t('private_user') }}
+			</span>
 		</div>
 
 		<div class="header-right">
