@@ -9,13 +9,6 @@ pageClass: page-reference
 > Roles are the primary organizational structure for Users within the platform.
 > [Learn more about Roles](/user-guide/overview/glossary#roles).
 
-:::tip Directus 11 RC
-
-This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
-data structure and relations.
-
-:::
-
 ## The Role Object
 
 `id` **uuid**\

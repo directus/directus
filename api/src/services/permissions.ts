@@ -1,6 +1,9 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Item, ItemPermissions, Permission, PrimaryKey, Query } from '@directus/types';
+import { uniq } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { withAppMinimalPermissions } from '../permissions/lib/with-app-minimal-permissions.js';
 import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
@@ -145,28 +148,33 @@ export class PermissionsService extends ItemsService {
 		);
 
 		if (schema?.singleton && itemPermissions.update.access) {
-			const query: Query = {
-				filter: {
-					_and: [
-						...(this.accountability?.role ? [{ role: { _eq: this.accountability.role } }] : []),
-						{ collection: { _eq: collection } },
-						{ action: { _eq: updateAction } },
-					],
-				},
-				fields: ['presets', 'fields'],
-			};
+			const context = { schema: this.schema, knex: this.knex };
+			const policies = await fetchPolicies(this.accountability, context);
 
-			try {
-				const result = await this.readByQuery(query);
-				const permission = result[0];
+			const permissions = await fetchPermissions(
+				{ policies, accountability: this.accountability, action: updateAction, collections: [collection] },
+				context,
+			);
 
-				if (permission) {
-					itemPermissions.update.presets = permission['presets'];
-					itemPermissions.update.fields = permission['fields'];
+			let fields: string[] = [];
+			let presets = {};
+
+			for (const permission of permissions) {
+				if (permission.fields && fields[0] !== '*') {
+					fields = uniq([...fields, ...permission.fields]);
+
+					if (fields.includes('*')) {
+						fields = ['*'];
+					}
 				}
-			} catch {
-				// No permission
+
+				if (permission.presets) {
+					presets = { ...(presets ?? {}), ...permission.presets };
+				}
 			}
+
+			itemPermissions.update.fields = fields;
+			itemPermissions.update.presets = presets;
 		}
 
 		return itemPermissions;

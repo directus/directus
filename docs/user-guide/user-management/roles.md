@@ -15,13 +15,6 @@ To configure roles programmatically, see our API documentation on [roles](/refer
 
 :::
 
-:::tip Directus 11 RC
-
-This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
-data structure and relations.
-
-:::
-
 ## View a Role
 
 To view an existing role, navigate to **Settings > User Roles > [Role]**. Now you can see the role's policies and other
