@@ -80,6 +80,11 @@ const links = computed<Link[][]>(() => [
 	],
 	[
 		{
+			icon: 'terminal',
+			name: t('settings_system_logs'),
+			to: `/settings/system-logs`,
+		},
+		{
 			icon: 'bug_report',
 			name: t('report_bug'),
 			href: settings.value?.report_bug_url ?? DEFAULT_REPORT_BUG_URL,
