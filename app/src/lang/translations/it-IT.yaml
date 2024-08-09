@@ -773,10 +773,6 @@ make_collection_hidden: Rendi nascosta la raccolta
 make_folder_visible: Rendi visibile la cartella
 make_folder_hidden: Rendi nascosta la cartella
 goto_collection_content: Visualizza contenuto
-start_end_of_count_items: '{start}-{end} di {count} elementi'
-start_end_of_count_filtered_items: '{start}-{end} di {count} elementi filtrati'
-one_item: '1 elemento'
-one_filtered_item: '1 elemento filtrato'
 delete_collection_are_you_sure: >-
   Sei sicuro di voler eliminare la raccolta "{collection}"? Questo eliminerà la raccolta e tutti gli elementi in essa. Questa azione non può essere annullata.
 delete_folder_are_you_sure: Sei sicuro di voler eliminare la cartella "{folder}"? Le cartelle e le raccolte annidate saranno spostate al livello più alto.
@@ -868,7 +864,6 @@ create_item: Crea Elemento
 display_template: Display Template
 language_display_template: Modello di visualizzazione della lingua
 translations_display_template: Modello Visualizzazione Traduzioni
-n_items_selected: 'Nessun Elemento Selezionato | 1 Elemento Selezionato | {n} Elementi Selezionati'
 per_page: Per Pagina
 all_files: Tutti i File
 my_files: I Miei File
@@ -1510,7 +1505,6 @@ live_preview:
   toggle_3d: Attiva/disattiva 3D
 shares: Condivisioni
 unlimited_usage: Utilizzo illimitato
-uses_left: Nessun utilizzo rimanente | 1 utilizzo rimanente | {n} utilizzi rimanenti
 no_shares: Nessuna condivisione da mostrare
 new_share: Nuova condivisione
 expired: Scaduto
@@ -2182,7 +2176,6 @@ layouts:
     show_ungrouped: Mostra separati
     show: Mostra
     no_group: Nessun gruppo
-    not_all_loaded: È stato possibile caricare solo i primi 1000 elementi.
 horizontal: Orizzontale
 vertical: Verticale
 axis: Asse
