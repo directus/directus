@@ -4,7 +4,9 @@ import LogDetailFilteringInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { realtime } from '@directus/sdk';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import CodeMirror from 'codemirror';
+import 'codemirror/mode/javascript/javascript';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import SettingsNavigation from '../../components/navigation.vue';
 import InlineFilter from './components/inline-filter.vue';
@@ -16,7 +18,8 @@ const { t } = useI18n();
 const reconnectionParams = { delay: 1000, retries: 10 };
 let reconnectionCount = 0;
 const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
-
+const codemirrorEl = ref<HTMLTextAreaElement>();
+let codemirror: CodeMirror.Editor | null = null;
 const search = ref<string>();
 const logLevelNames = ref<string[]>();
 const nodeIds = ref<string[]>();
@@ -94,6 +97,15 @@ watch(filteredLogs, (cur, prev) => {
 	}
 });
 
+watch(logDetailSearch, () => {
+	processRawLog();
+});
+
+watch(logDetailVisible, async () => {
+	await nextTick();
+	codemirror?.refresh();
+});
+
 function filterObjectBySortedPaths(obj: Log['data'], paths: string[]) {
 	function _filter(obj: Log['data'], paths: string[][]) {
 		if (!obj || typeof obj !== 'object') return;
@@ -161,16 +173,6 @@ function filterObjectBySortedPaths(obj: Log['data'], paths: string[]) {
 			.map((path) => path.trim().split('.')),
 	);
 }
-
-const filteredRawLog = computed(() => {
-	if (logDetailSearch.value && selectedLog.value) {
-		const paths = logDetailSearch.value.split(',').map((p) => p.trim());
-		const result = filterObjectBySortedPaths(selectedLog.value.data, paths);
-		return JSON.stringify(result, null, 2) || 'No match found';
-	} else {
-		return JSON.stringify(selectedLog.value?.data, null, 2);
-	}
-});
 
 client.onWebSocket('open', () => {
 	reconnectionCount = 0;
@@ -241,12 +243,12 @@ async function resumeLogsStreaming() {
 	}
 }
 
-async function pauseLogsStreaming() {
+function pauseLogsStreaming() {
 	shouldStream.value = false;
 	client.disconnect();
 }
 
-async function maximizeLog(index: number) {
+function maximizeLog(index: number) {
 	const correctedIndex = index - purgedLogsCount.value;
 
 	if (logs.value[correctedIndex]) {
@@ -259,10 +261,35 @@ async function maximizeLog(index: number) {
 		selectedLog.value.selected = true;
 	}
 
+	if (!codemirror && codemirrorEl.value) {
+		codemirror = CodeMirror(codemirrorEl.value, {
+			mode: 'application/json',
+			readOnly: true,
+			lineNumbers: true,
+			cursorBlinkRate: -1,
+		});
+	}
+
+	processRawLog();
+
 	logDetailVisible.value = true;
 }
 
-async function minimizeLog() {
+function processRawLog() {
+	let filteredRawLog = '';
+
+	if (logDetailSearch.value && selectedLog.value) {
+		const paths = logDetailSearch.value.split(',').map((p) => p.trim());
+		const result = filterObjectBySortedPaths(selectedLog.value.data, paths);
+		filteredRawLog = JSON.stringify(result, null, 2);
+	} else {
+		filteredRawLog = JSON.stringify(selectedLog.value?.data, null, 2);
+	}
+
+	codemirror?.setValue(filteredRawLog);
+}
+
+function minimizeLog() {
 	logDetailVisible.value = false;
 
 	if (selectedLog.value) {
@@ -279,7 +306,7 @@ function scrollLogsToBottom() {
 	logsDisplay.value?.scrollToBottom();
 }
 
-async function onScroll(event: Event) {
+function onScroll(event: Event) {
 	const scroller = event.target as HTMLElement;
 
 	if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1) {
@@ -367,7 +394,7 @@ onUnmounted(() => {
 					/>
 				</div>
 				<transition name="fade">
-					<div v-if="logDetailVisible" class="log-detail">
+					<div v-show="logDetailVisible" class="log-detail">
 						<div class="log-detail-controls">
 							<v-button class="close-button" large secondary icon @click="minimizeLog">
 								<v-icon name="close" />
@@ -380,9 +407,7 @@ onUnmounted(() => {
 								@input="logDetailSearch = $event"
 							/>
 						</div>
-						<div class="raw-log">
-							<pre>{{ filteredRawLog || 'No Log Selected' }}</pre>
-						</div>
+						<div ref="codemirrorEl" class="raw-log"></div>
 					</div>
 				</transition>
 			</div>
@@ -474,7 +499,6 @@ onUnmounted(() => {
 .raw-log {
 	height: 100%;
 	margin: 4px;
-	padding: 20px;
 	overflow: auto;
 	background-color: var(--theme--background);
 	font-family: var(--theme--fonts--monospace--font-family);
@@ -482,6 +506,16 @@ onUnmounted(() => {
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
 	box-shadow: var(--theme--form--field--input--box-shadow);
+}
+
+.raw-log :deep(.CodeMirror) {
+	height: 100%;
+	max-height: 100%;
+}
+
+.raw-log :deep(.CodeMirror-scroll) {
+	height: 100%;
+	max-height: 100%;
 }
 
 .fade-enter-active,
