@@ -35,8 +35,8 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new AccessService(opts);
 		case 'directus_activity':
 			return new ActivityService(opts);
-		 case 'directus_collections':
-		 	return new CollectionsService(opts);
+		case 'directus_collections':
+			return new CollectionsService(opts);
 		case 'directus_comments':
 			return new CommentsService(opts);
 		case 'directus_dashboards':
