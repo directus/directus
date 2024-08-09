@@ -2,6 +2,7 @@ import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
+import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
@@ -9,6 +10,7 @@ import { defineLayout } from '@directus/extensions';
 import { User } from '@directus/types';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
@@ -27,6 +29,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: KanbanActions,
 	},
 	setup(props, { emit }) {
+		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const { info: serverInfo } = useServerStore();
@@ -34,7 +37,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
-		const { collection, filter, search } = toRefs(props);
+		const { collection, filter, filterSystem, search } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
@@ -134,19 +137,26 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			isRelational,
 		} = useGrouping();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
-			collection,
-			{
-				sort,
-				limit,
-				page,
-				fields,
-				filter,
-				search,
-			},
-		);
-
-		const limitWarning = computed(() => items.value.length >= limit.value);
+		const {
+			items,
+			loading,
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			changeManualSort,
+			getItems,
+			getItemCount,
+			getTotalCount,
+		} = useItems(collection, {
+			sort,
+			limit,
+			page,
+			fields,
+			filter,
+			search,
+			filterSystem,
+		});
 
 		const groupedItems = computed<Group[]>(() => {
 			const groupsCollectionPrimaryKeyField = groupsPrimaryKeyField.value?.field;
@@ -214,6 +224,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return Object.values(itemGroups).sort((a, b) => a.sort - b.sort);
 		});
 
+		const showingCount = computed(() => {
+			if (totalCount.value === null) return;
+
+			// Return total count if no group field is selected or no group options are available
+			if (!groupField.value || groupedItems.value.length === 0)
+				return t('item_count', { count: n(totalCount.value) }, totalCount.value);
+
+			const displayedCount = groupedItems.value.reduce((sum, { items }) => sum + items.length, 0);
+
+			return formatItemsCountRelative({
+				totalItems: totalCount.value,
+				currentItems: displayedCount,
+				isFiltered: !!props.filterUser,
+			});
+		});
+
 		return {
 			isRelational,
 			groupedItems,
@@ -233,6 +259,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			page,
 			itemCount,
 			totalCount,
+			showingCount,
 			fieldsInCollection,
 			fields,
 			limit,
@@ -252,7 +279,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			editGroup,
 			deleteGroup,
 			showUngrouped,
-			limitWarning,
 			userFieldType,
 			resetPresetAndRefresh,
 			refresh,
@@ -319,6 +345,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
 			// potentially reload the related group items, if the group field is relational
 			if (isRelational.value) getGroups();
 		}

@@ -1,6 +1,7 @@
 import api from '@/api';
 import { router } from '@/router';
 import { useServerStore } from '@/stores/server';
+import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
 import { getItemRoute } from '@/utils/get-route';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
@@ -37,7 +38,7 @@ export default defineLayout<LayoutOptions>({
 		actions: CalendarActions,
 	},
 	setup(props, { emit }) {
-		const { t, locale } = useI18n();
+		const { t, n, locale } = useI18n();
 
 		const calendar = ref<Calendar>();
 
@@ -47,7 +48,7 @@ export default defineLayout<LayoutOptions>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 
-		const { collection, filter, search } = toRefs(props);
+		const { collection, search, filterSystem } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -80,7 +81,7 @@ export default defineLayout<LayoutOptions>({
 			return { _or: [startsHere, endsHere, overlapsHere] };
 		});
 
-		const filterWithCalendarView = computed(() => mergeFilters(filter.value, calendarFilter.value));
+		const filterWithCalendarView = computed(() => mergeFilters(props.filter, calendarFilter.value));
 
 		const template = syncRefProperty(layoutOptions, 'template', undefined);
 		const viewInfo = syncRefProperty(layoutOptions, 'viewInfo', undefined);
@@ -111,17 +112,26 @@ export default defineLayout<LayoutOptions>({
 
 		const limit = info.queryLimit?.max && info.queryLimit.max !== -1 ? info.queryLimit.max : 10000;
 
-		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
-			collection,
-			{
-				sort: computed(() => [primaryKeyField.value?.field || '']),
-				page: ref(1),
-				limit: ref(limit),
-				fields: queryFields,
-				filter: filterWithCalendarView,
-				search: search,
-			},
-		);
+		const {
+			items,
+			loading,
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			changeManualSort,
+			getItems,
+			getItemCount,
+			getTotalCount,
+		} = useItems(collection, {
+			sort: computed(() => [primaryKeyField.value?.field || '']),
+			page: ref(1),
+			limit: ref(limit),
+			fields: queryFields,
+			filter: filterWithCalendarView,
+			search: search,
+			filterSystem,
+		});
 
 		const events = computed<EventInput>(
 			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [],
@@ -234,9 +244,16 @@ export default defineLayout<LayoutOptions>({
 		);
 
 		const showingCount = computed(() => {
-			if (!itemCount.value) return null;
+			if (totalCount.value === null || itemCount.value === null) return;
 
-			return t('item_count', itemCount.value);
+			// Return total count if no start date field is selected
+			if (!startDateField.value) return t('item_count', { count: n(totalCount.value) }, totalCount.value);
+
+			return formatItemsCountRelative({
+				totalItems: totalCount.value,
+				currentItems: itemCount.value,
+				isFiltered: !!props.filterUser,
+			});
 		});
 
 		return {
@@ -269,20 +286,23 @@ export default defineLayout<LayoutOptions>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
 		}
 
 		function download() {
 			if (!collection.value) return;
+
 			saveAsCSV(collection.value, queryFields.value, items.value);
 		}
 
 		function updateCalendar() {
-			if (calendar.value) {
-				calendar.value.pauseRendering();
-				calendar.value.resetOptions(fullFullCalendarOptions.value);
-				calendar.value.resumeRendering();
-				calendar.value.render();
-			}
+			if (!calendar.value) return;
+
+			calendar.value.pauseRendering();
+			calendar.value.resetOptions(fullFullCalendarOptions.value);
+			calendar.value.resumeRendering();
+			calendar.value.render();
 		}
 
 		function createCalendar(calendarElement: HTMLElement) {
