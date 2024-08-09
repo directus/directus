@@ -777,10 +777,6 @@ make_collection_hidden: Приховати колекцію
 make_folder_visible: Зробити теку видимою
 make_folder_hidden: Зробити теку прихованою
 goto_collection_content: Переглянути вміст
-start_end_of_count_items: '{start}-{end} з {count} об''єктів'
-start_end_of_count_filtered_items: '{start}-{end} з {count} відсортованих об''єктів'
-one_item: '1 об''єкт'
-one_filtered_item: '1 відсортований об''єкт'
 delete_collection_are_you_sure: >-
   Ви впевнені що хочете видалити колекцію "{collection}"? Це видалить колекцію та всі елементи в ній. Ця дія є безповоротною.
 delete_folder_are_you_sure: Ви впевнені що бажаєте видалити теку "{folder}"? Вкладені теки й колекції будуть переміщені на самий верхній рівень.
@@ -872,7 +868,6 @@ create_item: Створити об'єкт
 display_template: Шаблон відображення
 language_display_template: Шаблон відображення мови
 translations_display_template: Шаблон відображення перекладів
-n_items_selected: 'Об''єкти не обрано | 1 об''єкт обрано | {n} об''єктів обрано'
 per_page: На сторінку
 all_files: Всі файли
 my_files: Мої файли
@@ -1514,7 +1509,6 @@ live_preview:
   toggle_3d: Перемикнути 3D
 shares: Акції
 unlimited_usage: Необмежене використання
-uses_left: 'Ніякого іншого використання | 1 додаток | Залишилося використання: {n}'
 no_shares: Немає спільних ресурсів для відображення
 new_share: Нова публікація
 expired: Закінчився
@@ -2188,7 +2182,6 @@ layouts:
     show_ungrouped: Показати не згруповані
     show: Показати
     no_group: Без Групи
-    not_all_loaded: Можна завантажити лише перші 1000 елементів.
 horizontal: Горизонтальний
 vertical: Вертикальний
 axis: Вісь

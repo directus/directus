@@ -767,10 +767,6 @@ make_collection_hidden: Masquer la collection
 make_folder_visible: Rendre le dossier visible
 make_folder_hidden: Cacher Le Dossier
 goto_collection_content: Voir le Contenu
-start_end_of_count_items: '{start}-{end} de {count} éléments'
-start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
-one_item: '1 élément'
-one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer la collection "{collection}" ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
 delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer le dossier "{folder}" ? Les dossiers imbriqués et les collections seront déplacés à la racine.
@@ -862,7 +858,6 @@ create_item: Créer un élément
 display_template: Modèle d'affichage
 language_display_template: Modèle d'affichage de la langue
 translations_display_template: Modèle d'affichage des traductions
-n_items_selected: 'Aucun élément sélectionné | 1 élément sélectionné | {n} éléments sélectionnés'
 per_page: Par page
 all_files: Tous les fichiers
 my_files: Mes fichiers
@@ -1493,7 +1488,6 @@ live_preview:
   toggle_3d: Alterner 3D
 shares: Partages
 unlimited_usage: Utilisation illimitée
-uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
 no_shares: Aucun partage pour l'instant
 new_share: Nouveau partage
 expired: Expiré
@@ -2155,7 +2149,6 @@ layouts:
     show_ungrouped: Afficher non-groupé
     show: Afficher
     no_group: Aucun Groupe
-    not_all_loaded: Impossible de charger les 1000 premiers éléments.
 horizontal: Horizontal
 vertical: Vertical
 x_axis: Axe X

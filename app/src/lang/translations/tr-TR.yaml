@@ -719,10 +719,6 @@ make_collection_hidden: Koleksiyonu Gizli Yap
 make_folder_visible: Klasörü Görünür Yap
 make_folder_hidden: Klasörü Gizli Yap
 goto_collection_content: İçeriği Görüntüle
-start_end_of_count_items: '{count} öğeden {start}-{end} arasındakiler gösteriliyor'
-start_end_of_count_filtered_items: 'Filtrelenmiş {count} öğeden {start}-{end} arasındakiler gösteriliyor'
-one_item: '1 öğe'
-one_filtered_item: '1 filtrelenmiş öğe'
 delete_collection_are_you_sure: >-
   "{collection}" koleksiyonunu silmek istediğinizden emin misiniz? Bu, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem kalıcıdır.
 delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
@@ -808,7 +804,6 @@ create_item: Öğe Oluştur
 display_template: Görüntüleme Şablonu
 language_display_template: Dil Görüntüleme Şablonu
 translations_display_template: Çeviri Görüntüleme Şablonu
-n_items_selected: 'Seçili Öğe Yok | 1 Öğe Seçildi | {n} Öğe Seçildi'
 per_page: Sayfa Başına
 all_files: Tüm Dosyalar
 my_files: Dosyalarım
@@ -1392,7 +1387,6 @@ live_preview:
   toggle_3d: 3D'ye geçiş yap
 shares: Paylaşımlar
 unlimited_usage: Limitsiz kullanım
-uses_left: Hiç kullanım kalmadı | 1 kullanım kaldı | {n} kullanım kaldı
 no_shares: Gösterilecek paylaşım yok
 new_share: Yeni Paylaşım
 expired: Süresi Dolmuş
@@ -2028,7 +2022,6 @@ layouts:
     show_ungrouped: Gruplanmamış göster
     show: Göstermek
     no_group: Grup yok
-    not_all_loaded: Yalnızca ilk 1000 öğe yüklenebilir.
 horizontal: Yatay
 vertical: Dikey
 x_axis: X Ekseni

@@ -768,10 +768,6 @@ make_collection_hidden: Скриване на колекцията
 make_folder_visible: Папката е видима
 make_folder_hidden: Папката е скрита
 goto_collection_content: Преглед на съдържанието
-start_end_of_count_items: '{start}-{end} от {count} записа'
-start_end_of_count_filtered_items: '{start}-{end} от {count} филтрирани записи'
-one_item: '1 запис'
-one_filtered_item: '1 филтриран запис'
 delete_collection_are_you_sure: >-
   Сигурни ли сте, че искате да изтриете колекцията - „{collection}“? Всички записи и самата колекция ще бъдат изтрити. Действието е завинаги.
 delete_folder_are_you_sure: Сигурни ли сте, че искате да изтриете папката „{folder}“? Подпапките и колекциите ще бъдат преместени към главната папка.
@@ -863,7 +859,6 @@ create_item: Създаване на запис
 display_template: Шаблон при показване
 language_display_template: Шаблон при показване на езиците
 translations_display_template: Шаблон при показване на преводите
-n_items_selected: 'Не са избрани записи | 1 избран запис | {n} избрани записа'
 per_page: На страница
 all_files: Всички файлове
 my_files: Моите файлове
@@ -1494,7 +1489,6 @@ live_preview:
   toggle_3d: Превключване на 3D
 shares: Споделяния
 unlimited_usage: Неограничено използване
-uses_left: Не е налична | Остава 1 използване | Остават {n} използвания
 no_shares: Не е споделено
 new_share: Ново споделяне
 expired: Просрочен
@@ -2156,7 +2150,6 @@ layouts:
     show_ungrouped: Негрупирано показване
     show: Показване
     no_group: Без групиране
-    not_all_loaded: Може да се заредят само първите 1000 записи.
 horizontal: Хоризонтала
 vertical: Вертикална
 x_axis: Оста X

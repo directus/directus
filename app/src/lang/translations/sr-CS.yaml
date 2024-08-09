@@ -466,10 +466,6 @@ all_users: Svi korisnici
 delete_collection: Obriši Kolekciju
 update_collection_success: Ažurirana Kolekcija
 delete_collection_success: Obrisana Kolekcija
-start_end_of_count_items: '{start}-{end} od {count} stavki'
-start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
-one_item: '1 Stavka'
-one_filtered_item: '1 Filtrirana Stavka'
 collections_shown: Prikazano Kolekcija
 visible_collections: Vidljive Kolekcije
 hidden_collections: Sakrivene Kolekcije
@@ -535,7 +531,6 @@ create_item: Napravi Stavku
 display_template: Šablon za Prikaz
 language_display_template: Šablon za prikaz jezika
 translations_display_template: Šablon za prikaz Prevoda
-n_items_selected: 'Nema Odabranih Stavki | 1 Stavka Odabrana | {n} Stavki Odabrano'
 per_page: Po Stranici
 all_files: Svi Fajlovi
 my_files: Moji Fajlovi

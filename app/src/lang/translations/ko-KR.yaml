@@ -774,10 +774,6 @@ make_collection_hidden: 컬렉션 숨김
 make_folder_visible: 폴더 표시
 make_folder_hidden: 폴더 숨기기
 goto_collection_content: 내용 보기
-start_end_of_count_items: '{start}-{end} / 총 {count}개'
-start_end_of_count_filtered_items: '{start}-{end} / 총 {count}개 '
-one_item: '1개 항목'
-one_filtered_item: '1개 항목'
 delete_collection_are_you_sure: >-
   정말 "{collection}" 컬렉션을 삭제하시겠습니까? 이렇게 하면 컬렉션과 그 안에 있는 모든 항목이 삭제됩니다. 이 작업은 영구적입니다.
 delete_folder_are_you_sure: 정말로 "{folder}" 폴더를 삭제하시겠습니까? 중첩된 폴더 및 컬렉션은 최상위 레벨로 이동됩니다.
@@ -869,7 +865,6 @@ create_item: 추가
 display_template: 표시 형식
 language_display_template: 언어 표시 템플릿
 translations_display_template: 번역 표시 템플릿
-n_items_selected: '선택한 항목 없음 | 1 항목 선택됨 | {n} 항목이 선택됨'
 per_page: 페이지 당
 all_files: 전체 파일
 my_files: 내 파일
@@ -1511,7 +1506,6 @@ live_preview:
   toggle_3d: 토글 3D
 shares: 공유
 unlimited_usage: 무제한 사용
-uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
 new_share: 새 공유
 expired: 만료됨
@@ -2185,7 +2179,6 @@ layouts:
     show_ungrouped: 그룹 해제 표시
     show: 보여주다
     no_group: 그룹 없음
-    not_all_loaded: 처음 1000개 항목만 로드할 수 있습니다.
 horizontal: 수평의
 vertical: 수직의
 axis: 축

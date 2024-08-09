@@ -649,10 +649,6 @@ make_collection_hidden: Amaga la col·lecció
 make_folder_visible: Fes visible la carpeta
 make_folder_hidden: Amaga la carpeta
 goto_collection_content: Mostra el contingut
-start_end_of_count_items: '{start}-{end} de {count} elements'
-start_end_of_count_filtered_items: '{start}-{end} de {count} elements filtrats'
-one_item: '1 element'
-one_filtered_item: '1 element filtrat'
 delete_collection_are_you_sure: >-
   Estàs segur d'eliminar aquesta "{collection}"? Això també eliminarà tots els elements que conté. Aquesta acció és permanent.
 delete_folder_are_you_sure: Estàs segur d'eliminar aquesta "{folder}"? Les carpetes i col·leccions anidades es mouran al nivell més alt.
@@ -736,7 +732,6 @@ create_item: Crea un element
 display_template: Mostra la plantilla
 language_display_template: Plantilla de visualització d'idioma
 translations_display_template: Plantilla de visualització de traduccions
-n_items_selected: 'No hi han elements seleccionats | Un element seleccionat | {n} Elements seleccionats'
 per_page: Per pàgina
 all_files: Tots els fitxers
 my_files: Els meus fitxers

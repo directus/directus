@@ -757,10 +757,6 @@ make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
 goto_collection_content: Inhalt anzeigen
-start_end_of_count_items: '{start}-{end} von {count} Elementen'
-start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
-one_item: '1 Element'
-one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
@@ -851,7 +847,6 @@ create_item: Element erstellen
 display_template: Anzeigevorlage
 language_display_template: Anzeigevorlage Sprache
 translations_display_template: Anzeigevorlage Übersetzungen
-n_items_selected: 'Keine Objekte ausgewählt | 1 Element ausgewählt | {n} Elemente ausgewählt'
 per_page: Pro Seite
 all_files: Alle Dateien
 my_files: Meine Dateien
@@ -1469,7 +1464,6 @@ live_preview:
   toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
-uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
 expired: Abgelaufen
@@ -2130,7 +2124,6 @@ layouts:
     show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
-    not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 horizontal: Horizontal
 vertical: Vertikal
 x_axis: X-Achse

@@ -418,10 +418,6 @@ all_users: An holl implijerien
 delete_collection: Dilemel an dastumad
 update_collection_success: Dastumad hizivaet
 delete_collection_success: Dastumad dilemet
-start_end_of_count_items: '{start}-{end} {count} elfenn'
-start_end_of_count_filtered_items: '{start}-{end} diwar {count} elfenn silet'
-one_item: '1 elfenn'
-one_filtered_item: '1 elfenn silet'
 collections_shown: Dastumadoù diskouezhet
 visible_collections: Dastumadoù da wel
 hidden_collections: Dastumadoù kuzhet
@@ -489,7 +485,6 @@ create_item: Krouiñ un elfenn
 display_template: Patrom diskwel
 language_display_template: Patrom diskwel ar yezh
 translations_display_template: Patrom diskwel an troidigezhioù
-n_items_selected: 'N''eus elfenn ebet dibabet | 1 elfenn dibabet | {n} elfenn dibabet'
 per_page: Dre bajenn
 all_files: An holl restroù
 my_files: Ma restroù

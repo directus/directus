@@ -773,10 +773,6 @@ make_collection_hidden: جعل المجموعة مخفية
 make_folder_visible: جعل المجلد مرئي
 make_folder_hidden: جعل المجلد مخفي
 goto_collection_content: عرض المحتوى
-start_end_of_count_items: '{start}-{end} من {count} عناصر'
-start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
-one_item: '1 عنصر'
-one_filtered_item: '1 عنصر مصفى'
 delete_collection_are_you_sure: >-
   هل أنت متيقِّن من أنك تريد حذف المجموعة"{collection}"؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. وهذا الإجراء دائم الأثر.
 delete_folder_are_you_sure: هل أنت متيقِّن من أنك تريد حذف المجلد"{folder}"؟ سيتم نقل المجلدات والمجموعات المتفرعة منه إلى أعلى مستوى.
@@ -868,7 +864,6 @@ create_item: أنشئ عنصر
 display_template: عرض القالب
 language_display_template: قالب عرض اللغة
 translations_display_template: قالب عرض الترجمات
-n_items_selected: 'لم يتم تحديد عناصر | 1 عنصر محدد | {n} عناصر محددة'
 per_page: لكل صفحة
 all_files: '‮كل الملفات'
 my_files: ملفاتي

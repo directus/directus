@@ -559,10 +559,6 @@ delete_collection_success: Andmekogu kustutatud
 make_folder_visible: Tee kaust nähtavaks
 make_folder_hidden: Peida kaust
 goto_collection_content: Vaata Sisu
-start_end_of_count_items: '{start}-{end} / {count}'
-start_end_of_count_filtered_items: '{start}-{end} / {count}'
-one_item: '1 kirje'
-one_filtered_item: '1 filtreeritud kirje'
 collections_shown: Nähtavad andmekogud
 visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud
@@ -637,7 +633,6 @@ create_item: Loo kirje
 display_template: Vaate mall
 language_display_template: Keele templiit
 translations_display_template: Tõlgete templiit
-n_items_selected: 'Kirjeid pole valitud | Valitud 1 kirje | {n} kirjet valitud'
 per_page: Lehe kohta
 all_files: Kõik failid
 my_files: Minu failid

@@ -632,10 +632,6 @@ make_collection_hidden: Make Collection Hidden
 make_folder_visible: Make Folder Visible
 make_folder_hidden: Make Folder Hidden
 goto_collection_content: View Content
-start_end_of_count_items: '{start}-{end} of {count} items'
-start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
-one_item: '1 item'
-one_filtered_item: '1 filtered item'
 delete_collection_are_you_sure: >-
   Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it. This action is permanent.
 delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
@@ -719,7 +715,6 @@ create_item: Create Item
 display_template: Display Template
 language_display_template: Language Display Template
 translations_display_template: Translations Display Template
-n_items_selected: 'No Items Selected | 1 Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
 my_files: My Files
@@ -1285,7 +1280,6 @@ live_preview:
   new_window: Open in New Window
 shares: Shares
 unlimited_usage: Unlimited usage
-uses_left: No uses left | 1 use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
 expired: Expired
@@ -1915,7 +1909,6 @@ layouts:
     show_ungrouped: Show Ungrouped
     show: Show
     no_group: No Group
-    not_all_loaded: Could only load the first 1000 items.
 horizontal: Horizontal
 vertical: Vertical
 x_axis: X-Axis
