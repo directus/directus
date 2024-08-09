@@ -52,18 +52,28 @@ The CLI supports rebuilding extensions whenever a file has changed by using the 
 ### Configuring the CLI
 
 Most of the time, it should be sufficient to use the CLI as is. But, in some cases it might be necessary to customize it
-to your specific needs. This can be done by creating a `extension.config.js` file at the root of your extension package
-with the following content:
+to your specific needs. This can be done by creating a `extension.config.js` file at the root of your extension package.
+This file will be used to customize how Rollup builds and bundles your extensions. An example with the currently
+available options will look something like:
 
 ```js
 export default {
 	plugins: [],
+	onwarn(warning, handler){},
+	watch: {
+		clearScreen: false
+	}
 };
 ```
 
 #### Supported Options
 
-- `plugins` — An array of Rollup plugins that will be used when building extensions in addition to the built-in ones.
+- [`plugins`](https://rollupjs.org/configuration-options/#plugins) — An array of Rollup plugins that will be used when
+  building extensions in addition to the built-in ones.
+- [`onwarn`](https://rollupjs.org/configuration-options/#onwarn) — A function that can be used to modify how Rollup
+  handles warnings.
+- [`watch.clearScreen`](https://rollupjs.org/configuration-options/#watch-clearscreen) — Controls whether or not to
+  clear the screen when a rebuild is triggered.
 
 ::: tip CommonJS or ESM
 
