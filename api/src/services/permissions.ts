@@ -161,7 +161,7 @@ export class PermissionsService extends ItemsService {
 
 			for (const permission of permissions) {
 				if (permission.fields && fields[0] !== '*') {
-					fields = uniq([...(fields || []), ...(permission.fields || [])]);
+					fields = uniq([...fields, ...permission.fields]);
 
 					if (fields.includes('*')) {
 						fields = ['*'];
