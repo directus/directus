@@ -4,14 +4,14 @@ import type { Accountability, Comment, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
-import { getPermissions } from '../utils/get-permissions.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
-import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -31,9 +31,20 @@ export class CommentsService extends ItemsService {
 			throw new InvalidPayloadError({ reason: 'Missing required fields' });
 		}
 
-		const authorizationService = new AuthorizationService({ schema: this.schema, accountability: this.accountability });
-
-		await authorizationService.checkAccess('read', data['collection'], data['item']);
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: data['collection'],
+					primaryKeys: [data['item']],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
+		}
 
 		const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 
@@ -55,15 +66,25 @@ export class CommentsService extends ItemsService {
 				role: user['role']?.id ?? null,
 				admin: user['role']?.admin_access ?? null,
 				app: user['role']?.app_access ?? null,
+				roles: await fetchRolesTree(user['role']?.id, this.knex),
+				ip: null,
 			};
 
-			accountability.permissions = await getPermissions(accountability, this.schema);
-
-			const authorizationService = new AuthorizationService({ schema: this.schema, accountability });
 			const usersService = new UsersService({ schema: this.schema, accountability });
 
 			try {
-				await authorizationService.checkAccess('read', data['collection'], data['item']);
+				await validateAccess(
+					{
+						accountability,
+						action: 'read',
+						collection: data['collection'],
+						primaryKeys: [data['item']],
+					},
+					{
+						schema: this.schema,
+						knex: this.knex,
+					},
+				);
 
 				const templateData = await usersService.readByQuery({
 					fields: ['id', 'first_name', 'last_name', 'email'],
