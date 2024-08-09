@@ -38,7 +38,6 @@ const parts = computed(() =>
 			const fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
 			const fieldKeyAfter = fieldKey.split('.').slice(-1)[0];
 
-			// Try getting the value from the item, return some question marks if it doesn't exist
 			const value = get(props.item, fieldKeyBefore);
 
 			return Array.isArray(value) ? handleArray(fieldKeyBefore, fieldKeyAfter) : handleObject(fieldKey);
@@ -91,6 +90,16 @@ function handleObject(fieldKey: string) {
 		field = fieldsStore.getField(props.collection, fieldKey);
 	}
 
+	const keyPrefix = fieldKey.split('.')[0]!;
+
+	// Check if the first part of the key is a M2A key
+	if (keyPrefix.includes(':')) {
+		// Strip out the :collection part from the field key, so that it can be used to access
+		// the correct field value in the item object
+		const fieldName = keyPrefix.split(':')[0];
+		fieldKey = `${fieldName}.${fieldKey.split('.').slice(1).join('.')}`;
+	}
+
 	/**
 	 * This is for cases where you are rendering a display template directly on
 	 * directus_files. The $thumbnail fields doesn't exist, but instead renders a
@@ -119,14 +128,14 @@ function handleObject(fieldKey: string) {
 
 	const displayInfo = useExtension(
 		'display',
-		computed(() => field?.meta?.display ?? null),
+		computed(() => display),
 	);
 
 	// If used display doesn't exist in the current project, return raw value
 	if (!displayInfo.value) return value;
 
 	return {
-		component: field.meta?.display,
+		component: display,
 		options: field.meta?.display_options,
 		value: value,
 		interface: field.meta?.interface,
