@@ -626,10 +626,6 @@ make_collection_visible: Faceți colecția vizibilă
 make_collection_hidden: Ascundeți colecția
 make_folder_visible: Fă vizibil dosarul
 make_folder_hidden: Ascunde dosarul
-start_end_of_count_items: '{start}-{end} din {count} elemente'
-start_end_of_count_filtered_items: '{start}-{end} din {count} elemente filtrate'
-one_item: '1 element'
-one_filtered_item: '1 element filtrat'
 collections_shown: Colecții afișate
 visible_collections: Colecții vizibile
 hidden_collections: Colecții ascunse
@@ -706,7 +702,6 @@ create_item: Creează element
 display_template: Afişare şablon
 language_display_template: Șablon de afişare a limbii
 translations_display_template: Șablon de afișare a traducerilor
-n_items_selected: 'Niciun element selectat | Un element selectat | {n} elemente selectate'
 per_page: Elemente per pagină
 all_files: Toate fişierele
 my_files: Fișierele mele
@@ -1217,7 +1212,6 @@ live_preview:
   new_window: Deschide în fereastră nouă
 shares: Distribuiri
 unlimited_usage: Utilizare nelimitată
-uses_left: Nu a mai rămas nicio utilizare | O utilizare rămasă | {n} utilizări rămase
 no_shares: Nici o distribuire de afișat
 new_share: Distribuire nouă
 expired: Expirat
