@@ -110,6 +110,7 @@ field_name_translations: Překlady názvu polí
 enter_password_to_enable_tfa: Zadejte své heslo pro zapnutí dvoufázového ověřování
 add_field: Přidat pole
 role_name: Jméno role
+policy_name: Název oprávnění
 branch: Větev
 leaf: List
 indeterminate: Neurčitý
@@ -127,13 +128,14 @@ requires_value: Vyžaduje hodnotu
 create_preset: Vytvořit šablonu
 create_panel: Vytvořit panel
 create_role: Vytvořit roli
+create_policy: Vytvořit oprávnění
 create_user: Vytvořit uživatele
 message: Zpráva
 delete_panel: Odstranit panel
 create_webhook: Vytvořit webhook
 create_custom_translation: Vytvořit Vlastní Překlad
 edit_custom_translation: Upravit Vlastní Překlad
-no_custom_translations: Žadné Vlastní Překlady
+no_custom_translations: Žádné Vlastní Překlady
 no_custom_translations_copy: Zatím neexistují žádné vlastní překlady.
 invite_users: Pozvat uživatele
 invite: Pozvat
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Relace vypršela
 public_label: Veřejný
 public_description: Určuje, která API data jsou dostupná bez ověřování.
+public_role_info: >-
+  Veřejná role kontroluje, jaká data jsou skrze API dostupná neautentizovaným uživatelům nebo uživatelům bez role. Požadavky s veřejnou rolí nemohou přístupovat k aplikaci nebo administraci. Pokud je aplikaci nebo administraci přidělen přístup k oprávněním přiřazeným veřejné roli, bude tento přístup ignorován.
 admin_description: Počáteční administrativní role s neomezeným přístupem k Aplikaci/API.
+admin_policy_description: Počáteční administrativní oprávnění s neomezeným přístupem k Aplikaci/API.
 no_description: Bez popisu...
 reached_maximum_number_of_extensions: Dosáhli jste maximálního počtu rozšíření pro tento projekt ({n}). Pro více informací kontaktujte správce systému.
 not_allowed: Nepovoleno
@@ -255,9 +260,13 @@ field_permissions: Oprávnění pole
 field_validation: Validace pole
 field_presets: Předvolby polí
 permissions_for_role: 'Položky, které {role} role může {action}.'
+permissions_for_policy: 'Položky, které role {policy} může {action}.'
 fields_for_role: 'Pole, které {role} role může {action}.'
+fields_for_policy: 'Pole, které role {policy} může {action}.'
 validation_for_role: 'Pole {action} praví, že role {role} musí uposlechnout.'
+validation_for_policy: 'Pole {action} říká, že se role {policy} musí podřídit.'
 presets_for_role: 'Výchozí hodnota pole pro roli {role}.'
+presets_for_policy: 'Výchozí hodnota pole pro oprávnění {policy}.'
 presets_field_warning: 'Relativní předvolby pro pole "{field}" by měly být nastaveny pomocí "podrobné" syntaxe.'
 presentation_and_aliases: Prezentace a aliasy
 revision_post_create: Zde je jak položka vypadala po jejím vytvoření.
@@ -363,6 +372,7 @@ no_collections_found: Nebyly nalezeny žádné kolekce.
 new_data_alert: 'V rámci vašeho datového modelu bude vytvořeno toto:'
 search_collection: Vyhledat v kolekci...
 search_role: Hledat roli...
+search_policy: Hledat přístupová práva...
 search_field: Prohledat pole...
 new_field: 'Nové pole'
 new_collection: 'Nová kolekce'
@@ -513,6 +523,11 @@ hours: Hodin
 month: Měsíc
 year: Rok
 select_all: Vybrat vše
+permissionsLevel:
+  all: Plný přístup k {action}
+  partial: Částečný přístup k {action}
+  custom: Částečný přístup k {action}
+  none: Nemá přístup k {action}
 months:
   january: Leden
   february: Únor
@@ -650,6 +665,7 @@ copy_to: Kopírovat do...
 no_other_dashboards_copy: Zatím nemáte žádné další nástěnky.
 inactive: Neaktivní
 users: Uživatelé
+roles: Role
 activity: Aktivita
 activity_item: Položka činnosti
 action: Akce
@@ -1087,7 +1103,8 @@ editing_unit: 'Úprava {unit}'
 editing_in_batch: 'Hromadná úprava {count} položek'
 no_options_available: Žádné možnosti nejsou k dispozici
 settings_data_model: Datový model
-settings_permissions: Správa přístupu
+settings_roles: Uživatelské role
+settings_permissions: Přístupová práva
 settings_project: Nastavení
 settings_appearance: Vzhled
 settings_webhooks: Webhooky
@@ -1137,7 +1154,9 @@ page_help_settings_datamodel_collections: >-
   **Datový model: Kolekce** – Zobrazí všechny dostupné kolekce. To zahrnuje viditelné, skryté a systémové kolekce, stejně jako nespravované databázové tabulky, které lze přidat.
 page_help_settings_datamodel_fields: >-
   **Model dat: Kolekce** – Formulář pro správu této kolekce a jejích polí.
-page_help_settings_roles_collection: '**Procházet role** — Zobrazuje správce, veřejné a vlastní uživatelské role.'
+page_help_settings_policies_collection: '**Procházet oprávnění** — Zobrazuje všechna oprávnění v rámci projektu.'
+page_help_settings_policies_item: "**Detail oprávnění** — Správa přístupových oprávnění a dalších nastavení."
+page_help_settings_roles_collection: '**Procházet role** — Zobrazuje všechny role v rámci projektu.'
 page_help_settings_roles_item: "**Detail role** — Správa oprávnění role a dalších nastavení."
 page_help_settings_presets_collection: >-
   **Procházet předvolby** – Zobrazuje všechny předvolby v projektu, včetně: uživatelů, rolí a globálních záložek, stejně jako výchozích pohledů.
@@ -1185,6 +1204,7 @@ singleton: Objekt
 singleton_label: Považovat za jeden objekt
 system_fields_locked: Systémová pole jsou uzamčena a nelze je upravovat
 directus_collection:
+  directus_access: Přílohy přístupových oprávnění
   directus_activity: Záznamy o odpovědnosti za všechny události
   directus_collections: Dodatečná konfigurace kolekce a metadata
   directus_dashboards: Nástěnky v modulu přehledů
@@ -1197,6 +1217,7 @@ directus_collection:
   directus_operations: Operace, které probíhají v tocích
   directus_panels: Jednotlivé panely uvnitř nástěnek
   directus_permissions: Přístupová práva pro každou roli
+  directus_policies: Zásady kontroly přístupu
   directus_presets: Předvolby pro výchozí nastavení kolekce a záložky
   directus_relations: Konfigurace vztahů a metadata
   directus_revisions: Snímky dat pro všechny aktivity
@@ -1373,12 +1394,16 @@ fields:
     name: Jméno role
     icon: Ikona role
     description: Popis
-    app_access: Přístup k aplikaci
-    admin_access: Přístup k administraci
-    ip_access: IP adresa
-    enforce_tfa: Vyžadovat 2FA
     users: Uživatelé v roli
-    module_list: Navigace modulu
+    parent: Nadřazená role
+    children: Podřízená role
+  directus_policies:
+    name: Název oprávnění
+    description: Popis
+    app_access: Přístup aplikace
+    admin_access: Přístup správce
+    ip_access: Přístup z IP adresy
+    enforce_tfa: Vyžadovat 2FA
   directus_webhooks:
     name: Jméno
     method: Metoda
@@ -1461,16 +1486,23 @@ field_options:
     focal_point_divider: Ohnisko
     filename_disk: Název na diskovém úložišti...
     filename_download: Název při stahování...
+  directus_policies:
+    name: Jedinečný název tohoto oprávnění...
+    description: Popis tohoto oprávnění...
+    ip_access: Přidat povolené IP adresy, rozsah IP a CIDR bloky. Ponechte prázdné, pokud chcete povolit vše...
+    enforce_tfa: Vynutit dvoufázové ověření
+    assigned_to: Přiřazeno
   directus_roles:
     name: Jedinečný název této role...
     description: Popis této role...
-    ip_access: Přidat povolené IP adresy, rozsah IP a CIDR bloky. Ponechte prázdné, pokud chcete povolit vše...
     fields:
       icon_name: Ikona
       name_name: Jméno
       name_placeholder: Zadejte název...
       link_name: Odkaz
       link_placeholder: Relativní nebo absolutní URL...
+    parent_note: Volitelná nadřazená role, od které tato role dědí oprávnění
+    children_note: Vnořené role, které dědí oprávnění této role
     collections_name: Kategorie
     collections_addLabel: Přidat kolekci...
   directus_users:
@@ -1555,6 +1587,9 @@ continue_label: Pokračovat
 continue_as: >-
   {name} je aktuálně ověřen. Pokud tento účet poznáváte, stiskněte pokračovat.
 editing_role: '{role} role'
+editing_policy: 'Přístupová práva k {policy}'
+no_permissions: Bez oprávnění
+permission_add_collection: Přidat kolekci
 creating_webhook: Vytvoření webhooku
 default_label: Výchozí
 delete_label: Odstranit

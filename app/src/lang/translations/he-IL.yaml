@@ -295,6 +295,8 @@ fields:
   directus_roles:
     name: שם תפקיד
     description: תיאור
+  directus_policies:
+    description: תיאור
   directus_webhooks:
     status: סטטוס
 field_options:

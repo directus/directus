@@ -1083,7 +1083,6 @@ editing_unit: 'تعديل {unit}'
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
 no_options_available: لا توجد خيارات متاحة
 settings_data_model: نموذج البيانات
-settings_permissions: صلاحيات الوصول
 settings_project: إعدادات
 settings_appearance: المظهر
 settings_webhooks: روابط الويب (Webhooks)
@@ -1133,7 +1132,6 @@ page_help_settings_datamodel_collections: >-
   **نموذج البيانات: المجموعات** - قوائم جميع المجموعات المتاحة. ويشمل ذلك مجموعات النظام المرئية والمخفية، فضلا عن جداول قواعد البيانات غير المدارة التي يمكن إضافتها.
 page_help_settings_datamodel_fields: >-
   **نموذج البيانات: المجموعة** - نموذج لإدارة هذه المجموعة وحقولها.
-page_help_settings_roles_collection: '**تصفح الأدوار** - قوائم الأدوار الإدارية والعامة والمخصصة للمستخدمين.'
 page_help_settings_roles_item: "**تفاصيل الدور** - إدارة أذونات الدور والإعدادات الأخرى."
 page_help_settings_presets_collection: >-
   **استعراض الإعدادات المسبقة** - عرض جميع الإعدادات المسبقة في المشروع، بما في ذلك: المستخدم، الدور، الإشارات المرجعية العالمية، فضلا عن نماذج عروض الافتراضية.
@@ -1183,7 +1181,6 @@ directus_collection:
   directus_notifications: الإشعارات المرسلة إلى المستخدمين
   directus_operations: العمليات التي تشتغل في التدفقات
   directus_panels: لوحات فردية ضمن لوحة تحكم البصائر
-  directus_permissions: أذونات الوصول لكل دور
   directus_presets: الإعداد المسبق للقيم الافتراضية للمجموعة والعلامات المرجعية
   directus_relations: تكوين وبيانات العَلاقة الوصفية
   directus_revisions: لقطات بيانات لجميع الأنشطة
@@ -1334,11 +1331,9 @@ fields:
     name: إسم الدور
     icon: أيقونة الدور
     description: التفاصيل
-    app_access: صلاحيات تطبيق
-    admin_access: صلاحيات مسؤول
-    ip_access: عنوان IP
-    enforce_tfa: يتطلب التحقق بخطوتين 2FA
     users: المستخدمون في الدور
+  directus_policies:
+    description: التفاصيل
   directus_webhooks:
     name: الاسم
     method: الطريقة
@@ -1415,7 +1410,6 @@ field_options:
   directus_roles:
     name: الاسم الفريد لهذا الدور...
     description: وصف لهذا الدور...
-    ip_access: إضافة عناوين IP المسموح بها، نطاقات IP وكتل CIDR. اتركها فارغة للسماح للجميع...
     fields:
       icon_name: أيقونة
       name_name: الاسم

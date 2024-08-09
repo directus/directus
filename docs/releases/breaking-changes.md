@@ -68,7 +68,7 @@ If you're using MySQL/MariaDB, please note that:
 - Values of type "Decimal" are now returned as a `string` instead of a `number`, which ensures that the precision is
   preserved.
 
-## Version 10.14.0
+## Version 10.13.2
 
 ### Updated Date Fields for Files
 
