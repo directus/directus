@@ -1,6 +1,6 @@
 import { DIRECTUS_VARIABLES_REGEX } from '../constants/directus-variables.js';
 
-export const isDirectusVariable = (key: string) => {
+export const isDirectusVariable = (key: string): boolean => {
 	if (key.endsWith('_FILE')) {
 		key = key.slice(0, -5);
 	}

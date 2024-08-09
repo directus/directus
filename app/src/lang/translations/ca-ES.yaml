@@ -932,7 +932,6 @@ page_help_settings_datamodel_collections: >-
   ** Model de dades: Col·leccions **: Llista de totes les col·leccions disponibles. Això inclou col·leccions visibles, ocultes i del sistema, així com taules de bases de dades no gestionades que es poden afegir.
 page_help_settings_datamodel_fields: >-
   ** Model de dades: col·lecció **: Un formulari per gestionar aquesta col·lecció i els seus camps.
-page_help_settings_roles_collection: '** Fons d''exploració **: Llista dels rols Administrador, públic i personalitzats.'
 page_help_settings_roles_item: "** Detalls del rol **: Gestiona els permisos i altres paràmetres d'un rol."
 page_help_settings_presets_collection: >-
   ** Examina predefinits **: Llista tots els predefinits del projecte, incloent marcadors d'usuari, rols, globals, així com la vista predeterminada.
@@ -974,7 +973,6 @@ directus_collection:
   directus_notifications: Notificacions enviades als usuaris
   directus_operations: Operacions que s'executen en fluxes
   directus_panels: Panells individuals dins dels quadres de comandament de la visió
-  directus_permissions: Permisos d'accés per cada rol
   directus_presets: Predefinits per als ajustaments predeterminat de col·leció i marcadors
   directus_relations: Configuració i metadades de la relació
   directus_revisions: Instantània de dades per a totes les activitats
@@ -1122,12 +1120,9 @@ fields:
     name: Nom del Rol
     icon: Icona del rol
     description: Descripció
-    app_access: Accés a l'aplicació
-    admin_access: Accés d'administrador
-    ip_access: Accés per IP
-    enforce_tfa: Requereix 2FA
     users: Usuaris al rol
-    module_list: Navegació dels mòduls
+  directus_policies:
+    description: Descripció
   directus_webhooks:
     name: Nom
     method: Mètode

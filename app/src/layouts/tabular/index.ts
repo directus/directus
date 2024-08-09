@@ -2,7 +2,7 @@ import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { getItemRoute } from '@/utils/get-route';
 import { hideDragImage } from '@/utils/hide-drag-image';
@@ -11,7 +11,7 @@ import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
-import { debounce } from 'lodash';
+import { debounce, flatten } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
@@ -39,7 +39,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
-		const { collection, filter, filterUser, search } = toRefs(props);
+		const { collection, filter, filterSystem, filterUser, search } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
@@ -47,11 +47,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		const { aliasedFields, aliasQuery, aliasedKeys } = useAliasFields(fields, collection);
 
-		const fieldsWithRelationalAliased = computed(() => {
-			return Object.values(aliasedFields.value).reduce<string[]>((acc, value) => {
-				return [...acc, ...value.fields];
-			}, []);
-		});
+		const fieldsWithRelationalAliased = computed(() =>
+			flatten(Object.values(aliasedFields.value).map(({ fields }) => fields)),
+		);
 
 		const {
 			items,
@@ -72,6 +70,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			alias: aliasQuery,
 			filter,
 			search,
+			filterSystem,
 		});
 
 		const {
@@ -86,8 +85,16 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		} = useTable();
 
 		const showingCount = computed(() => {
-			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
-			return formatCollectionItemsCount(itemCount.value || 0, page.value, limit.value, filtering);
+			// Don't show count if there are no items
+			if (!totalCount.value || !itemCount.value) return;
+
+			return formatItemsCountPaginated({
+				currentItems: itemCount.value,
+				currentPage: page.value,
+				perPage: limit.value,
+				isFiltered: !!filterUser.value,
+				totalItems: totalCount.value,
+			});
 		});
 
 		return {
@@ -166,9 +173,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const fieldsDefaultValue = computed(() => {
 				return fieldsInCollection.value
-					.filter((field: Field) => !field.meta?.hidden)
+					.filter((field) => !field.meta?.hidden && !field.meta?.special?.includes('no-data'))
 					.slice(0, 4)
-					.map(({ field }: Field) => field)
+					.map(({ field }) => field)
 					.sort();
 			});
 

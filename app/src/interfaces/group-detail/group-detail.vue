@@ -43,6 +43,7 @@ watch(
 	(newVal) => {
 		if (!newVal) detailOpen.value = props.start === 'open';
 	},
+	{ once: true },
 );
 
 const edited = computed(() => {

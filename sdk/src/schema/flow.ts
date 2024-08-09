@@ -2,7 +2,7 @@ import type { MergeCoreCollection } from '../index.js';
 import type { DirectusUser } from './user.js';
 import type { DirectusOperation } from './operation.js';
 
-export type DirectusFlow<Schema> = MergeCoreCollection<
+export type DirectusFlow<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_flows',
 	{

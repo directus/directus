@@ -6,7 +6,7 @@ readTime:
 # Users
 
 > Users represent the distinct people _(and entities)_ that interact with your project. Each user can be assigned a
-> role, which defines a user's access permissions.
+> role, and any number of policies, which defines a user's access permissions.
 
 ::: tip Learn More
 

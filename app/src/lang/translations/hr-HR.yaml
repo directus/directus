@@ -1079,7 +1079,6 @@ editing_unit: 'Uređivanje {unit}'
 editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
-settings_permissions: Kontrola Pristupa
 settings_project: Postavke
 settings_appearance: Izgled
 settings_webhooks: Web-dojavnici
@@ -1129,7 +1128,6 @@ page_help_settings_datamodel_collections: >-
   **Model podataka: zbirke** — Navodi sve dostupne zbirke. To uključuje vidljive, skrivene i sustavne zbirke, kao i neupravljane tablice baze podataka koje se mogu dodati.
 page_help_settings_datamodel_fields: >-
   **Model podataka: zbirka** — Obrazac za upravljanje ovom zbirkom i njezinim poljima.
-page_help_settings_roles_collection: '**Pregledaj uloge** — Navodi administratorske, javne i prilagođene korisničke uloge.'
 page_help_settings_roles_item: "**Pojedinosti o ulozi** — Upravljajte dopuštenjima uloge i drugim postavkama."
 page_help_settings_presets_collection: >-
   **Pregledaj unaprijed postavljene postavke** — Navodi sve unaprijed postavljene postavke u projektu, uključujući: korisničke, uloge i globalne oznake, kao i zadane prikaze.
@@ -1188,7 +1186,6 @@ directus_collection:
   directus_notifications: Obavijesti poslane korisnicima
   directus_operations: Operacije koje se izvode u tokovima
   directus_panels: Pojedinačne ploče unutar nadzornih ploča s uvidima
-  directus_permissions: Dozvole pristupa za svaku ulogu
   directus_presets: Unaprijed postavljene postavke za zbirke i oznake
   directus_relations: Konfiguracija odnosa i metapodaci
   directus_revisions: Snimke podataka za sve aktivnosti
@@ -1356,12 +1353,9 @@ fields:
     name: Naziv uloge
     icon: Ikona uloge
     description: Opis
-    app_access: Pristup aplikaciji
-    admin_access: Administratorski pristup
-    ip_access: IP pristup
-    enforce_tfa: Zahtijevaj 2FA
     users: Korisnici s ulogom
-    module_list: Navigacija modula
+  directus_policies:
+    description: Opis
   directus_webhooks:
     name: Ime
     method: Metoda
@@ -1447,7 +1441,6 @@ field_options:
   directus_roles:
     name: Jedinstveni naziv za ovu ulogu...
     description: Opis uloge...
-    ip_access: Dodajte dozvoljene IP adrese, raspon IP adresa i CIDR blokove. Ostavite prazno za dozvolu svih...
     fields:
       icon_name: Ikona
       name_name: Naziv

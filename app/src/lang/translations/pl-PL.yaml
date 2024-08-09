@@ -1081,7 +1081,6 @@ editing_unit: 'Edycja {unit}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
 no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
-settings_permissions: Kontrola dostępu
 settings_project: Ustawienia
 settings_appearance: Wygląd
 settings_webhooks: Webhooki
@@ -1131,7 +1130,6 @@ page_help_settings_datamodel_collections: >-
   **Model danych: Kolekcje** — Lista wszystkich dostępnych kolekcji. Obejmuje to widoczne, ukryte i systemowe kolekcje, jak również niezarządzane tabele bazy danych, które mogą być dodane.
 page_help_settings_datamodel_fields: >-
   **Model danych: Zbieranie** — Formularz do zarządzania tą kolekcją i jej polami.
-page_help_settings_roles_collection: '**Przeglądaj role** — Wyświetla role administratora, publiczne i niestandardowe role użytkowników.'
 page_help_settings_roles_item: "**Szczegóły roli** - Zarządzaj uprawnieniami ról i innymi ustawieniami."
 page_help_settings_presets_collection: >-
   **Przeglądaj ustawienia** — wyświetla wszystkie ustawienia predefiniowane w projekcie, w tym: użytkownik, role, globalne zakładki, a także widoki domyślne.
@@ -1190,7 +1188,6 @@ directus_collection:
   directus_notifications: Powiadomienia wysłane do użytkowników
   directus_operations: Operacje prowadzone w przepływach
   directus_panels: Pojedyncze panele w panelu Insights
-  directus_permissions: Uprawnienia dostępu do każdej roli
   directus_presets: Ustawienia domyślne kolekcji i zakładek
   directus_relations: Konfiguracja relacji i metadane
   directus_revisions: Zrzuty danych dla wszystkich działań
@@ -1365,12 +1362,9 @@ fields:
     name: Nazwa roli
     icon: Ikona roli
     description: Opis
-    app_access: Dostęp aplikacji
-    admin_access: Dostęp do panelu administratora
-    ip_access: Dostęp IP
-    enforce_tfa: Wymagaj uwierzytelniania dwuskładnikowego
     users: Użytkownicy w roli
-    module_list: Moduł Nawigacji
+  directus_policies:
+    description: Opis
   directus_webhooks:
     name: Nazwa
     method: Metoda
@@ -1456,7 +1450,6 @@ field_options:
   directus_roles:
     name: Unikalna nazwa dla tej roli...
     description: Opis tej roli...
-    ip_access: Dodaj dozwolone adresy IP, zakresy IP i bloki CIDR. Pozostaw puste, aby zezwolić na wszystkie...
     fields:
       icon_name: Ikona
       name_name: Nazwa

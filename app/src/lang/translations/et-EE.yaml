@@ -793,7 +793,6 @@ page_help_settings_datamodel_collections: >-
   **Andmekogud** — Näitab olemasolevaid andmekogusid. Samuti ka nähtavaid, peidetud, ja süsteemi kogusid, lisaks ka haldamata andmebaaside tabeleid, mida saab lisada.
 page_help_settings_datamodel_fields: >-
   **Andmekogu** — Ükskiku andmekogu ja tema väljade muutmise vorm.
-page_help_settings_roles_collection: '**Vaata rolle* — Näitab adminne, avalikke jm kasutajarolle.'
 page_help_settings_roles_item: "**Rolli detailid** - Muuda rolli ligipääse ja muid seadistusti."
 page_help_settings_presets_collection: >-
   **Näita eelseadistusi** — Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated.
@@ -916,12 +915,9 @@ fields:
     name: Rolli Nimi
     icon: Rolli pilt
     description: Kirjeldus
-    app_access: Rakenduse ligipääs
-    admin_access: Admini ligipääs
-    ip_access: IP ligipääs
-    enforce_tfa: 2FA on nõutav
     users: Kasutajad selles rollis
-    module_list: Moodulite näitamine
+  directus_policies:
+    description: Kirjeldus
   directus_webhooks:
     name: Nimi
     status: Staatus
