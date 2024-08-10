@@ -629,6 +629,7 @@ display_not_found: 'Zobrazenie "{display}" sa nenašlo.'
 reset_display: Obnoviť zobrazenie
 list-m2a: Skladateľ (M2A)
 item_count: 'Žiadne položky | Jedna položka | {count} položiek'
+filtered_item_count: 'Žiadne vyfiltrované položky | Jedna vyfiltrovaná položka | {count} vyfiltrovaných položiek'
 no_items_copy: V zbierke zatiaľ nie sú žiadne položky.
 file_count: 'Žiadne súbory | Jeden súbor | {count} súborov'
 no_files_copy: Nie sú tu žiadne súbory.
@@ -791,6 +792,8 @@ make_collection_hidden: Skryť zbierku
 make_folder_visible: Zviditeľniť priečinok
 make_folder_hidden: Skryť priečinok
 goto_collection_content: Zobraziť obsah
+count_of_total_items: '{count} z {total} položiek'
+start_end_of_count_items: '{start}-{end} z {count} položiek'
 delete_collection_are_you_sure: >-
   Naozaj chcete odstrániť zbierku "{collection}"? Odstránite zbierku so všetkými jej položkami. Táto akcia je trvalá.
 delete_folder_are_you_sure: Naozaj chcete odstrániť priečinok "{folder}"? Vnorené priečinky a zbierky sa presunú na najvyššiu úroveň.
