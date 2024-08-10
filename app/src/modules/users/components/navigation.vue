@@ -44,6 +44,7 @@ function handleClick({ role }: { role: string }) {
 				:current-role="currentRole"
 				:active="!hasBookmark && role.id == currentRole"
 				@click="handleClick"
+				:active="!hasBookmark && role.id == currentRole"
 			/>
 		</v-item-group>
 	</v-list>

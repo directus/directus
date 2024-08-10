@@ -382,7 +382,7 @@ function clearFilters() {
 				</template>
 			</v-info>
 
-			<component :is="`layout-${layout}`" v-else v-bind="layoutState">
+			<component v-else :is="`layout-${layout}`" v-bind="layoutState">
 				<template #no-results>
 					<v-info v-if="!filter && !search" :title="t('user_count', 0)" icon="people_alt" center>
 						{{ t('no_users_copy') }}
