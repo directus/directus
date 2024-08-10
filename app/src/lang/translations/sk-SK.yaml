@@ -794,6 +794,7 @@ make_folder_hidden: Skryť priečinok
 goto_collection_content: Zobraziť obsah
 count_of_total_items: '{count} z {total} položiek'
 start_end_of_count_items: '{start}-{end} z {count} položiek'
+start_end_of_count_filtered_items: '{start}-{end} z {count} vyfiltrovaných položiek'
 delete_collection_are_you_sure: >-
   Naozaj chcete odstrániť zbierku "{collection}"? Odstránite zbierku so všetkými jej položkami. Táto akcia je trvalá.
 delete_folder_are_you_sure: Naozaj chcete odstrániť priečinok "{folder}"? Vnorené priečinky a zbierky sa presunú na najvyššiu úroveň.
@@ -885,6 +886,7 @@ create_item: Vytvoriť položku
 display_template: Šablóna zobrazenia
 language_display_template: Šablóna zobrazenia jazyka
 translations_display_template: Šablóna zobrazenia prekladov
+n_items_selected: 'Žiadne vybraté položky | Jedna vybratá položka | {n} vybratých položiek'
 per_page: Na stránku
 all_files: Všetky súbory
 my_files: Moje súbory
@@ -1547,6 +1549,7 @@ live_preview:
   toggle_3d: Prepnúť 3D
 shares: Zdieľania
 unlimited_usage: Neobmedzené používanie
+uses_left: Žiadne zostávajúce použitia | Jedno zostávajúce použitie | {n} zostávajúcich použití
 no_shares: Žiadne zdieľania
 new_share: Nové zdieľanie
 expired: Vypršalo
