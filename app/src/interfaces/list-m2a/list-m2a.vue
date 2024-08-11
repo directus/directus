@@ -381,7 +381,11 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						/>
 						<div class="spacer" />
 						<v-icon
-							v-if="!disabled && (enableCreate || enableSelect) && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
+							v-if="
+								!disabled &&
+								(enableCreate || enableSelect) &&
+								(deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))
+							"
 							class="clear-icon"
 							:name="getDeselectIcon(element)"
 							@click.stop="deleteItem(element)"
