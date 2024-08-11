@@ -564,7 +564,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 								<v-icon name="launch" />
 							</router-link>
 							<v-icon
-								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
+								v-if="!disabled && (enableCreate || enableSelect) && (deleteAllowed || isLocalItem(element))"
 								v-tooltip="t(getDeselectTooltip(element))"
 								class="deselect"
 								:name="getDeselectIcon(element)"
