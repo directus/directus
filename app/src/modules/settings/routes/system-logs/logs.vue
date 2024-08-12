@@ -550,7 +550,6 @@ onUnmounted(() => {
 	background-color: var(--theme--background-subdued);
 	border-top: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
-	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
 	box-shadow: var(--sidebar-shadow);
 }
 
@@ -574,7 +573,6 @@ onUnmounted(() => {
 	background-color: var(--theme--background);
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--foreground-accent);
-	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
 	box-shadow: var(--theme--form--field--input--box-shadow);
 }
@@ -603,11 +601,6 @@ onUnmounted(() => {
 	.logs-container {
 		margin-bottom: 0;
 	}
-
-	.log-detail {
-		border-left: var(--theme--border-width) solid
-			var(--v-input-border-color, var(--theme--form--field--input--border-color));
-	}
 }
 
 @media (min-width: 1200px) {
@@ -626,6 +619,9 @@ onUnmounted(() => {
 	.log-detail {
 		flex: 1;
 		max-width: 50%;
+		border-top: none;
+		border-left: var(--theme--border-width) solid
+			var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	}
 }
 </style>
