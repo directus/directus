@@ -191,9 +191,17 @@ export async function parseFields(
 			};
 
 			for (const relatedCollection of allowedCollections) {
-				const existingFields = Array.isArray(nestedFields)
-					? nestedFields.filter((field) => field in (context.schema.collections[relatedCollection]?.fields ?? {}))
-					: [];
+				let existingFields: string[] = [];
+
+				if (Array.isArray(nestedFields)) {
+					if (nestedFields.includes('*')) {
+						existingFields = ['*'];
+					} else {
+						existingFields = nestedFields.filter(
+							(field) => field in (context.schema.collections[relatedCollection]?.fields ?? {}),
+						);
+					}
+				}
 
 				child.children[relatedCollection] = await parseFields(
 					{
