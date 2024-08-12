@@ -908,7 +908,6 @@ page_help_settings_datamodel_collections: >-
   **Model podataka: kolekcije** — Navodi sve dostupne kolekcije. To uključuje vidljive, skrivene i sistemske kolekcije, kao i neupravljane tablice baze podataka koje se mogu dodati.
 page_help_settings_datamodel_fields: >-
   **Model podataka: kolekcija** — Obrazac za upravljanje ovom kolekcijom i njezinim poljima.
-page_help_settings_roles_collection: '**Pregledaj role** — Navodi administratorske, javne i prilagođene korisničke role.'
 page_help_settings_roles_item: "**Detalji o roli** — Upravljajte dopuštenjima role i drugim postavkama."
 page_help_settings_presets_collection: >-
   **Pregledaj unaprijed postavljene postavke** — Navodi sve unaprijed postavljene postavke u projektu, uključujući: korisničke, role i globalne oznake, kao i zadane prikaze.
@@ -950,7 +949,6 @@ directus_collection:
   directus_notifications: Obavijesti poslane korisnicima
   directus_operations: Operacije koje se izvode u tokovima
   directus_panels: Pojedinačni paneli unutar kontrolnih panela s uvidima
-  directus_permissions: Dozvole pristupa za svaku rolu
   directus_presets: Unaprijed postavljene postavke za kolekcije i oznake
   directus_relations: Konfiguracija odnosa i metapodaci
   directus_revisions: Snimke podataka za sve aktivnosti
@@ -1083,12 +1081,9 @@ fields:
     name: Naziv role
     icon: Ikona role
     description: Opis
-    app_access: Pristup aplikaciji
-    admin_access: Administratorski pristup
-    ip_access: IP pristup
-    enforce_tfa: Zahtijevaj 2FA
     users: Korisnici s rolom
-    module_list: Navigacija modula
+  directus_policies:
+    description: Opis
   directus_webhooks:
     name: Ime
     method: Metoda

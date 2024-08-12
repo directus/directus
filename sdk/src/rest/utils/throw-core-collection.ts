@@ -1,4 +1,4 @@
-import { isSystemCollection } from '@directus/system-data';
+import { isSystemCollection } from './is-system-collection.js';
 
 /**
  *

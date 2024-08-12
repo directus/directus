@@ -3,7 +3,6 @@ import { useBus } from '../../bus/index.js';
 import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
-import { refreshAccountability } from '../../websocket/authenticate.js';
 import { getPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
@@ -30,7 +29,6 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				continue; // skip filtered events
 			}
 
-			const accountability = await refreshAccountability(self.accountability);
 			const schema = await getSchema();
 
 			const subscription: Omit<Subscription, 'client'> = {
@@ -49,7 +47,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 			if (eventData['action'] === 'create') {
 				try {
 					subscription.item = eventData['key'];
-					const result = await getPayload(subscription, accountability, schema, eventData);
+					const result = await getPayload(subscription, self.accountability, schema, eventData);
 
 					yield {
 						[event]: {
@@ -67,7 +65,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				for (const key of eventData['keys']) {
 					try {
 						subscription.item = key;
-						const result = await getPayload(subscription, accountability, schema, eventData);
+						const result = await getPayload(subscription, self.accountability, schema, eventData);
 
 						yield {
 							[event]: {

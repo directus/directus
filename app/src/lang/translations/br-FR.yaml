@@ -637,7 +637,6 @@ page_help_settings_datamodel_collections: >-
   **Patrom roadennoù : Dastumadoù** — Roll an holl dastumadoù hegerz. Da lâret eo an dastumadoù a c'heller gwelet, ar re kuzhet ha sistem, hag an taolennoù gant diazoù roadennoù nann meret a c'hell bezañ ouzhpennet.
 page_help_settings_datamodel_fields: >-
   **Patrom roadennoù : Dastumadoù** — Furmskrid evit merañ an dastumad hag e vaeziennoù.
-page_help_settings_roles_collection: '**Mont a-dreuz ar rolloù** — Roll ar rolloù Merour, Foran hag ar rolloù implijerien personelaet.'
 page_help_settings_roles_item: "**Mundoù ar roll** — Merañ an aotreoù hag arventennoù all ur roll."
 page_help_settings_presets_collection: >-
   **Mont a-dreuz ar rakreoliñ** - Roll holl rakreoliñ ar raktres gant : an implijer, ar roll, ar pennrolloù hollek hag ar gweloù dre ziouer.
@@ -751,12 +750,9 @@ fields:
     name: Anv ar roll
     icon: Arlun ar roll
     description: Deskrivadur
-    app_access: Aksed en arload
-    admin_access: Aksed Merour
-    ip_access: Aksed IP
-    enforce_tfa: Ret eo kaout A2F
     users: Izili gant ar roll
-    module_list: Modulenn ar Merdeiñ
+  directus_policies:
+    description: Deskrivadur
   directus_webhooks:
     name: Anv
     status: Stad

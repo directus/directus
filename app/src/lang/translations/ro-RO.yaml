@@ -902,7 +902,6 @@ page_help_settings_datamodel_collections: >-
   **Modelul de date: Colecții** — Listează toate colecțiile disponibile. Aceasta include colecții vizibile, ascunse și de sistem, precum și tabele de baze de date negestionate care pot fi adăugate.
 page_help_settings_datamodel_fields: >-
   **Modelul de date: Colecție** — Un formular pentru gestionarea acestei colecții și a câmpurilor sale.
-page_help_settings_roles_collection: '**Răsfoiește roluri** — Listează rolurile de utilizator Admin, Public și personalizat.'
 page_help_settings_roles_item: "**Detaliile rolurilor** - Gestionează permisiunile unui rol și alte setări."
 page_help_settings_presets_collection: >-
   **Răsfoiește presetările** — Listează toate presetările din proiect, inclusiv: utilizatorul, rolul și semnele de carte globale, precum și vizualizările implicite.
@@ -941,7 +940,6 @@ directus_collection:
   directus_migrations: Ce versiune a bazei de date utilizaţi
   directus_notifications: Notificări trimise utilizatorilor
   directus_panels: Panouri individuale din tablourile de bord pentru analize
-  directus_permissions: Accesați permisiunile pentru fiecare rol
   directus_presets: Presetări pentru valorile implicite ale colecțiilor și semne de carte
   directus_relations: Configurarea relației și metadate
   directus_revisions: Instantanee cu date pentru toată activitatea
@@ -1086,12 +1084,9 @@ fields:
     name: Nume rol
     icon: Pictogramă rol
     description: Descriere
-    app_access: Acces aplicație
-    admin_access: Acces administrator
-    ip_access: Acces IP
-    enforce_tfa: Necesită 2FA
     users: Utilizatori în rol
-    module_list: Navigare în module
+  directus_policies:
+    description: Descriere
   directus_webhooks:
     name: Nume
     method: Metodă

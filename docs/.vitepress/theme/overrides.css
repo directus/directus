@@ -48,6 +48,10 @@
 	font-weight: 700;
 }
 
+.vp-doc h4 {
+	margin-top: 16px;
+}
+
 /**
  * Hubspot color-scheme weirdness
  * -------------------------------------------------------------------------- */

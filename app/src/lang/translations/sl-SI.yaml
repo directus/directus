@@ -746,7 +746,6 @@ page_help_settings_datamodel_collections: >-
   **Podatkovni model: zbirke** - Spisek vse zbitk. Vključuje vidne, skrite in sistemske zbirke kot tudi neurejene tabele iz baze.
 page_help_settings_datamodel_fields: >-
   **Podatkovni model: zbirka** - Obrazec za urejanje te zbirke in njenih polj.
-page_help_settings_roles_collection: '**Brskanje vlog** - Spisek administracijskih, javnih in prilagojenih uporabniških vlog.'
 page_help_settings_roles_item: "**Podrobnosti vloge** - Urejanje pravic vlog in drugih nastavitev."
 page_help_settings_presets_collection: >-
   **Brskanje prednastavitev** - Prikaz vseh prednastavitev projekta, vključno z zaznamki uporabnika, vloge in globalno ter privzetih pogledov.
@@ -876,12 +875,9 @@ fields:
     name: Ime vloge
     icon: Ikona vloge
     description: Opis
-    app_access: Aplikacijski dostop
-    admin_access: Administracijski dostop
-    ip_access: IP dostop
-    enforce_tfa: Obvezno 2FA
     users: Uporabniki v vlogi
-    module_list: Krmarjenje po modulu
+  directus_policies:
+    description: Opis
   directus_webhooks:
     name: Ime
     method: Metoda

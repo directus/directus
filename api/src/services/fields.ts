@@ -1,9 +1,10 @@
 import {
-	KNEX_TYPES,
-	REGEX_BETWEEN_PARENS,
 	DEFAULT_NUMERIC_PRECISION,
 	DEFAULT_NUMERIC_SCALE,
+	KNEX_TYPES,
+	REGEX_BETWEEN_PARENS,
 } from '@directus/constants';
+import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
@@ -19,6 +20,9 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
@@ -30,7 +34,6 @@ import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
-import { useEnv } from '@directus/env';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
@@ -61,12 +64,6 @@ export class FieldsService {
 		this.cache = cache;
 		this.systemCache = systemCache;
 		this.schemaCache = localSchemaCache;
-	}
-
-	private get hasReadAccess() {
-		return !!this.accountability?.permissions?.find((permission) => {
-			return permission.collection === 'directus_fields' && permission.action === 'read';
-		});
 	}
 
 	async columnInfo(collection?: string): Promise<Column[]>;
@@ -102,8 +99,18 @@ export class FieldsService {
 	async readAll(collection?: string): Promise<Field[]> {
 		let fields: FieldMeta[];
 
-		if (this.accountability && this.accountability.admin !== true && this.hasReadAccess === false) {
-			throw new ForbiddenError();
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: 'directus_fields',
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
 		}
 
 		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
@@ -195,14 +202,34 @@ export class FieldsService {
 
 		// Filter the result so we only return the fields you have read access to
 		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.accountability.permissions!.filter((permission) => {
-				return permission.action === 'read';
-			});
+			const policies = await fetchPolicies(this.accountability, { knex: this.knex, schema: this.schema });
 
-			const allowedFieldsInCollection: Record<string, string[]> = {};
+			const permissions = await fetchPermissions(
+				collection
+					? {
+							action: 'read',
+							policies,
+							collections: [collection],
+							accountability: this.accountability,
+					  }
+					: {
+							action: 'read',
+							policies,
+							accountability: this.accountability,
+					  },
+				{ knex: this.knex, schema: this.schema },
+			);
+
+			const allowedFieldsInCollection: Record<string, Set<string>> = {};
 
 			permissions.forEach((permission) => {
-				allowedFieldsInCollection[permission.collection] = permission.fields ?? [];
+				if (!allowedFieldsInCollection[permission.collection]) {
+					allowedFieldsInCollection[permission.collection] = new Set();
+				}
+
+				for (const field of permission.fields ?? []) {
+					allowedFieldsInCollection[permission.collection]!.add(field);
+				}
 			});
 
 			if (collection && collection in allowedFieldsInCollection === false) {
@@ -212,8 +239,8 @@ export class FieldsService {
 			return result.filter((field) => {
 				if (field.collection in allowedFieldsInCollection === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection]!;
-				if (allowedFields[0] === '*') return true;
-				return allowedFields.includes(field.field);
+				if (allowedFields.has('*')) return true;
+				return allowedFields.has(field.field);
 			});
 		}
 
@@ -233,19 +260,38 @@ export class FieldsService {
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
 		if (this.accountability && this.accountability.admin !== true) {
-			if (this.hasReadAccess === false) {
-				throw new ForbiddenError();
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
+
+			const policies = await fetchPolicies(this.accountability, { knex: this.knex, schema: this.schema });
+
+			const permissions = await fetchPermissions(
+				{ action: 'read', policies, collections: [collection], accountability: this.accountability },
+				{ knex: this.knex, schema: this.schema },
+			);
+
+			let hasAccess = false;
+
+			for (const permission of permissions) {
+				if (permission.fields) {
+					if (permission.fields.includes('*') || permission.fields.includes(field)) {
+						hasAccess = true;
+						break;
+					}
+				}
 			}
 
-			const permissions = this.accountability.permissions!.find((permission) => {
-				return permission.action === 'read' && permission.collection === collection;
-			});
-
-			if (!permissions || !permissions.fields) throw new ForbiddenError();
-
-			if (permissions.fields.includes('*') === false) {
-				const allowedFields = permissions.fields;
-				if (allowedFields.includes(field) === false) throw new ForbiddenError();
+			if (!hasAccess) {
+				throw new ForbiddenError();
 			}
 		}
 
@@ -771,7 +817,11 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
+	public addColumnToTable(
+		table: Knex.CreateTableBuilder,
+		field: RawField | Field,
+		existing: Column | null = null,
+	): void {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -809,56 +859,60 @@ export class FieldsService {
 			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
-		if (field.schema?.default_value !== undefined) {
-			if (
-				typeof field.schema.default_value === 'string' &&
-				(field.schema.default_value.toLowerCase() === 'now()' || field.schema.default_value === 'CURRENT_TIMESTAMP')
-			) {
+		const defaultValue =
+			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
+
+		if (defaultValue) {
+			const newDefaultValueIsString = typeof defaultValue === 'string';
+			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
+			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
+			const newDefaultIsSetToCurrentTime = newDefaultIsNowFunction || newDefaultIsCurrentTimestamp;
+
+			const newDefaultIsTimestampWithPrecision =
+				newDefaultValueIsString && defaultValue.includes('CURRENT_TIMESTAMP(') && defaultValue.includes(')');
+
+			if (newDefaultIsSetToCurrentTime) {
 				column.defaultTo(this.knex.fn.now());
-			} else if (
-				typeof field.schema.default_value === 'string' &&
-				field.schema.default_value.includes('CURRENT_TIMESTAMP(') &&
-				field.schema.default_value.includes(')')
-			) {
-				const precision = field.schema.default_value.match(REGEX_BETWEEN_PARENS)![1];
+			} else if (newDefaultIsTimestampWithPrecision) {
+				const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
 				column.defaultTo(this.knex.fn.now(Number(precision)));
 			} else {
-				column.defaultTo(field.schema.default_value);
-			}
-		}
-
-		if (field.schema?.is_nullable === false) {
-			if (!alter || alter.is_nullable === true) {
-				column.notNullable();
+				column.defaultTo(defaultValue);
 			}
 		} else {
-			if (!alter || alter.is_nullable === false) {
-				column.nullable();
-			}
+			column.defaultTo(null);
+		}
+
+		const isNullable = field.schema?.is_nullable ?? existing?.is_nullable ?? true;
+
+		if (isNullable) {
+			column.nullable();
+		} else {
+			column.notNullable();
 		}
 
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
-		} else if (!alter?.is_primary_key) {
+		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
-				if (!alter || alter.is_unique === false) {
+				if (!existing || existing.is_unique === false) {
 					column.unique();
 				}
 			} else if (field.schema?.is_unique === false) {
-				if (alter && alter.is_unique === true) {
+				if (existing && existing.is_unique === true) {
 					table.dropUnique([field.field]);
 				}
 			}
 
-			if (field.schema?.is_indexed === true && !alter?.is_indexed) {
+			if (field.schema?.is_indexed === true && !existing?.is_indexed) {
 				column.index();
-			} else if (field.schema?.is_indexed === false && alter?.is_indexed) {
+			} else if (field.schema?.is_indexed === false && existing?.is_indexed) {
 				table.dropIndex([field.field]);
 			}
 		}
 
-		if (alter) {
+		if (existing) {
 			column.alter();
 		}
 	}

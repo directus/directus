@@ -7,7 +7,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
@@ -148,14 +148,14 @@ const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const showingCount = computed(() => {
-	return formatCollectionItemsCount(
-		totalItemCount.value,
-		page.value,
-		limit.value,
-		!!(search.value || searchFilter.value),
-	);
-});
+const showingCount = computed(() =>
+	formatItemsCountPaginated({
+		currentItems: totalItemCount.value,
+		currentPage: page.value,
+		perPage: limit.value,
+		isFiltered: !!(search.value || searchFilter.value),
+	}),
+);
 
 const headers = ref<Array<any>>([]);
 
@@ -471,13 +471,14 @@ function getLinkForItem(item: DisplayItem) {
 				/>
 			</template>
 
-			<v-list v-else>
+			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
 					{{ t('no_items') }}
 				</v-notice>
 
 				<draggable
 					:model-value="displayItems"
+					tag="v-list"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
@@ -521,7 +522,7 @@ function getLinkForItem(item: DisplayItem) {
 						</v-list-item>
 					</template>
 				</draggable>
-			</v-list>
+			</template>
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">

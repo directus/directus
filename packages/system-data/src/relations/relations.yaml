@@ -146,11 +146,6 @@ data:
     many_field: user_created
     one_collection: directus_users
 
-  ### Permissions
-  - many_collection: directus_permissions
-    many_field: role
-    one_collection: directus_roles
-
   ### Sessions
   - many_collection: directus_sessions
     many_field: user
@@ -199,6 +194,50 @@ data:
   - many_collection: directus_versions
     many_field: user_updated
     one_collection: directus_users
+
+  ### Permissions
+  - many_collection: directus_permissions
+    many_field: policy
+    one_collection: directus_policies
+    one_field: permissions
+    one_deselect_action: delete
+
+  ### Access
+  - many_collection: directus_access
+    many_field: policy
+    one_collection: directus_policies
+    one_field: roles
+    one_deselect_action: 'delete'
+    junction_field: role
+
+  - many_collection: directus_access
+    many_field: policy
+    one_collection: directus_policies
+    one_field: users
+    one_deselect_action: 'delete'
+    junction_field: user
+
+  - many_collection: directus_access
+    many_field: role
+    one_collection: directus_roles
+    one_field: policies
+    one_deselect_action: 'delete'
+    junction_field: policy
+    sort_field: sort
+
+  - many_collection: directus_access
+    many_field: user
+    one_collection: directus_users
+    one_field: policies
+    one_deselect_action: 'delete'
+    junction_field: policy
+    sort_field: sort
+
+  ### Roles
+  - many_collection: directus_roles
+    many_field: parent
+    one_collection: directus_roles
+    one_field: children
 
   ### Webhooks
   - many_collection: directus_webhooks

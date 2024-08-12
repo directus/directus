@@ -1007,7 +1007,6 @@ page_help_settings_datamodel_collections: >-
   **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
 page_help_settings_datamodel_fields: >-
   **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
-page_help_settings_roles_collection: '**Blader door rollen** — Laat de Admin, Publieke en aangepaste gebruikersrollen zien.'
 page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
 page_help_settings_presets_collection: >-
   **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en standaard views.
@@ -1171,12 +1170,9 @@ fields:
     name: Rol Naam
     icon: Rol Icoon
     description: Beschrijving
-    app_access: App toegang
-    admin_access: Admin toegang
-    ip_access: IP Toegang
-    enforce_tfa: 2FA vereist
     users: Gebruikers in rol
-    module_list: Module Navigatie
+  directus_policies:
+    description: Beschrijving
   directus_webhooks:
     name: Naam
     method: Methode
