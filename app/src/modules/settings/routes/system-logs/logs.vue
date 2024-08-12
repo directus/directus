@@ -72,12 +72,13 @@ const logLevelValues = computed(() =>
 const filteredLogs = computed(() => {
 	return logs.value.filter((log) => {
 		return (
-			logLevelValues.value.includes(log.data.level) &&
-			nodeIds.value &&
-			nodeIds.value.includes(log.instance) &&
-			JSON.stringify(log)
-				.toLowerCase()
-				.includes(search.value?.toLowerCase() || '')
+			log.notice === true ||
+			(logLevelValues.value.includes(log.data.level) &&
+				nodeIds.value &&
+				nodeIds.value.includes(log.instance) &&
+				JSON.stringify(log)
+					.toLowerCase()
+					.includes(search.value?.toLowerCase() || ''))
 		);
 	});
 });
@@ -188,10 +189,11 @@ client.onWebSocket('message', function (message) {
 	if (type == 'logs') {
 		if (event === 'subscribe') {
 			streamConnected.value = true;
+			addNotice('Logs session resumed...');
 		}
 
 		if (data) {
-			logs.value.push({ index: logsCount.value, instance: uid, data });
+			addLog({ index: logsCount.value, instance: uid, data, notice: false });
 
 			if (!instances.value.includes(uid)) {
 				if (!nodeIds.value) {
@@ -204,23 +206,15 @@ client.onWebSocket('message', function (message) {
 
 				instances.value.push(uid);
 			}
-
-			if (logs.value.length > maxLogs) {
-				logs.value.splice(0, 1);
-				purgedLogsCount.value++;
-				logDetailIndex.value--;
-			}
-
-			if (autoScroll.value) {
-				logsDisplay.value?.scrollToBottom();
-			}
-
-			logsCount.value++;
 		}
 	}
 });
 
 client.onWebSocket('close', function () {
+	if (streamConnected.value) {
+		addNotice('Logs stream disconnected...');
+	}
+
 	streamConnected.value = false;
 });
 
@@ -233,6 +227,31 @@ client.onWebSocket('error', function (_error) {
 		shouldStream.value = false;
 	}
 });
+
+function addLog(log: Log) {
+	logs.value.push(log);
+
+	if (logs.value.length > maxLogs) {
+		logs.value.splice(0, 1);
+		purgedLogsCount.value++;
+		logDetailIndex.value--;
+	}
+
+	if (autoScroll.value) {
+		logsDisplay.value?.scrollToBottom();
+	}
+
+	logsCount.value++;
+}
+
+function addNotice(msg: string) {
+	addLog({
+		index: logsCount.value,
+		instance: '',
+		data: { level: 10, msg, time: new Date().getTime() },
+		notice: true,
+	});
+}
 
 async function resumeLogsStreaming() {
 	shouldStream.value = true;
@@ -247,7 +266,9 @@ async function resumeLogsStreaming() {
 
 function pauseLogsStreaming() {
 	shouldStream.value = false;
+	streamConnected.value = false;
 	client.disconnect();
+	addNotice('Logs session paused...');
 }
 
 function maximizeLog(index: number) {

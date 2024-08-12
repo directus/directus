@@ -128,8 +128,10 @@ async function scrollUpByOne() {
 			>
 				<div :class="['log-entry', { maximized: item.selected }]" @click="emit('expandLog', item.index)">
 					<span class="timestamp">[{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}]</span>
-					<span :class="getMessageClasses(['instance'], item)">[#{{ instances.indexOf(item.instance) + 1 }}]</span>
-					<span :class="getMessageClasses(['log-level', logLevelMap[item.data.level] || ''], item)">
+					<span v-if="!item.notice" :class="getMessageClasses(['instance'], item)">
+						[#{{ instances.indexOf(item.instance) + 1 }}]
+					</span>
+					<span v-if="!item.notice" :class="getMessageClasses(['log-level', logLevelMap[item.data.level] || ''], item)">
 						{{ logLevelMap[item.data.level]?.toLocaleUpperCase() }}
 					</span>
 					<span

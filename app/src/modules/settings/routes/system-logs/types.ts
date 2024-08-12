@@ -7,4 +7,5 @@ export type Log = {
 		time: number;
 		msg: string;
 	};
+	notice: boolean;
 };
