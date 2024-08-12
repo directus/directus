@@ -2,6 +2,7 @@ import * as http from 'http';
 import { describe, expect, test } from 'vitest';
 import { getAddress } from './get-address.js';
 import type { ListenOptions } from 'net';
+import getPort from 'get-port';
 
 function createServer(listenOptions?: ListenOptions) {
 	return new Promise<http.Server>((resolve, reject) => {
@@ -32,8 +33,9 @@ describe('getAddress', async () => {
 	});
 
 	test('Should return host + port when path is undefined', async () => {
-		const server = await createServer({ host: '0.0.0.0', port: 8055 });
+		const serverPort = await getPort();
+		const server = await createServer({ host: '0.0.0.0', port: serverPort });
 
-		expect(getAddress(server)).toBe('0.0.0.0:8055');
+		expect(getAddress(server)).toBe(`0.0.0.0:${serverPort}`);
 	});
 });
