@@ -1,4 +1,4 @@
-import type { Accountability, Filter, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
@@ -62,19 +62,20 @@ export class MetaService {
 					action: 'read',
 					policies,
 					accountability: this.accountability,
-					...(collection ? { collections: [collection] } : {}),
 				},
 				context,
 			);
 
-			const rules = dedupeAccess(permissions);
+			const collectionPermissions = permissions.filter((permission) => permission.collection === collection);
+
+			const rules = dedupeAccess(collectionPermissions);
 			const cases = rules.map(({ rule }) => rule);
 
 			const filter = {
 				_or: cases,
 			};
 
-			const result = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, cases);
+			const result = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, cases, permissions);
 			hasJoins = result.hasJoins;
 		}
 
@@ -97,6 +98,7 @@ export class MetaService {
 		let filter = query.filter || {};
 		let hasJoins = false;
 		let cases: Filter[] = [];
+		let permissions: Permission[] = [];
 
 		if (this.accountability && this.accountability.admin === false) {
 			const context = { knex: this.knex, schema: this.schema };
@@ -112,17 +114,18 @@ export class MetaService {
 
 			const policies = await fetchPolicies(this.accountability, context);
 
-			const permissions = await fetchPermissions(
+			permissions = await fetchPermissions(
 				{
 					action: 'read',
 					policies,
 					accountability: this.accountability,
-					...(collection ? { collections: [collection] } : {}),
 				},
 				context,
 			);
 
-			const rules = dedupeAccess(permissions);
+			const collectionPermissions = permissions.filter((permission) => permission.collection === collection);
+
+			const rules = dedupeAccess(collectionPermissions);
 			cases = rules.map(({ rule }) => rule);
 
 			const permissionsFilter = {
@@ -137,7 +140,7 @@ export class MetaService {
 		}
 
 		if (Object.keys(filter).length > 0) {
-			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, cases));
+			({ hasJoins } = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, cases, permissions));
 		}
 
 		if (query.search) {
