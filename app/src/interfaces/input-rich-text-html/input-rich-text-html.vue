@@ -28,6 +28,7 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
+import { getTinymceLocale } from '@/utils/get-tinymce-locale';
 
 type CustomFormat = {
 	title: string;
@@ -208,6 +209,7 @@ const editorOptions = computed(() => {
 		directionality: props.direction,
 		paste_data_images: false,
 		setup,
+		...getTinymceLocale(),
 		...(props.tinymceOverrides || {}),
 	};
 });
