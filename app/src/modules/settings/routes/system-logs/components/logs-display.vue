@@ -14,13 +14,15 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['expandLog', 'scrolledToBottom', 'scroll']);
+const emit = defineEmits(['expandLog', 'scrolledToBottom', 'scrolledToTop', 'scroll']);
 
-defineExpose({ scrollToBottom });
+defineExpose({ scrollToBottom, scrollToTop, scrollDownByOne, scrollUpByOne });
 
 const { t } = useI18n();
 const scroller = ref();
 const unreadLogsChipVisible = ref(true);
+const scrollInterval = 10;
+const logHeight = 36;
 
 const logLevelMap = Object.entries(props.logLevels).reduce(
 	(acc, [logLevelName, logLevelValue]) => {
@@ -34,30 +36,70 @@ function getMessageClasses(existingClasses: string[], item: Log) {
 	return [...existingClasses, { subdued: logLevelMap[item.data.level] === 'trace' }];
 }
 
-async function scrollToBottom() {
+async function scrollTo(
+	target: number,
+	stepSize: number,
+	isFixedStep: boolean,
+	emitEvent?: Parameters<typeof emit>[0],
+) {
 	const scrollerEl = scroller.value.$el;
-	const scrollInterval = 10;
-	unreadLogsChipVisible.value = false;
 
 	function scrollStepFn() {
 		const totalHeight = scrollerEl.scrollHeight;
-		const scrollStep = totalHeight / 20;
+		const isScrollingDown = stepSize > 0;
 
-		if (scrollerEl.scrollTop + scrollerEl.clientHeight < totalHeight) {
-			scrollerEl.scrollTop += scrollStep;
+		const targetReached = isScrollingDown
+			? scrollerEl.scrollTop + scrollerEl.clientHeight >= (isFixedStep ? target : totalHeight)
+			: scrollerEl.scrollTop <= target;
+
+		if (!targetReached) {
+			scrollerEl.scrollTop += stepSize;
 
 			setTimeout(() => {
 				requestAnimationFrame(scrollStepFn);
 			}, scrollInterval);
 		} else {
-			scrollerEl.scrollTop = totalHeight;
-			unreadLogsChipVisible.value = true;
-			emit('scrolledToBottom');
+			scrollerEl.scrollTop = target;
+
+			if (emitEvent) {
+				emit(emitEvent);
+
+				if (emitEvent === 'scrolledToBottom') {
+					unreadLogsChipVisible.value = true;
+				}
+			}
 		}
 	}
 
-	await nextTick();
 	scrollStepFn();
+}
+
+async function scrollToBottom() {
+	await nextTick();
+	unreadLogsChipVisible.value = false;
+	await scrollTo(scroller.value.$el.scrollHeight, scroller.value.$el.scrollHeight / 20, false, 'scrolledToBottom');
+}
+
+async function scrollToTop() {
+	await nextTick();
+	await scrollTo(0, -scroller.value.$el.scrollHeight / 20, false, 'scrolledToTop');
+}
+
+async function scrollDownByOne() {
+	await nextTick();
+	const targetScrollTop = scroller.value.$el.scrollTop + logHeight;
+	await scrollTo(targetScrollTop, logHeight, true);
+}
+
+async function scrollUpByOne() {
+	await nextTick();
+	let targetScrollTop = scroller.value.$el.scrollTop - logHeight;
+
+	if (targetScrollTop < 0) {
+		targetScrollTop = 0;
+	}
+
+	await scrollTo(targetScrollTop, -logHeight, true);
 }
 </script>
 

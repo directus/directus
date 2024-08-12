@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useClipboard } from '@/composables/use-clipboard';
 import { useShortcut } from '@/composables/use-shortcut';
 import LogDetailFilteringInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
@@ -20,14 +21,10 @@ let reconnectionCount = 0;
 const logsDisplay = ref<InstanceType<typeof LogsDisplay>>();
 const codemirrorEl = ref<HTMLTextAreaElement>();
 let codemirror: CodeMirror.Editor | null = null;
+const { isCopySupported, copyToClipboard } = useClipboard();
 const search = ref<string>();
 const logLevelNames = ref<string[]>();
 const nodeIds = ref<string[]>();
-
-const client = sdk.with(
-	realtime({ authMode: 'strict', url: `ws://${sdk.url.host}/websocket/logs`, reconnect: reconnectionParams }),
-);
-
 const logs = ref<Log[]>([]);
 const serverStore = useServerStore();
 let allowedLogLevels: Record<string, number> = {};
@@ -46,6 +43,10 @@ const autoScroll = ref(true);
 const logsCount = ref(0);
 const purgedLogsCount = ref(0);
 const unreadLogsCount = ref(0);
+
+const client = sdk.with(
+	realtime({ authMode: 'strict', url: `ws://${sdk.url.host}/websocket/logs`, reconnect: reconnectionParams }),
+);
 
 if (serverStore.info?.websocket) {
 	if (serverStore.info.websocket.logs) {
@@ -83,7 +84,8 @@ const filteredLogs = computed(() => {
 
 watch([logLevelNames, nodeIds, search], () => {
 	isFilterOptionsUpdated = true;
-	scrollLogsToBottom();
+	minimizeLog();
+	logsDisplay.value?.scrollToBottom();
 });
 
 watch(filteredLogs, (cur, prev) => {
@@ -210,7 +212,7 @@ client.onWebSocket('message', function (message) {
 			}
 
 			if (autoScroll.value) {
-				scrollLogsToBottom();
+				logsDisplay.value?.scrollToBottom();
 			}
 
 			logsCount.value++;
@@ -295,6 +297,8 @@ function minimizeLog() {
 	if (selectedLog.value) {
 		selectedLog.value.selected = false;
 	}
+
+	selectedLog.value = undefined;
 }
 
 function clearLogs() {
@@ -302,20 +306,52 @@ function clearLogs() {
 	logsCount.value = 0;
 }
 
-function scrollLogsToBottom() {
-	logsDisplay.value?.scrollToBottom();
-}
-
 function onScroll(event: Event) {
 	const scroller = event.target as HTMLElement;
 
 	if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1) {
 		autoScroll.value = true;
-		scrollLogsToBottom();
+		logsDisplay.value?.scrollToBottom();
 	} else {
 		autoScroll.value = false;
 	}
 }
+
+function handleUpDownKey(isUp: boolean) {
+	let filteredIndex;
+
+	if (!selectedLog.value) {
+		// None selected, scroll from the appropriate end
+		if (isUp) {
+			logsDisplay.value?.scrollToBottom();
+			filteredIndex = filteredLogs.value.length - 1;
+		} else {
+			logsDisplay.value?.scrollToTop();
+			filteredIndex = 0;
+		}
+	} else {
+		filteredIndex = filteredLogs.value.findIndex((log) => log.index === selectedLog.value?.index);
+
+		if (isUp && filteredIndex > 0) {
+			filteredIndex--;
+			logsDisplay.value?.scrollUpByOne();
+		} else if (!isUp && filteredIndex < filteredLogs.value.length - 1) {
+			filteredIndex++;
+			logsDisplay.value?.scrollDownByOne();
+		} else {
+			return;
+		}
+	}
+
+	const index = filteredLogs.value[filteredIndex]?.index;
+
+	if (index !== undefined) {
+		maximizeLog(index);
+	}
+}
+
+useShortcut('arrowup', () => handleUpDownKey(true));
+useShortcut('arrowdown', () => handleUpDownKey(false));
 
 useShortcut('escape', () => {
 	minimizeLog();
@@ -406,6 +442,16 @@ onUnmounted(() => {
 								icon-right="search"
 								@input="logDetailSearch = $event"
 							/>
+							<v-button
+								v-if="isCopySupported"
+								class="copy-button"
+								large
+								secondary
+								icon
+								@click="copyToClipboard(codemirror?.getValue())"
+							>
+								<v-icon name="content_copy" />
+							</v-button>
 						</div>
 						<div ref="codemirrorEl" class="raw-log"></div>
 					</div>
@@ -494,6 +540,10 @@ onUnmounted(() => {
 
 .close-button {
 	margin-right: 10px;
+}
+
+.copy-button {
+	margin-left: 10px;
 }
 
 .raw-log {
