@@ -1,4 +1,4 @@
-import type { Filter, SchemaOverview } from '@directus/types';
+import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/ast.js';
 import { joinFilterWithCases } from '../../../utils/apply-query.js';
@@ -19,6 +19,7 @@ export function getColumnPreprocessor(
 	schema: SchemaOverview,
 	table: string,
 	cases: Filter[],
+	permissions: Permission[],
 	aliasMap: AliasMap,
 ) {
 	const helpers = getHelpers(knex);
@@ -55,6 +56,7 @@ export function getColumnPreprocessor(
 					...fieldNode.query,
 					filter: joinFilterWithCases(fieldNode.query.filter, fieldNode.cases),
 				},
+				permissions,
 				cases: fieldNode.cases,
 			});
 		} else {
@@ -76,6 +78,7 @@ export function getColumnPreprocessor(
 					cases,
 					table,
 					alias,
+					permissions,
 				},
 				{ knex, schema },
 			);
