@@ -51,8 +51,7 @@ export function removeTemporaryFields(
 
 			const fieldsWithFunctionsApplied = fields[relatedCollection]!.map((field) => applyFunctionToColumnName(field));
 
-			item =
-				fields[relatedCollection]!.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : rawItem[primaryKeyField];
+			item = fields[relatedCollection]!.length > 0 ? pick(rawItem, fieldsWithFunctionsApplied) : {};
 
 			items.push(item);
 		}
