@@ -4,7 +4,7 @@ import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
-import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../types/index.js';
+import type { FieldNode, FunctionFieldNode, NestedCollectionNode, O2MNode } from '../../../types/index.js';
 import { getRelationType } from '../../../utils/get-relation-type.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
@@ -252,8 +252,14 @@ export async function parseFields(
 				whenCase: [],
 			};
 
-			if (relationType === 'o2m' && !child!.query.sort) {
-				child!.query.sort = [relation.meta?.sort_field || context.schema.collections[relation.collection]!.primary];
+			if (isO2MNode(child) && !child.query.sort) {
+				child.query.sort = [relation.meta?.sort_field || context.schema.collections[relation.collection]!.primary];
+			}
+
+			if (isO2MNode(child) && child?.query.group && child.query.group[0] !== relation.field) {
+				// If a group by is used, the result needs to be grouped by the foreign key of the relation first, so results
+				// are correctly grouped under the foreign key when extracting the grouped results from the nested queries.
+				child.query.group.unshift(relation.field);
 			}
 		}
 
@@ -274,4 +280,8 @@ export async function parseFields(
 
 		return true;
 	});
+}
+
+export function isO2MNode(node: NestedCollectionNode | null): node is O2MNode {
+	return !!node && node.type === 'o2m';
 }
