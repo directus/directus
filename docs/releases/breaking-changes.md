@@ -13,7 +13,7 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version 11.0.0 RC.1
+## Version 11.0.0
 
 Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in
 roles, but instead in policies. Policies can be attached to roles and also directly to users.
