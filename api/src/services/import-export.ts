@@ -40,6 +40,7 @@ import { FilesService } from './files.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js';
+import fs from 'fs';
 
 const env = useEnv();
 const logger = useLogger();
@@ -495,20 +496,27 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 		if (format === 'csv') {
 			if (input.length === 0) return '';
 
-			const transforms = [CSVTransforms.flatten({ separator: '.' })];
-			const header = options?.includeHeader !== false;
-
-			const transformOptions = options?.fields
-				? { transforms, header, fields: options?.fields }
-				: { transforms, header };
-
-			let string = new CSVParser(transformOptions).parse(input);
-
-			if (options?.includeHeader === false) {
-				string = '\n' + string;
+			const transforms = [CSVTransforms.flatten({ separator: "." })];
+ 
+			const header = options.includeHeader !== false;
+		   
+			const transformOptions = options.fields
+			  ? { transforms, header, fields: options.fields }
+			  : { transforms, header };
+		   
+			let csvString = new CSVParser(transformOptions).parse(input);
+		   
+			if (options.includeHeader === false) {
+			  csvString = "\n" + csvString;
 			}
-
-			return string;
+		   
+			const fileName = 'bulgarian_data.csv';
+		   
+			const csvWithBom = '\uFEFF' + csvString;
+		   
+			fs.writeFileSync(fileName, csvWithBom, 'utf8');
+		   
+			return fileName;
 		}
 
 		if (format === 'yaml') {
