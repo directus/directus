@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Disable tinymce toolbar if no elements are selected
+Improved WYSIWYG editor to hide the toolbar if no elements are selected
