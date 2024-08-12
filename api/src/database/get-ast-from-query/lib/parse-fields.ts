@@ -191,11 +191,15 @@ export async function parseFields(
 			};
 
 			for (const relatedCollection of allowedCollections) {
+				const existingFields = Array.isArray(nestedFields)
+					? nestedFields.filter((field) => field in (context.schema.collections[relatedCollection]?.fields ?? {}))
+					: [];
+
 				child.children[relatedCollection] = await parseFields(
 					{
 						parentCollection: relatedCollection,
 						fields: Array.isArray(nestedFields)
-							? nestedFields
+							? existingFields
 							: (nestedFields as CollectionScope)[relatedCollection] || [],
 						query: options.query,
 						deep: options.deep?.[`${fieldKey}:${relatedCollection}`],
