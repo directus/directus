@@ -440,16 +440,25 @@ export default class CockroachDB implements SchemaInspector {
 			const foreignKeyConstraint = constraintsForColumn.find((constraint) => constraint.type === 'f');
 
 			return {
-				...col,
+				name: col.name,
+				table: col.table,
+				data_type: col.data_type,
+				default_value: parseDefaultValue(col.default_value),
+				generation_expression: col.generation_expression,
+				max_length: col.max_length,
+				numeric_precision: col.numeric_precision,
+				numeric_scale: col.numeric_scale,
+				is_generated: col.is_generated,
+				is_nullable: col.is_nullable,
 				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
-				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
 				is_indexed: !!col.index_name?.length && col.index_name.length > 0,
+				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
 				has_auto_increment:
 					['integer', 'bigint'].includes(col.data_type) && (col.default_value?.startsWith('nextval(') ?? false),
-				default_value: parseDefaultValue(col.default_value),
 				foreign_key_schema: foreignKeyConstraint?.foreign_key_schema ?? null,
 				foreign_key_table: foreignKeyConstraint?.foreign_key_table ?? null,
 				foreign_key_column: foreignKeyConstraint?.foreign_key_column ?? null,
+				comment: col.comment,
 			};
 		});
 

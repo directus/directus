@@ -33,18 +33,22 @@ type RawColumn = {
 
 export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	return {
-		...rawColumn,
+		name: rawColumn.name,
+		table: rawColumn.table,
+		data_type: rawColumn.data_type,
 		default_value: parseDefaultValue(rawColumn.default_value),
 		generation_expression: rawColumn.generation_expression || null,
+		max_length: parseMaxLength(rawColumn),
+		numeric_precision: rawColumn.numeric_precision || null,
+		numeric_scale: rawColumn.numeric_scale || null,
 		is_generated: !!rawColumn.is_generated,
+		is_nullable: rawColumn.is_nullable === 'YES',
 		is_unique: rawColumn.is_unique === true,
 		is_indexed: !!rawColumn.index_name && rawColumn.index_name.length > 0,
 		is_primary_key: rawColumn.is_primary_key === true,
-		is_nullable: rawColumn.is_nullable === 'YES',
 		has_auto_increment: rawColumn.has_auto_increment === 'YES',
-		numeric_precision: rawColumn.numeric_precision || null,
-		numeric_scale: rawColumn.numeric_scale || null,
-		max_length: parseMaxLength(rawColumn),
+		foreign_key_column: rawColumn.foreign_key_column,
+		foreign_key_table: rawColumn.foreign_key_table,
 	};
 
 	function parseMaxLength(rawColumn: RawColumn) {
