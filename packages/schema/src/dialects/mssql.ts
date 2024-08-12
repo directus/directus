@@ -294,7 +294,7 @@ export default class MSSQL implements SchemaInspector {
 				[ic].[column_id],
 				[ix].[is_unique],
 				[ix].[is_primary_key],
-				[ix].name as ix_name,
+				[ix].[name] as index_name,
 				MAX([ic].[index_column_id]) OVER (PARTITION BY [ic].[index_id], [ic].[object_id]) AS index_column_count,
 				ROW_NUMBER() OVER (
 					PARTITION BY [ic].[object_id], [ic].[column_id]
@@ -314,6 +314,7 @@ export default class MSSQL implements SchemaInspector {
 					[is_unique],
 					[is_primary_key],
 					[index_priority],
+					[index_name],
 					[index_column_count]
 				FROM ##IndexInfo
 				WHERE ISNULL(index_column_count, 1) = 1 AND ISNULL(index_priority, 1) = 1`),
@@ -334,8 +335,9 @@ export default class MSSQL implements SchemaInspector {
 				object_definition ([c].[default_object_id]) AS [default_value],
 				[i].[is_primary_key],
 				[i].[is_unique],
-				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND ix_name IS NOT NULL THEN 
-					ix_name
+				[i].[index_name],
+				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN 
+					[i].[index_name]
 				ELSE
 					NULL
 				END AS [index_name],
