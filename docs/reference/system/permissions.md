@@ -9,13 +9,6 @@ pageClass: page-reference
 > Permissions are assigned to Policies, and control data access throughout the platform.
 > [Learn more about Permissions](/user-guide/overview/glossary#permissions).
 
-:::tip Directus 11 RC
-
-This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
-data structure and relations.
-
-:::
-
 ## The Permission Object
 
 `id` **uuid**\

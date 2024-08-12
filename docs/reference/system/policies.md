@@ -9,14 +9,6 @@ pageClass: page-reference
 > Policies define a specific set of access permissions, and are a composable unit that can be assigned to both roles and
 > users. [Learn more about Policies](/user-guide/overview/glossary#policies).
 
-:::tip Directus 11 RC
-
-Policies are a new concept available from the Directus 11 Release Candidate. In prior versions, they do not exist. There
-have also been changes to [users](/reference/system/users), [roles](/reference/system/roles), and
-[permissions](/reference/system/permissions).
-
-:::
-
 ## The Policy Object
 
 `id` **uuid**\
