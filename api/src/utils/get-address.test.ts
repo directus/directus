@@ -32,8 +32,8 @@ describe('getAddress', async () => {
 	});
 
 	test('Should return host + port when path is undefined', async () => {
-		const server = await createServer({ host: '0.0.0.0', port: 8055 });
+		const server = await createServer({ host: '0.0.0.0', port: 8054 });
 
-		expect(getAddress(server)).toBe('0.0.0.0:8055');
+		expect(getAddress(server)).toBe('0.0.0.0:8054');
 	});
 });
