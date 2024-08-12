@@ -589,11 +589,7 @@ export function applyFilter(
 								applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases, permissions);
 							};
 
-						const { cases: subCases } = getCases(
-							relation!.collection,
-							permissions.filter(({ collection }) => collection === relation.collection),
-							[],
-						);
+						const { cases: subCases } = getCases(relation!.collection, permissions, []);
 
 						if (childKey === '_none') {
 							dbQuery[logical].whereNotIn(
