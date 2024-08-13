@@ -96,7 +96,10 @@ async function fetchContextData(
 	const env = useEnv();
 
 	const fields = Array.from(permissionContext[key]!);
-	const cacheKey = cache ? `filter-context-${key.slice(1)}-${getSimpleHash(JSON.stringify(cacheContext))}` : '';
+
+	const cacheKey = cache
+		? `filter-context-${key.slice(1)}-${getSimpleHash(JSON.stringify({ ...cacheContext, fields }))}`
+		: '';
 
 	let data = undefined;
 
