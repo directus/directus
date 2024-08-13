@@ -1,5 +1,6 @@
 import type { Accountability, Filter, Permission, PermissionsAction } from '@directus/types';
 import { pick, sortBy } from 'lodash-es';
+import { withAppMinimalPermissions } from '../lib/with-app-minimal-permissions.js';
 import type { Context } from '../types.js';
 import { withCache } from './with-cache.js';
 
@@ -19,6 +20,7 @@ export interface FetchRawPermissionsOptions {
 	policies: string[];
 	collections?: string[];
 	accountability?: Pick<Accountability, 'user' | 'role' | 'roles' | 'app'>;
+	bypassMinimalAppPermissions?: boolean;
 }
 
 export async function _fetchRawPermissions(options: FetchRawPermissionsOptions, context: Context) {
@@ -46,6 +48,14 @@ export async function _fetchRawPermissions(options: FetchRawPermissionsOptions, 
 	// This ensures that if a sorted array of policies is passed in the permissions are returned in the same order
 	// which is necessary for correctly applying the presets in order
 	permissions = sortBy(permissions, (permission) => options.policies.indexOf(permission.policy!));
+
+	if (options.accountability && !options.bypassMinimalAppPermissions) {
+		// Add app minimal permissions for the request accountability, if applicable.
+		// Normally this is done in the permissions service readByQuery, but it also needs to do it here
+		// since the permissions service is created without accountability.
+		// We call it without the policies filter, since the static minimal app permissions don't have a policy attached.
+		return withAppMinimalPermissions(options.accountability ?? null, permissions, { _and: filter._and.slice(1) });
+	}
 
 	return permissions;
 }

@@ -1,9 +1,8 @@
-import type { Accountability, Filter, PermissionsAction } from '@directus/types';
+import type { Accountability, PermissionsAction } from '@directus/types';
 import type { Context } from '../types.js';
 import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
 import { fetchRawPermissions } from '../utils/fetch-raw-permissions.js';
 import { processPermissions } from '../utils/process-permissions.js';
-import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 
 export interface FetchPermissionsOptions {
 	action?: PermissionsAction;
@@ -14,43 +13,24 @@ export interface FetchPermissionsOptions {
 }
 
 export async function fetchPermissions(options: FetchPermissionsOptions, context: Context) {
-	const permissions = await fetchRawPermissions(options, context);
+	const permissions = await fetchRawPermissions(
+		{ ...options, bypassMinimalAppPermissions: options.bypassDynamicVariableProcessing ?? false },
+		context,
+	);
 
 	if (options.accountability && !options.bypassDynamicVariableProcessing) {
-		const filter: Filter = {
-			_and: [],
-		};
-
-		if (options.action) {
-			filter._and.push({ action: { _eq: options.action } });
-		}
-
-		if (options.collections) {
-			filter._and.push({ collection: { _in: options.collections } });
-		}
-
-		// Add app minimal permissions for the request accountability, if applicable.
-		// Normally this is done in the permissions service readByQuery, but it also needs to do it here
-		// since the permissions service is created without accountability.
-		// We call it without the policies filter, since the static minimal app permissions don't have a policy attached.
-		const permissionsWithAppPermissions = withAppMinimalPermissions(
-			options.accountability ?? null,
-			permissions,
-			filter,
-		);
-
 		const permissionsContext = await fetchDynamicVariableContext(
 			{
 				accountability: options.accountability,
 				policies: options.policies,
-				permissions: permissionsWithAppPermissions,
+				permissions,
 			},
 			context,
 		);
 
 		// Replace dynamic variables with their actual values
 		const processedPermissions = processPermissions({
-			permissions: permissionsWithAppPermissions,
+			permissions,
 			accountability: options.accountability,
 			permissionsContext,
 		});

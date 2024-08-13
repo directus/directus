@@ -4,7 +4,7 @@ import { PoliciesService } from '../../services/policies.js';
 import { UsersService } from '../../services/users.js';
 import { RolesService } from '../../services/roles.js';
 import type { Context } from '../types.js';
-import { _fetchDynamicVariableContext as fetchDynamicVariableContext } from './fetch-dynamic-variable-context.js';
+import { fetchDynamicVariableContext } from './fetch-dynamic-variable-context.js';
 
 vi.mock('../../services/users.js', () => ({
 	UsersService: vi.fn(),
