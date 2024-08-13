@@ -270,7 +270,7 @@ function onScrollToBottom() {
 }
 
 .unread-chip {
-	--v-chip-color: var(--theme--foreground-accent);
+	--v-chip-color: var(--white);
 	--v-chip-background-color: var(--theme--primary);
 	--v-chip-close-color: var(--theme--primary);
 
