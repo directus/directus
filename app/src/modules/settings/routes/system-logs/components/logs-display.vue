@@ -280,10 +280,6 @@ function onScrollToBottom() {
 	.v-icon {
 		margin: 0 4px 0 4px;
 	}
-
-	span .close {
-		--v-icon-color: red !important;
-	}
 }
 
 .log-level {
