@@ -1,5 +1,5 @@
 import type { Accountability, Filter, Permission, PermissionsAction } from '@directus/types';
-import { pick, sortBy } from 'lodash-es';
+import { sortBy } from 'lodash-es';
 import { withAppMinimalPermissions } from '../lib/with-app-minimal-permissions.js';
 import type { Context } from '../types.js';
 import { withCache } from './with-cache.js';
@@ -11,7 +11,7 @@ export const fetchRawPermissions = withCache(
 		policies, // we assume that policies always come from the same source, so they should be in the same order
 		...(action && { action }),
 		...(collections && { collections: sortBy(collections) }),
-		...(accountability && { accountability: pick(accountability, ['user', 'role', 'roles', 'app']) }),
+		...(accountability && { accountability: { app: accountability.app } }),
 		...(bypassMinimalAppPermissions && { bypassMinimalAppPermissions }),
 	}),
 );
@@ -20,7 +20,7 @@ export interface FetchRawPermissionsOptions {
 	action?: PermissionsAction;
 	policies: string[];
 	collections?: string[];
-	accountability?: Pick<Accountability, 'user' | 'role' | 'roles' | 'app'>;
+	accountability?: Pick<Accountability, 'app'>;
 	bypassMinimalAppPermissions?: boolean;
 }
 
