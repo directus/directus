@@ -57,6 +57,7 @@ const sortOptions = computed(() => {
 				item-count-translation="log_level_count"
 				multiple
 				inline
+				show-deselect
 				:items="typeOptions"
 			/>
 		</div>
@@ -70,6 +71,7 @@ const sortOptions = computed(() => {
 				item-count-translation="instance_count"
 				multiple
 				inline
+				show-deselect
 				:items="sortOptions"
 			/>
 		</div>
