@@ -69,7 +69,7 @@ export async function getSchema(
 	if (currentProcessShouldHandleOperation === false) {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
-		const timeout: Promise<any> = new Promise((_, reject) => setTimeout(reject, 10000));
+		const timeout: Promise<any> = new Promise((_, reject) => setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number));
 
 		const subscription = new Promise<SchemaOverview>((resolve, reject) => {
 			bus.subscribe(messageKey, busListener).catch(reject);
