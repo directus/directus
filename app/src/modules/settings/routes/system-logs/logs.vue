@@ -329,6 +329,9 @@ function minimizeLog() {
 function clearLogs() {
 	logs.value.length = 0;
 	logsCount.value = 0;
+	unreadLogsCount.value = 0;
+	autoScroll = true;
+	minimizeLog();
 }
 
 function onScroll(event: Event) {
