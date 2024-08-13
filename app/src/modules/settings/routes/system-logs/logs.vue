@@ -45,7 +45,11 @@ const purgedLogsCount = ref(0);
 const unreadLogsCount = ref(0);
 
 const client = sdk.with(
-	realtime({ authMode: 'strict', url: `ws://${sdk.url.host}/websocket/logs`, reconnect: reconnectionParams }),
+	realtime({
+		authMode: 'strict',
+		url: `${sdk.url.protocol === 'https:' ? 'wss' : 'ws'}://${sdk.url.host}/websocket/logs`,
+		reconnect: reconnectionParams,
+	}),
 );
 
 if (serverStore.info?.websocket) {
