@@ -7,11 +7,12 @@ import { withCache } from './with-cache.js';
 export const fetchRawPermissions = withCache(
 	'raw-permissions',
 	_fetchRawPermissions,
-	({ action, policies, collections, accountability }) => ({
+	({ action, policies, collections, accountability, bypassMinimalAppPermissions }) => ({
 		policies, // we assume that policies always come from the same source, so they should be in the same order
 		...(action && { action }),
 		...(collections && { collections: sortBy(collections) }),
 		...(accountability && { accountability: pick(accountability, ['user', 'role', 'roles', 'app']) }),
+		...(bypassMinimalAppPermissions && { bypassMinimalAppPermissions }),
 	}),
 );
 
