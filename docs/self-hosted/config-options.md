@@ -223,6 +223,8 @@ prefixing the value with `{type}:`. The following types are available:
 | `array`       | `array:https://example.com,https://example2.com` <br> `array:string:https://example.com,regex:\.example3\.com$` | `["https://example.com", "https://example2.com"]` <br> `["https://example.com", /\.example3\.com$/]` |
 | `json`        | `json:{"items": ["example1", "example2"]}`                                                                      | `{"items": ["example1", "example2"]}`                                                                |
 
+Explicit casting is also available when reading from a file with the `_FILE` suffix.
+
 ---
 
 ## General
@@ -232,6 +234,7 @@ prefixing the value with `{type}:`. The following types are available:
 | `CONFIG_PATH`                   | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
 | `HOST`                          | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
 | `PORT`                          | What port to run the API under.                                                                                             | `8055`                       |
+| `UNIX_SOCKET_PATH`              | The Unix socket the API listens on, `PORT` and `HOST` will be ignored if this is provided.                                  | --                           |
 | `PUBLIC_URL`<sup>[1]</sup>      | URL where your API can be reached on the web.                                                                               | `/`                          |
 | `LOG_LEVEL`                     | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
 | `LOG_STYLE`                     | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |

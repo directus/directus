@@ -922,7 +922,6 @@ page_help_files_item: >-
   **फाइल विवरण** — फाइल मेटाडेटा व्यवस्थापन गर्न, मूल सम्पत्ति सम्पादन गर्न र पहुँच सेटिङहरू अद्यावधिक गर्ने फारम।
 page_help_settings_datamodel_collections: >-
   **डेटा मोडेल: सङ्कलन** — उपलब्ध सबै सङ्कलनहरूको सूची बनाउँछ। यसमा दृश्यात्मक, लुकेका, र प्रणाली सङ्कलनहरू, साथै अव्यवस्थित डाटाबेस तालिकाहरू थप्न सकिन्छ।
-page_help_settings_roles_collection: '**भूमिकाहरू ब्राउज गर्नुहोस्** — प्रशासक, सार्वजनिक र अनुकूलन प्रयोगकर्ता भूमिकाहरू सूचीबद्ध गर्दछ।'
 page_help_settings_roles_item: "**भूमिका विवरण** — भूमिकाको अनुमति र अन्य सेटिङहरू प्रबन्ध गर्नुहोस्।"
 page_help_users_collection: '**प्रयोगकर्ता निर्देशिका** — यो परियोजना भित्रका सबै प्रणाली प्रयोगकर्ताहरूलाई सूचीबद्ध गर्दछ।'
 page_help_users_item: >-
@@ -956,7 +955,6 @@ directus_collection:
   directus_notifications: प्रयोगकर्ताहरूलाई सूचनाहरू पठाइयो
   directus_operations: फ्लोमा चल्ने अपरेशनहरू
   directus_panels: अन्तर्दृष्टि ड्यासबोर्डहरू भित्र व्यक्तिगत प्यानलहरू
-  directus_permissions: प्रत्येक भूमिकाको लागि पहुँच अनुमतिहरू
   directus_presets: पूर्वनिर्धारित संग्रह र बुकमार्कहरूको लागि प्रिसेटहरू
   directus_relations: सम्बन्ध कन्फिगरेसन र मेटाडेटा
   directus_revisions: सबै गतिविधिका लागि डाटा स्न्यापसटहरू
@@ -1093,12 +1091,9 @@ fields:
     name: भूमिकाको नाम
     icon: भूमिका आइकन
     description: विवरणः
-    app_access: एप पहुँच
-    admin_access: प्रशासक पहुँच
-    ip_access: आईपी पहुँच
-    enforce_tfa: 2FA आवश्यक छ
     users: भूमिकामा प्रयोगकर्ताहरू
-    module_list: मोड्युल नेभिगेसन
+  directus_policies:
+    description: विवरणः
   directus_webhooks:
     name: नाम
     method: विधि

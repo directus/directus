@@ -5,7 +5,6 @@ export const DEFAULTS = {
 	CONFIG_PATH: resolve(cwd(), '.env'),
 
 	HOST: '0.0.0.0',
-	PORT: 8055,
 	PUBLIC_URL: '/',
 	MAX_PAYLOAD_SIZE: '1mb',
 	MAX_RELATIONAL_DEPTH: 10,
