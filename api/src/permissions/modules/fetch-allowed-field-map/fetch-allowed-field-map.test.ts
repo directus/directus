@@ -2,7 +2,7 @@ import type { Accountability, SchemaOverview } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import { _fetchAllowedFieldMap as fetchAllowedFieldMap } from './fetch-allowed-field-map.js';
+import { fetchAllowedFieldMap } from './fetch-allowed-field-map.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import type { Permission } from '@directus/types';
 
