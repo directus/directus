@@ -23,6 +23,8 @@ const scroller = ref();
 const unreadLogsChipVisible = ref(true);
 const scrollInterval = 10;
 const logHeight = 36;
+let isNearBottom = true;
+let lastScrollHeight = 0;
 
 const logLevelMap = Object.entries(props.logLevels).reduce(
 	(acc, [logLevelName, logLevelValue]) => {
@@ -36,20 +38,42 @@ function getMessageClasses(existingClasses: string[], item: Log) {
 	return [...existingClasses, { subdued: logLevelMap[item.data.level] === 'trace' }];
 }
 
-async function scrollTo(
-	target: number,
+let currentScrollController: AbortController | null = null;
+
+function scrollTo(
+	target: number | 'bottom' | 'top',
 	stepSize: number,
 	isFixedStep: boolean,
 	emitEvent?: Parameters<typeof emit>[0],
 ) {
+	if (currentScrollController) {
+		currentScrollController.abort();
+	}
+
+	currentScrollController = new AbortController();
+	const { signal } = currentScrollController;
 	const scrollerEl = scroller.value.$el;
 
+	lastScrollHeight = scrollerEl.scrollTop;
+
 	function scrollStepFn() {
+		if (signal.aborted) return;
+
+		if (scrollerEl.scrollTop !== lastScrollHeight) {
+			currentScrollController = null;
+			return;
+		}
+
 		const totalHeight = scrollerEl.scrollHeight;
 		const isScrollingDown = stepSize > 0;
+		let targetHeight;
+
+		if (target === 'top') targetHeight = 0;
+		else if (target === 'bottom') targetHeight = scrollerEl.scrollHeight;
+		else targetHeight = target;
 
 		const targetReached = isScrollingDown
-			? scrollerEl.scrollTop + scrollerEl.clientHeight >= (isFixedStep ? target : totalHeight)
+			? scrollerEl.scrollTop + scrollerEl.clientHeight >= (isFixedStep ? targetHeight : totalHeight)
 			: scrollerEl.scrollTop <= target;
 
 		if (!targetReached) {
@@ -59,16 +83,15 @@ async function scrollTo(
 				requestAnimationFrame(scrollStepFn);
 			}, scrollInterval);
 		} else {
-			scrollerEl.scrollTop = target;
+			currentScrollController = null;
+			scrollerEl.scrollTop = targetHeight;
 
 			if (emitEvent) {
 				emit(emitEvent);
-
-				if (emitEvent === 'scrolledToBottom') {
-					unreadLogsChipVisible.value = true;
-				}
 			}
 		}
+
+		lastScrollHeight = scrollerEl.scrollTop;
 	}
 
 	scrollStepFn();
@@ -76,19 +99,26 @@ async function scrollTo(
 
 async function scrollToBottom() {
 	await nextTick();
+	const scrollerEl = scroller.value.$el;
 	unreadLogsChipVisible.value = false;
-	await scrollTo(scroller.value.$el.scrollHeight, scroller.value.$el.scrollHeight / 20, false, 'scrolledToBottom');
+
+	if (isNearBottom) {
+		scrollerEl.scrollTop = scrollerEl.scrollHeight;
+		onScrollToBottom();
+	} else {
+		scrollTo(scrollerEl.scrollHeight, scrollerEl.scrollHeight / 20, false, 'scrolledToBottom');
+	}
 }
 
 async function scrollToTop() {
 	await nextTick();
-	await scrollTo(0, -scroller.value.$el.scrollHeight / 20, false, 'scrolledToTop');
+	scrollTo(0, -scroller.value.$el.scrollHeight / 20, false, 'scrolledToTop');
 }
 
 async function scrollDownByOne() {
 	await nextTick();
 	const targetScrollTop = scroller.value.$el.scrollTop + logHeight;
-	await scrollTo(targetScrollTop, logHeight, true);
+	scrollTo(targetScrollTop, logHeight, true);
 }
 
 async function scrollUpByOne() {
@@ -99,7 +129,28 @@ async function scrollUpByOne() {
 		targetScrollTop = 0;
 	}
 
-	await scrollTo(targetScrollTop, -logHeight, true);
+	scrollTo(targetScrollTop, -logHeight, true);
+}
+
+function onScroll(event: any) {
+	if (currentScrollController) {
+		return;
+	}
+
+	const scrollerEl = scroller.value.$el;
+
+	isNearBottom = scrollerEl.scrollTop + scrollerEl.clientHeight >= scrollerEl.scrollHeight - 10;
+
+	if (isNearBottom) {
+		onScrollToBottom();
+	} else {
+		emit('scroll', event);
+	}
+}
+
+function onScrollToBottom() {
+	emit('scrolledToBottom');
+	unreadLogsChipVisible.value = true;
 }
 </script>
 
@@ -110,7 +161,7 @@ async function scrollUpByOne() {
 		key-field="index"
 		:min-item-size="30"
 		class="logs-display"
-		@scroll="emit('scroll', $event)"
+		@scroll="onScroll"
 	>
 		<template #before>
 			<div class="notice">This is the beginning of your logs session...</div>

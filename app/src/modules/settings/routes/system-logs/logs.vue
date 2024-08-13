@@ -39,7 +39,7 @@ const logDetailSearch = ref('');
 const logDetailVisible = ref(false);
 const logDetailIndex = ref(-1);
 const selectedLog = ref<Log>();
-const autoScroll = ref(true);
+let autoScroll = true;
 const logsCount = ref(0);
 const purgedLogsCount = ref(0);
 const unreadLogsCount = ref(0);
@@ -90,7 +90,7 @@ watch([logLevelNames, nodeIds, search], () => {
 });
 
 watch(filteredLogs, (cur, prev) => {
-	if (autoScroll.value) return;
+	if (autoScroll) return;
 
 	if (isFilterOptionsUpdated) {
 		unreadLogsCount.value = 0;
@@ -237,8 +237,10 @@ function addLog(log: Log) {
 		logDetailIndex.value--;
 	}
 
-	if (autoScroll.value) {
+	if (autoScroll) {
 		logsDisplay.value?.scrollToBottom();
+	} else {
+		unreadLogsCount.value++;
 	}
 
 	logsCount.value++;
@@ -330,12 +332,19 @@ function clearLogs() {
 function onScroll(event: Event) {
 	const scroller = event.target as HTMLElement;
 
-	if (scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1) {
-		autoScroll.value = true;
-		logsDisplay.value?.scrollToBottom();
+	const isNearBottom = scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 10;
+
+	if (isNearBottom) {
+		autoScroll = true;
+		unreadLogsCount.value = 0;
 	} else {
-		autoScroll.value = false;
+		autoScroll = false;
 	}
+}
+
+function onScrollBottom() {
+	autoScroll = true;
+	unreadLogsCount.value = 0;
 }
 
 function handleUpDownKey(isUp: boolean) {
@@ -447,7 +456,7 @@ onUnmounted(() => {
 						:unread-logs-count="unreadLogsCount"
 						@expand-log="maximizeLog"
 						@scroll="onScroll"
-						@scrolled-to-bottom="unreadLogsCount = 0"
+						@scrolled-to-bottom="onScrollBottom"
 					/>
 				</div>
 				<transition name="fade">
