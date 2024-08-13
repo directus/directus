@@ -241,11 +241,7 @@ function addLog(log: Log) {
 		logDetailIndex.value--;
 	}
 
-	if (autoScroll) {
-		logsDisplay.value?.scrollToBottom();
-	} else {
-		unreadLogsCount.value++;
-	}
+	logsDisplay.value?.scrollToBottom();
 
 	logsCount.value++;
 }
