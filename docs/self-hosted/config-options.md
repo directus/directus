@@ -489,9 +489,8 @@ middleman servers (like CDNs) and even the browser.
 
 ::: tip Internal Caching
 
-In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` which
-is enabled by default. This speed up the overall performance of Directus, as we don't want to introspect the whole
-database on every request.
+In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` which is enabled by default.
+This speed up the overall performance of Directus, as we don't want to introspect the whole database on every request.
 
 :::
 
@@ -504,7 +503,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 :::
 
 | Variable                                     | Description                                                                                                               | Default Value                        |
-| -------------------------------------------- |---------------------------------------------------------------------------------------------------------------------------| ------------------------------------ |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
 | `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                   | `false`                              |
 | `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                     | `5m`                                 |
 | `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                                 | `0`                                  |
