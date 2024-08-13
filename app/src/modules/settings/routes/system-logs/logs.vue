@@ -473,10 +473,11 @@ onUnmounted(() => {
 								icon-right="search"
 								@input="logDetailSearch = $event"
 							/>
+						</div>
+						<div ref="codemirrorEl" class="raw-log">
 							<v-button
 								v-if="isCopySupported"
 								class="copy-button"
-								large
 								secondary
 								icon
 								@click="copyToClipboard(codemirror?.getValue())"
@@ -484,7 +485,6 @@ onUnmounted(() => {
 								<v-icon name="content_copy" />
 							</v-button>
 						</div>
-						<div ref="codemirrorEl" class="raw-log"></div>
 					</div>
 				</transition>
 			</div>
@@ -573,12 +573,17 @@ onUnmounted(() => {
 }
 
 .copy-button {
-	margin-left: 10px;
+	float: right;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 10;
 }
 
 .raw-log {
 	height: 100%;
 	margin: 4px;
+	position: relative;
 	overflow: auto;
 	background-color: var(--theme--background);
 	font-family: var(--theme--fonts--monospace--font-family);
