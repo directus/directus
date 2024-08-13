@@ -274,6 +274,8 @@ function pauseLogsStreaming() {
 }
 
 function maximizeLog(index: number) {
+	autoScroll = false;
+
 	const correctedIndex = index - purgedLogsCount.value;
 
 	if (logs.value[correctedIndex]) {
