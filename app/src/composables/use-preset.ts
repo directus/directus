@@ -3,7 +3,7 @@ import { useUserStore } from '@/stores/user';
 import { translate } from '@/utils/translate-literal';
 import type { User } from '@directus/types';
 import { Filter, Preset } from '@directus/types';
-import { assign, debounce, isEqual } from 'lodash';
+import { assign, cloneDeep, debounce, isEqual } from 'lodash';
 import { ComputedRef, Ref, computed, ref, watch } from 'vue';
 
 type UsablePreset = {
@@ -69,8 +69,8 @@ export function usePreset(
 		return updatedValues;
 	};
 
-	const autoSave = debounce(async () => {
-		savePreset();
+	const autoSave = debounce(async (preset?: Partial<Preset>) => {
+		savePreset(preset);
 	}, 450);
 
 	/**
@@ -82,7 +82,8 @@ export function usePreset(
 			const bookmarkInStore = presetsStore.getBookmark(Number(bookmark.value));
 			bookmarkSaved.value = isEqual(localPreset.value, bookmarkInStore);
 		} else {
-			autoSave();
+			const preset = cloneDeep(localPreset.value);
+			autoSave(preset);
 		}
 	}
 
