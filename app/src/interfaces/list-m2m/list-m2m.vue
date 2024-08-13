@@ -419,7 +419,8 @@ function getLinkForItem(item: DisplayItem) {
 	return null;
 }
 
-const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
+const { createAllowed, updateAllowed, deleteAllowed, selectAllowed, junctionUpdateAllowed } =
+	useRelationPermissionsM2M(relationInfo);
 </script>
 
 <template>
@@ -476,7 +477,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
-				:disabled="!updateAllowed"
+				:disabled="!(updateAllowed || junctionUpdateAllowed)"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
 				show-resize
@@ -608,7 +609,7 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
+			:disabled="disabled || (!(updateAllowed || junctionUpdateAllowed) && currentlyEditing !== null)"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"

@@ -48,9 +48,9 @@ export function useRelationPermissionsM2M(info: Ref<RelationM2M | undefined>) {
 
 	const selectAllowed = computed(() => junctionPermissions.createAllowed.value);
 
-	const updateAllowed = computed(
-		() => junctionPermissions.updateAllowed.value && relatedPermissions.updateAllowed.value,
-	);
+	const junctionUpdateAllowed = computed(() => junctionPermissions.updateAllowed.value);
+
+	const updateAllowed = computed(() => junctionUpdateAllowed.value && relatedPermissions.updateAllowed.value);
 
 	const deleteAllowed = computed(() => {
 		if (info.value?.junction.meta?.one_deselect_action === 'delete') {
@@ -65,6 +65,7 @@ export function useRelationPermissionsM2M(info: Ref<RelationM2M | undefined>) {
 		selectAllowed,
 		updateAllowed,
 		deleteAllowed,
+		junctionUpdateAllowed,
 	};
 }
 

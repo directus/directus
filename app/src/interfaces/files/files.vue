@@ -107,7 +107,8 @@ const {
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
-const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissionsM2M(relationInfo);
+const { createAllowed, updateAllowed, selectAllowed, deleteAllowed, junctionUpdateAllowed } =
+	useRelationPermissionsM2M(relationInfo);
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
@@ -283,7 +284,7 @@ const allowDrag = computed(
 		totalItemCount.value <= limit.value &&
 		relationInfo.value?.sortField !== undefined &&
 		!props.disabled &&
-		updateAllowed.value,
+		junctionUpdateAllowed.value,
 );
 </script>
 
@@ -316,7 +317,7 @@ const allowDrag = computed(
 					<v-list-item
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
-						:disabled="disabled || !updateAllowed"
+						:disabled="disabled || !(updateAllowed || junctionUpdateAllowed)"
 						block
 						clickable
 						@click="editItem(element)"
@@ -371,7 +372,7 @@ const allowDrag = computed(
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
+			:disabled="disabled || (!(updateAllowed || junctionUpdateAllowed) && currentlyEditing !== null)"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
