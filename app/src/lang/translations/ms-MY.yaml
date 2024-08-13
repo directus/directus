@@ -192,6 +192,8 @@ fields:
   directus_roles:
     name: Nama peranan
     description: Penerangan
+  directus_policies:
+    description: Penerangan
   directus_webhooks:
     name: Nama
     status: Status

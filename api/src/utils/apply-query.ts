@@ -7,6 +7,7 @@ import type {
 	FieldOverview,
 	Filter,
 	NumericType,
+	Permission,
 	Query,
 	Relation,
 	SchemaOverview,
@@ -18,6 +19,7 @@ import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../database/helpers/index.js';
 import { applyCaseWhen } from '../database/run-ast/utils/apply-case-when.js';
+import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
@@ -45,6 +47,7 @@ export default function applyQuery(
 	query: Query,
 	schema: SchemaOverview,
 	cases: Filter[],
+	permissions: Permission[],
 	options?: ApplyQueryOptions,
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
@@ -82,7 +85,7 @@ export default function applyQuery(
 	const filter: Filter | null = joinFilterWithCases(query.filter, cases);
 
 	if (filter) {
-		const filterResult = applyFilter(knex, schema, dbQuery, filter, collection, aliasMap, cases);
+		const filterResult = applyFilter(knex, schema, dbQuery, filter, collection, aliasMap, cases, permissions);
 
 		if (!hasJoins) {
 			hasJoins = filterResult.hasJoins;
@@ -104,6 +107,7 @@ export default function applyQuery(
 						aliasMap,
 						cases,
 						table: collection,
+						permissions,
 					},
 					{
 						knex,
@@ -448,6 +452,7 @@ export function applyFilter(
 	collection: string,
 	aliasMap: AliasMap,
 	cases: Filter[],
+	permissions: Permission[],
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
@@ -567,27 +572,36 @@ export function applyFilter(
 						pkField = knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), [pkField]);
 					}
 
-					const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-						const field = relation!.field;
-						const collection = relation!.collection;
-						const column = `${collection}.${field}`;
-
-						subQueryKnex
-							.select({ [field]: column })
-							.from(collection)
-							.whereNotNull(column);
-
-						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases);
-					};
-
 					const childKey = Object.keys(value)?.[0];
 
-					if (childKey === '_none') {
-						dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
-						continue;
-					} else if (childKey === '_some') {
-						dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
-						continue;
+					if (childKey === '_none' || childKey === '_some') {
+						const subQueryBuilder =
+							(filter: Filter, cases: Filter[]) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+								const field = relation!.field;
+								const collection = relation!.collection;
+								const column = `${collection}.${field}`;
+
+								subQueryKnex
+									.select({ [field]: column })
+									.from(collection)
+									.whereNotNull(column);
+
+								applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases, permissions);
+							};
+
+						const { cases: subCases } = getCases(relation!.collection, permissions, []);
+
+						if (childKey === '_none') {
+							dbQuery[logical].whereNotIn(
+								pkField as string,
+								subQueryBuilder(Object.values(value)[0] as Filter, subCases),
+							);
+
+							continue;
+						} else if (childKey === '_some') {
+							dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
+							continue;
+						}
 					}
 				}
 

@@ -708,8 +708,8 @@ fields:
     name: Nomo de la rolo
     icon: Emblemo de la rolo
     description: Priskribo
-    ip_access: IP-adreso
-    enforce_tfa: Postuli dufaktoran kontroladon
+  directus_policies:
+    description: Priskribo
   directus_webhooks:
     name: Nomo
     method: Metodo

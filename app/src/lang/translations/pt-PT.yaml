@@ -786,12 +786,9 @@ fields:
   directus_roles:
     name: Nome do cargo
     description: Descrição
-    app_access: Acesso da aplicação
-    admin_access: Acesso de administrador
-    ip_access: Acesso IP
-    enforce_tfa: Exigir 2FA
     users: Utilizadores na função
-    module_list: Navegação do Modulo
+  directus_policies:
+    description: Descrição
   directus_webhooks:
     name: Nome
     status: Estado

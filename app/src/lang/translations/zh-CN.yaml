@@ -1086,7 +1086,6 @@ editing_unit: '正在编辑 {unit}'
 editing_in_batch: '批量编辑 {count} 条数据'
 no_options_available: 无可用的选项
 settings_data_model: 数据模型
-settings_permissions: 访问控制
 settings_project: 设置
 settings_appearance: 外观
 settings_webhooks: Webhook
@@ -1136,7 +1135,6 @@ page_help_settings_datamodel_collections: >-
   **数据模型: ** - 列出所有可用的模型。这包括可见、隐藏和系统模型，以及可以添加的数据库表（包括还未加入并管理的）。
 page_help_settings_datamodel_fields: >-
   **数据模型: Collection** — 用于管理此模型及其字段的表单
-page_help_settings_roles_collection: '**Browse Roles** - 列出管理员、公共和自定义用户角色。'
 page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
 page_help_settings_presets_collection: >-
   **Browse Presets** - 列出项目中的所有预设，包括：用户、角色、全局书签以及默认视图。
@@ -1195,7 +1193,6 @@ directus_collection:
   directus_notifications: 发送给用户的通知
   directus_operations: 在Flow中运行的操作
   directus_panels: Insights仪表板中的个别面板
-  directus_permissions: 每个角色的访问权限
   directus_presets: 书签/预设默认值
   directus_relations: 元数据和关系配置
   directus_revisions: 数据快照
@@ -1372,12 +1369,9 @@ fields:
     name: 角色名称
     icon: 角色 Icon
     description: 描述
-    app_access: App 访问
-    admin_access: 管理员访问
-    ip_access: IP 访问
-    enforce_tfa: 请求两步验证
     users: 角色中的用户
-    module_list: 模块导航
+  directus_policies:
+    description: 描述
   directus_webhooks:
     name: 名称
     method: 方法
@@ -1463,7 +1457,6 @@ field_options:
   directus_roles:
     name: 角色名称...
     description: 角色介绍...
-    ip_access: 添加允许的 IP 地址、 IP 范围和 CIDR 块。留空以允许所有...
     fields:
       icon_name: 图标
       name_name: 名称

@@ -110,6 +110,7 @@ field_name_translations: Переводы названия поля
 enter_password_to_enable_tfa: Введите свой пароль для включения двухфакторной аутентификации
 add_field: Добавить поле
 role_name: Название роли
+policy_name: Название политики
 branch: Ветвь
 leaf: Терминальный узел
 indeterminate: Неопределенный
@@ -127,6 +128,7 @@ requires_value: Требуется значение
 create_preset: Создать шаблон
 create_panel: Создать панель
 create_role: Создать роль
+create_policy: Создать политику
 create_user: Создать пользователя
 message: Сообщение
 delete_panel: Удалить панель
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Сессия истекла
 public_label: Публичный
 public_description: Контролирует, какие данные API доступны без входа в личный кабинет.
+public_role_info: >-
+  Публичная роль определяет, какие данные API доступны для неавторизованных пользователей или пользователей без роли. Запросы с публичной ролью не могут иметь доступ к приложению или администратору. Если приложению или администратору предоставлен доступ к политике, назначенной публичной роли, они будут проигнорированы.
 admin_description: Начальная административная роль с неограниченным доступом к приложениям/API.
+admin_policy_description: Начальная административная роль с неограниченным доступом к приложениям/API.
 no_description: Нет описания...
 reached_maximum_number_of_extensions: Вы достигли максимального количества расширений для этого проекта ({n}). Обратитесь к системному администратору для получения дополнительной информации.
 not_allowed: Не разрешено
@@ -255,9 +260,13 @@ field_permissions: Разрешения поля
 field_validation: Проверка поля
 field_presets: Шаблоны поля
 permissions_for_role: 'Элементы, для которых роль «{role}» имеет разрешение {action}.'
+permissions_for_policy: 'Элементы, для которых политика «{policy}» имеет разрешение {action}.'
 fields_for_role: 'Поля, для которых роль «{role}» имеет разрешение {action}.'
+fields_for_policy: 'Поля, для которых политика «{policy}» имеет разрешение {action}.'
 validation_for_role: 'Правила, которым должна следовать роль «{role}» для {action} в поле.'
+validation_for_policy: 'Поле {action} правил политики {policy} должны подчиняться.'
 presets_for_role: 'Значения поля по умолчанию для роли «{role}».'
+presets_for_policy: 'Значения поля по умолчанию для роли «{policy}».'
 presets_field_warning: 'Реляционные предустановки для поля «{field}» должны быть настроены с использованием «подробного» синтаксиса.'
 presentation_and_aliases: Оформление и псевдонимы
 revision_post_create: Вот как этот элемент выглядел, когда он был создан.
@@ -363,6 +372,7 @@ no_collections_found: Нет найденных коллекций.
 new_data_alert: 'В вашей модели данных будет создано следующее:'
 search_collection: Поиск коллекций...
 search_role: Поиск роли...
+search_policy: Поиск политики...
 search_field: Поиск полей...
 new_field: 'Новое поле'
 new_collection: 'Новая коллекция'
@@ -513,6 +523,11 @@ hours: Часов
 month: Месяц
 year: Год
 select_all: Выбрать все
+permissionsLevel:
+  all: Полный доступ к {action}
+  partial: Частичный доступ к {action}
+  custom: Частичный доступ к {action}
+  none: Нет доступа к {action}
 months:
   january: Январь
   february: Февраль
@@ -650,6 +665,7 @@ copy_to: Скопировать в...
 no_other_dashboards_copy: У вас пока нет других досок.
 inactive: Неактивный
 users: Пользователи
+roles: Роли
 activity: Активность
 activity_item: Элемент истории действий
 action: Действие
@@ -1087,7 +1103,8 @@ editing_unit: 'Редактирование {unit}'
 editing_in_batch: 'Пакетное редактирование {count} элементов'
 no_options_available: Нет доступных вариантов
 settings_data_model: Модель данных
-settings_permissions: Контроль доступа
+settings_roles: Роли пользователей
+settings_permissions: Политики доступа
 settings_project: Настройки
 settings_appearance: Внешний вид
 settings_webhooks: Веб-хуки
@@ -1137,7 +1154,9 @@ page_help_settings_datamodel_collections: >-
   **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
   **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
-page_help_settings_roles_collection: '**Просмотр ролей** — список администраторских, общедоступных и пользовательских ролей.'
+page_help_settings_policies_collection: '**Просмотреть политики** — список всех политик проекта.'
+page_help_settings_policies_item: "**Подробнее о политике** — Управление разрешениями политики и другими настройками."
+page_help_settings_roles_collection: '**Обзор ролей** — список всех ролей в проекте.'
 page_help_settings_roles_item: "**Карточка роли** — управление разрешениями роли и другими настройками."
 page_help_settings_presets_collection: >-
   **Просмотр шаблонов** — список всех шаблонов в проекте, включая: пользователей, роли и глобальные закладки, а также представления по умолчанию.
@@ -1185,6 +1204,7 @@ singleton: Синглтон
 singleton_label: Считать одним объектом
 system_fields_locked: Системные поля заблокированы и не могут быть изменены
 directus_collection:
+  directus_access: Вложения политики
   directus_activity: Журналы отчётности по всем событиям
   directus_collections: Дополнительные настройки коллекции и метаданные
   directus_dashboards: Панели инструментов в модуле Аналитика
@@ -1196,7 +1216,8 @@ directus_collection:
   directus_notifications: Уведомления, отправленные пользователям
   directus_operations: Операции, которые выполняются в процессах
   directus_panels: Панели в досках модуля Аналитика
-  directus_permissions: Права доступа для каждой роли
+  directus_permissions: Разрешения доступа для каждой политики
+  directus_policies: Политика контроля доступа
   directus_presets: Шаблоны для коллекций по умолчанию и закладки
   directus_relations: Настройки отношений и метаданные
   directus_revisions: Снимки данных для всех действий
@@ -1235,7 +1256,7 @@ fields:
     unarchive_value: Значение для извлеченных из архива
     sort_field: Поле сортировки
     accountability: Отслеживание действий и редакций
-    versioning: Версионирование
+    versioning: Управление версиями
     archive_field: Архивировать поле
     item_duplication_fields: Поля дублирования предметов
   directus_files:
@@ -1373,12 +1394,16 @@ fields:
     name: Название роли
     icon: Иконка роли
     description: Описание
+    users: Пользователи в роли
+    parent: Родительская роль
+    children: Дочерние роли
+  directus_policies:
+    name: Название политики
+    description: Описание
     app_access: Доступ к приложению
     admin_access: Доступ администратора
-    ip_access: IP-адреса
+    ip_access: IP-доступ
     enforce_tfa: Требуется 2FA
-    users: Пользователи в роли
-    module_list: Навигация по модулям
   directus_webhooks:
     name: Название
     method: Метод
@@ -1461,16 +1486,23 @@ field_options:
     focal_point_divider: Точка фокуса
     filename_disk: Имя на диске...
     filename_download: Имя при скачивании...
+  directus_policies:
+    name: Уникальное название для этой политики...
+    description: Описание этой политики...
+    ip_access: Добавьте разрешенные IP-адреса, диапазоны IP и блоки CIDR. Оставьте пустым, чтобы разрешить любые...
+    enforce_tfa: Принудительно включить двухфакторную аутентификацию
+    assigned_to: Назначенные для
   directus_roles:
     name: Уникальное название для этой роли...
     description: Описание этой роли...
-    ip_access: Добавьте разрешенные IP-адреса, диапазоны IP и блоки CIDR. Оставьте пустым, чтобы разрешить любые...
     fields:
       icon_name: Иконка
       name_name: Название
       name_placeholder: Введите название...
       link_name: Ссылка
       link_placeholder: Относительный или абсолютный URL-адрес...
+    parent_note: Необязательная родительская роль, от которой эта роль наследует разрешения
+    children_note: Вложенные роли потомков, которые наследуют права доступа этой роли
     collections_name: Коллекции
     collections_addLabel: Добавить коллекцию...
   directus_users:
@@ -1517,7 +1549,7 @@ live_preview:
   change_size: Изменить размеры отображения
   refresh: Обновить Предпросмотр
   new_window: Открыть в новом окне
-  close_window: Открыть в сплит-режиме
+  close_window: Открыть в режиме разделённого экрана
   toggle_3d: Переключить 3D
 shares: Элементы Общего доступа
 unlimited_usage: Неограниченное использование
@@ -1555,6 +1587,9 @@ continue_label: Продолжить
 continue_as: >-
   {name} в данный момент аутентифицирован. Если вы узнаёте эту учётную запись, нажмите продолжить.
 editing_role: '{role} Роль'
+editing_policy: 'Политика {policy}'
+no_permissions: Нет прав доступа
+permission_add_collection: Добавить коллекцию
 creating_webhook: Создание Веб-хука
 default_label: По умолчанию
 delete_label: Удалить

@@ -807,7 +807,11 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(table: Knex.CreateTableBuilder, field: RawField | Field, alter: Column | null = null): void {
+	public addColumnToTable(
+		table: Knex.CreateTableBuilder,
+		field: RawField | Field,
+		existing: Column | null = null,
+	): void {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -845,47 +849,51 @@ export class FieldsService {
 			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
-		if (field.schema?.default_value !== undefined) {
-			if (
-				typeof field.schema.default_value === 'string' &&
-				(field.schema.default_value.toLowerCase() === 'now()' || field.schema.default_value === 'CURRENT_TIMESTAMP')
-			) {
+		const defaultValue =
+			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
+
+		if (defaultValue) {
+			const newDefaultValueIsString = typeof defaultValue === 'string';
+			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
+			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
+			const newDefaultIsSetToCurrentTime = newDefaultIsNowFunction || newDefaultIsCurrentTimestamp;
+
+			const newDefaultIsTimestampWithPrecision =
+				newDefaultValueIsString && defaultValue.includes('CURRENT_TIMESTAMP(') && defaultValue.includes(')');
+
+			if (newDefaultIsSetToCurrentTime) {
 				column.defaultTo(this.knex.fn.now());
-			} else if (
-				typeof field.schema.default_value === 'string' &&
-				field.schema.default_value.includes('CURRENT_TIMESTAMP(') &&
-				field.schema.default_value.includes(')')
-			) {
-				const precision = field.schema.default_value.match(REGEX_BETWEEN_PARENS)![1];
+			} else if (newDefaultIsTimestampWithPrecision) {
+				const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
 				column.defaultTo(this.knex.fn.now(Number(precision)));
 			} else {
-				column.defaultTo(field.schema.default_value);
-			}
-		}
-
-		if (field.schema?.is_nullable === false) {
-			if (!alter || alter.is_nullable === true) {
-				column.notNullable();
+				column.defaultTo(defaultValue);
 			}
 		} else {
-			if (!alter || alter.is_nullable === false) {
-				column.nullable();
-			}
+			column.defaultTo(null);
+		}
+
+		const isNullable = field.schema?.is_nullable ?? existing?.is_nullable ?? true;
+
+		if (isNullable) {
+			column.nullable();
+		} else {
+			column.notNullable();
 		}
 
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
 		} else if (field.schema?.is_unique === true) {
-			if (!alter || alter.is_unique === false) {
+			if (!existing || existing.is_unique === false) {
 				column.unique();
 			}
 		} else if (field.schema?.is_unique === false) {
-			if (alter && alter.is_unique === true) {
+			if (existing && existing.is_unique === true) {
 				table.dropUnique([field.field]);
 			}
 		}
 
-		if (alter) {
+		if (existing) {
 			column.alter();
 		}
 	}
