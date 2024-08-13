@@ -568,6 +568,7 @@ onUnmounted(() => {
 	border-top: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	box-shadow: var(--sidebar-shadow);
+	z-index: 5;
 }
 
 .log-detail-controls {
