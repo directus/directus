@@ -16,6 +16,7 @@ import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
 import getLocalType from './get-local-type.js';
+import { compress, decompress } from './compress.js';
 
 const logger = useLogger();
 
@@ -73,10 +74,15 @@ export async function getSchema(
 		const subscription = new Promise<SchemaOverview>((resolve, reject) => {
 			bus.subscribe(messageKey, busListener).catch(reject);
 
-			function busListener(options: { schema: SchemaOverview }) {
+			async function busListener(options: { schema: Buffer | null }) {
+				if (options.schema === null) {
+					return reject();
+				}
+
 				cleanup();
-				setLocalSchemaCache(options.schema).catch(reject);
-				resolve(options.schema);
+				const schema: SchemaOverview = await decompress(options.schema).catch(reject);
+				setLocalSchemaCache(schema).catch(reject);
+				resolve(schema);
 			}
 
 			function cleanup() {
@@ -97,8 +103,8 @@ export async function getSchema(
 		await setLocalSchemaCache(schema);
 		return schema;
 	} finally {
+		await bus.publish(messageKey, { schema: schema ? await compress(schema) : null });
 		await lock.delete(lockKey);
-		bus.publish(messageKey, { ready: true, schema });
 	}
 }
 
@@ -217,3 +223,4 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 
 	return result;
 }
+``
