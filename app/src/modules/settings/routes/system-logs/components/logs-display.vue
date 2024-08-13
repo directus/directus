@@ -11,6 +11,7 @@ interface Props {
 	logLevels: Record<string, number>;
 	instances: string[];
 	unreadLogsCount: number;
+	streamConnected: boolean;
 }
 
 const props = defineProps<Props>();
@@ -167,7 +168,7 @@ function onScrollToBottom() {
 			<div class="notice">This is the beginning of your logs session...</div>
 		</template>
 		<template #after>
-			<div class="notice">Awaiting more logs...</div>
+			<div v-if="streamConnected" class="notice">Awaiting more logs...</div>
 		</template>
 		<template #default="{ item, index, active }">
 			<dynamic-scroller-item

@@ -454,6 +454,7 @@ onUnmounted(() => {
 						:log-levels="allowedLogLevels"
 						:instances="instances"
 						:unread-logs-count="unreadLogsCount"
+						:stream-connected="streamConnected"
 						@expand-log="maximizeLog"
 						@scroll="onScroll"
 						@scrolled-to-bottom="onScrollBottom"
