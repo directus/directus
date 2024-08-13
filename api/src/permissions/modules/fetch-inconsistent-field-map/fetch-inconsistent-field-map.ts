@@ -1,8 +1,7 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
-import { uniq, intersection, difference, pick } from 'lodash-es';
+import { uniq, intersection, difference } from 'lodash-es';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import { withCache } from '../../utils/with-cache.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 
 export type FieldMap = Record<string, string[]>;
@@ -15,16 +14,7 @@ export interface FetchInconsistentFieldMapOptions {
 /**
  * Fetch a field map for fields that may or may not be null based on item-by-item permissions.
  */
-export const fetchInconsistentFieldMap = withCache(
-	'inconsistent-field-map',
-	_fetchInconsistentFieldMap,
-	({ action, accountability }) => ({
-		action,
-		accountability: accountability ? pick(accountability, ['user', 'role', 'roles', 'ip', 'admin', 'app']) : null,
-	}),
-);
-
-export async function _fetchInconsistentFieldMap(
+export async function fetchInconsistentFieldMap(
 	{ accountability, action }: FetchInconsistentFieldMapOptions,
 	{ knex, schema }: Context,
 ) {
