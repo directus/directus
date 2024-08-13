@@ -429,7 +429,7 @@ onUnmounted(() => {
 				class="action-clear"
 				@click="clearLogs"
 			>
-				<v-icon name="delete" />
+				<v-icon name="mop" />
 			</v-button>
 		</template>
 
@@ -504,10 +504,10 @@ onUnmounted(() => {
 }
 
 .action-clear {
-	--v-button-background-color: var(--danger-10);
-	--v-button-color: var(--theme--danger);
-	--v-button-background-color-hover: var(--danger-25);
-	--v-button-color-hover: var(--theme--danger);
+	--v-button-background-color: var(--theme--background-normal);
+	--v-button-color: var(--theme--foreground);
+	--v-button-background-color-hover: var(--theme--danger);
+	--v-button-color-hover: var(--white);
 }
 
 .logs-container {
