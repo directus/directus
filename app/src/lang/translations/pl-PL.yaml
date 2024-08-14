@@ -1797,6 +1797,8 @@ interfaces:
     preview: Podgląd
     editorFont: Czcionka edytora
     previewFont: Podgląd czcionki
+    default_view: Widok domyślny
+    default_view_preview: Podgląd
     customSyntax: Niestandardowe bloki
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię
