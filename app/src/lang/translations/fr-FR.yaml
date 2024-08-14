@@ -1776,6 +1776,8 @@ interfaces:
     preview: Prévisualiser
     editorFont: Police de caractère de l'éditeur
     previewFont: Aperçu de la police
+    default_view: Vue par défaut
+    default_view_preview: Prévisualiser
     customSyntax: Blocs personnalisés
     customSyntax_label: Ajouter des types de syntaxe personnalisés
     customSyntax_add: Ajouter une syntaxe personnalisée
