@@ -1475,6 +1475,7 @@ interfaces:
     preview: Vista prèvia
     editorFont: Editor de tipografia
     previewFont: Previsualita la tipografia
+    default_view_preview: Vista prèvia
     customSyntax: Blocs personalitzats
     customSyntax_label: Afegeix tipus de sintaxi personalitzats
     customSyntax_add: Afegeix sintaxi personalitzada
