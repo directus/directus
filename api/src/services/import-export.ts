@@ -178,6 +178,8 @@ export class ImportService {
 
 			const PapaOptions: Papa.ParseConfig = {
 				header: true,
+				// Trim whitespaces in headers, including the byte order mark (BOM) zero-width no-break space
+				transformHeader: (header) => header.trim(),
 				transform,
 			};
 
