@@ -918,7 +918,6 @@ page_help_settings_datamodel_collections: >-
   **Tietomalli: kokoelmat** — Luettelee kaikki saatavilla olevat kokoelmat. Tämä sisältää näkyvät, piilotetut ja järjestelmäkokoelmat sekä hallitsemattomat tietokantataulut, jotka voidaan lisätä.
 page_help_settings_datamodel_fields: >-
   **Tietomalli: kokoelma** — Lomake tämän kokoelman ja sen kenttien hallintaa varten.
-page_help_settings_roles_collection: '**Selaa rooleja** — Listaa Admin, Julkiset ja mukautetut käyttäjäroolit.'
 page_help_settings_roles_item: "**Roolin yksityiskohdat** — Hallitse roolin käyttöoikeuksia ja muita asetuksia."
 page_help_settings_presets_collection: >-
   **Selaa esiasetuksia** — Listaa kaikki projektin esiasetukset, mukaan lukien käyttäjät, roolit ja maailmanlaajuiset kirjanmerkit sekä oletusnäkymät.
@@ -1082,12 +1081,9 @@ fields:
     name: Roolin nimi
     icon: Roolin kuvake
     description: Kuvaus
-    app_access: Sovelluspääsy
-    admin_access: Ylläpitäjän pääsy
-    ip_access: IP-pääsy
-    enforce_tfa: Vaadi 2FA
     users: Käyttäjät roolissa
-    module_list: Moduulien navigointi
+  directus_policies:
+    description: Kuvaus
   directus_webhooks:
     name: Nimi
     method: Metodi

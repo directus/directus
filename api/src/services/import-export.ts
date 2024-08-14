@@ -402,7 +402,6 @@ export class ExportService {
 
 			if (this.accountability?.user) {
 				const notificationsService = new NotificationsService({
-					accountability: this.accountability,
 					schema: this.schema,
 				});
 
@@ -436,7 +435,6 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 
 			if (this.accountability?.user) {
 				const notificationsService = new NotificationsService({
-					accountability: this.accountability,
 					schema: this.schema,
 				});
 

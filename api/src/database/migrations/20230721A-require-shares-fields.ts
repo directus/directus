@@ -1,11 +1,10 @@
 import { createInspector } from '@directus/schema';
 import type { Knex } from 'knex';
 import { useLogger } from '../../logger/index.js';
-import { getHelpers } from '../helpers/index.js';
+import { getDatabaseClient } from '../index.js';
 
 export async function up(knex: Knex): Promise<void> {
-	const helper = getHelpers(knex).schema;
-	const isMysql = helper.isOneOfClients(['mysql']);
+	const isMysql = getDatabaseClient(knex) === 'mysql';
 
 	if (isMysql) {
 		await dropConstraint(knex);
@@ -22,8 +21,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	const helper = getHelpers(knex).schema;
-	const isMysql = helper.isOneOfClients(['mysql']);
+	const isMysql = getDatabaseClient(knex) === 'mysql';
 
 	if (isMysql) {
 		await dropConstraint(knex);

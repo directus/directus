@@ -963,7 +963,6 @@ directus_collection:
   directus_notifications: 傳送給使用者的通知
   directus_operations: 執行在流程中的操作
   directus_panels: 在儀表板中的獨立面板
-  directus_permissions: 每種角色的使用權限
   directus_presets: 資料集以及書籤的預設值
   directus_relations: 關聯資料及元資料的設定
   directus_revisions: 所有操作的資料快照
@@ -1110,12 +1109,9 @@ fields:
     name: 角色名稱
     icon: 角色圖示
     description: 描述說明
-    app_access: 管理介面存取
-    admin_access: 管理者存取
-    ip_access: IP存取
-    enforce_tfa: 必須兩步驟登入
     users: 角色中的使用者
-    module_list: 模組導覽
+  directus_policies:
+    description: 描述說明
   directus_webhooks:
     name: 名稱
     method: 方法

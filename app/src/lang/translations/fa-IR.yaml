@@ -1018,7 +1018,6 @@ page_help_settings_datamodel_collections: >-
   **مدل داده: مجموعه ها** - تمامی مجموعه های موجود را لیست می کند. این شامل مجموعه های پیدا و نهان و مجموعه های سیستمی و همچنین جداول پایگاه داده مدیریت نشده ای است که میتوانند اضافه شوند.
 page_help_settings_datamodel_fields: >-
   **مدل داده: مجموعه** - فرمی برای مدیریت مجموعه و فیلدهای آن.
-page_help_settings_roles_collection: '**مرور نقش های کاربری** - لیستی از نقشهای ادمین، عمومی و نقشهای کاربری سفارشی.'
 page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
 page_help_settings_presets_collection: >-
   **مرور الگوها** - لیستی از تمامی الگوهای موجود در پروژه شامل: کاربر، نقش و نشانک های بالاترین سطح بعلاوه نماهای پیش فرض.
@@ -1062,7 +1061,6 @@ directus_collection:
   directus_notifications: اعلانهای ارسالی به کاربر
   directus_operations: عملیاتی که در جریان‌ها اجرا می شوند
   directus_panels: پنل‌های مجزا در داشبوردها
-  directus_permissions: دسترسی به اجازه های این نقش
   directus_presets: تنظیمات پیش‌فرض برای مجموعه و بوکمارک‌ها
   directus_relations: پیکربندی رابطه و داده متا
   directus_revisions: عکس های فوری داده برای همه فعالیت ها
@@ -1212,12 +1210,9 @@ fields:
     name: نام نقش
     icon: آیکن نقش
     description: توضیحات
-    app_access: دسترسی به برنامه
-    admin_access: دسترسی به سامانه مدیریت
-    ip_access: محدودیت IP
-    enforce_tfa: اجبار به احراز هویت دو عاملی
     users: کاربران دارای این نقش
-    module_list: نویگیشن مربوط به ماژول
+  directus_policies:
+    description: توضیحات
   directus_webhooks:
     name: نام
     method: شیوه یا متود

@@ -1087,7 +1087,6 @@ editing_unit: 'Редагування {unit}'
 editing_in_batch: 'Пакетне редагування {count} елементів'
 no_options_available: Варіанти недоступні
 settings_data_model: Модель даних
-settings_permissions: Управління доступом
 settings_project: Налаштування
 settings_appearance: Вигляд
 settings_webhooks: Вебхуки
@@ -1137,7 +1136,6 @@ page_help_settings_datamodel_collections: >-
   **Модель даних: колекції** — перелічує всі доступні колекції. Це включає видимі, приховані та системні колекції, а також незмінені таблиці бази даних, які можна додавати.
 page_help_settings_datamodel_fields: >-
   **Модель даних: колекція** — форма для керування цією колекцією та її полями.
-page_help_settings_roles_collection: '**Огляд ролей** — перелічує ролі адміністратора, загальнодоступних і настроюваних користувачів.'
 page_help_settings_roles_item: "**Детальна інформація про роль** — керуйте дозволами для ролі та іншими налаштуваннями."
 page_help_settings_presets_collection: >-
   **Огляд запрограмованих налаштувань** — перелік усіх попередніх налаштувань у проекті, включаючи: користувача, роль та глобальні закладки, а також вигляди за замовчуванням.
@@ -1196,7 +1194,6 @@ directus_collection:
   directus_notifications: Сповіщення відіслано користувачам
   directus_operations: Дії які виконуються Автоматизацією
   directus_panels: Окремі панелі на панелях керування інсайтів
-  directus_permissions: Доступ до дозволів для кожної ролі
   directus_presets: Попередні налаштування для передустановок і закладок колекції
   directus_relations: Конфігурація зв'язків і метадані
   directus_revisions: Знімки даних для всіх видів діяльності
@@ -1373,12 +1370,9 @@ fields:
     name: Назва ролі
     icon: Іконка ролі
     description: Опис
-    app_access: Доступ до додатку
-    admin_access: Адміністративний доступ
-    ip_access: IP адреса
-    enforce_tfa: Потрібен 2FA
     users: Користувачі у ролі
-    module_list: Перемкнути навігацію
+  directus_policies:
+    description: Опис
   directus_webhooks:
     name: Назва
     method: Метод
@@ -1464,7 +1458,6 @@ field_options:
   directus_roles:
     name: Унікальна назва для цієї ролі...
     description: Опис цієї ролі...
-    ip_access: Додайте дозволені IP-адреси, IP-діапазони та CIDR-блоки. Залиште пустим, щоб дозволити всім...
     fields:
       icon_name: Іконка
       name_name: Назва
