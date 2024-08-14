@@ -2,10 +2,7 @@ import firaMono2 from '../../assets/fonts/FiraMono-Medium.woff2';
 import firaMono from '../../assets/fonts/FiraMono-Medium.woff';
 import merriweatherRegular2 from '../../assets/fonts/merriweather-regular.woff2';
 import merriweatherRegular from '../../assets/fonts/merriweather-regular.woff';
-
-function cssVar(name: string) {
-	return getComputedStyle(document.body).getPropertyValue(name);
-}
+import { cssVar } from '@directus/utils/browser';
 
 export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace'): string {
 	return `
