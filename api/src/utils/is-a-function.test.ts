@@ -6,6 +6,10 @@ describe('should pass validation', () => {
 		expect(valueIsAFunction('doSomething()')).toBe(true);
 	});
 
+	test('function with underscore', () => {
+		expect(valueIsAFunction('do_something()')).toBe(true);
+	});
+
 	test('one nested function', () => {
 		expect(valueIsAFunction('doSomething(with(something))')).toBe(true);
 	});
@@ -18,6 +22,10 @@ describe('should pass validation', () => {
 describe('should not pass validation', () => {
 	test('no parentheses at all', () => {
 		expect(valueIsAFunction('doSomething')).toBe(false);
+	});
+
+	test('function with dash', () => {
+		expect(valueIsAFunction('do-something()')).toBe(true);
 	});
 
 	test('start with parentheses', () => {
