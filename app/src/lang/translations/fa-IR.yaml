@@ -1626,6 +1626,8 @@ interfaces:
     preview: پيش نمايش
     editorFont: Editor Font
     previewFont: Preview Font
+    default_view: Default View
+    default_view_preview: پيش نمايش
     customSyntax: بلوک‌های سفارشی
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
