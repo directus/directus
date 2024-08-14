@@ -288,3 +288,27 @@ test('Merges and applies defaults from presets', async () => {
 		'field-c': 2,
 	});
 });
+
+test('Checks validation rules against payload with defaults', async () => {
+	const schema = { collections: { 'collection-a': { fields: {} } } } as unknown as SchemaOverview;
+	const acc = { admin: false } as unknown as Accountability;
+
+	vi.mocked(fetchPermissions).mockResolvedValue([
+		{ fields: ['field-a'], validation: { 'field-a': { _eq: 2 } }, presets: { 'field-a': 1 } } as unknown as Permission,
+		{ fields: [], validation: null, presets: { 'field-a': 2 } } as unknown as Permission,
+	]);
+
+	const payloadWithPresets = await processPayload(
+		{
+			accountability: acc,
+			action: 'read',
+			collection: 'collection-a',
+			payload: {},
+		},
+		{ schema } as Context,
+	);
+
+	expect(payloadWithPresets).toEqual({
+		'field-a': 2,
+	});
+});
