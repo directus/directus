@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed the order of preset application and payload validation in `processPayload`
+Ensured payload validation accounts for preset data
