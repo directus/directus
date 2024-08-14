@@ -1422,6 +1422,8 @@ interfaces:
     preview: पूर्वावलोकन
     editorFont: सम्पादक फन्ट
     previewFont: फन्ट पूर्वावलोकन
+    default_view: पूर्वनिर्धारित दृश्य
+    default_view_preview: पूर्वावलोकन
     customSyntax: अनुकूलित ब्लकहरू
     customSyntax_label: अनुकूलन सिन्ट्याक्स प्रकारहरू थप्नुहोस्
   map:
