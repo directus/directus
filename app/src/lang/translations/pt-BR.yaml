@@ -1808,6 +1808,8 @@ interfaces:
     preview: Pré-visualizar
     editorFont: Fonte do Editor
     previewFont: Fonte da Pré-visualização
+    default_view: Exibição Padrão
+    default_view_preview: Pré-visualizar
     customSyntax: Blocos personalizados
     customSyntax_label: Adicionar tipos de sintaxe personalizados
     customSyntax_add: Adicionar sintaxe personalizada
