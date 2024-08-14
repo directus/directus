@@ -1,5 +1,5 @@
 ---
-'@directus/app': minor
+'@directus/app': patch
 ---
 
-Ensured that WYSIWYG uses the correct CSS var to display fonts correctly.
+Fixed the WYSIWYG interface to correctly apply the font configured in the interface settings
