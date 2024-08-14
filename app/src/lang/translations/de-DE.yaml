@@ -1751,6 +1751,8 @@ interfaces:
     preview: Vorschau
     editorFont: Editor Schriftart
     previewFont: Vorschau Schriftart
+    default_view: Standard-Ansicht
+    default_view_preview: Vorschau
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
