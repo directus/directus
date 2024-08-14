@@ -314,7 +314,7 @@ export default class oracleDB implements SchemaInspector {
           LEFT JOIN "USER_IND_COLUMNS" "uic"
             ON "uic"."TABLE_NAME" = "c"."TABLE_NAME" AND "uic"."COLUMN_NAME" = "c"."COLUMN_NAME"
           LEFT JOIN "USER_INDEXES" "ui"
-            ON "uic"."INDEX_NAME" = "ui"."INDEX_NAME" AND "ui"."CONSTRAINT_INDEX" = 'NO' AND "ui"."UNIQUENESS" = 'NONUNIQUE'
+            ON "uic"."INDEX_NAME" = "ui"."INDEX_NAME" AND "ui"."UNIQUENESS" = 'NONUNIQUE'
         `),
 			)
 			.where({ 'c.HIDDEN_COLUMN': 'NO' });
