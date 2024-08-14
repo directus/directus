@@ -34,6 +34,7 @@ import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
+import { valueIsAFunction } from '../utils/is-a-function.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
@@ -857,6 +858,7 @@ export class FieldsService {
 			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
 			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
 			const newDefaultIsSetToCurrentTime = newDefaultIsNowFunction || newDefaultIsCurrentTimestamp;
+			const newDefaultIsAFunction = newDefaultValueIsString && valueIsAFunction(defaultValue);
 
 			const newDefaultIsTimestampWithPrecision =
 				newDefaultValueIsString && defaultValue.includes('CURRENT_TIMESTAMP(') && defaultValue.includes(')');
@@ -866,6 +868,8 @@ export class FieldsService {
 			} else if (newDefaultIsTimestampWithPrecision) {
 				const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
 				column.defaultTo(this.knex.fn.now(Number(precision)));
+			} else if (newDefaultIsAFunction) {
+				column.defaultTo(this.knex.raw(defaultValue));
 			} else {
 				column.defaultTo(defaultValue);
 			}
