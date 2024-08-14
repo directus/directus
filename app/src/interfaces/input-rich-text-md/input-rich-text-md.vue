@@ -372,7 +372,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 				class="view"
 				mandatory
 				rounded
-				@update:model-value="([value]) => (view = value)"
+				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
 			>
 				<v-button x-small value="editor" :class="[{ active: view !== 'preview' }]">
 					{{ t('interfaces.input-rich-text-md.edit') }}
