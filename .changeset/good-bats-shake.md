@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-fix CSV import for files containing BOM
+fixed CSV import for files containing BOM
