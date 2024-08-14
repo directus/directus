@@ -936,6 +936,7 @@ interfaces:
     many-to-one: Pluraj-al-unu-rilato
   input-rich-text-md:
     edit: Redakti
+    default_view: Defaŭlta vido
   map:
     map: Mapo
     zoom: Zomi
