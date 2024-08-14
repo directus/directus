@@ -1807,6 +1807,8 @@ interfaces:
     preview: 预览
     editorFont: 编辑器字体
     previewFont: 预览字体
+    default_view: 默认视图
+    default_view_preview: 预览
     customSyntax: 自定义块
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法
