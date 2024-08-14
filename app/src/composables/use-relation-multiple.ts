@@ -195,12 +195,19 @@ export function useRelationMultiple(
 		if ((previewQuery.value.limit > 0 && totalItemCount.value > previewQuery.value.limit) || !sortField) return items;
 
 		return items.sort((a, b) => {
+			let left;
+			let right;
+
 			if (sortField.startsWith('-')) {
 				const field = sortField.substring(1);
-				return get(b, field) - get(a, field);
+				left = get(b, field);
+				right = get(a, field);
+			} else {
+				left = get(a, sortField);
+				right = get(b, sortField);
 			}
 
-			return get(a, sortField) - get(b, sortField);
+			return Number(left > right) - Number(right > left);
 		});
 	});
 
