@@ -566,7 +566,7 @@ onUnmounted(() => {
 	border-top: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	box-shadow: var(--sidebar-shadow);
-	z-index: 5;
+	z-index: 1;
 }
 
 .log-detail-controls {
@@ -583,7 +583,7 @@ onUnmounted(() => {
 	position: absolute;
 	top: 10px;
 	right: 10px;
-	z-index: 10;
+	z-index: 2;
 }
 
 .raw-log {
