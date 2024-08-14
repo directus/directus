@@ -26,11 +26,6 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		// whole or not
 		fields: [],
 		limit: options.primaryKeys.length,
-		filter: {
-			[primaryKeyField]: {
-				_in: options.primaryKeys,
-			},
-		},
 	};
 
 	const ast = await getAstFromQuery(
@@ -43,6 +38,12 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 	);
 
 	await processAst({ ast, ...options }, context);
+
+	ast.query.filter = {
+		[primaryKeyField]: {
+			_in: options.primaryKeys,
+		},
+	};
 
 	const items = await runAst(ast, context.schema, options.accountability, { knex: context.knex });
 
