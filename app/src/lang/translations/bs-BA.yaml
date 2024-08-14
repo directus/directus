@@ -590,10 +590,6 @@ make_collection_hidden: Učini kolekciju skrivenom
 make_folder_visible: Učini folder vidljivim
 make_folder_hidden: Učini folder skrivenim
 goto_collection_content: Pregledaj sadržaj
-start_end_of_count_items: '{start}-{end} od {count} stavki'
-start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
-one_item: '1 stavka'
-one_filtered_item: '1 filtrirana stavka'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati kolekciju "{collection}"? Ovo će izbrisati kolekciju i sve stavke u njoj. Ova akcija je trajna.
 delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati folder "{folder}"? Ugniježđeni folderi i kolekcije biće premješteni na najviši nivo.
@@ -673,7 +669,6 @@ create_item: Dodaj novu stavku
 display_template: Predložak prikaza
 language_display_template: Predložak prikaza jezika
 translations_display_template: Predložak prikaza prijevoda
-n_items_selected: 'Nema odabranih stavki | 1 stavka odabrana | {n} odabranih stavki'
 per_page: Po stranici
 all_files: Svi fajlovi
 my_files: Moji fajlovi
@@ -1207,7 +1202,6 @@ live_preview:
   new_window: Otvori u novom prozoru
 shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
-uses_left: 'Nema više korištenja | Još 1 korištenje | Preostalo korištenja: {n}'
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
 expired: Isteklo
@@ -1789,7 +1783,6 @@ layouts:
   kanban:
     crop: Izreži
     advanced: Napredno
-    not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 horizontal: Horizontalno
 both: Oboje
 panels:

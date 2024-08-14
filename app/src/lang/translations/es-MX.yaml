@@ -776,10 +776,6 @@ make_collection_hidden: Hacer que la colección se oculte
 make_folder_visible: Hacer visible la carpeta
 make_folder_hidden: Ocultar carpeta
 goto_collection_content: Ver contenido
-start_end_of_count_items: '{start}-{end} de {count} elementos'
-start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
-one_item: '1 elemento'
-one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
   ¿Estás seguro que quieres eliminar la colección "{collection}"? Esto eliminará la colección y todos los elementos de la misma. Esta acción es permanente.
 delete_folder_are_you_sure: '¿Estás seguro que quieres eliminar la carpeta "{folder}"? Las carpetas y colecciones anidadas se moverán al nivel más alto.'
@@ -871,7 +867,6 @@ create_item: Crear elemento
 display_template: Plantilla de Presentación
 language_display_template: Plantilla de visualización de idioma
 translations_display_template: Plantilla de visualización de traducciones
-n_items_selected: 'Sin elementos seleccionados | 1 elemento seleccionado | {n} elementos seleccionados'
 per_page: Por Página
 all_files: Todos los Archivos
 my_files: Mis Archivos
@@ -1513,7 +1508,6 @@ live_preview:
   toggle_3d: Alterna 3D
 shares: Compartido
 unlimited_usage: Uso ilimitado
-uses_left: No hay usos restantes | 1 uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
 expired: Expirado
@@ -2187,7 +2181,6 @@ layouts:
     show_ungrouped: Mostrar desagrupado
     show: Mostrar
     no_group: Sin grupo
-    not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 horizontal: Horizontal
 vertical: Vertical
 axis: Eje

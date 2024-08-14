@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Despre
 identifier: Identificator
 avatar: Avatar
 application: Aplicație
@@ -7,10 +28,12 @@ method: Metodă
 published: Publicat
 draft: Ciornă
 archived: Arhivat
+marketplace: Marketplace
 extensions: Extensii
 modules: Module
 module_bar: Bară module
 logs: Log-uri
+unknown: Necunoscut
 reset_width: Resetează lățimea
 tile_size: Dimensiune titlu
 edit_field: Editează câmp
@@ -28,6 +51,8 @@ duplicate_field: Duplică câmp
 half_width: Lățime înjumătățită
 full_width: Lățime completă
 group: Grup
+popular: Popular
+recent: Recent
 export_items: Exportă elemente
 and: Și
 or: Sau
@@ -39,6 +64,7 @@ extension_display: Afişare
 extension_layout: Aspect
 extension_module: Compartiment
 extension_panel: Panou
+extension_theme: Temă
 extension_hook: Cârlig
 extension_endpoint: Punct final
 extension_operation: Operațiune
@@ -48,12 +74,23 @@ extension_displays: Afișaje
 extension_layouts: Aranjamente
 extension_modules: Module
 extension_panels: Panouri
+extension_themes: Teme
 extension_hooks: Cârlige
 extension_endpoints: Puncte finale
 extension_operations: Operațiuni
 extension_bundles: Pachete
+extension_missing: Lipsă
 extension_reload_required_copy: Este necesară o reîncărcare a paginii pentru a vedea modificările după activarea sau dezactivarea extensiilor aplicației.
 extension_reload_now: Reîncarcă acum
+published_relative: Publicat {relativeTime}
+compatible_with_your_project: Compatibil cu proiectul tău
+report_an_issue: Raportează o problemă
+website: Website
+github: GitHub
+beta: Beta
+n_downloads: '{n} Descărcări'
+downloads: Descărcări
+compatibility_not_guaranteed: Compatibilitatea nu este garantată
 enable: Activare
 disable: Dezactivează
 custom: Personalizat
@@ -274,6 +311,8 @@ time: Timp
 timestamp: Marcă temporală
 uuid: UUID
 hash: Hash
+geometry:
+  MultiLineString: Șir multiplu de linii (MultiLineString)
 not_available_for_type: Indisponibil pentru acest tip
 create_translations: Creare traduceri
 auto_refresh: Actualizare automată
@@ -348,6 +387,7 @@ clear_changes: Șterge schimbările
 reset_to_default: Resetare la valorile implicite
 undo_changes: Anulează modificările
 notifications: Notificări
+archive_all: Arhivează tot
 show_all_activity: Afișează toată activitatea
 page_not_found: Pagina nu a fost găsită
 page_not_found_body: Pagina pe care o cauţi nu pare să existe.
@@ -441,6 +481,8 @@ months:
   november: Noiembrie
   december: Decembrie
 drag_mode: Mod tragere
+move_tool: Mută unealta
+crop_tool: Unealtă de decupare
 cancel_crop: Anulează decuparea
 original: Original
 url: URL
@@ -537,6 +579,7 @@ activity_item: Element de activitate
 action: Acţiune
 ip_address: Adresă IP
 user_agent: User Agent
+origin: Origine
 webhooks: Webhook-uri
 decimals: Zecimale
 value_decimals: Valoare zecimale
@@ -568,7 +611,10 @@ bookmark_doesnt_exist_copy: Semnul de carte pe care încerci să îl deschizi nu
 bookmark_doesnt_exist_cta: Revenire la colecție
 select_an_item: Selectați un element...
 edit: Editare
+edit_item: Editare element
 enabled: Activat
+enable_all: Activeaza tot
+disable_all: Dezactivează tot
 disable_tfa: Dezactivează 2FA
 tfa_scan_code: Scanează codul din aplicația de autentificare pentru a finaliza configurarea 2FA
 enter_otp_to_disable_tfa: Introduceți OTP pentru a dezactiva 2FA
@@ -626,10 +672,6 @@ make_collection_visible: Faceți colecția vizibilă
 make_collection_hidden: Ascundeți colecția
 make_folder_visible: Fă vizibil dosarul
 make_folder_hidden: Ascunde dosarul
-start_end_of_count_items: '{start}-{end} din {count} elemente'
-start_end_of_count_filtered_items: '{start}-{end} din {count} elemente filtrate'
-one_item: '1 element'
-one_filtered_item: '1 element filtrat'
 collections_shown: Colecții afișate
 visible_collections: Colecții vizibile
 hidden_collections: Colecții ascunse
@@ -706,7 +748,6 @@ create_item: Creează element
 display_template: Afişare şablon
 language_display_template: Șablon de afişare a limbii
 translations_display_template: Șablon de afișare a traducerilor
-n_items_selected: 'Niciun element selectat | Un element selectat | {n} elemente selectate'
 per_page: Elemente per pagină
 all_files: Toate fişierele
 my_files: Fișierele mele
@@ -924,6 +965,7 @@ batch_delete_confirm: >-
   Nu au fost selectate articole | Sigur doriți să ștergeți acest articol? Această acțiune nu poate fi anulată. | Sigur doriți să ștergeți aceste {count} elemente? Această acțiune nu poate fi anulată.
 cancel: Anulează
 no_upscale: Nu suprascala imaginile
+source_registry: Marketplace
 collection: Colecție
 collections: Colecții
 content: Conținut
@@ -958,6 +1000,7 @@ fields:
     user: Acțiune de
     comment: Comentariu
     user_agent: User Agent
+    origin: Origine
     ip: Adresă IP
     revisions: Revizii
   directus_collections:
@@ -1217,7 +1260,6 @@ live_preview:
   new_window: Deschide în fereastră nouă
 shares: Distribuiri
 unlimited_usage: Utilizare nelimitată
-uses_left: Nu a mai rămas nicio utilizare | O utilizare rămasă | {n} utilizări rămase
 no_shares: Nici o distribuire de afișat
 new_share: Distribuire nouă
 expired: Expirat
