@@ -1856,6 +1856,8 @@ interfaces:
     preview: Предпросмотр
     editorFont: Шрифт редактора
     previewFont: Шрифт на предпросмотре
+    default_view: Вид по умолчанию
+    default_view_preview: Предпросмотр
     customSyntax: Произвольные блоки
     customSyntax_label: Добавить произвольные типы синтаксиса
     customSyntax_add: Добавить произвольный синтаксис
