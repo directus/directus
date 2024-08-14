@@ -1511,6 +1511,8 @@ interfaces:
     preview: 預覽
     editorFont: 編輯器字型
     previewFont: 預覽字型
+    default_view: 預設顯示地點
+    default_view_preview: 預覽
     customSyntax: 自訂區塊
     customSyntax_label: 新增自訂語法類型
     customSyntax_add: 新增自訂語法
