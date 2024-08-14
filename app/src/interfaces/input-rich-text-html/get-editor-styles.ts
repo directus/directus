@@ -43,7 +43,7 @@ body.mce-content-readonly {
 	display: none;
 }
 h1, h2, h3, h4, h5, h6 {
-	font-family: ${cssVar(`--family-${font}`)}, serif;
+	font-family: ${cssVar(`--theme--fonts--${font}--font-family`)}, serif;
 	color: ${cssVar('--theme--form--field--input--foreground-accent')};
 	font-weight: 700;
 	margin-bottom: 0;
@@ -82,7 +82,7 @@ h6 {
 	margin-top: 2em;
 }
 p {
-	font-family: ${cssVar(`--family-${font}`)}, serif;
+	font-family: ${cssVar(`--theme--fonts--${font}--font-family`)}, serif;
 	font-size: 15px;
 	line-height: 24px;
 	font-weight: 500;
@@ -93,7 +93,7 @@ a {
 	text-decoration: none;
 }
 ul, ol {
-	font-family: ${cssVar(`--family-${font}`)}, serif;
+	font-family: ${cssVar(`--theme--fonts--${font}--font-family`)}, serif;
 	font-size: 15px;
 	line-height: 24px;
 	font-weight: 500;
@@ -129,7 +129,7 @@ pre {
 	overflow: auto;
 }
 blockquote {
-	font-family: ${cssVar(`--family-${font}`)}, serif;
+	font-family: ${cssVar(`--theme--fonts--${font}--font-family`)}, serif;
 	font-size: 15px;
 	line-height: 24px;
 	font-weight: 500;
