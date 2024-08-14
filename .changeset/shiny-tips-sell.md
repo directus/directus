@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed file export is ready notification for user without `create` permission to `directus_notifications`
+Fixed the notification for finished file exports to be sent out to users without requiring any permissions on `directus_notifications`
