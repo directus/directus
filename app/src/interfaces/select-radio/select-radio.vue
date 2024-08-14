@@ -2,6 +2,7 @@
 import { useCustomSelection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import stringWidth from 'string-width';
 
 type Option = {
 	text: string;
@@ -38,19 +39,25 @@ const gridClass = computed(() => {
 	if (choices?.value === undefined) return null;
 
 	const widestOptionLength = choices.value.reduce((acc, val) => {
-		if (val.text.length > acc.length) acc = val.text;
+		if (stringWidth(val.text) > acc) acc = stringWidth(val.text);
 		return acc;
-	}, '').length;
+	}, 0);
+
+	const choicesLength = choices.value.length;
+
+	const getMinimalGridClassName = (size: number) => {
+		return `grid-${Math.min(choicesLength, size)}`;
+	};
 
 	if (props.width?.startsWith('half')) {
-		if (widestOptionLength <= 10) return 'grid-2';
-		return 'grid-1';
+		if (widestOptionLength <= 10) return getMinimalGridClassName(2);
+		return getMinimalGridClassName(1);
 	}
 
-	if (widestOptionLength <= 10) return 'grid-4';
-	if (widestOptionLength > 10 && widestOptionLength <= 15) return 'grid-3';
-	if (widestOptionLength > 15 && widestOptionLength <= 25) return 'grid-2';
-	return 'grid-1';
+	if (widestOptionLength <= 10) return getMinimalGridClassName(4);
+	if (widestOptionLength > 10 && widestOptionLength <= 15) return getMinimalGridClassName(3);
+	if (widestOptionLength > 15 && widestOptionLength <= 25) return getMinimalGridClassName(2);
+	return getMinimalGridClassName(1);
 });
 
 const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>

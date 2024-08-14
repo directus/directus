@@ -150,5 +150,8 @@
 		"vue-tsc": "2.0.29",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
+	},
+	"dependencies": {
+		"string-width": "7.2.0"
 	}
 }
