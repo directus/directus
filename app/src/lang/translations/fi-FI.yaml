@@ -1405,6 +1405,8 @@ interfaces:
     description: Syötä ja esikatsele markdownia
     edit: Muokkaa
     preview: Esikatselu
+    default_view: Oletusnäkymä
+    default_view_preview: Esikatselu
     customSyntax: Mukautetut lohkot
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi
