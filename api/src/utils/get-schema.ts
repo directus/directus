@@ -16,7 +16,6 @@ import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
 import getLocalType from './get-local-type.js';
-import { compress, decompress } from './compress.js';
 
 const logger = useLogger();
 
@@ -69,20 +68,21 @@ export async function getSchema(
 	if (currentProcessShouldHandleOperation === false) {
 		logger.trace('Schema cache is prepared in another process, waiting for result.');
 
-		const timeout: Promise<any> = new Promise((_, reject) => setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number));
+		const timeout: Promise<any> = new Promise((_, reject) =>
+			setTimeout(reject, env['CACHE_SCHEMA_SYNC_TIMEOUT'] as number),
+		);
 
 		const subscription = new Promise<SchemaOverview>((resolve, reject) => {
 			bus.subscribe(messageKey, busListener).catch(reject);
 
-			async function busListener(options: { schema: Buffer | null }) {
+			function busListener(options: { schema: SchemaOverview | null }) {
 				if (options.schema === null) {
 					return reject();
 				}
 
 				cleanup();
-				const schema: SchemaOverview = await decompress(options.schema).catch(reject);
-				setLocalSchemaCache(schema).catch(reject);
-				resolve(schema);
+				setLocalSchemaCache(options.schema).catch(reject);
+				resolve(options.schema);
 			}
 
 			function cleanup() {
@@ -103,7 +103,7 @@ export async function getSchema(
 		await setLocalSchemaCache(schema);
 		return schema;
 	} finally {
-		await bus.publish(messageKey, { schema: schema ? await compress(schema) : null });
+		await bus.publish(messageKey, { schema });
 		await lock.delete(lockKey);
 	}
 }
