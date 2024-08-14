@@ -39,6 +39,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 
 	await processAst({ ast, ...options }, context);
 
+	// Inject the filter after the permissions have been processed, as to not require access to the primary key
 	ast.query.filter = {
 		[primaryKeyField]: {
 			_in: options.primaryKeys,
