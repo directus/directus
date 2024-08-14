@@ -1776,6 +1776,8 @@ interfaces:
     preview: Преглед
     editorFont: Шрифт при редактиране
     previewFont: Шрифт при преглед
+    default_view: Изглед по подразбиране
+    default_view_preview: Преглед
     customSyntax: Собствени блокове
     customSyntax_label: Добавяне на собствени синтактични типове
     customSyntax_add: Добавяне на собствен синтаксис
