@@ -1514,6 +1514,8 @@ interfaces:
     preview: Previzualizare
     editorFont: Font pentru editor
     previewFont: Font pentru previzualizare
+    default_view: Vizualizare implicită
+    default_view_preview: Previzualizare
     customSyntax: Blocuri personalizate
     customSyntax_label: Adăugați tipuri de sintaxă personalizate
     customSyntax_add: Adaugă sintaxă personalizată
