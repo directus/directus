@@ -1805,6 +1805,8 @@ interfaces:
     preview: 미리보기
     editorFont: 편집기 글꼴
     previewFont: 글꼴 미리보기
+    default_view: 기본 보기
+    default_view_preview: 미리보기
     customSyntax: 맞춤형 블록
     customSyntax_label: 사용자 정의 구문 유형 추가
     customSyntax_add: 사용자 지정 구문 추가
