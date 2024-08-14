@@ -1409,6 +1409,7 @@ interfaces:
     edit: Edit
     preview: Pratinjau
     previewFont: Font Pratinjau
+    default_view_preview: Pratinjau
     customSyntax: Blok Kustom
     customSyntax_label: Tambahkan jenis sintaks khusus
     customSyntax_add: Tambahkan sintaks khusus
