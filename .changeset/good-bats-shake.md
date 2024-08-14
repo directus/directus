@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-fixed CSV import for files containing BOM
+Fixed an issue where the first column would be missing when importing UTF-8 BOM CSV files
