@@ -1,7 +1,5 @@
-import firaMono2 from '../../assets/fonts/FiraMono-Medium.woff2';
-import firaMono from '../../assets/fonts/FiraMono-Medium.woff';
-import merriweatherRegular2 from '../../assets/fonts/merriweather-regular.woff2';
-import merriweatherRegular from '../../assets/fonts/merriweather-regular.woff';
+import firaMono from '../../assets/fonts/FiraMono-Medium.woff2';
+import merriweatherRegular from '../../assets/fonts/merriweather-regular.woff2';
 import { cssVar } from '@directus/utils/browser';
 
 export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospace'): string {
@@ -9,15 +7,13 @@ export default function getEditorStyles(font: 'sans-serif' | 'serif' | 'monospac
 @font-face {
 	font-family: 'Fira Mono';
 	font-style: normal;
-	src: url(${firaMono2}) format('woff2'),
-	url(${firaMono}) format('woff');
+	src: url(${firaMono}) format('woff2');
 }
 
 @font-face {
 	font-family: 'Merriweather';
 	font-style: normal;
-	src: url(${merriweatherRegular2}) format('woff2'),
-	url(${merriweatherRegular}) format('woff');
+	src: url(${merriweatherRegular}) format('woff2');
 }
 
 ::selection {
