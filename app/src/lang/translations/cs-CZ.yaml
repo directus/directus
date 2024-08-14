@@ -631,6 +631,7 @@ display_not_found: 'Zobrazení "{display}" nenalezeno.'
 reset_display: Obnovit zobrazení
 list-m2a: Stavitel (M2A)
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
+filtered_item_count: 'Žádné filtrované položky | 1 filtrovaná položka | {count} položek filtrováno'
 no_items_copy: V této kolekci zatím nejsou žádné položky.
 file_count: 'Žádné soubory | Jeden soubor | {count} souborů'
 no_files_copy: Nejsou zde žádné soubory.
@@ -793,6 +794,9 @@ make_collection_hidden: Skrýt kolekci
 make_folder_visible: Zviditelnit složku
 make_folder_hidden: Skrýt složku
 goto_collection_content: Zobrazit obsah
+count_of_total_items: '{count} z {total} položek'
+start_end_of_count_items: '{start}-{end} z {count} položek'
+start_end_of_count_filtered_items: '{start}-{end} z {count} filtrovaných položek'
 delete_collection_are_you_sure: >-
   Jste si jisti, že chcete odstranit kolekci "{collection}"? Tato akce odstraní kolekci a všechny její položky. Tato akce je trvalá.
 delete_folder_are_you_sure: Jste si jisti, že chcete odstranit složku "{folder}"? Vnořené složky a kolekce budou přesunuty na nejvyšší úroveň.
@@ -884,6 +888,7 @@ create_item: Vytvořit položku
 display_template: Šablona zobrazení
 language_display_template: Šablona zobrazení jazyka
 translations_display_template: Šablona pro zobrazení překladů
+n_items_selected: 'Nebyly vybrány žádné položky | 1 položka vybrána | {n} položek vybráno'
 per_page: Na stránku
 all_files: Všechny soubory
 my_files: Mé soubory
@@ -1548,6 +1553,7 @@ live_preview:
   toggle_3d: Přepnout 3D
 shares: Sdílení
 unlimited_usage: Neomezené použití
+uses_left: Nezbývá žádné použití | Zbývá 1 použití | Zbývá {n} použití
 no_shares: Nic sdíleného k zobrazení
 new_share: Nové sdílení
 expired: Vypršela platnost
