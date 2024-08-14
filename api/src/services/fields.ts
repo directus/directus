@@ -883,11 +883,9 @@ export class FieldsService {
 			column.defaultTo(null);
 		}
 
-		const isNullable = field.schema?.is_nullable ?? existing?.is_nullable ?? true;
-
-		if (isNullable) {
+		if (field.schema?.is_nullable && (!existing || existing.is_nullable === false)) {
 			column.nullable();
-		} else {
+		} else if (field.schema?.is_nullable === false && existing && existing.is_nullable === true) {
 			column.notNullable();
 		}
 
