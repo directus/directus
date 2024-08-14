@@ -1564,6 +1564,8 @@ interfaces:
     preview: بینین
     editorFont: دەستکاریکەری فۆنت
     previewFont: بینینی فۆنت
+    default_view: بینینی بنەڕەتی
+    default_view_preview: بینین
     customSyntax: خشتە تایبەتەکان
     customSyntax_label: جۆرەکانی ڕستەسازی تایبەت زیاد بکە
     customSyntax_add: ڕستەسازی تایبەت زیادبکە
