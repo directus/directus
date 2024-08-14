@@ -29,7 +29,7 @@ test('Throws error when primary key does not exist in given collection', async (
 test('Queries the database', async () => {
 	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
 	const acc = {} as unknown as Accountability;
-	const ast = {} as unknown as AST;
+	const ast = { query: {} } as unknown as AST;
 
 	vi.mocked(getAstFromQuery).mockResolvedValue(ast);
 	vi.mocked(runAst).mockResolvedValue([]);
@@ -46,11 +46,6 @@ test('Queries the database', async () => {
 			query: {
 				fields: [],
 				limit: 1,
-				filter: {
-					'field-a': {
-						_in: [1],
-					},
-				},
 			},
 			accountability: acc,
 		},
@@ -66,6 +61,21 @@ test('Queries the database', async () => {
 			ast,
 		},
 		{ schema },
+	);
+
+	expect(runAst).toHaveBeenCalledWith(
+		{
+			query: {
+				filter: {
+					'field-a': {
+						_in: [1],
+					},
+				},
+			},
+		},
+		schema,
+		acc,
+		{ knex: undefined },
 	);
 });
 

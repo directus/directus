@@ -84,6 +84,10 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 		fieldValidationRules.push(field.validation);
 	}
 
+	const presets = (permissions ?? []).map((permission) => permission.presets);
+
+	const payloadWithPresets = assign({}, ...presets, options.payload);
+
 	const validationRules = [...fieldValidationRules, ...permissionValidationRules].filter((rule): rule is Filter => {
 		if (rule === null) return false;
 		if (Object.keys(rule).length === 0) return false;
@@ -94,7 +98,7 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 		const validationErrors: InstanceType<typeof FailedValidationError>[] = [];
 
 		validationErrors.push(
-			...validatePayload({ _and: validationRules }, options.payload)
+			...validatePayload({ _and: validationRules }, payloadWithPresets)
 				.map((error) =>
 					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details))),
 				)
@@ -104,9 +108,5 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 		if (validationErrors.length > 0) throw validationErrors;
 	}
 
-	if (!permissions) return options.payload;
-
-	const presets = permissions.map((permission) => permission.presets);
-
-	return assign({}, ...presets, options.payload);
+	return payloadWithPresets;
 }

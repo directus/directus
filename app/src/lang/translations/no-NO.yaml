@@ -568,10 +568,6 @@ make_collection_hidden: Gjør samlingen skjult
 make_folder_visible: Gjør mappen synlig
 make_folder_hidden: Skjul mappe
 goto_collection_content: Vis innhold
-start_end_of_count_items: '{start}–{end} av {count} artikler'
-start_end_of_count_filtered_items: '{start}–{end} av {count} filtrerte artikler'
-one_item: '1 element'
-one_filtered_item: '1 filtrert element'
 collections_shown: Samlinger vises
 visible_collections: Synlige samlinger
 hidden_collections: Skjulte samlinger

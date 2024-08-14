@@ -860,8 +860,8 @@ importers:
         specifier: 7.6.3
         version: 7.6.3
       tinymce:
-        specifier: 7.2.1
-        version: 7.2.1
+        specifier: 7.3.0
+        version: 7.3.0
       tus-js-client:
         specifier: 4.1.0
         version: 4.1.0
@@ -1839,8 +1839,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.32.35
-        version: 0.32.35
+        specifier: 0.33.4
+        version: 0.33.4
       decamelize:
         specifier: 6.0.0
         version: 6.0.0
@@ -4613,8 +4613,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@sinclair/typebox@0.32.35':
-    resolution: {integrity: sha512-Ul3YyOTU++to8cgNkttakC0dWvpERr6RYoHO2W47DLbFvrwBDJUY31B1sImH6JZSYc4Kt4PyHtoPNu+vL2r2dA==}
+  '@sinclair/typebox@0.33.4':
+    resolution: {integrity: sha512-IUMFWdOtTqJ5F/rCjy2f3InRS9i4EWaCAMRsXVpUUQVi8hVByz/ifOi41Qt0Law8lz01/6zTz67vT70sB1VZbw==}
 
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
@@ -11134,8 +11134,8 @@ packages:
   tinymce@6.8.4:
     resolution: {integrity: sha512-okoJyxuPv1gzASxQDNgQbnUXOdAIyoOSXcXcZZu7tiW0PSKEdf3SdASxPBupRj+64/E3elHwVRnzSdo82Emqbg==}
 
-  tinymce@7.2.1:
-    resolution: {integrity: sha512-ADd1cvdIuq6NWyii0ZOZRuu+9sHIdQfcRNWBcBps2K8vy7OjlRkX6iw7zz1WlL9kY4z4L1DvIP+xOrVX/46aHA==}
+  tinymce@7.3.0:
+    resolution: {integrity: sha512-Ls4PgYlpk73XAxBSBqbVmSl8Mb3DuNfgF01GZ0lY6/MOEVRl3IL+VxC1Oe6165e8WqbqVsxO3Qj/PmoYNvQKGQ==}
 
   tinypool@0.8.4:
     resolution: {integrity: sha512-i11VH5gS6IFeLY3gMBQ00/MmLncVP7JLXOw1vlgkytLmJK7QnEr7NXf0LBdxfmNPAeyetukOk0bOYrJrFGjYJQ==}
@@ -15197,7 +15197,7 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@sinclair/typebox@0.32.35': {}
+  '@sinclair/typebox@0.33.4': {}
 
   '@sindresorhus/is@4.6.0': {}
 
@@ -23083,7 +23083,7 @@ snapshots:
 
   tinymce@6.8.4: {}
 
-  tinymce@7.2.1: {}
+  tinymce@7.3.0: {}
 
   tinypool@0.8.4: {}
 
