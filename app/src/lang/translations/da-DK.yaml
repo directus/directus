@@ -1592,6 +1592,8 @@ interfaces:
     preview: Eksempelvisning
     editorFont: Rediger skrifttype
     previewFont: Forhåndsvis skrifttype
+    default_view: Standard visning
+    default_view_preview: Eksempelvisning
     customSyntax: Brugerdefinerede blokke
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks
