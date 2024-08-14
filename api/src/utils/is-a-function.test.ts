@@ -14,6 +14,18 @@ describe('should pass validation', () => {
 		expect(valueIsAFunction('doSomething(with(something))')).toBe(true);
 	});
 
+	test('with parameters', () => {
+		expect(valueIsAFunction('doSomething(1,2)')).toBe(true);
+	});
+
+	test('function with whitespace', () => {
+		expect(valueIsAFunction('do_something( )')).toBe(true);
+	});
+
+	test('with some spaces', () => {
+		expect(valueIsAFunction('doSomething (1, with(true) )')).toBe(true);
+	});
+
 	test('multiple nested functions with space', () => {
 		expect(valueIsAFunction('doSomething(with(something), and(somethingElse, 2))')).toBe(true);
 	});
@@ -24,15 +36,15 @@ describe('should not pass validation', () => {
 		expect(valueIsAFunction('doSomething')).toBe(false);
 	});
 
-	test('function with dash', () => {
-		expect(valueIsAFunction('do-something()')).toBe(true);
-	});
-
 	test('start with parentheses', () => {
-		expect(valueIsAFunction('()doSomething()')).toBe(true);
+		expect(valueIsAFunction('()doSomething()')).toBe(false);
 	});
 
 	test('unbalances brakes', () => {
-		expect(valueIsAFunction('doSomething(with()')).toBe(true);
+		expect(valueIsAFunction('doSomething(with()')).toBe(false);
+	});
+
+	test('starts with a number', () => {
+		expect(valueIsAFunction('123do_something()')).toBe(false);
 	});
 });
