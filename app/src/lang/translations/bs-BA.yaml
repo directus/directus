@@ -1471,6 +1471,8 @@ interfaces:
     preview: Pretpregled
     editorFont: Font uređivača
     previewFont: Pregled fonta
+    default_view: Zadani prikaz
+    default_view_preview: Pretpregled
     customSyntax: Prilagođeni blokovi
     customSyntax_label: Dodajte prilagođene vrste sintakse
     customSyntax_add: Dodajte prilagođenu sintaksu
