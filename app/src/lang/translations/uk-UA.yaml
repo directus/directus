@@ -1808,6 +1808,8 @@ interfaces:
     preview: Перегляд
     editorFont: Шрифт редактора
     previewFont: Попередній перегляд шрифту
+    default_view: Вид за замовчуванням
+    default_view_preview: Перегляд
     customSyntax: Користувацькі блоки
     customSyntax_label: Додати користувацькі типи синтаксису
     customSyntax_add: Додати користувацький синтаксис
