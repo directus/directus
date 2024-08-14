@@ -87,7 +87,8 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 	}
 }
 
-.newsletter, .cloud {
+.newsletter,
+.cloud {
 	margin-top: 2em;
 }
 
