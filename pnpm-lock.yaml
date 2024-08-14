@@ -860,8 +860,8 @@ importers:
         specifier: 7.6.3
         version: 7.6.3
       tinymce:
-        specifier: 7.2.1
-        version: 7.2.1
+        specifier: 7.3.0
+        version: 7.3.0
       tus-js-client:
         specifier: 4.1.0
         version: 4.1.0
@@ -11134,8 +11134,8 @@ packages:
   tinymce@6.8.4:
     resolution: {integrity: sha512-okoJyxuPv1gzASxQDNgQbnUXOdAIyoOSXcXcZZu7tiW0PSKEdf3SdASxPBupRj+64/E3elHwVRnzSdo82Emqbg==}
 
-  tinymce@7.2.1:
-    resolution: {integrity: sha512-ADd1cvdIuq6NWyii0ZOZRuu+9sHIdQfcRNWBcBps2K8vy7OjlRkX6iw7zz1WlL9kY4z4L1DvIP+xOrVX/46aHA==}
+  tinymce@7.3.0:
+    resolution: {integrity: sha512-Ls4PgYlpk73XAxBSBqbVmSl8Mb3DuNfgF01GZ0lY6/MOEVRl3IL+VxC1Oe6165e8WqbqVsxO3Qj/PmoYNvQKGQ==}
 
   tinypool@0.8.4:
     resolution: {integrity: sha512-i11VH5gS6IFeLY3gMBQ00/MmLncVP7JLXOw1vlgkytLmJK7QnEr7NXf0LBdxfmNPAeyetukOk0bOYrJrFGjYJQ==}
@@ -23083,7 +23083,7 @@ snapshots:
 
   tinymce@6.8.4: {}
 
-  tinymce@7.2.1: {}
+  tinymce@7.3.0: {}
 
   tinypool@0.8.4: {}
 
