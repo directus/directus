@@ -1852,6 +1852,8 @@ interfaces:
     preview: Náhľad
     editorFont: Písmo editoru
     previewFont: Písmo náhľadu
+    default_view: Predvolený pohľad
+    default_view_preview: Náhľad
     customSyntax: Vlastné bloky
     customSyntax_label: Pridať vlastné typy syntaxe
     customSyntax_add: Pridať vlastnú syntax
