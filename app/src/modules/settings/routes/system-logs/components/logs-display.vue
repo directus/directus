@@ -10,21 +10,20 @@ interface Props {
 	logs: Log[];
 	logLevels: Record<string, number>;
 	instances: string[];
-	unreadLogsCount: number;
 	streamConnected: boolean;
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits(['expandLog', 'scrolledToBottom', 'scrolledToTop', 'scroll']);
 
-defineExpose({ scrollToBottom, scrollToTop, scrollDownByOne, scrollUpByOne });
+defineExpose({ clearUnreadLogs, incrementUnreadLogs, scrollToBottom, scrollToTop, scrollDownByOne, scrollUpByOne });
 
 const { t } = useI18n();
 const scroller = ref();
 const unreadLogsChipVisible = ref(true);
+const unreadLogsCount = ref(0);
 const scrollInterval = 10;
 const logHeight = 36;
-let isNearBottom = true;
 let lastScrollHeight = 0;
 
 const logLevelMap = Object.entries(props.logLevels).reduce(
@@ -39,7 +38,27 @@ function getMessageClasses(existingClasses: string[], item: Log) {
 	return [...existingClasses, { subdued: logLevelMap[item.data.level] === 'trace' }];
 }
 
+function clearUnreadLogs() {
+	unreadLogsCount.value = 0;
+}
+
+function incrementUnreadLogs(count: number) {
+	if (hasScrollBar()) {
+		unreadLogsCount.value += count;
+	}
+}
+
 let currentScrollController: AbortController | null = null;
+
+function isNearBottom() {
+	const scrollerEl = scroller.value.$el;
+	return scrollerEl.scrollTop + scrollerEl.clientHeight >= scrollerEl.scrollHeight - 10;
+}
+
+function hasScrollBar() {
+	const scrollerEl = scroller.value.$el;
+	return scrollerEl.scrollHeight > scrollerEl.clientHeight;
+}
 
 function scrollTo(
 	target: number | 'bottom' | 'top',
@@ -101,9 +120,12 @@ function scrollTo(
 async function scrollToBottom() {
 	await nextTick();
 	const scrollerEl = scroller.value.$el;
+
+	if (!hasScrollBar()) return;
+
 	unreadLogsChipVisible.value = false;
 
-	if (isNearBottom) {
+	if (isNearBottom()) {
 		scrollerEl.scrollTop = scrollerEl.scrollHeight;
 		onScrollToBottom();
 	} else {
@@ -138,11 +160,7 @@ function onScroll(event: any) {
 		return;
 	}
 
-	const scrollerEl = scroller.value.$el;
-
-	isNearBottom = scrollerEl.scrollTop + scrollerEl.clientHeight >= scrollerEl.scrollHeight - 10;
-
-	if (isNearBottom) {
+	if (isNearBottom()) {
 		onScrollToBottom();
 	} else {
 		emit('scroll', event);

@@ -42,7 +42,6 @@ const selectedLog = ref<Log>();
 let autoScroll = true;
 const logsCount = ref(0);
 const purgedLogsCount = ref(0);
-const unreadLogsCount = ref(0);
 
 const client = sdk.with(
 	realtime({
@@ -97,10 +96,10 @@ watch(filteredLogs, (cur, prev) => {
 	if (autoScroll) return;
 
 	if (isFilterOptionsUpdated) {
-		unreadLogsCount.value = 0;
 		isFilterOptionsUpdated = false;
+		logsDisplay.value?.clearUnreadLogs();
 	} else {
-		unreadLogsCount.value += cur.length - prev.length;
+		logsDisplay.value?.incrementUnreadLogs(cur.length - prev.length);
 	}
 });
 
@@ -331,8 +330,8 @@ function minimizeLog() {
 function clearLogs() {
 	logs.value.length = 0;
 	logsCount.value = 0;
-	unreadLogsCount.value = 0;
 	autoScroll = true;
+	logsDisplay.value?.clearUnreadLogs();
 	minimizeLog();
 }
 
@@ -343,7 +342,7 @@ function onScroll(event: Event) {
 
 	if (isNearBottom) {
 		autoScroll = true;
-		unreadLogsCount.value = 0;
+		logsDisplay.value?.clearUnreadLogs();
 	} else {
 		autoScroll = false;
 	}
@@ -351,7 +350,7 @@ function onScroll(event: Event) {
 
 function onScrollBottom() {
 	autoScroll = true;
-	unreadLogsCount.value = 0;
+	logsDisplay.value?.clearUnreadLogs();
 }
 
 function handleUpDownKey(isUp: boolean) {
@@ -460,7 +459,6 @@ onUnmounted(() => {
 						:logs="filteredLogs"
 						:log-levels="allowedLogLevels"
 						:instances="instances"
-						:unread-logs-count="unreadLogsCount"
 						:stream-connected="streamConnected"
 						@expand-log="maximizeLog"
 						@scroll="onScroll"
