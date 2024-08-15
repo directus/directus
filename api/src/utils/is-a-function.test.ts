@@ -67,4 +67,8 @@ describe('should not pass validation', () => {
 	test('starts with a number', () => {
 		expect(valueIsAFunction('123do_something()')).toBe(false);
 	});
+
+	test('escaping with backslashes', () => {
+		expect(valueIsAFunction("doSomething('it\\'s not okay')")).toBe(false);
+	});
 });
