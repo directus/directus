@@ -51,10 +51,12 @@ describe('should not pass validation', () => {
 		expect(valueIsAFunction('123do_something()')).toBe(false);
 	});
 
-	test('escaping with backslashes', () => {
+	test('escaping', () => {
 		expect(valueIsAFunction("doSomething('it\\'s not okay')")).toBe(false);
 		expect(valueIsAFunction("doSomething\\'doStuff\\'()")).toBe(false);
 		expect(valueIsAFunction(`doSomething\\"doStuff\\"()`)).toBe(false);
+		expect(valueIsAFunction("doSomething'doStuff'()")).toBe(false);
+		expect(valueIsAFunction(`doSomething"doStuff"()`)).toBe(false);
 	});
 
 	test('single backslash for ascii chars', () => {
