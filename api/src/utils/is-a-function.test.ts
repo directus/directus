@@ -9,34 +9,6 @@ describe('should pass validation', () => {
 	test('function with underscore', () => {
 		expect(valueIsAFunction('do_something()')).toBe(true);
 	});
-
-	test('one nested function', () => {
-		expect(valueIsAFunction('doSomething(with(something))')).toBe(true);
-	});
-
-	test('with parameters', () => {
-		expect(valueIsAFunction('doSomething(1,2)')).toBe(true);
-		expect(valueIsAFunction('doSomething("one")')).toBe(true);
-		expect(valueIsAFunction("doSomething('oe')")).toBe(true);
-	});
-
-	test('with whitespace', () => {
-		expect(valueIsAFunction('do_something( )')).toBe(true);
-		expect(valueIsAFunction('doSomething (1, with(true) )')).toBe(true);
-	});
-
-	test('multiple nested functions with space', () => {
-		expect(valueIsAFunction('doSomething(with(something), and(somethingElse, 2))')).toBe(true);
-	});
-
-	test('Comments included ', () => {
-		expect(valueIsAFunction('nested(call(/* SQL */))')).toBe(true);
-	});
-
-	test('single backslash for ascii chars', () => {
-		expect(valueIsAFunction('doSomething\u0020()')).toBe(true);
-		expect(valueIsAFunction('doSomething(\u0020)')).toBe(true);
-	});
 });
 
 describe('should not pass validation', () => {
@@ -44,28 +16,35 @@ describe('should not pass validation', () => {
 		expect(valueIsAFunction('doSomething')).toBe(false);
 	});
 
-	test('No closing parentheses at the end', () => {
-		expect(valueIsAFunction('doSomething(')).toBe(false);
-		expect(valueIsAFunction('doSomething();')).toBe(false);
-		expect(valueIsAFunction('doSomething() DO')).toBe(false);
-		expect(valueIsAFunction('doSomething() DO SOMETHING; --')).toBe(false);
-		expect(valueIsAFunction('"SELECT * FROM users;"')).toBe(false);
-		expect(valueIsAFunction('SELECT * FROM users;')).toBe(false);
+	test('whitespace', () => {
+		expect(valueIsAFunction('doSomething( )')).toBe(false);
+		expect(valueIsAFunction('doSomething ()')).toBe(false);
+		expect(valueIsAFunction(' doSomething ()')).toBe(false);
 	});
 
-	test('No real parameters', () => {
+	test('with any kind of parameters', () => {
+		expect(valueIsAFunction('doSomething(1,2)')).toBe(false);
+		expect(valueIsAFunction('doSomething("one")')).toBe(false);
+		expect(valueIsAFunction("doSomething('oe')")).toBe(false);
+		expect(valueIsAFunction('doSomething(with(something))')).toBe(false);
+	});
+
+	test('no closing parentheses at the end', () => {
+		expect(valueIsAFunction('doSomething(')).toBe(false);
+		expect(valueIsAFunction('doSomething();')).toBe(false);
+		expect(valueIsAFunction('doSomething() ')).toBe(false);
+	});
+
+	test('SQL injections', () => {
+		expect(valueIsAFunction('"SELECT * FROM users;"')).toBe(false);
+		expect(valueIsAFunction('SELECT * FROM users;')).toBe(false);
 		expect(valueIsAFunction('some_func(;DROP DATABASE;)')).toBe(false);
+		expect(valueIsAFunction('doSomething() DO')).toBe(false);
+		expect(valueIsAFunction('doSomething(); DROP DATABASE; --')).toBe(false);
 	});
 
 	test('start with parentheses', () => {
 		expect(valueIsAFunction('()doSomething()')).toBe(false);
-	});
-
-	test('unbalances brakes or quotes', () => {
-		expect(valueIsAFunction('doSomething(')).toBe(false);
-		expect(valueIsAFunction('doSomething)')).toBe(false);
-		expect(valueIsAFunction('doSomething(with()')).toBe(false);
-		expect(valueIsAFunction('doSomething("one, "two")')).toBe(false);
 	});
 
 	test('starts with a number', () => {
@@ -74,5 +53,14 @@ describe('should not pass validation', () => {
 
 	test('escaping with backslashes', () => {
 		expect(valueIsAFunction("doSomething('it\\'s not okay')")).toBe(false);
+	});
+
+	test('single backslash for ascii chars', () => {
+		expect(valueIsAFunction('doSomething\u0020()')).toBe(false);
+		expect(valueIsAFunction('doSomething(\u0020)')).toBe(false);
+	});
+
+	test('Comments included ', () => {
+		expect(valueIsAFunction('call/* SQL */()')).toBe(false);
 	});
 });
