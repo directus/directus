@@ -23,7 +23,6 @@ describe('should pass validation', () => {
 	test('with whitespace', () => {
 		expect(valueIsAFunction('do_something( )')).toBe(true);
 		expect(valueIsAFunction('doSomething (1, with(true) )')).toBe(true);
-		expect(valueIsAFunction('doSomething\u0020()')).toBe(true);
 	});
 
 	test('multiple nested functions with space', () => {
@@ -32,6 +31,11 @@ describe('should pass validation', () => {
 
 	test('Comments included ', () => {
 		expect(valueIsAFunction('nested(call(/* SQL */))')).toBe(true);
+	});
+
+	test('single backslash for ascii chars', () => {
+		expect(valueIsAFunction('doSomething\u0020()')).toBe(true);
+		expect(valueIsAFunction('doSomething(\u0020)')).toBe(true);
 	});
 });
 
