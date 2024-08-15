@@ -668,8 +668,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       '@pinia/testing':
-        specifier: 0.1.4
-        version: 0.1.4(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
+        specifier: 0.1.5
+        version: 0.1.5(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
       '@popperjs/core':
         specifier: 2.11.8
         version: 2.11.8
@@ -4094,10 +4094,10 @@ packages:
     resolution: {integrity: sha512-m7X9U6BG2+J+R1lSOdCiITLLrxm+cWlNI3HUFA92oLO77ObGNzaKdh8pMLqdZcshtkKuV84olNNXDfMc4FezBQ==}
     engines: {node: '>=10'}
 
-  '@pinia/testing@0.1.4':
-    resolution: {integrity: sha512-DJ3oXYqVa6SfAngZoUmKKBp+WmQ50XV41NWThgX49p66ptTeR756QRXd0lg42FC17sIWlAbtc9EEiu1T8Yzoig==}
+  '@pinia/testing@0.1.5':
+    resolution: {integrity: sha512-AcGzuotkzhRoF00htuxLfIPBBHVE6HjjB3YC5Y3os8vRgKu6ipknK5GBQq9+pduwYQhZ+BcCZDC9TyLAUlUpoQ==}
     peerDependencies:
-      pinia: '>=2.2.0'
+      pinia: '>=2.2.1'
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -14584,7 +14584,7 @@ snapshots:
 
   '@phc/format@1.0.0': {}
 
-  '@pinia/testing@0.1.4(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))':
+  '@pinia/testing@0.1.5(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
       pinia: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       vue-demi: 0.14.10(vue@3.4.27(typescript@5.4.5))
