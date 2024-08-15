@@ -3,7 +3,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
-import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
+import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import useImage from './useImage';
@@ -28,7 +28,8 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
-import { getTinymceLocale } from '@/utils/get-tinymce-locale';
+import tinymce from 'tinymce/tinymce';
+import { i18n } from '@/lang';
 
 type CustomFormat = {
 	title: string;
@@ -209,7 +210,7 @@ const editorOptions = computed(() => {
 		directionality: props.direction,
 		paste_data_images: false,
 		setup,
-		...getTinymceLocale(),
+		language: i18n.global.locale.value,
 		...(props.tinymceOverrides || {}),
 	};
 });
@@ -303,6 +304,23 @@ function setFocus(val: boolean) {
 		body.classList.remove('focus');
 	}
 }
+
+onMounted(()=> {
+	tinymce.addI18n(i18n.global.locale.value, {
+		'Bold': t('wysiwyg_options.bold'),
+		'Italic': t('wysiwyg_options.italic'),
+		'Underline': t('wysiwyg_options.underline'),
+		'Heading 1': t('wysiwyg_options.h1'),
+		'Heading 2': t('wysiwyg_options.h2'),
+		'Heading 3': t('wysiwyg_options.h3'),
+		'Numbered list': t('wysiwyg_options.numlist'),
+		'Bullet list': t('wysiwyg_options.bullist'),
+		'Clear formatting': t('wysiwyg_options.removeformat'),
+		'Blockquote': t('wysiwyg_options.blockquote'),
+		'Fullscreen': t('wysiwyg_options.fullscreen'),
+	});
+})
+
 </script>
 
 <template>
