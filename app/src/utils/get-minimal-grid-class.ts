@@ -1,4 +1,4 @@
-import stringWidth from "string-width";
+import stringWidth from 'string-width';
 
 type Option = {
 	text: string;
@@ -27,4 +27,4 @@ export const getMinimalGridClass = (choices: Option[] | undefined, width: string
 	if (widestOptionLength > 10 && widestOptionLength <= 15) return getMinimalGridClassName(3);
 	if (widestOptionLength > 15 && widestOptionLength <= 25) return getMinimalGridClassName(2);
 	return getMinimalGridClassName(1);
-}
+};
