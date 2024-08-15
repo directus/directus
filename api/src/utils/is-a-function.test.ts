@@ -23,6 +23,7 @@ describe('should pass validation', () => {
 	test('with whitespace', () => {
 		expect(valueIsAFunction('do_something( )')).toBe(true);
 		expect(valueIsAFunction('doSomething (1, with(true) )')).toBe(true);
+		expect(valueIsAFunction('doSomething\u0020()')).toBe(true);
 	});
 
 	test('multiple nested functions with space', () => {
