@@ -11,7 +11,8 @@
  * Spaces are also allowed between the function name and the opening parenthesis, as well as between the closing parenthesis and the arguments.
  */
 export function valueIsAFunction(value: string): boolean {
-	const regex = /(?:^)([a-zA-Z_][a-zA-Z0-9_]*)\s*\(\s*(?:[^)(]+|\((?:[^)(]+|\([^)(]*\))*\))*\s*\)/g;
+	const regex =
+		/(?:^|\s)([a-zA-Z_][a-zA-Z0-9_]*)\s*\(\s*(?:[^)(;"'\\]*(?:(?:"(?:[^"\\]*|\\.)*"|'(?:[^'\\]*|\\.)*')[^)(;"'\\]*)*|\((?:[^)(;"'\\]*(?:(?:"(?:[^"\\]*|\\.)*"|'(?:[^'\\]*|\\.)*')[^)(;"'\\]*)*|\([^)(;"'\\]*(?:(?:"(?:[^"\\]*|\\.)*"|'(?:[^'\\]*|\\.)*')[^)(;"'\\]*)*\))*\))*\s*\)\s*$/g;
 
 	return regex.test(value);
 }
