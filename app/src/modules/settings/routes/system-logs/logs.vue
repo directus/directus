@@ -468,7 +468,7 @@ onUnmounted(() => {
 				<transition name="fade">
 					<div v-show="logDetailVisible" class="log-detail">
 						<div class="log-detail-controls">
-							<v-button class="close-button" large secondary icon @click="minimizeLog">
+							<v-button class="close-button" x-large secondary icon @click="minimizeLog">
 								<v-icon name="close" />
 							</v-button>
 							<log-detail-filtering-input
