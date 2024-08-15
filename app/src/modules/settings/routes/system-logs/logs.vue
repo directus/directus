@@ -301,6 +301,17 @@ function maximizeLog(index: number) {
 	processRawLog();
 
 	logDetailVisible.value = true;
+
+	updateCopyButtonPosition();
+}
+
+function updateCopyButtonPosition() {
+	const copyButtonEl: HTMLElement | null = document.querySelector('.copy-button');
+	const codeMirrorScrollBarEl: HTMLElement | null = document.querySelector('.CodeMirror-hscrollbar');
+
+	if (!copyButtonEl || !codeMirrorScrollBarEl) return;
+
+	copyButtonEl.style.right = `${Number(codeMirrorScrollBarEl.style.right.replace('px', '')) + 10}px`;
 }
 
 function processRawLog() {
