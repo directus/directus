@@ -161,7 +161,7 @@ If you are not using the `latest` tag for the Directus image you need to adjust 
 increment the tag version number, e.g.:
 
 ```diff-vue
--   image: directus/directus:{{ packages.directus.version.major }}.0.0
+-   image: directus/latest
 +   image: directus/directus:{{ packages.directus.version.full }}
 ```
 
