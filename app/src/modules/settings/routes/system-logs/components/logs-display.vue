@@ -224,11 +224,12 @@ function onScrollToBottom() {
 			:active="unreadLogsChipVisible && unreadLogsCount > 0"
 			small
 			close
+			clickable
 			@click="scrollToBottom"
 			@close="unreadLogsChipVisible = false"
 		>
-			<v-icon name="arrow_downward" small />
-			{{ unreadLogsCount }} UNREAD
+			<v-icon name="arrow_downward" x-small />
+			<span class="label">{{ unreadLogsCount }} UNREAD</span>
 		</v-chip>
 	</div>
 </template>
@@ -296,7 +297,12 @@ function onScrollToBottom() {
 	box-shadow: var(--sidebar-shadow);
 
 	.v-icon {
-		margin: 0 4px 0 4px;
+		margin-right: 8px;
+	}
+
+	.label {
+		font-weight: bold;
+		font-size: 12px;
 	}
 }
 
