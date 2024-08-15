@@ -531,10 +531,6 @@ importers:
         version: 1.5.3(@types/node@18.19.43)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.77.8)(terser@5.31.3)
 
   app:
-    dependencies:
-      string-width:
-        specifier: 7.2.0
-        version: 7.2.0
     devDependencies:
       '@directus/composables':
         specifier: workspace:*
@@ -863,6 +859,9 @@ importers:
       semver:
         specifier: 7.6.3
         version: 7.6.3
+      string-width:
+        specifier: 7.2.0
+        version: 7.2.0
       tinymce:
         specifier: 7.3.0
         version: 7.3.0
