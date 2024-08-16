@@ -49,6 +49,13 @@ The CLI supports rebuilding extensions whenever a file has changed by using the 
 
 :::
 
+::: tip Automatically Reload Extensions
+
+To automatically reload extensions every time you make a change, without having to restart Directus, in your
+`docker-compose.yml` file, set `EXTENSIONS_AUTO_RELOAD=true`.
+
+:::
+
 ### Configuring the CLI
 
 Most of the time, it should be sufficient to use the CLI as is. But, in some cases it might be necessary to customize it
