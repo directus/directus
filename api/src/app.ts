@@ -39,7 +39,7 @@ import serverRouter from './controllers/server.js';
 import settingsRouter from './controllers/settings.js';
 import sharesRouter from './controllers/shares.js';
 import translationsRouter from './controllers/translations.js';
-import { default as tusRouter, scheduleTusCleanup } from './controllers/tus.js';
+import tusRouter from './controllers/tus.js';
 import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
@@ -63,10 +63,10 @@ import rateLimiterGlobal from './middleware/rate-limiter-global.js';
 import rateLimiter from './middleware/rate-limiter-ip.js';
 import sanitizeQuery from './middleware/sanitize-query.js';
 import schema from './middleware/schema.js';
-import { initTelemetry } from './telemetry/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
+import { initSchedules } from './schedules/init.js';
 
 const require = createRequire(import.meta.url);
 
@@ -319,8 +319,7 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitter.emitInit('routes.after', { app });
 
-	initTelemetry();
-	scheduleTusCleanup();
+	initSchedules();
 
 	await emitter.emitInit('app.after', { app });
 
