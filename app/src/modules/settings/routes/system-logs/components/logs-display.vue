@@ -248,7 +248,7 @@ function onScrollToBottom() {
 }
 
 .logs-display {
-	min-height: 300px;
+	min-height: 200px;
 	height: 100%;
 }
 
