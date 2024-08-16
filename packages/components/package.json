@@ -36,7 +36,7 @@
 		"histoire": "0.17.17",
 		"pinia": "2.1.7",
 		"rollup-plugin-node-externals": "7.1.2",
-		"typescript": "5.4.5",
+		"typescript": "5.5.4",
 		"vite": "5.2.11",
 		"vite-plugin-dts": "3.9.1",
 		"vitest": "1.5.3",
