@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { nextTick, ref, watch } from 'vue';
+import { useLocalStorage } from '@vueuse/core';
 
 const props = defineProps<{
 	sidebarOpen?: boolean;
 }>();
 
 // By syncing the opened item here, we can force close the module once the sidebar closes
-const openDetail = ref<string[]>([]);
+const openDetail = useLocalStorage('sidebar-open-detail', [] as string[]);
 
 const mandatory = ref(false);
 
