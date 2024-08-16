@@ -2,4 +2,4 @@
 '@directus/api': minor
 ---
 
-Added whitelist for database functions as default values
+Enabled `gen_random_uuid()` to be used as default value for a field
