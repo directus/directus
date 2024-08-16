@@ -2,4 +2,4 @@
 '@directus/api': minor
 ---
 
-Allowed database functions as field default value
+Added whitelist for database functions as default values
