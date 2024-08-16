@@ -14,6 +14,7 @@ const { t } = useI18n();
 const isLoading = ref(false);
 const email = ref<string | null>(null);
 const password = ref<string | null>(null);
+const passwordHidden = ref<boolean>(false);
 const error = ref<RequestError | string | null>(null);
 
 const emit = defineEmits<{
@@ -60,6 +61,10 @@ async function onSubmit() {
 		isLoading.value = false;
 	}
 }
+
+function toggleHidePassword() {
+	passwordHidden.value = !passwordHidden.value;
+}
 </script>
 
 <template>
@@ -74,11 +79,20 @@ async function onSubmit() {
 		/>
 		<v-input
 			v-model="password"
-			type="password"
+			:type="passwordHidden ? 'password' : 'text'"
 			autocomplete="new-password"
 			:placeholder="t('password')"
 			:disabled="isLoading"
-		/>
+		>
+			<template #append>
+				<v-icon
+					v-tooltip="passwordHidden ? 'Show password' : 'Hide password'"
+					:name="passwordHidden ? 'visibility' : 'visibility_off'"
+					clickable
+					@click="toggleHidePassword"
+				/>
+			</template>
+		</v-input>
 
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
