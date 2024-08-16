@@ -18,7 +18,7 @@ const emit = defineEmits(['expandLog', 'scrolledToBottom', 'scrolledToTop', 'scr
 
 defineExpose({ clearUnreadLogs, incrementUnreadLogs, scrollToBottom, scrollToTop, scrollDownByOne, scrollUpByOne });
 
-const { t } = useI18n();
+const { n, t } = useI18n();
 const scroller = ref();
 const unreadLogsChipVisible = ref(true);
 const unreadLogsCount = ref(0);
@@ -183,10 +183,10 @@ function onScrollToBottom() {
 		@scroll="onScroll"
 	>
 		<template #before>
-			<div class="notice">This is the beginning of your logs session...</div>
+			<div class="notice">{{ t('logs_beginning') }}</div>
 		</template>
 		<template #after>
-			<div v-if="streamConnected" class="notice">Awaiting more logs...</div>
+			<div v-if="streamConnected" class="notice">{{ t('logs_waiting') }}</div>
 		</template>
 		<template #default="{ item, index, active }">
 			<dynamic-scroller-item
@@ -229,7 +229,7 @@ function onScrollToBottom() {
 			@close="unreadLogsChipVisible = false"
 		>
 			<v-icon name="arrow_downward" x-small />
-			<span class="label">{{ unreadLogsCount }} UNREAD</span>
+			<span class="label">{{ t('logs_unread_count', { count: n(unreadLogsCount) }) }}</span>
 		</v-chip>
 	</div>
 </template>

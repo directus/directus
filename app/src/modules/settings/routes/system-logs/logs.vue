@@ -192,7 +192,7 @@ client.onWebSocket('message', function (message) {
 	if (type == 'logs') {
 		if (event === 'subscribe') {
 			streamConnected.value = true;
-			addNotice('Logs session resumed...');
+			addNotice(t('logs_session_resumed'));
 		}
 
 		if (data) {
@@ -215,7 +215,7 @@ client.onWebSocket('message', function (message) {
 
 client.onWebSocket('close', function () {
 	if (streamConnected.value) {
-		addNotice('Logs stream disconnected...');
+		addNotice(t('logs_stream_disconnected'));
 	}
 
 	streamConnected.value = false;
@@ -271,7 +271,7 @@ function pauseLogsStreaming() {
 	shouldStream.value = false;
 	streamConnected.value = false;
 	client.disconnect();
-	addNotice('Logs session paused...');
+	addNotice(t('logs_session_paused'));
 }
 
 function maximizeLog(index: number) {
@@ -485,7 +485,7 @@ onUnmounted(() => {
 							<log-detail-filtering-input
 								:value="logDetailSearch"
 								class="full"
-								placeholder="Filter Paths (eg: req.method, res.statusCode)"
+								:placeholder="t('log_detail_filter_paths')"
 								icon-right="search"
 								@input="logDetailSearch = $event"
 							/>
