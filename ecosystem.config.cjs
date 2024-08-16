@@ -15,6 +15,7 @@ module.exports = [
 		instances: process.env.PM2_INSTANCES ?? 1,
 		exec_mode: process.env.PM2_EXEC_MODE ?? 'cluster',
 		max_memory_restart: process.env.PM2_MAX_MEMORY_RESTART,
+		node_args: process.env.PM2_NODE_ARGS,
 
 		// Control flow
 		min_uptime: process.env.PM2_MIN_UPTIME,
