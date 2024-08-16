@@ -1129,7 +1129,7 @@ For more information on what these options do, please refer to
 | `PM2_INSTANCES`<sup>[1]</sup> | Number of app instance to be launched                              | `1`                                          |
 | `PM2_EXEC_MODE`               | One of `fork`, `cluster`                                           | `'cluster'`                                  |
 | `PM2_MAX_MEMORY_RESTART`      | App will be restarted if it exceeds the amount of memory specified | —                                            |
-| `PM2_NODE_ARGS`  							    | NODEJS args																												 | —                                            |
+| `PM2_NODE_ARGS`  					    | NODEJS args																												 | —                                            |
 | `PM2_MIN_UPTIME`              | Min uptime of the app to be considered started                     | —                                            |
 | `PM2_LISTEN_TIMEOUT`          | Time in ms before forcing a reload if app not listening            | —                                            |
 | `PM2_KILL_TIMEOUT`            | Time in milliseconds before sending a final SIGKILL                | —                                            |
