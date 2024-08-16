@@ -86,7 +86,7 @@ function toggleHidePassword() {
 		>
 			<template #append>
 				<v-icon
-					v-tooltip="passwordHidden ? 'Show password' : 'Hide password'"
+					v-tooltip="passwordHidden ? t('show_password') : t('hide_password')"
 					:name="passwordHidden ? 'visibility' : 'visibility_off'"
 					clickable
 					@click="toggleHidePassword"
