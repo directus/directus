@@ -524,10 +524,6 @@ update_collection_success: แก้ไขคอลเลกชัน
 delete_collection_success: คอลเลกชันถูกลบแล้ว
 make_collection_visible: แสดงคอลเลคชั่น
 make_collection_hidden: ซ่อนคอลเลคชั่น
-start_end_of_count_items: '{start}-{end} ของ {count} ไอเท็ม'
-start_end_of_count_filtered_items: '{start}-{end} ของ {count} ไอเท็มที่ถูกกรอง'
-one_item: '1 รายการ'
-one_filtered_item: 'มี 1 ไอเท็มที่ถูกกรอง'
 collections_shown: แสดงคอลเลกชัน
 visible_collections: คอลเลกชันที่มองเห็นได้
 hidden_collections: คอลเลกชันที่ซ่อนอยู่
@@ -604,7 +600,6 @@ create_item: สร้างไอเท็ม
 display_template: แม่แบบการแสดงผล
 language_display_template: แม่แบบการแสดงภาษา
 translations_display_template: แม่แบบการแปลภาษา
-n_items_selected: 'ไม่มีรายการที่เลือก | เลือกแล้ว 1 รายการ | เลือกแล้ว {n} รายการ'
 per_page: ต่อหน้า
 all_files: ทุกไฟล์
 my_files: ไฟล์ของฉัน
