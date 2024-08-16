@@ -84,21 +84,21 @@ const options = computed({
 });
 
 watch(customOptionsFields, (newVal) => {
-    if (fieldDetailStore.field.meta?.options) {
-        const options = fieldDetailStore.field.meta?.options;
+	if (fieldDetailStore.field.meta?.options) {
+		const options = fieldDetailStore.field.meta?.options;
 
-        Object.keys(options).forEach((field) => {
-			if(isArray(newVal) && !some(newVal,{field})) {
+		Object.keys(options).forEach((field) => {
+			if (isArray(newVal) && !some(newVal, { field })) {
 				delete options[field];
 			}
 
-			if(newVal && 'standard' in newVal) {
-				if(!some([...newVal.standard, newVal.advanced],{field})) {
+			if (newVal && 'standard' in newVal) {
+				if (!some([...newVal.standard, newVal.advanced], { field })) {
 					delete options[field];
 				}
 			}
-        });
-    }
+		});
+	}
 });
 </script>
 
