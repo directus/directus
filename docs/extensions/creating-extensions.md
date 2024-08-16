@@ -1,7 +1,7 @@
 ---
 description: A guide on how to scaffold your Directus Extension.
 readTime: 5 min read
-contributors: Rijk Van Zanten, Esther Agbaje, Kevin Lewis
+contributors: Rijk Van Zanten, Esther Agbaje, Kevin Lewis, Lukas Zelenka
 ---
 
 # Creating Extensions
