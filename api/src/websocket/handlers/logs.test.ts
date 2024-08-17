@@ -220,6 +220,8 @@ describe('WebSocket logs handler', () => {
 
 		for (const level of Object.keys(getAllowedLogLevels(logLevel))) {
 			expect(handler.subscriptions[level]?.size).toBe(1);
+			expect(handler.subscriptions[level]?.has(client)).toBe(false);
+			expect(handler.subscriptions[level]?.has(client2)).toBe(true);
 		}
 	});
 });
