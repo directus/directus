@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
 	await helper.changeToType('directus_panels', 'icon', 'string', {
 		nullable: true,
 		default: null,
-		length: 30,
+		length: 64,
 	});
 }
 
@@ -17,6 +17,6 @@ export async function down(knex: Knex): Promise<void> {
 	await helper.changeToType('directus_panels', 'icon', 'string', {
 		nullable: true,
 		default: 'insert_chart',
-		length: 30,
+		length: 64,
 	});
 }

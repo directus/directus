@@ -2,7 +2,7 @@ import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	await knex.schema.alterTable('directus_presets', (table) => {
-		table.string('icon', 30).notNullable().defaultTo('bookmark_outline');
+		table.string('icon', 64).notNullable().defaultTo('bookmark_outline');
 		table.string('color').nullable();
 	});
 }

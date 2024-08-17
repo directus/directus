@@ -11,7 +11,7 @@ columns:
     nullable: false
   icon:
     type: string
-    length: 30
+    length: 64
     nullable: false
     default: supervised_user_circle
   description:

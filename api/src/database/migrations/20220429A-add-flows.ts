@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_flows', (table) => {
 		table.uuid('id').primary().notNullable();
 		table.string('name').notNullable();
-		table.string('icon', 30);
+		table.string('icon', 64);
 		table.string('color').nullable();
 		table.text('description');
 		table.string('status').notNullable().defaultTo('active');
