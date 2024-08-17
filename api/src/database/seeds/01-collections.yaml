@@ -8,7 +8,7 @@ columns:
     nullable: false
   icon:
     type: string
-    length: 64
+    length: 30
   note:
     type: text
   display_template:
