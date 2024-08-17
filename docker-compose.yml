@@ -149,7 +149,7 @@ services:
 
   yugabytedb:
     image: yugabytedb/yugabyte:2024.1.1.0-b137
-    command: bash -c 'rm -rf /tmp/.yb.* ; yugabyted start --enable_pg_parity_tech_preview --background=false --tserver_flags=ysql_pg_conf_csv='"{log_statement='all'}"
+    command: bash -c 'rm -rf /tmp/.yb.* ; yugabyted start --enable_pg_parity_tech_preview --background=false
     healthcheck:
       test: postgres/bin/pg_isready -h yugabytedb
       interval: '10s'
