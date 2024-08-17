@@ -1605,7 +1605,7 @@ register: 등록
 registration_successful_headline: 성공!
 registration_successful_note: 이제 로그인 페이지로 이동할 수 있습니다.
 registration_successful_check_email_note: |
-  로그인하기 전에 이메일 주소를 확인하기 위해 발송된 확인 링크를 클릭해야 합니다. 
+  로그인하기 전에 이메일 주소를 확인하기 위해 발송된 확인 링크를 클릭해야 합니다.
 dont_have_an_account: 계정이 없으신가요?
 already_have_an_account: 이미 계정이 있으신가요?
 sign_up_now: 지금 가입
