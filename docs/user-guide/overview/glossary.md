@@ -67,7 +67,7 @@ group data based on department, objective, business process or anything you choo
 ## Database Abstraction
 
 Directus supports mirroring all the most widely used SQL databases, including PostgreSQL, MySQL, Microsoft SQL Server,
-SQLite, OracleDB, MariaDB, CockroachDB, and other variants. Each vendor has subtle (and sometimes not so subtle)
+SQLite, OracleDB, MariaDB, CockroachDB, YugabyteDB, and other variants. Each vendor has subtle (and sometimes not so subtle)
 differences in how they function, so Directus includes an abstraction layer that helps it avoid writing different code
 for each type.
 

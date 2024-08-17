@@ -1,7 +1,7 @@
 import type { Driver } from '../../types/index.js';
 
 export const drivers: Record<Driver, string> = {
-	pg: 'PostgreSQL / Redshift',
+	pg: 'PostgreSQL / Redshift / YugabyteDB',
 	cockroachdb: 'CockroachDB (Beta)',
 	mysql2: 'MySQL / MariaDB / Aurora',
 	sqlite3: 'SQLite',

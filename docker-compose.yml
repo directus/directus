@@ -28,6 +28,7 @@
 #   Postgres (10):   5111
 #   Minio Admin:     5112
 #   CockroachDB:     5113
+#   YugabyteDB:      5114
 #
 # Credentials:
 #   Postgres:
@@ -72,6 +73,11 @@
 #   CockroachDB
 #     User:          admin
 #     Password:      --
+#
+#   YugabyteDB:
+#     User:          yugabyte
+#     Password:      yugabyte
+#     Database:      directus
 
 version: '3.8'
 
@@ -141,6 +147,23 @@ services:
     ports:
       - 5113:26257
 
+  yugabytedb:
+    image: yugabytedb/yugabyte:2024.1.1.0-b137
+    command: bash -c 'rm -rf /tmp/.yb.* ; yugabyted start --enable_pg_parity_tech_preview --background=false --tserver_flags=ysql_pg_conf_csv='"{log_statement='all'}"
+    healthcheck:
+      test: postgres/bin/pg_isready -h yugabytedb
+      interval: '10s'
+      timeout: '30s'
+      retries: 5
+      start_period: '20s'  
+    environment:
+      - YSQL_USER=yugabyte
+      - YSQL_PASSWORD=yugabyte
+      - YSQL_DB=directus
+    ports:
+      - 15433:15433
+      - 5114:5433
+
   redis:
     image: redis:6-alpine
     ports:
@@ -173,3 +196,4 @@ services:
     ports:
       - 1025:1025
       - 1080:1080
+
