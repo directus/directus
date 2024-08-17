@@ -8,8 +8,8 @@ import { pinoHttp, stdSerializers, type AutoLoggingOptions } from 'pino-http';
 import { httpPrintFactory } from 'pino-http-print';
 import { build as pinoPretty } from 'pino-pretty';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
+import { LogsStream } from './logs-stream.js';
 import { redactQuery } from './redact-query.js';
-import { LogsStream } from './stream.js';
 
 export const _cache: {
 	logger: Logger<never> | undefined;
