@@ -2,7 +2,6 @@ import stringWidth from 'string-width';
 
 type Option = {
 	text: string;
-	value: string | number | boolean;
 };
 
 export const getMinimalGridClass = (choices: Option[] | undefined, width: string | undefined) => {
