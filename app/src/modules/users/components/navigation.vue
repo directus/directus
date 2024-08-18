@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { toRefs, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './navigation-role.vue';
@@ -14,7 +13,6 @@ const props = defineProps<{
 
 const { currentRole } = toRefs(props);
 
-const { t } = useI18n();
 const router = useRouter();
 const collectionsStore = useCollectionsStore();
 
@@ -44,8 +42,8 @@ function handleClick({ role }: { role: string }) {
 				:key="role.id"
 				:role="role"
 				:current-role="currentRole"
-				@click="handleClick"
 				:active="!hasBookmark && role.id == currentRole"
+				@click="handleClick"
 			/>
 		</v-item-group>
 	</v-list>
