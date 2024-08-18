@@ -336,8 +336,8 @@ importers:
         specifier: 11.2.1
         version: 11.2.1
       qs:
-        specifier: 6.12.3
-        version: 6.12.3
+        specifier: 6.13.0
+        version: 6.13.0
       rate-limiter-flexible:
         specifier: 5.0.3
         version: 5.0.3
@@ -360,8 +360,8 @@ importers:
         specifier: 1.8.0
         version: 1.8.0
       tar:
-        specifier: 7.4.2
-        version: 7.4.2
+        specifier: 7.4.3
+        version: 7.4.3
       tsx:
         specifier: 4.16.5
         version: 4.16.5
@@ -506,8 +506,8 @@ importers:
         specifier: 0.5.8
         version: 0.5.8
       '@types/ws':
-        specifier: 8.5.11
-        version: 8.5.11
+        specifier: 8.5.12
+        version: 8.5.12
       '@vitest/coverage-v8':
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.43)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.77.8)(terser@5.31.3))
@@ -517,6 +517,9 @@ importers:
       form-data:
         specifier: 4.0.0
         version: 4.0.0
+      get-port:
+        specifier: 7.1.0
+        version: 7.1.0
       knex-mock-client:
         specifier: 2.0.1
         version: 2.0.1(knex@3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0))
@@ -602,8 +605,8 @@ importers:
         specifier: 2.9.3
         version: 2.9.3
       '@editorjs/inline-code':
-        specifier: 1.5.0
-        version: 1.5.0
+        specifier: 1.5.1
+        version: 1.5.1
       '@editorjs/nested-list':
         specifier: 1.4.3
         version: 1.4.3
@@ -626,8 +629,8 @@ importers:
         specifier: 6.6.0
         version: 6.6.0
       '@fortawesome/free-brands-svg-icons':
-        specifier: 6.5.2
-        version: 6.5.2
+        specifier: 6.6.0
+        version: 6.6.0
       '@fullcalendar/core':
         specifier: 6.1.7
         version: 6.1.7
@@ -665,8 +668,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       '@pinia/testing':
-        specifier: 0.1.4
-        version: 0.1.4(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
+        specifier: 0.1.5
+        version: 0.1.5(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
       '@popperjs/core':
         specifier: 2.11.8
         version: 2.11.8
@@ -857,8 +860,8 @@ importers:
         specifier: 7.6.3
         version: 7.6.3
       tinymce:
-        specifier: 7.2.1
-        version: 7.2.1
+        specifier: 7.3.0
+        version: 7.3.0
       tus-js-client:
         specifier: 4.1.0
         version: 4.1.0
@@ -1821,8 +1824,8 @@ importers:
         specifier: 0.20.2
         version: 0.20.2
       esbuild-yaml:
-        specifier: 1.1.1
-        version: 1.1.1(esbuild@0.20.2)
+        specifier: 1.2.0
+        version: 1.2.0(esbuild@0.20.2)
       tsup:
         specifier: 8.2.2
         version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.41)(tsx@4.16.5)(typescript@5.4.5)(yaml@2.5.0)
@@ -1836,8 +1839,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.32.35
-        version: 0.32.35
+        specifier: 0.33.6
+        version: 0.33.6
       decamelize:
         specifier: 6.0.0
         version: 6.0.0
@@ -2107,8 +2110,8 @@ importers:
         specifier: 9.0.8
         version: 9.0.8
       '@types/ws':
-        specifier: 8.5.11
-        version: 8.5.11
+        specifier: 8.5.12
+        version: 8.5.12
       argon2:
         specifier: 0.40.3
         version: 0.40.3
@@ -2816,8 +2819,8 @@ packages:
   '@editorjs/image@2.9.3':
     resolution: {integrity: sha512-hBOHuqvL/ovjrns+xLuBh/b3kqABDlLxlByWnSuKnE31O351NDrg9AXrB1yYo0yZerw5V591rP0US3PEzp7CzQ==}
 
-  '@editorjs/inline-code@1.5.0':
-    resolution: {integrity: sha512-5i6BCOG8eOg4/6qGoLJuL6XSZZg834zIByDW8K80doM1L7ss/VqtLY0nrB2Q5bfs1KA0tOlVHOfjE4JD4438FQ==}
+  '@editorjs/inline-code@1.5.1':
+    resolution: {integrity: sha512-XvKpqw9y1bOYgyuVUHGDuu7KlNWCYIXD5uU1Lpc4s4LJ8VN4TjWFGKJ3sS+LR7zzasWe8hu2ffR1JC6MHIS0EQ==}
 
   '@editorjs/nested-list@1.4.3':
     resolution: {integrity: sha512-3jTJd6H2Zwe8SeiI9li9AolkCxFVitEnCpJjDI6+la/HslSJC827fHivc9hue6JmC8esA4yri0KCMyp8N4ykww==}
@@ -3546,10 +3549,6 @@ packages:
     resolution: {integrity: sha512-a/7BiSgobHAgBWeN7N0w+lAhInrGxksn13uK7231n2m8EDPE3BMCl9NZLTGrj9ZXfCmC6LM0QLqXidIizVQ6yg==}
     engines: {node: '>=6'}
 
-  '@fortawesome/fontawesome-common-types@6.5.2':
-    resolution: {integrity: sha512-gBxPg3aVO6J0kpfHNILc+NMhXnqHumFxOmjYCFfOiLZfwhnnfhtsdA2hfJlDnj+8PjAs6kKQPenOTKj3Rf7zHw==}
-    engines: {node: '>=6'}
-
   '@fortawesome/fontawesome-common-types@6.6.0':
     resolution: {integrity: sha512-xyX0X9mc0kyz9plIyryrRbl7ngsA9jz77mCZJsUkLl+ZKs0KWObgaEBoSgQiYWAsSmjz/yjl0F++Got0Mdp4Rw==}
     engines: {node: '>=6'}
@@ -3562,8 +3561,8 @@ packages:
     resolution: {integrity: sha512-KHwPkCk6oRT4HADE7smhfsKudt9N/9lm6EJ5BVg0tD1yPA5hht837fB87F8pn15D8JfTqQOjhKTktwmLMiD7Kg==}
     engines: {node: '>=6'}
 
-  '@fortawesome/free-brands-svg-icons@6.5.2':
-    resolution: {integrity: sha512-zi5FNYdmKLnEc0jc0uuHH17kz/hfYTg4Uei0wMGzcoCL/4d3WM3u1VMc0iGGa31HuhV5i7ZK8ZlTCQrHqRHSGQ==}
+  '@fortawesome/free-brands-svg-icons@6.6.0':
+    resolution: {integrity: sha512-1MPD8lMNW/earme4OQi1IFHtmHUwAKgghXlNwWi9GO7QkTfD+IIaYpIai4m2YJEzqfEji3jFHX1DZI5pbY/biQ==}
     engines: {node: '>=6'}
 
   '@fortawesome/free-regular-svg-icons@5.15.4':
@@ -4095,10 +4094,10 @@ packages:
     resolution: {integrity: sha512-m7X9U6BG2+J+R1lSOdCiITLLrxm+cWlNI3HUFA92oLO77ObGNzaKdh8pMLqdZcshtkKuV84olNNXDfMc4FezBQ==}
     engines: {node: '>=10'}
 
-  '@pinia/testing@0.1.4':
-    resolution: {integrity: sha512-DJ3oXYqVa6SfAngZoUmKKBp+WmQ50XV41NWThgX49p66ptTeR756QRXd0lg42FC17sIWlAbtc9EEiu1T8Yzoig==}
+  '@pinia/testing@0.1.5':
+    resolution: {integrity: sha512-AcGzuotkzhRoF00htuxLfIPBBHVE6HjjB3YC5Y3os8vRgKu6ipknK5GBQq9+pduwYQhZ+BcCZDC9TyLAUlUpoQ==}
     peerDependencies:
-      pinia: '>=2.2.0'
+      pinia: '>=2.2.1'
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -4614,8 +4613,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@sinclair/typebox@0.32.35':
-    resolution: {integrity: sha512-Ul3YyOTU++to8cgNkttakC0dWvpERr6RYoHO2W47DLbFvrwBDJUY31B1sImH6JZSYc4Kt4PyHtoPNu+vL2r2dA==}
+  '@sinclair/typebox@0.33.6':
+    resolution: {integrity: sha512-9Q3DMNtaLN053foIr1lCR+2BjDzdNLgLruvbIHQwPPLcllGbjmp9Ns69rQQJbg4YZoMmaBVNtDOCq626aGO78g==}
 
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
@@ -5327,8 +5326,8 @@ packages:
   '@types/wellknown@0.5.8':
     resolution: {integrity: sha512-/tXv+IfentaS3F0VplScdl+pwP7biW4RBnOxCTtoWlpNiulFBQWqA8rA7r/knavu9SELsFcNVtdGo6YNIElMdw==}
 
-  '@types/ws@8.5.11':
-    resolution: {integrity: sha512-4+q7P5h3SpJxaBft0Dzpbr6lmMaqh0Jr2tbhJZ/luAwvD7ohSCniYkwz/pLxuT2h0EOa6QADgJj1Ko+TzRfZ+w==}
+  '@types/ws@8.5.12':
+    resolution: {integrity: sha512-3tPRkv1EtkDpzlgyKyI8pGsGZAGPEaXeu0DOj5DI25Ja91bdAYddYHbADRYVrZMRbfW+1l5YwXVDKohDJNQxkQ==}
 
   '@typescript-eslint/eslint-plugin@7.8.0':
     resolution: {integrity: sha512-gFTT+ezJmkwutUPmB0skOj3GZJtlEGnlssems4AjkVweUPGj7jRwwqg0Hhg7++kPGJqKtTYx+R05Ftww372aIg==}
@@ -7049,8 +7048,8 @@ packages:
   esbuild-plugin-replace@1.4.0:
     resolution: {integrity: sha512-lP3ZAyzyRa5JXoOd59lJbRKNObtK8pJ/RO7o6vdjwLi71GfbL32NR22ZuS7/cLZkr10/L1lutoLma8E4DLngYg==}
 
-  esbuild-yaml@1.1.1:
-    resolution: {integrity: sha512-eiYWoTAeV1YBZ/BtaRksgp51LvLZvqJkBtKTYlqIjDYvJYddkXmmjBAT3uAln/+TVjVsM3tzMPjOF7m0gNmyxQ==}
+  esbuild-yaml@1.2.0:
+    resolution: {integrity: sha512-XnYNh8xsBNg0b7n4qI7S0Zt+eam3eT6VNCmJ/dtH0fvRy+BfUhurlbY0gEIY4XMhk4rM8UC3IcLOCWrj29LWbQ==}
     peerDependencies:
       esbuild: '>=0.18'
 
@@ -10100,8 +10099,8 @@ packages:
     resolution: {integrity: sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==}
     engines: {node: '>=0.6'}
 
-  qs@6.12.3:
-    resolution: {integrity: sha512-AWJm14H1vVaO/iNZ4/hO+HyaTehuy9nRqVdkTqlJt0HWvBiBIEXFmb4C0DGeYo3Xes9rrEW+TxHsaigCbN5ICQ==}
+  qs@6.13.0:
+    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
     engines: {node: '>=0.6'}
 
   qs@6.5.3:
@@ -11063,8 +11062,8 @@ packages:
     resolution: {integrity: sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==}
     engines: {node: '>=10'}
 
-  tar@7.4.2:
-    resolution: {integrity: sha512-pP4ToLATHpXOrbxOZudW6rnfyPWJZoyERNrpTpQEtW6LkvpXw+WDnpj2GBQX9tyQ6teUyPESyyiOCFgp6HnGdw==}
+  tar@7.4.3:
+    resolution: {integrity: sha512-5S7Va8hKfV7W5U6g3aYxXmlPoZVAwUMy9AOKyF2fVuZa2UD3qZjg578OrLRt8PcNN1PleVaL/5/yYATNL0ICUw==}
     engines: {node: '>=18'}
 
   tarn@3.0.2:
@@ -11135,8 +11134,8 @@ packages:
   tinymce@6.8.4:
     resolution: {integrity: sha512-okoJyxuPv1gzASxQDNgQbnUXOdAIyoOSXcXcZZu7tiW0PSKEdf3SdASxPBupRj+64/E3elHwVRnzSdo82Emqbg==}
 
-  tinymce@7.2.1:
-    resolution: {integrity: sha512-ADd1cvdIuq6NWyii0ZOZRuu+9sHIdQfcRNWBcBps2K8vy7OjlRkX6iw7zz1WlL9kY4z4L1DvIP+xOrVX/46aHA==}
+  tinymce@7.3.0:
+    resolution: {integrity: sha512-Ls4PgYlpk73XAxBSBqbVmSl8Mb3DuNfgF01GZ0lY6/MOEVRl3IL+VxC1Oe6165e8WqbqVsxO3Qj/PmoYNvQKGQ==}
 
   tinypool@0.8.4:
     resolution: {integrity: sha512-i11VH5gS6IFeLY3gMBQ00/MmLncVP7JLXOw1vlgkytLmJK7QnEr7NXf0LBdxfmNPAeyetukOk0bOYrJrFGjYJQ==}
@@ -13606,9 +13605,9 @@ snapshots:
     dependencies:
       '@codexteam/icons': 0.3.2
 
-  '@editorjs/inline-code@1.5.0':
+  '@editorjs/inline-code@1.5.1':
     dependencies:
-      '@codexteam/icons': 0.0.5
+      '@codexteam/icons': 0.3.2
 
   '@editorjs/nested-list@1.4.3':
     dependencies:
@@ -14006,8 +14005,6 @@ snapshots:
 
   '@fortawesome/fontawesome-common-types@0.2.36': {}
 
-  '@fortawesome/fontawesome-common-types@6.5.2': {}
-
   '@fortawesome/fontawesome-common-types@6.6.0': {}
 
   '@fortawesome/fontawesome-svg-core@1.2.36':
@@ -14018,9 +14015,9 @@ snapshots:
     dependencies:
       '@fortawesome/fontawesome-common-types': 6.6.0
 
-  '@fortawesome/free-brands-svg-icons@6.5.2':
+  '@fortawesome/free-brands-svg-icons@6.6.0':
     dependencies:
-      '@fortawesome/fontawesome-common-types': 6.5.2
+      '@fortawesome/fontawesome-common-types': 6.6.0
 
   '@fortawesome/free-regular-svg-icons@5.15.4':
     dependencies:
@@ -14587,7 +14584,7 @@ snapshots:
 
   '@phc/format@1.0.0': {}
 
-  '@pinia/testing@0.1.4(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))':
+  '@pinia/testing@0.1.5(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
       pinia: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       vue-demi: 0.14.10(vue@3.4.27(typescript@5.4.5))
@@ -15200,7 +15197,7 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@sinclair/typebox@0.32.35': {}
+  '@sinclair/typebox@0.33.6': {}
 
   '@sindresorhus/is@4.6.0': {}
 
@@ -16165,7 +16162,7 @@ snapshots:
 
   '@types/wellknown@0.5.8': {}
 
-  '@types/ws@8.5.11':
+  '@types/ws@8.5.12':
     dependencies:
       '@types/node': 18.19.43
 
@@ -18025,7 +18022,7 @@ snapshots:
     dependencies:
       magic-string: 0.25.9
 
-  esbuild-yaml@1.1.1(esbuild@0.20.2):
+  esbuild-yaml@1.2.0(esbuild@0.20.2):
     dependencies:
       esbuild: 0.20.2
       js-yaml: 4.1.0
@@ -18603,7 +18600,7 @@ snapshots:
       dezalgo: 1.0.4
       hexoid: 1.0.0
       once: 1.4.0
-      qs: 6.12.3
+      qs: 6.13.0
 
   formidable@3.5.1:
     dependencies:
@@ -21674,7 +21671,7 @@ snapshots:
     dependencies:
       side-channel: 1.0.6
 
-  qs@6.12.3:
+  qs@6.13.0:
     dependencies:
       side-channel: 1.0.6
 
@@ -22837,7 +22834,7 @@ snapshots:
       formidable: 2.1.2
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.12.3
+      qs: 6.13.0
       readable-stream: 3.6.2
       semver: 7.6.3
     transitivePeerDependencies:
@@ -22853,7 +22850,7 @@ snapshots:
       formidable: 3.5.1
       methods: 1.1.2
       mime: 2.6.0
-      qs: 6.12.3
+      qs: 6.13.0
     transitivePeerDependencies:
       - supports-color
 
@@ -22995,7 +22992,7 @@ snapshots:
       yallist: 4.0.0
     optional: true
 
-  tar@7.4.2:
+  tar@7.4.3:
     dependencies:
       '@isaacs/fs-minipass': 4.0.1
       chownr: 3.0.0
@@ -23086,7 +23083,7 @@ snapshots:
 
   tinymce@6.8.4: {}
 
-  tinymce@7.2.1: {}
+  tinymce@7.3.0: {}
 
   tinypool@0.8.4: {}
 

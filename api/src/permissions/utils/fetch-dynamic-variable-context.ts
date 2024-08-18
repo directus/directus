@@ -1,21 +1,12 @@
+import { useEnv } from '@directus/env';
 import type { Accountability, Permission } from '@directus/types';
+import { getSimpleHash } from '@directus/utils';
+import { getCache, getCacheValue, setCacheValue } from '../../cache.js';
 import type { Context } from '../types.js';
-import { extractRequiredDynamicVariableContext } from './extract-required-dynamic-variable-context.js';
-import { withCache } from './with-cache.js';
-
-export const fetchDynamicVariableContext = withCache(
-	'permission-dynamic-variables',
-	_fetchDynamicVariableContext,
-	({ policies, permissions, accountability: { user, role, roles } }) => ({
-		policies,
-		permissions,
-		accountability: {
-			user,
-			role,
-			roles,
-		},
-	}),
-);
+import {
+	extractRequiredDynamicVariableContext,
+	type RequiredPermissionContext,
+} from './extract-required-dynamic-variable-context.js';
 
 export interface FetchDynamicVariableContext {
 	accountability: Pick<Accountability, 'user' | 'role' | 'roles'>;
@@ -23,7 +14,7 @@ export interface FetchDynamicVariableContext {
 	permissions: Permission[];
 }
 
-export async function _fetchDynamicVariableContext(options: FetchDynamicVariableContext, context: Context) {
+export async function fetchDynamicVariableContext(options: FetchDynamicVariableContext, context: Context) {
 	const { UsersService } = await import('../../services/users.js');
 	const { RolesService } = await import('../../services/roles.js');
 	const { PoliciesService } = await import('../../services/policies.js');
@@ -33,36 +24,96 @@ export async function _fetchDynamicVariableContext(options: FetchDynamicVariable
 	const permissionContext = extractRequiredDynamicVariableContext(options.permissions);
 
 	if (options.accountability.user && (permissionContext.$CURRENT_USER?.size ?? 0) > 0) {
-		const usersService = new UsersService(context);
+		contextData['$CURRENT_USER'] = await fetchContextData(
+			'$CURRENT_USER',
+			permissionContext,
+			{ user: options.accountability.user },
+			async (fields) => {
+				const usersService = new UsersService(context);
 
-		contextData['$CURRENT_USER'] = await usersService.readOne(options.accountability.user, {
-			fields: Array.from(permissionContext.$CURRENT_USER!),
-		});
+				return await usersService.readOne(options.accountability.user!, {
+					fields,
+				});
+			},
+		);
 	}
 
 	if (options.accountability.role && (permissionContext.$CURRENT_ROLE?.size ?? 0) > 0) {
-		const rolesService = new RolesService(context);
+		contextData['$CURRENT_ROLE'] = await fetchContextData(
+			'$CURRENT_ROLE',
+			permissionContext,
+			{ role: options.accountability.role },
+			async (fields) => {
+				const usersService = new RolesService(context);
 
-		contextData['$CURRENT_ROLE'] = await rolesService.readOne(options.accountability.role, {
-			fields: Array.from(permissionContext.$CURRENT_ROLE!),
-		});
+				return await usersService.readOne(options.accountability.role!, {
+					fields,
+				});
+			},
+		);
 	}
 
 	if (options.accountability.roles.length > 0 && (permissionContext.$CURRENT_ROLES?.size ?? 0) > 0) {
-		const rolesService = new RolesService(context);
+		contextData['$CURRENT_ROLES'] = await fetchContextData(
+			'$CURRENT_ROLES',
+			permissionContext,
+			{ roles: options.accountability.roles },
+			async (fields) => {
+				const rolesService = new RolesService(context);
 
-		contextData['$CURRENT_ROLES'] = await rolesService.readMany(options.accountability.roles, {
-			fields: Array.from(permissionContext.$CURRENT_ROLES!),
-		});
+				return await rolesService.readMany(options.accountability.roles, {
+					fields,
+				});
+			},
+		);
 	}
 
 	if (options.policies.length > 0 && (permissionContext.$CURRENT_POLICIES?.size ?? 0) > 0) {
-		const policiesService = new PoliciesService(context);
+		contextData['$CURRENT_POLICIES'] = await fetchContextData(
+			'$CURRENT_POLICIES',
+			permissionContext,
+			{ policies: options.policies },
+			async (fields) => {
+				const policiesService = new PoliciesService(context);
 
-		contextData['$CURRENT_POLICIES'] = await policiesService.readMany(options.policies, {
-			fields: Array.from(permissionContext.$CURRENT_POLICIES!),
-		});
+				return await policiesService.readMany(options.policies, {
+					fields,
+				});
+			},
+		);
 	}
 
 	return contextData;
+}
+
+async function fetchContextData(
+	key: keyof RequiredPermissionContext,
+	permissionContext: RequiredPermissionContext,
+	cacheContext: Record<string, any>,
+	fetch: (fields: string[]) => Promise<Record<string, any>>,
+) {
+	const { cache } = getCache();
+	const env = useEnv();
+
+	const fields = Array.from(permissionContext[key]!);
+
+	const cacheKey = cache
+		? `filter-context-${key.slice(1)}-${getSimpleHash(JSON.stringify({ ...cacheContext, fields }))}`
+		: '';
+
+	let data = undefined;
+
+	if (cache) {
+		data = await getCacheValue(cache, cacheKey);
+	}
+
+	if (!data) {
+		data = await fetch(fields);
+
+		if (cache && env['CACHE_ENABLED'] !== false) {
+			await setCacheValue(cache, cacheKey, data);
+		}
+	}
+
+	return data;
 }

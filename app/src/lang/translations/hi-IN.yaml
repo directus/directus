@@ -360,7 +360,6 @@ errors:
   NOT_NULL_VIOLATION: मान null नहीं हो सकता
 bookmarks: पृष्टस्मृतियाँ
 flip_horizontal: फ्लिप हॉरिजॉन्टल
-one_item: '1 समान'
 font: फ़ॉन्ट
 sans_serif: Sans Serif
 serif: Serif

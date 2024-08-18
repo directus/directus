@@ -1,16 +1,22 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { FieldFunction, Filter, Query, SchemaOverview } from '@directus/types';
+import type { FieldFunction, Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getFunctions } from '../database/helpers/index.js';
 import { InvalidQueryError } from '@directus/errors';
 import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
-type GetColumnOptions = {
-	query?: Query | undefined;
-	cases?: Filter[];
+type FunctionColumnOptions = {
+	query: Query;
+	cases: Filter[];
+	permissions: Permission[];
+};
+
+type OriginalCollectionName = {
 	originalCollectionName?: string | undefined;
 };
+
+type GetColumnOptions = OriginalCollectionName | (FunctionColumnOptions & OriginalCollectionName);
 
 /**
  * Return column prefixed by table. If column includes functions (like `year(date_created)`), the
@@ -49,8 +55,13 @@ export function getColumn(
 
 			const result = fn[functionName as keyof typeof fn](table, columnName!, {
 				type,
-				query: options?.query,
-				cases: options?.cases,
+				relationalCountOptions: isFunctionColumnOptions(options)
+					? {
+							query: options.query,
+							cases: options.cases,
+							permissions: options.permissions,
+					  }
+					: undefined,
 				originalCollectionName: options?.originalCollectionName,
 			}) as Knex.Raw;
 
@@ -69,4 +80,8 @@ export function getColumn(
 	}
 
 	return knex.ref(`${table}.${column}`);
+}
+
+function isFunctionColumnOptions(options?: GetColumnOptions): options is FunctionColumnOptions {
+	return !!options && 'query' in options;
 }

@@ -159,14 +159,14 @@ services:
       - 5107:10000
 
   keycloak:
-    image: jboss/keycloak
+    image: quay.io/keycloak/keycloak
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: secret
-      DB_ADDR: ''
-      DB_VENDOR: h2
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: secret
     ports:
       - 5110:8080
+    command:
+      - start-dev
 
   maildev:
     image: maildev/maildev

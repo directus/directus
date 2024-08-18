@@ -166,6 +166,7 @@ function useLanguages() {
 	const languages = ref<Record<string, any>[]>([]);
 	const loading = ref(false);
 	const error = ref<any>(null);
+	const fieldsStore = useFieldsStore();
 
 	watch(relationInfo, fetchLanguages, { immediate: true });
 
@@ -208,12 +209,13 @@ function useLanguages() {
 		if (!relationInfo.value) return;
 
 		const fields = new Set<string>();
+		const collection = relationInfo.value.relatedCollection.collection;
 
-		if (props.languageField !== null) {
+		if (props.languageField !== null && fieldsStore.getField(collection, props.languageField)) {
 			fields.add(props.languageField);
 		}
 
-		if (props.languageDirectionField !== null) {
+		if (props.languageDirectionField !== null && fieldsStore.getField(collection, props.languageDirectionField)) {
 			fields.add(props.languageDirectionField);
 		}
 
@@ -225,15 +227,12 @@ function useLanguages() {
 		loading.value = true;
 
 		try {
-			languages.value = await fetchAll<Record<string, any>[]>(
-				getEndpoint(relationInfo.value.relatedCollection.collection),
-				{
-					params: {
-						fields: Array.from(fields),
-						sort: sortField ?? props.languageField ?? pkField,
-					},
+			languages.value = await fetchAll<Record<string, any>[]>(getEndpoint(collection), {
+				params: {
+					fields: Array.from(fields),
+					sort: sortField ?? props.languageField ?? pkField,
 				},
-			);
+			});
 
 			if (!firstLang.value) {
 				const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;

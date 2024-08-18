@@ -489,9 +489,8 @@ middleman servers (like CDNs) and even the browser.
 
 ::: tip Internal Caching
 
-In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` and `CACHE_PERMISSIONS` which
-are enabled by default. These speed up the overall performance of Directus, as we don't want to introspect the whole
-database or check all permissions on every request.
+In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` which is enabled by default.
+This speed up the overall performance of Directus, as we don't want to introspect the whole database on every request.
 
 :::
 
@@ -510,10 +509,9 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                                 | `0`                                  |
 | `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on actions that manipulate the data.                                                   | `false`                              |
 | `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                        | `directus_activity,directus_presets` |
-| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                            | --                                   |
+| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` is persisted.                                                                                     | --                                   |
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                      | `true`                               |
 | `CACHE_SCHEMA_MAX_ITERATIONS`<sup>[4]</sup>  | Safe value to limit max iterations on get schema cache. This value should only be adjusted for high scaling applications. | `100`                                |
-| `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                    | `true`                               |
 | `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                              | `system-cache`                       |
 | `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                  | `memory`                             |
 | `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                          | --                                   |
