@@ -3,6 +3,7 @@ import { toBoolean } from '@directus/utils';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import getDatabase from '../database/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { useLogger } from '../logger/index.js';
 import type { Knex } from 'knex';
 
 export interface RetentionTask {
@@ -34,6 +35,8 @@ const RETENTION_TASKS: RetentionTask[] = [
 
 export async function handleRetentionJob() {
 	const database = getDatabase();
+	const logger = useLogger();
+	const batch = Number(env['RETENTION_BATCH']);
 
 	for (const task of RETENTION_TASKS) {
 		let count = 0;
@@ -54,21 +57,27 @@ export async function handleRetentionJob() {
 				subquery.join(...task.join);
 			}
 
-			count = await subquery
-				.count(`${task.collection}.id`, { as: 'count' })
-				.limit(1)
-				.then((r) => Number(r[0]?.count || 0));
+			try {
+				count = await subquery
+					.count(`${task.collection}.id`, { as: 'count' })
+					.limit(1)
+					.then((r) => Number(r[0]?.count || 0));
 
-			if (count !== 0) {
-				// if select is not cleared the count "select" will still be present causing the delete to fail
-				subquery.clear('select');
+				if (count !== 0) {
+					// if select is not cleared the count "select" will still be present causing the delete to fail
+					subquery.clear('select');
 
-				await database
-					.delete()
-					.from(task.collection)
-					.where('id', 'in', subquery.select(`${task.collection}.id`).limit(env['RETENTION_BATCH'] as number));
+					await database
+						.delete()
+						.from(task.collection)
+						.where('id', 'in', subquery.select(`${task.collection}.id`).limit(batch));
+				}
+			} catch (error) {
+				logger.error(error, `Retention failed for ${task.collection}`);
+
+				break;
 			}
-		} while (count !== 0);
+		} while (count !== 0 && count > batch);
 	}
 }
 
