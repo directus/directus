@@ -13,6 +13,83 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 11.0.0
+
+Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in
+roles, but instead in policies. Policies can be attached to roles and also directly to users.
+
+While users can still only have one direct role, roles can now also be nested within roles. A user's permissions are now
+an aggregate of all policies attached directly to them, to their role, and any nested roles.
+
+### Changes to Object Properties
+
+Object properties have changed and moved. This should only impact users who use and rely on the users, roles, and
+permissions endpoints.
+
+#### Users
+
+Users now have one additional property - `policies`, which is a many-to-many relationship to `policies`.
+
+#### Roles
+
+Roles no longer hold `admin_access`, `app_access`, `enforce_tfa`, or `ip_access`. These have been moved to `policies`.
+
+Roles now have one additional property - `children`, which is a one-to-many relationship to `roles`.
+
+#### Permissions
+
+Permissions are no longer attached to a `role`. This has been changed to a `policy`.
+
+### Changes for Extension Developers
+
+#### Properties Returned from `usersStore`
+
+The `usersStore` has a `role` object that previously contained the `admin_access`, `app_access`, and `enforce_tfa`
+properties. These are now returned directly in the `user` object.
+
+#### `preRegisterCheck` Data Structure
+
+If you use the `preRegisterCheck` guard function in your module extension to determine whether it is shown, it now
+receives a different data structure. It previously received a list of permission objects. Now, it receives the same data
+returned from the new [Get Current User Permissions](/reference/system/permissions.html#get-current-user-permissions)
+endpoint.
+
+### Replaced `mysql` with `mysql2`
+
+The database client library [`mysql`](https://www.npmjs.com/package/mysql) has been replaced with
+[`mysql2`](https://www.npmjs.com/package/mysql2), which is a continuation of the former. The client is used to connect
+to MySQL/MariaDB databases.
+
+If you're using MySQL/MariaDB, please note that:
+
+- `mysql2` leads to cross-collection queries (filtering on relations) with stricter charset comparison. Therefore,
+  ensure again that the value of the config option
+  [`DB_CHARSET`/`DB_CHARSET_NUMBER`](/self-hosted/config-options#database) matches the charset of your tables.
+- Values of type "Decimal" are now returned as a `string` instead of a `number`, which ensures that the precision is
+  preserved.
+
+## Version 10.13.2
+
+### Updated Date Fields for Files
+
+In order to make it possible to recognize when a file was last replaced, the following changes have been made to the
+date fields:
+
+- A new `created_on` field has been introduced, which contains the initial date of creation
+- The `uploaded_on` field is now updated with every file upload/replacement
+
+## Version 10.12.2
+
+### Disallowed Mutation of Special System Collections via Relations
+
+For security reasons, mutations of the following system collections via relations are no longer permitted:
+
+- `directus_collections`
+- `directus_fields`
+- `directus_relations`
+- `directus_sessions`
+- `directus_extensions`
+
 ## Version 10.10.0
 
 ### Deprecated Typed Extension Folders

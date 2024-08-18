@@ -8,7 +8,7 @@ import { pipeline } from 'node:stream/promises';
 import Queue from 'p-queue';
 import { useBus } from '../../bus/index.js';
 import { useLock } from '../../lock/index.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { getStorage } from '../../storage/index.js';
 import { getExtensionsPath } from './get-extensions-path.js';
 import { SyncStatus, getSyncStatus, setSyncStatus } from './sync-status.js';

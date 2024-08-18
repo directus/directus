@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-supabase",
-	"version": "1.0.14",
+	"version": "2.0.0",
 	"description": "Supabase file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -28,14 +28,14 @@
 	"dependencies": {
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@supabase/storage-js": "2.5.5",
-		"undici": "6.18.2"
+		"@supabase/storage-js": "2.6.0",
+		"undici": "6.19.5"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "7.2.0",
 		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.1.0",
+		"tsup": "8.2.2",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3"
 	}

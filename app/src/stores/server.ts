@@ -55,6 +55,9 @@ export type Info = {
 	extensions?: {
 		limit: number | null;
 	};
+	uploads?: {
+		chunkSize: number;
+	};
 };
 
 export type Auth = {
@@ -68,6 +71,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
+		uploads: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -101,6 +105,7 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
 		info.version = serverInfoResponse.data.data?.version;
+		info.uploads = serverInfoResponse.data.data?.uploads;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;

@@ -1,21 +1,14 @@
 <script setup lang="ts">
+defineOptions({ inheritAttrs: false });
+
 defineProps<{
-	itemCount?: number;
-	showingCount: string;
+	showingCount?: string;
 }>();
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-	inheritAttrs: false,
-});
 </script>
 
 <template>
 	<transition name="fade">
-		<span v-if="itemCount" class="item-count">
+		<span v-if="showingCount" class="item-count">
 			{{ showingCount }}
 		</span>
 	</transition>

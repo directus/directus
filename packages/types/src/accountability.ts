@@ -1,5 +1,3 @@
-import type { Permission } from './permissions.js';
-
 export type ShareScope = {
 	collection: string;
 	item: string;
@@ -7,13 +5,13 @@ export type ShareScope = {
 
 export type Accountability = {
 	role: string | null;
-	user?: string | null;
-	admin?: boolean;
-	app?: boolean;
-	permissions?: Permission[];
+	roles: string[];
+	user: string | null;
+	admin: boolean;
+	app: boolean;
 	share?: string;
 	share_scope?: ShareScope;
-	ip?: string | null;
+	ip: string | null;
 	userAgent?: string;
 	origin?: string;
 };

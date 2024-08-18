@@ -48,42 +48,39 @@ function uniqueViolation(error: MySQLError) {
 	/**
 	 * MySQL's error doesn't return the field name in the error. In case the field is created through
 	 * Directus (/ Knex), the key name will be `<collection>_<field>_unique` in which case we can pull
-	 * the field name from the key name
+	 * the field name from the key name.
+	 * If the field is the primary key it instead will be `<collection>_PRIMARY` for MySQL 8+
+	 * and `PRIMARY` for MySQL 5.7 and MariaDB.
 	 */
 
-	/** MySQL 8+ style error message */
+	let collection: string | null;
+	let indexName: string;
+	let field = null;
+
 	if (matches[1]!.includes('.')) {
-		const collection = matches[1]!.slice(1, -1).split('.')[0]!;
+		// MySQL 8+ style error message
 
-		let field = null;
-
-		const indexName = matches[1]?.slice(1, -1).split('.')[1];
-
-		if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
-			field = indexName?.slice(collection.length + 1, -7);
-		}
-
-		return new RecordNotUniqueError({
-			collection,
-			field,
-		});
+		// In case of primary key matches[1] is `'<collection>.PRIMARY'`
+		// In case of other field matches[1] is `'<collection>.<collection>_<field>_unique'`
+		[collection, indexName] = matches[1]!.slice(1, -1).split('.') as [string, string];
 	} else {
-		/** MySQL 5.7 style error message */
-		const indexName = matches[1]!.slice(1, -1);
+		// MySQL 5.7 and MariaDB style error message
 
-		const collection = indexName.split('_')[0]!;
-
-		let field = null;
-
-		if (indexName?.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
-			field = indexName?.slice(collection.length + 1, -7);
-		}
-
-		return new RecordNotUniqueError({
-			collection,
-			field,
-		});
+		// In case of primary key matches[1] is `'PRIMARY'`
+		// In case of other field matches[1] is `'<collection>_<field>_unique'`
+		indexName = matches[1]!.slice(1, -1);
+		collection = indexName.includes('_') ? indexName.split('_')[0]! : null;
 	}
+
+	if (collection !== null && indexName.startsWith(`${collection}_`) && indexName.endsWith('_unique')) {
+		field = indexName?.slice(collection.length + 1, -7);
+	}
+
+	return new RecordNotUniqueError({
+		collection,
+		field,
+		primaryKey: indexName === 'PRIMARY', // propagate information about primary key violation
+	});
 }
 
 function numericValueOutOfRange(error: MySQLError) {

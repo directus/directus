@@ -1,7 +1,8 @@
 import type { KNEX_TYPES } from '@directus/constants';
-import type { Options } from '../types.js';
+import type { Options, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
 import { useEnv } from '@directus/env';
+import { preprocessBindings } from '../utils/preprocess-bindings.js';
 
 const env = useEnv();
 
@@ -37,5 +38,9 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		} catch {
 			return null;
 		}
+	}
+
+	override preprocessBindings(queryParams: Sql): Sql {
+		return preprocessBindings(queryParams, { format: (index) => `$${index + 1}` });
 	}
 }

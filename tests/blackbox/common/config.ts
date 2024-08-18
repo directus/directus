@@ -120,7 +120,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		mysql: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',
@@ -131,7 +131,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		mysql5: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',
@@ -142,7 +142,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		maria: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',

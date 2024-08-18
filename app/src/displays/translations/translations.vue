@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { useRelationM2M } from '@/composables/use-relation-m2m';
+import { getCurrentLanguage } from '@/lang/get-current-language';
 import { useFieldsStore } from '@/stores/fields';
-import { useUserStore } from '@/stores/user';
-import type { User } from '@directus/types';
 import { isNil } from 'lodash';
 import { computed, toRefs } from 'vue';
 
@@ -48,8 +47,8 @@ const displayItem = computed(() => {
 	let item = props.value.find((val) => val?.[langField]?.[langPkField] === props.defaultLanguage) ?? props.value[0];
 
 	if (props.userLanguage) {
-		const user = useUserStore();
-		item = props.value.find((val) => val?.[langField]?.[langPkField] === (user.currentUser as User)?.language) ?? item;
+		const lang = getCurrentLanguage();
+		item = props.value.find((val) => val?.[langField]?.[langPkField] === lang) ?? item;
 	}
 
 	return item ?? {};

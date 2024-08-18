@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	const helper = await getHelpers(knex).schema;
+	const helper = getHelpers(knex).schema;
 
 	const opts = {
 		nullable: false,

@@ -292,7 +292,7 @@ function useFileUpload() {
 			notificationsStore.remove(dragNotificationID);
 		}
 
-		const files = [...(event.dataTransfer.files as any)];
+		const files = Array.from(event.dataTransfer.files).filter((file) => file.type);
 
 		fileUploadNotificationID = notificationsStore.add({
 			title: t(
@@ -447,7 +447,7 @@ function useFileUpload() {
 				</v-button>
 
 				<v-button
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					v-tooltip.bottom="createAllowed ? t('upload_file') : t('not_allowed')"
 					rounded
 					icon
 					:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
