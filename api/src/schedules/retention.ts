@@ -59,17 +59,15 @@ export async function handleRetentionJob() {
 				.limit(1)
 				.then((r) => Number(r[0]?.count || 0));
 
-			if (count === 0) {
-				return;
+			if (count !== 0) {
+				// if select is not cleared the count "select" will still be present causing the delete to fail
+				subquery.clear('select');
+
+				await database
+					.delete()
+					.from(task.collection)
+					.where('id', 'in', subquery.select(`${task.collection}.id`).limit(env['RETENTION_BATCH'] as number));
 			}
-
-			// if select is not cleared the count "select" will still be present causing the delete to fail
-			subquery.clear('select');
-
-			await database
-				.delete()
-				.from(task.collection)
-				.where('id', 'in', subquery.select(`${task.collection}.id`).limit(env['RETENTION_BATCH'] as number));
 		} while (count !== 0);
 	}
 }
