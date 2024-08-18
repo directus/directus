@@ -12,12 +12,15 @@ export async function extractData(response: unknown) {
 		if (type?.startsWith('application/json') || type?.startsWith('application/health+json')) {
 			const result = await response.json();
 			if (!response.ok) throw result;
+
 			if ('data' in result) {
 				if ('errors' in result) {
 					throw result;
 				}
+
 				return result.data;
 			}
+
 			return result;
 		}
 
@@ -36,7 +39,9 @@ export async function extractData(response: unknown) {
 		if ('errors' in response) {
 			throw response;
 		}
+
 		return response.data;
 	}
+
 	return response;
 }
