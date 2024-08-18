@@ -1,5 +1,5 @@
 ---
-'@directus/app': patch
+'@directus/app': minor
 ---
 
-Persisted the opened detail in the sidebar-detail-group to maintain state across site navigation and reloads
+Ensured the opened detail in the sidebar is persisted across site navigation and reloads (per browser tab) 
