@@ -8,7 +8,6 @@ import { useI18n } from 'vue-i18n';
 import ExtensionOptions from '../shared/extension-options.vue';
 import { syncFieldDetailStoreProperty, useFieldDetailStore } from '../store/';
 import RelationshipConfiguration from './relationship-configuration.vue';
-import { isArray, some } from 'lodash';
 
 defineProps<{
 	row?: number;
@@ -81,24 +80,6 @@ const options = computed({
 			},
 		});
 	},
-});
-
-watch(customOptionsFields, (newVal) => {
-	if (fieldDetailStore.field.meta?.options) {
-		const options = fieldDetailStore.field.meta?.options;
-
-		Object.keys(options).forEach((field) => {
-			if (isArray(newVal) && !some(newVal, { field })) {
-				delete options[field];
-			}
-
-			if (newVal && 'standard' in newVal) {
-				if (!some([...newVal.standard, newVal.advanced], { field })) {
-					delete options[field];
-				}
-			}
-		});
-	}
 });
 </script>
 
