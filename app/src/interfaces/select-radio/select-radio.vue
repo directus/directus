@@ -35,7 +35,7 @@ const { t } = useI18n();
 
 const { choices, value } = toRefs(props);
 
-const gridClass = computed(() => getMinimalGridClass(choices?.value, props?.width));
+const gridClass = computed(() => getMinimalGridClass(choices.value, props.width));
 
 const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>
 	emit('input', value),

@@ -37,19 +37,19 @@ const { t } = useI18n();
 const { choices, value } = toRefs(props);
 const showAll = ref(false);
 
-const hideChoices = computed(() => props.choices!.length > props.itemsShown);
+const hideChoices = computed(() => props.choices.length > props.itemsShown);
 
 const choicesDisplayed = computed(() => {
 	if (showAll.value || hideChoices.value === false) {
 		return props.choices;
 	}
 
-	return props.choices!.slice(0, props.itemsShown);
+	return props.choices.slice(0, props.itemsShown);
 });
 
 const hiddenCount = computed(() => props.choices!.length - props.itemsShown);
 
-const gridClass = computed(() => getMinimalGridClass(choices?.value, props?.width));
+const gridClass = computed(() => getMinimalGridClass(choices.value, props.width));
 
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, (value) =>
 	emit('input', value),
