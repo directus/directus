@@ -1,66 +1,61 @@
-import { test, expect, describe } from 'vitest';
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
+import { describe, expect, test, vi } from 'vitest';
 
 describe('getMinimalGridClass', () => {
 	test('Returns null when choices are undefined', () => {
-		expect(getMinimalGridClass(undefined, 'full')).toBeNull();
+		expect(getMinimalGridClass(undefined)).toBeNull();
 	});
 
-	test('Returns grid class when width starts with "half" and widestOptionLength <= 10', () => {
-		const choices = [
-			{ text: 'short', value: '1' },
-			{ text: 'text', value: '2' },
-		];
+	test('Returns null when choices are empty', () => {
+		expect(getMinimalGridClass([])).toBeNull();
+	});
+
+	describe('Minimum is based on amount of options', () => {
+		test(`Returns "grid-1" if there's only one short option`, () => {
+			const choices = [{ text: 'short' }];
+
+			expect(getMinimalGridClass(choices)).toBe('grid-1');
+		});
+
+		test('Returns up to "grid-4" if there are multiple short options', () => {
+			const choices = [{ text: 'short' }, { text: 'short' }, { text: 'short' }, { text: 'short' }, { text: 'short' }];
+
+			expect(getMinimalGridClass(choices)).toBe('grid-4');
+		});
+	});
+
+	test('Returns "grid-2" when interface width starts with "half" and widest option is <= 10', () => {
+		const choices = [{ text: 'short' }, { text: 'short' }];
 
 		expect(getMinimalGridClass(choices, 'half')).toBe('grid-2');
 	});
 
-	test('Returns grid class when width starts with "half" and widestOptionLength > 10', () => {
-		const choices = [
-			{ text: 'a very long text', value: '1' },
-			{ text: 'another long text', value: '2' },
-		];
+	test('Returns "grid-1" when interface width starts with "half" and widest option is > 10', () => {
+		const choices = [{ text: 'short' }, { text: 'a longer text' }];
 
 		expect(getMinimalGridClass(choices, 'half')).toBe('grid-1');
 	});
 
-	test('Returns grid class when width is full and widestOptionLength <= 10', () => {
-		const choices = [
-			{ text: 'short', value: '1' },
-			{ text: 'text', value: '2' },
-			{ text: 'text', value: '3' },
-			{ text: 'text', value: '4' },
-			{ text: 'text', value: '5' },
-		];
+	test('Returns "grid-4" when interface width is full and widest option is <= 10', () => {
+		const choices = [{ text: 'short' }, { text: 'short' }, { text: 'short' }, { text: 'short' }];
 
 		expect(getMinimalGridClass(choices, 'full')).toBe('grid-4');
 	});
 
-	test('Returns grid class when width is full and 10 < widestOptionLength <= 15', () => {
-		const choices = [
-			{ text: 'medium text', value: '1' },
-			{ text: 'another text', value: '2' },
-			{ text: 'another text', value: '3' },
-		];
+	test('Returns "grid-3" when interface width is full and widest option is > 10 and <= 15', () => {
+		const choices = [{ text: 'short' }, { text: 'short' }, { text: 'a longer text' }];
 
 		expect(getMinimalGridClass(choices, 'full')).toBe('grid-3');
 	});
 
-	test('Returns grid class when width is full and 15 < widestOptionLength <= 25', () => {
-		const choices = [
-			{ text: 'longer text than usual', value: '1' },
-			{ text: 'quite long text', value: '2' },
-			{ text: 'quite long text', value: '3' },
-		];
+	test('Returns "grid-2" when interface width is full and widest option is > 15 and <= 25', () => {
+		const choices = [{ text: 'short' }, { text: 'quite long text' }];
 
 		expect(getMinimalGridClass(choices, 'full')).toBe('grid-2');
 	});
 
-	test('Returns grid class when width is full and widestOptionLength > 25', () => {
-		const choices = [
-			{ text: 'a very very long text that exceeds 25 characters', value: '1' },
-			{ text: 'another extremely long text', value: '2' },
-		];
+	test('Returns "grid-1" when interface width is full and widest option is > 25', () => {
+		const choices = [{ text: 'short' }, { text: 'a very very long text that exceeds 25 characters' }];
 
 		expect(getMinimalGridClass(choices, 'full')).toBe('grid-1');
 	});
