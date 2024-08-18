@@ -12,12 +12,12 @@ export const jobCallback = () => {
 };
 
 /**
- * Initialize the telemetry tracking. Will generate a report on start, and set a schedule to report
+ * Schedule the telemetry tracking. Will generate a report on start, and set a schedule to report
  * every 6 hours
  *
  * @returns Whether or not telemetry has been initialized
  */
-export async function telemetry() {
+export default async function schedule() {
 	const env = useEnv();
 
 	if (toBoolean(env['TELEMETRY']) === false) return false;

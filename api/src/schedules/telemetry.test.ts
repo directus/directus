@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { getCache } from '../cache.js';
 import { scheduleSynchronizedJob } from '../utils/schedule.js';
-import { telemetry, jobCallback } from './telemetry.js';
+import { default as telemetrySchedule, jobCallback } from './telemetry.js';
 import { track } from '../telemetry/index.js';
 
 vi.mock('../telemetry/index.js');
@@ -35,27 +35,27 @@ describe('telemetry', () => {
 	test('Returns early when telemetry is disabled', async () => {
 		vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
 
-		const res = await telemetry();
+		const res = await telemetrySchedule();
 
 		expect(res).toBe(false);
 	});
 
 	test('Schedules synchronized job', async () => {
-		await telemetry();
+		await telemetrySchedule();
 		expect(scheduleSynchronizedJob).toHaveBeenCalledWith('telemetry', '0 */6 * * *', jobCallback);
 	});
 
 	test('Sets lock and calls track without waiting if lock is not set yet', async () => {
 		vi.mocked(mockCache.lockCache.get).mockResolvedValue(null as any);
 
-		await telemetry();
+		await telemetrySchedule();
 
 		expect(mockCache.lockCache.set).toHaveBeenCalledWith('telemetry-lock', true, 30000);
 		expect(track).toHaveBeenCalledWith({ wait: false });
 	});
 
 	test('Returns true on successful init', async () => {
-		const res = await telemetry();
+		const res = await telemetrySchedule();
 		expect(res).toBe(true);
 	});
 });

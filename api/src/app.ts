@@ -44,6 +44,9 @@ import usersRouter from './controllers/users.js';
 import utilsRouter from './controllers/utils.js';
 import versionsRouter from './controllers/versions.js';
 import webhooksRouter from './controllers/webhooks.js';
+import retentionSchedule from './schedules/retention.js';
+import telemetrySchedule from './schedules/telemetry.js';
+import tusSchedule from './schedules/tus.js';
 import {
 	isInstalled,
 	validateDatabaseConnection,
@@ -66,7 +69,6 @@ import schema from './middleware/schema.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { Url } from './utils/url.js';
 import { validateStorage } from './utils/validate-storage.js';
-import { initSchedules } from './schedules/init.js';
 
 const require = createRequire(import.meta.url);
 
@@ -319,7 +321,9 @@ export default async function createApp(): Promise<express.Application> {
 
 	await emitter.emitInit('routes.after', { app });
 
-	initSchedules();
+	retentionSchedule();
+	telemetrySchedule();
+	tusSchedule();
 
 	await emitter.emitInit('app.after', { app });
 

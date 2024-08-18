@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as schedule from '../utils/schedule.js';
-import { handleRetentionJob, retention } from './retention.js';
+import { handleRetentionJob, default as retentionSchedule } from './retention.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -22,7 +22,7 @@ describe('retention', () => {
 	test('Returns early when retention is disabled', () => {
 		vi.mocked(useEnv).mockReturnValue({ RETENTION_ENABLED: false, RETENTION_SCHEDULE: '0 0 * * *' });
 
-		const res = retention();
+		const res = retentionSchedule();
 
 		expect(res).toBe(false);
 	});
@@ -30,7 +30,7 @@ describe('retention', () => {
 	test('Returns early for invalid retention schedule', () => {
 		vi.mocked(useEnv).mockReturnValue({ RETENTION_ENABLED: true, RETENTION_SCHEDULE: '#' });
 
-		const res = retention();
+		const res = retentionSchedule();
 
 		expect(schedule.validateCron).toHaveBeenCalledWith('#');
 
@@ -38,13 +38,13 @@ describe('retention', () => {
 	});
 
 	test('Schedules synchronized job', () => {
-		retention();
+		retentionSchedule();
 		expect(schedule.validateCron).toHaveBeenCalledWith('0 0 * * *');
 		expect(schedule.scheduleSynchronizedJob).toHaveBeenCalledWith('retention', '0 0 * * *', handleRetentionJob);
 	});
 
 	test('Returns true on successful init', () => {
-		const res = retention();
+		const res = retentionSchedule();
 		expect(res).toBe(true);
 	});
 });
