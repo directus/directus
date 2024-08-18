@@ -14,7 +14,7 @@ import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
 import { clearSystemCache, getCache, getCacheValue, setCacheValue } from '../cache.js';
-import { ALIAS_TYPES } from '../constants.js';
+import { ALIAS_TYPES, ALLOWED_DB_DEFAULT_FUNCTIONS } from '../constants.js';
 import { translateDatabaseError } from '../database/errors/translate.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
@@ -857,6 +857,7 @@ export class FieldsService {
 			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
 			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
 			const newDefaultIsSetToCurrentTime = newDefaultIsNowFunction || newDefaultIsCurrentTimestamp;
+			const newDefaultIsAFunction = newDefaultValueIsString && ALLOWED_DB_DEFAULT_FUNCTIONS.includes(defaultValue);
 
 			const newDefaultIsTimestampWithPrecision =
 				newDefaultValueIsString && defaultValue.includes('CURRENT_TIMESTAMP(') && defaultValue.includes(')');
@@ -866,6 +867,8 @@ export class FieldsService {
 			} else if (newDefaultIsTimestampWithPrecision) {
 				const precision = defaultValue.match(REGEX_BETWEEN_PARENS)![1];
 				column.defaultTo(this.knex.fn.now(Number(precision)));
+			} else if (newDefaultIsAFunction) {
+				column.defaultTo(this.knex.raw(defaultValue));
 			} else {
 				column.defaultTo(defaultValue);
 			}
