@@ -77,7 +77,7 @@ export async function handleRetentionJob() {
 
 				break;
 			}
-		} while (count !== 0 && count > batch);
+		} while (count > batch);
 	}
 }
 
