@@ -4,9 +4,7 @@ import { getHelpers } from '../helpers/index.js';
 export async function up(knex: Knex): Promise<void> {
 	const helper = getHelpers(knex).schema;
 
-	await helper.changeToType('directus_presets', 'icon', 'string', {
-		nullable: true,
-		default: 'bookmark',
+	await helper.changeToType('directus_collections', 'icon', 'string', {
 		length: 64,
 	});
 
@@ -16,17 +14,17 @@ export async function up(knex: Knex): Promise<void> {
 		length: 64,
 	});
 
-	await helper.changeToType('directus_panels', 'icon', 'string', {
-		nullable: true,
-		default: null,
-		length: 64,
-	});
-
 	await helper.changeToType('directus_flows', 'icon', 'string', {
 		length: 64,
 	});
 
-	await helper.changeToType('directus_collections', 'icon', 'string', {
+	await helper.changeToType('directus_panels', 'icon', 'string', {
+		default: null,
+		length: 64,
+	});
+
+	await helper.changeToType('directus_presets', 'icon', 'string', {
+		default: 'bookmark',
 		length: 64,
 	});
 
@@ -40,9 +38,7 @@ export async function up(knex: Knex): Promise<void> {
 export async function down(knex: Knex): Promise<void> {
 	const helper = getHelpers(knex).schema;
 
-	await helper.changeToType('directus_presets', 'icon', 'string', {
-		nullable: true,
-		default: 'bookmark',
+	await helper.changeToType('directus_collections', 'icon', 'string', {
 		length: 30,
 	});
 
@@ -52,17 +48,17 @@ export async function down(knex: Knex): Promise<void> {
 		length: 30,
 	});
 
-	await helper.changeToType('directus_panels', 'icon', 'string', {
-		nullable: true,
-		default: null,
-		length: 30,
-	});
-
 	await helper.changeToType('directus_flows', 'icon', 'string', {
 		length: 30,
 	});
 
-	await helper.changeToType('directus_collections', 'icon', 'string', {
+	await helper.changeToType('directus_panels', 'icon', 'string', {
+		default: null,
+		length: 30,
+	});
+
+	await helper.changeToType('directus_presets', 'icon', 'string', {
+		default: 'bookmark',
 		length: 30,
 	});
 
