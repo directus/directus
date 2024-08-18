@@ -23,6 +23,7 @@ describe('retention', () => {
 		vi.mocked(useEnv).mockReturnValue({ RETENTION_ENABLED: false, RETENTION_SCHEDULE: '0 0 * * *' });
 
 		const res = retentionSchedule();
+		expect(schedule.validateCron).not.toHaveBeenCalled();
 
 		expect(res).toBe(false);
 	});
