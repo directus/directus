@@ -23,8 +23,8 @@ describe('retention', () => {
 		vi.mocked(useEnv).mockReturnValue({ RETENTION_ENABLED: false, RETENTION_SCHEDULE: '0 0 * * *' });
 
 		const res = retentionSchedule();
-		expect(schedule.validateCron).not.toHaveBeenCalled();
 
+		expect(schedule.validateCron).not.toHaveBeenCalled();
 		expect(res).toBe(false);
 	});
 
@@ -34,18 +34,19 @@ describe('retention', () => {
 		const res = retentionSchedule();
 
 		expect(schedule.validateCron).toHaveBeenCalledWith('#');
-
 		expect(res).toBe(false);
 	});
 
 	test('Schedules synchronized job', () => {
 		retentionSchedule();
+
 		expect(schedule.validateCron).toHaveBeenCalledWith('0 0 * * *');
 		expect(schedule.scheduleSynchronizedJob).toHaveBeenCalledWith('retention', '0 0 * * *', handleRetentionJob);
 	});
 
 	test('Returns true on successful init', () => {
 		const res = retentionSchedule();
+
 		expect(res).toBe(true);
 	});
 });

@@ -42,6 +42,7 @@ describe('telemetry', () => {
 
 	test('Schedules synchronized job', async () => {
 		await telemetrySchedule();
+
 		expect(scheduleSynchronizedJob).toHaveBeenCalledWith('telemetry', '0 */6 * * *', jobCallback);
 	});
 
@@ -56,6 +57,7 @@ describe('telemetry', () => {
 
 	test('Returns true on successful init', async () => {
 		const res = await telemetrySchedule();
+
 		expect(res).toBe(true);
 	});
 });
@@ -63,6 +65,7 @@ describe('telemetry', () => {
 describe('jobCallback', () => {
 	test('Calls track', () => {
 		jobCallback();
+
 		expect(track).toHaveBeenCalledWith();
 	});
 });
