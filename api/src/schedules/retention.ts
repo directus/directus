@@ -73,7 +73,7 @@ export async function handleRetentionJob() {
 						.where('id', 'in', subquery.select(`${task.collection}.id`).limit(batch));
 				}
 			} catch (error) {
-				logger.error(error, `Retention failed for ${task.collection}`);
+				logger.error(error, `Retention failed for Collection ${task.collection}`);
 
 				break;
 			}
