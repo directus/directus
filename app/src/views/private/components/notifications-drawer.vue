@@ -124,11 +124,7 @@ async function refresh() {
 
 async function archiveAll() {
 	await api.patch('/notifications', {
-		query: {
-			recipient: {
-				_eq: userStore.currentUser!.id,
-			},
-		},
+		keys: items.value.map((item) => item.id),
 		data: {
 			status: 'archived',
 		},
