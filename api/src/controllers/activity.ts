@@ -1,4 +1,3 @@
-import { Action } from '@directus/constants';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import express from 'express';
 import Joi from 'joi';
@@ -9,7 +8,6 @@ import { ActivityService } from '../services/activity.js';
 import { CommentsService } from '../services/comments.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
-import { getIPFromReq } from '../utils/get-ip-from-req.js';
 
 const router = express.Router();
 
