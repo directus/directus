@@ -22,7 +22,7 @@ const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
-const { setUnreadCount } = useNotificationsStore();
+const notificationsStore = useNotificationsStore();
 
 const router = useRouter();
 
@@ -34,6 +34,7 @@ const limit = ref(25);
 const search = ref<string | null>(null);
 const userFilter = ref<Filter>({});
 const mouseDownTarget = ref<EventTarget | null>(null);
+const { notificationsDrawerOpen } = storeToRefs(appStore);
 
 watch(tab, (newTab, oldTab) => {
 	if (newTab[0] !== oldTab[0]) {
@@ -44,6 +45,12 @@ watch(tab, (newTab, oldTab) => {
 
 watch([search, userFilter], () => {
 	page.value = 1;
+});
+
+watch(notificationsDrawerOpen, async (value) => {
+	if (value) {
+		await refresh();
+	}
 });
 
 function toggleSelected(id: string) {
@@ -61,8 +68,6 @@ function toggleNotification(id: string) {
 		openNotifications.value.push(id);
 	}
 }
-
-const { notificationsDrawerOpen } = storeToRefs(appStore);
 
 const filter = computed(() => ({
 	_and: [
@@ -112,6 +117,11 @@ const notifications = computed<LocalNotification[]>(() => {
 	});
 });
 
+async function refresh() {
+	await getItemCount();
+	await getItems();
+}
+
 async function archiveAll() {
 	await api.patch('/notifications', {
 		query: {
@@ -124,10 +134,9 @@ async function archiveAll() {
 		},
 	});
 
-	await getItemCount();
-	await getItems();
+	await refresh();
 
-	setUnreadCount(0);
+	notificationsStore.setUnreadCount(0);
 }
 
 async function toggleArchive() {
@@ -138,8 +147,8 @@ async function toggleArchive() {
 		},
 	});
 
-	await getItemCount();
-	await getItems();
+	await refresh();
+	await notificationsStore.refreshUnreadCount();
 
 	selection.value = [];
 }
