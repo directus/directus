@@ -190,12 +190,11 @@ const runManualFlow = async (flowId: string) => {
 					<v-card-title>{{ confirmDetails.description ?? t('run_flow_confirm') }}</v-card-title>
 
 					<v-card-text class="confirm-form">
-						<v-notice
-							v-if="hasEdits"
-							type="warning"
-						>
+						<v-notice v-if="hasEdits" type="warning">
 							<div>
-								<div><strong>{{ t('unsaved_changes') }}</strong></div>
+								<div>
+									<strong>{{ t('unsaved_changes') }}</strong>
+								</div>
 								<div>{{ t('run_flow_on_current_edited_confirm') }}</div>
 							</div>
 						</v-notice>
