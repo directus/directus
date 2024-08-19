@@ -22,7 +22,7 @@ const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
-const { setUnreadCount } = useNotificationsStore();
+const notificationsStore = useNotificationsStore();
 
 const router = useRouter();
 
@@ -136,7 +136,7 @@ async function archiveAll() {
 
 	await refresh();
 
-	setUnreadCount(0);
+	notificationsStore.setUnreadCount(0);
 }
 
 async function toggleArchive() {
@@ -148,6 +148,7 @@ async function toggleArchive() {
 	});
 
 	await refresh();
+	await notificationsStore.refreshUnreadCount();
 
 	selection.value = [];
 }
