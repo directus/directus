@@ -1,4 +1,4 @@
-import { FUNCTIONS } from '@directus/constants';
+import { Action, FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -79,6 +79,7 @@ import { mergeVersionsRaw, mergeVersionsRecursive } from '../../utils/merge-vers
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
+import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
 import { ExtensionsService } from '../extensions.js';
@@ -107,6 +108,7 @@ import { sanitizeGraphqlSchema } from './utils/sanitize-gql-schema.js';
 import { fetchAccountabilityCollectionAccess } from '../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
 import { fetchAccountabilityPolicyGlobals } from '../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
 import { RolesService } from '../roles.js';
+import { CommentsService } from '../comments.js';
 
 const env = useEnv();
 
@@ -2093,6 +2095,7 @@ export class GraphQLService {
 			CreateCollectionTypes,
 			ReadCollectionTypes,
 			UpdateCollectionTypes,
+			DeleteCollectionTypes,
 		}: {
 			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 			ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
@@ -3346,6 +3349,97 @@ export class GraphQLService {
 						}
 
 						return true;
+					},
+				},
+			});
+		}
+
+		if ('directus_activity' in schema.create.collections) {
+			schemaComposer.Mutation.addFields({
+				create_comment: {
+					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
+					args: {
+						collection: new GraphQLNonNull(GraphQLString),
+						item: new GraphQLNonNull(GraphQLID),
+						comment: new GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args, __, info) => {
+						const service = new CommentsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						const primaryKey = await service.createOne({
+							...args,
+						});
+
+						if ('directus_activity' in ReadCollectionTypes) {
+							const selections = this.replaceFragmentsInSelections(
+								info.fieldNodes[0]?.selectionSet?.selections,
+								info.fragments,
+							);
+
+							const query = this.getQuery(args, selections || [], info.variableValues);
+
+							return await service.readOne(primaryKey, query);
+						}
+
+						return true;
+					},
+				},
+			});
+		}
+
+		if ('directus_activity' in schema.update.collections) {
+			schemaComposer.Mutation.addFields({
+				update_comment: {
+					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
+					args: {
+						id: new GraphQLNonNull(GraphQLID),
+						comment: new GraphQLNonNull(GraphQLString),
+					},
+					resolve: async (_, args, __, info) => {
+						const service = new CommentsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						const primaryKey = await service.migrateComment(args['id']);
+						await service.updateOne(primaryKey, { comment: args['comment'] });
+
+						if ('directus_activity' in ReadCollectionTypes) {
+							const selections = this.replaceFragmentsInSelections(
+								info.fieldNodes[0]?.selectionSet?.selections,
+								info.fragments,
+							);
+
+							const query = this.getQuery(args, selections || [], info.variableValues);
+
+							return { ...(await service.readOne(primaryKey, query)), id: args['id'] };
+						}
+
+						return true;
+					},
+				},
+			});
+		}
+
+		if ('directus_activity' in schema.delete.collections) {
+			schemaComposer.Mutation.addFields({
+				delete_comment: {
+					type: DeleteCollectionTypes['one']!,
+					args: {
+						id: new GraphQLNonNull(GraphQLID),
+					},
+					resolve: async (_, args) => {
+						const service = new CommentsService({
+							accountability: this.accountability,
+							schema: this.schema,
+						});
+
+						const primaryKey = await service.migrateComment(args['id']);
+						await service.deleteOne(primaryKey);
+						return { id: args['id'] };
 					},
 				},
 			});
