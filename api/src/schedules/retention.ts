@@ -5,6 +5,7 @@ import getDatabase from '../database/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { useLogger } from '../logger/index.js';
 import type { Knex } from 'knex';
+import { useLock } from '../lock/index.js';
 
 export interface RetentionTask {
 	collection: string;
@@ -14,6 +15,8 @@ export interface RetentionTask {
 }
 
 const env = useEnv();
+
+const retentionLockKey = 'schedule--data-retention';
 
 const RETENTION_TASKS: RetentionTask[] = [
 	{
@@ -36,7 +39,15 @@ const RETENTION_TASKS: RetentionTask[] = [
 export async function handleRetentionJob() {
 	const database = getDatabase();
 	const logger = useLogger();
+	const lock = useLock();
 	const batch = Number(env['RETENTION_BATCH']);
+
+	if (await lock.has(retentionLockKey)) {
+		// ensure only one connected process
+		return;
+	}
+
+	await lock.set(retentionLockKey, Date.now());
 
 	for (const task of RETENTION_TASKS) {
 		let count = 0;
@@ -79,6 +90,8 @@ export async function handleRetentionJob() {
 			}
 		} while (count > batch);
 	}
+
+	await lock.delete(retentionLockKey);
 }
 
 /**
