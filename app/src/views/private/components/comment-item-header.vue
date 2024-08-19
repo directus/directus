@@ -47,13 +47,7 @@ function useDelete() {
 		deleting.value = true;
 
 		try {
-			// TODO: Remove legacy commenting in upcoming version
-			if (typeof props.comment.id === 'number') {
-				await api.delete(`/activity/comment/${props.comment.id}`);
-			} else {
-				await api.delete(`/comments/${props.comment.id}`);
-			}
-
+			await api.delete(`/comments/${props.comment.id}`);
 			await props.refresh();
 			confirmDelete.value = false;
 		} catch (error) {

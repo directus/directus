@@ -40,16 +40,9 @@ function useEdits() {
 		savingEdits.value = true;
 
 		try {
-			// TODO: Remove legacy commenting in upcoming version
-			if (typeof props.comment.id === 'number') {
-				await api.patch(`/activity/comment/${props.comment.id}`, {
-					comment: edits.value,
-				});
-			} else {
-				await api.patch(`/comments/${props.comment.id}`, {
-					comment: edits.value,
-				});
-			}
+			await api.patch(`/comments/${props.comment.id}`, {
+				comment: edits.value,
+			});
 
 			props.refresh();
 		} catch (error) {

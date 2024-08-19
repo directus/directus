@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import api from '@/api';
-import { Activity } from '@/types/activity';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
 import type { Comment, PrimaryKey, User } from '@directus/types';
@@ -69,29 +68,8 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loading.value = true;
 
 		try {
-			const [activityResponse, commentsResponse] = await Promise.all([
-				api.get(`/activity`, {
-					params: {
-						'filter[collection][_eq]': collection.value,
-						'filter[item][_eq]': primaryKey.value,
-						'filter[action][_eq]': 'comment',
-						sort: '-id', // directus_activity has auto increment and is therefore in chronological order
-						fields: [
-							'id',
-							'action',
-							'timestamp',
-							'user.id',
-							'user.email',
-							'user.first_name',
-							'user.last_name',
-							'user.avatar.id',
-							'revisions.id',
-							'comment',
-						],
-					},
-				}),
-
-				api.get(`/comments`, {
+			const response = (
+				await api.get(`/comments`, {
 					params: {
 						'filter[collection][_eq]': collection.value,
 						'filter[item][_eq]': primaryKey.value,
@@ -107,17 +85,8 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 							'user_created.avatar.id',
 						],
 					},
-				}),
-			]);
-
-			const mappedActivityComments = activityResponse.data.data.map((activity: Activity) => ({
-				id: activity.id,
-				comment: activity.comment,
-				date_created: activity.timestamp,
-				user_created: activity.user,
-			}));
-
-			const response = [...mappedActivityComments, ...commentsResponse.data.data];
+				})
+			).data.data as Comment[];
 
 			userPreviews.value = await loadUserPreviews(response, regex);
 
@@ -177,59 +146,29 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 		loadingCount.value = true;
 
 		try {
-			const [activityResponse, commentsResponse] = await Promise.all([
-				api.get(`/activity`, {
-					params: {
-						filter: {
-							_and: [
-								{
-									collection: {
-										_eq: collection.value,
-									},
+			const response = await api.get(`/comments`, {
+				params: {
+					filter: {
+						_and: [
+							{
+								collection: {
+									_eq: collection.value,
 								},
-								{
-									item: {
-										_eq: primaryKey.value,
-									},
+							},
+							{
+								item: {
+									_eq: primaryKey.value,
 								},
-								{
-									action: {
-										_eq: 'comment',
-									},
-								},
-							],
-						},
-						aggregate: {
-							count: 'id',
-						},
+							},
+						],
 					},
-				}),
-
-				api.get(`/comments`, {
-					params: {
-						filter: {
-							_and: [
-								{
-									collection: {
-										_eq: collection.value,
-									},
-								},
-								{
-									item: {
-										_eq: primaryKey.value,
-									},
-								},
-							],
-						},
-						aggregate: {
-							count: 'id',
-						},
+					aggregate: {
+						count: 'id',
 					},
-				}),
-			]);
+				},
+			});
 
-			commentsCount.value =
-				Number(activityResponse.data.data[0].count.id) + Number(commentsResponse.data.data[0].count.id);
+			commentsCount.value = Number(response.data.data[0].count.id);
 		} catch (error: any) {
 			error.value = error;
 		} finally {
