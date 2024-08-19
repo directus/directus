@@ -1,7 +1,7 @@
 ---
 description: A guide on how to scaffold your Directus Extension.
 readTime: 5 min read
-contributors: Rijk Van Zanten, Esther Agbaje, Kevin Lewis
+contributors: Rijk Van Zanten, Esther Agbaje, Kevin Lewis, Lukas Zelenka
 ---
 
 # Creating Extensions
@@ -46,6 +46,13 @@ Internally, the CLI uses Rollup to bundle your extension to a single entrypoint.
 ::: tip Watch
 
 The CLI supports rebuilding extensions whenever a file has changed by using the `--watch` flag.
+
+:::
+
+::: tip Automatically Reload Extensions
+
+To automatically reload extensions every time you make a change, without having to restart Directus, in your
+`docker-compose.yml` file, set `EXTENSIONS_AUTO_RELOAD=true`.
 
 :::
 
