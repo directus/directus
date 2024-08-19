@@ -37,7 +37,6 @@ const { primaryKeyField } = useCollection(collection);
 const flowsStore = useFlowsStore();
 const notificationStore = useNotificationsStore();
 
-
 const manualFlows = computed(() =>
 	flowsStore
 		.getManualFlowsForCollection(collection.value)

@@ -47,8 +47,8 @@ watch([search, userFilter], () => {
 	page.value = 1;
 });
 
-watch(notificationsDrawerOpen, async (newVal, oldVal) => {
-	if (newVal) {
+watch(notificationsDrawerOpen, async (value) => {
+	if (value) {
 		await refresh();
 	}
 });
@@ -68,8 +68,6 @@ function toggleNotification(id: string) {
 		openNotifications.value.push(id);
 	}
 }
-
-
 
 const filter = computed(() => ({
 	_and: [
