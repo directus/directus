@@ -5,4 +5,4 @@
 '@directus/app': minor
 ---
 
-Added index support
+Added support for creating database indexes on fields
