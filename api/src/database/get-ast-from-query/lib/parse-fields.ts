@@ -176,7 +176,23 @@ export async function parseFields(
 		let child: NestedCollectionNode | null = null;
 
 		if (relationType === 'a2o') {
-			const allowedCollections = relation.meta!.one_allowed_collections!;
+			let allowedCollections = relation.meta!.one_allowed_collections!;
+
+			if (options.accountability && options.accountability.admin === false && policies) {
+				const permissions = await fetchPermissions(
+					{
+						action: 'read',
+						collections: allowedCollections,
+						policies: policies,
+						accountability: options.accountability,
+					},
+					context,
+				);
+
+				allowedCollections = allowedCollections.filter((collection) =>
+					permissions.some((permission) => permission.collection === collection),
+				);
+			}
 
 			child = {
 				type: 'a2o',

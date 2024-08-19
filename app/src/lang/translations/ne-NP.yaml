@@ -595,10 +595,6 @@ make_collection_hidden: संग्रह लुकाउनुहोस्
 make_folder_visible: फोल्डर देखिने बनाउनुहोस्
 make_folder_hidden: फोल्डर लुकाउनुहोस्
 goto_collection_content: सामग्री हेर्नुहोस्
-start_end_of_count_items: '{start}-{end} को {count} वस्तुहरू'
-start_end_of_count_filtered_items: '{start}-{end} को {count} फिल्टर गरिएका वस्तुहरू'
-one_item: '१ वस्तु'
-one_filtered_item: '१ फिल्टर गरिएको वस्तु'
 delete_collection_are_you_sure: >-
   के तपाइँ "{collection}" सङ्ग्रह मेटाउन निश्चित हुनुहुन्छ? यसले संग्रह र यसमा भएका सबै वस्तुहरू मेटाउनेछ। यो कार्य स्थायी छ।
 delete_folder_are_you_sure: के तपाइँ "{folder}" फोल्डर मेटाउन निश्चित हुनुहुन्छ? नेस्ट गरिएका फोल्डरहरू र सङ्ग्रहहरूलाई सबैभन्दा माथिल्लो तहमा सारिनेछ।
@@ -682,7 +678,6 @@ create_item: वस्तु सिर्जना गर्नुहोस्
 display_template: टेम्प्लेट प्रदर्शन गर्नुहोस्
 language_display_template: भाषा प्रदर्शन टेम्प्लेट
 translations_display_template: अनुवाद प्रदर्शन टेम्प्लेट
-n_items_selected: 'कुनै वस्तु चयन गरिएको छैन | १ वस्तु चयन गरियो | {n} वस्तुहरू चयन गरियो'
 per_page: प्रति पृष्ठ
 all_files: सबै फाइलहरू
 my_files: मेरो फाइलहरू
@@ -1676,7 +1671,6 @@ layouts:
     delete_group: समूह मेटाउनुहोस्
     add_group: समूह थप्नुहोस्
     show: देखाउने
-    not_all_loaded: "तपाईंले पहिलो 1000 वस्तुहरू मात्र लोड गर्न सक्नुहुन्छ।\n"
 horizontal: तेर्सो
 x_axis: "x-अक्ष\n"
 y_axis: y-अक्ष

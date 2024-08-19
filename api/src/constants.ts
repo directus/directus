@@ -104,3 +104,5 @@ export const RESUMABLE_UPLOADS = {
 	EXPIRATION_TIME: getMilliseconds(env['TUS_UPLOAD_EXPIRATION'], 600_000 /* 10min */),
 	SCHEDULE: String(env['TUS_CLEANUP_SCHEDULE'] as string),
 };
+
+export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()'];

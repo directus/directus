@@ -673,10 +673,6 @@ make_collection_hidden: Maak collectie verborgen
 make_folder_visible: Maak map zichtbar
 make_folder_hidden: Maak map verborgen
 goto_collection_content: Bekijk inhoud
-start_end_of_count_items: '{start}-{end} van {count} items'
-start_end_of_count_filtered_items: '{start}-{end} van {count} gefilterde items'
-one_item: '1 item'
-one_filtered_item: '1 gefilterd item'
 delete_collection_are_you_sure: >-
   Weet je zeker dat je collectie "{collection}" wilt verwijderen? Dit zal de collectie en alle items die erin zijn opgeslagen verwijderen. Deze actie is permanent.
 delete_folder_are_you_sure: Weet je zeker dat je de map "{folder}" wilt verwijderen? Geneste mappen en collecties zullen worden verplaatst naar het hoogste niveau.
@@ -764,7 +760,6 @@ create_item: Item aanmaken
 display_template: Weergavesjabloon
 language_display_template: Taalweergavesjabloon
 translations_display_template: Vertalingsweergavesjabloon
-n_items_selected: 'Geen Items Geselecteerd | 1 Item Geselecteerd | {n} Items Geselecteerd'
 per_page: Per pagina
 all_files: Alle bestanden
 my_files: Mijn bestanden

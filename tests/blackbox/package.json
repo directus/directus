@@ -16,7 +16,7 @@
 		"@types/seedrandom": "3.0.8",
 		"@types/supertest": "6.0.2",
 		"@types/uuid": "9.0.8",
-		"@types/ws": "8.5.11",
+		"@types/ws": "8.5.12",
 		"argon2": "0.40.3",
 		"autocannon": "7.15.0",
 		"axios": "1.7.3",

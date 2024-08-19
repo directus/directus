@@ -172,6 +172,24 @@ export default defineInterface({
 				},
 			},
 			{
+				field: 'defaultView',
+				name: '$t:interfaces.input-rich-text-md.default_view',
+				type: 'string',
+				meta: {
+					width: 'half',
+					interface: 'select-dropdown',
+					options: {
+						choices: [
+							{ text: '$t:interfaces.input-rich-text-md.default_view_editor', value: 'editor' },
+							{ text: '$t:interfaces.input-rich-text-md.default_view_preview', value: 'preview' },
+						],
+					},
+				},
+				schema: {
+					default_value: 'editor',
+				},
+			},
+			{
 				field: 'customSyntax',
 				name: '$t:interfaces.input-rich-text-md.customSyntax',
 				type: 'json',

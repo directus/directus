@@ -631,6 +631,7 @@ display_not_found: 'Отображение «{display}» не найдено.'
 reset_display: Сбросить отображение
 list-m2a: Конструктор (M2A)
 item_count: 'Нет элементов | Один элемент | {count} элементов'
+filtered_item_count: 'Нет отфильтрованных элементов | Один отфильтрованный элемент | отфильтрованные элементы: {count}'
 no_items_copy: В этой коллекции пока нет элементов.
 file_count: 'Нет файлов | Один файл | {count} файлов'
 no_files_copy: Здесь нет файлов.
@@ -793,10 +794,9 @@ make_collection_hidden: Сделать коллекцию скрытой
 make_folder_visible: Показать папку
 make_folder_hidden: Скрыть папку
 goto_collection_content: Просмотреть содержимое
+count_of_total_items: '{count} из {total} элементов'
 start_end_of_count_items: '{start}-{end} из {count} элементов'
 start_end_of_count_filtered_items: '{start}-{end} из {count} отфильтрованных элементов'
-one_item: '1 элемент'
-one_filtered_item: '1 отфильтрованный элемент'
 delete_collection_are_you_sure: >-
   Вы уверены, что хотите удалить коллекцию «{collection}»? Это приведет к удалению коллекции и всех её элементов. Это действие необратимо.
 delete_folder_are_you_sure: Вы уверены, что хотите удалить папку «{folder}»? Вложенные папки и коллекции будут перемещены на самый верхний уровень.
@@ -2230,7 +2230,6 @@ layouts:
     show_ungrouped: Показать несгруппированные
     show: Показать
     no_group: Нет группы
-    not_all_loaded: Загружены только первые 1000 элементов.
 horizontal: Горизонтально
 vertical: Вертикально
 axis: Ось

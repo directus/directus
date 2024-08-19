@@ -599,10 +599,6 @@ make_collection_hidden: 將資料集設定為隱藏
 make_folder_visible: 設定資料夾為可見
 make_folder_hidden: 設定資料夾為隱藏
 goto_collection_content: 查看內容
-start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
-start_end_of_count_filtered_items: '共有 {count} 個項目，現正顯示 {start} - {end} 。'
-one_item: '一個項目'
-one_filtered_item: '一個篩選項目'
 delete_collection_are_you_sure: >-
   是否確認要刪除資料集 {collection} ？這將刪除資料集及其中的所有項目。此操作無法復原。
 delete_folder_are_you_sure: 是否確定要刪除資料夾 {folder} ？包含的所有資料夾都會被移到最外層。
@@ -686,7 +682,6 @@ create_item: 建立項目
 display_template: 顯示模板
 language_display_template: 語言顯示範本
 translations_display_template: 翻譯顯示範本
-n_items_selected: '未選擇項目 | 已選一個項目 | 已選 {n} 個項目'
 per_page: 每頁
 all_files: 所有檔案
 my_files: 我的檔案
@@ -1242,7 +1237,6 @@ live_preview:
   new_window: 在新視窗開啟
 shares: 分享
 unlimited_usage: 無限制使用
-uses_left: 已無法使用 | 剩下1次 | 剩下{n} 次
 no_shares: 目前沒有分享
 new_share: 新增分享
 expired: 已過期
@@ -1846,7 +1840,6 @@ layouts:
   kanban:
     crop: 裁剪
     advanced: 進階
-    not_all_loaded: 只能讀取前1000個項目。
 horizontal: 水平
 both: 都要
 panels:
