@@ -182,7 +182,7 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	}
 }
 
-async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
+async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 	const userPreviews: any[] = [];
 
 	comments.forEach((comment: Record<string, any>) => {
