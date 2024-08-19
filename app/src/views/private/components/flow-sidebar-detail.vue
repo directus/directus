@@ -195,7 +195,7 @@ const runManualFlow = async (flowId: string) => {
 							type="warning"
 						>
 							<div>
-								<p><strong>{{ t('unsaved_changes') }}</strong></p>
+								<div><strong>{{ t('unsaved_changes') }}</strong></div>
 								<div>{{ t('run_flow_on_current_edited_confirm') }}</div>
 							</div>
 						</v-notice>
