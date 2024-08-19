@@ -190,6 +190,16 @@ const runManualFlow = async (flowId: string) => {
 					<v-card-title>{{ confirmDetails.description ?? t('run_flow_confirm') }}</v-card-title>
 
 					<v-card-text class="confirm-form">
+						<v-notice
+							v-if="hasEdits"
+							type="warning"
+						>
+							<div>
+								<p><strong>{{ t('unsaved_changes') }}</strong></p>
+								<div>{{ t('run_flow_on_current_edited_confirm') }}</div>
+							</div>
+						</v-notice>
+
 						<v-form
 							v-if="confirmDetails.fields && confirmDetails.fields.length > 0"
 							:fields="confirmDetails.fields"
@@ -250,6 +260,10 @@ const runManualFlow = async (flowId: string) => {
 
 	:deep(.type-label) {
 		font-size: 1rem;
+	}
+
+	.v-notice {
+		margin-bottom: var(--v-card-padding, 16px);
 	}
 }
 </style>
