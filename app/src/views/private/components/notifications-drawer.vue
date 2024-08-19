@@ -13,12 +13,13 @@ import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 
 type LocalNotification = Notification & {
 	to?: string;
 };
 
-const { t } = useI18n();
+const { t, n } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
@@ -85,7 +86,7 @@ const filter = computed(() => ({
 	],
 }));
 
-const { items, loading, getItems, totalPages, getItemCount } = useItems(ref('directus_notifications'), {
+const { items, loading, getItems, totalPages, totalCount, itemCount, getItemCount } = useItems(ref('directus_notifications'), {
 	filter,
 	fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
 	sort: ref(['-timestamp']),
@@ -114,6 +115,20 @@ const notifications = computed<LocalNotification[]>(() => {
 			...item,
 			to,
 		} as LocalNotification;
+	});
+});
+
+const showingCount = computed(() => {
+	// Don't show count if there are no items
+	if (!totalCount.value || !itemCount.value) return;
+
+	return formatItemsCountPaginated({
+		currentItems: itemCount.value,
+		currentPage: page.value,
+		perPage: limit.value,
+		isFiltered: !!userFilter.value,
+		totalItems: totalCount.value,
+		i18n: { t, n },
 	});
 });
 
@@ -168,6 +183,11 @@ function onLinkClick(to: string) {
 		@cancel="notificationsDrawerOpen = false"
 	>
 		<template #actions>
+			<transition name="fade">
+				<span v-if="showingCount" class="item-count">
+					{{ showingCount }}
+				</span>
+			</transition>
 			<search-input v-model="search" v-model:filter="userFilter" collection="directus_notifications" />
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
@@ -267,6 +287,19 @@ function onLinkClick(to: string) {
 </template>
 
 <style lang="scss" scoped>
+.item-count {
+	position: relative;
+	display: none;
+	margin: 0 8px;
+	color: var(--theme--foreground-subdued);
+	white-space: nowrap;
+	align-self: center;
+
+	@media (min-width: 600px) {
+		display: inline;
+	}
+}
+
 .content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }

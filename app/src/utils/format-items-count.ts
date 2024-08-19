@@ -6,6 +6,7 @@ export type FormatItemsCountPaginatedOptions = {
 	perPage: number;
 	isFiltered?: boolean;
 	totalItems?: number;
+	i18n?: ReturnType<typeof useI18n>;
 };
 
 export function formatItemsCountPaginated({
@@ -14,8 +15,9 @@ export function formatItemsCountPaginated({
 	perPage,
 	isFiltered,
 	totalItems,
+	i18n,
 }: FormatItemsCountPaginatedOptions) {
-	const { t, n } = useI18n();
+	const { t, n } = i18n ? i18n : useI18n();
 
 	const values = {
 		start: n((currentPage - 1) * perPage + 1),
