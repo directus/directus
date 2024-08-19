@@ -54,6 +54,7 @@ const runningFlows = ref<string[]>([]);
 
 const confirmRunFlow = ref<string | null>(null);
 const confirmValues = ref<Record<string, any> | null>();
+const confirmedUnsavedChanges = ref(false);
 
 const isConfirmButtonDisabled = computed(() => {
 	if (!confirmRunFlow.value) return true;
@@ -96,9 +97,18 @@ const confirmDetails = computed(() => {
 	};
 });
 
+const displayUnsavedChangesDialog = computed(
+	() => !!confirmRunFlow.value && hasEdits.value && !confirmedUnsavedChanges.value,
+);
+
+const displayCustomConfirmDialog = computed(
+	() => !!confirmRunFlow.value && confirmDetails.value && (!hasEdits.value || confirmedUnsavedChanges.value),
+);
+
 const resetConfirm = () => {
 	confirmRunFlow.value = null;
 	confirmValues.value = null;
+	confirmedUnsavedChanges.value = false;
 };
 
 const getFlowTooltip = (manualFlow: FlowRaw) => {
@@ -124,6 +134,14 @@ const onFlowClick = async (flowId: string) => {
 	if (hasEdits.value || flow.options?.requireConfirmation) {
 		confirmRunFlow.value = flowId;
 	} else {
+		runManualFlow(flowId);
+	}
+};
+
+const confirmUnsavedChanges = async (flowId: string) => {
+	confirmedUnsavedChanges.value = true;
+
+	if (!confirmDetails.value) {
 		runManualFlow(flowId);
 	}
 };
@@ -184,27 +202,35 @@ const runManualFlow = async (flowId: string) => {
 			</div>
 		</div>
 
-		<v-dialog :model-value="!!confirmRunFlow" @esc="resetConfirm">
+		<v-dialog :model-value="displayUnsavedChangesDialog" @esc="resetConfirm">
 			<v-card class="allow-drawer">
-				<template v-if="confirmDetails">
-					<v-card-title>{{ confirmDetails.description ?? t('run_flow_confirm') }}</v-card-title>
+				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
+				<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
 
-					<v-card-text class="confirm-form">
-						<v-form
-							v-if="confirmDetails.fields && confirmDetails.fields.length > 0"
-							:fields="confirmDetails.fields"
-							:model-value="confirmValues"
-							autofocus
-							primary-key="+"
-							@update:model-value="confirmValues = $event"
-						/>
-					</v-card-text>
-				</template>
+				<v-card-actions>
+					<v-button secondary @click="resetConfirm">
+						{{ t('cancel') }}
+					</v-button>
+					<v-button :disabled="isConfirmButtonDisabled" @click="confirmUnsavedChanges(confirmRunFlow!)">
+						{{ confirmButtonCTA }}
+					</v-button>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 
-				<template v-else>
-					<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
-					<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
-				</template>
+		<v-dialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
+			<v-card class="allow-drawer">
+				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
+				<v-card-text class="confirm-form">
+					<v-form
+						v-if="confirmDetails!.fields && confirmDetails!.fields.length > 0"
+						:fields="confirmDetails!.fields"
+						:model-value="confirmValues"
+						autofocus
+						primary-key="+"
+						@update:model-value="confirmValues = $event"
+					/>
+				</v-card-text>
 
 				<v-card-actions>
 					<v-button secondary @click="resetConfirm">
