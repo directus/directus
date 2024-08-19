@@ -10,7 +10,7 @@ import { useItems } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Filter, Notification } from '@directus/types';
 import { storeToRefs } from 'pinia';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -124,7 +124,9 @@ async function refresh() {
 
 async function archiveAll() {
 	await api.patch('/notifications', {
-		keys: items.value.map((item) => item.id),
+		query: {
+			filter: unref(filter),
+		},
 		data: {
 			status: 'archived',
 		},
