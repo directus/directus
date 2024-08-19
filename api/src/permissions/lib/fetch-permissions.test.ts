@@ -4,7 +4,7 @@ import { PermissionsService } from '../../services/permissions.js';
 import type { Context } from '../types.js';
 import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
 import { processPermissions } from '../utils/process-permissions.js';
-import { _fetchPermissions as fetchPermissions } from './fetch-permissions.js';
+import { fetchPermissions } from './fetch-permissions.js';
 import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
 
 vi.mock('../../services/permissions.js', () => ({

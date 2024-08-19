@@ -68,6 +68,7 @@ extension_theme: Theme
 extension_hook: Móc
 extension_endpoint: Endpoint
 extension_operation: Thao tác
+extension_bundle: Nhóm
 extension_modules: Mô đun
 extension_hooks: Móc
 extension_missing: Thiếu
@@ -606,10 +607,6 @@ make_collection_hidden: Hiện bộ sưu tập
 make_folder_visible: Hiện thư mục
 make_folder_hidden: Ẩn thư mục
 goto_collection_content: Xem Nội dung
-start_end_of_count_items: 'Bản ghi {start}-{end} trong tổng số {count}'
-start_end_of_count_filtered_items: 'Bản ghi {start}-{end} trong tổng số {count}'
-one_item: '1 sản phẩm'
-one_filtered_item: 'Đã lọc được 1 mục'
 delete_collection_are_you_sure: >-
   Bạn có chắc rằng bạn muốn xoá danh mục {collection} này? Thao tác này sẽ xóa danh mục và tất cả dữ liệu trong đó. Bạn không thể khôi phục danh mục này sau khi đã xóa.
 delete_folder_are_you_sure: Bạn có chắc rằng bạn muốn xoá {folder} này? Những thư mục và danh mục bên trong sẽ được mang ra ngoài và không bị xoá.
@@ -678,7 +675,6 @@ value_unique: Giá trị phải là duy nhất
 all_activity: Tất cả hoạt động
 create_item: Tạo Bản Ghi
 display_template: Mẫu hiển thị
-n_items_selected: '0 bản ghi được chọn | 1 bản ghi được chọn | {n} bản ghi được chọn'
 per_page: Mỗi trang
 all_files: Tất cả các tệp
 my_files: Tập tin của tôi

@@ -9,6 +9,7 @@ import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { translate } from '@/utils/translate-object-values';
 import formatTitle from '@directus/format-title';
+import { useNotificationsStore } from '@/stores/notifications';
 
 const props = withDefaults(
 	defineProps<{
@@ -34,6 +35,7 @@ const { collection, primaryKey, selection, location, hasEdits } = toRefs(props);
 const { primaryKeyField } = useCollection(collection);
 
 const flowsStore = useFlowsStore();
+const notificationStore = useNotificationsStore();
 
 const manualFlows = computed(() =>
 	flowsStore
@@ -152,6 +154,8 @@ const runManualFlow = async (flowId: string) => {
 		notify({
 			title: t('run_flow_success', { flow: selectedFlow.name }),
 		});
+
+		await notificationStore.getUnreadCount();
 
 		resetConfirm();
 	} catch (error) {

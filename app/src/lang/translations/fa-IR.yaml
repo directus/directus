@@ -74,6 +74,10 @@ extension_layouts: چیدمان ها
 extension_modules: ماژول‌ها
 extension_panels: پنل‌ها
 extension_themes: پوسته‌ها
+extension_operations: عملیات
+extension_reload_required: صفحه به بازنشانی مجدد نیاز دارد
+extension_reload_required_copy: جهت مشاهده تغییرات پس از فعالی یا غیرفعالسازی افزونه ها لازم است صفحه بازنشانی مجدد گردد.
+extension_reload_now: هم اکنون بازنشانی گردد
 last_updated_relative: آخرین به روزرسانی {relativeTime}
 homepage: صفحه اصلی
 website: وب سایت
@@ -680,10 +684,6 @@ make_collection_hidden: این مجموعه را پنهان کن
 make_folder_visible: این پوشه را هویدا کن
 make_folder_hidden: این پوشه را پنهان کن
 goto_collection_content: مشاهده محتوا
-start_end_of_count_items: '{start}-{end} از {count} آیتم'
-start_end_of_count_filtered_items: '{start}-{end} از {count} آیتم فیلتر شده'
-one_item: '۱ آیتم'
-one_filtered_item: '۱ آیتم فیلتر شده'
 delete_collection_are_you_sure: >-
   آیا مطمئن هستید که می خواهید مجموعه "{collection}" را حذف کنید؟ با این کار مجموعه و همه موارد موجود در آن حذف می شود. این عمل دائمی است.
 delete_folder_are_you_sure: آیا مطمئن هستید که می خواهید پوشه "{folder}" را حذف کنید؟ پوشه ها و مجموعه های تو در تو به بالاترین سطح منتقل می شوند.
@@ -768,7 +768,6 @@ create_item: ساخت آیتم
 display_template: نمایش الگو
 language_display_template: قالب نمایش زبان
 translations_display_template: قالب نمایش ترجمه ها
-n_items_selected: 'هیچ آیتمی انتخاب نشده است | یک آیتم انتخاب شده | {n} آیتم انتخاب شده اند'
 per_page: هر صفحه
 all_files: تمامی فایلها
 my_files: فایلهای من
@@ -1349,7 +1348,6 @@ live_preview:
   toggle_3d: حالت سه بعدی
 shares: اشتراک‌گذاری
 unlimited_usage: Unlimited usage
-uses_left: No uses left | 1 use left | {n} uses left
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
 expired: منقضی شده
@@ -1994,7 +1992,6 @@ layouts:
     show_ungrouped: نمایش گروه‌بندی نشده
     show: نمایش
     no_group: بدون گروه
-    not_all_loaded: فقط می‌توان 1000 مورد اول را بارگیری کرد.
 horizontal: افقی
 vertical: عمودی
 x_axis: محور افقی

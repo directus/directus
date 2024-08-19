@@ -791,10 +791,6 @@ make_collection_hidden: Bëj Koleksionin të Fshehur
 make_folder_visible: Bëj Dosjen të Dukshme
 make_folder_hidden: Bëj Dosjen të Fshehur
 goto_collection_content: Shiko Përmbajtjen
-start_end_of_count_items: '{start}-{end} nga {count} artikuj'
-start_end_of_count_filtered_items: '{start}-{end} nga {count} artikuj të filtruar'
-one_item: '1 artikull'
-one_filtered_item: '1 artikull i filtruar'
 delete_collection_are_you_sure: >-
   Jeni i sigurt që doni të fshini koleksionin "{collection}"? Kjo do të fshijë koleksionin dhe të gjithë artikujt brenda tij. Ky veprim është i përhershëm.
 delete_folder_are_you_sure: Jeni i sigurt që doni të fshini dosjen "{folder}"? Dosjet e brendshme dhe koleksionet do të zhvendosen në nivelin më të lartë.
@@ -886,7 +882,6 @@ create_item: Krijo Artikull
 display_template: Shabllon i Shfaqjes
 language_display_template: Shabllon i Shfaqjes së Gjuhës
 translations_display_template: Shabllon i Shfaqjes së Përkthimeve
-n_items_selected: 'Nuk janë Zgjedhur Artikuj | 1 Artikull i Zgjedhur | {n} Artikuj të Zgjedhur'
 per_page: Për Faqe
 all_files: Të gjitha Skedarët
 my_files: Skedarët e mi
@@ -1551,7 +1546,6 @@ live_preview:
   toggle_3d: Ndëro 3D
 shares: Ndaj
 unlimited_usage: Përdorim i Pakufizuar
-uses_left: S'ka mbetur asnjë përdorim | 1 përdorim i mbetur | {n} përdorime të mbetura
 no_shares: Asnjë ndarje për t'u shfaqur
 new_share: Ndarje e Re
 expired: Skaduar
@@ -2228,7 +2222,6 @@ layouts:
     show_ungrouped: Shfaq të Pagrupuar
     show: Shfaq
     no_group: Asnjë Grup
-    not_all_loaded: Mund të ngarkohen vetëm 1000 artikujt e parë.
 horizontal: Horizontal
 vertical: Vertikal
 axis: Boshti

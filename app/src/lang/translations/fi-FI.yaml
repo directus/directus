@@ -605,10 +605,6 @@ make_collection_hidden: Tee kokoelma piilotettu
 make_folder_visible: Näytä kansio
 make_folder_hidden: Piilota kansio
 goto_collection_content: Näytä sisältö
-start_end_of_count_items: '{start}-{end} / {count} kohdetta'
-start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
-one_item: '1 kohde'
-one_filtered_item: '1 suodatettu kohde'
 delete_collection_are_you_sure: >-
   Haluatko poistaa kokoelman "{collection}"? Kokoelma ja kaikki siihen kuuluvat kohteet poistetaan pysyvästi.
 delete_folder_are_you_sure: Haluatko poistaa kansion "{folder}"? Kansion kansiot ja kokoelmat siirretään ylimmälle tasolle.
@@ -690,7 +686,6 @@ create_item: Luo kohde
 display_template: Esitysmalli
 language_display_template: Kielen näyttömalli
 translations_display_template: Käännösten näyttömalli
-n_items_selected: 'Ei valittuja kohteita | 1 valittu kohde | {n} valittua kohdetta'
 per_page: Per sivu
 all_files: Kaikki Tiedostot
 my_files: Omat tiedostot

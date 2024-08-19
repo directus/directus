@@ -641,10 +641,6 @@ make_collection_hidden: Gör samling dold
 make_folder_visible: Gör mappen synlig
 make_folder_hidden: Gör mappen dold
 goto_collection_content: Visa innehåll
-start_end_of_count_items: '{start}-{end} av {count} objekt'
-start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
-one_item: '1 objekt'
-one_filtered_item: '1 filtrerat objekt'
 delete_collection_are_you_sure: >-
   Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 delete_folder_are_you_sure: Är du säker på att du vill ta bort mappen "{folder}"? Kapslade mappar och samlingar kommer att flyttas till den översta nivån.
@@ -722,7 +718,6 @@ value_unique: Värdet måste vara unikt
 all_activity: All aktivitet
 create_item: Skapa objekt
 display_template: Visningsmall
-n_items_selected: 'Inga valda objekt | 1 valt objekt | {n} valda objekt'
 per_page: Per sida
 all_files: Alla filer
 my_files: Mina filer
