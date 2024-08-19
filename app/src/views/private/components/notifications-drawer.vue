@@ -86,14 +86,17 @@ const filter = computed(() => ({
 	],
 }));
 
-const { items, loading, getItems, totalPages, totalCount, itemCount, getItemCount } = useItems(ref('directus_notifications'), {
-	filter,
-	fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
-	sort: ref(['-timestamp']),
-	search,
-	limit,
-	page,
-});
+const { items, loading, getItems, totalPages, totalCount, itemCount, getItemCount } = useItems(
+	ref('directus_notifications'),
+	{
+		filter,
+		fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
+		sort: ref(['-timestamp']),
+		search,
+		limit,
+		page,
+	},
+);
 
 const notifications = computed<LocalNotification[]>(() => {
 	return items.value.map((item) => {
