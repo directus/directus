@@ -97,9 +97,13 @@ const confirmDetails = computed(() => {
 	};
 });
 
-const displayUnsavedChangesDialog = computed(() => !!confirmRunFlow.value && hasEdits.value && !confirmedUnsavedChanges.value);
+const displayUnsavedChangesDialog = computed(
+	() => !!confirmRunFlow.value && hasEdits.value && !confirmedUnsavedChanges.value,
+);
 
-const displayCustomConfirmDialog = computed(() => !!confirmRunFlow.value && confirmDetails.value && (!hasEdits.value || confirmedUnsavedChanges.value));
+const displayCustomConfirmDialog = computed(
+	() => !!confirmRunFlow.value && confirmDetails.value && (!hasEdits.value || confirmedUnsavedChanges.value),
+);
 
 const resetConfirm = () => {
 	confirmRunFlow.value = null;
