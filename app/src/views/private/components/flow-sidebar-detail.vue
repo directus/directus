@@ -155,7 +155,7 @@ const runManualFlow = async (flowId: string) => {
 			title: t('run_flow_success', { flow: selectedFlow.name }),
 		});
 
-		await notificationStore.getUnreadCount();
+		await notificationStore.refreshUnreadCount();
 
 		resetConfirm();
 	} catch (error) {
