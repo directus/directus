@@ -45,12 +45,8 @@ const readHandler = asyncHandler(async (req, res, next) => {
 			const commentsService = new CommentsService({
 				accountability: req.accountability,
 				schema: req.schema,
+				serviceOrigin: 'activity',
 			});
-
-			// Remove action field from filter
-			sanitizedFilter['_and'] = sanitizedFilter['_and'].filter(
-				(andItem) => !('action' in andItem && '_eq' in andItem['action'] && andItem['action']['_eq'] === 'comment'),
-			);
 
 			result = await commentsService.readByQuery(req.sanitizedQuery);
 			isComment = true;
@@ -94,7 +90,6 @@ router.get(
 	respond,
 );
 
-// TODO: Remove legacy commenting in upcoming version
 const createCommentSchema = Joi.object({
 	comment: Joi.string().required(),
 	collection: Joi.string().required(),
@@ -107,6 +102,7 @@ router.post(
 		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'activity',
 		});
 
 		const { error } = createCommentSchema.validate(req.body);
@@ -146,6 +142,7 @@ router.patch(
 		const commentsService = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'activity',
 		});
 
 		const { error } = updateCommentSchema.validate(req.body);
@@ -182,6 +179,7 @@ router.delete(
 		const commentsService = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'activity',
 		});
 
 		const primaryKey = await commentsService.migrateComment(req.params['pk']!);

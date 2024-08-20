@@ -3366,6 +3366,7 @@ export class GraphQLService {
 						const service = new CommentsService({
 							accountability: this.accountability,
 							schema: this.schema,
+							serviceOrigin: 'activity',
 						});
 
 						const primaryKey = await service.createOne({
@@ -3401,6 +3402,7 @@ export class GraphQLService {
 						const service = new CommentsService({
 							accountability: this.accountability,
 							schema: this.schema,
+							serviceOrigin: 'activity',
 						});
 
 						const primaryKey = await service.migrateComment(args['id']);
@@ -3434,6 +3436,7 @@ export class GraphQLService {
 						const service = new CommentsService({
 							accountability: this.accountability,
 							schema: this.schema,
+							serviceOrigin: 'activity',
 						});
 
 						const primaryKey = await service.migrateComment(args['id']);

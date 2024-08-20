@@ -20,16 +20,23 @@ import { UsersService } from './users.js';
 const env = useEnv();
 const logger = useLogger();
 
+type serviceOrigin = 'activity' | 'comments';
+
+// TODO: Remove legacy comments logic
 export class CommentsService extends ItemsService {
 	activityService: ActivityService;
 	notificationsService: NotificationsService;
 	usersService: UsersService;
+	serviceOrigin: serviceOrigin;
 
-	constructor(options: AbstractServiceOptions) {
+	constructor(
+		options: AbstractServiceOptions & { serviceOrigin: serviceOrigin }, // TODO: Remove serviceOrigin when legacy comments are migrated
+	) {
 		super('directus_comments', options);
 		this.activityService = new ActivityService(options);
 		this.notificationsService = new NotificationsService({ schema: this.schema });
 		this.usersService = new UsersService({ schema: this.schema });
+		this.serviceOrigin = options.serviceOrigin ?? 'comments';
 	}
 
 	override readOne(key: PrimaryKey, query?: Query, opts?: QueryOptions): Promise<Item> {
@@ -38,18 +45,21 @@ export class CommentsService extends ItemsService {
 		let result;
 
 		if (isLegacyComment) {
-			result = this.activityService.readOne(key, query ? this.generateActivityQuery(query) : undefined, opts);
+			const activityQuery = this.serviceOrigin === 'activity' ? query : this.generateQuery('activity', query || {});
+			result = this.activityService.readOne(key, activityQuery, opts);
 		} else {
-			result = super.readOne(key, query, opts);
+			const commentsQuery = this.serviceOrigin === 'comments' ? query : this.generateQuery('comments', query || {});
+			result = super.readOne(key, commentsQuery, opts);
 		}
 
 		return result;
 	}
 
 	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
-		const activityQuery: Query = this.generateActivityQuery(query);
-		const commentsResult = await super.readByQuery(query, opts);
+		const activityQuery = this.serviceOrigin === 'activity' ? query : this.generateQuery('activity', query);
+		const commentsQuery = this.serviceOrigin === 'comments' ? query : this.generateQuery('comments', query);
 		const activityResult = await this.activityService.readByQuery(activityQuery, opts);
+		const commentsResult = await super.readByQuery(commentsQuery, opts);
 
 		if (query.aggregate) {
 			// Merging the first result only as the app does not utilise group
@@ -81,8 +91,10 @@ export class CommentsService extends ItemsService {
 			}
 		}
 
-		const activityResult = await this.activityService.readMany(activityKeys, query, opts);
-		const commentsResult = await super.readMany(commentsKeys, query, opts);
+		const activityQuery = this.serviceOrigin === 'activity' ? query : this.generateQuery('activity', query || {});
+		const commentsQuery = this.serviceOrigin === 'comments' ? query : this.generateQuery('comments', query || {});
+		const activityResult = await this.activityService.readMany(activityKeys, activityQuery, opts);
+		const commentsResult = await super.readMany(commentsKeys, commentsQuery, opts);
 
 		if (query?.sort) {
 			return this.sortLegacyResults([...activityResult, ...commentsResult], query.sort);
@@ -224,7 +236,11 @@ ${comment}
 
 	async migrateComment(activityPk: PrimaryKey): Promise<PrimaryKey> {
 		return transaction(this.knex, async (trx) => {
-			const sudoCommentsService = new CommentsService({ schema: this.schema, knex: trx });
+			const sudoCommentsService = new CommentsService({
+				schema: this.schema,
+				knex: trx,
+				serviceOrigin: this.serviceOrigin,
+			});
 
 			const sudoActivityService = new ActivityService({
 				schema: this.schema,
@@ -278,8 +294,8 @@ ${comment}
 		});
 	}
 
-	generateActivityQuery(commentsQuery: Query): Query {
-		const activityQuery: Query = cloneDeep(commentsQuery);
+	generateQuery(type: 'activity' | 'comments', originalQuery: Query): Query {
+		const query: Query = cloneDeep(originalQuery);
 		const defaultActivityCommentFilter = { action: { _eq: Action.COMMENT } };
 
 		const commentsToActivityFieldMap: Record<string, string> = {
@@ -291,50 +307,81 @@ ${comment}
 			date_created: 'timestamp',
 		};
 
-		for (const key of Object.keys(commentsQuery)) {
+		const activityToCommentsFieldMap: Record<string, string> = {
+			id: 'id',
+			comment: 'comment',
+			item: 'item',
+			collection: 'collection',
+			user: 'user_created',
+			timestamp: 'date_created',
+		};
+
+		const targetFieldMap = type === 'activity' ? commentsToActivityFieldMap : activityToCommentsFieldMap;
+
+		for (const key of Object.keys(originalQuery)) {
 			switch (key as keyof Filter) {
 				case 'fields':
-					if (!commentsQuery.fields) break;
+					if (!originalQuery.fields) break;
 
-					for (const field of commentsQuery.fields) {
+					query.fields = [];
+
+					for (const field of originalQuery.fields) {
 						if (field === '*') {
-							activityQuery.fields = ['*'];
+							query.fields = ['*'];
 							break;
 						}
 
 						const parts = field.split('.');
 						const firstPart = parts[0];
 
-						if (firstPart && commentsToActivityFieldMap[firstPart]) {
-							(activityQuery.fields = activityQuery.fields || []).push(field);
-							(activityQuery.alias = activityQuery.alias || {})[firstPart] = commentsToActivityFieldMap[firstPart];
+						if (firstPart && targetFieldMap[firstPart]) {
+							query.fields.push(field);
+
+							if (firstPart !== targetFieldMap[firstPart]) {
+								(query.alias = query.alias || {})[firstPart] = targetFieldMap[firstPart]!;
+							}
 						}
 					}
 
 					break;
 				case 'filter':
-					if (commentsQuery.filter) {
-						activityQuery.filter = { _and: [defaultActivityCommentFilter, commentsQuery.filter] };
+					if (!originalQuery.filter) break;
+
+					if (type === 'activity') {
+						query.filter = { _and: [defaultActivityCommentFilter, originalQuery.filter] };
+					}
+
+					if (type === 'comments' && this.serviceOrigin === 'activity') {
+						if ('_and' in originalQuery.filter && Array.isArray(originalQuery.filter['_and'])) {
+							query.filter = {
+								_and: originalQuery.filter['_and'].filter(
+									(andItem) =>
+										!('action' in andItem && '_eq' in andItem['action'] && andItem['action']['_eq'] === 'comment'),
+								),
+							};
+						} else {
+							query.filter = originalQuery.filter;
+						}
 					}
 
 					break;
 				case 'aggregate':
-					if (commentsQuery.aggregate) {
-						activityQuery.aggregate = commentsQuery.aggregate;
+					if (originalQuery.aggregate) {
+						query.aggregate = originalQuery.aggregate;
 					}
 
 					break;
 				case 'sort':
-					if (!commentsQuery.sort) break;
+					if (!originalQuery.sort) break;
 
-					activityQuery.sort = [];
+					query.sort = [];
 
-					for (const sort of commentsQuery.sort) {
+					for (const sort of originalQuery.sort) {
 						const isDescending = sort.startsWith('-');
 						const field = isDescending ? sort.slice(1) : sort;
 
-						if (field && commentsToActivityFieldMap[field]) {
-							activityQuery.sort.push(`${isDescending ? '-' : ''}${commentsToActivityFieldMap[field]}`);
+						if (field && targetFieldMap[field]) {
+							query.sort.push(`${isDescending ? '-' : ''}${targetFieldMap[field]}`);
 						}
 					}
 
@@ -342,11 +389,11 @@ ${comment}
 			}
 		}
 
-		if (!activityQuery.filter) {
-			activityQuery.filter = defaultActivityCommentFilter;
+		if (type === 'activity' && !query.filter) {
+			query.filter = defaultActivityCommentFilter;
 		}
 
-		return activityQuery;
+		return query;
 	}
 
 	private sortLegacyResults(results: Item[], sortKeys: string[]) {

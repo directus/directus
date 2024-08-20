@@ -36,7 +36,7 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 		case 'directus_activity':
 			return new ActivityService(opts);
 		case 'directus_comments':
-			return new CommentsService(opts);
+			return new CommentsService({ ...opts, serviceOrigin: 'comments' });
 		case 'directus_dashboards':
 			return new DashboardsService(opts);
 		case 'directus_files':
