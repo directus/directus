@@ -25,9 +25,9 @@ const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
 const notificationsStore = useNotificationsStore();
-
 const router = useRouter();
 
+const collection = ref<string | null>(null);
 const selection = ref<string[]>([]);
 const tab = ref(['inbox']);
 const openNotifications = ref<string[]>([]);
@@ -40,36 +40,14 @@ const { notificationsDrawerOpen } = storeToRefs(appStore);
 
 watch(tab, (newTab, oldTab) => {
 	if (newTab[0] !== oldTab[0]) {
-		page.value = 1;
 		selection.value = [];
 	}
 });
 
-watch([search, filter], () => {
-	page.value = 1;
+watch(notificationsDrawerOpen, (open) => {
+	// Load notifications only once the drawer is opened and reset when closed
+	collection.value = open ? 'directus_notifications' : null;
 });
-
-watch(notificationsDrawerOpen, async (value) => {
-	if (value) {
-		await refresh();
-	}
-});
-
-function toggleSelected(id: string) {
-	if (selection.value.includes(id)) {
-		selection.value.splice(selection.value.indexOf(id), 1);
-	} else {
-		selection.value.push(id);
-	}
-}
-
-function toggleNotification(id: string) {
-	if (openNotifications.value.includes(id)) {
-		openNotifications.value.splice(openNotifications.value.indexOf(id), 1);
-	} else {
-		openNotifications.value.push(id);
-	}
-}
 
 const filterSystem = computed(
 	() =>
@@ -90,7 +68,7 @@ const filterSystem = computed(
 );
 
 const { items, loading, totalPages, totalCount, itemCount, getItems, getItemCount, getTotalCount } = useItems(
-	ref('directus_notifications'),
+	collection,
 	{
 		filter: computed(() => mergeFilters(filter.value, filterSystem.value)),
 		filterSystem,
@@ -173,6 +151,22 @@ async function archiveAll() {
 	notificationsStore.setUnreadCount(0);
 }
 
+function toggleSelected(id: string) {
+	if (selection.value.includes(id)) {
+		selection.value.splice(selection.value.indexOf(id), 1);
+	} else {
+		selection.value.push(id);
+	}
+}
+
+function toggleNotification(id: string) {
+	if (openNotifications.value.includes(id)) {
+		openNotifications.value.splice(openNotifications.value.indexOf(id), 1);
+	} else {
+		openNotifications.value.push(id);
+	}
+}
+
 async function toggleArchive() {
 	await api.patch('/notifications', {
 		keys: selection.value,
@@ -191,6 +185,11 @@ function onLinkClick(to: string) {
 	router.push(to);
 
 	notificationsDrawerOpen.value = false;
+}
+
+function clearFilters() {
+	filter.value = null;
+	search.value = null;
 }
 </script>
 
@@ -251,9 +250,19 @@ function onLinkClick(to: string) {
 			</v-tabs>
 		</template>
 
-		<v-info v-if="!loading && notifications.length === 0" icon="notifications" :title="t('no_notifications')" center>
-			{{ t('no_notifications_copy') }}
-		</v-info>
+		<template v-if="!loading && !itemCount">
+			<v-info v-if="filter || search" :title="t('no_results')" icon="search" center>
+				{{ t('no_results_copy') }}
+
+				<template #append>
+					<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+				</template>
+			</v-info>
+
+			<v-info v-else icon="notifications" :title="t('no_notifications')" center>
+				{{ t('no_notifications_copy') }}
+			</v-info>
+		</template>
 
 		<div v-else class="content">
 			<v-list v-if="loading" class="notifications">
