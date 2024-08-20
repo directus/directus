@@ -136,7 +136,7 @@
 		"p-queue": "8.0.1",
 		"pinia": "2.1.7",
 		"pretty-ms": "9.0.0",
-		"qrcode": "1.5.3",
+		"qrcode": "1.5.4",
 		"sass": "1.77.8",
 		"semver": "7.6.3",
 		"string-width": "7.2.0",
