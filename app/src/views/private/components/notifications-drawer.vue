@@ -4,11 +4,13 @@ import useDatetime from '@/components/use-datetime.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useItems } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Filter, Notification } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -18,7 +20,7 @@ type LocalNotification = Notification & {
 	to?: string;
 };
 
-const { t } = useI18n();
+const { t, n } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
@@ -69,30 +71,36 @@ function toggleNotification(id: string) {
 	}
 }
 
-const filter = computed(() => ({
-	_and: [
-		{
-			recipient: {
-				_eq: userStore.currentUser!.id,
-			},
-		},
-		{
-			status: {
-				_eq: tab.value[0],
-			},
-		},
-		userFilter.value,
-	],
-}));
+const filterSystem = computed(
+	() =>
+		({
+			_and: [
+				{
+					recipient: {
+						_eq: userStore.currentUser!.id,
+					},
+				},
+				{
+					status: {
+						_eq: tab.value[0],
+					},
+				},
+			],
+		}) as Filter,
+);
 
-const { items, loading, getItems, totalPages, getItemCount } = useItems(ref('directus_notifications'), {
-	filter,
-	fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
-	sort: ref(['-timestamp']),
-	search,
-	limit,
-	page,
-});
+const { items, loading, totalPages, totalCount, itemCount, getItems, getItemCount, getTotalCount } = useItems(
+	collection,
+	{
+		filter: computed(() => mergeFilters(filter.value, filterSystem.value)),
+		filterSystem,
+		fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
+		sort: ref(['-timestamp']),
+		search,
+		limit,
+		page,
+	},
+);
 
 const notifications = computed<LocalNotification[]>(() => {
 	return items.value.map((item) => {
@@ -117,9 +125,24 @@ const notifications = computed<LocalNotification[]>(() => {
 	});
 });
 
+const showingCount = computed(() => {
+	// Don't show count if there are no items
+	if (!totalCount.value || !itemCount.value) return;
+
+	return formatItemsCountPaginated({
+		currentItems: itemCount.value,
+		currentPage: page.value,
+		perPage: limit.value,
+		isFiltered: !!filter.value,
+		totalItems: totalCount.value,
+		i18n: { t, n },
+	});
+});
+
 async function refresh() {
-	await getItemCount();
 	await getItems();
+	await getTotalCount();
+	await getItemCount();
 }
 
 async function archiveAll() {
@@ -168,8 +191,16 @@ function onLinkClick(to: string) {
 		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 	>
+		<template #actions:prepend>
+			<transition name="fade">
+				<span v-if="showingCount" class="item-count">
+					{{ showingCount }}
+				</span>
+			</transition>
+		</template>
+
 		<template #actions>
-			<search-input v-model="search" v-model:filter="userFilter" collection="directus_notifications" />
+			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon
@@ -268,6 +299,19 @@ function onLinkClick(to: string) {
 </template>
 
 <style lang="scss" scoped>
+.item-count {
+	position: relative;
+	display: none;
+	margin: 0 8px;
+	color: var(--theme--foreground-subdued);
+	white-space: nowrap;
+	align-self: center;
+
+	@media (min-width: 600px) {
+		display: inline;
+	}
+}
+
 .content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
@@ -324,5 +368,15 @@ function onLinkClick(to: string) {
 			}
 		}
 	}
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>
