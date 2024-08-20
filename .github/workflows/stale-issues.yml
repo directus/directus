@@ -11,12 +11,10 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v9
+      - uses: directus/stale-issues-action@v1
         with:
-          days-before-stale: -1
+          stale-label: ':detective: Needs More Info'
           days-before-close: 7
-          remove-stale-when-updated: false
-          stale-issue-label: ':detective: Needs More Info'
-          close-issue-message:
+          close-message:
             "Heya! There isn't enough information available to keep investigating this issue at present time, so it'll
             be closed until more information becomes available. Thanks!"
