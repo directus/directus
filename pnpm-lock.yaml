@@ -259,7 +259,7 @@ importers:
         version: 4.5.4
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       ldapjs:
         specifier: 2.3.3
         version: 2.3.3
@@ -382,8 +382,8 @@ importers:
         specifier: 2.8.5
         version: 2.8.5
       mysql2:
-        specifier: 3.10.0
-        version: 3.10.0
+        specifier: 3.11.0
+        version: 3.11.0
       nodemailer-mailgun-transport:
         specifier: 2.1.5
         version: 2.1.5(lodash@4.17.21)(underscore@1.13.7)
@@ -522,7 +522,7 @@ importers:
         version: 7.1.0
       knex-mock-client:
         specifier: 2.0.1
-        version: 2.0.1(knex@3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0))
+        version: 2.0.1(knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1235,7 +1235,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.43)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.77.8)(terser@5.31.3))
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       pino:
         specifier: 9.2.0
         version: 9.2.0
@@ -1543,7 +1543,7 @@ importers:
     dependencies:
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1907,7 +1907,7 @@ importers:
         version: link:../tsconfig
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2141,7 +2141,7 @@ importers:
         version: 2.2.5
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       listr2:
         specifier: 8.2.3
         version: 8.2.3
@@ -5876,6 +5876,10 @@ packages:
   aws-sign2@0.7.0:
     resolution: {integrity: sha512-08kcGqnYf/YmjoRhfxyu+CLxBjUtHLXLXX/vUfx9l2LYzG3c1m61nrpyFUZI6zeS+Li/wWMMidD9KgrqtGq3mA==}
 
+  aws-ssl-profiles@1.1.1:
+    resolution: {integrity: sha512-+H+kuK34PfMaI9PNU/NSjBKL5hh/KDM9J72kwYeYEm0A8B1AC4fuCy3qsjnA7lxklgyXsB68yn8Z2xoZEjgwCQ==}
+    engines: {node: '>= 6.0.0'}
+
   aws4@1.13.1:
     resolution: {integrity: sha512-u5w79Rd7SU4JaIlA/zFqG+gOiuq25q5VLyZ8E+ijJeILuTxVzZgp2CaGw/UTw6pXYN9XMO9yiqj/nEHmhTG5CA==}
 
@@ -9074,8 +9078,8 @@ packages:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  mysql2@3.10.0:
-    resolution: {integrity: sha512-qx0mfWYt1DpTPkw8mAcHW/OwqqyNqBLBHvY5IjN8+icIYTjt6znrgYJ+gxqNNRpVknb5Wc/gcCM4XjbCR0j5tw==}
+  mysql2@3.11.0:
+    resolution: {integrity: sha512-J9phbsXGvTOcRVPR95YedzVSxJecpW5A5+cQ57rhHIFXteTP10HCs+VBjS7DHIKfEaI1zQ5tlVrquCd64A6YvA==}
     engines: {node: '>= 8.0'}
 
   mz@2.7.0:
@@ -16896,6 +16900,9 @@ snapshots:
   aws-sign2@0.7.0:
     optional: true
 
+  aws-ssl-profiles@1.1.1:
+    optional: true
+
   aws4@1.13.1:
     optional: true
 
@@ -19689,12 +19696,12 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)):
+  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)):
     dependencies:
-      knex: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+      knex: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       lodash.clonedeep: 4.5.0
 
-  knex@3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0):
+  knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -19711,7 +19718,7 @@ snapshots:
       tarn: 3.0.2
       tildify: 2.0.0
     optionalDependencies:
-      mysql2: 3.10.0
+      mysql2: 3.11.0
       pg: 8.12.0
       sqlite3: 5.1.7
       tedious: 18.2.0
@@ -20503,8 +20510,9 @@ snapshots:
 
   mute-stream@1.0.0: {}
 
-  mysql2@3.10.0:
+  mysql2@3.11.0:
     dependencies:
+      aws-ssl-profiles: 1.1.1
       denque: 2.1.0
       generate-function: 2.3.1
       iconv-lite: 0.6.3
