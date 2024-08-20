@@ -226,7 +226,7 @@
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "2.8.5",
-		"mysql2": "3.10.0",
+		"mysql2": "3.11.0",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"nodemailer-sendgrid": "1.0.3",
 		"oracledb": "6.5.1",

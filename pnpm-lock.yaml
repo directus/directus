@@ -259,7 +259,7 @@ importers:
         version: 4.5.4
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       ldapjs:
         specifier: 2.3.3
         version: 2.3.3
@@ -382,8 +382,8 @@ importers:
         specifier: 2.8.5
         version: 2.8.5
       mysql2:
-        specifier: 3.10.0
-        version: 3.10.0
+        specifier: 3.11.0
+        version: 3.11.0
       nodemailer-mailgun-transport:
         specifier: 2.1.5
         version: 2.1.5(lodash@4.17.21)(underscore@1.13.7)
@@ -522,7 +522,7 @@ importers:
         version: 7.1.0
       knex-mock-client:
         specifier: 2.0.1
-        version: 2.0.1(knex@3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0))
+        version: 2.0.1(knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -851,8 +851,8 @@ importers:
         specifier: 9.0.0
         version: 9.0.0
       qrcode:
-        specifier: 1.5.3
-        version: 1.5.3
+        specifier: 1.5.4
+        version: 1.5.4
       sass:
         specifier: 1.77.8
         version: 1.77.8
@@ -967,10 +967,10 @@ importers:
         version: 5.4.5
       vitepress:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.3)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5)
+        version: 1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5)
       vitepress-plugin-tabs:
         specifier: 0.3.0
-        version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.3)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5))
+        version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5))
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -1235,7 +1235,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.43)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.77.8)(terser@5.31.3))
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       pino:
         specifier: 9.2.0
         version: 9.2.0
@@ -1543,7 +1543,7 @@ importers:
     dependencies:
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1907,7 +1907,7 @@ importers:
         version: link:../tsconfig
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2141,7 +2141,7 @@ importers:
         version: 2.2.5
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       listr2:
         specifier: 8.2.3
         version: 8.2.3
@@ -5876,6 +5876,10 @@ packages:
   aws-sign2@0.7.0:
     resolution: {integrity: sha512-08kcGqnYf/YmjoRhfxyu+CLxBjUtHLXLXX/vUfx9l2LYzG3c1m61nrpyFUZI6zeS+Li/wWMMidD9KgrqtGq3mA==}
 
+  aws-ssl-profiles@1.1.1:
+    resolution: {integrity: sha512-+H+kuK34PfMaI9PNU/NSjBKL5hh/KDM9J72kwYeYEm0A8B1AC4fuCy3qsjnA7lxklgyXsB68yn8Z2xoZEjgwCQ==}
+    engines: {node: '>= 6.0.0'}
+
   aws4@1.13.1:
     resolution: {integrity: sha512-u5w79Rd7SU4JaIlA/zFqG+gOiuq25q5VLyZ8E+ijJeILuTxVzZgp2CaGw/UTw6pXYN9XMO9yiqj/nEHmhTG5CA==}
 
@@ -6948,9 +6952,6 @@ packages:
   encode-registry@3.0.1:
     resolution: {integrity: sha512-6qOwkl1g0fv0DN3Y3ggr2EaZXN71aoAqPp3p/pVaWSBSIo+YjLOWN61Fva43oVyQNPf7kgm8lkudzlzojwE2jw==}
     engines: {node: '>=10'}
-
-  encode-utf8@1.0.3:
-    resolution: {integrity: sha512-ucAnuBEhUK4boH2HjVYG5Q2mQyPorvv0u/ocS+zhdw0S8AlHYY+GOFhP1Gio5z4icpP2ivFSvhtFjQi8+T9ppw==}
 
   encodeurl@1.0.2:
     resolution: {integrity: sha512-TPJXq8JqFaVYm2CWmPvnP2Iyo4ZSM7/QKcSmuMLDObfpH5fi7RUGmd/rTDf+rut/saiDiQEeVTNgAmJEdAOx0w==}
@@ -9074,8 +9075,8 @@ packages:
     resolution: {integrity: sha512-avsJQhyd+680gKXyG/sQc0nXaC6rBkPOfyHYcFb9+hdkqQkR9bdnkJ0AMZhke0oesPqIO+mFFJ+IdBc7mst4IA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  mysql2@3.10.0:
-    resolution: {integrity: sha512-qx0mfWYt1DpTPkw8mAcHW/OwqqyNqBLBHvY5IjN8+icIYTjt6znrgYJ+gxqNNRpVknb5Wc/gcCM4XjbCR0j5tw==}
+  mysql2@3.11.0:
+    resolution: {integrity: sha512-J9phbsXGvTOcRVPR95YedzVSxJecpW5A5+cQ57rhHIFXteTP10HCs+VBjS7DHIKfEaI1zQ5tlVrquCd64A6YvA==}
     engines: {node: '>= 8.0'}
 
   mz@2.7.0:
@@ -10085,8 +10086,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  qrcode@1.5.3:
-    resolution: {integrity: sha512-puyri6ApkEHYiVl4CFzo1tDkAZ+ATcnbJrJ6RiBM1Fhctdn/ix9MTE3hRph33omisEbC/2fcfemsseiKgBPKZg==}
+  qrcode@1.5.4:
+    resolution: {integrity: sha512-1ca71Zgiu6ORjHqFBDpnSMTR2ReToX4l1Au1VFLyVeBTFavzQnv5JxMFr3ukHVKpSrSA2MCk0lNJSykjUfz7Zg==}
     engines: {node: '>=10.13.0'}
     hasBin: true
 
@@ -16523,7 +16524,7 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
-  '@vueuse/integrations@10.11.0(axios@1.7.3)(change-case@4.1.2)(focus-trap@7.5.4)(qrcode@1.5.3)(sortablejs@1.14.0)(vue@3.4.27(typescript@5.4.5))':
+  '@vueuse/integrations@10.11.0(axios@1.7.3)(change-case@4.1.2)(focus-trap@7.5.4)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.4.27(typescript@5.4.5))':
     dependencies:
       '@vueuse/core': 10.11.0(vue@3.4.27(typescript@5.4.5))
       '@vueuse/shared': 10.11.0(vue@3.4.27(typescript@5.4.5))
@@ -16532,7 +16533,7 @@ snapshots:
       axios: 1.7.3
       change-case: 4.1.2
       focus-trap: 7.5.4
-      qrcode: 1.5.3
+      qrcode: 1.5.4
       sortablejs: 1.14.0
     transitivePeerDependencies:
       - '@vue/composition-api'
@@ -16894,6 +16895,9 @@ snapshots:
       possible-typed-array-names: 1.0.0
 
   aws-sign2@0.7.0:
+    optional: true
+
+  aws-ssl-profiles@1.1.1:
     optional: true
 
   aws4@1.13.1:
@@ -17859,8 +17863,6 @@ snapshots:
   encode-registry@3.0.1:
     dependencies:
       mem: 8.1.1
-
-  encode-utf8@1.0.3: {}
 
   encodeurl@1.0.2: {}
 
@@ -19689,12 +19691,12 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)):
+  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)):
     dependencies:
-      knex: 3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+      knex: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
       lodash.clonedeep: 4.5.0
 
-  knex@3.1.0(mysql2@3.10.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0):
+  knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -19711,7 +19713,7 @@ snapshots:
       tarn: 3.0.2
       tildify: 2.0.0
     optionalDependencies:
-      mysql2: 3.10.0
+      mysql2: 3.11.0
       pg: 8.12.0
       sqlite3: 5.1.7
       tedious: 18.2.0
@@ -20503,8 +20505,9 @@ snapshots:
 
   mute-stream@1.0.0: {}
 
-  mysql2@3.10.0:
+  mysql2@3.11.0:
     dependencies:
+      aws-ssl-profiles: 1.1.1
       denque: 2.1.0
       generate-function: 2.3.1
       iconv-lite: 0.6.3
@@ -21655,10 +21658,9 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  qrcode@1.5.3:
+  qrcode@1.5.4:
     dependencies:
       dijkstrajs: 1.0.3
-      encode-utf8: 1.0.3
       pngjs: 5.0.0
       yargs: 15.4.1
 
@@ -23684,19 +23686,19 @@ snapshots:
       sass: 1.77.8
       terser: 5.31.3
 
-  vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.3)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5)):
+  vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5)):
     dependencies:
-      vitepress: 1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.3)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5)
+      vitepress: 1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5)
       vue: 3.4.27(typescript@5.4.5)
 
-  vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.3)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5):
+  vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.43)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.77.8)(search-insights@2.16.0)(sortablejs@1.14.0)(terser@5.31.3)(typescript@5.4.5):
     dependencies:
       '@docsearch/css': 3.6.1
       '@docsearch/js': 3.6.1(@algolia/client-search@4.24.0)(search-insights@2.16.0)
       '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@18.19.43)(sass@1.77.8)(terser@5.31.3))(vue@3.4.27(typescript@5.4.5))
       '@vue/devtools-api': 6.6.3
       '@vueuse/core': 10.9.0(vue@3.4.27(typescript@5.4.5))
-      '@vueuse/integrations': 10.11.0(axios@1.7.3)(change-case@4.1.2)(focus-trap@7.5.4)(qrcode@1.5.3)(sortablejs@1.14.0)(vue@3.4.27(typescript@5.4.5))
+      '@vueuse/integrations': 10.11.0(axios@1.7.3)(change-case@4.1.2)(focus-trap@7.5.4)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.4.27(typescript@5.4.5))
       body-scroll-lock: 4.0.0-beta.0
       focus-trap: 7.5.4
       mark.js: 8.11.1
