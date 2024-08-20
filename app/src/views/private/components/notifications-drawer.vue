@@ -12,7 +12,7 @@ import { useAppStore } from '@directus/stores';
 import { Filter, Notification } from '@directus/types';
 import { mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
-import { computed, ref, watch, unref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
@@ -148,7 +148,20 @@ async function refresh() {
 async function archiveAll() {
 	await api.patch('/notifications', {
 		query: {
-			filter: unref(filter),
+			filter: {
+				_and: [
+					{
+						recipient: {
+							_eq: userStore.currentUser!.id,
+						},
+					},
+					{
+						status: {
+							_eq: 'index',
+						},
+					},
+				],
+			},
 		},
 		data: {
 			status: 'archived',
