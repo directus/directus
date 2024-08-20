@@ -747,7 +747,7 @@ importers:
         version: 10.9.0(vue@3.4.27(typescript@5.4.5))
       '@vueuse/router':
         specifier: 10.9.0
-        version: 10.9.0(vue-router@4.4.0(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
+        version: 10.9.0(vue-router@4.4.3(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
       apexcharts:
         specifier: 3.50.0
         version: 3.50.0
@@ -884,8 +884,8 @@ importers:
         specifier: 9.13.1
         version: 9.13.1(vue@3.4.27(typescript@5.4.5))
       vue-router:
-        specifier: 4.4.0
-        version: 4.4.0(vue@3.4.27(typescript@5.4.5))
+        specifier: 4.4.3
+        version: 4.4.3(vue@3.4.27(typescript@5.4.5))
       vue-tsc:
         specifier: 2.0.29
         version: 2.0.29(typescript@5.4.5)
@@ -1017,8 +1017,8 @@ importers:
         specifier: 9.13.1
         version: 9.13.1(vue@3.4.27(typescript@5.4.5))
       vue-router:
-        specifier: 4.4.0
-        version: 4.4.0(vue@3.4.27(typescript@5.4.5))
+        specifier: 4.4.3
+        version: 4.4.3(vue@3.4.27(typescript@5.4.5))
 
   packages/composables:
     dependencies:
@@ -1255,8 +1255,8 @@ importers:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
       vue-router:
-        specifier: 4.4.0
-        version: 4.4.0(vue@3.4.27(typescript@5.4.5))
+        specifier: 4.4.3
+        version: 4.4.3(vue@3.4.27(typescript@5.4.5))
 
   packages/extensions-registry:
     dependencies:
@@ -11795,8 +11795,8 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
-  vue-router@4.4.0:
-    resolution: {integrity: sha512-HB+t2p611aIZraV2aPSRNXf0Z/oLZFrlygJm+sZbdJaW6lcFqEDQwnzUBXn+DApw+/QzDU/I9TeWx9izEjTmsA==}
+  vue-router@4.4.3:
+    resolution: {integrity: sha512-sv6wmNKx2j3aqJQDMxLFzs/u/mjA9Z5LCgy6BE0f7yFWMjrPLnS/sPNn8ARY/FXw6byV18EFutn5lTO6+UsV5A==}
     peerDependencies:
       vue: ^3.2.0
 
@@ -16543,11 +16543,11 @@ snapshots:
 
   '@vueuse/metadata@10.9.0': {}
 
-  '@vueuse/router@10.9.0(vue-router@4.4.0(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))':
+  '@vueuse/router@10.9.0(vue-router@4.4.3(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
       '@vueuse/shared': 10.9.0(vue@3.4.27(typescript@5.4.5))
       vue-demi: 0.14.10(vue@3.4.27(typescript@5.4.5))
-      vue-router: 4.4.0(vue@3.4.27(typescript@5.4.5))
+      vue-router: 4.4.3(vue@3.4.27(typescript@5.4.5))
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -23841,7 +23841,7 @@ snapshots:
       '@vue/devtools-api': 6.6.3
       vue: 3.4.27(typescript@5.4.5)
 
-  vue-router@4.4.0(vue@3.4.27(typescript@5.4.5)):
+  vue-router@4.4.3(vue@3.4.27(typescript@5.4.5)):
     dependencies:
       '@vue/devtools-api': 6.6.3
       vue: 3.4.27(typescript@5.4.5)
