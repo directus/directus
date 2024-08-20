@@ -14,7 +14,6 @@ const { t } = useI18n();
 const isLoading = ref(false);
 const email = ref<string | null>(null);
 const password = ref<string | null>(null);
-const passwordHidden = ref<boolean>(false);
 const error = ref<RequestError | string | null>(null);
 
 const emit = defineEmits<{
@@ -61,13 +60,10 @@ async function onSubmit() {
 		isLoading.value = false;
 	}
 }
-
-function toggleHidePassword() {
-	passwordHidden.value = !passwordHidden.value;
-}
 </script>
 
 <template>
+	<v-form>test</v-form>
 	<form novalidate @submit.prevent="onSubmit">
 		<v-input
 			v-model="email"
@@ -77,22 +73,7 @@ function toggleHidePassword() {
 			:placeholder="t('email')"
 			:disabled="isLoading"
 		/>
-		<v-input
-			v-model="password"
-			:type="passwordHidden ? 'password' : 'text'"
-			autocomplete="new-password"
-			:placeholder="t('password')"
-			:disabled="isLoading"
-		>
-			<template #append>
-				<v-icon
-					v-tooltip="passwordHidden ? t('show_password') : t('hide_password')"
-					:name="passwordHidden ? 'visibility' : 'visibility_off'"
-					clickable
-					@click="toggleHidePassword"
-				/>
-			</template>
-		</v-input>
+		<interface-system-input-password v-model="password" :disabled="isLoading" />
 
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
