@@ -1,8 +1,9 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import type { Accountability, Comment, PrimaryKey } from '@directus/types';
-import { uniq } from 'lodash-es';
+import type { Filter } from '@directus/system-data';
+import type { Accountability, Comment, Item, PrimaryKey, Query } from '@directus/types';
+import { cloneDeep, isNumber, mergeWith, uniq } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
@@ -12,7 +13,7 @@ import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { ActivityService } from './activity.js';
-import { ItemsService } from './items.js';
+import { ItemsService, type QueryOptions } from './items.js';
 import { NotificationsService } from './notifications.js';
 import { UsersService } from './users.js';
 
@@ -20,13 +21,74 @@ const env = useEnv();
 const logger = useLogger();
 
 export class CommentsService extends ItemsService {
+	activityService: ActivityService;
 	notificationsService: NotificationsService;
 	usersService: UsersService;
 
 	constructor(options: AbstractServiceOptions) {
 		super('directus_comments', options);
+		this.activityService = new ActivityService(options);
 		this.notificationsService = new NotificationsService({ schema: this.schema });
 		this.usersService = new UsersService({ schema: this.schema });
+	}
+
+	override readOne(key: PrimaryKey, query?: Query, opts?: QueryOptions): Promise<Item> {
+		const isLegacyComment = !isNaN(Number(key));
+
+		let result;
+
+		if (isLegacyComment) {
+			result = this.activityService.readOne(key, query ? this.generateActivityQuery(query) : undefined, opts);
+		} else {
+			result = super.readOne(key, query, opts);
+		}
+
+		return result;
+	}
+
+	override async readByQuery(query: Query, opts?: QueryOptions): Promise<Item[]> {
+		const activityQuery: Query = this.generateActivityQuery(query);
+		const commentsResult = await super.readByQuery(query, opts);
+		const activityResult = await this.activityService.readByQuery(activityQuery, opts);
+
+		if (query.aggregate) {
+			// Merging the first result only as the app does not utilise group
+			return [
+				mergeWith({}, activityResult[0], commentsResult[0], (a: any, b: any) => {
+					if (isNumber(a) && isNumber(b)) {
+						return a + b;
+					}
+
+					return;
+				}),
+			];
+		} else if (query.sort) {
+			return this.sortLegacyResults([...activityResult, ...commentsResult], query.sort);
+		} else {
+			return [...activityResult, ...commentsResult];
+		}
+	}
+
+	override async readMany(keys: PrimaryKey[], query?: Query, opts?: QueryOptions): Promise<Item[]> {
+		const commentsKeys = [];
+		const activityKeys = [];
+
+		for (const key of keys) {
+			if (isNaN(Number(key))) {
+				commentsKeys.push(key);
+			} else {
+				activityKeys.push(key);
+			}
+		}
+
+		const activityResult = await this.activityService.readMany(activityKeys, query, opts);
+		const commentsResult = await super.readMany(commentsKeys, query, opts);
+
+		if (query?.sort) {
+			return this.sortLegacyResults([...activityResult, ...commentsResult], query.sort);
+		} else {
+			return [...activityResult, ...commentsResult];
+		}
 	}
 
 	override async createOne(
@@ -213,6 +275,99 @@ ${comment}
 			}
 
 			return primaryKey;
+		});
+	}
+
+	generateActivityQuery(commentsQuery: Query): Query {
+		const activityQuery: Query = cloneDeep(commentsQuery);
+		const defaultActivityCommentFilter = { action: { _eq: Action.COMMENT } };
+
+		const commentsToActivityFieldMap: Record<string, string> = {
+			id: 'id',
+			comment: 'comment',
+			item: 'item',
+			collection: 'collection',
+			user_created: 'user',
+			date_created: 'timestamp',
+		};
+
+		for (const key of Object.keys(commentsQuery)) {
+			switch (key as keyof Filter) {
+				case 'fields':
+					if (!commentsQuery.fields) break;
+
+					for (const field of commentsQuery.fields) {
+						if (field === '*') {
+							activityQuery.fields = ['*'];
+							break;
+						}
+
+						const parts = field.split('.');
+						const firstPart = parts[0];
+
+						if (firstPart && commentsToActivityFieldMap[firstPart]) {
+							(activityQuery.fields = activityQuery.fields || []).push(field);
+							(activityQuery.alias = activityQuery.alias || {})[firstPart] = commentsToActivityFieldMap[firstPart];
+						}
+					}
+
+					break;
+				case 'filter':
+					if (commentsQuery.filter) {
+						activityQuery.filter = { _and: [defaultActivityCommentFilter, commentsQuery.filter] };
+					}
+
+					break;
+				case 'aggregate':
+					if (commentsQuery.aggregate) {
+						activityQuery.aggregate = commentsQuery.aggregate;
+					}
+
+					break;
+				case 'sort':
+					if (!commentsQuery.sort) break;
+
+					activityQuery.sort = [];
+
+					for (const sort of commentsQuery.sort) {
+						const isDescending = sort.startsWith('-');
+						const field = isDescending ? sort.slice(1) : sort;
+
+						if (field && commentsToActivityFieldMap[field]) {
+							activityQuery.sort.push(`${isDescending ? '-' : ''}${commentsToActivityFieldMap[field]}`);
+						}
+					}
+
+					break;
+			}
+		}
+
+		if (!activityQuery.filter) {
+			activityQuery.filter = defaultActivityCommentFilter;
+		}
+
+		return activityQuery;
+	}
+
+	private sortLegacyResults(results: Item[], sortKeys: string[]) {
+		return results.sort((a, b) => {
+			for (const key of sortKeys) {
+				const isDescending = key.startsWith('-');
+				const actualKey = isDescending ? key.substring(1) : key;
+
+				let aValue = a[actualKey];
+				let bValue = b[actualKey];
+
+				if (actualKey === 'date_created') {
+					aValue = new Date(aValue);
+					bValue = new Date(bValue);
+				}
+
+				if (aValue < bValue) return isDescending ? 1 : -1;
+				if (aValue > bValue) return isDescending ? -1 : 1;
+			}
+
+			return 0;
 		});
 	}
 }
