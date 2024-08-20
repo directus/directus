@@ -4,16 +4,17 @@ import useDatetime from '@/components/use-datetime.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useItems } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Filter, Notification } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
 
 type LocalNotification = Notification & {
 	to?: string;
@@ -70,26 +71,29 @@ function toggleNotification(id: string) {
 	}
 }
 
-const filter = computed(() => ({
-	_and: [
-		{
-			recipient: {
-				_eq: userStore.currentUser!.id,
-			},
-		},
-		{
-			status: {
-				_eq: tab.value[0],
-			},
-		},
-		userFilter.value,
-	],
-}));
+const filterSystem = computed(
+	() =>
+		({
+			_and: [
+				{
+					recipient: {
+						_eq: userStore.currentUser!.id,
+					},
+				},
+				{
+					status: {
+						_eq: tab.value[0],
+					},
+				},
+			],
+		}) as Filter,
+);
 
-const { items, loading, getItems, totalPages, totalCount, itemCount, getItemCount } = useItems(
-	ref('directus_notifications'),
+const { items, loading, totalPages, totalCount, itemCount, getItems, getItemCount, getTotalCount } = useItems(
+	collection,
 	{
-		filter,
+		filter: computed(() => mergeFilters(filter.value, filterSystem.value)),
+		filterSystem,
 		fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
 		sort: ref(['-timestamp']),
 		search,
@@ -129,15 +133,16 @@ const showingCount = computed(() => {
 		currentItems: itemCount.value,
 		currentPage: page.value,
 		perPage: limit.value,
-		isFiltered: !!userFilter.value,
+		isFiltered: !!filter.value,
 		totalItems: totalCount.value,
 		i18n: { t, n },
 	});
 });
 
 async function refresh() {
-	await getItemCount();
 	await getItems();
+	await getTotalCount();
+	await getItemCount();
 }
 
 async function archiveAll() {
@@ -186,13 +191,16 @@ function onLinkClick(to: string) {
 		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 	>
-		<template #actions>
+		<template #actions:prepend>
 			<transition name="fade">
 				<span v-if="showingCount" class="item-count">
 					{{ showingCount }}
 				</span>
 			</transition>
-			<search-input v-model="search" v-model:filter="userFilter" collection="directus_notifications" />
+		</template>
+
+		<template #actions>
+			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon
@@ -360,5 +368,15 @@ function onLinkClick(to: string) {
 			}
 		}
 	}
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>
