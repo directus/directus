@@ -79,9 +79,9 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operaciones
 extension_bundles: Paquetes
-extension_missing: Faltan
-extension_reload_required: Recarga de página requerida
-extension_reload_required_copy: Es necesario recargar una página para ver los cambios después de activar o desactivar las extensiones.
+extension_missing: Perdida
+extension_reload_required: Se requiere actualizar la página
+extension_reload_required_copy: Es necesario recargar la página para ver los cambios después de activar o desactivar las extensiones.
 extension_reload_now: Recargar ahora
 published_relative: Publicado {relativeTime}
 compatible_with_your_project: Compatible con tu proyecto
@@ -93,7 +93,7 @@ homepage: Inicio
 repository: Repositorio
 reload_page: Recargar Página
 reload_required: Recarga Requerida
-report_an_issue: Reportar un Problema
+report_an_issue: Informar de un Problema
 website: Sitio Web
 github: GitHub
 beta: Beta
@@ -341,7 +341,7 @@ geometry:
 theme_auto: Automático (basado en el sistema)
 theme_light: Modo claro
 theme_dark: Modo oscuro
-theme_directus_default: Directus Default
+theme_directus_default: Directus Por Defecto
 theme_directus_minimal: Directus Minimal
 theme_directus_colormatch: Directus coincidencia de color
 not_available_for_type: No disponible para este tipo
@@ -527,9 +527,9 @@ months:
   november: Noviembre
   december: Diciembre
 drag_mode: Modo de arrastre
-move_tool: Herramienta para mover
-crop_tool: Herramienta de recorte
-focal_point_tool: Herramienta de Punto Focal
+move_tool: Herramienta Mover
+crop_tool: Herramienta Recorte
+focal_point_tool: Herramienta Punto Focal
 cancel_crop: Cancelar Recorte
 cancel_selection: Cancelar selección
 original: Original
@@ -567,7 +567,7 @@ exporting_all_items_in_collection: Exportando los {total} elementos dentro de {c
 exporting_limited_items_in_collection: '{count} de {total} elementos en {collection} serán exportados.'
 exporting_no_items_to_export: No hay elementos para exportar. Ajuste la configuración de exportación y/o añada elementos a la colección.
 exporting_download_hint: Una vez creado el archivo {format}, se descargará a tu dispositivo.
-exporting_library_hint: Una vez creado el archivo {format}, se guardará en la biblioteca de archivos.
+exporting_library_hint: Una vez creado el archivo {format}, se guardará en la Biblioteca de Archivos.
 exporting_library_hint_forced: Esta exportación se procesará por lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
@@ -595,7 +595,10 @@ allow_duplicates: Permitir duplicados
 comments: Comentarios
 no_comments: Aún Sin Comentarios
 expand: Expandir
+expand_all: Desplegar todo
+expand_none: Contraer todo
 collapse: Contraer
+collapse_all: Contraer todo
 select_item: Seleccionar elemento
 no_items: Sin elementos
 search_items: Buscar elementos...
@@ -773,10 +776,6 @@ make_collection_hidden: Hacer que la colección se oculte
 make_folder_visible: Hacer visible la carpeta
 make_folder_hidden: Ocultar carpeta
 goto_collection_content: Ver contenido
-start_end_of_count_items: '{start}-{end} de {count} elementos'
-start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
-one_item: '1 elemento'
-one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
   ¿Estás seguro que quieres eliminar la colección "{collection}"? Esto eliminará la colección y todos los elementos de la misma. Esta acción es permanente.
 delete_folder_are_you_sure: '¿Estás seguro que quieres eliminar la carpeta "{folder}"? Las carpetas y colecciones anidadas se moverán al nivel más alto.'
@@ -868,7 +867,6 @@ create_item: Crear elemento
 display_template: Plantilla de Presentación
 language_display_template: Plantilla de visualización de idioma
 translations_display_template: Plantilla de visualización de traducciones
-n_items_selected: 'Sin elementos seleccionados | 1 elemento seleccionado | {n} elementos seleccionados'
 per_page: Por Página
 all_files: Todos los Archivos
 my_files: Mis Archivos
@@ -1083,7 +1081,6 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando por lote {count} elementos'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de datos
-settings_permissions: Control de acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
 settings_webhooks: Webhooks
@@ -1133,7 +1130,6 @@ page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
-page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
 page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
   **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
@@ -1192,7 +1188,6 @@ directus_collection:
   directus_notifications: Notificaciones enviadas a usuarios
   directus_operations: Operaciones que se ejecutan en flujos
   directus_panels: Paneles individuales dentro de los tableros Informes
-  directus_permissions: Permisos de acceso para cada rol
   directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
   directus_revisions: Capturas de datos para toda la actividad
@@ -1369,12 +1364,9 @@ fields:
     name: Nombre del rol
     icon: Ícono del rol
     description: Descripción
-    app_access: Acceso a la aplicación
-    admin_access: Acceso Admin
-    ip_access: Acceso IP
-    enforce_tfa: Requiere 2FA
     users: Usuarios en el rol
-    module_list: Navegación en Módulo
+  directus_policies:
+    description: Descripción
   directus_webhooks:
     name: Nombre
     method: Método
@@ -1460,7 +1452,6 @@ field_options:
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
-    ip_access: Añadir direcciones IP, rangos IP y bloques CIDR. Dejar en blanco para permitir todos...
     fields:
       icon_name: Ícono
       name_name: Nombre
@@ -1517,7 +1508,6 @@ live_preview:
   toggle_3d: Alterna 3D
 shares: Compartido
 unlimited_usage: Uso ilimitado
-uses_left: No hay usos restantes | 1 uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
 expired: Expirado
@@ -1650,6 +1640,8 @@ navigate_to_item: Navegar al elemento
 undo_removed_item: Deshacer elemento eliminado
 remove_item: Quitar elemento
 delete_item: Eliminar elemento
+pause: Pausar
+resume: Reanudar
 interfaces:
   list-m2a:
     prefix_note: Utiliza el nombre de la colección del elemento relacionado de forma predeterminada.
@@ -2189,7 +2181,6 @@ layouts:
     show_ungrouped: Mostrar desagrupado
     show: Mostrar
     no_group: Sin grupo
-    not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 horizontal: Horizontal
 vertical: Vertical
 axis: Eje

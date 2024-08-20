@@ -20,8 +20,9 @@ import { getAuthProvider } from '../../auth.js';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { respond } from '../../middleware/respond.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
 import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
@@ -383,10 +384,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			const { verifier, redirect, prompt } = tokenData;
 
-			const accountability: Accountability = {
-				ip: getIPFromReq(req),
-				role: null,
-			};
+			const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 			const userAgent = req.get('user-agent')?.substring(0, 1024);
 			if (userAgent) accountability.userAgent = userAgent;

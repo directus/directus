@@ -351,11 +351,12 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			/>
 		</template>
 
-		<v-list v-else>
+		<template v-else>
 			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
 
 			<draggable
 				:model-value="displayItems"
+				tag="v-list"
 				item-key="$index"
 				:set-data="hideDragImage"
 				:disabled="!allowDrag"
@@ -400,7 +401,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 					</v-list-item>
 				</template>
 			</draggable>
-		</v-list>
+		</template>
 
 		<div class="actions">
 			<v-menu v-if="enableCreate && createCollections.length > 0" :disabled="disabled" show-arrow>
@@ -460,7 +461,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 					/>
 				</div>
 
-				<v-pagination v-model="page" :length="pageCount" :total-visible="5" />
+				<v-pagination v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 			</div>
 		</div>
 

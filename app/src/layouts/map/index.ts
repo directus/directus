@@ -1,4 +1,4 @@
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { formatItemsCountPaginated, formatItemsCountRelative } from '@/utils/format-items-count';
 import { getGeometryFormatForType, toGeoJSON } from '@/utils/geometry';
 import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
@@ -6,9 +6,10 @@ import { syncRefProperty } from '@/utils/sync-ref-property';
 import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { Field, Filter, GeometryOptions } from '@directus/types';
-import { getFieldsFromTemplate } from '@directus/utils';
+import { getFieldsFromTemplate, mergeFilters } from '@directus/utils';
 import { cloneDeep, merge } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import MapActions from './actions.vue';
 import MapLayout from './map.vue';
@@ -30,12 +31,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	},
 	setup(props, { emit }) {
 		const router = useRouter();
+		const { t, n } = useI18n();
 
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
-		const { collection, filter, filterUser, search } = toRefs(props);
+		const { collection, filterSystem, search } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -124,14 +126,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			} as Filter;
 		});
 
-		const filterWithLocation = computed<Filter | null>(() => {
-			if (!locationFilter.value) return filter.value;
-			if (!filter.value) return locationFilter.value;
-
-			return {
-				_and: [filter.value, locationFilter.value],
-			};
-		});
+		const filterWithLocation = computed(() => mergeFilters(props.filter, locationFilter.value));
 
 		const shouldUpdateCamera = ref(false);
 
@@ -159,6 +154,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				search,
 				filter: filterWithLocation,
 				fields: queryFields,
+				filterSystem,
 			});
 
 		const geojson = ref<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
@@ -240,8 +236,25 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		});
 
 		const showingCount = computed(() => {
-			const filtering = Boolean((itemCount.value || 0) < (totalCount.value || 0) && filterUser.value);
-			return formatCollectionItemsCount(itemCount.value || 0, page.value, limit.value, filtering);
+			if (totalCount.value === null || itemCount.value === null) return;
+
+			// Return total count if no geometry field is selected
+			if (!geometryOptions.value) return t('item_count', { count: n(totalCount.value) }, totalCount.value);
+
+			if (totalPages.value > 1)
+				return formatItemsCountPaginated({
+					currentItems: itemCount.value,
+					currentPage: page.value,
+					perPage: limit.value,
+					isFiltered: !!props.filterUser,
+					totalItems: totalCount.value,
+				});
+
+			return formatItemsCountRelative({
+				totalItems: totalCount.value,
+				currentItems: itemCount.value,
+				isFiltered: !!props.filterUser,
+			});
 		});
 
 		type ItemPopup = { item?: any; position?: { x: number; y: number } };
@@ -279,10 +292,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			totalPages,
 			page,
 			toPage,
+			totalCount,
 			itemCount,
 			fieldsInCollection,
 			limit,
-			filter,
 			primaryKeyField,
 			sort,
 			info,

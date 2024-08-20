@@ -7,7 +7,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
@@ -40,6 +40,8 @@ const props = withDefaults(
 		enableSearchFilter?: boolean;
 		enableLink?: boolean;
 		limit?: number;
+		sort?: string;
+		sortDirection?: '+' | '-';
 	}>(),
 	{
 		value: () => [],
@@ -99,7 +101,10 @@ const limit = ref(props.limit);
 const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
-const sort = ref<Sort>();
+
+const manualSort = ref<Sort | null>(
+	props.sort && !relationInfo.value?.sortField ? { by: props.sort, desc: props.sortDirection === '-' } : null,
+);
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
@@ -120,8 +125,8 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.search = search.value;
 	}
 
-	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
+	if (manualSort.value) {
+		q.sort = [`${manualSort.value.desc ? '-' : ''}${manualSort.value.by}`];
 	}
 
 	return q;
@@ -149,14 +154,14 @@ const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const showingCount = computed(() => {
-	return formatCollectionItemsCount(
-		totalItemCount.value,
-		page.value,
-		limit.value,
-		!!(search.value || searchFilter.value),
-	);
-});
+const showingCount = computed(() =>
+	formatItemsCountPaginated({
+		currentItems: totalItemCount.value,
+		currentPage: page.value,
+		perPage: limit.value,
+		isFiltered: !!(search.value || searchFilter.value),
+	}),
+);
 
 const headers = ref<Array<any>>([]);
 
@@ -466,7 +471,7 @@ function getLinkForItem(item: DisplayItem) {
 
 			<v-table
 				v-if="layout === LAYOUTS.TABLE"
-				v-model:sort="sort"
+				v-model:sort="manualSort"
 				v-model:headers="headers"
 				v-model="selection"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
@@ -519,13 +524,14 @@ function getLinkForItem(item: DisplayItem) {
 				/>
 			</template>
 
-			<v-list v-else>
+			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
 					{{ t('no_items') }}
 				</v-notice>
 
 				<draggable
 					:model-value="displayItems"
+					tag="v-list"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
@@ -569,12 +575,17 @@ function getLinkForItem(item: DisplayItem) {
 						</v-list-item>
 					</template>
 				</draggable>
-			</v-list>
+			</template>
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+						<v-pagination
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 1 : 2"
+							show-first-last
+						/>
 
 						<div class="spacer" />
 
@@ -592,7 +603,7 @@ function getLinkForItem(item: DisplayItem) {
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 				</template>
 			</div>
 		</div>
@@ -677,10 +688,12 @@ function getLinkForItem(item: DisplayItem) {
 
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
+		margin-left: auto;
 		:deep(.v-button) {
 			display: inline-flex;
 		}

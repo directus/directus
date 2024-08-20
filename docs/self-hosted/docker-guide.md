@@ -98,9 +98,23 @@ services:
       POSTGRES_USER: "directus"
       POSTGRES_PASSWORD: "directus"
       POSTGRES_DB: "directus"
+    healthcheck:
+      test: ["CMD", "pg_isready", "--host=localhost", "--username=directus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
 
   cache:
     image: redis:6
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(redis-cli ping) = 'PONG' ]"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
 
   directus:
     image: directus/directus:{{ packages.directus.version.full }}
@@ -110,8 +124,10 @@ services:
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
     depends_on:
-      - cache
-      - database
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
     environment:
       SECRET: "replace-with-secure-random-value"
 

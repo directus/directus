@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-      - next
+      - v11-rc
 
 concurrency:
   group: check-${{ github.ref }}
