@@ -34,7 +34,7 @@ const openNotifications = ref<string[]>([]);
 const page = ref(1);
 const limit = ref(25);
 const search = ref<string | null>(null);
-const userFilter = ref<Filter>({});
+const filter = ref<Filter | null>(null);
 const mouseDownTarget = ref<EventTarget | null>(null);
 const { notificationsDrawerOpen } = storeToRefs(appStore);
 
@@ -45,7 +45,7 @@ watch(tab, (newTab, oldTab) => {
 	}
 });
 
-watch([search, userFilter], () => {
+watch([search, filter], () => {
 	page.value = 1;
 });
 
@@ -90,7 +90,7 @@ const filterSystem = computed(
 );
 
 const { items, loading, totalPages, totalCount, itemCount, getItems, getItemCount, getTotalCount } = useItems(
-	collection,
+	ref('directus_notifications'),
 	{
 		filter: computed(() => mergeFilters(filter.value, filterSystem.value)),
 		filterSystem,
@@ -148,8 +148,19 @@ async function refresh() {
 async function archiveAll() {
 	await api.patch('/notifications', {
 		query: {
-			recipient: {
-				_eq: userStore.currentUser!.id,
+			filter: {
+				_and: [
+					{
+						recipient: {
+							_eq: userStore.currentUser!.id,
+						},
+					},
+					{
+						status: {
+							_eq: 'index',
+						},
+					},
+				],
 			},
 		},
 		data: {
