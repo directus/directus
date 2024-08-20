@@ -1,5 +1,5 @@
 ---
-'@directus/app': patch
+'@directus/app': minor
 ---
 
-Adds an item count to the notification drawer.
+Added item count to the notification drawer
