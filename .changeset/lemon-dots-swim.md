@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix the notifications "archive all" button
+Fixed the "Archive All" notifications functionality
