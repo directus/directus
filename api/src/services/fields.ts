@@ -862,7 +862,7 @@ export class FieldsService {
 		const defaultValue =
 			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
 
-		if (defaultValue) {
+		if (defaultValue !== undefined && defaultValue !== null ) {
 			const newDefaultValueIsString = typeof defaultValue === 'string';
 			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
 			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
