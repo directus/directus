@@ -1,4 +1,4 @@
-import { useI18n } from 'vue-i18n';
+import { ComposerNumberFormatting, ComposerTranslation, useI18n } from 'vue-i18n';
 
 export type FormatItemsCountPaginatedOptions = {
 	currentItems: number;
@@ -6,7 +6,7 @@ export type FormatItemsCountPaginatedOptions = {
 	perPage: number;
 	isFiltered?: boolean;
 	totalItems?: number;
-	i18n?: ReturnType<typeof useI18n>;
+	i18n?: { t: ComposerTranslation; n: ComposerNumberFormatting };
 };
 
 export function formatItemsCountPaginated({
@@ -41,14 +41,16 @@ export type FormatItemsCountRelativeOptions = {
 	totalItems: number;
 	currentItems: number;
 	isFiltered?: boolean;
+	i18n?: { t: ComposerTranslation; n: ComposerNumberFormatting };
 };
 
 export function formatItemsCountRelative({
 	totalItems,
 	currentItems,
 	isFiltered = false,
+	i18n,
 }: FormatItemsCountRelativeOptions) {
-	const { t, n } = useI18n();
+	const { t, n } = i18n ? i18n : useI18n();
 
 	const values = {
 		count: n(currentItems),
