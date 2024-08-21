@@ -230,7 +230,60 @@ ${comment}
 		return super.createOne(data, opts);
 	}
 
-	async migrateComment(activityPk: PrimaryKey): Promise<PrimaryKey> {
+	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const keys = await this.getKeysByQuery(query);
+		const migratedKeys = await this.processPrimaryKeys(keys);
+
+		return super.updateMany(migratedKeys, data, opts);
+	}
+
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const migratedKeys = await this.processPrimaryKeys(keys);
+
+		return super.updateMany(migratedKeys, data, opts);
+	}
+
+	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
+		const migratedKey = await this.migrateLegacyComment(key);
+
+		return super.updateOne(migratedKey, data, opts);
+	}
+
+	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const keys = await this.getKeysByQuery(query);
+		const migratedKeys = await this.processPrimaryKeys(keys);
+
+		return super.deleteMany(migratedKeys, opts);
+	}
+
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		const migratedKeys = await this.processPrimaryKeys(keys);
+
+		return super.deleteMany(migratedKeys, opts);
+	}
+
+	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		const migratedKey = await this.migrateLegacyComment(key);
+
+		return super.deleteOne(migratedKey, opts);
+	}
+
+	private async processPrimaryKeys(keys: PrimaryKey[]) {
+		const migratedKeys = [];
+
+		for (const key of keys) {
+			if (isNaN(Number(key))) {
+				migratedKeys.push(key);
+				continue;
+			}
+
+			migratedKeys.push(await this.migrateLegacyComment(key));
+		}
+
+		return migratedKeys;
+	}
+
+	async migrateLegacyComment(activityPk: PrimaryKey): Promise<PrimaryKey> {
 		// Skip migration if not a legacy comment
 		if (isNaN(Number(activityPk))) {
 			return activityPk;

@@ -3399,14 +3399,13 @@ export class GraphQLService {
 						comment: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args, __, info) => {
-						const service = new CommentsService({
+						const commentsService = new CommentsService({
 							accountability: this.accountability,
 							schema: this.schema,
 							serviceOrigin: 'activity',
 						});
 
-						const primaryKey = await service.migrateComment(args['id']);
-						await service.updateOne(primaryKey, { comment: args['comment'] });
+						const primaryKey = await commentsService.updateOne(args['id'], { comment: args['comment'] });
 
 						if ('directus_activity' in ReadCollectionTypes) {
 							const selections = this.replaceFragmentsInSelections(
@@ -3416,7 +3415,7 @@ export class GraphQLService {
 
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
-							return { ...(await service.readOne(primaryKey, query)), id: args['id'] };
+							return { ...(await commentsService.readOne(primaryKey, query)), id: args['id'] };
 						}
 
 						return true;
@@ -3433,14 +3432,14 @@ export class GraphQLService {
 						id: new GraphQLNonNull(GraphQLID),
 					},
 					resolve: async (_, args) => {
-						const service = new CommentsService({
+						const commentsService = new CommentsService({
 							accountability: this.accountability,
 							schema: this.schema,
 							serviceOrigin: 'activity',
 						});
 
-						const primaryKey = await service.migrateComment(args['id']);
-						await service.deleteOne(primaryKey);
+						await commentsService.deleteOne(args['id']);
+
 						return { id: args['id'] };
 					},
 				},

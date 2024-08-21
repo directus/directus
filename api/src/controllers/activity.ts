@@ -151,8 +151,7 @@ router.patch(
 			throw new InvalidPayloadError({ reason: error.message });
 		}
 
-		const primaryKey = await commentsService.migrateComment(req.params['pk']!);
-		await commentsService.updateOne(primaryKey, req.body);
+		const primaryKey = await commentsService.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const record = await commentsService.readOne(primaryKey, req.sanitizedQuery);
@@ -182,8 +181,7 @@ router.delete(
 			serviceOrigin: 'activity',
 		});
 
-		const primaryKey = await commentsService.migrateComment(req.params['pk']!);
-		await commentsService.deleteOne(primaryKey);
+		await commentsService.deleteOne(req.params['pk']!);
 
 		return next();
 	}),
