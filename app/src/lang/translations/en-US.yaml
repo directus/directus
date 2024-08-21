@@ -2088,9 +2088,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values
-  input-toggle-hidden:
-    input-toggle-hidden: Input Toggle Hidden
-    description: Text input with toggle to hide value
+  input-password:
+    input-password: Input Password
+    description: Password input with toggle to hide value
 displays:
   translations:
     translations: Translations
