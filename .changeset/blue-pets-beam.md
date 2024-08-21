@@ -1,5 +1,5 @@
 ---
-'@directus/api': major
+'@directus/api': minor
 '@directus/sdk': major
 '@directus/system-data': minor
 '@directus/specs': minor
