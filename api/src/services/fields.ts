@@ -859,10 +859,7 @@ export class FieldsService {
 			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
-		const defaultValue =
-			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
-
-		if (defaultValue) {
+		const setDefaultValue = (defaultValue: string | number | boolean | null) => {
 			const newDefaultValueIsString = typeof defaultValue === 'string';
 			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
 			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
@@ -882,16 +879,67 @@ export class FieldsService {
 			} else {
 				column.defaultTo(defaultValue);
 			}
-		} else {
-			column.defaultTo(null);
-		}
+		};
 
-		const isNullable = field.schema?.is_nullable ?? existing?.is_nullable ?? true;
+		// for a new item, set the default value and nullable as provided without any further considerations
+		if (!existing) {
+			if (field.schema?.default_value !== undefined) {
+				setDefaultValue(field.schema.default_value);
+			}
 
-		if (isNullable) {
-			column.nullable();
+			if (field.schema?.is_nullable) {
+				column.nullable();
+			} else {
+				column.notNullable();
+			}
 		} else {
-			column.notNullable();
+			// for an existing item: if nullable option changed, we have to provide the default values as well and vice versa
+			// see https://knexjs.org/guide/schema-builder.html#alter
+
+			if (field.schema?.default_value !== undefined || field.schema?.is_nullable !== undefined) {
+				let defaultValue = null;
+
+				if (field.schema?.default_value !== undefined) {
+					defaultValue = field.schema.default_value;
+				} else if (existing.default_value !== undefined) {
+					defaultValue = existing.default_value;
+				}
+
+				setDefaultValue(defaultValue);
+
+				const isNullable = field.schema?.is_nullable ?? existing?.is_nullable ?? true;
+
+				if (isNullable) {
+					column.nullable();
+				} else {
+					column.notNullable();
+				}
+			}
+
+			// Oracle fail when overwriting the nullable option with same value
+			// let nullableChanged = false;
+
+			// if (field.schema?.is_nullable === false && existing.is_nullable === true) {
+			// 	column.notNullable();
+			// 	nullableChanged = true;
+			// } else if (field.schema?.is_nullable === true && existing.is_nullable === false) {
+			// 	column.nullable();
+			// 	nullableChanged = true;
+			// }
+
+			// let defaultValue = null;
+
+			// if (field.schema?.default_value !== undefined) {
+			// 	defaultValue = field.schema.default_value;
+			// } else if (existing.default_value !== undefined) {
+			// 	defaultValue = existing.default_value;
+			// }
+
+			// if (field.schema?.default_value !== undefined && nullableChanged) {
+			// 	setDefaultValue(defaultValue);
+			// } else if (field.schema?.default_value !== undefined && !nullableChanged) {
+			// 	column.defaultTo(defaultValue);
+			// }
 		}
 
 		if (field.schema?.is_primary_key) {
