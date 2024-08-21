@@ -377,7 +377,16 @@ ${comment}
 		return query;
 	}
 
-	private sortLegacyResults(results: Item[], sortKeys: string[]) {
+	private sortLegacyResults(results: Item[], sort: Query['sort']) {
+		if (!sort) return results;
+
+		let sortKeys = sort;
+
+		// Fix legacy app sort query which uses id
+		if (sortKeys.length === 1 && sortKeys[0]?.endsWith('id') && results[0]?.['timestamp']) {
+			sortKeys = [`${sortKeys[0].startsWith('-') ? '-' : ''}timestamp`];
+		}
+
 		return results.sort((a, b) => {
 			for (const key of sortKeys) {
 				const isDescending = key.startsWith('-');
@@ -386,7 +395,7 @@ ${comment}
 				let aValue = a[actualKey];
 				let bValue = b[actualKey];
 
-				if (actualKey === 'date_created') {
+				if (actualKey === 'date_created' || actualKey === 'timestamp') {
 					aValue = new Date(aValue);
 					bValue = new Date(bValue);
 				}
