@@ -590,8 +590,8 @@ importers:
         specifier: 2.9.0
         version: 2.9.0
       '@editorjs/delimiter':
-        specifier: 1.4.0
-        version: 1.4.0
+        specifier: 1.4.2
+        version: 1.4.2
       '@editorjs/editorjs':
         specifier: 2.29.1
         version: 2.29.1
@@ -2807,8 +2807,8 @@ packages:
   '@editorjs/code@2.9.0':
     resolution: {integrity: sha512-QNOWxF29j6mYl/gM5HJzeGOt3s4laoZCUbuRqj6RkIvLBWMU+ASwjckEiouA61hcYUOMfpw4vQjzhsfC7xm/vA==}
 
-  '@editorjs/delimiter@1.4.0':
-    resolution: {integrity: sha512-i1Wm3UQsVisM7Fh9focJ1a4kX2l7IxO3zrEd+GmYoPVaNwxb/63GLNbGfCCGZBuvUyzeUDnc8cdhD1QQGwUZIg==}
+  '@editorjs/delimiter@1.4.2':
+    resolution: {integrity: sha512-S8q2LpeYdYkVShLp7K8c4HLthDHBevLw+sT+iO0+SH0oMvFmld9SUon3DFzMQ2gG07EOdZGRZ958+sVxyvFjZw==}
 
   '@editorjs/editorjs@2.29.1':
     resolution: {integrity: sha512-WRT2pCfikMsvySQJqpCU21LfTZaPuxUWsDO8aFGrPx4MKzOR9D+Ur4mNb3jq0FXx2EMqvIWfTyFixJxtjGHTyQ==}
@@ -13440,9 +13440,9 @@ snapshots:
     dependencies:
       '@codexteam/icons': 0.0.5
 
-  '@editorjs/delimiter@1.4.0':
+  '@editorjs/delimiter@1.4.2':
     dependencies:
-      '@codexteam/icons': 0.0.5
+      '@codexteam/icons': 0.3.2
 
   '@editorjs/editorjs@2.29.1': {}
 
