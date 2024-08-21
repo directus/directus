@@ -2,6 +2,7 @@
 import { useCustomSelection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 
 type Option = {
 	text: string;
@@ -34,24 +35,7 @@ const { t } = useI18n();
 
 const { choices, value } = toRefs(props);
 
-const gridClass = computed(() => {
-	if (choices?.value === undefined) return null;
-
-	const widestOptionLength = choices.value.reduce((acc, val) => {
-		if (val.text.length > acc.length) acc = val.text;
-		return acc;
-	}, '').length;
-
-	if (props.width?.startsWith('half')) {
-		if (widestOptionLength <= 10) return 'grid-2';
-		return 'grid-1';
-	}
-
-	if (widestOptionLength <= 10) return 'grid-4';
-	if (widestOptionLength > 10 && widestOptionLength <= 15) return 'grid-3';
-	if (widestOptionLength > 15 && widestOptionLength <= 25) return 'grid-2';
-	return 'grid-1';
-});
+const gridClass = computed(() => getMinimalGridClass(choices.value, props.width));
 
 const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>
 	emit('input', value),

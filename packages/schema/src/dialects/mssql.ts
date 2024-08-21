@@ -21,6 +21,7 @@ type RawColumn = {
 	numeric_scale: number | null;
 	is_generated: boolean | null;
 	is_nullable: 'YES' | 'NO';
+	index_name: string | null;
 	default_value: string | null;
 	is_unique: true | null;
 	is_primary_key: true | null;
@@ -32,17 +33,22 @@ type RawColumn = {
 
 export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	return {
-		...rawColumn,
+		name: rawColumn.name,
+		table: rawColumn.table,
+		data_type: rawColumn.data_type,
 		default_value: parseDefaultValue(rawColumn.default_value),
 		generation_expression: rawColumn.generation_expression || null,
-		is_generated: !!rawColumn.is_generated,
-		is_unique: rawColumn.is_unique === true,
-		is_primary_key: rawColumn.is_primary_key === true,
-		is_nullable: rawColumn.is_nullable === 'YES',
-		has_auto_increment: rawColumn.has_auto_increment === 'YES',
+		max_length: parseMaxLength(rawColumn),
 		numeric_precision: rawColumn.numeric_precision || null,
 		numeric_scale: rawColumn.numeric_scale || null,
-		max_length: parseMaxLength(rawColumn),
+		is_generated: !!rawColumn.is_generated,
+		is_nullable: rawColumn.is_nullable === 'YES',
+		is_unique: rawColumn.is_unique === true,
+		is_indexed: !!rawColumn.index_name && rawColumn.index_name.length > 0,
+		is_primary_key: rawColumn.is_primary_key === true,
+		has_auto_increment: rawColumn.has_auto_increment === 'YES',
+		foreign_key_column: rawColumn.foreign_key_column,
+		foreign_key_table: rawColumn.foreign_key_table,
 	};
 
 	function parseMaxLength(rawColumn: RawColumn) {
@@ -292,6 +298,7 @@ export default class MSSQL implements SchemaInspector {
 				[ic].[column_id],
 				[ix].[is_unique],
 				[ix].[is_primary_key],
+				[ix].[name] as index_name,
 				MAX([ic].[index_column_id]) OVER (PARTITION BY [ic].[index_id], [ic].[object_id]) AS index_column_count,
 				ROW_NUMBER() OVER (
 					PARTITION BY [ic].[object_id], [ic].[column_id]
@@ -311,6 +318,7 @@ export default class MSSQL implements SchemaInspector {
 					[is_unique],
 					[is_primary_key],
 					[index_priority],
+					[index_name],
 					[index_column_count]
 				FROM ##IndexInfo
 				WHERE ISNULL(index_column_count, 1) = 1 AND ISNULL(index_priority, 1) = 1`),
@@ -331,6 +339,12 @@ export default class MSSQL implements SchemaInspector {
 				object_definition ([c].[default_object_id]) AS [default_value],
 				[i].[is_primary_key],
 				[i].[is_unique],
+				[i].[index_name],
+				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN 
+					[i].[index_name]
+				ELSE
+					NULL
+				END AS [index_name],
 				CASE [c].[is_identity]
 					WHEN 1 THEN
 						'YES'

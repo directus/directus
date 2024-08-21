@@ -1,13 +1,14 @@
 import { toArray, toBoolean } from '@directus/utils';
 import { toNumber, toString } from 'lodash-es';
-import { getTypeFromMap } from '../utils/get-type-from-map.js';
+import { getDefaultType } from '../utils/get-default-type.js';
 import { guessType } from '../utils/guess-type.js';
 import { getCastFlag } from '../utils/has-cast-prefix.js';
 import { tryJson } from '../utils/try-json.js';
 
 export const cast = (value: unknown, key?: string): unknown => {
 	const castFlag = getCastFlag(value);
-	const type = castFlag ?? getTypeFromMap(key) ?? guessType(value);
+
+	const type = castFlag ?? getDefaultType(key) ?? guessType(value);
 
 	if (typeof value === 'string' && castFlag) {
 		value = value.substring(castFlag.length + 1); // Type length + 1 for `:` character

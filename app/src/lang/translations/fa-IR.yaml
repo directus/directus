@@ -74,6 +74,10 @@ extension_layouts: چیدمان ها
 extension_modules: ماژول‌ها
 extension_panels: پنل‌ها
 extension_themes: پوسته‌ها
+extension_operations: عملیات
+extension_reload_required: صفحه به بازنشانی مجدد نیاز دارد
+extension_reload_required_copy: جهت مشاهده تغییرات پس از فعالی یا غیرفعالسازی افزونه ها لازم است صفحه بازنشانی مجدد گردد.
+extension_reload_now: هم اکنون بازنشانی گردد
 last_updated_relative: آخرین به روزرسانی {relativeTime}
 homepage: صفحه اصلی
 website: وب سایت
@@ -680,10 +684,6 @@ make_collection_hidden: این مجموعه را پنهان کن
 make_folder_visible: این پوشه را هویدا کن
 make_folder_hidden: این پوشه را پنهان کن
 goto_collection_content: مشاهده محتوا
-start_end_of_count_items: '{start}-{end} از {count} آیتم'
-start_end_of_count_filtered_items: '{start}-{end} از {count} آیتم فیلتر شده'
-one_item: '۱ آیتم'
-one_filtered_item: '۱ آیتم فیلتر شده'
 delete_collection_are_you_sure: >-
   آیا مطمئن هستید که می خواهید مجموعه "{collection}" را حذف کنید؟ با این کار مجموعه و همه موارد موجود در آن حذف می شود. این عمل دائمی است.
 delete_folder_are_you_sure: آیا مطمئن هستید که می خواهید پوشه "{folder}" را حذف کنید؟ پوشه ها و مجموعه های تو در تو به بالاترین سطح منتقل می شوند.
@@ -768,7 +768,6 @@ create_item: ساخت آیتم
 display_template: نمایش الگو
 language_display_template: قالب نمایش زبان
 translations_display_template: قالب نمایش ترجمه ها
-n_items_selected: 'هیچ آیتمی انتخاب نشده است | یک آیتم انتخاب شده | {n} آیتم انتخاب شده اند'
 per_page: هر صفحه
 all_files: تمامی فایلها
 my_files: فایلهای من
@@ -1018,7 +1017,6 @@ page_help_settings_datamodel_collections: >-
   **مدل داده: مجموعه ها** - تمامی مجموعه های موجود را لیست می کند. این شامل مجموعه های پیدا و نهان و مجموعه های سیستمی و همچنین جداول پایگاه داده مدیریت نشده ای است که میتوانند اضافه شوند.
 page_help_settings_datamodel_fields: >-
   **مدل داده: مجموعه** - فرمی برای مدیریت مجموعه و فیلدهای آن.
-page_help_settings_roles_collection: '**مرور نقش های کاربری** - لیستی از نقشهای ادمین، عمومی و نقشهای کاربری سفارشی.'
 page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
 page_help_settings_presets_collection: >-
   **مرور الگوها** - لیستی از تمامی الگوهای موجود در پروژه شامل: کاربر، نقش و نشانک های بالاترین سطح بعلاوه نماهای پیش فرض.
@@ -1062,7 +1060,6 @@ directus_collection:
   directus_notifications: اعلانهای ارسالی به کاربر
   directus_operations: عملیاتی که در جریان‌ها اجرا می شوند
   directus_panels: پنل‌های مجزا در داشبوردها
-  directus_permissions: دسترسی به اجازه های این نقش
   directus_presets: تنظیمات پیش‌فرض برای مجموعه و بوکمارک‌ها
   directus_relations: پیکربندی رابطه و داده متا
   directus_revisions: عکس های فوری داده برای همه فعالیت ها
@@ -1212,12 +1209,9 @@ fields:
     name: نام نقش
     icon: آیکن نقش
     description: توضیحات
-    app_access: دسترسی به برنامه
-    admin_access: دسترسی به سامانه مدیریت
-    ip_access: محدودیت IP
-    enforce_tfa: اجبار به احراز هویت دو عاملی
     users: کاربران دارای این نقش
-    module_list: نویگیشن مربوط به ماژول
+  directus_policies:
+    description: توضیحات
   directus_webhooks:
     name: نام
     method: شیوه یا متود
@@ -1354,7 +1348,6 @@ live_preview:
   toggle_3d: حالت سه بعدی
 shares: اشتراک‌گذاری
 unlimited_usage: Unlimited usage
-uses_left: No uses left | 1 use left | {n} uses left
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
 expired: منقضی شده
@@ -1999,7 +1992,6 @@ layouts:
     show_ungrouped: نمایش گروه‌بندی نشده
     show: نمایش
     no_group: بدون گروه
-    not_all_loaded: فقط می‌توان 1000 مورد اول را بارگیری کرد.
 horizontal: افقی
 vertical: عمودی
 x_axis: محور افقی

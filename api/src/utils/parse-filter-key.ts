@@ -15,13 +15,7 @@ export function parseFilterKey(key: string) {
 
 	const fieldNameWithFunction = match?.[3]?.trim();
 	const fieldName = fieldNameWithFunction || key.trim();
-	let functionName;
-
-	if (fieldNameWithFunction) {
-		functionName = match?.[1]?.trim();
-
-		return { fieldName, functionName };
-	}
+	const functionName = fieldNameWithFunction ? match?.[1]?.trim() : undefined;
 
 	return { fieldName, functionName };
 }

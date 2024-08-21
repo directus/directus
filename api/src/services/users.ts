@@ -126,7 +126,10 @@ export class UsersService extends ItemsService {
 	private inviteUrl(email: string, url: string | null): string {
 		const payload = { email, scope: 'invite' };
 
-		const token = jwt.sign(payload, getSecret(), { expiresIn: '7d', issuer: 'directus' });
+		const token = jwt.sign(payload, getSecret(), {
+			expiresIn: env['USER_INVITE_TOKEN_TTL'] as string,
+			issuer: 'directus',
+		});
 
 		return (url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite'))
 			.setQuery('token', token)

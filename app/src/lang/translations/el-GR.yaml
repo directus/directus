@@ -399,6 +399,8 @@ fields:
   directus_roles:
     name: Όνομα Ρόλου
     description: Περιγραφή
+  directus_policies:
+    description: Περιγραφή
   directus_webhooks:
     name: Όνομα
     status: Κατάσταση

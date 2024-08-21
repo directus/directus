@@ -777,10 +777,6 @@ make_collection_hidden: Tornar Coleção Oculta
 make_folder_visible: Tornar Pasta Visível
 make_folder_hidden: Tornar Pasta Oculta
 goto_collection_content: Ver conteúdo
-start_end_of_count_items: '{start}-{end} de {count} itens'
-start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
-one_item: '1 item'
-one_filtered_item: '1 item filtrado'
 delete_collection_are_you_sure: >-
   Você tem certeza que quer deletar a coleção "{collection}"? Isso apagará a coleção e todos os itens dela. Esta ação é permanente.
 delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível mais elevado.
@@ -872,7 +868,6 @@ create_item: Criar item
 display_template: Modelo de exibição
 language_display_template: Modelo de Exibição do Idioma
 translations_display_template: Modelos de Exibição da Aplicação
-n_items_selected: 'Não há itens selecionados | 1 item selecionado | {n} itens selecionados'
 per_page: Por página
 all_files: Todos os arquivos
 my_files: Meus arquivos
@@ -1087,7 +1082,6 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
-settings_permissions: Controle de acesso
 settings_project: Configurações
 settings_appearance: Aparência
 settings_webhooks: Webhooks
@@ -1137,7 +1131,6 @@ page_help_settings_datamodel_collections: >-
   **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
-page_help_settings_roles_collection: '**Navegando em cargos** - Lista os cargos de administrador, público e também personalizados.'
 page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
 page_help_settings_presets_collection: >-
   **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
@@ -1196,7 +1189,6 @@ directus_collection:
   directus_notifications: Notificações enviadas aos usuários
   directus_operations: Operações executadas em fluxos
   directus_panels: Painéis individuais nos dashboards de Visões
-  directus_permissions: Permissões de acesso para cada papel
   directus_presets: Predefinições para padrões de coleção e favoritos
   directus_relations: Configurações e metadados do relacionamento
   directus_revisions: Cópia de dados de todas as atividades
@@ -1373,12 +1365,9 @@ fields:
     name: Nome do Cargo
     icon: Ícone do cargo
     description: Descrição
-    app_access: Acesso ao app
-    admin_access: Acesso de administrador
-    ip_access: Acesso IP
-    enforce_tfa: Exigir 2FA
     users: Usuários no cargo
-    module_list: Navegação do Módulo
+  directus_policies:
+    description: Descrição
   directus_webhooks:
     name: Nome
     method: Método
@@ -1464,7 +1453,6 @@ field_options:
   directus_roles:
     name: O nome único para este papel...
     description: Uma descrição deste papel...
-    ip_access: Adicionar endereços IP, intervalos de IP e blocos CIDR. Deixe este campo em branco para permitir todos...
     fields:
       icon_name: Ícone
       name_name: Nome
@@ -1521,7 +1509,6 @@ live_preview:
   toggle_3d: Alternar 3D
 shares: Compartilhar
 unlimited_usage: Uso Ilimitado
-uses_left: Não há usos restante | 1 uso restante | {n} usos restantes
 no_shares: Nenhum compartilhamento para mostrar
 new_share: Novo Compartilhamento
 expired: Expirado
@@ -2195,7 +2182,6 @@ layouts:
     show_ungrouped: Mostrar os não agrupados
     show: Mostrar
     no_group: Sem Grupo
-    not_all_loaded: Só foi possível carregar os primeiros 1000 itens.
 horizontal: Horizontal
 vertical: Vertical
 axis: Eixo
