@@ -429,6 +429,7 @@ soft_length: Soft Limit
 precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
+index: Index
 updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key
@@ -904,6 +905,7 @@ columns: Columns
 collection_setup: Collection Setup
 optional_system_fields: Optional Fields
 value_unique: Value has to be unique
+value_index: Field is indexed
 all_activity: All Activity
 create_item: Create Item
 display_template: Display Template

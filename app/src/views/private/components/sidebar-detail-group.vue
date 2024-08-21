@@ -1,22 +1,22 @@
 <script setup lang="ts">
+import { useSessionStorage } from '@vueuse/core';
 import { nextTick, ref, watch } from 'vue';
 
 const props = defineProps<{
 	sidebarOpen?: boolean;
 }>();
 
-// By syncing the opened item here, we can force close the module once the sidebar closes
-const openDetail = ref<string[]>([]);
-
+const openDetail = useSessionStorage<string[]>('sidebar-open-detail', []);
 const mandatory = ref(false);
 
 watch(
 	() => props.sidebarOpen,
 	async (newOpenState) => {
 		if (newOpenState === false) {
+			// Force close the module once the sidebar closes
 			openDetail.value = [];
 		} else {
-			// Ensures the first item in the sidebar is automatically opened whenever the sidebar opens.
+			// Ensures the first item in the sidebar is automatically opened whenever the sidebar opens
 			mandatory.value = true;
 			await nextTick();
 

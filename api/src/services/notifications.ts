@@ -14,13 +14,8 @@ const env = useEnv();
 const logger = useLogger();
 
 export class NotificationsService extends ItemsService {
-	usersService: UsersService;
-	mailService: MailService;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_notifications', options);
-		this.usersService = new UsersService({ schema: this.schema });
-		this.mailService = new MailService({ schema: this.schema, accountability: this.accountability });
 	}
 
 	override async createOne(data: Partial<Notification>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -33,7 +28,9 @@ export class NotificationsService extends ItemsService {
 
 	async sendEmail(data: Partial<Notification>) {
 		if (data.recipient) {
-			const user = await this.usersService.readOne(data.recipient, {
+			const usersService = new UsersService({ schema: this.schema, knex: this.knex });
+
+			const user = await usersService.readOne(data.recipient, {
 				fields: ['id', 'email', 'email_notifications', 'role'],
 			});
 
@@ -54,7 +51,13 @@ export class NotificationsService extends ItemsService {
 					this.knex,
 				);
 
-				this.mailService
+				const mailService = new MailService({
+					schema: this.schema,
+					knex: this.knex,
+					accountability: this.accountability,
+				});
+
+				mailService
 					.send({
 						template: {
 							name: 'base',
