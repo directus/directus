@@ -4,6 +4,7 @@ import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from 
 import type { Filter } from '@directus/system-data';
 import type { Accountability, Comment, Item, PrimaryKey, Query } from '@directus/types';
 import { cloneDeep, isNumber, mergeWith, uniq } from 'lodash-es';
+import { randomUUID } from 'node:crypto';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
@@ -103,10 +104,7 @@ export class CommentsService extends ItemsService {
 		}
 	}
 
-	override async createOne(
-		data: Partial<Comment>,
-		opts?: MutationOptions & { skipMentions?: boolean },
-	): Promise<PrimaryKey> {
+	override async createOne(data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
 		if (!data['comment']) {
 			throw new InvalidPayloadError({ reason: `"comment" is required` });
 		}
@@ -142,68 +140,67 @@ export class CommentsService extends ItemsService {
 			fields: ['id', 'first_name', 'last_name', 'email'],
 		});
 
-		if (!opts?.skipMentions) {
-			for (const mention of mentions) {
-				const userID = mention.substring(1);
+		for (const mention of mentions) {
+			const userID = mention.substring(1);
 
-				const user = await this.usersService.readOne(userID, {
-					fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
+			const user = await this.usersService.readOne(userID, {
+				fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
+			});
+
+			const accountability: Accountability = {
+				user: userID,
+				role: user['role']?.id ?? null,
+				admin: user['role']?.admin_access ?? null,
+				app: user['role']?.app_access ?? null,
+				roles: await fetchRolesTree(user['role']?.id, this.knex),
+				ip: null,
+			};
+
+			const usersService = new UsersService({ schema: this.schema, accountability });
+
+			try {
+				await validateAccess(
+					{
+						accountability,
+						action: 'read',
+						collection: data['collection'],
+						primaryKeys: [data['item']],
+					},
+					{
+						schema: this.schema,
+						knex: this.knex,
+					},
+				);
+
+				const templateData = await usersService.readByQuery({
+					fields: ['id', 'first_name', 'last_name', 'email'],
+					filter: { id: { _in: mentions.map((mention) => mention.substring(1)) } },
 				});
 
-				const accountability: Accountability = {
-					user: userID,
-					role: user['role']?.id ?? null,
-					admin: user['role']?.admin_access ?? null,
-					app: user['role']?.app_access ?? null,
-					roles: await fetchRolesTree(user['role']?.id, this.knex),
-					ip: null,
-				};
+				const userPreviews = templateData.reduce(
+					(acc, user) => {
+						acc[user['id']] = `<em>${userName(user)}</em>`;
+						return acc;
+					},
+					{} as Record<string, string>,
+				);
 
-				const usersService = new UsersService({ schema: this.schema, accountability });
+				let comment = data['comment'];
 
-				try {
-					await validateAccess(
-						{
-							accountability,
-							action: 'read',
-							collection: data['collection'],
-							primaryKeys: [data['item']],
-						},
-						{
-							schema: this.schema,
-							knex: this.knex,
-						},
-					);
+				for (const mention of mentions) {
+					const uuid = mention.substring(1);
+					// We only match on UUIDs in the first place. This is just an extra sanity check.
+					if (isValidUuid(uuid) === false) continue;
+					comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
+				}
 
-					const templateData = await usersService.readByQuery({
-						fields: ['id', 'first_name', 'last_name', 'email'],
-						filter: { id: { _in: mentions.map((mention) => mention.substring(1)) } },
-					});
+				comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
 
-					const userPreviews = templateData.reduce(
-						(acc, user) => {
-							acc[user['id']] = `<em>${userName(user)}</em>`;
-							return acc;
-						},
-						{} as Record<string, string>,
-					);
+				const href = new Url(env['PUBLIC_URL'] as string)
+					.addPath('admin', 'content', data['collection'], data['item'])
+					.toString();
 
-					let comment = data['comment'];
-
-					for (const mention of mentions) {
-						const uuid = mention.substring(1);
-						// We only match on UUIDs in the first place. This is just an extra sanity check.
-						if (isValidUuid(uuid) === false) continue;
-						comment = comment.replace(new RegExp(mention, 'gm'), userPreviews[uuid] ?? '@Unknown User');
-					}
-
-					comment = `> ${comment.replace(/\n+/gm, '\n> ')}`;
-
-					const href = new Url(env['PUBLIC_URL'] as string)
-						.addPath('admin', 'content', data['collection'], data['item'])
-						.toString();
-
-					const message = `
+				const message = `
 Hello ${userName(user)},
 
 ${userName(sender)} has mentioned you in a comment:
@@ -213,20 +210,19 @@ ${comment}
 <a href="${href}">Click here to view.</a>
 `;
 
-					await this.notificationsService.createOne({
-						recipient: userID,
-						sender: sender['id'],
-						subject: `You were mentioned in ${data['collection']}`,
-						message,
-						collection: data['collection'],
-						item: data['item'],
-					});
-				} catch (err: any) {
-					if (isDirectusError(err, ErrorCode.Forbidden)) {
-						logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
-					} else {
-						throw err;
-					}
+				await this.notificationsService.createOne({
+					recipient: userID,
+					sender: sender['id'],
+					subject: `You were mentioned in ${data['collection']}`,
+					message,
+					collection: data['collection'],
+					item: data['item'],
+				});
+			} catch (err: any) {
+				if (isDirectusError(err, ErrorCode.Forbidden)) {
+					logger.warn(`User ${userID} doesn't have proper permissions to receive notification for this item.`);
+				} else {
+					throw err;
 				}
 			}
 		}
@@ -235,55 +231,40 @@ ${comment}
 	}
 
 	async migrateComment(activityPk: PrimaryKey): Promise<PrimaryKey> {
+		// Skip migration if not a legacy comment
+		if (isNaN(Number(activityPk))) {
+			return activityPk;
+		}
+
 		return transaction(this.knex, async (trx) => {
-			const sudoCommentsService = new CommentsService({
-				schema: this.schema,
-				knex: trx,
-				serviceOrigin: this.serviceOrigin,
-			});
-
-			const sudoActivityService = new ActivityService({
-				schema: this.schema,
-				knex: trx,
-			});
-
-			const legacyComment = await sudoActivityService.readOne(activityPk);
 			let primaryKey;
+			const legacyComment = await trx('directus_activity').select('*').where('id', '=', activityPk).first();
 
 			// Legacy comment
 			if (legacyComment['action'] === Action.COMMENT) {
-				primaryKey = await sudoCommentsService.createOne(
-					{
-						collection: legacyComment['collection'],
-						item: legacyComment['item'],
-						comment: legacyComment['comment'],
-						user_created: legacyComment['user'],
-						date_created: legacyComment['timestamp'],
-					},
-					{
-						bypassLimits: true,
-						emitEvents: false,
-						skipMentions: true,
-					},
-				);
+				primaryKey = randomUUID();
 
-				await sudoActivityService.updateOne(
-					activityPk,
-					{
-						collection: 'directus_comments',
+				await trx('directus_comments').insert({
+					id: primaryKey,
+					collection: legacyComment.collection,
+					item: legacyComment.item,
+					comment: legacyComment.comment,
+					user_created: legacyComment.user,
+					date_created: legacyComment.timestamp,
+				});
+
+				await trx('directus_activity')
+					.update({
 						action: Action.CREATE,
+						collection: 'directus_comments',
 						item: primaryKey,
-					},
-					{
-						bypassLimits: true,
-						emitEvents: false,
-					},
-				);
+						comment: null,
+					})
+					.where('id', '=', activityPk);
 			}
 			// Migrated comment
-			else if (legacyComment['collection'] === 'directus_comment' && legacyComment['action'] === Action.CREATE) {
-				const newComment = await sudoCommentsService.readOne(legacyComment['item'], { fields: ['id'] });
-				primaryKey = newComment['id'];
+			else if (legacyComment.collection === 'directus_comment' && legacyComment.action === Action.CREATE) {
+				primaryKey = legacyComment.item;
 			}
 
 			if (!primaryKey) {
