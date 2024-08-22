@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fixed filter `email.send` to be used in Flows
+Fixed the `email.send` filter to be usable in Flows in conjunction with the "Run Script" operation
