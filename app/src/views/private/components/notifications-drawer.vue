@@ -157,7 +157,7 @@ async function archiveAll() {
 					},
 					{
 						status: {
-							_eq: 'index',
+							_eq: 'inbox',
 						},
 					},
 				],
