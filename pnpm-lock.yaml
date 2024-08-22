@@ -957,8 +957,8 @@ importers:
         specifier: 4.0.0-next.53
         version: 4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))
       typedoc-plugin-zod:
-        specifier: 1.2.0
-        version: 1.2.0(typedoc@0.25.13(typescript@5.4.5))
+        specifier: 1.2.1
+        version: 1.2.1(typedoc@0.25.13(typescript@5.4.5))
       typedoc-vitepress-theme:
         specifier: 1.0.0-next.10
         version: 1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5)))
@@ -11201,8 +11201,8 @@ packages:
     peerDependencies:
       typedoc: 0.25.x
 
-  typedoc-plugin-zod@1.2.0:
-    resolution: {integrity: sha512-eFvPQ4iJsoru4HJP8z7F0NhRxPBjgVPoM0j/xipB7nkGLYhfUjEOlABayaTdBiMocPNCXOCBjFWBHEJGBiMRdw==}
+  typedoc-plugin-zod@1.2.1:
+    resolution: {integrity: sha512-oPo0PhcryKNR9UYZ6F4LFqDpQEBtNRQe6CpRTOUGrdqZOeoIZtJBVVZnSn/pBJiBU+Y6iZ/HsPESLZn1BPeLkw==}
     peerDependencies:
       typedoc: 0.23.x || 0.24.x || 0.25.x || 0.26.x
 
@@ -23062,7 +23062,7 @@ snapshots:
     dependencies:
       typedoc: 0.25.13(typescript@5.4.5)
 
-  typedoc-plugin-zod@1.2.0(typedoc@0.25.13(typescript@5.4.5)):
+  typedoc-plugin-zod@1.2.1(typedoc@0.25.13(typescript@5.4.5)):
     dependencies:
       typedoc: 0.25.13(typescript@5.4.5)
 
