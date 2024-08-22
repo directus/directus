@@ -41,7 +41,7 @@
 		"vite-plugin-dts": "3.9.1",
 		"vitest": "1.5.3",
 		"vue": "3.4.27",
-		"vue-i18n": "9.13.1",
+		"vue-i18n": "9.14.0",
 		"vue-router": "4.4.3"
 	},
 	"peerDependencies": {
