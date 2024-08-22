@@ -1,5 +1,6 @@
 import { isString } from 'lodash-es';
 import type { Sql } from '../types.js';
+import type { Knex } from 'knex';
 
 export type PreprocessBindingsOptions = {
 	format(index: number): string;
@@ -26,21 +27,27 @@ export function preprocessBindings(
 
 	let matchIndex = 0;
 	let currentBindingIndex = 0;
+	const bindings: Knex.Value[] = [];
 
 	const sql = query.sql.replace(/(\\*)(\?)/g, function (_, escapes) {
 		if (escapes.length % 2) {
 			// Return an escaped question mark, so it stays escaped
 			return `${'\\'.repeat(escapes.length)}?`;
 		} else {
-			const bindingIndex =
-				bindingIndices[matchIndex] === matchIndex ? currentBindingIndex++ : bindingIndices[matchIndex]!;
+			let bindingIndex;
+
+			if (bindingIndices[matchIndex] === matchIndex) {
+				bindingIndex = currentBindingIndex++;
+				bindingIndices[matchIndex] = bindingIndex;
+				bindings.push(query.bindings[matchIndex]!);
+			} else {
+				bindingIndex = bindingIndices[bindingIndices[matchIndex]!]!;
+			}
 
 			matchIndex++;
 			return options.format(bindingIndex);
 		}
 	});
-
-	const bindings = query.bindings.filter((_, i) => bindingIndices[i] === i);
 
 	return { ...query, sql, bindings };
 }
