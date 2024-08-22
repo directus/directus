@@ -238,7 +238,7 @@ This operation updates item(s) in a collection. You may select item(s) to update
 - **Collection** — Select the collection on which you'd like to update items in.
 - **Permissions** — Set the role that this operation will inherit permissions from.
 - **Emit Events** — Toggle whether the event is emitted.
-- **IDs** — Input the ID for Item(s) you wish to read and press enter. Click the ID to remove.
+- **IDs** — Input the ID for Item(s) you wish to update and press enter. Click the ID to remove.
 - **Payload** — Update Items in a collection, using one of the following formats:
   - Single object with data, to update items specified in **IDs** or **Query** to the same values.
   - Single object with keys and data, to update multiple items to the same values.
