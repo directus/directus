@@ -893,10 +893,12 @@ export class FieldsService {
 				column.notNullable();
 			}
 		} else {
-			// for an existing item: if nullable option changed, we have to provide the default values as well and vice versa
+			// for an existing item: if nullable option changed, we have to provide the default values as well and actually vice versa
 			// see https://knexjs.org/guide/schema-builder.html#alter
 
 			if (field.schema?.default_value !== undefined || field.schema?.is_nullable !== undefined) {
+				this.helpers.nullableUpdate.updateNullableValue(column, field, existing);
+
 				let defaultValue = null;
 
 				if (field.schema?.default_value !== undefined) {
@@ -906,40 +908,7 @@ export class FieldsService {
 				}
 
 				setDefaultValue(defaultValue);
-
-				const isNullable = field.schema?.is_nullable ?? existing?.is_nullable ?? true;
-
-				if (isNullable) {
-					column.nullable();
-				} else {
-					column.notNullable();
-				}
 			}
-
-			// Oracle fail when overwriting the nullable option with same value
-			// let nullableChanged = false;
-
-			// if (field.schema?.is_nullable === false && existing.is_nullable === true) {
-			// 	column.notNullable();
-			// 	nullableChanged = true;
-			// } else if (field.schema?.is_nullable === true && existing.is_nullable === false) {
-			// 	column.nullable();
-			// 	nullableChanged = true;
-			// }
-
-			// let defaultValue = null;
-
-			// if (field.schema?.default_value !== undefined) {
-			// 	defaultValue = field.schema.default_value;
-			// } else if (existing.default_value !== undefined) {
-			// 	defaultValue = existing.default_value;
-			// }
-
-			// if (field.schema?.default_value !== undefined && nullableChanged) {
-			// 	setDefaultValue(defaultValue);
-			// } else if (field.schema?.default_value !== undefined && !nullableChanged) {
-			// 	column.defaultTo(defaultValue);
-			// }
 		}
 
 		if (field.schema?.is_primary_key) {
