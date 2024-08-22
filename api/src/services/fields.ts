@@ -895,6 +895,7 @@ export class FieldsService {
 		} else {
 			// for an existing item: if nullable option changed, we have to provide the default values as well and actually vice versa
 			// see https://knexjs.org/guide/schema-builder.html#alter
+			// To overwrite a nullable option with the same value this is not possible for Oracle though, hence the DB helper
 
 			if (field.schema?.default_value !== undefined || field.schema?.is_nullable !== undefined) {
 				this.helpers.nullableUpdate.updateNullableValue(column, field, existing);
