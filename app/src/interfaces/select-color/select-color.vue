@@ -143,7 +143,11 @@ function useColor() {
 	watch(
 		() => props.value,
 		() => {
-			color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
+			try {
+				color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
+			} catch (error) {
+				color.value = null;
+			}
 		},
 		{ immediate: true },
 	);
@@ -231,7 +235,7 @@ function useColor() {
 			<v-input
 				v-model="hex"
 				:disabled="disabled"
-				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
+				:placeholder="value ? value : placeholder || t('interfaces.select-color.placeholder')"
 				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
 				:maxlength="opacity ? 9 : 7"
