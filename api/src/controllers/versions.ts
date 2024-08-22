@@ -216,7 +216,7 @@ router.get(
 		if (version['delta']) {
 			current = version['delta'];
 		} else {
-			const saves = await service.getVersionSavesById(version['id']);
+			const saves = await service.getLegacyVersionSaves(version['id']);
 
 			current = assign({}, ...saves);
 		}
