@@ -31,7 +31,7 @@ type UsableImage = {
 	saveImage: () => void;
 	imageButton: ImageButton;
 	getImageIds: (value: string | null) => string[];
-	replaceCacheBuster: (value: string | null, images: Item[]) => string;
+	replaceCacheBuster: (value: string | null, images: Ref<Item[]>) => string;
 };
 
 export default function useImage(
@@ -220,7 +220,7 @@ export default function useImage(
 		return ids;
 	}
 
-	function replaceCacheBuster(value: string | null, items: Item[]): string {
+	function replaceCacheBuster(value: string | null, items: Ref<Item[]>): string {
 		const parser = new DOMParser();
 		const doc = parser.parseFromString(value || '', 'text/html');
 		const images = doc.querySelectorAll('img');
@@ -230,7 +230,7 @@ export default function useImage(
 
 			if (originalSrc.startsWith(getPublicURL() + 'assets/')) {
 				const [id] = originalSrc.replace(getPublicURL() + 'assets/', '').split('.');
-				const item = items.find((i) => i.id === id);
+				const item = items.value.find((i) => i.id === id);
 
 				if (item) {
 					const url = new URL(originalSrc);

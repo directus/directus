@@ -130,7 +130,7 @@ const imageIds = computed(() => getImageIds(props.value));
 
 const query = computed(() => ({
 	fields: computed(() => ['id', 'uploaded_on']),
-	limit: ref(imageIds.value.length || 0),
+	limit: computed(()=> imageIds.value.length || 0),
 	page: ref(1),
 	filter: computed(() => ({
 		id: {
@@ -146,7 +146,7 @@ const { items } = useItems(collection, query.value);
 
 const internalValue = computed({
 	get() {
-		return replaceCacheBuster(props.value, items.value);
+		return replaceCacheBuster(props.value, items);
 	},
 	set(value) {
 		if (props.value !== value) {
