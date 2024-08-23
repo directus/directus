@@ -413,6 +413,7 @@ soft_length: Ограничение
 precision_scale: Точность и масштаб
 readonly: Только для чтения
 unique: Уникальный
+index: Индекс
 updated_on: Дата обновления
 updated_by: Обновлено
 primary_key: Первичный ключ
