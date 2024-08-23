@@ -127,6 +127,7 @@ requires_value: Requer valor
 create_preset: Criar Predefinição
 create_panel: Criar Painel
 create_role: Criar Cargo
+create_policy: Criar Política
 create_user: Criar Usuário
 message: Mensagem
 delete_panel: Excluir Painel
@@ -188,7 +189,10 @@ logoutReason:
   SESSION_EXPIRED: Sessão expirada
 public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
+public_role_info: >-
+  A função pública controla quais dados de API estão disponíveis para usuários não autenticados ou usuários sem uma função. Requisições com cargo público não podem ter acesso a aplicativo ou administrador. Se o app ou o acesso de administrador forem dados a uma política atribuída ao cargo público eles serão ignorados.
 admin_description: Cargo administrativo inicial com acesso irrestrito ao App/API.
+admin_policy_description: Política administrativa inicial com acesso irrestrito ao App/API.
 no_description: Sem descrição...
 reached_maximum_number_of_extensions: Você atingiu o número máximo de extensões para este projeto ({n}). Entre em contato com o administrador do sistema para obter mais informações.
 not_allowed: Não Permitido
@@ -255,7 +259,9 @@ field_permissions: Permissões dos Campos
 field_validation: Validação dos Campos
 field_presets: Predefinições dos Campos
 permissions_for_role: 'Itens que o Cargo {role} pode {action}.'
+permissions_for_policy: 'Itens da {policy} Política pode {action}.'
 fields_for_role: 'Campos que o Cargo {role} pode {action}.'
+fields_for_policy: 'Campos que o Cargo {policy} pode {action}.'
 validation_for_role: 'As regras de {action} do campo que o Cargo {role} deve obedecer.'
 presets_for_role: 'Valores padrões de campo para o Cargo {role}.'
 presets_field_warning: 'As predefinições relacionais para o campo "{field}" devem ser configuradas com a sintaxe "detalhada".'
@@ -363,6 +369,7 @@ no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado em seu modelo de dados:'
 search_collection: Pesquisar Coleção...
 search_role: Buscar Cargo...
+search_policy: Buscar Política...
 search_field: Campo de pesquisa...
 new_field: 'Novo campo'
 new_collection: 'Nova Coleção'
@@ -513,6 +520,10 @@ hours: Horas
 month: Mês
 year: Ano
 select_all: Selecionar todos
+permissionsLevel:
+  partial: Acesso Parcial {action}
+  custom: Acesso parcial de {action}
+  none: Sem acesso {action}
 months:
   january: Janeiro
   february: Fevereiro
@@ -650,6 +661,7 @@ copy_to: Copiar para...
 no_other_dashboards_copy: Você ainda não tem nenhum outro painel.
 inactive: Inativo
 users: Usuários
+roles: Funções
 activity: Atividade
 activity_item: Feed de atividade
 action: Ação
@@ -777,6 +789,8 @@ make_collection_hidden: Tornar Coleção Oculta
 make_folder_visible: Tornar Pasta Visível
 make_folder_hidden: Tornar Pasta Oculta
 goto_collection_content: Ver conteúdo
+count_of_total_items: '{count} de {total} Itens'
+start_end_of_count_items: '{start}-{end} de {count} itens'
 delete_collection_are_you_sure: >-
   Você tem certeza que quer deletar a coleção "{collection}"? Isso apagará a coleção e todos os itens dela. Esta ação é permanente.
 delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível mais elevado.
@@ -1131,6 +1145,7 @@ page_help_settings_datamodel_collections: >-
   **Modelo de Dados: Coleções** — Lista todas as coleções disponíveis. Isso inclui coleções visíveis, escondidas e do sistema, bem como tabelas de banco de dados não gerenciadas que podem ser adicionadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
+page_help_settings_policies_collection: '**Pesquisar Políticas** — Lista todas as políticas no projeto.'
 page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
 page_help_settings_presets_collection: >-
   **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
@@ -1189,6 +1204,7 @@ directus_collection:
   directus_notifications: Notificações enviadas aos usuários
   directus_operations: Operações executadas em fluxos
   directus_panels: Painéis individuais nos dashboards de Visões
+  directus_permissions: Permissões de acesso para cada política
   directus_presets: Predefinições para padrões de coleção e favoritos
   directus_relations: Configurações e metadados do relacionamento
   directus_revisions: Cópia de dados de todas as atividades
@@ -1367,7 +1383,9 @@ fields:
     description: Descrição
     users: Usuários no cargo
   directus_policies:
+    name: Nome da Política
     description: Descrição
+    app_access: Acesso ao Aplicativo
   directus_webhooks:
     name: Nome
     method: Método
@@ -1450,6 +1468,8 @@ field_options:
     focal_point_divider: Ponto Focal
     filename_disk: Nome no armazenamento do disco...
     filename_download: Nome ao baixar...
+  directus_policies:
+    assigned_to: Atribuído para
   directus_roles:
     name: O nome único para este papel...
     description: Uma descrição deste papel...
