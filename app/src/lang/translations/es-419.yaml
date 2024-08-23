@@ -29,7 +29,7 @@ published: Publicado
 draft: Borrador
 archived: Archivado
 marketplace: Marketplace
-extensions: Extensions
+extensions: Extensiones
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
@@ -63,12 +63,12 @@ extension_interface: Interfaz
 extension_display: Visualización
 extension_layout: Diseño
 extension_module: Módulo
-extension_panel: Tablero
+extension_panel: Panel
 extension_theme: Tema
 extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operación
-extension_bundle: Bundle
+extension_bundle: Paquete
 extension_interfaces: Interfaces
 extension_displays: Visualizaciones
 extension_layouts: Diseños
@@ -78,9 +78,9 @@ extension_themes: Temas
 extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operaciones
-extension_bundles: Bundles
+extension_bundles: Paquetes
 extension_missing: Faltan
-extension_reload_required: Se requiere recarga de página
+extension_reload_required: Se requiere recargar la página
 extension_reload_required_copy: Se requiere recargar la página para ver los cambios después de habilitar o deshabilitar las extensiones de la aplicación.
 extension_reload_now: Recargar ahora
 published_relative: Publicado {relativeTime}
@@ -101,8 +101,8 @@ n_downloads: '{n} Descargas'
 downloads: Descargas
 compatibility_not_guaranteed: Compatibilidad no garantizada
 compatibility_not_guaranteed_copy: El autor ha indicado que la compatibilidad de esta extensión es {hostVersion}, no coincide con la versión de su proyecto ({currentVersion})
-enable: Habilitado
-disable: Desactivar
+enable: Habilitar
+disable: Deshabilitar
 custom: Personalizar
 hook: Hook
 fill_width: Llenar ancho
@@ -154,7 +154,7 @@ prefix: Prefijo
 suffix: Sufijo
 keep: Mantener
 version: Versión
-version_key: Clade de Versión
+version_key: Clave de Versión
 version_name: Nombre de Versión
 main_version: Principal
 switch_version: Cambiar Versión
@@ -163,7 +163,7 @@ create_version: Crear Versión
 rename_version: Renombrar Versión
 compare_version: Comparar Versión
 save_version: Guardar Versión
-promote_version: Promocionar Versión
+promote_version: Promover Versión
 promote_version_disabled: Sin Cambios
 promote_version_drawer_title: Promover {version} a Principal
 promote_version_changes: Cambios
