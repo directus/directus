@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fixed the OpenAPI specifications to include POST, PATCH and DELETE paths again
+Fixed the generated OpenAPI specs to include POST, PATCH and DELETE paths again
