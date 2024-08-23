@@ -15,23 +15,26 @@ import { getSnapshot } from '../../../utils/get-snapshot.js';
 
 function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
 	const filterSet = new Set(filters);
-  
+
 	function shouldKeep(item: { collection: string; field?: string }): boolean {
-	  if (filterSet.has(item.collection)) return false;
-	  if (item.field && filterSet.has(`${item.collection}.${item.field}`)) return false;
-	  return true;
+		if (filterSet.has(item.collection)) return false;
+		if (item.field && filterSet.has(`${item.collection}.${item.field}`)) return false;
+		return true;
 	}
-  
+
 	const filteredDiff: SnapshotDiff = {
-	  collections: snapshot.collections.filter((item) => shouldKeep(item)),
-	  fields: snapshot.fields.filter((item) => shouldKeep(item)),
-	  relations: snapshot.relations.filter((item) => shouldKeep(item)),
+		collections: snapshot.collections.filter((item) => shouldKeep(item)),
+		fields: snapshot.fields.filter((item) => shouldKeep(item)),
+		relations: snapshot.relations.filter((item) => shouldKeep(item)),
 	};
-  
+
 	return filteredDiff;
 }
 
-export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean, ignoreRules: string }): Promise<void> {
+export async function apply(
+	snapshotPath: string,
+	options?: { yes: boolean; dryRun: boolean; ignoreRules: string },
+): Promise<void> {
 	const logger = useLogger();
 
 	const filename = path.resolve(process.cwd(), snapshotPath);
@@ -60,8 +63,8 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 		const currentSnapshot = await getSnapshot({ database });
 		let snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
 
-		if (ignoreRules) {
-			snapshotDiff = filterSnapshotDiff(snapshotDiff, ignoreRules.split(','));
+		if (options?.ignoreRules) {
+			snapshotDiff = filterSnapshotDiff(snapshotDiff, options.ignoreRules.split(','));
 		}
 
 		if (
