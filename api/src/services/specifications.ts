@@ -61,7 +61,8 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	async generate(host?: string) {
-		let schema = this.schema;
+		const schema = this.schema;
+		let schemaForSpec = schema;
 		let permissions: Permission[] = [];
 
 		if (this.accountability && this.accountability.admin !== true) {
@@ -73,7 +74,7 @@ class OASSpecsService implements SpecificationSubService {
 				{ schema, knex: this.knex },
 			);
 
-			schema = reduceSchema(schema, allowedFields);
+			schemaForSpec = reduceSchema(schema, allowedFields);
 
 			const policies = await fetchPolicies(this.accountability, { schema, knex: this.knex });
 
@@ -83,9 +84,9 @@ class OASSpecsService implements SpecificationSubService {
 			);
 		}
 
-		const tags = await this.generateTags(schema);
+		const tags = await this.generateTags(schemaForSpec);
 		const paths = await this.generatePaths(permissions, tags);
-		const components = await this.generateComponents(schema, tags);
+		const components = await this.generateComponents(schemaForSpec, tags);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
