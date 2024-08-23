@@ -110,6 +110,7 @@ field_name_translations: Traducciónes del nombre de campo
 enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar el doble factor de autenticación
 add_field: Añade un campo
 role_name: Nombra un rol
+policy_name: Nombre de Regla
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
@@ -127,6 +128,7 @@ requires_value: Valor requerido
 create_preset: Crear ajuste
 create_panel: Crear Panel
 create_role: Crear rol
+create_policy: Crear Regla
 create_user: Crear Usuario
 message: Mensaje
 delete_panel: Borrar Panel
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Control de datos disponibles por API sin autentificación.
+public_role_info: >-
+  El rol público controla qué datos de la API están disponibles para los usuarios no autenticados o para los usuarios sin un rol. Las solicitudes con el rol público no pueden tener acceso de aplicación o de administrador. Si se otorgan accesos de aplicación o de administrador a una política asignada al rol público, serán ignorados.
 admin_description: Descripción_administrador.
+admin_policy_description: Política administrativa inicial con acceso sin restricciones a la aplicación/API.
 no_description: Sin descripción...
 reached_maximum_number_of_extensions: Ha alcanzado el número máximo de extensiones para este proyecto ({n}). Póngase en contacto con el administrador del sistema para obtener más información.
 not_allowed: No permitido
@@ -255,9 +260,13 @@ field_permissions: Permisos de campo
 field_validation: Validación de campo
 field_presets: Ajustes prefijados de campo
 permissions_for_role: 'Items_El{role}_Rol_Puede{action}.'
+permissions_for_policy: 'Elementos que la regla {policy} puede {action}.'
 fields_for_role: 'Campos que {role} puede {action}.'
+fields_for_policy: 'Campos que la regla {policy} puede {action}.'
 validation_for_role: 'Reglas del campo {action} que el Rol {role} debe obedecer.'
+validation_for_policy: 'Reglas del campo {action} que el Rol {policy} debe obedecer.'
 presets_for_role: 'Valor del campo por defecto para el rol {role}.'
+presets_for_policy: 'Valor del campo por defecto para el rol {policy}.'
 presets_field_warning: 'Los ajustes relacionales preestablecidos para el campo "{field}" deben configurarse con la sintaxis "detallada".'
 presentation_and_aliases: Presentación_y_Aliases
 revision_post_create: Aspecto_Una_Vez_Creado.
@@ -363,6 +372,7 @@ no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
 search_role: Buscar rol...
+search_policy: Buscar Regla...
 search_field: Campo de Búsqueda...
 new_field: 'Nuevo Campo'
 new_collection: 'Nueva Colección'
@@ -403,6 +413,7 @@ soft_length: Límite Suave
 precision_scale: Precisión y Escala
 readonly: Solo Lectura
 unique: Único
+index: Índice
 updated_on: Actualizado el
 updated_by: Actualizado Por
 primary_key: Llave Primaria
@@ -513,6 +524,11 @@ hours: Horas
 month: Mes
 year: Año
 select_all: Seleccionar Todos
+permissionsLevel:
+  all: Acceso completo a {action}
+  partial: Acceso parcial a {action}
+  custom: Acceso parcial a {action}
+  none: Sin acceso a {action}
 months:
   january: Enero
   february: Febrero
@@ -539,6 +555,7 @@ file_details: Detalles del archivo
 dimensions: Dimensiones
 size: Tamaño
 created: Creado
+uploaded: Cargado
 modified: Modificado
 owner: Propietario
 edited_by: Editado por
@@ -1366,6 +1383,7 @@ fields:
     description: Descripción
     users: Usuarios en el Rol
   directus_policies:
+    name: Nombre de Regla
     description: Descripción
   directus_webhooks:
     name: Nombre
