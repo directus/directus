@@ -110,6 +110,7 @@ field_name_translations: Traducciones del campo de nombre
 enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar la autenticación de dos factores
 add_field: Añadir campo
 role_name: Nombre del rol
+policy_name: Nombre de la política
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
@@ -127,6 +128,7 @@ requires_value: Requiere un valor
 create_preset: Crear predefinido
 create_panel: Crear panel
 create_role: Crear rol
+create_policy: Crear política
 create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
@@ -1368,7 +1370,9 @@ fields:
     description: Descripción
     users: Usuarios en el rol
   directus_policies:
+    name: Nombre de la política
     description: Descripción
+    ip_access: Acceso IP
     enforce_tfa: Requiere 2FA
   directus_webhooks:
     name: Nombre
@@ -1544,6 +1548,8 @@ continue_label: Continuar
 continue_as: >-
   Actualmente {name} ha iniciado sesión. Si reconoce esta cuenta, presione continuar.
 editing_role: 'Rol {role}'
+no_permissions: Sin permisos
+permission_add_collection: Añadir colección
 creating_webhook: Creando Webhook
 default_label: Por defecto
 delete_label: Eliminar
