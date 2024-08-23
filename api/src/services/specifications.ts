@@ -61,8 +61,7 @@ class OASSpecsService implements SpecificationSubService {
 	}
 
 	async generate(host?: string) {
-		const schema = this.schema;
-		let schemaForSpec = schema;
+		let schemaForSpec = this.schema;
 		let permissions: Permission[] = [];
 
 		if (this.accountability && this.accountability.admin !== true) {
@@ -71,16 +70,16 @@ class OASSpecsService implements SpecificationSubService {
 					accountability: this.accountability,
 					action: 'read',
 				},
-				{ schema, knex: this.knex },
+				{ schema: this.schema, knex: this.knex },
 			);
 
-			schemaForSpec = reduceSchema(schema, allowedFields);
+			schemaForSpec = reduceSchema(this.schema, allowedFields);
 
-			const policies = await fetchPolicies(this.accountability, { schema, knex: this.knex });
+			const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
 
 			permissions = await fetchPermissions(
 				{ policies, accountability: this.accountability },
-				{ schema, knex: this.knex },
+				{ schema: this.schema, knex: this.knex },
 			);
 		}
 
