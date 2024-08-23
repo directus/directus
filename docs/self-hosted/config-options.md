@@ -1,4 +1,3 @@
-
 ---
 description:
   Environment variables are used for all configuration within a Directus project. These variables can be defined in a
