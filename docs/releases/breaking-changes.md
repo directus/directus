@@ -40,6 +40,34 @@ Roles now have one additional property - `children`, which is a one-to-many rela
 
 Permissions are no longer attached to a `role`. This has been changed to a `policy`.
 
+### Requests for Missing Fields Now Fail
+
+If you are requesting fields that do not exist anymore, your requests will throw an error. To fix this, either put
+fields back into your data model or remove them from the request.
+
+### M2A Fields Now Require Collection Name
+
+If you are requesting Many-to-Any (M2A) fields without collection name, they will throw an error. To fix this, you need
+to put the collection name you are targeting. This is true regardless of level or if using REST/GraphQL.
+
+::: details Migration/Mitigation
+
+You could previously request fields in a M2A builder without specifying the collection they came from, for example:
+
+```
+GET https://example.directus.app/items/example?fields=items.item.m2a_field
+```
+
+This no longer works and you must specify which collection the field is located in:
+
+```
+GET https://example.directus.app/items/example?fields=items.item:m2a_collection.m2a_field
+```
+
+[Understand the M2A field syntax in our global query parameter page](https://docs.directus.io/reference/query).
+
+:::
+
 ### Changes for Extension Developers
 
 #### Properties Returned from `usersStore`
