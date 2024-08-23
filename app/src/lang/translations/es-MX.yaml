@@ -403,6 +403,7 @@ soft_length: Limite flexible
 precision_scale: Escala de precisión
 readonly: Sólo lectura
 unique: Único
+index: Índice
 updated_on: Actualizado el
 updated_by: Actualizado por
 primary_key: Llave primaria
@@ -649,6 +650,7 @@ copy_to: Copiar a...
 no_other_dashboards_copy: Todavía no tienes ningún otro tablero.
 inactive: Inactivo
 users: Usuarios
+roles: Roles
 activity: Actividad
 activity_item: Elemento de actividad
 action: Acción
@@ -1367,6 +1369,7 @@ fields:
     users: Usuarios en el rol
   directus_policies:
     description: Descripción
+    enforce_tfa: Requiere 2FA
   directus_webhooks:
     name: Nombre
     method: Método
@@ -1808,6 +1811,7 @@ interfaces:
     editorFont: Fuente del editor
     previewFont: Previsualizar fuente
     default_view: Vista predeterminada
+    default_view_editor: Editor
     default_view_preview: Vista previa
     customSyntax: Bloques personalizados
     customSyntax_label: Añadir tipos de sintaxis personalizados
