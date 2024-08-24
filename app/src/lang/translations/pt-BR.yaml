@@ -797,6 +797,7 @@ make_folder_hidden: Tornar Pasta Oculta
 goto_collection_content: Ver conteúdo
 count_of_total_items: '{count} de {total} Itens'
 start_end_of_count_items: '{start}-{end} de {count} itens'
+start_end_of_count_filtered_items: 'Inicio e fim de contagem de itens filtrados'
 delete_collection_are_you_sure: >-
   Você tem certeza que quer deletar a coleção "{collection}"? Isso apagará a coleção e todos os itens dela. Esta ação é permanente.
 delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível mais elevado.
@@ -883,12 +884,13 @@ columns: Colunas
 collection_setup: Configurando coleção
 optional_system_fields: Campos opcionais
 value_unique: O valor deve ser único
-value_index:
+value_index: O campo é indexado
 all_activity: Todas as atividades
 create_item: Criar item
 display_template: Modelo de exibição
 language_display_template: Modelo de Exibição do Idioma
 translations_display_template: Modelos de Exibição da Aplicação
+n_items_selected: 'Nenhum “item” selecionado | Um “item” selecionado | Itens selecionados'
 per_page: Por página
 all_files: Todos os arquivos
 my_files: Meus arquivos
@@ -1103,6 +1105,8 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando Lote {count} Itens'
 no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
+settings_roles: Funções do usuário
+settings_permissions: Políticas de acesso
 settings_project: Configurações
 settings_appearance: Aparência
 settings_webhooks: Webhooks
@@ -1153,6 +1157,8 @@ page_help_settings_datamodel_collections: >-
 page_help_settings_datamodel_fields: >-
   **Modelo de Dados: Coleção** — Um formulário para gerenciar esta coleção e seus campos.
 page_help_settings_policies_collection: '**Pesquisar Políticas** — Lista todas as políticas no projeto.'
+page_help_settings_policies_item: "\"Detalhes da política, Gerenciar permissões de uma política e outras configurações\""
+page_help_settings_roles_collection: 'Navegar por funções, listar todas as funções de usuário no projeto.'
 page_help_settings_roles_item: "**Detalhes do cargo** — Gerencie as permissões de um cargo e outras configurações."
 page_help_settings_presets_collection: >-
   **Navegando em predefinições** — Lista todas as predefinições no projeto, incluindo: usuário, cargo e marcadores globais, bem como visualizações padrão.
@@ -1200,6 +1206,7 @@ singleton: Singleton
 singleton_label: Tratar como objeto único
 system_fields_locked: Os campos do sistema estão bloqueados e não podem ser editados
 directus_collection:
+  directus_access: Anexos de políticas
   directus_activity: Histórico de responsabilidade para todos os eventos
   directus_collections: Configurações e metadados adicionais da coleção
   directus_dashboards: Painéis dentro do módulo Insights
@@ -1212,6 +1219,7 @@ directus_collection:
   directus_operations: Operações executadas em fluxos
   directus_panels: Painéis individuais nos dashboards de Visões
   directus_permissions: Permissões de acesso para cada política
+  directus_policies: Políticas de controle de acesso
   directus_presets: Predefinições para padrões de coleção e favoritos
   directus_relations: Configurações e metadados do relacionamento
   directus_revisions: Cópia de dados de todas as atividades
@@ -1389,10 +1397,15 @@ fields:
     icon: Ícone do cargo
     description: Descrição
     users: Usuários no cargo
+    parent: Função dos pais
+    children: Papéis infantis
   directus_policies:
     name: Nome da Política
     description: Descrição
     app_access: Acesso ao Aplicativo
+    admin_access: Acesso de administrador
+    ip_access: Acesso IP
+    enforce_tfa: Exigir 2FA
   directus_webhooks:
     name: Nome
     method: Método
@@ -1476,6 +1489,10 @@ field_options:
     filename_disk: Nome no armazenamento do disco...
     filename_download: Nome ao baixar...
   directus_policies:
+    name: Um nome exclusivo para esta política...
+    description: Uma descrição desta política...
+    ip_access: Adicione endereços IP, intervalos de IP e blocos CIDR permitidos. Deixe em branco para permitir todos...
+    enforce_tfa: Aplicar autenticação de dois fatores
     assigned_to: Atribuído para
   directus_roles:
     name: O nome único para este papel...
