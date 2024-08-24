@@ -1503,6 +1503,8 @@ field_options:
       name_placeholder: Insira um título...
       link_name: Link
       link_placeholder: URL relativa ou absoluta...
+    parent_note: Função pai opcional da qual esta função herda permissões
+    children_note: Funções de filho que herdam as permissões dessas funções
     collections_name: Coleções
     collections_addLabel: Adicionar Coleção...
   directus_users:
@@ -1553,6 +1555,7 @@ live_preview:
   toggle_3d: Alternar 3D
 shares: Compartilhar
 unlimited_usage: Uso Ilimitado
+uses_left: Nenhum uso restante | Um uso restante |  {n} usos restantes
 no_shares: Nenhum compartilhamento para mostrar
 new_share: Novo Compartilhamento
 expired: Expirado
@@ -1586,6 +1589,9 @@ continue_label: Continuar
 continue_as: >-
   {name} está autenticado. Se você reconhece esta conta, clique em continuar.
 editing_role: 'Cargo {role}'
+editing_policy: 'Política'
+no_permissions: Sem permissão
+permission_add_collection: Adicionar coleção
 creating_webhook: Criando Webhook
 default_label: Padrão
 delete_label: Excluir
@@ -1853,6 +1859,7 @@ interfaces:
     editorFont: Fonte do Editor
     previewFont: Fonte da Pré-visualização
     default_view: Exibição Padrão
+    default_view_editor: Editor
     default_view_preview: Pré-visualizar
     customSyntax: Blocos personalizados
     customSyntax_label: Adicionar tipos de sintaxe personalizados
