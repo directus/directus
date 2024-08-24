@@ -413,6 +413,7 @@ soft_length: Limite leve
 precision_scale: Precisão e Escala
 readonly: Leitura apenas
 unique: Único
+index: Índice
 updated_on: Atualizado em
 updated_by: Atualizado por
 primary_key: Chave primária
@@ -524,6 +525,7 @@ month: Mês
 year: Ano
 select_all: Selecionar todos
 permissionsLevel:
+  all: "Acesso total\n"
   partial: Acesso Parcial {action}
   custom: Acesso parcial de {action}
   none: Sem acesso {action}
@@ -630,6 +632,7 @@ display_not_found: 'Exibição "{display}" não foi encontrada.'
 reset_display: Redefinir Exibição
 list-m2a: Construtor (M2A)
 item_count: 'Sem Itens | Um Item | {count} Itens'
+filtered_item_count: 'Nenhum “item” filtrado | Um “item” filtrado | itens filtrados'
 no_items_copy: Ainda não há itens nesta coleção.
 file_count: 'Nenhum arquivo | Um arquivo | {count} arquivos'
 no_files_copy: Ainda não há arquivos aqui.
@@ -880,6 +883,7 @@ columns: Colunas
 collection_setup: Configurando coleção
 optional_system_fields: Campos opcionais
 value_unique: O valor deve ser único
+value_index:
 all_activity: Todas as atividades
 create_item: Criar item
 display_template: Modelo de exibição
