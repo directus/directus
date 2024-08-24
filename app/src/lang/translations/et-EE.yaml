@@ -37,6 +37,7 @@ extension_interface: Kasutajaliides
 extension_display: Vaade
 extension_layout: Paigutus
 extension_hook: Haak
+extension_interfaces: Kasutajaliidesed
 extension_modules: Moodulid
 custom: Kohandatud
 hook: Haak
