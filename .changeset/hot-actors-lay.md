@@ -1,5 +1,5 @@
 ---
-"@directus/api": patch
+"@directus/api": major
 ---
 
-Drop nodemailer-sendgrid support since the package is no longer maintained
+Dropped support for the SendGrid email transport option
