@@ -13,6 +13,11 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 11.1.0
+
+### Dropped support for the SendGrid email transport option
+Due to the fact that nodemailer/sendgrid received the last update 6 years ago, we dropped support for the SendGrid email transport option. We recommend using SMTP instead.
+
 ## Version 11.0.0
 
 Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in
