@@ -501,7 +501,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 :::
 
 | Variable                                     | Description                                                                                                               | Default Value                        |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+|----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|--------------------------------------|
 | `CACHE_ENABLED`                              | Whether or not data caching is enabled.                                                                                   | `false`                              |
 | `CACHE_TTL`<sup>[1]</sup>                    | How long the data cache is persisted.                                                                                     | `5m`                                 |
 | `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                                 | `0`                                  |
@@ -510,6 +510,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                            | --                                   |
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                      | `true`                               |
 | `CACHE_SCHEMA_MAX_ITERATIONS`<sup>[4]</sup>  | Safe value to limit max iterations on get schema cache. This value should only be adjusted for high scaling applications. | `100`                                |
+| `CACHE_SCHEMA_SYNC_TIMEOUT`                  | How long to wait for other containers to message before trying again                                                      | `10000`                              |
 | `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                    | `true`                               |
 | `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                              | `system-cache`                       |
 | `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                  | `memory`                             |
