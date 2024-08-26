@@ -7,6 +7,7 @@ withDefaults(
 		value?: string | null;
 		autofocus?: boolean;
 		autocomplete?: string | null;
+		placeholder?: string;
 		disabled?: boolean;
 	}>(),
 	{
@@ -35,7 +36,7 @@ function toggleHidePassword() {
 		:type="hidden ? 'password' : 'text'"
 		:autocomplete="autocomplete"
 		:autofocus="autofocus"
-		:placeholder="t('password')"
+		:placeholder="placeholder ?? t('password')"
 		:disabled="disabled"
 		@update:model-value="emit('input', $event)"
 	>
