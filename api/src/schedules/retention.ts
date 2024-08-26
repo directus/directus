@@ -18,6 +18,7 @@ export interface RetentionTask {
 const env = useEnv();
 
 const retentionLockKey = 'schedule--data-retention';
+const retentionLockTimeout = 10 * 60 * 1000; // 10 mins
 
 const RETENTION_TASKS: RetentionTask[] = [
 	{
@@ -42,8 +43,10 @@ export async function handleRetentionJob() {
 	const logger = useLogger();
 	const lock = useLock();
 	const batch = Number(env['RETENTION_BATCH']);
+	const lockTime = await lock.get(retentionLockKey);
+	const now = Date.now();
 
-	if (await lock.has(retentionLockKey)) {
+	if (lockTime && Number(lockTime) > now - retentionLockTimeout) {
 		// ensure only one connected process
 		return;
 	}
@@ -81,6 +84,9 @@ export async function handleRetentionJob() {
 
 				break;
 			}
+
+			// Update lock time to prevent concurrent runs
+			await lock.set(retentionLockKey, Date.now());
 		} while (count >= batch);
 	}
 
