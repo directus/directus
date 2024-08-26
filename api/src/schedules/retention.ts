@@ -59,7 +59,12 @@ export async function handleRetentionJob() {
 		}
 
 		do {
-			const subquery = database(task.collection).where('timestamp', '<', Date.now() - task.timeframe);
+			const subquery = database
+				.queryBuilder()
+				.select('id')
+				.from(task.collection)
+				.where('timestamp', '<', Date.now() - task.timeframe)
+				.limit(batch);
 
 			if (task.where) {
 				subquery.where(...task.where);
@@ -70,26 +75,13 @@ export async function handleRetentionJob() {
 			}
 
 			try {
-				count = await subquery
-					.count(`${task.collection}.id`, { as: 'count' })
-					.limit(1)
-					.then((r) => Number(r[0]?.count || 0));
-
-				if (count !== 0) {
-					// if select is not cleared the count "select" will still be present causing the delete to fail
-					subquery.clear('select');
-
-					await database
-						.delete()
-						.from(task.collection)
-						.where('id', 'in', subquery.select(`${task.collection}.id`).limit(batch));
-				}
+				count = await database(task.collection).where('id', 'in', subquery).delete();
 			} catch (error) {
 				logger.error(error, `Retention failed for Collection ${task.collection}`);
 
 				break;
 			}
-		} while (count > batch);
+		} while (count >= batch);
 	}
 
 	await lock.delete(retentionLockKey);
