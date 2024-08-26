@@ -8,8 +8,10 @@ import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
+import { useEnv } from '@directus/env';
 
 const logger = useLogger();
+const env = useEnv();
 
 export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {
@@ -19,7 +21,9 @@ export class WebSocketController extends SocketController {
 			this.bindEvents(this.createClient(ws, auth));
 		});
 
-		logger.info(`WebSocket Server started at ws://${getAddress(httpServer)}${this.endpoint}`);
+		logger.info(
+			`WebSocket Server started at ${env['UNIX_SOCKET_PATH'] ? '' : 'ws://'}${getAddress(httpServer)}${this.endpoint}`,
+		);
 	}
 
 	private bindEvents(client: WebSocketClient) {
