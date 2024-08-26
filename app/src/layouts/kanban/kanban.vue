@@ -328,11 +328,8 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					padding: 12px 16px;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
-					outline: 0 solid transparent;
-					transition: outline-color outline-width var(--transition) 1s;
 
 					&:hover .title {
-						// color: var(--theme--primary);
 						text-decoration: underline;
 					}
 
