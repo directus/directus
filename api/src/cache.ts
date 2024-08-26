@@ -119,13 +119,13 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 	return await getCacheValue(systemCache, key);
 }
 
-export async function setSchemaCache(schema: SchemaOverview): Promise<void> {
+export async function setLocalSchemaCache(schema: SchemaOverview): Promise<void> {
 	const { localSchemaCache } = getCache();
 
 	await localSchemaCache.set('schema', schema);
 }
 
-export async function getSchemaCache(): Promise<SchemaOverview | undefined> {
+export async function getLocalSchemaCache(): Promise<SchemaOverview | undefined> {
 	const { localSchemaCache } = getCache();
 
 	return await localSchemaCache.get('schema');
