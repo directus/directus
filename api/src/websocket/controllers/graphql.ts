@@ -13,10 +13,8 @@ import { ConnectionParams, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
 import SocketController from './base.js';
-import { useEnv } from '@directus/env';
 
 const logger = useLogger();
-const env = useEnv();
 
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
@@ -44,11 +42,7 @@ export class GraphQLSubscriptionController extends SocketController {
 
 		bindPubSub();
 
-		logger.info(
-			`GraphQL Subscriptions started at ${env['UNIX_SOCKET_PATH'] ? '' : 'ws://'}${getAddress(httpServer)}${
-				this.endpoint
-			}`,
-		);
+		logger.info(`GraphQL Subscriptions started at ${getAddress(httpServer)}${this.endpoint}`);
 	}
 
 	private bindEvents(client: WebSocketClient) {
