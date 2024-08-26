@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useLayoutSelection } from '@/composables/use-layout-selection';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
@@ -42,6 +43,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const { sort, limit, page, fields } = useLayoutQuery();
+
+		const { onClick } = useLayoutSelection({ props, emit, primaryKeyField });
 
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
 			title: (field) => field.type === 'string',
@@ -282,6 +285,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			userFieldType,
 			resetPresetAndRefresh,
 			refresh,
+			onClick,
 		};
 
 		async function change(group: Group, event: ChangeEvent<Item>) {
