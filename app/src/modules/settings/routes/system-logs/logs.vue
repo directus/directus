@@ -240,10 +240,6 @@ function addLog(log: Log) {
 		logDetailIndex.value--;
 	}
 
-	if (autoScroll) {
-		logsDisplay.value?.scrollToBottom();
-	}
-
 	logsCount.value++;
 }
 
