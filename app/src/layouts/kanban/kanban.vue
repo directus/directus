@@ -157,7 +157,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 									<div
 										class="item"
 										:class="{ selected: selection.includes(element[primaryKeyField?.field]) }"
-										@click="onClick?.({ item: element, event: $event })"
+										@click="onClick({ item: element, event: $event })"
 									>
 										<div v-if="element.title" class="title">{{ element.title }}</div>
 										<img v-if="element.image" class="image" :src="element.image" />
