@@ -250,6 +250,14 @@ function onScrollToBottom() {
 .logs-display {
 	min-height: 200px;
 	height: 100%;
+	scroll-snap-type: y proximity;
+	align-content: end;
+}
+
+.logs-display::after {
+	display: block;
+	content: '';
+	scroll-snap-align: end;
 }
 
 .log-entry:hover:not(.maximized) {
