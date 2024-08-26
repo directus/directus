@@ -2088,6 +2088,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values
+  input-password:
+    input-password: Input Password
+    description: Password input with toggle to hide value
 displays:
   translations:
     translations: Translations
@@ -2537,3 +2540,5 @@ duplicate_dashboard: Duplicate Dashboard
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent
+show_password: Show password
+hide_password: Hide password
