@@ -1,11 +1,12 @@
+import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
-import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
-import getDatabase from '../database/index.js';
-import { getMilliseconds } from '../utils/get-milliseconds.js';
-import { useLogger } from '../logger/index.js';
 import type { Knex } from 'knex';
+import getDatabase from '../database/index.js';
 import { useLock } from '../lock/index.js';
+import { useLogger } from '../logger/index.js';
+import { getMilliseconds } from '../utils/get-milliseconds.js';
+import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 
 export interface RetentionTask {
 	collection: string;
@@ -21,12 +22,12 @@ const retentionLockKey = 'schedule--data-retention';
 const RETENTION_TASKS: RetentionTask[] = [
 	{
 		collection: 'directus_activity',
-		where: ['action', '!=', 'run'],
+		where: ['action', '!=', Action.RUN],
 		timeframe: getMilliseconds(env['ACTIVITY_RETENTION']),
 	},
 	{
 		collection: 'directus_activity',
-		where: ['action', '=', 'run'],
+		where: ['action', '=', Action.RUN],
 		timeframe: getMilliseconds(env['FLOW_LOGS_RETENTION']),
 	},
 	{
