@@ -1,5 +1,5 @@
 import api from '@/api';
-import { useLayoutSelection } from '@/composables/use-layout-selection';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useServerStore } from '@/stores/server';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
@@ -44,13 +44,14 @@ export default defineLayout<LayoutOptions>({
 		const appStore = useAppStore();
 		const { info } = useServerStore();
 
+		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 
 		const { collection, search, filterSystem } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
-		const { onClick, selection } = useLayoutSelection({ props, emit, primaryKeyField });
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
 
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {

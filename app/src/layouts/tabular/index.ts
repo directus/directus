@@ -1,6 +1,6 @@
 import { HeaderRaw, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
-import { useLayoutSelection } from '@/composables/use-layout-selection';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
@@ -32,6 +32,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	setup(props, { emit }) {
 		const fieldsStore = useFieldsStore();
 
+		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
@@ -47,7 +48,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			flatten(Object.values(aliasedFields.value).map(({ fields }) => fields)),
 		);
 
-		const { onClick, selection } = useLayoutSelection({ props, emit, primaryKeyField });
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
 
 		const {
 			items,
