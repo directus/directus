@@ -102,7 +102,7 @@ async function onSubmit() {
 <template>
 	<form novalidate @submit.prevent="onSubmit">
 		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
-		<interface-system-input-password v-model="password" autocomplete="current-password" />
+		<interface-system-input-password :value="password" autocomplete="current-password" @input="password = $event" />
 
 		<transition-expand>
 			<v-input

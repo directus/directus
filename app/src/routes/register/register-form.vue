@@ -63,7 +63,6 @@ async function onSubmit() {
 </script>
 
 <template>
-	<v-form>test</v-form>
 	<form novalidate @submit.prevent="onSubmit">
 		<v-input
 			v-model="email"
@@ -73,7 +72,7 @@ async function onSubmit() {
 			:placeholder="t('email')"
 			:disabled="isLoading"
 		/>
-		<interface-system-input-password v-model="password" :disabled="isLoading" />
+		<interface-system-input-password :value="password" :disabled="isLoading" @input="password = $event" />
 
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}

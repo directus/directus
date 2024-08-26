@@ -17,6 +17,8 @@ withDefaults(
 	},
 );
 
+const emit = defineEmits(['input']);
+
 const { t } = useI18n();
 const hidden = ref<boolean>(true);
 
@@ -33,6 +35,7 @@ function toggleHidePassword() {
 		:autofocus="autofocus"
 		:placeholder="t('password')"
 		:disabled="disabled"
+		@update:model-value="emit('input', $event)"
 	>
 		<template #append>
 			<v-icon
