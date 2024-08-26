@@ -129,7 +129,7 @@
 		"maplibre-gl": "1.15.3",
 		"marked": "12.0.2",
 		"micromustache": "8.0.3",
-		"mime": "4.0.3",
+		"mime": "4.0.4",
 		"mitt": "3.0.1",
 		"nanoid": "5.0.7",
 		"ofetch": "1.3.4",
