@@ -17,7 +17,9 @@ withDefaults(
 	},
 );
 
-const emit = defineEmits(['input']);
+const emit = defineEmits<{
+	input: [value: string];
+}>();
 
 const { t } = useI18n();
 const hidden = ref<boolean>(true);
