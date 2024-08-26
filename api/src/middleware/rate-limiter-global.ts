@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { HitRateLimitError } from '@directus/errors';
 import type { RequestHandler } from 'express';
 import type { RateLimiterMemory, RateLimiterRedis } from 'rate-limiter-flexible';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { createRateLimiter } from '../rate-limiter.js';
 import asyncHandler from '../utils/async-handler.js';
 import { validateEnv } from '../utils/validate-env.js';
@@ -17,7 +17,7 @@ let checkRateLimit: RequestHandler = (_req, _res, next) => next();
 export let rateLimiterGlobal: RateLimiterRedis | RateLimiterMemory;
 
 if (env['RATE_LIMITER_GLOBAL_ENABLED'] === true) {
-	validateEnv(['RATE_LIMITER_GLOBAL_STORE', 'RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);
+	validateEnv(['RATE_LIMITER_GLOBAL_DURATION', 'RATE_LIMITER_GLOBAL_POINTS']);
 	validateConfiguration();
 
 	rateLimiterGlobal = createRateLimiter('RATE_LIMITER_GLOBAL');

@@ -1,4 +1,4 @@
-import type { Extension, ExtensionSettings } from '@directus/extensions';
+import type { BundleExtension, Extension, ExtensionSettings } from '@directus/extensions';
 import { randomUUID } from 'node:crypto';
 import getDatabase from '../../database/index.js';
 import { ExtensionsService } from '../../services/extensions.js';
@@ -28,10 +28,43 @@ export const getExtensionsSettings = async ({
 	const existingSettings = await service.extensionsItemService.readByQuery({ limit: -1 });
 
 	const newSettings: ExtensionSettings[] = [];
+	const removedSettingIds: string[] = [];
 
 	const localSettings = existingSettings.filter(({ source }) => source === 'local');
 	const registrySettings = existingSettings.filter(({ source }) => source === 'registry');
 	const moduleSettings = existingSettings.filter(({ source }) => source === 'module');
+
+	const updateBundleEntriesSettings = (
+		bundle: BundleExtension,
+		bundleSettings: ExtensionSettings,
+		allSettings: ExtensionSettings[],
+	) => {
+		const bundleEntriesSettings = allSettings.filter(({ bundle }) => bundle === bundleSettings.id);
+
+		// Remove settings of removed bundle entries from the DB
+		for (const entry of bundleEntriesSettings) {
+			const entryInBundle = bundle.entries.some(({ name }) => name === entry.folder);
+
+			if (entryInBundle) continue;
+
+			removedSettingIds.push(entry.id);
+		}
+
+		// Add new bundle entries to the settings
+		for (const entry of bundle.entries) {
+			const settingsExist = bundleEntriesSettings.some(({ folder }) => folder === entry.name);
+
+			if (settingsExist) continue;
+
+			newSettings.push({
+				id: randomUUID(),
+				enabled: bundleSettings.enabled,
+				source: bundleSettings.source,
+				bundle: bundleSettings.id,
+				folder: entry.name,
+			});
+		}
+	};
 
 	const generateSettingsEntry = (folder: string, extension: Extension, source: 'local' | 'registry' | 'module') => {
 		if (extension.type === 'bundle') {
@@ -66,8 +99,15 @@ export const getExtensionsSettings = async ({
 	};
 
 	for (const [folder, extension] of local.entries()) {
-		const settingsExist = localSettings.some((settings) => settings.folder === folder);
-		if (settingsExist) continue;
+		const existingSettings = localSettings.find((settings) => settings.folder === folder);
+
+		if (existingSettings) {
+			if (extension.type === 'bundle') {
+				updateBundleEntriesSettings(extension, existingSettings, localSettings);
+			}
+
+			continue;
+		}
 
 		const settingsForName = localSettings.find((settings) => settings.folder === extension.name);
 
@@ -85,24 +125,36 @@ export const getExtensionsSettings = async ({
 			continue;
 		}
 
-		if (!settingsExist) generateSettingsEntry(folder, extension, 'local');
+		generateSettingsEntry(folder, extension, 'local');
 	}
 
 	for (const [folder, extension] of module.entries()) {
-		const settingsExist = moduleSettings.some((settings) => settings.folder === folder);
-		if (!settingsExist) generateSettingsEntry(folder, extension, 'module');
+		const existingSettings = moduleSettings.find((settings) => settings.folder === folder);
+
+		if (!existingSettings) {
+			generateSettingsEntry(folder, extension, 'module');
+		} else if (extension.type === 'bundle') {
+			updateBundleEntriesSettings(extension, existingSettings, moduleSettings);
+		}
 	}
 
 	for (const [folder, extension] of registry.entries()) {
-		const settingsExist = registrySettings.some((settings) => settings.folder === folder);
-		if (!settingsExist) generateSettingsEntry(folder, extension, 'registry');
+		const existingSettings = registrySettings.find((settings) => settings.folder === folder);
+
+		if (!existingSettings) {
+			generateSettingsEntry(folder, extension, 'registry');
+		} else if (extension.type === 'bundle') {
+			updateBundleEntriesSettings(extension, existingSettings, registrySettings);
+		}
+	}
+
+	if (removedSettingIds.length > 0) {
+		await service.extensionsItemService.deleteMany(removedSettingIds);
 	}
 
 	if (newSettings.length > 0) {
-		await database.insert(newSettings).into('directus_extensions');
+		await service.extensionsItemService.createMany(newSettings);
 	}
 
-	const settings = [...existingSettings, ...newSettings];
-
-	return settings;
+	return [...existingSettings.filter(({ id }) => !removedSettingIds.includes(id)), ...newSettings];
 };

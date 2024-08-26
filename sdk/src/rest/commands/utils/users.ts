@@ -41,6 +41,46 @@ export const acceptUserInvite =
 	});
 
 /**
+ * Register a new user.
+ *
+ * @param email The new user email.
+ * @param password The new user password.
+ * @param options Optional registration fields.
+ *
+ * @returns Nothing
+ */
+export const registerUser =
+	<Schema>(
+		email: string,
+		password: string,
+		options: { verification_url?: string; first_name?: string; last_name?: string } = {},
+	): RestCommand<void, Schema> =>
+	() => ({
+		path: `/users/register`,
+		method: 'POST',
+		body: JSON.stringify({
+			email,
+			password,
+			...options,
+		}),
+	});
+
+/**
+ * Verify a registered user email using a token sent to the address.
+ *
+ * @param token Accept registration token.
+ *
+ * @returns Nothing
+ */
+export const registerUserVerify =
+	<Schema>(token: string): RestCommand<void, Schema> =>
+	() => ({
+		path: `/users/register/verify-email`,
+		params: { token },
+		method: 'GET',
+	});
+
+/**
  * Generates a secret and returns the URL to be used in an authenticator app.
  *
  * @param password The user's password.

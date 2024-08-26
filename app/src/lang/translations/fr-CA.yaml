@@ -79,6 +79,7 @@ extension_hooks: Hooks
 extension_endpoints: Points d'accès
 extension_operations: Opérations
 extension_bundles: Lots
+extension_missing: Manquant
 extension_reload_required: Rechargement de la page requis
 extension_reload_required_copy: Un rechargement de la page est nécessaire pour voir les changements après l'activation ou la désactivation des extensions d'application.
 extension_reload_now: Recharger maintenant
@@ -360,6 +361,7 @@ fields_group: Groupe de champs
 no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
 search_collection: Rechercher une collection...
+search_role: Recherche de Rôle...
 search_field: Champ de recherche...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
@@ -445,6 +447,7 @@ revision_delta_other: Historique
 revision_delta_by: '{date} par {user}'
 presentation_text_values_cannot_be_reimported: 'Utilise le texte de présentation, les valeurs ne peuvent pas être réimportées.'
 download_page_as_csv: 'Télécharger la page au format CSV'
+download_page_as_csv_unsupported: Cette mise en page ne prend pas en charge le téléchargement de la page actuelle.
 private_user: Utilisateur privé
 creation_preview: Aperçu de la création
 revision_preview: Aperçu de la révision
@@ -740,7 +743,6 @@ cannot_edit_global_bookmarks: Impossible de modifier les signets globaux
 bookmarks: Favoris
 presets: Pré-réglages
 unexpected_error: Erreur inconnue
-unexpected_error_copy: Une erreur inconnue s'est produite. Veuillez réessayer plus tard.
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
@@ -765,10 +767,6 @@ make_collection_hidden: Masquer la collection
 make_folder_visible: Rendre le dossier visible
 make_folder_hidden: Cacher Le Dossier
 goto_collection_content: Voir le Contenu
-start_end_of_count_items: '{start}-{end} de {count} éléments'
-start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
-one_item: '1 élément'
-one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer la collection "{collection}" ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
 delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer le dossier "{folder}" ? Les dossiers imbriqués et les collections seront déplacés à la racine.
@@ -860,7 +858,6 @@ create_item: Créer un élément
 display_template: Modèle d'affichage
 language_display_template: Modèle d'affichage de la langue
 translations_display_template: Modèle d'affichage des traductions
-n_items_selected: 'Aucun élément sélectionné | 1 élément sélectionné | {n} éléments sélectionnés'
 per_page: Par page
 all_files: Tous les fichiers
 my_files: Mes fichiers
@@ -1075,7 +1072,6 @@ editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
-settings_permissions: Rôles et Autorisations
 settings_project: Réglages
 settings_appearance: Personnalisation du Thème
 settings_webhooks: Webhooks
@@ -1125,7 +1121,6 @@ page_help_settings_datamodel_collections: >-
   **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
-page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
   **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
@@ -1164,6 +1159,8 @@ installed: Installé
 reinstall: Réinstaller
 open_in_marketplace: Ouvrir dans la Marketplace
 source_registry: Marketplace
+source_local: Local
+source_module: Module Node
 collection: Collection
 collections: Collections
 content: Contenu
@@ -1182,7 +1179,6 @@ directus_collection:
   directus_notifications: Notifications envoyées aux utilisateurs
   directus_operations: Opérations qui s'exécutent dans les Flux
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
-  directus_permissions: Sélectionner les permissions pour chaque groupe
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
   directus_revisions: Instantanés de données pour toutes les activités
@@ -1286,6 +1282,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Compte rendu
     mapping: Cartographie
     basemaps: Cartes de base
     basemaps_raster: Raster
@@ -1347,12 +1344,9 @@ fields:
     name: Nom de rôle
     icon: Icône de rôle
     description: Description
-    app_access: Accès à l'application
-    admin_access: Accès Administrateur
-    ip_access: Accès IP
-    enforce_tfa: Nécessite A2F
     users: Membres avec le rôle
-    module_list: Module de Navigation
+  directus_policies:
+    description: Description
   directus_webhooks:
     name: Nom
     method: Méthode
@@ -1438,7 +1432,6 @@ field_options:
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
-    ip_access: Ajouter les adresses IP autorisées, les plages IP et les blocs CIDR. Laisser vide pour tout autoriser...
     fields:
       icon_name: Icône
       name_name: Nom
@@ -1495,7 +1488,6 @@ live_preview:
   toggle_3d: Alterner 3D
 shares: Partages
 unlimited_usage: Utilisation illimitée
-uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
 no_shares: Aucun partage pour l'instant
 new_share: Nouveau partage
 expired: Expiré
@@ -1622,6 +1614,7 @@ delete_item: Supprimer l'élément
 interfaces:
   list-m2a:
     prefix_note: Utilise le nom de la collection de l'élément lié par défaut .
+    sorting_disabled: Le tri est désactivé car il y a plus d'éléments que sur une seule page.
   filter:
     name: Filtre
     description: Configurer un objet filtre.
@@ -2156,7 +2149,6 @@ layouts:
     show_ungrouped: Afficher non-groupé
     show: Afficher
     no_group: Aucun Groupe
-    not_all_loaded: Impossible de charger les 1000 premiers éléments.
 horizontal: Horizontal
 vertical: Vertical
 x_axis: Axe X

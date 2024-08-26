@@ -300,7 +300,6 @@ choose_from_library: Alŝuti dosieron de biblioteko
 import_from_url: Importi dosieron per URL
 no_file_selected: Neniu dosiero elektita
 download_file: Elŝuti la dosieron
-open_file_in_tab: Malfermi la dosieron en nova langeto
 start_export: Komenci eksporti
 not_available_for_local_downloads: Ne disponebla por lokaj elŝutoj
 collection_key: Ŝlosilo de la kolekto
@@ -425,10 +424,6 @@ make_collection_hidden: Igi la kolekton kaŝita
 make_folder_visible: Igi la dosierujon videbla
 make_folder_hidden: Igi la dosierujon kaŝita
 goto_collection_content: Vidi la enhavon
-start_end_of_count_items: '{start}-{end} de {count} eroj'
-start_end_of_count_filtered_items: '{start}-{end} de {count} filtritaj eroj'
-one_item: '1 ero'
-one_filtered_item: '1 filtrita ero'
 visible_collections: Videblaj kolektoj
 hidden_collections: Kaŝitaj kolektoj
 show_hidden_collections: Montri kaŝitajn kolektojn
@@ -709,8 +704,8 @@ fields:
     name: Nomo de la rolo
     icon: Emblemo de la rolo
     description: Priskribo
-    ip_access: IP-adreso
-    enforce_tfa: Postuli dufaktoran kontroladon
+  directus_policies:
+    description: Priskribo
   directus_webhooks:
     name: Nomo
     method: Metodo

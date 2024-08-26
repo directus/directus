@@ -1,8 +1,8 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
-import { Router } from 'express';
 import type { Request } from 'express';
+import { Router } from 'express';
 import {
 	createLDAPAuthRouter,
 	createLocalAuthRouter,
@@ -10,17 +10,19 @@ import {
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
-import { REFRESH_COOKIE_OPTIONS, DEFAULT_AUTH_PROVIDER, SESSION_COOKIE_OPTIONS } from '../constants.js';
-import { useLogger } from '../logger.js';
+import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
+import { useLogger } from '../logger/index.js';
 import { respond } from '../middleware/respond.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../services/authentication.js';
 import { UsersService } from '../services/users.js';
+import type { AuthenticationMode } from '../types/auth.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
+import { getSecret } from '../utils/get-secret.js';
 import isDirectusJWT from '../utils/is-directus-jwt.js';
 import { verifyAccessJWT } from '../utils/jwt.js';
-import type { AuthenticationMode } from '../types/auth.js';
 
 const router = Router();
 const env = useEnv();
@@ -90,7 +92,7 @@ function getCurrentRefreshToken(req: Request, mode: AuthenticationMode): string 
 		const token = req.cookies[env['SESSION_COOKIE_NAME'] as string];
 
 		if (isDirectusJWT(token)) {
-			const payload = verifyAccessJWT(token, env['SECRET'] as string);
+			const payload = verifyAccessJWT(token, getSecret());
 			return payload.session;
 		}
 	}
@@ -101,10 +103,7 @@ function getCurrentRefreshToken(req: Request, mode: AuthenticationMode): string 
 router.post(
 	'/refresh',
 	asyncHandler(async (req, res, next) => {
-		const accountability: Accountability = {
-			ip: getIPFromReq(req),
-			role: null,
-		};
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
@@ -155,10 +154,7 @@ router.post(
 router.post(
 	'/logout',
 	asyncHandler(async (req, res, next) => {
-		const accountability: Accountability = {
-			ip: getIPFromReq(req),
-			role: null,
-		};
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
@@ -202,10 +198,7 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"email" field is required` });
 		}
 
-		const accountability: Accountability = {
-			ip: getIPFromReq(req),
-			role: null,
-		};
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;
@@ -241,10 +234,7 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"password" field is required` });
 		}
 
-		const accountability: Accountability = {
-			ip: getIPFromReq(req),
-			role: null,
-		};
+		const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 		const userAgent = req.get('user-agent')?.substring(0, 1024);
 		if (userAgent) accountability.userAgent = userAgent;

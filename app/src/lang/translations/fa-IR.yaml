@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: درباره
 identifier: شناساگر
 avatar: آواتار
 application: برنامه
@@ -7,14 +28,18 @@ method: شیوه
 published: منتشر شد
 draft: پیش‌نویس
 archived: بایگانی‌شده
+marketplace: بازار
+extensions: افزونه ها
 modules: ماژول‌ها
 module_bar: نوار ماژول ها
 logs: تاریخچه رخدادها
+unknown: نامشخص
 reset_width: تنظیم مجدد عرض
 tile_size: اندازه هر مربع در نقشه
 edit_field: ویرایش فیلد
 conditions: شرایط
 location: موقعیت
+collection_names_are_case_sensitive: نام مجموعه ها حساس به حروف کوچک و بزرگ هستند
 condition_rules: استایل شرطی
 input: ورودی
 maps: نقشه‌ها
@@ -26,6 +51,8 @@ duplicate_field: فیلد تکراری
 half_width: نصف عرض
 full_width: عرض کامل
 group: گروه
+popular: محبوب
+recent: اخیر
 export_items: خروجی گرفتن از موارد
 and: و
 or: یا
@@ -35,10 +62,27 @@ modifier: اصلاح شده
 extension_interface: رابط کاربری
 extension_display: نحوه نمایش
 extension_layout: چیدمان
+extension_module: ماژول
 extension_panel: پنل
+extension_theme: پوسته
 extension_hook: هوک
+extension_endpoint: نقطه اتصال
+extension_operation: عملیات
+extension_bundle: پکیج ها
+extension_interfaces: رابط‌های کاربری
+extension_layouts: چیدمان ها
 extension_modules: ماژول‌ها
+extension_panels: پنل‌ها
+extension_themes: پوسته‌ها
+extension_operations: عملیات
+extension_reload_required: صفحه به بازنشانی مجدد نیاز دارد
+extension_reload_required_copy: جهت مشاهده تغییرات پس از فعالی یا غیرفعالسازی افزونه ها لازم است صفحه بازنشانی مجدد گردد.
+extension_reload_now: هم اکنون بازنشانی گردد
+last_updated_relative: آخرین به روزرسانی {relativeTime}
+homepage: صفحه اصلی
+website: وب سایت
 enable: فعال سازی
+disable: غیرفعال کردن
 custom: سفارشی
 hook: هوک
 fill_width: عرض کامل
@@ -86,6 +130,9 @@ rename_folder: تغییر نام پوشه
 delete_folder: حذف پوشه
 prefix: پيشوند
 suffix: پسوند
+version: نسخه
+promote_version_disabled: بدون تغییر
+promote_version_changes: تغییرات
 promote_version_preview: پيش نمايش
 reset_bookmark: بازنشانی نشانک
 update_bookmark: به روزرسانی نشانک
@@ -133,6 +180,9 @@ validationError:
   required: مقدار الزامی است
   unique: مقدار باید یکتا باشد
   regex: این مقدار، فرمت صحیحی ندارد
+  iends_with: مقدار باید با {substring} پایان یابد
+  nends_with: مقدار نمی‌تواند با {substring} پایان یابد
+  niends_with: مقدار نمی‌تواند با {substring} پایان یابد
 all_access: دسترسی کامل
 no_access: بدون دسترسی
 use_custom: استفاده از حالت سفارشی
@@ -230,6 +280,10 @@ time: زمان
 timestamp: الگوی زمانی
 uuid: شماره شناسایی یکتا (UUID)
 hash: هش
+geometry:
+  All: هندسی (همه)
+theme_light: حالت روشن
+theme_dark: حالت تاریک
 not_available_for_type: برای این نوع در دسترس نیست
 create_translations: ایجاد ترجمه
 auto_refresh: تازه نمودن خودکار
@@ -241,6 +295,7 @@ auto_generate: تولید خودکار
 this_will_auto_setup_fields_relations: کلیه فیلدها و روابط مورد نیاز بدینوسیله بروزرسانی خواهد شد.
 click_here: اینجا کلیک کنید
 to_manually_setup_translations: راه اندازی دستی ترجمه ها.
+manage: مدیریت
 click_to_manage_translated_fields: >-
   هنوز هیچ فیلد ترجمه شده ای وجود ندارد. برای ساخت آن، اینجا را کلیک کنید. | هیچ فیلد ترجمه شده ای وجود ندارد. برای مدیرت آن، اینجا را کلیک کنید. | تعداد {count} فیلد ترجمه شده وجود دارد. برای مدیریت آنها اینجا را کلیک کنید.
 fields_group: گروه فیلدها
@@ -409,6 +464,7 @@ months:
   december: دسامبر
 drag_mode: حالت کشیدن
 cancel_crop: لغو برش
+cancel_selection: لغو انتخاب
 original: مقدار اولیه
 url: URL
 import_label: وارد کردن
@@ -434,9 +490,9 @@ import_from_url: استخراج فایل از URL
 replace_from_device: جایگزینی فایل از دستگاه
 replace_from_library: جایگزینی فایل از مجموعه
 replace_from_url: جایگزینی فایل از URL
+no_image_selected: تصویری انتخاب نشده است
 no_file_selected: هیچ فایلی انتخاب نشده است
 download_file: دانلود فایل
-open_file_in_tab: فایل را در تب جدید باز کنید
 start_export: شروع برون بری
 not_available_for_local_downloads: برای دانلودهای محلی در دسترس نیست
 exporting_all_items_in_collection: برون‌بری {total} مورد از {collection}.
@@ -604,7 +660,6 @@ cannot_edit_global_bookmarks: نمی‌توان بوک مارکهای کلی ر�
 bookmarks: نشانک‌ها
 presets: الگوها
 unexpected_error: خطای غیر منتظره
-unexpected_error_copy: یک خطای غیر منتظره رخ داده است، لطفا بعدا دوباره تلاش کنید.
 copy_details: کپی کردنِ جزئیات
 no_app_access: عدم دسترسی به برنامه
 no_app_access_copy: کاربر اجازه دسترسی به سامانه مدیریت را ندارد.
@@ -629,10 +684,6 @@ make_collection_hidden: این مجموعه را پنهان کن
 make_folder_visible: این پوشه را هویدا کن
 make_folder_hidden: این پوشه را پنهان کن
 goto_collection_content: مشاهده محتوا
-start_end_of_count_items: '{start}-{end} از {count} آیتم'
-start_end_of_count_filtered_items: '{start}-{end} از {count} آیتم فیلتر شده'
-one_item: '۱ آیتم'
-one_filtered_item: '۱ آیتم فیلتر شده'
 delete_collection_are_you_sure: >-
   آیا مطمئن هستید که می خواهید مجموعه "{collection}" را حذف کنید؟ با این کار مجموعه و همه موارد موجود در آن حذف می شود. این عمل دائمی است.
 delete_folder_are_you_sure: آیا مطمئن هستید که می خواهید پوشه "{folder}" را حذف کنید؟ پوشه ها و مجموعه های تو در تو به بالاترین سطح منتقل می شوند.
@@ -717,7 +768,6 @@ create_item: ساخت آیتم
 display_template: نمایش الگو
 language_display_template: قالب نمایش زبان
 translations_display_template: قالب نمایش ترجمه ها
-n_items_selected: 'هیچ آیتمی انتخاب نشده است | یک آیتم انتخاب شده | {n} آیتم انتخاب شده اند'
 per_page: هر صفحه
 all_files: تمامی فایلها
 my_files: فایلهای من
@@ -967,7 +1017,6 @@ page_help_settings_datamodel_collections: >-
   **مدل داده: مجموعه ها** - تمامی مجموعه های موجود را لیست می کند. این شامل مجموعه های پیدا و نهان و مجموعه های سیستمی و همچنین جداول پایگاه داده مدیریت نشده ای است که میتوانند اضافه شوند.
 page_help_settings_datamodel_fields: >-
   **مدل داده: مجموعه** - فرمی برای مدیریت مجموعه و فیلدهای آن.
-page_help_settings_roles_collection: '**مرور نقش های کاربری** - لیستی از نقشهای ادمین، عمومی و نقشهای کاربری سفارشی.'
 page_help_settings_roles_item: "**جزئیات نقش** - مدیریت اجازه های یک نقش و سایر تنظیمات مربوط به آن."
 page_help_settings_presets_collection: >-
   **مرور الگوها** - لیستی از تمامی الگوهای موجود در پروژه شامل: کاربر، نقش و نشانک های بالاترین سطح بعلاوه نماهای پیش فرض.
@@ -992,6 +1041,7 @@ batch_delete_confirm: >-
   هیچ آیتمی انتخاب نشده است | آیا مطمئنید که میخواهید این آیتم را حذف کنید؟ این عمل غیرقابل بازگشت است. | آیا مطمئنید که میخواهید این {count} آیتم را پاک کنید؟ این عمل غیر قابل بازگشت است.
 cancel: انصراف
 no_upscale: تصاویر را بالا نبرید
+source_registry: بازار
 collection: مجموعه
 collections: مجموعه‌ها
 content: محتوا
@@ -1010,7 +1060,6 @@ directus_collection:
   directus_notifications: اعلانهای ارسالی به کاربر
   directus_operations: عملیاتی که در جریان‌ها اجرا می شوند
   directus_panels: پنل‌های مجزا در داشبوردها
-  directus_permissions: دسترسی به اجازه های این نقش
   directus_presets: تنظیمات پیش‌فرض برای مجموعه و بوکمارک‌ها
   directus_relations: پیکربندی رابطه و داده متا
   directus_revisions: عکس های فوری داده برای همه فعالیت ها
@@ -1160,12 +1209,9 @@ fields:
     name: نام نقش
     icon: آیکن نقش
     description: توضیحات
-    app_access: دسترسی به برنامه
-    admin_access: دسترسی به سامانه مدیریت
-    ip_access: محدودیت IP
-    enforce_tfa: اجبار به احراز هویت دو عاملی
     users: کاربران دارای این نقش
-    module_list: نویگیشن مربوط به ماژول
+  directus_policies:
+    description: توضیحات
   directus_webhooks:
     name: نام
     method: شیوه یا متود
@@ -1302,7 +1348,6 @@ live_preview:
   toggle_3d: حالت سه بعدی
 shares: اشتراک‌گذاری
 unlimited_usage: Unlimited usage
-uses_left: No uses left | 1 use left | {n} uses left
 no_shares: هیچ اشتراک گذاری برای نمایش نیست
 new_share: اشتراک گذاری جدید
 expired: منقضی شده
@@ -1947,7 +1992,6 @@ layouts:
     show_ungrouped: نمایش گروه‌بندی نشده
     show: نمایش
     no_group: بدون گروه
-    not_all_loaded: فقط می‌توان 1000 مورد اول را بارگیری کرد.
 horizontal: افقی
 vertical: عمودی
 x_axis: محور افقی

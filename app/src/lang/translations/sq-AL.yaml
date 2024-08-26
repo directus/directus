@@ -33,7 +33,7 @@ extensions: Zgjerime
 modules: Module
 module_bar: Shiriti i Moduleve
 logs: Regjistrime
-unknown: I panjohur
+unknown: Panjohur
 reset_width: Rikthe Gjerësinë
 tile_size: Madhësia e Mozaikut
 edit_field: Modifiko Fushën
@@ -66,7 +66,7 @@ extension_module: Modul
 extension_panel: Paneli
 extension_theme: Temë
 extension_hook: Hook
-extension_endpoint: Pikë fundore
+extension_endpoint: Endpoint
 extension_operation: Operacion
 extension_bundle: Paketë
 extension_interfaces: Ndërfaqe
@@ -91,6 +91,7 @@ n_files: '{n} Skedarë'
 verified: Verifikuar
 homepage: Faqja kryesore
 repository: Depo
+reload_page: Rifresko Faqen
 reload_required: Kërkohet ringarkim
 report_an_issue: Raporto një Problem
 website: Faqe interneti
@@ -109,6 +110,7 @@ field_name_translations: Përkthimet e Emrit të Fushës
 enter_password_to_enable_tfa: Shkruaj fjalëkalimin për të aktivizuar Autentikimin me dy Faktorë
 add_field: Shto Fushë
 role_name: Emri i Rolit
+policy_name: Emri i drejtimit
 branch: Dega
 leaf: Gjethe
 indeterminate: Indeterminuar
@@ -126,6 +128,7 @@ requires_value: Kërkon vlerë
 create_preset: Krijo Parametrat e Paracaktuar
 create_panel: Krijo Panel
 create_role: Krijo Rol
+create_policy: Krijo drejtim
 create_user: Krijo Përdorues
 message: Mesazh
 delete_panel: Fshi Panelin
@@ -187,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Seanca ka skaduar
 public_label: Publik
 public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
+public_role_info: >-
+  Roli publik kontrollon se cilat të dhëna API janë të disponueshme për përdoruesit e paautentikuar ose për ata pa rol. Kërkesat me rolin publik nuk mund të kenë akses në aplikacion ose administrim. Nëse një drejtimi të caktuar për rolin publik i jepet akses në aplikacion ose administrim, do të injorohet.
 admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
+admin_policy_description: Drejtimi fillestar administrativ me akses të pakufizuar në Aplikacion/API.
 no_description: Pa përshkrim...
 reached_maximum_number_of_extensions: Keni arritur numrin maksimal të zgjerimeve për këtë projekt ({n}). Kontaktoni administratorin e sistemit tuaj për më shumë informacion.
 not_allowed: Nuk lejohet
@@ -254,9 +260,13 @@ field_permissions: Lejet e Fushës
 field_validation: Vleftësim i Fushës
 field_presets: Parametrat e Paracaktuar të Fushës
 permissions_for_role: 'Artikujt që Roli {role} mund të {action}.'
+permissions_for_policy: 'Artikujt që Drejtimi {policy} mund të {action}.'
 fields_for_role: 'Fushat që Roli {role} mund të {action}.'
+fields_for_policy: 'Fushat që Drejtimi {policy} mund të {action}.'
 validation_for_role: 'Rregullat e {action} të fushës që Roli {role} duhet të zbatojë.'
+validation_for_policy: 'Rregullat e {action} të fushës që Drejtimi {policy} duhet të ndjekë.'
 presets_for_role: 'Vlerat e paracaktuara të fushës për Rolin {role}.'
+presets_for_policy: 'Vlerat e paracaktuara të fushës për Drejtimin {policy}.'
 presets_field_warning: 'Parametrat e paracaktuar të marrëdhënies për fushën "{field}" duhet të konfigurohen me sint.'
 presentation_and_aliases: Prezantim & Pseudonime
 revision_post_create: Ja si dukej ky artikull kur u krijua.
@@ -361,6 +371,8 @@ fields_group: Grup Fushash
 no_collections_found: Nuk u gjetën koleksione.
 new_data_alert: 'Më poshtë do të krijohen brenda Modelit tuaj të të Dhënave:'
 search_collection: Kërko Koleksion...
+search_role: Kërko Rolin...
+search_policy: Kërko Drejtim...
 search_field: Kërko Fushë...
 new_field: 'Fushë e Re'
 new_collection: 'Koleksion i Ri'
@@ -446,6 +458,7 @@ revision_delta_other: Rishikim
 revision_delta_by: '{date} nga {user}'
 presentation_text_values_cannot_be_reimported: 'Përdor tekst prezantimi, vlerat nuk mund të rimportohen.'
 download_page_as_csv: 'Shkarko Faqen si CSV'''
+download_page_as_csv_unsupported: Ky format nuk mbështet shkarkimin e faqes aktuale.
 private_user: Përdorues Privat
 creation_preview: Parapamje e Krijimit
 revision_preview: Parapamje e Rishikimit
@@ -510,6 +523,11 @@ hours: Orë
 month: Muaj
 year: Vit
 select_all: Zgjidh Të Gjitha
+permissionsLevel:
+  all: Akses i Plotë për {action}
+  partial: Akses i Pjesshëm për {action}
+  custom: Akses i Pjesshëm për {action}
+  none: Pa Akses për {action}
 months:
   january: Janar
   february: Shkurt
@@ -536,6 +554,7 @@ file_details: Detajet e Skedarit
 dimensions: Dimensionet
 size: Madhësia
 created: U krijua
+uploaded: I Ngarkuar
 modified: Modifikuar
 owner: Pronari
 edited_by: Redaktuar nga
@@ -557,7 +576,7 @@ replace_from_url: Zëvendëso Skedarin nga URL
 no_image_selected: Asnjë imazh nuk është zgjedhur
 no_file_selected: Asnjë Skedar i Zgjedhur
 download_file: Shkarko Skedarin
-open_file_in_tab: Hap skedarin në skedë të re
+open_file_in_tab: Hap Skedarin në Skedë të Re
 start_export: Filloni Eksportimin
 not_available_for_local_downloads: Nuk është i disponueshëm për shkarkime lokale
 exporting_all_items_in_collection: Eksportimi i të gjitha artikujve ({total}) brenda {collection}.
@@ -592,7 +611,10 @@ allow_duplicates: Lejo Kopjet
 comments: Komente
 no_comments: Ende nuk ka komente
 expand: Zgjero
+expand_all: Zgjero të gjitha
+expand_none: Zgjero Asnjë
 collapse: Tkurre
+collapse_all: Mbledh të gjitha
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
 search_items: Kërko artikuj...
@@ -641,6 +663,7 @@ copy_to: Kopjo në...
 no_other_dashboards_copy: Ju nuk keni asnjë Dashboard tjetër ende.
 inactive: Joaktiv
 users: Përdorues
+roles: Rolet
 activity: Aktivitet
 activity_item: Artikull Aktiviteti
 action: Veprim
@@ -743,7 +766,7 @@ cannot_edit_global_bookmarks: Nuk mund të Modifikoni Faqerojtësit Globalë
 bookmarks: Faqerojtësit
 presets: Paracaktuar
 unexpected_error: Gabim i papritur
-unexpected_error_copy: Ka ndodhur një gabim i papritur. Ju lutem provoni përsëri më vonë.
+unexpected_error_copy: Ndodhi një gabim i papritur. Ju lutem provoni përsëri.
 copy_details: Kopjo Detajet
 no_app_access: S'ka Akses në Aplikacion
 no_app_access_copy: Ky përdorues nuk ka leje për të përdorur aplikacionin e administrimit.
@@ -768,10 +791,6 @@ make_collection_hidden: Bëj Koleksionin të Fshehur
 make_folder_visible: Bëj Dosjen të Dukshme
 make_folder_hidden: Bëj Dosjen të Fshehur
 goto_collection_content: Shiko Përmbajtjen
-start_end_of_count_items: '{start}-{end} nga {count} artikuj'
-start_end_of_count_filtered_items: '{start}-{end} nga {count} artikuj të filtruar'
-one_item: '1 artikull'
-one_filtered_item: '1 artikull i filtruar'
 delete_collection_are_you_sure: >-
   Jeni i sigurt që doni të fshini koleksionin "{collection}"? Kjo do të fshijë koleksionin dhe të gjithë artikujt brenda tij. Ky veprim është i përhershëm.
 delete_folder_are_you_sure: Jeni i sigurt që doni të fshini dosjen "{folder}"? Dosjet e brendshme dhe koleksionet do të zhvendosen në nivelin më të lartë.
@@ -863,7 +882,6 @@ create_item: Krijo Artikull
 display_template: Shabllon i Shfaqjes
 language_display_template: Shabllon i Shfaqjes së Gjuhës
 translations_display_template: Shabllon i Shfaqjes së Përkthimeve
-n_items_selected: 'Nuk janë Zgjedhur Artikuj | 1 Artikull i Zgjedhur | {n} Artikuj të Zgjedhur'
 per_page: Për Faqe
 all_files: Të gjitha Skedarët
 my_files: Skedarët e mi
@@ -1078,7 +1096,8 @@ editing_unit: 'Po modifikohet {unit}'
 editing_in_batch: 'Modifikim në masë i {count} artikujve'
 no_options_available: Nuk ka opsione të disponueshme
 settings_data_model: Modeli i të Dhënave
-settings_permissions: Kontrolli i Qasjes
+settings_roles: Rolet e Përdoruesve
+settings_permissions: Drejtimet e Aksesit
 settings_project: Parametra
 settings_appearance: Pamja
 settings_webhooks: Webhooks
@@ -1128,7 +1147,9 @@ page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
 page_help_settings_datamodel_fields: >-
   **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
-page_help_settings_roles_collection: '**Shfleto Rolet** — Liston rolet e Administratorit, Publikut dhe rolet e personalizuara të Përdoruesit.'
+page_help_settings_policies_collection: '**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit.'
+page_help_settings_policies_item: "**Detajet e Drejtimit** — Menaxho lejet dhe cilësimet e tjera të një drejtimi."
+page_help_settings_roles_collection: '**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit.'
 page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
 page_help_settings_presets_collection: >-
   **Shfleto Cilësimet e Paracaktuara** — Liston të gjitha cilësimet e paracaktuara në projekt, duke përfshirë: faqerojtësit e përdoruesit, rolit dhe globalë, si dhe pamjet e paracaktuara.
@@ -1176,6 +1197,7 @@ singleton: Singleton
 singleton_label: Trajto si objekt të vetëm
 system_fields_locked: Fushat e sistemit janë të bllokuara dhe nuk mund të redaktohen
 directus_collection:
+  directus_access: Bashkëngjitjet e Drejtimit
   directus_activity: Regjistrat e përgjegjshëm për të gjitha eventet
   directus_collections: Konfigurimi shtesë i koleksionit dhe metadata
   directus_dashboards: Dashboards brenda modulit të Insights
@@ -1187,7 +1209,8 @@ directus_collection:
   directus_notifications: Njoftimet e dërguara për përdoruesit
   directus_operations: Operacionet që drejtohen në Flujot
   directus_panels: Panelet individuale brenda kokpitëve të Insights
-  directus_permissions: Lejet e qasjes për çdo rol
+  directus_permissions: Lejet e aksesit për çdo drejtim
+  directus_policies: Drejtimet e kontrollit të aksesit
   directus_presets: Cilësimet e paracaktuara për parazgjedhjet e koleksionit dhe faqerojtësit
   directus_relations: Konfigurimi i marrëdhënieve dhe metadata
   directus_revisions: Instantanet e të dhënave për të gjithë aktivitetin
@@ -1253,6 +1276,8 @@ fields:
     height: Lartësi
     charset: Set Karakteresh
     duration: Kohëzgjatje
+    focal_point_x: Koordinata-X
+    focal_point_y: Koordinata-Y
   directus_users:
     first_name: Emri
     last_name: Mbiemri
@@ -1270,6 +1295,7 @@ fields:
     status: Statusi
     status_draft: Draft
     status_invited: I ftuar
+    status_unverified: E pa verifikuar
     status_active: Aktiv
     status_suspended: I pezulluar
     status_archived: I arkivuar
@@ -1333,6 +1359,14 @@ fields:
     custom_aspect_ratios: Raporte Personalizuar të Aspekteve
     theme_light_overrides: Personalizimi i Temës së Ndritshme
     theme_dark_overrides: Personalizimi i Temës së Errët
+    public_registration: Regjistrimi i Përdoruesit
+    public_registration_note: Lejon përdoruesit të regjistrohen përmes [rrugës së regjistrimit](/admin/register).
+    public_registration_role: Roli i Përdoruesit
+    public_registration_role_note: Ky rol caktohet për përdoruesit që regjistrohen duke përdorur këtë metodë. Nuk ndikon në përdoruesit tashmë të regjistruar.
+    public_registration_email_filter: Filtri i Adresës së Email-it
+    public_registration_email_filter_note: Vetëm adresat e email-it që përputhen me këtë filtër mund të regjistrohen.
+    public_registration_verify_email: Verifiko Email-in
+    public_registration_verify_email_note: Dërgon një email përdoruesit që po regjistrohet duke kërkuar që të klikojnë në një lidhje verifikimi përpara se të mund të identifikohen.
   directus_shares:
     name: Emri
     role: Roli
@@ -1353,12 +1387,16 @@ fields:
     name: Emri i Rolit
     icon: Ikona e Rolit
     description: Përshkrim
-    app_access: Qasja në Aplikacion
-    admin_access: Qasja Admin
-    ip_access: Qasja IP
-    enforce_tfa: Kërko 2FA
     users: Përdoruesit në Rol
-    module_list: Navigacioni i Moduleve
+    parent: Roli Prind
+    children: Rolet Fëmijë
+  directus_policies:
+    name: Emri i drejtimit
+    description: Përshkrim
+    app_access: Aksesi në Aplikacion
+    admin_access: Aksesi Administrativ
+    ip_access: Aksesi me IP
+    enforce_tfa: Kërko 2FA
   directus_webhooks:
     name: Emri
     method: Metoda
@@ -1441,16 +1479,23 @@ field_options:
     focal_point_divider: Pika Fokale
     filename_disk: Emri në ruajtjen disk...
     filename_download: Emri gjatë shkarkimit...
+  directus_policies:
+    name: Një emër unik për këtë drejtim...
+    description: Një përshkrim për këtë drejtim...
+    ip_access: Shto adresat IP të lejuara, rangjet IP dhe blloqet CIDR. Lëre bosh për të lejuar të gjitha...
+    enforce_tfa: Zbato Autentifikimin me Dy Faktorë
+    assigned_to: I Caktuar Tek
   directus_roles:
     name: Emri unik për këtë rol...
     description: Përshkrimi i këtij roli...
-    ip_access: Shto adresat e lejuara të IP-së, gamat e IP-së dhe blloqet CIDR. Lëre bosh për të lejuar të gjitha...
     fields:
       icon_name: Ikonë
       name_name: Emri
       name_placeholder: Shkruani një titull...
       link_name: Lidhje
       link_placeholder: URL relative ose absolute...
+    parent_note: Roli prind opsional nga i cili ky rol trashëgon lejet
+    children_note: Rolet fëmijë të mbivendosura që trashëgojnë lejet e këtij roli
     collections_name: Koleksione
     collections_addLabel: Shto Koleksion...
   directus_users:
@@ -1501,7 +1546,6 @@ live_preview:
   toggle_3d: Ndëro 3D
 shares: Ndaj
 unlimited_usage: Përdorim i Pakufizuar
-uses_left: S'ka mbetur asnjë përdorim | 1 përdorim i mbetur | {n} përdorime të mbetura
 no_shares: Asnjë ndarje për t'u shfaqur
 new_share: Ndarje e Re
 expired: Skaduar
@@ -1535,6 +1579,9 @@ continue_label: Vazhdo
 continue_as: >-
   {name} është aktualisht i autentifikuar. Nëse njihni këtë llogari, shtypni vazhdo.
 editing_role: 'Roli {role}'
+editing_policy: 'Drejtimi {policy}'
+no_permissions: Pa Leje
+permission_add_collection: Shto Koleksion
 creating_webhook: Po krijohet Webhook
 default_label: Parazgjedhur
 delete_label: Fshi
@@ -1580,6 +1627,7 @@ authenticated: I autentifikuar
 options: Opsione
 otp: Fjalëkalim i Njëherëshëm
 password: Fjalëkalimi
+confirm_password: Konfirmo Fjalëkalimin
 permissions: Leje
 relationship: Marrëdhënie
 reset: Reset
@@ -1596,6 +1644,14 @@ select_field_type: Zgjidh llojin e fushës
 select_interface: Zgjidh ndërfaqen
 select_display: Zgjidh një shfaqje
 settings: Parametra
+register: Regjistrohu
+registration_successful_headline: Sukses!
+registration_successful_note: Tani mund të vazhdoni në faqen e identifikimit.
+registration_successful_check_email_note: |
+  Ju lutem vini re se përpara se të mund të identifikoheni, do të duhet të verifikoni adresën tuaj të email-it duke klikuar në lidhjen e verifikimit që ju është dërguar.
+dont_have_an_account: Nuk keni një llogari?
+already_have_an_account: Keni tashmë një llogari?
+sign_up_now: Regjistrohuni tani
 sign_in: Hyni
 sign_out: Dil
 sign_out_confirm: A jeni i sigurt se dëshironi të dilni?
@@ -1625,9 +1681,12 @@ navigate_to_item: Shko tek Artikulli
 undo_removed_item: Zhbëj Hiqjen e Artikullit
 remove_item: Hiq Artikullin
 delete_item: Fshi Artikullin
+pause: Ndalo
+resume: Rivendos
 interfaces:
   list-m2a:
     prefix_note: Përdor emrin e koleksionit të artikullit të lidhur si parazgjedhje.
+    sorting_disabled: Renditja është çaktivizuar sepse ka më shumë artikuj se sa mund të përshtaten në një faqe.
   filter:
     name: Filtri
     description: Konfiguro një objekt filtrues.
@@ -2163,9 +2222,9 @@ layouts:
     show_ungrouped: Shfaq të Pagrupuar
     show: Shfaq
     no_group: Asnjë Grup
-    not_all_loaded: Mund të ngarkohen vetëm 1000 artikujt e parë.
 horizontal: Horizontal
 vertical: Vertikal
+axis: Boshti
 x_axis: Aks X
 y_axis: Aks Y
 y_axis_function: Funskion i Aksit Y

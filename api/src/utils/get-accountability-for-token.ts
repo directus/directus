@@ -1,44 +1,48 @@
-import { useEnv } from '@directus/env';
 import { InvalidCredentialsError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
+import { getSecret } from './get-secret.js';
 import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
+import { verifySessionJWT } from './verify-session-jwt.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,
 	accountability?: Accountability,
 ): Promise<Accountability> {
-	const env = useEnv();
-
 	if (!accountability) {
-		accountability = {
-			user: null,
-			role: null,
-			admin: false,
-			app: false,
-		};
+		accountability = createDefaultAccountability();
 	}
+
+	// Try finding the user with the provided token
+	const database = getDatabase();
 
 	if (token) {
 		if (isDirectusJWT(token)) {
-			const payload = verifyAccessJWT(token, env['SECRET'] as string);
+			const payload = verifyAccessJWT(token, getSecret());
 
-			accountability.role = payload.role;
-			accountability.admin = payload.admin_access === true || payload.admin_access == 1;
-			accountability.app = payload.app_access === true || payload.app_access == 1;
+			if ('session' in payload) {
+				await verifySessionJWT(payload);
+			}
 
 			if (payload.share) accountability.share = payload.share;
 			if (payload.share_scope) accountability.share_scope = payload.share_scope;
 			if (payload.id) accountability.user = payload.id;
-		} else {
-			// Try finding the user with the provided token
-			const database = getDatabase();
 
+			accountability.role = payload.role;
+			accountability.roles = await fetchRolesTree(payload.role, database);
+
+			const { admin, app } = await fetchGlobalAccess(accountability, database);
+
+			accountability.admin = admin;
+			accountability.app = app;
+		} else {
 			const user = await database
-				.select('directus_users.id', 'directus_users.role', 'directus_roles.admin_access', 'directus_roles.app_access')
+				.select('directus_users.id', 'directus_users.role')
 				.from('directus_users')
-				.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
 				.where({
 					'directus_users.token': token,
 					status: 'active',
@@ -51,8 +55,12 @@ export async function getAccountabilityForToken(
 
 			accountability.user = user.id;
 			accountability.role = user.role;
-			accountability.admin = user.admin_access === true || user.admin_access == 1;
-			accountability.app = user.app_access === true || user.app_access == 1;
+			accountability.roles = await fetchRolesTree(user.role, database);
+
+			const { admin, app } = await fetchGlobalAccess(accountability, database);
+
+			accountability.admin = admin;
+			accountability.app = app;
 		}
 	}
 

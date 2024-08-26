@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Über
 identifier: Identifikator
 avatar: Avatar
 application: Anwendung
@@ -7,10 +28,12 @@ method: Methode
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
+marketplace: Marktplatz
 extensions: Erweiterungen
 modules: Module
 module_bar: Modulleiste
 logs: Logs
+unknown: Unbekannt
 reset_width: Breite zurücksetzen
 tile_size: Kachelgröße
 edit_field: Feld bearbeiten
@@ -28,6 +51,8 @@ duplicate_field: Feld duplizieren
 half_width: Halbe Breite
 full_width: Volle Breite
 group: Gruppe
+popular: Beliebt
+recent: Aktuell
 export_items: Elemente exportieren
 and: Und
 or: Oder
@@ -54,10 +79,27 @@ extension_hooks: Hooks
 extension_endpoints: Endpunkte
 extension_operations: Operationen
 extension_bundles: Pakete
+extension_missing: Fehlend
 extension_reload_required: Neuladen der Seite erforderlich
 extension_reload_required_copy: Um die Änderungen nach Aktivierung oder Deaktivierung von App-Erweiterungen sehen zu können, ist ein Neuladen der Seite erforderlich.
 extension_reload_now: Jetzt neu laden
+published_relative: Veröffentlicht {relativeTime}
+compatible_with_your_project: Mit Ihrem Projekt kompatibel
+compatible_with_your_project_copy: Der Autor hat die Kompatibilität dieser Erweiterung mit {hostVersion} angegeben, die mit der Version Ihres Projekts ({currentVersion}) übereinstimmt
+last_updated_relative: Letzte Aktualisierung {relativeTime}
+n_files: '{n} Dateien'
+verified: Verifiziert
 homepage: Hello world
+repository: Repository
+reload_page: Seite neu laden
+reload_required: Erneutes Laden erforderlich
+report_an_issue: Problem melden
+website: Webseite
+github: GitHub
+beta: Beta
+n_downloads: '{n} downloads'
+downloads: Downloads
+compatibility_not_guaranteed: Kompatibilität nicht garantiert
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
@@ -146,6 +188,7 @@ logoutReason:
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
+no_description: Keine Beschreibung ...
 not_allowed: Nicht erlaubt
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -508,14 +551,13 @@ replace_from_url: Mit Datei von URL ersetzen
 no_image_selected: Kein Bild ausgewählt
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
-open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle Elemente ({total}) innerhalb {collection} exportieren.
 exporting_limited_items_in_collection: '{count} von {total} Elementen aus {collection} werden exportiert.'
 exporting_no_items_to_export: Keine zu exportierende Elemente. Passen Sie die Exportkonfiguration an und/oder fügen Sie Elemente zur Sammlung hinzu.
-exporting_download_hint: Sobald die {format} Datei erstellt wurde, wird sie auf Ihr Gerät heruntergeladen.
-exporting_library_hint: Sobald die {format} Datei erstellt wurde, wird sie in der Dateibibliothek gespeichert.
+exporting_download_hint: Sobald die {format}-Datei erstellt wurde, wird sie auf Ihr Gerät heruntergeladen.
+exporting_library_hint: Sobald die {format}-Datei erstellt wurde, wird sie in der Dateibibliothek gespeichert.
 exporting_library_hint_forced: Dieser Export muss in mehreren Durchgängen durchgeführt werden. Nach Abschluss wird die {format} Datei in der Datei-Bibliothek gespeichert.
 collection_key: Sammlungsschlüssel
 name: Name
@@ -546,7 +588,8 @@ expand: Ausklappen
 collapse: Einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
-search_items: Elemente suchen...
+search_items: Elemente suchen ...
+search_extensions: Durchsuche Erweiterungen ...
 disabled: Deaktiviert
 information: Information
 report_bug: Bug melden
@@ -647,7 +690,7 @@ errors:
   CONTENT_TOO_LARGE: Gewähltes Element bzw. gewählte Datei ist zu groß
   FIELD_NOT_FOUND: Feld nicht gefunden
   FORBIDDEN: Verweigert
-  GRAPHQL_VALIDATION: GraphQL Validierung
+  GRAPHQL_VALIDATION: GraphQL-Validierung
   ILLEGAL_ASSET_TRANSFORMATION: Bildquelle zu groß für die Vorschau
   INTERNAL_SERVER_ERROR: Unerwarteter Fehler
   INVALID_CONFIG: Ungültige Konfiguration
@@ -690,7 +733,6 @@ cannot_edit_global_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 bookmarks: Lesezeichen
 presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
-unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es später erneut.
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
@@ -715,10 +757,6 @@ make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
 goto_collection_content: Inhalt anzeigen
-start_end_of_count_items: '{start}-{end} von {count} Elementen'
-start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
-one_item: '1 Element'
-one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
@@ -809,7 +847,6 @@ create_item: Element erstellen
 display_template: Anzeigevorlage
 language_display_template: Anzeigevorlage Sprache
 translations_display_template: Anzeigevorlage Übersetzungen
-n_items_selected: 'Keine Objekte ausgewählt | 1 Element ausgewählt | {n} Elemente ausgewählt'
 per_page: Pro Seite
 all_files: Alle Dateien
 my_files: Meine Dateien
@@ -860,7 +897,7 @@ run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktual
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
 run_flow: Flow ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
-field_name_placeholder: Feldnamen eingeben...
+field_name_placeholder: Feldnamen eingeben ...
 field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger
 trigger_options: Auslöse-Optionen
@@ -1024,7 +1061,6 @@ editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
-settings_permissions: Zugriffssteuerung
 settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
@@ -1074,7 +1110,6 @@ page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
-page_help_settings_roles_collection: '**Rollen durchsuchen** — Auflistung der Admin-, öffentlichen und benutzerdefinierten Benutzerrollen.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
   **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
@@ -1103,6 +1138,7 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
+source_registry: Marktplatz
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
@@ -1121,7 +1157,6 @@ directus_collection:
   directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_operations: In Flows ausgeführte Operationen
   directus_panels: Individuelle Panels in Einblicke-Dashboards
-  directus_permissions: Zugriffsrechte für jede Rolle
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
@@ -1286,12 +1321,9 @@ fields:
     name: Rollenname
     icon: Rollen-Symbol
     description: Beschreibung
-    app_access: App-Zugriff
-    admin_access: Admin-Zugriff
-    ip_access: IP-Zugriff
-    enforce_tfa: 2FA erforderlich
     users: Benutzer in Rolle
-    module_list: Modulnavigation
+  directus_policies:
+    description: Beschreibung
   directus_webhooks:
     name: Name
     method: Methode
@@ -1364,7 +1396,7 @@ field_options:
     accountability_divider: Verantwortlichkeit
     duplication_divider: Duplikation
     preview_divider: Vorschau
-    content_versioning_divider: Content Versioning
+    content_versioning_divider: Inhalts-Versionierung
     enable_versioning: Versionierung aktivieren
   directus_files:
     title: Ein einzigartiger Titel...
@@ -1376,7 +1408,6 @@ field_options:
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
-    ip_access: Erlaubte IP-Adressen, IP-Bereiche und CIDR-Blöcke hinzufügen. Leer lassen, um alle zuzulassen...
     fields:
       icon_name: Symbol
       name_name: Name
@@ -1433,7 +1464,6 @@ live_preview:
   toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
-uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
 expired: Abgelaufen
@@ -1760,7 +1790,7 @@ interfaces:
     root_name: Stammordner für Dateien
     system_default: System-Standardeinstellungen
   select-radio:
-    radio-buttons: Radio Buttons
+    radio-buttons: Radio-Buttons
     description: Eine von mehreren Optionen auswählen
   list:
     repeater: Repeater
@@ -2073,7 +2103,7 @@ layouts:
     group_title: Gruppentitel
     group_title_placeholder: Feld für Gruppentitel...
     title: Karten-Titel
-    title_placeholder: Optionales Titelfeld...
+    title_placeholder: Optionales Titelfeld ...
     text: Karten-Text
     text_placeholder: Optionales Textfeld...
     date: Karten-Datum
@@ -2081,7 +2111,7 @@ layouts:
     tags: Karten-Tags
     tags_placeholder: Optionales Tag-Feld...
     user: Karten-Benutzer
-    user_placeholder: Optionales Benutzerfeld...
+    user_placeholder: Optionales Benutzerfeld ...
     image: Karten-Bild
     image_placeholder: Optionales Bildfeld...
     image_fit: Karten-Bild Füllmodus
@@ -2094,7 +2124,6 @@ layouts:
     show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
-    not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 horizontal: Horizontal
 vertical: Vertikal
 x_axis: X-Achse
@@ -2147,8 +2176,8 @@ panels:
   linechart:
     name: Liniendiagramm
     description: Liniendiagramm zum Vergleich der Änderung eines Feldes
-    disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist.
-    disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist.
+    disabled_grouping: Deaktiviert, wenn Gruppierung ausgewählt ist
+    disabled_no_grouping: Deaktiviert, wenn keine Gruppierung ausgewählt ist
     show_marker: Tooltip-Marker anzeigen
     curve_type: Kurventyp
     smooth: Weich
@@ -2269,8 +2298,8 @@ operations:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden
     recipient: Benutzer
-    recipient_placeholder: Eine UUID eingeben...
-    recipient_note: Benutzer UUID hinzufügen und Enter drücken...
+    recipient_placeholder: Eine UUID eingeben ...
+    recipient_note: Benutzer-UUID hinzufügen und Enter drücken ...
     item_note: Elementschlüssel oder relative URL
     message: Nachricht
     subject: Betreff
@@ -2344,5 +2373,5 @@ date_precision: Datumsgenauigkeit
 export_dashboard: Dashboard exportieren
 duplicate_dashboard: Dashboard duplizieren
 search_dashboard: Dashboard suchen...
-search_flow: Flow suchen...
+search_flow: Flow suchen ...
 percent: Prozent

@@ -11,7 +11,7 @@ import { getSchemaCache, setSchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLock } from '../lock/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { RelationsService } from '../services/relations.js';
 import getDefaultValue from './get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from './get-field-system-rows.js';
@@ -54,6 +54,7 @@ export async function getSchema(
 	}
 
 	return await handleSchemaCaching();
+
 
 	async function fetchAndCacheSchema(): Promise<SchemaOverview> {
 		const database = options?.database || getDatabase();

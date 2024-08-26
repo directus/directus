@@ -10,6 +10,12 @@ export interface GraphqlConfig {
 	credentials?: RequestCredentials;
 }
 
-export type GqlResult<Schema, Collection extends keyof Schema> = {
+// these utility types do not have schema fallback logic
+
+export type GqlResult<Schema extends object, Collection extends keyof Schema> = {
 	[Key in Collection]: Schema[Collection][];
+};
+
+export type GqlSingletonResult<Schema extends object, Collection extends keyof Schema> = {
+	[Key in Collection]: Schema[Collection];
 };

@@ -5,6 +5,8 @@ export type ServerInfoOutput = {
 	project: {
 		project_name: string;
 		default_language: string;
+		public_registration: boolean;
+		public_registration_verify_email: boolean;
 	};
 	rateLimit?:
 		| {

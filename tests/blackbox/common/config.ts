@@ -74,7 +74,6 @@ const directusConfig = {
 	...process.env,
 	ADMIN_EMAIL: 'admin@example.com',
 	ADMIN_PASSWORD: 'password',
-	KEY: 'directus-test',
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
 	CACHE_SCHEMA: 'true',
@@ -121,7 +120,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		mysql: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',
@@ -132,7 +131,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		mysql5: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',
@@ -143,7 +142,7 @@ const config: Config = {
 			...knexConfig,
 		},
 		maria: {
-			client: 'mysql',
+			client: 'mysql2',
 			connection: {
 				database: 'directus',
 				user: 'root',
@@ -313,6 +312,7 @@ const isWindows = ['win32', 'win64'].includes(process.platform);
 
 for (const vendor of allVendors) {
 	config.envs[vendor]['TZ'] = isWindows ? '0' : 'UTC';
+	config.envs[vendor]['PUBLIC_URL'] = getUrl(vendor);
 }
 
 export function getUrl(vendor: Vendor, overrideEnv?: Env) {

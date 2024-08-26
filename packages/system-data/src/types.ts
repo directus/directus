@@ -155,7 +155,7 @@ export type FieldValidationOperator = {
 
 export type Permission = {
 	id?: number;
-	role: string | null;
+	policy: string | null;
 	collection: string;
 	action: PermissionsAction;
 	permissions: Filter | null;
@@ -165,6 +165,6 @@ export type Permission = {
 	system?: true;
 };
 
-export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'comment' | 'explain' | 'share';
+export type PermissionsAction = 'create' | 'read' | 'update' | 'delete' | 'share';
 
 export type DataPermission = Partial<Permission> & Pick<Permission, 'collection' | 'action'>;

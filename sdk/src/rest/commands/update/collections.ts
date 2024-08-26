@@ -33,3 +33,21 @@ export const updateCollection =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update multiple collections as batch.
+ * @param items
+ * @param query
+ * @returns Returns the collection objects for the updated collections.
+ */
+export const updateCollectionsBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusCollection<Schema>>>(
+		items: NestedPartial<DirectusCollection<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateCollectionOutput<Schema, TQuery>, Schema> =>
+	() => ({
+		path: `/collections`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});

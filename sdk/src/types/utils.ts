@@ -20,9 +20,6 @@ export type Merge<A, B, TypeA = NeverToUnknown<A>, TypeB = NeverToUnknown<B>> = 
 		    ? TypeA[K]
 		    : never;
 };
-export type MergeOptional<A, B, TypeA = NeverToUnknown<A>, TypeB = NeverToUnknown<B>> = Partial<
-	Merge<A, B, TypeA, TypeB>
->;
 
 /**
  * Fallback never to unknown

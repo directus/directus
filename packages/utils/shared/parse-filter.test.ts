@@ -1,4 +1,4 @@
-import type { Filter, User } from '@directus/types';
+import type { Filter, Policy, User } from '@directus/types';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { parseFilter } from './parse-filter.js';
 
@@ -10,6 +10,22 @@ describe('#parseFilter', () => {
 
 	afterEach(() => {
 		vi.useRealTimers();
+	});
+
+	it('should accept empty filter object', () => {
+		const filter = {};
+
+		const parsedFilter = parseFilter(filter, null);
+
+		expect(parsedFilter).toEqual({});
+	});
+
+	it('should accept empty object for key', () => {
+		const filter = { field_a: {} };
+
+		const parsedFilter = parseFilter(filter, null);
+
+		expect(parsedFilter).toEqual({ field_a: {} });
 	});
 
 	it('returns the filter when passed accountability with only a role', () => {
@@ -271,6 +287,31 @@ describe('#parseFilter', () => {
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
 
+	it('replaces the roles from accountability to $CURRENT_ROLES', () => {
+		const mockFilter = {
+			_and: [
+				{
+					owner: {
+						_in: '$CURRENT_ROLES',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					owner: {
+						_in: ['admin'],
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { roles: ['admin'] };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
 	it('adjusts the date by 1 day', () => {
 		const mockFilter = {
 			date: {
@@ -367,6 +408,58 @@ describe('#parseFilter', () => {
 			$CURRENT_USER: { o2m: [{ nested_o2m: [{ field: 'example-value' }] }] } as unknown as User,
 		};
 
+		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
+	});
+
+	it('replaces the policies with the ids of the $CURRENT_POLICIES variable', () => {
+		const mockFilter = {
+			_and: [
+				{
+					owner: {
+						_in: '$CURRENT_POLICIES',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					owner: {
+						_in: ['policy-1'],
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = {};
+		const mockContext = { $CURRENT_POLICIES: [{ id: 'policy-1' }] as unknown as Policy[] };
+		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
+	});
+
+	it('replaces field from policies using the $CURRENT_POLICIES variable', () => {
+		const mockFilter = {
+			_and: [
+				{
+					owner: {
+						_in: '$CURRENT_POLICIES.key',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					owner: {
+						_in: ['policy-key'],
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = {};
+		const mockContext = { $CURRENT_POLICIES: [{ key: 'policy-key' }] as unknown as Policy[] };
 		expect(parseFilter(mockFilter, mockAccountability, mockContext)).toStrictEqual(mockResult);
 	});
 });

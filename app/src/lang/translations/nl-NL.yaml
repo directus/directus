@@ -477,7 +477,6 @@ replace_from_url: Vervang bestand via een URL import
 no_image_selected: Geen afbeelding geselecteerd
 no_file_selected: Geen bestand geselecteerd
 download_file: Download bestand
-open_file_in_tab: Openen in nieuw tabblad
 start_export: Start exporteren
 not_available_for_local_downloads: Niet beschikbaar voor lokale downloads
 exporting_all_items_in_collection: Alle {total} items uit {collection} aan het exporteren.
@@ -650,7 +649,6 @@ cannot_edit_global_bookmarks: Kan niet globale bladwijzers bewerken
 bookmarks: Bladwijzers
 presets: Voorkeuren
 unexpected_error: Onverwachte fout
-unexpected_error_copy: Een onverwachte fout is opgetreden. Probeer het later opnieuw.
 copy_details: Kopieer details
 no_app_access: Geen App Toegang
 no_app_access_copy: Deze gebruiker heeft geen toestemming om de admin app te gebruiken.
@@ -675,10 +673,6 @@ make_collection_hidden: Maak collectie verborgen
 make_folder_visible: Maak map zichtbar
 make_folder_hidden: Maak map verborgen
 goto_collection_content: Bekijk inhoud
-start_end_of_count_items: '{start}-{end} van {count} items'
-start_end_of_count_filtered_items: '{start}-{end} van {count} gefilterde items'
-one_item: '1 item'
-one_filtered_item: '1 gefilterd item'
 delete_collection_are_you_sure: >-
   Weet je zeker dat je collectie "{collection}" wilt verwijderen? Dit zal de collectie en alle items die erin zijn opgeslagen verwijderen. Deze actie is permanent.
 delete_folder_are_you_sure: Weet je zeker dat je de map "{folder}" wilt verwijderen? Geneste mappen en collecties zullen worden verplaatst naar het hoogste niveau.
@@ -766,7 +760,6 @@ create_item: Item aanmaken
 display_template: Weergavesjabloon
 language_display_template: Taalweergavesjabloon
 translations_display_template: Vertalingsweergavesjabloon
-n_items_selected: 'Geen Items Geselecteerd | 1 Item Geselecteerd | {n} Items Geselecteerd'
 per_page: Per pagina
 all_files: Alle bestanden
 my_files: Mijn bestanden
@@ -1009,7 +1002,6 @@ page_help_settings_datamodel_collections: >-
   **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
 page_help_settings_datamodel_fields: >-
   **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
-page_help_settings_roles_collection: '**Blader door rollen** — Laat de Admin, Publieke en aangepaste gebruikersrollen zien.'
 page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
 page_help_settings_presets_collection: >-
   **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en standaard views.
@@ -1173,12 +1165,9 @@ fields:
     name: Rol Naam
     icon: Rol Icoon
     description: Beschrijving
-    app_access: App toegang
-    admin_access: Admin toegang
-    ip_access: IP Toegang
-    enforce_tfa: 2FA vereist
     users: Gebruikers in rol
-    module_list: Module Navigatie
+  directus_policies:
+    description: Beschrijving
   directus_webhooks:
     name: Naam
     method: Methode

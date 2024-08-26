@@ -421,7 +421,6 @@ replace_from_library: Korvaa tiedosto kirjastosta
 replace_from_url: Korvaa tiedosto osoitteesta
 no_file_selected: Ei valittua tiedostoa
 download_file: Lataa tiedosto
-open_file_in_tab: Avaa tiedosto uudessa välilehdessä
 start_export: Aloita vienti
 not_available_for_local_downloads: Ei saatavilla paikallisille latauksille
 exporting_all_items_in_collection: Viedään kaikki {total} kohdetta kokoelmasta {collection}.
@@ -582,7 +581,6 @@ cannot_edit_global_bookmarks: Yleisten kirjanmerkkien muokkaus epäonnistui
 bookmarks: Kirjainmerkit
 presets: Esiasetukset
 unexpected_error: Odottamaton virhe
-unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
@@ -607,10 +605,6 @@ make_collection_hidden: Tee kokoelma piilotettu
 make_folder_visible: Näytä kansio
 make_folder_hidden: Piilota kansio
 goto_collection_content: Näytä sisältö
-start_end_of_count_items: '{start}-{end} / {count} kohdetta'
-start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
-one_item: '1 kohde'
-one_filtered_item: '1 suodatettu kohde'
 delete_collection_are_you_sure: >-
   Haluatko poistaa kokoelman "{collection}"? Kokoelma ja kaikki siihen kuuluvat kohteet poistetaan pysyvästi.
 delete_folder_are_you_sure: Haluatko poistaa kansion "{folder}"? Kansion kansiot ja kokoelmat siirretään ylimmälle tasolle.
@@ -692,7 +686,6 @@ create_item: Luo kohde
 display_template: Esitysmalli
 language_display_template: Kielen näyttömalli
 translations_display_template: Käännösten näyttömalli
-n_items_selected: 'Ei valittuja kohteita | 1 valittu kohde | {n} valittua kohdetta'
 per_page: Per sivu
 all_files: Kaikki Tiedostot
 my_files: Omat tiedostot
@@ -920,7 +913,6 @@ page_help_settings_datamodel_collections: >-
   **Tietomalli: kokoelmat** — Luettelee kaikki saatavilla olevat kokoelmat. Tämä sisältää näkyvät, piilotetut ja järjestelmäkokoelmat sekä hallitsemattomat tietokantataulut, jotka voidaan lisätä.
 page_help_settings_datamodel_fields: >-
   **Tietomalli: kokoelma** — Lomake tämän kokoelman ja sen kenttien hallintaa varten.
-page_help_settings_roles_collection: '**Selaa rooleja** — Listaa Admin, Julkiset ja mukautetut käyttäjäroolit.'
 page_help_settings_roles_item: "**Roolin yksityiskohdat** — Hallitse roolin käyttöoikeuksia ja muita asetuksia."
 page_help_settings_presets_collection: >-
   **Selaa esiasetuksia** — Listaa kaikki projektin esiasetukset, mukaan lukien käyttäjät, roolit ja maailmanlaajuiset kirjanmerkit sekä oletusnäkymät.
@@ -1084,12 +1076,9 @@ fields:
     name: Roolin nimi
     icon: Roolin kuvake
     description: Kuvaus
-    app_access: Sovelluspääsy
-    admin_access: Ylläpitäjän pääsy
-    ip_access: IP-pääsy
-    enforce_tfa: Vaadi 2FA
     users: Käyttäjät roolissa
-    module_list: Moduulien navigointi
+  directus_policies:
+    description: Kuvaus
   directus_webhooks:
     name: Nimi
     method: Metodi

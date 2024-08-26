@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import { isInstalled, validateMigrations } from '../database/index.js';
 import { getExtensionManager } from '../extensions/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 
 export const loadExtensions = async () => {
 	const env = useEnv();

@@ -392,7 +392,6 @@ edit_bookmark: Redaguoti žymę
 bookmarks: Žymės
 presets: Ruošiniai
 unexpected_error: Nenumatyta klaida
-unexpected_error_copy: Nutiko nenumatyta klaida. Prašome pabandyti vėliau.
 copy_details: Kopijuoti detales
 no_app_access: Nėra prieigos prie aplikacijos
 no_app_access_copy: Šis vartotojas negali naudotis administravimo aplikacija.
@@ -409,7 +408,6 @@ all_users: Visi vartotojai
 delete_collection: Trinti kolekciją
 update_collection_success: Atnaujinti kolekciją
 delete_collection_success: Kolekcija ištrinta
-start_end_of_count_items: '{start}-{end} iš {count} elementų'
 collections_shown: Rodomos kolekcijos
 visible_collections: Matomos kolekcijos
 hidden_collections: Paslėptos kolekcijos
@@ -467,7 +465,6 @@ value_unique: Reikšmė turi būti unikali
 all_activity: Visa Veikla
 create_item: Sukurti elementą
 display_template: Rodymo šablonas
-n_items_selected: 'Nepasirinkta elementų | 1 pasirinktas elementas | Pasirinkta {n} elementai/-ų'
 per_page: Puslapyje
 all_files: Visi failai
 my_files: Mano failai
@@ -588,7 +585,6 @@ page_help_settings_datamodel_collections: >-
   **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
 page_help_settings_datamodel_fields: >-
   **Duomenų modelis: Kolekcija** — forma kolekcijos ir jos laukų valdymui.
-page_help_settings_roles_collection: '**Grupių peržiūra** — Rodomos administratoriaus, vieša ir pasirinktinos vartotojų grupės (rolės).'
 page_help_settings_roles_item: "**Grupės duomenys** — Valdykite grupės prieigą prie duomenų ir kitus nustatymus."
 page_help_settings_presets_collection: >-
   **Peržiurėti ruošinius** — atvaizduojami visi projekto ruošiniai, įskaitant vartotojų, grupių ir bendras žymas bei numatytuosius langus.
@@ -693,12 +689,9 @@ fields:
     name: Vaidmens pavadinimas
     icon: Grupės ikonėlė
     description: Aprašymas
-    app_access: Programos prieiga
-    admin_access: Administratoriaus prieiga
-    ip_access: IP adresas
-    enforce_tfa: Reikalinga 2FA
     users: Vartotojai grupėje
-    module_list: Modulių navigacija
+  directus_policies:
+    description: Aprašymas
   directus_webhooks:
     name: Pavadinimas
     status: Būsena

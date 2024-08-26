@@ -20,14 +20,16 @@ import { getAuthProvider } from '../../auth.js';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { respond } from '../../middleware/respond.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
 import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
+import { getSecret } from '../../utils/get-secret.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
@@ -336,7 +338,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				throw new InvalidPayloadError({ reason: `URL "${redirect}" can't be used to redirect after login` });
 			}
 
-			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, env['SECRET'] as string, {
+			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
 				expiresIn: '5m',
 				issuer: 'directus',
 			});
@@ -368,7 +370,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], env['SECRET'] as string, {
+				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], getSecret(), {
 					issuer: 'directus',
 				}) as {
 					verifier: string;
@@ -382,10 +384,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 
 			const { verifier, redirect, prompt } = tokenData;
 
-			const accountability: Accountability = {
-				ip: getIPFromReq(req),
-				role: null,
-			};
+			const accountability: Accountability = createDefaultAccountability({ ip: getIPFromReq(req) });
 
 			const userAgent = req.get('user-agent')?.substring(0, 1024);
 			if (userAgent) accountability.userAgent = userAgent;

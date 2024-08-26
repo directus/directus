@@ -436,7 +436,6 @@ replace_from_library: Menggantikan Berkas dari Pustaka
 replace_from_url: Menggantikan Berkas dari URL
 no_file_selected: Tidak Ada Berkas Yang Dipilih
 download_file: Unduh Berkas
-open_file_in_tab: Buka file di tab baru
 start_export: Mulai Ekspor
 not_available_for_local_downloads: Tidak tersedia untuk unduhan lokal
 exporting_all_items_in_collection: Ekspor semua {total} item dalam {collection}.
@@ -601,7 +600,6 @@ cannot_edit_global_bookmarks: Tidak dapat mengubah Markah Peran secara Global
 bookmarks: Markah
 presets: Preset
 unexpected_error: Kesalahan Tidak Terduga
-unexpected_error_copy: Terjadi galat yang tidak terduga, Silahkan mencoba lagi nanti.
 copy_details: Salin Rincian
 no_app_access: Tidak Ada Akses Aplikasi
 no_app_access_copy: Pengguna ini tidak diperbolehkan untuk menggunakan aplikasi admin.
@@ -626,10 +624,6 @@ make_collection_hidden: Buat Koleksi Tersembunyi
 make_folder_visible: Buat Folder Terlihat
 make_folder_hidden: Buat Folder Tersembunyi
 goto_collection_content: Tampilkan konten
-start_end_of_count_items: '{start}-{end} dari {count} item'
-start_end_of_count_filtered_items: '{start}-{end} dari {count} item yang di filter'
-one_item: '1 item'
-one_filtered_item: '1 item yang di filter'
 delete_collection_are_you_sure: >-
   Apakah anda yakin ingin menghapus koleksi "{collection}"? Hal ini akan menghapus koleksi dan semua item di dalamnya. Aksi ini bersifat permanen.
 delete_folder_are_you_sure: Anda yakin ingin menghapus folder "{folder}"? Susunan folder dan koleksi akan dipindahkan ke level paling atas.
@@ -714,7 +708,6 @@ create_item: Buat item
 display_template: Tampilan Template
 language_display_template: Templat Tampilan Bahasa
 translations_display_template: Templat Tampilan Terjemahan
-n_items_selected: 'Tidak ada Item yang Dipilih | 1 Item Dipilih | {n} Item Dipilih'
 per_page: Per Halaman
 all_files: Semua Berkas
 my_files: Berkas Saya
@@ -964,7 +957,6 @@ page_help_settings_datamodel_collections: >-
   **Model Data: Collection** — Menampilkan semua Collection yang tersedia. Ini mencakup Collection yang terlihat, tersembunyi, dan sistem, serta tabel basis data yang tidak dikelola yang dapat ditambahkan.
 page_help_settings_datamodel_fields: >-
   **Model Data: Collection** — Formulir untuk mengelola Collection ini dan fieldnya.
-page_help_settings_roles_collection: '**Jelajahi Peran** — Mencantumkan Peran Admin, Publik, dan Pengguna khusus.'
 page_help_settings_roles_item: "**Detail Peran** — Mengelola izin peran dan pengaturan lainnya."
 page_help_settings_presets_collection: >-
   **Jelajahi Preset** — Mencantumkan semua preset dalam proyek, termasuk: pengguna, peran, dan bookmark global, serta tampilan default.
@@ -1007,7 +999,6 @@ directus_collection:
   directus_notifications: Notifikasi dikirim ke pengguna
   directus_operations: Operasi yang berjalan di Flow
   directus_panels: Panel individual dalam dasbor Wawasan
-  directus_permissions: Izin akses untuk setiap peran
   directus_presets: Preset untuk default koleksi dan bookmark
   directus_relations: Konfigurasi relasi dan metadata
   directus_revisions: Snapshot data untuk semua aktivitas
@@ -1139,6 +1130,8 @@ fields:
     display_template: Templat
   directus_roles:
     name: Nama Peran
+    description: Deskripsi
+  directus_policies:
     description: Deskripsi
   directus_webhooks:
     name: Nama

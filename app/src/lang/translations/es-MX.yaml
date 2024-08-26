@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Acerca de
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -7,10 +28,12 @@ method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
+marketplace: Marketplace
 extensions: Extensiones
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
+unknown: Desconocido
 reset_width: Restablecer ancho
 tile_size: Tamaño del mosaico
 edit_field: Editar campo
@@ -28,6 +51,8 @@ duplicate_field: Duplicar campo
 half_width: Anchura 50%
 full_width: Ancho completo
 group: Grupo
+popular: Popular
+recent: Reciente
 export_items: Exportar elementos
 and: "Y"
 or: O
@@ -49,10 +74,33 @@ extension_displays: Displays
 extension_layouts: Layouts
 extension_modules: Módulos
 extension_panels: Paneles
+extension_themes: Temas
 extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operaciones
 extension_bundles: Paquetes
+extension_missing: Perdida
+extension_reload_required: Se requiere actualizar la página
+extension_reload_required_copy: Es necesario recargar la página para ver los cambios después de activar o desactivar las extensiones.
+extension_reload_now: Recargar ahora
+published_relative: Publicado {relativeTime}
+compatible_with_your_project: Compatible con tu proyecto
+compatible_with_your_project_copy: El autor ha indicado la compatibilidad de esta extensión con {hostVersion}, que coincide con la versión de tu proyecto ({currentVersion})
+last_updated_relative: Última actualización {relativeTime}
+n_files: '{n} Archivos'
+verified: Verificado
+homepage: Inicio
+repository: Repositorio
+reload_page: Recargar Página
+reload_required: Recarga Requerida
+report_an_issue: Informar de un Problema
+website: Sitio Web
+github: GitHub
+beta: Beta
+n_downloads: '{n} Descargas'
+downloads: Descargas
+compatibility_not_guaranteed: Compatibilidad no garantizada
+compatibility_not_guaranteed_copy: El autor ha indicado la compatibilidad de esta extensión con {hostVersion}, que coincide con la versión de tu proyecto ({currentVersion})
 enable: Habilitado
 disable: Desactivar
 custom: Personalizado
@@ -141,6 +189,8 @@ logoutReason:
 public_label: Público
 public_description: Controla qué datos de la API están disponibles sin autenticar.
 admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
+no_description: Sin descripción...
+reached_maximum_number_of_extensions: Ha alcanzado el número máximo de extensiones para este proyecto ({n}). Póngase en contacto con el administrador del sistema para obtener más información.
 not_allowed: No permitido
 archive: Archivar
 archive_confirm: '¿Estás seguro que quieres archivar este elemento?'
@@ -280,9 +330,20 @@ time: Hora
 timestamp: Marca de tiempo
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometría (Todo)
+  Point: Punto
+  LineString: LineString
+  Polygon: Polígono
+  MultiPoint: Multipunto
+  MultiLineString: MultiLinea
+  MultiPolygon: MultiPolígono
 theme_auto: Automático (basado en el sistema)
 theme_light: Modo claro
 theme_dark: Modo oscuro
+theme_directus_default: Directus Por Defecto
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus coincidencia de color
 not_available_for_type: No disponible para este tipo
 create_translations: Crear traducciones
 auto_refresh: Actualización automática
@@ -294,12 +355,14 @@ auto_generate: Auto-generar
 this_will_auto_setup_fields_relations: Esto configurará automáticamente todos los campos y relaciones requeridas.
 click_here: Clic aquí
 to_manually_setup_translations: para configurar manualmente las traducciones.
+manage: Administrar
 click_to_manage_translated_fields: >-
   Aún no hay campos traducidos. Haga clic aquí para crearlos. | Hay un campo traducido. Haga clic aquí para administrarlo. | Hay {count} campos traducidos. Haga clic aquí para administrarlos.
 fields_group: Grupo de campos
 no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Se creará lo siguiente dentro de su modelo de datos:'
 search_collection: Buscar colección...
+search_role: Buscar roles...
 search_field: Campo Buscado...
 new_field: 'Nuevo campo'
 new_collection: 'Nueva colección'
@@ -385,6 +448,7 @@ revision_delta_other: Revisión
 revision_delta_by: '{date} por {user}'
 presentation_text_values_cannot_be_reimported: 'Utiliza texto de presentación, los valores no pueden ser reimportados.'
 download_page_as_csv: 'Descargar página como CSV'
+download_page_as_csv_unsupported: Este diseño no soporta la descarga de la página actual.
 private_user: Usuario Privado
 creation_preview: Vista previa de creación
 revision_preview: Vista Previa de Revisión
@@ -463,7 +527,11 @@ months:
   november: Noviembre
   december: Diciembre
 drag_mode: Modo de arrastre
+move_tool: Herramienta Mover
+crop_tool: Herramienta Recorte
+focal_point_tool: Herramienta Punto Focal
 cancel_crop: Cancelar Recorte
+cancel_selection: Cancelar selección
 original: Original
 url: URL
 import_label: Importar
@@ -497,6 +565,10 @@ start_export: Comenzar exportación
 not_available_for_local_downloads: No disponible para descargas locales
 exporting_all_items_in_collection: Exportando los {total} elementos dentro de {collection}.
 exporting_limited_items_in_collection: '{count} de {total} elementos en {collection} serán exportados.'
+exporting_no_items_to_export: No hay elementos para exportar. Ajuste la configuración de exportación y/o añada elementos a la colección.
+exporting_download_hint: Una vez creado el archivo {format}, se descargará a tu dispositivo.
+exporting_library_hint: Una vez creado el archivo {format}, se guardará en la Biblioteca de Archivos.
+exporting_library_hint_forced: Esta exportación se procesará por lotes, y una vez completado, el archivo {format} se guardará en la Biblioteca de Archivos.
 collection_key: Llave de Colección
 name: Nombre
 primary_key_field: Campo de Llave Primaria
@@ -523,10 +595,14 @@ allow_duplicates: Permitir duplicados
 comments: Comentarios
 no_comments: Aún Sin Comentarios
 expand: Expandir
+expand_all: Desplegar todo
+expand_none: Contraer todo
 collapse: Contraer
+collapse_all: Contraer todo
 select_item: Seleccionar elemento
 no_items: Sin elementos
 search_items: Buscar elementos...
+search_extensions: Buscar extensiones...
 disabled: Desactivado
 information: Información
 report_bug: Reportar Problema
@@ -545,6 +621,10 @@ no_files_copy: Aquí no hay archivos.
 user_count: 'Sin Usuarios | Un Usuario | {count} Usuarios'
 no_users_copy: No hay usuarios con este Rol aún.
 webhooks_count: 'Sin Webhooks | Un Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Los webhooks están obsoletos y no se recomienda el uso posterior.
+
+  Por favor usa **Flows** con la [operación Webhook / Solicitud URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) en su lugar.
 no_webhooks_copy: Aún no se ha configurado ningún webhooks. Comienza creando uno a continuación.
 no_notifications: Sin notificaciones
 no_notifications_copy: '¡Estás al día!'
@@ -608,6 +688,10 @@ select_an_item: Seleccionar un elemento...
 edit: Editar
 edit_item: Editando elemento
 enabled: Activado
+partially_enabled: Parcialmente activado
+enable_all: Habilitar Todo
+disable_all: Deshabilitar todo
+enabled_dev_tooltip: Las extensiones de la aplicación siempre están habilitadas en modo dev
 disable_tfa: Desactivar 2FA
 admin_disable_tfa_text: '¿Está seguro que desea desactivar 2FA para este usuario?'
 tfa_setup: Configurar 2FA
@@ -623,6 +707,7 @@ errors:
   CONTENT_TOO_LARGE: El elemento/archivo enviado es demasiado grande
   FIELD_NOT_FOUND: Campo no encontrado
   FORBIDDEN: Prohibido
+  GRAPHQL_VALIDATION: Validación GraphQL
   ILLEGAL_ASSET_TRANSFORMATION: Fuente de imagen demasiado grande para previsualizar
   INTERNAL_SERVER_ERROR: Error Inesperado
   INVALID_CONFIG: Configuración invalida
@@ -637,6 +722,7 @@ errors:
   INVALID_USER: Fallo al autenticar usuario
   ITEM_LIMIT_REACHED: Límite de elementos alcanzado
   ITEM_NOT_FOUND: Elemento no encontrado
+  LIMIT_EXCEEDED: 'Límite excedido'
   METHOD_NOT_ALLOWED: Método no permitido
   NOT_NULL_VIOLATION: El valor no puede ser nulo
   RANGE_NOT_SATISFIABLE: Rango invalido
@@ -647,6 +733,7 @@ errors:
   TOKEN_EXPIRED: Token caducado
   UNEXPECTED_RESPONSE: Respuesta inesperada
   UNKNOWN: Error Inesperado
+  UNPROCESSABLE_CONTENT: Contenido no procesable
   UNSUPPORTED_MEDIA_TYPE: Tipo de archivo no soportado
   USER_SUSPENDED: Usuario suspendido
   VALUE_OUT_OF_RANGE: Valor fuera de rango
@@ -664,7 +751,7 @@ cannot_edit_global_bookmarks: No se puede editar marcadores globales
 bookmarks: Marcadores
 presets: Predefinidos
 unexpected_error: Error Inesperado
-unexpected_error_copy: Ha ocurrido un error inesperado. Por favor inténtelo más tarde.
+unexpected_error_copy: Ha ocurrido un error inesperado. Por favor, intenta de nuevo.
 copy_details: Copiar Detalles
 no_app_access: Sin acceso a la aplicación
 no_app_access_copy: Este usuario no tiene permitido usar la aplicación de administración.
@@ -689,10 +776,6 @@ make_collection_hidden: Hacer que la colección se oculte
 make_folder_visible: Hacer visible la carpeta
 make_folder_hidden: Ocultar carpeta
 goto_collection_content: Ver contenido
-start_end_of_count_items: '{start}-{end} de {count} elementos'
-start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
-one_item: '1 elemento'
-one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
   ¿Estás seguro que quieres eliminar la colección "{collection}"? Esto eliminará la colección y todos los elementos de la misma. Esta acción es permanente.
 delete_folder_are_you_sure: '¿Estás seguro que quieres eliminar la carpeta "{folder}"? Las carpetas y colecciones anidadas se moverán al nivel más alto.'
@@ -759,6 +842,7 @@ operators:
   regex: Coincidir RegExp
 custom_validation_message: Mensaje de validación personalizado
 loading: Cargando...
+extension_readme_missing: Esta extensión no tiene un archivo README.
 drop_to_upload: Arrastrar para Subir
 item: Elemento
 items: Elementos
@@ -771,17 +855,18 @@ upload_pending: Subida Pendiente
 drag_file_here: Arrastre y Suelte un Archivo Aquí
 click_to_browse: Haga Clic para Navegar
 interface_options: Opciones de Interfaz
+display_options: Opciones de Visualización
 layout_options: Opciones de Diseño
 rows: Filas
 columns: Columnas
 collection_setup: Configuración de Colección
+optional_system_fields: Campos opcionales
 value_unique: El valor tiene que ser único
 all_activity: Toda la Actividad
 create_item: Crear elemento
 display_template: Plantilla de Presentación
 language_display_template: Plantilla de visualización de idioma
 translations_display_template: Plantilla de visualización de traducciones
-n_items_selected: 'Sin elementos seleccionados | 1 elemento seleccionado | {n} elementos seleccionados'
 per_page: Por Página
 all_files: Todos los Archivos
 my_files: Mis Archivos
@@ -972,6 +1057,8 @@ wysiwyg_options:
   source_code: Editar código fuente
   fullscreen: Pantalla Completa
   directionality: Direccionalidad
+  lazy_loading: Imagen de carga diferida
+  lazy_loading_label: Habilitar carga diferida
 dropdown: Lista Desplegable
 choices: Opciones
 choices_option_configured_incorrectly: Opciones configuradas incorrectamente
@@ -979,6 +1066,8 @@ deselect: Quitar selección
 deselect_all: Deseleccionar Todo
 theme: Tema
 select_a_theme: Seleccionar un tema
+default_sync_with_project: Predeterminado (Sincronizar con proyecto)
+appearance_auto: Automático (Sincronizar con el sistema)
 appearance_light: Claro
 appearance_dark: Oscuro
 other: Otro...
@@ -992,7 +1081,6 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando por lote {count} elementos'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de datos
-settings_permissions: Control de acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
 settings_webhooks: Webhooks
@@ -1013,6 +1101,7 @@ editing_preset: Editar Predefinido
 layout_preview: Vista Previa de Diseño
 layout_setup: Configuración del Diseño
 data: Datos
+theme-overrides: Reemplazo del tema
 unsaved_changes: Cambios sin Guardar
 unsaved_changes_copy: '¿Estás seguro que quieres salir de esta página?'
 discard_changes: Descartar Cambios
@@ -1034,11 +1123,13 @@ page_help_files_collection: >-
   **Biblioteca de archivos** — Lista todos los archivos subidos a este proyecto. Personaliza el diseño, los filtros y la ordenación para adaptar su vista, e incluso guardar los marcadores de estas diferentes configuraciones para un acceso rápido.
 page_help_files_item: >-
   **Detalle de archivo** — Una forma para administrar metadatos de archivos, editar el archivo original y actualizar los ajustes de acceso.
+page_help_settings_project: "**Ajustes del Proyecto** — Sus opciones de ajustes globales para el proyecto."
+page_help_settings_appearance: "**Apariencia** — Opciones de apariencia y temas de tu proyecto."
+page_help_settings_extensions: '**Extensiones** — Las extensiones instaladas en tu proyecto.'
 page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
-page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
 page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
   **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
@@ -1048,11 +1139,16 @@ page_help_settings_webhooks_collection: '**Navegar en Webhooks** — Lista todos
 page_help_settings_webhooks_item: '**Detalle de Webhook** — Una manera de crear y administrar los webhooks del proyecto.'
 page_help_settings_flows_collection: '**Explorar flujos** — Lista todos los flujos dentro del proyecto.'
 page_help_settings_flows_item: '**Detalle de flujo** — Espacio de trabajo para gestionar una o más operaciones.'
+page_help_settings_translations_collection: '**Ver traducciones personalizadas** — Lista todas las traducciones personalizadas dentro del proyecto.'
+page_help_settings_translations_item: '**Detalle de traducciones personalizadas** — Un formulario para ver y administrar este elemento.'
 page_help_users_collection: '**Directorio de Usuarios** — Lista todos los usuarios del sistema en este proyecto.'
 page_help_users_item: >-
   **Detalle de Usuario** — Administre su información de cuenta, o visualice el detalle de otros usuarios.
 page_help_insights_overview: '**Informes** — Lista de tableros a los que tiene acceso.'
 page_help_insights_dashboard: '**Tablero** — Espacio de trabajo para administrar uno o más paneles'
+page_help_marketplace_account: '**Cuenta** — Editor o mantenedor de una extensión publicada.'
+page_help_marketplace_registry: '**Registro** — Extensiones disponibles en el Marketplace de Directus.'
+page_help_marketplace_extension: '**Extensión** — Extensión en el Marketplace de Directus.'
 activity_feed: Actividad
 add_new: Añadir nuevo
 create_new: Crear Nuevo
@@ -1063,6 +1159,17 @@ batch_delete_confirm: >-
   No hay elementos seleccionados | ¿Estás seguro que quieres eliminar este elemento? Esta acción no se puede deshacer. | ¿Estás seguro que quieres eliminar estos {count} elementos? Esta acción no se puede deshacer.
 cancel: Cancelar
 no_upscale: No mejorar imágenes
+no_extensions: Sin extensiones
+no_extensions_copy: Aún no se han instalado extensiones.
+install_extension: Instalar extensión
+uninstall_locked: No se pueden desinstalar extensiones que no estaban instaladas a través del Marketplace
+uninstall: Desinstalar
+installed: Instalada
+reinstall: Reinstalar
+open_in_marketplace: Abrir en el Marketplace
+source_registry: Marketplace
+source_local: Local
+source_module: Módulo de Nodo
 collection: Colección
 collections: Colecciones
 content: Contenido
@@ -1081,7 +1188,6 @@ directus_collection:
   directus_notifications: Notificaciones enviadas a usuarios
   directus_operations: Operaciones que se ejecutan en flujos
   directus_panels: Paneles individuales dentro de los tableros Informes
-  directus_permissions: Permisos de acceso para cada rol
   directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
   directus_revisions: Capturas de datos para toda la actividad
@@ -1092,6 +1198,8 @@ directus_collection:
   directus_users: Usuarios del sistema para la plataforma
   directus_webhooks: Configuración de peticiones HTTP basadas en eventos
   directus_translations: Traducciones personalizadas
+  directus_versions: Versiones de contenido para elementos
+  directus_extensions: Configuración de extensiones
 fields:
   directus_activity:
     item: Llave primaria del elemento
@@ -1118,6 +1226,7 @@ fields:
     unarchive_value: Desarchivar valor
     sort_field: Ordenar campo
     accountability: Actividad y seguimiento de revisión
+    versioning: Versionado
     archive_field: Campo de archivo
     item_duplication_fields: Campos de duplicación de elementos
   directus_files:
@@ -1144,6 +1253,8 @@ fields:
     height: Alto
     charset: Codificación
     duration: Duración
+    focal_point_x: Coordenada X
+    focal_point_y: Coordenada Y
   directus_users:
     first_name: Nombre
     last_name: Apellido
@@ -1161,6 +1272,7 @@ fields:
     status: Estado
     status_draft: Borrador
     status_invited: Invitado
+    status_unverified: No verificado
     status_active: Activo
     status_suspended: Suspendido
     status_archived: Archivado
@@ -1172,12 +1284,17 @@ fields:
     last_access: Último acceso
     email_notifications: Notificaciones por email
     appearance: Apariencia
+    theme_light: Tema claro
+    theme_dark: Tema Oscuro
+    theme_light_overrides: Personalización de tema claro
+    theme_dark_overrides: Personalización del tema oscuro
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Notificación
     mapping: Mapeo
     basemaps: Mapas basales
     basemaps_raster: Ráster
@@ -1195,9 +1312,14 @@ fields:
     project_color: Color del proyecto
     project_logo: Logo del proyecto
     default_language: Idioma predeterminado
+    branding: Marca
     public_foreground: Superficie Pública
     public_background: Fondo público
     public_note: Notas Públicas
+    theming: Valores predeterminados del tema
+    default_appearance: Aspecto por defecto
+    default_theme_light: Tema Claro por defecto
+    default_theme_dark: Tema Oscuro por defecto
     auth_password_policy: Política de Contraseña para Autentificación
     auth_login_attempts: Intentos de Inicio de Sesión al Autentificarse
     files_and_thumbnails: Archivos y almacenamiento
@@ -1212,6 +1334,16 @@ fields:
     transformations_presets: Limitar las transformaciones a los ajustes de abajo
     image_editor: Editor de imágenes
     custom_aspect_ratios: Relaciones de aspecto personalizadas
+    theme_light_overrides: Personalización del Tema Claro
+    theme_dark_overrides: Personalización del Tema Oscuro
+    public_registration: Registro de Usuario
+    public_registration_note: Permite a los usuarios registrarse a través de la [ruta de registro](/admin/register).
+    public_registration_role: Rol de Usuario
+    public_registration_role_note: Este rol está asignado a los usuarios que se registran utilizando este método. No afecta a los usuarios ya registrados.
+    public_registration_email_filter: Filtro de dirección de email
+    public_registration_email_filter_note: Sólo pueden registrarse direcciones de correo electrónico que coincidan con este filtro.
+    public_registration_verify_email: Verificar E-mail
+    public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
   directus_shares:
     name: Nombre
     role: Rol
@@ -1232,12 +1364,9 @@ fields:
     name: Nombre del rol
     icon: Ícono del rol
     description: Descripción
-    app_access: Acceso a la aplicación
-    admin_access: Acceso Admin
-    ip_access: Acceso IP
-    enforce_tfa: Requiere 2FA
     users: Usuarios en el rol
-    module_list: Navegación en Módulo
+  directus_policies:
+    description: Descripción
   directus_webhooks:
     name: Nombre
     method: Método
@@ -1254,6 +1383,8 @@ field_options:
   directus_settings:
     project_name_placeholder: Mi proyecto...
     project_color_note: Inicio de sesión y fondo de logo
+    project_logo_note: Blanco 40x40 SVG/PNG
+    project_favicon_note: 32×32 ICO
     public_note_placeholder: Un mensaje corto y público que soporta formato markdown...
     security_divider_title: Seguridad
     auth_password_policy:
@@ -1308,11 +1439,14 @@ field_options:
     accountability_divider: Responsabilidad
     duplication_divider: Duplicación
     preview_divider: Vista previa
+    content_versioning_divider: Contenido Versionado
+    enable_versioning: Habilitar versiones
   directus_files:
     title: Un título único...
     description: Una descripción opcional...
     location: Una ubicación opcional...
     storage_divider: Nombre de archivo
+    focal_point_divider: Punto focal
     filename_disk: Nombre en el almacenamiento de disco...
     filename_download: Nombre al descargar...
   directus_roles:
@@ -1365,10 +1499,15 @@ block: Bloque
 inline: Alineado
 comment: Comentar
 live_preview:
+  enable: Habilitar previsualización
+  disable: Deshabilitar previsualización
+  change_size: Cambiar dimensiones de pantalla
+  refresh: Actualizar vista previa
   new_window: Abrir en nueva ventana
+  close_window: Abrir en vista dividida
+  toggle_3d: Alterna 3D
 shares: Compartido
 unlimited_usage: Uso ilimitado
-uses_left: No hay usos restantes | 1 uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
 expired: Expirado
@@ -1377,6 +1516,7 @@ share: Compartir
 share_item: Compartir elemento
 shared_with_you: Un artículo ha sido compartido contigo
 shared_enter_passcode: Ingresa tu código de acceso para continuar...
+shared_leave_blank_for_passwordless_access: Dejar en blanco para acceso sin contraseña
 shared_leave_blank_for_unlimited: Dejar en blanco para ilimitado
 shared_times_remaining: Este enlace sólo puede utilizarse {n} veces
 shared_last_remaining: Este enlace sólo puede utilizarse una vez
@@ -1446,6 +1586,7 @@ authenticated: Autenticado
 options: Opciones
 otp: Contraseña de un solo uso
 password: Contraseña
+confirm_password: Confirmar Contraseña
 permissions: Permisos
 relationship: Relación
 reset: Restablecer
@@ -1460,7 +1601,16 @@ search: Buscar
 select_existing: Seleccionar Existente
 select_field_type: Seleccione un tipo de campo
 select_interface: Seleccione una interfaz
+select_display: Seleccione una pantalla
 settings: Ajustes
+register: Registrar
+registration_successful_headline: '¡Éxito!'
+registration_successful_note: Ahora puede proceder a la página de inicio de sesión.
+registration_successful_check_email_note: |
+  Por favor, ten en cuenta que antes de poder iniciar sesión, tendrás que verificar tu dirección de correo electrónico haciendo clic en el enlace de verificación que se te ha enviado.
+dont_have_an_account: '¿No tienes una cuenta?'
+already_have_an_account: '¿Ya tienes una cuenta?'
+sign_up_now: Regístrate ahora
 sign_in: Iniciar Sesión
 sign_out: Cerrar Sesión
 sign_out_confirm: '¿Estás seguro que quieres cerrar sesión?'
@@ -1490,7 +1640,12 @@ navigate_to_item: Navegar al elemento
 undo_removed_item: Deshacer elemento eliminado
 remove_item: Quitar elemento
 delete_item: Eliminar elemento
+pause: Pausar
+resume: Reanudar
 interfaces:
+  list-m2a:
+    prefix_note: Utiliza el nombre de la colección del elemento relacionado de forma predeterminada.
+    sorting_disabled: La ordenación está desactivada porque hay más elementos de los que caben en una página.
   filter:
     name: Filtro
     description: Configurar un objeto de filtro.
@@ -1628,6 +1783,11 @@ interfaces:
     description: Una ventana modal para seleccionar opciones de una interfaz
   system-display:
     display: Mostrar
+    description: Seleccionar una interfaz existente
+    placeholder: Seleccione una interfaz...
+  system-display-options:
+    display-options: Opciones de Visualización
+    description: Un diálogo para seleccionar opciones de una interfaz
   list-m2m:
     many-to-many: Muchos a Muchos
     description: Seleccionar múltiples elementos de unión relacionados
@@ -1674,11 +1834,13 @@ interfaces:
     notice: Aviso
     description: Mostrar un breve aviso
     text: Ingresa el contenido del aviso aquí...
+    no_text: No hay texto configurado...
   list-o2m:
     one-to-many: Uno a Muchos
     description: Seleccionar varios elementos relacionados
     no_collection: No se encontró la colección
   system-folder:
+    folder: Carpeta raíz
     description: Seleccione una carpeta
     field_hint: Carpeta predeterminada para los archivos subidos sin una carpeta especificada. No afecta a los archivos existentes.
     root_name: Raíz de la Biblioteca de Archivos
@@ -1696,6 +1858,7 @@ interfaces:
     field_note_placeholder: Ingresa la nota del campo...
     incompatible_data: Los datos actuales no son compatibles con la interfaz del repetidor y serán reemplazados al agregar elementos al repetidor
     interface_group: Opciones de Interfaz
+    display_group: Opciones de Visualización
   slider:
     slider: Deslizador
     description: Seleccionar un número usando un deslizador
@@ -1735,6 +1898,7 @@ interfaces:
     input-translated-string: Cadenas traducidas
     description: Seleccionar o añadir cadena de traducción
     search_placeholder: Buscar...
+    new_custom_translation: Nueva traducción personalizada
   boolean:
     toggle: Alternar
     description: Alternar entre Activado y Desactivado
@@ -1747,6 +1911,7 @@ interfaces:
     no_collection: Sin Colección
     toggle_split_view: Cambiar vista dividida
     enable: Habilitado
+    default_split_view_state: Estado por defecto de la vista separada
     user_language: Usar el idioma actual del usuario
     default_language: Idioma predeterminado
     language_field: Campo indicador de idioma
@@ -1767,20 +1932,33 @@ interfaces:
     description: Un editor de texto rich escribiendo contenido HTML
     toolbar: Barra de Herramientas
     custom_formats: Formatos Personalizados
+    custom_formats_note: Lista de Formatos de Contenido de TinyMCE. Consulte la documentación de TinyMCE acerca de [Formateo de Contenido](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) para más información.
     options_override: Sobrescribir Opciones
+    options_override_note: Lista de Formatos de Contenido de TinyMCE. Consulte la documentación de TinyMCE acerca de [Formateo de Contenido](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) para más información.
     folder_note: Carpeta para los archivos subidos. No afecta a los archivos existentes.
     imageToken: Token de acceso estático
     imageToken_label: Token de acceso estático se añade a la URL de los archivos
   input-block-editor:
+    input-block-editor: Editor de Bloques
+    description: Editor con estilo de bloque para historias de medios enriquecidos, genera datos limpios en JSON usando Editor.js
     tools: Barra de Herramientas
     tools_options:
       header: Encabezado
       nestedlist: Lista
       embed: Incrustado
+      paragraph: Párrafo
       code: Código
       image: Imagen
+      attaches: Adjuntos
       table: Tabla
+      quote: Cuota
       underline: Subrayado
+      inlinecode: Codigo en línea
+      delimiter: Delimitador
+      checklist: Lista de verificación
+      toggle: Bloque desplegable
+      alignment: Alineación
+      raw: HTML sin formato
   input-autocomplete-api:
     input-autocomplete-api: Campo de Autocompletado (API)
     description: Búsqueda autocompletada para valores de API externos.
@@ -1897,6 +2075,7 @@ displays:
     description: Presentar una versión formateada del objeto
   hash:
     hash: Hash
+    description: Presentar una versión formateada del texto
   icon:
     icon: Ícono
     description: Mostrar un ícono
@@ -2002,9 +2181,9 @@ layouts:
     show_ungrouped: Mostrar desagrupado
     show: Mostrar
     no_group: Sin grupo
-    not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 horizontal: Horizontal
 vertical: Vertical
+axis: Eje
 x_axis: Eje X
 y_axis: Eje Y
 y_axis_function: Función del eje Y
@@ -2031,6 +2210,9 @@ panels:
     name: Métrico
     description: Mostrar un único valor basado en una consulta
     field: Campo
+  metric_list:
+    name: Lista de métricas
+    description: Listar y visualizar métricas agregadas de una colección
   time_series:
     name: Series de tiempo
     description: Procesar un gráfico de línea basado en valores a lo largo del tiempo
@@ -2144,9 +2326,19 @@ operations:
     payload: Payload
     query: Consulta
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Firmar y verificar JSON Web Tokens
+    operation: Operación
+    secret: Clave Secreta
+    secret_placeholder: Escriba un texto secreto...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opciones
+    options_placeholder: 'Consulte https://www.npmjs.com/package/jsonwebtoken#usage para ver las opciones disponibles'
+    sign: Firmar token
+    verify: Verificar token
+    decode: Decodificar token
   log:
     name: Registrar en la consola
     description: Envía algo a la consola
@@ -2166,6 +2358,7 @@ operations:
     recipient: Usuario
     recipient_placeholder: Ingresa un UUID...
     recipient_note: Añade el UUID del usuario y presiona enter...
+    item_note: Clave de artículo o URL relativa
     message: Mensaje
     subject: Asunto
   request:
@@ -2199,14 +2392,44 @@ operations:
     batch: Lote
     batch_size: Tamaño del lote
     cache: Caché
+unit: Unidad
 standard: Estándar
+scientific: Científica
+engineering: Ingeniería
 compact: Compacto
+currency: Moneda
+notation: Nota
 style: Estilo
 fonts:
   thin: Fino
+  extra_light: Extra-Ligero
+  light: Claro
   normal: Normal
   medium: Medio
+  semi_bold: Semi negrita
   bold: Negrita
+  extra_bold: Extra negrita
   black: Negro
   italic: Cursiva
+  oblique: Oblicua
+  small: Pequeño
+  large: Grande
   auto: Automático
+text_wrap: Ajuste de texto
+center: Centrar
+justify: Justificar
+text_align: Alineación de texto
+font_weight: Grosor de la fuente
+font_style: Estilo de la fuente
+font_size: Tamaño de la Fuente
+minimum_fraction_digits: Decimales mínimos
+maximum_fraction_digits: Decimales máximos
+show_percentage: Mostrar porcentaje
+aggregation: Agregación
+series_grouping: Grupo de series
+date_precision: Precisión de fecha
+export_dashboard: Exportar Panel
+duplicate_dashboard: Duplicar Panel
+search_dashboard: Buscar Panel...
+search_flow: Buscar Flujo...
+percent: Porcentaje

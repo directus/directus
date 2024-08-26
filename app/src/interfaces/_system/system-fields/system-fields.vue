@@ -95,18 +95,23 @@ const removeField = (field: string) => {
 		<v-list v-if="fields.length === 0">
 			<v-notice class="no-fields">{{ t('interfaces.system-fields.no_fields') }}</v-notice>
 		</v-list>
-		<v-list v-else>
-			<draggable v-model="fields" item-key="key" handle=".drag-handle" v-bind="{ 'force-fallback': true }">
-				<template #item="{ element: field }">
-					<v-list-item block>
-						<v-icon name="drag_handle" class="drag-handle" left />
-						<div class="name">{{ field.displayName }}</div>
-						<div class="spacer" />
-						<v-icon name="close" clickable @click="removeField(field.key)" />
-					</v-list-item>
-				</template>
-			</draggable>
-		</v-list>
+		<draggable
+			v-else
+			v-model="fields"
+			tag="v-list"
+			item-key="key"
+			handle=".drag-handle"
+			v-bind="{ 'force-fallback': true }"
+		>
+			<template #item="{ element: field }">
+				<v-list-item block>
+					<v-icon name="drag_handle" class="drag-handle" left />
+					<div class="name">{{ field.displayName }}</div>
+					<div class="spacer" />
+					<v-icon name="close" clickable @click="removeField(field.key)" />
+				</v-list-item>
+			</template>
+		</draggable>
 		<v-menu placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
 				<button class="toggle" @click="toggle">

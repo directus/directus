@@ -1,15 +1,17 @@
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import mime from 'mime/lite';
 import { Ref, ref, watch } from 'vue';
-import { SettingsStorageAssetPreset } from '@directus/types';
+import { SettingsStorageAssetPreset, File } from '@directus/types';
 
 type ImageSelection = {
 	imageUrl: string;
 	alt: string;
 	lazy?: boolean;
-	width?: number;
-	height?: number;
+	width?: number | null;
+	height?: number | null;
 	transformationKey?: string | null;
 	previewUrl?: string;
 };
@@ -25,7 +27,7 @@ type UsableImage = {
 	imageDrawerOpen: Ref<boolean>;
 	imageSelection: Ref<ImageSelection | null>;
 	closeImageDrawer: () => void;
-	onImageSelect: (image: Record<string, any>) => void;
+	onImageSelect: (image: File) => void;
 	saveImage: () => void;
 	imageButton: ImageButton;
 };
@@ -115,12 +117,16 @@ export default function useImage(
 		imageDrawerOpen.value = false;
 	}
 
-	function onImageSelect(image: Record<string, any>) {
-		const assetUrl = getPublicURL() + 'assets/' + image.id;
+	function onImageSelect(image: File) {
+		const fileExtension = image.type
+			? readableMimeType(image.type, true)
+			: readableMimeType(mime.getType(image.filename_download) as string, true);
+
+		const assetUrl = getPublicURL() + 'assets/' + image.id + '.' + fileExtension;
 
 		imageSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),
-			alt: image.title,
+			alt: image.title!,
 			lazy: false,
 			width: image.width,
 			height: image.height,
@@ -135,7 +141,7 @@ export default function useImage(
 		if (img === null) return;
 
 		const queries: Record<string, any> = {};
-		const newURL = new URL(img.imageUrl);
+		const newURL = new URL(img.imageUrl, 'file://');
 
 		newURL.searchParams.delete('width');
 		newURL.searchParams.delete('height');
@@ -154,7 +160,7 @@ export default function useImage(
 			}
 		}
 
-		const resizedImageUrl = addQueryToPath(newURL.toString(), queries);
+		const resizedImageUrl = addQueryToPath(newURL.toString().replace('file://', ''), queries);
 		const imageHtml = `<img src="${resizedImageUrl}" alt="${img.alt}" ${img.lazy ? 'loading="lazy" ' : ''}/>`;
 		editor.value.selection.setContent(imageHtml);
 		editor.value.undoManager.add();
