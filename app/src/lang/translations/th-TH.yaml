@@ -673,8 +673,6 @@ tooltip: คำแนะนำ
 tooltip_placeholder: ใส่คำแนะนำ
 unlimited: ไม่จำกัด
 open_link_in: เปิดลิงก์
-new_tab: แท็บใหม่
-current_tab: แท็บปัจจุบัน
 wysiwyg_options:
   aligncenter: จัดตำแหน่งกึ่งกลาง
   alignjustify: จัดตำแหน่งชิดขอบซ้ายและขวา
