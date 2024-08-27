@@ -1030,8 +1030,6 @@ tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
 unlimited: Не ограничено
 open_link_in: Открыть ссылку в
-new_tab: Новая вкладка
-current_tab: Текущая вкладка
 save_image: Сохранить изображение
 save_media: Сохранить медиа
 wysiwyg_options:
