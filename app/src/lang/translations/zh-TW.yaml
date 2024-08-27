@@ -814,8 +814,6 @@ tooltip: 工具提示
 tooltip_placeholder: 輸入工具提示....
 unlimited: 無限制
 open_link_in: 開啟連結至
-new_tab: 新分頁
-current_tab: 目前分頁
 save_image: 儲存圖片
 save_media: 儲存媒體
 wysiwyg_options:
