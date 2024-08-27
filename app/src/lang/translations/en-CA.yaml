@@ -678,8 +678,6 @@ tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
 open_link_in: Open link in
-new_tab: New tab
-current_tab: Current tab
 wysiwyg_options:
   aligncenter: Align Centre
   alignjustify: Align Justify
