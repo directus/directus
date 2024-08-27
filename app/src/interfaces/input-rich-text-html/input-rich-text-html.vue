@@ -349,7 +349,7 @@ function setFocus(val: boolean) {
 							<v-checkbox
 								v-model="linkSelection.newTab"
 								block
-								:label="t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
+								:label="t('new_tab')"
 							></v-checkbox>
 						</div>
 					</div>
