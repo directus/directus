@@ -1051,8 +1051,7 @@ tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
 open_link_in: Open link in
-new_tab: New tab
-current_tab: Current tab
+new_tab: New Tab
 save_image: Save Image
 save_media: Save Media
 wysiwyg_options:
