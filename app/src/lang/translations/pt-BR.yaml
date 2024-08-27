@@ -2044,6 +2044,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Editor "Raw"
     description: Permitir valores com templates "raw" ou "mustache"
+  input-password:
+    input-password: Insira sua Senha
+    description: Entrada de senha com alternância para ocultar o valor
 displays:
   translations:
     translations: Traduções
@@ -2487,3 +2490,5 @@ duplicate_dashboard: Duplicar Painel
 search_dashboard: Procurar Painel...
 search_flow: Procurar Fluxo...
 percent: Porcentagem
+show_password: Mostrar senha
+hide_password: Ocultar Senha
