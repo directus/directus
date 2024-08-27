@@ -690,8 +690,6 @@ tooltip: Vihje
 tooltip_placeholder: Sisesta vihje...
 unlimited: Piiramatu
 open_link_in: Ava link
-new_tab: Uus vahekaart
-current_tab: Praegune vahekaart
 wysiwyg_options:
   aligncenter: Joonda Keskele
   alignjustify: Joonda kahepoolselt
