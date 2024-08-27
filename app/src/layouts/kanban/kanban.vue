@@ -328,6 +328,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					padding: 12px 16px;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
+					cursor: pointer;
 
 					&:hover .title {
 						text-decoration: underline;
