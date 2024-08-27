@@ -539,8 +539,6 @@ interface_group_relational: Rilata
 interface_group_groups: Grupoj
 interface_group_other: Alia
 unlimited: Senlima
-new_tab: Nova langeto
-current_tab: Nuna langeto
 save_image: Konservi la bildon
 wysiwyg_options:
   forecolor: Malfona koloro
