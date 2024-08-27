@@ -796,8 +796,6 @@ interface_group_other: Drugo
 tooltip_placeholder: Unesite tooltip...
 unlimited: Neograničeno
 open_link_in: Otvori link u
-new_tab: Nova kartica
-current_tab: Trenutna kartica
 save_image: Sačuvaj sliku
 save_media: Sačuvaj medijski zapis
 wysiwyg_options:
