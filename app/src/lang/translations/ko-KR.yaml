@@ -1004,8 +1004,6 @@ tooltip: 툴팁
 tooltip_placeholder: 툴팁을 입력하세요...
 unlimited: 제한 없는
 open_link_in: 링크 열기
-new_tab: 새 탭
-current_tab: 현재 탭
 save_image: 이미지를 저장
 save_media: 미디어 저장
 wysiwyg_options:
