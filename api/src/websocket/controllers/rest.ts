@@ -19,7 +19,7 @@ export class WebSocketController extends SocketController {
 			this.bindEvents(this.createClient(ws, auth));
 		});
 
-		logger.info(`WebSocket Server started at ws://${getAddress(httpServer)}${this.endpoint}`);
+		logger.info(`WebSocket Server started at ${getAddress(httpServer)}${this.endpoint}`);
 	}
 
 	private bindEvents(client: WebSocketClient) {
