@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: directus/stale-issues-action@v1
         with:
-          stale-label: ':detective: Needs More Info'
+          stale-label: 'Needs Info'
           days-before-close: 7
           close-message:
             "Heya! There isn't enough information available to keep investigating this issue at present time, so it'll
