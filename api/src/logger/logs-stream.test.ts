@@ -121,8 +121,5 @@ test('Escapes quotes in error messages', () => {
 
 	logStream._write(JSON.stringify(log), '', () => {});
 
-	expect(messenger.publish).toBeCalledWith(
-		'logs',
-		JSON.stringify({ log, nodeId: 'a-nanoid' }),
-	);
+	expect(messenger.publish).toBeCalledWith('logs', JSON.stringify({ log, nodeId: 'a-nanoid' }));
 });
