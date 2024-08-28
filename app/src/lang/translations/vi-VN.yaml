@@ -918,6 +918,7 @@ fields:
     custom_css: Tuỳ chỉnh CSS
     module_bar: Thanh công cụ
     image_editor: Trình chỉnh sửa ảnh
+    public_registration_role: Vai trò người dùng
   directus_shares:
     name: Tên
     role: Phân quyền
@@ -1133,9 +1134,11 @@ interfaces:
     label_default: Đã kích hoạt
   translations:
     display_template: Mẫu hiển thị
+    user_language: Sử dụng ngôn ngữ người dùng hiện tại
   user:
     user: Người dùng
     modes:
+      auto: Tự động
       dropdown: Tuỳ chọn dạng thả xuống
   input-block-editor:
     tools_options:
@@ -1149,6 +1152,7 @@ interfaces:
 displays:
   translations:
     translations: Các Bản Dịch
+    user_language: Sử dụng ngôn ngữ người dùng hiện tại
   boolean:
     boolean: Boolean
     icon_on: Biểu tượng của trạng thái Bật
@@ -1251,3 +1255,4 @@ fonts:
   bold: In đậm
   black: Đen
   italic: Nghiêng
+  auto: Tự động
