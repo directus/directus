@@ -48,7 +48,13 @@ test('Publishes raw log when pretty is false', () => {
 
 	logStream._write(logString, '', () => {});
 
-	expect(messenger.publish).toBeCalledWith('logs', `{"log":${logString},"nodeId":"a-nanoid"}`);
+	expect(messenger.publish).toBeCalledWith(
+		'logs',
+		JSON.stringify({
+			log: sample.log,
+			nodeId: 'a-nanoid',
+		}),
+	);
 });
 
 test('Publishes http log when pretty is false', () => {
@@ -58,7 +64,13 @@ test('Publishes http log when pretty is false', () => {
 
 	logStream._write(logString, '', () => {});
 
-	expect(messenger.publish).toBeCalledWith('logs', `{"log":${logString},"nodeId":"a-nanoid"}`);
+	expect(messenger.publish).toBeCalledWith(
+		'logs',
+		JSON.stringify({
+			log: sample.httpLog,
+			nodeId: 'a-nanoid',
+		}),
+	);
 });
 
 test('Publishes prettified log when pretty is basic', () => {
@@ -68,7 +80,13 @@ test('Publishes prettified log when pretty is basic', () => {
 
 	logStream._write(logString, '', () => {});
 
-	expect(messenger.publish).toBeCalledWith('logs', `{"log":${logString},"nodeId":"a-nanoid"}`);
+	expect(messenger.publish).toBeCalledWith(
+		'logs',
+		JSON.stringify({
+			log: sample.log,
+			nodeId: 'a-nanoid',
+		}),
+	);
 });
 
 test('Publishes prettified http log when pretty is http', () => {
@@ -78,5 +96,33 @@ test('Publishes prettified http log when pretty is http', () => {
 
 	logStream._write(logString, '', () => {});
 
-	expect(messenger.publish).toBeCalledWith('logs', `{"log":${logString},"nodeId":"a-nanoid"}`);
+	expect(messenger.publish).toBeCalledWith(
+		'logs',
+		JSON.stringify({
+			log: {
+				level: sample.httpLog.level,
+				time: sample.httpLog.time,
+				msg: sample.httpLog.msg,
+			},
+			nodeId: 'a-nanoid',
+		}),
+	);
+});
+
+test('Escapes quotes in error messages', () => {
+	const messenger = useBus();
+	const logStream = new LogsStream('basic');
+
+	const log = {
+		level: 30,
+		time: new Date().getTime(),
+		msg: `Am I "'escaped'"=?`,
+	};
+
+	logStream._write(JSON.stringify(log), '', () => {});
+
+	expect(messenger.publish).toBeCalledWith(
+		'logs',
+		JSON.stringify({ log, nodeId: 'a-nanoid' }),
+	);
 });
