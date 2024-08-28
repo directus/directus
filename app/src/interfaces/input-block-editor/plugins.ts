@@ -201,6 +201,10 @@ export class ImageTool extends BaseImageTool {
 			titleElement.innerHTML = tune.title;
 			tuneElement.appendChild(titleElement);
 
+			if (tune.toggle && this._data[tune.name]) {
+				tuneElement.classList.add('ce-popover-item--active');
+			}
+
 			if (tune.onActivate) tuneElement.addEventListener('click', tune.onActivate);
 			else if (tune.toggle)
 				tuneElement.addEventListener('click', () => {
