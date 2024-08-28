@@ -42,11 +42,7 @@ function updateValue(value: string[]) {
 </script>
 
 <template>
-	<v-notice v-if="!items" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
 	<v-select
-		v-else
 		multiple
 		:model-value="value"
 		:items="items"
