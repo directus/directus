@@ -15,7 +15,7 @@ export const appRecommendedPermissions: Partial<Permission>[] = [
 				_eq: '$CURRENT_USER',
 			},
 		},
-		fields: ['*'],
+		fields: ['comment'],
 	},
 	{
 		collection: 'directus_comments',
