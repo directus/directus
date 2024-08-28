@@ -816,6 +816,7 @@ editing_unit: 'Đang sửa {unit}'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
 no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
+settings_roles: Vai trò người dùng
 settings_project: Cài đặt
 settings_webhooks: Webhooks
 settings_presets: Đánh dấu
