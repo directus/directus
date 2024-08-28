@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { getItemRoute } from '@/utils/get-route';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import type { Field } from '@directus/types';
+import type { Field, PrimaryKey } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -32,6 +31,9 @@ const props = withDefaults(
 		layoutOptions: LayoutOptions;
 		resetPresetAndRefresh: () => Promise<void>;
 		error?: any;
+		selection: PrimaryKey[];
+		selectMode?: boolean;
+		onClick: (options: { item: Item; event: MouseEvent }) => void;
 	}>(),
 	{
 		collection: null,
@@ -106,13 +108,14 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					group="groups"
 					item-key="id"
 					draggable=".draggable"
+					:disabled="selectMode"
 					:animation="150"
 					class="draggable"
 					:class="{ sortable: groupsSortField !== null }"
 					@change="changeGroupSort"
 				>
 					<template #item="{ element: group }">
-						<div class="group" :class="{ draggable: group.id !== null }">
+						<div class="group" :class="{ draggable: group.id !== null, disabled: selectMode }">
 							<div class="header">
 								<div class="title">
 									<div class="title-content">
@@ -120,7 +123,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 									</div>
 									<span class="badge">{{ group.items.length }}</span>
 								</div>
-								<div v-if="group.id !== null" class="actions">
+								<div v-if="group.id !== null && !selectMode" class="actions">
 									<v-menu show-arrow placement="bottom-end">
 										<template #activator="{ toggle }">
 											<v-icon name="more_horiz" clickable @click="toggle" />
@@ -143,6 +146,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 								:model-value="group.items"
 								group="items"
 								draggable=".item"
+								:disabled="selectMode"
 								:animation="150"
 								:sort="sortField !== null"
 								class="items"
@@ -150,7 +154,11 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 								@change="change(group, $event)"
 							>
 								<template #item="{ element }">
-									<router-link :to="getItemRoute(collection, element.id)" class="item">
+									<div
+										class="item"
+										:class="{ selected: selection.includes(element[primaryKeyField?.field]) }"
+										@click="onClick({ item: element, event: $event })"
+									>
 										<div v-if="element.title" class="title">{{ element.title }}</div>
 										<img v-if="element.image" class="image" :src="element.image" />
 										<render-display
@@ -190,7 +198,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 												</v-avatar>
 											</div>
 										</div>
-									</router-link>
+									</div>
 								</template>
 							</draggable>
 						</div>
@@ -256,7 +264,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			margin-right: 20px;
 			transition: border-color var(--transition) var(--fast);
 
-			&:active {
+			&:not(.disabled).active {
 				border-color: var(--theme--form--field--input--border-color-hover);
 				cursor: move;
 			}
@@ -320,10 +328,14 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					padding: 12px 16px;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
+					cursor: pointer;
 
 					&:hover .title {
-						// color: var(--theme--primary);
 						text-decoration: underline;
+					}
+
+					&.selected {
+						outline: 2px solid var(--theme--primary);
 					}
 				}
 
