@@ -1,9 +1,8 @@
 import api from '@/api';
-import { router } from '@/router';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useServerStore } from '@/stores/server';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
-import { getItemRoute } from '@/utils/get-route';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
@@ -51,6 +50,8 @@ export default defineLayout<LayoutOptions>({
 		const { collection, search, filterSystem } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
 
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
@@ -168,24 +169,11 @@ export default defineLayout<LayoutOptions>({
 				eventClick(info) {
 					if (!collection.value) return;
 
-					if (props.selectMode || selection.value?.length > 0) {
-						const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
+					const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
 
-						if (item) {
-							const primaryKey = item[primaryKeyField.value!.field];
-
-							if (selection.value.includes(primaryKey)) {
-								selection.value = selection.value.filter((selected) => selected !== primaryKey);
-							} else {
-								selection.value = [...selection.value, primaryKey];
-							}
-
-							updateCalendar();
-						}
-					} else {
-						const primaryKey = info.event.id;
-
-						router.push(getItemRoute(collection.value, primaryKey));
+					if (item) {
+						onClick({ item, event: info.jsEvent });
+						updateCalendar();
 					}
 				},
 				async eventChange(info) {

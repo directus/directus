@@ -41,7 +41,8 @@ export class GraphQLSubscriptionController extends SocketController {
 		});
 
 		bindPubSub();
-		logger.info(`GraphQL Subscriptions started at ws://${getAddress(httpServer)}${this.endpoint}`);
+
+		logger.info(`GraphQL Subscriptions started at ${getAddress(httpServer)}${this.endpoint}`);
 	}
 
 	private bindEvents(client: WebSocketClient) {

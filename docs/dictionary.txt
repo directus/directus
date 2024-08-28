@@ -154,6 +154,7 @@ Corepack
 CORS
 CPUs?
 create-directus-extension
+create-directus-project
 cron
 Cron
 CRON
