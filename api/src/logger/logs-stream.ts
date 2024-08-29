@@ -19,6 +19,7 @@ export class LogsStream extends Writable {
 
 	override _write(chunk: string, _encoding: string, callback: (error?: Error | null) => void) {
 		if (!this.pretty) {
+			// keeping this string interpolation for performance on RAW logs
 			this.messenger.publish('logs', `{"log":${chunk},"nodeId":"${nodeId}"}`);
 			return callback();
 		}
@@ -28,7 +29,14 @@ export class LogsStream extends Writable {
 		if (this.pretty === 'http' && log.req?.method && log.req?.url && log.res?.statusCode && log.responseTime) {
 			this.messenger.publish(
 				'logs',
-				`{"log":{"level":${log['level']},"time":${log['time']},"msg":"${log.req.method} ${log.req.url} ${log.res.statusCode} ${log.responseTime}ms"},"nodeId":"${nodeId}"}`,
+				JSON.stringify({
+					log: {
+						level: log['level'],
+						time: log['time'],
+						msg: `${log.req.method} ${log.req.url} ${log.res.statusCode} ${log.responseTime}ms`,
+					},
+					nodeId: nodeId,
+				}),
 			);
 
 			return callback();
@@ -36,7 +44,14 @@ export class LogsStream extends Writable {
 
 		this.messenger.publish(
 			'logs',
-			`{"log":{"level":${log['level']},"time":${log['time']},"msg":"${log['msg']}"},"nodeId":"${nodeId}"}`,
+			JSON.stringify({
+				log: {
+					level: log['level'],
+					time: log['time'],
+					msg: log['msg'],
+				},
+				nodeId: nodeId,
+			}),
 		);
 
 		callback();
