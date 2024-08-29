@@ -163,7 +163,6 @@ function onScroll(event: any) {
 	const scrollerEl = scroller.value.$el;
 
 	if (isNearBottom()) {
-		scrollerEl.style.scrollSnapType = 'y mandatory';
 		onScrollToBottom();
 	} else {
 		scrollerEl.style.scrollSnapType = 'none';
@@ -172,8 +171,12 @@ function onScroll(event: any) {
 }
 
 function onScrollToBottom() {
-	emit('scrolledToBottom');
+	const scrollerEl = scroller.value.$el;
+
+	scrollerEl.style.scrollSnapType = 'y mandatory';
 	unreadLogsChipVisible.value = true;
+
+	emit('scrolledToBottom');
 }
 </script>
 
