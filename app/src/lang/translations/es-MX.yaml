@@ -542,6 +542,7 @@ file_details: Detalles de Archivo
 dimensions: Dimensiones
 size: Tamaño
 created: Creado
+uploaded: Subido
 modified: Modificado
 owner: Propietario
 edited_by: Editado por
@@ -1010,6 +1011,7 @@ tooltip: Sugerencia
 tooltip_placeholder: Ingresa una sugerencia...
 unlimited: Ilimitado
 open_link_in: Abrir enlace en
+new_tab: Nueva pestaña
 save_image: Guardar imagen
 save_media: Guardar archivo
 wysiwyg_options:
@@ -1169,7 +1171,7 @@ uninstall: Desinstalar
 installed: Instalada
 reinstall: Reinstalar
 open_in_marketplace: Abrir en el Marketplace
-source_registry: Marketplace
+source_registry: Mercado
 source_local: Local
 source_module: Módulo de Nodo
 collection: Colección
@@ -1454,6 +1456,11 @@ field_options:
     focal_point_divider: Punto focal
     filename_disk: Nombre en el almacenamiento de disco...
     filename_download: Nombre al descargar...
+  directus_policies:
+    name: Un nombre único para esta política...
+    description: Una descripción de esta política...
+    enforce_tfa: Forzar la autenticación de dos factores
+    assigned_to: Asignado a
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
@@ -2443,3 +2450,5 @@ duplicate_dashboard: Duplicar Panel
 search_dashboard: Buscar Panel...
 search_flow: Buscar Flujo...
 percent: Porcentaje
+show_password: Mostrar contraseña
+hide_password: Ocultar contraseña
