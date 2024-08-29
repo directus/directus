@@ -164,6 +164,7 @@ function onScroll(event: any) {
 
 	if (isNearBottom()) {
 		scrollerEl.style.scrollSnapType = 'y mandatory';
+		onScrollToBottom();
 	} else {
 		scrollerEl.style.scrollSnapType = 'none';
 		emit('scroll', event);
