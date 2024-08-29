@@ -26,6 +26,7 @@ export function preprocessBindings(
 
 	const sql = query.sql.replace(/(\\*)(\?)/g, (_, escapes) => {
 		if (escapes.length % 2) {
+			// Return an escaped question mark, so it stays escaped
 			return `${'\\'.repeat(escapes.length)}?`;
 		}
 
