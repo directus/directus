@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Set initial state of tunes in BlockEditor ImageTool
+Fixed the image tune menu toggle state indication in the block editor interface

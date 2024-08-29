@@ -179,7 +179,7 @@ export class ImageTool extends BaseImageTool {
 					bus.emit({ type: 'open-url', payload: this.data.file.fileURL });
 				},
 			},
-			...ImageTool.tunes,
+			...BaseImageTool.tunes,
 		];
 
 		const wrapperElement = document.createElement('div');
@@ -201,7 +201,7 @@ export class ImageTool extends BaseImageTool {
 			titleElement.innerHTML = tune.title;
 			tuneElement.appendChild(titleElement);
 
-			if (tune.toggle && this._data[tune.name]) {
+			if (tune.toggle && tune.name && this._data[tune.name]) {
 				tuneElement.classList.add('ce-popover-item--active');
 			}
 
