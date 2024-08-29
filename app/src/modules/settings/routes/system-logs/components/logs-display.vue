@@ -106,7 +106,9 @@ function scrollTo(
 			currentScrollController = null;
 			scrollerEl.scrollTop = targetHeight;
 
-			if (emitEvent) {
+			if (target === 'bottom') {
+				onScrollToBottom();
+			} else if (emitEvent) {
 				emit(emitEvent);
 			}
 		}
@@ -129,7 +131,7 @@ async function scrollToBottom() {
 		scrollerEl.scrollTop = scrollerEl.scrollHeight;
 		onScrollToBottom();
 	} else {
-		scrollTo(scrollerEl.scrollHeight, scrollerEl.scrollHeight / 20, false, 'scrolledToBottom');
+		scrollTo('bottom', scrollerEl.scrollHeight / 20, false, 'scrolledToBottom');
 	}
 }
 
