@@ -29,18 +29,18 @@ export function preprocessBindings(
 			return `${'\\'.repeat(escapes.length)}?`;
 		}
 
-		const binding = query.bindings[matchIndex];
+		const binding = query.bindings[matchIndex]!;
 		let bindingIndex: number;
 
-		if (bindingIndices.has(binding!)) {
+		if (bindingIndices.has(binding)) {
 			// This index belongs to a binding that has been encountered before.
-			bindingIndex = bindingIndices.get(binding!)!;
+			bindingIndex = bindingIndices.get(binding)!;
 		} else {
 			// The first time the value is encountered, set the index lookup to the current index
 			// Use the nextBindingIndex to get the next unused binding index that is used in the new, deduplicated bindings
 			bindingIndex = nextBindingIndex++;
-			bindingIndices.set(binding!, bindingIndex);
-			bindings.push(binding!);
+			bindingIndices.set(binding, bindingIndex);
+			bindings.push(binding);
 		}
 
 		// Increment the loop counter
