@@ -160,9 +160,12 @@ function onScroll(event: any) {
 		return;
 	}
 
+	const scrollerEl = scroller.value.$el;
+
 	if (isNearBottom()) {
-		onScrollToBottom();
+		scrollerEl.style.scrollSnapType = 'y mandatory';
 	} else {
+		scrollerEl.style.scrollSnapType = 'none';
 		emit('scroll', event);
 	}
 }
