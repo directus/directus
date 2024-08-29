@@ -21,7 +21,8 @@ Directus is a real-time API and App dashboard for managing SQL database content.
 
 ## 🚀 Directus Cloud
 
-[Directus Cloud](https://directus.io/pricing) allows you to create projects, hosted by the Directus team, from $15/month.
+[Directus Cloud](https://directus.io/pricing) allows you to create projects, hosted by the Directus team, from
+$15/month.
 
 - A self-service dashboard to create and monitor all your projects in one place.
 - Everything you need: Directus, database, storage, auto-scaling, and a global CDN.

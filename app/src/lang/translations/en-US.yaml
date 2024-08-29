@@ -1066,8 +1066,7 @@ tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
 open_link_in: Open link in
-new_tab: New tab
-current_tab: Current tab
+new_tab: New Tab
 save_image: Save Image
 save_media: Save Media
 wysiwyg_options:
@@ -2105,6 +2104,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values
+  input-password:
+    input-password: Input Password
+    description: Password input with toggle to hide value
 displays:
   translations:
     translations: Translations
@@ -2554,3 +2556,5 @@ duplicate_dashboard: Duplicate Dashboard
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent
+show_password: Show password
+hide_password: Hide password

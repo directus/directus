@@ -163,7 +163,7 @@ export async function startServer(): Promise<void> {
 
 	const host = env['HOST'] as string;
 	const path = env['UNIX_SOCKET_PATH'] as string | undefined;
-	const port = env['PORT'] as string | undefined;
+	const port = env['PORT'] as string;
 
 	let listenOptions: ListenOptions;
 
@@ -172,7 +172,7 @@ export async function startServer(): Promise<void> {
 	} else {
 		listenOptions = {
 			host,
-			port: parseInt(port || '8055'),
+			port: parseInt(port),
 		};
 	}
 
