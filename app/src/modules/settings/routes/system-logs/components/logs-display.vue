@@ -137,7 +137,11 @@ async function scrollToBottom() {
 
 async function scrollToTop() {
 	await nextTick();
-	scrollTo(0, -scroller.value.$el.scrollHeight / 20, false, 'scrolledToTop');
+
+	const scrollerEl = scroller.value.$el;
+
+	scrollerEl.style.scrollSnapType = 'none';
+	scrollTo('top', -scroller.value.$el.scrollHeight / 20, false, 'scrolledToTop');
 }
 
 async function scrollDownByOne() {
