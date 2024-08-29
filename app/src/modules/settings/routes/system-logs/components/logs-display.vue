@@ -203,7 +203,7 @@ function onScrollToBottom() {
 		</template>
 		<template #default="{ item, index, active }">
 			<dynamic-scroller-item :item="item" :active="active" :data-index="index" :data-active="active">
-				<div :class="['log-entry', { maximized: item.selected }]" @click="emit('expandLog', item.index)">
+				<div :class="['log-entry', { selected: item.selected }]" @click="emit('expandLog', item.index)">
 					<span class="timestamp">[{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}]</span>
 					<span v-if="!item.notice" :class="getMessageClasses(['instance'], item)">
 						[#{{ instances.indexOf(item.instance) + 1 }}]
@@ -267,7 +267,7 @@ function onScrollToBottom() {
 	scroll-snap-align: end;
 }
 
-.log-entry:hover:not(.maximized) {
+.log-entry:hover:not(.selected) {
 	background-color: var(--theme--background-normal);
 }
 
@@ -292,7 +292,7 @@ function onScrollToBottom() {
 	flex-grow: 1;
 }
 
-.maximized {
+.selected {
 	background-color: var(--theme--background-accent);
 }
 
