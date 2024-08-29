@@ -1,34 +1,52 @@
-import { parseJSON } from '@directus/utils';
+import { useEnv } from '@directus/env';
 import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
-import { getAddress } from '../../utils/get-address.js';
-import { WebSocketError, handleWebSocketError } from '../errors.js';
-import { WebSocketMessage } from '../messages.js';
+import { handleWebSocketError } from '../errors.js';
+import { AuthMode, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
-import { registerWebSocketEvents } from './hooks.js';
 
 const logger = useLogger();
 
-export class WebSocketController extends SocketController {
+export class LogsController extends SocketController {
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WEBSOCKETS_REST');
-		registerWebSocketEvents();
+		super(httpServer, 'WEBSOCKETS_LOGS');
+
+		const env = useEnv();
 
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
 
-		logger.info(`WebSocket Server started at ${getAddress(httpServer)}${this.endpoint}`);
+		logger.info(`Logs WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+	}
+
+	override getEnvironmentConfig(configPrefix: string) {
+		const env = useEnv();
+
+		const endpoint = String(env[`${configPrefix}_PATH`]);
+
+		const maxConnections =
+			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
+
+		return {
+			endpoint,
+			maxConnections,
+			// require strict auth
+			authentication: {
+				mode: 'strict' as AuthMode,
+				timeout: 0,
+				requireAdmin: true,
+			},
+		};
 	}
 
 	private bindEvents(client: WebSocketClient) {
 		client.on('parsed-message', async (message: WebSocketMessage) => {
 			try {
-				message = WebSocketMessage.parse(await emitter.emitFilter('websocket.message', message, { client }));
-				emitter.emitAction('websocket.message', { message, client });
+				emitter.emitAction('websocket.logs', { message, client });
 			} catch (error) {
 				handleWebSocketError(client, error, 'server');
 				return;
@@ -44,17 +62,5 @@ export class WebSocketController extends SocketController {
 		});
 
 		emitter.emitAction('websocket.connect', { client });
-	}
-
-	protected override parseMessage(data: string): WebSocketMessage {
-		let message: WebSocketMessage;
-
-		try {
-			message = parseJSON(data);
-		} catch (err: any) {
-			throw new WebSocketError('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
-		}
-
-		return message;
 	}
 }
