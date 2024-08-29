@@ -1038,6 +1038,7 @@ all_instances: All Instances
 instance_count: 'No Instance | One Instance | {count} Instances'
 all_log_levels: All Log Levels
 log_level_count: 'No Log Level | One Log Level | {count} Log Levels'
+soft_wrap_lines: Soft Wrap Lines
 full_screen: Full Screen
 full_text_search: Full-Text Search
 edit_panels: Edit Panels

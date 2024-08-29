@@ -42,6 +42,7 @@ const selectedLog = ref<Log>();
 let autoScroll = true;
 const logsCount = ref(0);
 const purgedLogsCount = ref(0);
+const softWrap = ref(false);
 
 const client = sdk.with(
 	realtime({
@@ -110,6 +111,10 @@ watch(logDetailSearch, () => {
 watch(logDetailVisible, async () => {
 	await nextTick();
 	codemirror?.refresh();
+});
+
+watch(softWrap, () => {
+	codemirror?.setOption('lineWrapping', softWrap.value);
 });
 
 function filterObjectBySortedPaths(obj: Log['data'], paths: string[]) {
@@ -497,6 +502,9 @@ onUnmounted(() => {
 								<v-icon name="content_copy" />
 							</v-button>
 						</div>
+						<div class="actions">
+							<v-checkbox v-model="softWrap" :label="t('soft_wrap_lines')" />
+						</div>
 					</div>
 				</transition>
 			</div>
@@ -624,6 +632,11 @@ onUnmounted(() => {
 .fade-enter-from,
 .fade-leave-to {
 	opacity: 0;
+}
+
+.actions {
+	padding: 0 5px;
+	margin-left: auto;
 }
 
 @media (min-width: 960px) {
