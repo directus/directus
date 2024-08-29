@@ -205,7 +205,6 @@ function onScrollToBottom() {
 			<dynamic-scroller-item
 				:item="item"
 				:active="active"
-				:size-dependencies="[item.data.msg]"
 				:data-index="index"
 				:data-active="active"
 			>
