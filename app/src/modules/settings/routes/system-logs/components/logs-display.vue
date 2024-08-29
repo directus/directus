@@ -202,12 +202,7 @@ function onScrollToBottom() {
 			<div v-if="streamConnected" class="notice">{{ t('logs_waiting') }}</div>
 		</template>
 		<template #default="{ item, index, active }">
-			<dynamic-scroller-item
-				:item="item"
-				:active="active"
-				:data-index="index"
-				:data-active="active"
-			>
+			<dynamic-scroller-item :item="item" :active="active" :data-index="index" :data-active="active">
 				<div :class="['log-entry', { maximized: item.selected }]" @click="emit('expandLog', item.index)">
 					<span class="timestamp">[{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}]</span>
 					<span v-if="!item.notice" :class="getMessageClasses(['instance'], item)">
@@ -323,6 +318,7 @@ function onScrollToBottom() {
 	.label {
 		font-weight: bold;
 		font-size: 12px;
+		text-transform: uppercase;
 	}
 }
 
