@@ -14,7 +14,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['expandLog', 'scrolledToBottom', 'scrolledToTop', 'scroll']);
+const emit = defineEmits(['logSelected', 'scrolledToBottom', 'scrolledToTop', 'scroll']);
 
 defineExpose({ clearUnreadLogs, incrementUnreadLogs, scrollToBottom, scrollToTop, scrollDownByOne, scrollUpByOne });
 
@@ -184,6 +184,13 @@ function onScrollToBottom() {
 
 	emit('scrolledToBottom');
 }
+
+function selectLog(index: number) {
+	const scrollerEl = scroller.value.$el;
+
+	scrollerEl.style.scrollSnapType = 'none';
+	emit('logSelected', index);
+}
 </script>
 
 <template>
@@ -203,7 +210,7 @@ function onScrollToBottom() {
 		</template>
 		<template #default="{ item, index, active }">
 			<dynamic-scroller-item :item="item" :active="active" :data-index="index" :data-active="active">
-				<div :class="['log-entry', { selected: item.selected }]" @click="emit('expandLog', item.index)">
+				<div :class="['log-entry', { selected: item.selected }]" @click="selectLog(item.index)">
 					<span class="timestamp">[{{ localizedFormat(item.data.time, `${t('date-fns_time_24hour')}`) }}]</span>
 					<span v-if="!item.notice" :class="getMessageClasses(['instance'], item)">
 						[#{{ instances.indexOf(item.instance) + 1 }}]

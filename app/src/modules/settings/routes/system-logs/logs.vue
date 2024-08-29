@@ -275,7 +275,7 @@ function pauseLogsStreaming() {
 	addNotice(t('logs_session_paused'));
 }
 
-function maximizeLog(index: number) {
+function showLogDetail(index: number) {
 	autoScroll = false;
 
 	const correctedIndex = index - purgedLogsCount.value;
@@ -394,7 +394,7 @@ function handleUpDownKey(isUp: boolean) {
 	const index = filteredLogs.value[filteredIndex]?.index;
 
 	if (index !== undefined) {
-		maximizeLog(index);
+		showLogDetail(index);
 	}
 }
 
@@ -472,7 +472,7 @@ onUnmounted(() => {
 						:log-levels="allowedLogLevels"
 						:instances="instances"
 						:stream-connected="streamConnected"
-						@expand-log="maximizeLog"
+						@log-selected="showLogDetail"
 						@scroll="onScroll"
 						@scrolled-to-bottom="onScrollBottom"
 					/>
