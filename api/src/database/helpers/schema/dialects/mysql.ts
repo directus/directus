@@ -57,6 +57,8 @@ export class SchemaHelperMySQL extends SchemaHelper {
 	) {
 		if (hasMultiRelationalSort) {
 			/*
+			** MySQL **
+
 			MySQL only requires all selected sort columns that are not functionally dependent on the primary key to be included.
 
 			> If the ONLY_FULL_GROUP_BY SQL mode is enabled (which it is by default),
@@ -70,6 +72,17 @@ export class SchemaHelperMySQL extends SchemaHelper {
 			> You can use the alias in GROUP BY, ORDER BY, or HAVING clauses to refer to the column:
 
 			https://dev.mysql.com/doc/refman/8.4/en/problems-with-alias.html
+
+			** MariaDB **
+
+			MariaDB does not document how it supports functional dependent columns in GROUP BY clauses.
+			But testing shows that it does support the same features as MySQL in this area.
+
+			MariaDB allows aliases to be used in the GROUP BY clause
+
+			> The GROUP BY expression can be a computed value, and can refer back to an identifer specified with AS.
+
+			https://mariadb.com/kb/en/group-by/#group-by-examples
 			 */
 
 			groupByFields.push(...sortRecords.map(({ alias }) => alias));
