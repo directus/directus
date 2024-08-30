@@ -61,10 +61,13 @@ extension_modules: Moduloj
 extension_panels: Paneloj
 extension_hooks: Hokoj
 extension_operations: Operacioj
+extension_missing: Mankanta
 n_files: '{n} dosieroj'
 repository: Deponejo
 website: Retejo
 github: GitHub
+n_downloads: '{n} elŝutoj'
+downloads: Elŝutoj
 enable: Ŝalti
 disable: Malŝalti
 custom: Propra
@@ -106,6 +109,7 @@ delete_folder: Forigi la dosierujon
 prefix: Prefikso
 suffix: Sufikso
 version: Versio
+create_version: Krei version
 promote_version_changes: Ŝanĝoj
 delete_bookmark: Forigi la legosignon
 delete_bookmark_copy: >-
@@ -115,6 +119,7 @@ logoutReason:
   SIGN_OUT: Elsalutinta
   SESSION_EXPIRED: Seanco eksvalidiĝinta
 public_label: Publika
+no_description: Neniu priskribo...
 not_allowed: Ne permesita
 archive: Arĥivi
 archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
@@ -191,6 +196,8 @@ text: Teksto
 time: Tempo
 timestamp: Tempindiko
 uuid: UUID
+theme_light: Hela reĝimo
+theme_dark: Malhela reĝimo
 not_available_for_type: Ne disponebla por la tipo
 create_translations: Krei tradukojn
 auto_refresh: Aŭtomate aktualigi
@@ -605,6 +612,7 @@ adding_user: Aldoni uzanton
 unknown_user: Nekonata uzanto
 settings_data_model: Datummodelo
 settings_project: Agordoj
+settings_appearance: Aspekto
 settings_webhooks: Rethokoj
 settings_flows: Fluoj
 settings_presets: Legosignoj
@@ -629,6 +637,11 @@ none: Neniu
 batch_delete_confirm: >-
   Neniu ero estas elektita | Ĉu vi certas, ke vi volas forigi la eron? La ago ne estas malfarebla. | Ĉu vi certas, ke vi volas forigi {count} erojn? La ago ne estas malfarebla.
 cancel: Nuligi
+uninstall: Malinstali
+installed: Instalita
+reinstall: Reinstali
+source_local: Loka
+source_module: Node-modulo
 collection: Kolekto
 collections: Kolektoj
 content: Enhavo
@@ -698,6 +711,7 @@ fields:
     provider: Provizanto
     external_identifier: Ekstera identigilo
     last_page: Lasta paĝo
+    appearance: Aspekto
   directus_settings:
     jpg: JPEG
     png: PNG
