@@ -328,7 +328,7 @@ ${comment}
 		});
 	}
 
-	generateQuery(type: 'activity' | 'comments', originalQuery: Query): Query {
+	generateQuery(type: serviceOrigin, originalQuery: Query): Query {
 		const query: Query = cloneDeep(originalQuery);
 		const defaultActivityCommentFilter = { action: { _eq: Action.COMMENT } };
 
