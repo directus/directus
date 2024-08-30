@@ -12,7 +12,7 @@ export interface RetentionTask {
 	collection: string;
 	where?: readonly [string, string, Knex.Value | null];
 	join?: readonly [string, string, string];
-	timeframe?: number;
+	timeframe: number | undefined;
 }
 
 const env = useEnv();
@@ -20,21 +20,20 @@ const env = useEnv();
 const retentionLockKey = 'schedule--data-retention';
 const retentionLockTimeout = 10 * 60 * 1000; // 10 mins
 
+const ACTIVITY_RETENTION_TIMEFRAME = getMilliseconds(env['ACTIVITY_RETENTION']);
+const FLOW_LOGS_RETENTION_TIMEFRAME = getMilliseconds(env['FLOW_LOGS_RETENTION']);
+const REVISIONS_RETENTION_TIMEFRAME = getMilliseconds(env['REVISIONS_RETENTION']);
+
 const RETENTION_TASKS: RetentionTask[] = [
 	{
 		collection: 'directus_activity',
 		where: ['action', '!=', Action.RUN],
-		timeframe: getMilliseconds(env['ACTIVITY_RETENTION']),
+		timeframe: ACTIVITY_RETENTION_TIMEFRAME,
 	},
 	{
 		collection: 'directus_activity',
 		where: ['action', '=', Action.RUN],
-		timeframe: getMilliseconds(env['FLOW_LOGS_RETENTION']),
-	},
-	{
-		collection: 'directus_revisions',
-		join: ['directus_activity', 'directus_revisions.activity', 'directus_activity.id'],
-		timeframe: getMilliseconds(env['REVISIONS_RETENTION']),
+		timeframe: FLOW_LOGS_RETENTION_TIMEFRAME,
 	},
 ];
 
@@ -107,6 +106,19 @@ export default function schedule() {
 
 	if (!validateCron(String(env['RETENTION_SCHEDULE']))) {
 		return false;
+	}
+
+	if (
+		!ACTIVITY_RETENTION_TIMEFRAME ||
+		(ACTIVITY_RETENTION_TIMEFRAME &&
+			REVISIONS_RETENTION_TIMEFRAME &&
+			ACTIVITY_RETENTION_TIMEFRAME > REVISIONS_RETENTION_TIMEFRAME)
+	) {
+		RETENTION_TASKS.push({
+			collection: 'directus_revisions',
+			join: ['directus_activity', 'directus_revisions.activity', 'directus_activity.id'],
+			timeframe: REVISIONS_RETENTION_TIMEFRAME,
+		});
 	}
 
 	scheduleSynchronizedJob('retention', String(env['RETENTION_SCHEDULE']), handleRetentionJob);
