@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { useShortcut } from '@/composables/use-shortcut';
-import LogDetailFilteringInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { realtime } from '@directus/sdk';
@@ -485,11 +484,12 @@ onUnmounted(() => {
 							<v-button class="close-button" x-large secondary icon @click="minimizeLog">
 								<v-icon name="close" />
 							</v-button>
-							<log-detail-filtering-input
+							<interface-input
 								:value="logDetailSearch"
 								class="full"
 								:placeholder="t('log_detail_filter_paths')"
 								icon-right="search"
+								spellcheck="false"
 								@input="logDetailSearch = $event"
 							/>
 						</div>
