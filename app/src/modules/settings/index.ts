@@ -27,6 +27,7 @@ import NewRole from './routes/roles/add-new.vue';
 import RolesCollection from './routes/roles/collection.vue';
 import RolesItem from './routes/roles/item.vue';
 import RolesPublicItem from './routes/roles/public-item.vue';
+import SystemLogs from './routes/system-logs/logs.vue';
 import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
@@ -284,6 +285,11 @@ export default defineModule({
 					props: true,
 				},
 			],
+		},
+		{
+			name: 'settings-system-logs',
+			path: 'system-logs',
+			component: SystemLogs,
 		},
 		{
 			name: 'settings-not-found',

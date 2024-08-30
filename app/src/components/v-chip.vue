@@ -188,10 +188,6 @@ function onCloseClick(event: MouseEvent) {
 			background-color: var(--v-chip-close-color, var(--theme--danger));
 			border-radius: 10px;
 
-			.close {
-				--v-icon-color: var(--v-chip-background-color, var(--theme--background-normal));
-			}
-
 			&.disabled {
 				background-color: var(--v-chip-close-color-disabled, var(--theme--primary));
 
