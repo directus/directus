@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
@@ -34,6 +35,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const relationsStore = useRelationsStore();
 		const { info: serverInfo } = useServerStore();
 
+		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
@@ -42,6 +44,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const { sort, limit, page, fields } = useLayoutQuery();
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
 
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
 			title: (field) => field.type === 'string',
@@ -282,6 +286,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			userFieldType,
 			resetPresetAndRefresh,
 			refresh,
+			onClick,
 		};
 
 		async function change(group: Group, event: ChangeEvent<Item>) {
