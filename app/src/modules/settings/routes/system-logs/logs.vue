@@ -5,6 +5,7 @@ import LogDetailFilteringInput from '@/interfaces/input/input.vue';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { realtime } from '@directus/sdk';
+import { useLocalStorage } from '@vueuse/core';
 import CodeMirror from 'codemirror';
 import 'codemirror/mode/javascript/javascript';
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
@@ -42,7 +43,7 @@ const selectedLog = ref<Log>();
 let autoScroll = true;
 const logsCount = ref(0);
 const purgedLogsCount = ref(0);
-const softWrap = ref(false);
+const softWrap = useLocalStorage('system-logs-soft-wrap', true);
 
 const client = sdk.with(
 	realtime({
@@ -295,6 +296,7 @@ function showLogDetail(index: number) {
 			mode: 'application/json',
 			readOnly: true,
 			lineNumbers: true,
+			lineWrapping: softWrap.value,
 			cursorBlinkRate: -1,
 		});
 	}
