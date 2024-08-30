@@ -241,15 +241,16 @@ export function getDBQuery(
 
 		const groupByFields = [knex.raw('??.??', [table, primaryKey])];
 
-		if (innerQuerySortRecords.length > 0) {
-			// Sort fields need to be included in the group by clause, otherwise this causes problems on some DBs
-			// since sort fields are selected in the inner query, and they expect all selected columns to be in
-			// the group by clause or aggregated over. The field needs to be the actual raw column expression, since
-			// aliases are not available in the group by clause in some DBs.
-			// Since the fields are expected to be the same for a single primary key it is safe to include them in the
-			// group by without influencing the result.
-			groupByFields.push(...innerQuerySortRecords.map(({ column }) => column));
-		}
+		// For some DB vendors sort fields need to be included in the group by clause, otherwise this causes problems those DBs
+		// since sort fields are selected in the inner query, and they expect all selected columns to be in
+		// the group by clause or aggregated over.
+		// For some DBs the field needs to be the actual raw column expression, since aliases are not available in the
+		// group by clause.
+		// Since the fields are expected to be the same for a single primary key it is safe to include them in the
+		// group by without influencing the result.
+
+		// This inclusion depends on the DB vendor, as such it is handled in a dialect specific helper.
+		helpers.schema.addInnerSortFieldsToGroupBy(groupByFields, innerQuerySortRecords, hasMultiRelationalSort ?? false);
 
 		dbQuery.groupBy(groupByFields);
 	}

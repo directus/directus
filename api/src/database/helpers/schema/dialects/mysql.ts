@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { getDatabaseVersion } from '../../../index.js';
-import { SchemaHelper } from '../types.js';
+import { SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
@@ -47,6 +47,32 @@ export class SchemaHelperMySQL extends SchemaHelper {
 			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {
 			return null;
+		}
+	}
+
+	override addInnerSortFieldsToGroupBy(
+		groupByFields: (string | Knex.Raw)[],
+		sortRecords: SortRecord[],
+		hasMultiRelationalSort: boolean,
+	) {
+		if (hasMultiRelationalSort) {
+			/*
+			MySQL only requires all selected sort columns that are not functionally dependent on the primary key to be included.
+
+			> If the ONLY_FULL_GROUP_BY SQL mode is enabled (which it is by default),
+			  MySQL rejects queries for which the select list, HAVING condition, or ORDER BY list refer to
+			  nonaggregated columns that are neither named in the GROUP BY clause nor are functionally dependent on them.
+
+			https://dev.mysql.com/doc/refman/8.4/en/group-by-handling.html
+
+			MySQL allows aliases to be used in the GROUP BY clause
+
+			> You can use the alias in GROUP BY, ORDER BY, or HAVING clauses to refer to the column:
+
+			https://dev.mysql.com/doc/refman/8.4/en/problems-with-alias.html
+			 */
+
+			groupByFields.push(...sortRecords.map(({ alias }) => alias));
 		}
 	}
 }
