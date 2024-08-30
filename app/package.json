@@ -102,7 +102,7 @@
 		"@vue/test-utils": "2.4.6",
 		"@vueuse/core": "10.9.0",
 		"@vueuse/router": "10.9.0",
-		"apexcharts": "3.50.0",
+		"apexcharts": "3.52.0",
 		"axios": "1.7.3",
 		"base-64": "1.0.0",
 		"caret-pos": "2.0.0",
@@ -146,9 +146,10 @@
 		"vite": "5.2.11",
 		"vitest": "1.5.3",
 		"vue": "3.4.27",
-		"vue-i18n": "9.13.1",
+		"vue-i18n": "9.14.0",
 		"vue-router": "4.4.3",
 		"vue-tsc": "2.0.29",
+		"vue-virtual-scroller": "2.0.0-beta.8",
 		"vuedraggable": "4.1.0",
 		"wellknown": "0.5.0"
 	}
