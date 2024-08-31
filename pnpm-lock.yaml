@@ -391,8 +391,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       oracledb:
-        specifier: 6.5.1
-        version: 6.5.1
+        specifier: 6.6.0
+        version: 6.6.0
       pg:
         specifier: 8.12.0
         version: 8.12.0
@@ -9252,8 +9252,8 @@ packages:
     resolution: {integrity: sha512-ANIvzobt1rls2BDny5fWZ3ZVKyD6nscLvfFRpQgfWsythlcsVUC9kL0zq6j2Z5z9wwp1kd7wpsD/T9qNPVLCaQ==}
     engines: {node: '>=18'}
 
-  oracledb@6.5.1:
-    resolution: {integrity: sha512-JzoSGei1wnvmqgKnAZK1W650mzHTZXx+7hClV4mwsbY/ZjUtrpnojNJMYJ2jkOhj7XG5oJPfXc4GqDKaNzkxqg==}
+  oracledb@6.6.0:
+    resolution: {integrity: sha512-T3dx+o3j+tVN53wQyr4yGTmoPHLy+a2V8yb1T2PmWrsj3ZlSt2Yu1BgV2yTDqnmBZYpRi/I3yJXRCOHHD7PiyA==}
     engines: {node: '>=14.6'}
 
   os-tmpdir@1.0.2:
@@ -20746,7 +20746,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.1.0
 
-  oracledb@6.5.1:
+  oracledb@6.6.0:
     optional: true
 
   os-tmpdir@1.0.2: {}
