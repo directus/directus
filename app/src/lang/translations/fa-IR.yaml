@@ -74,6 +74,7 @@ extension_layouts: چیدمان ها
 extension_modules: ماژول‌ها
 extension_panels: پنل‌ها
 extension_themes: پوسته‌ها
+extension_hooks: هوکها
 extension_operations: عملیات
 extension_reload_required: صفحه به بازنشانی مجدد نیاز دارد
 extension_reload_required_copy: جهت مشاهده تغییرات پس از فعالی یا غیرفعالسازی افزونه ها لازم است صفحه بازنشانی مجدد گردد.
