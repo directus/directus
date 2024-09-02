@@ -41,7 +41,7 @@ const fields = computed(() => {
 
 // Reset value whenever the chosen collection changes
 watch(collection, (newCol, oldCol) => {
-	if (oldCol !== null && newCol !== oldCol) {
+	if (oldCol && newCol !== oldCol) {
 		emit('input', null);
 	}
 });

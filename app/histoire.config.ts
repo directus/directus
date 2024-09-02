@@ -3,7 +3,7 @@ import { defineConfig } from 'histoire';
 
 export default defineConfig({
 	plugins: [HstVue()],
-	setupFile: './src/histoire/setup.ts',
+	setupFile: './src/__histoire__/setup.ts',
 	theme: {
 		title: 'Directus Components',
 		favicon: './public/favicon.ico',

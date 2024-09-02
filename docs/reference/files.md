@@ -19,8 +19,7 @@ import { data as packages } from '@/data/packages.data.js';
 Data and permissions around files are associated to the `directus_files` collection.
 
 It is recommended that you only provide public permissions to specific files or file folders (for example, a 'Public'
-folder), rather than making the whole collection public. Read more on
-[custom access permissions](/user-guide/user-management/permissions.html#configure-custom-permissions).
+folder), rather than making the whole collection public. Read more on custom access permissions.
 
 ::: warning Exporting Data Creates Files
 
@@ -78,7 +77,7 @@ download will work on the _same_ domain, however it will have the file's "id" as
 
 ## Requesting a Thumbnail
 
-Fetching thumbnails is as easy as adding a `key` query parameter to the original file's URL. In the Admin App, you can
+Fetching thumbnails is as easy as adding a `key` query parameter to the original file's URL. In the Data Studio, you can
 configure different asset presets that control the output of any given image. If a requested thumbnail doesn't yet
 exist, it is dynamically generated and immediately returned.
 
@@ -238,6 +237,12 @@ const result = await client.request(readAssetRaw('1ac73658-8b62-4dea-b6da-529fbc
 </template>
 </SnippetToggler>
 
+### Focal Points
+
+Directus will crop assets when requested with a `width` or `height` query parameter. By default, images are cropped
+around the center of the image. If `focal_point_x` and `focal_point_y` values are stored in the file object, cropping
+will center around these coordinates.
+
 ## The File Object
 
 `id` **uuid**\
@@ -261,11 +266,14 @@ Mimetype of the file.
 `folder` **many-to-one**\
 What (virtual) folder the file is in. Many-to-one to [folders](/reference/system/folders).
 
+`created_on` **datetime**\
+When the file was created.
+
 `uploaded_by` **many-to-one**\
 Who uploaded the file. Many-to-one to [users](/reference/system/users).
 
 `uploaded_on` **datetime**\
-When the file was uploaded.
+When the file was last uploaded/replaced.
 
 `modified_by` **many-to-one**\
 Who updated the file last. Many-to-one to [users](/reference/system/users).
@@ -281,6 +289,12 @@ This property is only auto-extracted for images.
 If the file is a(n) image/video, it's the height in px.\
 This property is only auto-extracted for images.
 
+`focal_point_x` **number**\
+If the file is an image, cropping will center around this point.
+
+`focal_point_y` **number**\
+If the file is an image, cropping will center around this point.
+
 `duration` **number**\
 If the file contains audio/video, it's the duration in milliseconds.\
 This property is not auto-extracted.
@@ -295,7 +309,7 @@ Location of the file.
 Tags for the file.
 
 `metadata` **object**\
-Any additional metadata Directus was able to scrape from the file. For images, this includes EXIF, IPTC, and ICC information.
+Any additional metadata Directus was able to scrape from the file. For images, this includes Exif, IPTC, and ICC information.
 
 ```json
 {
@@ -306,6 +320,7 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 	"title": "Paulo Silva (via Unsplash)",
 	"type": "image/jpeg",
 	"folder": null,
+	"created_on": "2021-02-04T11:37:41-05:00",
 	"uploaded_by": "0bc7b36a-9ba9-4ce0-83f0-0a526f354e07",
 	"uploaded_on": "2021-02-04T11:37:41-05:00",
 	"modified_by": null,
@@ -313,6 +328,8 @@ Any additional metadata Directus was able to scrape from the file. For images, t
 	"filesize": 3442252,
 	"width": 3456,
 	"height": 5184,
+	"focal_point_x": null,
+	"focal_point_y": null,
 	"duration": null,
 	"description": null,
 	"location": null,

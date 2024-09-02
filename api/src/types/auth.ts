@@ -32,6 +32,7 @@ export interface Session {
 export type DirectusTokenPayload = {
 	id?: string;
 	role: string | null;
+	session?: string;
 	app_access: boolean | number;
 	admin_access: boolean | number;
 	share?: string;
@@ -54,8 +55,10 @@ export type ShareData = {
 };
 
 export type LoginResult = {
-	accessToken: any;
-	refreshToken: any;
-	expires: any;
-	id?: any;
+	accessToken: string;
+	refreshToken: string;
+	expires: number;
+	id?: string;
 };
+
+export type AuthenticationMode = 'json' | 'cookie' | 'session';

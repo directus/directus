@@ -76,9 +76,16 @@ const FAKE_SCHEMA: SchemaOverview = {
 	relations: [],
 };
 
+class Client_SQLite3 extends MockClient {}
+
 describe('applySearch', () => {
-	function mockDatabase() {
+	function mockDatabase(dbClient: string = 'Client_SQLite3') {
 		const self: Record<string, any> = {
+			client: {
+				constructor: {
+					name: dbClient,
+				},
+			},
 			andWhere: vi.fn(() => self),
 			orWhere: vi.fn(() => self),
 			orWhereRaw: vi.fn(() => self),
@@ -98,11 +105,12 @@ describe('applySearch', () => {
 				return db;
 			});
 
-			await applySearch(FAKE_SCHEMA, db as any, number, 'test');
+			applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
 
 			expect(db['andWhere']).toBeCalledTimes(1);
 			expect(db['orWhere']).toBeCalledTimes(0);
 			expect(db['orWhereRaw']).toBeCalledTimes(1);
+			expect(db['orWhereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text', `%${number.toLowerCase()}%`]);
 		},
 	);
 
@@ -115,11 +123,33 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		await applySearch(FAKE_SCHEMA, db as any, number, 'test');
+		applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(2);
 		expect(db['orWhereRaw']).toBeCalledTimes(1);
+		expect(db['orWhereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text', `%${number.toLowerCase()}%`]);
+	});
+
+	test('Query is falsy if no other clause is added', async () => {
+		const db = mockDatabase();
+
+		const schemaWithStringFieldRemoved = JSON.parse(JSON.stringify(FAKE_SCHEMA));
+
+		delete schemaWithStringFieldRemoved.collections.test.fields.text;
+
+		db['andWhere'].mockImplementation((callback: () => void) => {
+			// detonate the andWhere function
+			callback.call(db);
+			return db;
+		});
+
+		applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(db['orWhere']).toBeCalledTimes(0);
+		expect(db['orWhereRaw']).toBeCalledTimes(1);
+		expect(db['orWhereRaw']).toBeCalledWith('1 = 0');
 	});
 });
 
@@ -158,10 +188,7 @@ describe('applyFilter', () => {
 		for (const { filterOperator, sqlWhereClause } of withReverseOperators) {
 			for (const filterValue of [true, '', false]) {
 				test(`${filterOperator} with value ${filterValue}`, async () => {
-					class Client_SQLite3 extends MockClient {}
-
 					const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
-
 					const queryBuilder = db.queryBuilder();
 
 					const collection = 'test';
@@ -171,7 +198,7 @@ describe('applyFilter', () => {
 						_and: [{ [field]: { [`_${filterOperator}`]: filterValue } }],
 					};
 
-					const { query } = applyFilter(db, FAKE_SCHEMA, queryBuilder, rootFilter, collection, {});
+					const { query } = applyFilter(db, FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, []);
 
 					const tracker = createTracker(db);
 					tracker.on.select('*').response([]);
@@ -189,5 +216,124 @@ describe('applyFilter', () => {
 				});
 			}
 		}
+	});
+
+	test(`filter values on bigint fields are correctly passed as such to db query`, async () => {
+		const collection = 'test';
+		const field = 'bigInteger';
+
+		const BIGINT_FAKE_SCHEMA: SchemaOverview = {
+			collections: {
+				[collection]: {
+					collection: 'test',
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					fields: {
+						[field]: {
+							field: field,
+							defaultValue: null,
+							nullable: false,
+							generated: false,
+							type: 'bigInteger',
+							dbType: null,
+							precision: null,
+							scale: null,
+							special: [],
+							note: null,
+							validation: null,
+							alias: false,
+						},
+					},
+				},
+			},
+			relations: [],
+		};
+
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
+
+		// testing with value greater than Number.MAX_SAFE_INTEGER
+		const bigintId = 9007199254740991477n;
+
+		const rootFilter = {
+			[field]: {
+				_eq: bigintId.toString(),
+			},
+		};
+
+		const { query } = applyFilter(db, BIGINT_FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, []);
+
+		const tracker = createTracker(db);
+		tracker.on.select('*').response([]);
+
+		await query;
+
+		const resultingSelectQuery = tracker.history.select[0];
+		const expectedSql = `select * where "${collection}"."${field}" = ?`;
+
+		expect(resultingSelectQuery?.sql).toEqual(expectedSql);
+		expect(resultingSelectQuery?.bindings[0]).toEqual(bigintId.toString());
+	});
+
+	test.each([
+		{ operator: '_eq', replacement: '_null', sqlOutput: 'null' },
+		{ operator: '_neq', replacement: '_nnull', sqlOutput: 'not null' },
+	])('$operator = null should behave as $replacement = true', async ({ operator, sqlOutput: sql }) => {
+		const collection = 'test';
+		const field = 'string';
+
+		const sampleSchema: SchemaOverview = {
+			collections: {
+				[collection]: {
+					collection,
+					primary: 'id',
+					singleton: false,
+					sortField: null,
+					note: null,
+					accountability: null,
+					fields: {
+						[field]: {
+							field,
+							defaultValue: null,
+							nullable: false,
+							generated: false,
+							type: 'string',
+							dbType: null,
+							precision: null,
+							scale: null,
+							special: [],
+							note: null,
+							validation: null,
+							alias: false,
+						},
+					},
+				},
+			},
+			relations: [],
+		};
+
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
+
+		const rootFilter = {
+			[field]: {
+				[operator]: null,
+			},
+		};
+
+		const { query } = applyFilter(db, sampleSchema, queryBuilder, rootFilter, collection, {});
+
+		const tracker = createTracker(db);
+		tracker.on.select('*').response([]);
+
+		await query;
+
+		const resultingSelectQuery = tracker.history.select[0];
+		const expectedSql = `select * where "${collection}"."${field}" is ${sql}`;
+
+		expect(resultingSelectQuery?.sql).toEqual(expectedSql);
 	});
 });

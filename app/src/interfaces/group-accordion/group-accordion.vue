@@ -61,7 +61,8 @@ watch(
 			groupFields.value.find((rootField) => rootField.field === validationError.field),
 		);
 
-		if (includedFieldsWithErrors.length > 0) selection.value = [includedFieldsWithErrors[0].field];
+		if (includedFieldsWithErrors.length > 0)
+			selection.value = [(includedFieldsWithErrors as [ValidationError])[0].field];
 	},
 );
 

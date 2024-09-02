@@ -6,11 +6,13 @@ import { sequentialTestsList } from './sequential-tests';
 export default class CustomSequencer extends BaseSequencer {
 	override async sort(files: WorkspaceSpec[]) {
 		if (files.length > 1) {
+			const list = sequentialTestsList[files[0]![0].config.name as 'db' | 'common'];
+
 			// If specified, only run these tests sequentially
-			if (sequentialTestsList.only.length > 0) {
+			if (list.only.length > 0) {
 				const onlyTests = [];
 
-				for (const sequentialTest of sequentialTestsList.only) {
+				for (const sequentialTest of list.only) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
 						return testFile.endsWith(sequentialTest);
 					});
@@ -21,12 +23,14 @@ export default class CustomSequencer extends BaseSequencer {
 						if (test) {
 							onlyTests.push(test);
 						}
+					} else {
+						throw new Error(`Non-existent test file "${sequentialTest}" in "only" list`);
 					}
 				}
 
 				files = onlyTests;
 			} else {
-				for (const sequentialTest of sequentialTestsList.before.slice().reverse()) {
+				for (const sequentialTest of list.before.slice().reverse()) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
 						return testFile.endsWith(sequentialTest);
 					});
@@ -37,10 +41,12 @@ export default class CustomSequencer extends BaseSequencer {
 						if (test) {
 							files.unshift(test);
 						}
+					} else {
+						throw new Error(`Non-existent test file "${sequentialTest}" in "before" list`);
 					}
 				}
 
-				for (const sequentialTest of sequentialTestsList.after) {
+				for (const sequentialTest of list.after) {
 					const testIndex = findIndex(files, ([_, testFile]) => {
 						return testFile.endsWith(sequentialTest);
 					});
@@ -51,6 +57,8 @@ export default class CustomSequencer extends BaseSequencer {
 						if (test) {
 							files.push(test);
 						}
+					} else {
+						throw new Error(`Non-existent test file "${sequentialTest}" in "after" list`);
 					}
 				}
 			}

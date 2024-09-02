@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
 import { useSizeClass } from '@directus/composables';
+import { computed, ref } from 'vue';
 
 interface Props {
 	/** Model the active state */
@@ -23,6 +23,7 @@ interface Props {
 	large?: boolean;
 	/** Renders a larger chip */
 	xLarge?: boolean;
+	clickable?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,7 +35,11 @@ const props = withDefaults(defineProps<Props>(), {
 	disabled: false,
 });
 
-const emit = defineEmits(['update:active', 'click', 'close']);
+const emit = defineEmits<{
+	'update:active': [active: boolean];
+	click: [event: MouseEvent];
+	close: [event: MouseEvent];
+}>();
 
 const internalLocalActive = ref(true);
 
@@ -67,7 +72,7 @@ function onCloseClick(event: MouseEvent) {
 	<span
 		v-if="internalActive"
 		class="v-chip"
-		:class="[sizeClass, { outlined, label, disabled, close }]"
+		:class="[sizeClass, { outlined, label, disabled, close, clickable }]"
 		@click="onClick"
 	>
 		<span class="chip-content">
@@ -85,12 +90,15 @@ function onCloseClick(event: MouseEvent) {
 	Available Variables:
 
 		--v-chip-color                   [var(--theme--foreground)]
-		--v-chip-background-color        [var(--theme--background-normal)]
 		--v-chip-color-hover             [var(--white)]
+		--v-chip-background-color        [var(--theme--background-normal)]
 		--v-chip-background-color-hover  [var(--theme--primary-accent)]
+		--v-chip-border-color            [var(--v-chip-background-color)]
+		--v-chip-border-color-hover      [var(--v-chip-background-color-hover)]
 		--v-chip-close-color             [var(--theme--danger)]
 		--v-chip-close-color-disabled    [var(--theme--primary)]
 		--v-chip-close-color-hover       [var(--theme--primary-accent)]
+		--v-chip-padding                 [0 8px]
 
 */
 
@@ -98,18 +106,20 @@ function onCloseClick(event: MouseEvent) {
 	display: inline-flex;
 	align-items: center;
 	height: 36px;
-	padding: 0 8px;
+	padding: var(--v-chip-padding, 0 8px);
 	color: var(--v-chip-color, var(--theme--foreground));
 	font-weight: var(--weight-normal);
+	font-family: var(--v-chip-font-family);
 	line-height: 22px;
 	background-color: var(--v-chip-background-color, var(--theme--background-normal));
-	border: var(--theme--border-width) solid var(--v-chip-background-color, var(--theme--background-normal));
+	border: var(--theme--border-width) solid
+		var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));
 	border-radius: 16px;
 
 	&.clickable:hover {
 		color: var(--v-chip-color-hover, var(--white));
 		background-color: var(--v-chip-background-color-hover, var(--theme--primary-accent));
-		border-color: var(--v-chip-background-color-hover, var(--theme--primary-accent));
+		border-color: var(--v-chip-border-color-hover, var(--v-chip-background-color-hover), var(--theme--primary-accent));
 		cursor: pointer;
 	}
 
@@ -120,7 +130,7 @@ function onCloseClick(event: MouseEvent) {
 	&.disabled {
 		color: var(--v-chip-color, var(--theme--foreground));
 		background-color: var(--v-chip-background-color, var(--theme--background-normal));
-		border-color: var(--v-chip-background-color, var(--theme--background-normal));
+		border-color: var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));
 
 		&.clickable:hover {
 			color: var(--v-chip-color, var(--theme--foreground));
@@ -131,28 +141,28 @@ function onCloseClick(event: MouseEvent) {
 
 	&.x-small {
 		height: 20px;
-		padding: 0 4px;
+		padding: var(--v-chip-padding, 0 6px);
 		font-size: 12px;
 		border-radius: 10px;
 	}
 
 	&.small {
 		height: 24px;
-		padding: 0 8px;
+		padding: var(--v-chip-padding, 0 8px);
 		font-size: 14px;
 		border-radius: 12px;
 	}
 
 	&.large {
 		height: 44px;
-		padding: 0 20px;
+		padding: var(--v-chip-padding, 0 20px);
 		font-size: 16px;
 		border-radius: 22px;
 	}
 
 	&.x-large {
 		height: 48px;
-		padding: 0 20px;
+		padding: var(--v-chip-padding, 0 20px);
 		font-size: 18px;
 		border-radius: 24px;
 	}
@@ -177,10 +187,6 @@ function onCloseClick(event: MouseEvent) {
 			margin-left: 4px;
 			background-color: var(--v-chip-close-color, var(--theme--danger));
 			border-radius: 10px;
-
-			.close {
-				--v-icon-color: var(--v-chip-background-color, var(--theme--background-normal));
-			}
 
 			&.disabled {
 				background-color: var(--v-chip-close-color-disabled, var(--theme--primary));

@@ -1,5 +1,8 @@
+import { useEnv } from '@directus/env';
+import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { SchemaInspector, Table } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-data';
 import type { Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -10,27 +13,21 @@ import { ALIAS_TYPES } from '../constants.js';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
-import { systemCollectionRows } from '../database/system-data/collections/index.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
-import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import { FieldsService } from './fields.js';
-import { ItemsService } from './items.js';
-import type {
-	AbstractServiceOptions,
-	ActionEventParams,
-	Collection,
-	CollectionMeta,
-	MutationOptions,
-} from '../types/index.js';
+import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import type { AbstractServiceOptions, ActionEventParams, Collection, MutationOptions } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
+import { transaction } from '../utils/transaction.js';
+import { FieldsService } from './fields.js';
+import { ItemsService } from './items.js';
 
 export type RawCollection = {
 	collection: string;
 	fields?: RawField[];
 	schema?: Partial<Table> | null;
-	meta?: Partial<CollectionMeta> | null;
+	meta?: Partial<BaseCollectionMeta> | null;
 };
 
 export class CollectionsService {
@@ -84,7 +81,7 @@ export class CollectionsService {
 			// Create the collection/fields in a transaction so it'll be reverted in case of errors or
 			// permission problems. This might not work reliably in MySQL, as it doesn't support DDL in
 			// transactions.
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				if (payload.schema) {
 					// Directus heavily relies on the primary key of a collection, so we have to make sure that
 					// every collection that is created has a primary key. If no primary key field is created
@@ -225,7 +222,7 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const collections = await this.knex.transaction(async (trx) => {
+			const collections = await transaction(this.knex, async (trx) => {
 				const service = new CollectionsService({
 					schema: this.schema,
 					accountability: this.accountability,
@@ -272,6 +269,8 @@ export class CollectionsService {
 	 * Read all collections. Currently doesn't support any query.
 	 */
 	async readByQuery(): Promise<Collection[]> {
+		const env = useEnv();
+
 		const collectionItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			schema: this.schema,
@@ -282,7 +281,7 @@ export class CollectionsService {
 
 		let meta = (await collectionItemsService.readByQuery({
 			limit: -1,
-		})) as CollectionMeta[];
+		})) as BaseCollectionMeta[];
 
 		meta.push(...systemCollectionRows);
 
@@ -295,11 +294,16 @@ export class CollectionsService {
 				{},
 			);
 
-			let collectionsYouHavePermissionToRead: string[] = this.accountability
-				.permissions!.filter((permission) => {
-					return permission.action === 'read';
-				})
-				.map(({ collection }) => collection);
+			let collectionsYouHavePermissionToRead = await fetchAllowedCollections(
+				{
+					accountability: this.accountability,
+					action: 'read',
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
+			);
 
 			for (const collection of collectionsYouHavePermissionToRead) {
 				const group = collectionsGroups[collection];
@@ -343,7 +347,9 @@ export class CollectionsService {
 		}
 
 		if (env['DB_EXCLUDE_TABLES']) {
-			return collections.filter((collection) => env['DB_EXCLUDE_TABLES'].includes(collection.collection) === false);
+			return collections.filter(
+				(collection) => (env['DB_EXCLUDE_TABLES'] as string[]).includes(collection.collection) === false,
+			);
 		}
 
 		return collections;
@@ -364,20 +370,22 @@ export class CollectionsService {
 	 * Read many collections by name
 	 */
 	async readMany(collectionKeys: string[]): Promise<Collection[]> {
-		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.accountability.permissions!.filter((permission) => {
-				return permission.action === 'read' && collectionKeys.includes(permission.collection);
-			});
-
-			if (collectionKeys.length !== permissions.length) {
-				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
-
-				for (const collectionKey of collectionKeys) {
-					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-						throw new ForbiddenError();
-					}
-				}
-			}
+		if (this.accountability) {
+			await Promise.all(
+				collectionKeys.map((collection) =>
+					validateAccess(
+						{
+							accountability: this.accountability!,
+							action: 'read',
+							collection,
+						},
+						{
+							schema: this.schema,
+							knex: this.knex,
+						},
+					),
+				),
+			);
 		}
 
 		const collections = await this.readByQuery();
@@ -468,7 +476,7 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const collectionItemsService = new CollectionsService({
 					knex: trx,
 					accountability: this.accountability,
@@ -523,7 +531,7 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const service = new CollectionsService({
 					schema: this.schema,
 					accountability: this.accountability,
@@ -580,7 +588,7 @@ export class CollectionsService {
 				throw new ForbiddenError();
 			}
 
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				if (collectionToBeDeleted!.schema) {
 					await trx.schema.dropTable(collectionKey);
 				}
@@ -707,7 +715,7 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			await this.knex.transaction(async (trx) => {
+			await transaction(this.knex, async (trx) => {
 				const service = new CollectionsService({
 					schema: this.schema,
 					accountability: this.accountability,

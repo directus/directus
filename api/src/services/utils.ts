@@ -1,11 +1,13 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
-import type { Knex } from 'knex';
-import { flushCaches, getCache } from '../cache.js';
-import getDatabase from '../database/index.js';
-import { systemCollectionRows } from '../database/system-data/collections/index.js';
-import emitter from '../emitter.js';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { AbstractServiceOptions, PrimaryKey } from '../types/index.js';
+import { systemCollectionRows } from '@directus/system-data';
+import type { Accountability, PrimaryKey, SchemaOverview } from '@directus/types';
+import type { Knex } from 'knex';
+import { clearSystemCache, getCache } from '../cache.js';
+import getDatabase from '../database/index.js';
+import emitter from '../emitter.js';
+import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
+import type { AbstractServiceOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 
 export class UtilsService {
@@ -30,16 +32,23 @@ export class UtilsService {
 			throw new InvalidPayloadError({ reason: `Collection "${collection}" doesn't have a sort field` });
 		}
 
-		if (this.accountability?.admin !== true) {
-			const permissions = this.accountability?.permissions?.find((permission) => {
-				return permission.collection === collection && permission.action === 'update';
-			});
+		if (this.accountability && this.accountability.admin !== true) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection,
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
 
-			if (!permissions) {
-				throw new ForbiddenError();
-			}
-
-			const allowedFields = permissions.fields ?? [];
+			const allowedFields = await fetchAllowedFields(
+				{ collection, action: 'update', accountability: this.accountability },
+				{ schema: this.schema, knex: this.knex },
+			);
 
 			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
 				throw new ForbiddenError();
@@ -148,11 +157,17 @@ export class UtilsService {
 		);
 	}
 
-	async clearCache(): Promise<void> {
+	async clearCache({ system }: { system: boolean }): Promise<void> {
 		if (this.accountability?.admin !== true) {
 			throw new ForbiddenError();
 		}
 
-		return flushCaches(true);
+		const { cache } = getCache();
+
+		if (system) {
+			await clearSystemCache({ forced: true });
+		}
+
+		return cache?.clear();
 	}
 }

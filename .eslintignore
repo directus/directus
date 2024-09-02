@@ -1,7 +1,6 @@
 dist/
 /packages/extensions-sdk/templates/
 /api/extensions/
-!/app/.storybook/
 !/docs/.vitepress/
 !/docs/.typedocs/
 /docs/.vitepress/cache/
@@ -14,7 +13,9 @@ dist/
 *.scss
 *.css
 *.svg
+*.png
 *.liquid
 *.html
+*.toml
 Dockerfile
 license

@@ -5,8 +5,8 @@
 		"moduleResolution": "Bundler",
 		"paths": {
 			"@common/*": ["./common/*"],
-			"@query/*": ["./query/*"],
-			"@schema/*": ["./schema/*"],
+			"@query/*": ["./tests/db/query/*"],
+			"@schema/*": ["./tests/db/schema/*"],
 			"@utils/*": ["./utils/*"]
 		}
 	},

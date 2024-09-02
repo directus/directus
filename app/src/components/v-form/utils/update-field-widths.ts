@@ -1,18 +1,11 @@
 import { Field } from '@directus/types';
-import { orderBy } from 'lodash';
 
 export function updateFieldWidths(fields: Field[]) {
-	const sortedFields = orderBy(
-		fields,
-		[(field) => !!field.meta?.system, 'meta.group', 'meta.sort', 'meta.id'],
-		['desc', 'desc', 'asc', 'asc'],
-	);
-
-	for (const [index, field] of sortedFields.entries()) {
+	for (const [index, field] of fields.entries()) {
 		if (index !== 0 && field.meta?.width === 'half' && field.meta.hidden !== true) {
 			let prevNonHiddenField;
 
-			for (const formField of sortedFields) {
+			for (const formField of fields) {
 				if (formField.meta?.group !== field.meta?.group || formField.meta?.hidden) continue;
 				if (formField === field) break;
 				prevNonHiddenField = formField;

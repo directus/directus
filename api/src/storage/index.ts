@@ -14,10 +14,12 @@ export const getStorage = async (): Promise<StorageManager> => {
 
 	validateEnv(['STORAGE_LOCATIONS']);
 
-	_cache.storage = new StorageManager();
+	const storage = new StorageManager();
 
-	await registerDrivers(_cache.storage);
-	await registerLocations(_cache.storage);
+	await registerDrivers(storage);
+	await registerLocations(storage);
 
-	return _cache.storage;
+	_cache.storage = storage;
+
+	return storage;
 };

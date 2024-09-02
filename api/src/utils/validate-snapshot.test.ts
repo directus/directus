@@ -2,7 +2,7 @@ import { describe, expect, test, vi } from 'vitest';
 import type { Snapshot } from '../types/snapshot.js';
 import { validateSnapshot } from './validate-snapshot.js';
 
-vi.mock('./package.js', () => ({
+vi.mock('directus/version', () => ({
 	version: '10.0.0',
 }));
 

@@ -2,7 +2,6 @@
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { getAssetUrl } from '@/utils/get-asset-url';
 import { notify } from '@/utils/notify';
@@ -35,8 +34,26 @@ const { breadcrumb } = useBreadcrumb();
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, saveAsCopy, refresh, validationErrors } =
-	useItem<File>(ref('directus_files'), primaryKey);
+const {
+	isNew,
+	edits,
+	hasEdits,
+	item,
+	permissions,
+	saving,
+	loading,
+	save,
+	remove,
+	deleting,
+	saveAsCopy,
+	refresh,
+	validationErrors,
+} = useItem<File>(ref('directus_files'), primaryKey);
+
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, fields },
+} = permissions;
 
 const isSavable = computed(() => saveAllowed.value && hasEdits.value);
 
@@ -51,6 +68,7 @@ const fieldsDenyList: string[] = [
 	'width',
 	'height',
 	'filesize',
+	'created_on',
 	'uploaded_by',
 	'uploaded_on',
 	'modified_by',
@@ -69,12 +87,6 @@ const to = computed(() => {
 const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
 useShortcut('meta+s', saveAndStay, form);
-
-const { createAllowed, deleteAllowed, saveAllowed, updateAllowed, fields, revisionsAllowed } = usePermissions(
-	ref('directus_files'),
-	item,
-	isNew,
-);
 
 const fieldsFiltered = computed(() => {
 	return fields.value.filter((field: Field) => fieldsDenyList.includes(field.field) === false);

@@ -5,7 +5,7 @@ import { getDatabaseClient } from '../database/index.js';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Snapshot } from '../types/index.js';
 import { DatabaseClients } from '../types/index.js';
-import { version as currentDirectusVersion } from './package.js';
+import { version } from 'directus/version';
 
 const snapshotJoiSchema = Joi.object({
 	version: Joi.number().valid(1).required(),
@@ -60,9 +60,9 @@ export function validateSnapshot(snapshot: Snapshot, force = false) {
 	// Bypass checks when "force" option is enabled
 	if (force) return;
 
-	if (snapshot.directus !== currentDirectusVersion) {
+	if (snapshot.directus !== version) {
 		throw new InvalidPayloadError({
-			reason: `Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${currentDirectusVersion}. You can bypass this check by passing the "force" query parameter`,
+			reason: `Provided snapshot's directus version ${snapshot.directus} does not match the current instance's version ${version}. You can bypass this check by passing the "force" query parameter`,
 		});
 	}
 

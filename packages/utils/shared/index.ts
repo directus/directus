@@ -31,5 +31,7 @@ export * from './parse-filter-function-path.js';
 export * from './parse-filter.js';
 export * from './parse-json.js';
 export * from './pluralize.js';
+export * from './process-chunk.js';
 export * from './to-array.js';
+export * from './to-boolean.js';
 export * from './validate-payload.js';

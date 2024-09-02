@@ -1,5 +1,6 @@
 export {
 	useApi,
+	useSdk,
 	useCollection,
 	useExtensions,
 	useFilterFields,

@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 
 import VTextarea from './v-textarea.vue';
 import { Focus } from '@/__utils__/focus';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
+import { GlobalMountOptions } from '@/__utils__/types';
 
 const global: GlobalMountOptions = {
 	directives: {
@@ -51,7 +51,7 @@ test('trim prop', async () => {
 
 	await wrapper.get('textarea').trigger('blur');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['This is an info']);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['This is an info']);
 });
 
 test('nullable prop', async () => {
@@ -65,5 +65,5 @@ test('nullable prop', async () => {
 
 	await wrapper.get('textarea').setValue('');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual([null]);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual([null]);
 });

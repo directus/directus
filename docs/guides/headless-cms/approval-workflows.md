@@ -10,15 +10,14 @@ author: Eron Powell
 
 ## Explanation
 
-Remember, your basic [CRUDS permissions](/user-guide/user-management/permissions#configure-permissions) define what a
-role can and can't do to all items in a collection.
-[Custom access permissions](/user-guide/user-management/permissions#configure-custom-permissions) take things a step
-further and let you define what a role can and can't do to each item in a collection, _based on its
+CRUDS permissions define what a role can and can't do to all items in a collection. Custom access permissions take
+things a step further and let you define what a role can and can't do to each item in a collection, _based on its
 [field values](/app/data-model/fields)_.
 
 Workflows are when you use these permissions techniques to create structured stages to content or data creation. In
 simplest terms, it is when you have two or more roles, and you give them different permissions at each stage in the
-content creation process.
+content creation process. This is common when using Directus as a
+[Headless CMS](https://directus.io/solutions/headless-cms).
 
 There are an infinite number of possible workflows you could configure. But for this recipe, we will configure a simple
 workflow where `writers` and `editors` work together to create, co-edit and publish `articles`.
@@ -64,9 +63,8 @@ To create a structured workflow for `articles`, follow these steps.
    field `status`, but it could be named anything.
 2. [Create a field](/app/data-model/fields#create-a-field-advanced) with a Dropdown Interface. Name it `status` and add
    the stages _(`draft`, `under review` and `published`)_ needed for your content creation process.
-3. Next, [create two roles](/user-guide/user-management/roles#create-a-role): `author` and `editor`.
-4. Finally, configure [custom access permissions](/user-guide/user-management/permissions#configure-custom-permissions)
-   for each role based on the value of the `status` field.
+3. Next, create two roles: `author` and `editor`.
+4. Finally, configure custom access permissions for each role based on the value of the `status` field.
    - For the `author` role:
      - Set a filter under **Create > Use Custom > Field Validation** to ensure the author can only create articles with
        a `draft` status.

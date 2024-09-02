@@ -21,6 +21,7 @@ type RawColumn = {
 	numeric_scale: number | null;
 	is_generated: boolean | null;
 	is_nullable: 'YES' | 'NO';
+	index_name: string | null;
 	default_value: string | null;
 	is_unique: true | null;
 	is_primary_key: true | null;
@@ -32,17 +33,22 @@ type RawColumn = {
 
 export function rawColumnToColumn(rawColumn: RawColumn): Column {
 	return {
-		...rawColumn,
+		name: rawColumn.name,
+		table: rawColumn.table,
+		data_type: rawColumn.data_type,
 		default_value: parseDefaultValue(rawColumn.default_value),
 		generation_expression: rawColumn.generation_expression || null,
-		is_generated: !!rawColumn.is_generated,
-		is_unique: rawColumn.is_unique === true,
-		is_primary_key: rawColumn.is_primary_key === true,
-		is_nullable: rawColumn.is_nullable === 'YES',
-		has_auto_increment: rawColumn.has_auto_increment === 'YES',
+		max_length: parseMaxLength(rawColumn),
 		numeric_precision: rawColumn.numeric_precision || null,
 		numeric_scale: rawColumn.numeric_scale || null,
-		max_length: parseMaxLength(rawColumn),
+		is_generated: !!rawColumn.is_generated,
+		is_nullable: rawColumn.is_nullable === 'YES',
+		is_unique: rawColumn.is_unique === true,
+		is_indexed: !!rawColumn.index_name && rawColumn.index_name.length > 0,
+		is_primary_key: rawColumn.is_primary_key === true,
+		has_auto_increment: rawColumn.has_auto_increment === 'YES',
+		foreign_key_column: rawColumn.foreign_key_column,
+		foreign_key_table: rawColumn.foreign_key_table,
 	};
 
 	function parseMaxLength(rawColumn: RawColumn) {
@@ -275,82 +281,119 @@ export default class MSSQL implements SchemaInspector {
 	async columnInfo(table?: string, column?: string) {
 		const dbName = this.knex.client.database();
 
-		const query = this.knex
-			.select(
-				this.knex.raw(`
-        [o].[name] AS [table],
-        [c].[name] AS [name],
-        [t].[name] AS [data_type],
-        [c].[max_length] AS [max_length],
-        [c].[precision] AS [numeric_precision],
-        [c].[scale] AS [numeric_scale],
-        CASE WHEN [c].[is_nullable] = 0 THEN
-          'NO'
-        ELSE
-          'YES'
-        END AS [is_nullable],
-        object_definition ([c].[default_object_id]) AS [default_value],
-        [i].[is_primary_key],
-        [i].[is_unique],
-        CASE [c].[is_identity]
-        WHEN 1 THEN
-          'YES'
-        ELSE
-          'NO'
-        END AS [has_auto_increment],
-        OBJECT_NAME ([fk].[referenced_object_id]) AS [foreign_key_table],
-        COL_NAME ([fk].[referenced_object_id],
-          [fk].[referenced_column_id]) AS [foreign_key_column],
-        [cc].[is_computed] as [is_generated],
-        [cc].[definition] as [generation_expression]`),
-			)
-			.from(this.knex.raw(`??.[sys].[columns] [c]`, [dbName]))
-			.joinRaw(`JOIN [sys].[types] [t] ON [c].[user_type_id] = [t].[user_type_id]`)
-			.joinRaw(`JOIN [sys].[tables] [o] ON [o].[object_id] = [c].[object_id]`)
-			.joinRaw(`JOIN [sys].[schemas] [s] ON [s].[schema_id] = [o].[schema_id]`)
-			.joinRaw(
-				`LEFT JOIN [sys].[computed_columns] AS [cc] ON [cc].[object_id] = [c].[object_id] AND [cc].[column_id] = [c].[column_id]`,
-			)
-			.joinRaw(
-				`LEFT JOIN [sys].[foreign_key_columns] AS [fk] ON [fk].[parent_object_id] = [c].[object_id] AND [fk].[parent_column_id] = [c].[column_id]`,
-			)
-			.joinRaw(
-				`LEFT JOIN (
-          SELECT
-            [ic].[object_id],
-            [ic].[column_id],
-            [ix].[is_unique],
-            [ix].[is_primary_key],
-            MAX([ic].[index_column_id]) OVER(partition by [ic].[index_id], [ic].[object_id]) AS index_column_count,
-            ROW_NUMBER() OVER (
-              PARTITION BY [ic].[object_id], [ic].[column_id]
-              ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC
-            ) AS index_priority
-          FROM
-            [sys].[index_columns] [ic]
-          JOIN [sys].[indexes] AS [ix] ON [ix].[object_id] = [ic].[object_id]
-            AND [ix].[index_id] = [ic].[index_id]
-        ) AS [i]
-        ON [i].[object_id] = [c].[object_id]
-        AND [i].[column_id] = [c].[column_id]
-        AND ISNULL([i].[index_column_count], 1) = 1
-        AND ISNULL([i].[index_priority], 1) = 1`,
-			)
-			.where({ 's.name': this.schema });
+		const schemaIdResult = await this.knex.select('schema_id').from('sys.schemas').where({ name: this.schema }).first();
 
-		if (table) {
-			query.andWhere({ 'o.name': table });
+		const schemaId = schemaIdResult.schema_id;
+
+		if (!schemaId) {
+			throw new Error(`Schema '${this.schema}' not found.`);
 		}
+
+		const dbResult = await this.knex.transaction<RawColumn[] | RawColumn>(async (trx) => {
+			await trx.raw(`IF OBJECT_ID('tempdb..##IndexInfo') IS NOT NULL DROP TABLE ##IndexInfo;`);
+
+			await trx.raw(`
+			SELECT
+				[ic].[object_id],
+				[ic].[column_id],
+				[ix].[is_unique],
+				[ix].[is_primary_key],
+				[ix].[name] as index_name,
+				MAX([ic].[index_column_id]) OVER (PARTITION BY [ic].[index_id], [ic].[object_id]) AS index_column_count,
+				ROW_NUMBER() OVER (
+					PARTITION BY [ic].[object_id], [ic].[column_id]
+					ORDER BY [ix].[is_primary_key] DESC, [ix].[is_unique] DESC
+				) AS index_priority
+			INTO ##IndexInfo
+			FROM [sys].[index_columns] ic
+			JOIN [sys].[indexes] ix ON [ix].[object_id] = [ic].[object_id] AND [ix].[index_id] = [ic].[index_id];`);
+
+			const query = trx
+				.with(
+					'FilteredIndexInfo',
+					this.knex.raw(`
+				SELECT
+					[object_id],
+					[column_id],
+					[is_unique],
+					[is_primary_key],
+					[index_priority],
+					[index_name],
+					[index_column_count]
+				FROM ##IndexInfo
+				WHERE ISNULL(index_column_count, 1) = 1 AND ISNULL(index_priority, 1) = 1`),
+				)
+				.select(
+					trx.raw(`
+				[o].[name] AS [table],
+				[c].[name] AS [name],
+				[t].[name] AS [data_type],
+				[c].[max_length] AS [max_length],
+				[c].[precision] AS [numeric_precision],
+				[c].[scale] AS [numeric_scale],
+				CASE WHEN [c].[is_nullable] = 0 THEN
+					'NO'
+				ELSE
+					'YES'
+				END AS [is_nullable],
+				object_definition ([c].[default_object_id]) AS [default_value],
+				[i].[is_primary_key],
+				[i].[is_unique],
+				[i].[index_name],
+				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN 
+					[i].[index_name]
+				ELSE
+					NULL
+				END AS [index_name],
+				CASE [c].[is_identity]
+					WHEN 1 THEN
+						'YES'
+					ELSE
+						'NO'
+				END AS [has_auto_increment],
+				OBJECT_NAME ([fk].[referenced_object_id]) AS [foreign_key_table],
+				COL_NAME ([fk].[referenced_object_id],
+				[fk].[referenced_column_id]) AS [foreign_key_column],
+				[cc].[is_computed] as [is_generated],
+				[cc].[definition] as [generation_expression]`),
+				)
+				.from(trx.raw(`??.[sys].[columns] [c]`, [dbName]))
+				.joinRaw(`JOIN [sys].[types] [t] ON [c].[user_type_id] = [t].[user_type_id]`)
+				.joinRaw(`JOIN [sys].[tables] [o] ON [o].[object_id] = [c].[object_id]`)
+				.joinRaw(`JOIN [sys].[schemas] [s] ON [s].[schema_id] = [o].[schema_id]`)
+				.joinRaw(
+					`LEFT JOIN [sys].[computed_columns] AS [cc] ON [cc].[object_id] = [c].[object_id] AND [cc].[column_id] = [c].[column_id]`,
+				)
+				.joinRaw(
+					`LEFT JOIN [sys].[foreign_key_columns] AS [fk] ON [fk].[parent_object_id] = [c].[object_id] AND [fk].[parent_column_id] = [c].[column_id]`,
+				)
+				.joinRaw(
+					`LEFT JOIN FilteredIndexInfo [i] ON [i].[object_id] = [c].[object_id] AND [i].[column_id] = [c].[column_id]`,
+				)
+				.where({ 's.schema_id': schemaId });
+
+			if (table) {
+				query.andWhere({ 'o.name': table });
+			}
+
+			if (column) {
+				// if a specific column is requested, return only the first record
+				query.andWhere({ 'c.name': column }).first();
+			}
+
+			const result = await query;
+
+			await trx.raw(`DROP TABLE ##IndexInfo;`);
+
+			return result;
+		});
 
 		if (column) {
-			const rawColumn: RawColumn = await query.andWhere({ 'c.name': column }).first();
-
-			return rawColumnToColumn(rawColumn);
+			// if a specific column is requested, the db result is a single object
+			return rawColumnToColumn(dbResult as RawColumn);
 		}
 
-		const records: RawColumn[] = await query;
-
-		return records.map(rawColumnToColumn);
+		return (dbResult as RawColumn[]).map(rawColumnToColumn);
 	}
 
 	/**

@@ -1,11 +1,11 @@
-import type { Query } from '@directus/types';
+import type { Query, Permission } from '@directus/types';
 import { omit } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 import { getUrl, type Env } from './config';
 import vendors, { type Vendor } from './get-dbs-to-test';
 import type { PrimaryKeyType } from './types';
-import { USER } from './variables';
+import { ROLE, USER } from './variables';
 
 export function DisableTestCachingSetup() {
 	beforeEach(async () => {
@@ -27,7 +27,7 @@ export function ClearCaches() {
 
 				// Assert
 				const response = await request(getUrl(vendor))
-					.post(`/utils/cache/clear`)
+					.post(`/utils/cache/clear?system`)
 					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 				const response2 = await request(getUrl(vendor))
@@ -709,7 +709,24 @@ export async function UpdateItem(vendor: Vendor, options: OptionsUpdateItem) {
 	return response.body.data;
 }
 
+export async function CreatePermission(
+	vendor: Vendor,
+	role: keyof typeof ROLE,
+	permission: Omit<Partial<Permission>, 'id' | 'role' | 'system'>,
+) {
+	const roleResponse = await request(getUrl(vendor))
+		.get(`/roles`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.query({ filter: { name: { _eq: ROLE[role].NAME } } });
+
+	const response = await request(getUrl(vendor))
+		.post(`/permissions`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send({ ...permission, role: roleResponse.body.data[0].id });
+
+	return response.body.data;
+}
+
 // TODO
-// export async function CreatePermissions() {}
-// export async function UpdatePermissions() {}
-// export async function DeletePermissions() {}
+// export async function UpdatePermission() {}
+// export async function DeletePermission() {}

@@ -1,6 +1,7 @@
 export * from './activity.js';
 export * from './collections.js';
 export * from './dashboards.js';
+export * from './extensions.js';
 export * from './fields.js';
 export * from './files.js';
 export * from './flows.js';
@@ -10,6 +11,7 @@ export * from './notifications.js';
 export * from './operations.js';
 export * from './panels.js';
 export * from './permissions.js';
+export * from './policies.js';
 export * from './presets.js';
 export * from './relations.js';
 export * from './roles.js';

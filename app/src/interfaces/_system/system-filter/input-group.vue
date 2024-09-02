@@ -141,11 +141,7 @@ function setValueAt(index: number, newVal: any) {
 		/>
 	</template>
 
-	<div
-		v-else-if="['_in', '_nin'].includes(comparator)"
-		class="list"
-		:class="{ moveComma: interfaceType === 'interface-input' }"
-	>
+	<div v-else-if="['_in', '_nin'].includes(comparator)" class="list">
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
@@ -201,13 +197,9 @@ function setValueAt(index: number, newVal: any) {
 		margin-right: 6px;
 		content: ',';
 	}
-
-	&.moveComma .value:not(:last-child)::after {
-		margin: 0 8px 0 -6px;
-	}
 }
 
 .and {
-	margin: 0px 8px;
+	margin: 0 8px;
 }
 </style>

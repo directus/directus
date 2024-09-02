@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Accountability, SchemaOverview } from '@directus/types';
 import fse from 'fs-extra';
@@ -7,17 +8,19 @@ import type { SendMailOptions, Transporter } from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import getDatabase from '../../database/index.js';
-import env from '../../env.js';
-import { getExtensionsPath } from '../../extensions/lib/get-extensions-path.js';
-import logger from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import getMailer from '../../mailer.js';
 import type { AbstractServiceOptions } from '../../types/index.js';
 import { Url } from '../../utils/url.js';
+import emitter from '../../emitter.js';
+
+const env = useEnv();
+const logger = useLogger();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const liquidEngine = new Liquid({
-	root: [path.resolve(getExtensionsPath(), 'templates'), path.resolve(__dirname, 'templates')],
+	root: [path.resolve(env['EMAIL_TEMPLATES_PATH'] as string), path.resolve(__dirname, 'templates')],
 	extname: '.liquid',
 });
 
@@ -50,8 +53,13 @@ export class MailService {
 		}
 	}
 
-	async send<T>(options: EmailOptions): Promise<T> {
-		const { template, ...emailOptions } = options;
+	async send<T>(options: EmailOptions): Promise<T | null> {
+		const payload = await emitter.emitFilter(`email.send`, options, {});
+
+		if (!payload) return null;
+
+		const { template, ...emailOptions } = payload;
+
 		let { html } = options;
 
 		const defaultTemplateData = await this.getDefaultTemplateData();
@@ -82,7 +90,7 @@ export class MailService {
 	}
 
 	private async renderTemplate(template: string, variables: Record<string, any>) {
-		const customTemplatePath = path.resolve(getExtensionsPath(), 'templates', template + '.liquid');
+		const customTemplatePath = path.resolve(env['EMAIL_TEMPLATES_PATH'] as string, template + '.liquid');
 		const systemTemplatePath = path.join(__dirname, 'templates', template + '.liquid');
 
 		const templatePath = (await fse.pathExists(customTemplatePath)) ? customTemplatePath : systemTemplatePath;
@@ -111,7 +119,7 @@ export class MailService {
 		};
 
 		function getProjectLogoURL(logoID?: string) {
-			const projectLogoUrl = new Url(env['PUBLIC_URL']);
+			const projectLogoUrl = new Url(env['PUBLIC_URL'] as string);
 
 			if (logoID) {
 				projectLogoUrl.addPath('assets', logoID);

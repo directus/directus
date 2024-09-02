@@ -1,0 +1,650 @@
+table: directus_settings
+
+fields:
+  - field: id
+    hidden: true
+
+  - field: project_name
+    interface: input
+    options:
+      iconRight: title
+      placeholder: $t:field_options.directus_settings.project_name_placeholder
+    width: half
+
+  - field: project_descriptor
+    interface: input
+    options:
+      iconRight: title
+      placeholder: $t:field_options.directus_settings.project_name_placeholder
+    width: half
+
+  - field: project_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com
+    width: half
+
+  - field: default_language
+    interface: system-language
+    options:
+      iconRight: language
+      placeholder: en-US
+    width: half
+
+  - field: theming_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
+  - field: branding_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:fields.directus_settings.branding
+    special:
+      - alias
+      - no-data
+    width: full
+    group: theming_group
+
+  - field: project_color
+    interface: select-color
+    note: $t:field_options.directus_settings.project_color_note
+    width: half
+    group: theming_group
+
+  - field: project_logo
+    interface: file
+    note: $t:field_options.directus_settings.project_logo_note
+    width: half
+    group: theming_group
+
+  - field: public_foreground
+    interface: file
+    width: half
+    group: theming_group
+
+  - field: public_background
+    interface: file
+    width: half
+    group: theming_group
+
+  - field: public_favicon
+    interface: file
+    note: $t:field_options.directus_settings.project_favicon_note
+    width: half
+    group: theming_group
+
+  - field: public_note
+    interface: input
+    options:
+      placeholder: $t:field_options.directus_settings.public_note_placeholder
+      iconRight: info
+    width: half
+    group: theming_group
+
+  - field: theming_divider
+    interface: presentation-divider
+    options:
+      icon: palette
+      title: $t:fields.directus_settings.theming
+    special:
+      - alias
+      - no-data
+    width: full
+    group: theming_group
+
+  - field: default_appearance
+    interface: select-dropdown
+    width: half
+    options:
+      choices:
+        - value: auto
+          text: $t:appearance_auto
+        - value: light
+          text: $t:appearance_light
+        - value: dark
+          text: $t:appearance_dark
+    group: theming_group
+
+  - field: default_theme_light
+    width: full
+    interface: system-theme
+    options:
+      appearance: light
+    group: theming_group
+
+  - field: theme_light_overrides
+    width: full
+    interface: system-theme-overrides
+    options:
+      appearance: light
+    group: theming_group
+    special:
+      - cast-json
+
+  - field: default_theme_dark
+    width: full
+    interface: system-theme
+    options:
+      appearance: dark
+    group: theming_group
+
+  - field: theme_dark_overrides
+    width: full
+    interface: system-theme-overrides
+    options:
+      appearance: dark
+    group: theming_group
+    special:
+      - cast-json
+
+  - field: custom_css
+    interface: input-code
+    options:
+      language: css
+      lineNumber: true
+      template: |
+        #app, #main-content, body {
+          --v-button-background-color: #6644FF !important;
+          --v-button-background-color-hover: #5E41EC !important;
+        }
+    width: full
+    group: theming_group
+
+  - field: modules_divider
+    interface: presentation-divider
+    options:
+      icon: menu_open
+      title: $t:modules
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: module_bar
+    interface: system-modules
+    special:
+      - cast-json
+
+  - field: security_divider
+    interface: presentation-divider
+    options:
+      icon: shield
+      title: $t:security
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: auth_password_policy
+    interface: select-dropdown
+    options:
+      choices:
+        - value: null
+          text: $t:field_options.directus_settings.auth_password_policy.none_text
+        - value: '/^.{8,}$/'
+          text: $t:field_options.directus_settings.auth_password_policy.weak_text
+        - value: "/(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{';'?>.<,])(?!.*\\s).*$/"
+          text: $t:field_options.directus_settings.auth_password_policy.strong_text
+      allowOther: true
+    width: half
+
+  - field: auth_login_attempts
+    interface: input
+    options:
+      iconRight: lock
+      placeholder: $t:unlimited
+    width: half
+
+  - field: public_registration_divider
+    interface: presentation-divider
+    options:
+      icon: person_add
+      title: $t:fields.directus_settings.public_registration
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: public_registration
+    interface: boolean
+    note: $t:fields.directus_settings.public_registration_note
+    width: half
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
+
+  - field: public_registration_role
+    interface: select-dropdown-m2o
+    note: $t:fields.directus_settings.public_registration_role_note
+    options:
+      template: '{{ name }}'
+    special:
+      - m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: public_registration_verify_email
+    interface: boolean
+    note: $t:fields.directus_settings.public_registration_verify_email_note
+    width: half
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
+
+  - field: public_registration_email_filter
+    interface: system-filter
+    note: $t:fields.directus_settings.public_registration_email_filter_note
+    options:
+      collectionName: directus_users
+      collectionField: email
+      fieldName: email
+    special:
+      - cast-json
+    width: half
+
+  - field: files_divider
+    interface: presentation-divider
+    options:
+      icon: folder
+      title: $t:fields.directus_settings.files_and_thumbnails
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: storage_asset_transform
+    interface: select-dropdown
+    options:
+      choices:
+        - value: all
+          text: $t:fields.directus_settings.transformations_all
+        - value: none
+          text: $t:fields.directus_settings.transformations_none
+        - value: presets
+          text: $t:fields.directus_settings.transformations_presets
+    width: half
+
+  - field: storage_default_folder
+    interface: system-folder
+    width: half
+    note: $t:interfaces.system-folder.field_hint
+
+  - field: storage_asset_presets
+    interface: list
+    options:
+      fields:
+        - field: key
+          name: $t:key
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            options:
+              slug: true
+              onlyOnCreate: false
+            width: full
+            required: true
+        - field: fit
+          name: $t:field_options.directus_settings.storage_asset_presets.fit_label
+          type: string
+          schema:
+            is_nullable: false
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - value: contain
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.contain_text
+                - value: cover
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.cover_text
+                - value: inside
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.fit_text
+                - value: outside
+                  text: $t:field_options.directus_settings.storage_asset_presets.fit.outside_text
+            width: half
+        - field: width
+          name: $t:width
+          type: integer
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            width: half
+        - field: height
+          name: $t:height
+          type: integer
+          schema:
+            is_nullable: false
+          meta:
+            interface: input
+            width: half
+        - field: quality
+          type: integer
+          name: $t:quality
+          schema:
+            default_value: 80
+            is_nullable: false
+          meta:
+            interface: slider
+            options:
+              max: 100
+              min: 0
+              step: 1
+            width: half
+        - field: withoutEnlargement
+          name: $t:field_options.directus_settings.storage_asset_presets.upscaling
+          type: boolean
+          schema:
+            default_value: false
+          meta:
+            interface: boolean
+            width: half
+            options:
+              label: $t:no_upscale
+        - field: format
+          name: $t:format
+          type: string
+          schema:
+            is_nullable: false
+            default_value: ''
+          meta:
+            interface: select-dropdown
+            options:
+              allowNone: true
+              choices:
+                - value: 'auto'
+                  text: 'Auto'
+                - value: jpeg
+                  text: JPEG
+                - value: png
+                  text: PNG
+                - value: webp
+                  text: WebP
+                - value: tiff
+                  text: Tiff
+                - value: avif
+                  text: AVIF
+            width: half
+        - field: transforms
+          name: $t:field_options.directus_settings.additional_transforms
+          type: json
+          schema:
+            is_nullable: false
+            default_value: []
+          meta:
+            note: $t:field_options.directus_settings.transforms_note
+
+            interface: json
+            options:
+              template: >
+                [
+                  ["blur", 45],
+                  ["grayscale"],
+                  ["extend", { "right": 500, "background": "rgb(255, 0, 0)" }]
+                ]
+              placeholder: >
+                [
+                  ["blur", 45],
+                  ["grayscale"],
+                  ["extend", { "right": 500, "background": "rgb(255, 0, 0)" }]
+                ]
+            width: full
+      template: '{{key}}'
+    special:
+      - cast-json
+    width: full
+
+  - field: reporting_divider
+    interface: presentation-divider
+    options:
+      icon: feedback
+      title: $t:fields.directus_settings.reporting
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: report_feature_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com/feature
+    width: half
+
+  - field: report_bug_url
+    interface: input
+    options:
+      iconRight: link
+      placeholder: https://example.com/bug
+    width: half
+
+  - field: report_error_url
+    interface: system-display-template
+    options:
+      placeholder: https://example.com/error
+      fields:
+        - name: Error
+          field: error
+          key: error
+          path: error
+          children:
+            - name: Name
+              field: name
+              key: error.name
+              path: error.name
+            - name: Message
+              field: message
+              key: error.message
+              path: error.message
+        - name: Navigator
+          field: navigator
+          key: navigator
+          path: navigator
+          children:
+            - name: Language
+              field: language
+              key: navigator.language
+              path: navigator.language
+            - name: User Agent
+              field: userAgent
+              key: navigator.userAgent
+              path: navigator.userAgent
+        - name: Route
+          field: route
+          key: route
+          path: route
+          children:
+            - name: Full Path
+              field: fullPath
+              key: route.fullPath
+              path: route.fullPath
+            - name: Hash
+              field: hash
+              key: route.hash
+              path: route.hash
+            - name: Name
+              field: name
+              key: route.name
+              path: route.name
+            - name: Path
+              field: path
+              key: route.path
+              path: route.path
+            - name: Query
+              field: query
+              key: route.query
+              path: route.query
+        - name: User
+          field: user
+          key: user
+          path: user
+          children:
+            - name: ID
+              field: id
+              key: user.id
+              path: user.id
+            - name: First Name
+              field: first_name
+              key: user.first_name
+              path: user.first_name
+            - name: Last Name
+              field: last_name
+              key: user.last_name
+              path: user.last_name
+            - name: Status
+              field: status
+              key: user.status
+              path: user.status
+            - name: Title
+              field: title
+              key: user.title
+              path: user.title
+            - name: Description
+              field: description
+              key: user.description
+              path: user.description
+            - name: Location
+              field: location
+              key: user.location
+              path: user.location
+        - name: Role
+          field: role
+          key: role
+          path: role
+          children:
+            - name: ID
+              field: id
+              key: role.id
+              path: role.id
+            - name: Name
+              field: name
+              key: role.name
+              path: role.name
+    width: full
+
+  - field: map_divider
+    interface: presentation-divider
+    options:
+      icon: map
+      title: $t:fields.directus_settings.mapping
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: mapbox_key
+    interface: input
+    options:
+      icon: key
+      title: $t:field_options.directus_settings.mapbox_key
+      placeholder: $t:field_options.directus_settings.mapbox_placeholder
+      iconLeft: vpn_key
+      font: monospace
+    width: full
+
+  - field: basemaps
+    interface: list
+    special:
+      - cast-json
+    options:
+      template: '{{name}}'
+      fields:
+        - field: name
+          name: $t:name
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            required: true
+            options:
+              placeholder: $t:field_options.directus_settings.basemaps_name_placeholder
+        - field: type
+          name: $t:type
+          meta:
+            interface: select-dropdown
+            options:
+              choices:
+                - value: raster
+                  text: $t:field_options.directus_settings.basemaps_raster
+                - value: tile
+                  text: $t:field_options.directus_settings.basemaps_tile
+                - value: style
+                  text: $t:field_options.directus_settings.basemaps_style
+        - field: url
+          name: $t:url
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            options:
+              placeholder: http://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png
+        - field: tileSize
+          name: $t:tile_size
+          type: integer
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            options:
+              placeholder: '512'
+            conditions:
+              - name: typeNeqRaster
+                rule:
+                  type:
+                    _neq: 'raster'
+                hidden: true
+        - field: attribution
+          name: $t:fields.directus_settings.attribution
+          type: string
+          schema:
+            is_nullable: true
+          meta:
+            interface: input
+            options:
+              placeholder: $t:fields.directus_settings.attribution_placeholder
+
+  - field: image_editor
+    interface: presentation-divider
+    options:
+      icon: image
+      title: $t:fields.directus_settings.image_editor
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: custom_aspect_ratios
+    interface: list
+    special:
+      - cast-json
+    options:
+      template: '{{text}}'
+      fields:
+        - field: text
+          name: $t:text
+          type: string
+          meta:
+            interface: text-input
+            width: half
+            required: true
+            options:
+              placeholder: $t:text
+        - field: value
+          name: $t:value
+          type: float
+          meta:
+            interface: input
+            width: half
+            required: true
+            options:
+              placeholder: $t:value

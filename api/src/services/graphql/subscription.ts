@@ -1,9 +1,8 @@
 import { EventEmitter, on } from 'events';
-import { getMessenger } from '../../messenger.js';
+import { useBus } from '../../bus/index.js';
 import type { GraphQLService } from './index.js';
 import { getSchema } from '../../utils/get-schema.js';
 import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
-import { refreshAccountability } from '../../websocket/authenticate.js';
 import { getPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
@@ -11,7 +10,7 @@ import type { WebSocketEvent } from '../../websocket/messages.js';
 const messages = createPubSub(new EventEmitter());
 
 export function bindPubSub() {
-	const messenger = getMessenger();
+	const messenger = useBus();
 
 	messenger.subscribe('websocket.event', (message: Record<string, any>) => {
 		messages.publish(`${message['collection']}_mutated`, message);
@@ -30,7 +29,6 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				continue; // skip filtered events
 			}
 
-			const accountability = await refreshAccountability(self.accountability);
 			const schema = await getSchema();
 
 			const subscription: Omit<Subscription, 'client'> = {
@@ -49,7 +47,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 			if (eventData['action'] === 'create') {
 				try {
 					subscription.item = eventData['key'];
-					const result = await getPayload(subscription, accountability, schema, eventData);
+					const result = await getPayload(subscription, self.accountability, schema, eventData);
 
 					yield {
 						[event]: {
@@ -67,7 +65,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				for (const key of eventData['keys']) {
 					try {
 						subscription.item = key;
-						const result = await getPayload(subscription, accountability, schema, eventData);
+						const result = await getPayload(subscription, self.accountability, schema, eventData);
 
 						yield {
 							[event]: {

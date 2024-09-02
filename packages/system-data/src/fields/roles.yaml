@@ -1,0 +1,104 @@
+table: directus_roles
+
+fields:
+  - field: id
+    hidden: true
+    interface: input
+    special:
+      - uuid
+
+  - field: name
+    required: true
+    interface: input
+    options:
+      placeholder: $t:field_options.directus_roles.name
+    width: half
+    display: formatted-value
+    display_options:
+      translate: true
+
+  - field: icon
+    interface: select-icon
+    display: icon
+    width: half
+
+  - field: description
+    interface: input
+    options:
+      placeholder: $t:field_options.directus_roles.description
+    width: full
+    display: formatted-value
+    display_options:
+      translate: true
+
+  - field: parent
+    interface: select-dropdown-m2o
+    note: $t:field_options.directus_roles.parent_note
+    options:
+      template: '{{ name }}'
+      filter:
+        id:
+          _neq: '{{ id }}'
+    special:
+      - m2o
+    width: half
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: children
+    hidden: true
+    interface: list-o2m-tree-view
+    note: $t:field_options.directus_roles.children_note
+    special:
+      - o2m
+    options:
+      displayTemplate: '{{ name }}'
+      enableCreate: false
+      fields:
+        - name
+      filter:
+        id:
+          _neq: '{{ id }}'
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+    width: full
+
+  - field: policies
+    interface: list-m2m
+    options:
+      layout: list
+    display: related-values
+    special:
+      - m2m
+    width: full
+
+  - field: users_group
+    interface: group-raw
+    special:
+      - alias
+      - no-data
+      - group
+
+  - field: users_divider
+    interface: presentation-divider
+    options:
+      icon: people_alt
+      title: $t:users
+    special:
+      - alias
+      - no-data
+    width: full
+    group: users_group
+
+  - field: users
+    interface: list-o2m
+    special:
+      - o2m
+    options:
+      fields:
+        - first_name
+        - last_name
+    width: full
+    group: users_group

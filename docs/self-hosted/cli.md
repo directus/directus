@@ -13,7 +13,7 @@ readTime: 7 min read
 
 ## Requirements
 
-- Node.js [v18](https://github.com/nodejs/release#release-schedule)
+- Node.js [v18](https://github.com/nodejs/release#release-schedule), specifically version 18.17 or higher.
 
 ## Server
 
@@ -42,9 +42,9 @@ Kubernetes configuration.
 
 ::: tip First User
 
-You can use the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables to automatically provision the first user on
-first creation using the `bootstrap` command. See [Environment Variables](/self-hosted/config-options#general) for more
-information.
+You can use the `ADMIN_EMAIL`, `ADMIN_PASSWORD` and `ADMIN_TOKEN` environment variables to automatically provision the
+first user on first creation using the `bootstrap` command. See
+[Environment Variables](/self-hosted/config-options#general) for more information.
 
 :::
 

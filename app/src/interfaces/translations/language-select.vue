@@ -26,8 +26,8 @@ const displayValue = computed(() => {
 			<button class="toggle" @click="toggle">
 				<v-icon class="translate" name="translate" />
 				<span class="display-value">{{ displayValue }}</span>
-				<v-icon name="expand_more" :class="{ active }" />
-				<span class="append-slot"><slot name="append" /></span>
+				<v-icon class="expand" name="expand_more" :class="{ active }" />
+				<span class="append-slot"><slot name="append" :active="active" :toggle="toggle" /></span>
 			</button>
 		</template>
 
@@ -64,6 +64,15 @@ const displayValue = computed(() => {
 	text-align: left;
 	background-color: var(--theme--primary-background);
 	border-radius: var(--theme--border-radius);
+
+	.expand {
+		transition: transform var(--medium) var(--transition-out);
+	}
+
+	.expand.active {
+		transform: scaleY(-1);
+		transition-timing-function: var(--transition-in);
+	}
 
 	.display-value {
 		flex-grow: 1;

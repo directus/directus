@@ -100,6 +100,7 @@ export default {
 - `showHeader` **boolean** — Whether the header is shown. Useful for alternative styling based on the extra/reduced
   space.
 - `dashboard` **uuid** - The UUID string of the dashboard containing the panel.
+- `id` **uuid** - The UUID string of the panel.
 - `height` **number** - The current configured height of the panel.
 - `width` **number** - The current configured width of the panel.
 - `now` **Date** - The Date object as of the moment of viewing the dashboard containing the panel.
@@ -143,5 +144,5 @@ Learn how to build panels with our official guides:
 <GuidesListExtensions type="Panels" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

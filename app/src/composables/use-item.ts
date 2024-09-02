@@ -6,52 +6,54 @@ import { useRelationsStore } from '@/stores/relations';
 import { APIError } from '@/types/error';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { notify } from '@/utils/notify';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
-import { Field, Query, Relation } from '@directus/types';
+import { isSystemCollection } from '@directus/system-data';
+import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
-import { ComputedRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { usePermissions } from './use-permissions';
-import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
+import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
+import { UsablePermissions, usePermissions } from './use-permissions';
 
-type UsableItem<T extends Record<string, any>> = {
-	edits: Ref<Record<string, any>>;
-	hasEdits: Ref<boolean>;
+type UsableItem<T extends Item> = {
+	edits: Ref<Item>;
+	hasEdits: ComputedRef<boolean>;
 	item: Ref<T | null>;
+	permissions: UsablePermissions;
 	error: Ref<any>;
-	loading: Ref<boolean>;
+	loading: ComputedRef<boolean>;
 	saving: Ref<boolean>;
 	refresh: () => void;
-	save: () => Promise<any>;
+	save: () => Promise<T>;
 	isNew: ComputedRef<boolean>;
 	remove: () => Promise<void>;
 	deleting: Ref<boolean>;
 	archive: () => Promise<void>;
 	isArchived: ComputedRef<boolean | null>;
 	archiving: Ref<boolean>;
-	saveAsCopy: () => Promise<any>;
+	saveAsCopy: () => Promise<PrimaryKey | null>;
 	getItem: () => Promise<void>;
 	validationErrors: Ref<any[]>;
 };
 
-export function useItem<T extends Record<string, any>>(
+export function useItem<T extends Item>(
 	collection: Ref<string>,
-	primaryKey: Ref<string | number | null>,
-	query: Ref<Query> | Query = {},
+	primaryKey: Ref<PrimaryKey | null>,
+	query: MaybeRef<Query> = {},
 ): UsableItem<T> {
 	const { info: collectionInfo, primaryKeyField } = useCollection(collection);
 	const item: Ref<T | null> = ref(null);
 	const error = ref<any>(null);
 	const validationErrors = ref<any[]>([]);
-	const loading = ref(false);
+	const loadingItem = ref(false);
 	const saving = ref(false);
 	const deleting = ref(false);
 	const archiving = ref(false);
-	const edits = ref<Record<string, any>>({});
+	const edits = ref<Item>({});
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
@@ -66,7 +68,10 @@ export function useItem<T extends Record<string, any>>(
 		return item.value?.[collectionInfo.value.meta.archive_field] === collectionInfo.value.meta.archive_value;
 	});
 
-	const { fields: fieldsWithPermissions } = usePermissions(collection, item, isNew);
+	const permissions = usePermissions(collection, primaryKey, isNew);
+	const fieldsWithPermissions = permissions.itemPermissions.fields;
+
+	const loading = computed(() => loadingItem.value || permissions.itemPermissions.loading.value);
 
 	const itemEndpoint = computed(() => {
 		if (isSingle.value) {
@@ -78,12 +83,15 @@ export function useItem<T extends Record<string, any>>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh, { immediate: true });
+	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh);
+
+	refreshItem();
 
 	return {
 		edits,
 		hasEdits,
 		item,
+		permissions,
 		error,
 		loading,
 		saving,
@@ -101,16 +109,16 @@ export function useItem<T extends Record<string, any>>(
 	};
 
 	async function getItem() {
-		loading.value = true;
+		loadingItem.value = true;
 		error.value = null;
 
 		try {
 			const response = await api.get(itemEndpoint.value, { params: unref(query) });
 			setItemValueToResponse(response);
-		} catch (err: any) {
+		} catch (err) {
 			error.value = err;
 		} finally {
-			loading.value = false;
+			loadingItem.value = false;
 		}
 	}
 
@@ -143,7 +151,7 @@ export function useItem<T extends Record<string, any>>(
 		try {
 			let response;
 
-			if (isNew.value === true) {
+			if (isNew.value) {
 				response = await api.post(getEndpoint(collection.value), edits.value);
 
 				notify({
@@ -160,8 +168,8 @@ export function useItem<T extends Record<string, any>>(
 			setItemValueToResponse(response);
 			edits.value = {};
 			return response.data.data;
-		} catch (err: any) {
-			saveErrorHandler(err);
+		} catch (error) {
+			saveErrorHandler(error);
 		} finally {
 			saving.value = false;
 		}
@@ -175,83 +183,76 @@ export function useItem<T extends Record<string, any>>(
 
 		const itemData = await api.get(itemEndpoint.value, { params: { fields } });
 
-		const newItem: { [field: string]: any } = {
+		const newItem: Item = {
 			...(itemData.data.data || {}),
 			...edits.value,
 		};
 
-		// Make sure to delete the primary key if it's has auto increment enabled
 		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
 			if (primaryKeyField.value.schema?.has_auto_increment || primaryKeyField.value.meta?.special?.includes('uuid')) {
 				delete newItem[primaryKeyField.value.field];
 			}
 		}
 
-		// Make sure to delete nested relational primary keys
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const relations = relationsStore.getRelationsForCollection(collection.value);
 
 		for (const relation of relations) {
 			const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
+			if (!relatedPrimaryKeyField) continue;
 
-			const existsJunctionRelated = relationsStore.relations.find((r) => {
-				return r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field;
-			});
+			const existsJunctionRelated = relationsStore.relations.find(
+				(r) => r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field,
+			);
 
-			if (relation.meta?.one_field && relation.meta.one_field in newItem) {
-				const fieldsToFetch = fields
-					.filter((field) => field.startsWith(relation.meta!.one_field!))
-					.map((field) => field.split('.').slice(1).join('.'));
+			const oneField = relation.meta?.one_field;
+			if (!oneField || !(oneField in newItem)) continue;
 
-				if (Array.isArray(newItem[relation.meta.one_field])) {
-					const existingItems = await findExistingRelatedItems(
-						newItem,
-						relation,
-						relatedPrimaryKeyField,
-						fieldsToFetch,
-					);
+			const fieldsToFetch = fields
+				.filter((field) => field.split('.')[0] === oneField || field === '*')
+				.map((field) => (field.includes('.') ? field.split('.').slice(1).join('.') : '*'));
 
-					newItem[relation.meta.one_field] = newItem[relation.meta.one_field].map((relatedItem: any) => {
-						if (typeof relatedItem !== 'object' && existingItems.length > 0) {
-							relatedItem = existingItems.find((existingItem: any) => existingItem.id === relatedItem);
-						}
+			if (Array.isArray(newItem[oneField])) {
+				const existingItems = await findExistingRelatedItems(newItem, relation, relatedPrimaryKeyField, fieldsToFetch);
 
-						delete relatedItem[relatedPrimaryKeyField!.field];
-
-						updateJunctionRelatedKey(relation, existsJunctionRelated, fieldsStore, relatedItem);
-						return relatedItem;
-					});
-				} else {
-					const createdRelatedItems = newItem[relation.meta.one_field]?.create;
-					const updatedRelatedItems = newItem[relation.meta.one_field]?.update;
-					const deletedRelatedItems = newItem[relation.meta.one_field]?.delete;
-
-					let existingItems: any[] = await findExistingRelatedItems(
-						item.value,
-						relation,
-						relatedPrimaryKeyField,
-						fieldsToFetch,
-					);
-
-					existingItems = existingItems.filter((i) => {
-						return deletedRelatedItems.indexOf(i[relatedPrimaryKeyField!.field]) === -1;
-					});
-
-					for (const item of updatedRelatedItems) {
-						updateJunctionRelatedKey(relation, existsJunctionRelated, fieldsStore, item);
+				newItem[oneField] = newItem[oneField].map((relatedItem: any) => {
+					if (typeof relatedItem !== 'object' && existingItems.length > 0) {
+						relatedItem = existingItems.find((existingItem) => existingItem.id === relatedItem);
 					}
 
-					for (const item of existingItems) {
-						updateExistingRelatedItems(updatedRelatedItems, item, relatedPrimaryKeyField, relation);
-					}
+					delete relatedItem[relatedPrimaryKeyField.field];
 
-					updatedRelatedItems.length = 0;
+					updateJunctionRelatedKey(relation, existsJunctionRelated, relatedItem);
+					return relatedItem;
+				});
+			} else {
+				const newRelatedItem: Alterations = newItem[oneField];
 
-					for (const item of existingItems) {
-						delete item[relatedPrimaryKeyField!.field];
-						createdRelatedItems.push(item);
-					}
+				let existingItems = await findExistingRelatedItems(
+					item.value as Item,
+					relation,
+					relatedPrimaryKeyField,
+					fieldsToFetch,
+				);
+
+				existingItems = existingItems.filter(
+					(item) => !newRelatedItem.delete.includes(item[relatedPrimaryKeyField.field]),
+				);
+
+				for (const item of newRelatedItem.update) {
+					updateJunctionRelatedKey(relation, existsJunctionRelated, item);
+				}
+
+				for (const item of existingItems) {
+					updateExistingRelatedItems(newRelatedItem.update, item, relatedPrimaryKeyField, relation);
+				}
+
+				newRelatedItem.update.length = 0;
+
+				for (const item of existingItems) {
+					delete item[relatedPrimaryKeyField!.field];
+					newRelatedItem.create.push(item);
 				}
 			}
 		}
@@ -275,26 +276,26 @@ export function useItem<T extends Record<string, any>>(
 			edits.value = {};
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
-		} catch (err: any) {
-			saveErrorHandler(err);
+		} catch (error) {
+			saveErrorHandler(error);
 		} finally {
 			saving.value = false;
 		}
 
 		async function findExistingRelatedItems(
-			item: any,
+			item: Item,
 			relation: Relation,
-			relatedPrimaryKeyField: Field | null,
+			relatedPrimaryKeyField: Field,
 			fieldsToFetch: string[],
 		) {
 			const existingIds = item?.[relation.meta!.one_field!].filter((item: any) => typeof item !== 'object');
-			let existingItems: any[] = [];
+			let existingItems: Item[] = [];
 
 			if (existingIds.length > 0) {
 				const response = await api.get(getEndpoint(relation.collection), {
 					params: {
-						fields: [relatedPrimaryKeyField!.field, ...fieldsToFetch],
-						[`filter[${relatedPrimaryKeyField!.field}][_in]`]: existingIds.join(','),
+						fields: [relatedPrimaryKeyField.field, ...fieldsToFetch],
+						[`filter[${relation.field}][_eq]`]: primaryKey.value,
 					},
 				});
 
@@ -305,49 +306,33 @@ export function useItem<T extends Record<string, any>>(
 		}
 
 		function updateExistingRelatedItems(
-			updatedRelatedItems: any,
-			item: any,
-			relatedPrimaryKeyField: Field | null,
+			updatedRelatedItems: Item[],
+			item: Item,
+			relatedPrimaryKeyField: Field,
 			relation: Relation,
 		) {
 			for (const updatedItem of updatedRelatedItems) {
-				copyUserEditValuesToExistingItem(item, relatedPrimaryKeyField, updatedItem, relation);
-			}
-		}
+				if (item[relatedPrimaryKeyField.field] !== updatedItem[relatedPrimaryKeyField.field]) continue;
 
-		function copyUserEditValuesToExistingItem(
-			item: any,
-			relatedPrimaryKeyField: Field | null,
-			updatedItem: any,
-			relation: Relation,
-		) {
-			if (item[relatedPrimaryKeyField!.field] === updatedItem[relatedPrimaryKeyField!.field]) {
-				const columns = fields.filter((s) => s.startsWith(relation.meta!.one_field!));
+				for (const field of fields) {
+					const [relationField, fieldName] = field.split('.');
 
-				for (const col of columns) {
-					const colName = col.split('.')[1];
+					if (relationField !== relation.meta!.one_field!) continue;
 
-					if (colName !== undefined) {
-						item[colName] = updatedItem[colName];
-					}
+					if (fieldName && fieldName in updatedItem) item[fieldName] = updatedItem[fieldName];
 				}
 			}
 		}
-	}
 
-	function updateJunctionRelatedKey(
-		relation: Relation,
-		existsJunctionRelated: Relation | undefined,
-		fieldsStore: any,
-		item: any,
-	) {
-		if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
-			const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
-				existsJunctionRelated.related_collection,
-			);
+		function updateJunctionRelatedKey(relation: Relation, existsJunctionRelated: Relation | undefined, item: Item) {
+			if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
+				const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
+					existsJunctionRelated.related_collection,
+				);
 
-			if (relation.meta.junction_field in item && junctionRelatedPrimaryKeyField.schema!.is_generated) {
-				delete item[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
+				if (relation.meta.junction_field in item && junctionRelatedPrimaryKeyField?.schema!.is_generated) {
+					delete item[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
+				}
 			}
 		}
 	}
@@ -361,7 +346,7 @@ export function useItem<T extends Record<string, any>>(
 				});
 
 			const otherErrors = error.response.data.errors.filter(
-				(err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code) === false,
+				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
 			);
 
 			if (otherErrors.length > 0) {
@@ -437,11 +422,20 @@ export function useItem<T extends Record<string, any>>(
 
 	function refresh() {
 		error.value = null;
-		loading.value = false;
+		validationErrors.value = [];
+		loadingItem.value = false;
 		saving.value = false;
 		deleting.value = false;
+		archiving.value = false;
 
-		if (isNew.value === true) {
+		item.value = null;
+
+		refreshItem();
+		permissions.itemPermissions.refresh();
+	}
+
+	function refreshItem() {
+		if (isNew.value) {
 			item.value = null;
 		} else {
 			getItem();
@@ -450,8 +444,8 @@ export function useItem<T extends Record<string, any>>(
 
 	function setItemValueToResponse(response: AxiosResponse) {
 		if (
-			(collection.value.startsWith('directus_') && collection.value !== 'directus_collections') ||
-			(collection.value === 'directus_collections' && response.data.data.collection?.startsWith('directus_'))
+			(isSystemCollection(collection.value) && collection.value !== 'directus_collections') ||
+			(collection.value === 'directus_collections' && isSystemCollection(response.data.data.collection ?? ''))
 		) {
 			response.data.data = translate(response.data.data);
 		}

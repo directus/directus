@@ -1,6 +1,6 @@
 import type { DirectusField, MergeCoreCollection, NestedPartial } from '../index.js';
 
-export type DirectusCollection<Schema extends object> = {
+export type DirectusCollection<Schema = any> = {
 	collection: string; // TODO keyof complete schema
 	meta: MergeCoreCollection<
 		Schema,

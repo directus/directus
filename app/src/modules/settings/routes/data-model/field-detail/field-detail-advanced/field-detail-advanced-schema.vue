@@ -75,7 +75,7 @@ const fieldTypes: Array<FieldTypeOption | { divider: true }> = [
 	},
 	{ divider: true },
 	{
-		text: '$t:geometry',
+		text: '$t:geometry.All',
 		value: 'geometry',
 	},
 	{
@@ -118,6 +118,7 @@ const maxLength = syncFieldDetailStoreProperty('field.schema.max_length');
 const numericPrecision = syncFieldDetailStoreProperty('field.schema.numeric_precision');
 const nullable = syncFieldDetailStoreProperty('field.schema.is_nullable', true);
 const unique = syncFieldDetailStoreProperty('field.schema.is_unique', false);
+const indexed = syncFieldDetailStoreProperty('field.schema.is_indexed', false);
 const numericScale = syncFieldDetailStoreProperty('field.schema.numeric_scale');
 
 const { t } = useI18n();
@@ -439,12 +440,17 @@ function useOnUpdate() {
 
 			<div v-if="!isAlias" class="field half-left">
 				<div class="label type-label">{{ t('nullable') }}</div>
-				<v-checkbox v-model="nullable" :disabled="isGenerated" :label="t('allow_null_value')" block />
+				<v-checkbox v-model="nullable" :disabled="isGenerated || isPrimaryKey" :label="t('allow_null_value')" block />
 			</div>
 
 			<div v-if="!isAlias" class="field half-right">
 				<div class="label type-label">{{ t('unique') }}</div>
-				<v-checkbox v-model="unique" :disabled="isGenerated" :label="t('value_unique')" block />
+				<v-checkbox v-model="unique" :disabled="isGenerated || isPrimaryKey" :label="t('value_unique')" block />
+			</div>
+
+			<div v-if="!isAlias" class="field half-left">
+				<div class="label type-label">{{ t('index') }}</div>
+				<v-checkbox v-model="indexed" :disabled="isGenerated || isPrimaryKey" :label="t('value_index')" block />
 			</div>
 		</div>
 	</div>

@@ -176,7 +176,6 @@ function toggleManualSort() {
 	<thead class="table-header" :class="{ resizing, reordering }">
 		<draggable
 			v-model="headersWritable"
-			force-fallback
 			:class="{ fixed }"
 			item-key="value"
 			tag="tr"
@@ -186,6 +185,7 @@ function toggleManualSort() {
 			animation="150"
 			ghost-class="header-order-ghost"
 			swap-threshold="0.5"
+			v-bind="{ 'force-fallback': true }"
 			@start="$emit('update:reordering', true)"
 			@end="$emit('update:reordering', false)"
 		>

@@ -1,7 +1,7 @@
 ---
 description: A guide on how to scaffold your Directus Extension.
 readTime: 5 min read
-contributors: Rijk Van Zanten, Esther Agbaje
+contributors: Rijk Van Zanten, Esther Agbaje, Kevin Lewis, Lukas Zelenka
 ---
 
 # Creating Extensions
@@ -49,6 +49,13 @@ The CLI supports rebuilding extensions whenever a file has changed by using the 
 
 :::
 
+::: tip Automatically Reload Extensions
+
+To automatically reload extensions every time you make a change, without having to restart Directus, in your
+`docker-compose.yml` file, set `EXTENSIONS_AUTO_RELOAD=true`.
+
+:::
+
 ### Configuring the CLI
 
 Most of the time, it should be sufficient to use the CLI as is. But, in some cases it might be necessary to customize it
@@ -74,11 +81,24 @@ the config file can be loaded as a CommonJS or ESM file.
 
 ::: tip Component Library
 
-Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you can
-use to enrich your extensions. These components can be used in any of the "app extensions", including Interfaces,
-Displays, Modules, Layouts, and Panels.
+Directus comes shipped with it's own [Vue Component Library](https://components.directus.io) that you can use to enrich
+your extensions. These components can be used in any of the "app extensions", including Interfaces, Displays, Modules,
+Layouts, and Panels.
 
 :::
+
+### Usage with Docker
+
+After you have created your custom extension, a new folder was created (for example: `custom-extension`). Now, you need
+to go to the `package.json` within this newly created folder and copy the `name` of the extension (for example:
+`directus-extension-custom-extension`). Then, you just need to mount a volume in your Docker container pointing to this
+folder, but remember that you need to use the `name` of the extension as the folder name within Directus. For example,
+if you use a `docker-compose.yaml` it would be something like this:
+
+```yaml
+	volumes:
+		- ./custom-extension:/directus/extensions/directus-extension-custom-extension
+```
 
 ## Extension Folder Structure
 
@@ -105,6 +125,13 @@ The generated `package.json` file contains an additional `directus:extension` fi
 
 The CLI will use those fields by default to determine the input and output file paths and how the extension should be
 built.
+
+## Marketplace Requirements
+
+By default, App Extensions and [Sandboxed Extensions](/extensions/sandbox/introduction) are available from the
+[Directus Marketplace](/user-guide/marketplace/overview) in all Directus projects (Directus Professional and Enterprise
+Cloud, and self-hosted). If you are building an API or Hybrid extension and want to publish it to the Marketplace, it
+must use the Sandbox SDK.
 
 ## Developing Your Extension
 

@@ -205,6 +205,7 @@ export default ({ embed }, { env }) => {
 | `auth.create`<sup>[1]</sup>    | The created user                     | `identifier`, `provider`, `providerPayload` |
 | `auth.update`<sup>[2]</sup>    | The updated auth token<sup>[3]</sup> | `identifier`, `provider`, `providerPayload` |
 | `authenticate`                 | The empty accountability object      | `req`                                       |
+| `email.send`                   | The email payload                    | --                                          |
 | `(<collection>.)items.query`   | The items query                      | `collection`                                |
 | `(<collection>.)items.read`    | The read item                        | `query`, `collection`                       |
 | `(<collection>.)items.create`  | The new item                         | `collection`                                |
@@ -326,5 +327,5 @@ Learn how to build hooks with our official guides:
 <GuidesListExtensions type="Hooks" />
 
 <script setup>
-import GuidesListExtensions from '../.vitepress/components/guides/GuidesListExtensions.vue'
+import GuidesListExtensions from '@/components/guides/GuidesListExtensions.vue';
 </script>

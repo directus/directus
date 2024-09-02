@@ -34,7 +34,7 @@ test('modelValue prop', async () => {
 
 	await wrapper.get('.label').trigger('click');
 
-	expect(wrapper.emitted()['update:modelValue'][0]).toEqual(['test']);
+	expect(wrapper.emitted()['update:modelValue']?.[0]).toEqual(['test']);
 
 	await wrapper.setProps({ modelValue: null });
 

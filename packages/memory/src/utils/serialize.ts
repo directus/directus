@@ -1,7 +1,6 @@
 import { parseJSON } from '@directus/utils';
-
-const encoder = new TextEncoder();
-const decoder = new TextDecoder();
+import { stringToUint8Array } from './string-to-uint8array.js';
+import { uint8ArrayToString } from './uint8array-to-string.js';
 
 /**
  * Serialize a given JavaScript value to it's Uint8Array equivalent
@@ -11,7 +10,7 @@ const decoder = new TextDecoder();
  */
 export const serialize = (val: unknown) => {
 	const valueString = JSON.stringify(val);
-	return encoder.encode(valueString);
+	return stringToUint8Array(valueString);
 };
 
 /**
@@ -21,6 +20,6 @@ export const serialize = (val: unknown) => {
  * @returns JavaScript value
  */
 export const deserialize = <T = unknown>(val: Uint8Array) => {
-	const valueString = decoder.decode(val);
+	const valueString = uint8ArrayToString(val);
 	return <T>parseJSON(valueString);
 };

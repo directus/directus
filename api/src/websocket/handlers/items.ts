@@ -1,6 +1,7 @@
 import emitter from '../../emitter.js';
 import { ItemsService, MetaService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
+import { isSystemCollection } from '@directus/system-data';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketItemsMessage } from '../messages.js';
@@ -30,7 +31,7 @@ export class ItemsHandler {
 		const accountability = client.accountability;
 		const schema = await getSchema();
 
-		if (!schema.collections[message.collection] || message.collection.startsWith('directus_')) {
+		if (!schema.collections[message.collection] || isSystemCollection(message.collection)) {
 			throw new WebSocketError(
 				'items',
 				'INVALID_COLLECTION',

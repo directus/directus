@@ -6,7 +6,6 @@ import type {
 } from '@directus/extensions';
 import {
 	EXTENSION_LANGUAGES,
-	EXTENSION_NAME_REGEX,
 	EXTENSION_PKG_KEY,
 	EXTENSION_TYPES,
 	ExtensionManifest,
@@ -28,7 +27,10 @@ import { log } from '../utils/logger.js';
 import copyTemplate from './helpers/copy-template.js';
 import getExtensionDevDeps from './helpers/get-extension-dev-deps.js';
 
-export default async function add(): Promise<void> {
+type AddOptions = { install?: boolean };
+
+export default async function add(options: AddOptions): Promise<void> {
+	const install = options.install ?? true;
 	const extensionPath = process.cwd();
 	const packagePath = path.resolve('package.json');
 
@@ -98,6 +100,13 @@ export default async function add(): Promise<void> {
 			},
 		]);
 
+		const bundleEntryNames = new Set(extensionOptions.entries.map((entry) => entry.name));
+
+		if (bundleEntryNames.has(name)) {
+			log(`Extension ${chalk.bold(name)} already exists for this bundle.`, 'error');
+			process.exit(1);
+		}
+
 		const spinner = ora(chalk.bold('Modifying Directus extension...')).start();
 
 		const source = alternativeSource ?? 'src';
@@ -130,19 +139,27 @@ export default async function add(): Promise<void> {
 		const newExtensionManifest = {
 			...extensionManifest,
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
-			devDependencies: await getExtensionDevDeps(
-				newEntries.map((entry) => entry.type),
-				getLanguageFromEntries(newEntries),
-			),
+			devDependencies: {
+				...extensionManifest.devDependencies,
+				...(await getExtensionDevDeps(
+					newEntries.map((entry) => entry.type),
+					getLanguageFromEntries(newEntries),
+				)),
+			},
 		};
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
 		const packageManager = getPackageManager();
 
-		await execa(packageManager, ['install'], { cwd: extensionPath });
+		if (install) {
+			await execa(packageManager, ['install'], { cwd: extensionPath });
+		} else {
+			spinner.info(`Dependency installation skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
+		}
 
 		spinner.succeed(chalk.bold('Done'));
+		log(`Your ${type} extension has been added.`);
 	} else {
 		const { proceed } = await inquirer.prompt<{ proceed: boolean }>([
 			{
@@ -156,8 +173,6 @@ export default async function add(): Promise<void> {
 			log(`Extension has not been modified.`, 'info');
 			process.exit(1);
 		}
-
-		const oldName = extensionManifest.name.match(EXTENSION_NAME_REGEX)?.[1] ?? extensionManifest.name;
 
 		const { type, name, language, convertName, extensionName, alternativeSource } = await inquirer.prompt<{
 			type: NestedExtensionType;
@@ -189,14 +204,15 @@ export default async function add(): Promise<void> {
 				type: 'input',
 				name: 'convertName',
 				message: 'Choose a name for the extension that is converted to an entry',
-				default: oldName,
+				default: extensionManifest.name,
 				validate: (name: string) => (name.length === 0 ? 'Entry name can not be empty.' : true),
 			},
 			{
 				type: 'input',
 				name: 'extensionName',
 				message: 'Choose a name for the extension',
-				default: ({ convertName }: { convertName: string }) => (convertName !== oldName ? oldName : null),
+				default: ({ convertName }: { convertName: string }) =>
+					convertName !== extensionManifest.name ? extensionManifest.name : null,
 				validate: (name: string) => (name.length === 0 ? 'Extension name can not be empty.' : true),
 			},
 			{
@@ -267,22 +283,30 @@ export default async function add(): Promise<void> {
 
 		const newExtensionManifest = {
 			...extensionManifest,
-			name: EXTENSION_NAME_REGEX.test(extensionName) ? extensionName : `directus-extension-${extensionName}`,
-			keywords: ['directus', 'directus-extension', `directus-custom-bundle`],
+			name: extensionName,
+			keywords: ['directus', 'directus-extension', 'directus-extension-bundle'],
 			[EXTENSION_PKG_KEY]: newExtensionOptions,
-			devDependencies: await getExtensionDevDeps(
-				entries.map((entry) => entry.type),
-				getLanguageFromEntries(entries),
-			),
+			devDependencies: {
+				...extensionManifest.devDependencies,
+				...(await getExtensionDevDeps(
+					entries.map((entry) => entry.type),
+					getLanguageFromEntries(entries),
+				)),
+			},
 		};
 
 		await fse.writeJSON(packagePath, newExtensionManifest, { spaces: indent ?? '\t' });
 
 		const packageManager = getPackageManager();
 
-		await execa(packageManager, ['install'], { cwd: extensionPath });
+		if (install) {
+			await execa(packageManager, ['install'], { cwd: extensionPath });
+		} else {
+			spinner.info(`Dependency installation skipped, to install run: ${chalk.blue(`${packageManager}`)} install`);
+		}
 
 		spinner.succeed(chalk.bold('Done'));
+		log(`Your ${type} extension has been added.`);
 	}
 }
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import api from '@/api';
 import { Header, Sort } from '@/components/v-table/types';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { router } from '@/router';
 import { useFlowsStore } from '@/stores/flows';
-import { usePermissionsStore } from '@/stores/permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { FlowRaw } from '@directus/types';
 import { sortBy } from 'lodash';
@@ -14,15 +14,11 @@ import FlowDrawer from './flow-drawer.vue';
 
 const { t } = useI18n();
 
-const permissionsStore = usePermissionsStore();
+const { createAllowed } = useCollectionPermissions('directus_flows');
 
 const confirmDelete = ref<FlowRaw | null>(null);
 const deletingFlow = ref(false);
 const editFlow = ref<string | undefined>();
-
-const createAllowed = computed<boolean>(() => {
-	return permissionsStore.hasPermission('directus_flows', 'create');
-});
 
 const conditionalFormatting = ref([
 	{

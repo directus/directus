@@ -1,8 +1,10 @@
 import mitt from 'mitt';
 
-const emitter = mitt();
+export const emitter = mitt();
 
-export default emitter;
 export enum Events {
 	upload = 'upload',
+	tabIdle = 'tab-idle',
+	tabActive = 'tab-active',
+	tusResumableUploadsChanged = 'tus-resumable-uploads-changed',
 }

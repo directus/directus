@@ -7,7 +7,6 @@ import { getSpecialForType } from '@/utils/get-special-for-type';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import formatTitle from '@directus/format-title';
 import type { Field, Width } from '@directus/types';
 import { cloneDeep } from 'lodash';
 import { computed, ref, unref } from 'vue';
@@ -159,6 +158,8 @@ async function onGroupSortChange(fields: Field[]) {
 
 	emit('setNestedSort', updates);
 }
+
+const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : type);
 </script>
 
 <template>
@@ -170,7 +171,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 			<template #input>
 				<div
-					v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+					v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
 					class="label"
 				>
 					<div class="label-inner">
@@ -186,14 +187,12 @@ async function onGroupSortChange(fields: Field[]) {
 				v-if="localType === 'group'"
 				class="field-grid group full nested"
 				:model-value="nestedFields"
-				force-fallback
 				handle=".drag-handle"
 				:group="{ name: 'fields' }"
 				:set-data="hideDragImage"
 				:animation="150"
 				item-key="field"
-				fallback-on-body
-				invert-swap
+				v-bind="{ 'force-fallback': true, 'fallback-on-body': true, 'invert-swap': true }"
 				@update:model-value="onGroupSortChange"
 			>
 				<template #header>
@@ -227,7 +226,7 @@ async function onGroupSortChange(fields: Field[]) {
 
 				<template #input>
 					<div
-						v-tooltip="`${field.name} (${formatTitle(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
+						v-tooltip="`${field.name} (${tFieldType(field.type)})${interfaceName ? ` - ${interfaceName}` : ''}`"
 						class="label"
 						@click="openFieldDetail"
 					>

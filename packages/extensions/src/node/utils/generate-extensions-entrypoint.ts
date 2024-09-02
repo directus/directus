@@ -1,18 +1,56 @@
-import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
 import { isIn, isTypeIn, pathToRelativeUrl, pluralize } from '@directus/utils/node';
 import path from 'path';
-import type { AppExtension, BundleExtension, Extension, HybridExtension } from '../../shared/types/index.js';
+import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
+import type {
+	AppExtension,
+	BundleExtension,
+	Extension,
+	ExtensionSettings,
+	HybridExtension,
+} from '../../shared/types/index.js';
 
-export function generateExtensionsEntrypoint(extensions: Extension[]): string {
-	const appOrHybridExtensions = extensions.filter((extension): extension is AppExtension | HybridExtension =>
-		isIn(extension.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]),
-	);
+export function generateExtensionsEntrypoint(
+	extensionMaps: { local: Map<string, Extension>; registry: Map<string, Extension>; module: Map<string, Extension> },
+	settings: ExtensionSettings[],
+): string {
+	const appOrHybridExtensions: (AppExtension | HybridExtension)[] = [];
+	const bundleExtensions: BundleExtension[] = [];
 
-	const bundleExtensions = extensions.filter(
-		(extension): extension is BundleExtension =>
-			extension.type === 'bundle' &&
-			extension.entries.some((entry) => isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES])),
-	);
+	for (const [source, extensions] of Object.entries(extensionMaps)) {
+		for (const [folder, extension] of extensions.entries()) {
+			const settingsForExtension = settings.find((setting) => setting.source === source && setting.folder === folder);
+
+			if (!settingsForExtension) continue;
+
+			if (isIn(extension.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]) && settingsForExtension.enabled) {
+				appOrHybridExtensions.push(extension as AppExtension | HybridExtension);
+			}
+
+			if (extension.type === 'bundle') {
+				const appBundle: BundleExtension = {
+					...extension,
+					entries: extension.entries.filter((entry) => {
+						const isApp = isIn(entry.type, [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]);
+						if (isApp === false) return false;
+
+						const enabled =
+							settings.find(
+								(setting) =>
+									setting.source === source &&
+									setting.folder === entry.name &&
+									setting.bundle === settingsForExtension.id,
+							)?.enabled ?? false;
+
+						return enabled;
+					}),
+				};
+
+				if (appBundle.entries.length > 0) {
+					bundleExtensions.push(appBundle);
+				}
+			}
+		}
+	}
 
 	const appOrHybridExtensionImports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].flatMap((type) =>
 		appOrHybridExtensions
@@ -28,12 +66,13 @@ export function generateExtensionsEntrypoint(extensions: Extension[]): string {
 			),
 	);
 
-	const bundleExtensionImports = bundleExtensions.map(
-		(extension, i) =>
-			`import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
-				.filter((type) => extension.entries.some((entry) => entry.type === type))
-				.map((type) => `${pluralize(type)} as ${type}Bundle${i}`)
-				.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`,
+	const bundleExtensionImports = bundleExtensions.map((extension, i) =>
+		extension.entries.length > 0
+			? `import {${[...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES]
+					.filter((type) => extension.entries.some((entry) => entry.type === type))
+					.map((type) => `${pluralize(type)} as ${type}Bundle${i}`)
+					.join(',')}} from './${pathToRelativeUrl(path.resolve(extension.path, extension.entrypoint.app))}';`
+			: '',
 	);
 
 	const extensionExports = [...APP_EXTENSION_TYPES, ...HYBRID_EXTENSION_TYPES].map(

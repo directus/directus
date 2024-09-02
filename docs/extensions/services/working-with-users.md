@@ -11,8 +11,8 @@ There are various services related to users:
 - `RolesServices`: Used to assign roles to users.
 - `PermissionsServices`: Used to manage the permissions associated with each role.
 
-All three of these services extend the [ItemsService](/docs/extensions/services/accessing-items.md) and are used in a
-very similar way.
+All three of these services extend the [ItemsService](/extensions/services/accessing-items) and are used in a very
+similar way.
 
 ```js
 export default defineEndpoint((router, context) => {

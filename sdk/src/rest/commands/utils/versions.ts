@@ -12,7 +12,7 @@ import { throwIfEmpty } from '../../utils/index.js';
  * @returns State of the item after save.
  */
 export const saveToContentVersion =
-	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
+	<Schema, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
 		item: Partial<Item>,
 	): RestCommand<Item, Schema> =>
@@ -36,7 +36,7 @@ whether the Content Version is outdated (i.e. main version of the item has been 
 Content Version)
  */
 export const compareContentVersion =
-	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
+	<Schema, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
 	): RestCommand<
 		{
@@ -66,7 +66,7 @@ export const compareContentVersion =
  * @returns The primary key of the promoted item.
  */
 export const promoteContentVersion =
-	<Schema extends object, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
+	<Schema, Collection extends keyof Schema, Item = UnpackList<Schema[Collection]>>(
 		id: DirectusVersion<Schema>['id'],
 		mainHash: string,
 		fields?: (keyof UnpackList<Item>)[],
