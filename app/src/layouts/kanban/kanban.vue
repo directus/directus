@@ -89,8 +89,8 @@ function saveChanges() {
 }
 
 const titleFieldConfiguration = computed<Field | undefined>(() => {
-  return props.fieldsInCollection.find(field => field.field === props.layoutOptions.titleField)
-})
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.titleField);
+});
 
 const textFieldConfiguration = computed<Field | undefined>(() => {
 	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
@@ -165,15 +165,15 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 									>
 										<div v-if="element.title" class="title">
 											<render-display
-                        v-if="titleFieldConfiguration"
-                        :collection="collection"
-                        :value="element.title"
-                        :type="titleFieldConfiguration.type"
-                        :field="layoutOptions?.titleField"
-                        :display="titleFieldConfiguration.meta?.display"
-                        :options="titleFieldConfiguration.meta?.options"
-                        :interface="titleFieldConfiguration.meta?.interface"
-                      />
+												v-if="titleFieldConfiguration"
+												:collection="collection"
+												:value="element.title"
+												:type="titleFieldConfiguration.type"
+												:field="layoutOptions?.titleField"
+												:display="titleFieldConfiguration.meta?.display"
+												:options="titleFieldConfiguration.meta?.options"
+												:interface="titleFieldConfiguration.meta?.interface"
+											/>
 										</div>
 										<img v-if="element.image" class="image" :src="element.image" />
 										<render-display

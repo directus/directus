@@ -676,25 +676,25 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				});
 
 				function addRelatedFields(fieldName?: string) {
-					if (!fieldName) 
-						return
-				
-					const fieldConfiguration = layoutOptions.value ? fieldsInCollection.value.find(field => field.field === fieldName) : null
+					if (!fieldName) return;
 
-					if (!fieldConfiguration) 
-						return
+					const fieldConfiguration = layoutOptions.value
+						? fieldsInCollection.value.find((field) => field.field === fieldName)
+						: null;
 
-					const relatedFields = adjustFieldsForDisplays(fields, collection.value!)
+					if (!fieldConfiguration) return;
+
+					const relatedFields = adjustFieldsForDisplays(fields, collection.value!);
 
 					relatedFields.forEach((val) => {
 						if (!fields.includes(val)) {
-							fields.push(val)
+							fields.push(val);
 						}
-					})
+					});
 				}
 
-				addRelatedFields(layoutOptions.value?.titleField)
-				addRelatedFields(layoutOptions.value?.textField)
+				addRelatedFields(layoutOptions.value?.titleField);
+				addRelatedFields(layoutOptions.value?.textField);
 
 				return fields;
 			});
