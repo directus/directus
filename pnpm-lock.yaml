@@ -391,8 +391,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3
       oracledb:
-        specifier: 6.5.1
-        version: 6.5.1
+        specifier: 6.6.0
+        version: 6.6.0
       pg:
         specifier: 8.12.0
         version: 8.12.0
@@ -761,8 +761,8 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       chroma-js:
-        specifier: 2.4.2
-        version: 2.4.2
+        specifier: 2.6.0
+        version: 2.6.0
       codemirror:
         specifier: 5.65.17
         version: 5.65.17
@@ -830,8 +830,8 @@ importers:
         specifier: 8.0.3
         version: 8.0.3
       mime:
-        specifier: 4.0.3
-        version: 4.0.3
+        specifier: 4.0.4
+        version: 4.0.4
       mitt:
         specifier: 3.0.1
         version: 3.0.1
@@ -848,8 +848,8 @@ importers:
         specifier: 2.1.7
         version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       pretty-ms:
-        specifier: 9.0.0
-        version: 9.0.0
+        specifier: 9.1.0
+        version: 9.1.0
       qrcode:
         specifier: 1.5.4
         version: 1.5.4
@@ -889,6 +889,9 @@ importers:
       vue-tsc:
         specifier: 2.0.29
         version: 2.0.29(typescript@5.4.5)
+      vue-virtual-scroller:
+        specifier: 2.0.0-beta.8
+        version: 2.0.0-beta.8(vue@3.4.27(typescript@5.4.5))
       vuedraggable:
         specifier: 4.1.0
         version: 4.1.0(vue@3.4.27(typescript@5.4.5))
@@ -960,8 +963,8 @@ importers:
         specifier: 1.2.1
         version: 1.2.1(typedoc@0.25.13(typescript@5.4.5))
       typedoc-vitepress-theme:
-        specifier: 1.0.0-next.10
-        version: 1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5)))
+        specifier: 1.0.1
+        version: 1.0.1(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5)))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -6022,8 +6025,8 @@ packages:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
 
-  chroma-js@2.4.2:
-    resolution: {integrity: sha512-U9eDw6+wt7V8z5NncY2jJfZa+hUH8XEj8FQHgFJTrUFnJfXYf4Ml4adI2vXZOjqRDpFWtYVWypDfZwnJ+HIR4A==}
+  chroma-js@2.6.0:
+    resolution: {integrity: sha512-BLHvCB9s8Z1EV4ethr6xnkl/P2YRFOGqfgvuMG/MyCbZPrTA+NeiByY6XvgF0zP4/2deU2CXnWyMa3zu1LqQ3A==}
 
   ci-info@3.9.0:
     resolution: {integrity: sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==}
@@ -8767,8 +8770,8 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
 
-  mime@4.0.3:
-    resolution: {integrity: sha512-KgUb15Oorc0NEKPbvfa0wRU+PItIEZmiv+pyAO2i0oTIVTJhlzMclU7w4RXWQrSOVH5ax/p/CkIO7KI4OyFJTQ==}
+  mime@4.0.4:
+    resolution: {integrity: sha512-v8yqInVjhXyqP6+Kw4fV3ZzeMRqEW6FotRsKXjRS5VMTNIuXsdRoAvklpoRgSqXm6o9VNH4/C0mgedko9DdLsQ==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -8867,6 +8870,9 @@ packages:
   minizlib@3.0.1:
     resolution: {integrity: sha512-umcy022ILvb5/3Djuu8LWeqUa8D68JaBzlttKeMWen48SjabqS3iY5w/vzeMzMUNhLDifyhbOwKDSznB1vvrwg==}
     engines: {node: '>= 18'}
+
+  mitt@2.1.0:
+    resolution: {integrity: sha512-ILj2TpLiysu2wkBbWjAmww7TkZb65aiQO+DkVdUTBpBXq+MHYiETENkKFMtsJZX1Lf4pe4QOrTSjIfUwN5lRdg==}
 
   mitt@3.0.1:
     resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
@@ -9246,8 +9252,8 @@ packages:
     resolution: {integrity: sha512-ANIvzobt1rls2BDny5fWZ3ZVKyD6nscLvfFRpQgfWsythlcsVUC9kL0zq6j2Z5z9wwp1kd7wpsD/T9qNPVLCaQ==}
     engines: {node: '>=18'}
 
-  oracledb@6.5.1:
-    resolution: {integrity: sha512-JzoSGei1wnvmqgKnAZK1W650mzHTZXx+7hClV4mwsbY/ZjUtrpnojNJMYJ2jkOhj7XG5oJPfXc4GqDKaNzkxqg==}
+  oracledb@6.6.0:
+    resolution: {integrity: sha512-T3dx+o3j+tVN53wQyr4yGTmoPHLy+a2V8yb1T2PmWrsj3ZlSt2Yu1BgV2yTDqnmBZYpRi/I3yJXRCOHHD7PiyA==}
     engines: {node: '>=14.6'}
 
   os-tmpdir@1.0.2:
@@ -9872,8 +9878,8 @@ packages:
     resolution: {integrity: sha512-973driJZvxiGOQ5ONsFhOF/DtzPMOMtgC11kCpUrPGMTgqp2q/1gwzCquocrN33is0VZ5GFHXZYMM9l6h67v2Q==}
     engines: {node: '>=10'}
 
-  pretty-ms@9.0.0:
-    resolution: {integrity: sha512-E9e9HJ9R9NasGOgPaPE8VMeiPKAyWR5jcFpNnwIejslIhWqdqOrb2wShBsncMPUb+BcCd2OPYfh7p2W6oemTng==}
+  pretty-ms@9.1.0:
+    resolution: {integrity: sha512-o1piW0n3tgKIKCwk2vpM/vOV13zjJzvP37Ioze54YlTHE06m4tjEbzg9WsKkvTuyYln2DHjo5pY4qrZGI0otpw==}
     engines: {node: '>=18'}
 
   printable-characters@1.0.42:
@@ -11206,10 +11212,10 @@ packages:
     peerDependencies:
       typedoc: 0.23.x || 0.24.x || 0.25.x || 0.26.x
 
-  typedoc-vitepress-theme@1.0.0-next.10:
-    resolution: {integrity: sha512-VtEoqO4VLG3NsyzsqAFLFeg4L18UotZughdJbW5pRhLaKKfpflr9zbJAnLcA6t1Z1JvkJZa8c26iCM3akOURdQ==}
+  typedoc-vitepress-theme@1.0.1:
+    resolution: {integrity: sha512-pnpgzSQRaR9QLMl3it/tjq7vlV+eeUzKa22w/xF6ZUdAcYdmeag13kuA6EKfU7/kkIkJ/qsu1GPd3OcIC36Hlw==}
     peerDependencies:
-      typedoc-plugin-markdown: '>=4.0.0-next.51'
+      typedoc-plugin-markdown: '>=4.1.0'
 
   typedoc@0.25.13:
     resolution: {integrity: sha512-pQqiwiJ+Z4pigfOnnysObszLiU3mVLWAExSPf+Mu06G/qsc3wzbuM56SZQvONhHLncLUhYzOVkjFFpFfL5AzhQ==}
@@ -11652,6 +11658,16 @@ packages:
     peerDependencies:
       vue: ^3.0.0
 
+  vue-observe-visibility@2.0.0-alpha.1:
+    resolution: {integrity: sha512-flFbp/gs9pZniXR6fans8smv1kDScJ8RS7rEpMjhVabiKeq7Qz3D9+eGsypncjfIyyU84saU88XZ0zjbD6Gq/g==}
+    peerDependencies:
+      vue: ^3.0.0
+
+  vue-resize@2.0.0-alpha.1:
+    resolution: {integrity: sha512-7+iqOueLU7uc9NrMfrzbG8hwMqchfVfSzpVlCMeJQe4pyibqyoifDNbKTZvwxZKDvGkB+PdFeKvnGZMoEb8esg==}
+    peerDependencies:
+      vue: ^3.0.0
+
   vue-router@4.4.3:
     resolution: {integrity: sha512-sv6wmNKx2j3aqJQDMxLFzs/u/mjA9Z5LCgy6BE0f7yFWMjrPLnS/sPNn8ARY/FXw6byV18EFutn5lTO6+UsV5A==}
     peerDependencies:
@@ -11671,6 +11687,11 @@ packages:
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
+
+  vue-virtual-scroller@2.0.0-beta.8:
+    resolution: {integrity: sha512-b8/f5NQ5nIEBRTNi6GcPItE4s7kxNHw2AIHLtDp+2QvqdTjVN0FgONwX9cr53jWRgnu+HRLPaWDOR2JPI5MTfQ==}
+    peerDependencies:
+      vue: ^3.2.0
 
   vue@3.4.27:
     resolution: {integrity: sha512-8s/56uK6r01r1icG/aEOHqyMVxd1bkYcSe9j8HcKtr/xTOFWvnzIVTehNW+5Yt89f+DLBe4A569pnZLS5HzAMA==}
@@ -12116,13 +12137,13 @@ snapshots:
   '@aws-crypto/crc32@3.0.0':
     dependencies:
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.609.0
+      '@aws-sdk/types': 3.567.0
       tslib: 1.14.1
 
   '@aws-crypto/crc32c@3.0.0':
     dependencies:
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.609.0
+      '@aws-sdk/types': 3.567.0
       tslib: 1.14.1
 
   '@aws-crypto/ie11-detection@3.0.0':
@@ -12134,7 +12155,7 @@ snapshots:
       '@aws-crypto/ie11-detection': 3.0.0
       '@aws-crypto/supports-web-crypto': 3.0.0
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.609.0
+      '@aws-sdk/types': 3.567.0
       '@aws-sdk/util-locate-window': 3.568.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
@@ -12145,7 +12166,7 @@ snapshots:
       '@aws-crypto/sha256-js': 3.0.0
       '@aws-crypto/supports-web-crypto': 3.0.0
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.609.0
+      '@aws-sdk/types': 3.567.0
       '@aws-sdk/util-locate-window': 3.568.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
@@ -12163,7 +12184,7 @@ snapshots:
   '@aws-crypto/sha256-js@3.0.0':
     dependencies:
       '@aws-crypto/util': 3.0.0
-      '@aws-sdk/types': 3.609.0
+      '@aws-sdk/types': 3.567.0
       tslib: 1.14.1
 
   '@aws-crypto/sha256-js@5.2.0':
@@ -12182,7 +12203,7 @@ snapshots:
 
   '@aws-crypto/util@3.0.0':
     dependencies:
-      '@aws-sdk/types': 3.609.0
+      '@aws-sdk/types': 3.567.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
 
@@ -17051,7 +17072,7 @@ snapshots:
 
   chownr@3.0.0: {}
 
-  chroma-js@2.4.2: {}
+  chroma-js@2.6.0: {}
 
   ci-info@3.9.0: {}
 
@@ -20132,7 +20153,7 @@ snapshots:
 
   mime@3.0.0: {}
 
-  mime@4.0.3: {}
+  mime@4.0.4: {}
 
   mimic-fn@2.1.0: {}
 
@@ -20227,6 +20248,8 @@ snapshots:
     dependencies:
       minipass: 7.1.2
       rimraf: 5.0.10
+
+  mitt@2.1.0: {}
 
   mitt@3.0.1: {}
 
@@ -20723,7 +20746,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.1.0
 
-  oracledb@6.5.1:
+  oracledb@6.6.0:
     optional: true
 
   os-tmpdir@1.0.2: {}
@@ -21365,7 +21388,7 @@ snapshots:
     dependencies:
       parse-ms: 2.1.0
 
-  pretty-ms@9.0.0:
+  pretty-ms@9.1.0:
     dependencies:
       parse-ms: 4.0.0
 
@@ -23066,7 +23089,7 @@ snapshots:
     dependencies:
       typedoc: 0.25.13(typescript@5.4.5)
 
-  typedoc-vitepress-theme@1.0.0-next.10(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))):
+  typedoc-vitepress-theme@1.0.1(typedoc-plugin-markdown@4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))):
     dependencies:
       typedoc-plugin-markdown: 4.0.0-next.53(typedoc@0.25.13(typescript@5.4.5))
 
@@ -23609,6 +23632,14 @@ snapshots:
       '@vue/devtools-api': 6.6.3
       vue: 3.4.27(typescript@5.4.5)
 
+  vue-observe-visibility@2.0.0-alpha.1(vue@3.4.27(typescript@5.4.5)):
+    dependencies:
+      vue: 3.4.27(typescript@5.4.5)
+
+  vue-resize@2.0.0-alpha.1(vue@3.4.27(typescript@5.4.5)):
+    dependencies:
+      vue: 3.4.27(typescript@5.4.5)
+
   vue-router@4.4.3(vue@3.4.27(typescript@5.4.5)):
     dependencies:
       '@vue/devtools-api': 6.6.3
@@ -23632,6 +23663,13 @@ snapshots:
       '@vue/language-core': 2.0.29(typescript@5.4.5)
       semver: 7.6.3
       typescript: 5.4.5
+
+  vue-virtual-scroller@2.0.0-beta.8(vue@3.4.27(typescript@5.4.5)):
+    dependencies:
+      mitt: 2.1.0
+      vue: 3.4.27(typescript@5.4.5)
+      vue-observe-visibility: 2.0.0-alpha.1(vue@3.4.27(typescript@5.4.5))
+      vue-resize: 2.0.0-alpha.1(vue@3.4.27(typescript@5.4.5))
 
   vue@3.4.27(typescript@5.4.5):
     dependencies:

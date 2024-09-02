@@ -158,7 +158,7 @@ export default async function createApp(): Promise<express.Application> {
 							'https://avatars.githubusercontent.com',
 						],
 						mediaSrc: ["'self'"],
-						connectSrc: ["'self'", 'https://*'],
+						connectSrc: ["'self'", 'https://*', 'wss://*'],
 					},
 				},
 				getConfigFromEnv('CONTENT_SECURITY_POLICY_'),
