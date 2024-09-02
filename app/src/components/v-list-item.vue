@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { RouteLocation, useLink, useRoute } from 'vue-router';
-import { computed } from 'vue';
 import { useGroupable } from '@directus/composables';
-import { isEqual } from 'lodash';
+import { isMatch } from 'lodash';
+import { computed } from 'vue';
+import { RouteLocation, useLink, useRoute } from 'vue-router';
 
 interface Props {
 	block?: boolean;
+	/** Makes the item height grow, if 'block' is enabled */
+	grow?: boolean;
 	/** Makes the item smaller */
 	dense?: boolean;
 	/** Where the item should link to */
@@ -36,6 +38,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
 	block: false,
+	grow: false,
 	dense: false,
 	to: '',
 	href: undefined,
@@ -92,7 +95,11 @@ const isActiveRoute = computed(() => {
 	if (props.active !== undefined) return props.active;
 
 	if (props.to) {
-		const isQueryActive = !props.query || isEqual(route.query, linkRoute.value.query);
+		const queryMatch = Object.values(linkRoute.value.query).length
+			? isMatch(route.query, linkRoute.value.query)
+			: !Object.values(route.query).length;
+
+		const isQueryActive = !props.query || queryMatch;
 
 		if (!props.exact) {
 			return isActive.value && isQueryActive;
@@ -116,6 +123,7 @@ function onClick(event: PointerEvent) {
 		class="v-list-item"
 		:class="{
 			active: isActiveRoute,
+			grow,
 			dense,
 			link: isLink,
 			disabled,
@@ -254,8 +262,10 @@ function onClick(event: PointerEvent) {
 	&.block {
 		--v-icon-color: var(--v-icon-color, var(--theme--foreground-subdued));
 
-		--v-list-item-padding: var(--theme--form--field--input--padding);
-
+		padding: var(
+			--v-list-item-padding,
+			calc(var(--theme--form--field--input--padding) / 2) var(--theme--form--field--input--padding)
+		);
 		position: relative;
 		display: flex;
 		height: var(--theme--form--field--input--height);
@@ -267,7 +277,8 @@ function onClick(event: PointerEvent) {
 		border: var(--theme--border-width) solid
 			var(--v-list-item-border-color, var(--theme--form--field--input--border-color));
 		border-radius: var(--theme--border-radius);
-		transition: border-color var(--fast) var(--transition);
+		transition: var(--fast) var(--transition);
+		transition-property: background-color, border-color;
 
 		:slotted(.drag-handle) {
 			cursor: grab;
@@ -303,15 +314,20 @@ function onClick(event: PointerEvent) {
 		}
 
 		& + & {
-			margin-top: 8px;
+			margin-top: var(--v-list-item-margin, 8px);
+		}
+
+		&.grow {
+			height: auto;
+			min-height: var(--theme--form--field--input--height);
 		}
 
 		&.dense {
-			height: 44px;
-			padding: 4px 8px;
+			--theme--form--field--input--height: 44px;
+			padding: calc(var(--theme--form--field--input--padding) / 4) calc(var(--theme--form--field--input--padding) / 2);
 
 			& + & {
-				margin-top: 4px;
+				margin-top: var(--v-list-item-margin, 4px);
 			}
 		}
 	}

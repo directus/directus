@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -57,7 +58,7 @@ const imageInfo = computed(() => {
 		key = 'system-medium-contain';
 	}
 
-	const source = `/assets/${props.file.id}?key=${key}&modified=${props.file.modified_on}`;
+	const source = getAssetUrl(`${props.file.id}?key=${key}&modified=${props.file.modified_on}`);
 
 	return { source, fileType };
 });
@@ -73,7 +74,7 @@ const selectionIcon = computed(() => {
 });
 
 function toggleSelection() {
-	if (!props.item) return null;
+	if (!props.item) return;
 
 	if (props.modelValue.includes(props.item[props.itemKey])) {
 		emit(
@@ -105,7 +106,7 @@ function handleClick() {
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
 			<template v-else>
-				<v-icon-file v-if="type || imgError" :ext="type" />
+				<v-icon-file v-if="type || imgError" :ext="type ?? ''" />
 				<template v-else>
 					<v-image
 						v-if="showThumbnail"
@@ -113,6 +114,7 @@ function handleClick() {
 						:src="imageInfo?.source"
 						:alt="item?.title"
 						role="presentation"
+						@error="imgError = true"
 					/>
 					<v-icon v-else large :name="icon" />
 				</template>

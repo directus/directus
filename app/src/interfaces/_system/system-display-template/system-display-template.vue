@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
 import type { Field } from '@directus/types';
 import { computed, inject, ref, unref } from 'vue';
@@ -6,9 +7,11 @@ import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
 	value: string | null;
+	placeholder?: string | null;
 	disabled?: boolean;
 	collectionField?: string;
 	collectionName?: string;
+	fields?: FieldNode[];
 	injectVersionField?: boolean;
 }>();
 
@@ -76,20 +79,34 @@ const injectValue = computed(() => {
 
 	return { fields: [fakeVersionField] };
 });
+
+const { treeList, loadFieldRelations } = useFieldTree(collection, injectValue);
+
+const tree = computed(() => {
+	if (props.fields) {
+		return { list: props.fields };
+	}
+
+	if (collection.value === null) {
+		return null;
+	}
+
+	return { list: treeList.value, pathLoader: loadFieldRelations };
+});
 </script>
 
 <template>
 	<div class="system-display-template">
-		<v-notice v-if="collection === null">
+		<v-notice v-if="tree === null">
 			{{ t('interfaces.system-display-template.select_a_collection') }}
 		</v-notice>
-
 		<v-field-template
 			v-else
-			:collection="collection"
+			:tree="tree.list"
 			:model-value="value"
 			:disabled="disabled"
-			:inject="injectValue"
+			:placeholder="placeholder"
+			:load-path-level="tree.pathLoader"
 			@update:model-value="$emit('input', $event)"
 		/>
 	</div>

@@ -4,6 +4,7 @@ import { router } from '@/router';
 import { useUserStore } from '@/stores/user';
 import { useAppStore } from '@directus/stores';
 import { User } from '@directus/types';
+import { useHead } from '@unhead/vue';
 import { nextTick, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -42,6 +43,10 @@ async function enable() {
 		(inputOTP.value.$el as HTMLElement).querySelector('input')!.focus();
 	}
 }
+
+useHead({
+	title: t('tfa_setup'),
+});
 </script>
 
 <template>

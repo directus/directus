@@ -491,7 +491,7 @@ Update an existing operation.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`PATCH /operation/:id`
+`PATCH /operations/:id`
 
 Provide a partial [operation object](#the-operation-object) as the body of your request.
 

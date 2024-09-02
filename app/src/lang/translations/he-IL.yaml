@@ -19,6 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
+about: אודות
 identifier: מזהה
 avatar: צלמית
 application: יישום
@@ -27,14 +28,18 @@ method: פונקציה
 published: פורסם
 draft: טיוטה
 archived: ארכיון
+marketplace: חנות
+extensions: הרחבות
 modules: מודולים
 module_bar: סרגל מודולים
 logs: לוגים
+unknown: לא ידוע
 reset_width: אפס רוחב
 tile_size: גודל צלמית
 edit_field: ערוך שדה
 conditions: תנאים
 location: מיקום
+collection_names_are_case_sensitive: יש חשיבות לגודל אותיות בשמות
 condition_rules: תנאי כלל
 input: קלט
 maps: מפות
@@ -46,13 +51,55 @@ duplicate_field: שדה כפול
 half_width: חצי עמוד
 full_width: רוחב מלא
 group: קבוצה
+popular: פופולרי
+recent: אחרון
 export_items: יצא פריטים
 and: ו
 or: או
 init: אתחל
 dataset_too_large_currently_showing_n_items: מערך הנתונים גדול מדי. מציג כעת את {n} הפריטים הראשונים.
+extension_interface: ממשק
+extension_display: תצוגה
+extension_layout: פריסה
+extension_module: מודול
+extension_panel: לוח
+extension_theme: ערכת נושא
 extension_hook: נקודת השחלה
+extension_endpoint: כתובת קצה
+extension_operation: פעולה
+extension_bundle: חבילה
+extension_interfaces: ממשקים
+extension_displays: תצוגה
+extension_layouts: פריסה
 extension_modules: מודולים
+extension_panels: לוחות
+extension_themes: ערכות נושא
+extension_hooks: נקודת השחלה
+extension_endpoints: נקודת גישה
+extension_operations: תהליכים
+extension_bundles: חבילות
+extension_missing: חסרים
+extension_reload_required: יש לטעון את הדף מחדש
+extension_reload_required_copy: יש לטעון את הדף מחדש לאחר הפעלה או נטרול של תוסף.
+extension_reload_now: טען מחדש כעת
+published_relative: פורסם ב{relativeTime}
+compatible_with_your_project: תואם את הפרויקט שלך
+last_updated_relative: תאריך עדכון {relativeTime}
+n_files: '{n} קבצים'
+verified: מאומת
+homepage: דף הבית
+repository: מאגר
+reload_page: רענן דף
+reload_required: יש לטעון את הדף מחדש
+report_an_issue: דווח על תקלה
+website: אתר
+github: גיטהאב
+beta: בטא
+n_downloads: '{n} הורדות'
+downloads: הורדות
+compatibility_not_guaranteed: תאימות לא מובטחת
+enable: אפשר
+disable: מושבת
 custom: מותאם אישית
 hook: נקודת השחלה
 fill_width: עמוד מלא
@@ -62,9 +109,11 @@ add_field: הוסף שדה
 role_name: שם תפקיד
 branch: ענף
 leaf: עלה
+indeterminate: לא מוגדר
 edit_collection: ערוך אוסף
 exclusive: בלעדי
 children: ילדים
+db_only_click_to_configure: 'דאטהבייס בלבד: יש ללחץ כאן על מנת להגדיר'
 show_active_items: הצג פריטים פעילים
 show_archived_items: הצג פריטי ארכיון
 show_all_items: הצג את כל הפריטים
@@ -73,12 +122,19 @@ required: שדה חובה
 required_for_app_access: נדרש עבור גישה לאפליקציה
 requires_value: דורש ערך
 create_preset: יצירת הגדרה מראש
+create_panel: יצירת לוח
 create_role: צור תפקיד
 create_user: צור משתמש
 message: הודעה
+delete_panel: מחיקת לוח
 create_webhook: צור Webhook
+create_custom_translation: יצירת תרגומים
+edit_custom_translation: עריכת תרגומים
+no_custom_translations: חסרים תרגומים
+no_custom_translations_copy: חסרים תרגומים.
 invite_users: הזמן משתמשים
 invite: הזמן
+email_already_invited: כבר נשלחה הזמנה לכתובת מייל "{email}"
 subject: נושא
 inbox: תיבת דואר
 emails: אימייל
@@ -89,6 +145,29 @@ connection_poor: קליטה לא טובה
 primary: ראשי
 rename_folder: שינוי שם תיקיה
 delete_folder: מחק תיקייה
+prefix: קידומת
+suffix: סיומת
+keep: שמור
+version: גרסה
+version_key: מזהה גרסה
+version_name: שם הגרסה
+main_version: ראשי
+switch_version: החלפת גרסה
+switch_version_copy: האם את/ה רוצה להחליף לגרסה {version}? שינויים שלא נשמרו יאבדו.
+create_version: ליצור גרסה
+rename_version: לשנות שם גרסה
+compare_version: השווה גירסאות
+save_version: לשמור גרסה
+promote_version: לקדם גרסה
+promote_version_disabled: ללא שינויים
+promote_version_drawer_title: לקדם {version} לענף הראשי
+promote_version_changes: שינויים
+promote_version_preview: תצוגה מקדימה
+delete_version: מחיקת גרסא
+delete_version_copy: >-
+  האם ברצונך למחוק את גרסה {version}? הפעולה אינה ניתנת לביטול.
+delete_on_promote_copy: >-
+  האם ברצונך לשמור או למחוק את גרסה {version} לאחר הקידום?
 not_allowed: לא מורשה
 validationError:
   eq: הערך צריך להיות {valid}
@@ -97,6 +176,18 @@ validationError:
   nempty: הערך אינו יכול להיות ריק
   null: הערך צריך להיות null
   nnull: הערך צריך להיות לא null
+  istarts_with: ערך צריך להתחיל ב{substring}
+  nstarts_with: ערך לא יכול יכול להתחיל ב{substring}
+  nistarts_with: ערך לא יכול יכול להתחיל ב{substring}
+  ends_with: ערך צריך להסתיים ב{substring}
+  iends_with: ערך צריך להסתיים ב{substring}
+  nends_with: ערך לא יכול יכול להסתיים ב{substring}
+  niends_with: ערך לא יכול יכול להסתיים ב{substring}
+all_access: גישה פתוחה
+no_access: אין גישה
+use_custom: השתמש במותאם אישית
+nullable: לא חובה
+allow_null_value: אפשר ערך ריק
 allow_multiple: מאפשר כמה
 field_file: קובץ בודד
 field_files: כמה קובצים
@@ -155,6 +246,7 @@ role: תפקיד
 width: רוחב
 height: גובה
 settings_translations: תרגומים
+source_registry: חנות
 collection: מאגר
 fields:
   directus_activity:
@@ -203,6 +295,8 @@ fields:
   directus_roles:
     name: שם תפקיד
     description: תיאור
+  directus_policies:
+    description: תיאור
   directus_webhooks:
     status: סטטוס
 field_options:
@@ -230,7 +324,11 @@ displays:
     boolean: בוליאני
   collection:
     collection: מאגר
+  datetime:
+    suffix: סיומת
   formatted-value:
+    prefix: קידומת
+    suffix: סיומת
     text: טקסט
   labels:
     choices_value_placeholder: הכנס ערך...

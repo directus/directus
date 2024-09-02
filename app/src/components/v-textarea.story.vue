@@ -8,9 +8,7 @@ This is a new line.`);
 
 <template>
 	<Story title="VTextarea">
-		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-textarea v-model="value" v-bind="state" />
-		</template>
+		<v-textarea v-model="value" />
 
 		<template #controls>
 			<HstTextarea v-model="value" title="Value" />

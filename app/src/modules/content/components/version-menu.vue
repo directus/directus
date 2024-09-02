@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import api from '@/api';
-import { usePermissionsStore } from '@/stores/permissions';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
 import { isNil } from 'lodash';
-import { computed, ref, toRefs, unref } from 'vue';
+import { ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VersionPromoteDrawer from './version-promote-drawer.vue';
 
@@ -28,15 +28,15 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const { hasPermission } = usePermissionsStore();
-
 const { collection, primaryKey, hasEdits, currentVersion } = toRefs(props);
 
 const isVersionPromoteDrawerOpen = ref(false);
 
-const createVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'create'));
-const updateVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'update'));
-const deleteVersionsAllowed = computed<boolean>(() => hasPermission('directus_versions', 'delete'));
+const {
+	createAllowed: createVersionsAllowed,
+	updateAllowed: updateVersionsAllowed,
+	deleteAllowed: deleteVersionsAllowed,
+} = useCollectionPermissions('directus_versions');
 
 const { switchDialogActive, switchTarget, switchVersion } = useSwitchDialog();
 
@@ -222,12 +222,12 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 </script>
 
 <template>
-	<div>
+	<div class="version-menu-wrapper">
 		<v-menu class="version-menu" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
 				<button class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
 					<span class="version-name">
-						{{ currentVersion ? getVersionDisplayName(currentVersion) : t('main_version') }}
+						<v-text-overflow :text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')" />
 					</span>
 					<v-icon name="arrow_drop_down" />
 				</button>
@@ -413,6 +413,10 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	@include form-grid;
 }
 
+.version-menu-wrapper {
+	overflow: hidden;
+}
+
 .version-menu {
 	flex-shrink: 0;
 }
@@ -426,14 +430,16 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-button {
 	display: flex;
-	margin-left: 16px;
+	align-items: center;
 	padding: 2px;
 	background-color: var(--theme--background-normal);
 	color: var(--theme--foreground);
 	border-radius: 24px;
+	width: 100%;
 
 	.version-name {
 		padding-left: 8px;
+		overflow: hidden;
 	}
 
 	&:hover {

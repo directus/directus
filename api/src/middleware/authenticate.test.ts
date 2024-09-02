@@ -5,30 +5,54 @@ import type { Knex } from 'knex';
 import { afterEach, expect, test, vi } from 'vitest';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
-import env from '../env.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import '../types/express.d.ts';
 import { handler } from './authenticate.js';
 
+const reqGetImplementation = (string: any) => {
+	switch (string) {
+		case 'user-agent':
+			return 'fake-user-agent';
+		case 'origin':
+			return 'fake-origin';
+		default:
+			return null;
+	}
+};
+
 vi.mock('../database/index');
 
-vi.mock('../env.js', async () => {
-	const { mockEnv } = await import('../__utils__/mock-env.js');
-	return mockEnv({
-		env: {
-			SECRET: 'test',
-			EXTENSIONS_PATH: './extensions',
-		},
-	});
-});
+// This is required because logger uses global env which is imported before the tests run. Can be
+// reduce to just mock the file when logger is also using useLogger everywhere @TODO
+vi.mock('@directus/env', () => ({
+	useEnv: vi.fn().mockReturnValue({
+		SECRET: 'test',
+		EXTENSIONS_PATH: './extensions',
+		SESSION_COOKIE_NAME: 'directus_session',
+		// needed for constants.ts top level mocking
+		REFRESH_TOKEN_COOKIE_DOMAIN: '',
+		REFRESH_TOKEN_TTL: 0,
+		REFRESH_TOKEN_COOKIE_SECURE: false,
+		SESSION_COOKIE_DOMAIN: '',
+		SESSION_COOKIE_TTL: 0,
+		SESSION_COOKIE_SECURE: false,
+	}),
+}));
+
+vi.mock('../permissions/lib/fetch-roles-tree.js');
+vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.js');
 
 afterEach(() => {
-	vi.resetAllMocks();
+	vi.clearAllMocks();
 });
 
 test('Short-circuits when authenticate filter is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
-		get: vi.fn(),
+		cookies: {},
+		get: vi.fn(reqGetImplementation),
 	} as unknown as Request;
 
 	const res = {} as Response;
@@ -47,16 +71,8 @@ test('Short-circuits when authenticate filter is used', async () => {
 test('Uses default public accountability when no token is given', async () => {
 	const req = {
 		ip: '127.0.0.1',
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		cookies: {},
+		get: vi.fn(reqGetImplementation),
 	} as unknown as Request;
 
 	const res = {} as Response;
@@ -66,15 +82,13 @@ test('Uses default public accountability when no token is given', async () => {
 
 	await handler(req, res, next);
 
-	expect(req.accountability).toEqual({
-		user: null,
-		role: null,
-		admin: false,
-		app: false,
-		ip: '127.0.0.1',
-		userAgent: 'fake-user-agent',
-		origin: 'fake-origin',
-	});
+	expect(req.accountability).toEqual(
+		createDefaultAccountability({
+			ip: '127.0.0.1',
+			userAgent: 'fake-user-agent',
+			origin: 'fake-origin',
+		}),
+	);
 
 	expect(next).toHaveBeenCalledTimes(1);
 });
@@ -101,33 +115,29 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env['SECRET'],
+		'test',
 		{ issuer: 'directus' },
 	);
 
 	const req = {
 		ip: '127.0.0.1',
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		cookies: {},
+		get: vi.fn(reqGetImplementation),
 		token,
 	} as unknown as Request;
 
 	const res = {} as Response;
 	const next = vi.fn();
 
+	vi.mocked(fetchRolesTree).mockResolvedValue([roleID]);
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: appAccess, admin: adminAccess });
+
 	await handler(req, res, next);
 
 	expect(req.accountability).toEqual({
 		user: userID,
 		role: roleID,
+		roles: [roleID],
 		app: appAccess,
 		admin: adminAccess,
 		share,
@@ -151,7 +161,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			share,
 			share_scope: shareScope,
 		},
-		env['SECRET'],
+		'test',
 		{ issuer: 'directus' },
 	);
 
@@ -160,6 +170,7 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	expect(req.accountability).toEqual({
 		user: userID,
 		role: roleID,
+		roles: [roleID],
 		app: appAccess,
 		admin: adminAccess,
 		share,
@@ -183,16 +194,8 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 
 	const req = {
 		ip: '127.0.0.1',
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		cookies: {},
+		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
 
@@ -206,16 +209,8 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 test('Sets accountability to user information when static token is used', async () => {
 	const req = {
 		ip: '127.0.0.1',
-		get: vi.fn((string) => {
-			switch (string) {
-				case 'user-agent':
-					return 'fake-user-agent';
-				case 'origin':
-					return 'fake-origin';
-				default:
-					return null;
-			}
-		}),
+		cookies: {},
+		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
 
@@ -227,6 +222,7 @@ test('Sets accountability to user information when static token is used', async 
 	const expectedAccountability = {
 		user: testUser.id,
 		role: testUser.role,
+		roles: [testUser.role],
 		app: testUser.app_access,
 		admin: testUser.admin_access,
 		ip: '127.0.0.1',
@@ -241,6 +237,9 @@ test('Sets accountability to user information when static token is used', async 
 		where: vi.fn().mockReturnThis(),
 		first: vi.fn().mockResolvedValue(testUser),
 	} as unknown as Knex);
+
+	vi.mocked(fetchRolesTree).mockResolvedValue([testUser.role]);
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: testUser.app_access, admin: testUser.admin_access });
 
 	await handler(req, res, next);
 
@@ -261,7 +260,68 @@ test('Sets accountability to user information when static token is used', async 
 	testUser.app_access = '1' as never;
 	expectedAccountability.admin = false;
 	expectedAccountability.app = true;
+
+	vi.mocked(fetchGlobalAccess).mockResolvedValue({ app: true, admin: false });
+
 	await handler(req, res, next);
 	expect(req.accountability).toEqual(expectedAccountability);
 	expect(next).toHaveBeenCalledTimes(1);
+});
+
+test('Invalid session token responds with error and clears the cookie', async () => {
+	const req = {
+		ip: '127.0.0.1',
+		cookies: {
+			directus_session: 'session-token',
+		},
+		get: vi.fn(reqGetImplementation),
+		token: 'session-token',
+	} as unknown as Request;
+
+	const res = {
+		clearCookie: vi.fn(),
+	} as unknown as Response;
+
+	const next = vi.fn();
+
+	vi.mocked(getDatabase).mockReturnValue({
+		select: vi.fn().mockReturnThis(),
+		from: vi.fn().mockReturnThis(),
+		leftJoin: vi.fn().mockReturnThis(),
+		where: vi.fn().mockReturnThis(),
+		first: vi.fn().mockResolvedValue(null),
+	} as unknown as Knex);
+
+	await expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
+	expect(res.clearCookie).toHaveBeenCalledTimes(1);
+	expect(next).toHaveBeenCalledTimes(0);
+});
+
+test('Invalid query token responds with error but does not clear the session cookie', async () => {
+	const req = {
+		ip: '127.0.0.1',
+		cookies: {
+			directus_session: 'session-token',
+		},
+		get: vi.fn(reqGetImplementation),
+		token: 'static-token',
+	} as unknown as Request;
+
+	const res = {
+		clearCookie: vi.fn(),
+	} as unknown as Response;
+
+	const next = vi.fn();
+
+	vi.mocked(getDatabase).mockReturnValue({
+		select: vi.fn().mockReturnThis(),
+		from: vi.fn().mockReturnThis(),
+		leftJoin: vi.fn().mockReturnThis(),
+		where: vi.fn().mockReturnThis(),
+		first: vi.fn().mockResolvedValue(null),
+	} as unknown as Knex);
+
+	await expect(handler(req, res, next)).rejects.toEqual(new InvalidCredentialsError());
+	expect(next).toHaveBeenCalledTimes(0);
+	expect(res.clearCookie).toHaveBeenCalledTimes(0);
 });

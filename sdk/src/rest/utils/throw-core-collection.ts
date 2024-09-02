@@ -1,3 +1,5 @@
+import { isSystemCollection } from './is-system-collection.js';
+
 /**
  *
  * @param value
@@ -5,7 +7,7 @@
  * @throws Throws an error if the collection starts with the `directus_` prefix
  */
 export const throwIfCoreCollection = (value: string | number | symbol, message: string) => {
-	if (String(value).startsWith('directus_')) {
+	if (isSystemCollection(String(value))) {
 		throw new Error(message);
 	}
 };

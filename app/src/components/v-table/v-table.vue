@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { i18n } from '@/lang/';
+import { i18n } from '@/lang';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import type { ShowSelect } from '@directus/extensions';
 import { clone, forEach, pick } from 'lodash';
@@ -209,9 +209,7 @@ function onItemSelected(event: ItemSelectEvent) {
 }
 
 function getSelectedState(item: Item) {
-	const selectedKeys = props.selectionUseKeys
-		? props.modelValue
-		: props.modelValue.map((item: any) => item[props.itemKey]);
+	const selectedKeys = props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey]);
 
 	return selectedKeys.includes(item[props.itemKey]);
 }

@@ -15,7 +15,7 @@ readTime: 3 min read
 ## Monorepo
 
 The primary Directus repository is located at [`directus/directus`](https://github.com/directus/directus) and houses the
-Admin App (Vue.js 3 w/ Composition API), API (Node.js), API Specification (OpenAPI), and other smaller packages used
+Data Studio (Vue.js 3 w/ Composition API), API (Node.js), API Specification (OpenAPI), and other smaller packages used
 internally. Directus follows a monorepo design similar to React or Babel — this page will outline our monorepo's design
 and structure.
 
@@ -68,9 +68,9 @@ The source code is located in `/app/src` and the below folders are inside there.
 
 ::: tip Component Library
 
-Directus comes shipped with it's own [Vue Component Library and Storybook](https://components.directus.io) that you can
-use to enrich your extensions or when developing locally. These components can be used in any of the "app extensions",
-including Interfaces, Displays, Modules, Layouts, and Panels.
+Directus comes shipped with it's own [Vue Component Library](https://components.directus.io) that you can use to enrich
+your extensions or when developing locally. These components can be used in any of the "app extensions", including
+Interfaces, Displays, Modules, Layouts, and Panels.
 
 :::
 
@@ -83,10 +83,14 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 | [@directus/composables](/packages/@directus/composables/)                                                                | Shared Vue composables for Directus use                                                                                                                               |
 | [@directus/constants](/packages/@directus/constants/)                                                                    | Shared constants for Directus                                                                                                                                         |
 | [create-directus-extension](https://github.com/directus/directus/tree/main/packages/create-directus-extension)           | A small util that will scaffold a Directus extension                                                                                                                  |
-| [@directus/data-driver-postgres](https://github.com/directus/directus/tree/main/packages/data-driver-postgres)           | Data abstraction for Postgres                                                                                                                                         |
-| [@directus/data](https://github.com/directus/directus/tree/main/packages/data)                                           | Data abstraction for Directus                                                                                                                                         |
+| [create-directus-project](https://github.com/directus/directus/tree/main/packages/create-directus-project)               | A small installer util that will create a directory, add boilerplate folders, and install Directus through npm                                                        |
+| [@directus/env](/packages/@directus/env/)                                                                                | Environment variable configuration extraction for Directus                                                                                                            |
 | [@directus/errors](/packages/@directus/errors/)                                                                          | Utility functions to help creating and checking against Directus errors                                                                                               |
+| [@directus/extensions-registry](/packages/@directus/extensions-registry/)                                                | Abstraction for exploring Directus extensions on a package registry                                                                                                   |
 | [@directus/extensions-sdk](/packages/@directus/extensions-sdk/)                                                          | A toolkit to develop extensions to extend Directus                                                                                                                    |
+| [@directus/extensions](/packages/@directus/extensions/)                                                                  | Shared utilities, types and constants related to Directus extensions                                                                                                  |
+| [@directus/format-title](/packages/@directus/format-title/)                                                              | Custom formatter that converts any string into Title Case                                                                                                             |
+| [@directus/memory](/packages/@directus/memory/)                                                                          | Memory / Redis abstraction for Directus                                                                                                                               |
 | [@directus/pressure](/packages/@directus/pressure/)                                                                      | Pressure based rate limiter                                                                                                                                           |
 | [@directus/random](/packages/@directus/random/)                                                                          | Set of random-utilities for use in tests                                                                                                                              |
 | [@directus/release-notes-generator](https://github.com/directus/directus/tree/main/packages/release-notes-generator)     | Package that generates release notes for Directus monorepo                                                                                                            |
@@ -98,8 +102,10 @@ The various sub-packages of the platform. Including the file-storage adapters, s
 | [@directus/storage-driver-gcs](https://github.com/directus/directus/tree/main/packages/storage-driver-gcs)               | GCS file storage abstraction for `@directus/storage`                                                                                                                  |
 | [@directus/storage-driver-local](https://github.com/directus/directus/tree/main/packages/storage-driver-local)           | Local file storage abstraction for `@directus/storage`                                                                                                                |
 | [@directus/storage-driver-s3](https://github.com/directus/directus/tree/main/packages/storage-driver-s3)                 | S3 file storage abstraction for `@directus/storage`                                                                                                                   |
+| [@directus/storage-driver-supabase](https://github.com/directus/directus/tree/main/packages/storage-driver-supabase)     | Supabase file storage driver for `@directus/storage`                                                                                                                  |
 | [@directus/storage](https://github.com/directus/directus/tree/main/packages/storage)                                     | Object storage abstraction layer for Directus                                                                                                                         |
 | [@directus/stores](/packages/@directus/stores/)                                                                          | Shared Directus Studio state for use in components, extensions, and the `@directus/app` routes. Stores are [Pinia](https://www.npmjs.com/package/pinia)-based stores. |
+| [@directus/system-data](/packages/@directus/system-data/)                                                                | Definitions and types for Directus system collections                                                                                                                 |
 | [@directus/tsconfig](https://github.com/directus/directus/tree/main/packages/tsconfig)                                   | The shared TS Config files used by the projects in the Directus ecosystem.                                                                                            |
 | [@directus/types](/packages/@directus/types/)                                                                            | Shared types for Directus                                                                                                                                             |
 | [@directus/update-check](/packages/@directus/update-check/)                                                              | Check if an update is available for a given package                                                                                                                   |

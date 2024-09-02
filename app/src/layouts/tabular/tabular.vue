@@ -2,14 +2,13 @@
 import { HeaderRaw } from '@/components/v-table/types';
 import { AliasFields, useAliasFields } from '@/composables/use-alias-fields';
 import { usePageSize } from '@/composables/use-page-size';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
-import { usePermissionsStore } from '@/stores/permissions';
-import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { useSync } from '@directus/composables';
 import type { ShowSelect } from '@directus/extensions';
 import type { Field, Filter, Item } from '@directus/types';
-import { ComponentPublicInstance, Ref, computed, inject, ref, toRefs, watch } from 'vue';
+import { ComponentPublicInstance, Ref, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 defineOptions({ inheritAttrs: false });
@@ -25,7 +24,7 @@ interface Props {
 	error?: any;
 	totalPages: number;
 	tableSort?: { by: string; desc: boolean } | null;
-	onRowClick: (item: Item) => void;
+	onRowClick: ({ item, event }: { item: Item; event: PointerEvent }) => void;
 	tableRowHeight: number;
 	page: number;
 	toPage: (newPage: number) => void;
@@ -65,6 +64,8 @@ const emit = defineEmits(['update:selection', 'update:tableHeaders', 'update:lim
 const { t } = useI18n();
 const { collection } = toRefs(props);
 
+const { sortAllowed } = useCollectionPermissions(collection);
+
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
 const limitWritable = useSync(props, 'limit', emit);
@@ -86,9 +87,6 @@ useShortcut(
 	table,
 );
 
-const permissionsStore = usePermissionsStore();
-const userStore = useUserStore();
-
 const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 	[25, 50, 100, 250, 500, 1000],
 	(value) => String(value),
@@ -98,24 +96,6 @@ const { sizes: pageSizes, selected: selectedSize } = usePageSize<string>(
 if (limitWritable.value !== selectedSize) {
 	limitWritable.value = selectedSize;
 }
-
-const showManualSort = computed(() => {
-	if (!props.sortField) return false;
-
-	const isAdmin = userStore.currentUser?.role?.admin_access;
-
-	if (isAdmin) return true;
-
-	const permission = permissionsStore.getPermissionsForUser(props.collection, 'update');
-
-	if (!permission) return false;
-
-	if (Array.isArray(permission.fields) && permission.fields.length > 0) {
-		return permission.fields.includes(props.sortField) || permission.fields.includes('*');
-	}
-
-	return true;
-});
 
 const fieldsWritable = useSync(props, 'fields', emit);
 
@@ -147,7 +127,7 @@ function removeField(fieldKey: string) {
 			:loading="loading"
 			:row-height="tableRowHeight"
 			:item-key="primaryKeyField?.field"
-			:show-manual-sort="showManualSort"
+			:show-manual-sort="sortAllowed"
 			:manual-sort-key="sortField"
 			allow-header-reorder
 			selection-use-keys
@@ -286,18 +266,7 @@ function removeField(fieldKey: string) {
 			</template>
 		</v-table>
 
-		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-			{{ t('unexpected_error_copy') }}
-
-			<template #append>
-				<v-error :error="error" />
-
-				<v-button small class="reset-preset" @click="resetPresetAndRefresh">
-					{{ t('reset_page_preferences') }}
-				</v-button>
-			</template>
-		</v-info>
-
+		<slot v-else-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 		<slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
@@ -354,10 +323,6 @@ function removeField(fieldKey: string) {
 			color: var(--theme--foreground);
 		}
 	}
-}
-
-.reset-preset {
-	margin-top: 24px;
 }
 
 .add-field {

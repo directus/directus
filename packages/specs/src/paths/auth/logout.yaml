@@ -9,12 +9,17 @@ post:
       application/json:
         schema:
           type: object
-          required: [token]
           properties:
             refresh_token:
               type: string
               example: eyJ0eXAiOiJKV...
-              description: JWT access token you want to logout.
+              description:
+                The refresh token to invalidate. If you have the refresh token in a cookie through /auth/login, you
+                don't have to submit it here.
+            mode:
+              type: string
+              enum: [json, cookie, session]
+              description: Whether the refresh token is submitted in the JSON response, or in a httpOnly cookie.
   responses:
     '200':
       description: Request successful

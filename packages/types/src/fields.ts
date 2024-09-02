@@ -1,5 +1,12 @@
 import type { Column } from '@directus/schema';
-import type { FUNCTIONS, GEOMETRY_FORMATS, GEOMETRY_TYPES, LOCAL_TYPES, TYPES } from '@directus/constants';
+import type {
+	FUNCTIONS,
+	GEOMETRY_FORMATS,
+	GEOMETRY_TYPES,
+	LOCAL_TYPES,
+	TYPES,
+	NUMERIC_TYPES,
+} from '@directus/constants';
 import type { Filter, FilterOperator } from './filter.js';
 import type { DeepPartial } from './misc.js';
 
@@ -15,6 +22,9 @@ export type Type = (typeof TYPES)[number];
 export type FieldFunction = (typeof FUNCTIONS)[number];
 
 export type LocalType = (typeof LOCAL_TYPES)[number];
+
+export type NumericValue = number | bigint;
+export type NumericType = (typeof NUMERIC_TYPES)[number];
 
 export type GeometryType = (typeof GEOMETRY_TYPES)[number] | 'GeometryCollection' | undefined;
 

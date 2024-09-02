@@ -9,12 +9,17 @@ post:
       application/json:
         schema:
           type: object
-          required: [token]
           properties:
             refresh_token:
               type: string
               example: eyJ0eXAiOiJKV...
               description: JWT access token you want to refresh. This token can't be expired.
+            mode:
+              type: string
+              enum: [json, cookie, session]
+              default: json
+              description:
+                Whether to submit and retrieve the refresh token in the JSON response, or in a httpOnly cookie.
   responses:
     '200':
       description: Successful request

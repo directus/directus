@@ -12,10 +12,11 @@ export interface WebSocketConfig {
 		  }
 		| false;
 	heartbeat?: boolean;
+	debug?: boolean;
 	url?: string;
 }
 
-export interface SubscribeOptions<Schema extends object, Collection extends keyof Schema> {
+export interface SubscribeOptions<Schema, Collection extends keyof Schema> {
 	event?: SubscriptionOptionsEvents;
 	query?: Query<Schema, Schema[Collection]>;
 	uid?: string;
@@ -25,8 +26,8 @@ export type WebSocketEvents = 'open' | 'close' | 'error' | 'message';
 export type RemoveEventHandler = () => void;
 export type WebSocketEventHandler = (this: WebSocketInterface, ev: Event | CloseEvent | any) => any;
 
-export interface WebSocketClient<Schema extends object> {
-	connect(): Promise<void>;
+export interface WebSocketClient<Schema> {
+	connect(): Promise<WebSocketInterface>;
 	disconnect(): void;
 	onWebSocket(event: 'open', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;
 	onWebSocket(event: 'error', callback: (this: WebSocketInterface, ev: Event) => any): RemoveEventHandler;
@@ -52,12 +53,23 @@ export interface WebSocketClient<Schema extends object> {
 	}>;
 }
 
+export type ConnectionState =
+	| { code: 'open'; connection: WebSocketInterface; firstMessage: boolean }
+	| { code: 'connecting'; connection: Promise<WebSocketInterface> }
+	| { code: 'error' }
+	| { code: 'closed' };
+
+export type ReconnectState = {
+	attempts: number;
+	active: false | Promise<WebSocketInterface | void>;
+};
+
 type Fallback<Selected, Options> = Selected extends Options ? Selected : Options;
 export type SubscriptionOptionsEvents = 'create' | 'update' | 'delete';
 export type SubscriptionEvents = 'init' | SubscriptionOptionsEvents;
 
 export type SubscriptionOutput<
-	Schema extends object,
+	Schema,
 	Collection extends keyof Schema,
 	TQuery extends Query<Schema, Schema[Collection]> | undefined,
 	Events extends SubscriptionEvents,
@@ -76,4 +88,13 @@ export type SubscriptionPayload<Item> = {
 	create: Item[];
 	update: Item[];
 	delete: string[] | number[];
+};
+
+export type WebSocketAuthError = {
+	type: 'auth';
+	status: 'error';
+	error: {
+		code: string;
+		message: string;
+	};
 };

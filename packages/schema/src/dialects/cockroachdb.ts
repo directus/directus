@@ -18,6 +18,7 @@ type RawColumn = {
 	schema: string;
 	data_type: string;
 	is_nullable: boolean;
+	index_name: null | string;
 	generation_expression: null | string;
 	default_value: null | string;
 	is_generated: boolean;
@@ -347,6 +348,7 @@ export default class CockroachDB implements SchemaInspector {
            rel.relname AS table,
            rel.relnamespace::regnamespace::text AS schema,
            format_type(att.atttypid, null) AS data_type,
+           ix_rel.relname as index_name,
            NOT att.attnotnull AS is_nullable,
            CASE WHEN att.attgenerated = '' THEN pg_get_expr(ad.adbin, ad.adrelid) ELSE null END AS default_value,
            att.attgenerated = 's' AS is_generated,
@@ -382,6 +384,18 @@ export default class CockroachDB implements SchemaInspector {
            LEFT JOIN pg_class rel ON att.attrelid = rel.oid
            LEFT JOIN pg_attrdef ad ON (att.attrelid, att.attnum) = (ad.adrelid, ad.adnum)
            LEFT JOIN pg_description des ON (att.attrelid, att.attnum) = (des.objoid, des.objsubid)
+           LEFT JOIN LATERAL (
+              SELECT
+                indexrelid
+              FROM
+                pg_index ix
+              WHERE
+                att.attrelid = ix.indrelid
+                AND att.attnum = ALL(ix.indkey)
+                AND ix.indisunique = false
+              LIMIT 1
+           ) ix ON true
+           LEFT JOIN pg_class ix_rel ON ix_rel.oid=ix.indexrelid
          WHERE
            rel.relnamespace IN (${schemaIn})
            ${table ? 'AND rel.relname = ?' : ''}
@@ -426,15 +440,25 @@ export default class CockroachDB implements SchemaInspector {
 			const foreignKeyConstraint = constraintsForColumn.find((constraint) => constraint.type === 'f');
 
 			return {
-				...col,
+				name: col.name,
+				table: col.table,
+				data_type: col.data_type,
+				default_value: parseDefaultValue(col.default_value),
+				generation_expression: col.generation_expression,
+				max_length: col.max_length,
+				numeric_precision: col.numeric_precision,
+				numeric_scale: col.numeric_scale,
+				is_generated: col.is_generated,
+				is_nullable: col.is_nullable,
 				is_unique: constraintsForColumn.some((constraint) => ['u', 'p'].includes(constraint.type)),
+				is_indexed: !!col.index_name?.length && col.index_name.length > 0,
 				is_primary_key: constraintsForColumn.some((constraint) => constraint.type === 'p'),
 				has_auto_increment:
 					['integer', 'bigint'].includes(col.data_type) && (col.default_value?.startsWith('nextval(') ?? false),
-				default_value: parseDefaultValue(col.default_value),
 				foreign_key_schema: foreignKeyConstraint?.foreign_key_schema ?? null,
 				foreign_key_table: foreignKeyConstraint?.foreign_key_table ?? null,
 				foreign_key_column: foreignKeyConstraint?.foreign_key_column ?? null,
+				comment: col.comment,
 			};
 		});
 

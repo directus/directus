@@ -1,13 +1,12 @@
+import type { Policy } from './policies.js';
+
 export type Role = {
 	id: string;
 	name: string;
 	description: string;
 	icon: string;
-	enforce_tfa: null | boolean;
-	external_id: null | string;
-	ip_whitelist: string[];
-	app_access: boolean;
-	admin_access: boolean;
+	users: string[];
+	parent: string | null;
 };
 
 export type Avatar = {
@@ -16,7 +15,7 @@ export type Avatar = {
 
 export type User = {
 	id: string;
-	status: 'draft' | 'invited' | 'active' | 'suspended' | 'archived';
+	status: 'draft' | 'invited' | 'unverified' | 'active' | 'suspended' | 'archived';
 	first_name: string | null;
 	last_name: string | null;
 	email: string | null;
@@ -34,6 +33,7 @@ export type User = {
 	theme_light_overrides: Record<string, unknown> | null;
 	theme_dark_overrides: Record<string, unknown> | null;
 	role: Role | null;
+	policies: Policy[];
 	language: string | null;
 	avatar: Avatar | null;
 	title: string | null;
@@ -41,4 +41,12 @@ export type User = {
 	location: string | null;
 	tags: string[] | null;
 	email_notifications: boolean;
+};
+
+export type RegisterUserInput = {
+	email: NonNullable<User['email']>;
+	password: NonNullable<User['password']>;
+	verification_url?: string | null;
+	first_name?: User['first_name'];
+	last_name?: User['last_name'];
 };

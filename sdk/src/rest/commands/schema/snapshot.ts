@@ -15,7 +15,7 @@ export type SchemaSnapshotOutput = {
  * @returns Returns the JSON object containing schema details.
  */
 export const schemaSnapshot =
-	<Schema extends object>(): RestCommand<SchemaSnapshotOutput, Schema> =>
+	<Schema>(): RestCommand<SchemaSnapshotOutput, Schema> =>
 	() => ({
 		method: 'GET',
 		path: '/schema/snapshot',

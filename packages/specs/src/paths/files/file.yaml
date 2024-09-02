@@ -56,7 +56,7 @@ patch:
                 - $ref: '../../openapi.yaml#/components/schemas/Folders'
               nullable: true
             tags:
-              description: Tags for the file. Is automatically populated based on EXIF data for images.
+              description: Tags for the file. Is automatically populated based on Exif data for images.
               type: array
               nullable: true
               items:
@@ -87,7 +87,7 @@ patch:
                 - $ref: '../../openapi.yaml#/components/schemas/Folders'
               nullable: true
             tags:
-              description: Tags for the file. Is automatically populated based on EXIF data for images.
+              description: Tags for the file. Is automatically populated based on Exif data for images.
               type: array
               nullable: true
               items:

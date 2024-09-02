@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase, {
@@ -7,16 +8,21 @@ import getDatabase, {
 } from '../../../database/index.js';
 import runMigrations from '../../../database/migrations/run.js';
 import installDatabase from '../../../database/seeds/run.js';
-import env from '../../../env.js';
-import logger from '../../../logger.js';
+import { useLogger } from '../../../logger/index.js';
+import { AccessService } from '../../../services/access.js';
+import { PoliciesService } from '../../../services/policies.js';
 import { RolesService } from '../../../services/roles.js';
 import { SettingsService } from '../../../services/settings.js';
 import { UsersService } from '../../../services/users.js';
 import { getSchema } from '../../../utils/get-schema.js';
-import { defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
+import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../utils/defaults.js';
 
 export default async function bootstrap({ skipAdminInit }: { skipAdminInit?: boolean }): Promise<void> {
+	const logger = useLogger();
+
 	logger.info('Initializing bootstrap...');
+
+	const env = useEnv();
 
 	const database = getDatabase();
 
@@ -72,11 +78,20 @@ async function waitForDatabase(database: Knex) {
 }
 
 async function createDefaultAdmin(schema: SchemaOverview) {
+	const logger = useLogger();
+	const env = useEnv();
+
 	const { nanoid } = await import('nanoid');
 
 	logger.info('Setting up first admin role...');
+	const accessService = new AccessService({ schema });
+	const policiesService = new PoliciesService({ schema });
 	const rolesService = new RolesService({ schema });
+
 	const role = await rolesService.createOne(defaultAdminRole);
+	const policy = await policiesService.createOne(defaultAdminPolicy);
+
+	await accessService.createOne({ policy, role });
 
 	logger.info('Adding first admin user...');
 	const usersService = new UsersService({ schema });
@@ -95,5 +110,7 @@ async function createDefaultAdmin(schema: SchemaOverview) {
 		logger.info(`No admin password provided. Defaulting to "${adminPassword}"`);
 	}
 
-	await usersService.createOne({ email: adminEmail, password: adminPassword, role, ...defaultAdminUser });
+	const token = env['ADMIN_TOKEN'] ?? null;
+
+	await usersService.createOne({ ...defaultAdminUser, email: adminEmail, password: adminPassword, token, role });
 }

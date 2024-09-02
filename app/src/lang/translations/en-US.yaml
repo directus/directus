@@ -20,6 +20,7 @@
 # 'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 # 'Proxy', 'Intl'
 
+about: About
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -28,10 +29,12 @@ method: Method
 published: Published
 draft: Draft
 archived: Archived
+marketplace: Marketplace
 extensions: Extensions
 modules: Modules
 module_bar: Module Bar
 logs: Logs
+unknown: Unknown
 reset_width: Reset Width
 tile_size: Tile Size
 edit_field: Edit Field
@@ -49,6 +52,8 @@ duplicate_field: Duplicate Field
 half_width: Half Width
 full_width: Full Width
 group: Group
+popular: Popular
+recent: Recent
 export_items: Export Items
 and: And
 or: Or
@@ -75,9 +80,32 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operations
 extension_bundles: Bundles
+extension_missing: Missing
 extension_reload_required: Page Reload Required
 extension_reload_required_copy: A page reload is required to see the changes after enabling or disabling app extensions.
 extension_reload_now: Reload now
+published_relative: Published {relativeTime}
+compatible_with_your_project: Compatible with your Project
+compatible_with_your_project_copy:
+  The author has indicated the compatibility of this extension to be {hostVersion}, which matches your project's version
+  ({currentVersion})
+last_updated_relative: Last updated {relativeTime}
+n_files: '{n} Files'
+verified: Verified
+homepage: Homepage
+repository: Repository
+reload_page: Reload Page
+reload_required: Reload Required
+report_an_issue: Report an Issue
+website: Website
+github: GitHub
+beta: Beta
+n_downloads: '{n} Downloads'
+downloads: Downloads
+compatibility_not_guaranteed: Compatibility not guaranteed
+compatibility_not_guaranteed_copy:
+  The author has indicated the compatibility of this extension to be {hostVersion}, which doesn't match your project's
+  version ({currentVersion})
 enable: Enable
 disable: Disable
 custom: Custom
@@ -87,6 +115,7 @@ field_name_translations: Field Name Translations
 enter_password_to_enable_tfa: Enter your password to enable Two-Factor Authentication
 add_field: Add Field
 role_name: Role Name
+policy_name: Policy Name
 branch: Branch
 leaf: Leaf
 indeterminate: Indeterminate
@@ -104,6 +133,7 @@ requires_value: Requires value
 create_preset: Create Preset
 create_panel: Create Panel
 create_role: Create Role
+create_policy: Create Policy
 create_user: Create User
 message: Message
 delete_panel: Delete Panel
@@ -167,7 +197,16 @@ logoutReason:
   SESSION_EXPIRED: Session expired
 public_label: Public
 public_description: Controls what API data is available without authenticating.
+public_role_info: >-
+  The public role controls what API data is available to unauthenticated users or users without a role. Requests with
+  the public role can not have app or admin access. If app or admin access are given to a policy assigned to the public
+  role they will be ignored.
 admin_description: Initial administrative role with unrestricted App/API access.
+admin_policy_description: Initial administrative policy with unrestricted App/API access.
+no_description: No description...
+reached_maximum_number_of_extensions:
+  You've reached the maximum number of extensions for this project ({n}). Contact your system administrator for more
+  information.
 not_allowed: Not Allowed
 archive: Archive
 archive_confirm: Are you sure you want to archive this item?
@@ -236,9 +275,13 @@ field_permissions: Field Permissions
 field_validation: Field Validation
 field_presets: Field Presets
 permissions_for_role: 'Items the {role} Role can {action}.'
+permissions_for_policy: 'Items the {policy} Policy can {action}.'
 fields_for_role: 'Fields the {role} Role can {action}.'
+fields_for_policy: 'Fields the {policy} Policy can {action}.'
 validation_for_role: 'Field {action} rules the {role} Role must obey.'
+validation_for_policy: 'Field {action} rules the {policy} Policy must obey.'
 presets_for_role: 'Field value defaults for the {role} Role.'
+presets_for_policy: 'Field value defaults for the {policy} Policy.'
 presets_field_warning: 'Relational presets for field "{field}" should be configured with the "detailed" syntax.'
 presentation_and_aliases: Presentation & Aliases
 revision_post_create: Here is what this item looked like when it was created.
@@ -311,13 +354,14 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
-geometry: Geometry (All)
-geometry.Point: Point
-geometry.LineString: LineString
-geometry.Polygon: Polygon
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
+geometry:
+  All: Geometry (All)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
 theme_auto: Automatic (Based on System)
 theme_light: Light Mode
 theme_dark: Dark Mode
@@ -335,6 +379,7 @@ auto_generate: Auto-Generate
 this_will_auto_setup_fields_relations: This will automatically setup all required fields and relations.
 click_here: Click here
 to_manually_setup_translations: to manually setup translations.
+manage: Manage
 click_to_manage_translated_fields: >-
   There are no translated fields yet. Click here to create them. | There is one translated field. Click here to manage
   it. | There are {count} translated fields. Click here to manage them.
@@ -342,6 +387,8 @@ fields_group: Fields Group
 no_collections_found: No collections found.
 new_data_alert: 'The following will be created within your Data Model:'
 search_collection: Search Collection...
+search_role: Search Role...
+search_policy: Search Policy...
 search_field: Search Field...
 new_field: 'New Field'
 new_collection: 'New Collection'
@@ -382,6 +429,7 @@ soft_length: Soft Limit
 precision_scale: Precision & Scale
 readonly: Readonly
 unique: Unique
+index: Index
 updated_on: Updated On
 updated_by: Updated By
 primary_key: Primary Key
@@ -427,6 +475,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} by {user}'
 presentation_text_values_cannot_be_reimported: 'Uses presentation text, values can not be re-imported.'
 download_page_as_csv: 'Download Page as CSV'
+download_page_as_csv_unsupported: This layout does not support downloading the current page.
 private_user: Private User
 creation_preview: Creation Preview
 revision_preview: Revision Preview
@@ -491,6 +540,11 @@ hours: Hours
 month: Month
 year: Year
 select_all: Select All
+permissionsLevel:
+  all: Full {action} Access
+  partial: Partial {action} Access
+  custom: Partial {action} Access
+  none: No {action} Access
 months:
   january: January
   february: February
@@ -505,7 +559,11 @@ months:
   november: November
   december: December
 drag_mode: Drag Mode
+move_tool: Move Tool
+crop_tool: Crop Tool
+focal_point_tool: Focal Point Tool
 cancel_crop: Cancel Crop
+cancel_selection: Cancel Selection
 original: Original
 url: URL
 import_label: Import
@@ -513,6 +571,7 @@ file_details: File Details
 dimensions: Dimensions
 size: Size
 created: Created
+uploaded: Uploaded
 modified: Modified
 owner: Owner
 edited_by: Edited by
@@ -534,7 +593,7 @@ replace_from_url: Replace File from URL
 no_image_selected: No Image Selected
 no_file_selected: No File Selected
 download_file: Download File
-open_file_in_tab: Open file in new tab
+open_file_in_tab: Open File in New Tab
 start_export: Start Export
 not_available_for_local_downloads: Not available for local downloads
 exporting_all_items_in_collection: Exporting all items ({total}) within {collection}.
@@ -570,10 +629,14 @@ allow_duplicates: Allow Duplicates
 comments: Comments
 no_comments: No Comments Yet
 expand: Expand
+expand_all: Expand All
+expand_none: Expand None
 collapse: Collapse
+collapse_all: Collapse All
 select_item: Select Item
 no_items: No items
 search_items: Search Items...
+search_extensions: Search Extensions...
 disabled: Disabled
 information: Information
 report_bug: Report Bug
@@ -586,12 +649,17 @@ display_not_found: 'Display "{display}" not found.'
 reset_display: Reset Display
 list-m2a: Builder (M2A)
 item_count: 'No Items | One Item | {count} Items'
+filtered_item_count: 'No Filtered Items | One Filtered Item | {count} Filtered Items'
 no_items_copy: There are no items in this collection yet.
 file_count: 'No Files | One File | {count} Files'
 no_files_copy: There are no files here.
 user_count: 'No Users | One User | {count} Users'
 no_users_copy: There are no users in this role yet.
 webhooks_count: 'No Webhooks | One Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks are deprecated and further use is discouraged.
+
+  Please use **Flows** with the [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url) instead.
 no_webhooks_copy: No webhooks have been configured yet. Get started by creating one below.
 no_notifications: No Notifications
 no_notifications_copy: You're all caught up!
@@ -616,6 +684,7 @@ copy_to: Copy To...
 no_other_dashboards_copy: You don't have any other Dashboards yet.
 inactive: Inactive
 users: Users
+roles: Roles
 activity: Activity
 activity_item: Activity Item
 action: Action
@@ -655,8 +724,10 @@ select_an_item: Select an item...
 edit: Edit
 edit_item: Edit Item
 enabled: Enabled
-enabled_dev: Enabled (Dev)
-enabled_dev_tooltip: App extensions cannot be disabled in dev mode
+partially_enabled: Partially Enabled
+enable_all: Enable All
+disable_all: Disable All
+enabled_dev_tooltip: App extensions are always enabled in dev mode
 disable_tfa: Disable 2FA
 admin_disable_tfa_text: Are you sure you want to disable 2FA for this user?
 tfa_setup: Setup 2FA
@@ -668,40 +739,41 @@ auto_fill: Auto Fill
 corresponding_field: Corresponding Field
 errors:
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
+  CONTAINS_NULL_VALUES: Field contains null values
+  CONTENT_TOO_LARGE: Submitted item/file is too large
   FIELD_NOT_FOUND: Field not found
   FORBIDDEN: Forbidden
+  GRAPHQL_VALIDATION: GraphQL Validation
+  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
+  INTERNAL_SERVER_ERROR: Unexpected Error
+  INVALID_CONFIG: Invalid config
   INVALID_CREDENTIALS: Wrong username or password
+  INVALID_FOREIGN_KEY: Invalid foreign key
+  INVALID_IP: IP Address not allowed
   INVALID_OTP: Wrong one-time password
   INVALID_PAYLOAD: Invalid payload
   INVALID_PROVIDER: User belongs to a different auth provider
   INVALID_QUERY: Invalid query
-  INVALID_CONFIG: Invalid config
   INVALID_TOKEN: Invalid token
-  INVALID_IP: IP Address not allowed
   INVALID_USER: Failed to authenticate user
   ITEM_LIMIT_REACHED: Item limit reached
   ITEM_NOT_FOUND: Item not found
-  ROUTE_NOT_FOUND: Not found
-  RECORD_NOT_UNIQUE: Duplicate value detected
-  USER_SUSPENDED: User Suspended
-  CONTAINS_NULL_VALUES: Field contains null values
-  UNPROCESSABLE_CONTENT: Unprocessable Content
-  INTERNAL_SERVER_ERROR: Unexpected Error
-  NOT_NULL_VIOLATION: Value can't be null
-  ILLEGAL_ASSET_TRANSFORMATION: Image source too large to preview
-  VALUE_TOO_LONG: Value is too long
-  VALUE_OUT_OF_RANGE: Value is out of range
-  INVALID_FOREIGN_KEY: Invalid foreign key
-  UNKNOWN: Unexpected Error
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL Validation Exception
-  SERVICE_UNAVAILABLE: Service Unavailable
-  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
-  UNEXPECTED_RESPONSE: Unexpected response
-  TOKEN_EXPIRED: Token expired
-  RANGE_NOT_SATISFIABLE: Invalid range
+  LIMIT_EXCEEDED: 'Limit exceeded'
   METHOD_NOT_ALLOWED: Method not allowed
+  NOT_NULL_VIOLATION: Value can't be null
+  RANGE_NOT_SATISFIABLE: Invalid range
+  RECORD_NOT_UNIQUE: Duplicate value detected
   REQUESTS_EXCEEDED: Requests limit reached
-  CONTENT_TOO_LARGE: Submitted item/file is too large
+  ROUTE_NOT_FOUND: Not found
+  SERVICE_UNAVAILABLE: Service Unavailable
+  TOKEN_EXPIRED: Token expired
+  UNEXPECTED_RESPONSE: Unexpected response
+  UNKNOWN: Unexpected Error
+  UNPROCESSABLE_CONTENT: Unprocessable Content
+  UNSUPPORTED_MEDIA_TYPE: Unsupported media type
+  USER_SUSPENDED: User Suspended
+  VALUE_OUT_OF_RANGE: Value is out of range
+  VALUE_TOO_LONG: Value is too long
 security: Security
 value_hashed: Value Securely Hashed
 bookmark_name: Bookmark name...
@@ -715,7 +787,7 @@ cannot_edit_global_bookmarks: Can't Edit Global Bookmarks
 bookmarks: Bookmarks
 presets: Presets
 unexpected_error: Unexpected Error
-unexpected_error_copy: An unexpected error has occurred. Please try again later.
+unexpected_error_copy: An unexpected error has occurred. Please try again.
 copy_details: Copy Details
 no_app_access: No App Access
 no_app_access_copy: This user isn't allowed to use the admin app.
@@ -740,10 +812,9 @@ make_collection_hidden: Make Collection Hidden
 make_folder_visible: Make Folder Visible
 make_folder_hidden: Make Folder Hidden
 goto_collection_content: View Content
-start_end_of_count_items: '{start}-{end} of {count} items'
-start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
-one_item: '1 item'
-one_filtered_item: '1 filtered item'
+count_of_total_items: '{count} of {total} Items'
+start_end_of_count_items: '{start}-{end} of {count} Items'
+start_end_of_count_filtered_items: '{start}-{end} of {count} Filtered Items'
 delete_collection_are_you_sure: >-
   Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it.
   This action is permanent.
@@ -814,6 +885,7 @@ operators:
   regex: Matches RegExp
 custom_validation_message: Custom Validation Message
 loading: Loading...
+extension_readme_missing: This extension does not have a README file.
 drop_to_upload: Drop to Upload
 item: Item
 items: Items
@@ -833,12 +905,13 @@ columns: Columns
 collection_setup: Collection Setup
 optional_system_fields: Optional Fields
 value_unique: Value has to be unique
+value_index: Field is indexed
 all_activity: All Activity
 create_item: Create Item
 display_template: Display Template
 language_display_template: Language Display Template
 translations_display_template: Translations Display Template
-n_items_selected: 'No Items Selected | 1 Item Selected | {n} Items Selected'
+n_items_selected: 'No Items Selected | One Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
 my_files: My Files
@@ -950,6 +1023,22 @@ no_data_in_flow: No data was produced or accessed within this Flow
 accountability: Accountability
 payload: Payload
 details: Details
+resume_streaming_logs: Resume Streaming Logs
+pause_streaming_logs: Pause Streaming Logs
+logs_session_resumed: Logs session resumed...
+logs_session_paused: Logs session paused...
+logs_stream_disconnected: Logs stream disconnected...
+log_detail_filter_paths: 'Filter Paths (eg: req.method, res.statusCode)'
+logs_beginning: This is the beginning of your logs session...
+logs_waiting: 'Awaiting more logs...'
+logs_unread_count: '{count} unread'
+clear_logs: Clear Logs
+search_logs: Search Logs...
+all_instances: All Instances
+instance_count: 'No Instance | One Instance | {count} Instances'
+all_log_levels: All Log Levels
+log_level_count: 'No Log Level | One Log Level | {count} Log Levels'
+soft_wrap_lines: Soft Wrap Lines
 full_screen: Full Screen
 full_text_search: Full-Text Search
 edit_panels: Edit Panels
@@ -978,8 +1067,7 @@ tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
 open_link_in: Open link in
-new_tab: New tab
-current_tab: Current tab
+new_tab: New Tab
 save_image: Save Image
 save_media: Save Media
 wysiwyg_options:
@@ -1053,11 +1141,13 @@ editing_unit: 'Editing {unit}'
 editing_in_batch: 'Batch Editing {count} Items'
 no_options_available: No options available
 settings_data_model: Data Model
-settings_permissions: Access Control
+settings_roles: User Roles
+settings_permissions: Access Policies
 settings_project: Settings
 settings_appearance: Appearance
 settings_webhooks: Webhooks
 settings_flows: Flows
+settings_system_logs: System Logs
 settings_presets: Bookmarks
 settings_translations: Translations
 one_or_more_options_are_missing: One or more options are missing
@@ -1107,7 +1197,10 @@ page_help_settings_datamodel_collections: >-
   as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
+page_help_settings_system_logs: '**System Logs** — Access a live stream of the system logs.'
+page_help_settings_policies_collection: '**Browse Policies** — Lists all policies within the project.'
+page_help_settings_policies_item: "**Policy Detail** — Manage a policy's permissions and other settings."
+page_help_settings_roles_collection: '**Browse Roles** — Lists the all user roles within the project.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
   **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default
@@ -1126,6 +1219,9 @@ page_help_users_item: >-
   **User Detail** — Manage your account information, or view the details of other users.
 page_help_insights_overview: '**Insights** — List of dashboards you have access to.'
 page_help_insights_dashboard: '**Dashboard** — Workspace for managing one or more panels'
+page_help_marketplace_account: '**Account** — Publisher or maintainer of a published extension.'
+page_help_marketplace_registry: '**Registry** — Extensions available in the Directus Marketplace.'
+page_help_marketplace_extension: '**Extension** — Extension in the Directus Marketplace.'
 activity_feed: Activity Feed
 add_new: Add New
 create_new: Create New
@@ -1139,6 +1235,15 @@ cancel: Cancel
 no_upscale: Don't upscale images
 no_extensions: No Extensions
 no_extensions_copy: No extensions have been installed yet.
+install_extension: Install Extension
+uninstall_locked: Cannot uninstall extensions that weren't installed through the Marketplace
+uninstall: Uninstall
+installed: Installed
+reinstall: Reinstall
+open_in_marketplace: Open in Marketplace
+source_registry: Marketplace
+source_local: Local
+source_module: Node Module
 collection: Collection
 collections: Collections
 content: Content
@@ -1146,6 +1251,7 @@ singleton: Singleton
 singleton_label: Treat as single object
 system_fields_locked: System fields are locked and can't be edited
 directus_collection:
+  directus_access: Policy attachments
   directus_activity: Accountability logs for all events
   directus_collections: Additional collection configuration and metadata
   directus_dashboards: Dashboards within the Insights module
@@ -1157,7 +1263,8 @@ directus_collection:
   directus_notifications: Notifications sent to users
   directus_operations: Operations that run in Flows
   directus_panels: Individual panels within Insights dashboards
-  directus_permissions: Access permissions for each role
+  directus_permissions: Access permissions for each policy
+  directus_policies: Access control policies
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -1223,6 +1330,8 @@ fields:
     height: Height
     charset: Charset
     duration: Duration
+    focal_point_x: X-Coordinate
+    focal_point_y: Y-Coordinate
   directus_users:
     first_name: First Name
     last_name: Last Name
@@ -1240,6 +1349,7 @@ fields:
     status: Status
     status_draft: Draft
     status_invited: Invited
+    status_unverified: Unverified
     status_active: Active
     status_suspended: Suspended
     status_archived: Archived
@@ -1261,6 +1371,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Reporting
     mapping: Mapping
     basemaps: Basemaps
     basemaps_raster: Raster
@@ -1303,6 +1414,16 @@ fields:
     custom_aspect_ratios: Custom Aspect Ratios
     theme_light_overrides: Light Theme Customization
     theme_dark_overrides: Dark Theme Customization
+    public_registration: User Registration
+    public_registration_note: Allows users to register via the [registration route](/admin/register).
+    public_registration_role: User Role
+    public_registration_role_note:
+      This role is assigned to users who register using this method. Does not affect already registered users.
+    public_registration_email_filter: Email Address Filter
+    public_registration_email_filter_note: Only email addresses matching this filter can register.
+    public_registration_verify_email: Verify Email
+    public_registration_verify_email_note:
+      Sends an email to the registering user asking them to click on a verification link before they can sign in.
   directus_shares:
     name: Name
     role: Role
@@ -1323,12 +1444,16 @@ fields:
     name: Role Name
     icon: Role Icon
     description: Description
+    users: Users in Role
+    parent: Parent Role
+    children: Child Roles
+  directus_policies:
+    name: Policy Name
+    description: Description
     app_access: App Access
     admin_access: Admin Access
     ip_access: IP Access
     enforce_tfa: Require 2FA
-    users: Users in Role
-    module_list: Module Navigation
   directus_webhooks:
     name: Name
     method: Method
@@ -1409,18 +1534,26 @@ field_options:
     description: An optional description...
     location: An optional location...
     storage_divider: File Naming
+    focal_point_divider: Focal Point
     filename_disk: Name on disk storage...
     filename_download: Name when downloading...
+  directus_policies:
+    name: A unique name for this policy...
+    description: A description of this policy...
+    ip_access: Add allowed IP addresses, IP ranges and CIDR blocks. Leave empty to allow all...
+    enforce_tfa: Enforce Two-Factor Authentication
+    assigned_to: Assigned To
   directus_roles:
     name: The unique name for this role...
     description: A description of this role...
-    ip_access: Add allowed IP addresses, leave empty to allow all...
     fields:
       icon_name: Icon
       name_name: Name
       name_placeholder: Enter a title...
       link_name: Link
       link_placeholder: Relative or absolute URL...
+    parent_note: Optional parent role that this role inherits permissions from
+    children_note: Nested child roles that inherit this roles permissions
     collections_name: Collections
     collections_addLabel: Add Collection...
   directus_users:
@@ -1471,7 +1604,7 @@ live_preview:
   toggle_3d: Toggle 3D
 shares: Shares
 unlimited_usage: Unlimited usage
-uses_left: No uses left | 1 use left | {n} uses left
+uses_left: No uses left | One use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
 expired: Expired
@@ -1508,6 +1641,9 @@ continue_label: Continue
 continue_as: >-
   {name} is currently authenticated. If you recognize this account, press continue.
 editing_role: '{role} Role'
+editing_policy: '{policy} Policy'
+no_permissions: No Permissions
+permission_add_collection: Add Collection
 creating_webhook: Creating Webhook
 default_label: Default
 delete_label: Delete
@@ -1553,6 +1689,7 @@ authenticated: Authenticated
 options: Options
 otp: One-Time Password
 password: Password
+confirm_password: Confirm Password
 permissions: Permissions
 relationship: Relationship
 reset: Reset
@@ -1569,6 +1706,14 @@ select_field_type: Select a field type
 select_interface: Select an interface
 select_display: Select a display
 settings: Settings
+register: Register
+registration_successful_headline: Success!
+registration_successful_note: You may now proceed to the sign in page.
+registration_successful_check_email_note: |
+  Please note that before you can sign in, you'll need to verify your email address by clicking on the verification link sent to you.
+dont_have_an_account: Don't have an account?
+already_have_an_account: Already have an account?
+sign_up_now: Sign up now
 sign_in: Sign In
 sign_out: Sign Out
 sign_out_confirm: Are you sure you want to sign out?
@@ -1598,9 +1743,12 @@ navigate_to_item: Navigate to Item
 undo_removed_item: Undo Removed Item
 remove_item: Remove Item
 delete_item: Delete Item
+pause: Pause
+resume: Resume
 interfaces:
   list-m2a:
     prefix_note: Uses the related item's collection name by default.
+    sorting_disabled: Sorting is disabled because there are more items than can fit on one page.
   filter:
     name: Filter
     description: Configure a filter object.
@@ -1762,6 +1910,9 @@ interfaces:
     preview: Preview
     editorFont: Editor Font
     previewFont: Preview Font
+    default_view: Default View
+    default_view_editor: Editor
+    default_view_preview: Preview
     customSyntax: Custom Blocks
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
@@ -1869,6 +2020,7 @@ interfaces:
     no_collection: No Collection
     toggle_split_view: Toggle Split View
     enable: Enable
+    default_split_view_state: Default Split View State
     user_language: Use Current User Language
     default_language: Default Language
     language_field: Language Indicator Field
@@ -1889,7 +2041,13 @@ interfaces:
     description: A rich-text editor writing HTML content
     toolbar: Toolbar
     custom_formats: Custom Formats
+    custom_formats_note:
+      List of TinyMCE Content Formats. See the TinyMCE documentation about [Content
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
     options_override: Options Override
+    options_override_note:
+      The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User
+      Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
     folder_note: Folder for uploaded files. Does not affect existing files.
     imageToken: Static Access Token
     imageToken_label: Static access token is appended to the assets' URL
@@ -1947,6 +2105,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Raw Editor
     description: Allow entering of raw or mustache templating values
+  input-password:
+    input-password: Input Password
+    description: Password input with toggle to hide value
 displays:
   translations:
     translations: Translations
@@ -2031,6 +2192,9 @@ displays:
   formatted-json-value:
     formatted-json-value: Formatted JSON value
     description: Display a formatted version of the object
+  hash:
+    hash: Hash
+    description: Display a redacted version of the value
   icon:
     icon: Icon
     description: Display an icon
@@ -2136,10 +2300,10 @@ layouts:
     show_ungrouped: Show Ungrouped
     show: Show
     no_group: No Group
-    not_all_loaded: Could only load the first 1000 items.
 
 horizontal: Horizontal
 vertical: Vertical
+axis: Axis
 x_axis: X-Axis
 y_axis: Y-Axis
 y_axis_function: Y-Axis Function
@@ -2393,3 +2557,5 @@ duplicate_dashboard: Duplicate Dashboard
 search_dashboard: Search Dashboard...
 search_flow: Search Flow...
 percent: Percent
+show_password: Show password
+hide_password: Hide password

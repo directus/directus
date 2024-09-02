@@ -4,14 +4,14 @@ on:
   push:
     branches:
       - main
-      - next
+      - v11-rc
     paths:
       - api/**
       - tests/blackbox/**
       - packages/**
       - package.json
       - pnpm-lock.yaml
-      - .github/workflows/blackbox-main.yml
+      - .github/workflows/blackbox.yml
 
 concurrency:
   group: blackbox-${{ github.ref }}
@@ -21,18 +21,35 @@ env:
   NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
-  test:
+  common:
+    name: common
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Start services
+        run:
+          docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
+
+      - name: Run tests
+        run: TEST_DB=sqlite3 pnpm run test:blackbox -- --project common
+
+  db:
     name: ${{ matrix.vendor }}
     runs-on: ${{ matrix.vendor == 'mssql' && 'ubuntu-20.04' || 'ubuntu-latest' }}
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         vendor:
           - sqlite3
           - postgres
-          - postgres10
           - mysql
-          - mysql5
           - maria
           - mssql
           - oracle
@@ -63,4 +80,4 @@ jobs:
           docker compose -f tests/blackbox/docker-compose.yml up auth-saml redis minio minio-mc -d --quiet-pull --wait
 
       - name: Run tests
-        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox
+        run: TEST_DB=${{ matrix.vendor }} pnpm run test:blackbox -- --project db

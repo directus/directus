@@ -40,7 +40,9 @@ function folderParentPath(folder: Folder, folders: Folder[]) {
 	const folderMap = new Map(folders.map((folder) => [folder.id, folder]));
 
 	const folderParent = (target: Folder): Folder[] =>
-		(folderMap.has(target.parent) ? folderParent(folderMap.get(target.parent) as Folder) : []).concat(target);
+		(target.parent && folderMap.has(target.parent) ? folderParent(folderMap.get(target.parent) as Folder) : []).concat(
+			target,
+		);
 
 	return folderParent(folder);
 }

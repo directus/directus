@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
 import { useLocalStorage } from '@/composables/use-local-storage';
-import { usePermissions } from '@/composables/use-permissions';
+import { useItemPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
-import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
@@ -19,7 +15,10 @@ import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-d
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
 import { useCollection } from '@directus/composables';
+import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
+import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
@@ -42,8 +41,6 @@ const { t, te } = useI18n();
 const router = useRouter();
 
 const form = ref<HTMLElement>();
-
-const { hasPermission } = usePermissionsStore();
 
 const { collection, primaryKey } = toRefs(props);
 const { breadcrumb } = useBreadcrumb();
@@ -70,6 +67,7 @@ const {
 	edits,
 	hasEdits,
 	item,
+	permissions,
 	saving,
 	loading,
 	error,
@@ -84,24 +82,14 @@ const {
 	validationErrors,
 } = useItem(collection, primaryKey, query);
 
+const {
+	collectionPermissions: { createAllowed, revisionsAllowed },
+	itemPermissions: { updateAllowed, deleteAllowed, saveAllowed, archiveAllowed, shareAllowed, fields },
+} = permissions;
+
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
-const isSavable = computed(() => {
-	if (saveAllowed.value === false && currentVersion.value === null) return false;
-	if (hasEdits.value === true) return true;
-
-	if (!primaryKeyField.value?.schema?.has_auto_increment && !primaryKeyField.value?.meta?.special?.includes('uuid')) {
-		return !!edits.value?.[primaryKeyField.value.field];
-	}
-
-	if (isNew.value === true) {
-		return Object.keys(defaults.value).length > 0 || hasEdits.value;
-	}
-
-	return hasEdits.value;
-});
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
@@ -165,30 +153,57 @@ useShortcut(
 	form,
 );
 
-const {
-	createAllowed,
-	deleteAllowed,
-	archiveAllowed,
-	saveAllowed,
-	updateAllowed,
-	shareAllowed,
-	fields,
-	revisionsAllowed,
-} = usePermissions(collection, item, isNew);
+const isSavable = computed(() => {
+	if (saveAllowed.value === false && currentVersion.value === null) return false;
+	if (hasEdits.value === true) return true;
+
+	if (
+		primaryKeyField.value &&
+		!primaryKeyField.value?.schema?.has_auto_increment &&
+		!primaryKeyField.value?.meta?.special?.includes('uuid')
+	) {
+		return !!edits.value?.[primaryKeyField.value.field];
+	}
+
+	if (isNew.value === true) {
+		return Object.keys(defaults.value).length > 0 || hasEdits.value;
+	}
+
+	return hasEdits.value;
+});
+
+const { updateAllowed: updateVersionsAllowed } = useItemPermissions(
+	'directus_versions',
+	computed(() => currentVersion.value?.id ?? null),
+	computed(() => !currentVersion.value),
+);
 
 const isFormDisabled = computed(() => {
 	if (isNew.value) return false;
 	if (updateAllowed.value) return false;
-	const updateVersionsAllowed = hasPermission('directus_versions', 'update');
-	if (currentVersion.value !== null && updateVersionsAllowed) return false;
+	if (currentVersion.value !== null && updateVersionsAllowed.value) return false;
 	return true;
+});
+
+const actualPrimaryKey = computed(() => {
+	if (unref(isSingleton)) {
+		const singleton = unref(item);
+		const pkField = unref(primaryKeyField)?.field;
+		return (singleton && pkField ? singleton[pkField] ?? null : null) as PrimaryKey | null;
+	}
+
+	return props.primaryKey;
 });
 
 const internalPrimaryKey = computed(() => {
 	if (unref(loading)) return '+';
 	if (unref(isNew)) return '+';
 
-	if (unref(isSingleton)) return unref(item)?.[unref(primaryKeyField)?.field] ?? '+';
+	if (unref(isSingleton)) {
+		const singleton = unref(item);
+		const pkField = unref(primaryKeyField)?.field;
+		return (singleton && pkField ? singleton[pkField] ?? '+' : '+') as PrimaryKey;
+	}
 
 	return props.primaryKey;
 });
@@ -205,17 +220,17 @@ watch(currentVersion, () => {
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
-const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
+const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, {
+	template: previewTemplate,
+	injectData: computed(() => ({ $version: currentVersion.value?.key ?? 'main' })),
+});
 
-const previewURL = computed(() => {
-	const enrichedPreviewData = {
-		...unref(previewData),
-		$version: currentVersion.value ? currentVersion.value.key : 'main',
-	};
+const previewUrl = computed(() => {
+	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData.value);
 
-	const { displayValue } = renderStringTemplate(previewTemplate.value, enrichedPreviewData);
+	if (!displayValue.value) return null;
 
-	return displayValue.value || null;
+	return displayValue.value.trim() || null;
 });
 
 const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
@@ -235,14 +250,15 @@ const splitView = computed({
 let popupWindow: Window | null = null;
 
 watch(
-	[livePreviewMode, previewURL],
+	[livePreviewMode, previewUrl],
 	([mode, url]) => {
 		if (mode !== 'popup' || !url) {
 			if (popupWindow) popupWindow.close();
 			return;
 		}
 
-		const targetUrl = window.location.href + (window.location.href.endsWith('/') ? 'preview' : '/preview');
+		const targetUrl = new URL(window.location.href);
+		targetUrl.pathname += targetUrl.pathname.endsWith('/') ? 'preview' : '/preview';
 
 		popupWindow = window.open(
 			targetUrl,
@@ -275,8 +291,8 @@ function toggleSplitView() {
 async function refreshLivePreview() {
 	try {
 		await fetchTemplateValues();
-		window.refreshLivePreview(previewURL.value);
-		if (popupWindow) popupWindow.refreshLivePreview(previewURL.value);
+		window.refreshLivePreview(previewUrl.value);
+		if (popupWindow) popupWindow.refreshLivePreview(previewUrl.value);
 	} catch (error) {
 		// noop
 	}
@@ -529,7 +545,7 @@ function revert(values: Record<string, any>) {
 
 		<template #actions>
 			<v-button
-				v-if="previewURL"
+				v-if="previewUrl"
 				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
 				rounded
 				icon
@@ -699,19 +715,19 @@ function revert(values: Record<string, any>) {
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview v-if="previewURL" :url="previewURL" @new-window="livePreviewMode = 'popup'" />
+			<LivePreview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 		</template>
 
 		<template #sidebar>
 			<sidebar-detail icon="info" :title="t('information')" close>
 				<div v-md="t('page_help_collections_item')" class="page-description" />
 			</sidebar-detail>
-			<template v-if="isNew === false && loading === false && internalPrimaryKey">
+			<template v-if="isNew === false && actualPrimaryKey">
 				<revisions-drawer-detail
 					v-if="revisionsAllowed && accountabilityScope === 'all'"
 					ref="revisionsDrawerDetailRef"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:version="currentVersion"
 					:scope="accountabilityScope"
 					@revert="revert"
@@ -719,19 +735,19 @@ function revert(values: Record<string, any>) {
 				<comments-sidebar-detail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 				/>
 				<shares-sidebar-detail
 					v-if="currentVersion === null"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:allowed="shareAllowed"
 				/>
 				<flow-sidebar-detail
 					v-if="currentVersion === null"
 					location="item"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="actualPrimaryKey"
 					:has-edits="hasEdits"
 					@refresh="refresh"
 				/>

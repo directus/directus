@@ -10,7 +10,7 @@ readTime: 4 min read
 ## Troubleshooting Steps
 
 If you're experiencing issues or think you have found a problem in Directus, be sure to follow these steps before
-[Reporting a Bug](/contributing/introduction#bug-reporting):
+[Reporting a Bug](/contributing/introduction#report-a-bug):
 
 1. Ensure your server and database meet the [minimum requirements](/self-hosted/docker-guide#supported-databases).
 2. Ensure you’re on the [latest version](https://github.com/directus/directus/releases/latest) of Directus.
@@ -24,7 +24,7 @@ If you're experiencing issues or think you have found a problem in Directus, be 
    [Discussions](https://github.com/directus/directus/discussions)) that match your problem.
 
 If you're still experiencing a problem after completing the above steps, you can chat through things on our
-[community support](#community-support) or [report a bug](/contributing/introduction#bug-reporting).
+[community support](#community-support) or [report a bug](/contributing/introduction#report-a-bug).
 
 ## Support Tiers
 
@@ -52,20 +52,6 @@ Enterprise Projects, and Premium Support adds 24/7 response times for critical s
 Cloud customers and Self-Hosted users interested in learning more about our monthly retainer agreements should contact
 us at [support@directus.io](mailto:support@directus.io).
 
-## Sponsored Work
-
-### Commissioned Features
-
-If you need a specific feature added to Directus faster than the normal development timeline,
-[reach out to us](https://directus.io/contact) for a quote. Our parent agency will often help subsidize the cost of
-developing new features if they pass our 80/20 Rule (supports 80% of our user's common use cases) and can be merged into
-the core codebase. Other custom/proprietary development will be built bespoke within our robust extension system.
-
-### Expedited Fixes
-
-We triage all reported bugs based on priority and how long the fix is estimated to take. If you need a specific issue
-resolved sooner, [reach out to us](https://directus.io/contact) for a quote.
-
 ## Frequently Asked Questions
 
 ### Does Directus support Mongo/NoSQL?
@@ -80,13 +66,9 @@ feature, and will continue to explore its possibility.
 Directus is an open-source project, maintained by a small core team and community contributors who have limited time and
 resources.
 
-Our platform is feature-rich, however we strictly adhere to our
-[80/20 Rule](/contributing/introduction#feature-requests) to avoid a messy/bloated codebase. Directus is also quite
-stable, however new issues still arise, some of which may be triaged with a lower prioritization.
-
-If you need, you can contact us about [sponsoring expedited fixes](#expedited-fixes) or
-[commissioning new features](#commissioned-features). You can also
-[submit a pull request](https://github.com/directus/directus/pulls) — after all, it is open-source!
+Our platform is feature-rich, however not every suggested feature is right for the core codebase. We rely on extensions
+to include new functionality that might not be relevant for 80%+ of our user base. Directus is also quite stable,
+however new issues still arise, some of which may be triaged with a lower prioritization.
 
 ### Can you give an ETA for this feature/fix?
 
@@ -96,5 +78,4 @@ not. This is open-source software, work is prioritized internally, and all timel
 ### But this is an emergency, my very important project requires it now!
 
 We understand, and are here to help. If you need something prioritized, you can reach out to us to discuss
-[premium support](#basic-and-premium-support), [sponsoring expedited fixes](#expedited-fixes) or
-[commissioning new features](#commissioned-features).
+[premium support](#basic-and-premium-support).

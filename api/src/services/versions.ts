@@ -7,25 +7,17 @@ import objectHash from 'object-hash';
 import { getCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { ActivityService } from './activity.js';
-import { AuthorizationService } from './authorization.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RevisionsService } from './revisions.js';
 
 export class VersionsService extends ItemsService {
-	authorizationService: AuthorizationService;
-
 	constructor(options: AbstractServiceOptions) {
 		super('directus_versions', options);
-
-		this.authorizationService = new AuthorizationService({
-			accountability: this.accountability,
-			knex: this.knex,
-			schema: this.schema,
-		});
 	}
 
 	private async validateCreateData(data: Partial<Item>): Promise<void> {
@@ -68,12 +60,38 @@ export class VersionsService extends ItemsService {
 		}
 
 		// will throw an error if the accountability does not have permission to read the item
-		await this.authorizationService.checkAccess('read', data['collection'], data['item']);
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection: data['collection'],
+					primaryKeys: [data['item']],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
+		}
 	}
 
 	async getMainItem(collection: string, item: PrimaryKey, query?: Query): Promise<Item> {
 		// will throw an error if the accountability does not have permission to read the item
-		await this.authorizationService.checkAccess('read', collection, item);
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+					primaryKeys: [item],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
+		}
 
 		const itemsService = new ItemsService(collection, {
 			knex: this.knex,
@@ -230,14 +248,16 @@ export class VersionsService extends ItemsService {
 			schema: this.schema,
 		});
 
+		const { item, collection } = version;
+
 		const activity = await activityService.createOne({
 			action: Action.VERSION_SAVE,
 			user: this.accountability?.user ?? null,
-			collection: version['collection'],
+			collection,
 			ip: this.accountability?.ip ?? null,
 			user_agent: this.accountability?.userAgent ?? null,
 			origin: this.accountability?.origin ?? null,
-			item: version['item'],
+			item,
 		});
 
 		const revisionDelta = await payloadService.prepareDelta(data);
@@ -245,15 +265,15 @@ export class VersionsService extends ItemsService {
 		await revisionsService.createOne({
 			activity,
 			version: key,
-			collection: version['collection'],
-			item: version['item'],
+			collection,
+			item,
 			data: revisionDelta,
 			delta: revisionDelta,
 		});
 
 		const { cache } = getCache();
 
-		if (shouldClearCache(cache, undefined, version['collection'])) {
+		if (shouldClearCache(cache, undefined, collection)) {
 			cache.clear();
 		}
 
@@ -264,7 +284,20 @@ export class VersionsService extends ItemsService {
 		const { id, collection, item } = (await this.readOne(version)) as ContentVersion;
 
 		// will throw an error if the accountability does not have permission to update the item
-		await this.authorizationService.checkAccess('update', collection, item);
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection,
+					primaryKeys: [item],
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
+		}
 
 		const { outdated } = await this.verifyHash(collection, item, mainHash);
 

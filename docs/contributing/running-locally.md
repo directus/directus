@@ -54,12 +54,12 @@ Create an `.env` file under the `api` folder using vars from the online
 
 ::: tip Config Values
 
-The `KEY`& `SECRET` config options from [Security](https://docs.directus.io/self-hosted/config-options.html#security)
-are mandatory.
+The `SECRET` config option from [Security](https://docs.directus.io/self-hosted/config-options.html#security) is
+mandatory in production.
 
 Also the [Database Configuration](https://docs.directus.io/self-hosted/config-options.html#database) must be specified.
 You might want to use the [docker-compose.yml](https://github.com/directus/directus/blob/main/docker-compose.yml) file
-to spin up a test database.
+to spin up a test database or a local mail server.
 
 :::
 
@@ -76,7 +76,7 @@ which will create the database (file) for you.
 ::: tip Admin Account
 
 Adding the `ADMIN_EMAIL` & `ADMIN_PASSWORD` to the `.env` file before running the `bootstrap` command, will populate the
-admin user with the provided credentials instead of random values.
+admin user with the provided credentials instead of random values. `ADMIN_TOKEN` sets the API token for the admin user.
 
 :::
 

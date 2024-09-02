@@ -24,6 +24,7 @@
 (D|d)atacenter
 (D|d)atastores
 (D|d)atetimes?
+(D|d)elisting
 (D|d)ev
 (D|d)onut
 (D|d)ropdown
@@ -46,6 +47,7 @@
 (M|m)isconfigured
 (M|m)ultitenancy
 (N|n)atively
+(N|n)on-(S|s)andboxed
 (P|p)olyfill
 (Q|q)uickstart
 (R|r)eal-(T|t)ime
@@ -54,6 +56,7 @@
 (R|r)econfigures
 (R|r)elink
 (R|r)epo
+(R|r)esumable
 (R|r)ollup
 (S|s)andboxed
 (S|s)chemas?
@@ -103,6 +106,7 @@ Alibaba
 allowlist
 allowList
 alwaysdata
+AMI
 anonymized
 api
 API
@@ -130,6 +134,8 @@ Cardgroup
 cardinality
 CDNs?
 changelogs
+CIDR
+cjs
 CLA
 CLI
 CloudFront
@@ -138,6 +144,7 @@ Cloudron
 CloudSQL
 CMS
 CockroachDB
+codebase.
 CodeDeploy
 CollectionsService
 CommonJS
@@ -147,6 +154,7 @@ Corepack
 CORS
 CPUs?
 create-directus-extension
+create-directus-project
 cron
 Cron
 CRON
@@ -194,7 +202,8 @@ Entrypoint
 env
 ENV
 ESM
-EXIF
+esm
+Exif
 fallbacks
 falsy
 FavIcon
@@ -246,7 +255,7 @@ JPG
 JS
 JS-SDK
 json
-JSON
+JSON\.?
 JWT
 kanban
 Kanban
@@ -289,7 +298,6 @@ nitty-gritty
 no-brainer
 node[^\s]*
 NodeJS
-non-sandboxed
 NoSQL
 npm
 NPM
@@ -299,7 +307,8 @@ Nuxt
 O2M
 O2Ms
 O2O
-OAuth
+OAuth2?
+OpenAI
 Okta
 omnichannel
 on-prem
@@ -347,6 +356,7 @@ pub/sub
 px
 px.
 reactively
+readme
 readonly
 readTime
 rebase
@@ -411,6 +421,7 @@ TrustRadius
 truthy
 TTL
 TTY
+TUS
 TypeDoc
 UI
 UID

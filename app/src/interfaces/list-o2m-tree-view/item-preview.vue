@@ -31,7 +31,7 @@ const editActive = ref(false);
 	<div class="preview" :class="{ open, deleted }">
 		<v-icon
 			v-if="relationInfo.relatedPrimaryKeyField.field in item"
-			:name="props.open ? 'expand_less' : 'expand_more'"
+			:name="props.open ? 'expand_more' : 'chevron_right'"
 			clickable
 			@click="emit('update:open', !props.open)"
 		/>
@@ -54,8 +54,10 @@ const editActive = ref(false);
 </template>
 
 <style lang="scss" scoped>
-div.preview {
+.preview {
 	display: flex;
+	height: var(--theme--form--field--input--height);
+	align-items: center;
 
 	&:not(.open) {
 		margin-bottom: 12px;
@@ -68,6 +70,8 @@ div.preview {
 	.actions {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 		--v-icon-color-hover: var(--theme--form--field--input--foreground);
+		flex-shrink: 0;
+		margin-left: 8px;
 
 		.v-icon + .v-icon {
 			margin-left: 4px;

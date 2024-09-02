@@ -1,16 +1,10 @@
 name: Docs
 
 on:
-  push:
-    branches:
-      - main
-      - next
-    paths:
-      - docs/**
-      - .github/workflows/docs.yml
   pull_request:
     branches:
       - main
+      - v11-rc
     paths:
       - docs/**
       - .github/workflows/docs.yml

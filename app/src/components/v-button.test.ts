@@ -1,28 +1,17 @@
-import { test, expect, beforeEach } from 'vitest';
-import { mount } from '@vue/test-utils';
-
-import VButton from './v-button.vue';
-import { h } from 'vue';
-import { generateRouter } from '@/__utils__/router';
-import { Router } from 'vue-router';
-import { GlobalMountOptions } from '@vue/test-utils/dist/types';
 import { Focus } from '@/__utils__/focus';
+import { generateRouter } from '@/__utils__/router';
+import { Tooltip } from '@/__utils__/tooltip';
+import type { GlobalMountOptions } from '@/__utils__/types';
+import { mount } from '@vue/test-utils';
+import { beforeEach, expect, test } from 'vitest';
+import { Router } from 'vue-router';
+import VButton from './v-button.vue';
 
 let router: Router;
-
 let global: GlobalMountOptions;
 
 beforeEach(async () => {
-	router = generateRouter([
-		{
-			path: '/',
-			component: h('div', VButton),
-		},
-		{
-			path: '/test',
-			component: h('div', 'empty'),
-		},
-	]);
+	router = generateRouter();
 
 	router.push('/');
 	await router.isReady();
@@ -31,6 +20,7 @@ beforeEach(async () => {
 		stubs: ['v-progress-circular'],
 		directives: {
 			focus: Focus,
+			tooltip: Tooltip,
 		},
 		plugins: [router],
 	};
@@ -45,17 +35,3 @@ test('Mount component', () => {
 
 	expect(wrapper.html()).toMatchSnapshot();
 });
-
-// test('Click on link', async () => {
-// 	const wrapper = mount(VButton, {
-//         props: {
-//             to: '/test'
-//         },
-// 		global
-// 	});
-
-//     await wrapper.get('a').trigger('click')
-
-//     expect(router.currentRoute.value.path).toBe('/test')
-
-// });

@@ -6,7 +6,7 @@ pageClass: page-reference
 
 # Extensions
 
-> The extensions endpoints are used by the Admin App to retrieve what extensions to install.
+> The extensions endpoints are used by the Data Studio to retrieve what extensions to install.
 > [Learn more about Extensions](/user-guide/overview/glossary#extensions).
 
 ## The Extension Object
@@ -37,6 +37,9 @@ Whether the extension exists in the local extensions folder or is loaded from `n
 
 `version` **string**\
 The currently loaded version of the plugin as defined by its `package.json`.
+
+`partial` **boolean**\
+Whether or not a bundles entries can be individually disabled. This is applicable to bundle type extensions only.
 
 ```json
 {
@@ -141,7 +144,7 @@ Update an existing extension.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`PATCH /extension/:bundleOrName/:name?`
+`PATCH /extensions/:bundleOrName/:name?`
 
 Provide a partial [extension object](#the-extension-object) as the body of your request.
 

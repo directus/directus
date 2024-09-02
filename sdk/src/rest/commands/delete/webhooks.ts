@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @throws Will throw if keys is empty
  */
 export const deleteWebhooks =
-	<Schema extends object>(keys: DirectusWebhook<Schema>['id'][]): RestCommand<void, Schema> =>
+	<Schema>(keys: DirectusWebhook<Schema>['id'][]): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(keys, 'Keys cannot be empty');
 
@@ -27,7 +27,7 @@ export const deleteWebhooks =
  * @throws Will throw if key is empty
  */
 export const deleteWebhook =
-	<Schema extends object>(key: DirectusWebhook<Schema>['id']): RestCommand<void, Schema> =>
+	<Schema>(key: DirectusWebhook<Schema>['id']): RestCommand<void, Schema> =>
 	() => {
 		throwIfEmpty(String(key), 'Key cannot be empty');
 

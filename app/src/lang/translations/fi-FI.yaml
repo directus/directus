@@ -1,24 +1,4 @@
 ---
-## Be aware:
-#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
-#"void", etc are stripped out. See
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
-#and
-#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
-#Illegal words:
-#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
-#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
-#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
-#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
-#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
-#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
-#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
-#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
-#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
-#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
-#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
-#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
-#'Proxy', 'Intl'
 identifier: Tunniste
 avatar: Avatari
 application: Sovellus
@@ -242,13 +222,6 @@ time: Aika
 timestamp: Aikaleima
 uuid: UUID
 hash: Tiiviste
-geometry: Geometria (kaikki)
-geometry.Point: Piste
-geometry.LineString: LineString
-geometry.Polygon: Monikulmio
-geometry.MultiPoint: MultiPoint
-geometry.MultiLineString: MultiLineString
-geometry.MultiPolygon: MultiPolygon
 not_available_for_type: Ei saatavilla tälle tyypille
 create_translations: Luo käännökset
 auto_refresh: Automaattinen päivitys
@@ -448,7 +421,6 @@ replace_from_library: Korvaa tiedosto kirjastosta
 replace_from_url: Korvaa tiedosto osoitteesta
 no_file_selected: Ei valittua tiedostoa
 download_file: Lataa tiedosto
-open_file_in_tab: Avaa tiedosto uudessa välilehdessä
 start_export: Aloita vienti
 not_available_for_local_downloads: Ei saatavilla paikallisille latauksille
 exporting_all_items_in_collection: Viedään kaikki {total} kohdetta kokoelmasta {collection}.
@@ -568,37 +540,36 @@ auto_fill: Automaattinen täyttö
 corresponding_field: Vastaava kenttä
 errors:
   COLLECTION_NOT_FOUND: "Kokoelmaa ei ole olemassa"
+  CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
   FIELD_NOT_FOUND: Kenttää ei löydy
   FORBIDDEN: Kielletty
+  ILLEGAL_ASSET_TRANSFORMATION: Kuvan lähde on liian suuri esikatseltavaksi
+  INTERNAL_SERVER_ERROR: Odottamaton virhe
+  INVALID_CONFIG: Virheelliset asetukset
   INVALID_CREDENTIALS: Väärä käyttäjätunnus tai salasana
+  INVALID_FOREIGN_KEY: Virheellinen vierasavain
+  INVALID_IP: IP-osoite ei ole sallittu
   INVALID_OTP: Väärä kertakäyttösalasana
   INVALID_PAYLOAD: Virheellinen kuorma
   INVALID_PROVIDER: Käyttäjä kuuluu eri tunnistautumis-tarjoajalle
   INVALID_QUERY: Virheellinen kysely
-  INVALID_CONFIG: Virheelliset asetukset
   INVALID_TOKEN: Tunnus ei kelpaa
-  INVALID_IP: IP-osoite ei ole sallittu
   INVALID_USER: Todennus epäonnistui
   ITEM_LIMIT_REACHED: Kohteiden rajoitus saavutettu
   ITEM_NOT_FOUND: Kohdetta ei löydy
-  ROUTE_NOT_FOUND: Ei löytynyt
-  RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
-  USER_SUSPENDED: Käyttäjä jäädytetty
-  CONTAINS_NULL_VALUES: Kenttä sisältää null-arvoja
-  INTERNAL_SERVER_ERROR: Odottamaton virhe
   NOT_NULL_VIOLATION: Arvo ei voi olla null
-  ILLEGAL_ASSET_TRANSFORMATION: Kuvan lähde on liian suuri esikatseltavaksi
-  VALUE_TOO_LONG: Arvo on liian pitkä
-  VALUE_OUT_OF_RANGE: Arvo on alueen ulkopuolella
-  INVALID_FOREIGN_KEY: Virheellinen vierasavain
-  UNKNOWN: Odottamaton virhe
-  GRAPHQL_VALIDATION_EXCEPTION: GraphQL-validointivirhe
-  SERVICE_UNAVAILABLE: Palvelu ei ole saatavilla
-  UNSUPPORTED_MEDIA_TYPE: Median tyyppiä ei tueta
-  UNEXPECTED_RESPONSE: Odottamaton vastaus
-  TOKEN_EXPIRED: Token vanhentunut
   RANGE_NOT_SATISFIABLE: Virheellinen väli
+  RECORD_NOT_UNIQUE: Duplikaattiarvo havaittu
   REQUESTS_EXCEEDED: Pyyntöjen raja saavutettu
+  ROUTE_NOT_FOUND: Ei löytynyt
+  SERVICE_UNAVAILABLE: Palvelu ei ole saatavilla
+  TOKEN_EXPIRED: Token vanhentunut
+  UNEXPECTED_RESPONSE: Odottamaton vastaus
+  UNKNOWN: Odottamaton virhe
+  UNSUPPORTED_MEDIA_TYPE: Median tyyppiä ei tueta
+  USER_SUSPENDED: Käyttäjä jäädytetty
+  VALUE_OUT_OF_RANGE: Arvo on alueen ulkopuolella
+  VALUE_TOO_LONG: Arvo on liian pitkä
 security: Turvallisuus
 value_hashed: Arvo tiivistetty turvallisesti
 bookmark_name: Kirjanmerkin nimi...
@@ -610,7 +581,6 @@ cannot_edit_global_bookmarks: Yleisten kirjanmerkkien muokkaus epäonnistui
 bookmarks: Kirjainmerkit
 presets: Esiasetukset
 unexpected_error: Odottamaton virhe
-unexpected_error_copy: Tapahtui odottamaton virhe. Yritä myöhemmin uudelleen.
 copy_details: Kopioi tiedot
 no_app_access: Ei sovelluspääsyä
 no_app_access_copy: Tällä käyttäjällä ei ole oikeutta käyttää järjestelmänvalvojasovellusta.
@@ -635,10 +605,6 @@ make_collection_hidden: Tee kokoelma piilotettu
 make_folder_visible: Näytä kansio
 make_folder_hidden: Piilota kansio
 goto_collection_content: Näytä sisältö
-start_end_of_count_items: '{start}-{end} / {count} kohdetta'
-start_end_of_count_filtered_items: '{start}-{end} / {count} suodatettua kohdetta'
-one_item: '1 kohde'
-one_filtered_item: '1 suodatettu kohde'
 delete_collection_are_you_sure: >-
   Haluatko poistaa kokoelman "{collection}"? Kokoelma ja kaikki siihen kuuluvat kohteet poistetaan pysyvästi.
 delete_folder_are_you_sure: Haluatko poistaa kansion "{folder}"? Kansion kansiot ja kokoelmat siirretään ylimmälle tasolle.
@@ -720,7 +686,6 @@ create_item: Luo kohde
 display_template: Esitysmalli
 language_display_template: Kielen näyttömalli
 translations_display_template: Käännösten näyttömalli
-n_items_selected: 'Ei valittuja kohteita | 1 valittu kohde | {n} valittua kohdetta'
 per_page: Per sivu
 all_files: Kaikki Tiedostot
 my_files: Omat tiedostot
@@ -948,7 +913,6 @@ page_help_settings_datamodel_collections: >-
   **Tietomalli: kokoelmat** — Luettelee kaikki saatavilla olevat kokoelmat. Tämä sisältää näkyvät, piilotetut ja järjestelmäkokoelmat sekä hallitsemattomat tietokantataulut, jotka voidaan lisätä.
 page_help_settings_datamodel_fields: >-
   **Tietomalli: kokoelma** — Lomake tämän kokoelman ja sen kenttien hallintaa varten.
-page_help_settings_roles_collection: '**Selaa rooleja** — Listaa Admin, Julkiset ja mukautetut käyttäjäroolit.'
 page_help_settings_roles_item: "**Roolin yksityiskohdat** — Hallitse roolin käyttöoikeuksia ja muita asetuksia."
 page_help_settings_presets_collection: >-
   **Selaa esiasetuksia** — Listaa kaikki projektin esiasetukset, mukaan lukien käyttäjät, roolit ja maailmanlaajuiset kirjanmerkit sekä oletusnäkymät.
@@ -1112,12 +1076,9 @@ fields:
     name: Roolin nimi
     icon: Roolin kuvake
     description: Kuvaus
-    app_access: Sovelluspääsy
-    admin_access: Ylläpitäjän pääsy
-    ip_access: IP-pääsy
-    enforce_tfa: Vaadi 2FA
     users: Käyttäjät roolissa
-    module_list: Moduulien navigointi
+  directus_policies:
+    description: Kuvaus
   directus_webhooks:
     name: Nimi
     method: Metodi
@@ -1191,7 +1152,6 @@ field_options:
   directus_roles:
     name: Yksilöllinen nimi tälle roolille...
     description: Tämän roolin kuvaus...
-    ip_access: Lisää sallitut IP-osoitteet, jätä tyhjäksi salliaksesi kaikki...
     fields:
       icon_name: Kuvake
       name_name: Nimi
@@ -1643,10 +1603,14 @@ displays:
     suffix: Jälkiliite
     color: Väri
     icon: Kuvake
+    mask: Maskeerattu
+    mask_label: Piilota todellinen arvo
     text: Teksti
   formatted-json-value:
     formatted-json-value: Muotoiltu JSON-arvo
     description: Näytä objektin muotoiltu versio
+  hash:
+    hash: Tiiviste
   icon:
     icon: Kuvake
     description: Näytä kuvake

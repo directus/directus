@@ -4,6 +4,7 @@ import { useDialogRoute } from '@/composables/use-dialog-route';
 import { i18n } from '@/lang';
 import { getItemRoute } from '@/utils/get-route';
 import { userName } from '@/utils/user-name';
+import { isSystemCollection } from '@directus/system-data';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -40,7 +41,7 @@ const loading = ref(false);
 const error = ref<any>(null);
 
 const openItemLink = computed(() => {
-	if (!item.value || item.value.collection.startsWith('directus_') || item.value.action === 'delete') return;
+	if (!item.value || isSystemCollection(item.value.collection) || item.value.action === 'delete') return;
 
 	return getItemRoute(item.value.collection, item.value.item);
 });

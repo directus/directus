@@ -10,7 +10,7 @@ import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
 import { SchemaService } from './schema.js';
 
-vi.mock('../utils/package.js', () => ({ version: '0.0.0' }));
+vi.mock('directus/version', () => ({ version: '0.0.0' }));
 
 vi.mock('../../src/database/index.js', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };

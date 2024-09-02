@@ -1,6 +1,9 @@
+import { useEnv } from '@directus/env';
 import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
+import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } from '@directus/types';
+import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
@@ -13,12 +16,15 @@ import type {
 } from 'openapi3-ts/oas30';
 import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
-import env from '../env.js';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
-import { version } from '../utils/package.js';
-import { GraphQLService } from './graphql/index.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
+import { GraphQLService } from './graphql/index.js';
+
+const env = useEnv();
 
 export class SpecificationService {
 	accountability: Accountability | null;
@@ -28,13 +34,13 @@ export class SpecificationService {
 	oas: OASSpecsService;
 	graphql: GraphQLSpecsService;
 
-	constructor({ accountability, knex, schema }: AbstractServiceOptions) {
-		this.accountability = accountability || null;
-		this.knex = knex || getDatabase();
-		this.schema = schema;
+	constructor(options: AbstractServiceOptions) {
+		this.accountability = options.accountability || null;
+		this.knex = options.knex || getDatabase();
+		this.schema = options.schema;
 
-		this.oas = new OASSpecsService({ knex, schema, accountability });
-		this.graphql = new GraphQLSpecsService({ knex, schema, accountability });
+		this.oas = new OASSpecsService(options);
+		this.graphql = new GraphQLSpecsService(options);
 	}
 }
 
@@ -47,23 +53,42 @@ class OASSpecsService implements SpecificationSubService {
 	knex: Knex;
 	schema: SchemaOverview;
 
-	constructor({ knex, schema, accountability }: AbstractServiceOptions) {
-		this.accountability = accountability || null;
-		this.knex = knex || getDatabase();
+	constructor(options: AbstractServiceOptions) {
+		this.accountability = options.accountability || null;
+		this.knex = options.knex || getDatabase();
 
-		this.schema =
-			this.accountability?.admin === true ? schema : reduceSchema(schema, accountability?.permissions || null);
+		this.schema = options.schema;
 	}
 
 	async generate(host?: string) {
-		const permissions = this.accountability?.permissions ?? [];
+		let schemaForSpec = this.schema;
+		let permissions: Permission[] = [];
 
-		const tags = await this.generateTags();
+		if (this.accountability && this.accountability.admin !== true) {
+			const allowedFields = await fetchAllowedFieldMap(
+				{
+					accountability: this.accountability,
+					action: 'read',
+				},
+				{ schema: this.schema, knex: this.knex },
+			);
+
+			schemaForSpec = reduceSchema(this.schema, allowedFields);
+
+			const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
+
+			permissions = await fetchPermissions(
+				{ policies, accountability: this.accountability },
+				{ schema: this.schema, knex: this.knex },
+			);
+		}
+
+		const tags = await this.generateTags(schemaForSpec);
 		const paths = await this.generatePaths(permissions, tags);
-		const components = await this.generateComponents(tags);
+		const components = await this.generateComponents(schemaForSpec, tags);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
-		const url = isDefaultPublicUrl && host ? host : env['PUBLIC_URL'];
+		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',
@@ -88,9 +113,10 @@ class OASSpecsService implements SpecificationSubService {
 		return spec;
 	}
 
-	private async generateTags(): Promise<OpenAPIObject['tags']> {
+	private async generateTags(schema: SchemaOverview): Promise<OpenAPIObject['tags']> {
 		const systemTags = cloneDeep(spec.tags)!;
-		const collections = Object.values(this.schema.collections);
+
+		const collections = Object.values(schema.collections);
 		const tags: OpenAPIObject['tags'] = [];
 
 		for (const systemTag of systemTags) {
@@ -105,7 +131,7 @@ class OASSpecsService implements SpecificationSubService {
 		}
 
 		for (const collection of collections) {
-			const isSystem = collection.collection.startsWith('directus_');
+			const isSystem = isSystemCollection(collection.collection);
 
 			// If the collection is one of the system collections, pull the tag from the static spec
 			if (isSystem) {
@@ -139,7 +165,7 @@ class OASSpecsService implements SpecificationSubService {
 		if (!tags) return paths;
 
 		for (const tag of tags) {
-			const isSystem = 'x-collection' in tag === false || tag['x-collection'].startsWith('directus_');
+			const isSystem = 'x-collection' in tag === false || isSystemCollection(tag['x-collection']);
 
 			if (isSystem) {
 				for (const [path, pathItem] of Object.entries<PathItemObject>(spec.paths)) {
@@ -300,7 +326,10 @@ class OASSpecsService implements SpecificationSubService {
 		return paths;
 	}
 
-	private async generateComponents(tags: OpenAPIObject['tags']): Promise<OpenAPIObject['components']> {
+	private async generateComponents(
+		schema: SchemaOverview,
+		tags: OpenAPIObject['tags'],
+	): Promise<OpenAPIObject['components']> {
 		if (!tags) return;
 
 		let components: OpenAPIObject['components'] = cloneDeep(spec.components);
@@ -327,14 +356,14 @@ class OASSpecsService implements SpecificationSubService {
 			}
 		}
 
-		const collections = Object.values(this.schema.collections);
+		const collections = Object.values(schema.collections);
 
 		for (const collection of collections) {
 			const tag = tags.find((tag) => tag['x-collection'] === collection.collection);
 
 			if (!tag) continue;
 
-			const isSystem = collection.collection.startsWith('directus_');
+			const isSystem = isSystemCollection(collection.collection);
 
 			const fieldsInCollection = Object.values(collection.fields);
 
@@ -348,7 +377,7 @@ class OASSpecsService implements SpecificationSubService {
 					schemaComponent.properties[field.field] =
 						(cloneDeep(
 							(spec.components!.schemas![tag.name] as SchemaObject).properties![field.field],
-						) as SchemaObject) || this.generateField(collection.collection, field, tags);
+						) as SchemaObject) || this.generateField(schema, collection.collection, field, tags);
 				}
 
 				components.schemas[tag.name] = schemaComponent;
@@ -360,7 +389,7 @@ class OASSpecsService implements SpecificationSubService {
 				};
 
 				for (const field of fieldsInCollection) {
-					schemaComponent.properties![field.field] = this.generateField(collection.collection, field, tags);
+					schemaComponent.properties![field.field] = this.generateField(schema, collection.collection, field, tags);
 				}
 
 				components.schemas[tag.name] = schemaComponent;
@@ -390,7 +419,12 @@ class OASSpecsService implements SpecificationSubService {
 		}
 	}
 
-	private generateField(collection: string, field: FieldOverview, tags: TagObject[]): SchemaObject {
+	private generateField(
+		schema: SchemaOverview,
+		collection: string,
+		field: FieldOverview,
+		tags: TagObject[],
+	): SchemaObject {
 		let propertyObject: SchemaObject = {};
 
 		propertyObject.nullable = field.nullable;
@@ -399,7 +433,7 @@ class OASSpecsService implements SpecificationSubService {
 			propertyObject.description = field.note;
 		}
 
-		const relation = this.schema.relations.find(
+		const relation = schema.relations.find(
 			(relation) =>
 				(relation.collection === collection && relation.field === field.field) ||
 				(relation.related_collection === collection && relation.meta?.one_field === field.field),
@@ -423,12 +457,12 @@ class OASSpecsService implements SpecificationSubService {
 				if (
 					!relatedTag ||
 					!relation.related_collection ||
-					relation.related_collection in this.schema.collections === false
+					relation.related_collection in schema.collections === false
 				) {
 					return propertyObject;
 				}
 
-				const relatedCollection = this.schema.collections[relation.related_collection]!;
+				const relatedCollection = schema.collections[relation.related_collection]!;
 				const relatedPrimaryKeyField = relatedCollection.fields[relatedCollection.primary]!;
 
 				propertyObject.oneOf = [
@@ -442,11 +476,11 @@ class OASSpecsService implements SpecificationSubService {
 			} else if (relationType === 'o2m') {
 				const relatedTag = tags.find((tag) => tag['x-collection'] === relation.collection);
 
-				if (!relatedTag || !relation.related_collection || relation.collection in this.schema.collections === false) {
+				if (!relatedTag || !relation.related_collection || relation.collection in schema.collections === false) {
 					return propertyObject;
 				}
 
-				const relatedCollection = this.schema.collections[relation.collection]!;
+				const relatedCollection = schema.collections[relation.collection]!;
 				const relatedPrimaryKeyField = relatedCollection.fields[relatedCollection.primary]!;
 
 				if (!relatedTag || !relatedPrimaryKeyField) return propertyObject;

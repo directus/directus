@@ -8,31 +8,29 @@ import { getCache } from './cache.js';
 
 const cache = await getCache();
 const instance = Axios.create();
-// @ts-ignore TODO Remove once type is fixed in axios-cache-interceptor
-const axios = setupCache(instance, { storage: cache });
+const axios = cache ? setupCache(instance, { storage: cache }) : instance;
 
 export async function updateCheck(currentVersion: string) {
-	let response;
+	let packageManifest: Partial<Manifest> | null;
 
 	try {
-		response = await axios.get<Manifest>('https://registry.npmjs.org/directus', {
+		const response = await axios.get('https://registry.npmjs.org/directus', {
 			headers: { accept: 'application/vnd.npm.install-v1+json; q=1.0, application/json; q=0.8, */*' },
 			timeout: 8_000,
 		});
+
+		packageManifest = response.data;
 	} catch {
 		// Errors are intentionally ignored and update check is skipped
 		return;
 	}
 
-	const packageManifest = response.data;
+	const latestVersion = packageManifest?.['dist-tags']?.['latest'];
+	const versions = packageManifest?.versions;
 
-	const latestVersion = packageManifest['dist-tags']['latest'];
+	if (!latestVersion || !versions || gte(currentVersion, latestVersion)) return;
 
-	if (!latestVersion || gte(currentVersion, latestVersion)) {
-		return;
-	}
-
-	const allVersions = Object.keys(packageManifest.versions).filter((version) => !prerelease(version));
+	const allVersions = Object.keys(versions).filter((version) => !prerelease(version));
 	const indexOfCurrent = allVersions.indexOf(currentVersion);
 	const indexOfLatest = allVersions.indexOf(latestVersion);
 

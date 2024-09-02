@@ -19,13 +19,11 @@ To configure permissions programmatically, see our API documentation on [permiss
 
 ## Configure Permissions
 
-<video title="Configure Role Permissions" autoplay playsinline muted loop controls>
-	<source src="https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/permissions-20220909/configure-permissions-20220907A.mp4" type="video/mp4" />
-</video>
+![How to configure role permissions](https://marketing.directus.app/assets/d6eacb7e-7657-44fc-91a0-c3f21306b34a.gif)
 
 To configure a role's access permissions, follow these steps.
 
-1. Navigate to **Settings > Roles & Permissions > [Role]** and scroll to **Permissions**.\
+1. Navigate to **Settings > Access Control > [Role]** and scroll to **Permissions**.\
    Each collection is a row. Its [CRUDS permissions](/user-guide/user-management/users-roles-permissions#directus-permissions)
    are in columns.
 2. Click the icon of the collection and permission type that you want to set and a tooltip will appear. If you'd like to
@@ -44,16 +42,13 @@ To configure a role's access permissions, follow these steps.
 
 ::: warning Admin Roles
 
-If you [configured the role's details](/user-guide/user-management/roles#configure-role-details) to have **Admin
-Access**, permission configuration is disabled.
+If you configured the role's details to have **Admin Access**, permission configuration is disabled.
 
 :::
 
 ## Configure Custom Permissions
 
-<video title="Configure Role Permissions" autoplay playsinline muted loop controls>
-	<source src="https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/permissions-20220909/custom-access-permissions-20220909A.mp4" type="video/mp4" />
-</video>
+![How to configure custom role permissions](https://marketing.directus.app/assets/68e68b6c-a503-457f-8c9b-73d5b226639a.gif)
 
 To configure custom access permissions for a role, follow these steps.
 
@@ -75,28 +70,23 @@ To configure custom access permissions for a role, follow these steps.
 
 ## Toggle All Collection Permissions
 
-<video title="Toggle all Collection Permissions" autoplay playsinline muted loop controls>
-	<source src="https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/permissions-20220909/toggle-all-permissions-20220907A.mp4" type="video/mp4" />
-</video>
+![How to toggle all collection permissions](https://marketing.directus.app/assets/9903d727-6d97-4a1b-84f8-3f6bdc10b73a.gif)
 
 To grant or restrict all CRUDS permissions to a collection at once, follow these steps.
 
-1. Navigate to **Settings > Roles & Permissions > [Role]**.
+1. Navigate to **Settings > Access Control > [Role]**.
 2. Mouse over the desired collection's name and the following options will appear:
    - **All** — Click to enable all CRUDS permissions for a collection.
    - **None** — Click to restrict all CRUDS permissions for a collection.
 
 ## Reset System Permissions
 
-<video title="Reset System Permissions" autoplay playsinline muted loop controls>
-	<source src="https://cdn.directus.io/docs/v9/configuration/users-roles-permissions/permissions-20220909/reset-system-permissions-20220908A.mp4" type="video/mp4" />
-</video>
+![How to reset system permissions](https://marketing.directus.app/assets/7db0408a-a456-43e7-bfe4-6bb9aef2374d.gif)
 
-This is only available when **App Access** is enabled when you
-[configure role details](/user-guide/user-management/roles#configure-role-details). If you made any custom
+This is only available when **App Access** is enabled when you configure role details. If you made any custom
 configurations to system collections, these will be reverted. To reset system permissions, follow these steps.
 
-1. Navigate to **Settings > Roles & Permissions > [Role]**.
+1. Navigate to **Settings > Access Control > [Role]**.
 2. At the bottom of **Permissions**, click **System Collections** to show system collections.
 3. Scroll to the bottom and choose to **Reset System Permissions to:**
    - **App Access Minimum** — Reconfigures permissions on system collections to the bare minimum that are required to

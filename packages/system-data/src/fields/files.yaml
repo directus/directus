@@ -1,0 +1,178 @@
+table: directus_files
+
+fields:
+  - field: id
+    hidden: true
+    interface: input
+    special:
+      - uuid
+
+  - field: title
+    interface: input
+    options:
+      iconRight: title
+      placeholder: $t:field_options.directus_files.title
+    width: full
+
+  - field: description
+    interface: input-multiline
+    width: full
+    options:
+      placeholder: $t:field_options.directus_files.description
+
+  - field: tags
+    interface: tags
+    options:
+      iconRight: local_offer
+    special:
+      - cast-json
+    width: full
+    display: labels
+    display_options:
+      choices: null
+      format: false
+
+  - field: location
+    interface: input
+    options:
+      iconRight: place
+      placeholder: $t:field_options.directus_files.location
+    width: half
+
+  - field: storage
+    interface: input
+    options:
+      iconRight: storage
+    width: half
+    readonly: true
+
+  - field: focal_point_divider
+    interface: presentation-divider
+    options:
+      icon: image_search
+      title: $t:field_options.directus_files.focal_point_divider
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: focal_point_x
+    width: half
+
+  - field: focal_point_y
+    width: half
+
+  - field: storage_divider
+    interface: presentation-divider
+    options:
+      icon: insert_drive_file
+      title: $t:field_options.directus_files.storage_divider
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: filename_disk
+    interface: input
+    options:
+      iconRight: publish
+      placeholder: $t:field_options.directus_files.filename_disk
+    readonly: true
+    width: half
+
+  - field: filename_download
+    interface: input
+    options:
+      iconRight: get_app
+      placeholder: $t:field_options.directus_files.filename_download
+    width: half
+
+  - field: metadata
+    hidden: true
+    special:
+      - cast-json
+
+  - field: type
+    display: mime-type
+    readonly: true
+
+  - field: filesize
+    display: filesize
+    readonly: true
+
+  - field: created_on
+    interface: datetime
+    display: datetime
+    width: half
+    special:
+      - date-created
+    readonly: true
+
+  - field: modified_by
+    interface: select-dropdown-m2o
+    special:
+      - user-updated
+    width: half
+    display: user
+    readonly: true
+    options:
+      template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
+
+  - field: modified_on
+    interface: datetime
+    special:
+      - date-updated
+    width: half
+    display: datetime
+    readonly: true
+
+  - field: embed
+    width: half
+    hidden: true
+
+  - field: uploaded_by
+    display: user
+    width: half
+    hidden: true
+    special:
+      - user-created
+
+  - field: uploaded_on
+    display: datetime
+    width: half
+    hidden: true
+
+  - field: folder
+    width: half
+    readonly: true
+    special:
+      - m2o
+    display: related-values
+    display_options:
+      template: '{{ name }}'
+
+  - field: width
+    width: half
+    readonly: true
+
+  - field: height
+    width: half
+    readonly: true
+
+  - field: charset
+    width: half
+    readonly: true
+
+  - field: duration
+    width: half
+    readonly: true
+
+  - field: tus_id
+    width: half
+    hidden: true
+
+  - field: tus_data
+    width: half
+    hidden: true
+    special:
+      - cast-json
