@@ -6,9 +6,10 @@ import { useServerStore } from '@/stores/server';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
-import { User } from '@directus/types';
+import { Field, User } from '@directus/types';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -48,8 +49,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
 
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
-			title: (field) => field.type === 'string',
-			text: (field) => field.type === 'string' || field.type === 'text',
+			title: getRelatedFilterFields,
+			group: getRelatedFilterFields,
+			text: getRelatedFilterFields,
+
 			tags: (field) => field.type === 'json' || field.type === 'csv',
 			date: (field) => ['date', 'time', 'dateTime', 'timestamp'].includes(field.type),
 			user: (field) => {
@@ -79,21 +82,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 					return related !== undefined;
 				}
-			},
-			group: (field) => {
-				if (
-					field.meta?.options &&
-					Object.keys(field.meta.options).includes('choices') &&
-					['string', 'integer', 'float', 'bigInteger'].includes(field.type)
-				) {
-					return Object.keys(field.meta.options).includes('choices');
-				}
-
-				const relation = relationsStore.relations.find(
-					(relation) => getRelationType({ relation, collection: collection.value, field: field.field }) === 'm2o',
-				);
-
-				return !!relation;
 			},
 
 			file: (field) => {
@@ -288,6 +276,22 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			refresh,
 			onClick,
 		};
+
+		function getRelatedFilterFields(field: Field) {
+			if (
+				field.meta?.options &&
+				Object.keys(field.meta.options).includes('choices') &&
+				['string', 'integer', 'float', 'bigInteger'].includes(field.type)
+			) {
+				return Object.keys(field.meta.options).includes('choices');
+			}
+
+			const relation = relationsStore.relations.find(
+				(relation) => getRelationType({ relation, collection: collection.value, field: field.field }) === 'm2o',
+			);
+
+			return !!relation;
+		}
 
 		async function change(group: Group, event: ChangeEvent<Item>) {
 			const gField = groupField.value;
@@ -670,6 +674,27 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				[groupField.value, titleField.value, textField.value, tagsField.value, dateField.value].forEach((val) => {
 					if (val !== null) fields.push(val);
 				});
+
+				function addRelatedFields(fieldName?: string) {
+					if (!fieldName) 
+						return
+				
+					const fieldConfiguration = layoutOptions.value ? fieldsInCollection.value.find(field => field.field === fieldName) : null
+
+					if (!fieldConfiguration) 
+						return
+
+					const relatedFields = adjustFieldsForDisplays(fields, collection.value!)
+
+					relatedFields.forEach((val) => {
+						if (!fields.includes(val)) {
+							fields.push(val)
+						}
+					})
+				}
+
+				addRelatedFields(layoutOptions.value?.titleField)
+				addRelatedFields(layoutOptions.value?.textField)
 
 				return fields;
 			});

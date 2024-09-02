@@ -88,6 +88,10 @@ function saveChanges() {
 	editTitle.value = '';
 }
 
+const titleFieldConfiguration = computed<Field | undefined>(() => {
+  return props.fieldsInCollection.find(field => field.field === props.layoutOptions.titleField)
+})
+
 const textFieldConfiguration = computed<Field | undefined>(() => {
 	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
 });
@@ -159,7 +163,18 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 										:class="{ selected: selection.includes(element[primaryKeyField?.field]) }"
 										@click="onClick({ item: element, event: $event })"
 									>
-										<div v-if="element.title" class="title">{{ element.title }}</div>
+										<div v-if="element.title" class="title">
+											<render-display
+                        v-if="titleFieldConfiguration"
+                        :collection="collection"
+                        :value="element.title"
+                        :type="titleFieldConfiguration.type"
+                        :field="layoutOptions?.titleField"
+                        :display="titleFieldConfiguration.meta?.display"
+                        :options="titleFieldConfiguration.meta?.options"
+                        :interface="titleFieldConfiguration.meta?.interface"
+                      />
+										</div>
 										<img v-if="element.image" class="image" :src="element.image" />
 										<render-display
 											v-if="element.text && textFieldConfiguration"
