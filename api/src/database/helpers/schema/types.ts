@@ -162,11 +162,9 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	}
 
 	addInnerSortFieldsToGroupBy(
-		/* eslint-disable @typescript-eslint/no-unused-vars */
-		groupByFields: (string | Knex.Raw)[],
-		sortRecords: SortRecord[],
-		hasMultiRelationalSort: boolean,
-		/* eslint-enable */
+		_groupByFields: (string | Knex.Raw)[],
+		_sortRecords: SortRecord[],
+		_hasMultiRelationalSort: boolean,
 	): void {
 		// no-op by default
 	}
