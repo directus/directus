@@ -1,13 +1,36 @@
+import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
 import { HeartbeatHandler } from './heartbeat.js';
 import { ItemsHandler } from './items.js';
+import { LogsHandler } from './logs.js';
 import { SubscribeHandler } from './subscribe.js';
 
 export function startWebSocketHandlers() {
-	new HeartbeatHandler();
-	new ItemsHandler();
-	new SubscribeHandler();
+	const env = useEnv();
+
+	const heartbeatEnabled = toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']);
+	const restEnabled = toBoolean(env['WEBSOCKETS_REST_ENABLED']);
+	const graphqlEnabled = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED']);
+	const logsEnabled = toBoolean(env['WEBSOCKETS_LOGS_ENABLED']);
+
+	if (heartbeatEnabled) {
+		new HeartbeatHandler();
+	}
+
+	if (restEnabled || graphqlEnabled) {
+		new ItemsHandler();
+	}
+
+	if (restEnabled) {
+		new SubscribeHandler();
+	}
+
+	if (logsEnabled) {
+		new LogsHandler();
+	}
 }
 
 export * from './heartbeat.js';
 export * from './items.js';
+export * from './logs.js';
 export * from './subscribe.js';
