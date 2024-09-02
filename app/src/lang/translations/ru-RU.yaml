@@ -1002,6 +1002,8 @@ no_data_in_flow: В этом процессе не были использова
 accountability: Подотчетность
 payload: Содержимое
 details: Подробности
+clear_logs: Очистить логи
+search_logs: Поиск логов...
 full_screen: Во весь экран
 full_text_search: Поиск по полному тексту
 edit_panels: Редактировать панели
@@ -1030,6 +1032,7 @@ tooltip: Подсказка
 tooltip_placeholder: Введите подсказку...
 unlimited: Не ограничено
 open_link_in: Открыть ссылку в
+new_tab: Новая вкладка
 save_image: Сохранить изображение
 save_media: Сохранить медиа
 wysiwyg_options:
@@ -1109,6 +1112,7 @@ settings_project: Настройки
 settings_appearance: Внешний вид
 settings_webhooks: Веб-хуки
 settings_flows: Процессы
+settings_system_logs: Системные логи
 settings_presets: Закладки
 settings_translations: Переводы
 one_or_more_options_are_missing: Один или несколько вариантов отсутствуют
