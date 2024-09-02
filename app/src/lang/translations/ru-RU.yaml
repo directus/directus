@@ -1002,8 +1002,22 @@ no_data_in_flow: В этом процессе не были использова
 accountability: Подотчетность
 payload: Содержимое
 details: Подробности
+resume_streaming_logs: Возобновить поток ведения журналов
+pause_streaming_logs: Приостановить поток ведения журналов
+logs_session_resumed: Сессия ведения журналов возобновлена...
+logs_session_paused: Сессия ведение журналов приостановлена...
+logs_stream_disconnected: Поток ведения журналов отключен...
+log_detail_filter_paths: 'Фильтрация пути (например: req.method, res.statusCode)'
+logs_beginning: Это начало вашей сессии ведения журналов...
+logs_waiting: 'Ожидает больше журналов...'
+logs_unread_count: '{count} Не прочитано'
 clear_logs: Очистить логи
 search_logs: Поиск логов...
+all_instances: Все экземпляры
+instance_count: 'Нет экземпляра | Один экземпляр | {count} экземпляров'
+all_log_levels: Все уровни ведения журнала
+log_level_count: 'Без уровня журнала | Один уровень журнала | {count} Уровни журнала'
+soft_wrap_lines: Строки Мягкого Переноса
 full_screen: Во весь экран
 full_text_search: Поиск по полному тексту
 edit_panels: Редактировать панели
@@ -1158,6 +1172,7 @@ page_help_settings_datamodel_collections: >-
   **Модель данных: коллекции** – список всех доступных коллекций. Включает в себя видимые, скрытые и системные коллекции, а также ненастроенные таблицы базы данных, которые можно добавить.
 page_help_settings_datamodel_fields: >-
   **Модель данных: коллекция** — форма для управления этой коллекцией и её полями.
+page_help_settings_system_logs: '**Системные журналы** — доступ к потоку системных журналов.'
 page_help_settings_policies_collection: '**Просмотреть политики** — список всех политик проекта.'
 page_help_settings_policies_item: "**Подробнее о политике** — Управление разрешениями политики и другими настройками."
 page_help_settings_roles_collection: '**Обзор ролей** — список всех ролей в проекте.'
