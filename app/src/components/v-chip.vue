@@ -113,7 +113,7 @@ function onCloseClick(event: MouseEvent) {
 	line-height: 22px;
 	background-color: var(--v-chip-background-color, var(--theme--background-normal));
 	border: var(--theme--border-width) solid
-		var(--v-chip-border-color, var(--v-chip-background-color), var(--theme--background-normal));
+		var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));
 	border-radius: 16px;
 
 	&.clickable:hover {
@@ -130,7 +130,7 @@ function onCloseClick(event: MouseEvent) {
 	&.disabled {
 		color: var(--v-chip-color, var(--theme--foreground));
 		background-color: var(--v-chip-background-color, var(--theme--background-normal));
-		border-color: var(--v-chip-border-color, var(--v-chip-background-color), var(--theme--background-normal));
+		border-color: var(--v-chip-border-color, var(--v-chip-background-color, var(--theme--background-normal)));
 
 		&.clickable:hover {
 			color: var(--v-chip-color, var(--theme--foreground));
