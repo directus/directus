@@ -21,6 +21,13 @@ export async function validateAccess(options: ValidateAccessOptions, context: Co
 		return;
 	}
 
+	// Skip further validation if the collection does not exist
+	if (options.collection in context.schema.collections === false) {
+		throw new ForbiddenError({
+			reason: `You don't have permission to "${options.action}" from collection "${options.collection}" or it does not exist.`,
+		});
+	}
+
 	let access;
 
 	// If primary keys are passed, we have to confirm the access by actually trying to read the items
