@@ -191,12 +191,12 @@ export function getDatabase(): Knex {
 	return database;
 }
 
-export function getSchemaInspector(): SchemaInspector {
+export function getSchemaInspector(database?: Knex): SchemaInspector {
 	if (inspector) {
 		return inspector;
 	}
 
-	const database = getDatabase();
+	database ??= getDatabase();
 
 	inspector = createInspector(database);
 

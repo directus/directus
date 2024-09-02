@@ -513,10 +513,6 @@ all_users: Vsi uporabniki
 delete_collection: Briši zbirko
 update_collection_success: Zbirka posodobljena
 delete_collection_success: Zbirka brisana
-start_end_of_count_items: '{start}-{end} od {count} zapisov'
-start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih zapisov'
-one_item: '1 zapis'
-one_filtered_item: '1 filtriran zapis'
 collections_shown: zbirk prikazanih
 visible_collections: Vidne zbirke
 hidden_collections: Skrite zbirke
@@ -591,7 +587,6 @@ create_item: Ustvari zapis
 display_template: Prikaži predlogo
 language_display_template: Predloga prikaza jezika
 translations_display_template: Predloga prikaza prevodov
-n_items_selected: 'Noben zapis ni izbran | 1 zapis je izbran | {n} zapisov izbranih'
 per_page: Na stran
 all_files: Vse datoteke
 my_files: Moje datoteke

@@ -642,10 +642,6 @@ make_collection_hidden: کۆمەڵە بشارەوە
 make_folder_visible: بوخچە دیاربخە
 make_folder_hidden: بوخچە بشارەوە
 goto_collection_content: بینینی ناوەڕۆک
-start_end_of_count_items: '{start}-{end} لە {count} مادە'
-start_end_of_count_filtered_items: '{start}-{end} لە {count} مادەی پاڵاوتەکراو'
-one_item: 'یەک مادە'
-one_filtered_item: 'یەک مادەی پاڵاوتەکراو'
 delete_collection_are_you_sure: >-
   ئایا دڵنیای دەتەوێت ئەم کۆمەڵەیە "{collection}" بسڕیتەوە؟ ئەمە وا دەکات کە کۆمەڵەکە و هەموو مادەکانی ناوی بسڕینەوە. ئەم کارە هەمیشەییە.
 delete_folder_are_you_sure: ئایا دڵنیای دەتەوێت بوخچەی "{folder}" بسڕیتەوە؟ بوخچە بە ناویەکداچوەکان و کۆمەڵەکان دەگوازرێنەوە بۆ ئاستی یەکەم.
@@ -729,7 +725,6 @@ create_item: دروستکردنی مادە
 display_template: پیشاندانی قاڵب
 language_display_template: پیشاندانی قاڵبی زمان
 translations_display_template: پیشاندانی قاڵبی وەرگێڕانەکان
-n_items_selected: 'هیچ مادەیەک دیاری نەکراوە | یەک مادە دیاری کراوە | {n} مادە دیاری کراوە'
 per_page: بۆ هەر پەڕەیەک
 all_files: سەرجەم پەڕگەکان
 my_files: پەڕگەکانم
@@ -1295,7 +1290,6 @@ live_preview:
   new_window: کردنەوە لە پەنجەرەی نوێدا
 shares: هاوبەشیکردنەکان
 unlimited_usage: بەکارهێنانی بێسنور
-uses_left: هیچ بەکارهێنانێک نەماوەتەوە | یەک بەکارهێنان ماوەتەوە | {n} بەکارهێنان ماوەتەوە
 no_shares: هیچ هاوبەشیکردنێک نییە بۆ نیشاندان
 new_share: هاوبەشی نوێ
 expired: بەسەرچوو
@@ -1903,7 +1897,6 @@ layouts:
     group_title: ناونیشانی دەستە
     crop: بڕین
     advanced: پێشکەوتوو
-    not_all_loaded: تەنها دەتوانرێت یەکەم 1000 ماددە باربکرێت.
 both: هەموویان
 panels:
   metric:

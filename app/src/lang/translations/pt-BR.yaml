@@ -777,10 +777,6 @@ make_collection_hidden: Tornar Coleção Oculta
 make_folder_visible: Tornar Pasta Visível
 make_folder_hidden: Tornar Pasta Oculta
 goto_collection_content: Ver conteúdo
-start_end_of_count_items: '{start}-{end} de {count} itens'
-start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
-one_item: '1 item'
-one_filtered_item: '1 item filtrado'
 delete_collection_are_you_sure: >-
   Você tem certeza que quer deletar a coleção "{collection}"? Isso apagará a coleção e todos os itens dela. Esta ação é permanente.
 delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível mais elevado.
@@ -872,7 +868,6 @@ create_item: Criar item
 display_template: Modelo de exibição
 language_display_template: Modelo de Exibição do Idioma
 translations_display_template: Modelos de Exibição da Aplicação
-n_items_selected: 'Não há itens selecionados | 1 item selecionado | {n} itens selecionados'
 per_page: Por página
 all_files: Todos os arquivos
 my_files: Meus arquivos
@@ -1514,7 +1509,6 @@ live_preview:
   toggle_3d: Alternar 3D
 shares: Compartilhar
 unlimited_usage: Uso Ilimitado
-uses_left: Não há usos restante | 1 uso restante | {n} usos restantes
 no_shares: Nenhum compartilhamento para mostrar
 new_share: Novo Compartilhamento
 expired: Expirado
@@ -2188,7 +2182,6 @@ layouts:
     show_ungrouped: Mostrar os não agrupados
     show: Mostrar
     no_group: Sem Grupo
-    not_all_loaded: Só foi possível carregar os primeiros 1000 itens.
 horizontal: Horizontal
 vertical: Vertical
 axis: Eixo

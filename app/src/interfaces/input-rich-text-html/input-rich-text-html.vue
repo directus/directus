@@ -200,7 +200,7 @@ const editorOptions = computed(() => {
 		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
-		toolbar: toolbarString,
+		toolbar: toolbarString ? toolbarString : false,
 		style_formats: styleFormats,
 		file_picker_types: 'customImage customMedia image media',
 		link_default_protocol: 'https',
@@ -349,7 +349,7 @@ function setFocus(val: boolean) {
 							<v-checkbox
 								v-model="linkSelection.newTab"
 								block
-								:label="t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
+								:label="t('new_tab')"
 							></v-checkbox>
 						</div>
 					</div>

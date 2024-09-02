@@ -683,10 +683,6 @@ make_collection_hidden: Gør samlingen skjult
 make_folder_visible: Gør mappen synlig
 make_folder_hidden: Lav mappe skjult
 goto_collection_content: Vis indhold
-start_end_of_count_items: '{start}-{end} af {count} elementer'
-start_end_of_count_filtered_items: '{start}-{end} af {count} filtrerede elementer'
-one_item: '1 element'
-one_filtered_item: '1 filtreret element'
 delete_collection_are_you_sure: >-
   Er du sikker på du vil slette denne samling "{collection}"? Dette vil slette alle enheder i samlingen. Denne handling er permanent.
 delete_folder_are_you_sure: Er du sikker på du vil slette denne mappe"{folder}"? Dette vil slette alle undermapper og enheder i mappen. Denne handling er permanent.
@@ -770,7 +766,6 @@ create_item: Opret element
 display_template: Vis skabelon
 language_display_template: Sprogvisning skabelon
 translations_display_template: Skabelon til oversættelsesvisning
-n_items_selected: 'Ingen elementer valgt | Et element Valgt | {n} elementer Valgt'
 per_page: Pr. side
 all_files: Alle filer
 my_files: Mine filer
@@ -1324,7 +1319,6 @@ live_preview:
   new_window: Åbn i nyt vindue
 shares: Aktier
 unlimited_usage: Ubegrænset brug
-uses_left: Ingen anvendelser tilbage - 1 brug tilbage - {n} bruger venstre
 no_shares: Ingen aktier at vise
 new_share: Ny Del
 expired: Udløbet
@@ -1929,7 +1923,6 @@ layouts:
     edit_group: Rediger gruppe
     delete_group: Slet gruppe
     add_group: Tilføj gruppe
-    not_all_loaded: Kunne kun indlæse de første 1000 elementer.
 horizontal: Horisontal
 vertical: Lodret
 x_axis: X-akse

@@ -3,7 +3,7 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import { _fetchInconsistentFieldMap as fetchInconsistentFieldMap } from './fetch-inconsistent-field-map.js';
+import { fetchInconsistentFieldMap } from './fetch-inconsistent-field-map.js';
 
 vi.mock('../../lib/fetch-policies.js');
 vi.mock('../../lib/fetch-permissions.js', () => ({ fetchPermissions: vi.fn() }));

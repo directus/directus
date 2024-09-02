@@ -27,6 +27,7 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 	if (
 		(req.method.toLowerCase() === 'get' || req.originalUrl?.startsWith('/graphql')) &&
+		req.originalUrl?.startsWith('/auth') === false &&
 		env['CACHE_ENABLED'] === true &&
 		cache &&
 		!req.sanitizedQuery.export &&

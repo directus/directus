@@ -360,6 +360,7 @@ Redis is required when you run Directus load balanced across multiple containers
 | `LOGIN_STALL_TIME`                  | The duration in milliseconds that a login request will be stalled for, and it should be greater than the time taken for a login request with an invalid password                                     | `500`                     |
 | `REGISTER_STALL_TIME`               | The duration in milliseconds that a registration request will be stalled for, and it should be greater than the time taken for a registration request with an already registered email               | `750`                     |
 | `PASSWORD_RESET_URL_ALLOW_LIST`     | List of URLs that can be used [as `reset_url` in /password/request](/reference/authentication#request-password-reset)                                                                                | --                        |
+| `USER_INVITE_TOKEN_TTL`             | The duration that the invite token is valid.                                                                                                                                                         | `7d`                      |
 | `USER_INVITE_URL_ALLOW_LIST`        | List of URLs that can be used [as `invite_url` in /users/invite](/reference/system/users#invite-a-new-user)                                                                                          | --                        |
 | `USER_REGISTER_URL_ALLOW_LIST`      | List of URLs that can be used as `verification_url` in /users/register                                                                                                                               | --                        |
 | `IP_TRUST_PROXY`                    | Settings for [express' trust proxy setting](https://expressjs.com/en/guide/behind-proxies.html)                                                                                                      | true                      |
@@ -489,9 +490,8 @@ middleman servers (like CDNs) and even the browser.
 
 ::: tip Internal Caching
 
-In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` and `CACHE_PERMISSIONS` which
-are enabled by default. These speed up the overall performance of Directus, as we don't want to introspect the whole
-database or check all permissions on every request.
+In addition to data-caching, Directus also does some internal caching. Note `CACHE_SCHEMA` which is enabled by default.
+This speed up the overall performance of Directus, as we don't want to introspect the whole database on every request.
 
 :::
 
@@ -510,10 +510,10 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_CONTROL_S_MAXAGE`                     | Whether to not to add the `s-maxage` expiration flag. Set to a number for a custom value.                                 | `0`                                  |
 | `CACHE_AUTO_PURGE`<sup>[2]</sup>             | Automatically purge the data cache on actions that manipulate the data.                                                   | `false`                              |
 | `CACHE_AUTO_PURGE_IGNORE_LIST`<sup>[3]</sup> | List of collections that prevent cache purging when `CACHE_AUTO_PURGE` is enabled.                                        | `directus_activity,directus_presets` |
-| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` and `CACHE_PERMISSIONS` are persisted.                                                            | --                                   |
+| `CACHE_SYSTEM_TTL`<sup>[4]</sup>             | How long `CACHE_SCHEMA` is persisted.                                                                                     | --                                   |
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                      | `true`                               |
 | `CACHE_SCHEMA_MAX_ITERATIONS`<sup>[4]</sup>  | Safe value to limit max iterations on get schema cache. This value should only be adjusted for high scaling applications. | `100`                                |
-| `CACHE_PERMISSIONS`<sup>[4]</sup>            | Whether or not the user permissions are cached. One of `false`, `true`                                                    | `true`                               |
+| `CACHE_SCHEMA_SYNC_TIMEOUT`                  | How long to wait for other containers to message before trying again                                                      | `10000`                              |
 | `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                              | `system-cache`                       |
 | `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                  | `memory`                             |
 | `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                          | --                                   |
@@ -1111,6 +1111,19 @@ https://websockets.readthedocs.io/en/stable/topics/timeouts.html.
 | `WEBSOCKETS_GRAPHQL_CONN_LIMIT`   | How many simultaneous connections are allowed.                                                                                                                                                          | `Infinity`    |
 | `WEBSOCKETS_GRAPHQL_AUTH`         | The method of authentication to require for this connection. One of `public`, `handshake` or `strict`. Refer to the [authentication guide](/guides/real-time/authentication.html) for more information. | `handshake`   |
 | `WEBSOCKETS_GRAPHQL_AUTH_TIMEOUT` | The amount of time in seconds to wait before closing an unauthenticated connection.                                                                                                                     | 30            |
+
+### Logs
+
+The WebSocket Logs endpoint is accessible at `/websocket/logs`. The method of authentication is limited to `strict` and
+the connection will be disconnected when the authentication expires. Refer to the
+[authentication guide](/guides/real-time/authentication.html) for more information.
+
+| Variable                     | Description                                                                                            | Default Value |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------ | ------------- |
+| `WEBSOCKETS_LOGS_ENABLED`    | Whether or not to enable the Logs Subscriptions.                                                       | `true`        |
+| `WEBSOCKETS_LOGS_LEVEL`      | What level of detail to stream. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. | `info`        |
+| `WEBSOCKETS_LOGS_STYLE`      | Stream just the message (pretty) or the full JSON log. One of `pretty`, `raw`.                         | `pretty`      |
+| `WEBSOCKETS_LOGS_CONN_LIMIT` | How many simultaneous connections are allowed.                                                         | `Infinity`    |
 
 ---
 

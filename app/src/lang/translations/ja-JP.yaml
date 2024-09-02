@@ -645,10 +645,6 @@ make_collection_hidden: コレクションを非表示
 make_folder_visible: フォルダを表示
 make_folder_hidden: フォルダを非表示
 goto_collection_content: コンテンツを表示
-start_end_of_count_items: '{start}-{end} / {count} のアイテム'
-start_end_of_count_filtered_items: '{start}-{end} / {count} のフィルタ済みアイテム'
-one_item: '1 つのアイテム'
-one_filtered_item: 'フィルターされた項目'
 visible_collections: 表示中のコレクション
 hidden_collections: 非表示のコレクション
 show_hidden_collections: 非表示コレクションを表示
@@ -725,7 +721,6 @@ create_item: アイテムの作成
 display_template: テンプレートを表示
 language_display_template: 言語表示テンプレート
 translations_display_template: 翻訳表示テンプレート
-n_items_selected: 'アイテムが選択されていません | 1アイテム選択| {n} アイテム選択'
 per_page: ページごと
 all_files: すべてのファイル
 my_files: マイファイル

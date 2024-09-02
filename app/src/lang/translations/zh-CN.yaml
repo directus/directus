@@ -776,10 +776,6 @@ make_collection_hidden: 隐藏模型
 make_folder_visible: 显示文件夹
 make_folder_hidden: 隐藏文件夹
 goto_collection_content: 查看内容
-start_end_of_count_items: '{count} 个条目中的 {start}-{end}'
-start_end_of_count_filtered_items: '已过滤后{count} 个条目中的 {start}-{end}'
-one_item: '1项'
-one_filtered_item: '1 个已过滤条目'
 delete_collection_are_you_sure: >-
   您确定要删除 "{collection}" 数据模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
 delete_folder_are_you_sure: 您确定要删除 "{folder}" 文件夹吗？嵌套文件夹和数据模型将被移动到最上层。
@@ -871,7 +867,6 @@ create_item: 创建条目
 display_template: 显示模板
 language_display_template: 语言显示模板
 translations_display_template: 翻译显示模板
-n_items_selected: '没有选定条目 | 1 项选定条目 | {n} 项选定条目'
 per_page: 每页
 all_files: 所有文件
 my_files: 我的文件
@@ -1513,7 +1508,6 @@ live_preview:
   toggle_3d: 切换 3D
 shares: 共享
 unlimited_usage: 无限使用
-uses_left: 无剩余使用次数 | 仅剩1次使用次数 | 还有 {n} 次使用次数
 no_shares: 没有要显示的共享
 new_share: 新建分享
 expired: 已过期
@@ -2187,7 +2181,6 @@ layouts:
     show_ungrouped: 显示未分组
     show: 显示
     no_group: 无分组
-    not_all_loaded: 只能加载前 1000 个条目。
 horizontal: 横向
 vertical: 垂直
 axis: 轴

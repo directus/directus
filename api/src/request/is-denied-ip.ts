@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import os from 'node:os';
+import { matches } from 'ip-matching';
 import { useLogger } from '../logger/index.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';
 
@@ -29,7 +30,11 @@ export function isDeniedIp(ip: string): boolean {
 			if (!networkInfo) continue;
 
 			for (const info of networkInfo) {
-				if (info.address === ip) return true;
+				if (info.internal && info.cidr) {
+					if (matches(ip, info.cidr)) return true;
+				} else if (info.address === ip) { 
+					return true;
+				}
 			}
 		}
 	}
