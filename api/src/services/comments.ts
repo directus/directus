@@ -66,8 +66,11 @@ export class CommentsService extends ItemsService {
 			// Merging the first result only as the app does not utilise group
 			return [
 				mergeWith({}, activityResult[0], commentsResult[0], (a: any, b: any) => {
-					if (isNumber(a) && isNumber(b)) {
-						return a + b;
+					const numA = Number(a);
+					const numB = Number(b);
+
+					if (!isNaN(numA) && !isNaN(numB)) {
+						return numA + numB;
 					}
 
 					return;
