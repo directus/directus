@@ -63,7 +63,7 @@ jobs:
           pnpm --recursive publish \
             --access=public \
             --no-git-checks \
-            --tag ${{ needs.check-version.outputs.prerelease == 'true' && 'canary'  || 'v10' }}
+            --tag ${{ needs.check-version.outputs.prerelease == 'true' && 'canary'  || 'esu' }}
 
   build-images:
     name: Build Images
