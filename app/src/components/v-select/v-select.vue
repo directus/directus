@@ -54,6 +54,9 @@ const props = withDefaults(
 		/** Renders the element inline, good for seamless selections */
 		inline?: boolean;
 		label?: boolean;
+		/** Translation strings to replace items naming */
+		allItemsTranslation?: string;
+		itemCountTranslation?: string;
 		/** Limits the amount of items inside the preview */
 		multiplePreviewThreshold?: number;
 		/** The direction the menu should open */
@@ -205,11 +208,15 @@ function useDisplayValue() {
 				const selectionCount = props.modelValue.length;
 
 				if (itemCount === selectionCount) {
-					return { text: t('all_items') };
+					return { text: t(props.allItemsTranslation ?? 'all_items') };
 				} else {
-					return { text: t('item_count', selectionCount) };
+					return { text: t(props.itemCountTranslation ?? 'item_count', selectionCount) };
 				}
 			}
+		}
+
+		if (props.multiple) {
+			return { text: t(props.itemCountTranslation ?? 'item_count', 0) };
 		}
 
 		const item = getItemForValue(props.modelValue);

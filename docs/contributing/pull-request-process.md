@@ -16,9 +16,9 @@ accidentally work on the same issue at the same time.
 ## Choosing What to Implement
 
 We welcome PRs for any open [Issue](https://github.com/directus/directus/issues). Issues labeled
-["Good First Issue"](https://github.com/directus/directus/issues?q=is:issue+is:open+label:%22Good+First+Issue%22) are
-typically easier to resolve for those who haven't contributed to the codebase before, and are therefore a great starting
-point.
+["Good First Issue"](https://github.com/directus/directus/issues?q=is:issue+is:open+label:%22:star:+Good+First+Issue%22)
+are typically easier to resolve for those who haven't contributed to the codebase before, and are therefore a great
+starting point.
 
 ## Implementing an Accepted Feature Request
 

@@ -1,7 +1,7 @@
 ---
 description: A guide on how to scaffold your Directus Extension.
 readTime: 5 min read
-contributors: Rijk Van Zanten, Esther Agbaje, Kevin Lewis
+contributors: Rijk Van Zanten, Esther Agbaje, Kevin Lewis, Lukas Zelenka
 ---
 
 # Creating Extensions
@@ -49,6 +49,13 @@ The CLI supports rebuilding extensions whenever a file has changed by using the 
 
 :::
 
+::: tip Automatically Reload Extensions
+
+To automatically reload extensions every time you make a change, without having to restart Directus, in your
+`docker-compose.yml` file, set `EXTENSIONS_AUTO_RELOAD=true`.
+
+:::
+
 ### Configuring the CLI
 
 Most of the time, it should be sufficient to use the CLI as is. But, in some cases it might be necessary to customize it
@@ -79,6 +86,19 @@ your extensions. These components can be used in any of the "app extensions", in
 Layouts, and Panels.
 
 :::
+
+### Usage with Docker
+
+After you have created your custom extension, a new folder was created (for example: `custom-extension`). Now, you need
+to go to the `package.json` within this newly created folder and copy the `name` of the extension (for example:
+`directus-extension-custom-extension`). Then, you just need to mount a volume in your Docker container pointing to this
+folder, but remember that you need to use the `name` of the extension as the folder name within Directus. For example,
+if you use a `docker-compose.yaml` it would be something like this:
+
+```yaml
+	volumes:
+		- ./custom-extension:/directus/extensions/directus-extension-custom-extension
+```
 
 ## Extension Folder Structure
 

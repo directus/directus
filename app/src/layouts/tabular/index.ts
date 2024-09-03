@@ -1,10 +1,10 @@
-import { HeaderRaw, Item, Sort } from '@/components/v-table/types';
+import { HeaderRaw, Sort } from '@/components/v-table/types';
 import { useAliasFields } from '@/composables/use-alias-fields';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useFieldsStore } from '@/stores/fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
-import { getItemRoute } from '@/utils/get-route';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
@@ -13,7 +13,6 @@ import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
 import { debounce, flatten } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
@@ -31,8 +30,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	},
 	headerShadow: false,
 	setup(props, { emit }) {
-		const router = useRouter();
-
 		const fieldsStore = useFieldsStore();
 
 		const selection = useSync(props, 'selection', emit);
@@ -50,6 +47,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const fieldsWithRelationalAliased = computed(() =>
 			flatten(Object.values(aliasedFields.value).map(({ fields }) => fields)),
 		);
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
 
 		const {
 			items,
@@ -73,16 +72,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filterSystem,
 		});
 
-		const {
-			tableSort,
-			tableHeaders,
-			tableRowHeight,
-			onRowClick,
-			onSortChange,
-			onAlignChange,
-			activeFields,
-			tableSpacing,
-		} = useTable();
+		const { tableSort, tableHeaders, tableRowHeight, onSortChange, onAlignChange, activeFields, tableSpacing } =
+			useTable();
 
 		const showingCount = computed(() => {
 			// Don't show count if there are no items
@@ -104,7 +95,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			error,
 			totalPages,
 			tableSort,
-			onRowClick,
+			onRowClick: onClick,
 			onSortChange,
 			onAlignChange,
 			tableRowHeight,
@@ -311,31 +302,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				tableHeaders,
 				tableSpacing,
 				tableRowHeight,
-				onRowClick,
 				onSortChange,
 				onAlignChange,
 				activeFields,
 				getFieldDisplay,
 			};
-
-			function onRowClick({ item, event }: { item: Item; event: PointerEvent }) {
-				if (props.readonly === true || !primaryKeyField.value) return;
-
-				const primaryKey = item[primaryKeyField.value.field];
-
-				if (props.selectMode || selection.value?.length > 0) {
-					if (selection.value?.includes(primaryKey) === false) {
-						selection.value = selection.value.concat(primaryKey);
-					} else {
-						selection.value = selection.value.filter((item) => item !== primaryKey);
-					}
-				} else {
-					const route = getItemRoute(unref(collection), primaryKey);
-
-					if (event.ctrlKey || event.metaKey) window.open(router.resolve(route).href, '_blank');
-					else router.push(route);
-				}
-			}
 
 			function onSortChange(newSort: Sort | null) {
 				if (!newSort?.by) {

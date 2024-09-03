@@ -24,7 +24,7 @@ interface Props {
 	error?: any;
 	totalPages: number;
 	tableSort?: { by: string; desc: boolean } | null;
-	onRowClick: (item: Item) => void;
+	onRowClick: ({ item, event }: { item: Item; event: PointerEvent }) => void;
 	tableRowHeight: number;
 	page: number;
 	toPage: (newPage: number) => void;
