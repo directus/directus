@@ -275,21 +275,12 @@ export default class MySQL implements SchemaInspector {
 					.andOn('rc.CONSTRAINT_NAME', '=', 'fk.CONSTRAINT_NAME')
 					.andOn('rc.CONSTRAINT_SCHEMA', '=', 'fk.CONSTRAINT_SCHEMA');
 			})
-			.leftJoin(
-				this.knex.raw(`
-				LATERAL (
-				  SELECT 
-				    INDEX_NAME 
-				  FROM
-				    INFORMATION_SCHEMA.STATISTICS stats
-				  WHERE
-				    stats.TABLE_NAME = c.TABLE_NAME
-				    AND stats.NON_UNIQUE = 1
-				    AND stats.SEQ_IN_INDEX = 1
-				    AND stats.COLUMN_NAME = c.COLUMN_NAME
-				  LIMIT 1
-				) stats ON true`),
-			)
+			.leftJoin('INFORMATION_SCHEMA.STATISTICS as stats', function () {
+				this.on('stats.TABLE_NAME', '=', 'c.TABLE_NAME')
+					.andOn('stats.COLUMN_NAME', '=', 'c.COLUMN_NAME')
+					.andOnVal('stats.NON_UNIQUE', 1)
+					.andOnVal('stats.SEQ_IN_INDEX', 1);
+			})
 			.where({
 				'c.TABLE_SCHEMA': this.knex.client.database(),
 			});

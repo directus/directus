@@ -13,6 +13,7 @@ import { ConnectionParams, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
 import SocketController from './base.js';
+import { registerWebSocketEvents } from './hooks.js';
 
 const logger = useLogger();
 
@@ -20,6 +21,7 @@ export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_GRAPHQL');
+		registerWebSocketEvents();
 
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
