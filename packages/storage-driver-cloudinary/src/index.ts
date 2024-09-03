@@ -262,17 +262,17 @@ export class DriverCloudinary implements Driver {
 
 		const queue = new PQueue({ concurrency: 10 });
 
-		const chunk_size = 5.5e6;
+		const chunkSize = 5.5e6;
 		let chunks = Buffer.alloc(0);
 
 		for await (const chunk of content) {
 			// Cloudinary requires each chunk to be at least 5MB. We'll submit the chunk as soon as we
 			// reach 5.5MB to be safe
-			if (chunks.length + chunk.length <= chunk_size) {
+			if (chunks.length + chunk.length <= chunkSize) {
 				currentChunkSize = chunks.length + chunk.length;
 				chunks = Buffer.concat([chunks, chunk], currentChunkSize);
 			} else {
-				const grab = chunk_size - chunks.length;
+				const grab = chunkSize - chunks.length;
 				currentChunkSize = chunks.length + grab;
 				chunks = Buffer.concat([chunks, chunk.slice(0, grab)], currentChunkSize);
 
