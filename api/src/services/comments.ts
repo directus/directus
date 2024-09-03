@@ -41,7 +41,7 @@ export class CommentsService extends ItemsService {
 	}
 
 	override readOne(key: PrimaryKey, query?: Query, opts?: QueryOptions): Promise<Item> {
-		const isLegacyComment = !isNaN(Number(key));
+		const isLegacyComment = isNaN(Number(key));
 
 		let result;
 
