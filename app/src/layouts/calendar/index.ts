@@ -167,7 +167,7 @@ export default defineLayout<LayoutOptions>({
 						},
 					},
 					week: { displayEventTime },
-					day: { displayEventTime }
+					day: { displayEventTime },
 				},
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
