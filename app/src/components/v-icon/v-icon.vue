@@ -62,8 +62,12 @@ const customIconName = computed(() => {
 
 const socialIconName = computed<IconName | null>(() => {
 	let name = props.name;
-	if (name.startsWith(socialPrefix)) name = name.replace(socialPrefix, '');
-	if (socialIcons.includes(name)) return name.replace(/_/g, '-') as IconName;
+
+	if (name.startsWith(socialPrefix)) {
+		name = name.replace(socialPrefix, '');
+		if (socialIcons.includes(name)) return name.replace(/_/g, '-') as IconName;
+	}
+
 	return null;
 });
 
