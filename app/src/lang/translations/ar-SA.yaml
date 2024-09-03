@@ -1003,8 +1003,6 @@ tooltip: تلميح
 tooltip_placeholder: أدخل تلميح الأداة...
 unlimited: غير محدود
 open_link_in: افتح الرابط في
-new_tab: تبويب جديد
-current_tab: التبويب الحالي
 save_image: حفظ الصورة
 save_media: حفظ الوسائط
 wysiwyg_options:
@@ -1734,6 +1732,8 @@ interfaces:
     preview: معاينة
     editorFont: خط المحرر
     previewFont: معاينة الخط
+    default_view: طريقة العرض الافتراضية
+    default_view_preview: معاينة
     customSyntax: كتل مخصصة
     box: كتلة / مضمن
     imageToken: رمز الوصول الثابت

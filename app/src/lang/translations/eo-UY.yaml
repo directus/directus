@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Pri
 identifier: Identigilo
 avatar: Profilbildo
 application: Aplikaĵo
@@ -10,6 +31,7 @@ archived: Arĥivita
 modules: Moduloj
 module_bar: Modula breto
 logs: Protokoloj
+unknown: Nekonata
 edit_field: Redakti la kampon
 conditions: Kondiĉoj
 location: Loko
@@ -30,10 +52,24 @@ modifier: Ŝanĝilo
 extension_interface: Interfaco
 extension_display: Montri
 extension_layout: Aranĝo
+extension_module: Modulo
 extension_panel: Panelo
 extension_hook: Hoko
+extension_operation: Operacio
+extension_interfaces: Interfacoj
 extension_modules: Moduloj
+extension_panels: Paneloj
+extension_hooks: Hokoj
+extension_operations: Operacioj
+extension_missing: Mankanta
+n_files: '{n} dosieroj'
+repository: Deponejo
+website: Retejo
+github: GitHub
+n_downloads: '{n} elŝutoj'
+downloads: Elŝutoj
 enable: Ŝalti
+disable: Malŝalti
 custom: Propra
 hook: Hoko
 enter_password_to_enable_tfa: Entajpu vian pasvorton por ŝalti dufaktoran kontroladon
@@ -72,6 +108,9 @@ rename_folder: Alinomi la dosierujon
 delete_folder: Forigi la dosierujon
 prefix: Prefikso
 suffix: Sufikso
+version: Versio
+create_version: Krei version
+promote_version_changes: Ŝanĝoj
 delete_bookmark: Forigi la legosignon
 delete_bookmark_copy: >-
   Ĉu vi certas, ke vi volas forigi la legosignon "{bookmark}"? La ago ne estas malfarebla.
@@ -80,6 +119,7 @@ logoutReason:
   SIGN_OUT: Elsalutinta
   SESSION_EXPIRED: Seanco eksvalidiĝinta
 public_label: Publika
+no_description: Neniu priskribo...
 not_allowed: Ne permesita
 archive: Arĥivi
 archive_confirm: Ĉu vi certas, ke vi volas arĥivi la eron?
@@ -156,6 +196,8 @@ text: Teksto
 time: Tempo
 timestamp: Tempindiko
 uuid: UUID
+theme_light: Hela reĝimo
+theme_dark: Malhela reĝimo
 not_available_for_type: Ne disponebla por la tipo
 create_translations: Krei tradukojn
 auto_refresh: Aŭtomate aktualigi
@@ -539,8 +581,6 @@ interface_group_relational: Rilata
 interface_group_groups: Grupoj
 interface_group_other: Alia
 unlimited: Senlima
-new_tab: Nova langeto
-current_tab: Nuna langeto
 save_image: Konservi la bildon
 wysiwyg_options:
   forecolor: Malfona koloro
@@ -572,6 +612,7 @@ adding_user: Aldoni uzanton
 unknown_user: Nekonata uzanto
 settings_data_model: Datummodelo
 settings_project: Agordoj
+settings_appearance: Aspekto
 settings_webhooks: Rethokoj
 settings_flows: Fluoj
 settings_presets: Legosignoj
@@ -596,6 +637,11 @@ none: Neniu
 batch_delete_confirm: >-
   Neniu ero estas elektita | Ĉu vi certas, ke vi volas forigi la eron? La ago ne estas malfarebla. | Ĉu vi certas, ke vi volas forigi {count} erojn? La ago ne estas malfarebla.
 cancel: Nuligi
+uninstall: Malinstali
+installed: Instalita
+reinstall: Reinstali
+source_local: Loka
+source_module: Node-modulo
 collection: Kolekto
 collections: Kolektoj
 content: Enhavo
@@ -665,6 +711,7 @@ fields:
     provider: Provizanto
     external_identifier: Ekstera identigilo
     last_page: Lasta paĝo
+    appearance: Aspekto
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -936,6 +983,7 @@ interfaces:
     many-to-one: Pluraj-al-unu-rilato
   input-rich-text-md:
     edit: Redakti
+    default_view: Defaŭlta vido
   map:
     map: Mapo
     zoom: Zomi
