@@ -33,15 +33,6 @@ beforeEach(() => {
 	PermissionsService.prototype.readByQuery = vi.fn().mockResolvedValue([]);
 });
 
-test('Returns when admin is true', async () => {
-	const accountability = { admin: true } as unknown as Accountability;
-	const action = 'read';
-
-	await expect(
-		validateAccess({ accountability, action, collection: sample.collection }, {} as Context),
-	).resolves.toBeUndefined();
-});
-
 test('Throws if the collection does not exist', async () => {
 	const accountability = { admin: false } as unknown as Accountability;
 	const action = 'read';
@@ -51,6 +42,15 @@ test('Throws if the collection does not exist', async () => {
 	await expect(
 		validateAccess({ accountability, action, collection: 'non-existent' }, sample.context),
 	).rejects.toBeInstanceOf(ForbiddenError);
+});
+
+test('Returns when admin is true', async () => {
+	const accountability = { admin: true } as unknown as Accountability;
+	const action = 'read';
+
+	await expect(
+		validateAccess({ accountability, action, collection: sample.collection }, sample.context),
+	).resolves.toBeUndefined();
 });
 
 test('Throws if you do not have item access when primary keys are passed', async () => {

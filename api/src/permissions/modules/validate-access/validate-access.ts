@@ -17,15 +17,15 @@ export interface ValidateAccessOptions {
  * control rules and checking if we got the expected result back
  */
 export async function validateAccess(options: ValidateAccessOptions, context: Context) {
-	if (options.accountability.admin === true) {
-		return;
-	}
-
 	// Skip further validation if the collection does not exist
 	if (options.collection in context.schema.collections === false) {
 		throw new ForbiddenError({
 			reason: `You don't have permission to "${options.action}" from collection "${options.collection}" or it does not exist.`,
 		});
+	}
+
+	if (options.accountability.admin === true) {
+		return;
 	}
 
 	let access;
