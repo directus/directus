@@ -887,7 +887,7 @@ export class FieldsService {
 				setDefaultValue(field.schema.default_value);
 			}
 
-			if (field.schema?.is_nullable) {
+			if (field.schema?.is_nullable || field.schema?.is_nullable === undefined) {
 				column.nullable();
 			} else {
 				column.notNullable();
