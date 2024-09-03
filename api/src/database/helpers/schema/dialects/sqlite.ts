@@ -26,4 +26,8 @@ export class SchemaHelperSQLite extends SchemaHelper {
 			return null;
 		}
 	}
+
+	override addInnerSortFieldsToGroupBy() {
+		// SQLite does not need any special handling for inner query sort columns
+	}
 }
