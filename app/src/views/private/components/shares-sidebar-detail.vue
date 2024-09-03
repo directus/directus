@@ -10,6 +10,7 @@ import api from '@/api';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import { abbreviateNumber } from '@directus/utils';
 import ShareItem from './share-item.vue';
+import { useGroupable } from '@directus/composables';
 
 const props = defineProps<{
 	collection: string;
@@ -20,6 +21,11 @@ const props = defineProps<{
 const { t } = useI18n();
 
 const { collection, primaryKey } = toRefs(props);
+
+const { active: open } = useGroupable({
+	value: t('shares'),
+	group: 'sidebar-detail',
+});
 
 const { copyToClipboard } = useClipboard();
 
@@ -47,6 +53,7 @@ const {
 
 onMounted(() => {
 	getSharesCount();
+	if (open.value && shares.value === null) getShares();
 });
 
 function onToggle(open: boolean) {

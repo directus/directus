@@ -11,6 +11,7 @@ import { Ref, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
+import { useGroupable } from '@directus/composables';
 
 type ActivityByDateDisplay = ActivityByDate & {
 	activity: (Activity & {
@@ -26,6 +27,11 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
+const { active: open } = useGroupable({
+	value: t('comments'),
+	group: 'sidebar-detail',
+});
+
 const { collection, primaryKey } = toRefs(props);
 
 const { activity, getActivity, loading, refresh, activityCount, getActivityCount, loadingCount, userPreviews } =
@@ -33,6 +39,7 @@ const { activity, getActivity, loading, refresh, activityCount, getActivityCount
 
 onMounted(() => {
 	getActivityCount();
+	if (open.value && activity.value === null) getActivity();
 });
 
 function onToggle(open: boolean) {

@@ -7,6 +7,7 @@ import { computed, ref, toRefs, unref, watch, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 import { abbreviateNumber } from '@directus/utils';
+import { useGroupable } from '@directus/composables';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -21,6 +22,11 @@ const { operations } = useExtensions();
 
 const usedTrigger = computed(() => {
 	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
+});
+
+const { active: open } = useGroupable({
+	value: t('logs'),
+	group: 'sidebar-detail',
 });
 
 const page = ref<number>(1);
@@ -44,6 +50,7 @@ watch(
 
 onMounted(() => {
 	getRevisionsCount();
+	if (open.value && revisionsByDate.value === null) getRevisions();
 });
 
 const previewing = ref();

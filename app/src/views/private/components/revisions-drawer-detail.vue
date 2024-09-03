@@ -6,6 +6,7 @@ import { onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
+import { useGroupable } from '@directus/composables';
 
 const props = defineProps<{
 	collection: string;
@@ -18,6 +19,11 @@ defineEmits(['revert']);
 const { t } = useI18n();
 
 const { collection, primaryKey, version } = toRefs(props);
+
+const { active: open } = useGroupable({
+	value: t('revisions'),
+	group: 'sidebar-detail',
+});
 
 const modalActive = ref(false);
 const modalCurrentRevision = ref<number | null>(null);
@@ -38,6 +44,7 @@ const {
 
 onMounted(() => {
 	getRevisionsCount();
+	if (open.value && revisions.value === null) getRevisions();
 });
 
 watch(
