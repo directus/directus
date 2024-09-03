@@ -3,7 +3,7 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Filter } from '@directus/system-data';
 import type { Accountability, Comment, Item, PrimaryKey, Query } from '@directus/types';
-import { cloneDeep, isNumber, mergeWith, uniq } from 'lodash-es';
+import { cloneDeep, mergeWith, uniq } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
