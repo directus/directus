@@ -76,7 +76,7 @@ export default defineComponent({
 
 .calendar-layout :deep(.fc-daygrid-event.fc-daygrid-dot-event:not(:has(.fc-event-time))) {
 	background-color: var(--theme--primary);
-	color: var(--foreground-inverted);
+	color: var(--fc-event-text-color);
 }
 
 .calendar-layout :deep(.fc-daygrid-event.fc-daygrid-block-event) {
