@@ -1079,7 +1079,6 @@ editing_unit: '正在编辑 {unit}'
 editing_in_batch: '批量编辑 {count} 条数据'
 no_options_available: 无可用的选项
 settings_data_model: 数据模型
-settings_permissions:
 settings_project: 设置
 settings_appearance: 外观
 settings_webhooks: Webhook
