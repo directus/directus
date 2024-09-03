@@ -87,6 +87,19 @@ Layouts, and Panels.
 
 :::
 
+### Usage with Docker
+
+After you have created your custom extension, a new folder was created (for example: `custom-extension`). Now, you need
+to go to the `package.json` within this newly created folder and copy the `name` of the extension (for example:
+`directus-extension-custom-extension`). Then, you just need to mount a volume in your Docker container pointing to this
+folder, but remember that you need to use the `name` of the extension as the folder name within Directus. For example,
+if you use a `docker-compose.yaml` it would be something like this:
+
+```yaml
+	volumes:
+		- ./custom-extension:/directus/extensions/directus-extension-custom-extension
+```
+
 ## Extension Folder Structure
 
 The folder created by the utility is in fact an npm package. It comes with a few pre-installed packages depending on the
