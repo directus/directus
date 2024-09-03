@@ -1273,8 +1273,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       ky:
-        specifier: 1.5.0
-        version: 1.5.0
+        specifier: 1.7.2
+        version: 1.7.2
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -8288,8 +8288,8 @@ packages:
   kolorist@1.8.0:
     resolution: {integrity: sha512-Y+60/zizpJ3HRH8DCss+q95yr6145JXZo46OTpFvDZWLfRCE4qChOyk1b26nMaNpfHHgxagk9dXT5OP0Tfe+dQ==}
 
-  ky@1.5.0:
-    resolution: {integrity: sha512-bkQo+UqryW6Zmo/DsixYZE4Z9t2mzvNMhceyIhuMuInb3knm5Q+GNGMKveydJAj+Z6piN1SwI6eR/V0G+Z0BtA==}
+  ky@1.7.2:
+    resolution: {integrity: sha512-OzIvbHKKDpi60TnF9t7UUVAF1B4mcqc02z5PIvrm08Wyb+yOcz63GRvEuVxNT18a9E1SrNouhB4W2NNLeD7Ykg==}
     engines: {node: '>=18'}
 
   launch-editor@2.8.1:
@@ -19511,7 +19511,7 @@ snapshots:
 
   kolorist@1.8.0: {}
 
-  ky@1.5.0: {}
+  ky@1.7.2: {}
 
   launch-editor@2.8.1:
     dependencies:
