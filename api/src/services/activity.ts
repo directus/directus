@@ -3,7 +3,7 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { Accountability, Item, PrimaryKey } from '@directus/types';
 import { uniq } from 'lodash-es';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getPermissions } from '../utils/get-permissions.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';

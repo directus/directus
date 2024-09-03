@@ -595,7 +595,10 @@ allow_duplicates: Lejo Kopjet
 comments: Komente
 no_comments: Ende nuk ka komente
 expand: Zgjero
+expand_all: Zgjero të gjitha
+expand_none: Zgjero Asnjë
 collapse: Tkurre
+collapse_all: Mbledh të gjitha
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
 search_items: Kërko artikuj...
@@ -1648,6 +1651,8 @@ navigate_to_item: Shko tek Artikulli
 undo_removed_item: Zhbëj Hiqjen e Artikullit
 remove_item: Hiq Artikullin
 delete_item: Fshi Artikullin
+pause: Ndalo
+resume: Rivendos
 interfaces:
   list-m2a:
     prefix_note: Përdor emrin e koleksionit të artikullit të lidhur si parazgjedhje.
