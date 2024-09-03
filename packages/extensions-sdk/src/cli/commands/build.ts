@@ -537,9 +537,8 @@ function getRollupOptions({
 	config: Config;
 }): RollupOptions {
 	const plugins = config.plugins ?? [];
-	const onwarn = config.onwarn ?? defaultOnwarn;
 
-	function defaultOnwarn(warning: RollupLog, handler: (warning: string | RollupLog) => void): void {
+	function onwarn(warning: RollupLog, handler: (warning: string | RollupLog) => void): void {
 		if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
 
 		handler(warning);

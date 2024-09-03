@@ -2,4 +2,4 @@
 '@directus/extensions-sdk': minor
 ---
 
-Adding more options to Rollup config
+Adding option to disable clearing screen on file change

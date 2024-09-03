@@ -6,7 +6,6 @@ export type LanguageShort = 'js' | 'ts';
 
 export type Config = {
 	plugins?: Plugin[];
-	onwarn?: (warning: RollupLog, defaultHandler: (warning: string | RollupLog) => void) => void;
 	watch?: {
 		clearScreen?: boolean;
 	};
