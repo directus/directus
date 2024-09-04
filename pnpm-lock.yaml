@@ -132,8 +132,8 @@ importers:
         specifier: 0.6.0
         version: 0.6.0
       argon2:
-        specifier: 0.40.3
-        version: 0.40.3
+        specifier: 0.41.1
+        version: 0.41.1
       async:
         specifier: 3.2.5
         version: 3.2.5
@@ -2119,8 +2119,8 @@ importers:
         specifier: 8.5.12
         version: 8.5.12
       argon2:
-        specifier: 0.40.3
-        version: 0.40.3
+        specifier: 0.41.1
+        version: 0.41.1
       autocannon:
         specifier: 7.15.0
         version: 7.15.0
@@ -5629,8 +5629,8 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
     deprecated: This package is no longer supported.
 
-  argon2@0.40.3:
-    resolution: {integrity: sha512-FrSmz4VeM91jwFvvjsQv9GYp6o/kARWoYKjbjDB2U5io1H3e5X67PYGclFDeQff6UXIhUd4aHR3mxCdBbMMuQw==}
+  argon2@0.41.1:
+    resolution: {integrity: sha512-dqCW8kJXke8Ik+McUcMDltrbuAWETPyU6iq+4AhxqKphWi7pChB/Zgd/Tp/o8xRLbg8ksMj46F/vph9wnxpTzQ==}
     engines: {node: '>=16.17.0'}
 
   argparse@1.0.10:
@@ -16559,7 +16559,7 @@ snapshots:
       readable-stream: 3.6.2
     optional: true
 
-  argon2@0.40.3:
+  argon2@0.41.1:
     dependencies:
       '@phc/format': 1.0.0
       node-addon-api: 8.1.0

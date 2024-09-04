@@ -97,7 +97,7 @@
 		"@tus/server": "1.6.0",
 		"@tus/utils": "0.2.0",
 		"@types/cookie": "0.6.0",
-		"argon2": "0.40.3",
+		"argon2": "0.41.1",
 		"async": "3.2.5",
 		"axios": "1.7.3",
 		"busboy": "1.6.0",
