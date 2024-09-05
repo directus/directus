@@ -1006,8 +1006,6 @@ tooltip: 提示
 tooltip_placeholder: 输入工具提示...
 unlimited: 无限制
 open_link_in: 打开链接于
-new_tab: 新的选项卡
-current_tab: 当前选项卡
 save_image: 保存图像
 save_media: 保存媒体
 wysiwyg_options:
@@ -1807,6 +1805,8 @@ interfaces:
     preview: 预览
     editorFont: 编辑器字体
     previewFont: 预览字体
+    default_view: 默认视图
+    default_view_preview: 预览
     customSyntax: 自定义块
     customSyntax_label: 添加自定义语法类型
     customSyntax_add: 添加自定义语法

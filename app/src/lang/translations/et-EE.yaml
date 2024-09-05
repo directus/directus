@@ -37,6 +37,7 @@ extension_interface: Kasutajaliides
 extension_display: Vaade
 extension_layout: Paigutus
 extension_hook: Haak
+extension_interfaces: Kasutajaliidesed
 extension_modules: Moodulid
 custom: Kohandatud
 hook: Haak
@@ -689,8 +690,6 @@ tooltip: Vihje
 tooltip_placeholder: Sisesta vihje...
 unlimited: Piiramatu
 open_link_in: Ava link
-new_tab: Uus vahekaart
-current_tab: Praegune vahekaart
 wysiwyg_options:
   aligncenter: Joonda Keskele
   alignjustify: Joonda kahepoolselt
@@ -1155,6 +1154,8 @@ interfaces:
     description: Sisesta ja vaata markdown'i
     edit: Muuda
     preview: Eelvaade
+    default_view: Vaikimisi vaade
+    default_view_preview: Eelvaade
     customSyntax: Kohandatud plokid
     customSyntax_label: Lisa kohandatud süntaksi tüüpe
     customSyntax_add: Lisa kohandatud süntaks

@@ -411,6 +411,7 @@ soft_length: Mäkký limit
 precision_scale: Presnosť a rozsah
 readonly: Len na čítanie
 unique: Unikátne
+index: Index
 updated_on: Aktualizované
 updated_by: Upravil
 primary_key: Primárny kľúč
@@ -881,6 +882,7 @@ columns: Stĺpce
 collection_setup: Nastavenia zbierky
 optional_system_fields: Voliteľné polia
 value_unique: Hodnota musí byť unikátna
+value_index: Pole je indexované
 all_activity: Všetky aktivity
 create_item: Vytvoriť položku
 display_template: Šablóna zobrazenia
@@ -1027,7 +1029,6 @@ tooltip_placeholder: Zadajte nápovedu...
 unlimited: Neobmedzené
 open_link_in: Otvoriť odkaz v
 new_tab: Nová karta
-current_tab: Aktuálna karta
 save_image: Uložiť obrázok
 save_media: Uložiť médium
 wysiwyg_options:
@@ -1852,6 +1853,9 @@ interfaces:
     preview: Náhľad
     editorFont: Písmo editoru
     previewFont: Písmo náhľadu
+    default_view: Predvolený pohľad
+    default_view_editor: Editor
+    default_view_preview: Náhľad
     customSyntax: Vlastné bloky
     customSyntax_label: Pridať vlastné typy syntaxe
     customSyntax_add: Pridať vlastnú syntax
@@ -2035,6 +2039,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Surový editor
     description: Povolí zadávanie surovej hodnoty mustache šablóny
+  input-password:
+    input-password: Vložte heslo
+    description: Pole na heslo so skrývaním hodnoty
 displays:
   translations:
     translations: Preklady
@@ -2478,3 +2485,5 @@ duplicate_dashboard: Duplikovať tabuľu
 search_dashboard: Hľadať v tabuli...
 search_flow: Hľadať tok...
 percent: Percent
+show_password: Zobraziť heslo
+hide_password: Skryť heslo
