@@ -2042,6 +2042,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Editor Grezzo
     description: Permetti l'inserimento di valori di template grezzi o di mustache
+  input-password:
+    input-password: Inserisci password
+    description: Campo password con controllo per mostrare o nascondere il valore
 displays:
   translations:
     translations: Traduzioni
@@ -2485,3 +2488,5 @@ duplicate_dashboard: Duplica bacheca
 search_dashboard: Cerca bacheca...
 search_flow: Cerca flusso...
 percent: Percentuale
+show_password: Mostra password
+hide_password: Nascondi password
