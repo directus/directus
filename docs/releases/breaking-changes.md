@@ -18,7 +18,7 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 ### Dropped support for the SendGrid email transport option
 
 The SendGrid abstraction for `nodemailer` is no longer supported, so we have dropped it's usage from Directus. Users of
-SendGrid should update their configuration to use SendGrid's SMTP Relay configuration instead.
+SendGrid should update their configuration to use their SendGrid account's SMTP Relay configuration instead.
 
 ## Version 11.0.0
 
