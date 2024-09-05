@@ -382,7 +382,9 @@ errors:
   INVALID_QUERY: Neteisinga užklausa
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
+  LIMIT_EXCEEDED: 'Limitas viršytas'
   NOT_NULL_VIOLATION: Reikšmė negali būti null
+  REQUESTS_EXCEEDED: Užklausų limitas viršytas
   ROUTE_NOT_FOUND: Nerasta
   UNKNOWN: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
