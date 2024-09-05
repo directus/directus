@@ -333,8 +333,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       pino-pretty:
-        specifier: 11.2.1
-        version: 11.2.1
+        specifier: 11.2.2
+        version: 11.2.2
       qs:
         specifier: 6.13.0
         version: 6.13.0
@@ -716,8 +716,8 @@ importers:
         specifier: 4.17.7
         version: 4.17.7
       '@types/mapbox__mapbox-gl-draw':
-        specifier: 1.4.6
-        version: 1.4.6
+        specifier: 1.4.7
+        version: 1.4.7
       '@types/mapbox__mapbox-gl-geocoder':
         specifier: 4.7.7
         version: 4.7.7
@@ -1845,8 +1845,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.33.6
-        version: 0.33.6
+        specifier: 0.33.9
+        version: 0.33.9
       decamelize:
         specifier: 6.0.0
         version: 6.0.0
@@ -4473,8 +4473,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@sinclair/typebox@0.33.6':
-    resolution: {integrity: sha512-9Q3DMNtaLN053foIr1lCR+2BjDzdNLgLruvbIHQwPPLcllGbjmp9Ns69rQQJbg4YZoMmaBVNtDOCq626aGO78g==}
+  '@sinclair/typebox@0.33.9':
+    resolution: {integrity: sha512-agK7y8hO5Gz4Thu5kxTtLiZudNRflR1rTwmnWW5skxMd/+aqQ9XQene8HyyBsiajs5HV6ZQ/pCd3IKsqIfu4Kw==}
 
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
@@ -5045,8 +5045,8 @@ packages:
   '@types/mapbox-gl@3.4.0':
     resolution: {integrity: sha512-tbn++Mm94H1kE7W6FF0oVC9rMXHVzDDNUbS7KfBMRF8NV/8csFi+67ytKcZJ4LsrpsJ+8MC6Os6ZinEDCsrunw==}
 
-  '@types/mapbox__mapbox-gl-draw@1.4.6':
-    resolution: {integrity: sha512-ajnIY/6pMjJhLyz5TUt1ukzs6rl9m/hItzw/b3Z0tQlrFq9vwDNPugLFOuNpLdmgA7emfMxlvxnLKbtE5/vtsw==}
+  '@types/mapbox__mapbox-gl-draw@1.4.7':
+    resolution: {integrity: sha512-SNiewXzHCgbJ4EIEG6B7ZMFTwYhHAoEWLdD179AujwmGBaYjn/LZBEQRJLjjq2utB4dEsy5ys2t4cXwEmShpPQ==}
 
   '@types/mapbox__mapbox-gl-geocoder@4.7.7':
     resolution: {integrity: sha512-RFUDSDnFoCBapQWfGdgNGkB76drJ2kVG9tH0ottQtDpTW3KPtdQobw0lvvJK4VIMDEKIt/ssEyyLvY1Tja7MSw==}
@@ -9547,8 +9547,8 @@ packages:
   pino-http@9.0.0:
     resolution: {integrity: sha512-Q9QDNEz0vQmbJtMFjOVr2c9yL92vHudjmr3s3m6J1hbw3DBGFZJm3TIj9TWyynZ4GEsEA9SOtni4heRUr6lNOg==}
 
-  pino-pretty@11.2.1:
-    resolution: {integrity: sha512-O05NuD9tkRasFRWVaF/uHLOvoRDFD7tb5VMertr78rbsYFjYp48Vg3477EshVAF5eZaEw+OpDl/tu+B0R5o+7g==}
+  pino-pretty@11.2.2:
+    resolution: {integrity: sha512-2FnyGir8nAJAqD3srROdrF1J5BIcMT4nwj7hHSc60El6Uxlym00UbCCd8pYIterstVBFlMyF1yFV8XdGIPbj4A==}
     hasBin: true
 
   pino-pretty@7.6.1:
@@ -15008,7 +15008,7 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@sinclair/typebox@0.33.6': {}
+  '@sinclair/typebox@0.33.9': {}
 
   '@sindresorhus/is@4.6.0': {}
 
@@ -15817,10 +15817,10 @@ snapshots:
     dependencies:
       '@types/geojson': 7946.0.14
 
-  '@types/mapbox__mapbox-gl-draw@1.4.6':
+  '@types/mapbox__mapbox-gl-draw@1.4.7':
     dependencies:
       '@types/geojson': 7946.0.14
-      '@types/mapbox-gl': 3.4.0
+      mapbox-gl: 1.13.3
 
   '@types/mapbox__mapbox-gl-geocoder@4.7.7':
     dependencies:
@@ -21045,7 +21045,7 @@ snapshots:
       pino-std-serializers: 6.2.2
       process-warning: 3.0.0
 
-  pino-pretty@11.2.1:
+  pino-pretty@11.2.2:
     dependencies:
       colorette: 2.0.20
       dateformat: 4.6.3
