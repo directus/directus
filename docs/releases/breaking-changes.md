@@ -13,10 +13,12 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version 11.1.0
+## Version 11.1.1
 
 ### Dropped support for the SendGrid email transport option
-Due to the fact that nodemailer/sendgrid received the last update 6 years ago, we dropped support for the SendGrid email transport option. We recommend using SMTP instead.
+
+The Sendgrid abstraction for `nodemailer` is no longer supported, so we have dropped it's usage from Directus. Users of
+Sendgrid should update their configuration to use Sendgrid's SMTP Relay configuration instead.
 
 ## Version 11.0.0
 
