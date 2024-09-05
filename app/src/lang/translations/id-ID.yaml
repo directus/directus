@@ -847,8 +847,6 @@ tooltip: Keterangan alat
 tooltip_placeholder: Masukkan keterangan alat...
 unlimited: Tak terbatas
 open_link_in: Buka tautan di
-new_tab: Tab baru
-current_tab: Tab saat ini
 save_image: Simpan Gambar
 save_media: Simpan Media
 wysiwyg_options:
@@ -1409,6 +1407,7 @@ interfaces:
     edit: Edit
     preview: Pratinjau
     previewFont: Font Pratinjau
+    default_view_preview: Pratinjau
     customSyntax: Blok Kustom
     customSyntax_label: Tambahkan jenis sintaks khusus
     customSyntax_add: Tambahkan sintaks khusus

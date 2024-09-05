@@ -80,7 +80,7 @@ function getLinkForItem(item: any) {
 		:disabled="value?.length === 0"
 	>
 		<template #activator="{ toggle }">
-			<span class="toggle" :class="{ subdued: value?.length === 0 }" @click.stop="toggle">
+			<span class="toggle" :class="{ disabled: value?.length === 0 }" @click.stop="toggle">
 				<span class="label">
 					{{ value?.length }}
 					<template v-if="value?.length >= 100">+</template>
@@ -110,14 +110,16 @@ function getLinkForItem(item: any) {
 <style lang="scss" scoped>
 .toggle {
 	position: relative;
+	--toggle-px: 6px;
+	--toggle-py: 4px;
 
 	&::before {
 		position: absolute;
-		top: -6px;
-		left: -6px;
+		top: calc(-1 * var(--toggle-py));
+		left: calc(-1 * var(--toggle-px));
 		z-index: 1;
-		width: calc(100% + 12px);
-		height: calc(100% + 12px);
+		width: calc(100% + var(--toggle-px) * 2);
+		height: calc(100% + var(--toggle-py) * 2);
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -130,17 +132,26 @@ function getLinkForItem(item: any) {
 		z-index: 2;
 	}
 
-	&:not(.subdued):hover::before {
+	&:not(.disabled):hover::before {
 		opacity: 1;
 	}
 
-	&:not(.subdued):active::before {
+	&:not(.disabled):active::before {
 		background-color: var(--theme--background-accent);
+	}
+
+	.render-template > .v-menu & {
+		margin: var(--toggle-py) var(--toggle-px);
 	}
 }
 
-.subdued {
+.render-template > .v-menu {
+	display: inline;
+}
+
+.disabled {
 	color: var(--theme--foreground-subdued);
+	pointer-events: none;
 }
 
 .links {

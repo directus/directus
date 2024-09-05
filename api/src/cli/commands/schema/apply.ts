@@ -6,14 +6,35 @@ import { load as loadYaml } from 'js-yaml';
 import path from 'path';
 import getDatabase, { isInstalled, validateDatabaseConnection } from '../../../database/index.js';
 import { useLogger } from '../../../logger/index.js';
-import type { Snapshot } from '../../../types/index.js';
+import type { Snapshot, SnapshotDiff } from '../../../types/index.js';
 import { DiffKind } from '../../../types/index.js';
 import { isNestedMetaUpdate } from '../../../utils/apply-diff.js';
 import { applySnapshot } from '../../../utils/apply-snapshot.js';
 import { getSnapshotDiff } from '../../../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
 
-export async function apply(snapshotPath: string, options?: { yes: boolean; dryRun: boolean }): Promise<void> {
+function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): SnapshotDiff {
+	const filterSet = new Set(filters);
+
+	function shouldKeep(item: { collection: string; field?: string }): boolean {
+		if (filterSet.has(item.collection)) return false;
+		if (item.field && filterSet.has(`${item.collection}.${item.field}`)) return false;
+		return true;
+	}
+
+	const filteredDiff: SnapshotDiff = {
+		collections: snapshot.collections.filter((item) => shouldKeep(item)),
+		fields: snapshot.fields.filter((item) => shouldKeep(item)),
+		relations: snapshot.relations.filter((item) => shouldKeep(item)),
+	};
+
+	return filteredDiff;
+}
+
+export async function apply(
+	snapshotPath: string,
+	options?: { yes: boolean; dryRun: boolean; ignoreRules: string },
+): Promise<void> {
 	const logger = useLogger();
 
 	const filename = path.resolve(process.cwd(), snapshotPath);
@@ -40,7 +61,11 @@ export async function apply(snapshotPath: string, options?: { yes: boolean; dryR
 		}
 
 		const currentSnapshot = await getSnapshot({ database });
-		const snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
+		let snapshotDiff = getSnapshotDiff(currentSnapshot, snapshot);
+
+		if (options?.ignoreRules) {
+			snapshotDiff = filterSnapshotDiff(snapshotDiff, options.ignoreRules.split(','));
+		}
 
 		if (
 			snapshotDiff.collections.length === 0 &&

@@ -14,9 +14,7 @@ const { t } = useI18n();
 const isLoading = ref(false);
 const email = ref<string | null>(null);
 const password = ref<string | null>(null);
-const passwordVerification = ref<string | null>(null);
 const error = ref<RequestError | string | null>(null);
-const passwordsMatch = computed(() => password.value === passwordVerification.value);
 
 const emit = defineEmits<{
 	wasSuccessful: [boolean];
@@ -39,12 +37,7 @@ async function onSubmit() {
 	// Simple RegEx, not for validation, but to prevent unnecessary login requests when the value is clearly invalid
 	const emailRegex = /^\S+@\S+$/;
 
-	if (
-		email.value === null ||
-		!emailRegex.test(email.value) ||
-		password.value === null ||
-		passwordsMatch.value === false
-	) {
+	if (email.value === null || !emailRegex.test(email.value) || password.value === null) {
 		error.value = ErrorCode.InvalidPayload;
 		return;
 	}
@@ -79,20 +72,7 @@ async function onSubmit() {
 			:placeholder="t('email')"
 			:disabled="isLoading"
 		/>
-		<v-input
-			v-model="password"
-			type="password"
-			autocomplete="new-password"
-			:placeholder="t('password')"
-			:disabled="isLoading"
-		/>
-		<v-input
-			v-model="passwordVerification"
-			type="password"
-			autocomplete="new-password"
-			:placeholder="t('confirm_password')"
-			:disabled="isLoading"
-		/>
+		<interface-system-input-password :value="password" :disabled="isLoading" @input="password = $event" />
 
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
