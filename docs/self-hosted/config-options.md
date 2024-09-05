@@ -994,12 +994,12 @@ extensions from a storage location instead. Under the hood, they are synced into
 
 ## Email
 
-| Variable               | Description                                                                          | Default Value          |
-| ---------------------- | ------------------------------------------------------------------------------------ | ---------------------- |
-| `EMAIL_VERIFY_SETUP`   | Check if email setup is properly configured.                                         | `true`                 |
-| `EMAIL_FROM`           | Email address from which emails are sent.                                            | `no-reply@example.com` |
+| Variable               | Description                                                              | Default Value          |
+| ---------------------- | ------------------------------------------------------------------------ | ---------------------- |
+| `EMAIL_VERIFY_SETUP`   | Check if email setup is properly configured.                             | `true`                 |
+| `EMAIL_FROM`           | Email address from which emails are sent.                                | `no-reply@example.com` |
 | `EMAIL_TRANSPORT`      | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `ses`. | `sendmail`             |
-| `EMAIL_TEMPLATES_PATH` | Where custom templates are located                                                   | `./templates`          |
+| `EMAIL_TEMPLATES_PATH` | Where custom templates are located                                       | `./templates`          |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
