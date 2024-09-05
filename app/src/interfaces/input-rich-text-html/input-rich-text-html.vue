@@ -346,11 +346,7 @@ function setFocus(val: boolean) {
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ t('open_link_in') }}</div>
-							<v-checkbox
-								v-model="linkSelection.newTab"
-								block
-								:label="t('new_tab')"
-							></v-checkbox>
+							<v-checkbox v-model="linkSelection.newTab" block :label="t('new_tab')"></v-checkbox>
 						</div>
 					</div>
 				</v-card-text>
