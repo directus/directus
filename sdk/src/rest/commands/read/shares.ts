@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type ReadShareOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusShare<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -15,7 +15,7 @@ export type ReadShareOutput<
  * @returns An array of up to limit Share objects. If no items are available, data will be an empty array.
  */
 export const readShares =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		query?: TQuery,
 	): RestCommand<ReadShareOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -32,7 +32,7 @@ export const readShares =
  * @throws Will throw if key is empty
  */
 export const readShare =
-	<Schema extends object, TQuery extends Query<Schema, DirectusShare<Schema>>>(
+	<Schema, TQuery extends Query<Schema, DirectusShare<Schema>>>(
 		key: DirectusShare<Schema>['id'],
 		query?: TQuery,
 	): RestCommand<ReadShareOutput<Schema, TQuery>, Schema> =>

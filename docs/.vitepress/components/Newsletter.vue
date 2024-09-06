@@ -22,8 +22,8 @@ onMounted(() => {
 
 <template>
 	<div id="nl">
-		<h2>Follow the White Rabbit 🐇</h2>
-		<p>Get insights, releases, and product updates delivered directly to your inbox once a month.</p>
+		<h2>Newsletter</h2>
+		<p>Get insights, releases, and updates delivered directly to your inbox once a month.</p>
 		<div id="nl-form"></div>
 	</div>
 </template>
@@ -109,5 +109,10 @@ p {
 	line-height: 1rem;
 	font-size: 0.75rem;
 	margin-top: 0.5rem;
+}
+
+/* Hide main error message if mail field already has one */
+:deep(form:has(.hs-form-field .hs-error-msgs) .hs_error_rollup) {
+	display: none;
 }
 </style>

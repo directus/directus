@@ -52,12 +52,6 @@ async function create(directory) {
 	await fse.mkdir(join(rootPath, 'uploads'));
 	await fse.mkdir(join(rootPath, 'extensions'));
 
-	const extensionFolders = ['interfaces', 'displays', 'layouts', 'modules'];
-
-	for (const folderName of extensionFolders) {
-		await fse.mkdir(join(rootPath, 'extensions', folderName));
-	}
-
 	// Let's get into the Directus mood while waiting
 	const bunnyFrames = [];
 	const numOfSpaces = 3;

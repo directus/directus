@@ -2,7 +2,7 @@ import { type AllCollections } from '../../../index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { AggregationOptions, AggregationOutput } from '../../../types/aggregate.js';
 import type { RestCommand } from '../../types.js';
-import { isSystemCollection } from '@directus/system-data';
+import { isSystemCollection } from '../../utils/is-system-collection.js';
 
 /**
  * Aggregate allow you to perform calculations on a set of values, returning a single result.
@@ -12,11 +12,7 @@ import { isSystemCollection } from '@directus/system-data';
  * @throws Will throw if collection is empty
  */
 export const aggregate =
-	<
-		Schema extends object,
-		Collection extends AllCollections<Schema>,
-		Options extends AggregationOptions<Schema, Collection>,
-	>(
+	<Schema, Collection extends AllCollections<Schema>, Options extends AggregationOptions<Schema, Collection>>(
 		collection: Collection,
 		options: Options,
 	): RestCommand<AggregationOutput<Schema, Collection, Options>, Schema> =>

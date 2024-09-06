@@ -1,3 +1,4 @@
+import { NUMERIC_TYPES } from '@directus/constants';
 import { InvalidQueryError } from '@directus/errors';
 import type {
 	Aggregate,
@@ -5,24 +6,36 @@ import type {
 	FieldFunction,
 	FieldOverview,
 	Filter,
+	NumericType,
+	Permission,
 	Query,
 	Relation,
 	SchemaOverview,
 	Type,
 } from '@directus/types';
-import { getFilterOperatorsForType, getOutputTypeForFunction } from '@directus/utils';
+import { getFilterOperatorsForType, getFunctionsForType, getOutputTypeForFunction, isIn } from '@directus/utils';
 import type { Knex } from 'knex';
 import { clone, isPlainObject } from 'lodash-es';
 import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../database/helpers/index.js';
+import { applyCaseWhen } from '../database/run-ast/utils/apply-case-when.js';
+import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from './get-column-path.js';
 import { getColumnPath } from './get-column-path.js';
 import { getColumn } from './get-column.js';
 import { getRelationInfo } from './get-relation-info.js';
 import { isValidUuid } from './is-valid-uuid.js';
-import { stripFunction } from './strip-function.js';
+import { parseFilterKey } from './parse-filter-key.js';
+import { parseNumericString } from './parse-numeric-string.js';
 
 export const generateAlias = customAlphabet('abcdefghijklmnopqrstuvwxyz', 5);
+
+type ApplyQueryOptions = {
+	aliasMap?: AliasMap;
+	isInnerQuery?: boolean;
+	hasMultiRelationalSort?: boolean | undefined;
+	groupWhenCases?: number[][] | undefined;
+};
 
 /**
  * Apply the Query to a given Knex query builder instance
@@ -33,7 +46,9 @@ export default function applyQuery(
 	dbQuery: Knex.QueryBuilder,
 	query: Query,
 	schema: SchemaOverview,
-	options?: { aliasMap?: AliasMap; isInnerQuery?: boolean; hasMultiRelationalSort?: boolean | undefined },
+	cases: Filter[],
+	permissions: Permission[],
+	options?: ApplyQueryOptions,
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
 	let hasJoins = false;
@@ -58,21 +73,68 @@ export default function applyQuery(
 	}
 
 	if (query.search) {
-		applySearch(schema, dbQuery, query.search, collection);
+		applySearch(knex, schema, dbQuery, query.search, collection);
 	}
 
-	if (query.group) {
-		dbQuery.groupBy(query.group.map((column) => getColumn(knex, collection, column, false, schema)));
-	}
+	// `cases` are the permissions cases that are required for the current data set. We're
+	// dynamically adding those into the filters that the user provided to enforce the permission
+	// rules. You should be able to read an item if one or more of the cases matches. The actual case
+	// is reused in the column selection case/when to dynamically return or nullify the field values
+	// you're actually allowed to read
 
-	if (query.filter) {
-		const filterResult = applyFilter(knex, schema, dbQuery, query.filter, collection, aliasMap);
+	const filter: Filter | null = joinFilterWithCases(query.filter, cases);
+
+	if (filter) {
+		const filterResult = applyFilter(knex, schema, dbQuery, filter, collection, aliasMap, cases, permissions);
 
 		if (!hasJoins) {
 			hasJoins = filterResult.hasJoins;
 		}
 
 		hasMultiRelationalFilter = filterResult.hasMultiRelationalFilter;
+	}
+
+	if (query.group) {
+		const rawColumns = query.group.map((column) => getColumn(knex, collection, column, false, schema));
+		let columns;
+
+		if (options?.groupWhenCases) {
+			columns = rawColumns.map((column, index) =>
+				applyCaseWhen(
+					{
+						columnCases: options.groupWhenCases![index]!.map((caseIndex) => cases[caseIndex]!),
+						column,
+						aliasMap,
+						cases,
+						table: collection,
+						permissions,
+					},
+					{
+						knex,
+						schema,
+					},
+				),
+			);
+
+			if (query.sort && query.sort.length === 1 && query.sort[0] === query.group[0]) {
+				// Special case, where the sort query is injected by the group by operation
+				dbQuery.clear('order');
+
+				let order = 'asc';
+
+				if (query.sort[0]!.startsWith('-')) {
+					order = 'desc';
+				}
+
+				// @ts-expect-error (orderBy does not accept Knex.Raw for some reason, even though it is handled correctly)
+				// https://github.com/knex/knex/issues/5711
+				dbQuery.orderBy([{ column: columns[0]!, order }]);
+			}
+		} else {
+			columns = rawColumns;
+		}
+
+		dbQuery.groupBy(columns);
 	}
 
 	if (query.aggregate) {
@@ -184,7 +246,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 
 				rootQuery.leftJoin({ [alias]: pathScope }, (joinClause) => {
 					joinClause
-						.onVal(relation.meta!.one_collection_field!, '=', pathScope)
+						.onVal(`${aliasedParentCollection}.${relation.meta!.one_collection_field!}`, '=', pathScope)
 						.andOn(
 							`${aliasedParentCollection}.${relation.field}`,
 							'=',
@@ -201,7 +263,7 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 			} else if (relationType === 'o2a') {
 				rootQuery.leftJoin({ [alias]: relation.collection }, (joinClause) => {
 					joinClause
-						.onVal(relation.meta!.one_collection_field!, '=', parentCollection)
+						.onVal(`${alias}.${relation.meta!.one_collection_field!}`, '=', parentCollection)
 						.andOn(
 							`${alias}.${relation.field}`,
 							'=',
@@ -389,6 +451,8 @@ export function applyFilter(
 	rootFilter: Filter,
 	collection: string,
 	aliasMap: AliasMap,
+	cases: Filter[],
+	permissions: Permission[],
 ) {
 	const helpers = getHelpers(knex);
 	const relations: Relation[] = schema.relations;
@@ -401,12 +465,22 @@ export function applyFilter(
 	return { query: rootQuery, hasJoins, hasMultiRelationalFilter };
 
 	function addJoins(dbQuery: Knex.QueryBuilder, filter: Filter, collection: string) {
-		for (const [key, value] of Object.entries(filter)) {
+		// eslint-disable-next-line prefer-const
+		for (let [key, value] of Object.entries(filter)) {
 			if (key === '_or' || key === '_and') {
 				// If the _or array contains an empty object (full permissions), we should short-circuit and ignore all other
 				// permission checks, as {} already matches full permissions.
 				if (key === '_or' && value.some((subFilter: Record<string, any>) => Object.keys(subFilter).length === 0)) {
-					continue;
+					// But only do so, if the value is not equal to `cases` (since then this is not permission related at all)
+					// or the length of value is 1, ie. only the empty filter.
+					// If the length is more than one it means that some items (and fields) might now be available, so
+					// the joins are required for the case/when construction.
+					if (value !== cases || value.length === 1) {
+						continue;
+					} else {
+						// Otherwise we can at least filter out all empty filters that would not add joins anyway
+						value = value.filter((subFilter: Record<string, any>) => Object.keys(subFilter).length > 0);
+					}
 				}
 
 				value.forEach((subFilter: Record<string, any>) => {
@@ -477,7 +551,11 @@ export function applyFilter(
 
 			const { relation, relationType } = getRelationInfo(relations, collection, pathRoot);
 
-			const { operator: filterOperator, value: filterValue } = getOperation(key, value);
+			const operation = getOperation(key, value);
+
+			if (!operation) continue;
+
+			const { operator: filterOperator, value: filterValue } = operation;
 
 			if (
 				filterPath.length > 1 ||
@@ -494,27 +572,36 @@ export function applyFilter(
 						pkField = knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), [pkField]);
 					}
 
-					const subQueryBuilder = (filter: Filter) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-						const field = relation!.field;
-						const collection = relation!.collection;
-						const column = `${collection}.${field}`;
-
-						subQueryKnex
-							.select({ [field]: column })
-							.from(collection)
-							.whereNotNull(column);
-
-						applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema);
-					};
-
 					const childKey = Object.keys(value)?.[0];
 
-					if (childKey === '_none') {
-						dbQuery[logical].whereNotIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
-						continue;
-					} else if (childKey === '_some') {
-						dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter));
-						continue;
+					if (childKey === '_none' || childKey === '_some') {
+						const subQueryBuilder =
+							(filter: Filter, cases: Filter[]) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+								const field = relation!.field;
+								const collection = relation!.collection;
+								const column = `${collection}.${field}`;
+
+								subQueryKnex
+									.select({ [field]: column })
+									.from(collection)
+									.whereNotNull(column);
+
+								applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases, permissions);
+							};
+
+						const { cases: subCases } = getCases(relation!.collection, permissions, []);
+
+						if (childKey === '_none') {
+							dbQuery[logical].whereNotIn(
+								pkField as string,
+								subQueryBuilder(Object.values(value)[0] as Filter, subCases),
+							);
+
+							continue;
+						} else if (childKey === '_some') {
+							dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
+							continue;
+						}
 					}
 				}
 
@@ -540,9 +627,9 @@ export function applyFilter(
 
 				if (!columnPath) continue;
 
-				const { type, special } = validateFilterField(
+				const { type, special } = getFilterType(
 					schema.collections[targetCollection]!.fields,
-					stripFunction(filterPath[filterPath.length - 1]!),
+					filterPath.at(-1)!,
 					targetCollection,
 				)!;
 
@@ -550,27 +637,43 @@ export function applyFilter(
 
 				applyFilterToQuery(columnPath, filterOperator, filterValue, logical, targetCollection);
 			} else {
-				const { type, special } = validateFilterField(
-					schema.collections[collection]!.fields,
-					stripFunction(filterPath[0]!),
-					collection,
-				)!;
+				const { type, special } = getFilterType(schema.collections[collection]!.fields, filterPath[0]!, collection)!;
 
 				validateFilterOperator(type, filterOperator, special);
 
-				applyFilterToQuery(`${collection}.${filterPath[0]}`, filterOperator, filterValue, logical);
+				const aliasedCollection = aliasMap['']?.alias || collection;
+
+				applyFilterToQuery(`${aliasedCollection}.${filterPath[0]}`, filterOperator, filterValue, logical, collection);
 			}
 		}
 
-		function validateFilterField(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
-			if (fields[key] === undefined) {
+		function getFilterType(fields: Record<string, FieldOverview>, key: string, collection = 'unknown') {
+			const { fieldName, functionName } = parseFilterKey(key);
+
+			const field = fields[fieldName];
+
+			if (!field) {
 				throw new InvalidQueryError({ reason: `Invalid filter key "${key}" on "${collection}"` });
 			}
 
-			return fields[key];
+			const { type } = field;
+
+			if (functionName) {
+				const availableFunctions: string[] = getFunctionsForType(type);
+
+				if (!availableFunctions.includes(functionName)) {
+					throw new InvalidQueryError({ reason: `Invalid filter key "${key}" on "${collection}"` });
+				}
+
+				const functionType = getOutputTypeForFunction(functionName as FieldFunction);
+
+				return { type: functionType };
+			}
+
+			return { type, special: field.special };
 		}
 
-		function validateFilterOperator(type: Type, filterOperator: string, special: string[]) {
+		function validateFilterOperator(type: Type, filterOperator: string, special?: string[]) {
 			if (filterOperator.startsWith('_')) {
 				filterOperator = filterOperator.slice(1);
 			}
@@ -582,7 +685,7 @@ export function applyFilter(
 			}
 
 			if (
-				special.includes('conceal') &&
+				special?.includes('conceal') &&
 				!getFilterOperatorsForType('hash').includes(filterOperator as ClientFilterOperator)
 			) {
 				throw new InvalidQueryError({
@@ -607,12 +710,22 @@ export function applyFilter(
 			// See https://github.com/knex/knex/issues/4518 @TODO remove as any once knex is updated
 
 			// These operators don't rely on a value, and can thus be used without one (eg `?filter[field][_null]`)
-			if ((operator === '_null' && compareValue !== false) || (operator === '_nnull' && compareValue === false)) {
+			if (
+				(operator === '_null' && compareValue !== false) ||
+				(operator === '_nnull' && compareValue === false) ||
+				(operator === '_eq' && compareValue === null)
+			) {
 				dbQuery[logical].whereNull(selectionRaw);
+				return;
 			}
 
-			if ((operator === '_nnull' && compareValue !== false) || (operator === '_null' && compareValue === false)) {
+			if (
+				(operator === '_nnull' && compareValue !== false) ||
+				(operator === '_null' && compareValue === false) ||
+				(operator === '_neq' && compareValue === null)
+			) {
 				dbQuery[logical].whereNotNull(selectionRaw);
+				return;
 			}
 
 			if ((operator === '_empty' && compareValue !== false) || (operator === '_nempty' && compareValue === false)) {
@@ -645,7 +758,7 @@ export function applyFilter(
 				const type = getOutputTypeForFunction(functionName);
 
 				if (['integer', 'float', 'decimal'].includes(type)) {
-					compareValue = Number(compareValue);
+					compareValue = Array.isArray(compareValue) ? compareValue.map(Number) : Number(compareValue);
 				}
 			}
 
@@ -768,19 +881,19 @@ export function applyFilter(
 			}
 
 			if (operator === '_between') {
-				if (compareValue.length !== 2) return;
-
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
+
+				if (value.length !== 2) return;
 
 				dbQuery[logical].whereBetween(selectionRaw, value);
 			}
 
 			if (operator === '_nbetween') {
-				if (compareValue.length !== 2) return;
-
 				let value = compareValue;
 				if (typeof value === 'string') value = value.split(',');
+
+				if (value.length !== 2) return;
 
 				dbQuery[logical].whereNotBetween(selectionRaw, value);
 			}
@@ -804,37 +917,44 @@ export function applyFilter(
 	}
 }
 
-export async function applySearch(
+export function applySearch(
+	knex: Knex,
 	schema: SchemaOverview,
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
-): Promise<void> {
+) {
+	const { number: numberHelper } = getHelpers(knex);
 	const fields = Object.entries(schema.collections[collection]!.fields);
 
 	dbQuery.andWhere(function () {
+		let needsFallbackCondition = true;
+
 		fields.forEach(([name, field]) => {
 			if (['text', 'string'].includes(field.type)) {
 				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
-			} else if (['bigInteger', 'integer', 'decimal', 'float'].includes(field.type)) {
-				const number = Number(searchQuery);
+				needsFallbackCondition = false;
+			} else if (isNumericField(field)) {
+				const number = parseNumericString(searchQuery);
 
-				// only cast finite base10 numeric values
-				if (validateNumber(searchQuery, number)) {
-					this.orWhere({ [`${collection}.${name}`]: number });
+				if (number === null) {
+					return; // unable to parse
+				}
+
+				if (numberHelper.isNumberValid(number, field)) {
+					numberHelper.addSearchCondition(this, collection, name, number);
+					needsFallbackCondition = false;
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
 				this.orWhere({ [`${collection}.${name}`]: searchQuery });
+				needsFallbackCondition = false;
 			}
 		});
-	});
-}
 
-function validateNumber(value: string, parsed: number) {
-	if (isNaN(parsed) || !Number.isFinite(parsed)) return false;
-	// casting parsed value back to string should be equal the original value
-	// (prevent unintended number parsing, e.g. String(7) !== "ob111")
-	return String(parsed) === value;
+		if (needsFallbackCondition) {
+			this.orWhereRaw('1 = 0');
+		}
+	});
 }
 
 export function applyAggregate(
@@ -896,11 +1016,23 @@ export function applyAggregate(
 	}
 }
 
+export function joinFilterWithCases(filter: Filter | null | undefined, cases: Filter[]) {
+	if (cases.length > 0 && !filter) {
+		return { _or: cases };
+	} else if (filter && cases.length === 0) {
+		return filter ?? null;
+	} else if (filter && cases.length > 0) {
+		return { _and: [filter, { _or: cases }] };
+	}
+
+	return null;
+}
+
 function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
-	const childKey = Object.keys(value)[0]!;
+	const childKey = Object.keys(value)[0];
 
-	if (typeof childKey === 'string' && childKey.startsWith('_') === true && !['_none', '_some'].includes(childKey)) {
+	if (!childKey || (childKey.startsWith('_') === true && !['_none', '_some'].includes(childKey))) {
 		return path;
 	}
 
@@ -911,12 +1043,22 @@ function getFilterPath(key: string, value: Record<string, any>) {
 	return path;
 }
 
-function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } {
+function getOperation(key: string, value: Record<string, any>): { operator: string; value: any } | null {
 	if (key.startsWith('_') && !['_and', '_or', '_none', '_some'].includes(key)) {
-		return { operator: key as string, value };
-	} else if (isPlainObject(value) === false) {
+		return { operator: key, value };
+	} else if (!isPlainObject(value)) {
 		return { operator: '_eq', value };
 	}
 
-	return getOperation(Object.keys(value)[0]!, Object.values(value)[0]);
+	const childKey = Object.keys(value)[0];
+
+	if (childKey) {
+		return getOperation(childKey, Object.values(value)[0]);
+	}
+
+	return null;
+}
+
+function isNumericField(field: FieldOverview): field is FieldOverview & { type: NumericType } {
+	return isIn(field.type, NUMERIC_TYPES);
 }

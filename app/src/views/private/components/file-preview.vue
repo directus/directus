@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import type { File } from '@directus/types';
 import { computed, toRef } from 'vue';
@@ -18,10 +18,8 @@ defineEmits<{
 
 const file = toRef(props, 'file');
 
-const src = computed(
-	() =>
-		getRootPath() +
-		`assets/${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`,
+const src = computed(() =>
+	getAssetUrl(`${file.value.id}?cache-buster=${file.value.modified_on}${props.preset ? `&key=${props.preset}` : ''}`),
 );
 
 const type = computed<'image' | 'video' | 'audio' | string>(() => {

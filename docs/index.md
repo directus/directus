@@ -56,8 +56,8 @@ const item = await client.request(
 <template #authentication>
 
 ```js
-import { createDirectus, rest, createUser } from '@directus/sdk';
-const client = createDirectus('https://xyz.directus.app').with(rest());
+import { createDirectus, rest, createUser, authentication } from '@directus/sdk';
+const client = createDirectus('https://xyz.directus.app').with(rest()).with(authentication());
 
 const newUser = await client.request(
 	createUser({
@@ -211,7 +211,7 @@ for await (const item of subscription) {
 			</p>
 		</div>
 		<div :class="[$style.grid4, $style.m60, $style.frameworks]">
-			<a href="/guides/headless-cms/build-static-website/next-13">
+			<a href="/guides/headless-cms/build-static-website/next">
 				<div :class="[$style.image]">
 					<img src="/assets/frameworks/next.png" alt="Next.js" />
 				</div>

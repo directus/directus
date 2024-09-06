@@ -46,8 +46,7 @@ readTime: 7 min read
    ```shell
    docker run \
    -p 8055:8055 \
-   -e KEY=replace-with-random-value \
-   -e SECRET=replace-with-random-value \
+   -e SECRET=replace-with-secure-random-value \
    directus/directus
    ```
 

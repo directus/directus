@@ -20,7 +20,7 @@ import type {
 	ScheduleHandler,
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
-import { getNodeEnv, pathToRelativeUrl, processId } from '@directus/utils/node';
+import { pathToRelativeUrl, processId } from '@directus/utils/node';
 import aliasDefault from '@rollup/plugin-alias';
 import nodeResolveDefault from '@rollup/plugin-node-resolve';
 import virtualDefault from '@rollup/plugin-virtual';
@@ -38,7 +38,7 @@ import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
 import { getFlowManager } from '../flows.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import * as services from '../services/index.js';
 import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
@@ -69,7 +69,7 @@ const env = useEnv();
 
 const defaultOptions: ExtensionManagerOptions = {
 	schedule: true,
-	watch: (env['EXTENSIONS_AUTO_RELOAD'] as boolean) && getNodeEnv() !== 'development',
+	watch: env['EXTENSIONS_AUTO_RELOAD'] as boolean,
 };
 
 export class ExtensionManager {
@@ -209,7 +209,7 @@ export class ExtensionManager {
 		}
 
 		if (this.options.watch && !wasWatcherInitialized) {
-			this.updateWatchedExtensions(Array.from(this.localExtensions.values()));
+			this.updateWatchedExtensions([...this.extensions]);
 		}
 
 		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
@@ -224,25 +224,29 @@ export class ExtensionManager {
 	 */
 	public async install(versionId: string): Promise<void> {
 		await this.installationManager.install(versionId);
-		await this.reload();
-		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
+		await this.reload({ forceSync: true });
+		await this.broadcastReloadNotification();
 	}
 
 	public async uninstall(folder: string) {
 		await this.installationManager.uninstall(folder);
-		await this.reload();
+		await this.reload({ forceSync: true });
+		await this.broadcastReloadNotification();
+	}
+
+	public async broadcastReloadNotification() {
 		await this.messenger.publish(this.reloadChannel, { origin: this.processId });
 	}
 
 	/**
 	 * Load all extensions from disk and register them in their respective places
 	 */
-	private async load(): Promise<void> {
+	private async load(options?: { forceSync: boolean }): Promise<void> {
 		const logger = useLogger();
 
 		if (env['EXTENSIONS_LOCATION']) {
 			try {
-				await syncExtensions();
+				await syncExtensions({ force: options?.forceSync ?? false });
 			} catch (error) {
 				logger.error(`Failed to sync extensions`);
 				logger.error(error);
@@ -287,7 +291,7 @@ export class ExtensionManager {
 	/**
 	 * Reload all the extensions. Will unload if extensions have already been loaded
 	 */
-	public reload(): Promise<unknown> {
+	public reload(options?: { forceSync: boolean }): Promise<unknown> {
 		if (this.reloadQueue.size > 0) {
 			// The pending job in the queue will already handle the additional changes
 			return Promise.resolve();
@@ -308,7 +312,7 @@ export class ExtensionManager {
 				const prevExtensions = clone(this.extensions);
 
 				await this.unload();
-				await this.load();
+				await this.load(options);
 
 				logger.info('Extensions reloaded');
 
@@ -387,7 +391,8 @@ export class ExtensionManager {
 		this.watcher = chokidar.watch(
 			[path.resolve('package.json'), path.posix.join(extensionDirUrl, '*', 'package.json')],
 			{
-				ignoreInitial: true, // dotdirs are watched by default and frequently found in 'node_modules'
+				ignoreInitial: true,
+				// dotdirs are watched by default and frequently found in 'node_modules'
 				ignored: `${extensionDirUrl}/**/node_modules/**`,
 				// on macOS dotdirs in linked extensions are watched too
 				followSymlinks: os.platform() === 'darwin' ? false : true,
@@ -425,25 +430,25 @@ export class ExtensionManager {
 	 * removed
 	 */
 	private updateWatchedExtensions(added: Extension[], removed: Extension[] = []): void {
-		if (this.watcher) {
-			const toPackageExtensionPaths = (extensions: Extension[]) =>
-				extensions
-					.filter((extension) => !extension.local || extension.type === 'bundle')
-					.flatMap((extension) =>
-						isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
-							? [
-									path.resolve(extension.path, extension.entrypoint.app),
-									path.resolve(extension.path, extension.entrypoint.api),
-							  ]
-							: path.resolve(extension.path, extension.entrypoint),
-					);
+		if (!this.watcher) return;
 
-			const addedPackageExtensionPaths = toPackageExtensionPaths(added);
-			const removedPackageExtensionPaths = toPackageExtensionPaths(removed);
+		const extensionDir = path.resolve(getExtensionsPath());
+		const registryDir = path.join(extensionDir, '.registry');
 
-			this.watcher.add(addedPackageExtensionPaths);
-			this.watcher.unwatch(removedPackageExtensionPaths);
-		}
+		const toPackageExtensionPaths = (extensions: Extension[]) =>
+			extensions
+				.filter((extension) => extension.local && !extension.path.startsWith(registryDir))
+				.flatMap((extension) =>
+					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
+						? [
+								path.resolve(extension.path, extension.entrypoint.app),
+								path.resolve(extension.path, extension.entrypoint.api),
+						  ]
+						: path.resolve(extension.path, extension.entrypoint),
+				);
+
+		this.watcher.add(toPackageExtensionPaths(added));
+		this.watcher.unwatch(toPackageExtensionPaths(removed));
 	}
 
 	/**
@@ -547,7 +552,7 @@ export class ExtensionManager {
 		this.unregisterFunctionMap.set(extension.name, async () => {
 			await unregisterFunction();
 
-			isolate.dispose();
+			if (!isolate.isDisposed) isolate.dispose();
 		});
 	}
 

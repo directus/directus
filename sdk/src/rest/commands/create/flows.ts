@@ -3,7 +3,7 @@ import type { ApplyQueryFields, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateFlowOutput<
-	Schema extends object,
+	Schema,
 	TQuery extends Query<Schema, Item>,
 	Item extends object = DirectusFlow<Schema>,
 > = ApplyQueryFields<Schema, Item, TQuery['fields']>;
@@ -17,7 +17,7 @@ export type CreateFlowOutput<
  * @returns Returns the flow object for the created flow.
  */
 export const createFlows =
-	<Schema extends object, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
+	<Schema, const TQuery extends Query<Schema, DirectusFlow<Schema>>>(
 		items: Partial<DirectusFlow<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateFlowOutput<Schema, TQuery>[], Schema> =>
@@ -37,7 +37,7 @@ export const createFlows =
  * @returns Returns the flow object for the created flow.
  */
 export const createFlow =
-	<Schema extends object, TQuery extends Query<Schema, DirectusFlow<Schema>>>(
+	<Schema, TQuery extends Query<Schema, DirectusFlow<Schema>>>(
 		item: Partial<DirectusFlow<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateFlowOutput<Schema, TQuery>, Schema> =>

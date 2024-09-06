@@ -24,7 +24,7 @@ interface Props {
 	error?: any;
 	totalPages: number;
 	tableSort?: { by: string; desc: boolean } | null;
-	onRowClick: (item: Item) => void;
+	onRowClick: ({ item, event }: { item: Item; event: PointerEvent }) => void;
 	tableRowHeight: number;
 	page: number;
 	toPage: (newPage: number) => void;
@@ -266,18 +266,7 @@ function removeField(fieldKey: string) {
 			</template>
 		</v-table>
 
-		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-			{{ t('unexpected_error_copy') }}
-
-			<template #append>
-				<v-error :error="error" />
-
-				<v-button small class="reset-preset" @click="resetPresetAndRefresh">
-					{{ t('reset_page_preferences') }}
-				</v-button>
-			</template>
-		</v-info>
-
+		<slot v-else-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
 		<slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
 		<slot v-else-if="itemCount === 0" name="no-items" />
 	</div>
@@ -334,10 +323,6 @@ function removeField(fieldKey: string) {
 			color: var(--theme--foreground);
 		}
 	}
-}
-
-.reset-preset {
-	margin-top: 24px;
 }
 
 .add-field {

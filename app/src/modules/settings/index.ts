@@ -17,14 +17,17 @@ import MarketplaceAccount from './routes/marketplace/routes/account/account.vue'
 import MarketplaceExtension from './routes/marketplace/routes/extension/extension.vue';
 import MarketplaceRegistry from './routes/marketplace/routes/registry/registry.vue';
 import NotFound from './routes/not-found.vue';
+import PoliciesCollection from './routes/policies/collection.vue';
+import PoliciesItem from './routes/policies/item.vue';
+import NewPolicy from './routes/policies/add-new.vue';
 import PresetsCollection from './routes/presets/collection/collection.vue';
 import PresetsItem from './routes/presets/item.vue';
 import Project from './routes/project/project.vue';
 import NewRole from './routes/roles/add-new.vue';
 import RolesCollection from './routes/roles/collection.vue';
-import RolesItem from './routes/roles/item/item.vue';
-import RolesPermissionsDetail from './routes/roles/permissions-detail/permissions-detail.vue';
+import RolesItem from './routes/roles/item.vue';
 import RolesPublicItem from './routes/roles/public-item.vue';
+import SystemLogs from './routes/system-logs/logs.vue';
 import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
@@ -112,6 +115,32 @@ export default defineModule({
 			],
 		},
 		{
+			path: 'policies',
+			component: RouterPass,
+			children: [
+				{
+					name: 'settings-policies-collection',
+					path: '',
+					component: PoliciesCollection,
+					children: [
+						{
+							path: '+',
+							name: 'settings-add-new-policy',
+							components: {
+								add: NewPolicy,
+							},
+						},
+					],
+				},
+				{
+					name: 'settings-policies-item',
+					path: ':primaryKey',
+					component: PoliciesItem,
+					props: true,
+				},
+			],
+		},
+		{
 			path: 'roles',
 			component: RouterPass,
 			children: [
@@ -130,31 +159,15 @@ export default defineModule({
 					],
 				},
 				{
+					name: 'settings-roles-public-item',
 					path: 'public',
 					component: RolesPublicItem,
-					props: true,
-					children: [
-						{
-							path: ':permissionKey',
-							components: {
-								permissionsDetail: RolesPermissionsDetail,
-							},
-						},
-					],
 				},
 				{
 					name: 'settings-roles-item',
 					path: ':primaryKey',
 					component: RolesItem,
 					props: true,
-					children: [
-						{
-							path: ':permissionKey',
-							components: {
-								permissionsDetail: RolesPermissionsDetail,
-							},
-						},
-					],
 				},
 			],
 		},
@@ -274,12 +287,17 @@ export default defineModule({
 			],
 		},
 		{
+			name: 'settings-system-logs',
+			path: 'system-logs',
+			component: SystemLogs,
+		},
+		{
 			name: 'settings-not-found',
 			path: ':_(.+)+',
 			component: NotFound,
 		},
 	],
 	preRegisterCheck: (user) => {
-		return user.role.admin_access === true;
+		return user.admin_access === true;
 	},
 });

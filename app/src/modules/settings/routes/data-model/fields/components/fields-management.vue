@@ -3,7 +3,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import { Field, LocalType } from '@directus/types';
 import { isNil, orderBy } from 'lodash';
-import { computed, toRefs, onBeforeMount } from 'vue';
+import { computed, toRefs, onBeforeMount, onBeforeUnmount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
 import FieldSelect from './field-select.vue';
@@ -17,6 +17,7 @@ const { t } = useI18n();
 const { collection } = toRefs(props);
 const fieldsStore = useFieldsStore();
 onBeforeMount(async () => await fieldsStore.hydrate({ skipTranslation: true }));
+onBeforeUnmount(() => fieldsStore.translateFields());
 
 const fields = computed(() => fieldsStore.getFieldsForCollectionSorted(collection.value));
 

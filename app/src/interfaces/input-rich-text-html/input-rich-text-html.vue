@@ -190,15 +190,17 @@ const editorOptions = computed(() => {
 			'fullscreen',
 			'directionality',
 		],
+		license_key: 'gpl',
 		branding: false,
 		max_height: 1000,
 		elementpath: false,
 		statusbar: false,
 		menubar: false,
+		highlight_on_focus: false,
 		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
-		toolbar: toolbarString,
+		toolbar: toolbarString ? toolbarString : false,
 		style_formats: styleFormats,
 		file_picker_types: 'customImage customMedia image media',
 		link_default_protocol: 'https',
@@ -249,15 +251,17 @@ function setupContentWatcher() {
 function setup(editor: any) {
 	editorRef.value = editor;
 
+	const linkShortcut = 'meta+k';
+
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
-	editor.ui.registry.addToggleButton('customLink', linkButton);
+	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
 	editor.ui.registry.addButton('customCode', sourceCodeButton);
 
 	editor.on('init', function () {
-		editor.shortcuts.remove('meta+k');
+		editor.shortcuts.remove(linkShortcut);
 
-		editor.addShortcut('meta+k', 'Insert Link', () => {
+		editor.addShortcut(linkShortcut, 'Insert Link', () => {
 			editor.ui.registry.getAll().buttons.customlink.onAction();
 		});
 
@@ -345,7 +349,7 @@ function setFocus(val: boolean) {
 							<v-checkbox
 								v-model="linkSelection.newTab"
 								block
-								:label="t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
+								:label="t('new_tab')"
 							></v-checkbox>
 						</div>
 					</div>

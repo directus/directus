@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useExtension } from '@/composables/use-extension';
@@ -11,11 +8,13 @@ import { useCollectionsStore } from '@/stores/collections';
 import { usePresetsStore } from '@/stores/presets';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useLayout } from '@directus/composables';
-import { Filter, Preset } from '@directus/types';
+import { isSystemCollection } from '@directus/system-data';
+import { DeepPartial, Field, Filter, Preset } from '@directus/types';
 import { isEqual } from 'lodash';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
-import { isSystemCollection } from '@directus/system-data';
 
 type FormattedPreset = {
 	id: number;
@@ -317,10 +316,55 @@ function usePreset() {
 function useForm() {
 	const systemCollectionWhiteList = ['directus_users', 'directus_files', 'directus_activity'];
 
-	const fields = computed(() => [
+	const fields = computed<DeepPartial<Field>[]>(() => [
+		{
+			field: 'meta-group',
+			type: 'alias',
+			meta: {
+				field: 'meta-group',
+				special: ['alias', 'no-data', 'group'],
+				interface: 'group-raw',
+			},
+		},
+		{
+			field: 'name',
+			name: '$t:name',
+			type: 'string',
+			meta: {
+				interface: 'system-input-translated-string',
+				options: {
+					placeholder: '$t:preset_name_placeholder',
+				},
+				width: 'half',
+				group: 'meta-group',
+			},
+		},
+		{
+			field: 'icon',
+			name: '$t:icon',
+			type: 'string',
+			meta: {
+				interface: 'select-icon',
+				width: 'half',
+				group: 'meta-group',
+			},
+			schema: {
+				default_value: 'bookmark',
+			},
+		},
+		{
+			field: 'color',
+			name: '$t:color',
+			type: 'string',
+			meta: {
+				interface: 'select-color',
+				width: 'half',
+				group: 'meta-group',
+			},
+		},
 		{
 			field: 'collection',
-			name: t('collection'),
+			name: '$t:collection',
 			type: 'string',
 			meta: {
 				interface: 'select-dropdown',
@@ -341,7 +385,7 @@ function useForm() {
 		},
 		{
 			field: 'scope',
-			name: t('scope'),
+			name: '$t:scope',
 			type: 'string',
 			meta: {
 				interface: 'system-scope',
@@ -350,7 +394,7 @@ function useForm() {
 		},
 		{
 			field: 'layout',
-			name: t('layout'),
+			name: '$t:layout',
 			type: 'string',
 			meta: {
 				interface: 'select-dropdown',
@@ -363,58 +407,25 @@ function useForm() {
 				width: 'half',
 			},
 		},
-		{
-			field: 'name',
-			name: t('name'),
-			type: 'string',
-			meta: {
-				interface: 'system-input-translated-string',
-				width: 'half',
-				options: {
-					placeholder: t('preset_name_placeholder'),
-				},
-			},
-		},
-		{
-			field: 'icon',
-			name: '$t:icon',
-			type: 'string',
-			meta: {
-				interface: 'select-icon',
-				width: 'half',
-			},
-			schema: {
-				default_value: 'bookmark',
-			},
-		},
-		{
-			field: 'color',
-			name: '$t:color',
-			type: 'string',
-			meta: {
-				interface: 'select-color',
-				width: 'half',
-			},
-		},
+
 		{
 			field: 'search',
-			name: t('search'),
+			name: '$t:search',
 			type: 'string',
 			meta: {
 				interface: 'input',
 				width: 'half',
 				options: {
-					placeholder: t('search_items'),
+					placeholder: '$t:search_items',
 				},
 			},
 		},
 		{
 			field: 'filter',
-			name: t('filter'),
+			name: '$t:filter',
 			type: 'json',
 			meta: {
 				interface: 'system-filter',
-				width: 'half',
 				options: {
 					collectionField: 'collection',
 					rawFieldNames: true,
@@ -422,14 +433,14 @@ function useForm() {
 			},
 		},
 		{
-			field: 'divider',
-			name: t('divider'),
+			field: 'layout-divider',
+			name: '$t:divider',
 			type: 'alias',
 			meta: {
 				interface: 'presentation-divider',
 				width: 'fill',
 				options: {
-					title: t('layout_preview'),
+					title: '$t:layout_preview',
 					icon: 'visibility',
 				},
 			},

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { readableMimeType } from '@/utils/readable-mime-type';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { computed, ref } from 'vue';
 
 type File = {
@@ -27,9 +28,9 @@ const fileExtension = computed(() => {
 
 const imageThumbnail = computed(() => {
 	if (!props.value) return null;
-	if (props.value.type?.includes('svg')) return '/assets/' + props.value.id;
+	if (props.value.type?.includes('svg')) return getAssetUrl(props.value.id);
 	if (props.value.type?.includes('image') === false) return null;
-	return `/assets/${props.value.id}?key=system-small-cover`;
+	return getAssetUrl(`${props.value.id}?key=system-small-cover`);
 });
 </script>
 

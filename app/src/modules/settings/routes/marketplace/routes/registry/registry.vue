@@ -15,9 +15,18 @@ const { t } = useI18n();
 
 const perPage = 10;
 
-const search = useRouteQuery('search');
-const page = useRouteQuery('page', 1);
-const type = useRouteQuery('type');
+const page = useRouteQuery('page', 1, {
+	transform: (value) => Number(Array.isArray(value) ? value[0] : value) || 1,
+});
+
+const search = useRouteQuery<string | null>('search', null, {
+	transform: (value) => (Array.isArray(value) ? value[0] : value),
+});
+
+const type = useRouteQuery<string | null>('type', null, {
+	transform: (value) => (Array.isArray(value) ? value[0] : value),
+});
+
 const sort = useRouteQuery<'popular' | 'recent' | 'downloads'>('sort', 'popular');
 
 watch([search, sort, type], (newVal, oldVal) => {
@@ -29,7 +38,7 @@ watch([search, sort, type], (newVal, oldVal) => {
 const filterCount = ref(0);
 
 const extensions = ref<RegistryListResponse['data'] | null>(null);
-const pageCount = computed(() => Math.round(filterCount.value / perPage));
+const pageCount = computed(() => Math.ceil(filterCount.value / perPage));
 const loading = ref(false);
 const error = ref<unknown>(null);
 
@@ -44,7 +53,11 @@ watchEffect(async () => {
 				search: search.value,
 				limit: perPage,
 				offset: (page.value - 1) * perPage,
-				type: type.value,
+				filter: {
+					type: {
+						_eq: type.value,
+					},
+				},
 				sort: sort.value,
 			},
 		});

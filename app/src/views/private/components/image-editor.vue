@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useSettingsStore } from '@/stores/settings';
-import { getRootPath } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { unexpectedError } from '@/utils/unexpected-error';
 import type { File } from '@directus/types';
 import Cropper from 'cropperjs';
@@ -81,7 +81,7 @@ watch(internalActive, (isActive) => {
 const randomId = ref<string>(nanoid());
 
 const imageURL = computed(() => {
-	return `${getRootPath()}assets/${props.id}?${randomId.value}`;
+	return getAssetUrl(`${props.id}?${randomId.value}`);
 });
 
 const dimensionsString = computed(() => {

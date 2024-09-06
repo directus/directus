@@ -32,8 +32,16 @@ export type Info = {
 		public_favicon: string | null;
 		public_note: string | null;
 		custom_css: string | null;
+		public_registration: boolean | null;
+		public_registration_verify_email: boolean | null;
 	};
 	rateLimit?:
+		| false
+		| {
+				points: number;
+				duration: number;
+		  };
+	rateLimitGlobal?:
 		| false
 		| {
 				points: number;
@@ -43,9 +51,34 @@ export type Info = {
 		default: number;
 		max: number;
 	};
+	websocket?:
+		| false
+		| {
+				logs?:
+					| false
+					| {
+							allowedLogLevels: Record<string, number>;
+					  };
+				rest?:
+					| false
+					| {
+							authentication: string;
+							path: string;
+					  };
+				graphql?:
+					| false
+					| {
+							authentication: string;
+							path: string;
+					  };
+				heartbeat?: boolean | number;
+		  };
 	version?: string;
 	extensions?: {
 		limit: number | null;
+	};
+	uploads?: {
+		chunkSize: number;
 	};
 };
 
@@ -60,6 +93,8 @@ export const useServerStore = defineStore('serverStore', () => {
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
+		websocket: undefined,
+		uploads: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -84,12 +119,17 @@ export const useServerStore = defineStore('serverStore', () => {
 	});
 
 	const hydrate = async (options?: HydrateOptions) => {
-		const [serverInfoResponse, authResponse] = await Promise.all([api.get(`/server/info`), api.get('/auth')]);
+		const [serverInfoResponse, authResponse] = await Promise.all([
+			api.get(`/server/info`),
+			api.get('/auth?sessionOnly'),
+		]);
 
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
+		info.websocket = serverInfoResponse.data.data?.websocket;
 		info.version = serverInfoResponse.data.data?.version;
+		info.uploads = serverInfoResponse.data.data?.uploads;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;
@@ -111,7 +151,10 @@ export const useServerStore = defineStore('serverStore', () => {
 				await replaceQueue();
 			} else {
 				const { duration, points } = serverInfoResponse.data.data.rateLimit;
-				await replaceQueue({ intervalCap: points - 10, interval: duration * 1000, carryoverConcurrencyCount: true });
+				const intervalCap = 1;
+				/** Interval for 1 point */
+				const interval = Math.ceil((duration * 1000) / points);
+				await replaceQueue({ intervalCap, interval });
 			}
 		}
 	};

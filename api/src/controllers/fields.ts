@@ -130,9 +130,7 @@ router.patch(
 			throw new InvalidPayloadError({ reason: 'Submitted body has to be an array' });
 		}
 
-		for (const field of req.body) {
-			await service.updateField(req.params['collection']!, field);
-		}
+		await service.updateFields(req.params['collection']!, req.body);
 
 		try {
 			const results: any = [];

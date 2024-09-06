@@ -4,7 +4,7 @@ withDefaults(
 		name: string;
 		icon: string;
 		search?: string;
-		color?: string;
+		color?: string | null;
 	}>(),
 	{
 		color: 'var(--theme--foreground)',

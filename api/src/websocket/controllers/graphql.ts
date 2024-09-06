@@ -1,18 +1,19 @@
-import { useEnv } from '@directus/env';
 import type { Server } from 'graphql-ws';
 import { CloseCode, MessageType, makeServer } from 'graphql-ws';
 import type { Server as httpServer } from 'http';
 import type { WebSocket } from 'ws';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
 import { GraphQLService } from '../../services/index.js';
 import { getSchema } from '../../utils/get-schema.js';
-import { authenticateConnection, refreshAccountability } from '../authenticate.js';
+import { getAddress } from '../../utils/get-address.js';
+import { authenticateConnection } from '../authenticate.js';
 import { handleWebSocketError } from '../errors.js';
 import { ConnectionParams, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
 import SocketController from './base.js';
+import { registerWebSocketEvents } from './hooks.js';
 
 const logger = useLogger();
 
@@ -20,8 +21,7 @@ export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_GRAPHQL');
-
-		const env = useEnv();
+		registerWebSocketEvents();
 
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
@@ -43,7 +43,8 @@ export class GraphQLSubscriptionController extends SocketController {
 		});
 
 		bindPubSub();
-		logger.info(`GraphQL Subscriptions started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+
+		logger.info(`GraphQL Subscriptions started at ${getAddress(httpServer)}${this.endpoint}`);
 	}
 
 	private bindEvents(client: WebSocketClient) {
@@ -78,8 +79,6 @@ export class GraphQLSubscriptionController extends SocketController {
 								// the first message should authenticate successfully in this mode
 								client.close(CloseCode.Forbidden, 'Forbidden');
 								return;
-							} else {
-								client.accountability = await refreshAccountability(client.accountability);
 							}
 
 							await cb(JSON.stringify(message));

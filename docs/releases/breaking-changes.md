@@ -13,15 +13,124 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 11.0.0
+
+Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in
+roles, but instead in policies. Policies can be attached to roles and also directly to users.
+
+While users can still only have one direct role, roles can now also be nested within roles. A user's permissions are now
+an aggregate of all policies attached directly to them, to their role, and any nested roles.
+
+### Changes to Object Properties
+
+Object properties have changed and moved. This should only impact users who use and rely on the users, roles, and
+permissions endpoints.
+
+#### Users
+
+Users now have one additional property - `policies`, which is a many-to-many relationship to `policies`.
+
+#### Roles
+
+Roles no longer hold `admin_access`, `app_access`, `enforce_tfa`, or `ip_access`. These have been moved to `policies`.
+
+Roles now have one additional property - `children`, which is a one-to-many relationship to `roles`.
+
+#### Permissions
+
+Permissions are no longer attached to a `role`. This has been changed to a `policy`.
+
+### Requests for Missing Fields Now Fail
+
+If you are requesting fields that do not exist anymore, your requests will throw an error. To fix this, either put
+fields back into your data model or remove them from the request.
+
+### M2A Fields Now Require Collection Name
+
+If you are requesting Many-to-Any (M2A) fields without collection name, they will throw an error. To fix this, you need
+to put the collection name you are targeting. This is true regardless of level or if using REST/GraphQL.
+
+::: details Migration/Mitigation
+
+You could previously request fields in a M2A builder without specifying the collection they came from, for example:
+
+```
+GET https://example.directus.app/items/example?fields=items.item.m2a_field
+```
+
+This no longer works and you must specify which collection the field is located in:
+
+```
+GET https://example.directus.app/items/example?fields=items.item:m2a_collection.m2a_field
+```
+
+[Understand the M2A field syntax in our global query parameter page](https://docs.directus.io/reference/query).
+
+:::
+
+### Changes for Extension Developers
+
+#### Properties Returned from `usersStore`
+
+The `usersStore` has a `role` object that previously contained the `admin_access`, `app_access`, and `enforce_tfa`
+properties. These are now returned directly in the `user` object.
+
+#### `preRegisterCheck` Data Structure
+
+If you use the `preRegisterCheck` guard function in your module extension to determine whether it is shown, it now
+receives a different data structure. It previously received a list of permission objects. Now, it receives the same data
+returned from the new [Get Current User Permissions](/reference/system/permissions.html#get-current-user-permissions)
+endpoint.
+
+### Replaced `mysql` with `mysql2`
+
+The database client library [`mysql`](https://www.npmjs.com/package/mysql) has been replaced with
+[`mysql2`](https://www.npmjs.com/package/mysql2), which is a continuation of the former. The client is used to connect
+to MySQL/MariaDB databases.
+
+If you're using MySQL/MariaDB, please note that:
+
+- `mysql2` leads to cross-collection queries (filtering on relations) with stricter charset comparison. Therefore,
+  ensure again that the value of the config option
+  [`DB_CHARSET`/`DB_CHARSET_NUMBER`](/self-hosted/config-options#database) matches the charset of your tables.
+- Values of type "Decimal" are now returned as a `string` instead of a `number`, which ensures that the precision is
+  preserved.
+
+## Version 10.13.2
+
+### Updated Date Fields for Files
+
+In order to make it possible to recognize when a file was last replaced, the following changes have been made to the
+date fields:
+
+- A new `created_on` field has been introduced, which contains the initial date of creation
+- The `uploaded_on` field is now updated with every file upload/replacement
+
+## Version 10.12.2
+
+### Disallowed Mutation of Special System Collections via Relations
+
+For security reasons, mutations of the following system collections via relations are no longer permitted:
+
+- `directus_collections`
+- `directus_fields`
+- `directus_relations`
+- `directus_sessions`
+- `directus_extensions`
+
 ## Version 10.10.0
 
-### Removed Local Extension Folders
+### Deprecated Typed Extension Folders
 
-Legacy extension type directory-based structure (/interfaces/my-interface/, /endpoints/my-endpoint, etc) are being
+Legacy extension type directory-based structure (`/interfaces/my-interface/`, `/endpoints/my-endpoint`, etc) are being
 removed in favor of relying on the `package.json` file for metadata including extension type.
 
-If your extension is already in the root `extensions` directory and has a `package.json` file with a
-`directus:extension` object, there is no action required.
+If your extensions are already relying on the up-to-date extensions folder paradigm (extensions in the root of your
+extensions folder prefixed with `directus-extension-`) no action is required at this point. If you're currently relying
+on the legacy format for extensions, recognizable by each extension type having it's own folder, like `endpoints`,
+`hooks`, etc, you will have to update your extensions before upgrading to this version.
+
+Directus will ignore extensions that use the legacy format starting in this version.
 
 ::: details Migration/Mitigation
 
@@ -30,7 +139,7 @@ Move all extension directories from their extension type subdirectory one level 
 - `./extensions/modules/module-a/` becomes `./extensions/module-a/`.
 - `./extensions/panels/panel-b/` becomes `./extensions/panel-b/`.
 
-If your project does not already have one, add a `directus:extension` object to your `package.json` file:
+If your extension does not already have one, add a `directus:extension` object to your `package.json` file:
 
 ```json
 {
@@ -58,6 +167,21 @@ Notes:
 
 :::
 
+### Moved Migrations Out of Extensions
+
+Migrations are no longer considered an extension type as of this release. The `migrations` extensions directory must be
+migrated.
+
+Place migrations in the `./migrations` directory, or set the new location in the `MIGRATIONS_PATH` environment variable.
+
+### Moved Email Templates Out of Extensions
+
+Email Templates are no longer considered an extension type as of this release. The `templates` extensions directory must
+be migrated.
+
+Place email templates in the `./templates` directory, or set the new location in the `EMAIL_TEMPLATES_PATH` environment
+variable.
+
 ### Content Versioning Output
 
 Starting with 10.10.0, when requesting Item Content Versions via the API, nested relational changes to one-to-many are
@@ -82,9 +206,6 @@ applications, you can set `AUTH_<PROVIDER>_MODE=cookie`. This will however not w
 
 This affects App extensions that are currently extracting the token from `axios`. This will no longer be either possible
 or necessary, as the App now uses a session cookie, which will be sent with each request from the browser.
-
-This also means that the `<v-image>` component being deprecated as it does not add any value over using the native
-`<img>` tag anymore.
 
 ::: details Migration/Mitigation
 
@@ -154,6 +275,16 @@ If your current workflow depends on redirecting to an external domain after succ
 `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` config option.
 
 `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST` accepts a comma-separated list of URLs (path is included in comparison).
+
+### Email Flow Operation No Longer Waits for Emails to Be Sent
+
+Previously, the [Send Email](https://docs.directus.io/app/flows/operations.html#send-email) Flow Operation has waited
+until emails have been sent out before proceeding to the next step.
+
+This is no longer the case, which also means that the operation can no longer be used to receive information about
+dispatched emails.
+
+If this is a requirement, it can still be achieved by building a custom operation which directly uses the `MailService`.
 
 ## Version 10.9.0
 

@@ -1,8 +1,8 @@
-import { readItems } from '@directus/sdk';
 import { formatTitle } from '@directus/format-title';
-import { client } from '../lib/directus.js';
+import { readItems } from '@directus/sdk';
 import type { DefaultTheme } from 'vitepress';
 import typeDocSidebar from '../../packages/typedoc-sidebar.json';
+import { client } from '../lib/directus.js';
 import { sections as guideSections } from './guides.js';
 
 export default {
@@ -93,10 +93,6 @@ function sidebarDeveloperReference() {
 							text: 'Relationships',
 						},
 					],
-				},
-				{
-					link: '/app/webhooks',
-					text: 'Webhooks',
 				},
 				{
 					link: '/app/flows',
@@ -191,6 +187,10 @@ function sidebarDeveloperReference() {
 					text: 'Permissions',
 				},
 				{
+					link: '/reference/system/policies',
+					text: 'Policies',
+				},
+				{
 					link: '/reference/system/presets',
 					text: 'Presets',
 				},
@@ -233,10 +233,6 @@ function sidebarDeveloperReference() {
 				{
 					link: '/reference/system/utilities',
 					text: 'Utilities',
-				},
-				{
-					link: '/reference/system/webhooks',
-					text: 'Webhooks',
 				},
 			],
 		},
@@ -312,10 +308,6 @@ function sidebarDeveloperReference() {
 									text: 'Displays',
 								},
 								{
-									link: '/extensions/email-templates',
-									text: 'Email Templates',
-								},
-								{
 									link: '/extensions/endpoints',
 									text: 'Endpoints',
 								},
@@ -330,10 +322,6 @@ function sidebarDeveloperReference() {
 								{
 									link: '/extensions/layouts',
 									text: 'Layouts',
-								},
-								{
-									link: '/extensions/migrations',
-									text: 'Migrations',
 								},
 								{
 									link: '/extensions/modules',
@@ -467,6 +455,14 @@ function sidebarDeveloperReference() {
 					text: 'CLI',
 				},
 				{
+					link: '/self-hosted/migrations',
+					text: 'Migrations',
+				},
+				{
+					link: '/self-hosted/email-templates',
+					text: 'Email Templates',
+				},
+				{
 					text: 'Single Sign-On (SSO)',
 					items: [
 						{ link: '/self-hosted/sso', text: 'Quickstart' },
@@ -567,23 +563,8 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
+					text: 'Key Concepts',
 					link: '/user-guide/user-management/users-roles-permissions',
-					text: 'Users, Roles & Permissions',
-					type: 'page',
-					items: [
-						{
-							text: 'Users',
-							link: '/user-guide/user-management/users',
-						},
-						{
-							text: 'Roles',
-							link: '/user-guide/user-management/roles',
-						},
-						{
-							text: 'Permissions',
-							link: '/user-guide/user-management/permissions',
-						},
-					],
 				},
 				{
 					text: 'User Directory',

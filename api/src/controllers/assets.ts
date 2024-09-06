@@ -7,7 +7,7 @@ import { Router } from 'express';
 import { merge, pick } from 'lodash-es';
 import { ASSET_TRANSFORM_QUERY_KEYS, SYSTEM_ASSET_ALLOW_LIST } from '../constants.js';
 import getDatabase from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
@@ -238,37 +238,30 @@ router.get(
 			return res.end();
 		}
 
-		let isDataSent = false;
+		stream
+			.on('error', (error) => {
+				logger.error(error, `Couldn't stream file ${file.id} to the client`);
 
-		stream.on('data', (chunk) => {
-			isDataSent = true;
-			res.write(chunk);
-		});
+				if (!res.headersSent) {
+					res.removeHeader('Content-Type');
+					res.removeHeader('Content-Disposition');
+					res.removeHeader('Cache-Control');
 
-		stream.on('end', () => {
-			res.end();
-		});
-
-		stream.on('error', (e) => {
-			logger.error(e, `Couldn't stream file ${file.id} to the client`);
-
-			if (!isDataSent) {
-				res.removeHeader('Content-Type');
-				res.removeHeader('Content-Disposition');
-				res.removeHeader('Cache-Control');
-
-				res.status(500).json({
-					errors: [
-						{
-							message: 'An unexpected error occurred.',
-							extensions: {
-								code: 'INTERNAL_SERVER_ERROR',
+					res.status(500).json({
+						errors: [
+							{
+								message: 'An unexpected error occurred.',
+								extensions: {
+									code: 'INTERNAL_SERVER_ERROR',
+								},
 							},
-						},
-					],
-				});
-			}
-		});
+						],
+					});
+				} else {
+					res.end();
+				}
+			})
+			.pipe(res);
 
 		return undefined;
 	}),

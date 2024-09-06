@@ -192,8 +192,8 @@ appearance:
 
 ## Add Template to Directus
 
-Inside the Directus project directory is an extensions directory, this is where the custom extensions live. There is a
-directory for each type. In this case you are adding a template.
+Custom email templates are stored in the configured `EMAIL_TEMPLATES_PATH` location, which defaults to the `./templates`
+folder relative to your project.
 
 1. Inside the templates directory, copy and paste the required liquid files for your email. These cannot go in a
    subdirectory.

@@ -17,7 +17,7 @@ beforeAll(() => {
 	vi.spyOn(i18n.global, 't').mockImplementation((key: string) => key);
 
 	global = {
-		stubs: ['v-field-template', 'v-select'],
+		stubs: ['v-collection-field-template', 'v-select'],
 		plugins: [i18n],
 	};
 });

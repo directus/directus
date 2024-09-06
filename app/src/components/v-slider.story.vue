@@ -7,9 +7,7 @@ const value = ref(50);
 
 <template>
 	<Story title="VSlider">
-		<template #default="{ state: { _hPropState, _hPropDefs, $data: _, ...state } }">
-			<v-slider v-model="value" v-bind="state" />
-		</template>
+		<v-slider v-model="value" />
 
 		<template #controls>
 			<HstNumber v-model="value" title="Value" />

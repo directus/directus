@@ -219,8 +219,9 @@ const downloadName = computed(() => {
 	const junctionField = relationInfo.value.junctionField.field;
 	const relationPkField = relationInfo.value.relatedPrimaryKeyField.field;
 
-	return displayItems.value.find((item) => get(item, [junctionField, relationPkField]))?.directus_files_id
-		?.filename_download;
+	return displayItems.value.find((item) => get(item, [junctionField, relationPkField]) === relatedPrimaryKey.value)?.[
+		junctionField
+	]?.filename_download;
 });
 
 const downloadUrl = computed(() => {
@@ -236,6 +237,13 @@ function getFilename(junctionRow: Record<string, any>) {
 	if (!key) return null;
 
 	return key;
+}
+
+function getDownloadName(junctionRow: Record<string, any>) {
+	const junctionField = relationInfo.value?.junctionField.field;
+	if (!junctionField) return;
+
+	return junctionRow[junctionField]?.filename_download;
 }
 
 const customFilter = computed(() => {
@@ -290,11 +298,14 @@ const allowDrag = computed(
 			/>
 		</template>
 
-		<v-list v-else>
+		<template v-else>
 			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
 
 			<draggable
+				v-else
 				:model-value="displayItems"
+				tag="v-list"
+				class="files"
 				item-key="id"
 				handle=".drag-handle"
 				:disabled="!allowDrag"
@@ -335,7 +346,7 @@ const allowDrag = computed(
 								</v-list-item>
 								<v-list-item
 									clickable
-									:download="element.directus_files_id.filename_download"
+									:download="getDownloadName(element)"
 									:href="getAssetUrl(getFilename(element), true)"
 								>
 									<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
@@ -346,7 +357,7 @@ const allowDrag = computed(
 					</v-list-item>
 				</template>
 			</draggable>
-		</v-list>
+		</template>
 
 		<div class="actions">
 			<v-button v-if="enableCreate && createAllowed" :disabled="disabled" @click="showUpload = true">
@@ -355,7 +366,7 @@ const allowDrag = computed(
 			<v-button v-if="enableSelect && selectAllowed" :disabled="disabled" @click="selectModalActive = true">
 				{{ t('add_existing') }}
 			</v-button>
-			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+			<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 		</div>
 
 		<drawer-item
@@ -408,7 +419,7 @@ const allowDrag = computed(
 </template>
 
 <style lang="scss" scoped>
-.v-list {
+.v-list.files {
 	--v-list-padding: 0 0 4px;
 
 	.v-list-item.deleted {
@@ -426,6 +437,8 @@ const allowDrag = computed(
 .actions {
 	margin-top: 8px;
 	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
 	gap: 8px;
 
 	.v-pagination {

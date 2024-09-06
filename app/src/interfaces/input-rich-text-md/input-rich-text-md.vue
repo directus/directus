@@ -8,7 +8,7 @@ import 'codemirror/mode/markdown/markdown';
 
 import { useShortcut } from '@/composables/use-shortcut';
 import { useWindowSize } from '@/composables/use-window-size';
-import { getPublicURL } from '@/utils/get-root-path';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { percentage } from '@/utils/percentage';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import { Alteration, CustomSyntax, applyEdit } from './edits';
@@ -20,6 +20,7 @@ const props = withDefaults(
 		placeholder?: string;
 		editorFont?: 'sans-serif' | 'serif' | 'monospace';
 		previewFont?: 'sans-serif' | 'serif' | 'monospace';
+		defaultView?: 'editor' | 'preview';
 		toolbar?: string[];
 		customSyntax?: CustomSyntax[];
 		imageToken?: string;
@@ -30,6 +31,7 @@ const props = withDefaults(
 	{
 		editorFont: 'sans-serif',
 		previewFont: 'sans-serif',
+		defaultView: 'editor',
 		toolbar: () => [
 			'heading',
 			'bold',
@@ -60,7 +62,7 @@ const codemirrorEl = ref<HTMLTextAreaElement>();
 let codemirror: CodeMirror.Editor | null = null;
 let previousContent: string | null = null;
 
-const view = ref(['editor']);
+const view = ref(props.defaultView);
 
 const imageDialogOpen = ref(false);
 
@@ -183,7 +185,7 @@ useShortcut('meta+alt+6', () => edit('heading', { level: 6 }), markdownInterface
 function onImageUpload(image: any) {
 	if (!codemirror) return;
 
-	let url = getPublicURL() + `assets/` + image.id;
+	let url = getAssetUrl(image.id);
 
 	if (props.imageToken) {
 		url += '?access_token=' + props.imageToken;
@@ -202,14 +204,14 @@ function edit(type: Alteration, options?: Record<string, any>) {
 </script>
 
 <template>
-	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view[0], { disabled }]">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view, { disabled }]">
 		<div class="toolbar">
-			<template v-if="view[0] !== 'preview'">
+			<template v-if="view !== 'preview'">
 				<v-menu
 					v-if="toolbar?.includes('heading')"
 					show-arrow
 					placement="bottom-start"
-					:class="[{ active: view[0] !== 'preview' }]"
+					:class="[{ active: view !== 'preview' }]"
 				>
 					<template #activator="{ toggle }">
 						<v-button v-tooltip="t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
@@ -365,11 +367,17 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 			<div class="spacer"></div>
 
-			<v-item-group v-model="view" class="view" mandatory rounded>
-				<v-button x-small value="editor" :class="[{ active: view[0] !== 'preview' }]">
+			<v-item-group
+				:model-value="[view]"
+				class="view"
+				mandatory
+				rounded
+				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
+			>
+				<v-button x-small value="editor" :class="[{ active: view !== 'preview' }]">
 					{{ t('interfaces.input-rich-text-md.edit') }}
 				</v-button>
-				<v-button x-small value="preview" :class="[{ active: view[0] === 'preview' }]">
+				<v-button x-small value="preview" :class="[{ active: view === 'preview' }]">
 					{{ t('interfaces.input-rich-text-md.preview') }}
 				</v-button>
 			</v-item-group>

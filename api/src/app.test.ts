@@ -22,6 +22,7 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({
 		EXTENSIONS_PATH: './extensions',
 		STORAGE_LOCATIONS: ['local'],
+		EMAIL_TEMPLATES_PATH: './templates',
 	}),
 }));
 
@@ -46,15 +47,7 @@ vi.mock('./flows', () => ({
 	}),
 }));
 
-vi.mock('./middleware/check-ip', () => ({
-	checkIP: Router(),
-}));
-
 vi.mock('./middleware/schema', () => ({
-	default: Router(),
-}));
-
-vi.mock('./middleware/get-permissions', () => ({
 	default: Router(),
 }));
 
@@ -70,7 +63,6 @@ vi.mock('./utils/validate-env.js');
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
-		KEY: 'xxxxxxx-xxxxxx-xxxxxxxx-xxxxxxxxxx',
 		SECRET: 'abcdef',
 		SERVE_APP: 'true',
 		PUBLIC_URL: 'http://localhost:8055/directus',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useExtensionsStore } from '@/stores/extensions';
-import { ExtensionType } from '@directus/extensions';
+import { ApiOutput } from '@directus/extensions';
 import { groupBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
@@ -9,6 +9,9 @@ import SettingsNavigation from '../../components/navigation.vue';
 import ExtensionGroupDivider from './components/extension-group-divider.vue';
 import ExtensionItem from './components/extension-item.vue';
 import ExtensionsInfoSidebarDetail from './components/extensions-info-sidebar-detail.vue';
+import { ExtensionType } from './types';
+
+type ExtensionsMap = Record<ExtensionType, ApiOutput[]>;
 
 const { t } = useI18n();
 
@@ -16,8 +19,19 @@ const extensionsStore = useExtensionsStore();
 const { extensions, loading } = storeToRefs(extensionsStore);
 
 const bundled = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle !== null));
+
 const regular = computed(() => extensionsStore.extensions.filter(({ bundle }) => bundle === null));
-const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
+
+const extensionsByType = computed(() => {
+	const groups = groupBy(regular.value, 'schema.type');
+
+	if ('undefined' in groups) {
+		groups['missing'] = groups['undefined'];
+		delete groups['undefined'];
+	}
+
+	return groups as ExtensionsMap;
+});
 </script>
 
 <template>
@@ -41,13 +55,15 @@ const extensionsByType = computed(() => groupBy(regular.value, 'schema.type'));
 		<div v-if="extensions.length > 0 || loading === false" class="page-container">
 			<template v-if="extensions.length > 0">
 				<div v-for="(list, type) in extensionsByType" :key="`${type}-list`" class="extension-group">
-					<extension-group-divider class="group-divider" :type="type as ExtensionType" />
+					<extension-group-divider class="group-divider" :type="type" />
 
 					<v-list>
-						<template v-for="ext in list" :key="ext.name">
+						<template v-for="extension in list" :key="extension.name">
 							<extension-item
-								:extension="ext"
-								:children="ext.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === ext.id) : []"
+								:extension
+								:children="
+									extension.schema?.type === 'bundle' ? bundled.filter(({ bundle }) => bundle === extension.id) : []
+								"
 							/>
 						</template>
 					</v-list>

@@ -61,9 +61,10 @@ be removed [unless you persist them](https://docs.docker.com/storage) when creat
 Directus image by default will use the following locations for data persistence (note that these can be changed through
 environment variables):
 
-- `/directus/uploads` for uploads
 - `/directus/database` (only when using SQLite and not configured to a different folder)
+- `/directus/uploads` for uploads
 - `/directus/extensions` for loading extensions
+- `/directus/templates` for overriding and extending email templates
 
 The `services.directus.volumes` section in your docker-compose.yml is optional. To persist data to your local machine,
 include a list of persisted directories:
@@ -75,6 +76,7 @@ services:
       - ./database:/directus/database
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
+      - ./templates:/directus/templates
 ```
 
 ## Example Docker Compose
@@ -96,9 +98,23 @@ services:
       POSTGRES_USER: "directus"
       POSTGRES_PASSWORD: "directus"
       POSTGRES_DB: "directus"
+    healthcheck:
+      test: ["CMD", "pg_isready", "--host=localhost", "--username=directus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
 
   cache:
     image: redis:6
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(redis-cli ping) = 'PONG' ]"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
 
   directus:
     image: directus/directus:{{ packages.directus.version.full }}
@@ -106,14 +122,14 @@ services:
       - 8055:8055
     volumes:
       - ./uploads:/directus/uploads
-      # If you want to load extensions from the host
-      # - ./extensions:/directus/extensions
+      - ./extensions:/directus/extensions
     depends_on:
-      - cache
-      - database
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
     environment:
-      KEY: "255d861b-5ea1-5996-9aa3-922530ec40b1"
-      SECRET: "6116487b-cda1-52c2-b5b5-c8022c45e263"
+      SECRET: "replace-with-secure-random-value"
 
       DB_CLIENT: "pg"
       DB_HOST: "database"
@@ -123,6 +139,7 @@ services:
       DB_PASSWORD: "directus"
 
       CACHE_ENABLED: "true"
+      CACHE_AUTO_PURGE: "true"
       CACHE_STORE: "redis"
       REDIS: "redis://cache:6379"
 

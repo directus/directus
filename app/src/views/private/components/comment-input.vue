@@ -2,6 +2,7 @@
 import api from '@/api';
 import { useShortcut } from '@/composables/use-shortcut';
 import { Activity } from '@/types/activity';
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { md } from '@/utils/md';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -218,7 +219,7 @@ function triggerSearch({ searchQuery, caretPosition }: { searchQuery: string; ca
 
 function avatarSource(url: string) {
 	if (url === null) return '';
-	return `/assets/${url}?key=system-small-cover`;
+	return getAssetUrl(`${url}?key=system-small-cover`);
 }
 
 async function postComment() {

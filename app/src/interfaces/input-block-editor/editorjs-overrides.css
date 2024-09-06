@@ -104,6 +104,14 @@
 	color: var(--theme--primary);
 }
 
+.codex-editor .ce-popover-item__icon i {
+	font-family: 'Material Symbols', sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+}
+
 .codex-editor .ce-inline-toolbar__toggler-and-button-wrapper {
 	padding: 0;
 }

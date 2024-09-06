@@ -88,10 +88,10 @@ async function onSubmit() {
 
 		router.push(redirectQuery || lastPage || '/content');
 	} catch (err: any) {
-		if (err.response?.data?.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
+		if (err.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 			requiresTFA.value = true;
 		} else {
-			error.value = err.response?.data?.errors?.[0]?.extensions?.code || err;
+			error.value = err.errors?.[0]?.extensions?.code || err;
 		}
 	} finally {
 		loggingIn.value = false;
@@ -102,10 +102,17 @@ async function onSubmit() {
 <template>
 	<form novalidate @submit.prevent="onSubmit">
 		<v-input v-model="email" autofocus autocomplete="username" type="email" :placeholder="t('email')" />
-		<v-input v-model="password" type="password" autocomplete="current-password" :placeholder="t('password')" />
+		<interface-system-input-password :value="password" autocomplete="current-password" @input="password = $event" />
 
 		<transition-expand>
-			<v-input v-if="requiresTFA" v-model="otp" type="text" :placeholder="t('otp')" autofocus />
+			<v-input
+				v-if="requiresTFA"
+				v-model="otp"
+				type="text"
+				autocomplete="one-time-code"
+				:placeholder="t('otp')"
+				autofocus
+			/>
 		</transition-expand>
 
 		<v-notice v-if="error" type="warning">

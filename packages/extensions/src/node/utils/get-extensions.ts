@@ -80,14 +80,19 @@ export async function resolveFsExtensions(root: string): Promise<Map<string, Ext
 				const manifest: Record<string, any> = await fse.readJSON(join(path, 'package.json'));
 				return { name: folder, path, manifest };
 			} catch {
-				throw new Error(`Extension "${folder}" (${path}) does not contain a package.json file.`);
+				// Ignore invalid extensions or non-extension folders
+				return;
 			}
 		}),
 	);
 
 	const extensions = new Map();
 
-	for (const { name, path, manifest } of extensionMap.values()) {
+	for (const extension of extensionMap.values()) {
+		if (!extension) continue;
+
+		const { name, path, manifest } = extension;
+
 		let parsedManifest;
 
 		try {

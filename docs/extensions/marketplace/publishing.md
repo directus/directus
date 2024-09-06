@@ -107,11 +107,9 @@ processing:
 - The title is parsed by the [Title Formatter](https://github.com/directus/format-title) used throughout the Data
   Studio.
 
-The full, unprocessed, package name is also shown in the extension detail page.
-
 ### README
 
-Your npm package's `README.md` file is also shown on the extension detail page. This can be updated by releasing a new
+Your npm package's `README.md` file is shown on the extension detail page. This can be updated by releasing a new
 version of your package to npm.
 
 #### Installation Instructions

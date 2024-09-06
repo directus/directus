@@ -1,23 +1,30 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
-import type { Query } from '@directus/types';
-import { getSimpleHash, toArray } from '@directus/utils';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import type { Item, PrimaryKey, RegisterUserInput, User } from '@directus/types';
+import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import { cloneDeep, isEmpty } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
+import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
-import type { AbstractServiceOptions, Item, MutationOptions, PrimaryKey } from '../types/index.js';
+import { useLogger } from '../logger/index.js';
+import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
+import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
 import { Url } from '../utils/url.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
 
 const env = useEnv();
+const logger = useLogger();
 
 export class UsersService extends ItemsService {
 	constructor(options: AbstractServiceOptions) {
@@ -100,50 +107,13 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	private async checkRemainingAdminExistence(excludeKeys: PrimaryKey[]) {
-		// Make sure there's at least one admin user left after this deletion is done
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNotIn('directus_users.id', excludeKeys)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the role` });
-		}
-	}
-
-	/**
-	 * Make sure there's at least one active admin user when updating user status
-	 */
-	private async checkRemainingActiveAdmin(excludeKeys: PrimaryKey[]): Promise<void> {
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNotIn('directus_users.id', excludeKeys)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.andWhere({ 'directus_users.status': 'active' })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableContentError({ reason: `You can't change the active status of the last admin user` });
-		}
-	}
-
 	/**
 	 * Get basic information of user identified by email
 	 */
 	private async getUserByEmail(
 		email: string,
 	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
-		return await this.knex
+		return this.knex
 			.select('id', 'role', 'status', 'password', 'email')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
@@ -151,16 +121,19 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
-	 * Create url for inviting users
+	 * Create URL for inviting users
 	 */
 	private inviteUrl(email: string, url: string | null): string {
 		const payload = { email, scope: 'invite' };
 
-		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '7d', issuer: 'directus' });
-		const inviteURL = url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite');
-		inviteURL.setQuery('token', token);
+		const token = jwt.sign(payload, getSecret(), {
+			expiresIn: env['USER_INVITE_TOKEN_TTL'] as string,
+			issuer: 'directus',
+		});
 
-		return inviteURL.toString();
+		return (url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite'))
+			.setQuery('token', token)
+			.toString();
 	}
 
 	/**
@@ -186,17 +159,38 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create a new user
 	 */
-	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const result = await this.createMany([data], opts);
-		return result[0]!;
+	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		try {
+			if ('email' in data) {
+				this.validateEmail(data['email']);
+				await this.checkUniqueEmails([data['email']]);
+			}
+
+			if ('password' in data) {
+				await this.checkPasswordPolicy([data['password']]);
+			}
+		} catch (err: any) {
+			opts.preMutationError = err;
+		}
+
+		if (!('status' in data) || data['status'] === 'active') {
+			// Creating a user only requires checking user limits if the user is active, no need to care about the role
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		}
+
+		return await super.createOne(data, opts);
 	}
 
 	/**
 	 * Create multiple new users
 	 */
-	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const emails = data['map']((payload) => payload['email']).filter((email) => email);
-		const passwords = data['map']((payload) => payload['password']).filter((password) => password);
+	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		const emails = data.map((payload) => payload['email']).filter((email) => email);
+		const passwords = data.map((payload) => payload['password']).filter((password) => password);
+		const someActive = data.some((payload) => !('status' in payload) || payload['status'] === 'active');
 
 		try {
 			if (emails.length) {
@@ -208,82 +202,37 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+			opts.preMutationError = err;
 		}
 
-		return await super.createMany(data, opts);
-	}
+		if (someActive) {
+			// Creating users only requires checking user limits if the users are active, no need to care about the role
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
-	/**
-	 * Update many users by query
-	 */
-	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const keys = await this.getKeysByQuery(query);
-		return keys.length ? await this.updateMany(keys, data, opts) : [];
-	}
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		}
 
-	/**
-	 * Update a single user by primary key
-	 */
-	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.updateMany([key], data, opts);
-		return key;
-	}
-
-	override async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
-
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-
-		const keys: PrimaryKey[] = [];
-
-		await this.knex.transaction(async (trx) => {
-			const service = new UsersService({
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
-
-			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `User in update misses primary key` });
-				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
-			}
+		// Use generic ItemsService to avoid calling `UserService.createOne` to avoid additional work of validating emails,
+		// as this requires one query per email if done in `createOne`
+		const itemsService = new ItemsService(this.collection, {
+			schema: this.schema,
+			accountability: this.accountability,
+			knex: this.knex,
 		});
 
-		return keys;
+		return await itemsService.createMany(data, opts);
 	}
 
 	/**
 	 * Update many users by primary key
 	 */
-	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Item>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
 		try {
-			if (data['role']) {
-				/*
-				 * data['role'] has the following cases:
-				 * - a string with existing role id
-				 * - an object with existing role id for GraphQL mutations
-				 * - an object with data for new role
-				 */
-				const role = data['role']?.id ?? data['role'];
-
-				let newRole;
-
-				if (typeof role === 'string') {
-					newRole = await this.knex.select('admin_access').from('directus_roles').where('id', role).first();
-				} else {
-					newRole = role;
-				}
-
-				if (!newRole?.admin_access) {
-					await this.checkRemainingAdminExistence(keys);
-				}
-			}
-
-			if (data['status'] !== undefined && data['status'] !== 'active') {
-				await this.checkRemainingActiveAdmin(keys);
-			}
-
 			if (data['email']) {
 				if (keys.length > 1) {
 					throw new RecordNotUniqueError({
@@ -320,28 +269,49 @@ export class UsersService extends ItemsService {
 				data['auth_data'] = null;
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+			opts.preMutationError = err;
 		}
 
-		return await super.updateMany(keys, data, opts);
-	}
+		if ('role' in data) {
+			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		}
 
-	/**
-	 * Delete a single user by primary key
-	 */
-	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.deleteMany([key], opts);
-		return key;
+		if ('status' in data) {
+			if (data['status'] === 'active') {
+				// User are being activated, no need to check if there are enough admins
+				opts.userIntegrityCheckFlags =
+					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+			} else {
+				opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+			}
+		}
+
+		if (opts.userIntegrityCheckFlags) {
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		}
+
+		const result = await super.updateMany(keys, data, opts);
+
+		// Only clear the caches if the role has been updated
+		if ('role' in data) {
+			await this.clearCaches(opts);
+		}
+
+		return result;
 	}
 
 	/**
 	 * Delete multiple users by primary key
 	 */
-	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		try {
-			await this.checkRemainingAdminExistence(keys);
-		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (opts?.onRequireUserIntegrityCheck) {
+			opts.onRequireUserIntegrityCheck(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None);
+		} else {
+			try {
+				await validateRemainingAdminUsers({ excludeUsers: keys }, { knex: this.knex, schema: this.schema });
+			} catch (err: any) {
+				opts.preMutationError = err;
+			}
 		}
 
 		// Manual constraint, see https://github.com/directus/directus/pull/19912
@@ -352,31 +322,12 @@ export class UsersService extends ItemsService {
 		return keys;
 	}
 
-	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const readQuery = cloneDeep(query);
-		readQuery.fields = [primaryKeyField];
-
-		// Not authenticated:
-		const itemsService = new ItemsService(this.collection, {
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		const itemsToDelete = await itemsService.readByQuery(readQuery);
-		const keys: PrimaryKey[] = itemsToDelete.map((item: Item) => item[primaryKeyField]);
-
-		if (keys.length === 0) return [];
-
-		return await this.deleteMany(keys, opts);
-	}
-
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {
 		const opts: MutationOptions = {};
 
 		try {
 			if (url && isUrlAllowed(url, env['USER_INVITE_URL_ALLOW_LIST'] as string) === false) {
-				throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to invite users` });
+				throw new InvalidPayloadError({ reason: `URL "${url}" can't be used to invite users` });
 			}
 		} catch (err: any) {
 			opts.preMutationError = err;
@@ -406,23 +357,27 @@ export class UsersService extends ItemsService {
 			if (isEmpty(user) || user.status === 'invited') {
 				const subjectLine = subject ?? "You've been invited";
 
-				await mailService.send({
-					to: user?.email ?? email,
-					subject: subjectLine,
-					template: {
-						name: 'user-invitation',
-						data: {
-							url: this.inviteUrl(user?.email ?? email, url),
-							email: user?.email ?? email,
+				mailService
+					.send({
+						to: user?.email ?? email,
+						subject: subjectLine,
+						template: {
+							name: 'user-invitation',
+							data: {
+								url: this.inviteUrl(user?.email ?? email, url),
+								email: user?.email ?? email,
+							},
 						},
-					},
-				});
+					})
+					.catch((error) => {
+						logger.error(error, `Could not send user invitation mail`);
+					});
 			}
 		}
 	}
 
 	async acceptInvite(token: string, password: string): Promise<void> {
-		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
+		const { email, scope } = verifyJWT(token, getSecret()) as {
 			email: string;
 			scope: string;
 		};
@@ -444,6 +399,126 @@ export class UsersService extends ItemsService {
 		await service.updateOne(user.id, { password, status: 'active' });
 	}
 
+	async registerUser(input: RegisterUserInput) {
+		if (
+			input.verification_url &&
+			isUrlAllowed(input.verification_url, env['USER_REGISTER_URL_ALLOW_LIST'] as string) === false
+		) {
+			throw new InvalidPayloadError({
+				reason: `URL "${input.verification_url}" can't be used to verify registered users`,
+			});
+		}
+
+		const STALL_TIME = env['REGISTER_STALL_TIME'] as number;
+		const timeStart = performance.now();
+		const serviceOptions: AbstractServiceOptions = { accountability: this.accountability, schema: this.schema };
+		const settingsService = new SettingsService(serviceOptions);
+
+		const settings = await settingsService.readSingleton({
+			fields: [
+				'public_registration',
+				'public_registration_verify_email',
+				'public_registration_role',
+				'public_registration_email_filter',
+			],
+		});
+
+		if (settings?.['public_registration'] == false) {
+			throw new ForbiddenError();
+		}
+
+		const publicRegistrationRole = settings?.['public_registration_role'] ?? null;
+		const hasEmailVerification = settings?.['public_registration_verify_email'];
+		const emailFilter = settings?.['public_registration_email_filter'];
+		const first_name = input.first_name ?? null;
+		const last_name = input.last_name ?? null;
+
+		const partialUser: Partial<User> = {
+			// Required fields
+			email: input.email,
+			password: input.password,
+			role: publicRegistrationRole,
+			status: hasEmailVerification ? 'unverified' : 'active',
+			// Optional fields
+			first_name,
+			last_name,
+		};
+
+		if (emailFilter && validatePayload(emailFilter, { email: input.email }).length !== 0) {
+			await stall(STALL_TIME, timeStart);
+			throw new ForbiddenError();
+		}
+
+		const user = await this.getUserByEmail(input.email);
+
+		if (isEmpty(user)) {
+			await this.createOne(partialUser);
+		}
+		// We want to be able to re-send the verification email
+		else if (user.status !== ('unverified' satisfies User['status'])) {
+			// To avoid giving attackers infos about registered emails we dont fail for violated unique constraints
+			await stall(STALL_TIME, timeStart);
+			return;
+		}
+
+		if (hasEmailVerification) {
+			const mailService = new MailService(serviceOptions);
+			const payload = { email: input.email, scope: 'pending-registration' };
+
+			const token = jwt.sign(payload, env['SECRET'] as string, {
+				expiresIn: env['EMAIL_VERIFICATION_TOKEN_TTL'] as string,
+				issuer: 'directus',
+			});
+
+			const verificationUrl = (
+				input.verification_url
+					? new Url(input.verification_url)
+					: new Url(env['PUBLIC_URL'] as string).addPath('users', 'register', 'verify-email')
+			)
+				.setQuery('token', token)
+				.toString();
+
+			mailService
+				.send({
+					to: input.email,
+					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
+					template: {
+						name: 'user-registration',
+						data: {
+							url: verificationUrl,
+							email: input.email,
+							first_name,
+							last_name,
+						},
+					},
+				})
+				.catch((error) => {
+					logger.error(error, 'Could not send email verification mail');
+				});
+		}
+
+		await stall(STALL_TIME, timeStart);
+	}
+
+	async verifyRegistration(token: string): Promise<string> {
+		const { email, scope } = verifyJWT(token, env['SECRET'] as string) as {
+			email: string;
+			scope: string;
+		};
+
+		if (scope !== 'pending-registration') throw new ForbiddenError();
+
+		const user = await this.getUserByEmail(email);
+
+		if (user?.status !== ('unverified' satisfies User['status'])) {
+			throw new InvalidPayloadError({ reason: 'Invalid verification code' });
+		}
+
+		await this.updateOne(user.id, { status: 'active' });
+
+		return user.id;
+	}
+
 	async requestPasswordReset(email: string, url: string | null, subject?: string | null): Promise<void> {
 		const STALL_TIME = 500;
 		const timeStart = performance.now();
@@ -456,7 +531,7 @@ export class UsersService extends ItemsService {
 		}
 
 		if (url && isUrlAllowed(url, env['PASSWORD_RESET_URL_ALLOW_LIST'] as string) === false) {
-			throw new InvalidPayloadError({ reason: `Url "${url}" can't be used to reset passwords` });
+			throw new InvalidPayloadError({ reason: `URL "${url}" can't be used to reset passwords` });
 		}
 
 		const mailService = new MailService({
@@ -466,31 +541,35 @@ export class UsersService extends ItemsService {
 		});
 
 		const payload = { email: user.email, scope: 'password-reset', hash: getSimpleHash('' + user.password) };
-		const token = jwt.sign(payload, env['SECRET'] as string, { expiresIn: '1d', issuer: 'directus' });
+		const token = jwt.sign(payload, getSecret(), { expiresIn: '1d', issuer: 'directus' });
 
-		const acceptURL = url
-			? new Url(url).setQuery('token', token).toString()
-			: new Url(env['PUBLIC_URL'] as string).addPath('admin', 'reset-password').setQuery('token', token).toString();
+		const acceptUrl = (url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'reset-password'))
+			.setQuery('token', token)
+			.toString();
 
 		const subjectLine = subject ? subject : 'Password Reset Request';
 
-		await mailService.send({
-			to: user.email,
-			subject: subjectLine,
-			template: {
-				name: 'password-reset',
-				data: {
-					url: acceptURL,
-					email: user.email,
+		mailService
+			.send({
+				to: user.email,
+				subject: subjectLine,
+				template: {
+					name: 'password-reset',
+					data: {
+						url: acceptUrl,
+						email: user.email,
+					},
 				},
-			},
-		});
+			})
+			.catch((error) => {
+				logger.error(error, `Could not send password reset mail`);
+			});
 
 		await stall(STALL_TIME, timeStart);
 	}
 
 	async resetPassword(token: string, password: string): Promise<void> {
-		const { email, scope, hash } = jwt.verify(token, env['SECRET'] as string, { issuer: 'directus' }) as {
+		const { email, scope, hash } = jwt.verify(token, getSecret(), { issuer: 'directus' }) as {
 			email: string;
 			scope: string;
 			hash: string;
@@ -517,11 +596,19 @@ export class UsersService extends ItemsService {
 			knex: this.knex,
 			schema: this.schema,
 			accountability: {
-				...(this.accountability ?? { role: null }),
+				...(this.accountability ?? createDefaultAccountability()),
 				admin: true, // We need to skip permissions checks for the update call below
 			},
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' }, opts);
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
 	}
 }

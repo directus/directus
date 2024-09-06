@@ -30,7 +30,9 @@ export async function instantiateSandboxSdk(
 
 	await apiContext.evalClosure(
 		handlerCode,
-		sdk.map(({ generator, async }) => (async ? wrap(generator(requestedScopes)) : generator(requestedScopes))),
+		sdk.map(({ name, generator, async }) =>
+			async ? wrap(name, generator(requestedScopes)) : generator(requestedScopes),
+		),
 		{ filename: '<extensions-sdk>', arguments: { reference: true } },
 	);
 

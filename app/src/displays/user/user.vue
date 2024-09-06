@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getAssetUrl } from '@/utils/get-asset-url';
 import { userName } from '@/utils/user-name';
 import { User } from '@directus/types';
 import { computed } from 'vue';
@@ -18,7 +19,7 @@ const src = computed(() => {
 	if (props.value === null) return null;
 
 	if (props.value.avatar?.id) {
-		return `/assets/${props.value.avatar.id}?key=system-small-cover`;
+		return getAssetUrl(`${props.value.avatar.id}?key=system-small-cover`);
 	}
 
 	return null;

@@ -2,6 +2,7 @@ import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitepress';
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs';
 import sidebar from './data/sidebar.js';
+import { useMaterialIconsNoTranslate } from './lib/markdown-plugins/material-icons-no-translate.js';
 
 export default defineConfig({
 	base: '/',
@@ -19,6 +20,7 @@ export default defineConfig({
 		},
 		config(md) {
 			md.use(tabsMarkdownPlugin);
+			useMaterialIconsNoTranslate(md);
 		},
 	},
 	head: [

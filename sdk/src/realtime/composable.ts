@@ -1,4 +1,8 @@
+import type { AuthenticationClient } from '../auth/types.js';
+import type { ConsoleInterface, WebSocketInterface } from '../index.js';
 import type { DirectusClient } from '../types/client.js';
+import { auth } from './commands/auth.js';
+import { pong } from './commands/pong.js';
 import type {
 	ConnectionState,
 	ReconnectState,
@@ -11,14 +15,10 @@ import type {
 	WebSocketEventHandler,
 	WebSocketEvents,
 } from './types.js';
-import { messageCallback } from './utils/message-callback.js';
 import { generateUid } from './utils/generate-uid.js';
-import { pong } from './commands/pong.js';
-import { auth } from './commands/auth.js';
-import type { AuthenticationClient } from '../auth/types.js';
-import type { ConsoleInterface, WebSocketInterface } from '../index.js';
+import { messageCallback } from './utils/message-callback.js';
 
-type AuthWSClient<Schema extends object> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
+type AuthWSClient<Schema> = WebSocketClient<Schema> & AuthenticationClient<Schema>;
 
 const defaultRealTimeConfig: WebSocketConfig = {
 	authMode: 'handshake',
@@ -38,7 +38,7 @@ const defaultRealTimeConfig: WebSocketConfig = {
  * @returns A Directus realtime client.
  */
 export function realtime(config: WebSocketConfig = {}) {
-	return <Schema extends object>(client: DirectusClient<Schema>) => {
+	return <Schema>(client: DirectusClient<Schema>) => {
 		config = { ...defaultRealTimeConfig, ...config };
 		let uid = generateUid();
 
@@ -51,6 +51,9 @@ export function realtime(config: WebSocketConfig = {}) {
 			active: false,
 		};
 
+		// Disable reconnection after manual disconnection
+		let wasManuallyDisconnected = false;
+
 		const subscriptions = new Set<Record<string, any>>();
 
 		const hasAuth = (client: AuthWSClient<Schema>) => 'getToken' in client;
@@ -58,17 +61,19 @@ export function realtime(config: WebSocketConfig = {}) {
 		const debug = (level: keyof ConsoleInterface, ...data: any[]) =>
 			config.debug && client.globals.logger[level]('[Directus SDK]', ...data);
 
-		const withStrictAuth = async (url: URL, currentClient: AuthWSClient<Schema>) => {
+		const withStrictAuth = async (url: URL | string, currentClient: AuthWSClient<Schema>) => {
+			const newUrl = new client.globals.URL(url);
+
 			if (config.authMode === 'strict' && hasAuth(currentClient)) {
 				const token = await currentClient.getToken();
-				if (token) url.searchParams.set('access_token', token);
+				if (token) newUrl.searchParams.set('access_token', token);
 			}
 
-			return url;
+			return newUrl.toString();
 		};
 
 		const getSocketUrl = async (currentClient: AuthWSClient<Schema>) => {
-			if ('url' in config) return await withStrictAuth(new client.globals.URL(config.url), currentClient);
+			if ('url' in config) return await withStrictAuth(config.url, currentClient);
 
 			// if the main URL is a websocket URL use it directly!
 			if (['ws:', 'wss:'].includes(client.url.protocol)) {
@@ -85,7 +90,7 @@ export function realtime(config: WebSocketConfig = {}) {
 
 		const reconnect = (self: WebSocketClient<Schema>) => {
 			const reconnectPromise = new Promise<WebSocketInterface>((resolve, reject) => {
-				if (!config.reconnect) return reject();
+				if (!config.reconnect || wasManuallyDisconnected) return reject();
 
 				debug(
 					'info',
@@ -96,7 +101,11 @@ export function realtime(config: WebSocketConfig = {}) {
 				);
 
 				if (reconnectState.active) return reconnectState.active;
-				if (reconnectState.attempts >= config.reconnect.retries) return reject();
+
+				if (reconnectState.attempts >= config.reconnect.retries) {
+					reconnectState.attempts = -1;
+					return reject();
+				}
 
 				setTimeout(
 					() =>
@@ -215,6 +224,8 @@ export function realtime(config: WebSocketConfig = {}) {
 
 		return {
 			async connect() {
+				wasManuallyDisconnected = false;
+
 				if (state.code === 'connecting') {
 					// wait for the current connection to open
 					return await state.connection;
@@ -234,6 +245,11 @@ export function realtime(config: WebSocketConfig = {}) {
 
 					ws.addEventListener('open', async (evt: Event) => {
 						debug('info', `Connection open.`);
+
+						state = { code: 'open', connection: ws, firstMessage: true };
+						reconnectState.attempts = 0;
+						reconnectState.active = false;
+						handleMessages(self);
 
 						if (config.authMode === 'handshake' && hasAuth(self)) {
 							const access_token = await self.getToken();
@@ -262,12 +278,7 @@ export function realtime(config: WebSocketConfig = {}) {
 							}
 						}
 
-						state = { code: 'open', connection: ws, firstMessage: true };
-						reconnectState.attempts = 0;
-						reconnectState.active = false;
-
 						eventHandlers['open'].forEach((handler) => handler.call(ws, evt));
-						handleMessages(self);
 
 						resolved = true;
 						resolve(ws);
@@ -299,6 +310,8 @@ export function realtime(config: WebSocketConfig = {}) {
 				return connectPromise;
 			},
 			disconnect() {
+				wasManuallyDisconnected = true;
+
 				if (state.code === 'open') {
 					state.connection.close();
 				}

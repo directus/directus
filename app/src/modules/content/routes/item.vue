@@ -220,17 +220,17 @@ watch(currentVersion, () => {
 
 const previewTemplate = computed(() => collectionInfo.value?.meta?.preview_url ?? '');
 
-const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, previewTemplate);
+const { templateData: previewData, fetchTemplateValues } = useTemplateData(collectionInfo, primaryKey, {
+	template: previewTemplate,
+	injectData: computed(() => ({ $version: currentVersion.value?.key ?? 'main' })),
+});
 
-const previewURL = computed(() => {
-	const enrichedPreviewData = {
-		...unref(previewData),
-		$version: currentVersion.value ? currentVersion.value.key : 'main',
-	};
+const previewUrl = computed(() => {
+	const { displayValue } = renderStringTemplate(previewTemplate.value, previewData.value);
 
-	const { displayValue } = renderStringTemplate(previewTemplate.value, enrichedPreviewData);
+	if (!displayValue.value) return null;
 
-	return displayValue.value || null;
+	return displayValue.value.trim() || null;
 });
 
 const { data: livePreviewMode } = useLocalStorage<'split' | 'popup'>('live-preview-mode', null);
@@ -250,14 +250,15 @@ const splitView = computed({
 let popupWindow: Window | null = null;
 
 watch(
-	[livePreviewMode, previewURL],
+	[livePreviewMode, previewUrl],
 	([mode, url]) => {
 		if (mode !== 'popup' || !url) {
 			if (popupWindow) popupWindow.close();
 			return;
 		}
 
-		const targetUrl = window.location.href + (window.location.href.endsWith('/') ? 'preview' : '/preview');
+		const targetUrl = new URL(window.location.href);
+		targetUrl.pathname += targetUrl.pathname.endsWith('/') ? 'preview' : '/preview';
 
 		popupWindow = window.open(
 			targetUrl,
@@ -290,8 +291,8 @@ function toggleSplitView() {
 async function refreshLivePreview() {
 	try {
 		await fetchTemplateValues();
-		window.refreshLivePreview(previewURL.value);
-		if (popupWindow) popupWindow.refreshLivePreview(previewURL.value);
+		window.refreshLivePreview(previewUrl.value);
+		if (popupWindow) popupWindow.refreshLivePreview(previewUrl.value);
 	} catch (error) {
 		// noop
 	}
@@ -544,7 +545,7 @@ function revert(values: Record<string, any>) {
 
 		<template #actions>
 			<v-button
-				v-if="previewURL"
+				v-if="previewUrl"
 				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
 				rounded
 				icon
@@ -714,7 +715,7 @@ function revert(values: Record<string, any>) {
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview v-if="previewURL" :url="previewURL" @new-window="livePreviewMode = 'popup'" />
+			<LivePreview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 		</template>
 
 		<template #sidebar>

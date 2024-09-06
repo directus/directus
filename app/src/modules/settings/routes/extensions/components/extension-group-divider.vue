@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { extensionTypeIconMap } from '@/constants/extension-type-icon-map';
-import { ExtensionType } from '@directus/extensions';
 import { pluralize } from '@directus/utils';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { extensionTypeIconMap } from '../constants';
+import { ExtensionType } from '../types';
 
 const props = defineProps<{
 	type: ExtensionType;
@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const label = computed(() => t(`extension_${pluralize(props.type)}`));
+const label = computed(() => t(`extension_${props.type !== 'missing' ? pluralize(props.type) : props.type}`));
 
 const icon = computed(() => extensionTypeIconMap[props.type]);
 </script>

@@ -1,6 +1,6 @@
 import { toArray } from '@directus/utils';
 import { URL } from 'url';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 
 /**
  * Check if URL matches allow list either exactly or by origin (protocol+domain+port) + pathname

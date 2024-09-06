@@ -35,13 +35,14 @@ const props = withDefaults(
 		loading: boolean;
 		showSelect?: ShowSelect;
 		error?: any;
-		itemCount?: number;
+		itemCount: number | null;
+		totalCount: number | null;
 		primaryKeyField?: Field;
 		imageSource?: string;
 		title?: string;
 		subtitle?: string;
 		info?: Collection;
-		filter?: Filter;
+		filterUser?: Filter;
 		search?: string;
 	}>(),
 	{
@@ -86,7 +87,7 @@ watch(innerWidth, (value) => {
 
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || itemCount! > 0">
+		<template v-if="loading || (itemCount ?? 0) > 0">
 			<cards-header
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"
@@ -138,20 +139,9 @@ watch(innerWidth, (value) => {
 			</div>
 		</template>
 
-		<v-info v-else-if="error" type="danger" :title="t('unexpected_error')" icon="error" center>
-			{{ t('unexpected_error_copy') }}
-
-			<template #append>
-				<v-error :error="error" />
-
-				<v-button small class="reset-preset" @click="resetPresetAndRefresh">
-					{{ t('reset_page_preferences') }}
-				</v-button>
-			</template>
-		</v-info>
-
-		<slot v-else-if="itemCount === 0 && (filter || search)" name="no-results" />
-		<slot v-else-if="itemCount === 0" name="no-items" />
+		<slot v-else-if="error" name="error" :error="error" :reset="resetPresetAndRefresh" />
+		<slot v-else-if="itemCount === 0 && (filterUser || search)" name="no-results" />
+		<slot v-else-if="totalCount === 0" name="no-items" />
 	</div>
 </template>
 
@@ -197,9 +187,5 @@ watch(innerWidth, (value) => {
 			color: var(--theme--foreground);
 		}
 	}
-}
-
-.reset-preset {
-	margin-top: 24px;
 }
 </style>

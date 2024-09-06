@@ -1,16 +1,25 @@
+import { useLatencyStore } from '@/stores/latency';
 import { useRequestsStore } from '@/stores/requests';
 import { getRootPath } from '@/utils/get-root-path';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import PQueue, { type Options } from 'p-queue';
+import PQueue, { Options, QueueAddOptions } from 'p-queue';
+import sdk from './sdk';
 
 const api = axios.create({
 	baseURL: getRootPath(),
 	withCredentials: true,
 });
 
-let queue = new PQueue({ concurrency: 5, intervalCap: 5, interval: 500, carryoverConcurrencyCount: true });
+export let requestQueue: PQueue = new PQueue({
+	concurrency: 5,
+	intervalCap: 5,
+	interval: 500,
+	carryoverConcurrencyCount: true,
+});
 
-type RequestConfig = InternalAxiosRequestConfig & { id: string };
+export type RequestConfig = InternalAxiosRequestConfig & { measureLatency?: boolean };
+
+type InternalRequestConfig = RequestConfig & { id: string; start?: number };
 type Response = AxiosResponse & { config: RequestConfig };
 export type RequestError = AxiosError & { response: Response };
 
@@ -18,38 +27,32 @@ export const onRequest = (config: InternalAxiosRequestConfig): Promise<InternalA
 	const requestsStore = useRequestsStore();
 	const id = requestsStore.startRequest();
 
-	const requestConfig: RequestConfig = {
-		id: id,
+	const requestConfig: InternalRequestConfig = {
 		...config,
+		id,
 	};
 
 	return new Promise((resolve) => {
-		if (config.url && config.url === '/auth/refresh') {
-			queue.pause();
-			return resolve(requestConfig);
-		}
+		requestQueue.add(async () => {
+			// use getToken to await currently active refreshes
+			await sdk.getToken().catch(() => {
+				/* fail gracefully */
+			});
 
-		queue.add(() => {
+			if (requestConfig.measureLatency) requestConfig.start = performance.now();
+
 			return resolve(requestConfig);
 		});
 	});
 };
 
 export const onResponse = (response: AxiosResponse | Response): AxiosResponse | Response => {
-	const requestsStore = useRequestsStore();
-	const id = (response.config as RequestConfig)?.id;
-	if (id) requestsStore.endRequest(id);
+	onRequestEnd(response);
 	return response;
 };
 
 export const onError = async (error: RequestError): Promise<RequestError> => {
-	const requestsStore = useRequestsStore();
-
-	// Note: Cancelled requests don't respond with the config
-	const id = (error.response?.config as RequestConfig)?.id;
-
-	if (id) requestsStore.endRequest(id);
-
+	onRequestEnd(error.response);
 	return Promise.reject(error);
 };
 
@@ -59,11 +62,31 @@ api.interceptors.response.use(onResponse, onError);
 export default api;
 
 export function resumeQueue() {
-	if (!queue.isPaused) return;
-	queue.start();
+	if (!requestQueue.isPaused) return;
+	requestQueue.start();
 }
 
 export async function replaceQueue(options?: Options<any, QueueAddOptions>) {
-	await queue.onIdle();
-	queue = new PQueue(options);
+	await requestQueue.onIdle();
+	requestQueue = new PQueue(options);
+}
+
+function onRequestEnd(response?: AxiosResponse | Response) {
+	// Note: Cancelled requests don't respond with the config
+	const config = response?.config as InternalRequestConfig | undefined;
+
+	if (config?.id) {
+		const requestsStore = useRequestsStore();
+		requestsStore.endRequest(config.id);
+	}
+
+	if (config?.start) {
+		const end = performance.now();
+		const latencyStore = useLatencyStore();
+
+		latencyStore.save({
+			timestamp: new Date(),
+			latency: end - config.start,
+		});
+	}
 }
