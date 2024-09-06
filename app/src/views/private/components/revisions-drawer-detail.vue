@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
+import { useGroupable } from '@directus/composables';
 import { ContentVersion } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
-import { onMounted, ref, toRefs, watch } from 'vue';
+import { computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RevisionsDateGroup from './revisions-date-group.vue';
 import RevisionsDrawer from './revisions-drawer.vue';
@@ -16,6 +17,13 @@ const props = defineProps<{
 defineEmits(['revert']);
 
 const { t } = useI18n();
+
+const title = computed(() => t('revisions'));
+
+const { active: open } = useGroupable({
+	value: title.value,
+	group: 'sidebar-detail',
+});
 
 const { collection, primaryKey, version } = toRefs(props);
 
@@ -38,6 +46,7 @@ const {
 
 onMounted(() => {
 	getRevisionsCount();
+	if (open.value) getRevisions();
 });
 
 watch(
@@ -63,7 +72,7 @@ defineExpose({
 
 <template>
 	<sidebar-detail
-		:title="t('revisions')"
+		:title
 		icon="change_history"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 		@toggle="onToggle"

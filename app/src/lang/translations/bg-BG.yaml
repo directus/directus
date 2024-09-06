@@ -998,8 +998,6 @@ tooltip: Подсказка
 tooltip_placeholder: Въвеждане на подсказката...
 unlimited: Неограничен
 open_link_in: Отваряне не връзката в
-new_tab: Нов таб
-current_tab: Текущ таб
 save_image: Запазване на изображението
 save_media: Запазване на медията
 wysiwyg_options:
@@ -1776,6 +1774,8 @@ interfaces:
     preview: Преглед
     editorFont: Шрифт при редактиране
     previewFont: Шрифт при преглед
+    default_view: Изглед по подразбиране
+    default_view_preview: Преглед
     customSyntax: Собствени блокове
     customSyntax_label: Добавяне на собствени синтактични типове
     customSyntax_add: Добавяне на собствен синтаксис
