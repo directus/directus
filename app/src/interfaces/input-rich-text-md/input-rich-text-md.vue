@@ -398,7 +398,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		<div
 			v-md="markdownString"
 			class="preview-box"
-			:style="{ display: view[0] === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
+			:style="{ display: view === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
 		<v-dialog
