@@ -66,9 +66,5 @@ function sortDeep(raw: any): any {
 		return fromPairs(sorted);
 	}
 
-	if (isArray(raw) && raw.length > 0 && isPlainObject(raw[0])) {
-		return sortBy(raw);
-	}
-
 	return raw;
 }
