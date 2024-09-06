@@ -2,4 +2,4 @@
 '@directus/extensions-sdk': minor
 ---
 
-Adding option to disable clearing screen on file change
+Added support for disabling terminal screen clearing on rebuild in watch mode
