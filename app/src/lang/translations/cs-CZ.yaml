@@ -413,6 +413,7 @@ soft_length: Měkký limit
 precision_scale: Přesnost a měřítko
 readonly: Pouze pro čtení
 unique: Unikátní
+index: Index
 updated_on: Aktualizováno
 updated_by: Aktualizoval/a
 primary_key: Primární klíč
@@ -631,6 +632,7 @@ display_not_found: 'Zobrazení "{display}" nenalezeno.'
 reset_display: Obnovit zobrazení
 list-m2a: Stavitel (M2A)
 item_count: 'Bez výsledků | Jeden výsledek | Výsledků: {count}'
+filtered_item_count: 'Žádné filtrované položky | 1 filtrovaná položka | {count} položek filtrováno'
 no_items_copy: V této kolekci zatím nejsou žádné položky.
 file_count: 'Žádné soubory | Jeden soubor | {count} souborů'
 no_files_copy: Nejsou zde žádné soubory.
@@ -793,10 +795,9 @@ make_collection_hidden: Skrýt kolekci
 make_folder_visible: Zviditelnit složku
 make_folder_hidden: Skrýt složku
 goto_collection_content: Zobrazit obsah
+count_of_total_items: '{count} z {total} položek'
 start_end_of_count_items: '{start}-{end} z {count} položek'
 start_end_of_count_filtered_items: '{start}-{end} z {count} filtrovaných položek'
-one_item: '1 položka'
-one_filtered_item: '1 filtrovaná položka'
 delete_collection_are_you_sure: >-
   Jste si jisti, že chcete odstranit kolekci "{collection}"? Tato akce odstraní kolekci a všechny její položky. Tato akce je trvalá.
 delete_folder_are_you_sure: Jste si jisti, že chcete odstranit složku "{folder}"? Vnořené složky a kolekce budou přesunuty na nejvyšší úroveň.
@@ -883,6 +884,7 @@ columns: Sloupce
 collection_setup: Nastavení kolekce
 optional_system_fields: Volitelná pole
 value_unique: Hodnota musí být unikátní
+value_index: Pole je indexováno
 all_activity: Všechna aktivita
 create_item: Vytvořit položku
 display_template: Šablona zobrazení
@@ -1028,8 +1030,6 @@ tooltip: Popisek
 tooltip_placeholder: Zadejte popisek...
 unlimited: Bez omezení
 open_link_in: Otevřít odkaz v
-new_tab: Nové kartě
-current_tab: Aktuální kartě
 save_image: Uložit obrázek
 save_media: Uložit média
 wysiwyg_options:
@@ -1856,6 +1856,9 @@ interfaces:
     preview: Náhled
     editorFont: Písmo editoru
     previewFont: Písmo náhledu
+    default_view: Výchozí zobrazení
+    default_view_editor: Editor
+    default_view_preview: Náhled
     customSyntax: Vlastní bloky
     customSyntax_label: Přidat vlastní typy syntaxe
     customSyntax_add: Přidat vlastní syntaxi
@@ -2230,7 +2233,6 @@ layouts:
     show_ungrouped: Zobrazit neseskupené
     show: Ukázat
     no_group: Žádná skupina
-    not_all_loaded: Podařilo se načíst pouze prvních 1000 položek.
 horizontal: Horizontální
 vertical: Svisle
 axis: Osa

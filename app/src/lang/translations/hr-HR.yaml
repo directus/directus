@@ -769,10 +769,6 @@ make_collection_hidden: Učini zbirku skrivenom
 make_folder_visible: Učini mapu vidljivom
 make_folder_hidden: Učini mapu skrivenom
 goto_collection_content: Pregledaj sadržaj
-start_end_of_count_items: '{start}-{end} od {count} stavki'
-start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
-one_item: '1 stavka'
-one_filtered_item: '1 filtrirana stavka'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati zbirku "{collection}"? Ovo će izbrisati zbirku i sve stavke u njoj. Ova akcija je trajna.
 delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati mapu "{folder}"? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
@@ -864,7 +860,6 @@ create_item: Dodaj novu stavku
 display_template: Predložak prikaza
 language_display_template: Predložak prikaza jezika
 translations_display_template: Predložak prikaza prijevoda
-n_items_selected: 'Nema odabranih stavki | 1 stavka odabrana | {n} odabranih stavki'
 per_page: Po stranici
 all_files: Sve datoteke
 my_files: Moje datoteke
@@ -1004,8 +999,6 @@ tooltip: Kratka Poruka
 tooltip_placeholder: Unesite tooltip...
 unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
-new_tab: Nova kartica
-current_tab: Trenutna kartica
 save_image: Spremi sliku
 save_media: Spremi medijski zapis
 wysiwyg_options:
@@ -1497,7 +1490,6 @@ live_preview:
   toggle_3d: Preklopi 3D
 shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
-uses_left: 'Nema više korištenja | Još 1 korištenje | Preostalo korištenja: {n}'
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
 expired: Isteklo
@@ -1795,6 +1787,8 @@ interfaces:
     preview: Pretpregled
     editorFont: Font uređivača
     previewFont: Pregled fonta
+    default_view: Zadani prikaz
+    default_view_preview: Pretpregled
     customSyntax: Prilagođeni blokovi
     customSyntax_label: Dodajte prilagođene vrste sintakse
     customSyntax_add: Dodajte prilagođenu sintaksu
@@ -2169,7 +2163,6 @@ layouts:
     show_ungrouped: Prikaži Negrupirano
     show: Prikaži
     no_group: Nema Grupe
-    not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 horizontal: Horizontalno
 vertical: Uspravno
 axis: Os

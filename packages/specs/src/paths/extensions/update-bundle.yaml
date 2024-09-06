@@ -1,7 +1,7 @@
 patch:
   summary: Update an Extension
   description: Update an existing extension.
-  operationId: updateExtensions
+  operationId: updateExtensionBundle
   parameters:
     - in: path
       name: bundle

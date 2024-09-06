@@ -54,11 +54,7 @@ export class MailService {
 	}
 
 	async send<T>(options: EmailOptions): Promise<T | null> {
-		const payload = await emitter.emitFilter(`email.send`, options, {
-			database: getDatabase(),
-			schema: null,
-			accountability: null,
-		});
+		const payload = await emitter.emitFilter(`email.send`, options, {});
 
 		if (!payload) return null;
 

@@ -1,4 +1,4 @@
-import type { Filter, Query, SchemaOverview } from '@directus/types';
+import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { applyFilter, generateAlias } from '../../../utils/apply-query.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
@@ -6,9 +6,14 @@ import { DatabaseHelper } from '../types.js';
 
 export type FnHelperOptions = {
 	type: string | undefined;
-	query: Query | undefined;
-	cases: Filter[] | undefined;
 	originalCollectionName: string | undefined;
+	relationalCountOptions:
+		| {
+				query: Query;
+				cases: Filter[];
+				permissions: Permission[];
+		  }
+		| undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
@@ -51,7 +56,7 @@ export abstract class FnHelper extends DatabaseHelper {
 			.from({ [alias]: relation.collection })
 			.where(this.knex.raw(`??.??`, [alias, relation.field]), '=', this.knex.raw(`??.??`, [table, currentPrimary]));
 
-		if (options?.query?.filter) {
+		if (options?.relationalCountOptions?.query.filter) {
 			// set the newly aliased collection in the alias map as the default parent collection, indicated by '', for any nested filters
 			const aliasMap: AliasMap = {
 				'': {
@@ -64,10 +69,11 @@ export abstract class FnHelper extends DatabaseHelper {
 				this.knex,
 				this.schema,
 				countQuery,
-				options.query.filter,
+				options.relationalCountOptions.query.filter,
 				relation.collection,
 				aliasMap,
-				options.cases ?? [],
+				options.relationalCountOptions.cases,
+				options.relationalCountOptions.permissions,
 			).query;
 		}
 
