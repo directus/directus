@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
 import { useExtensions } from '@/extensions';
-import type { FlowRaw } from '@directus/types';
+import { useGroupable } from '@directus/composables';
 import { Action } from '@directus/constants';
-import { computed, ref, toRefs, unref, watch, onMounted } from 'vue';
+import type { FlowRaw } from '@directus/types';
+import { abbreviateNumber } from '@directus/utils';
+import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
-import { abbreviateNumber } from '@directus/utils';
-import { useGroupable } from '@directus/composables';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -17,16 +17,18 @@ const { flow } = toRefs(props);
 
 const { t } = useI18n();
 
+const title = computed(() => t('logs'));
+
+const { active: open } = useGroupable({
+	value: title.value,
+	group: 'sidebar-detail',
+});
+
 const { triggers } = getTriggers();
 const { operations } = useExtensions();
 
 const usedTrigger = computed(() => {
 	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
-});
-
-const { active: open } = useGroupable({
-	value: t('logs'),
-	group: 'sidebar-detail',
 });
 
 const page = ref<number>(1);
@@ -50,7 +52,7 @@ watch(
 
 onMounted(() => {
 	getRevisionsCount();
-	if (open.value && revisionsByDate.value === null) getRevisions();
+	if (open.value) getRevisions();
 });
 
 const previewing = ref();
@@ -107,7 +109,7 @@ function onToggle(open: boolean) {
 
 <template>
 	<sidebar-detail
-		:title="t('logs')"
+		:title
 		icon="fact_check"
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 		@toggle="onToggle"
