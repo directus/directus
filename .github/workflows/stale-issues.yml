@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   stale:
+    if: github.repository == 'directus/directus'
     runs-on: ubuntu-latest
     steps:
       - uses: directus/stale-issues-action@v1

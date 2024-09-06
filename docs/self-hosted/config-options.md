@@ -994,12 +994,12 @@ extensions from a storage location instead. Under the hood, they are synced into
 
 ## Email
 
-| Variable               | Description                                                                          | Default Value          |
-| ---------------------- | ------------------------------------------------------------------------------------ | ---------------------- |
-| `EMAIL_VERIFY_SETUP`   | Check if email setup is properly configured.                                         | `true`                 |
-| `EMAIL_FROM`           | Email address from which emails are sent.                                            | `no-reply@example.com` |
-| `EMAIL_TRANSPORT`      | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `sendgrid`, `ses`. | `sendmail`             |
-| `EMAIL_TEMPLATES_PATH` | Where custom templates are located                                                   | `./templates`          |
+| Variable               | Description                                                              | Default Value          |
+| ---------------------- | ------------------------------------------------------------------------ | ---------------------- |
+| `EMAIL_VERIFY_SETUP`   | Check if email setup is properly configured.                             | `true`                 |
+| `EMAIL_FROM`           | Email address from which emails are sent.                                | `no-reply@example.com` |
+| `EMAIL_TRANSPORT`      | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `ses`. | `sendmail`             |
+| `EMAIL_TEMPLATES_PATH` | Where custom templates are located                                       | `./templates`          |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
@@ -1030,12 +1030,6 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --                |
 | `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
 | `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | `api.mailgun.net` |
-
-### SendGrid (`sendgrid`)
-
-| Variable                 | Description            | Default Value |
-| ------------------------ | ---------------------- | ------------- |
-| `EMAIL_SENDGRID_API_KEY` | Your SendGrid API key. | --            |
 
 ### AWS SES (`ses`)
 

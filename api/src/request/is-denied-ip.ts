@@ -32,7 +32,7 @@ export function isDeniedIp(ip: string): boolean {
 			for (const info of networkInfo) {
 				if (info.internal && info.cidr) {
 					if (matches(ip, info.cidr)) return true;
-				} else if (info.address === ip) { 
+				} else if (info.address === ip) {
 					return true;
 				}
 			}
