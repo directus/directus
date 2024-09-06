@@ -35,7 +35,7 @@ When the Content Version was last updated.
 `user_created` **many-to-one**\
 User that created the Content Version. Many-to-one to [users](/reference/system/users).
 
-`user_created` **many-to-one**\
+`user_updated` **many-to-one**\
 User that last updated the Content Version. Many-to-one to [users](/reference/system/users).
 
 `delta` **json**\
