@@ -91,6 +91,7 @@ n_files: '{n} Fichiers'
 verified: Vérifié
 homepage: Page d’accueil
 repository: Dépôt
+reload_page: Actualiser la page
 reload_required: Rechargement requis
 report_an_issue: Signaler un problème
 website: Site internet
@@ -109,6 +110,7 @@ field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
 add_field: Ajouter un champ
 role_name: Nom de rôle
+policy_name: Nom de la politique
 branch: Branche
 leaf: Feuille
 indeterminate: Indéterminé
@@ -126,6 +128,7 @@ requires_value: La valeur est obligatoire
 create_preset: Créer un préréglage
 create_panel: Créer un panneau
 create_role: Créer un rôle
+create_policy: Créer une politique
 create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
@@ -187,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Votre session a expiré
 public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
+public_role_info: >-
+  Le rôle public contrôle quelles données de l'API sont rendues disponibles pour les utilisateurs non authentifiés ou les utilisateurs sans rôle. Les requêtes faites avec le rôle public ne peuvent pas avoir accès à l'application ou aux fonctions réservées à l'administrateur. Si l'un de ces deux accès sont donnés à une politique assignée au rôle public, ils seront ignorés.
 admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
+admin_policy_description: Politique administrative initiale avec accès non restreint à l'application / à l'API.
 no_description: Aucune description...
 reached_maximum_number_of_extensions: Vous avez atteint le nombre maximum d'extensions pour ce projet ({n}). Contactez votre administrateur système pour plus d'informations.
 not_allowed: Non autorisé
@@ -254,7 +260,9 @@ field_permissions: Autorisations pour le champ
 field_validation: Validation du champ
 field_presets: Préréglages du champ
 permissions_for_role: 'Éléments que le rôle {role} peut {action}.'
+permissions_for_policy: 'Éléments que la politique {policy} peut {action}.'
 fields_for_role: 'Champs dont l''action « {action} » peut être effectué par le rôle {role} .'
+fields_for_policy: 'Champs que la politique {policy} peut {action}.'
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
 presets_field_warning: 'Les préréglages relationnels pour le champ "{field}" doivent être configurés avec la syntaxe "détaillée".'
@@ -1344,6 +1352,7 @@ fields:
     description: Description
     users: Membres avec le rôle
   directus_policies:
+    name: Nom de la politique
     description: Description
   directus_webhooks:
     name: Nom
