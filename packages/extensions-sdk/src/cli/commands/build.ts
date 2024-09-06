@@ -26,11 +26,11 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import type { RollupError, RollupOptions, RollupLog, OutputOptions as RollupOutputOptions } from 'rollup';
+import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuildDefault from 'rollup-plugin-esbuild';
 import stylesDefault from 'rollup-plugin-styles';
-import type { Format, RollupConfig, RollupMode, Config } from '../types.js';
+import type { Config, Format, RollupConfig, RollupMode } from '../types.js';
 import { getFileExt } from '../utils/file.js';
 import { clear, log } from '../utils/logger.js';
 import tryParseJson from '../utils/try-parse-json.js';
@@ -538,12 +538,6 @@ function getRollupOptions({
 }): RollupOptions {
 	const plugins = config.plugins ?? [];
 
-	function onwarn(warning: RollupLog, handler: (warning: string | RollupLog) => void): void {
-		if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
-
-		handler(warning);
-	}
-
 	return {
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
@@ -564,7 +558,11 @@ function getRollupOptions({
 			}),
 			minify ? terser() : null,
 		],
-		onwarn,
+		onwarn(warning, warn) {
+			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
+
+			warn(warning);
+		},
 	};
 }
 
