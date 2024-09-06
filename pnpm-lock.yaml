@@ -303,8 +303,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       openapi3-ts:
-        specifier: 4.3.3
-        version: 4.3.3
+        specifier: 4.4.0
+        version: 4.4.0
       openid-client:
         specifier: 5.6.5
         version: 5.6.5
@@ -1061,7 +1061,7 @@ importers:
         version: 2.4.6
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1079,7 +1079,7 @@ importers:
         version: link:../tsconfig
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1149,7 +1149,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1180,7 +1180,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1244,7 +1244,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1296,7 +1296,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1408,7 +1408,7 @@ importers:
         version: link:../tsconfig
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1445,7 +1445,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1473,7 +1473,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1494,7 +1494,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1550,7 +1550,7 @@ importers:
         version: link:../tsconfig
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1558,8 +1558,8 @@ importers:
   packages/specs:
     dependencies:
       openapi3-ts:
-        specifier: 4.3.3
-        version: 4.3.3
+        specifier: 4.4.0
+        version: 4.4.0
     devDependencies:
       npm-watch:
         specifier: 0.13.0
@@ -1584,7 +1584,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1615,7 +1615,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1649,7 +1649,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1680,7 +1680,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1708,7 +1708,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1751,7 +1751,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1785,7 +1785,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1810,7 +1810,7 @@ importers:
         version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1831,7 +1831,7 @@ importers:
         version: 1.2.0(esbuild@0.20.2)
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1956,7 +1956,7 @@ importers:
         version: 7.1.0
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2020,7 +2020,7 @@ importers:
         version: 0.2.3
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2054,7 +2054,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2078,7 +2078,7 @@ importers:
         version: 1.4.0
       tsup:
         specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2258,6 +2258,7 @@ packages:
   '@apidevtools/swagger-cli@4.0.4':
     resolution: {integrity: sha512-hdDT3B6GLVovCsRZYDi3+wMcB1HfetTU20l2DC8zD3iFRNMC6QNAZG5fo/6PYeHWBEv7ri4MvnlKodhNB0nt7g==}
     engines: {node: '>=10'}
+    deprecated: This package has been abandoned. Please switch to using the actively maintained @redocly/cli
     hasBin: true
 
   '@apidevtools/swagger-methods@3.0.2':
@@ -8224,6 +8225,7 @@ packages:
   ldapjs@2.3.3:
     resolution: {integrity: sha512-75QiiLJV/PQqtpH+HGls44dXweviFwQ6SiIK27EqzKQ5jU/7UFrl2E5nLdQ3IYRBzJ/AVFJI66u0MZ0uofKYwg==}
     engines: {node: '>=10.13.0'}
+    deprecated: This package has been decomissioned. See https://github.com/ldapjs/node-ldapjs/blob/8ffd0bc9c149088a10ec4c1ec6a18450f76ad05d/README.md
 
   leven@2.1.0:
     resolution: {integrity: sha512-nvVPLpIHUxCUoRLrFqTgSxXJ614d8AgQoWl7zPe/2VadE8+1dpU3LBhowRuBAcuwruWtOdD8oYC9jDNJjXDPyA==}
@@ -9145,8 +9147,8 @@ packages:
   openapi-types@12.1.3:
     resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
 
-  openapi3-ts@4.3.3:
-    resolution: {integrity: sha512-LKkzBGJcZ6wdvkKGMoSvpK+0cbN5Xc3XuYkJskO+vjEQWJgs1kgtyUk0pjf8KwPuysv323Er62F5P17XQl96Qg==}
+  openapi3-ts@4.4.0:
+    resolution: {integrity: sha512-9asTNB9IkKEzWMcHmVZE7Ts3kC9G7AFHfs8i7caD8HbI76gEjdkId4z/AkP83xdZsH7PLAnnbl47qZkXuxpArw==}
 
   openid-client@5.6.5:
     resolution: {integrity: sha512-5P4qO9nGJzB5PI0LFlhj4Dzg3m4odt0qsJTfyEtZyOlkgpILwEioOhVVJOrS1iVH494S4Ee5OCjjg6Bf5WOj3w==}
@@ -12102,7 +12104,7 @@ snapshots:
       '@aws-sdk/client-sso-oidc': 3.569.0
       '@aws-sdk/client-sts': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)
       '@aws-sdk/core': 3.567.0
-      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0)
+      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
       '@aws-sdk/middleware-bucket-endpoint': 3.568.0
       '@aws-sdk/middleware-expect-continue': 3.567.0
       '@aws-sdk/middleware-flexible-checksums': 3.567.0
@@ -12210,7 +12212,7 @@ snapshots:
       '@aws-crypto/sha256-js': 3.0.0
       '@aws-sdk/client-sts': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)
       '@aws-sdk/core': 3.567.0
-      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0)
+      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
       '@aws-sdk/middleware-host-header': 3.567.0
       '@aws-sdk/middleware-logger': 3.568.0
       '@aws-sdk/middleware-recursion-detection': 3.567.0
@@ -12386,7 +12388,7 @@ snapshots:
       '@aws-crypto/sha256-js': 3.0.0
       '@aws-sdk/client-sso-oidc': 3.569.0
       '@aws-sdk/core': 3.567.0
-      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0)
+      '@aws-sdk/credential-provider-node': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
       '@aws-sdk/middleware-host-header': 3.567.0
       '@aws-sdk/middleware-logger': 3.568.0
       '@aws-sdk/middleware-recursion-detection': 3.567.0
@@ -12532,13 +12534,13 @@ snapshots:
       '@smithy/util-stream': 3.1.3
       tslib: 2.7.0
 
-  '@aws-sdk/credential-provider-ini@3.568.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0)':
+  '@aws-sdk/credential-provider-ini@3.568.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))':
     dependencies:
       '@aws-sdk/client-sts': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)
       '@aws-sdk/credential-provider-env': 3.568.0
       '@aws-sdk/credential-provider-process': 3.568.0
       '@aws-sdk/credential-provider-sso': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0)
-      '@aws-sdk/credential-provider-web-identity': 3.568.0(@aws-sdk/client-sts@3.569.0)
+      '@aws-sdk/credential-provider-web-identity': 3.568.0(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
       '@aws-sdk/types': 3.567.0
       '@smithy/credential-provider-imds': 2.3.0
       '@smithy/property-provider': 2.2.0
@@ -12567,14 +12569,14 @@ snapshots:
       - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
-  '@aws-sdk/credential-provider-node@3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0)':
+  '@aws-sdk/credential-provider-node@3.569.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))':
     dependencies:
       '@aws-sdk/credential-provider-env': 3.568.0
       '@aws-sdk/credential-provider-http': 3.568.0
-      '@aws-sdk/credential-provider-ini': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0)
+      '@aws-sdk/credential-provider-ini': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0)(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
       '@aws-sdk/credential-provider-process': 3.568.0
       '@aws-sdk/credential-provider-sso': 3.568.0(@aws-sdk/client-sso-oidc@3.569.0)
-      '@aws-sdk/credential-provider-web-identity': 3.568.0(@aws-sdk/client-sts@3.569.0)
+      '@aws-sdk/credential-provider-web-identity': 3.568.0(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))
       '@aws-sdk/types': 3.567.0
       '@smithy/credential-provider-imds': 2.3.0
       '@smithy/property-provider': 2.2.0
@@ -12647,7 +12649,7 @@ snapshots:
       - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
-  '@aws-sdk/credential-provider-web-identity@3.568.0(@aws-sdk/client-sts@3.569.0)':
+  '@aws-sdk/credential-provider-web-identity@3.568.0(@aws-sdk/client-sts@3.569.0(@aws-sdk/client-sso-oidc@3.569.0))':
     dependencies:
       '@aws-sdk/client-sts': 3.569.0(@aws-sdk/client-sso-oidc@3.569.0)
       '@aws-sdk/types': 3.567.0
@@ -20459,7 +20461,7 @@ snapshots:
 
   openapi-types@12.1.3: {}
 
-  openapi3-ts@4.3.3:
+  openapi3-ts@4.4.0:
     dependencies:
       yaml: 2.5.1
 
@@ -22670,7 +22672,7 @@ snapshots:
 
   tslib@2.7.0: {}
 
-  tsup@8.2.2(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1):
+  tsup@8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.23.1)
       cac: 6.7.14
