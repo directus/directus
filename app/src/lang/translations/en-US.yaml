@@ -1254,6 +1254,7 @@ directus_collection:
   directus_access: Policy attachments
   directus_activity: Accountability logs for all events
   directus_collections: Additional collection configuration and metadata
+  directus_comments: Comments for items
   directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
