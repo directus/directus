@@ -641,10 +641,6 @@ make_collection_hidden: Gör samling dold
 make_folder_visible: Gör mappen synlig
 make_folder_hidden: Gör mappen dold
 goto_collection_content: Visa innehåll
-start_end_of_count_items: '{start}-{end} av {count} objekt'
-start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
-one_item: '1 objekt'
-one_filtered_item: '1 filtrerat objekt'
 delete_collection_are_you_sure: >-
   Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 delete_folder_are_you_sure: Är du säker på att du vill ta bort mappen "{folder}"? Kapslade mappar och samlingar kommer att flyttas till den översta nivån.
@@ -722,7 +718,6 @@ value_unique: Värdet måste vara unikt
 all_activity: All aktivitet
 create_item: Skapa objekt
 display_template: Visningsmall
-n_items_selected: 'Inga valda objekt | 1 valt objekt | {n} valda objekt'
 per_page: Per sida
 all_files: Alla filer
 my_files: Mina filer
@@ -834,8 +829,6 @@ tooltip: Inforuta
 tooltip_placeholder: Ange en inforuta...
 unlimited: Obegränsad
 open_link_in: Öppna länk i
-new_tab: Ny flik
-current_tab: Aktuell flik
 save_image: Spara bild
 save_media: Spara media
 wysiwyg_options:
@@ -943,7 +936,6 @@ page_help_settings_datamodel_collections: >-
   **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
 page_help_settings_datamodel_fields: >-
   **Datamodel: Kollektion** — Ett formulär för att hantera denna kollektion och dess fält.
-page_help_settings_roles_collection: '**Bläddra bland roller** — Listar administratörer, offentliga och anpassade användarroller.'
 page_help_settings_roles_item: "**Detaljvy roll** — Hantera en rolls rättigheter och andra inställningar."
 page_help_settings_presets_collection: >-
   **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
@@ -1099,12 +1091,9 @@ fields:
     name: Rollens namn
     icon: Ikon roll
     description: Beskrivning
-    app_access: Åtkomst till appen
-    admin_access: Åtkomst admin
-    ip_access: Åtkomst med IP
-    enforce_tfa: Kräv 2FA
     users: Användare i rollen
-    module_list: Navigering för modul
+  directus_policies:
+    description: Beskrivning
   directus_webhooks:
     name: Namn
     method: Metod
@@ -1458,6 +1447,8 @@ interfaces:
     description: Ange och förhandsgranska markdown
     edit: Redigera
     preview: Förhandsgranska
+    default_view: Förvald vy
+    default_view_preview: Förhandsgranska
     customSyntax: Anpassade block
     customSyntax_label: Lägg till anpassade syntaxtyper
     customSyntax_add: Lägg till anpassad syntax

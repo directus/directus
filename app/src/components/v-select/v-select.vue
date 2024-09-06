@@ -54,6 +54,9 @@ const props = withDefaults(
 		/** Renders the element inline, good for seamless selections */
 		inline?: boolean;
 		label?: boolean;
+		/** Translation strings to replace items naming */
+		allItemsTranslation?: string;
+		itemCountTranslation?: string;
 		/** Limits the amount of items inside the preview */
 		multiplePreviewThreshold?: number;
 		/** The direction the menu should open */
@@ -132,7 +135,7 @@ function useItems() {
 				selectable: get(item, props.itemSelectable),
 				children: children
 					? children.filter((childItem: Record<string, any>) =>
-							filterItem(get(childItem, props.itemText), get(childItem, props.itemValue), childItem.children),
+							filterItem(childItem.text, childItem.value, childItem.children),
 					  )
 					: children,
 				hidden: internalSearch.value ? !filterItem(text, value, item.children) : false,
@@ -205,11 +208,15 @@ function useDisplayValue() {
 				const selectionCount = props.modelValue.length;
 
 				if (itemCount === selectionCount) {
-					return { text: t('all_items') };
+					return { text: t(props.allItemsTranslation ?? 'all_items') };
 				} else {
-					return { text: t('item_count', selectionCount) };
+					return { text: t(props.itemCountTranslation ?? 'item_count', selectionCount) };
 				}
 			}
+		}
+
+		if (props.multiple) {
+			return { text: t(props.itemCountTranslation ?? 'item_count', 0) };
 		}
 
 		const item = getItemForValue(props.modelValue);
@@ -297,6 +304,12 @@ function useDisplayValue() {
 				</v-list-item>
 				<v-divider />
 			</template>
+
+			<v-list-item v-if="internalItemsCount === 0 && !allowOther">
+				<v-list-item-content>
+					{{ t('no_options_available') }}
+				</v-list-item-content>
+			</v-list-item>
 
 			<v-list-item v-if="internalItemsCount > 10 || search">
 				<v-list-item-content>

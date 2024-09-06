@@ -769,10 +769,6 @@ make_collection_hidden: Učini zbirku skrivenom
 make_folder_visible: Učini mapu vidljivom
 make_folder_hidden: Učini mapu skrivenom
 goto_collection_content: Pregledaj sadržaj
-start_end_of_count_items: '{start}-{end} od {count} stavki'
-start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih stavki'
-one_item: '1 stavka'
-one_filtered_item: '1 filtrirana stavka'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati zbirku "{collection}"? Ovo će izbrisati zbirku i sve stavke u njoj. Ova akcija je trajna.
 delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati mapu "{folder}"? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
@@ -864,7 +860,6 @@ create_item: Dodaj novu stavku
 display_template: Predložak prikaza
 language_display_template: Predložak prikaza jezika
 translations_display_template: Predložak prikaza prijevoda
-n_items_selected: 'Nema odabranih stavki | 1 stavka odabrana | {n} odabranih stavki'
 per_page: Po stranici
 all_files: Sve datoteke
 my_files: Moje datoteke
@@ -1004,8 +999,6 @@ tooltip: Kratka Poruka
 tooltip_placeholder: Unesite tooltip...
 unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
-new_tab: Nova kartica
-current_tab: Trenutna kartica
 save_image: Spremi sliku
 save_media: Spremi medijski zapis
 wysiwyg_options:
@@ -1079,7 +1072,6 @@ editing_unit: 'Uređivanje {unit}'
 editing_in_batch: 'Skupno uređivanje {count} stavki'
 no_options_available: Nema dostupnih opcija
 settings_data_model: Model podataka
-settings_permissions: Kontrola Pristupa
 settings_project: Postavke
 settings_appearance: Izgled
 settings_webhooks: Web-dojavnici
@@ -1129,7 +1121,6 @@ page_help_settings_datamodel_collections: >-
   **Model podataka: zbirke** — Navodi sve dostupne zbirke. To uključuje vidljive, skrivene i sustavne zbirke, kao i neupravljane tablice baze podataka koje se mogu dodati.
 page_help_settings_datamodel_fields: >-
   **Model podataka: zbirka** — Obrazac za upravljanje ovom zbirkom i njezinim poljima.
-page_help_settings_roles_collection: '**Pregledaj uloge** — Navodi administratorske, javne i prilagođene korisničke uloge.'
 page_help_settings_roles_item: "**Pojedinosti o ulozi** — Upravljajte dopuštenjima uloge i drugim postavkama."
 page_help_settings_presets_collection: >-
   **Pregledaj unaprijed postavljene postavke** — Navodi sve unaprijed postavljene postavke u projektu, uključujući: korisničke, uloge i globalne oznake, kao i zadane prikaze.
@@ -1188,7 +1179,6 @@ directus_collection:
   directus_notifications: Obavijesti poslane korisnicima
   directus_operations: Operacije koje se izvode u tokovima
   directus_panels: Pojedinačne ploče unutar nadzornih ploča s uvidima
-  directus_permissions: Dozvole pristupa za svaku ulogu
   directus_presets: Unaprijed postavljene postavke za zbirke i oznake
   directus_relations: Konfiguracija odnosa i metapodaci
   directus_revisions: Snimke podataka za sve aktivnosti
@@ -1356,12 +1346,9 @@ fields:
     name: Naziv uloge
     icon: Ikona uloge
     description: Opis
-    app_access: Pristup aplikaciji
-    admin_access: Administratorski pristup
-    ip_access: IP pristup
-    enforce_tfa: Zahtijevaj 2FA
     users: Korisnici s ulogom
-    module_list: Navigacija modula
+  directus_policies:
+    description: Opis
   directus_webhooks:
     name: Ime
     method: Metoda
@@ -1447,7 +1434,6 @@ field_options:
   directus_roles:
     name: Jedinstveni naziv za ovu ulogu...
     description: Opis uloge...
-    ip_access: Dodajte dozvoljene IP adrese, raspon IP adresa i CIDR blokove. Ostavite prazno za dozvolu svih...
     fields:
       icon_name: Ikona
       name_name: Naziv
@@ -1504,7 +1490,6 @@ live_preview:
   toggle_3d: Preklopi 3D
 shares: Dijeljenja
 unlimited_usage: Neograničena upotreba
-uses_left: 'Nema više korištenja | Još 1 korištenje | Preostalo korištenja: {n}'
 no_shares: Nema dijeljenja za prikaz
 new_share: Novo dijeljenje
 expired: Isteklo
@@ -1802,6 +1787,8 @@ interfaces:
     preview: Pretpregled
     editorFont: Font uređivača
     previewFont: Pregled fonta
+    default_view: Zadani prikaz
+    default_view_preview: Pretpregled
     customSyntax: Prilagođeni blokovi
     customSyntax_label: Dodajte prilagođene vrste sintakse
     customSyntax_add: Dodajte prilagođenu sintaksu
@@ -2176,7 +2163,6 @@ layouts:
     show_ungrouped: Prikaži Negrupirano
     show: Prikaži
     no_group: Nema Grupe
-    not_all_loaded: Moguće učitati samo prvih 1000 stavki.
 horizontal: Horizontalno
 vertical: Uspravno
 axis: Os

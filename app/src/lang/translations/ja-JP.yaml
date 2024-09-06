@@ -645,10 +645,6 @@ make_collection_hidden: コレクションを非表示
 make_folder_visible: フォルダを表示
 make_folder_hidden: フォルダを非表示
 goto_collection_content: コンテンツを表示
-start_end_of_count_items: '{start}-{end} / {count} のアイテム'
-start_end_of_count_filtered_items: '{start}-{end} / {count} のフィルタ済みアイテム'
-one_item: '1 つのアイテム'
-one_filtered_item: 'フィルターされた項目'
 visible_collections: 表示中のコレクション
 hidden_collections: 非表示のコレクション
 show_hidden_collections: 非表示コレクションを表示
@@ -725,7 +721,6 @@ create_item: アイテムの作成
 display_template: テンプレートを表示
 language_display_template: 言語表示テンプレート
 translations_display_template: 翻訳表示テンプレート
-n_items_selected: 'アイテムが選択されていません | 1アイテム選択| {n} アイテム選択'
 per_page: ページごと
 all_files: すべてのファイル
 my_files: マイファイル
@@ -843,8 +838,6 @@ tooltip: ヒント
 tooltip_placeholder: ヒントを入力中...
 unlimited: 無制限
 open_link_in: リンクを開く
-new_tab: 新しいタブ
-current_tab: 現在のタブ
 save_image: 画像を保存
 save_media: メディアを保存
 wysiwyg_options:
@@ -953,7 +946,6 @@ page_help_settings_datamodel_collections: >-
   **データモデル: コレクション** — 利用可能なすべてのコレクション一覧です。表示、非表示、システムコレクション、および追加可能な管理されていないデータベーステーブルを含みます。
 page_help_settings_datamodel_fields: >-
   **データモデル: コレクション** — このコレクションとそのフィールドを管理するためのフォーム。
-page_help_settings_roles_collection: '**ロールの検索** — 管理者、公開およびカスタムユーザーロールの一覧です。'
 page_help_settings_roles_item: "**ロールの詳細** : ロールの権限とその他の設定を管理します。"
 page_help_settings_presets_collection: >-
   **プリセットの検索** — プリセットの一覧です。ユーザー、ロール、ブックマーク、デフォルトのビューなどを含みます。
@@ -1084,8 +1076,8 @@ fields:
   directus_roles:
     name: 権限名
     description: 説明
-    ip_access: IP アクセス
-    enforce_tfa: 二段階認証が必要
+  directus_policies:
+    description: 説明
   directus_webhooks:
     name: 名前
     status: ステータス

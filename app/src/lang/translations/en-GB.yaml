@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: About
 identifier: Identifier
 avatar: Avatar
 application: Application
@@ -611,10 +632,6 @@ make_collection_hidden: Make Collection Hidden
 make_folder_visible: Make Folder Visible
 make_folder_hidden: Make Folder Hidden
 goto_collection_content: View Content
-start_end_of_count_items: '{start}-{end} of {count} items'
-start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
-one_item: '1 item'
-one_filtered_item: '1 filtered item'
 delete_collection_are_you_sure: >-
   Are you sure you want to delete the collection "{collection}"? This will delete the collection and all items in it. This action is permanent.
 delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
@@ -698,7 +715,6 @@ create_item: Create Item
 display_template: Display Template
 language_display_template: Language Display Template
 translations_display_template: Translations Display Template
-n_items_selected: 'No Items Selected | 1 Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
 my_files: My Files
@@ -831,8 +847,6 @@ tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
 open_link_in: Open link in
-new_tab: New tab
-current_tab: Current tab
 save_image: Save Image
 save_media: Save Media
 wysiwyg_options:
@@ -941,7 +955,6 @@ page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
   **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default views.
@@ -984,7 +997,6 @@ directus_collection:
   directus_notifications: Notifications sent to users
   directus_operations: Operations that run in Flows
   directus_panels: Individual panels within Insights dashboards
-  directus_permissions: Access permissions for each role
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -1133,12 +1145,9 @@ fields:
     name: Role Name
     icon: Role Icon
     description: Description
-    app_access: App Access
-    admin_access: Admin Access
-    ip_access: IP Access
-    enforce_tfa: Require 2FA
     users: Users in Role
-    module_list: Module Navigation
+  directus_policies:
+    description: Description
   directus_webhooks:
     name: Name
     method: Method
@@ -1269,7 +1278,6 @@ live_preview:
   new_window: Open in New Window
 shares: Shares
 unlimited_usage: Unlimited usage
-uses_left: No uses left | 1 use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
 expired: Expired
@@ -1544,6 +1552,8 @@ interfaces:
     preview: Preview
     editorFont: Editor Font
     previewFont: Preview Font
+    default_view: Default View
+    default_view_preview: Preview
     customSyntax: Custom Blocks
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax
@@ -1899,7 +1909,6 @@ layouts:
     show_ungrouped: Show Ungrouped
     show: Show
     no_group: No Group
-    not_all_loaded: Could only load the first 1000 items.
 horizontal: Horizontal
 vertical: Vertical
 x_axis: X-Axis

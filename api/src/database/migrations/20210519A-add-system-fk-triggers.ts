@@ -1,6 +1,7 @@
 import { createInspector } from '@directus/schema';
 import type { Knex } from 'knex';
 import { useLogger } from '../../logger/index.js';
+import { getDatabaseClient } from '../index.js';
 
 /**
  * Things to keep in mind:
@@ -110,7 +111,7 @@ export async function up(knex: Knex): Promise<void> {
 			 * MySQL won't delete the index when you drop the foreign key constraint. Gotta make
 			 * sure to clean those up as well
 			 */
-			if (knex.client.constructor.name === 'Client_MySQL') {
+			if (getDatabaseClient(knex) === 'mysql') {
 				try {
 					await knex.schema.alterTable(update.table, (table) => {
 						// Knex uses a default convention for index names: `table_column_type`
@@ -155,7 +156,7 @@ export async function down(knex: Knex): Promise<void> {
 			 * MySQL won't delete the index when you drop the foreign key constraint. Gotta make
 			 * sure to clean those up as well
 			 */
-			if (knex.client.constructor.name === 'Client_MySQL') {
+			if (getDatabaseClient(knex) === 'mysql') {
 				try {
 					await knex.schema.alterTable(update.table, (table) => {
 						// Knex uses a default convention for index names: `table_column_type`

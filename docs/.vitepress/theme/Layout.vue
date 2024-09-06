@@ -4,6 +4,7 @@ import DefaultTheme from 'vitepress/theme';
 import { computed } from 'vue';
 import Feedback from '../components/Feedback.vue';
 import Newsletter from '../components/Newsletter.vue';
+import Cloud from '../components/Cloud.vue';
 
 const { Layout } = DefaultTheme;
 const { page } = useData();
@@ -39,6 +40,7 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 		</template>
 		<template #aside-outline-after>
 			<Newsletter class="newsletter" />
+			<Cloud class="cloud" />
 		</template>
 		<template #doc-footer-before>
 			<Feedback v-if="!isPackagePage" :url="path" :title="title" />
@@ -85,7 +87,8 @@ const isPackagePage = computed(() => RegExp('^/packages/.+$').test(path.value));
 	}
 }
 
-.newsletter {
+.newsletter,
+.cloud {
 	margin-top: 2em;
 }
 

@@ -29,7 +29,7 @@ export class BusLocal implements Bus {
 		this.handlers[channel] = set;
 	}
 
-	async unsubscribe(channel: string, callback: MessageHandler) {
+	async unsubscribe<T = unknown>(channel: string, callback: MessageHandler<T>) {
 		this.handlers[channel]?.delete(callback);
 	}
 }
