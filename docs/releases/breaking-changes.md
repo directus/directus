@@ -13,6 +13,13 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 11.1.1
+
+### Dropped support for the SendGrid email transport option
+
+The SendGrid abstraction for `nodemailer` is no longer supported, so we have dropped it's usage from Directus. Users of
+SendGrid should update their configuration to use their SendGrid account's SMTP Relay configuration instead.
+
 ## Version 11.0.0
 
 Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in
