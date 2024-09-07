@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Fixed preview on Markdown interface
+Fixed empty preview in Markdown interface
