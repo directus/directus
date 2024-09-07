@@ -107,7 +107,7 @@ onMounted(async () => {
 	}
 
 	if (markdownInterface.value) {
-		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
+		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0] as HTMLDivElement;
 
 		const observer = new MutationObserver(() => {
 			count.value = previewBox?.textContent?.replace('\n', '')?.length ?? 0;
@@ -206,13 +206,8 @@ function edit(type: Alteration, options?: Record<string, any>) {
 <template>
 	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view, { disabled }]">
 		<div class="toolbar">
-			<template v-if="view !== 'preview'">
-				<v-menu
-					v-if="toolbar?.includes('heading')"
-					show-arrow
-					placement="bottom-start"
-					:class="[{ active: view !== 'preview' }]"
-				>
+			<template v-if="view === 'editor'">
+				<v-menu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
 						<v-button v-tooltip="t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="format_size" />
@@ -398,7 +393,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		<div
 			v-md="markdownString"
 			class="preview-box"
-			:style="{ display: view[0] === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
+			:style="{ display: view === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
 		<v-dialog
