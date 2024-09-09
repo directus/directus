@@ -28,7 +28,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.45",
+		"@types/node": "18.19.50",
 		"@vitest/coverage-v8": "1.5.3",
 		"tsup": "8.2.2",
 		"typescript": "5.4.5",
