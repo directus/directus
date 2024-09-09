@@ -101,6 +101,10 @@ export async function createCli(): Promise<Command> {
 		.description('Apply a snapshot file to the current database')
 		.option('-y, --yes', `Assume "yes" as answer to all prompts and run non-interactively`)
 		.option('-d, --dry-run', 'Plan and log changes to be applied', false)
+		.option(
+			'--ignoreRules <value>',
+			`Comma-separated list of collections and or fields to ignore. Format: "products.title,reviews" this will ignore applying changes to the title field in the products collection and the entire reviews collection`,
+		)
 		.argument('<path>', 'Path to snapshot file')
 		.action(apply);
 

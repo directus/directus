@@ -12,6 +12,11 @@ export type Sql = {
 	bindings: readonly Knex.Value[];
 };
 
+export type SortRecord = {
+	alias: string;
+	column: Knex.Raw;
+};
+
 export abstract class SchemaHelper extends DatabaseHelper {
 	isOneOfClients(clients: DatabaseClient[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
@@ -154,5 +159,13 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 	preprocessBindings(queryParams: Sql): Sql {
 		return queryParams;
+	}
+
+	addInnerSortFieldsToGroupBy(
+		_groupByFields: (string | Knex.Raw)[],
+		_sortRecords: SortRecord[],
+		_hasMultiRelationalSort: boolean,
+	): void {
+		// no-op by default
 	}
 }

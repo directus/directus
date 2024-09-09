@@ -1004,8 +1004,6 @@ tooltip: 툴팁
 tooltip_placeholder: 툴팁을 입력하세요...
 unlimited: 제한 없는
 open_link_in: 링크 열기
-new_tab: 새 탭
-current_tab: 현재 탭
 save_image: 이미지를 저장
 save_media: 미디어 저장
 wysiwyg_options:
@@ -1605,7 +1603,7 @@ register: 등록
 registration_successful_headline: 성공!
 registration_successful_note: 이제 로그인 페이지로 이동할 수 있습니다.
 registration_successful_check_email_note: |
-  로그인하기 전에 이메일 주소를 확인하기 위해 발송된 확인 링크를 클릭해야 합니다. 
+  로그인하기 전에 이메일 주소를 확인하기 위해 발송된 확인 링크를 클릭해야 합니다.
 dont_have_an_account: 계정이 없으신가요?
 already_have_an_account: 이미 계정이 있으신가요?
 sign_up_now: 지금 가입
@@ -1805,6 +1803,8 @@ interfaces:
     preview: 미리보기
     editorFont: 편집기 글꼴
     previewFont: 글꼴 미리보기
+    default_view: 기본 보기
+    default_view_preview: 미리보기
     customSyntax: 맞춤형 블록
     customSyntax_label: 사용자 정의 구문 유형 추가
     customSyntax_add: 사용자 지정 구문 추가

@@ -2,11 +2,12 @@
 import api from '@/api';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
+import { useGroupable } from '@directus/composables';
 import type { Comment, PrimaryKey, User } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
 import { flatten, groupBy, orderBy } from 'lodash';
-import { Ref, onMounted, ref, toRefs, watch } from 'vue';
+import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
@@ -27,6 +28,13 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
+const title = computed(() => t('comments'));
+
+const { active: open } = useGroupable({
+	value: title.value,
+	group: 'sidebar-detail',
+});
+
 const { collection, primaryKey } = toRefs(props);
 
 const { comments, getComments, loading, refresh, commentsCount, getCommentsCount, loadingCount, userPreviews } =
@@ -34,6 +42,7 @@ const { comments, getComments, loading, refresh, commentsCount, getCommentsCount
 
 onMounted(() => {
 	getCommentsCount();
+	if (open.value) getActivity();
 });
 
 function onToggle(open: boolean) {
@@ -216,7 +225,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 <template>
 	<sidebar-detail
-		:title="t('comments')"
+		:title
 		icon="chat_bubble_outline"
 		:badge="!loadingCount && commentsCount > 0 ? abbreviateNumber(commentsCount) : null"
 		@toggle="onToggle"
