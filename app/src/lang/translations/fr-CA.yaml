@@ -997,8 +997,6 @@ tooltip: Info-bulle
 tooltip_placeholder: Entrez une infobulle ...
 unlimited: Illimité
 open_link_in: Ouvrir le lien dans
-new_tab: Nouvel onglet
-current_tab: Onglet actif
 save_image: Enregistrer l'image
 save_media: Enregistrer le média
 wysiwyg_options:
@@ -1776,6 +1774,8 @@ interfaces:
     preview: Prévisualiser
     editorFont: Police de caractère de l'éditeur
     previewFont: Aperçu de la police
+    default_view: Vue par défaut
+    default_view_preview: Prévisualiser
     customSyntax: Blocs personnalisés
     customSyntax_label: Ajouter des types de syntaxe personnalisés
     customSyntax_add: Ajouter une syntaxe personnalisée
