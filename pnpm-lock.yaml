@@ -1060,8 +1060,8 @@ importers:
         specifier: 2.4.6
         version: 2.4.6
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1078,8 +1078,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1148,8 +1148,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1179,8 +1179,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1243,8 +1243,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1295,8 +1295,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1407,8 +1407,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1444,8 +1444,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1472,8 +1472,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1493,8 +1493,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1549,8 +1549,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1583,8 +1583,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1614,8 +1614,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1648,8 +1648,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1679,8 +1679,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1707,8 +1707,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1750,8 +1750,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1784,8 +1784,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1809,8 +1809,8 @@ importers:
         specifier: 2.1.7
         version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1830,8 +1830,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0(esbuild@0.20.2)
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1955,8 +1955,8 @@ importers:
         specifier: 7.1.0
         version: 7.1.0
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2019,8 +2019,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2053,8 +2053,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2077,8 +2077,8 @@ importers:
         specifier: 1.4.0
         version: 1.4.0
       tsup:
-        specifier: 8.2.2
-        version: 8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
+        specifier: 8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -10995,8 +10995,8 @@ packages:
   tslib@2.7.0:
     resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
-  tsup@8.2.2:
-    resolution: {integrity: sha512-MufIuzdSt6HYPOeOtjUXLR4rqRJySi6XsRNZdwvjC2XR+xghsu2L3vSmYmX+k4S1mO6j0OlUEyVQ3Fc0H66XcA==}
+  tsup@8.2.4:
+    resolution: {integrity: sha512-akpCPePnBnC/CXgRrcy72ZSntgIEUa1jN0oJbbvpALWKNOz1B7aM+UVDWGRGIO/T/PZugAESWDJUAb5FD48o8Q==}
     engines: {node: '>=18'}
     hasBin: true
     peerDependencies:
@@ -22674,7 +22674,7 @@ snapshots:
 
   tslib@2.7.0: {}
 
-  tsup@8.2.2(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1):
+  tsup@8.2.4(@microsoft/api-extractor@7.43.0)(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1):
     dependencies:
       bundle-require: 5.0.0(esbuild@0.23.1)
       cac: 6.7.14

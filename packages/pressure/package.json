@@ -33,7 +33,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/express": "4.17.21",
 		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.2.2",
+		"tsup": "8.2.4",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3"
 	}
