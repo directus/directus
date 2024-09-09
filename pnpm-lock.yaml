@@ -259,7 +259,7 @@ importers:
         version: 4.5.4
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)
       ldapjs:
         specifier: 2.3.3
         version: 2.3.3
@@ -397,8 +397,8 @@ importers:
         specifier: 5.1.7
         version: 5.1.7
       tedious:
-        specifier: 18.2.0
-        version: 18.2.0
+        specifier: 18.6.1
+        version: 18.6.1
     devDependencies:
       '@directus/random':
         specifier: workspace:*
@@ -519,7 +519,7 @@ importers:
         version: 7.1.0
       knex-mock-client:
         specifier: 2.0.1
-        version: 2.0.1(knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0))
+        version: 2.0.1(knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1))
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1235,7 +1235,7 @@ importers:
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.45)(happy-dom@14.12.3)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)
       pino:
         specifier: 9.4.0
         version: 9.4.0
@@ -1543,7 +1543,7 @@ importers:
     dependencies:
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -1907,7 +1907,7 @@ importers:
         version: link:../tsconfig
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -2141,7 +2141,7 @@ importers:
         version: 2.2.5
       knex:
         specifier: 3.1.0
-        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+        version: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)
       listr2:
         specifier: 8.2.4
         version: 8.2.4
@@ -2613,9 +2613,9 @@ packages:
     resolution: {integrity: sha512-D6G7FEmDiTctPKuWegX2WTrS1enKZwqYwdKTO6ZN6JMigcCehlT0/CYl+zWpI9vQ9frwwp7GQT3/owaEXgnOsA==}
     engines: {node: '>=18.0.0'}
 
-  '@azure/identity@3.4.2':
-    resolution: {integrity: sha512-0q5DL4uyR0EZ4RXQKD8MadGH6zTIcloUoS/RVbCpNpej4pwte0xpqYxk8K97Py2RiuUvI7F4GXpoT4046VfufA==}
-    engines: {node: '>=14.0.0'}
+  '@azure/identity@4.4.1':
+    resolution: {integrity: sha512-DwnG4cKFEM7S3T+9u05NstXU/HN0dk45kPOinUyNKsn5VWwpXd9sbPKEg6kgJzGbm1lMuhx9o31PVbCtM5sfBA==}
+    engines: {node: '>=18.0.0'}
 
   '@azure/keyvault-keys@4.8.0':
     resolution: {integrity: sha512-jkuYxgkw0aaRfk40OQhFqDIupqblIOIlYESWB6DKCVDxQet1pyv86Tfk9M+5uFM0+mCs6+MUHU+Hxh3joiUn4Q==}
@@ -7199,6 +7199,7 @@ packages:
   follow-redirects@1.15.8:
     resolution: {integrity: sha512-xgrmBhBToVKay1q2Tao5LI26B83UhrB/vM1avwVSDzt8rx3rO6AizBAaF46EgksTVr+rFTQaqZZ9MVBfUe4nig==}
     engines: {node: '>=4.0'}
+    deprecated: Browser detection issues fixed in v1.15.9
     peerDependencies:
       debug: '*'
     peerDependenciesMeta:
@@ -10827,8 +10828,8 @@ packages:
     resolution: {integrity: sha512-51LAVKUSZSVfI05vjPESNc5vwqqZpbXCsU+/+wxlOrUjk2SnFTt97v9ZgQrD4YmxYW1Px6w2KjaDitCfkvgxMQ==}
     engines: {node: '>=8.0.0'}
 
-  tedious@18.2.0:
-    resolution: {integrity: sha512-PCELoE17gN71lk0A87+WITcIJ6uGagrV2hXVJT5ige/Yef+YCLVpQ/Je12rOZT7vBhVZoMp6MvaBmbfI8fw0ag==}
+  tedious@18.6.1:
+    resolution: {integrity: sha512-9AvErXXQTd6l7TDd5EmM+nxbOGyhnmdbp/8c3pw+tjaiSXW9usME90ET/CRG1LN1Y9tPMtz/p83z4Q97B4DDpw==}
     engines: {node: '>=18'}
 
   teeny-request@9.0.0:
@@ -12980,7 +12981,7 @@ snapshots:
       fast-xml-parser: 4.5.0
       tslib: 2.7.0
 
-  '@azure/identity@3.4.2':
+  '@azure/identity@4.4.1':
     dependencies:
       '@azure/abort-controller': 1.1.0
       '@azure/core-auth': 1.7.2
@@ -19259,12 +19260,12 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)):
+  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)):
     dependencies:
-      knex: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0)
+      knex: 3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)
       lodash.clonedeep: 4.5.0
 
-  knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.2.0):
+  knex@3.1.0(mysql2@3.11.0)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -19284,7 +19285,7 @@ snapshots:
       mysql2: 3.11.0
       pg: 8.12.0
       sqlite3: 5.1.7
-      tedious: 18.2.0
+      tedious: 18.6.1
     transitivePeerDependencies:
       - supports-color
 
@@ -22519,9 +22520,10 @@ snapshots:
 
   tarn@3.0.2: {}
 
-  tedious@18.2.0:
+  tedious@18.6.1:
     dependencies:
-      '@azure/identity': 3.4.2
+      '@azure/core-auth': 1.7.2
+      '@azure/identity': 4.4.1
       '@azure/keyvault-keys': 4.8.0
       '@js-joda/core': 5.6.3
       '@types/node': 18.19.45
