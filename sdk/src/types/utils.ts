@@ -49,11 +49,6 @@ export type NestedPartial<Item extends object> = {
 };
 
 /**
- * Resolve type to its final object
- */
-export type Identity<U> = U extends infer A ? A : U;
-
-/**
  * Reduces a complex object type to make it readable in IDEs.
  */
 export type Prettify<T> = {
