@@ -65,6 +65,8 @@ function sortDeep(raw: any): any {
 		const sorted = sortBy(pairs);
 		return fromPairs(sorted);
 	}
-
+	if (isArray(raw)) {
+		return raw.map((raw) => sortDeep(raw))
+	}
 	return raw;
 }
