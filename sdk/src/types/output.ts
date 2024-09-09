@@ -1,7 +1,7 @@
 import type { FieldsWildcard, HasManyToAnyRelation, PickRelationalFields } from './fields.js';
 import type { MappedFunctionFields } from './functions.js';
 import type { ItemType } from './schema.js';
-import type { IfAny, IsNullable, Merge, Mutable, UnpackList } from './utils.js';
+import type { IfAny, IsNullable, Merge, Mutable, UnpackList, Prettify } from './utils.js';
 
 /**
  * Apply the configured fields query parameter on a given Item type
@@ -20,26 +20,28 @@ export type ApplyQueryFields<
 > = IfAny<
 	Schema,
 	Record<string, any>,
-	Merge<
-		MappedFunctionFields<Schema, CollectionItem> extends infer FF
-			? MapFlatFields<CollectionItem, FlatFields, FF extends Record<string, string> ? FF : Record<string, string>>
-			: never,
-		RelationalFields extends never
-			? never
-			: {
-					[Field in keyof RelationalFields]: Field extends keyof CollectionItem
-						? Extract<CollectionItem[Field], ItemType<Schema>> extends infer RelatedCollection
-							? RelationNullable<
-									CollectionItem[Field],
-									RelatedCollection extends any[]
-										? HasManyToAnyRelation<RelatedCollection> extends never
-											? ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]>[] | null // many-to-many or one-to-many
-											: ApplyManyToAnyFields<Schema, RelatedCollection, RelationalFields[Field]>[] // many-to-any'
-										: ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]> // many-to-one
-							  >
-							: never
-						: never;
-			  }
+	Prettify<
+		Merge<
+			MappedFunctionFields<Schema, CollectionItem> extends infer FF
+				? MapFlatFields<CollectionItem, FlatFields, FF extends Record<string, string> ? FF : Record<string, string>>
+				: never,
+			RelationalFields extends never
+				? never
+				: {
+						[Field in keyof RelationalFields]: Field extends keyof CollectionItem
+							? Extract<CollectionItem[Field], ItemType<Schema>> extends infer RelatedCollection
+								? RelationNullable<
+										CollectionItem[Field],
+										RelatedCollection extends any[]
+											? HasManyToAnyRelation<RelatedCollection> extends never
+												? ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]>[] | null // many-to-many or one-to-many
+												: ApplyManyToAnyFields<Schema, RelatedCollection, RelationalFields[Field]>[] // many-to-any'
+											: ApplyNestedQueryFields<Schema, RelatedCollection, RelationalFields[Field]> // many-to-one
+								  >
+								: never
+							: never;
+				  }
+		>
 	>
 >;
 
