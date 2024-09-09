@@ -23,5 +23,5 @@ export interface Bus {
 	 * @param channel Channel to unsubscribe from
 	 * @param callback Callback to remove from the stack
 	 */
-	unsubscribe(channel: string, callback: MessageHandler): Promise<void>;
+	unsubscribe<T = unknown>(channel: string, callback: MessageHandler<T>): Promise<void>;
 }

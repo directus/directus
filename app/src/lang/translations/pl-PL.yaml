@@ -1001,8 +1001,6 @@ tooltip: Podpowiedź
 tooltip_placeholder: Wprowadź podpowiedź...
 unlimited: Nielimitowany
 open_link_in: Otwórz link w
-new_tab: Nowa karta
-current_tab: Aktualna karta
 save_image: Zapisz obraz
 save_media: Zapisz media
 wysiwyg_options:
@@ -1797,6 +1795,8 @@ interfaces:
     preview: Podgląd
     editorFont: Czcionka edytora
     previewFont: Podgląd czcionki
+    default_view: Widok domyślny
+    default_view_preview: Podgląd
     customSyntax: Niestandardowe bloki
     customSyntax_label: Dodaj własne typy składni
     customSyntax_add: Dodaj własną składnię

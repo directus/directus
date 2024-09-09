@@ -79,6 +79,13 @@ const links = computed<Link[][]>(() => [
 		},
 	],
 	[
+		info.value.websocket && info.value.websocket.logs
+			? {
+					icon: 'terminal',
+					name: t('settings_system_logs'),
+					to: `/settings/system-logs`,
+			  }
+			: undefined,
 		{
 			icon: 'bug_report',
 			name: t('report_bug'),
@@ -89,7 +96,7 @@ const links = computed<Link[][]>(() => [
 			name: t('request_feature'),
 			href: settings.value?.report_feature_url ?? DEFAULT_REPORT_FEATURE_URL,
 		},
-	],
+	].filter((link) => link) as Link[],
 ]);
 </script>
 

@@ -829,8 +829,6 @@ tooltip: Buboréksúgó
 tooltip_placeholder: Írjon be egy buboréksúgó szöveget...
 unlimited: Korlátlan
 open_link_in: Hivatkozás megnyitása itt
-new_tab: Új fül
-current_tab: Jelenlegi fül
 save_image: Kép mentése
 save_media: Média mentése
 wysiwyg_options:
@@ -1535,6 +1533,8 @@ interfaces:
     preview: Előnézet
     editorFont: Szerkesztő betűtípus
     previewFont: Betűtípus előnézete
+    default_view: Alapértelmezett nézet
+    default_view_preview: Előnézet
     customSyntax: Egyedi blokkok
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása

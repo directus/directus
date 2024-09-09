@@ -154,7 +154,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		// Flatten response to support dot indexes
 		userInfo = flatten(userInfo) as Record<string, unknown>;
 
-		const { provider, emailKey, identifierKey, allowPublicRegistration } = this.config;
+		const { provider, emailKey, identifierKey, allowPublicRegistration, syncUserInfo } = this.config;
 
 		const email = userInfo[emailKey ?? 'email'] ? String(userInfo[emailKey ?? 'email']) : undefined;
 		// Fallback to email if explicit identifier not found
@@ -180,9 +180,22 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
+			let emitPayload: Record<string, unknown> = {
+				auth_data: userPayload.auth_data,
+			};
+
+			if (syncUserInfo) {
+				emitPayload = {
+					...emitPayload,
+					first_name: userPayload.first_name,
+					last_name: userPayload.last_name,
+					email: userPayload.email,
+				};
+			}
+
 			const updatedUserPayload = await emitter.emitFilter(
 				`auth.update`,
-				{ auth_data: userPayload.auth_data },
+				emitPayload,
 				{
 					identifier,
 					provider: this.config['provider'],
