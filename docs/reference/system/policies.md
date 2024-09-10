@@ -36,15 +36,15 @@ If this policy grants the user admin access. This means that users with this pol
 `app_access` **boolean**\
 Whether or not users with this policy have access to use the Data Studio.
 
-`users` **one-to-many**\
-The users this policy is assigned to directly, this does not include users which receive this policy through a role. One-to-many
-to [users](/reference/system/users).
+`users` **many-to-many**\
+The users this policy is assigned to directly via `directus_access`, this does not include users which receive this policy
+through a role. Many-to-many to [access](/reference/system/access).
 
-`roles` **one-to-many**\
-The roles this policy is assigned to. One-to-many to [roles](/reference/system/policies).
+`roles` **many-to-many**\
+The roles this policy is assigned to via `directus_access`. Many-to-many to [access](/reference/system/access).
 
 `permissions` **one-to-many**\
-The permissions assigned to this policy. One-to-many to [permissions](/reference/system/policies).
+The permissions assigned to this policy. One-to-many to [permissions](/reference/system/permissions).
 
 ```json
 {

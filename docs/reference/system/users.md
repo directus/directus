@@ -73,7 +73,7 @@ Role of the user. Many-to-one to [roles](/reference/system/roles).
 Static access token for the user.
 
 `policies` **many-to-many**\
-The policies in this role. Many-to-many to [policies](/reference/system/policies).
+The policies associated with this user. Many-to-many to [policies](/reference/system/policies).
 
 `last_access` **date**\
 Last time the user accessed the API.
