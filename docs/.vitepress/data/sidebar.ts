@@ -660,6 +660,10 @@ function sidebarUserGuide() {
 					text: 'Activity Log',
 					link: '/user-guide/settings/activity-log',
 				},
+				{
+					text: 'System Logs',
+					link: '/user-guide/settings/system-logs',
+				},
 			],
 		},
 	];
