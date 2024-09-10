@@ -123,8 +123,8 @@ importers:
         specifier: 1.3.3
         version: 1.3.3
       '@tus/server':
-        specifier: 1.6.0
-        version: 1.6.0
+        specifier: 1.8.0
+        version: 1.8.0
       '@tus/utils':
         specifier: 0.2.0
         version: 0.2.0
@@ -4868,12 +4868,16 @@ packages:
     resolution: {integrity: sha512-IxgWdnIz64ua4x86pGHHRpTm6JEJCNdMiqwvc8uhdAxyKrfGEdwE2dYfhN/BfqGlu2FtOZqlH3iBSSgUQJM+ng==}
     engines: {node: '>=16'}
 
-  '@tus/server@1.6.0':
-    resolution: {integrity: sha512-bjZMmlyrXJ0ZxQ7eFGHToAvw2QIxTUucpgdMD+fdfMmxg30dIXXmQybis5ErVf+Qx7JtkBmRyQb3zE2hLvwfGw==}
+  '@tus/server@1.8.0':
+    resolution: {integrity: sha512-mgqFD0c6DMSp+U//e+S6ng9dwMp0nxLCsWV3YBsq2eLUaqNFm/CXK8VH6zGOiRSaHh+5+dAeu6PZbWHrerGxbw==}
     engines: {node: '>=16'}
 
   '@tus/utils@0.2.0':
     resolution: {integrity: sha512-wTZS5PL+wfa6AisJoTtpt9r/GNNWq/rXkcXchAcV5z5GNUXGzgcAl/+u0d9uPkmmOHiJfGcM3MJGGnmsD2a5Kg==}
+    engines: {node: '>=16'}
+
+  '@tus/utils@0.4.0':
+    resolution: {integrity: sha512-Lc+t/D4IyB/iV70DNALN851yPcqP/FYp1prA3jQHM2vn0OicA7qpFjMaM+1/XRDkeF2b75gDGHRfw8S4sVjs8g==}
     engines: {node: '>=16'}
 
   '@types/argparse@1.0.38':
@@ -15491,9 +15495,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@tus/server@1.6.0':
+  '@tus/server@1.8.0':
     dependencies:
-      '@tus/utils': 0.2.0
+      '@tus/utils': 0.4.0
       debug: 4.3.6(supports-color@5.5.0)
       lodash.throttle: 4.1.1
     optionalDependencies:
@@ -15502,6 +15506,8 @@ snapshots:
       - supports-color
 
   '@tus/utils@0.2.0': {}
+
+  '@tus/utils@0.4.0': {}
 
   '@types/argparse@1.0.38': {}
 
