@@ -44,7 +44,7 @@ through a role. Many-to-many to [access](/reference/system/access).
 The roles this policy is assigned to via `directus_access`. Many-to-many to [access](/reference/system/access).
 
 `permissions` **one-to-many**\
-The permissions assigned to this policy. One-to-many to [permissions](/reference/system/policies).
+The permissions assigned to this policy. One-to-many to [permissions](/reference/system/permissions).
 
 ```json
 {
