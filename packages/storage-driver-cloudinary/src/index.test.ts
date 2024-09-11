@@ -561,7 +561,7 @@ describe('#read', () => {
 	});
 
 	test('Adds optional Range header for start', async () => {
-		await driver.read(sample.path.input, { start: sample.range.start, end: undefined });
+		await driver.read(sample.path.input, { range: { start: sample.range.start, end: undefined } });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
@@ -570,7 +570,7 @@ describe('#read', () => {
 	});
 
 	test('Adds optional Range header for end', async () => {
-		await driver.read(sample.path.input, { start: undefined, end: sample.range.end });
+		await driver.read(sample.path.input, { range: { start: undefined, end: sample.range.end } });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,
@@ -579,7 +579,7 @@ describe('#read', () => {
 	});
 
 	test('Adds optional Range header for start and end', async () => {
-		await driver.read(sample.path.input, sample.range);
+		await driver.read(sample.path.input, { range: sample.range });
 
 		expect(fetch).toHaveBeenCalledWith(
 			`https://res.cloudinary.com/${sample.config.cloudName}/${sample.resourceType}/upload/${sample.parameterSignature}/${sample.path.inputFull}`,

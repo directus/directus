@@ -198,13 +198,13 @@ describe('#read', () => {
 	});
 
 	test('Passes optional range to createReadStream', async () => {
-		await driver.read('/path/to/file', { start: sample.range.start, end: undefined });
+		await driver.read('/path/to/file', { range: { start: sample.range.start, end: undefined } });
 		expect(mockFile.createReadStream).toHaveBeenCalledWith({ start: sample.range.start, end: undefined });
 
-		await driver.read('/path/to/file', sample.range);
+		await driver.read('/path/to/file', { range: sample.range });
 		expect(mockFile.createReadStream).toHaveBeenCalledWith(sample.range);
 
-		await driver.read('/path/to/file', { start: undefined, end: sample.range.end });
+		await driver.read('/path/to/file', { range: { start: undefined, end: sample.range.end } });
 		expect(mockFile.createReadStream).toHaveBeenCalledWith({ start: undefined, end: sample.range.end });
 	});
 });
