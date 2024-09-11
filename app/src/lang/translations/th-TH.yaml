@@ -524,10 +524,6 @@ update_collection_success: แก้ไขคอลเลกชัน
 delete_collection_success: คอลเลกชันถูกลบแล้ว
 make_collection_visible: แสดงคอลเลคชั่น
 make_collection_hidden: ซ่อนคอลเลคชั่น
-start_end_of_count_items: '{start}-{end} ของ {count} ไอเท็ม'
-start_end_of_count_filtered_items: '{start}-{end} ของ {count} ไอเท็มที่ถูกกรอง'
-one_item: '1 รายการ'
-one_filtered_item: 'มี 1 ไอเท็มที่ถูกกรอง'
 collections_shown: แสดงคอลเลกชัน
 visible_collections: คอลเลกชันที่มองเห็นได้
 hidden_collections: คอลเลกชันที่ซ่อนอยู่
@@ -604,7 +600,6 @@ create_item: สร้างไอเท็ม
 display_template: แม่แบบการแสดงผล
 language_display_template: แม่แบบการแสดงภาษา
 translations_display_template: แม่แบบการแปลภาษา
-n_items_selected: 'ไม่มีรายการที่เลือก | เลือกแล้ว 1 รายการ | เลือกแล้ว {n} รายการ'
 per_page: ต่อหน้า
 all_files: ทุกไฟล์
 my_files: ไฟล์ของฉัน
@@ -678,8 +673,6 @@ tooltip: คำแนะนำ
 tooltip_placeholder: ใส่คำแนะนำ
 unlimited: ไม่จำกัด
 open_link_in: เปิดลิงก์
-new_tab: แท็บใหม่
-current_tab: แท็บปัจจุบัน
 wysiwyg_options:
   aligncenter: จัดตำแหน่งกึ่งกลาง
   alignjustify: จัดตำแหน่งชิดขอบซ้ายและขวา
@@ -780,7 +773,6 @@ page_help_settings_datamodel_collections: >-
   **คอลเลกชัน** — แสดงทุกคอลเลกชัน รวมถึงคอลเลกชันที่ซ่อน คอลเลกชันของระบบ และตารางในฐานข้อมูลที่ถูกเพิ่มเข้ามาภายหลัง
 page_help_settings_datamodel_fields: >-
   **คอลเลกชัน** — ฟอร์มสำหรับการจัดการคอลเลกชันและฟิลด์ต่างๆ
-page_help_settings_roles_collection: '**เรียกดูบทบาท** — แสดงแอดมิน, บทบาทเมื่อเข้าถึงแบบสาธารณะ และบทบาทของผู้ใช้'
 page_help_settings_roles_item: "**รายละเอียดบทบาท** — จัดการบทบาทของสิทธิ์และการตั้งค่าต่างๆ"
 page_help_settings_presets_collection: >-
   **เรียกดูการตั้งค่าล่วงหน้า** — แสดงการตั้งค่าล่วงหน้าทั้งหมดในโปรเจ็ค รวมถึงการตั้งค่าล่วงหน้าของผู้ใช้ บทบาท บุ๊คมาร์ก และรูปแบบการมองเห็น
@@ -912,12 +904,9 @@ fields:
     name: ชื่อบทบาท
     icon: ไอคอนของบทบาท
     description: รายละเอียด
-    app_access: การเข้าถึงแอป
-    admin_access: ผู้ดูแลเท่านั้น
-    ip_access: IP ที่เข้าถึง
-    enforce_tfa: ต้องการ 2FA
     users: ผู้ใช้ในบทบาทนี้
-    module_list: รายการโมดูล
+  directus_policies:
+    description: รายละเอียด
   directus_webhooks:
     name: ชื่อ
     method: เมธอด
@@ -1181,6 +1170,8 @@ interfaces:
     description: กรอกและดู Markdown ล่วงหน้าก่อน
     edit: แก้ไข
     preview: ดูตัวอย่าง
+    default_view: มุมมองเริ่มต้น
+    default_view_preview: ดูตัวอย่าง
     customSyntax: บล็อกที่ออกแบบเอง
     customSyntax_label: เพิ่ม syntax ที่ออกแบบเอง
     customSyntax_add: เพิ่ม syntax ที่ออกแบบเอง

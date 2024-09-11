@@ -6,6 +6,9 @@ export type LanguageShort = 'js' | 'ts';
 
 export type Config = {
 	plugins?: Plugin[];
+	watch?: {
+		clearScreen?: boolean;
+	};
 };
 
 export type RollupConfig = { rollupOptions: RollupOptions; rollupOutputOptions: RollupOutputOptions };

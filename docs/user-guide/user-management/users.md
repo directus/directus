@@ -14,13 +14,6 @@ To configure users programmatically, see our API documentation on [users](/refer
 
 :::
 
-:::tip Directus 11 RC
-
-This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
-data structure and relations.
-
-:::
-
 Within the Data Studio, the [User Directory](/user-guide/user-management/user-directory) is the primary place to manage
 users. However, certain controls are included in **Settings > Access Control > [Role]** as well, which is what the
 following sections will focus on.

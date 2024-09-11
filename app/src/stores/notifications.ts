@@ -20,10 +20,10 @@ export const useNotificationsStore = defineStore({
 			const userStore = useUserStore();
 
 			if (userStore.currentUser && !('share' in userStore.currentUser)) {
-				await this.getUnreadCount();
+				await this.refreshUnreadCount();
 			}
 		},
-		async getUnreadCount() {
+		async refreshUnreadCount() {
 			const userStore = useUserStore();
 
 			if (!userStore.currentUser || !('id' in userStore.currentUser)) return;

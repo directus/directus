@@ -228,6 +228,8 @@ fields:
     display_template: Шаблон
   directus_roles:
     description: Опис
+  directus_policies:
+    description: Опис
   directus_webhooks:
     name: Име
     status: Стање

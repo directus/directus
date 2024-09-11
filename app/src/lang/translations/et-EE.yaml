@@ -37,6 +37,7 @@ extension_interface: Kasutajaliides
 extension_display: Vaade
 extension_layout: Paigutus
 extension_hook: Haak
+extension_interfaces: Kasutajaliidesed
 extension_modules: Moodulid
 custom: Kohandatud
 hook: Haak
@@ -559,10 +560,6 @@ delete_collection_success: Andmekogu kustutatud
 make_folder_visible: Tee kaust nähtavaks
 make_folder_hidden: Peida kaust
 goto_collection_content: Vaata Sisu
-start_end_of_count_items: '{start}-{end} / {count}'
-start_end_of_count_filtered_items: '{start}-{end} / {count}'
-one_item: '1 kirje'
-one_filtered_item: '1 filtreeritud kirje'
 collections_shown: Nähtavad andmekogud
 visible_collections: Nähtavad andmekogud
 hidden_collections: Peidetud andmekogud
@@ -637,7 +634,6 @@ create_item: Loo kirje
 display_template: Vaate mall
 language_display_template: Keele templiit
 translations_display_template: Tõlgete templiit
-n_items_selected: 'Kirjeid pole valitud | Valitud 1 kirje | {n} kirjet valitud'
 per_page: Lehe kohta
 all_files: Kõik failid
 my_files: Minu failid
@@ -694,8 +690,6 @@ tooltip: Vihje
 tooltip_placeholder: Sisesta vihje...
 unlimited: Piiramatu
 open_link_in: Ava link
-new_tab: Uus vahekaart
-current_tab: Praegune vahekaart
 wysiwyg_options:
   aligncenter: Joonda Keskele
   alignjustify: Joonda kahepoolselt
@@ -793,7 +787,6 @@ page_help_settings_datamodel_collections: >-
   **Andmekogud** — Näitab olemasolevaid andmekogusid. Samuti ka nähtavaid, peidetud, ja süsteemi kogusid, lisaks ka haldamata andmebaaside tabeleid, mida saab lisada.
 page_help_settings_datamodel_fields: >-
   **Andmekogu** — Ükskiku andmekogu ja tema väljade muutmise vorm.
-page_help_settings_roles_collection: '**Vaata rolle* — Näitab adminne, avalikke jm kasutajarolle.'
 page_help_settings_roles_item: "**Rolli detailid** - Muuda rolli ligipääse ja muid seadistusti."
 page_help_settings_presets_collection: >-
   **Näita eelseadistusi** — Näitab kõiki projekti eelseadistusi, sh kasutajad, rollid, järjehoidjad ja vaikimisi vaated.
@@ -916,12 +909,9 @@ fields:
     name: Rolli Nimi
     icon: Rolli pilt
     description: Kirjeldus
-    app_access: Rakenduse ligipääs
-    admin_access: Admini ligipääs
-    ip_access: IP ligipääs
-    enforce_tfa: 2FA on nõutav
     users: Kasutajad selles rollis
-    module_list: Moodulite näitamine
+  directus_policies:
+    description: Kirjeldus
   directus_webhooks:
     name: Nimi
     status: Staatus
@@ -1164,6 +1154,8 @@ interfaces:
     description: Sisesta ja vaata markdown'i
     edit: Muuda
     preview: Eelvaade
+    default_view: Vaikimisi vaade
+    default_view_preview: Eelvaade
     customSyntax: Kohandatud plokid
     customSyntax_label: Lisa kohandatud süntaksi tüüpe
     customSyntax_add: Lisa kohandatud süntaks
