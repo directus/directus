@@ -57,7 +57,7 @@
 		"@editorjs/inline-code": "1.5.1",
 		"@editorjs/nested-list": "1.4.3",
 		"@editorjs/paragraph": "2.11.5",
-		"@editorjs/quote": "2.6.0",
+		"@editorjs/quote": "2.7.2",
 		"@editorjs/raw": "2.5.0",
 		"@editorjs/table": "2.3.0",
 		"@editorjs/underline": "1.1.0",
