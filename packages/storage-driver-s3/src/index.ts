@@ -278,13 +278,13 @@ export class DriverS3 implements TusDriver {
 			Metadata: { 'tus-version': TUS_RESUMABLE },
 			...(context.metadata?.['contentType']
 				? {
-					ContentType: context.metadata['contentType'],
-				}
+						ContentType: context.metadata['contentType'],
+				  }
 				: {}),
 			...(context.metadata?.['cacheControl']
 				? {
-					CacheControl: context.metadata['cacheControl'],
-				}
+						CacheControl: context.metadata['cacheControl'],
+				  }
 				: {}),
 		});
 

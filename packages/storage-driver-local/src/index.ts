@@ -131,7 +131,7 @@ export class DriverLocal implements TusDriver {
 		await this.delete(filepath);
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> { }
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {}
 
 	async writeChunk(
 		filepath: string,
