@@ -345,7 +345,7 @@ Redis is required when you run Directus load balanced across multiple containers
 | --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------- |
 | `RETENTION_ENABLED`   | Whether or not to enable data retention.                                                                         | `false`       |
 | `RETENTION_SCHEDULE`  | The frequency at which to check for removable records.                                                           | `0 * * * *`   |
-| `RETENTION_BATCH`     | The maximum amount of records to delete in a single query.                                                       | `500`         |
+| `RETENTION_BATCH`     | The maximum number of records to delete in a single query.                                                       | `500`         |
 | `ACTIVITY_RETENTION`  | The maximum amount of time to retain `directus_activity` records or `false` to disable. This excludes flow logs. | `30d`         |
 | `REVISIONS_RETENTION` | The maximum amount of time to retain `directus_revisions` records or `false` to disable.                         | `30d`         |
 | `FLOW_LOGS_RETENTION` | The maximum amount of time to retain flow logs or `false` to disable.                                            | `30d`         |
