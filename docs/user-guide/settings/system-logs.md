@@ -1,5 +1,5 @@
 ---
-description: 
+description: System Logs provide real-time visibility into application logs, enabling monitoring and debugging of API requests.
 ---
 
 # System Logs
