@@ -67,7 +67,7 @@ function sortDeep(raw: any): any {
 	}
 
 	if (isArray(raw)) {
-		return raw.map((raw) => sortDeep(raw))
+		return raw.map((raw) => sortDeep(raw));
 	}
 
 	return raw;
