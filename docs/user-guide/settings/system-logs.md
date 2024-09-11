@@ -40,7 +40,7 @@ library:
 | `fatal`   | 60            |
 
 You can enable different log levels shown in System Logs via the
-[`WEBSOCKETS_LOGS_LEVELS` environment variable](/self-hosted/config-options.html#logs).
+[`WEBSOCKETS_LOGS_LEVEL` environment variable](/self-hosted/config-options.html#logs).
 
 ## Searching & Filtering
 
