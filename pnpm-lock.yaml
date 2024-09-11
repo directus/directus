@@ -611,8 +611,8 @@ importers:
         specifier: 2.11.5
         version: 2.11.5
       '@editorjs/quote':
-        specifier: 2.6.0
-        version: 2.6.0
+        specifier: 2.7.2
+        version: 2.7.2
       '@editorjs/raw':
         specifier: 2.5.0
         version: 2.5.0
@@ -2810,6 +2810,9 @@ packages:
   '@editorjs/delimiter@1.4.2':
     resolution: {integrity: sha512-S8q2LpeYdYkVShLp7K8c4HLthDHBevLw+sT+iO0+SH0oMvFmld9SUon3DFzMQ2gG07EOdZGRZ958+sVxyvFjZw==}
 
+  '@editorjs/dom@0.0.5':
+    resolution: {integrity: sha512-SZ78Gwpkp3EUhjBIp0lSojeQ35V9acF8SubJsMeOH/vlOUE40GOnvvwWZnF05lO7bIB0dOHhhJy4N7IIAWxP2w==}
+
   '@editorjs/editorjs@2.29.1':
     resolution: {integrity: sha512-WRT2pCfikMsvySQJqpCU21LfTZaPuxUWsDO8aFGrPx4MKzOR9D+Ur4mNb3jq0FXx2EMqvIWfTyFixJxtjGHTyQ==}
 
@@ -2818,6 +2821,9 @@ packages:
 
   '@editorjs/header@2.8.1':
     resolution: {integrity: sha512-y0HVXRP7m2W617CWo3fsb5HhXmSLaRpb9GzFx0Vkp/HEm9Dz5YO1s8tC7R8JD3MskwoYh7V0hRFQt39io/r6hA==}
+
+  '@editorjs/helpers@0.0.4':
+    resolution: {integrity: sha512-ieg3dzo2m1/ELze/RMNADiAiC5amXxIlVXoJ5vvXITOu/p/dPsrF+Oi3h5gBYvtGk9vg5LJUSG5YWU0tBUO1tw==}
 
   '@editorjs/image@2.9.3':
     resolution: {integrity: sha512-hBOHuqvL/ovjrns+xLuBh/b3kqABDlLxlByWnSuKnE31O351NDrg9AXrB1yYo0yZerw5V591rP0US3PEzp7CzQ==}
@@ -2831,8 +2837,8 @@ packages:
   '@editorjs/paragraph@2.11.5':
     resolution: {integrity: sha512-ZcUKnVOoFPuMdVJJXMo2odmsjxeZQOUxmOwOiZktRuFkRDMq9qCqkmzqE1BH5VR6YyyMLKV4ZBEwedwggDH8iA==}
 
-  '@editorjs/quote@2.6.0':
-    resolution: {integrity: sha512-8DiCMBT4n4UDV5bgzvfRH26HmL6YWddGC4+twvjhR+PzX0gwrnY8nFifvro79EeSqxwRtFjjlGnu5I0VTfw5aQ==}
+  '@editorjs/quote@2.7.2':
+    resolution: {integrity: sha512-C2yB6TdBJsmfcwe2rirSjPMCQ3jTz8oOwOPbOFeLDcvUgxECEIws8kZOkuxXePdWua68QwIpUFH7yWf338lwUQ==}
 
   '@editorjs/raw@2.5.0':
     resolution: {integrity: sha512-ZOYKgR/sutOXHQ4uaWg8KzZ6yFJZCMTndezlN257GGsQ3Sa3ERcK9wZHKgAMNXaDhdKx9fDuojxRRcYvz6l9aQ==}
@@ -13342,6 +13348,10 @@ snapshots:
     dependencies:
       '@codexteam/icons': 0.3.2
 
+  '@editorjs/dom@0.0.5':
+    dependencies:
+      '@editorjs/helpers': 0.0.4
+
   '@editorjs/editorjs@2.29.1': {}
 
   '@editorjs/embed@2.7.4':
@@ -13351,6 +13361,8 @@ snapshots:
   '@editorjs/header@2.8.1':
     dependencies:
       '@codexteam/icons': 0.0.5
+
+  '@editorjs/helpers@0.0.4': {}
 
   '@editorjs/image@2.9.3':
     dependencies:
@@ -13368,9 +13380,10 @@ snapshots:
     dependencies:
       '@codexteam/icons': 0.0.4
 
-  '@editorjs/quote@2.6.0':
+  '@editorjs/quote@2.7.2':
     dependencies:
-      '@codexteam/icons': 0.0.5
+      '@codexteam/icons': 0.3.2
+      '@editorjs/dom': 0.0.5
 
   '@editorjs/raw@2.5.0':
     dependencies:
