@@ -666,7 +666,7 @@ importers:
         version: 7.2.0
       '@pinia/testing':
         specifier: 0.1.5
-        version: 0.1.5(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
+        version: 0.1.5(pinia@2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))
       '@popperjs/core':
         specifier: 2.11.8
         version: 2.11.8
@@ -842,8 +842,8 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       pinia:
-        specifier: 2.1.7
-        version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
+        specifier: 2.2.2
+        version: 2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       pretty-ms:
         specifier: 9.1.0
         version: 9.1.0
@@ -993,8 +993,8 @@ importers:
         specifier: 0.17.17
         version: 0.17.17(@types/node@18.19.50)(sass@1.78.0)(terser@5.31.6)(vite@5.2.11(@types/node@18.19.50)(sass@1.78.0)(terser@5.31.6))
       pinia:
-        specifier: 2.1.7
-        version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
+        specifier: 2.2.2
+        version: 2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       rollup-plugin-node-externals:
         specifier: 7.1.2
         version: 7.1.2(rollup@4.21.2)
@@ -1806,8 +1806,8 @@ importers:
         specifier: 10.9.0
         version: 10.9.0(vue@3.4.27(typescript@5.4.5))
       pinia:
-        specifier: 2.1.7
-        version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
+        specifier: 2.2.2
+        version: 2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       tsup:
         specifier: 8.2.4
         version: 8.2.4(@microsoft/api-extractor@7.43.0(@types/node@18.19.50))(jiti@1.21.6)(postcss@8.4.45)(tsx@4.17.0)(typescript@5.4.5)(yaml@2.5.1)
@@ -1870,8 +1870,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4(vite@5.2.11(@types/node@18.19.50)(sass@1.78.0)(terser@5.31.6))(vue@3.4.27(typescript@5.4.5))
       pinia:
-        specifier: 2.1.7
-        version: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
+        specifier: 2.2.2
+        version: 2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       rollup-plugin-node-externals:
         specifier: 7.1.2
         version: 7.1.2(rollup@4.21.2)
@@ -9440,8 +9440,8 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  pinia@2.1.7:
-    resolution: {integrity: sha512-+C2AHFtcFqjPih0zpYuvof37SFxMQ7OEG2zV9jRI12i9BOy3YQVAHwdKtyyc8pDcDyIc33WCIsZaCFWU7WWxGQ==}
+  pinia@2.2.2:
+    resolution: {integrity: sha512-ja2XqFWZC36mupU4z1ZzxeTApV7DOw44cV4dhQ9sGwun+N89v/XP7+j7q6TanS1u1tdbK4r+1BUx7heMaIdagA==}
     peerDependencies:
       '@vue/composition-api': ^1.4.0
       typescript: '>=4.4.4'
@@ -14279,9 +14279,9 @@ snapshots:
 
   '@phc/format@1.0.0': {}
 
-  '@pinia/testing@0.1.5(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))':
+  '@pinia/testing@0.1.5(pinia@2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))(vue@3.4.27(typescript@5.4.5))':
     dependencies:
-      pinia: 2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
+      pinia: 2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       vue-demi: 0.14.10(vue@3.4.27(typescript@5.4.5))
     transitivePeerDependencies:
       - '@vue/composition-api'
@@ -20784,7 +20784,7 @@ snapshots:
 
   pify@4.0.1: {}
 
-  pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)):
+  pinia@2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)):
     dependencies:
       '@vue/devtools-api': 6.6.3
       vue: 3.4.27(typescript@5.4.5)
