@@ -1,5 +1,5 @@
 ---
-'@directus/api': major
+'@directus/api': patch
 '@directus/specs': patch
 '@directus/system-data': patch
 '@directus/types': patch

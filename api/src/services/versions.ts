@@ -106,7 +106,7 @@ export class VersionsService extends ItemsService {
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getLegacyVersionSaves(id: PrimaryKey): Promise<Partial<Item>[]> {
+	async getVersionSavesById(id: PrimaryKey): Promise<Partial<Item>[]> {
 		const revisionsService = new RevisionsService({
 			knex: this.knex,
 			schema: this.schema,
@@ -138,7 +138,7 @@ export class VersionsService extends ItemsService {
 			return [versions[0]['delta']];
 		}
 
-		const saves = await this.getLegacyVersionSaves(versions[0]['id']);
+		const saves = await this.getVersionSavesById(versions[0]['id']);
 
 		return saves;
 	}
@@ -265,7 +265,7 @@ export class VersionsService extends ItemsService {
 		let existingDelta = version['delta'];
 
 		if (!existingDelta) {
-			const saves = await this.getLegacyVersionSaves(key);
+			const saves = await this.getVersionSavesById(key);
 
 			existingDelta = assign({}, ...saves);
 		}
@@ -320,7 +320,7 @@ export class VersionsService extends ItemsService {
 		if (delta) {
 			versionResult = delta;
 		} else {
-			const saves = await this.getLegacyVersionSaves(id);
+			const saves = await this.getVersionSavesById(id);
 
 			versionResult = assign({}, ...saves);
 		}
