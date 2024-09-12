@@ -212,7 +212,7 @@
 		"@types/object-hash": "3.0.6",
 		"@types/papaparse": "5.3.14",
 		"@types/qs": "6.9.15",
-		"@types/sanitize-html": "2.11.0",
+		"@types/sanitize-html": "2.13.0",
 		"@types/stream-json": "1.7.7",
 		"@types/wellknown": "0.5.8",
 		"@types/ws": "8.5.12",
