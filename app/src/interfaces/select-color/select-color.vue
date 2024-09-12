@@ -302,7 +302,7 @@ function useColor() {
 						icon
 						:style="{
 							'--swatch-color': showSwatch ? value : 'transparent',
-							...( lowContrast === false ? {'--theme--border-width': '0px'} : {} ),
+							...(lowContrast === false ? { '--theme--border-width': '0px' } : {}),
 							border:
 								lowContrast === false
 									? 'none'
