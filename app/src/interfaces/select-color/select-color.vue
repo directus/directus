@@ -159,7 +159,11 @@ function useColor() {
 	watch(
 		() => props.value,
 		() => {
-			color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
+			try {
+				color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
+			} catch (error) {
+				color.value = null;
+			}
 		},
 		{ immediate: true },
 	);
