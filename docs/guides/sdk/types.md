@@ -233,23 +233,7 @@ async function getCollectionA() {
 type GeneratedType = Awaited<ReturnType<typeof getCollectionA>>;
 ```
 
-### Debugging
-
-The SDK provides some utility generic types to help debug issues. The `Identity<>` generic type can be used to try and
-resolve generics to their results. This may not always work, and you may need to reduce the type.
-
-```ts
-// the output type from the previous example
-type GeneratedType = Awaited<ReturnType<typeof getCollectionA>>;
-
-// when hovering over this type it may look unreadable like:
-//  Merge<MapFlatFields<object & CollectionA, "id", MappedFunctionFields<MySchema, object & CollectionA>>, {}, MapFlatFields<...>, {}>[]
-
-// should resolve to { id: number; }
-type ResolvedType = Identity< GeneratedType[0] >;
-```
-
-## Working with input Query Types
+## Working with Input Query Types
 
 For the output types to work properly, the `fields` list needs to be static so the types can read the fields that were
 selected in the query.
