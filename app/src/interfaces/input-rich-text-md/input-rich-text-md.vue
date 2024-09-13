@@ -544,12 +544,11 @@ textarea {
 }
 
 .table-options {
-	@include form-grid;
-
 	--theme--form--row-gap: 12px;
 	--theme--form--column-gap: 12px;
 
 	padding: 12px;
+	@include form-grid;
 
 	.v-input {
 		min-width: 100px;

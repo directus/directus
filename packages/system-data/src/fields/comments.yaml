@@ -1,4 +1,4 @@
-table: directus_versions
+table: directus_comments
 
 fields:
   - field: id
@@ -7,17 +7,11 @@ fields:
     readonly: true
     hidden: true
 
-  - field: key
-
-  - field: name
-
   - field: collection
 
   - field: item
 
-  - field: hash
-    readonly: true
-    hidden: true
+  - field: comment
 
   - field: date_created
     special:
@@ -36,7 +30,3 @@ fields:
   - field: user_updated
     special:
       - user-updated
-
-  - field: delta
-    special:
-      - cast-json

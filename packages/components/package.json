@@ -34,7 +34,7 @@
 		"@vitejs/plugin-vue": "5.0.4",
 		"@vitest/coverage-v8": "1.5.3",
 		"histoire": "0.17.17",
-		"pinia": "2.1.7",
+		"pinia": "2.2.2",
 		"rollup-plugin-node-externals": "7.1.2",
 		"typescript": "5.4.5",
 		"vite": "5.2.11",
