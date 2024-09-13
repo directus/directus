@@ -138,8 +138,8 @@ importers:
         specifier: 3.2.5
         version: 3.2.5
       axios:
-        specifier: 1.7.3
-        version: 1.7.3
+        specifier: 1.7.7
+        version: 1.7.7
       busboy:
         specifier: 1.6.0
         version: 1.6.0
@@ -749,8 +749,8 @@ importers:
         specifier: 3.52.0
         version: 3.52.0
       axios:
-        specifier: 1.7.3
-        version: 1.7.3
+        specifier: 1.7.7
+        version: 1.7.7
       base-64:
         specifier: 1.0.0
         version: 1.0.0
@@ -967,10 +967,10 @@ importers:
         version: 5.4.5
       vitepress:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5)
+        version: 1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.7)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5)
       vitepress-plugin-tabs:
         specifier: 0.3.0
-        version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5))
+        version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.7)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5))
       vue:
         specifier: 3.4.27
         version: 3.4.27(typescript@5.4.5)
@@ -1029,8 +1029,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       axios:
-        specifier: 1.7.3
-        version: 1.7.3
+        specifier: 1.7.7
+        version: 1.7.7
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -1918,11 +1918,11 @@ importers:
   packages/update-check:
     dependencies:
       axios:
-        specifier: 1.7.3
-        version: 1.7.3
+        specifier: 1.7.7
+        version: 1.7.7
       axios-cache-interceptor:
         specifier: 1.5.3
-        version: 1.5.3(axios@1.7.3)
+        version: 1.5.3(axios@1.7.7)
       boxen:
         specifier: 7.1.1
         version: 7.1.1
@@ -2122,8 +2122,8 @@ importers:
         specifier: 7.15.0
         version: 7.15.0
       axios:
-        specifier: 1.7.3
-        version: 1.7.3
+        specifier: 1.7.7
+        version: 1.7.7
       get-port:
         specifier: 7.1.0
         version: 7.1.0
@@ -5739,8 +5739,8 @@ packages:
     peerDependencies:
       axios: ^1
 
-  axios@1.7.3:
-    resolution: {integrity: sha512-Ar7ND9pU99eJ9GpoGQKhKf58GpUOgnzuaB7ueNQ5BMi0p+LZ5oaEnfF999fAArcTIBwXTCHAmGcHOZJaWPq9Nw==}
+  axios@1.7.7:
+    resolution: {integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==}
 
   backoff@2.5.0:
     resolution: {integrity: sha512-wC5ihrnUXmR2douXmXLCe5O3zg3GKIyvRi/hi58a/XyRxVI+3/yM0PYueQOZXPXQ9pxBislYkw+sF9b7C/RuMA==}
@@ -16208,13 +16208,13 @@ snapshots:
       - '@vue/composition-api'
       - vue
 
-  '@vueuse/integrations@10.11.1(axios@1.7.3)(change-case@4.1.2)(focus-trap@7.5.4)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.4.27(typescript@5.4.5))':
+  '@vueuse/integrations@10.11.1(axios@1.7.7)(change-case@4.1.2)(focus-trap@7.5.4)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.4.27(typescript@5.4.5))':
     dependencies:
       '@vueuse/core': 10.11.1(vue@3.4.27(typescript@5.4.5))
       '@vueuse/shared': 10.11.1(vue@3.4.27(typescript@5.4.5))
       vue-demi: 0.14.10(vue@3.4.27(typescript@5.4.5))
     optionalDependencies:
-      axios: 1.7.3
+      axios: 1.7.7
       change-case: 4.1.2
       focus-trap: 7.5.4
       qrcode: 1.5.4
@@ -16582,14 +16582,14 @@ snapshots:
   aws-ssl-profiles@1.1.2:
     optional: true
 
-  axios-cache-interceptor@1.5.3(axios@1.7.3):
+  axios-cache-interceptor@1.5.3(axios@1.7.7):
     dependencies:
-      axios: 1.7.3
+      axios: 1.7.7
       cache-parser: 1.2.5
       fast-defer: 1.1.8
       object-code: 1.3.3
 
-  axios@1.7.3:
+  axios@1.7.7:
     dependencies:
       follow-redirects: 1.15.8
       form-data: 4.0.0
@@ -19548,7 +19548,7 @@ snapshots:
 
   mailgun.js@8.2.2:
     dependencies:
-      axios: 1.7.3
+      axios: 1.7.7
       base-64: 1.0.0
       url-join: 4.0.1
     transitivePeerDependencies:
@@ -23205,19 +23205,19 @@ snapshots:
       sass: 1.78.0
       terser: 5.31.6
 
-  vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5)):
+  vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.7)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5))(vue@3.4.27(typescript@5.4.5)):
     dependencies:
-      vitepress: 1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5)
+      vitepress: 1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.7)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5)
       vue: 3.4.27(typescript@5.4.5)
 
-  vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.3)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5):
+  vitepress@1.0.0-rc.4(@algolia/client-search@4.24.0)(@types/node@18.19.50)(axios@1.7.7)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.78.0)(search-insights@2.17.1)(sortablejs@1.14.0)(terser@5.31.6)(typescript@5.4.5):
     dependencies:
       '@docsearch/css': 3.6.1
       '@docsearch/js': 3.6.1(@algolia/client-search@4.24.0)(search-insights@2.17.1)
       '@vitejs/plugin-vue': 4.6.2(vite@4.5.2(@types/node@18.19.50)(sass@1.78.0)(terser@5.31.6))(vue@3.4.27(typescript@5.4.5))
       '@vue/devtools-api': 6.6.3
       '@vueuse/core': 10.9.0(vue@3.4.27(typescript@5.4.5))
-      '@vueuse/integrations': 10.11.1(axios@1.7.3)(change-case@4.1.2)(focus-trap@7.5.4)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.4.27(typescript@5.4.5))
+      '@vueuse/integrations': 10.11.1(axios@1.7.7)(change-case@4.1.2)(focus-trap@7.5.4)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.4.27(typescript@5.4.5))
       body-scroll-lock: 4.0.0-beta.0
       focus-trap: 7.5.4
       mark.js: 8.11.1
