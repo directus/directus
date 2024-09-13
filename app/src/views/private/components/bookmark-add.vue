@@ -42,7 +42,7 @@ function cancel() {
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
-		<v-card>
+		<v-card class="allow-drawer">
 			<v-card-title>{{ t('create_bookmark') }}</v-card-title>
 
 			<v-card-text>
