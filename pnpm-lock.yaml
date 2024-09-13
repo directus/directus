@@ -126,8 +126,8 @@ importers:
         specifier: 1.6.0
         version: 1.6.0
       '@tus/utils':
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: 0.4.0
+        version: 0.4.0
       '@types/cookie':
         specifier: 0.6.0
         version: 0.6.0
@@ -1737,8 +1737,8 @@ importers:
         specifier: 2.5.0
         version: 2.5.0
       '@tus/utils':
-        specifier: 0.2.0
-        version: 0.2.0
+        specifier: 0.4.0
+        version: 0.4.0
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*
@@ -4880,6 +4880,10 @@ packages:
 
   '@tus/utils@0.2.0':
     resolution: {integrity: sha512-wTZS5PL+wfa6AisJoTtpt9r/GNNWq/rXkcXchAcV5z5GNUXGzgcAl/+u0d9uPkmmOHiJfGcM3MJGGnmsD2a5Kg==}
+    engines: {node: '>=16'}
+
+  '@tus/utils@0.4.0':
+    resolution: {integrity: sha512-Lc+t/D4IyB/iV70DNALN851yPcqP/FYp1prA3jQHM2vn0OicA7qpFjMaM+1/XRDkeF2b75gDGHRfw8S4sVjs8g==}
     engines: {node: '>=16'}
 
   '@types/argparse@1.0.38':
@@ -15515,6 +15519,8 @@ snapshots:
       - supports-color
 
   '@tus/utils@0.2.0': {}
+
+  '@tus/utils@0.4.0': {}
 
   '@types/argparse@1.0.38': {}
 
