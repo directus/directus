@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
+import { softValidateCssVar } from '@/utils/soft-validate-css-var';
 import { cssVar } from '@directus/utils/browser';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -64,19 +65,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['input']);
 
-const validateVarSyntax = (input: string): boolean =>
-	(input.match(/var\(/g)?.length || 0) === (input.match(/\)/g)?.length || 0) &&
-	input.startsWith('var(') &&
-	input.endsWith(')');
-
 const isCssVar = computed(() => {
 	if (!props.value) return false;
-	return validateVarSyntax(props.value);
+	return softValidateCssVar(props.value);
 });
 
 const valueWithoutVariables = computed(() => {
 	if (!props.value) return null;
-	return validateVarSyntax(props.value) ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
+	return softValidateCssVar(props.value) ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
 });
 
 const htmlColorInput = ref<ComponentPublicInstance | null>(null);
@@ -229,7 +225,7 @@ function useColor() {
 		set(newInput) {
 			if (newInput === null || newInput === '') {
 				unsetColor();
-			} else if (validateVarSyntax(newInput)) {
+			} else if (softValidateCssVar(newInput)) {
 				emit('input', newInput);
 
 				try {
