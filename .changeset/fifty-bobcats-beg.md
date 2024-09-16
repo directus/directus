@@ -2,4 +2,4 @@
 '@directus/schema': patch
 ---
 
-Fixed an issue that would cause directus to crash on unexpected database schema contents
+Fixed an issue that would cause a server crash on unexpected PostgreSQL database schema contents
