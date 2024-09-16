@@ -215,7 +215,9 @@ export default class Postgres implements SchemaInspector {
 					overview[table_name].columns[column_name].data_type = data_type;
 				} else {
 					/* eslint-disable-next-line no-console */
-					console.error(`Could not set data type "${data_type}" for unknown column "${column_name}" in table "${table_name}"`);
+					console.error(
+						`Could not set data type "${data_type}" for unknown column "${column_name}" in table "${table_name}"`,
+					);
 				}
 			} else {
 				/* eslint-disable-next-line no-console */
