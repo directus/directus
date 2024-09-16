@@ -224,7 +224,7 @@ export default class CockroachDB implements SchemaInspector {
 				}
 			} else {
 				/* eslint-disable-next-line no-console */
-				console.error(`Could not set primary key "${column_name}" for unknown table "${table_name}"`);
+				console.error(`Could not set geometry column "${column_name}" for unknown table "${table_name}"`);
 			}
 		}
 
