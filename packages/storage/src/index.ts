@@ -43,7 +43,7 @@ export type Stat = {
 
 export type ReadOptions = {
 	range?: Range | undefined;
-	bustCache?: boolean;
+	version?: string | undefined;
 };
 
 export type ChunkedUploadContext = {

@@ -79,10 +79,6 @@ export class DriverCloudinary implements Driver {
 		return String(new Date().getTime());
 	}
 
-	private getLatestVersion() {
-		return `v${this.getTimestamp()}`;
-	}
-
 	/**
 	 * Used to guess what resource type is appropriate for a given filepath
 	 * @see https://cloudinary.com/documentation/image_transformations#image_upload_note
@@ -124,11 +120,11 @@ export class DriverCloudinary implements Driver {
 	}
 
 	async read(filepath: string, options?: ReadOptions) {
-		const { range, bustCache } = options ?? {};
+		const { range, version } = options ?? {};
 
 		const resourceType = this.getResourceType(filepath);
 		const fullPath = this.fullPath(filepath);
-		const signature = bustCache === true ? this.getLatestVersion() : this.getParameterSignature(fullPath);
+		const signature = version !== undefined ? `v${version}` : this.getParameterSignature(fullPath);
 		const url = `https://res.cloudinary.com/${this.cloudName}/${resourceType}/upload/${signature}/${fullPath}`;
 
 		const requestInit: RequestInit = { method: 'GET' };
@@ -253,9 +249,9 @@ export class DriverCloudinary implements Driver {
 			public_id: this.getPublicId(fullPath),
 			...(folderPath
 				? {
-						asset_folder: folderPath,
-						use_asset_folder_as_public_id_prefix: 'true',
-				  }
+					asset_folder: folderPath,
+					use_asset_folder_as_public_id_prefix: 'true',
+				}
 				: {}),
 		};
 
