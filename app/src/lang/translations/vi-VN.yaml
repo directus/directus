@@ -69,6 +69,7 @@ extension_hook: Móc
 extension_endpoint: Endpoint
 extension_operation: Thao tác
 extension_bundle: Nhóm
+extension_interfaces: Giao diện
 extension_displays: Hiển thị
 extension_layouts: Bố cục
 extension_modules: Mô đun
@@ -144,6 +145,7 @@ delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
 version: Phiên bản
+promote_version_disabled: Không có thay đổi
 promote_version_changes: Thay đổi
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
