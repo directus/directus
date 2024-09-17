@@ -996,8 +996,8 @@ importers:
         specifier: 2.2.2
         version: 2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       rollup-plugin-node-externals:
-        specifier: 7.1.2
-        version: 7.1.2(rollup@4.21.2)
+        specifier: 7.1.3
+        version: 7.1.3(rollup@4.21.2)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -1873,8 +1873,8 @@ importers:
         specifier: 2.2.2
         version: 2.2.2(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5))
       rollup-plugin-node-externals:
-        specifier: 7.1.2
-        version: 7.1.2(rollup@4.21.2)
+        specifier: 7.1.3
+        version: 7.1.3(rollup@4.21.2)
       typescript:
         specifier: 5.4.5
         version: 5.4.5
@@ -10262,8 +10262,8 @@ packages:
       esbuild: '>=0.10.1'
       rollup: ^1.20.0 || ^2.0.0 || ^3.0.0
 
-  rollup-plugin-node-externals@7.1.2:
-    resolution: {integrity: sha512-cVJFKs+ulZxpMmn/s+oi431d93Jq5+G7Sc5ixWDrL2k+Gj+MqXg0KMNWgKf8Mw5qpaG4jVDpsvuqFfiCvRcGeA==}
+  rollup-plugin-node-externals@7.1.3:
+    resolution: {integrity: sha512-RM+7tJAejAoRsCf93TptTSdqUhRA8S78DleihMiu54Kac+uLkd9VIegLPhGnaW3ehZTXh56+R301mFH6j2A7vw==}
     engines: {node: '>= 21 || ^20.6.0 || ^18.19.0'}
     peerDependencies:
       rollup: ^3.0.0 || ^4.0.0
@@ -21874,7 +21874,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  rollup-plugin-node-externals@7.1.2(rollup@4.21.2):
+  rollup-plugin-node-externals@7.1.3(rollup@4.21.2):
     dependencies:
       rollup: 4.21.2
 
