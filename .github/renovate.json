@@ -28,16 +28,6 @@
 			"rangeStrategy": "update-lockfile"
 		},
 		{
-			"groupName": "vueuse monorepo",
-			"matchSourceUrls": ["https://github.com/vueuse/vueuse"],
-			"matchUpdateTypes": ["major"]
-		},
-		{
-			"groupName": "unhead monorepo",
-			"matchSourceUrls": ["https://github.com/unjs/unhead"],
-			"matchUpdateTypes": ["major"]
-		},
-		{
 			"description": "hold - https://github.com/directus/directus/issues/21995",
 			"matchPackageNames": ["samlify"],
 			"enabled": false
