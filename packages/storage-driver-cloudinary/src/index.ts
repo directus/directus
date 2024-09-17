@@ -249,9 +249,9 @@ export class DriverCloudinary implements Driver {
 			public_id: this.getPublicId(fullPath),
 			...(folderPath
 				? {
-					asset_folder: folderPath,
-					use_asset_folder_as_public_id_prefix: 'true',
-				}
+						asset_folder: folderPath,
+						use_asset_folder_as_public_id_prefix: 'true',
+				  }
 				: {}),
 		};
 
