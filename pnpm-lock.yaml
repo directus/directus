@@ -375,8 +375,8 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
       zod-validation-error:
-        specifier: 3.3.1
-        version: 3.3.1(zod@3.23.8)
+        specifier: 3.4.0
+        version: 3.4.0(zod@3.23.8)
     optionalDependencies:
       '@keyv/redis':
         specifier: 2.8.5
@@ -11971,8 +11971,8 @@ packages:
   zhead@2.2.4:
     resolution: {integrity: sha512-8F0OI5dpWIA5IGG5NHUg9staDwz/ZPxZtvGVf01j7vHqSyZ0raHY+78atOVxRqb73AotX22uV1pXt3gYSstGag==}
 
-  zod-validation-error@3.3.1:
-    resolution: {integrity: sha512-uFzCZz7FQis256dqw4AhPQgD6f3pzNca/Zh62RNELavlumQB3nDIUFbF5JQfFLcMbO1s02Q7Xg/gpcOBlEnYZA==}
+  zod-validation-error@3.4.0:
+    resolution: {integrity: sha512-ZOPR9SVY6Pb2qqO5XHt+MkkTRxGXb4EVtnjc9JpXUOtUB1T9Ru7mZOT361AN3MsetVe7R0a1KZshJDZdgp9miQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       zod: ^3.18.0
@@ -23954,7 +23954,7 @@ snapshots:
 
   zhead@2.2.4: {}
 
-  zod-validation-error@3.3.1(zod@3.23.8):
+  zod-validation-error@3.4.0(zod@3.23.8):
     dependencies:
       zod: 3.23.8
 
