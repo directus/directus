@@ -1842,8 +1842,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.33.9
-        version: 0.33.9
+        specifier: 0.33.11
+        version: 0.33.11
       decamelize:
         specifier: 6.0.0
         version: 6.0.0
@@ -4479,8 +4479,8 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@sinclair/typebox@0.33.9':
-    resolution: {integrity: sha512-agK7y8hO5Gz4Thu5kxTtLiZudNRflR1rTwmnWW5skxMd/+aqQ9XQene8HyyBsiajs5HV6ZQ/pCd3IKsqIfu4Kw==}
+  '@sinclair/typebox@0.33.11':
+    resolution: {integrity: sha512-2+0JxGh5HK1KX660phgcfxw161/TV3n0koonoQ8u65gTeZFHdWI5ujPaGaQmXXtVC6rwEWwPtOoQ8ihyZwt3eg==}
 
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
@@ -15016,7 +15016,7 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@sinclair/typebox@0.33.9': {}
+  '@sinclair/typebox@0.33.11': {}
 
   '@sindresorhus/is@4.6.0': {}
 
