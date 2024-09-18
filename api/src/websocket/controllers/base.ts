@@ -175,7 +175,14 @@ export default abstract class SocketController {
 			return;
 		}
 
-		this.checkUserRequirements(accountability);
+		try {
+			this.checkUserRequirements(accountability);
+		} catch {
+			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
+			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+			socket.destroy();
+			return;
+		}
 
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
