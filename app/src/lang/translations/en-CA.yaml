@@ -516,10 +516,6 @@ update_collection_success: Updated Collection
 delete_collection_success: Deleted Collection
 make_collection_visible: Make Collection Visible
 make_collection_hidden: Make Collection Hidden
-start_end_of_count_items: '{start}-{end} of {count} items'
-start_end_of_count_filtered_items: '{start}-{end} of {count} filtered items'
-one_item: '1 item'
-one_filtered_item: '1 filtered item'
 collections_shown: Collections Shown
 visible_collections: Visible Collections
 hidden_collections: Hidden Collections
@@ -596,7 +592,6 @@ create_item: Create Item
 display_template: Display Template
 language_display_template: Language Display Template
 translations_display_template: Translations Display Template
-n_items_selected: 'No Items Selected | 1 Item Selected | {n} Items Selected'
 per_page: Per Page
 all_files: All Files
 my_files: My Files
@@ -683,8 +678,6 @@ tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
 open_link_in: Open link in
-new_tab: New tab
-current_tab: Current tab
 wysiwyg_options:
   aligncenter: Align Centre
   alignjustify: Align Justify
@@ -790,7 +783,6 @@ page_help_settings_datamodel_collections: >-
   **Data Model: Collections** — Lists all collections available. This includes visible, hidden, and system collections, as well as unmanaged database tables that can be added.
 page_help_settings_datamodel_fields: >-
   **Data Model: Collection** — A form for managing this collection and its fields.
-page_help_settings_roles_collection: '**Browse Roles** — Lists the Admin, Public and custom User Roles.'
 page_help_settings_roles_item: "**Role Detail** — Manage a role's permissions and other settings."
 page_help_settings_presets_collection: >-
   **Browse Presets** — Lists all presets in the project, including: user, role, and global bookmarks, as well as default views.
@@ -829,7 +821,6 @@ directus_collection:
   directus_migrations: What version of the database you're using
   directus_notifications: Notifications sent to users
   directus_panels: Individual panels within Insights dashboards
-  directus_permissions: Access permissions for each role
   directus_presets: Presets for collection defaults and bookmarks
   directus_relations: Relationship configuration and metadata
   directus_revisions: Data snapshots for all activity
@@ -972,12 +963,9 @@ fields:
     name: Role Name
     icon: Role Icon
     description: Description
-    app_access: App Access
-    admin_access: Admin Access
-    ip_access: IP Access
-    enforce_tfa: Require 2FA
     users: Users in Role
-    module_list: Module Navigation
+  directus_policies:
+    description: Description
   directus_webhooks:
     name: Name
     method: Method
@@ -1108,7 +1096,6 @@ live_preview:
   new_window: Open in New Window
 shares: Shares
 unlimited_usage: Unlimited usage
-uses_left: No uses left | 1 use left | {n} uses left
 no_shares: No shares to show
 new_share: New Share
 expired: Expired
@@ -1350,6 +1337,8 @@ interfaces:
     preview: Preview
     editorFont: Editor Font
     previewFont: Preview Font
+    default_view: Default View
+    default_view_preview: Preview
     customSyntax: Custom Blocks
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax

@@ -49,7 +49,7 @@ dashboard creation, or whatever. If you find Directus is missing something that 
 
 Built entirely in Typescript, primarily on [Node.js](https://nodejs.dev) and [Vue.js](https://vuejs.org), Directus is
 100% open-source, modular and extensible, ensuring your project never hits a hard feature ceiling. The platform scales
-without issue, _and some Projects have hundreds of millions of users._
+without issue, _and some projects have hundreds of millions of users._
 
 You can use it with any _(or many)_ stacks or frontend frameworks.
 
@@ -94,7 +94,7 @@ effectively removes all bottlenecks, latency overhead, and proprietary access li
 <!--
 ::: tip Ready to try the API?
 
-Get a Project running in minutes. Test the API hands-on in the [Quickstart Guide](/getting-started/quickstart).
+Get a project running in minutes. Test the API hands-on in the [Quickstart Guide](/getting-started/quickstart).
 
 :::
 -->
@@ -206,7 +206,7 @@ Cloud architecture can be complicated and resource-intensive. Directus Cloud pro
 infrastructure, and automatic updates so developers can focus on the app's core business logic.
 
 With your free Directus Cloud account, you can set up Teams to organize Projects, Project billing, and other Team
-Members however you need. You'll be able to get a Project running in about 90 seconds. Then as Project growth changes
+Members however you need. You'll be able to get a project running in about 90 seconds. Then as project growth changes
 over time, scale service up or down as needed at the click of a button. The cloud dashboard also provides simple,
 straightforward analytics to help understand traffic and inform scaling decisions.
 

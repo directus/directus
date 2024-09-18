@@ -29,13 +29,27 @@ export function extractPathsFromQuery(query: Query) {
 		for (const field of query.sort) {
 			// Sort can have dot notation fields for sorting on m2o values Sort fields can start with
 			// `-` to indicate descending order, which should be dropped for permissions checks
-			readOnlyPaths.push(field.split('.').map((field) => (field.startsWith('-') ? field.substring(1) : field)));
+
+			const parts = field.split('.').map((field) => (field.startsWith('-') ? field.substring(1) : field));
+
+			if (query.aggregate && parts.length > 0 && parts[0]! in query.aggregate) {
+				// If query is an aggregate query and the first part is a requested aggregate operation, ignore the whole field.
+				// The correct field is extracted into the field map when processing the `query.aggregate` fields.
+				continue;
+			}
+
+			readOnlyPaths.push(parts);
 		}
 	}
 
 	if (query.aggregate) {
 		for (const fields of Object.values(query.aggregate)) {
 			for (const field of fields) {
+				if (field === '*') {
+					// Don't add wildcard field to the paths
+					continue;
+				}
+
 				// Aggregate doesn't currently support aggregating on nested fields, but it doesn't hurt
 				// to standardize it in the validation layer
 				paths.push(field.split('.'));

@@ -95,10 +95,6 @@ function sidebarDeveloperReference() {
 					],
 				},
 				{
-					link: '/app/webhooks',
-					text: 'Webhooks',
-				},
-				{
 					link: '/app/flows',
 					text: 'Flows',
 					items: [
@@ -237,10 +233,6 @@ function sidebarDeveloperReference() {
 				{
 					link: '/reference/system/utilities',
 					text: 'Utilities',
-				},
-				{
-					link: '/reference/system/webhooks',
-					text: 'Webhooks',
 				},
 			],
 		},
@@ -667,6 +659,10 @@ function sidebarUserGuide() {
 				{
 					text: 'Activity Log',
 					link: '/user-guide/settings/activity-log',
+				},
+				{
+					text: 'System Logs',
+					link: '/user-guide/settings/system-logs',
 				},
 			],
 		},

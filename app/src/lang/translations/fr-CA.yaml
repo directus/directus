@@ -767,10 +767,6 @@ make_collection_hidden: Masquer la collection
 make_folder_visible: Rendre le dossier visible
 make_folder_hidden: Cacher Le Dossier
 goto_collection_content: Voir le Contenu
-start_end_of_count_items: '{start}-{end} de {count} éléments'
-start_end_of_count_filtered_items: '{start}-{end} sur {count} éléments filtrés'
-one_item: '1 élément'
-one_filtered_item: '1 élément filtré'
 delete_collection_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer la collection "{collection}" ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
 delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer le dossier "{folder}" ? Les dossiers imbriqués et les collections seront déplacés à la racine.
@@ -862,7 +858,6 @@ create_item: Créer un élément
 display_template: Modèle d'affichage
 language_display_template: Modèle d'affichage de la langue
 translations_display_template: Modèle d'affichage des traductions
-n_items_selected: 'Aucun élément sélectionné | 1 élément sélectionné | {n} éléments sélectionnés'
 per_page: Par page
 all_files: Tous les fichiers
 my_files: Mes fichiers
@@ -1002,8 +997,6 @@ tooltip: Info-bulle
 tooltip_placeholder: Entrez une infobulle ...
 unlimited: Illimité
 open_link_in: Ouvrir le lien dans
-new_tab: Nouvel onglet
-current_tab: Onglet actif
 save_image: Enregistrer l'image
 save_media: Enregistrer le média
 wysiwyg_options:
@@ -1077,7 +1070,6 @@ editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
-settings_permissions: Rôles et Autorisations
 settings_project: Réglages
 settings_appearance: Personnalisation du Thème
 settings_webhooks: Webhooks
@@ -1127,7 +1119,6 @@ page_help_settings_datamodel_collections: >-
   **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
-page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste les rôles Administrateur, Public et les rôles utilisateurs personnalisés.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
   **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
@@ -1186,7 +1177,6 @@ directus_collection:
   directus_notifications: Notifications envoyées aux utilisateurs
   directus_operations: Opérations qui s'exécutent dans les Flux
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
-  directus_permissions: Sélectionner les permissions pour chaque groupe
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
   directus_revisions: Instantanés de données pour toutes les activités
@@ -1352,12 +1342,9 @@ fields:
     name: Nom de rôle
     icon: Icône de rôle
     description: Description
-    app_access: Accès à l'application
-    admin_access: Accès Administrateur
-    ip_access: Accès IP
-    enforce_tfa: Nécessite A2F
     users: Membres avec le rôle
-    module_list: Module de Navigation
+  directus_policies:
+    description: Description
   directus_webhooks:
     name: Nom
     method: Méthode
@@ -1443,7 +1430,6 @@ field_options:
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
-    ip_access: Ajouter les adresses IP autorisées, les plages IP et les blocs CIDR. Laisser vide pour tout autoriser...
     fields:
       icon_name: Icône
       name_name: Nom
@@ -1500,7 +1486,6 @@ live_preview:
   toggle_3d: Alterner 3D
 shares: Partages
 unlimited_usage: Utilisation illimitée
-uses_left: Aucune utilisation restant | 1 utilisation restante | {n} utilisations restantes
 no_shares: Aucun partage pour l'instant
 new_share: Nouveau partage
 expired: Expiré
@@ -1789,6 +1774,8 @@ interfaces:
     preview: Prévisualiser
     editorFont: Police de caractère de l'éditeur
     previewFont: Aperçu de la police
+    default_view: Vue par défaut
+    default_view_preview: Prévisualiser
     customSyntax: Blocs personnalisés
     customSyntax_label: Ajouter des types de syntaxe personnalisés
     customSyntax_add: Ajouter une syntaxe personnalisée
@@ -2162,7 +2149,6 @@ layouts:
     show_ungrouped: Afficher non-groupé
     show: Afficher
     no_group: Aucun Groupe
-    not_all_loaded: Impossible de charger les 1000 premiers éléments.
 horizontal: Horizontal
 vertical: Vertical
 x_axis: Axe X

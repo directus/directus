@@ -1,8 +1,12 @@
 import type { Accountability, Filter } from '@directus/types';
-import type { AccessRow } from '../modules/process-ast/types.js';
+import type { Context } from '../types.js';
 import { filterPoliciesByIp } from '../utils/filter-policies-by-ip.js';
 import { withCache } from '../utils/with-cache.js';
-import type { Context } from '../types.js';
+
+export interface AccessRow {
+	policy: { id: string; ip_access: string[] | null };
+	role: string | null;
+}
 
 export const fetchPolicies = withCache('policies', _fetchPolicies, ({ roles, user, ip }) => ({ roles, user, ip }));
 
@@ -30,11 +34,26 @@ export async function _fetchPolicies(
 
 	const accessRows = (await accessService.readByQuery({
 		filter,
-		fields: ['policy.id', 'policy.ip_access'],
+		fields: ['policy.id', 'policy.ip_access', 'role'],
 		limit: -1,
 	})) as AccessRow[];
 
 	const filteredAccessRows = filterPoliciesByIp(accessRows, ip);
+
+	/*
+	 * Sort rows by priority (goes bottom up):
+	 * - Parent role policies
+	 * - Child role policies
+	 * - User policies
+	 */
+	filteredAccessRows.sort((a, b) => {
+		if (!a.role && !b.role) return 0;
+		if (!a.role) return 1;
+		if (!b.role) return -1;
+
+		return roles.indexOf(a.role) - roles.indexOf(b.role);
+	});
+
 	const ids = filteredAccessRows.map(({ policy }) => policy.id);
 
 	return ids;

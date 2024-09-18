@@ -15,12 +15,6 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .permissions-overview-header {
-	tr:last-child {
-		z-index: 4;
-		position: sticky;
-		top: calc(var(--header-bar-height) - 2px); // minus 1px to avoid gaps
-	}
-
 	th {
 		text-align: start;
 		padding: 12px;

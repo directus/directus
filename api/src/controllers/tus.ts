@@ -1,12 +1,12 @@
+import type { PermissionsAction } from '@directus/types';
 import { Router } from 'express';
+import { RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import { getSchema } from '../utils/get-schema.js';
-import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 import { createTusServer } from '../services/tus/index.js';
 import asyncHandler from '../utils/async-handler.js';
-import type { PermissionsAction } from '@directus/types';
-import { RESUMABLE_UPLOADS } from '../constants.js';
+import { getSchema } from '../utils/get-schema.js';
+import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 
 const mapAction = (method: string): PermissionsAction => {
 	switch (method) {
@@ -42,12 +42,14 @@ const checkFileAccess = asyncHandler(async (req, _res, next) => {
 });
 
 const handler = asyncHandler(async (req, res) => {
-	const tusServer = await createTusServer({
+	const [tusServer, cleanupServer] = await createTusServer({
 		schema: req.schema,
 		accountability: req.accountability,
 	});
 
 	await tusServer.handle(req, res);
+
+	cleanupServer();
 });
 
 export function scheduleTusCleanup() {
@@ -55,11 +57,13 @@ export function scheduleTusCleanup() {
 
 	if (validateCron(RESUMABLE_UPLOADS.SCHEDULE)) {
 		scheduleSynchronizedJob('tus-cleanup', RESUMABLE_UPLOADS.SCHEDULE, async () => {
-			const tusServer = await createTusServer({
+			const [tusServer, cleanupServer] = await createTusServer({
 				schema: await getSchema(),
 			});
 
 			await tusServer.cleanUpExpiredUploads();
+
+			cleanupServer();
 		});
 	}
 }

@@ -3,6 +3,10 @@ description: Single Sign-On is a mechanism which allows to use external provider
 readTime: 4 min read
 ---
 
+<script setup lang="ts">
+import { data as packages } from '@/data/packages.data.js';
+</script>
+
 # Single Sign-On (SSO)
 
 Single Sign-On is a mechanism which allows to use external providers to login into systems. For example, you can use
@@ -192,3 +196,74 @@ The configuration disables secured cookies and should only be used in local envi
 your instance to CSRF attacks.
 
 :::
+
+## SSO with Directus behind Proxy
+
+If Directus is running behind an HTTP(S) proxy, the instance might not be able to reach the configured SSO provider. In
+such a case, you may want to use the [`global-agent`](https://www.npmjs.com/package/global-agent) package, allowing you
+to configure the corresponding proxy settings.
+
+In this quick guide, we'll show how to set up the `global-agent` package by extending the Directus Docker Image.
+
+::: warning Security Concerns
+
+Due to the fact that the `global-agent` package needs to intercept all external requests, it can be regarded as a
+potential attack surface. Especially in critical environments, it's therefore recommended to thoroughly evaluate the
+impact of such a setup beforehand.
+
+:::
+
+First, create a patch file to adjust the `pm2` configuration file so that `global-agent` is registered at startup:
+
+::: code-group
+
+```diff [ecosystem-global-agent.patch]
+diff --git a/ecosystem.config.cjs b/ecosystem.config.cjs
+index 5218fda853..4c53cabc80 100644
+--- a/ecosystem.config.cjs
++++ b/ecosystem.config.cjs
+@@ -10,6 +10,7 @@ module.exports = [
+ 		name: 'directus',
+ 		script: 'cli.js',
+ 		args: ['start'],
++		node_args: ['-r', 'global-agent/bootstrap'],
+
+ 		// General
+ 		instances: process.env.PM2_INSTANCES ?? 1,
+```
+
+Afterwards, in the same directory, create a `Dockerfile`. In there, we extend from the Directus Image, install the
+`global-agent` package and apply the previously created patch file:
+
+:::
+
+::: code-group
+
+```Dockerfile-vue [Dockerfile]
+FROM directus/directus:{{ packages.directus.version.major }}.x.y
+
+USER root
+RUN corepack enable
+USER node
+
+RUN pnpm install global-agent@3
+
+COPY ecosystem-global-agent.patch .
+
+USER root
+RUN <<EOF
+	apk add --no-cache patch
+	patch -p1 < ecosystem-global-agent.patch || exit 1
+	rm ecosystem-global-agent.patch
+	apk del patch
+EOF
+USER node
+```
+
+:::
+
+A new Docker Image can now be built from this customized `Dockerfile`, and can then be used with the following
+environment variables to control the proxy configuration:
+
+- `GLOBAL_AGENT_HTTP_PROXY`
+- `GLOBAL_AGENT_HTTPS_PROXY`

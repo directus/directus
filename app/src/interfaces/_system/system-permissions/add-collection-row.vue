@@ -31,15 +31,16 @@ const systemCollections = computed(() =>
 );
 
 const displayItems = computed(() => {
-	const items: any[] = availableCollections.value;
+	const items: any[] = [...availableCollections.value];
 
-	if (systemCollections.value.length > 0) {
-		items.push(
-			{ divider: true },
-			// Don't do a separate group, since the v-select search does not open groups, so the experience is rather unpleasant
-			...systemCollections.value,
-		);
+	// Don't use a separate group for system collections, since the v-select search does not open groups,
+	// so the experience is rather unpleasant
+
+	if (availableCollections.value.length > 0 && systemCollections.value.length > 0) {
+		items.push({ divider: true });
 	}
+
+	items.push(...systemCollections.value);
 
 	return items;
 });

@@ -82,6 +82,11 @@ export class FilesService extends ItemsService<File> {
 		// The filename_disk is the FINAL filename on disk
 		payload.filename_disk ||= primaryKey + (fileExtension || '');
 
+		// If the filename_disk extension doesn't match the new mimetype, update it
+		if (isReplacement === true && path.extname(payload.filename_disk!) !== fileExtension) {
+			payload.filename_disk = primaryKey + (fileExtension || '');
+		}
+
 		// Temp filename is used for replacements
 		const tempFilenameDisk = 'temp_' + payload.filename_disk;
 
@@ -157,6 +162,8 @@ export class FilesService extends ItemsService<File> {
 		payload.filesize = size;
 
 		const metadata = await extractMetadata(data.storage, payload as Parameters<typeof extractMetadata>[1]);
+
+		payload.uploaded_on = new Date().toISOString();
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create

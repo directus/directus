@@ -773,10 +773,6 @@ make_collection_hidden: جعل المجموعة مخفية
 make_folder_visible: جعل المجلد مرئي
 make_folder_hidden: جعل المجلد مخفي
 goto_collection_content: عرض المحتوى
-start_end_of_count_items: '{start}-{end} من {count} عناصر'
-start_end_of_count_filtered_items: '{start}-{end} من {count} من العناصر المصفاة'
-one_item: '1 عنصر'
-one_filtered_item: '1 عنصر مصفى'
 delete_collection_are_you_sure: >-
   هل أنت متيقِّن من أنك تريد حذف المجموعة"{collection}"؟ سيؤدي هذا إلى حذف المجموعة وجميع العناصر فيها. وهذا الإجراء دائم الأثر.
 delete_folder_are_you_sure: هل أنت متيقِّن من أنك تريد حذف المجلد"{folder}"؟ سيتم نقل المجلدات والمجموعات المتفرعة منه إلى أعلى مستوى.
@@ -868,7 +864,6 @@ create_item: أنشئ عنصر
 display_template: عرض القالب
 language_display_template: قالب عرض اللغة
 translations_display_template: قالب عرض الترجمات
-n_items_selected: 'لم يتم تحديد عناصر | 1 عنصر محدد | {n} عناصر محددة'
 per_page: لكل صفحة
 all_files: '‮كل الملفات'
 my_files: ملفاتي
@@ -1008,8 +1003,6 @@ tooltip: تلميح
 tooltip_placeholder: أدخل تلميح الأداة...
 unlimited: غير محدود
 open_link_in: افتح الرابط في
-new_tab: تبويب جديد
-current_tab: التبويب الحالي
 save_image: حفظ الصورة
 save_media: حفظ الوسائط
 wysiwyg_options:
@@ -1083,7 +1076,6 @@ editing_unit: 'تعديل {unit}'
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
 no_options_available: لا توجد خيارات متاحة
 settings_data_model: نموذج البيانات
-settings_permissions: صلاحيات الوصول
 settings_project: إعدادات
 settings_appearance: المظهر
 settings_webhooks: روابط الويب (Webhooks)
@@ -1133,7 +1125,6 @@ page_help_settings_datamodel_collections: >-
   **نموذج البيانات: المجموعات** - قوائم جميع المجموعات المتاحة. ويشمل ذلك مجموعات النظام المرئية والمخفية، فضلا عن جداول قواعد البيانات غير المدارة التي يمكن إضافتها.
 page_help_settings_datamodel_fields: >-
   **نموذج البيانات: المجموعة** - نموذج لإدارة هذه المجموعة وحقولها.
-page_help_settings_roles_collection: '**تصفح الأدوار** - قوائم الأدوار الإدارية والعامة والمخصصة للمستخدمين.'
 page_help_settings_roles_item: "**تفاصيل الدور** - إدارة أذونات الدور والإعدادات الأخرى."
 page_help_settings_presets_collection: >-
   **استعراض الإعدادات المسبقة** - عرض جميع الإعدادات المسبقة في المشروع، بما في ذلك: المستخدم، الدور، الإشارات المرجعية العالمية، فضلا عن نماذج عروض الافتراضية.
@@ -1183,7 +1174,6 @@ directus_collection:
   directus_notifications: الإشعارات المرسلة إلى المستخدمين
   directus_operations: العمليات التي تشتغل في التدفقات
   directus_panels: لوحات فردية ضمن لوحة تحكم البصائر
-  directus_permissions: أذونات الوصول لكل دور
   directus_presets: الإعداد المسبق للقيم الافتراضية للمجموعة والعلامات المرجعية
   directus_relations: تكوين وبيانات العَلاقة الوصفية
   directus_revisions: لقطات بيانات لجميع الأنشطة
@@ -1334,11 +1324,9 @@ fields:
     name: إسم الدور
     icon: أيقونة الدور
     description: التفاصيل
-    app_access: صلاحيات تطبيق
-    admin_access: صلاحيات مسؤول
-    ip_access: عنوان IP
-    enforce_tfa: يتطلب التحقق بخطوتين 2FA
     users: المستخدمون في الدور
+  directus_policies:
+    description: التفاصيل
   directus_webhooks:
     name: الاسم
     method: الطريقة
@@ -1415,7 +1403,6 @@ field_options:
   directus_roles:
     name: الاسم الفريد لهذا الدور...
     description: وصف لهذا الدور...
-    ip_access: إضافة عناوين IP المسموح بها، نطاقات IP وكتل CIDR. اتركها فارغة للسماح للجميع...
     fields:
       icon_name: أيقونة
       name_name: الاسم
@@ -1745,6 +1732,8 @@ interfaces:
     preview: معاينة
     editorFont: خط المحرر
     previewFont: معاينة الخط
+    default_view: طريقة العرض الافتراضية
+    default_view_preview: معاينة
     customSyntax: كتل مخصصة
     box: كتلة / مضمن
     imageToken: رمز الوصول الثابت

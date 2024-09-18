@@ -26,11 +26,11 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import type { Plugin, RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
+import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
 import { rollup, watch as rollupWatch } from 'rollup';
 import esbuildDefault from 'rollup-plugin-esbuild';
 import stylesDefault from 'rollup-plugin-styles';
-import type { Format, RollupConfig, RollupMode } from '../types.js';
+import type { Config, Format, RollupConfig, RollupMode } from '../types.js';
 import { getFileExt } from '../utils/file.js';
 import { clear, log } from '../utils/logger.js';
 import tryParseJson from '../utils/try-parse-json.js';
@@ -275,11 +275,10 @@ async function buildAppOrApiExtension({
 	}
 
 	const config = await loadConfig();
-	const plugins = config.plugins ?? [];
 
 	const mode = isIn(type, APP_EXTENSION_TYPES) ? 'browser' : 'node';
 
-	const rollupOptions = getRollupOptions({ mode, input, sourcemap, minify, plugins });
+	const rollupOptions = getRollupOptions({ mode, input, sourcemap, minify, config });
 	const rollupOutputOptions = getRollupOutputOptions({ mode, output, format, sourcemap });
 
 	if (watch) {
@@ -329,14 +328,13 @@ async function buildHybridExtension({
 	}
 
 	const config = await loadConfig();
-	const plugins = config.plugins ?? [];
 
 	const rollupOptionsApp = getRollupOptions({
 		mode: 'browser',
 		input: inputApp,
 		sourcemap,
 		minify,
-		plugins,
+		config,
 	});
 
 	const rollupOptionsApi = getRollupOptions({
@@ -344,7 +342,7 @@ async function buildHybridExtension({
 		input: inputApi,
 		sourcemap,
 		minify,
-		plugins,
+		config,
 	});
 
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
@@ -401,7 +399,6 @@ async function buildBundleExtension({
 	}
 
 	const config = await loadConfig();
-	const plugins = config.plugins ?? [];
 
 	const entrypointApp = generateBundleEntrypoint('app', entries);
 	const entrypointApi = generateBundleEntrypoint('api', entries);
@@ -411,7 +408,7 @@ async function buildBundleExtension({
 		input: { entry: entrypointApp },
 		sourcemap,
 		minify,
-		plugins,
+		config,
 	});
 
 	const rollupOptionsApi = getRollupOptions({
@@ -419,7 +416,7 @@ async function buildBundleExtension({
 		input: { entry: entrypointApi },
 		sourcemap,
 		minify,
-		plugins,
+		config,
 	});
 
 	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
@@ -472,6 +469,7 @@ async function buildExtension(config: RollupConfig | RollupConfig[]) {
 
 async function watchExtension(config: RollupConfig | RollupConfig[]) {
 	const configs = Array.isArray(config) ? config : [config];
+	const userConfig = await loadConfig();
 
 	const spinner = ora(chalk.bold('Building Directus extension...'));
 
@@ -487,7 +485,10 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 			switch (event.code) {
 				case 'BUNDLE_START':
 					if (buildCount === 0) {
-						clear();
+						if (userConfig?.watch?.clearScreen !== false) {
+							clear();
+						}
+
 						spinner.start();
 					}
 
@@ -527,14 +528,16 @@ function getRollupOptions({
 	input,
 	sourcemap,
 	minify,
-	plugins,
+	config,
 }: {
 	mode: RollupMode;
 	input: string | Record<string, string>;
 	sourcemap: boolean;
 	minify: boolean;
-	plugins: Plugin[];
+	config: Config;
 }): RollupOptions {
+	const plugins = config.plugins ?? [];
+
 	return {
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,

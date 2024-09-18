@@ -1,4 +1,4 @@
-import type { Filter, SchemaOverview } from '@directus/types';
+import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { applyFilter } from '../../../utils/apply-query.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
@@ -10,6 +10,7 @@ export interface ApplyCaseWhenOptions {
 	cases: Filter[];
 	aliasMap: AliasMap;
 	alias?: string;
+	permissions: Permission[];
 }
 
 export interface ApplyCaseWhenContext {
@@ -18,12 +19,12 @@ export interface ApplyCaseWhenContext {
 }
 
 export function applyCaseWhen(
-	{ columnCases, table, aliasMap, cases, column, alias }: ApplyCaseWhenOptions,
+	{ columnCases, table, aliasMap, cases, column, alias, permissions }: ApplyCaseWhenOptions,
 	{ knex, schema }: ApplyCaseWhenContext,
 ): Knex.Raw {
 	const caseQuery = knex.queryBuilder();
 
-	applyFilter(knex, schema, caseQuery, { _or: columnCases }, table, aliasMap, cases);
+	applyFilter(knex, schema, caseQuery, { _or: columnCases }, table, aliasMap, cases, permissions);
 
 	const compiler = knex.client.queryCompiler(caseQuery);
 
@@ -45,13 +46,14 @@ export function applyCaseWhen(
 	}
 
 	const sql = sqlParts.join(' ');
-	const bindings = caseQuery.toSQL().bindings;
+	const bindings = [...caseQuery.toSQL().bindings, column];
 
-	const result = knex.raw(`(CASE WHEN ${sql} THEN ?? END)`, [...bindings, column]);
+	let rawCase = `(CASE WHEN ${sql} THEN ?? END)`;
 
 	if (alias) {
-		return knex.raw(result + ' AS ??', [alias]);
+		rawCase += ' AS ??';
+		bindings.push(alias);
 	}
 
-	return result;
+	return knex.raw(rawCase, bindings);
 }
