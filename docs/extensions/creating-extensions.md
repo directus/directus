@@ -59,18 +59,24 @@ To automatically reload extensions every time you make a change, without having 
 ### Configuring the CLI
 
 Most of the time, it should be sufficient to use the CLI as is. But, in some cases it might be necessary to customize it
-to your specific needs. This can be done by creating a `extension.config.js` file at the root of your extension package
-with the following content:
+to your specific needs. This can be done by creating a `extension.config.js` file at the root of your extension package.
+An example with the currently available options will look something like:
 
 ```js
 export default {
 	plugins: [],
+	watch: {
+		clearScreen: false
+	}
 };
 ```
 
 #### Supported Options
 
-- `plugins` — An array of Rollup plugins that will be used when building extensions in addition to the built-in ones.
+- [`plugins`](https://rollupjs.org/configuration-options/#plugins) — An array of Rollup plugins that will be used when
+  building extensions in addition to the built-in ones.
+- [`watch.clearScreen`](https://rollupjs.org/configuration-options/#watch-clearscreen) — Controls whether or not to
+  clear the screen when a rebuild is triggered.
 
 ::: tip CommonJS or ESM
 

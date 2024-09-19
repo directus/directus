@@ -3,11 +3,12 @@ import api from '@/api';
 import { Activity, ActivityByDate } from '@/types/activity';
 import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
+import { useGroupable } from '@directus/composables';
 import type { PrimaryKey, User } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
 import { flatten, groupBy, orderBy } from 'lodash';
-import { Ref, onMounted, ref, toRefs, watch } from 'vue';
+import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
@@ -26,6 +27,13 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
+const title = computed(() => t('comments'));
+
+const { active: open } = useGroupable({
+	value: title.value,
+	group: 'sidebar-detail',
+});
+
 const { collection, primaryKey } = toRefs(props);
 
 const { activity, getActivity, loading, refresh, activityCount, getActivityCount, loadingCount, userPreviews } =
@@ -33,6 +41,7 @@ const { activity, getActivity, loading, refresh, activityCount, getActivityCount
 
 onMounted(() => {
 	getActivityCount();
+	if (open.value) getActivity();
 });
 
 function onToggle(open: boolean) {
@@ -221,7 +230,7 @@ async function loadUserPreviews(comments: Record<string, any>, regex: RegExp) {
 
 <template>
 	<sidebar-detail
-		:title="t('comments')"
+		:title
 		icon="chat_bubble_outline"
 		:badge="!loadingCount && activityCount > 0 ? abbreviateNumber(activityCount) : null"
 		@toggle="onToggle"
