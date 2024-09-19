@@ -891,7 +891,10 @@ without a password.
 | Variable                                    | Description                                                                                               | Default Value                                                          |
 | ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | `AUTH_<PROVIDER>_SP_metadata`               | String containing XML metadata for service provider                                                       | --                                                                     |
+| `AUTH_<PROVIDER>_SP_entity_id`              | String containing the entity Id to be used in the service provider XML                                    | `https://sp.example.org/metadata`                                      |
+| `AUTH_<PROVIDER>_SP_acs_url`                | String containing the ACS Location URL to be used in the service provider XML                             | `http://localhost:8055/auth/login/websso/acs`                          |
 | `AUTH_<PROVIDER>_IDP_metadata`              | String containing XML metadata for identity provider                                                      | --                                                                     |
+| `AUTH_<PROVIDER>_IDP_metadata_url`          | String containing an URL to download the XML metadata for identity provider from                          | --                                                                     |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`                                                                |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --                                                                     |
 | `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                               | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier` |
@@ -905,6 +908,13 @@ Directus users "External Identifier".
 
 The `SP_metadata` and `IDP_metadata` variables should be set to the XML metadata provided by the service provider and
 identity provider respectively.
+
+As an alternative to setting the `SP_metadata` with the raw XML, you can leave `SP_metadata` empty and instead set
+`SP_entity_id` with the `entityId` given to you by your service provider and `SP_acs_url` with the url for your
+`.../acs` endpoint. The service provider XML will be generated from this.
+
+Instead of setting the `IDP_metadata`, you can set `IDP_metadata_url` with the direct link to the metadata XML document
+provided by your Identity Provider (for example the link found under "App Federation Metadata Url" in EntraID)
 
 ### Example: Multiple Auth Providers
 

@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { InvalidProviderConfigError } from '@directus/errors';
+import { InvalidCredentialsError, InvalidProviderConfigError } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import type { AuthDriver } from './auth/auth.js';
 import {
@@ -38,8 +38,13 @@ export async function registerAuthProviders(): Promise<void> {
 
 	// Register default provider if not disabled
 	if (!env['AUTH_DISABLE_DEFAULT']) {
-		const defaultProvider = getProviderInstance('local', options)!;
-		providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
+		const defaultProvider = await getProviderInstance('local', options);
+
+		if (!defaultProvider) {
+			logger.error('Could not set default auth provider');
+		} else {
+			providers.set(DEFAULT_AUTH_PROVIDER, defaultProvider);
+		}
 	}
 
 	if (!env['AUTH_PROVIDERS']) {
@@ -47,7 +52,7 @@ export async function registerAuthProviders(): Promise<void> {
 	}
 
 	// Register configured providers
-	providerNames.forEach((name: string) => {
+	providerNames.forEach(async (name: string) => {
 		name = name.trim();
 
 		if (name === DEFAULT_AUTH_PROVIDER) {
@@ -62,7 +67,7 @@ export async function registerAuthProviders(): Promise<void> {
 			return;
 		}
 
-		const provider = getProviderInstance(driver, options, { provider: name, ...config });
+		const provider = await getProviderInstance(driver, options, { provider: name, ...config });
 
 		if (!provider) {
 			logger.warn(`Invalid "${driver}" auth driver.`);
@@ -73,11 +78,13 @@ export async function registerAuthProviders(): Promise<void> {
 	});
 }
 
-function getProviderInstance(
+async function getProviderInstance(
 	driver: string,
 	options: AuthDriverOptions,
 	config: Record<string, any> = {},
-): AuthDriver | undefined {
+): Promise<AuthDriver | undefined> {
+	const logger = useLogger();
+
 	switch (driver) {
 		case 'local':
 			return new LocalAuthDriver(options, config);
@@ -91,8 +98,20 @@ function getProviderInstance(
 		case 'ldap':
 			return new LDAPAuthDriver(options, config);
 
-		case 'saml':
-			return new SAMLAuthDriver(options, config);
+		case 'saml': {
+			const samlAuthDriver = new SAMLAuthDriver(options, config);
+
+			if (samlAuthDriver.idp === null) {
+				await samlAuthDriver.setSAMLIdentityProviderMetadataFromUrl();
+
+				if (samlAuthDriver.idp === null) {
+					logger.error('[SAML] Setting up the IdentityProvider from metadata URL failed');
+					throw new InvalidCredentialsError();
+				}
+			}
+
+			return samlAuthDriver;
+		}
 	}
 
 	return undefined;
