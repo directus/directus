@@ -6,8 +6,8 @@ pageClass: page-reference
 
 # Users
 
-> Directus Users are the individual accounts that let you authenticate into the API and App. Each user belongs to a Role
-> which defines its granular Permissions. [Learn more about Users](/user-guide/overview/glossary#users).
+> Directus Users are the individual accounts that let you authenticate into the API and App. Each user can belong to a
+> Role and. [Learn more about Users](/user-guide/overview/glossary#users).
 
 ## The User Object
 
@@ -42,8 +42,8 @@ Tags for the user.
 Avatar file. Many-to-one to [files](/reference/files).
 
 `language` **string**\
-Language the Admin App is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages and
-translations.
+Language the Data Studio is rendered in. See [our Crowdin page](https://locales.directus.io) for all available languages
+and translations.
 
 `appearance` **string**\
 One of `auto`, `light`, `dark`.
@@ -71,6 +71,9 @@ Role of the user. Many-to-one to [roles](/reference/system/roles).
 
 `token` **string**\
 Static access token for the user.
+
+`policies` **many-to-many**\
+The policies associated with this user. Many-to-many to [policies](/reference/system/policies).
 
 `last_access` **date**\
 Last time the user accessed the API.
@@ -1130,6 +1133,11 @@ First name for the new user.
 `last_name`\
 Last name for the new user.
 
+`verification_url`\
+Provide a custom verification url which the link in the email will lead to. The verification token will be passed as a parameter.\
+**Note**: You need to configure the
+[`USER_REGISTER_URL_ALLOW_LIST` environment variable](/self-hosted/config-options#security) to enable this feature.
+
 ### Response
 
 Empty body.
@@ -1358,7 +1366,7 @@ const result = await client.request(inviteUser('another@example.com', 'c86c2761-
 
 ## Accept User Invite
 
-Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the email a link to the Admin App.
+Accept your invite. The [invite user endpoint](#invite-a-new-user) sends the email a link to the Data Studio.
 
 This link includes a token, which is then used to activate the invited user.
 
@@ -1367,7 +1375,7 @@ This link includes a token, which is then used to activate the invited user.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /users/invisponse/accept`
+`POST /users/invite/accept`
 
 ```json
 {

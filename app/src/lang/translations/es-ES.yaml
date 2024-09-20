@@ -110,6 +110,7 @@ field_name_translations: Traducciones del nombre del campo
 enter_password_to_enable_tfa: Introduce tu contraseña para habilitar la autenticación de dos factores
 add_field: Añadir campo
 role_name: Nombre del rol
+policy_name: Nombre de la Directiva
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
@@ -127,6 +128,7 @@ requires_value: Requiere un valor
 create_preset: Crear preestablecido
 create_panel: Crear panel
 create_role: Crear Rol
+create_policy: Crear política
 create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Controla qué datos de la API estarán disponibles sin requerir autenticarse.
+public_role_info: >-
+  El rol público controla qué datos de la API están disponibles para usuarios no autenticados o usuarios sin rol. Las solicitudes con el rol público no pueden tener acceso de app o administradores. Si se da acceso de app o administrador a una política asignada al rol público, serán ignoradas.
 admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
+admin_policy_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API
 no_description: Sin descripción...
 reached_maximum_number_of_extensions: Ha alcanzado el número máximo de extensiones para este proyecto ({n}). Póngase en contacto con el administrador del sistema para obtener más información.
 not_allowed: No Permitido
@@ -776,10 +781,6 @@ make_collection_hidden: Hacer que la colección se oculte
 make_folder_visible: Hacer visible la carpeta
 make_folder_hidden: Ocultar carpeta
 goto_collection_content: Ver contenido
-start_end_of_count_items: '{start}-{end} de {count} elementos'
-start_end_of_count_filtered_items: '{start}-{end} de {count} elementos filtrados'
-one_item: '1 elemento'
-one_filtered_item: '1 elemento filtrado'
 delete_collection_are_you_sure: >-
   ¿Estás seguro que quieres borrar la colección "{collection}"? Esto borrará la colección y todos los elementos en ella. Esta acción es permanente.
 delete_folder_are_you_sure: '¿Estás seguro que quieres eliminar esta carpeta "{folder}"? Las carpetas y colecciones anidadas se moverán al nivel más alto.'
@@ -871,7 +872,6 @@ create_item: Crear Elemento
 display_template: Plantilla de Presentación
 language_display_template: Plantilla de visualización de idioma
 translations_display_template: Plantilla de visualización de traducciones
-n_items_selected: 'No hay Elementos Seleccionados | 1 Elemento Seleccionado | {n} Elementos Seleccionados'
 per_page: Por Página
 all_files: Todos los Archivos
 my_files: Mis Archivos
@@ -1011,8 +1011,6 @@ tooltip: Sugerencia
 tooltip_placeholder: Introduzca una sugerencia...
 unlimited: Ilimitado
 open_link_in: Abrir enlace en
-new_tab: Nueva pestaña
-current_tab: Pestaña actual
 save_image: Guardar imagen
 save_media: Guardar archivo
 wysiwyg_options:
@@ -1086,7 +1084,6 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando {count} Elementos por lote'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de Datos
-settings_permissions: Control de Acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
 settings_webhooks: Webhooks
@@ -1136,7 +1133,6 @@ page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
-page_help_settings_roles_collection: '**Navegar en Roles** — Lista los roles de Usuario Admin, Public y Personalizados.'
 page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
   **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
@@ -1195,7 +1191,6 @@ directus_collection:
   directus_notifications: Notificaciones enviadas a usuarios
   directus_operations: Operaciones que funcionan en flujos
   directus_panels: Paneles individuales dentro de los paneles de Individual
-  directus_permissions: Permisos de acceso para cada rol
   directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
   directus_revisions: Capturas de datos para toda la actividad
@@ -1372,12 +1367,10 @@ fields:
     name: Nombre del rol
     icon: Ícono del Rol
     description: Descripción
-    app_access: Acceso a App
-    admin_access: Acceso Admin
-    ip_access: Acceso IP
-    enforce_tfa: Requiere 2FA
     users: Usuarios en el Rol
-    module_list: Navegación en Módulo
+  directus_policies:
+    name: Nombre de la Directiva
+    description: Descripción
   directus_webhooks:
     name: Nombre
     method: Método
@@ -1463,7 +1456,6 @@ field_options:
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
-    ip_access: Añadir direcciones IP, rangos IP y bloques CIDR. Dejar en blanco para permitir todos...
     fields:
       icon_name: Ícono
       name_name: Nombre
@@ -1520,7 +1512,6 @@ live_preview:
   toggle_3d: Alterna 3D
 shares: Compartido
 unlimited_usage: Uso ilimitado
-uses_left: No hay usos restantes | 1 uso restante | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
 expired: Expirado
@@ -1653,6 +1644,8 @@ navigate_to_item: Navegar al elemento
 undo_removed_item: Deshacer eliminar elemento
 remove_item: Eliminar elemento
 delete_item: Borrar elemento
+pause: Pausar
+resume: Reanudar
 interfaces:
   list-m2a:
     prefix_note: Utiliza el nombre de la colección del elemento relacionado de forma predeterminada.
@@ -1818,6 +1811,8 @@ interfaces:
     preview: Vista previa
     editorFont: Fuente del editor
     previewFont: Previsualizar fuente
+    default_view: Vista predeterminada
+    default_view_preview: Vista previa
     customSyntax: Bloques personalizados
     customSyntax_label: Añadir tipos de sintaxis personalizados
     customSyntax_add: Añadir sintaxis personalizada
@@ -2192,7 +2187,6 @@ layouts:
     show_ungrouped: Mostrar Desagrupado
     show: Mostrar
     no_group: Sin Grupo
-    not_all_loaded: Sólo se pudieron cargar los primeros 1000 elementos.
 horizontal: Horizontal
 vertical: Vertical
 axis: Eje

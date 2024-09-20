@@ -200,7 +200,7 @@ const editorOptions = computed(() => {
 		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
-		toolbar: toolbarString,
+		toolbar: toolbarString ? toolbarString : false,
 		style_formats: styleFormats,
 		file_picker_types: 'customImage customMedia image media',
 		link_default_protocol: 'https',
@@ -346,11 +346,7 @@ function setFocus(val: boolean) {
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ t('open_link_in') }}</div>
-							<v-checkbox
-								v-model="linkSelection.newTab"
-								block
-								:label="t(linkSelection.newTab ? 'new_tab' : 'current_tab')"
-							></v-checkbox>
+							<v-checkbox v-model="linkSelection.newTab" block :label="t('new_tab')"></v-checkbox>
 						</div>
 					</div>
 				</v-card-text>

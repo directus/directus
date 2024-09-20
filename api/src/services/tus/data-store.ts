@@ -6,7 +6,7 @@ import { extname } from 'node:path';
 import stream from 'node:stream';
 import { DataStore, ERRORS, Upload } from '@tus/utils';
 import { ItemsService } from '../items.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import getDatabase from '../../database/index.js';
 import { omit } from 'lodash-es';
 
@@ -116,6 +116,11 @@ export class TusDataStore extends DataStore {
 		// If this is a new file upload, we need to generate a new primary key and DB record
 		const primaryKey = await itemsService.createOne(fileData, { emitEvents: false });
 
+		// Set the file id, so it is available to be sent as a header on upload creation / resume
+		if (!upload.metadata['id']) {
+			upload.metadata['id'] = primaryKey as string;
+		}
+
 		const fileExtension =
 			extname(upload.metadata['filename_download']) ||
 			(upload.metadata['type'] && '.' + extension(upload.metadata['type'])) ||
@@ -123,13 +128,6 @@ export class TusDataStore extends DataStore {
 
 		// The filename_disk is the FINAL filename on disk
 		fileData.filename_disk ||= primaryKey + (fileExtension || '');
-
-		// Temp filename is used for replacements
-		// const tempFilenameDisk = fileData.tus_id! + (fileExtension || '');
-
-		// if (isReplacement) {
-		// 	upload.metadata['temp_file'] = tempFilenameDisk;
-		// }
 
 		try {
 			// If this is a replacement, we'll write the file to a temp location first to ensure we don't overwrite the existing file if something goes wrong
@@ -155,6 +153,7 @@ export class TusDataStore extends DataStore {
 	}
 
 	public override async write(readable: stream.Readable, tus_id: string, offset: number): Promise<number> {
+		const logger = useLogger();
 		const fileData = await this.getFileById(tus_id);
 		const filePath = fileData.filename_disk!;
 
@@ -204,6 +203,8 @@ export class TusDataStore extends DataStore {
 
 			return newOffset;
 		} catch (err: any) {
+			logger.error(err, 'Error writing chunk for upload "%s" at offset %d', tus_id, offset);
+
 			if ('status_code' in err && err.status_code === 500) {
 				throw err;
 			}

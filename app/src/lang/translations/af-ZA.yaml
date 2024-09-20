@@ -171,6 +171,8 @@ fields:
   directus_roles:
     name: Rol Naam
     description: Beskrywing
+  directus_policies:
+    description: Beskrywing
   directus_webhooks:
     status: Status
 field_options:

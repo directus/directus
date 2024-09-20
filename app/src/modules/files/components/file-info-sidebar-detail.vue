@@ -14,7 +14,7 @@ const props = defineProps<{
 	isNew: boolean;
 }>();
 
-const { t, n } = useI18n();
+const { t, n, d } = useI18n();
 const { userCreated, userModified } = useUser();
 const { folder, folderLink } = useFolder();
 
@@ -31,16 +31,27 @@ const fileLink = computed(() => {
 	return getAssetUrl(props.file.id);
 });
 
-const creationDate = computed(() => {
+const creationDate = computed(() => ({
+	short: localizedFormat(new Date(props.file.created_on), String(t('date-fns_date_short'))),
+	long: d(props.file.created_on, 'long'),
+}));
+
+const uploadDate = computed(() => {
 	if (!props.file?.uploaded_on) return;
 
-	return localizedFormat(new Date(props.file.uploaded_on), String(t('date-fns_date_short')));
+	return {
+		short: localizedFormat(new Date(props.file.uploaded_on), String(t('date-fns_date_short'))),
+		long: d(props.file.uploaded_on, 'long'),
+	};
 });
 
 const modificationDate = computed(() => {
 	if (!props.file?.modified_on) return;
 
-	return localizedFormat(new Date(props.file.modified_on), String(t('date-fns_date_short')));
+	return {
+		short: localizedFormat(new Date(props.file.modified_on), String(t('date-fns_date_short'))),
+		long: d(props.file.modified_on, 'long'),
+	};
 });
 
 const imageMetadata = computed(() => {
@@ -198,7 +209,9 @@ function useFolder() {
 
 			<div v-if="creationDate">
 				<dt>{{ t('created') }}</dt>
-				<dd>{{ creationDate }}</dd>
+				<dd>
+					<span v-tooltip="creationDate.long">{{ creationDate.short }}</span>
+				</dd>
 			</div>
 
 			<div v-if="userCreated">
@@ -210,9 +223,18 @@ function useFolder() {
 				</dd>
 			</div>
 
+			<div v-if="uploadDate">
+				<dt>{{ t('uploaded') }}</dt>
+				<dd>
+					<span v-tooltip="uploadDate.long">{{ uploadDate.short }}</span>
+				</dd>
+			</div>
+
 			<div v-if="modificationDate">
 				<dt>{{ t('modified') }}</dt>
-				<dd>{{ modificationDate }}</dd>
+				<dd>
+					<span v-tooltip="modificationDate.long">{{ modificationDate.short }}</span>
+				</dd>
 			</div>
 
 			<div v-if="userModified">

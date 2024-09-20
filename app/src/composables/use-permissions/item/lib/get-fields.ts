@@ -16,9 +16,9 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 
 		if (!collectionValue) return [];
 
-		if (userStore.isAdmin) return rawFields.value;
-
 		let fields = cloneDeep(rawFields.value);
+
+		if (userStore.isAdmin) return fields;
 
 		const readableFields = getPermission(collectionValue, 'read')?.fields;
 

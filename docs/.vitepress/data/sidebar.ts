@@ -95,10 +95,6 @@ function sidebarDeveloperReference() {
 					],
 				},
 				{
-					link: '/app/webhooks',
-					text: 'Webhooks',
-				},
-				{
 					link: '/app/flows',
 					text: 'Flows',
 					items: [
@@ -191,6 +187,10 @@ function sidebarDeveloperReference() {
 					text: 'Permissions',
 				},
 				{
+					link: '/reference/system/policies',
+					text: 'Policies',
+				},
+				{
 					link: '/reference/system/presets',
 					text: 'Presets',
 				},
@@ -233,10 +233,6 @@ function sidebarDeveloperReference() {
 				{
 					link: '/reference/system/utilities',
 					text: 'Utilities',
-				},
-				{
-					link: '/reference/system/webhooks',
-					text: 'Webhooks',
 				},
 			],
 		},
@@ -567,23 +563,8 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
+					text: 'Key Concepts',
 					link: '/user-guide/user-management/users-roles-permissions',
-					text: 'Users, Roles & Permissions',
-					type: 'page',
-					items: [
-						{
-							text: 'Users',
-							link: '/user-guide/user-management/users',
-						},
-						{
-							text: 'Roles',
-							link: '/user-guide/user-management/roles',
-						},
-						{
-							text: 'Permissions',
-							link: '/user-guide/user-management/permissions',
-						},
-					],
 				},
 				{
 					text: 'User Directory',
@@ -678,6 +659,10 @@ function sidebarUserGuide() {
 				{
 					text: 'Activity Log',
 					link: '/user-guide/settings/activity-log',
+				},
+				{
+					text: 'System Logs',
+					link: '/user-guide/settings/system-logs',
 				},
 			],
 		},

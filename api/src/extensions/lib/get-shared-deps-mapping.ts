@@ -5,7 +5,7 @@ import { readdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { Url } from '../../utils/url.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

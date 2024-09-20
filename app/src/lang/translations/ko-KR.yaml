@@ -381,7 +381,7 @@ multiple_files: 여러 파일들
 m2o_relationship: 다대일 관계
 o2m_relationship: 일대다 관계
 m2m_relationship: 다대다 관계
-m2a_relationship: 다대다 관계
+m2a_relationship: 다대다 관계 (M2A)
 invalid_item: 비정상적인 아이템
 require_confirmation: 확인 요청
 dialog: 대화상자
@@ -437,7 +437,7 @@ confirm_revert_body: 항목이 선택한 상태로 되돌아갑니다.
 display: 표시하다
 settings_update_success: 설정이 수정됨.
 title: 제목
-revision_delta_created: 만들어진
+revision_delta_created: 생성됨
 revision_delta_created_externally: 외부에서 생성됨
 revision_delta_updated: '업데이트 된 1개의 필드 | 업데이트 된 {count}개의 필드'
 revision_delta_deleted: 삭제됨
@@ -774,10 +774,6 @@ make_collection_hidden: 컬렉션 숨김
 make_folder_visible: 폴더 표시
 make_folder_hidden: 폴더 숨기기
 goto_collection_content: 내용 보기
-start_end_of_count_items: '{start}-{end} / 총 {count}개'
-start_end_of_count_filtered_items: '{start}-{end} / 총 {count}개 '
-one_item: '1개 항목'
-one_filtered_item: '1개 항목'
 delete_collection_are_you_sure: >-
   정말 "{collection}" 컬렉션을 삭제하시겠습니까? 이렇게 하면 컬렉션과 그 안에 있는 모든 항목이 삭제됩니다. 이 작업은 영구적입니다.
 delete_folder_are_you_sure: 정말로 "{folder}" 폴더를 삭제하시겠습니까? 중첩된 폴더 및 컬렉션은 최상위 레벨로 이동됩니다.
@@ -869,7 +865,6 @@ create_item: 추가
 display_template: 표시 형식
 language_display_template: 언어 표시 템플릿
 translations_display_template: 번역 표시 템플릿
-n_items_selected: '선택한 항목 없음 | 1 항목 선택됨 | {n} 항목이 선택됨'
 per_page: 페이지 당
 all_files: 전체 파일
 my_files: 내 파일
@@ -1009,8 +1004,6 @@ tooltip: 툴팁
 tooltip_placeholder: 툴팁을 입력하세요...
 unlimited: 제한 없는
 open_link_in: 링크 열기
-new_tab: 새 탭
-current_tab: 현재 탭
 save_image: 이미지를 저장
 save_media: 미디어 저장
 wysiwyg_options:
@@ -1084,7 +1077,6 @@ editing_unit: '편집 {unit}'
 editing_in_batch: '일괄 편집 {count} 항목'
 no_options_available: 사용 가능한 옵션 없음
 settings_data_model: 데이터 모델
-settings_permissions: 권한 설정
 settings_project: 설정
 settings_appearance: 외관
 settings_webhooks: 웹후크
@@ -1134,7 +1126,6 @@ page_help_settings_datamodel_collections: >-
   **데이터 모델: 컬렉션** - 사용 가능한 모든 컬렉션을 나열합니다. 여기에는 추가할 수 있는 관리되지 않는 데이터베이스 테이블뿐만 아니라 가시적, 숨김 및 시스템 컬렉션이 포함됩니다.
 page_help_settings_datamodel_fields: >-
   **데이터 모델: 컬렉션** — 이 컬렉션과 해당 필드를 관리하기 위한 양식입니다.
-page_help_settings_roles_collection: '**역할 찾아보기** — 관리자, 공개 및 사용자 지정 사용자 역할을 나열합니다.'
 page_help_settings_roles_item: "**역할 세부 정보** — 역할의 권한 및 기타 설정을 관리합니다."
 page_help_settings_presets_collection: >-
   **사전 설정 찾아보기** — 사용자, 역할, 전역 책갈피 및 기본 보기를 포함하여 프로젝트의 모든 사전 설정을 나열합니다.
@@ -1193,7 +1184,6 @@ directus_collection:
   directus_notifications: 사용자에게 전송된 알림
   directus_operations: 플로우에서 실행되는 작업
   directus_panels: Insights 대시보드 내의 개별 패널
-  directus_permissions: 역할별 접근 권한
   directus_presets: 컬렉션 기본값 및 책갈피에 대한 사전 설정
   directus_relations: 관계 구성 및 메타데이터
   directus_revisions: 모든 활동에 대한 데이터 스냅샷
@@ -1370,12 +1360,9 @@ fields:
     name: 역할명
     icon: 역할 아이콘
     description: 설명
-    app_access: 앱 액세스
-    admin_access: 관리자 액세스
-    ip_access: IP 액세스
-    enforce_tfa: 2FA 필요
     users: 이 역할의 사용자 목록
-    module_list: '모듈 탐색:'
+  directus_policies:
+    description: 설명
   directus_webhooks:
     name: 이름
     method: 방법
@@ -1401,7 +1388,7 @@ field_options:
       weak_text: 약함 – 최소 8자
       strong_text: 강함 – 대문자 / 소문자 / 숫자 / 특수
     storage_asset_presets:
-      fit_label: 맞다
+      fit_label: 맞춤
       upscaling: 업스케일링
       fit:
         contain_text: 포함(가로 세로 비율 유지)
@@ -1446,7 +1433,7 @@ field_options:
     sort_divider: 정렬
     sort_field: 필드 선택...
     accountability_divider: 책임
-    duplication_divider: 복사
+    duplication_divider: 복제
     preview_divider: 미리보기
     content_versioning_divider: 콘텐츠 버전 관리
     enable_versioning: 버전 관리 활성화
@@ -1461,7 +1448,6 @@ field_options:
   directus_roles:
     name: 이 역할의 고유한 이름...
     description: 이 역할에 대한 설명...
-    ip_access: 허용된 IP 주소, IP 범위 및 CIDR 블록을 추가합니다. 모두 허용하려면 비워 두세요...
     fields:
       icon_name: 아이콘
       name_name: 이름
@@ -1518,7 +1504,6 @@ live_preview:
   toggle_3d: 토글 3D
 shares: 공유
 unlimited_usage: 무제한 사용
-uses_left: 남은 용도 없음 | 1회 남음 | {n}은(는) 왼쪽 사용
 no_shares: 표시할 공유가 없습니다.
 new_share: 새 공유
 expired: 만료됨
@@ -1618,7 +1603,7 @@ register: 등록
 registration_successful_headline: 성공!
 registration_successful_note: 이제 로그인 페이지로 이동할 수 있습니다.
 registration_successful_check_email_note: |
-  로그인하기 전에 이메일 주소를 확인하기 위해 발송된 확인 링크를 클릭해야 합니다. 
+  로그인하기 전에 이메일 주소를 확인하기 위해 발송된 확인 링크를 클릭해야 합니다.
 dont_have_an_account: 계정이 없으신가요?
 already_have_an_account: 이미 계정이 있으신가요?
 sign_up_now: 지금 가입
@@ -1651,6 +1636,8 @@ navigate_to_item: 항목으로 이동
 undo_removed_item: 제거된 항목 취소
 remove_item: 항목 제거
 delete_item: 항목 삭제
+pause: 일시 정지
+resume: 재개
 interfaces:
   list-m2a:
     prefix_note: 기본적으로 관련 항목의 컬렉션 이름을 사용합니다.
@@ -1816,6 +1803,8 @@ interfaces:
     preview: 미리보기
     editorFont: 편집기 글꼴
     previewFont: 글꼴 미리보기
+    default_view: 기본 보기
+    default_view_preview: 미리보기
     customSyntax: 맞춤형 블록
     customSyntax_label: 사용자 정의 구문 유형 추가
     customSyntax_add: 사용자 지정 구문 추가
@@ -2190,7 +2179,6 @@ layouts:
     show_ungrouped: 그룹 해제 표시
     show: 보여주다
     no_group: 그룹 없음
-    not_all_loaded: 처음 1000개 항목만 로드할 수 있습니다.
 horizontal: 수평의
 vertical: 수직의
 axis: 축
@@ -2355,11 +2343,11 @@ operations:
     message: 메시지
     message_placeholder: 콘솔에 표시할 메시지를 입력하세요...
   mail:
-    name: 이메일을 보내
+    name: 이메일 전송
     description: 한 명 이상의 사람에게 이메일 보내기
     to: 에게
     to_placeholder: 이메일 주소를 추가하고 엔터를 누르세요...
-    body: 몸
+    body: 본문
     template: 템플릿
     data: 데이터
   notification:

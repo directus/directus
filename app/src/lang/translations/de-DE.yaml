@@ -353,6 +353,7 @@ auto_generate: Automatisch generieren
 this_will_auto_setup_fields_relations: Dies wird automatisch alle benötigten Felder und Beziehungen einrichten.
 click_here: Hier klicken
 to_manually_setup_translations: um die Übersetzung manuell einzurichten.
+manage: Verwalten
 click_to_manage_translated_fields: >-
   Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
 fields_group: Feldergruppe
@@ -757,10 +758,6 @@ make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
 goto_collection_content: Inhalt anzeigen
-start_end_of_count_items: '{start}-{end} von {count} Elementen'
-start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
-one_item: '1 Element'
-one_filtered_item: '1 gefiltertes Element'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
@@ -851,7 +848,6 @@ create_item: Element erstellen
 display_template: Anzeigevorlage
 language_display_template: Anzeigevorlage Sprache
 translations_display_template: Anzeigevorlage Übersetzungen
-n_items_selected: 'Keine Objekte ausgewählt | 1 Element ausgewählt | {n} Elemente ausgewählt'
 per_page: Pro Seite
 all_files: Alle Dateien
 my_files: Meine Dateien
@@ -991,8 +987,6 @@ tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
 open_link_in: Link öffnen in
-new_tab: Neuer Tab
-current_tab: Aktueller Tab
 save_image: Bild speichern
 save_media: Medien speichern
 wysiwyg_options:
@@ -1066,7 +1060,6 @@ editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
-settings_permissions: Zugriffssteuerung
 settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
@@ -1116,7 +1109,6 @@ page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
-page_help_settings_roles_collection: '**Rollen durchsuchen** — Auflistung der Admin-, öffentlichen und benutzerdefinierten Benutzerrollen.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
   **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
@@ -1145,6 +1137,7 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
+install_extension: Erweiterung installieren
 source_registry: Marktplatz
 collection: Sammlung
 collections: Sammlungen
@@ -1164,7 +1157,6 @@ directus_collection:
   directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_operations: In Flows ausgeführte Operationen
   directus_panels: Individuelle Panels in Einblicke-Dashboards
-  directus_permissions: Zugriffsrechte für jede Rolle
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
@@ -1329,12 +1321,9 @@ fields:
     name: Rollenname
     icon: Rollen-Symbol
     description: Beschreibung
-    app_access: App-Zugriff
-    admin_access: Admin-Zugriff
-    ip_access: IP-Zugriff
-    enforce_tfa: 2FA erforderlich
     users: Benutzer in Rolle
-    module_list: Modulnavigation
+  directus_policies:
+    description: Beschreibung
   directus_webhooks:
     name: Name
     method: Methode
@@ -1419,7 +1408,6 @@ field_options:
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
-    ip_access: Erlaubte IP-Adressen, IP-Bereiche und CIDR-Blöcke hinzufügen. Leer lassen, um alle zuzulassen...
     fields:
       icon_name: Symbol
       name_name: Name
@@ -1476,7 +1464,6 @@ live_preview:
   toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
-uses_left: Keine Verwendungen übrig | 1 Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
 expired: Abgelaufen
@@ -1764,6 +1751,8 @@ interfaces:
     preview: Vorschau
     editorFont: Editor Schriftart
     previewFont: Vorschau Schriftart
+    default_view: Standard-Ansicht
+    default_view_preview: Vorschau
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
@@ -2137,7 +2126,6 @@ layouts:
     show_ungrouped: Nicht gruppierte Elemente zeigen
     show: Anzeigen
     no_group: Keine Gruppe
-    not_all_loaded: Konnte nur die ersten 1000 Elemente laden.
 horizontal: Horizontal
 vertical: Vertikal
 x_axis: X-Achse

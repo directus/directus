@@ -3,7 +3,7 @@ import inquirer from 'inquirer';
 import { dump as toYaml } from 'js-yaml';
 import path from 'path';
 import getDatabase from '../../../database/index.js';
-import { useLogger } from '../../../logger.js';
+import { useLogger } from '../../../logger/index.js';
 import { getSnapshot } from '../../../utils/get-snapshot.js';
 
 export async function snapshot(

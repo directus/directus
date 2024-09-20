@@ -4,11 +4,13 @@ import useDatetime from '@/components/use-datetime.vue';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useItems } from '@directus/composables';
 import { useAppStore } from '@directus/stores';
 import { Filter, Notification } from '@directus/types';
+import { mergeFilters } from '@directus/utils';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -18,76 +20,65 @@ type LocalNotification = Notification & {
 	to?: string;
 };
 
-const { t } = useI18n();
+const { t, n } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();
-const { setUnreadCount } = useNotificationsStore();
-
+const notificationsStore = useNotificationsStore();
 const router = useRouter();
 
+const collection = ref<string | null>(null);
 const selection = ref<string[]>([]);
 const tab = ref(['inbox']);
 const openNotifications = ref<string[]>([]);
 const page = ref(1);
 const limit = ref(25);
 const search = ref<string | null>(null);
-const userFilter = ref<Filter>({});
+const filter = ref<Filter | null>(null);
 const mouseDownTarget = ref<EventTarget | null>(null);
+const { notificationsDrawerOpen } = storeToRefs(appStore);
 
 watch(tab, (newTab, oldTab) => {
 	if (newTab[0] !== oldTab[0]) {
-		page.value = 1;
 		selection.value = [];
 	}
 });
 
-watch([search, userFilter], () => {
-	page.value = 1;
+watch(notificationsDrawerOpen, (open) => {
+	// Load notifications only once the drawer is opened and reset when closed
+	collection.value = open ? 'directus_notifications' : null;
 });
 
-function toggleSelected(id: string) {
-	if (selection.value.includes(id)) {
-		selection.value.splice(selection.value.indexOf(id), 1);
-	} else {
-		selection.value.push(id);
-	}
-}
+const filterSystem = computed(
+	() =>
+		({
+			_and: [
+				{
+					recipient: {
+						_eq: userStore.currentUser!.id,
+					},
+				},
+				{
+					status: {
+						_eq: tab.value[0],
+					},
+				},
+			],
+		}) as Filter,
+);
 
-function toggleNotification(id: string) {
-	if (openNotifications.value.includes(id)) {
-		openNotifications.value.splice(openNotifications.value.indexOf(id), 1);
-	} else {
-		openNotifications.value.push(id);
-	}
-}
-
-const { notificationsDrawerOpen } = storeToRefs(appStore);
-
-const filter = computed(() => ({
-	_and: [
-		{
-			recipient: {
-				_eq: userStore.currentUser!.id,
-			},
-		},
-		{
-			status: {
-				_eq: tab.value[0],
-			},
-		},
-		userFilter.value,
-	],
-}));
-
-const { items, loading, getItems, totalPages, getItemCount } = useItems(ref('directus_notifications'), {
-	filter,
-	fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
-	sort: ref(['-timestamp']),
-	search,
-	limit,
-	page,
-});
+const { items, loading, totalPages, totalCount, itemCount, getItems, getItemCount, getTotalCount } = useItems(
+	collection,
+	{
+		filter: computed(() => mergeFilters(filter.value, filterSystem.value)),
+		filterSystem,
+		fields: ref(['id', 'subject', 'message', 'collection', 'item', 'timestamp']),
+		sort: ref(['-timestamp']),
+		search,
+		limit,
+		page,
+	},
+);
 
 const notifications = computed<LocalNotification[]>(() => {
 	return items.value.map((item) => {
@@ -112,11 +103,42 @@ const notifications = computed<LocalNotification[]>(() => {
 	});
 });
 
+const showingCount = computed(() => {
+	// Don't show count if there are no items
+	if (!totalCount.value || !itemCount.value) return;
+
+	return formatItemsCountPaginated({
+		currentItems: itemCount.value,
+		currentPage: page.value,
+		perPage: limit.value,
+		isFiltered: !!filter.value,
+		totalItems: totalCount.value,
+		i18n: { t, n },
+	});
+});
+
+async function refresh() {
+	await getItems();
+	await getTotalCount();
+	await getItemCount();
+}
+
 async function archiveAll() {
 	await api.patch('/notifications', {
 		query: {
-			recipient: {
-				_eq: userStore.currentUser!.id,
+			filter: {
+				_and: [
+					{
+						recipient: {
+							_eq: userStore.currentUser!.id,
+						},
+					},
+					{
+						status: {
+							_eq: 'inbox',
+						},
+					},
+				],
 			},
 		},
 		data: {
@@ -124,10 +146,25 @@ async function archiveAll() {
 		},
 	});
 
-	await getItemCount();
-	await getItems();
+	await refresh();
 
-	setUnreadCount(0);
+	notificationsStore.setUnreadCount(0);
+}
+
+function toggleSelected(id: string) {
+	if (selection.value.includes(id)) {
+		selection.value.splice(selection.value.indexOf(id), 1);
+	} else {
+		selection.value.push(id);
+	}
+}
+
+function toggleNotification(id: string) {
+	if (openNotifications.value.includes(id)) {
+		openNotifications.value.splice(openNotifications.value.indexOf(id), 1);
+	} else {
+		openNotifications.value.push(id);
+	}
 }
 
 async function toggleArchive() {
@@ -138,8 +175,8 @@ async function toggleArchive() {
 		},
 	});
 
-	await getItemCount();
-	await getItems();
+	await refresh();
+	await notificationsStore.refreshUnreadCount();
 
 	selection.value = [];
 }
@@ -148,6 +185,11 @@ function onLinkClick(to: string) {
 	router.push(to);
 
 	notificationsDrawerOpen.value = false;
+}
+
+function clearFilters() {
+	filter.value = null;
+	search.value = null;
 }
 </script>
 
@@ -159,8 +201,16 @@ function onLinkClick(to: string) {
 		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
 	>
+		<template #actions:prepend>
+			<transition name="fade">
+				<span v-if="showingCount" class="item-count">
+					{{ showingCount }}
+				</span>
+			</transition>
+		</template>
+
 		<template #actions>
-			<search-input v-model="search" v-model:filter="userFilter" collection="directus_notifications" />
+			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon
@@ -200,9 +250,19 @@ function onLinkClick(to: string) {
 			</v-tabs>
 		</template>
 
-		<v-info v-if="!loading && notifications.length === 0" icon="notifications" :title="t('no_notifications')" center>
-			{{ t('no_notifications_copy') }}
-		</v-info>
+		<template v-if="!loading && !itemCount">
+			<v-info v-if="filter || search" :title="t('no_results')" icon="search" center>
+				{{ t('no_results_copy') }}
+
+				<template #append>
+					<v-button @click="clearFilters">{{ t('clear_filters') }}</v-button>
+				</template>
+			</v-info>
+
+			<v-info v-else icon="notifications" :title="t('no_notifications')" center>
+				{{ t('no_notifications_copy') }}
+			</v-info>
+		</template>
 
 		<div v-else class="content">
 			<v-list v-if="loading" class="notifications">
@@ -259,6 +319,19 @@ function onLinkClick(to: string) {
 </template>
 
 <style lang="scss" scoped>
+.item-count {
+	position: relative;
+	display: none;
+	margin: 0 8px;
+	color: var(--theme--foreground-subdued);
+	white-space: nowrap;
+	align-self: center;
+
+	@media (min-width: 600px) {
+		display: inline;
+	}
+}
+
 .content {
 	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
@@ -315,5 +388,15 @@ function onLinkClick(to: string) {
 			}
 		}
 	}
+}
+
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity var(--medium) var(--transition);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+	opacity: 0;
 }
 </style>

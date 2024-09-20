@@ -10,7 +10,7 @@ import Queue from 'p-queue';
 import { join } from 'path';
 import type { ReadableStream } from 'stream/web';
 import { extract } from 'tar';
-import { useLogger } from '../../../logger.js';
+import { useLogger } from '../../../logger/index.js';
 import { getStorage } from '../../../storage/index.js';
 import { getExtensionsPath } from '../get-extensions-path.js';
 

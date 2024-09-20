@@ -719,10 +719,6 @@ make_collection_hidden: Koleksiyonu Gizli Yap
 make_folder_visible: Klasörü Görünür Yap
 make_folder_hidden: Klasörü Gizli Yap
 goto_collection_content: İçeriği Görüntüle
-start_end_of_count_items: '{count} öğeden {start}-{end} arasındakiler gösteriliyor'
-start_end_of_count_filtered_items: 'Filtrelenmiş {count} öğeden {start}-{end} arasındakiler gösteriliyor'
-one_item: '1 öğe'
-one_filtered_item: '1 filtrelenmiş öğe'
 delete_collection_are_you_sure: >-
   "{collection}" koleksiyonunu silmek istediğinizden emin misiniz? Bu, koleksiyonu ve içindeki tüm öğeleri siler. Bu işlem kalıcıdır.
 delete_folder_are_you_sure: Are you sure you want to delete the folder "{folder}"? Nested folders and collections will be moved to the top most level.
@@ -808,7 +804,6 @@ create_item: Öğe Oluştur
 display_template: Görüntüleme Şablonu
 language_display_template: Dil Görüntüleme Şablonu
 translations_display_template: Çeviri Görüntüleme Şablonu
-n_items_selected: 'Seçili Öğe Yok | 1 Öğe Seçildi | {n} Öğe Seçildi'
 per_page: Sayfa Başına
 all_files: Tüm Dosyalar
 my_files: Dosyalarım
@@ -944,8 +939,6 @@ tooltip: İpucu
 tooltip_placeholder: Bir ipucu girin...
 unlimited: Limitsiz
 open_link_in: Bağlantıyı aç
-new_tab: Yeni sekme
-current_tab: Mevcut sekme
 save_image: Fotoğrafı Kaydet
 save_media: Medyayı Kaydet
 wysiwyg_options:
@@ -1018,7 +1011,6 @@ editing_unit: '{unit} Düzenleniyor'
 editing_in_batch: '{count} Öge Toplu Olarak Düzenleniyor'
 no_options_available: Hiç seçenek yok
 settings_data_model: Veri Modeli
-settings_permissions: Erişim Kontrolleri
 settings_project: Ayarlar
 settings_webhooks: Webhooklar
 settings_flows: Akışlar
@@ -1062,7 +1054,6 @@ page_help_settings_datamodel_collections: >-
   **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
 page_help_settings_datamodel_fields: >-
   **Veri Modeli: Koleksiyon** — Bu koleksiyonu ve alanlarını yönetmek için bir form/sayfa.
-page_help_settings_roles_collection: '**Rollere Göz At** — Herkese açık, yönetici ve özel kullanıcı rollerini listeler.'
 page_help_settings_roles_item: "**Rol Detayı** — Bir rolün yetki ve diğer ayarlarını yönet."
 page_help_settings_presets_collection: >-
   **Ön Ayarlara Göz At** — Projedeki tüm ön ayarları listeler. Buna kullanıcı, rol, genel yer işaretleri ve varsayılan görünüm/yerleşimler dahildir.
@@ -1106,7 +1097,6 @@ directus_collection:
   directus_notifications: Bildirimler kullanıcılara gönderildi
   directus_operations: Akışların içerisindeki operasyonlar
   directus_panels: Panolar modülündeki panolardaki tekil paneller
-  directus_permissions: Her bir rol için yetkilere eriş
   directus_presets: Koleksiyon varsayılanları ve yer işaretleri için ön ayarlar
   directus_relations: İlişki ayarı ve metaveri
   directus_revisions: Tüm etkinlikler için anlık veri görüntüleri
@@ -1256,12 +1246,9 @@ fields:
     name: Rol Adı
     icon: Rol İkonu
     description: Açıklama
-    app_access: Uygulama Erişimi
-    admin_access: Yönetici Erişimi
-    ip_access: IP Erişimi
-    enforce_tfa: 2FA Gerekli
     users: Rol'deki Kullanıcılar
-    module_list: Modül Navigasyonu
+  directus_policies:
+    description: Açıklama
   directus_webhooks:
     name: İsim
     method: Metod
@@ -1398,7 +1385,6 @@ live_preview:
   toggle_3d: 3D'ye geçiş yap
 shares: Paylaşımlar
 unlimited_usage: Limitsiz kullanım
-uses_left: Hiç kullanım kalmadı | 1 kullanım kaldı | {n} kullanım kaldı
 no_shares: Gösterilecek paylaşım yok
 new_share: Yeni Paylaşım
 expired: Süresi Dolmuş
@@ -1675,6 +1661,8 @@ interfaces:
     preview: Önizleme
     editorFont: Editör Yazı Tipi
     previewFont: Önizleme Yazı Tipi
+    default_view: Varsayılan Görünüm
+    default_view_preview: Önizleme
     customSyntax: Özel Bloklar
     customSyntax_label: Özel sözdizimi türleri ekle
     customSyntax_add: Özel sözdizimi ekle
@@ -2034,7 +2022,6 @@ layouts:
     show_ungrouped: Gruplanmamış göster
     show: Göstermek
     no_group: Grup yok
-    not_all_loaded: Yalnızca ilk 1000 öğe yüklenebilir.
 horizontal: Yatay
 vertical: Dikey
 x_axis: X Ekseni

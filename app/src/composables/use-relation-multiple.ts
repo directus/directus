@@ -35,7 +35,7 @@ export function useRelationMultiple(
 	value: Ref<Record<string, any> | any[] | undefined>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
-	itemId: Ref<string | number>,
+	itemId: Ref<string | number | null>,
 ) {
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
@@ -195,12 +195,19 @@ export function useRelationMultiple(
 		if ((previewQuery.value.limit > 0 && totalItemCount.value > previewQuery.value.limit) || !sortField) return items;
 
 		return items.sort((a, b) => {
+			let left;
+			let right;
+
 			if (sortField.startsWith('-')) {
 				const field = sortField.substring(1);
-				return get(b, field) - get(a, field);
+				left = get(b, field);
+				right = get(a, field);
+			} else {
+				left = get(a, sortField);
+				right = get(b, sortField);
 			}
 
-			return get(a, sortField) - get(b, sortField);
+			return Number(left > right) - Number(right > left);
 		});
 	});
 
@@ -313,7 +320,7 @@ export function useRelationMultiple(
 	async function updateFetchedItems() {
 		if (!relation.value) return;
 
-		if (!itemId.value || itemId.value === '+') {
+		if (itemId.value === undefined || itemId.value === '+') {
 			fetchedItems.value = [];
 			return;
 		}

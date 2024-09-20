@@ -1,7 +1,9 @@
 import type { KNEX_TYPES } from '@directus/constants';
-import type { Options } from '../types.js';
+import { type Knex } from 'knex';
+import type { Options, SortRecord, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
 import { useEnv } from '@directus/env';
+import { preprocessBindings } from '../utils/preprocess-bindings.js';
 
 const env = useEnv();
 
@@ -36,6 +38,32 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 			return result[0]?.['size'] ? Number(result[0]?.['size']) : null;
 		} catch {
 			return null;
+		}
+	}
+
+	override preprocessBindings(queryParams: Sql): Sql {
+		return preprocessBindings(queryParams, { format: (index) => `$${index + 1}` });
+	}
+
+	override addInnerSortFieldsToGroupBy(
+		groupByFields: (string | Knex.Raw)[],
+		sortRecords: SortRecord[],
+		hasMultiRelationalSort: boolean,
+	) {
+		if (hasMultiRelationalSort) {
+			/*
+			Cockroach allows aliases to be used in the GROUP BY clause and only needs columns in the GROUP BY clause that
+			are not functionally dependent on the primary key.
+
+			> You can group columns by an alias (i.e., a label assigned to the column with an AS clause) rather than the column name.
+
+			> If aggregate groups are created on a full primary key, any column in the table can be selected as a target_elem,
+			  or specified in a HAVING clause.
+
+			https://www.cockroachlabs.com/docs/stable/select-clause#parameters
+			 */
+
+			groupByFields.push(...sortRecords.map(({ alias }) => alias));
 		}
 	}
 }

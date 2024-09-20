@@ -85,7 +85,8 @@ sidebar, the header and the main content area.
 
 ::: warning Enable the Module
 
-Before a module appears in the module bar, it has to be enabled inside the project settings.
+Before a module appears in the module bar, the extension has to be enabled under Settings > Extensions, and the module
+has to be enabled under Settings > Settings > Module Bar.
 
 :::
 

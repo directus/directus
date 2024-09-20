@@ -61,7 +61,7 @@ export const DEFAULT_AUTH_PROVIDER = 'default';
 
 export const COLUMN_TRANSFORMS = ['year', 'month', 'day', 'weekday', 'hour', 'minute', 'second'];
 
-export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-created'];
+export const GENERATE_SPECIAL = ['uuid', 'date-created', 'role-created', 'user-created'] as const;
 
 export const UUID_REGEX = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
 
@@ -99,8 +99,10 @@ export const SUPPORTED_IMAGE_METADATA_FORMATS = [
 /** Resumable uploads */
 export const RESUMABLE_UPLOADS = {
 	ENABLED: toBoolean(env['TUS_ENABLED']),
-	CHUNK_SIZE: bytes(env['TUS_CHUNK_SIZE'] as string),
-	MAX_SIZE: bytes(env['FILES_MAX_UPLOAD_SIZE'] as string),
+	CHUNK_SIZE: bytes.parse(env['TUS_CHUNK_SIZE'] as string),
+	MAX_SIZE: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string),
 	EXPIRATION_TIME: getMilliseconds(env['TUS_UPLOAD_EXPIRATION'], 600_000 /* 10min */),
 	SCHEDULE: String(env['TUS_CLEANUP_SCHEDULE'] as string),
 };
+
+export const ALLOWED_DB_DEFAULT_FUNCTIONS = ['gen_random_uuid()'];

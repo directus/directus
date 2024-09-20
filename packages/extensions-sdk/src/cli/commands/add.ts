@@ -78,7 +78,7 @@ export default async function add(options: AddOptions): Promise<void> {
 				type: 'list',
 				name: 'type',
 				message: 'Choose the extension type',
-				choices: EXTENSION_TYPES,
+				choices: () => EXTENSION_TYPES.filter((e) => e !== 'bundle'),
 			},
 			{
 				type: 'input',
@@ -186,7 +186,7 @@ export default async function add(options: AddOptions): Promise<void> {
 				type: 'list',
 				name: 'type',
 				message: 'Choose the extension type',
-				choices: EXTENSION_TYPES,
+				choices: () => EXTENSION_TYPES.filter((e) => e !== 'bundle'),
 			},
 			{
 				type: 'input',

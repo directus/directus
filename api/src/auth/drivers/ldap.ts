@@ -14,17 +14,18 @@ import { Router } from 'express';
 import Joi from 'joi';
 import type { Client, Error, LDAPResult, SearchCallbackResponse, SearchEntry } from 'ldapjs';
 import ldap from 'ldapjs';
+import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import emitter from '../../emitter.js';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { respond } from '../../middleware/respond.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
 import type { AuthDriverOptions, AuthenticationMode, User } from '../../types/index.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { AuthDriver } from '../auth.js';
-import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 
 interface UserInfo {
 	dn: string;
@@ -240,7 +241,8 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		await this.validateBindClient();
 
-		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId } = this.config;
+		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId, syncUserInfo } =
+			this.config;
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
@@ -284,17 +286,30 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
-			let updatedUserPayload = await emitter.emitFilter(
-				`auth.update`,
-				{},
-				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
-				{ database: getDatabase(), schema: this.schema, accountability: null },
-			);
+			let emitPayload = {};
 
 			// Only sync roles if the AD groups are configured
 			if (groupDn) {
-				updatedUserPayload = { role: userRole?.id ?? defaultRoleId ?? null, ...updatedUserPayload };
+				emitPayload = {
+					role: userRole?.id ?? defaultRoleId ?? null,
+				};
 			}
+
+			if (syncUserInfo) {
+				emitPayload = {
+					...emitPayload,
+					first_name: userInfo.firstName,
+					last_name: userInfo.lastName,
+					email: userInfo.email,
+				};
+			}
+
+			const updatedUserPayload = await emitter.emitFilter(
+				`auth.update`,
+				emitPayload,
+				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
+				{ database: getDatabase(), schema: this.schema, accountability: null },
+			);
 
 			// Update user to update properties that might have changed
 			await this.usersService.updateOne(userId, updatedUserPayload);
@@ -417,10 +432,9 @@ export function createLDAPAuthRouter(provider: string): Router {
 		asyncHandler(async (req, res, next) => {
 			const env = useEnv();
 
-			const accountability: Accountability = {
+			const accountability: Accountability = createDefaultAccountability({
 				ip: getIPFromReq(req),
-				role: null,
-			};
+			});
 
 			const userAgent = req.get('user-agent')?.substring(0, 1024);
 			if (userAgent) accountability.userAgent = userAgent;
