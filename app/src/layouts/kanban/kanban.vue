@@ -89,11 +89,11 @@ function saveChanges() {
 }
 
 const titleFieldConfiguration = computed<Field | undefined>(() => {
-	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.titleField);
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions?.titleField);
 });
 
 const textFieldConfiguration = computed<Field | undefined>(() => {
-	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions?.textField);
 });
 </script>
 
