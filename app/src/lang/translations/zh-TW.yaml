@@ -1484,8 +1484,6 @@ interfaces:
     description: 選擇或上傳檔案
     crop: 裁切以符合
     crop_label: 當需要時進行裁切
-    letterbox: 黑邊
-    letterbox_label: 圖片有內距
   system-interface:
     interface: 介面
     description: 選擇現有介面

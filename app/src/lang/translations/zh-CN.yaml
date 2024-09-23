@@ -1772,8 +1772,6 @@ interfaces:
     description: 选择或上传图片
     crop: 裁剪为适合的
     crop_label: 视需要裁剪图像
-    letterbox: 黑边
-    letterbox_label: 图片有内距
   system-interface:
     interface: 接口
     description: 选择一个现有接口
