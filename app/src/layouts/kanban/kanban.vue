@@ -171,8 +171,9 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 												:type="titleFieldConfiguration.type"
 												:field="layoutOptions?.titleField"
 												:display="titleFieldConfiguration.meta?.display"
-												:options="titleFieldConfiguration.meta?.options"
+												:options="titleFieldConfiguration.meta?.display_options"
 												:interface="titleFieldConfiguration.meta?.interface"
+												:interface-options="titleFieldConfiguration.meta?.options"
 											/>
 										</div>
 										<img v-if="element.image" class="image" :src="element.image" />
@@ -183,8 +184,9 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 											:type="textFieldConfiguration.type"
 											:field="layoutOptions?.textField"
 											:display="textFieldConfiguration.meta?.display"
-											:options="textFieldConfiguration.meta?.options"
+											:options="textFieldConfiguration.meta?.display_options"
 											:interface="textFieldConfiguration.meta?.interface"
+											:interface-options="textFieldConfiguration.meta?.options"
 										/>
 										<display-labels
 											v-if="element.tags"
