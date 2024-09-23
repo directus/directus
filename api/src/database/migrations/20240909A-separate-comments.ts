@@ -1,5 +1,4 @@
 import { Action } from '@directus/constants';
-import { processChunk } from '@directus/utils';
 import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
@@ -25,40 +24,53 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-	const comments = await knex
-		.select('id', 'collection', 'item', 'comment', 'date_created', 'user_created')
-		.from('directus_comments');
+	const rowsLimit = 50;
+	let hasMore = true;
 
-	await processChunk(comments, 100, async (commentChunk) => {
-		for (const comment of commentChunk) {
-			const migratedRecords = await knex('directus_activity')
-				.select('id')
-				.where('collection', '=', 'directus_comments')
-				.andWhere('item', '=', comment.id)
-				.andWhere('action', '=', Action.CREATE)
-				.limit(1);
+	while (hasMore) {
+		const comments = await knex
+			.select('id', 'collection', 'item', 'comment', 'date_created', 'user_created')
+			.from('directus_comments')
+			.limit(rowsLimit);
 
-			if (migratedRecords[0]) {
-				await knex('directus_activity')
-					.update({
+		if (comments.length === 0) {
+			hasMore = false;
+			break;
+		}
+
+		await knex.transaction(async (trx) => {
+			for (const comment of comments) {
+				const migratedRecords = await trx('directus_activity')
+					.select('id')
+					.where('collection', '=', 'directus_comments')
+					.andWhere('item', '=', comment.id)
+					.andWhere('action', '=', Action.CREATE)
+					.limit(1);
+
+				if (migratedRecords[0]) {
+					await trx('directus_activity')
+						.update({
+							action: Action.COMMENT,
+							collection: comment.collection,
+							item: comment.item,
+							comment: comment.comment,
+						})
+						.where('id', '=', migratedRecords[0].id);
+				} else {
+					await trx('directus_activity').insert({
 						action: Action.COMMENT,
 						collection: comment.collection,
 						item: comment.item,
 						comment: comment.comment,
-					})
-					.where('id', '=', migratedRecords[0].id);
-			} else {
-				await knex('directus_activity').insert({
-					action: Action.COMMENT,
-					collection: comment.collection,
-					item: comment.item,
-					comment: comment.comment,
-					user: comment.user_created,
-					timestamp: comment.date_created,
-				});
+						user: comment.user_created,
+						timestamp: comment.date_created,
+					});
+				}
+
+				await trx('directus_comments').where('id', '=', comment.id).delete();
 			}
-		}
-	});
+		});
+	}
 
 	await knex.schema.dropTable('directus_comments');
 }
