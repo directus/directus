@@ -1,10 +1,9 @@
 import { schemaPermissions } from '@directus/system-data';
 import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
-import { assign, set, uniq } from 'lodash-es';
-import { fetchAllowedFieldMap, type FieldMap } from '../modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { set, uniq } from 'lodash-es';
+import { fetchAllowedFieldMap } from '../modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import type { Context } from '../types.js';
 import { fetchShareInfo } from './fetch-share-info.js';
-import { fieldMapFromFields } from './field-map-from-fields.js';
 import { mergePermissions } from './merge-permissions.js';
 import { fetchPermissions } from '../lib/fetch-permissions.js';
 import { fetchPolicies } from '../lib/fetch-policies.js';
@@ -12,9 +11,8 @@ import { fetchRolesTree } from '../lib/fetch-roles-tree.js';
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { fetchGlobalAccess } from '../modules/fetch-global-access/fetch-global-access.js';
 
-export async function mergePermissionsForShare(
-	publicPermissions: Permission[],
-	accountability: Accountability,
+export async function getPermissionsForShare(
+	accountability: Pick<Accountability, 'share' | 'ip'>,
 	context: Context,
 ): Promise<Permission[]> {
 	const defaults: Permission = {
@@ -27,9 +25,7 @@ export async function mergePermissionsForShare(
 		fields: null,
 	};
 
-	console.log("accountability", accountability)
-
-	const { collection, item, fields, user_created } = await fetchShareInfo(accountability.share!, context);
+	const { collection, item, user_created } = await fetchShareInfo(accountability.share!, context);
 
 	// const allowedFields = fieldMapFromFields(collection, fields, context.schema);
 
@@ -48,8 +44,6 @@ export async function mergePermissionsForShare(
 		defaults.fields = ['*']
 	}
 
-	console.log("userAccountability", userAccountability)
-
 	const policies = await fetchPolicies(userAccountability, context);
 
 	const userPermissions = await fetchPermissions({
@@ -62,8 +56,6 @@ export async function mergePermissionsForShare(
 		accountability: userAccountability,
 		action: 'read'
 	}, context)
-
-	console.log(userPermissions)
 
 	const reducedSchema = admin ? context.schema : reduceSchema(context.schema, fieldMap)
 	const parentPrimaryKeyField = context.schema.collections[collection]!.primary;

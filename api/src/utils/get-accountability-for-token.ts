@@ -30,21 +30,7 @@ export async function getAccountabilityForToken(
 				await verifySessionJWT(payload);
 			}
 
-			if (payload.share) {
-				accountability.share = payload.share;
-
-				// const shareInfo = await fetchShareInfo(payload.share, {
-				// 	schema: await getSchema(),
-				// })
-
-				// accountability.user = shareInfo.user_created.id
-				// accountability.role = shareInfo.user_created.role
-				// accountability.roles = await fetchRolesTree(accountability.role, database);
-				// accountability.admin = false;
-				// accountability.app = false;
-				// return accountability;
-			}
-
+			if (payload.share) accountability.share = payload.share;
 
 			if (payload.id) accountability.user = payload.id;
 

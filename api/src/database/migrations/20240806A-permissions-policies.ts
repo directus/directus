@@ -10,6 +10,7 @@ import { getSchema } from '../../utils/get-schema.js';
 
 import type { Permission } from '@directus/types';
 import { getSchemaInspector } from '../index.js';
+import { mergePermissions } from '../../permissions/utils/merge-permissions.js';
 
 type RoleAccess = {
 	app_access: boolean;
