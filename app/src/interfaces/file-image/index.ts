@@ -49,6 +49,9 @@ export default defineInterface({
 					label: '$t:interfaces.file-image.letterbox_label',
 				},
 			},
+			schema: {
+				default_value: false,
+			},
 		},
 	],
 	recommendedDisplays: ['image'],
