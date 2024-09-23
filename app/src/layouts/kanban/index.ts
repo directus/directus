@@ -49,9 +49,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
 
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
-			title: getRelatedFilterFields,
-			group: getRelatedFilterFields,
-			text: getRelatedFilterFields,
+			title: (field) => field.type === 'string' || fieldIsRelatedField(field),
+			text: (field) => field.type === 'string' || field.type === 'text' || fieldIsRelatedField(field),
+			group: (field) => fieldHasChoices(field) || fieldIsRelatedField(field),
 
 			tags: (field) => field.type === 'json' || field.type === 'csv',
 			date: (field) => ['date', 'time', 'dateTime', 'timestamp'].includes(field.type),
@@ -277,7 +277,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			onClick,
 		};
 
-		function getRelatedFilterFields(field: Field) {
+		function fieldHasChoices(field: Field) {
 			if (
 				field.meta?.options &&
 				Object.keys(field.meta.options).includes('choices') &&
@@ -286,6 +286,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return Object.keys(field.meta.options).includes('choices');
 			}
 
+			return false;
+		}
+
+		function fieldIsRelatedField(field: Field) {
 			const relation = relationsStore.relations.find(
 				(relation) => getRelationType({ relation, collection: collection.value, field: field.field }) === 'm2o',
 			);
