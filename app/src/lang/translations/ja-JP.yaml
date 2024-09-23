@@ -838,8 +838,6 @@ tooltip: ヒント
 tooltip_placeholder: ヒントを入力中...
 unlimited: 無制限
 open_link_in: リンクを開く
-new_tab: 新しいタブ
-current_tab: 現在のタブ
 save_image: 画像を保存
 save_media: メディアを保存
 wysiwyg_options:

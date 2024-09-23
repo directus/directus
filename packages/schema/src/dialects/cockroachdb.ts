@@ -206,11 +206,28 @@ export default class CockroachDB implements SchemaInspector {
 		}
 
 		for (const { table_name, column_name } of primaryKeys) {
-			overview[table_name]!.primary = column_name;
+			if (overview[table_name]) {
+				overview[table_name].primary = column_name;
+			} else {
+				/* eslint-disable-next-line no-console */
+				console.error(`Could not set primary key "${column_name}" for unknown table "${table_name}"`);
+			}
 		}
 
 		for (const { table_name, column_name, data_type } of geometryColumns) {
-			overview[table_name]!.columns[column_name]!.data_type = data_type;
+			if (overview[table_name]) {
+				if (overview[table_name].columns[column_name]) {
+					overview[table_name].columns[column_name].data_type = data_type;
+				} else {
+					/* eslint-disable-next-line no-console */
+					console.error(
+						`Could not set data type "${data_type}" for unknown column "${column_name}" in table "${table_name}"`,
+					);
+				}
+			} else {
+				/* eslint-disable-next-line no-console */
+				console.error(`Could not set geometry column "${column_name}" for unknown table "${table_name}"`);
+			}
 		}
 
 		return overview;

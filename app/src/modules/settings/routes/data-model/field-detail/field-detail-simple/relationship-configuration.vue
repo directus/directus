@@ -112,10 +112,10 @@ const availableCollections = computed(() => {
 @import '@/styles/mixins/form-grid';
 
 .relationship {
-	@include form-grid;
-
 	--v-select-font-family: var(--theme--fonts--monospace--font-family);
 	--v-input-font-family: var(--theme--fonts--monospace--font-family);
+
+	@include form-grid;
 
 	&:not(:empty) {
 		margin-bottom: 20px;

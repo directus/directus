@@ -34,7 +34,7 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/ms": "0.7.34",
 		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.2.2",
+		"tsup": "8.2.4",
 		"typescript": "5.4.5",
 		"vitest": "1.5.3"
 	}

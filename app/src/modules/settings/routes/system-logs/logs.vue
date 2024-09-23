@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useClipboard } from '@/composables/use-clipboard';
 import { useShortcut } from '@/composables/use-shortcut';
+import { getRootPath } from '@/utils/get-root-path';
 import { sdk } from '@/sdk';
 import { useServerStore } from '@/stores/server';
 import { realtime } from '@directus/sdk';
@@ -47,7 +48,7 @@ const softWrap = useLocalStorage('system-logs-soft-wrap', true);
 const client = sdk.with(
 	realtime({
 		authMode: 'strict',
-		url: `${sdk.url.protocol === 'https:' ? 'wss' : 'ws'}://${sdk.url.host}/websocket/logs`,
+		url: `${sdk.url.protocol === 'https:' ? 'wss' : 'ws'}://${sdk.url.host}${getRootPath()}websocket/logs`,
 		reconnect: reconnectionParams,
 	}),
 );

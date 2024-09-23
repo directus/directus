@@ -1021,8 +1021,6 @@ tooltip: Ndihmë
 tooltip_placeholder: Shkruaj një ndihmë...
 unlimited: I pakufizuar
 open_link_in: Hap lidhjen në
-new_tab: Skedë të re
-current_tab: Skedën aktuale
 save_image: Ruaj Imazhin
 save_media: Ruaj Median
 wysiwyg_options:
@@ -1848,6 +1846,8 @@ interfaces:
     preview: Parashiko
     editorFont: Fonti i Redaktorit
     previewFont: Fonti i Parashikimit
+    default_view: Pamja e Paracaktuar
+    default_view_preview: Parashiko
     customSyntax: Blloqe të Personalizuara
     customSyntax_label: Shto lloje të personalizuara të sintaksës
     customSyntax_add: Shto sintaksë të personalizuar
