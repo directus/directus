@@ -347,6 +347,11 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					border-radius: var(--theme--border-radius);
 					cursor: pointer;
 
+					// This fixes the broken underline spacing when rendering a related field as title
+					.title > :deep(.render-template) > span:not(.vertical-aligner) {
+						vertical-align: unset;
+					}
+
 					&:hover .title {
 						text-decoration: underline;
 					}
