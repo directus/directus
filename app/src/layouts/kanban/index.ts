@@ -11,6 +11,7 @@ import { useCollection, useFilterFields, useItems, useSync } from '@directus/com
 import { defineLayout } from '@directus/extensions';
 import { Field, User } from '@directus/types';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
+import { uniq } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import KanbanActions from './actions.vue';
@@ -679,28 +680,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					if (val !== null) fields.push(val);
 				});
 
-				function addRelatedFields(fieldName?: string) {
-					if (!fieldName) return;
-
-					const fieldConfiguration = layoutOptions.value
-						? fieldsInCollection.value.find((field) => field.field === fieldName)
-						: null;
-
-					if (!fieldConfiguration) return;
-
-					const relatedFields = adjustFieldsForDisplays(fields, collection.value!);
-
-					relatedFields.forEach((val) => {
-						if (!fields.includes(val)) {
-							fields.push(val);
-						}
-					});
-				}
-
-				addRelatedFields(layoutOptions.value?.titleField);
-				addRelatedFields(layoutOptions.value?.textField);
-
-				return fields;
+				return uniq(adjustFieldsForDisplays(fields, collection.value!));
 			});
 
 			return { sort, limit, page, fields };
