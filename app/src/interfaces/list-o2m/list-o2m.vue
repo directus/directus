@@ -334,7 +334,7 @@ function stageBatchEdits(edits: Record<string, any>) {
 
 	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
 
-	selection.value.forEach((item) => {
+	for (const item of selection.value) {
 		const relatedId = get(item, [relatedPkField], null);
 
 		const changes: Record<string, any> = {
@@ -347,7 +347,7 @@ function stageBatchEdits(edits: Record<string, any>) {
 		};
 
 		update(changes);
-	});
+	}
 
 	selection.value = [];
 }

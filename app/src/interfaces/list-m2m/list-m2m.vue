@@ -382,7 +382,7 @@ function stageBatchEdits(edits: Record<string, any>) {
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
 
-	selection.value.forEach((item) => {
+	for (const item of selection.value) {
 		const junctionId = get(item, [junctionPkField], null);
 		const relatedId = get(item, [junctionField, relatedPkField], null);
 
@@ -399,7 +399,7 @@ function stageBatchEdits(edits: Record<string, any>) {
 		};
 
 		update(changes);
-	});
+	}
 
 	selection.value = [];
 }
