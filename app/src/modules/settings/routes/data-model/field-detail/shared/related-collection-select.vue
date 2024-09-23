@@ -17,7 +17,7 @@ const collectionExists = computed(() => {
 	return !!collectionsStore.getCollection(props.modelValue);
 });
 
-const availableCollections = collectionsStore.configuredCollections;
+const availableCollections = collectionsStore.databaseCollections.filter((collection) => collection.meta);
 const systemCollections = collectionsStore.crudSafeSystemCollections;
 </script>
 

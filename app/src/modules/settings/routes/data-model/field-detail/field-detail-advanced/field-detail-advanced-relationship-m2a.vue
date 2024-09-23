@@ -33,7 +33,7 @@ const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollec
 
 const availableCollections = computed(() => {
 	return [
-		...collectionsStore.configuredCollections,
+		...collectionsStore.databaseCollections.filter((collection) => collection.meta),
 		{
 			divider: true,
 		},

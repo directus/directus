@@ -20,22 +20,40 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 
 	const sortedCollections = computed(() => flattenGroupedCollections(collections.value));
 
+	/**
+	 * All system collections
+	 */
 	const systemCollections = computed(() =>
 		sortedCollections.value.filter(({ collection }) => isSystemCollection(collection)),
 	);
 
+	/**
+	 * All collections excluding system collections
+	 */
 	const allCollections = computed(() =>
 		sortedCollections.value.filter(({ collection }) => isSystemCollection(collection) === false),
 	);
 
+	/**
+	 * All non-system collections that have a meta object, i.e. are configured in Directus
+	 */
 	const configuredCollections = computed(() => allCollections.value.filter((collection) => collection.meta));
 
+	/**
+	 * All non-system collections that are configured and visible (not hidden)
+	 */
 	const visibleCollections = computed(() =>
 		configuredCollections.value.filter((collection) => collection.meta?.hidden !== true),
 	);
 
+	/**
+	 * All non-system collections that are configured and have a corresponding database table
+	 */
 	const databaseCollections = computed(() => allCollections.value.filter((collection) => collection.schema));
 
+	/**
+	 * All system collections that are safe to CRUD
+	 */
 	const crudSafeSystemCollections = computed(() =>
 		systemCollections.value.filter((collection) => !COLLECTIONS_DENY_LIST.includes(collection.collection)),
 	);

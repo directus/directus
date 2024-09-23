@@ -25,7 +25,7 @@ const collectionsStore = useCollectionsStore();
 const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
-	return translate(collectionsStore.configuredCollections).map((collection) => ({
+	return translate(collectionsStore.allCollections.filter((collection) => collection.meta)).map((collection) => ({
 		...collection,
 		isCollapsed: collapsedIds.value?.includes(collection.collection),
 	}));
