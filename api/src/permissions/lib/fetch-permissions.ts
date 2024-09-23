@@ -14,6 +14,8 @@ export interface FetchPermissionsOptions {
 }
 
 export async function fetchPermissions(options: FetchPermissionsOptions, context: Context) {
+	console.log("fetchPermissions", options)
+
 	const permissions = await fetchRawPermissions(
 		{ ...options, bypassMinimalAppPermissions: options.bypassDynamicVariableProcessing ?? false },
 		context,
@@ -38,10 +40,8 @@ export async function fetchPermissions(options: FetchPermissionsOptions, context
 
 		// TODO merge in permissions coming from the share scope
 
-		if (options.accountability.share) {
+		if (options.accountability.share && options.action === 'read') {
 			processedPermissions = await mergePermissionsForShare(processedPermissions, options.accountability as any, context);
-
-			console.log('mergePermissionsForShare', JSON.stringify(processedPermissions, null, 4));
 		}
 
 		return processedPermissions;

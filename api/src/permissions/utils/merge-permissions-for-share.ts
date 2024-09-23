@@ -27,6 +27,8 @@ export async function mergePermissionsForShare(
 		fields: null,
 	};
 
+	console.log("accountability", accountability)
+
 	const { collection, item, fields, user_created } = await fetchShareInfo(accountability.share!, context);
 
 	// const allowedFields = fieldMapFromFields(collection, fields, context.schema);
