@@ -530,7 +530,6 @@ function getLinkForItem(item: DisplayItem) {
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
-				:disabled="!updateAllowed"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
 				:show-select="updateAllowed ? 'multiple' : 'none'"
