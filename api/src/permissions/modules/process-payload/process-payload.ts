@@ -31,8 +31,6 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 			context,
 		);
 
-		console.log("permissions!", permissions)
-
 		if (permissions.length === 0) {
 			throw new ForbiddenError({
 				reason: `You don't have permission to "${options.action}" from collection "${options.collection}" or it does not exist.`,

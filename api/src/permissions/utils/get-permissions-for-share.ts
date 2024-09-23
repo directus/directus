@@ -27,8 +27,6 @@ export async function getPermissionsForShare(
 
 	const { collection, item, user_created } = await fetchShareInfo(accountability.share!, context);
 
-	// const allowedFields = fieldMapFromFields(collection, fields, context.schema);
-
 	const userAccountability: Accountability = {
 		user: user_created.id,
 		role: user_created.role,

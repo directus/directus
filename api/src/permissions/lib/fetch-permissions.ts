@@ -3,7 +3,7 @@ import type { Context } from '../types.js';
 import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
 import { fetchRawPermissions } from '../utils/fetch-raw-permissions.js';
 import { processPermissions } from '../utils/process-permissions.js';
-import { getPermissionsForShare } from '../utils/merge-permissions-for-share.js';
+import { getPermissionsForShare } from '../utils/get-permissions-for-share.js';
 
 export interface FetchPermissionsOptions {
 	action?: PermissionsAction;
@@ -14,7 +14,6 @@ export interface FetchPermissionsOptions {
 }
 
 export async function fetchPermissions(options: FetchPermissionsOptions, context: Context) {
-
 	const permissions = await fetchRawPermissions(
 		{ ...options, bypassMinimalAppPermissions: options.bypassDynamicVariableProcessing ?? false },
 		context,
@@ -31,14 +30,14 @@ export async function fetchPermissions(options: FetchPermissionsOptions, context
 		);
 
 		// Replace dynamic variables with their actual values
-		let processedPermissions = processPermissions({
+		const processedPermissions = processPermissions({
 			permissions,
 			accountability: options.accountability,
 			permissionsContext,
 		});
 
 		if (options.accountability.share && options.action === 'read') {
-			processedPermissions = await getPermissionsForShare(options.accountability, context);
+			return await getPermissionsForShare(options.accountability, context);
 		}
 
 		return processedPermissions;

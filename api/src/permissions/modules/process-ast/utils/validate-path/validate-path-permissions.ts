@@ -9,10 +9,7 @@ export function validatePathPermissions(
 ) {
 	const permissionsForCollection = permissions.filter((permission) => permission.collection === collection);
 
-	console.log("permissionsForCollection", permissionsForCollection)
-
 	if (permissionsForCollection.length === 0) {
-		console.log('a')
 		throw createCollectionForbiddenError(path, collection);
 	}
 
@@ -36,15 +33,11 @@ export function validatePathPermissions(
 
 	const requestedFields = Array.from(fields);
 
-	console.log("requestedFields", requestedFields)
-	console.log("allowedFields", allowedFields)
-
 	const forbiddenFields = allowedFields.has('*')
 		? []
 		: requestedFields.filter((field) => allowedFields.has(field) === false);
 
 	if (forbiddenFields.length > 0) {
-		console.log('b')
 		throw createFieldsForbiddenError(path, collection, forbiddenFields);
 	}
 }

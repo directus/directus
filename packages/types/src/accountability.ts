@@ -1,7 +1,6 @@
 export type ShareScope = {
 	collection: string;
 	item: string;
-	fields: string[];
 };
 
 export type Accountability = {
