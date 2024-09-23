@@ -23,6 +23,7 @@ const props = withDefaults(
 		field: string;
 		width: string;
 		crop?: boolean;
+		letterbox?: boolean;
 	}>(),
 	{
 		crop: true,
@@ -143,7 +144,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			{{ t('no_image_selected') }}
 		</v-notice>
 
-		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
+		<div v-else-if="image" class="image-preview">
 			<div v-if="imageError || !src" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
@@ -155,6 +156,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<v-image
 				v-else-if="image.type?.startsWith('image') && isImage"
 				:src="src"
+				:class="{ 'is-letterbox': letterbox }"
 				:width="image.width"
 				:height="image.height"
 				alt=""
@@ -241,12 +243,8 @@ img {
 	object-fit: contain;
 }
 
-.is-svg {
+.is-letterbox {
 	padding: 32px;
-
-	img {
-		object-fit: contain;
-	}
 }
 
 .image-error {
