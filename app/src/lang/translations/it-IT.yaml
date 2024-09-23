@@ -413,6 +413,7 @@ soft_length: Limite consigliato
 precision_scale: Precisione & Scala
 readonly: Sola lettura
 unique: Unico
+index: Indice
 updated_on: Aggiornato il
 updated_by: Aggiornato da
 primary_key: Chiave primaria
@@ -883,6 +884,7 @@ columns: Colonne
 collection_setup: Configurazione Raccolta
 optional_system_fields: Campi opzionali
 value_unique: Il valore deve essere unico
+value_index: Il campo è indicizzato
 all_activity: Tutte le Attività
 create_item: Crea Elemento
 display_template: Display Template
@@ -1028,8 +1030,6 @@ tooltip: Suggerimento
 tooltip_placeholder: Inserisci un suggerimento...
 unlimited: Illimitato
 open_link_in: Apri collegamento in
-new_tab: Nuova scheda
-current_tab: Scheda corrente
 save_image: Salva immagine
 save_media: Salva media
 wysiwyg_options:
@@ -1856,6 +1856,9 @@ interfaces:
     preview: Anteprima
     editorFont: Carattere dell'editor
     previewFont: Anteprima carattere
+    default_view: Vista predefinita
+    default_view_editor: Editor
+    default_view_preview: Anteprima
     customSyntax: Blocchi Personalizzati
     customSyntax_label: Aggiungi tipi di sintassi personalizzati
     customSyntax_add: Aggiungi sintassi personalizzata

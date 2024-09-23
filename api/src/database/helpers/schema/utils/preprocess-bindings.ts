@@ -1,46 +1,53 @@
 import { isString } from 'lodash-es';
+import type { Knex } from 'knex';
 import type { Sql } from '../types.js';
 
 export type PreprocessBindingsOptions = {
 	format(index: number): string;
 };
 
+/**
+ * Preprocess a SQL query, such that repeated binding values are bound to the same binding index.
+ **/
 export function preprocessBindings(
 	queryParams: (Partial<Sql> & Pick<Sql, 'sql'>) | string,
 	options: PreprocessBindingsOptions,
 ) {
 	const query: Sql = { bindings: [], ...(isString(queryParams) ? { sql: queryParams } : queryParams) };
 
-	const bindingIndices: number[] = new Array(query.bindings.length);
+	// bindingIndices[i] is the index of the first occurrence of query.bindings[i]
+	const bindingIndices = new Map<Knex.Value, number>();
 
-	for (let i = 0; i < query.bindings.length; i++) {
-		const binding = query.bindings[i];
-		const prevIndex = query.bindings.findIndex((b, j) => j < i && b === binding);
-
-		if (prevIndex !== -1) {
-			bindingIndices[i] = prevIndex;
-		} else {
-			bindingIndices[i] = i;
-		}
-	}
+	// The new, deduplicated bindings
+	const bindings: Knex.Value[] = [];
 
 	let matchIndex = 0;
-	let currentBindingIndex = 0;
+	let nextBindingIndex = 0;
 
-	const sql = query.sql.replace(/(\\*)(\?)/g, function (_, escapes) {
+	const sql = query.sql.replace(/(\\*)(\?)/g, (_, escapes) => {
 		if (escapes.length % 2) {
 			// Return an escaped question mark, so it stays escaped
 			return `${'\\'.repeat(escapes.length)}?`;
-		} else {
-			const bindingIndex =
-				bindingIndices[matchIndex] === matchIndex ? currentBindingIndex++ : bindingIndices[matchIndex]!;
-
-			matchIndex++;
-			return options.format(bindingIndex);
 		}
-	});
 
-	const bindings = query.bindings.filter((_, i) => bindingIndices[i] === i);
+		const binding = query.bindings[matchIndex]!;
+		let bindingIndex: number;
+
+		if (bindingIndices.has(binding)) {
+			// This index belongs to a binding that has been encountered before.
+			bindingIndex = bindingIndices.get(binding)!;
+		} else {
+			// The first time the value is encountered, set the index lookup to the current index
+			// Use the nextBindingIndex to get the next unused binding index that is used in the new, deduplicated bindings
+			bindingIndex = nextBindingIndex++;
+			bindingIndices.set(binding, bindingIndex);
+			bindings.push(binding);
+		}
+
+		// Increment the loop counter
+		matchIndex++;
+		return options.format(bindingIndex);
+	});
 
 	return { ...query, sql, bindings };
 }

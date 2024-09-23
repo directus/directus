@@ -413,6 +413,7 @@ soft_length: Měkký limit
 precision_scale: Přesnost a měřítko
 readonly: Pouze pro čtení
 unique: Unikátní
+index: Index
 updated_on: Aktualizováno
 updated_by: Aktualizoval/a
 primary_key: Primární klíč
@@ -883,6 +884,7 @@ columns: Sloupce
 collection_setup: Nastavení kolekce
 optional_system_fields: Volitelná pole
 value_unique: Hodnota musí být unikátní
+value_index: Pole je indexováno
 all_activity: Všechna aktivita
 create_item: Vytvořit položku
 display_template: Šablona zobrazení
@@ -1028,8 +1030,6 @@ tooltip: Popisek
 tooltip_placeholder: Zadejte popisek...
 unlimited: Bez omezení
 open_link_in: Otevřít odkaz v
-new_tab: Nové kartě
-current_tab: Aktuální kartě
 save_image: Uložit obrázek
 save_media: Uložit média
 wysiwyg_options:
@@ -1856,6 +1856,9 @@ interfaces:
     preview: Náhled
     editorFont: Písmo editoru
     previewFont: Písmo náhledu
+    default_view: Výchozí zobrazení
+    default_view_editor: Editor
+    default_view_preview: Náhled
     customSyntax: Vlastní bloky
     customSyntax_label: Přidat vlastní typy syntaxe
     customSyntax_add: Přidat vlastní syntaxi

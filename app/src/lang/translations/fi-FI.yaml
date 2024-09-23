@@ -804,8 +804,6 @@ tooltip: Työkaluvihje
 tooltip_placeholder: Syötä työkaluvihje...
 unlimited: Rajoittamaton
 open_link_in: Avaa linkki
-new_tab: Uusi välilehti
-current_tab: Nykyinen välilehti
 save_image: Tallenna kuva
 save_media: Tallenna media
 wysiwyg_options:
@@ -1405,6 +1403,8 @@ interfaces:
     description: Syötä ja esikatsele markdownia
     edit: Muokkaa
     preview: Esikatselu
+    default_view: Oletusnäkymä
+    default_view_preview: Esikatselu
     customSyntax: Mukautetut lohkot
     customSyntax_label: Lisää mukautettuja syntaksityyppejä
     customSyntax_add: Lisää mukautettu syntaksi

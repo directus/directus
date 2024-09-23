@@ -1007,8 +1007,6 @@ tooltip: Підказка
 tooltip_placeholder: Введіть підказку...
 unlimited: Необмежено
 open_link_in: Відкрити посилання за допомогою
-new_tab: Нова вкладка
-current_tab: Поточна вкладка
 save_image: Зберегти зображення
 save_media: Зберегти медіа
 wysiwyg_options:
@@ -1808,6 +1806,8 @@ interfaces:
     preview: Перегляд
     editorFont: Шрифт редактора
     previewFont: Попередній перегляд шрифту
+    default_view: Вид за замовчуванням
+    default_view_preview: Перегляд
     customSyntax: Користувацькі блоки
     customSyntax_label: Додати користувацькі типи синтаксису
     customSyntax_add: Додати користувацький синтаксис

@@ -110,6 +110,7 @@ field_name_translations: Traducciones del campo de nombre
 enter_password_to_enable_tfa: Ingresa tu contraseña para habilitar la autenticación de dos factores
 add_field: Añadir campo
 role_name: Nombre del rol
+policy_name: Nombre de la política
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
@@ -127,6 +128,7 @@ requires_value: Requiere un valor
 create_preset: Crear predefinido
 create_panel: Crear panel
 create_role: Crear rol
+create_policy: Crear política
 create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
@@ -403,6 +405,7 @@ soft_length: Limite flexible
 precision_scale: Escala de precisión
 readonly: Sólo lectura
 unique: Único
+index: Índice
 updated_on: Actualizado el
 updated_by: Actualizado por
 primary_key: Llave primaria
@@ -539,6 +542,7 @@ file_details: Detalles de Archivo
 dimensions: Dimensiones
 size: Tamaño
 created: Creado
+uploaded: Subido
 modified: Modificado
 owner: Propietario
 edited_by: Editado por
@@ -649,6 +653,7 @@ copy_to: Copiar a...
 no_other_dashboards_copy: Todavía no tienes ningún otro tablero.
 inactive: Inactivo
 users: Usuarios
+roles: Roles
 activity: Actividad
 activity_item: Elemento de actividad
 action: Acción
@@ -1007,7 +1012,6 @@ tooltip_placeholder: Ingresa una sugerencia...
 unlimited: Ilimitado
 open_link_in: Abrir enlace en
 new_tab: Nueva pestaña
-current_tab: Pestaña actual
 save_image: Guardar imagen
 save_media: Guardar archivo
 wysiwyg_options:
@@ -1167,7 +1171,7 @@ uninstall: Desinstalar
 installed: Instalada
 reinstall: Reinstalar
 open_in_marketplace: Abrir en el Marketplace
-source_registry: Marketplace
+source_registry: Mercado
 source_local: Local
 source_module: Módulo de Nodo
 collection: Colección
@@ -1366,7 +1370,10 @@ fields:
     description: Descripción
     users: Usuarios en el rol
   directus_policies:
+    name: Nombre de la política
     description: Descripción
+    ip_access: Acceso IP
+    enforce_tfa: Requiere 2FA
   directus_webhooks:
     name: Nombre
     method: Método
@@ -1449,6 +1456,11 @@ field_options:
     focal_point_divider: Punto focal
     filename_disk: Nombre en el almacenamiento de disco...
     filename_download: Nombre al descargar...
+  directus_policies:
+    name: Un nombre único para esta política...
+    description: Una descripción de esta política...
+    enforce_tfa: Forzar la autenticación de dos factores
+    assigned_to: Asignado a
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
@@ -1541,6 +1553,8 @@ continue_label: Continuar
 continue_as: >-
   Actualmente {name} ha iniciado sesión. Si reconoce esta cuenta, presione continuar.
 editing_role: 'Rol {role}'
+no_permissions: Sin permisos
+permission_add_collection: Añadir colección
 creating_webhook: Creando Webhook
 default_label: Por defecto
 delete_label: Eliminar
@@ -1807,6 +1821,9 @@ interfaces:
     preview: Vista previa
     editorFont: Fuente del editor
     previewFont: Previsualizar fuente
+    default_view: Vista predeterminada
+    default_view_editor: Editor
+    default_view_preview: Vista previa
     customSyntax: Bloques personalizados
     customSyntax_label: Añadir tipos de sintaxis personalizados
     customSyntax_add: Añadir sintaxis personalizada
@@ -2433,3 +2450,5 @@ duplicate_dashboard: Duplicar Panel
 search_dashboard: Buscar Panel...
 search_flow: Buscar Flujo...
 percent: Porcentaje
+show_password: Mostrar contraseña
+hide_password: Ocultar contraseña
