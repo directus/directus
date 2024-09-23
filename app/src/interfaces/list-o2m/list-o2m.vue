@@ -326,7 +326,7 @@ const relatedPrimaryKeys = computed(() => {
 	if (!relationInfo.value) return [];
 
 	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
-	return selection.value.map((item) => get(item, relatedPkField, null)).filter(Boolean);
+	return selection.value.map((item) => get(item, relatedPkField, null)).filter((key) => !isNil(key));
 });
 
 function stageBatchEdits(edits: Record<string, any>) {
