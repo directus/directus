@@ -1,10 +1,16 @@
 import { schemaPermissions } from '@directus/system-data';
 import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
 import { assign, set, uniq } from 'lodash-es';
-import type { FieldMap } from '../modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import { reduceSchema } from '../../utils/reduce-schema.js';
+import { fetchAllowedFieldMap, type FieldMap } from '../modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import type { Context } from '../types.js';
 import { fetchShareInfo } from './fetch-share-info.js';
+import { fieldMapFromFields } from './field-map-from-fields.js';
+import { mergePermissions } from './merge-permissions.js';
+import { fetchPermissions } from '../lib/fetch-permissions.js';
+import { fetchPolicies } from '../lib/fetch-policies.js';
+import { fetchRolesTree } from '../lib/fetch-roles-tree.js';
+import { reduceSchema } from '../../utils/reduce-schema.js';
+import { fetchGlobalAccess } from '../modules/fetch-global-access/fetch-global-access.js';
 
 export async function mergePermissionsForShare(
 	publicPermissions: Permission[],
@@ -21,10 +27,43 @@ export async function mergePermissionsForShare(
 		fields: null,
 	};
 
-	const { collection, item, fields } = await fetchShareInfo(accountability.share!, context);
+	const { collection, item, fields, user_created } = await fetchShareInfo(accountability.share!, context);
 
-	const allowedFields = fieldMapFromFields(fields);
+	// const allowedFields = fieldMapFromFields(collection, fields, context.schema);
 
+	const userAccountability: Accountability = {
+		user: user_created.id,
+		role: user_created.role,
+		roles: await fetchRolesTree(user_created.role, context.knex),
+		admin: false,
+		app: false,
+		ip: accountability.ip,
+	}
+
+	const { admin } = await fetchGlobalAccess(userAccountability, context.knex);
+
+	if (admin) {
+		defaults.fields = ['*']
+	}
+
+	console.log("userAccountability", userAccountability)
+
+	const policies = await fetchPolicies(userAccountability, context);
+
+	const userPermissions = await fetchPermissions({
+		policies: policies,
+		action: 'read',
+		accountability: userAccountability,
+	}, context)
+
+	const fieldMap = await fetchAllowedFieldMap({
+		accountability: userAccountability,
+		action: 'read'
+	}, context)
+
+	console.log(userPermissions)
+
+	const reducedSchema = admin ? context.schema : reduceSchema(context.schema, fieldMap)
 	const parentPrimaryKeyField = context.schema.collections[collection]!.primary;
 
 	const relationalPermissions = traverse(reducedSchema, parentPrimaryKeyField, item, collection);
@@ -65,8 +104,12 @@ export async function mergePermissionsForShare(
 		}
 	}
 
+	if (admin) {
+		return generatedPermissions;
+	}
+
 	// Explicitly filter out permissions to collections unrelated to the root parent item.
-	const limitedPermissions = publicPermissions.filter(
+	const limitedPermissions = userPermissions.filter(
 		({ action, collection }) => allowedCollections.includes(collection) && action === 'read',
 	);
 

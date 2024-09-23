@@ -38,28 +38,41 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 		context,
 	);
 
+	console.log(1, fieldMap)
+
 	const readPermissions =
 		options.action === 'read'
 			? permissions
 			: await fetchPermissions(
-					{ action: 'read', policies, collections, accountability: options.accountability },
-					context,
-			  );
+				{ action: 'read', policies, collections, accountability: options.accountability },
+				context,
+			);
+
+	console.log(2)
+
 
 	// Validate field existence first
 	for (const [path, { collection, fields }] of [...fieldMap.read.entries(), ...fieldMap.other.entries()]) {
 		validatePathExistence(path, collection, fields, context.schema);
 	}
 
+	console.log(3)
+
+
 	// Validate permissions for the fields
 	for (const [path, { collection, fields }] of fieldMap.other.entries()) {
 		validatePathPermissions(path, permissions, collection, fields);
 	}
 
+	console.log(4)
+
+
 	// Validate permission for read only fields
 	for (const [path, { collection, fields }] of fieldMap.read.entries()) {
 		validatePathPermissions(path, readPermissions, collection, fields);
 	}
+
+	console.log(5)
 
 	injectCases(options.ast, permissions);
 
