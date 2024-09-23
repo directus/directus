@@ -81,13 +81,16 @@ const { t } = useI18n();
 	.shortcuts {
 		position: absolute;
 		right: 0;
-		padding: 0 12px;
 		background: var(--theme--background);
 		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);
 		font-size: 12px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
+		padding-right: 12px;
+		box-shadow:
+			-12px 0 10px 2px var(--theme--background),
+			-12px 0 12px 2px var(--theme--background);
 
 		span {
 			cursor: pointer;
