@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
-import { isCssVar } from '@/utils/soft-validate-css-var';
+import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { cssVar } from '@directus/utils/browser';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -67,12 +67,12 @@ const emit = defineEmits(['input']);
 
 const isCssVar = computed(() => {
 	if (!props.value) return false;
-	return isCssVar(props.value);
+	return isCssVarUtil(props.value);
 });
 
 const valueWithoutVariables = computed(() => {
 	if (!props.value) return null;
-	return isCssVar(props.value) ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
+	return isCssVar.value ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
 });
 
 const htmlColorInput = ref<ComponentPublicInstance | null>(null);
@@ -225,7 +225,7 @@ function useColor() {
 		set(newInput) {
 			if (newInput === null || newInput === '') {
 				unsetColor();
-			} else if (isCssVar(newInput)) {
+			} else if (isCssVarUtil(newInput)) {
 				emit('input', newInput);
 
 				try {
