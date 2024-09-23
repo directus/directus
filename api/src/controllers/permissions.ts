@@ -98,8 +98,6 @@ router.get(
 			knex: getDatabase(),
 		});
 
-		console.log('result', result);
-
 		res.locals['payload'] = { data: result };
 		return next();
 	}),
