@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
+import { isCssVar } from '@/utils/soft-validate-css-var';
 import { cssVar } from '@directus/utils/browser';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -64,9 +65,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['input']);
 
+const isCssVar = computed(() => {
+	if (!props.value) return false;
+	return isCssVar(props.value);
+});
+
 const valueWithoutVariables = computed(() => {
 	if (!props.value) return null;
-	return props.value?.startsWith('var(--') ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
+	return isCssVar(props.value) ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
 });
 
 const htmlColorInput = ref<ComponentPublicInstance | null>(null);
@@ -96,7 +102,13 @@ const getPresetContrast = (hex: string) => {
 	return color.contrast(Color(cssVar('--theme--popover--menu--background'))) < 1.1;
 };
 
-const { hsl, rgb, hex, alpha, color } = useColor();
+const { hsl, rgb, hex, alpha, color, input } = useColor();
+
+const showSwatch = computed(() => {
+	if (color.value) return true;
+	if (isCssVar.value) return true;
+	return false;
+});
 
 function setValue(type: 'rgb' | 'hsl' | 'alpha', i: number, val: number) {
 	if (type === 'rgb') {
@@ -143,7 +155,11 @@ function useColor() {
 	watch(
 		() => props.value,
 		() => {
-			color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
+			try {
+				color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
+			} catch (error) {
+				color.value = null;
+			}
 		},
 		{ immediate: true },
 	);
@@ -202,7 +218,39 @@ function useColor() {
 		},
 	});
 
-	return { rgb, hsl, hex, alpha, color };
+	const input = computed<string | null>({
+		get() {
+			return props.value;
+		},
+		set(newInput) {
+			if (newInput === null || newInput === '') {
+				unsetColor();
+			} else if (isCssVar(newInput)) {
+				emit('input', newInput);
+
+				try {
+					color.value = Color(cssVar(newInput.substring(4, newInput.length - 1)));
+				} catch (error) {
+					// Color or cssVar could not resolve the color to a color in JS, however, the CSS Var may still be a valid color.
+					// So we keep the input value as is and set the internal color to null.
+					// This way the user can still edit the input and we can still show the color in the swatch.
+					// The color editor (rgb/hsl) will show the color as black (0,0,0) in this case.
+					color.value = null;
+				}
+			} else {
+				try {
+					// If the input is a valid color, we set the color and emit the input as a hex value which is consistent with the dropdown selector and HTML color picker
+					const newColor = Color(newInput);
+					setColor(newColor);
+				} catch (e) {
+					// The input is not a valid color, but we still want to let the user edit/type in the input so we emit the input
+					emit('input', newInput);
+				}
+			}
+		},
+	});
+
+	return { rgb, hsl, hex, alpha, color, input };
 
 	function setColor(newColor: Color | null) {
 		color.value = newColor;
@@ -229,7 +277,7 @@ function useColor() {
 	<v-menu attached :disabled="disabled" :close-on-content-click="false">
 		<template #activator="{ activate }">
 			<v-input
-				v-model="hex"
+				v-model="input"
 				:disabled="disabled"
 				:placeholder="placeholder || t('interfaces.select-color.placeholder')"
 				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
@@ -249,7 +297,8 @@ function useColor() {
 						class="swatch"
 						icon
 						:style="{
-							'--v-button-background-color': isValidColor ? hex : 'transparent',
+							'--swatch-color': showSwatch ? value : 'transparent',
+							...(lowContrast === false ? { '--theme--border-width': '0px' } : {}),
 							border:
 								lowContrast === false
 									? 'none'
@@ -258,6 +307,7 @@ function useColor() {
 						@click="activateColorPicker"
 					>
 						<v-icon v-if="!isValidColor" name="colorize" />
+						<v-icon v-else-if="!showSwatch" name="question_mark" />
 					</v-button>
 				</template>
 				<template #append>
@@ -390,15 +440,17 @@ function useColor() {
 .swatch {
 	--v-button-padding: 6px;
 	--v-button-background-color: transparent;
+	background-color: var(--swatch-color, transparent);
 	--v-button-background-color-hover: var(--v-button-background-color);
-
+	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);
+	--v-button-width: calc(var(--theme--form--field--input--height) - 20px);
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
 	width: calc(var(--theme--form--field--input--height) - 20px);
-	max-height: calc(var(--theme--form--field--input--height) - 20px);
-	overflow: hidden;
+	height: calc(var(--theme--form--field--input--height) - 20px);
 	border-radius: calc(var(--theme--border-radius) + 2px);
+	overflow: hidden;
 	cursor: pointer;
 }
 
