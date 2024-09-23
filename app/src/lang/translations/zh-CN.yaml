@@ -41,7 +41,7 @@ conditions: 条件
 location: 地理位置
 collection_names_are_case_sensitive: 集合名称是区分大小写
 condition_rules: 条件规则
-input: Input
+input: 输入
 maps: 地图
 switch_user: 切换用户
 item_creation: 新建
@@ -1842,6 +1842,8 @@ interfaces:
     description: 选择或上传图片
     crop: 裁剪为适合的
     crop_label: 视需要裁剪图像
+    letterbox: 信箱
+    letterbox_label: 添加图像预览间距
   system-interface:
     interface: 接口
     description: 选择一个现有接口
@@ -2412,7 +2414,7 @@ operations:
     options_placeholder: '请参考阅读https://www.npmjs.com/package/jsonwebtoken#usage for the available options'
     sign: 签名令牌
     verify: 验证令牌
-    decode: 删除令牌
+    decode: 解码令牌
   log:
     name: 记录到控制台
     description: 输出内容到控制台
