@@ -348,6 +348,7 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 				currentVersion.value = null;
 				break;
 			case 'stay':
+				revisionsDrawerDetailRef.value?.refresh?.();
 				refresh();
 				break;
 			case 'quit':

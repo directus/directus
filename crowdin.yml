@@ -3,7 +3,4 @@ files:
     translation: /app/src/lang/translations/%locale%.yaml
 
 pull_request_labels:
-  - ':cake: Chore'
-  - ':elevator: Web'
-  - ':file_folder: Studio Misc.'
-  - ':fire:'
+  - 🍰 Chore

@@ -241,7 +241,8 @@ export class LDAPAuthDriver extends AuthDriver {
 
 		await this.validateBindClient();
 
-		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId } = this.config;
+		const { userDn, userScope, userAttribute, groupDn, groupScope, groupAttribute, defaultRoleId, syncUserInfo } =
+			this.config;
 
 		const userInfo = await this.fetchUserInfo(
 			userDn,
@@ -285,17 +286,30 @@ export class LDAPAuthDriver extends AuthDriver {
 		if (userId) {
 			// Run hook so the end user has the chance to augment the
 			// user that is about to be updated
-			let updatedUserPayload = await emitter.emitFilter(
-				`auth.update`,
-				{},
-				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
-				{ database: getDatabase(), schema: this.schema, accountability: null },
-			);
+			let emitPayload = {};
 
 			// Only sync roles if the AD groups are configured
 			if (groupDn) {
-				updatedUserPayload = { role: userRole?.id ?? defaultRoleId ?? null, ...updatedUserPayload };
+				emitPayload = {
+					role: userRole?.id ?? defaultRoleId ?? null,
+				};
 			}
+
+			if (syncUserInfo) {
+				emitPayload = {
+					...emitPayload,
+					first_name: userInfo.firstName,
+					last_name: userInfo.lastName,
+					email: userInfo.email,
+				};
+			}
+
+			const updatedUserPayload = await emitter.emitFilter(
+				`auth.update`,
+				emitPayload,
+				{ identifier: userInfo.dn, provider: this.config['provider'], providerPayload: { userInfo, userRole } },
+				{ database: getDatabase(), schema: this.schema, accountability: null },
+			);
 
 			// Update user to update properties that might have changed
 			await this.usersService.updateOne(userId, updatedUserPayload);
