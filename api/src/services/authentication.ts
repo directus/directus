@@ -294,7 +294,6 @@ export class AuthenticationService {
 				user_role: 'u.role',
 				share_id: 'd.id',
 				share_item: 'd.item',
-				share_role: 'd.role',
 				share_collection: 'd.collection',
 				share_start: 'd.date_start',
 				share_end: 'd.date_end',
@@ -382,7 +381,7 @@ export class AuthenticationService {
 
 		if (record.share_id) {
 			tokenPayload.share = record.share_id;
-			tokenPayload.role = record.share_role;
+			tokenPayload.role = null;
 
 			tokenPayload.app_access = false;
 			tokenPayload.admin_access = false;
