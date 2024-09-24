@@ -261,7 +261,12 @@ export async function down(knex: Knex) {
 			//  fetch all of the policies permissions
 			const rawPermissions = await fetchPermissions(
 				{
-					accountability: { role: null, roles: roleTree, user: null, app: roleAccess?.app_access || false } as Accountability,
+					accountability: {
+						role: null,
+						roles: roleTree,
+						user: null,
+						app: roleAccess?.app_access || false,
+					} as Accountability,
 					policies,
 					bypassDynamicVariableProcessing: true,
 				},
