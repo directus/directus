@@ -36,8 +36,8 @@ export async function fetchPermissions(options: FetchPermissionsOptions, context
 			permissionsContext,
 		});
 
-		if (options.accountability.share && options.action === 'read') {
-			return await getPermissionsForShare(options.accountability, context);
+		if (options.accountability.share && (options.action === undefined || options.action === 'read')) {
+			return await getPermissionsForShare(options.accountability, options.collections, context);
 		}
 
 		return processedPermissions;

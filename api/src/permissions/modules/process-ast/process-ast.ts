@@ -46,7 +46,6 @@ export async function processAst(options: ProcessAstOptions, context: Context) {
 				context,
 			);
 
-
 	// Validate field existence first
 	for (const [path, { collection, fields }] of [...fieldMap.read.entries(), ...fieldMap.other.entries()]) {
 		validatePathExistence(path, collection, fields, context.schema);

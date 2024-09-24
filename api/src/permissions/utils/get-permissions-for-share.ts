@@ -13,6 +13,7 @@ import { fetchGlobalAccess } from '../modules/fetch-global-access/fetch-global-a
 
 export async function getPermissionsForShare(
 	accountability: Pick<Accountability, 'share' | 'ip'>,
+	collections: string[] | undefined,
 	context: Context,
 ): Promise<Permission[]> {
 	const defaults: Permission = {
@@ -97,7 +98,7 @@ export async function getPermissionsForShare(
 	}
 
 	if (admin) {
-		return generatedPermissions;
+		return filterCollections(collections, generatedPermissions);
 	}
 
 	// Explicitly filter out permissions to collections unrelated to the root parent item.
@@ -105,7 +106,15 @@ export async function getPermissionsForShare(
 		({ action, collection }) => allowedCollections.includes(collection) && action === 'read',
 	);
 
-	return mergePermissions('and', limitedPermissions, generatedPermissions);
+	return filterCollections(collections, mergePermissions('and', limitedPermissions, generatedPermissions));
+}
+
+function filterCollections(collections: string[] | undefined, permissions: Permission[]): Permission[] {
+	if (!collections) {
+		return permissions;
+	}
+
+	return permissions.filter(({ collection }) => collections.includes(collection));
 }
 
 export function traverse(
