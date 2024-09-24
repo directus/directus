@@ -11,7 +11,7 @@ import { useRoute } from 'vue-router';
 export const useNavigationBookmarkItem = (collection: Collection, showHidden?: boolean, search?: string) => {
 	const route = useRoute();
 
-	const { isAdmin } = useUserStore();
+	const userStore = useUserStore();
 	const collectionsStore = useCollectionsStore();
 	const presetsStore = usePresetsStore();
 
@@ -52,7 +52,7 @@ export const useNavigationBookmarkItem = (collection: Collection, showHidden?: b
 		}
 	});
 
-	const hasContextMenu = computed(() => isAdmin && collection.type === 'table');
+	const hasContextMenu = computed(() => userStore.isAdmin && collection.type === 'table');
 
 	function getChildCollections(collection: Collection) {
 		let collections = collectionsStore.collections.filter(
