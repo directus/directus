@@ -11,7 +11,7 @@ import type {
 	PanelConfig,
 } from '../types/index.js';
 
-type CustomConfig<T extends object> = { [K in string]: K extends keyof T ? never : unknown };
+type CustomConfig<T> = { [K in string]: K extends keyof T ? never : unknown };
 
 type ExtendedConfig<T, C> = Prettify<T & Omit<C, keyof T>>;
 
