@@ -412,6 +412,7 @@ functions:
   minute: Phút
   second: Giây
 date-fns_date_short: 'MMM d, ''bạn'''
+date-fns_date_short_no_year:
 minutes: Phút
 hours: Giờ
 month: Tháng
