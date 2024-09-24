@@ -1,5 +1,5 @@
 import { InvalidCredentialsError } from '@directus/errors';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability } from '@directus/types';
 import getDatabase from '../database/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
@@ -8,8 +8,6 @@ import { getSecret } from './get-secret.js';
 import isDirectusJWT from './is-directus-jwt.js';
 import { verifyAccessJWT } from './jwt.js';
 import { verifySessionJWT } from './verify-session-jwt.js';
-import { fetchShareInfo } from '../permissions/utils/fetch-share-info.js';
-import { getSchema } from './get-schema.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,

@@ -8,7 +8,7 @@ import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
 import { getSchema } from '../../utils/get-schema.js';
 
-import type { Permission } from '@directus/types';
+import type { Accountability, Permission } from '@directus/types';
 import { getSchemaInspector } from '../index.js';
 import { mergePermissions } from '../../permissions/utils/merge-permissions.js';
 
@@ -261,7 +261,7 @@ export async function down(knex: Knex) {
 			//  fetch all of the policies permissions
 			const rawPermissions = await fetchPermissions(
 				{
-					accountability: { role: null, roles: roleTree, user: null, app: roleAccess?.app_access || false },
+					accountability: { role: null, roles: roleTree, user: null, app: roleAccess?.app_access || false } as Accountability,
 					policies,
 					bypassDynamicVariableProcessing: true,
 				},
