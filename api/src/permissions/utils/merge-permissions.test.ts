@@ -16,8 +16,8 @@ test('merge two permissions', () => {
 		permissions: {},
 		validation: {},
 		presets: {},
-		fields: ['*']
-	}
+		fields: ['*'],
+	};
 
 	const perm2: Permission = {
 		collection: 'collection',
@@ -26,8 +26,8 @@ test('merge two permissions', () => {
 		permissions: {},
 		validation: {},
 		presets: {},
-		fields: ['*']
-	}
+		fields: ['*'],
+	};
 
 	let permissions = mergePermissions('and', [perm1], [perm2]);
 
@@ -37,14 +37,14 @@ test('merge two permissions', () => {
 			policy: 'some-policy',
 			action: 'read',
 			permissions: {
-				_and: [{}, {}]
+				_and: [{}, {}],
 			},
 			validation: {
-				_and: [{}, {}]
+				_and: [{}, {}],
 			},
 			presets: {},
-			fields: ['*']
-		}
+			fields: ['*'],
+		},
 	]);
 
 	permissions = mergePermissions('or', [perm1], [perm2]);
@@ -57,8 +57,8 @@ test('merge two permissions', () => {
 			permissions: {},
 			validation: {},
 			presets: {},
-			fields: ['*']
-		}
+			fields: ['*'],
+		},
 	]);
 });
 
@@ -70,8 +70,8 @@ test('merge three permissions', () => {
 		permissions: {},
 		validation: {},
 		presets: {},
-		fields: ['*']
-	}
+		fields: ['*'],
+	};
 
 	const perm2: Permission = {
 		collection: 'collection',
@@ -80,18 +80,18 @@ test('merge three permissions', () => {
 		permissions: {},
 		validation: {},
 		presets: {},
-		fields: ['aa', 'bb']
-	}
+		fields: ['aa', 'bb'],
+	};
 
 	const perm3: Permission = {
 		collection: 'collection',
 		policy: 'some-policy',
 		action: 'read',
-		permissions: { 'aa': { _eq: 1 } },
+		permissions: { aa: { _eq: 1 } },
 		validation: {},
 		presets: {},
-		fields: ['aa']
-	}
+		fields: ['aa'],
+	};
 
 	let permissions = mergePermissions('and', [perm1, perm3], [perm2]);
 
@@ -103,21 +103,21 @@ test('merge three permissions', () => {
 			permissions: {},
 			validation: {},
 			presets: {},
-			fields: ['*']
+			fields: ['*'],
 		},
 		{
 			collection: 'collection',
 			policy: 'some-policy',
 			action: 'read',
 			permissions: {
-				_and: [{ "aa": { "_eq": 1 } }, {}]
+				_and: [{ aa: { _eq: 1 } }, {}],
 			},
 			validation: {
-				_and: [{}, {}]
+				_and: [{}, {}],
 			},
 			presets: {},
-			fields: ['aa']
-		}
+			fields: ['aa'],
+		},
 	]);
 
 	permissions = mergePermissions('or', [perm1, perm3], [perm2]);
@@ -130,7 +130,7 @@ test('merge three permissions', () => {
 			permissions: {},
 			validation: {},
 			presets: {},
-			fields: ['*']
+			fields: ['*'],
 		},
 		{
 			collection: 'collection',
@@ -139,7 +139,7 @@ test('merge three permissions', () => {
 			permissions: {},
 			validation: {},
 			presets: {},
-			fields: ['aa', 'bb']
-		}
+			fields: ['aa', 'bb'],
+		},
 	]);
 });

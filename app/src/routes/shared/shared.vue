@@ -120,16 +120,15 @@ async function handleAuth() {
 }
 
 async function hydrate() {
-	const collectionsStore = useCollectionsStore()
+	const collectionsStore = useCollectionsStore();
 	const fieldsStore = useFieldsStore();
 	const permissionsStore = usePermissionsStore();
 	const relationsStore = useRelationsStore();
 
-	await collectionsStore.hydrate()
-	await permissionsStore.hydrate()
-	await fieldsStore.hydrate({ skipTranslation: true })
-	await relationsStore.hydrate()
-
+	await collectionsStore.hydrate();
+	await permissionsStore.hydrate();
+	await fieldsStore.hydrate({ skipTranslation: true });
+	await relationsStore.hydrate();
 }
 
 async function authenticate() {

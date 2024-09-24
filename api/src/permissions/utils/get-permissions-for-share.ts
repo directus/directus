@@ -35,28 +35,34 @@ export async function getPermissionsForShare(
 		admin: false,
 		app: false,
 		ip: accountability.ip,
-	}
+	};
 
 	const { admin } = await fetchGlobalAccess(userAccountability, context.knex);
 
 	if (admin) {
-		defaults.fields = ['*']
+		defaults.fields = ['*'];
 	}
 
 	const policies = await fetchPolicies(userAccountability, context);
 
-	const userPermissions = await fetchPermissions({
-		policies: policies,
-		action: 'read',
-		accountability: userAccountability,
-	}, context)
+	const userPermissions = await fetchPermissions(
+		{
+			policies: policies,
+			action: 'read',
+			accountability: userAccountability,
+		},
+		context,
+	);
 
-	const fieldMap = await fetchAllowedFieldMap({
-		accountability: userAccountability,
-		action: 'read'
-	}, context)
+	const fieldMap = await fetchAllowedFieldMap(
+		{
+			accountability: userAccountability,
+			action: 'read',
+		},
+		context,
+	);
 
-	const reducedSchema = admin ? context.schema : reduceSchema(context.schema, fieldMap)
+	const reducedSchema = admin ? context.schema : reduceSchema(context.schema, fieldMap);
 	const parentPrimaryKeyField = context.schema.collections[collection]!.primary;
 
 	const relationalPermissions = traverse(reducedSchema, parentPrimaryKeyField, item, collection);

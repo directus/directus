@@ -13,7 +13,7 @@ import { getSchema } from './get-schema.js';
 
 export async function getAccountabilityForToken(
 	token?: string | null,
-	accountability?: Accountability
+	accountability?: Accountability,
 ): Promise<Accountability> {
 	if (!accountability) {
 		accountability = createDefaultAccountability();
