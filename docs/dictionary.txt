@@ -197,6 +197,7 @@ EC2
 eCommerce
 ELB
 Elestio
+EntraID
 entrypoint
 Entrypoint
 env
