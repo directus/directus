@@ -8,7 +8,7 @@ import { orderBy } from 'lodash';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
-export const useNavigationBookmarkItem = (collection: Collection, showHidden?: boolean, search?: string) => {
+export const useCollectionNavigationItem = (collection: Collection, showHidden?: boolean, search?: string) => {
 	const route = useRoute();
 
 	const userStore = useUserStore();
@@ -23,7 +23,7 @@ export const useNavigationBookmarkItem = (collection: Collection, showHidden?: b
 
 	const isBookmarkActive = computed(() => 'bookmark' in route.query);
 
-	const to = computed(() => (collection.schema ? getCollectionRoute(collection.collection) : ''));
+	const collectionRoute = computed(() => (collection.schema ? getCollectionRoute(collection.collection) : ''));
 
 	const matchesSearch = computed(() => {
 		if (!search || search.length < 3) return true;
@@ -73,7 +73,7 @@ export const useNavigationBookmarkItem = (collection: Collection, showHidden?: b
 	return {
 		isGroup,
 		isBookmarkActive,
-		to,
+		collectionRoute,
 		matchesSearch,
 		hasContextMenu,
 		childBookmarks,

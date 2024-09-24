@@ -3,7 +3,7 @@ import { Collection } from '@/types/collections';
 import { useI18n } from 'vue-i18n';
 import NavigationBookmark from '../../content/components/navigation-bookmark.vue';
 import NavigationItemContent from '../../content/components/navigation-item-content.vue';
-import { useNavigationBookmarkItem } from '@/modules/content/composables/use-navigation-bookmark-item';
+import { useCollectionNavigationItem } from '@/modules/content/composables/use-collection-navigation-item';
 import { useGroupable } from '@directus/composables';
 
 const props = defineProps<{
@@ -15,11 +15,8 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const { isGroup, isBookmarkActive, to, matchesSearch, hasContextMenu, childBookmarks } = useNavigationBookmarkItem(
-	props.collection,
-	props.showHidden,
-	props.search,
-);
+const { isGroup, isBookmarkActive, collectionRoute, matchesSearch, hasContextMenu, childBookmarks } =
+	useCollectionNavigationItem(props.collection, props.showHidden, props.search);
 
 const groupScope = 'v-list';
 const groupValue = props.collection.collection;
@@ -34,7 +31,7 @@ const { active: isGroupOpen } = useGroupable({
 	<v-list-group
 		v-if="isGroup && matchesSearch"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
-		:to="to"
+		:to="collectionRoute"
 		:scope="groupScope"
 		:value="groupValue"
 		:query="isGroupOpen && isBookmarkActive"
@@ -51,7 +48,7 @@ const { active: isGroupOpen } = useGroupable({
 	<v-list-item
 		v-else-if="matchesSearch"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
-		:to="to"
+		:to="collectionRoute"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 		:active="active && !isBookmarkActive"

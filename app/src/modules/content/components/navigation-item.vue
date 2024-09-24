@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
+import { storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import NavigationBookmark from './navigation-bookmark.vue';
 import NavigationItemContent from './navigation-item-content.vue';
 import { useGroupable } from '@directus/composables';
-import { useNavigationBookmarkItem } from '../composables/use-navigation-bookmark-item';
+import { useCollectionNavigationItem } from '../composables/use-collection-navigation-item';
 
 const props = defineProps<{
 	collection: Collection;
@@ -14,8 +16,10 @@ const props = defineProps<{
 
 const { t } = useI18n();
 
-const { isGroup, isBookmarkActive, to, matchesSearch, hasContextMenu, childBookmarks, childCollections } =
-	useNavigationBookmarkItem(props.collection, props.showHidden, props.search);
+const { isAdmin } = storeToRefs(useUserStore());
+
+const { isGroup, isBookmarkActive, collectionRoute, matchesSearch, hasContextMenu, childBookmarks, childCollections } =
+	useCollectionNavigationItem(props.collection, props.showHidden, props.search);
 
 const groupScope = 'content-navigation';
 const groupValue = props.collection.collection;
@@ -30,7 +34,7 @@ const { active: isGroupOpen } = useGroupable({
 	<v-list-group
 		v-if="isGroup && matchesSearch"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
-		:to="to"
+		:to="collectionRoute"
 		:scope="groupScope"
 		:value="groupValue"
 		:query="isGroupOpen && isBookmarkActive"
@@ -58,7 +62,7 @@ const { active: isGroupOpen } = useGroupable({
 	<v-list-item
 		v-else-if="matchesSearch"
 		v-context-menu="hasContextMenu ? 'contextMenu' : null"
-		:to="to"
+		:to="collectionRoute"
 		:value="collection.collection"
 		:class="{ hidden: collection.meta?.hidden }"
 	>
