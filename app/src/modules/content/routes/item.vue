@@ -293,7 +293,7 @@ async function refreshLivePreview() {
 		await fetchTemplateValues();
 		window.refreshLivePreview(previewUrl.value);
 		if (popupWindow) popupWindow.refreshLivePreview(previewUrl.value);
-	} catch (error) {
+	} catch {
 		// noop
 	}
 }
