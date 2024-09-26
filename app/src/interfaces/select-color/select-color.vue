@@ -157,7 +157,7 @@ function useColor() {
 		() => {
 			try {
 				color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
-			} catch (error) {
+			} catch {
 				color.value = null;
 			}
 		},
@@ -230,7 +230,7 @@ function useColor() {
 
 				try {
 					color.value = Color(cssVar(newInput.substring(4, newInput.length - 1)));
-				} catch (error) {
+				} catch {
 					// Color or cssVar could not resolve the color to a color in JS, however, the CSS Var may still be a valid color.
 					// So we keep the input value as is and set the internal color to null.
 					// This way the user can still edit the input and we can still show the color in the swatch.
@@ -242,7 +242,7 @@ function useColor() {
 					// If the input is a valid color, we set the color and emit the input as a hex value which is consistent with the dropdown selector and HTML color picker
 					const newColor = Color(newInput);
 					setColor(newColor);
-				} catch (e) {
+				} catch {
 					// The input is not a valid color, but we still want to let the user edit/type in the input so we emit the input
 					emit('input', newInput);
 				}

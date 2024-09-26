@@ -1,3 +1,4 @@
+import type { Prettify } from '@directus/types';
 import type {
 	DisplayConfig,
 	EndpointConfig,
@@ -10,11 +11,19 @@ import type {
 	PanelConfig,
 } from '../types/index.js';
 
-export function defineInterface<T extends InterfaceConfig>(config: T): T {
+type CustomConfig<T> = { [K in string]: K extends keyof T ? never : unknown };
+
+type ExtendedConfig<T, C> = Prettify<T & Omit<C, keyof T>>;
+
+export function defineInterface<Custom extends CustomConfig<InterfaceConfig>>(
+	config: ExtendedConfig<InterfaceConfig, Custom>,
+): ExtendedConfig<InterfaceConfig, Custom> {
 	return config;
 }
 
-export function defineDisplay<T extends DisplayConfig>(config: T): T {
+export function defineDisplay<Custom extends CustomConfig<DisplayConfig>>(
+	config: ExtendedConfig<DisplayConfig, Custom>,
+): ExtendedConfig<DisplayConfig, Custom> {
 	return config;
 }
 
@@ -24,23 +33,33 @@ export function defineLayout<Options = any, Query = any>(
 	return config;
 }
 
-export function defineModule<T extends ModuleConfig>(config: T): T {
+export function defineModule<Custom extends CustomConfig<ModuleConfig>>(
+	config: ExtendedConfig<ModuleConfig, Custom>,
+): ExtendedConfig<ModuleConfig, Custom> {
 	return config;
 }
 
-export function definePanel<T extends PanelConfig>(config: T): T {
+export function definePanel<Custom extends CustomConfig<PanelConfig>>(
+	config: ExtendedConfig<PanelConfig, Custom>,
+): ExtendedConfig<PanelConfig, Custom> {
 	return config;
 }
 
-export function defineHook<T extends HookConfig>(config: T): T {
+export function defineHook<Custom extends CustomConfig<HookConfig>>(
+	config: ExtendedConfig<HookConfig, Custom>,
+): ExtendedConfig<HookConfig, Custom> {
 	return config;
 }
 
-export function defineEndpoint<T extends EndpointConfig>(config: T): T {
+export function defineEndpoint<Custom extends CustomConfig<EndpointConfig>>(
+	config: ExtendedConfig<EndpointConfig, Custom>,
+): ExtendedConfig<EndpointConfig, Custom> {
 	return config;
 }
 
-export function defineOperationApp<T extends OperationAppConfig>(config: T): T {
+export function defineOperationApp<Custom extends CustomConfig<OperationAppConfig>>(
+	config: ExtendedConfig<OperationAppConfig, Custom>,
+): ExtendedConfig<OperationAppConfig, Custom> {
 	return config;
 }
 

@@ -35,7 +35,7 @@ export async function authenticateConnection(
 		const accountability = await getAccountabilityForToken(access_token);
 		const expires_at = getExpiresAtForToken(access_token);
 		return { accountability, expires_at, refresh_token } as AuthenticationState;
-	} catch (error) {
+	} catch {
 		throw new WebSocketError('auth', 'AUTH_FAILED', 'Authentication failed.', message['uid']);
 	}
 }
