@@ -109,7 +109,9 @@ async function onSubmit() {
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
-		<v-button class="sign-in-ellipsis" type="submit" :loading="loggingIn" large :title="t('sign_in')">{{ t('sign_in') }}</v-button>
+		<v-button class="sign-in-ellipsis" type="submit" :loading="loggingIn" large :title="t('sign_in')">
+			{{ t('sign_in') }}
+		</v-button>
 	</form>
 </template>
 
