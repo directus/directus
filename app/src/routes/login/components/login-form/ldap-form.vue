@@ -109,7 +109,7 @@ async function onSubmit() {
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
-		<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
+		<v-button class="sign-in-ellipsis" type="submit" :loading="loggingIn" large :title="t('sign_in')">{{ t('sign_in') }}</v-button>
 	</form>
 </template>
 
@@ -117,5 +117,15 @@ async function onSubmit() {
 .v-input,
 .v-notice {
 	margin-bottom: 20px;
+}
+
+.sign-in-ellipsis {
+	max-width: 50%;
+	:deep(.content) {
+		display: block;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
 }
 </style>
