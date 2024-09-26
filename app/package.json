@@ -142,7 +142,7 @@
 		"string-width": "7.2.0",
 		"tinymce": "7.3.0",
 		"tus-js-client": "4.2.3",
-		"typescript": "5.4.5",
+		"typescript": "5.6.2",
 		"vite": "5.2.11",
 		"vitest": "1.5.3",
 		"vue": "3.4.27",

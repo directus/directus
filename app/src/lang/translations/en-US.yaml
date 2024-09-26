@@ -1877,6 +1877,8 @@ interfaces:
     description: Select or upload an image
     crop: Crop to Fit
     crop_label: Crop image as needed
+    letterbox: Letterbox
+    letterbox_label: Add padding to image preview
   system-interface:
     interface: Interface
     description: Select an existing interface
