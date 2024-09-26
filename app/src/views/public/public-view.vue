@@ -66,7 +66,9 @@ const logoURL = computed<string | null>(() => {
 				</div>
 				<div class="title">
 					<h1 class="type-title" :title="info?.project?.project_name">{{ info?.project?.project_name }}</h1>
-					<p class="subtitle" :title="info?.project?.project_descriptor ?? t('application')">{{ info?.project?.project_descriptor ?? t('application') }}</p>
+					<p class="subtitle" :title="info?.project?.project_descriptor ?? t('application')">
+						{{ info?.project?.project_descriptor ?? t('application') }}
+					</p>
 				</div>
 			</div>
 

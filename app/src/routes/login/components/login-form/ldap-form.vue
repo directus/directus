@@ -118,7 +118,6 @@ async function onSubmit() {
 <style lang="scss" scoped>
 @import '@/styles/mixins/ellipsis';
 
-
 .v-input,
 .v-notice {
 	margin-bottom: 20px;
