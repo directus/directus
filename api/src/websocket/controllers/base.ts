@@ -296,7 +296,7 @@ export default abstract class SocketController {
 
 		try {
 			message = WebSocketMessage.parse(parseJSON(data));
-		} catch (err: any) {
+		} catch {
 			throw new WebSocketError('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
 		}
 
