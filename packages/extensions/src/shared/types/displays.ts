@@ -29,7 +29,7 @@ export interface DisplayConfig {
 		| ((
 				ctx: ExtensionOptionsContext,
 		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
-		| ComponentOptions
+		| Exclude<ComponentOptions, any>
 		| null;
 	types: readonly Type[];
 	localTypes?: readonly LocalType[];

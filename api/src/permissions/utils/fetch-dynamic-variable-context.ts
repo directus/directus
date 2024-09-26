@@ -68,19 +68,27 @@ export async function fetchDynamicVariableContext(options: FetchDynamicVariableC
 		);
 	}
 
-	if (options.policies.length > 0 && (permissionContext.$CURRENT_POLICIES?.size ?? 0) > 0) {
-		contextData['$CURRENT_POLICIES'] = await fetchContextData(
-			'$CURRENT_POLICIES',
-			permissionContext,
-			{ policies: options.policies },
-			async (fields) => {
-				const policiesService = new PoliciesService(context);
+	if (options.policies.length > 0) {
+		if ((permissionContext.$CURRENT_POLICIES?.size ?? 0) > 0) {
+			// Always add the id field
+			permissionContext.$CURRENT_POLICIES.add('id');
 
-				return await policiesService.readMany(options.policies, {
-					fields,
-				});
-			},
-		);
+			contextData['$CURRENT_POLICIES'] = await fetchContextData(
+				'$CURRENT_POLICIES',
+				permissionContext,
+				{ policies: options.policies },
+				async (fields) => {
+					const policiesService = new PoliciesService(context);
+
+					return await policiesService.readMany(options.policies, {
+						fields,
+					});
+				},
+			);
+		} else {
+			// Always create entries for the policies with the `id` field present
+			contextData['$CURRENT_POLICIES'] = options.policies.map((id) => ({ id }));
+		}
 	}
 
 	return contextData;

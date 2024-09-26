@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { isDynamicVariable } from '@directus/utils';
 import { computed, onMounted, onUpdated, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -81,11 +82,7 @@ function isValueValid(value: any): boolean {
 		return true;
 	}
 
-	if (
-		typeof value === 'string' &&
-		(['$NOW', '$CURRENT_USER', '$CURRENT_ROLE'].some((prefix) => value.startsWith(prefix)) ||
-			/^{{\s*?\S+?\s*?}}$/.test(value))
-	) {
+	if (isDynamicVariable(value) || /^{{\s*?\S+?\s*?}}$/.test(value)) {
 		return true;
 	}
 
