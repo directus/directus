@@ -65,8 +65,8 @@ const logoURL = computed<string | null>(() => {
 					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
 				</div>
 				<div class="title">
-					<h1 class="type-title">{{ info?.project?.project_name }}</h1>
-					<p class="subtitle">{{ info?.project?.project_descriptor ?? t('application') }}</p>
+					<h1 class="type-title" :title="info?.project?.project_name">{{ info?.project?.project_name }}</h1>
+					<p class="subtitle" :title="info?.project?.project_descriptor ?? t('application')">{{ info?.project?.project_descriptor ?? t('application') }}</p>
 				</div>
 			</div>
 
@@ -97,6 +97,8 @@ const logoURL = computed<string | null>(() => {
 </template>
 
 <style lang="scss" scoped>
+@import '@/styles/mixins/ellipsis';
+
 .public-view {
 	display: flex;
 	width: 100%;
@@ -152,6 +154,10 @@ const logoURL = computed<string | null>(() => {
 			font-size: 42px;
 			line-height: 52px;
 			color: var(--theme--public--foreground-accent);
+		}
+
+		.type-title {
+			@include ellipsis;
 		}
 
 		.content {
@@ -395,6 +401,7 @@ const logoURL = computed<string | null>(() => {
 		.title {
 			margin-top: 2px;
 			margin-left: 16px;
+			max-width: 100%;
 
 			h1 {
 				font-weight: 700;
@@ -405,6 +412,7 @@ const logoURL = computed<string | null>(() => {
 			.subtitle {
 				width: 100%;
 				color: var(--theme--foreground-subdued);
+				@include ellipsis;
 			}
 		}
 	}
