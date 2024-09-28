@@ -26,7 +26,7 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"axios": "1.7.3",
+		"axios": "1.7.7",
 		"axios-cache-interceptor": "1.5.3",
 		"boxen": "7.1.1",
 		"chalk": "5.3.0",
@@ -36,12 +36,12 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@npm/types": "1.0.2",
-		"@types/node": "18.19.45",
+		"@types/node": "18.19.50",
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "1.5.3",
 		"strip-ansi": "7.1.0",
-		"tsup": "8.2.2",
-		"typescript": "5.4.5",
+		"tsup": "8.2.4",
+		"typescript": "5.6.2",
 		"vitest": "1.5.3"
 	}
 }

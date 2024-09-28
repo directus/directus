@@ -678,8 +678,6 @@ tooltip: Tooltip
 tooltip_placeholder: Enter a tooltip...
 unlimited: Unlimited
 open_link_in: Open link in
-new_tab: New tab
-current_tab: Current tab
 wysiwyg_options:
   aligncenter: Align Centre
   alignjustify: Align Justify
@@ -1339,6 +1337,8 @@ interfaces:
     preview: Preview
     editorFont: Editor Font
     previewFont: Preview Font
+    default_view: Default View
+    default_view_preview: Preview
     customSyntax: Custom Blocks
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax

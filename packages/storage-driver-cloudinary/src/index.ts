@@ -262,18 +262,23 @@ export class DriverCloudinary implements Driver {
 
 		const queue = new PQueue({ concurrency: 10 });
 
-		const chunks: Buffer[] = [];
+		const chunkSize = 5.5e6;
+		let chunks = Buffer.alloc(0);
 
 		for await (const chunk of content) {
-			chunks.push(chunk);
-			currentChunkSize += chunk.length;
-
 			// Cloudinary requires each chunk to be at least 5MB. We'll submit the chunk as soon as we
 			// reach 5.5MB to be safe
-			if (currentChunkSize >= 5.5e6) {
+			if (chunks.length + chunk.length <= chunkSize) {
+				currentChunkSize = chunks.length + chunk.length;
+				chunks = Buffer.concat([chunks, chunk], currentChunkSize);
+			} else {
+				const grab = chunkSize - chunks.length;
+				currentChunkSize = chunks.length + grab;
+				chunks = Buffer.concat([chunks, chunk.slice(0, grab)], currentChunkSize);
+
 				const uploadChunkParams: Parameters<typeof this.uploadChunk>[0] = {
 					resourceType,
-					blob: new Blob(chunks),
+					blob: new Blob([chunks]),
 					bytesOffset: uploaded,
 					bytesTotal: -1,
 					parameters: {
@@ -290,7 +295,7 @@ export class DriverCloudinary implements Driver {
 
 				uploaded += currentChunkSize;
 				currentChunkSize = 0;
-				chunks.length = 0; // empty the array of chunks
+				chunks = chunk.slice(grab);
 			}
 
 			totalSize += chunk.length;
@@ -300,7 +305,7 @@ export class DriverCloudinary implements Driver {
 			.add(() =>
 				this.uploadChunk({
 					resourceType,
-					blob: new Blob(chunks),
+					blob: new Blob([chunks]),
 					bytesOffset: uploaded,
 					bytesTotal: totalSize,
 					parameters: {

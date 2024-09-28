@@ -69,12 +69,29 @@ extension_hook: Móc
 extension_endpoint: Endpoint
 extension_operation: Thao tác
 extension_bundle: Nhóm
+extension_displays: Hiển thị
+extension_layouts: Bố cục
 extension_modules: Mô đun
 extension_hooks: Móc
+extension_endpoints: Đầu cuối
+extension_bundles: Gói
 extension_missing: Thiếu
 extension_reload_required: Cần phải tải lại trang
 extension_reload_required_copy: Cần phải tải lại trang để nhìn thấy những thay đổi sau khi kích hoạt hoặc tắt các mở rộng của ứng dụng.
 extension_reload_now: Hiện tại đang tải lại
+published_relative: Đã xuất bản {relativeTime}
+compatible_with_your_project: Tương thích với dự án của bạn
+compatible_with_your_project_copy: Tác giả đã chỉ ra bản mở rộng này tương thích với phiên bản {hostVersion}, khớp với phiên bản dự án của bạn ({currentVersion})
+last_updated_relative: Lần cập nhật cuối {relativeTime}
+homepage: Trang chủ
+reload_page: Tải lại trang
+reload_required: Cần phải tải lại trang
+report_an_issue: Báo lỗi
+website: Trang web
+n_downloads: '{n} Tải xuống'
+downloads: Tải xuống
+compatibility_not_guaranteed: Tương thích không được đảm bảo
+compatibility_not_guaranteed_copy: Tác giả đã chỉ ra bản mở rộng này tương thích với phiên bản {hostVersion}, không khớp với phiên bản dự án của bạn ({currentVersion})
 enable: Bật lên
 disable: Tắt
 custom: Tuỳ chỉnh
@@ -84,6 +101,7 @@ field_name_translations: Hiển thị Ngôn ngữ Khác
 enter_password_to_enable_tfa: Nhập mật khẩu của bạn để kích hoạt Bảo Mật 2 Lớp
 add_field: Thêm trường
 role_name: Tên Quyền
+policy_name: Tên chính sách
 branch: Chọn nhánh
 leaf: Nút lá
 indeterminate: Không xác định
@@ -101,10 +119,15 @@ requires_value: Giá trị bắt buộc
 create_preset: Tạo Định dạng
 create_panel: Tạo bảng
 create_role: Tạo vai trò (phân quyền)
+create_policy: Tạo chính sách
 create_user: Tạo Người dùng
 message: Tin nhắn
 delete_panel: Xóa bảng
 create_webhook: Tạo Webhook
+create_custom_translation: Bản dịch tùy chỉnh mới
+edit_custom_translation: Sửa bản dịch tùy chỉnh
+no_custom_translations: Không có bản dịch tùy chỉnh
+no_custom_translations_copy: Chưa có bản dịch tùy chỉnh.
 invite_users: Mời Người dùng
 invite: Mời
 email_already_invited: Email "{email}" đã được mời
@@ -121,6 +144,7 @@ delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
 version: Phiên bản
+promote_version_changes: Thay đổi
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
 delete_bookmark: Xoá dấu trang
@@ -733,7 +757,6 @@ height: Độ dài
 source: Nguồn
 url_placeholder: Nhập một địa chỉ...
 unlimited: Không giới hạn
-current_tab: Thẻ hiện tại
 save_image: Lưu ảnh
 wysiwyg_options:
   aligncenter: Canh giữa
@@ -793,6 +816,7 @@ editing_unit: 'Đang sửa {unit}'
 editing_in_batch: 'Sửa cùng lúc {count} mục'
 no_options_available: Không có tùy chọn sẵn có
 settings_data_model: Mô Hình Dữ Liệu
+settings_roles: Vai trò người dùng
 settings_project: Cài đặt
 settings_webhooks: Webhooks
 settings_presets: Đánh dấu
@@ -895,6 +919,7 @@ fields:
     custom_css: Tuỳ chỉnh CSS
     module_bar: Thanh công cụ
     image_editor: Trình chỉnh sửa ảnh
+    public_registration_role: Vai trò người dùng
   directus_shares:
     name: Tên
     role: Phân quyền
@@ -912,6 +937,7 @@ fields:
     name: Tên Quyền
     description: Mô tả
   directus_policies:
+    name: Tên chính sách
     description: Mô tả
   directus_webhooks:
     name: Tên
@@ -1109,9 +1135,11 @@ interfaces:
     label_default: Đã kích hoạt
   translations:
     display_template: Mẫu hiển thị
+    user_language: Sử dụng ngôn ngữ người dùng hiện tại
   user:
     user: Người dùng
     modes:
+      auto: Tự động
       dropdown: Tuỳ chọn dạng thả xuống
   input-block-editor:
     tools_options:
@@ -1125,6 +1153,7 @@ interfaces:
 displays:
   translations:
     translations: Các Bản Dịch
+    user_language: Sử dụng ngôn ngữ người dùng hiện tại
   boolean:
     boolean: Boolean
     icon_on: Biểu tượng của trạng thái Bật
@@ -1227,3 +1256,4 @@ fonts:
   bold: In đậm
   black: Đen
   italic: Nghiêng
+  auto: Tự động

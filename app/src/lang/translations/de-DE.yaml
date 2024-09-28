@@ -353,6 +353,7 @@ auto_generate: Automatisch generieren
 this_will_auto_setup_fields_relations: Dies wird automatisch alle benötigten Felder und Beziehungen einrichten.
 click_here: Hier klicken
 to_manually_setup_translations: um die Übersetzung manuell einzurichten.
+manage: Verwalten
 click_to_manage_translated_fields: >-
   Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
 fields_group: Feldergruppe
@@ -986,8 +987,6 @@ tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
 open_link_in: Link öffnen in
-new_tab: Neuer Tab
-current_tab: Aktueller Tab
 save_image: Bild speichern
 save_media: Medien speichern
 wysiwyg_options:
@@ -1138,6 +1137,7 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
+install_extension: Erweiterung installieren
 source_registry: Marktplatz
 collection: Sammlung
 collections: Sammlungen
@@ -1751,6 +1751,8 @@ interfaces:
     preview: Vorschau
     editorFont: Editor Schriftart
     previewFont: Vorschau Schriftart
+    default_view: Standard-Ansicht
+    default_view_preview: Vorschau
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen

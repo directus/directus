@@ -999,8 +999,6 @@ tooltip: Kratka Poruka
 tooltip_placeholder: Unesite tooltip...
 unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
-new_tab: Nova kartica
-current_tab: Trenutna kartica
 save_image: Spremi sliku
 save_media: Spremi medijski zapis
 wysiwyg_options:
@@ -1789,6 +1787,8 @@ interfaces:
     preview: Pretpregled
     editorFont: Font uređivača
     previewFont: Pregled fonta
+    default_view: Zadani prikaz
+    default_view_preview: Pretpregled
     customSyntax: Prilagođeni blokovi
     customSyntax_label: Dodajte prilagođene vrste sintakse
     customSyntax_add: Dodajte prilagođenu sintaksu

@@ -1006,8 +1006,6 @@ tooltip: Sugerencia
 tooltip_placeholder: Introduzca una sugerencia...
 unlimited: Ilimitado
 open_link_in: Abrir enlace en
-new_tab: Nueva pestaña
-current_tab: Pestaña actual
 save_image: Guardar imagen
 save_media: Guardar archivo
 wysiwyg_options:
@@ -1807,6 +1805,8 @@ interfaces:
     preview: Vista previa
     editorFont: Fuente del editor
     previewFont: Previsualizar fuente
+    default_view: Vista predeterminada
+    default_view_preview: Vista previa
     customSyntax: Bloques personalizados
     customSyntax_label: Añadir tipos de sintaxis personalizados
     customSyntax_add: Añadir sintaxis personalizada
