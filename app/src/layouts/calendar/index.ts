@@ -138,9 +138,9 @@ export default defineLayout<LayoutOptions>({
 			() => items.value.map((item: Item) => parseEvent(item)).filter((e: EventInput | null) => e) || [],
 		);
 
-		const displayEventTime = startDateFieldInfo.value?.type !== 'date';
-
 		const fullFullCalendarOptions = computed<FullCalendarOptions>(() => {
+			const displayEventTime = startDateFieldInfo.value?.type !== 'date';
+
 			const options: FullCalendarOptions = {
 				editable: true,
 				eventStartEditable: true,
