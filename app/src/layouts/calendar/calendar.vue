@@ -57,38 +57,6 @@ export default defineComponent({
 	padding-top: 0;
 }
 
-.calendar-layout :deep(.fc-daygrid-event.fc-daygrid-dot-event .fc-event-time) {
-	font-weight: 700;
-}
-
-.calendar-layout :deep(.fc-daygrid-event.fc-daygrid-dot-event .fc-event-title) {
-	font-weight: inherit;
-}
-
-.calendar-layout :deep(.fc-daygrid-event.fc-daygrid-dot-event) {
-	color: var(--theme--primary);
-	padding: 1px 4px;
-}
-
-.calendar-layout :deep(.fc-daygrid-event.fc-daygrid-dot-event:hover) {
-	background-color: transparent;
-}
-
-.calendar-layout :deep(.fc-daygrid-event.fc-daygrid-dot-event:not(:has(.fc-event-time))) {
-	background-color: var(--theme--primary);
-	color: var(--fc-event-text-color);
-}
-
-.calendar-layout :deep(.fc-daygrid-event.fc-daygrid-block-event) {
-	padding: 0px 4px;
-	line-height: 1.5;
-}
-
-.calendar-layout :deep(.fc-daygrid-event.fc-daygrid-block-event .fc-event-time),
-.calendar-layout :deep(.fc-daygrid-event.fc-daygrid-block-event .fc-event-title) {
-	padding: 0;
-}
-
 .v-notice {
 	margin-bottom: 24px;
 }
