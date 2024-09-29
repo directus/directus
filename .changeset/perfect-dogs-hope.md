@@ -1,5 +1,5 @@
 ---
-'@directus/app': minor
+'@directus/app': patch
 ---
 
-Improved the calendar layout
+Improved calendar layout styling to be more consistent
