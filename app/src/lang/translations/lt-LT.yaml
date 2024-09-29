@@ -1,6 +1,8 @@
 ---
 avatar: Nuotrauka
+tile_size: Plytelių dydis
 edit_field: Redaguoti lauką
+conditions: Sąlyga
 location: Vietovė
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
