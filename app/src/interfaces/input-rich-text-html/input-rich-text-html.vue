@@ -79,6 +79,8 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
+const editorKey = ref(0);
+
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
 
@@ -148,6 +150,15 @@ watch(
 				editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
 			}
 		}
+	},
+);
+
+watch(
+	() => JSON.stringify([props.toolbar, props.font, props.customFormats]),
+	() => {
+		editorRef.value.remove();
+		editorInitialized.value = false;
+		editorKey.value++;
 	},
 );
 
@@ -306,6 +317,7 @@ function setFocus(val: boolean) {
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
 		<editor
+			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"
 			:init="editorOptions"
