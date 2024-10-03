@@ -676,7 +676,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					if (val !== null) fields.push(val);
 				});
 
-				console.log('calc fields', fields);
 				return fields;
 			});
 
