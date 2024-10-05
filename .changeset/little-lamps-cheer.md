@@ -2,4 +2,5 @@
 '@directus/app': patch
 ---
 
-Fix WYSIWYG interface conditionally reinitialized
+Fixed WYSIWYG interface to be updated when interface options are changed via conditions
+
