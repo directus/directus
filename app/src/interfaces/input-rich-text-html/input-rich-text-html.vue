@@ -3,6 +3,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
+import { isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
@@ -154,8 +155,10 @@ watch(
 );
 
 watch(
-	() => JSON.stringify([props.toolbar, props.font, props.customFormats]),
-	() => {
+	() => [props.toolbar, props.font, props.customFormats, props.tinymceOverrides],
+	(newOptions, oldOptions) => {
+		if (isEqual(newOptions, oldOptions)) return;
+
 		editorRef.value.remove();
 		editorInitialized.value = false;
 		editorKey.value++;
