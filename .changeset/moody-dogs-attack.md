@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed reactivity of default values for kanban layout
+Fixed an issue blocking collection view after switching between Kanban bookmarks
