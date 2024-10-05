@@ -3,6 +3,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
+import { isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
@@ -79,6 +80,8 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
+const editorKey = ref(0);
+
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
 
@@ -148,6 +151,17 @@ watch(
 				editorRef.value.editorCommands?.commands?.exec?.mcedirectionltr();
 			}
 		}
+	},
+);
+
+watch(
+	() => [props.toolbar, props.font, props.customFormats, props.tinymceOverrides],
+	(newOptions, oldOptions) => {
+		if (isEqual(newOptions, oldOptions)) return;
+
+		editorRef.value.remove();
+		editorInitialized.value = false;
+		editorKey.value++;
 	},
 );
 
@@ -306,6 +320,7 @@ function setFocus(val: boolean) {
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
 		<editor
+			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"
 			:init="editorOptions"
