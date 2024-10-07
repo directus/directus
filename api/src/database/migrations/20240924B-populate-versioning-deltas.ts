@@ -1,3 +1,4 @@
+import { parseJSON } from '@directus/utils';
 import type { Knex } from 'knex';
 import { assign } from 'lodash-es';
 
@@ -18,15 +19,15 @@ export async function up(knex: Knex): Promise<void> {
 				const revisions = await trx
 					.select('delta')
 					.from('directus_revisions')
-					.where('id', '=', missingDeltaVersion.id)
+					.where('version', '=', missingDeltaVersion.id)
 					.orderBy('id');
 
-				const deltas = revisions.map((revision) => revision.delta);
+				const deltas = revisions.map((revision) => parseJSON(revision.delta));
 				const consolidatedDelta = assign({}, ...deltas);
 
 				await trx('directus_versions')
 					.update({
-						delta: consolidatedDelta,
+						delta: JSON.stringify(consolidatedDelta),
 					})
 					.where('id', '=', missingDeltaVersion.id);
 			}
