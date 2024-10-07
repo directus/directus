@@ -162,7 +162,7 @@
 		"p-queue": "8.0.1",
 		"papaparse": "5.4.1",
 		"pino": "9.4.0",
-		"pino-http": "9.0.0",
+		"pino-http": "10.3.0",
 		"pino-http-print": "3.1.0",
 		"pino-pretty": "11.2.2",
 		"qs": "6.13.0",
