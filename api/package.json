@@ -111,7 +111,7 @@
 		"cookie-parser": "1.4.6",
 		"cors": "2.8.5",
 		"cron-parser": "4.9.0",
-		"date-fns": "3.6.0",
+		"date-fns": "4.1.0",
 		"deep-diff": "1.0.2",
 		"destroy": "1.2.0",
 		"directus": "workspace:*",
