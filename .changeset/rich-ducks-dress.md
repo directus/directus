@@ -6,6 +6,7 @@
 '@directus/extensions-registry': patch
 '@directus/release-notes-generator': patch
 '@directus/stores': patch
+'@directus/storage-driver-s3': patch
 '@directus/themes': patch
 '@directus/update-check': patch
 '@directus/utils': patch
