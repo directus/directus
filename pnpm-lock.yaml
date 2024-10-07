@@ -677,8 +677,8 @@ importers:
         specifier: 2.2.1
         version: 2.2.1
       '@tinymce/tinymce-vue':
-        specifier: 5.1.1
-        version: 5.1.1(vue@3.4.27(typescript@5.6.2))
+        specifier: 6.0.1
+        version: 6.0.1(vue@3.4.27(typescript@5.6.2))
       '@turf/meta':
         specifier: 6.5.0
         version: 6.5.0
@@ -4863,8 +4863,8 @@ packages:
     resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
     engines: {node: '>=10'}
 
-  '@tinymce/tinymce-vue@5.1.1':
-    resolution: {integrity: sha512-iO57HOWesFOhsaqjA5Ea6sDvQBmJJH3/dq00Uvg7metlct2kLF+ctRgoDsetLt6gmeZ7COPftr814/XzqnJ/dg==}
+  '@tinymce/tinymce-vue@6.0.1':
+    resolution: {integrity: sha512-VzjI8AKlNrrsosIk3WuBez6kubqPsPMeaButkRLuts77uo4e2EwPRFX+VyB6fHbMGHwUPK22zNjOUGMvJFZFCw==}
     peerDependencies:
       vue: ^3.0.0
 
@@ -10978,9 +10978,6 @@ packages:
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
-  tinymce@6.8.4:
-    resolution: {integrity: sha512-okoJyxuPv1gzASxQDNgQbnUXOdAIyoOSXcXcZZu7tiW0PSKEdf3SdASxPBupRj+64/E3elHwVRnzSdo82Emqbg==}
-
   tinymce@7.3.0:
     resolution: {integrity: sha512-Ls4PgYlpk73XAxBSBqbVmSl8Mb3DuNfgF01GZ0lY6/MOEVRl3IL+VxC1Oe6165e8WqbqVsxO3Qj/PmoYNvQKGQ==}
 
@@ -15601,9 +15598,9 @@ snapshots:
     dependencies:
       defer-to-connect: 2.0.1
 
-  '@tinymce/tinymce-vue@5.1.1(vue@3.4.27(typescript@5.6.2))':
+  '@tinymce/tinymce-vue@6.0.1(vue@3.4.27(typescript@5.6.2))':
     dependencies:
-      tinymce: 6.8.4
+      tinymce: 7.3.0
       vue: 3.4.27(typescript@5.6.2)
 
   '@tootallnate/once@1.1.2':
@@ -22829,8 +22826,6 @@ snapshots:
   tiny-emitter@2.1.0: {}
 
   tinybench@2.9.0: {}
-
-  tinymce@6.8.4: {}
 
   tinymce@7.3.0: {}
 
