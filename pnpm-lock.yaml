@@ -1533,8 +1533,8 @@ importers:
         specifier: 1.5.3
         version: 1.5.3(vitest@1.5.3(@types/node@18.19.50)(happy-dom@15.7.4)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6))
       typescript:
-        specifier: 5.5.2
-        version: 5.5.2
+        specifier: 5.6.2
+        version: 5.6.2
       vitest:
         specifier: 1.5.3
         version: 1.5.3(@types/node@18.19.50)(happy-dom@15.7.4)(jsdom@20.0.3)(sass@1.78.0)(terser@5.31.6)
@@ -11218,11 +11218,6 @@ packages:
 
   typescript@5.4.2:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-
-  typescript@5.5.2:
-    resolution: {integrity: sha512-NcRtPEOsPFFWjobJEtfihkLCZCXZt/os3zf8nTxjVH3RvTSxjrCamJpbExGvYOF+tFHc3pA65qpdwPbzjohhew==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -23098,8 +23093,6 @@ snapshots:
       yaml: 2.5.1
 
   typescript@5.4.2: {}
-
-  typescript@5.5.2: {}
 
   typescript@5.6.2: {}
 
