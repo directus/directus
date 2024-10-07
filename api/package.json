@@ -132,7 +132,7 @@
 		"inquirer": "9.3.6",
 		"ioredis": "5.4.1",
 		"ip-matching": "2.1.2",
-		"isolated-vm": "4.7.2",
+		"isolated-vm": "5.0.1",
 		"joi": "17.13.3",
 		"js-yaml": "4.1.0",
 		"js2xmlparser": "5.0.0",
