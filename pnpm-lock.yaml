@@ -315,8 +315,8 @@ importers:
         specifier: 12.0.1
         version: 12.0.1
       p-limit:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 6.1.0
+        version: 6.1.0
       p-queue:
         specifier: 8.0.1
         version: 8.0.1
@@ -9289,6 +9289,10 @@ packages:
 
   p-limit@5.0.0:
     resolution: {integrity: sha512-/Eaoq+QyLSiXQ4lyYV23f14mZRQcXnxfHrN0vCai+ak9G0pp9iEQukIIZq5NccEvwRB8PUnZT0KsOoDCINS1qQ==}
+    engines: {node: '>=18'}
+
+  p-limit@6.1.0:
+    resolution: {integrity: sha512-H0jc0q1vOzlEk0TqAKXKZxdl7kX3OFUzCnNVUnq5Pc3DGo0kpeaMuPqxQn235HibwBEb0/pm9dgKTjXy66fBkg==}
     engines: {node: '>=18'}
 
   p-locate@4.1.0:
@@ -20794,6 +20798,10 @@ snapshots:
       yocto-queue: 1.1.1
 
   p-limit@5.0.0:
+    dependencies:
+      yocto-queue: 1.1.1
+
+  p-limit@6.1.0:
     dependencies:
       yocto-queue: 1.1.1
 
