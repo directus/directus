@@ -1940,8 +1940,8 @@ importers:
         specifier: workspace:*
         version: link:../tsconfig
       '@npm/types':
-        specifier: 1.0.2
-        version: 1.0.2
+        specifier: 2.0.0
+        version: 2.0.0
       '@types/node':
         specifier: 18.19.50
         version: 18.19.50
@@ -3910,8 +3910,9 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@npm/types@1.0.2':
-    resolution: {integrity: sha512-KXZccTDEnWqNrrx6JjpJKU/wJvNeg9BDgjS0XhmlZab7br921HtyVbsYzJr4L+xIvjdJ20Wh9dgxgCI2a5CEQw==}
+  '@npm/types@2.0.0':
+    resolution: {integrity: sha512-4WqrAc16VKuD8ea+tT8QC/WO+hkn32Z9qMFrG1u3dIAEv3pn0DuIUc7uBpplDJLFIyV7gq1qtm3Yv6kAxJh8KA==}
+    engines: {node: '>=18.6.0'}
 
   '@npmcli/fs@1.1.1':
     resolution: {integrity: sha512-8KG5RD0GVP4ydEzRn/I4BNDuxDtqVbOdm8675T49OIG/NGhaK0pjPX7ZcDlvKYbA+ulvVK3ztfcF4uBdOxuJbQ==}
@@ -14347,7 +14348,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@npm/types@1.0.2': {}
+  '@npm/types@2.0.0': {}
 
   '@npmcli/fs@1.1.1':
     dependencies:

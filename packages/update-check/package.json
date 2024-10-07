@@ -35,7 +35,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@npm/types": "1.0.2",
+		"@npm/types": "2.0.0",
 		"@types/node": "18.19.50",
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "1.5.3",
