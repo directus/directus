@@ -31,7 +31,7 @@
 		"@directus/utils": "workspace:*",
 		"ky": "1.7.2",
 		"lodash-es": "4.17.21",
-		"validate-npm-package-name": "5.0.1",
+		"validate-npm-package-name": "6.0.0",
 		"zod": "3.23.8"
 	},
 	"devDependencies": {
