@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix cards layout should always show error
+Ensured errors occured within the cards layout are always shown
