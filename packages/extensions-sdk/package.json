@@ -61,9 +61,9 @@
 		"@directus/tsconfig": "workspace:*",
 		"@types/fs-extra": "11.0.4",
 		"@types/inquirer": "9.0.7",
-		"@vitest/coverage-v8": "1.5.3",
+		"@vitest/coverage-v8": "2.1.2",
 		"typescript": "5.6.2",
-		"vitest": "1.5.3"
+		"vitest": "2.1.2"
 	},
 	"engines": {
 		"node": ">=12.20.0"
