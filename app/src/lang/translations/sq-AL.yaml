@@ -413,6 +413,7 @@ soft_length: Kufi i Butë
 precision_scale: Saktësi & Shkallë
 readonly: Vetëm Lexim
 unique: Unike
+index: Index
 updated_on: Përditësuar më
 updated_by: Përditësuar nga
 primary_key: Çelësi Kryesor
@@ -631,6 +632,7 @@ display_not_found: 'Shfaqja "{display}" nuk u gjet.'
 reset_display: Riaktivizo Shfaqjen
 list-m2a: Ndërtues (M2A)
 item_count: 'Asnjë Artikull | Një Artikull | {count} Artikuj'
+filtered_item_count: 'Asnjë Artikull i Filtruar | Një Artikull i Filtruar | {count} Artikuj të Filtruar'
 no_items_copy: Ende nuk ka artikuj në këtë koleksion.
 file_count: 'Asnjë Skedar | Një Skedar | {count} Skedarë'
 no_files_copy: Këtu nuk ka skedarë.
@@ -791,6 +793,9 @@ make_collection_hidden: Bëj Koleksionin të Fshehur
 make_folder_visible: Bëj Dosjen të Dukshme
 make_folder_hidden: Bëj Dosjen të Fshehur
 goto_collection_content: Shiko Përmbajtjen
+count_of_total_items: '{count} nga {total} Artikuj'
+start_end_of_count_items: '{start}-{end} nga {count} Artikuj'
+start_end_of_count_filtered_items: '{start}-{end} nga {count} Artikuj të Filtruar'
 delete_collection_are_you_sure: >-
   Jeni i sigurt që doni të fshini koleksionin "{collection}"? Kjo do të fshijë koleksionin dhe të gjithë artikujt brenda tij. Ky veprim është i përhershëm.
 delete_folder_are_you_sure: Jeni i sigurt që doni të fshini dosjen "{folder}"? Dosjet e brendshme dhe koleksionet do të zhvendosen në nivelin më të lartë.
@@ -877,11 +882,13 @@ columns: Kolona
 collection_setup: Setup i Koleksionit
 optional_system_fields: Fushat Opsionale
 value_unique: Vlera duhet të jetë unike
+value_index: Fusha është e indeksuar
 all_activity: Të Gjitha Aktivitetet
 create_item: Krijo Artikull
 display_template: Shabllon i Shfaqjes
 language_display_template: Shabllon i Shfaqjes së Gjuhës
 translations_display_template: Shabllon i Shfaqjes së Përkthimeve
+n_items_selected: 'Asnjë Artikull i Zgjedhur | Një Artikull i Zgjedhur | {n} Artikuj të Zgjedhur'
 per_page: Për Faqe
 all_files: Të gjitha Skedarët
 my_files: Skedarët e mi
@@ -993,6 +1000,22 @@ no_data_in_flow: Nuk u prodhua ose u aksesua asnjë të dhënë brenda kësaj Rr
 accountability: Përgjegjësia
 payload: Ngarkesa
 details: Detajet
+resume_streaming_logs: Rifillo Transmetimin e Regjistrave
+pause_streaming_logs: Ndalo Transmetimin e Regjistrave
+logs_session_resumed: Seanca e regjistrave u rifillua...
+logs_session_paused: Seanca e regjistrave u ndal...
+logs_stream_disconnected: Transmetimi i regjistrave u shkëput...
+log_detail_filter_paths: 'Filtro Rrugët (p.sh.: req.method, res.statusCode)'
+logs_beginning: Ky është fillimi i seancës suaj të regjistrave...
+logs_waiting: 'Duke pritur më shumë regjistra...'
+logs_unread_count: '{count} të palexuara'
+clear_logs: Pastro Regjistrat
+search_logs: Kërko në Regjistra...
+all_instances: Të Gjitha Instancat
+instance_count: 'Asnjë Instancë | Një Instancë | {count} Instanca'
+all_log_levels: Të Gjitha Nivelet e Regjistrave
+log_level_count: 'Asnjë Nivel Regjistri | Një Nivel Regjistri | {count} Nivele Regjistri'
+soft_wrap_lines: Mbështjell Rreshtat e Butë
 full_screen: Ekran i Plotë
 full_text_search: Kërkim i Plotë i Tekstit
 edit_panels: Modifiko Panelet
@@ -1021,6 +1044,7 @@ tooltip: Ndihmë
 tooltip_placeholder: Shkruaj një ndihmë...
 unlimited: I pakufizuar
 open_link_in: Hap lidhjen në
+new_tab: Skedë e Re
 save_image: Ruaj Imazhin
 save_media: Ruaj Median
 wysiwyg_options:
@@ -1100,6 +1124,7 @@ settings_project: Parametra
 settings_appearance: Pamja
 settings_webhooks: Webhooks
 settings_flows: Rrjedha
+settings_system_logs: Regjistrat e Sistemit
 settings_presets: Faqerojtësit
 settings_translations: Përkthimet
 one_or_more_options_are_missing: Mungon një ose më shumë opsione
@@ -1145,6 +1170,7 @@ page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
 page_help_settings_datamodel_fields: >-
   **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
+page_help_settings_system_logs: '**Regjistrat e Sistemit** — Aksesoni një transmetim të drejtpërdrejtë të regjistrave të sistemit.'
 page_help_settings_policies_collection: '**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit.'
 page_help_settings_policies_item: "**Detajet e Drejtimit** — Menaxho lejet dhe cilësimet e tjera të një drejtimi."
 page_help_settings_roles_collection: '**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit.'
@@ -1544,6 +1570,7 @@ live_preview:
   toggle_3d: Ndëro 3D
 shares: Ndaj
 unlimited_usage: Përdorim i Pakufizuar
+uses_left: Asnjë përdorim i mbetur | Një përdorim i mbetur | {n} përdorime të mbetura
 no_shares: Asnjë ndarje për t'u shfaqur
 new_share: Ndarje e Re
 expired: Skaduar
@@ -1847,6 +1874,7 @@ interfaces:
     editorFont: Fonti i Redaktorit
     previewFont: Fonti i Parashikimit
     default_view: Pamja e Paracaktuar
+    default_view_editor: Redaktori
     default_view_preview: Parashiko
     customSyntax: Blloqe të Personalizuara
     customSyntax_label: Shto lloje të personalizuara të sintaksës
@@ -2031,6 +2059,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Redaktor i Papërpunuar
     description: Lejo futjen e vlerave të papërpunuara ose të vlerave të modelit të mustaqes
+  input-password:
+    input-password: Fut Fjalëkalimin
+    description: Hyrja e fjalëkalimit me mundësi për të fshehur vlerën
 displays:
   translations:
     translations: Përkthimet
@@ -2474,3 +2505,5 @@ duplicate_dashboard: Dupliko Panelin
 search_dashboard: Kërko në Panel...
 search_flow: Kërko në Rrjedhë...
 percent: Përqind
+show_password: Shfaq fjalëkalimin
+hide_password: Fshih fjalëkalimin
