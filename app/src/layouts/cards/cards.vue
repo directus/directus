@@ -87,7 +87,7 @@ watch(innerWidth, (value) => {
 
 <template>
 	<div ref="layoutElement" class="layout-cards" :style="{ '--size': size * 40 + 'px' }">
-		<template v-if="loading || (itemCount ?? 0) > 0">
+		<template v-if="loading || ((itemCount ?? 0) > 0 && !error)">
 			<cards-header
 				v-model:size="sizeWritable"
 				v-model:selection="selectionWritable"

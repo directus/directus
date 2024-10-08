@@ -105,13 +105,11 @@ describe('processValue', () => {
 			global,
 		});
 
-		const inputElement = wrapper.find('input').element;
-		// mock keyboard event
-		const keyboardEvent = new KeyboardEvent('keydown', event);
-		// manually attach the input element as the mocked event's target
-		Object.defineProperty(keyboardEvent, 'target', { value: inputElement });
+		const input = wrapper.find('input');
 
-		wrapper.vm.processValue(keyboardEvent);
+		await input.trigger('keydown', event);
+
+		const keyboardEvent = wrapper.emitted('keydown')?.[0]?.[0] as KeyboardEvent;
 
 		expect(keyboardEvent.defaultPrevented).toBe(shouldDefaultPrevented);
 	});
@@ -136,13 +134,11 @@ describe('processValue', () => {
 			global,
 		});
 
-		const inputElement = wrapper.find('input').element;
-		// mock keyboard event
-		const keyboardEvent = new KeyboardEvent('keydown', event);
-		// manually attach the input element as the mocked event's target
-		Object.defineProperty(keyboardEvent, 'target', { value: inputElement });
+		const input = wrapper.find('input');
 
-		wrapper.vm.processValue(keyboardEvent);
+		await input.trigger('keydown', event);
+
+		const keyboardEvent = wrapper.emitted('keydown')?.[0]?.[0] as KeyboardEvent;
 
 		expect(keyboardEvent.defaultPrevented).toBe(shouldDefaultPrevented);
 	});

@@ -36,15 +36,17 @@ If this policy grants the user admin access. This means that users with this pol
 `app_access` **boolean**\
 Whether or not users with this policy have access to use the Data Studio.
 
-`users` **one-to-many**\
-The users this policy is assigned to directly, this does not include users which receive this policy through a role. One-to-many
-to [users](/reference/system/users).
+`users` **many-to-many**\
+The users this policy is assigned to directly, this does not include users which receive this policy through a role. It expects
+and returns data from the `directus_access` collection. [Many-to-many](/app/data-model/relationships#many-to-many-m2m) to
+[users](/reference/system/users) via [access](/reference/system/access).
 
-`roles` **one-to-many**\
-The roles this policy is assigned to. One-to-many to [roles](/reference/system/policies).
+`roles` **many-to-many**\
+The roles this policy is assigned to. It expects and returns data from the `directus_access` collection. [Many-to-many](/app/data-model/relationships#many-to-many-m2m)
+to [roles](/reference/system/roles) via [access](/reference/system/access).
 
 `permissions` **one-to-many**\
-The permissions assigned to this policy. One-to-many to [permissions](/reference/system/policies).
+The permissions assigned to this policy. One-to-many to [permissions](/reference/system/permissions).
 
 ```json
 {
@@ -57,8 +59,8 @@ The permissions assigned to this policy. One-to-many to [permissions](/reference
 	"admin_access": true,
 	"app_access": true,
 	"users": ["0bc7b36a-9ba9-4ce0-83f0-0a526f354e07"],
-    "roles": ["8b4474c0-288d-4bb8-b62e-8330646bb6aa"]
-    "permissions": ["5c74c86f-cab0-4b14-a3c4-cd4f2363e826"]
+	"roles": ["8b4474c0-288d-4bb8-b62e-8330646bb6aa"],
+	"permissions": ["5c74c86f-cab0-4b14-a3c4-cd4f2363e826"]
 }
 ```
 

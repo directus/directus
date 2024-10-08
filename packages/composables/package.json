@@ -29,7 +29,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"axios": "1.7.3",
+		"axios": "1.7.7",
 		"lodash-es": "4.17.21",
 		"nanoid": "5.0.7"
 	},
@@ -39,11 +39,11 @@
 		"@directus/tsconfig": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
-		"@vitest/coverage-v8": "1.5.3",
+		"@vitest/coverage-v8": "2.1.2",
 		"@vue/test-utils": "2.4.6",
-		"tsup": "8.2.2",
-		"typescript": "5.4.5",
-		"vitest": "1.5.3",
+		"tsup": "8.2.4",
+		"typescript": "5.6.2",
+		"vitest": "2.1.2",
 		"vue": "3.4.27"
 	},
 	"peerDependencies": {

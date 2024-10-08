@@ -24,7 +24,7 @@ export default async function link(extensionsPath: string): Promise<void> {
 
 	try {
 		manifestFile = await fs.readJSON(packagePath);
-	} catch (err) {
+	} catch {
 		log(`Current directory is not a valid Directus extension.`, 'error');
 		return;
 	}

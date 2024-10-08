@@ -73,7 +73,7 @@ export async function up(knex: Knex): Promise<void> {
 				await knex(constraint.many_collection)
 					.update({ [constraint.many_field]: null })
 					.whereIn(currentPrimaryKeyField, ids);
-			} catch (err: any) {
+			} catch {
 				logger.error(
 					`${constraint.many_collection}.${constraint.many_field} contains illegal foreign keys which couldn't be set to NULL. Please fix these references and rerun this migration to complete the upgrade.`,
 				);
