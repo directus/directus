@@ -518,8 +518,8 @@ importers:
         specifier: 7.1.0
         version: 7.1.0
       knex-mock-client:
-        specifier: 2.0.1
-        version: 2.0.1(knex@3.1.0(mysql2@3.11.2)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1))
+        specifier: 3.0.2
+        version: 3.0.2(knex@3.1.0(mysql2@3.11.2)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1))
       typescript:
         specifier: 5.6.2
         version: 5.6.2
@@ -8288,9 +8288,9 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  knex-mock-client@2.0.1:
-    resolution: {integrity: sha512-tSNaht+aquo6SgEhwPYidfYWVS2IUbF2ZNu4Ye0mScGTmyS+ZTJzpAkogpUIDwiZbkjIg/bvsopRDM/Lbdt+Mw==}
-    engines: {node: '>=12'}
+  knex-mock-client@3.0.2:
+    resolution: {integrity: sha512-g3y60FBFrOTWMScndtgTAFlqPvdcKeO+hAu8qWfahBMRI9Y1EmP/8Ie01UMd1S377HUb2xCInHDIb68KcppzEg==}
+    engines: {node: '>=16'}
     peerDependencies:
       knex: '>=2.0.0'
 
@@ -19573,7 +19573,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex-mock-client@2.0.1(knex@3.1.0(mysql2@3.11.2)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)):
+  knex-mock-client@3.0.2(knex@3.1.0(mysql2@3.11.2)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)):
     dependencies:
       knex: 3.1.0(mysql2@3.11.2)(pg@8.12.0)(sqlite3@5.1.7)(tedious@18.6.1)
       lodash.clonedeep: 4.5.0
