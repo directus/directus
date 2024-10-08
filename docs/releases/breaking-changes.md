@@ -17,15 +17,17 @@ Starting with Directus 10.0, here is a list of potential breaking changes with r
 
 ### New Comment Endpoints
 
-We've introduced a dedicated `directus_comments` collection, replacing the previous system that used `directus_activity` for comments. While new comment endpoints have been added, existing endpoints remain functional. 
+We've introduced a dedicated `directus_comments` collection, replacing the previous system that used `directus_activity`
+for comments. While new comment endpoints have been added, existing endpoints remain functional.
 
 Comment primary keys are now UUIDs instead of numeric values, which may impact custom type checking implementations.
 
 ### SDK Comment Function Uses New Endpoints
 
-The SDK's internal comment endpoints have been updated to reflect this change. To avoid errors, ensure your Directus version is compatible with the latest SDK when using comment functions.
+The internal comment endpoints in the Directus SDK have been updated to reflect this change. To avoid errors, ensure
+your Directus version is compatible with the latest SDK when using comment functions.
 
-### Migrate to CommentsService in Extensions
+### Migrate to `CommentsService` in Extensions
 
 Extensions using the `ActivityService` to manage comments should migrate to the new `CommentsService`.
 
