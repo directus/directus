@@ -225,7 +225,7 @@
 		"vitest": "2.1.2"
 	},
 	"optionalDependencies": {
-		"@keyv/redis": "2.8.5",
+		"@keyv/redis": "3.0.1",
 		"mysql2": "3.11.2",
 		"nodemailer-mailgun-transport": "2.1.5",
 		"oracledb": "6.6.0",
