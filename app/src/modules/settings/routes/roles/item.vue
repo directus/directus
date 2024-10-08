@@ -13,6 +13,8 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
+import { getItemRoute } from '@/utils/get-route';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -30,13 +32,10 @@ const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Role>(
-	ref('directus_roles'),
-	primaryKey,
-	{
+const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, refresh, validationErrors } =
+	useItem<Role>(ref('directus_roles'), primaryKey, {
 		deep: { users: { _limit: 0 } },
-	},
-);
+	});
 
 const confirmDelete = ref(false);
 
@@ -73,6 +72,21 @@ async function saveAndStay() {
 	}
 }
 
+async function saveAndAddNew() {
+	try {
+		await save();
+		await userStore.hydrate();
+
+		if (isNew.value === true) {
+			refresh();
+		} else {
+			router.push(getItemRoute('directus_roles', '+'));
+		}
+	} catch {
+		// `save` shows unexpected error dialog
+	}
+}
+
 async function saveAndQuit() {
 	try {
 		await save();
@@ -98,6 +112,11 @@ function discardAndLeave() {
 	edits.value = {};
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
 }
 </script>
 
@@ -161,6 +180,15 @@ function discardAndLeave() {
 				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						:disabled-options="['save-as-copy']"
+						@save-and-stay="saveAndStay"
+						@save-and-add-new="saveAndAddNew"
+						@discard-and-stay="discardAndStay"
+					/>
+				</template>
 			</v-button>
 		</template>
 
