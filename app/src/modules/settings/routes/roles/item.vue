@@ -43,6 +43,10 @@ useShortcut('meta+s', () => {
 	if (hasEdits.value) saveAndStay();
 });
 
+useShortcut('meta+shift+s', () => {
+	if (hasEdits.value) saveAndAddNew();
+});
+
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 const { createAllowed: usersCreateAllowed } = useCollectionPermissions('directus_users');
