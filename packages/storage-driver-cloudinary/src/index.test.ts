@@ -13,7 +13,7 @@ import {
 	randGitShortSha as randUnique,
 	randWord,
 } from '@ngneat/falso';
-import { Blob } from 'node:buffer';
+import { Blob, Buffer } from 'node:buffer';
 import type { Hash } from 'node:crypto';
 import { createHash } from 'node:crypto';
 import type { ParsedPath } from 'node:path';
@@ -31,6 +31,7 @@ import { DriverCloudinary } from './index.js';
 vi.mock('@directus/utils/node');
 vi.mock('@directus/utils');
 vi.mock('node:path');
+vi.mock('node:buffer');
 vi.mock('node:crypto');
 vi.mock('undici');
 
