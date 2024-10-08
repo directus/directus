@@ -1,10 +1,10 @@
 // @ts-check
 
-import globals from 'globals';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-import eslintPluginVue from 'eslint-plugin-vue';
 import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintPluginVue from 'eslint-plugin-vue';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
 	// Global config
@@ -26,7 +26,6 @@ export default tseslint.config(
 
 	// Enable recommended rules for JS files
 	eslint.configs.recommended,
-	[],
 
 	// Custom basic rules
 	{
