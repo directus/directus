@@ -138,7 +138,7 @@
 		"js2xmlparser": "5.0.0",
 		"json2csv": "5.0.7",
 		"jsonwebtoken": "9.0.2",
-		"keyv": "4.5.4",
+		"keyv": "5.1.0",
 		"knex": "3.1.0",
 		"ldapjs": "2.3.3",
 		"liquidjs": "10.15.0",
