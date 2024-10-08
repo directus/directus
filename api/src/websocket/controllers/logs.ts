@@ -3,10 +3,11 @@ import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
-import { handleWebSocketError } from '../errors.js';
+import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { AuthMode, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
+import type { Accountability } from '@directus/types';
 
 const logger = useLogger();
 
@@ -34,11 +35,9 @@ export class LogsController extends SocketController {
 		return {
 			endpoint,
 			maxConnections,
-			// require strict auth
 			authentication: {
 				mode: 'strict' as AuthMode,
 				timeout: 0,
-				requireAdmin: true,
 			},
 		};
 	}
@@ -62,5 +61,12 @@ export class LogsController extends SocketController {
 		});
 
 		emitter.emitAction('websocket.connect', { client });
+	}
+
+	protected override checkUserRequirements(accountability: Accountability | null) {
+		// enforce admin only access for the logs streaming websocket
+		if (!accountability?.admin) {
+			throw new WebSocketError('auth', 'AUTH_FAILED', 'Unauthorized access.');
+		}
 	}
 }

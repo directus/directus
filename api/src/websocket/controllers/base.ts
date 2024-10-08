@@ -83,7 +83,6 @@ export default abstract class SocketController {
 			authentication: {
 				mode: authMode.data,
 				timeout: authTimeout,
-				requireAdmin: false,
 			},
 		};
 	}
@@ -176,7 +175,14 @@ export default abstract class SocketController {
 			return;
 		}
 
-		if (!this.meetsAdminRequirement({ socket, accountability })) return;
+		try {
+			this.checkUserRequirements(accountability);
+		} catch {
+			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
+			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+			socket.destroy();
+			return;
+		}
 
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
@@ -195,9 +201,10 @@ export default abstract class SocketController {
 
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
 
-				if (this.meetsAdminRequirement({ client: ws, accountability: state.accountability })) return;
+				this.checkUserRequirements(state.accountability);
 
 				ws.send(authenticationSuccess(payload['uid'], state.refresh_token));
+
 				this.server.emit('connection', ws, state);
 			} catch {
 				logger.debug('WebSocket authentication handshake failed');
@@ -306,8 +313,7 @@ export default abstract class SocketController {
 	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
 		try {
 			const { accountability, expires_at, refresh_token } = await authenticateConnection(message);
-
-			if (!this.meetsAdminRequirement({ client, accountability })) return;
+			this.checkUserRequirements(accountability);
 
 			client.accountability = accountability;
 			client.expires_at = expires_at;
@@ -333,6 +339,11 @@ export default abstract class SocketController {
 				client.close();
 			}
 		}
+	}
+
+	protected checkUserRequirements(_accountability: Accountability | null) {
+		// there are no requirements in the abstract class
+		return;
 	}
 
 	setTokenExpireTimer(client: WebSocketClient) {
@@ -373,30 +384,6 @@ export default abstract class SocketController {
 				this.setTokenExpireTimer(client);
 			}
 		}, TOKEN_CHECK_INTERVAL);
-	}
-
-	meetsAdminRequirement({
-		socket,
-		client,
-		accountability,
-	}: {
-		socket?: UpgradeContext['socket'];
-		client?: WebSocketClient | WebSocket;
-		accountability: Accountability | null;
-	}) {
-		if (!this.authentication.requireAdmin || accountability?.admin) return true;
-
-		logger.debug('WebSocket connection denied - ' + JSON.stringify(accountability || 'invalid'));
-
-		if (socket) {
-			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-			socket.destroy();
-		} else if (client) {
-			handleWebSocketError(client, new WebSocketError('auth', 'UNAUTHORIZED', 'Unauthorized.'), 'auth');
-			client.close();
-		}
-
-		return false;
 	}
 
 	terminate() {
