@@ -1511,6 +1511,9 @@ importers:
       '@directus/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@pnpm/types':
+        specifier: 12.2.0
+        version: 12.2.0
       '@types/node':
         specifier: 18.19.50
         version: 18.19.50
