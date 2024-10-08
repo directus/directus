@@ -31,8 +31,6 @@ your Directus version is compatible with the latest SDK when using comment funct
 
 Extensions using the `ActivityService` to manage comments should migrate to the new `CommentsService`.
 
-## Version 11.1.1
-
 ### Dropped support for the SendGrid email transport option
 
 The SendGrid abstraction for `nodemailer` is no longer supported, so we have dropped it's usage from Directus. Users of
