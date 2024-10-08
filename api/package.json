@@ -143,7 +143,7 @@
 		"ldapjs": "2.3.3",
 		"liquidjs": "10.15.0",
 		"lodash-es": "4.17.21",
-		"marked": "12.0.2",
+		"marked": "14.1.2",
 		"micromustache": "8.0.3",
 		"mime-types": "2.1.35",
 		"minimatch": "9.0.5",
