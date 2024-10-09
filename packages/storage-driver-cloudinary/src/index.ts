@@ -265,7 +265,9 @@ export class DriverCloudinary implements Driver {
 		const chunkSize = 5.5e6;
 		let chunks = Buffer.alloc(0);
 
-		for await (const chunk of content) {
+		for await (let chunk of content) {
+			if (!Buffer.isBuffer(chunk)) chunk = Buffer.from(chunk);
+
 			// Cloudinary requires each chunk to be at least 5MB. We'll submit the chunk as soon as we
 			// reach 5.5MB to be safe
 			if (chunks.length + chunk.length <= chunkSize) {

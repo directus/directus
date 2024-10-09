@@ -410,7 +410,7 @@ export class ServerService {
 				const startTime = performance.now();
 
 				try {
-					await disk.write(`health-${checkID}`, Readable.from(Buffer.from('check')));
+					await disk.write(`health-${checkID}`, Readable.from('check'));
 					const fileStream = await disk.read(`health-${checkID}`);
 
 					fileStream.on('data', async () => {
