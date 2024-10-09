@@ -65,7 +65,7 @@ function processArray(array: string[]): string[] {
 		if (props.capitalization === 'uppercase') val = val.toUpperCase();
 		if (props.capitalization === 'lowercase') val = val.toLowerCase();
 
-		const whitespace = props.whitespace === undefined ? ' ' : props.whitespace;
+		const whitespace = (props.whitespace === undefined || props.whitespace === null) ? ' ' : props.whitespace;
 
 		if (props.capitalization === 'auto-format') val = formatTitle(val, new RegExp(whitespace));
 
