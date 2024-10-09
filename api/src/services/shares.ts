@@ -23,7 +23,6 @@ import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 
-
 const env = useEnv();
 const logger = useLogger();
 
@@ -61,7 +60,6 @@ export class SharesService extends ItemsService {
 		await clearPermissionsCache();
 
 		return super.deleteMany(keys, opts);
-
 	}
 
 	async login(

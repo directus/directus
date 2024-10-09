@@ -38,14 +38,17 @@ export async function getPermissionsForShare(
 	};
 
 	// Fallback to user accountability so merging later on has no issues
-	const shareAccountability: Accountability = role === null ? userAccountability : {
-		user: null,
-		role: role,
-		roles: await fetchRolesTree(role, context.knex),
-		admin: false,
-		app: false,
-		ip: accountability.ip,
-	};
+	const shareAccountability: Accountability =
+		role === null
+			? userAccountability
+			: {
+					user: null,
+					role: role,
+					roles: await fetchRolesTree(role, context.knex),
+					admin: false,
+					app: false,
+					ip: accountability.ip,
+			  };
 
 	const { admin: shareIsAdmin } = await fetchGlobalAccess(shareAccountability, context.knex);
 	const { admin: userIsAdmin } = await fetchGlobalAccess(userAccountability, context.knex);
@@ -138,7 +141,6 @@ export async function getPermissionsForShare(
 		({ action, collection }) => allowedCollections.includes(collection) && action === 'read',
 	);
 
-
 	return filterCollections(collections, mergePermissions('and', limitedPermissions, generatedPermissions));
 }
 
@@ -150,7 +152,10 @@ function filterCollections(collections: string[] | undefined, permissions: Permi
 	return permissions.filter(({ collection }) => collections.includes(collection));
 }
 
-async function getPermissionsForAccountability(accountability: Accountability, context: Context): Promise<Permission[]> {
+async function getPermissionsForAccountability(
+	accountability: Accountability,
+	context: Context,
+): Promise<Permission[]> {
 	const policies = await fetchPolicies(accountability, context);
 
 	return fetchPermissions(
