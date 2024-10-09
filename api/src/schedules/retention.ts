@@ -24,7 +24,7 @@ const ACTIVITY_RETENTION_TIMEFRAME = getMilliseconds(env['ACTIVITY_RETENTION']);
 const FLOW_LOGS_RETENTION_TIMEFRAME = getMilliseconds(env['FLOW_LOGS_RETENTION']);
 const REVISIONS_RETENTION_TIMEFRAME = getMilliseconds(env['REVISIONS_RETENTION']);
 
-const RETENTION_TASKS: RetentionTask[] = [
+const retentionTasks: RetentionTask[] = [
 	{
 		collection: 'directus_activity',
 		where: ['action', '!=', Action.RUN],
@@ -52,7 +52,7 @@ export async function handleRetentionJob() {
 
 	await lock.set(retentionLockKey, Date.now());
 
-	for (const task of RETENTION_TASKS) {
+	for (const task of retentionTasks) {
 		let count = 0;
 
 		if (task.timeframe === undefined) {
@@ -114,7 +114,7 @@ export default function schedule() {
 			REVISIONS_RETENTION_TIMEFRAME &&
 			ACTIVITY_RETENTION_TIMEFRAME > REVISIONS_RETENTION_TIMEFRAME)
 	) {
-		RETENTION_TASKS.push({
+		retentionTasks.push({
 			collection: 'directus_revisions',
 			join: ['directus_activity', 'directus_revisions.activity', 'directus_activity.id'],
 			timeframe: REVISIONS_RETENTION_TIMEFRAME,
