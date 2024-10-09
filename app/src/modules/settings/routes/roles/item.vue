@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
 import { Role } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
@@ -13,8 +13,6 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import SettingsNavigation from '../../components/navigation.vue';
 import RoleInfoSidebarDetail from './role-info-sidebar-detail.vue';
-import SaveOptions from '@/views/private/components/save-options.vue';
-import { getItemRoute } from '@/utils/get-route';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -32,10 +30,15 @@ const { primaryKey } = toRefs(props);
 
 const revisionsDrawerDetailRef = ref<InstanceType<typeof RevisionsDrawerDetail> | null>(null);
 
-const { isNew, edits, hasEdits, item, saving, loading, save, remove, deleting, refresh, validationErrors } =
-	useItem<Role>(ref('directus_roles'), primaryKey, {
+const { edits, hasEdits, item, saving, loading, save, remove, deleting, validationErrors } = useItem<Role>(
+	ref('directus_roles'),
+	primaryKey,
+	{
 		deep: { users: { _limit: 0 } },
-	});
+	},
+);
+
+const canInviteUsers = computed(() => !serverStore.auth.disableDefault);
 
 const confirmDelete = ref(false);
 
@@ -48,16 +51,6 @@ useShortcut('meta+shift+s', () => {
 });
 
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-const { createAllowed: usersCreateAllowed } = useCollectionPermissions('directus_users');
-
-const { readAllowed: rolesReadAllowed } = useCollectionPermissions('directus_roles');
-
-const canInviteUsers = computed(() => {
-	if (serverStore.auth.disableDefault === true) return false;
-
-	return usersCreateAllowed.value && rolesReadAllowed.value;
-});
 
 /**
  * @NOTE
@@ -80,12 +73,7 @@ async function saveAndAddNew() {
 	try {
 		await save();
 		await userStore.hydrate();
-
-		if (isNew.value === true) {
-			refresh();
-		} else {
-			router.push(getItemRoute('directus_roles', '+'));
-		}
+		router.push(`/settings/roles/+`);
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -175,18 +163,12 @@ function discardAndStay() {
 				<v-icon name="person_add" />
 			</v-button>
 
-			<v-button
-				v-tooltip.bottom="t('save')"
-				rounded
-				icon
-				:loading="saving"
-				:disabled="hasEdits === false"
-				@click="saveAndQuit"
-			>
+			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
 				<v-icon name="check" />
 
 				<template #append-outer>
 					<save-options
+						v-if="hasEdits"
 						:disabled-options="['save-as-copy']"
 						@save-and-stay="saveAndStay"
 						@save-and-add-new="saveAndAddNew"
