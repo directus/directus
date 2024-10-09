@@ -1,4 +1,4 @@
-import type { Driver, Range } from '@directus/storage';
+import type { Driver, ReadOptions } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { Blob, Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
@@ -119,10 +119,12 @@ export class DriverCloudinary implements Driver {
 		return `Basic ${base64}`;
 	}
 
-	async read(filepath: string, range?: Range) {
+	async read(filepath: string, options?: ReadOptions) {
+		const { range, version } = options ?? {};
+
 		const resourceType = this.getResourceType(filepath);
 		const fullPath = this.fullPath(filepath);
-		const signature = this.getParameterSignature(fullPath);
+		const signature = version !== undefined ? `v${version}` : this.getParameterSignature(fullPath);
 		const url = `https://res.cloudinary.com/${this.cloudName}/${resourceType}/upload/${signature}/${fullPath}`;
 
 		const requestInit: RequestInit = { method: 'GET' };
