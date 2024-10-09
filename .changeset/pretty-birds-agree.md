@@ -2,4 +2,4 @@
 '@directus/storage-driver-cloudinary': patch
 ---
 
-Fixed health check erroring for cloundary driver
+Fixed the server health check erroring with the cloundary driver
