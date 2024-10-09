@@ -8,15 +8,20 @@ fields:
     hidden: true
 
   - field: name
-    width: half
 
   - field: collection
-    width: full
+    width: half
     hidden: true
 
   - field: item
     width: half
     hidden: true
+
+  - field: role
+    interface: select-dropdown-m2o
+    width: half
+    options:
+      template: '{{name}}'
 
   - field: password
     special:

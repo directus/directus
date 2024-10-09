@@ -21,6 +21,8 @@ import { userName } from '../utils/user-name.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
+import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
+
 
 const env = useEnv();
 const logger = useLogger();
@@ -47,6 +49,19 @@ export class SharesService extends ItemsService {
 		}
 
 		return super.createOne(data, opts);
+	}
+
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		await clearPermissionsCache();
+
+		return super.updateMany(keys, data, opts);
+	}
+
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		await clearPermissionsCache();
+
+		return super.deleteMany(keys, opts);
+
 	}
 
 	async login(

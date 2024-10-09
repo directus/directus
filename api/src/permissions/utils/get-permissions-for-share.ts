@@ -26,7 +26,7 @@ export async function getPermissionsForShare(
 		fields: null,
 	};
 
-	const { collection, item, user_created } = await fetchShareInfo(accountability.share!, context);
+	const { collection, item, role, user_created } = await fetchShareInfo(accountability.share!, context);
 
 	const userAccountability: Accountability = {
 		user: user_created.id,
@@ -37,32 +37,58 @@ export async function getPermissionsForShare(
 		ip: accountability.ip,
 	};
 
-	const { admin } = await fetchGlobalAccess(userAccountability, context.knex);
+	// Fallback to user accountability so merging later on has no issues
+	const shareAccountability: Accountability = role === null ? userAccountability : {
+		user: null,
+		role: role,
+		roles: await fetchRolesTree(role, context.knex),
+		admin: false,
+		app: false,
+		ip: accountability.ip,
+	};
 
-	if (admin) {
+	const { admin: shareIsAdmin } = await fetchGlobalAccess(shareAccountability, context.knex);
+	const { admin: userIsAdmin } = await fetchGlobalAccess(userAccountability, context.knex);
+
+	const isAdmin = userIsAdmin && shareIsAdmin;
+
+	const userPermissions = await getPermissionsForAccountability(userAccountability, context);
+	const sharePermissions = await getPermissionsForAccountability(shareAccountability, context);
+
+	const shareFieldMap = await fetchAllowedFieldMap(
+		{
+			accountability: shareAccountability,
+			action: 'read',
+		},
+		context,
+	);
+
+	const userFieldMap = await fetchAllowedFieldMap(
+		{
+			accountability: userAccountability,
+			action: 'read',
+		},
+		context,
+	);
+
+	let permissions: Permission[] = [];
+	let reducedSchema: SchemaOverview;
+
+	if (isAdmin) {
 		defaults.fields = ['*'];
+		reducedSchema = context.schema;
+	} else if (userIsAdmin && !shareIsAdmin) {
+		permissions = sharePermissions;
+		reducedSchema = reduceSchema(context.schema, shareFieldMap);
+	} else if (shareIsAdmin && !userIsAdmin) {
+		permissions = userPermissions;
+		reducedSchema = reduceSchema(context.schema, userFieldMap);
+	} else {
+		permissions = mergePermissions('and', sharePermissions, userPermissions);
+		reducedSchema = reduceSchema(context.schema, shareFieldMap);
+		reducedSchema = reduceSchema(reducedSchema, userFieldMap);
 	}
 
-	const policies = await fetchPolicies(userAccountability, context);
-
-	const userPermissions = await fetchPermissions(
-		{
-			policies: policies,
-			action: 'read',
-			accountability: userAccountability,
-		},
-		context,
-	);
-
-	const fieldMap = await fetchAllowedFieldMap(
-		{
-			accountability: userAccountability,
-			action: 'read',
-		},
-		context,
-	);
-
-	const reducedSchema = admin ? context.schema : reduceSchema(context.schema, fieldMap);
 	const parentPrimaryKeyField = context.schema.collections[collection]!.primary;
 
 	const relationalPermissions = traverse(reducedSchema, parentPrimaryKeyField, item, collection);
@@ -103,14 +129,15 @@ export async function getPermissionsForShare(
 		}
 	}
 
-	if (admin) {
+	if (isAdmin) {
 		return filterCollections(collections, generatedPermissions);
 	}
 
 	// Explicitly filter out permissions to collections unrelated to the root parent item.
-	const limitedPermissions = userPermissions.filter(
+	const limitedPermissions = permissions.filter(
 		({ action, collection }) => allowedCollections.includes(collection) && action === 'read',
 	);
+
 
 	return filterCollections(collections, mergePermissions('and', limitedPermissions, generatedPermissions));
 }
@@ -121,6 +148,18 @@ function filterCollections(collections: string[] | undefined, permissions: Permi
 	}
 
 	return permissions.filter(({ collection }) => collections.includes(collection));
+}
+
+async function getPermissionsForAccountability(accountability: Accountability, context: Context): Promise<Permission[]> {
+	const policies = await fetchPolicies(accountability, context);
+
+	return fetchPermissions(
+		{
+			policies,
+			accountability,
+		},
+		context,
+	);
 }
 
 export function traverse(
