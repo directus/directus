@@ -1375,7 +1375,7 @@ This link includes a token, which is then used to activate the invited user.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /users/invisponse/accept`
+`POST /users/invite/accept`
 
 ```json
 {

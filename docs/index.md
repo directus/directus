@@ -56,8 +56,8 @@ const item = await client.request(
 <template #authentication>
 
 ```js
-import { createDirectus, rest, createUser } from '@directus/sdk';
-const client = createDirectus('https://xyz.directus.app').with(rest());
+import { createDirectus, rest, createUser, authentication } from '@directus/sdk';
+const client = createDirectus('https://xyz.directus.app').with(rest()).with(authentication());
 
 const newUser = await client.request(
 	createUser({

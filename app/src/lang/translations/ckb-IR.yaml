@@ -857,8 +857,6 @@ tooltip: ئاماژە
 tooltip_placeholder: ئاماژەیەک دابنێ...
 unlimited: بێ سنوور
 open_link_in: کردنەوەی بەستەر لە
-new_tab: پەنجەرەی نوێ
-current_tab: پەنجەرەی ئێستا
 save_image: وێنە پاشەکەوت بکە
 save_media: میدیا پاشەکەوت بکە
 wysiwyg_options:
@@ -1564,6 +1562,8 @@ interfaces:
     preview: بینین
     editorFont: دەستکاریکەری فۆنت
     previewFont: بینینی فۆنت
+    default_view: بینینی بنەڕەتی
+    default_view_preview: بینین
     customSyntax: خشتە تایبەتەکان
     customSyntax_label: جۆرەکانی ڕستەسازی تایبەت زیاد بکە
     customSyntax_add: ڕستەسازی تایبەت زیادبکە

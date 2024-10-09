@@ -817,8 +817,6 @@ tooltip: Consell
 tooltip_placeholder: Introdueix el consell...
 unlimited: Il·limitat
 open_link_in: Obre l'enllaç a
-new_tab: Nova pestanya
-current_tab: Pestanya actual
 save_image: Desa la imatge
 save_media: Desa l'element media
 wysiwyg_options:
@@ -1475,6 +1473,7 @@ interfaces:
     preview: Vista prèvia
     editorFont: Editor de tipografia
     previewFont: Previsualita la tipografia
+    default_view_preview: Vista prèvia
     customSyntax: Blocs personalitzats
     customSyntax_label: Afegeix tipus de sintaxi personalitzats
     customSyntax_add: Afegeix sintaxi personalitzada
