@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix missing permission check of create dashboard button in insight module sidebar
+Added condition to only show the "Create Dashboard" if the user has the correct permissions
