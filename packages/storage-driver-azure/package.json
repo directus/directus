@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-azure",
-	"version": "11.0.0",
+	"version": "11.0.1",
 	"description": "Azure file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -33,9 +33,9 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@ngneat/falso": "7.2.0",
-		"@vitest/coverage-v8": "1.5.3",
+		"@vitest/coverage-v8": "2.1.2",
 		"tsup": "8.2.4",
-		"typescript": "5.4.5",
-		"vitest": "1.5.3"
+		"typescript": "5.6.2",
+		"vitest": "2.1.2"
 	}
 }

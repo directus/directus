@@ -100,5 +100,5 @@ test('Returns filter context for current policies', async () => {
 	);
 
 	expect(res['$CURRENT_POLICIES']).toBe(policies);
-	expect(PoliciesService.prototype.readMany).toHaveBeenCalledWith(['policy-1'], { fields: ['name'] });
+	expect(PoliciesService.prototype.readMany).toHaveBeenCalledWith(['policy-1'], { fields: ['name', 'id'] });
 });

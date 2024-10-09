@@ -3,9 +3,7 @@ https://github.com/vuejs/vitepress/blob/main/src/client/theme-default/components
 
 <script setup lang="ts">
 import { useData } from 'vitepress';
-// @ts-ignore
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue';
-// @ts-ignore
 import VPIconChevronRight from 'vitepress/dist/client/theme-default/components/icons/VPIconChevronRight.vue';
 // @ts-ignore
 import { useSidebarControl } from 'vitepress/dist/client/theme-default/composables/sidebar';
@@ -65,11 +63,11 @@ function onItemInteraction(e: MouseEvent | Event) {
 		return;
 	}
 
-	!props.item.link && toggle();
+	if (!props.item.link) toggle();
 }
 
 function onCaretClick() {
-	props.item.link && toggle();
+	if (props.item.link) toggle();
 }
 </script>
 

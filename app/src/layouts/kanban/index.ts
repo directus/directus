@@ -357,16 +357,21 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		}
 
 		function useLayoutOptions() {
-			const groupField = createViewOption<string | null>('groupField', fieldGroups.value.group[0]?.field ?? null);
-			const groupTitle = createViewOption<string | null>('groupTitle', null);
-			const dateField = createViewOption<string | null>('dateField', fieldGroups.value.date[0]?.field ?? null);
-			const tagsField = createViewOption<string | null>('tagsField', fieldGroups.value.tags[0]?.field ?? null);
-			const userField = createViewOption<string | null>('userField', fieldGroups.value.user[0]?.field ?? null);
-			const titleField = createViewOption<string | null>('titleField', fieldGroups.value.title[0]?.field ?? null);
-			const textField = createViewOption<string | null>('textField', fieldGroups.value.text[0]?.field ?? null);
-			const showUngrouped = createViewOption<boolean>('showUngrouped', false);
-			const imageSource = createViewOption<string | null>('imageSource', fieldGroups.value.file[0]?.field ?? null);
-			const crop = createViewOption<boolean>('crop', true);
+			const groupField = createViewOption<string | null>('groupField', () => fieldGroups.value.group[0]?.field ?? null);
+			const groupTitle = createViewOption<string | null>('groupTitle', () => null);
+			const dateField = createViewOption<string | null>('dateField', () => fieldGroups.value.date[0]?.field ?? null);
+			const tagsField = createViewOption<string | null>('tagsField', () => fieldGroups.value.tags[0]?.field ?? null);
+			const userField = createViewOption<string | null>('userField', () => fieldGroups.value.user[0]?.field ?? null);
+			const titleField = createViewOption<string | null>('titleField', () => fieldGroups.value.title[0]?.field ?? null);
+			const textField = createViewOption<string | null>('textField', () => fieldGroups.value.text[0]?.field ?? null);
+			const showUngrouped = createViewOption<boolean>('showUngrouped', () => false);
+
+			const imageSource = createViewOption<string | null>(
+				'imageSource',
+				() => fieldGroups.value.file[0]?.field ?? null,
+			);
+
+			const crop = createViewOption<boolean>('crop', () => true);
 
 			const selectedGroup = computed(() => fieldGroups.value.group.find((group) => group.field === groupField.value));
 
@@ -406,10 +411,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				userFieldType,
 			};
 
-			function createViewOption<T>(key: keyof LayoutOptions, defaultValue: any) {
+			function createViewOption<T>(key: keyof LayoutOptions, defaultValue: () => any) {
 				return computed<T>({
 					get() {
-						return layoutOptions.value?.[key] !== undefined ? layoutOptions.value[key] : defaultValue;
+						return layoutOptions.value?.[key] !== undefined ? layoutOptions.value[key] : defaultValue();
 					},
 					set(newValue: T) {
 						layoutOptions.value = {

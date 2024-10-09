@@ -2,8 +2,10 @@ import { fetchUserCount, type FetchUserCountOptions } from '../../../utils/fetch
 import type { Context } from '../../types.js';
 import { validateRemainingAdminCount } from './validate-remaining-admin-count.js';
 
-export interface ValidateRemainingAdminUsersOptions
-	extends Pick<FetchUserCountOptions, 'excludeAccessRows' | 'excludePolicies' | 'excludeUsers' | 'excludeRoles'> {}
+export type ValidateRemainingAdminUsersOptions = Pick<
+	FetchUserCountOptions,
+	'excludeAccessRows' | 'excludePolicies' | 'excludeUsers' | 'excludeRoles'
+>;
 
 export async function validateRemainingAdminUsers(options: ValidateRemainingAdminUsersOptions, context: Context) {
 	const { admin } = await fetchUserCount({

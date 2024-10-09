@@ -293,7 +293,7 @@ async function refreshLivePreview() {
 		await fetchTemplateValues();
 		window.refreshLivePreview(previewUrl.value);
 		if (popupWindow) popupWindow.refreshLivePreview(previewUrl.value);
-	} catch (error) {
+	} catch {
 		// noop
 	}
 }
@@ -468,7 +468,7 @@ function revert(values: Record<string, any>) {
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view v-else v-model:splitView="splitView" :split-view-min-width="310" :title="title">
+	<private-view v-else v-model:split-view="splitView" :split-view-min-width="310" :title="title">
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}

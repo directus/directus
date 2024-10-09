@@ -3,6 +3,7 @@ import { useUserStore } from '@/stores/user';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { BasicRole } from '../composables/use-navigation';
+import { translate } from '@/utils/translate-literal';
 
 const props = defineProps<{
 	role: BasicRole;
@@ -33,7 +34,7 @@ const settingLink = computed(() => ({
 		@click="$emit('click', { role: role.id })"
 	>
 		<v-list-item-icon><v-icon :name="role.icon" /></v-list-item-icon>
-		<v-list-item-content>{{ role.name }}</v-list-item-content>
+		<v-list-item-content>{{ translate(role.name) }}</v-list-item-content>
 	</v-list-item>
 	<v-list-group
 		v-else
@@ -47,7 +48,7 @@ const settingLink = computed(() => ({
 		<template #activator>
 			<v-list-item-icon><v-icon :name="role.icon" /></v-list-item-icon>
 			<v-list-item-content>
-				<v-text-overflow :text="role.name" />
+				<v-text-overflow :text="translate(role.name)" />
 			</v-list-item-content>
 		</template>
 
