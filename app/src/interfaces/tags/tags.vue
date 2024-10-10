@@ -8,8 +8,8 @@ const props = withDefaults(
 		value: string[] | string | null;
 		disabled?: boolean;
 		placeholder?: string;
-		whitespace?: string;
-		capitalization?: 'uppercase' | 'lowercase' | 'auto-format';
+		whitespace?: string | null;
+		capitalization?: string | null;
 		alphabetize?: boolean;
 		iconLeft?: string;
 		iconRight?: string;
@@ -65,7 +65,7 @@ function processArray(array: string[]): string[] {
 		if (props.capitalization === 'uppercase') val = val.toUpperCase();
 		if (props.capitalization === 'lowercase') val = val.toLowerCase();
 
-		const whitespace = props.whitespace === undefined ? ' ' : props.whitespace;
+		const whitespace = props.whitespace === undefined || props.whitespace === null ? ' ' : props.whitespace;
 
 		if (props.capitalization === 'auto-format') val = formatTitle(val, new RegExp(whitespace));
 
