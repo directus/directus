@@ -80,7 +80,7 @@
 		"@rollup/plugin-yaml": "4.1.2",
 		"@sindresorhus/slugify": "2.2.1",
 		"@tinymce/tinymce-vue": "6.0.1",
-		"@turf/meta": "6.5.0",
+		"@turf/meta": "7.1.0",
 		"@types/base-64": "1.0.2",
 		"@types/chroma-js": "2.4.4",
 		"@types/codemirror": "5.60.15",
