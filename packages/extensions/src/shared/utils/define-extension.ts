@@ -45,9 +45,7 @@ export function definePanel<Custom extends CustomConfig<PanelConfig>>(
 	return config;
 }
 
-export function defineHook<Config extends HookConfig>(
-	config: Config,
-): Config {
+export function defineHook(config: HookConfig): HookConfig {
 	return config;
 }
 
