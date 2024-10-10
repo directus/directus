@@ -8,8 +8,8 @@ const props = withDefaults(
 		value: string[] | string | null;
 		disabled?: boolean;
 		placeholder?: string;
-		whitespace?: string;
-		capitalization?: 'uppercase' | 'lowercase' | 'auto-format';
+		whitespace?: string | null;
+		capitalization?: string | null;
 		alphabetize?: boolean;
 		iconLeft?: string;
 		iconRight?: string;
