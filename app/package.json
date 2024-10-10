@@ -92,7 +92,7 @@
 		"@types/geojson": "7946.0.14",
 		"@types/lodash": "4.17.7",
 		"@types/mapbox__mapbox-gl-draw": "1.4.7",
-		"@types/mapbox__mapbox-gl-geocoder": "4.7.7",
+		"@types/mapbox__mapbox-gl-geocoder": "5.0.0",
 		"@types/qrcode": "1.5.5",
 		"@types/semver": "7.5.8",
 		"@types/wellknown": "0.5.8",

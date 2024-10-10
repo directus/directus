@@ -728,8 +728,8 @@ importers:
         specifier: 1.4.7
         version: 1.4.7
       '@types/mapbox__mapbox-gl-geocoder':
-        specifier: 4.7.7
-        version: 4.7.7
+        specifier: 5.0.0
+        version: 5.0.0
       '@types/qrcode':
         specifier: 1.5.5
         version: 1.5.5
@@ -5148,8 +5148,8 @@ packages:
   '@types/mapbox__mapbox-gl-draw@1.4.7':
     resolution: {integrity: sha512-SNiewXzHCgbJ4EIEG6B7ZMFTwYhHAoEWLdD179AujwmGBaYjn/LZBEQRJLjjq2utB4dEsy5ys2t4cXwEmShpPQ==}
 
-  '@types/mapbox__mapbox-gl-geocoder@4.7.7':
-    resolution: {integrity: sha512-RFUDSDnFoCBapQWfGdgNGkB76drJ2kVG9tH0ottQtDpTW3KPtdQobw0lvvJK4VIMDEKIt/ssEyyLvY1Tja7MSw==}
+  '@types/mapbox__mapbox-gl-geocoder@5.0.0':
+    resolution: {integrity: sha512-eGBWdFiP2QgmwndPyhwK6eBeOfyB8vRscp2C6Acqasx5dH8FvTo/VgXWCrCKFR3zkWek/H4w4/CwmBFOs7OLBA==}
 
   '@types/markdown-it@12.2.3':
     resolution: {integrity: sha512-GKMHFfv3458yYy+v/N8gjufHO6MSZKCOXpZc5GXIWWy8uldwfmPn98vp81gZ5f9SVw8YYBctgfJ22a2d7AOMeQ==}
@@ -16012,7 +16012,7 @@ snapshots:
       '@types/geojson': 7946.0.14
       mapbox-gl: 1.13.3
 
-  '@types/mapbox__mapbox-gl-geocoder@4.7.7':
+  '@types/mapbox__mapbox-gl-geocoder@5.0.0':
     dependencies:
       '@types/geojson': 7946.0.14
       '@types/mapbox-gl': 3.4.0
