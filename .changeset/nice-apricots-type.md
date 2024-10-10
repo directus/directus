@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix tags interface whitespace should handle null case
+Fixed tags interface to correctly handle reset whitespace option
