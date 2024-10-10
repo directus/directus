@@ -7,6 +7,11 @@
 	z-index: 3;
 }
 
+/* Remove once merged: https://github.com/codex-team/editor.js/pull/2679 */
+.codex-editor .ce-block__content [contenteditable] {
+	word-break: break-word;
+}
+
 .codex-editor ::selection {
 	background-color: var(--theme--background-accent);
 }
