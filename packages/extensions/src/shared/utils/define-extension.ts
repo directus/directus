@@ -49,9 +49,7 @@ export function defineHook(config: HookConfig): HookConfig {
 	return config;
 }
 
-export function defineEndpoint<Config extends EndpointConfig>(
-	config: Config,
-): Config {
+export function defineEndpoint(config: EndpointConfig): EndpointConfig {
 	return config;
 }
 
