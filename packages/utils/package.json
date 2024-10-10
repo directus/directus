@@ -47,14 +47,14 @@
 		"@types/fs-extra": "11.0.4",
 		"@types/js-yaml": "4.0.9",
 		"@types/lodash-es": "4.17.12",
-		"@types/node": "18.19.50",
+		"@types/node": "18.19.55",
 		"@types/tmp": "0.2.6",
 		"@vitest/coverage-v8": "2.1.2",
 		"tmp": "0.2.3",
-		"tsup": "8.2.4",
-		"typescript": "5.6.2",
+		"tsup": "8.3.0",
+		"typescript": "5.6.3",
 		"vitest": "2.1.2",
-		"vue": "3.4.27"
+		"vue": "3.5.11"
 	},
 	"peerDependencies": {
 		"vue": "^3.4"

@@ -25,11 +25,11 @@
 	},
 	"dependencies": {
 		"chalk": "5.3.0",
-		"commander": "12.0.0",
+		"commander": "12.1.0",
 		"execa": "8.0.1",
 		"fs-extra": "11.2.0",
 		"log-symbols": "7.0.0",
-		"ora": "8.0.1",
+		"ora": "8.1.0",
 		"update-check": "1.5.4"
 	},
 	"engines": {
