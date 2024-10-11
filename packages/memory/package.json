@@ -29,15 +29,15 @@
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"ioredis": "5.4.1",
-		"lru-cache": "10.2.2",
+		"lru-cache": "10.4.3",
 		"rate-limiter-flexible": "5.0.3"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.50",
+		"@types/node": "18.19.55",
 		"@vitest/coverage-v8": "2.1.2",
-		"tsup": "8.2.4",
-		"typescript": "5.6.2",
+		"tsup": "8.3.0",
+		"typescript": "5.6.3",
 		"vitest": "2.1.2"
 	}
 }
