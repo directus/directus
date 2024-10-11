@@ -11,18 +11,18 @@ import type {
 	PanelConfig,
 } from '../types/index.js';
 
-type CustomConfig<T extends object> = Record<string, unknown> & T;
+type CustomConfig<T extends object> = { [K in string]: K extends keyof T ? never : unknown };
 
 type ExtendedConfig<T extends object, C> = Prettify<T & Omit<C, keyof T>>;
 
 export function defineInterface<Custom extends CustomConfig<InterfaceConfig>>(
-	config: Custom,
+	config: ExtendedConfig<InterfaceConfig, Custom>,
 ): ExtendedConfig<InterfaceConfig, Custom> {
 	return config;
 }
 
 export function defineDisplay<Custom extends CustomConfig<DisplayConfig>>(
-	config: Custom,
+	config: ExtendedConfig<DisplayConfig, Custom>,
 ): ExtendedConfig<DisplayConfig, Custom> {
 	return config;
 }
@@ -34,13 +34,13 @@ export function defineLayout<Options = any, Query = any>(
 }
 
 export function defineModule<Custom extends CustomConfig<ModuleConfig>>(
-	config: Custom,
+	config: ExtendedConfig<ModuleConfig, Custom>,
 ): ExtendedConfig<ModuleConfig, Custom> {
 	return config;
 }
 
 export function definePanel<Custom extends CustomConfig<PanelConfig>>(
-	config: Custom,
+	config: ExtendedConfig<PanelConfig, Custom>,
 ): ExtendedConfig<PanelConfig, Custom> {
 	return config;
 }
@@ -54,7 +54,7 @@ export function defineEndpoint(config: EndpointConfig): EndpointConfig {
 }
 
 export function defineOperationApp<Custom extends CustomConfig<OperationAppConfig>>(
-	config: Custom,
+	config: ExtendedConfig<OperationAppConfig, Custom>,
 ): ExtendedConfig<OperationAppConfig, Custom> {
 	return config;
 }
