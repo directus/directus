@@ -111,7 +111,9 @@ async function onSubmit() {
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
-		<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
+		<v-button class="sign-in" type="submit" :loading="loggingIn" large>
+			<v-text-overflow :text="t('sign_in')" />
+		</v-button>
 	</form>
 </template>
 
@@ -119,5 +121,9 @@ async function onSubmit() {
 .v-input,
 .v-notice {
 	margin-bottom: 20px;
+}
+
+.sign-in {
+	max-width: 50%;
 }
 </style>
