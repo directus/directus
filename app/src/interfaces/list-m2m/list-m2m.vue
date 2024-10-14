@@ -496,7 +496,7 @@ function getLinkForItem(item: DisplayItem) {
 				</div>
 
 				<v-button
-					v-if="updateAllowed && relatedPrimaryKeys.length > 0"
+					v-if="!disabled && updateAllowed && relatedPrimaryKeys.length > 0"
 					v-tooltip.bottom="t('edit')"
 					rounded
 					icon
@@ -539,7 +539,7 @@ function getLinkForItem(item: DisplayItem) {
 				:row-height="tableRowHeight"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
-				:show-select="updateAllowed ? 'multiple' : 'none'"
+				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
 				show-resize
 				@click:row="editRow"
 				@update:items="sortItems"
