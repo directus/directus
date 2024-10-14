@@ -605,8 +605,8 @@ importers:
         specifier: 2.30.6
         version: 2.30.6
       '@editorjs/embed':
-        specifier: 2.7.4
-        version: 2.7.4
+        specifier: 2.7.6
+        version: 2.7.6
       '@editorjs/header':
         specifier: 2.8.8
         version: 2.8.8
@@ -632,8 +632,8 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
       '@editorjs/underline':
-        specifier: 1.1.0
-        version: 1.1.0
+        specifier: 1.2.1
+        version: 1.2.1
       '@fortawesome/fontawesome-svg-core':
         specifier: 6.6.0
         version: 6.6.0
@@ -2861,8 +2861,8 @@ packages:
   '@editorjs/editorjs@2.30.6':
     resolution: {integrity: sha512-6eQMc4Di3Hz9p4o+NGRgKaCeAF7eAk106m+bsDLc4eo94VGYO1M163OiGFdmanE+w503qTmXOzycWff5blEOAQ==}
 
-  '@editorjs/embed@2.7.4':
-    resolution: {integrity: sha512-ByvSZnVuh9FhjLGmvjNlxhk3hnqN0g5K+E/tJY6Whdspgh9mst0iBARoVJQDGeJC+NNL2sSgYGt1ZjvEK5Z+lQ==}
+  '@editorjs/embed@2.7.6':
+    resolution: {integrity: sha512-L3agW/23mOI0L+oksUE9UOR5VSNCqapxLH5lma+5j+idjKCC31nxbx07x53MSJ4rlOTO1L7cFVhkqptEdOliJA==}
 
   '@editorjs/header@2.8.8':
     resolution: {integrity: sha512-bsMSs34u2hoi0UBuRoc5EGWXIFzJiwYgkFUYQGVm63y5FU+s8zPBmVx5Ip2sw1xgs0fqfDROqmteMvvmbCy62w==}
@@ -2891,8 +2891,8 @@ packages:
   '@editorjs/table@2.4.2':
     resolution: {integrity: sha512-zGmwLCarsaTgOfccxR3Lc6oC3QTX0JdoK0O3+8TE/VCR/xnW92VO7rAcu4cqTwtbFMQErYl8id9a5hM23vyFng==}
 
-  '@editorjs/underline@1.1.0':
-    resolution: {integrity: sha512-vQj2ROW1KreD31QHlhaPikmDJGWYzRBusN4Zyfwl9nIIQCByt4S8fZQpsrRvH4sct5mkirsHllNT00rJlqHK7Q==}
+  '@editorjs/underline@1.2.1':
+    resolution: {integrity: sha512-LjJ01ia6Pj0Z/elifycp9+T1bQs0eXNnIcEYKOlk0sGHLy88DPcBOh9oz1i+uWarZ4AjGsvSMaptpWe+yQNsjQ==}
 
   '@emnapi/runtime@1.2.0':
     resolution: {integrity: sha512-bV21/9LQmcQeCPEg3BDFtvwL6cwiTMksYNWQQ4KOxCZikEGalWtenoZ0wCiukJINlGCIi2KXx01g4FoH/LxpzQ==}
@@ -13770,7 +13770,7 @@ snapshots:
 
   '@editorjs/editorjs@2.30.6': {}
 
-  '@editorjs/embed@2.7.4':
+  '@editorjs/embed@2.7.6':
     dependencies:
       '@editorjs/editorjs': 2.30.6
 
@@ -13810,9 +13810,9 @@ snapshots:
     dependencies:
       '@codexteam/icons': 0.0.6
 
-  '@editorjs/underline@1.1.0':
+  '@editorjs/underline@1.2.1':
     dependencies:
-      '@codexteam/icons': 0.0.6
+      '@codexteam/icons': 0.3.2
 
   '@emnapi/runtime@1.2.0':
     dependencies:
