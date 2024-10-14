@@ -48,7 +48,7 @@ useHead({
 <template>
 	<public-view>
 		<div class="header">
-			<h1 class="type-title" :title="t('sign_in')">{{ t('sign_in') }}</h1>
+			<h1 class="type-title"><v-text-overflow :text="t('sign_in')" /></h1>
 			<div v-if="!authenticated && providerOptions.length > 1" class="provider-select">
 				<v-select v-model="providerSelect" inline :items="providerOptions" label />
 			</div>
@@ -86,9 +86,8 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/ellipsis';
-
 h1 {
+	overflow: hidden;
 	margin-bottom: 20px;
 }
 
@@ -115,7 +114,6 @@ h1 {
 
 	.type-title {
 		margin-bottom: 0;
-		@include ellipsis;
 	}
 
 	.provider-select {

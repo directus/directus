@@ -119,8 +119,8 @@ async function onSubmit() {
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button class="sign-in" type="submit" :loading="loggingIn" large :title="t('sign_in')">
-				{{ t('sign_in') }}
+			<v-button class="sign-in" type="submit" :loading="loggingIn" large>
+				<v-text-overflow :text="t('sign_in')" />
 			</v-button>
 			<router-link to="/reset-password" class="forgot-password">
 				{{ t('forgot_password') }}
@@ -130,8 +130,6 @@ async function onSubmit() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/ellipsis';
-
 .v-input,
 .v-notice {
 	margin-bottom: 20px;
@@ -154,8 +152,5 @@ async function onSubmit() {
 
 .sign-in {
 	max-width: 50%;
-	:deep(.content) {
-		@include ellipsis;
-	}
 }
 </style>
