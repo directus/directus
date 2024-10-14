@@ -342,9 +342,12 @@ function stageBatchEdits(edits: Record<string, any>) {
 			$type: item.$type,
 			$edits: item.$edits,
 			...getItemEdits(item),
-			[relatedPkField]: relatedId,
 			...edits,
 		};
+
+		if (relatedId !== null) {
+			changes[relatedPkField] = relatedId;
+		}
 
 		update(changes);
 	}
