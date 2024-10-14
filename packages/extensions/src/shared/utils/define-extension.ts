@@ -11,9 +11,9 @@ import type {
 	PanelConfig,
 } from '../types/index.js';
 
-type CustomConfig<T> = { [K in string]: K extends keyof T ? never : unknown };
+type CustomConfig<T extends object> = { [K in string]: K extends keyof T ? never : unknown };
 
-type ExtendedConfig<T, C> = Prettify<T & Omit<C, keyof T>>;
+type ExtendedConfig<T extends object, C> = Prettify<T & Omit<C, keyof T>>;
 
 export function defineInterface<Custom extends CustomConfig<InterfaceConfig>>(
 	config: ExtendedConfig<InterfaceConfig, Custom>,
@@ -45,15 +45,11 @@ export function definePanel<Custom extends CustomConfig<PanelConfig>>(
 	return config;
 }
 
-export function defineHook<Custom extends CustomConfig<HookConfig>>(
-	config: ExtendedConfig<HookConfig, Custom>,
-): ExtendedConfig<HookConfig, Custom> {
+export function defineHook(config: HookConfig): HookConfig {
 	return config;
 }
 
-export function defineEndpoint<Custom extends CustomConfig<EndpointConfig>>(
-	config: ExtendedConfig<EndpointConfig, Custom>,
-): ExtendedConfig<EndpointConfig, Custom> {
+export function defineEndpoint(config: EndpointConfig): EndpointConfig {
 	return config;
 }
 

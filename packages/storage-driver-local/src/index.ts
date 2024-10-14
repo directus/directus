@@ -1,4 +1,4 @@
-import type { TusDriver, ChunkedUploadContext, Range } from '@directus/storage';
+import type { TusDriver, ChunkedUploadContext, ReadOptions } from '@directus/storage';
 import fsProm from 'fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
@@ -28,18 +28,20 @@ export class DriverLocal implements TusDriver {
 		await mkdir(dirpath, { recursive: true });
 	}
 
-	async read(filepath: string, range?: Range) {
-		const options: Parameters<typeof createReadStream>[1] = {};
+	async read(filepath: string, options?: ReadOptions) {
+		const { range } = options || {};
+
+		const stream_options: Parameters<typeof createReadStream>[1] = {};
 
 		if (range?.start) {
-			options.start = range.start;
+			stream_options.start = range.start;
 		}
 
 		if (range?.end) {
-			options.end = range.end;
+			stream_options.end = range.end;
 		}
 
-		return createReadStream(this.fullPath(filepath), options);
+		return createReadStream(this.fullPath(filepath), stream_options);
 	}
 
 	async stat(filepath: string) {
