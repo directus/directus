@@ -16,7 +16,7 @@ import DrawerItem from '@/views/private/components/drawer-item.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { clamp, get, isEmpty, isNil, merge, set } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -390,12 +390,13 @@ function stageBatchEdits(edits: Record<string, any>) {
 			$index: item.$index,
 			$type: item.$type,
 			$edits: item.$edits,
-			...getItemEdits(item),
-			[junctionPkField]: junctionId,
-			[junctionField]: {
-				[relatedPkField]: relatedId,
-				...edits,
-			},
+			...merge(getItemEdits(item), {
+				[junctionPkField]: junctionId,
+				[junctionField]: {
+					[relatedPkField]: relatedId,
+					...edits,
+				},
+			}),
 		};
 
 		update(changes);
