@@ -391,13 +391,19 @@ function stageBatchEdits(edits: Record<string, any>) {
 			$type: item.$type,
 			$edits: item.$edits,
 			...merge(getItemEdits(item), {
-				[junctionPkField]: junctionId,
 				[junctionField]: {
-					[relatedPkField]: relatedId,
 					...edits,
 				},
 			}),
 		};
+
+		if (junctionId !== null) {
+			changes[junctionPkField] = junctionId;
+		}
+
+		if (relatedId !== null) {
+			set(changes, [junctionField, relatedPkField], relatedId);
+		}
 
 		update(changes);
 	}
