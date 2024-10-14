@@ -88,7 +88,6 @@ useHead({
 <style lang="scss" scoped>
 h1 {
 	overflow: hidden;
-	margin-bottom: 20px;
 }
 
 .registration-wrapper {

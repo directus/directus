@@ -376,6 +376,7 @@ const logoURL = computed<string | null>(() => {
 				background-color: rgb(38 50 56 / 0.2);
 				border-radius: 6px;
 				backdrop-filter: blur(2px);
+				word-break: break-word;
 			}
 		}
 
@@ -399,7 +400,7 @@ const logoURL = computed<string | null>(() => {
 		.title {
 			margin-top: 2px;
 			margin-left: 16px;
-			max-width: 100%;
+			overflow: hidden;
 
 			h1 {
 				font-weight: 700;
@@ -408,7 +409,6 @@ const logoURL = computed<string | null>(() => {
 			}
 
 			.subtitle {
-				width: 100%;
 				color: var(--theme--foreground-subdued);
 			}
 		}
