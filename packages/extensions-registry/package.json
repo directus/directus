@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-registry",
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"description": "Abstraction for exploring Directus extensions on a package registry",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -31,16 +31,16 @@
 		"@directus/utils": "workspace:*",
 		"ky": "1.7.2",
 		"lodash-es": "4.17.21",
-		"validate-npm-package-name": "5.0.1",
+		"validate-npm-package-name": "6.0.0",
 		"zod": "3.23.8"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/lodash-es": "4.17.12",
 		"@types/validate-npm-package-name": "4.0.2",
-		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.2.4",
-		"typescript": "5.4.5",
-		"vitest": "1.5.3"
+		"@vitest/coverage-v8": "2.1.2",
+		"tsup": "8.3.0",
+		"typescript": "5.6.3",
+		"vitest": "2.1.2"
 	}
 }

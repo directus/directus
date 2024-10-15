@@ -264,7 +264,7 @@ describe('#read', () => {
 	});
 
 	test('Optionally allows setting start range offset', async () => {
-		await driver.read(sample.path.input, { start: sample.range.start } as any);
+		await driver.read(sample.path.input, { range: { start: sample.range.start } } as any);
 
 		expect(fetch).toHaveBeenCalledWith(endpoint, {
 			headers: {
@@ -276,7 +276,7 @@ describe('#read', () => {
 	});
 
 	test('Optionally allows setting end range offset', async () => {
-		await driver.read(sample.path.input, { end: sample.range.end } as any);
+		await driver.read(sample.path.input, { range: { end: sample.range.end } } as any);
 
 		expect(fetch).toHaveBeenCalledWith(endpoint, {
 			headers: {
@@ -288,7 +288,7 @@ describe('#read', () => {
 	});
 
 	test('Optionally allows setting start and end range offset', async () => {
-		await driver.read(sample.path.input, sample.range);
+		await driver.read(sample.path.input, { range: sample.range });
 
 		expect(fetch).toHaveBeenCalledWith(endpoint, {
 			headers: {
@@ -303,7 +303,7 @@ describe('#read', () => {
 		vi.mocked(fetch).mockReturnValue({ status: 400, body: new ReadableStream() } as unknown as Promise<Response>);
 
 		try {
-			await driver.read(sample.path.input, sample.range);
+			await driver.read(sample.path.input, { range: sample.range });
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
@@ -313,13 +313,13 @@ describe('#read', () => {
 	test('Throws an error when returned stream is not a readable stream', async () => {
 		vi.mocked(fetch).mockReturnValue({ status: 200, body: undefined } as unknown as Promise<Response>);
 
-		expect(driver.read(sample.path.input, sample.range)).rejects.toThrowError(
+		expect(driver.read(sample.path.input, { range: sample.range })).rejects.toThrowError(
 			new Error(`No stream returned for file "${sample.path.input}"`),
 		);
 	});
 
 	test('Returns stream', async () => {
-		const stream = await driver.read(sample.path.input, sample.range);
+		const stream = await driver.read(sample.path.input, { range: sample.range });
 
 		expect(fetch).toHaveBeenCalledWith(endpoint, {
 			headers: {

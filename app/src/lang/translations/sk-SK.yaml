@@ -1000,6 +1000,22 @@ no_data_in_flow: V rámci tohoto toku neboli vytvorené ani prečítané žiadne
 accountability: Zodpovednosť
 payload: Payload
 details: Podrobnosti
+resume_streaming_logs: Obnoviť stream logov
+pause_streaming_logs: Pozastaviť stream logov
+logs_session_resumed: Logovacia relácia obnovená...
+logs_session_paused: Logovacia relácia pozastavená...
+logs_stream_disconnected: Stream logov odpojený...
+log_detail_filter_paths: 'Filter ciest (napr. req.method, res.statusCode)'
+logs_beginning: Toto je začiatok logovacej relácie...
+logs_waiting: 'Čaká sa na ďalšie logy...'
+logs_unread_count: '{count} neprečítaných'
+clear_logs: Vymazať logy
+search_logs: Hľadať logy...
+all_instances: Všetky inštancie
+instance_count: 'Žiadna inštancia | Jedna inštancia | {count} inštancií'
+all_log_levels: Všetky úrovne logov
+log_level_count: 'Žiadna úroveň logu | Jedna úroveň logov | {count} úrovní logov'
+soft_wrap_lines: Mäkké zalomenie riadkov
 full_screen: Celá obrazovka
 full_text_search: Full-text hľadanie
 edit_panels: Upraviť panely
@@ -1108,6 +1124,7 @@ settings_project: Nastavenia
 settings_appearance: Vzhľad
 settings_webhooks: Webhooky
 settings_flows: Toky
+settings_system_logs: Systémové logy
 settings_presets: Záložky
 settings_translations: Preklady
 one_or_more_options_are_missing: Chýba jedna alebo viac možností
@@ -1153,6 +1170,7 @@ page_help_settings_datamodel_collections: >-
   **Data Model: Zbierky** — Zoznamy dostupných zbierok. Zahŕňa to viditeľné, skryté a systémové zbierky, a taktiež nespravované databázové tabuľky, ktore sa dajú pridať.
 page_help_settings_datamodel_fields: >-
   **Data Model: Zbierka** — Formulár na správu tejto zbierky a jej polí.
+page_help_settings_system_logs: '**Systémové logy** — Prístup k streamu systémových logov.'
 page_help_settings_policies_collection: '**Prehliadať politiky** - Zoznam všetkých politík v projekte.'
 page_help_settings_policies_item: "**Detaily politiky** - Spravuje povolenia politiky a iné nastavenia."
 page_help_settings_roles_collection: '**Prehliadať role** - Zoznam všetkých rolí v projekte.'

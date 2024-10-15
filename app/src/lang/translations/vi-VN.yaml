@@ -69,6 +69,7 @@ extension_hook: Móc
 extension_endpoint: Endpoint
 extension_operation: Thao tác
 extension_bundle: Nhóm
+extension_interfaces: Giao diện
 extension_displays: Hiển thị
 extension_layouts: Bố cục
 extension_modules: Mô đun
@@ -144,6 +145,7 @@ delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
 version: Phiên bản
+promote_version_disabled: Không có thay đổi
 promote_version_changes: Thay đổi
 reset_bookmark: Đặt lại Dấu trang
 update_bookmark: Cập nhật Dấu trang
@@ -735,6 +737,7 @@ run_flow_on_current_collection: Chạy luồng trên collection hiện tại
 run_flow: Chạy
 field_name_placeholder: Nhập tên trường...
 field_key_placeholder: Nhập field key...
+flow_delete_confirm: Bạn có chắc chắn muốn xóa quy trình "{flow}" không?
 flow_name: Tên
 flow_tracking_null: Không theo dõi bất cứ điều gì
 code: Mã nguồn
@@ -1001,6 +1004,8 @@ continue_label: Tiếp tục
 continue_as: >-
   Đang đăng nhập {name}. Nhấn tiếp tục để đăng nhập.
 editing_role: '{role} Vai trò'
+delete_are_you_sure: >-
+  Hành động này là vĩnh viễn và không thể hoàn tác.
 delete_field_are_you_sure: >-
   Bạn có chắc chắn muốn xóa trường "{field}"? Dữ liệu đã xóa sẽ không thể phục hồi lại được.
 description: Mô tả

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/release-notes-generator",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Directus tailored release notes generator for changesets",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -27,16 +27,17 @@
 	"dependencies": {
 		"@changesets/get-github-info": "0.6.0",
 		"@pnpm/find-workspace-packages": "6.0.9",
-		"@pnpm/workspace.pkgs-graph": "3.0.6",
+		"@pnpm/workspace.pkgs-graph": "4.0.6",
 		"semver": "7.6.3"
 	},
 	"devDependencies": {
 		"@changesets/types": "6.0.0",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.50",
+		"@pnpm/types": "12.2.0",
+		"@types/node": "18.19.55",
 		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "1.5.3",
-		"typescript": "5.4.5",
-		"vitest": "1.5.3"
+		"@vitest/coverage-v8": "2.1.2",
+		"typescript": "5.6.3",
+		"vitest": "2.1.2"
 	}
 }

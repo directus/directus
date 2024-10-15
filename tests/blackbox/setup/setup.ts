@@ -124,7 +124,7 @@ export async function setup() {
 							process.env['serverUrl'] = serverUrl;
 							break;
 						}
-					} catch (err) {
+					} catch {
 						continue;
 					}
 				}

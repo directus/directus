@@ -4,6 +4,7 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useFieldsStore } from '@/stores/fields';
 import { unexpectedError } from '@/utils/unexpected-error';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 import { useApi } from '@directus/composables';
 import { Alterations, Item, Policy } from '@directus/types';
 import { cloneDeep, isEmpty, isEqual, isObjectLike } from 'lodash';
@@ -86,6 +87,10 @@ useShortcut('meta+s', () => {
 	if (hasEdits.value) saveAndStay();
 });
 
+useShortcut('meta+shift+s', () => {
+	if (hasEdits.value) saveAndAddNew();
+});
+
 onMounted(() => {
 	fetchPolicies();
 });
@@ -156,6 +161,15 @@ async function saveAndStay() {
 	}
 }
 
+async function saveAndAddNew() {
+	try {
+		await save();
+		router.push(`/settings/roles/+`);
+	} catch {
+		// `save` shows unexpected error dialog
+	}
+}
+
 async function saveAndQuit() {
 	try {
 		await save();
@@ -170,6 +184,11 @@ function discardAndLeave() {
 	edits.value = {};
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
 }
 
 function isAlterations<T extends Item>(value: any): value is Alterations<T> {
@@ -189,15 +208,18 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 		</template>
 
 		<template #actions>
-			<v-button
-				v-tooltip.bottom="t('save')"
-				rounded
-				icon
-				:loading="saving"
-				:disabled="hasEdits === false"
-				@click="saveAndQuit"
-			>
+			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
 				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						v-if="hasEdits"
+						:disabled-options="['save-as-copy']"
+						@save-and-stay="saveAndStay"
+						@save-and-add-new="saveAndAddNew"
+						@discard-and-stay="discardAndStay"
+					/>
+				</template>
 			</v-button>
 		</template>
 

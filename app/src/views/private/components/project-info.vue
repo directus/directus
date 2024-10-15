@@ -13,8 +13,8 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	<div class="project-info">
 		<latency-indicator />
 		<div class="name-container">
-			<v-text-overflow placement="right" class="name" :text="name" />
-			<v-text-overflow v-if="descriptor" placement="right" class="descriptor" :text="descriptor" />
+			<v-text-overflow class="name" :text="name" placement="bottom" />
+			<v-text-overflow v-if="descriptor" class="descriptor" :text="descriptor" placement="bottom" />
 		</div>
 	</div>
 </template>
@@ -37,15 +37,14 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 		width: 100px;
 		margin-left: 12px;
 		line-height: 1.3;
+		margin-right: 8px;
 	}
 
 	.name {
-		margin-right: 8px;
 		font-family: var(--theme--navigation--project--font-family);
 	}
 
 	.descriptor {
-		display: block;
 		color: var(--theme--foreground-subdued);
 	}
 }
