@@ -1842,6 +1842,8 @@ interfaces:
     description: Selecione ou envie uma imagem
     crop: Cortar para Caber
     crop_label: Cortar a imagem conforme necessário
+    letterbox: Faixa preta
+    letterbox_label: Adicionar preenchimento à pré-visualização da imagem
   system-interface:
     interface: Interface
     description: Selecione uma interface existente
