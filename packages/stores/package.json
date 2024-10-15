@@ -30,10 +30,10 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@vueuse/shared": "11.1.0",
-		"pinia": "2.2.2",
-		"tsup": "8.2.4",
-		"typescript": "5.6.2",
-		"vue": "3.4.27"
+		"pinia": "2.2.4",
+		"tsup": "8.3.0",
+		"typescript": "5.6.3",
+		"vue": "3.5.11"
 	},
 	"peerDependencies": {
 		"pinia": "2",
