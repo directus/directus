@@ -639,6 +639,10 @@ no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
 webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Les Webhooks sont obsolètes et une utilisation ultérieure est déconseillée.
+
+  Veuillez utiliser **Flux** avec l'opération [Webhook / Requêtes URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) à la place.
 no_webhooks_copy: Aucun webhooks n'a encore été configuré. Commencez par en créer un ci-dessous.
 no_notifications: Aucune notification
 no_notifications_copy: Vous êtes à jour !
@@ -1169,6 +1173,9 @@ page_help_settings_datamodel_collections: >-
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
 page_help_settings_system_logs: '**System Logs** — Accédez au flux en direct des journaux du système.'
+page_help_settings_policies_collection: '**Parcourir les polices** — Liste toutes les polices du projet.'
+page_help_settings_policies_item: "**Détail de la police** — Gestion des permissions d'une police et d'autres paramètres."
+page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste tous les rôles utilisateur du projet.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
   **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
@@ -1216,6 +1223,7 @@ singleton: Singleton
 singleton_label: Est un objet unique
 system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
 directus_collection:
+  directus_access: Polices attachées
   directus_activity: Journaux de traçabilité de tous les événements
   directus_collections: Configuration de la collection supplémentaire et métadonnées
   directus_dashboards: Tableaux de bord dans le module Insights
@@ -1227,6 +1235,7 @@ directus_collection:
   directus_notifications: Notifications envoyées aux utilisateurs
   directus_operations: Opérations qui s'exécutent dans les Flux
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
+  directus_permissions: Permissions d'accès pour chaque police
   directus_policies: Règles de contrôle d'accès
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
@@ -1500,6 +1509,7 @@ field_options:
     name: Un nom unique pour cette règle...
     description: Une description de cette règle...
     ip_access: Ajouter les adresses IP autorisées, les plages IP et les blocs CIDR. Laisser vide pour tout autoriser...
+    enforce_tfa: Imposer l'authentification à deux facteurs
     assigned_to: Assigné à
   directus_roles:
     name: Le nom unique de ce rôle...
@@ -1510,6 +1520,7 @@ field_options:
       name_placeholder: Entrez un titre...
       link_name: Lien
       link_placeholder: URL relative ou absolue...
+    parent_note: Rôle parent optionnel duquel ce rôle hérite des permissions
     children_note: Rôles imbriqués qui héritent des permissions de ces rôles
     collections_name: Collections
     collections_addLabel: Ajouter une collection...
