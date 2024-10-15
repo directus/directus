@@ -91,6 +91,7 @@ n_files: '{n} plików'
 verified: Zweryfikowano
 homepage: Strona główna
 repository: Repozytorium
+reload_page: Przeładuj Stronę
 reload_required: Wymagane ponowne załadowanie
 report_an_issue: Zgłoś problem
 website: Strona internetowa
