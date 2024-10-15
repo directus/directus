@@ -264,6 +264,7 @@ permissions_for_policy: 'Éléments que la Règle {policy} peut {action}.'
 fields_for_role: 'Champs dont l''action « {action} » peut être effectué par le rôle {role} .'
 fields_for_policy: 'Champs que la règle {policy} peut {action}.'
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
+validation_for_policy: 'Règles du champ pour {action} que la police {policy} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
 presets_for_policy: 'Valeurs de champ par défaut pour la Règle {policy}.'
 presets_field_warning: 'Les préréglages relationnels pour le champ "{field}" doivent être configurés avec la syntaxe "détaillée".'
@@ -612,6 +613,7 @@ comments: Commentaires
 no_comments: Pas encore de commentaires
 expand: Agrandir
 expand_all: Tout développer
+expand_none: Ne pas étendre
 collapse: Replier
 collapse_all: Réduire Tout
 select_item: Sélectionner un élément
@@ -630,6 +632,7 @@ display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
 list-m2a: Constructeur (M2A)
 item_count: 'Aucun élément | Un élément | {count} éléments'
+filtered_item_count: 'Aucun élément filtré | Un élément filtré | {count} éléments filtrés'
 no_items_copy: Il n’y a pas encore d’élément dans cette collection.
 file_count: 'Aucun fichier | Un fichier | {count} fichiers'
 no_files_copy: Il n'y a aucun fichier ici.
@@ -1507,6 +1510,7 @@ field_options:
       name_placeholder: Entrez un titre...
       link_name: Lien
       link_placeholder: URL relative ou absolue...
+    children_note: Rôles imbriqués qui héritent des permissions de ces rôles
     collections_name: Collections
     collections_addLabel: Ajouter une collection...
   directus_users:
@@ -1557,6 +1561,7 @@ live_preview:
   toggle_3d: Alterner 3D
 shares: Partages
 unlimited_usage: Utilisation illimitée
+uses_left: Pas d'utilisation restante | Une utilisation restante | {n} utilisations restantes
 no_shares: Aucun partage pour l'instant
 new_share: Nouveau partage
 expired: Expiré
@@ -1590,6 +1595,7 @@ continue_label: Continuer
 continue_as: >-
   {name} est actuellement authentifié. Si vous reconnaissez ce compte, cliquez sur continuer.
 editing_role: 'Rôle {role}'
+editing_policy: 'Police {policy}'
 no_permissions: Aucune Permission
 permission_add_collection: Ajouter une collection
 creating_webhook: Création du Webhook
@@ -1655,6 +1661,7 @@ select_interface: Sélectionner une interface
 select_display: Sélectionnez un affichage
 settings: Réglages
 register: S'inscrire
+registration_successful_headline: Succès !
 registration_successful_note: Vous pouvez maintenant passer à la page de connexion.
 registration_successful_check_email_note: |
   Veuillez noter qu'avant de pouvoir vous connecter, vous devrez vérifier votre adresse e-mail en cliquant sur le lien de vérification qui vous a été envoyé.
@@ -1966,6 +1973,7 @@ interfaces:
     no_collection: Aucune collection
     toggle_split_view: Basculer en vue partagée
     enable: Activer
+    default_split_view_state: État de la vue divisée par défaut
     user_language: Utiliser la langue actuelle de l'utilisateur
     default_language: Langue par défaut
     language_field: Champ d'indicateur de langue
