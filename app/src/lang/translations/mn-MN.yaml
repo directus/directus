@@ -22,6 +22,7 @@ full_width: Бүтэн өргөн
 group: Бүлэг
 and: Мөн
 or: Эсвэл
+dataset_too_large_currently_showing_n_items: Өгөгдлийн багц хэт том байна. Одоогоор эхний {n} оролтуудыг харуулж байна.
 extension_modules: Модуль
 fill_width: Өргөн дүүрэн
 field_name_translations: Талбарын нэрний орчуулга
