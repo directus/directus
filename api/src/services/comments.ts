@@ -1,16 +1,14 @@
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
-import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import type { Filter } from '@directus/system-data';
 import type { Accountability, Comment, Item, PrimaryKey, Query } from '@directus/types';
 import { cloneDeep, mergeWith, uniq } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
-import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
 import { userName } from '../utils/user-name.js';
 import { ActivityService } from './activity.js';
@@ -231,104 +229,6 @@ ${comment}
 		}
 
 		return super.createOne(data, opts);
-	}
-
-	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const keys = await this.getKeysByQuery(query);
-		const migratedKeys = await this.processPrimaryKeys(keys);
-
-		return super.updateMany(migratedKeys, data, opts);
-	}
-
-	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const migratedKeys = await this.processPrimaryKeys(keys);
-
-		return super.updateMany(migratedKeys, data, opts);
-	}
-
-	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const migratedKey = await this.migrateLegacyComment(key);
-
-		return super.updateOne(migratedKey, data, opts);
-	}
-
-	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const keys = await this.getKeysByQuery(query);
-		const migratedKeys = await this.processPrimaryKeys(keys);
-
-		return super.deleteMany(migratedKeys, opts);
-	}
-
-	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const migratedKeys = await this.processPrimaryKeys(keys);
-
-		return super.deleteMany(migratedKeys, opts);
-	}
-
-	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		const migratedKey = await this.migrateLegacyComment(key);
-
-		return super.deleteOne(migratedKey, opts);
-	}
-
-	private async processPrimaryKeys(keys: PrimaryKey[]) {
-		const migratedKeys = [];
-
-		for (const key of keys) {
-			if (isNaN(Number(key))) {
-				migratedKeys.push(key);
-				continue;
-			}
-
-			migratedKeys.push(await this.migrateLegacyComment(key));
-		}
-
-		return migratedKeys;
-	}
-
-	async migrateLegacyComment(activityPk: PrimaryKey): Promise<PrimaryKey> {
-		// Skip migration if not a legacy comment
-		if (isNaN(Number(activityPk))) {
-			return activityPk;
-		}
-
-		return transaction(this.knex, async (trx) => {
-			let primaryKey;
-			const legacyComment = await trx('directus_activity').select('*').where('id', '=', activityPk).first();
-
-			// Legacy comment
-			if (legacyComment['action'] === Action.COMMENT) {
-				primaryKey = randomUUID();
-
-				await trx('directus_comments').insert({
-					id: primaryKey,
-					collection: legacyComment.collection,
-					item: legacyComment.item,
-					comment: legacyComment.comment,
-					user_created: legacyComment.user,
-					date_created: legacyComment.timestamp,
-				});
-
-				await trx('directus_activity')
-					.update({
-						action: Action.CREATE,
-						collection: 'directus_comments',
-						item: primaryKey,
-						comment: null,
-					})
-					.where('id', '=', activityPk);
-			}
-			// Migrated comment
-			else if (legacyComment.collection === 'directus_comment' && legacyComment.action === Action.CREATE) {
-				primaryKey = legacyComment.item;
-			}
-
-			if (!primaryKey) {
-				throw new ForbiddenError();
-			}
-
-			return primaryKey;
-		});
 	}
 
 	generateQuery(type: serviceOrigin, originalQuery: Query): Query {
