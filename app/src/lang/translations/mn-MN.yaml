@@ -271,7 +271,7 @@ presets_field_warning: '"{field}" талбарын хамаарлын урьдч
 presentation_and_aliases: Үзүүлэн & Нэр
 revision_post_create: Оруулга нь анх үүсэхдээ ийм байдлаар харагдаж байсан.
 revision_post_update: Оруулга нь шинэчлэл орсны дараагаар ингэж харагдана.
-changes_made: Дараах тодорхой өөрчлөлтүүдийг энэ буцаалтад хийсэн.
+changes_made: Дараах тодорхой өөрчлөлтүүдийг энэ хяналтад хийсэн.
 no_relational_data: Энд хамаарлын өгөгдөл ороогүй гэдгийг анхаарна уу.
 junction_field_location: Холбох талбаруудын байршил
 top: Дээр
@@ -392,7 +392,7 @@ m2o_relationship: Many to One харилцаа
 o2m_relationship: One to Many харилцаа
 m2m_relationship: Many to Many харилцаа
 m2a_relationship: Many to Any харилцаа
-invalid_item: Хүчингүй оруулга
+invalid_item: Тодорхойгүй оруулга
 require_confirmation: Баталгаажуулах шаардлагатай
 dialog: Диалог
 modal: Модал
@@ -462,7 +462,7 @@ download_page_as_csv: 'Хуудсыг CSV форматаар татах'
 download_page_as_csv_unsupported: Энэ бүтэц нь одоогийн хуудсыг татаж авахыг дэмждэггүй.
 private_user: Хувийн хэрэглэгч
 creation_preview: Үүсгэлтийг урьдчилан харах
-revision_preview: Буцаалтыг урьдчилан харах
+revision_preview: Хяналтыг урьдчилан харах
 updates_made: Хийсэн шинэчлэлтүүд
 leave_comment: Сэтгэгдэл үлдээх...
 post_comment_success: Сэтгэгдлийг нийтэллээ
@@ -721,7 +721,35 @@ corresponding_field: Харгалзах талбар
 errors:
   COLLECTION_NOT_FOUND: "Бүрдэл байхгүй байна"
   CONTAINS_NULL_VALUES: Талбар нь null утга агуулсан байна
+  CONTENT_TOO_LARGE: Оруулсан оруулга/файл нь хэт том байна
+  FIELD_NOT_FOUND: Талбар олдсонгүй
+  FORBIDDEN: Хориотой
+  GRAPHQL_VALIDATION: GraphQL баталгаажуулалт
+  ILLEGAL_ASSET_TRANSFORMATION: Зургийн эхийг урьдчилан үзэхэд хэт том байна
+  INTERNAL_SERVER_ERROR: Гэнэтийн алдаа
+  INVALID_CONFIG: Тодорхойгүй тохиргоо
+  INVALID_CREDENTIALS: Нэвтрэх нэр эсвэл нууц үг буруу байна
+  INVALID_FOREIGN_KEY: Гадаад түлхүүр тодорхойгүй
+  INVALID_IP: IP хаяг нь зөвшөөрөлгүй байна
+  INVALID_OTP: Нэг удаагийн нууц үг буруу байна
+  INVALID_PAYLOAD: Чингэлэг тодорхойгүй
+  INVALID_PROVIDER: Хэрэглэгч нь өөр баталгаажуулалтын үйлчилгээ үзүүлэгчид харъяалагддаг
+  INVALID_QUERY: Асуулга тодорхойгүй
+  INVALID_TOKEN: Токен тодорхойгүй
+  INVALID_USER: Хэрэглэгчийг баталгаажуулж чадсангүй
+  ITEM_LIMIT_REACHED: Оруулгын хязгаар хэтэрсэн байна
+  ITEM_NOT_FOUND: Оруулга олдсонгүй
+  LIMIT_EXCEEDED: 'Хязгаар хэтэрсэн байна'
+  METHOD_NOT_ALLOWED: Зөвшөөрөгдөөгүй арга
   NOT_NULL_VIOLATION: Утга null байж болохгүй
+  RANGE_NOT_SATISFIABLE: Хязгаар хүрээ тодорхойгүй
+  RECORD_NOT_UNIQUE: Давхардсан утга байна
+  REQUESTS_EXCEEDED: Хүсэлтүүдийн тоо хязгаарт хүрсэн байна
+  ROUTE_NOT_FOUND: Олдсонгүй
+  SERVICE_UNAVAILABLE: Үйлчилгээ боломжгүй байна
+  TOKEN_EXPIRED: Токен хугацаа дууссан байна
+  UNEXPECTED_RESPONSE: Гэнэтийн хариу
+  UNKNOWN: Гэнэтийн алдаа
   UNPROCESSABLE_CONTENT: Боловсруулах боломжгүй контент
   UNSUPPORTED_MEDIA_TYPE: Дэмжигдээгүй медиа төрөл
   USER_SUSPENDED: Хэрэглэгчийг түдгэлзүүлсэн
@@ -738,14 +766,166 @@ edit_global_bookmark: Глобал тэмдэглэгээг засах
 cannot_edit_role_bookmarks: Үүргийн тэмдэглэгээг засах боломжгүй
 cannot_edit_global_bookmarks: Глобал тэмдэглэгээг засах боломжгүй
 bookmarks: Тэмдэглэгээнүүд
+presets: Урьдчилсан тохиргоо
+unexpected_error: Гэнэтийн алдаа
+unexpected_error_copy: Гэнэтийн алдаа гарсан байна. Дахин оролдоно уу.
+copy_details: Дэлгэрэнгүй мэдээллийг хуулах
+no_app_access: Апп хандалт байхгүй
+no_app_access_copy: Энэ хэрэглэгч админ апп хэрэглэх зөвшөөрөлгүй байна.
+password_reset_sent: Та бүртгэлтэй бол бид тань руу нууц үг сэргээх аюулгүй холбоос илгээлээ
+password_reset_successful: Нууц үгийг амжилттай сэргээгдлээ
+back: Буцах
+filter: Шүүлтүүр
+edit_image: Зураг засах
+editing_image: Зураг засаж байна
+square: Дөрвөлжин
+free: Чөлөөт
+flip_horizontal: Хэвтээ эргүүлэх
+flip_vertical: Босоо эргүүлэх
+aspect_ratio: Харьцаа
+rotate: Эргүүлэх
+all_users: Бүх хэрэглэгч
+delete_collection: Бүрдэл устгах
+update_collection_success: Бүрдлийг шинэчиллээ
+delete_collection_success: Бүрдлийг устгалаа
+make_collection_visible: Бүрдлийг харагдахуйц болгох
+make_collection_hidden: Бүрдлийг нуух
+make_folder_visible: Хавтсыг харагдахуйц болгох
+make_folder_hidden: Хавтсыг нуух
+goto_collection_content: Контентыг харах
+count_of_total_items: '{total}-аас {count} оруулгууд'
+start_end_of_count_items: '{count}-аас {start}-{end} оруулгууд'
+start_end_of_count_filtered_items: '{count}-аас {start}-{end} шүүгдсэн оруулгууд'
+delete_collection_are_you_sure: >-
+  "{collection}" бүрдлийг устгахдаа та итгэлтэй байна уу? Энэ үйлдэл нь бүрдэл болон бүрдэл доторх бүх оруулгыг устгах болно. Уг үйлдлийг буцаах боломжгүй.
+delete_folder_are_you_sure: '"{folder}" хавтсыг устгахдаа та итгэлтэй байна уу? Үүрлэсэн хавтас болон бүрдлүүд нь хамгийн дээд үе рүү зөөгдөнө.'
+delete_collection_peer_dependencies: Дараах талбарууд одоогийн бүрдэлд хамрах тул мөн устах болно.
+collections_shown: Харуулсан бүрдлүүд
+visible_collections: Харагдах бүрдлүүд
+hidden_collections: Нуусан бүрдлүүд
+show_hidden_collections: Нуусан бүрдлүүдийг харуулах
+hide_hidden_collections: Нуусан бүрдлүүдийг нуух
+show_header: Толгойг харуулах
+unmanaged_collections: Тохируулагдаагүй бүрдлүүд
+system_collections: Систем бүрдлүүд
+placeholder: Орлогч
+icon_left: Зүүн таних тэмдэг
+icon_right: Баруун таних тэмдэг
+count_other_revisions: '{count} бусад хяналтууд'
+font: Фонт
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Хуваагч
+color: Өнгө
+circle: Тойрог
+empty_item: Хоосон оруулга
+log_in_with: '{provider}-аар нэвтрэх'
+conditional_styles: Нөхцөлт хэв маяг
+advanced_settings: Дэлгэрэнгүй тохиргоо
+advanced_filter: Нарийвчилсан шүүлтүүр
+delete_advanced_filter: Шүүлтүүр устгах
+change_advanced_filter_operator: Операторыг солих
+advanced: Дэлгэрэннгүй
+operators:
+  eq: Тэнцүү
+  neq: Тэнцүү биш
+  lt: Бага
+  gt: Их
+  lte: Бага болон тэнцүү
+  gte: Их болон тэнцүү
+  in: Харгалзах нэг
+  nin: Харгалзах нэг биш
+  null: Null мөн
+  nnull: Null биш
+  contains: Агуулсан
+  ncontains: Агуулаагүй
+  icontains: Агуулсан (үсгийн том жижиг хамаагүй)
+  starts_with: Эхэлсэн
+  nstarts_with: Эхлээгүй
+  istarts_with: Эхэлсэн (үсгийн том жижиг хамаагүй)
+  nistarts_with: Эхлээгүй (үсгийн том жижиг хамаагүй)
+  ends_with: Дууссан
+  nends_with: Дуусаагүй
+  iends_with: Дууссан (үсгийн том жижиг хамаагүй)
+  niends_with: Дуусаагүй (үсгийн том жижиг хамаагүй)
+  between: Хооронд
+  nbetween: Хооронд биш
+  empty: Хоосон
+  nempty: Хоосон биш
+  all: Эдгээр түлхүүрийг агуулсан
+  has: Эдгээр зарим түлхүүрийг агуулсан
+  intersects: Огтлолцсон
+  nintersects: Огтлолцоогүй
+  intersects_bbox: Хязгаарлах хайрцагтай огтлолцсон
+  nintersects_bbox: Хязгаарлах хайрцагтай огтлолцоогүй
+  regex: RegExp-тэй таарсан
+custom_validation_message: Тохируулгат баталгаажуулалтын мессеж
+loading: Уншиж байна...
+extension_readme_missing: Энэ хэрэгсэл нь README файлгүй байна.
 value_unique: Утга нь дахин давтагдашгүй байх ёстой
 no_presets_copy: Урьдчилсан тохиргоо эсвэл тэмдэглээ хадгалагдаагүй байна.
+on_update: Шинэчлэх үед
+read: Унших
+update: Шинэчлэх
+delete: Устгах
+select_fields: Талбар сонгох
+format_text: Текстийг форматлах
+format_value: Утгыг форматлах
+abbreviate_value: Утгыг товчлох
+operator: Оператор
+bold: Тод
+toggle: Солих
+icon_on: Таних тэмдгийг идэвхжүүлэх
+icon_off: Таних тэмдгийг идэвхгүй болгох
+label: Шошго
+flows: Урсгалууд
+flow: Урсгал
+select_a_flow: Урсгал сонгох
+run_flow_confirm: Энэ урсгалыг ажиллуулахыг хүсэж байна уу?
+run_flow_on_current_collection: Энэ бүрдэл дээр урсгал ажиллуулах
+run_flow_on_current: Энэ оруулга дээр урсгал ажиллуулах
+run_flow_on_current_edited_confirm: Энэ оруулга нь урсгалаар шинэчлэгдсэн байж магадагүй, та ажиллуулахдаа итгэлтэй байна уу?
+run_flow_on_selected: Нэг эсвэл хэд хэдэн оруулгыг эхлээд сонгоно уу | Нэг сонгосон оруулга дээр урсгалыг ажиллуулах | {n} сонгосон оруулгууд дээр урсгал ажиллуулах
+run_flow: Урсгал ажиллуулах
+run_flow_success: '"{flow}" урсгалыг амжилттай ажиллууллаа'
+field_name_placeholder: Талбарын нэрийг оруулна уу...
+field_key_placeholder: Талбарын түлхүүрийг оруулна уу...
+trigger: Өдөөгч
+trigger_options: Өдөөгчийн тохиргоо
+view_trigger: Өдөөгчийг харах
+create_trigger: Өдөөгч үүсгэх
+trigger_setup: Өдөөгч тохируулах
+change_trigger: Өдөөгч солих
+flow_delete_confirm: '"{flow}" урсгалыг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүй.'
+set_flow_active: Урсгалыг идэвхтэй болгох
+set_flow_inactive: Урсгалыг идэвхгүй болгох
+edit_flow: Урсгалыг засах
+delete_flow: Урсгалыг устгах
+no_other_flows_copy: Танд өөр урсгал байхгүй байна.
+no_flows: Урсгал байхгүй байна
+no_flows_copy: Танд одоогоор урсгал байхгүй байна.
+create_flow: Урсгал үүсгэх
+creating_new_flow: Шинэ урсгал үүсгэж байна
+updating_flow: Урсгалыг шинэчилж байна
+flow_setup: Урсгал тохируулах
 flow_name: Нэр
+flow_tracking: Үйл ажиллагаа, бүртгэл хяналт
+flow_tracking_all: Үйл ажиллагаа, бүртгэлийг хянах
+flow_tracking_activity: Зөвхөн үйл ажиллагааг хянах
+flow_tracking_null: Хяналт хийхгүй байх
+start_flow: Урсгал эхлүүлэх
+stop_flow: Урсгал зогсоох
+full_screen: Дэлгэц дүүргэх
+full_text_search: Бүрэн текст хайлт
+edit_panels: Самбар засах
 wysiwyg_options:
   forecolor: Урд дэвсгэрийн өнгө
   backcolor: Ар дэвсгэрийн өнгө
+  bold: Тод
   selectall: Бүгдийг сонгох
 settings_webhooks: Вэбхүүкүүд
+settings_flows: Урсгалууд
 settings_presets: Тэмдэглэгээнүүд
 settings_translations: Орчуулгууд
 source_registry: Нэмэлт хэрэгсэл
@@ -754,6 +934,7 @@ fields:
     origin: Эх
   directus_collections:
     note: Тэмдэглэл
+    color: Өнгө
     sort_field: Талбаруудыг эрэмбэлэх
   directus_files:
     title: Гарчиг
@@ -785,6 +966,8 @@ fields:
 field_options:
   directus_settings:
     security_divider_title: Аюулгүй байдал
+  directus_activity:
+    update: Шинэчлэх
   directus_collections:
     language: Хэл
     archive_divider: Архивлах
@@ -800,20 +983,26 @@ field_options:
   directus_webhooks:
     status_options_active: Идэвхтэй
     status_options_inactive: Идэвхгүй
+    actions_update: Шинэчлэх
 live_preview:
   new_window: Шинэ цонхонд нээх
 limit: Хязгаар
 interfaces:
   filter:
+    name: Шүүлтүүр
     add_filter: Шүүлтүүр нэмэх
     any: Ямар ч
   presentation-links:
     primary: Үндсэн
+  select-color:
+    color: Өнгө
   system-fields:
     select_a_collection: Бүрдэл сонгох
   system-display-template:
     collection_field_not_setup: Бүрдлийн талбар буруу тохируулагдсан байна
     select_a_collection: Бүрдэл сонгох
+  presentation-divider:
+    divider: Хуваагч
   select-dropdown:
     choices_value_placeholder: Утга оруулна уу...
   input-hash:
@@ -827,22 +1016,34 @@ interfaces:
   list:
     sort: Эрэмбэлэх
   boolean:
+    toggle: Солих
     label_default: Идэвхитэй
 displays:
   translations:
     translations: Орчуулгууд
   boolean:
     boolean: Булийн
+    icon_on: Таних тэмдгийг идэвхжүүлэх
+    icon_off: Таних тэмдгийг идэвхгүй болгох
+  color:
+    color: Өнгө
   datetime:
     format: Формат
     suffix: Дагавар
   formatted-value:
     format: Формат
+    font: Фонт
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Тод
     prefix: Угтвар
     suffix: Дагавар
+    color: Өнгө
     text: Текст
   hash:
     hash: Хэш
+  image:
+    circle: Тойрог
   labels:
     choices_value_placeholder: Утга оруулна уу...
   user:
@@ -850,6 +1051,11 @@ displays:
 layouts:
   cards:
     title: Гарчиг
+  kanban:
+    advanced: Дэлгэрэннгүй
+panels:
+  label:
+    name: Шошго
 operations:
   log:
     message: Зурвас
@@ -858,4 +1064,9 @@ operations:
     subject: Сэдэв
   request:
     url: URL
+  trigger:
+    flows: Урсгалууд
+    flow: Урсгал
 standard: Стандарт
+fonts:
+  bold: Тод
