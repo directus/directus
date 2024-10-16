@@ -158,7 +158,7 @@ version_key: Хувилбарын түлхүүр
 version_name: Хувилбарын нэр
 main_version: Үндсэн
 switch_version: Хувилбар солих
-switch_version_copy: Та {version} хувилбар руу солихыг хүсч байна уу? Хадгалаагүй өөрчлөлтүүд нь алдагдах болно.
+switch_version_copy: Та {version} хувилбар руу солихыг хүсэж байна уу? Хадгалаагүй өөрчлөлтүүд нь алдагдах болно.
 create_version: Хувилбар үүсгэх
 rename_version: Хувилбарын нэр солих
 compare_version: Хувилбар харьцуулах
@@ -207,7 +207,7 @@ the_following_are_minimum_permissions: '"Апп хандалт" идэвхжсэ
 app_access_minimum: Апп хандалтын доод хэмжээ
 recommended_defaults: Санал болгож буй өгөгдмөлүүд
 unarchive: Архиваас гаргах
-unarchive_confirm: Та үүнийг архиваас гаргахыг хүсч байна уу?
+unarchive_confirm: Та үүнийг архиваас гаргахыг хүсэж байна уу?
 nested_files_folders_will_be_moved: Үүрлэсэн файл болон хавтсууд нь нэг түвшин ахих болно.
 validation_errors_notice: 'Дараах талбарууд нь тодорхойгүй утгатай байна:'
 validationError:
@@ -229,10 +229,10 @@ validationError:
   unique: Утга нь дахин давтагдашгүй байх ёстой
   email: Утга нь хүчин төгөлдөр цахим шуудан байх ёстой
   regex: Утга зөв форматгүй байна
-  starts_with: Утга {substring}-ээр эхэлсэн байх ёстой
-  istarts_with: Утга {substring}-ээр эхэлсэн байх ёстой
-  nstarts_with: Утга {substring}-ээр эхэлсэн байж болохгүй
-  nistarts_with: Утга {substring}-ээр эхэлсэн байж болохгүй
+  starts_with: Утга {substring}-р эхэлсэн байх ёстой
+  istarts_with: Утга {substring}-р эхэлсэн байх ёстой
+  nstarts_with: Утга {substring}-р эхэлсэн байж болохгүй
+  nistarts_with: Утга {substring}-р эхэлсэн байж болохгүй
   ends_with: Утга {substring}-р төгссөн байх ёстой
   iends_with: Утга {substring}-р төгссөн байх ёстой
   nends_with: Утга {substring}-р төгссөн байж болохгүй
@@ -262,6 +262,42 @@ field_presets: Талбарын урьдчилсан тохиргоонууд
 permissions_for_role: 'Үүрэг {role}-н {action} боломжтой оролтууд.'
 permissions_for_policy: 'Эрх {policy}-н {action} боломжтой оролтууд.'
 fields_for_role: 'Үүрэг {role}-н {action} боломжтой талбарууд.'
+fields_for_policy: '{policy} бодлого {action} үйлдэл хийх боломжтой талбарууд.'
+validation_for_role: 'Талбар дээрх {action}-д {role} үүрэг дагаж мөрдөх ёстой дүрмүүд.'
+validation_for_policy: 'Талбар дээрх {action}-д {policy} бодлого дагаж мөрдөх ёстой дүрмүүд.'
+presets_for_role: '{role} үүрэг дэх талбарын утгын өгөгдмөлүүд.'
+presets_for_policy: '{policy} бодлого дахь талбарын утгын өгөгдмөлүүд.'
+presets_field_warning: '"{field}" талбарын хамаарлын урьдчилсан тохиргоог "дэлгэрэнгүй" синтаксаар тохируулах ёстой.'
+presentation_and_aliases: Үзүүлэн & Нэр
+revision_post_create: Оруулга нь анх үүсэхдээ ийм байдлаар харагдаж байсан.
+revision_post_update: Оруулга нь шинэчлэл орсны дараагаар ингэж харагдана.
+changes_made: Дараах тодорхой өөрчлөлтүүдийг энэ буцаалтад хийсэн.
+no_relational_data: Энд хамаарлын өгөгдөл ороогүй гэдгийг анхаарна уу.
+junction_field_location: Холбох талбаруудын байршил
+top: Дээр
+bottom: Доор
+hide_field: Талбар нуух
+hide_field_on_detail: Дэлгэрэнгүй талбарыг нуух
+show_field_on_detail: Дэлгэрэнгүй талбарыг харуулах
+delete_field: Талбар устгах
+fields_and_layout: Талбарууд & Бүтэц
+field_create_success: '"{field}" талбарыг үүсгэлээ'
+field_update_success: '"{field}" талбарыг шинэчиллээ'
+duplicate_where_to: Та энэ талбарыг хаана хуулбарлахыг хүсэж байна вэ?
+language: Хэл
+language_placeholder: Хэл сонгоно уу...
+aggregate_function: Нийлмэл функц
+aggregate_precision: Нийлмэл нарийвчлал
+group_aggregation: Бүлэг нэгтгэх
+group_precision: Бүлэг нарийвчлал
+global: Глобал
+admins_have_all_permissions: Админууд бүх эрхтэй байна
+camera: Камер
+show_zero: Тэг харуулах
+create_in_advanced_field_creation_mode: Нэмэлт горим дээр талбар үүсгэх
+continue_in_advanced_field_creation_mode: Нэмэлт талбар үүсгэх горим дээр үргэлжлүүлэх
+validation: Баталгаажуулалт
+sum: Нийлбэр
 field_in_collection: '{field} ({collection})'
 reset_page_preferences: Хуудсын тохиргоог дахин тохируулах
 hidden_field: Нуусан талбарууд
@@ -291,7 +327,7 @@ uuid: UUID
 hash: Хэш
 geometry:
   All: Геометр (Бүх)
-  Point: Цэг
+  Point: Point
   LineString: LineString
   Polygon: Polygon
   MultiPoint: MultiPoint
@@ -431,6 +467,7 @@ display_not_found: '"{display}" харагдац олдсонгүй.'
 reset_display: Харагдацыг дахин тохируулах
 list-m2a: Баригч (M2A)
 item_count: 'Оруулга байхгүй | Нэг оруулга | {count} оруулгууд'
+filtered_item_count: 'Шүүгдсэн оруулга байхгүй | Нэг шүүгдсэн оруулга | {count} шүүгдсэн оруулгууд'
 errors:
   NOT_NULL_VIOLATION: Утга null байж болохгүй
 value_unique: Утга нь дахин давтагдашгүй байх ёстой
@@ -445,6 +482,7 @@ fields:
     folder: Хавтас
   directus_users:
     title: Гарчиг
+    language: Хэл
   directus_settings:
     module_bar: Модулийн мөр
   directus_fields:
@@ -455,6 +493,7 @@ fields:
     name: Бодлогын нэр
 field_options:
   directus_collections:
+    language: Хэл
     archive_divider: Архивлах
   directus_users:
     dropdown_auto: Автомат (Системийн тохиргоо)
