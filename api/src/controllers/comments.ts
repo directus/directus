@@ -1,25 +1,25 @@
-import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, isDirectusError } from '@directus/errors';
 import type { PrimaryKey } from '@directus/types';
 import express from 'express';
-import { assign } from 'lodash-es';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
 import { validateBatch } from '../middleware/validate-batch.js';
+import { CommentsService } from '../services/comments.js';
 import { MetaService } from '../services/meta.js';
-import { VersionsService } from '../services/versions.js';
 import asyncHandler from '../utils/async-handler.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
 
-router.use(useCollection('directus_versions'));
+router.use(useCollection('directus_comments'));
 
 router.post(
 	'/',
 	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
+		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'comments',
 		});
 
 		const savedKeys: PrimaryKey[] = [];
@@ -28,8 +28,8 @@ router.post(
 			const keys = await service.createMany(req.body);
 			savedKeys.push(...keys);
 		} else {
-			const primaryKey = await service.createOne(req.body);
-			savedKeys.push(primaryKey);
+			const key = await service.createOne(req.body);
+			savedKeys.push(key);
 		}
 
 		try {
@@ -54,9 +54,10 @@ router.post(
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
-	const service = new VersionsService({
+	const service = new CommentsService({
 		accountability: req.accountability,
 		schema: req.schema,
+		serviceOrigin: 'comments',
 	});
 
 	const metaService = new MetaService({
@@ -66,15 +67,13 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	let result;
 
-	if (req.singleton) {
-		result = await service.readSingleton(req.sanitizedQuery);
-	} else if (req.body.keys) {
+	if (req.body.keys) {
 		result = await service.readMany(req.body.keys, req.sanitizedQuery);
 	} else {
 		result = await service.readByQuery(req.sanitizedQuery);
 	}
 
-	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);
+	const meta = await metaService.getMetaForQuery('directus_comments', req.sanitizedQuery);
 
 	res.locals['payload'] = { data: result, meta };
 	return next();
@@ -86,9 +85,10 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
+		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'comments',
 		});
 
 		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
@@ -103,9 +103,10 @@ router.patch(
 	'/',
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
+		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'comments',
 		});
 
 		let keys: PrimaryKey[] = [];
@@ -121,7 +122,7 @@ router.patch(
 
 		try {
 			const result = await service.readMany(keys, req.sanitizedQuery);
-			res.locals['payload'] = { data: result || null };
+			res.locals['payload'] = { data: result };
 		} catch (error: any) {
 			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
@@ -138,16 +139,17 @@ router.patch(
 router.patch(
 	'/:pk',
 	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
+		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'comments',
 		});
 
 		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
-			res.locals['payload'] = { data: record || null };
+			res.locals['payload'] = { data: record };
 		} catch (error: any) {
 			if (isDirectusError(error, ErrorCode.Forbidden)) {
 				return next();
@@ -165,9 +167,10 @@ router.delete(
 	'/',
 	validateBatch('delete'),
 	asyncHandler(async (req, _res, next) => {
-		const service = new VersionsService({
+		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'comments',
 		});
 
 		if (Array.isArray(req.body)) {
@@ -187,87 +190,13 @@ router.delete(
 router.delete(
 	'/:pk',
 	asyncHandler(async (req, _res, next) => {
-		const service = new VersionsService({
+		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
+			serviceOrigin: 'comments',
 		});
 
 		await service.deleteOne(req.params['pk']!);
-
-		return next();
-	}),
-	respond,
-);
-
-router.get(
-	'/:pk/compare',
-	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const version = await service.readOne(req.params['pk']!);
-
-		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
-
-		let current;
-
-		if (version['delta']) {
-			current = version['delta'];
-		} else {
-			const saves = await service.getVersionSavesById(version['id']);
-
-			current = assign({}, ...saves);
-		}
-
-		const main = await service.getMainItem(version['collection'], version['item']);
-
-		res.locals['payload'] = { data: { outdated, mainHash, current, main } };
-
-		return next();
-	}),
-	respond,
-);
-
-router.post(
-	'/:pk/save',
-	asyncHandler(async (req, res, next) => {
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const version = await service.readOne(req.params['pk']!);
-
-		const mainItem = await service.getMainItem(version['collection'], version['item']);
-
-		const updatedVersion = await service.save(req.params['pk']!, req.body);
-
-		const result = assign(mainItem, updatedVersion);
-
-		res.locals['payload'] = { data: result || null };
-
-		return next();
-	}),
-	respond,
-);
-
-router.post(
-	'/:pk/promote',
-	asyncHandler(async (req, res, next) => {
-		if (typeof req.body.mainHash !== 'string') {
-			throw new InvalidPayloadError({ reason: `"mainHash" field is required` });
-		}
-
-		const service = new VersionsService({
-			accountability: req.accountability,
-			schema: req.schema,
-		});
-
-		const updatedItemKey = await service.promote(req.params['pk']!, req.body.mainHash, req.body?.['fields']);
-
-		res.locals['payload'] = { data: updatedItemKey || null };
 
 		return next();
 	}),
