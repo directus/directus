@@ -516,14 +516,6 @@ export class FieldsService {
 					if (hookAdjustedField.schema?.is_nullable === true) {
 						throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
 					}
-
-					if (hookAdjustedField.schema?.is_unique === false) {
-						throw new InvalidPayloadError({ reason: 'Primary key must be unique' });
-					}
-
-					if (hookAdjustedField.schema?.is_indexed === true) {
-						throw new InvalidPayloadError({ reason: 'Primary key cannot be indexed' });
-					}
 				}
 
 				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts

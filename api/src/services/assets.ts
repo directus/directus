@@ -138,7 +138,7 @@ export class AssetsService {
 
 			if (exists) {
 				return {
-					stream: await storage.location(file.storage).read(assetFilename, range),
+					stream: await storage.location(file.storage).read(assetFilename, { range }),
 					file,
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
@@ -168,7 +168,9 @@ export class AssetsService {
 				});
 			}
 
-			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
+			const version = file.modified_on !== undefined ? String(new Date(file.modified_on).getTime() / 1000) : undefined;
+
+			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
 
 			const transformer = getSharpInstance();
 
@@ -202,12 +204,12 @@ export class AssetsService {
 			}
 
 			return {
-				stream: await storage.location(file.storage).read(assetFilename, range),
+				stream: await storage.location(file.storage).read(assetFilename, { range }),
 				stat: await storage.location(file.storage).stat(assetFilename),
 				file,
 			};
 		} else {
-			const readStream = await storage.location(file.storage).read(file.filename_disk, range);
+			const readStream = await storage.location(file.storage).read(file.filename_disk, { range });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return { stream: readStream, file, stat };
 		}

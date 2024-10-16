@@ -25,7 +25,7 @@ export const messageCallback = (socket: WebSocketInterface, timeout = 1000) =>
 					unbind();
 					abort();
 				}
-			} catch (err) {
+			} catch {
 				// return the original event to allow customization
 				unbind();
 				resolve(data);

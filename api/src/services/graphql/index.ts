@@ -83,6 +83,7 @@ import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
+import { CommentsService } from '../comments.js';
 import { ExtensionsService } from '../extensions.js';
 import { FieldsService } from '../fields.js';
 import { FilesService } from '../files.js';

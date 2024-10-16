@@ -1,5 +1,4 @@
 import { useLocalStorage } from '@vueuse/core';
-import type {} from '@vueuse/shared';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
