@@ -211,15 +211,7 @@ router.get(
 
 		const { outdated, mainHash } = await service.verifyHash(version['collection'], version['item'], version['hash']);
 
-		let current;
-
-		if (version['delta']) {
-			current = version['delta'];
-		} else {
-			const saves = await service.getVersionSavesById(version['id']);
-
-			current = assign({}, ...saves);
-		}
+		const current = assign({}, version['delta']);
 
 		const main = await service.getMainItem(version['collection'], version['item']);
 

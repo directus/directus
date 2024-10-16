@@ -106,20 +106,6 @@ export class VersionsService extends ItemsService {
 		return { outdated: hash !== mainHash, mainHash };
 	}
 
-	async getVersionSavesById(id: PrimaryKey): Promise<Partial<Item>[]> {
-		const revisionsService = new RevisionsService({
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		const result = await revisionsService.readByQuery({
-			filter: { version: { _eq: id } },
-		});
-
-		return result.map((revision) => revision['delta']);
-	}
-
-	// TODO: Remove legacy need to return a version array in subsequent release
 	async getVersionSaves(key: string, collection: string, item: string | undefined): Promise<Partial<Item>[] | null> {
 		const filter: Filter = {
 			key: { _eq: key },
@@ -138,9 +124,7 @@ export class VersionsService extends ItemsService {
 			return [versions[0]['delta']];
 		}
 
-		const saves = await this.getVersionSavesById(versions[0]['id']);
-
-		return saves;
+		return null;
 	}
 
 	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
@@ -262,15 +246,7 @@ export class VersionsService extends ItemsService {
 			delta: revisionDelta,
 		});
 
-		let existingDelta = version['delta'];
-
-		if (!existingDelta) {
-			const saves = await this.getVersionSavesById(key);
-
-			existingDelta = assign({}, ...saves);
-		}
-
-		const finalVersionDelta = assign({}, existingDelta, revisionDelta ? JSON.parse(revisionDelta) : null);
+		const finalVersionDelta = assign({}, version['delta'], revisionDelta ? JSON.parse(revisionDelta) : null);
 
 		const sudoService = new ItemsService(this.collection, {
 			knex: this.knex,
@@ -289,7 +265,7 @@ export class VersionsService extends ItemsService {
 	}
 
 	async promote(version: PrimaryKey, mainHash: string, fields?: string[]) {
-		const { id, collection, item, delta } = (await this.readOne(version)) as ContentVersion;
+		const { collection, item, delta } = (await this.readOne(version)) as ContentVersion;
 
 		// will throw an error if the accountability does not have permission to update the item
 		if (this.accountability) {
@@ -307,6 +283,12 @@ export class VersionsService extends ItemsService {
 			);
 		}
 
+		if (!delta) {
+			throw new UnprocessableContentError({
+				reason: `No changes to promote`,
+			});
+		}
+
 		const { outdated } = await this.verifyHash(collection, item, mainHash);
 
 		if (outdated) {
@@ -315,17 +297,7 @@ export class VersionsService extends ItemsService {
 			});
 		}
 
-		let versionResult;
-
-		if (delta) {
-			versionResult = delta;
-		} else {
-			const saves = await this.getVersionSavesById(id);
-
-			versionResult = assign({}, ...saves);
-		}
-
-		const payloadToUpdate = fields ? pick(versionResult, fields) : versionResult;
+		const payloadToUpdate = fields ? pick(delta, fields) : delta;
 
 		const itemsService = new ItemsService(collection, {
 			accountability: this.accountability,
