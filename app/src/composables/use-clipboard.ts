@@ -30,7 +30,7 @@ export function useClipboard() {
 			});
 
 			return true;
-		} catch (err: any) {
+		} catch {
 			notify({
 				type: 'error',
 				title: message?.fail ?? t('copy_raw_value_fail'),
@@ -49,7 +49,7 @@ export function useClipboard() {
 			});
 
 			return pasteValue;
-		} catch (err: any) {
+		} catch {
 			notify({
 				type: 'error',
 				title: message?.fail ?? t('paste_raw_value_fail'),

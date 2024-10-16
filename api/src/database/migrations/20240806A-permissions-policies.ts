@@ -248,7 +248,7 @@ export async function up(knex: Knex) {
 			// Drop the foreign key constraint here in order to update `null` role to public policy ID
 			table.dropForeign('role', foreignConstraint);
 		});
-	} catch (err) {
+	} catch {
 		logger.warn('Failed to drop foreign key constraint on `role` column in `directus_permissions` table');
 	}
 

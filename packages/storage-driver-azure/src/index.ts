@@ -1,5 +1,5 @@
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
-import type { Driver, Range } from '@directus/storage';
+import type { Driver, ReadOptions } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
@@ -33,7 +33,9 @@ export class DriverAzure implements Driver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async read(filepath: string, range?: Range) {
+	async read(filepath: string, options?: ReadOptions) {
+		const { range } = options || {};
+
 		const { readableStreamBody } = await this.containerClient
 			.getBlobClient(this.fullPath(filepath))
 			.download(range?.start, range?.end ? range.end - (range.start || 0) + 1 : undefined);

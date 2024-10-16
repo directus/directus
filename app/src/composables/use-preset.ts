@@ -89,7 +89,12 @@ export function usePreset(
 
 	function updatePreset(preset: Partial<Preset>, immediate?: boolean) {
 		localPreset.value = assign({}, localPreset.value, preset);
-		immediate ? savePreset() : handleChanges();
+
+		if (immediate) {
+			savePreset();
+		} else {
+			handleChanges();
+		}
 	}
 
 	watch([collection, bookmark], () => {

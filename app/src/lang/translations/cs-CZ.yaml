@@ -1002,6 +1002,22 @@ no_data_in_flow: V rámci tohoto toku nebyla vytvořena ani zpřístupněna žá
 accountability: Odpovědnost
 payload: Balík dat
 details: Podrobnosti
+resume_streaming_logs: Obnovit vysílání logů
+pause_streaming_logs: Pozastavit vysílání logů
+logs_session_resumed: Relace logů obnovena...
+logs_session_paused: Relace logů pozastavena...
+logs_stream_disconnected: Vysílání logů bylo odpojeno...
+log_detail_filter_paths: 'Filtruj cesty (např. req.method, res.statusCode)'
+logs_beginning: Toto je začátek vaší relace logů...
+logs_waiting: 'Čeká se na další logy...'
+logs_unread_count: '{count} nepřečtených'
+clear_logs: Vyprázdnit logy
+search_logs: Prohledávání logů...
+all_instances: Všechny instance
+instance_count: 'Žádná instance | Jedna instance | {count} instancí'
+all_log_levels: Všechny úrovně logů
+log_level_count: 'Žádná úroveň logu | Jedna úroveň logu | {count} Úrovně logů'
+soft_wrap_lines: Měkké zalamování řádky
 full_screen: Celá obrazovka
 full_text_search: Full-Text vyhledávání
 edit_panels: Upravit panely
@@ -1030,6 +1046,7 @@ tooltip: Popisek
 tooltip_placeholder: Zadejte popisek...
 unlimited: Bez omezení
 open_link_in: Otevřít odkaz v
+new_tab: Nová karta
 save_image: Uložit obrázek
 save_media: Uložit média
 wysiwyg_options:
@@ -1109,6 +1126,7 @@ settings_project: Nastavení
 settings_appearance: Vzhled
 settings_webhooks: Webhooky
 settings_flows: Toky
+settings_system_logs: Systémové protokoly
 settings_presets: Záložky
 settings_translations: Překlady
 one_or_more_options_are_missing: Chybí jedna nebo více možností
@@ -1154,6 +1172,7 @@ page_help_settings_datamodel_collections: >-
   **Datový model: Kolekce** – Zobrazí všechny dostupné kolekce. To zahrnuje viditelné, skryté a systémové kolekce, stejně jako nespravované databázové tabulky, které lze přidat.
 page_help_settings_datamodel_fields: >-
   **Model dat: Kolekce** – Formulář pro správu této kolekce a jejích polí.
+page_help_settings_system_logs: '**Systémové logy** – Přístup k živému toku systémových logů.'
 page_help_settings_policies_collection: '**Procházet oprávnění** — Zobrazuje všechna oprávnění v rámci projektu.'
 page_help_settings_policies_item: "**Detail oprávnění** — Správa přístupových oprávnění a dalších nastavení."
 page_help_settings_roles_collection: '**Procházet role** — Zobrazuje všechny role v rámci projektu.'
@@ -2042,6 +2061,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Editor surových hodnot
     description: Povolit zadávání syrových hodnot nebo mustache šablon
+  input-password:
+    input-password: Zadejte heslo
+    description: Zadání hesla pomocí přepínače pro skrytí hodnoty
 displays:
   translations:
     translations: Překlady
@@ -2485,3 +2507,5 @@ duplicate_dashboard: Duplikovat nástěnku
 search_dashboard: Prohledat nástěnku...
 search_flow: Prohledat tok...
 percent: '%'
+show_password: Zobrazit heslo
+hide_password: Skrýt heslo

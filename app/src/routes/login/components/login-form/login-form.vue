@@ -119,7 +119,9 @@ async function onSubmit() {
 			{{ errorFormatted }}
 		</v-notice>
 		<div class="buttons">
-			<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
+			<v-button class="sign-in" type="submit" :loading="loggingIn" large>
+				<v-text-overflow :text="t('sign_in')" />
+			</v-button>
 			<router-link to="/reset-password" class="forgot-password">
 				{{ t('forgot_password') }}
 			</router-link>
@@ -146,5 +148,9 @@ async function onSubmit() {
 	&:hover {
 		color: var(--theme--foreground);
 	}
+}
+
+.sign-in {
+	max-width: 50%;
 }
 </style>
