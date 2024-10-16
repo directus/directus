@@ -1,16 +1,47 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Тухай
 identifier: Тодохойлогч
 avatar: Аватар
 application: Аппликейшн
 default_provider: Үндсэн
+method: Арга
 published: Нийтлэгдсэн
 draft: Ноорог
 archived: Архивласан
+marketplace: Нэмэлт хэрэгсэл
+extensions: Суулгасан хэрэгсэл
 modules: Модуль
 module_bar: Модулийн мөр
+logs: Логууд
+unknown: Үл мэдэгдэх
+reset_width: Өргөнийг дахин тохируулах
 tile_size: Хэсгийн хэмжээ
 edit_field: Талбарыг засах
 conditions: Нөхцөл
+location: Байршил
+collection_names_are_case_sensitive: Бүрдлийн нэр нь том жижиг үсгийн хамааралтай
+condition_rules: Нөхцлийн дүрмүүд
+input: Оролт
 maps: Газрын зураг
 switch_user: Хэрэглэгч солих
 item_creation: Үүсгэх
@@ -20,10 +51,39 @@ duplicate_field: Талбарыг хувилах
 half_width: Тал өргөн
 full_width: Бүтэн өргөн
 group: Бүлэг
+popular: Нийтлэг
+recent: Сүүлийн
+export_items: Экспорт хийх
 and: Мөн
 or: Эсвэл
+init: Эхлэл
 dataset_too_large_currently_showing_n_items: Өгөгдлийн багц хэт том байна. Одоогоор эхний {n} оролтуудыг харуулж байна.
+modifier: Өөрчлөгч
+extension_interface: Интерфэйс
+extension_display: Харагдах байдал
+extension_layout: Бүтэц
+extension_module: Модуль
+extension_panel: Самбар
+extension_theme: Загвар
+extension_hook: Хүүк
+extension_endpoint: Төгсгөлийн цэг
+extension_operation: Үйлдэл
+extension_bundle: Багц
+extension_interfaces: Интерфэйсүүд
+extension_displays: Харагдах байдлууд
+extension_layouts: Бүтцүүд
 extension_modules: Модуль
+extension_panels: Самбарууд
+extension_themes: Загварууд
+extension_hooks: Хүүкүүд
+extension_endpoints: Төгсгөлийн цэгүүд
+extension_operations: Үйлдлүүд
+extension_bundles: Багцууд
+extension_missing: Хоосон
+extension_reload_required: Хуудсыг дахин ачаалах шаардлагатай
+extension_reload_required_copy: Апп өргөтгөл хэрэгслийн өөрчлөлтийг харахын тулд хуудсыг дахин ачаалах шаардлагатай.
+extension_reload_now: Одоо дахин ачаалах
+published_relative: '{relativeTime}-д нийтэлсэн'
 fill_width: Өргөн дүүрэн
 field_name_translations: Талбарын нэрний орчуулга
 enter_password_to_enable_tfa: Нууц үгээ оруулж Хоёр-Давхар Нотолгоог идэвхижүүлнэ үү
@@ -82,6 +142,7 @@ archive_confirm_count: >-
   Ямар нэг зүйл сонгогдоогүй | Та үүнийг архивлахдаа итгэлтэй байна уу? | Та энэ {count} зүйлсийг архивлахдаа итгэлтэй байна уу?
 reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
 reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
+source_registry: Нэмэлт хэрэгсэл
 fields:
   directus_settings:
     module_bar: Модулийн мөр
