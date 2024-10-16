@@ -278,11 +278,173 @@ datetime: Огноо цаг
 dateTime: Огноо цаг
 precision: Нарийвчлал
 decimal: Аравтын бутархай
+float: Float
+integer: Бүхэл тоо
+json: JSON
+xml: XML
+yaml: YAML
+string: Тэмдэгтэн мөр
+text: Текст
+time: Цаг
+timestamp: Цагийн тэмдэг
+uuid: UUID
+hash: Хэш
+geometry:
+  All: Геометр (Бүх)
+  Point: Цэг
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
+theme_auto: Автомат (Системийн тохиргоо)
+theme_light: Өдрийн горим
+theme_dark: Шөнийн горим
+theme_directus_default: Directus өгөгдмөл
+theme_directus_minimal: Directus минимал
+theme_directus_colormatch: Directus өнгөний зохицол
+not_available_for_type: Энэ төрөлд боломжгүй
+create_translations: Орчуулга үүсгэх
+auto_refresh: Автоматаар шинэчлэх
+refresh_interval: Шинэчлэх интервал
+no_refresh: Бүү шинэчил
+refresh_interval_seconds: Шууд шинэчлэх | Секунд бүр | {seconds} секунд тутам
+refresh_interval_minutes: Минут бүр | {minutes} минут тутам
+auto_generate: Автоматаар үүсгэх
+this_will_auto_setup_fields_relations: Энэ нь шаардлагатай бүх талбар болон хамаарлыг автоматаар тохируулах болно.
+click_here: Энд дарна уу
+updated_on: Шинэчлэгдсэн
+updated_by: Шинэчлэл хийсэн
+primary_key: Гол түлхүүр
+foreign_key: Гадаад түлхүүр
+field_key: Талбар түлхүүр
+finish_setup: Тохиргоог дуусгах
+dismiss: Төгсгөх
+toggle_raw_editor: Raw Editor-ийг солих
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Raw утга
+copy_raw_value: Raw утгыг хуулах
+copy_raw_value_success: Хуулагдлаа
+copy_raw_value_fail: Хуулалт амжилтгүй
+paste_raw_value: Raw утгыг наах
+paste_raw_value_success: Наагдлаа
+paste_raw_value_fail: Наалт амжилтгүй
+view_raw_value: Raw утгыг харах
+edit_raw_value: Raw утгыг засах
+enter_raw_value: Raw утгыг оруулах...
+clear_value: Утгыг арилгах
+clear_changes: Өөрчлөлтүүдийг арилгах
+clear_items: Оролтуудыг арилгах
+reset_to_default: Өгөгдмөл тохиргоо руу дахин тохируулах
+undo_changes: Өөрчлөлтүүдийг буцаах
+notifications: Мэдэгдлүүд
+archive_all: Бүгдийг архивлах
+show_all_activity: Бүх үйл ажиллагааг харуулах
+page_not_found: Хуудас олдсонгүй
+page_not_found_body: Таны хайж буй хуудас нь байхгүй бололтой.
+confirm_revert: Буцаалтыг баталгаажуулах
+confirm_revert_body: Энэ нь оролтыг сонгосон төлөв рүү буцаах болно.
+display: Харагдах байдал
+settings_update_success: Тохиргоо шинэчлэгдлээ
+title: Гарчиг
+revision_delta_created: Үүссэн
+revision_delta_created_externally: Гадна үүссэн
+revision_delta_updated: '1 талбар шинэчлэгдсэн | {count} талбаруудыг шинэчиллээ'
+revision_delta_deleted: Устгасан
+revision_delta_version_saved: 'Хувилбар хадгалагдсан (1 талбар шинэчлэгдсэн) | Хувилбар хадгалагдсан ({count} талбаруудыг шинэчиллээ)'
+revision_delta_reverted: Буцаагдсан
+revision_delta_update_message: Энэ талбар шинэчлэгдсэн боловч үүний утга нь аюулгүй байдлын үүднээс далдлагдаж байна.
+revision_delta_other: Хянасан
+revision_delta_by: '{date}-д {user}'
+presentation_text_values_cannot_be_reimported: 'Текстийг үзүүлэнд ашигладаг тул утгыг дахин импортлох боломжгүй.'
+download_page_as_csv: 'Хуудсыг CSV форматаар татах'
+download_page_as_csv_unsupported: Энэ бүтэц нь одоогийн хуудсыг татаж авахыг дэмждэггүй.
+private_user: Хувийн хэрэглэгч
+creation_preview: Үүсгэлтийг урьдчилан харах
+revision_preview: Буцаалтыг урьдчилан харах
+updates_made: Хийсэн шинэчлэлтүүд
+label_import: Импорт
+display_label: Харагдах байдал
+functions:
+  year: Он
+  month: Сар
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: Минут
+hours: Цаг
+month: Сар
+year: Он
+select_all: Бүгдийг сонгох
+permissionsLevel:
+  all: Бүтэн {action} хандалт
+  partial: Хэсэгчилсэн {action} хандалт
+  custom: Хэсэгчилсэн {action} хандалт
+  none: '{action} хандалт байхгүй'
+months:
+  january: 1-р сар
+  february: 2-р сар
+  march: 3-р сар
+  april: 4-р сар
+  may: 5-р сар
+  june: 6-р сар
+  july: 7-р сар
+  august: 8-р сар
+  september: 9-р сар
+  october: 10-р сар
+  november: 11-р сар
+  december: 12-р сар
+drag_mode: Чирэх горим
+move_tool: Зөөх хэрэгсэл
+crop_tool: Тайрах хэрэгсэл
+focal_point_tool: Фокус цэгийн хэрэгсэл
+cancel_crop: Тайралтыг цуцлах
+cancel_selection: Сонголтыг цуцлах
+original: Эх хувь
+url: URL
+import_label: Импорт
+file_details: Файлын дэлгэрэнгүй
+dimensions: Хэмжээс
+size: Хэмжээ
+created: Үүссэн
+uploaded: Байршуулсан
+modified: Өөрчилсөн
+owner: Эзэмшигч
+edited_by: Засвар оруулсан
+folder: Хавтас
+folders: Хавтсууд
+zoom: Томруулах
+download: Татах
+open: Нээх
+open_in_new_window: Шинэ цонхонд нээх
+open_folder: '"{folder}" хавтсыг нээх'
+foreground_color: Урд дэвсгэрийн өнгө
+background_color: Ар дэвсгэрийн өнгө
+upload_from_device: Төхөөрөмжөөс файл байршуулах
+report_bug: Алдааг мэдээлэх
+request_feature: Feature хүсэх
+request_body: Body хүсэх
+interface_not_found: '"{interface}" интерфэйс олдсонгүй.'
+operation_not_found: '"{operation}" үйлдэл олдсонгүй.'
+reset_interface: Интерфэйс дахин тохируулах
+display_not_found: '"{display}" харагдац олдсонгүй.'
+reset_display: Харагдацыг дахин тохируулах
+list-m2a: Баригч (M2A)
+item_count: 'Оруулга байхгүй | Нэг оруулга | {count} оруулгууд'
 errors:
   NOT_NULL_VIOLATION: Утга null байж болохгүй
 value_unique: Утга нь дахин давтагдашгүй байх ёстой
+wysiwyg_options:
+  forecolor: Урд дэвсгэрийн өнгө
+  backcolor: Ар дэвсгэрийн өнгө
+  selectall: Бүгдийг сонгох
 source_registry: Нэмэлт хэрэгсэл
 fields:
+  directus_files:
+    title: Гарчиг
+    folder: Хавтас
+  directus_users:
+    title: Гарчиг
   directus_settings:
     module_bar: Модулийн мөр
   directus_fields:
@@ -294,10 +456,22 @@ fields:
 field_options:
   directus_collections:
     archive_divider: Архивлах
+  directus_users:
+    dropdown_auto: Автомат (Системийн тохиргоо)
+    dropdown_light: Өдрийн горим
+    dropdown_dark: Шөнийн горим
+live_preview:
+  new_window: Шинэ цонхонд нээх
 limit: Хязгаар
 interfaces:
   presentation-links:
     primary: Үндсэн
+  input-hash:
+    hash: Хэш
+  system-display:
+    display: Харагдах байдал
+  map:
+    zoom: Томруулах
 displays:
   boolean:
     boolean: Булийн
@@ -306,10 +480,18 @@ displays:
   formatted-value:
     prefix: Угтвар
     suffix: Дагавар
+    text: Текст
+  hash:
+    hash: Хэш
+layouts:
+  cards:
+    title: Гарчиг
 operations:
   log:
     message: Зурвас
   notification:
     message: Зурвас
     subject: Сэдэв
+  request:
+    url: URL
 standard: Стандарт
