@@ -916,13 +916,58 @@ flow_tracking_activity: Зөвхөн үйл ажиллагааг хянах
 flow_tracking_null: Хяналт хийхгүй байх
 start_flow: Урсгал эхлүүлэх
 stop_flow: Урсгал зогсоох
+code: Код
 full_screen: Дэлгэц дүүргэх
 full_text_search: Бүрэн текст хайлт
 edit_panels: Самбар засах
+center_align: Голд байрлуулах
+left_align: Зүүнд байрлуулах
+right_align: Баруунд байрлуулах
+fit_to_screen: Дэлгэцийн хэмжээгээр дүүргэх
+image_url: Зургийн Url
+alt_text: Нэмэлт текст
+media: Медиа
+quality: Чанар
+width: Өргөн
+height: Өндөр
+transformation_preset_key: Өөрчлөлтийн урьдчилан тохируулсан түлхүүр
+source: Эх үүсвэр
+url_placeholder: Url оруулна уу...
+display_text: Харагдах текст
+display_text_placeholder: Харагдах текстийг оруулна уу...
+interface_group_text_and_numbers: Текст, тоо
+interface_group_selection: Сонголт
+interface_group_relational: Хамаарал
+interface_group_presentation: Үзүүлэн
+interface_group_groups: Бүлгүүд
+interface_group_other: Бусад
+unlimited: Хязгааргүй
+open_link_in: Холбоосыг нээх
+new_tab: Шинэ таб
+save_image: Зураг хадгалах
+save_media: Медиа хадгалах
 wysiwyg_options:
+  aligncenter: Төвд байрлуулах
+  alignjustify: Өргөн тэнцүүлэх
+  alignleft: Зүүнд байрлуулах
+  alignnone: Байрлалын тохируулгагүй
+  alignright: Баруунд байрлуулах
   forecolor: Урд дэвсгэрийн өнгө
   backcolor: Ар дэвсгэрийн өнгө
   bold: Тод
+  italic: Налуу бичвэр
+  underline: Доогуур зурвасласан бичвэр
+  strikethrough: Дундуур зураасласан бичвэр
+  subscript: Мөрийн доод индекс
+  superscript: Мөрний дээд индекс
+  codeblock: Код
+  blockquote: Иш татлал
+  bullist: Тэмдэглэгдсэн жагсаалт
+  numlist: Дугаарлагдсан жагсаалт
+  hr: Хэвтээ тусгаарлагч
+  link: Холбоос нэмэх/засах
+  unlink: Холбоос устгах
+  media: Медиа нэмэх/засах
   selectall: Бүгдийг сонгох
 settings_webhooks: Вэбхүүкүүд
 settings_flows: Урсгалууд
@@ -994,6 +1039,8 @@ interfaces:
     any: Ямар ч
   presentation-links:
     primary: Үндсэн
+  input-code:
+    code: Код
   select-color:
     color: Өнгө
   system-fields:
@@ -1018,6 +1065,10 @@ interfaces:
   boolean:
     toggle: Солих
     label_default: Идэвхитэй
+  input-block-editor:
+    tools_options:
+      code: Код
+      underline: Доогуур зурвасласан бичвэр
 displays:
   translations:
     translations: Орчуулгууд
@@ -1036,6 +1087,7 @@ displays:
     font_serif: Serif
     font_monospace: Monospace
     bold: Тод
+    italic: Налуу бичвэр
     prefix: Угтвар
     suffix: Дагавар
     color: Өнгө
@@ -1070,3 +1122,4 @@ operations:
 standard: Стандарт
 fonts:
   bold: Тод
+  italic: Налуу бичвэр
