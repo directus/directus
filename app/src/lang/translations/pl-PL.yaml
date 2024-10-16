@@ -631,6 +631,7 @@ display_not_found: 'Wyświetlanie "{display}" nie zostało znalezione.'
 reset_display: Resetuj wyświetlanie
 list-m2a: Konstruktor (M2A)
 item_count: 'Brak elementów | Jeden element | {count} elementy/ów'
+filtered_item_count: 'Brak filtrowanych elementów | Jeden filtrowany element | {count} filtrowanych elementów'
 no_items_copy: Nie ma jeszcze żadnych elementów w tej kolekcji.
 file_count: 'Brak plików | Jeden plik | {count} plików'
 no_files_copy: Brak plików.
@@ -793,6 +794,7 @@ make_collection_hidden: Spraw, aby kolekcja była ukryta
 make_folder_visible: Uwidocznij folder
 make_folder_hidden: Ukryj folder
 goto_collection_content: Zobacz zawartość
+count_of_total_items: '{count} z {total} elementów'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć kolekcję "{collection}"? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. To działanie jest nieodwracalne.
 delete_folder_are_you_sure: Czy na pewno chcesz usunąć folder "{folder}"? Zagnieżdżone foldery i kolekcje zostaną przeniesione do najwyższego poziomu.
@@ -885,6 +887,7 @@ create_item: Utwórz element
 display_template: Wyświetl szablon
 language_display_template: Szablon wyświetlanego języka
 translations_display_template: Szablon wyświetlania tłumaczeń
+n_items_selected: 'Nie wybrano elementów | 1 wybrany element | {n} wybranych elementów'
 per_page: Na stronę
 all_files: Wszystkie pliki
 my_files: Moje pliki
@@ -996,9 +999,15 @@ no_data_in_flow: Żadne dane nie zostały wygenerowane lub dostępne w tym przep
 accountability: Odpowiedzialność
 payload: Ładunek
 details: Szczegóły
+resume_streaming_logs: Wznów streaming logów
+pause_streaming_logs: Wstrzymaj streaming logów
+logs_session_resumed: Sesja logów wznowiona...
+logs_waiting: 'Oczekiwanie na więcej logów...'
 clear_logs: Wyczyść logi
+search_logs: Szukaj logi...
 all_instances: Wszystkie instancje
 instance_count: 'Brak instancji | Jedna instancja | {count} Instancje'
+all_log_levels: Wszystkie poziomy logów
 full_screen: Pełny ekran
 full_text_search: Wyszukiwanie pełnotekstowe
 edit_panels: Edytuj pulpit
@@ -1101,10 +1110,12 @@ editing_in_batch: 'Grupowa edycja {count} elementów'
 no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
 settings_roles: Role użytkownika
+settings_permissions: Polityki dostępu
 settings_project: Ustawienia
 settings_appearance: Wygląd
 settings_webhooks: Webhooki
 settings_flows: Przepływy
+settings_system_logs: Dzienniki systemowe
 settings_presets: Zakładki
 settings_translations: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
