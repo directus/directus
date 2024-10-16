@@ -84,11 +84,33 @@ extension_reload_required: Хуудсыг дахин ачаалах шаардл
 extension_reload_required_copy: Апп өргөтгөл хэрэгслийн өөрчлөлтийг харахын тулд хуудсыг дахин ачаалах шаардлагатай.
 extension_reload_now: Одоо дахин ачаалах
 published_relative: '{relativeTime}-д нийтэлсэн'
+compatible_with_your_project: Таны төсөл ажилтай нийцнэ
+compatible_with_your_project_copy: Зохиогч энэ апп өргөтгөлийн нийцтэй байдлыг {hostVersion} гэж зааж өгсөн бөгөөд энэ нь таны төслийн ({currentVersion}) хувилбартай таарч байна
+last_updated_relative: Сүүлд {relativeTime}-д шинэчилсэн
+n_files: '{n} файлууд'
+verified: Баталгаажсан
+homepage: Нүүр хуудас
+repository: Хадгалах газар
+reload_page: Хуудсыг дахин ачаалах
+reload_required: Дахин ачаалах шаардлагатай
+report_an_issue: Асуудлыг мэдэгдэх
+website: Вэбсайт
+github: GitHub
+beta: Бета
+n_downloads: '{n} таталтууд'
+downloads: Таталтууд
+compatibility_not_guaranteed: Нийцтэй байдал нь баталгаагүй
+compatibility_not_guaranteed_copy: Зохиогч энэ апп өргөтгөлийн нийцтэй байдлыг {hostVersion} гэж зааж өгсөн бөгөөд энэ нь таны төслийн ({currentVersion}) хувилбартай таарахгүй байна
+enable: Идэвхжүүлэх
+disable: Идэвхгүй болгох
+custom: Тохируулгат
+hook: Хүүк
 fill_width: Өргөн дүүрэн
 field_name_translations: Талбарын нэрний орчуулга
 enter_password_to_enable_tfa: Нууц үгээ оруулж Хоёр-Давхар Нотолгоог идэвхижүүлнэ үү
 add_field: Талбар нэмэх
 role_name: Үүргийн нэр
+policy_name: Бодлогын нэр
 branch: Салбар
 leaf: Навч
 indeterminate: Тодорхойгүй
@@ -106,9 +128,15 @@ requires_value: Утга оруулах шаардлагатай
 create_preset: Тохируулга үүсгэх
 create_panel: Хавтан үүсгэх
 create_role: Үүрэг үүсгэх
+create_policy: Бодлого үүсгэх
 create_user: Хэрэглэгч үүсгэх
+message: Зурвас
 delete_panel: Хавтан устгах
 create_webhook: Webhook үүсгэх
+create_custom_translation: Тохируулгат орчуулга үүсгэх
+edit_custom_translation: Тохируулгат орчуулгыг засах
+no_custom_translations: Тохируулгат орчуулга байхгүй байна
+no_custom_translations_copy: Тохируулгат орчуулга хараахан байхгүй байна.
 invite_users: Хэрэглэгч урих
 invite: Урих
 email_already_invited: '"{email}" имэйл хаягийг өмнө нь урьсан байна'
@@ -124,17 +152,50 @@ rename_folder: Хавтасны нэр өөрчлөх
 delete_folder: Хавтас устгах
 prefix: Угтвар
 suffix: Дагавар
+keep: Үлдээх
+version: Хувилбар
+version_key: Хувилбарын түлхүүр
+version_name: Хувилбарын нэр
+main_version: Үндсэн
+switch_version: Хувилбар солих
+switch_version_copy: Та {version} хувилбар руу солихыг хүсч байна уу? Хадгалаагүй өөрчлөлтүүд нь алдагдах болно.
+create_version: Хувилбар үүсгэх
+rename_version: Хувилбарын нэр солих
+compare_version: Хувилбар харьцуулах
+save_version: Хувилбар хадгалах
+promote_version: Хувилбар дэвшүүлэх
+promote_version_disabled: Өөрчлөлт байхгүй
+promote_version_drawer_title: '{version}-ийг үндсэн рүү дэвшүүлэх'
+promote_version_changes: Өөрчлөлтүүд
+promote_version_preview: Урьдчилан үзэх
+outdated_notice: >-
+  Энэ хувилбар нь үүссэн тул үндсэн оролт нь шинэчлэгдлээ. Доорх бүх талбаруудын утгуудыг шалгаж, энэ хувилбарыг үндсэн оролт руу дэвшүүлэхэд аль хувилбарыг ашиглахыг батална уу.
+promote_notice: >-
+  Доорх бүх талбаруудын утгуудыг шалгаж, энэ хувилбарыг үндсэн оролт руу дэвшүүлэхэд аль хувилбарыг ашиглахыг батална уу.
+delete_version: Хувилбар устгах
+delete_version_copy: >-
+  Хувилбар {version}-ийг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
+delete_on_promote_copy: >-
+  Хувилбар {version}-ийг дэвшүүлсний дараа устгах уу эсвэл үлдээх үү?
 reset_bookmark: Тэмдэглэгээг хуучин хэвэнд оруулах
 update_bookmark: Тэмдэглээг шинэлэх
 delete_bookmark: Тэмдэглэгээг устгах
 delete_bookmark_copy: >-
   "{bookmark}" тэмдэглэгээг устгахдаа итгэлтэй байна уу? Устгасан бол сэргээх боломжгүй.
+delete_personal_bookmark: Хувийн хавчуургыг устгах
+delete_role_bookmark: Үүргийн хавчуургыг устгах
+delete_global_bookmark: Глобал хавчуургыг устгах
 logoutReason:
   SIGN_OUT: Сайтаас гарсан
   SESSION_EXPIRED: Холболтын хугацаа дууссан
 public_label: Нээлттэй
 public_description: Нэвтэрч ороогүй үед API- ны ямар өгөгдөл авч болохыг удирдана.
+public_role_info: >-
+  Нийтийн үүрэг нь нэвтрээгүй эсвэл үүрэггүй хэрэглэгчдэд ямар API өгөгдөл нь боломжтой байхыг удирдана. Нийтийн үүрэг бүхий хүсэлтүүдэд апп эсвэл админ хандалт байх боломжгүй. Хэрэв апп эсвэл админ хандалтыг нийтийн үүрэгт хуваарилсан бодлогод өгсөн бол тэдгээрийг үл хэрэгсэх болно.
 admin_description: Апп болон API дата руу хязгааргүй хандах эрхтэй үндсэн админ эрх.
+admin_policy_description: Хязгаарлалтгүй Апп/API хандалт бүхий анхны админы бодлого.
+no_description: Тайлбар байхгүй...
+reached_maximum_number_of_extensions: Энэ төслийн апп өргөтгөлийн тоо дээд хязгаарт хүрсэн байна. ({n}). Та өөрийн систем админд хандаж дэлгэрэнгүй мэдээлэл авна уу.
 not_allowed: Зөвшөөрөгдөөгүй
 archive: Архивлах
 archive_confirm: Та энэ мэдээллийг архивлахыг хүсч байна уу?
@@ -142,6 +203,84 @@ archive_confirm_count: >-
   Ямар нэг зүйл сонгогдоогүй | Та үүнийг архивлахдаа итгэлтэй байна уу? | Та энэ {count} зүйлсийг архивлахдаа итгэлтэй байна уу?
 reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
 reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
+the_following_are_minimum_permissions: '"Апп хандалт" идэвхжсэн үед дараах хамгийн бага зөвшөөрлүүд автоматаар хэрэгжинэ. Шаардлагатай бол та нэмэлт зөвшөөрөл олгох боломжтой боловч энэ түвшнээс доош зөвшөөрлийг багасгах боломжгүй.'
+app_access_minimum: Апп хандалтын доод хэмжээ
+recommended_defaults: Санал болгож буй өгөгдмөлүүд
+unarchive: Архиваас гаргах
+unarchive_confirm: Та үүнийг архиваас гаргахыг хүсч байна уу?
+nested_files_folders_will_be_moved: Үүрлэсэн файл болон хавтсууд нь нэг түвшин ахих болно.
+validation_errors_notice: 'Дараах талбарууд нь тодорхойгүй утгатай байна:'
+validationError:
+  eq: Утга нь {valid} байх ёстой
+  neq: Утга нь {invalid} байж болохгүй
+  in: Утга нь {valid}-ийн нэг байх ёстой
+  nin: Утга нь {invalid}-ийн нэг байж болохгүй
+  contains: Утга нь {substring} агуулсан байх ёстой
+  ncontains: Утга нь {substring} агуулсан байж болохгүй
+  gt: Утга нь {valid}-аас их байх ёстой
+  gte: Утга нь {valid}-тай тэнцүү буюу их байх ёстой
+  lt: Утга нь {valid}-аас бага байх ёстой
+  lte: Утга нь {valid}-тай тэнцүү буюу бага байх ёстой
+  empty: Утга нь хоосон байх ёстой
+  nempty: Утга хоосон байж болохгүй
+  null: Утга нь null байх ёстой
+  nnull: Утга null байж болохгүй
+  required: Утга шаардлагатай
+  unique: Утга нь дахин давтагдашгүй байх ёстой
+  email: Утга нь хүчин төгөлдөр цахим шуудан байх ёстой
+  regex: Утга зөв форматгүй байна
+  starts_with: Утга {substring}-ээр эхэлсэн байх ёстой
+  istarts_with: Утга {substring}-ээр эхэлсэн байх ёстой
+  nstarts_with: Утга {substring}-ээр эхэлсэн байж болохгүй
+  nistarts_with: Утга {substring}-ээр эхэлсэн байж болохгүй
+  ends_with: Утга {substring}-р төгссөн байх ёстой
+  iends_with: Утга {substring}-р төгссөн байх ёстой
+  nends_with: Утга {substring}-р төгссөн байж болохгүй
+  niends_with: Утга {substring}-р төгссөн байж болохгүй
+all_access: Бүх хандалт
+no_access: Хандалт байхгүй
+use_custom: Тохируулгат хандалт
+nullable: Null байх боломжтой
+allow_null_value: NULL утгыг зөвшөөрөх
+allow_multiple: Олныг зөвшөөрөх
+allow_multiple_to_be_open: Олныг нээхийг зөвшөөрөх
+enter_value_to_replace_nulls: Энэ талбарт байгаа ямар ч NULL утгуудыг орлох шинэ утгуудыг оруулна уу.
+field_standard: Стандарт
+field_presentation: Үзүүлэн & Нэр
+field_file: Дан файл
+field_files: Олон файл
+field_m2o: M2O харилцаа
+field_m2a: M2A харилцаа
+field_o2m: O2M харилцаа
+field_m2m: M2M харилцаа
+field_translations: Орчуулгууд
+field_group: Талбарын бүлэг
+item_permissions: Оруулгын эрхүүд
+field_permissions: Талбарын эрхүүд
+field_validation: Талбарын баталгаажуулалт
+field_presets: Талбарын урьдчилсан тохиргоонууд
+permissions_for_role: 'Үүрэг {role}-н {action} боломжтой оролтууд.'
+permissions_for_policy: 'Эрх {policy}-н {action} боломжтой оролтууд.'
+fields_for_role: 'Үүрэг {role}-н {action} боломжтой талбарууд.'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Хуудсын тохиргоог дахин тохируулах
+hidden_field: Нуусан талбарууд
+hidden_on_detail: Дэлгэрэнгүй дээр нуусан
+disabled_editing_value: Утга засалтыг идэвхгүй болгох
+key: Түлхүүр
+alias: Нэр
+bigInteger: Том бүхэл тоо
+boolean: Булийн
+date: Огноо
+date_range: Огнооны хүрээ
+translation_key_placeholder: Түлхүүр оруулна уу...
+datetime: Огноо цаг
+dateTime: Огноо цаг
+precision: Нарийвчлал
+decimal: Аравтын бутархай
+errors:
+  NOT_NULL_VIOLATION: Утга null байж болохгүй
+value_unique: Утга нь дахин давтагдашгүй байх ёстой
 source_registry: Нэмэлт хэрэгсэл
 fields:
   directus_settings:
@@ -150,6 +289,8 @@ fields:
     translation: Талбарын нэрний орчуулга
   directus_roles:
     name: Үүргийн нэр
+  directus_policies:
+    name: Бодлогын нэр
 field_options:
   directus_collections:
     archive_divider: Архивлах
@@ -158,11 +299,17 @@ interfaces:
   presentation-links:
     primary: Үндсэн
 displays:
+  boolean:
+    boolean: Булийн
   datetime:
     suffix: Дагавар
   formatted-value:
     prefix: Угтвар
     suffix: Дагавар
 operations:
+  log:
+    message: Зурвас
   notification:
+    message: Зурвас
     subject: Сэдэв
+standard: Стандарт
