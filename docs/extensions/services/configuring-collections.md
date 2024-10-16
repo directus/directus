@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
 
   const data = await collectionsService.readOne(collectionKey);
 
-  res.json(record);
+  res.json(data);
 });
 ```
 
@@ -251,7 +251,7 @@ router.post('/', async (req, res) => {
 
   const data = await relationsService.readOne(data);
 
-  res.json(record);
+  res.json(data);
 });
 ```
 
