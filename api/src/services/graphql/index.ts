@@ -1,4 +1,4 @@
-import { Action, FUNCTIONS } from '@directus/constants';
+import { FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -64,6 +64,8 @@ import {
 } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
+import { fetchAccountabilityCollectionAccess } from '../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
+import { fetchAccountabilityPolicyGlobals } from '../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
 import { fetchAllowedFieldMap } from '../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchInconsistentFieldMap } from '../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
@@ -79,14 +81,15 @@ import { mergeVersionsRaw, mergeVersionsRecursive } from '../../utils/merge-vers
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
-import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
+import { CommentsService } from '../comments.js';
 import { ExtensionsService } from '../extensions.js';
 import { FieldsService } from '../fields.js';
 import { FilesService } from '../files.js';
 import { RelationsService } from '../relations.js';
 import { RevisionsService } from '../revisions.js';
+import { RolesService } from '../roles.js';
 import { ServerService } from '../server.js';
 import { SpecificationService } from '../specifications.js';
 import { TFAService } from '../tfa.js';
@@ -105,9 +108,6 @@ import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
 import { sanitizeGraphqlSchema } from './utils/sanitize-gql-schema.js';
-import { fetchAccountabilityCollectionAccess } from '../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
-import { fetchAccountabilityPolicyGlobals } from '../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
-import { RolesService } from '../roles.js';
 
 const env = useEnv();
 
@@ -3363,18 +3363,14 @@ export class GraphQLService {
 						comment: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args, __, info) => {
-						const service = new ActivityService({
+						const service = new CommentsService({
 							accountability: this.accountability,
 							schema: this.schema,
+							serviceOrigin: 'activity',
 						});
 
 						const primaryKey = await service.createOne({
 							...args,
-							action: Action.COMMENT,
-							user: this.accountability?.user,
-							ip: this.accountability?.ip,
-							user_agent: this.accountability?.userAgent,
-							origin: this.accountability?.origin,
 						});
 
 						if ('directus_activity' in ReadCollectionTypes) {
@@ -3403,12 +3399,13 @@ export class GraphQLService {
 						comment: new GraphQLNonNull(GraphQLString),
 					},
 					resolve: async (_, args, __, info) => {
-						const service = new ActivityService({
+						const commentsService = new CommentsService({
 							accountability: this.accountability,
 							schema: this.schema,
+							serviceOrigin: 'activity',
 						});
 
-						const primaryKey = await service.updateOne(args['id'], { comment: args['comment'] });
+						const primaryKey = await commentsService.updateOne(args['id'], { comment: args['comment'] });
 
 						if ('directus_activity' in ReadCollectionTypes) {
 							const selections = this.replaceFragmentsInSelections(
@@ -3418,7 +3415,7 @@ export class GraphQLService {
 
 							const query = this.getQuery(args, selections || [], info.variableValues);
 
-							return await service.readOne(primaryKey, query);
+							return { ...(await commentsService.readOne(primaryKey, query)), id: args['id'] };
 						}
 
 						return true;
@@ -3435,12 +3432,14 @@ export class GraphQLService {
 						id: new GraphQLNonNull(GraphQLID),
 					},
 					resolve: async (_, args) => {
-						const service = new ActivityService({
+						const commentsService = new CommentsService({
 							accountability: this.accountability,
 							schema: this.schema,
+							serviceOrigin: 'activity',
 						});
 
-						await service.deleteOne(args['id']);
+						await commentsService.deleteOne(args['id']);
+
 						return { id: args['id'] };
 					},
 				},

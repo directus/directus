@@ -2,6 +2,7 @@ import { ForbiddenError } from '@directus/errors';
 import {
 	AccessService,
 	ActivityService,
+	CommentsService,
 	DashboardsService,
 	FilesService,
 	FlowsService,
@@ -34,6 +35,8 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 			return new AccessService(opts);
 		case 'directus_activity':
 			return new ActivityService(opts);
+		case 'directus_comments':
+			return new CommentsService({ ...opts, serviceOrigin: 'comments' });
 		case 'directus_dashboards':
 			return new DashboardsService(opts);
 		case 'directus_files':

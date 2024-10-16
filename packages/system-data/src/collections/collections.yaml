@@ -25,6 +25,9 @@ data:
     icon: database
     note: $t:directus_collection.directus_collections
 
+  - collection: directus_comments
+    note: $t:directus_collection.directus_comments
+
   - collection: directus_fields
     icon: input
     note: $t:directus_collection.directus_fields

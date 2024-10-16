@@ -315,6 +315,7 @@ export class UsersService extends ItemsService {
 		}
 
 		// Manual constraint, see https://github.com/directus/directus/pull/19912
+		await this.knex('directus_comments').update({ user_updated: null }).whereIn('user_updated', keys);
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
 		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
