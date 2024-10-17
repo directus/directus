@@ -863,6 +863,22 @@ operators:
 custom_validation_message: Тохируулгат баталгаажуулалтын мессеж
 loading: Уншиж байна...
 extension_readme_missing: Энэ хэрэгсэл нь README файлгүй байна.
+drop_to_upload: Тавьж байршуулах
+item: Оруулга
+items: Оруулгууд
+upload_file: Файл байршуулах
+upload_file_indeterminate: Файл байршуулж байна...
+upload_file_success: Файл байршуулагдлаа
+upload_files_indeterminate: 'Файлуудыг байршуулж байна {done}/{total}'
+upload_files_success: '{count} файл байршуулагдлаа'
+upload_pending: Байршуулалт хүлээгдэж байна
+drag_file_here: Файлыг энд чирж тавина уу
+click_to_browse: Үзэхийн тулд дарна уу
+interface_options: Интерфэйс тохиргоо
+display_options: Харагдах байдлын тохиргоо
+layout_options: Бүтцийн тохиргоо
+rows: Мөрүүд
+columns: Баганууд
 value_unique: Утга нь дахин давтагдашгүй байх ёстой
 no_presets_copy: Урьдчилсан тохиргоо эсвэл тэмдэглээ хадгалагдаагүй байна.
 on_update: Шинэчлэх үед
@@ -1056,12 +1072,15 @@ interfaces:
     hash: Хэш
   system-display:
     display: Харагдах байдал
+  system-display-options:
+    display-options: Харагдах байдлын тохиргоо
   input-rich-text-md:
     edit: Засах
   map:
     zoom: Томруулах
   list:
     sort: Эрэмбэлэх
+    display_group: Харагдах байдлын тохиргоо
   boolean:
     toggle: Солих
     label_default: Идэвхитэй
