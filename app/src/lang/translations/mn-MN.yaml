@@ -653,7 +653,7 @@ create_collection: Бүрдэл үүсгэх
 no_collections_copy_admin: Бүрдэл одоогоор үүсгэгдээгүй байна. Доорх товчлуурыг дарж үүсгэнэ үү.
 no_collections_copy: Бүрдэл одоогоор үүсгэгдээгүй байна. Тухайн системийн админтай холбогдоно уу.
 relationship_not_setup: Харилцаа нь зөв тохируулагдаагүй байна
-no_singleton_relations: Ганц зүйлтэй харгалзах харилцаа дэмжигддэггүй
+no_singleton_relations: Синглтонтой харгалзах харилцаа дэмжигддэггүй
 display_template_not_setup: Харагдах байдлын загвар буруу тохируулагдсан байна
 collection_field_not_setup: Бүрдлийн талбар буруу тохируулагдсан байна
 select_a_collection: Бүрдэл сонгох
@@ -966,7 +966,16 @@ flow_tracking_activity: Зөвхөн үйл ажиллагааг хянах
 flow_tracking_null: Хяналт хийхгүй байх
 start_flow: Урсгал эхлүүлэх
 stop_flow: Урсгал зогсоох
+create_operation: Үйлдэл үүсгэх
+edit_operation: Үйлдэл засах
 code: Код
+operation_options: Үйлдлийн тохиргоо
+operation_name: Үйлдлийн нэр...
+operation_key: Лавлах танигч...
+operation_key_unique_error: Үйлдлийн түлхүүрүүд нь Урсгалд дахин давтагдашгүй байх ёстой
+operation_handle_resolve: 'Шийдэх: Нэмэх бол товшино уу, эсвэл замыг өөрчлөх бол чирнэ үү'
+operation_handle_reject: 'Татгалзах: Нэмэх бол товшино уу эсвэл замыг өөрчлөх бол чирнэ үү'
+insights: Аналитик
 dashboard: Хянах самбар
 panel: Самбар
 panel_options: Самбарын тохиргоо
@@ -974,16 +983,39 @@ panel_header: Самбарын толгой
 panel_name_placeholder: Энэ самбарыг нэрлэх...
 panel_note_placeholder: Энэ самбарын нэмэлт мэдээлэл...
 panel_delete_confirm: Энэ самбарыг усгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
+list_panel_allow_edit: Дотор засварлахыг зөвшөөрөх
+dashboard_delete_confirm: Энэ хянах самбарыг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
 edit_dashboard: Хянах самбар засах
 delete_dashboard: Хянах самбар устгах
+visible: Харагдах
+prefix_placeholder: Утгын өмнө бичнэ үү...
+suffix_placeholder: Утгын дараа бичнэ үү...
+decimals_placeholder: Аравтын орны тоо...
 no_dashboards: Хянах самбар байхгүй байна
 no_dashboards_copy: Танд одоогоор хянах самбар байхгүй байна.
 create_dashboard: Хянах самбар үүсгэх
 dashboard_name: Хянах самбарын нэр
 no_data: Өгөгдөл байхгүй
 no_data_in_flow: Энэ урсгалаар өгөгдөл үүсгэгдэж, хандагдаагүй байна
+accountability: Бүртгэл
 payload: Чингэлэг
 details: Дэлгэрэнгүй мэдээлэл
+resume_streaming_logs: Логийн урсгалыг үргэлжлүүлэх
+pause_streaming_logs: Логийн урсгалыг зогсоох
+logs_session_resumed: Логийн сессийг үргэлжлүүллээ...
+logs_session_paused: Логийн сессийг зогсоолоо...
+logs_stream_disconnected: Логийн урсгал саллаа...
+log_detail_filter_paths: 'Замын шүүлтүүр (жишээ: req.method, res.statusCode)'
+logs_beginning: Энэ бол таны лог сессийн эхлэл юм...
+logs_waiting: 'Дахин логуудыг хүлээж байна...'
+logs_unread_count: '{count} уншаагүй'
+clear_logs: Логуудыг арилгах
+search_logs: Лог хайх...
+all_instances: Бүх инстанцууд
+instance_count: 'Инстанц байхгүй | Нэг инстанц | {count} инстанцууд'
+all_log_levels: Бүх лог түвшингүүд
+log_level_count: 'Лог түвшин байхгүй | Нэг лог түвшин | {count} лог түвшингүүд'
+soft_wrap_lines: Сул мөр таслах
 full_screen: Дэлгэц дүүргэх
 full_text_search: Бүрэн текст хайлт
 edit_panels: Самбар засах
@@ -1008,6 +1040,8 @@ interface_group_relational: Хамаарал
 interface_group_presentation: Үзүүлэн
 interface_group_groups: Бүлгүүд
 interface_group_other: Бусад
+tooltip: Зөвлөмж
+tooltip_placeholder: Зөвлөмж оруулах...
 unlimited: Хязгааргүй
 open_link_in: Холбоосыг нээх
 new_tab: Шинэ таб
@@ -1049,6 +1083,7 @@ wysiwyg_options:
   fontselect: Фонт сонгох
   fontsizeselect: Фонтны хэмжээ сонгох
   indent: Догол мөр
+  outdent: Догол мөрийг арилгах
   undo: Буцаах
   redo: Дахин хийх
   remove: Арилгах
@@ -1061,6 +1096,7 @@ wysiwyg_options:
   directionality: Чиглэл
   lazy_loading: Шаардлагатай үед зургийг ачаалах
   lazy_loading_label: Шаардлагатай үед ачаалах тохиргоог идэвхжүүлэх
+dropdown: Доош унадаг цэс
 choices: Сонголтууд
 choices_option_configured_incorrectly: Сонголтуудыг буруу тохируулсан байна
 deselect: Сонголтыг цуцлах
@@ -1088,7 +1124,7 @@ settings_project: Тохиргоо
 settings_appearance: Харагдах байдал
 settings_webhooks: Вэбхүүкүүд
 settings_flows: Урсгалууд
-settings_system_logs: Системийн бүртгэл
+settings_system_logs: Системийн логууд
 settings_presets: Тэмдэглэгээнүүд
 settings_translations: Орчуулгууд
 one_or_more_options_are_missing: Нэг эсвэл хэд хэдэн тохиргоо дутуу байна
@@ -1121,70 +1157,318 @@ page_help_collections_item: >-
   **Оруулгын дэлгэрэнгүй** — Энэ оруулгыг харах болон удирдах маягт. Хажуу цэс нь засваруудын бүрэн түүх, оруулсан сэтгэгдлүүдийг агуулна.
 page_help_activity_collection: >-
   **Үйл ажиллагааг харах** — Хэрэглэгчийн бүх систем болон контент үйл ажиллагааны дэлгэрэнгүй жагсаалт.
+page_help_docs_global: >-
+  **Гарын авлагыг харах** — Энэ төслийн хувилбар болон схемд тусгайлан тохируулсан гарын авлагууд.
+page_help_files_collection: >-
+  **Файлын сан** — Энэ төсөлд харгалзах бүх файлын жагсаалт. Хурдан хандахын тулд өөрийн хэрэгцээнд нийцүүлэн бүтэц, шүүлтүүр, эрэмбэлэл зэргийг тохируулж, тэмдэглэлийг өөр өөр тохиргоонд хадгалаарай.
+page_help_files_item: >-
+  **Файлын дэлгэрэнгүй** — Файлын мета өгөгдлийг удирдах, анхны файлуудыг засварлах болон хандалтын тохиргоог шинэчлэх маягт.
+page_help_settings_project: "**Тохиргоо** — Төслийн глобал тохируулга."
+page_help_settings_appearance: "**Харагдах байдал** — Төслийн харагдах байдал болон загварын тохируулга."
+page_help_settings_extensions: '**Хэрэгсэл** — Төсөлд зориулан суулгасан хэрэгслүүд.'
+page_help_settings_datamodel_collections: >-
+  **Өгөгдлийн загвар: Бүрдлүүд** — Бүх боломжит бүрдлийн жагсаалт. Үүнд харагдах болон нуусан системийн бүрдлүүд, мөн нэмж болох удирдлагагүй мэдээллийн сангийн хүснэгтүүд орно.
+page_help_settings_datamodel_fields: >-
+  **Өгөгдлийн загвар: Бүрдэл** — Бүрдэл болон түүний талбаруудыг удирдах маягт.
+page_help_settings_system_logs: '**Системийн логууд** — Системийн бүртгэлийн шууд дамжуулалтад хандах.'
+page_help_settings_policies_collection: '**Бодлогуудыг харах** — Төсөлд харгалзах бүх бодлогуудын жагсаалт.'
+page_help_settings_policies_item: "**Бодлогын дэлгэрэнгүй** — Бодлогын эрхүүд болон бусад тохиргоог удирдах."
+page_help_settings_roles_collection: '**Үүргүүдийг харах** — Төсөлд харгалзах бүх хэрэглэгчийн үүргүүдийн жагсаалт.'
+page_help_settings_roles_item: "**Үүргийн дэлгэрэнгүй** — Үүргийн эрхүүд болон бусад тохиргоог удирдах."
+page_help_settings_presets_collection: >-
+  **Урьдчилсан тохиргоог харах** — Төсөлд харгалзах бүх урьдчилсан тохиргооны жагсаалт. Үүнд: хэрэглэгч, үүрэг болон глобал тэмдэглэл, цаашлаад өгөгдмөл харагдац байна.
+page_help_settings_presets_item: >-
+  **Урьдчилсан тохиргооны дэлгэрэнгүй** — Тэмдэглэл болон өгөгдмөл бүрдлийн урьдчилсан тохиргоог удирдах маягт.
+page_help_settings_webhooks_collection: '**Вэбхүүкүүдийг харах** — Төсөлд харгалзах бүх вэбхүүкүүдийн жагсаалт.'
+page_help_settings_webhooks_item: '**Вэбхүүкийн дэлгэрэнгүй** — Төслийн вэбхүүкийг үүсгэх болон удирдах маягт.'
+page_help_settings_flows_collection: '**Урсгалуудыг харах** — Төсөлд харгалзах бүх урсгалуудын жагсаалт.'
+page_help_settings_flows_item: '**Урсгалын дэлгэрэнгүй** — Нэг эсвэл хэд хэдэн үйлдэл удирдах ажлын талбар.'
+page_help_settings_translations_collection: '**Тохируулгат орчуулгуудыг харах** — Төсөлд харгалзах бүх тохируулгат орчуулгуудын жагсаалт.'
+page_help_settings_translations_item: '**Тохируулгат орчуулгын дэлгэрэнгүй** — Оруулгыг харах болон удирдах маягт.'
+page_help_users_collection: '**Хэрэглэгчийн лавлах** — Төсөлд харгалзах бүх системийн хэрэглэгчдийн жагсаалт.'
+page_help_users_item: >-
+  **Хэрэглэгчийн дэлгэрэнгүй** — Өөрийн бүртгэлийн мэдээллийг удирдах болон бусад хэрэглэгчдийн дэлгэрэнгүй мэдээллийг авах.
+page_help_insights_overview: '**Аналитик* — Таны хандаж болох хянах самбруудын жагсаалт.'
+page_help_insights_dashboard: '**Хянах самбар** — Нэг эсвэл хэд хэдэн самбар удирдах ажлын талбар'
+page_help_marketplace_account: '**Бүртгэл* — Нийтэлсэн хэрэгслийн нийтлэгч эсвэл засварлагч.'
+page_help_marketplace_registry: '**Бүртгэл* — Directus нэмэлт хэрэгсэлд байрлах боломжтой хэрэгслүүд.'
+page_help_marketplace_extension: '**Хэрэгсэл** — Directus нэмэлт хэрэгсэл дэх хэрэгсэл.'
+activity_feed: Үйл ажиллагааны хангамж
 add_new: Шинээр нэмэх
 create_new: Шинээр үүсгэх
 all: Бүгд
+none: Байхгүй
+no_layout_collection_selected_yet: Бүтэц/бүрдэл сонгогдоогүй байна
+batch_delete_confirm: >-
+  Оруулга сонгогдоогүй байна | Энэ оруулгыг устгахдаа итгэлтэй байна уу? Үйлдлийг буцаах боломжгүй. | Эдгээр {count} оруулгуудыг устгахдаа итгэлтэй байна уу? Үйлдлийг буцаах боломжгүй.
 cancel: Цуцлах
+no_upscale: Зургийг нягтаршуулах хэрэггүй
 no_extensions: Хэрэгсэл байхгүй байна
 no_extensions_copy: Нэмэлт хэрэгсэл одоогоор суулгаагүй байна.
 install_extension: Хэрэгсэл суулгах
+uninstall_locked: Нэмэлт хэрэгсэл цэснээс суулгаагүй хэрэгслүүдийг устгах боломжгүй
 uninstall: Устгах
 installed: Суулгасан
 reinstall: Дахин суулгах
+open_in_marketplace: Нэмэлт хэрэгслийн цэсэнд нээх
 source_registry: Нэмэлт хэрэгсэл
+source_local: Локал
+source_module: Node модуль
 collection: Бүрдэл
 collections: Бүрдлүүд
 content: Контент
+singleton: Синглтон
+singleton_label: Нэг объект гэж үзэх
+system_fields_locked: Системийн талбарууд түгжигдсэн бөгөөд засах боломжгүй болсон байна
+directus_collection:
+  directus_access: Хавсралтын бодлого
+  directus_activity: Бүх үйл явдлын лог бүртгэл
+  directus_collections: Нэмэлт бүрдлийн тохируулга болон мета өгөгдөл
+  directus_comments: Оруулгуудын сэтгэгдэл
+  directus_dashboards: Аналитик модулийн хянах самбарууд
+  directus_fields: Нэмэлт талбарын тохируулга болон мета өгөгдөл
+  directus_files: Бүх удирддаг файлуудын мета өгөгдөл
+  directus_flows: Автоматжуулсан процессууд
+  directus_folders: Файлуудад зориулсан виртуал лавлахыг хангадаг
+  directus_migrations: Өгөгдлийн сангийн ямар хувилбарыг ашиглаж байгаа
+  directus_notifications: Хэрэглэгчдэд мэдэгдлийг илгээлээ
+  directus_operations: Урсгалд ажилладаг үйлдлүүд
+  directus_panels: Аналитик хянах самбарт харгалзах бие даасан самбарууд
+  directus_permissions: Бодлого бүрийн хандах эрхүүд
+  directus_policies: Хандалтын хяналтын бодлого
+  directus_presets: Бүрдлийн өгөгдмөлүүд болон тэмдэглэлүүдийн урьдчилан тохиргоо
+  directus_relations: Харилцааны тохируулга болон мета өгөгдөл
+  directus_revisions: Бүх үйл ажиллагааны өгөгдлийн хормын хувилбарууд
+  directus_roles: Системийн хэрэглэгчдэд зориулсан зөвшөөрлийн бүлгүүд
+  directus_sessions: Хэрэглэгчийн сесс мэдээлэл
+  directus_settings: Төслийн тохируулга
+  directus_shares: Гаднаас хуваалцсан зүйлсийг хянадаг
+  directus_users: Платформд зориулсан системийн хэрэглэгчид
+  directus_webhooks: Үйл явдалд суурилсан HTTP хүсэлтийн тохиргоо
+  directus_translations: Тохируулгат орчуулгууд
+  directus_versions: Оруулгуудын контент хувилбарууд
+  directus_extensions: Хэрэгслүүдийн тохируулга
 fields:
   directus_activity:
+    item: Оруулгын гол түлхүүр
+    action: Үйлдэл
     collection: Бүрдэл
+    timestamp: Үйлдэл хийсэн
+    user: Үйлдсэн
+    comment: Сэтгэгдэл
+    user_agent: Хэрэглэгчийн агент
     origin: Эх
+    ip: IP хаяг
+    revisions: Хяналтууд
   directus_collections:
     collection: Бүрдэл
+    icon: Таних тэмдэг
     note: Тэмдэглэл
     color: Өнгө
     display_template: Харагдацын загвар
+    hidden: Нуусан
+    singleton: Синглтон
+    translations: Бүрдлийн нэршлийн орчуулгууд
+    archive_app_filter: Апп шүүлтүүр архивлах
+    archive_value: Утга архивлах
+    unarchive_value: Утгыг архиваас гаргах
     sort_field: Талбаруудыг эрэмбэлэх
+    accountability: Үйл ажиллагаа болон засваруудыг хянах
+    versioning: Хувилбарын удирдлага
+    archive_field: Талбар архивлах
+    item_duplication_fields: Оруулгын давхардлын талбарууд
   directus_files:
+    $thumbnail: Өнгөц зураг
     title: Гарчиг
+    description: Тайлбар
+    tags: Таг
+    location: Байршил
+    storage: Хадгалах байршил
+    filename_disk: Файлын нэр (диск дээрх)
+    filename_download: Файлын нэр (татаж авах)
+    metadata: Мета өгөгдөл
+    type: Mime төрөл
+    filesize: Файлын хэмжээ
+    modified_by: Засвар хийсэн
     modified_on: Өөрчлөгдсөн
     created_on: Үүсгэгдсэн
     created_by: Үүсгэсэн
+    embed: Оруулсан
+    uploaded_by: Байршуулсан
     folder: Хавтас
+    width: Өргөн
+    uploaded_on: Байршсан
+    height: Өндөр
     charset: Тэмдэгт
     duration: Хугацаа
+    focal_point_x: X координат
+    focal_point_y: Y координат
   directus_users:
+    first_name: Нэр
+    last_name: Овог
+    email: Цахим шуудан
+    password: Нууц үг
+    avatar: Хөрөг зураг
+    location: Байршил
     title: Гарчиг
+    description: Тайлбар
+    tags: Таг
+    user_preferences: Тусгай тохиргоо
     language: Хэл
+    tfa_secret: 2 давхар баталгаажуулалт
+    admin_options: Админ тохиргоо
+    status: Статус
+    status_draft: Ноорог
+    status_invited: Урьсан
+    status_unverified: Баталгаажаагүй
     status_active: Идэвхтэй
+    status_suspended: Түдгэлзүүлсэн
+    status_archived: Архивласан
     role: Үүрэг
+    token: Токен
+    provider: Үйлчилгээ үзүүлэгч
+    external_identifier: Гадны танигч
     last_page: Сүүлийн хуудас
     last_access: Сүүлийн хандалт
+    email_notifications: Цахим шуудангийн мэдэгдэл
     appearance: Харагдах байдал
+    theme_light: Өдрийн загвар
+    theme_dark: Шөнийн загвар
+    theme_light_overrides: Өдрийн загварын тохируулга
+    theme_dark_overrides: Шөнийн загварын тохируулга
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    reporting: Мэдэгдэх
+    mapping: Зураглал
+    basemaps: Үндсэн зураглал
+    basemaps_raster: Растер
+    basemaps_tile: Растер TileJSON
+    basemaps_style: Mapbox хэв маяг
+    mapbox_key: Mapbox хандалтын токен
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Шинж чанар
+    attribution_placeholder: '© OpenStreetMap оролцогчид'
+    transforms_note: Sharp аргын нэр ба түүний аргументууд. Дэлгэрэнгүй мэдээллийг https://sharp.pixelplumbing.com/api-constructor холбоосоос үзнэ үү.
+    additional_transforms: Нэмэлт хувиргалтууд
+    project_name: Төслийн нэр
+    project_descriptor: Төслийн тодрхойлолт
+    project_url: Төслийн URL
+    project_color: Төслийн өнгө
+    project_logo: Төслийн таних тэмдэг
+    default_language: Өгөгдмөл хэл
+    branding: Брэнд
+    public_foreground: Нүүр хуудсын урд зураг
+    public_background: Нүүр хуудсын дэвсгэр зураг
+    public_note: Нүүр тэмдэглэл
+    theming: Загварын өгөгдмөл
+    default_appearance: Өгөгдмөл харагдах байдал
+    default_theme_light: Өгөгдмөл өдрийн загвар
+    default_theme_dark: Өгөгдмөл шөнийн загвар
+    auth_password_policy: Нэвтрэх нууц үгийг бодлого
+    auth_login_attempts: Нэвтрэх ородлогын тоо
+    files_and_thumbnails: Файл хадгалалт
+    storage_default_folder: Өгөгдмөл хавтас
+    storage_asset_presets: Хувиргалтын урьдчилсан тохиргоо
+    storage_asset_transform: Зөвшөөрөгдсөн хувиргалтууд
+    overrides: Апп үл хэрэгсэнэ
+    custom_css: Тохируулгат CSS
     module_bar: Модулийн мөр
+    transformations_all: Бүх хувиргалтуудыг зөвшөөрөх
+    transformations_none: Хувиргалтуудыг идэвхгүй болгох
+    transformations_presets: Доорх урьдчилсан тохиргооны дагуу хувиргалтуудыг хязгаарлах
+    image_editor: Зураг засварлагч
+    custom_aspect_ratios: Тохируулгат хэмжээс
+    theme_light_overrides: Өдрийн загварын тохируулга
+    theme_dark_overrides: Шөнийн загварын тохируулга
+    public_registration: Хэрэглэгчийн бүртгэл
+    public_registration_note: '[Бүртгэлийн зам](/admin/register)-ээр бүртгүүлэх боломжийг хэрэглэгчдэд олгоно.'
+    public_registration_role: Хэрэглэгчийн үүрэг
+    public_registration_role_note: Энэ аргыг ашиглан бүртгүүлсэн хэрэглэгчдэд энэ үүргийг олгодог. Бүртгэгдсэн хэрэглэгчдэд нөлөөлөхгүй.
+    public_registration_email_filter: Цахим шуудангийн шүүлтүүр
+    public_registration_email_filter_note: Зөвхөн уг шүүлтүүрт нийцэх цахим шууданг бүртгэх боломжтой.
+    public_registration_verify_email: Цахим шуудан баталгаажуулах
+    public_registration_verify_email_note: Бүртгүүлж буй хэрэглэгч рүү нэвтрэхийн өмнө баталгаажуулах холбоос дээр дарахыг хүссэн имэйл илгээнэ.
   directus_shares:
     name: Нэр
     role: Үүрэг
+    password: Нууц үг
+    date_start: Эхлэх огноо
+    date_end: Дуусах огноо
+    max_uses: Ашиглалтын дээд тоо
+    times_used: Ашигласан тоо
   directus_fields:
+    collection: Бүрдлийн нэр
+    icon: Бүрдлийн таних тэмдэг
     note: Тэмдэглэл
+    hidden: Нуусан
+    singleton: Синглтон
     translation: Талбарын нэрний орчуулга
+    display_template: Загвар
   directus_roles:
     name: Үүргийн нэр
+    icon: Үүргийн таних тэмдэг
+    description: Тайлбар
+    users: Үүрэгт харгалзах хэрэглэгчид
+    parent: Эцэг үүрэг
+    children: Хүүхэд үүрэг
   directus_policies:
     name: Бодлогын нэр
+    description: Тайлбар
+    app_access: Апп хандалт
+    admin_access: Админ хандалт
+    ip_access: IP хандалт
+    enforce_tfa: 2FA шаардах
   directus_webhooks:
     name: Нэр
+    method: Арга
+    status: Статус
+    data: Өгөгдөл
+    header: Толгой
+    value: Утга
+    headers: Хүсэлтийн толгой
+    data_label: Үйл явдлын өгөгдлийг илгээх
+    triggers: Өдөөгчид
+    actions: Үйлдлүүд
     collections: Бүрдлүүд
 field_options:
   directus_settings:
+    project_name_placeholder: Миний төсөл...
+    project_color_note: Нэвтрэх, таних тэмдгийн ар дэвсгэр
+    project_logo_note: Цагаан 40x40 SVG/PNG
+    project_favicon_note: 32x32 ICO
+    public_note_placeholder: Нийтэд харагдах Markdown форматыг дэмждэг богино мессеж...
     security_divider_title: Аюулгүй байдал
+    auth_password_policy:
+      none_text: Байхгүй - Зөвлөхгүй
+      weak_text: Сул - Багадаа 8 тэмдэгтээс бүрдэнэ
+      strong_text: Хүчтэй - Том / жижиг үсэг / Тоо / Тэмдэгт орсон
+    storage_asset_presets:
+      fit_label: Хэмжээнд таарсан
+      upscaling: Томруулсан
+      fit:
+        contain_text: Агуулах (харьцааг хадгалсан байна)
+        cover_text: Бүрхэх (ижил хэмжээтэй байна)
+    additional_transforms: Нэмэлт хувиргалтууд
+    transforms_note: Sharp аргын нэр ба түүний аргументууд. Дэлгэрэнгүй мэдээллийг https://sharp.pixelplumbing.com/api-constructor холбоосоос үзнэ үү.
+    mapbox_key: Mapbox хандалтын токен
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Үндсэн зураглал
+    basemaps_raster: Растер
+    basemaps_tile: Растер TileJSON
+    basemaps_style: Mapbox хэв маяг
+    overrides_divider_title: Апп үл хэрэгсэнэ
   directus_activity:
     create: Үүсгэх
     update: Шинэчлэх
   directus_collections:
     collection_setup: Бүрдлийн тохируулга
+    singleton: Нэг объект гэж үзэх
     language: Хэл
+    collection_name: Бүрдлийн нэр
     archive_divider: Архивлах
     sort_divider: Эрэмбэлэх
   directus_roles:
@@ -1192,18 +1476,73 @@ field_options:
       name_name: Нэр
     collections_name: Бүрдлүүд
   directus_users:
+    preferences_divider: Тусгай тохиргоо
     dropdown_auto: Автомат (Системийн тохиргоо)
     dropdown_light: Өдрийн горим
     dropdown_dark: Шөнийн горим
+    admin_divider: Админ тохиргоо
+    status_dropdown_draft: Ноорог
     status_dropdown_active: Идэвхтэй
+    status_dropdown_suspended: Түдгэлзүүлсэн
+    status_dropdown_archived: Архивласан
   directus_webhooks:
     status_options_active: Идэвхтэй
     status_options_inactive: Идэвхгүй
+    data_label: Үйл явдлын өгөгдлийг илгээх
+    triggers_divider: Өдөөгчид
     actions_create: Үүсгэх
     actions_update: Шинэчлэх
+    headers:
+      header: Толгой
+      value: Утга
+      add: Толгой нэмэх
+no_fields_in_collection: '"{collection}"-д одоогоор талбар байхгүй байна'
+no_value: Утга байхгүй
+generate_and_save_uuid: UUID үүсгэж, хадгалах
+save_current_user_id: Одоогийн хэрэглэгчийн ID хадгалах
+save_current_user_role: Одоогийн хэрэглэгчийн үүргийг хадгалах
+save_current_datetime: Одоогийн огноо/цагийг хадгалах
+always_open: Үргэлж нээлттэй
+start_open: Нээлттэй эхлэх
+start_collapsed: Хаалттай эхлэх
+block: Блок
+inline: Тасралтгүй шугаманд
+comment: Сэтгэгдэл
 live_preview:
+  enable: Урьдчилан харуулахыг идэвхжүүлэх
+  disable: Урьдчилан харуулахыг идэвхгүй болгох
+  change_size: Дэлгэцийн хэмжээсийг өөрчлөх
+  refresh: Урьдчилан үзэлтийг шинэчлэх
   new_window: Шинэ цонхонд нээх
+  close_window: Дэлгэц хуваах горимд нээх
+  toggle_3d: 3D солих
+shares: Хуваалцсан
+unlimited_usage: Хязгааргүй хэрэглээ
+uses_left: Ашиглалт үлдсэнгүй | Нэг ашиглалт үлдсэн | {n} ашиглалт үлдсэн
+no_shares: Хуваалцсан зүйл байхгүй
+new_share: Шинэ хуваалцал
+expired: Хугацаа дууссан
+upcoming: Удахгүй
+share: Хуваалцах
+share_item: Оруулга хуваалцах
+shared_with_you: Нэг оруулгыг тантай хуваалцсан байна
+shared_enter_passcode: Үргэлжлүүлэхийн тулд нууц үгээ оруулна уу...
+shared_leave_blank_for_passwordless_access: Нууц үггүй нэвтрэлтэд нууц үгийн талбарыг хоосон орхино уу
+shared_leave_blank_for_unlimited: Хязгааргүй болгох бол хоосон орхино уу
+shared_times_remaining: Энэ холбоосыг зөвхөн {n} удаа ашиглаж болно
+shared_last_remaining: Энэ холбоосыг зөвхөн ганц удаа ашиглаж болно
+shared_uses_left: Аюулгүй байдлын үүднээс хуудсыг үзэх тоог хязгаарласан байна. Одоогоор {n} үзэлт үлдсэн бөгөөд тоо хязгаарт хүрсэн үед энэ хуудасд хандах боломжгүй болно.
+share_access_page: Хуваалцсан хуудсанд хандах
+share_access_not_found: Энэ хуваалцсан хуудас байхгүй эсвэл зөвшөөрөгдөх дээд хэмжээнээс хэтэрсэн байна.
+share_access_not_found_desc: Нэвтрэх хүсэлт гаргахын тулд энэ төслийн эрх бүхий хэрэглэгчтэй холбогдоно уу.
+share_access_not_found_title: Үл мэдэгдэх хуваалцсан хуудас
+share_copy_link: Холбоос хуулах
+description: Тайлбар
 limit: Хязгаар
+email: Цахим шуудан
+hidden: Нуусан
+password: Нууц үг
+template: Загвар
 table: Хүснэгт
 interfaces:
   filter:
@@ -1246,6 +1585,8 @@ interfaces:
   list:
     sort: Эрэмбэлэх
     display_group: Харагдах байдлын тохиргоо
+  tags:
+    tags: Таг
   boolean:
     toggle: Солих
     label_default: Идэвхитэй
@@ -1253,11 +1594,19 @@ interfaces:
     display_template: Харагдацын загвар
   user:
     user: Хэрэглэгч
+    modes:
+      dropdown: Доош унадаг цэс
+  input-rich-text-html:
+    options_override: Тохиргоо үл хэрэгсэнэ
+    options_override_note: TinyMCE хэрэглэгчийн форматлах түлхүүрүүд ба тэдгээрийн утга. Дэлгэрэнгүй мэдээллийг [Хэрэглэгчийн формат](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) дээрх TinyMCE гарын авлагаас дэлгэрэнгүй мэдээллийг авна уу.
   input-block-editor:
     tools_options:
+      header: Толгой
       code: Код
       table: Хүснэгт
       underline: Доогуур зурвасласан бичвэр
+  system-token:
+    system-token: Токен
 displays:
   translations:
     translations: Орчуулгууд
@@ -1283,6 +1632,7 @@ displays:
     suffix: Дагавар
     color: Өнгө
     text: Текст
+    text_placeholder: Нэмэлт утгыг үл хэрэгсэх...
   hash:
     hash: Хэш
   image:
@@ -1291,6 +1641,7 @@ displays:
     choices_value_placeholder: Утга оруулна уу...
   user:
     user: Хэрэглэгч
+    avatar: Хөрөг зураг
     name: Нэр
 layouts:
   cards:
@@ -1302,6 +1653,9 @@ layouts:
 panels:
   label:
     name: Шошго
+triggers:
+  webhook:
+    method: Арга
 operations:
   item-create:
     payload: Чингэлэг
@@ -1309,17 +1663,25 @@ operations:
     payload: Чингэлэг
   json-web-token:
     payload: Чингэлэг
+    token: Токен
   log:
     message: Зурвас
+  mail:
+    template: Загвар
+    data: Өгөгдөл
   notification:
     recipient: Хэрэглэгч
     message: Зурвас
     subject: Сэдэв
   request:
     url: URL
+    method: Арга
+    data: Өгөгдөл
+    header: Толгой
   trigger:
     flows: Урсгалууд
     flow: Урсгал
+    data: Өгөгдөл
 standard: Стандарт
 fonts:
   bold: Тод
