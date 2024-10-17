@@ -879,8 +879,42 @@ display_options: Харагдах байдлын тохиргоо
 layout_options: Бүтцийн тохиргоо
 rows: Мөрүүд
 columns: Баганууд
+collection_setup: Бүрдлийн тохируулга
+optional_system_fields: Нэмэлт талбарууд
 value_unique: Утга нь дахин давтагдашгүй байх ёстой
+value_index: Талбарыг индексжүүлсэн
+all_activity: Бүх үйл ажиллагаа
+create_item: Оруулга үүсгэх
+display_template: Харагдацын загвар
+language_display_template: Хэлний харагдацын загвар
+translations_display_template: Орчуулгын харагдацын загвар
+n_items_selected: 'Оруулга сонгогдсонгүй | Нэг оруулга сонгогдлоо | {n} оруулга сонгогдлоо'
+per_page: Нэг хуудсанд
+all_files: Бүх файлууд
+my_files: Миний файлууд
+recent_files: Сүүлийн файлууд
+create_folder: Хавтас үүсгэх
+edit_folder: Хавтас засах
+folder_name: Хавтсын нэр...
+folder_key: Хавтсын түлхүүр...
+add_file: Файл нэмэх
+replace_file: Файл солих
+no_results: Үр дүн олдсонгүй
+no_results_copy: Үр дүнг харахын тулд хайлтын шүүлтүүрийг тохируулж эсвэл арилгана уу.
+no_visible_fields: Хоосон маягт
+no_visible_fields_copy: Энэ маягтад харагдах талбар байхгүй байна.
+clear_filters: Шүүлтүүр арилгах
+saves_automatically: Автоматаар хадгална
+role: Үүрэг
+edit_role: Үүрэг засах
+rule: Дүрэм
+user: Хэрэглэгч
+no_presets: Урьдчилсан тохиргоо байхгүй
 no_presets_copy: Урьдчилсан тохиргоо эсвэл тэмдэглээ хадгалагдаагүй байна.
+no_presets_cta: Урьдчилсан тохиргоо нэмэх
+presets_only: Зөвхөн урьдчилсан тохиргоонууд
+create: Үүсгэх
+on_create: Үүсгэх үед
 on_update: Шинэчлэх үед
 read: Унших
 update: Шинэчлэх
@@ -996,6 +1030,7 @@ fields:
   directus_collections:
     note: Тэмдэглэл
     color: Өнгө
+    display_template: Харагдацын загвар
     sort_field: Талбаруудыг эрэмбэлэх
   directus_files:
     title: Гарчиг
@@ -1009,12 +1044,14 @@ fields:
     title: Гарчиг
     language: Хэл
     status_active: Идэвхтэй
+    role: Үүрэг
     last_page: Сүүлийн хуудас
     last_access: Сүүлийн хандалт
   directus_settings:
     module_bar: Модулийн мөр
   directus_shares:
     name: Нэр
+    role: Үүрэг
   directus_fields:
     note: Тэмдэглэл
     translation: Талбарын нэрний орчуулга
@@ -1028,8 +1065,10 @@ field_options:
   directus_settings:
     security_divider_title: Аюулгүй байдал
   directus_activity:
+    create: Үүсгэх
     update: Шинэчлэх
   directus_collections:
+    collection_setup: Бүрдлийн тохируулга
     language: Хэл
     archive_divider: Архивлах
     sort_divider: Эрэмбэлэх
@@ -1044,6 +1083,7 @@ field_options:
   directus_webhooks:
     status_options_active: Идэвхтэй
     status_options_inactive: Идэвхгүй
+    actions_create: Үүсгэх
     actions_update: Шинэчлэх
 live_preview:
   new_window: Шинэ цонхонд нээх
@@ -1062,6 +1102,7 @@ interfaces:
   system-fields:
     select_a_collection: Бүрдэл сонгох
   system-display-template:
+    display-template: Харагдацын загвар
     collection_field_not_setup: Бүрдлийн талбар буруу тохируулагдсан байна
     select_a_collection: Бүрдэл сонгох
   presentation-divider:
@@ -1074,6 +1115,8 @@ interfaces:
     display: Харагдах байдал
   system-display-options:
     display-options: Харагдах байдлын тохиргоо
+  select-dropdown-m2o:
+    display_template: Харагдацын загвар
   input-rich-text-md:
     edit: Засах
   map:
@@ -1084,6 +1127,10 @@ interfaces:
   boolean:
     toggle: Солих
     label_default: Идэвхитэй
+  translations:
+    display_template: Харагдацын загвар
+  user:
+    user: Хэрэглэгч
   input-block-editor:
     tools_options:
       code: Код
@@ -1118,6 +1165,7 @@ displays:
   labels:
     choices_value_placeholder: Утга оруулна уу...
   user:
+    user: Хэрэглэгч
     name: Нэр
 layouts:
   cards:
@@ -1131,6 +1179,7 @@ operations:
   log:
     message: Зурвас
   notification:
+    recipient: Хэрэглэгч
     message: Зурвас
     subject: Сэдэв
   request:
