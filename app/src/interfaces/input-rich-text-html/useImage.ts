@@ -4,7 +4,7 @@ import { getPublicURL } from '@/utils/get-root-path';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import mime from 'mime/lite';
 import { Ref, ref, watch } from 'vue';
-import { SettingsStorageAssetPreset, File } from '@directus/types';
+import { SettingsStorageAssetPreset, File, Item } from '@directus/types';
 
 type ImageSelection = {
 	imageUrl: string;
@@ -30,6 +30,8 @@ type UsableImage = {
 	onImageSelect: (image: File) => void;
 	saveImage: () => void;
 	imageButton: ImageButton;
+	getImageIds: (value: string | null) => string[];
+	replaceCacheBuster: (value: string | null, images: Ref<Item[]>) => string;
 };
 
 export default function useImage(
@@ -110,7 +112,16 @@ export default function useImage(
 		},
 	};
 
-	return { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton };
+	return {
+		imageDrawerOpen,
+		imageSelection,
+		closeImageDrawer,
+		onImageSelect,
+		saveImage,
+		imageButton,
+		getImageIds,
+		replaceCacheBuster,
+	};
 
 	function closeImageDrawer() {
 		imageSelection.value = null;
@@ -189,5 +200,47 @@ export default function useImage(
 		} catch {
 			return url;
 		}
+	}
+
+	function getImageIds(value: string | null): string[] {
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(value || '', 'text/html');
+		const images = doc.querySelectorAll('img');
+		const ids: string[] = [];
+
+		images.forEach((img) => {
+			const originalSrc = img.getAttribute('src') || '';
+
+			if (originalSrc.startsWith(getPublicURL() + 'assets/')) {
+				const [id] = originalSrc.replace(getPublicURL() + 'assets/', '').split('.');
+				if (id) ids.push(id);
+			}
+		});
+
+		return ids;
+	}
+
+	function replaceCacheBuster(value: string | null, items: Ref<Item[]>): string {
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(value || '', 'text/html');
+		const images = doc.querySelectorAll('img');
+
+		images.forEach((img) => {
+			const originalSrc = img.getAttribute('src') || '';
+
+			if (originalSrc.startsWith(getPublicURL() + 'assets/')) {
+				const [id] = originalSrc.replace(getPublicURL() + 'assets/', '').split('.');
+				const item = items.value.find((i) => i.id === id);
+
+				if (item) {
+					const url = new URL(originalSrc);
+					const params = url.searchParams;
+					params.set('cache-buster', item.uploaded_on);
+					img.setAttribute('src', url.toString());
+				}
+			}
+		});
+
+		return doc.body.innerHTML;
 	}
 }
