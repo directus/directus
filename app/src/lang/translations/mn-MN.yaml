@@ -230,9 +230,9 @@ validationError:
   email: Утга нь хүчин төгөлдөр цахим шуудан байх ёстой
   regex: Утга зөв форматгүй байна
   starts_with: Утга {substring}-р эхэлсэн байх ёстой
-  istarts_with: Утга {substring}-р эхэлсэн байх ёстой
+  istarts_with: Утга {substring}-р эхэлсэн байна
   nstarts_with: Утга {substring}-р эхэлсэн байж болохгүй
-  nistarts_with: Утга {substring}-р эхэлсэн байж болохгүй
+  nistarts_with: Утга {substring}-р эхлэхгүй
   ends_with: Утга {substring}-р төгссөн байх ёстой
   iends_with: Утга {substring}-р төгссөн байх ёстой
   nends_with: Утга {substring}-р төгссөн байж болохгүй
@@ -967,6 +967,23 @@ flow_tracking_null: Хяналт хийхгүй байх
 start_flow: Урсгал эхлүүлэх
 stop_flow: Урсгал зогсоох
 code: Код
+dashboard: Хянах самбар
+panel: Самбар
+panel_options: Самбарын тохиргоо
+panel_header: Самбарын толгой
+panel_name_placeholder: Энэ самбарыг нэрлэх...
+panel_note_placeholder: Энэ самбарын нэмэлт мэдээлэл...
+panel_delete_confirm: Энэ самбарыг усгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
+edit_dashboard: Хянах самбар засах
+delete_dashboard: Хянах самбар устгах
+no_dashboards: Хянах самбар байхгүй байна
+no_dashboards_copy: Танд одоогоор хянах самбар байхгүй байна.
+create_dashboard: Хянах самбар үүсгэх
+dashboard_name: Хянах самбарын нэр
+no_data: Өгөгдөл байхгүй
+no_data_in_flow: Энэ урсгалаар өгөгдөл үүсгэгдэж, хандагдаагүй байна
+payload: Чингэлэг
+details: Дэлгэрэнгүй мэдээлэл
 full_screen: Дэлгэц дүүргэх
 full_text_search: Бүрэн текст хайлт
 edit_panels: Самбар засах
@@ -1018,16 +1035,112 @@ wysiwyg_options:
   link: Холбоос нэмэх/засах
   unlink: Холбоос устгах
   media: Медиа нэмэх/засах
+  image: Зураг нэмэх/засах
+  copy: Хуулах
+  cut: Огтлох
+  paste: Наах
+  heading: Гарчиг
+  h1: Гарчиг 1
+  h2: Гарчиг 2
+  h3: Гарчиг 3
+  h4: Гарчиг 4
+  h5: Гарчиг 5
+  h6: Гарчиг 6
+  fontselect: Фонт сонгох
+  fontsizeselect: Фонтны хэмжээ сонгох
+  indent: Догол мөр
+  undo: Буцаах
+  redo: Дахин хийх
+  remove: Арилгах
+  removeformat: Формат арилгах
   selectall: Бүгдийг сонгох
+  table: Хүснэгт
+  visualaid: Үл харагдах элементүүдийг харах
+  source_code: Эх кодыг засах
+  fullscreen: Бүтэн дэлгэцлэх
+  directionality: Чиглэл
+  lazy_loading: Шаардлагатай үед зургийг ачаалах
+  lazy_loading_label: Шаардлагатай үед ачаалах тохиргоог идэвхжүүлэх
+choices: Сонголтууд
+choices_option_configured_incorrectly: Сонголтуудыг буруу тохируулсан байна
+deselect: Сонголтыг цуцлах
+deselect_all: Бүгдийг сонгохоо болих
+theme: Загвар
+select_a_theme: Загвар сонгох
+default_sync_with_project: Өгөгдмөл (Төсөлтэй тохирсон)
+appearance_auto: Автомат (Системтэй тохирсон)
+appearance_light: Өдрийн
+appearance_dark: Шөнийн
+other: Бусад...
+adding_user: Хэрэглэгч нэмж байна
+unknown_user: Мэдэгдэхгүй хэрэглэгч
+creating_in: '{collection}-д оруулга үүсгэж байна'
+editing_in: '{collection}-д оруулга засаж байна'
+viewing_in: '{collection}-д оруулга үзэж байна'
+creating_unit: '{unit} үүсгэж байна'
+editing_unit: '{unit} засаж байна'
+editing_in_batch: '{count} оруулгыг багцлан засаж байна'
+no_options_available: Боломжит тохируулга байхгүй байна
+settings_data_model: Өгөгдлийн загвар
+settings_roles: Хэрэглэгчийн үүргүүд
+settings_permissions: Хандах бодлогууд
+settings_project: Тохиргоо
+settings_appearance: Харагдах байдал
 settings_webhooks: Вэбхүүкүүд
 settings_flows: Урсгалууд
+settings_system_logs: Системийн бүртгэл
 settings_presets: Тэмдэглэгээнүүд
 settings_translations: Орчуулгууд
+one_or_more_options_are_missing: Нэг эсвэл хэд хэдэн тохиргоо дутуу байна
+configure_field_key_to_continue: Талбарын түлхүүрийг тохируулсны дараа үргэлжлүүлнэ үү
+scope: Хүрээ
+actions: Үйлдлүүд
+select: Сонгох...
+layout: Бүтэц
+tree_view: Мод загвараар харах
+changes_are_permanent: Өөрчлөлтүүд нь үүрдийн болно
+preset_name_placeholder: Хоосон үед өгөгдмөл болж үйлчилнэ...
+preset_search_placeholder: Асуулт хайх...
+editing_preset: Урьдчилсан тохиргоог засаж байна
+layout_preview: Бүтцийг урьдчилан харах
+layout_setup: Бүтцийг тохируулах
+data: Өгөгдөл
+theme-overrides: Загвар үл хэрэгсэнэ
+unsaved_changes: Хадгалагдаагүй өөрчлөлтүүд
+unsaved_changes_copy: Энэ хуудсыг орхихдоо итгэлтэй байна уу?
+discard_changes: Өөрчлөлтүүдийг цуцлах
+discard_all_changes: Бүх өөрчлөлтүүдийг цуцлах
+discard_changes_copy: Хийсэн бүх өөрчлөлтүүдийг цуцлахдаа итгэлтэй байна уу?
+show_x_axis: X тэнхлэгийг харах
+show_y_axis: Y тэнхлэгийг харах
+keep_editing: Засвар үргэлжлүүлэх
+page_help_collections_overview: '**Бүрдлийн тойм** - Таны хандах боломжтой бүх бүрдлийн жагсаалт.'
+page_help_collections_collection: >-
+  **Оруулгуудыг харах** — Таны хандах эрхтэй {collection} доторх бүх оруулгуудын жагсаалт. Хурдан хандахын тулд өөрийн хэрэгцээнд нийцүүлэн бүтэц, шүүлтүүр, эрэмбэлэл зэргийг тохируулж, тэмдэглэлийг өөр өөр тохиргоонд хадгалаарай.
+page_help_collections_item: >-
+  **Оруулгын дэлгэрэнгүй** — Энэ оруулгыг харах болон удирдах маягт. Хажуу цэс нь засваруудын бүрэн түүх, оруулсан сэтгэгдлүүдийг агуулна.
+page_help_activity_collection: >-
+  **Үйл ажиллагааг харах** — Хэрэглэгчийн бүх систем болон контент үйл ажиллагааны дэлгэрэнгүй жагсаалт.
+add_new: Шинээр нэмэх
+create_new: Шинээр үүсгэх
+all: Бүгд
+cancel: Цуцлах
+no_extensions: Хэрэгсэл байхгүй байна
+no_extensions_copy: Нэмэлт хэрэгсэл одоогоор суулгаагүй байна.
+install_extension: Хэрэгсэл суулгах
+uninstall: Устгах
+installed: Суулгасан
+reinstall: Дахин суулгах
 source_registry: Нэмэлт хэрэгсэл
+collection: Бүрдэл
+collections: Бүрдлүүд
+content: Контент
 fields:
   directus_activity:
+    collection: Бүрдэл
     origin: Эх
   directus_collections:
+    collection: Бүрдэл
     note: Тэмдэглэл
     color: Өнгө
     display_template: Харагдацын загвар
@@ -1047,6 +1160,7 @@ fields:
     role: Үүрэг
     last_page: Сүүлийн хуудас
     last_access: Сүүлийн хандалт
+    appearance: Харагдах байдал
   directus_settings:
     module_bar: Модулийн мөр
   directus_shares:
@@ -1061,6 +1175,7 @@ fields:
     name: Бодлогын нэр
   directus_webhooks:
     name: Нэр
+    collections: Бүрдлүүд
 field_options:
   directus_settings:
     security_divider_title: Аюулгүй байдал
@@ -1075,6 +1190,7 @@ field_options:
   directus_roles:
     fields:
       name_name: Нэр
+    collections_name: Бүрдлүүд
   directus_users:
     dropdown_auto: Автомат (Системийн тохиргоо)
     dropdown_light: Өдрийн горим
@@ -1088,15 +1204,21 @@ field_options:
 live_preview:
   new_window: Шинэ цонхонд нээх
 limit: Хязгаар
+table: Хүснэгт
 interfaces:
   filter:
     name: Шүүлтүүр
     add_filter: Шүүлтүүр нэмэх
+    all: Бүгд
     any: Ямар ч
   presentation-links:
     primary: Үндсэн
   input-code:
     code: Код
+  system-collection:
+    collection: Бүрдэл
+  system-collections:
+    collections: Бүрдлүүд
   select-color:
     color: Өнгө
   system-fields:
@@ -1134,6 +1256,7 @@ interfaces:
   input-block-editor:
     tools_options:
       code: Код
+      table: Хүснэгт
       underline: Доогуур зурвасласан бичвэр
 displays:
   translations:
@@ -1142,6 +1265,8 @@ displays:
     boolean: Булийн
     icon_on: Таних тэмдгийг идэвхжүүлэх
     icon_off: Таних тэмдгийг идэвхгүй болгох
+  collection:
+    collection: Бүрдэл
   color:
     color: Өнгө
   datetime:
@@ -1170,12 +1295,20 @@ displays:
 layouts:
   cards:
     title: Гарчиг
+  tabular:
+    tabular: Хүснэгт
   kanban:
     advanced: Дэлгэрэннгүй
 panels:
   label:
     name: Шошго
 operations:
+  item-create:
+    payload: Чингэлэг
+  item-update:
+    payload: Чингэлэг
+  json-web-token:
+    payload: Чингэлэг
   log:
     message: Зурвас
   notification:
