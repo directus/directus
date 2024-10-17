@@ -2,7 +2,6 @@
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { orderBy } from 'lodash';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -34,10 +33,7 @@ const currentPrimaryKey = computed(() => fieldsStore.getPrimaryKeyFieldForCollec
 
 const availableCollections = computed(() => {
 	return [
-		...orderBy(
-			collectionsStore.databaseCollections.filter((collection) => collection.meta),
-			['meta.sort', 'collection'],
-		),
+		...collectionsStore.databaseCollections.filter((collection) => collection.meta),
 		{
 			divider: true,
 		},

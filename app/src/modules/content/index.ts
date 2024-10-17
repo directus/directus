@@ -67,11 +67,8 @@ export default defineModule({
 
 				if (collectionsStore.visibleCollections.length === 0) return;
 
-				const rootCollections = orderBy(
-					collectionsStore.visibleCollections.filter((collection) => {
-						return isNil(collection?.meta?.group);
-					}),
-					['meta.sort', 'collection'],
+				const rootCollections = collectionsStore.visibleCollections.filter((collection) =>
+					isNil(collection?.meta?.group),
 				);
 
 				const { data } = useLocalStorage('last-accessed-collection');
