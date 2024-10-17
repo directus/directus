@@ -16,12 +16,18 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import useNavigation from '../composables/use-navigation';
+import { getCollectionRoute } from '@/utils/get-route';
+import { useRouter } from 'vue-router';
+import BookmarkAdd from '@/views/private/components/bookmark-add.vue';
 
 type Item = {
 	[field: string]: any;
 };
 
-const props = defineProps<{ role?: string }>();
+const props = defineProps<{
+	role?: string;
+	bookmark?: string;
+}>();
 
 const { role } = toRefs(props);
 
@@ -33,7 +39,25 @@ const serverStore = useServerStore();
 const layoutRef = ref();
 const selection = ref<Item[]>([]);
 
-const { layout, layoutOptions, layoutQuery, filter, search, resetPreset } = usePreset(ref('directus_users'));
+const bookmarkID = computed(() => (props.bookmark ? +props.bookmark : null));
+
+const {
+	layout,
+	layoutOptions,
+	layoutQuery,
+	filter,
+	search,
+	resetPreset,
+	bookmarkExists,
+	saveCurrentAsBookmark,
+	bookmarkTitle,
+	bookmarkSaved,
+	bookmarkIsMine,
+	refreshInterval,
+	busy: bookmarkSaving,
+	clearLocalSave,
+} = usePreset(ref('directus_users'), bookmarkID);
+
 const { addNewLink } = useLinks();
 
 const currentLayout = useExtension('layout', layout);
@@ -81,6 +105,41 @@ onBeforeRouteLeave(() => {
 onBeforeRouteUpdate(() => {
 	selection.value = [];
 });
+
+const router = useRouter();
+
+const { bookmarkDialogActive, creatingBookmark, createBookmark } = useBookmarks();
+
+function useBookmarks() {
+	const bookmarkDialogActive = ref(false);
+	const creatingBookmark = ref(false);
+
+	return {
+		bookmarkDialogActive,
+		creatingBookmark,
+		createBookmark,
+	};
+
+	async function createBookmark(bookmark: any) {
+		creatingBookmark.value = true;
+
+		try {
+			const newBookmark = await saveCurrentAsBookmark({
+				bookmark: bookmark.name,
+				icon: bookmark.icon,
+				color: bookmark.color,
+			});
+
+			router.push(`${getCollectionRoute(newBookmark.collection)}?bookmark=${newBookmark.id}`);
+
+			bookmarkDialogActive.value = false;
+		} catch (error) {
+			unexpectedError(error);
+		} finally {
+			creatingBookmark.value = false;
+		}
+	}
+}
 
 async function refresh() {
 	await layoutRef.value?.state?.refresh?.();
@@ -169,7 +228,7 @@ function clearFilters() {
 		:reset-preset="resetPreset"
 	>
 		<private-view
-			:title="title"
+			:title="bookmark ? bookmarkTitle : title"
 			:small-header="currentLayout?.smallHeader"
 			:header-shadow="currentLayout?.headerShadow"
 		>
@@ -185,6 +244,55 @@ function clearFilters() {
 
 			<template #actions:prepend>
 				<component :is="`layout-actions-${layout}`" v-bind="layoutState" />
+			</template>
+
+			<template #title-outer:append>
+				<div class="bookmark-controls">
+					<bookmark-add
+						v-if="!bookmark"
+						v-model="bookmarkDialogActive"
+						class="add"
+						:saving="creatingBookmark"
+						@save="createBookmark"
+					>
+						<template #activator="{ on }">
+							<v-icon v-tooltip.right="t('create_bookmark')" class="toggle" clickable name="bookmark" @click="on" />
+						</template>
+					</bookmark-add>
+
+					<v-icon v-else-if="bookmarkSaved" class="saved" name="bookmark" filled />
+
+					<template v-else-if="bookmarkIsMine">
+						<v-icon
+							v-tooltip.bottom="t('update_bookmark')"
+							class="save"
+							clickable
+							name="bookmark_save"
+							@click="savePreset()"
+						/>
+					</template>
+
+					<bookmark-add
+						v-else
+						v-model="bookmarkDialogActive"
+						class="add"
+						:saving="creatingBookmark"
+						@save="createBookmark"
+					>
+						<template #activator="{ on }">
+							<v-icon class="toggle" name="bookmark" clickable @click="on" />
+						</template>
+					</bookmark-add>
+
+					<v-icon
+						v-if="bookmark && !bookmarkSaving && bookmarkSaved === false"
+						v-tooltip.bottom="t('reset_bookmark')"
+						name="settings_backup_restore"
+						clickable
+						class="clear"
+						@click="clearLocalSave"
+					/>
+				</div>
 			</template>
 
 			<template #actions>
@@ -254,12 +362,27 @@ function clearFilters() {
 			</template>
 
 			<template #navigation>
-				<users-navigation :current-role="role" />
+				<users-navigation :current-role="role" :has-bookmark="!!bookmark" />
 			</template>
-
 			<users-invite v-if="canInviteUsers" v-model="userInviteModalActive" @update:model-value="refresh" />
 
-			<component :is="`layout-${layout}`" v-bind="layoutState">
+			<v-info
+				v-if="bookmark && bookmarkExists === false"
+				type="warning"
+				:title="t('bookmark_doesnt_exist')"
+				icon="bookmark"
+				center
+			>
+				{{ t('bookmark_doesnt_exist_copy') }}
+
+				<template #append>
+					<v-button :to="currentCollectionLink">
+						{{ t('bookmark_doesnt_exist_cta') }}
+					</v-button>
+				</template>
+			</v-info>
+
+			<component :is="`layout-${layout}`" v-else v-bind="layoutState">
 				<template #no-results>
 					<v-info v-if="!filter && !search" :title="t('user_count', 0)" icon="people_alt" center>
 						{{ t('no_users_copy') }}
@@ -308,6 +431,7 @@ function clearFilters() {
 					<component :is="`layout-options-${layout}`" v-bind="layoutState" />
 				</layout-sidebar-detail>
 				<component :is="`layout-sidebar-${layout}`" v-bind="layoutState" />
+				<refresh-sidebar-detail v-model="refreshInterval" @refresh="refresh" />
 				<export-sidebar-detail
 					collection="directus_users"
 					:layout-query="layoutQuery"
