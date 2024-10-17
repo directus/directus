@@ -10,6 +10,7 @@ export function getJSType(field: Field): string {
 
 	switch (field.type) {
 		case 'bigInteger':
+			return 'bigInteger';
 		case 'integer':
 		case 'float':
 		case 'decimal':
