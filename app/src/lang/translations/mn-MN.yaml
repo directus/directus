@@ -1452,22 +1452,29 @@ field_options:
       fit:
         contain_text: Агуулах (харьцааг хадгалсан байна)
         cover_text: Бүрхэх (ижил хэмжээтэй байна)
+        fit_text: Дотор тааруулах
+        outside_text: Гадна тааруулах
     additional_transforms: Нэмэлт хувиргалтууд
     transforms_note: Sharp аргын нэр ба түүний аргументууд. Дэлгэрэнгүй мэдээллийг https://sharp.pixelplumbing.com/api-constructor холбоосоос үзнэ үү.
     mapbox_key: Mapbox хандалтын токен
     mapbox_placeholder: pk.eyJ1Ijo.....
     basemaps: Үндсэн зураглал
+    basemaps_name_placeholder: Үндсэн зураглалын нэрийг оруулна уу...
     basemaps_raster: Растер
     basemaps_tile: Растер TileJSON
     basemaps_style: Mapbox хэв маяг
+    files_divider_title: Файл болон өнгөц зургууд
     overrides_divider_title: Апп үл хэрэгсэнэ
   directus_activity:
+    login: Нэвтрэх
     create: Үүсгэх
     update: Шинэчлэх
+    delete: Устгах
   directus_collections:
     collection_setup: Бүрдлийн тохируулга
     singleton: Нэг объект гэж үзэх
     language: Хэл
+    translation: Орчуулга
     collection_name: Бүрдлийн нэр
     archive_divider: Архивлах
     sort_divider: Эрэмбэлэх
@@ -1498,6 +1505,7 @@ field_options:
       add: Толгой нэмэх
 no_fields_in_collection: '"{collection}"-д одоогоор талбар байхгүй байна'
 no_value: Утга байхгүй
+do_nothing: Юу ч хийхгүй
 generate_and_save_uuid: UUID үүсгэж, хадгалах
 save_current_user_id: Одоогийн хэрэглэгчийн ID хадгалах
 save_current_user_role: Одоогийн хэрэглэгчийн үүргийг хадгалах
@@ -1537,19 +1545,82 @@ share_access_not_found: Энэ хуваалцсан хуудас байхгүй 
 share_access_not_found_desc: Нэвтрэх хүсэлт гаргахын тулд энэ төслийн эрх бүхий хэрэглэгчтэй холбогдоно уу.
 share_access_not_found_title: Үл мэдэгдэх хуваалцсан хуудас
 share_copy_link: Холбоос хуулах
+share_copy_link_success: Холбоосыг хуулсан
+share_copy_link_error: Холбоосыг хуулах боломжгүй
+share_send_link: Холбоос илгээх
+relational_triggers: Хамааралтай өдөөгчид
+referential_action_field_label_m2o: '{collection}-г устгах үед...'
+referential_action_field_label_o2m: '{collection}-г сонгохоо болих үед...'
+referential_action_no_action: Устгахаас сэргийлэх
+referential_action_cascade: '{collection} оруулгыг устгах (cascade)'
+referential_action_set_null: '{field} талбарыг хүчингүй болгох'
 description: Тайлбар
 limit: Хязгаар
 email: Цахим шуудан
 hidden: Нуусан
 password: Нууц үг
+reset_password: Нууц үг сэргээх
+revisions: Хяналтууд
+no_revisions: Хяналт одоогоор байхгүй байна
+no_logs: Лог одоогоор байхгүй байна
+revert: Буцаах
+save: Хадгалах
+schema: Схем
+search: Хайх
+select_existing: Одоо байгаа зүйлээс сонгоно уу
+select_field_type: Талбарын төрлийг сонгоно уу
+select_interface: Интерфэйс сонгоно уу
+select_display: Харагдацыг сонгоно уу
+settings: Тохиргоо
+register: Бүртгүүлэх
+registration_successful_headline: Амжилттай!
+registration_successful_note: Та одоо нэвтрэх хуудас руу очиж болно.
+registration_successful_check_email_note: |
+  Нэвтрэхээсээ өмнө танд илгээсэн баталгаажуулах холбоос дээр дарж имэйл хаягаа баталгаажуулах шаардлагатайг анхаарна уу.
+dont_have_an_account: Бүртгэл байхгүй юу?
+already_have_an_account: Аль хэдийн бүртгэлтэй юу?
+sign_up_now: Яг одоо нэгдээрэй
+sign_in: Нэвтрэх
+sign_out: Гарах
+sign_out_confirm: Та гарахдаа итгэлтэй байна уу?
+something_went_wrong: Ямар нэгэн алдаа гарлаа.
+sort_direction: Чиглэлийг эрэмбэлэх
+export_location: Экспорт хийх байршил
+export_started: Экспортлож эхэллээ
+export_started_copy: Таны экспорт эхэллээ. Татахад бэлэн болсон үед танд мэдэгдэх болно.
+sort_asc: Өсөхөөр эрэмбэлэх
+sort_desc: Буурахаар эрэмбэлэх
+disable_sort: Эрэмбэлэлтийг унтраах
 template: Загвар
+require_value_to_be_set: Үүсгэх үед утгыг бөглөх шаардлагатай болгох
+translation: Орчуулга
+translation_placeholder: Орчуулга оруулна уу...
+value: Утга
+view_project: Төсөл үзэх
+report_error: Алдааг мэдээлэх
+start: Эхлэх
 table: Хүснэгт
+list: Жагсаалт
+search_filter: Хайлт ба шүүлт
+enable_search_filter: Хайлт болон шүүлтүүрийг асаах
+item_link: Оруулгын холбоос
+show_link_to_item: Оруулгын холбоосыг харуулах
+navigate_to_item: Оруулга руу очих
+undo_removed_item: Устгасан оруулгыг буцаах
+remove_item: Оруулга арилгах
+delete_item: Оруулга устгах
+pause: Зогсоох
+resume: Үргэлжлүүлэх
 interfaces:
+  list-m2a:
+    prefix_note: Холбогдох оруулгын бүрдлийн өгөгдмөл нэрийг ашигладаг.
   filter:
     name: Шүүлтүүр
     add_filter: Шүүлтүүр нэмэх
     all: Бүгд
     any: Ямар ч
+  group-accordion:
+    start: Эхлэх
   presentation-links:
     primary: Үндсэн
   input-code:
