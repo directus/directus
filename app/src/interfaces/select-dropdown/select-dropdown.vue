@@ -87,11 +87,7 @@ watch(
 </script>
 
 <template>
-	<v-notice v-if="!items" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
 	<v-select
-		v-else
 		:model-value="value"
 		:items="items"
 		:disabled="disabled"
