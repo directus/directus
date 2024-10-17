@@ -22,9 +22,6 @@ fields:
     width: half
     options:
       template: '{{name}}'
-      filter:
-        admin_access:
-          _eq: false
 
   - field: password
     special:
