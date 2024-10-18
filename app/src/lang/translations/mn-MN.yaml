@@ -2245,8 +2245,15 @@ layouts:
     user: Картын хэрэглэгч
     user_placeholder: Нэмэлт хэрэглэгчийн талбар...
     image: Картын зураг
+    image_placeholder: Нэмэлт зургийн талбар...
+    image_fit: Картын зургийг тааруулах
     crop: Тайрах
     advanced: Дэлгэрэннгүй
+    edit_group: Бүлэг засах
+    delete_group: Бүлэг устгах
+    add_group: Бүлэг нэмэх
+    add_group_placeholder: Шинэ бүлгийн гарчиг оруулах...
+    show_ungrouped: Бүлэглээгүйг харуулах
     show: Харуулах
     no_group: Бүлэг байхгүй
 horizontal: Хэвтээ
