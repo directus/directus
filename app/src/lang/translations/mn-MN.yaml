@@ -1830,47 +1830,202 @@ interfaces:
   input-hash:
     hash: Хэш
     description: Хэш хийх утгыг оруулна уу
+    masked: Масклагдсан
+    masked_label: Жинхэнэ утгуудыг нуух
   select-icon:
     icon: Таних тэмдэг
+    description: Доош унах цэснээс таних тэмдгийг сонгох
+    search_for_icon: Таних тэмдэг хайх...
+  file-image:
+    image: Зураг
+    description: Зураг сонгох эсвэл оруулах
+    crop: Хэмжээнд тохирохоор тайрах
+    crop_label: Шаардлагатай бол зургийг тайрах
+    letterbox: Шуудангийн хайрцаг
+    letterbox_label: Зургийн урьдчилан үзэлтэд дэвсгэр нэмэх
+  system-interface:
+    interface: Интерфэйс
+    description: Одоо байгаа интерфэйс сонгох
+    placeholder: Интерфэйс сонгох...
+  system-interface-options:
+    interface-options: Интерфэйс тохиргоо
+    description: Интерфэйсийн тохиргоог сонгох модал цонх
   system-display:
     display: Харагдах байдал
+    description: Одоо байгаа харагдацыг сонгох
+    placeholder: Харагдац сонгох...
   system-display-options:
     display-options: Харагдах байдлын тохиргоо
+    description: Харагдацын тохиргоог сонгох модал цонх
+  list-m2m:
+    many-to-many: Many to Many
+    description: Хамааралтай олон холбох оруулгуудыг сонгох
+    columns_configure_notice: Энэ талбарыг үүсгэсний дараа баганыг тохируулж болно.
+    display_template_configure_notice: Энэ талбарыг үүсгэсний дараа харагдах байдлын загварыг тохируулж болно.
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Дан хамааралтай оруулгыг сонгох
     display_template: Харагдацын загвар
+  collection-item-dropdown:
+    collection-item-dropdown: Бүрдлийн оруулгын доош унадаг цэс
+    description: JSON форматаар бүрдлээс оруулгыг сонгох
   input-rich-text-md:
+    markdown: Markdown
+    description: Markdown-г оруулж, урьдчилан харах
     edit: Засах
+    preview: Урьдчилан харах
+    editorFont: Засварлагчийн фонт
+    previewFont: Урьдчилан харах фонт
+    default_view: Өгөгдмөл харагдац
+    default_view_editor: Засварлагч
+    default_view_preview: Урьдчилан харах
+    customSyntax: Тохируулгат блокууд
+    customSyntax_label: Тохируулгат синтакс төрлүүд нэмэх
+    customSyntax_add: Тохируулгат синтакс нэмэх
+    box: Блок /Тасралтгүй мөр
+    imageToken: Статик хандалтын токен
+    imageToken_label: Статик хандалтын токенг файлын URL-д нэгтгэсэн
   map:
+    map: Газрын зураг
+    description: Газрын зураг дээр байршил сонгоно уу
     zoom: Томруулах
+    geometry_type: Геометрын төрөл
+    geometry_format: Геометрын формат
+    default_view: Өгөгдмөл харагдац
+    invalid_options: Буруу тохиргоо
+    invalid_format: Буруу ({format}) формат
+    unexpected_geometry: '{expected} хүлээгдэж байсан ч {got} авав.'
+    fit_bounds: Өгөгдөлд харагдацыг тааруулах
+    native: Төрөлх
+    geojson: GeoJSON
+    lnglat: Уртраг, өргөрөг
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Дарж {geometry}-г сонгоно уу
+  presentation-notice:
+    notice: Мэдэгдэл
+    description: Богино мэдэгдэл харуулах
+    text: Мэдэгдлийн контентыг энд оруулна уу...
+    no_text: Текст тохируулгадаагүй байна...
+  list-o2m:
+    one-to-many: One to Many
+    description: Хамааралтай олон оруулгуудыг сонгох
+    no_collection: Бүрдэл олдсонгүй
+  system-folder:
+    folder: Эх хавтас
+    description: Хавтас сонгох
+    field_hint: Хавтас тохируулж өгөөгүй оруулсан файлуудын өгөгдмөл хавтас. Одоогийн файлуудад хамааралгүй.
+    root_name: Файлын сангийн эх
+    system_default: Системийн өгөгдмөлүүд
+  select-radio:
+    radio-buttons: Радио товчлуур
+    description: Олон сонголтоос нэгийг сонгох
   list:
+    repeater: Давтагч
+    description: Нэг бүтэцтэй олон оруулгууд үүсгэх
+    edit_fields: Талбаруудыг засах
+    add_label: '"Шинээр үүсгэх" шошго'
     sort: Эрэмбэлэх
+    sort_placeholder: Гар аргаар
+    field_note_placeholder: Талбарын тэмдэглэлийг оруулна уу...
+    incompatible_data: Одоогийн өгөгдөл нь давталтын интерфэйстэй тохирохгүй бөгөөд давтагч руу оруулга нэмэх үед хүчингүй болно
+    interface_group: Интерфэйс тохиргоо
     display_group: Харагдах байдлын тохиргоо
+  slider:
+    slider: Гулсагч
+    description: Гулсагч ашиглан тоо сонгох
+    always_show_value: Утгыг үргэлж харуулах
   tags:
     tags: Таг
+    description: Таг сонгох эсвэл нэмэх
+    whitespace: Хоосон зай
+    hyphen: Богино зураасаар солих
+    underscore: Доогуур зураасаар солих
+    remove: Хоосон зайг арилгах
+    capitalization: Том үсгээр эхлүүлэх
+    uppercase: Том үсгүүд болгон хөрвүүлэх
+    lowercase: Жижиг үсгүүд болгон хөрвүүлэх
+    auto_formatter: Автомат гарчиг форматлагчийг ашиглах
+    alphabetize: Цагаан толгойн дарааллаар
+    alphabetize_label: Цагаан толгойн дарааллыг шаардах
+    add_tags: Таг оруулсны дараа Enter товчлуурыг дарна уу...
+  input:
+    input: Оролт
+    description: Утгыг гараар оруулна уу
+    trim: Тайрах
+    trim_label: Эхлэл болон төгсгөлийг тайрах
+    mask: Масклагдсан
+    mask_label: Жинхэнэ утгыг нуух
+    clear: Цэвэрлэсэн утга
+    clear_label: Хоосон тэмдэгтэн мөрөөр хадгалах
+    minimum_value: Хамгийн бага утга
+    maximum_value: Хамгийн их утга
+    step_interval: Алхамын интервал
+    slug: Холбоосонд зориулсан формат
   boolean:
     toggle: Солих
     label_default: Идэвхитэй
   translations:
     display_template: Харагдацын загвар
+    language_field: Хэлний заагч талбар
+    language_direction_field: Хэлний чиглэлийн талбар
+  list-o2m-tree-view:
+    description: Рекурсив үүрлэсэн one-to-many харилцаатай оруулгуудын мод хэлбэрээр харах
+    recursive_only: Мод хэлбэрээр харах интерфэйс нь зөвхөн рекурсив харилцаанд ажиллана.
   user:
     user: Хэрэглэгч
+    description: Одоо байгаа Directus хэрэглэгчийг сонгох
+    select_mode: Горим сонгох
     modes:
+      auto: Автомат
       dropdown: Доош унадаг цэс
+      modal: Модал цонх
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: HTML үүсгэдэг дэвшилтэт засварлагч
+    toolbar: Хэрэгслийн самбар
+    custom_formats: Тохируулгат форматууд
+    custom_formats_note: TinyMCE контент форматуудын жагсаалт. [Контент формат] талаарх дэлгэрэнгүй мэдээллийг Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) TinyMCE гарын авлагаас авна уу.
     options_override: Тохиргоо үл хэрэгсэнэ
     options_override_note: TinyMCE хэрэглэгчийн форматлах түлхүүрүүд ба тэдгээрийн утга. Дэлгэрэнгүй мэдээллийг [Хэрэглэгчийн формат](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) дээрх TinyMCE гарын авлагаас дэлгэрэнгүй мэдээллийг авна уу.
+    folder_note: Оруулсан файлуудын хавтас. Одоогийн файлуудад хамаарахгүй.
+    imageToken: Статик хандалтын токен
+    imageToken_label: Статик хандалтын токенг файлын URL-д нэгтгэсэн
   input-block-editor:
+    input-block-editor: Блок засварлагч
+    description: Editor.js ашиглан JSON руу цэвэр өгөгдлийг гаргадаг мультимедиа өгүүллэгт зориулсан блок хэлбэрийн засварлагч
+    tools: Хэрэгслийн самбар
     tools_options:
       header: Толгой
+      nestedlist: Жагсаалт
       embed: Оруулах
+      paragraph: Цогцолбор
       code: Код
+      image: Зураг
+      attaches: Хавсралтууд
       table: Хүснэгт
+      quote: Ишлэл
       underline: Доогуур зурвасласан бичвэр
+      inlinecode: Мөр код
+      delimiter: Тусгаарлагч
+      checklist: Шалгах жагсаалт
+      toggle: Блок тохируулах
+      alignment: Байрлуулалт
+      raw: HTML код
+  input-autocomplete-api:
+    input-autocomplete-api: Автомат оролт бөглөлт (API)
+    description: Гадаад API утгыг урьдчилан хайх.
+    results_path: Үр дүнгийн зам
+    value_path: Утгын зам
+    text_path: Текстийн зам
+    trigger: Өдөөгч
+    rate: Үнэлэх
   system-token:
     system-token: Токен
 displays:
   translations:
     translations: Орчуулгууд
+    language_field: Хэлний заагч талбар
   boolean:
     boolean: Булийн
     icon_on: Таних тэмдгийг идэвхжүүлэх
@@ -1896,6 +2051,8 @@ displays:
     suffix: Дагавар
     color: Өнгө
     icon: Таних тэмдэг
+    mask: Масклагдсан
+    mask_label: Жинхэнэ утгыг нуух
     text: Текст
     text_placeholder: Нэмэлт утгыг үл хэрэгсэх...
   hash:
@@ -1906,6 +2063,8 @@ displays:
     circle: Тойрог
   labels:
     choices_value_placeholder: Утга оруулна уу...
+  related-values:
+    display_template_configure_notice: Энэ талбарыг үүсгэсний дараа харагдах байдлын загварыг тохируулж болно.
   user:
     user: Хэрэглэгч
     avatar: Хөрөг зураг
@@ -1915,6 +2074,8 @@ layouts:
     title: Гарчиг
   tabular:
     tabular: Хүснэгт
+  map:
+    map: Газрын зураг
   kanban:
     advanced: Дэлгэрэннгүй
 panels:
@@ -1957,3 +2118,4 @@ fonts:
   bold: Тод
   black: Хар
   italic: Налуу бичвэр
+  auto: Автомат
