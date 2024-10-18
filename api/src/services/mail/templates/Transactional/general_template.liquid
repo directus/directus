@@ -1,0 +1,56 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content="telephone=no" name="format-detection">
+  <link rel="stylesheet" href="Themes/styles.css">
+  <title>{# title #}</title>
+</head>
+
+<body class="body" style="width:100%;height:100%;padding:0;Margin:0">
+  <div dir="ltr" class="es-wrapper-color" lang="pt" style="background-color:#F6F6F6">
+    <table width="100%" cellspacing="0" cellpadding="0" class="es-wrapper" role="none"
+      style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;background-color:#F6F6F6">
+      <tr>
+        <td valign="top" style="padding:0;Margin:0">
+          <table cellspacing="0" cellpadding="0" align="center" class="es-header" role="none"
+            style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;width:100%;table-layout:fixed !important;background-color:transparent;background-repeat:repeat;background-position:center top">
+            <tr>
+              <td align="center" style="padding:0;Margin:0">
+                <table cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center" class="es-header-body"
+                  role="none"
+                  style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:500px">
+                  <tr>
+                    <td>
+                      <!-- Header -->
+                      {% render 'header' header: header %}
+
+                      <!-- Body -->
+                      {% render 'geral',
+                      greeting: greeting,
+                      payment.info-header: payment.info-header,
+                      payment.details: payment.details,
+                      payment.method: payment.method,
+                      order.next_payment: order.next_payment,
+                      disclaimer: disclaimer,
+                      %}
+                      
+                      <!-- Footer -->
+                      {% render 'footer', footer: footer %}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

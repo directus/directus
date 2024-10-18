@@ -1,0 +1,30 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+PRODID:calcom/ics
+METHOD:REQUEST
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+UID:7KJHxCG3gGM1pezcjDmK86@Agenda.Yinflow
+SUMMARY:[Terapia Ocupacional] Sessão de 50 minutos - 1ª sessão semanal betw
+	een Rafael Rjeille and teste sem campo tcle
+DTSTAMP:20240606T155700Z
+DTSTART:20240613T021000Z
+DESCRIPTION:A new recurring event has been scheduled.\n    We sent an email
+	 to everyone with this information.\n\n    What:\n[Terapia Ocupacional] Se
+	ssão de 50 minutos - 1ª sessão semanal between Rafael Rjeille and teste se
+	m campo tcle\n  \n\nInvitee Time Zone:\nAmerica/Sao_Paulo\n  \n\nWho:\n\nR
+	afael Rjeille - Organizer\nrafael@yinflow.life\n  \nteste sem campo tcle\n
+	rafael@yinflow.com.br\n      \n  \nWhere:\nhttps://meet.google.com/rwx-wud
+	h-qja\n\n\nAdditional notes:\nteste sem campo tcle\n  \n\n\nNeed to resche
+	dule or cancel? https://agenda.yinflow.life/booking/7KJHxCG3gGM1pezcjDmK86
+	?changes=true
+LOCATION:https://meet.google.com/rwx-wudh-qja
+STATUS:CONFIRMED
+ORGANIZER;CN=Rafael Rjeille:mailto:rafael@yinflow.life
+ATTENDEE;RSVP=TRUE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=teste sem camp
+	o tcle:mailto:rafael@yinflow.com.br
+RRULE:FREQ=WEEKLY;COUNT=10;INTERVAL=1
+DURATION:PT50M
+END:VEVENT
+END:VCALENDAR

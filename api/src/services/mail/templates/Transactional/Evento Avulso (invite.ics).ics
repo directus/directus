@@ -1,0 +1,26 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+PRODID:calcom/ics
+METHOD:REQUEST
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+UID:brMeAY3vPFyHTE3fCnoHCU@Cal.com
+SUMMARY:William and Rafael | 30min Meeting
+DTSTAMP:20240828T135700Z
+DTSTART:20240828T153000Z
+DESCRIPTION:A new event has been scheduled.\n    We sent an email to everyo
+	ne with this information.\n\n    What:\nWilliam and Rafael | 30min Meeting
+	\n  \n\nInvitee Time Zone:\nAmerica/Sao_Paulo\n  \n\nWho:\n\nRafael from Y
+	angflow - Organizer\nrafael@yangflow.us\n  \nWilliam\nwilliam.hildebrandt5
+	10@gmail.com\n      \n  \nWhere:\nhttps://us06web.zoom.us/j/83029785952\n\
+	n\n\n\nNeed to reschedule or cancel? https://cal.com/booking/brMeAY3vPFyHT
+	E3fCnoHCU?changes=true
+LOCATION:https://us06web.zoom.us/j/83029785952
+STATUS:CONFIRMED
+ORGANIZER;CN=Rafael from Yangflow:mailto:rafael@yangflow.us
+ATTENDEE;RSVP=TRUE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=William:mailto
+	:william.hildebrandt510@gmail.com
+DURATION:PT30M
+END:VEVENT
+END:VCALENDAR
