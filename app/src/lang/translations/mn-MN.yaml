@@ -1471,6 +1471,8 @@ field_options:
     update: Шинэчлэх
     delete: Устгах
   directus_collections:
+    track_activity_revisions: Үйл ажиллагаа болон засваруудыг хянах
+    only_track_activity: Зөвхөн үйл ажиллагааг хянах
     collection_setup: Бүрдлийн тохируулга
     singleton: Нэг объект гэж үзэх
     language: Хэл
