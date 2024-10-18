@@ -146,7 +146,7 @@ router.post('/', async (req, res) => {
     field.field,
   );
 
-  res.json(createdField);
+  res.json(data);
 });
 ```
 
@@ -189,7 +189,7 @@ router.patch('/', async (req, res) => {
     'field_name',
   );
 
-  res.json(updatedField);
+  res.json(data);
 });
 ```
 
