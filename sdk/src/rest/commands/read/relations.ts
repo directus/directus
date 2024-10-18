@@ -7,7 +7,6 @@ export type ReadRelationOutput<Schema> = ApplyQueryFields<Schema, DirectusRelati
 
 /**
  * List all Relations that exist in Directus.
- * @param query The query parameters
  * @returns An array of up to limit Relation objects. If no items are available, data will be an empty array.
  */
 export const readRelations =
