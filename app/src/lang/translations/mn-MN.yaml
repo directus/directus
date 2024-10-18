@@ -1960,13 +1960,32 @@ interfaces:
     clear_label: Хоосон тэмдэгтэн мөрөөр хадгалах
     minimum_value: Хамгийн бага утга
     maximum_value: Хамгийн их утга
-    step_interval: Алхамын интервал
+    step_interval: Алхмын интервал
     slug: Холбоосонд зориулсан формат
+    slug_label: URL-д зориулсан формат
+  input-multiline:
+    textarea: Текстийн талбар
+    description: Олон мөртэй энгийн текст оруулах
+  input-translated-string:
+    input-translated-string: Орчуулсан тэмдэгтэн мөрүүд
+    description: Тохируулгат орчуулга сонгох эсвэл нэмэх
+    search_placeholder: Хайх...
+    new_custom_translation: Шинэ тохируулгат орчуулга
   boolean:
     toggle: Солих
+    description: Асаах/унтраах
+    color_on: Өнгөтэй
+    color_off: Өнгөгүй
+    label_placeholder: Шошго оруулна уу...
     label_default: Идэвхитэй
   translations:
     display_template: Харагдацын загвар
+    no_collection: Бүрдэл байхгүй
+    toggle_split_view: Дэлгэц хуваах горимыг солих
+    enable: Идэвхжүүлэх
+    default_split_view_state: Өгөгдмөл дэлгэц хуваах төлөв
+    user_language: Одоогийн хэрэглэгчийн хэлийг ашиглах
+    default_language: Өгөгдмөл хэл
     language_field: Хэлний заагч талбар
     language_direction_field: Хэлний чиглэлийн талбар
   list-o2m-tree-view:
@@ -2020,64 +2039,236 @@ interfaces:
     text_path: Текстийн зам
     trigger: Өдөөгч
     rate: Үнэлэх
+  group-raw:
+    name: Raw бүлэг
+    description: Талбаруудыг байгаагаар нь харуулах
+  group-detail:
+    name: Бүлгийн дэлгэрэнгүй мэдээлэл
+    description: Талбаруудыг эвхэгддэг хэсэг болгон харуулах
+    show_header: Бүлгийн гарчгийг харуулах
+    header_icon: Толгой хэсгийн таних тэмдэг
+    header_color: Толгой хэсгийн өнгө
+    start_open: Нээж эхлэх
+    start_closed: Хааж эхлэх
   system-token:
     system-token: Токен
+    description: Статик хандалтын токенг удирдах
+    placeholder: '"Токен үүсгэх" товчлуур дээр дарж шинэ статик хандалтын токен үүсгэнэ үү'
+    value_securely_saved: Утгыг аюулгүй хадгалсан
+    generate: Токен үүсгэх
+    regenerate: Токен дахин үүсгэх
+    generate_success_copy: Дээрх токеныг хуулж авч, нөөцлөнө үү. Аюулгүй байдлын үүднээс та энэ хуудсыг орхисны дараагаар токеныг дахин харах боломжгүй болно.
+    remove_token: Токен устгах
+  system-raw-editor:
+    system-raw-editor: Raw засварлагч
+    description: Логикгүйгээр энгийн эсвэл орлуулагч тэмдэгтийн утгыг оруулахыг зөвшөөрөх
+  input-password:
+    input-password: Нууц үг оруулах
+    description: Утгыг нуух боломжтой нууц үгийн талбар
 displays:
   translations:
     translations: Орчуулгууд
+    description: Орчуулгуудыг урьдчилан харах
+    enable: Идэвхжүүлэх
+    user_language: Одоогийн хэрэглэгчийн хэлийг ашиглах
+    default_language: Өгөгдмөл хэл
     language_field: Хэлний заагч талбар
   boolean:
     boolean: Булийн
+    description: Асаах, унтраах төлөвийг харуулах
+    label_on: Шошготой
+    label_on_placeholder: Шошго оруулна уу...
+    label_off: Шошгогүй
+    label_off_placeholder: Шошгогүй оруулна уу...
     icon_on: Таних тэмдгийг идэвхжүүлэх
     icon_off: Таних тэмдгийг идэвхгүй болгох
+    color_on: Өнгөтэй
+    color_off: Өнгөгүй
   collection:
     collection: Бүрдэл
+    description: Бүрдлийг харуулах
+    icon_label: Бүрдлийн таних тэмдгийг харуулах
   color:
     color: Өнгө
+    description: Өнгөт цэгийг харуулах
+    default_color: Өгөгдмөл өнгө
   datetime:
     datetime: Огноо цаг
+    description: Цаг хугацаатай холбоотой утгыг харуулах
     format: Формат
+    format_note: >-
+      Тохируулгат формат нь __[Огнооны талбарын тэмдгийн хүснэгт] хүлээн авдаг. (https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Урт
+    short: Богино
+    relative: Харьцангуй
+    relative_label: 'Харьцангуй цагийг харуулах, жишээ: 5 минутын өмнө'
     suffix: Дагавар
+    suffix_label: Харьцангуй заагчийг харуулах
+    suffix_note: '"дотор" болон "өмнө" гэсэн үгсийг ашигладаг'
+    strict: Нарийвчлалтай
+    strict_label: Нарийвчлалын нэгжүүдийг ашиглах
+    strict_note: '''бараг, ''өнгөрсөн'', ''бага'' зэрэг үгсийг арилгана'
+    round: Тоймлох
+    round_note: Ашиглах тоймлох функцыг сонгоно уу
+    down: Доош
+    nearest: Хамгийн ойр
+    up: Дээш
   file:
     file: Файл
+    description: Файлуудыг харуулах
+  filesize:
+    filesize: Файлын хэмжээ
+    description: Файлын хэмжээг харуулах
   formatted-value:
+    formatted-value: Формат хийгдсэн утга
+    description: Текстийн формат хийгдсэн хувилбарыг харуулах
     format: Формат
+    format_label: Автомат формат
     font: Фонт
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Тод
+    bold_label: Тод хэв маягийг ашиглах
     italic: Налуу бичвэр
+    italic_label: Налуу хэв маягийг ашиглах
     prefix: Угтвар
+    prefix_label: Текстийн өмнө нэмэх
     suffix: Дагавар
+    suffix_label: Текст нэмэх
     color: Өнгө
+    background: Ар дэвсгэр
     icon: Таних тэмдэг
+    border: Хүрээ
+    border_label: Хүрээг харуулах
     mask: Масклагдсан
     mask_label: Жинхэнэ утгыг нуух
     text: Текст
     text_placeholder: Нэмэлт утгыг үл хэрэгсэх...
+  formatted-json-value:
+    formatted-json-value: Формат хийгдсэн JSON утга
+    description: Объектын формат хийгдсэн хувилбарыг харуулах
   hash:
     hash: Хэш
+    description: Утгын засварласан хувилбарыг харуулах
   icon:
     icon: Таних тэмдэг
+    description: Таних тэмдгийг харуулах
+    filled: Дүүргэсэн
+    filled_label: Дүүргэсэн хувилбарыг ашиглах
   image:
+    image: Зураг
+    description: Зургийн жижиг урьдчилсан харагдацыг харуулах
     circle: Тойрог
+    circle_label: Тойрог хэлбэрээр харуулах
   labels:
+    labels: Шошгууд
+    description: Дан эсвэл шошгуудын жагсаалтыг харуулах
+    default_foreground: Өгөгдмөл урд талын дэвсгэр
+    default_background: Өгөгдмөл ар дэвсгэр
+    format_label: Шошго бүрийг формат хийх
+    show_as_dot: Цэгээр харуулах
     choices_value_placeholder: Утга оруулна уу...
+    choices_text_placeholder: Текст оруулах...
+  mime-type:
+    mime-type: MIME төрөл
+    description: Файлын MINE-төрлийг харуулах
+    extension_only: Зөвхөн өргөтгөл
+    extension_only_label: Зөвхөн файлын өргөтгөлийг харуулах
+  rating:
+    rating: Үнэлгээ
+    description: Хамгийн их утгатай харьцуулагдах байдлаар одоор дүрслэх
+    simple: Энгийн
+    simple_label: Одуудыг энгийн форматаар харуулах
+  raw:
+    raw: Raw утга
   related-values:
+    related-values: Хамааралтай утгууд
+    description: Харьцангуй утгуудыг харуулах
     display_template_configure_notice: Энэ талбарыг үүсгэсний дараа харагдах байдлын загварыг тохируулж болно.
   user:
     user: Хэрэглэгч
+    description: Directus хэрэглэгчийг харуулах
     avatar: Хөрөг зураг
     name: Нэр
+    both: Хоёул
+    circle_label: Хэрэглэгчийг тойрог дүрсээр харуулах
 layouts:
   cards:
+    cards: Картууд
+    image_source: Зургийн эх
+    image_fit: Зураг тохируулах
+    crop: Тайрах
+    contain: Агуулах
     title: Гарчиг
+    subtitle: Дэд гарчиг
   tabular:
     tabular: Хүснэгт
+    spacing: Зай авалт
+    comfortable: Тухтай
+    compact: Авсаархан
+    cozy: Тохитой
+  calendar:
+    calendar: Хуанли
+    start_date_field: Эхлэх огнооны талбар
+    end_date_field: Дуусах огнооны талбар
+    optional: Нэмэлт
+    first_day: Долоо хоногийн эхний өдөр
   map:
     map: Газрын зураг
+    basemap: Үндсэн зураглал
+    layers: Давхаргууд
+    cluster_options: Кластерийн сонголтууд
+    cluster: Хамгийн ойрын кластерын өгөгдөл
+    cluster_radius: Кластер радиус
+    cluster_minpoints: Кластерын хамгийн бага хэмжээ
+    cluster_maxzoom: Кластерт зориулсан хамгийн дээд хэмжээ
+    field: Газарзүйн талбар
+    invalid_geometry: Буруу геометр
+    find_location: Байршил олох...
+    default_template: Бүрдлийн өгөгдмөлийг ашиглаж байна...
+    no_compatible_fields: Тохирох талбар байхгүй байна
   kanban:
+    name: Канбан
+    group_field: Бүлэглэх
+    group_field_placeholder: Бүлэглэх талбар...
+    group_title: Бүлгийн гарчиг
+    group_title_placeholder: Бүлгийн гарчгийн талбар...
+    title: Картын гарчиг
+    title_placeholder: Нэмэлт гарчгийн талбар...
+    text: Картын текст
+    text_placeholder: Нэмэлт текстийн талбар...
+    date: Картын огноо
+    date_placeholder: Нэмэлт огнооны талбар...
+    tags: Картын тагууд
+    tags_placeholder: Нэмэлт тагуудын талбар...
+    user: Картын хэрэглэгч
+    user_placeholder: Нэмэлт хэрэглэгчийн талбар...
+    image: Картын зураг
+    crop: Тайрах
     advanced: Дэлгэрэннгүй
+    show: Харуулах
+    no_group: Бүлэг байхгүй
+horizontal: Хэвтээ
+vertical: Босоо
+axis: Тэнхлэг
+x_axis: Х тэнхлэг
+y_axis: Y тэнхлэг
+y_axis_function: Y тэнхлэгийн функц
+show_x_only: Зөвхөн X тэнхлэгийг харуулах
+show_y_only: Зөвхөн Y тэнхлэгийг харуулах
+show_data_label: Өгөгдлийн шошгийг харуулах
+both: Хоёул
+show_axis_labels: Тэнхлэгийн шошгуудыг харуулах
+function: Функц
+half_circle: Хагас тойрог
+full_circle: Бүтэн тойрог
+stroke_width: Шугамын зузаан
+rounded_stroke: Тойрсон шугам
+thin: Нимгэн
+medium: Дунд
+broad: Өргөн
+show_labels: Шошгуудыг харуулах
 panels:
   label:
     name: Шошго
@@ -2112,9 +2303,12 @@ operations:
     flow: Урсгал
     data: Өгөгдөл
 standard: Стандарт
+compact: Авсаархан
 style: Хэв маяг
 fonts:
+  thin: Нимгэн
   normal: Энгийн
+  medium: Дунд
   bold: Тод
   black: Хар
   italic: Налуу бичвэр
