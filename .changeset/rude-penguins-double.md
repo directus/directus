@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Add filter get existing operation keys without deleted operation keys
+Ensured new operation can reuse same key as previously deleted one in current flow editing session
