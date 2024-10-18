@@ -1385,7 +1385,7 @@ fields:
     public_registration: Registrácia používateľa
     public_registration_note: Dovoľuje používateľovi registrovať sa na [registračnej ceste](/admin/register).
     public_registration_role: Rola používateľa
-    public_registration_role_note: Táto rola je priradená používateľovi, ktorý sa zaregistroval použitím tejto metódy. Neovplyvňí doteraz registrovaných používateľov.
+    public_registration_role_note: Táto rola je priradená používateľovi, ktorý sa zaregistroval použitím tejto metódy. Neovplyvní doteraz registrovaných používateľov.
     public_registration_email_filter: Filter emailových adries
     public_registration_email_filter_note: Len adersy vyhovujúce tomuto filtru sa môžu zaregistrovať.
     public_registration_verify_email: Overiť Email
@@ -1838,6 +1838,7 @@ interfaces:
     description: Vyberie alebo nahrá obrázok
     crop: Orezať na prispôsobenie
     crop_label: Oreže obrázok podľa potreby
+    letterbox_label: Pridať výplň do náhľadového obrázku
   system-interface:
     interface: Rozhranie
     description: Vyberie existujúce rozhranie

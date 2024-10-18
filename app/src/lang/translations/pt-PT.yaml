@@ -172,18 +172,27 @@ outdated_notice: >-
   O item principal foi atualizado desde que esta versão foi criada. Por favor, reveja todos os valores do campo abaixo e confirme qual a versão que deve ser utilizada ao promover esta versão no item principal.
 promote_notice: >-
   Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
+delete_version: Eliminar Versão
+delete_version_copy: >-
+  Tem a certeza que deseja eliminar a versão "{version}"? Esta ação não pode ser revertida.
+delete_on_promote_copy: >-
+  Pretende eliminar ou manter a versão {version} após a promoção?
 reset_bookmark: Restaurar marcador
 update_bookmark: Atualizar o marcador
 delete_bookmark: Eliminar o marcador
 delete_bookmark_copy: >-
   Tem a certeza que pretende remover o marcador "{bookmark}"? Esta ação não pode ser desfeita.
 delete_personal_bookmark: Apagar marcador pessoal
+delete_role_bookmark: Eliminar Marcador de Função
 delete_global_bookmark: Apagar marcador global
 logoutReason:
   SIGN_OUT: Sessão terminada
   SESSION_EXPIRED: Sessão expirada
 public_label: Público
 public_description: Controla quais dados da API estão disponíveis sem autenticação.
+public_role_info: >-
+  O papel público controla quais dados de API estão disponíveis para utilizadores não autenticados ou sem uma função. Pedidos com o papel público não podem ter acesso à aplicação ou ao administrador. Se for concedido acesso à aplicação ou ao administrador numa política atribuída ao papel público, esse acesso será ignorado.
+admin_description: Função administrativa inicial com acesso irrestrito à Aplicação/API.
 not_allowed: Não permitido
 archive: Arquivar
 archive_confirm: Tem a certeza que pretende arquivar este documento?
