@@ -7,7 +7,7 @@ export type ReadRelationOutput<Schema> = ApplyQueryFields<Schema, DirectusRelati
 
 /**
  * List all Relations that exist in Directus.
- * @returns An array of up to limit Relation objects. If no items are available, data will be an empty array.
+ * @returns An array of Relation objects. If no items are available, data will be an empty array.
  */
 export const readRelations =
 	<Schema>(): RestCommand<ReadRelationOutput<Schema>[], Schema> =>
@@ -17,23 +17,22 @@ export const readRelations =
 	});
 
 /**
- * List an existing Relation by primary key.
+ * List all Relations of a collection.
  * @param collection The collection
- * @returns Returns a Relation object if a valid primary key was provided.
- * @throws Will throw if collection is empty
+ * @returns Returns an array of Relation objects if a valid collection name was provided.
  */
 export const readRelationByCollection =
-	<Schema>(collection: DirectusRelation<Schema>['collection']): RestCommand<ReadRelationOutput<Schema>, Schema> =>
+	<Schema>(collection: DirectusRelation<Schema>['collection']): RestCommand<ReadRelationOutput<Schema>[], Schema> =>
 	() => ({
 		path: `/relations/${collection}`,
 		method: 'GET',
 	});
 
 /**
- * List an existing Relation by primary key.
+ * List an existing Relation by collection and field name.
  * @param collection The collection
  * @param field The field
- * @returns Returns a Relation object if a valid primary key was provided.
+ * @returns Returns a Relation object if a valid collection and field name was provided.
  * @throws Will throw if collection is empty
  * @throws Will throw if field is empty
  */
