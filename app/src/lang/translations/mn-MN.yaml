@@ -1315,7 +1315,7 @@ fields:
     tags: Таг
     user_preferences: Тусгай тохиргоо
     language: Хэл
-    tfa_secret: 2 давхар баталгаажуулалт
+    tfa_secret: Хоёр давхар баталгаажуулалт
     admin_options: Админ тохиргоо
     status: Статус
     status_draft: Ноорог
@@ -1473,17 +1473,56 @@ field_options:
   directus_collections:
     track_activity_revisions: Үйл ажиллагаа болон засваруудыг хянах
     only_track_activity: Зөвхөн үйл ажиллагааг хянах
+    do_not_track_anything: Юу ч хянахгүй байх
     collection_setup: Бүрдлийн тохируулга
+    note_placeholder: Бүрдлийн тайлбар...
+    hidden_label: Апп дотор нуух
     singleton: Нэг объект гэж үзэх
     language: Хэл
     translation: Орчуулга
+    translation_placeholder: Орчуулга оруулах...
     collection_name: Бүрдлийн нэр
+    singular_unit: Дан нэгж
+    plural_unit: Олон тооны нэгж
     archive_divider: Архивлах
+    archive_field_placeholder: Талбар сонгоно уу...
+    archive_app_filter: Апп архивын шүүлтүүрийг идэвхжүүлэх
+    archive_value: Архивлах үед тохируулсан утга...
+    unarchive_value: Архиваас гаргах үед тохируулсан утга...
     sort_divider: Эрэмбэлэх
+    sort_field: Талбар сонгох...
+    accountability_divider: Бүртгэл
+    duplication_divider: Давхардал
+    preview_divider: Урьдчилан үзэх
+    content_versioning_divider: Контентийн хувилбар
+    enable_versioning: Хувилбарлалтыг идэвхжүүлэх
+  directus_files:
+    title: Дахин давтагдашгүй гарчиг...
+    description: Нэмэлт тайлбар...
+    location: Нэмэлт байршил...
+    storage_divider: Файлын нэршил
+    focal_point_divider: Төв цэг
+    filename_disk: Хадгалах диск дээрх нэр...
+    filename_download: Татаж авах нэр...
+  directus_policies:
+    name: Энэ бодлогын дахин давтагдашгүй нэр...
+    description: Энэ бодлогын тайлбар...
+    ip_access: Зөвшөөрөгдсөн IP хаяг, IP муж, CIDR блокуудыг нэмнэ үү. Бүгдийг зөвшөөрөх бол хоосон орхино уу...
+    enforce_tfa: Хоёр давхар баталгаажуулалтыг шаардах
+    assigned_to: Хуваарилагдсан
   directus_roles:
+    name: Энэ үүргийн дахин давтагдашгүй нэр...
+    description: Энэ үүргийн тайлбар...
     fields:
+      icon_name: Таних тэмдэг
       name_name: Нэр
+      name_placeholder: Гарчиг оруулах...
+      link_name: Холбоос
+      link_placeholder: Харьцангуй эсвэл үнэмлэхүй URL...
+    parent_note: Энэ үүргийн зөвшөөрлийг өвлөсөн нэмэлт эцэг үүрэг
+    children_note: Энэ үүргийн зөвшөөрлийг өвлөсөн үүрлэсэн хүүхэд үүрэг
     collections_name: Бүрдлүүд
+    collections_addLabel: Бүрдэл нэмэх...
   directus_users:
     preferences_divider: Тусгай тохиргоо
     dropdown_auto: Автомат (Системийн тохиргоо)
@@ -1491,9 +1530,11 @@ field_options:
     dropdown_dark: Шөнийн горим
     admin_divider: Админ тохиргоо
     status_dropdown_draft: Ноорог
+    status_dropdown_invited: Урьсан
     status_dropdown_active: Идэвхтэй
     status_dropdown_suspended: Түдгэлзүүлсэн
     status_dropdown_archived: Архивласан
+    token: Аюулгүй хандалтын токенг оруулах...
   directus_webhooks:
     status_options_active: Идэвхтэй
     status_options_inactive: Идэвхгүй
@@ -1501,6 +1542,8 @@ field_options:
     triggers_divider: Өдөөгчид
     actions_create: Үүсгэх
     actions_update: Шинэчлэх
+    actions_delete: Устгах
+    actions_login: Нэвтрэх
     headers:
       header: Толгой
       value: Утга
@@ -1556,11 +1599,64 @@ referential_action_field_label_o2m: '{collection}-г сонгохоо болих
 referential_action_no_action: Устгахаас сэргийлэх
 referential_action_cascade: '{collection} оруулгыг устгах (cascade)'
 referential_action_set_null: '{field} талбарыг хүчингүй болгох'
+referential_action_set_default: '{field} талбарыг өгөгдмөл утгад тохируулах'
+choose_action: Үйлдэл сонгох
+continue_label: Үргэлжлүүлэх
+continue_as: >-
+  {name} одоогоор баталгаажсан байна. Хэрэв та энэ бүртгэлийг таньж байгаа бол үргэлжлүүлэх дээр дарна уу.
+editing_role: 'Үүрэг {role}'
+editing_policy: 'Бодлого {policy}'
+no_permissions: Эрх байхгүй
+permission_add_collection: Бүрдэл нэмэх
+creating_webhook: Вебхүүк үүсгэж байна
+default_label: Өгөгдмөл
+delete_label: Устгах
+delete_are_you_sure: >-
+  Энэ үйлдлийг буцаах боломжгүй. Та үргэлжлүүлэхийг хүсч байна уу?
+delete_field_are_you_sure: >-
+  "{field}" талбарыг устгахдаа та итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
 description: Тайлбар
+done: Болсон
+duplicate: Хуулбарлах
 limit: Хязгаар
 email: Цахим шуудан
+embed: Оруулах
+fallback_icon: Нөөц таних тэмдэг
+field: Талбар | Талбарууд
+file: Файл
+file_library: Файлын сан
+forgot_password: Нууц үгээ мартсан
 hidden: Нуусан
+hidden_in_group: '{group}-д нуусан'
+icon: Таних тэмдэг
+info: Мэдээлэл
+normal: Энгийн
+success: Амжилттай
+warning: Анхааруулга
+danger: Аюултай
+colors:
+  purple: Ягаан
+  blue: Цэнхэр
+  green: Ногоон
+  yellow: Шар
+  orange: Улбар шар
+  red: Улаан
+  black: Хар
+  gray: Саарал
+  white: Цагаан
+junction_collection: Холбох бүрдэл
+latency: Хүлээх хугацаа
+login: Нэвтрэх
+my_activity: Миний үйл ажиллагаа
+not_authenticated: Баталгаажаагүй
+authenticated: Баталгаажсан
+options: Тохиргоо
+otp: Нэг удаагийн нууц үг
 password: Нууц үг
+confirm_password: Нууц үг батлах
+permissions: Эрхүүд
+relationship: Харилцаа
+reset: Дахин тохируулах
 reset_password: Нууц үг сэргээх
 revisions: Хяналтууд
 no_revisions: Хяналт одоогоор байхгүй байна
@@ -1616,35 +1712,126 @@ resume: Үргэлжлүүлэх
 interfaces:
   list-m2a:
     prefix_note: Холбогдох оруулгын бүрдлийн өгөгдмөл нэрийг ашигладаг.
+    sorting_disabled: Нэг хуудсанд багтахгүй олон оруулга байгаа тул эрэмбэлэхийг идэвхгүй болгосон.
   filter:
     name: Шүүлтүүр
+    description: Шүүлтүүр объектыг тохируулах.
     add_filter: Шүүлтүүр нэмэх
+    add_group: Ба / эсвэл бүлэг
+    add_value: Утга нэмэх
+    logic_type_and: БА
+    logic_type_or: ЭСВЭЛ
     all: Бүгд
     any: Ямар ч
+    and: ба
+    of_the_following: дараахаас
+    no_rules: Тохируулсан дүрэм байхгүй
+    change_value: Дарж утгыг өөрчилнө үү
+    placeholder: Энд дүрмийг чирнэ үү
+    add_key_placeholder: Түлхүүрийг нэмээд Enter дарна уу...
+  fields:
+    name: Талбарууд
   group-accordion:
+    name: Аккордеон
+    description: Талбар эсвэл бүлгүүдийг аккордеон хэсэг болгон харуулах
     start: Эхлэх
+    all_closed: Бүгд хаагдсан
+    first_opened: Анх нээгдсэн
+    all_opened: Бүгд нээгдсэн
+    accordion_mode: Аккордеон горим
+    max_one_section_open: Ихдээ 1 нээлттэй хэсэг
   presentation-links:
+    presentation-links: Товчлууран холбоосууд
+    links: Холбоосууд
+    description: Динамик URL-д зориулсан тусгай холбоос товчлуурууд
+    style: Хэв маяг
     primary: Үндсэн
+    link: Холбоосууд
+    button: Товчлуур
+    error: Үйлдэл хийх боломжгүй байна
+  select-multiple-checkbox:
+    checkboxes: Сонгох нүд
+    description: Сонгох нүд ашиглан олон сонголтоос сонгох
+    allow_other: Бусдыг зөвшөөрөх
+    show_more: '{count}-г нэмж харуулах'
+    items_shown: Харуулсан оруулгууд
+  select-multiple-checkbox-tree:
+    name: Сонгох нүд (Мод)
+    description: Үүрлэсэн сонгох нүд ашиглан олон сонголтоос сонгох
+    value_combining: Утга нэгтгэх
+    value_combining_note: Үүрлэсэн сонголтуудыг үүсгэхэд ямар утгуудыг хадгалахыг тодорхойлно.
+    show_all: Бүгдийг харуулах
+    show_selected: Сонгосонг харуулах
   input-code:
     code: Код
+    description: Кодын хэсгүүдийг бичих эсвэл хуваалцах
+    line_number: Мөрийн дугаар
+    line_wrapping: Мөр таслах
+    placeholder: Энд код оруулна уу...
   system-collection:
     collection: Бүрдэл
+    description: Одоо байгаа бүрдэл дундаас сонгох
+    include_system_collections: Систем бүрдлийг оруулах
   system-collections:
     collections: Бүрдлүүд
+    description: Одоо байгаа бүрдэл дундаас сонгох
+    include_system_collections: Систем бүрдлийг оруулах
   select-color:
     color: Өнгө
+    description: Өнгөний утгыг оруулах болон сонгох
+    placeholder: Өнгөө сонгоно уу...
+    preset_colors: Урьдчилсан тохируулсан өнгөнүүд
+    opacity: Бүдгэрэл
+    preset_colors_add_label: Шинэ өнгө нэмэх...
+    name_placeholder: Өнгөний нэрийг оруулна уу...
+  datetime:
+    datetime: Огноо цаг
+    description: Огноо болон цагийг оруулна уу
+    include_seconds: Секунд оруулах
+    set_to_now: Одоогоор тохируулах
+    use_24: 24 цагийн формат ашиглах
+    placeholder: Огноо, цагийг сонгох...
   system-fields:
     select_a_collection: Бүрдэл сонгох
+    no_fields: Талбар байхгүй байна
   system-display-template:
     display-template: Харагдацын загвар
+    description: Статик текст болон динамик талбар утгуудыг холих
+    collection_field: Бүрдлийн талбар
     collection_field_not_setup: Бүрдлийн талбар буруу тохируулагдсан байна
     select_a_collection: Бүрдэл сонгох
   presentation-divider:
     divider: Хуваагч
+    description: Талбаруудыг шошголож, хэсэгт хуваах
+    title_placeholder: Гарчиг оруулна уу, эсвэл зөвхөн мөрийг харуулах бол хоосон орхино уу...
+    inline_title: Тасралтгүй мөрийн гарчиг
+    inline_title_label: Мөр дотор гарчгийг харуулах
+    margin_top: Дээд захын зай
+    margin_top_label: Дээд захын зайг ихэсгэх
   select-dropdown:
+    description: Доош унах цэснээс утга сонгох
+    choices_placeholder: Шинээр сонголт нэмэх
+    allow_other: Бусдыг зөвшөөрөх
+    allow_other_label: Бусад утгуудыг зөвшөөрөх
+    allow_none: Юу ч зөвшөөрөхгүй
+    allow_none_label: Сонголт зөвшөөрөхгүй
+    choices_name_placeholder: Нэр оруулна уу...
     choices_value_placeholder: Утга оруулна уу...
+    preview_threshold: Босго хязгаарыг урьдчилан харах
+  select-multiple-dropdown:
+    select-multiple-dropdown: Доош унах цэс (Олон)
+    description: Доош унах цэснээс олон утгууд сонгох
+  file:
+    file: Файл
+    description: Файл сонгох эсвэл оруулах
+  files:
+    files: Файлууд
+    description: Олон файл сонгох эсвэл оруулах
   input-hash:
     hash: Хэш
+    description: Хэш хийх утгыг оруулна уу
+  select-icon:
+    icon: Таних тэмдэг
   system-display:
     display: Харагдах байдал
   system-display-options:
@@ -1675,6 +1862,7 @@ interfaces:
   input-block-editor:
     tools_options:
       header: Толгой
+      embed: Оруулах
       code: Код
       table: Хүснэгт
       underline: Доогуур зурвасласан бичвэр
@@ -1692,8 +1880,11 @@ displays:
   color:
     color: Өнгө
   datetime:
+    datetime: Огноо цаг
     format: Формат
     suffix: Дагавар
+  file:
+    file: Файл
   formatted-value:
     format: Формат
     font: Фонт
@@ -1704,10 +1895,13 @@ displays:
     prefix: Угтвар
     suffix: Дагавар
     color: Өнгө
+    icon: Таних тэмдэг
     text: Текст
     text_placeholder: Нэмэлт утгыг үл хэрэгсэх...
   hash:
     hash: Хэш
+  icon:
+    icon: Таних тэмдэг
   image:
     circle: Тойрог
   labels:
@@ -1737,6 +1931,7 @@ operations:
   json-web-token:
     payload: Чингэлэг
     token: Токен
+    options: Тохиргоо
   log:
     message: Зурвас
   mail:
@@ -1756,6 +1951,9 @@ operations:
     flow: Урсгал
     data: Өгөгдөл
 standard: Стандарт
+style: Хэв маяг
 fonts:
+  normal: Энгийн
   bold: Тод
+  black: Хар
   italic: Налуу бичвэр
