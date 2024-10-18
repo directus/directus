@@ -2276,12 +2276,90 @@ thin: Нимгэн
 medium: Дунд
 broad: Өргөн
 show_labels: Шошгуудыг харуулах
+show_legend: Тайлбар харуулах
+right: Баруун
+left: Зүүн
+donut: Дугуй
 panels:
+  metric:
+    name: Хэмжүүр
+    description: Асуулга дээр үндэслэн зөвхөн нэг утгыг харуулах
+    field: Талбар
+  metric_list:
+    name: Хэмжүүрийн жагсаалт
+    description: Бүрдлээс нийлмэл хэмжүүрүүдийг жагсааж, дүрслэх
+  time_series:
+    name: Цагийн дараалал
+    description: Цаг хугацааны утгууд дээр тулгуурлан шугаман диаграмыг үзүүлэх
+    date_field: Огнооны талбар
+    value_field: Утгын талбар
+    fill_type: Дүүргэх төрөл
+    curve_type: Муруйлтын төрөл
   label:
     name: Шошго
+    description: Зарим текстийг харуулах
+  list:
+    name: Жагсаалт
+    description: Бүрдлээс оруулгуудыг шүүж, жагсаах
+  barchart:
+    name: Хэвтээ диаграм
+    description: Утгуудын бүлгийг харьцуулах хэвтээ эсвэл баганан диаграм
+    horizontal: Хэвтээ
+    select_collection: Заавал бүрдэл сонгох шаардлагатай.
+  linechart:
+    name: Шугаман диаграм
+    description: Талбарын өөрчлөлтийг харьцуулах шугаман диаграм
+    disabled_grouping: Бүлэглэлтийг сонгосон үед идэвхгүй байна.
+    disabled_no_grouping: Бүлэглэлтийг сонгоогүй үед идэвхгүй байна.
+    show_marker: Хэрэглэслийн зааврыг харуулах
+    curve_type: Муруйлтын төрөл
+    smooth: Гөлгөр
+    straight: Шулуун
+    step_line: Үе шаттай шугам
+    show_legend: Тайлбар харуулах
+  meter:
+    name: Тоолуур
+    description: Утга хянах тоолуур
+  piechart:
+    name: Дугуй диаграм
+    description: Багана дахь бүлгүүдийн харьцааг харуулсан дугуй диаграм
+  variable:
+    name: Глобал хувьсагч
+    description: Бусад самбруудын шүүлтүүрт ашиглах глобал утгыг тохируулах
+    variable_key: Хувьсагчийн түлхүүр
+  relational-variable:
+    name: Глобал хамаарлын хувьсагч
+    description: Бусад самбруудын шүүлтүүрт ашиглах глобал хамаарлын утгыг тохируулах
+    variable_key: Хувьсагчийн түлхүүр
+    multiple: Олон
+    multiple-label: Олон оруулгууд сонгох
 triggers:
+  common:
+    response_body: Хариу агуулга
+    response_body_all: Бүх өгөгдөл
+    response_body_last: Сүүлийн үйлдлийн өгөгдөл
+  event:
+    name: Үйл явдлын хүүк
+    description: Платформ эсвэл өгөгдлийн үйл явдал дээр өдөөгдөнө
+    action: 'Үйлдэл (Блоклохгүй)'
+    filter: 'Шүүлтүүр (Блоклоно)'
   webhook:
+    name: Вебхүүк
+    description: Ирж буй HTTP хүсэлт дээр өдөөгдөнө
     method: Арга
+    async: Асинхрон
+  operation:
+    name: Өөр урсгал
+    description: Гинжлэх зорилгоор өөр урсгалаар өдөөгдсөн
+    preview: Өөр урсгалын үйлдлээр өдөөгдсөн
+  schedule:
+    name: Хуваарь (CRON)
+    description: Тодорхой цаг үед өдөөгдөнө
+    cron: Интервал
+  manual:
+    name: Гар аргаар
+    description: Сонгогдсон бүрдэл(үүд) дээр гар аргаар ажиллуулах үед өдөөгдөнө
+    collection_and_item: Бүрдэл ба оруулгын хуудсууд
 operations:
   item-create:
     payload: Чингэлэг
