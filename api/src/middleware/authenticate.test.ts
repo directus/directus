@@ -98,11 +98,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	const roleID = '38269fc6-6eb6-475a-93cb-479d97f73039';
 	const share = 'ca0ad005-f4ad-4bfe-b428-419ee8784790';
 
-	const shareScope = {
-		collection: 'articles',
-		item: 15,
-	};
-
 	const appAccess = true;
 	const adminAccess = false;
 
@@ -113,7 +108,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			app_access: appAccess,
 			admin_access: adminAccess,
 			share,
-			share_scope: shareScope,
 		},
 		'test',
 		{ issuer: 'directus' },
@@ -141,7 +135,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 		app: appAccess,
 		admin: adminAccess,
 		share,
-		share_scope: shareScope,
 		ip: '127.0.0.1',
 		userAgent: 'fake-user-agent',
 		origin: 'fake-origin',
@@ -159,7 +152,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 			app_access: 1,
 			admin_access: 0,
 			share,
-			share_scope: shareScope,
 		},
 		'test',
 		{ issuer: 'directus' },
@@ -174,7 +166,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 		app: appAccess,
 		admin: adminAccess,
 		share,
-		share_scope: shareScope,
 		ip: '127.0.0.1',
 		userAgent: 'fake-user-agent',
 		origin: 'fake-origin',

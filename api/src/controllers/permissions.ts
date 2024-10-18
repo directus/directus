@@ -91,7 +91,8 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user && !req.accountability?.role) throw new ForbiddenError();
+		if (!req.accountability?.user && !req.accountability?.role && !req.accountability?.share)
+			throw new ForbiddenError();
 
 		const result = await fetchAccountabilityCollectionAccess(req.accountability, {
 			schema: req.schema,

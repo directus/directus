@@ -9,3 +9,6 @@
 
 - collection: directus_relations
   action: read
+
+- collection: directus_translations
+  action: read
