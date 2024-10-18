@@ -23,6 +23,7 @@ import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
 const props = defineProps<{
 	primaryKey: string;
 	role?: string;
+	bookmark?: string;
 }>();
 
 const { t, locale } = useI18n();
@@ -359,7 +360,7 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #navigation>
-			<users-navigation :current-role="item?.role?.id ?? role" />
+			<users-navigation :current-role="item?.role?.id ?? role" :has-bookmark="!!bookmark" />
 		</template>
 
 		<div class="user-item">
