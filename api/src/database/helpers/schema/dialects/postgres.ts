@@ -23,13 +23,13 @@ export class SchemaHelperPostgres extends SchemaHelper {
 	override addInnerSortFieldsToGroupBy(
 		groupByFields: (string | Knex.Raw)[],
 		sortRecords: SortRecord[],
-		hasMultiRelationalSort: boolean,
+		hasRelationalSort: boolean,
 	) {
-		if (hasMultiRelationalSort) {
+		if (hasRelationalSort) {
 			/*
 			Postgres only requires selected columns that are not functionally dependent on the primary key to be
 			included in the GROUP BY clause. Since the results are already grouped by the primary key, we don't need to
-			always include the sort columns in the GROUP BY but only if there is a multi relational sort involved, eg.
+			always include the sort columns in the GROUP BY but only if there is a relational sort involved, eg.
 			a sort column that comes from a related M2O relation.
 
 			> When GROUP BY is present, or any aggregate functions are present, it is not valid for the SELECT list
