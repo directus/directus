@@ -153,18 +153,12 @@ const currentOperation = computed(() => {
 	});
 });
 
-const existingOperationKeys = computed(() => {
-	const t = [
-		...(flow.value?.operations || [])
-			.filter((operation) => !panelsToBeDeleted.value.includes(operation.id))
-			.map((operation) => operation.key),
-		...stagedPanels.value.filter((stagedPanel) => stagedPanel.key !== undefined).map((stagedPanel) => stagedPanel.key!),
-	];
-
-	console.log(t);
-
-	return t;
-});
+const existingOperationKeys = computed(() => [
+	...(flow.value?.operations || [])
+		.filter((operation) => !panelsToBeDeleted.value.includes(operation.id))
+		.map((operation) => operation.key),
+	...stagedPanels.value.filter((stagedPanel) => stagedPanel.key !== undefined).map((stagedPanel) => stagedPanel.key!),
+]);
 
 const parentPanels = computed(() => {
 	const parents = panels.value.reduce<Record<string, ParentInfo>>((acc, panel) => {
