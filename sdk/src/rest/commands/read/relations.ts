@@ -1,13 +1,9 @@
 import type { DirectusRelation } from '../../../schema/relation.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
-export type ReadRelationOutput<Schema, Item extends object = DirectusRelation<Schema>> = ApplyQueryFields<
-	Schema,
-	Item,
-	'*'
->;
+export type ReadRelationOutput<Schema> = ApplyQueryFields<Schema, DirectusRelation<Schema>, '*'>;
 
 /**
  * List all Relations that exist in Directus.
@@ -43,10 +39,10 @@ export const readRelationByCollection =
  * @throws Will throw if field is empty
  */
 export const readRelation =
-	<Schema, const TQuery extends Query<Schema, DirectusRelation<Schema>>>(
+	<Schema>(
 		collection: DirectusRelation<Schema>['collection'],
 		field: DirectusRelation<Schema>['field'],
-	): RestCommand<ReadRelationOutput<Schema, TQuery>, Schema> =>
+	): RestCommand<ReadRelationOutput<Schema>, Schema> =>
 	() => {
 		throwIfEmpty(collection, 'Collection cannot be empty');
 		throwIfEmpty(field, 'Field cannot be empty');
