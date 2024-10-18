@@ -68,15 +68,6 @@ const flow = computed<FlowRaw | undefined>({
 
 const loading = ref(false);
 
-const existingOperationKeys = computed(() => {
-	return [
-		...(flow.value?.operations || [])
-			.filter((operation) => !panelsToBeDeleted.value.includes(operation.id))
-			.map((operation) => operation.key),
-		...stagedPanels.value.filter((stagedPanel) => stagedPanel.key !== undefined).map((stagedPanel) => stagedPanel.key!),
-	];
-});
-
 const editMode = ref(flow.value?.operations.length === 0 || props.operationId !== undefined);
 
 const confirmDelete = ref(false);
@@ -160,6 +151,19 @@ const currentOperation = computed(() => {
 	return panels.value.find((panel) => {
 		return panel.id === props.operationId;
 	});
+});
+
+const existingOperationKeys = computed(() => {
+	const t = [
+		...(flow.value?.operations || [])
+			.filter((operation) => !panelsToBeDeleted.value.includes(operation.id))
+			.map((operation) => operation.key),
+		...stagedPanels.value.filter((stagedPanel) => stagedPanel.key !== undefined).map((stagedPanel) => stagedPanel.key!),
+	];
+
+	console.log(t);
+
+	return t;
 });
 
 const parentPanels = computed(() => {
