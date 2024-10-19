@@ -1226,6 +1226,7 @@ directus_collection:
   directus_access: Anexos de políticas
   directus_activity: Histórico de responsabilidade para todos os eventos
   directus_collections: Configurações e metadados adicionais da coleção
+  directus_comments: Comentários para os itens
   directus_dashboards: Painéis dentro do módulo Insights
   directus_fields: Configurações e metadados adicionais do campo
   directus_files: Metadados de todos os arquivos gerenciados
