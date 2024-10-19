@@ -155,14 +155,10 @@ watch(
 );
 
 watch(
-	() => [props.toolbar, props.font, props.customFormats, props.tinymceOverrides],
+	() => [props.toolbar, props.font, map(props.customFormats, 'title'), props.tinymceOverrides],
 	(newOptions, oldOptions) => {
-		const newValue = [...newOptions];
-		const oldValue = [...oldOptions];
-		newValue[2] = map(newOptions?.[2], 'title');
-		oldValue[2] = map(oldOptions?.[2], 'title');
+		if (isEqual(newOptions, oldOptions)) return;
 
-		if (isEqual(newValue, oldValue)) return;
 		editorRef.value.remove();
 		editorInitialized.value = false;
 		editorKey.value++;
