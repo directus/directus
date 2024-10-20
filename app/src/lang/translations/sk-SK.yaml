@@ -1224,6 +1224,7 @@ directus_collection:
   directus_access: Prílohy politiky
   directus_activity: Logovať zodpovednosti za všetky aktivity
   directus_collections: Dodatočné nastavenia zbierky a metadát
+  directus_comments: Komentáre k položkám
   directus_dashboards: Tabule v module prehľadov
   directus_fields: Dodatočné nastavenia polí a metadát
   directus_files: Metadáta pre všetky spravované súbory
@@ -1838,6 +1839,7 @@ interfaces:
     description: Vyberie alebo nahrá obrázok
     crop: Orezať na prispôsobenie
     crop_label: Oreže obrázok podľa potreby
+    letterbox: Letterbox
     letterbox_label: Pridať výplň do náhľadového obrázku
   system-interface:
     interface: Rozhranie
