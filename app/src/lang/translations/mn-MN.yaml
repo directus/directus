@@ -2492,9 +2492,14 @@ fonts:
   auto: Автомат
 text_wrap: Текст таслах
 center: Голлох
+justify: Тэнцүүлэх
+text_align: Текст байрлуулах
 font_weight: Фонтны өргөн
 font_style: Фонтны хэв маяг
 font_size: Фонтны хэмжээ
+minimum_fraction_digits: Аравтын бутархайн хамгийн бага тоо
+maximum_fraction_digits: Аравтын бутархайн хамгийн их тоо
+show_percentage: Хувь харуулах
 duplicate_dashboard: Хянах самбар хувилах
 search_dashboard: Хянах самбар хайх...
 search_flow: Урсгал хайх...
