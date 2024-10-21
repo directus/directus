@@ -204,11 +204,12 @@ export class CollectionsService {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
-			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+			// Refresh the schema for subsequent reads
+			this.schema = await getSchema();
 
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				for (const nestedActionEvent of nestedActionEvents) {
-					nestedActionEvent.context.schema = updatedSchema;
+					nestedActionEvent.context.schema = this.schema;
 					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 				}
 			}
@@ -254,11 +255,12 @@ export class CollectionsService {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
-			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
-				const updatedSchema = await getSchema();
+			// Refresh the schema for subsequent reads
+			this.schema = await getSchema();
 
+			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
 				for (const nestedActionEvent of nestedActionEvents) {
-					nestedActionEvent.context.schema = updatedSchema;
+					nestedActionEvent.context.schema = this.schema;
 					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 				}
 			}
