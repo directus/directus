@@ -1,16 +1,47 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Тухай
 identifier: Тодохойлогч
 avatar: Аватар
 application: Аппликейшн
 default_provider: Үндсэн
+method: Арга
 published: Нийтлэгдсэн
 draft: Ноорог
 archived: Архивласан
+marketplace: Нэмэлт хэрэгсэл
+extensions: Суулгасан хэрэгсэл
 modules: Модуль
 module_bar: Модулийн мөр
+logs: Логууд
+unknown: Үл мэдэгдэх
+reset_width: Өргөнийг дахин тохируулах
 tile_size: Хэсгийн хэмжээ
 edit_field: Талбарыг засах
 conditions: Нөхцөл
+location: Байршил
+collection_names_are_case_sensitive: Бүрдлийн нэр нь том жижиг үсгийн хамааралтай
+condition_rules: Нөхцлийн дүрмүүд
+input: Оролт
 maps: Газрын зураг
 switch_user: Хэрэглэгч солих
 item_creation: Үүсгэх
@@ -20,14 +51,66 @@ duplicate_field: Талбарыг хувилах
 half_width: Тал өргөн
 full_width: Бүтэн өргөн
 group: Бүлэг
+popular: Нийтлэг
+recent: Сүүлийн
+export_items: Экспорт хийх
 and: Мөн
 or: Эсвэл
+init: Эхлэл
+dataset_too_large_currently_showing_n_items: Өгөгдлийн багц хэт том байна. Одоогоор эхний {n} оролтуудыг харуулж байна.
+modifier: Өөрчлөгч
+extension_interface: Интерфэйс
+extension_display: Харагдах байдал
+extension_layout: Бүтэц
+extension_module: Модуль
+extension_panel: Самбар
+extension_theme: Загвар
+extension_hook: Хүүк
+extension_endpoint: Төгсгөлийн цэг
+extension_operation: Үйлдэл
+extension_bundle: Багц
+extension_interfaces: Интерфэйсүүд
+extension_displays: Харагдах байдлууд
+extension_layouts: Бүтцүүд
 extension_modules: Модуль
+extension_panels: Самбарууд
+extension_themes: Загварууд
+extension_hooks: Хүүкүүд
+extension_endpoints: Төгсгөлийн цэгүүд
+extension_operations: Үйлдлүүд
+extension_bundles: Багцууд
+extension_missing: Хоосон
+extension_reload_required: Хуудсыг дахин ачаалах шаардлагатай
+extension_reload_required_copy: Апп өргөтгөл хэрэгслийн өөрчлөлтийг харахын тулд хуудсыг дахин ачаалах шаардлагатай.
+extension_reload_now: Одоо дахин ачаалах
+published_relative: '{relativeTime}-д нийтэлсэн'
+compatible_with_your_project: Таны төсөл ажилтай нийцнэ
+compatible_with_your_project_copy: Зохиогч энэ апп өргөтгөлийн нийцтэй байдлыг {hostVersion} гэж зааж өгсөн бөгөөд энэ нь таны төслийн ({currentVersion}) хувилбартай таарч байна
+last_updated_relative: Сүүлд {relativeTime}-д шинэчилсэн
+n_files: '{n} файлууд'
+verified: Баталгаажсан
+homepage: Нүүр хуудас
+repository: Хадгалах газар
+reload_page: Хуудсыг дахин ачаалах
+reload_required: Дахин ачаалах шаардлагатай
+report_an_issue: Асуудлыг мэдэгдэх
+website: Вэбсайт
+github: GitHub
+beta: Бета
+n_downloads: '{n} таталтууд'
+downloads: Таталтууд
+compatibility_not_guaranteed: Нийцтэй байдал нь баталгаагүй
+compatibility_not_guaranteed_copy: Зохиогч энэ апп өргөтгөлийн нийцтэй байдлыг {hostVersion} гэж зааж өгсөн бөгөөд энэ нь таны төслийн ({currentVersion}) хувилбартай таарахгүй байна
+enable: Идэвхжүүлэх
+disable: Идэвхгүй болгох
+custom: Тохируулгат
+hook: Хүүк
 fill_width: Өргөн дүүрэн
 field_name_translations: Талбарын нэрний орчуулга
 enter_password_to_enable_tfa: Нууц үгээ оруулж Хоёр-Давхар Нотолгоог идэвхижүүлнэ үү
 add_field: Талбар нэмэх
 role_name: Үүргийн нэр
+policy_name: Бодлогын нэр
 branch: Салбар
 leaf: Навч
 indeterminate: Тодорхойгүй
@@ -45,9 +128,15 @@ requires_value: Утга оруулах шаардлагатай
 create_preset: Тохируулга үүсгэх
 create_panel: Хавтан үүсгэх
 create_role: Үүрэг үүсгэх
+create_policy: Бодлого үүсгэх
 create_user: Хэрэглэгч үүсгэх
+message: Зурвас
 delete_panel: Хавтан устгах
 create_webhook: Webhook үүсгэх
+create_custom_translation: Тохируулгат орчуулга үүсгэх
+edit_custom_translation: Тохируулгат орчуулгыг засах
+no_custom_translations: Тохируулгат орчуулга байхгүй байна
+no_custom_translations_copy: Тохируулгат орчуулга хараахан байхгүй байна.
 invite_users: Хэрэглэгч урих
 invite: Урих
 email_already_invited: '"{email}" имэйл хаягийг өмнө нь урьсан байна'
@@ -63,17 +152,50 @@ rename_folder: Хавтасны нэр өөрчлөх
 delete_folder: Хавтас устгах
 prefix: Угтвар
 suffix: Дагавар
+keep: Үлдээх
+version: Хувилбар
+version_key: Хувилбарын түлхүүр
+version_name: Хувилбарын нэр
+main_version: Үндсэн
+switch_version: Хувилбар солих
+switch_version_copy: Та {version} хувилбар руу солихыг хүсэж байна уу? Хадгалаагүй өөрчлөлтүүд нь алдагдах болно.
+create_version: Хувилбар үүсгэх
+rename_version: Хувилбарын нэр солих
+compare_version: Хувилбар харьцуулах
+save_version: Хувилбар хадгалах
+promote_version: Хувилбар дэвшүүлэх
+promote_version_disabled: Өөрчлөлт байхгүй
+promote_version_drawer_title: '{version}-ийг үндсэн рүү дэвшүүлэх'
+promote_version_changes: Өөрчлөлтүүд
+promote_version_preview: Урьдчилан үзэх
+outdated_notice: >-
+  Энэ хувилбар нь үүссэн тул үндсэн оролт нь шинэчлэгдлээ. Доорх бүх талбаруудын утгуудыг шалгаж, энэ хувилбарыг үндсэн оролт руу дэвшүүлэхэд аль хувилбарыг ашиглахыг батална уу.
+promote_notice: >-
+  Доорх бүх талбаруудын утгуудыг шалгаж, энэ хувилбарыг үндсэн оролт руу дэвшүүлэхэд аль хувилбарыг ашиглахыг батална уу.
+delete_version: Хувилбар устгах
+delete_version_copy: >-
+  Хувилбар {version}-ийг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
+delete_on_promote_copy: >-
+  Хувилбар {version}-ийг дэвшүүлсний дараа устгах уу эсвэл үлдээх үү?
 reset_bookmark: Тэмдэглэгээг хуучин хэвэнд оруулах
 update_bookmark: Тэмдэглээг шинэлэх
 delete_bookmark: Тэмдэглэгээг устгах
 delete_bookmark_copy: >-
   "{bookmark}" тэмдэглэгээг устгахдаа итгэлтэй байна уу? Устгасан бол сэргээх боломжгүй.
+delete_personal_bookmark: Хувийн тэмдэглэгээг устгах
+delete_role_bookmark: Үүргийн тэмдэглэгээг устгах
+delete_global_bookmark: Глобал тэмдэглэгээг устгах
 logoutReason:
   SIGN_OUT: Сайтаас гарсан
   SESSION_EXPIRED: Холболтын хугацаа дууссан
 public_label: Нээлттэй
 public_description: Нэвтэрч ороогүй үед API- ны ямар өгөгдөл авч болохыг удирдана.
+public_role_info: >-
+  Нийтийн үүрэг нь нэвтрээгүй эсвэл үүрэггүй хэрэглэгчдэд ямар API өгөгдөл нь боломжтой байхыг удирдана. Нийтийн үүрэг бүхий хүсэлтүүдэд апп эсвэл админ хандалт байх боломжгүй. Хэрэв апп эсвэл админ хандалтыг нийтийн үүрэгт хуваарилсан бодлогод өгсөн бол тэдгээрийг үл хэрэгсэх болно.
 admin_description: Апп болон API дата руу хязгааргүй хандах эрхтэй үндсэн админ эрх.
+admin_policy_description: Хязгаарлалтгүй Апп/API хандалт бүхий анхны админы бодлого.
+no_description: Тайлбар байхгүй...
+reached_maximum_number_of_extensions: Энэ төслийн апп өргөтгөлийн тоо дээд хязгаарт хүрсэн байна. ({n}). Та өөрийн систем админд хандаж дэлгэрэнгүй мэдээлэл авна уу.
 not_allowed: Зөвшөөрөгдөөгүй
 archive: Архивлах
 archive_confirm: Та энэ мэдээллийг архивлахыг хүсч байна уу?
@@ -81,26 +203,2310 @@ archive_confirm_count: >-
   Ямар нэг зүйл сонгогдоогүй | Та үүнийг архивлахдаа итгэлтэй байна уу? | Та энэ {count} зүйлсийг архивлахдаа итгэлтэй байна уу?
 reset_system_permissions_to: 'Системийн зөвшөөрлийг буцааж хэвэнд нь оруулах:'
 reset_system_permissions_copy: Энэ үйлдлийг хийснээр өмнө нь тохируулсан зөвшөөрлийн тохиргоо дарагдана. Хийх үү?
+the_following_are_minimum_permissions: '"Апп хандалт" идэвхжсэн үед дараах хамгийн бага зөвшөөрлүүд автоматаар хэрэгжинэ. Шаардлагатай бол та нэмэлт зөвшөөрөл олгох боломжтой боловч энэ түвшнээс доош зөвшөөрлийг багасгах боломжгүй.'
+app_access_minimum: Апп хандалтын доод хэмжээ
+recommended_defaults: Санал болгож буй өгөгдмөлүүд
+unarchive: Архиваас гаргах
+unarchive_confirm: Та үүнийг архиваас гаргахыг хүсэж байна уу?
+nested_files_folders_will_be_moved: Үүрлэсэн файл болон хавтсууд нь нэг түвшин ахих болно.
+validation_errors_notice: 'Дараах талбарууд нь тодорхойгүй утгатай байна:'
+validationError:
+  eq: Утга нь {valid} байх ёстой
+  neq: Утга нь {invalid} байж болохгүй
+  in: Утга нь {valid}-ийн нэг байх ёстой
+  nin: Утга нь {invalid}-ийн нэг байж болохгүй
+  contains: Утга нь {substring} агуулсан байх ёстой
+  ncontains: Утга нь {substring} агуулсан байж болохгүй
+  gt: Утга нь {valid}-аас их байх ёстой
+  gte: Утга нь {valid}-тай тэнцүү буюу их байх ёстой
+  lt: Утга нь {valid}-аас бага байх ёстой
+  lte: Утга нь {valid}-тай тэнцүү буюу бага байх ёстой
+  empty: Утга нь хоосон байх ёстой
+  nempty: Утга хоосон байж болохгүй
+  null: Утга нь null байх ёстой
+  nnull: Утга null байж болохгүй
+  required: Утга шаардлагатай
+  unique: Утга нь дахин давтагдашгүй байх ёстой
+  email: Утга нь хүчин төгөлдөр цахим шуудан байх ёстой
+  regex: Утга зөв форматгүй байна
+  starts_with: Утга {substring}-р эхэлсэн байх ёстой
+  istarts_with: Утга {substring}-р эхэлсэн байна
+  nstarts_with: Утга {substring}-р эхэлсэн байж болохгүй
+  nistarts_with: Утга {substring}-р эхлэхгүй
+  ends_with: Утга {substring}-р төгссөн байх ёстой
+  iends_with: Утга {substring}-р төгссөн байх ёстой
+  nends_with: Утга {substring}-р төгссөн байж болохгүй
+  niends_with: Утга {substring}-р төгссөн байж болохгүй
+all_access: Бүх хандалт
+no_access: Хандалт байхгүй
+use_custom: Тохируулгат хандалт
+nullable: Null байх боломжтой
+allow_null_value: NULL утгыг зөвшөөрөх
+allow_multiple: Олныг зөвшөөрөх
+allow_multiple_to_be_open: Олныг нээхийг зөвшөөрөх
+enter_value_to_replace_nulls: Энэ талбарт байгаа ямар ч NULL утгуудыг орлох шинэ утгуудыг оруулна уу.
+field_standard: Стандарт
+field_presentation: Үзүүлэн & Нэр
+field_file: Дан файл
+field_files: Олон файл
+field_m2o: M2O харилцаа
+field_m2a: M2A харилцаа
+field_o2m: O2M харилцаа
+field_m2m: M2M харилцаа
+field_translations: Орчуулгууд
+field_group: Талбарын бүлэг
+item_permissions: Оруулгын эрхүүд
+field_permissions: Талбарын эрхүүд
+field_validation: Талбарын баталгаажуулалт
+field_presets: Талбарын урьдчилсан тохиргоонууд
+permissions_for_role: 'Үүрэг {role}-н {action} боломжтой оролтууд.'
+permissions_for_policy: 'Эрх {policy}-н {action} боломжтой оролтууд.'
+fields_for_role: 'Үүрэг {role}-н {action} боломжтой талбарууд.'
+fields_for_policy: '{policy} бодлого {action} үйлдэл хийх боломжтой талбарууд.'
+validation_for_role: 'Талбар дээрх {action}-д {role} үүрэг дагаж мөрдөх ёстой дүрмүүд.'
+validation_for_policy: 'Талбар дээрх {action}-д {policy} бодлого дагаж мөрдөх ёстой дүрмүүд.'
+presets_for_role: '{role} үүрэг дэх талбарын утгын өгөгдмөлүүд.'
+presets_for_policy: '{policy} бодлого дахь талбарын утгын өгөгдмөлүүд.'
+presets_field_warning: '"{field}" талбарын хамаарлын урьдчилсан тохиргоог "дэлгэрэнгүй" синтаксаар тохируулах ёстой.'
+presentation_and_aliases: Үзүүлэн & Нэр
+revision_post_create: Оруулга нь анх үүсэхдээ ийм байдлаар харагдаж байсан.
+revision_post_update: Оруулга нь шинэчлэл орсны дараагаар ингэж харагдана.
+changes_made: Дараах тодорхой өөрчлөлтүүдийг энэ хяналтад хийсэн.
+no_relational_data: Энд хамаарлын өгөгдөл ороогүй гэдгийг анхаарна уу.
+junction_field_location: Холбох талбаруудын байршил
+top: Дээр
+bottom: Доор
+hide_field: Талбар нуух
+hide_field_on_detail: Дэлгэрэнгүй талбарыг нуух
+show_field_on_detail: Дэлгэрэнгүй талбарыг харуулах
+delete_field: Талбар устгах
+fields_and_layout: Талбарууд & Бүтэц
+field_create_success: '"{field}" талбарыг үүсгэлээ'
+field_update_success: '"{field}" талбарыг шинэчиллээ'
+duplicate_where_to: Та энэ талбарыг хаана хуулбарлахыг хүсэж байна вэ?
+language: Хэл
+language_placeholder: Хэл сонгоно уу...
+aggregate_function: Нийлмэл функц
+aggregate_precision: Нийлмэл нарийвчлал
+group_aggregation: Бүлэг нэгтгэх
+group_precision: Бүлэг нарийвчлал
+global: Глобал
+admins_have_all_permissions: Админууд бүх эрхтэй байна
+camera: Камер
+show_zero: Тэг харуулах
+create_in_advanced_field_creation_mode: Нэмэлт горим дээр талбар үүсгэх
+continue_in_advanced_field_creation_mode: Нэмэлт талбар үүсгэх горим дээр үргэлжлүүлэх
+validation: Баталгаажуулалт
+sum: Нийлбэр
+sum_distinct: Өвөрмөц утгуудын нийлбэр
+avg: Дундаж
+avg_distinct: Өвөрмөц утгуудын дундаж
+count: Тоо ширхэг
+count_distinct: Өвөрмөц утгуудын тоо ширхэг
+min: Хамгийн бага
+max: Хамгийн их
+exposure: Илчлэлт
+shutter: Халхлалт
+iso: ISO
+focal_length: Фокусын зай
+schema_setup_key: Энэ талбарын өгөгдлийн сангийн баганын нэр болон API түлхүүр
+create_field: Талбар үүсгэх
+creating_new_field: 'Шинэ талбар ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Хуудсын тохиргоог дахин тохируулах
+hidden_field: Нуусан талбарууд
+hidden_on_detail: Дэлгэрэнгүй дээр нуусан
+disabled_editing_value: Утга засалтыг идэвхгүй болгох
+key: Түлхүүр
+alias: Нэр
+bigInteger: Том бүхэл тоо
+boolean: Булийн
+date: Огноо
+date_range: Огнооны хүрээ
+translation_key_placeholder: Түлхүүр оруулна уу...
+datetime: Огноо цаг
+dateTime: Огноо цаг
+precision: Нарийвчлал
+decimal: Аравтын бутархай
+float: Float
+integer: Бүхэл тоо
+json: JSON
+xml: XML
+yaml: YAML
+string: Тэмдэгтэн мөр
+text: Текст
+time: Цаг
+timestamp: Цагийн тэмдэг
+uuid: UUID
+hash: Хэш
+geometry:
+  All: Геометр (Бүх)
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
+  MultiLineString: MultiLineString
+  MultiPolygon: MultiPolygon
+theme_auto: Автомат (Системийн тохиргоо)
+theme_light: Өдрийн горим
+theme_dark: Шөнийн горим
+theme_directus_default: Directus өгөгдмөл
+theme_directus_minimal: Directus минимал
+theme_directus_colormatch: Directus өнгөний зохицол
+not_available_for_type: Энэ төрөлд боломжгүй
+create_translations: Орчуулга үүсгэх
+auto_refresh: Автоматаар шинэчлэх
+refresh_interval: Шинэчлэх интервал
+no_refresh: Бүү шинэчил
+refresh_interval_seconds: Шууд шинэчлэх | Секунд бүр | {seconds} секунд тутам
+refresh_interval_minutes: Минут бүр | {minutes} минут тутам
+auto_generate: Автоматаар үүсгэх
+this_will_auto_setup_fields_relations: Энэ нь шаардлагатай бүх талбар болон хамаарлыг автоматаар тохируулах болно.
+click_here: Энд дарна уу
+to_manually_setup_translations: орчуулгыг гараар тохируулах.
+manage: Удирдах
+click_to_manage_translated_fields: >-
+  Одоогоор орчуулагдсан талбар байхгүй байна. Энд дарж үүсгэнэ үү. | Нэг орчуулагдсан талбар байна. Энд дарж удирдана уу. | {count} орчуулагдсан талбар байна. Энд дарж удирдана уу.
+fields_group: Талбаруудын бүлэг
+no_collections_found: Бүрдэл олдсонгүй.
+new_data_alert: 'Дараах нь Өгөгдлийн Загвар дотор үүсгэгдэх болно:'
+search_collection: Бүрдэл хайх...
+search_role: Үүрэг хайх...
+search_policy: Бодлого хайх...
+search_field: Талбар хайх...
+new_field: 'Шинэ талбар'
+new_collection: 'Шинэ бүрдэл'
+add_m2o_to_collection: '"{collection}"-д M2O хамаарал нэмэх'
+add_o2m_to_collection: '"{collection}"-д O2M хамаарал нэмэх'
+add_m2m_to_collection: '"{collection}"-д M2M хамаарал нэмэх'
+choose_a_type: Төрөл сонгоно уу...
+determined_by_relationship: Харилцаагаар тодорхойлогдсон
+add_note: Хэрэглэгчдэд хэрэгцээтэй тэмдэглэл нэмэх...
+add_link: Холбоос нэмэх
+custom_link: Тохируулгат холбоос
+default_value: Өгөгдмөл утга
+standard_field: Стандарт талбар
+single_file: Дан файл
+multiple_files: Олон файлууд
+m2o_relationship: Many to One харилцаа
+o2m_relationship: One to Many харилцаа
+m2m_relationship: Many to Many харилцаа
+m2a_relationship: Many to Any харилцаа
+invalid_item: Тодорхойгүй оруулга
+require_confirmation: Баталгаажуулах шаардлагатай
+dialog: Диалог
+modal: Модал
+confirmation_dialog: Баталгаажуулалтын диалог
+confirmation_description: Баталгаажуулалтын тайлбар
+confirmation_input_fields: Баталгаажуулах оролтын талбар
+next: Дараагийн
+field_name: Талбарын нэр
+translations: Орчуулгууд
+no_translations: Орчуулга байхгүй
+left_to_right: Зүүнээс баруун
+right_to_left: Баруунаас зүүн
+note: Тэмдэглэл
+enter_a_value: Утга оруулна уу...
+enter_a_placeholder: Орлуулга текстийг оруулна уу...
+length: Урт
+soft_length: Софт хязгаар
+precision_scale: Нарийвчлал ба масштаб
+readonly: Зөвхөн унших
+unique: Дахин давтагдашгүй
+index: Индекс
+updated_on: Шинэчлэгдсэн
+updated_by: Шинэчлэл хийсэн
+primary_key: Гол түлхүүр
+foreign_key: Гадаад түлхүүр
+field_key: Талбар түлхүүр
+finish_setup: Тохиргоог дуусгах
+dismiss: Төгсгөх
+toggle_raw_editor: Raw Editor-ийг солих
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Raw утга
+copy_raw_value: Raw утгыг хуулах
+copy_raw_value_success: Хуулагдлаа
+copy_raw_value_fail: Хуулалт амжилтгүй
+paste_raw_value: Raw утгыг наах
+paste_raw_value_success: Наагдлаа
+paste_raw_value_fail: Наалт амжилтгүй
+view_raw_value: Raw утгыг харах
+edit_raw_value: Raw утгыг засах
+enter_raw_value: Raw утгыг оруулах...
+clear_value: Утгыг арилгах
+clear_changes: Өөрчлөлтүүдийг арилгах
+clear_items: Оролтуудыг арилгах
+reset_to_default: Өгөгдмөл тохиргоо руу дахин тохируулах
+undo_changes: Өөрчлөлтүүдийг буцаах
+notifications: Мэдэгдлүүд
+archive_all: Бүгдийг архивлах
+show_all_activity: Бүх үйл ажиллагааг харуулах
+page_not_found: Хуудас олдсонгүй
+page_not_found_body: Таны хайж буй хуудас нь байхгүй бололтой.
+confirm_revert: Буцаалтыг баталгаажуулах
+confirm_revert_body: Энэ нь оролтыг сонгосон төлөв рүү буцаах болно.
+display: Харагдах байдал
+settings_update_success: Тохиргоо шинэчлэгдлээ
+title: Гарчиг
+revision_delta_created: Үүссэн
+revision_delta_created_externally: Гадна үүссэн
+revision_delta_updated: '1 талбар шинэчлэгдсэн | {count} талбаруудыг шинэчиллээ'
+revision_delta_deleted: Устгасан
+revision_delta_version_saved: 'Хувилбар хадгалагдсан (1 талбар шинэчлэгдсэн) | Хувилбар хадгалагдсан ({count} талбаруудыг шинэчиллээ)'
+revision_delta_reverted: Буцаагдсан
+revision_delta_update_message: Энэ талбар шинэчлэгдсэн боловч үүний утга нь аюулгүй байдлын үүднээс далдлагдаж байна.
+revision_delta_other: Хянасан
+revision_delta_by: '{date}-д {user}'
+presentation_text_values_cannot_be_reimported: 'Текстийг үзүүлэнд ашигладаг тул утгыг дахин импортлох боломжгүй.'
+download_page_as_csv: 'Хуудсыг CSV форматаар татах'
+download_page_as_csv_unsupported: Энэ бүтэц нь одоогийн хуудсыг татаж авахыг дэмждэггүй.
+private_user: Хувийн хэрэглэгч
+creation_preview: Үүсгэлтийг урьдчилан харах
+revision_preview: Хяналтыг урьдчилан харах
+updates_made: Хийсэн шинэчлэлтүүд
+leave_comment: Сэтгэгдэл үлдээх...
+post_comment_success: Сэтгэгдлийг нийтэллээ
+post_comment_updated: Сэтгэгдлийг шинэчиллээ
+item_create_success: Оруулгыг үүсгэлээ | Оруулгуудыг үүсгэлээ
+item_update_success: Оруулгыг шинэчиллээ | Оруулгуудыг шинэчиллээ
+item_delete_success: Оруулгыг устгалаа | Оруулгуудыг устгалаа
+this_collection: Энэ бүрдэл
+related_collection: Хамааралтай бүрдэл
+related_collections: Хамааралтай бүрдлүүд
+translations_collection: Орчуулгын бүрдлүүд
+languages_collection: Хэлний бүрдлүүд
+import_data_input_placeholder: CSV эсвэл JSON...
+import_data_button: Импортлож эхлэх
+import_data_indeterminate: Өгөгдлийг импортлож байна...
+import_data_success: '{filename}-аас өгөгдлийг амжилттай импорт хийлээ'
+import_data_error: Энэ файлын өгөгдлийн бүтэц нь бүрдэлтэй тохирохгүй байна.
+label_import: Импорт
+label_export: Экспорт
+import_export: Импорт / Экспорт
+format: Формат
+last_page: Сүүлийн хуудас
+last_access: Сүүлийн хандалт
+fill_template: Загварын утгаар дүүргэх
+a_unique_table_name: Дахин давтагдашгүй хүснэгтийн нэр...
+a_unique_column_name: Дахин давтагдашгүй баганын нэр...
+enable_custom_values: Тохируулгат утгуудыг идэвхжүүлэх
+submit: Батлах
+move_to_folder: Хавтас руу зөөх
+move: Зөөх
+system: Систем
+add_field_related: Хамааралтай бүрдэлд талбар нэмэх
+interface_label: Интерфэйс
+display_label: Харагдах байдал
+today: Өнөөдөр
+yesterday: Өчигдөр
+delete_comment: Сэтгэгдэл устгах
+delete_share: Хуваалцсаныг устгах
+functions:
+  year: Он
+  month: Сар
+  week: Долоо хоног
+  day: Өдөр
+  weekday: Ажлын хоног
+  hour: Цаг
+  minute: Минут
+  second: Секунд
+  count: Тоо ширхэг
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: Минут
+hours: Цаг
+month: Сар
+year: Он
+select_all: Бүгдийг сонгох
+permissionsLevel:
+  all: Бүтэн {action} хандалт
+  partial: Хэсэгчилсэн {action} хандалт
+  custom: Хэсэгчилсэн {action} хандалт
+  none: '{action} хандалт байхгүй'
+months:
+  january: 1-р сар
+  february: 2-р сар
+  march: 3-р сар
+  april: 4-р сар
+  may: 5-р сар
+  june: 6-р сар
+  july: 7-р сар
+  august: 8-р сар
+  september: 9-р сар
+  october: 10-р сар
+  november: 11-р сар
+  december: 12-р сар
+drag_mode: Чирэх горим
+move_tool: Зөөх хэрэгсэл
+crop_tool: Тайрах хэрэгсэл
+focal_point_tool: Фокус цэгийн хэрэгсэл
+cancel_crop: Тайралтыг цуцлах
+cancel_selection: Сонголтыг цуцлах
+original: Эх хувь
+url: URL
+import_label: Импорт
+file_details: Файлын дэлгэрэнгүй
+dimensions: Хэмжээс
+size: Хэмжээ
+created: Үүссэн
+uploaded: Байршуулсан
+modified: Өөрчилсөн
+owner: Эзэмшигч
+edited_by: Засвар оруулсан
+folder: Хавтас
+folders: Хавтсууд
+zoom: Томруулах
+download: Татах
+open: Нээх
+open_in_new_window: Шинэ цонхонд нээх
+open_folder: '"{folder}" хавтсыг нээх'
+foreground_color: Урд дэвсгэрийн өнгө
+background_color: Ар дэвсгэрийн өнгө
+upload_from_device: Төхөөрөмжөөс файл байршуулах
+choose_from_library: Сангаас файл сонгох
+import_from_url: URL-аас файл импортлох
+replace_from_device: Төхөөрөмжөөс файлыг солих
+replace_from_library: Сангаас файлыг солих
+replace_from_url: URL-аас файлыг солих
+no_image_selected: Зураг сонгогдоогүй
+no_file_selected: Файл сонгогдоогүй
+download_file: Файл татах
+open_file_in_tab: Файлыг шинэ табд нэмэх
+start_export: Экспортыг эхлүүлэх
+not_available_for_local_downloads: Локал таталтад боломжгүй
+exporting_all_items_in_collection: '{collection} доторх бүх оруулгыг ({total}) экспорт хийж байна.'
+exporting_limited_items_in_collection: '{collection} доторх {total}-с {count} оруулгыг экспорт хийнэ.'
+exporting_no_items_to_export: Экспорт хийх оруулга байхгүй байна. Экспортын тохиргоог тохируулах эсвэл бүрдэлд оруулга нэмнэ үү.
+exporting_download_hint: '{format} файлыг үүсгэсний дараагаар таны төхөөрөмжид татагдах болно.'
+exporting_library_hint: '{format} файлыг үүсгэсний дараагаар Файлын Санд хадгалагдах болно.'
+exporting_library_hint_forced: Энэ экспортыг заавал багцаар нь боловсруулах ёстой. Дууссаны дараа {format} файл нь Файлын Санд хадгалагдах болно.
+collection_key: Бүрдлийн түлхүүр
+name: Нэр
+primary_key_field: Гол түлхүүрийн талбар
+type: Төрөл
+creating_new_collection: Шинэ бүрдэл үүсгэх
+created_by: Үүсгэсэн
+created_on: Үүсгэгдсэн
+creating_collection_info: Бүрдлийг нэрлэж, дахин давтагдашгүй түлхүүрийн талбарыг тохируулна уу...
+creating_collection_system: Эдгээр нэмэлт талбаруудын аль нэгийг идэвхжүүлж, нэрийг нь өөрчилнө үү.
+auto_increment_integer: Автоматаар нэмэгдэх бүхэл тоо
+auto_increment_big_integer: Автоматаар нэмэгдэх том бүхэл тоо
+generated_uuid: Үүсгэгдсэн UUID
+manual_string: Гараар оруулсан тэмдэгтэн мөр
+save_and_create_new: Хадгалаад, шинээр үүсгэх
+save_and_stay: Хадгалаад, энд үлдэх
+save_and_quit: Хадгалаад, гарах
+save_as_copy: Хуулбар болгон хадгалах
+add_existing: Одоо байгааг нэмэх
+creating_items: Оруулгуудыг үүсгэх
+enable_create_button: Үүсгэх товчлуурыг идэвхжүүлэх
+selecting_items: Оруулгуудыг сонгох
+enable_select_button: Сонгох товчлуурыг идэвхжүүлэх
+allow_duplicates: Давхардлуудыг зөвшөөрөх
+comments: Сэтгэгдлүүд
+no_comments: Сэтгэгдэл одоогоор байхгүй байна
+expand: Өргөжүүлэх
+expand_all: Бүгдийг өргөжүүлэх
+expand_none: Өргөжүүлэхгүй байх
+collapse: Хураах
+collapse_all: Бүгдийг хураах
+select_item: Оруулга сонгох
+no_items: Оруулга байхгүй
+search_items: Оруулга хайх...
+search_extensions: Хэрэгсэл хайх...
+disabled: Идэвхгүй
+information: Мэдээлэл
+report_bug: Алдааг мэдээлэх
+request_feature: Feature хүсэх
+request_body: Body хүсэх
+interface_not_found: '"{interface}" интерфэйс олдсонгүй.'
+operation_not_found: '"{operation}" үйлдэл олдсонгүй.'
+reset_interface: Интерфэйс дахин тохируулах
+display_not_found: '"{display}" харагдац олдсонгүй.'
+reset_display: Харагдацыг дахин тохируулах
+list-m2a: Баригч (M2A)
+item_count: 'Оруулга байхгүй | Нэг оруулга | {count} оруулгууд'
+filtered_item_count: 'Шүүгдсэн оруулга байхгүй | Нэг шүүгдсэн оруулга | {count} шүүгдсэн оруулгууд'
+no_items_copy: Энэ бүрдэлд одоогоор оруулга байхгүй байна.
+file_count: 'Файл байхгүй | Нэг файл | {count} файлууд'
+no_files_copy: Энд файл байхгүй байна.
+user_count: 'Хэрэглэгч байхгүй | Нэг хэрэглэгч | {count} хэрэглэгчид'
+no_users_copy: Ийм үүрэгтэй хэрэглэгч одоогоор байхгүй байна.
+webhooks_count: 'Вэбхүүк байхгүй | Нэг вэбхүүк | {count} вэбхүүкүүд'
+webhooks_deprecation_notice: |
+  Вэбхүүк ашиглагдахаа больсон бөгөөд цаашид ашиглахгүй байхыг сануулж байна. Оронд нь **Урсгалууд**-ыг [Вэбхүүк / URL үйлдлийн хүсэлт]-тэй хамт ашиглана уу. (https://docs.directus.io/app/flows/operations.html#webhook-request-url).
+no_webhooks_copy: Вэбхүүк одоогоор тохируулагдаагүй байна. Доорх хэсгээс үүсгэнэ үү.
+no_notifications: Мэдэгдэл байхгүй
+no_notifications_copy: Танд одоогоор мэдэгдэл байхгүй байна!
+activity_log: Үйл ажиллагааны бүртгэл
+all_items: Бүх оруулгууд
+any: Ямар ч
+csv: CSV
+no_collections: Бүрдэл байхгүй байна
+create_collection: Бүрдэл үүсгэх
+no_collections_copy_admin: Бүрдэл одоогоор үүсгэгдээгүй байна. Доорх товчлуурыг дарж үүсгэнэ үү.
+no_collections_copy: Бүрдэл одоогоор үүсгэгдээгүй байна. Тухайн системийн админтай холбогдоно уу.
+relationship_not_setup: Харилцаа нь зөв тохируулагдаагүй байна
+no_singleton_relations: Синглтонтой харгалзах харилцаа дэмжигддэггүй
+display_template_not_setup: Харагдах байдлын загвар буруу тохируулагдсан байна
+collection_field_not_setup: Бүрдлийн талбар буруу тохируулагдсан байна
+select_a_collection: Бүрдэл сонгох
+select_a_field: Талбар сонгох
+active: Идэвхтэй
+move_to: Дараах руу зөөх...
+copy: Хуулах
+copy_to: Дараах руу хуулах...
+no_other_dashboards_copy: Танд өөр хянах самбар одоогоор байхгүй байна.
+inactive: Идэвхгүй
+users: Хэрэглэгчид
+roles: Үүргүүд
+activity: Үйл ажиллагаа
+activity_item: Үйл ажиллагааны зүйл
+action: Үйлдэл
+ip_address: IP хаяг
+user_agent: Хэрэглэгчийн агент
+origin: Эх
+webhooks: Вэбхүүкүүд
+decimals: Аравтын бутархай
+value_decimals: Аравтын бутархайн утга
+min_value: Хамгийн бага утга
+max_value: Хамгийн дээд утга
+automatic: Автомат
+field_width: Талбарын өргөн
+add_filter: Шүүлтүүр нэмэх
+upper_limit: Дээд хязгаар...
+lower_limit: Доод хязгаар...
+user_directory: Хэрэглэгчийн лавлах
+documentation: Гарын авлага
+sidebar: Хажуу самбар
+duration: Хугацаа
+charset: Тэмдэгт
+second: секунд
+file_moved: Файлыг зөөв
+collection_created: Бүрдлийг үүсгэлээ
+modified_on: Өөрчлөгдсөн
+card_size: Картын хэмжээ
+sort_field: Талбаруудыг эрэмбэлэх
+add_sort_field: Эрэмбэлэх талбар нэмэх
+sort: Эрэмбэлэх
+status: Статус
+remove: Арилгах
+toggle_manual_sorting: Гараар эрэмбэлэлтийг солих
+bookmark_doesnt_exist: Тэмдэглэгээ байхгүй байна
+bookmark_doesnt_exist_copy: Таны нээх гэж буй тэмдэглэгээ олдсонгүй.
+bookmark_doesnt_exist_cta: Бүрдэл рүү буцах
+select_an_item: Оруулга сонгох...
+edit: Засах
+edit_item: Оруулга засах
+enabled: Идэвхитэй
+partially_enabled: Хэсэгчилэн идэвхэжсэн
+enable_all: Бүгдийг идэвхжүүлэх
+disable_all: Бүгдийг идэвхгүй болгох
+enabled_dev_tooltip: Хөгжүүлэлтийн горимд апп хэрэгслүүд нь үргэлж идэвхтэй байна
+disable_tfa: 2FA унтраах
+admin_disable_tfa_text: Энэ хэрэглэгчийн 2FA-ийг унтраахдаа итгэлтэй байна уу?
+tfa_setup: 2FA тохируулах
+tfa_scan_code: 2FA-г тохируулж дуусгахын тулд кодыг баталгаажуулагч аппдаа уншуулна уу
+enter_otp_to_disable_tfa: 2FA-г идэвхгүй болгохын тулд OTP-г оруулна уу
+create_account: Бүртгэл үүсгэх
+account_created_successfully: Бүртгэл амжилттай үүсгэгдлээ
+auto_fill: Автоматаар дүүргэх
+corresponding_field: Харгалзах талбар
+errors:
+  COLLECTION_NOT_FOUND: "Бүрдэл байхгүй байна"
+  CONTAINS_NULL_VALUES: Талбар нь null утга агуулсан байна
+  CONTENT_TOO_LARGE: Оруулсан оруулга/файл нь хэт том байна
+  FIELD_NOT_FOUND: Талбар олдсонгүй
+  FORBIDDEN: Хориотой
+  GRAPHQL_VALIDATION: GraphQL баталгаажуулалт
+  ILLEGAL_ASSET_TRANSFORMATION: Зургийн эхийг урьдчилан үзэхэд хэт том байна
+  INTERNAL_SERVER_ERROR: Гэнэтийн алдаа
+  INVALID_CONFIG: Тодорхойгүй тохиргоо
+  INVALID_CREDENTIALS: Нэвтрэх нэр эсвэл нууц үг буруу байна
+  INVALID_FOREIGN_KEY: Гадаад түлхүүр тодорхойгүй
+  INVALID_IP: IP хаяг нь зөвшөөрөлгүй байна
+  INVALID_OTP: Нэг удаагийн нууц үг буруу байна
+  INVALID_PAYLOAD: Чингэлэг тодорхойгүй
+  INVALID_PROVIDER: Хэрэглэгч нь өөр баталгаажуулалтын үйлчилгээ үзүүлэгчид харъяалагддаг
+  INVALID_QUERY: Асуулга тодорхойгүй
+  INVALID_TOKEN: Токен тодорхойгүй
+  INVALID_USER: Хэрэглэгчийг баталгаажуулж чадсангүй
+  ITEM_LIMIT_REACHED: Оруулгын хязгаар хэтэрсэн байна
+  ITEM_NOT_FOUND: Оруулга олдсонгүй
+  LIMIT_EXCEEDED: 'Хязгаар хэтэрсэн байна'
+  METHOD_NOT_ALLOWED: Зөвшөөрөгдөөгүй арга
+  NOT_NULL_VIOLATION: Утга null байж болохгүй
+  RANGE_NOT_SATISFIABLE: Хязгаар хүрээ тодорхойгүй
+  RECORD_NOT_UNIQUE: Давхардсан утга байна
+  REQUESTS_EXCEEDED: Хүсэлтүүдийн тоо хязгаарт хүрсэн байна
+  ROUTE_NOT_FOUND: Олдсонгүй
+  SERVICE_UNAVAILABLE: Үйлчилгээ боломжгүй байна
+  TOKEN_EXPIRED: Токен хугацаа дууссан байна
+  UNEXPECTED_RESPONSE: Гэнэтийн хариу
+  UNKNOWN: Гэнэтийн алдаа
+  UNPROCESSABLE_CONTENT: Боловсруулах боломжгүй контент
+  UNSUPPORTED_MEDIA_TYPE: Дэмжигдээгүй медиа төрөл
+  USER_SUSPENDED: Хэрэглэгчийг түдгэлзүүлсэн
+  VALUE_OUT_OF_RANGE: Утга нь хязгаарыг давсан байна
+  VALUE_TOO_LONG: Утга нь хэт урт байна
+security: Аюулгүй байдал
+value_hashed: Утгыг найдвартай хэш хийсэн
+bookmark_name: Тэмдэглэгээний нэр...
+create_bookmark: Тэмдэглэгээ үүсгэх
+edit_bookmark: Тэмдэглэгээ засах
+edit_personal_bookmark: Хувийн тэмдэглэгээг засах
+edit_role_bookmark: Үүргийн тэмдэглэгээг засах
+edit_global_bookmark: Глобал тэмдэглэгээг засах
+cannot_edit_role_bookmarks: Үүргийн тэмдэглэгээг засах боломжгүй
+cannot_edit_global_bookmarks: Глобал тэмдэглэгээг засах боломжгүй
+bookmarks: Тэмдэглэгээнүүд
+presets: Урьдчилсан тохиргоо
+unexpected_error: Гэнэтийн алдаа
+unexpected_error_copy: Гэнэтийн алдаа гарсан байна. Дахин оролдоно уу.
+copy_details: Дэлгэрэнгүй мэдээллийг хуулах
+no_app_access: Апп хандалт байхгүй
+no_app_access_copy: Энэ хэрэглэгч админ апп хэрэглэх зөвшөөрөлгүй байна.
+password_reset_sent: Та бүртгэлтэй бол бид тань руу нууц үг сэргээх аюулгүй холбоос илгээлээ
+password_reset_successful: Нууц үгийг амжилттай сэргээгдлээ
+back: Буцах
+filter: Шүүлтүүр
+edit_image: Зураг засах
+editing_image: Зураг засаж байна
+square: Дөрвөлжин
+free: Чөлөөт
+flip_horizontal: Хэвтээ эргүүлэх
+flip_vertical: Босоо эргүүлэх
+aspect_ratio: Харьцаа
+rotate: Эргүүлэх
+all_users: Бүх хэрэглэгч
+delete_collection: Бүрдэл устгах
+update_collection_success: Бүрдлийг шинэчиллээ
+delete_collection_success: Бүрдлийг устгалаа
+make_collection_visible: Бүрдлийг харагдахуйц болгох
+make_collection_hidden: Бүрдлийг нуух
+make_folder_visible: Хавтсыг харагдахуйц болгох
+make_folder_hidden: Хавтсыг нуух
+goto_collection_content: Контентыг харах
+count_of_total_items: '{total}-аас {count} оруулгууд'
+start_end_of_count_items: '{count}-аас {start}-{end} оруулгууд'
+start_end_of_count_filtered_items: '{count}-аас {start}-{end} шүүгдсэн оруулгууд'
+delete_collection_are_you_sure: >-
+  "{collection}" бүрдлийг устгахдаа та итгэлтэй байна уу? Энэ үйлдэл нь бүрдэл болон бүрдэл доторх бүх оруулгыг устгах болно. Уг үйлдлийг буцаах боломжгүй.
+delete_folder_are_you_sure: '"{folder}" хавтсыг устгахдаа та итгэлтэй байна уу? Үүрлэсэн хавтас болон бүрдлүүд нь хамгийн дээд үе рүү зөөгдөнө.'
+delete_collection_peer_dependencies: Дараах талбарууд одоогийн бүрдэлд хамрах тул мөн устах болно.
+collections_shown: Харуулсан бүрдлүүд
+visible_collections: Харагдах бүрдлүүд
+hidden_collections: Нуусан бүрдлүүд
+show_hidden_collections: Нуусан бүрдлүүдийг харуулах
+hide_hidden_collections: Нуусан бүрдлүүдийг нуух
+show_header: Толгойг харуулах
+unmanaged_collections: Тохируулагдаагүй бүрдлүүд
+system_collections: Систем бүрдлүүд
+placeholder: Орлогч
+icon_left: Зүүн таних тэмдэг
+icon_right: Баруун таних тэмдэг
+count_other_revisions: '{count} бусад хяналтууд'
+font: Фонт
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Хуваагч
+color: Өнгө
+circle: Тойрог
+empty_item: Хоосон оруулга
+log_in_with: '{provider}-аар нэвтрэх'
+conditional_styles: Нөхцөлт хэв маяг
+advanced_settings: Дэлгэрэнгүй тохиргоо
+advanced_filter: Нарийвчилсан шүүлтүүр
+delete_advanced_filter: Шүүлтүүр устгах
+change_advanced_filter_operator: Операторыг солих
+advanced: Дэлгэрэннгүй
+operators:
+  eq: Тэнцүү
+  neq: Тэнцүү биш
+  lt: Бага
+  gt: Их
+  lte: Бага болон тэнцүү
+  gte: Их болон тэнцүү
+  in: Харгалзах нэг
+  nin: Харгалзах нэг биш
+  null: Null мөн
+  nnull: Null биш
+  contains: Агуулсан
+  ncontains: Агуулаагүй
+  icontains: Агуулсан (үсгийн том жижиг хамаагүй)
+  starts_with: Эхэлсэн
+  nstarts_with: Эхлээгүй
+  istarts_with: Эхэлсэн (үсгийн том жижиг хамаагүй)
+  nistarts_with: Эхлээгүй (үсгийн том жижиг хамаагүй)
+  ends_with: Дууссан
+  nends_with: Дуусаагүй
+  iends_with: Дууссан (үсгийн том жижиг хамаагүй)
+  niends_with: Дуусаагүй (үсгийн том жижиг хамаагүй)
+  between: Хооронд
+  nbetween: Хооронд биш
+  empty: Хоосон
+  nempty: Хоосон биш
+  all: Эдгээр түлхүүрийг агуулсан
+  has: Эдгээр зарим түлхүүрийг агуулсан
+  intersects: Огтлолцсон
+  nintersects: Огтлолцоогүй
+  intersects_bbox: Хязгаарлах хайрцагтай огтлолцсон
+  nintersects_bbox: Хязгаарлах хайрцагтай огтлолцоогүй
+  regex: RegExp-тэй таарсан
+custom_validation_message: Тохируулгат баталгаажуулалтын мессеж
+loading: Уншиж байна...
+extension_readme_missing: Энэ хэрэгсэл нь README файлгүй байна.
+drop_to_upload: Тавьж байршуулах
+item: Оруулга
+items: Оруулгууд
+upload_file: Файл байршуулах
+upload_file_indeterminate: Файл байршуулж байна...
+upload_file_success: Файл байршуулагдлаа
+upload_files_indeterminate: 'Файлуудыг байршуулж байна {done}/{total}'
+upload_files_success: '{count} файл байршуулагдлаа'
+upload_pending: Байршуулалт хүлээгдэж байна
+drag_file_here: Файлыг энд чирж тавина уу
+click_to_browse: Үзэхийн тулд дарна уу
+interface_options: Интерфэйс тохиргоо
+display_options: Харагдах байдлын тохиргоо
+layout_options: Бүтцийн тохиргоо
+rows: Мөрүүд
+columns: Баганууд
+collection_setup: Бүрдлийн тохируулга
+optional_system_fields: Нэмэлт талбарууд
+value_unique: Утга нь дахин давтагдашгүй байх ёстой
+value_index: Талбарыг индексжүүлсэн
+all_activity: Бүх үйл ажиллагаа
+create_item: Оруулга үүсгэх
+display_template: Харагдацын загвар
+language_display_template: Хэлний харагдацын загвар
+translations_display_template: Орчуулгын харагдацын загвар
+n_items_selected: 'Оруулга сонгогдсонгүй | Нэг оруулга сонгогдлоо | {n} оруулга сонгогдлоо'
+per_page: Нэг хуудсанд
+all_files: Бүх файлууд
+my_files: Миний файлууд
+recent_files: Сүүлийн файлууд
+create_folder: Хавтас үүсгэх
+edit_folder: Хавтас засах
+folder_name: Хавтсын нэр...
+folder_key: Хавтсын түлхүүр...
+add_file: Файл нэмэх
+replace_file: Файл солих
+no_results: Үр дүн олдсонгүй
+no_results_copy: Үр дүнг харахын тулд хайлтын шүүлтүүрийг тохируулж эсвэл арилгана уу.
+no_visible_fields: Хоосон маягт
+no_visible_fields_copy: Энэ маягтад харагдах талбар байхгүй байна.
+clear_filters: Шүүлтүүр арилгах
+saves_automatically: Автоматаар хадгална
+role: Үүрэг
+edit_role: Үүрэг засах
+rule: Дүрэм
+user: Хэрэглэгч
+no_presets: Урьдчилсан тохиргоо байхгүй
+no_presets_copy: Урьдчилсан тохиргоо эсвэл тэмдэглээ хадгалагдаагүй байна.
+no_presets_cta: Урьдчилсан тохиргоо нэмэх
+presets_only: Зөвхөн урьдчилсан тохиргоонууд
+create: Үүсгэх
+on_create: Үүсгэх үед
+on_update: Шинэчлэх үед
+read: Унших
+update: Шинэчлэх
+delete: Устгах
+select_fields: Талбар сонгох
+format_text: Текстийг форматлах
+format_value: Утгыг форматлах
+abbreviate_value: Утгыг товчлох
+operator: Оператор
+bold: Тод
+toggle: Солих
+icon_on: Таних тэмдгийг идэвхжүүлэх
+icon_off: Таних тэмдгийг идэвхгүй болгох
+label: Шошго
+flows: Урсгалууд
+flow: Урсгал
+select_a_flow: Урсгал сонгох
+run_flow_confirm: Энэ урсгалыг ажиллуулахыг хүсэж байна уу?
+run_flow_on_current_collection: Энэ бүрдэл дээр урсгал ажиллуулах
+run_flow_on_current: Энэ оруулга дээр урсгал ажиллуулах
+run_flow_on_current_edited_confirm: Энэ оруулга нь урсгалаар шинэчлэгдсэн байж магадагүй, та ажиллуулахдаа итгэлтэй байна уу?
+run_flow_on_selected: Нэг эсвэл хэд хэдэн оруулгыг эхлээд сонгоно уу | Нэг сонгосон оруулга дээр урсгалыг ажиллуулах | {n} сонгосон оруулгууд дээр урсгал ажиллуулах
+run_flow: Урсгал ажиллуулах
+run_flow_success: '"{flow}" урсгалыг амжилттай ажиллууллаа'
+field_name_placeholder: Талбарын нэрийг оруулна уу...
+field_key_placeholder: Талбарын түлхүүрийг оруулна уу...
+trigger: Өдөөгч
+trigger_options: Өдөөгчийн тохиргоо
+view_trigger: Өдөөгчийг харах
+create_trigger: Өдөөгч үүсгэх
+trigger_setup: Өдөөгч тохируулах
+change_trigger: Өдөөгч солих
+flow_delete_confirm: '"{flow}" урсгалыг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүй.'
+set_flow_active: Урсгалыг идэвхтэй болгох
+set_flow_inactive: Урсгалыг идэвхгүй болгох
+edit_flow: Урсгалыг засах
+delete_flow: Урсгалыг устгах
+no_other_flows_copy: Танд өөр урсгал байхгүй байна.
+no_flows: Урсгал байхгүй байна
+no_flows_copy: Танд одоогоор урсгал байхгүй байна.
+create_flow: Урсгал үүсгэх
+creating_new_flow: Шинэ урсгал үүсгэж байна
+updating_flow: Урсгалыг шинэчилж байна
+flow_setup: Урсгал тохируулах
+flow_name: Нэр
+flow_tracking: Үйл ажиллагаа, бүртгэл хяналт
+flow_tracking_all: Үйл ажиллагаа, бүртгэлийг хянах
+flow_tracking_activity: Зөвхөн үйл ажиллагааг хянах
+flow_tracking_null: Хяналт хийхгүй байх
+start_flow: Урсгал эхлүүлэх
+stop_flow: Урсгал зогсоох
+create_operation: Үйлдэл үүсгэх
+edit_operation: Үйлдэл засах
+code: Код
+operation_options: Үйлдлийн тохиргоо
+operation_name: Үйлдлийн нэр...
+operation_key: Лавлах танигч...
+operation_key_unique_error: Үйлдлийн түлхүүрүүд нь Урсгалд дахин давтагдашгүй байх ёстой
+operation_handle_resolve: 'Шийдэх: Нэмэх бол товшино уу, эсвэл замыг өөрчлөх бол чирнэ үү'
+operation_handle_reject: 'Татгалзах: Нэмэх бол товшино уу эсвэл замыг өөрчлөх бол чирнэ үү'
+insights: Аналитик
+dashboard: Хянах самбар
+panel: Самбар
+panel_options: Самбарын тохиргоо
+panel_header: Самбарын толгой
+panel_name_placeholder: Энэ самбарыг нэрлэх...
+panel_note_placeholder: Энэ самбарын нэмэлт мэдээлэл...
+panel_delete_confirm: Энэ самбарыг усгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
+list_panel_allow_edit: Дотор засварлахыг зөвшөөрөх
+dashboard_delete_confirm: Энэ хянах самбарыг устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
+edit_dashboard: Хянах самбар засах
+delete_dashboard: Хянах самбар устгах
+visible: Харагдах
+prefix_placeholder: Утгын өмнө бичнэ үү...
+suffix_placeholder: Утгын дараа бичнэ үү...
+decimals_placeholder: Аравтын орны тоо...
+no_dashboards: Хянах самбар байхгүй байна
+no_dashboards_copy: Танд одоогоор хянах самбар байхгүй байна.
+create_dashboard: Хянах самбар үүсгэх
+dashboard_name: Хянах самбарын нэр
+no_data: Өгөгдөл байхгүй
+no_data_in_flow: Энэ урсгалаар өгөгдөл үүсгэгдэж, хандагдаагүй байна
+accountability: Бүртгэл
+payload: Чингэлэг
+details: Дэлгэрэнгүй мэдээлэл
+resume_streaming_logs: Логийн урсгалыг үргэлжлүүлэх
+pause_streaming_logs: Логийн урсгалыг зогсоох
+logs_session_resumed: Логийн сессийг үргэлжлүүллээ...
+logs_session_paused: Логийн сессийг зогсоолоо...
+logs_stream_disconnected: Логийн урсгал саллаа...
+log_detail_filter_paths: 'Замын шүүлтүүр (жишээ: req.method, res.statusCode)'
+logs_beginning: Энэ бол таны лог сессийн эхлэл юм...
+logs_waiting: 'Дахин логуудыг хүлээж байна...'
+logs_unread_count: '{count} уншаагүй'
+clear_logs: Логуудыг арилгах
+search_logs: Лог хайх...
+all_instances: Бүх инстанцууд
+instance_count: 'Инстанц байхгүй | Нэг инстанц | {count} инстанцууд'
+all_log_levels: Бүх лог түвшингүүд
+log_level_count: 'Лог түвшин байхгүй | Нэг лог түвшин | {count} лог түвшингүүд'
+soft_wrap_lines: Сул мөр таслах
+full_screen: Дэлгэц дүүргэх
+full_text_search: Бүрэн текст хайлт
+edit_panels: Самбар засах
+center_align: Голд байрлуулах
+left_align: Зүүнд байрлуулах
+right_align: Баруунд байрлуулах
+fit_to_screen: Дэлгэцийн хэмжээгээр дүүргэх
+image_url: Зургийн Url
+alt_text: Нэмэлт текст
+media: Медиа
+quality: Чанар
+width: Өргөн
+height: Өндөр
+transformation_preset_key: Өөрчлөлтийн урьдчилан тохируулсан түлхүүр
+source: Эх үүсвэр
+url_placeholder: Url оруулна уу...
+display_text: Харагдах текст
+display_text_placeholder: Харагдах текстийг оруулна уу...
+interface_group_text_and_numbers: Текст, тоо
+interface_group_selection: Сонголт
+interface_group_relational: Хамаарал
+interface_group_presentation: Үзүүлэн
+interface_group_groups: Бүлгүүд
+interface_group_other: Бусад
+tooltip: Зөвлөмж
+tooltip_placeholder: Зөвлөмж оруулах...
+unlimited: Хязгааргүй
+open_link_in: Холбоосыг нээх
+new_tab: Шинэ таб
+save_image: Зураг хадгалах
+save_media: Медиа хадгалах
+wysiwyg_options:
+  aligncenter: Төвд байрлуулах
+  alignjustify: Өргөн тэнцүүлэх
+  alignleft: Зүүнд байрлуулах
+  alignnone: Байрлалын тохируулгагүй
+  alignright: Баруунд байрлуулах
+  forecolor: Урд дэвсгэрийн өнгө
+  backcolor: Ар дэвсгэрийн өнгө
+  bold: Тод
+  italic: Налуу бичвэр
+  underline: Доогуур зурвасласан бичвэр
+  strikethrough: Дундуур зураасласан бичвэр
+  subscript: Мөрийн доод индекс
+  superscript: Мөрний дээд индекс
+  codeblock: Код
+  blockquote: Иш татлал
+  bullist: Тэмдэглэгдсэн жагсаалт
+  numlist: Дугаарлагдсан жагсаалт
+  hr: Хэвтээ тусгаарлагч
+  link: Холбоос нэмэх/засах
+  unlink: Холбоос устгах
+  media: Медиа нэмэх/засах
+  image: Зураг нэмэх/засах
+  copy: Хуулах
+  cut: Огтлох
+  paste: Наах
+  heading: Гарчиг
+  h1: Гарчиг 1
+  h2: Гарчиг 2
+  h3: Гарчиг 3
+  h4: Гарчиг 4
+  h5: Гарчиг 5
+  h6: Гарчиг 6
+  fontselect: Фонт сонгох
+  fontsizeselect: Фонтны хэмжээ сонгох
+  indent: Догол мөр
+  outdent: Догол мөрийг арилгах
+  undo: Буцаах
+  redo: Дахин хийх
+  remove: Арилгах
+  removeformat: Формат арилгах
+  selectall: Бүгдийг сонгох
+  table: Хүснэгт
+  visualaid: Үл харагдах элементүүдийг харах
+  source_code: Эх кодыг засах
+  fullscreen: Бүтэн дэлгэцлэх
+  directionality: Чиглэл
+  lazy_loading: Шаардлагатай үед зургийг ачаалах
+  lazy_loading_label: Шаардлагатай үед ачаалах тохиргоог идэвхжүүлэх
+dropdown: Доош унадаг цэс
+choices: Сонголтууд
+choices_option_configured_incorrectly: Сонголтуудыг буруу тохируулсан байна
+deselect: Сонголтыг цуцлах
+deselect_all: Бүгдийг сонгохоо болих
+theme: Загвар
+select_a_theme: Загвар сонгох
+default_sync_with_project: Өгөгдмөл (Төсөлтэй тохирсон)
+appearance_auto: Автомат (Системтэй тохирсон)
+appearance_light: Өдрийн
+appearance_dark: Шөнийн
+other: Бусад...
+adding_user: Хэрэглэгч нэмж байна
+unknown_user: Мэдэгдэхгүй хэрэглэгч
+creating_in: '{collection}-д оруулга үүсгэж байна'
+editing_in: '{collection}-д оруулга засаж байна'
+viewing_in: '{collection}-д оруулга үзэж байна'
+creating_unit: '{unit} үүсгэж байна'
+editing_unit: '{unit} засаж байна'
+editing_in_batch: '{count} оруулгыг багцлан засаж байна'
+no_options_available: Боломжит тохируулга байхгүй байна
+settings_data_model: Өгөгдлийн загвар
+settings_roles: Хэрэглэгчийн үүргүүд
+settings_permissions: Хандах бодлогууд
+settings_project: Тохиргоо
+settings_appearance: Харагдах байдал
+settings_webhooks: Вэбхүүкүүд
+settings_flows: Урсгалууд
+settings_system_logs: Системийн логууд
+settings_presets: Тэмдэглэгээнүүд
+settings_translations: Орчуулгууд
+one_or_more_options_are_missing: Нэг эсвэл хэд хэдэн тохиргоо дутуу байна
+configure_field_key_to_continue: Талбарын түлхүүрийг тохируулсны дараа үргэлжлүүлнэ үү
+scope: Хүрээ
+actions: Үйлдлүүд
+select: Сонгох...
+layout: Бүтэц
+tree_view: Мод загвараар харах
+changes_are_permanent: Өөрчлөлтүүд нь үүрдийн болно
+preset_name_placeholder: Хоосон үед өгөгдмөл болж үйлчилнэ...
+preset_search_placeholder: Асуулт хайх...
+editing_preset: Урьдчилсан тохиргоог засаж байна
+layout_preview: Бүтцийг урьдчилан харах
+layout_setup: Бүтцийг тохируулах
+data: Өгөгдөл
+theme-overrides: Загвар үл хэрэгсэнэ
+unsaved_changes: Хадгалагдаагүй өөрчлөлтүүд
+unsaved_changes_copy: Энэ хуудсыг орхихдоо итгэлтэй байна уу?
+discard_changes: Өөрчлөлтүүдийг цуцлах
+discard_all_changes: Бүх өөрчлөлтүүдийг цуцлах
+discard_changes_copy: Хийсэн бүх өөрчлөлтүүдийг цуцлахдаа итгэлтэй байна уу?
+show_x_axis: X тэнхлэгийг харах
+show_y_axis: Y тэнхлэгийг харах
+keep_editing: Засвар үргэлжлүүлэх
+page_help_collections_overview: '**Бүрдлийн тойм** - Таны хандах боломжтой бүх бүрдлийн жагсаалт.'
+page_help_collections_collection: >-
+  **Оруулгуудыг харах** — Таны хандах эрхтэй {collection} доторх бүх оруулгуудын жагсаалт. Хурдан хандахын тулд өөрийн хэрэгцээнд нийцүүлэн бүтэц, шүүлтүүр, эрэмбэлэл зэргийг тохируулж, тэмдэглэлийг өөр өөр тохиргоонд хадгалаарай.
+page_help_collections_item: >-
+  **Оруулгын дэлгэрэнгүй** — Энэ оруулгыг харах болон удирдах маягт. Хажуу цэс нь засваруудын бүрэн түүх, оруулсан сэтгэгдлүүдийг агуулна.
+page_help_activity_collection: >-
+  **Үйл ажиллагааг харах** — Хэрэглэгчийн бүх систем болон контент үйл ажиллагааны дэлгэрэнгүй жагсаалт.
+page_help_docs_global: >-
+  **Гарын авлагыг харах** — Энэ төслийн хувилбар болон схемд тусгайлан тохируулсан гарын авлагууд.
+page_help_files_collection: >-
+  **Файлын сан** — Энэ төсөлд харгалзах бүх файлын жагсаалт. Хурдан хандахын тулд өөрийн хэрэгцээнд нийцүүлэн бүтэц, шүүлтүүр, эрэмбэлэл зэргийг тохируулж, тэмдэглэлийг өөр өөр тохиргоонд хадгалаарай.
+page_help_files_item: >-
+  **Файлын дэлгэрэнгүй** — Файлын мета өгөгдлийг удирдах, анхны файлуудыг засварлах болон хандалтын тохиргоог шинэчлэх маягт.
+page_help_settings_project: "**Тохиргоо** — Төслийн глобал тохируулга."
+page_help_settings_appearance: "**Харагдах байдал** — Төслийн харагдах байдал болон загварын тохируулга."
+page_help_settings_extensions: '**Хэрэгсэл** — Төсөлд зориулан суулгасан хэрэгслүүд.'
+page_help_settings_datamodel_collections: >-
+  **Өгөгдлийн загвар: Бүрдлүүд** — Бүх боломжит бүрдлийн жагсаалт. Үүнд харагдах болон нуусан системийн бүрдлүүд, мөн нэмж болох удирдлагагүй мэдээллийн сангийн хүснэгтүүд орно.
+page_help_settings_datamodel_fields: >-
+  **Өгөгдлийн загвар: Бүрдэл** — Бүрдэл болон түүний талбаруудыг удирдах маягт.
+page_help_settings_system_logs: '**Системийн логууд** — Системийн бүртгэлийн шууд дамжуулалтад хандах.'
+page_help_settings_policies_collection: '**Бодлогуудыг харах** — Төсөлд харгалзах бүх бодлогуудын жагсаалт.'
+page_help_settings_policies_item: "**Бодлогын дэлгэрэнгүй** — Бодлогын эрхүүд болон бусад тохиргоог удирдах."
+page_help_settings_roles_collection: '**Үүргүүдийг харах** — Төсөлд харгалзах бүх хэрэглэгчийн үүргүүдийн жагсаалт.'
+page_help_settings_roles_item: "**Үүргийн дэлгэрэнгүй** — Үүргийн эрхүүд болон бусад тохиргоог удирдах."
+page_help_settings_presets_collection: >-
+  **Урьдчилсан тохиргоог харах** — Төсөлд харгалзах бүх урьдчилсан тохиргооны жагсаалт. Үүнд: хэрэглэгч, үүрэг болон глобал тэмдэглэл, цаашлаад өгөгдмөл харагдац байна.
+page_help_settings_presets_item: >-
+  **Урьдчилсан тохиргооны дэлгэрэнгүй** — Тэмдэглэл болон өгөгдмөл бүрдлийн урьдчилсан тохиргоог удирдах маягт.
+page_help_settings_webhooks_collection: '**Вэбхүүкүүдийг харах** — Төсөлд харгалзах бүх вэбхүүкүүдийн жагсаалт.'
+page_help_settings_webhooks_item: '**Вэбхүүкийн дэлгэрэнгүй** — Төслийн вэбхүүкийг үүсгэх болон удирдах маягт.'
+page_help_settings_flows_collection: '**Урсгалуудыг харах** — Төсөлд харгалзах бүх урсгалуудын жагсаалт.'
+page_help_settings_flows_item: '**Урсгалын дэлгэрэнгүй** — Нэг эсвэл хэд хэдэн үйлдэл удирдах ажлын талбар.'
+page_help_settings_translations_collection: '**Тохируулгат орчуулгуудыг харах** — Төсөлд харгалзах бүх тохируулгат орчуулгуудын жагсаалт.'
+page_help_settings_translations_item: '**Тохируулгат орчуулгын дэлгэрэнгүй** — Оруулгыг харах болон удирдах маягт.'
+page_help_users_collection: '**Хэрэглэгчийн лавлах** — Төсөлд харгалзах бүх системийн хэрэглэгчдийн жагсаалт.'
+page_help_users_item: >-
+  **Хэрэглэгчийн дэлгэрэнгүй** — Өөрийн бүртгэлийн мэдээллийг удирдах болон бусад хэрэглэгчдийн дэлгэрэнгүй мэдээллийг авах.
+page_help_insights_overview: '**Аналитик* — Таны хандаж болох хянах самбруудын жагсаалт.'
+page_help_insights_dashboard: '**Хянах самбар** — Нэг эсвэл хэд хэдэн самбар удирдах ажлын талбар'
+page_help_marketplace_account: '**Бүртгэл* — Нийтэлсэн хэрэгслийн нийтлэгч эсвэл засварлагч.'
+page_help_marketplace_registry: '**Бүртгэл* — Directus нэмэлт хэрэгсэлд байрлах боломжтой хэрэгслүүд.'
+page_help_marketplace_extension: '**Хэрэгсэл** — Directus нэмэлт хэрэгсэл дэх хэрэгсэл.'
+activity_feed: Үйл ажиллагааны хангамж
+add_new: Шинээр нэмэх
+create_new: Шинээр үүсгэх
+all: Бүгд
+none: Байхгүй
+no_layout_collection_selected_yet: Бүтэц/бүрдэл сонгогдоогүй байна
+batch_delete_confirm: >-
+  Оруулга сонгогдоогүй байна | Энэ оруулгыг устгахдаа итгэлтэй байна уу? Үйлдлийг буцаах боломжгүй. | Эдгээр {count} оруулгуудыг устгахдаа итгэлтэй байна уу? Үйлдлийг буцаах боломжгүй.
+cancel: Цуцлах
+no_upscale: Зургийг нягтаршуулах хэрэггүй
+no_extensions: Хэрэгсэл байхгүй байна
+no_extensions_copy: Нэмэлт хэрэгсэл одоогоор суулгаагүй байна.
+install_extension: Хэрэгсэл суулгах
+uninstall_locked: Нэмэлт хэрэгсэл цэснээс суулгаагүй хэрэгслүүдийг устгах боломжгүй
+uninstall: Устгах
+installed: Суулгасан
+reinstall: Дахин суулгах
+open_in_marketplace: Нэмэлт хэрэгслийн цэсэнд нээх
+source_registry: Нэмэлт хэрэгсэл
+source_local: Локал
+source_module: Node модуль
+collection: Бүрдэл
+collections: Бүрдлүүд
+content: Контент
+singleton: Синглтон
+singleton_label: Нэг объект гэж үзэх
+system_fields_locked: Системийн талбарууд түгжигдсэн бөгөөд засах боломжгүй болсон байна
+directus_collection:
+  directus_access: Хавсралтын бодлого
+  directus_activity: Бүх үйл явдлын лог бүртгэл
+  directus_collections: Нэмэлт бүрдлийн тохируулга болон мета өгөгдөл
+  directus_comments: Оруулгуудын сэтгэгдэл
+  directus_dashboards: Аналитик модулийн хянах самбарууд
+  directus_fields: Нэмэлт талбарын тохируулга болон мета өгөгдөл
+  directus_files: Бүх удирддаг файлуудын мета өгөгдөл
+  directus_flows: Автоматжуулсан процессууд
+  directus_folders: Файлуудад зориулсан виртуал лавлахыг хангадаг
+  directus_migrations: Өгөгдлийн сангийн ямар хувилбарыг ашиглаж байгаа
+  directus_notifications: Хэрэглэгчдэд мэдэгдлийг илгээлээ
+  directus_operations: Урсгалд ажилладаг үйлдлүүд
+  directus_panels: Аналитик хянах самбарт харгалзах бие даасан самбарууд
+  directus_permissions: Бодлого бүрийн хандах эрхүүд
+  directus_policies: Хандалтын хяналтын бодлого
+  directus_presets: Бүрдлийн өгөгдмөлүүд болон тэмдэглэлүүдийн урьдчилан тохиргоо
+  directus_relations: Харилцааны тохируулга болон мета өгөгдөл
+  directus_revisions: Бүх үйл ажиллагааны өгөгдлийн хормын хувилбарууд
+  directus_roles: Системийн хэрэглэгчдэд зориулсан зөвшөөрлийн бүлгүүд
+  directus_sessions: Хэрэглэгчийн сесс мэдээлэл
+  directus_settings: Төслийн тохируулга
+  directus_shares: Гаднаас хуваалцсан зүйлсийг хянадаг
+  directus_users: Платформд зориулсан системийн хэрэглэгчид
+  directus_webhooks: Үйл явдалд суурилсан HTTP хүсэлтийн тохиргоо
+  directus_translations: Тохируулгат орчуулгууд
+  directus_versions: Оруулгуудын контент хувилбарууд
+  directus_extensions: Хэрэгслүүдийн тохируулга
 fields:
+  directus_activity:
+    item: Оруулгын гол түлхүүр
+    action: Үйлдэл
+    collection: Бүрдэл
+    timestamp: Үйлдэл хийсэн
+    user: Үйлдсэн
+    comment: Сэтгэгдэл
+    user_agent: Хэрэглэгчийн агент
+    origin: Эх
+    ip: IP хаяг
+    revisions: Хяналтууд
+  directus_collections:
+    collection: Бүрдэл
+    icon: Таних тэмдэг
+    note: Тэмдэглэл
+    color: Өнгө
+    display_template: Харагдацын загвар
+    hidden: Нуусан
+    singleton: Синглтон
+    translations: Бүрдлийн нэршлийн орчуулгууд
+    archive_app_filter: Апп шүүлтүүр архивлах
+    archive_value: Утга архивлах
+    unarchive_value: Утгыг архиваас гаргах
+    sort_field: Талбаруудыг эрэмбэлэх
+    accountability: Үйл ажиллагаа болон засваруудыг хянах
+    versioning: Хувилбарын удирдлага
+    archive_field: Талбар архивлах
+    item_duplication_fields: Оруулгын давхардлын талбарууд
+  directus_files:
+    $thumbnail: Өнгөц зураг
+    title: Гарчиг
+    description: Тайлбар
+    tags: Таг
+    location: Байршил
+    storage: Хадгалах байршил
+    filename_disk: Файлын нэр (диск дээрх)
+    filename_download: Файлын нэр (татаж авах)
+    metadata: Мета өгөгдөл
+    type: Mime төрөл
+    filesize: Файлын хэмжээ
+    modified_by: Засвар хийсэн
+    modified_on: Өөрчлөгдсөн
+    created_on: Үүсгэгдсэн
+    created_by: Үүсгэсэн
+    embed: Оруулсан
+    uploaded_by: Байршуулсан
+    folder: Хавтас
+    width: Өргөн
+    uploaded_on: Байршсан
+    height: Өндөр
+    charset: Тэмдэгт
+    duration: Хугацаа
+    focal_point_x: X координат
+    focal_point_y: Y координат
+  directus_users:
+    first_name: Нэр
+    last_name: Овог
+    email: Цахим шуудан
+    password: Нууц үг
+    avatar: Хөрөг зураг
+    location: Байршил
+    title: Гарчиг
+    description: Тайлбар
+    tags: Таг
+    user_preferences: Тусгай тохиргоо
+    language: Хэл
+    tfa_secret: Хоёр давхар баталгаажуулалт
+    admin_options: Админ тохиргоо
+    status: Статус
+    status_draft: Ноорог
+    status_invited: Урьсан
+    status_unverified: Баталгаажаагүй
+    status_active: Идэвхтэй
+    status_suspended: Түдгэлзүүлсэн
+    status_archived: Архивласан
+    role: Үүрэг
+    token: Токен
+    provider: Үйлчилгээ үзүүлэгч
+    external_identifier: Гадны танигч
+    last_page: Сүүлийн хуудас
+    last_access: Сүүлийн хандалт
+    email_notifications: Цахим шуудангийн мэдэгдэл
+    appearance: Харагдах байдал
+    theme_light: Өдрийн загвар
+    theme_dark: Шөнийн загвар
+    theme_light_overrides: Өдрийн загварын тохируулга
+    theme_dark_overrides: Шөнийн загварын тохируулга
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    reporting: Мэдэгдэх
+    mapping: Зураглал
+    basemaps: Үндсэн зураглал
+    basemaps_raster: Растер
+    basemaps_tile: Растер TileJSON
+    basemaps_style: Mapbox хэв маяг
+    mapbox_key: Mapbox хандалтын токен
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Шинж чанар
+    attribution_placeholder: '© OpenStreetMap оролцогчид'
+    transforms_note: Sharp аргын нэр ба түүний аргументууд. Дэлгэрэнгүй мэдээллийг https://sharp.pixelplumbing.com/api-constructor холбоосоос үзнэ үү.
+    additional_transforms: Нэмэлт хувиргалтууд
+    project_name: Төслийн нэр
+    project_descriptor: Төслийн тодрхойлолт
+    project_url: Төслийн URL
+    project_color: Төслийн өнгө
+    project_logo: Төслийн таних тэмдэг
+    default_language: Өгөгдмөл хэл
+    branding: Брэнд
+    public_foreground: Нүүр хуудсын урд зураг
+    public_background: Нүүр хуудсын дэвсгэр зураг
+    public_note: Нүүр тэмдэглэл
+    theming: Загварын өгөгдмөл
+    default_appearance: Өгөгдмөл харагдах байдал
+    default_theme_light: Өгөгдмөл өдрийн загвар
+    default_theme_dark: Өгөгдмөл шөнийн загвар
+    auth_password_policy: Нэвтрэх нууц үгийг бодлого
+    auth_login_attempts: Нэвтрэх ородлогын тоо
+    files_and_thumbnails: Файл хадгалалт
+    storage_default_folder: Өгөгдмөл хавтас
+    storage_asset_presets: Хувиргалтын урьдчилсан тохиргоо
+    storage_asset_transform: Зөвшөөрөгдсөн хувиргалтууд
+    overrides: Апп үл хэрэгсэнэ
+    custom_css: Тохируулгат CSS
     module_bar: Модулийн мөр
+    transformations_all: Бүх хувиргалтуудыг зөвшөөрөх
+    transformations_none: Хувиргалтуудыг идэвхгүй болгох
+    transformations_presets: Доорх урьдчилсан тохиргооны дагуу хувиргалтуудыг хязгаарлах
+    image_editor: Зураг засварлагч
+    custom_aspect_ratios: Тохируулгат хэмжээс
+    theme_light_overrides: Өдрийн загварын тохируулга
+    theme_dark_overrides: Шөнийн загварын тохируулга
+    public_registration: Хэрэглэгчийн бүртгэл
+    public_registration_note: '[Бүртгэлийн зам](/admin/register)-ээр бүртгүүлэх боломжийг хэрэглэгчдэд олгоно.'
+    public_registration_role: Хэрэглэгчийн үүрэг
+    public_registration_role_note: Энэ аргыг ашиглан бүртгүүлсэн хэрэглэгчдэд энэ үүргийг олгодог. Бүртгэгдсэн хэрэглэгчдэд нөлөөлөхгүй.
+    public_registration_email_filter: Цахим шуудангийн шүүлтүүр
+    public_registration_email_filter_note: Зөвхөн уг шүүлтүүрт нийцэх цахим шууданг бүртгэх боломжтой.
+    public_registration_verify_email: Цахим шуудан баталгаажуулах
+    public_registration_verify_email_note: Бүртгүүлж буй хэрэглэгч рүү нэвтрэхийн өмнө баталгаажуулах холбоос дээр дарахыг хүссэн имэйл илгээнэ.
+  directus_shares:
+    name: Нэр
+    role: Үүрэг
+    password: Нууц үг
+    date_start: Эхлэх огноо
+    date_end: Дуусах огноо
+    max_uses: Ашиглалтын дээд тоо
+    times_used: Ашигласан тоо
   directus_fields:
+    collection: Бүрдлийн нэр
+    icon: Бүрдлийн таних тэмдэг
+    note: Тэмдэглэл
+    hidden: Нуусан
+    singleton: Синглтон
     translation: Талбарын нэрний орчуулга
+    display_template: Загвар
   directus_roles:
     name: Үүргийн нэр
+    icon: Үүргийн таних тэмдэг
+    description: Тайлбар
+    users: Үүрэгт харгалзах хэрэглэгчид
+    parent: Эцэг үүрэг
+    children: Хүүхэд үүрэг
+  directus_policies:
+    name: Бодлогын нэр
+    description: Тайлбар
+    app_access: Апп хандалт
+    admin_access: Админ хандалт
+    ip_access: IP хандалт
+    enforce_tfa: 2FA шаардах
+  directus_webhooks:
+    name: Нэр
+    method: Арга
+    status: Статус
+    data: Өгөгдөл
+    header: Толгой
+    value: Утга
+    headers: Хүсэлтийн толгой
+    data_label: Үйл явдлын өгөгдлийг илгээх
+    triggers: Өдөөгчид
+    actions: Үйлдлүүд
+    collections: Бүрдлүүд
 field_options:
+  directus_settings:
+    project_name_placeholder: Миний төсөл...
+    project_color_note: Нэвтрэх, таних тэмдгийн ар дэвсгэр
+    project_logo_note: Цагаан 40x40 SVG/PNG
+    project_favicon_note: 32x32 ICO
+    public_note_placeholder: Нийтэд харагдах Markdown форматыг дэмждэг богино мессеж...
+    security_divider_title: Аюулгүй байдал
+    auth_password_policy:
+      none_text: Байхгүй - Зөвлөхгүй
+      weak_text: Сул - Багадаа 8 тэмдэгтээс бүрдэнэ
+      strong_text: Хүчтэй - Том / жижиг үсэг / Тоо / Тэмдэгт орсон
+    storage_asset_presets:
+      fit_label: Хэмжээнд таарсан
+      upscaling: Томруулсан
+      fit:
+        contain_text: Агуулах (харьцааг хадгалсан байна)
+        cover_text: Бүрхэх (ижил хэмжээтэй байна)
+        fit_text: Дотор тааруулах
+        outside_text: Гадна тааруулах
+    additional_transforms: Нэмэлт хувиргалтууд
+    transforms_note: Sharp аргын нэр ба түүний аргументууд. Дэлгэрэнгүй мэдээллийг https://sharp.pixelplumbing.com/api-constructor холбоосоос үзнэ үү.
+    mapbox_key: Mapbox хандалтын токен
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Үндсэн зураглал
+    basemaps_name_placeholder: Үндсэн зураглалын нэрийг оруулна уу...
+    basemaps_raster: Растер
+    basemaps_tile: Растер TileJSON
+    basemaps_style: Mapbox хэв маяг
+    files_divider_title: Файл болон өнгөц зургууд
+    overrides_divider_title: Апп үл хэрэгсэнэ
+  directus_activity:
+    login: Нэвтрэх
+    create: Үүсгэх
+    update: Шинэчлэх
+    delete: Устгах
   directus_collections:
+    track_activity_revisions: Үйл ажиллагаа болон засваруудыг хянах
+    only_track_activity: Зөвхөн үйл ажиллагааг хянах
+    do_not_track_anything: Юу ч хянахгүй байх
+    collection_setup: Бүрдлийн тохируулга
+    note_placeholder: Бүрдлийн тайлбар...
+    hidden_label: Апп дотор нуух
+    singleton: Нэг объект гэж үзэх
+    language: Хэл
+    translation: Орчуулга
+    translation_placeholder: Орчуулга оруулах...
+    collection_name: Бүрдлийн нэр
+    singular_unit: Дан нэгж
+    plural_unit: Олон тооны нэгж
     archive_divider: Архивлах
+    archive_field_placeholder: Талбар сонгоно уу...
+    archive_app_filter: Апп архивын шүүлтүүрийг идэвхжүүлэх
+    archive_value: Архивлах үед тохируулсан утга...
+    unarchive_value: Архиваас гаргах үед тохируулсан утга...
+    sort_divider: Эрэмбэлэх
+    sort_field: Талбар сонгох...
+    accountability_divider: Бүртгэл
+    duplication_divider: Давхардал
+    preview_divider: Урьдчилан үзэх
+    content_versioning_divider: Контентийн хувилбар
+    enable_versioning: Хувилбарлалтыг идэвхжүүлэх
+  directus_files:
+    title: Дахин давтагдашгүй гарчиг...
+    description: Нэмэлт тайлбар...
+    location: Нэмэлт байршил...
+    storage_divider: Файлын нэршил
+    focal_point_divider: Төв цэг
+    filename_disk: Хадгалах диск дээрх нэр...
+    filename_download: Татаж авах нэр...
+  directus_policies:
+    name: Энэ бодлогын дахин давтагдашгүй нэр...
+    description: Энэ бодлогын тайлбар...
+    ip_access: Зөвшөөрөгдсөн IP хаяг, IP муж, CIDR блокуудыг нэмнэ үү. Бүгдийг зөвшөөрөх бол хоосон орхино уу...
+    enforce_tfa: Хоёр давхар баталгаажуулалтыг шаардах
+    assigned_to: Хуваарилагдсан
+  directus_roles:
+    name: Энэ үүргийн дахин давтагдашгүй нэр...
+    description: Энэ үүргийн тайлбар...
+    fields:
+      icon_name: Таних тэмдэг
+      name_name: Нэр
+      name_placeholder: Гарчиг оруулах...
+      link_name: Холбоос
+      link_placeholder: Харьцангуй эсвэл үнэмлэхүй URL...
+    parent_note: Энэ үүргийн зөвшөөрлийг өвлөсөн нэмэлт эцэг үүрэг
+    children_note: Энэ үүргийн зөвшөөрлийг өвлөсөн үүрлэсэн хүүхэд үүрэг
+    collections_name: Бүрдлүүд
+    collections_addLabel: Бүрдэл нэмэх...
+  directus_users:
+    preferences_divider: Тусгай тохиргоо
+    dropdown_auto: Автомат (Системийн тохиргоо)
+    dropdown_light: Өдрийн горим
+    dropdown_dark: Шөнийн горим
+    admin_divider: Админ тохиргоо
+    status_dropdown_draft: Ноорог
+    status_dropdown_invited: Урьсан
+    status_dropdown_active: Идэвхтэй
+    status_dropdown_suspended: Түдгэлзүүлсэн
+    status_dropdown_archived: Архивласан
+    token: Аюулгүй хандалтын токенг оруулах...
+  directus_webhooks:
+    status_options_active: Идэвхтэй
+    status_options_inactive: Идэвхгүй
+    data_label: Үйл явдлын өгөгдлийг илгээх
+    triggers_divider: Өдөөгчид
+    actions_create: Үүсгэх
+    actions_update: Шинэчлэх
+    actions_delete: Устгах
+    actions_login: Нэвтрэх
+    headers:
+      header: Толгой
+      value: Утга
+      add: Толгой нэмэх
+no_fields_in_collection: '"{collection}"-д одоогоор талбар байхгүй байна'
+no_value: Утга байхгүй
+do_nothing: Юу ч хийхгүй
+generate_and_save_uuid: UUID үүсгэж, хадгалах
+save_current_user_id: Одоогийн хэрэглэгчийн ID хадгалах
+save_current_user_role: Одоогийн хэрэглэгчийн үүргийг хадгалах
+save_current_datetime: Одоогийн огноо/цагийг хадгалах
+always_open: Үргэлж нээлттэй
+start_open: Нээлттэй эхлэх
+start_collapsed: Хаалттай эхлэх
+block: Блок
+inline: Тасралтгүй шугаманд
+comment: Сэтгэгдэл
+live_preview:
+  enable: Урьдчилан харуулахыг идэвхжүүлэх
+  disable: Урьдчилан харуулахыг идэвхгүй болгох
+  change_size: Дэлгэцийн хэмжээсийг өөрчлөх
+  refresh: Урьдчилан үзэлтийг шинэчлэх
+  new_window: Шинэ цонхонд нээх
+  close_window: Дэлгэц хуваах горимд нээх
+  toggle_3d: 3D солих
+shares: Хуваалцсан
+unlimited_usage: Хязгааргүй хэрэглээ
+uses_left: Ашиглалт үлдсэнгүй | Нэг ашиглалт үлдсэн | {n} ашиглалт үлдсэн
+no_shares: Хуваалцсан зүйл байхгүй
+new_share: Шинэ хуваалцал
+expired: Хугацаа дууссан
+upcoming: Удахгүй
+share: Хуваалцах
+share_item: Оруулга хуваалцах
+shared_with_you: Нэг оруулгыг тантай хуваалцсан байна
+shared_enter_passcode: Үргэлжлүүлэхийн тулд нууц үгээ оруулна уу...
+shared_leave_blank_for_passwordless_access: Нууц үггүй нэвтрэлтэд нууц үгийн талбарыг хоосон орхино уу
+shared_leave_blank_for_unlimited: Хязгааргүй болгох бол хоосон орхино уу
+shared_times_remaining: Энэ холбоосыг зөвхөн {n} удаа ашиглаж болно
+shared_last_remaining: Энэ холбоосыг зөвхөн ганц удаа ашиглаж болно
+shared_uses_left: Аюулгүй байдлын үүднээс хуудсыг үзэх тоог хязгаарласан байна. Одоогоор {n} үзэлт үлдсэн бөгөөд тоо хязгаарт хүрсэн үед энэ хуудасд хандах боломжгүй болно.
+share_access_page: Хуваалцсан хуудсанд хандах
+share_access_not_found: Энэ хуваалцсан хуудас байхгүй эсвэл зөвшөөрөгдөх дээд хэмжээнээс хэтэрсэн байна.
+share_access_not_found_desc: Нэвтрэх хүсэлт гаргахын тулд энэ төслийн эрх бүхий хэрэглэгчтэй холбогдоно уу.
+share_access_not_found_title: Үл мэдэгдэх хуваалцсан хуудас
+share_copy_link: Холбоос хуулах
+share_copy_link_success: Холбоосыг хуулсан
+share_copy_link_error: Холбоосыг хуулах боломжгүй
+share_send_link: Холбоос илгээх
+relational_triggers: Хамааралтай өдөөгчид
+referential_action_field_label_m2o: '{collection}-г устгах үед...'
+referential_action_field_label_o2m: '{collection}-г сонгохоо болих үед...'
+referential_action_no_action: Устгахаас сэргийлэх
+referential_action_cascade: '{collection} оруулгыг устгах (cascade)'
+referential_action_set_null: '{field} талбарыг хүчингүй болгох'
+referential_action_set_default: '{field} талбарыг өгөгдмөл утгад тохируулах'
+choose_action: Үйлдэл сонгох
+continue_label: Үргэлжлүүлэх
+continue_as: >-
+  {name} одоогоор баталгаажсан байна. Хэрэв та энэ бүртгэлийг таньж байгаа бол үргэлжлүүлэх дээр дарна уу.
+editing_role: 'Үүрэг {role}'
+editing_policy: 'Бодлого {policy}'
+no_permissions: Эрх байхгүй
+permission_add_collection: Бүрдэл нэмэх
+creating_webhook: Вебхүүк үүсгэж байна
+default_label: Өгөгдмөл
+delete_label: Устгах
+delete_are_you_sure: >-
+  Энэ үйлдлийг буцаах боломжгүй. Та үргэлжлүүлэхийг хүсч байна уу?
+delete_field_are_you_sure: >-
+  "{field}" талбарыг устгахдаа та итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүйг анхаарна уу.
+description: Тайлбар
+done: Болсон
+duplicate: Хуулбарлах
 limit: Хязгаар
+email: Цахим шуудан
+embed: Оруулах
+fallback_icon: Нөөц таних тэмдэг
+field: Талбар | Талбарууд
+file: Файл
+file_library: Файлын сан
+forgot_password: Нууц үгээ мартсан
+hidden: Нуусан
+hidden_in_group: '{group}-д нуусан'
+icon: Таних тэмдэг
+info: Мэдээлэл
+normal: Энгийн
+success: Амжилттай
+warning: Анхааруулга
+danger: Аюултай
+colors:
+  purple: Ягаан
+  blue: Цэнхэр
+  green: Ногоон
+  yellow: Шар
+  orange: Улбар шар
+  red: Улаан
+  black: Хар
+  gray: Саарал
+  white: Цагаан
+junction_collection: Холбох бүрдэл
+latency: Хүлээх хугацаа
+login: Нэвтрэх
+my_activity: Миний үйл ажиллагаа
+not_authenticated: Баталгаажаагүй
+authenticated: Баталгаажсан
+options: Тохиргоо
+otp: Нэг удаагийн нууц үг
+password: Нууц үг
+confirm_password: Нууц үг батлах
+permissions: Эрхүүд
+relationship: Харилцаа
+reset: Дахин тохируулах
+reset_password: Нууц үг сэргээх
+revisions: Хяналтууд
+no_revisions: Хяналт одоогоор байхгүй байна
+no_logs: Лог одоогоор байхгүй байна
+revert: Буцаах
+save: Хадгалах
+schema: Схем
+search: Хайх
+select_existing: Одоо байгаа зүйлээс сонгоно уу
+select_field_type: Талбарын төрлийг сонгоно уу
+select_interface: Интерфэйс сонгоно уу
+select_display: Харагдацыг сонгоно уу
+settings: Тохиргоо
+register: Бүртгүүлэх
+registration_successful_headline: Амжилттай!
+registration_successful_note: Та одоо нэвтрэх хуудас руу очиж болно.
+registration_successful_check_email_note: |
+  Нэвтрэхээсээ өмнө танд илгээсэн баталгаажуулах холбоос дээр дарж имэйл хаягаа баталгаажуулах шаардлагатайг анхаарна уу.
+dont_have_an_account: Бүртгэл байхгүй юу?
+already_have_an_account: Аль хэдийн бүртгэлтэй юу?
+sign_up_now: Яг одоо нэгдээрэй
+sign_in: Нэвтрэх
+sign_out: Гарах
+sign_out_confirm: Та гарахдаа итгэлтэй байна уу?
+something_went_wrong: Ямар нэгэн алдаа гарлаа.
+sort_direction: Чиглэлийг эрэмбэлэх
+export_location: Экспорт хийх байршил
+export_started: Экспортлож эхэллээ
+export_started_copy: Таны экспорт эхэллээ. Татахад бэлэн болсон үед танд мэдэгдэх болно.
+sort_asc: Өсөхөөр эрэмбэлэх
+sort_desc: Буурахаар эрэмбэлэх
+disable_sort: Эрэмбэлэлтийг унтраах
+template: Загвар
+require_value_to_be_set: Үүсгэх үед утгыг бөглөх шаардлагатай болгох
+translation: Орчуулга
+translation_placeholder: Орчуулга оруулна уу...
+value: Утга
+view_project: Төсөл үзэх
+report_error: Алдааг мэдээлэх
+start: Эхлэх
+table: Хүснэгт
+list: Жагсаалт
+search_filter: Хайлт ба шүүлт
+enable_search_filter: Хайлт болон шүүлтүүрийг асаах
+item_link: Оруулгын холбоос
+show_link_to_item: Оруулгын холбоосыг харуулах
+navigate_to_item: Оруулга руу очих
+undo_removed_item: Устгасан оруулгыг буцаах
+remove_item: Оруулга арилгах
+delete_item: Оруулга устгах
+pause: Зогсоох
+resume: Үргэлжлүүлэх
 interfaces:
+  list-m2a:
+    prefix_note: Холбогдох оруулгын бүрдлийн өгөгдмөл нэрийг ашигладаг.
+    sorting_disabled: Нэг хуудсанд багтахгүй олон оруулга байгаа тул эрэмбэлэхийг идэвхгүй болгосон.
+  filter:
+    name: Шүүлтүүр
+    description: Шүүлтүүр объектыг тохируулах.
+    add_filter: Шүүлтүүр нэмэх
+    add_group: Ба / эсвэл бүлэг
+    add_value: Утга нэмэх
+    logic_type_and: БА
+    logic_type_or: ЭСВЭЛ
+    all: Бүгд
+    any: Ямар ч
+    and: ба
+    of_the_following: дараахаас
+    no_rules: Тохируулсан дүрэм байхгүй
+    change_value: Дарж утгыг өөрчилнө үү
+    placeholder: Энд дүрмийг чирнэ үү
+    add_key_placeholder: Түлхүүрийг нэмээд Enter дарна уу...
+  fields:
+    name: Талбарууд
+  group-accordion:
+    name: Аккордеон
+    description: Талбар эсвэл бүлгүүдийг аккордеон хэсэг болгон харуулах
+    start: Эхлэх
+    all_closed: Бүгд хаагдсан
+    first_opened: Анх нээгдсэн
+    all_opened: Бүгд нээгдсэн
+    accordion_mode: Аккордеон горим
+    max_one_section_open: Ихдээ 1 нээлттэй хэсэг
   presentation-links:
+    presentation-links: Товчлууран холбоосууд
+    links: Холбоосууд
+    description: Динамик URL-д зориулсан тусгай холбоос товчлуурууд
+    style: Хэв маяг
     primary: Үндсэн
-displays:
+    link: Холбоосууд
+    button: Товчлуур
+    error: Үйлдэл хийх боломжгүй байна
+  select-multiple-checkbox:
+    checkboxes: Сонгох нүд
+    description: Сонгох нүд ашиглан олон сонголтоос сонгох
+    allow_other: Бусдыг зөвшөөрөх
+    show_more: '{count}-г нэмж харуулах'
+    items_shown: Харуулсан оруулгууд
+  select-multiple-checkbox-tree:
+    name: Сонгох нүд (Мод)
+    description: Үүрлэсэн сонгох нүд ашиглан олон сонголтоос сонгох
+    value_combining: Утга нэгтгэх
+    value_combining_note: Үүрлэсэн сонголтуудыг үүсгэхэд ямар утгуудыг хадгалахыг тодорхойлно.
+    show_all: Бүгдийг харуулах
+    show_selected: Сонгосонг харуулах
+  input-code:
+    code: Код
+    description: Кодын хэсгүүдийг бичих эсвэл хуваалцах
+    line_number: Мөрийн дугаар
+    line_wrapping: Мөр таслах
+    placeholder: Энд код оруулна уу...
+  system-collection:
+    collection: Бүрдэл
+    description: Одоо байгаа бүрдэл дундаас сонгох
+    include_system_collections: Систем бүрдлийг оруулах
+  system-collections:
+    collections: Бүрдлүүд
+    description: Одоо байгаа бүрдэл дундаас сонгох
+    include_system_collections: Систем бүрдлийг оруулах
+  select-color:
+    color: Өнгө
+    description: Өнгөний утгыг оруулах болон сонгох
+    placeholder: Өнгөө сонгоно уу...
+    preset_colors: Урьдчилсан тохируулсан өнгөнүүд
+    opacity: Бүдгэрэл
+    preset_colors_add_label: Шинэ өнгө нэмэх...
+    name_placeholder: Өнгөний нэрийг оруулна уу...
   datetime:
+    datetime: Огноо цаг
+    description: Огноо болон цагийг оруулна уу
+    include_seconds: Секунд оруулах
+    set_to_now: Одоогоор тохируулах
+    use_24: 24 цагийн формат ашиглах
+    placeholder: Огноо, цагийг сонгох...
+  system-fields:
+    select_a_collection: Бүрдэл сонгох
+    no_fields: Талбар байхгүй байна
+  system-display-template:
+    display-template: Харагдацын загвар
+    description: Статик текст болон динамик талбар утгуудыг холих
+    collection_field: Бүрдлийн талбар
+    collection_field_not_setup: Бүрдлийн талбар буруу тохируулагдсан байна
+    select_a_collection: Бүрдэл сонгох
+  presentation-divider:
+    divider: Хуваагч
+    description: Талбаруудыг шошголож, хэсэгт хуваах
+    title_placeholder: Гарчиг оруулна уу, эсвэл зөвхөн мөрийг харуулах бол хоосон орхино уу...
+    inline_title: Тасралтгүй мөрийн гарчиг
+    inline_title_label: Мөр дотор гарчгийг харуулах
+    margin_top: Дээд захын зай
+    margin_top_label: Дээд захын зайг ихэсгэх
+  select-dropdown:
+    description: Доош унах цэснээс утга сонгох
+    choices_placeholder: Шинээр сонголт нэмэх
+    allow_other: Бусдыг зөвшөөрөх
+    allow_other_label: Бусад утгуудыг зөвшөөрөх
+    allow_none: Юу ч зөвшөөрөхгүй
+    allow_none_label: Сонголт зөвшөөрөхгүй
+    choices_name_placeholder: Нэр оруулна уу...
+    choices_value_placeholder: Утга оруулна уу...
+    preview_threshold: Босго хязгаарыг урьдчилан харах
+  select-multiple-dropdown:
+    select-multiple-dropdown: Доош унах цэс (Олон)
+    description: Доош унах цэснээс олон утгууд сонгох
+  file:
+    file: Файл
+    description: Файл сонгох эсвэл оруулах
+  files:
+    files: Файлууд
+    description: Олон файл сонгох эсвэл оруулах
+  input-hash:
+    hash: Хэш
+    description: Хэш хийх утгыг оруулна уу
+    masked: Масклагдсан
+    masked_label: Жинхэнэ утгуудыг нуух
+  select-icon:
+    icon: Таних тэмдэг
+    description: Доош унах цэснээс таних тэмдгийг сонгох
+    search_for_icon: Таних тэмдэг хайх...
+  file-image:
+    image: Зураг
+    description: Зураг сонгох эсвэл оруулах
+    crop: Хэмжээнд тохирохоор тайрах
+    crop_label: Шаардлагатай бол зургийг тайрах
+    letterbox: Шуудангийн хайрцаг
+    letterbox_label: Зургийн урьдчилан үзэлтэд дэвсгэр нэмэх
+  system-interface:
+    interface: Интерфэйс
+    description: Одоо байгаа интерфэйс сонгох
+    placeholder: Интерфэйс сонгох...
+  system-interface-options:
+    interface-options: Интерфэйс тохиргоо
+    description: Интерфэйсийн тохиргоог сонгох модал цонх
+  system-display:
+    display: Харагдах байдал
+    description: Одоо байгаа харагдацыг сонгох
+    placeholder: Харагдац сонгох...
+  system-display-options:
+    display-options: Харагдах байдлын тохиргоо
+    description: Харагдацын тохиргоог сонгох модал цонх
+  list-m2m:
+    many-to-many: Many to Many
+    description: Хамааралтай олон холбох оруулгуудыг сонгох
+    columns_configure_notice: Энэ талбарыг үүсгэсний дараа баганыг тохируулж болно.
+    display_template_configure_notice: Энэ талбарыг үүсгэсний дараа харагдах байдлын загварыг тохируулж болно.
+  select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Дан хамааралтай оруулгыг сонгох
+    display_template: Харагдацын загвар
+  collection-item-dropdown:
+    collection-item-dropdown: Бүрдлийн оруулгын доош унадаг цэс
+    description: JSON форматаар бүрдлээс оруулгыг сонгох
+  input-rich-text-md:
+    markdown: Markdown
+    description: Markdown-г оруулж, урьдчилан харах
+    edit: Засах
+    preview: Урьдчилан харах
+    editorFont: Засварлагчийн фонт
+    previewFont: Урьдчилан харах фонт
+    default_view: Өгөгдмөл харагдац
+    default_view_editor: Засварлагч
+    default_view_preview: Урьдчилан харах
+    customSyntax: Тохируулгат блокууд
+    customSyntax_label: Тохируулгат синтакс төрлүүд нэмэх
+    customSyntax_add: Тохируулгат синтакс нэмэх
+    box: Блок /Тасралтгүй мөр
+    imageToken: Статик хандалтын токен
+    imageToken_label: Статик хандалтын токенг файлын URL-д нэгтгэсэн
+  map:
+    map: Газрын зураг
+    description: Газрын зураг дээр байршил сонгоно уу
+    zoom: Томруулах
+    geometry_type: Геометрын төрөл
+    geometry_format: Геометрын формат
+    default_view: Өгөгдмөл харагдац
+    invalid_options: Буруу тохиргоо
+    invalid_format: Буруу ({format}) формат
+    unexpected_geometry: '{expected} хүлээгдэж байсан ч {got} авав.'
+    fit_bounds: Өгөгдөлд харагдацыг тааруулах
+    native: Төрөлх
+    geojson: GeoJSON
+    lnglat: Уртраг, өргөрөг
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Дарж {geometry}-г сонгоно уу
+  presentation-notice:
+    notice: Мэдэгдэл
+    description: Богино мэдэгдэл харуулах
+    text: Мэдэгдлийн контентыг энд оруулна уу...
+    no_text: Текст тохируулгадаагүй байна...
+  list-o2m:
+    one-to-many: One to Many
+    description: Хамааралтай олон оруулгуудыг сонгох
+    no_collection: Бүрдэл олдсонгүй
+  system-folder:
+    folder: Эх хавтас
+    description: Хавтас сонгох
+    field_hint: Хавтас тохируулж өгөөгүй оруулсан файлуудын өгөгдмөл хавтас. Одоогийн файлуудад хамааралгүй.
+    root_name: Файлын сангийн эх
+    system_default: Системийн өгөгдмөлүүд
+  select-radio:
+    radio-buttons: Радио товчлуур
+    description: Олон сонголтоос нэгийг сонгох
+  list:
+    repeater: Давтагч
+    description: Нэг бүтэцтэй олон оруулгууд үүсгэх
+    edit_fields: Талбаруудыг засах
+    add_label: '"Шинээр үүсгэх" шошго'
+    sort: Эрэмбэлэх
+    sort_placeholder: Гар аргаар
+    field_note_placeholder: Талбарын тэмдэглэлийг оруулна уу...
+    incompatible_data: Одоогийн өгөгдөл нь давталтын интерфэйстэй тохирохгүй бөгөөд давтагч руу оруулга нэмэх үед хүчингүй болно
+    interface_group: Интерфэйс тохиргоо
+    display_group: Харагдах байдлын тохиргоо
+  slider:
+    slider: Гулсагч
+    description: Гулсагч ашиглан тоо сонгох
+    always_show_value: Утгыг үргэлж харуулах
+  tags:
+    tags: Таг
+    description: Таг сонгох эсвэл нэмэх
+    whitespace: Хоосон зай
+    hyphen: Богино зураасаар солих
+    underscore: Доогуур зураасаар солих
+    remove: Хоосон зайг арилгах
+    capitalization: Том үсгээр эхлүүлэх
+    uppercase: Том үсгүүд болгон хөрвүүлэх
+    lowercase: Жижиг үсгүүд болгон хөрвүүлэх
+    auto_formatter: Автомат гарчиг форматлагчийг ашиглах
+    alphabetize: Цагаан толгойн дарааллаар
+    alphabetize_label: Цагаан толгойн дарааллыг шаардах
+    add_tags: Таг оруулсны дараа Enter товчлуурыг дарна уу...
+  input:
+    input: Оролт
+    description: Утгыг гараар оруулна уу
+    trim: Тайрах
+    trim_label: Эхлэл болон төгсгөлийг тайрах
+    mask: Масклагдсан
+    mask_label: Жинхэнэ утгыг нуух
+    clear: Цэвэрлэсэн утга
+    clear_label: Хоосон тэмдэгтэн мөрөөр хадгалах
+    minimum_value: Хамгийн бага утга
+    maximum_value: Хамгийн их утга
+    step_interval: Алхмын интервал
+    slug: Холбоосонд зориулсан формат
+    slug_label: URL-д зориулсан формат
+  input-multiline:
+    textarea: Текстийн талбар
+    description: Олон мөртэй энгийн текст оруулах
+  input-translated-string:
+    input-translated-string: Орчуулсан тэмдэгтэн мөрүүд
+    description: Тохируулгат орчуулга сонгох эсвэл нэмэх
+    search_placeholder: Хайх...
+    new_custom_translation: Шинэ тохируулгат орчуулга
+  boolean:
+    toggle: Солих
+    description: Асаах/унтраах
+    color_on: Өнгөтэй
+    color_off: Өнгөгүй
+    label_placeholder: Шошго оруулна уу...
+    label_default: Идэвхитэй
+  translations:
+    display_template: Харагдацын загвар
+    no_collection: Бүрдэл байхгүй
+    toggle_split_view: Дэлгэц хуваах горимыг солих
+    enable: Идэвхжүүлэх
+    default_split_view_state: Өгөгдмөл дэлгэц хуваах төлөв
+    user_language: Одоогийн хэрэглэгчийн хэлийг ашиглах
+    default_language: Өгөгдмөл хэл
+    language_field: Хэлний заагч талбар
+    language_direction_field: Хэлний чиглэлийн талбар
+  list-o2m-tree-view:
+    description: Рекурсив үүрлэсэн one-to-many харилцаатай оруулгуудын мод хэлбэрээр харах
+    recursive_only: Мод хэлбэрээр харах интерфэйс нь зөвхөн рекурсив харилцаанд ажиллана.
+  user:
+    user: Хэрэглэгч
+    description: Одоо байгаа Directus хэрэглэгчийг сонгох
+    select_mode: Горим сонгох
+    modes:
+      auto: Автомат
+      dropdown: Доош унадаг цэс
+      modal: Модал цонх
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: HTML үүсгэдэг дэвшилтэт засварлагч
+    toolbar: Хэрэгслийн самбар
+    custom_formats: Тохируулгат форматууд
+    custom_formats_note: TinyMCE контент форматуудын жагсаалт. [Контент формат] талаарх дэлгэрэнгүй мэдээллийг Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) TinyMCE гарын авлагаас авна уу.
+    options_override: Тохиргоо үл хэрэгсэнэ
+    options_override_note: TinyMCE хэрэглэгчийн форматлах түлхүүрүүд ба тэдгээрийн утга. Дэлгэрэнгүй мэдээллийг [Хэрэглэгчийн формат](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) дээрх TinyMCE гарын авлагаас дэлгэрэнгүй мэдээллийг авна уу.
+    folder_note: Оруулсан файлуудын хавтас. Одоогийн файлуудад хамаарахгүй.
+    imageToken: Статик хандалтын токен
+    imageToken_label: Статик хандалтын токенг файлын URL-д нэгтгэсэн
+  input-block-editor:
+    input-block-editor: Блок засварлагч
+    description: Editor.js ашиглан JSON руу цэвэр өгөгдлийг гаргадаг мультимедиа өгүүллэгт зориулсан блок хэлбэрийн засварлагч
+    tools: Хэрэгслийн самбар
+    tools_options:
+      header: Толгой
+      nestedlist: Жагсаалт
+      embed: Оруулах
+      paragraph: Цогцолбор
+      code: Код
+      image: Зураг
+      attaches: Хавсралтууд
+      table: Хүснэгт
+      quote: Ишлэл
+      underline: Доогуур зурвасласан бичвэр
+      inlinecode: Мөр код
+      delimiter: Тусгаарлагч
+      checklist: Шалгах жагсаалт
+      toggle: Блок тохируулах
+      alignment: Байрлуулалт
+      raw: HTML код
+  input-autocomplete-api:
+    input-autocomplete-api: Автомат оролт бөглөлт (API)
+    description: Гадаад API утгыг урьдчилан хайх.
+    results_path: Үр дүнгийн зам
+    value_path: Утгын зам
+    text_path: Текстийн зам
+    trigger: Өдөөгч
+    rate: Үнэлэх
+  group-raw:
+    name: Raw бүлэг
+    description: Талбаруудыг байгаагаар нь харуулах
+  group-detail:
+    name: Бүлгийн дэлгэрэнгүй мэдээлэл
+    description: Талбаруудыг эвхэгддэг хэсэг болгон харуулах
+    show_header: Бүлгийн гарчгийг харуулах
+    header_icon: Толгой хэсгийн таних тэмдэг
+    header_color: Толгой хэсгийн өнгө
+    start_open: Нээж эхлэх
+    start_closed: Хааж эхлэх
+  system-token:
+    system-token: Токен
+    description: Статик хандалтын токенг удирдах
+    placeholder: '"Токен үүсгэх" товчлуур дээр дарж шинэ статик хандалтын токен үүсгэнэ үү'
+    value_securely_saved: Утгыг аюулгүй хадгалсан
+    generate: Токен үүсгэх
+    regenerate: Токен дахин үүсгэх
+    generate_success_copy: Дээрх токеныг хуулж авч, нөөцлөнө үү. Аюулгүй байдлын үүднээс та энэ хуудсыг орхисны дараагаар токеныг дахин харах боломжгүй болно.
+    remove_token: Токен устгах
+  system-raw-editor:
+    system-raw-editor: Raw засварлагч
+    description: Логикгүйгээр энгийн эсвэл орлуулагч тэмдэгтийн утгыг оруулахыг зөвшөөрөх
+  input-password:
+    input-password: Нууц үг оруулах
+    description: Утгыг нуух боломжтой нууц үгийн талбар
+displays:
+  translations:
+    translations: Орчуулгууд
+    description: Орчуулгуудыг урьдчилан харах
+    enable: Идэвхжүүлэх
+    user_language: Одоогийн хэрэглэгчийн хэлийг ашиглах
+    default_language: Өгөгдмөл хэл
+    language_field: Хэлний заагч талбар
+  boolean:
+    boolean: Булийн
+    description: Асаах, унтраах төлөвийг харуулах
+    label_on: Шошготой
+    label_on_placeholder: Шошго оруулна уу...
+    label_off: Шошгогүй
+    label_off_placeholder: Шошгогүй оруулна уу...
+    icon_on: Таних тэмдгийг идэвхжүүлэх
+    icon_off: Таних тэмдгийг идэвхгүй болгох
+    color_on: Өнгөтэй
+    color_off: Өнгөгүй
+  collection:
+    collection: Бүрдэл
+    description: Бүрдлийг харуулах
+    icon_label: Бүрдлийн таних тэмдгийг харуулах
+  color:
+    color: Өнгө
+    description: Өнгөт цэгийг харуулах
+    default_color: Өгөгдмөл өнгө
+  datetime:
+    datetime: Огноо цаг
+    description: Цаг хугацаатай холбоотой утгыг харуулах
+    format: Формат
+    format_note: >-
+      Тохируулгат формат нь __[Огнооны талбарын тэмдгийн хүснэгт] хүлээн авдаг. (https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__
+    long: Урт
+    short: Богино
+    relative: Харьцангуй
+    relative_label: 'Харьцангуй цагийг харуулах, жишээ: 5 минутын өмнө'
     suffix: Дагавар
+    suffix_label: Харьцангуй заагчийг харуулах
+    suffix_note: '"дотор" болон "өмнө" гэсэн үгсийг ашигладаг'
+    strict: Нарийвчлалтай
+    strict_label: Нарийвчлалын нэгжүүдийг ашиглах
+    strict_note: '''бараг, ''өнгөрсөн'', ''бага'' зэрэг үгсийг арилгана'
+    round: Тоймлох
+    round_note: Ашиглах тоймлох функцыг сонгоно уу
+    down: Доош
+    nearest: Хамгийн ойр
+    up: Дээш
+  file:
+    file: Файл
+    description: Файлуудыг харуулах
+  filesize:
+    filesize: Файлын хэмжээ
+    description: Файлын хэмжээг харуулах
   formatted-value:
+    formatted-value: Формат хийгдсэн утга
+    description: Текстийн формат хийгдсэн хувилбарыг харуулах
+    format: Формат
+    format_label: Автомат формат
+    font: Фонт
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Тод
+    bold_label: Тод хэв маягийг ашиглах
+    italic: Налуу бичвэр
+    italic_label: Налуу хэв маягийг ашиглах
     prefix: Угтвар
+    prefix_label: Текстийн өмнө нэмэх
     suffix: Дагавар
+    suffix_label: Текст нэмэх
+    color: Өнгө
+    background: Ар дэвсгэр
+    icon: Таних тэмдэг
+    border: Хүрээ
+    border_label: Хүрээг харуулах
+    mask: Масклагдсан
+    mask_label: Жинхэнэ утгыг нуух
+    text: Текст
+    text_placeholder: Нэмэлт утгыг үл хэрэгсэх...
+  formatted-json-value:
+    formatted-json-value: Формат хийгдсэн JSON утга
+    description: Объектын формат хийгдсэн хувилбарыг харуулах
+  hash:
+    hash: Хэш
+    description: Утгын засварласан хувилбарыг харуулах
+  icon:
+    icon: Таних тэмдэг
+    description: Таних тэмдгийг харуулах
+    filled: Дүүргэсэн
+    filled_label: Дүүргэсэн хувилбарыг ашиглах
+  image:
+    image: Зураг
+    description: Зургийн жижиг урьдчилсан харагдацыг харуулах
+    circle: Тойрог
+    circle_label: Тойрог хэлбэрээр харуулах
+  labels:
+    labels: Шошгууд
+    description: Дан эсвэл шошгуудын жагсаалтыг харуулах
+    default_foreground: Өгөгдмөл урд талын дэвсгэр
+    default_background: Өгөгдмөл ар дэвсгэр
+    format_label: Шошго бүрийг формат хийх
+    show_as_dot: Цэгээр харуулах
+    choices_value_placeholder: Утга оруулна уу...
+    choices_text_placeholder: Текст оруулах...
+  mime-type:
+    mime-type: MIME төрөл
+    description: Файлын MINE-төрлийг харуулах
+    extension_only: Зөвхөн өргөтгөл
+    extension_only_label: Зөвхөн файлын өргөтгөлийг харуулах
+  rating:
+    rating: Үнэлгээ
+    description: Хамгийн их утгатай харьцуулагдах байдлаар одоор дүрслэх
+    simple: Энгийн
+    simple_label: Одуудыг энгийн форматаар харуулах
+  raw:
+    raw: Raw утга
+  related-values:
+    related-values: Хамааралтай утгууд
+    description: Харьцангуй утгуудыг харуулах
+    display_template_configure_notice: Энэ талбарыг үүсгэсний дараа харагдах байдлын загварыг тохируулж болно.
+  user:
+    user: Хэрэглэгч
+    description: Directus хэрэглэгчийг харуулах
+    avatar: Хөрөг зураг
+    name: Нэр
+    both: Хоёул
+    circle_label: Хэрэглэгчийг тойрог дүрсээр харуулах
+layouts:
+  cards:
+    cards: Картууд
+    image_source: Зургийн эх
+    image_fit: Зураг тохируулах
+    crop: Тайрах
+    contain: Агуулах
+    title: Гарчиг
+    subtitle: Дэд гарчиг
+  tabular:
+    tabular: Хүснэгт
+    spacing: Зай авалт
+    comfortable: Тухтай
+    compact: Авсаархан
+    cozy: Тохитой
+  calendar:
+    calendar: Хуанли
+    start_date_field: Эхлэх огнооны талбар
+    end_date_field: Дуусах огнооны талбар
+    optional: Нэмэлт
+    first_day: Долоо хоногийн эхний өдөр
+  map:
+    map: Газрын зураг
+    basemap: Үндсэн зураглал
+    layers: Давхаргууд
+    cluster_options: Кластерийн сонголтууд
+    cluster: Хамгийн ойрын кластерын өгөгдөл
+    cluster_radius: Кластер радиус
+    cluster_minpoints: Кластерын хамгийн бага хэмжээ
+    cluster_maxzoom: Кластерт зориулсан хамгийн дээд хэмжээ
+    field: Газарзүйн талбар
+    invalid_geometry: Буруу геометр
+    find_location: Байршил олох...
+    default_template: Бүрдлийн өгөгдмөлийг ашиглаж байна...
+    no_compatible_fields: Тохирох талбар байхгүй байна
+  kanban:
+    name: Канбан
+    group_field: Бүлэглэх
+    group_field_placeholder: Бүлэглэх талбар...
+    group_title: Бүлгийн гарчиг
+    group_title_placeholder: Бүлгийн гарчгийн талбар...
+    title: Картын гарчиг
+    title_placeholder: Нэмэлт гарчгийн талбар...
+    text: Картын текст
+    text_placeholder: Нэмэлт текстийн талбар...
+    date: Картын огноо
+    date_placeholder: Нэмэлт огнооны талбар...
+    tags: Картын тагууд
+    tags_placeholder: Нэмэлт тагуудын талбар...
+    user: Картын хэрэглэгч
+    user_placeholder: Нэмэлт хэрэглэгчийн талбар...
+    image: Картын зураг
+    image_placeholder: Нэмэлт зургийн талбар...
+    image_fit: Картын зургийг тааруулах
+    crop: Тайрах
+    advanced: Дэлгэрэннгүй
+    edit_group: Бүлэг засах
+    delete_group: Бүлэг устгах
+    add_group: Бүлэг нэмэх
+    add_group_placeholder: Шинэ бүлгийн гарчиг оруулах...
+    show_ungrouped: Бүлэглээгүйг харуулах
+    show: Харуулах
+    no_group: Бүлэг байхгүй
+horizontal: Хэвтээ
+vertical: Босоо
+axis: Тэнхлэг
+x_axis: Х тэнхлэг
+y_axis: Y тэнхлэг
+y_axis_function: Y тэнхлэгийн функц
+show_x_only: Зөвхөн X тэнхлэгийг харуулах
+show_y_only: Зөвхөн Y тэнхлэгийг харуулах
+show_data_label: Өгөгдлийн шошгийг харуулах
+both: Хоёул
+show_axis_labels: Тэнхлэгийн шошгуудыг харуулах
+function: Функц
+half_circle: Хагас тойрог
+full_circle: Бүтэн тойрог
+stroke_width: Шугамын зузаан
+rounded_stroke: Тойрсон шугам
+thin: Нимгэн
+medium: Дунд
+broad: Өргөн
+show_labels: Шошгуудыг харуулах
+show_legend: Тайлбар харуулах
+right: Баруун
+left: Зүүн
+donut: Дугуй
+panels:
+  metric:
+    name: Хэмжүүр
+    description: Асуулга дээр үндэслэн зөвхөн нэг утгыг харуулах
+    field: Талбар
+  metric_list:
+    name: Хэмжүүрийн жагсаалт
+    description: Бүрдлээс нийлмэл хэмжүүрүүдийг жагсааж, дүрслэх
+  time_series:
+    name: Цагийн дараалал
+    description: Цаг хугацааны утгууд дээр тулгуурлан шугаман диаграмыг үзүүлэх
+    date_field: Огнооны талбар
+    value_field: Утгын талбар
+    fill_type: Дүүргэх төрөл
+    curve_type: Муруйлтын төрөл
+  label:
+    name: Шошго
+    description: Зарим текстийг харуулах
+  list:
+    name: Жагсаалт
+    description: Бүрдлээс оруулгуудыг шүүж, жагсаах
+  barchart:
+    name: Хэвтээ диаграм
+    description: Утгуудын бүлгийг харьцуулах хэвтээ эсвэл баганан диаграм
+    horizontal: Хэвтээ
+    select_collection: Заавал бүрдэл сонгох шаардлагатай.
+  linechart:
+    name: Шугаман диаграм
+    description: Талбарын өөрчлөлтийг харьцуулах шугаман диаграм
+    disabled_grouping: Бүлэглэлтийг сонгосон үед идэвхгүй байна.
+    disabled_no_grouping: Бүлэглэлтийг сонгоогүй үед идэвхгүй байна.
+    show_marker: Хэрэглэслийн зааврыг харуулах
+    curve_type: Муруйлтын төрөл
+    smooth: Гөлгөр
+    straight: Шулуун
+    step_line: Үе шаттай шугам
+    show_legend: Тайлбар харуулах
+  meter:
+    name: Тоолуур
+    description: Утга хянах тоолуур
+  piechart:
+    name: Дугуй диаграм
+    description: Багана дахь бүлгүүдийн харьцааг харуулсан дугуй диаграм
+  variable:
+    name: Глобал хувьсагч
+    description: Бусад самбруудын шүүлтүүрт ашиглах глобал утгыг тохируулах
+    variable_key: Хувьсагчийн түлхүүр
+  relational-variable:
+    name: Глобал хамаарлын хувьсагч
+    description: Бусад самбруудын шүүлтүүрт ашиглах глобал хамаарлын утгыг тохируулах
+    variable_key: Хувьсагчийн түлхүүр
+    multiple: Олон
+    multiple-label: Олон оруулгууд сонгох
+triggers:
+  common:
+    response_body: Хариу агуулга
+    response_body_all: Бүх өгөгдөл
+    response_body_last: Сүүлийн үйлдлийн өгөгдөл
+  event:
+    name: Үйл явдлын хүүк
+    description: Платформ эсвэл өгөгдлийн үйл явдал дээр өдөөгдөнө
+    action: 'Үйлдэл (Блоклохгүй)'
+    filter: 'Шүүлтүүр (Блоклоно)'
+  webhook:
+    name: Вебхүүк
+    description: Ирж буй HTTP хүсэлт дээр өдөөгдөнө
+    method: Арга
+    async: Асинхрон
+  operation:
+    name: Өөр урсгал
+    description: Гинжлэх зорилгоор өөр урсгалаар өдөөгдсөн
+    preview: Өөр урсгалын үйлдлээр өдөөгдсөн
+  schedule:
+    name: Хуваарь (CRON)
+    description: Тодорхой цаг үед өдөөгдөнө
+    cron: Интервал
+  manual:
+    name: Гар аргаар
+    description: Сонгогдсон бүрдэл(үүд) дээр гар аргаар ажиллуулах үед өдөөгдөнө
+    collection_and_item: Бүрдэл ба оруулгын хуудсууд
+    collection_only: Зөвхөн бүрдлийн хуудас
+    item_only: Зөвхөн оруулгын хуудас
+    collection_page: Бүрдлийн хуудас
+    require_selection: Сонгох шаардлагатай
+a_flow_uuid: Өдөөгдөх урсгалыг сонгоно уу...
+any_string_or_json: Ямар ч тэмдэгтэн мөр эсвэл JSON...
+item_payload_placeholder: Энэ бол оруулгын талбарын утгыг шинэчлэхэд хэрэглэгддэг JSON юм...
+operation_variables_note: Та урсгалын өгөгдөлд **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** болон **{'{'}{'{'}$accountability{'}'}{'}'}** хувьсагчуудаар хандах, эсвэл өмнөх үйлдлийг ашиглаж болно **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Нөхцөл
+    description: If/Else логик дээр суурилсан урсгалын процесс
+  exec:
+    name: Скрипт ажиллуулах
+    description: Чингэлэгийг өөрчлөх дурын кодыг ажиллуулах
+    modules: 'Дараах **Node модулиуд**-г ашиглаж болно:'
+  item-create:
+    name: Өгөгдөл үүсгэх
+    description: Өгөгдлийн санд оруулга үүсгэх
+    payload: Чингэлэг
+    emit_events: Үйл явдал үүсгэх
+  item-delete:
+    name: Өгөгдөл устгах
+    description: Өгөгдлийн сангаас оруулга устгах
+    emit_events: Үйл явдал үүсгэх
+    key: ID
+    query: Асуулга
+  item-read:
+    name: Өгөгдөл унших
+    description: Өгөгдлийн сангаас оруулга унших
+    key: ID
+    query: Асуулга
+    emit_events: Үйл явдал үүсгэх
+  item-update:
+    name: Өгөгдөл шинэчлэх
+    description: Өгөгдлийн санд оруулга шинэчлэх
+    emit_events: Үйл явдал үүсгэх
+    key: ID
+    payload: Чингэлэг
+    query: Асуулга
+  json-web-token:
+    name: JSON вэб токен (JWT)
+    description: JSON вэб токен бүртгэж, баталгаажуулах
+    operation: Үйлдэл
+    secret: Нууц түлхүүр
+    secret_placeholder: Нууц түлхүүрийг оруулна уу...
+    payload: Чингэлэг
+    token: Токен
+    token_placeholder: eyJhbGciOi......
+    options: Тохиргоо
+    options_placeholder: 'Боломжит тохиргоонуудыг https://www.npmjs.com/package/jsonwebtoken#usage холбоосоос үзнэ үү'
+    sign: Токен бүртгэх
+    verify: Токен баталгаажуулах
+    decode: Токен тайлах
+  log:
+    name: Консолд бүртгэх
+    description: Консол руу ямар нэгэн мэдээлэл хэвлэх
+    message: Зурвас
+    message_placeholder: Консолд харуулах мессеж оруулна уу...
+  mail:
+    name: Цахим шуудан илгээх
+    description: Нэг эсвэл хэд хэдэн хүнд цахим шуудан илгээх
+    to: Хэнд
+    to_placeholder: Цахим шуудангийн хаягуудыг оруулаад, Enter дарна уу...
+    body: Бие
+    template: Загвар
+    data: Өгөгдөл
   notification:
+    name: Мэдэгдэл илгээх
+    description: Апп доторх мэдэгдлийг нэг эсвэл хэд хэдэн хэрэглэгчид илгээх
+    recipient: Хэрэглэгч
+    recipient_placeholder: UUID оруулах...
+    recipient_note: Хэрэглэгчийн UUID-г оруулаад, Enter дарна уу...
+    item_note: Оруулгын түлхүүр эсвэл хамааралтай URL
+    message: Зурвас
     subject: Сэдэв
+  request:
+    name: Вэбхүүк / Хүсэлтийн URL
+    description: 'URL-руу хүсэлт илгээх'
+    url: URL
+    url_placeholder: https://example.com/example
+    method: Арга
+    data: Өгөгдөл
+    headers: Толгой
+    header: Толгой
+    header_placeholder: Зөвшөөрөл...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Зогсоох
+    description: Тодорхой хэдэн миллисекунд хүлээх
+    milliseconds: Миллисекунд
+  transform:
+    name: Чингэлэг хувиргах
+    description: Урсгалын JSON чингэлэгийг өөрчлөх
+  trigger:
+    name: Урсгал өдөөх
+    description: Энэ өгөгдлийг өөр урсгал руу дамжуулах
+    flows: Урсгалууд
+    flow: Урсгал
+    data: Өгөгдөл
+    iteration_mode: Давталтын горим
+    iteration_mode_note: Хүснэгт давтах горим.
+    serial: Цуврал
+    parallel: Параллел
+    batch: Багц
+    batch_size: Багцын хэмжээ
+    cache: Кэш
+unit: Нэгж
+standard: Стандарт
+scientific: Шинжлэх ухааны
+engineering: Инженерчлэл
+compact: Авсаархан
+currency: Валют
+notation: Тэмдэглэл
+style: Хэв маяг
+fonts:
+  thin: Нимгэн
+  extra_light: Маш нимгэн
+  light: Нимгэн
+  normal: Энгийн
+  medium: Дунд
+  semi_bold: Хагас тод
+  bold: Тод
+  extra_bold: Маш тод
+  black: Хар
+  italic: Налуу бичвэр
+  oblique: Налуу
+  small: Жижиг
+  large: Том
+  auto: Автомат
+text_wrap: Текст таслах
+center: Голлох
+justify: Тэнцүүлэх
+text_align: Текст байрлуулах
+font_weight: Фонтны өргөн
+font_style: Фонтны хэв маяг
+font_size: Фонтны хэмжээ
+minimum_fraction_digits: Аравтын бутархайн хамгийн бага тоо
+maximum_fraction_digits: Аравтын бутархайн хамгийн их тоо
+show_percentage: Хувь харуулах
+aggregation: Нийлмэл
+series_grouping: Цуврал бүлэглэл
+date_precision: Огнооны нарийвчлал
+export_dashboard: Хянах самбар экспортлох
+duplicate_dashboard: Хянах самбар хувилах
+search_dashboard: Хянах самбар хайх...
+search_flow: Урсгал хайх...
+percent: Хувь
+show_password: Нууц үг харуулах
+hide_password: Нууц үг нуух
