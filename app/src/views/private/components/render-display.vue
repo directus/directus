@@ -25,14 +25,16 @@ const displayInfo = useExtension('display', display);
 		<component
 			:is="`display-${display}`"
 			v-bind="options"
+			v-slot="{ copyValue }"
 			:interface="interface"
 			:interface-options="interfaceOptions"
 			:value="value"
 			:type="type"
 			:collection="collection"
 			:field="field"
-		/>
-
+		>
+			<slot :copy-value="copyValue" />
+		</component>
 		<template #fallback>
 			<v-text-overflow class="display" :text="value" />
 		</template>
