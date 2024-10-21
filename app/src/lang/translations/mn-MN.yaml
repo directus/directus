@@ -2360,41 +2360,144 @@ triggers:
     name: Гар аргаар
     description: Сонгогдсон бүрдэл(үүд) дээр гар аргаар ажиллуулах үед өдөөгдөнө
     collection_and_item: Бүрдэл ба оруулгын хуудсууд
+    collection_only: Зөвхөн бүрдлийн хуудас
+    item_only: Зөвхөн оруулгын хуудас
+    collection_page: Бүрдлийн хуудас
+    require_selection: Сонгох шаардлагатай
+a_flow_uuid: Өдөөгдөх урсгалыг сонгоно уу...
+any_string_or_json: Ямар ч тэмдэгтэн мөр эсвэл JSON...
+item_payload_placeholder: Энэ бол оруулгын талбарын утгыг шинэчлэхэд хэрэглэгддэг JSON юм...
+operation_variables_note: Та урсгалын өгөгдөлд **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** болон **{'{'}{'{'}$accountability{'}'}{'}'}** хувьсагчуудаар хандах, эсвэл өмнөх үйлдлийг ашиглаж болно **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Нөхцөл
+    description: If/Else логик дээр суурилсан урсгалын процесс
+  exec:
+    name: Скрипт ажиллуулах
+    description: Чингэлэгийг өөрчлөх дурын кодыг ажиллуулах
+    modules: 'Дараах **Node модулиуд**-г ашиглаж болно:'
   item-create:
+    name: Өгөгдөл үүсгэх
+    description: Өгөгдлийн санд оруулга үүсгэх
     payload: Чингэлэг
+    emit_events: Үйл явдал үүсгэх
+  item-delete:
+    name: Өгөгдөл устгах
+    description: Өгөгдлийн сангаас оруулга устгах
+    emit_events: Үйл явдал үүсгэх
+    key: ID
+    query: Асуулга
+  item-read:
+    name: Өгөгдөл унших
+    description: Өгөгдлийн сангаас оруулга унших
+    key: ID
+    query: Асуулга
+    emit_events: Үйл явдал үүсгэх
   item-update:
+    name: Өгөгдөл шинэчлэх
+    description: Өгөгдлийн санд оруулга шинэчлэх
+    emit_events: Үйл явдал үүсгэх
+    key: ID
     payload: Чингэлэг
+    query: Асуулга
   json-web-token:
+    name: JSON вэб токен (JWT)
+    description: JSON вэб токен бүртгэж, баталгаажуулах
+    operation: Үйлдэл
+    secret: Нууц түлхүүр
+    secret_placeholder: Нууц түлхүүрийг оруулна уу...
     payload: Чингэлэг
     token: Токен
+    token_placeholder: eyJhbGciOi......
     options: Тохиргоо
+    options_placeholder: 'Боломжит тохиргоонуудыг https://www.npmjs.com/package/jsonwebtoken#usage холбоосоос үзнэ үү'
+    sign: Токен бүртгэх
+    verify: Токен баталгаажуулах
+    decode: Токен тайлах
   log:
+    name: Консолд бүртгэх
+    description: Консол руу ямар нэгэн мэдээлэл хэвлэх
     message: Зурвас
+    message_placeholder: Консолд харуулах мессеж оруулна уу...
   mail:
+    name: Цахим шуудан илгээх
+    description: Нэг эсвэл хэд хэдэн хүнд цахим шуудан илгээх
+    to: Хэнд
+    to_placeholder: Цахим шуудангийн хаягуудыг оруулаад, Enter дарна уу...
+    body: Бие
     template: Загвар
     data: Өгөгдөл
   notification:
+    name: Мэдэгдэл илгээх
+    description: Апп доторх мэдэгдлийг нэг эсвэл хэд хэдэн хэрэглэгчид илгээх
     recipient: Хэрэглэгч
+    recipient_placeholder: UUID оруулах...
+    recipient_note: Хэрэглэгчийн UUID-г оруулаад, Enter дарна уу...
+    item_note: Оруулгын түлхүүр эсвэл хамааралтай URL
     message: Зурвас
     subject: Сэдэв
   request:
+    name: Вэбхүүк / Хүсэлтийн URL
+    description: 'URL-руу хүсэлт илгээх'
     url: URL
+    url_placeholder: https://example.com/example
     method: Арга
     data: Өгөгдөл
+    headers: Толгой
     header: Толгой
+    header_placeholder: Зөвшөөрөл...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Зогсоох
+    description: Тодорхой хэдэн миллисекунд хүлээх
+    milliseconds: Миллисекунд
+  transform:
+    name: Чингэлэг хувиргах
+    description: Урсгалын JSON чингэлэгийг өөрчлөх
   trigger:
+    name: Урсгал өдөөх
+    description: Энэ өгөгдлийг өөр урсгал руу дамжуулах
     flows: Урсгалууд
     flow: Урсгал
     data: Өгөгдөл
+    iteration_mode: Давталтын горим
+    iteration_mode_note: Хүснэгт давтах горим.
+    serial: Цуврал
+    parallel: Параллел
+    batch: Багц
+    batch_size: Багцын хэмжээ
+    cache: Кэш
+unit: Нэгж
 standard: Стандарт
+scientific: Шинжлэх ухааны
+engineering: Инженерчлэл
 compact: Авсаархан
+currency: Валют
+notation: Тэмдэглэл
 style: Хэв маяг
 fonts:
   thin: Нимгэн
+  extra_light: Маш нимгэн
+  light: Нимгэн
   normal: Энгийн
   medium: Дунд
+  semi_bold: Хагас тод
   bold: Тод
+  extra_bold: Маш тод
   black: Хар
   italic: Налуу бичвэр
+  oblique: Налуу
+  small: Жижиг
+  large: Том
   auto: Автомат
+text_wrap: Текст таслах
+center: Голлох
+font_weight: Фонтны өргөн
+font_style: Фонтны хэв маяг
+font_size: Фонтны хэмжээ
+duplicate_dashboard: Хянах самбар хувилах
+search_dashboard: Хянах самбар хайх...
+search_flow: Урсгал хайх...
+percent: Хувь
+show_password: Нууц үг харуулах
+hide_password: Нууц үг нуух
