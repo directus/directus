@@ -53,7 +53,6 @@ describe('getAccountabilityForToken', async () => {
 		const token = jwt.sign(
 			{
 				share: 'share-id',
-				share_scope: 'share-scope',
 				id: 'user-id',
 				role: 'role-id',
 				admin_access: 1,
@@ -76,7 +75,6 @@ describe('getAccountabilityForToken', async () => {
 			roles: [],
 			ip: null,
 			share: 'share-id',
-			share_scope: 'share-scope',
 		});
 	});
 
