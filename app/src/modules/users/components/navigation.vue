@@ -1,20 +1,23 @@
 <script setup lang="ts">
-import { toRefs } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { toRefs, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import useNavigation from '../composables/use-navigation';
 import NavigationRole from './navigation-role.vue';
+import NavigationItem from './navigation-item.vue';
+import { useCollectionsStore } from '@/stores/collections';
 
 const props = defineProps<{
 	currentRole?: string;
+	hasBookmark?: boolean;
 }>();
 
 const { currentRole } = toRefs(props);
 
-const { t } = useI18n();
 const router = useRouter();
+const collectionsStore = useCollectionsStore();
 
 const { roles, roleTree, openRoles, loading } = useNavigation(currentRole);
+const collection = computed(() => collectionsStore.getCollection('directus_users'));
 
 function handleClick({ role }: { role: string }) {
 	router.push(`/users/roles/${role}`);
@@ -23,10 +26,7 @@ function handleClick({ role }: { role: string }) {
 
 <template>
 	<v-list nav>
-		<v-list-item to="/users" exact :active="!currentRole">
-			<v-list-item-icon><v-icon name="folder_shared" /></v-list-item-icon>
-			<v-list-item-content>{{ t('all_users') }}</v-list-item-content>
-		</v-list-item>
+		<navigation-item show-hidden :collection="collection" :active="!currentRole" />
 
 		<v-divider v-if="(roles && roles.length > 0) || loading" />
 
@@ -42,6 +42,7 @@ function handleClick({ role }: { role: string }) {
 				:key="role.id"
 				:role="role"
 				:current-role="currentRole"
+				:active="!hasBookmark && role.id == currentRole"
 				@click="handleClick"
 			/>
 		</v-item-group>

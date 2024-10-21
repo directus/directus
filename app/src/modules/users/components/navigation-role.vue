@@ -8,6 +8,7 @@ import { translate } from '@/utils/translate-literal';
 const props = defineProps<{
 	role: BasicRole;
 	currentRole?: string;
+	active: boolean;
 }>();
 
 defineEmits<{
@@ -29,7 +30,7 @@ const settingLink = computed(() => ({
 		v-if="role.children === undefined"
 		v-context-menu="'contextMenu'"
 		scope="role-navigation"
-		:active="currentRole === role.id"
+		:active="active"
 		clickable
 		@click="$emit('click', { role: role.id })"
 	>
