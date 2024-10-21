@@ -1,12 +1,9 @@
 import type { PermissionsAction } from '@directus/types';
 import { Router } from 'express';
-import { RESUMABLE_UPLOADS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { createTusServer } from '../services/tus/index.js';
 import asyncHandler from '../utils/async-handler.js';
-import { getSchema } from '../utils/get-schema.js';
-import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 
 const mapAction = (method: string): PermissionsAction => {
 	switch (method) {
@@ -51,22 +48,6 @@ const handler = asyncHandler(async (req, res) => {
 
 	cleanupServer();
 });
-
-export function scheduleTusCleanup() {
-	if (!RESUMABLE_UPLOADS.ENABLED) return;
-
-	if (validateCron(RESUMABLE_UPLOADS.SCHEDULE)) {
-		scheduleSynchronizedJob('tus-cleanup', RESUMABLE_UPLOADS.SCHEDULE, async () => {
-			const [tusServer, cleanupServer] = await createTusServer({
-				schema: await getSchema(),
-			});
-
-			await tusServer.cleanUpExpiredUploads();
-
-			cleanupServer();
-		});
-	}
-}
 
 const router = Router();
 

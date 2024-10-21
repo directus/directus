@@ -1,12 +1,12 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { getCache } from '../../cache.js';
-import { scheduleSynchronizedJob } from '../../utils/schedule.js';
-import { initTelemetry, jobCallback } from './init-telemetry.js';
-import { track } from './track.js';
+import { getCache } from '../cache.js';
+import { scheduleSynchronizedJob } from '../utils/schedule.js';
+import { default as telemetrySchedule, jobCallback } from './telemetry.js';
+import { track } from '../telemetry/index.js';
 
-vi.mock('./track.js');
-vi.mock('../../cache.js');
+vi.mock('../telemetry/index.js');
+vi.mock('../cache.js');
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
@@ -16,7 +16,7 @@ vi.mock('@directus/env', () => ({
 	}),
 }));
 
-vi.mock('../../utils/schedule.js');
+vi.mock('../utils/schedule.js');
 
 let mockCache: ReturnType<typeof getCache>;
 
@@ -31,31 +31,33 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-describe('initTelemetry', () => {
+describe('telemetry', () => {
 	test('Returns early when telemetry is disabled', async () => {
 		vi.mocked(useEnv).mockReturnValue({ TELEMETRY: false });
 
-		const res = await initTelemetry();
+		const res = await telemetrySchedule();
 
 		expect(res).toBe(false);
 	});
 
 	test('Schedules synchronized job', async () => {
-		await initTelemetry();
+		await telemetrySchedule();
+
 		expect(scheduleSynchronizedJob).toHaveBeenCalledWith('telemetry', '0 */6 * * *', jobCallback);
 	});
 
 	test('Sets lock and calls track without waiting if lock is not set yet', async () => {
 		vi.mocked(mockCache.lockCache.get).mockResolvedValue(null as any);
 
-		await initTelemetry();
+		await telemetrySchedule();
 
 		expect(mockCache.lockCache.set).toHaveBeenCalledWith('telemetry-lock', true, 30000);
 		expect(track).toHaveBeenCalledWith({ wait: false });
 	});
 
 	test('Returns true on successful init', async () => {
-		const res = await initTelemetry();
+		const res = await telemetrySchedule();
+
 		expect(res).toBe(true);
 	});
 });
@@ -63,6 +65,7 @@ describe('initTelemetry', () => {
 describe('jobCallback', () => {
 	test('Calls track', () => {
 		jobCallback();
+
 		expect(track).toHaveBeenCalledWith();
 	});
 });
