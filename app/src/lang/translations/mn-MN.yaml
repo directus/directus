@@ -2500,6 +2500,10 @@ font_size: Фонтны хэмжээ
 minimum_fraction_digits: Аравтын бутархайн хамгийн бага тоо
 maximum_fraction_digits: Аравтын бутархайн хамгийн их тоо
 show_percentage: Хувь харуулах
+aggregation: Нийлмэл
+series_grouping: Цуврал бүлэглэл
+date_precision: Огнооны нарийвчлал
+export_dashboard: Хянах самбар экспортлох
 duplicate_dashboard: Хянах самбар хувилах
 search_dashboard: Хянах самбар хайх...
 search_flow: Урсгал хайх...
