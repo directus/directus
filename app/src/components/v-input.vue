@@ -5,10 +5,11 @@ export default {
 </script>
 
 <script setup lang="ts">
+import { SafeInteger } from '@/__utils__/safe-integer';
 import { keyMap, systemKeys } from '@/composables/use-shortcut';
 import slugify from '@sindresorhus/slugify';
 import { omit } from 'lodash';
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref, reactive, useAttrs, watch } from 'vue';
 
 interface Props {
 	/** Autofocusses the input on render */
@@ -87,6 +88,39 @@ const attrs = useAttrs();
 
 const input = ref<HTMLInputElement | null>(null);
 
+const inputValue = computed(() => {
+	const value = props.modelValue?.toString() ?? '';
+
+	// Default string in a primary key field
+	if (value.includes('nextval')) {
+		return '';
+	}
+
+	return value;
+});
+
+const isNumeric = computed(() => ['number', 'bigInteger'].includes(props.type));
+
+const useSafeInteger = () => {
+	const safeInput = reactive(new SafeInteger(inputValue.value, props.type === 'bigInteger'));
+
+	if (!isNumeric.value) {
+		return safeInput;
+	}
+
+	watch(inputValue, (value) => {
+		if (safeInput.toString() === value) {
+			return;
+		}
+
+		safeInput.setValue(value);
+	});
+
+	return safeInput;
+};
+
+const safeInput = useSafeInteger();
+
 const listeners = computed(() => ({
 	input: emitValue,
 	keydown: processValue,
@@ -110,11 +144,19 @@ const classes = computed(() => [
 ]);
 
 const isStepUpAllowed = computed(() => {
-	return props.disabled === false && (props.max === undefined || parseInt(String(props.modelValue), 10) < props.max);
+	return (
+		props.disabled === false &&
+		(props.max === undefined || parseInt(String(props.modelValue), 10) < props.max) &&
+		safeInput.isMaximum === false
+	);
 });
 
 const isStepDownAllowed = computed(() => {
-	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
+	return (
+		props.disabled === false &&
+		(props.min === undefined || parseInt(String(props.modelValue), 10) > props.min) &&
+		safeInput.isMinimum === false
+	);
 });
 
 function processValue(event: KeyboardEvent) {
@@ -173,12 +215,16 @@ function emitValue(event: InputEvent) {
 		return;
 	}
 
-	if (props.type === 'number') {
-		const parsedNumber = Number(value);
+	if (isNumeric.value) {
+		const isValid = safeInput.setValue(value);
 
 		// Ignore if numeric value remains unchanged
-		if (props.modelValue !== parsedNumber) {
-			emit('update:modelValue', parsedNumber);
+		if (props.modelValue !== safeInput.value) {
+			emit('update:modelValue', safeInput.value);
+		}
+
+		if (input.value && !isValid) {
+			input.value.value = safeInput.toString();
 		}
 	} else {
 		if (props.slug === true) {
@@ -203,24 +249,16 @@ function stepUp() {
 	if (!input.value) return;
 	if (isStepUpAllowed.value === false) return;
 
-	input.value.stepUp();
-
-	if (input.value.value != null) {
-		return emit('update:modelValue', Number(input.value.value));
-	}
+	safeInput.increment();
+	emit('update:modelValue', safeInput.value);
 }
 
 function stepDown() {
 	if (!input.value) return;
 	if (isStepDownAllowed.value === false) return;
 
-	input.value.stepDown();
-
-	if (input.value.value) {
-		return emit('update:modelValue', Number(input.value.value));
-	} else {
-		return emit('update:modelValue', props.min || 0);
-	}
+	safeInput.decrement();
+	emit('update:modelValue', safeInput.value);
 }
 </script>
 
@@ -247,7 +285,7 @@ function stepDown() {
 					:max="max"
 					:step="step"
 					:disabled="disabled"
-					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
+					:value="inputValue"
 					v-on="listeners"
 				/>
 			</slot>
