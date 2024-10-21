@@ -3,7 +3,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
-import { isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
@@ -166,15 +166,12 @@ watch(
 );
 
 const editorOptions = computed(() => {
-	let styleFormats = null;
-
-	if (Array.isArray(props.customFormats) && props.customFormats.length > 0) {
-		styleFormats = props.customFormats;
-	}
+	const styleFormats =
+		Array.isArray(props.customFormats) && props.customFormats.length > 0 ? cloneDeep(props.customFormats) : null;
 
 	let toolbarString = (props.toolbar ?? [])
-		.map((t) =>
-			t
+		.map((button) =>
+			button
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
@@ -222,7 +219,7 @@ const editorOptions = computed(() => {
 		directionality: props.direction,
 		paste_data_images: false,
 		setup,
-		...(props.tinymceOverrides || {}),
+		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
 	};
 });
 
