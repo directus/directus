@@ -9,6 +9,7 @@ export interface ValidateAccessOptions {
 	action: PermissionsAction;
 	collection: string;
 	primaryKeys?: PrimaryKey[];
+	fields?: string[];
 }
 
 /**
@@ -40,8 +41,16 @@ export async function validateAccess(options: ValidateAccessOptions, context: Co
 	}
 
 	if (!access) {
+		if (options.fields?.length ?? 0 > 0) {
+			throw new ForbiddenError({
+				reason: `You don't have permissions to perform "${options.action}" for the field(s) ${options
+					.fields!.map((field) => `"${field}"`)
+					.join(', ')} in collection "${options.collection}" or it does not exist.`,
+			});
+		}
+
 		throw new ForbiddenError({
-			reason: `You don't have permission to "${options.action}" from collection "${options.collection}" or it does not exist.`,
+			reason: `You don't have permission to perform "${options.action}" for collection "${options.collection}" or it does not exist.`,
 		});
 	}
 }
