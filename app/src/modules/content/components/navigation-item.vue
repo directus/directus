@@ -74,7 +74,7 @@ const matchesSearch = computed(() => {
 const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
 
 function getChildCollections(collection: Collection) {
-	let collections = collectionsStore.collections.filter(
+	let collections = collectionsStore.sortedCollections.filter(
 		(childCollection) => childCollection.meta?.group === collection.collection,
 	);
 
@@ -82,7 +82,7 @@ function getChildCollections(collection: Collection) {
 		collections = collections.filter((collection) => collection.meta?.hidden !== true);
 	}
 
-	return orderBy(collections, ['meta.sort', 'collection']);
+	return collections;
 }
 
 function getChildBookmarks(collection: Collection) {

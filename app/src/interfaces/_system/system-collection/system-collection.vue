@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
-import { isSystemCollection } from '@directus/system-data';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -23,16 +22,13 @@ const { t } = useI18n();
 const collectionsStore = useCollectionsStore();
 
 const collections = computed(() => {
-	let collections = collectionsStore.collections;
+	let collections = collectionsStore.allCollections;
 
 	if (!props.includeSingleton) {
 		collections = collections.filter((collection) => collection?.meta?.singleton === false);
 	}
 
-	return [
-		...collections.filter((collection) => isSystemCollection(collection.collection) === false),
-		...(props.includeSystem ? collectionsStore.crudSafeSystemCollections : []),
-	];
+	return [...collections, ...(props.includeSystem ? collectionsStore.crudSafeSystemCollections : [])];
 });
 
 const items = computed(() => {
