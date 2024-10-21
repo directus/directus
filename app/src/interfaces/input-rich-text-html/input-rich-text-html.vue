@@ -29,6 +29,8 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
+import { useItems } from '@directus/composables';
+import { getPublicURL } from '@/utils/get-root-path';
 
 type CustomFormat = {
 	title: string;
@@ -95,14 +97,19 @@ if (settingsStore.settings?.storage_asset_transform) {
 
 const count = ref(0);
 
-const { imageDrawerOpen, imageSelection, closeImageDrawer, onImageSelect, saveImage, imageButton } = useImage(
-	editorRef,
-	imageToken!,
-	{
-		storageAssetTransform,
-		storageAssetPresets,
-	},
-);
+const {
+	imageDrawerOpen,
+	imageSelection,
+	closeImageDrawer,
+	onImageSelect,
+	saveImage,
+	imageButton,
+	getImageIds,
+	replaceCacheBuster,
+} = useImage(editorRef, imageToken!, {
+	storageAssetTransform,
+	storageAssetPresets,
+});
 
 const {
 	mediaDrawerOpen,
@@ -122,9 +129,27 @@ const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, li
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
+const imageIds = computed(() => getImageIds(props.value));
+
+const query = computed(() => ({
+	fields: computed(() => ['id', 'uploaded_on']),
+	limit: computed(()=> imageIds.value.length || 0),
+	page: ref(1),
+	filter: computed(() => ({
+		id: {
+			_in: imageIds.value,
+		},
+	})),
+	sort: ref(null),
+	search: ref(''),
+}));
+
+const collection = ref('directus_files');
+const { items } = useItems(collection, query.value);
+
 const internalValue = computed({
 	get() {
-		return props.value || '';
+		return replaceCacheBuster(props.value, items);
 	},
 	set(value) {
 		if (props.value !== value) {
