@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix WYSIWYG interface changed check for custom formats
+Fixed an issue where the WYSIWYG interface would reload with every keystroke if custom formats are given
