@@ -30,7 +30,7 @@ export default function registerHooks({ action }, { services }) {
 			}
 
 			await database(logsCollection).insert({ key, value: '1' });
-		} catch (err) {
+		} catch {
 			await database(logsCollection).insert({ key, value: '0' });
 		}
 	}

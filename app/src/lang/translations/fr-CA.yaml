@@ -91,6 +91,7 @@ n_files: '{n} Fichiers'
 verified: Vérifié
 homepage: Page d'accueil
 repository: Dépôt
+reload_page: Actualiser la page
 reload_required: Rechargement requis
 report_an_issue: Signaler un problème
 website: Site internet
@@ -109,6 +110,7 @@ field_name_translations: Traductions du nom de champ
 enter_password_to_enable_tfa: Saisissez votre mot de passe pour activer l'authentification à deux facteurs
 add_field: Ajouter un champ
 role_name: Nom de rôle
+policy_name: Nom de la Règle
 branch: Branche
 leaf: Feuille
 indeterminate: Indéterminé
@@ -126,6 +128,7 @@ requires_value: La valeur est obligatoire
 create_preset: Créer un préréglage
 create_panel: Créer un panneau
 create_role: Créer un rôle
+create_policy: Créer une Règle
 create_user: Créer un utilisateur
 message: Message
 delete_panel: Supprimer le panneau
@@ -187,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Votre session a expiré
 public_label: Public
 public_description: Contrôle quelles sont les données API disponibles sans authentification.
+public_role_info: >-
+  Le rôle public contrôle quelles données de l'API sont rendues disponibles pour les utilisateurs non authentifiés ou les utilisateurs sans rôle. Les requêtes faites avec le rôle public ne peuvent pas avoir accès à l'application ou aux fonctions réservées à l'administrateur. Si l'un de ces deux accès sont donnés à une politique assignée au rôle public, ils seront ignorés.
 admin_description: Rôle administratif initial avec accès illimité à l'application/à l'API.
+admin_policy_description: Règle d'administration initiale avec accès non restreint à l'application / à l'API.
 no_description: Aucune description...
 reached_maximum_number_of_extensions: Vous avez atteint le nombre maximum d'extensions pour ce projet ({n}). Contactez votre administrateur système pour plus d'informations.
 not_allowed: Non autorisé
@@ -254,9 +260,12 @@ field_permissions: Autorisations pour le champ
 field_validation: Validation du champ
 field_presets: Préréglages du champ
 permissions_for_role: 'Éléments que le rôle {role} peut {action}.'
+permissions_for_policy: 'Éléments que la Règle {policy} peut {action}.'
 fields_for_role: 'Champs dont l''action « {action} » peut être effectué par le rôle {role} .'
+fields_for_policy: 'Champs que la règle {policy} peut {action}.'
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
+presets_for_policy: 'Valeurs de champ par défaut pour la Règle {policy}.'
 presets_field_warning: 'Les préréglages relationnels pour le champ "{field}" doivent être configurés avec la syntaxe "détaillée".'
 presentation_and_aliases: Présentation & Alias
 revision_post_create: Voici à quoi ressemblait cet article lors de sa création.
@@ -362,6 +371,7 @@ no_collections_found: Aucune collection trouvée.
 new_data_alert: 'Les éléments suivants seront créés dans votre Modèle de données :'
 search_collection: Rechercher une collection...
 search_role: Recherche de Rôle...
+search_policy: Rechercher une Règle...
 search_field: Champ de recherche...
 new_field: 'Nouveau Champ'
 new_collection: 'Nouvelle Collection'
@@ -402,6 +412,7 @@ soft_length: Limite de caractères
 precision_scale: Précision et échelle
 readonly: Lecture seule
 unique: Unique
+index: Index
 updated_on: Modifié le
 updated_by: Modifié par
 primary_key: Clef primaire
@@ -512,6 +523,11 @@ hours: Heures
 month: Mois
 year: Année
 select_all: Tout sélectionner
+permissionsLevel:
+  all: Accès complet à {action}
+  partial: Accès partiel à {action}
+  custom: Accès partiel à {action}
+  none: Aucun accès à {action}
 months:
   january: Janvier
   february: Février
@@ -595,6 +611,7 @@ comments: Commentaires
 no_comments: Pas encore de commentaires
 expand: Agrandir
 collapse: Replier
+collapse_all: Réduire Tout
 select_item: Sélectionner un élément
 no_items: Aucun élément
 search_items: Rechercher des éléments...
@@ -641,6 +658,7 @@ copy_to: Copier vers...
 no_other_dashboards_copy: Vous n'avez pas encore d'autres tableaux de bord.
 inactive: Inactif
 users: Utilisateurs
+roles: Rôles
 activity: Activité
 activity_item: Flux d'activité
 action: Action
@@ -743,6 +761,7 @@ cannot_edit_global_bookmarks: Impossible de modifier les signets globaux
 bookmarks: Favoris
 presets: Pré-réglages
 unexpected_error: Erreur inconnue
+unexpected_error_copy: Une erreur inattendue est survenue. Veuillez réessayer.
 copy_details: Copier les détails
 no_app_access: Pas d'accès à l'application
 no_app_access_copy: Cet utilisateur n'est pas autorisé à utiliser l'application d'administration.
@@ -767,6 +786,9 @@ make_collection_hidden: Masquer la collection
 make_folder_visible: Rendre le dossier visible
 make_folder_hidden: Cacher Le Dossier
 goto_collection_content: Voir le Contenu
+count_of_total_items: '{count} sur {total} Éléments'
+start_end_of_count_items: '{start}-{end} sur {count} Éléments'
+start_end_of_count_filtered_items: '{start}-{end} sur {count} Éléments Filtrés'
 delete_collection_are_you_sure: >-
   Êtes-vous sûr de vouloir supprimer la collection "{collection}" ? Cette action supprimera la collection et tous les éléments qu'elle contient. Cette action est irréversible.
 delete_folder_are_you_sure: Êtes-vous sûr de vouloir supprimer le dossier "{folder}" ? Les dossiers imbriqués et les collections seront déplacés à la racine.
@@ -853,11 +875,13 @@ columns: Colonnes
 collection_setup: Configuration de la collection
 optional_system_fields: Champs optionnels
 value_unique: La valeur doit être unique
+value_index: Le champ est indexé
 all_activity: Toutes les activités
 create_item: Créer un élément
 display_template: Modèle d'affichage
 language_display_template: Modèle d'affichage de la langue
 translations_display_template: Modèle d'affichage des traductions
+n_items_selected: 'Aucun élément sélectionné | 1 élément sélectionné | {n} éléments sélectionnés'
 per_page: Par page
 all_files: Tous les fichiers
 my_files: Mes fichiers
@@ -969,6 +993,7 @@ no_data_in_flow: Aucune donnée n'a été produite ou accédée dans ce flux
 accountability: Traçabilité
 payload: Données utiles
 details: Détails
+clear_logs: Effacer le journal
 full_screen: Plein écran
 full_text_search: Recherche dans l'intégralité du texte
 edit_panels: Modifier le panneau
@@ -997,6 +1022,7 @@ tooltip: Info-bulle
 tooltip_placeholder: Entrez une infobulle ...
 unlimited: Illimité
 open_link_in: Ouvrir le lien dans
+new_tab: Nouvel onglet
 save_image: Enregistrer l'image
 save_media: Enregistrer le média
 wysiwyg_options:
@@ -1070,6 +1096,7 @@ editing_unit: 'Modification de {unit}'
 editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
+settings_roles: Rôles Utilisateur
 settings_project: Réglages
 settings_appearance: Personnalisation du Thème
 settings_webhooks: Webhooks
@@ -1344,6 +1371,7 @@ fields:
     description: Description
     users: Membres avec le rôle
   directus_policies:
+    name: Nom de la Règle
     description: Description
   directus_webhooks:
     name: Nom

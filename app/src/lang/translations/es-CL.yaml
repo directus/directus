@@ -110,6 +110,7 @@ field_name_translations: Traducción de campos
 enter_password_to_enable_tfa: Escribe tu contraseña para habilitar el doble factor de autenticación
 add_field: Añadir campo
 role_name: Nombre de rol
+policy_name: Nombre de la Directiva
 branch: Rama
 leaf: Hoja
 indeterminate: Indeterminado
@@ -127,6 +128,7 @@ requires_value: Requiere un valor
 create_preset: Crear un pre-definido
 create_panel: Crear panel
 create_role: Crear Rol
+create_policy: Crear política
 create_user: Crear usuario
 message: Mensaje
 delete_panel: Eliminar panel
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Tu sesión ha expirado
 public_label: Público
 public_description: Controlar qué datos de la API están disponibles sin autenticación.
+public_role_info: >-
+  El rol público controla qué datos de la API están disponibles para usuarios no autenticados o usuarios sin rol. Las solicitudes con el rol público no pueden tener acceso de app o administradores. Si se da acceso de app o administrador a una política asignada al rol público, serán ignoradas.
 admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
+admin_policy_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API
 no_description: Sin descripción...
 reached_maximum_number_of_extensions: Ha alcanzado el número máximo de extensiones para este proyecto ({n}). Póngase en contacto con el administrador del sistema para obtener más información.
 not_allowed: No permitido
@@ -1364,6 +1369,7 @@ fields:
     description: Descripción
     users: Usuarios en el Rol
   directus_policies:
+    name: Nombre de la Directiva
     description: Descripción
   directus_webhooks:
     name: Nombre
