@@ -1,492 +1,81 @@
-<!-- Início da Estrutura Geral do E-mail -->
-<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F6F6F6; width:100%; height:100%;">
-  <tr>
-    <td align="center" valign="top">
-      <!-- Tabela Principal com largura máxima de 500px -->
-      <table width="100%" cellspacing="0" cellpadding="0"
-        style="max-width: 500px; width: 100%; background-color: #FFFFFF;">
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+  dir="ltr"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  lang="pt">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="telephone=no" name="format-detection">
+    <link rel="stylesheet" href="Themes/styles.css">
+    <title>{# title #}</title>
+  </head>
+
+  <body class="body" style="width:100%;height:100%;padding:0;Margin:0">
+    <div
+      dir="ltr"
+      class="es-wrapper-color"
+      lang="pt"
+      style="background-color:#F6F6F6">
+      <table
+        width="100%"
+        cellspacing="0"
+        cellpadding="0"
+        class="es-wrapper"
+        role="none"
+        style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;background-color:#F6F6F6">
         <tr>
-          <td>
-            <!-- Adicione seus componentes aqui -->
-
-            <!-- Header Default -->
-            {% if headerDefault %}
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #F6F6F6;">
+          <td valign="top" style="padding:0;Margin:0">
+            <table
+              cellspacing="0"
+              cellpadding="0"
+              align="center"
+              class="es-header"
+              role="none"
+              style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;width:100%;table-layout:fixed !important;background-color:transparent;background-repeat:repeat;background-position:center top">
               <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; background-color: #114559; padding: 24px;">
+                <td align="center" style="padding:0;Margin:0">
+                  <table
+                    cellspacing="0"
+                    cellpadding="0"
+                    bgcolor="#ffffff"
+                    align="center"
+                    class="es-header-body"
+                    role="none"
+                    style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;width:500px">
                     <tr>
-                      <td align="center" style="padding: 0;">
-                        <a href="https://yinflow.life" target="_blank" style="text-decoration: none;">
-                          <img
-                            src="https://ffwodbf.stripocdn.email/content/guids/CABINET_68baf15c3ede7f646939cb028bcce1cb69400de6679c979d9e456e4403ed201a/images/_logo_branco_kjj.png"
-                            alt="Logo Yinflow" height="40" width="auto"
-                            style="display: block; border: 0; outline: none; text-decoration: none;">
-                        </a>
+                      <td>
+                        <!-- Header -->
+                      {% render 'header' header: header %}
+
+                        <!-- Body -->
+                      {% render 'geral'
+                        , greeting: greeting
+                        , payment.info-header: payment.info-header
+                        , payment.details: payment.details
+                        , payment.method: payment.method
+                        , order.next_payment: order.next_payment
+                        , disclaimer: disclaimer
+                        ,
+                      %}
+
+                        <!-- Footer -->
+                        {% render 'footer'
+                          , footer: footer %}
                       </td>
                     </tr>
                   </table>
                 </td>
               </tr>
             </table>
-            {% endif %}
-            <!-- End Header Default -->
-
-            <!-- Greetings Payment -->
-            {% if greetinsPayment %}
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #F6F6F6;">
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; background-color: #ffffff; padding: 24px 0px 0px 0px;">
-                    <tr>
-                      <td align="center"
-                        style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #012432; line-height: 150%;">
-                        <p>Olá, {# client_name #},</p>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td align="center" style="padding-top: 16px;">
-                        <h1
-                          style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 20px; color: #012432; line-height: 150%; margin: 0;">
-                          <strong>Seu pagamento foi confirmado!</strong>
-                        </h1>
-                      </td>
-                    </tr>
-
-                  </table>
-                </td>
-              </tr>
-            </table>
-            {% endif %}
-            <!-- End Greetings Payment-->
-
-            <!-- Separator Line -->
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #ffffff;">
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; padding: 0px 32px 0px;">
-                    <tr>
-                      <td align="center" style="font-size: 0;">
-                        <!-- Linha separadora -->
-                        <table width="100%" height="1" cellpadding="0" cellspacing="0" border="0"
-                          style="border-bottom: 1px solid #E6EBF0;">
-                          <tr>
-                            <td style="height: 1px; background-color: none;"></td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            <!-- End Separator Line -->
-
-            <!-- Payment Info Header -->
-            {% if paymentInfoHeader %}
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #F6F6F6;">
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; background-color: #ffffff; padding: 0px 32px 0px;">
-                    <tr>
-                      <td align="left"
-                        style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #012432;">
-                        <table width="100%" cellpadding="0" cellspacing="0">
-                          <tr>
-                            <!-- Data do pagamento -->
-                            <td align="left" style="width: 50%; font-size: 14px; color: #012432;">
-                              <strong>Data:</strong> {# payment_created_at #}
-                            </td>
-                            <!-- Número do pagamento -->
-                            <td align="right" style="width: 50%; font-size: 14px; color: #012432;">
-                              <strong>Pagamento n°:</strong> {# payment_id #}
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            {% endif %}
-            <!-- End Payment Info Header -->
-
-            <!-- Separator Line -->
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #ffffff;"> 
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; padding: 0px 32px 0px;">
-                    <tr>
-                      <td align="center" style="font-size: 0;">
-                        <!-- Linha separadora -->
-                        <table width="100%" height="1" cellpadding="0" cellspacing="0" border="0"
-                          style="border-bottom: 1px solid #E6EBF0;">
-                          <tr>
-                            <td style="height: 1px; background-color: none;"></td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            <!-- End Separator Line -->
-
-            <!-- Payment Details -->
-            {% if paymentDetails %}
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #F6F6F6;">
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; background-color: #ffffff; padding: 0px 32px 0px">
-                    <tr>
-                      <td align="left"
-                        style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #012432;">
-                        <strong>Detalhes do pagamento</strong>
-                        <!-- Detalhes do pagamento -->
-                        <table width="100%" cellpadding="0" cellspacing="0"
-                          style="margin-top: 12px; background-color: #fafafa; padding: 12px; border-radius: 6px; border: 1px solid #E6EBF0;">
-                          <tr>
-                            <!-- Produto e plano -->
-                            <td style="font-size: 14px; color: #012432;">
-                              <strong>{# product_name #}</strong>
-                            </td>
-                          </tr>
-                          <tr>
-                            <!-- Número do pedido -->
-                            <td style="font-size: 12px; color: #012432; padding-top: 8px;">
-                              <strong>Pedido nº:</strong> {# order_name #}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style="padding-top: 8px; border-bottom: 1px solid #E6EBF0;"></td>
-                          </tr>
-                          <tr>
-                            <!-- Valor do serviço -->
-                            <td style="font-size: 14px; color: #012432; padding-top: 8px;">
-                              <strong>Valor do serviço:</strong> R$ {# product_price #}
-                            </td>
-                          </tr>
-                          <tr>
-                            <!-- Desconto -->
-                            <td style="font-size: 14px; color: #012432; padding-top: 8px;">
-                              <strong>Desconto:</strong> - R$ {# product_discount #}
-                            </td>
-                          </tr>
-                          <tr>
-                            <!-- Total -->
-                            <td style="font-size: 14px; color: #012432; padding-top: 8px;">
-                              <strong>Total:</strong> R$ {# product_total_price #}
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            {% endif %}
-            <!-- End Payment-Details -->
-
-            <!-- Payment Method -->
-            {% if paymentMethod %}
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #F6F6F6;">
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; background-color: #ffffff; padding: 0px 32px 0px;">
-                    <tr>
-                      <td align="left"
-                        style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #012432;">
-                        <strong>Método de pagamento</strong>
-                        <!-- Detalhes do método de pagamento -->
-                        <table width="100%" cellpadding="0" cellspacing="0"
-                          style="margin-top: 12px; background-color: #fafafa; padding: 12px; border-radius: 6px; border: 1px solid #E6EBF0;">
-                          <tr>
-                            <!-- Método de pagamento e últimos dígitos -->
-                            <td style="font-size: 14px; color: #012432;">
-                              {# payment_method #}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style="padding-top: 8px; border-bottom: 1px solid #E6EBF0;"></td>
-                          </tr>
-                          <tr>
-                            <!-- Valor total -->
-                            <td style="font-size: 14px; color: #012432; padding-top: 8px;">
-                              R$ {# order_total_price #} {# payment_type #}
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            {% endif %}
-            <!-- End Payment-Method -->
-
-            <!-- Order Next Payment -->
-            {% if orderNextPayment %}
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #F6F6F6;">
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; background-color: #ffffff; padding: 0px 32px 0px;">
-                    <tr>
-                      <td align="left"
-                        style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #012432;">
-                        <strong>Próxima cobrança</strong>
-                        <!-- Detalhes da próxima cobrança -->
-                        <table width="100%" cellpadding="0" cellspacing="0"
-                          style="margin-top: 12px; background-color: #fafafa; padding: 12px; border-radius: 6px; border: 1px solid #E6EBF0;">
-                          <tr>
-                            <!-- Valor e data da próxima cobrança -->
-                            <td style="font-size: 14px; color: #012432;">
-                              R$ {# order_next_payment #} em {# order_next_payment_date #}
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            {% endif %}
-            <!-- End Order.Next_Payment -->
-
-            <!-- Disclaimer Order Payment -->
-            {% if disclaimerOrderPayment %}
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #ffffff;">
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; width: 100%; padding: 0px 32px 0px 32px;">
-                    <tr>
-                      <td align="left">
-                        <!-- Tabela interna com fundo branco e borda -->
-                        <table width="100%" cellpadding="0" cellspacing="0"
-                          style="background-color: #FFFFFF; border-top: 1px solid #E6EBF0;">
-                          <tr>
-                            <td align="left" style="padding: 24px; background-color: #FFFFFF;">
-                              <p
-                                style="color: #012432; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 150%;">
-                                Este documento não tem validade fiscal e não pode ser usado para
-                                solicitação de
-                                reembolso com seu plano de saúde.
-                              </p>
-                              <p
-                                style="color: #012432; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 150%;">
-                                Se você possui plano de saúde e pretende solicitar o reembolso
-                                desta consulta ou sessão,
-                                <a href="#" style="color: #00a587; text-decoration: underline;">clique
-                                  aqui</a> para
-                                saber como.
-                              </p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            {% endif %}
-            <!-- End Disclaimer -->
-
-            <!-- Footer Order Payment -->
-            {% if footerOrderPayment %}
-            <table width="100%" align="center" cellpadding="0" cellspacing="0" role="none"
-              style="background-color: #F6F6F6;">
-              <tr>
-                <td align="center">
-                  <!-- Tabela principal com largura máxima de 500px -->
-                  <table width="100%" cellpadding="0" cellspacing="0" align="center"
-                    style="max-width: 500px; background-color: #FFFFFF;">
-                    <!-- Primeira parte do footer com informações de contato -->
-                    <tr>
-                      <td align="left" bgcolor="#FAFAFA"
-                        style="padding: 24px 32px 8px; background-color: #FAFAFA; border-top: 1px solid #E6EBF0;">
-                        <table width="100%" cellpadding="0" cellspacing="0" role="none" style="max-width: 484px;">
-                          <tr>
-                            <td align="left"
-                              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #012432;">
-                              <p style="font-size: 14px; line-height: 18px; color: #012432;">
-                                <strong>Precisa de ajuda?</strong>
-                              </p>
-                              <p style="font-size: 14px; line-height: 18px; color: #012432;">
-                                Em caso de dúvidas, entre em contato com o nosso time de
-                                acolhimento pelo WhatsApp
-                                <a href="https://wa.me/+5511935025619"
-                                  style="color: #00a587; text-decoration: underline;">clicando
-                                  aqui</a>,
-                                acessando nosso <a href="https://www.yinflow.life/perguntas-frequentes"
-                                  style="color: #00a587; text-decoration: underline;">FAQ</a>,
-                                ou envie um e-mail para <a href="mailto:falecom@yinflow.life"
-                                  style="color: #00a587; text-decoration: underline;">falecom@yinflow.life</a>.
-                              </p>
-                              <p style="font-size: 14px; line-height: 18px; color: #012432; margin-bottom: 8px;">
-                                Veja nossa <a href="https://www.yinflow.life/#politica-de-cancelamento-e-reembolso"
-                                  style="color: #00a587; text-decoration: underline;">Política de
-                                  Reembolso</a> e os
-                                <a href="https://www.yinflow.life/#termos-de-uso"
-                                  style="color: #00a587; text-decoration: underline;">Termos de
-                                  Serviço</a>.
-                              </p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <!-- Parte com as logos do Instagram e LinkedIn -->
-                    <tr>
-                      <td align="center" bgcolor="#FAFAFA"
-                        style="padding: 8px 32px 24px; border-bottom: 1px solid #E6EBF0;">
-                        <table width="100%" cellpadding="0" cellspacing="0" role="none" style="max-width: 484px;">
-                          <tr>
-                            <td align="left">
-                              <!-- Redes sociais -->
-                              <table cellpadding="0" cellspacing="0">
-                                <tr>
-                                  <!-- Instagram logo -->
-                                  <td align="center" style="padding-right: 16px;">
-                                    <a href="https://www.instagram.com/yinflow.life/" target="_blank">
-                                      <img
-                                        src="https://ffwodbf.stripocdn.email/content/guids/CABINET_68baf15c3ede7f646939cb028bcce1cb69400de6679c979d9e456e4403ed201a/images/instagramicon.png"
-                                        alt="Instagram" height="32" width="auto" style="border: 0;">
-                                    </a>
-                                  </td>
-                                  <!-- LinkedIn logo -->
-                                  <td align="center">
-                                    <a href="https://www.linkedin.com/company/yinflowlife/" target="_blank">
-                                      <img
-                                        src="https://ffwodbf.stripocdn.email/content/guids/CABINET_68baf15c3ede7f646939cb028bcce1cb69400de6679c979d9e456e4403ed201a/images/linkedinicon.png"
-                                        alt="LinkedIn" height="32" width="auto" style="border: 0;">
-                                    </a>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <!-- Parte com logos dos aplicativos Google Play e App Store -->
-                    <tr>
-                      <td align="left" bgcolor="#FAFAFA" style="padding: 24px 32px; border-bottom: 1px solid #E6EBF0;">
-                        <table width="100%" cellpadding="0" cellspacing="0" role="none" style="max-width: 484px;">
-                          <tr>
-                            <td align="left"
-                              style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #012432;">
-                              <p style="font-size: 14px; color: #012432;">
-                                Gerencie agendamentos, pagamentos e muito mais através do
-                                aplicativo Yinflow.Life.
-                              </p>
-                              <!-- Logos de aplicativos -->
-                              <table width="100%" cellpadding="0" cellspacing="0">
-                                <tr>
-                                  <td align="left" style="width: 100%;">
-                                    <table cellpadding="0" cellspacing="0">
-                                      <tr>
-                                        <!-- Primeira imagem - Google Play -->
-                                        <td align="left" style="padding-right: 16px;">
-                                          <a href="#">
-                                            <img
-                                              src="https://ffwodbf.stripocdn.email/content/guids/CABINET_68baf15c3ede7f646939cb028bcce1cb69400de6679c979d9e456e4403ed201a/images/googleplay.png"
-                                              alt="Disponível no Google Play" height="32" width="auto" style="border: 0;">
-                                          </a>
-                                        </td>
-                                        <!-- Segunda imagem - App Store -->
-                                        <td align="left">
-                                          <a href="#">
-                                            <img
-                                              src="https://ffwodbf.stripocdn.email/content/guids/CABINET_68baf15c3ede7f646939cb028bcce1cb69400de6679c979d9e456e4403ed201a/images/appstore.png"
-                                              alt="Baixar na App Store" height="32" width="auto" style="border: 0;">
-                                          </a>
-                                        </td>
-                                      </tr>
-                                    </table>
-                                  </td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <!-- Parte final com informações da empresa -->
-                    <tr>
-                      <td align="left" bgcolor="#114559" style="padding: 32px; background-color: #114559;">
-                        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 484px;">
-                          <tr>
-                            <td align="left">
-                              <img
-                                src="https://ffwodbf.stripocdn.email/content/guids/CABINET_68baf15c3ede7f646939cb028bcce1cb69400de6679c979d9e456e4403ed201a/images/_logo_branco_kjj.png"
-                                alt="Logo" height="32" width="auto" style="display: block; border: 0;">
-                            </td>
-                          </tr>
-                          <tr>
-                            <td align="left" style="padding-top: 16px;">
-                              <p
-                                style="color: #ffffff; font-size: 14px; line-height: 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-                                Avenida Brigadeiro Faria Lima, nº 2369, Conj. 1102, Jardim
-                                Paulistano, São Paulo/SP
-                                <br>CEP 01.452-922 | CNPJ: 42.516.954/0001-00
-                              </p>
-                              <p
-                                style="color: #ffffff; font-size: 14px; line-height: 18px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-                                ©️ Yinflow.Life. Todos os direitos reservados.
-                              </p>
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            {% endif %}
-            <!-- End Footer -->
-
           </td>
         </tr>
       </table>
-      <!-- Fim da Tabela Principal com largura máxima de 500px -->
-
-    </td>
-  </tr>
-</table>
-<!-- Fim da Estrutura Geral do E-mail -->
+    </div>
+  </body>
+</html>
