@@ -705,6 +705,12 @@ instability or limited bandwidth. This is implemented using the [TUS protocol](h
 | `TUS_UPLOAD_EXPIRATION` | The expiry duration for uncompleted files with no upload activity | `10m`         |
 | `TUS_CLEANUP_SCHEDULE`  | Cron schedule to clean up the expired uncompleted uploads         | `0 * * * *`   |
 
+::: warning
+
+chunkSize for GCP must be powers of 2 with a minimum of 256kb (e.g. 256, 512, 1024).
+
+:::
+
 ## Assets
 
 | Variable                                 | Description                                                                                                                         | Default Value |
