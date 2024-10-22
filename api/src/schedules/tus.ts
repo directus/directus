@@ -8,7 +8,7 @@ import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
  *
  * @returns Whether or not telemetry has been initialized
  */
-export default function schedule() {
+export default async function schedule(): Promise<boolean> {
 	if (!RESUMABLE_UPLOADS.ENABLED) return false;
 
 	if (validateCron(RESUMABLE_UPLOADS.SCHEDULE)) {

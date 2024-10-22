@@ -97,7 +97,7 @@ export async function handleRetentionJob() {
  *
  * @returns Whether or not telemetry has been initialized
  */
-export default function schedule() {
+export default async function schedule(): Promise<boolean> {
 	const env = useEnv();
 
 	if (!toBoolean(env['RETENTION_ENABLED'])) {

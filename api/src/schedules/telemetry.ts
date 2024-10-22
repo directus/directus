@@ -17,7 +17,7 @@ export const jobCallback = () => {
  *
  * @returns Whether or not telemetry has been initialized
  */
-export default async function schedule() {
+export default async function schedule(): Promise<boolean> {
 	const env = useEnv();
 
 	if (toBoolean(env['TELEMETRY']) === false) return false;
