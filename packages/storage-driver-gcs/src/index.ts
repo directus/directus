@@ -35,6 +35,7 @@ export class DriverGCS implements TusDriver {
 
 	private getPreferredChunkSize(tus?: { chunkSize?: number }) {
 		if (!tus?.chunkSize) {
+			// recommended default is 8MB
 			return 8388608;
 		}
 
