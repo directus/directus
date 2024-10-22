@@ -1671,6 +1671,9 @@ importers:
       '@google-cloud/storage':
         specifier: 7.13.0
         version: 7.13.0(encoding@0.1.13)
+      '@tus/utils':
+        specifier: 0.4.0
+        version: 0.4.0
     devDependencies:
       '@directus/tsconfig':
         specifier: workspace:*

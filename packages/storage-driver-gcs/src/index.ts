@@ -1,28 +1,37 @@
-import type { Driver, ReadOptions } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import type { Bucket, CreateReadStreamOptions, GetFilesOptions } from '@google-cloud/storage';
 import { Storage } from '@google-cloud/storage';
+import { TUS_RESUMABLE } from '@tus/utils';
 import { join } from 'node:path';
-import type { Readable } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
+import { PassThrough, type Readable } from 'node:stream';
+import { finished, pipeline } from 'node:stream/promises';
 
 export type DriverGCSConfig = {
 	root?: string;
 	bucket: string;
 	apiEndpoint?: string;
+	tus?: {
+		chunkSize?: number;
+	};
 };
 
-export class DriverGCS implements Driver {
+export class DriverGCS implements TusDriver {
 	private root: string;
 	private bucket: Bucket;
 
+	// TUS specific members
+	private readonly preferredChunkSize: number;
+
 	constructor(config: DriverGCSConfig) {
-		const { bucket, root, ...storageOptions } = config;
+		const { bucket, root, tus, ...storageOptions } = config;
 
 		this.root = root ? normalizePath(root, { removeLeading: true }) : '';
 
 		const storage = new Storage(storageOptions);
 		this.bucket = storage.bucket(bucket);
+
+		this.preferredChunkSize = tus?.chunkSize ?? 8388608;
 	}
 
 	private fullPath(filepath: string) {
@@ -87,6 +96,76 @@ export class DriverGCS implements Driver {
 
 			query = nextQuery;
 		}
+	}
+
+	get tusExtensions() {
+		return ['creation', 'termination', 'expiration'];
+	}
+
+	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
+		const file = this.file(this.fullPath(filepath));
+
+		const stream = file.createWriteStream({
+			chunkSize: this.preferredChunkSize,
+			metadata: {
+				metadata: {
+					tus_version: TUS_RESUMABLE,
+				},
+			},
+		});
+
+		const passThrough = new PassThrough();
+		passThrough.end();
+
+		passThrough.pipe(stream);
+
+		await finished(passThrough);
+
+		return context;
+	}
+
+	async writeChunk(
+		filepath: string,
+		content: Readable,
+		offset: number,
+		context: ChunkedUploadContext,
+	): Promise<number> {
+		const file = this.file(this.fullPath(filepath));
+
+		const stream = file.createWriteStream({
+			chunkSize: this.preferredChunkSize,
+			metadata: {
+				metadata: {
+					size: context.size ?? null,
+					offset,
+					tus_version: TUS_RESUMABLE,
+				},
+			},
+		});
+
+		let bytesUploaded = offset || 0;
+
+		content.on('data', (chunk: Buffer) => {
+			bytesUploaded += chunk.length;
+		});
+
+		try {
+			await pipeline(content, stream);
+		} catch {
+			this.delete(filepath).catch(() => {
+				/* ignore */
+			});
+		}
+
+		return bytesUploaded;
+	}
+
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {
+		return;
+	}
+
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
+		await this.delete(filepath);
 	}
 }
 
