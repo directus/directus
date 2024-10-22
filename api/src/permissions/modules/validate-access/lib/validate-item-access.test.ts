@@ -95,7 +95,7 @@ test('Returns false if no items are returned', async () => {
 	).resolves.toBe(false);
 });
 
-test('Returns true the number of returned items matches the number of requested primary keys', async () => {
+test('Returns true if the number of returned items matches the number of requested primary keys', async () => {
 	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
 	const acc = {} as unknown as Accountability;
 
@@ -106,4 +106,40 @@ test('Returns true the number of returned items matches the number of requested 
 			schema,
 		} as Context),
 	).resolves.toBe(true);
+});
+
+test('Returns true if the number of returned items matches the number of requested primary keys and the user has access to the fields', async () => {
+	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
+	const acc = {} as unknown as Accountability;
+	const ast = { query: {} } as unknown as AST;
+
+	vi.mocked(getAstFromQuery).mockResolvedValue(ast);
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ field_a: 1 }, { field_a: 1 }]);
+
+	await expect(
+		validateItemAccess(
+			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 2], fields: ['field_a'] },
+			{
+				schema,
+			} as Context,
+		),
+	).resolves.toBe(true);
+});
+
+test('Returns false the number of returned items matches the number of requested primary keys and the user does not have access to the fields', async () => {
+	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
+	const acc = {} as unknown as Accountability;
+	const ast = { query: {} } as unknown as AST;
+
+	vi.mocked(getAstFromQuery).mockResolvedValue(ast);
+	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ field_a: null }, { field_a: 1 }]);
+
+	await expect(
+		validateItemAccess(
+			{ accountability: acc, action: 'read', collection: 'collection-a', primaryKeys: [1, 2], fields: ['field_a'] },
+			{
+				schema,
+			} as Context,
+		),
+	).resolves.toBe(false);
 });
