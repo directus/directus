@@ -80,7 +80,8 @@ function onClick() {
 		height: calc(60px + var(--theme--sidebar--section--toggle--border-width));
 		color: var(--theme--sidebar--section--toggle--foreground);
 		background-color: var(--theme--sidebar--section--toggle--background);
-		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid var(--theme--sidebar--section--toggle--border-color);
+		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+			var(--theme--sidebar--section--toggle--border-color);
 
 		.icon {
 			--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
@@ -127,7 +128,7 @@ function onClick() {
 			opacity var(--fast) var(--transition),
 			color var(--fast) var(--transition);
 
-		[dir="rtl"] & {
+		[dir='rtl'] & {
 			right: unset;
 			left: 0;
 		}
@@ -167,7 +168,8 @@ function onClick() {
 
 	.content {
 		padding: 16px;
-		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid var(--theme--sidebar--section--toggle--border-color);
+		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+			var(--theme--sidebar--section--toggle--border-color);
 
 		:deep(.page-description) {
 			margin-bottom: 8px;

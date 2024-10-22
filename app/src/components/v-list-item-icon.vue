@@ -41,7 +41,6 @@ withDefaults(defineProps<Props>(), {
 	}
 
 	@at-root {
-
 		.v-list,
 		.v-list-item {
 			#{$this} {
@@ -54,10 +53,9 @@ withDefaults(defineProps<Props>(), {
 					&:first-child {
 						margin-right: 8px;
 
-						[dir="rtl"] & {
+						[dir='rtl'] & {
 							margin-right: unset;
 							margin-left: 8px;
-
 						}
 					}
 

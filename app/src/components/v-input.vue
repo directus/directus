@@ -235,18 +235,42 @@ function stepDown() {
 			</div>
 			<span v-if="prefix" class="prefix">{{ prefix }}</span>
 			<slot name="input">
-				<input ref="input" v-focus="autofocus" v-bind="attributes"
-					:placeholder="placeholder ? String(placeholder) : undefined" :autocomplete="autocomplete"
-					:type="type" :maxlength="maxLength" :min="min" :max="max" :step="step" :disabled="disabled"
+				<input
+					ref="input"
+					v-focus="autofocus"
+					v-bind="attributes"
+					:placeholder="placeholder ? String(placeholder) : undefined"
+					:autocomplete="autocomplete"
+					:type="type"
+					:maxlength="maxLength"
+					:min="min"
+					:max="max"
+					:step="step"
+					:disabled="disabled"
 					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
-					v-on="listeners" />
+					v-on="listeners"
+				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
 			<span v-if="type === 'number' && !hideArrows">
-				<v-icon :class="{ disabled: !isStepUpAllowed }" name="keyboard_arrow_up" class="step-up" tabindex="-1"
-					clickable :disabled="!isStepUpAllowed" @click="stepUp" />
-				<v-icon :class="{ disabled: !isStepDownAllowed }" name="keyboard_arrow_down" class="step-down"
-					tabindex="-1" clickable :disabled="!isStepDownAllowed" @click="stepDown" />
+				<v-icon
+					:class="{ disabled: !isStepUpAllowed }"
+					name="keyboard_arrow_up"
+					class="step-up"
+					tabindex="-1"
+					clickable
+					:disabled="!isStepUpAllowed"
+					@click="stepUp"
+				/>
+				<v-icon
+					:class="{ disabled: !isStepDownAllowed }"
+					name="keyboard_arrow_down"
+					class="step-down"
+					tabindex="-1"
+					clickable
+					:disabled="!isStepDownAllowed"
+					@click="stepDown"
+				/>
 			</span>
 			<div v-if="$slots.append" class="append">
 				<slot name="append" :value="modelValue" :disabled="disabled" />
@@ -306,7 +330,7 @@ function stepDown() {
 		.prepend {
 			margin-right: 8px;
 
-			[dir="rtl"] & {
+			[dir='rtl'] & {
 				margin-right: 0px;
 			}
 		}
@@ -391,7 +415,7 @@ function stepDown() {
 		border: none;
 		appearance: none;
 
-		[dir="rtl"] & {
+		[dir='rtl'] & {
 			padding-right: 18px;
 		}
 

@@ -32,7 +32,7 @@ const textDirection = computed(() => {
 useHead({
 	htmlAttrs: computed(() => ({
 		lang: locale.value,
-		dir: textDirection.value
+		dir: textDirection.value,
 	})),
 	style: [{ textContent: brandStyleCss }],
 	title: 'Directus',
@@ -92,8 +92,13 @@ useSystem();
 </script>
 
 <template>
-	<ThemeProvider :dark-mode="darkMode" :theme-light="themeLight" :theme-dark="themeDark"
-		:theme-light-overrides="themeLightOverrides" :theme-dark-overrides="themeDarkOverrides" />
+	<ThemeProvider
+		:dark-mode="darkMode"
+		:theme-light="themeLight"
+		:theme-dark="themeDark"
+		:theme-light-overrides="themeLightOverrides"
+		:theme-dark-overrides="themeDarkOverrides"
+	/>
 
 	<div id="directus">
 		<transition name="fade">

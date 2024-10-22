@@ -32,8 +32,7 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	background: var(--theme--navigation--project--background);
 	border-bottom: var(--theme--navigation--project--border-width) solid var(--theme--navigation--project--border-color);
 
-	[dir="rtl"] & {
-
+	[dir='rtl'] & {
 		padding-left: unset;
 		padding-right: 20px;
 	}

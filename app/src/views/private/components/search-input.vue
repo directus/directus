@@ -123,36 +123,72 @@ function emitValue() {
 </script>
 
 <template>
-	<v-badge bottom right class="search-badge" :value="activeFilterCount"
-		:disabled="!activeFilterCount || filterActive">
-		<div v-click-outside="{
-			handler: disable,
-			middleware: onClickOutside,
-			disabled: !active,
-		}" class="search-input" :class="{
-			active,
-			'filter-active': filterActive,
-			'has-content': !!modelValue,
-			'filter-border': filterBorder,
-			'show-filter': showFilter,
-		}" role="search" @click="activate">
-			<v-icon v-tooltip.bottom="!active ? t('search') : undefined" name="search" class="icon-search"
-				:clickable="!active" @click="input?.focus()" />
-			<input ref="input" :value="modelValue" :placeholder="placeholder ?? t('search_items')" type="search"
-				spellcheck="false" autocapitalize="off" autocorrect="off" autocomplete="off"
-				:tabindex="!active && !modelValue ? -1 : undefined" @input="emitValue" @paste="emitValue"
-				@keydown.esc="disable" />
+	<v-badge bottom right class="search-badge" :value="activeFilterCount" :disabled="!activeFilterCount || filterActive">
+		<div
+			v-click-outside="{
+				handler: disable,
+				middleware: onClickOutside,
+				disabled: !active,
+			}"
+			class="search-input"
+			:class="{
+				active,
+				'filter-active': filterActive,
+				'has-content': !!modelValue,
+				'filter-border': filterBorder,
+				'show-filter': showFilter,
+			}"
+			role="search"
+			@click="activate"
+		>
+			<v-icon
+				v-tooltip.bottom="!active ? t('search') : undefined"
+				name="search"
+				class="icon-search"
+				:clickable="!active"
+				@click="input?.focus()"
+			/>
+			<input
+				ref="input"
+				:value="modelValue"
+				:placeholder="placeholder ?? t('search_items')"
+				type="search"
+				spellcheck="false"
+				autocapitalize="off"
+				autocorrect="off"
+				autocomplete="off"
+				:tabindex="!active && !modelValue ? -1 : undefined"
+				@input="emitValue"
+				@paste="emitValue"
+				@keydown.esc="disable"
+			/>
 			<div class="spacer" />
-			<v-icon v-if="modelValue" v-tooltip.bottom="t('clear_value')" clickable class="icon-clear" name="close"
-				@click.stop="clear" />
+			<v-icon
+				v-if="modelValue"
+				v-tooltip.bottom="t('clear_value')"
+				clickable
+				class="icon-clear"
+				name="close"
+				@click.stop="clear"
+			/>
 			<template v-if="showFilter">
-				<v-icon v-tooltip.bottom="t('filter')" clickable class="icon-filter" name="filter_list"
-					@click.stop="toggleFilter" />
+				<v-icon
+					v-tooltip.bottom="t('filter')"
+					clickable
+					class="icon-filter"
+					name="filter_list"
+					@click.stop="toggleFilter"
+				/>
 
 				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">
-						<interface-system-filter class="filter-input" inline :value="filter"
-							:collection-name="collection" @input="$emit('update:filter', $event)" />
+						<interface-system-filter
+							class="filter-input"
+							inline
+							:value="filter"
+							:collection-name="collection"
+							@input="$emit('update:filter', $event)"
+						/>
 					</div>
 				</transition-expand>
 			</template>
@@ -225,7 +261,7 @@ function emitValue() {
 	.icon-search {
 		margin: 0 4px 0 9px; // visually center in closed filter
 
-		[dir="rtl"] & {
+		[dir='rtl'] & {
 			margin: 0 9px 0 0;
 		}
 	}
@@ -233,7 +269,7 @@ function emitValue() {
 	.icon-filter {
 		margin-right: 8px;
 
-		[dir="rtl"] & {
+		[dir='rtl'] & {
 			margin-right: unset;
 			margin-left: 8px;
 		}

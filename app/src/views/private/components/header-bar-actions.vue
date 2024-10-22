@@ -19,8 +19,15 @@ const active = ref(false);
 		</v-button>
 
 		<div class="action-buttons">
-			<v-button v-if="showSidebarToggle" class="sidebar-toggle" icon rounded secondary outlined
-				@click="$emit('toggle:sidebar')">
+			<v-button
+				v-if="showSidebarToggle"
+				class="sidebar-toggle"
+				icon
+				rounded
+				secondary
+				outlined
+				@click="$emit('toggle:sidebar')"
+			>
 				<v-icon name="info" />
 			</v-button>
 
@@ -62,11 +69,11 @@ const active = ref(false);
 	--v-icon-color: var(--theme--foreground);
 }
 
-.actions .action-buttons> :deep(*:not(:last-child)) {
+.actions .action-buttons > :deep(*:not(:last-child)) {
 	display: none;
 	margin-right: 8px;
 
-	[dir="rtl"] & {
+	[dir='rtl'] & {
 		margin-right: unset;
 		margin-left: 8px;
 	}
@@ -98,12 +105,12 @@ const active = ref(false);
 	transform: rotate(180deg);
 }
 
-.actions.active .action-buttons> :deep(*) {
+.actions.active .action-buttons > :deep(*) {
 	display: inherit;
 }
 
 @media (min-width: 960px) {
-	.actions .action-buttons> :deep(*:not(.sidebar-toggle)) {
+	.actions .action-buttons > :deep(*:not(.sidebar-toggle)) {
 		display: inherit !important;
 	}
 }
