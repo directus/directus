@@ -127,23 +127,20 @@ export class DriverGCS implements TusDriver {
 	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
 		const file = this.file(this.fullPath(filepath));
 
-		const stream = file
-			.createWriteStream({
-				chunkSize: this.preferredChunkSize,
-				uri: context.metadata!['uri'] as string,
-				offset,
-				isPartialUpload: true,
-				resumeCRC32C: context.metadata!['crc32'] as string,
-				metadata: {
-					contentLength: context.size || 0,
-					metadata: {
-						size: context.size || 0,
-					},
-				},
-			})
-			.on('crc32c', (crc32c) => {
-				context.metadata!['crc32'] = crc32c;
-			});
+		const stream = file.createWriteStream({
+			chunkSize: this.preferredChunkSize,
+			uri: context.metadata!['uri'] as string,
+			offset,
+			isPartialUpload: true,
+			resumeCRC32C: context.metadata!['hash'] as string,
+			metadata: {
+				contentLength: context.size || 0,
+			},
+		});
+
+		stream.on('crc32c', (hash: string) => {
+			context.metadata!['hash'] = hash;
+		});
 
 		let bytesUploaded = offset || 0;
 
