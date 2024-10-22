@@ -6,6 +6,9 @@ import { join } from 'node:path';
 import { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
+const DEFAULT_CHUNK_SIZE = 8388608; // 8mb in bytes
+const MINIMUM_CHUNK_SIZE = 262144; // 256kb in bytes
+
 export type DriverGCSConfig = {
 	root?: string;
 	bucket: string;
@@ -35,12 +38,11 @@ export class DriverGCS implements TusDriver {
 
 	private getPreferredChunkSize(tus?: { chunkSize?: number }) {
 		if (!tus?.chunkSize) {
-			// recommended default is 8MB
-			return 8388608;
+			return DEFAULT_CHUNK_SIZE;
 		}
 
 		// chunkSize must be powers of 2 starting at 256kb
-		if (Math.log2(tus.chunkSize) % 1 !== 0) {
+		if (tus.chunkSize < MINIMUM_CHUNK_SIZE || Math.log2(tus.chunkSize) % 1 !== 0) {
 			throw new Error('Invalid chunkSize provided');
 		}
 
