@@ -102,7 +102,7 @@ export class DriverGCS implements TusDriver {
 		return ['creation', 'termination', 'expiration'];
 	}
 
-	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
+	async createChunkedUpload(filepath: string, context: ChunkedUploadContext) {
 		const file = this.file(this.fullPath(filepath));
 
 		const stream = file.createWriteStream({
@@ -124,12 +124,7 @@ export class DriverGCS implements TusDriver {
 		return context;
 	}
 
-	async writeChunk(
-		filepath: string,
-		content: Readable,
-		offset: number,
-		context: ChunkedUploadContext,
-	): Promise<number> {
+	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
 		const file = this.file(this.fullPath(filepath));
 
 		const stream = file.createWriteStream({
@@ -160,11 +155,9 @@ export class DriverGCS implements TusDriver {
 		return bytesUploaded;
 	}
 
-	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {
-		return;
-	}
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
 
-	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
 		await this.delete(filepath);
 	}
 }
