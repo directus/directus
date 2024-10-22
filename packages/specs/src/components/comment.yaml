@@ -1,0 +1,46 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for this single collection preset.
+    example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+    type: string
+  collection:
+    description: The collection of the item the Comment is created for.
+    example: articles
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Collections'
+  item:
+    description: The item the Comment is created for.
+    example: '123'
+    type: string
+  comment:
+    description:
+      User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin
+      app.
+    example: 'This is a comment'
+    type: string
+  date_created:
+    description: When the Comment was created.
+    type: string
+    example: '2024-01-23T12:34:56Z'
+    format: date-time
+    nullable: true
+  date_updated:
+    description: When the Comment was updated.
+    type: string
+    example: '2024-01-23T12:34:56Z'
+    format: date-time
+    nullable: true
+  user_created:
+    description: User that created the Comment.
+    example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Users'
+  user_updated:
+    description: User that updated the Comment.
+    example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+    oneOf:
+      - type: string
+      - $ref: '../openapi.yaml#/components/schemas/Users'

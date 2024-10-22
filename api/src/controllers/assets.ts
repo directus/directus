@@ -139,7 +139,7 @@ router.get(
 				{
 					useDefaults: false,
 					directives: {
-						defaultSrc: ['none'],
+						defaultSrc: [`'none'`],
 					},
 				},
 				getConfigFromEnv('ASSETS_CONTENT_SECURITY_POLICY'),

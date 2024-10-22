@@ -39,6 +39,7 @@ tile_size: Tamanho do ícone
 edit_field: Editar campo
 conditions: Condições
 location: Localização
+collection_names_are_case_sensitive: Os nomes das coleções são sensíveis a maiúsculas e minúsculas
 condition_rules: Regras de Condição
 input: Input
 maps: Mapas
@@ -50,15 +51,58 @@ duplicate_field: Duplicar este campo
 half_width: Metade da largura
 full_width: Largura total
 group: Grupo
+popular: Popular
+recent: Recente
 export_items: Exportar itens
 and: E
 or: Ou
 init: Init
 dataset_too_large_currently_showing_n_items: O conjunto de dados é muito grande. A mostrar os primeiros {n} itens.
+modifier: Modificador
 extension_interface: Interface
 extension_display: Visualização
+extension_layout: Esquema
+extension_module: Módulo
+extension_panel: Painel
+extension_theme: Tema
 extension_hook: Gancho (hook)
+extension_endpoint: Endpoint
+extension_operation: Operação
+extension_bundle: Conjunto
+extension_interfaces: '''Interfaces'''
+extension_displays: Exibições
+extension_layouts: Esquemas
 extension_modules: Módulos
+extension_panels: Painéis
+extension_themes: Temas
+extension_hooks: '"Hooks"'
+extension_endpoints: Endpoints
+extension_operations: Operações
+extension_bundles: Conjuntos
+extension_missing: Em falta
+extension_reload_required: Necessário recarregar a página
+extension_reload_required_copy: É necessário recarregar a página para ver as alterações após ativar ou desativar extensões da aplicação.
+extension_reload_now: Recarregar agora
+published_relative: Publicado há {relativeTime}
+compatible_with_your_project: Compatível com o seu projeto
+compatible_with_your_project_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que corresponde à versão do seu projeto ({currentVersion})
+last_updated_relative: Última atualização há {relativeTime}
+n_files: '{n} Ficheiros'
+verified: Verificado
+homepage: Página inicial
+repository: Repositório
+reload_page: Recarregar Página
+reload_required: Recarga necessária
+report_an_issue: Reportar um Problema
+website: Site
+github: GitHub
+beta: Beta
+n_downloads: '{n} Transferências'
+downloads: Transferências
+compatibility_not_guaranteed: Compatibilidade não garantida
+compatibility_not_guaranteed_copy: O autor indicou que a compatibilidade desta extensão é {hostVersion}, o que não corresponde à versão do seu projeto ({currentVersion})
+enable: Ativar
+disable: Desativar
 custom: Personalizado
 hook: Gancho (hook)
 fill_width: Ocupar a largura
@@ -66,6 +110,7 @@ field_name_translations: Nome do campo para as traduções
 enter_password_to_enable_tfa: Coloque a password para ativar a autenticação de 2 fatores
 add_field: Adicionar Campo
 role_name: Nome do cargo
+policy_name: Nome da política
 branch: Filial
 leaf: Folha
 indeterminate: Indeterminado
@@ -83,10 +128,15 @@ requires_value: Valor obrigatório
 create_preset: Criar uma predefinação
 create_panel: Criar painel
 create_role: Criar estatuto
+create_policy: Criar Política
 create_user: Criar utilizador
 message: Mensagem
 delete_panel: Apagar painel
 create_webhook: Criar webhook
+create_custom_translation: Criar tradução personalizada
+edit_custom_translation: Editar tradução personalizada
+no_custom_translations: Sem tradução personalizada
+no_custom_translations_copy: Ainda não existem traduções personalizadas.
 invite_users: Convidar utlizadores
 invite: Convidar
 email_already_invited: Este e-mail já foi convidado
@@ -102,6 +152,26 @@ rename_folder: Mudar o nome da pasta
 delete_folder: Eliminar pasta
 prefix: Prefixo
 suffix: Sufixo
+keep: Manter
+version: Versão
+version_key: Chave da Versão
+version_name: Nome da Versão
+main_version: Principal
+switch_version: Trocar versão
+switch_version_copy: Tem a certeza que pretende mudar para a versão "{version}"? As alterações não guardadas serão perdidas.
+create_version: Criar Versão
+rename_version: Renomear versão
+compare_version: Comparar versão
+save_version: Guardar Versão
+promote_version: Promover versão
+promote_version_disabled: Sem alterações
+promote_version_drawer_title: Promover {version} para Principal
+promote_version_changes: Alterações
+promote_version_preview: Pré-visualização
+outdated_notice: >-
+  O item principal foi atualizado desde que esta versão foi criada. Por favor, reveja todos os valores do campo abaixo e confirme qual a versão que deve ser utilizada ao promover esta versão no item principal.
+promote_notice: >-
+  Por favor, reveja todos os valores dos campos abaixo e confirme qual versão deve ser usada ao promover esta versão no item principal.
 reset_bookmark: Restaurar marcador
 update_bookmark: Atualizar o marcador
 delete_bookmark: Eliminar o marcador
@@ -200,19 +270,35 @@ alias: Nome alternativo
 bigInteger: Grande inteiro
 boolean: Boleano
 date: Data
+translation_key_placeholder: Introduza uma chave...
 datetime: Data e Hora
 dateTime: Data e Hora
+precision: Precisão
 decimal: Decimal
 float: Ponto flutuante
 integer: Inteiro
 json: JSON
 xml: XML
+yaml: YAML
 string: String
 text: Texto
 time: Hora
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometria (Todos)
+  Point: Ponto
+  LineString: LineString
+  Polygon: Polígono
+  MultiPoint: Multiponto
+  MultiLineString: MultiLineString
+  MultiPolygon: Multipolígono
+theme_auto: Automático (baseado no sistema)
+theme_light: Modo Claro
+theme_dark: Modo Escuro
+theme_directus_default: Directus padrão
+theme_directus_minimal: Directus Mínimo
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar traduções
 auto_refresh: Atualização Automática
@@ -783,6 +869,7 @@ fields:
     description: Descrição
     users: Utilizadores na função
   directus_policies:
+    name: Nome da política
     description: Descrição
   directus_webhooks:
     name: Nome
@@ -809,6 +896,8 @@ field_options:
       name_name: Nome
   directus_users:
     dropdown_auto: Automático (baseado no sistema)
+    dropdown_light: Modo Claro
+    dropdown_dark: Modo Escuro
     status_dropdown_active: Ativar
   directus_webhooks:
     status_options_active: Ativar

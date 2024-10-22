@@ -1,6 +1,6 @@
 import type { Accountability, PermissionsAction, PrimaryKey, Query } from '@directus/types';
 import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
-import { runAst } from '../../../../database/run-ast/run-ast.js';
+import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
 
@@ -9,6 +9,7 @@ export interface ValidateItemAccessOptions {
 	action: PermissionsAction;
 	collection: string;
 	primaryKeys: PrimaryKey[];
+	fields?: string[];
 }
 
 export async function validateItemAccess(options: ValidateItemAccessOptions, context: Context) {
@@ -24,7 +25,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 	const query: Query = {
 		// We don't actually need any of the field data, just want to know if we can read the item as
 		// whole or not
-		fields: [],
+		fields: options.fields ?? [],
 		limit: options.primaryKeys.length,
 	};
 
@@ -46,9 +47,17 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		},
 	};
 
-	const items = await runAst(ast, context.schema, options.accountability, { knex: context.knex });
+	const items = await fetchPermittedAstRootFields(ast, {
+		schema: context.schema,
+		accountability: options.accountability,
+		knex: context.knex,
+	});
 
 	if (items && items.length === options.primaryKeys.length) {
+		if (options.fields) {
+			return items.every((item: any) => options.fields!.every((field) => item[field] === 1));
+		}
+
 		return true;
 	}
 

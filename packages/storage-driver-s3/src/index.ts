@@ -24,7 +24,7 @@ import {
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import type { ChunkedUploadContext, Range, TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import { Permit, Semaphore } from '@shopify/semaphore';
@@ -130,7 +130,9 @@ export class DriverS3 implements TusDriver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async read(filepath: string, range?: Range): Promise<Readable> {
+	async read(filepath: string, options?: ReadOptions): Promise<Readable> {
+		const { range } = options ?? {};
+
 		const commandInput: GetObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Bucket: this.config.bucket,
