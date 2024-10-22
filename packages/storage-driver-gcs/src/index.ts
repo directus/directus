@@ -2,10 +2,9 @@ import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/sto
 import { normalizePath } from '@directus/utils';
 import type { Bucket, CreateReadStreamOptions, GetFilesOptions } from '@google-cloud/storage';
 import { Storage } from '@google-cloud/storage';
-import { TUS_RESUMABLE } from '@tus/utils';
 import { join } from 'node:path';
-import { PassThrough, type Readable } from 'node:stream';
-import { finished, pipeline } from 'node:stream/promises';
+import { type Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 
 export type DriverGCSConfig = {
 	root?: string;
@@ -105,21 +104,9 @@ export class DriverGCS implements TusDriver {
 	async createChunkedUpload(filepath: string, context: ChunkedUploadContext) {
 		const file = this.file(this.fullPath(filepath));
 
-		const stream = file.createWriteStream({
-			chunkSize: this.preferredChunkSize,
-			metadata: {
-				metadata: {
-					tus_version: TUS_RESUMABLE,
-				},
-			},
-		});
+		const [uri] = await file.createResumableUpload();
 
-		const passThrough = new PassThrough();
-		passThrough.end();
-
-		passThrough.pipe(stream);
-
-		await finished(passThrough);
+		context.metadata!['uri'] = uri;
 
 		return context;
 	}
@@ -127,16 +114,22 @@ export class DriverGCS implements TusDriver {
 	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
 		const file = this.file(this.fullPath(filepath));
 
-		const stream = file.createWriteStream({
-			chunkSize: this.preferredChunkSize,
-			metadata: {
+		const stream = file
+			.createWriteStream({
+				chunkSize: this.preferredChunkSize,
+				uri: context.metadata!['uri'] as string,
+				offset,
+				resumeCRC32C: context.metadata!['crc32'] as string,
 				metadata: {
-					size: context.size ?? null,
-					offset,
-					tus_version: TUS_RESUMABLE,
+					contentLength: context.size || 0,
+					metadata: {
+						id: file.id,
+					},
 				},
-			},
-		});
+			})
+			.on('crc32c', (crc32c) => {
+				context.metadata!['crc32'] = crc32c;
+			});
 
 		let bytesUploaded = offset || 0;
 
