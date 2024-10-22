@@ -707,7 +707,7 @@ instability or limited bandwidth. This is implemented using the [TUS protocol](h
 
 ::: warning
 
-chunkSize for GCP must be powers of 2 with a minimum of 256kb (e.g. 256, 512, 1024).
+`chunkSize` for GCP must be powers of 2 with a minimum of `256kb` (e.g. 256, 512, 1024).
 
 :::
 
