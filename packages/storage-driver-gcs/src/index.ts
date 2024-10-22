@@ -119,11 +119,12 @@ export class DriverGCS implements TusDriver {
 				chunkSize: this.preferredChunkSize,
 				uri: context.metadata!['uri'] as string,
 				offset,
+				isPartialUpload: true,
 				resumeCRC32C: context.metadata!['crc32'] as string,
 				metadata: {
 					contentLength: context.size || 0,
 					metadata: {
-						id: file.id,
+						size: context.size || 0,
 					},
 				},
 			})
