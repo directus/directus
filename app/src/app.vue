@@ -11,7 +11,7 @@ import { useI18n } from 'vue-i18n';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const appStore = useAppStore();
 const serverStore = useServerStore();
@@ -24,7 +24,16 @@ const brandStyleCss = computed(() => {
 	return `:root { --project-color: ${serverStore.info?.project?.project_color ?? 'var(--theme--primary)'} }`;
 });
 
+const textDirection = computed(() => {
+	const rtlLanguages = ['ar-SA.', 'fa-IR', 'he-IL'];
+	return rtlLanguages.includes(locale.value) ? 'rtl' : 'ltr';
+});
+
 useHead({
+	htmlAttrs: computed(() => ({
+		lang: locale.value,
+		dir: textDirection.value
+	})),
 	style: [{ textContent: brandStyleCss }],
 	title: 'Directus',
 	titleTemplate: '%s · %projectName',
@@ -83,13 +92,8 @@ useSystem();
 </script>
 
 <template>
-	<ThemeProvider
-		:dark-mode="darkMode"
-		:theme-light="themeLight"
-		:theme-dark="themeDark"
-		:theme-light-overrides="themeLightOverrides"
-		:theme-dark-overrides="themeDarkOverrides"
-	/>
+	<ThemeProvider :dark-mode="darkMode" :theme-light="themeLight" :theme-dark="themeDark"
+		:theme-light-overrides="themeLightOverrides" :theme-dark-overrides="themeDarkOverrides" />
 
 	<div id="directus">
 		<transition name="fade">

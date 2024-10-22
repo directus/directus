@@ -64,8 +64,8 @@ const {
 	primaryKey,
 	props.primaryKey !== '+'
 		? {
-				fields: ['*', 'role.*'],
-		  }
+			fields: ['*', 'role.*'],
+		}
 		: undefined,
 );
 
@@ -274,15 +274,8 @@ function revert(values: Record<string, any>) {
 		<template #actions>
 			<v-dialog v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
 				<template #activator="{ on }">
-					<v-button
-						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
-						rounded
-						icon
-						class="action-delete"
-						secondary
-						:disabled="item === null || deleteAllowed !== true"
-						@click="on"
-					>
+					<v-button v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')" rounded icon
+						class="action-delete" secondary :disabled="item === null || deleteAllowed !== true" @click="on">
 						<v-icon name="delete" />
 					</v-button>
 				</template>
@@ -301,22 +294,12 @@ function revert(values: Record<string, any>) {
 				</v-card>
 			</v-dialog>
 
-			<v-dialog
-				v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew"
-				v-model="confirmArchive"
-				:disabled="archiveAllowed === false"
-				@esc="confirmArchive = false"
-			>
+			<v-dialog v-if="collectionInfo.meta && collectionInfo.meta.archive_field && !isNew" v-model="confirmArchive"
+				:disabled="archiveAllowed === false" @esc="confirmArchive = false">
 				<template #activator="{ on }">
-					<v-button
-						v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
-						v-tooltip.bottom="archiveTooltip"
-						rounded
-						icon
-						secondary
-						:disabled="item === null || archiveAllowed !== true"
-						@click="on"
-					>
+					<v-button v-if="collectionInfo.meta && collectionInfo.meta.singleton === false"
+						v-tooltip.bottom="archiveTooltip" rounded icon secondary
+						:disabled="item === null || archiveAllowed !== true" @click="on">
 						<v-icon :name="isArchived ? 'unarchive' : 'archive'" />
 					</v-button>
 				</template>
@@ -335,25 +318,15 @@ function revert(values: Record<string, any>) {
 				</v-card>
 			</v-dialog>
 
-			<v-button
-				v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')"
-				rounded
-				icon
-				:loading="saving"
-				:disabled="!isSavable"
-				@click="saveAndQuit"
-			>
+			<v-button v-tooltip.bottom="saveAllowed ? t('save') : t('not_allowed')" rounded icon :loading="saving"
+				:disabled="!isSavable" @click="saveAndQuit">
 				<v-icon name="check" />
 
 				<template #append-outer>
-					<save-options
-						v-if="isSavable"
+					<save-options v-if="isSavable"
 						:disabled-options="createAllowed ? [] : ['save-and-add-new', 'save-as-copy']"
-						@save-and-stay="saveAndStay"
-						@save-and-add-new="saveAndAddNew"
-						@save-as-copy="saveAsCopyAndNavigate"
-						@discard-and-stay="discardAndStay"
-					/>
+						@save-and-stay="saveAndStay" @save-and-add-new="saveAndAddNew"
+						@save-as-copy="saveAsCopyAndNavigate" @discard-and-stay="discardAndStay" />
 				</template>
 			</v-button>
 		</template>
@@ -366,12 +339,8 @@ function revert(values: Record<string, any>) {
 			<div v-if="isNew === false" class="user-box">
 				<div class="avatar">
 					<v-skeleton-loader v-if="loading" />
-					<v-image
-						v-else-if="avatarSrc && !avatarError"
-						:src="avatarSrc"
-						:alt="t('avatar')"
-						@error="avatarError = $event"
-					/>
+					<v-image v-else-if="avatarSrc && !avatarError" :src="avatarSrc" :alt="t('avatar')"
+						@error="avatarError = $event" />
 					<v-icon v-else name="account_circle" x-large />
 				</div>
 				<div class="user-box-content">
@@ -398,16 +367,9 @@ function revert(values: Record<string, any>) {
 				</div>
 			</div>
 
-			<v-form
-				ref="form"
-				v-model="edits"
-				:disabled="isNew ? false : updateAllowed === false"
-				:fields="fieldsFiltered"
-				:loading="loading"
-				:initial-values="user"
-				:primary-key="primaryKey"
-				:validation-errors="validationErrors"
-			/>
+			<v-form ref="form" v-model="edits" :disabled="isNew ? false : updateAllowed === false"
+				:fields="fieldsFiltered" :loading="loading" :initial-values="user" :primary-key="primaryKey"
+				:validation-errors="validationErrors" />
 		</div>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -425,13 +387,8 @@ function revert(values: Record<string, any>) {
 
 		<template #sidebar>
 			<user-info-sidebar-detail :is-new="isNew" :user="item" />
-			<revisions-drawer-detail
-				v-if="isNew === false && revisionsAllowed"
-				ref="revisionsDrawerDetail"
-				collection="directus_users"
-				:primary-key="primaryKey"
-				@revert="revert"
-			/>
+			<revisions-drawer-detail v-if="isNew === false && revisionsAllowed" ref="revisionsDrawerDetail"
+				collection="directus_users" :primary-key="primaryKey" @revert="revert" />
 			<comments-sidebar-detail v-if="isNew === false" collection="directus_users" :primary-key="primaryKey" />
 		</template>
 	</private-view>
@@ -488,6 +445,14 @@ function revert(values: Record<string, any>) {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
+		}
+
+		html[dir="rtl"] {
+			@media (min-width: 600px) {
+				margin-right: auto;
+				margin-left: 22px;
+
+			}
 		}
 
 		@media (min-width: 600px) {

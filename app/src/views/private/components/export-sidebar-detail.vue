@@ -119,11 +119,11 @@ const getItemCount = async () => {
 	try {
 		const aggregate = primaryKeyField.value?.field
 			? {
-					countDistinct: [primaryKeyField.value.field],
-			  }
+				countDistinct: [primaryKeyField.value.field],
+			}
 			: {
-					count: ['*'],
-			  };
+				count: ['*'],
+			};
 
 		const response = await api.get(getEndpoint(collection.value), {
 			params: {
@@ -370,7 +370,8 @@ async function exportDataFiles() {
 				<div class="field full">
 					<div v-if="uploading || importing" class="uploading">
 						<div class="type-text">
-							<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate') }}</span>
+							<span>{{ importing ? t('import_data_indeterminate') : t('upload_file_indeterminate')
+								}}</span>
 							<span v-if="!importing">{{ progress }}%</span>
 						</div>
 						<v-progress-linear :indeterminate="importing" :value="progress" rounded />
@@ -385,22 +386,18 @@ async function exportDataFiles() {
 								</div>
 							</template>
 							<template #input>
-								<input
-									id="import-file"
-									ref="fileInput"
-									type="file"
-									accept="text/csv, application/json"
-									hidden
-									@change="onChange"
-								/>
-								<label v-tooltip="file && file.name" for="import-file" class="import-file-label"></label>
+								<input id="import-file" ref="fileInput" type="file" accept="text/csv, application/json"
+									hidden @change="onChange" />
+								<label v-tooltip="file && file.name" for="import-file"
+									class="import-file-label"></label>
 								<span class="import-file-text" :class="{ 'no-file': !file }">
 									{{ file ? file.name : t('import_data_input_placeholder') }}
 								</span>
 							</template>
 							<template #append>
 								<template v-if="file">
-									<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="clearFileInput" />
+									<v-icon v-tooltip="t('deselect')" class="deselect" name="close"
+										@click.stop="clearFileInput" />
 								</template>
 								<v-icon v-else name="attach_file" />
 							</template>
@@ -422,79 +419,56 @@ async function exportDataFiles() {
 					{{ t('export_items') }}
 				</v-button>
 
-				<button
-					v-tooltip.bottom="
-						!!onDownload ? t('presentation_text_values_cannot_be_reimported') : t('download_page_as_csv_unsupported')
-					"
-					class="download-local"
-					:disabled="!onDownload"
-					@click="onDownload"
-				>
+				<button v-tooltip.bottom="!!onDownload ? t('presentation_text_values_cannot_be_reimported') : t('download_page_as_csv_unsupported')
+					" class="download-local" :disabled="!onDownload" @click="onDownload">
 					{{ t('download_page_as_csv') }}
 				</button>
 			</div>
 		</div>
 
-		<v-drawer
-			v-model="exportDialogActive"
-			:title="t('export_items')"
-			icon="import_export"
-			persistent
-			@esc="exportDialogActive = false"
-			@cancel="exportDialogActive = false"
-		>
+		<v-drawer v-model="exportDialogActive" :title="t('export_items')" icon="import_export" persistent
+			@esc="exportDialogActive = false" @cancel="exportDialogActive = false">
 			<template #actions>
-				<v-button
-					v-tooltip.bottom="location === 'download' ? t('download_file') : t('start_export')"
-					rounded
-					icon
-					:loading="exporting"
-					@click="startExport"
-				>
+				<v-button v-tooltip.bottom="location === 'download' ? t('download_file') : t('start_export')" rounded
+					icon :loading="exporting" @click="startExport">
 					<v-icon :name="location === 'download' ? 'download' : 'start'" />
 				</v-button>
 			</template>
 			<div class="export-fields">
 				<div class="field half-left">
 					<p class="type-label">{{ t('format') }}</p>
-					<v-select
-						v-model="format"
-						:items="[
-							{
-								text: t('csv'),
-								value: 'csv',
-							},
-							{
-								text: t('json'),
-								value: 'json',
-							},
-							{
-								text: t('xml'),
-								value: 'xml',
-							},
-							{
-								text: t('yaml'),
-								value: 'yaml',
-							},
-						]"
-					/>
+					<v-select v-model="format" :items="[
+						{
+							text: t('csv'),
+							value: 'csv',
+						},
+						{
+							text: t('json'),
+							value: 'json',
+						},
+						{
+							text: t('xml'),
+							value: 'xml',
+						},
+						{
+							text: t('yaml'),
+							value: 'yaml',
+						},
+					]" />
 				</div>
 
 				<div class="field half-right">
 					<p class="type-label">{{ t('limit') }}</p>
-					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1" :placeholder="t('unlimited')" />
+					<v-input v-model="exportSettings.limit" type="number" :min="-1" :step="1"
+						:placeholder="t('unlimited')" />
 				</div>
 
 				<div class="field half-left">
 					<p class="type-label">{{ t('export_location') }}</p>
-					<v-select
-						v-model="location"
-						:disabled="lockedToFiles !== null"
-						:items="[
-							{ value: 'download', text: t('download_file') },
-							{ value: 'files', text: t('file_library') },
-						]"
-					/>
+					<v-select v-model="location" :disabled="lockedToFiles !== null" :items="[
+						{ value: 'download', text: t('download_file') },
+						{ value: 'files', text: t('file_library') },
+					]" />
 				</div>
 
 				<div class="field half-right">
@@ -550,22 +524,15 @@ async function exportDataFiles() {
 
 				<div class="field half-left">
 					<p class="type-label">{{ t('sort_field') }}</p>
-					<interface-system-field
-						:value="sortField"
-						:collection-name="collection"
-						allow-primary-key
-						@input="sortField = $event"
-					/>
+					<interface-system-field :value="sortField" :collection-name="collection" allow-primary-key
+						@input="sortField = $event" />
 				</div>
 				<div class="field half-right">
 					<p class="type-label">{{ t('sort_direction') }}</p>
-					<v-select
-						v-model="sortDirection"
-						:items="[
-							{ value: 'ASC', text: t('sort_asc') },
-							{ value: 'DESC', text: t('sort_desc') },
-						]"
-					/>
+					<v-select v-model="sortDirection" :items="[
+						{ value: 'ASC', text: t('sort_asc') },
+						{ value: 'DESC', text: t('sort_desc') },
+					]" />
 				</div>
 
 				<div class="field full">
@@ -574,20 +541,13 @@ async function exportDataFiles() {
 				</div>
 				<div class="field full">
 					<p class="type-label">{{ t('filter') }}</p>
-					<interface-system-filter
-						:value="exportSettings.filter"
-						:collection-name="collection"
-						@input="exportSettings.filter = $event"
-					/>
+					<interface-system-filter :value="exportSettings.filter" :collection-name="collection"
+						@input="exportSettings.filter = $event" />
 				</div>
 				<div class="field full">
 					<p class="type-label">{{ t('field', 2) }}</p>
-					<interface-system-fields
-						:value="exportSettings.fields"
-						:collection-name="collection"
-						allow-select-all
-						@input="exportSettings.fields = $event"
-					/>
+					<interface-system-fields :value="exportSettings.fields" :collection-name="collection"
+						allow-select-all @input="exportSettings.fields = $event" />
 				</div>
 			</div>
 		</v-drawer>
@@ -670,6 +630,10 @@ async function exportDataFiles() {
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
+
+	[dir="rtl"] & {
+		margin-left: unset
+	}
 
 	&.has-file {
 		background-color: var(--theme--primary-background);
