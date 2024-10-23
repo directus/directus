@@ -109,7 +109,9 @@
 	color: var(--theme--primary);
 }
 
-.ce-popover__items
+/* Add small gap between buttons in inline toolbar */
+.codex-editor
+	.ce-popover__items
 	> [class^='ce-popover-item']:not(.ce-popover-item-separator)
 	+ [class^='ce-popover-item']:not(.ce-popover-item-separator) {
 	margin-left: 1px;
@@ -400,6 +402,7 @@
 	border-radius: 4px;
 }
 
+/* Contrast for highlighted content inside inline code elements */
 .codex-editor .ce-block .inline-code::selection,
 .codex-editor .ce-block .inline-code > *::selection {
 	background-color: var(--theme--warning);
