@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-fixed bug in mail service where when there is a colon in the project name the 'from' in the mail template is empty
+Fixed an issue where the mail sender is not displayed correctly for instances that use special characters in project name
