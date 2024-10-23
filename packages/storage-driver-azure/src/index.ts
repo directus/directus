@@ -118,18 +118,12 @@ export class DriverAzure implements TusDriver {
 			chunks.push(chunk);
 		});
 
-		try {
-			await finished(content);
+		await finished(content);
 
-			const chunk = Buffer.concat(chunks);
+		const chunk = Buffer.concat(chunks);
 
-			if (chunk.length > 0) {
-				await client.appendBlock(chunk, chunk.length);
-			}
-		} catch {
-			await this.delete(filepath).catch(() => {
-				/* ignore */
-			});
+		if (chunk.length > 0) {
+			await client.appendBlock(chunk, chunk.length);
 		}
 
 		return bytesUploaded;
