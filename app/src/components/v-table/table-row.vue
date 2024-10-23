@@ -26,7 +26,7 @@ const props = withDefaults(
 	},
 );
 
-defineEmits(['click', 'item-selected']);
+const emit = defineEmits(['click', 'item-selected']);
 
 const cssHeight = computed(() => {
 	return {
@@ -34,10 +34,16 @@ const cssHeight = computed(() => {
 		renderTemplateImage: props.height - 16 + 'px',
 	};
 });
+
+function onClick(event) {
+	if (window.getSelection().toString()) return;
+
+	emit('click', event);
+}
 </script>
 
 <template>
-	<tr class="table-row" :class="{ subdued: subdued, clickable: hasClickListener }" @click="$emit('click', $event)">
+	<tr class="table-row" :class="{ subdued: subdued, clickable: hasClickListener }" @click="onClick">
 		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
@@ -51,7 +57,7 @@ const cssHeight = computed(() => {
 			/>
 		</td>
 
-		<td v-for="header in headers" :key="header.value" class="cell" :class="`align-${header.align}`">
+		<td v-for="header in headers" :key="header.value" class="cell text-selectable" :class="`align-${header.align}`">
 			<slot :name="`item.${header.value}`" :item="item">
 				<v-text-overflow
 					v-if="
@@ -89,6 +95,14 @@ const cssHeight = computed(() => {
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color, transparent);
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		position: relative;
+
+		&.text-selectable {
+			user-select: text;
+			* {
+				user-select: text;
+			}
+		}
 
 		&:last-child {
 			padding: 0 12px;
