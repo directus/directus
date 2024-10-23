@@ -151,13 +151,7 @@ export class DriverGCS implements TusDriver {
 			bytesUploaded += chunk.length;
 		});
 
-		try {
-			await pipeline(content, stream);
-		} catch {
-			this.delete(filepath).catch(() => {
-				/* ignore */
-			});
-		}
+		await pipeline(content, stream);
 
 		return bytesUploaded;
 	}
