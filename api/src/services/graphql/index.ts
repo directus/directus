@@ -2844,6 +2844,8 @@ export class GraphQLService {
 						max_length: GraphQLInt,
 						numeric_precision: GraphQLInt,
 						numeric_scale: GraphQLInt,
+						is_indexed: GraphQLBoolean,
+						is_generated: GraphQLBoolean,
 						is_nullable: GraphQLBoolean,
 						is_unique: GraphQLBoolean,
 						is_primary_key: GraphQLBoolean,
