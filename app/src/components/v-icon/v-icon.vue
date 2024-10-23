@@ -7,7 +7,7 @@ import { camelCase, upperFirst } from 'lodash';
 import { components } from './custom-icons';
 
 import SocialIcon from './social-icon.vue';
-import { socialIcons } from './social-icons';
+import { socialIcons, socialPrefix } from './social-icons';
 
 const props = withDefaults(
 	defineProps<{
@@ -61,7 +61,13 @@ const customIconName = computed(() => {
 });
 
 const socialIconName = computed<IconName | null>(() => {
-	if (socialIcons.includes(props.name)) return props.name.replace(/_/g, '-') as IconName;
+	let name = props.name;
+
+	if (name.startsWith(socialPrefix)) {
+		name = name.replace(socialPrefix, '');
+		if (socialIcons.includes(name)) return name.replace(/_/g, '-') as IconName;
+	}
+
 	return null;
 });
 
@@ -148,8 +154,8 @@ function emitClick(event: MouseEvent) {
 		fill: currentColor;
 
 		&.svg-inline--fa {
-			width: auto;
-			height: auto;
+			width: 100%;
+			height: 100%;
 		}
 	}
 
