@@ -16,18 +16,18 @@ export function mergeWithParentItems(
 	const parentItems = clone(toArray(parentItem));
 
 	if (nestedNode.type === 'm2o') {
-		const parentsByForeignKey = new Map()
+		const parentsByForeignKey = new Map();
 
-		parentItems.forEach((parentItem: typeof parentItems[number]) => {
+		parentItems.forEach((parentItem: (typeof parentItems)[number]) => {
 			const relationKey = parentItem[nestedNode.relation.field];
 
 			if (!parentsByForeignKey.has(relationKey)) {
-				parentsByForeignKey.set(relationKey, [])
+				parentsByForeignKey.set(relationKey, []);
 			}
 
 			parentItem[nestedNode.fieldKey] = null;
 			parentsByForeignKey.get(relationKey).push(parentItem);
-		})
+		});
 
 		const nestPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
 
@@ -39,48 +39,46 @@ export function mergeWithParentItems(
 			}
 		}
 	} else if (nestedNode.type === 'o2m') {
-		const parentCollectionName = nestedNode.relation.related_collection
-		const parentPrimaryKeyField = schema.collections[parentCollectionName!]!.primary
-		const parentRelationField = nestedNode.fieldKey
-		const nestedParentKeyField = nestedNode.relation.field
+		const parentCollectionName = nestedNode.relation.related_collection;
+		const parentPrimaryKeyField = schema.collections[parentCollectionName!]!.primary;
+		const parentRelationField = nestedNode.fieldKey;
+		const nestedParentKeyField = nestedNode.relation.field;
 
 		const parentsByPrimaryKey = new Map();
 
-		parentItems.forEach((parentItem: typeof parentItems[number]) => {
-			if (!parentItem[parentRelationField])
-				parentItem[parentRelationField] = [];
+		parentItems.forEach((parentItem: (typeof parentItems)[number]) => {
+			if (!parentItem[parentRelationField]) parentItem[parentRelationField] = [];
 
-			const parentPrimaryKey = parentItem[parentPrimaryKeyField]
+			const parentPrimaryKey = parentItem[parentPrimaryKeyField];
 
 			if (parentsByPrimaryKey.has(parentPrimaryKey)) {
 				throw new Error(
-					`Duplicate parent primary key '${parentPrimaryKey}' of '${parentCollectionName}' when merging o2m nested items`
-				)
+					`Duplicate parent primary key '${parentPrimaryKey}' of '${parentCollectionName}' when merging o2m nested items`,
+				);
 			}
 
 			parentsByPrimaryKey.set(parentPrimaryKey, parentItem);
-		})
+		});
 
-		const toAddToAllParents: typeof nestedItems = []
+		const toAddToAllParents: typeof nestedItems = [];
 
 		nestedItems.forEach((nestedItem) => {
-			if (nestedItem === null)
-				return;
+			if (nestedItem === null) return;
 
 			if (Array.isArray(nestedItem[nestedParentKeyField])) {
 				toAddToAllParents.push(nestedItem); // TODO explain this odd case
-				return // Avoids adding the nestedItem twice
+				return; // Avoids adding the nestedItem twice
 			}
 
-			const parentPrimaryKey = nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField]
-				?? nestedItem[nestedParentKeyField]
+			const parentPrimaryKey =
+				nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField] ?? nestedItem[nestedParentKeyField];
 
 			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey);
 
 			if (!parentItem) {
 				throw new Error(
-					`Missing parentItem '${nestedItem[nestedParentKeyField]}' of '${parentCollectionName}' when merging o2m nested items`
-				)
+					`Missing parentItem '${nestedItem[nestedParentKeyField]}' of '${parentCollectionName}' when merging o2m nested items`,
+				);
 			}
 
 			parentItem[parentRelationField].push(nestedItem);
