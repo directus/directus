@@ -37,6 +37,7 @@ export type DirectusField<Schema = any> = {
 		is_nullable: boolean;
 		generation_expression: unknown | null;
 		default_value: any | null;
+		is_indexed: boolean;
 		is_generated: boolean;
 		max_length: number | null;
 		comment: string | null;
