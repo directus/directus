@@ -260,9 +260,13 @@ field_permissions: Permisos de Campo
 field_validation: Validación de Campo
 field_presets: Predefinidos para Campo
 permissions_for_role: 'Elementos que el Rol {role} puede {action}.'
+permissions_for_policy: 'Ítems que la {policy} regla puede {action}.'
 fields_for_role: 'Campos que el Rol {role} puede {action}.'
+fields_for_policy: 'Campos que la {policy} Regla puede {action}.'
 validation_for_role: 'Reglas de campo a la {action} que el Rol {role} tiene que obedecer.'
+validation_for_policy: 'El campo {action} rige las reglas que debe obedecer la política {policy}.'
 presets_for_role: 'Valores por defecto del Campo para el Rol {role}.'
+presets_for_policy: 'Valores de campo predeterminados para la regla {policy}.'
 presets_field_warning: 'Las relaciones preestablecidas para el campo ''{field}'' deben configurarse con la sintaxis "detallada".'
 presentation_and_aliases: Presentación y Alias
 revision_post_create: Este es el aspecto de este elemento cuando fue creado.
@@ -368,6 +372,7 @@ no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Los siguientes se crearán dentro de su Modelo de Datos:'
 search_collection: Buscar colección...
 search_role: Buscar roles...
+search_policy: Buscar Regla...
 search_field: Buscar campo...
 new_field: 'Nuevo Campo'
 new_collection: 'Colección Nueva'
@@ -408,6 +413,7 @@ soft_length: Límite suave
 precision_scale: Precisión y Escala
 readonly: Sólo lectura
 unique: Único
+index: Índice
 updated_on: Actualizado el
 updated_by: Actualizado por
 primary_key: Llave primaria
@@ -518,6 +524,11 @@ hours: Horas
 month: Mes
 year: Año
 select_all: Seleccionar Todo
+permissionsLevel:
+  all: Acceso completo a {action}
+  partial: Acceso parcial a {action}
+  custom: Acceso parcial a {action}
+  none: Sin acceso a {action}
 months:
   january: Enero
   february: Febrero
@@ -544,6 +555,7 @@ file_details: Detalles de Archivo
 dimensions: Dimensiones
 size: Tamaño
 created: Creado
+uploaded: Subido
 modified: Modificado
 owner: Propietario
 edited_by: Editado por
@@ -620,6 +632,7 @@ display_not_found: 'Presentación "{display}" no encontrada.'
 reset_display: Restablecer Presentación
 list-m2a: Constructor (M2A)
 item_count: 'Sin Elementos | Un Elemento | {count} Elementos'
+filtered_item_count: 'Sin ítems filtrados | Un ítem filtrado | {count} ítems filtrados'
 no_items_copy: Aún no hay Elementos en esta colección.
 file_count: 'Sin Archivos | Un Archivo | {count} Archivos'
 no_files_copy: Aquí no hay archivos.
@@ -654,6 +667,7 @@ copy_to: Copiar a...
 no_other_dashboards_copy: Aún no tienes un Panel.
 inactive: Inactivo
 users: Usuarios
+roles: Roles
 activity: Actividad
 activity_item: Elemento de actividad
 action: Acción
@@ -781,6 +795,9 @@ make_collection_hidden: Hacer que la colección se oculte
 make_folder_visible: Hacer visible la carpeta
 make_folder_hidden: Ocultar carpeta
 goto_collection_content: Ver contenido
+count_of_total_items: '{count} de {total} ítems'
+start_end_of_count_items: '{start}-{end} de {count} ítems'
+start_end_of_count_filtered_items: '{start}-{end} de {count} ítems filtrados'
 delete_collection_are_you_sure: >-
   ¿Estás seguro que quieres borrar la colección "{collection}"? Esto borrará la colección y todos los elementos en ella. Esta acción es permanente.
 delete_folder_are_you_sure: '¿Estás seguro que quieres eliminar esta carpeta "{folder}"? Las carpetas y colecciones anidadas se moverán al nivel más alto.'
@@ -867,11 +884,13 @@ columns: Columnas
 collection_setup: Configuración de Colección
 optional_system_fields: Campos opcionales
 value_unique: El Valor tiene que ser único
+value_index: Campo indexado
 all_activity: Toda la Actividad
 create_item: Crear Elemento
 display_template: Plantilla de Presentación
 language_display_template: Plantilla de visualización de idioma
 translations_display_template: Plantilla de visualización de traducciones
+n_items_selected: 'Sin ítems seleccionados | Un ítem seleccionado | {n} ítem seleccionado'
 per_page: Por Página
 all_files: Todos los Archivos
 my_files: Mis Archivos
@@ -923,7 +942,7 @@ run_flow_on_selected: Seleccionar uno o más artículos primero | Ejecutar flujo
 run_flow: Ejecutar Flujo
 run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 field_name_placeholder: Ingrese el nombre del campo...
-field_key_placeholder: Introduzca clave de campo...
+field_key_placeholder: Ingrese un campo clave...
 trigger: Disparador
 trigger_options: Opciones de activación
 view_trigger: Ver activador
@@ -983,6 +1002,22 @@ no_data_in_flow: Ningún dato fue producido o accedido dentro de este flujo
 accountability: Responsabilidad
 payload: Payload
 details: Detalles
+resume_streaming_logs: Reanudar registros de streaming
+pause_streaming_logs: Pausar registros de streaming
+logs_session_resumed: Sesión de registros reanudada...
+logs_session_paused: Sesión de registros pausada...
+logs_stream_disconnected: Transmisión de registro desconectada...
+log_detail_filter_paths: 'Filtrar rutas (por ejemplo: req.method, res.statusCode)'
+logs_beginning: Este es el comienzo de su sesión de registros...
+logs_waiting: 'Esperando más registros...'
+logs_unread_count: '{count} no leídos'
+clear_logs: Borrar registros
+search_logs: Buscar registros...
+all_instances: Todas las instancias
+instance_count: 'Ninguna Instancia | Una Instancia | {count} Instancias'
+all_log_levels: Todos los niveles de registro
+log_level_count: 'Sin nivel de registro | Un nivel de registro | {count} niveles de registro'
+soft_wrap_lines: Líneas de envoltura suave
 full_screen: Pantalla Completa
 full_text_search: Búsqueda de texto completo
 edit_panels: Editar Panel
@@ -1011,6 +1046,7 @@ tooltip: Sugerencia
 tooltip_placeholder: Introduzca una sugerencia...
 unlimited: Ilimitado
 open_link_in: Abrir enlace en
+new_tab: Nueva pestaña
 save_image: Guardar imagen
 save_media: Guardar archivo
 wysiwyg_options:
@@ -1084,10 +1120,13 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando {count} Elementos por lote'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de Datos
+settings_roles: Roles de Usuario
+settings_permissions: Reglas de Acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
 settings_webhooks: Webhooks
 settings_flows: Flujos
+settings_system_logs: Registros del Sistema
 settings_presets: Marcadores
 settings_translations: Traducciones
 one_or_more_options_are_missing: Falta una o más opciones
@@ -1133,6 +1172,10 @@ page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
+page_help_settings_system_logs: '**Registros del sistema**: acceda a una transmisión en vivo de los registros del sistema.'
+page_help_settings_policies_collection: '**Examinar reglas**: enumera todas las reglas dentro del proyecto.'
+page_help_settings_policies_item: "**Detalle de la regla**: administre los permisos de una regla y otras configuraciones."
+page_help_settings_roles_collection: '**Navegar roles**: enumera todos los roles de usuario dentro del proyecto.'
 page_help_settings_roles_item: "**Detalle de Rol** — Administra los permisos del Rol y otros ajustes."
 page_help_settings_presets_collection: >-
   **Navegar en Predefinidos** — Lista todos los Predefinidos en el proyecto, incluye: Marcadores para usuario, rol y global, así como vistas por defecto.
@@ -1180,8 +1223,10 @@ singleton: Singleton
 singleton_label: Tratar como un sólo objeto
 system_fields_locked: Los campos del sistema están bloqueados y no pueden ser editados
 directus_collection:
+  directus_access: Adjuntos de regla
   directus_activity: Registros de contabilidad para todos los eventos
   directus_collections: Configuración adicional de colección y metadatos
+  directus_comments: Comentarios para ítems
   directus_dashboards: Panel de control dentro del módulo Insights
   directus_fields: Configuración adicional de campos y metadatos
   directus_files: Metadatos para todos los archivos gestionados
@@ -1191,6 +1236,8 @@ directus_collection:
   directus_notifications: Notificaciones enviadas a usuarios
   directus_operations: Operaciones que funcionan en flujos
   directus_panels: Paneles individuales dentro de los paneles de Individual
+  directus_permissions: Permisos de acceso por cada regla
+  directus_policies: Reglas de control de acceso
   directus_presets: Preajustes para la colección por defecto y marcadores
   directus_relations: Configuración de relaciones y metadatos
   directus_revisions: Capturas de datos para toda la actividad
@@ -1368,9 +1415,15 @@ fields:
     icon: Ícono del Rol
     description: Descripción
     users: Usuarios en el Rol
+    parent: Rol padre
+    children: Roles hijos
   directus_policies:
     name: Nombre de la Directiva
     description: Descripción
+    app_access: Acceso a la aplicación
+    admin_access: Acceso de Administrador
+    ip_access: Acceso IP
+    enforce_tfa: Requiere 2FA
   directus_webhooks:
     name: Nombre
     method: Método
@@ -1453,6 +1506,12 @@ field_options:
     focal_point_divider: Punto focal
     filename_disk: Nombre en el almacenamiento de disco...
     filename_download: Nombre al descargar...
+  directus_policies:
+    name: Un nombre único para esta regla...
+    description: Una descripción para esta regla...
+    ip_access: Agregue direcciones IP permitidas, rangos de IP y bloques CIDR. Déjelo vacío para permitir todo...
+    enforce_tfa: Forzar la autenticación de dos factores
+    assigned_to: Asignado a
   directus_roles:
     name: El nombre único para este rol...
     description: Una descripción de este rol...
@@ -1462,6 +1521,8 @@ field_options:
       name_placeholder: Ingresar un título...
       link_name: Enlace
       link_placeholder: URL relativa o absoluta...
+    parent_note: Rol principal opcional del que este rol hereda permisos
+    children_note: Roles secundarios anidados que heredan los permisos de estos roles
     collections_name: Colecciones
     collections_addLabel: Añadir Colección...
   directus_users:
@@ -1512,6 +1573,7 @@ live_preview:
   toggle_3d: Alterna 3D
 shares: Compartido
 unlimited_usage: Uso ilimitado
+uses_left: No quedan usos | Queda un uso | {n} usos restantes
 no_shares: No hay acciones para mostrar
 new_share: Nueva parte
 expired: Expirado
@@ -1545,6 +1607,9 @@ continue_label: Continuar
 continue_as: >-
   Actualmente {name} ha iniciado sesión. Si reconoce esta cuenta, presione continuar.
 editing_role: 'Rol {role}'
+editing_policy: '{policy} Regla'
+no_permissions: Sin permisos
+permission_add_collection: Agregar colección
 creating_webhook: Creando Webhook
 default_label: Por defecto
 delete_label: Eliminar
@@ -1778,6 +1843,8 @@ interfaces:
     description: Seleccionar o subir una imagen
     crop: Recortar para encajar
     crop_label: Recortar imagen según sea necesario
+    letterbox: Buzón
+    letterbox_label: Agregar relleno a la vista previa de la imagen
   system-interface:
     interface: Interfaz
     description: Seleccionar una interfaz existente
@@ -1812,6 +1879,7 @@ interfaces:
     editorFont: Fuente del editor
     previewFont: Previsualizar fuente
     default_view: Vista predeterminada
+    default_view_editor: Editor
     default_view_preview: Vista previa
     customSyntax: Bloques personalizados
     customSyntax_label: Añadir tipos de sintaxis personalizados
@@ -1996,6 +2064,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Editor bruto
     description: Permitir la introducción de valores de plantillas en crudo o en mostacho
+  input-password:
+    input-password: Introducir Contraseña
+    description: Entrada de contraseña con alternancia para ocultar el valor
 displays:
   translations:
     translations: Traducciones
@@ -2439,3 +2510,5 @@ duplicate_dashboard: Duplicar Panel
 search_dashboard: Buscar Panel...
 search_flow: Buscar Flujo...
 percent: Porcentaje
+show_password: Mostrar Contraseña
+hide_password: Ocultar Contraseña

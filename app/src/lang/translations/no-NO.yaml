@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Om
 identifier: Identifikator
 avatar: Profilbilde
 application: Applikasjon
@@ -7,9 +28,12 @@ method: Metode
 published: Publisert
 draft: Utkast
 archived: Arkivert
+marketplace: Markedsplass
+extensions: Utvidelser
 modules: Moduler
 module_bar: Modul Bar
 logs: Logger
+unknown: Ukjent
 reset_width: Reset Width
 tile_size: Flisstørrelse
 edit_field: Rediger felt
@@ -26,6 +50,8 @@ duplicate_field: Dupliser felt
 half_width: Halv vidde
 full_width: Fullbredde
 group: Gruppe
+popular: Populær
+recent: Siste
 export_items: Eksporter produkter
 and: Og
 or: Eller
@@ -34,8 +60,33 @@ dataset_too_large_currently_showing_n_items: Datasettet er for stort. For øyebl
 modifier: Modifikator
 extension_interface: Grensesnitt
 extension_display: Visning
+extension_layout: Oppsett
+extension_module: Modul
+extension_panel: Panel
+extension_theme: Tema
 extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operasjon
+extension_bundle: Pakke
+extension_layouts: Oppsett
 extension_modules: Moduler
+extension_panels: Paneler
+extension_themes: Temaer
+extension_operations: Operasjoner
+extension_bundles: Pakker
+extension_missing: Mangler
+published_relative: Publisert {relativeTime}
+homepage: Hjemmeside
+reload_page: Last inn side på nytt
+report_an_issue: Rapporter en feil
+website: Nettside
+github: GitHub
+beta: Beta
+n_downloads: '{n} nedlastinger'
+downloads: Nedlastinger
+compatibility_not_guaranteed: Kompatibilitet ikke garantert
+enable: Aktiver
+disable: Deaktiver
 custom: Egendefinert
 hook: Hook
 fill_width: Fyll vidde
@@ -60,6 +111,7 @@ requires_value: Krever verdi
 create_preset: Opprett forhåndsinnstilling
 create_panel: Opprett panel
 create_role: Opprett rolle
+create_policy: Opprett vilkår
 create_user: Opprett bruker
 message: Melding
 delete_panel: Slett panel
@@ -67,6 +119,7 @@ create_webhook: Lag Webhook
 create_custom_translation: Opprett egendefinert oversettelse
 edit_custom_translation: Rediger egendefinert oversettelse
 no_custom_translations: Ingen egendefinerte oversettelser
+no_custom_translations_copy: Det finnes ingen egendefinerte oversettelser ennå.
 invite_users: Invitere brukere
 invite: Inviter
 email_already_invited: E-postadressen "{email}" er allerede invitert
@@ -623,6 +676,7 @@ all: Alle
 batch_delete_confirm: >-
   Ingen elementer har blitt valgt | Er du sikker på at du vil slette dette elementet? Handlingen kan ikke angres. | Er du sikker på at du vil slette disse {count} elementene? Handlingen kan ikke angres.
 cancel: Avbryt
+source_registry: Markedsplass
 collection: Kolleksjon
 collections: Kolleksjoner
 fields:

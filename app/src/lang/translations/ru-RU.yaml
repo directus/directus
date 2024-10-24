@@ -1842,6 +1842,8 @@ interfaces:
     description: Выберите или загрузите изображение
     crop: Обрезать по размеру
     crop_label: Обрезать изображение при необходимости
+    letterbox: Почтовый ящик
+    letterbox_label: Добавить отступ для пред просмотра изображения
   system-interface:
     interface: Интерфейс
     description: Выберите существующий интерфейс
