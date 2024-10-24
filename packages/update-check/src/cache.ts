@@ -39,5 +39,10 @@ export async function getCache() {
 				return undefined;
 			}
 		},
+
+		async clear() {
+			const files = await fs.readdir(dir);
+			await Promise.all(files.map((name) => fs.unlink(path.join(dir, name))));
+		},
 	});
 }
