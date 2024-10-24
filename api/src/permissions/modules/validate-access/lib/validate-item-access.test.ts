@@ -78,6 +78,7 @@ test('Queries the database', async () => {
 			schema,
 			accountability: acc,
 			knex: undefined,
+			action: 'read',
 		},
 	);
 });
