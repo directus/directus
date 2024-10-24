@@ -402,6 +402,11 @@ const logoURL = computed<string | null>(() => {
 			margin-left: 16px;
 			overflow: hidden;
 
+			[dir='rtl'] & {
+				margin-left: unset;
+				margin-right: 16px;
+			}
+
 			h1 {
 				font-weight: 700;
 				font-size: 18px;

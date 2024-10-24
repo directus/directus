@@ -147,6 +147,11 @@ const internalActive = computed({
 		top: 32px;
 		left: -76px;
 
+		[dir='rtl'] & {
+			left: unset;
+			right: -76px;
+		}
+
 		@media (min-width: 960px) {
 			display: inline-flex;
 		}

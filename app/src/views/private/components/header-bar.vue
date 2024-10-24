@@ -152,6 +152,11 @@ onUnmounted(() => {
 			transition: opacity var(--fast) var(--transition);
 			font-family: var(--theme--header--headline--font-family);
 
+			[dir='rtl'] & {
+				left: unset;
+				right: 0;
+			}
+
 			@media (min-width: 600px) {
 				top: -2px;
 			}

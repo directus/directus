@@ -141,7 +141,10 @@ function toggleInput(): void {
 		margin-left: 8px;
 		transition: color var(--fast) var(--transition);
 		@include no-wrap;
-
+		[dir='rtl'] & {
+			position: absolute;
+			right: 8px;
+		}
 		input {
 			width: 100%;
 			background-color: transparent;
@@ -155,6 +158,10 @@ function toggleInput(): void {
 		--v-icon-color: var(--v-checkbox-unchecked-color, var(--theme--foreground-subdued));
 
 		transition: color var(--fast) var(--transition);
+		[dir='rtl'] & {
+			position: absolute;
+			left: 8px;
+		}
 	}
 
 	&:disabled {

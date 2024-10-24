@@ -45,5 +45,9 @@ watch(
 	line-height: normal;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+
+	[dir='rtl'] & {
+		text-align: right;
+	}
 }
 </style>

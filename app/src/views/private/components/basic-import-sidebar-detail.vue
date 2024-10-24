@@ -260,7 +260,9 @@ function useUpload() {
 	line-height: normal;
 	white-space: nowrap;
 	text-overflow: ellipsis;
-
+	[dir='rtl'] & {
+		margin-right: 8px;
+	}
 	&.no-file {
 		color: var(--theme--foreground-subdued);
 	}

@@ -431,3 +431,11 @@ body.dark .tox .tox-toolbar__overflow {
 		text-align: center;
 	}
 }
+
+.tox:not([dir=rtl]) {
+    direction: rtl;
+    text-align: right;
+}
+html[dir=rtl]{
+	text-align: right;
+}

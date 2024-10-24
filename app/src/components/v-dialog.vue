@@ -92,6 +92,12 @@ function nudge() {
 	display: flex;
 	width: 100%;
 	height: 100%;
+
+	[dir='rtl'] & {
+		left: unset;
+		right: 0;
+		display: unset;
+	}
 }
 
 .container > :slotted(*) {

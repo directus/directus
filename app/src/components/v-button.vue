@@ -357,6 +357,10 @@ async function onClick(event: MouseEvent) {
 	--v-button-min-width: 60px;
 
 	padding: 0 12px;
+	[dir='rtl'] & {
+		left: unset;
+		right: -76px;
+	}
 }
 
 .small {
