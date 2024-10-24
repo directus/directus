@@ -53,7 +53,19 @@ const optionsFields = computed(() => {
 
 	if (!optionsObjectOrArray) return [];
 
-	if (Array.isArray(optionsObjectOrArray)) return optionsObjectOrArray;
+	if (Array.isArray(optionsObjectOrArray)) {
+		// Set the fields of Maximum and Minimum values on the interface of a table field
+		// to accept bigInteger values if the field itself is a bigInteger
+		if (field.value.type == 'bigInteger') {
+			for (const optionObject of optionsObjectOrArray) {
+				if (['minValue', 'maxValue'].includes(optionObject['field'])) {
+					optionObject['type'] = 'bigInteger';
+				}
+			}
+		}
+
+		return optionsObjectOrArray;
+	}
 
 	if (props.showAdvanced) {
 		return [...optionsObjectOrArray.standard, ...optionsObjectOrArray.advanced];
