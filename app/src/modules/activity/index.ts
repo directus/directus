@@ -17,6 +17,9 @@ export default defineModule({
 				{
 					name: 'activity-item',
 					path: ':primaryKey',
+					meta: {
+						isFloatingView: true,
+					},
 					components: {
 						detail: ActivityItem,
 					},
