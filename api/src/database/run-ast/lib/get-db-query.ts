@@ -96,31 +96,33 @@ export function getDBQuery(
 
 		// Add flags for o2m fields with case/when to the let the DB to the partial item permissions
 		dbQuery.select(
-			o2mNodes.map((node) => {
-				if (node.whenCase && node.whenCase.length > 1) {
-					// Include a full case/when construct in the select, in case there are any cases to be respected in the node
-					const columnCases = node.whenCase!.map((index) => cases[index]!);
-					return applyCaseWhen(
-						{
-							column: knex.raw(1),
-							columnCases,
-							aliasMap,
-							cases,
-							table,
-							alias: node.fieldKey,
-							permissions,
-						},
-						{ knex, schema },
-					);
-				} else if (permissionsOnly) {
-					// If `permissionsOnly` is set and now cases need to be respected, just include a 1 as flag to maintain the
-					// output structure
-					return knex.raw('1 as ??', [node.fieldKey]);
-				} else {
-					// Not need to include anything
-					return null;
-				}
-			}),
+			o2mNodes
+				.map((node) => {
+					if (node.whenCase && node.whenCase.length > 1) {
+						// Include a full case/when construct in the select, in case there are any cases to be respected in the node
+						const columnCases = node.whenCase!.map((index) => cases[index]!);
+						return applyCaseWhen(
+							{
+								column: knex.raw(1),
+								columnCases,
+								aliasMap,
+								cases,
+								table,
+								alias: node.fieldKey,
+								permissions,
+							},
+							{ knex, schema },
+						);
+					} else if (permissionsOnly) {
+						// If `permissionsOnly` is set and now cases need to be respected, just include a 1 as flag to maintain the
+						// output structure
+						return knex.raw('1 as ??', [node.fieldKey]);
+					} else {
+						// Not need to include anything
+						return null;
+					}
+				})
+				.filter((expr) => expr !== null),
 		);
 	}
 
@@ -301,21 +303,23 @@ export function getDBQuery(
 
 		// Pass the flags of o2m fields up through the wrapper query
 		wrapperQuery.select(
-			o2mNodes.map((node) => {
-				if (node.whenCase && node.whenCase.length > 0) {
-					// Set the flag based on the inner query result
-					const alias = node.fieldKey;
+			o2mNodes
+				.map((node) => {
+					if (node.whenCase && node.whenCase.length > 0) {
+						// Set the flag based on the inner query result
+						const alias = node.fieldKey;
 
-					const innerAlias = `${innerCaseWhenAliasPrefix}_${alias}`;
+						const innerAlias = `${innerCaseWhenAliasPrefix}_${alias}`;
 
-					return knex.raw(`CASE WHEN ??.?? > 0 THEN 1 END as ??`, ['inner', innerAlias, alias]);
-				} else if (permissionsOnly) {
-					// Select a flat 1 to maintain output structure
-					return knex.raw('1 as ??', [node.fieldKey]);
-				} else {
-					return null;
-				}
-			}),
+						return knex.raw(`CASE WHEN ??.?? > 0 THEN 1 END as ??`, ['inner', innerAlias, alias]);
+					} else if (permissionsOnly) {
+						// Select a flat 1 to maintain output structure
+						return knex.raw('1 as ??', [node.fieldKey]);
+					} else {
+						return null;
+					}
+				})
+				.filter((expr) => expr !== null),
 		);
 	}
 
