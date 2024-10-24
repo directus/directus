@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useCollectionsStore } from '@/stores/collections';
 import { LOCAL_TYPES } from '@directus/constants';
-import { orderBy } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import RelatedCollectionSelect from '../shared/related-collection-select.vue';
@@ -22,10 +21,7 @@ const oneAllowedCollections = syncFieldDetailStoreProperty('relations.m2o.meta.o
 
 const availableCollections = computed(() => {
 	return [
-		...orderBy(
-			collectionsStore.databaseCollections.filter((collection) => collection.meta),
-			['meta.sort', 'collection'],
-		),
+		...collectionsStore.databaseCollections.filter((collection) => collection.meta),
 		{
 			divider: true,
 		},
