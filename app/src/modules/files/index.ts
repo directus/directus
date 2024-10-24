@@ -17,7 +17,7 @@ export default defineModule({
 					path: '+',
 					name: 'add-file',
 					meta: {
-						isFloatingView: true
+						isFloatingView: true,
 					},
 					components: {
 						addNew: AddNew,

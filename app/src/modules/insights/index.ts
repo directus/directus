@@ -30,7 +30,7 @@ export default defineModule({
 					path: ':panelKey',
 					props: true,
 					meta: {
-						isFloatingView: true
+						isFloatingView: true,
 					},
 					components: {
 						detail: InsightsPanelConfiguration,
