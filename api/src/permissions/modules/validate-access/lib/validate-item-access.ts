@@ -51,6 +51,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		schema: context.schema,
 		accountability: options.accountability,
 		knex: context.knex,
+		action: options.action,
 	});
 
 	if (items && items.length === options.primaryKeys.length) {
