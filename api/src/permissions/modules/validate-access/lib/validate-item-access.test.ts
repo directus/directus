@@ -43,12 +43,13 @@ test('Queries the database', async () => {
 
 	expect(getAstFromQuery).toHaveBeenCalledWith(
 		{
+			accountability: acc,
+			action: 'read',
 			collection: 'collection-a',
 			query: {
 				fields: [],
 				limit: 1,
 			},
-			accountability: acc,
 		},
 		{ schema } as Context,
 	);
@@ -78,6 +79,7 @@ test('Queries the database', async () => {
 			schema,
 			accountability: acc,
 			knex: undefined,
+			action: 'read',
 		},
 	);
 });

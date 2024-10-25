@@ -32,6 +32,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 	const ast = await getAstFromQuery(
 		{
 			accountability: options.accountability,
+			action: options.action,
 			query,
 			collection: options.collection,
 		},
@@ -51,6 +52,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		schema: context.schema,
 		accountability: options.accountability,
 		knex: context.knex,
+		action: options.action,
 	});
 
 	if (items && items.length === options.primaryKeys.length) {

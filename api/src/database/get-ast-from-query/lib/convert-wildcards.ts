@@ -1,10 +1,11 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { getRelation } from '../utils/get-relation.js';
 
 export interface ConvertWildcardsOptions {
+	action: PermissionsAction;
 	parentCollection: string;
 	fields: string[];
 	query: Query;
@@ -29,7 +30,7 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 		allowedFields = await fetchAllowedFields(
 			{
 				collection: options.parentCollection,
-				action: 'read',
+				action: options.action,
 				accountability: options.accountability,
 			},
 			context,

@@ -1,9 +1,10 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/types';
+import type { Accountability, Permission, PermissionsAction, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { AST } from '../../../types/ast.js';
+import { isO2MNode } from '../../get-ast-from-query/lib/parse-fields.js';
 import { getDBQuery } from '../lib/get-db-query.js';
 import { parseCurrentLevel } from '../lib/parse-current-level.js';
 
@@ -11,6 +12,7 @@ type FetchPermittedAstRootFieldsOptions = {
 	schema: SchemaOverview;
 	accountability: Accountability;
 	knex: Knex;
+	action: PermissionsAction;
 };
 
 /**
@@ -19,27 +21,29 @@ type FetchPermittedAstRootFieldsOptions = {
  */
 export async function fetchPermittedAstRootFields(
 	originalAST: AST,
-	{ schema, accountability, knex }: FetchPermittedAstRootFieldsOptions,
+	{ schema, accountability, knex, action }: FetchPermittedAstRootFieldsOptions,
 ) {
 	const ast = cloneDeep(originalAST);
 
 	const { name: collection, children, cases, query } = ast;
 
 	// Retrieve the database columns to select in the current AST
-	const { fieldNodes } = await parseCurrentLevel(schema, collection, children, query);
+	const { fieldNodes, nestedCollectionNodes } = await parseCurrentLevel(schema, collection, children, query);
 
 	let permissions: Permission[] = [];
 
 	if (accountability && !accountability.admin) {
 		const policies = await fetchPolicies(accountability, { schema, knex });
-		permissions = await fetchPermissions({ action: 'read', accountability, policies }, { schema, knex });
+		permissions = await fetchPermissions({ action, accountability, policies }, { schema, knex });
 	}
+
+	const o2mNodes = nestedCollectionNodes.filter(isO2MNode);
 
 	return getDBQuery(
 		{
 			table: collection,
 			fieldNodes,
-			o2mNodes: [],
+			o2mNodes,
 			query,
 			cases,
 			permissions,
