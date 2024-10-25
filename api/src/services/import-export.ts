@@ -356,10 +356,11 @@ export class ExportService {
 
 							const parsedFields = await parseFields(
 								{
+									accountability: this.accountability,
+									action: 'read',
 									parentCollection: collection,
 									fields: query.fields,
 									query: query,
-									accountability: this.accountability,
 								},
 								{
 									schema: this.schema,
