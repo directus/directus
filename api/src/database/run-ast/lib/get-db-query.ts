@@ -114,7 +114,7 @@ export function getDBQuery(
 							{ knex, schema },
 						);
 					} else if (permissionsOnly) {
-						// If `permissionsOnly` is set and now cases need to be respected, just include a 1 as flag to maintain the
+						// If `permissionsOnly` is set and no cases need to be respected, just include a 1 as flag to maintain the
 						// output structure
 						return knex.raw('1 as ??', [node.fieldKey]);
 					} else {
