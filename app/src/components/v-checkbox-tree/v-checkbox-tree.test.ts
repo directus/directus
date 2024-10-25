@@ -13,15 +13,14 @@ import VCheckboxTreeCheckbox from './v-checkbox-tree-checkbox.vue';
 import VCheckboxTree from './v-checkbox-tree.vue';
 
 let router: Router;
-let global: GlobalMountOptions;
+let globalOptions: GlobalMountOptions;
 
 beforeEach(async () => {
 	router = generateRouter();
-
 	router.push('/');
 	await router.isReady();
 
-	global = {
+	globalOptions = {
 		components: {
 			VCheckboxTreeCheckbox,
 			VListItem,
@@ -35,12 +34,12 @@ beforeEach(async () => {
 	};
 });
 
-test('Mount component', () => {
-	expect(VCheckboxTree).toBeTruthy();
-
+test('Mount VCheckboxTree component', () => {
 	const wrapper = mount(VCheckboxTree, {
-		global,
+		global: globalOptions,
 	});
 
+	expect(VCheckboxTree).toBeTruthy();
 	expect(wrapper.html()).toMatchSnapshot();
 });
+	
