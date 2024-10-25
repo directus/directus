@@ -1,5 +1,5 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
@@ -18,6 +18,7 @@ interface CollectionScope {
 
 export interface ParseFieldsOptions {
 	accountability: Accountability | null;
+	action: PermissionsAction;
 	parentCollection: string;
 	fields: string[] | null;
 	query: Query;
@@ -38,8 +39,9 @@ export async function parseFields(
 
 	fields = await convertWildcards(
 		{
-			fields,
+			action: options.action,
 			parentCollection: options.parentCollection,
+			fields,
 			query: options.query,
 			accountability: options.accountability,
 		},
@@ -181,7 +183,7 @@ export async function parseFields(
 			if (options.accountability && options.accountability.admin === false && policies) {
 				const permissions = await fetchPermissions(
 					{
-						action: 'read',
+						action: options.action,
 						collections: allowedCollections,
 						policies: policies,
 						accountability: options.accountability,
@@ -210,13 +212,14 @@ export async function parseFields(
 			for (const relatedCollection of allowedCollections) {
 				child.children[relatedCollection] = await parseFields(
 					{
+						accountability: options.accountability,
+						action: options.action,
 						parentCollection: relatedCollection,
 						fields: Array.isArray(nestedFields)
 							? nestedFields
 							: (nestedFields as CollectionScope)[relatedCollection] || [],
 						query: options.query,
 						deep: options.deep?.[`${fieldKey}:${relatedCollection}`],
-						accountability: options.accountability,
 					},
 					context,
 				);
@@ -229,7 +232,7 @@ export async function parseFields(
 			if (options.accountability && options.accountability.admin === false && policies) {
 				const permissions = await fetchPermissions(
 					{
-						action: 'read',
+						action: options.action,
 						collections: [relatedCollection],
 						policies: policies,
 						accountability: options.accountability,
@@ -257,11 +260,12 @@ export async function parseFields(
 				query: getDeepQuery(options.deep?.[fieldKey] || {}),
 				children: await parseFields(
 					{
+						accountability: options.accountability,
+						action: options.action,
 						parentCollection: relatedCollection,
 						fields: nestedFields as string[],
 						query: options.query,
 						deep: options.deep?.[fieldKey] || {},
-						accountability: options.accountability,
 					},
 					context,
 				),

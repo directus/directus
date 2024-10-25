@@ -32,6 +32,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 	const ast = await getAstFromQuery(
 		{
 			accountability: options.accountability,
+			action: options.action,
 			query,
 			collection: options.collection,
 		},

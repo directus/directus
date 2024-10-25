@@ -487,6 +487,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		let ast = await getAstFromQuery(
 			{
+				action: 'read',
 				collection: this.collection,
 				query: updatedQuery,
 				accountability: this.accountability,

@@ -2,7 +2,7 @@
  * Generate an AST based on a given collection and query
  */
 
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, PermissionsAction, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep, uniq } from 'lodash-es';
 import type { AST } from '../../types/index.js';
@@ -10,6 +10,7 @@ import { parseFields } from './lib/parse-fields.js';
 import { getAllowedSort } from './utils/get-allowed-sort.js';
 
 export interface GetAstFromQueryOptions {
+	action: PermissionsAction;
 	collection: string;
 	query: Query;
 	accountability: Accountability | null;
@@ -71,11 +72,12 @@ export async function getAstFromQuery(options: GetAstFromQueryOptions, context: 
 
 	ast.children = await parseFields(
 		{
+			accountability: options.accountability,
+			action: options.action,
 			parentCollection: options.collection,
 			fields,
 			query: options.query,
 			deep,
-			accountability: options.accountability,
 		},
 		context,
 	);
