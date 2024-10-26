@@ -186,6 +186,14 @@ export function getDatabase(): Knex {
 			}
 
 			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${(queryInfo.bindings ?? []).join(', ')}]`);
+		})
+		.on('query-error', (error, queryInfo: QueryInfo) => {
+			const time = times.get(queryInfo.__knexUid);
+
+			if (time) times.delete(queryInfo.__knexUid);
+
+			logger.error(`Database query error occurred`);
+			logger.error(error);
 		});
 
 	return database;
