@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fix kanban layout layoutOptions props type definition
+Fixed display error when selecting kanban layout for the first time
