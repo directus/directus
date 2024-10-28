@@ -722,20 +722,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		keys.sort();
 
 		if (this.accountability) {
-			// Only validate access against the primary key field if `updateMany` is used with a single key and the primary key
-			// has actually changed. The precaution is necessary since in a O2M update scenario the payload contains the primary
-			// key of the item, but it is not actually being changed and does not require permissions for that field.
-			const primaryKeyChanged = keys.length === 1 && payloadAfterHooks[primaryKeyField] !== keys[0];
-
-			const fields = Object.keys(payloadAfterHooks).filter((field) => field !== primaryKeyField || primaryKeyChanged);
-
 			await validateAccess(
 				{
 					accountability: this.accountability,
 					action: 'update',
 					collection: this.collection,
 					primaryKeys: keys,
-					fields,
+					fields: Object.keys(payloadAfterHooks),
 				},
 				{
 					schema: this.schema,
@@ -957,7 +950,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				.first());
 
 		if (exists) {
-			return await this.updateOne(primaryKey as PrimaryKey, payload, opts);
+			const { [primaryKeyField]: _, ...data } = payload;
+			return await this.updateOne(primaryKey as PrimaryKey, data as Partial<Item>, opts);
 		} else {
 			return await this.createOne(payload, opts);
 		}
