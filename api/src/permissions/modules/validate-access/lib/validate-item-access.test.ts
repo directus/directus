@@ -5,7 +5,6 @@ import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
 import { validateItemAccess } from './validate-item-access.js';
 
-vi.mock('../../../../database/get-ast-from-query/get-ast-from-query.js');
 vi.mock('../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js');
 vi.mock('../../../../database/run-ast/run-ast.js');
 vi.mock('../../process-ast/process-ast.js');
