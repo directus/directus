@@ -24,7 +24,8 @@ const liquidEngine = new Liquid({
 	extname: '.liquid',
 });
 
-export type EmailOptions = SendMailOptions & {
+export type EmailOptions = Omit<SendMailOptions, 'from'> & {
+	from?: string;
 	template?: {
 		name: string;
 		data: Record<string, any>;
@@ -64,7 +65,10 @@ export class MailService {
 
 		const defaultTemplateData = await this.getDefaultTemplateData();
 
-		const from = `${defaultTemplateData.projectName} <${options.from || (env['EMAIL_FROM'] as string)}>`;
+		const from = {
+			name: defaultTemplateData.projectName,
+			address: options.from || (env['EMAIL_FROM'] as string),
+		};
 
 		if (template) {
 			let templateData = template.data;
