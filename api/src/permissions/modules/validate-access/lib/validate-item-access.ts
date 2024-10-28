@@ -1,6 +1,6 @@
-import type { Accountability, PermissionsAction, PrimaryKey, Query } from '@directus/types';
-import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
+import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/types';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
+import type { AST, FieldNode } from '../../../../types/index.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
 
@@ -22,22 +22,17 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 	// When we're looking up access to specific items, we have to read them from the database to
 	// make sure you are allowed to access them.
 
-	const query: Query = {
-		// We don't actually need any of the field data, just want to know if we can read the item as
-		// whole or not
-		fields: options.fields ?? [],
-		limit: options.primaryKeys.length,
-	};
+	// Act as if every field was a "normal" field
+	const children =
+		options.fields?.map((field): FieldNode => ({ type: 'field', name: field, fieldKey: field, whenCase: [] })) ?? [];
 
-	const ast = await getAstFromQuery(
-		{
-			accountability: options.accountability,
-			action: options.action,
-			query,
-			collection: options.collection,
-		},
-		context,
-	);
+	const ast: AST = {
+		type: 'root',
+		name: options.collection,
+		query: { limit: options.primaryKeys.length },
+		children,
+		cases: [],
+	};
 
 	await processAst({ ast, ...options }, context);
 
