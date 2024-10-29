@@ -12,8 +12,25 @@
 	word-break: break-word;
 }
 
+/* Background color for selected text */
 .codex-editor ::selection {
 	background-color: var(--theme--background-accent);
+}
+
+/* Color of block selection rectangle while dragging cursor */
+.codex-editor .codex-editor-overlay__rectangle {
+	background-color: color-mix(in srgb, var(--theme--primary), transparent 75%);
+}
+
+/* Background for selected blocks */
+.codex-editor .ce-block--selected .ce-block__content {
+	border-radius: var(--theme--border-radius);
+	background: var(--theme--primary-background);
+}
+
+/* Fix pseudo selection background when editing link */
+.codex-editor .ce-block .ce-block__content [style='background-color: rgb(168, 214, 255);'] {
+	background-color: var(--theme--primary-background) !important;
 }
 
 .codex-editor .ce-toolbar__plus,
@@ -56,6 +73,11 @@
 
 .codex-editor .cdx-search-field:hover {
 	border-color: var(--theme--form--field--input--border-color-hover);
+}
+
+/* Background color when focusing menu item */
+.codex-editor .ce-popover {
+	--color-background-item-focus: var(--theme--background-accent);
 }
 
 .codex-editor .ce-popover__container {
@@ -570,16 +592,6 @@
 
 .codex-editor .ce-block a {
 	color: var(--theme--primary);
-}
-
-.codex-editor .ce-block--selected .ce-block__content {
-	border-radius: var(--theme--border-radius);
-	background: var(--theme--primary-background);
-}
-
-/* Fix link pseudo selection background when editing link */
-.codex-editor .ce-block.ce-block--focused .ce-block__content span[style='background-color: rgb(168, 214, 255);'] {
-	background-color: var(--theme--background-accent) !important;
 }
 
 .codex-editor .ce-block ul,
