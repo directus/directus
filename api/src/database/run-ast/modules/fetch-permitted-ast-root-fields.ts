@@ -4,7 +4,6 @@ import { cloneDeep } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../../permissions/lib/fetch-policies.js';
 import type { AST } from '../../../types/ast.js';
-import { isO2MNode } from '../../get-ast-from-query/lib/parse-fields.js';
 import { getDBQuery } from '../lib/get-db-query.js';
 import { parseCurrentLevel } from '../lib/parse-current-level.js';
 
