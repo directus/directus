@@ -27,9 +27,9 @@ Comment primary keys are now UUIDs instead of numeric values, which may impact c
 The SDK's internal comment endpoints have been updated to reflect this change. To avoid errors, ensure your Directus
 version is compatible with the latest SDK when using comment functions.
 
-#### Migrate to CommentsService in Extensions
+#### Migrate to `CommentsService` in Extensions
 
-Extensions using the ActivityService to manage comments should migrate to the new CommentsService.
+Extensions using the `ActivityService` to manage comments should migrate to the new `CommentsService`.
 
 ## Version 11.1.1
 

@@ -376,7 +376,7 @@ scalable
 Scalable
 SCSS
 sdk
-SDK
+SDK('s)?
 SDL
 semver
 SemVer
