@@ -186,6 +186,9 @@ export function getDatabase(): Knex {
 			}
 
 			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${(queryInfo.bindings ?? []).join(', ')}]`);
+		})
+		.on('query-error', (_, queryInfo: QueryInfo) => {
+			times.delete(queryInfo.__knexUid);
 		});
 
 	return database;
