@@ -21,13 +21,13 @@ afterEach(() => {
 
 describe('tus', () => {
 	test('Schedules synchronized job', async () => {
-		tusSchedule();
+		await tusSchedule();
 
 		expect(schedule.scheduleSynchronizedJob).toHaveBeenCalled();
 	});
 
 	test('Returns true on successful init', async () => {
-		const res = tusSchedule();
+		const res = await tusSchedule();
 
 		expect(res).toBe(true);
 	});
