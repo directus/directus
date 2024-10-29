@@ -476,7 +476,7 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
-			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
+			<v-skeleton-loader v-if="loading" class="title-loader" type="text" />
 
 			<h1 v-else class="type-title">
 				<render-template

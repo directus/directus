@@ -71,7 +71,7 @@ const errorFormatted = computed(() => {
 					<v-icon :name="provider.icon" />
 				</div>
 				<div class="sso-title">
-					{{ t('log_in_with', { provider: provider.label }) }}
+					<v-text-overflow :text="t('log_in_with', { provider: provider.label })" />
 				</div>
 			</a>
 		</template>
@@ -117,6 +117,7 @@ const errorFormatted = computed(() => {
 		align-items: center;
 		padding: 0 16px 0 20px;
 		font-size: 16px;
+		overflow: hidden;
 	}
 
 	&:hover {

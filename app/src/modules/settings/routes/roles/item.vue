@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { useItem } from '@/composables/use-item';
-import { useCollectionPermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useServerStore } from '@/stores/server';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 import UsersInvite from '@/views/private/components/users-invite.vue';
 import { Role } from '@directus/types';
 import { computed, ref, toRefs } from 'vue';
@@ -38,23 +38,19 @@ const { edits, hasEdits, item, saving, loading, save, remove, deleting, validati
 	},
 );
 
+const canInviteUsers = computed(() => !serverStore.auth.disableDefault);
+
 const confirmDelete = ref(false);
 
 useShortcut('meta+s', () => {
 	if (hasEdits.value) saveAndStay();
 });
 
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
-
-const { createAllowed: usersCreateAllowed } = useCollectionPermissions('directus_users');
-
-const { readAllowed: rolesReadAllowed } = useCollectionPermissions('directus_roles');
-
-const canInviteUsers = computed(() => {
-	if (serverStore.auth.disableDefault === true) return false;
-
-	return usersCreateAllowed.value && rolesReadAllowed.value;
+useShortcut('meta+shift+s', () => {
+	if (hasEdits.value) saveAndAddNew();
 });
+
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 /**
  * @NOTE
@@ -68,6 +64,16 @@ async function saveAndStay() {
 		await save();
 		await userStore.hydrate();
 		revisionsDrawerDetailRef.value?.refresh?.();
+	} catch {
+		// `save` shows unexpected error dialog
+	}
+}
+
+async function saveAndAddNew() {
+	try {
+		await save();
+		await userStore.hydrate();
+		router.push(`/settings/roles/+`);
 	} catch {
 		// `save` shows unexpected error dialog
 	}
@@ -98,6 +104,11 @@ function discardAndLeave() {
 	edits.value = {};
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
 }
 </script>
 
@@ -152,15 +163,18 @@ function discardAndLeave() {
 				<v-icon name="person_add" />
 			</v-button>
 
-			<v-button
-				v-tooltip.bottom="t('save')"
-				rounded
-				icon
-				:loading="saving"
-				:disabled="hasEdits === false"
-				@click="saveAndQuit"
-			>
+			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
 				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						v-if="hasEdits"
+						:disabled-options="['save-as-copy']"
+						@save-and-stay="saveAndStay"
+						@save-and-add-new="saveAndAddNew"
+						@discard-and-stay="discardAndStay"
+					/>
+				</template>
 			</v-button>
 		</template>
 

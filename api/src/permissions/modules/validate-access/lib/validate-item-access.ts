@@ -1,6 +1,6 @@
-import type { Accountability, PermissionsAction, PrimaryKey, Query } from '@directus/types';
-import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
-import { runAst } from '../../../../database/run-ast/run-ast.js';
+import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/types';
+import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
+import type { AST } from '../../../../types/index.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
 
@@ -9,6 +9,7 @@ export interface ValidateItemAccessOptions {
 	action: PermissionsAction;
 	collection: string;
 	primaryKeys: PrimaryKey[];
+	fields?: string[];
 }
 
 export async function validateItemAccess(options: ValidateItemAccessOptions, context: Context) {
@@ -21,21 +22,14 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 	// When we're looking up access to specific items, we have to read them from the database to
 	// make sure you are allowed to access them.
 
-	const query: Query = {
-		// We don't actually need any of the field data, just want to know if we can read the item as
-		// whole or not
-		fields: [],
-		limit: options.primaryKeys.length,
+	const ast: AST = {
+		type: 'root',
+		name: options.collection,
+		query: { limit: options.primaryKeys.length },
+		// Act as if every field was a "normal" field
+		children: options.fields?.map((field) => ({ type: 'field', name: field, fieldKey: field, whenCase: [] })) ?? [],
+		cases: [],
 	};
-
-	const ast = await getAstFromQuery(
-		{
-			accountability: options.accountability,
-			query,
-			collection: options.collection,
-		},
-		context,
-	);
 
 	await processAst({ ast, ...options }, context);
 
@@ -46,9 +40,20 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		},
 	};
 
-	const items = await runAst(ast, context.schema, options.accountability, { knex: context.knex });
+	const items = await fetchPermittedAstRootFields(ast, {
+		schema: context.schema,
+		accountability: options.accountability,
+		knex: context.knex,
+		action: options.action,
+	});
 
 	if (items && items.length === options.primaryKeys.length) {
+		const { fields } = options;
+
+		if (fields) {
+			return items.every((item: any) => fields.every((field) => item[field] === 1));
+		}
+
 		return true;
 	}
 

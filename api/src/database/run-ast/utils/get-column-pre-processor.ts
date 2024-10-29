@@ -21,6 +21,7 @@ export function getColumnPreprocessor(
 	cases: Filter[],
 	permissions: Permission[],
 	aliasMap: AliasMap,
+	permissionsOnly?: boolean,
 ) {
 	const helpers = getHelpers(knex);
 
@@ -47,7 +48,13 @@ export function getColumnPreprocessor(
 
 		let column;
 
-		if (field?.type?.startsWith('geometry')) {
+		if (permissionsOnly) {
+			if (noAlias) {
+				column = knex.raw(1);
+			} else {
+				column = knex.raw('1 as ??', [alias]);
+			}
+		} else if (field?.type?.startsWith('geometry')) {
 			column = helpers.st.asText(table, field.field, rawColumnAlias);
 		} else if (fieldNode.type === 'functionField') {
 			// Include the field cases in the functionField query filter

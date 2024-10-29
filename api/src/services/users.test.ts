@@ -293,6 +293,8 @@ describe('Integration Tests', () => {
 				tracker.on.update('directus_notifications').response({});
 				// mock versions update query in deleteOne/deleteMany/deleteByQuery methods
 				tracker.on.update('directus_versions').response({});
+				// mock comments update query in deleteOne/deleteMany/deleteByQuery methods
+				tracker.on.update('directus_comments').response({});
 
 				const service = new UsersService({
 					knex: db,
