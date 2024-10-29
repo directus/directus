@@ -28,7 +28,7 @@ export async function fetchPermittedAstRootFields(
 	const { name: collection, children, cases, query } = ast;
 
 	// Retrieve the database columns to select in the current AST
-	const { fieldNodes, nestedCollectionNodes } = await parseCurrentLevel(schema, collection, children, query);
+	const { fieldNodes } = await parseCurrentLevel(schema, collection, children, query);
 
 	let permissions: Permission[] = [];
 
@@ -37,13 +37,11 @@ export async function fetchPermittedAstRootFields(
 		permissions = await fetchPermissions({ action, accountability, policies }, { schema, knex });
 	}
 
-	const o2mNodes = nestedCollectionNodes.filter(isO2MNode);
-
 	return getDBQuery(
 		{
 			table: collection,
 			fieldNodes,
-			o2mNodes,
+			o2mNodes: [],
 			query,
 			cases,
 			permissions,
