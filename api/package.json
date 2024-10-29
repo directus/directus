@@ -120,7 +120,7 @@
 		"eventemitter2": "6.4.9",
 		"execa": "8.0.1",
 		"exif-reader": "2.0.1",
-		"express": "4.19.2",
+		"express": "4.20.0",
 		"flat": "6.0.1",
 		"fs-extra": "11.2.0",
 		"glob-to-regexp": "0.4.1",
