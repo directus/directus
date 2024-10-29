@@ -174,8 +174,8 @@ importers:
         specifier: 0.5.4
         version: 0.5.4
       cookie:
-        specifier: 0.6.0
-        version: 0.6.0
+        specifier: 0.7.2
+        version: 0.7.2
       cookie-parser:
         specifier: 1.4.7
         version: 1.4.7
