@@ -41,8 +41,12 @@ export async function getCache() {
 		},
 
 		async clear() {
-			const files = await fs.readdir(dir);
-			await Promise.all(files.map((name) => fs.unlink(path.join(dir, name))));
+			try {
+				const files = await fs.readdir(dir);
+				await Promise.all(files.map((name) => fs.unlink(path.join(dir, name))));
+			} catch {
+				// Ignore any errors
+			}
 		},
 	});
 }
