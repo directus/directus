@@ -95,7 +95,7 @@ export async function handleRetentionJob() {
 /**
  * Schedule the retention tracking
  *
- * @returns Whether or not telemetry has been initialized
+ * @returns Whether or not retention has been initialized
  */
 export default async function schedule(): Promise<boolean> {
 	const env = useEnv();

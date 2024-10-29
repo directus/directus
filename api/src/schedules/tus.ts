@@ -6,7 +6,7 @@ import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 /**
  * Schedule the tus cleanup
  *
- * @returns Whether or not telemetry has been initialized
+ * @returns Whether or not tus cleanup has been initialized
  */
 export default async function schedule(): Promise<boolean> {
 	if (!RESUMABLE_UPLOADS.ENABLED) return false;
