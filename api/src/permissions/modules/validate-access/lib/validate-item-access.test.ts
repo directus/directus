@@ -1,13 +1,10 @@
 import type { Accountability, SchemaOverview } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
-import { getAstFromQuery } from '../../../../database/get-ast-from-query/get-ast-from-query.js';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
-import type { AST } from '../../../../types/ast.js';
 import type { Context } from '../../../types.js';
 import { processAst } from '../../process-ast/process-ast.js';
 import { validateItemAccess } from './validate-item-access.js';
 
-vi.mock('../../../../database/get-ast-from-query/get-ast-from-query.js');
 vi.mock('../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js');
 vi.mock('../../../../database/run-ast/run-ast.js');
 vi.mock('../../process-ast/process-ast.js');
@@ -30,9 +27,7 @@ test('Throws error when primary key does not exist in given collection', async (
 test('Queries the database', async () => {
 	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
 	const acc = {} as unknown as Accountability;
-	const ast = { query: {} } as unknown as AST;
 
-	vi.mocked(getAstFromQuery).mockResolvedValue(ast);
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([]);
 
 	await expect(
@@ -41,43 +36,43 @@ test('Queries the database', async () => {
 		} as Context),
 	).resolves.toBe(false);
 
-	expect(getAstFromQuery).toHaveBeenCalledWith(
-		{
-			collection: 'collection-a',
-			query: {
-				fields: [],
-				limit: 1,
-			},
-			accountability: acc,
-		},
-		{ schema } as Context,
-	);
-
 	expect(processAst).toHaveBeenCalledWith(
 		{
 			accountability: acc,
 			action: 'read',
 			collection: 'collection-a',
 			primaryKeys: [1],
-			ast,
+			ast: {
+				type: 'root',
+				name: 'collection-a',
+				query: expect.objectContaining({ limit: 1 }),
+				children: [],
+				cases: [],
+			},
 		},
 		{ schema },
 	);
 
 	expect(fetchPermittedAstRootFields).toHaveBeenCalledWith(
 		{
+			type: 'root',
+			name: 'collection-a',
+			children: [],
+			cases: [],
 			query: {
 				filter: {
 					'field-a': {
 						_in: [1],
 					},
 				},
+				limit: 1,
 			},
 		},
 		{
 			schema,
 			accountability: acc,
 			knex: undefined,
+			action: 'read',
 		},
 	);
 });
@@ -111,9 +106,7 @@ test('Returns true if the number of returned items matches the number of request
 test('Returns true if the number of returned items matches the number of requested primary keys and the user has access to the fields', async () => {
 	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
 	const acc = {} as unknown as Accountability;
-	const ast = { query: {} } as unknown as AST;
 
-	vi.mocked(getAstFromQuery).mockResolvedValue(ast);
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ field_a: 1 }, { field_a: 1 }]);
 
 	await expect(
@@ -126,12 +119,10 @@ test('Returns true if the number of returned items matches the number of request
 	).resolves.toBe(true);
 });
 
-test('Returns false the number of returned items matches the number of requested primary keys and the user does not have access to the fields', async () => {
+test('Returns false if the number of returned items matches the number of requested primary keys and the user does not have access to the fields', async () => {
 	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
 	const acc = {} as unknown as Accountability;
-	const ast = { query: {} } as unknown as AST;
 
-	vi.mocked(getAstFromQuery).mockResolvedValue(ast);
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ field_a: null }, { field_a: 1 }]);
 
 	await expect(
