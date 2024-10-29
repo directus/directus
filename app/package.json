@@ -53,7 +53,7 @@
 		"@editorjs/editorjs": "2.30.6",
 		"@editorjs/embed": "2.7.6",
 		"@editorjs/header": "2.8.8",
-		"@editorjs/image": "2.9.3",
+		"@editorjs/image": "2.10.0",
 		"@editorjs/inline-code": "1.5.1",
 		"@editorjs/nested-list": "1.4.3",
 		"@editorjs/paragraph": "2.11.6",

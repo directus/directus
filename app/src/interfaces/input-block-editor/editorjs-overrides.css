@@ -287,11 +287,23 @@
 	--border-color: var(--theme--form--field--input--border-color);
 }
 
-.codex-editor .image-tool--loading .image-tool__image {
-	background: var(--theme--background-normal);
+/* Add spacing between caption field and image selection button */
+.codex-editor .image-tool .cdx-button {
+	margin-top: 10px;
+}
+
+/* Fix preloader placing */
+.codex-editor .image-tool__image-preloader {
+	margin: 10px auto;
+}
+
+/* Hide image element while uploading / when unable to load */
+.codex-editor .image-tool--uploading .image-tool__image-picture {
+	display: none;
 }
 
 .codex-editor .image-tool--loading .image-tool__image {
+	background: var(--theme--background-normal);
 	border-color: var(--theme--form--field--input--border-color);
 }
 
