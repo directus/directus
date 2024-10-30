@@ -458,6 +458,8 @@ export class DriverCloudinary implements TusDriver {
 	}
 
 	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext) {
+		context.metadata!['timestamp'] = this.getTimestamp();
+
 		return context;
 	}
 
@@ -467,7 +469,7 @@ export class DriverCloudinary implements TusDriver {
 		const resourceType = this.getResourceType(filepath);
 
 		const uploadParameters = {
-			timestamp: this.getTimestamp(),
+			timestamp: context.metadata!['timestamp'] as string,
 			api_key: this.apiKey,
 			type: 'upload',
 			access_mode: this.accessMode || 'authenticated',
