@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed null being returned for deep aliases
+Fixed null being returned when deep field aliases are present across multiple top level fields
