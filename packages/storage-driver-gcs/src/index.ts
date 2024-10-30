@@ -6,8 +6,8 @@ import { join } from 'node:path';
 import { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
-const DEFAULT_CHUNK_SIZE = 8388608; // 8mb in bytes
-const MINIMUM_CHUNK_SIZE = 262144; // 256kb in bytes
+const DEFAULT_CHUNK_SIZE = 8_388_608; // 8mb in bytes
+const MINIMUM_CHUNK_SIZE = 262_144; // 256kb in bytes
 
 export type DriverGCSConfig = {
 	root?: string;
