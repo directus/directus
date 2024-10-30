@@ -489,6 +489,8 @@ export class DriverCloudinary implements TusDriver {
 			chunks = Buffer.concat([chunks, chunk], currentChunkSize);
 		}
 
+		bytesUploaded += currentChunkSize;
+
 		await this.uploadChunk({
 			resourceType,
 			blob: new Blob([chunks]),
@@ -499,8 +501,6 @@ export class DriverCloudinary implements TusDriver {
 				...uploadParameters,
 			},
 		});
-
-		bytesUploaded += currentChunkSize;
 
 		return bytesUploaded;
 	}
