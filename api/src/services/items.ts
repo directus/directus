@@ -949,7 +949,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				.first());
 
 		if (exists) {
-			return await this.updateOne(primaryKey as PrimaryKey, payload, opts);
+			const { [primaryKeyField]: _, ...data } = payload;
+			return await this.updateOne(primaryKey as PrimaryKey, data as Partial<Item>, opts);
 		} else {
 			return await this.createOne(payload, opts);
 		}
