@@ -481,12 +481,12 @@ export class DriverCloudinary implements TusDriver {
 		};
 
 		let bytesUploaded = offset || 0;
-
+		let currentChunkSize = 0;
 		let chunks = Buffer.alloc(0);
 
 		for await (const chunk of content) {
-			bytesUploaded += chunk.length;
-			chunks = Buffer.concat([chunks, chunk], bytesUploaded);
+			currentChunkSize += chunk.length;
+			chunks = Buffer.concat([chunks, chunk], currentChunkSize);
 		}
 
 		await this.uploadChunk({
@@ -499,6 +499,8 @@ export class DriverCloudinary implements TusDriver {
 				...uploadParameters,
 			},
 		});
+
+		bytesUploaded += currentChunkSize;
 
 		return bytesUploaded;
 	}
