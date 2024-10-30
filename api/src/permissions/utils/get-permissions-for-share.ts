@@ -37,18 +37,26 @@ export async function getPermissionsForShare(
 		ip: accountability.ip,
 	};
 
-	// Fallback to user accountability so merging later on has no issues
+	// Fallback to public accountability so merging later on has no issues
 	const shareAccountability: Accountability =
 		role === null
-			? userAccountability
+			? {
+				user: null,
+				role: null,
+				roles: await fetchRolesTree(null, context.knex),
+				admin: false,
+				app: false,
+				ip: accountability.ip,
+
+			}
 			: {
-					user: null,
-					role: role,
-					roles: await fetchRolesTree(role, context.knex),
-					admin: false,
-					app: false,
-					ip: accountability.ip,
-			  };
+				user: null,
+				role: role,
+				roles: await fetchRolesTree(role, context.knex),
+				admin: false,
+				app: false,
+				ip: accountability.ip,
+			};
 
 	const { admin: shareIsAdmin } = await fetchGlobalAccess(shareAccountability, context.knex);
 	const { admin: userIsAdmin } = await fetchGlobalAccess(userAccountability, context.knex);
