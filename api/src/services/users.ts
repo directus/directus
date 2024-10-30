@@ -355,7 +355,7 @@ export class UsersService extends ItemsService {
 
 			// Send invite for new and already invited users
 			if (isEmpty(user) || user.status === 'invited') {
-				const subjectLine = subject ?? "You've been invited";
+				const subjectLine = subject ?? "Yupi! Você recebeu um convite";
 
 				mailService
 					.send({
