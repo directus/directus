@@ -41,22 +41,21 @@ export async function getPermissionsForShare(
 	const shareAccountability: Accountability =
 		role === null
 			? {
-				user: null,
-				role: null,
-				roles: await fetchRolesTree(null, context.knex),
-				admin: false,
-				app: false,
-				ip: accountability.ip,
-
-			}
+					user: null,
+					role: null,
+					roles: await fetchRolesTree(null, context.knex),
+					admin: false,
+					app: false,
+					ip: accountability.ip,
+			  }
 			: {
-				user: null,
-				role: role,
-				roles: await fetchRolesTree(role, context.knex),
-				admin: false,
-				app: false,
-				ip: accountability.ip,
-			};
+					user: null,
+					role: role,
+					roles: await fetchRolesTree(role, context.knex),
+					admin: false,
+					app: false,
+					ip: accountability.ip,
+			  };
 
 	const { admin: shareIsAdmin } = await fetchGlobalAccess(shareAccountability, context.knex);
 	const { admin: userIsAdmin } = await fetchGlobalAccess(userAccountability, context.knex);
