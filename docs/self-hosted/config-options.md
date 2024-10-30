@@ -707,7 +707,8 @@ instability or limited bandwidth. This is implemented using the [TUS protocol](h
 
 ::: warning
 
-The `TUS_CHUNK_SIZE` for `storage-driver-gcs` must be a power of 2 with a minimum of `256kb` (e.g. `256kb`, `512kb`, `1024kb`).
+The `TUS_CHUNK_SIZE` for `storage-driver-gcs` must be a power of 2 with a minimum of `256kb` (e.g. `256kb`, `512kb`,
+`1024kb`).
 
 :::
 
