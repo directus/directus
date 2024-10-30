@@ -64,3 +64,5 @@ export const VIDEO_EXTENSIONS = [
 	'.webm',
 	'.wmv',
 ];
+
+export const MINIMUM_CHUNK_SIZE = 5242880; // 5mb
