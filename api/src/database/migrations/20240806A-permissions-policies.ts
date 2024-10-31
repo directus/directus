@@ -274,7 +274,7 @@ export async function down(knex: Knex) {
 			);
 
 			// merge all permissions to single version (v10) and save for later use
-			mergePermissions('or', rawPermissions).forEach((permission) => {
+			(mergePermissions('or', rawPermissions) as any[]).forEach((permission) => {
 				// System permissions are automatically populated
 				if (permission.system) {
 					return;
