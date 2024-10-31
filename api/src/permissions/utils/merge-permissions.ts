@@ -16,20 +16,20 @@ export function mergePermissions(
 
 	// Only keep permissions that are common to all lists
 	if (strategy === 'intersection') {
-		const permission_keys = permissions.map((permissions) => {
+		const permissionKeys = permissions.map((permissions) => {
 			return new Set(permissions.map((permission) => `${permission.collection}__${permission.action}`));
 		});
 
-		const intersection_keys = permission_keys.reduce((acc, val) => {
+		const intersectionKeys = permissionKeys.reduce((acc, val) => {
 			return new Set([...acc].filter((x) => val.has(x)));
-		}, permission_keys[0]!);
+		}, permissionKeys[0]!);
 
-		const deduplicate_subpermissions = permissions.map((permissions) => {
+		const deduplicateSubpermissions = permissions.map((permissions) => {
 			return mergePermissions('or', permissions);
 		});
 
-		allPermissions = flatten(deduplicate_subpermissions).filter((permission) => {
-			return intersection_keys.has(`${permission.collection}__${permission.action}`);
+		allPermissions = flatten(deduplicateSubpermissions).filter((permission) => {
+			return intersectionKeys.has(`${permission.collection}__${permission.action}`);
 		});
 
 		strategy = 'and';
