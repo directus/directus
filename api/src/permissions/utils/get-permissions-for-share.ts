@@ -45,7 +45,7 @@ export async function getPermissionsForShare(
 		admin: false,
 		app: false,
 		ip: accountability.ip,
-	}
+	};
 
 	const { admin: shareIsAdmin } = await fetchGlobalAccess(shareAccountability, context.knex);
 	const { admin: userIsAdmin } = await fetchGlobalAccess(userAccountability, context.knex);

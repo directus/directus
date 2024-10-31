@@ -8,30 +8,33 @@ import { flatten, intersection, isEqual, merge, omit, uniq } from 'lodash-es';
  * @param permissions List of permission lists to merge.
  * @returns A flat list of unique permissions.
  */
-export function mergePermissions(strategy: 'and' | 'or' | 'intersection', ...permissions: Permission[][]): Permission[] {
+export function mergePermissions(
+	strategy: 'and' | 'or' | 'intersection',
+	...permissions: Permission[][]
+): Permission[] {
 	let allPermissions;
 
 	// Only keep permissions that are common to all lists
 	if (strategy === 'intersection') {
-		const permission_keys = permissions.map((permissions => {
-			return new Set(permissions.map(permission => `${permission.collection}__${permission.action}`));
-		}))
+		const permission_keys = permissions.map((permissions) => {
+			return new Set(permissions.map((permission) => `${permission.collection}__${permission.action}`));
+		});
 
 		const intersection_keys = permission_keys.reduce((acc, val) => {
-			return new Set([...acc].filter(x => val.has(x)));
+			return new Set([...acc].filter((x) => val.has(x)));
 		}, permission_keys[0]!);
 
-		const deduplicate_subpermissions = permissions.map(permissions => {
+		const deduplicate_subpermissions = permissions.map((permissions) => {
 			return mergePermissions('or', permissions);
-		})
+		});
 
-		allPermissions = flatten(deduplicate_subpermissions).filter(permission => {
+		allPermissions = flatten(deduplicate_subpermissions).filter((permission) => {
 			return intersection_keys.has(`${permission.collection}__${permission.action}`);
 		});
 
 		strategy = 'and';
 	} else {
-		allPermissions = flatten(permissions)
+		allPermissions = flatten(permissions);
 	}
 
 	const mergedPermissions = allPermissions
