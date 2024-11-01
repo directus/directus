@@ -243,7 +243,7 @@ export default defineInterface({
 					options: {
 						fields: [
 							{
-								field: "field",
+								field: 'field',
 								name: '$t:sort',
 								type: 'string',
 								meta: {
@@ -252,7 +252,7 @@ export default defineInterface({
 										collectionName: collection,
 									},
 									width: 'half',
-								}
+								},
 							},
 							{
 								field: 'sortDirection',
@@ -294,8 +294,7 @@ export default defineInterface({
 					validation: null,
 					validation_message: null,
 				},
-			}
-
+			},
 		];
 	},
 	recommendedDisplays: ['related-values'],
