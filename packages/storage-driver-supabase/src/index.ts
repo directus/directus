@@ -236,7 +236,6 @@ export class DriverSupabase implements TusDriver {
 		await new Promise((resolve, reject) => {
 			const upload = new tus.Upload(content, {
 				endpoint: this.getResumableUrl(),
-				uploadUrl: context.metadata!['upload-url'] ?? null,
 				headers: {
 					Authorization: `Bearer ${this.config.serviceRole}`,
 					'x-upsert': 'true',
