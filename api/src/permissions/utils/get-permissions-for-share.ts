@@ -47,29 +47,29 @@ export async function getPermissionsForShare(
 		ip: accountability.ip,
 	};
 
-	const { admin: shareIsAdmin } = await fetchGlobalAccess(shareAccountability, context.knex);
-	const { admin: userIsAdmin } = await fetchGlobalAccess(userAccountability, context.knex);
+	const [{ admin: shareIsAdmin }, { admin: userIsAdmin }, userPermissions, sharePermissions, shareFieldMap, userFieldMap] = await Promise.all([
+		fetchGlobalAccess(shareAccountability, context.knex),
+		fetchGlobalAccess(userAccountability, context.knex),
+		getPermissionsForAccountability(userAccountability, context),
+		getPermissionsForAccountability(shareAccountability, context),
+		fetchAllowedFieldMap(
+			{
+				accountability: shareAccountability,
+				action: 'read',
+			},
+			context,
+		),
+		fetchAllowedFieldMap(
+			{
+				accountability: userAccountability,
+				action: 'read',
+			},
+			context,
+		)
+	]);
 
 	const isAdmin = userIsAdmin && shareIsAdmin;
 
-	const userPermissions = await getPermissionsForAccountability(userAccountability, context);
-	const sharePermissions = await getPermissionsForAccountability(shareAccountability, context);
-
-	const shareFieldMap = await fetchAllowedFieldMap(
-		{
-			accountability: shareAccountability,
-			action: 'read',
-		},
-		context,
-	);
-
-	const userFieldMap = await fetchAllowedFieldMap(
-		{
-			accountability: userAccountability,
-			action: 'read',
-		},
-		context,
-	);
 
 	let permissions: Permission[] = [];
 	let reducedSchema: SchemaOverview;

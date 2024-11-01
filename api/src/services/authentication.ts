@@ -293,12 +293,8 @@ export class AuthenticationService {
 				user_auth_data: 'u.auth_data',
 				user_role: 'u.role',
 				share_id: 'd.id',
-				share_item: 'd.item',
-				share_collection: 'd.collection',
 				share_start: 'd.date_start',
 				share_end: 'd.date_end',
-				share_times_used: 'd.times_used',
-				share_max_uses: 'd.max_uses',
 			})
 			.from('directus_sessions AS s')
 			.leftJoin('directus_users AS u', 's.user', 'u.id')

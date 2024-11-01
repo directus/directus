@@ -40,8 +40,6 @@ export type DirectusTokenPayload = {
 
 export type ShareData = {
 	share_id: string;
-	share_item: string;
-	share_collection: string;
 	share_start: Date;
 	share_end: Date;
 	share_times_used: number;
