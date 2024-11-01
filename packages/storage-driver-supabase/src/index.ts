@@ -236,15 +236,16 @@ export class DriverSupabase implements TusDriver {
 		await new Promise((resolve, reject) => {
 			const upload = new tus.Upload(content, {
 				endpoint: this.getResumableUrl(),
+				// @ts-expect-error
+				fileReader: new FileReader(),
 				headers: {
 					Authorization: `Bearer ${this.config.serviceRole}`,
 					'x-upsert': 'true',
 				},
 				metadata,
 				chunkSize: this.preferredChunkSize,
-				uploadLengthDeferred: true,
-				uploadDataDuringCreation: true,
-				removeFingerprintOnSuccess: true,
+				uploadSize: context.size,
+				retryDelays: null,
 				onError(error) {
 					reject(error);
 				},
@@ -292,4 +293,28 @@ export default DriverSupabase;
  */
 function dirname(path: string) {
 	return path.split('/').slice(0, -1).join('/');
+}
+
+// @ts-expect-error
+class StreamSource extends tus.StreamSource {
+	_streamEnded = false;
+
+	// @ts-expect-error
+	override async slice(start: number, end: number) {
+		if (this._streamEnded) return null;
+
+		// Act like the stream ended after it's been called once
+		this._streamEnded = true;
+
+		// Shift the start and end offsets to always start at 0, since the read stream is only a stream of one chunk with
+		// length of `chunkSize`
+		return super.slice(0, end - start);
+	}
+}
+
+class FileReader {
+	async openFile(input: Readable, _: number): Promise<StreamSource> {
+		// @ts-expect-error
+		return new StreamSource(input);
+	}
 }
