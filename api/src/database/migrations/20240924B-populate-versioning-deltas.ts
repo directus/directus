@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
 	let hasMore = true;
 
 	while (hasMore) {
-		const missingDeltaVersions = await knex.select('*').from('directus_versions').whereNull('delta').limit(rowsLimit);
+		const missingDeltaVersions = await knex.select('id').from('directus_versions').whereNull('delta').limit(rowsLimit);
 
 		if (missingDeltaVersions.length === 0) {
 			hasMore = false;
