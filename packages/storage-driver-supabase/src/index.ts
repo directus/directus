@@ -269,7 +269,8 @@ export class DriverSupabase implements TusDriver {
 					size: context.size!,
 					creationTime: context.metadata!['creation_date'] as string,
 					metadata,
-				});
+					uploadUrl: context.metadata!['upload-url'],
+				} as any);
 			}
 
 			upload.start();
