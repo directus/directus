@@ -42,6 +42,7 @@ const props = withDefaults(
 		limit?: number;
 		sort?: string;
 		sortDirection?: '+' | '-';
+		multipleSort?: { field: string; sortDirection?: '+' | '-' }[];
 	}>(),
 	{
 		value: () => [],
@@ -56,6 +57,7 @@ const props = withDefaults(
 		enableSearchFilter: false,
 		enableLink: false,
 		limit: 15,
+		multipleSort: () => [],
 	},
 );
 
@@ -123,6 +125,10 @@ const query = computed<RelationQueryMultiple>(() => {
 
 	if (search.value) {
 		q.search = search.value;
+	}
+
+	if (props.multipleSort.length > 0) {
+		q.sort = props.multipleSort.map((i) => `${i.sortDirection === '-' ? '-' : ''}${i.field}`);
 	}
 
 	if (manualSort.value) {
