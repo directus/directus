@@ -229,14 +229,14 @@ validationError:
   unique: القيمة يجب أن تكون
   email: القيمة يجب أن تكون عنوان بريد إلكتروني صحيح
   regex: القيمة لا تحتوي على التنسيق الصحيح
-  starts_with: القيمة يجب أن تبدأ ب {substring}
-  istarts_with: القيمة يجب أن تبدأ ب {substring}
-  nstarts_with: القيمة لا يمكن أن تبدأ ب {substring}
-  nistarts_with: القيمة لا يمكن أن تبدأ ب {substring}
-  ends_with: القيمة يجب أن تنتهي ب {substring}
-  iends_with: القيمة يجب أن تنتهي ب {substring}
-  nends_with: القيمة لا يمكن أن تنتهي ب {substring}
-  niends_with: القيمة لا يمكن أن تنتهي ب {substring}
+  starts_with: القيمة يجب أن تبدأ بـ {substring}
+  istarts_with: القيمة يجب أن تبدأ بـ {substring}
+  nstarts_with: القيمة لا يمكن أن تبدأ بـ {substring}
+  nistarts_with: القيمة لا يمكن أن تبدأ بـ {substring}
+  ends_with: القيمة يجب أن تنتهي بـ {substring}
+  iends_with: القيمة يجب أن تنتهي بـ {substring}
+  nends_with: القيمة لا يمكن أن تنتهي بـ {substring}
+  niends_with: القيمة لا يمكن أن تنتهي بـ {substring}
 all_access: دخول كامل للترجمات
 no_access: ممنوع الدخول
 use_custom: تخصيص
