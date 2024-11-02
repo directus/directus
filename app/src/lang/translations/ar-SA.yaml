@@ -39,7 +39,7 @@ tile_size: حجم الصورة
 edit_field: تعديل الحقل
 conditions: الشروط
 location: الموقع
-collection_names_are_case_sensitive: أسماء المجموعات حساسة الحالة
+collection_names_are_case_sensitive: أسماء المجموعات حساسة لحالة الأحرف
 condition_rules: قوانين الشرط
 input: إدخال
 maps: الخرائط
@@ -66,7 +66,7 @@ extension_module: وحدة نمطية
 extension_panel: لوحة
 extension_theme: السمة
 extension_hook: ربط
-extension_endpoint: نقطة الوصول
+extension_endpoint: نهاية رابط الوصول
 extension_operation: عمليّة
 extension_bundle: حُزْمَة
 extension_interfaces: واجهات
@@ -76,30 +76,30 @@ extension_modules: الوحدات
 extension_panels: لوحات
 extension_themes: السمات
 extension_hooks: روابط
-extension_endpoints: نقطة الوصول
+extension_endpoints: نهايات روابط الوصول
 extension_operations: عمليات
 extension_bundles: حُزَم
 extension_missing: مفقود
-extension_reload_required: مطلوب إعادة تحميل الصفحة
-extension_reload_required_copy: مطلوب إعادة تحميل الصفحة لرؤية التغييرات بعد تفعيل أو تعطيل إضافات التطبيق.
+extension_reload_required: يجب إعادة تحميل الصفحة
+extension_reload_required_copy: يجب إعادة تحميل الصفحة لرؤية التغييرات بعد تفعيل أو تعطيل الإضافات.
 extension_reload_now: إعادة التحميل الآن
-published_relative: نشر {relativeTime}
+published_relative: نُشر {relativeTime}
 compatible_with_your_project: متوافق مع مشروعك
-compatible_with_your_project_copy: أشار المؤلف إلى أن توافق هذا الملحق هو {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
+compatible_with_your_project_copy: أشار المؤلف إلى أن هذه الإضافة متوافقة مع الإصدار {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
 last_updated_relative: آخر تحديث {relativeTime}
-n_files: '{n} ملفات'
-verified: محقق
+n_files: '{n} ملف'
+verified: موثق
 homepage: الصفحة الرئيسية
-repository: المصادر
+repository: مستودع
 reload_page: إعادة تحميل الصفحة
 reload_required: إعادة التحميل مطلوبة
-report_an_issue: إبلاغ عن مشكلة
+report_an_issue: الإبلاغ عن مشكلة
 website: الموقع
 github: GitHub
 beta: الإصدار التجريبي
-n_downloads: '{n} تحميلات'
+n_downloads: '{n} تحميلاََ'
 downloads: التنزيلات
-compatibility_not_guaranteed: التوافق غير مسموح
+compatibility_not_guaranteed: التوافق غير مضمون
 compatibility_not_guaranteed_copy: أشار المؤلف إلى أن توافق هذا الملحق هو {hostVersion}، الذي يطابق إصدار مشروعك ({currentVersion})
 enable: تفعيل
 disable: تعطيل
@@ -134,8 +134,8 @@ message: الرسالة
 delete_panel: حذف لوحة
 create_webhook: إنشاء Webhook
 create_custom_translation: إنشاء ترجمة مخصصة
-edit_custom_translation: إنشاء ترجمة مخصصة
-no_custom_translations: ترجمات مخصصة
+edit_custom_translation: تعديل ترجمة مخصصة
+no_custom_translations: لا توجد ترجمات مخصصة
 no_custom_translations_copy: لا توجد ترجمات مخصصة حتى الآن.
 invite_users: دعوة مستخدمين
 invite: دعوة
@@ -158,25 +158,25 @@ version_key: مفتاح الإصدار
 version_name: اسم الإصدار
 main_version: رئيسي
 switch_version: تبديل الإصدار
-switch_version_copy: هل أنت متيقِّن من أنك تريد التبديل إلى الإصدار "{version}"؟ سيتم فقدان التغييرات الغير محفوظة.
-create_version: إنشاء الإصدار
+switch_version_copy: هل أنت متأكد من أنك تريد التبديل إلى الإصدار "{version}"؟ سيتم فقدان التغييرات الغير محفوظة.
+create_version: إنشاء إصدار
 rename_version: إعادة تسمية الإصدار
 compare_version: مقارنة الإصدار
 save_version: حفظ الإصدار
-promote_version: ترقية الإصدار
+promote_version: تحديث الإصدار
 promote_version_disabled: لا يوجد تغييرات
-promote_version_drawer_title: ترقية {version} إلى الإصدار الرئيس
+promote_version_drawer_title: تحديث الإصدار {version} إلى الإصدار الرئيس
 promote_version_changes: التغييرات
 promote_version_preview: معاينة
 outdated_notice: >-
-  تم تحديث العنصر الرئيس منذ إنشاء هذا الإصدار. يرجى مراجعة جميع قيم الحقول أدناه، وتأكيد الإصدار الذي يجب استخدامه عند ترقية هذا الإصدار إلى العنصر الرئيس.
+  تم تحديث العنصر الرئيس منذ إنشاء هذا الإصدار. يرجى مراجعة جميع قيم الحقول أدناه، وتأكيد الإصدار الذي يجب استخدامه عند تحديث هذا الإصدار إلى العنصر الرئيس.
 promote_notice: >-
-  يرجى مراجعة جميع قيم الحقول أدناه، وتأكيد الإصدار الذي يجب استخدامه عند ترقية هذا الإصدار إلى العنصر الرئيس.
+  يرجى مراجعة جميع قيم الحقول أدناه، وتأكيد الإصدار الذي يجب استخدامه عند تحديث هذا الإصدار إلى العنصر الرئيس.
 delete_version: حذف الإصدار
 delete_version_copy: >-
-  هل أنت متيقِّن من أنك تريد حذف الإصدار "{version}"؟ لا يمكن التراجع عن هذا الإجراء.
+  هل أنت متأكد من أنك تريد حذف الإصدار "{version}"؟ لا يمكن التراجع عن هذا الإجراء.
 delete_on_promote_copy: >-
-  هل تريد حذف أو إبقاء الإصدار "{version}" بعد الترقية؟
+  هل تريد حذف أو الإبقاء على الإصدار "{version}" بعد التحديث؟
 reset_bookmark: إعادة تعيين المفضلة
 update_bookmark: تحديث المفضلة
 delete_bookmark: حذف إشارة مرجعية
@@ -1292,7 +1292,10 @@ fields:
     png: PNG
     webP: WebP
     tiff: Tiff
+    avif: AVIF
+    reporting: التقارير
     mapping: تعيين
+    basemaps_raster: 'ِشبكة نقطية'
     mapbox_placeholder: pk.eyJ1Ijo.....
     attribution: السمات
     attribution_placeholder: المساهمون © OpenStreetMap
@@ -1325,9 +1328,11 @@ fields:
     image_editor: محرر الصور
     theme_light_overrides: تخصيصات الثيم الفاتح
     theme_dark_overrides: تخصيصات الثيم الغامق
+    public_registration_note: يسمح للمستخدمين بالتسجيل عبر [مسار التسجيل](/admin/register).
     public_registration_role: دور المستخدم
     public_registration_role_note: يتم تعيين هذا الدور للمستخدمين الذين يقومون بالتسجيل باستخدام هذه الطريقة. لا يؤثر على المستخدمين المسجلين مسبقا.
     public_registration_email_filter: تصفية عنوان البريد الإلكتروني
+    public_registration_email_filter_note: فقط عناوين البريد الإلكتروني المطابقة لهذا الفلتر تستطيع التسجيل.
     public_registration_verify_email: تحقق من البريد الإلكتروني
     public_registration_verify_email_note: يرسل رسالة بريد إلكتروني إلى المستخدم المسجل يطلب منه النقر على رابط التحقق قبل أن يتمكن من تسجيل الدخول.
   directus_shares:
@@ -1392,6 +1397,7 @@ field_options:
     additional_transforms: تحولات إضافية
     mapbox_key: رمز وصول الخريطة
     mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps_raster: 'ِشبكة نقطية'
     files_divider_title: الملفات و الصور المصغرة
     overrides_divider_title: تجاوزات التطبيق
   directus_activity:
@@ -1432,6 +1438,8 @@ field_options:
     storage_divider: تسمية الملف
     filename_disk: الإسم على قرص التخزين...
     filename_download: الاسم عند التنزيل...
+  directus_policies:
+    assigned_to: تم تعيينها لـ
   directus_roles:
     name: الاسم الفريد لهذا الدور...
     description: وصف لهذا الدور...
@@ -1885,7 +1893,7 @@ interfaces:
       dropdown: قائمة منسدلة
       modal: نموذج
   input-rich-text-html:
-    wysiwyg: ما تراه هو ما تحصل عليه (WYSIWYG)
+    wysiwyg: ما تراه هو ما حصل عليه (WYSIWYG)
     description: محرر نص يكتب محتوى HTML
     toolbar: شريط الأدوات
     custom_formats: تنسيقات مخصصة
