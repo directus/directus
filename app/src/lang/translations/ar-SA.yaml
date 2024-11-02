@@ -110,6 +110,7 @@ field_name_translations: ترجمة اسم الحقل
 enter_password_to_enable_tfa: أدخل كلمة المرور الخاصة بك لتمكين المصادقة الثنائية
 add_field: إضافة حقل
 role_name: إسم الدور
+policy_name: اسم السياسة
 branch: فرع
 leaf: ورقة الشجر
 indeterminate: غير محدد
@@ -127,6 +128,7 @@ requires_value: قيمة مطلوبة
 create_preset: إنشاء إعدادات مسبقة
 create_panel: إنشاء لوحة
 create_role: إنشاء دور أو صلاحية
+create_policy: إنشاء سياسة
 create_user: إضافة مستخدم
 message: الرسالة
 delete_panel: حذف لوحة
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: انتهت الجلسة
 public_label: عام
 public_description: التحكم بتوفر البيانات على واجهة الربط البرمجي بدون تسجيل دخول.
+public_role_info: >-
+  الدور العام يتحكم في ماهية بيانات الـ API المتاحة للمستخدمين غير المصدقين (المسجلين) أو المستخدمين دون دور. لا يمكن للطلبات ذات الدور العام أن يكون لها وصول إلى التطبيق أو وصول لواجهة المشرفين. إذا تم منح الوصول إلى التطبيق أو واجهة المشرفين لسياسة معينة للدور العام سيتم تجاهلها.
 admin_description: الدور الأساسي للمدير مع وصول غير مقيّد للتطبيق والـ API.
+admin_policy_description: الصلاحيات الافتراضية للمدير مع وصول غير مقيّد للتطبيق والـ API.
 no_description: لا يوجد وصف...
 reached_maximum_number_of_extensions: لقد وصلت إلى الحد الأقصى لعدد الملحقات لهذا المشروع ({n}). اتصل بمدير النظام للحصول على مزيد من المعلومات.
 not_allowed: غير مسموح
@@ -539,6 +544,7 @@ file_details: تفاصيل الملف
 dimensions: الأبعاد
 size: حجم
 created: تم الإنشاء
+uploaded: تم الرفع
 modified: معدّل
 owner: المالك
 edited_by: تم التحرير بواسطة
@@ -595,7 +601,10 @@ allow_duplicates: السماح بالتكرارات
 comments: تعليقات
 no_comments: لا توجد تعليقات بعد
 expand: عرض الكل
+expand_all: توسيع الكل
+expand_none: توسيع لا شيء
 collapse: طي
+collapse_all: تصغير الكل
 select_item: تحديد عنصر
 no_items: لا يوجد عناصر
 search_items: البحث عن عناصر...
@@ -646,6 +655,7 @@ copy_to: انسخ إلى...
 no_other_dashboards_copy: ليس لديك حتى الآن أي لوحة تحكم أخرى.
 inactive: غير نشط
 users: المستخدمين
+roles: الأدوار
 activity: الأنشطة
 activity_item: عنصر النشاط
 action: الإجراء
@@ -859,6 +869,7 @@ columns: أعمدة
 collection_setup: لا توجد مجموعات الإعداد
 optional_system_fields: حقول اختيارية
 value_unique: القيمة يجب أن تكون
+value_index: الحقل مفهرس
 all_activity: كل النشاط
 create_item: أنشئ عنصر
 display_template: عرض القالب
@@ -975,6 +986,8 @@ no_data_in_flow: لم يتم إنتاج أو الوصول إلى أي بيانا
 accountability: المساءلة
 payload: الحمولة
 details: التفاصيل
+all_instances: جميع النسخ
+all_log_levels: جميع مستويات السجل
 full_screen: ملء الشاشة
 full_text_search: البحث عن النص الكامل
 edit_panels: تحرير لوحة
@@ -1003,6 +1016,7 @@ tooltip: تلميح
 tooltip_placeholder: أدخل تلميح الأداة...
 unlimited: غير محدود
 open_link_in: افتح الرابط في
+new_tab: تبويب جديد
 save_image: حفظ الصورة
 save_media: حفظ الوسائط
 wysiwyg_options:
@@ -1076,10 +1090,13 @@ editing_unit: 'تعديل {unit}'
 editing_in_batch: 'تعديل دفعة من  {count} عناصر'
 no_options_available: لا توجد خيارات متاحة
 settings_data_model: نموذج البيانات
+settings_roles: أدوار المستخدم
+settings_permissions: سياسات الوصول
 settings_project: إعدادات
 settings_appearance: المظهر
 settings_webhooks: روابط الويب (Webhooks)
 settings_flows: التدفقات
+settings_system_logs: سجلات النظام
 settings_presets: محفوظات
 settings_translations: الترجمة
 one_or_more_options_are_missing: واحد أو أكثر من الخيارات مفقودة
@@ -1125,6 +1142,8 @@ page_help_settings_datamodel_collections: >-
   **نموذج البيانات: المجموعات** - قوائم جميع المجموعات المتاحة. ويشمل ذلك مجموعات النظام المرئية والمخفية، فضلا عن جداول قواعد البيانات غير المدارة التي يمكن إضافتها.
 page_help_settings_datamodel_fields: >-
   **نموذج البيانات: المجموعة** - نموذج لإدارة هذه المجموعة وحقولها.
+page_help_settings_system_logs: ''
+page_help_settings_policies_item: ""
 page_help_settings_roles_item: "**تفاصيل الدور** - إدارة أذونات الدور والإعدادات الأخرى."
 page_help_settings_presets_collection: >-
   **استعراض الإعدادات المسبقة** - عرض جميع الإعدادات المسبقة في المشروع، بما في ذلك: المستخدم، الدور، الإشارات المرجعية العالمية، فضلا عن نماذج عروض الافتراضية.
@@ -1326,6 +1345,7 @@ fields:
     description: التفاصيل
     users: المستخدمون في الدور
   directus_policies:
+    name: اسم السياسة
     description: التفاصيل
   directus_webhooks:
     name: الاسم
