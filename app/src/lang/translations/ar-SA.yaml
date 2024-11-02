@@ -1284,6 +1284,9 @@ fields:
     last_access: آخر وصول
     email_notifications: إشعارات البريد الإلكتروني
     appearance: المظهر
+    theme_dark: الثيم الداكن
+    theme_light_overrides: تخصيصات الثيم الفاتح
+    theme_dark_overrides: تخصيصات الثيم الغامق
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1306,6 +1309,8 @@ fields:
     public_note: ملاحظة عامة
     theming: القالب الافتراضي
     default_appearance: المظهر الافتراضي
+    default_theme_light: الثيم الفاتح الافتراضي
+    default_theme_dark: الثيم الغامق الافتراضي
     auth_password_policy: سياسات كلمة المرور
     auth_login_attempts: محاولات تسجيل الدخول
     files_and_thumbnails: الملفات والتخزين
@@ -1318,6 +1323,8 @@ fields:
     transformations_all: السماح بجميع التحولات
     transformations_none: تعطيل التحولات
     image_editor: محرر الصور
+    theme_light_overrides: تخصيصات الثيم الفاتح
+    theme_dark_overrides: تخصيصات الثيم الغامق
     public_registration_role: دور المستخدم
     public_registration_role_note: يتم تعيين هذا الدور للمستخدمين الذين يقومون بالتسجيل باستخدام هذه الطريقة. لا يؤثر على المستخدمين المسجلين مسبقا.
     public_registration_email_filter: تصفية عنوان البريد الإلكتروني
@@ -1344,9 +1351,14 @@ fields:
     icon: أيقونة الدور
     description: التفاصيل
     users: المستخدمون في الدور
+    parent: الدور الأب
   directus_policies:
     name: اسم السياسة
     description: التفاصيل
+    app_access: الوصول إلى التطبيق
+    admin_access: وصول المسؤول
+    ip_access: الوصول إلى IP
+    enforce_tfa: يتطلب التحقق بخطوتين 2FA
   directus_webhooks:
     name: الاسم
     method: الطريقة
@@ -1429,6 +1441,7 @@ field_options:
       name_placeholder: أدخل عنوانًا...
       link_name: الرابط
       link_placeholder: رابط نسبي أو مطلق...
+    parent_note: الدور الرئيس (اختياري) الذي يرث هذا الدور الأذونات منه
     collections_name: مجموعات
     collections_addLabel: مجموعة جديدة...
   directus_users:
@@ -1506,6 +1519,7 @@ referential_action_set_default: تعيين {field} إلى قيمته الافت�
 choose_action: اختر الإجراء
 continue_label: متابعة
 editing_role: 'دور {role}'
+no_permissions: لا توجد أذونات
 creating_webhook: إنشاء Webhook
 default_label: الافتراضي
 delete_label: حذف
@@ -1686,6 +1700,7 @@ interfaces:
     select_a_collection: حدد مجموعة
   presentation-divider:
     divider: الفاصل
+    inline_title: عنوان مضمن
     inline_title_label: أظهر العنوان داخل السطر
     margin_top: الهامش العلوي
     margin_top_label: زيادة الهامش العلوي
@@ -1747,12 +1762,14 @@ interfaces:
     collection-item-dropdown: قائمة عناصر المجموعة
     description: اختيار عنصر من مجموعة بتنسيق JSON
   input-rich-text-md:
+    markdown: Markdown
     description: أدخل و معاينة markdown
     edit: تعديل
     preview: معاينة
     editorFont: خط المحرر
     previewFont: معاينة الخط
     default_view: طريقة العرض الافتراضية
+    default_view_editor: محرر
     default_view_preview: معاينة
     customSyntax: كتل مخصصة
     box: كتلة / مضمن
@@ -1770,6 +1787,8 @@ interfaces:
     unexpected_geometry: توقّعت {expected}، حصلت على {got}.
     fit_bounds: تناسب العرض مع البيانات
     native: الأصل
+    wkt: WKT
+    wkb: WKB
     click_to_select: انقر لاختيار {geometry}
   presentation-notice:
     notice: إشعار
@@ -1784,9 +1803,14 @@ interfaces:
     folder: المجلد الرئيس
     description: اختر مجلدًا
     field_hint: المجلد الافتراضي للملفات التي تم تحميلها دون تحديد مجلد. لا يؤثر على الملفات الموجودة.
+    root_name: مكتبة الملفات
+    system_default: افتراضيات النظام
   select-radio:
+    radio-buttons: أزرار اختيار من متعدد
     description: حدد اختيار واحد من خيارات متعددة
   list:
+    repeater: مكرر
+    description: إنشاء عدة نسخ من نفس الهيكل
     edit_fields: تعديل الحقول
     add_label: 'علامة "إنشاء عنصر جديد"'
     sort: رتب
@@ -1859,14 +1883,19 @@ interfaces:
     modes:
       auto: تلقائي
       dropdown: قائمة منسدلة
+      modal: نموذج
   input-rich-text-html:
+    wysiwyg: ما تراه هو ما تحصل عليه (WYSIWYG)
     description: محرر نص يكتب محتوى HTML
     toolbar: شريط الأدوات
     custom_formats: تنسيقات مخصصة
+    custom_formats_note: قائمة بتنسيقات محتوى TinyMCE - راجع وثائق TinyMCE حول [تنسيق المحتوى] (https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) لمزيد من المعلومات.
     options_override: تجاوز الخيارات
+    folder_note: مجلد الملفات التي تم رفعها. لا يؤثر على الملفات الموجودة.
     imageToken: رمز الوصول الثابت
     imageToken_label: تم إلحاق رمز الوصول الثابت إلى عنوان URL للأصول
   input-block-editor:
+    input-block-editor: محرر البلوكات
     description: محرر على غرار الكتلة لقصص الوسائط الغنية، المخرجات نظيفة في JSON باستخدام Editor.js
     tools: شريط الأدوات
     tools_options:
@@ -1882,17 +1911,24 @@ interfaces:
       underline: مسطر
       inlinecode: الرمز المُتّضَمَّن
       delimiter: مُحَدَّد
+      checklist: قائمة اختيار
       alignment: المحاذاة
+      raw: HTML صرف
   input-autocomplete-api:
+    input-autocomplete-api: حقل مع ملء تلقائي (API)
     results_path: مسار النتائج
     value_path: مسار القيمة
     text_path: مسار النص
     trigger: المشغّل
     rate: معدل
   group-raw:
+    name: مجموعة صف
     description: عرض الحقول كـما هي
   group-detail:
     name: تفاصيل المجموعة
+    description: عرض الحقول كقسم قابل للتصغير
+    show_header: إظهار رأس للمجموعة
+    header_icon: أيقونة الرأس
   system-token:
     system-token: الرمز المميز
 displays:
