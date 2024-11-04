@@ -2,4 +2,4 @@
 '@directus/storage-driver-supabase': minor
 ---
 
-Added TUS support to the supabase storage driver
+Added TUS support to the Supabase storage driver
