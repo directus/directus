@@ -1,10 +1,13 @@
-import type { Driver, ReadOptions } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
+import * as tus from 'tus-js-client';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
+
+const DEFAULT_CHUNK_SIZE = 10_000_000;
 
 export type DriverSupabaseConfig = {
 	bucket: string;
@@ -13,18 +16,26 @@ export type DriverSupabaseConfig = {
 	/** Allows a custom Supabase endpoint for self-hosting */
 	endpoint?: string;
 	root?: string;
+	tus?: {
+		chunkSize?: number;
+	};
 };
 
-export class DriverSupabase implements Driver {
+export class DriverSupabase implements TusDriver {
 	private config: DriverSupabaseConfig & { root: string };
 	private client: StorageClient;
 	private bucket: ReturnType<StorageClient['from']>;
+
+	// TUS specific members
+	private readonly preferredChunkSize: number;
 
 	constructor(config: DriverSupabaseConfig) {
 		this.config = {
 			...config,
 			root: normalizePath(config.root ?? '', { removeLeading: true }),
 		};
+
+		this.preferredChunkSize = this.config.tus?.chunkSize ?? DEFAULT_CHUNK_SIZE;
 
 		this.client = this.getClient();
 		this.bucket = this.getBucket();
@@ -66,6 +77,10 @@ export class DriverSupabase implements Driver {
 
 	private getAuthenticatedUrl(filepath: string) {
 		return `${this.endpoint}/${join('object/authenticated', this.config.bucket, this.fullPath(filepath))}`;
+	}
+
+	private getResumableUrl() {
+		return `${this.endpoint}/upload/resumable`;
 	}
 
 	async read(filepath: string, options?: ReadOptions) {
@@ -201,6 +216,76 @@ export class DriverSupabase implements Driver {
 			}
 		} while (itemCount === limit);
 	}
+
+	get tusExtensions() {
+		return ['creation', 'termination', 'expiration'];
+	}
+
+	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext) {
+		return context;
+	}
+
+	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
+		let bytesUploaded = offset || 0;
+
+		const metadata = {
+			bucketName: this.config.bucket,
+			objectName: this.fullPath(filepath),
+			contentType: context.metadata!['type'] ?? 'image/png',
+			cacheControl: '3600',
+		};
+
+		await new Promise((resolve, reject) => {
+			const upload = new tus.Upload(content, {
+				endpoint: this.getResumableUrl(),
+				// @ts-expect-error
+				fileReader: new FileReader(),
+				headers: {
+					Authorization: `Bearer ${this.config.serviceRole}`,
+					'x-upsert': 'true',
+				},
+				metadata,
+				chunkSize: this.preferredChunkSize,
+				uploadSize: context.size,
+				retryDelays: null,
+				onError(error) {
+					reject(error);
+				},
+				onChunkComplete: function (chunkSize) {
+					bytesUploaded += chunkSize;
+
+					resolve(null);
+				},
+				onSuccess() {
+					resolve(null);
+				},
+				onUploadUrlAvailable() {
+					if (!context.metadata!['upload-url']) {
+						context.metadata!['upload-url'] = upload.url;
+					}
+				},
+			});
+
+			if (context.metadata!['upload-url']) {
+				upload.resumeFromPreviousUpload({
+					size: context.size!,
+					creationTime: context.metadata!['creation_date'] as string,
+					metadata,
+					uploadUrl: context.metadata!['upload-url'],
+				} as any);
+			}
+
+			upload.start();
+		});
+
+		return bytesUploaded;
+	}
+
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
+		await this.delete(filepath);
+	}
 }
 
 export default DriverSupabase;
@@ -210,4 +295,28 @@ export default DriverSupabase;
  */
 function dirname(path: string) {
 	return path.split('/').slice(0, -1).join('/');
+}
+
+// @ts-expect-error
+class StreamSource extends tus.StreamSource {
+	_streamEnded = false;
+
+	// @ts-expect-error
+	override async slice(start: number, end: number) {
+		if (this._streamEnded) return null;
+
+		// Act like the stream ended after it's been called once
+		this._streamEnded = true;
+
+		// Shift the start and end offsets to always start at 0, since the read stream is only a stream of one chunk with
+		// length of `chunkSize`
+		return super.slice(0, end - start);
+	}
+}
+
+class FileReader {
+	async openFile(input: Readable, _: number): Promise<StreamSource> {
+		// @ts-expect-error
+		return new StreamSource(input);
+	}
 }
