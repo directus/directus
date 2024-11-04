@@ -13,10 +13,11 @@ const defaultGlobals: ClientGlobals = {
 /**
  * Creates a client to communicate with a Directus app.
  *
- * @param url The URL to the Directus app.
- * @param config The optional configuration.
+ * @param {string} url - The URL to the Directus app.
+ * @param {ClientOptions} [options] - The client options. Defaults to defaultGlobals.
+ *     {@see {@link ClientOptions}} and {@see {@link ClientGlobals}}
  *
- * @returns A Directus client.
+ * @returns {DirectusClient} A Directus client.
  */
 export const createDirectus = <Schema = any>(url: string, options: ClientOptions = {}): DirectusClient<Schema> => {
 	const globals = options.globals ? { ...defaultGlobals, ...options.globals } : defaultGlobals;
