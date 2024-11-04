@@ -472,7 +472,7 @@ export class DriverCloudinary implements TusDriver {
 			timestamp: context.metadata!['timestamp'] as string,
 			api_key: this.apiKey,
 			type: 'upload',
-			access_mode: this.accessMode || 'authenticated',
+			access_mode: this.accessMode,
 			public_id: this.getPublicId(fullPath),
 			...(folderPath
 				? {
