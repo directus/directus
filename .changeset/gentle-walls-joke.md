@@ -2,4 +2,4 @@
 '@directus/storage-driver-azure': minor
 ---
 
-Added TUS support to the azure storage driver
+Added TUS support to the Azure storage driver
