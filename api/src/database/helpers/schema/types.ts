@@ -164,7 +164,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	addInnerSortFieldsToGroupBy(
 		_groupByFields: (string | Knex.Raw)[],
 		_sortRecords: SortRecord[],
-		_hasMultiRelationalSort: boolean,
+		_hasRelationalSort: boolean,
 	): void {
 		// no-op by default
 	}
