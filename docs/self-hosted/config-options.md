@@ -343,7 +343,7 @@ Redis is required when you run Directus load balanced across multiple containers
 
 All `REDIS_*` environment variables are passed to the `connection` configuration of a
 [`Redis` instance](https://redis.github.io/ioredis/classes/Redis.html). This means, based on your project's needs, you can
-extend the `REDIS_*` environment variables with any config you need to pass to the redis instance.
+extend the `REDIS_*` environment variables with any config you need to pass to the Redis instance.
 
 This includes:
 
