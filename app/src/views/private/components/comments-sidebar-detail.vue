@@ -5,6 +5,7 @@ import { localizedFormat } from '@/utils/localized-format';
 import { userName } from '@/utils/user-name';
 import type { PrimaryKey, User } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
+import dompurify from 'dompurify';
 import { isThisYear, isToday, isYesterday } from 'date-fns';
 import { flatten, groupBy, orderBy } from 'lodash';
 import { Ref, onMounted, ref, toRefs, watch } from 'vue';
@@ -91,10 +92,9 @@ function useActivity(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 			userPreviews.value = await loadUserPreviews(response.data.data, regex);
 
 			const activityWithUsersInComments = (response.data.data as Activity[]).map((comment) => {
-				const display = (comment.comment as string).replace(
-					regex,
-					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`,
-				);
+				const display = dompurify
+					.sanitize(comment.comment as string, { ALLOWED_TAGS: [] })
+					.replace(regex, (match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`);
 
 				return {
 					...comment,
