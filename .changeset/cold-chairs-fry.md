@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Fixed regression preventing preview Cloudinary images on File Library
+Fixed Cloudinary image preview in the File Library
