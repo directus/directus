@@ -11,6 +11,9 @@ export type DriverAzureConfig = {
 	accountKey: string;
 	root?: string;
 	endpoint?: string;
+	tus?: {
+		chunkSize?: number;
+	};
 };
 
 export class DriverAzure implements TusDriver {
@@ -28,6 +31,11 @@ export class DriverAzure implements TusDriver {
 
 		this.containerClient = client.getContainerClient(config.containerName);
 		this.root = config.root ? normalizePath(config.root, { removeLeading: true }) : '';
+
+		// https://learn.microsoft.com/en-us/rest/api/storageservices/append-block?tabs=microsoft-entra-id#remarks
+		if (config.tus?.chunkSize && config.tus.chunkSize > 104_857_600) {
+			throw new Error('Invalid chunkSize provided');
+		}
 	}
 
 	private fullPath(filepath: string) {
