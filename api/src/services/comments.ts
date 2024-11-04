@@ -7,6 +7,7 @@ import { cloneDeep, mergeWith, uniq } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import { useLogger } from '../logger/index.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccessForUser } from '../permissions/modules/fetch-global-access/lib/fetch-global-access-for-user.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { isValidUuid } from '../utils/is-valid-uuid.js';
@@ -147,17 +148,22 @@ export class CommentsService extends ItemsService {
 			const userID = mention.substring(1);
 
 			const user = await this.usersService.readOne(userID, {
-				fields: ['id', 'first_name', 'last_name', 'email', 'role.id', 'role.admin_access', 'role.app_access'],
+				fields: ['id', 'first_name', 'last_name', 'email', 'role.id'],
 			});
 
 			const accountability: Accountability = {
 				user: userID,
 				role: user['role']?.id ?? null,
-				admin: user['role']?.admin_access ?? null,
-				app: user['role']?.app_access ?? null,
+				admin: false,
+				app: false,
 				roles: await fetchRolesTree(user['role']?.id, this.knex),
 				ip: null,
 			};
+
+			const userGlobalAccess = await fetchGlobalAccessForUser(accountability, this.knex);
+
+			accountability.admin = userGlobalAccess.admin;
+			accountability.admin = userGlobalAccess.app;
 
 			const usersService = new UsersService({ schema: this.schema, accountability });
 
