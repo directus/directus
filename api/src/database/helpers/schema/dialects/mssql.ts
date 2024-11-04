@@ -39,7 +39,7 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 	override addInnerSortFieldsToGroupBy(
 		groupByFields: (string | Knex.Raw)[],
 		sortRecords: SortRecord[],
-		_hasMultiRelationalSort: boolean,
+		_hasRelationalSort: boolean,
 	) {
 		/*
 		MSSQL requires all selected columns that are not aggregated over are to be present in the GROUP BY clause

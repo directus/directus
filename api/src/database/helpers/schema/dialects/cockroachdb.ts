@@ -48,9 +48,9 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 	override addInnerSortFieldsToGroupBy(
 		groupByFields: (string | Knex.Raw)[],
 		sortRecords: SortRecord[],
-		hasMultiRelationalSort: boolean,
+		hasRelationalSort: boolean,
 	) {
-		if (hasMultiRelationalSort) {
+		if (hasRelationalSort) {
 			/*
 			Cockroach allows aliases to be used in the GROUP BY clause and only needs columns in the GROUP BY clause that
 			are not functionally dependent on the primary key.

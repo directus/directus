@@ -705,6 +705,13 @@ instability or limited bandwidth. This is implemented using the [TUS protocol](h
 | `TUS_UPLOAD_EXPIRATION` | The expiry duration for uncompleted files with no upload activity | `10m`         |
 | `TUS_CLEANUP_SCHEDULE`  | Cron schedule to clean up the expired uncompleted uploads         | `0 * * * *`   |
 
+::: warning
+
+The `TUS_CHUNK_SIZE` for `storage-driver-gcs` must be a power of 2 with a minimum of `256kb` (e.g. `256kb`, `512kb`,
+`1024kb`).
+
+:::
+
 ## Assets
 
 | Variable                                 | Description                                                                                                                         | Default Value |
