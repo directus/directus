@@ -5,6 +5,8 @@ import { join } from 'node:path';
 import type { Readable } from 'node:stream';
 import { finished } from 'node:stream/promises';
 
+const MAXIMUM_CHUNK_SIZE = 104_857_600; // 100mb
+
 export type DriverAzureConfig = {
 	containerName: string;
 	accountName: string;
@@ -33,7 +35,7 @@ export class DriverAzure implements TusDriver {
 		this.root = config.root ? normalizePath(config.root, { removeLeading: true }) : '';
 
 		// https://learn.microsoft.com/en-us/rest/api/storageservices/append-block?tabs=microsoft-entra-id#remarks
-		if (config.tus?.chunkSize && config.tus.chunkSize > 104_857_600) {
+		if (config.tus?.chunkSize && config.tus.chunkSize > MAXIMUM_CHUNK_SIZE) {
 			throw new Error('Invalid chunkSize provided');
 		}
 	}
