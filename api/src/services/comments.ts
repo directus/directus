@@ -156,7 +156,7 @@ export class CommentsService extends ItemsService {
 				role: user['role']?.id ?? null,
 				admin: false,
 				app: false,
-				roles: await fetchRolesTree(user['role']?.id, this.knex),
+				roles: await fetchRolesTree(user['role']?.id ?? null, this.knex),
 				ip: null,
 			};
 
