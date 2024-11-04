@@ -60,7 +60,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 	override addInnerSortFieldsToGroupBy(
 		groupByFields: (string | Knex.Raw)[],
 		sortRecords: SortRecord[],
-		_hasMultiRelationalSort: boolean,
+		_hasRelationalSort: boolean,
 	) {
 		/*
 		Oracle requires all selected columns that are not aggregated over to be present in the GROUP BY clause
