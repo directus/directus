@@ -124,8 +124,15 @@ export class DriverCloudinary implements Driver {
 
 		const resourceType = this.getResourceType(filepath);
 		const fullPath = this.fullPath(filepath);
-		const signature = version !== undefined ? `v${version}` : this.getParameterSignature(fullPath);
-		const url = `https://res.cloudinary.com/${this.cloudName}/${resourceType}/upload/${signature}/${fullPath}`;
+		const signature = this.getParameterSignature(fullPath);
+
+		let url = `https://res.cloudinary.com/${this.cloudName}/${resourceType}/upload/${signature}`;
+
+		if (version) {
+			url += `/v${version}`;
+		}
+
+		url += `/${fullPath}`;
 
 		const requestInit: RequestInit = { method: 'GET' };
 
