@@ -7,6 +7,8 @@ import { Readable } from 'node:stream';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
 
+const DEFAULT_CHUNK_SIZE = 10_000_000;
+
 export type DriverSupabaseConfig = {
 	bucket: string;
 	serviceRole: string;
@@ -33,7 +35,7 @@ export class DriverSupabase implements TusDriver {
 			root: normalizePath(config.root ?? '', { removeLeading: true }),
 		};
 
-		this.preferredChunkSize = this.config.tus?.chunkSize ?? 10_000_000;
+		this.preferredChunkSize = this.config.tus?.chunkSize ?? DEFAULT_CHUNK_SIZE;
 
 		this.client = this.getClient();
 		this.bucket = this.getBucket();
