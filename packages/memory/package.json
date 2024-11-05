@@ -1,6 +1,6 @@
 {
 	"name": "@directus/memory",
-	"version": "2.0.3",
+	"version": "2.0.4",
 	"description": "Memory / Redis abstraction for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
