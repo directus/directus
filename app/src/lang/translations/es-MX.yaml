@@ -368,6 +368,7 @@ no_collections_found: No se encontraron colecciones.
 new_data_alert: 'Se creará lo siguiente dentro de su modelo de datos:'
 search_collection: Buscar colección...
 search_role: Buscar roles...
+search_policy: Buscar política...
 search_field: Campo Buscado...
 new_field: 'Nuevo campo'
 new_collection: 'Nueva colección'
@@ -986,6 +987,12 @@ no_data_in_flow: No se produjo ni se accedió a ningún dato dentro de este fluj
 accountability: Responsabilidad
 payload: Payload
 details: Detalles
+logs_waiting: 'Esperando más registros...'
+logs_unread_count: '{count} no leídos'
+clear_logs: Eliminar registros
+search_logs: Buscar registros...
+all_instances: Todas las instancias
+all_log_levels: Todos los niveles de registro
 full_screen: Pantalla Completa
 full_text_search: Búsqueda de texto completo
 edit_panels: Editar Panel
@@ -1088,10 +1095,12 @@ editing_unit: 'Editando {unit}'
 editing_in_batch: 'Editando por lote {count} elementos'
 no_options_available: Sin opciones disponibles
 settings_data_model: Modelo de datos
+settings_permissions: Políticas de acceso
 settings_project: Ajustes
 settings_appearance: Apariencia
 settings_webhooks: Webhooks
 settings_flows: Flujos
+settings_system_logs: Registros del sistema
 settings_presets: Marcadores
 settings_translations: Traducciones
 one_or_more_options_are_missing: Falta una o más opciones
@@ -1372,9 +1381,12 @@ fields:
     icon: Ícono del rol
     description: Descripción
     users: Usuarios en el rol
+    parent: Rol parental
+    children: Roles infantiles
   directus_policies:
     name: Nombre de la política
     description: Descripción
+    app_access: Acceso a la aplicación
     ip_access: Acceso IP
     enforce_tfa: Requiere 2FA
   directus_webhooks:
