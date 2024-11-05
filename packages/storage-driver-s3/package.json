@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-s3",
-	"version": "11.0.2",
+	"version": "11.0.3",
 	"description": "S3 file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
