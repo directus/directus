@@ -44,9 +44,9 @@ export async function fetchDynamicVariableContext(options: FetchDynamicVariableC
 			permissionContext,
 			{ role: options.accountability.role },
 			async (fields) => {
-				const usersService = new RolesService(context);
+				const rolesService = new RolesService(context);
 
-				return await usersService.readOne(options.accountability.role!, {
+				return await rolesService.readOne(options.accountability.role!, {
 					fields,
 				});
 			},
