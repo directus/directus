@@ -481,7 +481,7 @@ export class UsersService extends ItemsService {
 			mailService
 				.send({
 					to: input.email,
-					subject: 'Verify your email address', // TODO: translate after theres support for internationalized emails
+					subject: 'Verifique o seu endereço de e-mail', // TODO: translate after theres support for internationalized emails
 					template: {
 						name: 'user-registration',
 						data: {
@@ -547,7 +547,7 @@ export class UsersService extends ItemsService {
 			.setQuery('token', token)
 			.toString();
 
-		const subjectLine = subject ? subject : 'Password Reset Request';
+		const subjectLine = subject ? subject : 'Troca de senha no Painel do Profissional Yinflow.Life';
 
 		mailService
 			.send({
