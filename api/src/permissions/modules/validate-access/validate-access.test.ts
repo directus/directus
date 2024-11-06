@@ -49,7 +49,10 @@ test('Does not throw when collection exists check is skipped for admins', async 
 	const action = 'read';
 
 	await expect(
-		validateAccess({ accountability, action, collection: 'non-existent' }, sample.context, true),
+		validateAccess(
+			{ accountability, action, collection: 'non-existent', skipCollectionExistsCheck: true },
+			sample.context,
+		),
 	).resolves.toBeUndefined();
 });
 

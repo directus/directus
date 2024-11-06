@@ -379,12 +379,12 @@ export class CollectionsService {
 							accountability: this.accountability!,
 							action: 'read',
 							collection,
+							skipCollectionExistsCheck: true,
 						},
 						{
 							schema: this.schema,
 							knex: this.knex,
 						},
-						true,
 					),
 				),
 			);
