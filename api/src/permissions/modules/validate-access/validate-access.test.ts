@@ -44,6 +44,15 @@ test('Throws if the collection does not exist', async () => {
 	).rejects.toBeInstanceOf(ForbiddenError);
 });
 
+test('Does not throw when collection exists check is skipped for admins', async () => {
+	const accountability = { admin: true } as unknown as Accountability;
+	const action = 'read';
+
+	await expect(
+		validateAccess({ accountability, action, collection: 'non-existent' }, sample.context, true),
+	).resolves.toBeUndefined();
+});
+
 test('Returns when admin is true', async () => {
 	const accountability = { admin: true } as unknown as Accountability;
 	const action = 'read';
