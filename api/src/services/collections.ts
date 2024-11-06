@@ -385,6 +385,7 @@ export class CollectionsService {
 							schema: this.schema,
 							knex: this.knex,
 						},
+						true,
 					),
 				),
 			);
