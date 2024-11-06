@@ -163,6 +163,11 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 		...(ttl && { ttl }),
 	};
 
+	if (store === 'memory') {
+		config.serialize = (v) => v as unknown as string;
+		config.deserialize = (v) => v as unknown as any;
+	}
+
 	if (store === 'redis') {
 		const { default: KeyvRedis } = require('@keyv/redis');
 		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'), { useRedisSets: false });
