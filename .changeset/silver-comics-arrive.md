@@ -4,4 +4,4 @@
 '@directus/sdk': patch
 ---
 
-Removed outdated logic in the comment service
+Removed outdated logic for the comment service
