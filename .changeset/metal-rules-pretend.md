@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Removed outdated logic for versioning
+Removed outdated logic for the versioning service
