@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
+import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { uniq } from 'lodash-es';
 import type { Accountability, Comment, PrimaryKey } from '@directus/types';
 import { useLogger } from '../logger/index.js';
@@ -27,6 +27,8 @@ export class CommentsService extends ItemsService {
 	}
 
 	override async createOne(data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!this.accountability?.user) throw new ForbiddenError();
+
 		if (!data['comment']) {
 			throw new InvalidPayloadError({ reason: `"comment" is required` });
 		}
@@ -54,11 +56,17 @@ export class CommentsService extends ItemsService {
 			);
 		}
 
+		const result = await super.createOne(data, opts);
+
 		const usersRegExp = new RegExp(/@[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}/gi);
 
 		const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
 
-		const sender = await this.usersService.readOne(this.accountability!.user!, {
+		if (mentions.length) {
+			return result;
+		}
+
+		const sender = await this.usersService.readOne(this.accountability.user, {
 			fields: ['id', 'first_name', 'last_name', 'email'],
 		});
 
@@ -149,6 +157,18 @@ ${comment}
 			}
 		}
 
-		return super.createOne(data, opts);
+		return result;
+	}
+
+	override updateOne(key: PrimaryKey, data: Partial<Comment>, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!this.accountability?.user) throw new ForbiddenError();
+
+		return super.updateOne(key, data, opts);
+	}
+
+	override deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
+		if (!this.accountability?.user) throw new ForbiddenError();
+
+		return super.deleteOne(key, opts);
 	}
 }
