@@ -204,12 +204,11 @@ export class CollectionsService {
 				await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
 			}
 
-			// Refresh the schema for subsequent reads
-			this.schema = await getSchema();
-
 			if (opts?.emitEvents !== false && nestedActionEvents.length > 0) {
+				const updatedSchema = await getSchema();
+
 				for (const nestedActionEvent of nestedActionEvents) {
-					nestedActionEvent.context.schema = this.schema;
+					nestedActionEvent.context.schema = updatedSchema;
 					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 				}
 			}
