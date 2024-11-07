@@ -286,17 +286,10 @@ const itemLink = computed(() => {
 }
 
 .item-link {
-	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
-	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
 
 	&:hover {
 		--v-icon-color: var(--theme--primary);
-	}
-
-	&.disabled {
-		opacity: 0;
-		pointer-events: none;
 	}
 }
 
