@@ -18,7 +18,7 @@ export type DriverSupabaseConfig = {
 	root?: string;
 	tus?: {
 		enabled: boolean;
-		chunkSize: number;
+		chunkSize?: number;
 	};
 };
 

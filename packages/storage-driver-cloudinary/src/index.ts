@@ -17,7 +17,7 @@ export type DriverCloudinaryConfig = {
 	accessMode: 'public' | 'authenticated';
 	tus?: {
 		enabled: boolean;
-		chunkSize: number;
+		chunkSize?: number;
 	};
 };
 
