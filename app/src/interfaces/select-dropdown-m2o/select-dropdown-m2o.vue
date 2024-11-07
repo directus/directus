@@ -163,8 +163,8 @@ function onSelection(selection: (number | string)[] | null) {
 }
 
 const itemLink = computed(() => {
-	if (!collection.value || !currentPrimaryKey.value) return '';
-	return getItemRoute(collection.value, currentPrimaryKey.value);
+	if (!collection.value || !currentPrimaryKey.value || !relationInfo.value) return '';
+	return getItemRoute(relationInfo.value.relatedCollection.collection, currentPrimaryKey.value);
 });
 </script>
 
