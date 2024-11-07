@@ -16,7 +16,8 @@ export type DriverCloudinaryConfig = {
 	apiSecret: string;
 	accessMode: 'public' | 'authenticated';
 	tus?: {
-		chunkSize?: number;
+		enabled: boolean;
+		chunkSize: number;
 	};
 };
 
@@ -35,7 +36,7 @@ export class DriverCloudinary implements TusDriver {
 		this.accessMode = config.accessMode;
 
 		// must be at least 5mb
-		if (config.tus?.chunkSize && config.tus?.chunkSize < MINIMUM_CHUNK_SIZE) {
+		if (config.tus?.enabled && config.tus.chunkSize && config.tus?.chunkSize < MINIMUM_CHUNK_SIZE) {
 			throw new Error('Invalid chunkSize provided');
 		}
 	}
