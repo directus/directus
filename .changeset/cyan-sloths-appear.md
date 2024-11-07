@@ -6,4 +6,4 @@
 '@directus/api': patch
 ---
 
-Fixed enforcing `chunkSize` when tus is not enabled
+Fixed enforcing `chunkSize` when TUS is not enabled
