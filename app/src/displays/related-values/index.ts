@@ -95,7 +95,7 @@ export default defineDisplay({
 
 		return renderPlainStringTemplate(options.template, stringValues);
 	},
-	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json'],
+	types: ['alias', 'string', 'uuid', 'integer', 'bigInteger', 'json', 'text'],
 	localTypes: ['m2m', 'm2o', 'o2m', 'translations', 'm2a', 'file', 'files'],
 	fields: (options: Options | null, { field, collection }) => {
 		const relatedCollectionData = getRelatedCollection(collection, field);
