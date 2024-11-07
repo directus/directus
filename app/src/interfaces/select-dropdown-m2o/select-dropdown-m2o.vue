@@ -13,6 +13,7 @@ import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getItemRoute } from '@/utils/get-route';
 
 const props = withDefaults(
 	defineProps<{
@@ -26,6 +27,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		loading?: boolean;
+		enableLink?: boolean;
 	}>(),
 	{
 		value: null,
@@ -35,6 +37,7 @@ const props = withDefaults(
 		filter: null,
 		enableCreate: true,
 		enableSelect: true,
+		enableLink: false,
 	},
 );
 
@@ -158,6 +161,11 @@ function onSelection(selection: (number | string)[] | null) {
 
 	selectModalActive.value = false;
 }
+
+const itemLink = computed(() => {
+	if (!collection.value || !currentPrimaryKey.value) return '';
+	return getItemRoute(collection.value, currentPrimaryKey.value);
+});
 </script>
 
 <template>
@@ -194,7 +202,10 @@ function onSelection(selection: (number | string)[] | null) {
 
 			<template #append>
 				<template v-if="displayItem">
-					<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click="editModalActive = true" />
+					<router-link v-if="enableLink" v-tooltip="t('navigate_to_item')" :to="itemLink" class="item-link">
+						<v-icon name="launch" />
+					</router-link>
+					<v-icon v-tooltip="t('edit')" name="edit" class="edit" @click="editModalActive = true" />
 					<v-icon
 						v-if="!disabled"
 						v-tooltip="t('deselect')"
@@ -271,6 +282,21 @@ function onSelection(selection: (number | string)[] | null) {
 
 	&:hover {
 		--v-icon-color: var(--theme--form--field--input--foreground);
+	}
+}
+
+.item-link {
+	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+	margin: 0 4px;
+
+	&:hover {
+		--v-icon-color: var(--theme--primary);
+	}
+
+	&.disabled {
+		opacity: 0;
+		pointer-events: none;
 	}
 }
 
