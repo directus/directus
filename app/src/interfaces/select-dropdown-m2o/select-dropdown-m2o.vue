@@ -205,7 +205,13 @@ const itemLink = computed(() => {
 					<router-link v-if="enableLink" v-slot="{ navigate }" v-tooltip="t('navigate_to_item')" :to="itemLink" custom>
 						<v-icon name="launch" class="item-link" @click.stop="navigate" />
 					</router-link>
-					<v-icon v-tooltip="t('edit')" name="edit" class="edit" @click="editModalActive = true" />
+					<v-icon
+						v-if="!(disabled && enableLink)"
+						v-tooltip="t('edit')"
+						name="edit"
+						class="edit"
+						@click="editModalActive = true"
+					/>
 					<v-icon
 						v-if="!disabled"
 						v-tooltip="t('deselect')"
