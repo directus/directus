@@ -5,7 +5,7 @@ import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { merge } from 'lodash-es';
+import { isArray, merge } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -16,6 +16,7 @@ import { useLogger } from '../logger/index.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
+import { Client_Oracledb } from './helpers/clients/oracledb.js';
 import { getHelpers } from './helpers/index.js';
 
 type QueryInfo = Partial<Knex.Sql> & {
@@ -167,6 +168,11 @@ export function getDatabase(): Knex {
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
 	}
 
+	if (client === 'oracledb') {
+		// Replace default client with a custom OracleDB Client
+		knexConfig.client = Client_Oracledb;
+	}
+
 	database = knex.default(knexConfig);
 	validateDatabaseCharset(database);
 
@@ -185,7 +191,14 @@ export function getDatabase(): Knex {
 				times.delete(queryInfo.__knexUid);
 			}
 
-			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${(queryInfo.bindings ?? []).join(', ')}]`);
+			// eslint-disable-next-line no-nested-ternary
+			const bindings = queryInfo.bindings
+				? isArray(queryInfo.bindings)
+					? queryInfo.bindings
+					: Object.values(queryInfo.bindings)
+				: [];
+
+			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${bindings.join(', ')}]`);
 		})
 		.on('query-error', (_, queryInfo: QueryInfo) => {
 			times.delete(queryInfo.__knexUid);
