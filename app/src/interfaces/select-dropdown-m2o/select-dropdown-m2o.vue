@@ -162,10 +162,10 @@ function onSelection(selection: (number | string)[] | null) {
 	selectModalActive.value = false;
 }
 
-const itemLink = computed(() => {
+function getLinkForItem() {
 	if (!collection.value || !currentPrimaryKey.value || !relationInfo.value) return '';
 	return getItemRoute(relationInfo.value.relatedCollection.collection, currentPrimaryKey.value);
-});
+}
 </script>
 
 <template>
@@ -202,16 +202,16 @@ const itemLink = computed(() => {
 
 			<template #append>
 				<template v-if="displayItem">
-					<router-link v-if="enableLink" v-slot="{ navigate }" v-tooltip="t('navigate_to_item')" :to="itemLink" custom>
-						<v-icon name="launch" class="item-link" @click.stop="navigate" />
+					<router-link
+						v-if="enableLink"
+						v-tooltip="t('navigate_to_item')"
+						@click.stop
+						:to="getLinkForItem()"
+						class="item-link"
+					>
+						<v-icon name="launch" />
 					</router-link>
-					<v-icon
-						v-if="!(disabled && enableLink)"
-						v-tooltip="t('edit')"
-						name="edit"
-						class="edit"
-						@click="editModalActive = true"
-					/>
+					<v-icon v-if="!disabled" v-tooltip="t('edit')" name="edit" class="edit" @click="editModalActive = true" />
 					<v-icon
 						v-if="!disabled"
 						v-tooltip="t('deselect')"
@@ -260,6 +260,7 @@ const itemLink = computed(() => {
 
 	:deep(.v-input .append) {
 		display: flex;
+		gap: 4px;
 	}
 }
 
@@ -283,24 +284,17 @@ const itemLink = computed(() => {
 	}
 }
 
-.edit {
-	margin-right: 4px;
-
-	&:hover {
-		--v-icon-color: var(--theme--form--field--input--foreground);
-	}
-}
-
-.item-link {
-	margin: 0 4px;
-
+.item-link,
+.add {
 	&:hover {
 		--v-icon-color: var(--theme--primary);
 	}
 }
 
-.add:hover {
-	--v-icon-color: var(--theme--primary);
+.edit {
+	&:hover {
+		--v-icon-color: var(--theme--form--field--input--foreground);
+	}
 }
 
 .deselect:hover {
