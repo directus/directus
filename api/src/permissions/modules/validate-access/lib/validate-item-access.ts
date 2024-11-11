@@ -1,4 +1,5 @@
 import type { Accountability, PermissionsAction, PrimaryKey } from '@directus/types';
+import { toBoolean } from '@directus/utils';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
 import type { AST } from '../../../../types/index.js';
 import type { Context } from '../../../types.js';
@@ -51,7 +52,7 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		const { fields } = options;
 
 		if (fields) {
-			return items.every((item: any) => fields.every((field) => item[field] === 1));
+			return items.every((item: any) => fields.every((field) => toBoolean(item[field])));
 		}
 
 		return true;
