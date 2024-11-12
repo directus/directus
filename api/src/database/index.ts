@@ -16,7 +16,6 @@ import { useLogger } from '../logger/index.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
-import { Client_Oracledb } from './helpers/clients/oracledb.js';
 import { getHelpers } from './helpers/index.js';
 
 type QueryInfo = Partial<Knex.Sql> & {
@@ -166,11 +165,6 @@ export function getDatabase(): Knex {
 		// timezone conversion on the database level, especially not when other database vendors don't
 		// act the same
 		merge(knexConfig, { connection: { options: { useUTC: false } } });
-	}
-
-	if (client === 'oracledb') {
-		// Replace default client with a custom OracleDB Client
-		knexConfig.client = Client_Oracledb;
 	}
 
 	database = knex.default(knexConfig);

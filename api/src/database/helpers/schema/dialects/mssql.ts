@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 import { SchemaHelper, type SortRecord, type Sql } from '../types.js';
-import { preprocessBindings } from '../utils/preprocess-bindings.js';
+import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
 	override applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
@@ -32,8 +32,8 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		}
 	}
 
-	override preprocessBindings(queryParams: Sql): Sql {
-		return preprocessBindings(queryParams, { format: (index) => `@p${index}` });
+	override prepQueryParams(queryParams: Sql): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `@p${index}` });
 	}
 
 	override addInnerSortFieldsToGroupBy(
