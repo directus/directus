@@ -3,7 +3,7 @@ import type { Field, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import type { Options, SortRecord, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
-import { preprocessBindings } from '../utils/preprocess-bindings.js';
+import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperOracle extends SchemaHelper {
 	override async changeToType(
@@ -53,8 +53,14 @@ export class SchemaHelperOracle extends SchemaHelper {
 		}
 	}
 
-	override preprocessBindings(queryParams: Sql): Sql {
-		return preprocessBindings(queryParams, { format: (index) => `:${index + 1}` });
+	override prepQueryParams(queryParams: Sql): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `:${index + 1}` });
+	}
+
+	override prepBindings(bindings: Knex.Value[]): any {
+		// Create an object with keys 1, 2, 3, ... and the bindings as values
+		// This will use the "named" binding syntax in the oracledb driver instead of the positional binding
+		return Object.fromEntries(bindings.map((binding: any, index: number) => [index + 1, binding]));
 	}
 
 	override addInnerSortFieldsToGroupBy(
