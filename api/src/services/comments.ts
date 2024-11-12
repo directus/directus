@@ -62,7 +62,7 @@ export class CommentsService extends ItemsService {
 
 		const mentions = uniq(data['comment'].match(usersRegExp) ?? []);
 
-		if (mentions.length) {
+		if (mentions.length === 0) {
 			return result;
 		}
 
