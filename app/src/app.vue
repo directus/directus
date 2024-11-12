@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useSystem } from '@/composables/use-system';
 import { useServerStore } from '@/stores/server';
-import { generateFavicon } from '@/utils/generate-favicon';
-import { getAssetUrl } from '@/utils/get-asset-url';
 import { useAppStore } from '@directus/stores';
 import { ThemeProvider } from '@directus/themes';
 import { useHead } from '@unhead/vue';
@@ -10,6 +8,7 @@ import { computed, onMounted, onUnmounted, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useThemeConfiguration } from './composables/use-theme-configuration';
 import { startIdleTracking, stopIdleTracking } from './idle';
+import { getPublicURL } from './utils/get-root-path';
 
 const { t } = useI18n();
 
@@ -46,20 +45,10 @@ useHead({
 		];
 	}),
 	link: computed(() => {
-		let href: string;
-
-		if (serverStore.info?.project?.public_favicon) {
-			href = getAssetUrl(serverStore.info.project.public_favicon);
-		} else if (serverStore.info?.project?.project_color) {
-			href = generateFavicon(serverStore.info.project.project_color, !!serverStore.info.project.project_logo === false);
-		} else {
-			href = '/favicon.ico';
-		}
-
 		return [
 			{
 				rel: 'icon',
-				href,
+				href: new URL(`favicon.ico`, getPublicURL()).href,
 			},
 		];
 	}),

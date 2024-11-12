@@ -1,4 +1,4 @@
-import { cssVar } from '@directus/utils/browser';
+import { Resvg } from '@resvg/resvg-js';
 
 const svg = (color: string, addDirectusLogo: boolean) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
@@ -17,18 +17,8 @@ const svg = (color: string, addDirectusLogo: boolean) => `
 	}
 </svg>`;
 
-export const generateFavicon = (color: string, addDirectusLogo = true) => {
-	color = color || cssVar('--theme--primary');
-
-	const icon = svg(color, addDirectusLogo);
-	const wrapper = document.createElement('div');
-	wrapper.innerHTML = icon.trim();
-
-	if (wrapper.firstChild) {
-		const iconSerialized = new XMLSerializer().serializeToString(wrapper.firstChild);
-
-		return 'data:image/svg+xml;base64,' + window.btoa(iconSerialized);
-	}
-
-	throw Error(`Couldn't generate favicon`);
+export const generateFavicon = async (color: string, addDirectusLogo = true) => {
+	const resvg = new Resvg(svg(color, addDirectusLogo));
+	const buffer = resvg.render().asPng();
+	return buffer;
 };
