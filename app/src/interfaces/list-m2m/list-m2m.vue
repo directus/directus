@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Sort } from '@/components/v-table/types';
+import { useFormatItemsCountPaginated } from '@/composables/use-format-items-count';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
@@ -7,7 +8,6 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
@@ -183,14 +183,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const showingCount = computed(() =>
-	formatItemsCountPaginated({
-		currentItems: totalItemCount.value,
-		currentPage: page.value,
-		perPage: limit.value,
-		isFiltered: !!(search.value || searchFilter.value),
-	}),
-);
+const showingCount = useFormatItemsCountPaginated({
+	currentItems: totalItemCount.value,
+	currentPage: page.value,
+	perPage: limit.value,
+	isFiltered: !!(search.value || searchFilter.value),
+});
 
 const headers = ref<Array<any>>([]);
 

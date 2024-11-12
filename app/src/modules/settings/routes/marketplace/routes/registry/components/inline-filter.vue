@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
+import { useFormatItemsCountPaginated } from '@/composables/use-format-items-count';
 import { EXTENSION_TYPES } from '@directus/extensions';
 import { watchDebounced } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const type = defineModel<string | null>('type');
@@ -33,14 +33,12 @@ watchDebounced(
 
 const { t } = useI18n();
 
-const showingCount = computed(() =>
-	formatItemsCountPaginated({
-		currentItems: props.filterCount,
-		currentPage: props.page,
-		perPage: props.perPage,
-		isFiltered: !!search.value,
-	}),
-);
+const showingCount = useFormatItemsCountPaginated({
+	currentItems: props.filterCount,
+	currentPage: props.page,
+	perPage: props.perPage,
+	isFiltered: !!search.value,
+});
 
 const typeOptions = [
 	{

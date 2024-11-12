@@ -1,8 +1,11 @@
 import { BlobServiceClient, ContainerClient, StorageSharedKeyCredential } from '@azure/storage-blob';
-import type { Driver, ReadOptions } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { join } from 'node:path';
 import type { Readable } from 'node:stream';
+import { finished } from 'node:stream/promises';
+
+const MAXIMUM_CHUNK_SIZE = 104_857_600; // 100mb
 
 export type DriverAzureConfig = {
 	containerName: string;
@@ -10,9 +13,12 @@ export type DriverAzureConfig = {
 	accountKey: string;
 	root?: string;
 	endpoint?: string;
+	tus?: {
+		chunkSize?: number;
+	};
 };
 
-export class DriverAzure implements Driver {
+export class DriverAzure implements TusDriver {
 	private containerClient: ContainerClient;
 	private signedCredentials: StorageSharedKeyCredential;
 	private root: string;
@@ -27,6 +33,11 @@ export class DriverAzure implements Driver {
 
 		this.containerClient = client.getContainerClient(config.containerName);
 		this.root = config.root ? normalizePath(config.root, { removeLeading: true }) : '';
+
+		// https://learn.microsoft.com/en-us/rest/api/storageservices/append-block?tabs=microsoft-entra-id#remarks
+		if (config.tus?.chunkSize && config.tus.chunkSize > MAXIMUM_CHUNK_SIZE) {
+			throw new Error('Invalid chunkSize provided');
+		}
 	}
 
 	private fullPath(filepath: string) {
@@ -93,6 +104,45 @@ export class DriverAzure implements Driver {
 		for await (const blob of blobs) {
 			yield (blob.name as string).substring(this.root.length);
 		}
+	}
+
+	get tusExtensions() {
+		return ['creation', 'termination', 'expiration'];
+	}
+
+	async createChunkedUpload(filepath: string, context: ChunkedUploadContext) {
+		await this.containerClient.getAppendBlobClient(this.fullPath(filepath)).createIfNotExists();
+
+		return context;
+	}
+
+	async writeChunk(filepath: string, content: Readable, offset: number, _context: ChunkedUploadContext) {
+		const client = this.containerClient.getAppendBlobClient(this.fullPath(filepath));
+
+		let bytesUploaded = offset || 0;
+
+		const chunks: Buffer[] = [];
+
+		content.on('data', (chunk: Buffer) => {
+			bytesUploaded += chunk.length;
+			chunks.push(chunk);
+		});
+
+		await finished(content);
+
+		const chunk = Buffer.concat(chunks);
+
+		if (chunk.length > 0) {
+			await client.appendBlock(chunk, chunk.length);
+		}
+
+		return bytesUploaded;
+	}
+
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
+		await this.delete(filepath);
 	}
 }
 

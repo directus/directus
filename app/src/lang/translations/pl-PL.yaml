@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-about: Informacje
+about: O aplikacji
 identifier: Identyfikator
 avatar: Awatar
 application: Aplikacja
@@ -91,6 +91,7 @@ n_files: '{n} plików'
 verified: Zweryfikowano
 homepage: Strona główna
 repository: Repozytorium
+reload_page: Przeładuj Stronę
 reload_required: Wymagane ponowne załadowanie
 report_an_issue: Zgłoś problem
 website: Strona internetowa
@@ -109,6 +110,7 @@ field_name_translations: Tłumaczenie nazwy pola
 enter_password_to_enable_tfa: Wprowadź hasło, aby włączyć uwierzytelnianie dwuetapowe
 add_field: Dodaj pole
 role_name: Nazwa roli
+policy_name: Nazwa polityki
 branch: Gałąź
 leaf: Arkusz
 indeterminate: Nieokreślony
@@ -126,6 +128,7 @@ requires_value: Wymaga wartości
 create_preset: Utwórz predefiniowane ustawienia
 create_panel: Utwórz panel
 create_role: Stwórz rolę
+create_policy: Utwórz Politykę
 create_user: Utwórz użytkownika
 message: Wiadomość
 delete_panel: Usuń panel
@@ -187,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Sesja wygasła
 public_label: Publiczny
 public_description: Kontroluje dostępność danych API bez uwierzytelniania.
+public_role_info: >-
+  Publiczna rola kontroluje jakie dane API są dostępne dla nieuwierzytelnionych użytkowników lub użytkowników bez roli. Żądania o publicznej roli nie mogą mieć dostępu do aplikacji lub administratora. Jeśli aplikacja lub administrator mają dostęp do zasad przypisanych do roli publicznej, zostaną one zignorowane.
 admin_description: Początkowa rola administracyjna z nieograniczonym dostępem App/API.
+admin_policy_description: Wstępna polityka administracyjna z nieograniczonym dostępem App/API.
 no_description: Brak opisu...
 reached_maximum_number_of_extensions: Osiągnięto maksymalną liczbę rozszerzeń dla tego projektu ({n}). Skontaktuj się z administratorem systemu, aby uzyskać więcej informacji.
 not_allowed: Niedozwolone
@@ -254,9 +260,13 @@ field_permissions: Uprawnienia pola
 field_validation: Walidacja pola
 field_presets: Ustawienia pól
 permissions_for_role: 'Przedmioty roli {role} mogą {action}.'
+permissions_for_policy: 'Przedmioty polityki {policy} mogą {action}.'
 fields_for_role: 'Pola roli {role} mogą {action}.'
+fields_for_policy: 'Pola polityki {policy} mogą {action}.'
 validation_for_role: 'Pole {action} zasad roli {role} musi być przestrzegane.'
+validation_for_policy: 'Pole {action} reguluje, że polityka {policy} musi być przestrzegana.'
 presets_for_role: 'Wartość domyślna dla roli {role}.'
+presets_for_policy: 'Wartość pola domyślna dla polityki {policy}.'
 presets_field_warning: 'Presety relacji dla pola "{field}" powinny być skonfigurowane ze składnią "detailed".'
 presentation_and_aliases: Prezentacja i aliasy
 revision_post_create: Oto jak wyglądał ten przedmiot podczas jego tworzenia.
@@ -362,6 +372,7 @@ no_collections_found: Nie znaleziono żadnych kolekcji.
 new_data_alert: 'W modelu danych zostaną utworzone następujące elementy:'
 search_collection: Przeszukaj kolekcje...
 search_role: Szukaj roli...
+search_policy: Wyszukaj Politykę...
 search_field: Pole wyszukiwania...
 new_field: 'Nowe pole'
 new_collection: 'Nowa kolekcja'
@@ -402,6 +413,7 @@ soft_length: Limit miękki
 precision_scale: Precyzja i Skala
 readonly: Tylko do odczytu
 unique: Unikalne
+index: Indeks
 updated_on: Edytowane
 updated_by: Aktualizowany przez
 primary_key: Klucz podstawowy
@@ -512,6 +524,11 @@ hours: Godziny
 month: Miesiąc
 year: Rok
 select_all: Wybierz wszystkie
+permissionsLevel:
+  all: Pełny dostęp {action}
+  partial: Częściowy dostęp {action}
+  custom: Częściowy dostęp {action}
+  none: Brak dostępu {action}
 months:
   january: Styczeń
   february: Luty
@@ -538,6 +555,7 @@ file_details: Szczegóły pliku
 dimensions: Wymiary
 size: Wielkość
 created: Utworzony
+uploaded: Przesłano
 modified: Zmodyfikowane
 owner: Właściciel
 edited_by: Edytowane przez
@@ -594,7 +612,9 @@ allow_duplicates: Zezwalaj na duplikaty
 comments: Komentarze
 no_comments: Brak komentarzy
 expand: Rozwiń
+expand_all: Rozwiń wszystko
 collapse: Zwiń
+collapse_all: Zwiń wszystko
 select_item: Wybierz element
 no_items: Brak elementów
 search_items: Szukaj elementów...
@@ -611,6 +631,7 @@ display_not_found: 'Wyświetlanie "{display}" nie zostało znalezione.'
 reset_display: Resetuj wyświetlanie
 list-m2a: Konstruktor (M2A)
 item_count: 'Brak elementów | Jeden element | {count} elementy/ów'
+filtered_item_count: 'Brak filtrowanych elementów | Jeden filtrowany element | {count} filtrowanych elementów'
 no_items_copy: Nie ma jeszcze żadnych elementów w tej kolekcji.
 file_count: 'Brak plików | Jeden plik | {count} plików'
 no_files_copy: Brak plików.
@@ -645,6 +666,7 @@ copy_to: Kopiuj do...
 no_other_dashboards_copy: Nie masz jeszcze żadnych innych Panelów.
 inactive: Nieaktywny
 users: Użytkownicy
+roles: Role
 activity: Aktywność
 activity_item: Element Aktywności
 action: Czynność
@@ -747,6 +769,7 @@ cannot_edit_global_bookmarks: Nie można edytować globalnych zakładek
 bookmarks: Zakładki
 presets: Ustawienia
 unexpected_error: Nieoczekiwany błąd
+unexpected_error_copy: Wystąpił nieoczekiwany błąd. Proszę spróbować ponownie.
 copy_details: Kopiuj szczegóły
 no_app_access: Brak dostępu do aplikacji
 no_app_access_copy: Ten użytkownik nie może używać aplikacji administracyjnej.
@@ -771,6 +794,7 @@ make_collection_hidden: Spraw, aby kolekcja była ukryta
 make_folder_visible: Uwidocznij folder
 make_folder_hidden: Ukryj folder
 goto_collection_content: Zobacz zawartość
+count_of_total_items: '{count} z {total} elementów'
 delete_collection_are_you_sure: >-
   Czy na pewno chcesz usunąć kolekcję "{collection}"? Spowoduje to usunięcie kolekcji i wszystkich jej elementów. To działanie jest nieodwracalne.
 delete_folder_are_you_sure: Czy na pewno chcesz usunąć folder "{folder}"? Zagnieżdżone foldery i kolekcje zostaną przeniesione do najwyższego poziomu.
@@ -857,11 +881,13 @@ columns: Kolumny
 collection_setup: Ustawienia kolekcji
 optional_system_fields: Pola opcjonalne
 value_unique: Wartość musi być unikalna
+value_index: Pole jest indeksowane
 all_activity: Wszystkie aktywności
 create_item: Utwórz element
 display_template: Wyświetl szablon
 language_display_template: Szablon wyświetlanego języka
 translations_display_template: Szablon wyświetlania tłumaczeń
+n_items_selected: 'Nie wybrano elementów | 1 wybrany element | {n} wybranych elementów'
 per_page: Na stronę
 all_files: Wszystkie pliki
 my_files: Moje pliki
@@ -973,6 +999,15 @@ no_data_in_flow: Żadne dane nie zostały wygenerowane lub dostępne w tym przep
 accountability: Odpowiedzialność
 payload: Ładunek
 details: Szczegóły
+resume_streaming_logs: Wznów streaming logów
+pause_streaming_logs: Wstrzymaj streaming logów
+logs_session_resumed: Sesja logów wznowiona...
+logs_waiting: 'Oczekiwanie na więcej logów...'
+clear_logs: Wyczyść logi
+search_logs: Szukaj logi...
+all_instances: Wszystkie instancje
+instance_count: 'Brak instancji | Jedna instancja | {count} Instancje'
+all_log_levels: Wszystkie poziomy logów
 full_screen: Pełny ekran
 full_text_search: Wyszukiwanie pełnotekstowe
 edit_panels: Edytuj pulpit
@@ -1074,10 +1109,13 @@ editing_unit: 'Edycja {unit}'
 editing_in_batch: 'Grupowa edycja {count} elementów'
 no_options_available: Brak dostępnych opcji
 settings_data_model: Model danych
+settings_roles: Role użytkownika
+settings_permissions: Polityki dostępu
 settings_project: Ustawienia
 settings_appearance: Wygląd
 settings_webhooks: Webhooki
 settings_flows: Przepływy
+settings_system_logs: Dzienniki systemowe
 settings_presets: Zakładki
 settings_translations: Tłumaczenia
 one_or_more_options_are_missing: Brakuje jednej lub więcej opcji
@@ -1357,6 +1395,7 @@ fields:
     description: Opis
     users: Użytkownicy w roli
   directus_policies:
+    name: Nazwa polityki
     description: Opis
   directus_webhooks:
     name: Nazwa
@@ -1440,6 +1479,11 @@ field_options:
     focal_point_divider: Punkt ogniskowy
     filename_disk: Nazwa na dysku...
     filename_download: Nazwa podczas pobierania...
+  directus_policies:
+    name: Unikalna nazwa dla tej polityki...
+    description: Opis tej polityki...
+    ip_access: Dodaj dozwolone adresy IP, zakresy IP i bloki CIDR. Pozostaw puste, aby zezwolić na wszystkie...
+    enforce_tfa: Wymuś uwierzytelnianie dwuetapowe
   directus_roles:
     name: Unikalna nazwa dla tej roli...
     description: Opis tej roli...
@@ -1499,6 +1543,7 @@ live_preview:
   toggle_3d: Przełącz 3D
 shares: Udostępnienia
 unlimited_usage: Nieograniczone użycie
+uses_left: Brak pozostałych zastosowań | Pozostało jedno użycie | {n} pozostało do użycia
 no_shares: Brak udostępnień do wyświetlenia
 new_share: Nowe udostępnianie
 expired: Wygasły
@@ -1532,6 +1577,9 @@ continue_label: Kontynuuj
 continue_as: >-
   {name} jest obecnie uwierzytelniony. Jeśli rozpoznajesz to konto, naciśnij przycisk Kontynuuj.
 editing_role: 'Rola {role}'
+editing_policy: 'Polityka {policy}'
+no_permissions: Brak uprawnień
+permission_add_collection: Dodaj kolekcję
 creating_webhook: Tworzenie Webhooka
 default_label: Domyślny
 delete_label: Usuń
@@ -1594,6 +1642,7 @@ select_field_type: Wybierz typ pola
 select_interface: Wybierz interfejs
 select_display: Wybierz wyświetlanie
 settings: Ustawienia
+register: Zarejestruj
 registration_successful_headline: Sukces!
 registration_successful_note: Teraz możesz przejść do strony logowania.
 registration_successful_check_email_note: |
@@ -1630,6 +1679,8 @@ navigate_to_item: Przejdź do elementu
 undo_removed_item: Cofnij usunięcie elementu
 remove_item: Usuń element
 delete_item: Usuń element
+pause: Wstrzymaj
+resume: Wznów
 interfaces:
   list-m2a:
     prefix_note: Domyślnie używa nazwy kolekcji powiązanych elementów.
@@ -1762,6 +1813,7 @@ interfaces:
     description: Wybierz lub prześlij plik
     crop: Przytnij aby dopasować
     crop_label: Przytnij obraz w razie potrzeby
+    letterbox_label: Dodaj dopełnienie do podglądu obrazu
   system-interface:
     interface: Interfejs
     description: Wybierz istniejący interfejs
@@ -1796,6 +1848,7 @@ interfaces:
     editorFont: Czcionka edytora
     previewFont: Podgląd czcionki
     default_view: Widok domyślny
+    default_view_editor: Edytor
     default_view_preview: Podgląd
     customSyntax: Niestandardowe bloki
     customSyntax_label: Dodaj własne typy składni
@@ -1980,6 +2033,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Edycja bezpośrednia
     description: Zezwalaj na wprowadzanie wartości szablonów surowych lub muszlowych
+  input-password:
+    input-password: Wprowadź hasło
+    description: Wprowadzanie hasła z przełącznikiem, aby ukryć wartość
 displays:
   translations:
     translations: Tłumaczenia
@@ -2423,3 +2479,5 @@ duplicate_dashboard: Duplikuj pulpit
 search_dashboard: Szukaj na pulpicie...
 search_flow: Szukaj przepływu...
 percent: Procent
+show_password: Pokaż hasło
+hide_password: Schowaj hasło

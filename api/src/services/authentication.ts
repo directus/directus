@@ -293,13 +293,8 @@ export class AuthenticationService {
 				user_auth_data: 'u.auth_data',
 				user_role: 'u.role',
 				share_id: 'd.id',
-				share_item: 'd.item',
-				share_role: 'd.role',
-				share_collection: 'd.collection',
 				share_start: 'd.date_start',
 				share_end: 'd.date_end',
-				share_times_used: 'd.times_used',
-				share_max_uses: 'd.max_uses',
 			})
 			.from('directus_sessions AS s')
 			.leftJoin('directus_users AS u', 's.user', 'u.id')
@@ -382,12 +377,7 @@ export class AuthenticationService {
 
 		if (record.share_id) {
 			tokenPayload.share = record.share_id;
-			tokenPayload.role = record.share_role;
-
-			tokenPayload.share_scope = {
-				collection: record.share_collection,
-				item: record.share_item,
-			};
+			tokenPayload.role = null;
 
 			tokenPayload.app_access = false;
 			tokenPayload.admin_access = false;
