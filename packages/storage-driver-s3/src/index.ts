@@ -50,6 +50,10 @@ export type DriverS3Config = {
 	tus?: {
 		chunkSize?: number;
 	};
+	connectionTimeout?: number;
+	socketTimeout?: number;
+	maxSockets?: number;
+	keepAlive?: boolean;
 };
 
 export class DriverS3 implements TusDriver {
@@ -79,10 +83,10 @@ export class DriverS3 implements TusDriver {
 		 * often in rapid succession, hitting the maxSockets limit of 50.
 		 * The requestHandler is customized to get around this.
 		 */
-		const connectionTimeout = 5000;
-		const socketTimeout = 120000;
-		const maxSockets = 500;
-		const keepAlive = true;
+		const connectionTimeout = this.config.connectionTimeout ?? 5000;
+		const socketTimeout = this.config.socketTimeout ?? 120000;
+		const maxSockets = this.config.maxSockets ?? 500;
+		const keepAlive = this.config.keepAlive ?? true;
 
 		const s3ClientConfig: S3ClientConfig = {
 			requestHandler: new NodeHttpHandler({
@@ -279,12 +283,12 @@ export class DriverS3 implements TusDriver {
 			...(context.metadata?.['contentType']
 				? {
 						ContentType: context.metadata['contentType'],
-				  }
+					}
 				: {}),
 			...(context.metadata?.['cacheControl']
 				? {
 						CacheControl: context.metadata['cacheControl'],
-				  }
+					}
 				: {}),
 		});
 
