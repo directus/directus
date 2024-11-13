@@ -400,6 +400,7 @@ soft_length: Soft Limit
 precision_scale: Präzision & Skalierung
 readonly: Lesezugriff
 unique: Eindeutig
+index: Index
 updated_on: Geändert am
 updated_by: Geändert von
 primary_key: Primärschlüssel
@@ -531,6 +532,7 @@ file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
+uploaded: Hochgeladen
 modified: Geändert
 owner: Besitzer
 edited_by: Editiert von
@@ -552,6 +554,7 @@ replace_from_url: Mit Datei von URL ersetzen
 no_image_selected: Kein Bild ausgewählt
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
+open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle Elemente ({total}) innerhalb {collection} exportieren.
@@ -633,6 +636,7 @@ copy_to: Kopieren nach...
 no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
+roles: Rollen
 activity: Aktivität
 activity_item: Aktivitäten-Element
 action: Aktion
@@ -706,6 +710,7 @@ errors:
   INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
+  LIMIT_EXCEEDED: 'Limit überschritten'
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
@@ -758,6 +763,9 @@ make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
 goto_collection_content: Inhalt anzeigen
+count_of_total_items: '{count} von {total} Elementen'
+start_end_of_count_items: '{start}-{end} von {count} Elementen'
+start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
@@ -824,6 +832,7 @@ operators:
   regex: Entspricht RegExp
 custom_validation_message: Benutzerdefinierte Validierungsnachricht
 loading: Wird geladen...
+extension_readme_missing: Diese Erweiterung hat keine README-Datei.
 drop_to_upload: Zum Hochladen ablegen
 item: Element
 items: Elemente
@@ -959,6 +968,9 @@ no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
 payload: Nutzdaten
 details: Details
+logs_unread_count: '{count} ungelesen'
+clear_logs: Logs leeren
+search_logs: Logs suchen...
 full_screen: Vollbild
 full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
@@ -1064,6 +1076,7 @@ settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
 settings_flows: Flows
+settings_system_logs: Systemprotokolle
 settings_presets: Lesezeichen
 settings_translations: Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
@@ -1109,6 +1122,7 @@ page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
+page_help_settings_system_logs: '**Systemprotokolle** — Greifen Sie auf einen Live-Stream der Systemprotokolle zu.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
   **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
@@ -1138,7 +1152,12 @@ no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
 install_extension: Erweiterung installieren
+uninstall: Deinstallieren
+installed: Installiert
+reinstall: Neu installieren
+open_in_marketplace: Im Marketplace öffnen
 source_registry: Marktplatz
+source_local: Lokal
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
