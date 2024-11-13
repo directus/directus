@@ -155,10 +155,10 @@ const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 const showingCount = useFormatItemsCountPaginated({
-	currentItems: totalItemCount.value,
-	currentPage: page.value,
-	perPage: limit.value,
-	isFiltered: !!(search.value || searchFilter.value),
+	currentItems: totalItemCount,
+	currentPage: page,
+	perPage: limit,
+	isFiltered: computed(() => !!(search.value || searchFilter.value)),
 });
 
 const headers = ref<Array<any>>([]);
