@@ -5,5 +5,8 @@ import { useI18n } from 'vue-i18n';
 
 export function useFormatItemsCountPaginated(options: ToRefs<Omit<FormatItemsCountPaginatedOptions, 'i18n'>>) {
 	const i18n = useI18n();
-	return computed(() => formatItemsCountPaginated({ ...mapValues(options, unref), i18n }));
+	return computed(() => {
+		const opts = mapValues(options, unref);
+		return formatItemsCountPaginated({ ...opts, i18n });
+	});
 }
