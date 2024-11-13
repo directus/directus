@@ -283,12 +283,12 @@ export class DriverS3 implements TusDriver {
 			...(context.metadata?.['contentType']
 				? {
 						ContentType: context.metadata['contentType'],
-					}
+				  }
 				: {}),
 			...(context.metadata?.['cacheControl']
 				? {
 						CacheControl: context.metadata['cacheControl'],
-					}
+				  }
 				: {}),
 		});
 
