@@ -1,4 +1,4 @@
-import type { Driver, ReadOptions } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { Blob, Buffer } from 'node:buffer';
 import { createHash } from 'node:crypto';
@@ -7,7 +7,7 @@ import { Readable } from 'node:stream';
 import PQueue from 'p-queue';
 import type { RequestInit } from 'undici';
 import { FormData, fetch } from 'undici';
-import { IMAGE_EXTENSIONS, VIDEO_EXTENSIONS } from './constants.js';
+import { IMAGE_EXTENSIONS, MINIMUM_CHUNK_SIZE, VIDEO_EXTENSIONS } from './constants.js';
 
 export type DriverCloudinaryConfig = {
 	root?: string;
@@ -15,9 +15,12 @@ export type DriverCloudinaryConfig = {
 	apiKey: string;
 	apiSecret: string;
 	accessMode: 'public' | 'authenticated';
+	tus?: {
+		chunkSize?: number;
+	};
 };
 
-export class DriverCloudinary implements Driver {
+export class DriverCloudinary implements TusDriver {
 	private root: string;
 	private apiKey: string;
 	private apiSecret: string;
@@ -30,6 +33,11 @@ export class DriverCloudinary implements Driver {
 		this.apiSecret = config.apiSecret;
 		this.cloudName = config.cloudName;
 		this.accessMode = config.accessMode;
+
+		// must be at least 5mb
+		if (config.tus?.chunkSize && config.tus?.chunkSize < MINIMUM_CHUNK_SIZE) {
+			throw new Error('Invalid chunkSize provided');
+		}
 	}
 
 	private fullPath(filepath: string) {
@@ -124,8 +132,15 @@ export class DriverCloudinary implements Driver {
 
 		const resourceType = this.getResourceType(filepath);
 		const fullPath = this.fullPath(filepath);
-		const signature = version !== undefined ? `v${version}` : this.getParameterSignature(fullPath);
-		const url = `https://res.cloudinary.com/${this.cloudName}/${resourceType}/upload/${signature}/${fullPath}`;
+		const signature = this.getParameterSignature(fullPath);
+
+		let url = `https://res.cloudinary.com/${this.cloudName}/${resourceType}/upload/${signature}`;
+
+		if (version) {
+			url += `/v${version}`;
+		}
+
+		url += `/${fullPath}`;
 
 		const requestInit: RequestInit = { method: 'GET' };
 
@@ -436,6 +451,66 @@ export class DriverCloudinary implements Driver {
 				else yield filename;
 			}
 		} while (nextCursor);
+	}
+
+	get tusExtensions() {
+		return ['creation', 'termination', 'expiration'];
+	}
+
+	async createChunkedUpload(_filepath: string, context: ChunkedUploadContext) {
+		context.metadata!['timestamp'] = this.getTimestamp();
+
+		return context;
+	}
+
+	async writeChunk(filepath: string, content: Readable, offset: number, context: ChunkedUploadContext) {
+		const fullPath = this.fullPath(filepath);
+		const folderPath = this.getFolderPath(fullPath);
+		const resourceType = this.getResourceType(filepath);
+
+		const uploadParameters = {
+			timestamp: context.metadata!['timestamp'] as string,
+			api_key: this.apiKey,
+			type: 'upload',
+			access_mode: this.accessMode,
+			public_id: this.getPublicId(fullPath),
+			...(folderPath
+				? {
+						asset_folder: folderPath,
+						use_asset_folder_as_public_id_prefix: 'true',
+				  }
+				: {}),
+		};
+
+		let bytesUploaded = offset || 0;
+		let currentChunkSize = 0;
+		let chunks = Buffer.alloc(0);
+
+		for await (const chunk of content) {
+			currentChunkSize += chunk.length;
+			chunks = Buffer.concat([chunks, chunk], currentChunkSize);
+		}
+
+		bytesUploaded += currentChunkSize;
+
+		await this.uploadChunk({
+			resourceType,
+			blob: new Blob([chunks]),
+			bytesOffset: offset || 0,
+			bytesTotal: context.size && bytesUploaded === context.size ? context.size : -1,
+			parameters: {
+				signature: this.getFullSignature(uploadParameters),
+				...uploadParameters,
+			},
+		});
+
+		return bytesUploaded;
+	}
+
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext) {}
+
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext) {
+		await this.delete(filepath);
 	}
 }
 

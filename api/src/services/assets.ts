@@ -168,7 +168,8 @@ export class AssetsService {
 				});
 			}
 
-			const version = file.modified_on !== undefined ? String(new Date(file.modified_on).getTime() / 1000) : undefined;
+			const version =
+				file.modified_on !== undefined ? String(Math.round(new Date(file.modified_on).getTime() / 1000)) : undefined;
 
 			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
 

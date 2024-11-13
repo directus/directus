@@ -1,4 +1,4 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/types';
+import type { Accountability, Permission, PermissionsAction, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
@@ -11,6 +11,7 @@ type FetchPermittedAstRootFieldsOptions = {
 	schema: SchemaOverview;
 	accountability: Accountability;
 	knex: Knex;
+	action: PermissionsAction;
 };
 
 /**
@@ -19,7 +20,7 @@ type FetchPermittedAstRootFieldsOptions = {
  */
 export async function fetchPermittedAstRootFields(
 	originalAST: AST,
-	{ schema, accountability, knex }: FetchPermittedAstRootFieldsOptions,
+	{ schema, accountability, knex, action }: FetchPermittedAstRootFieldsOptions,
 ) {
 	const ast = cloneDeep(originalAST);
 
@@ -32,7 +33,7 @@ export async function fetchPermittedAstRootFields(
 
 	if (accountability && !accountability.admin) {
 		const policies = await fetchPolicies(accountability, { schema, knex });
-		permissions = await fetchPermissions({ action: 'read', accountability, policies }, { schema, knex });
+		permissions = await fetchPermissions({ action, accountability, policies }, { schema, knex });
 	}
 
 	return getDBQuery(
