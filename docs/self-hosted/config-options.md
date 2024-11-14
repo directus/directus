@@ -701,7 +701,7 @@ instability or limited bandwidth. This is implemented using the [TUS protocol](h
 | Variable                | Description                                                       | Default Value |
 | ----------------------- | ----------------------------------------------------------------- | ------------- |
 | `TUS_ENABLED`           | Whether or not to enable the chunked uploads                      | `false`       |
-| `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `10mb`        |
+| `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `8mb`         |
 | `TUS_UPLOAD_EXPIRATION` | The expiry duration for uncompleted files with no upload activity | `10m`         |
 | `TUS_CLEANUP_SCHEDULE`  | Cron schedule to clean up the expired uncompleted uploads         | `0 * * * *`   |
 

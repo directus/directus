@@ -126,7 +126,7 @@ export const DEFAULTS = {
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
 	TUS_ENABLED: false,
-	TUS_CHUNK_SIZE: '10mb',
+	TUS_CHUNK_SIZE: '8mb',
 	TUS_UPLOAD_EXPIRATION: '10m',
 	TUS_CLEANUP_SCHEDULE: '0 * * * *', // every hour
 
