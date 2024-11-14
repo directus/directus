@@ -13,6 +13,7 @@ import { defineLayout } from '@directus/extensions';
 import { Field } from '@directus/types';
 import { debounce, flatten } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import TabularActions from './actions.vue';
 import TabularOptions from './options.vue';
 import TabularLayout from './tabular.vue';
@@ -30,6 +31,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	},
 	headerShadow: false,
 	setup(props, { emit }) {
+		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
 
 		const selection = useSync(props, 'selection', emit);
@@ -85,6 +87,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				perPage: limit.value,
 				isFiltered: !!filterUser.value,
 				totalItems: totalCount.value,
+				i18n: { t, n },
 			});
 		});
 
