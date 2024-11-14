@@ -102,13 +102,13 @@ const title = computed(() => {
 		: t('editing_in', { collection: collection.name });
 });
 
-const { fields: fieldsWithPermissions } = useItemPermissions(
+const { fields: fieldsWithPermissions, updateAllowed } = useItemPermissions(
 	collection,
 	primaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
-const { fields: relatedCollectionFields } = useItemPermissions(
+const { fields: relatedCollectionFields, updateAllowed: updateRelatedCollectionAllowed } = useItemPermissions(
 	relatedCollection as Ref<string>,
 	relatedPrimaryKey,
 	computed(() => props.primaryKey === '+'),
@@ -406,7 +406,7 @@ function useActions() {
 			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
 				<v-form
 					v-if="junctionField"
-					:disabled="disabled"
+					:disabled="disabled || (!updateRelatedCollectionAllowed && !isNew)"
 					:loading="loading"
 					:show-no-visible-fields="false"
 					:initial-values="initialValues?.[junctionField]"
@@ -421,7 +421,7 @@ function useActions() {
 
 				<v-form
 					v-model="internalEdits"
-					:disabled="disabled"
+					:disabled="disabled || (!updateAllowed && !isNew)"
 					:loading="loading"
 					:show-no-visible-fields="false"
 					:initial-values="initialValues"
