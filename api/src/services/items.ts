@@ -502,7 +502,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			{ knex: this.knex, schema: this.schema },
 		);
 
-		const records = await runAst(ast, this.schema, {
+		const records = await runAst(ast, this.schema, this.accountability, {
 			knex: this.knex,
 			// GraphQL requires relational keys to be returned regardless
 			stripNonRequested: opts?.stripNonRequested !== undefined ? opts.stripNonRequested : true,
@@ -727,6 +727,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					action: 'update',
 					collection: this.collection,
 					primaryKeys: keys,
+					fields: Object.keys(payloadAfterHooks),
 				},
 				{
 					schema: this.schema,
@@ -948,7 +949,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				.first());
 
 		if (exists) {
-			return await this.updateOne(primaryKey as PrimaryKey, payload, opts);
+			const { [primaryKeyField]: _, ...data } = payload;
+			return await this.updateOne(primaryKey as PrimaryKey, data as Partial<Item>, opts);
 		} else {
 			return await this.createOne(payload, opts);
 		}

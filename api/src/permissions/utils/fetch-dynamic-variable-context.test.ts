@@ -4,7 +4,7 @@ import { PoliciesService } from '../../services/policies.js';
 import { UsersService } from '../../services/users.js';
 import { RolesService } from '../../services/roles.js';
 import type { Context } from '../types.js';
-import { _fetchDynamicVariableContext as fetchDynamicVariableContext } from './fetch-dynamic-variable-context.js';
+import { fetchDynamicVariableContext } from './fetch-dynamic-variable-context.js';
 
 vi.mock('../../services/users.js', () => ({
 	UsersService: vi.fn(),
@@ -100,5 +100,5 @@ test('Returns filter context for current policies', async () => {
 	);
 
 	expect(res['$CURRENT_POLICIES']).toBe(policies);
-	expect(PoliciesService.prototype.readMany).toHaveBeenCalledWith(['policy-1'], { fields: ['name'] });
+	expect(PoliciesService.prototype.readMany).toHaveBeenCalledWith(['policy-1'], { fields: ['name', 'id'] });
 });

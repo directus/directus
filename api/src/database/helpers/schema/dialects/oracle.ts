@@ -1,8 +1,9 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Field, Relation, Type } from '@directus/types';
-import type { Options, Sql } from '../types.js';
+import type { Knex } from 'knex';
+import type { Options, SortRecord, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
-import { preprocessBindings } from '../utils/preprocess-bindings.js';
+import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperOracle extends SchemaHelper {
 	override async changeToType(
@@ -52,7 +53,40 @@ export class SchemaHelperOracle extends SchemaHelper {
 		}
 	}
 
-	override preprocessBindings(queryParams: Sql): Sql {
-		return preprocessBindings(queryParams, { format: (index) => `:${index + 1}` });
+	override prepQueryParams(queryParams: Sql): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `:${index + 1}` });
+	}
+
+	override prepBindings(bindings: Knex.Value[]): any {
+		// Create an object with keys 1, 2, 3, ... and the bindings as values
+		// This will use the "named" binding syntax in the oracledb driver instead of the positional binding
+		return Object.fromEntries(bindings.map((binding: any, index: number) => [index + 1, binding]));
+	}
+
+	override addInnerSortFieldsToGroupBy(
+		groupByFields: (string | Knex.Raw)[],
+		sortRecords: SortRecord[],
+		_hasRelationalSort: boolean,
+	) {
+		/*
+		Oracle requires all selected columns that are not aggregated over to be present in the GROUP BY clause
+		aliases can not be used before version 23c.
+
+		> If you also specify a group_by_clause in this statement, then this select list can contain only the following
+		  types of expressions:
+				* Constants
+				* Aggregate functions and the functions USER, UID, and SYSDATE
+				* Expressions identical to those in the group_by_clause. If the group_by_clause is in a subquery,
+				  then all columns in the select list of the subquery must match the GROUP BY columns in the subquery.
+				  If the select list and GROUP BY columns of a top-level query or of a subquery do not match,
+				  then the statement results in ORA-00979.
+				* Expressions involving the preceding expressions that evaluate to the same value for all rows in a group
+
+		https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/SELECT.html
+		 */
+
+		if (sortRecords.length > 0) {
+			groupByFields.push(...sortRecords.map(({ column }) => column));
+		}
 	}
 }

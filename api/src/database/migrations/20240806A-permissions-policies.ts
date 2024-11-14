@@ -1,13 +1,16 @@
 import { processChunk, toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
-import { flatten, intersection, isEqual, merge, omit, uniq } from 'lodash-es';
+import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
+import { useLogger } from '../../logger/index.js';
 import { fetchPermissions } from '../../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../../permissions/lib/fetch-policies.js';
 import { fetchRolesTree } from '../../permissions/lib/fetch-roles-tree.js';
 import { getSchema } from '../../utils/get-schema.js';
 
-import type { LogicalFilterAND, LogicalFilterOR, Permission } from '@directus/types';
+import type { Accountability, Permission } from '@directus/types';
+import { getSchemaInspector } from '../index.js';
+import { mergePermissions } from '../../permissions/utils/merge-permissions.js';
 
 type RoleAccess = {
 	app_access: boolean;
@@ -15,107 +18,6 @@ type RoleAccess = {
 	ip_access: string | null;
 	enforce_tfa: boolean;
 };
-
-// Adapted from https://github.com/directus/directus/blob/141b8adbf4dd8e06530a7929f34e3fc68a522053/api/src/utils/merge-permissions.ts#L4
-export function mergePermissions(strategy: 'and' | 'or', ...permissions: Permission[][]) {
-	const allPermissions = flatten(permissions);
-
-	const mergedPermissions = allPermissions
-		.reduce((acc, val) => {
-			const key = `${val.collection}__${val.action}`;
-			const current = acc.get(key);
-			acc.set(key, current ? mergePermission(strategy, current, val) : val);
-			return acc;
-		}, new Map())
-		.values();
-
-	return Array.from(mergedPermissions);
-}
-
-export function mergePermission(
-	strategy: 'and' | 'or',
-	currentPerm: Permission,
-	newPerm: Permission,
-): Omit<Permission, 'id' | 'system'> {
-	const logicalKey = `_${strategy}` as keyof LogicalFilterOR | keyof LogicalFilterAND;
-
-	let { permissions, validation, fields, presets } = currentPerm;
-
-	if (newPerm.permissions) {
-		if (currentPerm.permissions && Object.keys(currentPerm.permissions)[0] === logicalKey) {
-			permissions = {
-				[logicalKey]: [
-					...(currentPerm.permissions as LogicalFilterOR & LogicalFilterAND)[logicalKey],
-					newPerm.permissions,
-				],
-			} as LogicalFilterAND | LogicalFilterOR;
-		} else if (currentPerm.permissions) {
-			// Empty {} supersedes other permissions in _OR merge
-			if (strategy === 'or' && (isEqual(currentPerm.permissions, {}) || isEqual(newPerm.permissions, {}))) {
-				permissions = {};
-			} else {
-				permissions = {
-					[logicalKey]: [currentPerm.permissions, newPerm.permissions],
-				} as LogicalFilterAND | LogicalFilterOR;
-			}
-		} else {
-			permissions = {
-				[logicalKey]: [newPerm.permissions],
-			} as LogicalFilterAND | LogicalFilterOR;
-		}
-	}
-
-	if (newPerm.validation) {
-		if (currentPerm.validation && Object.keys(currentPerm.validation)[0] === logicalKey) {
-			validation = {
-				[logicalKey]: [
-					...(currentPerm.validation as LogicalFilterOR & LogicalFilterAND)[logicalKey],
-					newPerm.validation,
-				],
-			} as LogicalFilterAND | LogicalFilterOR;
-		} else if (currentPerm.validation) {
-			// Empty {} supersedes other validations in _OR merge
-			if (strategy === 'or' && (isEqual(currentPerm.validation, {}) || isEqual(newPerm.validation, {}))) {
-				validation = {};
-			} else {
-				validation = {
-					[logicalKey]: [currentPerm.validation, newPerm.validation],
-				} as LogicalFilterAND | LogicalFilterOR;
-			}
-		} else {
-			validation = {
-				[logicalKey]: [newPerm.validation],
-			} as LogicalFilterAND | LogicalFilterOR;
-		}
-	}
-
-	if (newPerm.fields) {
-		if (Array.isArray(currentPerm.fields) && strategy === 'or') {
-			fields = uniq([...currentPerm.fields, ...newPerm.fields]);
-		} else if (Array.isArray(currentPerm.fields) && strategy === 'and') {
-			fields = intersection(currentPerm.fields, newPerm.fields);
-		} else {
-			fields = newPerm.fields;
-		}
-
-		if (fields.includes('*')) fields = ['*'];
-	}
-
-	if (newPerm.presets) {
-		presets = merge({}, presets, newPerm.presets);
-	}
-
-	return omit(
-		{
-			...currentPerm,
-			permissions,
-			validation,
-			fields,
-			presets,
-		},
-		['id', 'system'],
-	);
-}
 
 async function fetchRoleAccess(roles: string[], context: { knex: Knex }) {
 	const roleAccess: RoleAccess = {
@@ -163,6 +65,8 @@ async function fetchRoleAccess(roles: string[], context: { knex: Knex }) {
 const PUBLIC_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 
 export async function up(knex: Knex) {
+	const logger = useLogger();
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	// If the policies table already exists the migration has already run
 	if (await knex.schema.hasTable('directus_policies')) {
@@ -229,10 +133,24 @@ export async function up(knex: Knex) {
 	// Link permissions to policies instead of roles
 
 	await knex.schema.alterTable('directus_permissions', (table) => {
-		table.uuid('policy').references('directus_policies.id').onDelete('CASCADE');
-		// Drop the foreign key constraint here in order to update `null` role to public policy ID
-		table.dropForeign('role');
+		table.uuid('policy');
 	});
+
+	try {
+		const inspector = await getSchemaInspector(knex);
+		const foreignKeys = await inspector.foreignKeys('directus_permissions');
+
+		const foreignConstraint =
+			foreignKeys.find((foreign) => foreign.foreign_key_table === 'directus_roles' && foreign.column === 'role')
+				?.constraint_name || undefined;
+
+		await knex.schema.alterTable('directus_permissions', (table) => {
+			// Drop the foreign key constraint here in order to update `null` role to public policy ID
+			table.dropForeign('role', foreignConstraint);
+		});
+	} catch {
+		logger.warn('Failed to drop foreign key constraint on `role` column in `directus_permissions` table');
+	}
 
 	await knex('directus_permissions')
 		.update({
@@ -247,6 +165,7 @@ export async function up(knex: Knex) {
 	await knex.schema.alterTable('directus_permissions', (table) => {
 		table.dropColumns('role');
 		table.dropNullable('policy');
+		table.foreign('policy').references('directus_policies.id').onDelete('CASCADE');
 	});
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -342,7 +261,12 @@ export async function down(knex: Knex) {
 			//  fetch all of the policies permissions
 			const rawPermissions = await fetchPermissions(
 				{
-					accountability: { role: null, roles: roleTree, user: null, app: roleAccess?.app_access || false },
+					accountability: {
+						role: null,
+						roles: roleTree,
+						user: null,
+						app: roleAccess?.app_access || false,
+					} as Accountability,
 					policies,
 					bypassDynamicVariableProcessing: true,
 				},
@@ -350,7 +274,7 @@ export async function down(knex: Knex) {
 			);
 
 			// merge all permissions to single version (v10) and save for later use
-			mergePermissions('or', rawPermissions).forEach((permission) => {
+			(mergePermissions('or', rawPermissions) as any[]).forEach((permission) => {
 				// System permissions are automatically populated
 				if (permission.system) {
 					return;

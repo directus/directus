@@ -18,7 +18,7 @@ export interface PanelConfig {
 		| ((
 				ctx: Partial<Panel>,
 		  ) => DeepPartial<Field>[] | { standard: DeepPartial<Field>[]; advanced: DeepPartial<Field>[] })
-		| ComponentOptions
+		| Exclude<ComponentOptions, any>
 		| null;
 	minWidth: number;
 	minHeight: number;

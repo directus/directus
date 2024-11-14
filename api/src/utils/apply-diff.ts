@@ -57,11 +57,6 @@ export async function applyDiff(
 				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === currentLevelCollection,
 			) as CollectionDelta[];
 
-		const getNestedCollectionsToDelete = (currentLevelCollection: string) =>
-			snapshotDiff.collections.filter(
-				({ diff }) => (diff[0] as DiffDeleted<Collection>).lhs?.meta?.group === currentLevelCollection,
-			) as CollectionDelta[];
-
 		const createCollections = async (collections: CollectionDelta[]) => {
 			for (const { collection, diff } of collections) {
 				if (diff?.[0]?.kind === DiffKind.NEW && diff[0].rhs) {
@@ -134,8 +129,6 @@ export async function applyDiff(
 						);
 					}
 
-					await deleteCollections(getNestedCollectionsToDelete(collection));
-
 					try {
 						await collectionsService.deleteOne(collection, mutationOptions);
 					} catch (err) {
@@ -182,14 +175,13 @@ export async function applyDiff(
 		// then continue with nested collections recursively
 		await createCollections(snapshotDiff.collections.filter(filterCollectionsForCreation));
 
-		// delete top level collections (no group) first, then continue with nested collections recursively
-		await deleteCollections(
-			snapshotDiff.collections.filter(({ diff }) => {
-				if (diff.length === 0 || diff[0] === undefined) return false;
-				const collectionDiff = diff[0] as DiffDeleted<Collection>;
-				return collectionDiff.kind === DiffKind.DELETE && collectionDiff.lhs?.meta?.group === null;
-			}),
-		);
+		const collectionsToDelete = snapshotDiff.collections.filter(({ diff }) => {
+			if (diff.length === 0 || diff[0] === undefined) return false;
+			const collectionDiff = diff[0] as DiffDeleted<Collection>;
+			return collectionDiff.kind === DiffKind.DELETE;
+		});
+
+		if (collectionsToDelete.length > 0) await deleteCollections(collectionsToDelete);
 
 		for (const { collection, diff } of snapshotDiff.collections) {
 			if (diff?.[0]?.kind === DiffKind.EDIT || diff?.[0]?.kind === DiffKind.ARRAY) {

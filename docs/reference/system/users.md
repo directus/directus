@@ -9,13 +9,6 @@ pageClass: page-reference
 > Directus Users are the individual accounts that let you authenticate into the API and App. Each user can belong to a
 > Role and. [Learn more about Users](/user-guide/overview/glossary#users).
 
-:::tip Directus 11 RC
-
-This reference has been updated for the Directus 11 Release Candidate, which introduced changes to this collection's
-data structure and relations.
-
-:::
-
 ## The User Object
 
 `id` **uuid**\
@@ -80,7 +73,7 @@ Role of the user. Many-to-one to [roles](/reference/system/roles).
 Static access token for the user.
 
 `policies` **many-to-many**\
-The policies in this role. Many-to-many to [policies](/reference/system/policies).
+The policies associated with this user. Many-to-many to [policies](/reference/system/policies).
 
 `last_access` **date**\
 Last time the user accessed the API.
@@ -1382,7 +1375,7 @@ This link includes a token, which is then used to activate the invited user.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /users/invisponse/accept`
+`POST /users/invite/accept`
 
 ```json
 {

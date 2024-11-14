@@ -41,7 +41,6 @@ export default defineConfig({
 		},
 	],
 	define: {
-		__INTLIFY_JIT_COMPILATION__: true,
 		__VUE_I18N_LEGACY_API__: false,
 	},
 	resolve: {
@@ -54,6 +53,10 @@ export default defineConfig({
 			proxy: {
 				'^/(?!admin)': {
 					target: process.env.API_URL ? process.env.API_URL : 'http://127.0.0.1:8055/',
+					changeOrigin: true,
+				},
+				'/websocket/logs': {
+					target: process.env.API_URL ? process.env.API_URL : 'ws://127.0.0.1:8055/',
 					changeOrigin: true,
 				},
 			},
@@ -137,14 +140,12 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		// eslint-disable-next-line no-undef
 		const localExtensions = extensionsPathExists ? await resolveFsExtensions(EXTENSIONS_PATH) : new Map();
 		const moduleExtensions = await resolveModuleExtensions(API_PATH);
 
 		const registryExtensions = extensionsPathExists
 			? await resolveFsExtensions(path.join(EXTENSIONS_PATH, '.registry'))
-			: // eslint-disable-next-line no-undef
-			  new Map();
+			: new Map();
 
 		const mockSetting = (source, folder, extension) => {
 			const settings = [

@@ -41,11 +41,11 @@ Within `useStores` are stores like the `usePermissionsStore`, `useCollectionsSto
 <script setup>
 import { useStores } from '@directus/extensions-sdk';
 
-const { useFieldsStore, usePermissionsStore, useCollectionStore } = useStores();
+const { useFieldsStore, usePermissionsStore, useCollectionsStore } = useStores();
 
 const fieldsStore = useFieldsStore();
 const permissionsStore = usePermissionsStore();
-const collectionStore = useCollectionStore();
+const collectionStore = useCollectionsStore();
 </script>
 ```
 
@@ -182,9 +182,9 @@ primaryKeyField.value;
 </script>
 ```
 
-::: tip `useCollection` vs `useCollectionStore`
+::: tip `useCollection` vs `useCollectionsStore`
 
-For full capabilities like retrieving, updating and deleting collection items, use the `useCollectionStore` composable
+For full capabilities like retrieving, updating and deleting collection items, use the `useCollectionsStore` composable
 instead.
 
 :::

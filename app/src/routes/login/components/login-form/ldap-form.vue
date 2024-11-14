@@ -71,13 +71,15 @@ async function onSubmit() {
 
 		await login({ provider: provider.value, credentials });
 
+		const redirectQuery = router.currentRoute.value.query.redirect as string;
+
 		let lastPage: string | undefined;
 
 		if (userStore.currentUser && 'last_page' in userStore.currentUser) {
 			lastPage = userStore.currentUser.last_page;
 		}
 
-		router.push(lastPage || '/content');
+		router.push(redirectQuery || lastPage || '/content');
 	} catch (err: any) {
 		if (err.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 			requiresTFA.value = true;
@@ -109,7 +111,9 @@ async function onSubmit() {
 		<v-notice v-if="error" type="warning">
 			{{ errorFormatted }}
 		</v-notice>
-		<v-button type="submit" :loading="loggingIn" large>{{ t('sign_in') }}</v-button>
+		<v-button class="sign-in" type="submit" :loading="loggingIn" large>
+			<v-text-overflow :text="t('sign_in')" />
+		</v-button>
 	</form>
 </template>
 
@@ -117,5 +121,9 @@ async function onSubmit() {
 .v-input,
 .v-notice {
 	margin-bottom: 20px;
+}
+
+.sign-in {
+	max-width: 50%;
 }
 </style>

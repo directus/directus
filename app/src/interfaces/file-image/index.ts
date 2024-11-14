@@ -38,6 +38,21 @@ export default defineInterface({
 				default_value: true,
 			},
 		},
+		{
+			field: 'letterbox',
+			name: '$t:interfaces.file-image.letterbox',
+			type: 'boolean',
+			meta: {
+				width: 'half',
+				interface: 'boolean',
+				options: {
+					label: '$t:interfaces.file-image.letterbox_label',
+				},
+			},
+			schema: {
+				default_value: false,
+			},
+		},
 	],
 	recommendedDisplays: ['image'],
 	preview: PreviewSVG,

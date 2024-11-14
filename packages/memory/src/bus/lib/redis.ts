@@ -57,7 +57,7 @@ export class BusRedis implements Bus {
 		}
 	}
 
-	async unsubscribe(channel: string, callback: MessageHandler) {
+	async unsubscribe<T = unknown>(channel: string, callback: MessageHandler<T>) {
 		const namespaced = withNamespace(channel, this.namespace);
 
 		const set = this.handlers[namespaced];

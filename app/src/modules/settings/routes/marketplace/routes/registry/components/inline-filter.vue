@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { EXTENSION_TYPES } from '@directus/extensions';
 import { watchDebounced } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const type = defineModel<string | null>('type');
@@ -31,28 +32,17 @@ watchDebounced(
 );
 
 const { t, n } = useI18n();
+const { filterCount, page, perPage } = toRefs(props);
 
-const showingCount = computed(() => {
-	const opts = {
-		start: n((+props.page - 1) * props.perPage + 1),
-		end: n(Math.min(props.page * props.perPage, props.filterCount || 0)),
-		count: n(props.filterCount || 0),
-	};
-
-	if (search.value) {
-		if (props.filterCount === 1) {
-			return t('one_filtered_item');
-		}
-
-		return t('start_end_of_count_filtered_items', opts);
-	}
-
-	if (props.filterCount > props.perPage) {
-		return t('start_end_of_count_items', opts);
-	}
-
-	return t('item_count', { count: props.filterCount });
-});
+const showingCount = computed(() =>
+	formatItemsCountPaginated({
+		currentItems: filterCount.value,
+		currentPage: page.value,
+		perPage: perPage.value,
+		isFiltered: !!search.value,
+		i18n: { t, n },
+	}),
+);
 
 const typeOptions = [
 	{

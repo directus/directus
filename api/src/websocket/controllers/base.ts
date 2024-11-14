@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { InvalidProviderConfigError, TokenExpiredError } from '@directus/errors';
 import type { Accountability } from '@directus/types';
 import { parseJSON, toBoolean } from '@directus/utils';
+import cookie from 'cookie';
 import type { IncomingMessage, Server as httpServer } from 'http';
 import { randomUUID } from 'node:crypto';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
@@ -16,12 +17,10 @@ import { getAccountabilityForToken } from '../../utils/get-accountability-for-to
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
-import type { AuthenticationState, UpgradeContext, WebSocketClient } from '../types.js';
+import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebSocketClient } from '../types.js';
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
-import { registerWebSocketEvents } from './hooks.js';
-import cookie from 'cookie';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -30,10 +29,7 @@ const logger = useLogger();
 export default abstract class SocketController {
 	server: WebSocket.Server;
 	clients: Set<WebSocketClient>;
-	authentication: {
-		mode: AuthMode;
-		timeout: number;
-	};
+	authentication: WebSocketAuthentication;
 
 	endpoint: string;
 	maxConnections: number;
@@ -58,15 +54,11 @@ export default abstract class SocketController {
 
 		httpServer.on('upgrade', this.handleUpgrade.bind(this));
 		this.checkClientTokens();
-		registerWebSocketEvents();
 	}
 
 	protected getEnvironmentConfig(configPrefix: string): {
 		endpoint: string;
-		authentication: {
-			mode: AuthMode;
-			timeout: number;
-		};
+		authentication: WebSocketAuthentication;
 		maxConnections: number;
 	} {
 		const env = useEnv();
@@ -183,6 +175,15 @@ export default abstract class SocketController {
 			return;
 		}
 
+		try {
+			this.checkUserRequirements(accountability);
+		} catch {
+			logger.debug('WebSocket upgrade denied - ' + JSON.stringify(accountability || 'invalid'));
+			socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+			socket.destroy();
+			return;
+		}
+
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
@@ -199,7 +200,11 @@ export default abstract class SocketController {
 				if (getMessageType(payload) !== 'auth') throw new Error();
 
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
+
+				this.checkUserRequirements(state.accountability);
+
 				ws.send(authenticationSuccess(payload['uid'], state.refresh_token));
+
 				this.server.emit('connection', ws, state);
 			} catch {
 				logger.debug('WebSocket authentication handshake failed');
@@ -298,7 +303,7 @@ export default abstract class SocketController {
 
 		try {
 			message = WebSocketMessage.parse(parseJSON(data));
-		} catch (err: any) {
+		} catch {
 			throw new WebSocketError('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
 		}
 
@@ -308,6 +313,8 @@ export default abstract class SocketController {
 	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
 		try {
 			const { accountability, expires_at, refresh_token } = await authenticateConnection(message);
+			this.checkUserRequirements(accountability);
+
 			client.accountability = accountability;
 			client.expires_at = expires_at;
 			this.setTokenExpireTimer(client);
@@ -332,6 +339,11 @@ export default abstract class SocketController {
 				client.close();
 			}
 		}
+	}
+
+	protected checkUserRequirements(_accountability: Accountability | null) {
+		// there are no requirements in the abstract class
+		return;
 	}
 
 	setTokenExpireTimer(client: WebSocketClient) {

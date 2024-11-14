@@ -1,4 +1,4 @@
-import type { Filter, SchemaOverview } from '@directus/types';
+import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/ast.js';
 import { joinFilterWithCases } from '../../../utils/apply-query.js';
@@ -19,7 +19,9 @@ export function getColumnPreprocessor(
 	schema: SchemaOverview,
 	table: string,
 	cases: Filter[],
+	permissions: Permission[],
 	aliasMap: AliasMap,
+	permissionsOnly?: boolean,
 ) {
 	const helpers = getHelpers(knex);
 
@@ -46,7 +48,13 @@ export function getColumnPreprocessor(
 
 		let column;
 
-		if (field?.type?.startsWith('geometry')) {
+		if (permissionsOnly) {
+			if (noAlias) {
+				column = knex.raw(1);
+			} else {
+				column = knex.raw('1 as ??', [alias]);
+			}
+		} else if (field?.type?.startsWith('geometry')) {
 			column = helpers.st.asText(table, field.field, rawColumnAlias);
 		} else if (fieldNode.type === 'functionField') {
 			// Include the field cases in the functionField query filter
@@ -55,6 +63,7 @@ export function getColumnPreprocessor(
 					...fieldNode.query,
 					filter: joinFilterWithCases(fieldNode.query.filter, fieldNode.cases),
 				},
+				permissions,
 				cases: fieldNode.cases,
 			});
 		} else {
@@ -76,6 +85,7 @@ export function getColumnPreprocessor(
 					cases,
 					table,
 					alias,
+					permissions,
 				},
 				{ knex, schema },
 			);

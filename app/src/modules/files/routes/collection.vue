@@ -292,7 +292,7 @@ function useFileUpload() {
 			notificationsStore.remove(dragNotificationID);
 		}
 
-		const files = [...(event.dataTransfer.files as any)];
+		const files = Array.from(event.dataTransfer.files).filter((file) => file.type);
 
 		fileUploadNotificationID = notificationsStore.add({
 			title: t(
@@ -487,7 +487,11 @@ function useFileUpload() {
 						{{ t('no_files_copy') }}
 
 						<template #append>
-							<v-button :to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }">
+							<v-button
+								:disabled="createAllowed === false"
+								v-tooltip.bottom="createAllowed ? t('add_file') : t('not_allowed')"
+								:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
+							>
 								{{ t('add_file') }}
 							</v-button>
 						</template>

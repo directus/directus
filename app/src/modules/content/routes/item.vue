@@ -293,7 +293,7 @@ async function refreshLivePreview() {
 		await fetchTemplateValues();
 		window.refreshLivePreview(previewUrl.value);
 		if (popupWindow) popupWindow.refreshLivePreview(previewUrl.value);
-	} catch (error) {
+	} catch {
 		// noop
 	}
 }
@@ -348,6 +348,7 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 				currentVersion.value = null;
 				break;
 			case 'stay':
+				revisionsDrawerDetailRef.value?.refresh?.();
 				refresh();
 				break;
 			case 'quit':
@@ -467,7 +468,7 @@ function revert(values: Record<string, any>) {
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view v-else v-model:splitView="splitView" :split-view-min-width="310" :title="title">
+	<private-view v-else v-model:split-view="splitView" :split-view-min-width="310" :title="title">
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
@@ -475,7 +476,7 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template v-else-if="isNew === false && collectionInfo.meta && collectionInfo.meta.display_template" #title>
-			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
+			<v-skeleton-loader v-if="loading" class="title-loader" type="text" />
 
 			<h1 v-else class="type-title">
 				<render-template

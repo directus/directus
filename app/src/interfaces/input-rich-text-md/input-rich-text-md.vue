@@ -20,6 +20,7 @@ const props = withDefaults(
 		placeholder?: string;
 		editorFont?: 'sans-serif' | 'serif' | 'monospace';
 		previewFont?: 'sans-serif' | 'serif' | 'monospace';
+		defaultView?: 'editor' | 'preview';
 		toolbar?: string[];
 		customSyntax?: CustomSyntax[];
 		imageToken?: string;
@@ -30,6 +31,7 @@ const props = withDefaults(
 	{
 		editorFont: 'sans-serif',
 		previewFont: 'sans-serif',
+		defaultView: 'editor',
 		toolbar: () => [
 			'heading',
 			'bold',
@@ -60,7 +62,7 @@ const codemirrorEl = ref<HTMLTextAreaElement>();
 let codemirror: CodeMirror.Editor | null = null;
 let previousContent: string | null = null;
 
-const view = ref(['editor']);
+const view = ref(props.defaultView);
 
 const imageDialogOpen = ref(false);
 
@@ -105,7 +107,7 @@ onMounted(async () => {
 	}
 
 	if (markdownInterface.value) {
-		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
+		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0] as HTMLDivElement;
 
 		const observer = new MutationObserver(() => {
 			count.value = previewBox?.textContent?.replace('\n', '')?.length ?? 0;
@@ -202,15 +204,10 @@ function edit(type: Alteration, options?: Record<string, any>) {
 </script>
 
 <template>
-	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view[0], { disabled }]">
+	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view, { disabled }]">
 		<div class="toolbar">
-			<template v-if="view[0] !== 'preview'">
-				<v-menu
-					v-if="toolbar?.includes('heading')"
-					show-arrow
-					placement="bottom-start"
-					:class="[{ active: view[0] !== 'preview' }]"
-				>
+			<template v-if="view === 'editor'">
+				<v-menu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
 						<v-button v-tooltip="t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="format_size" />
@@ -365,11 +362,17 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 			<div class="spacer"></div>
 
-			<v-item-group v-model="view" class="view" mandatory rounded>
-				<v-button x-small value="editor" :class="[{ active: view[0] !== 'preview' }]">
+			<v-item-group
+				:model-value="[view]"
+				class="view"
+				mandatory
+				rounded
+				@update:model-value="([value]: ['editor' | 'preview']) => (view = value)"
+			>
+				<v-button x-small value="editor" :class="[{ active: view !== 'preview' }]">
 					{{ t('interfaces.input-rich-text-md.edit') }}
 				</v-button>
-				<v-button x-small value="preview" :class="[{ active: view[0] === 'preview' }]">
+				<v-button x-small value="preview" :class="[{ active: view === 'preview' }]">
 					{{ t('interfaces.input-rich-text-md.preview') }}
 				</v-button>
 			</v-item-group>
@@ -390,7 +393,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		<div
 			v-md="markdownString"
 			class="preview-box"
-			:style="{ display: view[0] === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
+			:style="{ display: view === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
 		<v-dialog
@@ -541,12 +544,11 @@ textarea {
 }
 
 .table-options {
-	@include form-grid;
-
 	--theme--form--row-gap: 12px;
 	--theme--form--column-gap: 12px;
 
 	padding: 12px;
+	@include form-grid;
 
 	.v-input {
 		min-width: 100px;

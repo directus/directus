@@ -125,7 +125,7 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 		try {
 			aggregate = parseJSON(rawAggregate);
 		} catch {
-			logger.warn('Invalid value passed for filter query parameter.');
+			logger.warn('Invalid value passed for aggregate query parameter.');
 		}
 	}
 
@@ -239,7 +239,7 @@ function sanitizeAlias(rawAlias: any) {
 	if (typeof rawAlias === 'string') {
 		try {
 			alias = parseJSON(rawAlias);
-		} catch (err) {
+		} catch {
 			logger.warn('Invalid value passed for alias query parameter.');
 		}
 	}

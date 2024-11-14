@@ -595,10 +595,6 @@ make_collection_hidden: संग्रह लुकाउनुहोस्
 make_folder_visible: फोल्डर देखिने बनाउनुहोस्
 make_folder_hidden: फोल्डर लुकाउनुहोस्
 goto_collection_content: सामग्री हेर्नुहोस्
-start_end_of_count_items: '{start}-{end} को {count} वस्तुहरू'
-start_end_of_count_filtered_items: '{start}-{end} को {count} फिल्टर गरिएका वस्तुहरू'
-one_item: '१ वस्तु'
-one_filtered_item: '१ फिल्टर गरिएको वस्तु'
 delete_collection_are_you_sure: >-
   के तपाइँ "{collection}" सङ्ग्रह मेटाउन निश्चित हुनुहुन्छ? यसले संग्रह र यसमा भएका सबै वस्तुहरू मेटाउनेछ। यो कार्य स्थायी छ।
 delete_folder_are_you_sure: के तपाइँ "{folder}" फोल्डर मेटाउन निश्चित हुनुहुन्छ? नेस्ट गरिएका फोल्डरहरू र सङ्ग्रहहरूलाई सबैभन्दा माथिल्लो तहमा सारिनेछ।
@@ -682,7 +678,6 @@ create_item: वस्तु सिर्जना गर्नुहोस्
 display_template: टेम्प्लेट प्रदर्शन गर्नुहोस्
 language_display_template: भाषा प्रदर्शन टेम्प्लेट
 translations_display_template: अनुवाद प्रदर्शन टेम्प्लेट
-n_items_selected: 'कुनै वस्तु चयन गरिएको छैन | १ वस्तु चयन गरियो | {n} वस्तुहरू चयन गरियो'
 per_page: प्रति पृष्ठ
 all_files: सबै फाइलहरू
 my_files: मेरो फाइलहरू
@@ -816,8 +811,6 @@ tooltip: टूलटिप
 tooltip_placeholder: एउटा टूलटिप प्रविष्ट गर्नुहोस्...
 unlimited: असीमित
 open_link_in: मा लिङ्क खोल्नुहोस्
-new_tab: नयाँ ट्याब
-current_tab: हालको ट्याब
 save_image: तस्वीर बचत गर्नुहोस्
 save_media: मिडिया बचत गर्नुहोस्
 wysiwyg_options:
@@ -922,7 +915,6 @@ page_help_files_item: >-
   **फाइल विवरण** — फाइल मेटाडेटा व्यवस्थापन गर्न, मूल सम्पत्ति सम्पादन गर्न र पहुँच सेटिङहरू अद्यावधिक गर्ने फारम।
 page_help_settings_datamodel_collections: >-
   **डेटा मोडेल: सङ्कलन** — उपलब्ध सबै सङ्कलनहरूको सूची बनाउँछ। यसमा दृश्यात्मक, लुकेका, र प्रणाली सङ्कलनहरू, साथै अव्यवस्थित डाटाबेस तालिकाहरू थप्न सकिन्छ।
-page_help_settings_roles_collection: '**भूमिकाहरू ब्राउज गर्नुहोस्** — प्रशासक, सार्वजनिक र अनुकूलन प्रयोगकर्ता भूमिकाहरू सूचीबद्ध गर्दछ।'
 page_help_settings_roles_item: "**भूमिका विवरण** — भूमिकाको अनुमति र अन्य सेटिङहरू प्रबन्ध गर्नुहोस्।"
 page_help_users_collection: '**प्रयोगकर्ता निर्देशिका** — यो परियोजना भित्रका सबै प्रणाली प्रयोगकर्ताहरूलाई सूचीबद्ध गर्दछ।'
 page_help_users_item: >-
@@ -956,7 +948,6 @@ directus_collection:
   directus_notifications: प्रयोगकर्ताहरूलाई सूचनाहरू पठाइयो
   directus_operations: फ्लोमा चल्ने अपरेशनहरू
   directus_panels: अन्तर्दृष्टि ड्यासबोर्डहरू भित्र व्यक्तिगत प्यानलहरू
-  directus_permissions: प्रत्येक भूमिकाको लागि पहुँच अनुमतिहरू
   directus_presets: पूर्वनिर्धारित संग्रह र बुकमार्कहरूको लागि प्रिसेटहरू
   directus_relations: सम्बन्ध कन्फिगरेसन र मेटाडेटा
   directus_revisions: सबै गतिविधिका लागि डाटा स्न्यापसटहरू
@@ -1093,12 +1084,9 @@ fields:
     name: भूमिकाको नाम
     icon: भूमिका आइकन
     description: विवरणः
-    app_access: एप पहुँच
-    admin_access: प्रशासक पहुँच
-    ip_access: आईपी पहुँच
-    enforce_tfa: 2FA आवश्यक छ
     users: भूमिकामा प्रयोगकर्ताहरू
-    module_list: मोड्युल नेभिगेसन
+  directus_policies:
+    description: विवरणः
   directus_webhooks:
     name: नाम
     method: विधि
@@ -1432,6 +1420,8 @@ interfaces:
     preview: पूर्वावलोकन
     editorFont: सम्पादक फन्ट
     previewFont: फन्ट पूर्वावलोकन
+    default_view: पूर्वनिर्धारित दृश्य
+    default_view_preview: पूर्वावलोकन
     customSyntax: अनुकूलित ब्लकहरू
     customSyntax_label: अनुकूलन सिन्ट्याक्स प्रकारहरू थप्नुहोस्
   map:
@@ -1681,7 +1671,6 @@ layouts:
     delete_group: समूह मेटाउनुहोस्
     add_group: समूह थप्नुहोस्
     show: देखाउने
-    not_all_loaded: "तपाईंले पहिलो 1000 वस्तुहरू मात्र लोड गर्न सक्नुहुन्छ।\n"
 horizontal: तेर्सो
 x_axis: "x-अक्ष\n"
 y_axis: y-अक्ष

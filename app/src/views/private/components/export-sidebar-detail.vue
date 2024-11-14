@@ -60,7 +60,8 @@ const exportSettings = reactive({
 	limit: props.layoutQuery?.limit ?? defaultLimit,
 	filter: props.filter,
 	search: props.search,
-	fields: props.layoutQuery?.fields ?? fields.value?.map((field) => field.field),
+	fields:
+		props.layoutQuery?.fields ?? fields.value?.filter((field) => field.type !== 'alias').map((field) => field.field),
 	sort: `${primaryKeyField.value?.field ?? ''}`,
 });
 
@@ -68,7 +69,7 @@ watch(
 	fields,
 	() => {
 		if (props.layoutQuery?.fields) return;
-		exportSettings.fields = fields.value?.map((field) => field.field);
+		exportSettings.fields = fields.value?.filter((field) => field.type !== 'alias').map((field) => field.field);
 	},
 	{ immediate: true },
 );
