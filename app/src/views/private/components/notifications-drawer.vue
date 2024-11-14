@@ -20,7 +20,7 @@ type LocalNotification = Notification & {
 	to?: string;
 };
 
-const { t, n } = useI18n();
+const { t } = useI18n();
 const appStore = useAppStore();
 const userStore = useUserStore();
 const collectionsStore = useCollectionsStore();

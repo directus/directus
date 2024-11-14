@@ -1,4 +1,4 @@
-import { ComposerNumberFormatting, ComposerTranslation, useI18n } from 'vue-i18n';
+import { ComposerNumberFormatting, ComposerTranslation } from 'vue-i18n';
 
 export type FormatItemsCountPaginatedOptions = {
 	currentItems: number;
