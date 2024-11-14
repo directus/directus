@@ -999,6 +999,7 @@ tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
 open_link_in: Link öffnen in
+new_tab: Neuer Tab
 save_image: Bild speichern
 save_media: Medien speichern
 wysiwyg_options:
@@ -1072,6 +1073,7 @@ editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
+settings_roles: Benutzerrollen
 settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
@@ -1241,6 +1243,8 @@ fields:
     height: Höhe
     charset: Zeichensatz
     duration: Dauer
+    focal_point_x: X-Koordinate
+    focal_point_y: Y-Koordinate
   directus_users:
     first_name: Vorname
     last_name: Nachname
@@ -1320,6 +1324,8 @@ fields:
     custom_aspect_ratios: Benutzerdefiniertes Seitenverhältnis
     theme_light_overrides: Anpassung des hellen Designs
     theme_dark_overrides: Anpassung des dunklen Designs
+    public_registration: Benutzerregistrierung
+    public_registration_role: Benutzerrolle
   directus_shares:
     name: Name
     role: Rolle
@@ -1341,6 +1347,8 @@ fields:
     icon: Rollen-Symbol
     description: Beschreibung
     users: Benutzer in Rolle
+    parent: Übergeordnete Rolle
+    children: Untergeordnete Rollen
   directus_policies:
     description: Beschreibung
   directus_webhooks:
@@ -1422,8 +1430,12 @@ field_options:
     description: Eine optionale Beschreibung...
     location: Eine optionale Position...
     storage_divider: Dateibenennung
+    focal_point_divider: Fokuspunkt
     filename_disk: Name auf Festplatte...
     filename_download: Name während des Downloads...
+  directus_policies:
+    name: Ein einzigartiger Name für diese Richtlinie...
+    description: Eine Beschreibung dieser Richtlinie...
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
@@ -1516,6 +1528,7 @@ continue_label: Weiter
 continue_as: >-
   {name} ist derzeit angemeldet. Wenn Sie dieses Konto kennen, drücken Sie auf Fortfahren.
 editing_role: '{role} Rolle'
+permission_add_collection: Sammlung hinzufügen
 creating_webhook: Webhook erstellen
 default_label: Standard
 delete_label: Löschen
