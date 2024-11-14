@@ -152,6 +152,14 @@ const templatePrimaryKey = computed(() =>
 
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
 
+const isSavable = computed(() => {
+	if (props.disabled) return false;
+	if (isNew.value) return true;
+	if (updateAllowed.value && !props.junctionField) return true;
+	if (updateAllowed.value && props.junctionField && updateRelatedCollectionAllowed.value) return true;
+	return false;
+});
+
 const {
 	template,
 	templateData,
@@ -391,7 +399,7 @@ function useActions() {
 
 		<template #actions>
 			<slot name="actions" />
-			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!isSavable" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
