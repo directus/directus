@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import api from '@/api';
 import useDatetime from '@/components/use-datetime.vue';
+import { useFormatItemsCountPaginated } from '@/composables/use-format-items-count';
 import { useCollectionsStore } from '@/stores/collections';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
-import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useItems } from '@directus/composables';
@@ -103,18 +103,19 @@ const notifications = computed<LocalNotification[]>(() => {
 	});
 });
 
+const formattedCount = useFormatItemsCountPaginated({
+	currentItems: itemCount,
+	currentPage: page,
+	perPage: limit,
+	totalItems: totalCount,
+	isFiltered: computed(() => !!filter.value),
+});
+
 const showingCount = computed(() => {
 	// Don't show count if there are no items
 	if (!totalCount.value || !itemCount.value) return;
 
-	return formatItemsCountPaginated({
-		currentItems: itemCount.value,
-		currentPage: page.value,
-		perPage: limit.value,
-		isFiltered: !!filter.value,
-		totalItems: totalCount.value,
-		i18n: { t, n },
-	});
+	return formattedCount.value;
 });
 
 async function refresh() {
