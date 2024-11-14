@@ -712,6 +712,18 @@ The `TUS_CHUNK_SIZE` for `storage-driver-gcs` must be a power of 2 with a minimu
 
 :::
 
+::: warning
+
+The `TUS_CHUNK_SIZE` for `storage-driver-azure` must not be larger than `100mb`.
+
+:::
+
+::: warning
+
+The `TUS_CHUNK_SIZE` for `storage-driver-cloudinary` must not be lower than `5mb`.
+
+:::
+
 ## Assets
 
 | Variable                                 | Description                                                                                                                         | Default Value |
