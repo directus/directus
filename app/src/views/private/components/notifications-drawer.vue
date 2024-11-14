@@ -104,10 +104,10 @@ const notifications = computed<LocalNotification[]>(() => {
 });
 
 const formattedCount = useFormatItemsCountPaginated({
-	currentItems: itemCount,
+	currentItems: itemCount as Ref<number>,
 	currentPage: page,
 	perPage: limit,
-	totalItems: totalCount,
+	totalItems: totalCount as Ref<number>,
 	isFiltered: computed(() => !!filter.value),
 });
 

@@ -8,7 +8,7 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { clone } from 'lodash';
-import { computed, ref, toRefs } from 'vue';
+import { computed, Ref, ref, toRefs } from 'vue';
 import CardsActions from './actions.vue';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
@@ -67,11 +67,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 
 		const formattedCount = useFormatItemsCountPaginated({
-			currentItems: itemCount,
+			currentItems: itemCount as Ref<number>,
 			currentPage: page,
 			perPage: limit,
-			isFiltered: filterUser,
-			totalItems: totalCount,
+			isFiltered: computed(() => !!filterUser.value),
+			totalItems: totalCount as Ref<number>,
 		});
 
 		const showingCount = computed(() => {
