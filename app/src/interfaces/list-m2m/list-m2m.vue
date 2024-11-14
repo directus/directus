@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Sort } from '@/components/v-table/types';
-import { useFormatItemsCountPaginated } from '@/composables/use-format-items-count';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useRelationPermissionsM2M } from '@/composables/use-relation-permissions';
@@ -8,6 +7,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerBatch from '@/views/private/components/drawer-batch.vue';
@@ -63,7 +63,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-const { t } = useI18n();
+const { t, n } = useI18n();
 const { collection, field, primaryKey } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 const fieldsStore = useFieldsStore();
@@ -183,12 +183,15 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const showingCount = useFormatItemsCountPaginated({
-	currentItems: totalItemCount,
-	currentPage: page,
-	perPage: limit,
-	isFiltered: computed(() => !!(search.value || searchFilter.value)),
-});
+const showingCount = computed(() =>
+	formatItemsCountPaginated({
+		currentItems: totalItemCount.value,
+		currentPage: page.value,
+		perPage: limit.value,
+		isFiltered: !!(search.value || searchFilter.value),
+		i18n: { t, n },
+	}),
+);
 
 const headers = ref<Array<any>>([]);
 
@@ -576,8 +579,8 @@ function getLinkForItem(item: DisplayItem) {
 
 			<template v-else-if="loading">
 				<v-skeleton-loader
-					v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
-					:key="n"
+					v-for="num in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
+					:key="num"
 					:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
 				/>
 			</template>

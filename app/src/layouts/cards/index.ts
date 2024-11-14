@@ -1,6 +1,6 @@
-import { useFormatItemsCountPaginated } from '@/composables/use-format-items-count';
 import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
@@ -8,7 +8,8 @@ import { useCollection, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { clone } from 'lodash';
-import { computed, Ref, ref, toRefs } from 'vue';
+import { computed, ref, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
 import CardsActions from './actions.vue';
 import CardsLayout from './cards.vue';
 import CardsOptions from './options.vue';
@@ -26,6 +27,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: CardsActions,
 	},
 	setup(props, { emit }) {
+		const { t, n } = useI18n();
 		const relationsStore = useRelationsStore();
 
 		const selection = useSync(props, 'selection', emit);
@@ -66,19 +68,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				filterSystem,
 			});
 
-		const formattedCount = useFormatItemsCountPaginated({
-			currentItems: itemCount as Ref<number>,
-			currentPage: page,
-			perPage: limit,
-			isFiltered: computed(() => !!filterUser.value),
-			totalItems: totalCount as Ref<number>,
-		});
-
 		const showingCount = computed(() => {
 			// Don't show count if there are no items
 			if (!totalCount.value || !itemCount.value) return;
 
-			return formattedCount.value;
+			return formatItemsCountPaginated({
+				currentItems: itemCount.value,
+				currentPage: page.value,
+				perPage: limit.value,
+				isFiltered: !!filterUser.value,
+				totalItems: totalCount.value,
+				i18n: { t, n },
+			});
 		});
 
 		const width = ref(0);
