@@ -26,6 +26,7 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
+		"@directus/constants": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@supabase/storage-js": "2.7.1",

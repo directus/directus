@@ -1,14 +1,15 @@
 import api from '@/api';
-import type { File } from '@directus/types';
 import { emitter, Events } from '@/events';
 import { i18n } from '@/lang';
 import { useServerStore } from '@/stores/server';
-import { notify } from '@/utils/notify';
 import { getRootPath } from '@/utils/get-root-path';
+import { notify } from '@/utils/notify';
+import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
+import type { File } from '@directus/types';
 import type { AxiosProgressEvent } from 'axios';
-import { unexpectedError } from './unexpected-error';
 import type { PreviousUpload } from 'tus-js-client';
 import { Upload } from 'tus-js-client';
+import { unexpectedError } from './unexpected-error';
 
 export async function uploadFile(
 	file: globalThis.File,
@@ -39,7 +40,7 @@ export async function uploadFile(
 		return new Promise((resolve, reject) => {
 			const upload = new Upload(file, {
 				endpoint: getRootPath() + `files/tus`,
-				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
+				chunkSize: server.info.uploads?.chunkSize ?? DEFAULT_CHUNK_SIZE,
 				metadata: fileInfo as Record<string, string>,
 				// Allow user to re-upload of the same file
 				// https://github.com/tus/tus-js-client/blob/main/docs/api.md#removefingerprintonsuccess

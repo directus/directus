@@ -1,3 +1,4 @@
+import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import type { Bucket, CreateReadStreamOptions, GetFilesOptions } from '@google-cloud/storage';
@@ -6,7 +7,6 @@ import { join } from 'node:path';
 import { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
-const DEFAULT_CHUNK_SIZE = 8_388_608; // 8mb in bytes
 const MINIMUM_CHUNK_SIZE = 262_144; // 256kb in bytes
 
 export type DriverGCSConfig = {
