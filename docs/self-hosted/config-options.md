@@ -1034,8 +1034,8 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_SMTP_NAME`       | SMTP client hostname | --            |
 
 For more details about these options, see the
-[SMTP configuration documentation for Nodemailer](https://nodemailer.com/smtp/#general-options),
-which Directus uses under the hood.
+[SMTP configuration documentation for Nodemailer](https://nodemailer.com/smtp/#general-options), which Directus uses
+under the hood.
 
 ### Mailgun (`mailgun`)
 
