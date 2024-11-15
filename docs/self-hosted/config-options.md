@@ -714,7 +714,7 @@ the storage driver(s) being used.
 | --------------------------- | -------------------------------------------------------------------------------- |
 | `storage-driver-gcs`        | Must be a power of 2 with a minimum of `256kb` (e.g. `256kb`, `512kb`, `1024kb`) |
 | `storage-driver-azure`      | Must not be larger than `100mb`                                                  |
-| `storage-driver-cloudinary` | Must not be lower than `5mb`                                                     |
+| `storage-driver-cloudinary` | Must not be smaller than `5mb`                                                   |
 
 :::
 
