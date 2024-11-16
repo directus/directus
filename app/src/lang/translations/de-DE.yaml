@@ -971,6 +971,8 @@ details: Details
 logs_unread_count: '{count} ungelesen'
 clear_logs: Logs leeren
 search_logs: Logs suchen...
+all_log_levels: Alle Log-Levels
+log_level_count: 'Kein Log-Level | Ein Log-Level | {count} Log-Levels'
 full_screen: Vollbild
 full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
@@ -2160,6 +2162,7 @@ layouts:
     no_group: Keine Gruppe
 horizontal: Horizontal
 vertical: Vertikal
+axis: Achse
 x_axis: X-Achse
 y_axis: Y-Achse
 y_axis_function: Y-Achsenfunktion
@@ -2407,7 +2410,7 @@ date_precision: Datumsgenauigkeit
 export_dashboard: Dashboard exportieren
 duplicate_dashboard: Dashboard duplizieren
 search_dashboard: Dashboard suchen...
-search_flow: Flow suchen ...
+search_flow: Flow suchen...
 percent: Prozent
 show_password: Passwort anzeigen
 hide_password: Passwort ausblenden
