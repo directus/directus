@@ -66,7 +66,7 @@ extension_module: Модуль
 extension_panel: Панель
 extension_theme: Тема
 extension_hook: Хук
-extension_endpoint: Конечная точка
+extension_endpoint: Endpoint
 extension_operation: Действие
 extension_bundle: Набор
 extension_interfaces: Интерфейсы
@@ -79,7 +79,7 @@ extension_hooks: Хуки
 extension_endpoints: Конечные точки
 extension_operations: Операции
 extension_bundles: Пакеты
-extension_missing: Пропавшее
+extension_missing: Отсутствует
 extension_reload_required: Требуется перезагрузка страницы
 extension_reload_required_copy: Перезагрузка страницы необходима, чтобы увидеть изменения после включения или отключения расширений приложений.
 extension_reload_now: Перезагрузить сейчас
@@ -845,12 +845,12 @@ operators:
   icontains: Содержит (без учета регистра)
   starts_with: Начинается с
   nstarts_with: Не начинается с
-  istarts_with: Начинается с (без чувствительности к регистру)
-  nistarts_with: Не начинается с (без чувствительности к регистру)
+  istarts_with: Начинается с (без учета регистра)
+  nistarts_with: Не начинается с (без учета регистра)
   ends_with: Оканчивается на
   nends_with: Не оканчивается на
-  iends_with: Заканчивается на (без чувствительности к регистру)
-  niends_with: Не заканчивается на (без чувствительности к регистру)
+  iends_with: Заканчивается на (без учета регистра)
+  niends_with: Не заканчивается на (без учета регистра)
   between: Между
   nbetween: Не между
   empty: Пустой
