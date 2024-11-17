@@ -1,8 +1,5 @@
-import { useEnv } from '@directus/env';
+import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
 import { ErrorCode, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
-import type { Request } from 'express';
-import { Router } from 'express';
 import {
 	createLDAPAuthRouter,
 	createLocalAuthRouter,
@@ -10,18 +7,22 @@ import {
 	createOpenIDAuthRouter,
 	createSAMLAuthRouter,
 } from '../auth/drivers/index.js';
-import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../constants.js';
-import { useLogger } from '../logger/index.js';
-import { respond } from '../middleware/respond.js';
-import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
-import { AuthenticationService } from '../services/authentication.js';
-import { UsersService } from '../services/users.js';
+
+import type { Accountability } from '@directus/types';
 import type { AuthenticationMode } from '../types/auth.js';
+import { AuthenticationService } from '../services/authentication.js';
+import type { Request } from 'express';
+import { Router } from 'express';
+import { UsersService } from '../services/users.js';
 import asyncHandler from '../utils/async-handler.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import { getAuthProviders } from '../utils/get-auth-providers.js';
 import { getIPFromReq } from '../utils/get-ip-from-req.js';
 import { getSecret } from '../utils/get-secret.js';
 import isDirectusJWT from '../utils/is-directus-jwt.js';
+import { respond } from '../middleware/respond.js';
+import { useEnv } from '@directus/env';
+import { useLogger } from '../logger/index.js';
 import { verifyAccessJWT } from '../utils/jwt.js';
 
 const router = Router();
@@ -209,7 +210,7 @@ router.post(
 		const service = new UsersService({ accountability, schema: req.schema });
 
 		try {
-			await service.requestPasswordReset(req.body.email, req.body.reset_url || null);
+			await service.requestPasswordReset(req.body.email, req.body.reset_url || null, req.body.subject || null);
 			return next();
 		} catch (err: any) {
 			if (isDirectusError(err, ErrorCode.InvalidPayload)) {
