@@ -10,4 +10,4 @@
 '@directus/app': patch
 ---
 
-Fixed enforcing `chunkSize` when TUS is not enabled
+Fixed enforcing `chunkSize` when TUS is not enabled and updated the default `TUS_CHUNK_SIZE` to `8mb`
