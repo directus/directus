@@ -246,6 +246,7 @@ export default defineLayout<LayoutOptions>({
 				totalItems: totalCount.value,
 				currentItems: itemCount.value,
 				isFiltered: !!props.filterUser,
+				i18n: { t, n },
 			});
 		});
 

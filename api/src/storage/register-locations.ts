@@ -20,6 +20,7 @@ export const registerLocations = async (storage: StorageManager) => {
 
 function getOptions(driver: string, options: Record<string, any>) {
 	const tus = {
+    enabled: RESUMABLE_UPLOADS.ENABLED,
 		chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
 	};
 

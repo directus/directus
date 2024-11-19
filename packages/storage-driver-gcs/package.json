@@ -26,6 +26,7 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
+		"@directus/constants": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@google-cloud/storage": "7.13.0"
