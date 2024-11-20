@@ -7,12 +7,16 @@ export function withPreprocessBindings(knex: Knex, dbQuery: Knex.QueryBuilder) {
 	dbQuery.client = new Proxy(dbQuery.client, {
 		get(target, prop, receiver) {
 			if (prop === 'query') {
-				return (connection: any, queryParam: any) => {
-					return Reflect.get(target, prop, receiver).bind(target)(
+				return (connection: Knex, queryParams: Knex.Sql) =>
+					Reflect.get(target, prop, receiver).bind(dbQuery.client)(
 						connection,
-						schemaHelper.preprocessBindings(queryParam),
+						schemaHelper.prepQueryParams(queryParams),
 					);
-				};
+			}
+
+			if (prop === 'prepBindings') {
+				return (bindings: Knex.Value[]) =>
+					schemaHelper.prepBindings(Reflect.get(target, prop, receiver).bind(dbQuery.client)(bindings));
 			}
 
 			return Reflect.get(target, prop, receiver);

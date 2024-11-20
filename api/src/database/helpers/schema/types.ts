@@ -157,14 +157,18 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return null;
 	}
 
-	preprocessBindings(queryParams: Sql): Sql {
+	prepQueryParams(queryParams: Sql): Sql {
 		return queryParams;
+	}
+
+	prepBindings(bindings: Knex.Value[]): any {
+		return bindings;
 	}
 
 	addInnerSortFieldsToGroupBy(
 		_groupByFields: (string | Knex.Raw)[],
 		_sortRecords: SortRecord[],
-		_hasMultiRelationalSort: boolean,
+		_hasRelationalSort: boolean,
 	): void {
 		// no-op by default
 	}
