@@ -36,6 +36,7 @@ import { Agent as HttpsAgent } from 'node:https';
 import os from 'node:os';
 import { join } from 'node:path';
 import stream, { promises as streamProm, type Readable } from 'node:stream';
+import ms from 'ms';
 
 export type DriverS3Config = {
 	root?: string;
@@ -83,8 +84,8 @@ export class DriverS3 implements TusDriver {
 		 * often in rapid succession, hitting the maxSockets limit of 50.
 		 * The requestHandler is customized to get around this.
 		 */
-		const connectionTimeout = this.config.connectionTimeout ?? 5000;
-		const socketTimeout = this.config.socketTimeout ?? 120000;
+		const connectionTimeout = ms(String(this.config.connectionTimeout ?? 5000));
+		const socketTimeout = ms(String(this.config.socketTimeout ?? 120000));
 		const maxSockets = this.config.maxSockets ?? 500;
 		const keepAlive = this.config.keepAlive ?? true;
 
@@ -283,12 +284,12 @@ export class DriverS3 implements TusDriver {
 			...(context.metadata?.['contentType']
 				? {
 						ContentType: context.metadata['contentType'],
-				  }
+					}
 				: {}),
 			...(context.metadata?.['cacheControl']
 				? {
 						CacheControl: context.metadata['cacheControl'],
-				  }
+					}
 				: {}),
 		});
 
