@@ -2,8 +2,8 @@ import type { SchemaOverview } from '@directus/types';
 import { describe, expect, test } from 'vitest';
 import { getLocalSchemaCache, setLocalSchemaCache } from './cache.js';
 
-// Test optimized memory caching with localSchemaCache
-describe('optimize serialization and deserialization in keyv for memory store', async () => {
+// Test optimized memory caching using localSchemaCache
+describe('optimize serialization and deserialization for memory cache', async () => {
 	// Keyv handles all JSON types plus Buffer
 	const types = [
 		{ type: 'string', value: 'sample-string' },
