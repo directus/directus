@@ -1224,6 +1224,7 @@ directus_collection:
   directus_access: Prílohy politiky
   directus_activity: Logovať zodpovednosti za všetky aktivity
   directus_collections: Dodatočné nastavenia zbierky a metadát
+  directus_comments: Komentáre k položkám
   directus_dashboards: Tabule v module prehľadov
   directus_fields: Dodatočné nastavenia polí a metadát
   directus_files: Metadáta pre všetky spravované súbory
@@ -1385,7 +1386,7 @@ fields:
     public_registration: Registrácia používateľa
     public_registration_note: Dovoľuje používateľovi registrovať sa na [registračnej ceste](/admin/register).
     public_registration_role: Rola používateľa
-    public_registration_role_note: Táto rola je priradená používateľovi, ktorý sa zaregistroval použitím tejto metódy. Neovplyvňí doteraz registrovaných používateľov.
+    public_registration_role_note: Táto rola je priradená používateľovi, ktorý sa zaregistroval použitím tejto metódy. Neovplyvní doteraz registrovaných používateľov.
     public_registration_email_filter: Filter emailových adries
     public_registration_email_filter_note: Len adersy vyhovujúce tomuto filtru sa môžu zaregistrovať.
     public_registration_verify_email: Overiť Email
@@ -1838,6 +1839,8 @@ interfaces:
     description: Vyberie alebo nahrá obrázok
     crop: Orezať na prispôsobenie
     crop_label: Oreže obrázok podľa potreby
+    letterbox: Letterbox
+    letterbox_label: Pridať výplň do náhľadového obrázku
   system-interface:
     interface: Rozhranie
     description: Vyberie existujúce rozhranie
