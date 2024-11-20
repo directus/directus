@@ -30,13 +30,13 @@ import { isReadableStream } from '@directus/utils/node';
 import { Permit, Semaphore } from '@shopify/semaphore';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { ERRORS, StreamSplitter, TUS_RESUMABLE } from '@tus/utils';
+import ms from 'ms';
 import fs, { promises as fsProm } from 'node:fs';
 import { Agent as HttpAgent } from 'node:http';
 import { Agent as HttpsAgent } from 'node:https';
 import os from 'node:os';
 import { join } from 'node:path';
 import stream, { promises as streamProm, type Readable } from 'node:stream';
-import ms from 'ms';
 
 export type DriverS3Config = {
 	root?: string;
