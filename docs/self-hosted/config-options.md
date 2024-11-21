@@ -1035,9 +1035,13 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_SMTP_USER`       | SMTP user            | --            |
 | `EMAIL_SMTP_PASSWORD`   | SMTP password        | --            |
 | `EMAIL_SMTP_POOL`       | Use SMTP pooling     | --            |
-| `EMAIL_SMTP_SECURE`     | Enable TLS           | --            |
-| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS           | --            |
+| `EMAIL_SMTP_SECURE`     | Enable initial TLS   | --            |
+| `EMAIL_SMTP_IGNORE_TLS` | Ignore STARTTLS      | --            |
 | `EMAIL_SMTP_NAME`       | SMTP client hostname | --            |
+
+For more details about these options, see the
+[SMTP configuration documentation for Nodemailer](https://nodemailer.com/smtp/#general-options), which Directus uses
+under the hood.
 
 ### Mailgun (`mailgun`)
 
