@@ -2,4 +2,4 @@
 "@directus/api": patch
 ---
 
-Improved memory and performance on saving schema locally
+Optimized serialization and deserialization for memory cache
