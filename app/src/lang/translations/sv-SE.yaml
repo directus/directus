@@ -360,6 +360,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} av {user}'
 presentation_text_values_cannot_be_reimported: 'Använder presentationstext, värden kan inte återimporteras.'
 download_page_as_csv: 'Ladda ned sida som CSV'
+download_page_as_csv_unsupported: Denna layout stöder inte nedladdning av den aktuella sidan.
 private_user: Privat användare
 creation_preview: Förhandsgranskning av skapande
 revision_preview: Förhandsgranska revision
@@ -463,6 +464,7 @@ import_from_url: Importera fil från URL
 replace_from_device: Ersätt fil från enhet
 replace_from_library: Ersätt fil från biblioteket
 replace_from_url: Ersätt fil från URL
+no_image_selected: Ingen bild vald
 no_file_selected: Ingen fil vald
 download_file: Ladda ner fil
 start_export: Påbörja exportering
@@ -478,10 +480,12 @@ created_on: Skapad den
 creating_collection_info: Namnge kollektionen och konfigurera dess unika "nyckelfält"...
 creating_collection_system: Aktivera och döp om något av dessa valfria fält.
 auto_increment_integer: Auto-incremented integer
+auto_increment_big_integer: Auto-incremented integer
 generated_uuid: Genererad UUID
 manual_string: Manuellt inmatad textsträng
 save_and_create_new: Spara och skapa ny
 save_and_stay: Spara och stanna
+save_and_quit: Spara och avsluta
 save_as_copy: Spara som kopia
 add_existing: Lägg till befintlig
 creating_items: Skapar objekt
