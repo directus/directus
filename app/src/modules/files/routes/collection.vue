@@ -6,6 +6,7 @@ import { Folder, useFolders } from '@/composables/use-folders';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
 import { emitter, Events } from '@/events';
+import { useFilesStore } from '@/stores/files.js';
 import { useNotificationsStore } from '@/stores/notifications';
 import { useUserStore } from '@/stores/user';
 import { getFolderFilter } from '@/utils/get-folder-filter';
@@ -18,7 +19,8 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
-import { computed, nextTick, onMounted, onUnmounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
@@ -60,9 +62,6 @@ const { layoutWrapper } = useLayout(layout);
 
 const { moveToDialogActive, moveToFolder, moving, selectedFolder } = useMovetoFolder();
 
-onMounted(() => emitter.on(Events.upload, refresh));
-onUnmounted(() => emitter.off(Events.upload, refresh));
-
 onBeforeRouteLeave(() => {
 	selection.value = [];
 });
@@ -71,12 +70,18 @@ onBeforeRouteUpdate(() => {
 	selection.value = [];
 });
 
-const { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
+const { uploading, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
 
 useEventListener(window, 'dragenter', onDragEnter);
 useEventListener(window, 'dragover', onDragOver);
 useEventListener(window, 'dragleave', onDragLeave);
 useEventListener(window, 'drop', onDrop);
+
+watch(uploading, (isUploading, wasUploading) => {
+	if (wasUploading && !isUploading) {
+		refresh();
+	}
+});
 
 const {
 	updateAllowed: batchEditAllowed,
@@ -205,6 +210,7 @@ function clearFilters() {
 }
 
 function useFileUpload() {
+	const { uploading } = storeToRefs(useFilesStore());
 	const showDropEffect = ref(false);
 
 	let dragNotificationID: string;
@@ -214,7 +220,7 @@ function useFileUpload() {
 
 	const dragging = computed(() => dragCounter.value > 0);
 
-	return { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
+	return { uploading, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
 
 	function enableDropEffect() {
 		showDropEffect.value = true;
@@ -311,28 +317,34 @@ function useFileUpload() {
 
 		const preset = props.folder ? { folder: props.folder } : undefined;
 
-		await uploadFiles(files, {
-			preset,
-			onProgressChange: (progress) => {
-				const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
+		try {
+			uploading.value = true;
 
-				const total = files.length;
-				const done = progress.filter((p) => p === 100).length;
+			await uploadFiles(files, {
+				preset,
+				onProgressChange: (progress) => {
+					const percentageDone = progress.reduce((val, cur) => (val += cur)) / progress.length;
 
-				notificationsStore.update(fileUploadNotificationID, {
-					title: t(
-						'upload_files_indeterminate',
-						{
-							done,
-							total,
-						},
-						files.length,
-					),
-					loading: false,
-					progress: percentageDone,
-				});
-			},
-		});
+					const total = files.length;
+					const done = progress.filter((p) => p === 100).length;
+
+					notificationsStore.update(fileUploadNotificationID, {
+						title: t(
+							'upload_files_indeterminate',
+							{
+								done,
+								total,
+							},
+							files.length,
+						),
+						loading: false,
+						progress: percentageDone,
+					});
+				},
+			});
+		} finally {
+			uploading.value = false;
+		}
 
 		notificationsStore.remove(fileUploadNotificationID);
 		emitter.emit(Events.upload);

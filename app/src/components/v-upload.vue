@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import api from '@/api';
-import type { File } from '@directus/types';
 import { emitter, Events } from '@/events';
+import { useFilesStore } from '@/stores/files.js';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
+import type { File } from '@directus/types';
 import { sum } from 'lodash';
+import { storeToRefs } from 'pinia';
+import type { Upload } from 'tus-js-client';
 import { computed, onUnmounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import type { Upload } from 'tus-js-client';
 
 export type UploadController = {
 	start(): void;
@@ -63,7 +65,7 @@ function validFiles(files: FileList) {
 }
 
 function useUpload() {
-	const uploading = ref(false);
+	const { uploading } = storeToRefs(useFilesStore());
 	const progress = ref(0);
 	const numberOfFiles = ref(0);
 	const done = ref(0);
