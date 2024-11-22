@@ -37,7 +37,6 @@ Open a text editor such as Visual Studio Code, nano, Vim, TextEdit, or Notepad.
 Copy and paste the following and save the file as `docker-compose.yml`:
 
 ```yaml-vue
-version: "3"
 services:
   directus:
     image: directus/directus:{{ packages.directus.version.full }}
