@@ -196,6 +196,7 @@ permissions_for_role: 'Objekt som {role} rollen kan {action}.'
 fields_for_role: 'Fält {role} rollen kan {action}.'
 validation_for_role: 'Fältets {action} regler {role} rollen måste lyda.'
 presets_for_role: 'Förvalt fältvärde för rollen {role}.'
+presets_for_policy: 'Förvalt fältvärde för rollen {policy}.'
 presentation_and_aliases: Presentation & alias
 revision_post_create: Så här såg objektet ut när det skapades.
 revision_post_update: Så här såg objektet ut efter uppdateringen.
@@ -277,6 +278,7 @@ auto_generate: Generera automatiskt
 this_will_auto_setup_fields_relations: Detta kommer automatiskt att ställa in alla obligatoriska fält och relationer.
 click_here: Klicka här
 to_manually_setup_translations: för att manuellt konfigurera översättningar.
+manage: Hantera
 click_to_manage_translated_fields: >-
   Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
 fields_group: Fältens grupp
