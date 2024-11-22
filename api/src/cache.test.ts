@@ -17,6 +17,6 @@ describe('optimize serialization and deserialization for memory cache', async ()
 
 	test.each(types)('returns the exact value for type $type', async ({ value }) => {
 		await setLocalSchemaCache(value as unknown as SchemaOverview);
-		expect(await getLocalSchemaCache()).toBe(value);
+		expect(JSON.stringify(await getLocalSchemaCache())).toBe(JSON.stringify(value));
 	});
 });

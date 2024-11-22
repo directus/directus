@@ -9,6 +9,7 @@ import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
+import { cloneDeep } from 'lodash-es';
 
 import { createRequire } from 'node:module';
 
@@ -166,7 +167,7 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 	if (store === 'memory') {
 		config.compression = {
 			serialize: (v) => v,
-			deserialize: (v) => structuredClone(v),
+			deserialize: (v) => cloneDeep(v),
 		};
 	}
 
