@@ -164,8 +164,10 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 	};
 
 	if (store === 'memory') {
-		config.serialize = (v) => v as any;
-		config.deserialize = (v) => v as any;
+		config.compression = {
+			serialize: (v) => v,
+			deserialize: (v) => structuredClone(v),
+		};
 	}
 
 	if (store === 'redis') {
