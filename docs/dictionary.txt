@@ -298,6 +298,7 @@ nitty-gritty
 no-brainer
 node[^\s]*
 NodeJS
+Nodemailer
 NoSQL
 npm
 NPM
@@ -400,6 +401,7 @@ SSL
 SSO
 SSR
 StackOverflow
+STARTTLS
 stylization
 subdirectory
 subfolder

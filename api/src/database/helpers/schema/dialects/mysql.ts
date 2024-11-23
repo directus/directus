@@ -53,9 +53,9 @@ export class SchemaHelperMySQL extends SchemaHelper {
 	override addInnerSortFieldsToGroupBy(
 		groupByFields: (string | Knex.Raw)[],
 		sortRecords: SortRecord[],
-		hasMultiRelationalSort: boolean,
+		hasRelationalSort: boolean,
 	) {
-		if (hasMultiRelationalSort) {
+		if (hasRelationalSort) {
 			/*
 			** MySQL **
 

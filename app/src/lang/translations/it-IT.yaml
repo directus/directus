@@ -1002,6 +1002,22 @@ no_data_in_flow: Nessun dato è stato prodotto o letto in questo flusso
 accountability: Autorizzazioni
 payload: Payload
 details: Dettagli
+resume_streaming_logs: Riprendi lo streaming dei log
+pause_streaming_logs: Metti in pausa lo streaming dei log
+logs_session_resumed: Sessione di log ripresa...
+logs_session_paused: Sessione di log in pausa...
+logs_stream_disconnected: Stream dei log disconnesso...
+log_detail_filter_paths: 'Filtro percorsi (es.: req.method, res.statusCode)'
+logs_beginning: Questo è l'inizio della sessione di log...
+logs_waiting: 'In attesa di altri log...'
+logs_unread_count: '{count} non letti'
+clear_logs: Cancella i log
+search_logs: Cerca nei log...
+all_instances: Tutte le istanze
+instance_count: 'Nessuna istanza | Una istanza | {count} istanze'
+all_log_levels: Tutti i livelli di log
+log_level_count: 'Nessun livello di log | Un livello di log | {count} livelli di log'
+soft_wrap_lines: A capo automatico
 full_screen: Schermo Intero
 full_text_search: Ricerca full-text
 edit_panels: Modifica pannelli
@@ -1030,6 +1046,7 @@ tooltip: Suggerimento
 tooltip_placeholder: Inserisci un suggerimento...
 unlimited: Illimitato
 open_link_in: Apri collegamento in
+new_tab: Nuova scheda
 save_image: Salva immagine
 save_media: Salva media
 wysiwyg_options:
@@ -1109,6 +1126,7 @@ settings_project: Impostazioni
 settings_appearance: Aspetto
 settings_webhooks: Webhooks
 settings_flows: Flussi
+settings_system_logs: Log di sistema
 settings_presets: Segnalibri
 settings_translations: Traduzioni
 one_or_more_options_are_missing: Mancano una o più opzioni
@@ -1154,6 +1172,7 @@ page_help_settings_datamodel_collections: >-
   **Modello dei dati: Raccolte** — Elenca tutte le raccolte disponibili. Include raccolte visibili, nascoste e di sistema, così come tabelle di database non gestite che possono essere aggiunte.
 page_help_settings_datamodel_fields: >-
   **Modello dei dati: Raccolta** — Un modulo per la gestione di questa raccolta e dei suoi campi.
+page_help_settings_system_logs: '**Log di sistema** — Accedi a un live stream dei log di sistema.'
 page_help_settings_policies_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
 page_help_settings_policies_item: "**Dettagli della policy** — Gestisci i permessi dio una policy e altre impostazioni."
 page_help_settings_roles_collection: '**Sfoglia le policy** — Elenca tutte le policy nel progetto.'
@@ -1207,6 +1226,7 @@ directus_collection:
   directus_access: Allegati alle policy
   directus_activity: Log autorizzazioni per tutti gli eventi
   directus_collections: Configurazione e metadati aggiuntivi della raccolta
+  directus_comments: Osservazioni per gli elementi
   directus_dashboards: Bacheche nel modulo approfondimenti
   directus_fields: Configurazione e metadati aggiuntivi del campo
   directus_files: Metadati per tutti i file degli asset gestiti
@@ -1823,6 +1843,8 @@ interfaces:
     description: Seleziona o carica un'immagine
     crop: Ritaglia per adattarsi
     crop_label: Ritaglia l'immagine come necessario
+    letterbox: Letterbox
+    letterbox_label: Aggiungi padding all'anteprima dell'immagine
   system-interface:
     interface: Interfaccia
     description: Seleziona un'interfaccia esistente
