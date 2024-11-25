@@ -283,9 +283,11 @@ function updateSort(newSort: Sort) {
 				</template>
 			</table-header>
 			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
-				<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
-					<v-progress-linear v-if="loading" indeterminate />
-				</th>
+				<tr>
+					<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
+						<v-progress-linear v-if="loading" indeterminate />
+					</th>
+				</tr>
 			</thead>
 			<tbody v-if="loading && items.length === 0">
 				<tr class="loading-text">
