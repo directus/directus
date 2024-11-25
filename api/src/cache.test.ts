@@ -19,4 +19,36 @@ describe('optimize serialization and deserialization for memory cache', async ()
 		await setLocalSchemaCache(value as unknown as SchemaOverview);
 		expect(JSON.stringify(await getLocalSchemaCache())).toBe(JSON.stringify(value));
 	});
+
+	test.each(types)('cached value cannot be updated for type $type', async ({ type, value }) => {
+		await setLocalSchemaCache(value as unknown as SchemaOverview);
+
+		const cachedValue = await getLocalSchemaCache();
+
+		switch (type) {
+			case 'string':
+				value = 'updated';
+				break;
+			case 'number':
+				value = 789;
+				break;
+			case 'boolean':
+				value = false;
+				break;
+			case 'null':
+				value = 'updated';
+				break;
+			case 'array':
+				(value as Array<any>).push('updated');
+				break;
+			case 'object':
+				(value as any).updated = true;
+				break;
+			case 'buffer':
+				(value as Buffer).write('updated');
+				break;
+		}
+
+		expect(await getLocalSchemaCache()).toEqual(cachedValue);
+	});
 });
