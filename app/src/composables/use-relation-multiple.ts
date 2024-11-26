@@ -217,9 +217,10 @@ export function useRelationMultiple(
 		return { create, update, remove, select };
 
 		function create(...items: Record<string, any>[]) {
-			for (const item of items) {
-				const finalItem = applySort(cleanItem(item));
+			let sortCount = totalItemCount.value;
 
+			for (const item of items) {
+				const finalItem = applySort(cleanItem(item), sortCount++);
 				target.value.create.push(finalItem);
 			}
 
@@ -229,11 +230,13 @@ export function useRelationMultiple(
 		function update(...items: DisplayItem[]) {
 			if (!relation.value) return;
 
+			let sortCount = totalItemCount.value;
+
 			for (const item of items) {
 				const finalItem = cleanItem(item);
 
 				if (item.$type === undefined || item.$index === undefined) {
-					target.value.update.push(applySort(finalItem));
+					target.value.update.push(applySort(finalItem, sortCount++));
 				} else if (item.$type === 'created') {
 					target.value.create[item.$index] = finalItem;
 				} else if (item.$type === 'updated') {
@@ -645,14 +648,14 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		function applySort(item: Record<string, any>): Record<string, any> {
+		function applySort(item: Record<string, any>, totalSortCount = 0): Record<string, any> {
 			const sortField = relation.value?.sortField;
 
-			if (!sortField || totalItemCount.value > previewQuery.value.limit || item[sortField] !== undefined) return item;
+			if (!sortField || totalSortCount > previewQuery.value.limit || item[sortField] !== undefined) return item;
 
 			return {
 				...item,
-				[sortField]: totalItemCount.value + 1,
+				[sortField]: totalSortCount + 1,
 			};
 		}
 
