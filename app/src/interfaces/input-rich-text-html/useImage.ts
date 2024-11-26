@@ -116,7 +116,7 @@ export default function useImage(
 	}
 
 	function onImageSelect(image: File) {
-		const assetUrl = getPublicURL() + 'assets/' + image.filename_disk
+		const assetUrl = getPublicURL() + 'assets/' + image.filename_disk;
 
 		imageSelection.value = {
 			imageUrl: replaceUrlAccessToken(assetUrl, imageToken.value),

@@ -29,13 +29,10 @@ const imageFile: File = {
 	focal_point_y: null,
 	created_on: '2024-06-14T23:59:59.000Z',
 	tus_id: null,
-	tus_data: null
+	tus_data: null,
 };
 
-const fileExtensions = [
-	'jpeg',
-	'jpg',
-]
+const fileExtensions = ['jpeg', 'jpg'];
 
 test('Returns the file id and file extension from the file type as the imageUrl', () => {
 	const editorRef = ref<any | null>(null);
@@ -64,7 +61,7 @@ test('Returns the file id and file extension from the filename_download as the i
 		storageAssetPresets,
 	});
 
-	onImageSelect({...imageFile, type: null });
+	onImageSelect({ ...imageFile, type: null });
 
 	expect(imageSelection.value?.imageUrl).toEqual('http://localhost:3000/assets/unique_id.svg');
 });
@@ -80,7 +77,11 @@ test.each(fileExtensions)('Returns the correct file extension for %s', (fileExte
 		storageAssetPresets,
 	});
 
-	onImageSelect({...imageFile, filename_disk: 'unique_id.' + fileExtension, filename_download: '600x400.' + fileExtension });
+	onImageSelect({
+		...imageFile,
+		filename_disk: 'unique_id.' + fileExtension,
+		filename_download: '600x400.' + fileExtension,
+	});
 
 	expect(imageSelection.value?.imageUrl).toEqual(`http://localhost:3000/assets/unique_id.${fileExtension}`);
 });
