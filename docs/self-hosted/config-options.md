@@ -339,6 +339,24 @@ WebSockets work reliably across multiple containers of Directus.
 
 Redis is required when you run Directus load balanced across multiple containers/processes.
 
+::: tip Additional Redis Variables
+
+All `REDIS_*` environment variables are passed to the `connection` configuration of a
+[`Redis` instance](https://redis.github.io/ioredis/classes/Redis.html). This means, based on your project's needs, you
+can extend the `REDIS_*` environment variables with any config you need to pass to the Redis instance.
+
+This includes:
+
+- `REDIS_SENTINEL_` prefixed options which are passed to
+  [`SentinelConnectionOptions`](https://redis.github.io/ioredis/interfaces/SentinelConnectionOptions.html).
+
+  Note: `REDIS_SENTINELS` is required for specifying sentinel instances and expects to receive an array of objects:
+  `REDIS_SENTINELS=json:[{"host": "127.0.0.1", "port": 26379}, ...]`
+
+  Make sure to explicitly prefix the value with `json` so it will be treated as a json array.
+
+:::
+
 ## Security
 
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
