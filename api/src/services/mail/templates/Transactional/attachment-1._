@@ -1,0 +1,36 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+PRODID:calcom/ics
+METHOD:REQUEST
+X-PUBLISHED-TTL:PT1H
+BEGIN:VEVENT
+UID:4NBfLBQFLN3faQzdZwHKUf@Agenda.Yinflow
+SUMMARY:Sessão de Psicologia | 50 minutos | Semanal entre Sintropio Teste e
+	 Fernando Picardi Teste Calendar
+DTSTAMP:20241114T143900Z
+DTSTART:20241114T180000Z
+SEQUENCE:0
+DESCRIPTION:Seu evento recorrente foi agendado\n    Esta informação foi env
+	iada para você e para todos os outros participantes.\n\n    O quê:\nSessão
+	 de Psicologia | 50 minutos | Semanal entre Sintropio Teste e Fernando Pic
+	ardi Teste Calendar\n  \n\nFuso horário do participante:\nAmerica/Sao_Paul
+	o\n  \n\nQuem:\n\nSintropio Teste - Organizador\nsintropio@gmail.com\n  \n
+	Fernando Picardi Teste Calendar\npicardiii@gmail.com\n      \n  \nOnde:\nh
+	ttps://meet.google.com/oec-rkgv-vzb\n\nDescrição\n    Dr. João Silva é um 
+	psicólogo clínico com mais de 15 anos de experiência no campo da saúde men
+	tal. Formado em Psicologia pela Universidade de São Paulo (USP)\, ele poss
+	ui um mestrado em Psicologia Cognitiva e um doutorado em Psicologia Clínic
+	a. Dr. Silva é especializado em terapia cognitivo-comportamental (TCC) e t
+	em um interesse particular em transtornos de ansiedade e depressão.\n    \
+	n\n\nCPF:\n52486120041\n  \n\nPrecisa reagendar ou cancelar? https://agend
+	a.yinflow.life/booking/4NBfLBQFLN3faQzdZwHKUf?changes=true
+LOCATION:https://meet.google.com/oec-rkgv-vzb
+STATUS:CONFIRMED
+ORGANIZER;CN=Sintropio Teste:mailto:sintropio@gmail.com
+ATTENDEE;RSVP=TRUE;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN=Fernando Picar
+	di Teste Calendar:mailto:picardiii@gmail.com
+RRULE:FREQ=WEEKLY;COUNT=4;INTERVAL=1
+DURATION:PT50M
+END:VEVENT
+END:VCALENDAR
