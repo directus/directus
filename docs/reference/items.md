@@ -1004,7 +1004,7 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	updateItems(
-		'articles', 
+		'articles',
 		{ category: { _eq: 'Recipes' }},
 		{ status: 'published' },
 	)
@@ -1097,7 +1097,7 @@ Delete multiple existing items.
 
 `DELETE /items/:collection`
 
-Provide an array of item primary keys  `keys` as your request body.
+Provide an array of item primary keys `keys` as your request body.
 
 </template>
 <template #graphql>
@@ -1130,7 +1130,7 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-An array of item primary keys  `keys` to delete.
+An array of item primary keys `keys` to delete.
 
 ### Response
 
