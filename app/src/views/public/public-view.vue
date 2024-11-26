@@ -65,8 +65,12 @@ const logoURL = computed<string | null>(() => {
 					<img src="./logo-light.svg" alt="Directus" class="directus-logo" />
 				</div>
 				<div class="title">
-					<h1 class="type-title">{{ info?.project?.project_name }}</h1>
-					<p class="subtitle">{{ info?.project?.project_descriptor ?? t('application') }}</p>
+					<h1 class="type-title"><v-text-overflow :text="info?.project?.project_name" placement="bottom" /></h1>
+					<v-text-overflow
+						class="subtitle"
+						:text="info?.project?.project_descriptor ?? t('application')"
+						placement="bottom"
+					/>
 				</div>
 			</div>
 
@@ -372,6 +376,7 @@ const logoURL = computed<string | null>(() => {
 				background-color: rgb(38 50 56 / 0.2);
 				border-radius: 6px;
 				backdrop-filter: blur(2px);
+				word-break: break-word;
 			}
 		}
 
@@ -395,6 +400,7 @@ const logoURL = computed<string | null>(() => {
 		.title {
 			margin-top: 2px;
 			margin-left: 16px;
+			overflow: hidden;
 
 			h1 {
 				font-weight: 700;
@@ -403,7 +409,6 @@ const logoURL = computed<string | null>(() => {
 			}
 
 			.subtitle {
-				width: 100%;
 				color: var(--theme--foreground-subdued);
 			}
 		}

@@ -2,7 +2,7 @@
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { EXTENSION_TYPES } from '@directus/extensions';
 import { watchDebounced } from '@vueuse/core';
-import { computed, ref } from 'vue';
+import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const type = defineModel<string | null>('type');
@@ -31,14 +31,16 @@ watchDebounced(
 	{ debounce: 300 },
 );
 
-const { t } = useI18n();
+const { t, n } = useI18n();
+const { filterCount, page, perPage } = toRefs(props);
 
 const showingCount = computed(() =>
 	formatItemsCountPaginated({
-		currentItems: props.filterCount,
-		currentPage: props.page,
-		perPage: props.perPage,
+		currentItems: filterCount.value,
+		currentPage: page.value,
+		perPage: perPage.value,
 		isFiltered: !!search.value,
+		i18n: { t, n },
 	}),
 );
 

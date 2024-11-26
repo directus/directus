@@ -6,7 +6,7 @@ describe('Test QueryFilters', () => {
 	test('resolving _and/_or filters (issue #20633)', () => {
 		const client = createDirectus<TestSchema>('https://directus.example.com').with(rest());
 
-		const withConditional = () =>
+		const _withConditional = () =>
 			client.request(
 				readItems('collection_a', {
 					fields: [
@@ -22,7 +22,7 @@ describe('Test QueryFilters', () => {
 				}),
 			);
 
-		const withoutConditional = () =>
+		const _withoutConditional = () =>
 			client.request(
 				readItems('collection_a', {
 					fields: [
@@ -36,8 +36,8 @@ describe('Test QueryFilters', () => {
 				}),
 			);
 
-		type TypeWithConditional = Awaited<ReturnType<typeof withConditional>>;
-		type TypeWithoutConditional = Awaited<ReturnType<typeof withoutConditional>>;
+		type TypeWithConditional = Awaited<ReturnType<typeof _withConditional>>;
+		type TypeWithoutConditional = Awaited<ReturnType<typeof _withoutConditional>>;
 
 		const resultA: TypeWithConditional = [
 			{

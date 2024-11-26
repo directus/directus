@@ -1,0 +1,78 @@
+get:
+  tags:
+    - Comments
+  operationId: getComment
+  summary: Retrieve a Comment
+  description: Retrieve a single comment by unique identifier.
+  security:
+    - Auth: []
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Comments'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+
+patch:
+  tags:
+    - Comments
+  operationId: updateComment
+  summary: Update a Comment
+  description: Update an existing comment.
+  parameters:
+    - $ref: '../../openapi.yaml#/components/parameters/Fields'
+    - $ref: '../../openapi.yaml#/components/parameters/Meta'
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [collection]
+          properties:
+            collection:
+              type: string
+              description: Which collection this comment is for.
+              example: projects
+            item:
+              type: string
+              example: 81dfa7e0-56d2-471f-b96a-1cf8a62bdf28
+            comment:
+              type: string
+              example: An updated comment
+  responses:
+    '200':
+      description: Successful request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: '../../openapi.yaml#/components/schemas/Comments'
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'
+    '404':
+      $ref: '../../openapi.yaml#/components/responses/NotFoundError'
+
+delete:
+  tags:
+    - Comments
+  operationId: deleteComment
+  summary: Delete a Comment
+  description: Delete an existing comment.
+  security:
+    - Auth: []
+  responses:
+    '200':
+      description: Successful request
+    '401':
+      $ref: '../../openapi.yaml#/components/responses/UnauthorizedError'

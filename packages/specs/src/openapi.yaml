@@ -33,6 +33,9 @@ tags:
       Collections are the individual collections of items, similar to tables in a database. Changes to collections will
       alter the schema of the database.
     x-collection: directus_collections
+  - name: Comments
+    description: Comments can be added to items.
+    x-collection: directus_comments
   - name: Extensions
     description:
       Directus can easily be extended through the addition of several types of extensions, including layouts,
@@ -110,12 +113,8 @@ paths:
   # Activity
   /activity:
     $ref: './paths/activity/activities.yaml'
-  /activity/comment:
-    $ref: './paths/activity/activity-comments.yaml'
   /activity/{id}:
     $ref: './paths/activity/activity.yaml'
-  /activity/comment/{id}:
-    $ref: './paths/activity/activity-comment.yaml'
 
   # Assets
   /assets/{id}:
@@ -154,6 +153,12 @@ paths:
     $ref: './paths/collections/collections.yaml'
   /collections/{id}:
     $ref: './paths/collections/collection.yaml'
+
+  # Comments
+  /comments:
+    $ref: './paths/comments/comments.yaml'
+  /comments/{id}:
+    $ref: './paths/comments/comment.yaml'
 
   # Extensions
   /extensions:
@@ -299,6 +304,8 @@ components:
       $ref: './components/preset.yaml'
     Collections:
       $ref: './components/collection.yaml'
+    Comments:
+      $ref: './components/comment.yaml'
     Diff:
       $ref: './components/diff.yaml'
     Extensions:
