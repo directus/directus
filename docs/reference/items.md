@@ -854,7 +854,7 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-Object containing `data` for the values to set, and either `keys` or `query` to select what items to update.
+Object containing `data` for the values to set, and `keys` to select what items to update.
 
 ### Response
 
@@ -902,6 +902,112 @@ const result = await client.request(
 	updateItems('articles', ['5', '6'], {
 		status: 'published',
 	})
+);
+```
+
+</template>
+</SnippetToggler>
+
+## Update Items by Query
+
+Update multiple items by selecting what items to update using a Directus query object.
+
+### Request
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`PATCH /items/:collection`
+
+Provide a partial [item object](#the-item-object) as the body of your request.
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+type Mutation {
+	update_<collection>_batch(
+		filter: <collection>_filter,
+		sort: [String],
+		limit: Int,
+		offset: Int,
+		page: Int,
+		search: String,
+		data: [update_<collection>_input]
+	): [<collection>]
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateItems } from '@directus/sdk';
+
+const client = createDirectus('directus_project_url').with(rest());
+
+const result = await client.request(updateItems(collection_name, query, partial_item_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`PATCH /items/articles`
+
+```json
+{
+	"query": {
+		"filter": {
+			"category": {
+				"_eq": "Recipes"
+			}
+		}
+	},
+	"data": {
+		"status": "published"
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+mutation {
+	update_articles_batch(filter: { category: { _eq: "Recipes" }}, data: { status: "published" }) {
+		id
+		status
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, updateItems } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(
+	updateItems(
+		'articles', 
+		{ category: { _eq: 'Recipes' }},
+		{ status: 'published' },
+	)
 );
 ```
 
@@ -991,7 +1097,7 @@ Delete multiple existing items.
 
 `DELETE /items/:collection`
 
-Provide an array of item primary keys or an object containing either `keys` or `query` as your request body.
+Provide an array of item primary keys  `keys` as your request body.
 
 </template>
 <template #graphql>
@@ -1013,10 +1119,6 @@ import { createDirectus, rest, deleteItems } from '@directus/sdk';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteItems(collection_name, item_id_array));
-
-//or
-
-const result = await client.request(deleteItems(collection_name, query_object));
 ```
 
 </template>
@@ -1028,7 +1130,7 @@ Supports all [global query parameters](/reference/query).
 
 #### Request Body
 
-An array of item primary keys or an object containing either `keys` or `query` to select what items to update.
+An array of item primary keys  `keys` to delete.
 
 ### Response
 
@@ -1050,19 +1152,6 @@ Empty body.
 // Object containing keys
 {
 	"keys": [15, 16, 21]
-}
-```
-
-```json
-// Object containing query
-{
-	"query": {
-		"filter": {
-			"status": {
-				"_eq": "draft"
-			}
-		}
-	}
 }
 ```
 
@@ -1088,8 +1177,106 @@ import { createDirectus, rest, deleteItems } from '@directus/sdk';
 const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(deleteItems('articles', ['6', '7']));
+```
 
-//or
+</template>
+</SnippetToggler>
+
+## Delete Items by Query
+
+Delete multiple existing items using a query object.
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`DELETE /items/:collection`
+
+Provide an object containing `query` as your request body.
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+type Mutation {
+	delete_<collection>_batch(
+		filter: <collection>_filter,
+		sort: [String],
+		limit: Int,
+		offset: Int,
+		page: Int,
+		search: String,
+	): delete_many
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteItems } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
+
+const result = await client.request(deleteItems(collection_name, query_object));
+```
+
+</template>
+</SnippetToggler>
+
+#### Query Parameters
+
+Supports all [global query parameters](/reference/query).
+
+#### Request Body
+
+An object containing `query` to select what items to delete.
+
+### Response
+
+Empty body.
+
+### Example
+
+<SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
+<template #rest>
+
+`DELETE /items/articles`
+
+```json
+// Object containing query
+{
+	"query": {
+		"filter": {
+			"status": {
+				"_eq": "draft"
+			}
+		}
+	}
+}
+```
+
+</template>
+<template #graphql>
+
+`POST /graphql`
+
+```graphql
+mutation {
+	delete_articles_items(filter: { category: { _eq: "Recipes" }}) {
+		ids
+	}
+}
+```
+
+</template>
+<template #sdk>
+
+```js
+import { createDirectus, rest, deleteItems } from '@directus/sdk';
+
+const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	deleteItems('articles', {
