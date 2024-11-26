@@ -7,7 +7,7 @@
 
 ![A file type form input where user can pick from three options: "Upload File From Device", "Choose Files from Library", "Import File from URL"](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-file.webp)
 
-Interface that allows uses to upload a single file of any mime-type, choose an existing file from the
+Interface that allows users to upload a single file of any mime-type, choose an existing file from the
 [File Library](/user-guide/file-library/files), or import a file from a URL.
 
 - **Folder**: Folder for the uploaded files. Does not affect the location of existing files.
@@ -16,7 +16,7 @@ Interface that allows uses to upload a single file of any mime-type, choose an e
 
 ![A file type form input where user can pick from three options: "Upload File From Device", "Choose Files from Library", "Import File from URL"](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-image.webp)
 
-Interface that allows uses to upload a single image file, choose an existing image from the
+Interface that allows users to upload a single image file, choose an existing image from the
 [File Library](/user-guide/file-library/files), or import an image from a URL.
 
 - **Folder**: Folder for the uploaded files. Does not affect the location of existing files.
@@ -26,7 +26,7 @@ Interface that allows uses to upload a single image file, choose an existing ima
 
 ![A file type form input where user can select and upload multiple files.](https://cdn.directus.io/docs/v9/configuration/data-model/fields/interfaces-20230308/interface-files.webp)
 
-Interface that allows uses to upload multiple files, choose an existing image from the
+Interface that allows users to upload multiple files, choose an existing image from the
 [File Library](/user-guide/file-library/files), or import an image from a URL.
 
 This field will create a [Many-To-Many (M2M)](/app/data-model/relationships#many-to-many-m2m) junction collection when
