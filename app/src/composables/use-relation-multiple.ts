@@ -393,7 +393,7 @@ export function useRelationMultiple(
 
 	watch(
 		[previewQuery, itemId, relation],
-		async (newData, oldData) => {
+		(newData, oldData) => {
 			const [newPreviewQuery, newItemId, newRelation] = newData;
 			const [oldPreviewQuery, oldItemId, oldRelation] = oldData;
 
@@ -406,7 +406,7 @@ export function useRelationMultiple(
 				return;
 			}
 
-			await updateItemCount();
+			updateItemCount();
 		},
 		{ immediate: true },
 	);
