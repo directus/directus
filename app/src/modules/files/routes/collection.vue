@@ -19,11 +19,11 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
-import { storeToRefs } from 'pinia';
 import { computed, nextTick, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
+import { storeToRefs } from 'pinia';
 
 type Item = {
 	[field: string]: any;
@@ -70,14 +70,14 @@ onBeforeRouteUpdate(() => {
 	selection.value = [];
 });
 
-const { uploading, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
+const { isAnyUploadActive, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
 
 useEventListener(window, 'dragenter', onDragEnter);
 useEventListener(window, 'dragover', onDragOver);
 useEventListener(window, 'dragleave', onDragLeave);
 useEventListener(window, 'drop', onDrop);
 
-watch(uploading, (isUploading, wasUploading) => {
+watch(isAnyUploadActive, (isUploading, wasUploading) => {
 	if (wasUploading && !isUploading) {
 		refresh();
 	}
@@ -210,7 +210,10 @@ function clearFilters() {
 }
 
 function useFileUpload() {
-	const { uploading } = storeToRefs(useFilesStore());
+	const filesStore = useFilesStore();
+	const { isAnyUploadActive } = storeToRefs(filesStore);
+	const newUpload = filesStore.upload();
+
 	const showDropEffect = ref(false);
 
 	let dragNotificationID: string;
@@ -220,7 +223,7 @@ function useFileUpload() {
 
 	const dragging = computed(() => dragCounter.value > 0);
 
-	return { uploading, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
+	return { isAnyUploadActive, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging };
 
 	function enableDropEffect() {
 		showDropEffect.value = true;
@@ -318,7 +321,7 @@ function useFileUpload() {
 		const preset = props.folder ? { folder: props.folder } : undefined;
 
 		try {
-			uploading.value = true;
+			newUpload.start(files.length);
 
 			await uploadFiles(files, {
 				preset,
@@ -343,7 +346,7 @@ function useFileUpload() {
 				},
 			});
 		} finally {
-			uploading.value = false;
+			newUpload.finish();
 		}
 
 		notificationsStore.remove(fileUploadNotificationID);
