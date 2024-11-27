@@ -72,9 +72,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		this.config = additionalConfig;
 
 		const roleMapping: String = env[`AUTH_${config['provider'].toUpperCase()}_ROLE_MAPPING`] as string;
-		if (roleMapping && roleMapping.trim().length > 0){
-			const kvPairs = roleMapping.split(";").map(item => item.split("=") as [string, string]);
-			this.roleMap = new Map(kvPairs)
+		if (roleMapping && roleMapping.trim().length > 0) {
+			const roleMap = roleMapping.split(";").map(roleMapItem => roleMapItem.split("=") as [string, string]);
+			this.roleMap = new Map(roleMap)
 		}
 
 		this.client = new Promise((resolve, reject) => {
@@ -188,8 +188,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		let role = this.config['defaultRoleId'];
 
 		// Overwrite default role if user is member of a group specified in roleMapping
-		for (const [key, value] of this.roleMap){
-			if((userInfo['groups'] as Array<string>).includes(key)){
+		for (const [key, value] of this.roleMap) {
+			if ((userInfo['groups'] as Array<string>).includes(key)) {
 				role = value;
 				break;
 			}
