@@ -1,13 +1,12 @@
+import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
-import * as tus from 'tus-js-client';
 import { join } from 'node:path';
 import { Readable } from 'node:stream';
+import * as tus from 'tus-js-client';
 import type { RequestInit } from 'undici';
 import { fetch } from 'undici';
-
-const DEFAULT_CHUNK_SIZE = 10_000_000;
 
 export type DriverSupabaseConfig = {
 	bucket: string;

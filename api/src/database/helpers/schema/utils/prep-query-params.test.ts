@@ -1,20 +1,20 @@
 import { test, expect } from 'vitest';
-import { preprocessBindings } from './preprocess-bindings.js';
+import { prepQueryParams } from './prep-query-params.js';
 
 const format = (index: number) => `$${index + 1}`;
 
 test('Returns an escaped question mark, so it stays escaped', () => {
-	expect(preprocessBindings(`SELECT * FROM table WHERE column = "\\?"`, { format }).sql).toEqual(
+	expect(prepQueryParams(`SELECT * FROM table WHERE column = "\\?"`, { format }).sql).toEqual(
 		'SELECT * FROM table WHERE column = "\\?"',
 	);
 
-	expect(preprocessBindings(`SELECT * FROM table WHERE column = "\\\\\\?"`, { format }).sql).toEqual(
+	expect(prepQueryParams(`SELECT * FROM table WHERE column = "\\\\\\?"`, { format }).sql).toEqual(
 		'SELECT * FROM table WHERE column = "\\\\\\?"',
 	);
 });
 
 test('Replaces question marks with $1, $2, etc.', () => {
-	const bindings = preprocessBindings(
+	const bindings = prepQueryParams(
 		{ sql: `SELECT * FROM table WHERE column = ? LIMIT ?`, bindings: [1, 100] },
 		{ format },
 	);
@@ -24,7 +24,7 @@ test('Replaces question marks with $1, $2, etc.', () => {
 });
 
 test('Replaces question marks with $1, $2, etc. and skips duplicates', () => {
-	const bindings = preprocessBindings(
+	const bindings = prepQueryParams(
 		{
 			sql: `SELECT * FROM table WHERE column = ? AND other = ? LIMIT ?`,
 			bindings: [10, 'foo', 10],
@@ -37,7 +37,7 @@ test('Replaces question marks with $1, $2, etc. and skips duplicates', () => {
 });
 
 test('Replaces question marks with $1, $2, etc. and handles more than one duplicate', () => {
-	const bindings = preprocessBindings(
+	const bindings = prepQueryParams(
 		{
 			sql: `SELECT * FROM table WHERE column in [?, ?, ?] and other in [?, ?] LIMIT ?`,
 			bindings: [1, 1, 1, 100, 5, 100],
