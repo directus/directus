@@ -111,8 +111,8 @@ const showingCount = computed(() => {
 		currentItems: itemCount.value,
 		currentPage: page.value,
 		perPage: limit.value,
-		isFiltered: !!filter.value,
 		totalItems: totalCount.value,
+		isFiltered: !!filter.value,
 		i18n: { t, n },
 	});
 });
