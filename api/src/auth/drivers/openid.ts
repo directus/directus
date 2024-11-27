@@ -188,9 +188,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		let role = this.config['defaultRoleId'];
 
 		// Overwrite default role if user is member of a group specified in roleMapping
-		for (const [key, value] of this.roleMap) {
-			if ((userInfo['groups'] as Array<string>).includes(key)) {
-				role = value;
+		for (const [groupName, roleID] of this.roleMap) {
+			if ((userInfo['groups'] as Array<string>).includes(groupName)) {
+				role = roleID;
 				break;
 			}
 		}
