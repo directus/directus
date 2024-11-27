@@ -63,7 +63,7 @@ export async function handleRetentionJob() {
 		do {
 			const subquery = database
 				.queryBuilder()
-				.select('id')
+				.select(`${task.collection}.id`)
 				.from(task.collection)
 				.where('timestamp', '<', Date.now() - task.timeframe)
 				.limit(batch);
