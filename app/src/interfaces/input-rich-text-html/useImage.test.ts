@@ -79,6 +79,7 @@ test.each(fileExtensions)('Returns the correct file extension for %s', (fileExte
 
 	onImageSelect({
 		...imageFile,
+		type: `image/${fileExtension}`,
 		filename_disk: 'unique_id.' + fileExtension,
 		filename_download: '600x400.' + fileExtension,
 	});
