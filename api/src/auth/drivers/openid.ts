@@ -39,6 +39,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	redirectUrl: string;
 	usersService: UsersService;
 	config: Record<string, any>;
+	roleMap: Map<string, string> = new Map()
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
@@ -69,6 +70,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = additionalConfig;
+
+		const roleMapping: String = env[`AUTH_${config['provider'].toUpperCase()}_ROLE_MAPPING`] as string;
+		if (roleMapping && roleMapping.trim().length > 0){
+			const kvPairs = roleMapping.split(";").map(item => item.split("=") as [string, string]);
+			this.roleMap = new Map(kvPairs)
+		}
 
 		this.client = new Promise((resolve, reject) => {
 			Issuer.discover(issuerUrl)
@@ -178,6 +185,16 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
+		let role = this.config['defaultRoleId'];
+
+		// Overwrite default role if user is member of a group specified in roleMapping
+		for (const [key, value] of this.roleMap){
+			if((userInfo['groups'] as Array<string>).includes(key)){
+				role = value;
+				break;
+			}
+		}
+
 		// Flatten response to support dot indexes
 		userInfo = flatten(userInfo) as Record<string, unknown>;
 
@@ -198,7 +215,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			last_name: userInfo['family_name'],
 			email: email,
 			external_identifier: identifier,
-			role: this.config['defaultRoleId'],
+			role: role,
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		};
 
@@ -209,6 +226,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			let emitPayload: Record<string, unknown> = {
 				auth_data: userPayload.auth_data,
+				// Make sure a user's role gets updated if his openid group or role mapping changes
+				role: role
 			};
 
 			if (syncUserInfo) {
