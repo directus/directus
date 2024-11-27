@@ -3,7 +3,7 @@ import { type Knex } from 'knex';
 import type { Options, SortRecord, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
 import { useEnv } from '@directus/env';
-import { preprocessBindings } from '../utils/preprocess-bindings.js';
+import { prepQueryParams } from '../utils/prep-query-params.js';
 
 const env = useEnv();
 
@@ -41,8 +41,8 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		}
 	}
 
-	override preprocessBindings(queryParams: Sql): Sql {
-		return preprocessBindings(queryParams, { format: (index) => `$${index + 1}` });
+	override prepQueryParams(queryParams: Sql): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `$${index + 1}` });
 	}
 
 	override addInnerSortFieldsToGroupBy(

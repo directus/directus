@@ -248,12 +248,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					perPage: limit.value,
 					isFiltered: !!props.filterUser,
 					totalItems: totalCount.value,
+					i18n: { t, n },
 				});
 
 			return formatItemsCountRelative({
 				totalItems: totalCount.value,
 				currentItems: itemCount.value,
 				isFiltered: !!props.filterUser,
+				i18n: { t, n },
 			});
 		});
 
