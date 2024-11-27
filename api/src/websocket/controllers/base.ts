@@ -21,6 +21,7 @@ import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebS
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -149,7 +150,7 @@ export default abstract class SocketController {
 
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
-			const state = { accountability: null, expires_at: null } as AuthenticationState;
+			const state = { accountability: createDefaultAccountability(), expires_at: null } as AuthenticationState;
 			this.server.emit('connection', ws, state);
 		});
 	}
