@@ -422,6 +422,10 @@ export class GraphQLService {
 									`update_${collection.collection}_batch`,
 								);
 
+								acc[`update_${collectionName}_by_query`] = UpdateCollectionTypes[collection.collection]!.getResolver(
+									`update_${collection.collection}_by_query`,
+								);
+
 								acc[`update_${collectionName}_item`] = UpdateCollectionTypes[collection.collection]!.getResolver(
 									`update_${collection.collection}_item`,
 								);
@@ -1290,6 +1294,47 @@ export class GraphQLService {
 					},
 				});
 
+				const byQueryResolver: ResolverDefinition<any, any> = {
+					name: `${collection.collection}_by_query`,
+					type: collection.singleton
+						? ReadCollectionTypes[collection.collection]!
+						: new GraphQLNonNull(
+								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+						  ),
+					args: {
+						query: {
+							type: schemaComposer.createInputTC({
+								name: `${collection.collection}_by_query`,
+								fields: {
+									filter: ReadableCollectionFilterTypes[collection.collection]!,
+									sort: {
+										type: new GraphQLList(GraphQLString),
+									},
+									limit: {
+										type: GraphQLInt,
+									},
+									offset: {
+										type: GraphQLInt,
+									},
+									page: {
+										type: GraphQLInt,
+									},
+									search: {
+										type: GraphQLString,
+									},
+								},
+							}),
+						},
+					},
+					resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
+						const result = await self.resolveQuery(info);
+						context['data'] = result;
+						return result;
+					},
+				};
+
+				ReadCollectionTypes[collection.collection]!.addResolver(byQueryResolver);
+
 				if (collection.singleton === false) {
 					ReadCollectionTypes[collection.collection]!.addResolver({
 						name: `${collection.collection}_by_id`,
@@ -1521,6 +1566,25 @@ export class GraphQLService {
 						});
 
 						UpdateCollectionTypes[collection.collection]!.addResolver({
+							name: `update_${collection.collection}_by_query`,
+							type: collectionIsReadable
+								? new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType()))
+								: GraphQLBoolean,
+							args: {
+								...(collectionIsReadable
+									? ReadCollectionTypes[collection.collection]!.getResolver(
+											`${collection.collection}_by_query`,
+									  ).getArgs()
+									: {}),
+								data: toInputObjectType(UpdateCollectionTypes[collection.collection]!).setTypeName(
+									`update_${collection.collection}_input`,
+								).NonNull,
+							},
+							resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
+								await self.resolveMutation(args, info),
+						});
+
+						UpdateCollectionTypes[collection.collection]!.addResolver({
 							name: `update_${collection.collection}_items`,
 							type: collectionIsReadable
 								? new GraphQLNonNull(
@@ -1702,14 +1766,21 @@ export class GraphQLService {
 
 		const singleton =
 			collection.endsWith('_batch') === false &&
+			collection.endsWith('_by_query') === false &&
 			collection.endsWith('_items') === false &&
 			collection.endsWith('_item') === false &&
 			collection in this.schema.collections;
 
-		const single = collection.endsWith('_items') === false && collection.endsWith('_batch') === false;
+		const single =
+			collection.endsWith('_items') === false &&
+			collection.endsWith('_batch') === false &&
+			collection.endsWith('_by_query') === false;
+
 		const batchUpdate = action === 'update' && collection.endsWith('_batch');
+		const byQueryUpdate = action === 'update' && collection.endsWith('_by_query');
 
 		if (collection.endsWith('_batch')) collection = collection.slice(0, -6);
+		if (collection.endsWith('_by_query')) collection = collection.slice(0, -9);
 		if (collection.endsWith('_items')) collection = collection.slice(0, -6);
 		if (collection.endsWith('_item')) collection = collection.slice(0, -5);
 
@@ -1754,6 +1825,8 @@ export class GraphQLService {
 
 					if (batchUpdate) {
 						keys.push(...(await service.updateBatch(args['data'])));
+					} else if (byQueryUpdate) {
+						keys.push(...(await service.updateByQuery(args['query'], args['data'])));
 					} else {
 						keys.push(...(await service.updateMany(args['ids'], args['data'])));
 					}
