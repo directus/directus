@@ -1,0 +1,41 @@
+/packages/constants @directus/web @directus/server
+/packages/extensions @directus/web @directus/server
+/packages/tsconfig @directus/web @directus/server
+/packages/types @directus/web @directus/server
+/packages/utils @directus/web @directus/server
+
+/app/ @directus/web
+/packages/components @directus/web
+/packages/composables @directus/web
+/packages/format-title @directus/web
+/packages/stores @directus/web
+/packages/themes @directus/web
+
+/api/ @directus/server
+/packages/env @directus/server
+/packages/errors @directus/server
+/packages/extensions-registry @directus/server
+/packages/memory @directus/server
+/packages/pressure @directus/server
+/packages/random @directus/server
+/packages/schema @directus/server
+/packages/storage/ @directus/server
+/packages/storage/storage-driver-azure @directus/server
+/packages/storage/storage-driver-cloudinary @directus/server
+/packages/storage/storage-driver-gcs @directus/server
+/packages/storage/storage-driver-local @directus/server
+/packages/storage/storage-driver-s3 @directus/server
+/packages/storage/storage-driver-supabase @directus/server
+/packages/system-data @directus/server
+/packages/validation @directus/server
+
+/sdk/ @directus/dx
+/packages/create-directus-extension @directus/dx
+/packages/create-directus-project @directus/dx
+/packages/extensions-sdk @directus/dx
+/packages/specs @directus/dx
+
+/.github/actions/ @directus/infra
+/.github/workflows/ @directus/infra
+/packages/release-notes-generator @directus/infra
+/packages/update-check @directus/infra
