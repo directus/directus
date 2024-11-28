@@ -1,6 +1,8 @@
 import { i18n } from '@/lang';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getPublicURL } from '@/utils/get-root-path';
+import { readableMimeType } from '@/utils/readable-mime-type';
+import mime from 'mime/lite';
 import { Ref, ref, watch } from 'vue';
 import { SettingsStorageAssetPreset, File } from '@directus/types';
 
@@ -116,7 +118,13 @@ export default function useImage(
 	}
 
 	function onImageSelect(image: File) {
-		const fileExtension = image.filename_disk.split('.').pop();
+		const filenameDiskExtension = image.filename_disk.includes('.') ? image.filename_disk.split('.').pop() : undefined;
+
+		const fileTypeExtension = image.type
+			? readableMimeType(image.type, true)
+			: readableMimeType(mime.getType(image.filename_download) as string, true);
+
+		const fileExtension = filenameDiskExtension ?? fileTypeExtension;
 
 		const assetUrl = getPublicURL() + 'assets/' + image.id + '.' + fileExtension;
 
