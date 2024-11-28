@@ -122,8 +122,8 @@ export class AssetsService {
 		const type = file.type;
 		const transforms = transformation ? TransformationUtils.resolvePreset(transformation, file) : [];
 
-		const modified_on = file.modified_on ? new Date(file.modified_on) : undefined;
-		const version = modified_on ? (modified_on.getTime() / 1000).toFixed() : undefined;
+		const modifiedOn = file.modified_on ? new Date(file.modified_on) : undefined;
+		const version = modifiedOn ? (modifiedOn.getTime() / 1000).toFixed() : undefined;
 
 		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
