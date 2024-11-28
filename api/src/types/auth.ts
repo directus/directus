@@ -36,17 +36,10 @@ export type DirectusTokenPayload = {
 	app_access: boolean | number;
 	admin_access: boolean | number;
 	share?: string;
-	share_scope?: {
-		collection: string;
-		item: string;
-	};
 };
 
 export type ShareData = {
 	share_id: string;
-	share_role: string;
-	share_item: string;
-	share_collection: string;
 	share_start: Date;
 	share_end: Date;
 	share_times_used: number;

@@ -5,8 +5,7 @@ import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { isSystemCollection } from '@directus/system-data';
-import { merge, sortBy } from 'lodash';
+import { merge } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -26,14 +25,7 @@ const collectionsStore = useCollectionsStore();
 const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections.filter(
-				(collection) => isSystemCollection(collection.collection) === false && collection.meta,
-			),
-			['meta.sort', 'collection'],
-		),
-	).map((collection) => ({
+	return translate(collectionsStore.allCollections.filter((collection) => collection.meta)).map((collection) => ({
 		...collection,
 		isCollapsed: collapsedIds.value?.includes(collection.collection),
 	}));
@@ -63,7 +55,9 @@ const visibilityTree = computed(() => {
 	const propagateBackwards: CollectionTree[] = [];
 
 	function makeTree(parent: string | null = null): CollectionTree[] {
-		const children = collectionsStore.collections.filter((collection) => (collection.meta?.group ?? null) === parent);
+		const children = collectionsStore.sortedCollections.filter(
+			(collection) => (collection.meta?.group ?? null) === parent,
+		);
 
 		const normalizedSearch = search.value?.toLowerCase();
 
@@ -99,28 +93,13 @@ const visibilityTree = computed(() => {
 	return tree;
 });
 
-const tableCollections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections.filter(
-				(collection) =>
-					isSystemCollection(collection.collection) === false && !!collection.meta === false && collection.schema,
-			),
-			['meta.sort', 'collection'],
-		),
-	);
-});
+const tableCollections = computed(() =>
+	translate(collectionsStore.databaseCollections.filter((collection) => !collection.meta)),
+);
 
-const systemCollections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections
-				.filter((collection) => isSystemCollection(collection.collection) === true)
-				.map((collection) => ({ ...collection, icon: 'settings' })),
-			'collection',
-		),
-	);
-});
+const systemCollections = computed(() =>
+	translate(collectionsStore.systemCollections.map((collection) => ({ ...collection, icon: 'settings' }))),
+);
 
 async function onSort(updates: Collection[], removeGroup = false) {
 	const updatesWithSortValue = updates.map((collection, index) =>
@@ -153,7 +132,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 <template>
 	<private-view :title="t('settings_data_model')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+		</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>

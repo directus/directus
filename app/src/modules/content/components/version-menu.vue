@@ -98,7 +98,7 @@ function useCreateDialog() {
 				key: unref(newVersionKey),
 				...(unref(newVersionName) ? { name: unref(newVersionName) } : {}),
 				collection: unref(collection),
-				item: unref(primaryKey),
+				item: String(unref(primaryKey)),
 			});
 
 			emit('add', version);

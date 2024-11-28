@@ -1224,6 +1224,7 @@ directus_collection:
   directus_access: Bashkëngjitjet e Drejtimit
   directus_activity: Regjistrat e përgjegjshëm për të gjitha eventet
   directus_collections: Konfigurimi shtesë i koleksionit dhe metadata
+  directus_comments: Komente për artikujt​​​​​​​​​​​​​​​​
   directus_dashboards: Dashboards brenda modulit të Insights
   directus_fields: Konfigurimi shtesë i fushave dhe metadata
   directus_files: Metadata për të gjitha asetet e menaxhuara të skedarëve
@@ -1840,6 +1841,8 @@ interfaces:
     description: Zgjidh ose ngarko një imazh
     crop: Prerje për Përshtatje
     crop_label: Prerë imazhin sipas nevojës
+    letterbox: Kutia e letrave​​​​​​​​​​​​​​​​
+    letterbox_label: Shto mbushje në pamjen paraprake të imazhit​​​​​​​​​​​​​​​​
   system-interface:
     interface: Ndërfaqe
     description: Zgjidh një ndërfaqe ekzistuese
