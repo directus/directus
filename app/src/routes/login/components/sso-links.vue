@@ -88,7 +88,9 @@ const errorFormatted = computed(() => {
 }
 
 .sso-link {
-	$sso-link-border-width: 2px;
+	$sso-link-border-width: 1px;
+
+	$sso-link-icon-mb-apple: 11px;
 
 	display: flex;
 	width: 100%;
@@ -106,6 +108,10 @@ const errorFormatted = computed(() => {
 		margin: -$sso-link-border-width;
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
+
+		.v-icon:has(svg.fa-apple) {
+			margin-bottom: $sso-link-icon-mb-apple;
+		}
 
 		span {
 			--v-icon-size: 28px;
