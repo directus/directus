@@ -77,8 +77,20 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			'underscore',
 		);
 
+		/*
+		PATCH - ref: https://github.com/directus/directus/issues/9521
+
+		This is a temporary patch fix for an env var casting issue
+			client_id's for OAuth2 that contains only numbers
+
+		Causes the error:
+			throw new TypeError('client_id is required');
+
+		To be reverted and fixed by the implemented permanent solution.
+		*/
 		this.client = new issuer.Client({
-			client_id: clientId,
+			// client_id: clientId,
+			client_id: clientId.toString(),
 			client_secret: clientSecret,
 			redirect_uris: [this.redirectUrl],
 			response_types: ['code'],
