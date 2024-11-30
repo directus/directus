@@ -109,6 +109,7 @@ field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
 add_field: Feld hinzufügen
 role_name: Rollenname
+policy_name: Richtlinienname
 branch: Branch
 leaf: Blatt
 indeterminate: Unbestimmt
@@ -126,6 +127,7 @@ requires_value: Erfordert Wert
 create_preset: Vorlage erstellen
 create_panel: Panel erstellen
 create_role: Rolle erstellen
+create_policy: Erstelle Richtlinie
 create_user: Benutzer erstellen
 message: Nachricht
 delete_panel: Panel löschen
@@ -360,6 +362,7 @@ fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung suchen...
+search_policy: '" Suchrichtlinien "...'
 search_field: Suchfeld...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
@@ -968,9 +971,12 @@ no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
 payload: Nutzdaten
 details: Details
+logs_session_paused: '"Log Sitzung pausiert"'
+logs_beginning: '"Dies ist der Anfang Deiner Log-Sitzung"......'
 logs_unread_count: '{count} ungelesen'
 clear_logs: Logs leeren
 search_logs: Logs suchen...
+all_instances: '"alle Instanzen "'
 all_log_levels: Alle Log-Levels
 log_level_count: 'Kein Log-Level | Ein Log-Level | {count} Log-Levels'
 full_screen: Vollbild
@@ -1076,6 +1082,7 @@ editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
 settings_roles: Benutzerrollen
+settings_permissions: '"Zugangsrichtlinien "'
 settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
@@ -1352,6 +1359,7 @@ fields:
     parent: Übergeordnete Rolle
     children: Untergeordnete Rollen
   directus_policies:
+    name: Richtlinienname
     description: Beschreibung
   directus_webhooks:
     name: Name
