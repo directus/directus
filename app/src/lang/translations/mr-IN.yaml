@@ -72,6 +72,7 @@ extension_bundle: संग्रह
 extension_interfaces: इंटरफेस
 extension_displays: डिस्पले
 extension_modules: मॉड्यूल
+extension_bundles:
 source_registry: बाजारपेठ
 fields:
   directus_settings:
