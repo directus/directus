@@ -118,9 +118,13 @@ export default function useImage(
 	}
 
 	function onImageSelect(image: File) {
-		const fileExtension = image.type
+		const filenameDiskExtension = image.filename_disk.includes('.') ? image.filename_disk.split('.').pop() : undefined;
+
+		const fileTypeExtension = image.type
 			? readableMimeType(image.type, true)
 			: readableMimeType(mime.getType(image.filename_download) as string, true);
+
+		const fileExtension = filenameDiskExtension ?? fileTypeExtension;
 
 		const assetUrl = getPublicURL() + 'assets/' + image.id + '.' + fileExtension;
 
