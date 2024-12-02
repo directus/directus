@@ -205,7 +205,7 @@ export async function applyDiff(
 			}
 		}
 
-		const fieldsService = new FieldsService({
+		let fieldsService = new FieldsService({
 			knex: trx,
 			schema: await getSchema({ database: trx, bypassCache: true }),
 		});
@@ -214,6 +214,12 @@ export async function applyDiff(
 			if (diff?.[0]?.kind === DiffKind.NEW && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.createField(collection, (diff[0] as DiffNew<Field>).rhs, undefined, mutationOptions);
+
+					// Refresh the schema
+					fieldsService = new FieldsService({
+						knex: trx,
+						schema: await getSchema({ database: trx, bypassCache: true }),
+					});
 				} catch (err) {
 					logger.error(`Failed to create field "${collection}.${field}"`);
 					throw err;
@@ -243,15 +249,24 @@ export async function applyDiff(
 			if (diff?.[0]?.kind === DiffKind.DELETE && !isNestedMetaUpdate(diff?.[0])) {
 				try {
 					await fieldsService.deleteField(collection, field, mutationOptions);
+
+					// Refresh the schema
+					fieldsService = new FieldsService({
+						knex: trx,
+						schema: await getSchema({ database: trx, bypassCache: true }),
+					});
 				} catch (err) {
 					logger.error(`Failed to delete field "${collection}.${field}"`);
 					throw err;
 				}
 
 				// Field deletion also cleans up the relationship. We should ignore any relationship
-				// changes attached to this now non-existing field
+				// changes attached to this now non-existing field except newly created relationship
 				snapshotDiff.relations = snapshotDiff.relations.filter(
-					(relation) => (relation.collection === collection && relation.field === field) === false,
+					(relation) =>
+						(relation.collection === collection &&
+							relation.field === field &&
+							!relation.diff.some((diff) => diff.kind === DiffKind.NEW)) === false,
 				);
 			}
 		}
