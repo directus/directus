@@ -3,6 +3,15 @@ import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
 
 export async function up(knex: Knex): Promise<void> {
+	// remove foriegn key constraint for users already migrated to latest
+	try {
+		await knex.schema.alterTable('directus_comments', (table) => {
+			table.dropForeign('collection');
+		});
+	} catch {
+		// ignore
+	}
+
 	const rowsLimit = 50;
 	let hasMore = true;
 
