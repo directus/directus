@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
 
 export async function up(knex: Knex): Promise<void> {
-	// remove foriegn key constraint for users already migrated to latest
+	// remove foriegn key constraint for users already migrated to retentions-p1
 	try {
 		await knex.schema.alterTable('directus_comments', (table) => {
 			table.dropForeign('collection');
