@@ -163,7 +163,7 @@ describe('Integration Tests', () => {
 							      },
 							    },
 							    "required": [
-							      "id"
+							      "id",
 							    ],
 							    "type": "object",
 							    "x-collection": "test_table",
