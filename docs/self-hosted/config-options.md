@@ -357,6 +357,17 @@ This includes:
 
 :::
 
+## Data Retention
+
+| Variable              | Description                                                                                                      | Default Value |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RETENTION_ENABLED`   | Whether or not to enable custom data retention settings. `false` will not delete data.                           | `false`       |
+| `RETENTION_SCHEDULE`  | The cron schedule at which to check for removable records, the default is once a day at 00:00.                   | `0 0 * * *`   |
+| `RETENTION_BATCH`     | The maximum number of records to delete in a single query.                                                       | `500`         |
+| `ACTIVITY_RETENTION`  | The maximum amount of time to retain `directus_activity` records or `false` to disable. This excludes flow logs. | `90d`         |
+| `REVISIONS_RETENTION` | The maximum amount of time to retain `directus_revisions` records or `false` to disable.                         | `90d`         |
+| `FLOW_LOGS_RETENTION` | The maximum amount of time to retain flow logs or `false` to disable.                                            | `90d`         |
+
 ## Security
 
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
