@@ -1,0 +1,151 @@
+<div class="modern-health-loader">
+  <div class="circle"></div>
+  <div class="glow"></div>
+</div>
+
+<style>
+  /* Centraliza o loader na tela */
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background-color: #f8f8f8; /* Fundo claro para destacar o premium */
+    min-height: 100vh;
+  }
+
+  .modern-health-loader {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Círculo principal com gradiente elegante */
+  .circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      #114559 30%,
+      rgba(17, 69, 89, 0.1) 80%
+    );
+    mask: radial-gradient(circle, transparent 60%, black 61%);
+    -webkit-mask: radial-gradient(circle, transparent 60%, black 61%);
+    animation: spin 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    box-shadow: 0 0 15px rgba(17, 69, 89, 0.3); /* Suave iluminação */
+  }
+
+  /* Efeito de brilho dinâmico */
+  .glow {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      rgba(0, 165, 135, 0.15),
+      transparent 70%
+    );
+    animation: pulse-glow 2s ease-out infinite;
+    z-index: -1;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.5);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 0.5;
+    }
+  }
+</style>
+
+
+
+<div class="modern-health-loader">
+  <div class="circle"></div>
+  <div class="pulse"></div>
+</div>
+
+<style>
+  /* Centraliza o loader na tela */
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
+
+  .modern-health-loader {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Círculo com gradiente e extremidades suaves */
+  .circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from 0deg,
+      #114559 20%,
+      rgba(17, 69, 89, 0.1) 80%
+    );
+    mask: radial-gradient(circle, transparent 65%, #00A587 66%);
+    -webkit-mask: radial-gradient(circle, transparent 65%, #00A587 66%);
+    animation: spin 1.5s linear infinite;
+  }
+
+  /* Pulso expansivo */
+  .pulse {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(17, 69, 89, 0.2); /* Transparência */
+    border-radius: 50%;
+    animation: pulse 1.5s ease-out infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1.8);
+      opacity: 0;
+    }
+  }
+</style>
