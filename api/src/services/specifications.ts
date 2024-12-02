@@ -396,11 +396,7 @@ class OASSpecsService implements SpecificationSubService {
 					schemaComponent.properties![field.field] = fieldSchema;
 
 					// Check if field is required
-					if (
-						field.nullable === false && 
-						field.defaultValue === null && 
-						field.generated === false
-					) {
+					if (field.nullable === false && field.defaultValue === null && field.generated === false) {
 						requiredFields.push(field.field);
 					}
 				}
