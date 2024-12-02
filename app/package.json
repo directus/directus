@@ -144,6 +144,7 @@
 		"tus-js-client": "4.2.3",
 		"typescript": "5.6.3",
 		"vite": "5.2.11",
+		"vite-plugin-vue-devtools": "7.6.7",
 		"vitest": "2.1.2",
 		"vue": "3.5.11",
 		"vue-i18n": "10.0.4",
