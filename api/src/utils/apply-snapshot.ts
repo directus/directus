@@ -1,12 +1,12 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
+import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
 import type { Snapshot, SnapshotDiff } from '../types/index.js';
 import { applyDiff } from './apply-diff.js';
 import { getSchema } from './get-schema.js';
-import { getSnapshot } from './get-snapshot.js';
 import { getSnapshotDiff } from './get-snapshot-diff.js';
-import { clearSystemCache } from '../cache.js';
+import { getSnapshot } from './get-snapshot.js';
 
 export async function applySnapshot(
 	snapshot: Snapshot,
