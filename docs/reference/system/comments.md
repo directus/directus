@@ -143,7 +143,7 @@ Returns a [comment object](#the-comment-object) if a valid identifier was provid
 
 ## Create a Comment
 
-Create a new comment.
+Create a new comment. This action is only available to authenticated users.
 
 ### Request
 
@@ -193,7 +193,7 @@ Returns the [comment object](#the-comment-object) of the comment that was create
 
 ## Create Multiple Comments
 
-Create multiple new comments.
+Create multiple new comments. This action is only available to authenticated users.
 
 ### Request
 
@@ -243,7 +243,7 @@ Returns an array of [comment objects](#the-comment-object) of the comments that 
 
 ## Update a Comment
 
-Update an existing comment.
+Update an existing comment. This action is only available to authenticated users.
 
 ### Request
 
@@ -293,7 +293,7 @@ Returns the [comment object](#the-comment-object) of the comment that was update
 
 ## Update Multiple Comments
 
-Update multiple existing comments.
+Update multiple existing comments. This action is only available to authenticated users.
 
 ### Request
 
@@ -352,7 +352,7 @@ Returns the [comment objects](#the-comment-object) of the comments that were upd
 
 ## Delete a Comment
 
-Delete an existing comment.
+Delete an existing comment. This action is only available to authenticated users.
 
 ### Request
 
@@ -392,7 +392,7 @@ Empty body.
 
 ## Delete Multiple Comments
 
-Delete multiple existing comments.
+Delete multiple existing comments. This action is only available to authenticated users.
 
 ### Request
 
