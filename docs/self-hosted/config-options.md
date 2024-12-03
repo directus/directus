@@ -848,7 +848,7 @@ Directus users "External Identifier".
 <sup>[3]</sup> As directus only allows one role per user, evaluating stops after the first match. An OpenID user that is member of both e.g. developer and admin groups may be assigned different roles depending on the order that you specify your role-mapping in:
 In the following example said OpenID user will be assigned the role `directus_developer_role_id` 
 ```
-AUTH_<PROVIDER>_DEFAULT_ROLE_ID: "developer=directus_developer_role_id;admin=directus_admin_role_id"
+AUTH_<PROVIDER>_ROLE_MAPPING: "developer=directus_developer_role_id;admin=directus_admin_role_id"
 ```
 
 Whereas in the following example the OpenID user will be assigned the role `directus_admin_role_id`
