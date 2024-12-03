@@ -219,7 +219,7 @@ function clearFilters() {
 			<v-dialog v-model="confirmDelete" :disabled="selection.length === 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
-						v-tooltip.bottom="selection.length !== 0 ? t('delete_label') : t('not_allowed')"
+						v-tooltip.bottom="t('delete_label')"
 						rounded
 						icon
 						class="action-delete"
