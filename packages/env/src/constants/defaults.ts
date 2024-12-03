@@ -124,7 +124,8 @@ export const DEFAULTS = {
 	USERS_APP_ACCESS_LIMIT: Infinity,
 	USERS_API_ACCESS_LIMIT: Infinity,
 
-	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
+	FILE_METADATA_ALLOW_LIST:
+		'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings,stream,format,chapters',
 
 	TUS_ENABLED: false,
 	TUS_CHUNK_SIZE: DEFAULT_CHUNK_SIZE, // 8mb

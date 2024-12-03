@@ -282,12 +282,10 @@ Who updated the file last. Many-to-one to [users](/reference/system/users).
 Size of the file in bytes.
 
 `width` **number**\
-If the file is a(n) image/video, it's the width in px.\
-This property is only auto-extracted for images.
+If the file is a(n) image/video, it's the width in px.
 
 `height` **number**\
-If the file is a(n) image/video, it's the height in px.\
-This property is only auto-extracted for images.
+If the file is a(n) image/video, it's the height in px.
 
 `focal_point_x` **number**\
 If the file is an image, cropping will center around this point.
@@ -296,8 +294,7 @@ If the file is an image, cropping will center around this point.
 If the file is an image, cropping will center around this point.
 
 `duration` **number**\
-If the file contains audio/video, it's the duration in milliseconds.\
-This property is not auto-extracted.
+If the file contains audio/video, it's the duration in milliseconds.
 
 `description` **string**\
 Description of the file.

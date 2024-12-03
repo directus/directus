@@ -23,7 +23,7 @@ test('Resolves empty object on unexpected error in transformation', async () => 
 			}) as unknown as Sharp,
 	);
 
-	const result = await getMetadata(stream);
+	const result = await getMetadata(stream, 'image/png');
 
 	expect(result).toEqual({});
 });

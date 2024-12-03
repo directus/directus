@@ -8,16 +8,25 @@ import { pipeline } from 'node:stream/promises';
 import { useLogger } from '../../../logger/index.js';
 import { getSharpInstance } from '../lib/get-sharp-instance.js';
 import { parseIptc, parseXmp } from './parse-image-metadata.js';
+import ffmpeg, { type FfprobeStream } from 'fluent-ffmpeg';
 
 const env = useEnv();
 const logger = useLogger();
 
-export type Metadata = Partial<Pick<File, 'height' | 'width' | 'description' | 'title' | 'tags' | 'metadata'>>;
+export type Metadata = Partial<
+	Pick<File, 'height' | 'width' | 'duration' | 'description' | 'title' | 'tags' | 'metadata'>
+>;
 
 export async function getMetadata(
 	stream: Readable,
+	type: string,
 	allowList: string | string[] = env['FILE_METADATA_ALLOW_LIST'] as string[],
 ): Promise<Metadata> {
+	if (type.startsWith('image/')) return getImageMetadata(stream, allowList);
+	else return getMediaMetadata(stream, allowList);
+}
+
+async function getImageMetadata(stream: Readable, allowList: string | string[]): Promise<Metadata> {
 	const transformer = getSharpInstance();
 
 	return new Promise((resolve) => {
@@ -139,6 +148,73 @@ export async function getMetadata(
 
 				resolve(metadata);
 			}),
+		);
+	});
+}
+
+/**
+ * Lowercase properties on an object.
+ */
+function lowercaseProps<T extends Record<string, any>>(obj?: T): T {
+	const result: Record<string, any> = {};
+
+	if (obj) {
+		for (const [prop, value] of Object.entries(obj)) {
+			result[prop.toLowerCase()] = value;
+		}
+	}
+
+	return result as T;
+}
+
+async function getMediaMetadata(stream: Readable, allowList: string | string[]): Promise<Metadata> {
+	return new Promise((resolve) => {
+		ffmpeg.ffprobe(
+			// @ts-expect-error 2345
+			stream,
+			(err, probeData) => {
+				if (err) {
+					logger.error(err);
+					return resolve({});
+				}
+
+				const metadata: Metadata = {};
+
+				const { duration, tags } = probeData.format;
+				if (duration) metadata.duration = Math.round(duration * 1000);
+
+				const formatTags = lowercaseProps(tags);
+				if (formatTags['title']) metadata.title = `${formatTags['title']}`;
+
+				if (formatTags['comment']) {
+					metadata.description = `${formatTags['comment']}`;
+				} else if (formatTags['comments']) {
+					metadata.description = `${formatTags['comments']}`;
+				}
+
+				let stream: FfprobeStream | null = null;
+
+				for (const item of probeData.streams) {
+					if (item.codec_type !== 'video') continue; // Only use the first video stream
+
+					if (typeof item.width === 'number' && typeof item.height === 'number') {
+						metadata.width = item.width;
+						metadata.height = item.height;
+						stream = item;
+						break;
+					}
+				}
+
+				const _metadata = { ...probeData, stream };
+
+				if (allowList === '*' || allowList?.[0] === '*') {
+					metadata.metadata = _metadata;
+				} else {
+					metadata.metadata = pick(_metadata, allowList);
+				}
+
+				resolve(metadata);
+			},
 		);
 	});
 }
