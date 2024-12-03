@@ -102,13 +102,13 @@ const title = computed(() => {
 		: t('editing_in', { collection: collection.name });
 });
 
-const { fields: fieldsWithPermissions } = useItemPermissions(
+const { fields: fieldsWithPermissions, updateAllowed } = useItemPermissions(
 	collection,
 	primaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
-const { fields: relatedCollectionFields } = useItemPermissions(
+const { fields: relatedCollectionFields, updateAllowed: updateRelatedCollectionAllowed } = useItemPermissions(
 	relatedCollection as Ref<string>,
 	relatedPrimaryKey,
 	computed(() => props.primaryKey === '+'),
@@ -151,6 +151,14 @@ const templatePrimaryKey = computed(() =>
 );
 
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
+
+const isSavable = computed(() => {
+	if (props.disabled) return false;
+	if (isNew.value) return true;
+	if (updateAllowed.value && !props.junctionField) return true;
+	if (updateAllowed.value && props.junctionField && updateRelatedCollectionAllowed.value) return true;
+	return false;
+});
 
 const {
 	template,
@@ -391,7 +399,7 @@ function useActions() {
 
 		<template #actions>
 			<slot name="actions" />
-			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!isSavable" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -406,7 +414,7 @@ function useActions() {
 			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
 				<v-form
 					v-if="junctionField"
-					:disabled="disabled"
+					:disabled="disabled || (!updateRelatedCollectionAllowed && !isNew)"
 					:loading="loading"
 					:show-no-visible-fields="false"
 					:initial-values="initialValues?.[junctionField]"
@@ -421,7 +429,7 @@ function useActions() {
 
 				<v-form
 					v-model="internalEdits"
-					:disabled="disabled"
+					:disabled="disabled || (!updateAllowed && !isNew)"
 					:loading="loading"
 					:show-no-visible-fields="false"
 					:initial-values="initialValues"
