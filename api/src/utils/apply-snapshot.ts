@@ -1,6 +1,6 @@
 import type { SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { clearSystemCache } from '../cache.js';
+import { flushCaches } from '../cache.js';
 import getDatabase from '../database/index.js';
 import type { Snapshot, SnapshotDiff } from '../types/index.js';
 import { applyDiff } from './apply-diff.js';
@@ -19,5 +19,5 @@ export async function applySnapshot(
 
 	await applyDiff(current, snapshotDiff, { database, schema });
 
-	await clearSystemCache();
+	await flushCaches();
 }
