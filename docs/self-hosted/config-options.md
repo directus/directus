@@ -357,6 +357,17 @@ This includes:
 
 :::
 
+## Data Retention
+
+| Variable              | Description                                                                                                      | Default Value |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RETENTION_ENABLED`   | Whether or not to enable custom data retention settings. `false` will not delete data.                           | `false`       |
+| `RETENTION_SCHEDULE`  | The cron schedule at which to check for removable records, the default is once a day at 00:00.                   | `0 0 * * *`   |
+| `RETENTION_BATCH`     | The maximum number of records to delete in a single query.                                                       | `500`         |
+| `ACTIVITY_RETENTION`  | The maximum amount of time to retain `directus_activity` records or `false` to disable. This excludes flow logs. | `90d`         |
+| `REVISIONS_RETENTION` | The maximum amount of time to retain `directus_revisions` records or `false` to disable.                         | `90d`         |
+| `FLOW_LOGS_RETENTION` | The maximum amount of time to retain flow logs or `false` to disable.                                            | `90d`         |
+
 ## Security
 
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
@@ -855,6 +866,7 @@ OpenID is an authentication protocol built on OAuth 2.0, and should be preferred
 | `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`           |
 | `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --                     |
 | `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --                     |
+| `AUTH_<PROVIDER>_LOGIN_TIMEOUT`             | Time-Out for successful login in SSO.                                                                     | `5m`                   |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".

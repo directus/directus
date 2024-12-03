@@ -5,12 +5,7 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_comments', (table) => {
 		table.uuid('id').primary().notNullable();
 
-		table
-			.string('collection', 64)
-			.notNullable()
-			.references('collection')
-			.inTable('directus_collections')
-			.onDelete('CASCADE');
+		table.string('collection', 64).notNullable();
 
 		table.string('item').notNullable();
 		table.text('comment').notNullable();

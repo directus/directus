@@ -122,6 +122,9 @@ export class AssetsService {
 		const type = file.type;
 		const transforms = transformation ? TransformationUtils.resolvePreset(transformation, file) : [];
 
+		const modifiedOn = file.modified_on ? new Date(file.modified_on) : undefined;
+		const version = modifiedOn ? (modifiedOn.getTime() / 1000).toFixed() : undefined;
+
 		if (type && transforms.length > 0 && SUPPORTED_IMAGE_TRANSFORM_FORMATS.includes(type)) {
 			const maybeNewFormat = TransformationUtils.maybeExtractFormat(transforms);
 
@@ -168,9 +171,6 @@ export class AssetsService {
 				});
 			}
 
-			const version =
-				file.modified_on !== undefined ? String(Math.round(new Date(file.modified_on).getTime() / 1000)) : undefined;
-
 			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
 
 			const transformer = getSharpInstance();
@@ -205,12 +205,12 @@ export class AssetsService {
 			}
 
 			return {
-				stream: await storage.location(file.storage).read(assetFilename, { range }),
+				stream: await storage.location(file.storage).read(assetFilename, { range, version }),
 				stat: await storage.location(file.storage).stat(assetFilename),
 				file,
 			};
 		} else {
-			const readStream = await storage.location(file.storage).read(file.filename_disk, { range });
+			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return { stream: readStream, file, stat };
 		}
