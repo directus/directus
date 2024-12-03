@@ -12,7 +12,7 @@ import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
-import { computed, ref, toRefs, watch, WritableComputedRef } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
 
@@ -45,11 +45,11 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 
 const value = computed({
-	get: () => props.value ?? [],
+	get: () => props.value,
 	set: (val) => {
 		emit('input', val);
 	},
-}) as WritableComputedRef<(number | string | Record<string, any>)[] | Record<string, any>>;
+});
 
 const { collection, field, primaryKey, defaultLanguage, userLanguage } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
@@ -66,11 +66,8 @@ const secondLang = ref<string>();
 watch(splitView, (splitViewEnabled) => {
 	const lang = languageOptions.value;
 
-	if (splitViewEnabled) {
-		if (secondLang.value === firstLang.value || !secondLang.value) {
-			const alternativeLang = lang.find((l) => l.value !== firstLang.value);
-			secondLang.value = alternativeLang?.value ?? lang[0]?.value;
-		}
+	if (splitViewEnabled && secondLang.value === firstLang.value) {
+		secondLang.value = lang[0]?.value === firstLang.value ? lang[1]?.value : lang[0]?.value;
 	}
 });
 
@@ -245,10 +242,8 @@ function useLanguages() {
 
 			if (!secondLang.value) {
 				const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
-				const alternativeLang = languages.value.find((lang) => lang[pkField] !== firstLang.value);
-				const defaultLang = languages.value.find((lang) => lang[pkField] === defaultLocale);
-				
-				secondLang.value = (alternativeLang || defaultLang || languages.value[0])?.[pkField];
+				const lang = languages.value.find((lang) => lang[pkField] === defaultLocale) || languages.value[0];
+				secondLang.value = lang?.[pkField];
 			}
 		} catch (error) {
 			unexpectedError(error);
