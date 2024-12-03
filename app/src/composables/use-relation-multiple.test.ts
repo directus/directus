@@ -447,14 +447,14 @@ Article           Many|Any: article_m2a                    ┌─Text
 │id       ├───┐   │id: junctionPKField             │    ┌──┼─┤id       │
 │content  │   └──►│article_id: reverseJunctionField│    │  │ │text     │
 └─────────┘       │item: junctionField             │◄───┤  │ └─────────┘
-				      │sort: sortField                 │    │  │
-				      │collection: collectionField     │◄───┼──┤
-				      └────────────────────────────────┘    │  │
-														              │  └─Code
-				AllowedCollection: [Text,Code]		        │    ┌─────────┐
-				relatedPKFields: {Text: id,Code: id}        └────┤id       │
-															                │code     │
-															                └─────────┘
+                  │sort: sortField                 │    │  │
+                  │collection: collectionField     │◄───┼──┤
+                  └────────────────────────────────┘    │  │
+                                                        │  └─Code
+                  AllowedCollection: [Text,Code]		    │    ┌─────────┐
+                relatedPKFields: {Text: id,Code: id}    └────┤id       │
+                                                             │code     │
+                                                             └─────────┘
 */
 
 describe('test m2a relation', () => {
@@ -507,5 +507,113 @@ describe('test m2a relation', () => {
 				$edits: 1,
 			},
 		]);
+	});
+});
+
+const relationO2MSort: RelationO2M = {
+	...relationO2M,
+	sortField: 'sort',
+};
+
+describe('test o2m relation with sort', () => {
+	test('creating an item', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2MSort, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		wrapper.vm.create({
+			name: 'test5',
+			facility: 1,
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toEqual([
+			...workerData,
+			{ name: 'test5', facility: 1, $type: 'created', $index: 0, sort: 5 },
+		]);
+
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{
+					name: 'test5',
+					facility: 1,
+					sort: 5,
+				},
+			],
+			update: [],
+			delete: [],
+		});
+	});
+
+	test('editing a created item', async () => {
+		const wrapper = mount(TestComponent, {
+			props: { relation: relationO2MSort, value: [], id: 1 },
+		});
+
+		await flushPromises();
+
+		wrapper.vm.create({
+			name: 'test5',
+			facility: 1,
+		});
+
+		await flushPromises();
+
+		wrapper.vm.update({
+			name: 'test5 edited',
+			facility: 2,
+			$type: 'created',
+			$index: 0,
+			sort: 5,
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toEqual([
+			...workerData,
+			{ name: 'test5 edited', facility: 2, $type: 'created', $index: 0, sort: 5 },
+		]);
+
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{
+					name: 'test5 edited',
+					facility: 2,
+					sort: 5,
+				},
+			],
+			update: [],
+			delete: [],
+		});
+
+		await flushPromises();
+
+		wrapper.vm.update({
+			name: 'test5 edited',
+			facility: 2,
+			$type: 'created',
+			$index: 0,
+		});
+
+		await flushPromises();
+
+		expect(wrapper.vm.displayItems).toEqual([
+			...workerData,
+			{ name: 'test5 edited', facility: 2, $type: 'created', $index: 0 },
+		]);
+
+		expect(wrapper.vm.value).toEqual({
+			create: [
+				{
+					name: 'test5 edited',
+					facility: 2,
+				},
+			],
+			update: [],
+			delete: [],
+		});
 	});
 });

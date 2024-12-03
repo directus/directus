@@ -2,16 +2,16 @@ import { isString } from 'lodash-es';
 import type { Knex } from 'knex';
 import type { Sql } from '../types.js';
 
-export type PreprocessBindingsOptions = {
+export type PrepQueryParamsOptions = {
 	format(index: number): string;
 };
 
 /**
  * Preprocess a SQL query, such that repeated binding values are bound to the same binding index.
  **/
-export function preprocessBindings(
+export function prepQueryParams(
 	queryParams: (Partial<Sql> & Pick<Sql, 'sql'>) | string,
-	options: PreprocessBindingsOptions,
+	options: PrepQueryParamsOptions,
 ) {
 	const query: Sql = { bindings: [], ...(isString(queryParams) ? { sql: queryParams } : queryParams) };
 

@@ -282,10 +282,12 @@ function updateSort(newSort: Sort) {
 					<slot name="header-context-menu" v-bind="{ header }" />
 				</template>
 			</table-header>
-			<thead v-if="loading" class="loading-indicator" :class="{ sticky: fixedHeader }">
-				<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
-					<v-progress-linear v-if="loading" indeterminate />
-				</th>
+			<thead v-if="loading" :class="{ sticky: fixedHeader }">
+				<tr class="loading-indicator">
+					<th scope="colgroup" :style="{ gridColumn: fullColSpan }">
+						<v-progress-linear v-if="loading" indeterminate />
+					</th>
+				</tr>
 			</thead>
 			<tbody v-if="loading && items.length === 0">
 				<tr class="loading-text">
@@ -382,8 +384,7 @@ table :deep(th) {
 	color: var(--v-table-color, var(--theme--foreground));
 }
 
-table :deep(tr),
-table :deep(.loading-indicator) {
+table :deep(tr) {
 	display: grid;
 	grid-template-columns: var(--grid-columns);
 }

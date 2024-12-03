@@ -14,7 +14,6 @@ export type DirectusActivity<Schema = any> = MergeCoreCollection<
 		user_agent: string | null;
 		collection: string;
 		item: string;
-		comment: string | null;
 		origin: string | null;
 		revisions: DirectusRevision<Schema>[] | number[] | null;
 	}

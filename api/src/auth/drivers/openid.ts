@@ -352,7 +352,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			}
 
 			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
-				expiresIn: '5m',
+				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as string,
 				issuer: 'directus',
 			});
 

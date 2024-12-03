@@ -161,7 +161,7 @@ export class UsersService extends ItemsService {
 	 */
 	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		try {
-			if ('email' in data) {
+			if ('email' in data && data['email'] !== undefined) {
 				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']]);
 			}
