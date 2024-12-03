@@ -60,7 +60,7 @@ export function mergeWithParentItems(
 			parentsByPrimaryKey.set(parentPrimaryKey, parentItem);
 		});
 
-		const toAddToAllParents: typeof nestedItems = [];
+		const toAddToAllParents: Item[] = [];
 
 		nestedItems.forEach((nestedItem) => {
 			if (nestedItem === null) return;
