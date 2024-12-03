@@ -44,13 +44,13 @@ export async function up(knex: Knex): Promise<void> {
 						if (missingUsers.has(legacyCommentUserId)) {
 							legacyCommentUserId = null;
 						} else if (!existingUsers.has(legacyCommentUserId)) {
-							const userFound = await trx
+							const userExists = await trx
 								.select('id')
 								.from('directus_users')
 								.where('id', '=', legacyCommentUserId)
 								.first();
 
-							if (userFound) {
+							if (userExists) {
 								existingUsers.add(legacyCommentUserId);
 							} else {
 								missingUsers.add(legacyCommentUserId);
