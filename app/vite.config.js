@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
+import vueDevtools from 'vite-plugin-vue-devtools';
 
 const API_PATH = path.join('..', 'api');
 
@@ -39,6 +40,7 @@ export default defineConfig({
 				};
 			},
 		},
+		vueDevtools(),
 	],
 	define: {
 		__VUE_I18N_LEGACY_API__: false,
