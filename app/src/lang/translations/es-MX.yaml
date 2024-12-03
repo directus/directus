@@ -190,8 +190,6 @@ logoutReason:
   SESSION_EXPIRED: Sesión expirada
 public_label: Público
 public_description: Controla qué datos de la API están disponibles sin autenticar.
-public_role_info: >-
-
 admin_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API.
 admin_policy_description: Rol administrativo inicial con acceso sin restricciones a la aplicación/API
 no_description: Sin descripción...
