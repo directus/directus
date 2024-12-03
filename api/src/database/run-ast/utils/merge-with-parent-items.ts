@@ -18,7 +18,7 @@ export function mergeWithParentItems(
 	if (nestedNode.type === 'm2o') {
 		const parentsByForeignKey = new Map();
 
-		parentItems.forEach((parentItem: (typeof parentItems)[number]) => {
+		parentItems.forEach((parentItem: Item) => {
 			const relationKey = parentItem[nestedNode.relation.field];
 
 			if (!parentsByForeignKey.has(relationKey)) {
