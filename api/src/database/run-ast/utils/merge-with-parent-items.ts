@@ -46,7 +46,7 @@ export function mergeWithParentItems(
 
 		const parentsByPrimaryKey = new Map();
 
-		parentItems.forEach((parentItem: (typeof parentItems)[number]) => {
+		parentItems.forEach((parentItem: Item) => {
 			if (!parentItem[parentRelationField]) parentItem[parentRelationField] = [];
 
 			const parentPrimaryKey = parentItem[parentPrimaryKeyField];
