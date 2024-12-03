@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Item, SchemaOverview } from '@directus/types';
+import type { Item, SchemaOverview, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { clone, isArray } from 'lodash-es';
 import type { NestedCollectionNode } from '../../../types/ast.js';
@@ -16,7 +16,7 @@ export function mergeWithParentItems(
 	const parentItems = clone(toArray(parentItem));
 
 	if (nestedNode.type === 'm2o') {
-		const parentsByForeignKey = new Map();
+		const parentsByForeignKey = new Map<PrimaryKey, Item[]>();
 
 		parentItems.forEach((parentItem: Item) => {
 			const relationKey = parentItem[nestedNode.relation.field];
@@ -26,7 +26,7 @@ export function mergeWithParentItems(
 			}
 
 			parentItem[nestedNode.fieldKey] = null;
-			parentsByForeignKey.get(relationKey).push(parentItem);
+			parentsByForeignKey.get(relationKey)!.push(parentItem);
 		});
 
 		const nestPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
@@ -34,7 +34,7 @@ export function mergeWithParentItems(
 		for (const nestedItem of nestedItems) {
 			const nestedPK = nestedItem[nestPrimaryKeyField];
 
-			for (const parentItem of parentsByForeignKey.get(nestedPK)) {
+			for (const parentItem of parentsByForeignKey.get(nestedPK)!) {
 				parentItem[nestedNode.fieldKey] = nestedItem;
 			}
 		}
@@ -44,7 +44,7 @@ export function mergeWithParentItems(
 		const parentRelationField = nestedNode.fieldKey;
 		const nestedParentKeyField = nestedNode.relation.field;
 
-		const parentsByPrimaryKey = new Map();
+		const parentsByPrimaryKey = new Map<PrimaryKey, Item>();
 
 		parentItems.forEach((parentItem: Item) => {
 			if (!parentItem[parentRelationField]) parentItem[parentRelationField] = [];
