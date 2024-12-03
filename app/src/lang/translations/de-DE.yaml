@@ -109,6 +109,7 @@ field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
 add_field: Feld hinzufügen
 role_name: Rollenname
+policy_name: Richtlinienname
 branch: Branch
 leaf: Blatt
 indeterminate: Unbestimmt
@@ -126,6 +127,7 @@ requires_value: Erfordert Wert
 create_preset: Vorlage erstellen
 create_panel: Panel erstellen
 create_role: Rolle erstellen
+create_policy: Erstelle Richtlinie
 create_user: Benutzer erstellen
 message: Nachricht
 delete_panel: Panel löschen
@@ -360,6 +362,7 @@ fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung suchen...
+search_policy: '" Suchrichtlinien "...'
 search_field: Suchfeld...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
@@ -400,6 +403,7 @@ soft_length: Soft Limit
 precision_scale: Präzision & Skalierung
 readonly: Lesezugriff
 unique: Eindeutig
+index: Index
 updated_on: Geändert am
 updated_by: Geändert von
 primary_key: Primärschlüssel
@@ -531,6 +535,7 @@ file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
+uploaded: Hochgeladen
 modified: Geändert
 owner: Besitzer
 edited_by: Editiert von
@@ -552,6 +557,7 @@ replace_from_url: Mit Datei von URL ersetzen
 no_image_selected: Kein Bild ausgewählt
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
+open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle Elemente ({total}) innerhalb {collection} exportieren.
@@ -633,6 +639,7 @@ copy_to: Kopieren nach...
 no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
+roles: Rollen
 activity: Aktivität
 activity_item: Aktivitäten-Element
 action: Aktion
@@ -706,6 +713,7 @@ errors:
   INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
+  LIMIT_EXCEEDED: 'Limit überschritten'
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
@@ -758,6 +766,9 @@ make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
 goto_collection_content: Inhalt anzeigen
+count_of_total_items: '{count} von {total} Elementen'
+start_end_of_count_items: '{start}-{end} von {count} Elementen'
+start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
@@ -824,6 +835,7 @@ operators:
   regex: Entspricht RegExp
 custom_validation_message: Benutzerdefinierte Validierungsnachricht
 loading: Wird geladen...
+extension_readme_missing: Diese Erweiterung hat keine README-Datei.
 drop_to_upload: Zum Hochladen ablegen
 item: Element
 items: Elemente
@@ -959,6 +971,14 @@ no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
 payload: Nutzdaten
 details: Details
+logs_session_paused: '"Log Sitzung pausiert"'
+logs_beginning: '"Dies ist der Anfang Deiner Log-Sitzung"......'
+logs_unread_count: '{count} ungelesen'
+clear_logs: Logs leeren
+search_logs: Logs suchen...
+all_instances: '"alle Instanzen "'
+all_log_levels: Alle Log-Levels
+log_level_count: 'Kein Log-Level | Ein Log-Level | {count} Log-Levels'
 full_screen: Vollbild
 full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
@@ -987,6 +1007,7 @@ tooltip: Tooltip
 tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
 open_link_in: Link öffnen in
+new_tab: Neuer Tab
 save_image: Bild speichern
 save_media: Medien speichern
 wysiwyg_options:
@@ -1060,10 +1081,13 @@ editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
+settings_roles: Benutzerrollen
+settings_permissions: '"Zugangsrichtlinien "'
 settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
 settings_flows: Flows
+settings_system_logs: Systemprotokolle
 settings_presets: Lesezeichen
 settings_translations: Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
@@ -1109,6 +1133,7 @@ page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
+page_help_settings_system_logs: '**Systemprotokolle** — Greifen Sie auf einen Live-Stream der Systemprotokolle zu.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
   **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
@@ -1138,7 +1163,12 @@ no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
 install_extension: Erweiterung installieren
+uninstall: Deinstallieren
+installed: Installiert
+reinstall: Neu installieren
+open_in_marketplace: Im Marketplace öffnen
 source_registry: Marktplatz
+source_local: Lokal
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
@@ -1222,6 +1252,8 @@ fields:
     height: Höhe
     charset: Zeichensatz
     duration: Dauer
+    focal_point_x: X-Koordinate
+    focal_point_y: Y-Koordinate
   directus_users:
     first_name: Vorname
     last_name: Nachname
@@ -1301,6 +1333,8 @@ fields:
     custom_aspect_ratios: Benutzerdefiniertes Seitenverhältnis
     theme_light_overrides: Anpassung des hellen Designs
     theme_dark_overrides: Anpassung des dunklen Designs
+    public_registration: Benutzerregistrierung
+    public_registration_role: Benutzerrolle
   directus_shares:
     name: Name
     role: Rolle
@@ -1322,7 +1356,10 @@ fields:
     icon: Rollen-Symbol
     description: Beschreibung
     users: Benutzer in Rolle
+    parent: Übergeordnete Rolle
+    children: Untergeordnete Rollen
   directus_policies:
+    name: Richtlinienname
     description: Beschreibung
   directus_webhooks:
     name: Name
@@ -1403,8 +1440,12 @@ field_options:
     description: Eine optionale Beschreibung...
     location: Eine optionale Position...
     storage_divider: Dateibenennung
+    focal_point_divider: Fokuspunkt
     filename_disk: Name auf Festplatte...
     filename_download: Name während des Downloads...
+  directus_policies:
+    name: Ein einzigartiger Name für diese Richtlinie...
+    description: Eine Beschreibung dieser Richtlinie...
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
@@ -1497,6 +1538,7 @@ continue_label: Weiter
 continue_as: >-
   {name} ist derzeit angemeldet. Wenn Sie dieses Konto kennen, drücken Sie auf Fortfahren.
 editing_role: '{role} Rolle'
+permission_add_collection: Sammlung hinzufügen
 creating_webhook: Webhook erstellen
 default_label: Standard
 delete_label: Löschen
@@ -2128,6 +2170,7 @@ layouts:
     no_group: Keine Gruppe
 horizontal: Horizontal
 vertical: Vertikal
+axis: Achse
 x_axis: X-Achse
 y_axis: Y-Achse
 y_axis_function: Y-Achsenfunktion
@@ -2375,5 +2418,7 @@ date_precision: Datumsgenauigkeit
 export_dashboard: Dashboard exportieren
 duplicate_dashboard: Dashboard duplizieren
 search_dashboard: Dashboard suchen...
-search_flow: Flow suchen ...
+search_flow: Flow suchen...
 percent: Prozent
+show_password: Passwort anzeigen
+hide_password: Passwort ausblenden
