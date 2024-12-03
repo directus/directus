@@ -853,7 +853,7 @@ AUTH_<PROVIDER>_ROLE_MAPPING: "developer=directus_developer_role_id;admin=direct
 
 Whereas in the following example the OpenID user will be assigned the role `directus_admin_role_id`
 ```
-AUTH_<PROVIDER>_DEFAULT_ROLE_ID: "admin=directus_admin_role_id;developer=directus_developer_role_id"
+AUTH_<PROVIDER>_ROLE_MAPPING: "admin=directus_admin_role_id;developer=directus_developer_role_id"
 ```
 ### LDAP (`ldap`)
 
