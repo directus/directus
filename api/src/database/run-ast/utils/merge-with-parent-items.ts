@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Item, SchemaOverview } from '@directus/types';
+import type { Item, SchemaOverview, PrimaryKey } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { clone, isArray } from 'lodash-es';
 import type { NestedCollectionNode } from '../../../types/ast.js';
@@ -16,39 +16,81 @@ export function mergeWithParentItems(
 	const parentItems = clone(toArray(parentItem));
 
 	if (nestedNode.type === 'm2o') {
-		for (const parentItem of parentItems) {
-			const itemChild = nestedItems.find((nestedItem) => {
-				return (
-					nestedItem[schema.collections[nestedNode.relation.related_collection!]!.primary] ==
-					parentItem[nestedNode.relation.field]
-				);
-			});
+		const parentsByForeignKey = new Map<PrimaryKey, Item[]>();
 
-			parentItem[nestedNode.fieldKey] = itemChild || null;
+		parentItems.forEach((parentItem: Item) => {
+			const relationKey = parentItem[nestedNode.relation.field];
+
+			if (!parentsByForeignKey.has(relationKey)) {
+				parentsByForeignKey.set(relationKey, []);
+			}
+
+			parentItem[nestedNode.fieldKey] = null;
+			parentsByForeignKey.get(relationKey)!.push(parentItem);
+		});
+
+		const nestPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
+
+		for (const nestedItem of nestedItems) {
+			const nestedPK = nestedItem[nestPrimaryKeyField];
+
+			for (const parentItem of parentsByForeignKey.get(nestedPK)!) {
+				parentItem[nestedNode.fieldKey] = nestedItem;
+			}
 		}
 	} else if (nestedNode.type === 'o2m') {
+		const parentCollectionName = nestedNode.relation.related_collection;
+		const parentPrimaryKeyField = schema.collections[parentCollectionName!]!.primary;
+		const parentRelationField = nestedNode.fieldKey;
+		const nestedParentKeyField = nestedNode.relation.field;
+
+		const parentsByPrimaryKey = new Map<PrimaryKey, Item>();
+
+		parentItems.forEach((parentItem: Item) => {
+			if (!parentItem[parentRelationField]) parentItem[parentRelationField] = [];
+
+			const parentPrimaryKey = parentItem[parentPrimaryKeyField];
+
+			if (parentsByPrimaryKey.has(parentPrimaryKey)) {
+				throw new Error(
+					`Duplicate parent primary key '${parentPrimaryKey}' of '${parentCollectionName}' when merging o2m nested items`,
+				);
+			}
+
+			parentsByPrimaryKey.set(parentPrimaryKey, parentItem);
+		});
+
+		const toAddToAllParents: Item[] = [];
+
+		nestedItems.forEach((nestedItem) => {
+			if (nestedItem === null) return;
+
+			if (Array.isArray(nestedItem[nestedParentKeyField])) {
+				toAddToAllParents.push(nestedItem); // TODO explain this odd case
+				return; // Avoids adding the nestedItem twice
+			}
+
+			const parentPrimaryKey =
+				nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField] ?? nestedItem[nestedParentKeyField];
+
+			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey);
+
+			if (!parentItem) {
+				throw new Error(
+					`Missing parentItem '${nestedItem[nestedParentKeyField]}' of '${parentCollectionName}' when merging o2m nested items`,
+				);
+			}
+
+			parentItem[parentRelationField].push(nestedItem);
+		});
+
 		for (const [index, parentItem] of parentItems.entries()) {
 			if (fieldAllowed === false || (isArray(fieldAllowed) && !fieldAllowed[index])) {
 				parentItem[nestedNode.fieldKey] = null;
 				continue;
 			}
 
-			if (!parentItem[nestedNode.fieldKey]) parentItem[nestedNode.fieldKey] = [] as Item[];
-
-			const itemChildren = nestedItems.filter((nestedItem) => {
-				if (nestedItem === null) return false;
-				if (Array.isArray(nestedItem[nestedNode.relation.field])) return true;
-
-				return (
-					nestedItem[nestedNode.relation.field] ==
-						parentItem[schema.collections[nestedNode.relation.related_collection!]!.primary] ||
-					nestedItem[nestedNode.relation.field]?.[
-						schema.collections[nestedNode.relation.related_collection!]!.primary
-					] == parentItem[schema.collections[nestedNode.relation.related_collection!]!.primary]
-				);
-			});
-
-			parentItem[nestedNode.fieldKey].push(...itemChildren);
+			parentItem[parentRelationField].push(...toAddToAllParents);
 
 			const limit = nestedNode.query.limit ?? Number(env['QUERY_LIMIT_DEFAULT']);
 
