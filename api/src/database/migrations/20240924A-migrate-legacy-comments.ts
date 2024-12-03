@@ -15,8 +15,8 @@ export async function up(knex: Knex): Promise<void> {
 	const rowsLimit = 50;
 	let hasMore = true;
 
-	const existingUsers: string[] = [];
-	const missingUsers: string[] = [];
+	const existingUsers = new Set();
+	const missingUsers = new Set();
 
 	while (hasMore) {
 		const legacyComments = await knex
@@ -41,9 +41,9 @@ export async function up(knex: Knex): Promise<void> {
 					let legacyCommentUserId = legacyComment.user;
 
 					if (legacyCommentUserId) {
-						if (missingUsers.includes(legacyCommentUserId)) {
+						if (missingUsers.has(legacyCommentUserId)) {
 							legacyCommentUserId = null;
-						} else if (!existingUsers.includes(legacyCommentUserId)) {
+						} else if (!existingUsers.has(legacyCommentUserId)) {
 							const userFound = await trx
 								.select('id')
 								.from('directus_users')
@@ -51,9 +51,9 @@ export async function up(knex: Knex): Promise<void> {
 								.first();
 
 							if (userFound) {
-								existingUsers.push(legacyCommentUserId);
+								existingUsers.add(legacyCommentUserId);
 							} else {
-								missingUsers.push(legacyCommentUserId);
+								missingUsers.add(legacyCommentUserId);
 								legacyCommentUserId = null;
 							}
 						}
