@@ -247,7 +247,7 @@ function useLanguages() {
 				const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
 				const alternativeLang = languages.value.find((lang) => lang[pkField] !== firstLang.value);
 				const defaultLang = languages.value.find((lang) => lang[pkField] === defaultLocale);
-				
+
 				secondLang.value = (alternativeLang || defaultLang || languages.value[0])?.[pkField];
 			}
 		} catch (error) {
