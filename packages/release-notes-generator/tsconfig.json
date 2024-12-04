@@ -1,5 +1,5 @@
 {
-	"extends": "@directus/tsconfig/node18-cjs",
+	"extends": "@directus/tsconfig/node-cjs",
 	"compilerOptions": {
 		"outDir": "dist"
 	},

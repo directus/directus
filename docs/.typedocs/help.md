@@ -8,7 +8,7 @@ To add packages to the Typedocs in the Docs, just follow these steps.
 
 ```diff
 {
-	"extends": "@directus/tsconfig/node18-esm.json",
+	"extends": "@directus/tsconfig/node-esm.json",
 	"compilerOptions": {
 		"outDir": "dist",
 		"lib": ["es2022", "DOM"]

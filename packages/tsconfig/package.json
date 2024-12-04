@@ -1,6 +1,6 @@
 {
 	"name": "@directus/tsconfig",
-	"version": "2.0.0",
+	"version": "3.0.0",
 	"description": "TSConfig files used in Directus projects",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -13,8 +13,8 @@
 	"author": "Rijk van Zanten <rijkvanzanten@me.com>",
 	"exports": {
 		"./base": "./base/tsconfig.json",
-		"./node18-cjs": "./node18-cjs/tsconfig.json",
-		"./node18-esm": "./node18-esm/tsconfig.json",
+		"./node-cjs": "./node-cjs/tsconfig.json",
+		"./node-esm": "./node-esm/tsconfig.json",
 		"./vue3": "./vue3/tsconfig.json"
 	}
 }
