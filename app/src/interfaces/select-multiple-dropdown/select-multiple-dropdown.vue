@@ -30,7 +30,7 @@ const items = computed(() => props.choices || []);
 
 function updateValue(value: string[]) {
 	const sortedValue = sortBy(value, (val) => {
-		const sortIndex = items.value!.findIndex((choice) => val === choice.value);
+		const sortIndex = items.value!.findIndex((item) => val === item.value);
 		return sortIndex !== -1 ? sortIndex : value.length;
 	});
 
