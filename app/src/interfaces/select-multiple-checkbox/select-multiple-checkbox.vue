@@ -59,11 +59,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 </script>
 
 <template>
-	<v-notice v-if="!items" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
 	<div
-		v-else
 		class="checkboxes"
 		:class="gridClass"
 		:style="{
