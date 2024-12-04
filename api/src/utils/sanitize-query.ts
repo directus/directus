@@ -239,7 +239,7 @@ function sanitizeAlias(rawAlias: any) {
 	if (typeof rawAlias === 'string') {
 		try {
 			alias = parseJSON(rawAlias);
-		} catch (err) {
+		} catch {
 			logger.warn('Invalid value passed for alias query parameter.');
 		}
 	}

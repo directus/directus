@@ -1002,6 +1002,22 @@ no_data_in_flow: Ningún dato fue producido o accedido dentro de este flujo
 accountability: Responsabilidad
 payload: Payload
 details: Detalles
+resume_streaming_logs: Reanudar registros de streaming
+pause_streaming_logs: Pausar registros de streaming
+logs_session_resumed: Sesión de registros reanudada...
+logs_session_paused: Sesión de registros pausada...
+logs_stream_disconnected: Transmisión de registro desconectada...
+log_detail_filter_paths: 'Filtrar rutas (por ejemplo: req.method, res.statusCode)'
+logs_beginning: Este es el comienzo de su sesión de registros...
+logs_waiting: 'Esperando más registros...'
+logs_unread_count: '{count} no leídos'
+clear_logs: Borrar registros
+search_logs: Buscar registros...
+all_instances: Todas las instancias
+instance_count: 'Ninguna Instancia | Una Instancia | {count} Instancias'
+all_log_levels: Todos los niveles de registro
+log_level_count: 'Sin nivel de registro | Un nivel de registro | {count} niveles de registro'
+soft_wrap_lines: Líneas de envoltura suave
 full_screen: Pantalla completa
 full_text_search: Búsqueda de texto
 edit_panels: Editar paneles
@@ -1030,6 +1046,7 @@ tooltip: Sugerencia
 tooltip_placeholder: Ingresa una sugerencia...
 unlimited: Ilimitado
 open_link_in: Abrir enlace en
+new_tab: Nueva pestaña
 save_image: Guardar Imagen
 save_media: Guardar Archivo
 wysiwyg_options:
@@ -1109,6 +1126,7 @@ settings_project: Ajustes
 settings_appearance: Apariencia
 settings_webhooks: Webhooks
 settings_flows: Flujos
+settings_system_logs: Registros del Sistema
 settings_presets: Marcadores
 settings_translations: Traducciónes
 one_or_more_options_are_missing: Falta una o más opciones
@@ -1154,6 +1172,7 @@ page_help_settings_datamodel_collections: >-
   **Modelo de Datos: Colecciones** — Lista todas las colecciones disponibles. Esto incluye colecciones visibles, ocultas y del sistema, así como las tablas de base de datos que pueden ser agregadas.
 page_help_settings_datamodel_fields: >-
   **Modelo de Datos: Colección** — Una manera de manejar esta colección y sus campos.
+page_help_settings_system_logs: '**Registros del sistema**: acceda a una transmisión en vivo de los registros del sistema.'
 page_help_settings_policies_collection: '**Explorar Reglas** — Lista todas las reglas dentro del proyecto.'
 page_help_settings_policies_item: "**Detalle de la Regla** — Administra los permisos y otras configuraciones de una regla."
 page_help_settings_roles_collection: '**Explorar Roles** — Lista todos los roles de usuario dentro del proyecto.'
@@ -1207,6 +1226,7 @@ directus_collection:
   directus_access: Adjuntos de reglas
   directus_activity: Registros de contabilidad para todos los eventos
   directus_collections: Configuración adicional de colección y metadatos
+  directus_comments: Comentarios para ítems
   directus_dashboards: Panel de control dentro del módulo Insights
   directus_fields: Configuración adicional de campos y metadatos
   directus_files: Metadatos para todos los archivos gestionados
@@ -1823,6 +1843,8 @@ interfaces:
     description: Seleccionar o subir una imagen
     crop: Recortar para encajar
     crop_label: Recortar imagen según sea necesario
+    letterbox: Buzón
+    letterbox_label: Agregar relleno a la vista previa de la imagen
   system-interface:
     interface: Interfaz
     description: Seleccionar una interfaz existente
@@ -2042,6 +2064,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Editor bruto
     description: Permitir la introducción de valores de plantillas en crudo o en mostacho
+  input-password:
+    input-password: Introducir Contraseña
+    description: Entrada de contraseña con alternancia para ocultar el valor
 displays:
   translations:
     translations: Traducciónes
@@ -2485,3 +2510,5 @@ duplicate_dashboard: Duplicar Panel de Control
 search_dashboard: Buscar Panel...
 search_flow: Buscar Flujo...
 percent: Porciento
+show_password: Mostrar Contraseña
+hide_password: Ocultar Contraseña

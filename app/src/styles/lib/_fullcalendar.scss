@@ -38,17 +38,37 @@
 	}
 
 	.fc-daygrid-dot-event {
-		padding: 0px 4px;
+		color: var(--theme--primary);
 		line-height: 1.5;
+		padding: 1px 4px;
+
+		.fc-event-time {
+			font-weight: 700;
+		}
 
 		.fc-event-title {
+			font-weight: inherit;
 			text-overflow: ellipsis;
+		}
+
+		&:hover {
+			background-color: transparent;
+		}
+
+		&:not(:has(.fc-event-time)) {
+			color: var(--fc-event-text-color);
+			background-color: var(--theme--primary);
 		}
 	}
 
-	.fc-daygrid-dot-event:hover,
-	.fc-daygrid-dot-event.fc-event-mirror {
-		background: var(--theme--primary-subdued);
+	.fc-daygrid-block-event {
+		padding: 0px 4px;
+		line-height: 1.5;
+
+		.fc-event-time,
+		.fc-event-title {
+			padding: 0;
+		}
 	}
 
 	.fc-daygrid-event-dot {

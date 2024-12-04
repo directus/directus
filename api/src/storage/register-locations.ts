@@ -10,6 +10,7 @@ export const registerLocations = async (storage: StorageManager) => {
 	const locations = toArray(env['STORAGE_LOCATIONS'] as string);
 
 	const tus = {
+		enabled: RESUMABLE_UPLOADS.ENABLED,
 		chunkSize: RESUMABLE_UPLOADS.CHUNK_SIZE,
 	};
 

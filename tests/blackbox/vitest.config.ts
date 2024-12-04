@@ -5,7 +5,6 @@ import Sequencer from './setup/sequencer';
 export default defineConfig({
 	plugins: [tsconfigPaths()],
 	test: {
-		pool: 'forks',
 		poolOptions: {
 			forks: {
 				minForks: 1,
