@@ -26,7 +26,7 @@
 	},
 	"packageManager": "pnpm@9.12.1",
 	"engines": {
-		"node": ">=22.12.0",
+		"node": ">=22.11.0",
 		"pnpm": "9"
 	}
 }
