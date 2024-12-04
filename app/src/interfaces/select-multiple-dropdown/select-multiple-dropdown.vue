@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { sortBy } from 'lodash';
 import { computed } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
@@ -26,8 +25,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const items = computed(() => props.choices || []);
 

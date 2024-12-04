@@ -2,7 +2,6 @@
 import { i18n } from '@/lang';
 import { isEmpty, isEqual } from 'lodash';
 import { computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
@@ -28,8 +27,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-
-const { t } = useI18n();
 
 const applyGlobalIcon = computed(() => props.choices?.some((choice) => choice.icon));
 
