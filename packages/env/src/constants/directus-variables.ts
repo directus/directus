@@ -242,6 +242,11 @@ export const DIRECTUS_VARIABLES = [
 
 	// websockets
 	'WEBSOCKETS_.+',
+
+	// metrics
+	'METRICS_TOKENS',
+	'DATABASE_METRIC',
+	'CACHE_METRIC',
 ] as const;
 
 /**

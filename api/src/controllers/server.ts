@@ -1,4 +1,5 @@
-import { RouteNotFoundError } from '@directus/errors';
+import { useEnv } from '@directus/env';
+import { ForbiddenError, RouteNotFoundError } from '@directus/errors';
 import { format } from 'date-fns';
 import { Router } from 'express';
 import { respond } from '../middleware/respond.js';
@@ -7,6 +8,7 @@ import { SpecificationService } from '../services/specifications.js';
 import asyncHandler from '../utils/async-handler.js';
 
 const router = Router();
+const env = useEnv();
 
 router.get(
 	'/specs/oas',
@@ -90,6 +92,16 @@ router.get(
 			accountability: req.accountability,
 			schema: req.schema,
 		});
+
+		const token = req.headers.authorization;
+		const metricTokens = env['METRICS_TOKENS'] as string[] | undefined;
+
+		if (
+			(!token || !metricTokens?.find((metricToken) => metricToken.toString() === token)) &&
+			req.accountability?.admin !== true
+		) {
+			throw new ForbiddenError();
+		}
 
 		const metrics = await service.metrics();
 		res.set('Content-Type', 'text/plain');
