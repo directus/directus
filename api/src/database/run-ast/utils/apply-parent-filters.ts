@@ -45,11 +45,6 @@ export function applyParentFilters(
 			const foreignIds = uniq(parentItems.map((res) => res[nestedNode.parentKey])).filter((id) => !isNil(id));
 
 			merge(nestedNode, { query: { filter: { [foreignField]: { _in: foreignIds } } } });
-
-			if (nestedNode.relation.meta?.junction_field) {
-				const junctionField = nestedNode.relation.meta.junction_field;
-				merge(nestedNode, { query: { filter: { [junctionField]: { _nnull: true } } } });
-			}
 		} else if (nestedNode.type === 'a2o') {
 			const keysPerCollection: { [collection: string]: (string | number)[] } = {};
 
