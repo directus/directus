@@ -339,6 +339,35 @@ WebSockets work reliably across multiple containers of Directus.
 
 Redis is required when you run Directus load balanced across multiple containers/processes.
 
+::: tip Additional Redis Variables
+
+All `REDIS_*` environment variables are passed to the `connection` configuration of a
+[`Redis` instance](https://redis.github.io/ioredis/classes/Redis.html). This means, based on your project's needs, you
+can extend the `REDIS_*` environment variables with any config you need to pass to the Redis instance.
+
+This includes:
+
+- `REDIS_SENTINEL_` prefixed options which are passed to
+  [`SentinelConnectionOptions`](https://redis.github.io/ioredis/interfaces/SentinelConnectionOptions.html).
+
+  Note: `REDIS_SENTINELS` is required for specifying sentinel instances and expects to receive an array of objects:
+  `REDIS_SENTINELS=json:[{"host": "127.0.0.1", "port": 26379}, ...]`
+
+  Make sure to explicitly prefix the value with `json` so it will be treated as a json array.
+
+:::
+
+## Data Retention
+
+| Variable              | Description                                                                                                      | Default Value |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RETENTION_ENABLED`   | Whether or not to enable custom data retention settings. `false` will not delete data.                           | `false`       |
+| `RETENTION_SCHEDULE`  | The cron schedule at which to check for removable records, the default is once a day at 00:00.                   | `0 0 * * *`   |
+| `RETENTION_BATCH`     | The maximum number of records to delete in a single query.                                                       | `500`         |
+| `ACTIVITY_RETENTION`  | The maximum amount of time to retain `directus_activity` records or `false` to disable. This excludes flow logs. | `90d`         |
+| `REVISIONS_RETENTION` | The maximum amount of time to retain `directus_revisions` records or `false` to disable.                         | `90d`         |
+| `FLOW_LOGS_RETENTION` | The maximum amount of time to retain flow logs or `false` to disable.                                            | `90d`         |
+
 ## Security
 
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
