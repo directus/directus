@@ -26,6 +26,7 @@ import { createDefaultAccountability } from '../../permissions/utils/create-defa
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
 import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
+import type { RoleMap } from '../../types/rolemap.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
@@ -33,7 +34,6 @@ import { getSecret } from '../../utils/get-secret.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
-import type { RoleMap } from '../../types/rolemap.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
 	client: Promise<Client>;
@@ -82,7 +82,10 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		// role mapping will fail on login if AUTH_<provider>_ROLE_MAPPING is an array instead of an object.
 		// This happens if the 'json:' prefix is missing from the variable declaration. To save the user from exhaustive debugging, we'll try to fail early here.
 		if (roleMapping instanceof Array) {
-			logger.error("[OpenID] Expected a JSON-Object as role mapping, got an Array instead. Make sure you declare the variable with 'json:' prefix.");
+			logger.error(
+				"[OpenID] Expected a JSON-Object as role mapping, got an Array instead. Make sure you declare the variable with 'json:' prefix.",
+			);
+
 			throw new InvalidProviderError();
 		}
 
@@ -236,7 +239,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			let emitPayload: Record<string, unknown> = {
 				auth_data: userPayload.auth_data,
 				// Make sure a user's role gets updated if his openid group or role mapping changes
-				role: role
+				role: role,
 			};
 
 			if (syncUserInfo) {

@@ -1,3 +1,3 @@
 export type RoleMap = {
-	[key: string]: string
-}
+	[key: string]: string;
+};

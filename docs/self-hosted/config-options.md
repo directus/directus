@@ -823,7 +823,7 @@ Directus users "External Identifier".
 OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
 
 | Variable                                    | Description                                                                                                                                                                                                          | Default Value          |
-|---------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------|
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
 | `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                                                                                                                                          | --                     |
 | `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                                                                                                                                              | --                     |
 | `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                                                                                                                              | `openid profile email` |
@@ -845,16 +845,20 @@ Directus users "External Identifier".
 <sup>[2]</sup> `sub` represents a unique user identifier defined by the OpenID provider. For users not relying on
 `PUBLIC_REGISTRATION` it is recommended to use a human-readable identifier, such as `email`.
 
-<sup>[3]</sup> As directus only allows one role per user, evaluating stops after the first match. An OpenID user that is member of both e.g. developer and admin groups may be assigned different roles depending on the order that you specify your role-mapping in:
-In the following example said OpenID user will be assigned the role `directus_developer_role_id` 
+<sup>[3]</sup> As directus only allows one role per user, evaluating stops after the first match. An OpenID user that is
+member of both e.g. developer and admin groups may be assigned different roles depending on the order that you specify
+your role-mapping in: In the following example said OpenID user will be assigned the role `directus_developer_role_id`
+
 ```
 AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "developer": "directus_developer_role_id", "admin": "directus_admin_role_id" }"
 ```
 
 Whereas in the following example the OpenID user will be assigned the role `directus_admin_role_id`
+
 ```
 AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "admin": "directus_admin_role_id", "developer": "directus_developer_role_id" }"
 ```
+
 ### LDAP (`ldap`)
 
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
