@@ -82,7 +82,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		// role mapping will fail on login if AUTH_<provider>_ROLE_MAPPING is an array instead of an object.
 		// This happens if the 'json:' prefix is missing from the variable declaration. To save the user from exhaustive debugging, we'll try to fail early here.
 		if (roleMapping instanceof Array) {
-			logger.error("[OpenID] Expected a JSON-Object as role mapping, got an Array instead. Make sure you declare the variable with 'json:' prefix?");
+			logger.error("[OpenID] Expected a JSON-Object as role mapping, got an Array instead. Make sure you declare the variable with 'json:' prefix.");
 			throw new InvalidProviderError();
 		}
 
