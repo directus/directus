@@ -29,6 +29,9 @@ export default defineModule({
 					name: 'panel-detail',
 					path: ':panelKey',
 					props: true,
+					meta: {
+						isFloatingView: true,
+					},
 					components: {
 						detail: InsightsPanelConfiguration,
 					},
