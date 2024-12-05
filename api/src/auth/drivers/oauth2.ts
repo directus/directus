@@ -199,7 +199,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				{
 					identifier,
 					provider: this.config['provider'],
-					providerPayload: { accessToken: tokenSet.access_token, userInfo },
+					providerPayload: { accessToken: tokenSet.access_token, idToken: tokenSet.id_token, userInfo },
 				},
 				{ database: getDatabase(), schema: this.schema, accountability: null },
 			);
@@ -226,7 +226,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			{
 				identifier,
 				provider: this.config['provider'],
-				providerPayload: { accessToken: tokenSet.access_token, userInfo },
+				providerPayload: { accessToken: tokenSet.access_token, idToken: tokenSet.id_token, userInfo },
 			},
 			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
