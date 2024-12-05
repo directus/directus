@@ -1,6 +1,6 @@
+import { RouteNotFoundError } from '@directus/errors';
 import { format } from 'date-fns';
 import { Router } from 'express';
-import { RouteNotFoundError } from '@directus/errors';
 import { respond } from '../middleware/respond.js';
 import { ServerService } from '../services/server.js';
 import { SpecificationService } from '../services/specifications.js';
@@ -81,6 +81,24 @@ router.get(
 		return next();
 	}),
 	respond,
+);
+
+router.get(
+	'/metrics',
+	asyncHandler(async (req, res) => {
+		const service = new ServerService({
+			accountability: req.accountability,
+			schema: req.schema,
+		});
+
+		const metrics = await service.metrics();
+		res.set('Content-Type', 'text/plain');
+		// Don't cache anything by default
+		res.setHeader('Cache-Control', 'no-cache');
+		res.setHeader('Vary', 'Origin, Cache-Control');
+
+		return res.send(metrics);
+	}),
 );
 
 export default router;
