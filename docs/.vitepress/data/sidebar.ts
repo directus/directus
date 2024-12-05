@@ -147,6 +147,10 @@ function sidebarDeveloperReference() {
 					text: 'Collections',
 				},
 				{
+					link: '/reference/system/comments',
+					text: 'Comments',
+				},
+				{
 					link: '/reference/system/versions',
 					text: 'Content Versions',
 				},
@@ -625,6 +629,10 @@ function sidebarUserGuide() {
 				{
 					text: 'Projects',
 					link: '/user-guide/cloud/projects',
+				},
+				{
+					text: 'Environment Variables',
+					link: '/user-guide/cloud/variables',
 				},
 				{
 					text: 'Teams',

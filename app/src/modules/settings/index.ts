@@ -69,6 +69,9 @@ export default defineModule({
 						{
 							path: '+',
 							name: 'settings-add-new',
+							meta: {
+								isFloatingView: true,
+							},
 							components: {
 								add: NewCollection,
 							},
@@ -106,6 +109,9 @@ export default defineModule({
 						{
 							path: ':field',
 							name: 'settings-fields-field',
+							meta: {
+								isFloatingView: true,
+							},
 							components: {
 								field: FieldDetail,
 							},
@@ -126,6 +132,9 @@ export default defineModule({
 						{
 							path: '+',
 							name: 'settings-add-new-policy',
+							meta: {
+								isFloatingView: true,
+							},
 							components: {
 								add: NewPolicy,
 							},
@@ -154,6 +163,9 @@ export default defineModule({
 							name: 'settings-add-new-role',
 							components: {
 								add: NewRole,
+							},
+							meta: {
+								isFloatingView: true,
 							},
 						},
 					],
@@ -234,6 +246,9 @@ export default defineModule({
 						{
 							name: 'settings-flows-operation',
 							path: ':operationId',
+							meta: {
+								isFloatingView: true,
+							},
 							component: FlowOperationDetail,
 							props: true,
 						},
