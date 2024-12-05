@@ -254,7 +254,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				{
 					identifier,
 					provider: this.config['provider'],
-					providerPayload: { accessToken: tokenSet.access_token, userInfo },
+					providerPayload: { accessToken: tokenSet.access_token, idToken: tokenSet.id_token, userInfo },
 				},
 				{ database: getDatabase(), schema: this.schema, accountability: null },
 			);
@@ -283,7 +283,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			{
 				identifier,
 				provider: this.config['provider'],
-				providerPayload: { accessToken: tokenSet.access_token, userInfo },
+				providerPayload: { accessToken: tokenSet.access_token, idToken: tokenSet.id_token, userInfo },
 			},
 			{ database: getDatabase(), schema: this.schema, accountability: null },
 		);
@@ -380,7 +380,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			}
 
 			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
-				expiresIn: '5m',
+				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as string,
 				issuer: 'directus',
 			});
 
