@@ -339,6 +339,35 @@ WebSockets work reliably across multiple containers of Directus.
 
 Redis is required when you run Directus load balanced across multiple containers/processes.
 
+::: tip Additional Redis Variables
+
+All `REDIS_*` environment variables are passed to the `connection` configuration of a
+[`Redis` instance](https://redis.github.io/ioredis/classes/Redis.html). This means, based on your project's needs, you
+can extend the `REDIS_*` environment variables with any config you need to pass to the Redis instance.
+
+This includes:
+
+- `REDIS_SENTINEL_` prefixed options which are passed to
+  [`SentinelConnectionOptions`](https://redis.github.io/ioredis/interfaces/SentinelConnectionOptions.html).
+
+  Note: `REDIS_SENTINELS` is required for specifying sentinel instances and expects to receive an array of objects:
+  `REDIS_SENTINELS=json:[{"host": "127.0.0.1", "port": 26379}, ...]`
+
+  Make sure to explicitly prefix the value with `json` so it will be treated as a json array.
+
+:::
+
+## Data Retention
+
+| Variable              | Description                                                                                                      | Default Value |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RETENTION_ENABLED`   | Whether or not to enable custom data retention settings. `false` will not delete data.                           | `false`       |
+| `RETENTION_SCHEDULE`  | The cron schedule at which to check for removable records, the default is once a day at 00:00.                   | `0 0 * * *`   |
+| `RETENTION_BATCH`     | The maximum number of records to delete in a single query.                                                       | `500`         |
+| `ACTIVITY_RETENTION`  | The maximum amount of time to retain `directus_activity` records or `false` to disable. This excludes flow logs. | `90d`         |
+| `REVISIONS_RETENTION` | The maximum amount of time to retain `directus_revisions` records or `false` to disable.                         | `90d`         |
+| `FLOW_LOGS_RETENTION` | The maximum amount of time to retain flow logs or `false` to disable.                                            | `90d`         |
+
 ## Security
 
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
@@ -701,14 +730,20 @@ instability or limited bandwidth. This is implemented using the [TUS protocol](h
 | Variable                | Description                                                       | Default Value |
 | ----------------------- | ----------------------------------------------------------------- | ------------- |
 | `TUS_ENABLED`           | Whether or not to enable the chunked uploads                      | `false`       |
-| `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `10mb`        |
+| `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `8mb`         |
 | `TUS_UPLOAD_EXPIRATION` | The expiry duration for uncompleted files with no upload activity | `10m`         |
 | `TUS_CLEANUP_SCHEDULE`  | Cron schedule to clean up the expired uncompleted uploads         | `0 * * * *`   |
 
-::: warning
+::: warning Chunked Upload Restrictions
 
-The `TUS_CHUNK_SIZE` for `storage-driver-gcs` must be a power of 2 with a minimum of `256kb` (e.g. `256kb`, `512kb`,
-`1024kb`).
+Some storage drivers have specific chunk size restrictions. The `TUS_CHUNK_SIZE` must meet the relevant restrictions for
+the storage driver(s) being used.
+
+| Storage Driver              | `TUS_CHUNK_SIZE` Restriction                                                     |
+| --------------------------- | -------------------------------------------------------------------------------- |
+| `storage-driver-gcs`        | Must be a power of 2 with a minimum of `256kb` (e.g. `256kb`, `512kb`, `1024kb`) |
+| `storage-driver-azure`      | Must not be larger than `100mb`                                                  |
+| `storage-driver-cloudinary` | Must not be smaller than `5mb`                                                   |
 
 :::
 
@@ -831,6 +866,7 @@ OpenID is an authentication protocol built on OAuth 2.0, and should be preferred
 | `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`           |
 | `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --                     |
 | `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --                     |
+| `AUTH_<PROVIDER>_LOGIN_TIMEOUT`             | Time-Out for successful login in SSO.                                                                     | `5m`                   |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
@@ -1029,9 +1065,13 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_SMTP_USER`       | SMTP user            | --            |
 | `EMAIL_SMTP_PASSWORD`   | SMTP password        | --            |
 | `EMAIL_SMTP_POOL`       | Use SMTP pooling     | --            |
-| `EMAIL_SMTP_SECURE`     | Enable TLS           | --            |
-| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS           | --            |
+| `EMAIL_SMTP_SECURE`     | Enable initial TLS   | --            |
+| `EMAIL_SMTP_IGNORE_TLS` | Ignore STARTTLS      | --            |
 | `EMAIL_SMTP_NAME`       | SMTP client hostname | --            |
+
+For more details about these options, see the
+[SMTP configuration documentation for Nodemailer](https://nodemailer.com/smtp/#general-options), which Directus uses
+under the hood.
 
 ### Mailgun (`mailgun`)
 

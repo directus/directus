@@ -19,7 +19,6 @@ router.post(
 		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
-			serviceOrigin: 'comments',
 		});
 
 		const savedKeys: PrimaryKey[] = [];
@@ -57,7 +56,6 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	const service = new CommentsService({
 		accountability: req.accountability,
 		schema: req.schema,
-		serviceOrigin: 'comments',
 	});
 
 	const metaService = new MetaService({
@@ -88,7 +86,6 @@ router.get(
 		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
-			serviceOrigin: 'comments',
 		});
 
 		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
@@ -106,7 +103,6 @@ router.patch(
 		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
-			serviceOrigin: 'comments',
 		});
 
 		let keys: PrimaryKey[] = [];
@@ -142,7 +138,6 @@ router.patch(
 		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
-			serviceOrigin: 'comments',
 		});
 
 		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
@@ -170,7 +165,6 @@ router.delete(
 		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
-			serviceOrigin: 'comments',
 		});
 
 		if (Array.isArray(req.body)) {
@@ -193,7 +187,6 @@ router.delete(
 		const service = new CommentsService({
 			accountability: req.accountability,
 			schema: req.schema,
-			serviceOrigin: 'comments',
 		});
 
 		await service.deleteOne(req.params['pk']!);

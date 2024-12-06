@@ -14,6 +14,7 @@ export type DriverAzureConfig = {
 	root?: string;
 	endpoint?: string;
 	tus?: {
+		enabled: boolean;
 		chunkSize?: number;
 	};
 };
@@ -35,7 +36,7 @@ export class DriverAzure implements TusDriver {
 		this.root = config.root ? normalizePath(config.root, { removeLeading: true }) : '';
 
 		// https://learn.microsoft.com/en-us/rest/api/storageservices/append-block?tabs=microsoft-entra-id#remarks
-		if (config.tus?.chunkSize && config.tus.chunkSize > MAXIMUM_CHUNK_SIZE) {
+		if (config.tus?.enabled && config.tus.chunkSize && config.tus.chunkSize > MAXIMUM_CHUNK_SIZE) {
 			throw new Error('Invalid chunkSize provided');
 		}
 	}

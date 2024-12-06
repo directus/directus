@@ -162,6 +162,9 @@ describe('Integration Tests', () => {
 							        "type": "integer",
 							      },
 							    },
+							    "required": [
+							      "id",
+							    ],
 							    "type": "object",
 							    "x-collection": "test_table",
 							  },

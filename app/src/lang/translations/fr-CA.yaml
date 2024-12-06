@@ -264,6 +264,7 @@ permissions_for_policy: 'Éléments que la Règle {policy} peut {action}.'
 fields_for_role: 'Champs dont l''action « {action} » peut être effectué par le rôle {role} .'
 fields_for_policy: 'Champs que la règle {policy} peut {action}.'
 validation_for_role: 'Règles pour {action} le champ que le rôle {role} doit suivre.'
+validation_for_policy: 'Règles du champ pour {action} que la police {policy} doit suivre.'
 presets_for_role: 'Valeur par défaut du champ pour le rôle {role}.'
 presets_for_policy: 'Valeurs de champ par défaut pour la Règle {policy}.'
 presets_field_warning: 'Les préréglages relationnels pour le champ "{field}" doivent être configurés avec la syntaxe "détaillée".'
@@ -554,6 +555,7 @@ file_details: Détails du fichier
 dimensions: Dimensions
 size: Taille
 created: Créé
+uploaded: Téléchargé
 modified: Modifié
 owner: Propriétaire
 edited_by: Modifié par
@@ -610,6 +612,8 @@ allow_duplicates: Autoriser les doublons
 comments: Commentaires
 no_comments: Pas encore de commentaires
 expand: Agrandir
+expand_all: Tout développer
+expand_none: Ne pas étendre
 collapse: Replier
 collapse_all: Réduire Tout
 select_item: Sélectionner un élément
@@ -628,12 +632,17 @@ display_not_found: 'L''affichage "{display}" n''a pas été trouvé.'
 reset_display: Réinitialiser l'affichage
 list-m2a: Constructeur (M2A)
 item_count: 'Aucun élément | Un élément | {count} éléments'
+filtered_item_count: 'Aucun élément filtré | Un élément filtré | {count} éléments filtrés'
 no_items_copy: Il n’y a pas encore d’élément dans cette collection.
 file_count: 'Aucun fichier | Un fichier | {count} fichiers'
 no_files_copy: Il n'y a aucun fichier ici.
 user_count: 'Aucun utilisateur | Un seul utilisateur | {count} utilisateurs'
 no_users_copy: Il n'y a pas encore d'utilisateurs avec ce rôle.
 webhooks_count: 'Aucun Webhooks | 1 Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Les Webhooks sont obsolètes et une utilisation ultérieure est déconseillée.
+
+  Veuillez utiliser **Flux** avec l'opération [Webhook / Requêtes URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url) à la place.
 no_webhooks_copy: Aucun webhooks n'a encore été configuré. Commencez par en créer un ci-dessous.
 no_notifications: Aucune notification
 no_notifications_copy: Vous êtes à jour !
@@ -993,7 +1002,22 @@ no_data_in_flow: Aucune donnée n'a été produite ou accédée dans ce flux
 accountability: Traçabilité
 payload: Données utiles
 details: Détails
+resume_streaming_logs: Reprendre les logs en temps réel
+pause_streaming_logs: Mettre en pause les logs en temps réel
+logs_session_resumed: La session des logs à repris...
+logs_session_paused: Session des logs en pause...
+logs_stream_disconnected: Le flux des logs a été déconnecté...
+log_detail_filter_paths: 'Chemins de filtres (ex: req.method, res.statusCode)'
+logs_beginning: Début de votre session de logs...
+logs_waiting: 'En attente de logs...'
+logs_unread_count: '{count} non lu(s)'
 clear_logs: Effacer le journal
+search_logs: Recherche dans les journaux...
+all_instances: Toutes les instances
+instance_count: 'Aucune instance | Une instance | {count} Instances'
+all_log_levels: Tous les niveaux de log
+log_level_count: 'Aucun niveau de log | Un niveau de log | {count} niveaux de log'
+soft_wrap_lines: Lignes non enveloppées
 full_screen: Plein écran
 full_text_search: Recherche dans l'intégralité du texte
 edit_panels: Modifier le panneau
@@ -1097,10 +1121,12 @@ editing_in_batch: 'Modification par lot de {count} élément(s)'
 no_options_available: Aucune option disponible
 settings_data_model: Modèle de données
 settings_roles: Rôles Utilisateur
+settings_permissions: Règles d'accès
 settings_project: Réglages
 settings_appearance: Personnalisation du Thème
 settings_webhooks: Webhooks
 settings_flows: Flux
+settings_system_logs: Journaux système
 settings_presets: Favoris
 settings_translations: Traductions
 one_or_more_options_are_missing: Une ou plusieurs options sont manquantes
@@ -1146,6 +1172,10 @@ page_help_settings_datamodel_collections: >-
   **Modèle de données : Collections** — Liste toutes les collections disponibles. Cela inclut les collections visibles, cachées et système, ainsi que les tables de bases de données non gérées qui peuvent être ajoutées.
 page_help_settings_datamodel_fields: >-
   **Modèle de données : Collection** — Un formulaire pour gérer cette collection et ses champs.
+page_help_settings_system_logs: '**System Logs** — Accédez au flux en direct des journaux du système.'
+page_help_settings_policies_collection: '**Parcourir les polices** — Liste toutes les polices du projet.'
+page_help_settings_policies_item: "**Détail de la police** — Gestion des permissions d'une police et d'autres paramètres."
+page_help_settings_roles_collection: '**Parcourir les Rôles** — Liste tous les rôles utilisateur du projet.'
 page_help_settings_roles_item: "**Détail du rôle** — Gérer les autorisations et les autres paramètres d'un rôle."
 page_help_settings_presets_collection: >-
   **Parcourir les préréglages** - Liste tout les préréglages du projet, y compris : l'utilisateur, le rôle, les favoris globaux et les vues par défaut.
@@ -1193,6 +1223,7 @@ singleton: Singleton
 singleton_label: Est un objet unique
 system_fields_locked: Les champs système sont verrouillés et ne peuvent pas être modifiés
 directus_collection:
+  directus_access: Polices attachées
   directus_activity: Journaux de traçabilité de tous les événements
   directus_collections: Configuration de la collection supplémentaire et métadonnées
   directus_dashboards: Tableaux de bord dans le module Insights
@@ -1204,6 +1235,8 @@ directus_collection:
   directus_notifications: Notifications envoyées aux utilisateurs
   directus_operations: Opérations qui s'exécutent dans les Flux
   directus_panels: Panneaux individuels dans les tableaux de bord Insights
+  directus_permissions: Permissions d'accès pour chaque police
+  directus_policies: Règles de contrôle d'accès
   directus_presets: Préréglages pour la collection par défaut et les signets
   directus_relations: Configuration de la relation et métadonnées
   directus_revisions: Instantanés de données pour toutes les activités
@@ -1269,6 +1302,8 @@ fields:
     height: Hauteur
     charset: Jeu de caractères
     duration: Durée
+    focal_point_x: Coordonnée X (abscisse)
+    focal_point_y: Coordonnée Y (ordonnée)
   directus_users:
     first_name: Prénom
     last_name: Nom
@@ -1286,6 +1321,7 @@ fields:
     status: État
     status_draft: Brouillon
     status_invited: Invité
+    status_unverified: Non vérifié
     status_active: Actif
     status_suspended: Suspendu
     status_archived: Archivé
@@ -1349,6 +1385,14 @@ fields:
     custom_aspect_ratios: Personnaliser le rapport d'aspect
     theme_light_overrides: Personnalisation du thème clair
     theme_dark_overrides: Personnalisation du thème sombre
+    public_registration: Inscription d'utilisateur
+    public_registration_note: Permet aux utilisateurs de s'inscrire via la [route d'inscription](/admin/register).
+    public_registration_role: Rôles Utilisateur
+    public_registration_role_note: Ce rôle est attribué aux utilisateurs qui s'inscrivent en utilisant cette méthode. Cela n'affecte pas les utilisateurs déjà enregistrés.
+    public_registration_email_filter: Filtre d'adresse e-mail
+    public_registration_email_filter_note: Seules les adresses e-mail correspondant à ce filtre peuvent s'inscrire.
+    public_registration_verify_email: Vérifier l'adresse e-mail
+    public_registration_verify_email_note: Envoie un e-mail à l'utilisateur qui vient de s'inscrire, lui demandant de cliquer sur un lien de vérification avant de pouvoir se connecter.
   directus_shares:
     name: Nom
     role: Rôle
@@ -1370,9 +1414,15 @@ fields:
     icon: Icône de rôle
     description: Description
     users: Membres avec le rôle
+    parent: Rôle parent
+    children: Rôles enfants
   directus_policies:
     name: Nom de la Règle
     description: Description
+    app_access: Accès à l'application
+    admin_access: Accès Administrateur
+    ip_access: Accès IP
+    enforce_tfa: Nécessite une authentification à deux facteurs
   directus_webhooks:
     name: Nom
     method: Méthode
@@ -1455,6 +1505,12 @@ field_options:
     focal_point_divider: Point focal
     filename_disk: Nom du fichier sur le disque...
     filename_download: Nom du fichier téléchargé...
+  directus_policies:
+    name: Un nom unique pour cette règle...
+    description: Une description de cette règle...
+    ip_access: Ajouter les adresses IP autorisées, les plages IP et les blocs CIDR. Laisser vide pour tout autoriser...
+    enforce_tfa: Imposer l'authentification à deux facteurs
+    assigned_to: Assigné à
   directus_roles:
     name: Le nom unique de ce rôle...
     description: Une description pour ce rôle...
@@ -1464,6 +1520,8 @@ field_options:
       name_placeholder: Entrez un titre...
       link_name: Lien
       link_placeholder: URL relative ou absolue...
+    parent_note: Rôle parent optionnel duquel ce rôle hérite des permissions
+    children_note: Rôles imbriqués qui héritent des permissions de ces rôles
     collections_name: Collections
     collections_addLabel: Ajouter une collection...
   directus_users:
@@ -1514,6 +1572,7 @@ live_preview:
   toggle_3d: Alterner 3D
 shares: Partages
 unlimited_usage: Utilisation illimitée
+uses_left: Pas d'utilisation restante | Une utilisation restante | {n} utilisations restantes
 no_shares: Aucun partage pour l'instant
 new_share: Nouveau partage
 expired: Expiré
@@ -1547,6 +1606,9 @@ continue_label: Continuer
 continue_as: >-
   {name} est actuellement authentifié. Si vous reconnaissez ce compte, cliquez sur continuer.
 editing_role: 'Rôle {role}'
+editing_policy: 'Police {policy}'
+no_permissions: Aucune Permission
+permission_add_collection: Ajouter une collection
 creating_webhook: Création du Webhook
 default_label: Défaut
 delete_label: Supprimer
@@ -1592,6 +1654,7 @@ authenticated: Authentifié
 options: Paramètres
 otp: Mot de passe à usage unique
 password: Mot de passe
+confirm_password: Confirmez le mot de passe
 permissions: Autorisations
 relationship: Relation
 reset: Réinitialiser
@@ -1608,6 +1671,14 @@ select_field_type: Sélectionnez un type de champ
 select_interface: Sélectionner une interface
 select_display: Sélectionnez un affichage
 settings: Réglages
+register: S'inscrire
+registration_successful_headline: Succès !
+registration_successful_note: Vous pouvez maintenant passer à la page de connexion.
+registration_successful_check_email_note: |
+  Veuillez noter qu'avant de pouvoir vous connecter, vous devrez vérifier votre adresse e-mail en cliquant sur le lien de vérification qui vous a été envoyé.
+dont_have_an_account: Vous n’avez pas encore de compte?
+already_have_an_account: Vous avez déjà un compte?
+sign_up_now: S'inscrire maintenant
 sign_in: Se connecter
 sign_out: Déconnexion
 sign_out_confirm: Êtes-vous certain de vouloir vous déconnecter ?
@@ -1637,6 +1708,8 @@ navigate_to_item: Naviguer vers l'élément
 undo_removed_item: Annuler Supprimer l'élément
 remove_item: Retirer l'élément
 delete_item: Supprimer l'élément
+pause: Mettre en pause
+resume: Reprendre
 interfaces:
   list-m2a:
     prefix_note: Utilise le nom de la collection de l'élément lié par défaut .
@@ -1769,6 +1842,8 @@ interfaces:
     description: Sélectionner ou envoyer une image
     crop: Recadrer
     crop_label: Recadrer l'image si besoin
+    letterbox: Boîte aux lettres
+    letterbox_label: Ajouter un espacement intérieur à la prévisualisation de l'image
   system-interface:
     interface: Interface
     description: Sélectionner une interface existante
@@ -1803,6 +1878,7 @@ interfaces:
     editorFont: Police de caractère de l'éditeur
     previewFont: Aperçu de la police
     default_view: Vue par défaut
+    default_view_editor: Éditeur
     default_view_preview: Prévisualiser
     customSyntax: Blocs personnalisés
     customSyntax_label: Ajouter des types de syntaxe personnalisés
@@ -1908,6 +1984,7 @@ interfaces:
     no_collection: Aucune collection
     toggle_split_view: Basculer en vue partagée
     enable: Activer
+    default_split_view_state: État de la vue divisée par défaut
     user_language: Utiliser la langue actuelle de l'utilisateur
     default_language: Langue par défaut
     language_field: Champ d'indicateur de langue
@@ -1986,6 +2063,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Éditeur brut
     description: Permettre la saisie de valeurs brutes ou de modèles en moustache
+  input-password:
+    input-password: Saisissez le mot de passe
+    description: Saisie de mot de passe avec affichage masqué/visible
 displays:
   translations:
     translations: Traductions
@@ -2179,6 +2259,7 @@ layouts:
     no_group: Aucun Groupe
 horizontal: Horizontal
 vertical: Vertical
+axis: Axes
 x_axis: Axe X
 y_axis: Axe Y
 y_axis_function: Fonction Axe Y
@@ -2428,3 +2509,5 @@ duplicate_dashboard: Dupliquer le tableau de bord
 search_dashboard: Rechercher le tableau de bord...
 search_flow: Rechercher le flux...
 percent: Pourcent
+show_password: Afficher le mot de passe
+hide_password: Masquer le mot de passe

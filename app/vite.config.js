@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
+import vueDevtools from 'vite-plugin-vue-devtools';
 
 const API_PATH = path.join('..', 'api');
 
@@ -21,6 +22,13 @@ const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler',
+			},
+		},
+	},
 	plugins: [
 		directusExtensions(),
 		vue(),
@@ -39,6 +47,7 @@ export default defineConfig({
 				};
 			},
 		},
+		vueDevtools(),
 	],
 	define: {
 		__VUE_I18N_LEGACY_API__: false,

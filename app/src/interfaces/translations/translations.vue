@@ -45,7 +45,7 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 
 const value = computed({
-	get: () => props.value,
+	get: () => props.value ?? [],
 	set: (val) => {
 		emit('input', val);
 	},
@@ -64,10 +64,10 @@ const firstLang = ref<string>();
 const secondLang = ref<string>();
 
 watch(splitView, (splitViewEnabled) => {
-	const lang = languageOptions.value;
-
-	if (splitViewEnabled && secondLang.value === firstLang.value) {
-		secondLang.value = lang[0]?.value === firstLang.value ? lang[1]?.value : lang[0]?.value;
+	if (splitViewEnabled) {
+		const lang = languageOptions.value;
+		const alternativeLang = lang.find((l) => l.value !== firstLang.value);
+		secondLang.value = alternativeLang?.value ?? lang[0]?.value;
 	}
 });
 
@@ -242,7 +242,12 @@ function useLanguages() {
 
 			if (!secondLang.value) {
 				const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
-				const lang = languages.value.find((lang) => lang[pkField] === defaultLocale) || languages.value[0];
+				let lang = languages.value.find((lang) => lang[pkField] === defaultLocale) || languages.value[0];
+
+				if (!lang || lang[pkField] === firstLang.value) {
+					lang = languages.value.find((lang) => lang[pkField] !== firstLang.value) || languages.value[1];
+				}
+
 				secondLang.value = lang?.[pkField];
 			}
 		} catch (error) {
