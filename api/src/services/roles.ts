@@ -55,7 +55,7 @@ export class RolesService extends ItemsService {
 				schema: this.schema,
 			};
 
-			const itemsService = new ItemsService('directus_roles', options);
+			const rolesItemsService = new ItemsService('directus_roles', options);
 			const rolesService = new RolesService(options);
 			const accessService = new AccessService(options);
 			const presetsService = new PresetsService(options);
@@ -97,7 +97,7 @@ export class RolesService extends ItemsService {
 				{ parent: null },
 			);
 
-			await itemsService.deleteMany(keys, opts);
+			await rolesItemsService.deleteMany(keys, opts);
 		});
 
 		// Since nested roles could be updated, clear caches
