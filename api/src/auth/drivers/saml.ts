@@ -1,3 +1,5 @@
+import https from 'https';
+import axios from 'axios';
 import * as validator from '@authenio/samlify-node-xmllint';
 import { useEnv } from '@directus/env';
 import {
@@ -28,7 +30,7 @@ samlify.setSchemaValidator(validator);
 
 export class SAMLAuthDriver extends LocalAuthDriver {
 	sp: samlify.ServiceProviderInstance;
-	idp: samlify.IdentityProviderInstance;
+	idp: samlify.IdentityProviderInstance | null;
 	usersService: UsersService;
 	config: Record<string, any>;
 
@@ -38,8 +40,22 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 		this.config = config;
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 
-		this.sp = samlify.ServiceProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_SP`));
-		this.idp = samlify.IdentityProvider(getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_IDP`));
+		const sp_config = getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_SP`);
+
+		if (!sp_config['metadata']) {
+			sp_config['metadata'] = this.generateSAMLServiceProviderMetadata(sp_config['acsUrl'], sp_config['entityId']);
+		}
+
+		this.sp = samlify.ServiceProvider(sp_config);
+
+		const idp_config = getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_IDP`);
+
+		if (idp_config['metadata']) {
+			this.idp = samlify.IdentityProvider(idp_config);
+		} else {
+			// defer initializing Identity Provider and try to load async from URL, if set
+			this.idp = null;
+		}
 	}
 
 	async fetchUserID(identifier: string) {
@@ -111,11 +127,53 @@ export class SAMLAuthDriver extends LocalAuthDriver {
 	override async login(_user: User): Promise<void> {
 		return;
 	}
+
+	async setSAMLIdentityProviderMetadataFromUrl(): Promise<boolean> {
+		const logger = useLogger();
+		const agent = new https.Agent();
+		const idp_config = getConfigFromEnv(`AUTH_${this.config['provider'].toUpperCase()}_IDP`);
+
+		if (!idp_config['metadata'] && idp_config['metadataUrl']) {
+			try {
+				const response = await axios.get(idp_config['metadataUrl'], { httpsAgent: agent });
+
+				if (response.status === 200 && response.data) {
+					const xml = (await response.data) as string;
+					Object.assign(idp_config, { metadata: xml });
+					this.idp = samlify.IdentityProvider(idp_config);
+					return true;
+				}
+			} catch (error) {
+				logger.warn(error, `[SAML] Error fetching SAML Metadata from ${idp_config['metadataUrl']}`);
+				throw new InvalidCredentialsError();
+			}
+		}
+
+		return false;
+	}
+
+	generateSAMLServiceProviderMetadata(
+		acsUrl: string = 'http://localhost:8055/auth/login/websso/acs',
+		entityID = 'https://sp.example.org/metadata',
+	): string {
+		return `<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+  validUntil="2050-02-18T14:13:58Z"
+  cacheDuration="PT604800S"
+  entityID="${entityID}">
+  <md:SPSSODescriptor AuthnRequestsSigned="false" WantAssertionsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+    <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+    Location="${acsUrl}"
+    index="1" />
+  </md:SPSSODescriptor>
+</md:EntityDescriptor>`;
+	}
 }
 
 export function createSAMLAuthRouter(providerName: string) {
 	const router = Router();
 	const env = useEnv();
+	const logger = useLogger();
 
 	router.get(
 		'/metadata',
@@ -129,6 +187,13 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/',
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
+
+			if (idp === null) {
+				// this should not happen and is mostly to filter out the null type
+				logger.error('[SAML] IdentityProvider is null');
+				throw new InvalidCredentialsError();
+			}
+
 			const { context: url } = sp.createLoginRequest(idp, 'redirect');
 			const parsedUrl = new URL(url);
 
@@ -150,6 +215,13 @@ export function createSAMLAuthRouter(providerName: string) {
 		'/logout',
 		asyncHandler(async (req, res) => {
 			const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
+
+			if (idp === null) {
+				// this should not happen and is mostly to filter out the null type
+				logger.error('[SAML] IdentityProvider is null');
+				throw new InvalidCredentialsError();
+			}
+
 			const { context } = sp.createLogoutRequest(idp, 'redirect', req.body);
 
 			const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
@@ -176,6 +248,13 @@ export function createSAMLAuthRouter(providerName: string) {
 
 			try {
 				const { sp, idp } = getAuthProvider(providerName) as SAMLAuthDriver;
+
+				if (idp === null) {
+					// this should not happen and is mostly to filter out the null type
+					logger.error('[SAML] IdentityProvider is null');
+					throw new InvalidCredentialsError();
+				}
+
 				const { extract } = await sp.parseLoginResponse(idp, 'post', req);
 
 				const authService = new AuthenticationService({ accountability: req.accountability, schema: req.schema });
