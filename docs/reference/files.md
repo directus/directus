@@ -433,11 +433,9 @@ const client = createDirectus('https://directus.example.com').with(rest());
 
 const result = await client.request(
 	readFiles({
-		query: {
-			filter: {
-				type: {
-					_eq: 'image',
-				},
+		filter: {
+			type: {
+				_eq: 'image',
 			},
 		},
 	})

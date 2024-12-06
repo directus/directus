@@ -48,12 +48,6 @@ fields:
     display: user
     width: half
 
-  - field: comment
-    display: formatted-value
-    display_options:
-      color: 'var(--theme--foreground-subdued)'
-    width: half
-
   - field: user_agent
     display: formatted-value
     display_options:
