@@ -14,6 +14,7 @@ const props = withDefaults(
 		is: string;
 		type: string;
 		value: string | number | Record<string, unknown> | boolean | null;
+		commaAllowed?: boolean;
 		focus?: boolean;
 		choices?: Choice[];
 	}>(),
@@ -78,7 +79,13 @@ watch(
 );
 
 function isValueValid(value: any): boolean {
-	if (value === '' || typeof value !== 'string' || !inputPattern.value || new RegExp(inputPattern.value).test(value)) {
+	if (
+		value === '' ||
+		typeof value !== 'string' ||
+		(props.commaAllowed && value.includes(',')) ||
+		!inputPattern.value ||
+		new RegExp(inputPattern.value).test(value)
+	) {
 		return true;
 	}
 

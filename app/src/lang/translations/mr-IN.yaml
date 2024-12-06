@@ -1,1 +1,79 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: माहिती
+identifier: ओळखकर्ता
+avatar: अवतार
+application: अर्ज
+default_provider: मुख्य
+method: पद्धत
+published: प्रकाशित
+draft: मसुदा
+archived: संग्रहित
+marketplace: बाजारपेठ
+extensions: विस्तार
+modules: मॉड्यूल
+module_bar: मॉड्यूल बार
+logs: नोंदी
+unknown: अज्ञात
+reset_width: रुंदी रीसेट करा
+tile_size: टाइलचा आकार
+edit_field: फील्ड संपादित करा
+conditions: अटी
+location: ठिकाण
+collection_names_are_case_sensitive: संग्रहाची नावे केस संवेदनशील आहेत
+condition_rules: नियमांची अट
+input: इनपुट
+maps: नकाशा
+switch_user: युजर बदला
+item_creation: आयटम तयार करणे
+item_revision: आयटम पुनरावृत्ती
+enter_a_name: नाव भरा 
+duplicate_field: दुय्यम प्रत
+half_width: पूर्ण उंची
+full_width: पूर्ण रुंदी
+group: गट
+popular: लोकप्रिय
+recent: अलीकडील
+export_items: एक्स्पोर्ट आयटम्स
+and: आणि
+or: किंवा
+init: सुरुवात
+dataset_too_large_currently_showing_n_items: डेटासेट खूप मोठा आहे. सध्या पहिले {n} आयटम दाखवत आहे.
+modifier: सुधारक
+extension_interface: इंटरफेस
+extension_display: प्रदर्शित करा
+extension_layout: मांडणी
+extension_module: मॉड्यूल
+extension_panel: पॅनल
+extension_theme: थीम
+extension_hook: हुक
+extension_endpoint: शेवट
+extension_operation: संचालन
+extension_bundle: संग्रह 
+extension_interfaces: इंटरफेस
+extension_displays: डिस्पले
+extension_modules: मॉड्यूल
+extension_bundles:
+source_registry: बाजारपेठ
+fields:
+  directus_settings:
+    module_bar: मॉड्यूल बार

@@ -28,7 +28,7 @@ const props = withDefaults(
 		sortField?: string | null;
 		userField?: string | null;
 		groupsSortField?: string | null;
-		layoutOptions: LayoutOptions;
+		layoutOptions: LayoutOptions | null;
 		resetPresetAndRefresh: () => Promise<void>;
 		error?: any;
 		selection: PrimaryKey[];
@@ -89,7 +89,7 @@ function saveChanges() {
 }
 
 const textFieldConfiguration = computed<Field | undefined>(() => {
-	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions?.textField);
 });
 </script>
 

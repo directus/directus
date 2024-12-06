@@ -255,7 +255,11 @@ export function getDBQuery(
 		// group by without influencing the result.
 
 		// This inclusion depends on the DB vendor, as such it is handled in a dialect specific helper.
-		helpers.schema.addInnerSortFieldsToGroupBy(groupByFields, innerQuerySortRecords, hasMultiRelationalSort ?? false);
+		helpers.schema.addInnerSortFieldsToGroupBy(
+			groupByFields,
+			innerQuerySortRecords,
+			(hasMultiRelationalSort || sortRecords?.some(({ column }) => column.includes('.'))) ?? false,
+		);
 
 		dbQuery.groupBy(groupByFields);
 	}

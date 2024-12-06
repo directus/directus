@@ -86,17 +86,13 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
-		if (req.accountability?.share_scope) {
-			const user = {
-				share: req.accountability?.share,
-				role: {
-					id: req.accountability.role,
-					admin_access: false,
-					app_access: false,
+		if (req.accountability?.share) {
+			res.locals['payload'] = {
+				data: {
+					share: req.accountability?.share,
 				},
 			};
 
-			res.locals['payload'] = { data: user };
 			return next();
 		}
 

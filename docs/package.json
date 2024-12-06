@@ -24,7 +24,7 @@
 		"@pnpm/find-workspace-packages": "6.0.9",
 		"markdown-it-for-inline": "2.0.1",
 		"marked": "14.1.2",
-		"spellchecker-cli": "6.2.0",
+		"spellchecker-cli": "7.0.0",
 		"typedoc": "0.26.8",
 		"typedoc-plugin-frontmatter": "1.0.0",
 		"typedoc-plugin-markdown": "4.2.9",

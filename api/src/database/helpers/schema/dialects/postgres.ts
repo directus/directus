@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { SchemaHelper, type SortRecord, type Sql } from '../types.js';
-import { preprocessBindings } from '../utils/preprocess-bindings.js';
+import { prepQueryParams } from '../utils/prep-query-params.js';
 
 const env = useEnv();
 
@@ -16,20 +16,20 @@ export class SchemaHelperPostgres extends SchemaHelper {
 		}
 	}
 
-	override preprocessBindings(queryParams: Sql): Sql {
-		return preprocessBindings(queryParams, { format: (index) => `$${index + 1}` });
+	override prepQueryParams(queryParams: Sql): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `$${index + 1}` });
 	}
 
 	override addInnerSortFieldsToGroupBy(
 		groupByFields: (string | Knex.Raw)[],
 		sortRecords: SortRecord[],
-		hasMultiRelationalSort: boolean,
+		hasRelationalSort: boolean,
 	) {
-		if (hasMultiRelationalSort) {
+		if (hasRelationalSort) {
 			/*
 			Postgres only requires selected columns that are not functionally dependent on the primary key to be
 			included in the GROUP BY clause. Since the results are already grouped by the primary key, we don't need to
-			always include the sort columns in the GROUP BY but only if there is a multi relational sort involved, eg.
+			always include the sort columns in the GROUP BY but only if there is a relational sort involved, eg.
 			a sort column that comes from a related M2O relation.
 
 			> When GROUP BY is present, or any aggregate functions are present, it is not valid for the SELECT list
