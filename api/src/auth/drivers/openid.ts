@@ -208,13 +208,18 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderConfigError({ provider: this.config['provider'] });
 		}
 
-		// Overwrite default role if user is member of a group specified in roleMap
-		for (const key in this.roleMap) {
-                        const groups = userInfo[groupClaimName];
-			if (Array.isArray(groups) && groups.includes(key)) {
-				role = this.roleMap[key];
-				break;
+		const groups = userInfo[groupClaimName];
+
+		if (Array.isArray(groups)) {
+			for (const key in this.roleMap) {
+				if (groups.includes(key)) {
+					// Overwrite default role if user is member of a group specified in roleMap
+					role = this.roleMap[key];
+					break;
+				}
 			}
+		} else {
+			logger.debug(`[OpenID] Configured group claim with name "${groupClaimName}" is empty.`);
 		}
 
 		// Flatten response to support dot indexes
