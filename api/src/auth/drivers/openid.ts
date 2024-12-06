@@ -199,15 +199,6 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		let role = this.config['defaultRoleId'];
 		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
-
-		if (userInfo[groupClaimName] === undefined) {
-			logger.error(
-				'[OpenID] The groups claim name configured could not be found in the data received from the OIDC provider. Please check if your groups claim name is set correctly.',
-			);
-
-			throw new InvalidProviderConfigError({ provider: this.config['provider'] });
-		}
-
 		const groups = userInfo[groupClaimName];
 
 		if (Array.isArray(groups)) {
@@ -219,7 +210,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				}
 			}
 		} else {
-			logger.debug(`[OpenID] Configured group claim with name "${groupClaimName}" is empty.`);
+			logger.debug(`[OpenID] Configured group claim with name "${groupClaimName}" does not exist or is empty.`);
 		}
 
 		// Flatten response to support dot indexes
