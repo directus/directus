@@ -233,6 +233,68 @@ export default defineInterface({
 					width: 'half',
 				},
 			},
+			{
+				field: 'multipleSort',
+				name: 'Multiple Sort',
+				type: 'json',
+				meta: {
+					special: ['cast-json'],
+					interface: 'list',
+					options: {
+						fields: [
+							{
+								field: 'field',
+								name: '$t:sort',
+								type: 'string',
+								meta: {
+									interface: 'system-field',
+									options: {
+										collectionName: collection,
+									},
+									width: 'half',
+								},
+							},
+							{
+								field: 'sortDirection',
+								name: '$t:sort_direction',
+								schema: {
+									default_value: '+',
+								},
+								type: 'string',
+								meta: {
+									interface: 'select-dropdown',
+									options: {
+										choices: [
+											{
+												text: '$t:sort_asc',
+												value: '+',
+											},
+											{
+												text: '$t:sort_desc',
+												value: '-',
+											},
+										],
+									},
+									width: 'half',
+								},
+							},
+						],
+					},
+					display: null,
+					display_options: null,
+					readonly: false,
+					hidden: false,
+					sort: 4,
+					width: 'full',
+					translations: null,
+					note: null,
+					conditions: null,
+					required: false,
+					group: null,
+					validation: null,
+					validation_message: null,
+				},
+			},
 		];
 	},
 	recommendedDisplays: ['related-values'],
