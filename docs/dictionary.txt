@@ -68,6 +68,7 @@
 (S|s)ubheader
 (S|s)upabase
 (T|t)extarea
+(T|t)heming
 (T|t)imeseries
 (T|t)ooltips?
 (T|t)riage
@@ -173,10 +174,10 @@ customizable
 customizations
 DateTime
 DDoS
+destructure
 destructured
 devs
 Devtools
-destructure
 DigitalOcean
 DigitalOcean's
 directus
@@ -201,8 +202,8 @@ entrypoint
 Entrypoint
 env
 ENV
-ESM
 esm
+ESM
 Exif
 fallbacks
 falsy
@@ -309,10 +310,11 @@ O2M
 O2Ms
 O2O
 OAuth2?
-OpenAI
+OIDC
 Okta
 omnichannel
 on-prem
+OpenAI
 OpenAPI
 OpenID
 OracleDB
@@ -414,7 +416,6 @@ SVGs?
 TablePlus
 tfa
 TFA
-(T|t)heming
 TileJSON
 TinyMCE
 TLS

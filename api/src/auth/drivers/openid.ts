@@ -26,6 +26,7 @@ import { createDefaultAccountability } from '../../permissions/utils/create-defa
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
 import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
+import type { RoleMap } from '../../types/rolemap.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
@@ -39,6 +40,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	redirectUrl: string;
 	usersService: UsersService;
 	config: Record<string, any>;
+	roleMap: RoleMap;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
@@ -69,6 +71,23 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = additionalConfig;
+		this.roleMap = {};
+
+		const roleMapping = this.config['roleMapping'];
+
+		if (roleMapping) {
+			this.roleMap = roleMapping;
+		}
+
+		// role mapping will fail on login if AUTH_<provider>_ROLE_MAPPING is an array instead of an object.
+		// This happens if the 'json:' prefix is missing from the variable declaration. To save the user from exhaustive debugging, we'll try to fail early here.
+		if (roleMapping instanceof Array) {
+			logger.error(
+				"[OpenID] Expected a JSON-Object as role mapping, got an Array instead. Make sure you declare the variable with 'json:' prefix.",
+			);
+
+			throw new InvalidProviderError();
+		}
 
 		this.client = new Promise((resolve, reject) => {
 			Issuer.discover(issuerUrl)
@@ -178,6 +197,22 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
+		let role = this.config['defaultRoleId'];
+		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
+		const groups = userInfo[groupClaimName];
+
+		if (Array.isArray(groups)) {
+			for (const key in this.roleMap) {
+				if (groups.includes(key)) {
+					// Overwrite default role if user is member of a group specified in roleMap
+					role = this.roleMap[key];
+					break;
+				}
+			}
+		} else {
+			logger.debug(`[OpenID] Configured group claim with name "${groupClaimName}" does not exist or is empty.`);
+		}
+
 		// Flatten response to support dot indexes
 		userInfo = flatten(userInfo) as Record<string, unknown>;
 
@@ -198,7 +233,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			last_name: userInfo['family_name'],
 			email: email,
 			external_identifier: identifier,
-			role: this.config['defaultRoleId'],
+			role: role,
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		};
 
@@ -209,6 +244,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			let emitPayload: Record<string, unknown> = {
 				auth_data: userPayload.auth_data,
+				// Make sure a user's role gets updated if his openid group or role mapping changes
+				role: role,
 			};
 
 			if (syncUserInfo) {
