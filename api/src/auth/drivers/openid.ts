@@ -198,10 +198,19 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		}
 
 		let role = this.config['defaultRoleId'];
+		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
+
+		if (userInfo[groupClaimName] === undefined) {
+			logger.error(
+				'[OpenID] The groups claim name configured could not be found in the data received from the OIDC provider. Please check if your groups claim name is set correctly.',
+			);
+
+			throw new InvalidProviderConfigError({ provider: this.config['provider'] });
+		}
 
 		// Overwrite default role if user is member of a group specified in roleMap
 		for (const key in this.roleMap) {
-			if ((userInfo['groups'] as Array<string>).includes(key)) {
+			if ((userInfo[groupClaimName] as Array<string>).includes(key)) {
 				role = this.roleMap[key];
 				break;
 			}
