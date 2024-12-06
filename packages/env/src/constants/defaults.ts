@@ -1,3 +1,4 @@
+import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import { resolve } from 'node:path';
 import { cwd } from 'node:process';
 
@@ -126,9 +127,16 @@ export const DEFAULTS = {
 	FILE_METADATA_ALLOW_LIST: 'ifd0.Make,ifd0.Model,exif.FNumber,exif.ExposureTime,exif.FocalLength,exif.ISOSpeedRatings',
 
 	TUS_ENABLED: false,
-	TUS_CHUNK_SIZE: '10mb',
+	TUS_CHUNK_SIZE: DEFAULT_CHUNK_SIZE, // 8mb
 	TUS_UPLOAD_EXPIRATION: '10m',
 	TUS_CLEANUP_SCHEDULE: '0 * * * *', // every hour
+
+	RETENTION_ENABLED: false,
+	RETENTION_BATCH: 500,
+	RETENTION_SCHEDULE: '0 0 * * *', // once a day at 12AM
+	ACTIVITY_RETENTION: '90d',
+	REVISIONS_RETENTION: '90d',
+	FLOW_LOGS_RETENTION: '90d',
 
 	GRAPHQL_INTROSPECTION: true,
 	GRAPHQL_QUERY_TOKEN_LIMIT: 5000,

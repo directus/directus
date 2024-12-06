@@ -1,8 +1,8 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
-import { getCache } from '../../cache.js';
-import { scheduleSynchronizedJob } from '../../utils/schedule.js';
-import { track } from './track.js';
+import { getCache } from '../cache.js';
+import { scheduleSynchronizedJob } from '../utils/schedule.js';
+import { track } from '../telemetry/index.js';
 
 /**
  * Exported to be able to test the anonymous callback function
@@ -12,12 +12,12 @@ export const jobCallback = () => {
 };
 
 /**
- * Initialize the telemetry tracking. Will generate a report on start, and set a schedule to report
+ * Schedule the telemetry tracking. Will generate a report on start, and set a schedule to report
  * every 6 hours
  *
  * @returns Whether or not telemetry has been initialized
  */
-export const initTelemetry = async () => {
+export default async function schedule(): Promise<boolean> {
 	const env = useEnv();
 
 	if (toBoolean(env['TELEMETRY']) === false) return false;
@@ -35,4 +35,4 @@ export const initTelemetry = async () => {
 	}
 
 	return true;
-};
+}

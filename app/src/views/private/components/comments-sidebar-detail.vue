@@ -9,6 +9,7 @@ import { isThisYear, isToday, isYesterday } from 'date-fns';
 import { flatten, groupBy, orderBy } from 'lodash';
 import { Ref, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import dompurify from 'dompurify';
 import CommentInput from './comment-input.vue';
 import CommentItem from './comment-item.vue';
 
@@ -100,10 +101,9 @@ function useComments(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 			userPreviews.value = await loadUserPreviews(response, regex);
 
 			const commentsWithTaggedUsers = (response as Comment[]).map((comment) => {
-				const display = (comment.comment as string).replace(
-					regex,
-					(match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`,
-				);
+				const display = dompurify
+					.sanitize(comment.comment as string, { ALLOWED_TAGS: [] })
+					.replace(regex, (match) => `<mark>${userPreviews.value[match.substring(2)]}</mark>`);
 
 				return {
 					...comment,

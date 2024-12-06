@@ -83,7 +83,6 @@ import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
-import { CommentsService } from '../comments.js';
 import { ExtensionsService } from '../extensions.js';
 import { FieldsService } from '../fields.js';
 import { FilesService } from '../files.js';
@@ -325,7 +324,6 @@ export class GraphQLService {
 					CreateCollectionTypes,
 					ReadCollectionTypes,
 					UpdateCollectionTypes,
-					DeleteCollectionTypes,
 				},
 				schema,
 			);
@@ -2094,12 +2092,10 @@ export class GraphQLService {
 			CreateCollectionTypes,
 			ReadCollectionTypes,
 			UpdateCollectionTypes,
-			DeleteCollectionTypes,
 		}: {
 			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 			ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 			UpdateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
-			DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 		},
 		schema: {
 			create: SchemaOverview;
@@ -3351,99 +3347,6 @@ export class GraphQLService {
 						}
 
 						return true;
-					},
-				},
-			});
-		}
-
-		if ('directus_activity' in schema.create.collections) {
-			schemaComposer.Mutation.addFields({
-				create_comment: {
-					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
-					args: {
-						collection: new GraphQLNonNull(GraphQLString),
-						item: new GraphQLNonNull(GraphQLID),
-						comment: new GraphQLNonNull(GraphQLString),
-					},
-					resolve: async (_, args, __, info) => {
-						const service = new CommentsService({
-							accountability: this.accountability,
-							schema: this.schema,
-							serviceOrigin: 'activity',
-						});
-
-						const primaryKey = await service.createOne({
-							...args,
-						});
-
-						if ('directus_activity' in ReadCollectionTypes) {
-							const selections = this.replaceFragmentsInSelections(
-								info.fieldNodes[0]?.selectionSet?.selections,
-								info.fragments,
-							);
-
-							const query = this.getQuery(args, selections || [], info.variableValues);
-
-							return await service.readOne(primaryKey, query);
-						}
-
-						return true;
-					},
-				},
-			});
-		}
-
-		if ('directus_activity' in schema.update.collections) {
-			schemaComposer.Mutation.addFields({
-				update_comment: {
-					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
-					args: {
-						id: new GraphQLNonNull(GraphQLID),
-						comment: new GraphQLNonNull(GraphQLString),
-					},
-					resolve: async (_, args, __, info) => {
-						const commentsService = new CommentsService({
-							accountability: this.accountability,
-							schema: this.schema,
-							serviceOrigin: 'activity',
-						});
-
-						const primaryKey = await commentsService.updateOne(args['id'], { comment: args['comment'] });
-
-						if ('directus_activity' in ReadCollectionTypes) {
-							const selections = this.replaceFragmentsInSelections(
-								info.fieldNodes[0]?.selectionSet?.selections,
-								info.fragments,
-							);
-
-							const query = this.getQuery(args, selections || [], info.variableValues);
-
-							return { ...(await commentsService.readOne(primaryKey, query)), id: args['id'] };
-						}
-
-						return true;
-					},
-				},
-			});
-		}
-
-		if ('directus_activity' in schema.delete.collections) {
-			schemaComposer.Mutation.addFields({
-				delete_comment: {
-					type: DeleteCollectionTypes['one']!,
-					args: {
-						id: new GraphQLNonNull(GraphQLID),
-					},
-					resolve: async (_, args) => {
-						const commentsService = new CommentsService({
-							accountability: this.accountability,
-							schema: this.schema,
-							serviceOrigin: 'activity',
-						});
-
-						await commentsService.deleteOne(args['id']);
-
-						return { id: args['id'] };
 					},
 				},
 			});

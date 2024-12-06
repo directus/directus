@@ -5,7 +5,7 @@ import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { merge } from 'lodash-es';
+import { isArray, merge } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -185,7 +185,14 @@ export function getDatabase(): Knex {
 				times.delete(queryInfo.__knexUid);
 			}
 
-			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${(queryInfo.bindings ?? []).join(', ')}]`);
+			// eslint-disable-next-line no-nested-ternary
+			const bindings = queryInfo.bindings
+				? isArray(queryInfo.bindings)
+					? queryInfo.bindings
+					: Object.values(queryInfo.bindings)
+				: [];
+
+			logger.trace(`[${delta ? delta.toFixed(3) : '?'}ms] ${queryInfo.sql} [${bindings.join(', ')}]`);
 		})
 		.on('query-error', (_, queryInfo: QueryInfo) => {
 			times.delete(queryInfo.__knexUid);
