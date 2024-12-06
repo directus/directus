@@ -115,11 +115,11 @@ const errorFormatted = computed(() => {
 			justify-content: center;
 
 			svg {
-				max-width: 70%; // Scales the icon dynamically within the container
-				max-height: 70%; // Ensures proper fit and prevents overflow
+				max-width: 70%;
+				max-height: 70%;
 				width: auto;
 				height: auto;
-				vertical-align: middle; // Centers the SVG vertically
+				vertical-align: middle;
 			}
 		}
 	}
