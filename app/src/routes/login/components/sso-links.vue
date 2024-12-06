@@ -88,9 +88,7 @@ const errorFormatted = computed(() => {
 }
 
 .sso-link {
-	$sso-link-border-width: 1px;
-
-	$sso-link-icon-mb-apple: 11px;
+	$sso-link-border-width: 2px;
 
 	display: flex;
 	width: 100%;
@@ -105,16 +103,24 @@ const errorFormatted = computed(() => {
 		align-items: center;
 		justify-content: center;
 		width: var(--theme--form--field--input--height);
+		height: var(--theme--form--field--input--height);
 		margin: -$sso-link-border-width;
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 
-		.v-icon:has(svg.fa-apple) {
-			margin-bottom: $sso-link-icon-mb-apple;
-		}
-
 		span {
 			--v-icon-size: 28px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			svg {
+				max-width: 70%; // Scales the icon dynamically within the container
+				max-height: 70%; // Ensures proper fit and prevents overflow
+				width: auto;
+				height: auto;
+				vertical-align: middle; // Centers the SVG vertically
+			}
 		}
 	}
 
