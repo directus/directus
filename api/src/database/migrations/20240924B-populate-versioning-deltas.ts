@@ -22,7 +22,10 @@ export async function up(knex: Knex): Promise<void> {
 					.where('version', '=', missingDeltaVersion.id)
 					.orderBy('id');
 
-				const deltas = revisions.map((revision) => parseJSON(revision.delta));
+				const deltas = revisions.map((revision) =>
+					typeof revision.delta === 'string' ? parseJSON(revision.delta) : revision.delta ?? {},
+				);
+
 				const consolidatedDelta = assign({}, ...deltas);
 
 				await trx('directus_versions')

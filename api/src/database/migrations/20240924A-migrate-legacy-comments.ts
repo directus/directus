@@ -15,6 +15,9 @@ export async function up(knex: Knex): Promise<void> {
 	const rowsLimit = 50;
 	let hasMore = true;
 
+	const existingUsers = new Set();
+	const missingUsers = new Set();
+
 	while (hasMore) {
 		const legacyComments = await knex
 			.select('*')
@@ -35,12 +38,33 @@ export async function up(knex: Knex): Promise<void> {
 				if (legacyComment['action'] === Action.COMMENT) {
 					primaryKey = randomUUID();
 
+					let legacyCommentUserId = legacyComment.user;
+
+					if (legacyCommentUserId) {
+						if (missingUsers.has(legacyCommentUserId)) {
+							legacyCommentUserId = null;
+						} else if (!existingUsers.has(legacyCommentUserId)) {
+							const userExists = await trx
+								.select('id')
+								.from('directus_users')
+								.where('id', '=', legacyCommentUserId)
+								.first();
+
+							if (userExists) {
+								existingUsers.add(legacyCommentUserId);
+							} else {
+								missingUsers.add(legacyCommentUserId);
+								legacyCommentUserId = null;
+							}
+						}
+					}
+
 					await trx('directus_comments').insert({
 						id: primaryKey,
 						collection: legacyComment.collection,
 						item: legacyComment.item,
 						comment: legacyComment.comment,
-						user_created: legacyComment.user,
+						user_created: legacyCommentUserId,
 						date_created: legacyComment.timestamp,
 					});
 

@@ -29,6 +29,7 @@ const router = useRouter();
 
 const collection = ref<string | null>(null);
 const selection = ref<string[]>([]);
+const confirmDelete = ref(false);
 const tab = ref(['inbox']);
 const openNotifications = ref<string[]>([]);
 const page = ref(1);
@@ -117,38 +118,26 @@ const showingCount = computed(() => {
 	});
 });
 
+const someItemsSelected = computed(
+	() => selection.value.length > 0 && selection.value.length < notifications.value.length,
+);
+
+const allItemsSelected = computed(
+	() => selection.value.length === notifications.value.length && notifications.value.length > 0,
+);
+
 async function refresh() {
 	await getItems();
 	await getTotalCount();
 	await getItemCount();
 }
 
-async function archiveAll() {
-	await api.patch('/notifications', {
-		query: {
-			filter: {
-				_and: [
-					{
-						recipient: {
-							_eq: userStore.currentUser!.id,
-						},
-					},
-					{
-						status: {
-							_eq: 'inbox',
-						},
-					},
-				],
-			},
-		},
-		data: {
-			status: 'archived',
-		},
-	});
-
-	await refresh();
-
-	notificationsStore.setUnreadCount(0);
+async function selectAll() {
+	if (allItemsSelected.value) {
+		selection.value = [];
+	} else {
+		selection.value = notifications.value.map((notification) => notification.id);
+	}
 }
 
 function toggleSelected(id: string) {
@@ -181,6 +170,22 @@ async function toggleArchive() {
 	selection.value = [];
 }
 
+async function deleteSelected() {
+	try {
+		await api.delete('/notifications', {
+			data: {
+				keys: selection.value,
+			},
+		});
+
+		await refresh();
+		await notificationsStore.refreshUnreadCount();
+	} finally {
+		confirmDelete.value = false;
+		selection.value = [];
+	}
+}
+
 function onLinkClick(to: string) {
 	router.push(to);
 
@@ -211,6 +216,34 @@ function clearFilters() {
 
 		<template #actions>
 			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
+			<v-dialog v-model="confirmDelete" :disabled="selection.length === 0" @esc="confirmDelete = false">
+				<template #activator="{ on }">
+					<v-button
+						v-tooltip.bottom="t('delete_label')"
+						rounded
+						icon
+						class="action-delete"
+						secondary
+						:disabled="selection.length === 0"
+						@click="on"
+					>
+						<v-icon name="delete" outline />
+					</v-button>
+				</template>
+
+				<v-card>
+					<v-card-title>{{ t('delete_are_you_sure') }}</v-card-title>
+
+					<v-card-actions>
+						<v-button secondary @click="confirmDelete = false">
+							{{ t('cancel') }}
+						</v-button>
+						<v-button kind="danger" @click="deleteSelected">
+							{{ t('delete_label') }}
+						</v-button>
+					</v-card-actions>
+				</v-card>
+			</v-dialog>
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon
@@ -220,16 +253,6 @@ function clearFilters() {
 				@click="toggleArchive"
 			>
 				<v-icon :name="tab[0] === 'inbox' ? 'archive' : 'move_to_inbox'" />
-			</v-button>
-			<v-button
-				v-if="tab[0] === 'inbox'"
-				v-tooltip.bottom="t('archive_all')"
-				icon
-				rounded
-				:disabled="notifications.length === 0"
-				@click="archiveAll"
-			>
-				<v-icon name="done_all" />
 			</v-button>
 		</template>
 
@@ -269,50 +292,63 @@ function clearFilters() {
 				<v-skeleton-loader v-for="i in 10" :key="i" :class="{ dense: totalPages > 1 }" />
 			</v-list>
 
-			<v-list v-else class="notifications">
-				<v-list-item
-					v-for="notification in notifications"
-					:key="notification.id"
-					block
-					:dense="totalPages > 1"
-					:clickable="Boolean(notification.message)"
-					@mousedown.left.self="({ target }: Event) => (mouseDownTarget = target)"
-					@mouseup.left.self="
-						({ target }: Event) => {
-							if (target === mouseDownTarget) toggleNotification(notification.id);
-							mouseDownTarget = null;
-						}
-					"
-				>
-					<div class="header" @click="toggleNotification(notification.id)">
-						<v-checkbox
-							:model-value="selection.includes(notification.id)"
-							@update:model-value="toggleSelected(notification.id)"
+			<div v-else class="notifications-block">
+				<v-checkbox
+					class="select-all"
+					:class="{ dense: totalPages > 1 }"
+					:label="!allItemsSelected ? t('select_all') : t('deselect_all')"
+					:model-value="allItemsSelected"
+					:indeterminate="someItemsSelected"
+					@update:model-value="selectAll"
+				/>
+
+				<v-divider :class="{ dense: totalPages > 1 }" />
+
+				<v-list class="notifications">
+					<v-list-item
+						v-for="notification in notifications"
+						:key="notification.id"
+						block
+						:dense="totalPages > 1"
+						:clickable="Boolean(notification.message)"
+						@mousedown.left.self="({ target }: Event) => (mouseDownTarget = target)"
+						@mouseup.left.self="
+							({ target }: Event) => {
+								if (target === mouseDownTarget) toggleNotification(notification.id);
+								mouseDownTarget = null;
+							}
+						"
+					>
+						<div class="header" @click="toggleNotification(notification.id)">
+							<v-checkbox
+								:model-value="selection.includes(notification.id)"
+								@update:model-value="toggleSelected(notification.id)"
+							/>
+							<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
+							<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
+								<v-text-overflow class="datetime" :text="datetime" />
+							</use-datetime>
+							<v-icon
+								v-if="notification.to"
+								v-tooltip="t('goto_collection_content')"
+								clickable
+								name="open_in_new"
+								@click="onLinkClick(notification.to)"
+							/>
+							<v-icon
+								v-if="notification.message"
+								clickable
+								:name="openNotifications.includes(notification.id) ? 'expand_less' : 'expand_more'"
+							/>
+						</div>
+						<div
+							v-if="openNotifications.includes(notification.id) && notification.message"
+							v-md="notification.message"
+							class="message"
 						/>
-						<v-text-overflow class="title" :highlight="search" :text="notification.subject" />
-						<use-datetime v-slot="{ datetime }" :value="notification.timestamp" type="timestamp" relative>
-							<v-text-overflow class="datetime" :text="datetime" />
-						</use-datetime>
-						<v-icon
-							v-if="notification.to"
-							v-tooltip="t('goto_collection_content')"
-							clickable
-							name="open_in_new"
-							@click="onLinkClick(notification.to)"
-						/>
-						<v-icon
-							v-if="notification.message"
-							clickable
-							:name="openNotifications.includes(notification.id) ? 'expand_less' : 'expand_more'"
-						/>
-					</div>
-					<div
-						v-if="openNotifications.includes(notification.id) && notification.message"
-						v-md="notification.message"
-						class="message"
-					/>
-				</v-list-item>
-			</v-list>
+					</v-list-item>
+				</v-list>
+			</div>
 			<v-pagination v-if="totalPages > 1" v-model="page" :total-visible="5" :length="totalPages" />
 		</div>
 	</v-drawer>
@@ -338,6 +374,7 @@ function clearFilters() {
 
 .notifications {
 	margin-bottom: 16px;
+
 	.v-skeleton-loader {
 		margin-bottom: 8px;
 
@@ -388,6 +425,31 @@ function clearFilters() {
 			}
 		}
 	}
+}
+
+.select-all {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 24px;
+	margin: 0 18px;
+
+	&.dense {
+		margin: 0 10px 12px;
+	}
+}
+
+.v-divider {
+	margin: 8px 0;
+
+	&.dense {
+		margin: 4px 0;
+	}
+}
+
+.action-delete {
+	--v-button-background-color-hover: var(--theme--danger) !important;
+	--v-button-color-hover: var(--white) !important;
 }
 
 .fade-enter-active,
