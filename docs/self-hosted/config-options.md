@@ -353,6 +353,14 @@ This includes:
   Note: `REDIS_SENTINELS` is required for specifying sentinel instances and expects to receive an array of objects:
   `REDIS_SENTINELS=json:[{"host": "127.0.0.1", "port": 26379}, ...]`
 
+  For example:
+
+  ```
+  REDIS_NAME: "redis-cache" # Sentinel cluster name
+  REDIS_SENTINEL_PASSWORD: <password>
+  REDIS_SENTINELS: 'json:[{"host": <fdqn or ip>, "port": 26379}]'
+  ```
+
   Make sure to explicitly prefix the value with `json` so it will be treated as a json array.
 
 :::
