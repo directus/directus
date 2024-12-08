@@ -79,7 +79,14 @@ extension_hooks: हुक
 extension_endpoints: शेवट
 extension_operations: संचालन
 extension_bundles:
-extension_missing:
+extension_missing: अज्ञात
+extension_reload_required:
+extension_reload_required_copy: अँप एक्सटेंशन सक्षम किंवा अक्षम केल्यानंतर होणारे बदल पाहण्यासाठी पृष्ठ रीलोड करणे आवश्यक आहे.
+extension_reload_now: रीलोड करा
+published_relative: प्रसारित केले {relativeTime}
+compatible_with_your_project: तुमच्या प्रोजेक्टशी सुसंगत
+compatible_with_your_project_copy: लेखकाने या विस्ताराची सुसंगतता {hostVersion} असल्याचे सूचित केले आहे, जे तुमच्या प्रकल्पाच्या आवृत्तीशी जुळते ({currentVersion})
+last_updated_relative: शेवटचे अपडेट {relativeTime}
 source_registry: बाजारपेठ
 fields:
   directus_settings:
