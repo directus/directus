@@ -197,6 +197,7 @@ function editItem(item: DisplayItem) {
 
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
+	const sortField = relationInfo.value.sortField;
 
 	newItem = false;
 
@@ -204,6 +205,9 @@ function editItem(item: DisplayItem) {
 		...getItemEdits(item),
 		[relationInfo.value.collectionField.field]: item[relationInfo.value.collectionField.field],
 	};
+	if (sortField && item[sortField] !== undefined) {
+		editsAtStart.value[sortField] = item[sortField];
+	}
 
 	editModalActive.value = true;
 	editingCollection.value = item[relationInfo.value.collectionField.field];
