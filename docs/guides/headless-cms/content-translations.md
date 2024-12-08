@@ -37,7 +37,7 @@ Create a new collection for all the different languages your application will su
    languages
 
    - code (Primary Key Field, Type: Manually entered string )
-   - name (Type: String, Inferface: Input)
+   - name (Type: String, Interface: Input)
    - direction (Type: String, Interface: Dropdown, Default Value: ltr)
    ```
 
@@ -114,7 +114,7 @@ within, you can choose to Continue in Advanced Field Creation Mode.
    - title (Type: String, Interface: Input )
    - slug (Type: String, Interface: Input)
    - summary (Type: Text, Inteface: Textarea)
-   - content (Type: Text, Inferface: WYSIWYG)
+   - content (Type: Text, Interface: WYSIWYG)
    ```
 
    ![Data Model settings screen for the Articles Translations collection is displayed. The following fields are shown: id, articles_id, languages_code, title, slug, summary, content.](https://marketing.directus.app/assets/e2ee5c61-3449-40cf-9cd4-24f9edb2ae6a.png?key=doc)
