@@ -205,6 +205,7 @@ function editItem(item: DisplayItem) {
 		...getItemEdits(item),
 		[relationInfo.value.collectionField.field]: item[relationInfo.value.collectionField.field],
 	};
+
 	if (sortField && item[sortField] !== undefined) {
 		editsAtStart.value[sortField] = item[sortField];
 	}
