@@ -71,8 +71,15 @@ extension_operation: संचालन
 extension_bundle: संग्रह 
 extension_interfaces: इंटरफेस
 extension_displays: डिस्पले
+extension_layouts: मांडणी
 extension_modules: मॉड्यूल
+extension_panels: पॅनल
+extension_themes: थीम
+extension_hooks: हुक
+extension_endpoints: शेवट
+extension_operations: संचालन
 extension_bundles:
+extension_missing:
 source_registry: बाजारपेठ
 fields:
   directus_settings:
