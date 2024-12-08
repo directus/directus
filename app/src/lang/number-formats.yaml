@@ -828,3 +828,16 @@ vi-VN:
   percent:
     style: 'percent'
     useGrouping: false
+
+mr-IN:
+  currency:
+    style: 'currency'
+    currency: 'INR'
+    notation: standard
+  decimal:
+    style: 'decimal'
+    minimumFractionDigits: 2
+    maximumFractionDigits: 2
+  percent:
+    style: 'percent'
+    useGrouping: false
