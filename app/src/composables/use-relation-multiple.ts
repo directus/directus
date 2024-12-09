@@ -648,9 +648,9 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		function applySort(item: Record<string, any>, totalSortCount = 0): Record<string, any> {
-			const sortField = relation.value?.sortField;
+		const sortField = relation.value?.sortField;
 
+		function applySort(item: Record<string, any>, totalSortCount = 0): Record<string, any> {
 			if (!sortField || totalSortCount > previewQuery.value.limit || item[sortField] !== undefined) return item;
 
 			return {
@@ -727,36 +727,32 @@ export function useRelationMultiple(
 
 		function getItemEdits(item: DisplayItem) {
 			let edits: DisplayItem = {};
-			const sortField = relation.value?.sortField;
-
-			if (sortField && item[sortField] !== undefined) {
-				edits[sortField] = item[sortField];
-			}
 
 			if ('$type' in item && item.$index !== undefined) {
 				if (item.$type === 'created') {
 					edits = {
-						...edits,
 						..._value.value.create[item.$index],
-						$type: 'created',
+						$type: item.$type,
 						$index: item.$index,
 					};
 				} else if (item.$type === 'updated') {
 					edits = {
-						...edits,
 						..._value.value.update[item.$index],
-						$type: 'updated',
+						$type: item.$type,
 						$index: item.$index,
 					};
 				} else if (item.$type === 'deleted' && item.$edits !== undefined) {
 					edits = {
-						...edits,
 						..._value.value.update[item.$edits],
-						$type: 'deleted',
+						$type: item.$type,
 						$index: item.$index,
 						$edits: item.$edits,
 					};
 				}
+			}
+
+			if (sortField && item[sortField] !== undefined && edits[sortField] === undefined) {
+				edits[sortField] = item[sortField];
 			}
 
 			return edits;
