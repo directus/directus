@@ -111,15 +111,6 @@ const errorFormatted = computed(() => {
 			--v-icon-size: 28px;
 			display: flex;
 			align-items: center;
-			justify-content: center;
-
-			svg {
-				max-width: 70%;
-				max-height: 70%;
-				width: auto;
-				height: auto;
-				vertical-align: middle;
-			}
 		}
 	}
 
