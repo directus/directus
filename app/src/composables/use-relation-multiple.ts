@@ -648,9 +648,9 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		const sortField = relation.value?.sortField;
-
 		function applySort(item: Record<string, any>, totalSortCount = 0): Record<string, any> {
+			const sortField = relation.value?.sortField;
+
 			if (!sortField || totalSortCount > previewQuery.value.limit || item[sortField] !== undefined) return item;
 
 			return {
@@ -726,6 +726,7 @@ export function useRelationMultiple(
 		}
 
 		function getItemEdits(item: DisplayItem) {
+			const sortField = relation.value?.sortField;
 			let edits: DisplayItem = {};
 
 			if ('$type' in item && item.$index !== undefined) {
