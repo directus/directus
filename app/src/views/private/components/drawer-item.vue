@@ -103,7 +103,7 @@ const title = computed(() => {
 });
 
 const {
-	itemPermissions: { fields: fieldsWithPermissions, updateAllowed, saveAllowed },
+	itemPermissions: { fields: fieldsWithPermissions, saveAllowed },
 } = usePermissions(
 	collection,
 	primaryKey,
@@ -111,11 +111,7 @@ const {
 );
 
 const {
-	itemPermissions: {
-		fields: relatedCollectionFields,
-		updateAllowed: updateRelatedCollectionAllowed,
-		saveAllowed: saveRelatedCollectionAllowed,
-	},
+	itemPermissions: { fields: relatedCollectionFields, saveAllowed: saveRelatedCollectionAllowed },
 } = usePermissions(
 	relatedCollection as Ref<string>,
 	relatedPrimaryKey,
