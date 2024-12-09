@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed retention timestamp not being database specific
+Fixed retention time based query not being database agnostic
