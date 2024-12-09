@@ -87,6 +87,7 @@ published_relative: प्रसारित केले {relativeTime}
 compatible_with_your_project: तुमच्या प्रोजेक्टशी सुसंगत
 compatible_with_your_project_copy: लेखकाने या विस्ताराची सुसंगतता {hostVersion} असल्याचे सूचित केले आहे, जे तुमच्या प्रकल्पाच्या आवृत्तीशी जुळते ({currentVersion})
 last_updated_relative: शेवटचे अपडेट {relativeTime}
+n_files: '{n} फाइल्स'
 verified: व्हेरीफाय केले
 homepage: मुख्य पृष्ठ
 report_an_issue: समस्या नोंदवा
