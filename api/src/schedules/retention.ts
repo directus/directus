@@ -79,7 +79,17 @@ export async function handleRetentionJob() {
 			}
 
 			try {
-				count = await database(task.collection).where('id', 'in', subquery).delete();
+				const records = await subquery;
+
+				if (records.length !== 0) {
+					count = await database(task.collection)
+						.where(
+							'id',
+							'in',
+							records.map((r) => r.id),
+						)
+						.delete();
+				}
 			} catch (error) {
 				logger.error(error, `Retention failed for Collection ${task.collection}`);
 
