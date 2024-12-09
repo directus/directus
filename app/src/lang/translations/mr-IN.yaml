@@ -71,9 +71,41 @@ extension_operation: संचालन
 extension_bundle: संग्रह 
 extension_interfaces: इंटरफेस
 extension_displays: डिस्पले
+extension_layouts: मांडणी
 extension_modules: मॉड्यूल
+extension_panels: पॅनल
+extension_themes: थीम
+extension_hooks: हुक
+extension_endpoints: शेवट
+extension_operations: संचालन
 extension_bundles:
+extension_missing: अज्ञात
+extension_reload_required:
+extension_reload_required_copy: अँप एक्सटेंशन सक्षम किंवा अक्षम केल्यानंतर होणारे बदल पाहण्यासाठी पृष्ठ रीलोड करणे आवश्यक आहे.
+extension_reload_now: रीलोड करा
+published_relative: प्रसारित केले {relativeTime}
+compatible_with_your_project: तुमच्या प्रोजेक्टशी सुसंगत
+compatible_with_your_project_copy: लेखकाने या विस्ताराची सुसंगतता {hostVersion} असल्याचे सूचित केले आहे, जे तुमच्या प्रकल्पाच्या आवृत्तीशी जुळते ({currentVersion})
+last_updated_relative: शेवटचे अपडेट {relativeTime}
+verified: व्हेरीफाय केले
+homepage: मुख्य पृष्ठ
+report_an_issue: समस्या नोंदवा
+website: वेबसाइट
+github: GitHub
+beta: बीटा
+compatibility_not_guaranteed_copy: लेखकाने या विस्ताराची सुसंगतता {hostVersion} असल्याचे सूचित केले आहे, जे तुमच्या प्रकल्पाच्या आवृत्तीशी जुळते ({currentVersion})
+hook: हुक
+rename_folder: फोल्डरचे नाव बदला
+delete_folder: फोल्डर खोडून टाका
+suffix: प्रत्यय
+keep: ठेवा
+version: आवृत्ती
 source_registry: बाजारपेठ
 fields:
   directus_settings:
     module_bar: मॉड्यूल बार
+displays:
+  datetime:
+    suffix: प्रत्यय
+  formatted-value:
+    suffix: प्रत्यय
