@@ -202,7 +202,7 @@ function openNewCustomTranslationDrawer() {
 			</v-list>
 		</v-menu>
 
-		<DrawerItem
+		<drawer-item
 			v-model:active="isCustomTranslationDrawerOpen"
 			collection="directus_translations"
 			primary-key="+"
