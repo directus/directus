@@ -2,6 +2,7 @@ import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import type { Knex } from 'knex';
+import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import { useLock } from '../lock/index.js';
 import { useLogger } from '../logger/index.js';
@@ -44,6 +45,7 @@ export async function handleRetentionJob() {
 	const batch = Number(env['RETENTION_BATCH']);
 	const lockTime = await lock.get(retentionLockKey);
 	const now = Date.now();
+	const helpers = getHelpers(database);
 
 	if (lockTime && Number(lockTime) > now - retentionLockTimeout) {
 		// ensure only one connected process
@@ -65,7 +67,7 @@ export async function handleRetentionJob() {
 				.queryBuilder()
 				.select(`${task.collection}.id`)
 				.from(task.collection)
-				.where('timestamp', '<', Date.now() - task.timeframe)
+				.where('timestamp', '<', helpers.date.parse(new Date(Date.now() - task.timeframe)))
 				.limit(batch);
 
 			if (task.where) {
