@@ -260,7 +260,7 @@ function setupContentWatcher() {
 function setup(editor: any) {
 	editorRef.value = editor;
 
-	const linkShortcut = 'meta+k';
+	const linkShortcut = 'meta+K';
 
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
