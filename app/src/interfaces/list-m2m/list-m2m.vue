@@ -538,7 +538,7 @@ function getLinkForItem(item: DisplayItem) {
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
-				:disabled="!updateAllowed"
+				:disabled="disabled"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
 				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
@@ -671,7 +671,7 @@ function getLinkForItem(item: DisplayItem) {
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
+			:disabled="disabled"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
