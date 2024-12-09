@@ -54,7 +54,7 @@ const {
 	enabled: computed(() => !props.loading),
 });
 
-const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
+const { createAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const { t } = useI18n();
 
