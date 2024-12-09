@@ -1226,6 +1226,7 @@ directus_collection:
   directus_access: 策略附件
   directus_activity: 所有事件操作日志
   directus_collections: 其他集合配置和元数据
+  directus_comments:
   directus_dashboards: Insights模块中的仪表板
   directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
