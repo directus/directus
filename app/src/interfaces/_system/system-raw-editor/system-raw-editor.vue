@@ -7,6 +7,7 @@ import 'codemirror/addon/mode/simple';
 import { computed, onMounted, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { mustacheMode } from './mustacheMode';
+import { SafeInteger } from '@/__utils__/safe-integer';
 
 const props = withDefaults(
 	defineProps<{
@@ -96,6 +97,16 @@ onMounted(async () => {
 
 			if (content === '') {
 				emit('input', null);
+			} else if (props.type && ['number', 'bigInteger'].includes(props.type)) {
+				const safeInt = new SafeInteger(content, props.type === 'bigInteger');
+
+				if (safeInt.isInvalid) {
+					codemirror?.getInputField().blur();
+					codemirror?.setValue(content.substring(0, content.length - 1));
+					return;
+				}
+
+				emit('input', content);
 			} else {
 				emit('input', unref(isObjectLike) && isValidJSON(content) ? parseJSON(content) : content);
 			}
