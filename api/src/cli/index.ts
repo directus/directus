@@ -76,6 +76,7 @@ export async function createCli(): Promise<Command> {
 		.description('Create a new role')
 		.option('--role <value>', `name for the role`)
 		.option('--admin', `whether or not the role has admin access`)
+		.option('--app', `whether or not the role has app access`)
 		.action(rolesCreate);
 
 	program.command('count <collection>').description('Count the amount of items in a given collection').action(count);

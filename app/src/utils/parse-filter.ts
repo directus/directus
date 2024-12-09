@@ -8,7 +8,7 @@ export function parseFilter(filter: Filter | null): Filter {
 	if (!currentUser) return filter ?? {};
 	if (!('id' in currentUser)) return filter ?? {};
 
-	// TODO should this work with policies app side? Is that a dynamic variable that we expose in other filters, that are not permisisons?
+	// TODO should this work with policies app side? Is that a dynamic variable that we expose in other filters, that are not permissions?
 	const accountability: Accountability = {
 		role: currentUser.role?.id ?? null,
 		roles: currentUser.roles.map((role) => role.id),
