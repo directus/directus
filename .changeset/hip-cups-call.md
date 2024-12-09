@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-fixes sorting bug when editing items in m2a builder (#24163)
+Fixed an issue with unintentional sorting after editing items in relational interfaces (#24163)
