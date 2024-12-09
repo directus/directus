@@ -230,7 +230,7 @@ function useURLImport() {
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
-			:disabled="disabled || !updateAllowed"
+			:disabled="disabled"
 			@input="update"
 		>
 			<template #actions>
