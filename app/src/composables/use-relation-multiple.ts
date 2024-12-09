@@ -31,6 +31,13 @@ export type ChangesItem = {
 	delete: (string | number)[];
 };
 
+type EditsType = {
+	$edits?: number;
+	$type?: 'created' | 'updated' | 'deleted';
+	$index?: number;
+	[sortField: string]: any;
+};
+
 export function useRelationMultiple(
 	value: Ref<Record<string, any> | any[] | undefined>,
 	previewQuery: Ref<RelationQueryMultiple>,
@@ -725,22 +732,32 @@ export function useRelationMultiple(
 			return items.slice(start, end);
 		}
 
-		function getItemEdits(item: DisplayItem) {
+		function getItemEdits(item: DisplayItem): EditsType {
+			const edits: EditsType = {};
+			const sortField = relation.value?.sortField;
+
+			if (sortField && item[sortField] !== undefined) {
+				edits[sortField] = item[sortField];
+			}
+
 			if ('$type' in item && item.$index !== undefined) {
 				if (item.$type === 'created') {
 					return {
+						...edits,
 						..._value.value.create[item.$index],
 						$type: 'created',
 						$index: item.$index,
 					};
 				} else if (item.$type === 'updated') {
 					return {
+						...edits,
 						..._value.value.update[item.$index],
 						$type: 'updated',
 						$index: item.$index,
 					};
 				} else if (item.$type === 'deleted' && item.$edits !== undefined) {
 					return {
+						...edits,
 						..._value.value.update[item.$edits],
 						$type: 'deleted',
 						$index: item.$index,
@@ -749,7 +766,7 @@ export function useRelationMultiple(
 				}
 			}
 
-			return {};
+			return edits;
 		}
 
 		return { applySort, cleanItem, getPage, isLocalItem, getItemEdits, isEmpty };
