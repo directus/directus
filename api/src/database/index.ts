@@ -143,6 +143,17 @@ export function getDatabase(): Knex {
 		};
 	}
 
+	if (client === 'oracledb') {
+		poolConfig.afterCreate = async (conn: any, callback: any) => {
+			logger.trace('Setting OracleDB NLS_TIMESTAMP_FORMAT');
+
+			// enforce proper ISO standard date as default
+			await conn.executeAsync('ALTER SESSION SET NLS_TIMESTAMP_FORMAT = \'YY-MM-DD"T"HH24:MI:SS\'');
+
+			callback(null, conn);
+		};
+	}
+
 	if (client === 'mysql') {
 		// Remove the conflicting `filename` option, defined by default in the Docker Image
 		if (isObject(knexConfig.connection)) delete knexConfig.connection['filename'];
