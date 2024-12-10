@@ -204,7 +204,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<drawer-item
 				v-if="image"
 				v-model:active="editImageDetails"
-				:disabled="disabled || !updateAllowed"
+				:disabled="disabled"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
