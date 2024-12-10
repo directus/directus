@@ -145,12 +145,16 @@ export function getDatabase(): Knex {
 
 	if (client === 'oracledb') {
 		poolConfig.afterCreate = async (conn: any, callback: any) => {
-			logger.trace('Setting OracleDB NLS_DATE_FORMAT and NLS_TIMESTAMP_FORMAT');
+			logger.trace('Setting OracleDB NLS_DATE_FORMAT, NLS_TIMESTAMP_FORMAT and NLS_TIMESTAMP_TZ_FORMAT');
 
-			// enforce proper ISO standard date as default
+			// enforce proper ISO standard 2024-12-10T10:54:00.123Z for datetime/timestamp
 			await conn.executeAsync('ALTER SESSION SET NLS_TIMESTAMP_FORMAT = \'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"\'');
-			// enforce YY-MM-DD date formet
+
+			// enforce 2024-12-10 date formet
 			await conn.executeAsync("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD'");
+
+			// enforce for 2024-12-10T10:54:00-05:00 timezoned requests
+			await conn.executeAsync('ALTER SESSION SET NLS_TIMESTAMP_TZ_FORMAT = \'YYYY-MM-DD"T"HH24:MI:SSTZH:TZM\'');
 
 			callback(null, conn);
 		};
