@@ -79,6 +79,9 @@ export async function handleRetentionJob() {
 			}
 
 			try {
+				// reset count
+				count = 0;
+
 				// subquery executed here as mysql/maria does not allow limit within an IN statement
 				const records = await subquery;
 
