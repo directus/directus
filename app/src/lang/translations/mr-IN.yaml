@@ -94,8 +94,18 @@ report_an_issue: समस्या नोंदवा
 website: वेबसाइट
 github: GitHub
 beta: बीटा
+compatibility_not_guaranteed: सुसंगतता हमी नाही
 compatibility_not_guaranteed_copy: लेखकाने या विस्ताराची सुसंगतता {hostVersion} असल्याचे सूचित केले आहे, जे तुमच्या प्रकल्पाच्या आवृत्तीशी जुळते ({currentVersion})
+enable: सक्षम करा
+disable: अक्षम करा
+custom: कस्टम
 hook: हुक
+fill_width: पूर्ण रुंदी
+field_name_translations: फील्ड नाव भाषांतरे
+enter_password_to_enable_tfa: टू-फॅक्टर ऑथेंटिकेशन सक्षम करण्यासाठी तुमचा पासवर्ड एंटर करा
+add_field: फील्ड संपादित करा
+role_name: रोलचे नाव
+policy_name: पॉलिसीचे नाव
 rename_folder: फोल्डरचे नाव बदला
 delete_folder: फोल्डर खोडून टाका
 suffix: प्रत्यय
@@ -105,6 +115,12 @@ source_registry: बाजारपेठ
 fields:
   directus_settings:
     module_bar: मॉड्यूल बार
+  directus_fields:
+    translation: फील्ड नाव भाषांतरे
+  directus_roles:
+    name: रोलचे नाव
+  directus_policies:
+    name: पॉलिसीचे नाव
 displays:
   datetime:
     suffix: प्रत्यय
