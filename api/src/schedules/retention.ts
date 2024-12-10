@@ -79,6 +79,7 @@ export async function handleRetentionJob() {
 			}
 
 			try {
+				// subquery executed here as mysql/maria does not allow limit within an IN statement
 				const records = await subquery;
 
 				if (records.length !== 0) {
