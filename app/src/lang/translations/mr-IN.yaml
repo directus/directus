@@ -90,10 +90,15 @@ last_updated_relative: शेवटचे अपडेट {relativeTime}
 n_files: '{n} फाइल्स'
 verified: व्हेरीफाय केले
 homepage: मुख्य पृष्ठ
+repository: रिपोजिटरी
+reload_page: पृष्ठ रीलोड करा
+reload_required: रीलोड आवश्यक
 report_an_issue: समस्या नोंदवा
 website: वेबसाइट
 github: GitHub
 beta: बीटा
+n_downloads: '{n} डाउनलोड'
+downloads: डाउनलोड
 compatibility_not_guaranteed: सुसंगतता हमी नाही
 compatibility_not_guaranteed_copy: लेखकाने या विस्ताराची सुसंगतता {hostVersion} असल्याचे सूचित केले आहे, जे तुमच्या प्रकल्पाच्या आवृत्तीशी जुळते ({currentVersion})
 enable: सक्षम करा
@@ -106,11 +111,47 @@ enter_password_to_enable_tfa: टू-फॅक्टर ऑथेंटिके
 add_field: फील्ड संपादित करा
 role_name: रोलचे नाव
 policy_name: पॉलिसीचे नाव
+branch: शाखा
+leaf: पान
+indeterminate: अनिश्चित
+edit_collection: संकलन संपादित करा
+exclusive: अनन्य
+children: मुले
+db_only_click_to_configure: 'फक्त डेटाबेस: कॉन्फिगर करण्यासाठी क्लिक करा'
+show_active_items: सक्रिय आयटम दर्शवा
+show_archived_items: संग्रहित आयटम दर्शवा
+show_all_items: सर्व आयटम दर्शवा
+edited: मूल्य संपादित
+required: आवश्यक आहे
+required_for_app_access: ॲप प्रवेशासाठी आवश्यक
+requires_value: मूल्य आवश्यक आहे
+create_preset: प्रीसेट तयार करा
+create_panel: पॅनेल तयार करा
+create_role: रोल तयार करा
+create_policy: पॉलिसी तयार करा
+create_user: युजर तयार करा
+message: संदेश
+delete_panel: पॅनेल हटवा
+create_webhook: वेबहुक तयार करा
+create_custom_translation: सानुकूल भाषांतर तयार करा
+edit_custom_translation: सानुकूल भाषांतर संपादित करा
+no_custom_translations: सानुकूल भाषांतरे नाहीत
+no_custom_translations_copy: अद्याप कोणतीही सानुकूल भाषांतरे नाहीत.
+invite_users: युजर आमंत्रित करा
+invite: आमंत्रण
+email_already_invited: ईमेल "{email}" आधीच आमंत्रित केले आहे
+subject: विषय
+inbox: इनबॉक्स
+emails: ईमेल्स
+connection_excellent: उत्कृष्ट कनेक्शन
+connection_good: चांगले कनेक्शन
+connection_fair: ठीक ठाक कनेक्शन
 rename_folder: फोल्डरचे नाव बदला
 delete_folder: फोल्डर खोडून टाका
 suffix: प्रत्यय
 keep: ठेवा
 version: आवृत्ती
+main_version: मुख्य
 source_registry: बाजारपेठ
 fields:
   directus_settings:
@@ -126,3 +167,9 @@ displays:
     suffix: प्रत्यय
   formatted-value:
     suffix: प्रत्यय
+operations:
+  log:
+    message: संदेश
+  notification:
+    message: संदेश
+    subject: विषय
