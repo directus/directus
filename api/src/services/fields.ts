@@ -764,7 +764,17 @@ export class FieldsService {
 						.where({ group: metaRow.field, collection: metaRow.collection });
 				}
 
-				await trx('directus_fields').delete().where({ collection, field });
+				const fieldIds = (await trx('directus_fields').select('id').where({ collection, field })).map(
+					(field) => field.id,
+				);
+
+				const itemsService = new ItemsService('directus_fields', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				await itemsService.deleteMany(fieldIds, { emitEvents: false });
 			});
 
 			const actionEvent = {
