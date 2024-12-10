@@ -11,6 +11,11 @@ export class DateHelperOracle extends DateHelper {
 			return String(date.toISOString().substring(0, 19));
 		}
 
+		// Return YY-MM-DD as is for date support
+		if (date.length <= 10 && date.includes('-')) {
+			return date;
+		}
+
 		return String(new Date(date).toISOString().substring(0, 19));
 	}
 
