@@ -148,7 +148,7 @@ export function getDatabase(): Knex {
 			logger.trace('Setting OracleDB NLS_DATE_FORMAT and NLS_TIMESTAMP_FORMAT');
 
 			// enforce proper ISO standard date as default
-			await conn.executeAsync('ALTER SESSION SET NLS_TIMESTAMP_FORMAT = \'YYYY-MM-DD"T"HH24:MI:SS\'');
+			await conn.executeAsync('ALTER SESSION SET NLS_TIMESTAMP_FORMAT = \'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"\'');
 			// enforce YY-MM-DD date formet
 			await conn.executeAsync("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD'");
 
