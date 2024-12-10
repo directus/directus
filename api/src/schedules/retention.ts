@@ -67,7 +67,7 @@ export async function handleRetentionJob() {
 				.queryBuilder()
 				.select(`${task.collection}.id`)
 				.from(task.collection)
-				.where('timestamp', '<', helpers.date.parse(new Date(Date.now() - task.timeframe).toISOString()))
+				.where('timestamp', '<', helpers.date.parse(new Date(Date.now() - task.timeframe)))
 				.limit(batch);
 
 			if (task.where) {
