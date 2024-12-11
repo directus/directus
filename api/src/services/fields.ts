@@ -764,17 +764,21 @@ export class FieldsService {
 						.where({ group: metaRow.field, collection: metaRow.collection });
 				}
 
-				const fieldIds = (await trx('directus_fields').select('id').where({ collection, field })).map(
-					(field) => field.id,
-				);
-
 				const itemsService = new ItemsService('directus_fields', {
 					knex: trx,
 					accountability: this.accountability,
 					schema: this.schema,
 				});
 
-				await itemsService.deleteMany(fieldIds, { emitEvents: false });
+				await itemsService.deleteByQuery(
+					{
+						filter: {
+							collection: { _eq: collection },
+							field: { _eq: field },
+						},
+					},
+					{ emitEvents: false },
+				);
 			});
 
 			const actionEvent = {
