@@ -52,7 +52,7 @@ export class TusDataStore extends DataStore {
 		const logger = useLogger();
 		const knex = getDatabase();
 
-		const itemsService = new ItemsService<File>('directus_files', {
+		const filesItemsService = new ItemsService<File>('directus_files', {
 			accountability: this.accountability,
 			schema: this.schema,
 			knex,
@@ -114,7 +114,7 @@ export class TusDataStore extends DataStore {
 		}
 
 		// If this is a new file upload, we need to generate a new primary key and DB record
-		const primaryKey = await itemsService.createOne(fileData, { emitEvents: false });
+		const primaryKey = await filesItemsService.createOne(fileData, { emitEvents: false });
 
 		// Set the file id, so it is available to be sent as a header on upload creation / resume
 		if (!upload.metadata['id']) {
@@ -135,7 +135,7 @@ export class TusDataStore extends DataStore {
 
 			fileData.tus_data = upload;
 
-			await itemsService.updateOne(primaryKey!, fileData, { emitEvents: false });
+			await filesItemsService.updateOne(primaryKey!, fileData, { emitEvents: false });
 
 			return upload;
 		} catch (err) {
@@ -143,9 +143,9 @@ export class TusDataStore extends DataStore {
 			logger.warn(err);
 
 			if (isReplacement) {
-				await itemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
+				await filesItemsService.updateOne(primaryKey!, { tus_id: null, tus_data: null }, { emitEvents: false });
 			} else {
-				await itemsService.deleteOne(primaryKey!, { emitEvents: false });
+				await filesItemsService.deleteOne(primaryKey!, { emitEvents: false });
 			}
 
 			throw ERRORS.UNKNOWN_ERROR;
@@ -157,7 +157,7 @@ export class TusDataStore extends DataStore {
 		const fileData = await this.getFileById(tus_id);
 		const filePath = fileData.filename_disk!;
 
-		const sudoService = new ItemsService<File>('directus_files', {
+		const sudoFilesItemsService = new ItemsService<File>('directus_files', {
 			schema: this.schema,
 		});
 
@@ -169,7 +169,7 @@ export class TusDataStore extends DataStore {
 				fileData.tus_data as ChunkedUploadContext,
 			);
 
-			await sudoService.updateOne(fileData.id!, {
+			await sudoFilesItemsService.updateOne(fileData.id!, {
 				tus_data: {
 					...fileData.tus_data,
 					offset: newOffset,
@@ -189,7 +189,7 @@ export class TusDataStore extends DataStore {
 				// If the file is a replacement, delete the old files, and upgrade the temp file
 				if (isReplacement === true) {
 					const replaceId = fileData.tus_data!['metadata']!['replace_id'] as string;
-					const replaceData = await sudoService.readOne(replaceId, { fields: ['filename_disk'] });
+					const replaceData = await sudoFilesItemsService.readOne(replaceId, { fields: ['filename_disk'] });
 
 					// delete the previously saved file and thumbnails to ensure they're generated fresh
 					for await (const partPath of this.storageDriver.list(replaceId)) {
@@ -214,24 +214,24 @@ export class TusDataStore extends DataStore {
 	}
 
 	override async remove(tus_id: string): Promise<void> {
-		const sudoService = new ItemsService<File>('directus_files', {
+		const sudoFilesItemsService = new ItemsService<File>('directus_files', {
 			schema: this.schema,
 		});
 
 		const fileData = await this.getFileById(tus_id);
 		await this.storageDriver.deleteChunkedUpload(fileData.filename_disk!, fileData.tus_data as ChunkedUploadContext);
-		await sudoService.deleteOne(fileData.id!);
+		await sudoFilesItemsService.deleteOne(fileData.id!);
 	}
 
 	override async deleteExpired(): Promise<number> {
-		const sudoService = new ItemsService<File>('directus_files', {
+		const sudoFilesItemsService = new ItemsService<File>('directus_files', {
 			schema: this.schema,
 		});
 
 		const now = new Date();
 		const toDelete: Promise<void>[] = [];
 
-		const uploadFiles = await sudoService.readByQuery({
+		const uploadFiles = await sudoFilesItemsService.readByQuery({
 			fields: ['modified_on', 'tus_id', 'tus_data'],
 			filter: { tus_id: { _nnull: true } },
 		});
@@ -270,11 +270,11 @@ export class TusDataStore extends DataStore {
 	}
 
 	protected async getFileById(tus_id: string) {
-		const itemsService = new ItemsService<File>('directus_files', {
+		const sudoFilesItemsService = new ItemsService<File>('directus_files', {
 			schema: this.schema,
 		});
 
-		const results = await itemsService.readByQuery({
+		const results = await sudoFilesItemsService.readByQuery({
 			filter: {
 				tus_id: { _eq: tus_id },
 				storage: { _eq: this.location },

@@ -35,11 +35,11 @@ const { t } = useI18n();
 
 const { choices, value } = toRefs(props);
 
-const gridClass = computed(() => getMinimalGridClass(choices.value, props.width));
+const items = computed(() => choices.value || []);
 
-const { otherValue, usesOtherValue } = useCustomSelection(value as any, choices as any, (value) =>
-	emit('input', value),
-);
+const gridClass = computed(() => getMinimalGridClass(items.value, props.width));
+
+const { otherValue, usesOtherValue } = useCustomSelection(value as any, items as any, (value) => emit('input', value));
 
 const customIcon = computed(() => {
 	if (!otherValue.value) return 'add';
@@ -49,7 +49,7 @@ const customIcon = computed(() => {
 </script>
 
 <template>
-	<v-notice v-if="!choices" type="warning">
+	<v-notice v-if="!items" type="warning">
 		{{ t('choices_option_configured_incorrectly') }}
 	</v-notice>
 	<div
@@ -61,7 +61,7 @@ const customIcon = computed(() => {
 		}"
 	>
 		<v-radio
-			v-for="item in choices"
+			v-for="item in items"
 			:key="item.value"
 			block
 			:value="item.value"
@@ -72,6 +72,9 @@ const customIcon = computed(() => {
 			:model-value="value"
 			@update:model-value="$emit('input', $event)"
 		/>
+		<v-notice v-if="items.length === 0 && !allowOther" type="info">
+			{{ t('no_options_available') }}
+		</v-notice>
 		<div
 			v-if="allowOther"
 			class="custom"

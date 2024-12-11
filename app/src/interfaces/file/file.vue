@@ -54,7 +54,7 @@ const {
 	enabled: computed(() => !props.loading),
 });
 
-const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
+const { createAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const { t } = useI18n();
 
@@ -230,7 +230,7 @@ function useURLImport() {
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
-			:disabled="disabled || !updateAllowed"
+			:disabled="disabled"
 			@input="update"
 		>
 			<template #actions>
