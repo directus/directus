@@ -872,8 +872,8 @@ importers:
         specifier: 7.2.0
         version: 7.2.0
       tinymce:
-        specifier: 7.4.1
-        version: 7.4.1
+        specifier: 6.8.5
+        version: 6.8.5
       tus-js-client:
         specifier: 4.2.3
         version: 4.2.3
@@ -11360,6 +11360,9 @@ packages:
   tinyglobby@0.2.9:
     resolution: {integrity: sha512-8or1+BGEdk1Zkkw2ii16qSS7uVrQJPre5A9o/XkWPATkk23FZh/15BKFxPnlTy6vkljZxLqYCzzBMj30ZrSvjw==}
     engines: {node: '>=12.0.0'}
+
+  tinymce@6.8.5:
+    resolution: {integrity: sha512-qAL/FxL7cwZHj4BfaF818zeJJizK9jU5IQzTcSLL4Rj5MaJdiVblEj7aDr80VCV1w9h4Lak9hlnALhq/kVtN1g==}
 
   tinymce@7.4.1:
     resolution: {integrity: sha512-g1Ieaio5YU+jLEQZkQyxTT8EY/im+TC/CFBPlqDBCNdsF8YQOeLMot+K6vmFOAXhNc85KhP1rC9Dn2X+iBFDGg==}
@@ -23515,6 +23518,8 @@ snapshots:
     dependencies:
       fdir: 6.4.0(picomatch@4.0.2)
       picomatch: 4.0.2
+
+  tinymce@6.8.5: {}
 
   tinymce@7.4.1: {}
 

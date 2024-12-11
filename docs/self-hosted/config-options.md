@@ -859,28 +859,43 @@ Directus users "External Identifier".
 
 OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
 
-| Variable                                    | Description                                                                                               | Default Value          |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                               | --                     |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                                   | --                     |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                   | `openid profile email` |
-| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                                      | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                               | `sub`<sup>[2]</sup>    |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`                |
-| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                                   | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --                     |
-| `AUTH_<PROVIDER>_SYNC_USER_INFO`            | Set user's first name, last name and email from provider's user info on each login.                       | `false`                |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).         | `account_circle`       |
-| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`           |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --                     |
-| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --                     |
-| `AUTH_<PROVIDER>_LOGIN_TIMEOUT`             | Time-Out for successful login in SSO.                                                                     | `5m`                   |
+| Variable                                    | Description                                                                                                                                                                                                          | Default Value          |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                                                                                                                                          | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                                                                                                                                              | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                                                                                                                              | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                                                                                                                                                 | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                                                                                                                                          | `sub`<sup>[2]</sup>    |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                                                                                                              | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                                                                                                                                              | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                                                                                                                                          | --                     |
+| `AUTH_<PROVIDER>_SYNC_USER_INFO`            | Set user's first name, last name and email from provider's user info on each login.                                                                                                                                  | `false`                |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).                                                                                                                    | `account_circle`       |
+| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                                                                                                                                       | `<PROVIDER>`           |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                                                                                                                            | --                     |
+| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login.                                                                                                            | --                     |
+| `AUTH_<PROVIDER>_ROLE_MAPPING`              | A JSON object in the form of `{ "openid_group_name": "directus_role_id" }` that you can use to map OpenID groups to Directus roles <sup>[3]</sup>. If not specified, falls back to `AUTH_<PROVIDER>_DEFAULT_ROLE_ID` | --                     |
+| `AUTH_<PROVIDER>_GROUP_CLAIM_NAME`          | The name of the OIDC claim that contains your user's groups.                                                                                                                                                         | `groups`               |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
 
 <sup>[2]</sup> `sub` represents a unique user identifier defined by the OpenID provider. For users not relying on
 `PUBLIC_REGISTRATION` it is recommended to use a human-readable identifier, such as `email`.
+
+<sup>[3]</sup> As directus only allows one role per user, evaluating stops after the first match. An OpenID user that is
+member of both e.g. developer and admin groups may be assigned different roles depending on the order that you specify
+your role-mapping in: In the following example said OpenID user will be assigned the role `directus_developer_role_id`
+
+```
+AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "developer": "directus_developer_role_id", "admin": "directus_admin_role_id" }"
+```
+
+Whereas in the following example the OpenID user will be assigned the role `directus_admin_role_id`
+
+```
+AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "admin": "directus_admin_role_id", "developer": "directus_developer_role_id" }"
+```
 
 ### LDAP (`ldap`)
 
