@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
 import { useCustomSelectionMultiple } from '@directus/composables';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -36,48 +37,29 @@ const { t } = useI18n();
 const { choices, value } = toRefs(props);
 const showAll = ref(false);
 
-const hideChoices = computed(() => props.choices!.length > props.itemsShown);
+const items = computed(() => choices.value || []);
+
+const hideChoices = computed(() => items.value.length > props.itemsShown);
 
 const choicesDisplayed = computed(() => {
 	if (showAll.value || hideChoices.value === false) {
-		return props.choices;
+		return items.value;
 	}
 
-	return props.choices!.slice(0, props.itemsShown);
+	return items.value.slice(0, props.itemsShown);
 });
 
-const hiddenCount = computed(() => props.choices!.length - props.itemsShown);
+const hiddenCount = computed(() => items.value!.length - props.itemsShown);
 
-const gridClass = computed(() => {
-	if (choices?.value === undefined) return null;
+const gridClass = computed(() => getMinimalGridClass(items.value, props.width));
 
-	const widestOptionLength = choices.value.reduce((acc, val) => {
-		if (val.text.length > acc.length) acc = val.text;
-		return acc;
-	}, '').length;
-
-	if (props.width?.startsWith('half')) {
-		if (widestOptionLength <= 10) return 'grid-2';
-		return 'grid-1';
-	}
-
-	if (widestOptionLength <= 10) return 'grid-4';
-	if (widestOptionLength > 10 && widestOptionLength <= 15) return 'grid-3';
-	if (widestOptionLength > 15 && widestOptionLength <= 25) return 'grid-2';
-	return 'grid-1';
-});
-
-const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, choices, (value) =>
+const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, items, (value) =>
 	emit('input', value),
 );
 </script>
 
 <template>
-	<v-notice v-if="!choices" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
 	<div
-		v-else
 		class="checkboxes"
 		:class="gridClass"
 		:style="{
@@ -102,6 +84,10 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 			:label="t(`interfaces.select-multiple-checkbox.show_more`, { count: hiddenCount })"
 			@update:model-value="showAll = true"
 		></v-detail>
+
+		<v-notice v-if="items.length === 0 && !allowOther" type="info">
+			{{ t('no_options_available') }}
+		</v-notice>
 
 		<template v-if="allowOther">
 			<v-checkbox

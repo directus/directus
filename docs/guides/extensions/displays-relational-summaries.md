@@ -346,8 +346,10 @@ export default {
 		const { useFieldsStore } = useStores();
 		const fieldsStore = useFieldsStore();
 
+		let displayTemplateMeta;
+
 		if (editing === '+') {
-			const displayTemplateMeta = {
+			 displayTemplateMeta = {
 				interface: 'presentation-notice',
 				options: {
 					text: 'Please complete the field before attempting to configure the display.',
@@ -365,7 +367,7 @@ export default {
 				});
 			});
 
-			const displayTemplateMeta = {
+			 displayTemplateMeta = {
 				interface: 'select-dropdown',
 				options: {
 					choices: field_choices,

@@ -22,7 +22,7 @@ The Directus data type of the field. See [Types](/user-guide/overview/glossary#t
 
 #### Meta
 
-Directus metadata, primarily used in the Admin App. Meta is optional.
+Directus metadata, primarily used in the Data Studio. Meta is optional.
 
 `id` **integer**\
 Primary key of the metadata row in `directus_fields`.
@@ -49,29 +49,29 @@ The display used for this field.
 The configured options for the used display.
 
 `readonly` **boolean**\
-If the field is considered readonly in the Admin App.
+If the field is considered readonly in the Data Studio.
 
 `hidden` **boolean**\
-If the field is hidden from the edit page in the Admin App.
+If the field is hidden from the edit page in the Data Studio.
 
 `sort` **integer**\
-Where this field is shown on the edit page in the Admin App.
+Where this field is shown on the edit page in the Data Studio.
 
 `width` **string**\
-How wide the interface is rendered on the edit page in the Admin App. One of `half`, `half-left`, `half-right`, `half-space`,
+How wide the interface is rendered on the edit page in the Data Studio. One of `half`, `half-left`, `half-right`, `half-space`,
 `full`, `fill`.
 
 `translations` **array**\
-How this field's name is displayed in the different languages in the Admin App.
+How this field's name is displayed in the different languages in the Data Studio.
 
 `note` **string**\
-Short description displayed in the Admin App.
+Short description displayed in the Data Studio.
 
 #### Schema
 
 "Raw" database information. Based on the database vendor used, different information might be returned. The following
 are available for all drivers. Note: schema is optional. If a field exist in directus_fields, but not in the database,
-it's an alias commonly used for relational (O2M) or presentation purposes in the Admin App.
+it's an alias commonly used for relational (O2M) or presentation purposes in the Data Studio.
 
 `name` **string**\
 Identifier of the field. Matches the column name in the database.
@@ -94,8 +94,20 @@ Precision for integer/float/decimal type fields.
 `numeric_scale` **integer**\
 Scale for integer/float/decimal type fields.
 
+`is_generated` **boolean**\
+Whether or not it is a generated column on the part of the database.
+
+`generation_expression` **string**\
+The database level expression used for computing the column, in case it is a generated column.
+
 `is_nullable` **boolean**\
 Whether or not the column is nullable. This is what is used as the "required" state in Directus.
+
+`is_unique` **boolean**\
+Whether or not the column has a unique constraint.
+
+`is_indexed` **boolean**\
+Whether or not the column is indexed.
 
 `is_primary_key` **boolean**\
 Whether or not the field is the primary key of the table.
@@ -138,7 +150,11 @@ Comment as stored in the database.
 		"max_length": null,
 		"numeric_precision": 32,
 		"numeric_scale": 0,
+		"is_generated": false,
+		"generation_expression": null,
 		"is_nullable": false,
+		"is_unique": false,
+		"is_indexed": true,
 		"is_primary_key": true,
 		"has_auto_increment": true,
 		"foreign_key_column": null,

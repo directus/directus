@@ -147,6 +147,10 @@ function sidebarDeveloperReference() {
 					text: 'Collections',
 				},
 				{
+					link: '/reference/system/comments',
+					text: 'Comments',
+				},
+				{
 					link: '/reference/system/versions',
 					text: 'Content Versions',
 				},
@@ -185,6 +189,10 @@ function sidebarDeveloperReference() {
 				{
 					link: '/reference/system/permissions',
 					text: 'Permissions',
+				},
+				{
+					link: '/reference/system/policies',
+					text: 'Policies',
 				},
 				{
 					link: '/reference/system/presets',
@@ -559,23 +567,8 @@ function sidebarUserGuide() {
 			collapsed: true,
 			items: [
 				{
+					text: 'Key Concepts',
 					link: '/user-guide/user-management/users-roles-permissions',
-					text: 'Users, Roles & Permissions',
-					type: 'page',
-					items: [
-						{
-							text: 'Users',
-							link: '/user-guide/user-management/users',
-						},
-						{
-							text: 'Roles',
-							link: '/user-guide/user-management/roles',
-						},
-						{
-							text: 'Permissions',
-							link: '/user-guide/user-management/permissions',
-						},
-					],
 				},
 				{
 					text: 'User Directory',
@@ -638,6 +631,10 @@ function sidebarUserGuide() {
 					link: '/user-guide/cloud/projects',
 				},
 				{
+					text: 'Environment Variables',
+					link: '/user-guide/cloud/variables',
+				},
+				{
 					text: 'Teams',
 					link: '/user-guide/cloud/teams',
 				},
@@ -670,6 +667,10 @@ function sidebarUserGuide() {
 				{
 					text: 'Activity Log',
 					link: '/user-guide/settings/activity-log',
+				},
+				{
+					text: 'System Logs',
+					link: '/user-guide/settings/system-logs',
 				},
 			],
 		},

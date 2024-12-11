@@ -45,7 +45,7 @@ const props = withDefaults(
 const emit = defineEmits(['input']);
 
 const value = computed({
-	get: () => props.value,
+	get: () => props.value ?? [],
 	set: (val) => {
 		emit('input', val);
 	},
@@ -64,10 +64,10 @@ const firstLang = ref<string>();
 const secondLang = ref<string>();
 
 watch(splitView, (splitViewEnabled) => {
-	const lang = languageOptions.value;
-
-	if (splitViewEnabled && secondLang.value === firstLang.value) {
-		secondLang.value = lang[0]?.value === firstLang.value ? lang[1]?.value : lang[0]?.value;
+	if (splitViewEnabled) {
+		const lang = languageOptions.value;
+		const alternativeLang = lang.find((l) => l.value !== firstLang.value);
+		secondLang.value = alternativeLang?.value ?? lang[0]?.value;
 	}
 });
 
@@ -166,6 +166,7 @@ function useLanguages() {
 	const languages = ref<Record<string, any>[]>([]);
 	const loading = ref(false);
 	const error = ref<any>(null);
+	const fieldsStore = useFieldsStore();
 
 	watch(relationInfo, fetchLanguages, { immediate: true });
 
@@ -208,12 +209,13 @@ function useLanguages() {
 		if (!relationInfo.value) return;
 
 		const fields = new Set<string>();
+		const collection = relationInfo.value.relatedCollection.collection;
 
-		if (props.languageField !== null) {
+		if (props.languageField !== null && fieldsStore.getField(collection, props.languageField)) {
 			fields.add(props.languageField);
 		}
 
-		if (props.languageDirectionField !== null) {
+		if (props.languageDirectionField !== null && fieldsStore.getField(collection, props.languageDirectionField)) {
 			fields.add(props.languageDirectionField);
 		}
 
@@ -225,15 +227,12 @@ function useLanguages() {
 		loading.value = true;
 
 		try {
-			languages.value = await fetchAll<Record<string, any>[]>(
-				getEndpoint(relationInfo.value.relatedCollection.collection),
-				{
-					params: {
-						fields: Array.from(fields),
-						sort: sortField ?? props.languageField ?? pkField,
-					},
+			languages.value = await fetchAll<Record<string, any>[]>(getEndpoint(collection), {
+				params: {
+					fields: Array.from(fields),
+					sort: sortField ?? props.languageField ?? pkField,
 				},
-			);
+			});
 
 			if (!firstLang.value) {
 				const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
@@ -242,7 +241,14 @@ function useLanguages() {
 			}
 
 			if (!secondLang.value) {
-				secondLang.value = languages.value[1]?.[pkField];
+				const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
+				let lang = languages.value.find((lang) => lang[pkField] === defaultLocale) || languages.value[0];
+
+				if (!lang || lang[pkField] === firstLang.value) {
+					lang = languages.value.find((lang) => lang[pkField] !== firstLang.value) || languages.value[1];
+				}
+
+				secondLang.value = lang?.[pkField];
 			}
 		} catch (error) {
 			unexpectedError(error);

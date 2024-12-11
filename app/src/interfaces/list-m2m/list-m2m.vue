@@ -7,15 +7,16 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
 import { Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
-import { clamp, get, isEmpty, isNil, set } from 'lodash';
+import { clamp, get, isEmpty, isNil, merge, set } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -24,7 +25,7 @@ import Draggable from 'vuedraggable';
 const props = withDefaults(
 	defineProps<{
 		value?: (number | string | Record<string, any>)[] | Record<string, any>;
-		primaryKey: string | number;
+		primaryKey: string | number | null;
 		collection: string;
 		field: string;
 		width: string;
@@ -41,6 +42,7 @@ const props = withDefaults(
 		limit?: number;
 		allowDuplicates?: boolean;
 		junctionFieldLocation?: string;
+		junctionFilter?: Filter | null;
 	}>(),
 	{
 		value: () => [],
@@ -61,7 +63,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-const { t } = useI18n();
+const { t, n } = useI18n();
 const { collection, field, primaryKey } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 const fieldsStore = useFieldsStore();
@@ -123,6 +125,7 @@ const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
 const sort = ref<Sort>();
+const junctionFilter = ref<Filter | null>(props.junctionFilter ?? null);
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
@@ -137,6 +140,14 @@ const query = computed<RelationQueryMultiple>(() => {
 
 	if (searchFilter.value) {
 		q.filter = searchFilter.value;
+	}
+
+	if (junctionFilter.value) {
+		if (q.filter) {
+			q.filter = { _and: [q.filter, junctionFilter.value] };
+		} else {
+			q.filter = junctionFilter.value;
+		}
 	}
 
 	if (search.value) {
@@ -168,16 +179,19 @@ const {
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
+const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
+
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const showingCount = computed(() => {
-	return formatCollectionItemsCount(
-		totalItemCount.value,
-		page.value,
-		limit.value,
-		!!(search.value || searchFilter.value),
-	);
-});
+const showingCount = computed(() =>
+	formatItemsCountPaginated({
+		currentItems: totalItemCount.value,
+		currentPage: page.value,
+		perPage: limit.value,
+		isFiltered: !!(search.value || searchFilter.value),
+		i18n: { t, n },
+	}),
+);
 
 const headers = ref<Array<any>>([]);
 
@@ -221,7 +235,9 @@ watch(
 			})
 			.filter((key) => key !== null);
 	},
-	{ immediate: true },
+	{
+		immediate: true,
+	},
 );
 
 const spacings = {
@@ -348,6 +364,54 @@ function deleteItem(item: DisplayItem) {
 	remove(item);
 }
 
+const batchEditActive = ref(false);
+const selection = ref<DisplayItem[]>([]);
+
+const relatedPrimaryKeys = computed(() => {
+	if (!relationInfo.value) return [];
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
+
+	return selection.value.map((item) => get(item, [junctionField, relatedPkField], null)).filter((key) => !isNil(key));
+});
+
+function stageBatchEdits(edits: Record<string, any>) {
+	if (!relationInfo.value) return;
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	const junctionField = relationInfo.value.junctionField.field;
+	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
+
+	for (const item of selection.value) {
+		const junctionId = get(item, [junctionPkField], null);
+		const relatedId = get(item, [junctionField, relatedPkField], null);
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...merge(getItemEdits(item), {
+				[junctionField]: {
+					...edits,
+				},
+			}),
+		};
+
+		if (junctionId !== null) {
+			changes[junctionPkField] = junctionId;
+		}
+
+		if (relatedId !== null) {
+			set(changes, [junctionField, relatedPkField], relatedId);
+		}
+
+		update(changes);
+	}
+
+	selection.value = [];
+}
+
 const values = inject('values', ref<Record<string, any>>({}));
 
 const customFilter = computed(() => {
@@ -406,8 +470,6 @@ function getLinkForItem(item: DisplayItem) {
 
 	return null;
 }
-
-const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
 </script>
 
 <template>
@@ -435,6 +497,17 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 				</div>
 
 				<v-button
+					v-if="!disabled && updateAllowed && relatedPrimaryKeys.length > 0"
+					v-tooltip.bottom="t('edit')"
+					rounded
+					icon
+					secondary
+					@click="batchEditActive = true"
+				>
+					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
 					v-if="!disabled && enableSelect && selectAllowed"
 					v-tooltip.bottom="selectAllowed ? t('add_existing') : t('not_allowed')"
 					rounded
@@ -460,13 +533,15 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 				v-if="layout === LAYOUTS.TABLE"
 				v-model:sort="sort"
 				v-model:headers="headers"
+				v-model="selection"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
 				:items="displayItems"
 				:row-height="tableRowHeight"
-				:disabled="!updateAllowed"
+				:disabled="disabled"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
+				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
 				show-resize
 				@click:row="editRow"
 				@update:items="sortItems"
@@ -504,19 +579,20 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 			<template v-else-if="loading">
 				<v-skeleton-loader
-					v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
-					:key="n"
+					v-for="num in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
+					:key="num"
 					:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
 				/>
 			</template>
 
-			<v-list v-else>
+			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
 					{{ t('no_items') }}
 				</v-notice>
 
 				<draggable
 					:model-value="displayItems"
+					tag="v-list"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
@@ -560,12 +636,17 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 						</v-list-item>
 					</template>
 				</draggable>
-			</v-list>
+			</template>
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+						<v-pagination
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 1 : 2"
+							show-first-last
+						/>
 
 						<div class="spacer" />
 
@@ -583,14 +664,14 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 				</template>
 			</div>
 		</div>
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
+			:disabled="disabled"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"
@@ -608,6 +689,14 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 			:filter="customFilter"
 			multiple
 			@input="select"
+		/>
+
+		<drawer-batch
+			v-model:active="batchEditActive"
+			:primary-keys="relatedPrimaryKeys"
+			:collection="relationInfo.relatedCollection.collection"
+			stage-on-save
+			@input="stageBatchEdits"
 		/>
 	</div>
 </template>
@@ -667,10 +756,12 @@ const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelati
 
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
+		margin-left: auto;
 		:deep(.v-button) {
 			display: inline-flex;
 		}

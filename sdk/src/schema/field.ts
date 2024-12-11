@@ -1,6 +1,6 @@
 import type { MergeCoreCollection } from '../index.js';
 
-export type DirectusField<Schema> = {
+export type DirectusField<Schema = any> = {
 	collection: string; // TODO keyof complete schema
 	field: string;
 	type: string;
@@ -35,9 +35,10 @@ export type DirectusField<Schema> = {
 		schema: string;
 		data_type: string;
 		is_nullable: boolean;
-		generation_expression: unknown | null;
 		default_value: any | null;
+		is_indexed: boolean;
 		is_generated: boolean;
+		generation_expression: unknown | null;
 		max_length: number | null;
 		comment: string | null;
 		numeric_precision: number | null;

@@ -196,6 +196,7 @@ permissions_for_role: 'Objekt som {role} rollen kan {action}.'
 fields_for_role: 'Fält {role} rollen kan {action}.'
 validation_for_role: 'Fältets {action} regler {role} rollen måste lyda.'
 presets_for_role: 'Förvalt fältvärde för rollen {role}.'
+presets_for_policy: 'Förvalt fältvärde för rollen {policy}.'
 presentation_and_aliases: Presentation & alias
 revision_post_create: Så här såg objektet ut när det skapades.
 revision_post_update: Så här såg objektet ut efter uppdateringen.
@@ -277,6 +278,7 @@ auto_generate: Generera automatiskt
 this_will_auto_setup_fields_relations: Detta kommer automatiskt att ställa in alla obligatoriska fält och relationer.
 click_here: Klicka här
 to_manually_setup_translations: för att manuellt konfigurera översättningar.
+manage: Hantera
 click_to_manage_translated_fields: >-
   Det finns inga översatta fält ännu. Klicka här för att skapa dem. | Det finns ett översatt fält. Klicka här för att administrera det. | Det finns {count} översatta fält. Klicka här för att administrera dem.
 fields_group: Fältens grupp
@@ -358,6 +360,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} av {user}'
 presentation_text_values_cannot_be_reimported: 'Använder presentationstext, värden kan inte återimporteras.'
 download_page_as_csv: 'Ladda ned sida som CSV'
+download_page_as_csv_unsupported: Denna layout stöder inte nedladdning av den aktuella sidan.
 private_user: Privat användare
 creation_preview: Förhandsgranskning av skapande
 revision_preview: Förhandsgranska revision
@@ -461,6 +464,7 @@ import_from_url: Importera fil från URL
 replace_from_device: Ersätt fil från enhet
 replace_from_library: Ersätt fil från biblioteket
 replace_from_url: Ersätt fil från URL
+no_image_selected: Ingen bild vald
 no_file_selected: Ingen fil vald
 download_file: Ladda ner fil
 start_export: Påbörja exportering
@@ -476,10 +480,12 @@ created_on: Skapad den
 creating_collection_info: Namnge kollektionen och konfigurera dess unika "nyckelfält"...
 creating_collection_system: Aktivera och döp om något av dessa valfria fält.
 auto_increment_integer: Auto-incremented integer
+auto_increment_big_integer: Auto-incremented integer
 generated_uuid: Genererad UUID
 manual_string: Manuellt inmatad textsträng
 save_and_create_new: Spara och skapa ny
 save_and_stay: Spara och stanna
+save_and_quit: Spara och avsluta
 save_as_copy: Spara som kopia
 add_existing: Lägg till befintlig
 creating_items: Skapar objekt
@@ -641,10 +647,6 @@ make_collection_hidden: Gör samling dold
 make_folder_visible: Gör mappen synlig
 make_folder_hidden: Gör mappen dold
 goto_collection_content: Visa innehåll
-start_end_of_count_items: '{start}-{end} av {count} objekt'
-start_end_of_count_filtered_items: '{start}-{end} av {count} filtrerade objekt'
-one_item: '1 objekt'
-one_filtered_item: '1 filtrerat objekt'
 delete_collection_are_you_sure: >-
   Är du säker på att du vill ta bort denna kollektion? Detta kommer att ta bort kollektionen och alla objekt i den. Denna åtgärd är permanent.
 delete_folder_are_you_sure: Är du säker på att du vill ta bort mappen "{folder}"? Kapslade mappar och samlingar kommer att flyttas till den översta nivån.
@@ -722,7 +724,6 @@ value_unique: Värdet måste vara unikt
 all_activity: All aktivitet
 create_item: Skapa objekt
 display_template: Visningsmall
-n_items_selected: 'Inga valda objekt | 1 valt objekt | {n} valda objekt'
 per_page: Per sida
 all_files: Alla filer
 my_files: Mina filer
@@ -834,8 +835,6 @@ tooltip: Inforuta
 tooltip_placeholder: Ange en inforuta...
 unlimited: Obegränsad
 open_link_in: Öppna länk i
-new_tab: Ny flik
-current_tab: Aktuell flik
 save_image: Spara bild
 save_media: Spara media
 wysiwyg_options:
@@ -943,7 +942,6 @@ page_help_settings_datamodel_collections: >-
   **Datamodel: Kollektioner** — Listar alla tillgängliga kollektioner. Detta inkluderar synliga, dolda och systemsamlingar, samt ohanterade databas-tabeller som kan läggas till.
 page_help_settings_datamodel_fields: >-
   **Datamodel: Kollektion** — Ett formulär för att hantera denna kollektion och dess fält.
-page_help_settings_roles_collection: '**Bläddra bland roller** — Listar administratörer, offentliga och anpassade användarroller.'
 page_help_settings_roles_item: "**Detaljvy roll** — Hantera en rolls rättigheter och andra inställningar."
 page_help_settings_presets_collection: >-
   **Bläddra i förinställningar** — Visar alla förinställningar i projektet, inklusive: användare, roll och globala bokmärken, samt standardvyer.
@@ -1099,12 +1097,9 @@ fields:
     name: Rollens namn
     icon: Ikon roll
     description: Beskrivning
-    app_access: Åtkomst till appen
-    admin_access: Åtkomst admin
-    ip_access: Åtkomst med IP
-    enforce_tfa: Kräv 2FA
     users: Användare i rollen
-    module_list: Navigering för modul
+  directus_policies:
+    description: Beskrivning
   directus_webhooks:
     name: Namn
     method: Metod
@@ -1458,6 +1453,8 @@ interfaces:
     description: Ange och förhandsgranska markdown
     edit: Redigera
     preview: Förhandsgranska
+    default_view: Förvald vy
+    default_view_preview: Förhandsgranska
     customSyntax: Anpassade block
     customSyntax_label: Lägg till anpassade syntaxtyper
     customSyntax_add: Lägg till anpassad syntax

@@ -2,37 +2,33 @@ import api from '@/api';
 import { emitter, Events } from '@/events';
 import { i18n } from '@/lang';
 import { useServerStore } from '@/stores/server';
-import { notify } from '@/utils/notify';
 import { getRootPath } from '@/utils/get-root-path';
+import { notify } from '@/utils/notify';
+import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
+import type { File } from '@directus/types';
 import type { AxiosProgressEvent } from 'axios';
-import { unexpectedError } from './unexpected-error';
 import type { PreviousUpload } from 'tus-js-client';
 import { Upload } from 'tus-js-client';
+import { unexpectedError } from './unexpected-error';
 
 export async function uploadFile(
-	file: File,
+	file: globalThis.File,
 	options?: {
 		onProgressChange?: (percentage: number) => void;
 		onChunkedUpload?: (controller: Upload) => void;
 		notifications?: boolean;
-		preset?: Record<string, any>;
+		preset?: Partial<File>;
 		fileId?: string;
 		requirePreviousUpload?: boolean;
 	},
-): Promise<any> {
+): Promise<File | undefined> {
 	const progressHandler = options?.onProgressChange || (() => undefined);
 
 	const server = useServerStore();
 	let notified = false;
 
 	if (server.info.uploads) {
-		const fileInfo: Record<string, any> = {};
-
-		if (options?.preset) {
-			for (const [key, value] of Object.entries(options.preset)) {
-				fileInfo[key] = value;
-			}
-		}
+		const fileInfo: Partial<File> = { ...(options?.preset ?? {}) };
 
 		if (options?.fileId) {
 			fileInfo.id = options?.fileId;
@@ -44,8 +40,8 @@ export async function uploadFile(
 		return new Promise((resolve, reject) => {
 			const upload = new Upload(file, {
 				endpoint: getRootPath() + `files/tus`,
-				chunkSize: server.info.uploads?.chunkSize ?? 10_000_000,
-				metadata: fileInfo,
+				chunkSize: server.info.uploads?.chunkSize ?? DEFAULT_CHUNK_SIZE,
+				metadata: fileInfo as Record<string, string>,
 				// Allow user to re-upload of the same file
 				// https://github.com/tus/tus-js-client/blob/main/docs/api.md#removefingerprintonsuccess
 				removeFingerprintOnSuccess: true,
@@ -66,7 +62,7 @@ export async function uploadFile(
 						notified = true;
 					}
 				},
-				onSuccess() {
+				async onSuccess() {
 					if (options?.notifications) {
 						notify({
 							title: i18n.global.t('upload_file_success'),
@@ -76,10 +72,19 @@ export async function uploadFile(
 					emitter.emit(Events.upload);
 					emitter.emit(Events.tusResumableUploadsChanged);
 
-					resolve(fileInfo);
+					const response = await api.get(`files/${fileInfo.id}`);
+
+					if (response) {
+						resolve(response.data.data);
+					} else {
+						resolve(fileInfo as File);
+					}
 				},
 				onShouldRetry() {
 					return false;
+				},
+				onAfterResponse(_req, res) {
+					fileInfo.id ??= res.getHeader('Directus-File-Id');
 				},
 			});
 
@@ -99,6 +104,7 @@ export async function uploadFile(
 				// Found previous uploads so we select the first one.
 				if (previousUploads.length > 0) {
 					upload.resumeFromPreviousUpload(previousUploads[0]!);
+					fileInfo.id = previousUploads[0]!.metadata['id'];
 				}
 
 				// Start the upload
@@ -141,6 +147,8 @@ export async function uploadFile(
 		} catch (error) {
 			unexpectedError(error);
 		}
+
+		return;
 	}
 
 	function onUploadProgress(progressEvent: AxiosProgressEvent) {

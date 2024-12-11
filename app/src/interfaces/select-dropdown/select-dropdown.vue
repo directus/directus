@@ -2,7 +2,6 @@
 import { i18n } from '@/lang';
 import { isEmpty, isEqual } from 'lodash';
 import { computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
 
 type Option = {
 	text: string;
@@ -29,16 +28,18 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const { t } = useI18n();
-
 const applyGlobalIcon = computed(() => props.choices?.some((choice) => choice.icon));
 
 const items = computed(() => {
+	if (!props.choices) {
+		return [];
+	}
+
 	if (!applyGlobalIcon.value) {
 		return props.choices;
 	}
 
-	return props.choices?.map((choice) => {
+	return props.choices.map((choice) => {
 		if (choice.icon) {
 			return choice;
 		}
@@ -83,11 +84,7 @@ watch(
 </script>
 
 <template>
-	<v-notice v-if="!items" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
 	<v-select
-		v-else
 		:model-value="value"
 		:items="items"
 		:disabled="disabled"

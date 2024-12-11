@@ -17,13 +17,13 @@ Primary key of the flow.
 Name for the flow.
 
 `icon` **string**\
-Icon displayed in the Admin App for the flow.
+Icon displayed in the Data Studio for the flow.
 
 `color` **string**\
-Color of the icon displayed in the Admin App for the flow.
+Color of the icon displayed in the Data Studio for the flow.
 
 `description` **text**\
-Short description displayed in the Admin App.
+Short description displayed in the Data Studio.
 
 `status` **string**\
 Current status of the flow. One of `active`, `inactive`. Defaults to `active` when not specified.

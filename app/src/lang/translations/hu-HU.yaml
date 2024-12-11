@@ -610,10 +610,6 @@ make_collection_hidden: A Gyűjtemény legyen rejtett
 make_folder_visible: Mappa láthatóvá tétele
 make_folder_hidden: Mappa elrejtése
 goto_collection_content: Tartalom megtekintése
-start_end_of_count_items: '{start}-{end} {count} elemből'
-start_end_of_count_filtered_items: '{start}-{end} {count} szűrt elemből'
-one_item: '1 elem'
-one_filtered_item: '1 szűrt elem'
 delete_collection_are_you_sure: >-
   Biztos, hogy törölni szeretné ezt a gyűjteményt"{collection}"? Ez törli a gyűjteményt a benne lévő összes elemével együtt. Ez a művelet végleges.
 delete_folder_are_you_sure: Biztosan törli a(z) "{folder}" mappát? A beágyazott mappák és gyűjtemények a legfelső szintre kerülnek.
@@ -697,7 +693,6 @@ create_item: Elem létrehozása
 display_template: Megjelenítési sablon
 language_display_template: Nyelvi megjelenítés sablon
 translations_display_template: Fordítások megjelenítése sablon
-n_items_selected: 'Nincs elem kiválasztva | 1 elem van kiválasztva | {n} elem van kiválasztva'
 per_page: oldalanként
 all_files: Minden fájl
 my_files: A saját fájljaim
@@ -834,8 +829,6 @@ tooltip: Buboréksúgó
 tooltip_placeholder: Írjon be egy buboréksúgó szöveget...
 unlimited: Korlátlan
 open_link_in: Hivatkozás megnyitása itt
-new_tab: Új fül
-current_tab: Jelenlegi fül
 save_image: Kép mentése
 save_media: Média mentése
 wysiwyg_options:
@@ -944,7 +937,6 @@ page_help_settings_datamodel_collections: >-
   **Adatmodell: Gyűjtemények** - Az összes elérhető gyűjtemény listája. Ide tartoznak a látható, rejtett és rendszergyűjtemények, valamint a hozzáadható nem kezelt adatbázis táblák.
 page_help_settings_datamodel_fields: >-
   **Adatmodell: Gyűjtemény** - Egy űrlap, ezen gyűjtemény és mezőinek kezelésére.
-page_help_settings_roles_collection: '**Szerepkörök böngészése** - A Rendszergazda, a Nyilvános és az egyéni Felhasználói Szerepkörök listája.'
 page_help_settings_roles_item: "**Szerepkör Részletei** - A szerepkörök jogosultságainak és egyéb beállításainak kezelése."
 page_help_settings_presets_collection: >-
   **Alapbeállítások Böngészése** - A projektben lévő összes alapbeállítás listázása, beleértve: a felhasználói, szerepköri és globális könyvjelzőket, valamint az alapértelmezett nézeteket.
@@ -987,7 +979,6 @@ directus_collection:
   directus_notifications: A felhasználóknak küldött értesítések
   directus_operations: A folyamatok műveletei
   directus_panels: Egyedi panelek a kimutatások irányítópultjain belül
-  directus_permissions: Hozzáférési engedélyek a szerepkörökhöz
   directus_presets: Gyűjtemény és könyvjelzők alapértelmezései
   directus_relations: Reláció konfigurációja és metaadatok
   directus_revisions: Pillanatkép minden tevékenységhez
@@ -1135,12 +1126,9 @@ fields:
     name: Szerepkör neve
     icon: Szerep ikonja
     description: Leírás
-    app_access: Alkalmazás hozzáférés
-    admin_access: Admin hozzáférés
-    ip_access: IP cím
-    enforce_tfa: 2FA megkövetelése
     users: Felhasználók a szerepkörben
-    module_list: Modul navigáció felülbírálása
+  directus_policies:
+    description: Leírás
   directus_webhooks:
     name: Név
     method: Metódus
@@ -1271,7 +1259,6 @@ live_preview:
   new_window: Megnyitás új ablakban
 shares: Megosztások
 unlimited_usage: Korlátlan használat
-uses_left: Nincs használat hátra | 1 használat maradt | {n} használat maradt
 no_shares: Nincs megjeleníthető megosztás
 new_share: Új megosztás
 expired: Lejárt
@@ -1546,6 +1533,8 @@ interfaces:
     preview: Előnézet
     editorFont: Szerkesztő betűtípus
     previewFont: Betűtípus előnézete
+    default_view: Alapértelmezett nézet
+    default_view_preview: Előnézet
     customSyntax: Egyedi blokkok
     customSyntax_label: Egyéni szintaxistípusok hozzáadása
     customSyntax_add: Egyéni szintaxis hozzáadása
@@ -1900,7 +1889,6 @@ layouts:
     show_ungrouped: Mutasd a csoport nélkülieket
     show: Mutasd
     no_group: Keresés és szűrés engedélyezése
-    not_all_loaded: Csak az első 100 elemet sikerült betölteni.
 horizontal: Horizontális
 vertical: Függőleges
 x_axis: X-tengely

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useItemPermissions } from '@/composables/use-permissions';
+import { usePermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -102,16 +102,20 @@ const title = computed(() => {
 		: t('editing_in', { collection: collection.name });
 });
 
-const { fields: fieldsWithPermissions } = useItemPermissions(
+const {
+	itemPermissions: { fields: fieldsWithPermissions, saveAllowed },
+} = usePermissions(
 	collection,
 	primaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
-const { fields: relatedCollectionFields } = useItemPermissions(
+const {
+	itemPermissions: { fields: relatedCollectionFields, saveAllowed: saveRelatedCollectionAllowed },
+} = usePermissions(
 	relatedCollection as Ref<string>,
 	relatedPrimaryKey,
-	computed(() => props.primaryKey === '+'),
+	computed(() => props.relatedPrimaryKey === '+'),
 );
 
 const fields = computed(() => {
@@ -151,6 +155,12 @@ const templatePrimaryKey = computed(() =>
 );
 
 const templateCollection = computed(() => relatedCollectionInfo.value || collectionInfo.value);
+
+const isSavable = computed(() => {
+	if (props.disabled) return false;
+	if (!relatedCollection.value) return saveAllowed.value;
+	return saveAllowed.value || saveRelatedCollectionAllowed.value;
+});
 
 const {
 	template,
@@ -391,7 +401,7 @@ function useActions() {
 
 		<template #actions>
 			<slot name="actions" />
-			<v-button v-tooltip.bottom="t('save')" icon rounded @click="save">
+			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!isSavable" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>

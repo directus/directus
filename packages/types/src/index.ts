@@ -1,5 +1,6 @@
 export * from './accountability.js';
 export * from './collection.js';
+export * from './comments.js';
 export * from './events.js';
 export * from './fields.js';
 export * from './files.js';
@@ -10,6 +11,7 @@ export * from './items.js';
 export * from './misc.js';
 export * from './notifications.js';
 export * from './permissions.js';
+export * from './policies.js';
 export * from './presets.js';
 export * from './query.js';
 export * from './relations.js';

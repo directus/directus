@@ -1,6 +1,43 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Apie
+identifier: Identifikatorius
 avatar: Nuotrauka
+application: Aplikacija
+default_provider: Numatytasis
+method: Metodas
+published: Paskelbta
+draft: Juodraštis
+archived: Archyvuotas
+marketplace: Turgavietė
+extensions: Plėtiniai
+modules: Moduliai
+module_bar: Modulių juosta
+logs: Registras
+unknown: Nežinomas
+reset_width: Iš naujo nustatyti plotį
+tile_size: Plytelių dydis
 edit_field: Redaguoti lauką
+conditions: Sąlygos
 location: Vietovė
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
@@ -10,6 +47,7 @@ group: Grupė
 extension_interface: Sąsaja
 extension_display: Rodymas
 extension_layout: Išdėstymas
+extension_modules: Moduliai
 fill_width: Užpildyti visą plotį
 field_name_translations: Laukų pavadinimų vertimai
 enter_password_to_enable_tfa: Norint įjungti dviejų veiksmų autentifikavimą, reikia įvesti savo slaptažodį
@@ -382,7 +420,9 @@ errors:
   INVALID_QUERY: Neteisinga užklausa
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
+  LIMIT_EXCEEDED: 'Limitas viršytas'
   NOT_NULL_VIOLATION: Reikšmė negali būti null
+  REQUESTS_EXCEEDED: Užklausų limitas viršytas
   ROUTE_NOT_FOUND: Nerasta
   UNKNOWN: Nenumatyta klaida
 value_hashed: Reikšmė saugiai išsaugota
@@ -408,7 +448,6 @@ all_users: Visi vartotojai
 delete_collection: Trinti kolekciją
 update_collection_success: Atnaujinti kolekciją
 delete_collection_success: Kolekcija ištrinta
-start_end_of_count_items: '{start}-{end} iš {count} elementų'
 collections_shown: Rodomos kolekcijos
 visible_collections: Matomos kolekcijos
 hidden_collections: Paslėptos kolekcijos
@@ -466,7 +505,6 @@ value_unique: Reikšmė turi būti unikali
 all_activity: Visa Veikla
 create_item: Sukurti elementą
 display_template: Rodymo šablonas
-n_items_selected: 'Nepasirinkta elementų | 1 pasirinktas elementas | Pasirinkta {n} elementai/-ų'
 per_page: Puslapyje
 all_files: Visi failai
 my_files: Mano failai
@@ -587,7 +625,6 @@ page_help_settings_datamodel_collections: >-
   **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
 page_help_settings_datamodel_fields: >-
   **Duomenų modelis: Kolekcija** — forma kolekcijos ir jos laukų valdymui.
-page_help_settings_roles_collection: '**Grupių peržiūra** — Rodomos administratoriaus, vieša ir pasirinktinos vartotojų grupės (rolės).'
 page_help_settings_roles_item: "**Grupės duomenys** — Valdykite grupės prieigą prie duomenų ir kitus nustatymus."
 page_help_settings_presets_collection: >-
   **Peržiurėti ruošinius** — atvaizduojami visi projekto ruošiniai, įskaitant vartotojų, grupių ir bendras žymas bei numatytuosius langus.
@@ -606,6 +643,7 @@ no_layout_collection_selected_yet: Nepasirinktas išdėstymas/kolekcija
 batch_delete_confirm: >-
   Įrašai nepažymėti | Ar įsitikinę, jog norite trinti įrašą? Išsitrins negrįštamai. | Ar įsitikinę, jog norite trinti šiuos {count} įrašus? Išsitrins negrįštamai.
 cancel: Atšaukti
+source_registry: Turgavietė
 collection: Rinkinys
 collections: Kolekcijos
 singleton: Singleton objektas
@@ -676,6 +714,7 @@ fields:
     public_note: Vieša pastaba
     auth_password_policy: Slaptažodžių politika
     auth_login_attempts: Max. bandymų prisijungti kiekis
+    module_bar: Modulių juosta
   directus_shares:
     name: Pavadinimas
     role: Vaidmuo
@@ -692,12 +731,9 @@ fields:
     name: Vaidmens pavadinimas
     icon: Grupės ikonėlė
     description: Aprašymas
-    app_access: Programos prieiga
-    admin_access: Administratoriaus prieiga
-    ip_access: IP adresas
-    enforce_tfa: Reikalinga 2FA
     users: Vartotojai grupėje
-    module_list: Modulių navigacija
+  directus_policies:
+    description: Aprašymas
   directus_webhooks:
     name: Pavadinimas
     status: Būsena

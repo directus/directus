@@ -8,6 +8,7 @@ import * as geometryHelpers from './geometry/index.js';
 import * as schemaHelpers from './schema/index.js';
 import * as sequenceHelpers from './sequence/index.js';
 import * as numberHelpers from './number/index.js';
+import * as nullableUpdateHelper from './nullable-update/index.js';
 
 export function getHelpers(database: Knex) {
 	const client = getDatabaseClient(database);
@@ -18,6 +19,7 @@ export function getHelpers(database: Knex) {
 		schema: new schemaHelpers[client](database),
 		sequence: new sequenceHelpers[client](database),
 		number: new numberHelpers[client](database),
+		nullableUpdate: new nullableUpdateHelper[client](database),
 	};
 }
 

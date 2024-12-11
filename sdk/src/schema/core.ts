@@ -1,5 +1,6 @@
 import type { DirectusActivity } from './activity.js';
 import type { DirectusCollection } from './collection.js';
+import type { DirectusComment } from './comment.js';
 import type { DirectusDashboard } from './dashboard.js';
 import type { DirectusExtension } from './extension.js';
 import type { DirectusField } from './field.js';
@@ -19,9 +20,10 @@ import type { DirectusUser } from './user.js';
 import type { DirectusVersion } from './version.js';
 import type { DirectusWebhook } from './webhook.js';
 
-export interface CoreSchema<Schema = object> {
+export interface CoreSchema<Schema = any> {
 	directus_activity: DirectusActivity<Schema>[];
 	directus_collections: DirectusCollection<Schema>[];
+	directus_comments: DirectusComment<Schema>[];
 	directus_dashboards: DirectusDashboard<Schema>[];
 	directus_extensions: DirectusExtension<Schema>[];
 	directus_fields: DirectusField<Schema>[];

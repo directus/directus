@@ -2,7 +2,7 @@ import type { MergeCoreCollection } from '../index.js';
 import type { DirectusRevision } from './revision.js';
 import type { DirectusUser } from './user.js';
 
-export type DirectusActivity<Schema> = MergeCoreCollection<
+export type DirectusActivity<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_activity',
 	{
@@ -14,7 +14,6 @@ export type DirectusActivity<Schema> = MergeCoreCollection<
 		user_agent: string | null;
 		collection: string;
 		item: string;
-		comment: string | null;
 		origin: string | null;
 		revisions: DirectusRevision<Schema>[] | number[] | null;
 	}

@@ -599,10 +599,6 @@ make_collection_hidden: 將資料集設定為隱藏
 make_folder_visible: 設定資料夾為可見
 make_folder_hidden: 設定資料夾為隱藏
 goto_collection_content: 查看內容
-start_end_of_count_items: '{count} 個項目中的 {start}-{end}'
-start_end_of_count_filtered_items: '共有 {count} 個項目，現正顯示 {start} - {end} 。'
-one_item: '一個項目'
-one_filtered_item: '一個篩選項目'
 delete_collection_are_you_sure: >-
   是否確認要刪除資料集 {collection} ？這將刪除資料集及其中的所有項目。此操作無法復原。
 delete_folder_are_you_sure: 是否確定要刪除資料夾 {folder} ？包含的所有資料夾都會被移到最外層。
@@ -686,7 +682,6 @@ create_item: 建立項目
 display_template: 顯示模板
 language_display_template: 語言顯示範本
 translations_display_template: 翻譯顯示範本
-n_items_selected: '未選擇項目 | 已選一個項目 | 已選 {n} 個項目'
 per_page: 每頁
 all_files: 所有檔案
 my_files: 我的檔案
@@ -819,8 +814,6 @@ tooltip: 工具提示
 tooltip_placeholder: 輸入工具提示....
 unlimited: 無限制
 open_link_in: 開啟連結至
-new_tab: 新分頁
-current_tab: 目前分頁
 save_image: 儲存圖片
 save_media: 儲存媒體
 wysiwyg_options:
@@ -963,7 +956,6 @@ directus_collection:
   directus_notifications: 傳送給使用者的通知
   directus_operations: 執行在流程中的操作
   directus_panels: 在儀表板中的獨立面板
-  directus_permissions: 每種角色的使用權限
   directus_presets: 資料集以及書籤的預設值
   directus_relations: 關聯資料及元資料的設定
   directus_revisions: 所有操作的資料快照
@@ -1110,12 +1102,9 @@ fields:
     name: 角色名稱
     icon: 角色圖示
     description: 描述說明
-    app_access: 管理介面存取
-    admin_access: 管理者存取
-    ip_access: IP存取
-    enforce_tfa: 必須兩步驟登入
     users: 角色中的使用者
-    module_list: 模組導覽
+  directus_policies:
+    description: 描述說明
   directus_webhooks:
     name: 名稱
     method: 方法
@@ -1246,7 +1235,6 @@ live_preview:
   new_window: 在新視窗開啟
 shares: 分享
 unlimited_usage: 無限制使用
-uses_left: 已無法使用 | 剩下1次 | 剩下{n} 次
 no_shares: 目前沒有分享
 new_share: 新增分享
 expired: 已過期
@@ -1521,6 +1509,8 @@ interfaces:
     preview: 預覽
     editorFont: 編輯器字型
     previewFont: 預覽字型
+    default_view: 預設顯示地點
+    default_view_preview: 預覽
     customSyntax: 自訂區塊
     customSyntax_label: 新增自訂語法類型
     customSyntax_add: 新增自訂語法
@@ -1850,7 +1840,6 @@ layouts:
   kanban:
     crop: 裁剪
     advanced: 進階
-    not_all_loaded: 只能讀取前1000個項目。
 horizontal: 水平
 both: 都要
 panels:

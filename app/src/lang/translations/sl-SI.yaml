@@ -513,10 +513,6 @@ all_users: Vsi uporabniki
 delete_collection: Briši zbirko
 update_collection_success: Zbirka posodobljena
 delete_collection_success: Zbirka brisana
-start_end_of_count_items: '{start}-{end} od {count} zapisov'
-start_end_of_count_filtered_items: '{start}-{end} od {count} filtriranih zapisov'
-one_item: '1 zapis'
-one_filtered_item: '1 filtriran zapis'
 collections_shown: zbirk prikazanih
 visible_collections: Vidne zbirke
 hidden_collections: Skrite zbirke
@@ -591,7 +587,6 @@ create_item: Ustvari zapis
 display_template: Prikaži predlogo
 language_display_template: Predloga prikaza jezika
 translations_display_template: Predloga prikaza prevodov
-n_items_selected: 'Noben zapis ni izbran | 1 zapis je izbran | {n} zapisov izbranih'
 per_page: Na stran
 all_files: Vse datoteke
 my_files: Moje datoteke
@@ -645,8 +640,6 @@ tooltip: Namig
 tooltip_placeholder: Vnesite namig ...
 unlimited: Neomejeno
 open_link_in: Odpri povezavo v
-new_tab: Nov zavihek
-current_tab: Trenutni zavihek
 wysiwyg_options:
   aligncenter: Poravnaj na sredino
   alignjustify: Poravnaj robove
@@ -746,7 +739,6 @@ page_help_settings_datamodel_collections: >-
   **Podatkovni model: zbirke** - Spisek vse zbitk. Vključuje vidne, skrite in sistemske zbirke kot tudi neurejene tabele iz baze.
 page_help_settings_datamodel_fields: >-
   **Podatkovni model: zbirka** - Obrazec za urejanje te zbirke in njenih polj.
-page_help_settings_roles_collection: '**Brskanje vlog** - Spisek administracijskih, javnih in prilagojenih uporabniških vlog.'
 page_help_settings_roles_item: "**Podrobnosti vloge** - Urejanje pravic vlog in drugih nastavitev."
 page_help_settings_presets_collection: >-
   **Brskanje prednastavitev** - Prikaz vseh prednastavitev projekta, vključno z zaznamki uporabnika, vloge in globalno ter privzetih pogledov.
@@ -876,12 +868,9 @@ fields:
     name: Ime vloge
     icon: Ikona vloge
     description: Opis
-    app_access: Aplikacijski dostop
-    admin_access: Administracijski dostop
-    ip_access: IP dostop
-    enforce_tfa: Obvezno 2FA
     users: Uporabniki v vlogi
-    module_list: Krmarjenje po modulu
+  directus_policies:
+    description: Opis
   directus_webhooks:
     name: Ime
     method: Metoda

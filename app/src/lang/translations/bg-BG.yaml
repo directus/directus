@@ -768,10 +768,6 @@ make_collection_hidden: Скриване на колекцията
 make_folder_visible: Папката е видима
 make_folder_hidden: Папката е скрита
 goto_collection_content: Преглед на съдържанието
-start_end_of_count_items: '{start}-{end} от {count} записа'
-start_end_of_count_filtered_items: '{start}-{end} от {count} филтрирани записи'
-one_item: '1 запис'
-one_filtered_item: '1 филтриран запис'
 delete_collection_are_you_sure: >-
   Сигурни ли сте, че искате да изтриете колекцията - „{collection}“? Всички записи и самата колекция ще бъдат изтрити. Действието е завинаги.
 delete_folder_are_you_sure: Сигурни ли сте, че искате да изтриете папката „{folder}“? Подпапките и колекциите ще бъдат преместени към главната папка.
@@ -863,7 +859,6 @@ create_item: Създаване на запис
 display_template: Шаблон при показване
 language_display_template: Шаблон при показване на езиците
 translations_display_template: Шаблон при показване на преводите
-n_items_selected: 'Не са избрани записи | 1 избран запис | {n} избрани записа'
 per_page: На страница
 all_files: Всички файлове
 my_files: Моите файлове
@@ -1003,8 +998,6 @@ tooltip: Подсказка
 tooltip_placeholder: Въвеждане на подсказката...
 unlimited: Неограничен
 open_link_in: Отваряне не връзката в
-new_tab: Нов таб
-current_tab: Текущ таб
 save_image: Запазване на изображението
 save_media: Запазване на медията
 wysiwyg_options:
@@ -1078,7 +1071,6 @@ editing_unit: 'Редактиране на {unit}'
 editing_in_batch: 'Множествено редактиране на {count} записи'
 no_options_available: Не са налични настройки
 settings_data_model: Модел на данните
-settings_permissions: Контрол на достъпа
 settings_project: Настройки
 settings_appearance: Външен вид
 settings_webhooks: Уеб-куки
@@ -1128,7 +1120,6 @@ page_help_settings_datamodel_collections: >-
   **Модел на данните: Колекции** — Показват се всички налични колекции. Това включва всички видими, невидими, системни, както и все още не конфигурираните таблици в базата от данни, които могат да бъдат добавяни като колекции.
 page_help_settings_datamodel_fields: >-
   **Модел на данните: Колекция** — Формуляр за управление на тази колекция и нейните полета.
-page_help_settings_roles_collection: '**Преглед на роли** — Показват се администраторската, публичната и всички собствени роли.'
 page_help_settings_roles_item: "**Детайли за роля** — Управление на позволенията на ролята, както и някои други настройки."
 page_help_settings_presets_collection: >-
   **Преглед на заготовките** — Показват се всички заготовки от изгледи, включително за отделните: потребител, роля, и глобални отметки, както и изгледите по подразбиране.
@@ -1187,7 +1178,6 @@ directus_collection:
   directus_notifications: Известия, изпратени до потребителите
   directus_operations: Задачи които се изпълняват в автоматизиран процес
   directus_panels: Панели в таблото на задълбочения анализ
-  directus_permissions: Позволения за роли
   directus_presets: Заготовки на началните стойности и отметките за колекциите
   directus_relations: Релационни настройки и мета данни
   directus_revisions: Моментни данни за цялата активност
@@ -1353,12 +1343,9 @@ fields:
     name: Име на ролята
     icon: Икона на ролята
     description: Описание
-    app_access: Достъп до приложението
-    admin_access: Администраторски достъп
-    ip_access: IP адрес
-    enforce_tfa: Изискване за 2FA
     users: Потребители към ролята
-    module_list: Модули
+  directus_policies:
+    description: Описание
   directus_webhooks:
     name: Име
     method: Метод
@@ -1444,7 +1431,6 @@ field_options:
   directus_roles:
     name: Уникално име за ролята...
     description: Описание на ролята...
-    ip_access: Добавете разрешени IP адреси, IP диапазони и CIDR блокове. Оставете празно, за да разрешите всички...
     fields:
       icon_name: Икона
       name_name: Име
@@ -1501,7 +1487,6 @@ live_preview:
   toggle_3d: Превключване на 3D
 shares: Споделяния
 unlimited_usage: Неограничено използване
-uses_left: Не е налична | Остава 1 използване | Остават {n} използвания
 no_shares: Не е споделено
 new_share: Ново споделяне
 expired: Просрочен
@@ -1789,6 +1774,8 @@ interfaces:
     preview: Преглед
     editorFont: Шрифт при редактиране
     previewFont: Шрифт при преглед
+    default_view: Изглед по подразбиране
+    default_view_preview: Преглед
     customSyntax: Собствени блокове
     customSyntax_label: Добавяне на собствени синтактични типове
     customSyntax_add: Добавяне на собствен синтаксис
@@ -2163,7 +2150,6 @@ layouts:
     show_ungrouped: Негрупирано показване
     show: Показване
     no_group: Без групиране
-    not_all_loaded: Може да се заредят само първите 1000 записи.
 horizontal: Хоризонтала
 vertical: Вертикална
 x_axis: Оста X
