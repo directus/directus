@@ -48,12 +48,13 @@ type ExtractParm<F> = F extends { (a: infer A): void } ? A : never;
 type SpliceOne<Union> = Exclude<Union, ExtractOne<Union>>;
 type ExtractOne<Union> = ExtractParm<UnionToSect<UnionToParm<Union>>>;
 
-type ToTuple<Union> = ToTupleRec<Union, []>;
-type ToTupleRec<Union, Rslt extends any[]> = SpliceOne<Union> extends never
-	? [NestedPartial<ExtractOne<Union>>, ...Rslt]
-	: ToTupleRec<SpliceOne<Union>, [NestedPartial<ExtractOne<Union>>, ...Rslt]>;
+export type ToTuple<Union> = ToTupleRec<Union, []>;
 
-type TupleToUnion<T extends unknown[]> = T[number];
+type ToTupleRec<Union, Rslt extends any[]> = SpliceOne<Union> extends never
+	? [ExtractOne<Union>, ...Rslt]
+	: ToTupleRec<SpliceOne<Union>, [ExtractOne<Union>, ...Rslt]>;
+
+export type TupleToUnion<T extends unknown[]> = T[number];
 
 /**
  * Recursively make properties optional
@@ -63,8 +64,15 @@ export type NestedPartial<Item> = Item extends any[]
 		? NestedPartial<RawItem>[]
 		: never
 	: Item extends object
-	  ? { [Key in keyof Item]?: TupleToUnion<ToTuple<Item[Key]>> }
+	  ? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
 	  : Item;
+
+type NestedUnion<Item> = TupleToUnion<ToTuplePartial<Item>>;
+
+type ToTuplePartial<Union> = ToTuplePartialRec<Union, []>;
+type ToTuplePartialRec<Union, Rslt extends any[]> = SpliceOne<Union> extends never
+	? [NestedPartial<ExtractOne<Union>>, ...Rslt]
+	: ToTuplePartialRec<SpliceOne<Union>, [NestedPartial<ExtractOne<Union>>, ...Rslt]>;
 
 /**
  * Reduces a complex object type to make it readable in IDEs.
