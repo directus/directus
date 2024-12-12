@@ -432,10 +432,10 @@ function clearFilters() {
 	align-items: center;
 	justify-content: center;
 	height: 24px;
-	margin: 0 18px;
+	margin: 0 var(--theme--form--field--input--padding);
 
 	&.dense {
-		margin: 0 10px 12px;
+		margin: 0 8px 12px;
 	}
 }
 
