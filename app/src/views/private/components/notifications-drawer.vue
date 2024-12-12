@@ -435,7 +435,7 @@ function clearFilters() {
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {
-		margin: 0 calc(8px + var(--theme--border-width))  12px;
+		margin: 0 calc(8px + var(--theme--border-width)) 12px;
 	}
 }
 
