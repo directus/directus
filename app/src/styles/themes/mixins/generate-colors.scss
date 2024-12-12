@@ -3,19 +3,19 @@
 @use '../../colors';
 
 @mixin generate-colors($color-map, $mix-color-low, $mix-color-high) {
-  @each $identifier, $color in $color-map {
-    @each $suffix, $step in colors.$step-mapping {
-      $resolved-suffix: '';
-      $mixing-color: $mix-color-low;
+	@each $identifier, $color in $color-map {
+		@each $suffix, $step in colors.$step-mapping {
+			$resolved-suffix: '';
+			$mixing-color: $mix-color-low;
 
-      @if $suffix != 'none' {
-        $resolved-suffix: '-#{$suffix}';
-      }
-      @if $step < 0 {
-        $mixing-color: $mix-color-high;
-      }
+			@if $suffix != 'none' {
+				$resolved-suffix: '-#{$suffix}';
+			}
+			@if $step < 0 {
+				$mixing-color: $mix-color-high;
+			}
 
-      --#{$identifier}#{$resolved-suffix}: #{color.mix($mixing-color, $color, 100% - math.abs($step))};
-    }
-  }
+			--#{$identifier}#{$resolved-suffix}: #{color.mix($mixing-color, $color, 100% - math.abs($step))};
+		}
+	}
 }
