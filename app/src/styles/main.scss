@@ -1,25 +1,25 @@
-@use 'base';
-@use 'colors';
-@use 'fonts';
-@use 'themes/dark';
-@use 'themes/light';
-@use 'variables';
-@use 'tooltip';
-@use 'type-styles';
-@use 'stacked-drawers';
-@use 'lib/mapbox';
-@use 'lib/codemirror';
-@use 'lib/cropperjs';
-@use 'lib/highlight';
-@use 'lib/fullcalendar';
-@use 'lib/frappe-charts';
-@use 'lib/emoji-picker';
-@use 'lib/flatpickr';
+@use './base';
+@use './colors' as colors;
+@use './fonts';
+@use './themes/dark' as dark;
+@use './themes/light' as light;
+@use './variables';
+@use './tooltip';
+@use './type-styles';
+@use './stacked-drawers';
+@use './lib/mapbox';
+@use './lib/codemirror';
+@use './lib/cropperjs';
+@use './lib/highlight';
+@use './lib/fullcalendar';
+@use './lib/frappe-charts';
+@use './lib/emoji-picker';
+@use './lib/flatpickr';
 
 body.light {
-	@include light.light;
+  @include light.light;
 }
 
 body.dark {
-	@include dark.dark;
+  @include dark.dark;
 }

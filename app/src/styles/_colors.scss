@@ -1,4 +1,4 @@
-@use 'themes/mixins/generate-colors';
+@use 'sass:map';
 
 // Main palette
 $purple: #6644ff;
@@ -17,34 +17,31 @@ $dark-theme-shade: #16151a;
 
 // Color variant names -> Color to map to said name
 $color-mapping: (
-	'purple': $purple,
-	'pink': $pink,
-	'blue': $blue,
-	'green': $green,
-	'yellow': $yellow,
-	'orange': $orange,
-	'red': $red,
-	'primary': $purple,
-	'secondary': $pink,
-	'success': $green,
-	'warning': $orange,
-	'danger': $red,
+  'purple': $purple,
+  'pink': $pink,
+  'blue': $blue,
+  'green': $green,
+  'yellow': $yellow,
+  'orange': $orange,
+  'red': $red,
+  'primary': $purple,
+  'secondary': $pink,
+  'success': $green,
+  'warning': $orange,
+  'danger': $red,
 );
 
 // Suffix -> Percentage mapping (Percentage of main color)
-// Negative numbers will use secondary color for mixture.
-// The percentage will be equal to the absolute value of the number.
 $step-mapping: (
-	'10': 10,
-	'25': 25,
-	'50': 50,
-	'75': 75,
-	'90': 90,
-	// Special case, 'none' will result in no suffix
-	'none': 100,
-	'110': -90,
-	'125': -75,
-	'150': -50,
-	'175': -25,
-	'190': -10,
+  '10': 10,
+  '25': 25,
+  '50': 50,
+  '75': 75,
+  '90': 90,
+  'none': 100,
+  '110': -90,
+  '125': -75,
+  '150': -50,
+  '175': -25,
+  '190': -10,
 );

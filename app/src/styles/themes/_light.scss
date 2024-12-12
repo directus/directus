@@ -3,42 +3,41 @@
 
 // Default / Light Mode
 @mixin light {
-	color-scheme: light;
+  color-scheme: light;
 
-	--foreground-inverted: #fff;
-	--background-normal-alt: #e4eaf1;
-	--background-highlight: #f7f9fd;
-	--background-input: #ffffff;
-	--background-page-rgb: 255, 255, 255;
-	--background-inverted: #263238;
-	--background-mark: var(--theme--primary-subdued);
+  --foreground-inverted: #fff;
+  --background-normal-alt: #e4eaf1;
+  --background-highlight: #f7f9fd;
+  --background-input: #ffffff;
+  --background-page-rgb: 255, 255, 255;
+  --background-inverted: #263238;
+  --background-mark: var(--theme--primary-subdued);
 
-	--overlay-color: rgba(38, 50, 56, 0.8);
+  --overlay-color: rgba(38, 50, 56, 0.8);
 
-	--navigation-shadow: 4px 0 7px -4px rgb(0 0 0 / 0.2);
-	--sidebar-shadow: -4px 0 7px -4px rgb(0 0 0 / 0.2);
+  --navigation-shadow: 4px 0 7px -4px rgb(0 0 0 / 0.2);
+  --sidebar-shadow: -4px 0 7px -4px rgb(0 0 0 / 0.2);
 
-	// Generate color variations
-	@include generate-colors.generate-colors(
-		colors.$color-mapping,
-		colors.$light-theme-tint,
-		colors.$light-theme-shade,
-		colors.$step-mapping
-	);
+  // Generate color variations
+  @include generate-colors.generate-colors(
+    colors.$color-mapping,
+    colors.$light-theme-tint,
+    colors.$light-theme-shade
+  );
 
-	--purple-alt: var(--purple-10);
-	--blue-alt: var(--blue-10);
-	--green-alt: var(--green-10);
-	--yellow-alt: var(--yellow-10);
-	--orange-alt: var(--orange-10);
-	--red-alt: var(--red-10);
-	--primary-alt: var(--purple-10);
-	--secondary-alt: var(--pink-10);
-	--success-alt: var(--green-10);
-	--warning-alt: var(--yellow-10);
-	--danger-alt: var(--red-10);
+  --purple-alt: var(--purple-10);
+  --blue-alt: var(--blue-10);
+  --green-alt: var(--green-10);
+  --yellow-alt: var(--yellow-10);
+  --orange-alt: var(--orange-10);
+  --red-alt: var(--red-10);
+  --primary-alt: var(--purple-10);
+  --secondary-alt: var(--pink-10);
+  --success-alt: var(--green-10);
+  --warning-alt: var(--yellow-10);
+  --danger-alt: var(--red-10);
 
-	.alt-colors {
-		--background-subdued: var(--theme--background);
-	}
+  .alt-colors {
+    --background-subdued: var(--theme--background);
+  }
 }
