@@ -42,17 +42,16 @@ export type IsString<T, Y, N> = T extends string ? Y : N;
  * Helpers for working with unions
  */
 type UnionToParm<U> = U extends any ? (k: U) => void : never;
-type UnionToSect<U> = UnionToParm<U> extends ((k: infer I) => void) ? I : never;
+type UnionToSect<U> = UnionToParm<U> extends (k: infer I) => void ? I : never;
 type ExtractParm<F> = F extends { (a: infer A): void } ? A : never;
 
 type SpliceOne<Union> = Exclude<Union, ExtractOne<Union>>;
 type ExtractOne<Union> = ExtractParm<UnionToSect<UnionToParm<Union>>>;
 
 type ToTuple<Union> = ToTupleRec<Union, []>;
-type ToTupleRec<Union, Rslt extends any[]> =
-    SpliceOne<Union> extends never ? [NestedPartial<ExtractOne<Union>>, ...Rslt]
-    : ToTupleRec<SpliceOne<Union>, [NestedPartial<ExtractOne<Union>>, ...Rslt]>
-;
+type ToTupleRec<Union, Rslt extends any[]> = SpliceOne<Union> extends never
+	? [NestedPartial<ExtractOne<Union>>, ...Rslt]
+	: ToTupleRec<SpliceOne<Union>, [NestedPartial<ExtractOne<Union>>, ...Rslt]>;
 
 type TupleToUnion<T extends unknown[]> = T[number];
 
@@ -64,9 +63,8 @@ export type NestedPartial<Item> = Item extends any[]
 		? NestedPartial<RawItem>[]
 		: never
 	: Item extends object
-		? { [Key in keyof Item]?: TupleToUnion<ToTuple<Item[Key]>> }
-		: Item;
-
+	  ? { [Key in keyof Item]?: TupleToUnion<ToTuple<Item[Key]>> }
+	  : Item;
 
 /**
  * Reduces a complex object type to make it readable in IDEs.
