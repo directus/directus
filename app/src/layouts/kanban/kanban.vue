@@ -351,6 +351,10 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 					&:hover .title {
 						text-decoration: underline;
+
+						& * {
+							color: var(--theme--primary);
+						}
 					}
 
 					&.selected {
