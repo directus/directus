@@ -146,12 +146,22 @@ emails: ईमेल्स
 connection_excellent: उत्कृष्ट कनेक्शन
 connection_good: चांगले कनेक्शन
 connection_fair: ठीक ठाक कनेक्शन
+connection_poor: खराब कनेक्शन
+primary: प्राथमिक
 rename_folder: फोल्डरचे नाव बदला
 delete_folder: फोल्डर खोडून टाका
+prefix: उपसर्ग
 suffix: प्रत्यय
 keep: ठेवा
 version: आवृत्ती
+version_key: व्हर्जन की
 main_version: मुख्य
+switch_version_copy: तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन वरती स्विच करू इच्छिता? जतन केले नाहीत असे बदल गमावले जातील.
+create_version: व्हर्जन तयार करा
+rename_version: व्हर्जन नाव बदला
+compare_version: व्हर्जन तुलना करा
+save_version: व्हर्जन जतन करा
+promote_version_disabled: बदल नाही
 source_registry: बाजारपेठ
 fields:
   directus_settings:
@@ -162,10 +172,14 @@ fields:
     name: रोलचे नाव
   directus_policies:
     name: पॉलिसीचे नाव
+interfaces:
+  presentation-links:
+    primary: प्राथमिक
 displays:
   datetime:
     suffix: प्रत्यय
   formatted-value:
+    prefix: उपसर्ग
     suffix: प्रत्यय
 operations:
   log:
