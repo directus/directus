@@ -1,6 +1,6 @@
-@use "sass:map";
-@use "../colors";
-@use "mixins/generate-colors";
+@use './mixins/generate-colors' as generate-colors;
+@use '../colors' as colors;
+@use 'sass:map';
 
 // Dark Mode
 @mixin dark {
@@ -16,7 +16,6 @@
 	color-scheme: dark;
 
 	--foreground-inverted: #0d1117;
-
 	--background-normal-alt: #30363d;
 	--background-subdued: #161b22;
 	--background-highlight: #1d1d21;
@@ -31,7 +30,12 @@
 	--sidebar-shadow: var(--navigation-shadow);
 
 	// Generate color variations
-	@include generate-colors.generate-colors($color-mapping, colors.$dark-theme-shade, colors.$dark-theme-tint);
+	@include generate-colors.generate-colors(
+		$color-mapping,
+		colors.$dark-theme-tint,
+		colors.$dark-theme-shade,
+		colors.$step-mapping
+	);
 
 	--purple-alt: var(--purple-10);
 	--blue-alt: var(--blue-10);

@@ -1,8 +1,7 @@
-@use "sass:color";
-@use "sass:math";
-@use "../../colors";
+@use 'sass:color';
+@use 'sass:math';
 
-@mixin generate-colors($color-map, $mix-color-low, $mix-color-high) {
+@mixin generate-colors($color-map, $mix-color-low, $mix-color-high, $step-mapping) {
 	// Loop through palette in $color-map list
 	@each $identifier, $color in $color-map {
 		// Loop through pre-defined steps in $step-mapping list

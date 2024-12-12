@@ -1,4 +1,4 @@
-@use "../mixins/type-styles";
+@use '../mixins/type-styles' as type-styles;
 
 .fc {
 	--fc-event-bg-color: var(--theme--primary);
