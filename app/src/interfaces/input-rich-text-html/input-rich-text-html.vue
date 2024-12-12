@@ -494,14 +494,14 @@ function setFocus(val: boolean) {
 </style>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins/form-grid' as mixins-fg;
 
 .body {
 	padding: 20px;
 }
 
 .grid {
-	@include form-grid;
+	@include mixins-fg.form-grid;
 }
 
 .remaining {

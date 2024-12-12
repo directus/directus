@@ -63,12 +63,12 @@ watch(selectedItem, () => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins/form-grid' as mixins-fg;
 
 .fields {
 	--theme--form--row-gap: 24px;
 
-	@include form-grid;
+	@include mixins-fg.form-grid;
 
 	.type-label {
 		font-size: 1rem;

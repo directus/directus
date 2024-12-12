@@ -415,7 +415,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins/form-grid' as mixins-fg;
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
@@ -548,7 +548,7 @@ textarea {
 	--theme--form--column-gap: 12px;
 
 	padding: 12px;
-	@include form-grid;
+	@include mixins-fg.form-grid;
 
 	.v-input {
 		min-width: 100px;

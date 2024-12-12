@@ -405,12 +405,12 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 </template>
 
 <style scoped lang="scss">
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins/form-grid' as mixins-fg;
 
 .grid {
 	--theme--form--row-gap: 8px;
 
-	@include form-grid;
+	@include mixins-fg.form-grid;
 }
 
 .version-menu-wrapper {

@@ -360,10 +360,10 @@ const {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins/form-grid' as mixins-fg;
 
 .translations {
-	@include form-grid;
+	@include mixins-fg.form-grid;
 
 	.v-form {
 		--theme--form--row-gap: 32px;
