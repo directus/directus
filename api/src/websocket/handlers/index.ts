@@ -19,7 +19,6 @@ export function startWebSocketHandlers() {
 	}
 
 	if (restEnabled || graphqlEnabled) {
-
 		new ItemsHandler();
 	}
 
