@@ -252,6 +252,27 @@ hide_field: फील्ड लपवा
 show_field_on_detail: तपशीलावर फील्ड दर्शवा
 delete_field: फील्ड हटवा
 fields_and_layout: फील्ड आणि लेआऊट
+aggregate_precision: एकूण अचूकता
+admins_have_all_permissions: प्रशासक यांना सर्व परवानग्या आहेत
+continue_in_advanced_field_creation_mode: प्रगत फील्ड निर्मिती मोड मध्ये सुरू ठेवा
+avg_distinct: सरासरी वेगळे
+disabled_editing_value: व्हॅल्यू संपादन बंद करा
+alias: उर्फ
+translation_key_placeholder: एक की भरा...
+dateTime: दिनांक वेळ
+geometry:
+  MultiLineString: MultiLineString
+  MultiPolygon: बहू बहुभुज
+theme_auto: ऍटोमिक
+theme_dark: डार्क मोड
+theme_directus_minimal: थेट किमान
+theme_directus_colormatch: Directus कलर मॅच
+no_refresh: रिफ्रेश करू नका
+search_collection: संग्रह शोधा...
+search_field: सर्च फील्ड...
+add_m2o_to_collection: '"{collection}" मध्ये M2O जोडा'
+add_o2m_to_collection: '"{collection}" मध्ये O2M जोडा'
+determined_by_relationship: संबंधाने ठरवले जाते
 errors:
   NOT_NULL_VIOLATION: व्हॅल्यू रिकामी असू शकत नाही
 source_registry: बाजारपेठ
@@ -264,6 +285,10 @@ fields:
     name: रोलचे नाव
   directus_policies:
     name: पॉलिसीचे नाव
+field_options:
+  directus_users:
+    dropdown_auto: ऍटोमिक
+    dropdown_dark: डार्क मोड
 interfaces:
   presentation-links:
     primary: प्राथमिक
