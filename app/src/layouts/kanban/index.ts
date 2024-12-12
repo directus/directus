@@ -52,7 +52,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
 			title: (field) => field.type === 'string' || fieldIsRelatedField(field),
 			text: (field) => field.type === 'string' || field.type === 'text' || fieldIsRelatedField(field),
-			group: (field) => fieldHasChoices(field) || fieldIsRelatedField(field),
+			group: (field) => fieldHasChoices(field) || fieldIsRelatedField(field, ['m2o']),
 
 			tags: (field) => field.type === 'json' || field.type === 'csv',
 			date: (field) => ['date', 'time', 'dateTime', 'timestamp'].includes(field.type),
@@ -290,9 +290,12 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return false;
 		}
 
-		function fieldIsRelatedField(field: Field) {
-			const relation = relationsStore.relations.find(
-				(relation) => getRelationType({ relation, collection: collection.value, field: field.field }) === 'm2o',
+		function fieldIsRelatedField(
+			field: Field,
+			allowedTypes: Array<'m2o' | 'o2m' | 'm2a' | null> = ['m2o', 'o2m', 'm2a'],
+		) {
+			const relation = relationsStore.relations.find((relation) =>
+				allowedTypes.includes(getRelationType({ relation, collection: collection.value, field: field.field })),
 			);
 
 			return !!relation;
