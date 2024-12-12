@@ -13,7 +13,6 @@ export function startWebSocketHandlers() {
 	const graphqlEnabled = toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED']);
 	const logsEnabled = toBoolean(env['WEBSOCKETS_LOGS_ENABLED']);
 
-
 	if (restEnabled && heartbeatEnabled) {
 		new HeartbeatHandler();
 	}
