@@ -88,6 +88,10 @@ function saveChanges() {
 	editTitle.value = '';
 }
 
+const titleFieldConfiguration = computed<Field | undefined>(() => {
+	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions?.titleField);
+});
+
 const textFieldConfiguration = computed<Field | undefined>(() => {
 	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions?.textField);
 });
@@ -159,7 +163,19 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 										:class="{ selected: selection.includes(element[primaryKeyField?.field]) }"
 										@click="onClick({ item: element, event: $event })"
 									>
-										<div v-if="element.title" class="title">{{ element.title }}</div>
+										<div v-if="element.title" class="title">
+											<render-display
+												v-if="titleFieldConfiguration"
+												:collection="collection"
+												:value="element.title"
+												:type="titleFieldConfiguration.type"
+												:field="layoutOptions?.titleField"
+												:display="titleFieldConfiguration.meta?.display"
+												:options="titleFieldConfiguration.meta?.display_options"
+												:interface="titleFieldConfiguration.meta?.interface"
+												:interface-options="titleFieldConfiguration.meta?.options"
+											/>
+										</div>
 										<img v-if="element.image" class="image" :src="element.image" />
 										<render-display
 											v-if="element.text && textFieldConfiguration"
@@ -168,8 +184,9 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 											:type="textFieldConfiguration.type"
 											:field="layoutOptions?.textField"
 											:display="textFieldConfiguration.meta?.display"
-											:options="textFieldConfiguration.meta?.options"
+											:options="textFieldConfiguration.meta?.display_options"
 											:interface="textFieldConfiguration.meta?.interface"
+											:interface-options="textFieldConfiguration.meta?.options"
 										/>
 										<display-labels
 											v-if="element.tags"
@@ -329,6 +346,11 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
 					cursor: pointer;
+
+					// This fixes the broken underline spacing when rendering a related field as title
+					.title > :deep(.render-template) > span:not(.vertical-aligner) {
+						vertical-align: unset;
+					}
 
 					&:hover .title {
 						text-decoration: underline;
