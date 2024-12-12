@@ -177,17 +177,19 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 											/>
 										</div>
 										<img v-if="element.image" class="image" :src="element.image" />
-										<render-display
-											v-if="element.text && textFieldConfiguration"
-											:collection="collection"
-											:value="element.text"
-											:type="textFieldConfiguration.type"
-											:field="layoutOptions?.textField"
-											:display="textFieldConfiguration.meta?.display"
-											:options="textFieldConfiguration.meta?.display_options"
-											:interface="textFieldConfiguration.meta?.interface"
-											:interface-options="textFieldConfiguration.meta?.options"
-										/>
+										<div class="text">
+											<render-display
+												v-if="element.text && textFieldConfiguration"
+												:collection="collection"
+												:value="element.text"
+												:type="textFieldConfiguration.type"
+												:field="layoutOptions?.textField"
+												:display="textFieldConfiguration.meta?.display"
+												:options="textFieldConfiguration.meta?.display_options"
+												:interface="textFieldConfiguration.meta?.interface"
+												:interface-options="textFieldConfiguration.meta?.options"
+											/>
+										</div>
 										<display-labels
 											v-if="element.tags"
 											:value="element.tags"
@@ -347,11 +349,6 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					border-radius: var(--theme--border-radius);
 					cursor: pointer;
 
-					// This fixes the broken underline spacing when rendering a related field as title
-					.title > :deep(.render-template) > span:not(.vertical-aligner) {
-						vertical-align: unset;
-					}
-
 					&:hover .title {
 						text-decoration: underline;
 					}
@@ -365,17 +362,22 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
-					line-height: 1.25;
 					margin-bottom: 4px;
 				}
 
+				.title,
 				.text {
-					font-size: 14px;
-					line-height: 1.4em;
-					-webkit-line-clamp: 4;
-					-webkit-box-orient: vertical;
-					overflow: hidden;
-					display: -webkit-box;
+					line-height: 24px;
+					height: 24px;
+
+					& * {
+						line-height: inherit;
+					}
+
+					// This fixes the broken underline spacing when rendering a related field as title
+					& > :deep(.render-template) > span:not(.vertical-aligner) {
+						vertical-align: baseline;
+					}
 				}
 
 				.image {
@@ -413,6 +415,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					align-items: center;
 					margin-top: 8px;
 					margin-bottom: 2px;
+
 					.datetime {
 						display: inline-block;
 						color: var(--theme--foreground-subdued);
