@@ -416,6 +416,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins/markdown' as mixins-md;
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
@@ -462,7 +463,7 @@ textarea {
 	font-family: v-bind(previewFamily), serif;
 
 	:deep() {
-		@import '@/styles/markdown';
+		@include mixins-md.markdown;
 	}
 }
 
