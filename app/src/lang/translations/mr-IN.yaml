@@ -162,6 +162,8 @@ rename_version: व्हर्जन नाव बदला
 compare_version: व्हर्जन तुलना करा
 save_version: व्हर्जन जतन करा
 promote_version_disabled: बदल नाही
+outdated_notice: >-
+  हे व्हर्जन तयार केल्यापासून मुख्य आयटम अपडेट केला गेला आहे. कृपया खालील सर्व फील्ड व्हॅल्यू चेक करा आणि मुख्य आयटम मध्ये हे व्हर्जन प्रमोट करताना कोणते व्हर्जन वापरले जावे याची पुष्टी करा.
 source_registry: बाजारपेठ
 fields:
   directus_settings:
