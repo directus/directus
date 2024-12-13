@@ -256,6 +256,8 @@ aggregate_precision: एकूण अचूकता
 admins_have_all_permissions: प्रशासक यांना सर्व परवानग्या आहेत
 continue_in_advanced_field_creation_mode: प्रगत फील्ड निर्मिती मोड मध्ये सुरू ठेवा
 avg_distinct: सरासरी वेगळे
+exposure: एक्स्पोजर
+shutter: शटर
 disabled_editing_value: व्हॅल्यू संपादन बंद करा
 alias: उर्फ
 translation_key_placeholder: एक की भरा...
@@ -268,11 +270,25 @@ theme_dark: डार्क मोड
 theme_directus_minimal: थेट किमान
 theme_directus_colormatch: Directus कलर मॅच
 no_refresh: रिफ्रेश करू नका
+refresh_interval_seconds: झटपट लोड करा | प्रत्येक सेकंद | प्रत्येक {seconds} सेकंदांनी
+refresh_interval_minutes: खूप मिनिट | प्रत्येक {minutes} मिनिटांनी
+auto_generate: ऑटो जेनेरेट करा
+this_will_auto_setup_fields_relations: हे आपोआप सर्व आवश्यक फील्ड आणि संबंध सेटअप करेल.
+click_here: येथे क्लिक करा
+to_manually_setup_translations: स्वहस्ते भाषांतरे सेटअप करण्यासाठी.
+manage: मॅनेज
+click_to_manage_translated_fields: >-
+  अद्याप कोणतेही भाषांतरित फील्ड नाहीत. ते तयार करण्यासाठी येथे क्लिक करा. | एक अनुवादित फील्ड आहे. ते मॅनेज करण्यासाठी येथे क्लिक करा. | भाषांतरित फील्ड {count} आहेत. त्यांना मॅनेज करण्यासाठी येथे क्लिक करा.
+new_data_alert: 'तुमच्या डेटा मॉडेलमध्ये खालील तयार केले जातील:'
 search_collection: संग्रह शोधा...
+search_role: सर्च रोल...
+search_policy: सर्च पोलिसी...
 search_field: सर्च फील्ड...
 add_m2o_to_collection: '"{collection}" मध्ये M2O जोडा'
 add_o2m_to_collection: '"{collection}" मध्ये O2M जोडा'
 determined_by_relationship: संबंधाने ठरवले जाते
+m2o_relationship: अनेक ते एक संबंध
+confirmation_dialog: पुष्टीकरण संभाषण
 errors:
   NOT_NULL_VIOLATION: व्हॅल्यू रिकामी असू शकत नाही
 source_registry: बाजारपेठ
