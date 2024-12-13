@@ -227,6 +227,7 @@ allow_multiple_to_be_open: एकापेक्षा अधिक उघडण
 enter_value_to_replace_nulls: कृपया या फील्ड मधील कोणतेही NULL बदलण्यासाठी नवीन व्हॅल्यू प्रविष्ट करा.
 field_presentation: प्रेझेंटेशन आणि उपाधी
 field_file: एकल फाइल
+field_files: बहुसंख्य फाईल
 field_m2o: M2O संबंध
 field_group: फील्ड ग्रुप
 item_permissions: आयटम परवानग्या
@@ -290,7 +291,11 @@ add_o2m_to_collection: '"{collection}" मध्ये O2M जोडा'
 determined_by_relationship: संबंधाने ठरवले जाते
 add_note: वापर कर्त्या साठी उपयुक्त टीप जोडा...
 add_link: लिंक Add करा
+standard_field: स्टँडर्ड फील्ड
+single_file: सिंगल फाईल
+multiple_files: बहुसंख्य फाईल
 m2o_relationship: अनेक ते एक संबंध
+o2m_relationship: एक ते अनेक संबंध
 confirmation_dialog: पुष्टीकरण संभाषण
 enter_a_value: व्हॅल्यू भरा...
 enter_a_placeholder: प्लेस होल्डर भरा...
@@ -310,6 +315,13 @@ edit_raw_value: कच्ची व्हॅल्यू एडीट करा
 enter_raw_value: कच्ची व्हॅल्यू भरा...
 reset_to_default: डीफॉल्ट वर पुन्हा सेट करा
 undo_changes: बदल मागे घ्या
+notifications: सूचना
+archive_all: सर्व संग्रहित करा
+show_all_activity: सर्व कामे दाखवा
+page_not_found: पृष्ठ सापडत नाही
+page_not_found_body: आपण शोधत असलेले पृष्ठ अस्तित्वात नाही असे दिसते.
+confirm_revert_body: हे आयटम निवडलेल्या स्थितीत परत करेल.
+settings_update_success: सेटिंग्ज अपडेट केल्या
 errors:
   NOT_NULL_VIOLATION: व्हॅल्यू रिकामी असू शकत नाही
 source_registry: बाजारपेठ
