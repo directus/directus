@@ -373,6 +373,20 @@ operators:
   all: या की असतात
 loading: लोड करत आहे...
 upload_files_indeterminate: 'फाइल अपलोड करत आहे {done}/{total}'
+interface_options: इंटरफेस पर्याय
+bold: बोल्ड
+toggle: टोगल
+run_flow_confirm: तुमची खात्री आहे की तुम्ही हा प्रवाह कार्यान्वित करू इच्छिता?
+trigger_options: ट्रिगर पर्याय
+no_flows: फ्लोव नाही
+no_flows_copy: तुमच्याकडे अद्याप कोणतेही फ्लोव नाहीत.
+operation_handle_resolve: 'निराकरण करा: जोडण्यासाठी क्लिक करा किंवा मार्ग बदलण्यासाठी ड्रॅग करा'
+panel: पॅनल
+prefix_placeholder: व्हॅल्यू पूर्वी मजकूर...
+soft_wrap_lines: सॉफ्ट ओघ ओळी
+display_text_placeholder: डिस्प्ले टेक्स्ट एंटर करा...
+wysiwyg_options:
+  bold: बोल्ड
 settings_presets: बुकमार्क
 source_registry: बाजारपेठ
 fields:
@@ -401,11 +415,14 @@ interfaces:
     select_a_collection: एक कलेक्शन निवडा
   select-dropdown:
     choices_value_placeholder: व्हॅल्यू भरा...
+  boolean:
+    toggle: टोगल
 displays:
   datetime:
     suffix: प्रत्यय
   formatted-value:
     font_serif: सेरिफ
+    bold: बोल्ड
     prefix: उपसर्ग
     suffix: प्रत्यय
   labels:
@@ -416,3 +433,5 @@ operations:
   notification:
     message: संदेश
     subject: विषय
+fonts:
+  bold: बोल्ड
