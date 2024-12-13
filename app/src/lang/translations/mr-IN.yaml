@@ -354,8 +354,26 @@ webhooks_deprecation_notice: |
 no_notifications_copy: तुम्ही सर्व पाहिले आहात!
 no_collections: कोणतेही संग्रह नाहीत
 display_template_not_setup: डिस्प्ले टेम्पलेट पर्याय चुकीचा कॉन्फिगर केलेला आहे
+select_a_collection: एक कलेक्शन निवडा
+inactive: निष्क्रिय
+user_directory: युजर डायरेक्टरी
+edit_item: आयटम संपादित करा
 errors:
+  CONTAINS_NULL_VALUES: फील्ड मध्ये शून्य व्हॅल्यू आहेत
+  INVALID_IP: IP ऍड्रेस परवानगी नाही
   NOT_NULL_VIOLATION: व्हॅल्यू रिकामी असू शकत नाही
+edit_personal_bookmark: वैयक्तिक बुकमार्क एडिट करा
+cannot_edit_global_bookmarks: ग्लोबल बुकमार्क दुरुस्त करू शकत नाही
+bookmarks: बुकमार्क
+unmanaged_collections: कॉन्फिगर केलेले कलेक्शन
+serif: सेरिफ
+log_in_with: '{provider} सोबत लॉग इन करा'
+operators:
+  nstarts_with: ने सुरू होत नाही
+  all: या की असतात
+loading: लोड करत आहे...
+upload_files_indeterminate: 'फाइल अपलोड करत आहे {done}/{total}'
+settings_presets: बुकमार्क
 source_registry: बाजारपेठ
 fields:
   directus_users:
@@ -372,15 +390,22 @@ field_options:
   directus_users:
     dropdown_auto: ऍटोमिक
     dropdown_dark: डार्क मोड
+  directus_webhooks:
+    status_options_inactive: निष्क्रिय
 interfaces:
   presentation-links:
     primary: प्राथमिक
+  system-fields:
+    select_a_collection: एक कलेक्शन निवडा
+  system-display-template:
+    select_a_collection: एक कलेक्शन निवडा
   select-dropdown:
     choices_value_placeholder: व्हॅल्यू भरा...
 displays:
   datetime:
     suffix: प्रत्यय
   formatted-value:
+    font_serif: सेरिफ
     prefix: उपसर्ग
     suffix: प्रत्यय
   labels:
