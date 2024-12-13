@@ -258,6 +258,7 @@ continue_in_advanced_field_creation_mode: प्रगत फील्ड नि
 avg_distinct: सरासरी वेगळे
 exposure: एक्स्पोजर
 shutter: शटर
+focal_length: फोकल लांबी
 disabled_editing_value: व्हॅल्यू संपादन बंद करा
 alias: उर्फ
 translation_key_placeholder: एक की भरा...
@@ -287,6 +288,8 @@ search_field: सर्च फील्ड...
 add_m2o_to_collection: '"{collection}" मध्ये M2O जोडा'
 add_o2m_to_collection: '"{collection}" मध्ये O2M जोडा'
 determined_by_relationship: संबंधाने ठरवले जाते
+add_note: वापर कर्त्या साठी उपयुक्त टीप जोडा...
+add_link: लिंक Add करा
 m2o_relationship: अनेक ते एक संबंध
 confirmation_dialog: पुष्टीकरण संभाषण
 enter_a_value: व्हॅल्यू भरा...
