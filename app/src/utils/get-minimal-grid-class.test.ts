@@ -1,5 +1,5 @@
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test } from 'vitest';
 
 describe('getMinimalGridClass', () => {
 	test('Returns null when choices are undefined', () => {

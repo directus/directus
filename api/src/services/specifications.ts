@@ -388,8 +388,22 @@ class OASSpecsService implements SpecificationSubService {
 					'x-collection': collection.collection,
 				};
 
+				// Track required fields
+				const requiredFields: string[] = [];
+
 				for (const field of fieldsInCollection) {
-					schemaComponent.properties![field.field] = this.generateField(schema, collection.collection, field, tags);
+					const fieldSchema = this.generateField(schema, collection.collection, field, tags);
+					schemaComponent.properties![field.field] = fieldSchema;
+
+					// Check if field is required
+					if (field.nullable === false && field.defaultValue === null && field.generated === false) {
+						requiredFields.push(field.field);
+					}
+				}
+
+				// Only add required if there are actually required fields
+				if (requiredFields.length > 0) {
+					schemaComponent.required = requiredFields;
 				}
 
 				components.schemas[tag.name] = schemaComponent;

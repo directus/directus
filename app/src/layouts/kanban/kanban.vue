@@ -28,7 +28,7 @@ const props = withDefaults(
 		sortField?: string | null;
 		userField?: string | null;
 		groupsSortField?: string | null;
-		layoutOptions: LayoutOptions;
+		layoutOptions: LayoutOptions | null;
 		resetPresetAndRefresh: () => Promise<void>;
 		error?: any;
 		selection: PrimaryKey[];

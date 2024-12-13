@@ -3,6 +3,7 @@ import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
+import { cloneDeep, isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
@@ -79,6 +80,8 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
+const editorKey = ref(0);
+
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
 
@@ -151,16 +154,24 @@ watch(
 	},
 );
 
-const editorOptions = computed(() => {
-	let styleFormats = null;
+watch(
+	() => [props.toolbar, props.font, props.customFormats, props.tinymceOverrides],
+	(newOptions, oldOptions) => {
+		if (isEqual(newOptions, oldOptions)) return;
 
-	if (Array.isArray(props.customFormats) && props.customFormats.length > 0) {
-		styleFormats = props.customFormats;
-	}
+		editorRef.value.remove();
+		editorInitialized.value = false;
+		editorKey.value++;
+	},
+);
+
+const editorOptions = computed(() => {
+	const styleFormats =
+		Array.isArray(props.customFormats) && props.customFormats.length > 0 ? cloneDeep(props.customFormats) : null;
 
 	let toolbarString = (props.toolbar ?? [])
-		.map((t) =>
-			t
+		.map((button) =>
+			button
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
@@ -190,13 +201,11 @@ const editorOptions = computed(() => {
 			'fullscreen',
 			'directionality',
 		],
-		license_key: 'gpl',
 		branding: false,
 		max_height: 1000,
 		elementpath: false,
 		statusbar: false,
 		menubar: false,
-		highlight_on_focus: false,
 		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
@@ -208,7 +217,7 @@ const editorOptions = computed(() => {
 		directionality: props.direction,
 		paste_data_images: false,
 		setup,
-		...(props.tinymceOverrides || {}),
+		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
 	};
 });
 
@@ -306,6 +315,7 @@ function setFocus(val: boolean) {
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
 		<editor
+			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"
 			:init="editorOptions"

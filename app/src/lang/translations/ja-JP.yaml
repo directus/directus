@@ -44,6 +44,7 @@ extension_hook: フック
 extension_endpoint: エンドポイント
 extension_bundle: バンドル
 extension_interfaces: インターフェース
+extension_displays: 表示
 extension_layouts: レイアウト
 extension_modules: モジュール
 extension_panels: パネル

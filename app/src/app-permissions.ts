@@ -2,6 +2,12 @@ import { Permission } from '@directus/types';
 
 export const appRecommendedPermissions: Partial<Permission>[] = [
 	{
+		collection: 'directus_comments',
+		action: 'read',
+		permissions: {},
+		fields: ['*'],
+	},
+	{
 		collection: 'directus_files',
 		action: 'create',
 		permissions: {},
