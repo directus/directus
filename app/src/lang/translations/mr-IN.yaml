@@ -322,6 +322,9 @@ page_not_found: पृष्ठ सापडत नाही
 page_not_found_body: आपण शोधत असलेले पृष्ठ अस्तित्वात नाही असे दिसते.
 confirm_revert_body: हे आयटम निवडलेल्या स्थितीत परत करेल.
 settings_update_success: सेटिंग्ज अपडेट केल्या
+updates_made: अपडेट्स केले
+leave_comment: कमेंट लिहा...
+post_comment_success: कमेंट पोस्ट झाली
 errors:
   NOT_NULL_VIOLATION: व्हॅल्यू रिकामी असू शकत नाही
 source_registry: बाजारपेठ
