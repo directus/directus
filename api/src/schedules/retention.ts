@@ -87,9 +87,8 @@ export async function handleRetentionJob() {
 
 				if (records.length !== 0) {
 					count = await database(task.collection)
-						.where(
+						.whereIn(
 							'id',
-							'in',
 							records.map((r) => r.id),
 						)
 						.delete();
