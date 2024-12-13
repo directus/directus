@@ -79,20 +79,22 @@ export async function handleRetentionJob() {
 			}
 
 			try {
-				// reset count
-				count = 0;
+				let records = [];
+				const isMysql = helpers.schema.isOneOfClients(['mysql']);
 
-				// subquery executed here as mysql/maria does not allow limit within an IN statement
-				const records = await subquery;
+				// mysql/maria does not allow limit within a subquery
+				// https://dev.mysql.com/doc/refman/8.4/en/subquery-restrictions.html
+				if (isMysql) {
+					records = await subquery.then((r) => r.map((r) => r.id));
 
-				if (records.length !== 0) {
-					count = await database(task.collection)
-						.whereIn(
-							'id',
-							records.map((r) => r.id),
-						)
-						.delete();
+					if (records.length === 0) {
+						break;
+					}
 				}
+
+				count = await database(task.collection)
+					.whereIn('id', isMysql ? records : subquery)
+					.delete();
 			} catch (error) {
 				logger.error(error, `Retention failed for Collection ${task.collection}`);
 
