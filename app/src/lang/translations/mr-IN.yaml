@@ -289,6 +289,24 @@ add_o2m_to_collection: '"{collection}" मध्ये O2M जोडा'
 determined_by_relationship: संबंधाने ठरवले जाते
 m2o_relationship: अनेक ते एक संबंध
 confirmation_dialog: पुष्टीकरण संभाषण
+enter_a_value: व्हॅल्यू भरा...
+enter_a_placeholder: प्लेस होल्डर भरा...
+precision_scale: अचूकता आणि स्केल
+readonly: केवळ वाचनीय
+updated_on: वर अपडेट केले
+updated_by: द्वारे अपडेट
+primary_key: प्रायमरी की
+foreign_key: फॉरेन की
+finish_setup: सेटअप पूर्ण करा
+toggle_raw_editor: Raw एडिटर बदल करा
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Raw व्हॅल्यू
+copy_raw_value: कच्चे कॉपी व्हॅल्यू
+paste_raw_value: कच्ची व्हॅल्यू पेस्ट करा
+edit_raw_value: कच्ची व्हॅल्यू एडीट करा
+enter_raw_value: कच्ची व्हॅल्यू भरा...
+reset_to_default: डीफॉल्ट वर पुन्हा सेट करा
+undo_changes: बदल मागे घ्या
 errors:
   NOT_NULL_VIOLATION: व्हॅल्यू रिकामी असू शकत नाही
 source_registry: बाजारपेठ
@@ -308,12 +326,16 @@ field_options:
 interfaces:
   presentation-links:
     primary: प्राथमिक
+  select-dropdown:
+    choices_value_placeholder: व्हॅल्यू भरा...
 displays:
   datetime:
     suffix: प्रत्यय
   formatted-value:
     prefix: उपसर्ग
     suffix: प्रत्यय
+  labels:
+    choices_value_placeholder: व्हॅल्यू भरा...
 operations:
   log:
     message: संदेश
