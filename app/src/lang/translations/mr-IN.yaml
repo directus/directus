@@ -1656,6 +1656,7 @@ password: पासवर्ड
 confirm_password: पासवर्डची पुष्टी करा
 permissions: परवानग्या
 relationship: रिलेशनशीप
+reset: पुन्हा सेट करा
 reset_password: पासवर्ड रीसेट करा
 revisions: आवर्तने
 no_revisions: अद्याप कोणतीही पुनरावृत्ती नाही
@@ -1714,30 +1715,94 @@ interfaces:
     sorting_disabled: क्रमवारी अक्षम केले आहे कारण एका पृष्ठावर बसू शकतील त्यापेक्षा जास्त आयटम आहेत.
   filter:
     name: फिल्टर
+    description: फिल्टर ऑब्जेक्ट कॉन्फिगर करा.
     add_filter: फिल्टर जोडा
+    add_group: And / Or ग्रुप
+    add_value: व्हॅल्यू ऍड करा
+    logic_type_and: AND
+    logic_type_or: OR
     all: सर्व
     any: काहीही
+    and: and
+    of_the_following: खालीलपैकी
+    no_rules: कॉन्फिगर केलेले नियम नाहीत
+    change_value: मूल्य बदलण्यासाठी क्लिक करा
+    placeholder: येथे नियम ड्रॅग करा
+    add_key_placeholder: एक की जोडा आणि एंटर दाबा...
+  fields:
+    name: फील्ड
   group-accordion:
+    name: एकॉर्डियन
+    description: एकॉर्डियन विभाग म्हणून फील्ड किंवा गट प्रदर्शित करा
     start: चालू
+    all_closed: सर्व बंद
+    first_opened: प्रथम उघडले
+    all_opened: सर्व उघडले
+    accordion_mode: एकॉर्डियन मोड
+    max_one_section_open: कमाल 1 विभाग उघडा
   presentation-links:
+    presentation-links: बटण लिंक
+    links: लिंक
+    description: डायनॅमिक URL लाँच करण्यासाठी कॉन्फिगर करण्यायोग्य लिंक बटणे
+    style: स्टाईल
     primary: प्राथमिक
+    link: लिंक्स
+    button: बटन्स
+    error: कृती करू शकत नाही
+  select-multiple-checkbox:
+    checkboxes: चेकबॉक्सेस
+    description: चेकबॉक्सेसद्वारे एकाधिक पर्यायांमधून निवडा
+    allow_other: इतरांना परवानगी द्या
+    show_more: 'आणखी {count} दाखवा'
+    items_shown: आयटम दाखवले
+  select-multiple-checkbox-tree:
+    name: चेकबॉक्सेस (वृक्ष)
+    description: नेस्टेड चेकबॉक्सेसद्वारे एकाधिक पर्यायांमधून निवडा
+    value_combining: मूल्य संयोजन
+    value_combining_note: नेस्टेड निवडी केल्या जातात तेव्हा कोणते मूल्य संचयित केले जाते ते नियंत्रित करते
+    show_all: सर्व दाखवा
+    show_selected: निवडलेले दाखवा
   input-code:
     code: कोड
+    description: कोड स्निपेट्स लिहा किंवा शेअर करा
+    line_number: ओळ क्रमांक
+    line_wrapping: Line Wrapping
+    placeholder: येथे कोड प्रविष्ट करा...
   system-collection:
     collection: कलेक्शन
+    description: विद्यमान संग्रहांमधून निवडा
+    include_system_collections: सिस्टम संग्रह समाविष्ट करा
   system-collections:
     collections: कलेक्शन्स
+    description: विद्यमान संग्रहांमधून निवडा
+    include_system_collections: सिस्टम संग्रह समाविष्ट करा
   select-color:
     color: कलर
+    description: रंग मूल्य प्रविष्ट करा किंवा निवडा
+    placeholder: एक रंग निवडा...
+    preset_colors: प्रीसेट रंग
+    opacity: अपारदर्शकता
+    preset_colors_add_label: नवीन रंग जोडा...
+    name_placeholder: कलर चे नाव एंटर करा
+  datetime:
+    datetime: तारीख वेळ
+    description: तारखा आणि वेळा प्रविष्ट करा
+    include_seconds: सेकंद समाविष्ट करा
+    set_to_now: आता वर सेट करा
+    use_24: 24-तास स्वरूप वापरा
+    placeholder: तारीख वेळ निवडा...
   system-fields:
     select_a_collection: एक कलेक्शन निवडा
+    no_fields: फील्ड नाहीत
   system-display-template:
     display-template: टेम्प्लेट डिस्प्ले करा
+    description: Mix static text and dynamic field values
     collection_field_not_setup: संकलन फील्ड पर्याय चुकीचा कॉन्फिगर केलेला आहे
     select_a_collection: एक कलेक्शन निवडा
   presentation-divider:
     divider: दुभाजक
   select-dropdown:
+    allow_other: इतरांना परवानगी द्या
     choices_value_placeholder: व्हॅल्यू भरा...
   file:
     file: फाईल
@@ -1790,6 +1855,7 @@ displays:
   color:
     color: कलर
   datetime:
+    datetime: तारीख वेळ
     format: फॉरमॅट
     suffix: प्रत्यय
   file:
@@ -1859,6 +1925,7 @@ operations:
     flow: फ्लोव
     data: डेटा
 standard: आदर्श
+style: स्टाईल
 fonts:
   normal: नॉर्मल
   bold: बोल्ड
