@@ -410,12 +410,19 @@ fields:
     name: रोलचे नाव
   directus_policies:
     name: पॉलिसीचे नाव
+  directus_webhooks:
+    header: हेडर
 field_options:
+  directus_collections:
+    archive_field_placeholder: फील्ड निवडा...
   directus_users:
     dropdown_auto: ऍटोमिक
     dropdown_dark: डार्क मोड
+    admin_divider: ऍडमिन पर्याय
   directus_webhooks:
     status_options_inactive: निष्क्रिय
+    headers:
+      header: हेडर
 table: टेबल
 interfaces:
   presentation-links:
@@ -430,6 +437,7 @@ interfaces:
     toggle: टोगल
   input-block-editor:
     tools_options:
+      header: हेडर
       table: टेबल
 displays:
   datetime:
@@ -450,5 +458,7 @@ operations:
   notification:
     message: संदेश
     subject: विषय
+  request:
+    header: हेडर
 fonts:
   bold: बोल्ड
