@@ -28,7 +28,7 @@ active. Refreshing the page will clear the logs.
 ::: tip Enabling System Logs
 
 System Logs rely on
-[Websockets](https://docs.directus.io/guides/real-time/getting-started/websockets-js.html#getting-started-with-websockets)
+[WebSockets](https://docs.directus.io/guides/real-time/getting-started/websockets-js.html#getting-started-with-websockets)
 for real-time connectivity. To enable this feature:
 
 1. Ensure the `WEBSOCKETS_ENABLED` environment variable is set to `true`.
