@@ -402,6 +402,7 @@ fields:
     language: भाषा
     last_access: शेवटचा प्रवेश
   directus_settings:
+    default_theme_dark: डिफॉल्ट थीम डार्क
     module_bar: मॉड्यूल बार
   directus_fields:
     translation: फील्ड नाव भाषांतरे
