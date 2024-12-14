@@ -423,6 +423,9 @@ field_options:
     status_options_inactive: निष्क्रिय
     headers:
       header: हेडर
+      add: हेडर ऍड करा
+choose_action: कृती निवडा
+relationship: रिलेशनशीप
 table: टेबल
 interfaces:
   presentation-links:
