@@ -1975,38 +1975,125 @@ interfaces:
     toggle: टोगल
     description: चालू आणि च्या दरम्यान स्विच करा
     color_on: कलर चालू
+    color_off: कलर बंद
+    label_placeholder: लेबल एंटर करा
     label_default: एनेबल
   translations:
     display_template: टेम्प्लेट डिस्प्ले करा
+    no_collection: कलेक्शन नाही
+    toggle_split_view: टोगल स्प्लिट व्हिव
+    enable: एनेबल
+    default_split_view_state: डिफॉल्ट स्प्लिट दृश्य स्थिती
+    user_language: वर्तमान वापरकर्ता भाषा वापरा
+    default_language: डीफॉल्ट भाषा
+    language_field: भाषा सूचक फील्ड
+    language_direction_field: भाषा दिशा फील्ड
+  list-o2m-tree-view:
+    description: नेस्टेड रिकर्सिव वन-टू-अनेक आयटमसाठी ट्री व्ह्यू
+    recursive_only: ट्री व्ह्यू इंटरफेस फक्त आवर्ती संबंधांसाठी कार्य करतो.
   user:
     user: युजर
+    description: विद्यमान डायरेक्टस वापरकर्ता निवडा
+    select_mode: "मोड निवडा\n"
     modes:
+      auto: ऑटो
       dropdown: ड्रॉप डाऊन
+      modal: मोडल
   input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: HTML सामग्री लिहिणारा रिच टेक्स्ट एडिटर
+    toolbar: टूलबार
+    custom_formats: कस्टम स्वरूप
+    custom_formats_note: TinyMCE सामग्री स्वरूपांची सूची. अधिक माहितीसाठी [सामग्री फॉरमॅटिंग](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) बद्दल TinyMCE दस्तऐवजीकरण पहा.
+    options_override: पर्याय ओव्हरराइड
+    options_override_note: TinyMCE वापरकर्ता स्वरूपन की आणि त्यांची मूल्ये. अधिक माहितीसाठी [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) बद्दल TinyMCE दस्तऐवज पहा
     imageToken: स्थिर प्रवेश टोकन
     imageToken_label: स्टॅटिक ऍक्सेस टोकन मालमत्तेच्या URL मध्ये जोडलेले आहे
   input-block-editor:
+    input-block-editor: Block Editor
+    description: समृद्ध मीडिया कथांसाठी ब्लॉक-शैलीतील संपादक, Editor.js वापरून JSON मध्ये स्वच्छ डेटा आउटपुट करतो
+    tools: टूलबार
     tools_options:
       header: हेडर
+      nestedlist: यादी
       embed: एम्बेड करा
+      paragraph: परिच्छेद
       code: कोड
+      image: इमेज
+      attaches: जोडते
       table: टेबल
+      quote: कोट
       underline: अंडरलाईन
+      inlinecode: इनलाईन कोड 
+      delimiter: परिसीमक
+      checklist: चेकलिस्ट
+      toggle: ब्लॉक टॉगल करा
+      alignment: संरेखन
+      raw: Raw HTML
+  input-autocomplete-api:
+    input-autocomplete-api: "स्वयंपूर्ण इनपुट (API)\n"
+    description: "स्वयंपूर्ण इनपुट (API)\n"
+    results_path: परिणाम पथ
+    value_path: मूल्य पथ
+    text_path: "मजकूर मार्ग\n"
+    trigger: ट्रिगर
+    rate: किंमत
+  group-raw:
+    name: raw ग्रुप
+    description: फील्ड जसे आहे तसे रेंडर करा
+  group-detail:
+    name: तपशील गट
+    description: फील्ड एक संकुचित करण्यायोग्य विभाग म्हणून प्रस्तुत करा
+    show_header: गट हेडर दर्शवा
+    header_icon: हेडर आयकॉन
+    header_color: हेडर कलर
+    start_open: उघडणे चालू करा
+    start_closed: प्रारंभ बंद
   system-token:
     system-token: टोकन
+    description: स्थिर प्रवेश टोकन व्यवस्थापित करा
+    placeholder: नवीन स्थिर प्रवेश टोकन तयार करण्यासाठी "टोकन व्युत्पन्न करा" वर क्लिक करा
+    value_securely_saved: मूल्य सुरक्षितपणे जतन केले
+    generate: टोकन जनरेट करा
+    regenerate: टोकन पुन्हा जनरेट करा
+    generate_success_copy: वरील टोकन बॅकअप आणि कॉपी केल्याची खात्री करा. सुरक्षिततेच्या कारणास्तव, हे पृष्ठ जतन केल्यानंतर आणि नेव्हिगेट केल्यानंतर तुम्ही टोकन पुन्हा पाहू शकणार नाही.
+    remove_token: टोकन काढा
+  system-raw-editor:
+    system-raw-editor: raw एडिटर
+    description: कच्च्या किंवा मिश्या टेम्प्लेटिंग मूल्ये प्रविष्ट करण्यास अनुमती द्या
+  input-password:
+    input-password: इनपुट पासवर्ड
+    description: मूल्य लपवण्यासाठी टॉगलसह पासवर्ड इनपुट
 displays:
   translations:
     translations: भाषांतरे
+    description: भाषांतरांचे पूर्वावलोकन करा
+    enable: एनेबल
+    user_language: वर्तमान वापरकर्ता भाषा वापरा
+    default_language: डीफॉल्ट भाषा
+    language_field: भाषा सूचक फील्ड
   boolean:
     boolean: बुलियन
+    description: चालू आणि बंद स्थिती प्रदर्शित करा
+    label_on: लेबल चालू
+    label_on_placeholder: ऑन लेबल एंटर करा...
+    label_off: लेबल बंद
+    label_off_placeholder: एक बंद लेबल प्रविष्ट करा...
     icon_on: चिन्ह चालू
     icon_off: चिन्ह बंद
+    color_on: रंग चालू
+    color_off: रंग बंद
   collection:
     collection: कलेक्शन
+    description: कलेक्शन प्रदर्शित करा
+    icon_label: कलेक्शन चिन्ह दाखवा
   color:
     color: कलर
+    description: रंगीत बिंदू प्रदर्शित करा
+    default_color: डीफॉल्ट रंग
   datetime:
     datetime: तारीख वेळ
+    description: वेळेशी संबंधित मूल्ये प्रदर्शित करा
     format: फॉरमॅट
     suffix: प्रत्यय
   file:
@@ -2088,3 +2175,4 @@ fonts:
   bold: बोल्ड
   black: काळा
   italic: इटालिक
+  auto: ऑटो
