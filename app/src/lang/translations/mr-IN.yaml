@@ -385,9 +385,12 @@ panel: पॅनल
 prefix_placeholder: व्हॅल्यू पूर्वी मजकूर...
 soft_wrap_lines: सॉफ्ट ओघ ओळी
 display_text_placeholder: डिस्प्ले टेक्स्ट एंटर करा...
+interface_group_relational: रेलशनल
 wysiwyg_options:
   bold: बोल्ड
+  table: टेबल
 settings_presets: बुकमार्क
+theme-overrides: थीम ओव्हर राईड
 source_registry: बाजारपेठ
 fields:
   directus_users:
@@ -406,6 +409,7 @@ field_options:
     dropdown_dark: डार्क मोड
   directus_webhooks:
     status_options_inactive: निष्क्रिय
+table: टेबल
 interfaces:
   presentation-links:
     primary: प्राथमिक
@@ -417,6 +421,9 @@ interfaces:
     choices_value_placeholder: व्हॅल्यू भरा...
   boolean:
     toggle: टोगल
+  input-block-editor:
+    tools_options:
+      table: टेबल
 displays:
   datetime:
     suffix: प्रत्यय
@@ -427,6 +434,9 @@ displays:
     suffix: प्रत्यय
   labels:
     choices_value_placeholder: व्हॅल्यू भरा...
+layouts:
+  tabular:
+    tabular: टेबल
 operations:
   log:
     message: संदेश
