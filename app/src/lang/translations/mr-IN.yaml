@@ -391,9 +391,15 @@ wysiwyg_options:
   table: टेबल
 settings_presets: बुकमार्क
 theme-overrides: थीम ओव्हर राईड
+no_extensions_copy: अद्याप कोणतेही विस्तार स्थापित केलेले नाहीत.
 source_registry: बाजारपेठ
+directus_collection:
+  directus_relations: रिलेशनशिप कॉन्फिगरेशन आणि मेटाडेटा
 fields:
+  directus_activity:
+    revisions: उजळणी
   directus_users:
+    language: भाषा
     last_access: शेवटचा प्रवेश
   directus_settings:
     module_bar: मॉड्यूल बार
