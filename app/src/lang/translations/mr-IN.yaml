@@ -1797,36 +1797,184 @@ interfaces:
   system-display-template:
     display-template: टेम्प्लेट डिस्प्ले करा
     description: Mix static text and dynamic field values
+    collection_field: संकलन फील्ड
     collection_field_not_setup: संकलन फील्ड पर्याय चुकीचा कॉन्फिगर केलेला आहे
     select_a_collection: एक कलेक्शन निवडा
   presentation-divider:
     divider: दुभाजक
+    description: फील्डला लेबल करा आणि विभागांमध्ये विभाजित करा
+    title_placeholder: शीर्षक एंटर करा किंवा फक्त एक ओळ दर्शविण्यासाठी रिक्त सोडा...
+    inline_title: इनलाईन टायटल
+    inline_title_label: ओळीच्या आत शीर्षक दाखवा
+    margin_top: मार्जिन टॉप
+    margin_top_label: शीर्ष मार्जिन वाढवा
   select-dropdown:
+    description: ड्रॉपडाउनमधून मूल्य निवडा
+    choices_placeholder: नवीन निवड जोडा
     allow_other: इतरांना परवानगी द्या
+    allow_other_label: इतर मूल्यांना अनुमती द्या
+    allow_none: काहीही परवानगी द्या
+    allow_none_label: कोणत्याही निवडीला अनुमती द्या
+    choices_name_placeholder: नाव एंटर करा...
     choices_value_placeholder: व्हॅल्यू भरा...
+    preview_threshold: पूर्वावलोकन थ्रेशोल्ड
+  select-multiple-dropdown:
+    select-multiple-dropdown: ड्रॉपडाउन (एकाधिक)
+    description: ड्रॉपडाउनमधून एकाधिक मूल्ये निवडा
   file:
     file: फाईल
+    description: फाइल निवडा किंवा अपलोड करा
+  files:
+    files: फाईल्स
+    description: एकाधिक फायली निवडा किंवा अपलोड करा
   input-hash:
     hash: हॅश
+    description: हॅश करण्यासाठी व्हॅल्यू प्रविष्ट करा
+    masked: मुखवटा घातलेला
+    masked_label: खरे व्हॅल्यू लपवा
   select-icon:
     icon: आयकॉन
+    description: ड्रॉपडाउनमधून एक चिन्ह निवडा
+    search_for_icon: चिन्ह शोधा...
+  file-image:
+    image: प्रतिमा
+    description: प्रतिमा निवडा किंवा अपलोड करा
+    crop: फिट करण्यासाठी क्रॉप करा
+    crop_label: आवश्यकतेनुसार प्रतिमा क्रॉप करा
+    letterbox: लेटरबॉक्स
+    letterbox_label: प्रतिमा पूर्वावलोकनात पॅडिंग जोडा
+  system-interface:
+    interface: इंटरफेस
+    description: विद्यमान इंटरफेस निवडा
+    placeholder: इंटरफेस निवडा...
+  system-interface-options:
+    interface-options: इंटरफेस पर्याय
+    description: इंटरफेसचे पर्याय निवडण्यासाठी एक मॉडेल
   system-display:
     display: डिस्प्ले
+    description: विद्यमान डिस्प्ले निवडा
+    placeholder: डिस्प्ले निवडा...
   system-display-options:
     display-options: प्रदर्शन पर्याय
+    description: डिस्प्लेचे पर्याय निवडण्यासाठी एक मॉडेल
+  list-m2m:
+    many-to-many: अनेक ते अनेक
+    description: एकाधिक संबंधित जंक्शन आयटम निवडा
+    columns_configure_notice: हे फील्ड तयार केल्यानंतर तुम्ही कॉलम कॉन्फिगर करू शकता
+    display_template_configure_notice: हे फील्ड तयार केल्यानंतर तुम्ही डिस्प्ले टेम्प्लेट कॉन्फिगर करू शकता.
   select-dropdown-m2o:
+    many-to-one: अनेक ते एक
+    description: एकच संबंधित आयटम निवडा
     display_template: टेम्प्लेट डिस्प्ले करा
+  collection-item-dropdown:
+    collection-item-dropdown: कलेक्शन आयटम ड्रॉपडाउन
+    description: JSON फॉरमॅटमधील संग्रहातून एक आयटम निवडा
   input-rich-text-md:
+    markdown: मार्कडाउन
+    description: प्रविष्ट करा आणि मार्कडाउनचे पूर्वावलोकन करा
     edit: संपादित करा
+    preview: प्रिव्हिव
+    editorFont: संपादक फॉन्ट
+    previewFont: प्रिव्हिव फॉन्ट
+    default_view: डीफॉल्ट व्हिव
+    default_view_editor: संपादक
+    default_view_preview: प्रिव्हिव
+    customSyntax: कस्टम ब्लॉक
+    customSyntax_label: कस्टम वाक्यरचना प्रकार जोडा
+    customSyntax_add: कस्टम वाक्यरचना जोडा
+    box: ब्लॉक / इनलाइन
+    imageToken: स्थिर प्रवेश टोकन
+    imageToken_label: स्टॅटिक ऍक्सेस टोकन मालमत्तेच्या URL मध्ये जोडलेले आहे
   map:
+    map: नकाशा
+    description: नकाशावर एक स्थान निवडा
     zoom: झूम
+    geometry_type: भूमिती प्रकार
+    geometry_format: भूमिती स्वरूप
+    default_view: डीफॉल्ट व्हिव
+    invalid_options: अवैध पर्याय
+    invalid_format: अवैध स्वरूप ({format})
+    unexpected_geometry: अपेक्षित {expected}, मिळाले {मिळाले}.
+    fit_bounds: डेटासाठी दृश्य फिट करा
+    native: मूळ
+    geojson: GeoJSON
+    lnglat: रेखांश, अक्षांश
+    wkt: WKT
+    wkb: WKB
+    click_to_select: '{geometry} निवडण्यासाठी क्लिक करा'
+  presentation-notice:
+    notice: लक्ष द्या
+    description: एक लहान सूचना प्रदर्शित करा
+    text: येथे सूचना सामग्री प्रविष्ट करा...
+    no_text: कोणताही मजकूर कॉन्फिगर केलेला नाही...
+  list-o2m:
+    one-to-many: एक ते अनेक
+    description: एकाधिक संबंधित आयटम निवडा
+    no_collection: कलेक्शन सापडला नाही
+  system-folder:
+    folder: रूट फोल्डर
+    description: फोल्डर निवडा
+    field_hint: निर्दिष्ट केलेल्या फोल्डरशिवाय अपलोड केलेल्या फायलींसाठी डीफॉल्ट फोल्डर. विद्यमान फाइल्सवर परिणाम होत नाही.
+    root_name: फाइल लायब्ररी रूट
+    system_default: सिस्टम डीफॉल्ट
+  select-radio:
+    radio-buttons: रेडिओ बटणे
+    description: अनेक पर्यायांपैकी एक निवडा
   list:
+    repeater: रिपीटर
+    description: एकाच संरचनेच्या अनेक नोंदी तयार करा
+    edit_fields: फील्ड एडिट करा
+    add_label: '"नवीन तयार करा" लेबल'
     sort: क्रमवारी लावा
+    sort_placeholder: मॅन्युअल
+    field_note_placeholder: फील्ड नोट एंटर करा...
+    incompatible_data: वर्तमान डेटा रिपीटर इंटरफेसशी सुसंगत नाही आणि रिपीटरमध्ये आयटम जोडताना ओव्हरराइड केला जाईल
+    interface_group: इंटरफेस पर्याय
     display_group: प्रदर्शन पर्याय
+  slider:
+    slider: स्लाइडर
+    description: स्लाइडर वापरून संख्या निवडा
+    always_show_value: नेहमी व्हॅल्यू दाखवा
   tags:
     tags: टॅग्स
+    description: टॅग निवडा किंवा जोडा
+    whitespace: व्हाइटस्पेस
+    hyphen: हायफनसह बदला
+    underscore: अंडरस्कोरसह बदला
+    remove: व्हाइटस्पेस काढा
+    capitalization: कॅपिटलायझेशन
+    uppercase: अप्परकेसमध्ये रूपांतरित करा
+    lowercase: लोअरकेसमध्ये रूपांतरित करा
+    auto_formatter: शीर्षक ऑटो-फॉर्मेटर वापरा
+    alphabetize: वर्णमाला
+    alphabetize_label: सक्तीची वर्णमाला क्रम
+    add_tags: टॅग जोडा आणि एंटर दाबा...
+  input:
+    input: इनपुट
+    description: व्यक्तिचलितपणे व्हॅल्यू प्रविष्ट करा
+    trim: ट्रिम करा
+    trim_label: प्रारंभ आणि शेवट ट्रिम करा
+    mask: मुखवटा घातलेला
+    mask_label: "वास्तविक व्हॅल्यू लपवा\n"
+    clear: क्लिअर केलेले व्हॅल्यू
+    clear_label: रिक्त स्ट्रिंग म्हणून जतन करा
+    minimum_value: किमान मूल्य
+    maximum_value: कमाल मूल्य
+    step_interval: स्टेप इंटरव्हल
+    slug: Slugify
+    slug_label: प्रविष्ट केलेली मूल्य URL सुरक्षित करा
+  input-multiline:
+    textarea: मजकूर
+    description: मल्टिलाइन प्लेन टेक्स्ट एंटर करा
+  input-translated-string:
+    input-translated-string: अनुवादित स्ट्रिंग्स
+    description: कस्टम भाषांतर निवडा किंवा जोडा
+    search_placeholder: शोधा...
+    new_custom_translation: नवीन कस्टम भाषांतर
   boolean:
     toggle: टोगल
+    description: चालू आणि च्या दरम्यान स्विच करा
+    color_on: कलर चालू
     label_default: एनेबल
   translations:
     display_template: टेम्प्लेट डिस्प्ले करा
@@ -1834,6 +1982,9 @@ interfaces:
     user: युजर
     modes:
       dropdown: ड्रॉप डाऊन
+  input-rich-text-html:
+    imageToken: स्थिर प्रवेश टोकन
+    imageToken_label: स्टॅटिक ऍक्सेस टोकन मालमत्तेच्या URL मध्ये जोडलेले आहे
   input-block-editor:
     tools_options:
       header: हेडर
@@ -1871,6 +2022,8 @@ displays:
     suffix: प्रत्यय
     color: कलर
     icon: आयकॉन
+    mask: मुखवटा घातलेला
+    mask_label: "वास्तविक व्हॅल्यू लपवा\n"
     text: टेक्स्ट
   hash:
     hash: हॅश
@@ -1880,6 +2033,8 @@ displays:
     circle: वर्तुळ
   labels:
     choices_value_placeholder: व्हॅल्यू भरा...
+  related-values:
+    display_template_configure_notice: हे फील्ड तयार केल्यानंतर तुम्ही डिस्प्ले टेम्प्लेट कॉन्फिगर करू शकता.
   user:
     user: युजर
     avatar: अवतार
@@ -1889,6 +2044,8 @@ layouts:
     title: शीर्षक
   tabular:
     tabular: टेबल
+  map:
+    map: नकाशा
   kanban:
     advanced: अडवान्सड
 panels:
