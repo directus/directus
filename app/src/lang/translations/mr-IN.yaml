@@ -2150,30 +2150,181 @@ displays:
     description: ऑब्जेक्टची फॉरमॅटेड आवृत्ती प्रदर्शित करा
   hash:
     hash: हॅश
+    description: व्हॅल्यू सुधारित आवृत्ती प्रदर्शित करा
   icon:
     icon: आयकॉन
+    description: एक चिन्ह प्रदर्शित करा
+    filled: भरले 
+    filled_label: भरलेला प्रकार वापरा
   image:
+    image: इमेज
+    description: एक लहान प्रतिमा प्रिव्हिव प्रदर्शित करा
     circle: वर्तुळ
+    circle_label: वर्तुळ दाखवा
   labels:
+    labels: लेबल्स
+    description: एकतर एक किंवा लेबलांची सूची प्रदर्शित करा
+    default_foreground: डीफॉल्ट फोरग्राउंड
+    default_background: डीफॉल्ट पार्श्वभूमी
+    format_label: प्रत्येक लेबल फॉरमॅट करा
+    show_as_dot: डॉट म्हणून दाखवा
     choices_value_placeholder: व्हॅल्यू भरा...
+    choices_text_placeholder: मजकूर एंटर करा...
+  mime-type:
+    mime-type: MIME प्रकार
+    description: फाइलचा MIME-प्रकार दाखवा
+    extension_only: फक्त विस्तार
+    extension_only_label: फक्त फाईल एक्स्टेंशन दाखवा
+  rating:
+    rating: रेटिंग
+    description: कमाल-मूल्याच्या सापेक्ष स्टार म्हणून संख्या दृश्यमान करा
+    simple: सिम्पल
+    simple_label: साध्या स्वरूपात स्टार दाखवा
+  raw:
+    raw: raw व्हॅल्यू
   related-values:
+    related-values: संबंधित व्हॅल्यू
+    description: संबंधित व्हॅल्यू प्रदर्शित करा
     display_template_configure_notice: हे फील्ड तयार केल्यानंतर तुम्ही डिस्प्ले टेम्प्लेट कॉन्फिगर करू शकता.
   user:
     user: युजर
+    description: थेट वापरकर्ता प्रदर्शित करा
     avatar: अवतार
     name: नाव
+    both: दोन्ही
+    circle_label: वर्तुळात वापरकर्ता दर्शवा
 layouts:
   cards:
+    cards: कार्डस
+    image_source: इमेज सोर्स
+    image_fit: इमेज फिट
+    crop: क्रॉप
+    contain: समाविष्ट करा
     title: शीर्षक
+    subtitle: उपशीर्षक
   tabular:
     tabular: टेबल
+    spacing: अंतर
+    comfortable: आरामदायी
+    compact: संक्षिप्त
+    cozy: उबदार
+  calendar:
+    calendar: दिनदर्शिका
+    start_date_field: प्रारंभ तारीख फील्ड
+    end_date_field: समाप्ती तारीख फील्ड
+    optional: पर्यायी
+    first_day: आठवड्याचा पहिला दिवस
   map:
     map: नकाशा
+    basemap: बेस मॅप
+    layers: लेयर
+    cluster_options: क्लस्टरिंग पर्याय
+    cluster: क्लस्टर जवळील डेटा
+    cluster_radius: क्लस्टर त्रिज्या
+    cluster_minpoints: क्लस्टर किमान आकार
+    cluster_maxzoom: क्लस्टरिंगसाठी कमाल झूम
+    field: भौगोलिक क्षेत्र
+    invalid_geometry: अवैध भूमिती
+    find_location: स्थान शोधा...
+    default_template: कलेक्शन डीफॉल्ट वापरत आहे..
+    no_compatible_fields: कोणतीही सुसंगत फील्ड नाहीत
   kanban:
+    name: Kanban 
+    group_field: द्वारे गट
+    group_field_placeholder: द्वारे गटासाठी फील्ड...
+    group_title: गट शीर्षक
+    group_title_placeholder: गट विजेतेपदांसाठी फील्ड...
+    title: कार्ड शीर्षक
+    title_placeholder: पर्यायी शीर्षक फील्ड...
+    text: कार्ड मजकूर
+    text_placeholder: पर्यायी मजकूर फील्ड...
+    date: कार्ड तारीख
+    date_placeholder: पर्यायी तारीख फील्ड...
+    tags: कार्ड टॅग्ज
+    tags_placeholder: पर्यायी टॅग फील्ड...
+    user: कार्ड वापरकर्ता
+    user_placeholder: पर्यायी वापरकर्ता फील्ड...
+    image: कार्ड प्रतिमा
+    image_placeholder: पर्यायी इमेज फील्ड...
+    image_fit: कार्ड प्रतिमा फिट
+    crop: क्रॉप
     advanced: अडवान्सड
+    edit_group: ग्रुप एडिट करा
+    delete_group: डिलीट ग्रुप
+    add_group: ग्रुप ऍड करा.
+    add_group_placeholder: नवीन गट शीर्षक प्रविष्ट करा...
+    show_ungrouped: गटबद्ध न केलेले दाखवा
+    show: दाखवा
+    no_group: गट नाही
+horizontal: क्षैतिज
+vertical: उभे
+axis: अक्ष
+x_axis: X- अक्ष
+y_axis: Y-अक्ष
+y_axis_function: Y-अक्ष कार्य
+show_x_only: फक्त एक्स-अक्ष दाखवा
+show_y_only: फक्त Y-अक्ष दाखवा
+show_data_label: डेटा लेबल दाखवा
+both: दोन्ही
+show_axis_labels: अक्ष लेबल दर्शवा
+function: कार्य
+half_circle: अर्ध वर्तुळ
+full_circle: पूर्ण वर्तुळ
+stroke_width: स्ट्रोक रुंदी
+rounded_stroke: गोलाकार स्ट्रोक
+thin: पातळ
+medium: मध्यम
+broad: ब्रॉड
+show_labels: लेबल दाखवा
+show_legend: लेजेंड दाखवा
+right: उजवा
+left: डावा
+donut: डोनट
 panels:
+  metric:
+    name: परिमाण
+    description: क्वेरीवर आधारित एकल मूल्य दर्शवा
+    field: फील्ड
+  metric_list:
+    name: मेट्रिक सूची
+    description: कलेक्शन एकूण मेट्रिक्स सूचीबद्ध करा आणि दृश्यमान करा
+  time_series:
+    name: वेळ मालिका
+    description: कालांतराने मूल्यांवर आधारित रेखा चार्ट रेंडर करा
+    date_field: तारीख फील्ड
+    value_field: मूल्य क्षेत्र
+    fill_type: प्रकार भरा
+    curve_type: वक्र प्रकार
   label:
     name: लेबल
+    description: काही मजकूर दाखवा
+  list:
+    name: यादी
+    description: कलेक्शन फील्ड फिल्टर आणि सूचीबद्ध कर
+  barchart:
+    name: बार चार्ट
+    description: मूल्यांच्या गटांची तुलना करण्यासाठी बार किंवा स्तंभ चार्ट
+    horizontal: क्षैतिज
+    select_collection: आपण कलेक्शन निवडणे आवश्यक आहे.
+  linechart:
+    name: रेखा चार्ट
+    description: फील्डच्या बदलाची तुलना करण्यासाठी रेखा चार्ट
+    disabled_grouping: गटीकरण निवडल्यावर अक्षम केले जाते
+    disabled_no_grouping: कोणतेही गट निवडलेले नसताना अक्षम केले.
+    show_marker: टूलटिप मार्कर दाखवा
+    curve_type: वक्र प्रकार
+    smooth: स्मूथ
+    straight: सरळ
+    step_line: स्टेप लाईन
+    show_legend: लेजेंड दाखवा
+  meter:
+    name: मीटर
+    description: व्हॅल्यू ट्रॅक करण्यासाठी मीटर
+  piechart:
+    name: पाय किंवा डोनट चार्ट
+    description: स्तंभावरील गटांचे गुणोत्तर दर्शविणारा परिपत्रक तक्ता
+  variable:
+    name: ग्लोबल व्हेरिएबल
 triggers:
   webhook:
     method: पद्धत
@@ -2205,9 +2356,12 @@ operations:
     flow: फ्लोव
     data: डेटा
 standard: आदर्श
+compact: संक्षिप्त
 style: स्टाईल
 fonts:
+  thin: पातळ
   normal: नॉर्मल
+  medium: मध्यम
   bold: बोल्ड
   black: काळा
   italic: इटालिक
