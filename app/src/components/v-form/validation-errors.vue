@@ -54,8 +54,7 @@ const validationErrorsWithNames = computed<
 		<div>
 			<p>{{ t('validation_errors_notice') }}</p>
 			<ul class="validation-errors-list">
-				<li v-for="(validationError, index) of validationErrorsWithNames" :key="index">
-					<span class="validation-error">
+				<li v-for="(validationError, index) of validationErrorsWithNames" :key="index" class="validation-error">
 					<strong class="field" @click="$emit('scroll-to-field', validationError.group || validationError.field)">
 						<template v-if="validationError.field && validationError.hidden && validationError.group">
 							{{
@@ -69,7 +68,7 @@ const validationErrorsWithNames = computed<
 						</template>
 						<template v-else-if="validationError.field">{{ validationError.fieldName }}</template>
 					</strong>
-						<span>:&nbsp;</span>
+					<strong>{{ ': ' }}</strong>
 					<template v-if="validationError.customValidationMessage">
 						{{ validationError.customValidationMessage }}
 						<v-icon
@@ -91,7 +90,6 @@ const validationErrorsWithNames = computed<
 							{{ t(`validationError.${validationError.type}`, validationError) }}
 						</template>
 					</template>
-					</span>
 				</li>
 			</ul>
 		</div>
@@ -111,9 +109,9 @@ const validationErrorsWithNames = computed<
 		}
 	}
 
-	.validation-error {
-		display: inline-flex;
-		align-items: center;
+	.validation-error .v-icon {
+		vertical-align: text-top;
+		margin-left: 0 !important;
 	}
 
 	li:not(:last-child) {
