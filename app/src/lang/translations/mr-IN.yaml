@@ -2325,31 +2325,125 @@ panels:
     description: स्तंभावरील गटांचे गुणोत्तर दर्शविणारा परिपत्रक तक्ता
   variable:
     name: ग्लोबल व्हेरिएबल
+    description: इतर पॅनेलच्या फिल्टरमध्ये वापरण्यासाठी जागतिक मूल्य सेट करा
+    variable_key: व्हेरिएबल की
+  relational-variable:
+    name: ग्लोबल रिलेशनल व्हेरिएबल
+    description: इतर पॅनेलच्या फिल्टरमध्ये वापरण्यासाठी जागतिक संबंध मूल्य सेट करा
+    variable_key: व्हेरिएबल की
+    multiple: अनेक
+    multiple-label: एकाधिक आयटम निवडा
 triggers:
+  common:
+    response_body: रिस्पॉन्स बॉडी
+    response_body_all: सर्व डेटा
+    response_body_last: शेवटच्या ऑपरेशनचा डेटा
+  event:
+    name: इव्हेंट हुक
+    description: प्लॅटफॉर्म किंवा डेटा इव्हेंटवर ट्रिगर
+    action: 'क्रिया (नॉन-ब्लॉकिंग)'
+    filter: 'फिल्टर (ब्लॉक करणे)'
   webhook:
+    name: वेबहुक
+    description: येणाऱ्या HTTP विनंतीवर ट्रिगर
     method: पद्धत
+    async: असिंक्रोनस
+  operation:
+    name: दुसरा प्रवाह
+    description: चेनिंगसाठी दुसऱ्या प्रवाहाने ट्रिगर केले
+    preview: वेगळ्या प्रवाहातील ऑपरेशनद्वारे ट्रिगर केले
+  schedule:
+    name: शेड्यूल (CRON)
+    description: वेळेत नियमित बिंदूंवर ट्रिगर
+    cron: मध्यांतर
+  manual:
+    name: मॅन्युअल
+    description: निवडलेल्या संग्रहामध्ये मॅन्युअल रनवर ट्रिगर
+    collection_and_item: कलेक्शन आणि आयटम पृष्ठे
+    collection_only: कलेक्शन पृष्ठ फक्त
+    item_only: केवळ आयटम पृष्ठ
+    collection_page: कलेक्शन पेज
+    require_selection: निवड आवश्यक आहे
+a_flow_uuid: ट्रिगर करण्यासाठी एक प्रवाह निवडा...
+any_string_or_json: कोणतीही स्ट्रिंग किंवा JSON...
+item_payload_placeholder: आयटमची फील्ड व्हॅल्यू अपडेट करण्यासाठी वापरला जाणारा JSON आहे...
+operation_variables_note: तुम्ही **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger सारख्या व्हेरिएबल्ससह प्रवाह डेटामध्ये प्रवेश करू शकता {'}'}{'}'}** आणि **{'{'}{'{'}$accountability{'}'}{'}'}**, किंवा वापरून मागील ऑपरेशन्सचा संदर्भ द्या **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: अट
+    description: If/Else लॉजिकवर आधारित फ्लो रूट करा
+  exec:
+    name: स्क्रिप्ट चालवा
+    description: पेलोड सुधारण्यासाठी अनियंत्रित कोड कार्यान्वित करा
+    modules: 'खालील **नोड मॉड्यूल** वापरले जाऊ शकतात'
   item-create:
+    name: डेटा तयार करा
+    description: डेटाबेसमध्ये आयटम तयार करा
     payload: पेलोड
+    emit_events: इमिट इव्हेंट्स
+  item-delete:
+    name: डेटा हटवा
+    description: डेटाबेसमधील आयटम हटवा
+    emit_events: इमिट इव्हेंट्स
+    key: आयडी
+    query: क्वेरी
+  item-read:
+    name: डेटा वाचा
+    description: डेटाबेसमधील आयटम वाचा
+    key: आयडी
+    query: क्वेरी
+    emit_events: इमिट इव्हेंट्स
   item-update:
+    name: डेटा अपडेट करा
+    description: डेटाबेसमधील आयटम अद्यतनित करा
+    emit_events: इमिट इव्हेंट्स
+    key: आयडी
     payload: पेलोड
+    query: क्वेरी
   json-web-token:
+    name: JSON वेब टोकन (JWT)
+    description: "साइन इन करा आणि JSON वेब टोकन सत्यापित करा\n"
+    operation: ऑपरेशन
+    secret: गुप्त
+    secret_placeholder: एक गुप्त प्रविष्ट करा...
     payload: पेलोड
     token: टोकन
+    token_placeholder: eyJhbGciOi......
     options: पर्याय
+    options_placeholder: 'उपलब्ध पर्यायांसाठी https://www.npmjs.com/package/jsonwebtoken#usage पहा'
+    sign: साइन टोकन
+    verify: टोकन सत्यापित करा
+    decode: डिकोड टोकन
   log:
+    name: कन्सोलवर लॉग इन करा
+    description: कन्सोलवर काहीतरी आउटपुट करा
     message: संदेश
+    message_placeholder: कन्सोलमध्ये दर्शविण्यासाठी संदेश प्रविष्ट करा..
   mail:
+    name: ईमेल पाठवा
+    description: एक किंवा अधिक लोकांना ईमेल पाठवा
+    to: ला
+    to_placeholder: ई-मेल पत्ते जोडा आणि एंटर दाबा...
+    body: बॉडी
     template: टेम्प्लेट
     data: डेटा
   notification:
+    name: सूचना पाठवा
+    description: एक किंवा अधिक वापरकर्त्यांना ॲप-मधील सूचना पाठवा
     recipient: युजर
+    recipient_placeholder: UUID प्रविष्ट करा...
+    recipient_note: वापरकर्ता UUID जोडा आणि एंटर दाबा...
+    item_note: आयटम की किंवा संबंधित URL
     message: संदेश
     subject: विषय
   request:
+    name: वेबहुक / विनंती URL
+    description: 'URL ला विनंती करा'
     url: URL
+    url_placeholder: https://example.com/example
     method: पद्धत
     data: डेटा
+    headers: शीर्षलेख
     header: हेडर
   trigger:
     flows: फ्लोव
