@@ -2096,23 +2096,58 @@ displays:
     datetime: तारीख वेळ
     description: वेळेशी संबंधित मूल्ये प्रदर्शित करा
     format: फॉरमॅट
+    format_note: >-
+      कस्टम फॉरमॅट __[तारीख फील्ड सिम्बॉल टेबल](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ स्वीकारते
+    long: लांब
+    short: लहान
+    relative: संबंधित
+    relative_label: 'सापेक्ष वेळ दर्शवा, उदा: 5 मिनिटांपूर्वी'
     suffix: प्रत्यय
+    suffix_label: संबंधित सूचक दर्शवा
+    suffix_note: '''इन'' आणि ''अगो'' सारखे शब्द वापरते'
+    strict: कडक
+    strict_label: कठोर युनिट्स वापरा
+    strict_note: '''जवळजवळ'', ''ओव्हर'', ''पेक्षा कमी'' सारखे शब्द काढून टाकते'
+    round: गोलाकार
+    round_note: वापरण्यासाठी राउंडिंग फंक्शन निवडा
+    down: खाली 
+    nearest: जवळचे
+    up: वर
   file:
     file: फाईल
+    description: फाईल दाखवा
+  filesize:
+    filesize: फाइल आकार
+    description: फाईलचा आकार प्रदर्शित करा
   formatted-value:
+    formatted-value: फॉरमॅटेड व्हॅल्यू
+    description: मजकूराची स्वरूपित आवृत्ती प्रदर्शित करा
     format: फॉरमॅट
+    format_label: ऑटो फॉरमॅट
     font: फॉन्ट
+    font_sans_serif: सांस सेरिफ
     font_serif: सेरिफ
     font_monospace: मोनोस्पेस
     bold: बोल्ड
+    bold_label: बोल्ड स्टाईल वापरा
     italic: इटालिक
+    italic_label: इटालिक स्टाईल वापरा
     prefix: उपसर्ग
+    prefix_label: ' मजकूर प्रीपेंड करा'
     suffix: प्रत्यय
+    suffix_label: जोडलेला मजकूर
     color: कलर
+    background: बॅगराउंड
     icon: आयकॉन
+    border: बॉर्डर
+    border_label: बॉर्डर दाखवा
     mask: मुखवटा घातलेला
     mask_label: "वास्तविक व्हॅल्यू लपवा\n"
     text: टेक्स्ट
+    text_placeholder: पर्यायी व्हॅल्यू ओव्हरराइड...
+  formatted-json-value:
+    formatted-json-value: फॉरमॅटेड JSON व्हॅल्यू
+    description: ऑब्जेक्टची फॉरमॅटेड आवृत्ती प्रदर्शित करा
   hash:
     hash: हॅश
   icon:
