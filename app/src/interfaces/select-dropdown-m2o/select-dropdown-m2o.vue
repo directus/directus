@@ -101,7 +101,7 @@ const { update, remove, displayItem, loading } = useRelationSingle(value, query,
 	enabled: computed(() => !props.loading),
 });
 
-const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
+const { createAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const currentPrimaryKey = computed<string | number>(() => {
 	if (!displayItem.value || !props.value || !relationInfo.value) return '+';
@@ -205,9 +205,9 @@ function getLinkForItem() {
 					<router-link
 						v-if="enableLink"
 						v-tooltip="t('navigate_to_item')"
-						@click.stop
 						:to="getLinkForItem()"
 						class="item-link"
+						@click.stop
 					>
 						<v-icon name="launch" />
 					</router-link>
@@ -239,7 +239,7 @@ function getLinkForItem() {
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
-			:disabled="!updateAllowed || disabled"
+			:disabled="disabled"
 			@input="onDrawerItemInput"
 		/>
 

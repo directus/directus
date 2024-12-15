@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
-import { useItemPermissions } from '@/composables/use-permissions';
+import { usePermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
@@ -102,16 +102,20 @@ const title = computed(() => {
 		: t('editing_in', { collection: collection.name });
 });
 
-const { fields: fieldsWithPermissions, updateAllowed } = useItemPermissions(
+const {
+	itemPermissions: { fields: fieldsWithPermissions, saveAllowed },
+} = usePermissions(
 	collection,
 	primaryKey,
 	computed(() => props.primaryKey === '+'),
 );
 
-const { fields: relatedCollectionFields, updateAllowed: updateRelatedCollectionAllowed } = useItemPermissions(
+const {
+	itemPermissions: { fields: relatedCollectionFields, saveAllowed: saveRelatedCollectionAllowed },
+} = usePermissions(
 	relatedCollection as Ref<string>,
 	relatedPrimaryKey,
-	computed(() => props.primaryKey === '+'),
+	computed(() => props.relatedPrimaryKey === '+'),
 );
 
 const fields = computed(() => {
@@ -154,10 +158,8 @@ const templateCollection = computed(() => relatedCollectionInfo.value || collect
 
 const isSavable = computed(() => {
 	if (props.disabled) return false;
-	if (isNew.value) return true;
-	if (updateAllowed.value && !props.junctionField) return true;
-	if (updateAllowed.value && props.junctionField && updateRelatedCollectionAllowed.value) return true;
-	return false;
+	if (!relatedCollection.value) return saveAllowed.value;
+	return saveAllowed.value || saveRelatedCollectionAllowed.value;
 });
 
 const {
@@ -414,7 +416,7 @@ function useActions() {
 			<div v-else class="drawer-item-order" :class="{ swap: swapFormOrder }">
 				<v-form
 					v-if="junctionField"
-					:disabled="disabled || (!updateRelatedCollectionAllowed && !isNew)"
+					:disabled="disabled"
 					:loading="loading"
 					:show-no-visible-fields="false"
 					:initial-values="initialValues?.[junctionField]"
@@ -429,7 +431,7 @@ function useActions() {
 
 				<v-form
 					v-model="internalEdits"
-					:disabled="disabled || (!updateAllowed && !isNew)"
+					:disabled="disabled"
 					:loading="loading"
 					:show-no-visible-fields="false"
 					:initial-values="initialValues"
