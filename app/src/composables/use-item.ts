@@ -15,8 +15,8 @@ import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
-import { mergeWith } from 'lodash';
-import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
+import { isEmpty, mergeWith } from 'lodash';
+import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch, provide } from 'vue';
 import { UsablePermissions, usePermissions } from './use-permissions';
 
 type UsableItem<T extends Item> = {
@@ -87,6 +87,8 @@ export function useItem<T extends Item>(
 
 	refreshItem();
 
+	const { nestedValidationErrors } = useNestedValidation();
+
 	return {
 		edits,
 		hasEdits,
@@ -141,6 +143,7 @@ export function useItem<T extends Item>(
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
 		const errors = validateItem(payloadToValidate, fields, isNew.value);
+		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -258,6 +261,7 @@ export function useItem<T extends Item>(
 		}
 
 		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value);
+		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -451,5 +455,24 @@ export function useItem<T extends Item>(
 		}
 
 		item.value = response.data.data;
+	}
+
+	function useNestedValidation() {
+		const nestedValidationErrorsPerField = ref<Record<string, any>>({});
+		const nestedValidationErrors = computed(getNestedValidationErrors);
+
+		provide('nestedValidation', { updateNestedValidationErrors });
+
+		return { nestedValidationErrors };
+
+		function updateNestedValidationErrors(fieldKey: string, errors: any[]) {
+			nestedValidationErrorsPerField.value[fieldKey] = errors;
+		}
+
+		function getNestedValidationErrors() {
+			return Object.entries(nestedValidationErrorsPerField.value)?.flatMap(([_field, errors]) =>
+				!isEmpty(errors) ? errors : [],
+			);
+		}
 	}
 }
