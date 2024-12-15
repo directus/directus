@@ -419,7 +419,7 @@ updated_by: द्वारे अपडेट
 primary_key: प्रायमरी की
 foreign_key: फॉरेन की
 field_key: फिल्ड की
-finish_setup: सेटअप पूर्ण करा
+finish_setup: सेटअप संपवा
 dismiss: डिसमिस करा
 toggle_raw_editor: Raw एडिटर बदल करा
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
@@ -1317,6 +1317,7 @@ fields:
     tags: टॅग
     user_preferences: वापरकर्ता प्राधान्ये
     language: भाषा
+    tfa_secret: टू फॅक्टर ऑथेंटिकेशन
     admin_options: ऍडमिन पर्याय
     status: स्टेटस
     status_draft: मसुदा
@@ -1387,6 +1388,7 @@ fields:
     theme_dark_overrides: डार्क थीम कस्टमायझेशन
     public_registration: उशीर रेजिस्ट्रेशन
     public_registration_note: वापरकर्त्यांना [नोंदणी मार्ग](/प्रशासन/नोंदणी) द्वारे नोंदणी करण्याची अनुमती देते.
+    public_registration_role: वापरकर्ता भूमिका
     public_registration_role_note: ही भूमिका ही पद्धत वापरून नोंदणी करणाऱ्या वापरकर्त्यांना नियुक्त केली जाते. आधीच नोंदणीकृत वापरकर्त्यांना प्रभावित करत नाही
     public_registration_email_filter: ईमेल पत्ता फिल्टर
     public_registration_email_filter_note: या फिल्टरशी जुळणारे ईमेल पत्तेच नोंदणी करू शकतात.
@@ -2445,18 +2447,68 @@ operations:
     data: डेटा
     headers: शीर्षलेख
     header: हेडर
+    header_placeholder: अधिकृतता..
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: स्लिप
+    description: दिलेली संख्या मिलीसेकंद प्रतीक्षा करा
+    milliseconds: मिलीसेकंद
+  transform:
+    name: ट्रान्सफॉर्म पेलोड
+    description: फ्लोचा JSON पेलोड बदला
   trigger:
+    name: ट्रिगर प्रवाह
+    description: हा डेटा दुसर्या प्रवाहात पास करा
     flows: फ्लोव
     flow: फ्लोव
     data: डेटा
+    iteration_mode: पुनरावृत्ती मोड
+    iteration_mode_note: ॲरेवर पुनरावृत्ती करण्यासाठी मोड.
+    serial: Serial
+    parallel: Parallel
+    batch: बॅच
+    batch_size: बॅच आकार
+    cache: कॅशे
+unit: युनिट
 standard: आदर्श
+scientific: वैज्ञानिक
+engineering: अभियांत्रिकी
 compact: संक्षिप्त
+currency: चलन
+notation: नोटेशन
 style: स्टाईल
 fonts:
   thin: पातळ
+  extra_light: अतिरिक्त प्रकाश
+  light: प्रकाश
   normal: नॉर्मल
   medium: मध्यम
+  semi_bold: अर्ध ठळक
   bold: बोल्ड
+  extra_bold: एक्स्ट्रा बोल्ड
   black: काळा
   italic: इटालिक
+  oblique: तिरकस
+  small: लहान
+  large: मोठा
   auto: ऑटो
+text_wrap: Text Wrap
+center: मध्य
+justify: जस्टीफाय
+text_align: मजकूर संरेखित करा
+font_weight: फॉन्ट वेट
+font_style: फॉन्ट स्टाईल
+font_size: फॉन्ट साईझ
+minimum_fraction_digits: किमान दशांश
+maximum_fraction_digits: कमाल दशांश
+show_percentage: टक्केवारी दाखवा
+aggregation: एकत्रीकरण
+series_grouping: मालिका गट
+date_precision: तारीख अचूकता
+export_dashboard: डॅशबोर्ड निर्यात करा
+duplicate_dashboard: डुप्लिकेट डॅशबोर्ड
+search_dashboard: डॅशबोर्ड शोधा...
+search_flow: शोध प्रवाह...
+percent: टक्के
+show_password: पासवर्ड दाखवा
+hide_password: पासवर्ड लपवा
