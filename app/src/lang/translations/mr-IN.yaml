@@ -2007,6 +2007,7 @@ interfaces:
     custom_formats_note: TinyMCE सामग्री स्वरूपांची सूची. अधिक माहितीसाठी [सामग्री फॉरमॅटिंग](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) बद्दल TinyMCE दस्तऐवजीकरण पहा.
     options_override: पर्याय ओव्हरराइड
     options_override_note: TinyMCE वापरकर्ता स्वरूपन की आणि त्यांची मूल्ये. अधिक माहितीसाठी [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) बद्दल TinyMCE दस्तऐवज पहा
+    folder_note: अपलोड केलेल्या फायलींसाठी फोल्डर. विद्यमान फाइल्सवर परिणाम होत नाही.
     imageToken: स्थिर प्रवेश टोकन
     imageToken_label: स्टॅटिक ऍक्सेस टोकन मालमत्तेच्या URL मध्ये जोडलेले आहे
   input-block-editor:
