@@ -10,13 +10,14 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+import { useNestedValidation } from '@/composables/use-nested-validation';
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
-import { isEmpty, mergeWith } from 'lodash';
-import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch, provide } from 'vue';
+import { mergeWith } from 'lodash';
+import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from './use-permissions';
 
 type UsableItem<T extends Item> = {
@@ -455,24 +456,5 @@ export function useItem<T extends Item>(
 		}
 
 		item.value = response.data.data;
-	}
-
-	function useNestedValidation() {
-		const nestedValidationErrorsPerField = ref<Record<string, any>>({});
-		const nestedValidationErrors = computed(getNestedValidationErrors);
-
-		provide('nestedValidation', { updateNestedValidationErrors });
-
-		return { nestedValidationErrors };
-
-		function updateNestedValidationErrors(fieldKey: string, errors: any[]) {
-			nestedValidationErrorsPerField.value[fieldKey] = errors;
-		}
-
-		function getNestedValidationErrors() {
-			return Object.entries(nestedValidationErrorsPerField.value)?.flatMap(([_field, errors]) =>
-				!isEmpty(errors) ? errors : [],
-			);
-		}
 	}
 }

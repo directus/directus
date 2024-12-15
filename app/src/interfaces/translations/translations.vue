@@ -6,13 +6,14 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useWindowSize } from '@/composables/use-window-size';
+import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
-import { computed, ref, toRefs, watch, inject } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
 import { validateItem } from '@/utils/validate-item';
@@ -290,9 +291,7 @@ const {
 useNestedValidation();
 
 function useNestedValidation() {
-	const { updateNestedValidationErrors } = inject('nestedValidation', {
-		updateNestedValidationErrors: (_field: string, _validationErrors: any[]) => {},
-	});
+	const { updateNestedValidationErrors } = useInjectNestedValidation();
 
 	watch(
 		() => displayItems.value,
