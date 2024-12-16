@@ -78,34 +78,2437 @@ extension_themes: थीम
 extension_hooks: हुक
 extension_endpoints: शेवट
 extension_operations: संचालन
-extension_bundles:
+extension_bundles: संग्रह 
 extension_missing: अज्ञात
-extension_reload_required:
+extension_reload_required: रीलोड आवश्यक
 extension_reload_required_copy: अँप एक्सटेंशन सक्षम किंवा अक्षम केल्यानंतर होणारे बदल पाहण्यासाठी पृष्ठ रीलोड करणे आवश्यक आहे.
 extension_reload_now: रीलोड करा
 published_relative: प्रसारित केले {relativeTime}
 compatible_with_your_project: तुमच्या प्रोजेक्टशी सुसंगत
 compatible_with_your_project_copy: लेखकाने या विस्ताराची सुसंगतता {hostVersion} असल्याचे सूचित केले आहे, जे तुमच्या प्रकल्पाच्या आवृत्तीशी जुळते ({currentVersion})
 last_updated_relative: शेवटचे अपडेट {relativeTime}
+n_files: '{n} फाइल्स'
 verified: व्हेरीफाय केले
 homepage: मुख्य पृष्ठ
+repository: रिपोजिटरी
+reload_page: पृष्ठ रीलोड करा
+reload_required: रीलोड आवश्यक
 report_an_issue: समस्या नोंदवा
 website: वेबसाइट
 github: GitHub
 beta: बीटा
+n_downloads: '{n} डाउनलोड'
+downloads: डाउनलोड
+compatibility_not_guaranteed: सुसंगतता हमी नाही
 compatibility_not_guaranteed_copy: लेखकाने या विस्ताराची सुसंगतता {hostVersion} असल्याचे सूचित केले आहे, जे तुमच्या प्रकल्पाच्या आवृत्तीशी जुळते ({currentVersion})
+enable: सक्षम करा
+disable: अक्षम करा
+custom: कस्टम
 hook: हुक
+fill_width: पूर्ण रुंदी
+field_name_translations: फील्ड नाव भाषांतरे
+enter_password_to_enable_tfa: टू-फॅक्टर ऑथेंटिकेशन सक्षम करण्यासाठी तुमचा पासवर्ड एंटर करा
+add_field: फील्ड संपादित करा
+role_name: रोलचे नाव
+policy_name: पॉलिसीचे नाव
+branch: शाखा
+leaf: पान
+indeterminate: अनिश्चित
+edit_collection: संकलन संपादित करा
+exclusive: अनन्य
+children: मुले
+db_only_click_to_configure: 'फक्त डेटाबेस: कॉन्फिगर करण्यासाठी क्लिक करा'
+show_active_items: सक्रिय आयटम दर्शवा
+show_archived_items: संग्रहित आयटम दर्शवा
+show_all_items: सर्व आयटम दर्शवा
+edited: मूल्य संपादित
+required: आवश्यक आहे
+required_for_app_access: ॲप प्रवेशासाठी आवश्यक
+requires_value: मूल्य आवश्यक आहे
+create_preset: प्रीसेट तयार करा
+create_panel: पॅनेल तयार करा
+create_role: रोल तयार करा
+create_policy: पॉलिसी तयार करा
+create_user: युजर तयार करा
+message: संदेश
+delete_panel: पॅनेल हटवा
+create_webhook: वेबहुक तयार करा
+create_custom_translation: सानुकूल भाषांतर तयार करा
+edit_custom_translation: सानुकूल भाषांतर संपादित करा
+no_custom_translations: सानुकूल भाषांतरे नाहीत
+no_custom_translations_copy: अद्याप कोणतीही सानुकूल भाषांतरे नाहीत.
+invite_users: युजर आमंत्रित करा
+invite: आमंत्रण
+email_already_invited: ईमेल "{email}" आधीच आमंत्रित केले आहे
+subject: विषय
+inbox: इनबॉक्स
+emails: ईमेल्स
+connection_excellent: उत्कृष्ट कनेक्शन
+connection_good: चांगले कनेक्शन
+connection_fair: ठीक ठाक कनेक्शन
+connection_poor: खराब कनेक्शन
+primary: प्राथमिक
 rename_folder: फोल्डरचे नाव बदला
 delete_folder: फोल्डर खोडून टाका
+prefix: उपसर्ग
 suffix: प्रत्यय
 keep: ठेवा
 version: आवृत्ती
+version_key: व्हर्जन की
+version_name: व्हर्जन चे नाव
+main_version: मुख्य
+switch_version: व्हर्जन स्विच करा 
+switch_version_copy: तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन वरती स्विच करू इच्छिता? जतन केले नाहीत असे बदल गमावले जातील.
+create_version: व्हर्जन तयार करा
+rename_version: व्हर्जन नाव बदला
+compare_version: व्हर्जन तुलना करा
+save_version: व्हर्जन जतन करा
+promote_version: व्हर्जन प्रमोट करा
+promote_version_disabled: बदल नाही
+promote_version_drawer_title: '{version} ला मेन मध्ये प्रमोट करा'
+promote_version_changes: बदल
+promote_version_preview: प्रिव्हियू 
+outdated_notice: >-
+  हे व्हर्जन तयार केल्यापासून मुख्य आयटम अपडेट केला गेला आहे. कृपया खालील सर्व फील्ड व्हॅल्यू चेक करा आणि मुख्य आयटम मध्ये हे व्हर्जन प्रमोट करताना कोणते व्हर्जन वापरले जावे याची पुष्टी करा.
+promote_notice: >-
+  कृपया खालील सर्व फील्ड व्हॅल्यू चेक करा आणि मुख्य आयटम मध्ये या आवृत्तीचा प्रचार करताना कोणती आवृत्ती वापरली जावी याची पुष्टी करा.
+delete_version: व्हर्जन डिलीट करा
+delete_version_copy: >-
+  तुम्हाला खात्री आहे की तुम्ही "{version}" व्हर्जन डिलीट करू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
+delete_on_promote_copy: >-
+  प्रमोट केल्यानंतर तुम्ही "{version}" व्हर्जन हटवू किंवा ठेवू इच्छिता?
+reset_bookmark: बुकमार्क पुन्हा सेट करा
+update_bookmark: बुकमार्क अपडेट करा
+delete_bookmark: बुकमार्क डिलीट करा
+delete_bookmark_copy: >-
+  तुमची खात्री आहे की तुम्ही "{bookmark}" बुकमार्क डिलीट करू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
+delete_personal_bookmark: वैयक्तिक बुकमार्क डिलीट करा
+delete_role_bookmark: "रोल बुकमार्क डिलीट करा\n"
+delete_global_bookmark: "ग्लोबल बुकमार्क डिलीट करा\n"
+logoutReason:
+  SIGN_OUT: साइन आउट केले
+  SESSION_EXPIRED: सेशन कालबाह्य झाले
+public_label: पब्लिक 
+public_description: प्रमाणीकरणाशिवाय कोणता API डेटा उपलब्ध आहे हे नियंत्रित करते.
+public_role_info: >-
+  पब्लिक रोल अनधिकृत USER साठी किंवा रोल नसलेल्या USER साठी कोणता API डेटा उपलब्ध आहे हे नियंत्रित करते. पब्लिक रोल असलेल्या विनंत्यांना APP किंवा प्रशासक प्रवेश असू शकत नाही. पब्लिक रोल साठी नियुक्त केलेल्या धोरणास APP किंवा प्रशासक प्रवेश दिला असल्यास त्याकडे दुर्लक्ष केले जाईल.
+admin_description: अप्रतिबंधित APP / API  प्रवेशासह प्रारंभिक प्रशासकीय रोल.
+admin_policy_description: अप्रतिबंधित APP /API प्रवेशा सोबत प्रारंभिक प्रशासकीय धोरण.
+no_description: वर्णन नाही...
+reached_maximum_number_of_extensions: तुम्ही या प्रकल्पासाठी ({n}) विस्ताराची कमाल संख्या गाठली आहे. अधिक माहितीसाठी तुमच्या सिस्टम प्रशासक यास संपर्क साधा.
+not_allowed: परवानगी नाही
+archive: संग्रहण
+archive_confirm: तुमची खात्री आहे की तुम्ही हा आयटम संग्रहित करू इच्छिता?
+archive_confirm_count: >-
+  कोणतेही आयटम निवडलेले नाहीत | तुमची खात्री आहे की तुम्ही हा आयटम संग्रहित करू इच्छिता? | तुमची खात्री आहे की तुम्ही हे {count} आयटम संग्रहित करू इच्छिता?
+reset_system_permissions_to: 'सिस्टम परवानग्या यावर पुन्हा सेट करा:'
+reset_system_permissions_copy: ही कृती तुम्ही सिस्टम कलेक्शन वर लागू केलेल्या कोणत्याही अनुकूल परवानग्या ओव्हर-राइट करेल. तुम्हाला खात्री आहे का?
+the_following_are_minimum_permissions: खालील किमान परवानग्या APP प्रवेश सक्षम केल्यावर आपोआप लागू होतात. आवश्यक असल्यास तुम्ही अतिरिक्त परवानग्या देऊ शकता, परंतु तुम्ही या पातळीच्या खाली असलेल्या परवानग्या कमी करू शकत नाही.
+app_access_minimum: किमान APP प्रवेश
+recommended_defaults: शिफारस केलेले डिफॉल्ट
+unarchive: संग्रह रद्द करा
+unarchive_confirm: तुमची खात्री आहे की तुम्ही हा आयटम संग्रह रद्द करू इच्छिता?
+nested_files_folders_will_be_moved: नेस्टेड फायली आणि फोल्डर एक पातळी वर हलवले जातील.
+validation_errors_notice: 'खालील फील्ड मध्ये अवैध व्हॅल्यू आहेत:'
+validationError:
+  eq: व्हॅल्यू {valid} असणे आवश्यक आहे
+  neq: व्हॅल्यू {invalid} असू शकत नाही
+  in: व्हॅल्यू {valid} पैकी एक असणे आवश्यक आहे
+  nin: व्हॅल्यू {invalid} पैकी एक असू शकत नाही
+  contains: व्हॅल्यू मध्ये {substring} असणे आवश्यक आहे
+  ncontains: व्हॅल्यू मध्ये {substring} असू शकत नाही
+  gt: व्हॅल्यू {valid} पेक्षा मोठे असणे आवश्यक आहे
+  gte: व्हॅल्यू {valid} पेक्षा मोठे किंवा समान असणे आवश्यक आहे
+  lt: व्हॅल्यू {valid} पेक्षा कमी असणे आवश्यक आहे
+  lte: व्हॅल्यू {valid} पेक्षा कमी किंवा समान असणे आवश्यक आहे
+  empty: व्हॅल्यू रिक्त असणे आवश्यक आहे
+  nempty: व्हॅल्यू रिकामी असू शकत नाही
+  null: व्हॅल्यू रिकामी असायला पाहिजे
+  nnull: व्हॅल्यू रिकामी असू शकत नाही
+  required: व्हॅल्यू भरणे आवश्यक आहे.
+  unique: व्हॅल्यू युनिक असणे आवश्यक आहे
+  email: व्हॅल्यू साठी प्रमाणित  असणे आवश्यक आहे
+  regex: व्हॅल्यू योग्य स्वरूपात नाही
+  starts_with: व्हॅल्यू {substring} पासून चालू होणे आवश्यक आहे
+  istarts_with: व्हॅल्यू {substring} पासून चालू होणे आवश्यक आहे
+  nstarts_with: व्हॅल्यू {substring} पासून चालू होऊ शकत नाही
+  nistarts_with: व्हॅल्यू {substring} पासून चालू होऊ शकत नाही
+  ends_with: व्हॅल्यू {substring} नंतर संपली पाहिजे
+  iends_with: व्हॅल्यू {substring} नंतर संपली पाहिजे
+  nends_with: व्हॅल्यू {substring} सोबत संपवू शकत नाही
+  niends_with: व्हॅल्यू {substring} सोबत संपवू शकत नाही
+all_access: पूर्ण अधिकार
+no_access: अधिकार नाही
+use_custom: कस्टम वापरा
+nullable: रिक्त
+allow_null_value: रिक्त व्हॅल्यू परवानगी द्या
+allow_multiple: अनेकांना परवानगी द्या
+allow_multiple_to_be_open: एकापेक्षा अधिक उघडण्याची परवानगी द्या
+enter_value_to_replace_nulls: कृपया या फील्ड मधील कोणतेही NULL बदलण्यासाठी नवीन व्हॅल्यू प्रविष्ट करा.
+field_standard: आदर्श
+field_presentation: प्रेझेंटेशन आणि उपाधी
+field_file: एकल फाइल
+field_files: बहुसंख्य 
+field_m2o: M2O संबंध
+field_m2a: "M2A संबंध\n"
+field_o2m: O2M संबंध
+field_m2m: M2M संबंध
+field_translations: भाषांतरे
+field_group: फील्ड ग्रुप
+item_permissions: आयटम परवानग्या
+field_permissions: फील्ड परवानग्या
+field_validation: फील्ड प्रमाणीकरण
+field_presets: फील्ड प्री - सेट
+permissions_for_role: 'आयटम {role} भूमिका {action} करू शकतात.'
+permissions_for_policy: 'आयटम {policy} धोरण {action} करू शकते.'
+fields_for_role: 'फील्ड {role} भूमिका {action} करू शकते.'
+fields_for_policy: 'फील्ड {policy} धोरण {action} करू शकते.'
+validation_for_role: 'फील्ड {action} नियम {role} रोल पाळणे आवश्यक आहे.'
+validation_for_policy: 'फील्ड {action} नियमांचे {policy} धोरणाचे पालन करणे आवश्यक आहे.'
+presets_for_role: "{role} भूमिकेसाठी फील्ड मूल्य डीफॉल्ट.\n"
+presets_for_policy: '{policy} धोरणासाठी फील्ड मूल्य डीफॉल्ट.'
+presets_field_warning: 'फील्ड "{field}" साठी संबंधित सेट "तपशील" "सिंटॅक्स" सोबत जोडले जावे.'
+presentation_and_aliases: प्रेझेंटेशन आणि उपाधी
+revision_post_create: हा आयटम तयार केला तेव्हा कसा दिसत होता ते येथे आहे.
+revision_post_update: अपडेट नंतर हा आयटम कसा दिसत होता ते येथे आहे.
+changes_made: या आवर्तनात केलेले विशिष्ट बदल खाली दिले आहेत.
+no_relational_data: लक्षात ठेवा की संबंधित डेटा येथे समाविष्ट केलेला नाही.
+junction_field_location: जंक्शन फील्ड स्थान
+top: वर
+bottom: खाली
+hide_field: फील्ड लपवा
+hide_field_on_detail: तपशीलावर फील्ड लपवा
+show_field_on_detail: तपशीलावर फील्ड दर्शवा
+delete_field: फील्ड हटवा
+fields_and_layout: फील्ड आणि लेआऊट
+field_create_success: 'फील्ड तयार केले: "{field}"'
+field_update_success: 'अपडेट केलेली फील्ड: "{field}"'
+duplicate_where_to: तुम्हाला हे फील्ड कोठे डुप्लिकेट करायचे आहे?
+language: भाषा
+language_placeholder: भाषा निवडा
+aggregate_function: अग्रीगेट फंक्शन
+aggregate_precision: एकूण अचूकता
+group_aggregation: गट एकत्रीकरण
+group_precision: गट अचूकता
+global: ग्लोबल
+admins_have_all_permissions: प्रशासक यांना सर्व परवानग्या आहेत
+camera: कॅमेरा
+show_zero: शून्य दाखवा
+create_in_advanced_field_creation_mode: प्रगत मोडमध्ये फील्ड तयार करा
+continue_in_advanced_field_creation_mode: प्रगत फील्ड निर्मिती मोड मध्ये सुरू ठेवा
+validation: प्रमाणीकरण
+sum: बेरीज
+sum_distinct: बेरीज वेगळे
+avg: सरासरी
+avg_distinct: सरासरी वेगळे
+count: मोजा
+count_distinct: वेगळे मोजा
+min: किमान
+max: कमाल
+exposure: एक्स्पोजर
+shutter: शटर
+iso: आयएसओ
+focal_length: फोकल लांबी
+schema_setup_key: या फील्डचे डेटाबेस स्तंभाचे नाव आणि API की
+create_field: फिल्ड तयार करा
+creating_new_field: 'नवीन फिल्ड ({collection})'
+field_in_collection: '{field} ({collection}'
+reset_page_preferences: पृष्ठ प्राधान्ये पुन्हा सेट करा
+hidden_field: लपलेले फील्ड
+hidden_on_detail: तपशीलावर लपलेले
+disabled_editing_value: व्हॅल्यू संपादन बंद करा
+key: की
+alias: उर्फ
+bigInteger: मोठा पूर्णांक
+boolean: बुलियन
+date: दिनांक
+date_range: तारीख श्रेणी
+translation_key_placeholder: एक की भरा...
+datetime: दिनांक वेळ
+dateTime: दिनांक वेळ
+precision: सुस्पष्टता
+decimal: दशांश
+float: अपूर्णांक
+integer: पूर्णांक
+json: JSON
+xml: XML
+yaml: YAML
+string: स्ट्रिंग
+text: टेक्स्ट
+time: वेळ
+timestamp: टाईमस्टॅम्प
+uuid: UUID
+hash: हॅश
+geometry:
+  All: भूमिती (सर्व)
+  Point: पॉइंट
+  LineString: लाइनस्ट्रिंग
+  Polygon: बहुभुज
+  MultiPoint: मल्टीपॉइंट
+  MultiLineString: MultiLineString
+  MultiPolygon: बहू बहुभुज
+theme_auto: ऍटोमिक
+theme_light: लाईट मोड
+theme_dark: डार्क मोड
+theme_directus_default: डायरेक्टस डिफॉल्ट
+theme_directus_minimal: थेट किमान
+theme_directus_colormatch: Directus कलर मॅच
+not_available_for_type: या प्रकारासाठी उपलब्ध नाही
+create_translations: भाषांतरे करा
+auto_refresh: ऑटो रिफ्रेश
+refresh_interval: रीफ्रेश मध्यांतर
+no_refresh: रिफ्रेश करू नका
+refresh_interval_seconds: झटपट लोड करा | प्रत्येक सेकंद | प्रत्येक {seconds} सेकंदांनी
+refresh_interval_minutes: खूप मिनिट | प्रत्येक {minutes} मिनिटांनी
+auto_generate: ऑटो जेनेरेट करा
+this_will_auto_setup_fields_relations: हे आपोआप सर्व आवश्यक फील्ड आणि संबंध सेटअप करेल.
+click_here: येथे क्लिक करा
+to_manually_setup_translations: स्वहस्ते भाषांतरे सेटअप करण्यासाठी.
+manage: मॅनेज
+click_to_manage_translated_fields: >-
+  अद्याप कोणतेही भाषांतरित फील्ड नाहीत. ते तयार करण्यासाठी येथे क्लिक करा. | एक अनुवादित फील्ड आहे. ते मॅनेज करण्यासाठी येथे क्लिक करा. | भाषांतरित फील्ड {count} आहेत. त्यांना मॅनेज करण्यासाठी येथे क्लिक करा.
+fields_group: फील्ड ग्रुप
+no_collections_found: कोणतेही संग्रह आढळले नाहीत.
+new_data_alert: 'तुमच्या डेटा मॉडेलमध्ये खालील तयार केले जातील:'
+search_collection: संग्रह शोधा...
+search_role: सर्च रोल...
+search_policy: सर्च पोलिसी...
+search_field: सर्च फील्ड...
+new_field: 'नवीन फील्ड'
+new_collection: 'नवीन कलेक्शन'
+add_m2o_to_collection: '"{collection}" मध्ये M2O जोडा'
+add_o2m_to_collection: '"{collection}" मध्ये O2M जोडा'
+add_m2m_to_collection: '"{collection}" मध्ये M2M जोडा'
+choose_a_type: टाईप निवडा
+determined_by_relationship: संबंधाने ठरवले जाते
+add_note: वापर कर्त्या साठी उपयुक्त टीप जोडा...
+add_link: लिंक Add करा
+custom_link: सानुकूल दुवा
+default_value: मूळ व्हॅल्यू
+standard_field: स्टँडर्ड फील्ड
+single_file: सिंगल फाईल
+multiple_files: बहुसंख्य फाईल
+m2o_relationship: अनेक ते एक संबंध
+o2m_relationship: एक ते अनेक संबंध
+m2m_relationship: अनेक ते अनेक संबंध
+m2a_relationship: अनेक ते कुणीही संबंध
+invalid_item: अवैध्य आयटम
+require_confirmation: संमती आवश्यक
+dialog: संभाषण
+modal: मोडल
+confirmation_dialog: पुष्टीकरण संभाषण
+confirmation_description: पुष्टीकरण वर्णन
+confirmation_input_fields: पुष्टीकरण इनपुट फील्ड
+next: पुढे
+field_name: फिल्ड नाव
+translations: भाषांतरे
+no_translations: भाषांतरे नाहीत
+left_to_right: डावीकडून उजवीकडे 
+right_to_left: उजवीकडून डावीकडे
+note: नोट
+enter_a_value: व्हॅल्यू भरा...
+enter_a_placeholder: प्लेस होल्डर भरा...
+length: लांबी
+soft_length: सॉफ्ट लिमिट
+precision_scale: अचूकता आणि स्केल
+readonly: केवळ वाचनीय
+unique: युनिक
+index: इंडेक्स
+updated_on: वर अपडेट केले
+updated_by: द्वारे अपडेट
+primary_key: प्रायमरी की
+foreign_key: फॉरेन की
+field_key: फिल्ड की
+finish_setup: सेटअप संपवा
+dismiss: डिसमिस करा
+toggle_raw_editor: Raw एडिटर बदल करा
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: कच्चे व्हॅल्यू
+copy_raw_value: कच्चे कॉपी व्हॅल्यू
+copy_raw_value_success: कॉपी केले
+copy_raw_value_fail: कॉपी फेल झाली
+paste_raw_value: कच्ची व्हॅल्यू पेस्ट करा
+paste_raw_value_success: पेस्ट केले
+paste_raw_value_fail: पेस्ट फेल झाले
+view_raw_value: कच्ची व्हॅल्यू पहा
+edit_raw_value: कच्ची व्हॅल्यू बदल करा
+enter_raw_value: कच्ची व्हॅल्यू भरा...
+clear_value: व्हॅल्यू क्लिअर करा
+clear_changes: बदल क्लिअर करा
+clear_items: आयटम क्लिअर करा
+reset_to_default: डीफॉल्ट वर पुन्हा सेट करा
+undo_changes: बदल मागे घ्या
+notifications: सूचना
+archive_all: सर्व संग्रहित करा
+show_all_activity: सर्व कामे दाखवा
+page_not_found: पृष्ठ सापडत नाही
+page_not_found_body: आपण शोधत असलेले पृष्ठ अस्तित्वात नाही असे दिसते.
+confirm_revert: रिव्हर्टची पुष्टी करा
+confirm_revert_body: हे आयटम निवडलेल्या स्थितीत परत करेल.
+display: डिस्प्ले
+settings_update_success: सेटिंग्ज अपडेट केल्या
+title: शीर्षक
+revision_delta_created: तयार केले
+revision_delta_created_externally: बाहेरून तयार केले
+revision_delta_updated: '1 फील्ड अपडेट केली | {count} फील्ड अपडेट केली'
+revision_delta_deleted: डिलीट केले
+revision_delta_version_saved: 'व्हर्जन जतन करा (1 फील्ड अपडेट केली ) | आवृत्ती जतन ({count} फील्ड अपडेट केली)'
+revision_delta_reverted: पूर्ववत केले
+revision_delta_update_message: हे फील्ड अपडेट केले गेले आहे परंतु सुरक्षिततेच्या कारणास्तव त्याचे व्हॅल्यू लपवले जात आहे.
+revision_delta_other: पडताळणी
+revision_delta_by: '{date} बाय {user}'
+presentation_text_values_cannot_be_reimported: 'सादरीकरण मजकूर वापरते, व्हॅल्यू पुन्हा आयात केली जाऊ शकत नाहीत'
+download_page_as_csv: 'पृष्ठ CSV म्हणून डाउनलोड करा'
+download_page_as_csv_unsupported: हा लेआउट वर्तमान पृष्ठ डाउनलोड करण्यास समर्थन देत नाही.
+private_user: खाजगी वापर कर्ता
+creation_preview: निर्मिती पूर्वावलोकन
+revision_preview: पुनरावृत्ती पूर्वावलोकन
+updates_made: अपडेट्स केले
+leave_comment: कमेंट लिहा...
+post_comment_success: कमेंट पोस्ट झाली
+post_comment_updated: टिप्पणी अपडेट केली
+item_create_success: आयटम तयार केला | आयटम तयार केले
+item_update_success: आयटम अपडेट | आयटम अपडेट केले
+item_delete_success: आयटम हटविला | आयटम हटवले
+this_collection: हे कलेक्शन
+related_collection: संबंधित कलेक्शन
+related_collections: संबंधीत कलेक्शन्स
+translations_collection: भाषांतर कलेक्शन
+languages_collection: भाषा कलेक्शन
+import_data_input_placeholder: CSV किंवा JSON...
+import_data_button: आयात सुरू करा
+import_data_indeterminate: डेटा इंपोर्ट करत आहे...
+import_data_success: '{filename} वरून डेटा यशस्वीरीत्या आयात केला'
+import_data_error: या फाइलची डेटा रचना संकलनाशी जुळत नाही.
+label_import: आयात
+label_export: निर्यात
+import_export: आयात / निर्यात
+format: फॉरमॅट
+last_page: शेवटचे पृष्ठ
+last_access: शेवटचा प्रवेश
+fill_template: टेम्प्लेट व्हॅल्यू सोबत भरा
+a_unique_table_name: एक युनिक टेबल नाव...
+a_unique_column_name: युनिक कॉलम नाव...
+enable_custom_values: कस्टम व्हॅल्यू चालू करा
+submit: सादर करा
+move_to_folder: फोल्डर कडे हलवा
+move: हलवा
+system: सिस्टीम
+add_field_related: संबंधित संग्रहामध्ये फील्ड जोडा
+interface_label: इंटरफेस
+display_label: डिस्प्ले
+today: आज
+yesterday: काल
+delete_comment: टिप्पणी हटवा
+delete_share: शेअर हटवा
+functions:
+  year: वर्ष
+  month: महिना
+  week: आठवडा
+  day: दिवस
+  weekday: आठवड्याचा दिवस
+  hour: तास
+  minute: मिनिटे
+  second: सेकंद
+  count: मोजा
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_date_short_no_year: MMM d
+minutes: मिनिटे
+hours: तास
+month: महिने
+year: वर्ष
+select_all: सर्व निवडा
+permissionsLevel:
+  all: पूर्ण {action} प्रवेश
+  partial: आंशिक {action} प्रवेश
+  custom: आंशिक {action} प्रवेश
+  none: '{action} प्रवेश नाही'
+months:
+  january: जानेवारी
+  february: फेब्रुवारी
+  march: मार्च
+  april: एप्रिल
+  may: मे
+  june: जून
+  july: जुलै
+  august: ऑगस्ट
+  september: सप्टेंबर
+  october: ऑक्टोबर
+  november: नोव्हेंबर
+  december: डिसेंबर
+drag_mode: ड्रॅग मोड
+move_tool: टूल हलवा
+crop_tool: टूल क्रॉप करा
+focal_point_tool: फोकल पॉइंट टूल
+cancel_crop: क्रॉप कॅन्सल करा
+cancel_selection: सिलेक्शन कॅन्सल करा
+original: मूळ
+url: URL
+import_label: आयात
+file_details: फाइल तपशील
+dimensions: परिमाणे
+size: साईज
+created: तयार केले
+uploaded: अपलोड केले
+modified: मॉडिफाय केले
+owner: मालक
+edited_by: द्वारा संपादित
+folder: फोल्डर
+folders: फोल्डर्स
+zoom: झूम
+download: डाउनलोड
+open: उघडा
+open_in_new_window: नवीन विंडो मध्ये उघडा
+open_folder: '"{folder}" फोल्डर उघडा'
+foreground_color: फोरग्राउंड कलर
+background_color: बॅगराउंड कलर
+upload_from_device: डिव्हाइस वरून फाइल अपलोड करा
+choose_from_library: लायब्ररी मधून फाइल निवडा
+import_from_url: URL वरून फाइल आयात करा
+replace_from_device: डिव्हाइसवरून फाइल बदला
+replace_from_library: लायब्ररी मधून फाइल बदला
+replace_from_url: URL वरून फाइल बदला
+no_image_selected: कोणतीही प्रतिमा निवडलेली नाही
+no_file_selected: कोणतीही फाइल निवडलेली नाही
+download_file: फाइल डाउनलोड करा
+open_file_in_tab: नवीन टॅबमध्ये फाइल उघडा
+start_export: निर्यात सुरू करा
+not_available_for_local_downloads: स्थानिक डाउनलोडसाठी उपलब्ध नाही
+exporting_all_items_in_collection: '{collection} मधील सर्व आयटम ({total}) निर्यात करत आहे.'
+exporting_limited_items_in_collection: '{collection} मधील {total} आयटमपैकी {count} निर्यात केले जातील.'
+exporting_no_items_to_export: निर्यात करण्यासाठी कोणत्याही वस्तू नाहीत. निर्यात कॉन्फिगरेशन समायोजित करा आणि/किंवा संग्रहामध्ये आयटम जोडा.
+exporting_download_hint: एकदा {format} फाइल तयार झाल्यानंतर, ती तुमच्या डिव्हाइसवर डाउनलोड केली जाईल
+exporting_library_hint: एकदा {format} फाइल तयार झाली की ती फाइल लायब्ररीमध्ये सेव्ह केली जाईल.
+exporting_library_hint_forced: या निर्यातीवर बॅचमध्ये प्रक्रिया करणे आवश्यक आहे. एकदा पूर्ण झाल्यावर, {format} फाइल फाइल लायब्ररीमध्ये सेव्ह केली जाईल.
+collection_key: संग्रह की
+name: नाव
+primary_key_field: प्राथमिक की फील्ड
+type: प्रकार
+creating_new_collection: नवीन संग्रह तयार करणे
+created_by: यांनी तयार केले
+created_on: रोजी तयार केले
+creating_collection_info: संग्रहाला नाव द्या आणि त्याचे अद्वितीय "की" फील्ड सेट करा...
+creating_collection_system: यापैकी कोणतेही पर्यायी फील्ड सक्षम आणि पुनर्नामित करा.
+auto_increment_integer: स्वयं-वाढीव पूर्णांक
+auto_increment_big_integer: स्वयं-वाढीव मोठा पूर्णांक
+generated_uuid: UUID व्युत्पन्न केले
+manual_string: मॅन्युअली स्ट्रिंग एंटर केली
+save_and_create_new: सेव्ह आणि नवीन तयार करा
+save_and_stay: सेव्ह करा आणि थांबा
+save_and_quit: सेव्ह आणि बंद करा
+save_as_copy: कॉपी म्हणून सेव्ह करा
+add_existing: विद्यमान जोडा
+creating_items: आयटम तयार करत आहे
+enable_create_button: क्रिएट बटण चालू करा
+selecting_items: आयटम सिलेक्ट करत आहे
+enable_select_button: सिलेक्ट बटन चालू करा
+allow_duplicates: डुप्लिकेटला अनुमती द्या
+comments: टिपण्णी
+no_comments: अजून कोणतीही टिपण्णी नाही
+expand: विस्तृत करा
+expand_all: सर्व विस्तृत करा
+expand_none: काहीही विस्तृत करु नका
+collapse: संकुचित करा
+collapse_all: सर्व संकुचित करा
+select_item: आयटम निवडा
+no_items: आयटम नाहीत
+search_items: आयटम शोधा...
+search_extensions: एक्स्टेंशन शोधा...
+disabled: बंद करा
+information: माहिती
+report_bug: बग रिपोर्ट करा
+request_feature: फिचर ची मागणी करा
+request_body: बॉडी ची मागणी करा
+interface_not_found: 'इंटरफेस "{interface}" सापडला नाही.'
+operation_not_found: 'ऑपरेशन "{operation}" आढळले नाही.'
+reset_interface: इंटरफेस पुन्हा सेट करा
+display_not_found: 'डिस्प्ले "{display}" आढळला नाही.'
+reset_display: डिस्प्ले पुन्हा सेट करा
+list-m2a: बिल्डर (M2A)
+item_count: 'कोणत्याही वस्तू नाहीत | एक आयटम | {count} आयटम'
+filtered_item_count: 'कोणतेही फिल्टर केलेले आयटम नाहीत | एक फिल्टर केलेला आयटम | {count} फिल्टर केलेले आयटम'
+no_items_copy: या संग्रहात अद्याप कोणतेही आयटम नाहीत.
+file_count: 'फाइल नाहीत | एक फाईल | {count} फाइल'
+no_files_copy: येथे कोणत्याही फाइल्स नाहीत
+user_count: 'वापरकर्ते नाहीत | एक वापरकर्ता | {count} वापरकर्ते'
+no_users_copy: या भूमिकेत अद्याप कोणतेही वापरकर्ते नाहीत
+webhooks_count: 'वेबहुक्स नाहीत | एक वेबहुक | {count} वेबहुक'
+webhooks_deprecation_notice: |
+  वेबहुक नापसंत केले आहेत आणि पुढील वापरास परावृत्त केले आहे.
+
+  कृपया त्याऐवजी [Webhook / Request URL ऑपरेशन](https://docs.directus.io/app/flows/operations.html#webhook-request-url) सोबत वापरा.
+no_webhooks_copy: अद्याप कोणतेही वेबहुक कॉन्फिगर केलेले नाहीत. खाली एक तयार करून प्रारंभ करा.
+no_notifications: कोणत्याही सूचना नाहीत
+no_notifications_copy: तुम्ही सर्व पाहिले आहात!
+activity_log: ऍक्टिव्हिटी लॉग
+all_items: सर्व आयटम
+any: काहीही
+csv: CSV
+no_collections: कोणतेही संग्रह नाहीत
+create_collection: संकलन तयार करा
+no_collections_copy_admin: तुमच्याकडे अद्याप कोणतेही संग्रह नाहीत. प्रारंभ करण्यासाठी खालील बटणावर क्लिक करा
+no_collections_copy: तुमच्याकडे अद्याप कोणतेही संग्रह नाहीत. कृपया तुमच्या सिस्टम प्रशासकाशी संपर्क साधा.
+relationship_not_setup: संबंध योग्यरितीने कॉन्फिगर केले गेले नाहीत
+no_singleton_relations: सिंगलटन्सचे संबंध समर्थित नाहीत
+display_template_not_setup: डिस्प्ले टेम्पलेट पर्याय चुकीचा कॉन्फिगर केलेला आहे
+collection_field_not_setup: संकलन फील्ड पर्याय चुकीचा कॉन्फिगर केलेला आहे
+select_a_collection: एक कलेक्शन निवडा
+select_a_field: फील्ड सिलेक्ट करा
+active: चालू
+move_to: कडे हलवा
+copy: कॉपी
+copy_to: कडे कॉपी करा
+no_other_dashboards_copy: तुमच्याकडे अजून कोणतेही डॅशबोर्ड नाहीत
+inactive: निष्क्रिय
+users: युजर्स
+roles: रोल्स
+activity: ऍक्टिव्हिटी
+activity_item: ऍक्टिव्हिटी आयटम
+action: कृती
+ip_address: IP Address
+user_agent: युजर एजंट
+origin: उगम
+webhooks: वेबहुक
+decimals: दशांश
+value_decimals: मूल्य दशांश
+min_value: किमान मूल्य
+max_value: कमाल मूल्य
+automatic: स्वयंचलित
+field_width: फील्ड रुंदी
+add_filter: फिल्टर जोडा
+upper_limit: कमाल मर्यादा...
+lower_limit: कमी मर्यादा...
+user_directory: युजर डायरेक्टरी
+documentation: दस्तऐवजीकरण
+sidebar: साईड बार
+duration: कालावधी
+charset: चारसेट
+second: सेकंद
+file_moved: फाईल मूव्ह केली
+collection_created: कलेक्शन तयार केले
+modified_on: यावर सुधारित केले
+card_size: कार्ड आकार
+sort_field: क्रमवारी फील्ड
+add_sort_field: क्रमवारी फील्ड जोडा
+sort: क्रमवारी लावा
+status: स्थिती
+remove: काढून टाका
+toggle_manual_sorting: मॅन्युअल क्रमवारी टॉगल करा
+bookmark_doesnt_exist: बुकमार्क अस्तित्वात नाही
+bookmark_doesnt_exist_copy: तुम्ही उघडण्याचा प्रयत्न करत असलेला बुकमार्क सापडला नाही.
+bookmark_doesnt_exist_cta: संग्रहाकडे परत या
+select_an_item: एक आयटम निवडा...
+edit: संपादित करा
+edit_item: आयटम संपादित करा
+enabled: एनेबल
+partially_enabled: अंशतः एनेबल
+enable_all: सर्व एनेबल करा
+disable_all: सर्व डिसेबल करा
+enabled_dev_tooltip: ॲप विस्तार नेहमी डेव्ह मोडमध्ये सक्षम केले जातात
+disable_tfa: 2FA अक्षम करा
+admin_disable_tfa_text: तुमची खात्री आहे की तुम्ही या वापरकर्त्यासाठी 2FA अक्षम करू इच्छिता?
+tfa_setup: 2FA सेटअप करा
+tfa_scan_code: 2FA सेट करणे पूर्ण करण्यासाठी तुमच्या ऑथेंटिकेटर ॲपमधील कोड स्कॅन करा
+enter_otp_to_disable_tfa: 2FA अक्षम करण्यासाठी OTP प्रविष्ट करा
+create_account: खाते तयार करा
+account_created_successfully: खाते यशस्वीरित्या तयार केले
+auto_fill: ऑटो फिल
+corresponding_field: संबंधित फील्ड
+errors:
+  COLLECTION_NOT_FOUND: "संग्रह अस्तित्वात नाही"
+  CONTAINS_NULL_VALUES: फील्ड मध्ये शून्य व्हॅल्यू आहेत
+  CONTENT_TOO_LARGE: सबमिट केलेला आयटम/फाइल खूप मोठी आहे
+  FIELD_NOT_FOUND: फील्ड सापडले नाही
+  FORBIDDEN: निषिद्ध
+  GRAPHQL_VALIDATION: ग्राफक्यूएल प्रमाणीकरण
+  ILLEGAL_ASSET_TRANSFORMATION: पूर्वावलोकनासाठी प्रतिमा स्रोत खूप मोठा आहे
+  INTERNAL_SERVER_ERROR: अनपेक्षित त्रुटी
+  INVALID_CONFIG: अवैध कॉन्फिगरेशन
+  INVALID_CREDENTIALS: चुकीचे वापरकर्ता नाव किंवा पासवर्ड
+  INVALID_FOREIGN_KEY: अवैध फॉरेन की
+  INVALID_IP: IP ऍड्रेस परवानगी नाही
+  INVALID_OTP: वन टाइम पासवर्ड चुकीचा आहे
+  INVALID_PAYLOAD: अवैध्य पेलोड
+  INVALID_PROVIDER: वापरकर्ता वेगळ्या प्रमाणीकरण प्रदात्याशी संबंधित आहे
+  INVALID_QUERY: अवैध क्वेरी
+  INVALID_TOKEN: अवैध टोकन
+  INVALID_USER: वापरकर्त्याचे प्रमाणीकरण करण्यात अयशस्वी
+  ITEM_LIMIT_REACHED: आयटम मर्यादा गाठली
+  ITEM_NOT_FOUND: आयटम सापडला नाही
+  LIMIT_EXCEEDED: 'मर्यादा ओलांडली'
+  METHOD_NOT_ALLOWED: पद्धतीला परवानगी नाही
+  NOT_NULL_VIOLATION: व्हॅल्यू रिकामी असू शकत नाही
+  RANGE_NOT_SATISFIABLE: अवैध श्रेणी
+  RECORD_NOT_UNIQUE: डुप्लिकेट मूल्य आढळले
+  REQUESTS_EXCEEDED: विनंती मर्यादा गाठली
+  ROUTE_NOT_FOUND: सापडले नाही
+  SERVICE_UNAVAILABLE: सेवा अनुपलब्ध
+  TOKEN_EXPIRED: टोकन कालबाह्य झाले
+  UNEXPECTED_RESPONSE: अनपेक्षित प्रतिसाद
+  UNKNOWN: अनपेक्षित त्रुटी
+  UNPROCESSABLE_CONTENT: प्रक्रिया न करता येणारी सामग्री
+  UNSUPPORTED_MEDIA_TYPE: असमर्थित मीडिया प्रकार
+  USER_SUSPENDED: वापरकर्ता निलंबित
+  VALUE_OUT_OF_RANGE: मूल्य श्रेणीबाहेर आहे
+  VALUE_TOO_LONG: मूल्य खूप मोठे आहे
+security: सुरक्षा
+value_hashed: मूल्य सुरक्षितपणे हॅश केलेले
+bookmark_name: बुकमार्क नाव...
+create_bookmark: बुकमार्क तयार करा
+edit_bookmark: एडिट बुकमार्क
+edit_personal_bookmark: वैयक्तिक बुकमार्क एडिट करा
+edit_role_bookmark: रोल बुकमार्क संपादित करा
+edit_global_bookmark: ग्लोबल बुकमार्क संपादित करा
+cannot_edit_role_bookmarks: रोल बुकमार्क संपादित करू शकत नाही
+cannot_edit_global_bookmarks: ग्लोबल बुकमार्क दुरुस्त करू शकत नाही
+bookmarks: बुकमार्क
+presets: प्रीसेट
+unexpected_error: अनपेक्षित त्रुटी
+unexpected_error_copy: एक अनपेक्षित त्रुटी आली आहे. कृपया पुन्हा प्रयत्न करा.
+copy_details: तपशील कॉपी करा
+no_app_access: तपशील कॉपी करा
+no_app_access_copy: या वापरकर्त्याला प्रशासक ॲप वापरण्याची परवानगी नाही.
+password_reset_sent: तुमचे खाते असल्यास, तुमचा पासवर्ड रीसेट करण्यासाठी आम्ही तुम्हाला एक सुरक्षित लिंक पाठवली आहे
+password_reset_successful: पासवर्ड यशस्वीरित्या रीसेट केला
+back: मागे
+filter: फिल्टर
+edit_image: इमेज एडिट करा
+editing_image: इमेज एडिट होत आहे
+square: चौरस
+free: मोफत
+flip_horizontal: आडवे फिरवा
+flip_vertical: उभे फिरवा
+aspect_ratio: गुणोत्तर
+rotate: फिरवा
+all_users: सर्व युजर
+delete_collection: कलेक्शन काढून टाका
+update_collection_success: कलेक्शन अपडेट करा
+delete_collection_success: काढलेले कलेक्शन
+make_collection_visible: कलेक्शन दृश्यमान करा
+make_collection_hidden: कलेक्शन लपवा
+make_folder_visible: फोल्डर दृश्यमान करा
+make_folder_hidden: फोल्डर लपवा
+goto_collection_content: कन्टेन्ट पहा
+count_of_total_items: '{total} आयटमपैकी {count}'
+start_end_of_count_items: '{count} पैकी {start}-{end} आयटम'
+start_end_of_count_filtered_items: 'फिल्टर केलेल्या {count} आयटमपैकी {start}-{end}'
+delete_collection_are_you_sure: >-
+  तुम्हाला खात्री आहे की तुम्ही संग्रह "{collection}" हटवू इच्छिता? हे संग्रह आणि त्यातील सर्व आयटम हटवेल. ही क्रिया कायमस्वरूपी आहे.
+delete_folder_are_you_sure: तुमची खात्री आहे की तुम्ही "{folder}" फोल्डर हटवू इच्छिता? नेस्टेड फोल्डर आणि संग्रह शीर्ष स्तरावर हलविले जातील.
+delete_collection_peer_dependencies: खालील फील्ड देखील हटवल्या जातील, कारण ते वर्तमान संग्रहाशी संबंधित आहेत.
+collections_shown: कलेक्शन दाखवले
+visible_collections: दृश्यमान कलेक्शन
+hidden_collections: लपलेले कलेक्शन
+show_hidden_collections: लपवलेले कलेक्शन दाखवा
+hide_hidden_collections: लपविलेले कलेक्शन लपवा
+show_header: हेडर दर्शवा
+unmanaged_collections: कॉन्फिगर केलेले कलेक्शन
+system_collections: सिस्टीम कलेक्शन
+placeholder: प्लेसहोल्डर
+icon_left: आयकॉन डावीकडे
+icon_right: आयकॉन उजवीकडे
+count_other_revisions: '{count} इतर आवर्तने'
+font: फॉन्ट
+sans_serif: सांस सेरिफ
+serif: सेरिफ
+monospace: मोनोस्पेस
+divider: दुभाजक
+color: कलर
+circle: वर्तुळ
+empty_item: रिकामा आयटम
+log_in_with: '{provider} सोबत लॉग इन करा'
+conditional_styles: सशर्त शैली
+advanced_settings: ऍडव्हान्स सेटिंग्ज
+advanced_filter: ऍडव्हान्स फिल्टर
+delete_advanced_filter: फिल्टर काढा
+change_advanced_filter_operator: ऑपरेटर बदला
+advanced: अडवान्सड
+operators:
+  eq: बरोबरी
+  neq: समान नाही
+  lt: पेक्षा कमी
+  gt: पेक्षा मोठे
+  lte: पेक्षा कमी किंवा समान
+  gte: पेक्षा मोठे किंवा समान
+  in: पैकी एक आहे
+  nin: पैकी एक नाही
+  null: शून्य आहे
+  nnull: शून्य नाही
+  contains: समाविष्ट आहे
+  ncontains: समाविष्ट नाही
+  icontains: समाविष्टीत आहे (संवेदनशील)
+  starts_with: ने सुरू होते
+  nstarts_with: ने सुरू होत नाही
+  istarts_with: (असंवेदनशील) ने सुरू होते
+  nistarts_with: (असंवेदनशील.) ने सुरू होत नाही
+  ends_with: ने समाप्त होते
+  nends_with: ने संपत नाही
+  iends_with: (असंवेदनशील) ने समाप्त होते
+  niends_with: (असंवेदनशील) ने समाप्त होत नाही
+  between: च्या दरम्यान आहे
+  nbetween: दरम्यान नाही
+  empty: रिकामे आहे
+  nempty: रिकामा नाही
+  all: या की असतात
+  has: यापैकी काही की समाविष्ट आहेत
+  intersects: छेदतात
+  nintersects: एकमेकांना छेदत नाही
+  intersects_bbox: बाउंडिंग बॉक्सला छेदतो
+  nintersects_bbox: बाउंडिंग बॉक्सला छेदत नाही
+  regex: RegExp शी जुळते
+custom_validation_message: कस्टम प्रमाणीकरण संदेश
+loading: लोड करत आहे...
+extension_readme_missing: या एक्स्टेंशनमध्ये README फाइल नाही.
+drop_to_upload: अपलोड करण्यासाठी ड्रॉप करा
+item: आयटम
+items: आयटम्स
+upload_file: फाईल अपलोड करा
+upload_file_indeterminate: फाईल अपलोड होत आहे
+upload_file_success: फाईल अपलोड झाली
+upload_files_indeterminate: 'फाइल अपलोड करत आहे {done}/{total}'
+upload_files_success: '{count} फाइल अपलोड केल्या'
+upload_pending: अपलोड प्रलंबित
+drag_file_here: येथे फाइल ड्रॅग आणि ड्रॉप करा
+click_to_browse: ब्राउझ करण्यासाठी क्लिक करा
+interface_options: इंटरफेस पर्याय
+display_options: प्रदर्शन पर्याय
+layout_options: लेआउट पर्याय
+rows: ओळी
+columns: स्तंभ
+collection_setup: कलेक्शन सेटअप
+optional_system_fields: पर्यायी फील्ड
+value_unique: व्हॅल्यू युनिक असणे आवश्यक आहे
+value_index: फील्ड अनुक्रमित आहे
+all_activity: सर्व ऍक्टिव्हिटी
+create_item: आयटम तयार करा
+display_template: टेम्प्लेट डिस्प्ले करा
+language_display_template: भाषा प्रदर्शन टेम्पलेट
+translations_display_template: भाषांतर प्रदर्शन टेम्पलेट
+n_items_selected: 'कोणतेही आयटम निवडलेले नाहीत | एक आयटम निवडला | {n} आयटम निवडले'
+per_page: प्रति पृष्ठ
+all_files: सर्व फायली
+my_files: माझ्या फायली
+recent_files: अलीकडील फायली
+create_folder: फोल्डर तयार करा
+edit_folder: फोल्डर संपादित करा
+folder_name: फोल्डरचे नाव...
+folder_key: फोल्डर की...
+add_file: फाइल जोडा
+replace_file: फाइल बदला
+no_results: कोणतेही परिणाम नाहीत
+no_results_copy: परिणाम पाहण्यासाठी शोध फिल्टर समायोजित करा किंवा साफ करा.
+no_visible_fields: रिक्त फॉर्म
+no_visible_fields_copy: या फॉर्ममध्ये कोणतेही दृश्यमान फील्ड नाहीत.
+clear_filters: फिल्टर साफ करा
+saves_automatically: स्वयंचलितपणे जतन करते
+role: रोल
+edit_role: रोल एडिट करा
+rule: नियम
+user: युजर
+no_presets: प्रीसेट नाहीत
+no_presets_copy: अद्याप कोणतेही प्रीसेट किंवा बुकमार्क सेव्ह केलेले नाहीत.
+no_presets_cta: प्रीसेट जोडा
+presets_only: फक्त प्रीसेट
+create: तयार करा
+on_create: तयार केल्या नंतर
+on_update: अपडेट केल्या नंतर
+read: वाचा
+update: अपडेट करा
+delete: डिलीट करा
+select_fields: फील्ड सिलेक्ट करा
+format_text: टेक्स्ट फॉरमॅट करा
+format_value: फॉरमॅट व्हॅल्यू
+abbreviate_value: संक्षिप्त व्हॅल्यू
+operator: ऑपरेटर
+bold: बोल्ड
+toggle: टोगल
+icon_on: चिन्ह चालू
+icon_off: चिन्ह बंद
+label: लेबल
+flows: फ्लोव
+flow: फ्लोव
+select_a_flow: फ्लो सिलेक्ट करा
+run_flow_confirm: तुमची खात्री आहे की तुम्ही हा प्रवाह कार्यान्वित करू इच्छिता?
+run_flow_on_current_collection: वर्तमान संकलनावर प्रवाह चालवा
+run_flow_on_current: वर्तमान आयटमवर फ्लो चालवा
+run_flow_on_current_edited_confirm: हा आयटम या प्रवाहाद्वारे अद्यतनित केला जाऊ शकतो, तुमची खात्री आहे की तुम्ही ते कार्यान्वित करू इच्छिता?
+run_flow_on_selected: प्रथम एक किंवा अधिक आयटम निवडा | 1 निवडलेल्या आयटमवर फ्लो चालवा | निवडलेल्या {n} आयटमवर फ्लो चालवा
+run_flow: रन फ्लो
+run_flow_success: Flow "{flow}" ran successfully
+field_name_placeholder: फील्डचे नाव एंटर करा...
+field_key_placeholder: फील्ड की एंटर करा...
+trigger: ट्रिगर
+trigger_options: ट्रिगर पर्याय
+view_trigger: ट्रिगर पहा
+create_trigger: ट्रिगर तयार करा
+trigger_setup: ट्रिगर सेटअप
+change_trigger: ट्रिगर बदला
+flow_delete_confirm: तुम्हाला खात्री आहे की तुम्ही प्रवाह "{flow}" हटवू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
+set_flow_active: फ्लो सक्रिय वर सेट करा
+set_flow_inactive: फ्लोव निष्क्रिय वर सेट करा
+edit_flow: फ्लोव एडिट करा
+delete_flow: फ्लोव हटवा
+no_other_flows_copy: तुमच्याकडे अजून कोणतेही फ्लोव नाहीत.
+no_flows: फ्लोव नाही
+no_flows_copy: तुमच्याकडे अद्याप कोणतेही फ्लोव नाहीत.
+create_flow: फ्लोव तयार करा
+creating_new_flow: नवीन फ्लोव तयार करत आहे
+updating_flow: फ्लोव अपडेट
+flow_setup: फ्लोव सेटअप
+flow_name: नाव
+flow_tracking: ऍक्टिव्हिटी आणि लॉग ट्रॅकिंग
+flow_tracking_all: ऍक्टिव्हिटी आणि लॉग ट्रॅक करा
+flow_tracking_activity: फक्त ऍक्टिव्हिटी ट्रॅक करा
+flow_tracking_null: काहीही ट्रॅक करू नका
+start_flow: फ्लोव स्टार्ट करा
+stop_flow: फ्लोव थांबवा
+create_operation: ऑपरेशन तयार करा
+edit_operation: ऑपरेशन एडिट करा
+code: कोड
+operation_options: ऑपेरेशन पर्याय
+operation_name: ऑपेरेशन चे नाव
+operation_key: संदर्भासाठी अभिज्ञापक...
+operation_key_unique_error: फ्लोमध्ये ऑपरेशन की अद्वितीय असणे आवश्यक आहे
+operation_handle_resolve: 'निराकरण करा: जोडण्यासाठी क्लिक करा किंवा मार्ग बदलण्यासाठी ड्रॅग करा'
+operation_handle_reject: 'नकार द्या: जोडण्यासाठी क्लिक करा किंवा मार्ग बदलण्यासाठी ड्रॅग करा'
+insights: अंतर्दृष्टी
+dashboard: डॅशबोर्ड
+panel: पॅनल
+panel_options: पॅनल पर्याय
+panel_header: पॅनल हेडर
+panel_name_placeholder: या पॅनल ला नाव द्या...
+panel_note_placeholder: या पॅनेलबद्दल पर्यायी तपशील...
+panel_delete_confirm: तुम्हाला खात्री आहे की तुम्ही हे पॅनेल हटवू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
+list_panel_allow_edit: इनलाइन एडिट ला अनुमती द्या
+dashboard_delete_confirm: तुमची खात्री आहे की तुम्ही हा डॅशबोर्ड हटवू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
+edit_dashboard: डॅशबोर्ड एडिट करा
+delete_dashboard: डॅशबोर्ड हटवा
+visible: दृश्यमान
+prefix_placeholder: व्हॅल्यू पूर्वी मजकूर...
+suffix_placeholder: मूल्यानंतर मजकूर..
+decimals_placeholder: दशांश स्थानांची संख्या...
+no_dashboards: डॅशबोर्ड नाहीत
+no_dashboards_copy: तुमच्याकडे अद्याप कोणतेही डॅशबोर्ड नाहीत
+create_dashboard: डॅशबोर्ड तयार करा
+dashboard_name: डॅशबोर्ड नाव
+no_data: डेटा नाही
+no_data_in_flow: या प्रवाहात कोणताही डेटा तयार किंवा प्रवेश केला गेला नाही
+accountability: जबाबदारी
+payload: पेलोड
+details: तपशील
+resume_streaming_logs: स्ट्रीमिंग लॉग पुन्हा सुरू करा
+pause_streaming_logs: प्रवाह लॉग विराम द्या
+logs_session_resumed: लॉग सत्र पुन्हा सुरू झाले..
+logs_session_paused: लॉग सत्र थांबवले...
+logs_stream_disconnected: लॉग स्ट्रीम डिस्कनेक्ट झाला...
+log_detail_filter_paths: 'फिल्टर पथ (उदा: req.method, res.statusCode)'
+logs_beginning: ही तुमच्या लॉग सत्राची सुरुवात आहे..
+logs_waiting: 'आणखी लॉग्सची प्रतीक्षा करत आहे..'
+logs_unread_count: '{count} न वाचलेले'
+clear_logs: नोंदी साफ करा
+search_logs: लॉग शोधा...
+all_instances: सर्व उदाहरणे
+instance_count: 'उदाहरण नाही | एक प्रसंग | {count} उदाहरणे'
+all_log_levels: सर्व लॉग स्तर
+log_level_count: 'लॉग स्तर नाही | एक लॉग स्तर | {count} लॉग स्तर'
+soft_wrap_lines: सॉफ्ट ओघ ओळी
+full_screen: फुल स्क्रीन
+full_text_search: फुल टेक्स्ट सर्च
+edit_panels: एडिट पॅनल
+center_align: सेंटर अलाइन
+left_align: डावीकडे अलाइन
+right_align: उजवीकडे अलाइन
+fit_to_screen: स्क्रीन सोबत फिट करा
+image_url: इमेज URL
+alt_text: पर्यायी मजकूर
+media: मीडिया
+quality: क्वालिटी
+width: रुंदी
+height: उंची
+transformation_preset_key: ट्रान्सफॉर्मेशन प्रीसेट की
+source: स्त्रोत
+url_placeholder: URL एंटर करा...
+display_text: टेक्स्ट दाखवा
+display_text_placeholder: डिस्प्ले टेक्स्ट एंटर करा...
+interface_group_text_and_numbers: मजकूर आणि आकडे
+interface_group_selection: सिलेक्शन
+interface_group_relational: रेलशनल
+interface_group_presentation: सादरीकरण
+interface_group_groups: ग्रुप्स
+interface_group_other: इतर
+tooltip: टूलटीप
+tooltip_placeholder: टूलटीप भरा
+unlimited: अमर्याद
+open_link_in: यामध्ये लिंक उघडा
+new_tab: नवीन टॅब
+save_image: इमेज जतन करा
+save_media: मेडिया जतन करा
+wysiwyg_options:
+  aligncenter: मध्यभागी अलाइन करा
+  alignjustify: जस्टिफाय अलाइन करा
+  alignleft: डावीकडे अलाइन करा
+  alignnone: काहीही अलाइन करू नका
+  alignright: उजवीकडे अलाइन करा
+  forecolor: फोरग्राउंड कलर
+  backcolor: बॅगराउंड कलर
+  bold: बोल्ड
+  italic: इटालिक
+  underline: अंडरलाईन
+  strikethrough: स्ट्राइकथ्रू
+  subscript: सबस्क्रिप्ट
+  superscript: सुपरस्क्रिप्ट
+  codeblock: कोड
+  blockquote: ब्लॉककोट
+  bullist: बुलेट यादी
+  numlist: क्रमांकित यादी
+  hr: समांतर नियम
+  link: लिंक जोडा/संपादित करा
+  unlink: लिंक काढा
+  media: मीडिया जोडा/संपादित करा
+  image: प्रतिमा जोडा/संपादित करा
+  copy: कॉपी
+  cut: कट
+  paste: पेस्ट करा
+  heading: शीर्षक
+  h1: हेडिंग १
+  h2: हेडिंग २
+  h3: हेडिंग ३
+  h4: हेडिंग ४
+  h5: हेडिंग ५
+  h6: हेडिंग ६
+  fontselect: सिलेक्ट फॉन्ट
+  fontsizeselect: सिलेक्ट फॉन्ट साईझ
+  indent: इंडेंट
+  outdent: आउटडेंट
+  undo: पूर्ववत करा
+  redo: मागे घ्या
+  remove: काढून टाका
+  removeformat: फॉरमॅट काढून टाका
+  selectall: सर्व सिलेक्ट करा
+  table: टेबल
+  visualaid: अदृश्य घटक पहा
+  source_code: सोर्स कोड एडिट करा
+  fullscreen: फुल स्क्रीन
+  directionality: दिशाहीनता
+  lazy_loading: लेझी लोड इमेज
+  lazy_loading_label: लेझी लोड एनेबल करा
+dropdown: ड्रॉप डाऊन
+choices: निवडी
+choices_option_configured_incorrectly: निवडी चुकीच्या पद्धतीने कॉन्फिगर केल्या आहेत
+deselect: निवड रद्द करा
+deselect_all: सर्वांची निवड रद्द करा
+theme: थीम
+select_a_theme: थीम सिलेक्ट करा
+default_sync_with_project: डीफॉल्ट (प्रोजेक्टसह सिंक)
+appearance_auto: स्वयंचलित (सिस्टमसह समक्रमित करा)
+appearance_light: लाईट
+appearance_dark: डार्क
+other: इतर
+adding_user: वापरकर्ता जोडत आहे
+unknown_user: अज्ञात वापरकर्ता
+creating_in: '{collection} मध्ये आयटम तयार करत आहे'
+editing_in: '{collection} मधील आयटम संपादित करत आहे'
+viewing_in: '{collection} मध्ये आयटम पहात आहे'
+creating_unit: '{unit} तयार करत आहे'
+editing_unit: 'एडिट {unit}'
+editing_in_batch: 'बॅच एडिट {count} आयटम'
+no_options_available: कोणतेही पर्याय उपलब्ध नाहीत
+settings_data_model: डेटा मॉडेल
+settings_roles: वापरकर्ता भूमिका
+settings_permissions: प्रवेश धोरणे
+settings_project: सेटिंग्ज
+settings_appearance: देखावा
+settings_webhooks: वेबहुक
+settings_flows: फ्लोव
+settings_system_logs: सिस्टम लॉग
+settings_presets: बुकमार्क
+settings_translations: भाषांतरे
+one_or_more_options_are_missing: एक किंवा अधिक पर्याय गहाळ आहेत
+configure_field_key_to_continue: सुरू ठेवण्यासाठी फील्ड की कॉन्फिगर करा
+scope: व्याप्ती
+actions: क्रिया
+select: निवडा..
+layout: मांडणी
+tree_view: ट्री व्हियू
+changes_are_permanent: बदल कायम असतात
+preset_name_placeholder: रिकामे असताना डीफॉल्ट म्हणून काम करते...
+preset_search_placeholder: शोध क्वेरी..
+editing_preset: एडिटिंग प्रीसेट
+layout_preview: लेआऊट प्रिव्हिव
+layout_setup: लेआऊट सेटअप
+data: डेटा
+theme-overrides: थीम ओव्हर राईड
+unsaved_changes: जतन न केलेले बदल
+unsaved_changes_copy: तुमची खात्री आहे की तुम्ही हे पृष्ठ सोडू इच्छिता?
+discard_changes: बदल टाकून द्या
+discard_all_changes: सर्व बदल टाकून द्या
+discard_changes_copy: तुमची खात्री आहे की तुम्ही केलेले सर्व बदल टाकून देऊ इच्छिता?
+show_x_axis: X अक्ष दाखवा
+show_y_axis: Y अक्ष दाखवा
+keep_editing: एडिट करत रहा
+page_help_collections_overview: '**कलेक्शन ओव्हर व्हिव** — तुम्हाला प्रवेश असलेल्या सर्व संग्रहांची सूची'
+page_help_collections_collection: >-
+  **आयटम ब्राउझ करा** — तुम्हाला ॲक्सेस असलेल्या सर्व {संकलन} आयटमची सूची देते. आपले दृश्य तयार करण्यासाठी लेआउट, फिल्टर आणि क्रमवारी सानुकूलित करा आणि द्रुत प्रवेशासाठी या भिन्न कॉन्फिगरेशनचे बुकमार्क देखील जतन करा.
+page_help_collections_item: >-
+  **आयटम तपशील** — हा आयटम पाहण्यासाठी आणि व्यवस्थापित करण्यासाठी एक फॉर्म. या साइडबारमध्ये पुनरावृत्ती आणि एम्बेड केलेल्या टिप्पण्यांचा पूर्ण इतिहास देखील आहे.
+page_help_activity_collection: >-
+  **ॲक्टिव्हिटी ब्राउझ करा** — तुमच्या सर्व वापरकर्त्याच्या सिस्टीमची आणि सामग्री क्रियाकलापांची सर्वसमावेशक सूची.
+page_help_docs_global: >-
+  **दस्तऐवजीकरण विहंगावलोकन** — दस्तऐवज विशेषतः या प्रकल्पाच्या आवृत्ती आणि स्कीमासाठी तयार केले आहेत.
+page_help_files_collection: >-
+  **फाइल लायब्ररी** — या प्रकल्पात अपलोड केलेल्या सर्व फाइल मालमत्तांची यादी करते. आपले दृश्य तयार करण्यासाठी लेआउट, फिल्टर आणि क्रमवारी सानुकूलित करा आणि द्रुत प्रवेशासाठी या भिन्न कॉन्फिगरेशनचे बुकमार्क देखील जतन करा.
+page_help_files_item: >-
+  **फाइल तपशील** — फाइल मेटाडेटा व्यवस्थापित करण्यासाठी, मूळ मालमत्ता संपादित करण्यासाठी आणि प्रवेश सेटिंग्ज अद्यतनित करण्यासाठी एक फॉर्म.
+page_help_settings_project: "**सेटिंग्ज** — तुमच्या प्रोजेक्टचे ग्लोबल कॉन्फिगरेशन पर्याय"
+page_help_settings_appearance: "**स्वरूप** — तुमच्या प्रकल्पाचे स्वरूप आणि थीमिंग पर्याय."
+page_help_settings_extensions: '**विस्तार** — तुमच्या प्रकल्पामध्ये स्थापित केलेले विस्तार.'
+page_help_settings_datamodel_collections: >-
+  **डेटा मॉडेल: संग्रह** — उपलब्ध सर्व संग्रहांची यादी करते. यामध्ये दृश्यमान, लपलेले आणि सिस्टम कलेक्शन, तसेच अव्यवस्थापित डेटाबेस टेबल समाविष्ट आहेत जे जोडले जाऊ शकतात.
+page_help_settings_datamodel_fields: >-
+  **डेटा मॉडेल: संकलन** — हा संग्रह आणि त्याची फील्ड व्यवस्थापित करण्यासाठी एक फॉर्म.
+page_help_settings_system_logs: '**सिस्टम लॉग** — सिस्टम लॉगच्या थेट प्रवाहात प्रवेश करा'
+page_help_settings_policies_collection: '**नीती ब्राउझ करा** — प्रकल्पातील सर्व धोरणांची सूची.'
+page_help_settings_policies_item: "**धोरण तपशील** — पॉलिसीच्या परवानग्या आणि इतर सेटिंग्ज व्यवस्थापित करा."
+page_help_settings_roles_collection: '**भूमिका ब्राउझ करा** — प्रकल्पातील सर्व वापरकर्त्यांच्या भूमिकांची सूची.'
+page_help_settings_roles_item: "**भूमिका तपशील** — भूमिकेच्या परवानग्या आणि इतर सेटिंग्ज व्यवस्थापित करा."
+page_help_settings_presets_collection: >-
+  **प्रीसेट ब्राउझ करा** — प्रकल्पातील सर्व प्रीसेट सूचीबद्ध करा, यासह: वापरकर्ता, भूमिका आणि जागतिक बुकमार्क, तसेच डीफॉल्ट दृश्ये.
+page_help_settings_presets_item: >-
+  **प्रीसेट तपशील** — बुकमार्क आणि डीफॉल्ट संग्रह प्रीसेट व्यवस्थापित करण्यासाठी एक फॉर्म.
+page_help_settings_webhooks_collection: '**वेबहुक ब्राउझ करा** — प्रोजेक्टमधील सर्व वेबहुकची सूची.'
+page_help_settings_webhooks_item: '**वेबहुक तपशील** — प्रोजेक्ट वेबहुक तयार आणि व्यवस्थापित करण्यासाठी एक फॉर्म.'
+page_help_settings_flows_collection: '**प्रवाह ब्राउझ करा** — प्रकल्पातील सर्व प्रवाहांची यादी करा.'
+page_help_settings_flows_item: '**प्रवाह तपशील** — एक किंवा अधिक ऑपरेशन्स व्यवस्थापित करण्यासाठी कार्यक्षेत्र.'
+page_help_settings_translations_collection: '**कस्टम भाषांतरे ब्राउझ करा** — प्रकल्पातील सर्व सानुकूल भाषांतरांची यादी करा.'
+page_help_settings_translations_item: '**कस्टम भाषांतर तपशील** — हा आयटम पाहण्यासाठी आणि व्यवस्थापित करण्यासाठी एक फॉर्म'
+page_help_users_collection: '**वापरकर्ता निर्देशिका** — या प्रकल्पातील सर्व सिस्टम वापरकर्त्यांची यादी करते.'
+page_help_users_item: >-
+  **वापरकर्ता तपशील** — तुमची खाते माहिती व्यवस्थापित करा किंवा इतर वापरकर्त्यांचे तपशील पहा.
+page_help_insights_overview: '**अंतर्दृष्टी** — तुम्हाला प्रवेश असलेल्या डॅशबोर्डची सूची.'
+page_help_insights_dashboard: '**डॅशबोर्ड** — एक किंवा अधिक पॅनेल व्यवस्थापित करण्यासाठी कार्यस्थान'
+page_help_marketplace_account: '**खाते** — प्रकाशित विस्ताराचा प्रकाशक किंवा देखभालकर्ता.'
+page_help_marketplace_registry: '**रजिस्ट्री** — डायरेक्टस मार्केटप्लेसमध्ये विस्तार उपलब्ध आहेत'
+page_help_marketplace_extension: '**विस्तार** — डायरेक्टस मार्केटप्लेसमधील विस्तार.'
+activity_feed: ऍक्टिव्हिटी फीड
+add_new: नवीन ऍड करा
+create_new: नवीन तयार करा
+all: सर्व
+none: काही नाही
+no_layout_collection_selected_yet: अद्याप कोणतेही लेआउट/कलेक्शन निवडलेले नाही
+batch_delete_confirm: >-
+  कोणतेही आयटम निवडलेले नाहीत | तुमची खात्री आहे की तुम्ही हा आयटम हटवू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही. | तुमची खात्री आहे की तुम्ही हे {count} आयटम हटवू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही.
+cancel: रद्द करा
+no_upscale: प्रतिमा अपस्केल करू नका
+no_extensions: कोणतेही विस्तार नाहीत
+no_extensions_copy: अद्याप कोणतेही विस्तार स्थापित केलेले नाहीत.
+install_extension: इन्स्टॉल एक्सटेंशन
+uninstall_locked: मार्केटप्लेसद्वारे स्थापित न केलेले विस्तार विस्थापित करू शकत नाही
+uninstall: विस्थापित करा
+installed: इन्स्टॉल केले
+reinstall: पुन्हा इन्स्टॉल करा
+open_in_marketplace: मार्केटप्लेसमध्ये उघडा
 source_registry: बाजारपेठ
+source_local: स्थानिक
+source_module: नोड मॉड्यूल
+collection: कलेक्शन
+collections: कलेक्शन्स
+content: कन्टेन्ट
+singleton: सिंगलटन
+singleton_label: सिंगल ऑब्जेक्ट म्हणून हाताळा
+system_fields_locked: सिस्टम फील्ड लॉक केलेले आहेत आणि संपादित केले जाऊ शकत नाहीत
+directus_collection:
+  directus_access: पॉलिसी संलग्नक
+  directus_activity: सर्व कार्यक्रमांसाठी उत्तरदायित्व नोंदी
+  directus_collections: अतिरिक्त संकलन कॉन्फिगरेशन आणि मेटाडेटा
+  directus_comments: आयटमसाठी टिप्पण्या
+  directus_dashboards: इनसाइट्स मॉड्यूलमधील डॅशबोर्ड
+  directus_fields: अतिरिक्त फील्ड कॉन्फिगरेशन आणि मेटाडेटा
+  directus_files: सर्व व्यवस्थापित फाइल मालमत्तेसाठी मेटाडेटा
+  directus_flows: ऑटोमेशन फ्लोव
+  directus_folders: फायलींसाठी आभासी निर्देशिका प्रदान करते
+  directus_migrations: तुम्ही डेटाबेसची कोणती आवृत्ती वापरत आहात
+  directus_notifications: वापरकर्त्यांना सूचना पाठवल्या
+  directus_operations: फ्लोमध्ये चालणारी ऑपरेशन्स
+  directus_panels: इनसाइट्स डॅशबोर्डमधील वैयक्तिक पॅनेल
+  directus_permissions: प्रत्येक पॉलिसीसाठी प्रवेश परवानग्या
+  directus_policies: प्रवेश नियंत्रण धोरणे
+  directus_presets: कलेक्शन डीफॉल्ट आणि बुकमार्कसाठी प्रीसेट
+  directus_relations: रिलेशनशिप कॉन्फिगरेशन आणि मेटाडेटा
+  directus_revisions: सर्व क्रियाकलापांसाठी डेटा स्नॅपशॉट
+  directus_roles: सिस्टम वापरकर्त्यासाठी परवानगी गट
+  directus_sessions: वापरकर्ता सत्र माहिती
+  directus_settings: प्रोजेक्ट कॉन्फिगरेशन पर्याय
+  directus_shares: बाह्यरित्या सामायिक केलेल्या आयटमचा मागोवा घेतो
+  directus_users: प्लॅटफॉर्मसाठी सिस्टम वापरकर्ते
+  directus_webhooks: इव्हेंट-आधारित HTTP विनंत्यांसाठी कॉन्फिगरेशन
+  directus_translations: कस्टम भाषांतरे
+  directus_versions: आयटमसाठी सामग्री आवृत्त्या
+  directus_extensions: विस्तारांचे कॉन्फिगरेशन
 fields:
+  directus_activity:
+    item: आयटम प्राथमिक की
+    action: कृती
+    collection: कलेक्शन
+    timestamp: क्रिया चालू
+    user: द्वारे कारवाई
+    comment: टिपण्णी
+    user_agent: वापरकर्ता एजंट
+    origin: मूळ
+    ip: IP ऍड्रेस
+    revisions: उजळणी
+  directus_collections:
+    collection: कलेक्शन
+    icon: आयकॉन
+    note: नोट
+    color: कलर
+    display_template: डिस्प्ले टेम्प्लेट
+    hidden: लपलेले
+    singleton: सिंगलटन
+    translations: संकलन नामकरण भाषांतरे
+    archive_app_filter: संग्रहण ॲप फिल्टर
+    archive_value: संग्रहण मूल्य
+    unarchive_value: संग्रहण रद्द करा
+    sort_field: क्रमवारी फील्ड
+    accountability: ऍक्टिव्हिटी आणि पुनरावृत्ती ट्रॅकिंग
+    versioning: आवृत्ती तयार करणे
+    archive_field: संग्रहण फील्ड
+    item_duplication_fields: आयटम डुप्लिकेशन फील्ड
+  directus_files:
+    $thumbnail: थम्बनेल
+    title: टायटल
+    description: डिस्क्रिप्सशन 
+    tags: टॅग्स
+    location: लोकेशन
+    storage: स्टोरेज
+    filename_disk: फाइलनाव (डिस्क)
+    filename_download: फाइलनाव (डाउनलोड)
+    metadata: मेटाडेटा
+    type: माइम प्रकार
+    filesize: फाइल साईझ
+    modified_by: द्वारे सुधारित
+    modified_on: सुधारित चालू
+    created_on: रोजी तयार केले
+    created_by: यांनी तयार केले
+    embed: एम्बेड
+    uploaded_by: द्वारे अपलोड केले
+    folder: फोल्डर
+    width: रुंदी
+    uploaded_on: वर अपलोड केले
+    height: उंची
+    charset: चारसेट
+    duration: कालावधी
+    focal_point_x: X- को ओर्डीनेट
+    focal_point_y: Y- को ओर्डीनेट
+  directus_users:
+    first_name: पहिले नाव
+    last_name: आडनाव
+    email: ईमेल
+    password: पासवर्ड
+    avatar: अवतार
+    location: स्थान
+    title: टायटल
+    description: डिस्क्रिपशन
+    tags: टॅग
+    user_preferences: वापरकर्ता प्राधान्ये
+    language: भाषा
+    tfa_secret: टू फॅक्टर ऑथेंटिकेशन
+    admin_options: ऍडमिन पर्याय
+    status: स्टेटस
+    status_draft: मसुदा
+    status_invited: आमंत्रित केले
+    status_unverified: असत्यापित
+    status_active: ऍक्टिव्ह
+    status_suspended: निलंबित
+    status_archived: संग्रहित
+    role: रोल
+    token: टोकन
+    provider: प्रोव्हायडर
+    external_identifier: बाह्य आयडेंटिफायर
+    last_page: शेवट पृष्ठ
+    last_access: शेवटचा प्रवेश
+    email_notifications: ईमेल सूचना
+    appearance: देखावा
+    theme_light: थीम लाईट
+    theme_dark: थीम डार्क
+    theme_light_overrides: लाइट थीम कस्टमायझेशन
+    theme_dark_overrides: डार्क थीम कस्टमायझेशन
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    reporting: Reporting
+    mapping: Mapping
+    basemaps: Basemaps
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: मॅपबॉक्स स्टाईल
+    mapbox_key: मॅपबॉक्स ऍक्सेस टोकन
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribution
+    attribution_placeholder: OpenStreetMap contributors
+    transforms_note: शार्प पद्धतीचे नाव आणि त्याचे युक्तिवाद. अधिक माहितीसाठी https://sharp.pixelplumbing.com/api-constructor पहा.
+    additional_transforms: अतिरिक्त परिवर्तने
+    project_name: प्रोजेक्ट नाव
+    project_descriptor: प्रोजेक्ट वर्णनकर्ता
+    project_url: प्रोजेक्ट URL
+    project_color: प्रोजेक्ट कलर
+    project_logo: प्रोजेक्ट लोगो
+    default_language: डिफॉल्ट भाषा
+    branding: ब्रॅण्डिंग
+    public_foreground: पब्लिक फोरग्राउंड
+    public_background: पब्लिक बॅगराउंड
+    public_note: पब्लिक नोट
+    theming: थिमिंग डिफॉल्ट
+    default_appearance: डिफॉल्ट देखावा
+    default_theme_light: डिफॉल्ट थीम लाईट
+    default_theme_dark: डिफॉल्ट थीम डार्क
+    auth_password_policy: प्रमाणीकरण पासवर्ड धोरण
+    auth_login_attempts: Auth लॉगिन प्रयत्न
+    files_and_thumbnails: फाइल्स आणि स्टोरेज
+    storage_default_folder: डीफॉल्ट फोल्डर
+    storage_asset_presets: परिवर्तन प्रीसेट
+    storage_asset_transform: अनुमत परिवर्तन
+    overrides: ॲप ओव्हरराइड करते
+    custom_css: कस्टम CSS
     module_bar: मॉड्यूल बार
-displays:
+    transformations_all: सर्व परिवर्तनांना अनुमती द्या
+    transformations_none: परिवर्तने बंद करा
+    transformations_presets: खालील प्रीसेटमध्ये परिवर्तने मर्यादित करा
+    image_editor: जादूगार एडिट
+    custom_aspect_ratios: कस्टम आस्पेक्ट रेशो
+    theme_light_overrides: लाईट थीम कस्टमायझेशन
+    theme_dark_overrides: डार्क थीम कस्टमायझेशन
+    public_registration: उशीर रेजिस्ट्रेशन
+    public_registration_note: वापरकर्त्यांना [नोंदणी मार्ग](/प्रशासन/नोंदणी) द्वारे नोंदणी करण्याची अनुमती देते.
+    public_registration_role: वापरकर्ता भूमिका
+    public_registration_role_note: ही भूमिका ही पद्धत वापरून नोंदणी करणाऱ्या वापरकर्त्यांना नियुक्त केली जाते. आधीच नोंदणीकृत वापरकर्त्यांना प्रभावित करत नाही
+    public_registration_email_filter: ईमेल पत्ता फिल्टर
+    public_registration_email_filter_note: या फिल्टरशी जुळणारे ईमेल पत्तेच नोंदणी करू शकतात.
+    public_registration_verify_email: ईमेल सत्यापित करा
+    public_registration_verify_email_note: नोंदणी करणाऱ्या वापरकर्त्याला ते साइन इन करण्यापूर्वी त्यांना सत्यापन लिंकवर क्लिक करण्यास सांगणारा ईमेल पाठवते.
+  directus_shares:
+    name: नाव
+    role: रोल
+    password: पासवर्ड
+    date_start: डेटा सुरु
+    date_end: डेटा बंद
+    max_uses: कमाल वापर
+    times_used: वापरलेल्या वेळा
+  directus_fields:
+    collection: कलेक्शन नाव
+    icon: कलेक्शन आयकॉन
+    note: नोट
+    hidden: लपलेले
+    singleton: सिंगलटन
+    translation: फील्ड नाव भाषांतरे
+    display_template: टेम्प्लेट
+  directus_roles:
+    name: रोलचे नाव
+    icon: रोल आयकॉन
+    description: डिस्क्रिपशन
+    users: रोल मधील यूजर 
+    parent: पॅरेन्ट रोल
+    children: चाईल्ड रोल
+  directus_policies:
+    name: पॉलिसीचे नाव
+    description: डिस्क्रिपशन 
+    app_access: app प्रवेश
+    admin_access: ऍडमिन प्रवेश
+    ip_access: IP प्रवेश
+    enforce_tfa: 2FA आवश्यक आहे
+  directus_webhooks:
+    name: नाव
+    method: पद्धत
+    status: स्टेटस
+    data: डेटा
+    header: हेडर
+    value: व्हॅल्यू
+    headers: हेडर ची विनंती करा
+    data_label: इव्हेंट डेटा पाठवा
+    triggers: ट्रिगर
+    actions: ऍक्शन
+    collections: कलेक्शन
+field_options:
+  directus_settings:
+    project_name_placeholder: माझे प्रोजेक्ट
+    project_color_note: लॉगिन आणि लोगो पार्श्वभूमी
+    project_logo_note: White 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
+    public_note_placeholder: एक लहान, सार्वजनिक संदेश जो मार्कडाउन स्वरूपनास समर्थन देतो...
+    security_divider_title: सुरक्षा
+    auth_password_policy:
+      none_text: काहीही नाही - शिफारस केलेली नाही
+      weak_text: कमकुवत - किमान 8 वर्ण
+      strong_text: मजबूत - अप्पर / लोअरकेस / संख्या / विशेष
+    storage_asset_presets:
+      fit_label: फिट
+      upscaling: अपस्केलिंग
+      fit:
+        contain_text: समाविष्ट करा (आस्पेक्ट रेशो जतन करा)
+        cover_text: कव्हर (अचूक आकाराची सक्ती करते)
+        fit_text: आत फिट
+        outside_text: बाहेर फिट
+    additional_transforms: अतिरिक्त परिवर्तने
+    transforms_note: शार्प पद्धतीचे नाव आणि त्याचे युक्तिवाद. अधिक माहितीसाठी https://sharp.pixelplumbing.com/api-constructor पहा.
+    mapbox_key: मॅपबॉक्स ऍक्सेस टोकन
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: बेसमॅप्स
+    basemaps_name_placeholder: बेसमॅप नाव प्रविष्ट करा...
+    basemaps_raster: रास्टर
+    basemaps_tile: रास्टर टाइलJSON
+    basemaps_style: मॅपबॉक्स शैली
+    files_divider_title: फाइल्स आणि लघुप्रतिमा
+    overrides_divider_title: ॲप ओव्हरराइड करते
+  directus_activity:
+    login: लॉगिन करा
+    create: तयार करा
+    update: अपडेट करा
+    delete: हटवा
+  directus_collections:
+    track_activity_revisions: ऍक्शन आणि पुनरावृत्तींचा मागोवा घ्या
+    only_track_activity: फक्त ऍक्शन ट्रॅक करा
+    do_not_track_anything: काहीही ट्रॅक करू नका
+    collection_setup: कलेक्शन सेटअप
+    note_placeholder: या कलेक्शन वर्णन...
+    hidden_label: ॲपमध्ये लपवा
+    singleton: एकल वस्तू म्हणून हाताळा
+    language: भाषा
+    translation: भाषांतर
+    translation_placeholder: भाषांतर करा
+    collection_name: कलेक्शन नवा
+    singular_unit: सिंग्युलर युनिट
+    plural_unit: प्लुरल युनिट
+    archive_divider: संग्रहण
+    archive_field_placeholder: फील्ड निवडा...
+    archive_app_filter: ॲप संग्रहण फिल्टर सक्षम करा
+    archive_value: संग्रहित करताना मूल्य सेट करा...
+    unarchive_value: संग्रहण रद्द करताना सेट केलेले मूल्य...
+    sort_divider: क्रमवारी लावा
+    sort_field: फील्ड निवडा...
+    accountability_divider: जबाबदारी
+    duplication_divider: डुप्लिकेशन
+    preview_divider: पूर्वावलोकन
+    content_versioning_divider: सामग्री आवृत्ती
+    enable_versioning: आवृत्ती सक्षम करा
+  directus_files:
+    title: एक अनोखे शीर्षक...
+    description: पर्यायी वर्णन...
+    location: एक पर्यायी स्थान...
+    storage_divider: फाइल नामकरण
+    focal_point_divider: फोकल पॉइंट
+    filename_disk: डिस्क स्टोरेजवर नाव...
+    filename_download: डाउनलोड करताना नाव..
+  directus_policies:
+    name: या धोरणासाठी एक अद्वितीय नाव..
+    description: या धोरणाचे वर्णन...
+    ip_access: अनुमत IP पत्ते, IP श्रेणी आणि CIDR ब्लॉक्स जोडा. सर्वांना परवानगी देण्यासाठी रिकामे सोडा...
+    enforce_tfa: टू-फॅक्टर ऑथेंटिकेशन लागू करा
+    assigned_to: यांना नियुक्त केले
+  directus_roles:
+    name: या भूमिकेचे अनोखे नाव...
+    description: या भूमिकेचे वर्णन...
+    fields:
+      icon_name: चिन्ह
+      name_name: नाव
+      name_placeholder: टायटल भरा
+      link_name: लिंक
+      link_placeholder: संबंधित किंवा परिपूर्ण URL...
+    parent_note: या भूमिकेकडून परवानग्या वारशाने मिळतात अशी पर्यायी पालक भूमिका
+    children_note: नेस्टेड चाइल्ड रोल ज्यांना या भूमिकांच्या परवानग्या मिळतात
+    collections_name: कलेक्शन
+    collections_addLabel: ऍड कलेक्शन
+  directus_users:
+    preferences_divider: वापरकर्ता प्राधान्ये
+    dropdown_auto: ऍटोमिक
+    dropdown_light: लाईट मोड
+    dropdown_dark: डार्क मोड
+    admin_divider: ऍडमिन पर्याय
+    status_dropdown_draft: मसुदा
+    status_dropdown_invited: आमंत्रित केले
+    status_dropdown_active: ऍक्टिव्ह
+    status_dropdown_suspended: निलंबित
+    status_dropdown_archived: संग्रहित
+    token: सुरक्षित प्रवेश टोकन प्रविष्ट करा..
+  directus_webhooks:
+    status_options_active: ऍक्टिव्ह
+    status_options_inactive: निष्क्रिय
+    data_label: इव्हेंट डेटा पाठवा
+    triggers_divider: ट्रिगर्स
+    actions_create: तयार करा
+    actions_update: अपडेट करा
+    actions_delete: डिलीट करा
+    actions_login: लॉगिन
+    headers:
+      header: हेडर
+      value: व्हॅल्यू
+      add: हेडर ऍड करा
+no_fields_in_collection: '"{collection}" मध्ये अद्याप कोणतेही फील्ड नाहीत'
+no_value: व्हॅल्यू नाही
+do_nothing: काहीही करू नका
+generate_and_save_uuid: UUID तयार करा आणि जतन करा
+save_current_user_id: वर्तमान वापरकर्ता आयडी जतन करा
+save_current_user_role: वर्तमान वापरकर्ता भूमिका जतन करा
+save_current_datetime: वर्तमान तारीख/वेळ जतन करा
+always_open: नेहमी उघडा
+start_open: उघडणे सुरू करा
+start_collapsed: कोलॅप्स केलेले सुरु करा
+block: ब्लॉक
+inline: इनलाईन
+comment: टिपण्णी
+live_preview:
+  enable: प्रिव्हिव एनेबल करा
+  disable: प्रिव्हिव डिसेबल करा
+  change_size: डिस्प्लेचे परिमाण बदला
+  refresh: पूर्वावलोकन रिफ्रेश करा
+  new_window: नवीन विंडोमध्ये उघडा
+  close_window: स्प्लिट व्ह्यूमध्ये उघडा
+  toggle_3d: 3D टॉगल करा
+shares: शेअर्स
+unlimited_usage: अमर्याद वापर
+uses_left: "उपयोग नाही | एक वापर बाकी | {n} डावीकडे वापरते\n"
+no_shares: दाखवण्यासाठी कोणतेही शेअर्स नाहीत
+new_share: नवीन शेअर
+expired: कालबाह्य
+upcoming: आगामी
+share: शेअर
+share_item: शेअर आयटम
+shared_with_you: तुमच्यासोबत एक आयटम शेअर केला गेला आहे
+shared_enter_passcode: सुरू ठेवण्यासाठी तुमचा पासकोड एंटर करा...
+shared_leave_blank_for_passwordless_access: पासवर्डविना प्रवेशासाठी रिक्त सोडा
+shared_leave_blank_for_unlimited: अमर्यादित साठी रिक्त सोडा
+shared_times_remaining: ' लिंक फक्त {n} वेळा वापरली जाऊ शकते'
+shared_last_remaining: ही लिंक फक्त एकदाच वापरली जाऊ शकते
+shared_uses_left: अतिरिक्त सुरक्षिततेसाठी, हे सामायिक केलेले पृष्ठ मर्यादित दृश्यांसह कॉन्फिगर केले गेले आहे. सध्या {n} दृश्ये शिल्लक आहेत, त्यानंतर, पृष्ठ यापुढे प्रवेश करता येणार नाही.
+share_access_page: सामायिक पृष्ठावर प्रवेश करा
+share_access_not_found: हे सामायिक केलेले पृष्ठ एकतर अस्तित्वात नाही किंवा आधीच अनुमत वापरांची कमाल संख्या ओलांडली आहे.
+share_access_not_found_desc: प्रवेशाची विनंती करण्यासाठी कृपया या प्रकल्पाच्या अधिकृत वापरकर्त्याशी संपर्क साधा.
+share_access_not_found_title: अज्ञात शेअर पृष्ठ
+share_copy_link: लिंक कॉपी करा
+share_copy_link_success: लिंक कॉपी केली
+share_copy_link_error: लिंक कॉपी करण्यात अक्षम
+share_send_link: लिंक पाठवा
+relational_triggers: Relational Triggers
+referential_action_field_label_m2o: '{collection} हटवल्यावर...'
+referential_action_field_label_o2m: "{collection} ची निवड रद्द केल्यावर...\n"
+referential_action_no_action: हटविणे प्रतिबंधित करा
+referential_action_cascade: '{collection} आयटम हटवा (कॅस्केड)'
+referential_action_set_null: '{field} फील्ड रद्द करा'
+referential_action_set_default: त्याच्या डीफॉल्ट मूल्यावर {field} सेट करा
+choose_action: कृती निवडा
+continue_label: चालू ठेवा
+continue_as: >-
+  {name} सध्या प्रमाणीकृत आहे. तुम्ही हे खाते ओळखल्यास, सुरू ठेवा दाबा.
+editing_role: '{role} भूमिका'
+editing_policy: '{policy} धोरण'
+no_permissions: कोणत्याही परवानग्या नाहीत
+permission_add_collection: संग्रह जोडा
+creating_webhook: वेबहुक तयार करत आहे
+default_label: डीफॉल्ट
+delete_label: हटवा
+delete_are_you_sure: >-
+  ही क्रिया कायमची आहे आणि ती पूर्ववत केली जाऊ शकत नाही. तुम्हाला खात्री आहे की तुम्ही पुढे जाऊ इच्छिता?
+delete_field_are_you_sure: >-
+  तुमची खात्री आहे की तुम्ही "{field}" फील्ड हटवू इच्छिता? ही क्रिया पूर्ववत केली जाऊ शकत नाही
+description: वर्णन
+done: झाले
+duplicate: डुप्लिकेट
+limit: मर्यादा
+email: ईमेल
+embed: एम्बेड करा
+fallback_icon: फॉलबॅक चिन्ह
+field: फील्ड | फील्ड
+file: फाईल
+file_library: फाइल लायब्ररी
+forgot_password: पासवर्ड विसरलात 
+hidden: लपवलेले
+hidden_in_group: '{group} मध्ये लपलेले'
+icon: आयकॉन
+info: इन्फो
+normal: नॉर्मल
+success: सक्सेस
+warning: वॉर्निंग
+danger: डेंजर
+colors:
+  purple: जांभळा
+  blue: निळा
+  green: हिरवा
+  yellow: यल्लो
+  orange: केशरी
+  red: लाल
+  black: काळा
+  gray: राखाडी
+  white: पांढरा
+junction_collection: जंक्शन कलेक्शन
+latency: लेटन्सी
+login: लॉगिन
+my_activity: माझी ऍक्टिव्हिटी
+not_authenticated: प्रमाणीकृत नाही
+authenticated: प्रमाणीकृत
+options: पर्याय
+otp: वन-टाइम पासवर्ड
+password: पासवर्ड
+confirm_password: पासवर्डची पुष्टी करा
+permissions: परवानग्या
+relationship: रिलेशनशीप
+reset: पुन्हा सेट करा
+reset_password: पासवर्ड रीसेट करा
+revisions: आवर्तने
+no_revisions: अद्याप कोणतीही पुनरावृत्ती नाही
+no_logs: अद्याप नोंदी नाहीत
+revert: परत करा
+save: जतन करा
+schema: स्कीमा
+search: शोधा
+select_existing: विद्यमान निवडा
+select_field_type: फील्ड प्रकार निवडा
+select_interface: इंटरफेस निवडा
+select_display: एक डिस्प्ले निवडा
+settings: सेटिंग्स
+register: रजिस्टर
+registration_successful_headline: सक्सेस !
+registration_successful_note: तुम्ही आता साइन इन पेजवर जाऊ शकता.
+registration_successful_check_email_note: |
+  कृपया लक्षात घ्या की तुम्ही साइन इन करण्यापूर्वी, तुम्हाला पाठवलेल्या पडताळणी लिंकवर क्लिक करून तुमचा ईमेल पत्ता सत्यापित करणे आवश्यक आहे.
+dont_have_an_account: खाते नाही?
+already_have_an_account: आधीच खाते आहे?
+sign_up_now: आता साइन अप करा
+sign_in: साइन इन करा
+sign_out: साइन आउट करा
+sign_out_confirm: तुमची खात्री आहे की तुम्ही साइन आउट करू इच्छिता?
+something_went_wrong: काहीतरी चूक झाली.
+sort_direction: क्रमवारी दिशा
+export_location: स्थान निर्यात करा
+export_started: निर्यात सुरू
+export_started_copy: तुमची निर्यात सुरू झाली आहे. ते डाउनलोड करण्यासाठी तयार झाल्यावर तुम्हाला सूचित केले जाईल.
+sort_asc: चढत्या क्रमाने क्रमवारी लावा
+sort_desc: उतरत्या क्रमाने क्रमवारी लावा
+disable_sort: क्रमवारी अक्षम करा
+template: टेम्प्लेट
+require_value_to_be_set: निर्मितीवर मूल्य सेट करणे आवश्यक आहे
+translation: भाषांतर
+translation_placeholder: भाषांतर भरा
+value: व्हॅल्यू
+view_project: प्रोजेक्ट पहा
+report_error: एरर रिपोर्ट करा
+start: चालू
+table: टेबल
+list: लिस्ट
+search_filter: शोधा आणि फिल्टर करा
+enable_search_filter: शोध आणि फिल्टरिंग सक्षम करा
+item_link: आयटम लिंक
+show_link_to_item: आयटमची लिंक दाखवा
+navigate_to_item: आयटमवर नेव्हिगेट करा
+undo_removed_item: काढलेला आयटम पूर्ववत करा
+remove_item: आयटम काढा
+delete_item: आयटम हटवा
+pause: विराम द्या
+resume: पुन्हा सुरू करा
+interfaces:
+  list-m2a:
+    prefix_note: डीफॉल्टनुसार संबंधित आयटमचे कलेक्शन नाव वापरते.
+    sorting_disabled: क्रमवारी अक्षम केले आहे कारण एका पृष्ठावर बसू शकतील त्यापेक्षा जास्त आयटम आहेत.
+  filter:
+    name: फिल्टर
+    description: फिल्टर ऑब्जेक्ट कॉन्फिगर करा.
+    add_filter: फिल्टर जोडा
+    add_group: And / Or ग्रुप
+    add_value: व्हॅल्यू ऍड करा
+    logic_type_and: AND
+    logic_type_or: OR
+    all: सर्व
+    any: काहीही
+    and: and
+    of_the_following: खालीलपैकी
+    no_rules: कॉन्फिगर केलेले नियम नाहीत
+    change_value: मूल्य बदलण्यासाठी क्लिक करा
+    placeholder: येथे नियम ड्रॅग करा
+    add_key_placeholder: एक की जोडा आणि एंटर दाबा...
+  fields:
+    name: फील्ड
+  group-accordion:
+    name: एकॉर्डियन
+    description: एकॉर्डियन विभाग म्हणून फील्ड किंवा गट प्रदर्शित करा
+    start: चालू
+    all_closed: सर्व बंद
+    first_opened: प्रथम उघडले
+    all_opened: सर्व उघडले
+    accordion_mode: एकॉर्डियन मोड
+    max_one_section_open: कमाल 1 विभाग उघडा
+  presentation-links:
+    presentation-links: बटण लिंक
+    links: लिंक
+    description: डायनॅमिक URL लाँच करण्यासाठी कॉन्फिगर करण्यायोग्य लिंक बटणे
+    style: स्टाईल
+    primary: प्राथमिक
+    link: लिंक्स
+    button: बटन्स
+    error: कृती करू शकत नाही
+  select-multiple-checkbox:
+    checkboxes: चेकबॉक्सेस
+    description: चेकबॉक्सेसद्वारे एकाधिक पर्यायांमधून निवडा
+    allow_other: इतरांना परवानगी द्या
+    show_more: 'आणखी {count} दाखवा'
+    items_shown: आयटम दाखवले
+  select-multiple-checkbox-tree:
+    name: चेकबॉक्सेस (वृक्ष)
+    description: नेस्टेड चेकबॉक्सेसद्वारे एकाधिक पर्यायांमधून निवडा
+    value_combining: मूल्य संयोजन
+    value_combining_note: नेस्टेड निवडी केल्या जातात तेव्हा कोणते मूल्य संचयित केले जाते ते नियंत्रित करते
+    show_all: सर्व दाखवा
+    show_selected: निवडलेले दाखवा
+  input-code:
+    code: कोड
+    description: कोड स्निपेट्स लिहा किंवा शेअर करा
+    line_number: ओळ क्रमांक
+    line_wrapping: Line Wrapping
+    placeholder: येथे कोड प्रविष्ट करा...
+  system-collection:
+    collection: कलेक्शन
+    description: विद्यमान संग्रहांमधून निवडा
+    include_system_collections: सिस्टम संग्रह समाविष्ट करा
+  system-collections:
+    collections: कलेक्शन्स
+    description: विद्यमान संग्रहांमधून निवडा
+    include_system_collections: सिस्टम संग्रह समाविष्ट करा
+  select-color:
+    color: कलर
+    description: रंग मूल्य प्रविष्ट करा किंवा निवडा
+    placeholder: एक रंग निवडा...
+    preset_colors: प्रीसेट रंग
+    opacity: अपारदर्शकता
+    preset_colors_add_label: नवीन रंग जोडा...
+    name_placeholder: कलर चे नाव एंटर करा
   datetime:
+    datetime: तारीख वेळ
+    description: तारखा आणि वेळा प्रविष्ट करा
+    include_seconds: सेकंद समाविष्ट करा
+    set_to_now: आता वर सेट करा
+    use_24: 24-तास स्वरूप वापरा
+    placeholder: तारीख वेळ निवडा...
+  system-fields:
+    select_a_collection: एक कलेक्शन निवडा
+    no_fields: फील्ड नाहीत
+  system-display-template:
+    display-template: टेम्प्लेट डिस्प्ले करा
+    description: Mix static text and dynamic field values
+    collection_field: संकलन फील्ड
+    collection_field_not_setup: संकलन फील्ड पर्याय चुकीचा कॉन्फिगर केलेला आहे
+    select_a_collection: एक कलेक्शन निवडा
+  presentation-divider:
+    divider: दुभाजक
+    description: फील्डला लेबल करा आणि विभागांमध्ये विभाजित करा
+    title_placeholder: शीर्षक एंटर करा किंवा फक्त एक ओळ दर्शविण्यासाठी रिक्त सोडा...
+    inline_title: इनलाईन टायटल
+    inline_title_label: ओळीच्या आत शीर्षक दाखवा
+    margin_top: मार्जिन टॉप
+    margin_top_label: शीर्ष मार्जिन वाढवा
+  select-dropdown:
+    description: ड्रॉपडाउनमधून मूल्य निवडा
+    choices_placeholder: नवीन निवड जोडा
+    allow_other: इतरांना परवानगी द्या
+    allow_other_label: इतर मूल्यांना अनुमती द्या
+    allow_none: काहीही परवानगी द्या
+    allow_none_label: कोणत्याही निवडीला अनुमती द्या
+    choices_name_placeholder: नाव एंटर करा...
+    choices_value_placeholder: व्हॅल्यू भरा...
+    preview_threshold: पूर्वावलोकन थ्रेशोल्ड
+  select-multiple-dropdown:
+    select-multiple-dropdown: ड्रॉपडाउन (एकाधिक)
+    description: ड्रॉपडाउनमधून एकाधिक मूल्ये निवडा
+  file:
+    file: फाईल
+    description: फाइल निवडा किंवा अपलोड करा
+  files:
+    files: फाईल्स
+    description: एकाधिक फायली निवडा किंवा अपलोड करा
+  input-hash:
+    hash: हॅश
+    description: हॅश करण्यासाठी व्हॅल्यू प्रविष्ट करा
+    masked: मुखवटा घातलेला
+    masked_label: खरे व्हॅल्यू लपवा
+  select-icon:
+    icon: आयकॉन
+    description: ड्रॉपडाउनमधून एक चिन्ह निवडा
+    search_for_icon: चिन्ह शोधा...
+  file-image:
+    image: प्रतिमा
+    description: प्रतिमा निवडा किंवा अपलोड करा
+    crop: फिट करण्यासाठी क्रॉप करा
+    crop_label: आवश्यकतेनुसार प्रतिमा क्रॉप करा
+    letterbox: लेटरबॉक्स
+    letterbox_label: प्रतिमा पूर्वावलोकनात पॅडिंग जोडा
+  system-interface:
+    interface: इंटरफेस
+    description: विद्यमान इंटरफेस निवडा
+    placeholder: इंटरफेस निवडा...
+  system-interface-options:
+    interface-options: इंटरफेस पर्याय
+    description: इंटरफेसचे पर्याय निवडण्यासाठी एक मॉडेल
+  system-display:
+    display: डिस्प्ले
+    description: विद्यमान डिस्प्ले निवडा
+    placeholder: डिस्प्ले निवडा...
+  system-display-options:
+    display-options: प्रदर्शन पर्याय
+    description: डिस्प्लेचे पर्याय निवडण्यासाठी एक मॉडेल
+  list-m2m:
+    many-to-many: अनेक ते अनेक
+    description: एकाधिक संबंधित जंक्शन आयटम निवडा
+    columns_configure_notice: हे फील्ड तयार केल्यानंतर तुम्ही कॉलम कॉन्फिगर करू शकता
+    display_template_configure_notice: हे फील्ड तयार केल्यानंतर तुम्ही डिस्प्ले टेम्प्लेट कॉन्फिगर करू शकता.
+  select-dropdown-m2o:
+    many-to-one: अनेक ते एक
+    description: एकच संबंधित आयटम निवडा
+    display_template: टेम्प्लेट डिस्प्ले करा
+  collection-item-dropdown:
+    collection-item-dropdown: कलेक्शन आयटम ड्रॉपडाउन
+    description: JSON फॉरमॅटमधील संग्रहातून एक आयटम निवडा
+  input-rich-text-md:
+    markdown: मार्कडाउन
+    description: प्रविष्ट करा आणि मार्कडाउनचे पूर्वावलोकन करा
+    edit: संपादित करा
+    preview: प्रिव्हिव
+    editorFont: संपादक फॉन्ट
+    previewFont: प्रिव्हिव फॉन्ट
+    default_view: डीफॉल्ट व्हिव
+    default_view_editor: संपादक
+    default_view_preview: प्रिव्हिव
+    customSyntax: कस्टम ब्लॉक
+    customSyntax_label: कस्टम वाक्यरचना प्रकार जोडा
+    customSyntax_add: कस्टम वाक्यरचना जोडा
+    box: ब्लॉक / इनलाइन
+    imageToken: स्थिर प्रवेश टोकन
+    imageToken_label: स्टॅटिक ऍक्सेस टोकन मालमत्तेच्या URL मध्ये जोडलेले आहे
+  map:
+    map: नकाशा
+    description: नकाशावर एक स्थान निवडा
+    zoom: झूम
+    geometry_type: भूमिती प्रकार
+    geometry_format: भूमिती स्वरूप
+    default_view: डीफॉल्ट व्हिव
+    invalid_options: अवैध पर्याय
+    invalid_format: अवैध स्वरूप ({format})
+    unexpected_geometry: अपेक्षित {expected}, मिळाले {मिळाले}.
+    fit_bounds: डेटासाठी दृश्य फिट करा
+    native: मूळ
+    geojson: GeoJSON
+    lnglat: रेखांश, अक्षांश
+    wkt: WKT
+    wkb: WKB
+    click_to_select: '{geometry} निवडण्यासाठी क्लिक करा'
+  presentation-notice:
+    notice: लक्ष द्या
+    description: एक लहान सूचना प्रदर्शित करा
+    text: येथे सूचना सामग्री प्रविष्ट करा...
+    no_text: कोणताही मजकूर कॉन्फिगर केलेला नाही...
+  list-o2m:
+    one-to-many: एक ते अनेक
+    description: एकाधिक संबंधित आयटम निवडा
+    no_collection: कलेक्शन सापडला नाही
+  system-folder:
+    folder: रूट फोल्डर
+    description: फोल्डर निवडा
+    field_hint: निर्दिष्ट केलेल्या फोल्डरशिवाय अपलोड केलेल्या फायलींसाठी डीफॉल्ट फोल्डर. विद्यमान फाइल्सवर परिणाम होत नाही.
+    root_name: फाइल लायब्ररी रूट
+    system_default: सिस्टम डीफॉल्ट
+  select-radio:
+    radio-buttons: रेडिओ बटणे
+    description: अनेक पर्यायांपैकी एक निवडा
+  list:
+    repeater: रिपीटर
+    description: एकाच संरचनेच्या अनेक नोंदी तयार करा
+    edit_fields: फील्ड एडिट करा
+    add_label: '"नवीन तयार करा" लेबल'
+    sort: क्रमवारी लावा
+    sort_placeholder: मॅन्युअल
+    field_note_placeholder: फील्ड नोट एंटर करा...
+    incompatible_data: वर्तमान डेटा रिपीटर इंटरफेसशी सुसंगत नाही आणि रिपीटरमध्ये आयटम जोडताना ओव्हरराइड केला जाईल
+    interface_group: इंटरफेस पर्याय
+    display_group: प्रदर्शन पर्याय
+  slider:
+    slider: स्लाइडर
+    description: स्लाइडर वापरून संख्या निवडा
+    always_show_value: नेहमी व्हॅल्यू दाखवा
+  tags:
+    tags: टॅग्स
+    description: टॅग निवडा किंवा जोडा
+    whitespace: व्हाइटस्पेस
+    hyphen: हायफनसह बदला
+    underscore: अंडरस्कोरसह बदला
+    remove: व्हाइटस्पेस काढा
+    capitalization: कॅपिटलायझेशन
+    uppercase: अप्परकेसमध्ये रूपांतरित करा
+    lowercase: लोअरकेसमध्ये रूपांतरित करा
+    auto_formatter: शीर्षक ऑटो-फॉर्मेटर वापरा
+    alphabetize: वर्णमाला
+    alphabetize_label: सक्तीची वर्णमाला क्रम
+    add_tags: टॅग जोडा आणि एंटर दाबा...
+  input:
+    input: इनपुट
+    description: व्यक्तिचलितपणे व्हॅल्यू प्रविष्ट करा
+    trim: ट्रिम करा
+    trim_label: प्रारंभ आणि शेवट ट्रिम करा
+    mask: मुखवटा घातलेला
+    mask_label: "वास्तविक व्हॅल्यू लपवा\n"
+    clear: क्लिअर केलेले व्हॅल्यू
+    clear_label: रिक्त स्ट्रिंग म्हणून जतन करा
+    minimum_value: किमान मूल्य
+    maximum_value: कमाल मूल्य
+    step_interval: स्टेप इंटरव्हल
+    slug: Slugify
+    slug_label: प्रविष्ट केलेली मूल्य URL सुरक्षित करा
+  input-multiline:
+    textarea: मजकूर
+    description: मल्टिलाइन प्लेन टेक्स्ट एंटर करा
+  input-translated-string:
+    input-translated-string: अनुवादित स्ट्रिंग्स
+    description: कस्टम भाषांतर निवडा किंवा जोडा
+    search_placeholder: शोधा...
+    new_custom_translation: नवीन कस्टम भाषांतर
+  boolean:
+    toggle: टोगल
+    description: चालू आणि च्या दरम्यान स्विच करा
+    color_on: कलर चालू
+    color_off: कलर बंद
+    label_placeholder: लेबल एंटर करा
+    label_default: एनेबल
+  translations:
+    display_template: टेम्प्लेट डिस्प्ले करा
+    no_collection: कलेक्शन नाही
+    toggle_split_view: टोगल स्प्लिट व्हिव
+    enable: एनेबल
+    default_split_view_state: डिफॉल्ट स्प्लिट दृश्य स्थिती
+    user_language: वर्तमान वापरकर्ता भाषा वापरा
+    default_language: डीफॉल्ट भाषा
+    language_field: भाषा सूचक फील्ड
+    language_direction_field: भाषा दिशा फील्ड
+  list-o2m-tree-view:
+    description: नेस्टेड रिकर्सिव वन-टू-अनेक आयटमसाठी ट्री व्ह्यू
+    recursive_only: ट्री व्ह्यू इंटरफेस फक्त आवर्ती संबंधांसाठी कार्य करतो.
+  user:
+    user: युजर
+    description: विद्यमान डायरेक्टस वापरकर्ता निवडा
+    select_mode: "मोड निवडा\n"
+    modes:
+      auto: ऑटो
+      dropdown: ड्रॉप डाऊन
+      modal: मोडल
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: HTML सामग्री लिहिणारा रिच टेक्स्ट एडिटर
+    toolbar: टूलबार
+    custom_formats: कस्टम स्वरूप
+    custom_formats_note: TinyMCE सामग्री स्वरूपांची सूची. अधिक माहितीसाठी [सामग्री फॉरमॅटिंग](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) बद्दल TinyMCE दस्तऐवजीकरण पहा.
+    options_override: पर्याय ओव्हरराइड
+    options_override_note: TinyMCE वापरकर्ता स्वरूपन की आणि त्यांची मूल्ये. अधिक माहितीसाठी [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) बद्दल TinyMCE दस्तऐवज पहा
+    folder_note: अपलोड केलेल्या फायलींसाठी फोल्डर. विद्यमान फाइल्सवर परिणाम होत नाही.
+    imageToken: स्थिर प्रवेश टोकन
+    imageToken_label: स्टॅटिक ऍक्सेस टोकन मालमत्तेच्या URL मध्ये जोडलेले आहे
+  input-block-editor:
+    input-block-editor: Block Editor
+    description: समृद्ध मीडिया कथांसाठी ब्लॉक-शैलीतील संपादक, Editor.js वापरून JSON मध्ये स्वच्छ डेटा आउटपुट करतो
+    tools: टूलबार
+    tools_options:
+      header: हेडर
+      nestedlist: यादी
+      embed: एम्बेड करा
+      paragraph: परिच्छेद
+      code: कोड
+      image: इमेज
+      attaches: जोडते
+      table: टेबल
+      quote: कोट
+      underline: अंडरलाईन
+      inlinecode: इनलाईन कोड 
+      delimiter: परिसीमक
+      checklist: चेकलिस्ट
+      toggle: ब्लॉक टॉगल करा
+      alignment: संरेखन
+      raw: Raw HTML
+  input-autocomplete-api:
+    input-autocomplete-api: "स्वयंपूर्ण इनपुट (API)\n"
+    description: "स्वयंपूर्ण इनपुट (API)\n"
+    results_path: परिणाम पथ
+    value_path: मूल्य पथ
+    text_path: "मजकूर मार्ग\n"
+    trigger: ट्रिगर
+    rate: किंमत
+  group-raw:
+    name: raw ग्रुप
+    description: फील्ड जसे आहे तसे रेंडर करा
+  group-detail:
+    name: तपशील गट
+    description: फील्ड एक संकुचित करण्यायोग्य विभाग म्हणून प्रस्तुत करा
+    show_header: गट हेडर दर्शवा
+    header_icon: हेडर आयकॉन
+    header_color: हेडर कलर
+    start_open: उघडणे चालू करा
+    start_closed: प्रारंभ बंद
+  system-token:
+    system-token: टोकन
+    description: स्थिर प्रवेश टोकन व्यवस्थापित करा
+    placeholder: नवीन स्थिर प्रवेश टोकन तयार करण्यासाठी "टोकन व्युत्पन्न करा" वर क्लिक करा
+    value_securely_saved: मूल्य सुरक्षितपणे जतन केले
+    generate: टोकन जनरेट करा
+    regenerate: टोकन पुन्हा जनरेट करा
+    generate_success_copy: वरील टोकन बॅकअप आणि कॉपी केल्याची खात्री करा. सुरक्षिततेच्या कारणास्तव, हे पृष्ठ जतन केल्यानंतर आणि नेव्हिगेट केल्यानंतर तुम्ही टोकन पुन्हा पाहू शकणार नाही.
+    remove_token: टोकन काढा
+  system-raw-editor:
+    system-raw-editor: raw एडिटर
+    description: कच्च्या किंवा मिश्या टेम्प्लेटिंग मूल्ये प्रविष्ट करण्यास अनुमती द्या
+  input-password:
+    input-password: इनपुट पासवर्ड
+    description: मूल्य लपवण्यासाठी टॉगलसह पासवर्ड इनपुट
+displays:
+  translations:
+    translations: भाषांतरे
+    description: भाषांतरांचे पूर्वावलोकन करा
+    enable: एनेबल
+    user_language: वर्तमान वापरकर्ता भाषा वापरा
+    default_language: डीफॉल्ट भाषा
+    language_field: भाषा सूचक फील्ड
+  boolean:
+    boolean: बुलियन
+    description: चालू आणि बंद स्थिती प्रदर्शित करा
+    label_on: लेबल चालू
+    label_on_placeholder: ऑन लेबल एंटर करा...
+    label_off: लेबल बंद
+    label_off_placeholder: एक बंद लेबल प्रविष्ट करा...
+    icon_on: चिन्ह चालू
+    icon_off: चिन्ह बंद
+    color_on: रंग चालू
+    color_off: रंग बंद
+  collection:
+    collection: कलेक्शन
+    description: कलेक्शन प्रदर्शित करा
+    icon_label: कलेक्शन चिन्ह दाखवा
+  color:
+    color: कलर
+    description: रंगीत बिंदू प्रदर्शित करा
+    default_color: डीफॉल्ट रंग
+  datetime:
+    datetime: तारीख वेळ
+    description: वेळेशी संबंधित मूल्ये प्रदर्शित करा
+    format: फॉरमॅट
+    format_note: >-
+      कस्टम फॉरमॅट __[तारीख फील्ड सिम्बॉल टेबल](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ स्वीकारते
+    long: लांब
+    short: लहान
+    relative: संबंधित
+    relative_label: 'सापेक्ष वेळ दर्शवा, उदा: 5 मिनिटांपूर्वी'
     suffix: प्रत्यय
+    suffix_label: संबंधित सूचक दर्शवा
+    suffix_note: '''इन'' आणि ''अगो'' सारखे शब्द वापरते'
+    strict: कडक
+    strict_label: कठोर युनिट्स वापरा
+    strict_note: '''जवळजवळ'', ''ओव्हर'', ''पेक्षा कमी'' सारखे शब्द काढून टाकते'
+    round: गोलाकार
+    round_note: वापरण्यासाठी राउंडिंग फंक्शन निवडा
+    down: खाली 
+    nearest: जवळचे
+    up: वर
+  file:
+    file: फाईल
+    description: फाईल दाखवा
+  filesize:
+    filesize: फाइल आकार
+    description: फाईलचा आकार प्रदर्शित करा
   formatted-value:
+    formatted-value: फॉरमॅटेड व्हॅल्यू
+    description: मजकूराची स्वरूपित आवृत्ती प्रदर्शित करा
+    format: फॉरमॅट
+    format_label: ऑटो फॉरमॅट
+    font: फॉन्ट
+    font_sans_serif: सांस सेरिफ
+    font_serif: सेरिफ
+    font_monospace: मोनोस्पेस
+    bold: बोल्ड
+    bold_label: बोल्ड स्टाईल वापरा
+    italic: इटालिक
+    italic_label: इटालिक स्टाईल वापरा
+    prefix: उपसर्ग
+    prefix_label: ' मजकूर प्रीपेंड करा'
     suffix: प्रत्यय
+    suffix_label: जोडलेला मजकूर
+    color: कलर
+    background: बॅगराउंड
+    icon: आयकॉन
+    border: बॉर्डर
+    border_label: बॉर्डर दाखवा
+    mask: मुखवटा घातलेला
+    mask_label: "वास्तविक व्हॅल्यू लपवा\n"
+    text: टेक्स्ट
+    text_placeholder: पर्यायी व्हॅल्यू ओव्हरराइड...
+  formatted-json-value:
+    formatted-json-value: फॉरमॅटेड JSON व्हॅल्यू
+    description: ऑब्जेक्टची फॉरमॅटेड आवृत्ती प्रदर्शित करा
+  hash:
+    hash: हॅश
+    description: व्हॅल्यू सुधारित आवृत्ती प्रदर्शित करा
+  icon:
+    icon: आयकॉन
+    description: एक चिन्ह प्रदर्शित करा
+    filled: भरले 
+    filled_label: भरलेला प्रकार वापरा
+  image:
+    image: इमेज
+    description: एक लहान प्रतिमा प्रिव्हिव प्रदर्शित करा
+    circle: वर्तुळ
+    circle_label: वर्तुळ दाखवा
+  labels:
+    labels: लेबल्स
+    description: एकतर एक किंवा लेबलांची सूची प्रदर्शित करा
+    default_foreground: डीफॉल्ट फोरग्राउंड
+    default_background: डीफॉल्ट पार्श्वभूमी
+    format_label: प्रत्येक लेबल फॉरमॅट करा
+    show_as_dot: डॉट म्हणून दाखवा
+    choices_value_placeholder: व्हॅल्यू भरा...
+    choices_text_placeholder: मजकूर एंटर करा...
+  mime-type:
+    mime-type: MIME प्रकार
+    description: फाइलचा MIME-प्रकार दाखवा
+    extension_only: फक्त विस्तार
+    extension_only_label: फक्त फाईल एक्स्टेंशन दाखवा
+  rating:
+    rating: रेटिंग
+    description: कमाल-मूल्याच्या सापेक्ष स्टार म्हणून संख्या दृश्यमान करा
+    simple: सिम्पल
+    simple_label: साध्या स्वरूपात स्टार दाखवा
+  raw:
+    raw: raw व्हॅल्यू
+  related-values:
+    related-values: संबंधित व्हॅल्यू
+    description: संबंधित व्हॅल्यू प्रदर्शित करा
+    display_template_configure_notice: हे फील्ड तयार केल्यानंतर तुम्ही डिस्प्ले टेम्प्लेट कॉन्फिगर करू शकता.
+  user:
+    user: युजर
+    description: थेट वापरकर्ता प्रदर्शित करा
+    avatar: अवतार
+    name: नाव
+    both: दोन्ही
+    circle_label: वर्तुळात वापरकर्ता दर्शवा
+layouts:
+  cards:
+    cards: कार्डस
+    image_source: इमेज सोर्स
+    image_fit: इमेज फिट
+    crop: क्रॉप
+    contain: समाविष्ट करा
+    title: शीर्षक
+    subtitle: उपशीर्षक
+  tabular:
+    tabular: टेबल
+    spacing: अंतर
+    comfortable: आरामदायी
+    compact: संक्षिप्त
+    cozy: उबदार
+  calendar:
+    calendar: दिनदर्शिका
+    start_date_field: प्रारंभ तारीख फील्ड
+    end_date_field: समाप्ती तारीख फील्ड
+    optional: पर्यायी
+    first_day: आठवड्याचा पहिला दिवस
+  map:
+    map: नकाशा
+    basemap: बेस मॅप
+    layers: लेयर
+    cluster_options: क्लस्टरिंग पर्याय
+    cluster: क्लस्टर जवळील डेटा
+    cluster_radius: क्लस्टर त्रिज्या
+    cluster_minpoints: क्लस्टर किमान आकार
+    cluster_maxzoom: क्लस्टरिंगसाठी कमाल झूम
+    field: भौगोलिक क्षेत्र
+    invalid_geometry: अवैध भूमिती
+    find_location: स्थान शोधा...
+    default_template: कलेक्शन डीफॉल्ट वापरत आहे..
+    no_compatible_fields: कोणतीही सुसंगत फील्ड नाहीत
+  kanban:
+    name: Kanban 
+    group_field: द्वारे गट
+    group_field_placeholder: द्वारे गटासाठी फील्ड...
+    group_title: गट शीर्षक
+    group_title_placeholder: गट विजेतेपदांसाठी फील्ड...
+    title: कार्ड शीर्षक
+    title_placeholder: पर्यायी शीर्षक फील्ड...
+    text: कार्ड मजकूर
+    text_placeholder: पर्यायी मजकूर फील्ड...
+    date: कार्ड तारीख
+    date_placeholder: पर्यायी तारीख फील्ड...
+    tags: कार्ड टॅग्ज
+    tags_placeholder: पर्यायी टॅग फील्ड...
+    user: कार्ड वापरकर्ता
+    user_placeholder: पर्यायी वापरकर्ता फील्ड...
+    image: कार्ड प्रतिमा
+    image_placeholder: पर्यायी इमेज फील्ड...
+    image_fit: कार्ड प्रतिमा फिट
+    crop: क्रॉप
+    advanced: अडवान्सड
+    edit_group: ग्रुप एडिट करा
+    delete_group: डिलीट ग्रुप
+    add_group: ग्रुप ऍड करा.
+    add_group_placeholder: नवीन गट शीर्षक प्रविष्ट करा...
+    show_ungrouped: गटबद्ध न केलेले दाखवा
+    show: दाखवा
+    no_group: गट नाही
+horizontal: क्षैतिज
+vertical: उभे
+axis: अक्ष
+x_axis: X- अक्ष
+y_axis: Y-अक्ष
+y_axis_function: Y-अक्ष कार्य
+show_x_only: फक्त एक्स-अक्ष दाखवा
+show_y_only: फक्त Y-अक्ष दाखवा
+show_data_label: डेटा लेबल दाखवा
+both: दोन्ही
+show_axis_labels: अक्ष लेबल दर्शवा
+function: कार्य
+half_circle: अर्ध वर्तुळ
+full_circle: पूर्ण वर्तुळ
+stroke_width: स्ट्रोक रुंदी
+rounded_stroke: गोलाकार स्ट्रोक
+thin: पातळ
+medium: मध्यम
+broad: ब्रॉड
+show_labels: लेबल दाखवा
+show_legend: लेजेंड दाखवा
+right: उजवा
+left: डावा
+donut: डोनट
+panels:
+  metric:
+    name: परिमाण
+    description: क्वेरीवर आधारित एकल मूल्य दर्शवा
+    field: फील्ड
+  metric_list:
+    name: मेट्रिक सूची
+    description: कलेक्शन एकूण मेट्रिक्स सूचीबद्ध करा आणि दृश्यमान करा
+  time_series:
+    name: वेळ मालिका
+    description: कालांतराने मूल्यांवर आधारित रेखा चार्ट रेंडर करा
+    date_field: तारीख फील्ड
+    value_field: मूल्य क्षेत्र
+    fill_type: प्रकार भरा
+    curve_type: वक्र प्रकार
+  label:
+    name: लेबल
+    description: काही मजकूर दाखवा
+  list:
+    name: यादी
+    description: कलेक्शन फील्ड फिल्टर आणि सूचीबद्ध कर
+  barchart:
+    name: बार चार्ट
+    description: मूल्यांच्या गटांची तुलना करण्यासाठी बार किंवा स्तंभ चार्ट
+    horizontal: क्षैतिज
+    select_collection: आपण कलेक्शन निवडणे आवश्यक आहे.
+  linechart:
+    name: रेखा चार्ट
+    description: फील्डच्या बदलाची तुलना करण्यासाठी रेखा चार्ट
+    disabled_grouping: गटीकरण निवडल्यावर अक्षम केले जाते
+    disabled_no_grouping: कोणतेही गट निवडलेले नसताना अक्षम केले.
+    show_marker: टूलटिप मार्कर दाखवा
+    curve_type: वक्र प्रकार
+    smooth: स्मूथ
+    straight: सरळ
+    step_line: स्टेप लाईन
+    show_legend: लेजेंड दाखवा
+  meter:
+    name: मीटर
+    description: व्हॅल्यू ट्रॅक करण्यासाठी मीटर
+  piechart:
+    name: पाय किंवा डोनट चार्ट
+    description: स्तंभावरील गटांचे गुणोत्तर दर्शविणारा परिपत्रक तक्ता
+  variable:
+    name: ग्लोबल व्हेरिएबल
+    description: इतर पॅनेलच्या फिल्टरमध्ये वापरण्यासाठी जागतिक मूल्य सेट करा
+    variable_key: व्हेरिएबल की
+  relational-variable:
+    name: ग्लोबल रिलेशनल व्हेरिएबल
+    description: इतर पॅनेलच्या फिल्टरमध्ये वापरण्यासाठी जागतिक संबंध मूल्य सेट करा
+    variable_key: व्हेरिएबल की
+    multiple: अनेक
+    multiple-label: एकाधिक आयटम निवडा
+triggers:
+  common:
+    response_body: रिस्पॉन्स बॉडी
+    response_body_all: सर्व डेटा
+    response_body_last: शेवटच्या ऑपरेशनचा डेटा
+  event:
+    name: इव्हेंट हुक
+    description: प्लॅटफॉर्म किंवा डेटा इव्हेंटवर ट्रिगर
+    action: 'क्रिया (नॉन-ब्लॉकिंग)'
+    filter: 'फिल्टर (ब्लॉक करणे)'
+  webhook:
+    name: वेबहुक
+    description: येणाऱ्या HTTP विनंतीवर ट्रिगर
+    method: पद्धत
+    async: असिंक्रोनस
+  operation:
+    name: दुसरा प्रवाह
+    description: चेनिंगसाठी दुसऱ्या प्रवाहाने ट्रिगर केले
+    preview: वेगळ्या प्रवाहातील ऑपरेशनद्वारे ट्रिगर केले
+  schedule:
+    name: शेड्यूल (CRON)
+    description: वेळेत नियमित बिंदूंवर ट्रिगर
+    cron: मध्यांतर
+  manual:
+    name: मॅन्युअल
+    description: निवडलेल्या संग्रहामध्ये मॅन्युअल रनवर ट्रिगर
+    collection_and_item: कलेक्शन आणि आयटम पृष्ठे
+    collection_only: कलेक्शन पृष्ठ फक्त
+    item_only: केवळ आयटम पृष्ठ
+    collection_page: कलेक्शन पेज
+    require_selection: निवड आवश्यक आहे
+a_flow_uuid: ट्रिगर करण्यासाठी एक प्रवाह निवडा...
+any_string_or_json: कोणतीही स्ट्रिंग किंवा JSON...
+item_payload_placeholder: आयटमची फील्ड व्हॅल्यू अपडेट करण्यासाठी वापरला जाणारा JSON आहे...
+operation_variables_note: तुम्ही **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger सारख्या व्हेरिएबल्ससह प्रवाह डेटामध्ये प्रवेश करू शकता {'}'}{'}'}** आणि **{'{'}{'{'}$accountability{'}'}{'}'}**, किंवा वापरून मागील ऑपरेशन्सचा संदर्भ द्या **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operations:
+  condition:
+    name: अट
+    description: If/Else लॉजिकवर आधारित फ्लो रूट करा
+  exec:
+    name: स्क्रिप्ट चालवा
+    description: पेलोड सुधारण्यासाठी अनियंत्रित कोड कार्यान्वित करा
+    modules: 'खालील **नोड मॉड्यूल** वापरले जाऊ शकतात'
+  item-create:
+    name: डेटा तयार करा
+    description: डेटाबेसमध्ये आयटम तयार करा
+    payload: पेलोड
+    emit_events: इमिट इव्हेंट्स
+  item-delete:
+    name: डेटा हटवा
+    description: डेटाबेसमधील आयटम हटवा
+    emit_events: इमिट इव्हेंट्स
+    key: आयडी
+    query: क्वेरी
+  item-read:
+    name: डेटा वाचा
+    description: डेटाबेसमधील आयटम वाचा
+    key: आयडी
+    query: क्वेरी
+    emit_events: इमिट इव्हेंट्स
+  item-update:
+    name: डेटा अपडेट करा
+    description: डेटाबेसमधील आयटम अद्यतनित करा
+    emit_events: इमिट इव्हेंट्स
+    key: आयडी
+    payload: पेलोड
+    query: क्वेरी
+  json-web-token:
+    name: JSON वेब टोकन (JWT)
+    description: "साइन इन करा आणि JSON वेब टोकन सत्यापित करा\n"
+    operation: ऑपरेशन
+    secret: गुप्त
+    secret_placeholder: एक गुप्त प्रविष्ट करा...
+    payload: पेलोड
+    token: टोकन
+    token_placeholder: eyJhbGciOi......
+    options: पर्याय
+    options_placeholder: 'उपलब्ध पर्यायांसाठी https://www.npmjs.com/package/jsonwebtoken#usage पहा'
+    sign: साइन टोकन
+    verify: टोकन सत्यापित करा
+    decode: डिकोड टोकन
+  log:
+    name: कन्सोलवर लॉग इन करा
+    description: कन्सोलवर काहीतरी आउटपुट करा
+    message: संदेश
+    message_placeholder: कन्सोलमध्ये दर्शविण्यासाठी संदेश प्रविष्ट करा..
+  mail:
+    name: ईमेल पाठवा
+    description: एक किंवा अधिक लोकांना ईमेल पाठवा
+    to: ला
+    to_placeholder: ई-मेल पत्ते जोडा आणि एंटर दाबा...
+    body: बॉडी
+    template: टेम्प्लेट
+    data: डेटा
+  notification:
+    name: सूचना पाठवा
+    description: एक किंवा अधिक वापरकर्त्यांना ॲप-मधील सूचना पाठवा
+    recipient: युजर
+    recipient_placeholder: UUID प्रविष्ट करा...
+    recipient_note: वापरकर्ता UUID जोडा आणि एंटर दाबा...
+    item_note: आयटम की किंवा संबंधित URL
+    message: संदेश
+    subject: विषय
+  request:
+    name: वेबहुक / विनंती URL
+    description: 'URL ला विनंती करा'
+    url: URL
+    url_placeholder: https://example.com/example
+    method: पद्धत
+    data: डेटा
+    headers: शीर्षलेख
+    header: हेडर
+    header_placeholder: अधिकृतता..
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: स्लिप
+    description: दिलेली संख्या मिलीसेकंद प्रतीक्षा करा
+    milliseconds: मिलीसेकंद
+  transform:
+    name: ट्रान्सफॉर्म पेलोड
+    description: फ्लोचा JSON पेलोड बदला
+  trigger:
+    name: ट्रिगर प्रवाह
+    description: हा डेटा दुसर्या प्रवाहात पास करा
+    flows: फ्लोव
+    flow: फ्लोव
+    data: डेटा
+    iteration_mode: पुनरावृत्ती मोड
+    iteration_mode_note: ॲरेवर पुनरावृत्ती करण्यासाठी मोड.
+    serial: Serial
+    parallel: Parallel
+    batch: बॅच
+    batch_size: बॅच आकार
+    cache: कॅशे
+unit: युनिट
+standard: आदर्श
+scientific: वैज्ञानिक
+engineering: अभियांत्रिकी
+compact: संक्षिप्त
+currency: चलन
+notation: नोटेशन
+style: स्टाईल
+fonts:
+  thin: पातळ
+  extra_light: अतिरिक्त प्रकाश
+  light: प्रकाश
+  normal: नॉर्मल
+  medium: मध्यम
+  semi_bold: अर्ध ठळक
+  bold: बोल्ड
+  extra_bold: एक्स्ट्रा बोल्ड
+  black: काळा
+  italic: इटालिक
+  oblique: तिरकस
+  small: लहान
+  large: मोठा
+  auto: ऑटो
+text_wrap: Text Wrap
+center: मध्य
+justify: जस्टीफाय
+text_align: मजकूर संरेखित करा
+font_weight: फॉन्ट वेट
+font_style: फॉन्ट स्टाईल
+font_size: फॉन्ट साईझ
+minimum_fraction_digits: किमान दशांश
+maximum_fraction_digits: कमाल दशांश
+show_percentage: टक्केवारी दाखवा
+aggregation: एकत्रीकरण
+series_grouping: मालिका गट
+date_precision: तारीख अचूकता
+export_dashboard: डॅशबोर्ड निर्यात करा
+duplicate_dashboard: डुप्लिकेट डॅशबोर्ड
+search_dashboard: डॅशबोर्ड शोधा...
+search_flow: शोध प्रवाह...
+percent: टक्के
+show_password: पासवर्ड दाखवा
+hide_password: पासवर्ड लपवा
