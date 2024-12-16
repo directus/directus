@@ -88,14 +88,28 @@ function saveChanges() {
 	editTitle.value = '';
 }
 
-const fieldConfigurations = computed<{ textField: Field | undefined; titleField: Field | undefined }>(() => {
+const fieldDisplay = computed(() => {
 	return {
-		titleField: getFieldConfiguration('titleField'),
-		textField: getFieldConfiguration('textField'),
+		titleField: getRenderDisplayOptions('titleField'),
+		textField: getRenderDisplayOptions('textField'),
 	};
 
-	function getFieldConfiguration(fieldName: keyof LayoutOptions) {
-		return props.fieldsInCollection.find((field) => field.field === props.layoutOptions?.[fieldName]);
+	function getRenderDisplayOptions(fieldName: keyof LayoutOptions) {
+		const fieldConfiguration = props.fieldsInCollection.find(
+			(field) => field.field === props.layoutOptions?.[fieldName],
+		);
+
+		if (!fieldConfiguration) return;
+		const { field, type, meta } = fieldConfiguration;
+		return {
+			collection: props.collection,
+			field,
+			type,
+			display: meta?.display,
+			options: meta?.display_options,
+			interface: meta?.interface,
+			interfaceOptions: meta?.options,
+		};
 	}
 });
 </script>
@@ -168,29 +182,17 @@ const fieldConfigurations = computed<{ textField: Field | undefined; titleField:
 									>
 										<div v-if="element.title" class="title">
 											<render-display
-												v-if="fieldConfigurations.titleField"
-												:collection="collection"
+												v-if="fieldDisplay.titleField"
+												v-bind="fieldDisplay.titleField"
 												:value="element.title"
-												:field="fieldConfigurations.titleField.field"
-												:type="fieldConfigurations.titleField.type"
-												:display="fieldConfigurations.titleField.meta?.display"
-												:options="fieldConfigurations.titleField.meta?.display_options"
-												:interface="fieldConfigurations.titleField.meta?.interface"
-												:interface-options="fieldConfigurations.titleField.meta?.options"
 											/>
 										</div>
 										<img v-if="element.image" class="image" :src="element.image" />
 										<div v-if="element.text" class="text">
 											<render-display
-												v-if="fieldConfigurations.textField"
-												:collection="collection"
+												v-if="fieldDisplay.textField"
+												v-bind="fieldDisplay.textField"
 												:value="element.text"
-												:field="fieldConfigurations.textField.field"
-												:type="fieldConfigurations.textField.type"
-												:display="fieldConfigurations.textField.meta?.display"
-												:options="fieldConfigurations.textField.meta?.display_options"
-												:interface="fieldConfigurations.textField.meta?.interface"
-												:interface-options="fieldConfigurations.textField.meta?.options"
 											/>
 										</div>
 										<display-labels
