@@ -1,4 +1,5 @@
 import type { MergeCoreCollection } from '../index.js';
+import type { DirectusPolicy } from './policy.js';
 import type { DirectusRole } from './role.js';
 import type { DirectusUser } from './user.js';
 
