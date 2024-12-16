@@ -4,6 +4,7 @@ import { flattenFieldGroups } from '@/utils/flatten-field-groups';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import FieldListItem from './field-list-item.vue';
 import { FieldTree } from './types';
+import dompurify from 'dompurify';
 
 const props = withDefaults(
 	defineProps<{
@@ -253,7 +254,7 @@ function setContent() {
 			})
 			.join('');
 
-		contentEl.value.innerHTML = newInnerHTML;
+		contentEl.value.innerHTML = dompurify.sanitize(newInnerHTML, { ALLOWED_TAGS: [] });
 	}
 }
 </script>
