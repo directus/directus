@@ -96,7 +96,7 @@ const displayValue = computed(() => {
 
 	if (isNil(props.value) || props.value === '') return null;
 
-	let value = String(props.value);
+	let value = Array.isArray(props.value) ? props.value.join(", ") : String(props.value);
 
 	if (props.translate && value.startsWith('$t:')) {
 		value = t(value.slice(3));
