@@ -14,7 +14,7 @@ export async function up(knex: Knex): Promise<void> {
 	}
 
 	await knex.schema.alterTable('directus_files', (table) => {
-		table.timestamp('uploaded_on').defaultTo(knex.fn.now());
+		table.timestamp('uploaded_on').nullable();
 	});
 
 	await knex('directus_files').update('uploaded_on', knex.ref('created_on'));
