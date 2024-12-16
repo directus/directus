@@ -4,7 +4,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
-import { get } from 'lodash';
+import { get, flatMap } from 'lodash';
 import { computed, ref } from 'vue';
 
 const props = withDefaults(
@@ -27,140 +27,118 @@ const templateEl = ref<HTMLElement>();
 
 const regex = /({{.*?}})/g;
 
+const getNestedValues = (data: any, path: string) => {
+	const pathParts = path.split('.');
+	let currentData = data;
+
+	for (const part of pathParts) {
+		if (Array.isArray(currentData)) {
+			currentData = flatMap(currentData.map((item) => get(item, part)));
+		} else {
+			currentData = get(currentData, part);
+		}
+	}
+
+	return Array.isArray(currentData) ? currentData : [currentData];
+};
+
 const parts = computed(() =>
 	props.template
 		.split(regex)
 		.filter((p) => p)
 		.map((part) => {
-			if (part.startsWith('{{') === false) return part;
+			if (part.startsWith('{{') === false) return [part];
+
+			console.log('part', part);
 
 			const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
-			const fieldKeyBefore = fieldKey.split('.').slice(0, -1).join('.');
-			const fieldKeyAfter = fieldKey.split('.').slice(-1)[0];
 
-			// Try getting the value from the item, return some question marks if it doesn't exist
-			const value = get(props.item, fieldKeyBefore);
+			// Try getting the value from the item
+			const value = getNestedValues(props.item, fieldKey);
 
-			return Array.isArray(value) ? handleArray(fieldKeyBefore, fieldKeyAfter) : handleObject(fieldKey);
+			let field: Field | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
+
+			if (props.collection) {
+				field = fieldsStore.getField(props.collection, fieldKey);
+			}
+
+			if (!field) return [value];
+
+			const component = field?.meta?.display || getDefaultDisplayForType(field.type);
+			const options = field?.meta?.display_options;
+
+			// No need to render the empty display overhead in this case
+			if (component === 'raw') return [value];
+
+			const displayInfo = useExtension(
+				'display',
+				computed(() => component ?? null),
+			);
+
+			if (!displayInfo.value) return [value];
+
+			// These displays natively support rendering arrays of values
+			if (field?.meta?.display && ['related-values', 'formatted-value', 'labels'].includes(field?.meta?.display)) {
+				return [
+					{
+						component,
+						options,
+						value: value,
+						interface: field.meta?.interface,
+						interfaceOptions: field.meta?.options,
+						type: field.type,
+						collection: field.collection,
+						field: field.field,
+					},
+				];
+			} else if (field?.meta?.display) {
+				return value.map((v) => {
+					return {
+						component: field.meta?.display,
+						options: field.meta?.display_options,
+						value: v,
+						interface: field.meta?.interface,
+						interfaceOptions: field.meta?.options,
+						type: field.type,
+						collection: field.collection,
+						field: field.field,
+					};
+				});
+			} else {
+				return value;
+			}
 		})
 		.map((p) => p ?? null),
 );
-
-function handleArray(fieldKeyBefore: string, fieldKeyAfter: string) {
-	const value = get(props.item, fieldKeyBefore);
-
-	let field: Field | null = props.fields?.find((field) => field.field === fieldKeyBefore) ?? null;
-
-	if (props.collection) {
-		field = fieldsStore.getField(props.collection, fieldKeyBefore);
-	}
-
-	if (value === undefined) return null;
-
-	if (!field) return value;
-
-	const displayInfo = useExtension(
-		'display',
-		computed(() => field?.meta?.display ?? null),
-	);
-
-	let component = field.meta?.display;
-	let options = field.meta?.display_options;
-
-	if (!displayInfo.value) {
-		component = 'related-values';
-		options = { template: `{{${fieldKeyAfter}}}` };
-	}
-
-	return {
-		component,
-		options,
-		value: value,
-		interface: field.meta?.interface,
-		interfaceOptions: field.meta?.options,
-		type: field.type,
-		collection: field.collection,
-		field: field.field,
-	};
-}
-
-function handleObject(fieldKey: string) {
-	let field: Field | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
-
-	if (props.collection) {
-		field = fieldsStore.getField(props.collection, fieldKey);
-	}
-
-	/**
-	 * This is for cases where you are rendering a display template directly on
-	 * directus_files. The $thumbnail fields doesn't exist, but instead renders a
-	 * thumbnail based on the other fields in the file info. In that case, the value
-	 * should be the whole related file object, not just the fake "thumbnail" field. By
-	 * stripping out the thumbnail part in the field key path, the rest of the function
-	 * will extract the value correctly.
-	 */
-	if (field && field.collection === 'directus_files' && field.field === '$thumbnail') {
-		fieldKey = fieldKey
-			.split('.')
-			.filter((part) => part !== '$thumbnail')
-			.join('.');
-	}
-
-	const value = fieldKey ? get(props.item, fieldKey) : props.item;
-
-	if (value === undefined) return null;
-
-	if (!field) return value;
-
-	const display = field?.meta?.display || getDefaultDisplayForType(field.type);
-
-	// No need to render the empty display overhead in this case
-	if (display === 'raw') return value;
-
-	const displayInfo = useExtension(
-		'display',
-		computed(() => field?.meta?.display ?? null),
-	);
-
-	// If used display doesn't exist in the current project, return raw value
-	if (!displayInfo.value) return value;
-
-	return {
-		component: field.meta?.display,
-		options: field.meta?.display_options,
-		value: value,
-		interface: field.meta?.interface,
-		interfaceOptions: field.meta?.options,
-		type: field.type,
-		collection: field.collection,
-		field: field.field,
-	};
-}
 </script>
 
 <template>
 	<div ref="templateEl" class="render-template">
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
-			<value-null v-if="part === null || (typeof part === 'object' && part.value === null)" />
-			<v-error-boundary v-else-if="typeof part === 'object' && part.component" :name="`display-${part.component}`">
-				<component
-					:is="`display-${part.component}`"
-					v-bind="part.options"
-					:value="part.value"
-					:interface="part.interface"
-					:interface-options="part.interfaceOptions"
-					:type="part.type"
-					:collection="part.collection"
-					:field="part.field"
-				/>
+			<v-error-boundary>
+				<template v-for="(subPart, subIndex) in part" :key="subIndex">
+					<value-null v-if="subPart === null || (typeof subPart === 'object' && subPart.value === null)" />
+					<component
+						:is="`display-${subPart.component}`"
+						v-else-if="subPart?.component"
+						v-bind="subPart.options"
+						:value="subPart.value"
+						:interface="subPart.interface"
+						:interface-options="subPart.interfaceOptions"
+						:type="subPart.type"
+						:collection="subPart.collection"
+						:field="subPart.field"
+						class="displayed-component"
+					/>
+					<span v-else-if="typeof subPart === 'string'" :dir="direction">{{ translate(subPart) }}</span>
+					<span v-else>{{ subPart }}</span>
+				</template>
 
 				<template #fallback>
-					<span>{{ part.value }}</span>
+					<span>{{ part }}</span>
 				</template>
 			</v-error-boundary>
-			<span v-else-if="typeof part === 'string'" :dir="direction">{{ translate(part) }}</span>
-			<span v-else>{{ part }}</span>
 		</template>
 	</div>
 </template>
@@ -188,6 +166,10 @@ function handleObject(fieldKey: string) {
 
 	.render-template {
 		display: inline;
+	}
+
+	.displayed-component {
+		margin-right: 4px;
 	}
 }
 
