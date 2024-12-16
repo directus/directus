@@ -59,7 +59,6 @@ extension_layout: Layout
 extension_panel: Panel
 extension_hook: Hook
 extension_modules: Modules
-extension_endpoints: Cash app
 enable: Enable
 custom: Custom
 hook: Hook
