@@ -88,6 +88,7 @@ const steps = computed(() => {
 			const operationConfiguration = props.flow.operations.find((operationConfig) => operationConfig.id === operation);
 
 			const operationType = operations.value.find((operation) => operation.id === operationConfiguration?.type);
+
 			return {
 				id: operation,
 				name: operationConfiguration?.name ?? key,
