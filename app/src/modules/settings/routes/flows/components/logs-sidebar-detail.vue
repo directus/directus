@@ -88,7 +88,6 @@ const steps = computed(() => {
 			const operationConfiguration = props.flow.operations.find((operationConfig) => operationConfig.id === operation);
 
 			const operationType = operations.value.find((operation) => operation.id === operationConfiguration?.type);
-
 			return {
 				id: operation,
 				name: operationConfiguration?.name ?? key,
@@ -186,7 +185,7 @@ function onToggle(open: boolean) {
 							<pre class="json selectable">{{ step.options }}</pre>
 						</v-detail>
 
-						<v-detail v-if="step.data" :label="t('payload')">
+						<v-detail v-if="step.data !== null" :label="t('payload')">
 							<pre class="json selectable">{{ step.data }}</pre>
 						</v-detail>
 					</div>
