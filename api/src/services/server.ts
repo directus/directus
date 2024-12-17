@@ -4,7 +4,6 @@ import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { merge } from 'lodash-es';
-import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { performance } from 'perf_hooks';
 import { getCache } from '../cache.js';
@@ -458,97 +457,6 @@ export class ServerService {
 			}
 
 			return checks;
-		}
-	}
-
-	async metrics(): Promise<string> {
-		const checkId = randomUUID();
-
-		interface ServiceMetric {
-			name: string;
-			value: number | null;
-			type: 'counter' | 'gauge' | 'histogram';
-			help?: string;
-		}
-
-		const checks = await Promise.all([getDatabaseMetric(), getCacheMetric()]);
-
-		let metrics = '';
-
-		// convert to prometheus data format
-		for (const check of checks) {
-			// service is not enabled
-			if (check.value === null) {
-				continue;
-			}
-
-			if (check.help) {
-				metrics += `# HELP ${check.help} \n`;
-			}
-
-			metrics += `# TYPE ${check.name} ${check.type} \n`;
-
-			metrics += `${check.name} ${check.value} \n`;
-		}
-
-		return metrics;
-
-		async function getDatabaseMetric(): Promise<ServiceMetric> {
-			const client = env['DB_CLIENT'];
-
-			const metric: ServiceMetric = {
-				name: `directus_${client}_response_time`,
-				value: null,
-				type: 'gauge',
-			};
-
-			if (env['DATABASE_METRICS'] !== true) {
-				return metric;
-			}
-
-			try {
-				const startTime = performance.now();
-
-				// if no connection indicate issue via zero value
-				if (!(await hasDatabaseConnection())) {
-					metric.value = 0;
-					return metric;
-				}
-
-				const endTime = performance.now();
-
-				metric.value = +(endTime - startTime).toFixed(3);
-			} catch {
-				metric.value = 0;
-			}
-
-			return metric;
-		}
-
-		async function getCacheMetric(): Promise<ServiceMetric> {
-			const { cache } = getCache();
-
-			const metric: ServiceMetric = {
-				name: 'directus_cache_response_time',
-				value: null,
-				type: 'gauge',
-			};
-
-			if (env['CACHE_ENABLED'] !== true || env['CACHE_METRICS'] !== true) {
-				return metric;
-			}
-
-			try {
-				const startTime = performance.now();
-				await cache!.set(`metrics-${checkId}`, true, 5);
-				await cache!.delete(`metrics-${checkId}`);
-				const endTime = performance.now();
-				metric.value = +(endTime - startTime).toFixed(3);
-			} catch {
-				metric.value = 0;
-			}
-
-			return metric;
 		}
 	}
 }
