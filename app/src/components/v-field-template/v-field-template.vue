@@ -254,7 +254,10 @@ function setContent() {
 			})
 			.join('');
 
-		contentEl.value.innerHTML = dompurify.sanitize(newInnerHTML, { ALLOWED_TAGS: [] });
+		contentEl.value.innerHTML = dompurify.sanitize(newInnerHTML, {
+			ALLOWED_TAGS: ['span', 'button'],
+			ALLOWED_ATTR: ['contenteditable', 'data-field', 'disabled', 'class'],
+		});
 	}
 }
 </script>
