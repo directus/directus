@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { sortBy } from 'lodash';
-import { useI18n } from 'vue-i18n';
+import { computed } from 'vue';
 
 type Option = {
 	text: string;
@@ -26,11 +26,11 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 
-const { t } = useI18n();
+const items = computed(() => props.choices || []);
 
 function updateValue(value: string[]) {
 	const sortedValue = sortBy(value, (val) => {
-		const sortIndex = props.choices!.findIndex((choice) => val === choice.value);
+		const sortIndex = items.value!.findIndex((item) => val === item.value);
 		return sortIndex !== -1 ? sortIndex : value.length;
 	});
 
@@ -39,14 +39,10 @@ function updateValue(value: string[]) {
 </script>
 
 <template>
-	<v-notice v-if="!choices" type="warning">
-		{{ t('choices_option_configured_incorrectly') }}
-	</v-notice>
 	<v-select
-		v-else
 		multiple
 		:model-value="value"
-		:items="choices"
+		:items="items"
 		:disabled="disabled"
 		:show-deselect="allowNone"
 		:placeholder="placeholder"
