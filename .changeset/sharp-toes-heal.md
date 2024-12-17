@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Fixed Field Template Sanitization
+Fixed field template sanitization
