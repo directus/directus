@@ -51,7 +51,7 @@ export function createMetrics() {
 		const metric: ServiceMetric = {
 			name: `directus_${client}_response_time`,
 			value: null,
-			type: 'gauge',
+			type: 'histogram',
 		};
 
 		if (env['METRICS_DATABASE_ENABLED'] !== true) {
@@ -80,7 +80,7 @@ export function createMetrics() {
 		const metric: ServiceMetric = {
 			name: 'directus_cache_response_time',
 			value: null,
-			type: 'gauge',
+			type: 'histogram',
 		};
 
 		if (env['CACHE_ENABLED'] !== true || env['METRICS_CACHE_ENABLED'] !== true) {
@@ -116,7 +116,7 @@ export function createMetrics() {
 		const metric: ServiceMetric = {
 			name: 'directus_redis_response_time',
 			value: null,
-			type: 'gauge',
+			type: 'histogram',
 		};
 
 		try {
@@ -145,7 +145,7 @@ export function createMetrics() {
 			const metric: ServiceMetric = {
 				name: `directus_${location}_response_time`,
 				value: null,
-				type: 'gauge',
+				type: 'histogram',
 			};
 
 			const startTime = performance.now();
