@@ -34,12 +34,12 @@ export function createMetrics() {
 			}
 
 			if (metric.help) {
-				data += `# HELP ${metric.help} \n`;
+				data += `# HELP ${metric.help}\n`;
 			}
 
-			data += `# TYPE ${metric.name} ${metric.type} \n`;
+			data += `# TYPE ${metric.name} ${metric.type}\n`;
 
-			data += `${metric.name} ${metric.value} \n`;
+			data += `${metric.name} ${metric.value}\n`;
 		}
 
 		return data;
