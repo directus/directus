@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { scheduleJob } from 'node-schedule';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import * as schedule from '../utils/schedule.js';
 import { handleMetricsJob, default as metricsSchedule } from './metrics.js';
@@ -7,7 +8,10 @@ vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
 }));
 
-vi.spyOn(schedule, 'scheduleSynchronizedJob');
+vi.mock('node-schedule', () => ({
+	scheduleJob: vi.fn().mockReturnValue({}),
+}));
+
 vi.spyOn(schedule, 'validateCron');
 
 beforeEach(() => {
@@ -41,7 +45,7 @@ describe('metrics', () => {
 		await metricsSchedule();
 
 		expect(schedule.validateCron).toHaveBeenCalledWith('0 0 * * *');
-		expect(schedule.scheduleSynchronizedJob).toHaveBeenCalledWith('metrics', '0 0 * * *', handleMetricsJob);
+		expect(scheduleJob).toHaveBeenCalledWith('metrics', '0 0 * * *', handleMetricsJob);
 	});
 
 	test('Returns true on successful init', async () => {

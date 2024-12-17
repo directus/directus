@@ -1,8 +1,9 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
+import { scheduleJob } from 'node-schedule';
 import { useLock } from '../lock/index.js';
 import { useMetrics } from '../metrics/index.js';
-import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
+import { validateCron } from '../utils/schedule.js';
 
 const metrics = useMetrics();
 const metricsLockKey = 'schedule--metrics';
@@ -41,7 +42,7 @@ export default async function schedule(): Promise<boolean> {
 		return false;
 	}
 
-	scheduleSynchronizedJob('metrics', String(env['METRICS_SCHEDULE']), handleMetricsJob);
+	scheduleJob('metrics', String(env['METRICS_SCHEDULE']), handleMetricsJob);
 
 	return true;
 }
