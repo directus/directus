@@ -49,8 +49,6 @@ const parts = computed(() =>
 		.map((part) => {
 			if (part.startsWith('{{') === false) return [part];
 
-			console.log('part', part);
-
 			const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
 
 			// Try getting the value from the item
