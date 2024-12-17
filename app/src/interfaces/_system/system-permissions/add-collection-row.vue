@@ -62,7 +62,7 @@ function notExcluded({ collection }: Collection) {
 				item-label-font-family="var(--theme--fonts--monospace--font-family)"
 				@update:model-value="$emit('select', $event)"
 			>
-				<template #preview="{toggle}">
+				<template #preview="{ toggle }">
 					<v-button x-small @click="toggle">
 						{{ t('permission_add_collection') }}
 						<v-icon name="arrow_drop_down" right />
