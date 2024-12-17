@@ -58,14 +58,13 @@ function notExcluded({ collection }: Collection) {
 				item-text="collection"
 				item-value="collection"
 				:show-arrow="false"
-				:placeholder="t('permission_add_collection')"
 				placement="bottom-start"
 				item-label-font-family="var(--theme--fonts--monospace--font-family)"
 				@update:model-value="$emit('select', $event)"
 			>
 				<template #preview="{toggle}">
 					<v-button x-small @click="toggle">
-						{{ t('add_existing') }}
+						{{ t('permission_add_collection') }}
 						<v-icon name="arrow_drop_down" right />
 					</v-button>
 				</template>
