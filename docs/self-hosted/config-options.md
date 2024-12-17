@@ -1134,6 +1134,21 @@ Directus collects little and anonymized data about your environment.
 | `TELEMETRY_URL`           | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
 | `TELEMETRY_AUTHORIZATION` | Optional authorization header value.                              | --                               |
 
+## Metrics
+
+To enable the measurement of performance for directus services Directus allows for collecting metrics. At this time only
+prometheus is supported.
+
+| Variable                   | Description                                                                                              | Default Value  |
+| -------------------------- | -------------------------------------------------------------------------------------------------------- | -------------- |
+| `METRICS_ENABLED`          | Whether or not to enable metrics.                                                                        | `false`        |
+| `METRICS_SCHEDULE`         | The cron schedule at which to check for removable records, the default is every 5 minutes                | `*/5 * * * * ` |
+| `METRICS_TOKENS`           | The allowed non bearer token values for the Authorization header. Default is only an admin bearer token. | --             |
+| `METRICS_DATABASE_ENABLED` | Whether or not to add the database response time                                                         | `true`         |
+| `METRICS_CACHE_ENABLED`    | Whether or not to add the cache response time.                                                           | `true`         |
+| `METRICS_REDIS_ENABLED`    | Whether or not to add the redis response time.                                                           | `true`         |
+| `METRICS_STORAGE_ENABLED`  | Whether or not to add the storage response time(s).                                                      | `true`         |
+
 ## Limits & Optimizations
 
 Allows you to configure hard technical limits, to prevent abuse and optimize for your particular server environment.
