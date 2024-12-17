@@ -4,7 +4,6 @@ import { useLock } from '../lock/index.js';
 import { useMetrics } from '../metrics/index.js';
 import { scheduleSynchronizedJob, validateCron } from '../utils/schedule.js';
 
-const env = useEnv();
 const metrics = useMetrics();
 const metricsLockKey = 'schedule--metrics';
 const metricsLockTimeout = 10 * 60 * 1000; // 10 mins
@@ -32,6 +31,8 @@ export async function handleMetricsJob() {
  * @returns Whether or not metrics has been initialized
  */
 export default async function schedule(): Promise<boolean> {
+	const env = useEnv();
+
 	if (!toBoolean(env['METRICS_ENABLED'])) {
 		return false;
 	}

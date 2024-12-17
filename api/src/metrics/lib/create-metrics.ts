@@ -83,7 +83,7 @@ export function createMetrics() {
 			type: 'histogram',
 		};
 
-		if (env['CACHE_ENABLED'] !== true || env['METRICS_CACHE_ENABLED'] !== true) {
+		if (env['METRICS_CACHE_ENABLED'] !== true || env['CACHE_ENABLED'] !== true) {
 			return;
 		}
 
@@ -107,7 +107,7 @@ export function createMetrics() {
 	}
 
 	async function getRedisMetric(checkId: string) {
-		if (!redisConfigAvailable() || env['METRICS_REDIS_ENABLED'] !== true) {
+		if (env['METRICS_REDIS_ENABLED'] !== true || redisConfigAvailable() !== true) {
 			return;
 		}
 
