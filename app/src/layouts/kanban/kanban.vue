@@ -88,8 +88,29 @@ function saveChanges() {
 	editTitle.value = '';
 }
 
-const textFieldConfiguration = computed<Field | undefined>(() => {
-	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions?.textField);
+const fieldDisplay = computed(() => {
+	return {
+		titleField: getRenderDisplayOptions('titleField'),
+		textField: getRenderDisplayOptions('textField'),
+	};
+
+	function getRenderDisplayOptions(fieldName: keyof LayoutOptions) {
+		const fieldConfiguration = props.fieldsInCollection.find(
+			(field) => field.field === props.layoutOptions?.[fieldName],
+		);
+
+		if (!fieldConfiguration) return;
+		const { field, type, meta } = fieldConfiguration;
+		return {
+			collection: props.collection,
+			field,
+			type,
+			display: meta?.display,
+			options: meta?.display_options,
+			interface: meta?.interface,
+			interfaceOptions: meta?.options,
+		};
+	}
 });
 </script>
 
@@ -159,18 +180,21 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 										:class="{ selected: selection.includes(element[primaryKeyField?.field]) }"
 										@click="onClick({ item: element, event: $event })"
 									>
-										<div v-if="element.title" class="title">{{ element.title }}</div>
+										<div v-if="element.title" class="title">
+											<render-display
+												v-if="fieldDisplay.titleField"
+												v-bind="fieldDisplay.titleField"
+												:value="element.title"
+											/>
+										</div>
 										<img v-if="element.image" class="image" :src="element.image" />
-										<render-display
-											v-if="element.text && textFieldConfiguration"
-											:collection="collection"
-											:value="element.text"
-											:type="textFieldConfiguration.type"
-											:field="layoutOptions?.textField"
-											:display="textFieldConfiguration.meta?.display"
-											:options="textFieldConfiguration.meta?.options"
-											:interface="textFieldConfiguration.meta?.interface"
-										/>
+										<div v-if="element.text" class="text">
+											<render-display
+												v-if="fieldDisplay.textField"
+												v-bind="fieldDisplay.textField"
+												:value="element.text"
+											/>
+										</div>
 										<display-labels
 											v-if="element.tags"
 											:value="element.tags"
@@ -332,6 +356,10 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 					&:hover .title {
 						text-decoration: underline;
+
+						& * {
+							color: var(--theme--primary);
+						}
 					}
 
 					&.selected {
@@ -343,17 +371,22 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
-					line-height: 1.25;
 					margin-bottom: 4px;
 				}
 
+				.title,
 				.text {
-					font-size: 14px;
-					line-height: 1.4em;
-					-webkit-line-clamp: 4;
-					-webkit-box-orient: vertical;
-					overflow: hidden;
-					display: -webkit-box;
+					line-height: 24px;
+					height: 24px;
+
+					& * {
+						line-height: inherit;
+					}
+
+					// This fixes the broken underline spacing when rendering a related field as title
+					& > :deep(.render-template) > span:not(.vertical-aligner) {
+						vertical-align: baseline;
+					}
 				}
 
 				.image {
@@ -391,6 +424,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					align-items: center;
 					margin-top: 8px;
 					margin-bottom: 2px;
+
 					.datetime {
 						display: inline-block;
 						color: var(--theme--foreground-subdued);
