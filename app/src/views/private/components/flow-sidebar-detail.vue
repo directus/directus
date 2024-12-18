@@ -246,10 +246,10 @@ const runManualFlow = async (flowId: string) => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins/form-grid' as mixins-fg;
 
 .fields {
-	@include form-grid;
+	@include mixins-fg.form-grid;
 }
 
 .fields {
