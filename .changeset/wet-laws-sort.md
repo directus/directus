@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Updated user's role only when OIDC role mapping is set
+Fixed incorrect updating of user's role when OIDC role mapping is not set
