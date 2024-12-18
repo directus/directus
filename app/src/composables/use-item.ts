@@ -10,6 +10,7 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
+import { useNestedValidation } from '@/composables/use-nested-validation';
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
@@ -87,6 +88,8 @@ export function useItem<T extends Item>(
 
 	refreshItem();
 
+	const { nestedValidationErrors } = useNestedValidation();
+
 	return {
 		edits,
 		hasEdits,
@@ -141,6 +144,7 @@ export function useItem<T extends Item>(
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
 		const errors = validateItem(payloadToValidate, fields, isNew.value);
+		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -258,6 +262,7 @@ export function useItem<T extends Item>(
 		}
 
 		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value);
+		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
