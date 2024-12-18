@@ -10,6 +10,7 @@ import type { ShowSelect } from '@directus/extensions';
 import type { Field, Filter, Item } from '@directus/types';
 import { ComponentPublicInstance, Ref, inject, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useClipboard } from '@/composables/use-clipboard';
 
 defineOptions({ inheritAttrs: false });
 
@@ -65,6 +66,7 @@ const { t } = useI18n();
 const { collection } = toRefs(props);
 
 const { sortAllowed } = useCollectionPermissions(collection);
+const { copyToClipboard, pasteFromClipboard } = useClipboard();
 
 const selectionWritable = useSync(props, 'selection', emit);
 const tableHeadersWritable = useSync(props, 'tableHeaders', emit);
@@ -137,6 +139,7 @@ function removeField(fieldKey: string) {
 		>
 			<template v-for="header in tableHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
 				<render-display
+					v-slot="{ copyValue }"
 					:value="getFromAliasedItem(item, header.value)"
 					:display="header.field.display"
 					:options="header.field.displayOptions"
@@ -145,7 +148,9 @@ function removeField(fieldKey: string) {
 					:type="header.field.type"
 					:collection="header.field.collection"
 					:field="header.field.field"
-				/>
+				>
+					<v-icon class="clipboard-icon" name="content_copy" @click.stop="copyToClipboard(copyValue)" />
+				</render-display>
 			</template>
 
 			<template #header-context-menu="{ header }">
@@ -290,6 +295,27 @@ function removeField(fieldKey: string) {
 
 		tr {
 			margin-right: var(--content-padding);
+		}
+	}
+
+	.table-row {
+		.cell {
+			.clipboard-icon {
+				--v-icon-color: var(--theme--foreground-subdued);
+				--v-icon-color-hover: var(--theme--foreground);
+				position: absolute;
+				right: 0;
+				top: 0;
+				opacity: 0;
+				visibility: hidden;
+				transform: translate(-50%, 50%);
+				transition: 0.3s;
+			}
+
+			&:hover .clipboard-icon {
+				opacity: 1;
+				visibility: visible;
+			}
 		}
 	}
 }
