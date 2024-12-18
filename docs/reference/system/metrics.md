@@ -8,7 +8,7 @@ pageClass: page-reference
 
 Retrieve monitored metrics for connected services.
 
-The output is based on prometheus "Time Series Data Model":
+The output is based on Prometheus "Time Series Data Model":
 [Prometheus Time Series Data Model](https://prometheus.io/docs/concepts/data_model)
 
 ### Request

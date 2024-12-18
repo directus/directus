@@ -1137,7 +1137,7 @@ Directus collects little and anonymized data about your environment.
 ## Metrics
 
 To enable the measurement of performance for directus services Directus allows for collecting metrics. At this time only
-prometheus is supported.
+Prometheus is supported.
 
 | Variable                   | Description                                                                                              | Default Value  |
 | -------------------------- | -------------------------------------------------------------------------------------------------------- | -------------- |
@@ -1146,7 +1146,7 @@ prometheus is supported.
 | `METRICS_TOKENS`           | The allowed non bearer token values for the Authorization header. Default is only an admin bearer token. | --             |
 | `METRICS_DATABASE_ENABLED` | Whether or not to add the database response time                                                         | `true`         |
 | `METRICS_CACHE_ENABLED`    | Whether or not to add the cache response time.                                                           | `true`         |
-| `METRICS_REDIS_ENABLED`    | Whether or not to add the redis response time.                                                           | `true`         |
+| `METRICS_REDIS_ENABLED`    | Whether or not to add the Redis response time.                                                           | `true`         |
 | `METRICS_STORAGE_ENABLED`  | Whether or not to add the storage response time(s).                                                      | `true`         |
 
 ## Limits & Optimizations
