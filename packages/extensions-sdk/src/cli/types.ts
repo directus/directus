@@ -6,6 +6,7 @@ export type LanguageShort = 'js' | 'ts';
 
 export type Config = {
 	plugins?: Plugin[];
+	external?: string[];
 	watch?: {
 		clearScreen?: boolean;
 	};

@@ -65,6 +65,7 @@ An example with the currently available options will look something like:
 ```js
 export default {
 	plugins: [],
+	external: [],
 	watch: {
 		clearScreen: false
 	}
@@ -75,6 +76,8 @@ export default {
 
 - [`plugins`](https://rollupjs.org/configuration-options/#plugins) — An array of Rollup plugins that will be used when
   building extensions in addition to the built-in ones.
+- [`external`](https://rollupjs.org/configuration-options/#external) — An array of strings representing modules which
+  should not be bundled together with your extension.
 - [`watch.clearScreen`](https://rollupjs.org/configuration-options/#watch-clearscreen) — Controls whether or not to
   clear the screen when a rebuild is triggered.
 
