@@ -1,11 +1,20 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Field, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
+import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import type { Options, SortRecord, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperOracle extends SchemaHelper {
+	override generateIndexName(
+		type: 'unique' | 'foreign' | 'index',
+		collection: string,
+		fields: string | string[],
+	): string {
+		return getDefaultIndexName(type, collection, fields, { maxLength: 30 });
+	}
+
 	override async changeToType(
 		table: string,
 		column: string,

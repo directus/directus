@@ -24,6 +24,7 @@ import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 import getLocalType from '../utils/get-local-type.js';
@@ -34,7 +35,6 @@ import { transaction } from '../utils/transaction.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
-import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
@@ -910,22 +910,25 @@ export class FieldsService {
 			column.primary().notNullable();
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
+
+			const uniqueIndexName = this.helpers.schema.generateIndexName('unique', collection, field.field);
+
 			if (field.schema?.is_unique === true) {
 				if (!existing || existing.is_unique === false) {
-					column.unique();
+					column.unique({ indexName: uniqueIndexName });
 				}
 			} else if (field.schema?.is_unique === false) {
 				if (existing && existing.is_unique === true) {
-					table.dropUnique([field.field]);
+					table.dropUnique([field.field], uniqueIndexName);
 				}
 			}
 
-			const constraintName: string = getDefaultIndexName('index', collection, field.field);
+			const indexName: string = getDefaultIndexName('index', collection, field.field);
 
 			if (field.schema?.is_indexed === true && !existing?.is_indexed) {
-				column.index(constraintName);
+				column.index(indexName);
 			} else if (field.schema?.is_indexed === false && existing?.is_indexed) {
-				table.dropIndex([field.field], constraintName);
+				table.dropIndex([field.field], indexName);
 			}
 		}
 
