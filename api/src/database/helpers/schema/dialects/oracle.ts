@@ -1,6 +1,7 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Field, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
+import crypto from 'node:crypto';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import type { Options, SortRecord, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
@@ -12,7 +13,17 @@ export class SchemaHelperOracle extends SchemaHelper {
 		collection: string,
 		fields: string | string[],
 	): string {
-		return getDefaultIndexName(type, collection, fields, { maxLength: 128 });
+		// Backwards compatibility with oracle requires no hash added to the name.
+		let indexName = getDefaultIndexName(type, collection, fields, { maxLength: Infinity });
+
+		// Knex generates a hash of the name if it is above the allowed value
+		// https://github.com/knex/knex/blob/master/lib/dialects/oracle/utils.js#L20
+		if (indexName.length > 128) {
+			// generates the sha1 of the name and encode it with base64
+			indexName = crypto.createHash('sha1').update(indexName).digest('base64').replace('=', '');
+		}
+
+		return indexName;
 	}
 
 	override async changeToType(
