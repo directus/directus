@@ -12,7 +12,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 		collection: string,
 		fields: string | string[],
 	): string {
-		return getDefaultIndexName(type, collection, fields, { maxLength: 30 });
+		return getDefaultIndexName(type, collection, fields, { maxLength: 128 });
 	}
 
 	override async changeToType(
