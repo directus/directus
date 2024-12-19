@@ -24,7 +24,6 @@ import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
-import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 import getLocalType from '../utils/get-local-type.js';
@@ -923,7 +922,7 @@ export class FieldsService {
 				}
 			}
 
-			const indexName: string = getDefaultIndexName('index', collection, field.field);
+			const indexName: string = this.helpers.schema.generateIndexName('index', collection, field.field);
 
 			if (field.schema?.is_indexed === true && !existing?.is_indexed) {
 				column.index(indexName);
