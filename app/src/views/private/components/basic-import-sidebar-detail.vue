@@ -154,11 +154,11 @@ function useUpload() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins/form-grid' as mixins-fg;
 
 .fields,
 .export-fields {
-	@include form-grid;
+	@include mixins-fg.form-grid;
 
 	.v-divider {
 		grid-column: 1 / span 2;

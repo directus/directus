@@ -500,14 +500,14 @@ function getSystemRelations() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins/form-grid' as mixins-fg;
 
 .type-title {
 	margin-bottom: 48px;
 }
 
 .grid {
-	@include form-grid;
+	@include mixins-fg.form-grid;
 }
 
 .system :deep(.v-input .input) {
