@@ -76,7 +76,7 @@ const parts = computed(() =>
 			if (!displayInfo.value) return [value];
 
 			// These displays natively support rendering arrays of values
-			if (field?.meta?.display && ['related-values', 'formatted-value', 'labels'].includes(field?.meta?.display)) {
+			if (field?.meta?.display && ['related-values', 'formatted-value'].includes(field?.meta?.display)) {
 				return [
 					{
 						component,
@@ -114,29 +114,34 @@ const parts = computed(() =>
 	<div ref="templateEl" class="render-template">
 		<span class="vertical-aligner" />
 		<template v-for="(part, index) in parts" :key="index">
-			<v-error-boundary>
-				<template v-for="(subPart, subIndex) in part" :key="subIndex">
-					<value-null v-if="subPart === null || (typeof subPart === 'object' && subPart.value === null)" />
-					<component
-						:is="`display-${subPart.component}`"
-						v-else-if="subPart?.component"
-						v-bind="subPart.options"
-						:value="subPart.value"
-						:interface="subPart.interface"
-						:interface-options="subPart.interfaceOptions"
-						:type="subPart.type"
-						:collection="subPart.collection"
-						:field="subPart.field"
-						class="displayed-component"
+			<template v-for="(subPart, subIndex) in part" :key="subIndex">
+				<v-error-boundary>
+					<value-null
+						v-if="
+							subPart === null ||
+							(typeof subPart === 'object' && (subPart.value === null || subPart.value === undefined))
+						"
 					/>
+					<template v-else-if="subPart?.component">
+						<component
+							:is="`display-${subPart.component}`"
+							v-bind="subPart.options"
+							:value="subPart.value"
+							:interface="subPart.interface"
+							:interface-options="subPart.interfaceOptions"
+							:type="subPart.type"
+							:collection="subPart.collection"
+							:field="subPart.field"
+						/>
+						<span>&nbsp;</span>
+					</template>
 					<span v-else-if="typeof subPart === 'string'" :dir="direction">{{ translate(subPart) }}</span>
 					<span v-else>{{ subPart }}</span>
-				</template>
-
-				<template #fallback>
-					<span>{{ part }}</span>
-				</template>
-			</v-error-boundary>
+					<template #fallback>
+						<span>{{ subPart?.value || subPart }}</span>
+					</template>
+				</v-error-boundary>
+			</template>
 		</template>
 	</div>
 </template>
@@ -164,10 +169,6 @@ const parts = computed(() =>
 
 	.render-template {
 		display: inline;
-	}
-
-	.displayed-component {
-		margin-right: 4px;
 	}
 }
 
