@@ -1082,7 +1082,7 @@ editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
 settings_roles: Benutzerrollen
-settings_permissions: '"Zugangsrichtlinien "'
+settings_permissions: Zugangsrichtlinien
 settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
