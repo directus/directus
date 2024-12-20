@@ -46,6 +46,7 @@ watch(
 
 const setRawValue = () => {
 	switch (type.value) {
+		case 'bigInteger':
 		case 'string':
 			emit('setRawValue', internalValue.value);
 			break;
