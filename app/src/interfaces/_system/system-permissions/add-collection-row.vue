@@ -63,7 +63,7 @@ function notExcluded({ collection }: Collection) {
 				@update:model-value="$emit('select', $event)"
 			>
 				<template #preview="{ toggle }">
-					<v-button @click="toggle">
+					<v-button small @click="toggle">
 						{{ t('permission_add_collection') }}
 						<v-icon name="arrow_drop_down" />
 					</v-button>
@@ -86,13 +86,6 @@ function notExcluded({ collection }: Collection) {
 
 	.v-select:hover {
 		--v-select-placeholder-color: var(--theme--foreground-accent);
-	}
-
-	.v-button {
-		--v-button-padding: 0 6px 0 12px;
-		--v-button-height: 28px;
-		--v-button-font-size: 12px;
-		--v-button-min-width: 60px;
 	}
 }
 </style>
