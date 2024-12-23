@@ -42,12 +42,6 @@ watch(provider, () => {
 	requiresTFA.value = false;
 });
 
-watch(requiresTFA, (newValue: boolean) => {
-  if (newValue) {
-    error.value = null;
-  }
-});
-
 const errorFormatted = computed(() => {
 	// Show "Wrong username or password" for wrongly formatted emails as well
 	if (error.value === 'INVALID_PAYLOAD') {
@@ -96,6 +90,7 @@ async function onSubmit() {
 	} catch (err: any) {
 		if (err.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 			requiresTFA.value = true;
+			error.value = null;
 		} else {
 			error.value = err.errors?.[0]?.extensions?.code || err;
 		}
