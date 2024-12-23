@@ -168,10 +168,6 @@ const splitViewEnabled = computed(() => {
 	return splitViewAvailable.value && splitView.value;
 });
 
-const showLanguageSelect = computed(() => {
-	return languageOptions.value.length > 1;
-});
-
 function useLanguages() {
 	const languages = ref<Record<string, any>[]>([]);
 	const loading = ref(false);
@@ -399,12 +395,7 @@ function useNestedValidation() {
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
 		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select
-				v-if="showLanguageSelect"
-				v-model="firstLang"
-				:items="languageOptions"
-				:danger="firstItem?.$type === 'deleted'"
-			>
+			<language-select v-model="firstLang" :items="languageOptions" :danger="firstItem?.$type === 'deleted'">
 				<template #prepend>
 					<v-icon
 						v-tooltip="!firstItemDisabled ? t(getDeselectTooltip(firstItem)) : null"
