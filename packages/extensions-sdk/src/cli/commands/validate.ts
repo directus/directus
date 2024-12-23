@@ -8,9 +8,23 @@ export default async function validate(): Promise<void> {
 	const spinner = ora(chalk.bold('Validating Directus extension...')).start();
 
 	try {
-		await Promise.all([checkDirectusConfig(), checkBuiltCode(), checkReadMe(), checkLicense()]);
+		const result = await Promise.allSettled([checkDirectusConfig(), checkBuiltCode(), checkReadMe(), checkLicense()]);
 
-		spinner.succeed(chalk.bold('Extension is valid'));
+		const rejectedChecks = result.filter((value) => {
+			return value.status === 'rejected';
+		});
+
+		if (rejectedChecks.length) {
+			spinner.suffixText = rejectedChecks
+				.map((error) => {
+					return error.reason.message;
+				})
+				.join('\n ');
+
+			spinner.fail(chalk.bold('Failed validation: \n'));
+		} else {
+			spinner.succeed(chalk.bold('Extension is valid'));
+		}
 	} catch (error) {
 		spinner.fail(chalk.bold('Failed validation'));
 		log(String(error), 'error');
@@ -72,9 +86,7 @@ async function checkDirectusConfig() {
 		throw new Error('No package.json');
 	}
 
-	const packageFile = await fse.readJson(
-		`/Users/michael.elsmore/Development/directus-extensions/packages/spreadsheet-layout/package.json`,
-	);
+	const packageFile = await fse.readJson(`${process.cwd()}/package.json`);
 
 	spinner.text = `Checking ${EXTENSION_PKG_KEY} is present`;
 
