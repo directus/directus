@@ -1,0 +1,23 @@
+# Exported from Render on 2024-12-20T06:41:39Z
+services:
+- type: web
+  name: directus:11.3.5
+  runtime: image
+  image:
+    url: docker.io/directus/directus:11.3.5
+  plan: free
+  envVars:
+  - key: WEBSOCKETS_ENABLED
+    sync: false
+  - key: DB_FILENAME
+    sync: false
+  - key: ADMIN_PASSWORD
+    sync: false
+  - key: ADMIN_EMAIL
+    sync: false
+  - key: SECRET
+    sync: false
+  - key: DB_CLIENT
+    sync: false
+  region: oregon
+version: "1"
