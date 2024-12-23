@@ -217,7 +217,7 @@ const appStore = useAppStore();
 
 const appAccess = computed(() => {
 	if (!userStore.currentUser) return true;
-	return userStore.currentUser?.role?.app_access || false;
+	return userStore.currentUser?.app_access || false;
 });
 
 const notificationsPreviewActive = ref(false);
@@ -230,8 +230,11 @@ const appearance = computed(() => {
 
 provide('main-element', contentEl);
 
-router.afterEach(() => {
-	contentEl.value?.scrollTo({ top: 0 });
+router.afterEach((to, from) => {
+	if (!to.meta.isFloatingView && !from.meta.isFloatingView) {
+		contentEl.value?.scrollTo({ top: 0 });
+	}
+
 	fullScreen.value = false;
 });
 

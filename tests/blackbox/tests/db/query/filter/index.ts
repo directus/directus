@@ -212,7 +212,7 @@ function processValidation(
 						found = true;
 						break;
 					}
-				} catch (_err) {
+				} catch {
 					continue;
 				}
 			}
@@ -238,7 +238,7 @@ function processValidation(
 
 			try {
 				validationResult = filter.validatorFunction(get(data, keys[0]), filter.value);
-			} catch (_err) {
+			} catch {
 				validationResult = false;
 			}
 

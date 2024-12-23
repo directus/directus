@@ -14,6 +14,8 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
+import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, Collection, MutationOptions } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
@@ -171,13 +173,13 @@ export class CollectionsService {
 				}
 
 				if (payload.meta) {
-					const collectionItemsService = new ItemsService('directus_collections', {
+					const collectionsItemsService = new ItemsService('directus_collections', {
 						knex: trx,
 						accountability: this.accountability,
 						schema: this.schema,
 					});
 
-					await collectionItemsService.createOne(
+					await collectionsItemsService.createOne(
 						{
 							...payload.meta,
 							collection: payload.collection,
@@ -269,7 +271,7 @@ export class CollectionsService {
 	async readByQuery(): Promise<Collection[]> {
 		const env = useEnv();
 
-		const collectionItemsService = new ItemsService('directus_collections', {
+		const collectionsItemsService = new ItemsService('directus_collections', {
 			knex: this.knex,
 			schema: this.schema,
 			accountability: this.accountability,
@@ -277,7 +279,7 @@ export class CollectionsService {
 
 		let tablesInDatabase = await this.schemaInspector.tableInfo();
 
-		let meta = (await collectionItemsService.readByQuery({
+		let meta = (await collectionsItemsService.readByQuery({
 			limit: -1,
 		})) as BaseCollectionMeta[];
 
@@ -292,11 +294,16 @@ export class CollectionsService {
 				{},
 			);
 
-			let collectionsYouHavePermissionToRead: string[] = this.accountability
-				.permissions!.filter((permission) => {
-					return permission.action === 'read';
-				})
-				.map(({ collection }) => collection);
+			let collectionsYouHavePermissionToRead = await fetchAllowedCollections(
+				{
+					accountability: this.accountability,
+					action: 'read',
+				},
+				{
+					knex: this.knex,
+					schema: this.schema,
+				},
+			);
 
 			for (const collection of collectionsYouHavePermissionToRead) {
 				const group = collectionsGroups[collection];
@@ -363,20 +370,23 @@ export class CollectionsService {
 	 * Read many collections by name
 	 */
 	async readMany(collectionKeys: string[]): Promise<Collection[]> {
-		if (this.accountability && this.accountability.admin !== true) {
-			const permissions = this.accountability.permissions!.filter((permission) => {
-				return permission.action === 'read' && collectionKeys.includes(permission.collection);
-			});
-
-			if (collectionKeys.length !== permissions.length) {
-				const collectionsYouHavePermissionToRead = permissions.map(({ collection }) => collection);
-
-				for (const collectionKey of collectionKeys) {
-					if (collectionsYouHavePermissionToRead.includes(collectionKey) === false) {
-						throw new ForbiddenError();
-					}
-				}
-			}
+		if (this.accountability) {
+			await Promise.all(
+				collectionKeys.map((collection) =>
+					validateAccess(
+						{
+							accountability: this.accountability!,
+							action: 'read',
+							collection,
+							skipCollectionExistsCheck: true,
+						},
+						{
+							schema: this.schema,
+							knex: this.knex,
+						},
+					),
+				),
+			);
 		}
 
 		const collections = await this.readByQuery();
@@ -394,7 +404,7 @@ export class CollectionsService {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
-			const collectionItemsService = new ItemsService('directus_collections', {
+			const collectionsItemsService = new ItemsService('directus_collections', {
 				knex: this.knex,
 				accountability: this.accountability,
 				schema: this.schema,
@@ -413,13 +423,13 @@ export class CollectionsService {
 				.first());
 
 			if (exists) {
-				await collectionItemsService.updateOne(collectionKey, payload.meta, {
+				await collectionsItemsService.updateOne(collectionKey, payload.meta, {
 					...opts,
 					bypassEmitAction: (params) =>
 						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 				});
 			} else {
-				await collectionItemsService.createOne(
+				await collectionsItemsService.createOne(
 					{ ...payload.meta, collection: collectionKey },
 					{
 						...opts,
@@ -588,13 +598,13 @@ export class CollectionsService {
 				await trx('directus_collections').update({ group: null }).where({ group: collectionKey });
 
 				if (collectionToBeDeleted!.meta) {
-					const collectionItemsService = new ItemsService('directus_collections', {
+					const collectionsItemsService = new ItemsService('directus_collections', {
 						knex: trx,
 						accountability: this.accountability,
 						schema: this.schema,
 					});
 
-					await collectionItemsService.deleteOne(collectionKey, {
+					await collectionsItemsService.deleteOne(collectionKey, {
 						bypassEmitAction: (params) =>
 							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 					});

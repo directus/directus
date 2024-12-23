@@ -26,14 +26,21 @@ const links = computed<Link[][]>(() => [
 			to: `/settings/data-model`,
 		},
 		{
-			icon: 'admin_panel_settings',
-			name: t('settings_permissions'),
-			to: `/settings/roles`,
-		},
-		{
 			icon: 'bolt',
 			name: t('settings_flows'),
 			to: `/settings/flows`,
+		},
+	],
+	[
+		{
+			icon: 'group',
+			name: t('settings_roles'),
+			to: `/settings/roles`,
+		},
+		{
+			icon: 'admin_panel_settings',
+			name: t('settings_permissions'),
+			to: `/settings/policies`,
 		},
 	],
 	[
@@ -72,6 +79,13 @@ const links = computed<Link[][]>(() => [
 		},
 	],
 	[
+		info.value.websocket && info.value.websocket.logs
+			? {
+					icon: 'terminal',
+					name: t('settings_system_logs'),
+					to: `/settings/system-logs`,
+			  }
+			: undefined,
 		{
 			icon: 'bug_report',
 			name: t('report_bug'),
@@ -82,7 +96,7 @@ const links = computed<Link[][]>(() => [
 			name: t('request_feature'),
 			href: settings.value?.report_feature_url ?? DEFAULT_REPORT_FEATURE_URL,
 		},
-	],
+	].filter((link) => link) as Link[],
 ]);
 </script>
 

@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Transporter } from 'nodemailer';
 import nodemailer from 'nodemailer';
-import { useLogger } from './logger.js';
+import { useLogger } from './logger/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
 import { createRequire } from 'node:module';
@@ -66,14 +66,6 @@ export default function getMailer(): Transporter {
 					domain: env['EMAIL_MAILGUN_DOMAIN'],
 				},
 				host: env['EMAIL_MAILGUN_HOST'] || 'api.mailgun.net',
-			}) as any,
-		);
-	} else if (transportName === 'sendgrid') {
-		const sg = require('nodemailer-sendgrid');
-
-		transporter = nodemailer.createTransport(
-			sg({
-				apiKey: env['EMAIL_SENDGRID_API_KEY'],
 			}) as any,
 		);
 	} else {

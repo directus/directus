@@ -1,5 +1,5 @@
 import type { DirectusShare } from '../../../schema/share.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
@@ -33,6 +33,24 @@ export const updateShares =
 			method: 'PATCH',
 		};
 	};
+
+/**
+ * Update multiple shares as batch.
+ * @param items
+ * @param query
+ * @returns Returns the share objects for the updated shares.
+ */
+export const updateSharesBatch =
+	<Schema, const TQuery extends Query<Schema, DirectusShare<Schema>>>(
+		items: NestedPartial<DirectusShare<Schema>>[],
+		query?: TQuery,
+	): RestCommand<UpdateShareOutput<Schema, TQuery>[], Schema> =>
+	() => ({
+		path: `/shares`,
+		params: query ?? {},
+		body: JSON.stringify(items),
+		method: 'PATCH',
+	});
 
 /**
  * Update an existing share.

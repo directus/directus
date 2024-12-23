@@ -1,14 +1,19 @@
 import api from '@/api';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
+import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getRootPath } from '@/utils/get-root-path';
 import { translate } from '@/utils/translate-literal';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
-import { User } from '@directus/types';
+import { Field, User } from '@directus/types';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
+import { uniq } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
@@ -27,22 +32,28 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 		actions: KanbanActions,
 	},
 	setup(props, { emit }) {
+		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const { info: serverInfo } = useServerStore();
 
+		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 		const layoutQuery = useSync(props, 'layoutQuery', emit);
 
-		const { collection, filter, search } = toRefs(props);
+		const { collection, filter, filterSystem, search } = toRefs(props);
 
 		const { info, primaryKeyField, fields: fieldsInCollection, sortField } = useCollection(collection);
 
 		const { sort, limit, page, fields } = useLayoutQuery();
 
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
+
 		const { fieldGroups } = useFilterFields(fieldsInCollection, {
-			title: (field) => field.type === 'string',
-			text: (field) => field.type === 'string' || field.type === 'text',
+			title: (field) => field.type === 'string' || fieldIsRelatedField(field),
+			text: (field) => field.type === 'string' || field.type === 'text' || fieldIsRelatedField(field),
+			group: (field) => fieldHasChoices(field) || fieldIsRelatedField(field, ['m2o']),
+
 			tags: (field) => field.type === 'json' || field.type === 'csv',
 			date: (field) => ['date', 'time', 'dateTime', 'timestamp'].includes(field.type),
 			user: (field) => {
@@ -72,21 +83,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 					return related !== undefined;
 				}
-			},
-			group: (field) => {
-				if (
-					field.meta?.options &&
-					Object.keys(field.meta.options).includes('choices') &&
-					['string', 'integer', 'float', 'bigInteger'].includes(field.type)
-				) {
-					return Object.keys(field.meta.options).includes('choices');
-				}
-
-				const relation = relationsStore.relations.find(
-					(relation) => getRelationType({ relation, collection: collection.value, field: field.field }) === 'm2o',
-				);
-
-				return !!relation;
 			},
 
 			file: (field) => {
@@ -134,19 +130,26 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			isRelational,
 		} = useGrouping();
 
-		const { items, loading, error, totalPages, itemCount, totalCount, changeManualSort, getItems } = useItems(
-			collection,
-			{
-				sort,
-				limit,
-				page,
-				fields,
-				filter,
-				search,
-			},
-		);
-
-		const limitWarning = computed(() => items.value.length >= limit.value);
+		const {
+			items,
+			loading,
+			error,
+			totalPages,
+			itemCount,
+			totalCount,
+			changeManualSort,
+			getItems,
+			getItemCount,
+			getTotalCount,
+		} = useItems(collection, {
+			sort,
+			limit,
+			page,
+			fields,
+			filter,
+			search,
+			filterSystem,
+		});
 
 		const groupedItems = computed<Group[]>(() => {
 			const groupsCollectionPrimaryKeyField = groupsPrimaryKeyField.value?.field;
@@ -214,6 +217,23 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			return Object.values(itemGroups).sort((a, b) => a.sort - b.sort);
 		});
 
+		const showingCount = computed(() => {
+			if (totalCount.value === null) return;
+
+			// Return total count if no group field is selected or no group options are available
+			if (!groupField.value || groupedItems.value.length === 0)
+				return t('item_count', { count: n(totalCount.value) }, totalCount.value);
+
+			const displayedCount = groupedItems.value.reduce((sum, { items }) => sum + items.length, 0);
+
+			return formatItemsCountRelative({
+				totalItems: totalCount.value,
+				currentItems: displayedCount,
+				isFiltered: !!props.filterUser,
+				i18n: { t, n },
+			});
+		});
+
 		return {
 			isRelational,
 			groupedItems,
@@ -233,6 +253,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			page,
 			itemCount,
 			totalCount,
+			showingCount,
 			fieldsInCollection,
 			fields,
 			limit,
@@ -252,11 +273,34 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			editGroup,
 			deleteGroup,
 			showUngrouped,
-			limitWarning,
 			userFieldType,
 			resetPresetAndRefresh,
 			refresh,
+			onClick,
 		};
+
+		function fieldHasChoices(field: Field) {
+			if (
+				field.meta?.options &&
+				Object.keys(field.meta.options).includes('choices') &&
+				['string', 'integer', 'float', 'bigInteger'].includes(field.type)
+			) {
+				return Object.keys(field.meta.options).includes('choices');
+			}
+
+			return false;
+		}
+
+		function fieldIsRelatedField(
+			field: Field,
+			allowedTypes: Array<'m2o' | 'o2m' | 'm2a' | null> = ['m2o', 'o2m', 'm2a'],
+		) {
+			const relation = relationsStore.relations.find((relation) =>
+				allowedTypes.includes(getRelationType({ relation, collection: collection.value, field: field.field })),
+			);
+
+			return !!relation;
+		}
 
 		async function change(group: Group, event: ChangeEvent<Item>) {
 			const gField = groupField.value;
@@ -319,21 +363,28 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		function refresh() {
 			getItems();
+			getTotalCount();
+			getItemCount();
 			// potentially reload the related group items, if the group field is relational
 			if (isRelational.value) getGroups();
 		}
 
 		function useLayoutOptions() {
-			const groupField = createViewOption<string | null>('groupField', fieldGroups.value.group[0]?.field ?? null);
-			const groupTitle = createViewOption<string | null>('groupTitle', null);
-			const dateField = createViewOption<string | null>('dateField', fieldGroups.value.date[0]?.field ?? null);
-			const tagsField = createViewOption<string | null>('tagsField', fieldGroups.value.tags[0]?.field ?? null);
-			const userField = createViewOption<string | null>('userField', fieldGroups.value.user[0]?.field ?? null);
-			const titleField = createViewOption<string | null>('titleField', fieldGroups.value.title[0]?.field ?? null);
-			const textField = createViewOption<string | null>('textField', fieldGroups.value.text[0]?.field ?? null);
-			const showUngrouped = createViewOption<boolean>('showUngrouped', false);
-			const imageSource = createViewOption<string | null>('imageSource', fieldGroups.value.file[0]?.field ?? null);
-			const crop = createViewOption<boolean>('crop', true);
+			const groupField = createViewOption<string | null>('groupField', () => fieldGroups.value.group[0]?.field ?? null);
+			const groupTitle = createViewOption<string | null>('groupTitle', () => null);
+			const dateField = createViewOption<string | null>('dateField', () => fieldGroups.value.date[0]?.field ?? null);
+			const tagsField = createViewOption<string | null>('tagsField', () => fieldGroups.value.tags[0]?.field ?? null);
+			const userField = createViewOption<string | null>('userField', () => fieldGroups.value.user[0]?.field ?? null);
+			const titleField = createViewOption<string | null>('titleField', () => fieldGroups.value.title[0]?.field ?? null);
+			const textField = createViewOption<string | null>('textField', () => fieldGroups.value.text[0]?.field ?? null);
+			const showUngrouped = createViewOption<boolean>('showUngrouped', () => false);
+
+			const imageSource = createViewOption<string | null>(
+				'imageSource',
+				() => fieldGroups.value.file[0]?.field ?? null,
+			);
+
+			const crop = createViewOption<boolean>('crop', () => true);
 
 			const selectedGroup = computed(() => fieldGroups.value.group.find((group) => group.field === groupField.value));
 
@@ -373,10 +424,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				userFieldType,
 			};
 
-			function createViewOption<T>(key: keyof LayoutOptions, defaultValue: any) {
+			function createViewOption<T>(key: keyof LayoutOptions, defaultValue: () => any) {
 				return computed<T>({
 					get() {
-						return layoutOptions.value?.[key] !== undefined ? layoutOptions.value[key] : defaultValue;
+						return layoutOptions.value?.[key] !== undefined ? layoutOptions.value[key] : defaultValue();
 					},
 					set(newValue: T) {
 						layoutOptions.value = {
@@ -638,7 +689,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					if (val !== null) fields.push(val);
 				});
 
-				return fields;
+				return uniq(adjustFieldsForDisplays(fields, collection.value!));
 			});
 
 			return { sort, limit, page, fields };

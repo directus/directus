@@ -1,21 +1,24 @@
 import { useEnv } from '@directus/env';
-import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError, UnprocessableContentError } from '@directus/errors';
-import type { Item, PrimaryKey, Query, RegisterUserInput, User } from '@directus/types';
+import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import type { Item, PrimaryKey, RegisterUserInput, User } from '@directus/types';
 import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
 import jwt from 'jsonwebtoken';
-import { cloneDeep, isEmpty } from 'lodash-es';
+import { isEmpty } from 'lodash-es';
 import { performance } from 'perf_hooks';
+import { clearSystemCache } from '../cache.js';
 import getDatabase from '../database/index.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
+import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { getSecret } from '../utils/get-secret.js';
 import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
-import { transaction } from '../utils/transaction.js';
 import { Url } from '../utils/url.js';
+import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';
@@ -104,43 +107,6 @@ export class UsersService extends ItemsService {
 		}
 	}
 
-	private async checkRemainingAdminExistence(excludeKeys: PrimaryKey[]) {
-		// Make sure there's at least one admin user left after this deletion is done
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNotIn('directus_users.id', excludeKeys)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableContentError({ reason: `You can't remove the last admin user from the role` });
-		}
-	}
-
-	/**
-	 * Make sure there's at least one active admin user when updating user status
-	 */
-	private async checkRemainingActiveAdmin(excludeKeys: PrimaryKey[]): Promise<void> {
-		const otherAdminUsers = await this.knex
-			.count('*', { as: 'count' })
-			.from('directus_users')
-			.whereNotIn('directus_users.id', excludeKeys)
-			.andWhere({ 'directus_roles.admin_access': true })
-			.andWhere({ 'directus_users.status': 'active' })
-			.leftJoin('directus_roles', 'directus_users.role', 'directus_roles.id')
-			.first();
-
-		const otherAdminUsersCount = +(otherAdminUsers?.count || 0);
-
-		if (otherAdminUsersCount === 0) {
-			throw new UnprocessableContentError({ reason: `You can't change the active status of the last admin user` });
-		}
-	}
-
 	/**
 	 * Clear users sessions when its status is no longer "active"
 	 */
@@ -154,7 +120,7 @@ export class UsersService extends ItemsService {
 	private async getUserByEmail(
 		email: string,
 	): Promise<{ id: string; role: string; status: string; password: string; email: string } | undefined> {
-		return await this.knex
+		return this.knex
 			.select('id', 'role', 'status', 'password', 'email')
 			.from('directus_users')
 			.whereRaw(`LOWER(??) = ?`, ['email', email.toLowerCase()])
@@ -167,7 +133,10 @@ export class UsersService extends ItemsService {
 	private inviteUrl(email: string, url: string | null): string {
 		const payload = { email, scope: 'invite' };
 
-		const token = jwt.sign(payload, getSecret(), { expiresIn: '7d', issuer: 'directus' });
+		const token = jwt.sign(payload, getSecret(), {
+			expiresIn: env['USER_INVITE_TOKEN_TTL'] as string,
+			issuer: 'directus',
+		});
 
 		return (url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite'))
 			.setQuery('token', token)
@@ -197,17 +166,38 @@ export class UsersService extends ItemsService {
 	/**
 	 * Create a new user
 	 */
-	override async createOne(data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const result = await this.createMany([data], opts);
-		return result[0]!;
+	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		try {
+			if ('email' in data && data['email'] !== undefined) {
+				this.validateEmail(data['email']);
+				await this.checkUniqueEmails([data['email']]);
+			}
+
+			if ('password' in data) {
+				await this.checkPasswordPolicy([data['password']]);
+			}
+		} catch (err: any) {
+			opts.preMutationError = err;
+		}
+
+		if (!('status' in data) || data['status'] === 'active') {
+			// Creating a user only requires checking user limits if the user is active, no need to care about the role
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		}
+
+		return await super.createOne(data, opts);
 	}
 
 	/**
 	 * Create multiple new users
 	 */
-	override async createMany(data: Partial<Item>[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const emails = data['map']((payload) => payload['email']).filter((email) => email);
-		const passwords = data['map']((payload) => payload['password']).filter((password) => password);
+	override async createMany(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		const emails = data.map((payload) => payload['email']).filter((email) => email);
+		const passwords = data.map((payload) => payload['password']).filter((password) => password);
+		const someActive = data.some((payload) => !('status' in payload) || payload['status'] === 'active');
 
 		try {
 			if (emails.length) {
@@ -219,82 +209,37 @@ export class UsersService extends ItemsService {
 				await this.checkPasswordPolicy(passwords);
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+			opts.preMutationError = err;
 		}
 
-		return await super.createMany(data, opts);
-	}
+		if (someActive) {
+			// Creating users only requires checking user limits if the users are active, no need to care about the role
+			opts.userIntegrityCheckFlags =
+				(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
 
-	/**
-	 * Update many users by query
-	 */
-	override async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const keys = await this.getKeysByQuery(query);
-		return keys.length ? await this.updateMany(keys, data, opts) : [];
-	}
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
+		}
 
-	/**
-	 * Update a single user by primary key
-	 */
-	override async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.updateMany([key], data, opts);
-		return key;
-	}
-
-	override async updateBatch(data: Partial<Item>[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
-		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
-
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-
-		const keys: PrimaryKey[] = [];
-
-		await transaction(this.knex, async (trx) => {
-			const service = new UsersService({
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			});
-
-			for (const item of data) {
-				if (!item[primaryKeyField]) throw new InvalidPayloadError({ reason: `User in update misses primary key` });
-				keys.push(await service.updateOne(item[primaryKeyField]!, item, opts));
-			}
+		// Use generic ItemsService to avoid calling `UserService.createOne` to avoid additional work of validating emails,
+		// as this requires one query per email if done in `createOne`
+		const itemsService = new ItemsService(this.collection, {
+			schema: this.schema,
+			accountability: this.accountability,
+			knex: this.knex,
 		});
 
-		return keys;
+		return await itemsService.createMany(data, opts);
 	}
 
 	/**
 	 * Update many users by primary key
 	 */
-	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+	override async updateMany(
+		keys: PrimaryKey[],
+		data: Partial<Item>,
+		opts: MutationOptions = {},
+	): Promise<PrimaryKey[]> {
 		try {
-			if (data['role']) {
-				/*
-				 * data['role'] has the following cases:
-				 * - a string with existing role id
-				 * - an object with existing role id for GraphQL mutations
-				 * - an object with data for new role
-				 */
-				const role = data['role']?.id ?? data['role'];
-
-				let newRole;
-
-				if (typeof role === 'string') {
-					newRole = await this.knex.select('admin_access').from('directus_roles').where('id', role).first();
-				} else {
-					newRole = role;
-				}
-
-				if (!newRole?.admin_access) {
-					await this.checkRemainingAdminExistence(keys);
-				}
-			}
-
-			if (data['status'] !== undefined && data['status'] !== 'active') {
-				await this.checkRemainingActiveAdmin(keys);
-			}
-
 			if (data['email']) {
 				if (keys.length > 1) {
 					throw new RecordNotUniqueError({
@@ -331,7 +276,25 @@ export class UsersService extends ItemsService {
 				data['auth_data'] = null;
 			}
 		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+			opts.preMutationError = err;
+		}
+
+		if ('role' in data) {
+			opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+		}
+
+		if ('status' in data) {
+			if (data['status'] === 'active') {
+				// User are being activated, no need to check if there are enough admins
+				opts.userIntegrityCheckFlags =
+					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) | UserIntegrityCheckFlag.UserLimits;
+			} else {
+				opts.userIntegrityCheckFlags = UserIntegrityCheckFlag.All;
+			}
+		}
+
+		if (opts.userIntegrityCheckFlags) {
+			opts.onRequireUserIntegrityCheck?.(opts.userIntegrityCheckFlags);
 		}
 
 		const result = await super.updateMany(keys, data, opts);
@@ -340,28 +303,30 @@ export class UsersService extends ItemsService {
 			await this.clearUserSessions(keys);
 		}
 
-		return result;
-	}
+		// Only clear the caches if the role has been updated
+		if ('role' in data) {
+			await this.clearCaches(opts);
+		}
 
-	/**
-	 * Delete a single user by primary key
-	 */
-	override async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
-		await this.deleteMany([key], opts);
-		return key;
+		return result;
 	}
 
 	/**
 	 * Delete multiple users by primary key
 	 */
-	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
-		try {
-			await this.checkRemainingAdminExistence(keys);
-		} catch (err: any) {
-			(opts || (opts = {})).preMutationError = err;
+	override async deleteMany(keys: PrimaryKey[], opts: MutationOptions = {}): Promise<PrimaryKey[]> {
+		if (opts?.onRequireUserIntegrityCheck) {
+			opts.onRequireUserIntegrityCheck(opts?.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None);
+		} else {
+			try {
+				await validateRemainingAdminUsers({ excludeUsers: keys }, { knex: this.knex, schema: this.schema });
+			} catch (err: any) {
+				opts.preMutationError = err;
+			}
 		}
 
 		// Manual constraint, see https://github.com/directus/directus/pull/19912
+		await this.knex('directus_comments').update({ user_updated: null }).whereIn('user_updated', keys);
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
 		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
@@ -369,25 +334,6 @@ export class UsersService extends ItemsService {
 		await this.clearUserSessions(keys);
 
 		return keys;
-	}
-
-	override async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const readQuery = cloneDeep(query);
-		readQuery.fields = [primaryKeyField];
-
-		// Not authenticated:
-		const itemsService = new ItemsService(this.collection, {
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		const itemsToDelete = await itemsService.readByQuery(readQuery);
-		const keys: PrimaryKey[] = itemsToDelete.map((item: Item) => item[primaryKeyField]);
-
-		if (keys.length === 0) return [];
-
-		return await this.deleteMany(keys, opts);
 	}
 
 	async inviteUser(email: string | string[], role: string, url: string | null, subject?: string | null): Promise<void> {
@@ -664,11 +610,19 @@ export class UsersService extends ItemsService {
 			knex: this.knex,
 			schema: this.schema,
 			accountability: {
-				...(this.accountability ?? { role: null }),
+				...(this.accountability ?? createDefaultAccountability()),
 				admin: true, // We need to skip permissions checks for the update call below
 			},
 		});
 
 		await service.updateOne(user.id, { password, status: 'active' }, opts);
+	}
+
+	private async clearCaches(opts?: MutationOptions) {
+		await clearSystemCache({ autoPurgeCache: opts?.autoPurgeCache });
+
+		if (this.cache && opts?.autoPurgeCache !== false) {
+			await this.cache.clear();
+		}
 	}
 }

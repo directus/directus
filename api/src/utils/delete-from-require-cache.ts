@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 
 const require = createRequire(import.meta.url);
 
@@ -9,7 +9,7 @@ export function deleteFromRequireCache(modulePath: string): void {
 	try {
 		const moduleCachePath = require.resolve(modulePath);
 		delete require.cache[moduleCachePath];
-	} catch (error) {
+	} catch {
 		logger.trace(`Module cache not found for ${modulePath}, skipped cache delete.`);
 	}
 }

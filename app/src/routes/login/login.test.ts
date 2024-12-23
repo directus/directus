@@ -22,7 +22,7 @@ const i18n = createI18n({ legacy: false });
 const global: GlobalMountOptions = {
 	components: { publicView, vSelect, vIcon, vImage },
 	directives: { md: MarkdownDirective },
-	stubs: { publicView: false },
+	stubs: { routerLink: true, publicView: false },
 	plugins: [i18n],
 };
 

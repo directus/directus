@@ -42,9 +42,9 @@ Kubernetes configuration.
 
 ::: tip First User
 
-You can use the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables to automatically provision the first user on
-first creation using the `bootstrap` command. See [Environment Variables](/self-hosted/config-options#general) for more
-information.
+You can use the `ADMIN_EMAIL`, `ADMIN_PASSWORD` and `ADMIN_TOKEN` environment variables to automatically provision the
+first user on first creation using the `bootstrap` command. See
+[Environment Variables](/self-hosted/config-options#general) for more information.
 
 :::
 
@@ -174,6 +174,12 @@ To create a new role with admin access, set the `--admin` flag to `true`, such a
 
 ```bash
 npx directus roles create --role <role-name> --admin true
+```
+
+To create a new role with app access, set the `--app` flag to `true`, such as
+
+```bash
+npx directus roles create --role <role-name> --app true
 ```
 
 ### Count Items in a Collection

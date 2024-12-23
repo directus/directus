@@ -7,9 +7,10 @@ import { useFieldsStore } from '@/stores/fields';
 import { LAYOUTS } from '@/types/interfaces';
 import { addRelatedPrimaryKeyToFields } from '@/utils/add-related-primary-key-to-fields';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
-import { formatCollectionItemsCount } from '@/utils/format-collection-items-count';
+import { formatItemsCountPaginated } from '@/utils/format-items-count';
 import { getItemRoute } from '@/utils/get-route';
 import { parseFilter } from '@/utils/parse-filter';
+import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
@@ -39,6 +40,8 @@ const props = withDefaults(
 		enableSearchFilter?: boolean;
 		enableLink?: boolean;
 		limit?: number;
+		sort?: string;
+		sortDirection?: '+' | '-';
 	}>(),
 	{
 		value: () => [],
@@ -57,7 +60,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits(['input']);
-const { t } = useI18n();
+const { t, n } = useI18n();
 const { collection, field, primaryKey } = toRefs(props);
 const { relationInfo } = useRelationO2M(collection, field);
 const fieldsStore = useFieldsStore();
@@ -98,7 +101,10 @@ const limit = ref(props.limit);
 const page = ref(1);
 const search = ref('');
 const searchFilter = ref<Filter>();
-const sort = ref<Sort>();
+
+const manualSort = ref<Sort | null>(
+	props.sort && !relationInfo.value?.sortField ? { by: props.sort, desc: props.sortDirection === '-' } : null,
+);
 
 const query = computed<RelationQueryMultiple>(() => {
 	const q: RelationQueryMultiple = {
@@ -119,8 +125,8 @@ const query = computed<RelationQueryMultiple>(() => {
 		q.search = search.value;
 	}
 
-	if (sort.value) {
-		q.sort = [`${sort.value.desc ? '-' : ''}${sort.value.by}`];
+	if (manualSort.value) {
+		q.sort = [`${manualSort.value.desc ? '-' : ''}${manualSort.value.by}`];
 	}
 
 	return q;
@@ -148,14 +154,15 @@ const { createAllowed, deleteAllowed, updateAllowed } = useRelationPermissionsO2
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-const showingCount = computed(() => {
-	return formatCollectionItemsCount(
-		totalItemCount.value,
-		page.value,
-		limit.value,
-		!!(search.value || searchFilter.value),
-	);
-});
+const showingCount = computed(() =>
+	formatItemsCountPaginated({
+		currentItems: totalItemCount.value,
+		currentPage: page.value,
+		perPage: limit.value,
+		isFiltered: !!(search.value || searchFilter.value),
+		i18n: { t, n },
+	}),
+);
 
 const headers = ref<Array<any>>([]);
 
@@ -313,6 +320,42 @@ function deleteItem(item: DisplayItem) {
 	remove(item);
 }
 
+const batchEditActive = ref(false);
+const selection = ref<DisplayItem[]>([]);
+
+const relatedPrimaryKeys = computed(() => {
+	if (!relationInfo.value) return [];
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+	return selection.value.map((item) => get(item, relatedPkField, null)).filter((key) => !isNil(key));
+});
+
+function stageBatchEdits(edits: Record<string, any>) {
+	if (!relationInfo.value) return;
+
+	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
+
+	for (const item of selection.value) {
+		const relatedId = get(item, [relatedPkField], null);
+
+		const changes: Record<string, any> = {
+			$index: item.$index,
+			$type: item.$type,
+			$edits: item.$edits,
+			...getItemEdits(item),
+			...edits,
+		};
+
+		if (relatedId !== null) {
+			changes[relatedPkField] = relatedId;
+		}
+
+		update(changes);
+	}
+
+	selection.value = [];
+}
+
 const values = inject('values', ref<Record<string, any>>({}));
 
 const customFilter = computed(() => {
@@ -398,8 +441,19 @@ function getLinkForItem(item: DisplayItem) {
 				</div>
 
 				<v-button
+					v-if="!disabled && updateAllowed && relatedPrimaryKeys.length > 0"
+					v-tooltip.bottom="t('edit')"
+					rounded
+					icon
+					secondary
+					@click="batchEditActive = true"
+				>
+					<v-icon name="edit" outline />
+				</v-button>
+
+				<v-button
 					v-if="!disabled && enableSelect && updateAllowed"
-					v-tooltip.bottom="updateAllowed ? t('add_existing') : t('not_allowed')"
+					v-tooltip.bottom="t('add_existing')"
 					rounded
 					icon
 					:secondary="enableCreate"
@@ -410,7 +464,7 @@ function getLinkForItem(item: DisplayItem) {
 
 				<v-button
 					v-if="!disabled && enableCreate && createAllowed"
-					v-tooltip.bottom="createAllowed ? t('create_item') : t('not_allowed')"
+					v-tooltip.bottom="t('create_item')"
 					rounded
 					icon
 					@click="createItem"
@@ -421,14 +475,16 @@ function getLinkForItem(item: DisplayItem) {
 
 			<v-table
 				v-if="layout === LAYOUTS.TABLE"
-				v-model:sort="sort"
+				v-model:sort="manualSort"
 				v-model:headers="headers"
+				v-model="selection"
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
-				:show-manual-sort="allowDrag"
-				:manual-sort-key="relationInfo?.sortField"
 				:items="displayItems"
 				:row-height="tableRowHeight"
+				:show-manual-sort="allowDrag"
+				:manual-sort-key="relationInfo?.sortField"
+				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
 				show-resize
 				@click:row="editRow"
 				@update:items="sortItems"
@@ -465,19 +521,20 @@ function getLinkForItem(item: DisplayItem) {
 
 			<template v-else-if="loading">
 				<v-skeleton-loader
-					v-for="n in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
-					:key="n"
+					v-for="num in clamp(totalItemCount - (page - 1) * limit, 1, limit)"
+					:key="num"
 					:type="totalItemCount > 4 ? 'block-list-item-dense' : 'block-list-item'"
 				/>
 			</template>
 
-			<v-list v-else>
+			<template v-else>
 				<v-notice v-if="displayItems.length === 0">
 					{{ t('no_items') }}
 				</v-notice>
 
 				<draggable
 					:model-value="displayItems"
+					tag="v-list"
 					item-key="id"
 					handle=".drag-handle"
 					:disabled="!allowDrag"
@@ -521,12 +578,17 @@ function getLinkForItem(item: DisplayItem) {
 						</v-list-item>
 					</template>
 				</draggable>
-			</v-list>
+			</template>
 
 			<div class="actions" :class="layout">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
-						<v-pagination v-model="page" :length="pageCount" :total-visible="width.includes('half') ? 3 : 5" />
+						<v-pagination
+							v-model="page"
+							:length="pageCount"
+							:total-visible="width.includes('half') ? 1 : 2"
+							show-first-last
+						/>
 
 						<div class="spacer" />
 
@@ -544,13 +606,13 @@ function getLinkForItem(item: DisplayItem) {
 						{{ t('add_existing') }}
 					</v-button>
 					<div class="spacer" />
-					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="5" />
+					<v-pagination v-if="pageCount > 1" v-model="page" :length="pageCount" :total-visible="2" show-first-last />
 				</template>
 			</div>
 		</div>
 
 		<drawer-item
-			:disabled="disabled || (!updateAllowed && currentlyEditing !== '+')"
+			:disabled="disabled"
 			:active="currentlyEditing !== null"
 			:collection="relationInfo.relatedCollection.collection"
 			:primary-key="currentlyEditing || '+'"
@@ -567,6 +629,14 @@ function getLinkForItem(item: DisplayItem) {
 			:filter="customFilter"
 			multiple
 			@input="select"
+		/>
+
+		<drawer-batch
+			v-model:active="batchEditActive"
+			:primary-keys="relatedPrimaryKeys"
+			:collection="relationInfo.relatedCollection.collection"
+			stage-on-save
+			@input="stageBatchEdits"
 		/>
 	</div>
 </template>
@@ -621,10 +691,12 @@ function getLinkForItem(item: DisplayItem) {
 
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 8px;
 
 	.v-pagination {
+		margin-left: auto;
 		:deep(.v-button) {
 			display: inline-flex;
 		}

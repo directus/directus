@@ -29,8 +29,17 @@ The item the Content Version is created on.
 `date_created` **Date**\
 When the Content Version was created.
 
+`date_updated` **Date**\
+When the Content Version was last updated.
+
 `user_created` **many-to-one**\
 User that created the Content Version. Many-to-one to [users](/reference/system/users).
+
+`user_updated` **many-to-one**\
+User that last updated the Content Version. Many-to-one to [users](/reference/system/users).
+
+`delta` **json**\
+The current changes compared to the main version of the item.
 
 ```json
 {
@@ -40,8 +49,13 @@ User that created the Content Version. Many-to-one to [users](/reference/system/
 	"collection": "my_collection",
 	"item": "1",
 	"hash": "aaafc0db8fb60e82e634903523e1fa2144c58520",
-	"date_created": "2023-08-23T10:38:20.686Z",
-	"user_created": "a2dbc923-7c75-4d26-83f4-4674bfa7be81"
+	"date_created": "2024-07-22T10:33:02.542Z",
+	"date_updated": "2024-07-22T10:33:14.324Z",
+	"user_created": "a2dbc923-7c75-4d26-83f4-4674bfa7be81",
+	"user_updated": "a2dbc923-7c75-4d26-83f4-4674bfa7be81",
+	"delta": {
+		"my_field": "Updated Value"
+	}
 }
 ```
 

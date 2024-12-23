@@ -7,11 +7,31 @@
     user:
       _eq: $CURRENT_USER
 
-- collection: directus_activity
+- collection: directus_comments
+  action: read
+  permissions:
+    user_created:
+      _eq: $CURRENT_USER
+
+- collection: directus_comments
   action: create
   validation:
     comment:
       _nnull: true
+
+- collection: directus_comments
+  action: update
+  permissions:
+    user_created:
+      _eq: $CURRENT_USER
+  fields:
+    - comment
+
+- collection: directus_comments
+  action: delete
+  permissions:
+    user_created:
+      _eq: $CURRENT_USER
 
 - collection: directus_presets
   action: read
@@ -19,6 +39,7 @@
     _or:
       - user:
           _eq: $CURRENT_USER
+      # TODO decide if want to allow users to see all presets of nested roles
       - _and:
           - user:
               _null: true
@@ -41,6 +62,9 @@
   permissions:
     user:
       _eq: $CURRENT_USER
+  validation:
+    user:
+      _eq: $CURRENT_USER
 
 - collection: directus_presets
   action: delete
@@ -52,7 +76,7 @@
   action: read
   permissions:
     id:
-      _eq: $CURRENT_ROLE
+      _in: $CURRENT_ROLES
 
 - collection: directus_settings
   action: read

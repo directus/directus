@@ -1,20 +1,18 @@
-import { expect, describe, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { getAccountabilityForRole } from './get-accountability-for-role.js';
 
 vi.mock('./get-permissions', () => ({
 	getPermissions: vi.fn().mockReturnValue([]),
 }));
 
-function mockDatabase() {
-	const self: Record<string, any> = {
-		select: vi.fn(() => self),
-		from: vi.fn(() => self),
-		where: vi.fn(() => self),
-		first: vi.fn(),
-	};
+vi.mock('../permissions/modules/fetch-global-access/fetch-global-access.ts');
+vi.mock('../permissions/lib/fetch-roles-tree.js');
 
-	return self;
-}
+beforeEach(() => {
+	vi.clearAllMocks();
+});
 
 describe('getAccountabilityForRole', async () => {
 	test('no role', async () => {
@@ -27,7 +25,8 @@ describe('getAccountabilityForRole', async () => {
 		expect(result).toStrictEqual({
 			admin: false,
 			app: false,
-			permissions: [],
+			ip: null,
+			roles: [],
 			role: null,
 			user: null,
 		});
@@ -43,45 +42,49 @@ describe('getAccountabilityForRole', async () => {
 		expect(result).toStrictEqual({
 			admin: true,
 			app: true,
-			permissions: [],
+			ip: null,
+			roles: [],
 			role: null,
 			user: null,
 		});
 	});
 
-	test('get role from database', async () => {
-		const db = mockDatabase();
-
-		db['first'].mockReturnValue({
-			admin_access: 'not true',
-			app_access: '1',
-		});
+	test('get role and role tree from database', async () => {
+		const roles = ['123-456', '234-567'];
+		vi.mocked(fetchRolesTree).mockResolvedValue(roles);
+		vi.mocked(fetchGlobalAccess).mockResolvedValue({ admin: false, app: true });
 
 		const result = await getAccountabilityForRole('123-456', {
 			accountability: null,
 			schema: {} as any,
-			database: db as any,
+			database: {} as any,
 		});
 
 		expect(result).toStrictEqual({
 			admin: false,
 			app: true,
-			permissions: [],
+			roles: roles,
 			role: '123-456',
 			user: null,
+			ip: null,
 		});
+
+		expect(fetchRolesTree).toHaveBeenCalledWith('123-456', {});
+		expect(fetchGlobalAccess).toHaveBeenCalledWith({ roles, user: null, ip: null }, {});
 	});
 
-	test('database invalid role', async () => {
-		const db = mockDatabase();
-		db['first'].mockReturnValue(false);
+	test('invalid role throws error', async () => {
+		vi.mocked(fetchRolesTree).mockResolvedValue([]);
+		vi.mocked(fetchGlobalAccess).mockResolvedValue({ admin: false, app: false });
 
-		expect(() =>
+		expect(
 			getAccountabilityForRole('456-789', {
 				accountability: null,
 				schema: {} as any,
-				database: db as any,
+				database: {} as any,
 			}),
-		).rejects.toThrow('Configured role "456-789" isn\'t a valid role ID or doesn\'t exist.');
+		).rejects.toThrowErrorMatchingInlineSnapshot(
+			`[Error: Configured role "456-789" isn't a valid role ID or doesn't exist.]`,
+		);
 	});
 });

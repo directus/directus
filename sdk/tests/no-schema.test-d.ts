@@ -1,5 +1,5 @@
 import { assertType, describe, test } from 'vitest';
-import type { ApplyQueryFields, Query, RegularCollections } from '../src/index.js';
+import type { ApplyQueryFields, MergeCoreCollection, Query, RegularCollections } from '../src/index.js';
 
 describe('Test Schema Fallback', () => {
 	// RegularCollections is used to determine the collection input type of "readItems"
@@ -20,6 +20,14 @@ describe('Test Schema Fallback', () => {
 		// output fallback
 		const output: Record<string, any> = { field: 'value' };
 		assertType<ApplyQueryFields<any, any, typeof fields>>(output);
+	});
+
+	test('core collection fallback', () => {
+		type CoreCollection = MergeCoreCollection<any, 'directus_test', { test: string }>;
+
+		assertType<CoreCollection>({ test: 'string' });
+		// @ts-expect-error
+		assertType<CoreCollection>({ error: 'string', test: 'string' });
 	});
 
 	test('Should fail for explicit invalid schema types', () => {

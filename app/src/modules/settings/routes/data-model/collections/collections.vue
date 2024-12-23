@@ -5,7 +5,7 @@ import { Collection } from '@/types/collections';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { merge, sortBy } from 'lodash';
+import { merge } from 'lodash';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -13,7 +13,7 @@ import SettingsNavigation from '../../../components/navigation.vue';
 import CollectionDialog from './components/collection-dialog.vue';
 import CollectionItem from './components/collection-item.vue';
 import CollectionOptions from './components/collection-options.vue';
-import { isSystemCollection } from '@directus/system-data';
+import { useExpandCollapse } from './composables/use-expand-collapse';
 
 const { t } = useI18n();
 
@@ -22,16 +22,13 @@ const collectionDialogActive = ref(false);
 const editCollection = ref<Collection | null>();
 
 const collectionsStore = useCollectionsStore();
+const { collapsedIds, hasExpandableCollections, expandAll, collapseAll, toggleCollapse } = useExpandCollapse();
 
 const collections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections.filter(
-				(collection) => isSystemCollection(collection.collection) === false && collection.meta,
-			),
-			['meta.sort', 'collection'],
-		),
-	);
+	return translate(collectionsStore.allCollections.filter((collection) => collection.meta)).map((collection) => ({
+		...collection,
+		isCollapsed: collapsedIds.value?.includes(collection.collection),
+	}));
 });
 
 const rootCollections = computed(() => {
@@ -58,7 +55,9 @@ const visibilityTree = computed(() => {
 	const propagateBackwards: CollectionTree[] = [];
 
 	function makeTree(parent: string | null = null): CollectionTree[] {
-		const children = collectionsStore.collections.filter((collection) => (collection.meta?.group ?? null) === parent);
+		const children = collectionsStore.sortedCollections.filter(
+			(collection) => (collection.meta?.group ?? null) === parent,
+		);
 
 		const normalizedSearch = search.value?.toLowerCase();
 
@@ -94,28 +93,13 @@ const visibilityTree = computed(() => {
 	return tree;
 });
 
-const tableCollections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections.filter(
-				(collection) =>
-					isSystemCollection(collection.collection) === false && !!collection.meta === false && collection.schema,
-			),
-			['meta.sort', 'collection'],
-		),
-	);
-});
+const tableCollections = computed(() =>
+	translate(collectionsStore.databaseCollections.filter((collection) => !collection.meta)),
+);
 
-const systemCollections = computed(() => {
-	return translate(
-		sortBy(
-			collectionsStore.collections
-				.filter((collection) => isSystemCollection(collection.collection) === true)
-				.map((collection) => ({ ...collection, icon: 'settings' })),
-			'collection',
-		),
-	);
-});
+const systemCollections = computed(() =>
+	translate(collectionsStore.systemCollections.map((collection) => ({ ...collection, icon: 'settings' }))),
+);
 
 async function onSort(updates: Collection[], removeGroup = false) {
 	const updatesWithSortValue = updates.map((collection, index) =>
@@ -148,7 +132,9 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 <template>
 	<private-view :title="t('settings_data_model')">
-		<template #headline><v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" /></template>
+		<template #headline>
+			<v-breadcrumb :items="[{ name: t('settings'), to: '/settings' }]" />
+		</template>
 
 		<template #title-outer:prepend>
 			<v-button class="header-icon" rounded icon exact disabled>
@@ -190,12 +176,21 @@ async function onSort(updates: Collection[], removeGroup = false) {
 				</template>
 			</v-info>
 
-			<v-list v-else class="draggable-list">
+			<template v-else>
+				<transition-expand>
+					<div v-if="hasExpandableCollections" class="expand-collapse-button">
+						{{ t('expand') }}
+						<button @click="expandAll">{{ t('all') }}</button>
+						/
+						<button @click="collapseAll">{{ t('none') }}</button>
+					</div>
+				</transition-expand>
 				<draggable
+					tag="v-list"
 					:model-value="rootCollections"
 					:group="{ name: 'collections' }"
 					:swap-threshold="0.3"
-					class="root-drag-container"
+					class="root-drag-container draggable-list"
 					item-key="collection"
 					handle=".drag-handle"
 					v-bind="{ 'force-fallback': true }"
@@ -205,13 +200,15 @@ async function onSort(updates: Collection[], removeGroup = false) {
 						<collection-item
 							:collection="element"
 							:collections="collections"
+							:is-collapsed="element.isCollapsed"
 							:visibility-tree="findVisibilityChild(element.collection)!"
 							@edit-collection="editCollection = $event"
 							@set-nested-sort="onSort"
+							@toggle-collapse="toggleCollapse"
 						/>
 					</template>
 				</draggable>
-			</v-list>
+			</template>
 
 			<v-list class="db-only">
 				<v-list-item
@@ -247,6 +244,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 					:collection="collection"
 					:collections="systemCollections"
 					:visibility-tree="findVisibilityChild(collection.collection)!"
+					:is-collapsed="false"
 					disable-drag
 				/>
 			</v-detail>
@@ -318,5 +316,26 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 .db-only {
 	margin-bottom: 16px;
+}
+
+.expand-collapse-button {
+	padding-top: 4px;
+	padding-bottom: 8px;
+	text-align: right;
+	color: var(--theme--foreground-subdued);
+
+	button {
+		color: var(--theme--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+	}
+
+	button:hover {
+		color: var(--theme--foreground);
+		transition: none;
+	}
+}
+
+.v-list.draggable-list {
+	padding-top: 0;
 }
 </style>

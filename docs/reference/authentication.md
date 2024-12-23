@@ -59,8 +59,7 @@ Register a new user.
 
 ::: warning Disabled by Default
 
-The user registration feature is disabled by default. To make use of it, it must first be enabled via
-[Project Settings](/user-guide/user-management/users.html#enable-user-registration).
+The user registration feature is disabled by default. To make use of it, it must first be enabled via Project Settings.
 
 :::
 
@@ -77,7 +76,7 @@ project.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /register`
+`POST /users/register`
 
 ```json
 {
@@ -136,7 +135,7 @@ parameter.\
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /register`
+`POST /users/register`
 
 ```json
 {
@@ -180,7 +179,7 @@ URL) to allow the user to finish their registration.
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /register/verify-email`
+`POST /users/register/verify-email`
 
 ```json
 {
@@ -223,7 +222,7 @@ Verification token, as provided in the verification email sent by the registrati
 <SnippetToggler :choices="['REST', 'GraphQL', 'SDK']" group="api">
 <template #rest>
 
-`POST /register/verify-email`
+`POST /users/register/verify-email`
 
 ```json
 {
@@ -706,8 +705,8 @@ const result = await client.request(passwordRequest('admin@example.com'));
 
 ## Reset a Password
 
-The request a password reset endpoint sends an email with a link to the admin app (or a custom route) which in turn uses
-this endpoint to allow the user to reset their password.
+The request a password reset endpoint sends an email with a link to the Data Studio (or a custom route) which in turn
+uses this endpoint to allow the user to reset their password.
 
 ### Request
 

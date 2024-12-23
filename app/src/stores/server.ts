@@ -51,9 +51,34 @@ export type Info = {
 		default: number;
 		max: number;
 	};
+	websocket?:
+		| false
+		| {
+				logs?:
+					| false
+					| {
+							allowedLogLevels: Record<string, number>;
+					  };
+				rest?:
+					| false
+					| {
+							authentication: string;
+							path: string;
+					  };
+				graphql?:
+					| false
+					| {
+							authentication: string;
+							path: string;
+					  };
+				heartbeat?: boolean | number;
+		  };
 	version?: string;
 	extensions?: {
 		limit: number | null;
+	};
+	uploads?: {
+		chunkSize: number;
 	};
 };
 
@@ -68,6 +93,8 @@ export const useServerStore = defineStore('serverStore', () => {
 		extensions: undefined,
 		rateLimit: undefined,
 		queryLimit: undefined,
+		websocket: undefined,
+		uploads: undefined,
 	});
 
 	const auth = reactive<Auth>({
@@ -100,7 +127,9 @@ export const useServerStore = defineStore('serverStore', () => {
 		info.project = serverInfoResponse.data.data?.project;
 		info.queryLimit = serverInfoResponse.data.data?.queryLimit;
 		info.extensions = serverInfoResponse.data.data?.extensions;
+		info.websocket = serverInfoResponse.data.data?.websocket;
 		info.version = serverInfoResponse.data.data?.version;
+		info.uploads = serverInfoResponse.data.data?.uploads;
 
 		auth.providers = authResponse.data.data;
 		auth.disableDefault = authResponse.data.disableDefault;

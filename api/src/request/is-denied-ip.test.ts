@@ -3,13 +3,13 @@ import { randIp, randUrl } from '@ngneat/falso';
 import os from 'node:os';
 import type { Logger } from 'pino';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { ipInNetworks } from '../utils/ip-in-networks.js';
 import { isDeniedIp } from './is-denied-ip.js';
 
 vi.mock('node:os');
 vi.mock('@directus/env');
-vi.mock('../logger.js');
+vi.mock('../logger/index.js');
 vi.mock('../utils/ip-in-networks.js');
 
 let sample: {
@@ -108,7 +108,7 @@ test(`Returns true if IP matches resolved local network interface address`, asyn
 				netmask: '255.0.0.0',
 				family: 'IPv4',
 				mac: '00:00:00:00:00:00',
-				internal: true,
+				internal: false,
 				cidr: '127.0.0.1/8',
 			},
 		],
@@ -117,4 +117,26 @@ test(`Returns true if IP matches resolved local network interface address`, asyn
 	const result = isDeniedIp(sample.ip);
 
 	expect(result).toBe(true);
+});
+
+test(`Returns true if IP matches resolved to local loopback devices`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] });
+
+	vi.mocked(os.networkInterfaces).mockReturnValue({
+		fa0: undefined,
+		lo0: [
+			{
+				address: '127.0.0.1',
+				netmask: '255.0.0.0',
+				family: 'IPv4',
+				mac: '00:00:00:00:00:00',
+				internal: true,
+				cidr: '127.0.0.1/8',
+			},
+		],
+	});
+
+	expect(isDeniedIp('127.0.0.1')).toBe(true);
+	expect(isDeniedIp('127.8.16.32')).toBe(true);
+	expect(isDeniedIp('127.127.127.127')).toBe(true);
 });

@@ -1,7 +1,7 @@
 import { createInspector } from '@directus/schema';
 import type { RelationMeta } from '@directus/types';
 import type { Knex } from 'knex';
-import { useLogger } from '../../logger.js';
+import { useLogger } from '../../logger/index.js';
 import { getDefaultIndexName } from '../../utils/get-default-index-name.js';
 
 export async function up(knex: Knex): Promise<void> {
@@ -73,7 +73,7 @@ export async function up(knex: Knex): Promise<void> {
 				await knex(constraint.many_collection)
 					.update({ [constraint.many_field]: null })
 					.whereIn(currentPrimaryKeyField, ids);
-			} catch (err: any) {
+			} catch {
 				logger.error(
 					`${constraint.many_collection}.${constraint.many_field} contains illegal foreign keys which couldn't be set to NULL. Please fix these references and rerun this migration to complete the upgrade.`,
 				);

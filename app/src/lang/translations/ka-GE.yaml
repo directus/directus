@@ -60,6 +60,8 @@ fields:
     password: პაროლი
   directus_roles:
     description: აღწერა
+  directus_policies:
+    description: აღწერა
   directus_webhooks:
     status: სტატუსი
 field_options:

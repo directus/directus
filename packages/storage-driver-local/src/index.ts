@@ -1,16 +1,17 @@
-import type { Driver, Range } from '@directus/storage';
+import type { TusDriver, ChunkedUploadContext, ReadOptions } from '@directus/storage';
+import fsProm from 'fs/promises';
 import { createReadStream, createWriteStream } from 'node:fs';
 import { access, copyFile, mkdir, opendir, rename, stat, unlink } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
-import type { Readable } from 'node:stream';
+import stream, { type Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
 
 export type DriverLocalConfig = {
 	root: string;
 };
 
-export class DriverLocal implements Driver {
-	private root: string;
+export class DriverLocal implements TusDriver {
+	private readonly root: string;
 
 	constructor(config: DriverLocalConfig) {
 		this.root = resolve(config.root);
@@ -27,18 +28,20 @@ export class DriverLocal implements Driver {
 		await mkdir(dirpath, { recursive: true });
 	}
 
-	async read(filepath: string, range?: Range) {
-		const options: Parameters<typeof createReadStream>[1] = {};
+	async read(filepath: string, options?: ReadOptions) {
+		const { range } = options || {};
+
+		const stream_options: Parameters<typeof createReadStream>[1] = {};
 
 		if (range?.start) {
-			options.start = range.start;
+			stream_options.start = range.start;
 		}
 
 		if (range?.end) {
-			options.end = range.end;
+			stream_options.end = range.end;
 		}
 
-		return createReadStream(this.fullPath(filepath), options);
+		return createReadStream(this.fullPath(filepath), stream_options);
 	}
 
 	async stat(filepath: string) {
@@ -109,6 +112,63 @@ export class DriverLocal implements Driver {
 				yield* this.listGenerator(join(fileName, sep));
 			}
 		}
+	}
+
+	get tusExtensions() {
+		return ['creation', 'termination', 'expiration'];
+	}
+
+	async createChunkedUpload(filepath: string, context: ChunkedUploadContext): Promise<ChunkedUploadContext> {
+		const fullPath = this.fullPath(filepath);
+		await this.ensureDir(dirname(fullPath));
+
+		await fsProm.writeFile(fullPath, '');
+
+		return context;
+	}
+
+	async deleteChunkedUpload(filepath: string, _context: ChunkedUploadContext): Promise<void> {
+		await this.delete(filepath);
+	}
+
+	async finishChunkedUpload(_filepath: string, _context: ChunkedUploadContext): Promise<void> {}
+
+	async writeChunk(
+		filepath: string,
+		content: Readable,
+		offset: number,
+		_context: ChunkedUploadContext,
+	): Promise<number> {
+		const fullPath = this.fullPath(filepath);
+
+		const writeable = await fsProm.open(fullPath, 'r+').then((file) =>
+			file.createWriteStream({
+				start: offset,
+			}),
+		);
+
+		let bytes_received = 0;
+
+		const transform = new stream.Transform({
+			transform(chunk, _, callback) {
+				bytes_received += chunk.length;
+				callback(null, chunk);
+			},
+		});
+
+		return new Promise<number>((resolve, reject) => {
+			stream.pipeline(content, transform, writeable, (err) => {
+				if (err) {
+					return reject();
+				}
+
+				offset += bytes_received;
+
+				return resolve(offset);
+			});
+		}).then(async (offset) => {
+			return offset;
+		});
 	}
 }
 

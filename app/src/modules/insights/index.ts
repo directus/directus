@@ -29,6 +29,9 @@ export default defineModule({
 					name: 'panel-detail',
 					path: ':panelKey',
 					props: true,
+					meta: {
+						isFloatingView: true,
+					},
 					components: {
 						detail: InsightsPanelConfiguration,
 					},
@@ -37,14 +40,11 @@ export default defineModule({
 		},
 	],
 	preRegisterCheck(user, permissions) {
-		const admin = user.role.admin_access;
+		const admin = user.admin_access;
 
 		if (admin) return true;
 
-		const permission = permissions.find(
-			(permission) => permission.collection === 'directus_dashboards' && permission.action === 'read',
-		);
-
-		return !!permission;
+		const access = permissions['directus_dashboards']?.['read']?.access;
+		return access === 'partial' || access === 'full';
 	},
 });

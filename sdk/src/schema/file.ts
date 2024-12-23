@@ -3,7 +3,7 @@ import type { DirectusFolder } from './folder.js';
 import type { DirectusUser } from './user.js';
 
 // Base type for directus_files
-export type DirectusFile<Schema> = MergeCoreCollection<
+export type DirectusFile<Schema = any> = MergeCoreCollection<
 	Schema,
 	'directus_files',
 	{

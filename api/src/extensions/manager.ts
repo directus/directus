@@ -38,7 +38,7 @@ import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
 import { getFlowManager } from '../flows.js';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import * as services from '../services/index.js';
 import { deleteFromRequireCache } from '../utils/delete-from-require-cache.js';
 import getModuleDefault from '../utils/get-module-default.js';
@@ -209,7 +209,7 @@ export class ExtensionManager {
 		}
 
 		if (this.options.watch && !wasWatcherInitialized) {
-			this.updateWatchedExtensions(Array.from(this.localExtensions.values()));
+			this.updateWatchedExtensions([...this.extensions]);
 		}
 
 		this.messenger.subscribe(this.reloadChannel, (payload: Record<string, unknown>) => {
@@ -437,10 +437,7 @@ export class ExtensionManager {
 
 		const toPackageExtensionPaths = (extensions: Extension[]) =>
 			extensions
-				.filter(
-					(extension) =>
-						extension.local && extension.path.startsWith(extensionDir) && !extension.path.startsWith(registryDir),
-				)
+				.filter((extension) => extension.local && !extension.path.startsWith(registryDir))
 				.flatMap((extension) =>
 					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 						? [

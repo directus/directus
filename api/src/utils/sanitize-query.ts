@@ -3,7 +3,7 @@ import { InvalidQueryError } from '@directus/errors';
 import type { Accountability, Aggregate, Query } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
-import { useLogger } from '../logger.js';
+import { useLogger } from '../logger/index.js';
 import { Meta } from '../types/index.js';
 
 export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
@@ -125,7 +125,7 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 		try {
 			aggregate = parseJSON(rawAggregate);
 		} catch {
-			logger.warn('Invalid value passed for filter query parameter.');
+			logger.warn('Invalid value passed for aggregate query parameter.');
 		}
 	}
 
@@ -239,7 +239,7 @@ function sanitizeAlias(rawAlias: any) {
 	if (typeof rawAlias === 'string') {
 		try {
 			alias = parseJSON(rawAlias);
-		} catch (err) {
+		} catch {
 			logger.warn('Invalid value passed for alias query parameter.');
 		}
 	}

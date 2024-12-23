@@ -92,7 +92,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 	return next();
 });
 
-router.search('/:collection', collectionExists, validateBatch('read'), readHandler, respond);
+router.search('/:collection', collectionExists, validateBatch('read'), readHandler, mergeContentVersions, respond);
 router.get('/:collection', collectionExists, readHandler, mergeContentVersions, respond);
 
 router.get(

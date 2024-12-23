@@ -110,6 +110,7 @@ field_name_translations: Përkthimet e Emrit të Fushës
 enter_password_to_enable_tfa: Shkruaj fjalëkalimin për të aktivizuar Autentikimin me dy Faktorë
 add_field: Shto Fushë
 role_name: Emri i Rolit
+policy_name: Emri i drejtimit
 branch: Dega
 leaf: Gjethe
 indeterminate: Indeterminuar
@@ -127,6 +128,7 @@ requires_value: Kërkon vlerë
 create_preset: Krijo Parametrat e Paracaktuar
 create_panel: Krijo Panel
 create_role: Krijo Rol
+create_policy: Krijo drejtim
 create_user: Krijo Përdorues
 message: Mesazh
 delete_panel: Fshi Panelin
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Seanca ka skaduar
 public_label: Publik
 public_description: Kontrollon cilat të dhëna API janë në dispozicion pa autentifikim.
+public_role_info: >-
+  Roli publik kontrollon se cilat të dhëna API janë të disponueshme për përdoruesit e paautentikuar ose për ata pa rol. Kërkesat me rolin publik nuk mund të kenë akses në aplikacion ose administrim. Nëse një drejtimi të caktuar për rolin publik i jepet akses në aplikacion ose administrim, do të injorohet.
 admin_description: Roli administrativ fillestar me qasje të pakufizuar në Aplikacion/API.
+admin_policy_description: Drejtimi fillestar administrativ me akses të pakufizuar në Aplikacion/API.
 no_description: Pa përshkrim...
 reached_maximum_number_of_extensions: Keni arritur numrin maksimal të zgjerimeve për këtë projekt ({n}). Kontaktoni administratorin e sistemit tuaj për më shumë informacion.
 not_allowed: Nuk lejohet
@@ -255,9 +260,13 @@ field_permissions: Lejet e Fushës
 field_validation: Vleftësim i Fushës
 field_presets: Parametrat e Paracaktuar të Fushës
 permissions_for_role: 'Artikujt që Roli {role} mund të {action}.'
+permissions_for_policy: 'Artikujt që Drejtimi {policy} mund të {action}.'
 fields_for_role: 'Fushat që Roli {role} mund të {action}.'
+fields_for_policy: 'Fushat që Drejtimi {policy} mund të {action}.'
 validation_for_role: 'Rregullat e {action} të fushës që Roli {role} duhet të zbatojë.'
+validation_for_policy: 'Rregullat e {action} të fushës që Drejtimi {policy} duhet të ndjekë.'
 presets_for_role: 'Vlerat e paracaktuara të fushës për Rolin {role}.'
+presets_for_policy: 'Vlerat e paracaktuara të fushës për Drejtimin {policy}.'
 presets_field_warning: 'Parametrat e paracaktuar të marrëdhënies për fushën "{field}" duhet të konfigurohen me sint.'
 presentation_and_aliases: Prezantim & Pseudonime
 revision_post_create: Ja si dukej ky artikull kur u krijua.
@@ -363,6 +372,7 @@ no_collections_found: Nuk u gjetën koleksione.
 new_data_alert: 'Më poshtë do të krijohen brenda Modelit tuaj të të Dhënave:'
 search_collection: Kërko Koleksion...
 search_role: Kërko Rolin...
+search_policy: Kërko Drejtim...
 search_field: Kërko Fushë...
 new_field: 'Fushë e Re'
 new_collection: 'Koleksion i Ri'
@@ -403,6 +413,7 @@ soft_length: Kufi i Butë
 precision_scale: Saktësi & Shkallë
 readonly: Vetëm Lexim
 unique: Unike
+index: Index
 updated_on: Përditësuar më
 updated_by: Përditësuar nga
 primary_key: Çelësi Kryesor
@@ -513,6 +524,11 @@ hours: Orë
 month: Muaj
 year: Vit
 select_all: Zgjidh Të Gjitha
+permissionsLevel:
+  all: Akses i Plotë për {action}
+  partial: Akses i Pjesshëm për {action}
+  custom: Akses i Pjesshëm për {action}
+  none: Pa Akses për {action}
 months:
   january: Janar
   february: Shkurt
@@ -539,6 +555,7 @@ file_details: Detajet e Skedarit
 dimensions: Dimensionet
 size: Madhësia
 created: U krijua
+uploaded: I Ngarkuar
 modified: Modifikuar
 owner: Pronari
 edited_by: Redaktuar nga
@@ -595,7 +612,10 @@ allow_duplicates: Lejo Kopjet
 comments: Komente
 no_comments: Ende nuk ka komente
 expand: Zgjero
+expand_all: Zgjero të gjitha
+expand_none: Zgjero Asnjë
 collapse: Tkurre
+collapse_all: Mbledh të gjitha
 select_item: Zgjidh Artikull
 no_items: Asnjë artikull
 search_items: Kërko artikuj...
@@ -612,6 +632,7 @@ display_not_found: 'Shfaqja "{display}" nuk u gjet.'
 reset_display: Riaktivizo Shfaqjen
 list-m2a: Ndërtues (M2A)
 item_count: 'Asnjë Artikull | Një Artikull | {count} Artikuj'
+filtered_item_count: 'Asnjë Artikull i Filtruar | Një Artikull i Filtruar | {count} Artikuj të Filtruar'
 no_items_copy: Ende nuk ka artikuj në këtë koleksion.
 file_count: 'Asnjë Skedar | Një Skedar | {count} Skedarë'
 no_files_copy: Këtu nuk ka skedarë.
@@ -644,6 +665,7 @@ copy_to: Kopjo në...
 no_other_dashboards_copy: Ju nuk keni asnjë Dashboard tjetër ende.
 inactive: Joaktiv
 users: Përdorues
+roles: Rolet
 activity: Aktivitet
 activity_item: Artikull Aktiviteti
 action: Veprim
@@ -771,10 +793,9 @@ make_collection_hidden: Bëj Koleksionin të Fshehur
 make_folder_visible: Bëj Dosjen të Dukshme
 make_folder_hidden: Bëj Dosjen të Fshehur
 goto_collection_content: Shiko Përmbajtjen
-start_end_of_count_items: '{start}-{end} nga {count} artikuj'
-start_end_of_count_filtered_items: '{start}-{end} nga {count} artikuj të filtruar'
-one_item: '1 artikull'
-one_filtered_item: '1 artikull i filtruar'
+count_of_total_items: '{count} nga {total} Artikuj'
+start_end_of_count_items: '{start}-{end} nga {count} Artikuj'
+start_end_of_count_filtered_items: '{start}-{end} nga {count} Artikuj të Filtruar'
 delete_collection_are_you_sure: >-
   Jeni i sigurt që doni të fshini koleksionin "{collection}"? Kjo do të fshijë koleksionin dhe të gjithë artikujt brenda tij. Ky veprim është i përhershëm.
 delete_folder_are_you_sure: Jeni i sigurt që doni të fshini dosjen "{folder}"? Dosjet e brendshme dhe koleksionet do të zhvendosen në nivelin më të lartë.
@@ -861,12 +882,13 @@ columns: Kolona
 collection_setup: Setup i Koleksionit
 optional_system_fields: Fushat Opsionale
 value_unique: Vlera duhet të jetë unike
+value_index: Fusha është e indeksuar
 all_activity: Të Gjitha Aktivitetet
 create_item: Krijo Artikull
 display_template: Shabllon i Shfaqjes
 language_display_template: Shabllon i Shfaqjes së Gjuhës
 translations_display_template: Shabllon i Shfaqjes së Përkthimeve
-n_items_selected: 'Nuk janë Zgjedhur Artikuj | 1 Artikull i Zgjedhur | {n} Artikuj të Zgjedhur'
+n_items_selected: 'Asnjë Artikull i Zgjedhur | Një Artikull i Zgjedhur | {n} Artikuj të Zgjedhur'
 per_page: Për Faqe
 all_files: Të gjitha Skedarët
 my_files: Skedarët e mi
@@ -978,6 +1000,22 @@ no_data_in_flow: Nuk u prodhua ose u aksesua asnjë të dhënë brenda kësaj Rr
 accountability: Përgjegjësia
 payload: Ngarkesa
 details: Detajet
+resume_streaming_logs: Rifillo Transmetimin e Regjistrave
+pause_streaming_logs: Ndalo Transmetimin e Regjistrave
+logs_session_resumed: Seanca e regjistrave u rifillua...
+logs_session_paused: Seanca e regjistrave u ndal...
+logs_stream_disconnected: Transmetimi i regjistrave u shkëput...
+log_detail_filter_paths: 'Filtro Rrugët (p.sh.: req.method, res.statusCode)'
+logs_beginning: Ky është fillimi i seancës suaj të regjistrave...
+logs_waiting: 'Duke pritur më shumë regjistra...'
+logs_unread_count: '{count} të palexuara'
+clear_logs: Pastro Regjistrat
+search_logs: Kërko në Regjistra...
+all_instances: Të Gjitha Instancat
+instance_count: 'Asnjë Instancë | Një Instancë | {count} Instanca'
+all_log_levels: Të Gjitha Nivelet e Regjistrave
+log_level_count: 'Asnjë Nivel Regjistri | Një Nivel Regjistri | {count} Nivele Regjistri'
+soft_wrap_lines: Mbështjell Rreshtat e Butë
 full_screen: Ekran i Plotë
 full_text_search: Kërkim i Plotë i Tekstit
 edit_panels: Modifiko Panelet
@@ -1006,8 +1044,7 @@ tooltip: Ndihmë
 tooltip_placeholder: Shkruaj një ndihmë...
 unlimited: I pakufizuar
 open_link_in: Hap lidhjen në
-new_tab: Skedë të re
-current_tab: Skedën aktuale
+new_tab: Skedë e Re
 save_image: Ruaj Imazhin
 save_media: Ruaj Median
 wysiwyg_options:
@@ -1081,11 +1118,13 @@ editing_unit: 'Po modifikohet {unit}'
 editing_in_batch: 'Modifikim në masë i {count} artikujve'
 no_options_available: Nuk ka opsione të disponueshme
 settings_data_model: Modeli i të Dhënave
-settings_permissions: Kontrolli i Qasjes
+settings_roles: Rolet e Përdoruesve
+settings_permissions: Drejtimet e Aksesit
 settings_project: Parametra
 settings_appearance: Pamja
 settings_webhooks: Webhooks
 settings_flows: Rrjedha
+settings_system_logs: Regjistrat e Sistemit
 settings_presets: Faqerojtësit
 settings_translations: Përkthimet
 one_or_more_options_are_missing: Mungon një ose më shumë opsione
@@ -1131,7 +1170,10 @@ page_help_settings_datamodel_collections: >-
   **Modeli i të Dhënave: Koleksionet** — Liston të gjitha koleksionet e disponueshme. Kjo përfshin koleksionet e dukshme, të fshehura dhe sistemit, si dhe tabelat e menaxhuara të bazës së të dhënave që mund të shtohen.
 page_help_settings_datamodel_fields: >-
   **Modeli i të Dhënave: Koleksioni** — Një formë për menaxhimin e këtij koleksioni dhe fushave të tij.
-page_help_settings_roles_collection: '**Shfleto Rolet** — Liston rolet e Administratorit, Publikut dhe rolet e personalizuara të Përdoruesit.'
+page_help_settings_system_logs: '**Regjistrat e Sistemit** — Aksesoni një transmetim të drejtpërdrejtë të regjistrave të sistemit.'
+page_help_settings_policies_collection: '**Shfleto Drejtimet** — Rendit të gjithë drejtimet brenda projektit.'
+page_help_settings_policies_item: "**Detajet e Drejtimit** — Menaxho lejet dhe cilësimet e tjera të një drejtimi."
+page_help_settings_roles_collection: '**Shfleto Rolet** — Rendit të gjithë rolet e përdoruesve brenda projektit.'
 page_help_settings_roles_item: "**Detajet e Rolit** — Menaxho lejet e rolit dhe cilësimet e tjera."
 page_help_settings_presets_collection: >-
   **Shfleto Cilësimet e Paracaktuara** — Liston të gjitha cilësimet e paracaktuara në projekt, duke përfshirë: faqerojtësit e përdoruesit, rolit dhe globalë, si dhe pamjet e paracaktuara.
@@ -1179,8 +1221,10 @@ singleton: Singleton
 singleton_label: Trajto si objekt të vetëm
 system_fields_locked: Fushat e sistemit janë të bllokuara dhe nuk mund të redaktohen
 directus_collection:
+  directus_access: Bashkëngjitjet e Drejtimit
   directus_activity: Regjistrat e përgjegjshëm për të gjitha eventet
   directus_collections: Konfigurimi shtesë i koleksionit dhe metadata
+  directus_comments: Komente për artikujt​​​​​​​​​​​​​​​​
   directus_dashboards: Dashboards brenda modulit të Insights
   directus_fields: Konfigurimi shtesë i fushave dhe metadata
   directus_files: Metadata për të gjitha asetet e menaxhuara të skedarëve
@@ -1190,7 +1234,8 @@ directus_collection:
   directus_notifications: Njoftimet e dërguara për përdoruesit
   directus_operations: Operacionet që drejtohen në Flujot
   directus_panels: Panelet individuale brenda kokpitëve të Insights
-  directus_permissions: Lejet e qasjes për çdo rol
+  directus_permissions: Lejet e aksesit për çdo drejtim
+  directus_policies: Drejtimet e kontrollit të aksesit
   directus_presets: Cilësimet e paracaktuara për parazgjedhjet e koleksionit dhe faqerojtësit
   directus_relations: Konfigurimi i marrëdhënieve dhe metadata
   directus_revisions: Instantanet e të dhënave për të gjithë aktivitetin
@@ -1367,12 +1412,16 @@ fields:
     name: Emri i Rolit
     icon: Ikona e Rolit
     description: Përshkrim
-    app_access: Qasja në Aplikacion
-    admin_access: Qasja Admin
-    ip_access: Qasja IP
-    enforce_tfa: Kërko 2FA
     users: Përdoruesit në Rol
-    module_list: Navigacioni i Moduleve
+    parent: Roli Prind
+    children: Rolet Fëmijë
+  directus_policies:
+    name: Emri i drejtimit
+    description: Përshkrim
+    app_access: Aksesi në Aplikacion
+    admin_access: Aksesi Administrativ
+    ip_access: Aksesi me IP
+    enforce_tfa: Kërko 2FA
   directus_webhooks:
     name: Emri
     method: Metoda
@@ -1455,16 +1504,23 @@ field_options:
     focal_point_divider: Pika Fokale
     filename_disk: Emri në ruajtjen disk...
     filename_download: Emri gjatë shkarkimit...
+  directus_policies:
+    name: Një emër unik për këtë drejtim...
+    description: Një përshkrim për këtë drejtim...
+    ip_access: Shto adresat IP të lejuara, rangjet IP dhe blloqet CIDR. Lëre bosh për të lejuar të gjitha...
+    enforce_tfa: Zbato Autentifikimin me Dy Faktorë
+    assigned_to: I Caktuar Tek
   directus_roles:
     name: Emri unik për këtë rol...
     description: Përshkrimi i këtij roli...
-    ip_access: Shto adresat e lejuara të IP-së, gamat e IP-së dhe blloqet CIDR. Lëre bosh për të lejuar të gjitha...
     fields:
       icon_name: Ikonë
       name_name: Emri
       name_placeholder: Shkruani një titull...
       link_name: Lidhje
       link_placeholder: URL relative ose absolute...
+    parent_note: Roli prind opsional nga i cili ky rol trashëgon lejet
+    children_note: Rolet fëmijë të mbivendosura që trashëgojnë lejet e këtij roli
     collections_name: Koleksione
     collections_addLabel: Shto Koleksion...
   directus_users:
@@ -1515,7 +1571,7 @@ live_preview:
   toggle_3d: Ndëro 3D
 shares: Ndaj
 unlimited_usage: Përdorim i Pakufizuar
-uses_left: S'ka mbetur asnjë përdorim | 1 përdorim i mbetur | {n} përdorime të mbetura
+uses_left: Asnjë përdorim i mbetur | Një përdorim i mbetur | {n} përdorime të mbetura
 no_shares: Asnjë ndarje për t'u shfaqur
 new_share: Ndarje e Re
 expired: Skaduar
@@ -1549,6 +1605,9 @@ continue_label: Vazhdo
 continue_as: >-
   {name} është aktualisht i autentifikuar. Nëse njihni këtë llogari, shtypni vazhdo.
 editing_role: 'Roli {role}'
+editing_policy: 'Drejtimi {policy}'
+no_permissions: Pa Leje
+permission_add_collection: Shto Koleksion
 creating_webhook: Po krijohet Webhook
 default_label: Parazgjedhur
 delete_label: Fshi
@@ -1648,6 +1707,8 @@ navigate_to_item: Shko tek Artikulli
 undo_removed_item: Zhbëj Hiqjen e Artikullit
 remove_item: Hiq Artikullin
 delete_item: Fshi Artikullin
+pause: Ndalo
+resume: Rivendos
 interfaces:
   list-m2a:
     prefix_note: Përdor emrin e koleksionit të artikullit të lidhur si parazgjedhje.
@@ -1780,6 +1841,8 @@ interfaces:
     description: Zgjidh ose ngarko një imazh
     crop: Prerje për Përshtatje
     crop_label: Prerë imazhin sipas nevojës
+    letterbox: Kutia e letrave​​​​​​​​​​​​​​​​
+    letterbox_label: Shto mbushje në pamjen paraprake të imazhit​​​​​​​​​​​​​​​​
   system-interface:
     interface: Ndërfaqe
     description: Zgjidh një ndërfaqe ekzistuese
@@ -1813,6 +1876,9 @@ interfaces:
     preview: Parashiko
     editorFont: Fonti i Redaktorit
     previewFont: Fonti i Parashikimit
+    default_view: Pamja e Paracaktuar
+    default_view_editor: Redaktori
+    default_view_preview: Parashiko
     customSyntax: Blloqe të Personalizuara
     customSyntax_label: Shto lloje të personalizuara të sintaksës
     customSyntax_add: Shto sintaksë të personalizuar
@@ -1996,6 +2062,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Redaktor i Papërpunuar
     description: Lejo futjen e vlerave të papërpunuara ose të vlerave të modelit të mustaqes
+  input-password:
+    input-password: Fut Fjalëkalimin
+    description: Hyrja e fjalëkalimit me mundësi për të fshehur vlerën
 displays:
   translations:
     translations: Përkthimet
@@ -2187,7 +2256,6 @@ layouts:
     show_ungrouped: Shfaq të Pagrupuar
     show: Shfaq
     no_group: Asnjë Grup
-    not_all_loaded: Mund të ngarkohen vetëm 1000 artikujt e parë.
 horizontal: Horizontal
 vertical: Vertikal
 axis: Boshti
@@ -2440,3 +2508,5 @@ duplicate_dashboard: Dupliko Panelin
 search_dashboard: Kërko në Panel...
 search_flow: Kërko në Rrjedhë...
 percent: Përqind
+show_password: Shfaq fjalëkalimin
+hide_password: Fshih fjalëkalimin
