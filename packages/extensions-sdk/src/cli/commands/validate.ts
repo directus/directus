@@ -8,7 +8,7 @@ export default async function validate(): Promise<void> {
 	const spinner = ora(chalk.bold('Validating Directus extension...')).start();
 
 	try {
-		await Promise.all([checkBuiltCode(), checkReadMe(), checkLicense(), checkDirectusConfig()]);
+		await Promise.all([checkDirectusConfig(), checkBuiltCode(), checkReadMe(), checkLicense()]);
 
 		spinner.succeed(chalk.bold('Extension is valid'));
 	} catch (error) {
@@ -18,15 +18,26 @@ export default async function validate(): Promise<void> {
 }
 
 async function checkBuiltCode() {
-	const spinner = ora('Check for /dist').start();
+	const spinner = ora('Check for built code').start();
 
-	if (!(await fse.pathExists(`${process.cwd()}/dist`))) {
-		spinner.fail();
-		return Promise.reject('No /dist directory');
+	let codePath = '/dist';
+
+	if (await fse.pathExists(`${process.cwd()}/package.json`)) {
+		const packageFile = await fse.readJson(`${process.cwd()}/package.json`);
+
+		if (packageFile[EXTENSION_PKG_KEY]) {
+			const { path } = packageFile[EXTENSION_PKG_KEY];
+			spinner.text = `Path ${path} found in ${EXTENSION_PKG_KEY}`;
+			codePath = path;
+		}
 	}
 
-	spinner.succeed('Valid /dist');
-	return true;
+	if (!(await fse.pathExists(`${process.cwd()}/${codePath}`))) {
+		spinner.fail();
+		throw new Error(`No ${codePath} directory`);
+	}
+
+	return spinner.succeed('Valid built code directory');
 }
 
 async function checkReadMe() {
@@ -34,11 +45,10 @@ async function checkReadMe() {
 
 	if (!(await fse.pathExists(`${process.cwd()}/README.md`))) {
 		spinner.fail();
-		return Promise.reject('No README.md');
+		throw new Error('No README.md');
 	}
 
-	spinner.succeed('Valid README');
-	return true;
+	return spinner.succeed('Valid README');
 }
 
 async function checkLicense() {
@@ -46,11 +56,10 @@ async function checkLicense() {
 
 	if (!(await fse.pathExists(`${process.cwd()}/LICENSE`))) {
 		spinner.fail();
-		return Promise.reject('No LICENSE file');
+		throw new Error('No LICENSE file');
 	}
 
-	spinner.succeed('Valid LICENSE');
-	return true;
+	return spinner.succeed('Valid LICENSE');
 }
 
 async function checkDirectusConfig() {
@@ -60,16 +69,18 @@ async function checkDirectusConfig() {
 
 	if (!(await fse.pathExists(`${process.cwd()}/package.json`))) {
 		spinner.fail();
-		return Promise.reject('No package.json');
+		throw new Error('No package.json');
 	}
 
-	const packageFile = await fse.readJson(`${process.cwd()}/package.json`);
+	const packageFile = await fse.readJson(
+		`/Users/michael.elsmore/Development/directus-extensions/packages/spreadsheet-layout/package.json`,
+	);
 
 	spinner.text = `Checking ${EXTENSION_PKG_KEY} is present`;
 
 	if (!packageFile[EXTENSION_PKG_KEY]) {
 		spinner.fail();
-		return Promise.reject('Directus object not found');
+		throw new Error('Directus object not found');
 	}
 
 	const { type, path, host } = packageFile[EXTENSION_PKG_KEY];
@@ -78,14 +89,14 @@ async function checkDirectusConfig() {
 
 	if (!EXTENSION_TYPES.includes(type)) {
 		spinner.fail();
-		return Promise.reject(`Invalid Directus Extension Type: ${type}`);
+		throw new Error(`Invalid Directus Extension Type: ${type}`);
 	}
 
 	spinner.text = `Checking extension path`;
 
 	if (!(await fse.pathExists(`${process.cwd()}/${path}`))) {
 		spinner.fail();
-		return Promise.reject(`Extension path ${path} invalid`);
+		throw new Error(`Extension path ${path} invalid`);
 	}
 
 	spinner.text = 'Checking for valid Directus host version';
@@ -94,9 +105,8 @@ async function checkDirectusConfig() {
 
 	if (!regex.test(host)) {
 		spinner.fail();
-		return Promise.reject(`${host} not a valid Directus version`);
+		throw new Error(`${host} not a valid Directus version`);
 	}
 
-	spinner.succeed(`Valid ${EXTENSION_PKG_KEY} Object`);
-	return true;
+	return spinner.succeed(`Valid ${EXTENSION_PKG_KEY} Object`);
 }
