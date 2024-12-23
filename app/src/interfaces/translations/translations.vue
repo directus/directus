@@ -12,7 +12,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
-import { isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
@@ -86,7 +86,7 @@ const query = ref<RelationQueryMultiple>({
 	page: 1,
 });
 
-const { create, update, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
+const { create, update, remove, isLocalItem, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
@@ -97,12 +97,20 @@ const firstItem = computed(() => {
 	const item = getItemWithLang(displayItems.value, firstLang.value);
 	if (item === undefined) return undefined;
 
+	const itemEdits = getItemEdits(item);
+
+	if (isEmpty(itemEdits) && item.$type === 'deleted') return item;
+
 	return getItemEdits(item);
 });
 
 const secondItem = computed(() => {
 	const item = getItemWithLang(displayItems.value, secondLang.value);
 	if (item === undefined) return undefined;
+
+	const itemEdits = getItemEdits(item);
+
+	if (isEmpty(itemEdits) && item.$type === 'deleted') return item;
 
 	return getItemEdits(item);
 });
@@ -118,7 +126,7 @@ function getItemWithLang<T extends Record<string, any>>(items: T[], lang: string
 	return items.find((item) => item?.[langField]?.[relatedPKField] === lang);
 }
 
-function updateValue(item: DisplayItem, lang: string | undefined) {
+function updateValue(item: DisplayItem | undefined, lang: string | undefined) {
 	const info = relationInfo.value;
 	if (!info) return;
 
@@ -273,7 +281,7 @@ const firstItemNew = computed(() => !!(relationInfo.value && firstItemPrimaryKey
 const secondItemNew = computed(() => !!(relationInfo.value && secondItemPrimaryKey.value === undefined));
 
 const {
-	itemPermissions: { saveAllowed: firstSaveAllowed, fields: firstFields },
+	itemPermissions: { saveAllowed: firstSaveAllowed, fields: firstFields, deleteAllowed: firstDeleteAllowed },
 } = usePermissions(
 	computed(() => relationInfo.value?.junctionCollection.collection ?? null),
 	firstItemPrimaryKey,
@@ -281,12 +289,55 @@ const {
 );
 
 const {
-	itemPermissions: { saveAllowed: secondSaveAllowed, fields: secondFields },
+	itemPermissions: { saveAllowed: secondSaveAllowed, fields: secondFields, deleteAllowed: secondDeleteAllowed },
 } = usePermissions(
 	computed(() => relationInfo.value?.junctionCollection.collection ?? null),
 	secondItemPrimaryKey,
 	secondItemNew,
 );
+
+function getDeselectTooltip(item?: DisplayItem) {
+	if (!item) return 'create_item';
+	if (item.$type === 'deleted') return 'undo_removed_item';
+	if (isLocalItem(item)) return 'delete_item';
+	return 'remove_item';
+}
+
+function getIconName(item?: DisplayItem) {
+	if (!item) return 'check_box_outline_blank';
+	if (item.$type === 'deleted') return 'settings_backup_restore';
+	return 'check_box';
+}
+
+function onToggleTranslation(lang?: string, item?: DisplayItem, itemInitial?: DisplayItem) {
+	if (!isEmpty(item)) {
+		remove(item);
+		return;
+	}
+
+	if (!isEmpty(itemInitial)) {
+		remove(itemInitial);
+		return;
+	}
+
+	updateValue(item, lang);
+}
+
+const firstItemDisabled = computed(() => {
+	return (
+		props.disabled ||
+		(!firstItem.value && !firstSaveAllowed.value) ||
+		(firstItem.value && !firstDeleteAllowed.value && !isLocalItem(firstItem.value))
+	);
+});
+
+const secondItemDisabled = computed(() => {
+	return (
+		props.disabled ||
+		(!secondItem.value && !secondSaveAllowed.value) ||
+		(secondItem.value && !secondDeleteAllowed.value && !isLocalItem(secondItem.value))
+	);
+});
 
 useNestedValidation();
 
@@ -348,7 +399,22 @@ function useNestedValidation() {
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
 		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select v-if="showLanguageSelect" v-model="firstLang" :items="languageOptions">
+			<language-select
+				v-if="showLanguageSelect"
+				v-model="firstLang"
+				:items="languageOptions"
+				:danger="firstItem?.$type === 'deleted'"
+			>
+				<template #prepend>
+					<v-icon
+						v-tooltip="!firstItemDisabled ? t(getDeselectTooltip(firstItem)) : null"
+						class="toggle"
+						:disabled="firstItemDisabled"
+						:name="getIconName(firstItem)"
+						clickable
+						@click.stop="onToggleTranslation(firstLang, firstItem, firstItemInitial)"
+					/>
+				</template>
 				<template #append="{ active, toggle }">
 					<v-icon
 						v-if="splitViewAvailable && !splitViewEnabled"
@@ -370,7 +436,8 @@ function useNestedValidation() {
 						? firstItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
 						: null
 				"
-				:disabled="disabled || !firstSaveAllowed"
+				:class="{ unselected: !firstItem }"
+				:disabled="disabled || !firstSaveAllowed || firstItem?.$type === 'deleted'"
 				:loading="loading"
 				:fields="firstFields"
 				:model-value="firstItem"
@@ -383,8 +450,24 @@ function useNestedValidation() {
 			/>
 			<v-divider />
 		</div>
+
 		<div v-if="splitViewEnabled" class="secondary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select v-model="secondLang" :items="languageOptions" secondary>
+			<language-select
+				v-model="secondLang"
+				:items="languageOptions"
+				secondary
+				:danger="secondItem?.$type === 'deleted'"
+			>
+				<template #prepend>
+					<v-icon
+						v-tooltip="!secondItemDisabled ? t(getDeselectTooltip(secondItem)) : null"
+						class="toggle"
+						:disabled="secondItemDisabled"
+						:name="getIconName(secondItem)"
+						clickable
+						@click.stop="onToggleTranslation(secondLang, secondItem, secondItemInitial)"
+					/>
+				</template>
 				<template #append>
 					<v-icon
 						v-tooltip="t('interfaces.translations.toggle_split_view')"
@@ -402,7 +485,8 @@ function useNestedValidation() {
 						? secondItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
 						: null
 				"
-				:disabled="disabled || !secondSaveAllowed"
+				:class="{ unselected: !secondItem }"
+				:disabled="disabled || !secondSaveAllowed || secondItem?.$type === 'deleted'"
 				:loading="loading"
 				:initial-values="secondItemInitial"
 				:fields="secondFields"
@@ -423,21 +507,37 @@ function useNestedValidation() {
 .translations {
 	@include form-grid;
 
+	.toggle:not(.has-click) {
+		--v-icon-color: var(--theme--primary-subdued);
+	}
+
 	.v-form {
 		--theme--form--row-gap: 32px;
 		--v-chip-color: var(--theme--primary);
 		--v-chip-background-color: var(--theme--primary-background);
 
 		margin-top: 32px;
-	}
 
-	.primary {
-		.v-divider {
-			--v-divider-color: var(--theme--primary-subdued);
+		&.unselected {
+			opacity: 0.5;
+
+			&:hover,
+			&:focus-within {
+				opacity: 1;
+			}
 		}
 	}
 
+	.v-divider {
+		--v-divider-color: var(--theme--primary-subdued);
+		margin-top: var(--theme--form--row-gap);
+	}
+
 	.secondary {
+		.toggle:not(.has-click) {
+			--v-icon-color: var(--theme--secondary-subdued);
+		}
+
 		.v-form {
 			--primary: var(--theme--secondary);
 			--v-chip-color: var(--theme--secondary);
@@ -446,13 +546,6 @@ function useNestedValidation() {
 
 		.v-divider {
 			--v-divider-color: var(--secondary-50);
-		}
-	}
-
-	.primary,
-	.secondary {
-		.v-divider {
-			margin-top: var(--theme--form--row-gap);
 		}
 	}
 }
