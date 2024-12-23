@@ -42,6 +42,12 @@ watch(provider, () => {
 	requiresTFA.value = false;
 });
 
+watch(requiresTFA, (newValue: boolean) => {
+  if (newValue) {
+    error.value = null;
+  }
+});
+
 const errorFormatted = computed(() => {
 	// Show "Wrong username or password" for wrongly formatted emails as well
 	if (error.value === 'INVALID_PAYLOAD') {
