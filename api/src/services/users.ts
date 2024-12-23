@@ -108,10 +108,14 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
-	 * Clear users sessions when its status is no longer "active"
+	 * Clear users sessions when security data changes
 	 */
-	private async clearUserSessions(userKeys: PrimaryKey[]): Promise<void> {
-		await this.knex.from('directus_sessions').whereIn('user', userKeys).delete();
+	private async clearUserSessions(userKeys: PrimaryKey[], excludeSession?: string): Promise<void> {
+		if (excludeSession) {
+			await this.knex.from('directus_sessions').whereIn('user', userKeys).andWhereNot('token', '=', excludeSession).delete();
+		} else {
+			await this.knex.from('directus_sessions').whereIn('user', userKeys).delete();
+		}
 	}
 
 	/**
@@ -299,8 +303,15 @@ export class UsersService extends ItemsService {
 
 		const result = await super.updateMany(keys, data, opts);
 
+		// clear all user sessions when the status changes
 		if (data['status'] !== undefined && data['status'] !== 'active') {
 			await this.clearUserSessions(keys);
+		}
+
+		// clear the user sessions with the exception of the current session if known
+		// note: this will log users out if these properties are changed by another user.
+		if (data['password'] !== undefined || data['email'] !== undefined) {
+			await this.clearUserSessions(keys, this.accountability?.session);
 		}
 
 		// Only clear the caches if the role has been updated
