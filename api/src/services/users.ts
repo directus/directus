@@ -303,14 +303,12 @@ export class UsersService extends ItemsService {
 
 		const result = await super.updateMany(keys, data, opts);
 
-		// clear all user sessions when the status changes
 		if (data['status'] !== undefined && data['status'] !== 'active') {
+			// clear all user sessions when the status changes
 			await this.clearUserSessions(keys);
-		}
-
-		// clear the user sessions with the exception of the current session if known
-		// note: this will log users out if these properties are changed by another user.
-		if (data['password'] !== undefined || data['email'] !== undefined) {
+		} else if (data['password'] !== undefined || data['email'] !== undefined) {
+			// clear the user sessions with the exception of the current session if known
+			// note: this will log users out if these properties are changed by another user.
 			await this.clearUserSessions(keys, this.accountability?.session);
 		}
 
