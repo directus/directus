@@ -25,7 +25,7 @@ export async function extractData(response: unknown) {
 			return result;
 		}
 
-		if (response.ok && response.status === 204) {
+		if (response.status === 204) {
 			return null;
 		}
 
