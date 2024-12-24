@@ -87,6 +87,10 @@ export function createMetrics() {
 			return;
 		}
 
+		if (env['CACHE_STORE'] === 'redis' && redisConfigAvailable() !== true) {
+			return;
+		}
+
 		const { cache } = getCache();
 
 		if (!cache) {
