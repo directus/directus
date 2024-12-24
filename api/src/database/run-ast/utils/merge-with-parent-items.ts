@@ -13,6 +13,7 @@ export function mergeWithParentItems(
 ) {
 	const env = useEnv();
 	const nestedItems = toArray(nestedItem);
+	const returnArray = Array.isArray(parentItem);
 	const parentItems = clone(toArray(parentItem));
 
 	if (nestedNode.type === 'm2o') {
@@ -34,7 +35,17 @@ export function mergeWithParentItems(
 		for (const nestedItem of nestedItems) {
 			const nestedPK = nestedItem[nestPrimaryKeyField];
 
-			for (const parentItem of parentsByForeignKey.get(nestedPK)!) {
+			if (nestedPK === null) {
+				continue;
+			}
+
+			const parentItems = parentsByForeignKey.get(nestedPK);
+
+			if (!parentItems) {
+				continue;
+			}
+
+			for (const parentItem of parentItems) {
 				parentItem[nestedNode.fieldKey] = nestedItem;
 			}
 		}
@@ -46,10 +57,16 @@ export function mergeWithParentItems(
 
 		const parentsByPrimaryKey = new Map<PrimaryKey, Item>();
 
-		parentItems.forEach((parentItem: Item) => {
-			if (!parentItem[parentRelationField]) parentItem[parentRelationField] = [];
+		for (parentItem of parentItems) {
+			if (!parentItem[parentRelationField]) {
+				parentItem[parentRelationField] = [];
+			}
 
 			const parentPrimaryKey = parentItem[parentPrimaryKeyField];
+
+			if (parentPrimaryKey === null) {
+				continue;
+			}
 
 			if (parentsByPrimaryKey.has(parentPrimaryKey)) {
 				throw new Error(
@@ -58,20 +75,26 @@ export function mergeWithParentItems(
 			}
 
 			parentsByPrimaryKey.set(parentPrimaryKey, parentItem);
-		});
+		}
 
 		const toAddToAllParents: Item[] = [];
 
-		nestedItems.forEach((nestedItem) => {
-			if (nestedItem === null) return;
+		for (const nestedItem of nestedItems) {
+			if (nestedItem === null) {
+				continue;
+			}
 
 			if (Array.isArray(nestedItem[nestedParentKeyField])) {
 				toAddToAllParents.push(nestedItem); // TODO explain this odd case
-				return; // Avoids adding the nestedItem twice
+				continue; // Avoids adding the nestedItem twice
 			}
 
 			const parentPrimaryKey =
 				nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField] ?? nestedItem[nestedParentKeyField];
+
+			if (parentPrimaryKey === null) {
+				continue;
+			}
 
 			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey);
 
@@ -82,7 +105,7 @@ export function mergeWithParentItems(
 			}
 
 			parentItem[parentRelationField].push(nestedItem);
-		});
+		}
 
 		for (const [index, parentItem] of parentItems.entries()) {
 			if (fieldAllowed === false || (isArray(fieldAllowed) && !fieldAllowed[index])) {
@@ -150,5 +173,5 @@ export function mergeWithParentItems(
 		}
 	}
 
-	return Array.isArray(parentItem) ? parentItems : parentItems[0];
+	return returnArray ? parentItems : parentItems[0];
 }
