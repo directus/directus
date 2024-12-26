@@ -362,6 +362,7 @@ fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung suchen...
+search_role: Suche Rolle...
 search_policy: '" Suchrichtlinien "...'
 search_field: Suchfeld...
 new_field: 'Neues Feld'
@@ -449,6 +450,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
 presentation_text_values_cannot_be_reimported: 'Verwendet Präsentationstext, Werte können nicht neu importiert werden.'
 download_page_as_csv: 'Als CSV herunterladen'
+download_page_as_csv_unsupported: Dieses Layout unterstützt das Herunterladen der aktuellen Seite nicht.
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
 revision_preview: Überarbeitungs-Vorschau
@@ -513,6 +515,9 @@ hours: Stunden
 month: Monat
 year: Jahr
 select_all: Alle auswählen
+permissionsLevel:
+  all: Voller {action} Zugriff
+  none: Kein {action} Zugriff
 months:
   january: Januar
   february: Februar
@@ -592,7 +597,9 @@ allow_duplicates: Duplikate erlauben
 comments: Kommentare
 no_comments: Noch keine Kommentare
 expand: Ausklappen
+expand_all: Alles aufklappen
 collapse: Einklappen
+collapse_all: Alle einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen ...
@@ -855,6 +862,7 @@ columns: Spalten
 collection_setup: Einrichtung Sammlung
 optional_system_fields: Optionale Felder
 value_unique: Wert muss eindeutig sein
+value_index: Feld ist indiziert
 all_activity: Alle Aktivitäten
 create_item: Element erstellen
 display_template: Anzeigevorlage
@@ -971,8 +979,11 @@ no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
 payload: Nutzdaten
 details: Details
+resume_streaming_logs: Streaming-Logs fortsetzen
+pause_streaming_logs: Streaming-Logs pausieren
 logs_session_paused: '"Log Sitzung pausiert"'
 logs_beginning: '"Dies ist der Anfang Deiner Log-Sitzung"......'
+logs_waiting: 'Warte auf weitere Protokolle...'
 logs_unread_count: '{count} ungelesen'
 clear_logs: Logs leeren
 search_logs: Logs suchen...
@@ -1187,6 +1198,8 @@ directus_collection:
   directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_operations: In Flows ausgeführte Operationen
   directus_panels: Individuelle Panels in Einblicke-Dashboards
+  directus_permissions: Zugriffsrechte für jede Richtlinie
+  directus_policies: Zugriffskontrollrichtlinien
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
@@ -1271,6 +1284,7 @@ fields:
     status: Status
     status_draft: Entwurf
     status_invited: Eingeladen
+    status_unverified: Ungeprüft
     status_active: Aktiv
     status_suspended: Gesperrt
     status_archived: Archiviert
@@ -1292,6 +1306,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Berichte
     mapping: Kartografie
     basemaps: Basiskarte
     basemaps_raster: Raster
@@ -1538,6 +1553,8 @@ continue_label: Weiter
 continue_as: >-
   {name} ist derzeit angemeldet. Wenn Sie dieses Konto kennen, drücken Sie auf Fortfahren.
 editing_role: '{role} Rolle'
+editing_policy: '{policy} Richtlinie'
+no_permissions: Keine Berechtigungen
 permission_add_collection: Sammlung hinzufügen
 creating_webhook: Webhook erstellen
 default_label: Standard
@@ -1584,6 +1601,7 @@ authenticated: Authentifiziert
 options: Optionen
 otp: Einmaliges Passwort
 password: Passwort
+confirm_password: Passwort bestätigen
 permissions: Berechtigungen
 relationship: Beziehung
 reset: Zurücksetzen
@@ -1600,6 +1618,12 @@ select_field_type: Feldtyp wählen
 select_interface: Wähle eine Schnittstelle
 select_display: Anzeige auswählen
 settings: Einstellungen
+register: Registrieren
+registration_successful_headline: Erfolgreich!
+registration_successful_note: Sie können nun zur Anmeldeseite fortfahren.
+dont_have_an_account: Sie haben noch kein Konto?
+already_have_an_account: Sie haben bereits ein Konto?
+sign_up_now: Jetzt registrieren
 sign_in: Login
 sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
@@ -1629,6 +1653,8 @@ navigate_to_item: Zum Element navigieren
 undo_removed_item: Entferntes Item rückgängig
 remove_item: Item entfernen
 delete_item: Item löschen
+pause: Pause
+resume: Fortsetzen
 interfaces:
   list-m2a:
     prefix_note: Verwendet standardmäßig den Namen der Sammlung des zugehörigen Elements.
@@ -1760,6 +1786,7 @@ interfaces:
     description: Bild auswählen oder hochladen
     crop: Zuschneiden auf Passform
     crop_label: Bild nach Bedarf zuschneiden
+    letterbox: Briefkasten
   system-interface:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
@@ -1977,6 +2004,8 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
     description: Eingabe von Rohwerten oder Mustache-Templates erlauben
+  input-password:
+    input-password: Passwort eingeben
 displays:
   translations:
     translations: Übersetzungen
