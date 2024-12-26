@@ -3,6 +3,7 @@ import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { usePermissions } from '@/composables/use-permissions';
 import { useTemplateData } from '@/composables/use-template-data';
+import { useNestedValidation } from '@/composables/use-nested-validation';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
@@ -332,6 +333,8 @@ function useRelation() {
 }
 
 function useActions() {
+	const { nestedValidationErrors } = useNestedValidation();
+
 	return { save, cancel };
 
 	function save() {
@@ -345,6 +348,8 @@ function useActions() {
 			fieldsToValidate,
 			isNew.value,
 		);
+
+		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
