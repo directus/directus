@@ -39,11 +39,11 @@ Whether or not users with this policy have access to use the Data Studio.
 `users` **many-to-many**\
 The users this policy is assigned to directly, this does not include users which receive this policy through a role. It expects
 and returns data from the `directus_access` collection. [Many-to-many](/app/data-model/relationships#many-to-many-m2m) to
-[users](/reference/system/users) via [access](/reference/system/access).
+[users](/reference/system/users) via the `directus_access` junction collection.
 
 `roles` **many-to-many**\
 The roles this policy is assigned to. It expects and returns data from the `directus_access` collection. [Many-to-many](/app/data-model/relationships#many-to-many-m2m)
-to [roles](/reference/system/roles) via [access](/reference/system/access).
+to [roles](/reference/system/roles) via the `directus_access` junction collection.
 
 `permissions` **one-to-many**\
 The permissions assigned to this policy. One-to-many to [permissions](/reference/system/permissions).
