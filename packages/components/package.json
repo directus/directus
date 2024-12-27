@@ -47,7 +47,7 @@
 	"peerDependencies": {
 		"pinia": "2",
 		"vue": "^3.4",
-		"vue-i18n": "10",
+		"vue-i18n": "11",
 		"vue-router": "4"
 	}
 }
