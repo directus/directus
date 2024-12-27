@@ -75,16 +75,16 @@
 	border-color: var(--theme--form--field--input--border-color-hover);
 }
 
-/* Background color when focusing menu item */
 .codex-editor .ce-popover {
+	--color-border: var(--theme--form--field--input--border-color);
+	--color-background: var(--theme--form--field--input--background-subdued);
+	--border-radius: var(--theme--border-radius);
+	/* Background color when focusing menu item */
 	--color-background-item-focus: var(--theme--background-accent);
 }
 
 .codex-editor .ce-popover__container {
-	background: var(--theme--form--field--input--background-subdued);
-	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
-	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .ce-popover-item,
