@@ -29,7 +29,6 @@ declare module 'frappe-charts/src/js/charts/AxisChart' {
 declare module '@directus-extensions' {}
 
 declare module '@editorjs/attaches';
-declare module '@editorjs/paragraph';
 declare module '@editorjs/checklist';
 declare module '@editorjs/embed';
 declare module '@editorjs/raw';
