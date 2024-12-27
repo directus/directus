@@ -996,8 +996,8 @@ importers:
         specifier: 2.2.4
         version: 2.2.4(typescript@5.6.3)(vue@3.5.11(typescript@5.6.3))
       rollup-plugin-node-externals:
-        specifier: 7.1.3
-        version: 7.1.3(rollup@4.21.2)
+        specifier: 8.0.0
+        version: 8.0.0(rollup@4.21.2)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -1891,8 +1891,8 @@ importers:
         specifier: 2.2.4
         version: 2.2.4(typescript@5.6.3)(vue@3.5.11(typescript@5.6.3))
       rollup-plugin-node-externals:
-        specifier: 7.1.3
-        version: 7.1.3(rollup@4.21.2)
+        specifier: 8.0.0
+        version: 8.0.0(rollup@4.21.2)
       typescript:
         specifier: 5.6.3
         version: 5.6.3
@@ -10490,11 +10490,11 @@ packages:
       esbuild: '>=0.10.1'
       rollup: ^1.20.0 || ^2.0.0 || ^3.0.0
 
-  rollup-plugin-node-externals@7.1.3:
-    resolution: {integrity: sha512-RM+7tJAejAoRsCf93TptTSdqUhRA8S78DleihMiu54Kac+uLkd9VIegLPhGnaW3ehZTXh56+R301mFH6j2A7vw==}
+  rollup-plugin-node-externals@8.0.0:
+    resolution: {integrity: sha512-2HIOpWsWn5DqBoYl6iCAmB4kd5GoGbF68PR4xKR1YBPvywiqjtYvDEjHFodyqRL51iAMDITP074Zxs0OKs6F+g==}
     engines: {node: '>= 21 || ^20.6.0 || ^18.19.0'}
     peerDependencies:
-      rollup: ^3.0.0 || ^4.0.0
+      rollup: ^4.0.0
 
   rollup-plugin-styles@4.0.0:
     resolution: {integrity: sha512-A2K2sao84OsTmDxXG83JTCdXWrmgvQkkI38XDat46rdtpGMRm9tSYqeCdlwwGDJF4kKIafhV1mUidqu8MxUGig==}
@@ -16086,7 +16086,7 @@ snapshots:
   '@tus/file-store@1.5.0':
     dependencies:
       '@tus/utils': 0.4.0
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
     optionalDependencies:
       '@redis/client': 1.6.0
     transitivePeerDependencies:
@@ -16095,7 +16095,7 @@ snapshots:
   '@tus/server@1.9.0':
     dependencies:
       '@tus/utils': 0.4.0
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
       lodash.throttle: 4.1.1
     optionalDependencies:
       '@redis/client': 1.6.0
@@ -16600,7 +16600,7 @@ snapshots:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
@@ -16969,13 +16969,13 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
   agent-base@7.1.1:
     dependencies:
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -17999,10 +17999,6 @@ snapshots:
       ms: 2.0.0
 
   debug@4.3.4:
-    dependencies:
-      ms: 2.1.2
-
-  debug@4.3.6:
     dependencies:
       ms: 2.1.2
 
@@ -19489,7 +19485,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -19505,7 +19501,7 @@ snapshots:
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19517,14 +19513,14 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19636,7 +19632,7 @@ snapshots:
     dependencies:
       '@ioredis/commands': 1.2.0
       cluster-key-slot: 1.1.2
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
       denque: 2.1.0
       lodash.defaults: 4.2.0
       lodash.isarguments: 3.1.0
@@ -19824,7 +19820,7 @@ snapshots:
   istanbul-lib-source-maps@5.0.6:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -22426,7 +22422,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  rollup-plugin-node-externals@7.1.3(rollup@4.21.2):
+  rollup-plugin-node-externals@8.0.0(rollup@4.21.2):
     dependencies:
       rollup: 4.21.2
 
@@ -22944,7 +22940,7 @@ snapshots:
   socks-proxy-agent@6.2.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -24174,7 +24170,7 @@ snapshots:
   vite-node@2.1.2(@types/node@18.19.55)(sass-embedded@1.80.3)(sass@1.79.4)(terser@5.31.6):
     dependencies:
       cac: 6.7.14
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
       pathe: 1.1.2
       vite: 5.4.10(@types/node@18.19.55)(sass-embedded@1.80.3)(sass@1.79.4)(terser@5.31.6)
     transitivePeerDependencies:
@@ -24410,7 +24406,7 @@ snapshots:
       '@vitest/spy': 2.1.2
       '@vitest/utils': 2.1.2
       chai: 5.1.1
-      debug: 4.3.6
+      debug: 4.3.6(supports-color@5.5.0)
       magic-string: 0.30.11
       pathe: 1.1.2
       std-env: 3.7.0
