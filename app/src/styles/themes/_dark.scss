@@ -30,7 +30,7 @@
 	--sidebar-shadow: var(--navigation-shadow);
 
 	// Generate color variations
-	@include generate-colors.generate-colors($color-mapping, colors.$dark-theme-tint, colors.$dark-theme-shade);
+	@include generate-colors.generate-colors($color-mapping, colors.$dark-theme-shade, colors.$dark-theme-tint);
 
 	--purple-alt: var(--purple-10);
 	--blue-alt: var(--blue-10);
