@@ -88,7 +88,7 @@ const errorFormatted = computed(() => {
 }
 
 .sso-link {
-	$sso-link-border-width: 2px;
+	$sso-link-border-width: 1px;
 
 	display: flex;
 	width: 100%;
@@ -126,7 +126,7 @@ const errorFormatted = computed(() => {
 		border-color: var(--theme--background-accent);
 	}
 
-	& + & {
+	&+& {
 		margin-top: 12px;
 	}
 }
