@@ -244,9 +244,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			// user that is about to be updated
 			let emitPayload: Record<string, unknown> = {
 				auth_data: userPayload.auth_data,
-				// Make sure a user's role gets updated if his openid group or role mapping changes
-				role: role,
 			};
+
+			// Make sure a user's role gets updated if their openid group or role mapping changes
+			if (this.config['roleMapping']) {
+				emitPayload['role'] = role;
+			}
 
 			if (syncUserInfo) {
 				emitPayload = {
