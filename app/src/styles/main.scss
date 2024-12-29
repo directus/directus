@@ -17,7 +17,7 @@
 @use './lib/flatpickr';
 
 body.light {
-	@include light.light;
+	@include theme-light.light;
 }
 
 body.dark {
