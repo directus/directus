@@ -6,9 +6,7 @@ import { ButtonControl } from '@/utils/geometry/controls';
 import { useAppStore } from '@directus/stores';
 import { Field, GeoJSONParser, GeoJSONSerializer, GeometryType, MultiGeometry, SimpleGeometry } from '@directus/types';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import { Geometry } from 'geojson';
 import { debounce, isEqual, snakeCase } from 'lodash';
 import maplibre, {
@@ -21,7 +19,6 @@ import maplibre, {
 	Map,
 	NavigationControl,
 } from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Ref } from 'vue';
 import { computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { TranslateResult, useI18n } from 'vue-i18n';
@@ -29,6 +26,10 @@ import { getMapStyle } from './style';
 
 // @ts-ignore
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
+
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 const activeLayers = [
 	'directus-point',

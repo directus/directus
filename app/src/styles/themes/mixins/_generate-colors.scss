@@ -1,8 +1,12 @@
+@use 'sass:color';
+@use 'sass:math';
+@use '../../colors';
+
 @mixin generate-colors($color-map, $mix-color-low, $mix-color-high) {
 	// Loop through palette in $color-map list
 	@each $identifier, $color in $color-map {
 		// Loop through pre-defined steps in $step-mapping list
-		@each $suffix, $step in $step-mapping {
+		@each $suffix, $step in colors.$step-mapping {
 			// Default suffix to nothing
 			$resolved-suffix: '';
 			// Default mixing color
@@ -16,7 +20,7 @@
 				$mixing-color: $mix-color-high;
 			}
 			// This is the CSS variable that will be output
-			--#{$identifier}#{$resolved-suffix}: #{mix($mixing-color, $color, 100% - abs($step))};
+			--#{$identifier}#{$resolved-suffix}: #{color.mix($mixing-color, $color, 100% - math.abs($step))};
 		}
 	}
 }

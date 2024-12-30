@@ -40,7 +40,7 @@
 		"@types/validate-npm-package-name": "4.0.2",
 		"@vitest/coverage-v8": "2.1.2",
 		"tsup": "8.3.0",
-		"typescript": "5.6.3",
+		"typescript": "5.7.2",
 		"vitest": "2.1.2"
 	}
 }

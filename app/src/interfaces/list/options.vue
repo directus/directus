@@ -289,10 +289,10 @@ const sortFields = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .grid {
-	@include form-grid;
+	@include mixins.form-grid;
 
 	&-element {
 		&.full {
