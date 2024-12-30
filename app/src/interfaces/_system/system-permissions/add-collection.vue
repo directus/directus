@@ -7,7 +7,6 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
-	disabled?: boolean;
 	excludeCollections?: string[];
 }>();
 
@@ -51,36 +50,21 @@ function notExcluded({ collection }: Collection) {
 </script>
 
 <template>
-	<tr class="add-collection-row">
-		<td colspan="7">
-			<v-select
-				:items="displayItems"
-				item-text="collection"
-				item-value="collection"
-				:show-arrow="false"
-				:placeholder="t('permission_add_collection')"
-				placement="bottom-start"
-				inline
-				item-label-font-family="var(--theme--fonts--monospace--font-family)"
-				@update:model-value="$emit('select', $event)"
-			/>
-		</td>
-	</tr>
+	<div>
+		<v-select
+			:items="displayItems"
+			item-text="collection"
+			item-value="collection"
+			placement="bottom-start"
+			item-label-font-family="var(--theme--fonts--monospace--font-family)"
+			@update:model-value="$emit('select', $event)"
+		>
+			<template #preview="{ toggle }">
+				<v-button @click="toggle">
+					{{ t('permission_add_collection') }}
+					<v-icon name="arrow_drop_down" right />
+				</v-button>
+			</template>
+		</v-select>
+	</div>
 </template>
-
-<style scoped lang="scss">
-.add-collection-row {
-	td {
-		padding: 12px;
-		border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	}
-
-	.monospace {
-		font-family: var(--theme--fonts--monospace--font-family);
-	}
-
-	.v-select:hover {
-		--v-select-placeholder-color: var(--theme--foreground-accent);
-	}
-}
-</style>

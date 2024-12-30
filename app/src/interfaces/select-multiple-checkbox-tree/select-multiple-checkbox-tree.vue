@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { debounce } from 'lodash';
-import { ref, watch } from 'vue';
+import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export type Choice = {
@@ -9,7 +9,7 @@ export type Choice = {
 	children?: Choice[];
 };
 
-withDefaults(
+const props = withDefaults(
 	defineProps<{
 		value: string[] | null;
 		disabled?: boolean;
@@ -28,6 +28,9 @@ defineEmits(['input']);
 const { t } = useI18n();
 const search = ref('');
 
+const { choices, value } = toRefs(props);
+const items = computed(() => choices.value || []);
+
 const showSelectionOnly = ref(false);
 
 const setSearchDebounced = debounce((val: string) => {
@@ -40,8 +43,11 @@ const searchDebounced = ref('');
 </script>
 
 <template>
-	<div class="select-multiple-checkbox-tree">
-		<div v-if="choices.length > 10" class="search">
+	<v-notice v-if="items.length === 0" type="info">
+		{{ t('no_options_available') }}
+	</v-notice>
+	<div v-else class="select-multiple-checkbox-tree">
+		<div v-if="items.length > 10" class="search">
 			<v-input v-model="search" class="input" type="text" :placeholder="t('search')">
 				<template #prepend>
 					<v-icon name="search" />
@@ -57,7 +63,7 @@ const searchDebounced = ref('');
 			:model-value="value"
 			:search="searchDebounced"
 			:disabled="disabled"
-			:choices="choices"
+			:choices="items"
 			:value-combining="valueCombining"
 			:show-selection-only="showSelectionOnly"
 			@update:model-value="$emit('input', $event)"

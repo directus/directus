@@ -13,7 +13,7 @@ import { getEndpoint } from '@directus/utils';
 import { cloneDeep, get, groupBy, isNil, merge, orderBy, sortBy } from 'lodash';
 import { computed, inject, nextTick, type Ref, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import AddCollectionRow from './add-collection-row.vue';
+import AddCollection from './add-collection.vue';
 import PermissionsDetail from './detail/permissions-detail.vue';
 import PermissionsHeader from './permissions-header.vue';
 import PermissionsRow from './permissions-row.vue';
@@ -655,15 +655,16 @@ function useGroupedPermissions() {
 							</span>
 						</td>
 					</tr>
-
-					<add-collection-row
-						:exclude-collections="
-							[...regularPermissions, ...systemPermissions].map(({ collection }) => collection.collection)
-						"
-						@select="addEmptyPermission($event)"
-					/>
 				</tfoot>
 			</table>
+
+			<add-collection
+				class="add-collection"
+				:exclude-collections="
+					[...regularPermissions, ...systemPermissions].map(({ collection }) => collection.collection)
+				"
+				@select="addEmptyPermission($event)"
+			/>
 		</div>
 
 		<permissions-detail
@@ -759,7 +760,7 @@ function useGroupedPermissions() {
 	}
 }
 
-.system-collections {
-	margin-top: 14px;
+.add-collection {
+	margin-top: 12px;
 }
 </style>

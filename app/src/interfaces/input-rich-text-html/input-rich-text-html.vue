@@ -12,6 +12,9 @@ import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
 
+import 'tinymce/skins/ui/oxide/skin.css';
+import './tinymce-overrides.css';
+
 import 'tinymce/tinymce';
 
 import 'tinymce/icons/default';
@@ -201,13 +204,11 @@ const editorOptions = computed(() => {
 			'fullscreen',
 			'directionality',
 		],
-		license_key: 'gpl',
 		branding: false,
 		max_height: 1000,
 		elementpath: false,
 		statusbar: false,
 		menubar: false,
-		highlight_on_focus: false,
 		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
@@ -490,20 +491,15 @@ function setFocus(val: boolean) {
 	</div>
 </template>
 
-<style lang="scss">
-@import 'tinymce/skins/ui/oxide/skin.css';
-@import './tinymce-overrides.css';
-</style>
-
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .body {
 	padding: 20px;
 }
 
 .grid {
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .remaining {
