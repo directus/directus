@@ -248,11 +248,8 @@ export async function parseFields(
 			// update query alias for children parseFields
 			const deepAlias = getDeepQuery(options.deep?.[fieldKey] || {})?.['alias'];
 
-			if (!isEmpty(deepAlias)) {
-				childQuery.alias = deepAlias;
-			} else {
-				childQuery.alias = {};
-			}
+			// reset alias to empty if none are present
+			childQuery.alias = isEmpty(deepAlias) ? {} : deepAlias;
 
 			child = {
 				type: relationType,
