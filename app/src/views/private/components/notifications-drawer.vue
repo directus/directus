@@ -355,6 +355,8 @@ function clearFilters() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .item-count {
 	position: relative;
 	display: none;
@@ -421,7 +423,7 @@ function clearFilters() {
 			}
 
 			:deep() {
-				@import '@/styles/markdown';
+				@include mixins.markdown;
 			}
 		}
 	}
