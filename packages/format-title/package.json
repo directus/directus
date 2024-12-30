@@ -39,7 +39,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"tsup": "8.3.0",
-		"typescript": "5.6.3",
+		"typescript": "5.7.2",
 		"vitest": "2.1.2"
 	},
 	"engines": {
