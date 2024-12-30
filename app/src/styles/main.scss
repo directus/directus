@@ -1,8 +1,7 @@
 @use 'base';
 @use 'colors';
 @use 'fonts';
-@use 'themes/dark' as theme-dark;
-@use 'themes/light' as theme-light;
+@use 'themes';
 @use 'variables';
 @use 'tooltip';
 @use 'type-styles';
@@ -17,9 +16,9 @@
 @use 'lib/flatpickr';
 
 body.light {
-	@include theme-light.light;
+	@include themes.light;
 }
 
 body.dark {
-	@include theme-dark.dark;
+	@include themes.dark;
 }
