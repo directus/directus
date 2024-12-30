@@ -81,7 +81,7 @@ const currentTriggerOptionFields = computed(() => {
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .content {
 	padding: var(--content-padding);
@@ -89,7 +89,7 @@ const currentTriggerOptionFields = computed(() => {
 	padding-bottom: var(--content-padding-bottom);
 
 	.grid {
-		@include mixins-fg.form-grid;
+		@include mixins.form-grid;
 	}
 }
 

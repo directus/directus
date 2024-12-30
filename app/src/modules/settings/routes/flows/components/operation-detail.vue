@@ -196,7 +196,7 @@ function saveOperation() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .content {
 	padding: var(--content-padding);
@@ -204,7 +204,7 @@ function saveOperation() {
 	padding-bottom: var(--content-padding-bottom);
 
 	.grid {
-		@include mixins-fg.form-grid;
+		@include mixins.form-grid;
 	}
 }
 

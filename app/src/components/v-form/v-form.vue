@@ -420,10 +420,10 @@ function useRawEditor() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .v-form {
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 
 	.first-visible-field :deep(.v-divider) {
 		margin-top: 0;

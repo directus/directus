@@ -415,8 +415,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
-@use '@/styles/mixins/markdown' as mixins-md;
+@use '@/styles/mixins';
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
@@ -463,7 +462,7 @@ textarea {
 	font-family: v-bind(previewFamily), serif;
 
 	:deep() {
-		@include mixins-md.markdown;
+		@include mixins.markdown;
 	}
 }
 
@@ -549,7 +548,7 @@ textarea {
 	--theme--form--column-gap: 12px;
 
 	padding: 12px;
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 
 	.v-input {
 		min-width: 100px;

@@ -63,12 +63,12 @@ const fields = computed<DeepPartial<Field>[]>(() => [
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .form {
 	--theme--form--row-gap: 32px;
 	--theme--form--column-gap: 32px;
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 }
 
 .monospace {

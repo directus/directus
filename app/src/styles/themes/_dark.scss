@@ -1,5 +1,5 @@
-@use './mixins/generate-colors' as generate-colors;
-@use '../colors' as colors;
+@use './mixins';
+@use '../colors';
 @use 'sass:map';
 
 // Dark Mode
@@ -30,7 +30,7 @@
 	--sidebar-shadow: var(--navigation-shadow);
 
 	// Generate color variations
-	@include generate-colors.generate-colors($color-mapping, colors.$dark-theme-shade, colors.$dark-theme-tint);
+	@include mixins.generate-colors($color-mapping, colors.$dark-theme-shade, colors.$dark-theme-tint);
 
 	--purple-alt: var(--purple-10);
 	--blue-alt: var(--blue-10);

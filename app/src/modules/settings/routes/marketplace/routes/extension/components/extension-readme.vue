@@ -14,7 +14,7 @@ const { t } = useI18n();
 </template>
 
 <style scoped lang="scss">
-@use '@/styles/mixins/markdown' as mixins-md;
+@use '@/styles/mixins';
 
 .readme {
 	:deep(*) {
@@ -22,7 +22,7 @@ const { t } = useI18n();
 	}
 
 	:deep() {
-		@include mixins-md.markdown;
+		@include mixins.markdown;
 	}
 
 	:deep(* + *) {

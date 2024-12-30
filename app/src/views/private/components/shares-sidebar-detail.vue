@@ -336,7 +336,7 @@ async function copy(id: string) {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .v-progress-linear {
 	margin: 24px 0;
@@ -365,6 +365,6 @@ async function copy(id: string) {
 .grid {
 	--theme--form--row-gap: 20px;
 
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 }
 </style>

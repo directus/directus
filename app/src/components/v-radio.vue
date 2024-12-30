@@ -59,7 +59,7 @@ function emitValue(): void {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/no-wrap' as mixins-nw;
+@use '@/styles/mixins';
 
 /*
 
@@ -82,7 +82,7 @@ function emitValue(): void {
 	.label:not(:empty) {
 		margin-left: 8px;
 
-		@include mixins-nw.no-wrap;
+		@include mixins.no-wrap;
 	}
 
 	& .v-icon {

@@ -418,10 +418,10 @@ function useNestedValidation() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .translations {
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 
 	.v-form {
 		--theme--form--row-gap: 32px;

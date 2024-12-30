@@ -166,14 +166,14 @@ function handleObject(fieldKey: string) {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/no-wrap' as mixins-nw;
+@use '@/styles/mixins';
 
 .render-template {
 	height: 100%;
 	position: relative;
 	max-width: 100%;
 	padding-right: 8px;
-	@include mixins-nw.no-wrap;
+	@include mixins.no-wrap;
 
 	.vertical-aligner {
 		display: inline-block;

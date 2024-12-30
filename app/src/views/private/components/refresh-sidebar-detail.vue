@@ -77,12 +77,12 @@ const items = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .fields {
 	--theme--form--row-gap: 24px;
 
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 
 	.type-label {
 		font-size: 1rem;

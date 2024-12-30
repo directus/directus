@@ -260,10 +260,10 @@ async function save() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .fields {
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 }
 
 .v-icon.required {

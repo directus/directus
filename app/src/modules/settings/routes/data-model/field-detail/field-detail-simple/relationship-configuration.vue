@@ -105,13 +105,13 @@ const availableCollections = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .relationship {
 	--v-select-font-family: var(--theme--fonts--monospace--font-family);
 	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 
 	&:not(:empty) {
 		margin-bottom: 20px;

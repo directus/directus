@@ -111,7 +111,7 @@ function toggleInput(): void {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/no-wrap' as mixins-nw;
+@use '@/styles/mixins';
 
 /*
 
@@ -140,7 +140,7 @@ function toggleInput(): void {
 		flex-grow: 1;
 		margin-left: 8px;
 		transition: color var(--fast) var(--transition);
-		@include mixins-nw.no-wrap;
+		@include mixins.no-wrap;
 
 		input {
 			width: 100%;

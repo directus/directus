@@ -595,7 +595,7 @@ function discardAndLeave() {
 </template>
 
 <style lang="scss" scoped>
-@use '@/styles/mixins/form-grid' as mixins-fg;
+@use '@/styles/mixins';
 
 .header-icon {
 	--v-button-background-color: var(--theme--primary-background);
@@ -636,7 +636,7 @@ function discardAndLeave() {
 :deep(.layout-options) {
 	--theme--form--row-gap: 24px;
 
-	@include mixins-fg.form-grid;
+	@include mixins.form-grid;
 }
 
 :deep(.layout-options .type-label) {
