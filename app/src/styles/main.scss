@@ -1,20 +1,20 @@
-@use './base';
-@use './colors';
-@use './fonts';
-@use './themes/dark' as theme-dark;
-@use './themes/light' as theme-light;
-@use './variables';
-@use './tooltip';
-@use './type-styles';
-@use './stacked-drawers';
-@use './lib/mapbox';
-@use './lib/codemirror';
-@use './lib/cropperjs';
-@use './lib/highlight';
-@use './lib/fullcalendar';
-@use './lib/frappe-charts';
-@use './lib/emoji-picker';
-@use './lib/flatpickr';
+@use 'base';
+@use 'colors';
+@use 'fonts';
+@use 'themes/dark' as theme-dark;
+@use 'themes/light' as theme-light;
+@use 'variables';
+@use 'tooltip';
+@use 'type-styles';
+@use 'stacked-drawers';
+@use 'lib/mapbox';
+@use 'lib/codemirror';
+@use 'lib/cropperjs';
+@use 'lib/highlight';
+@use 'lib/fullcalendar';
+@use 'lib/frappe-charts';
+@use 'lib/emoji-picker';
+@use 'lib/flatpickr';
 
 body.light {
 	@include theme-light.light;
