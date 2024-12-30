@@ -631,6 +631,10 @@ function sidebarUserGuide() {
 					link: '/user-guide/cloud/projects',
 				},
 				{
+					text: 'Environment Variables',
+					link: '/user-guide/cloud/variables',
+				},
+				{
 					text: 'Teams',
 					link: '/user-guide/cloud/teams',
 				},

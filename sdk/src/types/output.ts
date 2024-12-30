@@ -60,13 +60,24 @@ export type ApplyManyToAnyFields<
 		? ApplyQueryFields<Schema, Junction, Readonly<UnpackList<FieldsList>>> // no relational fields
 		: 'item' extends keyof PickRelationalFields<FieldsList> // do m2a magic
 		  ? PickRelationalFields<FieldsList>['item'] extends infer ItemFields
-				? Omit<ApplyQueryFields<Schema, Omit<Junction, 'item'>, Readonly<UnpackList<FieldsList>>>, 'item'> & {
-						item: {
-							[Scope in keyof ItemFields]: Scope extends keyof Schema
-								? ApplyNestedQueryFields<Schema, Schema[Scope], ItemFields[Scope]>
-								: never;
-						}[keyof ItemFields];
-				  }
+				? Omit<ApplyQueryFields<Schema, Omit<Junction, 'item'>, Readonly<UnpackList<FieldsList>>>, 'item'> &
+						('collection' extends UnpackList<FieldsList>
+							? {
+									// try to use collection for union discrimation
+									[Scope in keyof ItemFields]: {
+										collection: Scope;
+										item: Scope extends keyof Schema
+											? ApplyNestedQueryFields<Schema, Schema[Scope], ItemFields[Scope]>
+											: never;
+									};
+							  }[keyof ItemFields]
+							: {
+									item: {
+										[Scope in keyof ItemFields]: Scope extends keyof Schema
+											? ApplyNestedQueryFields<Schema, Schema[Scope], ItemFields[Scope]>
+											: never;
+									}[keyof ItemFields];
+							  })
 				: never
 		  : ApplyQueryFields<Schema, Junction, Readonly<UnpackList<FieldsList>>> // no items query
 	: never;

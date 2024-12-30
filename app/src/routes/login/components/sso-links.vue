@@ -102,13 +102,15 @@ const errorFormatted = computed(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: var(--theme--form--field--input--height);
+		aspect-ratio: 1;
 		margin: -$sso-link-border-width;
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 
 		span {
 			--v-icon-size: 28px;
+			display: flex;
+			align-items: center;
 		}
 	}
 

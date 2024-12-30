@@ -1,3 +1,4 @@
+export * from './access.js';
 export * from './activity.js';
 export * from './collection.js';
 export * from './core.js';
