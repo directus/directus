@@ -9,7 +9,6 @@ import { compress, decompress } from './utils/compress.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
-import { cloneDeep } from 'lodash-es';
 
 import { createRequire } from 'node:module';
 
@@ -66,7 +65,11 @@ export function getCache(): {
 	}
 
 	if (localSchemaCache === null) {
-		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema');
+		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema', {
+			serialize: (v: any) => Object.freeze(v),
+			deserialize: (v: any) => v,
+		});
+
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
 	}
 
@@ -148,33 +151,36 @@ export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 	return decompressed;
 }
 
-function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?: string): Keyv {
+function getKeyvInstance(
+	store: Store,
+	ttl: number | undefined,
+	namespaceSuffix?: string,
+	configOverrides?: Partial<KeyvOptions>,
+): Keyv {
 	switch (store) {
 		case 'redis':
-			return new Keyv(getConfig('redis', ttl, namespaceSuffix));
+			return new Keyv(getConfig('redis', ttl, namespaceSuffix, configOverrides));
 		case 'memory':
 		default:
-			return new Keyv(getConfig('memory', ttl, namespaceSuffix));
+			return new Keyv(getConfig('memory', ttl, namespaceSuffix, configOverrides));
 	}
 }
 
-function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSuffix = ''): KeyvOptions {
+function getConfig(
+	store: Store = 'memory',
+	ttl: number | undefined,
+	namespaceSuffix = '',
+	configOverrides?: Partial<KeyvOptions>,
+): KeyvOptions {
 	const config: KeyvOptions = {
 		namespace: `${env['CACHE_NAMESPACE']}${namespaceSuffix}`,
 		...(ttl && { ttl }),
 	};
-
-	if (store === 'memory') {
-		config.compression = {
-			serialize: (v) => v,
-			deserialize: (v) => cloneDeep(v),
-		};
-	}
 
 	if (store === 'redis') {
 		const { default: KeyvRedis } = require('@keyv/redis');
 		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'), { useRedisSets: false });
 	}
 
-	return config;
+	return { ...config, ...configOverrides };
 }
