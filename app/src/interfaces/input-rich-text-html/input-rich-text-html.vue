@@ -12,6 +12,9 @@ import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
 
+import 'tinymce/skins/ui/oxide/skin.css';
+import './tinymce-overrides.css';
+
 import 'tinymce/tinymce';
 
 import 'tinymce/icons/default';
@@ -487,11 +490,6 @@ function setFocus(val: boolean) {
 		</v-drawer>
 	</div>
 </template>
-
-<style lang="scss">
-@import 'tinymce/skins/ui/oxide/skin.css';
-@import './tinymce-overrides.css';
-</style>
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
