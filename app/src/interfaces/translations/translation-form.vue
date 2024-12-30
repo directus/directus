@@ -20,11 +20,11 @@ const {
 	updateValue,
 } = defineProps<{
 	languageOptions: Record<string, any>[];
-	disabled: boolean;
-	autofocus: boolean;
+	disabled?: boolean;
+	autofocus?: boolean;
 	relationInfo?: RelationM2M;
 	getItemWithLang: (items: Record<string, any>[], lang: string | undefined) => DisplayItem | undefined;
-	loading: boolean;
+	loading?: boolean;
 	displayItems: DisplayItem[];
 	fetchedItems: Record<string, any>[];
 	getItemEdits: (item: DisplayItem) => DisplayItem;
