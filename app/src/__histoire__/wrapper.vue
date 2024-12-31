@@ -88,8 +88,10 @@ if (isIframe && topHtmlElement) {
 </template>
 
 <style lang="scss">
+@use 'sass:meta';
+
 .custom-html {
-	@import '@/styles/main';
+	@include meta.load-css('@/styles/main');
 }
 
 .histoire-generic-render-story:not(.__histoire-render-custom-controls) .custom-wrapper {
