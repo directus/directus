@@ -423,12 +423,11 @@ function useRawEditor() {
 @use '@/styles/mixins';
 
 .v-form {
-	@include mixins.form-grid;
 	display: grid;
 	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
 
 	&.grid {
-		@include fields-grid;
+		@include mixins.fields-grid;
 	}
 
 	&:not(.grid) {
