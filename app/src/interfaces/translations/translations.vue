@@ -336,9 +336,42 @@ function useNestedValidation() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .translations {
-	@include form-grid;
+	@include mixins.form-grid;
+
+	.v-form {
+		--theme--form--row-gap: 32px;
+		--v-chip-color: var(--theme--primary);
+		--v-chip-background-color: var(--theme--primary-background);
+
+		margin-top: 32px;
+	}
+
+	.primary {
+		.v-divider {
+			--v-divider-color: var(--theme--primary-subdued);
+		}
+	}
+
+	.secondary {
+		.v-form {
+			--primary: var(--theme--secondary);
+			--v-chip-color: var(--theme--secondary);
+			--v-chip-background-color: var(--secondary-alt);
+		}
+
+		.v-divider {
+			--v-divider-color: var(--secondary-50);
+		}
+	}
+
+	.primary,
+	.secondary {
+		.v-divider {
+			margin-top: var(--theme--form--row-gap);
+		}
+	}
 }
 </style>

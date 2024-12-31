@@ -1,4 +1,4 @@
-@import './mixins/form-grid.scss';
+@use 'mixins';
 
 *:not(svg *) {
 	box-sizing: border-box;
@@ -144,7 +144,7 @@ dd a {
 }
 
 .form-grid {
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 input[type='number']::-webkit-inner-spin-button,

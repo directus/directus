@@ -12,6 +12,9 @@ import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
 
+import 'tinymce/skins/ui/oxide/skin.css';
+import './tinymce-overrides.css';
+
 import 'tinymce/tinymce';
 
 import 'tinymce/icons/default';
@@ -488,20 +491,15 @@ function setFocus(val: boolean) {
 	</div>
 </template>
 
-<style lang="scss">
-@import 'tinymce/skins/ui/oxide/skin.css';
-@import './tinymce-overrides.css';
-</style>
-
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .body {
 	padding: 20px;
 }
 
 .grid {
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .remaining {
