@@ -72,6 +72,7 @@ const activatorDisabled = computed(() => {
 });
 
 const { pressing, getIconName, onEnableTranslation, onMousedown } = useActivatorButton();
+const { getDeleteToggleTooltip, getDeleteToggleName, onToggleDelete } = useDeleteToggle();
 
 function useActivatorButton() {
 	const pressing = ref(false);
@@ -107,31 +108,34 @@ function useActivatorButton() {
 	}
 }
 
-function getDeselectTooltip(item?: DisplayItem) {
-	if (!item) return 'create_item';
-	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (isLocalItem(item)) return 'delete_item';
-	return 'remove_item';
-}
+function useDeleteToggle() {
+	return {
+		getDeleteToggleTooltip,
+		getDeleteToggleName,
+		onToggleDelete,
+	};
 
-function getIconName(item?: DisplayItem) {
-	if (!item) return 'check_box_outline_blank';
-	if (item.$type === 'deleted') return 'settings_backup_restore';
-	return 'check_box';
-}
-
-function onToggleTranslation(lang?: string, item?: DisplayItem, itemInitial?: DisplayItem) {
-	if (!isEmpty(item)) {
-		remove(item);
-		return;
+	function getDeleteToggleTooltip(item: DisplayItem) {
+		if (item.$type === 'deleted') return 'undo_removed_item';
+		if (isLocalItem(item)) return 'delete_item';
+		return 'remove_item';
 	}
 
-	if (!isEmpty(itemInitial)) {
+	function getDeleteToggleName(item?: DisplayItem) {
+		if (item?.$type === 'deleted') return 'settings_backup_restore';
+		return 'delete';
+	}
+
+	function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
+		if (!isEmpty(item)) {
+			remove(item);
+			return;
+		}
+
+		if (isEmpty(itemInitial)) return;
+
 		remove(itemInitial);
-		return;
 	}
-
-	updateValue(item, lang);
 }
 </script>
 
@@ -151,7 +155,19 @@ function onToggleTranslation(lang?: string, item?: DisplayItem, itemInitial?: Di
 				/>
 			</template>
 
-			<template #append="{ active, toggle }">
+			<template #controls="{ active, toggle }">
+				<v-icon
+					v-if="item"
+					v-tooltip="!activatorDisabled ? t(getDeleteToggleTooltip(item)) : null"
+					class="delete"
+					:disabled="activatorDisabled"
+					:name="getDeleteToggleName(item)"
+					clickable
+					@click.stop="onToggleDelete(item, itemInitial)"
+					@mousedown="pressing = true"
+					@mouseup="pressing = false"
+				/>
+
 				<slot name="split-view" :active :toggle />
 			</template>
 		</language-select>
@@ -220,5 +236,9 @@ function onToggleTranslation(lang?: string, item?: DisplayItem, itemInitial?: Di
 	.v-divider {
 		--v-divider-color: var(--secondary-50);
 	}
+}
+
+.delete:hover {
+	--v-icon-color-hover: var(--theme--danger);
 }
 </style>
