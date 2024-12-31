@@ -3,8 +3,9 @@ import { localizedFormat } from '@/utils/localized-format';
 import { nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { DynamicScroller, DynamicScrollerItem } from 'vue-virtual-scroller';
-import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 import { Log } from '../types';
+
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css';
 
 interface Props {
 	logs: Log[];

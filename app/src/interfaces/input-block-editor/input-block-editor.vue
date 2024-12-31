@@ -11,6 +11,8 @@ import { useBus } from './bus';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
 
+import './editorjs-overrides.css';
+
 // https://github.com/codex-team/editor.js/blob/057bf17a6fc2d5e05c662107918d7c3e943d077c/src/components/events/RedactorDomChanged.ts#L4
 const RedactorDomChanged = 'redactor dom changed';
 
@@ -192,10 +194,6 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 		</v-drawer>
 	</div>
 </template>
-
-<style lang="scss">
-@import './editorjs-overrides.css';
-</style>
 
 <style lang="scss" scoped>
 .btn--default {

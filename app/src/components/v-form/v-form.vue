@@ -420,9 +420,10 @@ function useRawEditor() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .v-form {
+	@include mixins.form-grid;
 	display: grid;
 	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
 

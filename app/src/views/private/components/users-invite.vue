@@ -126,12 +126,12 @@ async function loadRoles() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .grid {
 	--theme--form--row-gap: 20px;
 
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .v-card-title {
