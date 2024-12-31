@@ -84,16 +84,13 @@ function useActivatorButton() {
 		onMousedown,
 	};
 
-	function getIconName(item?: DisplayItem) {
-		if (item) return 'translate';
+	function getIconName() {
 		if (pressing.value && !activatorDisabled.value) return 'check_box';
 		return 'check_box_outline_blank';
 	}
 
-	function onEnableTranslation(event: MouseEvent, lang?: string, item?: DisplayItem, itemInitial?: DisplayItem) {
+	function onEnableTranslation(lang?: string, item?: DisplayItem, itemInitial?: DisplayItem) {
 		if (!isEmpty(item) || !isEmpty(itemInitial)) return;
-
-		event.stopPropagation();
 		updateValue(item, lang);
 	}
 
@@ -144,15 +141,18 @@ function useDeleteToggle() {
 		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
 				<v-icon
-					v-tooltip="!activatorDisabled && !item ? t('enable') : null"
+					v-if="!item"
+					v-tooltip="!activatorDisabled ? t('enable') : null"
 					class="activator"
 					:class="{ disabled: activatorDisabled }"
-					:name="getIconName(item)"
+					:name="getIconName()"
 					:disabled="activatorDisabled"
-					:clickable="!item"
-					@click="onEnableTranslation($event, lang, item, itemInitial)"
+					clickable
+					@click.stop="onEnableTranslation(lang, item, itemInitial)"
 					@mousedown="onMousedown"
 				/>
+
+				<v-icon v-else name="translate" :disabled="activatorDisabled" />
 			</template>
 
 			<template #controls="{ active, toggle }">
@@ -160,6 +160,7 @@ function useDeleteToggle() {
 					v-if="item"
 					v-tooltip="!activatorDisabled ? t(getDeleteToggleTooltip(item)) : null"
 					class="delete"
+					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
 					:name="getDeleteToggleName(item)"
 					clickable
@@ -196,7 +197,7 @@ function useDeleteToggle() {
 </template>
 
 <style lang="scss" scoped>
-.activator.disabled {
+.disabled {
 	--v-icon-color: var(--theme--primary-subdued);
 }
 
@@ -223,7 +224,7 @@ function useDeleteToggle() {
 }
 
 .secondary {
-	.activator.disabled {
+	.disabled {
 		--v-icon-color: var(--theme--secondary-subdued);
 	}
 
