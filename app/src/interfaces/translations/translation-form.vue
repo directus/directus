@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEmpty } from 'lodash';
 import { usePermissions } from '@/composables/use-permissions';
@@ -65,11 +65,47 @@ const {
 	itemNew,
 );
 
-const toggleDisabled = computed(() => {
+const activatorDisabled = computed(() => {
 	return (
 		disabled || (!item.value && !saveAllowed.value) || (item.value && !deleteAllowed.value && !isLocalItem(item.value))
 	);
 });
+
+const { pressing, getIconName, onEnableTranslation, onMousedown } = useActivatorButton();
+
+function useActivatorButton() {
+	const pressing = ref(false);
+
+	return {
+		pressing,
+		getIconName,
+		onEnableTranslation,
+		onMousedown,
+	};
+
+	function getIconName(item?: DisplayItem) {
+		if (item) return 'translate';
+		if (pressing.value && !activatorDisabled.value) return 'check_box';
+		return 'check_box_outline_blank';
+	}
+
+	function onEnableTranslation(event: MouseEvent, lang?: string, item?: DisplayItem, itemInitial?: DisplayItem) {
+		if (!isEmpty(item) || !isEmpty(itemInitial)) return;
+
+		event.stopPropagation();
+		updateValue(item, lang);
+	}
+
+	function onMousedown() {
+		pressing.value = true;
+		document.addEventListener('mouseup', onMouseup);
+
+		function onMouseup() {
+			pressing.value = false;
+			document.removeEventListener('mouseup', onMouseup);
+		}
+	}
+}
 
 function getDeselectTooltip(item?: DisplayItem) {
 	if (!item) return 'create_item';
@@ -104,12 +140,14 @@ function onToggleTranslation(lang?: string, item?: DisplayItem, itemInitial?: Di
 		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
 				<v-icon
-					v-tooltip="!toggleDisabled ? t(getDeselectTooltip(item)) : null"
-					class="toggle"
-					:disabled="toggleDisabled"
+					v-tooltip="!activatorDisabled && !item ? t('enable') : null"
+					class="activator"
+					:class="{ disabled: activatorDisabled }"
 					:name="getIconName(item)"
-					clickable
-					@click.stop="onToggleTranslation(lang, item, itemInitial)"
+					:disabled="activatorDisabled"
+					:clickable="!item"
+					@click="onEnableTranslation($event, lang, item, itemInitial)"
+					@mousedown="onMousedown"
 				/>
 			</template>
 
@@ -142,7 +180,7 @@ function onToggleTranslation(lang?: string, item?: DisplayItem, itemInitial?: Di
 </template>
 
 <style lang="scss" scoped>
-.toggle:not(.has-click) {
+.activator.disabled {
 	--v-icon-color: var(--theme--primary-subdued);
 }
 
@@ -169,7 +207,7 @@ function onToggleTranslation(lang?: string, item?: DisplayItem, itemInitial?: Di
 }
 
 .secondary {
-	.toggle:not(.has-click) {
+	.activator.disabled {
 		--v-icon-color: var(--theme--secondary-subdued);
 	}
 
