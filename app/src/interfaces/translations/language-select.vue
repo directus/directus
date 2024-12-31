@@ -27,8 +27,8 @@ const displayValue = computed(() => {
 			<button class="toggle" @click="toggle">
 				<slot name="prepend" />
 				<span class="display-value">{{ displayValue }}</span>
-				<v-icon class="expand" name="expand_more" :class="{ active }" />
 				<span class="append-slot"><slot name="append" :active="active" :toggle="toggle" /></span>
+				<v-icon class="expand" name="expand_more" :class="{ active }" />
 			</button>
 		</template>
 

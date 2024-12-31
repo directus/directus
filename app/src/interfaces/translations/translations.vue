@@ -326,7 +326,7 @@ function useNestedValidation() {
 			<template #split-view>
 				<v-icon
 					v-tooltip="t('interfaces.translations.toggle_split_view')"
-					name="close"
+					name="flip"
 					clickable
 					@click="splitView = false"
 				/>
