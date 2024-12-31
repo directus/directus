@@ -6,6 +6,7 @@ import { usePermissions } from '@/composables/use-permissions';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useWindowSize } from '@/composables/use-window-size';
+import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { fetchAll } from '@/utils/fetch-all';
@@ -15,6 +16,7 @@ import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import LanguageSelect from './language-select.vue';
+import { validateItem } from '@/utils/validate-item';
 
 const props = withDefaults(
 	defineProps<{
@@ -285,6 +287,62 @@ const {
 	secondItemPrimaryKey,
 	secondItemNew,
 );
+
+useNestedValidation();
+
+function useNestedValidation() {
+	const { updateNestedValidationErrors } = useInjectNestedValidation();
+
+	watch(
+		() => displayItems.value,
+		(updatedDisplayItems) => {
+			const errorsMap = getErrorsPerLanguage(updatedDisplayItems);
+
+			const validationErrors = Object.entries(errorsMap)?.flatMap(([lang, items]) =>
+				items.map((item: Record<string, any>) => updateFieldName(item, lang)),
+			);
+
+			updateNestedValidationErrors(props.field, validationErrors);
+		},
+	);
+
+	function getErrorsPerLanguage(updatedDisplayItems: DisplayItem[]) {
+		const errorsMap: Record<string, any> = {};
+
+		updatedDisplayItems?.forEach((item) => {
+			const langField = relationInfo.value?.junctionField.field;
+			const relatedPKField = relationInfo.value?.relatedPrimaryKeyField.field;
+			if (!langField || !relatedPKField) return;
+
+			const lang = item?.[langField]?.[relatedPKField];
+			if (!lang) return;
+
+			const errorsPerLanguage = validateItem(item, fields.value, item.$type === 'created', true);
+			if (!errorsPerLanguage?.length) return;
+
+			errorsMap[lang] = errorsPerLanguage.map((error) => addNestedProperties(error, lang));
+		});
+
+		return errorsMap;
+	}
+
+	function addNestedProperties(error: any, lang: string) {
+		const field = fields.value?.find((field) => field.field === error.field);
+
+		const nestedNames = {
+			[lang]: languageOptions.value.find((langOption) => langOption.value === lang)?.text ?? lang,
+			[error.field]: field?.name ?? error.field,
+		};
+
+		const validation_message = field?.meta?.validation_message;
+
+		return { ...error, nestedNames, validation_message };
+	}
+
+	function updateFieldName(item: Record<string, any>, lang: string) {
+		return { ...item, field: `${props.field}.${lang}.${item.field}` };
+	}
+}
 </script>
 
 <template>
@@ -360,10 +418,10 @@ const {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .translations {
-	@include form-grid;
+	@include mixins.form-grid;
 
 	.v-form {
 		--theme--form--row-gap: 32px;
