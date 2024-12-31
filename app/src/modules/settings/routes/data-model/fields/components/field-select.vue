@@ -185,7 +185,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		<template v-else>
 			<draggable
 				v-if="localType === 'group'"
-				class="field-grid group full nested"
+				class="fields-nested-grid group nested"
 				:model-value="nestedFields"
 				handle=".drag-handle"
 				:group="{ name: 'fields' }"
@@ -196,7 +196,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				@update:model-value="onGroupSortChange"
 			>
 				<template #header>
-					<div class="header full">
+					<div class="header">
 						<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 						<span class="name">
 							{{ field.field }}
@@ -219,7 +219,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				</template>
 			</draggable>
 
-			<v-input v-else class="field" :class="{ hidden }" readonly>
+			<v-input v-else class="field" :class="[field.meta?.width || 'full', { hidden }]" readonly>
 				<template #prepend>
 					<v-icon class="drag-handle" name="drag_indicator" @click.stop />
 				</template>
@@ -317,16 +317,81 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
 .field-select {
 	--input-height: 40px;
 	--theme--form--field--input--padding: 8px;
+
+	&.full,
+	&.fill {
+		width: 100%;
+	}
 }
 
-.full,
-.fill {
-	grid-column: 1 / span 2;
+.form-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 12px;
+
+	.field {
+		grid-column: 1 / -1;
+	}
+}
+
+.fields-nested-grid {
+	position: relative;
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	gap: var(--theme--form--row-gap) var(--theme--form--column-gap);
+	width: 100%;
+
+	.quarter {
+		grid-column: span 3;
+
+		@media (max-width: 959px) {
+			grid-column: 1 / -1;
+		}
+	}
+
+	.third {
+		grid-column: span 4;
+
+		@media (max-width: 959px) {
+			grid-column: 1 / -1;
+		}
+	}
+
+	.half,
+	.half-left,
+	.half-space {
+		grid-column: span 6;
+
+		@media (max-width: 959px) {
+			grid-column: 1 / -1;
+		}
+	}
+
+	.half + .half,
+	.half-right {
+		grid-column: span 6;
+
+		@media (max-width: 959px) {
+			grid-column: 1 / -1;
+		}
+	}
+
+	.full {
+		grid-column: 1 / -1;
+	}
+
+	.fill {
+		grid-column: 1 / -1;
+	}
+
+	&.nested {
+		.field :deep(.input) {
+			border: var(--theme--border-width) solid var(--theme--primary-subdued);
+		}
+	}
 }
 
 .v-input.monospace {
@@ -420,29 +485,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 		.drag-handle {
 			--v-icon-color: var(--theme--primary);
-
 			margin-right: 8px;
 		}
 
 		.name {
 			flex-grow: 1;
-		}
-	}
-}
-
-.field-grid {
-	position: relative;
-	display: grid;
-	grid-gap: 8px;
-	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-
-	& + & {
-		margin-top: 8px;
-	}
-
-	&.nested {
-		.field :deep(.input) {
-			border: var(--theme--border-width) solid var(--theme--primary-subdued);
 		}
 	}
 }
@@ -499,16 +546,12 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .icons {
 	* + *:not(:last-child) {
-		margin-left: 8px;
+		margin-left: var(--theme--form--column-gap);
 	}
 }
 
 .spacer {
 	flex-grow: 1;
-}
-
-.form-grid {
-	--theme--form--row-gap: 24px;
 }
 
 .required {
