@@ -71,21 +71,23 @@ const activatorDisabled = computed(() => {
 	);
 });
 
-const { pressing, getIconName, onEnableTranslation, onMousedown } = useActivatorButton();
+const { getIconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd } = useActivatorButton();
 const { getDeleteToggleTooltip, getDeleteToggleName, onToggleDelete } = useDeleteToggle();
 
 function useActivatorButton() {
 	const pressing = ref(false);
+	const pressed = ref(false);
 
 	return {
-		pressing,
 		getIconName,
 		onEnableTranslation,
 		onMousedown,
+		onMouseup,
+		onTransitionEnd,
 	};
 
 	function getIconName() {
-		if (pressing.value && !activatorDisabled.value) return 'check_box';
+		if ((pressed.value || pressing.value) && !activatorDisabled.value) return 'check_box';
 		return 'check_box_outline_blank';
 	}
 
@@ -96,12 +98,20 @@ function useActivatorButton() {
 
 	function onMousedown() {
 		pressing.value = true;
-		document.addEventListener('mouseup', onMouseup);
+		document.addEventListener('mouseup', onMouseupOutside);
+	}
 
-		function onMouseup() {
-			pressing.value = false;
-			document.removeEventListener('mouseup', onMouseup);
-		}
+	function onMouseupOutside() {
+		pressing.value = false;
+		document.removeEventListener('mouseup', onMouseupOutside);
+	}
+
+	function onMouseup() {
+		pressed.value = true;
+	}
+
+	function onTransitionEnd() {
+		pressed.value = false;
 	}
 }
 
@@ -140,19 +150,26 @@ function useDeleteToggle() {
 	<div :class="{ secondary }">
 		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
-				<v-icon
-					v-if="!item"
-					v-tooltip="!activatorDisabled ? t('enable') : null"
-					class="activator"
-					:class="{ disabled: activatorDisabled }"
-					:name="getIconName()"
-					:disabled="activatorDisabled"
-					clickable
-					@click.stop="onEnableTranslation(lang, item, itemInitial)"
-					@mousedown="onMousedown"
-				/>
+				<transition
+					:name="item ? 'rotate-in' : 'rotate-out'"
+					mode="out-in"
+					@after-leave="onTransitionEnd"
+					@leave-cancelled="onTransitionEnd"
+				>
+					<v-icon v-if="item" name="translate" :disabled="activatorDisabled" />
 
-				<v-icon v-else name="translate" :disabled="activatorDisabled" />
+					<v-icon
+						v-else
+						v-tooltip="!activatorDisabled ? t('enable') : null"
+						:class="{ disabled: activatorDisabled }"
+						:name="getIconName()"
+						:disabled="activatorDisabled"
+						clickable
+						@click.stop="onEnableTranslation(lang, item, itemInitial)"
+						@mousedown="onMousedown"
+						@mouseup="onMouseup"
+					/>
+				</transition>
 			</template>
 
 			<template #controls="{ active, toggle }">
@@ -165,8 +182,6 @@ function useDeleteToggle() {
 					:name="getDeleteToggleName(item)"
 					clickable
 					@click.stop="onToggleDelete(item, itemInitial)"
-					@mousedown="pressing = true"
-					@mouseup="pressing = false"
 				/>
 
 				<slot name="split-view" :active :toggle />
@@ -241,5 +256,33 @@ function useDeleteToggle() {
 
 .delete:hover {
 	--v-icon-color-hover: var(--theme--danger);
+}
+
+.rotate {
+	&-in,
+	&-out {
+		&-enter-active,
+		&-enter-active.has-click {
+			transition: transform var(--medium) var(--transition-in);
+		}
+		&-leave-active,
+		&-leave-active.has-click {
+			transition: transform var(--medium) var(--transition-out);
+		}
+
+		&-leave-from,
+		&-enter-to {
+			transform: rotate(0deg);
+		}
+	}
+
+	&-in-enter-from,
+	&-out-leave-to {
+		transform: rotate(90deg);
+	}
+	&-in-leave-to,
+	&-out-enter-from {
+		transform: rotate(-90deg);
+	}
 }
 </style>
