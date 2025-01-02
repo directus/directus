@@ -60,13 +60,13 @@ const parts = computed(() =>
 				field = fieldsStore.getField(props.collection, fieldKey);
 			}
 
-			if (!field) return [value];
+			if (!field) return value;
 
 			const component = field?.meta?.display || getDefaultDisplayForType(field.type);
 			const options = field?.meta?.display_options;
 
 			// No need to render the empty display overhead in this case
-			if (component === 'raw') return [value];
+			if (component === 'raw') return value;
 
 			const displayInfo = useExtension(
 				'display',
@@ -75,8 +75,8 @@ const parts = computed(() =>
 
 			if (!displayInfo.value) return value;
 
-			// These displays natively support rendering arrays of values
-			if (field?.meta?.display && ['related-values', 'formatted-value'].includes(field?.meta?.display)) {
+			if (component && ['related-values', 'formatted-value'].includes(component)) {
+				// These displays natively support rendering arrays of values
 				return [
 					{
 						component,
@@ -89,10 +89,10 @@ const parts = computed(() =>
 						field: field.field,
 					},
 				];
-			} else if (field?.meta?.display) {
+			} else if (component) {
 				return value.map((v) => {
 					return {
-						component: field.meta?.display,
+						component: component,
 						options: field.meta?.display_options,
 						value: v,
 						interface: field.meta?.interface,
