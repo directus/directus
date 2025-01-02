@@ -41,7 +41,7 @@ describe('metrics', () => {
 		expect(res).toBe(false);
 	});
 
-	test('Schedules synchronized job', async () => {
+	test('Schedules job', async () => {
 		await metricsSchedule();
 
 		expect(schedule.validateCron).toHaveBeenCalledWith('0 0 * * *');
