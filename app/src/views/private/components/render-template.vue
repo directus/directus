@@ -73,7 +73,7 @@ const parts = computed(() =>
 				computed(() => component ?? null),
 			);
 
-			if (!displayInfo.value) return [value];
+			if (!displayInfo.value) return value;
 
 			// These displays natively support rendering arrays of values
 			if (field?.meta?.display && ['related-values', 'formatted-value'].includes(field?.meta?.display)) {
