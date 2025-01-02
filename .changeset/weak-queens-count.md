@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Deleted field items using ItemsService for activity tracking
+Fixed field deletion not being tracked in the activity log
