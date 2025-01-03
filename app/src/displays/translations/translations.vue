@@ -90,10 +90,13 @@ const translations = computed(() => {
 	<value-null v-if="!relationInfo?.junctionCollection?.collection" />
 	<div v-else class="display-translations">
 		<render-template
+			v-slot="{ copyValue }"
 			:template="internalTemplate"
 			:item="displayItem"
 			:collection="relationInfo.junctionCollection.collection"
-		/>
+		>
+			<slot :copy-value="copyValue" />
+		</render-template>
 		<v-menu class="menu" show-arrow :disabled="value.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
 				<v-icon small class="icon" :class="{ active }" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
