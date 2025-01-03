@@ -1,5 +1,5 @@
 {
-	"extends": "@directus/tsconfig/node18-esm",
+	"extends": "@directus/tsconfig/vue3",
 	"compilerOptions": {
 		"outDir": "dist"
 	},

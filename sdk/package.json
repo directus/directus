@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@types/node-fetch": "2.6.11",
 		"esbuild-plugin-replace": "1.4.0",
 		"tsup": "8.3.0",
@@ -37,6 +37,6 @@
 		"vitest": "2.1.2"
 	},
 	"engines": {
-		"node": ">=18.0.0"
+		"node": ">=22.0.0"
 	}
 }

@@ -42,7 +42,7 @@
 		"@directus/stores": "workspace:*",
 		"@directus/system-data": "workspace:*",
 		"@directus/themes": "workspace:*",
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",

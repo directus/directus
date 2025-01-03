@@ -1,7 +1,4 @@
 {
-	"extends": "@directus/tsconfig/node18-esm",
-	"compilerOptions": {
-		"types": ["node"]
-	},
+	"extends": "@directus/tsconfig/node22",
 	"include": ["."]
 }

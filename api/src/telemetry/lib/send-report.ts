@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import type { HeadersInit } from 'node-fetch';
 import { URL } from 'node:url';
 import type { TelemetryReport } from '../types/report.js';
 

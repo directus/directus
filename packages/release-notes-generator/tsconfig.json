@@ -1,6 +1,9 @@
 {
-	"extends": "@directus/tsconfig/node18-cjs",
+	"extends": "@directus/tsconfig/base",
 	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2023"],
+		"module": "CommonJS",
 		"outDir": "dist"
 	},
 	"include": ["src"]
