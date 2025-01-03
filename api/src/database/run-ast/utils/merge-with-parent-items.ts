@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Item, SchemaOverview, PrimaryKey } from '@directus/types';
+import type { Item, PrimaryKey, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { clone, isArray } from 'lodash-es';
 import type { NestedCollectionNode } from '../../../types/ast.js';
@@ -33,6 +33,10 @@ export function mergeWithParentItems(
 
 		for (const nestedItem of nestedItems) {
 			const nestedPK = nestedItem[nestPrimaryKeyField];
+
+			if (!parentsByForeignKey.has(nestedPK)) {
+				continue;
+			}
 
 			for (const parentItem of parentsByForeignKey.get(nestedPK)!) {
 				parentItem[nestedNode.fieldKey] = nestedItem;
