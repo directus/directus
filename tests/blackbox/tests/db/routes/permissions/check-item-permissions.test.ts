@@ -59,12 +59,16 @@ describe('/permissions/me/:collection/:id?', () => {
 						share: { access: false },
 					});
 
-					await CreatePermission(vendor, 'APP_ACCESS', {
-						collection,
-						action: 'update',
-						permissions: { _and: [{ name: { _eq: collectionItemName } }] },
-						presets: {},
-						fields: ['name'],
+					await CreatePermission(vendor, {
+						role: USER.APP_ACCESS.KEY,
+						permission: {
+							collection,
+							action: 'update',
+							permissions: { _and: [{ name: { _eq: collectionItemName } }] },
+							presets: {},
+							fields: ['name'],
+						},
+						policyName: 'Check Update Collection',
 					});
 
 					// Action
@@ -99,12 +103,16 @@ describe('/permissions/me/:collection/:id?', () => {
 						share: { access: false },
 					});
 
-					await CreatePermission(vendor, 'APP_ACCESS', {
-						collection: singleton,
-						action: 'update',
-						permissions: { _and: [{ name: { _eq: singletonItemName } }] },
-						presets: {},
-						fields: ['name'],
+					await CreatePermission(vendor, {
+						role: USER.APP_ACCESS.KEY,
+						permission: {
+							collection: singleton,
+							action: 'update',
+							permissions: { _and: [{ name: { _eq: singletonItemName } }] },
+							presets: {},
+							fields: ['name'],
+						},
+						policyName: 'Check Update Singleton',
 					});
 
 					// Action

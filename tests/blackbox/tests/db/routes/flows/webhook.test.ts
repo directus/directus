@@ -201,6 +201,8 @@ describe('/flows', () => {
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 					.send({ operation: { ...payloadOperationCreate, flow: flowCacheEnabledId } });
 
+				await sleep(100);
+
 				// Action
 				const responseDefault = await request(getUrl(vendor, env)).post(`/flows/trigger/${flowId}`);
 				const responseCacheEnabled = await request(getUrl(vendor, env)).post(`/flows/trigger/${flowCacheEnabledId}`);

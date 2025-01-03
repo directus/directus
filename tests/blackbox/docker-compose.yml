@@ -118,10 +118,13 @@ services:
     depends_on:
       - minio
     entrypoint: >
-      /bin/sh -c " /usr/bin/mc alias set directusminio http://minio:9000 directus miniosecret; /usr/bin/mc mb
-      directusminio/directus-blackbox-test; while true; do
+      /bin/sh -c " until (/usr/bin/mc alias set directusminio http://minio:9000 directus miniosecret &&
+             /usr/bin/mc admin info directusminio > /dev/null 2>&1); do
+          echo 'Waiting for MinIO to be ready...';
+          sleep 1;
+      done; /usr/bin/mc mb directusminio/directus-blackbox-test; while true; do
           sleep 3600;
-      done "
+      done;"
 
   auth-saml:
     image: kristophjunge/test-saml-idp
