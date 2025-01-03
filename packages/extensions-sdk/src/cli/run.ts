@@ -3,6 +3,7 @@ import add from './commands/add.js';
 import build from './commands/build.js';
 import create from './commands/create.js';
 import link from './commands/link.js';
+import validate from './commands/validate.js';
 import getSdkVersion from './utils/get-sdk-version.js';
 
 const program = new Command();
@@ -42,5 +43,12 @@ program
 	.description('Creates a symlink to the extension in the Directus extensions folder')
 	.argument('<path>', 'path to the extension folder of directus')
 	.action(link);
+
+program
+	.command('validate')
+	.description('Check that the extension matches the Directus extensions requirements')
+	.option('-c, --check <check>', 'Runs a specific check')
+	.option('-v --verbose', 'Full report on tests executed')
+	.action(validate);
 
 program.parse(process.argv);
