@@ -56,7 +56,8 @@ const percentageRemaining = computed(() => {
 
 const inputType = computed(() => {
 	if (props.masked) return 'password';
-	if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type!)) return 'number';
+	if (['integer', 'float', 'decimal'].includes(props.type!)) return 'number';
+	if (props.type! === 'bigInteger') return 'bigInteger';
 	return 'text';
 });
 </script>
