@@ -28,7 +28,7 @@
 		"@vueuse/core": "11.1.0"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@vueuse/shared": "11.1.0",
 		"pinia": "2.2.4",
 		"tsup": "8.3.0",

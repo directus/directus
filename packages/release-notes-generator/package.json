@@ -32,7 +32,7 @@
 	},
 	"devDependencies": {
 		"@changesets/types": "6.0.0",
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@pnpm/types": "12.2.0",
 		"@types/node": "22.10.1",
 		"@types/semver": "7.5.8",
