@@ -34,6 +34,9 @@ export function mergeWithParentItems(
 		for (const nestedItem of nestedItems) {
 			const nestedPK = nestedItem[nestedPrimaryKeyField];
 
+			if (nestedPK === null) {
+				continue;
+			}
 
 			if (!parentsByForeignKey.has(nestedPK)) {
 				continue;
