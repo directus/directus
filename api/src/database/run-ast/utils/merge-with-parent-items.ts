@@ -18,7 +18,7 @@ export function mergeWithParentItems(
 	if (nestedNode.type === 'm2o') {
 		const parentsByForeignKey = new Map<PrimaryKey, Item[]>();
 
-		parentItems.forEach((parentItem: Item) => {
+		for (const parentItem of parentItems) {
 			const relationKey = parentItem[nestedNode.relation.field];
 
 			if (!parentsByForeignKey.has(relationKey)) {
@@ -27,12 +27,13 @@ export function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey] = null;
 			parentsByForeignKey.get(relationKey)!.push(parentItem);
-		});
+		}
 
-		const nestPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
+		const nestedPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
 
 		for (const nestedItem of nestedItems) {
-			const nestedPK = nestedItem[nestPrimaryKeyField];
+			const nestedPK = nestedItem[nestedPrimaryKeyField];
+
 
 			if (!parentsByForeignKey.has(nestedPK)) {
 				continue;
@@ -50,8 +51,10 @@ export function mergeWithParentItems(
 
 		const parentsByPrimaryKey = new Map<PrimaryKey, Item>();
 
-		parentItems.forEach((parentItem: Item) => {
-			if (!parentItem[parentRelationField]) parentItem[parentRelationField] = [];
+		for (const parentItem of parentItems) {
+			if (!parentItem[parentRelationField]) {
+				parentItem[parentRelationField] = [];
+			}
 
 			const parentPrimaryKey = parentItem[parentPrimaryKeyField];
 
@@ -62,16 +65,18 @@ export function mergeWithParentItems(
 			}
 
 			parentsByPrimaryKey.set(parentPrimaryKey, parentItem);
-		});
+		}
 
 		const toAddToAllParents: Item[] = [];
 
-		nestedItems.forEach((nestedItem) => {
-			if (nestedItem === null) return;
+		for (const nestedItem of nestedItems) {
+			if (nestedItem === null) {
+				continue;
+			}
 
 			if (Array.isArray(nestedItem[nestedParentKeyField])) {
 				toAddToAllParents.push(nestedItem); // TODO explain this odd case
-				return; // Avoids adding the nestedItem twice
+				continue; // Avoids adding the nestedItem twice
 			}
 
 			const parentPrimaryKey =
@@ -86,7 +91,7 @@ export function mergeWithParentItems(
 			}
 
 			parentItem[parentRelationField].push(nestedItem);
-		});
+		}
 
 		for (const [index, parentItem] of parentItems.entries()) {
 			if (fieldAllowed === false || (isArray(fieldAllowed) && !fieldAllowed[index])) {
