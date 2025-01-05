@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed non existing nested primary keys on O2M resulting in internal server error
+Fixed invalid nested item primary keys on O2M/M2O relationships resulting in internal server error
