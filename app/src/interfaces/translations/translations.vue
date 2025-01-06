@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import VDivider from '@/components/v-divider.vue';
-import VForm from '@/components/v-form/v-form.vue';
 import VIcon from '@/components/v-icon/v-icon.vue';
-import { usePermissions } from '@/composables/use-permissions';
 import { useRelationM2M } from '@/composables/use-relation-m2m';
 import { DisplayItem, RelationQueryMultiple, useRelationMultiple } from '@/composables/use-relation-multiple';
 import { useWindowSize } from '@/composables/use-window-size';
@@ -15,7 +12,7 @@ import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import LanguageSelect from './language-select.vue';
+import TranslationForm from './translation-form.vue';
 import { validateItem } from '@/utils/validate-item';
 
 const props = withDefaults(
@@ -75,40 +72,24 @@ watch(splitView, (splitViewEnabled) => {
 
 const { languageOptions } = useLanguages();
 
+const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
+const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
+
 const fields = computed(() => {
 	if (!relationInfo.value) return [];
 	return fieldsStore.getFieldsForCollection(relationInfo.value.junctionCollection.collection);
 });
 
-const query = ref<RelationQueryMultiple>({
-	fields: ['*'],
-	limit: -1,
-	page: 1,
-});
+const query = ref<RelationQueryMultiple>({ fields: ['*'], limit: -1, page: 1 });
 
-const { create, update, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
+const { create, update, remove, isLocalItem, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
 	value,
 	query,
 	relationInfo,
 	primaryKey,
 );
 
-const firstItem = computed(() => {
-	const item = getItemWithLang(displayItems.value, firstLang.value);
-	if (item === undefined) return undefined;
-
-	return getItemEdits(item);
-});
-
-const secondItem = computed(() => {
-	const item = getItemWithLang(displayItems.value, secondLang.value);
-	if (item === undefined) return undefined;
-
-	return getItemEdits(item);
-});
-
-const firstItemInitial = computed(() => getItemWithLang(fetchedItems.value, firstLang.value));
-const secondItemInitial = computed(() => getItemWithLang(fetchedItems.value, secondLang.value));
+useNestedValidation();
 
 function getItemWithLang<T extends Record<string, any>>(items: T[], lang: string | undefined) {
 	const langField = relationInfo.value?.junctionField.field;
@@ -118,7 +99,7 @@ function getItemWithLang<T extends Record<string, any>>(items: T[], lang: string
 	return items.find((item) => item?.[langField]?.[relatedPKField] === lang);
 }
 
-function updateValue(item: DisplayItem, lang: string | undefined) {
+function updateValue(item: DisplayItem | undefined, lang: string | undefined) {
 	const info = relationInfo.value;
 	if (!info) return;
 
@@ -152,17 +133,20 @@ function updateValue(item: DisplayItem, lang: string | undefined) {
 	}
 }
 
-const splitViewAvailable = computed(() => {
-	return width.value > 960 && languageOptions.value.length > 1;
-});
-
-const splitViewEnabled = computed(() => {
-	return splitViewAvailable.value && splitView.value;
-});
-
-const showLanguageSelect = computed(() => {
-	return languageOptions.value.length > 1;
-});
+const translationProps = computed(() => ({
+	languageOptions: languageOptions.value,
+	disabled: props.disabled,
+	autofocus: props.autofocus,
+	relationInfo: relationInfo.value,
+	getItemWithLang,
+	loading: loading.value,
+	displayItems: displayItems.value,
+	fetchedItems: fetchedItems.value,
+	getItemEdits,
+	isLocalItem,
+	updateValue,
+	remove,
+}));
 
 function useLanguages() {
 	const languages = ref<Record<string, any>[]>([]);
@@ -260,36 +244,6 @@ function useLanguages() {
 	}
 }
 
-const firstItemPrimaryKey = computed(
-	() => relationInfo.value && firstItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field],
-);
-
-const secondItemPrimaryKey = computed(
-	() => relationInfo.value && secondItemInitial.value?.[relationInfo.value.junctionPrimaryKeyField.field],
-);
-
-const firstItemNew = computed(() => !!(relationInfo.value && firstItemPrimaryKey.value === undefined));
-
-const secondItemNew = computed(() => !!(relationInfo.value && secondItemPrimaryKey.value === undefined));
-
-const {
-	itemPermissions: { saveAllowed: firstSaveAllowed, fields: firstFields },
-} = usePermissions(
-	computed(() => relationInfo.value?.junctionCollection.collection ?? null),
-	firstItemPrimaryKey,
-	firstItemNew,
-);
-
-const {
-	itemPermissions: { saveAllowed: secondSaveAllowed, fields: secondFields },
-} = usePermissions(
-	computed(() => relationInfo.value?.junctionCollection.collection ?? null),
-	secondItemPrimaryKey,
-	secondItemNew,
-);
-
-useNestedValidation();
-
 function useNestedValidation() {
 	const { updateNestedValidationErrors } = useInjectNestedValidation();
 
@@ -347,73 +301,37 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<div class="primary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select v-if="showLanguageSelect" v-model="firstLang" :items="languageOptions">
-				<template #append="{ active, toggle }">
-					<v-icon
-						v-if="splitViewAvailable && !splitViewEnabled"
-						v-tooltip="t('interfaces.translations.toggle_split_view')"
-						name="flip"
-						clickable
-						@click.stop="
-							if (active) toggle();
-							splitView = true;
-						"
-					/>
-				</template>
-			</language-select>
-			<v-form
-				v-if="languageOptions.find((lang) => lang.value === firstLang)"
-				:key="languageOptions.find((lang) => lang.value === firstLang)?.value"
-				:primary-key="
-					relationInfo?.junctionPrimaryKeyField.field
-						? firstItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
-						: null
-				"
-				:disabled="disabled || !firstSaveAllowed"
-				:loading="loading"
-				:fields="firstFields"
-				:model-value="firstItem"
-				:initial-values="firstItemInitial"
-				:badge="languageOptions.find((lang) => lang.value === firstLang)?.text"
-				:direction="languageOptions.find((lang) => lang.value === firstLang)?.direction"
-				:autofocus="autofocus"
-				inline
-				@update:model-value="updateValue($event, firstLang)"
-			/>
-			<v-divider />
-		</div>
-		<div v-if="splitViewEnabled" class="secondary" :class="splitViewEnabled ? 'half' : 'full'">
-			<language-select v-model="secondLang" :items="languageOptions" secondary>
-				<template #append>
-					<v-icon
-						v-tooltip="t('interfaces.translations.toggle_split_view')"
-						name="close"
-						clickable
-						@click="splitView = false"
-					/>
-				</template>
-			</language-select>
-			<v-form
-				v-if="languageOptions.find((lang) => lang.value === secondLang)"
-				:key="languageOptions.find((lang) => lang.value === secondLang)?.value"
-				:primary-key="
-					relationInfo?.junctionPrimaryKeyField.field
-						? secondItemInitial?.[relationInfo?.junctionPrimaryKeyField.field]
-						: null
-				"
-				:disabled="disabled || !secondSaveAllowed"
-				:loading="loading"
-				:initial-values="secondItemInitial"
-				:fields="secondFields"
-				:badge="languageOptions.find((lang) => lang.value === secondLang)?.text"
-				:direction="languageOptions.find((lang) => lang.value === secondLang)?.direction"
-				:model-value="secondItem"
-				inline
-				@update:model-value="updateValue($event, secondLang)"
-			/>
-			<v-divider />
-		</div>
+		<translation-form v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
+			<template #split-view="{ active, toggle }">
+				<v-icon
+					v-if="splitViewAvailable && !splitViewEnabled"
+					v-tooltip="t('interfaces.translations.toggle_split_view')"
+					name="flip"
+					clickable
+					@click.stop="
+						if (active) toggle();
+						splitView = true;
+					"
+				/>
+			</template>
+		</translation-form>
+
+		<translation-form
+			v-if="splitViewEnabled"
+			v-model:lang="secondLang"
+			v-bind="translationProps"
+			secondary
+			class="half"
+		>
+			<template #split-view>
+				<v-icon
+					v-tooltip="t('interfaces.translations.toggle_split_view')"
+					name="flip"
+					clickable
+					@click="splitView = false"
+				/>
+			</template>
+		</translation-form>
 	</div>
 </template>
 
