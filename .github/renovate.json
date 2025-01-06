@@ -3,6 +3,9 @@
 	"extends": ["config:recommended", ":disableDependencyDashboard"],
 	"labels": [":robot: Dependency"],
 	"enabledManagers": ["npm", "github-actions"],
+	"vulnerabilityAlerts": {
+		"enabled": false
+	},
 	"packageRules": [
 		{
 			"groupName": "all non-major dependencies",
@@ -41,6 +44,12 @@
 		{
 			"description": "hold - https://github.com/prettier/prettier/issues/15783",
 			"matchPackageNames": ["prettier"],
+			"enabled": false
+		},
+		{
+			"description": "hold - https://github.com/directus/directus/pull/24181",
+			"matchPackageNames": ["tinymce"],
+			"matchUpdateTypes": ["major"],
 			"enabled": false
 		},
 		{
