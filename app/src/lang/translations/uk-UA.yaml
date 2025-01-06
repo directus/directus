@@ -1126,6 +1126,7 @@ settings_project: Налаштування
 settings_appearance: Вигляд
 settings_webhooks: Вебхуки
 settings_flows: Автоматизація
+settings_system_logs: Системні журнали
 settings_presets: Закладки
 settings_translations: Переклади
 one_or_more_options_are_missing: Одно або більше налаштувань відсутні
@@ -1171,6 +1172,10 @@ page_help_settings_datamodel_collections: >-
   **Модель даних: колекції** — перелічує всі доступні колекції. Це включає видимі, приховані та системні колекції, а також незмінені таблиці бази даних, які можна додавати.
 page_help_settings_datamodel_fields: >-
   **Модель даних: колекція** — форма для керування цією колекцією та її полями.
+page_help_settings_system_logs: '**Системні журнали** — доступ до прямої трансляції системних журналів.'
+page_help_settings_policies_collection: '**Переглянути політики** — список усіх політик у проєкті.'
+page_help_settings_policies_item: "**Деталі політики** — керуйте дозволами та іншими параметрами політики."
+page_help_settings_roles_collection: '**Огляд ролей** — перераховує всі ролі користувачів у проєкті.'
 page_help_settings_roles_item: "**Детальна інформація про роль** — керуйте дозволами для ролі та іншими налаштуваннями."
 page_help_settings_presets_collection: >-
   **Огляд запрограмованих налаштувань** — перелік усіх попередніх налаштувань у проекті, включаючи: користувача, роль та глобальні закладки, а також вигляди за замовчуванням.
@@ -1218,8 +1223,10 @@ singleton: Об'єкт-одинак
 singleton_label: Вважати як один об'єкт
 system_fields_locked: Системні поля заблоковані і не можуть бути відредаговані
 directus_collection:
+  directus_access: Додатки до політики
   directus_activity: Облікові записи для всіх подій
   directus_collections: Додаткова конфігурація колекції та метадані
+  directus_comments: Коментарі до предметів
   directus_dashboards: Панелі керування в межах модуля інсайтів
   directus_fields: Додаткова конфігурація поля та метадані
   directus_files: Метадані для всіх керованих файлів
@@ -1229,6 +1236,8 @@ directus_collection:
   directus_notifications: Сповіщення відіслано користувачам
   directus_operations: Дії які виконуються Автоматизацією
   directus_panels: Окремі панелі на панелях керування інсайтів
+  directus_permissions: Права доступу для кожної політики
+  directus_policies: Політики контролю доступу
   directus_presets: Попередні налаштування для передустановок і закладок колекції
   directus_relations: Конфігурація зв'язків і метадані
   directus_revisions: Знімки даних для всіх видів діяльності
@@ -1406,9 +1415,15 @@ fields:
     icon: Іконка ролі
     description: Опис
     users: Користувачі у ролі
+    parent: Батьківська роль
+    children: Дитячі ролі
   directus_policies:
     name: Назва політики
     description: Опис
+    app_access: Доступ до програми
+    admin_access: Доступ адміністратора
+    ip_access: IP доступ
+    enforce_tfa: Вимагати 2FA
   directus_webhooks:
     name: Назва
     method: Метод
@@ -1491,6 +1506,12 @@ field_options:
     focal_point_divider: Фокус
     filename_disk: Назва на диску пам'яті...
     filename_download: Назва під час завантаження...
+  directus_policies:
+    name: Унікальна назва цієї політики...
+    description: Опис цієї політики...
+    ip_access: Додайте дозволені IP-адреси, IP-діапазони та блоки CIDR. Залиште порожнім, щоб дозволити всім...
+    enforce_tfa: Застосувати двофакторну автентифікацію
+    assigned_to: Призначено
   directus_roles:
     name: Унікальна назва для цієї ролі...
     description: Опис цієї ролі...
@@ -1500,6 +1521,8 @@ field_options:
       name_placeholder: Ведіть назву...
       link_name: Посилання
       link_placeholder: Відносна або абсолютна URL-адреса...
+    parent_note: Додаткова батьківська роль, від якої ця роль успадковує дозволи
+    children_note: Вкладені дочірні ролі, які успадковують дозволи цієї ролі
     collections_name: Колекції
     collections_addLabel: Додати колекцію...
   directus_users:
@@ -1550,6 +1573,7 @@ live_preview:
   toggle_3d: Перемикнути 3D
 shares: Акції
 unlimited_usage: Необмежене використання
+uses_left: Не залишилося використань | Залишилося одне використання | {n} використань залишилося
 no_shares: Немає спільних ресурсів для відображення
 new_share: Нова публікація
 expired: Закінчився
@@ -1583,6 +1607,9 @@ continue_label: Продовжити
 continue_as: >-
   {name} наразі авторизований. Якщо ви впізнали цей обліковий запис, натисніть кнопку продовжити.
 editing_role: 'Роль {role}'
+editing_policy: 'Політика {policy}'
+no_permissions: Немає дозволів
+permission_add_collection: Додати колекцію
 creating_webhook: Створити вебхук
 default_label: За замовчуванням
 delete_label: Видалити
@@ -1816,6 +1843,8 @@ interfaces:
     description: Виберіть або завантажте зображення
     crop: Обрізати по розміру
     crop_label: Обрізати зображення при необхідності
+    letterbox: Поштова скринька
+    letterbox_label: Додати відступ до попереднього перегляду зображення
   system-interface:
     interface: Інтерфейс
     description: Оберіть існуючий інтерфейс
@@ -1850,6 +1879,7 @@ interfaces:
     editorFont: Шрифт редактора
     previewFont: Попередній перегляд шрифту
     default_view: Вид за замовчуванням
+    default_view_editor: Редактор
     default_view_preview: Перегляд
     customSyntax: Користувацькі блоки
     customSyntax_label: Додати користувацькі типи синтаксису
@@ -2034,6 +2064,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Редактор Raw
     description: Дозволити введення необроблених або шаблонізованих даних
+  input-password:
+    input-password: Введіть пароль
+    description: Введення пароля з перемикачем, щоб приховати значення
 displays:
   translations:
     translations: Переклади
@@ -2477,3 +2510,5 @@ duplicate_dashboard: Панель дублювання
 search_dashboard: Пошук резервних копій...
 search_flow: Пошуковий потік...
 percent: Відсоток
+show_password: Показати пароль
+hide_password: Приховати пароль
