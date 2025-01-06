@@ -13,7 +13,7 @@ readTime: 7 min read
 
 ## Requirements
 
-- Node.js [v22](https://github.com/nodejs/release#release-schedule), specifically version 22.12 or higher.
+- Node.js [v22](https://github.com/nodejs/release#release-schedule)
 
 ## Server
 
