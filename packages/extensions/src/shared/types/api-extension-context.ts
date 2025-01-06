@@ -7,5 +7,5 @@ export type ApiExtensionContext = {
 	database: Knex;
 	env: Record<string, any>;
 	logger: Logger;
-	getSchema: (options?: { database?: Knex, bypassCache?: boolean; }, attempt?: number) => Promise<SchemaOverview>;
+	getSchema: (options?: { database?: Knex; bypassCache?: boolean }, attempt?: number) => Promise<SchemaOverview>;
 };
