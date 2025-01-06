@@ -262,7 +262,7 @@ function useTab() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .content {
 	padding: var(--content-padding);
@@ -270,7 +270,7 @@ function useTab() {
 	padding-bottom: var(--content-padding-bottom);
 
 	.grid {
-		@include form-grid;
+		@include mixins.form-grid;
 	}
 }
 

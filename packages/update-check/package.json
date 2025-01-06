@@ -42,7 +42,7 @@
 		"@vitest/coverage-v8": "2.1.2",
 		"strip-ansi": "7.1.0",
 		"tsup": "8.3.0",
-		"typescript": "5.6.3",
+		"typescript": "5.7.2",
 		"vitest": "2.1.2"
 	}
 }
