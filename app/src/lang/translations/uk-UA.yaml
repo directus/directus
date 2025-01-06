@@ -260,9 +260,13 @@ field_permissions: Дозволи Поля
 field_validation: Валідація Поля
 field_presets: Пресети Полів
 permissions_for_role: 'Об''єкти {role} ролі можуть {action}.'
+permissions_for_policy: 'Елементи політики {policy} можуть {action}.'
 fields_for_role: 'Поля {role} ролі можуть {action}.'
+fields_for_policy: 'Поля політики {policy} можуть {action}.'
 validation_for_role: 'Поле {action} направляє {role} Роль повинна підпорядкуватися.'
+validation_for_policy: 'Поле {action} визначає політику {policy}.'
 presets_for_role: 'Значення поля за замовчуванням для ролі {role}.'
+presets_for_policy: 'Значення типового поля для політики {policy}.'
 presets_field_warning: 'Реляційні налаштування для поля "{field}" слід налаштовувати з "детальним" синтаксисом.'
 presentation_and_aliases: Подання та Аліаси
 revision_post_create: Ось як виглядав цей елемент після його створення.
@@ -368,6 +372,7 @@ no_collections_found: Колекцій не знайдено.
 new_data_alert: 'Наступне буде створено в межах вашої моделі даних:'
 search_collection: Пошук колекцій...
 search_role: Пошуковий запит...
+search_policy: Шукаємо політику...
 search_field: Пошуковий запит...
 new_field: 'Нове поле'
 new_collection: 'Нова колекція'
@@ -408,6 +413,7 @@ soft_length: Несувора квота
 precision_scale: Точність і шкала
 readonly: Тільки читання
 unique: Унікальне
+index: Індекс
 updated_on: Оновлене
 updated_by: Оновлено
 primary_key: Первинний ключ
@@ -518,6 +524,11 @@ hours: Години
 month: Місяць
 year: Рік
 select_all: Обрати все
+permissionsLevel:
+  all: Повний доступ {action}
+  partial: Частковий доступ {action}
+  custom: Частковий доступ {action}
+  none: Немає доступу {action}
 months:
   january: Січень
   february: Лютий
@@ -621,6 +632,7 @@ display_not_found: 'Дисплей "{display}" не знайдено.'
 reset_display: Скинути дисплей
 list-m2a: Білдер (М2А)
 item_count: 'Немає елементів | Один елемент | {count} елементів'
+filtered_item_count: 'Немає відфільтрованих елементів | Один відфільтрований елемент | {count} відфільтрованих елементів'
 no_items_copy: Ще немає об'єктів в цій колекції.
 file_count: 'Файлів немає | Один файл | {count} файлів'
 no_files_copy: Файлів не знайдено.
@@ -655,6 +667,7 @@ copy_to: Коіювати до...
 no_other_dashboards_copy: У вас ще немає інших панелей керування.
 inactive: Неактивний
 users: Користувачі
+roles: Ролі
 activity: Активність
 activity_item: Об'єкт активності
 action: Дія
@@ -782,6 +795,9 @@ make_collection_hidden: Приховати колекцію
 make_folder_visible: Зробити теку видимою
 make_folder_hidden: Зробити теку прихованою
 goto_collection_content: Переглянути вміст
+count_of_total_items: '{count} із {total} елементів'
+start_end_of_count_items: '{start}-{end} з {count} елементів'
+start_end_of_count_filtered_items: '{start}-{end} з {count} відфільтрованих елементів'
 delete_collection_are_you_sure: >-
   Ви впевнені що хочете видалити колекцію "{collection}"? Це видалить колекцію та всі елементи в ній. Ця дія є безповоротною.
 delete_folder_are_you_sure: Ви впевнені що бажаєте видалити теку "{folder}"? Вкладені теки й колекції будуть переміщені на самий верхній рівень.
@@ -868,11 +884,13 @@ columns: Колонки
 collection_setup: Налаштування колекції
 optional_system_fields: Необов'язкові поля
 value_unique: Значення повинно бути унікальним
+value_index: Поле індексоване
 all_activity: Уся діяльність
 create_item: Створити об'єкт
 display_template: Шаблон відображення
 language_display_template: Шаблон відображення мови
 translations_display_template: Шаблон відображення перекладів
+n_items_selected: 'Елементи не вибрано | Вибрано один елемент | Вибрано {n} елементів'
 per_page: На сторінку
 all_files: Всі файли
 my_files: Мої файли
@@ -984,6 +1002,22 @@ no_data_in_flow: В цьому потоці не було створено чи 
 accountability: Підзвітність
 payload: Вміст
 details: Деталі
+resume_streaming_logs: Відновити потокові журнали
+pause_streaming_logs: Тимчасово зупинити потокові журнали
+logs_session_resumed: Сеанс журналу відновлено...
+logs_session_paused: Сеанс журналів тимчасово зупинено...
+logs_stream_disconnected: Потік журналів від'єднано...
+log_detail_filter_paths: 'Шляхи фільтрів (наприклад: req.method, res.statusCode)'
+logs_beginning: Це початок сеансу вашого журналу...
+logs_waiting: 'Чекаємо на більше журналів...'
+logs_unread_count: '{count} непрочитаних'
+clear_logs: Очистити журнали
+search_logs: Шукати журнали...
+all_instances: Усі випадки
+instance_count: 'Немає випадків | Один випадок | {count} випадків'
+all_log_levels: Усі рівні журналу
+log_level_count: 'Без рівня журналу | Один рівень журналу | {count} рівнів журналу'
+soft_wrap_lines: М'які лінії обгортки
 full_screen: Повний екран
 full_text_search: Пошук за повним текстом
 edit_panels: Редагувати панелі
@@ -1012,6 +1046,7 @@ tooltip: Підказка
 tooltip_placeholder: Введіть підказку...
 unlimited: Необмежено
 open_link_in: Відкрити посилання за допомогою
+new_tab: Нова вкладка
 save_image: Зберегти зображення
 save_media: Зберегти медіа
 wysiwyg_options:
@@ -1085,6 +1120,8 @@ editing_unit: 'Редагування {unit}'
 editing_in_batch: 'Пакетне редагування {count} елементів'
 no_options_available: Варіанти недоступні
 settings_data_model: Модель даних
+settings_roles: Ролі користувачів
+settings_permissions: Правила доступу
 settings_project: Налаштування
 settings_appearance: Вигляд
 settings_webhooks: Вебхуки
