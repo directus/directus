@@ -522,6 +522,7 @@ year: Jahr
 select_all: Alle auswählen
 permissionsLevel:
   all: Voller {action} Zugriff
+  custom: Partieller {action} Zugriff
   none: Kein {action} Zugriff
 months:
   january: Januar
@@ -633,6 +634,10 @@ no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks sind veraltet und ihre weitere Nutzung wird nicht empfohlen.
+
+  Bitte benutze stattdessen **Flows** mit der [Webhook / Request URL Operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Es wurden noch keine Webhooks konfiguriert.
 no_notifications: Keine Benachrichtigungen
 no_notifications_copy: Du bist auf dem neusten Stand!
@@ -1187,12 +1192,14 @@ no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
 install_extension: Erweiterung installieren
+uninstall_locked: Erweiterungen, die nicht über den Marktplatz installiert wurden, können nicht deinstalliert werden
 uninstall: Deinstallieren
 installed: Installiert
 reinstall: Neu installieren
 open_in_marketplace: Im Marketplace öffnen
 source_registry: Marktplatz
 source_local: Lokal
+source_module: Node Module
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
