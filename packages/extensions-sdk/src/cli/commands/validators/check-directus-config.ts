@@ -29,7 +29,7 @@ const checkDirectusConfig = {
 		if (!packageFile[EXTENSION_PKG_KEY]) {
 			spinner.fail();
 
-			const message = 'Directus object not found';
+			const message = `"directus:extension" not found in ${packagePath}`;
 
 			reports.push({
 				level: 'error',
