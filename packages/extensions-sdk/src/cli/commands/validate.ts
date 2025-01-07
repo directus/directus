@@ -28,9 +28,7 @@ export default async function validate(options: ValidateOptions): Promise<void> 
 		}
 
 		const result = await Promise.allSettled(
-			filteredValidators.map(async (value) => {
-				return await value.handler(spinner, reports);
-			}),
+			filteredValidators.map((value) => value.handler(spinner, reports)),
 		);
 
 		const rejectedChecks = result.filter((value) => {
