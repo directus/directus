@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { isEmpty } from 'lodash';
 import { usePermissions } from '@/composables/use-permissions';
@@ -71,12 +71,17 @@ const activatorDisabled = computed(() => {
 	);
 });
 
-const { getIconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd } = useActivatorButton();
+const { getIconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd, transition } = useActivatorButton();
 const { getDeleteToggleTooltip, getDeleteToggleName, onToggleDelete } = useDeleteToggle();
 
 function useActivatorButton() {
 	const pressing = ref(false);
 	const pressed = ref(false);
+	const transition = ref(false);
+
+	watch([item, lang], ([newItem, newLang], [oldItem, oldLang]) => {
+		transition.value = newItem !== oldItem && newLang === oldLang;
+	});
 
 	return {
 		getIconName,
@@ -84,6 +89,7 @@ function useActivatorButton() {
 		onMousedown,
 		onMouseup,
 		onTransitionEnd,
+		transition,
 	};
 
 	function getIconName() {
@@ -151,7 +157,8 @@ function useDeleteToggle() {
 		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
 				<transition
-					:name="item ? 'rotate-in' : 'rotate-out'"
+					:name="transition ? (item ? 'rotate-in' : 'rotate-out') : null"
+					:duration="transition ? null : 0"
 					mode="out-in"
 					@after-leave="onTransitionEnd"
 					@leave-cancelled="onTransitionEnd"
