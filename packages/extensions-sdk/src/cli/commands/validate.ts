@@ -23,7 +23,7 @@ export default async function validate(options: ValidateOptions): Promise<void> 
 			return true;
 		});
 
-		if (filteredValidators.length < 1) {
+		if (filteredValidators.length === 0) {
 			throw new Error(`No validator selected`);
 		}
 
