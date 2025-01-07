@@ -33,7 +33,7 @@ export default async function validate(options: ValidateOptions): Promise<void> 
 
 		const rejectedChecks = result.filter((value) => value.status === 'rejected');
 
-		if (rejectedChecks.length) {
+		if (rejectedChecks.length > 0) {
 			spinner.fail(chalk.bold('Failed validation: '));
 			options.verbose = true;
 		} else {
