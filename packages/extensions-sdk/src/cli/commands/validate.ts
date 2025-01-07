@@ -10,6 +10,14 @@ type ValidateOptions = {
 	verbose?: boolean;
 };
 
+const printReport = (reports: Array<Report>) => {
+	reports
+		.sort((a, b) => a.message.localeCompare(b.message))
+		.forEach(({ level, message }) => {
+			log(message, level);
+		});
+};
+
 export default async function validate(options: ValidateOptions): Promise<void> {
 	const spinner = ora(chalk.bold('Validating Directus extension...')).start();
 	const reports: Array<Report> = [];
@@ -33,7 +41,9 @@ export default async function validate(options: ValidateOptions): Promise<void> 
 
 		if (rejectedChecks.length > 0) {
 			spinner.fail(chalk.bold('Failed validation: '));
-			options.verbose = true;
+
+			printReport(reports);
+			process.exit(1);
 		} else {
 			spinner.succeed(chalk.bold('Extension is valid'));
 		}

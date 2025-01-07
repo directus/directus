@@ -43,7 +43,7 @@ const checkLicense = {
 		}
 
 		if (!packageLicense && !licenseFile) {
-			const message = 'No file named LICENSE found or license reference in package.json';
+			const message = 'No license defined';
 
 			reports.push({
 				level: 'error',

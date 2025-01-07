@@ -1,5 +1,6 @@
 import fse from 'fs-extra';
 import { type Ora } from 'ora';
+import path from 'path';
 import type { Report } from '../../types.js';
 
 const checkReadMe = {
@@ -7,10 +8,13 @@ const checkReadMe = {
 	handler: async (spinner: Ora, reports: Array<Report>) => {
 		spinner.text = 'Check for README';
 
-		if (!(await fse.pathExists(`${process.cwd()}/README.md`))) {
+		if (
+			!(await fse.pathExists(path.resolve(process.cwd(), 'README.md'))) ||
+			!(await fse.pathExists(path.resolve(process.cwd(), 'readme.md')))
+		) {
 			spinner.fail();
 
-			const message = 'No README.md';
+			const message = 'No readme file found';
 
 			reports.push({
 				level: 'error',
