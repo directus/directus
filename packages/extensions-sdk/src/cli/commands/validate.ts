@@ -31,9 +31,7 @@ export default async function validate(options: ValidateOptions): Promise<void> 
 			filteredValidators.map((value) => value.handler(spinner, reports)),
 		);
 
-		const rejectedChecks = result.filter((value) => {
-			return value.status === 'rejected';
-		});
+		const rejectedChecks = result.filter((value) => value.status === 'rejected');
 
 		if (rejectedChecks.length) {
 			spinner.fail(chalk.bold('Failed validation: '));
