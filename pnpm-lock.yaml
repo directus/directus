@@ -1375,6 +1375,9 @@ importers:
       rollup-plugin-styles:
         specifier: 4.0.0
         version: 4.0.0(rollup@3.29.4)
+      semver:
+        specifier: 7.6.3
+        version: 7.6.3
       vite:
         specifier: 4.5.2
         version: 4.5.2(@types/node@22.7.5)(sass@1.79.4)(terser@5.31.6)
@@ -1391,6 +1394,9 @@ importers:
       '@types/inquirer':
         specifier: 9.0.7
         version: 9.0.7
+      '@types/semver':
+        specifier: 7.5.8
+        version: 7.5.8
       '@vitest/coverage-v8':
         specifier: 2.1.2
         version: 2.1.2(vitest@2.1.2(@types/node@22.7.5)(happy-dom@15.7.4)(jsdom@20.0.3)(sass-embedded@1.80.3)(sass@1.79.4)(terser@5.31.6))

@@ -1,6 +1,8 @@
 import { EXTENSION_PKG_KEY, EXTENSION_TYPES, API_EXTENSION_TYPES } from '@directus/extensions';
 import fse from 'fs-extra';
+import path from 'path';
 import { type Ora } from 'ora';
+import semver from 'semver';
 import type { Report } from '../../types.js';
 import { isObject } from '@directus/utils';
 
@@ -9,7 +11,9 @@ const checkDirectusConfig = {
 	handler: async (spinner: Ora, reports: Array<Report>) => {
 		spinner.text = 'Checking package file exists';
 
-		if (!(await fse.pathExists(`${process.cwd()}/package.json`))) {
+		const packagePath = path.resolve(process.cwd(), 'package.json');
+
+		if (!(await fse.pathExists(packagePath))) {
 			spinner.fail();
 
 			const message = 'No package.json';
@@ -22,7 +26,7 @@ const checkDirectusConfig = {
 			throw new Error(message);
 		}
 
-		const packageFile = await fse.readJson(`${process.cwd()}/package.json`);
+		const packageFile = await fse.readJson(packagePath);
 
 		spinner.text = `Checking ${EXTENSION_PKG_KEY} is present`;
 
@@ -39,8 +43,9 @@ const checkDirectusConfig = {
 			throw new Error(message);
 		}
 
-		const { type, host, sandbox } = packageFile[EXTENSION_PKG_KEY];
-		let { path } = packageFile[EXTENSION_PKG_KEY];
+		const packageObject = packageFile[EXTENSION_PKG_KEY];
+		const { type, host, sandbox } = packageObject;
+		let extensionPath = packageObject.path;
 
 		spinner.text = `Checking extension type`;
 
@@ -58,14 +63,14 @@ const checkDirectusConfig = {
 
 		spinner.text = `Checking extension path(s)`;
 
-		if (!isObject(path)) {
-			path = { app: path };
+		if (!isObject(extensionPath)) {
+			extensionPath = { app: extensionPath };
 		}
 
-		Object.keys(path).forEach(async (key) => {
-			if (!(await fse.pathExists(`${process.cwd()}/${path[key]}`))) {
+		Object.keys(extensionPath).forEach(async (key) => {
+			if (!(await fse.pathExists(path.resolve(process.cwd(), extensionPath[key])))) {
 				spinner.fail();
-				const message = `Extension path ${key}: ${path[key]} invalid`;
+				const message = `Extension path ${key}: ${extensionPath[key]} invalid`;
 
 				reports.push({
 					level: 'error',
@@ -78,9 +83,7 @@ const checkDirectusConfig = {
 
 		spinner.text = 'Checking for valid Directus host version';
 
-		const regex = new RegExp(/^\^?[1-9]\d*(\.[1-9]\d*)*/);
-
-		if (!regex.test(host)) {
+		if (!semver.validRange(host)) {
 			spinner.fail();
 			const message = `${host} not a valid Directus version`;
 
@@ -94,7 +97,7 @@ const checkDirectusConfig = {
 
 		spinner.text = 'Checking if it will publish to the Directus Marketplace';
 
-		if (type === 'bundle' || (!sandbox?.enabled && API_EXTENSION_TYPES.findIndex(type) >= 0)) {
+		if (type === 'bundle' || (sandbox && !sandbox?.enabled && API_EXTENSION_TYPES.findIndex(type) >= 0)) {
 			reports.push({
 				level: 'warn',
 				message: `${checkDirectusConfig.name}: Extension won't be generally visible in the Directus Marketplace`,

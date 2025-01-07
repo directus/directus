@@ -1,6 +1,7 @@
 import { EXTENSION_PKG_KEY } from '@directus/extensions';
 import fse from 'fs-extra';
 import { type Ora } from 'ora';
+import path from 'path';
 import type { Report } from '../../types.js';
 
 const checkBuiltCode = {
@@ -9,25 +10,29 @@ const checkBuiltCode = {
 		spinner.text = 'Check for built code';
 
 		let codePath = '/dist';
+		const packagePath = path.resolve(process.cwd(), 'package.json');
 
-		if (await fse.pathExists(`${process.cwd()}/package.json`)) {
-			const packageFile = await fse.readJson(`${process.cwd()}/package.json`);
+		if (await fse.pathExists(packagePath)) {
+			const packageFile = await fse.readJson(packagePath);
 
 			if (packageFile[EXTENSION_PKG_KEY]) {
 				const { path } = packageFile[EXTENSION_PKG_KEY];
-				const message = `Path ${path} found in ${EXTENSION_PKG_KEY}`;
-				spinner.text = message;
 
-				reports.push({
-					level: 'info',
-					message: `${checkBuiltCode.name}: ${message}`,
-				});
+				if (path) {
+					const message = `Path ${path} found in ${EXTENSION_PKG_KEY}`;
+					spinner.text = message;
 
-				codePath = path;
+					reports.push({
+						level: 'info',
+						message: `${checkBuiltCode.name}: ${message}`,
+					});
+
+					codePath = path;
+				}
 			}
 		}
 
-		if (!(await fse.pathExists(`${process.cwd()}/${codePath}`))) {
+		if (!(await fse.pathExists(path.resolve(process.cwd(), codePath)))) {
 			spinner.fail();
 			const message = `No ${codePath} directory`;
 

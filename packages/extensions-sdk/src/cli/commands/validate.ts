@@ -27,9 +27,7 @@ export default async function validate(options: ValidateOptions): Promise<void> 
 			throw new Error(`No validator selected`);
 		}
 
-		const result = await Promise.allSettled(
-			filteredValidators.map((value) => value.handler(spinner, reports)),
-		);
+		const result = await Promise.allSettled(filteredValidators.map((value) => value.handler(spinner, reports)));
 
 		const rejectedChecks = result.filter((value) => value.status === 'rejected');
 
