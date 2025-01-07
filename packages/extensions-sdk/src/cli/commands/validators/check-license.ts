@@ -9,7 +9,7 @@ const checkLicense = {
 
 		if (!(await fse.pathExists(`${process.cwd()}/LICENSE`))) {
 			spinner.fail();
-			const message = 'No LICENSE.md';
+			const message = 'No file named LICENSE found';
 
 			reports.push({
 				level: 'error',
