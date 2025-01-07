@@ -532,7 +532,11 @@ months:
   november: November
   december: Dezember
 drag_mode: Drag-Modus
+move_tool: Verschieben-Werkzeug
+crop_tool: Zuschneiden-Werkzeug
+focal_point_tool: Fokuspunkt-Werkzeug
 cancel_crop: Zuschneiden abbrechen
+cancel_selection: Auswahl abbrechen
 original: Original
 url: URL
 import_label: Import
@@ -598,6 +602,7 @@ comments: Kommentare
 no_comments: Noch keine Kommentare
 expand: Ausklappen
 expand_all: Alles aufklappen
+expand_none: Keine erweitern
 collapse: Einklappen
 collapse_all: Alle einklappen
 select_item: Element auswählen
@@ -616,6 +621,7 @@ display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
 list-m2a: Builder (n:x, Many to Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
+filtered_item_count: 'Keine gefilterten Elemente | Ein gefiltertes Element | {count} gefilterte Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
 no_files_copy: Keine Dateien vorhanden.
@@ -981,7 +987,9 @@ payload: Nutzdaten
 details: Details
 resume_streaming_logs: Streaming-Logs fortsetzen
 pause_streaming_logs: Streaming-Logs pausieren
+logs_session_resumed: Log-Sitzung fortgesetzt...
 logs_session_paused: '"Log Sitzung pausiert"'
+logs_stream_disconnected: Log-Stream getrennt...
 logs_beginning: '"Dies ist der Anfang Deiner Log-Sitzung"......'
 logs_waiting: 'Warte auf weitere Protokolle...'
 logs_unread_count: '{count} ungelesen'
