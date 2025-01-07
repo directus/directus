@@ -18,7 +18,7 @@ afterAll(async () => {
 	}
 });
 
-describe.skip('create and build', () => {
+describe('create and build', () => {
 	function getConfigFileContent(configFileName: string) {
 		switch (configFileName) {
 			case 'extension.config.js':
@@ -76,17 +76,13 @@ describe.skip('create and build', () => {
 });
 
 describe('validate extension', async () => {
-	const extensionType = 'interface';
-	const currentTime = Date.now();
-	const language = 'javascript';
-
-	const testExtensionPath = `${TEST_PREFIX}-validate-${extensionType}-${currentTime}`;
+	const testExtensionPath = `${TEST_PREFIX}-validate-${Date.now()}`;
 
 	const runValidate = (check: string) =>
 		execa('node', ['../cli.js', 'validate', '--check', check], { cwd: testExtensionPath });
 
 	// Create extension
-	await create(extensionType, testExtensionPath, { language });
+	await create('interface', testExtensionPath, { language: 'javascript' });
 
 	test('built-code', async () => {
 		// Needs to be built first
@@ -113,7 +109,7 @@ describe('validate extension', async () => {
 	test('license', async () => {
 		// License needs to be defined by hand first
 		await expect(runValidate('license')).rejects.toEqual(
-			expect.objectContaining({ stderr: expect.stringContaining('No license defined') }),
+			expect.objectContaining({ stderr: expect.stringContaining('[Error] license: No license defined') }),
 		);
 
 		// Add license field
@@ -131,7 +127,7 @@ describe('validate extension', async () => {
 	test('readme', async () => {
 		// Readme needs to be created by hand first
 		await expect(runValidate('readme')).rejects.toEqual(
-			expect.objectContaining({ stderr: expect.stringContaining('No readme file found') }),
+			expect.objectContaining({ stderr: expect.stringContaining('[Error] readme: No readme file found') }),
 		);
 
 		// Create readme
