@@ -40,7 +40,7 @@ export default async function validate(options: ValidateOptions): Promise<void> 
 			spinner.succeed(chalk.bold('Extension is valid'));
 		}
 	} catch (error) {
-		spinner.fail(chalk.bold('Failed validation'));
+		spinner.fail(chalk.bold('Failed validation: '));
 		log(String(error), 'error');
 	}
 
