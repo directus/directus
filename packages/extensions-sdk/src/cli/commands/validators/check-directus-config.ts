@@ -11,7 +11,7 @@ const checkDirectusConfig = {
 	handler: async (spinner: Ora, reports: Array<Report>) => {
 		spinner.text = 'Checking package file exists';
 
-		const packagePath = path.resolve(process.cwd(), 'package.json');
+		const packagePath = path.resolve('package.json');
 
 		if (!(await fse.pathExists(packagePath))) {
 			spinner.fail();
@@ -68,7 +68,7 @@ const checkDirectusConfig = {
 		}
 
 		Object.keys(extensionPath).forEach(async (key) => {
-			if (!(await fse.pathExists(path.resolve(process.cwd(), extensionPath[key])))) {
+			if (!(await fse.pathExists(path.resolve(extensionPath[key])))) {
 				spinner.fail();
 				const message = `Extension path ${key}: ${extensionPath[key]} invalid`;
 

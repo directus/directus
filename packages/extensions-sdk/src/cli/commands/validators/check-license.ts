@@ -8,41 +8,10 @@ const checkLicense = {
 	handler: async (spinner: Ora, reports: Array<Report>) => {
 		spinner.text = 'Check for LICENSE';
 
-		const packagePath = path.resolve(process.cwd(), 'package.json');
+		const packagePath = path.resolve('package.json');
+		const { license } = await fse.readJson(packagePath);
 
-		let packageLicense = true;
-		let licenseFile = true;
-
-		if (await fse.pathExists(packagePath)) {
-			const packageFile = await fse.readJson(packagePath);
-			const { license } = packageFile;
-
-			if (!license) {
-				const message = 'No LICENSE within the packages.json';
-
-				reports.push({
-					level: 'warn',
-					message: `${checkLicense.name}: ${message}`,
-				});
-
-				packageLicense = false;
-			}
-		}
-
-		const licensePath = path.resolve(process.cwd(), 'LICENSE');
-
-		if (!(await fse.pathExists(licensePath))) {
-			const message = 'No file named LICENSE found';
-
-			reports.push({
-				level: 'warn',
-				message: `${checkLicense.name}: ${message}`,
-			});
-
-			licenseFile = false;
-		}
-
-		if (!packageLicense && !licenseFile) {
+		if (!license) {
 			const message = 'No license defined';
 
 			reports.push({

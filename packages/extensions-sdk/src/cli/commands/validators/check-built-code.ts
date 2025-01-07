@@ -10,7 +10,7 @@ const checkBuiltCode = {
 		spinner.text = 'Check for built code';
 
 		let codePath = '/dist';
-		const packagePath = path.resolve(process.cwd(), 'package.json');
+		const packagePath = path.resolve('package.json');
 
 		if (await fse.pathExists(packagePath)) {
 			const packageFile = await fse.readJson(packagePath);
@@ -32,7 +32,7 @@ const checkBuiltCode = {
 			}
 		}
 
-		if (!(await fse.pathExists(path.resolve(process.cwd(), codePath)))) {
+		if (!(await fse.pathExists(path.resolve(codePath)))) {
 			spinner.fail();
 			const message = `No ${codePath} directory`;
 

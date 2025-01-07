@@ -8,10 +8,7 @@ const checkReadMe = {
 	handler: async (spinner: Ora, reports: Array<Report>) => {
 		spinner.text = 'Check for README';
 
-		if (
-			!(await fse.pathExists(path.resolve(process.cwd(), 'README.md'))) ||
-			!(await fse.pathExists(path.resolve(process.cwd(), 'readme.md')))
-		) {
+		if (!(await fse.pathExists(path.resolve('README.md'))) || !(await fse.pathExists(path.resolve('readme.md')))) {
 			spinner.fail();
 
 			const message = 'No readme file found';
