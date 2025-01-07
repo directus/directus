@@ -46,17 +46,7 @@ export default async function validate(options: ValidateOptions): Promise<void> 
 
 	if (options.verbose ?? false) {
 		reports
-			.sort((a, b) => {
-				if (a.message < b.message) {
-					return -1;
-				}
-
-				if (a.message > b.message) {
-					return 1;
-				}
-
-				return 0;
-			})
+			.sort((a, b) => a.message.localeCompare(b.message))
 			.forEach(({ level, message }) => {
 				log(message, level);
 			});
