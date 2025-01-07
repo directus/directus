@@ -695,8 +695,8 @@ importers:
         specifier: 1.0.2
         version: 1.0.2
       '@types/chroma-js':
-        specifier: 2.4.4
-        version: 2.4.4
+        specifier: 3.1.0
+        version: 3.1.0
       '@types/codemirror':
         specifier: 5.60.15
         version: 5.60.15
@@ -5066,8 +5066,8 @@ packages:
   '@types/caseless@0.12.5':
     resolution: {integrity: sha512-hWtVTC2q7hc7xZ/RLbxapMvDMgUnDvKvMOpKal4DrMyfGBUfB1oKaZlIRr6mJL+If3bAP6sV/QneGzF6tJjZDg==}
 
-  '@types/chroma-js@2.4.4':
-    resolution: {integrity: sha512-/DTccpHTaKomqussrn+ciEvfW4k6NAHzNzs/sts1TCqg333qNxOhy8TNIoQCmbGG3Tl8KdEhkGAssb1n3mTXiQ==}
+  '@types/chroma-js@3.1.0':
+    resolution: {integrity: sha512-Uwl3SOtUkbQ6Ye6ZYu4q4xdLGBzmY839sEHYtOT7i691neeyd+7fXWT5VIkcUSfNwIFrIjQutNYQn9h4q5HFvg==}
 
   '@types/codemirror@5.60.15':
     resolution: {integrity: sha512-dTOvwEQ+ouKJ/rE9LT1Ue2hmP6H1mZv5+CCnNWu2qtiOe2LQa9lCprEY20HxiDmV/Bxh+dXjywmy5aKvoGjULA==}
@@ -16144,7 +16144,7 @@ snapshots:
 
   '@types/caseless@0.12.5': {}
 
-  '@types/chroma-js@2.4.4': {}
+  '@types/chroma-js@3.1.0': {}
 
   '@types/codemirror@5.60.15':
     dependencies:
