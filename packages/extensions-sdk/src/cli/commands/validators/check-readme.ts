@@ -1,6 +1,5 @@
-import fse from 'fs-extra';
+import { opendir } from 'node:fs/promises';
 import { type Ora } from 'ora';
-import path from 'path';
 import type { Report } from '../../types.js';
 
 const checkReadMe = {
@@ -8,7 +7,7 @@ const checkReadMe = {
 	handler: async (spinner: Ora, reports: Array<Report>) => {
 		spinner.text = 'Check for README';
 
-		if (!(await fse.pathExists(path.resolve('README.md'))) || !(await fse.pathExists(path.resolve('readme.md')))) {
+		if (!(await hasReadmeFile())) {
 			spinner.fail();
 
 			const message = 'No readme file found';
@@ -31,5 +30,18 @@ const checkReadMe = {
 		return (spinner.text = message);
 	},
 };
+
+async function hasReadmeFile() {
+	/** README can have any case and extension */
+	const README_FILE_REGEX = /readme(\..+)?/i;
+
+	const dir = await opendir(process.cwd());
+
+	for await (const dirent of dir) {
+		if (dirent.isFile() && README_FILE_REGEX.test(dirent.name)) return true;
+	}
+
+	return false;
+}
 
 export default checkReadMe;
