@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
@@ -10,7 +11,6 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useNestedValidation } from '@/composables/use-nested-validation';
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
@@ -185,10 +185,23 @@ export function useItem<T extends Item>(
 
 		const fields = collectionInfo.value?.meta?.item_duplication_fields || ['*'];
 
-		const itemData = await api.get(itemEndpoint.value, { params: { fields } });
+		const itemData = await api.request({
+			method: 'SEARCH',
+			url: getEndpoint(collection.value),
+			data: {
+				query: {
+					fields,
+					filter: {
+						id: {
+							_eq: primaryKey.value,
+						},
+					},
+				},
+			},
+		});
 
 		const newItem: Item = {
-			...(itemData.data.data || {}),
+			...(itemData.data.data[0] || {}),
 			...edits.value,
 		};
 
