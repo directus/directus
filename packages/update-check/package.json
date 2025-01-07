@@ -37,7 +37,7 @@
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",
 		"@npm/types": "2.0.0",
-		"@types/node": "22.10.1",
+		"@types/node": "22.10.5",
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "2.1.2",
 		"strip-ansi": "7.1.0",
