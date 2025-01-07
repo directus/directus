@@ -13732,7 +13732,7 @@ snapshots:
 
   '@editorjs/code@2.9.3':
     dependencies:
-      '@codexteam/icons': 0.3.2
+      '@codexteam/icons': 0.3.3
 
   '@editorjs/delimiter@1.4.2':
     dependencies:
@@ -13786,7 +13786,7 @@ snapshots:
 
   '@editorjs/underline@1.2.1':
     dependencies:
-      '@codexteam/icons': 0.3.2
+      '@codexteam/icons': 0.3.3
 
   '@emnapi/runtime@1.3.1':
     dependencies:
