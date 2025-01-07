@@ -28,16 +28,16 @@
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"ioredis": "5.4.1",
+		"ioredis": "5.4.2",
 		"lru-cache": "10.4.3",
-		"rate-limiter-flexible": "5.0.3"
+		"rate-limiter-flexible": "5.0.4"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.55",
-		"@vitest/coverage-v8": "2.1.2",
-		"tsup": "8.3.0",
+		"@types/node": "18.19.70",
+		"@vitest/coverage-v8": "2.1.8",
+		"tsup": "8.3.5",
 		"typescript": "5.7.2",
-		"vitest": "2.1.2"
+		"vitest": "2.1.8"
 	}
 }

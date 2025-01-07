@@ -20,19 +20,19 @@
 		"@directus/format-title": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@pnpm/find-workspace-dir": "7.0.2",
+		"@pnpm/find-workspace-dir": "7.0.3",
 		"@pnpm/find-workspace-packages": "6.0.9",
 		"markdown-it-for-inline": "2.0.1",
-		"marked": "14.1.2",
+		"marked": "14.1.4",
 		"spellchecker-cli": "7.0.0",
-		"typedoc": "0.26.8",
-		"typedoc-plugin-frontmatter": "1.0.0",
-		"typedoc-plugin-markdown": "4.2.9",
-		"typedoc-plugin-zod": "1.2.1",
-		"typedoc-vitepress-theme": "1.0.2",
+		"typedoc": "0.27.6",
+		"typedoc-plugin-frontmatter": "1.1.2",
+		"typedoc-plugin-markdown": "4.4.1",
+		"typedoc-plugin-zod": "1.3.1",
+		"typedoc-vitepress-theme": "1.1.2",
 		"typescript": "5.7.2",
 		"vitepress": "1.0.0-rc.4",
 		"vitepress-plugin-tabs": "0.3.0",
-		"vue": "3.5.11"
+		"vue": "3.5.13"
 	}
 }

@@ -29,18 +29,18 @@
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"ky": "1.7.2",
+		"ky": "1.7.4",
 		"lodash-es": "4.17.21",
 		"validate-npm-package-name": "6.0.0",
-		"zod": "3.23.8"
+		"zod": "3.24.1"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@types/lodash-es": "4.17.12",
 		"@types/validate-npm-package-name": "4.0.2",
-		"@vitest/coverage-v8": "2.1.2",
-		"tsup": "8.3.0",
+		"@vitest/coverage-v8": "2.1.8",
+		"tsup": "8.3.5",
 		"typescript": "5.7.2",
-		"vitest": "2.1.2"
+		"vitest": "2.1.8"
 	}
 }
