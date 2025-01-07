@@ -1,5 +1,4 @@
 import { useEnv } from '@directus/env';
-import type { HeadersInit } from 'node-fetch';
 import { URL } from 'node:url';
 import type { TelemetryReport } from '../types/report.js';
 
@@ -11,7 +10,7 @@ export const sendReport = async (report: TelemetryReport) => {
 
 	const url = new URL('/v1/metrics', env['TELEMETRY_URL'] as string);
 
-	const headers: HeadersInit = {
+	const headers: ResponseInit['headers'] = {
 		'Content-Type': 'application/json',
 	};
 
