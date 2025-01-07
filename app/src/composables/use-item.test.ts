@@ -15,7 +15,7 @@ vi.mock('@/utils/notify', () => ({
 vi.mock('@/api', () => {
 	return {
 		default: {
-			get: vi.fn(),
+			request: vi.fn(),
 			post: vi.fn(),
 		},
 	};
@@ -37,8 +37,14 @@ afterEach(() => {
 });
 
 describe('Save As Copy', () => {
-	const apiGetSpy = vi.spyOn(api, 'get');
+	const apiSearchSpy = vi.spyOn(api, 'request');
 	const apiPostSpy = vi.spyOn(api, 'post');
+
+	const mockSearchResponse = {
+		data: {
+			data: [{ id: 1 }],
+		},
+	};
 
 	const mockResponse = {
 		data: {
@@ -57,7 +63,7 @@ describe('Save As Copy', () => {
 	} as AppCollection;
 
 	test('should keep manual primary key', async () => {
-		apiGetSpy.mockResolvedValue(mockResponse);
+		apiSearchSpy.mockResolvedValue(mockSearchResponse);
 		apiPostSpy.mockResolvedValue(mockResponse);
 
 		const mockPrimaryKeyFieldName = 'id';
@@ -113,7 +119,7 @@ describe('Save As Copy', () => {
 	});
 
 	test('should omit auto incremented primary key', async () => {
-		apiGetSpy.mockResolvedValue(mockResponse);
+		apiSearchSpy.mockResolvedValue(mockSearchResponse);
 		apiPostSpy.mockResolvedValue(mockResponse);
 
 		const mockPrimaryKeyFieldName = 'id';
@@ -169,7 +175,7 @@ describe('Save As Copy', () => {
 	});
 
 	test('should omit special uuid primary key', async () => {
-		apiGetSpy.mockResolvedValue(mockResponse);
+		apiSearchSpy.mockResolvedValue(mockSearchResponse);
 		apiPostSpy.mockResolvedValue(mockResponse);
 
 		const mockPrimaryKeyFieldName = 'id';
