@@ -100,6 +100,7 @@ beta: Beta
 n_downloads: '{n} downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Kompatibilität nicht garantiert
+compatibility_not_guaranteed_copy: Der Autor hat die Kompatibilität dieser Erweiterung mit {hostVersion} angegeben, welche nicht mit der Version Ihres Projekts ({currentVersion}) übereinstimmt
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
@@ -189,8 +190,12 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
+public_role_info: >-
+  Die öffentliche Rolle kontrolliert, welche API-Daten unauthentifizierten Benutzern oder Benutzern ohne Rolle zur Verfügung stehen. Anfragen mit öffentlicher Rolle können keinen App- oder Administratorzugriff haben. Wenn App- oder Administratorzugriff auf Richtlinien gewährt wird, die der öffentlichen Rolle zugewiesen sind, werden sie ignoriert.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
+admin_policy_description: Initiale Administrator-Richtlinie mit uneingeschränktem App-/API-Zugriff.
 no_description: Keine Beschreibung ...
+reached_maximum_number_of_extensions: Sie haben die maximale Anzahl an Erweiterungen für dieses Projekt erreicht ({n}). Kontaktieren Sie Ihren Systemadministrator für weitere Informationen.
 not_allowed: Nicht erlaubt
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -1384,6 +1389,7 @@ fields:
   directus_policies:
     name: Richtlinienname
     description: Beschreibung
+    enforce_tfa: 2FA erzwingen
   directus_webhooks:
     name: Name
     method: Methode
@@ -1469,6 +1475,9 @@ field_options:
   directus_policies:
     name: Ein einzigartiger Name für diese Richtlinie...
     description: Eine Beschreibung dieser Richtlinie...
+    ip_access: Erlaubte IP-Adressen, IP-Bereiche und CIDR-Blöcke hinzufügen. Leer lassen, um alle zuzulassen...
+    enforce_tfa: Zwei-Faktor-Authentifizierung erzwingen
+    assigned_to: Zugewiesen an
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
@@ -1478,6 +1487,8 @@ field_options:
       name_placeholder: Titel eingeben...
       link_name: Link
       link_placeholder: Relative oder absolute URL...
+    parent_note: Optionale übergeordnete Rolle, von der diese Rolle Berechtigungen erbt
+    children_note: Verschachtelte untergeordnete Rollen, welche die Rechte dieser Rolle erben
     collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
   directus_users:
@@ -1528,6 +1539,7 @@ live_preview:
   toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
+uses_left: Keine Verwendungen übrig | Eine Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
 expired: Abgelaufen
@@ -1629,6 +1641,8 @@ settings: Einstellungen
 register: Registrieren
 registration_successful_headline: Erfolgreich!
 registration_successful_note: Sie können nun zur Anmeldeseite fortfahren.
+registration_successful_check_email_note: |
+  Bitte beachten Sie, dass Sie Ihre E-Mail-Adresse bestätigen müssen, bevor Sie sich anmelden können, indem Sie auf den Ihnen zugesandten Bestätigungslink klicken.
 dont_have_an_account: Sie haben noch kein Konto?
 already_have_an_account: Sie haben bereits ein Konto?
 sign_up_now: Jetzt registrieren
@@ -1666,6 +1680,7 @@ resume: Fortsetzen
 interfaces:
   list-m2a:
     prefix_note: Verwendet standardmäßig den Namen der Sammlung des zugehörigen Elements.
+    sorting_disabled: Sortieren ist deaktiviert, da es mehr Elemente gibt, als auf eine Seite passen.
   filter:
     name: Filter
     description: Ein Filterobjekt konfigurieren.
@@ -1795,6 +1810,7 @@ interfaces:
     crop: Zuschneiden auf Passform
     crop_label: Bild nach Bedarf zuschneiden
     letterbox: Briefkasten
+    letterbox_label: Füge Leerraum zur Bildvorschau hinzu
   system-interface:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
@@ -1829,6 +1845,7 @@ interfaces:
     editorFont: Editor Schriftart
     previewFont: Vorschau Schriftart
     default_view: Standard-Ansicht
+    default_view_editor: Editor
     default_view_preview: Vorschau
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
@@ -1934,6 +1951,7 @@ interfaces:
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
     enable: Aktivieren
+    default_split_view_state: Standardstatus der geteilten Ansicht
     user_language: Aktuelle Benutzersprache verwenden
     default_language: Standardsprache
     language_field: Sprachindikatorfeld
@@ -2014,6 +2032,7 @@ interfaces:
     description: Eingabe von Rohwerten oder Mustache-Templates erlauben
   input-password:
     input-password: Passwort eingeben
+    description: Passwort-Eingabe mit Schalter zum Verstecken des Wertes
 displays:
   translations:
     translations: Übersetzungen
