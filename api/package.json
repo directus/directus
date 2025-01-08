@@ -145,7 +145,7 @@
 		"marked": "14.1.4",
 		"micromustache": "8.0.3",
 		"mime-types": "2.1.35",
-		"minimatch": "9.0.5",
+		"minimatch": "10.0.1",
 		"mnemonist": "0.39.8",
 		"ms": "2.1.3",
 		"nanoid": "5.0.9",
