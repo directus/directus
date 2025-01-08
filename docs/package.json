@@ -20,7 +20,7 @@
 		"@directus/format-title": "workspace:*",
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "3.0.0",
-		"@pnpm/find-workspace-dir": "7.0.3",
+		"@pnpm/find-workspace-dir": "900.0.1",
 		"@pnpm/find-workspace-packages": "6.0.9",
 		"markdown-it-for-inline": "2.0.1",
 		"marked": "14.1.4",

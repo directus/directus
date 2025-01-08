@@ -927,8 +927,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       '@pnpm/find-workspace-dir':
-        specifier: 7.0.3
-        version: 7.0.3
+        specifier: 900.0.1
+        version: 900.0.1
       '@pnpm/find-workspace-packages':
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.2.0)
@@ -4392,6 +4392,10 @@ packages:
     resolution: {integrity: sha512-PzpiPtGF+bIrmkNaHgOIfBZw669+rkUtt/5UFzHukiETwI4/+BTYz8FAr+m5Dfuns531Y+fYRFOpB0PdbAU0+w==}
     engines: {node: '>=16.14'}
 
+  '@pnpm/constants@901.0.0':
+    resolution: {integrity: sha512-TZUfW1giZ9WuLZZVJHkE+uHFm0EWdJQ940DjPvCx2iACJankQ/rL6xODLpwPVB32ivCInHPCHeu73KQ4tO/3Dw==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/core-loggers@10.0.7':
     resolution: {integrity: sha512-evM0PRk8Wz8pUQ+kSDgepLEA2Pm1jYMSiy7grjTiCx+8y89K8lMaycAemZk9BfZTr0m+/rBlwUZliDIEKWuisA==}
     engines: {node: '>=18.12'}
@@ -4434,6 +4438,10 @@ packages:
     resolution: {integrity: sha512-OIYhG7HQh4zUFh2s8/6bp7glVRjNxms7bpzXVOLV7pyRa+rSYFmqJ8zDsBC64k58nuaxS85Ip+SCDjFxsFGeOg==}
     engines: {node: '>=18.12'}
 
+  '@pnpm/error@900.0.1':
+    resolution: {integrity: sha512-s0QUt1s07OIdvslw231Y2FdQ6FYKgyU55yuQkQI3reGqZ0brtG1TVKea6pjk7b3O3Wxjz4OuyzbPLH6Meoq3YA==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/fetcher-base@14.0.1':
     resolution: {integrity: sha512-DXPZ33CrmDQXnYzwvqyP7I0BF0MQELo4ah2JGpXhLhgOdzU+vj7zdKFo2x82L8anrK861IRi01V8o14oATq1vA==}
     engines: {node: '>=16.14'}
@@ -4442,8 +4450,8 @@ packages:
     resolution: {integrity: sha512-fnsaegb+0q7Ku6AyCmoVtBeCuO8ytB7YMEaGHC+0MGoRsxxa6EVLgi2H4abKr8LLslf5tHJBnOH24DjST3UNfQ==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/find-workspace-dir@7.0.3':
-    resolution: {integrity: sha512-eGjkyHSufkHyZ66WpygWnslcRePB0U1lJg1dF3rgWqTChpregYoDyNGDzK7l9Gk+CHVgGZZS5aWp7uKKVmAAEg==}
+  '@pnpm/find-workspace-dir@900.0.1':
+    resolution: {integrity: sha512-ioLTvOroYzzlbFWwCicQMiErnGYRQV/r+moXlmbv5fbaPkWBoBmjj47hpHU+GNUN3PaAnmXH2DjD7MZmjKWXow==}
     engines: {node: '>=18.12'}
 
   '@pnpm/find-workspace-packages@6.0.9':
@@ -14814,6 +14822,8 @@ snapshots:
 
   '@pnpm/constants@7.1.0': {}
 
+  '@pnpm/constants@901.0.0': {}
+
   '@pnpm/core-loggers@10.0.7(@pnpm/logger@5.2.0)':
     dependencies:
       '@pnpm/logger': 5.2.0
@@ -14870,6 +14880,10 @@ snapshots:
     dependencies:
       '@pnpm/constants': 10.0.0
 
+  '@pnpm/error@900.0.1':
+    dependencies:
+      '@pnpm/constants': 901.0.0
+
   '@pnpm/fetcher-base@14.0.1':
     dependencies:
       '@pnpm/resolver-base': 10.0.1
@@ -14883,9 +14897,9 @@ snapshots:
     transitivePeerDependencies:
       - domexception
 
-  '@pnpm/find-workspace-dir@7.0.3':
+  '@pnpm/find-workspace-dir@900.0.1':
     dependencies:
-      '@pnpm/error': 6.0.3
+      '@pnpm/error': 900.0.1
       find-up: 5.0.0
 
   '@pnpm/find-workspace-packages@6.0.9(@pnpm/logger@5.2.0)':
