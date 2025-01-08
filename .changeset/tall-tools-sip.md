@@ -16,6 +16,7 @@
 "@directus/pressure": patch
 "@directus/random": patch
 "@directus/release-notes-generator": patch
+"@directus/sdk": patch
 "@directus/schema": patch
 "@directus/storage-driver-azure": patch
 "@directus/storage-driver-cloudinary": patch
@@ -27,6 +28,10 @@
 "@directus/stores": patch
 "@directus/system-data": patch
 "@directus/themes": patch
+"@directus/types": patch
+"@directus/update-check": patch
+"@directus/utils": patch
+"@directus/validation": patch
 ---
 
 Updated dependencies
