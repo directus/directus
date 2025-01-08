@@ -1518,8 +1518,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       '@pnpm/types':
-        specifier: 12.2.0
-        version: 12.2.0
+        specifier: 900.0.0
+        version: 900.0.0
       '@types/node':
         specifier: 22.10.5
         version: 22.10.5
@@ -4566,6 +4566,10 @@ packages:
   '@pnpm/types@9.1.0':
     resolution: {integrity: sha512-MMPDMLOY17bfNhLhR9Qmq6/2keoocnR5DWXZfZDC4dKXugrMsE1jB6RnuU8swJIo4zyCsMT/iVSAtl/XK+9Z+A==}
     engines: {node: '>=16.14'}
+
+  '@pnpm/types@900.0.0':
+    resolution: {integrity: sha512-GucC9h/EVbU03Kl7M/FqVes1s5RCQaGCW2f41lFA7VqqHWQElR6k1q33iF6f6fXDUSCdzB1IUxSq9ghP2J+8Pw==}
+    engines: {node: '>=18.12'}
 
   '@pnpm/util.lex-comparator@1.0.0':
     resolution: {integrity: sha512-3aBQPHntVgk5AweBWZn+1I/fqZ9krK/w01197aYVkAJQGftb+BVWgEepxY5GChjSW12j52XX+CmfynYZ/p0DFQ==}
@@ -15085,6 +15089,8 @@ snapshots:
   '@pnpm/types@12.2.0': {}
 
   '@pnpm/types@9.1.0': {}
+
+  '@pnpm/types@900.0.0': {}
 
   '@pnpm/util.lex-comparator@1.0.0': {}
 

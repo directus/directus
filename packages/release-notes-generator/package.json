@@ -33,7 +33,7 @@
 	"devDependencies": {
 		"@changesets/types": "6.0.0",
 		"@directus/tsconfig": "3.0.0",
-		"@pnpm/types": "12.2.0",
+		"@pnpm/types": "900.0.0",
 		"@types/node": "22.10.5",
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "2.1.8",
