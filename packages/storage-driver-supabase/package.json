@@ -31,7 +31,7 @@
 		"@directus/utils": "workspace:*",
 		"@supabase/storage-js": "2.7.1",
 		"tus-js-client": "4.2.3",
-		"undici": "6.21.0"
+		"undici": "7.2.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",

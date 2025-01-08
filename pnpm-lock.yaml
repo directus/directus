@@ -282,8 +282,8 @@ importers:
         specifier: 2.1.35
         version: 2.1.35
       minimatch:
-        specifier: 9.0.5
-        version: 9.0.5
+        specifier: 10.0.1
+        version: 10.0.1
       mnemonist:
         specifier: 0.39.8
         version: 0.39.8
@@ -336,8 +336,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       pino-pretty:
-        specifier: 11.3.0
-        version: 11.3.0
+        specifier: 13.0.0
+        version: 13.0.0
       qs:
         specifier: 6.13.1
         version: 6.13.1
@@ -510,7 +510,7 @@ importers:
         version: 8.5.13
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -528,7 +528,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   app:
     devDependencies:
@@ -800,8 +800,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       happy-dom:
-        specifier: 16.5.1
-        version: 16.5.1
+        specifier: 16.5.2
+        version: 16.5.2
       histoire:
         specifier: 0.17.17
         version: 0.17.17(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0))
@@ -879,7 +879,7 @@ importers:
         version: 7.7.0(rollup@4.30.1)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0))(vue@3.5.13(typescript@5.7.2))
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.7.2)
@@ -927,8 +927,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       '@pnpm/find-workspace-dir':
-        specifier: 7.0.3
-        version: 7.0.3
+        specifier: 900.0.1
+        version: 900.0.1
       '@pnpm/find-workspace-packages':
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.2.0)
@@ -982,7 +982,7 @@ importers:
         version: 5.2.1(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0))(vue@3.5.13(typescript@5.7.2))
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       histoire:
         specifier: 0.17.17
         version: 0.17.17(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0))
@@ -1003,7 +1003,7 @@ importers:
         version: 4.4.0(@types/node@22.10.5)(rollup@4.30.1)(typescript@5.7.2)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0))
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.7.2)
@@ -1049,7 +1049,7 @@ importers:
         version: 4.17.12
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       '@vue/test-utils':
         specifier: 2.4.6
         version: 2.4.6
@@ -1061,7 +1061,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.7.2)
@@ -1140,7 +1140,7 @@ importers:
         version: 22.10.5
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1149,7 +1149,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/errors:
     dependencies:
@@ -1171,7 +1171,7 @@ importers:
         version: 0.7.34
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1180,7 +1180,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/extensions:
     dependencies:
@@ -1226,7 +1226,7 @@ importers:
         version: 0.2.6
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.12.0)(pg@8.13.1)(sqlite3@5.1.7)(tedious@18.6.1)
@@ -1244,7 +1244,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.7.2)
@@ -1287,7 +1287,7 @@ importers:
         version: 4.0.2
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1296,7 +1296,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/extensions-sdk:
     dependencies:
@@ -1387,13 +1387,13 @@ importers:
         version: 9.0.7
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       typescript:
         specifier: 5.7.2
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/format-title:
     devDependencies:
@@ -1408,7 +1408,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/memory:
     dependencies:
@@ -1422,8 +1422,8 @@ importers:
         specifier: 5.4.2
         version: 5.4.2
       lru-cache:
-        specifier: 10.4.3
-        version: 10.4.3
+        specifier: 11.0.2
+        version: 11.0.2
       rate-limiter-flexible:
         specifier: 5.0.4
         version: 5.0.4
@@ -1436,7 +1436,7 @@ importers:
         version: 22.10.5
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1445,7 +1445,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/pressure:
     dependencies:
@@ -1464,7 +1464,7 @@ importers:
         version: 4.17.21
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1473,7 +1473,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/random:
     devDependencies:
@@ -1485,7 +1485,7 @@ importers:
         version: 22.10.5
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1494,7 +1494,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/release-notes-generator:
     dependencies:
@@ -1505,8 +1505,8 @@ importers:
         specifier: 6.0.9
         version: 6.0.9(@pnpm/logger@5.2.0)
       '@pnpm/workspace.pkgs-graph':
-        specifier: 4.0.8
-        version: 4.0.8(@pnpm/logger@5.2.0)
+        specifier: 900.0.3
+        version: 900.0.3(@pnpm/logger@5.2.0)
       semver:
         specifier: 7.6.3
         version: 7.6.3
@@ -1518,8 +1518,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       '@pnpm/types':
-        specifier: 12.2.0
-        version: 12.2.0
+        specifier: 900.0.0
+        version: 900.0.0
       '@types/node':
         specifier: 22.10.5
         version: 22.10.5
@@ -1528,13 +1528,13 @@ importers:
         version: 7.5.8
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       typescript:
         specifier: 5.7.2
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/schema:
     dependencies:
@@ -1578,7 +1578,7 @@ importers:
         version: 22.10.5
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1587,7 +1587,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/storage-driver-azure:
     dependencies:
@@ -1609,7 +1609,7 @@ importers:
         version: 7.3.0
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1618,7 +1618,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/storage-driver-cloudinary:
     dependencies:
@@ -1632,8 +1632,8 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       undici:
-        specifier: 6.21.0
-        version: 6.21.0
+        specifier: 7.2.0
+        version: 7.2.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 3.0.0
@@ -1643,7 +1643,7 @@ importers:
         version: 7.3.0
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1652,7 +1652,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/storage-driver-gcs:
     dependencies:
@@ -1677,7 +1677,7 @@ importers:
         version: 7.3.0
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1686,7 +1686,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/storage-driver-local:
     dependencies:
@@ -1705,7 +1705,7 @@ importers:
         version: 22.10.5
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1714,7 +1714,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/storage-driver-s3:
     dependencies:
@@ -1754,7 +1754,7 @@ importers:
         version: 0.7.34
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1763,7 +1763,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/storage-driver-supabase:
     dependencies:
@@ -1783,8 +1783,8 @@ importers:
         specifier: 4.2.3
         version: 4.2.3
       undici:
-        specifier: 6.21.0
-        version: 6.21.0
+        specifier: 7.2.0
+        version: 7.2.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 3.0.0
@@ -1794,7 +1794,7 @@ importers:
         version: 7.3.0
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -1803,7 +1803,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/stores:
     dependencies:
@@ -1960,7 +1960,7 @@ importers:
         version: 7.5.8
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       strip-ansi:
         specifier: 7.1.0
         version: 7.1.0
@@ -1972,7 +1972,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   packages/utils:
     dependencies:
@@ -2024,7 +2024,7 @@ importers:
         version: 0.2.6
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tmp:
         specifier: 0.2.3
         version: 0.2.3
@@ -2036,7 +2036,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.7.2)
@@ -2061,7 +2061,7 @@ importers:
         version: link:../types
       '@vitest/coverage-v8':
         specifier: 2.1.8
-        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
+        version: 2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.0(@types/node@22.10.5))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.2)(yaml@2.6.1)
@@ -2070,7 +2070,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   sdk:
     devDependencies:
@@ -2091,7 +2091,7 @@ importers:
         version: 5.7.2
       vitest:
         specifier: 2.1.8
-        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
 
   tests/blackbox:
     devDependencies:
@@ -2172,7 +2172,7 @@ importers:
         version: 4.3.2(typescript@5.6.2)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0))
       vitest:
         specifier: 1.6.0
-        version: 1.6.0(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+        version: 1.6.0(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
       ws:
         specifier: 8.18.0
         version: 8.18.0
@@ -4384,19 +4384,13 @@ packages:
     resolution: {integrity: sha512-8B4Pw7cnMvO3kYUBZYYIjg6BcGhHwxEEkmBAcqAeF9NM6LmG6F0lFNsOf6XPfHZMx2vUTpZxaWo0FQo1uU2AAw==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/constants@10.0.0':
-    resolution: {integrity: sha512-dxIXcW1F1dxIGfye2JXE7Q8WVwYB0axVzdBOkvE1WKIVR4xjB8e6k/Dkjo7DpbyfW5Vu2k21p6dyM32YLSAWoQ==}
-    engines: {node: '>=18.12'}
-
   '@pnpm/constants@7.1.0':
     resolution: {integrity: sha512-PzpiPtGF+bIrmkNaHgOIfBZw669+rkUtt/5UFzHukiETwI4/+BTYz8FAr+m5Dfuns531Y+fYRFOpB0PdbAU0+w==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/core-loggers@10.0.7':
-    resolution: {integrity: sha512-evM0PRk8Wz8pUQ+kSDgepLEA2Pm1jYMSiy7grjTiCx+8y89K8lMaycAemZk9BfZTr0m+/rBlwUZliDIEKWuisA==}
+  '@pnpm/constants@901.0.0':
+    resolution: {integrity: sha512-TZUfW1giZ9WuLZZVJHkE+uHFm0EWdJQ940DjPvCx2iACJankQ/rL6xODLpwPVB32ivCInHPCHeu73KQ4tO/3Dw==}
     engines: {node: '>=18.12'}
-    peerDependencies:
-      '@pnpm/logger': ^5.1.0
 
   '@pnpm/core-loggers@9.0.1':
     resolution: {integrity: sha512-qP/kk6OeLSxqhvA4n6u4XB6evqD9h1w9p4qtdBOVbkZloCK7L9btkSmKNolBoQ3wrOz7WRFfjRekYUSKphMMCg==}
@@ -4404,12 +4398,14 @@ packages:
     peerDependencies:
       '@pnpm/logger': ^5.0.0
 
-  '@pnpm/crypto.hash@1.0.0':
-    resolution: {integrity: sha512-FGcgj1APRYcuy7sqUrhaJ/aNZpCcqLoY0hl/O6OZ7uSzfSxeI0mZNu24+ef5nBLH64TF6wKkTExQGsDfOuo32A==}
+  '@pnpm/core-loggers@900.1.0':
+    resolution: {integrity: sha512-XMkq9CaeUp0fOF4Qyd2c7pX/WmSTjkGItuzhnNN0BXEuvzIydj2COj03i4p6X8JlFgc/5vFr/m5aJx5xkyKrow==}
     engines: {node: '>=18.12'}
+    peerDependencies:
+      '@pnpm/logger': '>=5.1.0 <901.0.0'
 
-  '@pnpm/crypto.polyfill@1.0.0':
-    resolution: {integrity: sha512-WbmsqqcUXKKaAF77ox1TQbpZiaQcr26myuMUu+WjUtoWYgD3VP6iKYEvSx35SZ6G2L316lu+pv+40A2GbWJc1w==}
+  '@pnpm/crypto.polyfill@900.0.0':
+    resolution: {integrity: sha512-W9y0Y76fgxh3dp053+wgAD+qT4rWmIQseCspENea/NqFnk+3InRpBES+BjfZH0rktEWOocaVMsU7zd377HqV8Q==}
     engines: {node: '>=18.12'}
 
   '@pnpm/dedupe.issues-renderer@1.0.0':
@@ -4430,20 +4426,20 @@ packages:
     resolution: {integrity: sha512-JQSOeSEqrV6k6+kKgrlSJ7gddJRcjxtNCxSVJRIqwckkGSdSTNpXmKEdGgLlaDuEwElPAZUmLDGSqk5InJ5pMA==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/error@6.0.3':
-    resolution: {integrity: sha512-OIYhG7HQh4zUFh2s8/6bp7glVRjNxms7bpzXVOLV7pyRa+rSYFmqJ8zDsBC64k58nuaxS85Ip+SCDjFxsFGeOg==}
+  '@pnpm/error@900.0.1':
+    resolution: {integrity: sha512-s0QUt1s07OIdvslw231Y2FdQ6FYKgyU55yuQkQI3reGqZ0brtG1TVKea6pjk7b3O3Wxjz4OuyzbPLH6Meoq3YA==}
     engines: {node: '>=18.12'}
 
   '@pnpm/fetcher-base@14.0.1':
     resolution: {integrity: sha512-DXPZ33CrmDQXnYzwvqyP7I0BF0MQELo4ah2JGpXhLhgOdzU+vj7zdKFo2x82L8anrK861IRi01V8o14oATq1vA==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/fetching-types@6.0.0':
-    resolution: {integrity: sha512-fnsaegb+0q7Ku6AyCmoVtBeCuO8ytB7YMEaGHC+0MGoRsxxa6EVLgi2H4abKr8LLslf5tHJBnOH24DjST3UNfQ==}
+  '@pnpm/fetching-types@900.0.0':
+    resolution: {integrity: sha512-RoH2+lyyQl7lgEfJnEZQs/dF+BbsQBnWaJm7QXTvvwQmjR0PwssaaaEZq2n8Y6NtzkdDscrK4Ml+FjS+QY88Hg==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/find-workspace-dir@7.0.3':
-    resolution: {integrity: sha512-eGjkyHSufkHyZ66WpygWnslcRePB0U1lJg1dF3rgWqTChpregYoDyNGDzK7l9Gk+CHVgGZZS5aWp7uKKVmAAEg==}
+  '@pnpm/find-workspace-dir@900.0.1':
+    resolution: {integrity: sha512-ioLTvOroYzzlbFWwCicQMiErnGYRQV/r+moXlmbv5fbaPkWBoBmjj47hpHU+GNUN3PaAnmXH2DjD7MZmjKWXow==}
     engines: {node: '>=18.12'}
 
   '@pnpm/find-workspace-packages@6.0.9':
@@ -4462,8 +4458,8 @@ packages:
     resolution: {integrity: sha512-72kkqIL2sacOVr6Y6B6xDGjRC4QgTLeIGkw/5XYyeMgMeL9mDE0lonZEOL9JuLS0XPOXQoyDtRCSmUrzAA57LQ==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/graceful-fs@4.0.0':
-    resolution: {integrity: sha512-933nhV2Prp51522poxX6Chvb7kEW3U3kzVWoqDU1+icB+QE7z/2qQ8wYHsBt4jm0Uil/sF67t77ugOr8bR63kg==}
+  '@pnpm/graceful-fs@900.0.0':
+    resolution: {integrity: sha512-06NoSU3nskpqmde/nN1gRyVlNFxYhOrmZpHal3jk5DJz7+UaCqmmMgQ6EHkk60RaLG53zOAOlfZuSRfVNILBZA==}
     engines: {node: '>=18.12'}
 
   '@pnpm/hooks.types@1.0.1':
@@ -4502,11 +4498,11 @@ packages:
     resolution: {integrity: sha512-oQYP08exi6mOPdAZZWcNIGS+KKPsnNwUBzSuAEGWuCcqwMAt3k/WVCqVIXzBxhO5sP2b43og69VHmPj6IroKqw==}
     engines: {node: '>=14.6'}
 
-  '@pnpm/npm-resolver@22.0.0':
-    resolution: {integrity: sha512-oUNY5AZNRnszuD+tDOZBRZFF6v3f5Sai2TUJwbAo1Sr5oqnhjdJjXaG7UjL/nvnaFo+GM9mgDiVQ42gC8qfz7g==}
+  '@pnpm/npm-resolver@900.0.3':
+    resolution: {integrity: sha512-BvVyD/S6QMYCjAxDU4YGO/1wI0Yivdm/lIQ6XLQcDMWj8HqeNqVUpH0Jbn/FsOlXMC3yqNxfNK/WGlVTpbRjCw==}
     engines: {node: '>=18.12'}
     peerDependencies:
-      '@pnpm/logger': ^5.1.0
+      '@pnpm/logger': '>=5.1.0 <901.0.0'
 
   '@pnpm/package-is-installable@8.0.2':
     resolution: {integrity: sha512-eYuqNBjzYf5wXbD4Xm6ZupRPjYxn2sp6mtYL9+bMntx1+yoUlCJABrYcSvbTM7kheoHyHRf+gEQDFKdn5trQ6w==}
@@ -4531,16 +4527,16 @@ packages:
     resolution: {integrity: sha512-+SsNmbBHH7lBsFrs6dQCEWRtT+Bmq9MYxu+xgkXRplyvjSEQmM0h/UduIw5s8ZAlUuQcxNVTvl0b7ul6OPEIwg==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/resolve-workspace-range@6.0.0':
-    resolution: {integrity: sha512-WN0ZfSBD6GFZinMatGOkhHy8BOugEZ3naGQvLKfLPrMrQOysH7/tOQuU6SFiMB+haVuDqiSOODzwHqAHBFrNwg==}
+  '@pnpm/resolve-workspace-range@900.0.0':
+    resolution: {integrity: sha512-1AVW9b7tpOUhAEgF73RyN/D/0eCvTC3nAoy4li1G1y3R5KWElHJ7b5jLE2XFwgLgrrw04zS20P54qp8hzz2G4A==}
     engines: {node: '>=18.12'}
 
   '@pnpm/resolver-base@10.0.1':
     resolution: {integrity: sha512-2yufLOpiPKQyNVLbL3dgoytkDuuURB5yBOrFtafiuZieGZJid2AeHmFfPhU9hNc/ZM1+wqH3EuVHe/1DdEgm4Q==}
     engines: {node: '>=16.14'}
 
-  '@pnpm/resolver-base@13.0.4':
-    resolution: {integrity: sha512-d6GtsaXDN1VmVdeB6ohrhwGwQfvYpEX/XkBZyRT0Hp772WabWVfaulvicwdh/8o7Rpzy7IV/2hKnDpodUY00lw==}
+  '@pnpm/resolver-base@900.0.0':
+    resolution: {integrity: sha512-ibxRvb8Nij336oMw1MCFkdcVdseXHy54ezU2suapoQ3xR97L365tm/2EHkFw37l1GkZPMy5Mlcc/znJZ+NAxqg==}
     engines: {node: '>=18.12'}
 
   '@pnpm/store-controller-types@15.0.1':
@@ -4559,16 +4555,20 @@ packages:
     resolution: {integrity: sha512-MMPDMLOY17bfNhLhR9Qmq6/2keoocnR5DWXZfZDC4dKXugrMsE1jB6RnuU8swJIo4zyCsMT/iVSAtl/XK+9Z+A==}
     engines: {node: '>=16.14'}
 
+  '@pnpm/types@900.0.0':
+    resolution: {integrity: sha512-GucC9h/EVbU03Kl7M/FqVes1s5RCQaGCW2f41lFA7VqqHWQElR6k1q33iF6f6fXDUSCdzB1IUxSq9ghP2J+8Pw==}
+    engines: {node: '>=18.12'}
+
   '@pnpm/util.lex-comparator@1.0.0':
     resolution: {integrity: sha512-3aBQPHntVgk5AweBWZn+1I/fqZ9krK/w01197aYVkAJQGftb+BVWgEepxY5GChjSW12j52XX+CmfynYZ/p0DFQ==}
     engines: {node: '>=12.22.0'}
 
-  '@pnpm/workspace.pkgs-graph@4.0.8':
-    resolution: {integrity: sha512-ARpEnr/8tNwgGZZf0oDMHCRSXvF7gmA3/yb02y1CUMx/AzIjWY8gb3fQ197BSPlLcOuoH+TNqA2oGeTdDf9dlg==}
+  '@pnpm/workspace.pkgs-graph@900.0.3':
+    resolution: {integrity: sha512-+ek03YwYEKShlH1CvmR/rdgwIpcDCsUNvZ9wi8GT2FZ/Lq9nfdhpK+Ih5tCxnlG1KaIGdqtaQWpdVPpzGAGD5g==}
     engines: {node: '>=18.12'}
 
-  '@pnpm/workspace.spec-parser@1.0.0':
-    resolution: {integrity: sha512-0FxRN/7uFCcnN+xrLWI/8+Qjp5TEQZbZmFMXIWo5NlTVvXRAJU2EKdMp6pULtSp/D90ZeDCjQqQw1c+kzMLQJw==}
+  '@pnpm/workspace.spec-parser@900.0.0':
+    resolution: {integrity: sha512-KJgO2j+URbEXz2qkj5ViYw5v5c/cFyvHSmooVpSYdiOr1RJeVuGY56r3oKLG5CnkEQwYUlBjhOzPdJ9GsPOHvg==}
     engines: {node: '>=18.12'}
 
   '@pnpm/write-project-manifest@5.0.1':
@@ -7811,8 +7811,8 @@ packages:
     resolution: {integrity: sha512-pCcEwRi+TKpMlxAQObHDQ56KawURgyAf6jtIY046fJ5tIv3zDe/LEIubckAO8fj6JnAxLdmWkUfNyulQ2iKdEw==}
     engines: {node: '>=14.0.0'}
 
-  happy-dom@16.5.1:
-    resolution: {integrity: sha512-fOCyxQ9YE2JcmPdpyMEP6GwaFWfRaxSGSzUNkQAdemtUH6KyGUkECPdIRx5YkPKjtjdumfukwdPdQn0f/6VDJA==}
+  happy-dom@16.5.2:
+    resolution: {integrity: sha512-XWXjbbNjog3Me13Q9FQ5L1D7p4bCUdxrJndLVdsCIsCZgHpKz7HUQzAy+R2TidjKEz2Spe3gaqNpPPxOOkepyg==}
     engines: {node: '>=18.0.0'}
 
   hard-rejection@2.1.0:
@@ -8693,6 +8693,10 @@ packages:
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
 
+  lru-cache@11.0.2:
+    resolution: {integrity: sha512-123qHRfJBmo2jXDbo/a5YOQrJoHF/GNQTLzQ5+IdK5pWpceK17yRc6ozlWd25FxvGKQbIUs91fDFkXmDHTKcyA==}
+    engines: {node: 20 || >=22}
+
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
@@ -9007,6 +9011,10 @@ packages:
   min-indent@1.0.1:
     resolution: {integrity: sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==}
     engines: {node: '>=4'}
+
+  minimatch@10.0.1:
+    resolution: {integrity: sha512-ethXTt3SGGR+95gudmqJ1eNhRO7eGEGIgYA9vnPatK4/etz2MEVDno5GMCibdMTuBMyElzIlgxMna3K94XDIDQ==}
+    engines: {node: 20 || >=22}
 
   minimatch@3.0.8:
     resolution: {integrity: sha512-6FsRAQsxQ61mw+qP1ZzbL9Bc78x2p5OqNgNpnoAFLTrX8n5Kxph0CsnhmKKNXTWjXqU5L0pGPR7hYk+XWZr60Q==}
@@ -9749,8 +9757,8 @@ packages:
   pino-http@10.3.0:
     resolution: {integrity: sha512-kaHQqt1i5S9LXWmyuw6aPPqYW/TjoDPizPs4PnDW4hSpajz2Uo/oisNliLf7We1xzpiLacdntmw8yaZiEkppQQ==}
 
-  pino-pretty@11.3.0:
-    resolution: {integrity: sha512-oXwn7ICywaZPHmu3epHGU2oJX4nPmKvHvB/bwrJHlGcbEWaVcotkpyVHMKLKmiVryWYByNp0jpgAcXpFJDXJzA==}
+  pino-pretty@13.0.0:
+    resolution: {integrity: sha512-cQBBIVG3YajgoUjo1FdKVRX6t9XPxwB9lcNJVD5GCnNM4Y6T12YYx8c6zEejxQsU0wrg9TwmDulcE9LR7qcJqA==}
     hasBin: true
 
   pino-pretty@7.6.1:
@@ -11477,9 +11485,9 @@ packages:
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
-  undici@6.21.0:
-    resolution: {integrity: sha512-BUgJXc752Kou3oOIuU1i+yZZypyZRqNPW0vqoMPl8VaoalSfeR0D8/t4iAS3yirs79SSMTxTag+ZC86uswv+Cw==}
-    engines: {node: '>=18.17'}
+  undici@7.2.0:
+    resolution: {integrity: sha512-klt+0S55GBViA9nsq48/NSCo4YX5mjydjypxD7UmHh/brMu8h/Mhd/F7qAeoH2NOO8SDTk6kjnTFc4WpzmfYpQ==}
+    engines: {node: '>=20.18.1'}
 
   unhead@1.11.15:
     resolution: {integrity: sha512-fA0rYB7qMHKY4sg0yzEXhi0cqiF/nl/OUKNaXOS9ChJwCjJxabpZvmQIUOiGS+1ckoFbZc3qZnhDLpdeNhOQwg==}
@@ -14802,25 +14810,21 @@ snapshots:
     transitivePeerDependencies:
       - '@pnpm/logger'
 
-  '@pnpm/constants@10.0.0': {}
-
   '@pnpm/constants@7.1.0': {}
 
-  '@pnpm/core-loggers@10.0.7(@pnpm/logger@5.2.0)':
-    dependencies:
-      '@pnpm/logger': 5.2.0
-      '@pnpm/types': 12.2.0
+  '@pnpm/constants@901.0.0': {}
 
   '@pnpm/core-loggers@9.0.1(@pnpm/logger@5.2.0)':
     dependencies:
       '@pnpm/logger': 5.2.0
       '@pnpm/types': 9.1.0
 
-  '@pnpm/crypto.hash@1.0.0':
+  '@pnpm/core-loggers@900.1.0(@pnpm/logger@5.2.0)':
     dependencies:
-      '@pnpm/crypto.polyfill': 1.0.0
+      '@pnpm/logger': 5.2.0
+      '@pnpm/types': 900.0.0
 
-  '@pnpm/crypto.polyfill@1.0.0': {}
+  '@pnpm/crypto.polyfill@900.0.0': {}
 
   '@pnpm/dedupe.issues-renderer@1.0.0':
     dependencies:
@@ -14858,9 +14862,9 @@ snapshots:
     dependencies:
       '@pnpm/constants': 7.1.0
 
-  '@pnpm/error@6.0.3':
+  '@pnpm/error@900.0.1':
     dependencies:
-      '@pnpm/constants': 10.0.0
+      '@pnpm/constants': 901.0.0
 
   '@pnpm/fetcher-base@14.0.1':
     dependencies:
@@ -14868,16 +14872,16 @@ snapshots:
       '@pnpm/types': 9.1.0
       '@types/ssri': 7.1.5
 
-  '@pnpm/fetching-types@6.0.0':
+  '@pnpm/fetching-types@900.0.0':
     dependencies:
       '@zkochan/retry': 0.2.0
       node-fetch: '@pnpm/node-fetch@1.0.0'
     transitivePeerDependencies:
       - domexception
 
-  '@pnpm/find-workspace-dir@7.0.3':
+  '@pnpm/find-workspace-dir@900.0.1':
     dependencies:
-      '@pnpm/error': 6.0.3
+      '@pnpm/error': 900.0.1
       find-up: 5.0.0
 
   '@pnpm/find-workspace-packages@6.0.9(@pnpm/logger@5.2.0)':
@@ -14907,7 +14911,7 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
 
-  '@pnpm/graceful-fs@4.0.0':
+  '@pnpm/graceful-fs@900.0.0':
     dependencies:
       graceful-fs: 4.2.11
 
@@ -14960,19 +14964,19 @@ snapshots:
       semver: 7.6.3
       validate-npm-package-name: 4.0.0
 
-  '@pnpm/npm-resolver@22.0.0(@pnpm/logger@5.2.0)':
+  '@pnpm/npm-resolver@900.0.3(@pnpm/logger@5.2.0)':
     dependencies:
-      '@pnpm/constants': 10.0.0
-      '@pnpm/core-loggers': 10.0.7(@pnpm/logger@5.2.0)
-      '@pnpm/crypto.hash': 1.0.0
-      '@pnpm/error': 6.0.3
-      '@pnpm/fetching-types': 6.0.0
-      '@pnpm/graceful-fs': 4.0.0
+      '@pnpm/constants': 901.0.0
+      '@pnpm/core-loggers': 900.1.0(@pnpm/logger@5.2.0)
+      '@pnpm/crypto.polyfill': 900.0.0
+      '@pnpm/error': 900.0.1
+      '@pnpm/fetching-types': 900.0.0
+      '@pnpm/graceful-fs': 900.0.0
       '@pnpm/logger': 5.2.0
-      '@pnpm/resolve-workspace-range': 6.0.0
-      '@pnpm/resolver-base': 13.0.4
-      '@pnpm/types': 12.2.0
-      '@pnpm/workspace.spec-parser': 1.0.0
+      '@pnpm/resolve-workspace-range': 900.0.0
+      '@pnpm/resolver-base': 900.0.0
+      '@pnpm/types': 900.0.0
+      '@pnpm/workspace.spec-parser': 900.0.0
       '@zkochan/retry': 0.2.0
       encode-registry: 3.0.1
       load-json-file: 6.2.0
@@ -15038,7 +15042,7 @@ snapshots:
       chalk: 4.1.2
       cli-columns: 4.0.0
 
-  '@pnpm/resolve-workspace-range@6.0.0':
+  '@pnpm/resolve-workspace-range@900.0.0':
     dependencies:
       semver: 7.6.3
 
@@ -15046,9 +15050,9 @@ snapshots:
     dependencies:
       '@pnpm/types': 9.1.0
 
-  '@pnpm/resolver-base@13.0.4':
+  '@pnpm/resolver-base@900.0.0':
     dependencies:
-      '@pnpm/types': 12.2.0
+      '@pnpm/types': 900.0.0
 
   '@pnpm/store-controller-types@15.0.1':
     dependencies:
@@ -15064,20 +15068,22 @@ snapshots:
 
   '@pnpm/types@9.1.0': {}
 
+  '@pnpm/types@900.0.0': {}
+
   '@pnpm/util.lex-comparator@1.0.0': {}
 
-  '@pnpm/workspace.pkgs-graph@4.0.8(@pnpm/logger@5.2.0)':
+  '@pnpm/workspace.pkgs-graph@900.0.3(@pnpm/logger@5.2.0)':
     dependencies:
       '@pnpm/npm-package-arg': 1.0.0
-      '@pnpm/npm-resolver': 22.0.0(@pnpm/logger@5.2.0)
-      '@pnpm/resolve-workspace-range': 6.0.0
-      '@pnpm/types': 12.2.0
+      '@pnpm/npm-resolver': 900.0.3(@pnpm/logger@5.2.0)
+      '@pnpm/resolve-workspace-range': 900.0.0
+      '@pnpm/types': 900.0.0
       ramda: '@pnpm/ramda@0.28.1'
     transitivePeerDependencies:
       - '@pnpm/logger'
       - domexception
 
-  '@pnpm/workspace.spec-parser@1.0.0': {}
+  '@pnpm/workspace.spec-parser@900.0.0': {}
 
   '@pnpm/write-project-manifest@5.0.1':
     dependencies:
@@ -16217,7 +16223,7 @@ snapshots:
       vite: 5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0)
       vue: 3.5.13(typescript@5.7.2)
 
-  '@vitest/coverage-v8@2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))':
+  '@vitest/coverage-v8@2.1.8(vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -16231,7 +16237,7 @@ snapshots:
       std-env: 3.8.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
+      vitest: 2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -18735,7 +18741,7 @@ snapshots:
       - encoding
       - supports-color
 
-  happy-dom@16.5.1:
+  happy-dom@16.5.2:
     dependencies:
       webidl-conversions: 7.0.0
       whatwg-mimetype: 3.0.0
@@ -19697,6 +19703,8 @@ snapshots:
 
   lru-cache@10.4.3: {}
 
+  lru-cache@11.0.2: {}
+
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
@@ -20171,6 +20179,10 @@ snapshots:
   mimic-response@3.1.0: {}
 
   min-indent@1.0.1: {}
+
+  minimatch@10.0.1:
+    dependencies:
+      brace-expansion: 2.0.1
 
   minimatch@3.0.8:
     dependencies:
@@ -21026,7 +21038,7 @@ snapshots:
       pino-std-serializers: 7.0.0
       process-warning: 4.0.0
 
-  pino-pretty@11.3.0:
+  pino-pretty@13.0.0:
     dependencies:
       colorette: 2.0.20
       dateformat: 4.6.3
@@ -21038,7 +21050,6 @@ snapshots:
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 2.0.0
       pump: 3.0.2
-      readable-stream: 4.5.2
       secure-json-parse: 2.7.0
       sonic-boom: 4.2.0
       strip-json-comments: 3.1.1
@@ -21531,6 +21542,7 @@ snapshots:
       events: 3.3.0
       process: 0.11.10
       string_decoder: 1.3.0
+    optional: true
 
   readdirp@3.6.0:
     dependencies:
@@ -22982,7 +22994,7 @@ snapshots:
 
   undici-types@6.20.0: {}
 
-  undici@6.21.0: {}
+  undici@7.2.0: {}
 
   unhead@1.11.15:
     dependencies:
@@ -23486,7 +23498,7 @@ snapshots:
       - typescript
       - universal-cookie
 
-  vitest@1.6.0(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0):
+  vitest@1.6.0(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -23510,7 +23522,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.10.5
-      happy-dom: 16.5.1
+      happy-dom: 16.5.2
       jsdom: 20.0.3
     transitivePeerDependencies:
       - less
@@ -23522,7 +23534,7 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.1)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0):
+  vitest@2.1.8(@types/node@22.10.5)(happy-dom@16.5.2)(jsdom@20.0.3)(sass-embedded@1.83.1)(terser@5.36.0):
     dependencies:
       '@vitest/expect': 2.1.8
       '@vitest/mocker': 2.1.8(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.36.0))
@@ -23546,7 +23558,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.10.5
-      happy-dom: 16.5.1
+      happy-dom: 16.5.2
       jsdom: 20.0.3
     transitivePeerDependencies:
       - less
