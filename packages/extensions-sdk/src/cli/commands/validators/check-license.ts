@@ -6,7 +6,7 @@ import path from 'path';
 const checkLicense = {
 	name: 'license',
 	handler: async (spinner: Ora, reports: Array<Report>) => {
-		spinner.text = 'Check for LICENSE';
+		spinner.text = 'Check for license';
 
 		const packagePath = path.resolve('package.json');
 		const { license } = await fse.readJson(packagePath);
