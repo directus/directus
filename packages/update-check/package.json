@@ -27,22 +27,22 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"axios": "1.7.7",
-		"axios-cache-interceptor": "1.6.0",
+		"axios": "1.7.9",
+		"axios-cache-interceptor": "1.6.2",
 		"boxen": "8.0.1",
-		"chalk": "5.3.0",
+		"chalk": "5.4.1",
 		"find-cache-dir": "5.0.0",
 		"semver": "7.6.3"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@npm/types": "2.0.0",
-		"@types/node": "18.19.55",
+		"@types/node": "18.19.70",
 		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "2.1.2",
+		"@vitest/coverage-v8": "2.1.8",
 		"strip-ansi": "7.1.0",
-		"tsup": "8.3.0",
+		"tsup": "8.3.5",
 		"typescript": "5.7.2",
-		"vitest": "2.1.2"
+		"vitest": "2.1.8"
 	}
 }

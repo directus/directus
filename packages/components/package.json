@@ -31,18 +31,18 @@
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
 		"@histoire/plugin-vue": "0.17.17",
-		"@vitejs/plugin-vue": "5.1.4",
-		"@vitest/coverage-v8": "2.1.2",
+		"@vitejs/plugin-vue": "5.2.1",
+		"@vitest/coverage-v8": "2.1.8",
 		"histoire": "0.17.17",
-		"pinia": "2.2.4",
+		"pinia": "2.3.0",
 		"rollup-plugin-node-externals": "8.0.0",
 		"typescript": "5.7.2",
-		"vite": "5.4.10",
-		"vite-plugin-dts": "4.2.3",
-		"vitest": "2.1.2",
-		"vue": "3.5.11",
+		"vite": "5.4.11",
+		"vite-plugin-dts": "4.4.0",
+		"vitest": "2.1.8",
+		"vue": "3.5.13",
 		"vue-i18n": "11.0.1",
-		"vue-router": "4.4.5"
+		"vue-router": "4.5.0"
 	},
 	"peerDependencies": {
 		"pinia": "2",

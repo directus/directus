@@ -30,11 +30,11 @@
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
 		"@directus/tsconfig": "workspace:*",
-		"@types/node-fetch": "2.6.11",
+		"@types/node-fetch": "2.6.12",
 		"esbuild-plugin-replace": "1.4.0",
-		"tsup": "8.3.0",
+		"tsup": "8.3.5",
 		"typescript": "5.7.2",
-		"vitest": "2.1.2"
+		"vitest": "2.1.8"
 	},
 	"engines": {
 		"node": ">=18.0.0"
