@@ -1518,8 +1518,8 @@ importers:
         specifier: 3.0.0
         version: 3.0.0
       '@pnpm/types':
-        specifier: 12.2.0
-        version: 12.2.0
+        specifier: 1000.1.0
+        version: 1000.1.0
       '@types/node':
         specifier: 22.10.5
         version: 22.10.5
@@ -4550,6 +4550,10 @@ packages:
   '@pnpm/text.comments-parser@2.0.0':
     resolution: {integrity: sha512-DRWtTmmxQQtuWHf1xPt9bqzCSq8d0MQF5x1kdpCDMLd7xk3nP4To2/OGkPrb8MKbrWsgCNDwXyKCFlEKrAg7fg==}
     engines: {node: '>=16.14'}
+
+  '@pnpm/types@1000.1.0':
+    resolution: {integrity: sha512-+F58+ZHk9vJS4NKeVIzvPGCdU9tiPs7p1egqZRBiMN6Sc55LdDUEd/ArvyuooesY1hqmapUcDsgpU2krmNFMRQ==}
+    engines: {node: '>=18.12'}
 
   '@pnpm/types@12.2.0':
     resolution: {integrity: sha512-5RtwWhX39j89/Tmyv2QSlpiNjErA357T/8r1Dkg+2lD3P7RuS7Xi2tChvmOC3VlezEFNcWnEGCOeKoGRkDuqFA==}
@@ -15067,6 +15071,8 @@ snapshots:
   '@pnpm/text.comments-parser@2.0.0':
     dependencies:
       strip-comments-strings: 1.2.0
+
+  '@pnpm/types@1000.1.0': {}
 
   '@pnpm/types@12.2.0': {}
 
