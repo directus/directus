@@ -1,29 +1,27 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import { scheduleJob } from 'node-schedule';
-import { useLock } from '../lock/index.js';
 import { useMetrics } from '../metrics/index.js';
 import { validateCron } from '../utils/schedule.js';
 
+const METRICS_LOCK_TIMEOUT = 10 * 60 * 1000; // 10 mins
+let lockedAt = 0;
+
 const metrics = useMetrics();
-const metricsLockKey = 'schedule--metrics';
-const metricsLockTimeout = 10 * 60 * 1000; // 10 mins
 
 export async function handleMetricsJob() {
-	const lock = useLock();
-	const lockTime = await lock.get(metricsLockKey);
 	const now = Date.now();
 
-	if (lockTime && Number(lockTime) > now - metricsLockTimeout) {
-		// ensure only one connected process
+	if (lockedAt !== 0 && lockedAt > now - METRICS_LOCK_TIMEOUT) {
+		// ensure only generating metrics once per node
 		return;
 	}
 
-	await lock.set(metricsLockKey, Date.now());
+	lockedAt = Date.now();
 
 	await metrics.generate();
 
-	await lock.delete(metricsLockKey);
+	lockedAt = 0;
 }
 
 /**
