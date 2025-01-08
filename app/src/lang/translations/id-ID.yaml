@@ -39,6 +39,9 @@ extension_layout: Tata letak
 extension_panel: Panel
 extension_hook: Hook
 extension_modules: Modul
+extension_missing: Hilang
+compatible_with_your_project: Kompatibel dengan proyek anda
+verified: Terverifikasi
 custom: Kustomisasi
 hook: Hook
 fill_width: Lebar Penuh
@@ -86,7 +89,11 @@ rename_folder: Ubah nama folder
 delete_folder: Hapus Folder
 prefix: Awalan
 suffix: Akhiran
+keep: Jaga
+version: Versi
+version_key: Versi kunci
 version_name: Nama Versi
+main_version: Utama
 promote_version_preview: Pratinjau
 reset_bookmark: Hapus Markah
 update_bookmark: Hapus Markah

@@ -56,4 +56,4 @@ team, talented contributors, and amazing [GitHub Sponsors](https://github.com/sp
 
 <br />
 
-© 2004-2024, Monospace, Inc.
+© 2004-2025, Monospace, Inc.
