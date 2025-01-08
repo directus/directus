@@ -25,11 +25,11 @@
 		"dev": "tsup src/index.ts --format=esm --dts --watch"
 	},
 	"dependencies": {
-		"@vueuse/core": "11.3.0"
+		"@vueuse/core": "12.3.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "workspace:*",
-		"@vueuse/shared": "11.3.0",
+		"@vueuse/shared": "12.3.0",
 		"pinia": "2.3.0",
 		"tsup": "8.3.5",
 		"typescript": "5.7.2",
