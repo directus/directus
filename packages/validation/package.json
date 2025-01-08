@@ -26,7 +26,7 @@
 		"dist"
 	],
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@vitest/coverage-v8": "2.1.8",
 		"tsup": "8.3.5",

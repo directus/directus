@@ -30,7 +30,7 @@
 		"@types/geojson": "7946.0.15"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"knex": "3.1.0",
 		"typescript": "5.7.2",
 		"vue": "3.5.13"

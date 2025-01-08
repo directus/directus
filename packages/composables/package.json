@@ -36,7 +36,7 @@
 	"devDependencies": {
 		"@directus/extensions": "workspace:*",
 		"@directus/sdk": "workspace:*",
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
 		"@vitest/coverage-v8": "2.1.8",

@@ -42,12 +42,12 @@
 		"micromustache": "8.0.3"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.4",
 		"@types/js-yaml": "4.0.9",
 		"@types/lodash-es": "4.17.12",
-		"@types/node": "18.19.70",
+		"@types/node": "22.10.5",
 		"@types/tmp": "0.2.6",
 		"@vitest/coverage-v8": "2.1.8",
 		"tmp": "0.2.3",

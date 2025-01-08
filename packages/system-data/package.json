@@ -28,7 +28,7 @@
 		"dev": "NODE_ENV=development tsup"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"esbuild": "0.20.2",
 		"esbuild-yaml": "1.2.0",
 		"tsup": "8.3.5",

@@ -29,7 +29,7 @@
 		"story:preview": "histoire preview"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@histoire/plugin-vue": "0.17.17",
 		"@vitejs/plugin-vue": "5.2.1",
 		"@vitest/coverage-v8": "2.1.8",

@@ -33,7 +33,7 @@
 		"lodash-es": "4.17.21"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
 		"@unhead/vue": "1.11.15",

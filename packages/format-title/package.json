@@ -37,12 +37,9 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"tsup": "8.3.5",
 		"typescript": "5.7.2",
 		"vitest": "2.1.8"
-	},
-	"engines": {
-		"node": ">=18"
 	}
 }

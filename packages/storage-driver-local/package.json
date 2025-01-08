@@ -29,9 +29,9 @@
 		"@directus/storage": "workspace:*"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
+		"@types/node": "22.10.5",
 		"@ngneat/falso": "7.3.0",
-		"@types/node": "18.19.70",
 		"@vitest/coverage-v8": "2.1.8",
 		"tsup": "8.3.5",
 		"typescript": "5.7.2",

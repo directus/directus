@@ -35,9 +35,9 @@
 		"semver": "7.6.3"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@npm/types": "2.0.0",
-		"@types/node": "18.19.70",
+		"@types/node": "22.10.5",
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "2.1.8",
 		"strip-ansi": "7.1.0",

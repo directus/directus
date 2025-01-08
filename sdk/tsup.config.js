@@ -24,7 +24,7 @@ export default defineConfig(() => ({
 	minify: env === 'production',
 	watch: env === 'development',
 	bundle: true,
-	target: 'es2020',
+	target: 'es2023',
 	entry: ['src/index.ts'],
 	esbuildPlugins: [
 		replace({

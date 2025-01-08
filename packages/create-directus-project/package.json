@@ -33,6 +33,6 @@
 		"update-check": "1.5.4"
 	},
 	"engines": {
-		"node": ">=18.17.0"
+		"node": ">=22"
 	}
 }

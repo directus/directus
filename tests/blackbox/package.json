@@ -8,7 +8,7 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"@types/js-yaml": "4.0.9",

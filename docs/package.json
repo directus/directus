@@ -19,7 +19,7 @@
 	"devDependencies": {
 		"@directus/format-title": "workspace:*",
 		"@directus/sdk": "workspace:*",
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@pnpm/find-workspace-dir": "7.0.3",
 		"@pnpm/find-workspace-packages": "6.0.9",
 		"markdown-it-for-inline": "2.0.1",
