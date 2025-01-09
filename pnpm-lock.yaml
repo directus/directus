@@ -273,8 +273,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       marked:
-        specifier: 14.1.4
-        version: 14.1.4
+        specifier: 15.0.6
+        version: 15.0.6
       micromustache:
         specifier: 8.0.3
         version: 8.0.3
@@ -824,8 +824,8 @@ importers:
         specifier: 1.15.3
         version: 1.15.3(mapbox-gl@1.13.3)
       marked:
-        specifier: 14.1.4
-        version: 14.1.4
+        specifier: 15.0.6
+        version: 15.0.6
       micromustache:
         specifier: 8.0.3
         version: 8.0.3
@@ -936,8 +936,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
       marked:
-        specifier: 14.1.4
-        version: 14.1.4
+        specifier: 15.0.6
+        version: 15.0.6
       spellchecker-cli:
         specifier: 7.0.0
         version: 7.0.0
@@ -4546,10 +4546,6 @@ packages:
   '@pnpm/text.comments-parser@2.0.0':
     resolution: {integrity: sha512-DRWtTmmxQQtuWHf1xPt9bqzCSq8d0MQF5x1kdpCDMLd7xk3nP4To2/OGkPrb8MKbrWsgCNDwXyKCFlEKrAg7fg==}
     engines: {node: '>=16.14'}
-
-  '@pnpm/types@12.2.0':
-    resolution: {integrity: sha512-5RtwWhX39j89/Tmyv2QSlpiNjErA357T/8r1Dkg+2lD3P7RuS7Xi2tChvmOC3VlezEFNcWnEGCOeKoGRkDuqFA==}
-    engines: {node: '>=18.12'}
 
   '@pnpm/types@9.1.0':
     resolution: {integrity: sha512-MMPDMLOY17bfNhLhR9Qmq6/2keoocnR5DWXZfZDC4dKXugrMsE1jB6RnuU8swJIo4zyCsMT/iVSAtl/XK+9Z+A==}
@@ -8802,8 +8798,8 @@ packages:
     resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
 
-  marked@14.1.4:
-    resolution: {integrity: sha512-vkVZ8ONmUdPnjCKc5uTRvmkRbx4EAi2OkTOXmfTDhZz3OFqMNBM1oTTWwTr4HY4uAEojhzPf+Fy8F1DWa3Sndg==}
+  marked@15.0.6:
+    resolution: {integrity: sha512-Y07CUOE+HQXbVDCGl3LXggqJDbXDP2pArc2C1N1RRMN0ONiShoSsIInMd5Gsxupe7fKLpgimTV+HOJ9r7bA+pg==}
     engines: {node: '>= 18'}
     hasBin: true
 
@@ -15064,8 +15060,6 @@ snapshots:
     dependencies:
       strip-comments-strings: 1.2.0
 
-  '@pnpm/types@12.2.0': {}
-
   '@pnpm/types@9.1.0': {}
 
   '@pnpm/types@900.0.0': {}
@@ -19880,7 +19874,7 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
-  marked@14.1.4: {}
+  marked@15.0.6: {}
 
   mdast-util-from-markdown@1.3.1:
     dependencies:

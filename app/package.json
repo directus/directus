@@ -127,7 +127,7 @@
 		"lodash": "4.17.21",
 		"mapbox-gl": "1.13.3",
 		"maplibre-gl": "1.15.3",
-		"marked": "14.1.4",
+		"marked": "15.0.6",
 		"micromustache": "8.0.3",
 		"mime": "4.0.6",
 		"mitt": "3.0.1",
