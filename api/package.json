@@ -125,7 +125,7 @@
 		"glob-to-regexp": "0.4.1",
 		"graphql": "16.10.0",
 		"graphql-compose": "9.0.11",
-		"graphql-ws": "5.16.0",
+		"graphql-ws": "5.16.1",
 		"helmet": "8.0.0",
 		"icc": "3.0.0",
 		"inquirer": "12.3.0",
@@ -159,7 +159,7 @@
 		"otplib": "12.0.1",
 		"p-limit": "6.2.0",
 		"p-queue": "8.0.1",
-		"papaparse": "5.4.1",
+		"papaparse": "5.5.0",
 		"pino": "9.6.0",
 		"pino-http": "10.3.0",
 		"pino-http-print": "3.1.0",
@@ -220,7 +220,7 @@
 		"form-data": "4.0.1",
 		"get-port": "7.1.0",
 		"knex-mock-client": "3.0.2",
-		"typescript": "5.7.2",
+		"typescript": "5.7.3",
 		"vitest": "2.1.8"
 	},
 	"optionalDependencies": {
