@@ -31,7 +31,7 @@
 		"seedrandom": "3.0.5",
 		"supertest": "7.0.0",
 		"typescript": "5.7.3",
-		"uuid": "9.0.1",
+		"uuid": "11.0.4",
 		"vite-tsconfig-paths": "4.3.2",
 		"vitest": "1.6.0",
 		"ws": "8.18.0"
