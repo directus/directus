@@ -18,7 +18,7 @@
 		"@types/uuid": "9.0.8",
 		"@types/ws": "8.5.13",
 		"argon2": "0.41.1",
-		"autocannon": "7.15.0",
+		"autocannon": "8.0.0",
 		"axios": "1.7.9",
 		"get-port": "7.1.0",
 		"globby": "14.0.2",
