@@ -23,7 +23,7 @@
 		"@pnpm/find-workspace-dir": "900.0.1",
 		"@pnpm/find-workspace-packages": "6.0.9",
 		"markdown-it-for-inline": "2.0.1",
-		"marked": "14.1.4",
+		"marked": "15.0.6",
 		"spellchecker-cli": "7.0.0",
 		"typedoc": "0.27.6",
 		"typedoc-plugin-frontmatter": "1.1.2",
