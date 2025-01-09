@@ -2123,8 +2123,8 @@ importers:
         specifier: 0.41.1
         version: 0.41.1
       autocannon:
-        specifier: 7.15.0
-        version: 7.15.0
+        specifier: 8.0.0
+        version: 8.0.0
       axios:
         specifier: 1.7.9
         version: 1.7.9
@@ -2145,7 +2145,7 @@ importers:
         version: 2.3.0
       knex:
         specifier: 3.1.0
-        version: 3.1.0
+        version: 3.1.0(mysql2@3.12.0)(pg@8.13.1)(sqlite3@5.1.7)(tedious@18.6.1)
       listr2:
         specifier: 8.2.5
         version: 8.2.5
@@ -4218,6 +4218,9 @@ packages:
   '@microsoft/tsdoc@0.15.1':
     resolution: {integrity: sha512-4aErSrCR/On/e5G2hDP0wjooqDdauzEbIq8hIkIe5pXV0rtWJZvdCEKL0ykZxex+IxIwBp0eGeV48hQN07dXtw==}
 
+  '@minimistjs/subarg@1.0.0':
+    resolution: {integrity: sha512-Q/ONBiM2zNeYUy0mVSO44mWWKYM3UHuEK43PKIOzJCbvUnPoMH1K+gk3cf1kgnCVJFlWmddahQQCmrmBGlk9jQ==}
+
   '@napi-rs/snappy-android-arm-eabi@7.2.2':
     resolution: {integrity: sha512-H7DuVkPCK5BlAr1NfSU8bDEN7gYs+R78pSHhDng83QxRnCLmVIZk33ymmIwurmoA1HrdTxbkbuNl+lMvNqnytw==}
     engines: {node: '>= 10'}
@@ -5980,8 +5983,8 @@ packages:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
     engines: {node: '>=8.0.0'}
 
-  autocannon@7.15.0:
-    resolution: {integrity: sha512-NaP2rQyA+tcubOJMFv2+oeW9jv2pq/t+LM6BL3cfJic0HEfscEcnWgAyU5YovE/oTHUzAgTliGdLPR+RQAWUbg==}
+  autocannon@8.0.0:
+    resolution: {integrity: sha512-fMMcWc2JPFcUaqHeR6+PbmEpTxCrPZyBUM95oG4w3ngJ8NfBNas/ZXA+pTHXLqJ0UlFVTcy05GC25WxKx/M20A==}
     hasBin: true
 
   aws-ssl-profiles@1.1.2:
@@ -11029,9 +11032,6 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
 
-  subarg@1.0.0:
-    resolution: {integrity: sha512-RIrIdRY0X1xojthNcVtgT9sjpOGagEUKpZdgBUi054OEPFo282yg+zE+t1Rj3+RqKq2xStL7uUHhY+AjbC4BXg==}
-
   subtag@0.5.0:
     resolution: {integrity: sha512-CaIBcTSb/nyk4xiiSOtZYz1B+F12ZxW8NEp54CdT+84vmh/h4sUnHGC6+KQXUfED8u22PQjCYWfZny8d2ELXwg==}
 
@@ -14618,6 +14618,10 @@ snapshots:
 
   '@microsoft/tsdoc@0.15.1': {}
 
+  '@minimistjs/subarg@1.0.0':
+    dependencies:
+      minimist: 1.2.8
+
   '@napi-rs/snappy-android-arm-eabi@7.2.2':
     optional: true
 
@@ -16532,7 +16536,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -16745,8 +16749,9 @@ snapshots:
 
   atomic-sleep@1.0.0: {}
 
-  autocannon@7.15.0:
+  autocannon@8.0.0:
     dependencies:
+      '@minimistjs/subarg': 1.0.0
       chalk: 4.1.2
       char-spinner: 1.0.1
       cli-table3: 0.6.5
@@ -16768,7 +16773,6 @@ snapshots:
       reinterval: 1.1.0
       retimer: 3.0.0
       semver: 7.6.3
-      subarg: 1.0.0
       timestring: 6.0.0
 
   aws-ssl-profiles@1.1.2:
@@ -17507,10 +17511,6 @@ snapshots:
       ms: 2.1.2
 
   debug@4.3.7:
-    dependencies:
-      ms: 2.1.3
-
-  debug@4.4.0:
     dependencies:
       ms: 2.1.3
 
@@ -18932,7 +18932,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -18951,7 +18951,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19420,25 +19420,6 @@ snapshots:
     dependencies:
       knex: 3.1.0(mysql2@3.12.0)(pg@8.13.1)(sqlite3@5.1.7)(tedious@18.6.1)
       lodash.clonedeep: 4.5.0
-
-  knex@3.1.0:
-    dependencies:
-      colorette: 2.0.19
-      commander: 10.0.1
-      debug: 4.3.4
-      escalade: 3.2.0
-      esm: 3.2.25
-      get-package-type: 0.1.0
-      getopts: 2.3.0
-      interpret: 2.2.0
-      lodash: 4.17.21
-      pg-connection-string: 2.6.2
-      rechoir: 0.8.0
-      resolve-from: 5.0.0
-      tarn: 3.0.2
-      tildify: 2.0.0
-    transitivePeerDependencies:
-      - supports-color
 
   knex@3.1.0(mysql2@3.12.0)(pg@8.13.1)(sqlite3@5.1.7)(tedious@18.6.1):
     dependencies:
@@ -22499,10 +22480,6 @@ snapshots:
       postcss: 8.4.49
       postcss-selector-parser: 6.1.2
 
-  subarg@1.0.0:
-    dependencies:
-      minimist: 1.2.8
-
   subtag@0.5.0: {}
 
   sucrase@3.35.0:
@@ -22540,7 +22517,7 @@ snapshots:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@5.5.0)
       fast-safe-stringify: 2.1.1
       form-data: 4.0.1
       formidable: 3.5.2
@@ -23293,7 +23270,7 @@ snapshots:
   vite-node@1.6.0(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.37.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.1.1
       vite: 5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.37.0)
@@ -23394,7 +23371,7 @@ snapshots:
 
   vite-tsconfig-paths@4.3.2(typescript@5.7.3)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.37.0)):
     dependencies:
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.1.4(typescript@5.7.3)
     optionalDependencies:
@@ -23480,7 +23457,7 @@ snapshots:
       '@vitest/utils': 1.6.0
       acorn-walk: 8.3.4
       chai: 4.5.0
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@5.5.0)
       execa: 8.0.1
       local-pkg: 0.5.1
       magic-string: 0.30.17
