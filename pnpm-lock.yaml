@@ -2116,9 +2116,6 @@ importers:
       '@types/supertest':
         specifier: 6.0.2
         version: 6.0.2
-      '@types/uuid':
-        specifier: 9.0.8
-        version: 9.0.8
       '@types/ws':
         specifier: 8.5.13
         version: 8.5.13
@@ -2165,8 +2162,8 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       uuid:
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 11.0.4
+        version: 11.0.4
       vite-tsconfig-paths:
         specifier: 4.3.2
         version: 4.3.2(typescript@5.7.3)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(terser@5.37.0))
@@ -5419,9 +5416,6 @@ packages:
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
-
-  '@types/uuid@9.0.8':
-    resolution: {integrity: sha512-jg+97EGIcY9AGHJJRaaPVgetKDsrTgbRjQ5Msgjh/DQKEFl0DtyRr/VCOyD1T2R1MNeWPK/u7JoGhlDZnKBAfA==}
 
   '@types/validate-npm-package-name@4.0.2':
     resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}
@@ -11623,6 +11617,10 @@ packages:
   uuid-parse@1.1.0:
     resolution: {integrity: sha512-OdmXxA8rDsQ7YpNVbKSJkNzTw2I+S5WsbMDnCtIWSQaosNAcWtFuI/YK1TjzUI6nbkgiqEyh8gWngfcv8Asd9A==}
 
+  uuid@11.0.4:
+    resolution: {integrity: sha512-IzL6VtTTYcAhA/oghbFJ1Dkmqev+FpQWnCBaKq/gUluLxliWvO8DPFWfIviRmYbtaavtSQe4WBL++rFjdcGWEg==}
+    hasBin: true
+
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
@@ -16046,8 +16044,6 @@ snapshots:
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
-
-  '@types/uuid@9.0.8': {}
 
   '@types/validate-npm-package-name@4.0.2': {}
 
@@ -23143,6 +23139,8 @@ snapshots:
   utils-merge@1.0.1: {}
 
   uuid-parse@1.1.0: {}
+
+  uuid@11.0.4: {}
 
   uuid@8.3.2: {}
 
