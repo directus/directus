@@ -21,7 +21,7 @@
 		"@directus/sdk": "workspace:*",
 		"@directus/tsconfig": "3.0.0",
 		"@pnpm/find-workspace-dir": "900.0.1",
-		"@pnpm/find-workspace-packages": "6.0.9",
+		"@pnpm/workspace.find-packages": "900.0.2",
 		"markdown-it-for-inline": "2.0.1",
 		"marked": "15.0.6",
 		"spellchecker-cli": "7.0.0",

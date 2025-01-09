@@ -29,7 +29,6 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",
-		"@vueuse/shared": "12.3.0",
 		"pinia": "2.3.0",
 		"tsup": "8.3.5",
 		"typescript": "5.7.3",

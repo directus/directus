@@ -26,14 +26,13 @@
 	},
 	"dependencies": {
 		"@changesets/get-github-info": "0.6.0",
-		"@pnpm/find-workspace-packages": "6.0.9",
+		"@pnpm/workspace.find-packages": "900.0.2",
 		"@pnpm/workspace.pkgs-graph": "900.0.3",
 		"semver": "7.6.3"
 	},
 	"devDependencies": {
 		"@changesets/types": "6.0.0",
 		"@directus/tsconfig": "3.0.0",
-		"@pnpm/types": "900.0.0",
 		"@types/node": "22.10.5",
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "2.1.8",
