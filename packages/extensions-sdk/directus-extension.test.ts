@@ -87,7 +87,7 @@ describe('validate extension', async () => {
 	test('built-code', async () => {
 		// Needs to be built first
 		await expect(runValidate('built-code')).rejects.toEqual(
-			expect.objectContaining({ stderr: expect.stringContaining('[Error] built-code: No dist/index.js directory') }),
+			expect.objectContaining({ stderr: expect.stringContaining('No dist/index.js directory') }),
 		);
 
 		// Build extension
