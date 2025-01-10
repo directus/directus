@@ -113,8 +113,14 @@ const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'delete';
-	return 'close';
+	if (isLocalItem(item)) return 'close';
+	return 'delete';
+}
+
+function getDeselectTooltip(item: DisplayItem) {
+	if (item.$type === 'deleted') return 'undo_removed_item';
+	if (isLocalItem(item)) return 'deselect';
+	return 'remove_item';
 }
 
 function sortItems(items: DisplayItem[]) {
@@ -321,38 +327,45 @@ const allowDrag = computed(
 						@click="editItem(element)"
 					>
 						<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+
 						<render-template
 							:collection="relationInfo.junctionCollection.collection"
 							:item="element"
 							:template="templateWithDefaults"
 						/>
-						<div class="spacer" />
-						<v-icon
-							v-if="!disabled && (deleteAllowed || isLocalItem(element))"
-							:name="getDeselectIcon(element)"
-							class="deselect"
-							@click.stop="deleteItem(element)"
-						/>
-						<v-menu show-arrow placement="bottom-end">
-							<template #activator="{ toggle }">
-								<v-icon name="more_vert" clickable @click.stop="toggle" />
-							</template>
 
-							<v-list>
-								<v-list-item clickable :href="getAssetUrl(getFilename(element))">
-									<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
-									<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
-								</v-list-item>
-								<v-list-item
-									clickable
-									:download="getDownloadName(element)"
-									:href="getAssetUrl(getFilename(element), true)"
-								>
-									<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
-									<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
-								</v-list-item>
-							</v-list>
-						</v-menu>
+						<div class="spacer" />
+
+						<div class="item-actions">
+							<v-icon
+								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
+								v-tooltip="t(getDeselectTooltip(element))"
+								:name="getDeselectIcon(element)"
+								clickable
+								@click.stop="deleteItem(element)"
+							/>
+
+							<v-menu show-arrow placement="bottom-end">
+								<template #activator="{ toggle }">
+									<v-icon name="more_vert" clickable @click.stop="toggle" />
+								</template>
+
+								<v-list>
+									<v-list-item clickable :href="getAssetUrl(getFilename(element))">
+										<v-list-item-icon><v-icon name="launch" /></v-list-item-icon>
+										<v-list-item-content>{{ t('open_file_in_tab') }}</v-list-item-content>
+									</v-list-item>
+									<v-list-item
+										clickable
+										:download="getDownloadName(element)"
+										:href="getAssetUrl(getFilename(element), true)"
+									>
+										<v-list-item-icon><v-icon name="download" /></v-list-item-icon>
+										<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
+									</v-list-item>
+								</v-list>
+							</v-menu>
+						</div>
 					</v-list-item>
 				</template>
 			</draggable>
@@ -424,18 +437,11 @@ const allowDrag = computed(
 	@include mixins.list-interface($deleteable: true);
 }
 
-.actions {
-	@include mixins.list-interface-actions($pagination: true);
+.item-actions {
+	@include mixins.list-interface-item-actions;
 }
 
-.deselect {
-	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
-	margin-right: 4px;
-	transition: color var(--fast) var(--transition);
-	cursor: pointer;
-
-	&:hover {
-		--v-icon-color: var(--theme--danger);
-	}
+.actions {
+	@include mixins.list-interface-actions($pagination: true);
 }
 </style>

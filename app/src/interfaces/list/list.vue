@@ -228,14 +228,25 @@ function closeDrawer() {
 			<template #item="{ element, index }">
 				<v-list-item :dense="internalValue.length > 4" block clickable @click="openItem(index)">
 					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+
 					<render-template
 						:fields="fields"
 						:item="{ ...defaults, ...element }"
 						:direction="direction"
 						:template="templateWithDefaults"
 					/>
+
 					<div class="spacer" />
-					<v-icon v-if="!disabled" name="close" @click.stop="removeItem(element)" />
+
+					<div class="item-actions">
+						<v-icon
+							v-if="!disabled"
+							v-tooltip="$t('deselect')"
+							name="close"
+							clickable
+							@click.stop="removeItem(element)"
+						/>
+					</div>
 				</v-list-item>
 			</template>
 		</draggable>
@@ -298,6 +309,10 @@ function closeDrawer() {
 
 .v-list {
 	@include mixins.list-interface;
+}
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
 }
 
 .actions {
