@@ -1,6 +1,12 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended", ":disableDependencyDashboard"],
+	"extends": [
+		":semanticPrefixFixDepsChoreOthers",
+		"group:monorepos",
+		"group:recommended",
+		"replacements:all",
+		"workarounds:all"
+	],
 	"labels": [":robot: Dependency"],
 	"enabledManagers": ["npm", "github-actions"],
 	"vulnerabilityAlerts": {

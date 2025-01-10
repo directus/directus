@@ -27,23 +27,23 @@
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*",
-		"@sinclair/typebox": "0.33.15",
+		"@sinclair/typebox": "0.34.13",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
 		"lodash-es": "4.17.21"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
-		"@unhead/vue": "1.11.7",
-		"@vitejs/plugin-vue": "5.1.4",
-		"pinia": "2.2.4",
+		"@unhead/vue": "1.11.15",
+		"@vitejs/plugin-vue": "5.2.1",
+		"pinia": "2.3.0",
 		"rollup-plugin-node-externals": "8.0.0",
-		"typescript": "5.7.2",
-		"vite": "5.4.10",
-		"vite-plugin-dts": "4.2.3",
-		"vue": "3.5.11"
+		"typescript": "5.7.3",
+		"vite": "5.4.11",
+		"vite-plugin-dts": "4.4.0",
+		"vue": "3.5.13"
 	},
 	"peerDependencies": {
 		"@unhead/vue": "1",

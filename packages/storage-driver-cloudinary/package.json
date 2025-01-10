@@ -29,14 +29,14 @@
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"p-queue": "8.0.1",
-		"undici": "6.20.0"
+		"undici": "7.2.1"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
-		"@ngneat/falso": "7.2.0",
-		"@vitest/coverage-v8": "2.1.2",
-		"tsup": "8.3.0",
-		"typescript": "5.7.2",
-		"vitest": "2.1.2"
+		"@directus/tsconfig": "3.0.0",
+		"@ngneat/falso": "7.3.0",
+		"@vitest/coverage-v8": "2.1.8",
+		"tsup": "8.3.5",
+		"typescript": "5.7.3",
+		"vitest": "2.1.8"
 	}
 }

@@ -29,22 +29,22 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"axios": "1.7.7",
+		"axios": "1.7.9",
 		"lodash-es": "4.17.21",
-		"nanoid": "5.0.7"
+		"nanoid": "5.0.9"
 	},
 	"devDependencies": {
 		"@directus/extensions": "workspace:*",
 		"@directus/sdk": "workspace:*",
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@types/lodash-es": "4.17.12",
-		"@vitest/coverage-v8": "2.1.2",
+		"@vitest/coverage-v8": "2.1.8",
 		"@vue/test-utils": "2.4.6",
-		"tsup": "8.3.0",
-		"typescript": "5.7.2",
-		"vitest": "2.1.2",
-		"vue": "3.5.11"
+		"tsup": "8.3.5",
+		"typescript": "5.7.3",
+		"vitest": "2.1.8",
+		"vue": "3.5.13"
 	},
 	"peerDependencies": {
 		"vue": "^3.4"

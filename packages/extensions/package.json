@@ -38,23 +38,21 @@
 		"@types/express": "4.17.21",
 		"fs-extra": "11.2.0",
 		"lodash-es": "4.17.21",
-		"zod": "3.23.8"
+		"zod": "3.24.1"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@types/fs-extra": "11.0.4",
 		"@types/lodash-es": "4.17.12",
-		"@types/node": "18.19.55",
-		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "2.1.2",
+		"@types/node": "22.10.5",
+		"@vitest/coverage-v8": "2.1.8",
 		"knex": "3.1.0",
-		"pino": "9.4.0",
-		"tmp": "0.2.3",
-		"tsup": "8.3.0",
-		"typescript": "5.7.2",
-		"vitest": "2.1.2",
-		"vue": "3.5.11",
-		"vue-router": "4.4.5"
+		"pino": "9.6.0",
+		"tsup": "8.3.5",
+		"typescript": "5.7.3",
+		"vitest": "2.1.8",
+		"vue": "3.5.13",
+		"vue-router": "4.5.0"
 	},
 	"peerDependencies": {
 		"knex": "3",
