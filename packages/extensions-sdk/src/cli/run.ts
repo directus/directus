@@ -46,7 +46,7 @@ program
 
 program
 	.command('validate')
-	.description('Check that the extension matches the Directus extensions requirements')
+	.description('Validate the extension against the Directus extensions requirements')
 	.option('-c, --check <check>', 'check a specific extension requirement')
 	.option('-v --verbose', 'print the full validation report')
 	.action(validate);
