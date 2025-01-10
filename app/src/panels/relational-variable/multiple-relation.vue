@@ -47,7 +47,7 @@ function deleteItem(elem: Record<string, any>) {
 			</v-list-item>
 		</v-list>
 
-		<div class="actions list">
+		<div class="actions">
 			<button v-if="totalItemCount < limit" @click="$emit('select')">
 				{{ t('add_existing') }}
 			</button>
@@ -59,37 +59,21 @@ function deleteItem(elem: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .one-to-many {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 }
+
 .v-list {
-	margin-top: 8px;
-	flex-grow: 1;
-	--v-list-padding: 0 0 4px;
-
-	.v-list-item.deleted {
-		--v-list-item-border-color: var(--danger-25);
-		--v-list-item-border-color-hover: var(--danger-50);
-		--v-list-item-background-color: var(--danger-10);
-		--v-list-item-background-color-hover: var(--danger-25);
-
-		::v-deep(.v-icon) {
-			color: var(--danger-75);
-		}
-	}
-}
-
-.v-skeleton-loader,
-.v-notice {
-	margin-top: 8px;
+	@include mixins.list-interface;
 }
 
 .actions {
-	display: flex;
-	align-items: center;
-	gap: 8px;
+	@include mixins.list-interface-actions;
 
 	button {
 		color: var(--theme--primary);
@@ -103,8 +87,10 @@ function deleteItem(elem: Record<string, any>) {
 
 .deselect {
 	--v-icon-color: var(--theme--foreground-subdued);
+
 	transition: color var(--fast) var(--transition);
 	margin: 0 4px;
+	cursor: pointer;
 
 	&:hover {
 		--v-icon-color: var(--theme--danger);
