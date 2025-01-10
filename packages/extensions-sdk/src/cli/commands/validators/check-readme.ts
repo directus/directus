@@ -20,7 +20,7 @@ const checkReadMe = {
 			throw new Error(message);
 		}
 
-		const message = 'Valid README';
+		const message = 'Valid readme';
 
 		reports.push({
 			level: 'info',
