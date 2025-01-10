@@ -1,5 +1,6 @@
 import type { KNEX_TYPES } from '@directus/constants';
-import type { Field, Relation, Type } from '@directus/types';
+import type { Column } from '@directus/schema';
+import type { Field, RawField, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import type { Options, SortRecord, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
@@ -50,6 +51,24 @@ export class SchemaHelperOracle extends SchemaHelper {
 			return result[0]?.['SUM(BYTES)'] ? Number(result[0]?.['SUM(BYTES)']) : null;
 		} catch {
 			return null;
+		}
+	}
+
+	override setNullable(column: Knex.ColumnBuilder, field: RawField | Field, existing: Column | null): void {
+		if (!existing) {
+			if (field.schema?.is_nullable || field.schema?.is_nullable === undefined) {
+				column.nullable();
+			} else {
+				column.notNullable();
+			}
+
+			return;
+		}
+
+		if (field.schema?.is_nullable === false && existing.is_nullable === true) {
+			column.notNullable();
+		} else if (field.schema?.is_nullable === true && existing.is_nullable === false) {
+			column.nullable();
 		}
 	}
 

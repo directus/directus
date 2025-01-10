@@ -865,7 +865,23 @@ export class FieldsService {
 			throw new InvalidPayloadError({ reason: `Illegal type passed: "${field.type}"` });
 		}
 
-		const setDefaultValue = (defaultValue: string | number | boolean | null) => {
+		/**
+		 * The field nullability must be set if it is provided or already existing on the field.
+		 * If it is not set it will always be dropped.
+		 * This is due to column.alter() not being incremental per https://knexjs.org/guide/schema-builder.html#alter
+		 */
+		this.helpers.schema.setNullable(column, field, existing);
+
+		/**
+		 * The default value must be set if it is provided or already existing on the field.
+		 * If it is not set it will always be dropped.
+		 * This is due to column.alter() not being incremental per https://knexjs.org/guide/schema-builder.html#alter
+		 */
+
+		const defaultValue =
+			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
+
+		if (defaultValue !== undefined) {
 			const newDefaultValueIsString = typeof defaultValue === 'string';
 			const newDefaultIsNowFunction = newDefaultValueIsString && defaultValue.toLowerCase() === 'now()';
 			const newDefaultIsCurrentTimestamp = newDefaultValueIsString && defaultValue === 'CURRENT_TIMESTAMP';
@@ -884,37 +900,6 @@ export class FieldsService {
 				column.defaultTo(this.knex.raw(defaultValue));
 			} else {
 				column.defaultTo(defaultValue);
-			}
-		};
-
-		// for a new item, set the default value and nullable as provided without any further considerations
-		if (!existing) {
-			if (field.schema?.default_value !== undefined) {
-				setDefaultValue(field.schema.default_value);
-			}
-
-			if (field.schema?.is_nullable || field.schema?.is_nullable === undefined) {
-				column.nullable();
-			} else {
-				column.notNullable();
-			}
-		} else {
-			// for an existing item: if nullable option changed, we have to provide the default values as well and actually vice versa
-			// see https://knexjs.org/guide/schema-builder.html#alter
-			// To overwrite a nullable option with the same value this is not possible for Oracle though, hence the DB helper
-
-			if (field.schema?.default_value !== undefined || field.schema?.is_nullable !== undefined) {
-				this.helpers.nullableUpdate.updateNullableValue(column, field, existing);
-
-				let defaultValue = null;
-
-				if (field.schema?.default_value !== undefined) {
-					defaultValue = field.schema.default_value;
-				} else if (existing.default_value !== undefined) {
-					defaultValue = existing.default_value;
-				}
-
-				setDefaultValue(defaultValue);
 			}
 		}
 
