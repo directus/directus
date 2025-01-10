@@ -534,6 +534,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 .actions {
 	@include mixins.list-interface-actions($pagination: true);
 
+	.v-button {
+		--v-button-padding: 0 12px 0 19px;
+	}
+
 	.pagination {
 		margin-left: auto;
 		display: flex;
