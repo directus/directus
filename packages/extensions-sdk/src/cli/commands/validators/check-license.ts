@@ -22,7 +22,7 @@ const checkLicense = {
 			throw new Error(message);
 		}
 
-		const message = 'Valid LICENSE';
+		const message = 'Valid license';
 
 		reports.push({
 			level: 'info',
