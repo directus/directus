@@ -42,8 +42,12 @@ function deleteItem(elem: Record<string, any>) {
 		<v-list v-else>
 			<v-list-item v-for="element in displayItems" :key="element[primaryKey]" block :dense="displayItems.length > 4">
 				<render-template :collection="collection" :item="element" :template="displayTemplate" />
+
 				<div class="spacer" />
-				<v-icon v-tooltip="t('remove_item')" class="deselect" name="delete" @click.stop="deleteItem(element)" />
+
+				<div class="item-actions">
+					<v-icon v-tooltip="t('deselect')" name="close" clickable @click.stop="deleteItem(element)" />
+				</div>
 			</v-list-item>
 		</v-list>
 
@@ -85,15 +89,7 @@ function deleteItem(elem: Record<string, any>) {
 	}
 }
 
-.deselect {
-	--v-icon-color: var(--theme--foreground-subdued);
-
-	transition: color var(--fast) var(--transition);
-	margin: 0 4px;
-	cursor: pointer;
-
-	&:hover {
-		--v-icon-color: var(--theme--danger);
-	}
+.item-actions {
+	@include mixins.list-interface-item-actions;
 }
 </style>
