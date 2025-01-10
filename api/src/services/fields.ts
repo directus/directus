@@ -912,15 +912,19 @@ export class FieldsService {
 					column.unique();
 				}
 			} else if (field.schema?.is_unique === false) {
-				if (existing && existing.is_unique === true) {
+				if (existing?.is_unique === true) {
 					table.dropUnique([field.field]);
 				}
 			}
 
-			if (field.schema?.is_indexed === true && !existing?.is_indexed) {
-				column.index();
-			} else if (field.schema?.is_indexed === false && existing?.is_indexed) {
-				table.dropIndex([field.field]);
+			if (field.schema?.is_indexed === true) {
+				if (!existing || existing.is_indexed === false) {
+					column.index();
+				}
+			} else if (field.schema?.is_indexed === false) {
+				if (existing?.is_indexed === true) {
+					table.dropIndex([field.field]);
+				}
 			}
 		}
 
