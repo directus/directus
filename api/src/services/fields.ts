@@ -866,15 +866,13 @@ export class FieldsService {
 		}
 
 		/**
-		 * The field nullability must be set if it is provided or already existing on the field.
-		 * If it is not set it will always be dropped.
+		 * The column nullability must be set on every alter or it will be dropped
 		 * This is due to column.alter() not being incremental per https://knexjs.org/guide/schema-builder.html#alter
 		 */
 		this.helpers.schema.setNullable(column, field, existing);
 
 		/**
-		 * The default value must be set if it is provided or already existing on the field.
-		 * If it is not set it will always be dropped.
+		 * The default value must be set on every alter or it will be dropped
 		 * This is due to column.alter() not being incremental per https://knexjs.org/guide/schema-builder.html#alter
 		 */
 
