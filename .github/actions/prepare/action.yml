@@ -15,14 +15,11 @@ runs:
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 18
+        node-version-file: package.json
         registry-url: ${{ inputs.registry }}
 
-    - uses: pnpm/action-setup@v3
-      name: Install pnpm
-      id: pnpm-install
-      with:
-        run_install: false
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
 
     - name: Get cache info
       id: cache-info
@@ -31,8 +28,8 @@ runs:
         echo "os-release=$(node --eval 'console.log(os.release())')" >> $GITHUB_OUTPUT
         echo "pnpm-cache-dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-    - uses: actions/cache@v4
-      name: Setup pnpm cache
+    - name: Setup pnpm cache
+      uses: actions/cache@v4
       with:
         path: ${{ steps.cache-info.outputs.pnpm-cache-dir }}
         key:
@@ -47,7 +44,7 @@ runs:
     - name: Build
       if: inputs.build == 'true'
       shell: bash
-      run: pnpm run build
       env:
-        npm_config_workspace_concurrency: '1'
+        npm_config_workspace_concurrency: 1
         NODE_OPTIONS: --max_old_space_size=6144
+      run: pnpm run build

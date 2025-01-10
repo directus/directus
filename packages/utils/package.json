@@ -42,19 +42,19 @@
 		"micromustache": "8.0.3"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
+		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.4",
 		"@types/js-yaml": "4.0.9",
 		"@types/lodash-es": "4.17.12",
-		"@types/node": "18.19.55",
+		"@types/node": "22.10.5",
 		"@types/tmp": "0.2.6",
-		"@vitest/coverage-v8": "2.1.2",
+		"@vitest/coverage-v8": "2.1.8",
 		"tmp": "0.2.3",
-		"tsup": "8.3.0",
-		"typescript": "5.7.2",
-		"vitest": "2.1.2",
-		"vue": "3.5.11"
+		"tsup": "8.3.5",
+		"typescript": "5.7.3",
+		"vitest": "2.1.8",
+		"vue": "3.5.13"
 	},
 	"peerDependencies": {
 		"vue": "^3.4"
