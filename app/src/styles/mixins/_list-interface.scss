@@ -1,0 +1,34 @@
+@mixin list-interface($deleteable: false) {
+	--v-list-padding: 0;
+
+	@if $deleteable {
+		.v-list-item.deleted {
+			--v-list-item-border-color: var(--danger-25);
+			--v-list-item-border-color-hover: var(--danger-50);
+			--v-list-item-background-color: var(--danger-10);
+			--v-list-item-background-color-hover: var(--danger-25);
+
+			::v-deep(.v-icon) {
+				color: var(--danger-75);
+			}
+		}
+	}
+}
+
+@mixin list-interface-actions($pagination: false) {
+	margin-top: 12px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+
+	@if $pagination {
+		.v-pagination {
+			margin-left: auto;
+
+			::v-deep(.v-button) {
+				display: inline-flex;
+			}
+		}
+	}
+}

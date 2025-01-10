@@ -490,13 +490,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 </template>
 
 <style lang="scss" scoped>
-.m2a-builder {
-	.v-notice {
-		margin-bottom: 8px;
-	}
-}
+@use '@/styles/mixins';
+
 .v-list {
-	--v-list-padding: 0 0 4px;
+	@include mixins.list-interface($deleteable: true);
 }
 
 .v-list-item {
@@ -506,39 +503,18 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		margin-right: 1ch;
 	}
 
-	&.deleted {
-		--v-list-item-border-color: var(--danger-25);
-		--v-list-item-border-color-hover: var(--danger-50);
-		--v-list-item-background-color: var(--danger-10);
-		--v-list-item-background-color-hover: var(--danger-25);
-
-		::v-deep(.v-icon) {
-			color: var(--danger-75);
-		}
-
-		.collection {
-			color: var(--theme--danger);
-		}
+	&.deleted .collection {
+		color: var(--theme--danger);
 	}
 }
 
 .actions {
-	margin-top: 8px;
-	display: flex;
-	align-items: end;
-	flex-wrap: wrap;
-	gap: 8px;
+	@include mixins.list-interface-actions($pagination: true);
 
 	.pagination {
 		margin-left: auto;
 		display: flex;
 		gap: 8px 16px;
-
-		.v-pagination {
-			::v-deep(.v-button) {
-				display: inline-flex;
-			}
-		}
 
 		.per-page {
 			display: flex;
@@ -556,10 +532,6 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			}
 		}
 	}
-}
-
-.drag-handle {
-	cursor: grab;
 }
 
 .invalid {

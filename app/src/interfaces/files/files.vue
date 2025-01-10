@@ -305,7 +305,6 @@ const allowDrag = computed(
 				v-else
 				:model-value="displayItems"
 				tag="v-list"
-				class="files"
 				item-key="id"
 				handle=".drag-handle"
 				:disabled="!allowDrag"
@@ -419,35 +418,14 @@ const allowDrag = computed(
 </template>
 
 <style lang="scss" scoped>
-.v-list.files {
-	--v-list-padding: 0 0 4px;
+@use '@/styles/mixins';
 
-	.v-list-item.deleted {
-		--v-list-item-border-color: var(--danger-25);
-		--v-list-item-border-color-hover: var(--danger-50);
-		--v-list-item-background-color: var(--danger-10);
-		--v-list-item-background-color-hover: var(--danger-25);
-
-		::v-deep(.v-icon) {
-			color: var(--danger-75);
-		}
-	}
+.v-list {
+	@include mixins.list-interface($deleteable: true);
 }
 
 .actions {
-	margin-top: 8px;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 8px;
-
-	.v-pagination {
-		margin-left: auto;
-
-		::v-deep(.v-button) {
-			display: inline-flex;
-		}
-	}
+	@include mixins.list-interface-actions($pagination: true);
 }
 
 .deselect {
@@ -459,9 +437,5 @@ const allowDrag = computed(
 	&:hover {
 		--v-icon-color: var(--theme--danger);
 	}
-}
-
-.render-template {
-	height: 100%;
 }
 </style>

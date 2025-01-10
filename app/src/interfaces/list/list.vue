@@ -226,7 +226,7 @@ function closeDrawer() {
 			@update:model-value="$emit('input', $event)"
 		>
 			<template #item="{ element, index }">
-				<v-list-item :dense="internalValue.length > 4" block @click="openItem(index)">
+				<v-list-item :dense="internalValue.length > 4" block clickable @click="openItem(index)">
 					<v-icon v-if="!disabled && !sort" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
 					<render-template
 						:fields="fields"
@@ -239,9 +239,12 @@ function closeDrawer() {
 				</v-list-item>
 			</template>
 		</draggable>
-		<v-button v-if="showAddNew" class="add-new" @click="addNew">
-			{{ addLabel }}
-		</v-button>
+
+		<div class="actions">
+			<v-button v-if="showAddNew" @click="addNew">
+				{{ addLabel }}
+			</v-button>
+		</div>
 
 		<v-drawer
 			:model-value="drawerOpen"
@@ -291,29 +294,18 @@ function closeDrawer() {
 </template>
 
 <style lang="scss" scoped>
-.v-notice {
-	margin-bottom: 4px;
-}
+@use '@/styles/mixins';
 
 .v-list {
-	--v-list-padding: 0 0 4px;
+	@include mixins.list-interface;
 }
 
-.v-list-item {
-	display: flex;
-	cursor: pointer;
-}
-
-.drag-handle {
-	cursor: grab;
+.actions {
+	@include mixins.list-interface-actions;
 }
 
 .drawer-item-content {
 	padding: var(--content-padding);
 	padding-bottom: var(--content-padding-bottom);
-}
-
-.add-new {
-	margin-top: 8px;
 }
 </style>

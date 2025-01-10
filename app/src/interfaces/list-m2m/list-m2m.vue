@@ -481,7 +481,7 @@ function getLinkForItem(item: DisplayItem) {
 	</v-notice>
 	<div v-else class="many-to-many">
 		<div :class="[`layout-${layout}`, { bordered: layout === LAYOUTS.TABLE }]">
-			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
+			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
 				<div class="spacer" />
 
 				<div v-if="totalItemCount" class="item-count">
@@ -638,7 +638,7 @@ function getLinkForItem(item: DisplayItem) {
 				</draggable>
 			</template>
 
-			<div class="actions" :class="layout">
+			<div class="actions">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
 						<v-pagination
@@ -726,26 +726,12 @@ function getLinkForItem(item: DisplayItem) {
 </style>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	padding: var(--v-card-padding, 16px);
-}
-
-.v-list {
-	margin-top: 8px;
-	--v-list-padding: 0 0 4px;
-
-	.v-list-item.deleted {
-		--v-list-item-border-color: var(--danger-25);
-		--v-list-item-border-color-hover: var(--danger-50);
-		--v-list-item-background-color: var(--danger-10);
-		--v-list-item-background-color-hover: var(--danger-25);
-
-		::v-deep(.v-icon) {
-			color: var(--danger-75);
-		}
-	}
 }
 
 .v-table {
@@ -754,21 +740,15 @@ function getLinkForItem(item: DisplayItem) {
 	}
 }
 
+.v-list {
+	@include mixins.list-interface($deleteable: true);
+}
+
 .actions {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 8px;
+	@include mixins.list-interface-actions($pagination: true);
 
-	.v-pagination {
-		margin-left: auto;
-		:deep(.v-button) {
-			display: inline-flex;
-		}
-	}
-
-	.table.v-pagination {
-		margin-top: 8px;
+	&.top {
+		margin-top: 0px;
 	}
 
 	.spacer {
@@ -798,10 +778,6 @@ function getLinkForItem(item: DisplayItem) {
 				width: 100% !important;
 			}
 		}
-	}
-
-	&.list {
-		margin-top: 8px;
 	}
 }
 

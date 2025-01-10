@@ -59,10 +59,6 @@ const editActive = ref(false);
 	height: var(--theme--form--field--input--height);
 	align-items: center;
 
-	&:not(.open) {
-		margin-bottom: 12px;
-	}
-
 	.spacer {
 		flex-grow: 1;
 	}

@@ -276,6 +276,8 @@ function stageEdits(item: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .drag-area {
 	min-height: 12px;
 
@@ -294,6 +296,8 @@ function stageEdits(item: Record<string, any>) {
 	}
 
 	&.v-list {
+		@include mixins.list-interface;
+
 		overflow: hidden;
 	}
 }
@@ -308,14 +312,22 @@ function stageEdits(item: Record<string, any>) {
 		border-radius: var(--theme--border-radius);
 
 		& + .drag-area {
-			padding-bottom: 0px;
-			padding-top: 12px;
+			padding: 0;
+
+			> .v-list-item:first-child {
+				margin-top: 8px;
+			}
 		}
 	}
 
 	&.v-list-item {
 		display: block;
 		--v-list-item-padding: 0;
+		--v-list-item-margin: 0;
+
+		+ .v-list-item {
+			margin-top: 8px;
+		}
 	}
 
 	&:not(.draggable) .preview {
@@ -328,10 +340,6 @@ function stageEdits(item: Record<string, any>) {
 }
 
 .actions {
-	margin-top: 12px;
-}
-
-.actions .v-button + .v-button {
-	margin-left: 12px;
+	@include mixins.list-interface-actions;
 }
 </style>
