@@ -3,13 +3,14 @@ import fse from 'fs-extra';
 import { type Ora } from 'ora';
 import path from 'path';
 import type { Report } from '../../types.js';
+import { isObject } from '@directus/utils';
 
 const checkBuiltCode = {
 	name: 'built-code',
 	handler: async (spinner: Ora, reports: Array<Report>) => {
 		spinner.text = 'Check for built code';
 
-		let codePath = '/dist';
+		let codePath: any = '/dist';
 		const packagePath = path.resolve('package.json');
 
 		if (await fse.pathExists(packagePath)) {
@@ -32,17 +33,23 @@ const checkBuiltCode = {
 			}
 		}
 
-		if (!(await fse.pathExists(path.resolve(codePath)))) {
-			spinner.fail();
-			const message = `No ${codePath} directory`;
-
-			reports.push({
-				level: 'error',
-				message: `${checkBuiltCode.name}: ${message}`,
-			});
-
-			throw new Error(message);
+		if (!isObject(codePath)) {
+			codePath = { app: codePath };
 		}
+
+		Object.keys(codePath).forEach(async (key) => {
+			if (!(await fse.pathExists(path.resolve(codePath[key])))) {
+				spinner.fail();
+				const message = `No ${codePath[key]} directory`;
+
+				reports.push({
+					level: 'error',
+					message: `${checkBuiltCode.name}: ${message}`,
+				});
+
+				throw new Error(message);
+			}
+		});
 
 		const message = 'Valid built code directory';
 
