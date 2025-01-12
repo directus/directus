@@ -1,8 +1,7 @@
 {
-	"extends": "@directus/tsconfig/node18-esm",
+	"extends": "@directus/tsconfig/node22",
 	"compilerOptions": {
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
+		"moduleResolution": "bundler",
 		"paths": {
 			"@common/*": ["./common/*"],
 			"@query/*": ["./tests/db/query/*"],

@@ -1,3 +1,5 @@
+@use '../mixins';
+
 .fc {
 	--fc-event-bg-color: var(--theme--primary);
 	--fc-event-border-color: var(--theme--primary);
@@ -135,7 +137,7 @@
 	.fc-toolbar-title {
 		font-size: inherit !important;
 
-		@include type-label;
+		@include mixins.type-label;
 	}
 
 	.fc-event.selected {

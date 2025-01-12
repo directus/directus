@@ -1,4 +1,4 @@
-import { DataPermission, Permission } from '../types.js';
+import type { DataPermission, Permission } from '../types.js';
 import permissions from './app-access-permissions.yaml';
 import schemaPermissionsRaw from './schema-access-permissions.yaml';
 

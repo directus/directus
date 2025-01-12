@@ -685,11 +685,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					}
 				}
 
-				[groupField.value, titleField.value, textField.value, tagsField.value, dateField.value].forEach((val) => {
-					if (val !== null) fields.push(val);
-				});
+				[groupField.value, tagsField.value, dateField.value].forEach(addFieldIfNotNull);
 
-				return uniq(adjustFieldsForDisplays(fields, collection.value!));
+				adjustFieldsForDisplays(
+					[titleField.value, textField.value].filter((val) => val !== null),
+					collection.value!,
+				)?.forEach(addFieldIfNotNull);
+
+				return uniq(fields);
+
+				function addFieldIfNotNull(val: string | null) {
+					if (val !== null) fields.push(val);
+				}
 			});
 
 			return { sort, limit, page, fields };
