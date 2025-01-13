@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
@@ -11,6 +12,7 @@ import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
+import tinymce from 'tinymce/tinymce';
 
 import 'tinymce/skins/ui/oxide/skin.css';
 import './tinymce-overrides.css';
@@ -32,8 +34,6 @@ import 'tinymce/plugins/pagebreak/plugin';
 import 'tinymce/plugins/preview/plugin';
 import 'tinymce/plugins/table/plugin';
 import 'tinymce/themes/silver';
-import tinymce from 'tinymce/tinymce';
-import { i18n } from '@/lang';
 
 type CustomFormat = {
 	title: string;
