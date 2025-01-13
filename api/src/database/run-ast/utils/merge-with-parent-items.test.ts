@@ -24,7 +24,7 @@ describe('m2o', () => {
 		},
 	} as NestedCollectionNode;
 
-	test('should return null relation node when no access to relational primary key', () => {
+	test('should return null node when no access to node primary key', () => {
 		const nestedItem: Item[] = [
 			{
 				id: null,
@@ -45,7 +45,7 @@ describe('m2o', () => {
 		expect(items).toEqual([{ id: 1, node: null }]);
 	});
 
-	test('should return null relation node when the relation record is existing but not linked to the parent', () => {
+	test('should return null node when the node record is not linked to the parent record', () => {
 		const nestedItem: Item[] = [
 			{
 				id: 'nestedPK2',
@@ -61,7 +61,7 @@ describe('m2o', () => {
 		expect(items).toEqual([{ id: 1, node: null }]);
 	});
 
-	test('should return items as an array response with merged relations for array parentItems', () => {
+	test('should return object response for single parentItems record', () => {
 		const nestedItem: Item[] = [
 			{
 				id: 'nestedPK1',
@@ -102,7 +102,7 @@ describe('m2o', () => {
 		]);
 	});
 
-	test('should return items as an object response with merged relations for object parentItems', () => {
+	test('should return array response for multiple parentItems records', () => {
 		const nestedItem: Item[] = [
 			{
 				id: 'nestedPK1',
@@ -139,19 +139,19 @@ describe('o2m', () => {
 		type: 'o2m',
 		fieldKey: 'nodes',
 		relation: {
-			field: 'parentPK',
+			field: 'parent_id',
 			related_collection: 'collection_a',
 		},
 		query: {},
 	} as NestedCollectionNode;
 
-	test('should return [] relation node when no access to parent primary key', () => {
+	test('should return empty nodes array when parent primary key is null', () => {
 		const nestedItem: Item[] = [
 			{
 				id: 'nestedPK1',
 				first_name: 'Lorem',
 				last_name: 'Ipsum',
-				parentPK: 1,
+				parent_id: 1,
 			},
 		];
 
@@ -162,13 +162,13 @@ describe('o2m', () => {
 		expect(items).toEqual([{ id: null, nodes: [] }]);
 	});
 
-	test('should return [] relation node when parentPK is null', () => {
+	test('should return empty nodes array when parent foreign key is null', () => {
 		const nestedItem: Item[] = [
 			{
 				id: 'nestedPK1',
 				first_name: 'Lorem',
 				last_name: 'Ipsum',
-				parentPK: null,
+				parent_id: null,
 			},
 		];
 
@@ -184,13 +184,13 @@ describe('o2m', () => {
 		]);
 	});
 
-	test('should return [] relation node when parentKey is not present', () => {
+	test('should return empty nodes array when parent foreign key does not match parent primary key', () => {
 		const nestedItem: Item[] = [
 			{
 				id: 'nestedPK1',
 				first_name: 'Lorem',
 				last_name: 'Ipsum',
-				parentPK: 1,
+				parent_id: 1,
 			},
 		];
 
@@ -206,13 +206,13 @@ describe('o2m', () => {
 		]);
 	});
 
-	test('should return relation node when keys have type mismatch', () => {
+	test('should return nodes array when parent primary key and node foreign keys have type mismatch', () => {
 		const nestedItem: Item[] = [
 			{
 				id: '1234',
 				first_name: 'Lorem',
 				last_name: 'Ipsum',
-				parentPK: 1,
+				parent_id: 1,
 			},
 		];
 
@@ -228,20 +228,20 @@ describe('o2m', () => {
 						id: '1234',
 						first_name: 'Lorem',
 						last_name: 'Ipsum',
-						parentPK: 1,
+						parent_id: 1,
 					},
 				],
 			},
 		]);
 	});
 
-	test('should return relation node', () => {
+	test('should return nodes array', () => {
 		const nestedItem: Item[] = [
 			{
 				id: 1,
 				first_name: 'Lorem',
 				last_name: 'Ipsum',
-				parentPK: 1,
+				parent_id: 1,
 			},
 		];
 
@@ -257,7 +257,7 @@ describe('o2m', () => {
 						id: 1,
 						first_name: 'Lorem',
 						last_name: 'Ipsum',
-						parentPK: 1,
+						parent_id: 1,
 					},
 				],
 			},
