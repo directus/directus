@@ -63,7 +63,7 @@ export function mergeWithParentItems(
 				parentItem[parentRelationField] = [];
 			}
 
-			let parentPrimaryKey: string | number | null = parentItem[parentPrimaryKeyField];
+			let parentPrimaryKey: PrimaryKey | null = parentItem[parentPrimaryKeyField];
 
 			if (parentPrimaryKey === null) {
 				continue;
@@ -93,7 +93,7 @@ export function mergeWithParentItems(
 				continue; // Avoids adding the nestedItem twice
 			}
 
-			const parentPrimaryKey: string | number | null =
+			const parentPrimaryKey: PrimaryKey | null =
 				nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField] ?? nestedItem[nestedParentKeyField];
 
 			if (parentPrimaryKey === null) {
