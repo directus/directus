@@ -81,7 +81,7 @@ const editActive = ref(false);
 		}
 
 		.item-actions .v-icon {
-			--v-icon-color: var(--danger-50);
+			--v-icon-color: var(--danger-75);
 			--v-icon-color-hover: var(--theme--danger);
 		}
 	}
