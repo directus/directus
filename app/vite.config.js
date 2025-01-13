@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { searchForWorkspaceRoot } from 'vite';
 import { defineConfig } from 'vitest/config';
+import vueDevtools from 'vite-plugin-vue-devtools';
 
 const API_PATH = path.join('..', 'api');
 
@@ -21,6 +22,13 @@ const extensionsPathExists = fs.existsSync(EXTENSIONS_PATH);
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler',
+			},
+		},
+	},
 	plugins: [
 		directusExtensions(),
 		vue(),
@@ -39,9 +47,9 @@ export default defineConfig({
 				};
 			},
 		},
+		vueDevtools(),
 	],
 	define: {
-		__INTLIFY_JIT_COMPILATION__: true,
 		__VUE_I18N_LEGACY_API__: false,
 	},
 	resolve: {
@@ -141,14 +149,12 @@ function directusExtensions() {
 	];
 
 	async function loadExtensions() {
-		// eslint-disable-next-line no-undef
 		const localExtensions = extensionsPathExists ? await resolveFsExtensions(EXTENSIONS_PATH) : new Map();
 		const moduleExtensions = await resolveModuleExtensions(API_PATH);
 
 		const registryExtensions = extensionsPathExists
 			? await resolveFsExtensions(path.join(EXTENSIONS_PATH, '.registry'))
-			: // eslint-disable-next-line no-undef
-			  new Map();
+			: new Map();
 
 		const mockSetting = (source, folder, extension) => {
 			const settings = [

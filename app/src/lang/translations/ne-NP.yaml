@@ -811,8 +811,6 @@ tooltip: टूलटिप
 tooltip_placeholder: एउटा टूलटिप प्रविष्ट गर्नुहोस्...
 unlimited: असीमित
 open_link_in: मा लिङ्क खोल्नुहोस्
-new_tab: नयाँ ट्याब
-current_tab: हालको ट्याब
 save_image: तस्वीर बचत गर्नुहोस्
 save_media: मिडिया बचत गर्नुहोस्
 wysiwyg_options:
@@ -1422,6 +1420,8 @@ interfaces:
     preview: पूर्वावलोकन
     editorFont: सम्पादक फन्ट
     previewFont: फन्ट पूर्वावलोकन
+    default_view: पूर्वनिर्धारित दृश्य
+    default_view_preview: पूर्वावलोकन
     customSyntax: अनुकूलित ब्लकहरू
     customSyntax_label: अनुकूलन सिन्ट्याक्स प्रकारहरू थप्नुहोस्
   map:

@@ -74,6 +74,7 @@ extension_layouts: چیدمان ها
 extension_modules: ماژول‌ها
 extension_panels: پنل‌ها
 extension_themes: پوسته‌ها
+extension_hooks: هوکها
 extension_operations: عملیات
 extension_reload_required: صفحه به بازنشانی مجدد نیاز دارد
 extension_reload_required_copy: جهت مشاهده تغییرات پس از فعالی یا غیرفعالسازی افزونه ها لازم است صفحه بازنشانی مجدد گردد.
@@ -907,8 +908,6 @@ tooltip: راهنما
 tooltip_placeholder: یک مقدار برای راهنما وارد کنید...
 unlimited: بدون محدودیت
 open_link_in: باز کردن پیوند در
-new_tab: پنجره جدید
-current_tab: پنجره فعلی
 save_image: ذخیره تصویر
 save_media: ذخیره رسانه
 wysiwyg_options:
@@ -1626,6 +1625,8 @@ interfaces:
     preview: پيش نمايش
     editorFont: Editor Font
     previewFont: Preview Font
+    default_view: Default View
+    default_view_preview: پيش نمايش
     customSyntax: بلوک‌های سفارشی
     customSyntax_label: Add custom syntax types
     customSyntax_add: Add custom syntax

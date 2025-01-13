@@ -939,8 +939,6 @@ tooltip: İpucu
 tooltip_placeholder: Bir ipucu girin...
 unlimited: Limitsiz
 open_link_in: Bağlantıyı aç
-new_tab: Yeni sekme
-current_tab: Mevcut sekme
 save_image: Fotoğrafı Kaydet
 save_media: Medyayı Kaydet
 wysiwyg_options:
@@ -1663,6 +1661,8 @@ interfaces:
     preview: Önizleme
     editorFont: Editör Yazı Tipi
     previewFont: Önizleme Yazı Tipi
+    default_view: Varsayılan Görünüm
+    default_view_preview: Önizleme
     customSyntax: Özel Bloklar
     customSyntax_label: Özel sözdizimi türleri ekle
     customSyntax_add: Özel sözdizimi ekle

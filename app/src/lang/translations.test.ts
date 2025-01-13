@@ -43,7 +43,7 @@ async function importLanguageFile(locale: string): Promise<{ isImported: boolean
 	try {
 		const { default: translations } = await import(`./translations/${locale}.yaml`);
 		return { isImported: true, translations };
-	} catch (e) {
+	} catch {
 		return { isImported: false, translations: {} };
 	}
 }

@@ -38,6 +38,22 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 				const isAutoIncrementPrimaryKey =
 					!!currentField.schema?.is_primary_key && !!currentField.schema?.has_auto_increment;
 
+				// Changing to/from alias fields should delete the current field
+				if (
+					afterField &&
+					currentField.type !== afterField.type &&
+					(currentField.type === 'alias' || afterField.type === 'alias')
+				) {
+					return {
+						collection: currentField.collection,
+						field: currentField.field,
+						diff: deepDiff.diff(
+							sanitizeField(currentField, isAutoIncrementPrimaryKey),
+							sanitizeField(undefined, isAutoIncrementPrimaryKey),
+						),
+					};
+				}
+
 				return {
 					collection: currentField.collection,
 					field: currentField.field,
@@ -49,10 +65,19 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 			}),
 			...after.fields
 				.filter((afterField) => {
-					const currentField = current.fields.find(
+					let currentField = current.fields.find(
 						(currentField) =>
 							currentField.collection === afterField.collection && afterField.field === currentField.field,
 					);
+
+					// Changing to/from alias fields should create the new field
+					if (
+						currentField &&
+						currentField.type !== afterField.type &&
+						(currentField.type === 'alias' || afterField.type === 'alias')
+					) {
+						currentField = undefined;
+					}
 
 					return !!currentField === false;
 				})

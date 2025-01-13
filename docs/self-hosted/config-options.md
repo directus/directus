@@ -339,6 +339,43 @@ WebSockets work reliably across multiple containers of Directus.
 
 Redis is required when you run Directus load balanced across multiple containers/processes.
 
+::: tip Additional Redis Variables
+
+All `REDIS_*` environment variables are passed to the `connection` configuration of a
+[`Redis` instance](https://redis.github.io/ioredis/classes/Redis.html). This means, based on your project's needs, you
+can extend the `REDIS_*` environment variables with any config you need to pass to the Redis instance.
+
+This includes:
+
+- `REDIS_SENTINEL_` prefixed options which are passed to
+  [`SentinelConnectionOptions`](https://redis.github.io/ioredis/interfaces/SentinelConnectionOptions.html).
+
+  Note: `REDIS_SENTINELS` is required for specifying sentinel instances and expects to receive an array of objects:
+  `REDIS_SENTINELS=json:[{"host": "127.0.0.1", "port": 26379}, ...]`
+
+  For example:
+
+  ```
+  REDIS_NAME: "redis-cache" # Sentinel cluster name
+  REDIS_SENTINEL_PASSWORD: <password>
+  REDIS_SENTINELS: 'json:[{"host": <fdqn or ip>, "port": 26379}]'
+  ```
+
+  Make sure to explicitly prefix the value with `json` so it will be treated as a json array.
+
+:::
+
+## Data Retention
+
+| Variable              | Description                                                                                                      | Default Value |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------- |
+| `RETENTION_ENABLED`   | Whether or not to enable custom data retention settings. `false` will not delete data.                           | `false`       |
+| `RETENTION_SCHEDULE`  | The cron schedule at which to check for removable records, the default is once a day at 00:00.                   | `0 0 * * *`   |
+| `RETENTION_BATCH`     | The maximum number of records to delete in a single query.                                                       | `500`         |
+| `ACTIVITY_RETENTION`  | The maximum amount of time to retain `directus_activity` records or `false` to disable. This excludes flow logs. | `90d`         |
+| `REVISIONS_RETENTION` | The maximum amount of time to retain `directus_revisions` records or `false` to disable.                         | `90d`         |
+| `FLOW_LOGS_RETENTION` | The maximum amount of time to retain flow logs or `false` to disable.                                            | `90d`         |
+
 ## Security
 
 | Variable                            | Description                                                                                                                                                                                          | Default Value             |
@@ -701,9 +738,22 @@ instability or limited bandwidth. This is implemented using the [TUS protocol](h
 | Variable                | Description                                                       | Default Value |
 | ----------------------- | ----------------------------------------------------------------- | ------------- |
 | `TUS_ENABLED`           | Whether or not to enable the chunked uploads                      | `false`       |
-| `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `10mb`        |
+| `TUS_CHUNK_SIZE`        | The size of each file chunks. For example `10mb`, `1gb`, `10kb`   | `8mb`         |
 | `TUS_UPLOAD_EXPIRATION` | The expiry duration for uncompleted files with no upload activity | `10m`         |
 | `TUS_CLEANUP_SCHEDULE`  | Cron schedule to clean up the expired uncompleted uploads         | `0 * * * *`   |
+
+::: warning Chunked Upload Restrictions
+
+Some storage drivers have specific chunk size restrictions. The `TUS_CHUNK_SIZE` must meet the relevant restrictions for
+the storage driver(s) being used.
+
+| Storage Driver              | `TUS_CHUNK_SIZE` Restriction                                                     |
+| --------------------------- | -------------------------------------------------------------------------------- |
+| `storage-driver-gcs`        | Must be a power of 2 with a minimum of `256kb` (e.g. `256kb`, `512kb`, `1024kb`) |
+| `storage-driver-azure`      | Must not be larger than `100mb`                                                  |
+| `storage-driver-cloudinary` | Must not be smaller than `5mb`                                                   |
+
+:::
 
 ## Assets
 
@@ -796,6 +846,7 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variab
 | `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                               | --               |
 | `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`          |
 | `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --               |
+| `AUTH_<PROVIDER>_SYNC_USER_INFO`            | Set user's first name, last name and email from provider's user info on each login.                       | `false`          |
 | `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).         | `account_circle` |
 | `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`     |
 | `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --               |
@@ -808,20 +859,23 @@ Directus users "External Identifier".
 
 OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
 
-| Variable                                    | Description                                                                                               | Default Value          |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                               | --                     |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                                   | --                     |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                   | `openid profile email` |
-| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                                      | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                                  | `sub`<sup>[2]</sup>    |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`                |
-| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                                   | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --                     |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).         | `account_circle`       |
-| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`           |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --                     |
-| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --                     |
+| Variable                                    | Description                                                                                                                                                                                                          | Default Value          |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                                                                                                                                          | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                                                                                                                                              | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                                                                                                                              | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                                                                                                                                                 | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                                                                                                                                          | `sub`<sup>[2]</sup>    |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                                                                                                              | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                                                                                                                                              | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                                                                                                                                          | --                     |
+| `AUTH_<PROVIDER>_SYNC_USER_INFO`            | Set user's first name, last name and email from provider's user info on each login.                                                                                                                                  | `false`                |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).                                                                                                                    | `account_circle`       |
+| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                                                                                                                                       | `<PROVIDER>`           |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                                                                                                                            | --                     |
+| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login.                                                                                                            | --                     |
+| `AUTH_<PROVIDER>_ROLE_MAPPING`              | A JSON object in the form of `{ "openid_group_name": "directus_role_id" }` that you can use to map OpenID groups to Directus roles <sup>[3]</sup>. If not specified, falls back to `AUTH_<PROVIDER>_DEFAULT_ROLE_ID` | --                     |
+| `AUTH_<PROVIDER>_GROUP_CLAIM_NAME`          | The name of the OIDC claim that contains your user's groups.                                                                                                                                                         | `groups`               |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
@@ -829,26 +883,41 @@ Directus users "External Identifier".
 <sup>[2]</sup> `sub` represents a unique user identifier defined by the OpenID provider. For users not relying on
 `PUBLIC_REGISTRATION` it is recommended to use a human-readable identifier, such as `email`.
 
+<sup>[3]</sup> As directus only allows one role per user, evaluating stops after the first match. An OpenID user that is
+member of both e.g. developer and admin groups may be assigned different roles depending on the order that you specify
+your role-mapping in: In the following example said OpenID user will be assigned the role `directus_developer_role_id`
+
+```
+AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "developer": "directus_developer_role_id", "admin": "directus_admin_role_id" }"
+```
+
+Whereas in the following example the OpenID user will be assigned the role `directus_admin_role_id`
+
+```
+AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "admin": "directus_admin_role_id", "developer": "directus_developer_role_id" }"
+```
+
 ### LDAP (`ldap`)
 
 LDAP allows Active Directory users to authenticate and use Directus without having to be manually configured. User
 information and roles will be assigned from Active Directory.
 
-| Variable                                 | Description                                                            | Default Value |
-| ---------------------------------------- | ---------------------------------------------------------------------- | ------------- |
-| `AUTH_<PROVIDER>_CLIENT_URL`             | LDAP connection URL.                                                   | --            |
-| `AUTH_<PROVIDER>_BIND_DN`                | Bind user <sup>[1]</sup> distinguished name.                           | --            |
-| `AUTH_<PROVIDER>_BIND_PASSWORD`          | Bind user password.                                                    | --            |
-| `AUTH_<PROVIDER>_USER_DN`                | Directory path containing users.                                       | --            |
-| `AUTH_<PROVIDER>_USER_ATTRIBUTE`         | Attribute to identify the user.                                        | `cn`          |
-| `AUTH_<PROVIDER>_USER_SCOPE`             | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.  | `one`         |
-| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`         | User email attribute.                                                  | `mail`        |
-| `AUTH_<PROVIDER>_FIRST_NAME_ATTRIBUTE`   | User first name attribute.                                             | `givenName`   |
-| `AUTH_<PROVIDER>_LAST_NAME_ATTRIBUTE`    | User last name attribute.                                              | `sn`          |
-| `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup> | Directory path containing groups.                                      | --            |
-| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`        | Attribute to identify user as a member of a group.                     | `member`      |
-| `AUTH_<PROVIDER>_GROUP_SCOPE`            | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>. | `one`         |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A fallback Directus role ID to assign created users.                   | --            |
+| Variable                                 | Description                                                                         | Default Value |
+| ---------------------------------------- | ----------------------------------------------------------------------------------- | ------------- |
+| `AUTH_<PROVIDER>_CLIENT_URL`             | LDAP connection URL.                                                                | --            |
+| `AUTH_<PROVIDER>_BIND_DN`                | Bind user <sup>[1]</sup> distinguished name.                                        | --            |
+| `AUTH_<PROVIDER>_BIND_PASSWORD`          | Bind user password.                                                                 | --            |
+| `AUTH_<PROVIDER>_USER_DN`                | Directory path containing users.                                                    | --            |
+| `AUTH_<PROVIDER>_USER_ATTRIBUTE`         | Attribute to identify the user.                                                     | `cn`          |
+| `AUTH_<PROVIDER>_USER_SCOPE`             | Scope of the user search, either `base`, `one`, `sub` <sup>[2]</sup>.               | `one`         |
+| `AUTH_<PROVIDER>_MAIL_ATTRIBUTE`         | User email attribute.                                                               | `mail`        |
+| `AUTH_<PROVIDER>_FIRST_NAME_ATTRIBUTE`   | User first name attribute.                                                          | `givenName`   |
+| `AUTH_<PROVIDER>_LAST_NAME_ATTRIBUTE`    | User last name attribute.                                                           | `sn`          |
+| `AUTH_<PROVIDER>_GROUP_DN`<sup>[3]</sup> | Directory path containing groups.                                                   | --            |
+| `AUTH_<PROVIDER>_GROUP_ATTRIBUTE`        | Attribute to identify user as a member of a group.                                  | `member`      |
+| `AUTH_<PROVIDER>_GROUP_SCOPE`            | Scope of the group search, either `base`, `one`, `sub` <sup>[2]</sup>.              | `one`         |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`        | A fallback Directus role ID to assign created users.                                | --            |
+| `AUTH_<PROVIDER>_SYNC_USER_INFO`         | Set user's first name, last name and email from provider's user info on each login. | `false`       |
 
 <sup>[1]</sup> The bind user must have permission to query users and groups to perform authentication. Anonymous binding
 can by achieved by setting an empty value for `BIND_DN` and `BIND_PASSWORD`.
@@ -994,12 +1063,12 @@ extensions from a storage location instead. Under the hood, they are synced into
 
 ## Email
 
-| Variable               | Description                                                                          | Default Value          |
-| ---------------------- | ------------------------------------------------------------------------------------ | ---------------------- |
-| `EMAIL_VERIFY_SETUP`   | Check if email setup is properly configured.                                         | `true`                 |
-| `EMAIL_FROM`           | Email address from which emails are sent.                                            | `no-reply@example.com` |
-| `EMAIL_TRANSPORT`      | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `sendgrid`, `ses`. | `sendmail`             |
-| `EMAIL_TEMPLATES_PATH` | Where custom templates are located                                                   | `./templates`          |
+| Variable               | Description                                                              | Default Value          |
+| ---------------------- | ------------------------------------------------------------------------ | ---------------------- |
+| `EMAIL_VERIFY_SETUP`   | Check if email setup is properly configured.                             | `true`                 |
+| `EMAIL_FROM`           | Email address from which emails are sent.                                | `no-reply@example.com` |
+| `EMAIL_TRANSPORT`      | What to use to send emails. One of `sendmail`, `smtp`, `mailgun`, `ses`. | `sendmail`             |
+| `EMAIL_TEMPLATES_PATH` | Where custom templates are located                                       | `./templates`          |
 
 Based on the `EMAIL_TRANSPORT` used, you must also provide the following configurations:
 
@@ -1019,9 +1088,13 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_SMTP_USER`       | SMTP user            | --            |
 | `EMAIL_SMTP_PASSWORD`   | SMTP password        | --            |
 | `EMAIL_SMTP_POOL`       | Use SMTP pooling     | --            |
-| `EMAIL_SMTP_SECURE`     | Enable TLS           | --            |
-| `EMAIL_SMTP_IGNORE_TLS` | Ignore TLS           | --            |
+| `EMAIL_SMTP_SECURE`     | Enable initial TLS   | --            |
+| `EMAIL_SMTP_IGNORE_TLS` | Ignore STARTTLS      | --            |
 | `EMAIL_SMTP_NAME`       | SMTP client hostname | --            |
+
+For more details about these options, see the
+[SMTP configuration documentation for Nodemailer](https://nodemailer.com/smtp/#general-options), which Directus uses
+under the hood.
 
 ### Mailgun (`mailgun`)
 
@@ -1030,12 +1103,6 @@ Based on the `EMAIL_TRANSPORT` used, you must also provide the following configu
 | `EMAIL_MAILGUN_API_KEY` | Your Mailgun API key.                                                             | --                |
 | `EMAIL_MAILGUN_DOMAIN`  | A domain from [your Mailgun account](https://app.mailgun.com/app/sending/domains) | --                |
 | `EMAIL_MAILGUN_HOST`    | Allows you to specify a custom host.                                              | `api.mailgun.net` |
-
-### SendGrid (`sendgrid`)
-
-| Variable                 | Description            | Default Value |
-| ------------------------ | ---------------------- | ------------- |
-| `EMAIL_SENDGRID_API_KEY` | Your SendGrid API key. | --            |
 
 ### AWS SES (`ses`)
 
