@@ -334,7 +334,10 @@ function useRelation() {
 
 function useActions() {
 	const { nestedValidationErrors, resetNestedValidationErrors } = useNestedValidation();
-	watch(internalActive, resetNestedValidationErrors);
+
+	watch(internalActive, (active) => {
+		if (!active) resetNestedValidationErrors();
+	});
 
 	return { save, cancel };
 
