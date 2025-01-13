@@ -147,6 +147,10 @@ function sidebarDeveloperReference() {
 					text: 'Collections',
 				},
 				{
+					link: '/reference/system/comments',
+					text: 'Comments',
+				},
+				{
 					link: '/reference/system/versions',
 					text: 'Content Versions',
 				},
@@ -627,6 +631,10 @@ function sidebarUserGuide() {
 					link: '/user-guide/cloud/projects',
 				},
 				{
+					text: 'Environment Variables',
+					link: '/user-guide/cloud/variables',
+				},
+				{
 					text: 'Teams',
 					link: '/user-guide/cloud/teams',
 				},
@@ -659,6 +667,10 @@ function sidebarUserGuide() {
 				{
 					text: 'Activity Log',
 					link: '/user-guide/settings/activity-log',
+				},
+				{
+					text: 'System Logs',
+					link: '/user-guide/settings/system-logs',
 				},
 			],
 		},

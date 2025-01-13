@@ -230,8 +230,11 @@ const appearance = computed(() => {
 
 provide('main-element', contentEl);
 
-router.afterEach(() => {
-	contentEl.value?.scrollTo({ top: 0 });
+router.afterEach((to, from) => {
+	if (!to.meta.isFloatingView && !from.meta.isFloatingView) {
+		contentEl.value?.scrollTo({ top: 0 });
+	}
+
 	fullScreen.value = false;
 });
 

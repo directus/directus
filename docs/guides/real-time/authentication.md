@@ -23,7 +23,7 @@ Your whole project will use the same, single, authentication mode. You cannot us
 single project.
 
 By default, the `handshake` authentication mode is used. If self-hosting your project, you may change the mode used by
-setting the `WEBSOCKETS_REST_AUTH` and `WEBSOCKETS_GRAPHQL_AUTH` environment variables.
+setting the `WEBSOCKETS_REST_AUTH`, `WEBSOCKETS_GRAPHQL_AUTH` and `WEBSOCKETS_LOGS_AUTH` environment variables.
 
 ## REST Authentication Flow
 

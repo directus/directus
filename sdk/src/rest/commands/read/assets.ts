@@ -4,7 +4,7 @@ import { throwIfEmpty } from '../../utils/index.js';
 import type { RestCommand } from '../../types.js';
 
 /**
- * Read the contents of a file as a ReadableStream<Uint8Array>
+ * Read the contents of a file as a ReadableStream
  *
  * @param {string} key
  * @param {AssetsQuery} query

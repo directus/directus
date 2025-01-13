@@ -38,7 +38,7 @@ export default <Environment>{
 				} else if (totalTestsCount + testIndex === completedCount) {
 					break;
 				}
-			} catch (err) {
+			} catch {
 				continue;
 			}
 

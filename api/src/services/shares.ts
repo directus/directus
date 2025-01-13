@@ -3,6 +3,7 @@ import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import type { Item, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import { nanoid } from 'nanoid';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type {
@@ -20,6 +21,7 @@ import { userName } from '../utils/user-name.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
+import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -48,20 +50,27 @@ export class SharesService extends ItemsService {
 		return super.createOne(data, opts);
 	}
 
+	override async updateMany(keys: PrimaryKey[], data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
+		await clearPermissionsCache();
+
+		return super.updateMany(keys, data, opts);
+	}
+
+	override async deleteMany(keys: PrimaryKey[], opts?: MutationOptions): Promise<PrimaryKey[]> {
+		await clearPermissionsCache();
+
+		return super.deleteMany(keys, opts);
+	}
+
 	async login(
 		payload: Record<string, any>,
 		options?: Partial<{
 			session: boolean;
 		}>,
 	): Promise<Omit<LoginResult, 'id'>> {
-		const { nanoid } = await import('nanoid');
-
 		const record = await this.knex
 			.select<ShareData>({
 				share_id: 'id',
-				share_role: 'role',
-				share_item: 'item',
-				share_collection: 'collection',
 				share_start: 'date_start',
 				share_end: 'date_end',
 				share_times_used: 'times_used',
@@ -96,12 +105,8 @@ export class SharesService extends ItemsService {
 		const tokenPayload: DirectusTokenPayload = {
 			app_access: false,
 			admin_access: false,
-			role: record.share_role,
+			role: null,
 			share: record.share_id,
-			share_scope: {
-				item: record.share_item,
-				collection: record.share_collection,
-			},
 		};
 
 		const refreshToken = nanoid(64);

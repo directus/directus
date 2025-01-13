@@ -22,11 +22,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	if (env['CACHE_VALUE_MAX_SIZE'] !== false) {
 		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
 		const maxSize = parseBytesConfiguration(env['CACHE_VALUE_MAX_SIZE'] as string);
-		exceedsMaxSize = valueSize > maxSize;
+		if (maxSize !== null) exceedsMaxSize = valueSize > maxSize;
 	}
 
 	if (
 		(req.method.toLowerCase() === 'get' || req.originalUrl?.startsWith('/graphql')) &&
+		req.originalUrl?.startsWith('/auth') === false &&
 		env['CACHE_ENABLED'] === true &&
 		cache &&
 		!req.sanitizedQuery.export &&

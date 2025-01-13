@@ -102,10 +102,10 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .form-grid {
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .map {

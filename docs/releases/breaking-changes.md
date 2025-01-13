@@ -13,6 +13,46 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
+## Version 11.4.0
+
+### Node.js 22
+
+The required Node.js runtime version has been upgraded to the current LTS version 22.
+
+Our base Docker image ([`directus/directus`](https://hub.docker.com/r/directus/directus)) has already been updated
+accordingly. This means that no further steps are necessary for the vast majority of Directus admins.
+
+For custom, self-hosted setups that are not relying on the official Docker image, it must be ensured that Node.js is
+upgraded to version 22, and dependencies are rebuilt.
+
+Additionally, if you're using non-sandboxed extensions, please ensure that the extensions (including their dependencies)
+are compatible with Node.js 22 as well.
+
+## Version 11.1.2
+
+### New Comment Endpoints
+
+We've introduced a dedicated `directus_comments` collection, replacing the previous system that used `directus_activity`
+for comments. While new comment endpoints have been added, existing endpoints remain functional.
+
+Comment primary keys are now UUIDs instead of numeric values, which may impact custom type checking implementations.
+
+#### SDK Comment Function Uses New Endpoints
+
+The SDK's internal comment endpoints have been updated to reflect this change. To avoid errors, ensure your Directus
+version is compatible with the latest SDK when using comment functions.
+
+#### Migrate to `CommentsService` in Extensions
+
+Extensions using the `ActivityService` to manage comments should migrate to the new `CommentsService`.
+
+## Version 11.1.1
+
+### Dropped support for the SendGrid email transport option
+
+The SendGrid abstraction for `nodemailer` is no longer supported, so we have dropped it's usage from Directus. Users of
+SendGrid should update their configuration to use their SendGrid account's SMTP Relay configuration instead.
+
 ## Version 11.0.0
 
 Directus 11 introduces policies, a new concept within access control configuration. Permissions are no longer held in

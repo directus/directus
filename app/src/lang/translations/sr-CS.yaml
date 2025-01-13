@@ -579,8 +579,6 @@ tooltip: Pomoćni prozor
 tooltip_placeholder: Unesi vrijednost u prozoru za pomoć...
 unlimited: Neograničeno
 open_link_in: Otvori vezu u
-new_tab: Nova kartica
-current_tab: Trenutna kartica
 wysiwyg_options:
   aligncenter: Poravnanje po sredini
   alignjustify: Blok Poravnanje

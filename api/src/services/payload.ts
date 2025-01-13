@@ -13,7 +13,7 @@ import { format, isValid, parseISO } from 'date-fns';
 import { unflatten } from 'flat';
 import Joi from 'joi';
 import type { Knex } from 'knex';
-import { clone, cloneDeep, isNil, isObject, isPlainObject, omit, pick } from 'lodash-es';
+import { clone, cloneDeep, isNil, isObject, isPlainObject, pick } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
@@ -190,16 +190,12 @@ export class PayloadService {
 			});
 		}
 
-		await Promise.all(
-			processedPayload.map(async (record: any) => {
-				await Promise.all(
-					specialFields.map(async ([name, field]) => {
-						const newValue = await this.processField(field, record, action, this.accountability);
-						if (newValue !== undefined) record[name] = newValue;
-					}),
-				);
-			}),
-		);
+		for (const record of processedPayload) {
+			for (const [name, field] of specialFields) {
+				const newValue = await this.processField(field, record, action, this.accountability);
+				if (newValue !== undefined) record[name] = newValue;
+			}
+		}
 
 		this.processGeometries(processedPayload, action);
 		this.processDates(processedPayload, action);
@@ -455,28 +451,28 @@ export class PayloadService {
 				schema: this.schema,
 			});
 
-			const relatedPrimary = this.schema.collections[relatedCollection]!.primary;
+			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
 			const relatedRecord: Partial<Item> = payload[relation.field];
 
 			if (['string', 'number'].includes(typeof relatedRecord)) continue;
 
-			const hasPrimaryKey = relatedPrimary in relatedRecord;
+			const hasPrimaryKey = relatedPrimaryKeyField in relatedRecord;
 
-			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimary];
+			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimaryKeyField];
 
 			const exists =
 				hasPrimaryKey &&
 				!!(await this.knex
-					.select(relatedPrimary)
+					.select(relatedPrimaryKeyField)
 					.from(relatedCollection)
-					.where({ [relatedPrimary]: relatedPrimaryKey })
+					.where({ [relatedPrimaryKeyField]: relatedPrimaryKey })
 					.first());
 
 			if (exists) {
-				const fieldsToUpdate = omit(relatedRecord, relatedPrimary);
+				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
 
-				if (Object.keys(fieldsToUpdate).length > 0) {
-					await service.updateOne(relatedPrimaryKey, relatedRecord, {
+				if (Object.keys(record).length > 0) {
+					await service.updateOne(relatedPrimaryKey, record, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
@@ -562,10 +558,10 @@ export class PayloadService {
 					.first());
 
 			if (exists) {
-				const fieldsToUpdate = omit(relatedRecord, relatedPrimaryKeyField);
+				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
 
-				if (Object.keys(fieldsToUpdate).length > 0) {
-					await service.updateOne(relatedPrimaryKey, relatedRecord, {
+				if (Object.keys(record).length > 0) {
+					await service.updateOne(relatedPrimaryKey, record, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
@@ -794,10 +790,12 @@ export class PayloadService {
 					const primaryKeyField = this.schema.collections[relation.collection]!.primary;
 
 					for (const item of alterations.update) {
+						const { [primaryKeyField]: key, ...record } = item;
+
 						await service.updateOne(
-							item[primaryKeyField],
+							key,
 							{
-								...item,
+								...record,
 								[relation.field]: parent || payload[currentPrimaryKeyField],
 							},
 							{

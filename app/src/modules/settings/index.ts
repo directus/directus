@@ -27,6 +27,7 @@ import NewRole from './routes/roles/add-new.vue';
 import RolesCollection from './routes/roles/collection.vue';
 import RolesItem from './routes/roles/item.vue';
 import RolesPublicItem from './routes/roles/public-item.vue';
+import SystemLogs from './routes/system-logs/logs.vue';
 import TranslationsCollection from './routes/translations/collection.vue';
 import TranslationsItem from './routes/translations/item.vue';
 import WebhooksCollection from './routes/webhooks/collection.vue';
@@ -68,6 +69,9 @@ export default defineModule({
 						{
 							path: '+',
 							name: 'settings-add-new',
+							meta: {
+								isFloatingView: true,
+							},
 							components: {
 								add: NewCollection,
 							},
@@ -105,6 +109,9 @@ export default defineModule({
 						{
 							path: ':field',
 							name: 'settings-fields-field',
+							meta: {
+								isFloatingView: true,
+							},
 							components: {
 								field: FieldDetail,
 							},
@@ -125,6 +132,9 @@ export default defineModule({
 						{
 							path: '+',
 							name: 'settings-add-new-policy',
+							meta: {
+								isFloatingView: true,
+							},
 							components: {
 								add: NewPolicy,
 							},
@@ -153,6 +163,9 @@ export default defineModule({
 							name: 'settings-add-new-role',
 							components: {
 								add: NewRole,
+							},
+							meta: {
+								isFloatingView: true,
 							},
 						},
 					],
@@ -233,6 +246,9 @@ export default defineModule({
 						{
 							name: 'settings-flows-operation',
 							path: ':operationId',
+							meta: {
+								isFloatingView: true,
+							},
 							component: FlowOperationDetail,
 							props: true,
 						},
@@ -284,6 +300,11 @@ export default defineModule({
 					props: true,
 				},
 			],
+		},
+		{
+			name: 'settings-system-logs',
+			path: 'system-logs',
+			component: SystemLogs,
 		},
 		{
 			name: 'settings-not-found',
