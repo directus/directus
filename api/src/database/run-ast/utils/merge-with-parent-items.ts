@@ -63,7 +63,14 @@ export function mergeWithParentItems(
 				parentItem[parentRelationField] = [];
 			}
 
-			const parentPrimaryKey = parentItem[parentPrimaryKeyField];
+			let parentPrimaryKey: string | number | null = parentItem[parentPrimaryKeyField];
+
+			if (parentPrimaryKey === null) {
+				continue;
+			} else {
+				// ensure key is type agnostic
+				parentPrimaryKey = parentPrimaryKey.toString();
+			}
 
 			if (parentsByPrimaryKey.has(parentPrimaryKey)) {
 				throw new Error(
@@ -86,15 +93,17 @@ export function mergeWithParentItems(
 				continue; // Avoids adding the nestedItem twice
 			}
 
-			const parentPrimaryKey =
+			const parentPrimaryKey: string | number | null =
 				nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField] ?? nestedItem[nestedParentKeyField];
 
-			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey);
+			if (parentPrimaryKey === null) {
+				continue;
+			}
+
+			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey.toString());
 
 			if (!parentItem) {
-				throw new Error(
-					`Missing parentItem '${nestedItem[nestedParentKeyField]}' of '${parentCollectionName}' when merging o2m nested items`,
-				);
+				continue;
 			}
 
 			parentItem[parentRelationField].push(nestedItem);
