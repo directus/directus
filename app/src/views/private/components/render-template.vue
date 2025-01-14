@@ -75,7 +75,7 @@ const parts = computed(() =>
 
 			if (!displayInfo.value) return value;
 
-			if (component && ['related-values', 'formatted-value'].includes(component)) {
+			if (component && ['related-values', 'formatted-value', 'formatted-json-value', 'translations'].includes(component)) {
 				// These displays natively support rendering arrays of values
 				return [
 					{
@@ -119,7 +119,7 @@ const parts = computed(() =>
 					<value-null
 						v-if="
 							subPart === null ||
-							(typeof subPart === 'object' && (subPart.value === null || subPart.value === undefined))
+							(typeof subPart === 'object' && (subPart.value === null))
 						"
 					/>
 					<template v-else-if="subPart?.component">
