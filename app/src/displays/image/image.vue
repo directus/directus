@@ -44,6 +44,7 @@ img {
 
 	&.circle {
 		border-radius: 100%;
+		aspect-ratio: 1;
 	}
 }
 </style>

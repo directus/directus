@@ -41,7 +41,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 		headers,
 		defParamCharset: 'utf8',
 		limits: {
-			fileSize: env['FILES_MAX_UPLOAD_SIZE'] ? bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string) : undefined,
+			fileSize: bytes.parse(env['FILES_MAX_UPLOAD_SIZE'] as string) ?? undefined,
 		},
 	});
 

@@ -45,7 +45,7 @@ export function applyCaseWhen(
 		}
 	}
 
-	const sql = sqlParts.join(' ');
+	const sql = sqlParts.length > 0 ? sqlParts.join(' ') : '1';
 	const bindings = [...caseQuery.toSQL().bindings, column];
 
 	let rawCase = `(CASE WHEN ${sql} THEN ?? END)`;

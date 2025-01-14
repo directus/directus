@@ -2,6 +2,7 @@ import type { KNEX_TYPES } from '@directus/constants';
 import type { Field, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import type { DatabaseClient } from '../../../types/index.js';
+import { getDefaultIndexName } from '../../../utils/get-default-index-name.js';
 import { getDatabaseClient } from '../../index.js';
 import { DatabaseHelper } from '../types.js';
 
@@ -10,6 +11,11 @@ export type Options = { nullable?: boolean; default?: any; length?: number };
 export type Sql = {
 	sql: string;
 	bindings: readonly Knex.Value[];
+};
+
+export type SortRecord = {
+	alias: string;
+	column: Knex.Raw;
 };
 
 export abstract class SchemaHelper extends DatabaseHelper {
@@ -25,6 +31,10 @@ export abstract class SchemaHelper extends DatabaseHelper {
 				builder.dropNullable(column);
 			}
 		});
+	}
+
+	generateIndexName(type: 'unique' | 'foreign' | 'index', collection: string, fields: string | string[]): string {
+		return getDefaultIndexName(type, collection, fields);
 	}
 
 	async changeToType(
@@ -152,7 +162,19 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return null;
 	}
 
-	preprocessBindings(queryParams: Sql): Sql {
+	prepQueryParams(queryParams: Sql): Sql {
 		return queryParams;
+	}
+
+	prepBindings(bindings: Knex.Value[]): any {
+		return bindings;
+	}
+
+	addInnerSortFieldsToGroupBy(
+		_groupByFields: (string | Knex.Raw)[],
+		_sortRecords: SortRecord[],
+		_hasRelationalSort: boolean,
+	): void {
+		// no-op by default
 	}
 }

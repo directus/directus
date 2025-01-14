@@ -393,10 +393,10 @@ export class FieldsService {
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
-						this.addColumnToTable(table, hookAdjustedField as Field);
+						this.addColumnToTable(table, collection, hookAdjustedField as Field);
 					} else {
 						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, hookAdjustedField as Field);
+							this.addColumnToTable(table, collection, hookAdjustedField as Field);
 						});
 					}
 				}
@@ -516,14 +516,6 @@ export class FieldsService {
 					if (hookAdjustedField.schema?.is_nullable === true) {
 						throw new InvalidPayloadError({ reason: 'Primary key cannot be null' });
 					}
-
-					if (hookAdjustedField.schema?.is_unique === false) {
-						throw new InvalidPayloadError({ reason: 'Primary key must be unique' });
-					}
-
-					if (hookAdjustedField.schema?.is_indexed === true) {
-						throw new InvalidPayloadError({ reason: 'Primary key cannot be indexed' });
-					}
 				}
 
 				// Sanitize column only when applying snapshot diff as opts is only passed from /utils/apply-diff.ts
@@ -535,7 +527,7 @@ export class FieldsService {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
-								this.addColumnToTable(table, field, existingColumn);
+								this.addColumnToTable(table, collection, field, existingColumn);
 							});
 						});
 					} catch (err: any) {
@@ -772,7 +764,21 @@ export class FieldsService {
 						.where({ group: metaRow.field, collection: metaRow.collection });
 				}
 
-				await trx('directus_fields').delete().where({ collection, field });
+				const itemsService = new ItemsService('directus_fields', {
+					knex: trx,
+					accountability: this.accountability,
+					schema: this.schema,
+				});
+
+				await itemsService.deleteByQuery(
+					{
+						filter: {
+							collection: { _eq: collection },
+							field: { _eq: field },
+						},
+					},
+					{ emitEvents: false },
+				);
 			});
 
 			const actionEvent = {
@@ -819,6 +825,7 @@ export class FieldsService {
 
 	public addColumnToTable(
 		table: Knex.CreateTableBuilder,
+		collection: string,
 		field: RawField | Field,
 		existing: Column | null = null,
 	): void {
@@ -916,20 +923,25 @@ export class FieldsService {
 			column.primary().notNullable();
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
+
+			const uniqueIndexName = this.helpers.schema.generateIndexName('unique', collection, field.field);
+
 			if (field.schema?.is_unique === true) {
 				if (!existing || existing.is_unique === false) {
-					column.unique();
+					column.unique({ indexName: uniqueIndexName });
 				}
 			} else if (field.schema?.is_unique === false) {
 				if (existing && existing.is_unique === true) {
-					table.dropUnique([field.field]);
+					table.dropUnique([field.field], uniqueIndexName);
 				}
 			}
 
+			const indexName: string = this.helpers.schema.generateIndexName('index', collection, field.field);
+
 			if (field.schema?.is_indexed === true && !existing?.is_indexed) {
-				column.index();
+				column.index(indexName);
 			} else if (field.schema?.is_indexed === false && existing?.is_indexed) {
-				table.dropIndex([field.field]);
+				table.dropIndex([field.field], indexName);
 			}
 		}
 

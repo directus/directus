@@ -316,7 +316,7 @@ const allowDrag = computed(
 					<v-list-item
 						:class="{ deleted: element.$type === 'deleted' }"
 						:dense="totalItemCount > 4"
-						:disabled="disabled || !updateAllowed"
+						:disabled="disabled"
 						block
 						clickable
 						@click="editItem(element)"
@@ -371,7 +371,7 @@ const allowDrag = computed(
 
 		<drawer-item
 			v-model:active="editModalActive"
-			:disabled="disabled || (!updateAllowed && currentlyEditing !== null)"
+			:disabled="disabled"
 			:collection="relationInfo.junctionCollection.collection"
 			:primary-key="currentlyEditing || '+'"
 			:related-primary-key="relatedPrimaryKey || '+'"

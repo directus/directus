@@ -834,8 +834,6 @@ tooltip: Sugestii
 tooltip_placeholder: Introduceți o sugestie...
 unlimited: Nelimitat
 open_link_in: Deschide link-ul în
-new_tab: Tab Nou
-current_tab: Tab curent
 save_image: Salvează imaginea
 save_media: Salvează media
 wysiwyg_options:
@@ -1514,6 +1512,8 @@ interfaces:
     preview: Previzualizare
     editorFont: Font pentru editor
     previewFont: Font pentru previzualizare
+    default_view: Vizualizare implicită
+    default_view_preview: Previzualizare
     customSyntax: Blocuri personalizate
     customSyntax_label: Adăugați tipuri de sintaxă personalizate
     customSyntax_add: Adaugă sintaxă personalizată

@@ -13,7 +13,7 @@ readTime: 7 min read
 
 ## Requirements
 
-- Node.js [v18](https://github.com/nodejs/release#release-schedule), specifically version 18.17 or higher.
+- Node.js [v22](https://github.com/nodejs/release#release-schedule)
 
 ## Server
 
@@ -174,6 +174,12 @@ To create a new role with admin access, set the `--admin` flag to `true`, such a
 
 ```bash
 npx directus roles create --role <role-name> --admin true
+```
+
+To create a new role with app access, set the `--app` flag to `true`, such as
+
+```bash
+npx directus roles create --role <role-name> --app true
 ```
 
 ### Count Items in a Collection

@@ -1,15 +1,21 @@
 <script setup lang="ts">
+import { i18n } from '@/lang';
 import { useSettingsStore } from '@/stores/settings';
 import { percentage } from '@/utils/percentage';
 import { SettingsStorageAssetPreset } from '@directus/types';
 import Editor from '@tinymce/tinymce-vue';
-import { ComponentPublicInstance, computed, ref, toRefs, watch } from 'vue';
+import { cloneDeep, isEqual } from 'lodash';
+import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
 import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
+import tinymce from 'tinymce/tinymce';
+
+import 'tinymce/skins/ui/oxide/skin.css';
+import './tinymce-overrides.css';
 
 import 'tinymce/tinymce';
 
@@ -79,6 +85,8 @@ const emit = defineEmits(['input']);
 const { t } = useI18n();
 const editorRef = ref<any | null>(null);
 const editorElement = ref<ComponentPublicInstance | null>(null);
+const editorKey = ref(0);
+
 const { imageToken } = toRefs(props);
 const settingsStore = useSettingsStore();
 
@@ -151,16 +159,24 @@ watch(
 	},
 );
 
-const editorOptions = computed(() => {
-	let styleFormats = null;
+watch(
+	() => [props.toolbar, props.font, props.customFormats, props.tinymceOverrides],
+	(newOptions, oldOptions) => {
+		if (isEqual(newOptions, oldOptions)) return;
 
-	if (Array.isArray(props.customFormats) && props.customFormats.length > 0) {
-		styleFormats = props.customFormats;
-	}
+		editorRef.value.remove();
+		editorInitialized.value = false;
+		editorKey.value++;
+	},
+);
+
+const editorOptions = computed(() => {
+	const styleFormats =
+		Array.isArray(props.customFormats) && props.customFormats.length > 0 ? cloneDeep(props.customFormats) : null;
 
 	let toolbarString = (props.toolbar ?? [])
-		.map((t) =>
-			t
+		.map((button) =>
+			button
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
@@ -190,13 +206,11 @@ const editorOptions = computed(() => {
 			'fullscreen',
 			'directionality',
 		],
-		license_key: 'gpl',
 		branding: false,
 		max_height: 1000,
 		elementpath: false,
 		statusbar: false,
 		menubar: false,
-		highlight_on_focus: false,
 		convert_urls: false,
 		image_dimensions: false,
 		extended_valid_elements: 'audio[loop|controls],source[src|type]',
@@ -208,7 +222,8 @@ const editorOptions = computed(() => {
 		directionality: props.direction,
 		paste_data_images: false,
 		setup,
-		...(props.tinymceOverrides || {}),
+		language: i18n.global.locale.value,
+		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
 	};
 });
 
@@ -301,11 +316,57 @@ function setFocus(val: boolean) {
 		body.classList.remove('focus');
 	}
 }
+
+onMounted(() => {
+	tinymce.addI18n(i18n.global.locale.value, {
+		Undo: t('wysiwyg_options.undo'),
+		Redo: t('wysiwyg_options.redo'),
+		Bold: t('wysiwyg_options.bold'),
+		Italic: t('wysiwyg_options.italic'),
+		Underline: t('wysiwyg_options.underline'),
+		Strikethrough: t('wysiwyg_options.strikethrough'),
+		Subscript: t('wysiwyg_options.subscript'),
+		Superscript: t('wysiwyg_options.superscript'),
+		'Font {0}': `${t('wysiwyg_options.fontselect')} {0}`,
+		'Font size {0}': `${t('wysiwyg_options.fontsizeselect')} {0}`,
+		'Heading 1': t('wysiwyg_options.h1'),
+		'Heading 2': t('wysiwyg_options.h2'),
+		'Heading 3': t('wysiwyg_options.h3'),
+		'Heading 4': t('wysiwyg_options.h4'),
+		'Heading 5': t('wysiwyg_options.h5'),
+		'Heading 6': t('wysiwyg_options.h6'),
+		'Align center': t('wysiwyg_options.aligncenter'),
+		'Align left': t('wysiwyg_options.alignleft'),
+		'Align right': t('wysiwyg_options.alignright'),
+		Justify: t('wysiwyg_options.alignjustify'),
+		'No alignment': t('wysiwyg_options.alignnone'),
+		'Increase indent': t('wysiwyg_options.indent'),
+		'Decrease indent': t('wysiwyg_options.outdent'),
+		'Numbered list': t('wysiwyg_options.numlist'),
+		'Bullet list': t('wysiwyg_options.bullist'),
+		'Text color {0}': `${t('wysiwyg_options.forecolor')} {0}`,
+		'Background color {0}': `${t('wysiwyg_options.backcolor')} {0}`,
+		'Clear formatting': t('wysiwyg_options.removeformat'),
+		Cut: t('wysiwyg_options.cut'),
+		Copy: t('wysiwyg_options.copy'),
+		Paste: t('wysiwyg_options.paste'),
+		Remove: t('wysiwyg_options.remove'),
+		'Select all': t('wysiwyg_options.selectall'),
+		Blockquote: t('wysiwyg_options.blockquote'),
+		Fullscreen: t('wysiwyg_options.fullscreen'),
+		Table: t('wysiwyg_options.table'),
+		'Horizontal line': t('wysiwyg_options.hr'),
+		'Visual aids': t('wysiwyg_options.visualaid'),
+		'Left to right': t('left_to_right'),
+		'Right to left': t('right_to_left'),
+	});
+});
 </script>
 
 <template>
 	<div :id="field" class="wysiwyg" :class="{ disabled }">
 		<editor
+			:key="editorKey"
 			ref="editorElement"
 			v-model="internalValue"
 			:init="editorOptions"
@@ -346,11 +407,7 @@ function setFocus(val: boolean) {
 						</div>
 						<div class="field half-right">
 							<div class="type-label">{{ t('open_link_in') }}</div>
-							<v-checkbox
-								v-model="linkSelection.newTab"
-								block
-								:label="t('new_tab')"
-							></v-checkbox>
+							<v-checkbox v-model="linkSelection.newTab" block :label="t('new_tab')"></v-checkbox>
 						</div>
 					</div>
 				</v-card-text>
@@ -482,20 +539,15 @@ function setFocus(val: boolean) {
 	</div>
 </template>
 
-<style lang="scss">
-@import 'tinymce/skins/ui/oxide/skin.css';
-@import './tinymce-overrides.css';
-</style>
-
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .body {
 	padding: 20px;
 }
 
 .grid {
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .remaining {

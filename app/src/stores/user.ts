@@ -54,7 +54,7 @@ export const useUserStore = defineStore({
 				const { data } = await api.get(`/users/me`, { params: { fields } });
 
 				this.currentUser = merge({}, this.currentUser, data.data);
-			} catch (error: any) {
+			} catch {
 				// Do nothing
 			}
 		},
