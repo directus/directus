@@ -110,6 +110,7 @@ field_name_translations: Alan Adı Çevirileri
 enter_password_to_enable_tfa: İki Faktörlü Kimlik Doğrulamayı etkinleştirmek için parolanızı girin
 add_field: Alan Ekle
 role_name: Rol Adı
+policy_name: Politika İsmi
 branch: Dal
 leaf: Yaprak
 indeterminate: Belirsiz
@@ -127,6 +128,7 @@ requires_value: Gerekli değer
 create_preset: Ön Ayar Oluştur
 create_panel: Panel Oluştur
 create_role: Rol Oluştur
+create_policy: Politika Oluştur
 create_user: Kullanıcı Oluştur
 message: Mesaj
 delete_panel: Paneli Sil
@@ -154,16 +156,28 @@ keep: Tut
 version: Sürüm
 version_key: Sürüm Anahtarı
 version_name: Sürüm Adı
+main_version: Temel
 switch_version: Sürümü Değiştir
+switch_version_copy: '"{version}"'' versiyonuna değiştirmek istediğinize emin misiniz? Kayıt edilmemiş değişikler kaybolacaktır.'
 create_version: Sürüm Oluştur
 rename_version: Sürümü Yeniden Adlandır
 compare_version: Sürümü Karşılaştır
 save_version: Sürümü Kaydet
 promote_version: Sürümü Yükselt
 promote_version_disabled: Değişiklik Yok
+promote_version_drawer_title: '{version} Temele geliştir'
 promote_version_changes: Değişiklikler
 promote_version_preview: Önizleme
+outdated_notice: >-
+  Bu versiyon yaratıldığı için temel eşya güncellenmiştir.
+  Lütfen aşağıdaki bütün alan değerlerini inceleyiniz. ve bu sürümü ana öğe ye yükseltirken hangi sürümün kullanılması gerektiğini onaylayın.
+promote_notice: >-
+  Lütfen aşağıdaki bütün alan değerlerini inceleyiniz, ve bu sürümü ana öğeye yükseltirken hangi sürümün kullanılması gerektirdiğini onaylayın.
 delete_version: Sürümü Sil
+delete_version_copy: >-
+  {version} versiyonu silme kararında emin misiniz? Bu eylem geri alınamaz.
+delete_on_promote_copy: >-
+  {version}'nu yükselttikten sonra silmek mi yoksa saklamak mı istersiniz?
 reset_bookmark: Yer İşaretini Sıfırla
 update_bookmark: Yer İşaretini Güncelle
 delete_bookmark: Yer İşaretini Kaldır
@@ -316,6 +330,11 @@ time: Zaman
 timestamp: Zaman Damgası
 uuid: UUID
 hash: Hash
+geometry:
+  All: Geometri (Hepsi)
+  Point: Derece
+  Polygon: Poligon
+  MultiPoint: ÇokluDerece
 theme_light: Açık Mod
 theme_dark: Koyu Mod
 not_available_for_type: Bu Tip için Mevcut Değil
@@ -556,7 +575,10 @@ allow_duplicates: Çiftlere İzin Ver
 comments: Yorumlar
 no_comments: Henüz Yorum Yok
 expand: Genişlet
+expand_all: Hepsini Genişlet
+expand_none: Hiçbirini Genişletme
 collapse: Daralt
+collapse_all: Hepsini Daralt
 select_item: Öğe Seçin
 no_items: Hiç öğe yok
 search_items: Öğeleri ara...
@@ -572,6 +594,7 @@ display_not_found: '"{display}" ekranı bulunamadı.'
 reset_display: Ekranı Sıfırla
 list-m2a: Oluşturucu (M2A)
 item_count: 'Hiç Öğe Yok | 1 Öğe | {count} Öğe'
+filtered_item_count: 'Hiçbir Filtreleştirlmiş Eşya | Bir tane Filtreleştirlmiş Eşya | {count} Filtreli Eşyalar'
 no_items_copy: Bu koleksiyonda henüz herhangi bir öğe yok.
 file_count: 'Hiç Dosya Yok | Bir Dosya | {count} Dosya'
 no_files_copy: Burada hiç dosya yok.
@@ -601,6 +624,7 @@ copy_to: Şuraya Kopyala...
 no_other_dashboards_copy: Henüz başka panonuz yok.
 inactive: Devre Dışı
 users: Kullanıcılar
+roles: Roller
 activity: Etkinlik
 activity_item: Etkinlik Öğesi
 action: İşlem
@@ -640,6 +664,9 @@ select_an_item: Bir Öğe Seçin...
 edit: Düzenle
 edit_item: Öğeyi Düzenle
 enabled: Etkin
+partially_enabled: Yarım Olarak Etkinleştirldi
+enable_all: Hepsini Etkinleştir
+disable_all: Hepsini Etkinleştirsiz
 disable_tfa: 2FA'yı Devre Dışı Bırak
 admin_disable_tfa_text: Yönetici tarafından 2FA devre dışı bırak?
 tfa_setup: 2 Adımlı doğrulamayı kur
@@ -652,8 +679,10 @@ corresponding_field: İlgili Alan
 errors:
   COLLECTION_NOT_FOUND: "Koleksiyon yok"
   CONTAINS_NULL_VALUES: Alan null değer içeriyor
+  CONTENT_TOO_LARGE: Teslim edilen eşya/dosya çok büyük
   FIELD_NOT_FOUND: Alan Bulunamadı
   FORBIDDEN: Yetkisiz Erişim
+  GRAPHQL_VALIDATION: GraphQL Doğrulaması
   ILLEGAL_ASSET_TRANSFORMATION: Resim kaynağı önizleme için çok büyük
   INTERNAL_SERVER_ERROR: Beklenmeyen Hata
   INVALID_CONFIG: Geçersiz yapılandırma
@@ -1248,6 +1277,7 @@ fields:
     description: Açıklama
     users: Rol'deki Kullanıcılar
   directus_policies:
+    name: Politika İsmi
     description: Açıklama
   directus_webhooks:
     name: İsim
