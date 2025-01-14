@@ -65,10 +65,11 @@ export function mergeWithParentItems(
 
 			let parentPrimaryKey: PrimaryKey | null = parentItem[parentPrimaryKeyField];
 
+			// null if the user has no access to parent PK
 			if (parentPrimaryKey === null) {
 				continue;
 			} else {
-				// ensure key is type agnostic
+				// ensure key access is type agnostic
 				parentPrimaryKey = parentPrimaryKey.toString();
 			}
 
@@ -102,6 +103,7 @@ export function mergeWithParentItems(
 
 			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey.toString());
 
+			// null if the user has no access to parent PK
 			if (!parentItem) {
 				continue;
 			}
