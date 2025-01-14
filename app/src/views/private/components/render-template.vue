@@ -170,6 +170,10 @@ const parts = computed(() =>
 	}
 }
 
+.render-template:has(.display-translations) {
+	text-overflow: clip;
+}
+
 .subdued {
 	color: var(--theme--foreground-subdued);
 }
