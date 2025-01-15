@@ -17,6 +17,7 @@ const {
 	getItemEdits,
 	isLocalItem,
 	remove,
+	loading,
 	updateValue,
 } = defineProps<{
 	languageOptions: Record<string, any>[];
@@ -71,7 +72,7 @@ const activatorDisabled = computed(() => {
 	);
 });
 
-const { getIconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd, transition } = useActivatorButton();
+const { transition, iconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd } = useActivatorButton();
 const { getDeleteToggleTooltip, getDeleteToggleName, onToggleDelete } = useDeleteToggle();
 
 function useActivatorButton() {
@@ -79,23 +80,23 @@ function useActivatorButton() {
 	const pressed = ref(false);
 	const transition = ref(false);
 
+	const iconName = computed(() =>
+		(pressed.value || pressing.value) && !activatorDisabled.value ? 'check_box' : 'check_box_outline_blank',
+	);
+
 	watch([item, lang], ([newItem, newLang], [oldItem, oldLang]) => {
-		transition.value = newItem !== oldItem && newLang === oldLang;
+		const isInitialItem = isEmpty(newItem) && isEmpty(oldItem);
+		transition.value = isInitialItem ? false : newItem !== oldItem && newLang === oldLang;
 	});
 
 	return {
-		getIconName,
+		transition,
+		iconName,
 		onEnableTranslation,
 		onMousedown,
 		onMouseup,
 		onTransitionEnd,
-		transition,
 	};
-
-	function getIconName() {
-		if ((pressed.value || pressing.value) && !activatorDisabled.value) return 'check_box';
-		return 'check_box_outline_blank';
-	}
 
 	function onEnableTranslation(lang?: string, item?: DisplayItem, itemInitial?: DisplayItem) {
 		if (!isEmpty(item) || !isEmpty(itemInitial)) return;
@@ -156,7 +157,10 @@ function useDeleteToggle() {
 	<div :class="{ secondary }">
 		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
+				<span v-if="loading" class="activator-loading-placeholder" />
+
 				<transition
+					v-else
 					:name="transition ? (item ? 'rotate-in' : 'rotate-out') : null"
 					:duration="transition ? null : 0"
 					mode="out-in"
@@ -169,7 +173,7 @@ function useDeleteToggle() {
 						v-else
 						v-tooltip="!activatorDisabled ? t('enable') : null"
 						:class="{ disabled: activatorDisabled }"
-						:name="getIconName()"
+						:name="iconName"
 						:disabled="activatorDisabled"
 						clickable
 						@click.stop="onEnableTranslation(lang, item, itemInitial)"
@@ -219,6 +223,14 @@ function useDeleteToggle() {
 </template>
 
 <style lang="scss" scoped>
+.activator-loading-placeholder {
+	--size: 24px;
+
+	display: inline-block;
+	width: var(--size);
+	height: var(--size);
+}
+
 .disabled {
 	--v-icon-color: var(--theme--primary-subdued);
 }

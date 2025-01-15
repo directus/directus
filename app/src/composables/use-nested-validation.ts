@@ -9,7 +9,7 @@ export function useNestedValidation() {
 
 	provide(nestedValidationSymbol, { updateNestedValidationErrors });
 
-	return { nestedValidationErrors };
+	return { nestedValidationErrors, resetNestedValidationErrors };
 
 	function updateNestedValidationErrors(fieldKey: string, errors: any[]) {
 		nestedValidationErrorsPerField.value[fieldKey] = errors;
@@ -19,6 +19,10 @@ export function useNestedValidation() {
 		return Object.entries(nestedValidationErrorsPerField.value)?.flatMap(([_field, errors]) =>
 			!isEmpty(errors) ? errors : [],
 		);
+	}
+
+	function resetNestedValidationErrors() {
+		nestedValidationErrorsPerField.value = {};
 	}
 }
 
