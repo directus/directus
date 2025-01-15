@@ -990,6 +990,11 @@ no_data_in_flow: Bu Akış içinde hiçbir veri üretilmedi veya erişilmedi
 accountability: İzlenebilirlik
 payload: Yük
 details: Ayrıntılar
+logs_session_resumed: Oturum geçmişi yineden başlatılmış...
+logs_session_paused: Oturum geçmişi duraklatılmıştır...
+logs_stream_disconnected: Geçmiş yayın bağlantısı koptu...
+logs_beginning: Bu geçmiş oturumunuzun başlangıcıdır...
+logs_unread_count: '{count} okunmamış'
 clear_logs: Geçmişi Temizle
 search_logs: Arama Geçmişi...
 all_instances: Bütün Olaylar
@@ -1074,6 +1079,7 @@ wysiwyg_options:
   source_code: Kaynak Kodunu Düzenle
   fullscreen: Tam Ekran
   directionality: Yönlülük
+  lazy_loading: Tembel Yükleme Fotoğrafı
   lazy_loading_label: Lazy yüklemeyi etkinleştir
 dropdown: Açılır Liste
 choices: Seçenekler
@@ -1097,12 +1103,17 @@ editing_unit: '{unit} Düzenleniyor'
 editing_in_batch: '{count} Öge Toplu Olarak Düzenleniyor'
 no_options_available: Hiç seçenek yok
 settings_data_model: Veri Modeli
+settings_roles: Kullanıcı Rolleri
+settings_permissions: Politikalara Eriş
 settings_project: Ayarlar
+settings_appearance: Görünüş
 settings_webhooks: Webhooklar
 settings_flows: Akışlar
+settings_system_logs: Sistem Geçmişleri
 settings_presets: Yer İmleri
 settings_translations: Çeviriler
 one_or_more_options_are_missing: Bir ya da birden fazla seçenek eksik
+configure_field_key_to_continue: Devam etmek için alan anahtarını yapılandırın
 scope: Kapsam
 actions: Aksiyonlar
 select: Seç...
@@ -1115,6 +1126,7 @@ editing_preset: Ön Ayarı Düzenle
 layout_preview: Sayfa Yerleşimi Önizlemesi
 layout_setup: Sayfa Yerleşimi Ayarları
 data: Veri
+theme-overrides: Tema Geçersiz kalır
 unsaved_changes: Kaydedilmemiş Değişiklikler
 unsaved_changes_copy: Bu sayfayı terketmek istediğinize emin misiniz?
 discard_changes: Değişiklikleri İptal Et
@@ -1136,10 +1148,14 @@ page_help_files_collection: >-
   **Dosya Kütüphanesi** —Bu projeye yüklenen tüm dosyaları listeler. Yerleşimi, filtreleri ve sıralamayı isteğine göre uyarla, üstelik bu seçenekleri hızlı erişim için yer işareti olarak kaydedebilirsin.
 page_help_files_item: >-
   **Dosya Detayı** — Dosya metaverilerini yönetmek, orijinal dosyayı düzenlemek ve erişim seçeneklerini güncellemek için bir form/sayfa.
+page_help_settings_project: "**Ayarlar** - Projenizin global konfigürasyon ayarları."
+page_help_settings_appearance: "**Görünüş** - Projenizin görünüş ve tema ayarları."
+page_help_settings_extensions: '**Uzantılar** - Projenize yüklenmiş uzantılar.'
 page_help_settings_datamodel_collections: >-
   **Veri Modeli: Koleksiyonlar** — Tüm uygun koleksiyonları listeler. Bu görünür, gizli, sistem koleksiyonları ve dağınık veritabanı tablolarını içerir.
 page_help_settings_datamodel_fields: >-
   **Veri Modeli: Koleksiyon** — Bu koleksiyonu ve alanlarını yönetmek için bir form/sayfa.
+page_help_settings_system_logs: '**Sistem Günlükleri** - Sistem günlüklerinin canlı akışına erişin.'
 page_help_settings_roles_item: "**Rol Detayı** — Bir rolün yetki ve diğer ayarlarını yönet."
 page_help_settings_presets_collection: >-
   **Ön Ayarlara Göz At** — Projedeki tüm ön ayarları listeler. Buna kullanıcı, rol, genel yer işaretleri ve varsayılan görünüm/yerleşimler dahildir.
@@ -1367,9 +1383,9 @@ fields:
   directus_policies:
     name: Politika İsmi
     description: Açıklama
-    app_access: Uygulama Girişi
-    admin_access: Yönetici Girişi
-    ip_access: IP Girişi
+    app_access: Uygulama Erişimş
+    admin_access: Yönetici Erişimi
+    ip_access: IP Erişimi
     enforce_tfa: 2FA Gerekiyor
   directus_webhooks:
     name: İsim
@@ -1540,6 +1556,8 @@ continue_label: Devam
 continue_as: >-
   {name} mevcut olarak kimliği doğrulanmış. Eğer bu hesabı tanıyorsanız devam edin.
 editing_role: '{role} Rolü'
+no_permissions: İzin Yok
+permission_add_collection: Koleksiyona Ekle
 creating_webhook: Webhook Oluşturma
 default_label: Varsayılan
 delete_label: Sil
@@ -1585,6 +1603,7 @@ authenticated: Kimlik Doğrulandı
 options: Seçenekler
 otp: Tek Kullanımlık Parola
 password: Parola
+confirm_password: Şifreyi Doğrula
 permissions: İzinler
 relationship: İlişki
 reset: Sıfırla
@@ -1599,9 +1618,13 @@ search: Ara
 select_existing: Varolanlar İçinden Seç
 select_field_type: Bir alan türü seçin
 select_interface: Bir arayüz seçin
+select_display: Bir gösterge seç
 settings: Ayarlar
 register: Kayıt Ol
 registration_successful_headline: Başarılı!
+dont_have_an_account: Hesabın yok mu?
+already_have_an_account: Zaten bir hesabınız mı var?
+sign_up_now: Şimdi kaydol
 sign_in: Oturum Aç
 sign_out: Oturumu Kapat
 sign_out_confirm: Oturumunuzu kapatmak istediğinize emin misiniz?
@@ -1612,6 +1635,7 @@ export_started: Dışa Aktarma Başladı
 export_started_copy: Dışa aktarma başladı. İndirilmeye hazır olduğunda bilgilendirileceksiniz.
 sort_asc: Artan Şekilde Sırala
 sort_desc: Azalan Şekilde Sırala
+disable_sort: Ayrıştırmayı Kapat
 template: Şablon
 require_value_to_be_set: Oluşturmada değer gerektir
 translation: Çeviri
@@ -1630,6 +1654,8 @@ navigate_to_item: Öğeye Git
 undo_removed_item: Kaldırılan Öğeyi Geri Al
 remove_item: Oğeyi Sil
 delete_item: Öğeyi Sil
+pause: Duraklat
+resume: Devam Et
 interfaces:
   filter:
     name: Filtrele
@@ -1759,6 +1785,7 @@ interfaces:
     description: Bir fotoğraf seçin ya da yükleyin
     crop: Sığdırmak için Kırp
     crop_label: Gerekirse fotoğrafı sığdırmak için kırp
+    letterbox: Posta Kutusu
   system-interface:
     interface: Arayüz
     description: Varolan bir arayüzü seç
@@ -1768,6 +1795,7 @@ interfaces:
     description: Arayüz seçeneklerini seçmek için açılır pencere
   system-display:
     display: Göster
+    placeholder: Bir gösterge seç...
   system-display-options:
     display-options: Görüntüleme Seçenekleri
   list-m2m:
@@ -1787,6 +1815,7 @@ interfaces:
     editorFont: Editör Yazı Tipi
     previewFont: Önizleme Yazı Tipi
     default_view: Varsayılan Görünüm
+    default_view_editor: Editör
     default_view_preview: Önizleme
     customSyntax: Özel Bloklar
     customSyntax_label: Özel sözdizimi türleri ekle
@@ -1878,6 +1907,7 @@ interfaces:
     input-translated-string: Çevrilmiş Dizeler
     description: Çeviri dizesi seçin veya ekleyin
     search_placeholder: Ara...
+    new_custom_translation: Yeni Varsayılan Çeviri
   boolean:
     toggle: Aç/Kapat
     description: Açık ve kapalı arasında geçiş yap
@@ -1921,11 +1951,19 @@ interfaces:
       header: Header
       nestedlist: Liste
       embed: Yerleştir
+      paragraph: Paragraf
       code: Kod
       image: Fotoğraf
+      attaches: Ekler
       table: Tablo
       quote: Alıntı Yap
       underline: Alt Çizgi
+      inlinecode: Satır içi Kod
+      delimiter: Ayırıcı
+      checklist: Kontrol Listesi
+      toggle: Blok değiştir
+      alignment: Hizalama
+      raw: Saf HTML
   input-autocomplete-api:
     input-autocomplete-api: Otomatik Tamamlamalı Girdi (API)
     description: Dış API değerleri için otomatik tamamlamalı arama.
@@ -1957,6 +1995,8 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Ham Düzenleyici
     description: Ham veya bıyık şablon değerlerinin girilmesine izin ver
+  input-password:
+    input-password: Şifreyi girin
 displays:
   translations:
     translations: Çeviriler
@@ -2149,6 +2189,7 @@ layouts:
     no_group: Grup yok
 horizontal: Yatay
 vertical: Dikey
+axis: Eksen
 x_axis: X Ekseni
 y_axis: Y Ekseni
 y_axis_function: Y ekseni işlevi
@@ -2156,6 +2197,7 @@ show_x_only: Yalnızca X eksenini göster
 show_y_only: Yalnızca Y eksenini göster
 show_data_label: Veri etiketini göster
 both: İkisi de
+show_axis_labels: Eksen Etiketlerini Göster
 function: İşlev
 half_circle: Yarım Daire
 full_circle: Tam Daire
@@ -2165,13 +2207,17 @@ thin: İnce
 medium: Orta
 broad: Kalın
 show_labels: Etiketleri Göster
+show_legend: Göstergeyi Göster
 right: Sağ
 left: Sol
+donut: Halka
 panels:
   metric:
     name: Metrik
     description: Sorguya göre tek bir değer gösterir
     field: Alan
+  metric_list:
+    name: Metrik Listesi
   time_series:
     name: Zaman Serileri
     description: Zamanla değişen değerler üzerinden çizgi grafiği göster
@@ -2195,7 +2241,9 @@ panels:
     disabled_no_grouping: Gruplandırma seçilmediğinde devre dışı bırakılır.
     show_marker: Araç İpucu İşaretçisini Göster
     curve_type: Eğim Türü
+    smooth: Pürüzsüz
     straight: Düz
+    show_legend: Göstergeyi Göster
   meter:
     name: Metre
     description: İzleme değerleri için sayaç
@@ -2215,10 +2263,12 @@ triggers:
     response_body_all: Tüm Veri
     response_body_last: Son İşlem Verileri
   event:
+    name: Olay Kancası
     description: Platform veya veri olaylarında tetikleyiciler
     action: 'Eylem (Engellenmeyen)'
     filter: 'Filtre (Engellenen)'
   webhook:
+    name: Webkancası
     description: Gelen bir HTTP isteğinde tetikler
     method: Metod
     async: Eşzamanlı Olmayan
@@ -2236,6 +2286,8 @@ triggers:
     collection_and_item: Koleksiyon ve Öğe Sayfaları
     collection_only: Yalnızca Koleksiyon Sayfası
     item_only: Yalnızca Öğe Sayfası
+    collection_page: Koleksiyon Sayfası
+    require_selection: Seçim Gerekiyor
 any_string_or_json: Herhangi bir dize veya JSON...
 item_payload_placeholder: Bu, öğenin alan değerlerini güncellemek için kullanılan JSON'dur...
 operations:
@@ -2269,10 +2321,16 @@ operations:
     payload: Yük
     query: Sorgula
   json-web-token:
+    operation: Operasyon
+    secret: Gizli
+    secret_placeholder: Bir giz girin...
     payload: Yük
     token: Erişim Anahtarı (Token)
     token_placeholder: eyJhbGciOi......
     options: Seçenekler
+    sign: İşaret Jetonu
+    verify: Jetonu Doğrulayın
+    decode: Jetonu Deşifre Edin
   log:
     name: Konsolda Oturum Aç
     message: Mesaj
@@ -2280,6 +2338,7 @@ operations:
   mail:
     name: E-posta Gönder
     description: Bir veya daha fazla kişiye e-posta gönderin
+    to: Kime
     to_placeholder: E-posta adreslerini ekleyin ve enter tuşuna basın...
     body: Gövde
     template: Şablon
@@ -2288,6 +2347,7 @@ operations:
     name: Bildirim Gönder
     description: Bir veya daha fazla kullanıcıya uygulama içi bildirim gönderin
     recipient: Kullanıcı
+    recipient_placeholder: Bir UUİD girin...
     message: Mesaj
     subject: Konu
   request:
@@ -2311,10 +2371,15 @@ operations:
     flows: Akışlar
     flow: Akış
     data: Veri
+    iteration_mode: Tekrarlama Modu
     serial: Seri No
+    parallel: Paralel
+    batch: Grup
+    batch_size: Grup Ölçüsü
     cache: Çerez
 unit: Birim
 standard: Standart
+scientific: Bilimsel
 engineering: Mühendislik
 compact: Kompakt
 currency: Para Birimi
