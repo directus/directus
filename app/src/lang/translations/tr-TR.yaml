@@ -990,6 +990,7 @@ no_data_in_flow: Bu Akış içinde hiçbir veri üretilmedi veya erişilmedi
 accountability: İzlenebilirlik
 payload: Yük
 details: Ayrıntılar
+clear_logs: Geçmişi Temizle
 search_logs: Arama Geçmişi...
 all_instances: Bütün Olaylar
 instance_count: 'Olaysız | Bir tane Olay | {count} Olayları'
@@ -1023,6 +1024,7 @@ tooltip: İpucu
 tooltip_placeholder: Bir ipucu girin...
 unlimited: Limitsiz
 open_link_in: Bağlantıyı aç
+new_tab: Yeni Sekme
 save_image: Fotoğrafı Kaydet
 save_media: Medyayı Kaydet
 wysiwyg_options:
