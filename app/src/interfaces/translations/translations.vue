@@ -70,7 +70,7 @@ watch(splitView, (splitViewEnabled) => {
 	}
 });
 
-const { languageOptions } = useLanguages();
+const { languageOptions, loading: languagesLoading } = useLanguages();
 
 const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
 const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
@@ -82,12 +82,16 @@ const fields = computed(() => {
 
 const query = ref<RelationQueryMultiple>({ fields: ['*'], limit: -1, page: 1 });
 
-const { create, update, remove, isLocalItem, displayItems, loading, fetchedItems, getItemEdits } = useRelationMultiple(
-	value,
-	query,
-	relationInfo,
-	primaryKey,
-);
+const {
+	create,
+	update,
+	remove,
+	isLocalItem,
+	displayItems,
+	loading: itemsLoading,
+	fetchedItems,
+	getItemEdits,
+} = useRelationMultiple(value, query, relationInfo, primaryKey);
 
 useNestedValidation();
 
@@ -139,7 +143,7 @@ const translationProps = computed(() => ({
 	autofocus: props.autofocus,
 	relationInfo: relationInfo.value,
 	getItemWithLang,
-	loading: loading.value,
+	loading: languagesLoading.value || itemsLoading.value,
 	displayItems: displayItems.value,
 	fetchedItems: fetchedItems.value,
 	getItemEdits,
