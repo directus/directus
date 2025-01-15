@@ -33,7 +33,7 @@ const checkBuiltCode = {
 			}
 		}
 
-		if (!isObject(codePath)) {
+		if (typeof codePath === 'string') {
 			codePath = { app: codePath };
 		}
 
