@@ -4,7 +4,6 @@ import path from 'path';
 import { type Ora } from 'ora';
 import semver from 'semver';
 import type { Report } from '../../types.js';
-import { isObject } from '@directus/utils';
 
 const checkDirectusConfig = {
 	name: 'directus-config',
@@ -63,7 +62,7 @@ const checkDirectusConfig = {
 
 		spinner.text = `Checking extension path(s)`;
 
-		if (!isObject(extensionPath)) {
+		if (typeof extensionPath === 'string') {
 			extensionPath = { app: extensionPath };
 		}
 

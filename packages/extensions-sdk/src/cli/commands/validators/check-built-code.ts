@@ -3,7 +3,6 @@ import fse from 'fs-extra';
 import { type Ora } from 'ora';
 import path from 'path';
 import type { Report } from '../../types.js';
-import { isObject } from '@directus/utils';
 
 const checkBuiltCode = {
 	name: 'built-code',
