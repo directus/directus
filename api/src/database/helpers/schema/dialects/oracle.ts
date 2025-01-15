@@ -54,13 +54,12 @@ export class SchemaHelperOracle extends SchemaHelper {
 		}
 	}
 
+	/**
+	 * Oracle throws an error when overwriting the nullable option for an existing column with the same value.
+	 */
 	override setNullable(column: Knex.ColumnBuilder, field: RawField | Field, existing: Column | null): void {
 		if (!existing) {
-			if (field.schema?.is_nullable || field.schema?.is_nullable === undefined) {
-				column.nullable();
-			} else {
-				column.notNullable();
-			}
+			super.setNullable(column, field, existing);
 
 			return;
 		}
