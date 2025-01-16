@@ -89,7 +89,7 @@ compatible_with_your_project_copy: Der Autor hat die Kompatibilität dieser Erwe
 last_updated_relative: Letzte Aktualisierung {relativeTime}
 n_files: '{n} Dateien'
 verified: Verifiziert
-homepage: Hello world
+homepage: Homepage
 repository: Repository
 reload_page: Seite neu laden
 reload_required: Erneutes Laden erforderlich
@@ -97,7 +97,7 @@ report_an_issue: Problem melden
 website: Webseite
 github: GitHub
 beta: Beta
-n_downloads: '{n} downloads'
+n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Kompatibilität nicht garantiert
 compatibility_not_guaranteed_copy: Der Autor hat die Kompatibilität dieser Erweiterung mit {hostVersion} angegeben, welche nicht mit der Version Ihres Projekts ({currentVersion}) übereinstimmt
@@ -260,8 +260,10 @@ field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
 field_presets: Feld-Vorlagen
 permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
+permissions_for_policy: 'Elemente, die {policy}-Richtlinie {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
+validation_for_policy: 'Feld {action} Regeln, welche die {policy}-Richtlinie befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
 presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der "detaillierten" Syntax konfiguriert werden.'
 presentation_and_aliases: Darstellung & Aliase
@@ -368,7 +370,7 @@ no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung suchen...
 search_role: Suche Rolle...
-search_policy: '" Suchrichtlinien "...'
+search_policy: Suche Richtlinien...
 search_field: Suchfeld...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
@@ -522,6 +524,7 @@ year: Jahr
 select_all: Alle auswählen
 permissionsLevel:
   all: Voller {action} Zugriff
+  partial: Partieller {action} Zugriff
   custom: Partieller {action} Zugriff
   none: Kein {action} Zugriff
 months:
