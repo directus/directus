@@ -171,7 +171,7 @@ const runManualFlow = async (flowId: string) => {
 
 		if (selectedFlow.options?.async) {
 			notify({
-				title: t('trigger_flow_success', { flow: selectedFlow.name })
+				title: t('trigger_flow_success', { flow: selectedFlow.name }),
 			});
 		} else {
 			notify({
