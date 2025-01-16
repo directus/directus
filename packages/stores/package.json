@@ -1,6 +1,6 @@
 {
 	"name": "@directus/stores",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Shared Pinia stores used in @directus/app",
 	"homepage": "https://directus.io",
 	"repository": {
