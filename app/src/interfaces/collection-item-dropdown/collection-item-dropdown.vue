@@ -118,12 +118,15 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 			<template #append>
 				<div class="item-actions">
-					<template v-if="displayItem">
-						<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="value = null" />
-					</template>
-					<template v-else>
-						<v-icon class="expand" name="expand_more" />
-					</template>
+					<v-icon
+						v-if="displayItem"
+						v-tooltip="t('deselect')"
+						name="close"
+						class="deselect"
+						@click.stop="value = null"
+					/>
+
+					<v-icon v-else class="expand" name="expand_more" />
 				</div>
 			</template>
 		</v-input>
@@ -143,7 +146,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 @use '@/styles/mixins';
 
 .item-actions {
-	@include mixins.list-interface-item-actions($item-link: true);
+	@include mixins.list-interface-item-actions;
 }
 
 .preview {
