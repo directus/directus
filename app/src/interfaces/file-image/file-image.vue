@@ -189,12 +189,12 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="edit" />
 					</v-button>
+
 					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
 						<v-icon name="tune" />
 					</v-button>
-					<v-button v-tooltip="t('deselect')" class="deselect" icon rounded @click="deselect">
-						<v-icon name="close" />
-					</v-button>
+
+					<v-remove button deselect @action="deselect" />
 				</template>
 			</div>
 
@@ -316,10 +316,6 @@ img {
 
 		.v-button:last-child {
 			margin-right: 0px;
-		}
-
-		.deselect:hover .v-icon {
-			color: var(--theme--danger);
 		}
 	}
 

@@ -135,13 +135,7 @@ function useUpload() {
 							</template>
 							<template #append>
 								<div class="item-actions">
-									<v-icon
-										v-if="file"
-										v-tooltip="t('deselect')"
-										class="deselect"
-										name="close"
-										@click.stop="clearFileInput"
-									/>
+									<v-remove v-if="file" deselect @action="clearFileInput" />
 
 									<v-icon v-else name="attach_file" />
 								</div>

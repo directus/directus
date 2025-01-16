@@ -14,8 +14,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		open?: boolean;
 		deleted: boolean;
-		deleteIcon: string;
-		deleteTooltip: string;
+		isLocalItem: boolean;
 	}>(),
 	{
 		disabled: false,
@@ -44,7 +43,7 @@ const editActive = ref(false);
 		<div v-if="!disabled" class="item-actions">
 			<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click="editActive = true" />
 
-			<v-icon v-tooltip="deleteTooltip" :name="deleteIcon" clickable @click="$emit('deselect')" />
+			<v-remove :item :deselect="isLocalItem" @action="$emit('deselect')" />
 		</div>
 
 		<drawer-item
