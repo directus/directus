@@ -76,8 +76,12 @@ extension_operations: Operasjoner
 extension_bundles: Pakker
 extension_missing: Mangler
 published_relative: Publisert {relativeTime}
+last_updated_relative: Sist oppdatert {relativeTime}
+n_files: '{n} Filer'
+verified: Verifisert
 homepage: Hjemmeside
 reload_page: Last inn side på nytt
+reload_required: Oppdater kreves
 report_an_issue: Rapporter en feil
 website: Nettside
 github: GitHub
