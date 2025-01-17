@@ -80,6 +80,7 @@ last_updated_relative: Sist oppdatert {relativeTime}
 n_files: '{n} Filer'
 verified: Verifisert
 homepage: Hjemmeside
+repository: Repository
 reload_page: Last inn side på nytt
 reload_required: Oppdater kreves
 report_an_issue: Rapporter en feil
