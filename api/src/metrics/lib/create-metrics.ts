@@ -33,7 +33,7 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = register.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter;
+		let metric = register.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
@@ -67,7 +67,7 @@ export function createMetrics() {
 			return;
 		}
 
-		let metric = register.getSingleMetric('directus_cache_connection_errors') as Counter;
+		let metric = register.getSingleMetric('directus_cache_connection_errors') as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
@@ -91,7 +91,7 @@ export function createMetrics() {
 
 		const redis = useRedis();
 
-		let metric = register.getSingleMetric('directus_redis_connection_errors') as Counter;
+		let metric = register.getSingleMetric('directus_redis_connection_errors') as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
@@ -118,7 +118,7 @@ export function createMetrics() {
 		for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
 			const disk = storage.location(location);
 
-			let metric = register.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter;
+			let metric = register.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter | undefined;
 
 			if (!metric) {
 				metric = new Counter({
