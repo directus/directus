@@ -1,6 +1,7 @@
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useFieldsStore } from '@/stores/fields';
+import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
@@ -9,7 +10,7 @@ import { translate } from '@/utils/translate-literal';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
-import { Field, User } from '@directus/types';
+import { Field, User, PermissionsAction } from '@directus/types';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { uniq } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
@@ -34,6 +35,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
 		const fieldsStore = useFieldsStore();
+		const permissionsStore = usePermissionsStore();
 		const relationsStore = useRelationsStore();
 		const { info: serverInfo } = useServerStore();
 
@@ -234,8 +236,14 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
+		const { canReorderGroups, canReorderItems, canUpdateGroupTitle, canDeleteGroups } = useLayoutPermissions();
+
 		return {
 			isRelational,
+			canReorderGroups,
+			canReorderItems,
+			canUpdateGroupTitle,
+			canDeleteGroups,
 			groupedItems,
 			groupsPrimaryKeyField,
 			groups,
@@ -609,6 +617,57 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						meta: { options: { choices: newSortedChoices } },
 					});
 				}
+			}
+		}
+
+		function useLayoutPermissions() {
+			const canUpdateLocalField = computed(() => {
+				if (selectedGroup.value?.meta?.readonly) return false;
+
+				return hasFieldPermissions(collection.value, 'update', selectedGroup.value?.field);
+			});
+
+			const canReorderGroups = computed(() => {
+				if (!canUpdateLocalField.value) return false;
+
+				if (isRelational.value) return hasFieldPermissions(groupsCollection.value, 'update', groupsSortField.value);
+
+				return true;
+			});
+
+			const canReorderItems = computed(() => canUpdateLocalField.value);
+
+			const canUpdateGroupTitle = computed(() => {
+				if (!canUpdateLocalField.value) return false;
+
+				if (isRelational.value) return hasFieldPermissions(groupsCollection.value, 'update', groupTitle?.value);
+
+				return true;
+			});
+
+			const canDeleteGroups = computed(() => {
+				if (!canUpdateLocalField.value) return false;
+
+				if (isRelational.value) return permissionsStore.hasPermission(groupsCollection.value ?? '', 'delete');
+
+				return true;
+			});
+
+			return { canReorderGroups, canReorderItems, canUpdateGroupTitle, canDeleteGroups };
+
+			function hasFieldPermissions(
+				collection: string | null,
+				action: PermissionsAction,
+				field: Field['field'] | undefined | null,
+			) {
+				if (!collection || !field) return false;
+
+				const permissions = permissionsStore.getPermission(collection, action);
+				if (permissions?.access === 'none') return false;
+
+				if (permissions?.fields?.[0] === '*' || permissions?.fields?.includes(field)) return true;
+
+				return false;
 			}
 		}
 

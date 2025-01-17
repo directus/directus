@@ -25,6 +25,10 @@ const props = withDefaults(
 		editGroup: (id: string | number, title: string) => Promise<void>;
 		deleteGroup: (id: string | number) => Promise<void>;
 		isRelational?: boolean;
+		canReorderGroups: boolean;
+		canReorderItems: boolean;
+		canUpdateGroupTitle: boolean;
+		canDeleteGroups: boolean;
 		sortField?: string | null;
 		userField?: string | null;
 		groupsSortField?: string | null;
@@ -112,6 +116,8 @@ const fieldDisplay = computed(() => {
 		};
 	}
 });
+
+const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.selectMode);
 </script>
 
 <template>
@@ -129,14 +135,14 @@ const fieldDisplay = computed(() => {
 					group="groups"
 					item-key="id"
 					draggable=".draggable"
-					:disabled="selectMode"
+					:disabled="reorderGroupsDisabled"
 					:animation="150"
 					class="draggable"
 					:class="{ sortable: groupsSortField !== null }"
 					@change="changeGroupSort"
 				>
 					<template #item="{ element: group }">
-						<div class="group" :class="{ draggable: group.id !== null, disabled: selectMode }">
+						<div class="group" :class="{ draggable: group.id !== null, disabled: reorderGroupsDisabled }">
 							<div class="header">
 								<div class="title">
 									<div class="title-content">
@@ -151,11 +157,21 @@ const fieldDisplay = computed(() => {
 										</template>
 
 										<v-list>
-											<v-list-item clickable @click="openEditGroup(group)">
+											<v-list-item
+												:disabled="!canUpdateGroupTitle || selectMode"
+												clickable
+												@click="openEditGroup(group)"
+											>
 												<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
 											</v-list-item>
-											<v-list-item v-if="isRelational" class="danger" clickable @click="deleteGroup(group.id)">
+											<v-list-item
+												v-if="isRelational"
+												:disabled="!canDeleteGroups || selectMode"
+												class="danger"
+												clickable
+												@click="deleteGroup(group.id)"
+											>
 												<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 												<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
 											</v-list-item>
@@ -167,7 +183,7 @@ const fieldDisplay = computed(() => {
 								:model-value="group.items"
 								group="items"
 								draggable=".item"
-								:disabled="selectMode"
+								:disabled="!canReorderItems || selectMode"
 								:animation="150"
 								:sort="sortField !== null"
 								class="items"
@@ -187,7 +203,7 @@ const fieldDisplay = computed(() => {
 												:value="element.title"
 											/>
 										</div>
-										<img v-if="element.image" class="image" :src="element.image" />
+										<img v-if="element.image" class="image" :src="element.image" draggable="false" />
 										<div v-if="element.text" class="text">
 											<render-display
 												v-if="fieldDisplay.textField"
