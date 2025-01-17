@@ -646,6 +646,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 
 			const canDeleteGroups = computed(() => {
+				if (!canUpdateLocalField.value) return false;
+
 				if (isRelational.value) return permissionsStore.hasPermission(groupsCollection.value ?? '', 'delete');
 
 				return true;
