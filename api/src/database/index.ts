@@ -10,6 +10,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
+import { Histogram, register } from 'prom-client';
 import { promisify } from 'util';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../logger/index.js';
@@ -186,6 +187,15 @@ export function getDatabase(): Knex {
 
 	const times = new Map<string, number>();
 
+	let metric = register.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram;
+
+	if (!metric) {
+		metric = new Histogram({
+			name: `directus_db_${client}_response_time_ms`,
+			help: `${client} Database error count`,
+		});
+	}
+
 	database
 		.on('query', ({ __knexUid }: QueryInfo) => {
 			times.set(__knexUid, performance.now());
@@ -197,6 +207,8 @@ export function getDatabase(): Knex {
 			if (time) {
 				delta = performance.now() - time;
 				times.delete(queryInfo.__knexUid);
+
+				metric.observe(delta);
 			}
 
 			// eslint-disable-next-line no-nested-ternary

@@ -2,14 +2,13 @@ import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
+import { Counter, register } from 'prom-client';
 import { getCache } from '../../cache.js';
 import { hasDatabaseConnection } from '../../database/index.js';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { getStorage } from '../../storage/index.js';
-import type { ServiceMetric } from '../types/metric.js';
 
 export function createMetrics() {
-	const metrics = new Map<string, ServiceMetric>();
 	const env = useEnv();
 
 	async function generate() {
@@ -23,66 +22,37 @@ export function createMetrics() {
 		]);
 	}
 
-	function readAll() {
-		let data = '';
-
-		// convert to prometheus data format
-		for (const [_, metric] of metrics) {
-			// service is not enabled
-			if (metric.value === null) {
-				continue;
-			}
-
-			if (metric.help) {
-				data += `# HELP ${metric.help}\n`;
-			}
-
-			data += `# TYPE ${metric.name} ${metric.type}\n`;
-
-			data += `${metric.name} ${metric.value}\n`;
-		}
-
-		return data;
+	function readAll(): Promise<string> {
+		return register.metrics();
 	}
 
 	async function getDatabaseMetric(): Promise<void> {
-		const client = env['DB_CLIENT'];
-
-		const metric: ServiceMetric = {
-			name: `directus_${client}_response_time`,
-			value: null,
-			type: 'histogram',
-		};
-
 		if (env['METRICS_DATABASE_ENABLED'] !== true) {
 			return;
 		}
 
-		try {
-			const startTime = performance.now();
+		const client = env['DB_CLIENT'];
 
-			// if no connection indicate issue via zero value
-			if (await hasDatabaseConnection()) {
-				const endTime = performance.now();
+		let metric = register.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter;
 
-				metric.value = +(endTime - startTime).toFixed(3);
-			} else {
-				metric.value = -1;
-			}
-		} catch {
-			metric.value = -1;
+		if (!metric) {
+			metric = new Counter({
+				name: `directus_db_${client}_connection_errors`,
+				help: `${client} Database connection error count`,
+			});
 		}
 
-		metrics.set(metric.name, metric);
+		try {
+			// if no connection indicate issue via zero value
+			if (!(await hasDatabaseConnection())) {
+				metric.inc();
+			}
+		} catch {
+			metric.inc();
+		}
 	}
 
 	async function getCacheMetric(checkId: string): Promise<void> {
-		const metric: ServiceMetric = {
-			name: 'directus_cache_response_time',
-			value: null,
-			type: 'histogram',
-		};
-
 		if (env['METRICS_CACHE_ENABLED'] !== true || env['CACHE_ENABLED'] !== true) {
 			return;
 		}
@@ -97,17 +67,21 @@ export function createMetrics() {
 			return;
 		}
 
-		try {
-			const startTime = performance.now();
-			await cache.set(`metrics-${checkId}`, '1', 5);
-			await cache.delete(`metrics-${checkId}`);
-			const endTime = performance.now();
-			metric.value = +(endTime - startTime).toFixed(3);
-		} catch {
-			metric.value = -1;
+		let metric = register.getSingleMetric('directus_cache_connection_errors') as Counter;
+
+		if (!metric) {
+			metric = new Counter({
+				name: `directus_cache_connection_errors`,
+				help: 'Cache connection error count',
+			});
 		}
 
-		metrics.set(metric.name, metric);
+		try {
+			await cache.set(`metrics-${checkId}`, '1', 5);
+			await cache.delete(`metrics-${checkId}`);
+		} catch {
+			metric.inc();
+		}
 	}
 
 	async function getRedisMetric(checkId: string) {
@@ -117,23 +91,21 @@ export function createMetrics() {
 
 		const redis = useRedis();
 
-		const metric: ServiceMetric = {
-			name: 'directus_redis_response_time',
-			value: null,
-			type: 'histogram',
-		};
+		let metric = register.getSingleMetric('directus_redis_connection_errors') as Counter;
 
-		try {
-			const startTime = performance.now();
-			await redis.set(`metrics-${checkId}`, '1');
-			await redis.del(`metrics-${checkId}`);
-			const endTime = performance.now();
-			metric.value = +(endTime - startTime).toFixed(3);
-		} catch {
-			metric.value = -1;
+		if (!metric) {
+			metric = new Counter({
+				name: `directus_redis_connection_errors`,
+				help: 'Redis connection error count',
+			});
 		}
 
-		metrics.set(metric.name, metric);
+		try {
+			await redis.set(`metrics-${checkId}`, '1');
+			await redis.del(`metrics-${checkId}`);
+		} catch {
+			metric.inc();
+		}
 	}
 
 	async function getStorageMetric(checkId: string) {
@@ -146,13 +118,14 @@ export function createMetrics() {
 		for (const location of toArray(env['STORAGE_LOCATIONS'] as string)) {
 			const disk = storage.location(location);
 
-			const metric: ServiceMetric = {
-				name: `directus_${location}_response_time`,
-				value: null,
-				type: 'histogram',
-			};
+			let metric = register.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter;
 
-			const startTime = performance.now();
+			if (!metric) {
+				metric = new Counter({
+					name: `directus_storage_${location}_connection_errors`,
+					help: `${location} storage connection error count`,
+				});
+			}
 
 			try {
 				await disk.write(`metric-${checkId}`, Readable.from(['check']));
@@ -165,14 +138,9 @@ export function createMetrics() {
 						return resolve(null);
 					}),
 				);
-
-				const endTime = performance.now();
-				metric.value = +(endTime - startTime).toFixed(3);
 			} catch {
-				metric.value = -1;
+				metric.inc();
 			}
-
-			metrics.set(metric.name, metric);
 		}
 	}
 
