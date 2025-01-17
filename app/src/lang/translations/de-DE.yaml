@@ -64,7 +64,7 @@ extension_display: Anzeige
 extension_layout: Ansicht
 extension_module: Modul
 extension_panel: Panel
-extension_theme: Erscheinungsbild
+extension_theme: Theme
 extension_hook: Hook
 extension_endpoint: Endpunkt
 extension_operation: Operation
@@ -74,7 +74,7 @@ extension_displays: Darstellungen
 extension_layouts: Layouts
 extension_modules: Module
 extension_panels: Panels
-extension_themes: Erscheinungsbilder
+extension_themes: Themes
 extension_hooks: Hooks
 extension_endpoints: Endpunkte
 extension_operations: Operationen
@@ -1104,8 +1104,8 @@ choices: Optionen
 choices_option_configured_incorrectly: Auswahl falsch konfiguriert
 deselect: Abwählen
 deselect_all: Alle abwählen
-theme: Erscheinungsbild
-select_a_theme: Erscheinungsbild wählen
+theme: Theme
+select_a_theme: Theme auswählen
 default_sync_with_project: Standard (Projekt folgen)
 appearance_auto: Automatisch (System folgen)
 appearance_light: Hell
@@ -1144,7 +1144,7 @@ editing_preset: Vorlage bearbeiten
 layout_preview: Vorschau der Ansicht
 layout_setup: Einrichtung Ansicht
 data: Daten
-theme-overrides: Erscheinungsbild-Überschreibungen
+theme-overrides: Theme-Überschreibungen
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
@@ -1335,10 +1335,10 @@ fields:
     last_access: Letzter Zugriff
     email_notifications: E-Mail Benachrichtigungen
     appearance: Erscheinung
-    theme_light: Helles Erscheinungsbild
-    theme_dark: Dunkles Erscheinungsbild
-    theme_light_overrides: Anpassung des hellen Erscheinungsbilds
-    theme_dark_overrides: Anpassung des dunklen Erscheinungsbilds
+    theme_light: Helles Theme
+    theme_dark: Dunkles Theme
+    theme_light_overrides: Anpassung des hellen Themes
+    theme_dark_overrides: Anpassung des dunklen Themes
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1369,8 +1369,8 @@ fields:
     public_note: Öffentliche Anmerkung
     theming: Design-Standardwerte
     default_appearance: Standard-Erscheinung
-    default_theme_light: Standard-Erscheinungsbild Hell
-    default_theme_dark: Standard-Erscheinungsbild Dunkel
+    default_theme_light: Helles Standard-Theme
+    default_theme_dark: Dunkles Standard-Theme
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Speicher
@@ -1385,8 +1385,8 @@ fields:
     transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
     image_editor: Bildeditor
     custom_aspect_ratios: Benutzerdefiniertes Seitenverhältnis
-    theme_light_overrides: Anpassung des hellen Erscheinungsbilds
-    theme_dark_overrides: Anpassung des dunklen Erscheinungsbilds
+    theme_light_overrides: Anpassung des hellen Themes
+    theme_dark_overrides: Anpassung des dunklen Themes
     public_registration: Benutzerregistrierung
     public_registration_note: Erlaubt Benutzern sich über die [Registrierungsroute](/admin/register) zu registrieren.
     public_registration_role: Benutzerrolle
