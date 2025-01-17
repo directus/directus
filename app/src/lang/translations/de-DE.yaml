@@ -259,12 +259,12 @@ item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
 field_presets: Feld-Vorlagen
-permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
-permissions_for_policy: 'Elemente, die {policy}-Richtlinie {action} kann.'
-fields_for_role: 'Felder, welche von der {role} Rolle {action} werden können.'
+permissions_for_role: 'Elemente, welche die {role} Rolle {action} kann.'
+permissions_for_policy: 'Elemente, welche die {policy} Richtlinie {action} kann.'
+fields_for_role: 'Felder, welche die {role} Rolle {action} kann.'
 fields_for_policy: 'Felder, welche die {policy} Richtlinie {action} kann.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
-validation_for_policy: 'Feld {action} Regeln, welche die {policy}-Richtlinie befolgen muss.'
+validation_for_policy: 'Feld {action} Regeln, welche die {policy} Richtlinie befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
 presets_for_policy: 'Standardwert für die {policy} Richtlinie.'
 presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der "detaillierten" Syntax konfiguriert werden.'
@@ -280,7 +280,7 @@ hide_field: Felder ausblenden
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
-fields_and_layout: Felder & Ansicht
+fields_and_layout: Felder & Layout
 field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
@@ -525,10 +525,10 @@ month: Monat
 year: Jahr
 select_all: Alle auswählen
 permissionsLevel:
-  all: Voller {action} Zugriff
-  partial: Partieller {action} Zugriff
-  custom: Partieller {action} Zugriff
-  none: Kein {action} Zugriff
+  all: Voller "{action}" Zugriff
+  partial: Partieller "{action}" Zugriff
+  custom: Partieller "{action}" Zugriff
+  none: Kein "{action}" Zugriff
 months:
   january: Januar
   february: Februar
@@ -1201,7 +1201,7 @@ add_new: Neu erstellen
 create_new: Neu anlegen
 all: Alle
 none: Kein/e
-no_layout_collection_selected_yet: Noch kein Layout oder keine Sammlung ausgewählt
+no_layout_collection_selected_yet: Noch kein Layout / keine Sammlung ausgewählt
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
@@ -2213,8 +2213,8 @@ layouts:
     cozy: Mittel
   calendar:
     calendar: Kalender
-    start_date_field: Datumsfeld Start
-    end_date_field: Datumsfeld Ende
+    start_date_field: Start-Datum Feld
+    end_date_field: End-Datum Feld
     optional: Optional
     first_day: Erster Tag der Woche
   map:
