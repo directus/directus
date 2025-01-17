@@ -61,7 +61,7 @@ dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit wer
 modifier: Geändert von
 extension_interface: Benutzeroberfläche
 extension_display: Anzeige
-extension_layout: Ansicht
+extension_layout: Layout
 extension_module: Modul
 extension_panel: Panel
 extension_theme: Theme
@@ -261,7 +261,7 @@ field_validation: Feldüberprüfung
 field_presets: Feld-Vorlagen
 permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
 permissions_for_policy: 'Elemente, die {policy}-Richtlinie {action} kann.'
-fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
+fields_for_role: 'Felder, welche von der {role} Rolle {action} werden können.'
 fields_for_policy: 'Felder, welche die {policy} Richtlinie {action} kann.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
 validation_for_policy: 'Feld {action} Regeln, welche die {policy}-Richtlinie befolgen muss.'
@@ -878,7 +878,7 @@ drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
 interface_options: Schnittstellenoptionen
 display_options: Anzeige-Optionen
-layout_options: Ansichtsoptionen
+layout_options: Layout-Optionen
 rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
@@ -1135,14 +1135,14 @@ configure_field_key_to_continue: Feldschlüssel konfigurieren, um fortzufahren
 scope: Bereich
 actions: Aktionen
 select: Auswählen...
-layout: Ansicht
+layout: Layout
 tree_view: Baumansicht
 changes_are_permanent: Änderungen können nicht rückgängig gemacht werden
 preset_name_placeholder: Standardwert, wenn leer...
 preset_search_placeholder: Suchabfrage...
 editing_preset: Vorlage bearbeiten
-layout_preview: Vorschau der Ansicht
-layout_setup: Einrichtung Ansicht
+layout_preview: Layout-Vorschau
+layout_setup: Layout-Einrichtung
 data: Daten
 theme-overrides: Theme-Überschreibungen
 unsaved_changes: Nicht gespeicherte Änderungen
@@ -1155,7 +1155,7 @@ show_y_axis: Y-Achse anzeigen
 keep_editing: Weiter bearbeiten
 page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
-  **Elemente durchstöbern** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Elemente durchstöbern** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_collections_item: >-
   **Elementdetails** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
 page_help_activity_collection: >-
@@ -1201,7 +1201,7 @@ add_new: Neu erstellen
 create_new: Neu anlegen
 all: Alle
 none: Kein/e
-no_layout_collection_selected_yet: Noch keine Ansicht oder Sammlung ausgewählt
+no_layout_collection_selected_yet: Noch kein Layout oder keine Sammlung ausgewählt
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
