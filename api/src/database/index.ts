@@ -187,13 +187,17 @@ export function getDatabase(): Knex {
 
 	const times = new Map<string, number>();
 
-	let metric = register.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram;
+	let metric: Histogram | undefined;
 
-	if (!metric) {
-		metric = new Histogram({
-			name: `directus_db_${client}_response_time_ms`,
-			help: `${client} Database error count`,
-		});
+	if (env['METRICS_DATABASE_ENABLED'] === true) {
+		metric = register.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram | undefined;
+
+		if (!metric) {
+			metric = new Histogram({
+				name: `directus_db_${client}_response_time_ms`,
+				help: `${client} Database error count`,
+			});
+		}
 	}
 
 	database
@@ -208,7 +212,9 @@ export function getDatabase(): Knex {
 				delta = performance.now() - time;
 				times.delete(queryInfo.__knexUid);
 
-				metric.observe(delta);
+				if (env['METRICS_DATABASE_ENABLED'] === true) {
+					metric?.observe(delta);
+				}
 			}
 
 			// eslint-disable-next-line no-nested-ternary
