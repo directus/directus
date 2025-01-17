@@ -238,7 +238,7 @@ function closeDrawer() {
 					<div class="spacer" />
 
 					<div class="item-actions">
-						<v-remove v-if="!disabled" deselect @action="removeItem(element)" />
+						<v-remove v-if="!disabled" confirm @action="removeItem(element)" />
 					</div>
 				</v-list-item>
 			</template>

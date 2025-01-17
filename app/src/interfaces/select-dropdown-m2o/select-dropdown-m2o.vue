@@ -216,7 +216,13 @@ function getLinkForItem() {
 
 						<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
 
-						<v-remove v-if="!disabled" deselect @action="$emit('input', null)" />
+						<v-remove
+							v-if="!disabled"
+							deselect
+							:item-info="relationInfo"
+							:item-edits="edits"
+							@action="$emit('input', null)"
+						/>
 					</template>
 
 					<template v-else>

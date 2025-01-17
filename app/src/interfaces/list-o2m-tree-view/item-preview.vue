@@ -43,7 +43,13 @@ const editActive = ref(false);
 		<div v-if="!disabled" class="item-actions">
 			<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click="editActive = true" />
 
-			<v-remove :item :deselect="isLocalItem" @action="$emit('deselect')" />
+			<v-remove
+				:item-type="item.$type"
+				:item-info="relationInfo"
+				:item-is-local="isLocalItem"
+				:item-edits="edits"
+				@action="$emit('deselect')"
+			/>
 		</div>
 
 		<drawer-item

@@ -24,7 +24,7 @@
 	align-items: center;
 	gap: 4px;
 
-	.v-icon {
+	::v-deep(.v-icon) {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 	}
 

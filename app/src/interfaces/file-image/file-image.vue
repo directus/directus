@@ -194,7 +194,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 						<v-icon name="tune" />
 					</v-button>
 
-					<v-remove button deselect @action="deselect" />
+					<v-remove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
 				</template>
 			</div>
 
@@ -300,7 +300,7 @@ img {
 		justify-content: center;
 		width: 100%;
 
-		.v-button {
+		::v-deep(.v-button) {
 			margin-right: 12px;
 			transform: translateY(10px);
 			opacity: 0;
@@ -314,7 +314,7 @@ img {
 			}
 		}
 
-		.v-button:last-child {
+		::v-deep(.v-button:last-child) {
 			margin-right: 0px;
 		}
 	}
@@ -349,7 +349,7 @@ img {
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
-	.actions .v-button {
+	.actions ::v-deep(.v-button) {
 		transform: translateY(0px);
 		opacity: 1;
 	}

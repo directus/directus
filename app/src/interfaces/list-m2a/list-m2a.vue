@@ -381,8 +381,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						<div class="item-actions">
 							<v-remove
 								v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
-								:item="element"
-								:deselect="isLocalItem(element)"
+								:item-type="element.$type"
+								:item-info="relationInfo"
+								:item-is-local="isLocalItem(element)"
+								:item-edits="getItemEdits(element)"
 								@action="deleteItem(element)"
 							/>
 						</div>
@@ -398,8 +400,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						<div class="item-actions">
 							<v-remove
 								v-if="!disabled"
-								:item="element"
-								:deselect="isLocalItem(element)"
+								:item-type="element.$type"
+								:item-info="relationInfo"
+								:item-is-local="isLocalItem(element)"
+								:item-edits="getItemEdits(element)"
 								@action="deleteItem(element)"
 							/>
 						</div>

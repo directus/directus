@@ -327,8 +327,10 @@ const allowDrag = computed(
 						<div class="item-actions">
 							<v-remove
 								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
-								:item="element"
-								:deselect="isLocalItem(element)"
+								:item-type="element.$type"
+								:item-info="relationInfo"
+								:item-is-local="isLocalItem(element)"
+								:item-edits="getItemEdits(element)"
 								@action="deleteItem(element)"
 							/>
 

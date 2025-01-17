@@ -559,8 +559,10 @@ function getLinkForItem(item: DisplayItem) {
 						<v-remove
 							v-if="!disabled && (deleteAllowed || isLocalItem(item))"
 							:class="{ deleted: item.$type === 'deleted' }"
-							:item
-							:deselect="isLocalItem(item)"
+							:item-type="item.$type"
+							:item-info="relationInfo"
+							:item-is-local="isLocalItem(item)"
+							:item-edits="getItemEdits(item)"
 							@action="deleteItem(item)"
 						/>
 					</div>
@@ -622,8 +624,10 @@ function getLinkForItem(item: DisplayItem) {
 
 								<v-remove
 									v-if="!disabled && (deleteAllowed || isLocalItem(element))"
-									:item="element"
-									:deselect="isLocalItem(element)"
+									:item-type="element.$type"
+									:item-info="relationInfo"
+									:item-is-local="isLocalItem(element)"
+									:item-edits="getItemEdits(element)"
 									@action="deleteItem(element)"
 								/>
 							</div>

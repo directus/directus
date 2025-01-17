@@ -168,8 +168,10 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 					v-if="item"
 					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
-					:item
-					:deselect="isLocalItem(item)"
+					:item-type="item.$type"
+					:item-info="relationInfo"
+					:item-is-local="isLocalItem(item)"
+					:item-edits="getItemEdits(item)"
 					@action="onToggleDelete(item, itemInitial)"
 				/>
 
