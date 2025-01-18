@@ -317,8 +317,6 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-
 .field-select {
 	--input-height: 40px;
 	--theme--form--field--input--padding: 8px;

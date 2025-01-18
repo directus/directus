@@ -1,9 +1,11 @@
 # syntax=docker/dockerfile:1.4
 
+ARG NODE_VERSION=22
+
 ####################################################################################################
 ## Build Packages
 
-FROM node:18-alpine AS builder
+FROM node:${NODE_VERSION}-alpine AS builder
 
 ARG TARGETPLATFORM
 RUN <<EOF
@@ -46,7 +48,7 @@ EOF
 ####################################################################################################
 ## Create Production Image
 
-FROM node:18-alpine AS runtime
+FROM node:${NODE_VERSION}-alpine AS runtime
 
 RUN npm install --global pm2@5
 
