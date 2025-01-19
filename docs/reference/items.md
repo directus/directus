@@ -764,7 +764,7 @@ The name of the collection `collection_name` is required and a partial [item obj
 
 ### Response
 
-Returns an [item object](#the-item-object) if a valid primary key was provided.
+Returns an [item object](#the-item-object) if a valid collection name was provided.
 
 ### Example
 
