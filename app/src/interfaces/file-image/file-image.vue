@@ -299,9 +299,9 @@ img {
 		display: flex;
 		justify-content: center;
 		width: 100%;
+		gap: 12px;
 
 		::v-deep(.v-button) {
-			margin-right: 12px;
 			transform: translateY(10px);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
@@ -312,10 +312,6 @@ img {
 					transition-delay: $i * 25ms;
 				}
 			}
-		}
-
-		::v-deep(.v-button:last-child) {
-			margin-right: 0px;
 		}
 	}
 
