@@ -16,7 +16,6 @@ export type UpgradeRequest = IncomingMessage & AuthenticationState;
 export type WebSocketAuthentication = {
 	mode: AuthMode;
 	timeout: number;
-	requireAdmin: boolean;
 };
 
 export type SubscriptionEvent = 'create' | 'update' | 'delete';

@@ -457,12 +457,12 @@ function useOnUpdate() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .form {
 	--theme--form--row-gap: 32px;
 	--theme--form--column-gap: 32px;
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .note {

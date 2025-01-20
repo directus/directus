@@ -146,7 +146,7 @@ import { createDirectus, rest, readRelations } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readRelations(query_object));
+const result = await client.request(readRelations());
 ```
 
 </template>
@@ -189,11 +189,7 @@ import { createDirectus, rest, readRelations } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readRelations({
-		fields: ['*'],
-	})
-);
+const result = await client.request(readRelations());
 ```
 
 </template>
@@ -236,7 +232,7 @@ import { createDirectus, rest, readRelationByCollection } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readRelationByCollection(collection_name, query_object));
+const result = await client.request(readRelationByCollection(collection_name));
 ```
 
 </template>
@@ -279,11 +275,7 @@ import { createDirectus, rest, readRelationByCollection } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readRelationByCollection('articles', {
-		fields: ['*'],
-	})
-);
+const result = await client.request(readRelationByCollection('articles'));
 ```
 
 </template>
@@ -319,7 +311,7 @@ import { createDirectus, rest, readRelation } from '@directus/sdk';
 
 const client = createDirectus('directus_project_url').with(rest());
 
-const result = await client.request(readRelation(collection_name, field_name, query_object));
+const result = await client.request(readRelation(collection_name, field_name));
 ```
 
 </template>
@@ -363,11 +355,7 @@ import { createDirectus, rest, readRelation } from '@directus/sdk';
 
 const client = createDirectus('https://directus.example.com').with(rest());
 
-const result = await client.request(
-	readRelation('articles', 'authors', {
-		fields: ['*'],
-	})
-);
+const result = await client.request(readRelation('articles', 'authors'));
 ```
 
 </template>

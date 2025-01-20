@@ -98,7 +98,7 @@ function useCreateDialog() {
 				key: unref(newVersionKey),
 				...(unref(newVersionName) ? { name: unref(newVersionName) } : {}),
 				collection: unref(collection),
-				item: unref(primaryKey),
+				item: String(unref(primaryKey)),
 			});
 
 			emit('add', version);
@@ -405,12 +405,12 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 </template>
 
 <style scoped lang="scss">
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .grid {
 	--theme--form--row-gap: 8px;
 
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .version-menu-wrapper {

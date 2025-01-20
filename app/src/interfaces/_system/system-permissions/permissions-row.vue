@@ -28,12 +28,14 @@ const { t } = useI18n();
 <template>
 	<tr class="permissions-row" :data-collection="collection.collection">
 		<td class="collection">
-			<span v-tooltip.left="collection.name" class="name">{{ collection.collection }}</span>
-			<span class="shortcuts">
-				<span class="all" @click="emit('setFullAccessAll')">{{ t('all') }}</span>
-				<span class="divider">/</span>
-				<span class="none" @click="emit('setNoAccessAll')">{{ t('none') }}</span>
-			</span>
+			<div>
+				<span v-tooltip.left="collection.name" class="name">{{ collection.collection }}</span>
+				<span class="shortcuts">
+					<span class="all" @click="emit('setFullAccessAll')">{{ t('all') }}</span>
+					<span class="divider">/</span>
+					<span class="none" @click="emit('setNoAccessAll')">{{ t('none') }}</span>
+				</span>
+			</div>
 		</td>
 
 		<td v-for="action in editablePermissionActions" :key="action" class="action">
@@ -57,15 +59,19 @@ const { t } = useI18n();
 
 <style lang="scss" scoped>
 .permissions-row {
-	td:first-child {
+	.collection {
+		white-space: nowrap;
 		width: 100%;
 	}
 
-	.collection {
-		white-space: nowrap;
+	.collection > div {
+		display: flex;
+		position: relative;
 	}
 
 	.name {
+		flex: 1;
+		width: 1px;
 		padding: 0 12px;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow: hidden;
@@ -73,11 +79,18 @@ const { t } = useI18n();
 	}
 
 	.shortcuts {
+		position: absolute;
+		right: 0;
+		background: var(--theme--background);
 		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);
 		font-size: 12px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
+		padding-right: 12px;
+		box-shadow:
+			-12px 0 10px 2px var(--theme--background),
+			-12px 0 12px 2px var(--theme--background);
 
 		span {
 			cursor: pointer;

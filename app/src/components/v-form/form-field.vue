@@ -106,7 +106,7 @@ function useRaw() {
 
 		try {
 			internalValue.value = parseJSON(pastedValue);
-		} catch (e) {
+		} catch {
 			internalValue.value = pastedValue;
 		}
 

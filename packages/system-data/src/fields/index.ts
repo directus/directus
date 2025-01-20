@@ -3,6 +3,7 @@ import defaults from './_defaults.yaml';
 import accessFields from './access.yaml';
 import activityFields from './activity.yaml';
 import collectionFields from './collections.yaml';
+import commentsFields from './comments.yaml';
 import dashboardFields from './dashboards.yaml';
 import extensionFields from './extensions.yaml';
 import fieldFields from './fields.yaml';
@@ -27,13 +28,14 @@ import userFields from './users.yaml';
 import versionFields from './versions.yaml';
 import webhookFields from './webhooks.yaml';
 
-import { FieldMeta } from '../types.js';
+import type { FieldMeta } from '../types.js';
 
 export const systemFieldRows: FieldMeta[] = [];
 
 processFields(accessFields);
 processFields(activityFields);
 processFields(collectionFields);
+processFields(commentsFields);
 processFields(dashboardFields);
 processFields(extensionFields);
 processFields(fieldFields);

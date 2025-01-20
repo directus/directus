@@ -4,6 +4,7 @@ import { useItem } from '@/composables/use-item';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useUserStore } from '@/stores/user';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
+import SaveOptions from '@/views/private/components/save-options.vue';
 import { Policy } from '@directus/types';
 import { ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -35,6 +36,10 @@ useShortcut('meta+s', () => {
 	if (hasEdits.value) saveAndStay();
 });
 
+useShortcut('meta+shift+s', () => {
+	if (hasEdits.value) saveAndAddNew();
+});
+
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 /**
@@ -54,11 +59,21 @@ async function saveAndStay() {
 	}
 }
 
+async function saveAndAddNew() {
+	try {
+		await save();
+		await userStore.hydrate();
+		router.push(`/settings/policies/+`);
+	} catch {
+		// `save` shows unexpected error dialog
+	}
+}
+
 async function saveAndQuit() {
 	try {
 		await save();
-		router.push(`/settings/policies`);
 		await userStore.hydrate();
+		router.push(`/settings/policies`);
 	} catch {
 		// 'save' shows unexpected error dialog
 	}
@@ -79,6 +94,11 @@ function discardAndLeave() {
 	edits.value = {};
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
+}
+
+function discardAndStay() {
+	edits.value = {};
+	confirmLeave.value = false;
 }
 </script>
 
@@ -122,15 +142,18 @@ function discardAndLeave() {
 				</v-card>
 			</v-dialog>
 
-			<v-button
-				v-tooltip.bottom="t('save')"
-				rounded
-				icon
-				:loading="saving"
-				:disabled="hasEdits === false"
-				@click="saveAndQuit"
-			>
+			<v-button rounded icon :tooltip="t('save')" :loading="saving" :disabled="!hasEdits" @click="saveAndQuit">
 				<v-icon name="check" />
+
+				<template #append-outer>
+					<save-options
+						v-if="hasEdits"
+						:disabled-options="['save-as-copy']"
+						@save-and-stay="saveAndStay"
+						@save-and-add-new="saveAndAddNew"
+						@discard-and-stay="discardAndStay"
+					/>
+				</template>
 			</v-button>
 		</template>
 

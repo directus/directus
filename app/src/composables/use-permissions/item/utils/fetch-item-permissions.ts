@@ -23,13 +23,15 @@ export const fetchItemPermissions = (collection: Collection, primaryKey: Primary
 
 	const fetchedItemPermissions = computedAsync(
 		async () => {
-			refreshKey.value;
+			void refreshKey.value;
 
 			const primaryKeyValue = unref(primaryKey);
 
 			try {
 				const response = await api.get<{ data: ItemPermissions }>(
-					`/permissions/me/${unref(collection)}${primaryKeyValue !== null ? `/${primaryKeyValue}` : ''}`,
+					`/permissions/me/${unref(collection)}${
+						primaryKeyValue !== null ? `/${encodeURIComponent(primaryKeyValue)}` : ''
+					}`,
 				);
 
 				return response.data.data;
