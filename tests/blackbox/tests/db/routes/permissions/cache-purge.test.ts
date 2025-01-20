@@ -1,6 +1,6 @@
 import config, { getUrl, paths, type Env } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
-import { ROLE, USER } from '@common/variables';
+import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
 import { ChildProcess, spawn } from 'child_process';
 import getPort from 'get-port';
