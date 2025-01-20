@@ -254,9 +254,9 @@ function stageEdits(item: Record<string, any>) {
 	</draggable>
 
 	<template v-if="root">
-		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
-			<v-button v-if="enableSelect" @click="selectDrawer = true">{{ t('add_existing') }}</v-button>
+		<div class="actions">
+			<v-button v-if="enableCreate" :disabled @click="addNewActive = true">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableSelect" :disabled @click="selectDrawer = true">{{ t('add_existing') }}</v-button>
 		</div>
 
 		<drawer-item

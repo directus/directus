@@ -45,7 +45,6 @@ const templateWithDefaults = computed(() =>
 );
 
 const showAddNew = computed(() => {
-	if (props.disabled) return false;
 	if (props.value === null) return true;
 	if (props.limit === undefined) return true;
 	if (Array.isArray(props.value) && props.value.length < props.limit) return true;
@@ -252,7 +251,7 @@ function closeDrawer() {
 		</draggable>
 
 		<div class="actions">
-			<v-button v-if="showAddNew" @click="addNew">
+			<v-button v-if="showAddNew" :disabled @click="addNew">
 				{{ addLabel }}
 			</v-button>
 		</div>
