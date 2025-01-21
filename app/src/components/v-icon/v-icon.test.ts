@@ -44,7 +44,7 @@ test('custom icon', () => {
 test('social icon', () => {
 	const wrapper = mount(VIcon, {
 		props: {
-			name: 'social-docker',
+			name: 'docker',
 		},
 	});
 
@@ -64,7 +64,7 @@ test('should only load fontawesome brand icons when using social icon', () => {
 
 	mount(VIcon, {
 		props: {
-			name: 'social-vuejs', // social icon
+			name: 'vuejs', // social icon
 		},
 	});
 
