@@ -203,7 +203,8 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		} catch (error) {
 			// reset the changes if the api sync failed
 			fields.value = stateClone;
-			unexpectedError(error);
+			// we need the error to be thrown so the caller can handle it
+			throw error;
 		}
 	}
 
@@ -234,7 +235,8 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 		} catch (error) {
 			// reset the changes if the api sync failed
 			fields.value = stateClone;
-			unexpectedError(error);
+			// we need the error to be thrown so the caller can handle it
+			throw error;
 		}
 	}
 

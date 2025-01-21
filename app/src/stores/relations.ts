@@ -27,29 +27,25 @@ export const useRelationsStore = defineStore({
 		async upsertRelation(collection: string, field: string, values: DeepPartial<Relation>) {
 			const existing = this.getRelationForField(collection, field);
 
-			try {
-				if (existing) {
-					if (isEqual(existing, values)) return;
+			if (existing) {
+				if (isEqual(existing, values)) return;
 
-					const updatedRelationResponse = await api.patch<{ data: Relation }>(
-						`/relations/${collection}/${field}`,
-						values,
-					);
+				const updatedRelationResponse = await api.patch<{ data: Relation }>(
+					`/relations/${collection}/${field}`,
+					values,
+				);
 
-					this.relations = this.relations.map((relation) => {
-						if (relation.collection === collection && relation.field === field) {
-							return updatedRelationResponse.data.data;
-						}
+				this.relations = this.relations.map((relation) => {
+					if (relation.collection === collection && relation.field === field) {
+						return updatedRelationResponse.data.data;
+					}
 
-						return relation;
-					});
-				} else {
-					const createdRelationResponse = await api.post<{ data: Relation }>(`/relations`, values);
+					return relation;
+				});
+			} else {
+				const createdRelationResponse = await api.post<{ data: Relation }>(`/relations`, values);
 
-					this.relations = [...this.relations, createdRelationResponse.data.data];
-				}
-			} catch (error) {
-				unexpectedError(error);
+				this.relations = [...this.relations, createdRelationResponse.data.data];
 			}
 		},
 		/**
