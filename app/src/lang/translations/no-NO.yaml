@@ -39,6 +39,7 @@ tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
 location: Lokasjon
+collection_names_are_case_sensitive: Samlingens navn er case følsomme
 condition_rules: Betingelser Regler
 input: Input
 maps: Kart
@@ -68,14 +69,22 @@ extension_hook: Hook
 extension_endpoint: Endpoint
 extension_operation: Operasjon
 extension_bundle: Pakke
+extension_interfaces: Grensesnitt
+extension_displays: Visning
 extension_layouts: Oppsett
 extension_modules: Moduler
 extension_panels: Paneler
 extension_themes: Temaer
+extension_hooks: Hook
+extension_endpoints: Endepunkter
 extension_operations: Operasjoner
 extension_bundles: Pakker
 extension_missing: Mangler
+extension_reload_required: Oppdatering av side kreves
+extension_reload_required_copy: En reload av side er nødvendig for å se endringene etter aktivering eller deaktivering av apputvidelser.
+extension_reload_now: Oppdater nå
 published_relative: Publisert {relativeTime}
+compatible_with_your_project: Kompatibel med ditt prosjekt
 last_updated_relative: Sist oppdatert {relativeTime}
 n_files: '{n} Filer'
 verified: Verifisert
@@ -99,6 +108,7 @@ field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
 add_field: Legg til felt
 role_name: Rollenavn
+policy_name: Navn på rettighet
 branch: Gren
 leaf: Blad
 indeterminate: Ubestemt
@@ -140,6 +150,15 @@ rename_folder: Endre mappenavn
 delete_folder: Slett mappe
 prefix: Prefiks
 suffix: Suffiks
+keep: Behold
+version: Versjon
+version_key: Versjon nøkkel
+version_name: Versjon Navn
+main_version: Hoved
+switch_version: Bytt versjon
+switch_version_copy: Er du sikker på at du vil bytte til versjon "{version}"? Ulagrede endringer vil gå tapt.
+create_version: Opprett versjon
+rename_version: Gi versjon nytt navn
 reset_bookmark: Tilbakestill bokmerke
 update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
@@ -669,6 +688,7 @@ wysiwyg_options:
   selectall: Merk alt
   table: Tabell
 deselect: Velg bort
+creating_in: 'Oppretter element i {collection}'
 editing_in_batch: 'Batch Editing {count} elementer'
 settings_project: Innstillinger
 settings_webhooks: Webhooks
@@ -684,6 +704,7 @@ cancel: Avbryt
 source_registry: Markedsplass
 collection: Kolleksjon
 collections: Kolleksjoner
+content: Innhold
 fields:
   directus_activity:
     item: Element Hovednøkkel
@@ -712,17 +733,21 @@ fields:
     charset: Charset
     duration: Varighet
   directus_users:
+    first_name: Fornavn
+    last_name: Etternavn
     email: E-post
     password: Passord
     location: Lokasjon
     title: Tittel
     description: Beskrivelse
     tags: Etiketter
+    user_preferences: Brukerinnstillinger
     language: Språk
     status: Status
     status_active: Aktiv
     last_page: Siste side
     last_access: Siste tilgang
+    email_notifications: E-postvarsler
   directus_settings:
     project_name: Prosjektnavn
     module_bar: Modul Bar
@@ -737,6 +762,7 @@ fields:
     name: Rollenavn
     description: Beskrivelse
   directus_policies:
+    name: Navn på rettighet
     description: Beskrivelse
   directus_webhooks:
     name: Navn
@@ -759,6 +785,7 @@ field_options:
       name_name: Navn
     collections_name: Kolleksjoner
   directus_users:
+    preferences_divider: Brukerinnstillinger
     status_dropdown_active: Aktiv
   directus_webhooks:
     status_options_active: Aktiv
