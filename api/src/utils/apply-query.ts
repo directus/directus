@@ -929,7 +929,12 @@ export function applySearch(
 
 	const allowedFields = new Set(permissions.find((p) => p.collection === collection)?.fields ?? []);
 
-	const fields = Object.entries(schema.collections[collection]!.fields).filter((field) => allowedFields.has(field[0]));
+	let fields = Object.entries(schema.collections[collection]!.fields);
+
+	// if non-admin add applicable field restrictions
+	if (permissions.length !== 0) {
+		fields = fields.filter((field) => allowedFields.has(field[0]));
+	}
 
 	dbQuery.andWhere(function () {
 		let needsFallbackCondition = true;
