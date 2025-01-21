@@ -1,5 +1,5 @@
 import type { DirectusRole } from '../../../schema/role.js';
-import type { ApplyQueryFields, Query } from '../../../types/index.js';
+import type { ApplyQueryFields, NestedPartial, Query } from '../../../types/index.js';
 import type { RestCommand } from '../../types.js';
 
 export type CreateRoleOutput<
@@ -18,7 +18,7 @@ export type CreateRoleOutput<
  */
 export const createRoles =
 	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
-		items: Partial<DirectusRole<Schema>>[],
+		items: NestedPartial<DirectusRole<Schema>>[],
 		query?: TQuery,
 	): RestCommand<CreateRoleOutput<Schema, TQuery>[], Schema> =>
 	() => ({
@@ -38,7 +38,7 @@ export const createRoles =
  */
 export const createRole =
 	<Schema, const TQuery extends Query<Schema, DirectusRole<Schema>>>(
-		item: Partial<DirectusRole<Schema>>,
+		item: NestedPartial<DirectusRole<Schema>>,
 		query?: TQuery,
 	): RestCommand<CreateRoleOutput<Schema, TQuery>, Schema> =>
 	() => ({

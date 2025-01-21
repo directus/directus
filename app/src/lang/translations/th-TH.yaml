@@ -673,8 +673,6 @@ tooltip: คำแนะนำ
 tooltip_placeholder: ใส่คำแนะนำ
 unlimited: ไม่จำกัด
 open_link_in: เปิดลิงก์
-new_tab: แท็บใหม่
-current_tab: แท็บปัจจุบัน
 wysiwyg_options:
   aligncenter: จัดตำแหน่งกึ่งกลาง
   alignjustify: จัดตำแหน่งชิดขอบซ้ายและขวา
@@ -1172,6 +1170,8 @@ interfaces:
     description: กรอกและดู Markdown ล่วงหน้าก่อน
     edit: แก้ไข
     preview: ดูตัวอย่าง
+    default_view: มุมมองเริ่มต้น
+    default_view_preview: ดูตัวอย่าง
     customSyntax: บล็อกที่ออกแบบเอง
     customSyntax_label: เพิ่ม syntax ที่ออกแบบเอง
     customSyntax_add: เพิ่ม syntax ที่ออกแบบเอง

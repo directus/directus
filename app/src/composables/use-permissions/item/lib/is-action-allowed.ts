@@ -3,7 +3,6 @@ import { useUserStore } from '@/stores/user';
 import { ItemPermissions } from '@directus/types';
 import { Ref, computed, unref } from 'vue';
 import { Collection, IsNew } from '../../types';
-import { isFullPermission } from '../utils/is-full-permission';
 
 export const isActionAllowed = (
 	collection: Collection,
@@ -24,9 +23,10 @@ export const isActionAllowed = (
 		if (userStore.isAdmin) return true;
 
 		const permission = getPermission(collectionValue, action);
-		if (!permission) return false;
 
-		if (isFullPermission(permission)) return true;
+		if (!permission) return false;
+		if (permission.access === 'full') return true;
+		if (permission.access === 'none') return false;
 
 		return null;
 	});

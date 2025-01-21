@@ -89,7 +89,7 @@ compatible_with_your_project_copy: Der Autor hat die Kompatibilität dieser Erwe
 last_updated_relative: Letzte Aktualisierung {relativeTime}
 n_files: '{n} Dateien'
 verified: Verifiziert
-homepage: Hello world
+homepage: Homepage
 repository: Repository
 reload_page: Seite neu laden
 reload_required: Erneutes Laden erforderlich
@@ -97,9 +97,10 @@ report_an_issue: Problem melden
 website: Webseite
 github: GitHub
 beta: Beta
-n_downloads: '{n} downloads'
+n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Kompatibilität nicht garantiert
+compatibility_not_guaranteed_copy: Der Autor hat die Kompatibilität dieser Erweiterung mit {hostVersion} angegeben, welche nicht mit der Version Ihres Projekts ({currentVersion}) übereinstimmt
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
@@ -109,6 +110,7 @@ field_name_translations: Feldnamen-Übersetzungen
 enter_password_to_enable_tfa: Geben Sie Ihr Passwort ein, um die Zwei-Faktor-Authentifizierung zu aktivieren
 add_field: Feld hinzufügen
 role_name: Rollenname
+policy_name: Richtlinienname
 branch: Branch
 leaf: Blatt
 indeterminate: Unbestimmt
@@ -126,6 +128,7 @@ requires_value: Erfordert Wert
 create_preset: Vorlage erstellen
 create_panel: Panel erstellen
 create_role: Rolle erstellen
+create_policy: Erstelle Richtlinie
 create_user: Benutzer erstellen
 message: Nachricht
 delete_panel: Panel löschen
@@ -187,8 +190,12 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
+public_role_info: >-
+  Die öffentliche Rolle kontrolliert, welche API-Daten unauthentifizierten Benutzern oder Benutzern ohne Rolle zur Verfügung stehen. Anfragen mit öffentlicher Rolle können keinen App- oder Administratorzugriff haben. Wenn App- oder Administratorzugriff auf Richtlinien gewährt wird, die der öffentlichen Rolle zugewiesen sind, werden sie ignoriert.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
+admin_policy_description: Initiale Administrator-Richtlinie mit uneingeschränktem App-/API-Zugriff.
 no_description: Keine Beschreibung ...
+reached_maximum_number_of_extensions: Sie haben die maximale Anzahl an Erweiterungen für dieses Projekt erreicht ({n}). Kontaktieren Sie Ihren Systemadministrator für weitere Informationen.
 not_allowed: Nicht erlaubt
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -253,8 +260,10 @@ field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
 field_presets: Feld-Vorlagen
 permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
+permissions_for_policy: 'Elemente, die {policy}-Richtlinie {action} kann.'
 fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
+validation_for_policy: 'Feld {action} Regeln, welche die {policy}-Richtlinie befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
 presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der "detaillierten" Syntax konfiguriert werden.'
 presentation_and_aliases: Darstellung & Aliase
@@ -353,12 +362,15 @@ auto_generate: Automatisch generieren
 this_will_auto_setup_fields_relations: Dies wird automatisch alle benötigten Felder und Beziehungen einrichten.
 click_here: Hier klicken
 to_manually_setup_translations: um die Übersetzung manuell einzurichten.
+manage: Verwalten
 click_to_manage_translated_fields: >-
   Es gibt noch keine übersetzten Felder. Klicke hier, um sie zu erstellen| Es gibt ein übersetztes Feld. Klicke hier, um es zu verwalten. | Es gibt {count} übersetzte Felder. Klicke hier, um sie zu verwalten.
 fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung suchen...
+search_role: Suche Rolle...
+search_policy: Suche Richtlinien...
 search_field: Suchfeld...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
@@ -399,6 +411,7 @@ soft_length: Soft Limit
 precision_scale: Präzision & Skalierung
 readonly: Lesezugriff
 unique: Eindeutig
+index: Index
 updated_on: Geändert am
 updated_by: Geändert von
 primary_key: Primärschlüssel
@@ -444,6 +457,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
 presentation_text_values_cannot_be_reimported: 'Verwendet Präsentationstext, Werte können nicht neu importiert werden.'
 download_page_as_csv: 'Als CSV herunterladen'
+download_page_as_csv_unsupported: Dieses Layout unterstützt das Herunterladen der aktuellen Seite nicht.
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
 revision_preview: Überarbeitungs-Vorschau
@@ -508,6 +522,11 @@ hours: Stunden
 month: Monat
 year: Jahr
 select_all: Alle auswählen
+permissionsLevel:
+  all: Voller {action} Zugriff
+  partial: Partieller {action} Zugriff
+  custom: Partieller {action} Zugriff
+  none: Kein {action} Zugriff
 months:
   january: Januar
   february: Februar
@@ -522,7 +541,11 @@ months:
   november: November
   december: Dezember
 drag_mode: Drag-Modus
+move_tool: Verschieben-Werkzeug
+crop_tool: Zuschneiden-Werkzeug
+focal_point_tool: Fokuspunkt-Werkzeug
 cancel_crop: Zuschneiden abbrechen
+cancel_selection: Auswahl abbrechen
 original: Original
 url: URL
 import_label: Import
@@ -530,6 +553,7 @@ file_details: Datei-Informationen
 dimensions: Dimensionen
 size: Größe
 created: Erstellt
+uploaded: Hochgeladen
 modified: Geändert
 owner: Besitzer
 edited_by: Editiert von
@@ -551,6 +575,7 @@ replace_from_url: Mit Datei von URL ersetzen
 no_image_selected: Kein Bild ausgewählt
 no_file_selected: Keine Datei ausgewählt
 download_file: Datei herunterladen
+open_file_in_tab: Datei in neuem Tab öffnen
 start_export: Export starten
 not_available_for_local_downloads: Nicht für lokale Downloads verfügbar
 exporting_all_items_in_collection: Alle Elemente ({total}) innerhalb {collection} exportieren.
@@ -585,7 +610,10 @@ allow_duplicates: Duplikate erlauben
 comments: Kommentare
 no_comments: Noch keine Kommentare
 expand: Ausklappen
+expand_all: Alles aufklappen
+expand_none: Keine erweitern
 collapse: Einklappen
+collapse_all: Alle einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen ...
@@ -602,12 +630,17 @@ display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
 list-m2a: Builder (n:x, Many to Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
+filtered_item_count: 'Keine gefilterten Elemente | Ein gefiltertes Element | {count} gefilterte Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
 no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks sind veraltet und ihre weitere Nutzung wird nicht empfohlen.
+
+  Bitte benutze stattdessen **Flows** mit der [Webhook / Request URL Operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Es wurden noch keine Webhooks konfiguriert.
 no_notifications: Keine Benachrichtigungen
 no_notifications_copy: Du bist auf dem neusten Stand!
@@ -632,6 +665,7 @@ copy_to: Kopieren nach...
 no_other_dashboards_copy: Sie haben noch keine anderen Dashboards.
 inactive: Inaktiv
 users: Benutzer
+roles: Rollen
 activity: Aktivität
 activity_item: Aktivitäten-Element
 action: Aktion
@@ -705,6 +739,7 @@ errors:
   INVALID_USER: Nutzer konnte nicht authentifiziert werden
   ITEM_LIMIT_REACHED: Limit für Elemente erreicht
   ITEM_NOT_FOUND: Element nicht gefunden
+  LIMIT_EXCEEDED: 'Limit überschritten'
   METHOD_NOT_ALLOWED: Methode ist nicht erlaubt
   NOT_NULL_VIOLATION: Der Wert darf nicht leer sein
   RANGE_NOT_SATISFIABLE: Ungültiger Bereich
@@ -757,6 +792,9 @@ make_collection_hidden: Sammlung verstecken
 make_folder_visible: Ordner sichtbar machen
 make_folder_hidden: Ordner verstecken
 goto_collection_content: Inhalt anzeigen
+count_of_total_items: '{count} von {total} Elementen'
+start_end_of_count_items: '{start}-{end} von {count} Elementen'
+start_end_of_count_filtered_items: '{start}-{end} von {count} gefilterten Elementen'
 delete_collection_are_you_sure: >-
   Sind Sie sicher, dass Sie die Sammlung "{collection}" löschen möchten? Dies wird die Sammlung und alle darin enthaltenen Elemente löschen. Diese Aktion kann nicht rückgängig gemacht werden.
 delete_folder_are_you_sure: Sind Sie sicher, dass Sie den Ordner "{folder}" löschen wollen? Verschachtelte Ordner und Sammlungen werden an die oberste Ebene verschoben.
@@ -823,6 +861,7 @@ operators:
   regex: Entspricht RegExp
 custom_validation_message: Benutzerdefinierte Validierungsnachricht
 loading: Wird geladen...
+extension_readme_missing: Diese Erweiterung hat keine README-Datei.
 drop_to_upload: Zum Hochladen ablegen
 item: Element
 items: Elemente
@@ -842,6 +881,7 @@ columns: Spalten
 collection_setup: Einrichtung Sammlung
 optional_system_fields: Optionale Felder
 value_unique: Wert muss eindeutig sein
+value_index: Feld ist indiziert
 all_activity: Alle Aktivitäten
 create_item: Element erstellen
 display_template: Anzeigevorlage
@@ -958,6 +998,19 @@ no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
 payload: Nutzdaten
 details: Details
+resume_streaming_logs: Streaming-Logs fortsetzen
+pause_streaming_logs: Streaming-Logs pausieren
+logs_session_resumed: Log-Sitzung fortgesetzt...
+logs_session_paused: '"Log Sitzung pausiert"'
+logs_stream_disconnected: Log-Stream getrennt...
+logs_beginning: '"Dies ist der Anfang Deiner Log-Sitzung"......'
+logs_waiting: 'Warte auf weitere Protokolle...'
+logs_unread_count: '{count} ungelesen'
+clear_logs: Logs leeren
+search_logs: Logs suchen...
+all_instances: '"alle Instanzen "'
+all_log_levels: Alle Log-Levels
+log_level_count: 'Kein Log-Level | Ein Log-Level | {count} Log-Levels'
 full_screen: Vollbild
 full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
@@ -987,7 +1040,6 @@ tooltip_placeholder: Tooltip eingeben...
 unlimited: Unlimitiert
 open_link_in: Link öffnen in
 new_tab: Neuer Tab
-current_tab: Aktueller Tab
 save_image: Bild speichern
 save_media: Medien speichern
 wysiwyg_options:
@@ -1061,10 +1113,13 @@ editing_unit: 'Bearbeite {unit}'
 editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
+settings_roles: Benutzerrollen
+settings_permissions: Zugangsrichtlinien
 settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
 settings_flows: Flows
+settings_system_logs: Systemprotokolle
 settings_presets: Lesezeichen
 settings_translations: Übersetzungen
 one_or_more_options_are_missing: Eine oder mehrere Optionen fehlen
@@ -1110,6 +1165,7 @@ page_help_settings_datamodel_collections: >-
   **Datenmodell: Sammlungen** — Listet alle verfügbaren Sammlungen auf. Dazu gehören sichtbare, ausgeblendete und Systemsammlungen sowie nicht verwaltete Datenbanktabellen, die hinzugefügt werden können.
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
+page_help_settings_system_logs: '**Systemprotokolle** — Greifen Sie auf einen Live-Stream der Systemprotokolle zu.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
   **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
@@ -1138,7 +1194,15 @@ cancel: Abbrechen
 no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
+install_extension: Erweiterung installieren
+uninstall_locked: Erweiterungen, die nicht über den Marktplatz installiert wurden, können nicht deinstalliert werden
+uninstall: Deinstallieren
+installed: Installiert
+reinstall: Neu installieren
+open_in_marketplace: Im Marketplace öffnen
 source_registry: Marktplatz
+source_local: Lokal
+source_module: Node Module
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
@@ -1157,6 +1221,8 @@ directus_collection:
   directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_operations: In Flows ausgeführte Operationen
   directus_panels: Individuelle Panels in Einblicke-Dashboards
+  directus_permissions: Zugriffsrechte für jede Richtlinie
+  directus_policies: Zugriffskontrollrichtlinien
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
@@ -1222,6 +1288,8 @@ fields:
     height: Höhe
     charset: Zeichensatz
     duration: Dauer
+    focal_point_x: X-Koordinate
+    focal_point_y: Y-Koordinate
   directus_users:
     first_name: Vorname
     last_name: Nachname
@@ -1239,6 +1307,7 @@ fields:
     status: Status
     status_draft: Entwurf
     status_invited: Eingeladen
+    status_unverified: Ungeprüft
     status_active: Aktiv
     status_suspended: Gesperrt
     status_archived: Archiviert
@@ -1260,6 +1329,7 @@ fields:
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Berichte
     mapping: Kartografie
     basemaps: Basiskarte
     basemaps_raster: Raster
@@ -1301,6 +1371,8 @@ fields:
     custom_aspect_ratios: Benutzerdefiniertes Seitenverhältnis
     theme_light_overrides: Anpassung des hellen Designs
     theme_dark_overrides: Anpassung des dunklen Designs
+    public_registration: Benutzerregistrierung
+    public_registration_role: Benutzerrolle
   directus_shares:
     name: Name
     role: Rolle
@@ -1322,8 +1394,12 @@ fields:
     icon: Rollen-Symbol
     description: Beschreibung
     users: Benutzer in Rolle
+    parent: Übergeordnete Rolle
+    children: Untergeordnete Rollen
   directus_policies:
+    name: Richtlinienname
     description: Beschreibung
+    enforce_tfa: 2FA erzwingen
   directus_webhooks:
     name: Name
     method: Methode
@@ -1403,8 +1479,15 @@ field_options:
     description: Eine optionale Beschreibung...
     location: Eine optionale Position...
     storage_divider: Dateibenennung
+    focal_point_divider: Fokuspunkt
     filename_disk: Name auf Festplatte...
     filename_download: Name während des Downloads...
+  directus_policies:
+    name: Ein einzigartiger Name für diese Richtlinie...
+    description: Eine Beschreibung dieser Richtlinie...
+    ip_access: Erlaubte IP-Adressen, IP-Bereiche und CIDR-Blöcke hinzufügen. Leer lassen, um alle zuzulassen...
+    enforce_tfa: Zwei-Faktor-Authentifizierung erzwingen
+    assigned_to: Zugewiesen an
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
@@ -1414,6 +1497,8 @@ field_options:
       name_placeholder: Titel eingeben...
       link_name: Link
       link_placeholder: Relative oder absolute URL...
+    parent_note: Optionale übergeordnete Rolle, von der diese Rolle Berechtigungen erbt
+    children_note: Verschachtelte untergeordnete Rollen, welche die Rechte dieser Rolle erben
     collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
   directus_users:
@@ -1464,6 +1549,7 @@ live_preview:
   toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
+uses_left: Keine Verwendungen übrig | Eine Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
 expired: Abgelaufen
@@ -1497,6 +1583,9 @@ continue_label: Weiter
 continue_as: >-
   {name} ist derzeit angemeldet. Wenn Sie dieses Konto kennen, drücken Sie auf Fortfahren.
 editing_role: '{role} Rolle'
+editing_policy: '{policy} Richtlinie'
+no_permissions: Keine Berechtigungen
+permission_add_collection: Sammlung hinzufügen
 creating_webhook: Webhook erstellen
 default_label: Standard
 delete_label: Löschen
@@ -1542,6 +1631,7 @@ authenticated: Authentifiziert
 options: Optionen
 otp: Einmaliges Passwort
 password: Passwort
+confirm_password: Passwort bestätigen
 permissions: Berechtigungen
 relationship: Beziehung
 reset: Zurücksetzen
@@ -1558,6 +1648,14 @@ select_field_type: Feldtyp wählen
 select_interface: Wähle eine Schnittstelle
 select_display: Anzeige auswählen
 settings: Einstellungen
+register: Registrieren
+registration_successful_headline: Erfolgreich!
+registration_successful_note: Sie können nun zur Anmeldeseite fortfahren.
+registration_successful_check_email_note: |
+  Bitte beachten Sie, dass Sie Ihre E-Mail-Adresse bestätigen müssen, bevor Sie sich anmelden können, indem Sie auf den Ihnen zugesandten Bestätigungslink klicken.
+dont_have_an_account: Sie haben noch kein Konto?
+already_have_an_account: Sie haben bereits ein Konto?
+sign_up_now: Jetzt registrieren
 sign_in: Login
 sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
@@ -1587,9 +1685,12 @@ navigate_to_item: Zum Element navigieren
 undo_removed_item: Entferntes Item rückgängig
 remove_item: Item entfernen
 delete_item: Item löschen
+pause: Pause
+resume: Fortsetzen
 interfaces:
   list-m2a:
     prefix_note: Verwendet standardmäßig den Namen der Sammlung des zugehörigen Elements.
+    sorting_disabled: Sortieren ist deaktiviert, da es mehr Elemente gibt, als auf eine Seite passen.
   filter:
     name: Filter
     description: Ein Filterobjekt konfigurieren.
@@ -1718,6 +1819,8 @@ interfaces:
     description: Bild auswählen oder hochladen
     crop: Zuschneiden auf Passform
     crop_label: Bild nach Bedarf zuschneiden
+    letterbox: Briefkasten
+    letterbox_label: Füge Leerraum zur Bildvorschau hinzu
   system-interface:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
@@ -1751,6 +1854,9 @@ interfaces:
     preview: Vorschau
     editorFont: Editor Schriftart
     previewFont: Vorschau Schriftart
+    default_view: Standard-Ansicht
+    default_view_editor: Editor
+    default_view_preview: Vorschau
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
     customSyntax_add: Eigene Syntax hinzufügen
@@ -1855,6 +1961,7 @@ interfaces:
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
     enable: Aktivieren
+    default_split_view_state: Standardstatus der geteilten Ansicht
     user_language: Aktuelle Benutzersprache verwenden
     default_language: Standardsprache
     language_field: Sprachindikatorfeld
@@ -1933,6 +2040,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
     description: Eingabe von Rohwerten oder Mustache-Templates erlauben
+  input-password:
+    input-password: Passwort eingeben
+    description: Passwort-Eingabe mit Schalter zum Verstecken des Wertes
 displays:
   translations:
     translations: Übersetzungen
@@ -2126,6 +2236,7 @@ layouts:
     no_group: Keine Gruppe
 horizontal: Horizontal
 vertical: Vertikal
+axis: Achse
 x_axis: X-Achse
 y_axis: Y-Achse
 y_axis_function: Y-Achsenfunktion
@@ -2373,5 +2484,7 @@ date_precision: Datumsgenauigkeit
 export_dashboard: Dashboard exportieren
 duplicate_dashboard: Dashboard duplizieren
 search_dashboard: Dashboard suchen...
-search_flow: Flow suchen ...
+search_flow: Flow suchen...
 percent: Prozent
+show_password: Passwort anzeigen
+hide_password: Passwort ausblenden

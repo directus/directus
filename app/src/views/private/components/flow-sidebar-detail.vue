@@ -169,9 +169,15 @@ const runManualFlow = async (flowId: string) => {
 
 		emit('refresh');
 
-		notify({
-			title: t('run_flow_success', { flow: selectedFlow.name }),
-		});
+		if (selectedFlow.options?.async) {
+			notify({
+				title: t('trigger_flow_success', { flow: selectedFlow.name }),
+			});
+		} else {
+			notify({
+				title: t('run_flow_success', { flow: selectedFlow.name }),
+			});
+		}
 
 		await notificationStore.refreshUnreadCount();
 
@@ -246,10 +252,10 @@ const runManualFlow = async (flowId: string) => {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .fields {
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .fields {

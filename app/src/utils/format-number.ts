@@ -144,7 +144,7 @@ export function formatNumber(value: number, locales: string | string[], options?
 	try {
 		const formatter: Intl.NumberFormat = new Intl.NumberFormat(locales, options);
 		return formatter.format(value);
-	} catch (e) {
+	} catch {
 		return String(value);
 	}
 }

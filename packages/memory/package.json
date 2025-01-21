@@ -1,6 +1,6 @@
 {
 	"name": "@directus/memory",
-	"version": "2.0.0",
+	"version": "3.0.0",
 	"description": "Memory / Redis abstraction for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -28,16 +28,16 @@
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"ioredis": "5.4.1",
-		"lru-cache": "10.2.2",
-		"rate-limiter-flexible": "5.0.3"
+		"ioredis": "5.4.2",
+		"lru-cache": "11.0.2",
+		"rate-limiter-flexible": "5.0.4"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.45",
-		"@vitest/coverage-v8": "1.5.3",
-		"tsup": "8.2.2",
-		"typescript": "5.4.5",
-		"vitest": "1.5.3"
+		"@directus/tsconfig": "3.0.0",
+		"@types/node": "22.10.5",
+		"@vitest/coverage-v8": "2.1.8",
+		"tsup": "8.3.5",
+		"typescript": "5.7.3",
+		"vitest": "2.1.8"
 	}
 }

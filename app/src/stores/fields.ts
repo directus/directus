@@ -8,7 +8,7 @@ import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import formatTitle from '@directus/format-title';
 import { DeepPartial, Field, FieldRaw, Relation } from '@directus/types';
-import { isEqual, isNil, merge, omit, orderBy } from 'lodash';
+import { isEmpty, isEqual, isNil, merge, omit, orderBy } from 'lodash';
 import { nanoid } from 'nanoid';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
@@ -146,16 +146,26 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 
 	function translateFields() {
 		fields.value = fields.value.map((field) => {
+			const translations: Partial<Field> = {};
+
 			if (i18n.global.te(`fields.${field.collection}.${field.field}`)) {
-				field.name = i18n.global.t(`fields.${field.collection}.${field.field}`);
+				translations.name = i18n.global.t(`fields.${field.collection}.${field.field}`);
 			}
 
-			if (field.meta?.note) field.meta.note = translateLiteral(field.meta.note);
-			if (field.meta?.options) field.meta.options = translate(field.meta.options);
-			if (field.meta?.display_options) field.meta.display_options = translate(field.meta.display_options);
+			if (field.meta) {
+				translations.meta = {} as Field['meta'];
+			}
+
+			if (field.meta?.note) translations.meta!.note = translateLiteral(field.meta.note);
+			if (field.meta?.options) translations.meta!.options = translate(field.meta.options);
+			if (field.meta?.display_options) translations.meta!.display_options = translate(field.meta.display_options);
 
 			if (field.meta?.validation_message) {
-				field.meta.validation_message = translateLiteral(field.meta.validation_message);
+				translations.meta!.validation_message = translateLiteral(field.meta.validation_message);
+			}
+
+			if (!isEmpty(translations)) {
+				return merge({}, field, translations);
 			}
 
 			return field;

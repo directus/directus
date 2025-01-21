@@ -108,7 +108,7 @@ test(`Returns true if IP matches resolved local network interface address`, asyn
 				netmask: '255.0.0.0',
 				family: 'IPv4',
 				mac: '00:00:00:00:00:00',
-				internal: true,
+				internal: false,
 				cidr: '127.0.0.1/8',
 			},
 		],
@@ -117,4 +117,26 @@ test(`Returns true if IP matches resolved local network interface address`, asyn
 	const result = isDeniedIp(sample.ip);
 
 	expect(result).toBe(true);
+});
+
+test(`Returns true if IP matches resolved to local loopback devices`, async () => {
+	vi.mocked(useEnv).mockReturnValue({ IMPORT_IP_DENY_LIST: ['0.0.0.0'] });
+
+	vi.mocked(os.networkInterfaces).mockReturnValue({
+		fa0: undefined,
+		lo0: [
+			{
+				address: '127.0.0.1',
+				netmask: '255.0.0.0',
+				family: 'IPv4',
+				mac: '00:00:00:00:00:00',
+				internal: true,
+				cidr: '127.0.0.1/8',
+			},
+		],
+	});
+
+	expect(isDeniedIp('127.0.0.1')).toBe(true);
+	expect(isDeniedIp('127.8.16.32')).toBe(true);
+	expect(isDeniedIp('127.127.127.127')).toBe(true);
 });

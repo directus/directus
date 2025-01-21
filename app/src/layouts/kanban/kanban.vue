@@ -25,10 +25,14 @@ const props = withDefaults(
 		editGroup: (id: string | number, title: string) => Promise<void>;
 		deleteGroup: (id: string | number) => Promise<void>;
 		isRelational?: boolean;
+		canReorderGroups: boolean;
+		canReorderItems: boolean;
+		canUpdateGroupTitle: boolean;
+		canDeleteGroups: boolean;
 		sortField?: string | null;
 		userField?: string | null;
 		groupsSortField?: string | null;
-		layoutOptions: LayoutOptions;
+		layoutOptions: LayoutOptions | null;
 		resetPresetAndRefresh: () => Promise<void>;
 		error?: any;
 		selection: PrimaryKey[];
@@ -88,9 +92,32 @@ function saveChanges() {
 	editTitle.value = '';
 }
 
-const textFieldConfiguration = computed<Field | undefined>(() => {
-	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
+const fieldDisplay = computed(() => {
+	return {
+		titleField: getRenderDisplayOptions('titleField'),
+		textField: getRenderDisplayOptions('textField'),
+	};
+
+	function getRenderDisplayOptions(fieldName: keyof LayoutOptions) {
+		const fieldConfiguration = props.fieldsInCollection.find(
+			(field) => field.field === props.layoutOptions?.[fieldName],
+		);
+
+		if (!fieldConfiguration) return;
+		const { field, type, meta } = fieldConfiguration;
+		return {
+			collection: props.collection,
+			field,
+			type,
+			display: meta?.display,
+			options: meta?.display_options,
+			interface: meta?.interface,
+			interfaceOptions: meta?.options,
+		};
+	}
 });
+
+const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.selectMode);
 </script>
 
 <template>
@@ -108,14 +135,14 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					group="groups"
 					item-key="id"
 					draggable=".draggable"
-					:disabled="selectMode"
+					:disabled="reorderGroupsDisabled"
 					:animation="150"
 					class="draggable"
 					:class="{ sortable: groupsSortField !== null }"
 					@change="changeGroupSort"
 				>
 					<template #item="{ element: group }">
-						<div class="group" :class="{ draggable: group.id !== null, disabled: selectMode }">
+						<div class="group" :class="{ draggable: group.id !== null, disabled: reorderGroupsDisabled }">
 							<div class="header">
 								<div class="title">
 									<div class="title-content">
@@ -130,11 +157,21 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 										</template>
 
 										<v-list>
-											<v-list-item clickable @click="openEditGroup(group)">
+											<v-list-item
+												:disabled="!canUpdateGroupTitle || selectMode"
+												clickable
+												@click="openEditGroup(group)"
+											>
 												<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
 											</v-list-item>
-											<v-list-item v-if="isRelational" class="danger" clickable @click="deleteGroup(group.id)">
+											<v-list-item
+												v-if="isRelational"
+												:disabled="!canDeleteGroups || selectMode"
+												class="danger"
+												clickable
+												@click="deleteGroup(group.id)"
+											>
 												<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 												<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
 											</v-list-item>
@@ -146,7 +183,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 								:model-value="group.items"
 								group="items"
 								draggable=".item"
-								:disabled="selectMode"
+								:disabled="!canReorderItems || selectMode"
 								:animation="150"
 								:sort="sortField !== null"
 								class="items"
@@ -159,18 +196,21 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 										:class="{ selected: selection.includes(element[primaryKeyField?.field]) }"
 										@click="onClick({ item: element, event: $event })"
 									>
-										<div v-if="element.title" class="title">{{ element.title }}</div>
-										<img v-if="element.image" class="image" :src="element.image" />
-										<render-display
-											v-if="element.text && textFieldConfiguration"
-											:collection="collection"
-											:value="element.text"
-											:type="textFieldConfiguration.type"
-											:field="layoutOptions?.textField"
-											:display="textFieldConfiguration.meta?.display"
-											:options="textFieldConfiguration.meta?.options"
-											:interface="textFieldConfiguration.meta?.interface"
-										/>
+										<div v-if="element.title" class="title">
+											<render-display
+												v-if="fieldDisplay.titleField"
+												v-bind="fieldDisplay.titleField"
+												:value="element.title"
+											/>
+										</div>
+										<img v-if="element.image" class="image" :src="element.image" draggable="false" />
+										<div v-if="element.text" class="text">
+											<render-display
+												v-if="fieldDisplay.textField"
+												v-bind="fieldDisplay.textField"
+												:value="element.text"
+											/>
+										</div>
 										<display-labels
 											v-if="element.tags"
 											:value="element.tags"
@@ -332,6 +372,10 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 					&:hover .title {
 						text-decoration: underline;
+
+						& * {
+							color: var(--theme--primary);
+						}
 					}
 
 					&.selected {
@@ -343,17 +387,22 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
-					line-height: 1.25;
 					margin-bottom: 4px;
 				}
 
+				.title,
 				.text {
-					font-size: 14px;
-					line-height: 1.4em;
-					-webkit-line-clamp: 4;
-					-webkit-box-orient: vertical;
-					overflow: hidden;
-					display: -webkit-box;
+					line-height: 24px;
+					height: 24px;
+
+					& * {
+						line-height: inherit;
+					}
+
+					// This fixes the broken underline spacing when rendering a related field as title
+					& > :deep(.render-template) > span:not(.vertical-aligner) {
+						vertical-align: baseline;
+					}
 				}
 
 				.image {
@@ -391,6 +440,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					align-items: center;
 					margin-top: 8px;
 					margin-bottom: 2px;
+
 					.datetime {
 						display: inline-block;
 						color: var(--theme--foreground-subdued);

@@ -328,7 +328,7 @@ describe('#read', () => {
 	});
 
 	test('Optionally allows setting start range offset', async () => {
-		await driver.read(sample.path.input, { start: sample.range.start });
+		await driver.read(sample.path.input, { range: { start: sample.range.start } });
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
@@ -338,7 +338,7 @@ describe('#read', () => {
 	});
 
 	test('Optionally allows setting end range offset', async () => {
-		await driver.read(sample.path.input, { end: sample.range.end });
+		await driver.read(sample.path.input, { range: { end: sample.range.end } });
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
@@ -348,7 +348,7 @@ describe('#read', () => {
 	});
 
 	test('Optionally allows setting start and end range offset', async () => {
-		await driver.read(sample.path.input, sample.range);
+		await driver.read(sample.path.input, { range: sample.range });
 
 		expect(GetObjectCommand).toHaveBeenCalledWith({
 			Key: sample.path.inputFull,
@@ -361,7 +361,7 @@ describe('#read', () => {
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: undefined } as unknown as void);
 
 		try {
-			await driver.read(sample.path.input, sample.range);
+			await driver.read(sample.path.input, { range: sample.range });
 		} catch (err: any) {
 			expect(err).toBeInstanceOf(Error);
 			expect(err.message).toBe(`No stream returned for file "${sample.path.input}"`);
@@ -371,7 +371,7 @@ describe('#read', () => {
 	test('Throws an error when returned stream is not a readable stream', async () => {
 		vi.mocked(isReadableStream).mockReturnValue(false);
 
-		expect(driver.read(sample.path.input, sample.range)).rejects.toThrowError(
+		expect(driver.read(sample.path.input, { range: sample.range })).rejects.toThrowError(
 			new Error(`No stream returned for file "${sample.path.input}"`),
 		);
 	});
@@ -382,7 +382,7 @@ describe('#read', () => {
 		vi.mocked(driver['client'].send).mockReturnValue({ Body: sample.stream } as unknown as void);
 		vi.mocked(GetObjectCommand).mockReturnValue(mockGetObjectCommand);
 
-		const stream = await driver.read(sample.path.input, sample.range);
+		const stream = await driver.read(sample.path.input, { range: sample.range });
 
 		expect(driver['client'].send).toHaveBeenCalledWith(mockGetObjectCommand);
 		expect(stream).toBe(sample.stream);

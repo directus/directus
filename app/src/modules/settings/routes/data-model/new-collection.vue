@@ -274,7 +274,7 @@ function getSystemFields() {
 				special: ['user-created'],
 				interface: 'select-dropdown-m2o',
 				options: {
-					template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
+					template: '{{avatar}} {{first_name}} {{last_name}}',
 				},
 				display: 'user',
 				readonly: true,
@@ -312,7 +312,7 @@ function getSystemFields() {
 				special: ['user-updated'],
 				interface: 'select-dropdown-m2o',
 				options: {
-					template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}',
+					template: '{{avatar}} {{first_name}} {{last_name}}',
 				},
 				display: 'user',
 				readonly: true,
@@ -500,14 +500,14 @@ function getSystemRelations() {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .type-title {
 	margin-bottom: 48px;
 }
 
 .grid {
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .system :deep(.v-input .input) {

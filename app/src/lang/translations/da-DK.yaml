@@ -894,8 +894,6 @@ tooltip: Værktøjstip
 tooltip_placeholder: Indtast et værktøjstip...
 unlimited: Ubegrænset
 open_link_in: Åbn link i
-new_tab: Ny fane
-current_tab: Aktuel fane
 save_image: Gem billede
 save_media: Gem medier
 wysiwyg_options:
@@ -1592,6 +1590,8 @@ interfaces:
     preview: Eksempelvisning
     editorFont: Rediger skrifttype
     previewFont: Forhåndsvis skrifttype
+    default_view: Standard visning
+    default_view_preview: Eksempelvisning
     customSyntax: Brugerdefinerede blokke
     customSyntax_label: Tilføj brugerdefinerede syntakstyper
     customSyntax_add: Tilføj brugerdefineret syntaks

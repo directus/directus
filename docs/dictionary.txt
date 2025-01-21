@@ -68,6 +68,7 @@
 (S|s)ubheader
 (S|s)upabase
 (T|t)extarea
+(T|t)heming
 (T|t)imeseries
 (T|t)ooltips?
 (T|t)riage
@@ -173,10 +174,10 @@ customizable
 customizations
 DateTime
 DDoS
+destructure
 destructured
 devs
 Devtools
-destructure
 DigitalOcean
 DigitalOcean's
 directus
@@ -201,8 +202,8 @@ entrypoint
 Entrypoint
 env
 ENV
-ESM
 esm
+ESM
 Exif
 fallbacks
 falsy
@@ -298,6 +299,7 @@ nitty-gritty
 no-brainer
 node[^\s]*
 NodeJS
+Nodemailer
 NoSQL
 npm
 NPM
@@ -308,10 +310,11 @@ O2M
 O2Ms
 O2O
 OAuth2?
-OpenAI
+OIDC
 Okta
 omnichannel
 on-prem
+OpenAI
 OpenAPI
 OpenID
 OracleDB
@@ -376,7 +379,7 @@ scalable
 Scalable
 SCSS
 sdk
-SDK
+SDK('s)?
 SDL
 semver
 SemVer
@@ -400,6 +403,7 @@ SSL
 SSO
 SSR
 StackOverflow
+STARTTLS
 stylization
 subdirectory
 subfolder
@@ -412,7 +416,6 @@ SVGs?
 TablePlus
 tfa
 TFA
-(T|t)heming
 TileJSON
 TinyMCE
 TLS

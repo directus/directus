@@ -88,7 +88,6 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 									'directus_collections',
 									'directus_fields',
 									'directus_notifications',
-									'directus_permissions',
 									'directus_presets',
 									'directus_relations',
 									'directus_roles',

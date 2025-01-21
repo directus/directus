@@ -38,3 +38,7 @@ export type Plural<T extends string> = `${T}s`;
 export type UnknownObject = Record<string | number | symbol, unknown>;
 
 export type PromiseCallback = () => void | Promise<void>;
+
+export type Prettify<T> = {
+	[K in keyof T]: T[K];
+} & unknown;
