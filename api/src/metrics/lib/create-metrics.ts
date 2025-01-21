@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
-import { Counter, Histogram, register } from 'prom-client';
+import { AggregatorRegistry, Counter, Histogram } from 'prom-client';
 import { getCache } from '../../cache.js';
 import { hasDatabaseConnection } from '../../database/index.js';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
@@ -10,6 +10,8 @@ import { getStorage } from '../../storage/index.js';
 
 export function createMetrics() {
 	const env = useEnv();
+
+	const registry = new AggregatorRegistry();
 
 	async function generate() {
 		const checkId = randomUUID();
@@ -23,7 +25,7 @@ export function createMetrics() {
 	}
 
 	function readAll(): Promise<string> {
-		return register.metrics();
+		return registry.metrics();
 	}
 
 	function getDatabaseErrorMetric(): Counter | null {
@@ -33,12 +35,13 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = register.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter | undefined;
+		let metric = registry.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
 				name: `directus_db_${client}_connection_errors`,
 				help: `${client} Database connection error count`,
+				registers: [registry],
 			});
 		}
 
@@ -52,12 +55,13 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = register.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram | undefined;
+		let metric = registry.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram | undefined;
 
 		if (!metric) {
 			metric = new Histogram({
 				name: `directus_db_${client}_response_time_ms`,
-				help: `${client} Database connection error count`,
+				help: `${client} Database connection response time`,
+				registers: [registry],
 			});
 		}
 
@@ -73,7 +77,7 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric(`directus_cache_${env['CACHE_STORE']}_connection_errors`) as
+		let metric = registry.getSingleMetric(`directus_cache_${env['CACHE_STORE']}_connection_errors`) as
 			| Counter
 			| undefined;
 
@@ -81,6 +85,7 @@ export function createMetrics() {
 			metric = new Counter({
 				name: `directus_cache_${env['CACHE_STORE']}_connection_errors`,
 				help: 'Cache connection error count',
+				registers: [registry],
 			});
 		}
 
@@ -92,12 +97,13 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric('directus_redis_connection_errors') as Counter | undefined;
+		let metric = registry.getSingleMetric('directus_redis_connection_errors') as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
 				name: `directus_redis_connection_errors`,
 				help: 'Redis connection error count',
+				registers: [registry],
 			});
 		}
 
@@ -109,12 +115,13 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = register.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter | undefined;
+		let metric = registry.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
 				name: `directus_storage_${location}_connection_errors`,
 				help: `${location} storage connection error count`,
+				registers: [registry],
 			});
 		}
 
