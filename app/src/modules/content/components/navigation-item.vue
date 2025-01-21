@@ -28,55 +28,6 @@ const { active: isGroupOpen } = useGroupable({
 	group: groupScope,
 	value: groupValue,
 });
-
-const isBookmarkActive = computed(() => 'bookmark' in route.query);
-
-const to = computed(() => (props.collection.schema ? getCollectionRoute(props.collection.collection) : ''));
-
-const matchesSearch = computed(() => {
-	if (!props.search || props.search.length < 3) return true;
-
-	const searchQuery = props.search.toLowerCase();
-
-	return matchesSearch(props.collection) || childrenMatchSearch(childCollections.value, childBookmarks.value);
-
-	function childrenMatchSearch(collections: Collection[], bookmarks: Preset[]): boolean {
-		return (
-			collections.some((collection) => {
-				const childCollections = getChildCollections(collection);
-				const childBookmarks = getChildBookmarks(collection);
-
-				return matchesSearch(collection) || childrenMatchSearch(childCollections, childBookmarks);
-			}) || bookmarks.some((bookmark) => bookmarkMatchesSearch(bookmark))
-		);
-	}
-
-	function matchesSearch(collection: Collection) {
-		return collection.collection.includes(searchQuery) || collection.name.toLowerCase().includes(searchQuery);
-	}
-
-	function bookmarkMatchesSearch(bookmark: Preset) {
-		return bookmark.bookmark?.toLowerCase().includes(searchQuery);
-	}
-});
-
-const hasContextMenu = computed(() => isAdmin && props.collection.type === 'table');
-
-function getChildCollections(collection: Collection) {
-	let collections = collectionsStore.sortedCollections.filter(
-		(childCollection) => childCollection.meta?.group === collection.collection,
-	);
-
-	if (props.showHidden === false) {
-		collections = collections.filter((collection) => collection.meta?.hidden !== true);
-	}
-
-	return collections;
-}
-
-function getChildBookmarks(collection: Collection) {
-	return presetsStore.bookmarks.filter((bookmark) => bookmark.collection === collection.collection);
-}
 </script>
 
 <template>
