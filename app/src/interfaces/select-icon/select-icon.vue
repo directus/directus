@@ -3,6 +3,7 @@ import formatTitle from '@directus/format-title';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import icons from './icons.json';
+import { socialIcons } from '@/components/v-icon/social-icons';
 
 withDefaults(
 	defineProps<{
@@ -21,10 +22,18 @@ const { t } = useI18n();
 
 const searchQuery = ref('');
 
-const filteredIcons = computed(() => {
-	if (searchQuery.value.length === 0) return icons;
+const mergedIcons = [
+	...icons,
+	{
+		name: 'Social',
+		icons: socialIcons,
+	},
+];
 
-	return icons.map((group) => {
+const filteredIcons = computed(() => {
+	if (searchQuery.value.length === 0) return mergedIcons;
+
+	return mergedIcons.map((group) => {
 		const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
 
 		return {

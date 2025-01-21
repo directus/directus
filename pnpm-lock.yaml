@@ -321,8 +321,8 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       papaparse:
-        specifier: 5.5.0
-        version: 5.5.0
+        specifier: 5.4.1
+        version: 5.4.1
       pino:
         specifier: 9.6.0
         version: 9.6.0
@@ -9515,8 +9515,8 @@ packages:
   pako@1.0.11:
     resolution: {integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==}
 
-  papaparse@5.5.0:
-    resolution: {integrity: sha512-rlVJyYL5QMvue8f/RNGpchWAiTc42GzJD/dqD/YgxJxmQ7TWQh5/7aN3p/aqxkYTRl/BkODi6Qsau1r2bt42JQ==}
+  papaparse@5.4.1:
+    resolution: {integrity: sha512-HipMsgJkZu8br23pW15uvo6sib6wne/4woLZPlFf3rpDyMe9ywEXUsuD7+6K9PRkJlVT51j/sCOYDKGGS3ZJrw==}
 
   param-case@3.0.4:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
@@ -20784,7 +20784,7 @@ snapshots:
 
   pako@1.0.11: {}
 
-  papaparse@5.5.0: {}
+  papaparse@5.4.1: {}
 
   param-case@3.0.4:
     dependencies:
