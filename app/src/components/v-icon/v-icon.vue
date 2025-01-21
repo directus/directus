@@ -148,8 +148,8 @@ function emitClick(event: MouseEvent) {
 		fill: currentColor;
 
 		&.svg-inline--fa {
-			width: auto;
-			height: auto;
+			width: 100%;
+			height: 100%;
 		}
 	}
 
