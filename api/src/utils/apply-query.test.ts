@@ -1,4 +1,4 @@
-import type { SchemaOverview } from '@directus/types';
+import type { Permission, SchemaOverview } from '@directus/types';
 import knex from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { describe, expect, test, vi } from 'vitest';
@@ -15,6 +15,20 @@ const FAKE_SCHEMA: SchemaOverview = {
 			accountability: null,
 			fields: {
 				text: {
+					field: 'text',
+					defaultValue: null,
+					nullable: false,
+					generated: false,
+					type: 'text',
+					dbType: null,
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					validation: null,
+					alias: false,
+				},
+				text1: {
 					field: 'text',
 					defaultValue: null,
 					nullable: false,
@@ -76,6 +90,17 @@ const FAKE_SCHEMA: SchemaOverview = {
 	relations: [],
 };
 
+const permissions = [
+	{
+		collection: 'test',
+		action: 'read',
+		fields: ['text', 'float', 'integer', 'id'],
+		permissions: {
+			text: {},
+		},
+	},
+] as unknown as Permission[];
+
 class Client_SQLite3 extends MockClient {}
 
 describe('applySearch', () => {
@@ -105,7 +130,7 @@ describe('applySearch', () => {
 				return db;
 			});
 
-			applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
+			applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test', permissions);
 
 			expect(db['andWhere']).toBeCalledTimes(1);
 			expect(db['orWhere']).toBeCalledTimes(0);
@@ -123,7 +148,7 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test');
+		applySearch(db as any, FAKE_SCHEMA, db as any, number, 'test', permissions);
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(2);
@@ -144,12 +169,76 @@ describe('applySearch', () => {
 			return db;
 		});
 
-		applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test');
+		applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test', permissions);
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(db['orWhere']).toBeCalledTimes(0);
 		expect(db['orWhereRaw']).toBeCalledTimes(1);
 		expect(db['orWhereRaw']).toBeCalledWith('1 = 0');
+	});
+
+	test('Query is falsy if no other clause is added', async () => {
+		const db = mockDatabase();
+
+		const schemaWithStringFieldRemoved = JSON.parse(JSON.stringify(FAKE_SCHEMA));
+
+		delete schemaWithStringFieldRemoved.collections.test.fields.text;
+
+		db['andWhere'].mockImplementation((callback: () => void) => {
+			// detonate the andWhere function
+			callback.call(db);
+			return db;
+		});
+
+		applySearch(db as any, schemaWithStringFieldRemoved, db as any, 'searchstring', 'test', permissions);
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(db['orWhere']).toBeCalledTimes(0);
+		expect(db['orWhereRaw']).toBeCalledTimes(1);
+		expect(db['orWhereRaw']).toBeCalledWith('1 = 0');
+	});
+
+	test('Remove forbidden field(s) "text" from search', () => {
+		const db = mockDatabase();
+
+		db['andWhere'].mockImplementation((callback: () => void) => {
+			// detonate the andWhere function
+			callback.call(db);
+			return db;
+		});
+
+		applySearch(db as any, FAKE_SCHEMA, db as any, 'directus', 'test', [
+			{
+				collection: 'test',
+				action: 'read',
+				fields: ['text1'],
+				permissions: {
+					text: {},
+				},
+			} as unknown as Permission,
+		]);
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(db['orWhere']).toBeCalledTimes(0);
+		expect(db['orWhereRaw']).toBeCalledTimes(1);
+		expect(db['orWhereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text1', `%directus%`]);
+	});
+
+	test('Remove forbidden field(s) "text" from search', () => {
+		const db = mockDatabase();
+
+		db['andWhere'].mockImplementation((callback: () => void) => {
+			// detonate the andWhere function
+			callback.call(db);
+			return db;
+		});
+
+		applySearch(db as any, FAKE_SCHEMA, db as any, 'directus', 'test', []);
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(db['orWhere']).toBeCalledTimes(0);
+		expect(db['orWhereRaw']).toBeCalledTimes(2);
+		expect(db['orWhereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text', `%directus%`]);
 	});
 });
 
@@ -198,7 +287,7 @@ describe('applyFilter', () => {
 						_and: [{ [field]: { [`_${filterOperator}`]: filterValue } }],
 					};
 
-					const { query } = applyFilter(db, FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, []);
+					const { query } = applyFilter(db, FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, [], []);
 
 					const tracker = createTracker(db);
 					tracker.on.select('*').response([]);
@@ -264,7 +353,7 @@ describe('applyFilter', () => {
 			},
 		};
 
-		const { query } = applyFilter(db, BIGINT_FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, []);
+		const { query } = applyFilter(db, BIGINT_FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, [], []);
 
 		const tracker = createTracker(db);
 		tracker.on.select('*').response([]);
@@ -324,7 +413,7 @@ describe('applyFilter', () => {
 			},
 		};
 
-		const { query } = applyFilter(db, sampleSchema, queryBuilder, rootFilter, collection, {});
+		const { query } = applyFilter(db, sampleSchema, queryBuilder, rootFilter, collection, {}, [], []);
 
 		const tracker = createTracker(db);
 		tracker.on.select('*').response([]);
