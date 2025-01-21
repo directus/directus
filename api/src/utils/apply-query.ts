@@ -73,7 +73,7 @@ export default function applyQuery(
 	}
 
 	if (query.search) {
-		applySearch(knex, schema, dbQuery, query.search, collection);
+		applySearch(knex, schema, dbQuery, query.search, collection, permissions);
 	}
 
 	// `cases` are the permissions cases that are required for the current data set. We're
@@ -923,9 +923,13 @@ export function applySearch(
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
+	permissions: Permission[],
 ) {
 	const { number: numberHelper } = getHelpers(knex);
-	const fields = Object.entries(schema.collections[collection]!.fields);
+
+	const allowedFields = new Set(permissions.find((p) => p.collection === collection)?.fields ?? []);
+
+	const fields = Object.entries(schema.collections[collection]!.fields).filter((field) => allowedFields.has(field[0]));
 
 	dbQuery.andWhere(function () {
 		let needsFallbackCondition = true;
