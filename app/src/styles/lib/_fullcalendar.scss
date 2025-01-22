@@ -42,7 +42,7 @@
 	.fc-daygrid-dot-event {
 		color: var(--theme--primary);
 		line-height: 1.5;
-		padding: 1px 4px;
+		padding: 1px;
 
 		.fc-event-time {
 			font-weight: 700;
@@ -60,11 +60,12 @@
 		&:not(:has(.fc-event-time)) {
 			color: var(--fc-event-text-color);
 			background-color: var(--theme--primary);
+			padding-inline: 4px;
 		}
 	}
 
 	.fc-daygrid-block-event {
-		padding: 0px 4px;
+		padding: 0px 3px;
 		line-height: 1.5;
 
 		.fc-event-time,
