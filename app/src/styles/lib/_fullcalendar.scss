@@ -193,4 +193,34 @@
 			}
 		}
 	}
+
+	.select-mode.select-one & .fc-event {
+		// view: month|week|day && start_date: date
+		&:not(.fc-daygrid-event) .fc-event-title,
+		// view: list && start_date: date|datetime
+		.fc-list-event-title,
+		// view: month && start_date: datetime
+		&.fc-daygrid-event .fc-event-main-frame,
+		// view: month && start_date: datetime (single day)
+		&.fc-daygrid-dot-event {
+			&:before {
+				content: 'radio_button_unchecked';
+			}
+		}
+
+		&.selected {
+			// view: month|week|day && start_date: date
+			&:not(.fc-daygrid-event) .fc-event-title,
+			// view: list && start_date: date|datetime
+			.fc-list-event-title,
+			// view: month && start_date: datetime
+			&.fc-daygrid-event .fc-event-main-frame,
+			// view: month && start_date: datetime (single day)
+			&.fc-daygrid-dot-event {
+				&:before {
+					content: 'radio_button_checked';
+				}
+			}
+		}
+	}
 }
