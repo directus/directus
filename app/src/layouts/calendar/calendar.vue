@@ -4,7 +4,9 @@ import { useI18n } from 'vue-i18n';
 
 import '@fullcalendar/core';
 
-const { n, t } = useI18n();
+defineOptions({
+	inheritAttrs: false,
+});
 
 interface Props {
 	createCalendar: (calendarElement: HTMLElement) => void;
@@ -20,6 +22,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits(['update:selection']);
 
+const { n, t } = useI18n();
+
 const calendarElement = ref<HTMLElement>();
 
 onMounted(() => {
@@ -31,13 +35,6 @@ onUnmounted(() => {
 });
 
 const atLimit = computed(() => props.itemCount === 10000);
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-export default defineComponent({
-	inheritAttrs: false,
-});
 </script>
 
 <template>
