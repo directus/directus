@@ -14,6 +14,7 @@ interface Props {
 	itemCount?: number;
 	resetPresetAndRefresh: () => Promise<void>;
 	error?: any;
+	selectMode: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -38,7 +39,7 @@ const atLimit = computed(() => props.itemCount === 10000);
 </script>
 
 <template>
-	<div class="calendar-layout">
+	<div class="calendar-layout" :class="{ 'select-mode': selectMode }">
 		<v-notice v-if="atLimit" type="warning">
 			{{ t('dataset_too_large_currently_showing_n_items', { n: n(10000) }) }}
 		</v-notice>
