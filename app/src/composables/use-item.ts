@@ -188,8 +188,8 @@ export function useItem<T extends Item>(
 
 		let itemData: any = null;
 
-		if(isSystemCollection(collection.value)) {
-			itemData = (await api.get(itemEndpoint.value, { params: { fields } })).data.data
+		if (isSystemCollection(collection.value)) {
+			itemData = (await api.get(itemEndpoint.value, { params: { fields } })).data.data;
 		} else {
 			const gqlString = queryToGqlString({
 				collection: `${collection.value}_by_id`,
@@ -198,11 +198,11 @@ export function useItem<T extends Item>(
 					fields,
 				},
 				args: {
-					[primaryKeyField.value!.field]:  primaryKey.value,
-				}
+					[primaryKeyField.value!.field]: primaryKey.value,
+				},
 			});
 
-			itemData = (await api.post(`/graphql`, { query: gqlString })).data.data.query
+			itemData = (await api.post(`/graphql`, { query: gqlString })).data.data.query;
 		}
 
 		const newItem: Item = {

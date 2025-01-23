@@ -6,7 +6,7 @@ import { isEmpty, pick, set, omitBy, isUndefined, transform, merge } from 'lodas
 import { extractFieldFromFunction } from './extract-field-from-function';
 import { isSystemCollection } from '@directus/system-data';
 
-type QueryInfo = { collection: string; key: string; query: Query, args?: Record<string, any> };
+type QueryInfo = { collection: string; key: string; query: Query; args?: Record<string, any> };
 
 export function queryToGqlString(queries: QueryInfo | QueryInfo[]): string | null {
 	if (!queries || isEmpty(queries)) return null;
@@ -33,8 +33,8 @@ export function formatQuery({ collection, query, args }: QueryInfo): Record<stri
 	};
 
 	if (args) {
-        formattedQuery.__args = merge(formattedQuery.__args, args);
-    }
+		formattedQuery.__args = merge(formattedQuery.__args, args);
+	}
 
 	const fields = query.fields ?? [useFieldsStore().getPrimaryKeyFieldForCollection(collection)!.field];
 
