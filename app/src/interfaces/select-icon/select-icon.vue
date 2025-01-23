@@ -66,15 +66,18 @@ function setIcon(icon: string | null) {
 				</template>
 
 				<template #append>
-					<v-icon v-if="value !== null" clickable name="close" @click="setIcon(null)" />
-					<v-icon
-						v-else
-						clickable
-						name="expand_more"
-						class="open-indicator"
-						:class="{ open: active }"
-						@click="activate"
-					/>
+					<div class="item-actions">
+						<v-icon v-if="value !== null" clickable name="close" @click="setIcon(null)" />
+
+						<v-icon
+							v-else
+							clickable
+							name="expand_more"
+							class="open-indicator"
+							:class="{ open: active }"
+							@click="activate"
+						/>
+					</div>
 				</template>
 			</v-input>
 		</template>
@@ -98,6 +101,12 @@ function setIcon(icon: string | null) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
+}
+
 .v-input.has-value {
 	--v-input-placeholder-color: var(--theme--primary);
 

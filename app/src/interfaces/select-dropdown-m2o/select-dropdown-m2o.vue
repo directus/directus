@@ -181,6 +181,7 @@ function getLinkForItem() {
 	<v-notice v-else-if="!enableCreate && !enableSelect && !displayItem">
 		{{ t('no_items') }}
 	</v-notice>
+
 	<div v-else class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
 		<v-input
@@ -201,35 +202,41 @@ function getLinkForItem() {
 			</template>
 
 			<template #append>
-				<template v-if="displayItem">
-					<router-link
-						v-if="enableLink"
-						v-tooltip="t('navigate_to_item')"
-						:to="getLinkForItem()"
-						class="item-link"
-						@click.stop
-					>
-						<v-icon name="launch" />
-					</router-link>
-					<v-icon v-if="!disabled" v-tooltip="t('edit')" name="edit" class="edit" @click="editModalActive = true" />
-					<v-icon
-						v-if="!disabled"
-						v-tooltip="t('deselect')"
-						name="close"
-						class="deselect"
-						@click.stop="$emit('input', null)"
-					/>
-				</template>
-				<template v-else>
-					<v-icon
-						v-if="createAllowed && enableCreate"
-						v-tooltip="t('create_item')"
-						class="add"
-						name="add"
-						@click="editModalActive = true"
-					/>
-					<v-icon v-if="enableSelect" class="expand" name="expand_more" />
-				</template>
+				<div class="item-actions">
+					<template v-if="displayItem">
+						<router-link
+							v-if="enableLink"
+							v-tooltip="t('navigate_to_item')"
+							:to="getLinkForItem()"
+							class="item-link"
+							@click.stop
+						>
+							<v-icon name="launch" />
+						</router-link>
+
+						<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+
+						<v-icon
+							v-if="!disabled"
+							v-tooltip="t('deselect')"
+							name="close"
+							clickable
+							@click.stop="$emit('input', null)"
+						/>
+					</template>
+
+					<template v-else>
+						<v-icon
+							v-if="createAllowed && enableCreate"
+							v-tooltip="t('create_item')"
+							class="add"
+							name="add"
+							@click="editModalActive = true"
+						/>
+
+						<v-icon v-if="enableSelect" class="expand" name="expand_more" />
+					</template>
+				</div>
 			</template>
 		</v-input>
 
@@ -255,6 +262,16 @@ function getLinkForItem() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions($item-link: true);
+
+	.add:hover {
+		--v-icon-color: var(--theme--primary);
+	}
+}
+
 .many-to-one {
 	position: relative;
 
@@ -282,22 +299,5 @@ function getLinkForItem() {
 	&.active {
 		transform: scaleY(-1);
 	}
-}
-
-.item-link,
-.add {
-	&:hover {
-		--v-icon-color: var(--theme--primary);
-	}
-}
-
-.edit {
-	&:hover {
-		--v-icon-color: var(--theme--form--field--input--foreground);
-	}
-}
-
-.deselect:hover {
-	--v-icon-color: var(--theme--danger);
 }
 </style>

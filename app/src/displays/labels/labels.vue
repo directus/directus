@@ -30,8 +30,8 @@ const items = computed(() => {
 	let items: string[] | number[];
 
 	if (isEmpty(props.value) && isNaN(props.value as number)) items = [];
-	else if (props.type === 'string' && isString(props.value)) items = [props.value as string];
 	else if (['integer', 'bigInteger', 'float', 'decimal'].includes(props.type)) items = [props.value as number];
+	else if (isString(props.value)) items = [props.value as string];
 	else items = props.value as string[];
 
 	return items.map((item) => {

@@ -125,8 +125,14 @@ const {
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'delete';
-	return 'close';
+	if (isLocalItem(item)) return 'close';
+	return 'delete';
+}
+
+function getDeselectTooltip(item: DisplayItem) {
+	if (item.$type === 'deleted') return 'undo_removed_item';
+	if (isLocalItem(item)) return 'deselect';
+	return 'remove_item';
 }
 
 function sortItems(items: DisplayItem[]) {
@@ -373,31 +379,44 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						@click="editItem(element)"
 					>
 						<v-icon v-if="allowDrag" class="drag-handle" left name="drag_handle" @click.stop />
+
 						<span class="collection">{{ getPrefix(element) }}:</span>
+
 						<render-template
 							:collection="element[relationInfo.collectionField.field]"
 							:template="templates[element[relationInfo.collectionField.field]]"
 							:item="element[relationInfo.junctionField.field]"
 						/>
+
 						<div class="spacer" />
-						<v-icon
-							v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
-							class="clear-icon"
-							:name="getDeselectIcon(element)"
-							@click.stop="deleteItem(element)"
-						/>
+
+						<div class="item-actions">
+							<v-icon
+								v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
+								v-tooltip="t(getDeselectTooltip(element))"
+								:name="getDeselectIcon(element)"
+								clickable
+								@click.stop="deleteItem(element)"
+							/>
+						</div>
 					</v-list-item>
 
 					<v-list-item v-else block :class="{ deleted: element.$type === 'deleted' }">
 						<v-icon class="invalid-icon" name="warning" left />
+
 						<span>{{ t('invalid_item') }}</span>
+
 						<div class="spacer" />
-						<v-icon
-							v-if="!disabled"
-							class="clear-icon"
-							:name="getDeselectIcon(element)"
-							@click.stop="deleteItem(element)"
-						/>
+
+						<div class="item-actions">
+							<v-icon
+								v-if="!disabled"
+								v-tooltip="t(getDeselectTooltip(element))"
+								:name="getDeselectIcon(element)"
+								clickable
+								@click.stop="deleteItem(element)"
+							/>
+						</div>
 					</v-list-item>
 				</template>
 			</draggable>
@@ -490,13 +509,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 </template>
 
 <style lang="scss" scoped>
-.m2a-builder {
-	.v-notice {
-		margin-bottom: 8px;
-	}
-}
+@use '@/styles/mixins';
+
 .v-list {
-	--v-list-padding: 0 0 4px;
+	@include mixins.list-interface($deleteable: true);
 }
 
 .v-list-item {
@@ -506,39 +522,26 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 		margin-right: 1ch;
 	}
 
-	&.deleted {
-		--v-list-item-border-color: var(--danger-25);
-		--v-list-item-border-color-hover: var(--danger-50);
-		--v-list-item-background-color: var(--danger-10);
-		--v-list-item-background-color-hover: var(--danger-25);
-
-		::v-deep(.v-icon) {
-			color: var(--danger-75);
-		}
-
-		.collection {
-			color: var(--theme--danger);
-		}
+	&.deleted .collection {
+		color: var(--theme--danger);
 	}
 }
 
+.item-actions {
+	@include mixins.list-interface-item-actions;
+}
+
 .actions {
-	margin-top: 8px;
-	display: flex;
-	align-items: end;
-	flex-wrap: wrap;
-	gap: 8px;
+	@include mixins.list-interface-actions($pagination: true);
+
+	.v-button {
+		--v-button-padding: 0 12px 0 19px;
+	}
 
 	.pagination {
 		margin-left: auto;
 		display: flex;
 		gap: 8px 16px;
-
-		.v-pagination {
-			::v-deep(.v-button) {
-				display: inline-flex;
-			}
-		}
 
 		.per-page {
 			display: flex;
@@ -558,28 +561,11 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	}
 }
 
-.drag-handle {
-	cursor: grab;
-}
-
 .invalid {
 	cursor: default;
 
 	.invalid-icon {
 		--v-icon-color: var(--theme--danger);
-	}
-}
-
-.clear-icon {
-	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
-	--v-icon-color-hover: var(--theme--danger);
-
-	margin-right: 8px;
-	color: var(--theme--form--field--input--foreground-subdued);
-	transition: color var(--fast) var(--transition);
-
-	&:hover {
-		color: var(--theme--danger);
 	}
 }
 
