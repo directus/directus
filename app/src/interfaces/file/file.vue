@@ -179,12 +179,17 @@ function useURLImport() {
 								<v-icon v-else name="folder_open" />
 							</div>
 						</template>
+
 						<template #append>
-							<template v-if="file">
-								<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click.stop="editDrawerActive = true" />
-								<v-icon v-if="!disabled" v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="remove" />
-							</template>
-							<v-icon v-else name="attach_file" />
+							<div class="item-actions">
+								<template v-if="file">
+									<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click.stop="editDrawerActive = true" />
+
+									<v-icon v-if="!disabled" v-tooltip="t('deselect')" name="close" @click.stop="remove" />
+								</template>
+
+								<v-icon v-else name="attach_file" />
+							</div>
 						</template>
 					</v-input>
 				</div>
@@ -289,6 +294,12 @@ function useURLImport() {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
+}
+
 .preview {
 	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
 
@@ -327,17 +338,5 @@ function useURLImport() {
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;
-}
-
-.deselect:hover {
-	--v-icon-color: var(--theme--danger);
-}
-
-.edit {
-	margin-right: 4px;
-
-	&:hover {
-		--v-icon-color: var(--theme--form--field--input--foreground);
-	}
 }
 </style>

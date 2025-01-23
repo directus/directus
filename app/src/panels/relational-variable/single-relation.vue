@@ -30,19 +30,24 @@ const displayItem = computed(() => (displayItems.value.length > 0 ? displayItems
 			</template>
 
 			<template #append>
-				<template v-if="displayItem">
-					<v-icon v-tooltip="t('deselect')" name="close" class="deselect" @click.stop="$emit('input', undefined)" />
-				</template>
-				<template v-else>
-					<v-icon class="expand" name="expand_more" />
-				</template>
+				<div class="item-actions">
+					<v-icon v-if="displayItem" v-tooltip="t('deselect')" name="close" @click.stop="$emit('input', undefined)" />
+
+					<v-icon v-else name="expand_more" />
+				</div>
 			</template>
 		</v-input>
 	</div>
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .preview {
 	flex-grow: 1;
+}
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
 }
 </style>

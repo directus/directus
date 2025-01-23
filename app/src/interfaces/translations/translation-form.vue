@@ -73,7 +73,7 @@ const activatorDisabled = computed(() => {
 });
 
 const { transition, iconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd } = useActivatorButton();
-const { getDeleteToggleTooltip, getDeleteToggleName, onToggleDelete } = useDeleteToggle();
+const { getDeselectTooltip, getDeselectIcon, onToggleDelete } = useDeleteToggle();
 
 function useActivatorButton() {
 	const pressing = ref(false);
@@ -124,20 +124,21 @@ function useActivatorButton() {
 
 function useDeleteToggle() {
 	return {
-		getDeleteToggleTooltip,
-		getDeleteToggleName,
+		getDeselectIcon,
+		getDeselectTooltip,
 		onToggleDelete,
 	};
 
-	function getDeleteToggleTooltip(item: DisplayItem) {
-		if (item.$type === 'deleted') return 'undo_removed_item';
-		if (isLocalItem(item)) return 'delete_item';
-		return 'remove_item';
+	function getDeselectIcon(item: DisplayItem) {
+		if (item.$type === 'deleted') return 'settings_backup_restore';
+		if (isLocalItem(item)) return 'close';
+		return 'delete';
 	}
 
-	function getDeleteToggleName(item?: DisplayItem) {
-		if (item?.$type === 'deleted') return 'settings_backup_restore';
-		return 'delete';
+	function getDeselectTooltip(item: DisplayItem) {
+		if (item.$type === 'deleted') return 'undo_removed_item';
+		if (isLocalItem(item)) return 'deselect';
+		return 'remove_item';
 	}
 
 	function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
@@ -186,11 +187,11 @@ function useDeleteToggle() {
 			<template #controls="{ active, toggle }">
 				<v-icon
 					v-if="item"
-					v-tooltip="!activatorDisabled ? t(getDeleteToggleTooltip(item)) : null"
+					v-tooltip="!activatorDisabled ? t(getDeselectTooltip(item)) : null"
 					class="delete"
 					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
-					:name="getDeleteToggleName(item)"
+					:name="getDeselectIcon(item)"
 					clickable
 					@click.stop="onToggleDelete(item, itemInitial)"
 				/>

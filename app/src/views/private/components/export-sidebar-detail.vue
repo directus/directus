@@ -399,10 +399,17 @@ async function exportDataFiles() {
 								</span>
 							</template>
 							<template #append>
-								<template v-if="file">
-									<v-icon v-tooltip="t('deselect')" class="deselect" name="close" @click.stop="clearFileInput" />
-								</template>
-								<v-icon v-else name="attach_file" />
+								<div class="item-actions">
+									<v-icon
+										v-if="file"
+										v-tooltip="t('deselect')"
+										class="deselect"
+										name="close"
+										@click.stop="clearFileInput"
+									/>
+
+									<v-icon v-else name="attach_file" />
+								</div>
 							</template>
 						</v-input>
 					</template>
@@ -596,6 +603,10 @@ async function exportDataFiles() {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
+}
 
 .fields,
 .export-fields {
