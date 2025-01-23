@@ -47,7 +47,7 @@ export default defineLayout<LayoutOptions>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 
-		const { collection, search, filterSystem } = toRefs(props);
+		const { collection, search, filterSystem, selectMode, showSelect } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -254,6 +254,8 @@ export default defineLayout<LayoutOptions>({
 			items,
 			loading,
 			error,
+			selectMode,
+			showSelect,
 			totalPages,
 			itemCount,
 			totalCount,
