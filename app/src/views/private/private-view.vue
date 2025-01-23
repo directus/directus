@@ -421,7 +421,7 @@ function getWidth(input: unknown, fallback: number): number {
 				--v-divider-color: var(--theme--navigation--list--divider--border-color);
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 
-				height: calc(100% - 64px);
+				height: calc(100% - 60px);
 				overflow-x: hidden;
 				overflow-y: auto;
 			}
