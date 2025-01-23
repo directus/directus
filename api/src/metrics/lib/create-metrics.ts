@@ -2,17 +2,36 @@ import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
+import { promisify } from 'node:util';
+import pm2 from 'pm2';
 import type { MetricObjectWithValues, MetricValue } from 'prom-client';
-import { AggregatorRegistry, Counter, Histogram } from 'prom-client';
+import { AggregatorRegistry, Counter, Histogram, register } from 'prom-client';
 import { getCache } from '../../cache.js';
 import { hasDatabaseConnection } from '../../database/index.js';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { getStorage } from '../../storage/index.js';
 
+const isPM2 = 'PM2_HOME' in process.env;
+const METRICS_SYNC_PACKET = 'directus:metrics---data-sync';
+
+const listApps = promisify(pm2.list.bind(pm2));
+const sendDataToProcessId = promisify(pm2.sendDataToProcessId.bind(pm2));
+
 export function createMetrics() {
 	const env = useEnv();
 
-	const registry = new AggregatorRegistry();
+	const aggregates = new Map();
+
+	/**
+	 * Listen for PM2 metric data sync messages and add them to the aggregate
+	 */
+	if (isPM2) {
+		process.on('message', (packet: any) => {
+			if (!packet.data || packet.topic !== METRICS_SYNC_PACKET) return;
+
+			aggregate(packet.data);
+		});
+	}
 
 	async function generate() {
 		const checkId = randomUUID();
@@ -23,18 +42,69 @@ export function createMetrics() {
 			trackRedisMetric(checkId),
 			trackStorageMetric(checkId),
 		]);
+
+		/**
+		 * Sync generated metrics with all pm2 instances
+		 */
+		if (isPM2) {
+			try {
+				// sync
+				const apps = await listApps();
+
+				const data = await register.getMetricsAsJSON();
+
+				const syncs = [];
+
+				for (const app of apps) {
+					if (app.pm_id === undefined || app.pid === 0 || app.name !== 'directus') {
+						continue;
+					}
+
+					syncs.push(
+						sendDataToProcessId(app.pm_id, {
+							data: { pid: process.pid, metrics: data },
+							topic: METRICS_SYNC_PACKET,
+						}),
+					);
+				}
+
+				await Promise.allSettled(syncs);
+			} catch {
+				// ignore
+			}
+		}
 	}
 
-	function asJSON(): Promise<MetricObjectWithValues<MetricValue<string>>[]> {
-		return registry.getMetricsAsJSON();
-	}
-
-	async function aggregate(data: MetricObjectWithValues<MetricValue<string>>[]) {
-		AggregatorRegistry.setRegistries([registry, AggregatorRegistry.aggregate([data])]);
+	/**
+	 * Add PM2 synced metric to the aggregate store.
+	 * Subsequent syncs for the given instance will override previous value.
+	 */
+	async function aggregate(data: { pid: number; metrics: MetricObjectWithValues<MetricValue<string>>[] }) {
+		aggregates.set(data.pid, data.metrics);
 	}
 
 	async function readAll(): Promise<string> {
-		return registry.metrics();
+		/**
+		 * In a PM2 context we must aggregate the metrics across instances ensuring
+		 * only currently active instances are added to the aggregate
+		 */
+		if (isPM2 && aggregates.size !== 0) {
+			const apps = await listApps();
+
+			const aggregate = [];
+
+			for (const app of apps) {
+				if (aggregates.has(app.pid)) {
+					aggregate.push(aggregates.get(app.pid));
+				}
+			}
+
+			if (aggregate.length !== 0) {
+				return AggregatorRegistry.aggregate(aggregate).metrics();
+			}
+		}
+
+		return register.metrics();
 	}
 
 	function getDatabaseErrorMetric(): Counter | null {
@@ -44,13 +114,12 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = registry.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter | undefined;
+		let metric = register.getSingleMetric(`directus_db_${client}_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
 				name: `directus_db_${client}_connection_errors`,
 				help: `${client} Database connection error count`,
-				registers: [registry],
 			});
 		}
 
@@ -64,13 +133,12 @@ export function createMetrics() {
 
 		const client = env['DB_CLIENT'];
 
-		let metric = registry.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram | undefined;
+		let metric = register.getSingleMetric(`directus_db_${client}_response_time_ms`) as Histogram | undefined;
 
 		if (!metric) {
 			metric = new Histogram({
 				name: `directus_db_${client}_response_time_ms`,
 				help: `${client} Database connection response time`,
-				registers: [registry],
 			});
 		}
 
@@ -86,7 +154,7 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = registry.getSingleMetric(`directus_cache_${env['CACHE_STORE']}_connection_errors`) as
+		let metric = register.getSingleMetric(`directus_cache_${env['CACHE_STORE']}_connection_errors`) as
 			| Counter
 			| undefined;
 
@@ -94,7 +162,6 @@ export function createMetrics() {
 			metric = new Counter({
 				name: `directus_cache_${env['CACHE_STORE']}_connection_errors`,
 				help: 'Cache connection error count',
-				registers: [registry],
 			});
 		}
 
@@ -106,13 +173,12 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = registry.getSingleMetric('directus_redis_connection_errors') as Counter | undefined;
+		let metric = register.getSingleMetric('directus_redis_connection_errors') as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
 				name: `directus_redis_connection_errors`,
 				help: 'Redis connection error count',
-				registers: [registry],
 			});
 		}
 
@@ -124,13 +190,12 @@ export function createMetrics() {
 			return null;
 		}
 
-		let metric = registry.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter | undefined;
+		let metric = register.getSingleMetric(`directus_storage_${location}_connection_errors`) as Counter | undefined;
 
 		if (!metric) {
 			metric = new Counter({
 				name: `directus_storage_${location}_connection_errors`,
 				help: `${location} storage connection error count`,
-				registers: [registry],
 			});
 		}
 
@@ -231,7 +296,6 @@ export function createMetrics() {
 		getCacheErrorMetric,
 		getRedisErrorMetric,
 		getStorageErrorMetric,
-		asJSON,
 		aggregate,
 		generate,
 		readAll,
