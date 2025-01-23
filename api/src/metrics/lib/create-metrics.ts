@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
 import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
+import type { MetricObjectWithValues, MetricValue } from 'prom-client';
 import { AggregatorRegistry, Counter, Histogram } from 'prom-client';
 import { getCache } from '../../cache.js';
 import { hasDatabaseConnection } from '../../database/index.js';
@@ -24,7 +25,15 @@ export function createMetrics() {
 		]);
 	}
 
-	function readAll(): Promise<string> {
+	function asJSON(): Promise<MetricObjectWithValues<MetricValue<string>>[]> {
+		return registry.getMetricsAsJSON();
+	}
+
+	async function aggregate(data: MetricObjectWithValues<MetricValue<string>>[]) {
+		AggregatorRegistry.setRegistries([registry, AggregatorRegistry.aggregate([data])]);
+	}
+
+	async function readAll(): Promise<string> {
 		return registry.metrics();
 	}
 
@@ -222,6 +231,8 @@ export function createMetrics() {
 		getCacheErrorMetric,
 		getRedisErrorMetric,
 		getStorageErrorMetric,
+		asJSON,
+		aggregate,
 		generate,
 		readAll,
 	};
