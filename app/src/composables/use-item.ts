@@ -19,6 +19,7 @@ import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from './use-permissions';
+import { queryToGqlString } from '@/utils/query-to-gql-string';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -185,10 +186,27 @@ export function useItem<T extends Item>(
 
 		const fields = collectionInfo.value?.meta?.item_duplication_fields || ['*'];
 
-		const itemData = await api.get(itemEndpoint.value, { params: { fields } });
+		let itemData: any = null;
+
+		if(isSystemCollection(collection.value)) {
+			itemData = (await api.get(itemEndpoint.value, { params: { fields } })).data.data
+		} else {
+			const gqlString = queryToGqlString({
+				collection: `${collection.value}_by_id`,
+				key: 'query',
+				query: {
+					fields,
+				},
+				args: {
+					[primaryKeyField.value!.field]:  primaryKey.value,
+				}
+			});
+
+			itemData = (await api.post(`/graphql`, { query: gqlString })).data.data.query
+		}
 
 		const newItem: Item = {
-			...(itemData.data.data || {}),
+			...(itemData || {}),
 			...edits.value,
 		};
 
