@@ -513,6 +513,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 
 .v-list {
 	@include mixins.list-interface($deleteable: true);
+
+	.v-notice + & {
+		margin-top: 12px;
+	}
 }
 
 .v-list-item {
