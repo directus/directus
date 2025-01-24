@@ -39,57 +39,7 @@ export class MetaService {
 	}
 
 	async totalCount(collection: string): Promise<number> {
-		const dbQuery = this.knex(collection);
-
-		let hasJoins = false;
-
-		if (this.accountability && this.accountability.admin === false) {
-			const context = { knex: this.knex, schema: this.schema };
-
-			await validateAccess(
-				{
-					accountability: this.accountability,
-					action: 'read',
-					collection,
-				},
-				context,
-			);
-
-			const policies = await fetchPolicies(this.accountability, context);
-
-			const permissions = await fetchPermissions(
-				{
-					action: 'read',
-					policies,
-					accountability: this.accountability,
-				},
-				context,
-			);
-
-			const collectionPermissions = permissions.filter((permission) => permission.collection === collection);
-
-			const rules = dedupeAccess(collectionPermissions);
-			const cases = rules.map(({ rule }) => rule);
-
-			const filter = {
-				_or: cases,
-			};
-
-			const result = applyFilter(this.knex, this.schema, dbQuery, filter, collection, {}, cases, permissions);
-			hasJoins = result.hasJoins;
-		}
-
-		if (hasJoins) {
-			const primaryKeyName = this.schema.collections[collection]!.primary;
-
-			dbQuery.countDistinct({ count: [`${collection}.${primaryKeyName}`] });
-		} else {
-			dbQuery.count('*', { as: 'count' });
-		}
-
-		const result = await dbQuery.first();
-
-		return Number(result?.count ?? 0);
+		return this.filterCount(collection, {});
 	}
 
 	async filterCount(collection: string, query: Query): Promise<number> {
@@ -144,7 +94,7 @@ export class MetaService {
 		}
 
 		if (query.search) {
-			applySearch(this.knex, this.schema, dbQuery, query.search, collection);
+			applySearch(this.knex, this.schema, dbQuery, query.search, collection, {}, permissions);
 		}
 
 		if (hasJoins) {
