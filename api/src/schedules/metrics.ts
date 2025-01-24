@@ -19,9 +19,11 @@ export async function handleMetricsJob() {
 
 	lockedAt = Date.now();
 
-	await metrics.generate();
-
-	lockedAt = 0;
+	try {
+		await metrics.generate();
+	} finally {
+		lockedAt = 0;
+	}
 }
 
 /**
