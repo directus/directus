@@ -4,6 +4,7 @@ import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-con
 import { fetchRawPermissions } from '../utils/fetch-raw-permissions.js';
 import { processPermissions } from '../utils/process-permissions.js';
 import { getPermissionsForShare } from '../utils/get-permissions-for-share.js';
+import emitter from '../../emitter.js';
 
 export interface FetchPermissionsOptions {
 	action?: PermissionsAction;
@@ -14,10 +15,12 @@ export interface FetchPermissionsOptions {
 }
 
 export async function fetchPermissions(options: FetchPermissionsOptions, context: Context) {
-	const permissions = await fetchRawPermissions(
+	const rawPermissions = await fetchRawPermissions(
 		{ ...options, bypassMinimalAppPermissions: options.bypassDynamicVariableProcessing ?? false },
 		context,
 	);
+
+	const permissions = await emitter.emitFilter('raw.permissions', rawPermissions, options, context as any);
 
 	if (options.accountability && !options.bypassDynamicVariableProcessing) {
 		const permissionsContext = await fetchDynamicVariableContext(
