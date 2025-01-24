@@ -223,13 +223,13 @@ const allowDrag = computed(
 
 function getDeselectIcon(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'delete';
-	return 'close';
+	if (isLocalItem(item)) return 'close';
+	return 'delete';
 }
 
 function getDeselectTooltip(item: DisplayItem) {
 	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (isLocalItem(item)) return 'delete_item';
+	if (isLocalItem(item)) return 'deselect';
 	return 'remove_item';
 }
 
@@ -425,7 +425,7 @@ function getLinkForItem(item: DisplayItem) {
 	</v-notice>
 	<div v-else class="one-to-many">
 		<div :class="{ bordered: layout === LAYOUTS.TABLE }">
-			<div v-if="layout === LAYOUTS.TABLE" class="actions" :class="width">
+			<div v-if="layout === LAYOUTS.TABLE" class="actions top" :class="width">
 				<div class="spacer" />
 
 				<div v-if="totalItemCount" class="item-count">
@@ -499,23 +499,27 @@ function getLinkForItem(item: DisplayItem) {
 				</template>
 
 				<template #item-append="{ item }">
-					<router-link
-						v-if="enableLink"
-						v-tooltip="t('navigate_to_item')"
-						:to="getLinkForItem(item)!"
-						class="item-link"
-						:class="{ disabled: item.$type === 'created' }"
-					>
-						<v-icon name="launch" />
-					</router-link>
+					<div class="item-actions">
+						<router-link
+							v-if="enableLink"
+							v-tooltip="t('navigate_to_item')"
+							:to="getLinkForItem(item)!"
+							class="item-link"
+							:class="{ disabled: item.$type === 'created' }"
+							@click.stop
+						>
+							<v-icon name="launch" />
+						</router-link>
 
-					<v-icon
-						v-if="!disabled && (deleteAllowed || isLocalItem(item))"
-						v-tooltip="t(getDeselectTooltip(item))"
-						class="deselect"
-						:name="getDeselectIcon(item)"
-						@click.stop="deleteItem(item)"
-					/>
+						<v-icon
+							v-if="!disabled && (deleteAllowed || isLocalItem(item))"
+							v-tooltip="t(getDeselectTooltip(item))"
+							:class="{ deleted: item.$type === 'deleted' }"
+							:name="getDeselectIcon(item)"
+							clickable
+							@click.stop="deleteItem(item)"
+						/>
+					</div>
 				</template>
 			</v-table>
 
@@ -551,36 +555,40 @@ function getLinkForItem(item: DisplayItem) {
 							@click="editItem(element)"
 						>
 							<v-icon v-if="allowDrag" name="drag_handle" class="drag-handle" left @click.stop="() => {}" />
+
 							<render-template
 								:collection="relationInfo.relatedCollection.collection"
 								:item="element"
 								:template="templateWithDefaults"
 							/>
+
 							<div class="spacer" />
 
-							<router-link
-								v-if="enableLink"
-								v-tooltip="t('navigate_to_item')"
-								:to="getLinkForItem(element)!"
-								class="item-link"
-								:class="{ disabled: element.$type === 'created' }"
-								@click.stop
-							>
-								<v-icon name="launch" />
-							</router-link>
-							<v-icon
-								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
-								v-tooltip="t(getDeselectTooltip(element))"
-								class="deselect"
-								:name="getDeselectIcon(element)"
-								@click.stop="deleteItem(element)"
-							/>
+							<div class="item-actions">
+								<router-link
+									v-if="enableLink && element.$type !== 'created'"
+									v-tooltip="t('navigate_to_item')"
+									:to="getLinkForItem(element)!"
+									class="item-link"
+									@click.stop
+								>
+									<v-icon name="launch" />
+								</router-link>
+
+								<v-icon
+									v-if="!disabled && (deleteAllowed || isLocalItem(element))"
+									v-tooltip="t(getDeselectTooltip(element))"
+									:name="getDeselectIcon(element)"
+									clickable
+									@click.stop="deleteItem(element)"
+								/>
+							</div>
 						</v-list-item>
 					</template>
 				</draggable>
 			</template>
 
-			<div class="actions" :class="layout">
+			<div class="actions">
 				<template v-if="layout === LAYOUTS.TABLE">
 					<template v-if="pageCount > 1">
 						<v-pagination
@@ -667,43 +675,31 @@ function getLinkForItem(item: DisplayItem) {
 </style>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .bordered {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 	padding: var(--v-card-padding, 16px);
 }
 
+.v-table .deleted {
+	color: var(--danger-75);
+}
+
 .v-list {
-	margin-top: 8px;
-	--v-list-padding: 0 0 4px;
+	@include mixins.list-interface($deleteable: true);
+}
 
-	.v-list-item.deleted {
-		--v-list-item-border-color: var(--danger-25);
-		--v-list-item-border-color-hover: var(--danger-50);
-		--v-list-item-background-color: var(--danger-10);
-		--v-list-item-background-color-hover: var(--danger-25);
-
-		::v-deep(.v-icon) {
-			color: var(--danger-75);
-		}
-	}
+.item-actions {
+	@include mixins.list-interface-item-actions($item-link: true);
 }
 
 .actions {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 8px;
+	@include mixins.list-interface-actions($pagination: true);
 
-	.v-pagination {
-		margin-left: auto;
-		:deep(.v-button) {
-			display: inline-flex;
-		}
-	}
-
-	.table.v-pagination {
-		margin-top: 8px;
+	&.top {
+		margin-top: 0px;
 	}
 
 	.spacer {
@@ -743,35 +739,6 @@ function getLinkForItem(item: DisplayItem) {
 				width: 100% !important;
 			}
 		}
-	}
-
-	&.list {
-		margin-top: 8px;
-	}
-}
-
-.item-link {
-	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
-	transition: color var(--fast) var(--transition);
-	margin: 0 4px;
-
-	&:hover {
-		--v-icon-color: var(--theme--primary);
-	}
-
-	&.disabled {
-		opacity: 0;
-		pointer-events: none;
-	}
-}
-
-.deselect {
-	--v-icon-color: var(--theme--form--field--input--foreground-subdued);
-	transition: color var(--fast) var(--transition);
-	margin: 0 4px;
-
-	&:hover {
-		--v-icon-color: var(--theme--danger);
 	}
 }
 

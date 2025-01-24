@@ -27,7 +27,8 @@ const collapsed = ref(false);
 
 const observer = new IntersectionObserver(
 	([e]) => {
-		collapsed.value = e.boundingClientRect.y === -1;
+		if (!e) return;
+		collapsed.value = e.boundingClientRect.y < 0;
 	},
 	{ threshold: [1] },
 );

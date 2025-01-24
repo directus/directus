@@ -311,7 +311,11 @@ function useColor() {
 					</v-button>
 				</template>
 				<template #append>
-					<v-icon :name="isValidColor ? 'close' : 'palette'" :clickable="isValidColor" @click="unsetColor" />
+					<div class="item-actions">
+						<v-icon v-if="isValidColor" name="close" clickable @click="unsetColor" />
+
+						<v-icon v-else name="palette" />
+					</div>
 				</template>
 			</v-input>
 		</template>
@@ -437,6 +441,12 @@ function useColor() {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
+}
+
 .swatch {
 	--v-button-padding: 6px;
 	--v-button-background-color: transparent;

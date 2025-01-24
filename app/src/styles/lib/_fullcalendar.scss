@@ -42,7 +42,7 @@
 	.fc-daygrid-dot-event {
 		color: var(--theme--primary);
 		line-height: 1.5;
-		padding: 1px 4px;
+		padding: 1px;
 
 		.fc-event-time {
 			font-weight: 700;
@@ -60,11 +60,12 @@
 		&:not(:has(.fc-event-time)) {
 			color: var(--fc-event-text-color);
 			background-color: var(--theme--primary);
+			padding-inline: 4px;
 		}
 	}
 
 	.fc-daygrid-block-event {
-		padding: 0px 4px;
+		padding: 0px 3px;
 		line-height: 1.5;
 
 		.fc-event-time,
@@ -140,7 +141,66 @@
 		@include mixins.type-label;
 	}
 
-	.fc-event.selected {
-		color: var(--theme--primary);
+	@mixin select-element {
+		// view: month|week|day && start_date: date
+		&:not(.fc-daygrid-event) .fc-event-title,
+		// view: list && start_date: date|datetime
+		.fc-list-event-title,
+		// view: month && start_date: datetime
+		&.fc-daygrid-event .fc-event-main-frame,
+		// view: month && start_date: datetime (single day)
+		&.fc-daygrid-dot-event {
+			&:before {
+				@content;
+			}
+		}
+	}
+
+	.select-mode & .fc-event {
+		@include select-element {
+			content: 'check_box_outline_blank';
+			color: var(--fc-event-text-color);
+			vertical-align: -0.25em;
+			margin-right: 0.1em;
+			font-family: 'Material Symbols';
+			font-weight: normal;
+			font-size: 1.4em;
+			font-style: normal;
+			line-height: 1;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			text-rendering: optimizeLegibility;
+			font-feature-settings: 'liga';
+			font-variation-settings:
+				'FILL' 0,
+				'wght' 400,
+				'GRAD' 0,
+				'opsz' 24;
+		}
+
+		&.fc-daygrid-dot-event:has(.fc-event-time),
+		.fc-list-event-title {
+			&:before {
+				color: var(--theme--primary);
+			}
+		}
+
+		&.selected {
+			@include select-element {
+				content: 'check_box';
+			}
+		}
+	}
+
+	.select-mode.select-one & .fc-event {
+		@include select-element {
+			content: 'radio_button_unchecked';
+		}
+
+		&.selected {
+			@include select-element {
+				content: 'radio_button_checked';
+			}
+		}
 	}
 }
