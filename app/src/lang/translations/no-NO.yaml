@@ -482,6 +482,7 @@ creating_new_collection: Oppretter ny samling
 created_by: Opprettet av
 created_on: Opprettet den
 generated_uuid: Generert UUID
+save_and_create_new: Lagre og opprett ny
 save_and_stay: Lagre og fortsett
 save_as_copy: Lagre som kopi
 add_existing: Legge til eksisterende
