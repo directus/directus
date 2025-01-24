@@ -928,14 +928,14 @@ export function applySearch(
 ) {
 	const { number: numberHelper } = getHelpers(knex);
 
-	const allowedFields = new Set(permissions.find((p) => p.collection === collection)?.fields ?? []);
+	const allowedFields = new Set(permissions.filter((p) => p.collection === collection).flatMap((p) => p.fields ?? []));
 
 	let fields = Object.entries(schema.collections[collection]!.fields);
 
 	const { cases, caseMap } = getCases(collection, permissions, []);
 
 	// if non-admin add applicable field restrictions
-	if (cases.length) {
+	if (cases.length !== 0) {
 		fields = fields.filter((field) => allowedFields.has(field[0]));
 	}
 
