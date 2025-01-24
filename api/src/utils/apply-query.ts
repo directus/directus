@@ -73,7 +73,7 @@ export default function applyQuery(
 	}
 
 	if (query.search) {
-		applySearch(knex, schema, dbQuery, query.search, collection, permissions);
+		applySearch(knex, schema, dbQuery, query.search, collection, aliasMap, permissions);
 	}
 
 	// `cases` are the permissions cases that are required for the current data set. We're
@@ -923,6 +923,7 @@ export function applySearch(
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
+	aliasMap: AliasMap,
 	permissions: Permission[],
 ) {
 	const { number: numberHelper } = getHelpers(knex);
@@ -931,17 +932,42 @@ export function applySearch(
 
 	let fields = Object.entries(schema.collections[collection]!.fields);
 
+	const { cases, caseMap } = getCases(collection, permissions, []);
+
 	// if non-admin add applicable field restrictions
-	if (permissions.length !== 0) {
+	if (cases.length) {
 		fields = fields.filter((field) => allowedFields.has(field[0]));
 	}
 
-	dbQuery.andWhere(function () {
+	dbQuery.andWhere(function (queryBuilder) {
 		let needsFallbackCondition = true;
 
 		fields.forEach(([name, field]) => {
+			const whenCases = (caseMap[name] ?? []).map((caseIndex) => cases[caseIndex]!);
+
+			if (cases.length !== 0 && whenCases?.length !== 0) {
+				queryBuilder.orWhere((subQuery) => {
+					addSearchCondition(subQuery, name, field, 'and');
+
+					applyFilter(knex, schema, subQuery, { _or: whenCases }, collection, aliasMap, cases, permissions);
+				});
+			} else {
+				addSearchCondition(queryBuilder, name, field, 'or');
+			}
+		});
+
+		function addSearchCondition(
+			queryBuilder: Knex.QueryBuilder,
+			name: string,
+			field: FieldOverview,
+			logical: 'and' | 'or',
+		) {
 			if (['text', 'string'].includes(field.type)) {
-				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
+				queryBuilder[logical].orWhereRaw(`LOWER(??) LIKE ?`, [
+					`${collection}.${name}`,
+					`%${searchQuery.toLowerCase()}%`,
+				]);
+
 				needsFallbackCondition = false;
 			} else if (isNumericField(field)) {
 				const number = parseNumericString(searchQuery);
@@ -951,14 +977,14 @@ export function applySearch(
 				}
 
 				if (numberHelper.isNumberValid(number, field)) {
-					numberHelper.addSearchCondition(this, collection, name, number);
+					numberHelper.addSearchCondition(queryBuilder, collection, name, number, logical);
 					needsFallbackCondition = false;
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
-				this.orWhere({ [`${collection}.${name}`]: searchQuery });
+				queryBuilder[logical].orWhere({ [`${collection}.${name}`]: searchQuery });
 				needsFallbackCondition = false;
 			}
-		});
+		}
 
 		if (needsFallbackCondition) {
 			this.orWhereRaw('1 = 0');
