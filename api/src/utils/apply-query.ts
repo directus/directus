@@ -72,10 +72,6 @@ export default function applyQuery(
 		}
 	}
 
-	if (query.search) {
-		applySearch(knex, schema, dbQuery, query.search, collection, aliasMap, permissions);
-	}
-
 	// `cases` are the permissions cases that are required for the current data set. We're
 	// dynamically adding those into the filters that the user provided to enforce the permission
 	// rules. You should be able to read an item if one or more of the cases matches. The actual case
@@ -135,6 +131,10 @@ export default function applyQuery(
 		}
 
 		dbQuery.groupBy(columns);
+	}
+
+	if (query.search) {
+		applySearch(knex, schema, dbQuery, query.search, collection, aliasMap, permissions);
 	}
 
 	if (query.aggregate) {
