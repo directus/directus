@@ -16,7 +16,7 @@ export abstract class NumberDatabaseHelper extends DatabaseHelper {
 		value: NumericValue,
 		logical: 'and' | 'or',
 	): Knex.QueryBuilder {
-		return dbQuery[logical].orWhere({ [`${collection}.${name}`]: value });
+		return dbQuery[logical].where({ [`${collection}.${name}`]: value });
 	}
 
 	isNumberValid(_value: NumericValue, _info: NumberInfo) {

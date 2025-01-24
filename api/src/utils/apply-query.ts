@@ -963,10 +963,7 @@ export function applySearch(
 			logical: 'and' | 'or',
 		) {
 			if (['text', 'string'].includes(field.type)) {
-				queryBuilder[logical].orWhereRaw(`LOWER(??) LIKE ?`, [
-					`${collection}.${name}`,
-					`%${searchQuery.toLowerCase()}%`,
-				]);
+				queryBuilder[logical].whereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
 
 				needsFallbackCondition = false;
 			} else if (isNumericField(field)) {
@@ -981,7 +978,7 @@ export function applySearch(
 					needsFallbackCondition = false;
 				}
 			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
-				queryBuilder[logical].orWhere({ [`${collection}.${name}`]: searchQuery });
+				queryBuilder[logical].where({ [`${collection}.${name}`]: searchQuery });
 				needsFallbackCondition = false;
 			}
 		}

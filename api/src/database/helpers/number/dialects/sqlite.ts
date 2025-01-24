@@ -11,6 +11,6 @@ export class NumberHelperSQLite extends NumberDatabaseHelper {
 		value: NumericValue,
 		logical: 'and' | 'or',
 	): Knex.QueryBuilder {
-		return dbQuery[logical].orWhere({ [`${collection}.${name}`]: maybeStringifyBigInt(value) });
+		return dbQuery[logical].where({ [`${collection}.${name}`]: maybeStringifyBigInt(value) });
 	}
 }
