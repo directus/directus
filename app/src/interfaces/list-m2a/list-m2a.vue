@@ -361,6 +361,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			<v-notice v-if="displayItems.length === 0">{{ t('no_items') }}</v-notice>
 
 			<draggable
+				v-else
 				:model-value="displayItems"
 				tag="v-list"
 				item-key="$index"
@@ -513,6 +514,10 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 
 .v-list {
 	@include mixins.list-interface($deleteable: true);
+
+	.v-notice + & {
+		margin-top: 12px;
+	}
 }
 
 .v-list-item {
