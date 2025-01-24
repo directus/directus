@@ -945,48 +945,70 @@ export function applySearch(
 		fields.forEach(([name, field]) => {
 			const whenCases = (caseMap[name] ?? []).map((caseIndex) => cases[caseIndex]!);
 
+			const fieldType = getFieldType(field);
+
+			if (fieldType !== null) {
+				needsFallbackCondition = false;
+			}
+
 			if (cases.length !== 0 && whenCases?.length !== 0) {
 				queryBuilder.orWhere((subQuery) => {
-					addSearchCondition(subQuery, name, field, 'and');
+					addSearchCondition(subQuery, name, fieldType, 'and');
 
 					applyFilter(knex, schema, subQuery, { _or: whenCases }, collection, aliasMap, cases, permissions);
 				});
 			} else {
-				addSearchCondition(queryBuilder, name, field, 'or');
+				addSearchCondition(queryBuilder, name, fieldType, 'or');
 			}
 		});
-
-		function addSearchCondition(
-			queryBuilder: Knex.QueryBuilder,
-			name: string,
-			field: FieldOverview,
-			logical: 'and' | 'or',
-		) {
-			if (['text', 'string'].includes(field.type)) {
-				queryBuilder[logical].whereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
-
-				needsFallbackCondition = false;
-			} else if (isNumericField(field)) {
-				const number = parseNumericString(searchQuery);
-
-				if (number === null) {
-					return; // unable to parse
-				}
-
-				if (numberHelper.isNumberValid(number, field)) {
-					numberHelper.addSearchCondition(queryBuilder, collection, name, number, logical);
-					needsFallbackCondition = false;
-				}
-			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
-				queryBuilder[logical].where({ [`${collection}.${name}`]: searchQuery });
-				needsFallbackCondition = false;
-			}
-		}
 
 		if (needsFallbackCondition) {
 			this.orWhereRaw('1 = 0');
 		}
 	});
+
+	function addSearchCondition(
+		queryBuilder: Knex.QueryBuilder,
+		name: string,
+		fieldType: 'string' | 'numeric' | 'uuid' | null,
+		logical: 'and' | 'or',
+	) {
+		if (fieldType === null) {
+			return;
+		}
+
+		if (fieldType === 'string') {
+			queryBuilder[logical].whereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
+		} else if (fieldType === 'numeric') {
+			numberHelper.addSearchCondition(queryBuilder, collection, name, parseNumericString(searchQuery)!, logical);
+		} else if (fieldType === 'uuid') {
+			queryBuilder[logical].where({ [`${collection}.${name}`]: searchQuery });
+		}
+	}
+
+	function getFieldType(field: FieldOverview): null | 'string' | 'numeric' | 'uuid' {
+		if (['text', 'string'].includes(field.type)) {
+			return 'string';
+		}
+
+		if (isNumericField(field)) {
+			const number = parseNumericString(searchQuery);
+
+			if (number === null) {
+				return null;
+			}
+
+			if (numberHelper.isNumberValid(number, field)) {
+				return 'numeric';
+			}
+		}
+
+		if (field.type === 'uuid' && isValidUuid(searchQuery)) {
+			return 'uuid';
+		}
+
+		return null;
+	}
 }
 
 export function applyAggregate(
