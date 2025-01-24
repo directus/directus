@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { toBoolean } from '@directus/utils';
 import { scheduleJob } from 'node-schedule';
+import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';
 import { validateCron } from '../utils/schedule.js';
 
@@ -8,6 +9,7 @@ const METRICS_LOCK_TIMEOUT = 10 * 60 * 1000; // 10 mins
 
 const metrics = useMetrics();
 let lockedAt = 0;
+const logger = useLogger();
 
 export async function handleMetricsJob() {
 	const now = Date.now();
@@ -21,6 +23,9 @@ export async function handleMetricsJob() {
 
 	try {
 		await metrics.generate();
+	} catch (err) {
+		logger.warn(`An error was thrown while attempting metric generation`);
+		logger.warn(err);
 	} finally {
 		lockedAt = 0;
 	}
