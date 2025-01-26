@@ -1,12 +1,12 @@
 import { useFieldsStore } from '@/stores/fields';
+import { isSystemCollection } from '@directus/system-data';
 import { Filter, Query } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { isEmpty, pick, set, omitBy, isUndefined, transform, merge } from 'lodash';
+import { isEmpty, isUndefined, omitBy, pick, set, transform } from 'lodash';
 import { extractFieldFromFunction } from './extract-field-from-function';
-import { isSystemCollection } from '@directus/system-data';
 
-type QueryInfo = { collection: string; key: string; query: Query; args?: Record<string, any> };
+type QueryInfo = { collection: string; key: string; query: Query };
 
 export function queryToGqlString(queries: QueryInfo | QueryInfo[]): string | null {
 	if (!queries || isEmpty(queries)) return null;
@@ -22,7 +22,7 @@ export function queryToGqlString(queries: QueryInfo | QueryInfo[]): string | nul
 	return jsonToGraphQLQuery(queryJSON);
 }
 
-export function formatQuery({ collection, query, args }: QueryInfo): Record<string, any> {
+export function formatQuery({ collection, query }: QueryInfo): Record<string, any> {
 	const queryKeysInArguments: (keyof Query)[] = ['limit', 'sort', 'filter', 'offset', 'page', 'search'];
 
 	const alias = isSystemCollection(collection) ? collection.substring(9) : collection;
@@ -31,10 +31,6 @@ export function formatQuery({ collection, query, args }: QueryInfo): Record<stri
 		__args: omitBy(pick(query, ...queryKeysInArguments), isUndefined),
 		__aliasFor: alias,
 	};
-
-	if (args) {
-		formattedQuery.__args = merge(formattedQuery.__args, args);
-	}
 
 	const fields = query.fields ?? [useFieldsStore().getPrimaryKeyFieldForCollection(collection)!.field];
 
