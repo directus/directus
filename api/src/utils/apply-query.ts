@@ -963,7 +963,7 @@ export function applySearch(
 		});
 
 		if (needsFallbackCondition) {
-			this.orWhereRaw('1 = 0');
+			queryBuilder.orWhereRaw('1 = 0');
 		}
 	});
 
