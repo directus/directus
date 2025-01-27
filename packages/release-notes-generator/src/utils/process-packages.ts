@@ -1,6 +1,5 @@
-import { findWorkspacePackagesNoCheck } from '@pnpm/find-workspace-packages';
-import { type ProjectRootDir } from '@pnpm/types';
-import { createPkgGraph, Package, type PackageNode } from '@pnpm/workspace.pkgs-graph';
+import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/workspace.find-packages';
+import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
 import { existsSync, readFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
 import semver from 'semver';
@@ -25,7 +24,7 @@ export async function processPackages(): Promise<{
 			continue;
 		}
 
-		const changelogPath = join(localPackage.dir, 'CHANGELOG.md');
+		const changelogPath = join(localPackage.rootDir, 'CHANGELOG.md');
 
 		// The package has been bumped if a changelog file is generated
 		// (catches packages bumped solely due to internal dependency updates from changesets too)
@@ -138,12 +137,7 @@ export async function processPackages(): Promise<{
 
 	function getDependentsMap() {
 		if (!dependentsMap) {
-			const pkgs = workspacePackages.map((project) => ({
-				manifest: project.manifest,
-				rootDir: project.dir as ProjectRootDir,
-			}));
-
-			const { graph } = createPkgGraph(pkgs);
+			const { graph } = createPkgGraph(workspacePackages);
 			dependentsMap = transformGraph(graph);
 		}
 
@@ -174,7 +168,7 @@ export async function processPackages(): Promise<{
 		return dependents;
 	}
 
-	function transformGraph(graph: Record<string, PackageNode<Package>>) {
+	function transformGraph(graph: Record<string, PackageNode<Project>>) {
 		const dependentsMap: Record<string, string[]> = {};
 
 		for (const dependentNodeId of Object.keys(graph)) {
@@ -184,7 +178,7 @@ export async function processPackages(): Promise<{
 			if (!dependentPackageName) continue;
 
 			for (const dependencyNodeId of dependentPackage.dependencies) {
-				const dependencyPackage = workspacePackages.find((p) => p.dir === dependencyNodeId);
+				const dependencyPackage = workspacePackages.find((p) => p.rootDir === dependencyNodeId);
 				const dependencyPackageName = dependencyPackage?.manifest.name;
 
 				if (!dependencyPackageName) continue;

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/components",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Component for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -36,7 +36,7 @@
 		"histoire": "0.17.17",
 		"pinia": "2.3.0",
 		"rollup-plugin-node-externals": "8.0.0",
-		"typescript": "5.7.2",
+		"typescript": "5.7.3",
 		"vite": "5.4.11",
 		"vite-plugin-dts": "4.4.0",
 		"vitest": "2.1.8",

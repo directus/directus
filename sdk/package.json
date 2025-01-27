@@ -1,6 +1,6 @@
 {
 	"name": "@directus/sdk",
-	"version": "18.0.3",
+	"version": "19.0.0",
 	"description": "Directus JavaScript SDK",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -32,7 +32,7 @@
 		"@directus/tsconfig": "3.0.0",
 		"esbuild-plugin-replace": "1.4.0",
 		"tsup": "8.3.5",
-		"typescript": "5.7.2",
+		"typescript": "5.7.3",
 		"vitest": "2.1.8"
 	},
 	"engines": {

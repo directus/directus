@@ -3,6 +3,7 @@ import type { Column } from '@directus/schema';
 import type { Field, RawField, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import type { DatabaseClient } from '../../../types/index.js';
+import { getDefaultIndexName } from '../../../utils/get-default-index-name.js';
 import { getDatabaseClient } from '../../index.js';
 import { DatabaseHelper } from '../types.js';
 
@@ -31,6 +32,10 @@ export abstract class SchemaHelper extends DatabaseHelper {
 				builder.dropNullable(column);
 			}
 		});
+	}
+
+	generateIndexName(type: 'unique' | 'foreign' | 'index', collection: string, fields: string | string[]): string {
+		return getDefaultIndexName(type, collection, fields);
 	}
 
 	async changeToType(

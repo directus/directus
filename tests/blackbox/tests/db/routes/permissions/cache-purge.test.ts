@@ -8,16 +8,18 @@ import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { collection, type Collection } from './cache-purge.seed';
+import { CreatePolicy } from '@common/functions';
 
 describe('Permissions Cache Purging Tests', () => {
 	const cacheStatusHeader = 'x-cache-status';
 
 	const action = 'read';
 	const updatedAction = 'update';
+	let policyId: string;
 
 	const mutations = {
 		createOne: async (vendor: Vendor, env: Env) => {
-			const item = { collection, action };
+			const item = { collection, action, policy: policyId };
 
 			await clearCacheAndFetchOnce(vendor, env);
 
@@ -27,7 +29,7 @@ describe('Permissions Cache Purging Tests', () => {
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 		},
 		createMany: async (vendor: Vendor, env: Env) => {
-			const items = Array(5).fill({ collection, action });
+			const items = Array(5).fill({ collection, action, policy: policyId });
 
 			await clearCacheAndFetchOnce(vendor, env);
 
@@ -37,7 +39,7 @@ describe('Permissions Cache Purging Tests', () => {
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 		},
 		updateOne: async (vendor: Vendor, env: Env) => {
-			const item = { collection, action };
+			const item = { collection, action, policy: policyId };
 			const updatedItem = { action: updatedAction };
 
 			const itemId = (
@@ -55,7 +57,7 @@ describe('Permissions Cache Purging Tests', () => {
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 		},
 		updateMany: async (vendor: Vendor, env: Env) => {
-			const items = Array(5).fill({ collection, action });
+			const items = Array(5).fill({ collection, action, policy: policyId });
 
 			const updatedItem = { action: updatedAction };
 
@@ -78,7 +80,7 @@ describe('Permissions Cache Purging Tests', () => {
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 		},
 		updateBatch: async (vendor: Vendor, env: Env) => {
-			const items = Array(5).fill({ collection, action });
+			const items = Array(5).fill({ collection, action, policy: policyId });
 
 			const itemIds = (
 				await request(getUrl(vendor, env))
@@ -103,7 +105,7 @@ describe('Permissions Cache Purging Tests', () => {
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 		},
 		deleteOne: async (vendor: Vendor, env: Env) => {
-			const item = { collection, action };
+			const item = { collection, action, policy: policyId };
 
 			const itemId = (
 				await request(getUrl(vendor, env))
@@ -119,7 +121,7 @@ describe('Permissions Cache Purging Tests', () => {
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 		},
 		deleteMany: async (vendor: Vendor, env: Env) => {
-			const items = Array(5).fill({ collection, action });
+			const items = Array(5).fill({ collection, action, policy: policyId });
 
 			const itemIds = (
 				await request(getUrl(vendor, env))
@@ -181,6 +183,14 @@ describe('Permissions Cache Purging Tests', () => {
 				instance = spawn('node', [paths.cli, 'start'], { cwd: paths.cwd, env: env[vendor] });
 
 				await awaitDirectusConnection(newServerPort);
+
+				const newPolicy = await CreatePolicy(vendor, {
+					adminAccessEnabled: false,
+					appAccessEnabled: false,
+					name: 'Cache Purge Test',
+				});
+
+				policyId = newPolicy.id;
 			}, 60_000);
 
 			afterAll(() => {

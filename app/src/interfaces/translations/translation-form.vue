@@ -17,6 +17,7 @@ const {
 	getItemEdits,
 	isLocalItem,
 	remove,
+	loading,
 	updateValue,
 } = defineProps<{
 	languageOptions: Record<string, any>[];
@@ -71,31 +72,31 @@ const activatorDisabled = computed(() => {
 	);
 });
 
-const { getIconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd, transition } = useActivatorButton();
-const { getDeleteToggleTooltip, getDeleteToggleName, onToggleDelete } = useDeleteToggle();
+const { transition, iconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd } = useActivatorButton();
+const { getDeselectTooltip, getDeselectIcon, onToggleDelete } = useDeleteToggle();
 
 function useActivatorButton() {
 	const pressing = ref(false);
 	const pressed = ref(false);
 	const transition = ref(false);
 
+	const iconName = computed(() =>
+		(pressed.value || pressing.value) && !activatorDisabled.value ? 'check_box' : 'check_box_outline_blank',
+	);
+
 	watch([item, lang], ([newItem, newLang], [oldItem, oldLang]) => {
-		transition.value = newItem !== oldItem && newLang === oldLang;
+		const isInitialItem = isEmpty(newItem) && isEmpty(oldItem);
+		transition.value = isInitialItem ? false : newItem !== oldItem && newLang === oldLang;
 	});
 
 	return {
-		getIconName,
+		transition,
+		iconName,
 		onEnableTranslation,
 		onMousedown,
 		onMouseup,
 		onTransitionEnd,
-		transition,
 	};
-
-	function getIconName() {
-		if ((pressed.value || pressing.value) && !activatorDisabled.value) return 'check_box';
-		return 'check_box_outline_blank';
-	}
 
 	function onEnableTranslation(lang?: string, item?: DisplayItem, itemInitial?: DisplayItem) {
 		if (!isEmpty(item) || !isEmpty(itemInitial)) return;
@@ -123,20 +124,21 @@ function useActivatorButton() {
 
 function useDeleteToggle() {
 	return {
-		getDeleteToggleTooltip,
-		getDeleteToggleName,
+		getDeselectIcon,
+		getDeselectTooltip,
 		onToggleDelete,
 	};
 
-	function getDeleteToggleTooltip(item: DisplayItem) {
-		if (item.$type === 'deleted') return 'undo_removed_item';
-		if (isLocalItem(item)) return 'delete_item';
-		return 'remove_item';
+	function getDeselectIcon(item: DisplayItem) {
+		if (item.$type === 'deleted') return 'settings_backup_restore';
+		if (isLocalItem(item)) return 'close';
+		return 'delete';
 	}
 
-	function getDeleteToggleName(item?: DisplayItem) {
-		if (item?.$type === 'deleted') return 'settings_backup_restore';
-		return 'delete';
+	function getDeselectTooltip(item: DisplayItem) {
+		if (item.$type === 'deleted') return 'undo_removed_item';
+		if (isLocalItem(item)) return 'deselect';
+		return 'remove_item';
 	}
 
 	function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
@@ -156,7 +158,10 @@ function useDeleteToggle() {
 	<div :class="{ secondary }">
 		<language-select v-model="lang" :items="languageOptions" :danger="item?.$type === 'deleted'" :secondary>
 			<template #prepend>
+				<span v-if="loading" class="activator-loading-placeholder" />
+
 				<transition
+					v-else
 					:name="transition ? (item ? 'rotate-in' : 'rotate-out') : null"
 					:duration="transition ? null : 0"
 					mode="out-in"
@@ -169,7 +174,7 @@ function useDeleteToggle() {
 						v-else
 						v-tooltip="!activatorDisabled ? t('enable') : null"
 						:class="{ disabled: activatorDisabled }"
-						:name="getIconName()"
+						:name="iconName"
 						:disabled="activatorDisabled"
 						clickable
 						@click.stop="onEnableTranslation(lang, item, itemInitial)"
@@ -182,11 +187,11 @@ function useDeleteToggle() {
 			<template #controls="{ active, toggle }">
 				<v-icon
 					v-if="item"
-					v-tooltip="!activatorDisabled ? t(getDeleteToggleTooltip(item)) : null"
+					v-tooltip="!activatorDisabled ? t(getDeselectTooltip(item)) : null"
 					class="delete"
 					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
-					:name="getDeleteToggleName(item)"
+					:name="getDeselectIcon(item)"
 					clickable
 					@click.stop="onToggleDelete(item, itemInitial)"
 				/>
@@ -219,6 +224,14 @@ function useDeleteToggle() {
 </template>
 
 <style lang="scss" scoped>
+.activator-loading-placeholder {
+	--size: 24px;
+
+	display: inline-block;
+	width: var(--size);
+	height: var(--size);
+}
+
 .disabled {
 	--v-icon-color: var(--theme--primary-subdued);
 }
