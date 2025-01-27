@@ -96,7 +96,7 @@ onUnmounted(() => {
 	margin: 0;
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
-	box-shadow: 0;
+	box-shadow: none;
 	transition:
 		box-shadow var(--medium) var(--transition),
 		margin var(--fast) var(--transition);
