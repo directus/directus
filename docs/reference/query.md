@@ -620,27 +620,19 @@ Deep allows you to set any of the other query parameters on a nested relational 
 
 ### Examples
 
-Limit the nested related articles to 3
+Only get 3 related posts, with only the top rated comment nested:
 
 ```json
 {
-	"related_articles": {
-		"_limit": 3
-	}
-}
-```
-
-Only get 3 related articles, with only the top rated comment nested
-
-```json
-{
-	"related_articles": {
-		"_limit": 3,
-		"comments": {
-			"_sort": "rating",
-			"_limit": 1
+	"deep": {
+		"related_posts": {
+			"_limit": 3,
+			"comments": {
+				"_sort": "rating",
+				"_limit": 1
+			}
 		}
-	}
+  }
 }
 ```
 
