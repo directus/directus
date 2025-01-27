@@ -118,13 +118,7 @@ function onSelection(selectedIds: (number | string)[] | null) {
 
 			<template #append>
 				<div class="item-actions">
-					<v-icon
-						v-if="displayItem"
-						v-tooltip="t('deselect')"
-						name="close"
-						class="deselect"
-						@click.stop="value = null"
-					/>
+					<v-remove v-if="displayItem" deselect @action="value = null" />
 
 					<v-icon v-else class="expand" name="expand_more" />
 				</div>

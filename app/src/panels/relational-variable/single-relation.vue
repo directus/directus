@@ -31,7 +31,7 @@ const displayItem = computed(() => (displayItems.value.length > 0 ? displayItems
 
 			<template #append>
 				<div class="item-actions">
-					<v-icon v-if="displayItem" v-tooltip="t('deselect')" name="close" @click.stop="$emit('input', undefined)" />
+					<v-remove v-if="displayItem" deselect @action="$emit('input', undefined)" />
 
 					<v-icon v-else name="expand_more" />
 				</div>

@@ -252,18 +252,6 @@ const allowDrag = computed(
 	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled,
 );
 
-function getDeselectIcon(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'close';
-	return 'delete';
-}
-
-function getDeselectTooltip(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (isLocalItem(item)) return 'deselect';
-	return 'remove_item';
-}
-
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
 	const sortField = info?.sortField;
@@ -568,13 +556,14 @@ function getLinkForItem(item: DisplayItem) {
 							<v-icon name="launch" />
 						</router-link>
 
-						<v-icon
+						<v-remove
 							v-if="!disabled && (deleteAllowed || isLocalItem(item))"
-							v-tooltip="t(getDeselectTooltip(item))"
 							:class="{ deleted: item.$type === 'deleted' }"
-							:name="getDeselectIcon(item)"
-							clickable
-							@click.stop="deleteItem(item)"
+							:item-type="item.$type"
+							:item-info="relationInfo"
+							:item-is-local="isLocalItem(item)"
+							:item-edits="getItemEdits(item)"
+							@action="deleteItem(item)"
 						/>
 					</div>
 				</template>
@@ -633,12 +622,13 @@ function getLinkForItem(item: DisplayItem) {
 									<v-icon name="launch" />
 								</router-link>
 
-								<v-icon
+								<v-remove
 									v-if="!disabled && (deleteAllowed || isLocalItem(element))"
-									v-tooltip="t(getDeselectTooltip(element))"
-									:name="getDeselectIcon(element)"
-									clickable
-									@click.stop="deleteItem(element)"
+									:item-type="element.$type"
+									:item-info="relationInfo"
+									:item-is-local="isLocalItem(element)"
+									:item-edits="getItemEdits(element)"
+									@action="deleteItem(element)"
 								/>
 							</div>
 						</v-list-item>

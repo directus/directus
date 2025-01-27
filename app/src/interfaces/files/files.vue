@@ -111,18 +111,6 @@ const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelati
 
 const pageCount = computed(() => Math.ceil(totalItemCount.value / limit.value));
 
-function getDeselectIcon(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'close';
-	return 'delete';
-}
-
-function getDeselectTooltip(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (isLocalItem(item)) return 'deselect';
-	return 'remove_item';
-}
-
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
 	const sortField = info?.sortField;
@@ -337,12 +325,13 @@ const allowDrag = computed(
 						<div class="spacer" />
 
 						<div class="item-actions">
-							<v-icon
+							<v-remove
 								v-if="!disabled && (deleteAllowed || isLocalItem(element))"
-								v-tooltip="t(getDeselectTooltip(element))"
-								:name="getDeselectIcon(element)"
-								clickable
-								@click.stop="deleteItem(element)"
+								:item-type="element.$type"
+								:item-info="relationInfo"
+								:item-is-local="isLocalItem(element)"
+								:item-edits="getItemEdits(element)"
+								@action="deleteItem(element)"
 							/>
 
 							<v-menu show-arrow placement="bottom-end">
