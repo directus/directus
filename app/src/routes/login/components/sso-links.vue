@@ -71,7 +71,7 @@ const errorFormatted = computed(() => {
 					<v-icon :name="provider.icon" />
 				</div>
 				<div class="sso-title">
-					{{ t('log_in_with', { provider: provider.label }) }}
+					<v-text-overflow :text="t('log_in_with', { provider: provider.label })" />
 				</div>
 			</a>
 		</template>
@@ -99,6 +99,8 @@ const errorFormatted = computed(() => {
 	transition: border-color var(--fast) var(--transition);
 
 	.sso-icon {
+		--v-icon-size: 28px;
+
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -106,10 +108,6 @@ const errorFormatted = computed(() => {
 		margin: -$sso-link-border-width;
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
-
-		span {
-			--v-icon-size: 28px;
-		}
 	}
 
 	.sso-title {
@@ -117,6 +115,7 @@ const errorFormatted = computed(() => {
 		align-items: center;
 		padding: 0 16px 0 20px;
 		font-size: 16px;
+		overflow: hidden;
 	}
 
 	&:hover {

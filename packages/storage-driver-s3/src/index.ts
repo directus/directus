@@ -24,12 +24,13 @@ import {
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import type { ChunkedUploadContext, Range, TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import { Permit, Semaphore } from '@shopify/semaphore';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { ERRORS, StreamSplitter, TUS_RESUMABLE } from '@tus/utils';
+import ms from 'ms';
 import fs, { promises as fsProm } from 'node:fs';
 import { Agent as HttpAgent } from 'node:http';
 import { Agent as HttpsAgent } from 'node:https';
@@ -50,6 +51,10 @@ export type DriverS3Config = {
 	tus?: {
 		chunkSize?: number;
 	};
+	connectionTimeout?: number;
+	socketTimeout?: number;
+	maxSockets?: number;
+	keepAlive?: boolean;
 };
 
 export class DriverS3 implements TusDriver {
@@ -79,10 +84,10 @@ export class DriverS3 implements TusDriver {
 		 * often in rapid succession, hitting the maxSockets limit of 50.
 		 * The requestHandler is customized to get around this.
 		 */
-		const connectionTimeout = 5000;
-		const socketTimeout = 120000;
-		const maxSockets = 500;
-		const keepAlive = true;
+		const connectionTimeout = ms(String(this.config.connectionTimeout ?? 5000));
+		const socketTimeout = ms(String(this.config.socketTimeout ?? 120000));
+		const maxSockets = this.config.maxSockets ?? 500;
+		const keepAlive = this.config.keepAlive ?? true;
 
 		const s3ClientConfig: S3ClientConfig = {
 			requestHandler: new NodeHttpHandler({
@@ -130,7 +135,9 @@ export class DriverS3 implements TusDriver {
 		return normalizePath(join(this.root, filepath));
 	}
 
-	async read(filepath: string, range?: Range): Promise<Readable> {
+	async read(filepath: string, options?: ReadOptions): Promise<Readable> {
+		const { range } = options ?? {};
+
 		const commandInput: GetObjectCommandInput = {
 			Key: this.fullPath(filepath),
 			Bucket: this.config.bucket,

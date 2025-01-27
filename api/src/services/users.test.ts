@@ -1,13 +1,13 @@
 import { InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
+import { randomUUID } from '@directus/random';
 import type { Accountability, SchemaOverview } from '@directus/types';
-import knex, { type Knex } from 'knex';
-import { MockClient, Tracker, createTracker } from 'knex-mock-client';
-import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
+import knex from 'knex';
+import { MockClient, createTracker } from 'knex-mock-client';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import type { MutationOptions } from '../types/items.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService, MailService, UsersService } from './index.js';
-import { randomUUID } from '@directus/random';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -293,6 +293,8 @@ describe('Integration Tests', () => {
 				tracker.on.update('directus_notifications').response({});
 				// mock versions update query in deleteOne/deleteMany/deleteByQuery methods
 				tracker.on.update('directus_versions').response({});
+				// mock comments update query in deleteOne/deleteMany/deleteByQuery methods
+				tracker.on.update('directus_comments').response({});
 
 				const service = new UsersService({
 					knex: db,

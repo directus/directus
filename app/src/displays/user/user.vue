@@ -50,15 +50,16 @@ const src = computed(() => {
 
 <style lang="scss" scoped>
 .user {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
 	height: 100%;
+	vertical-align: middle;
 
 	img {
 		display: inline-block;
 		width: auto;
 		height: 100%;
-		vertical-align: -30%;
+		vertical-align: -67%;
 		border-radius: 4px;
 
 		&.circle {

@@ -41,7 +41,7 @@ conditions: 条件
 location: 地理位置
 collection_names_are_case_sensitive: 集合名称是区分大小写
 condition_rules: 条件规则
-input: Input
+input: 输入
 maps: 地图
 switch_user: 切换用户
 item_creation: 新建
@@ -110,6 +110,7 @@ field_name_translations: 字段名称翻译
 enter_password_to_enable_tfa: 输入您的密码以启用双因素认证(2FA)
 add_field: 添加字段
 role_name: 角色名称
+policy_name: 策略名称
 branch: 分支
 leaf: 叶节点
 indeterminate: 不确定的状态
@@ -127,6 +128,7 @@ requires_value: 必填值
 create_preset: 创建预设
 create_panel: 创建面板
 create_role: 创建角色
+create_policy: 创建策略
 create_user: 创建用户
 message: 消息
 delete_panel: 删除面板
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: 会话过期
 public_label: 公开
 public_description: 设置哪些API无需身份验证。
+public_role_info: >-
+  公共角色控制未经身份验证的用户或没有角色的用户可以访问哪些API数据。具有公共角色的请求不能拥有应用程序或管理员访问权限。如果将应用程序或管理员访问权限分配给与公共角色相关的策略，这些权限将被忽略。
 admin_description: 不受限制的 App/ API 访问权限的初始管理角色
+admin_policy_description: 具有不受限制的应用/API访问权限的初始管理策略。
 no_description: 没有描述。
 reached_maximum_number_of_extensions: 您已达到此项目的最大扩展数 ({n})。请联系您的系统管理员以获取更多信息。
 not_allowed: 不允许
@@ -255,9 +260,13 @@ field_permissions: 字段权限
 field_validation: 字段验证
 field_presets: 字段预设
 permissions_for_role: '{role} 角色能够 {action}。'
+permissions_for_policy: '{policy} 角色能够 {action}。'
 fields_for_role: '{role} 角色能够 {action} 字段。'
+fields_for_policy: '{policy} 策略可以 {action} 的字段。'
 validation_for_role: '{role} 角色必须遵守字段的 {action} 规则。'
+validation_for_policy: '{policy} 策略必须遵守的字段 {action} 规则。'
 presets_for_role: '{role} 角色的默认值。'
+presets_for_policy: '{policy} 策略的字段值默认设置。'
 presets_field_warning: '字段“{field}”的关系预设应使用“详细”语法配置。'
 presentation_and_aliases: 别名
 revision_post_create: 这是新建条目后看起来的样子。
@@ -363,6 +372,7 @@ no_collections_found: 未找到任何模型
 new_data_alert: '以下将在您的模型中创建：'
 search_collection: 搜索模型...
 search_role: 搜索角色...
+search_policy: 搜索策略...
 search_field: 搜索字段
 new_field: '新建字段'
 new_collection: '新建模型'
@@ -403,6 +413,7 @@ soft_length: 软限制
 precision_scale: 精度和缩放
 readonly: 只读
 unique: 唯一
+index: 索引
 updated_on: 更新于
 updated_by: 更新，由
 primary_key: 主键
@@ -513,6 +524,11 @@ hours: 时
 month: 月
 year: 年
 select_all: 全选
+permissionsLevel:
+  all: 完全 {action} 访问权限
+  partial: 部分 {action} 访问权限
+  custom: 部分 {action} 访问权限
+  none: 无 {action} 访问权限
 months:
   january: 1 月
   february: 2 月
@@ -539,6 +555,7 @@ file_details: 文件信息
 dimensions: 尺寸
 size: 大小
 created: 已创建
+uploaded: 上传完成
 modified: 已修改
 owner: 所有者
 edited_by: 编辑者
@@ -615,6 +632,7 @@ display_not_found: '未找到显示 "{display}" 。'
 reset_display: 重置显示
 list-m2a: 构建器 (M2A)
 item_count: '暂无数据 | 找到一条数据 | 找到 {count} 条数据'
+filtered_item_count: '无过滤项目 | 一个过滤项目 | {count} 个过滤项目'
 no_items_copy: 该模型中没有数据。
 file_count: '没有文件 | 一个文件 | {count} 个文件'
 no_files_copy: 没有任何文件。
@@ -649,6 +667,7 @@ copy_to: 复制到...
 no_other_dashboards_copy: 您还没有任何其他工作台。
 inactive: 非活跃
 users: 用户
+roles: 角色
 activity: 操作记录
 activity_item: 活动项
 action: 操作
@@ -776,6 +795,9 @@ make_collection_hidden: 隐藏模型
 make_folder_visible: 显示文件夹
 make_folder_hidden: 隐藏文件夹
 goto_collection_content: 查看内容
+count_of_total_items: '{count} 个，共 {total} 个项目'
+start_end_of_count_items: '{start}-{end}，共 {count} 个项目'
+start_end_of_count_filtered_items: '{start}-{end}，共 {count} 个筛选项目'
 delete_collection_are_you_sure: >-
   您确定要删除 "{collection}" 数据模型吗？这将删除该模型及其中的所有数据。此操作是永久性的。
 delete_folder_are_you_sure: 您确定要删除 "{folder}" 文件夹吗？嵌套文件夹和数据模型将被移动到最上层。
@@ -862,11 +884,13 @@ columns: 列
 collection_setup: 模型设置
 optional_system_fields: 可选字段
 value_unique: 值必须唯一
+value_index: 字段已建立索引
 all_activity: 所有活动的
 create_item: 创建条目
 display_template: 显示模板
 language_display_template: 语言显示模板
 translations_display_template: 翻译显示模板
+n_items_selected: '未选择项目 | 选择了一个项目 | 选择了 {n} 个项目'
 per_page: 每页
 all_files: 所有文件
 my_files: 我的文件
@@ -978,6 +1002,22 @@ no_data_in_flow: 此Flow没有产生或获取任何数据
 accountability: 访问控制
 payload: 有效载荷 (Payload)
 details: 详细信息
+resume_streaming_logs: 恢复日志流
+pause_streaming_logs: 暂停流日志
+logs_session_resumed: 日志会话已恢复...
+logs_session_paused: 日志会话已暂停...
+logs_stream_disconnected: 日志流断开连接...
+log_detail_filter_paths: '过滤路径 (例如：req.method，res.statusCode)'
+logs_beginning: 这是日志会话的开始...
+logs_waiting: '等待更多日志...'
+logs_unread_count: '{count} 条未读'
+clear_logs: 清除日志
+search_logs: 搜索日志...
+all_instances: 所有实例
+instance_count: '无实例 | 一个实例 | {count} 个实例'
+all_log_levels: 所有日志级别
+log_level_count: '无日志级别 | 一个日志级别 | {count} 个日志级别'
+soft_wrap_lines: 软换行显示行
 full_screen: 全屏显示
 full_text_search: 全文搜索
 edit_panels: 编辑面板
@@ -1006,6 +1046,7 @@ tooltip: 提示
 tooltip_placeholder: 输入工具提示...
 unlimited: 无限制
 open_link_in: 打开链接于
+new_tab: 新标签页
 save_image: 保存图像
 save_media: 保存媒体
 wysiwyg_options:
@@ -1079,10 +1120,13 @@ editing_unit: '正在编辑 {unit}'
 editing_in_batch: '批量编辑 {count} 条数据'
 no_options_available: 无可用的选项
 settings_data_model: 数据模型
+settings_roles: 用户角色
+settings_permissions: 访问策略
 settings_project: 设置
 settings_appearance: 外观
 settings_webhooks: Webhook
 settings_flows: 流程
+settings_system_logs: 系统日志
 settings_presets: 书签
 settings_translations: 翻译
 one_or_more_options_are_missing: 缺少一个或多个选项
@@ -1128,6 +1172,10 @@ page_help_settings_datamodel_collections: >-
   **数据模型: ** - 列出所有可用的模型。这包括可见、隐藏和系统模型，以及可以添加的数据库表（包括还未加入并管理的）。
 page_help_settings_datamodel_fields: >-
   **数据模型: Collection** — 用于管理此模型及其字段的表单
+page_help_settings_system_logs: '**系统日志** — 访问系统日志的实时流。'
+page_help_settings_policies_collection: '**浏览策略** - 列出项目内的所有策略。'
+page_help_settings_policies_item: "**Policy Detail** — 管理策略的权限和其他设置。"
+page_help_settings_roles_collection: '**Browse Roles** - 列出项目中所有用户角色。'
 page_help_settings_roles_item: "**角色详细** — 管理角色的权限和其他设置。"
 page_help_settings_presets_collection: >-
   **Browse Presets** - 列出项目中的所有预设，包括：用户、角色、全局书签以及默认视图。
@@ -1175,6 +1223,7 @@ singleton: 单一
 singleton_label: 视为单个对象
 system_fields_locked: 系统字段已锁定，无法编辑
 directus_collection:
+  directus_access: 策略附件
   directus_activity: 所有事件操作日志
   directus_collections: 其他集合配置和元数据
   directus_dashboards: Insights模块中的仪表板
@@ -1186,6 +1235,8 @@ directus_collection:
   directus_notifications: 发送给用户的通知
   directus_operations: 在Flow中运行的操作
   directus_panels: Insights仪表板中的个别面板
+  directus_permissions: 每个策略的访问权限
+  directus_policies: 访问控制策略
   directus_presets: 书签/预设默认值
   directus_relations: 元数据和关系配置
   directus_revisions: 数据快照
@@ -1363,8 +1414,15 @@ fields:
     icon: 角色 Icon
     description: 描述
     users: 角色中的用户
+    parent: 父角色
+    children: 子角色
   directus_policies:
+    name: 策略名称
     description: 描述
+    app_access: 应用访问
+    admin_access: 管理员访问
+    ip_access: IP 访问
+    enforce_tfa: 需要 2FA
   directus_webhooks:
     name: 名称
     method: 方法
@@ -1447,6 +1505,12 @@ field_options:
     focal_point_divider: 聚焦点
     filename_disk: 服务端的名称...
     filename_download: 下载时的文件名
+  directus_policies:
+    name: 此策略的唯一名称...
+    description: 此策略的描述...
+    ip_access: 添加允许的 IP 地址、 IP 范围和 CIDR 块。留空以允许所有...
+    enforce_tfa: 强制两步验证
+    assigned_to: 分配给
   directus_roles:
     name: 角色名称...
     description: 角色介绍...
@@ -1456,6 +1520,8 @@ field_options:
       name_placeholder: 输入标题...
       link_name: 链接
       link_placeholder: 相对或绝对的 URL...
+    parent_note: 此角色继承权限的可选父角色
+    children_note: 继承此角色权限的嵌套子角色
     collections_name: 数据模型
     collections_addLabel: 添加到模型...
   directus_users:
@@ -1506,6 +1572,7 @@ live_preview:
   toggle_3d: 切换 3D
 shares: 共享
 unlimited_usage: 无限使用
+uses_left: 无剩余使用次数 | 剩余一次使用次数 | 剩余 {n} 次使用次数
 no_shares: 没有要显示的共享
 new_share: 新建分享
 expired: 已过期
@@ -1539,6 +1606,9 @@ continue_label: 继续
 continue_as: >-
   {name} 目前已被身份验证。如果您确认此帐户，请按继续。
 editing_role: '{role} 角色'
+editing_policy: '{policy} 策略'
+no_permissions: 没有权限
+permission_add_collection: 添加收藏
 creating_webhook: 正在创建 Webhook
 default_label: 默认值
 delete_label: 删除
@@ -1772,6 +1842,8 @@ interfaces:
     description: 选择或上传图片
     crop: 裁剪为适合的
     crop_label: 视需要裁剪图像
+    letterbox: 信箱
+    letterbox_label: 添加图像预览间距
   system-interface:
     interface: 接口
     description: 选择一个现有接口
@@ -1806,6 +1878,7 @@ interfaces:
     editorFont: 编辑器字体
     previewFont: 预览字体
     default_view: 默认视图
+    default_view_editor: 编辑器
     default_view_preview: 预览
     customSyntax: 自定义块
     customSyntax_label: 添加自定义语法类型
@@ -1990,6 +2063,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: 原始编辑器
     description: 允许输入原始或mustache 模板值
+  input-password:
+    input-password: 输入密码
+    description: 带有隐藏值切换的密码输入
 displays:
   translations:
     translations: 翻译
@@ -2338,7 +2414,7 @@ operations:
     options_placeholder: '请参考阅读https://www.npmjs.com/package/jsonwebtoken#usage for the available options'
     sign: 签名令牌
     verify: 验证令牌
-    decode: 删除令牌
+    decode: 解码令牌
   log:
     name: 记录到控制台
     description: 输出内容到控制台
@@ -2433,3 +2509,5 @@ duplicate_dashboard: 复制仪表板
 search_dashboard: 搜索仪表板...
 search_flow: 搜索流程...
 percent: 百分比
+show_password: 显示密码
+hide_password: 隐藏密码

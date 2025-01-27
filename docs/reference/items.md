@@ -764,7 +764,7 @@ The name of the collection `collection_name` is required and a partial [item obj
 
 ### Response
 
-Returns an [item object](#the-item-object) if a valid primary key was provided.
+Returns the [item object](#the-item-object) of the singleton that was updated.
 
 ### Example
 

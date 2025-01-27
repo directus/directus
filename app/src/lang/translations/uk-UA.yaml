@@ -110,6 +110,7 @@ field_name_translations: Переклад назви поля
 enter_password_to_enable_tfa: Введіть свій пароль, щоб увімкнути двофакторну аутентифікацію
 add_field: Додати поле
 role_name: Назва ролі
+policy_name: Назва політики
 branch: Гілка
 leaf: Відгалуження
 indeterminate: Не вдалось визначити
@@ -127,6 +128,7 @@ requires_value: Потребує значення
 create_preset: Створити шаблон
 create_panel: Створити панель
 create_role: Створити роль
+create_policy: Створити політику
 create_user: Новий користувач
 message: Повідомлення
 delete_panel: Видалити панель
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Час сеансу минув
 public_label: Загальнодоступний
 public_description: Контролює, які дані API є доступними без входу в особистий кабінет.
+public_role_info: >-
+  Публічна роль визначає, які дані API доступні для неавтентифікованих користувачів або користувачів без ролі. Запити з публічною роллю не можуть мати доступу до програми або адміністратора. Якщо додаток або адміністратор отримають доступ до політики, призначеної для публічної ролі, вони будуть проігноровані.
 admin_description: Початкова роль управління з необмеженим APP/API доступом.
+admin_policy_description: Початкова адміністративна політика з необмеженим доступом до програм та API.
 no_description: Немає опису...
 reached_maximum_number_of_extensions: Ви досягли максимальної кількості розширень для цього проєкту ({n}). Зверніться до вашого системного адміністратора за додатковою інформацією.
 not_allowed: Заборонено
@@ -255,9 +260,13 @@ field_permissions: Дозволи Поля
 field_validation: Валідація Поля
 field_presets: Пресети Полів
 permissions_for_role: 'Об''єкти {role} ролі можуть {action}.'
+permissions_for_policy: 'Елементи політики {policy} можуть {action}.'
 fields_for_role: 'Поля {role} ролі можуть {action}.'
+fields_for_policy: 'Поля політики {policy} можуть {action}.'
 validation_for_role: 'Поле {action} направляє {role} Роль повинна підпорядкуватися.'
+validation_for_policy: 'Поле {action} визначає політику {policy}.'
 presets_for_role: 'Значення поля за замовчуванням для ролі {role}.'
+presets_for_policy: 'Значення типового поля для політики {policy}.'
 presets_field_warning: 'Реляційні налаштування для поля "{field}" слід налаштовувати з "детальним" синтаксисом.'
 presentation_and_aliases: Подання та Аліаси
 revision_post_create: Ось як виглядав цей елемент після його створення.
@@ -363,6 +372,7 @@ no_collections_found: Колекцій не знайдено.
 new_data_alert: 'Наступне буде створено в межах вашої моделі даних:'
 search_collection: Пошук колекцій...
 search_role: Пошуковий запит...
+search_policy: Шукаємо політику...
 search_field: Пошуковий запит...
 new_field: 'Нове поле'
 new_collection: 'Нова колекція'
@@ -403,6 +413,7 @@ soft_length: Несувора квота
 precision_scale: Точність і шкала
 readonly: Тільки читання
 unique: Унікальне
+index: Індекс
 updated_on: Оновлене
 updated_by: Оновлено
 primary_key: Первинний ключ
@@ -513,6 +524,11 @@ hours: Години
 month: Місяць
 year: Рік
 select_all: Обрати все
+permissionsLevel:
+  all: Повний доступ {action}
+  partial: Частковий доступ {action}
+  custom: Частковий доступ {action}
+  none: Немає доступу {action}
 months:
   january: Січень
   february: Лютий
@@ -616,6 +632,7 @@ display_not_found: 'Дисплей "{display}" не знайдено.'
 reset_display: Скинути дисплей
 list-m2a: Білдер (М2А)
 item_count: 'Немає елементів | Один елемент | {count} елементів'
+filtered_item_count: 'Немає відфільтрованих елементів | Один відфільтрований елемент | {count} відфільтрованих елементів'
 no_items_copy: Ще немає об'єктів в цій колекції.
 file_count: 'Файлів немає | Один файл | {count} файлів'
 no_files_copy: Файлів не знайдено.
@@ -650,6 +667,7 @@ copy_to: Коіювати до...
 no_other_dashboards_copy: У вас ще немає інших панелей керування.
 inactive: Неактивний
 users: Користувачі
+roles: Ролі
 activity: Активність
 activity_item: Об'єкт активності
 action: Дія
@@ -777,6 +795,9 @@ make_collection_hidden: Приховати колекцію
 make_folder_visible: Зробити теку видимою
 make_folder_hidden: Зробити теку прихованою
 goto_collection_content: Переглянути вміст
+count_of_total_items: '{count} із {total} елементів'
+start_end_of_count_items: '{start}-{end} з {count} елементів'
+start_end_of_count_filtered_items: '{start}-{end} з {count} відфільтрованих елементів'
 delete_collection_are_you_sure: >-
   Ви впевнені що хочете видалити колекцію "{collection}"? Це видалить колекцію та всі елементи в ній. Ця дія є безповоротною.
 delete_folder_are_you_sure: Ви впевнені що бажаєте видалити теку "{folder}"? Вкладені теки й колекції будуть переміщені на самий верхній рівень.
@@ -863,11 +884,13 @@ columns: Колонки
 collection_setup: Налаштування колекції
 optional_system_fields: Необов'язкові поля
 value_unique: Значення повинно бути унікальним
+value_index: Поле індексоване
 all_activity: Уся діяльність
 create_item: Створити об'єкт
 display_template: Шаблон відображення
 language_display_template: Шаблон відображення мови
 translations_display_template: Шаблон відображення перекладів
+n_items_selected: 'Елементи не вибрано | Вибрано один елемент | Вибрано {n} елементів'
 per_page: На сторінку
 all_files: Всі файли
 my_files: Мої файли
@@ -979,6 +1002,22 @@ no_data_in_flow: В цьому потоці не було створено чи 
 accountability: Підзвітність
 payload: Вміст
 details: Деталі
+resume_streaming_logs: Відновити потокові журнали
+pause_streaming_logs: Тимчасово зупинити потокові журнали
+logs_session_resumed: Сеанс журналу відновлено...
+logs_session_paused: Сеанс журналів тимчасово зупинено...
+logs_stream_disconnected: Потік журналів від'єднано...
+log_detail_filter_paths: 'Шляхи фільтрів (наприклад: req.method, res.statusCode)'
+logs_beginning: Це початок сеансу вашого журналу...
+logs_waiting: 'Чекаємо на більше журналів...'
+logs_unread_count: '{count} непрочитаних'
+clear_logs: Очистити журнали
+search_logs: Шукати журнали...
+all_instances: Усі випадки
+instance_count: 'Немає випадків | Один випадок | {count} випадків'
+all_log_levels: Усі рівні журналу
+log_level_count: 'Без рівня журналу | Один рівень журналу | {count} рівнів журналу'
+soft_wrap_lines: М'які лінії обгортки
 full_screen: Повний екран
 full_text_search: Пошук за повним текстом
 edit_panels: Редагувати панелі
@@ -1007,6 +1046,7 @@ tooltip: Підказка
 tooltip_placeholder: Введіть підказку...
 unlimited: Необмежено
 open_link_in: Відкрити посилання за допомогою
+new_tab: Нова вкладка
 save_image: Зберегти зображення
 save_media: Зберегти медіа
 wysiwyg_options:
@@ -1080,10 +1120,13 @@ editing_unit: 'Редагування {unit}'
 editing_in_batch: 'Пакетне редагування {count} елементів'
 no_options_available: Варіанти недоступні
 settings_data_model: Модель даних
+settings_roles: Ролі користувачів
+settings_permissions: Правила доступу
 settings_project: Налаштування
 settings_appearance: Вигляд
 settings_webhooks: Вебхуки
 settings_flows: Автоматизація
+settings_system_logs: Системні журнали
 settings_presets: Закладки
 settings_translations: Переклади
 one_or_more_options_are_missing: Одно або більше налаштувань відсутні
@@ -1129,6 +1172,10 @@ page_help_settings_datamodel_collections: >-
   **Модель даних: колекції** — перелічує всі доступні колекції. Це включає видимі, приховані та системні колекції, а також незмінені таблиці бази даних, які можна додавати.
 page_help_settings_datamodel_fields: >-
   **Модель даних: колекція** — форма для керування цією колекцією та її полями.
+page_help_settings_system_logs: '**Системні журнали** — доступ до прямої трансляції системних журналів.'
+page_help_settings_policies_collection: '**Переглянути політики** — список усіх політик у проєкті.'
+page_help_settings_policies_item: "**Деталі політики** — керуйте дозволами та іншими параметрами політики."
+page_help_settings_roles_collection: '**Огляд ролей** — перераховує всі ролі користувачів у проєкті.'
 page_help_settings_roles_item: "**Детальна інформація про роль** — керуйте дозволами для ролі та іншими налаштуваннями."
 page_help_settings_presets_collection: >-
   **Огляд запрограмованих налаштувань** — перелік усіх попередніх налаштувань у проекті, включаючи: користувача, роль та глобальні закладки, а також вигляди за замовчуванням.
@@ -1176,8 +1223,10 @@ singleton: Об'єкт-одинак
 singleton_label: Вважати як один об'єкт
 system_fields_locked: Системні поля заблоковані і не можуть бути відредаговані
 directus_collection:
+  directus_access: Додатки до політики
   directus_activity: Облікові записи для всіх подій
   directus_collections: Додаткова конфігурація колекції та метадані
+  directus_comments: Коментарі до предметів
   directus_dashboards: Панелі керування в межах модуля інсайтів
   directus_fields: Додаткова конфігурація поля та метадані
   directus_files: Метадані для всіх керованих файлів
@@ -1187,6 +1236,8 @@ directus_collection:
   directus_notifications: Сповіщення відіслано користувачам
   directus_operations: Дії які виконуються Автоматизацією
   directus_panels: Окремі панелі на панелях керування інсайтів
+  directus_permissions: Права доступу для кожної політики
+  directus_policies: Політики контролю доступу
   directus_presets: Попередні налаштування для передустановок і закладок колекції
   directus_relations: Конфігурація зв'язків і метадані
   directus_revisions: Знімки даних для всіх видів діяльності
@@ -1364,8 +1415,15 @@ fields:
     icon: Іконка ролі
     description: Опис
     users: Користувачі у ролі
+    parent: Батьківська роль
+    children: Дитячі ролі
   directus_policies:
+    name: Назва політики
     description: Опис
+    app_access: Доступ до програми
+    admin_access: Доступ адміністратора
+    ip_access: IP доступ
+    enforce_tfa: Вимагати 2FA
   directus_webhooks:
     name: Назва
     method: Метод
@@ -1448,6 +1506,12 @@ field_options:
     focal_point_divider: Фокус
     filename_disk: Назва на диску пам'яті...
     filename_download: Назва під час завантаження...
+  directus_policies:
+    name: Унікальна назва цієї політики...
+    description: Опис цієї політики...
+    ip_access: Додайте дозволені IP-адреси, IP-діапазони та блоки CIDR. Залиште порожнім, щоб дозволити всім...
+    enforce_tfa: Застосувати двофакторну автентифікацію
+    assigned_to: Призначено
   directus_roles:
     name: Унікальна назва для цієї ролі...
     description: Опис цієї ролі...
@@ -1457,6 +1521,8 @@ field_options:
       name_placeholder: Ведіть назву...
       link_name: Посилання
       link_placeholder: Відносна або абсолютна URL-адреса...
+    parent_note: Додаткова батьківська роль, від якої ця роль успадковує дозволи
+    children_note: Вкладені дочірні ролі, які успадковують дозволи цієї ролі
     collections_name: Колекції
     collections_addLabel: Додати колекцію...
   directus_users:
@@ -1507,6 +1573,7 @@ live_preview:
   toggle_3d: Перемикнути 3D
 shares: Акції
 unlimited_usage: Необмежене використання
+uses_left: Не залишилося використань | Залишилося одне використання | {n} використань залишилося
 no_shares: Немає спільних ресурсів для відображення
 new_share: Нова публікація
 expired: Закінчився
@@ -1540,6 +1607,9 @@ continue_label: Продовжити
 continue_as: >-
   {name} наразі авторизований. Якщо ви впізнали цей обліковий запис, натисніть кнопку продовжити.
 editing_role: 'Роль {role}'
+editing_policy: 'Політика {policy}'
+no_permissions: Немає дозволів
+permission_add_collection: Додати колекцію
 creating_webhook: Створити вебхук
 default_label: За замовчуванням
 delete_label: Видалити
@@ -1773,6 +1843,8 @@ interfaces:
     description: Виберіть або завантажте зображення
     crop: Обрізати по розміру
     crop_label: Обрізати зображення при необхідності
+    letterbox: Поштова скринька
+    letterbox_label: Додати відступ до попереднього перегляду зображення
   system-interface:
     interface: Інтерфейс
     description: Оберіть існуючий інтерфейс
@@ -1807,6 +1879,7 @@ interfaces:
     editorFont: Шрифт редактора
     previewFont: Попередній перегляд шрифту
     default_view: Вид за замовчуванням
+    default_view_editor: Редактор
     default_view_preview: Перегляд
     customSyntax: Користувацькі блоки
     customSyntax_label: Додати користувацькі типи синтаксису
@@ -1991,6 +2064,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Редактор Raw
     description: Дозволити введення необроблених або шаблонізованих даних
+  input-password:
+    input-password: Введіть пароль
+    description: Введення пароля з перемикачем, щоб приховати значення
 displays:
   translations:
     translations: Переклади
@@ -2434,3 +2510,5 @@ duplicate_dashboard: Панель дублювання
 search_dashboard: Пошук резервних копій...
 search_flow: Пошуковий потік...
 percent: Відсоток
+show_password: Показати пароль
+hide_password: Приховати пароль

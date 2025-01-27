@@ -1,4 +1,4 @@
-import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/find-workspace-packages';
+import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/workspace.find-packages';
 import { createPkgGraph, type PackageNode } from '@pnpm/workspace.pkgs-graph';
 import { existsSync, readFileSync, unlinkSync } from 'node:fs';
 import { join } from 'node:path';
@@ -24,7 +24,7 @@ export async function processPackages(): Promise<{
 			continue;
 		}
 
-		const changelogPath = join(localPackage.dir, 'CHANGELOG.md');
+		const changelogPath = join(localPackage.rootDir, 'CHANGELOG.md');
 
 		// The package has been bumped if a changelog file is generated
 		// (catches packages bumped solely due to internal dependency updates from changesets too)
@@ -178,7 +178,7 @@ export async function processPackages(): Promise<{
 			if (!dependentPackageName) continue;
 
 			for (const dependencyNodeId of dependentPackage.dependencies) {
-				const dependencyPackage = workspacePackages.find((p) => p.dir === dependencyNodeId);
+				const dependencyPackage = workspacePackages.find((p) => p.rootDir === dependencyNodeId);
 				const dependencyPackageName = dependencyPackage?.manifest.name;
 
 				if (!dependencyPackageName) continue;

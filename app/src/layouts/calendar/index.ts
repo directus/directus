@@ -47,7 +47,7 @@ export default defineLayout<LayoutOptions>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 
-		const { collection, search, filterSystem } = toRefs(props);
+		const { collection, search, filterSystem, selectMode, showSelect } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
 
@@ -139,6 +139,8 @@ export default defineLayout<LayoutOptions>({
 		);
 
 		const fullFullCalendarOptions = computed<FullCalendarOptions>(() => {
+			const displayEventTime = startDateFieldInfo.value?.type !== 'date';
+
 			const options: FullCalendarOptions = {
 				editable: true,
 				eventStartEditable: true,
@@ -157,12 +159,15 @@ export default defineLayout<LayoutOptions>({
 				},
 				views: {
 					dayGridMonth: {
+						displayEventTime,
 						eventTimeFormat: {
 							hour: 'numeric',
 							minute: '2-digit',
 							meridiem: 'narrow',
 						},
 					},
+					week: { displayEventTime },
+					day: { displayEventTime },
 				},
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
@@ -241,6 +246,7 @@ export default defineLayout<LayoutOptions>({
 				totalItems: totalCount.value,
 				currentItems: itemCount.value,
 				isFiltered: !!props.filterUser,
+				i18n: { t, n },
 			});
 		});
 
@@ -248,6 +254,8 @@ export default defineLayout<LayoutOptions>({
 			items,
 			loading,
 			error,
+			selectMode,
+			showSelect,
 			totalPages,
 			itemCount,
 			totalCount,

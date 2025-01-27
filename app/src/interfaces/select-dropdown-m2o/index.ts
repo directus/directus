@@ -65,6 +65,20 @@ export default defineInterface({
 					},
 				},
 			},
+			{
+				field: 'enableLink',
+				name: '$t:item_link',
+				schema: {
+					default_value: false,
+				},
+				meta: {
+					interface: 'boolean',
+					options: {
+						label: '$t:show_link_to_item',
+					},
+					width: 'half',
+				},
+			},
 		];
 	},
 	recommendedDisplays: ['related-values'],

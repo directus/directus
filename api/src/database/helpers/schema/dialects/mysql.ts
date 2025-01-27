@@ -1,11 +1,20 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
+import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { getDatabaseVersion } from '../../../index.js';
 import { SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
 export class SchemaHelperMySQL extends SchemaHelper {
+	override generateIndexName(
+		type: 'unique' | 'foreign' | 'index',
+		collection: string,
+		fields: string | string[],
+	): string {
+		return getDefaultIndexName(type, collection, fields, { maxLength: 64 });
+	}
+
 	override applyMultiRelationalSort(
 		knex: Knex,
 		dbQuery: Knex.QueryBuilder,
@@ -53,9 +62,9 @@ export class SchemaHelperMySQL extends SchemaHelper {
 	override addInnerSortFieldsToGroupBy(
 		groupByFields: (string | Knex.Raw)[],
 		sortRecords: SortRecord[],
-		hasMultiRelationalSort: boolean,
+		hasRelationalSort: boolean,
 	) {
-		if (hasMultiRelationalSort) {
+		if (hasRelationalSort) {
 			/*
 			** MySQL **
 

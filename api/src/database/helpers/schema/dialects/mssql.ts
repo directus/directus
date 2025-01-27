@@ -1,8 +1,17 @@
 import type { Knex } from 'knex';
+import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { SchemaHelper, type SortRecord, type Sql } from '../types.js';
-import { preprocessBindings } from '../utils/preprocess-bindings.js';
+import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
+	override generateIndexName(
+		type: 'unique' | 'foreign' | 'index',
+		collection: string,
+		fields: string | string[],
+	): string {
+		return getDefaultIndexName(type, collection, fields, { maxLength: 128 });
+	}
+
 	override applyLimit(rootQuery: Knex.QueryBuilder, limit: number): void {
 		// The ORDER BY clause is invalid in views, inline functions, derived tables, subqueries,
 		// and common table expressions, unless TOP, OFFSET or FOR XML is also specified.
@@ -32,14 +41,14 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		}
 	}
 
-	override preprocessBindings(queryParams: Sql): Sql {
-		return preprocessBindings(queryParams, { format: (index) => `@p${index}` });
+	override prepQueryParams(queryParams: Sql): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `@p${index}` });
 	}
 
 	override addInnerSortFieldsToGroupBy(
 		groupByFields: (string | Knex.Raw)[],
 		sortRecords: SortRecord[],
-		_hasMultiRelationalSort: boolean,
+		_hasRelationalSort: boolean,
 	) {
 		/*
 		MSSQL requires all selected columns that are not aggregated over are to be present in the GROUP BY clause

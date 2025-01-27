@@ -265,7 +265,14 @@ function useDisplayValue() {
 				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
 			</div>
-			<slot v-else name="preview">
+			<slot
+				v-else
+				name="preview"
+				v-bind="{
+					toggle: toggle,
+					active: active,
+				}"
+			>
 				<v-input
 					:full-width="fullWidth"
 					readonly

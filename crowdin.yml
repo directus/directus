@@ -3,4 +3,4 @@ files:
     translation: /app/src/lang/translations/%locale%.yaml
 
 pull_request_labels:
-  - 🍰 Chore
+  - Chore

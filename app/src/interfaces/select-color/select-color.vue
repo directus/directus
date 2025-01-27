@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Color from 'color';
 import { isHex } from '@/utils/is-hex';
-import { isCssVar } from '@/utils/soft-validate-css-var';
+import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { cssVar } from '@directus/utils/browser';
 import { ComponentPublicInstance, computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -67,12 +67,12 @@ const emit = defineEmits(['input']);
 
 const isCssVar = computed(() => {
 	if (!props.value) return false;
-	return isCssVar(props.value);
+	return isCssVarUtil(props.value);
 });
 
 const valueWithoutVariables = computed(() => {
 	if (!props.value) return null;
-	return isCssVar(props.value) ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
+	return isCssVar.value ? cssVar(props.value.substring(4, props.value.length - 1)) : props.value;
 });
 
 const htmlColorInput = ref<ComponentPublicInstance | null>(null);
@@ -157,7 +157,7 @@ function useColor() {
 		() => {
 			try {
 				color.value = valueWithoutVariables.value !== null ? Color(valueWithoutVariables.value) : null;
-			} catch (error) {
+			} catch {
 				color.value = null;
 			}
 		},
@@ -225,12 +225,12 @@ function useColor() {
 		set(newInput) {
 			if (newInput === null || newInput === '') {
 				unsetColor();
-			} else if (isCssVar(newInput)) {
+			} else if (isCssVarUtil(newInput)) {
 				emit('input', newInput);
 
 				try {
 					color.value = Color(cssVar(newInput.substring(4, newInput.length - 1)));
-				} catch (error) {
+				} catch {
 					// Color or cssVar could not resolve the color to a color in JS, however, the CSS Var may still be a valid color.
 					// So we keep the input value as is and set the internal color to null.
 					// This way the user can still edit the input and we can still show the color in the swatch.
@@ -242,7 +242,7 @@ function useColor() {
 					// If the input is a valid color, we set the color and emit the input as a hex value which is consistent with the dropdown selector and HTML color picker
 					const newColor = Color(newInput);
 					setColor(newColor);
-				} catch (e) {
+				} catch {
 					// The input is not a valid color, but we still want to let the user edit/type in the input so we emit the input
 					emit('input', newInput);
 				}
@@ -311,7 +311,11 @@ function useColor() {
 					</v-button>
 				</template>
 				<template #append>
-					<v-icon :name="isValidColor ? 'close' : 'palette'" :clickable="isValidColor" @click="unsetColor" />
+					<div class="item-actions">
+						<v-icon v-if="isValidColor" name="close" clickable @click="unsetColor" />
+
+						<v-icon v-else name="palette" />
+					</div>
 				</template>
 			</v-input>
 		</template>
@@ -437,6 +441,12 @@ function useColor() {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
+}
+
 .swatch {
 	--v-button-padding: 6px;
 	--v-button-background-color: transparent;

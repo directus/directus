@@ -962,6 +962,7 @@ run_flow_on_current_edited_confirm: This item may be updated by this flow, are y
 run_flow_on_selected: Select One or More Items First | Run Flow on 1 Selected Item | Run Flow on {n} Selected Items
 run_flow: Run Flow
 run_flow_success: Flow "{flow}" ran successfully
+trigger_flow_success: Flow "{flow}" triggered successfully. It will run in the background
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
@@ -1254,6 +1255,7 @@ directus_collection:
   directus_access: Policy attachments
   directus_activity: Accountability logs for all events
   directus_collections: Additional collection configuration and metadata
+  directus_comments: Comments for items
   directus_dashboards: Dashboards within the Insights module
   directus_fields: Additional field configuration and metadata
   directus_files: Metadata for all managed file assets
@@ -1877,6 +1879,8 @@ interfaces:
     description: Select or upload an image
     crop: Crop to Fit
     crop_label: Crop image as needed
+    letterbox: Letterbox
+    letterbox_label: Add padding to image preview
   system-interface:
     interface: Interface
     description: Select an existing interface

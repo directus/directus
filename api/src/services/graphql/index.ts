@@ -1,4 +1,4 @@
-import { Action, FUNCTIONS } from '@directus/constants';
+import { FUNCTIONS } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError, type DirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
@@ -64,6 +64,8 @@ import {
 } from '../../constants.js';
 import getDatabase from '../../database/index.js';
 import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
+import { fetchAccountabilityCollectionAccess } from '../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
+import { fetchAccountabilityPolicyGlobals } from '../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
 import { fetchAllowedFieldMap } from '../../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchInconsistentFieldMap } from '../../permissions/modules/fetch-inconsistent-field-map/fetch-inconsistent-field-map.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
@@ -79,7 +81,6 @@ import { mergeVersionsRaw, mergeVersionsRecursive } from '../../utils/merge-vers
 import { reduceSchema } from '../../utils/reduce-schema.js';
 import { sanitizeQuery } from '../../utils/sanitize-query.js';
 import { validateQuery } from '../../utils/validate-query.js';
-import { ActivityService } from '../activity.js';
 import { AuthenticationService } from '../authentication.js';
 import { CollectionsService } from '../collections.js';
 import { ExtensionsService } from '../extensions.js';
@@ -87,6 +88,7 @@ import { FieldsService } from '../fields.js';
 import { FilesService } from '../files.js';
 import { RelationsService } from '../relations.js';
 import { RevisionsService } from '../revisions.js';
+import { RolesService } from '../roles.js';
 import { ServerService } from '../server.js';
 import { SpecificationService } from '../specifications.js';
 import { TFAService } from '../tfa.js';
@@ -105,9 +107,6 @@ import { GraphQLVoid } from './types/void.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
 import { sanitizeGraphqlSchema } from './utils/sanitize-gql-schema.js';
-import { fetchAccountabilityCollectionAccess } from '../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
-import { fetchAccountabilityPolicyGlobals } from '../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
-import { RolesService } from '../roles.js';
 
 const env = useEnv();
 
@@ -325,7 +324,6 @@ export class GraphQLService {
 					CreateCollectionTypes,
 					ReadCollectionTypes,
 					UpdateCollectionTypes,
-					DeleteCollectionTypes,
 				},
 				schema,
 			);
@@ -2094,12 +2092,10 @@ export class GraphQLService {
 			CreateCollectionTypes,
 			ReadCollectionTypes,
 			UpdateCollectionTypes,
-			DeleteCollectionTypes,
 		}: {
 			CreateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 			ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 			UpdateCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
-			DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>>;
 		},
 		schema: {
 			create: SchemaOverview;
@@ -2844,6 +2840,9 @@ export class GraphQLService {
 						max_length: GraphQLInt,
 						numeric_precision: GraphQLInt,
 						numeric_scale: GraphQLInt,
+						is_generated: GraphQLBoolean,
+						generation_expression: GraphQLString,
+						is_indexed: GraphQLBoolean,
 						is_nullable: GraphQLBoolean,
 						is_unique: GraphQLBoolean,
 						is_primary_key: GraphQLBoolean,
@@ -3348,100 +3347,6 @@ export class GraphQLService {
 						}
 
 						return true;
-					},
-				},
-			});
-		}
-
-		if ('directus_activity' in schema.create.collections) {
-			schemaComposer.Mutation.addFields({
-				create_comment: {
-					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
-					args: {
-						collection: new GraphQLNonNull(GraphQLString),
-						item: new GraphQLNonNull(GraphQLID),
-						comment: new GraphQLNonNull(GraphQLString),
-					},
-					resolve: async (_, args, __, info) => {
-						const service = new ActivityService({
-							accountability: this.accountability,
-							schema: this.schema,
-						});
-
-						const primaryKey = await service.createOne({
-							...args,
-							action: Action.COMMENT,
-							user: this.accountability?.user,
-							ip: this.accountability?.ip,
-							user_agent: this.accountability?.userAgent,
-							origin: this.accountability?.origin,
-						});
-
-						if ('directus_activity' in ReadCollectionTypes) {
-							const selections = this.replaceFragmentsInSelections(
-								info.fieldNodes[0]?.selectionSet?.selections,
-								info.fragments,
-							);
-
-							const query = this.getQuery(args, selections || [], info.variableValues);
-
-							return await service.readOne(primaryKey, query);
-						}
-
-						return true;
-					},
-				},
-			});
-		}
-
-		if ('directus_activity' in schema.update.collections) {
-			schemaComposer.Mutation.addFields({
-				update_comment: {
-					type: ReadCollectionTypes['directus_activity'] ?? GraphQLBoolean,
-					args: {
-						id: new GraphQLNonNull(GraphQLID),
-						comment: new GraphQLNonNull(GraphQLString),
-					},
-					resolve: async (_, args, __, info) => {
-						const service = new ActivityService({
-							accountability: this.accountability,
-							schema: this.schema,
-						});
-
-						const primaryKey = await service.updateOne(args['id'], { comment: args['comment'] });
-
-						if ('directus_activity' in ReadCollectionTypes) {
-							const selections = this.replaceFragmentsInSelections(
-								info.fieldNodes[0]?.selectionSet?.selections,
-								info.fragments,
-							);
-
-							const query = this.getQuery(args, selections || [], info.variableValues);
-
-							return await service.readOne(primaryKey, query);
-						}
-
-						return true;
-					},
-				},
-			});
-		}
-
-		if ('directus_activity' in schema.delete.collections) {
-			schemaComposer.Mutation.addFields({
-				delete_comment: {
-					type: DeleteCollectionTypes['one']!,
-					args: {
-						id: new GraphQLNonNull(GraphQLID),
-					},
-					resolve: async (_, args) => {
-						const service = new ActivityService({
-							accountability: this.accountability,
-							schema: this.schema,
-						});
-
-						await service.deleteOne(args['id']);
-						return { id: args['id'] };
 					},
 				},
 			});
