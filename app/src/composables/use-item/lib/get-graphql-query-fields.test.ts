@@ -91,3 +91,66 @@ it('should include primary keys for relational fields', () => {
 
 	expect(result).toEqual({ author: { avatar: { id: true } }, translations: { id: true } });
 });
+
+it('should work with m2a fields', () => {
+	vi.mocked(getRelatedCollection).mockImplementation((collection, field) => {
+		if (collection === 'pages')
+			switch (field) {
+				case 'blocks':
+					return {
+						relatedCollection: 'pages_blocks',
+					};
+				case 'sub_blocks':
+					return {
+						relatedCollection: 'pages_sub_blocks',
+					};
+			}
+
+		return null;
+	});
+
+	const fieldsStore = mockedStore(useFieldsStore());
+
+	fieldsStore.getPrimaryKeyFieldForCollection.mockImplementation((collection) => {
+		switch (collection) {
+			case 'block_text':
+				return { field: 'id' } as Field;
+			default:
+				return null;
+		}
+	});
+
+	const fields: string[] = [
+		'blocks.item:block_text',
+		'sub_blocks.different_field_for_test:block_paragraph.id',
+		'sub_blocks.different_field_for_test:block_paragraph.text',
+	];
+
+	const collection = 'pages';
+
+	const result = getGraphqlQueryFields(fields, collection);
+
+	expect(result).toEqual({
+		blocks: {
+			item: {
+				__on: [
+					{
+						__typeName: 'block_text',
+						id: true,
+					},
+				],
+			},
+		},
+		sub_blocks: {
+			different_field_for_test: {
+				__on: [
+					{
+						__typeName: 'block_paragraph',
+						id: true,
+						text: true,
+					},
+				],
+			},
+		},
+	});
+});
