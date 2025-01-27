@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Expose translationsStore to extensions via useStores
+Exposed `useTranslationsStore` to extensions via `useStores`
