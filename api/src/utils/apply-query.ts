@@ -949,6 +949,8 @@ export function applySearch(
 
 			if (fieldType !== null) {
 				needsFallbackCondition = false;
+			} else {
+				return;
 			}
 
 			if (cases.length !== 0 && whenCases?.length !== 0) {
@@ -970,7 +972,7 @@ export function applySearch(
 	function addSearchCondition(
 		queryBuilder: Knex.QueryBuilder,
 		name: string,
-		fieldType: 'string' | 'numeric' | 'uuid' | null,
+		fieldType: 'string' | 'numeric' | 'uuid',
 		logical: 'and' | 'or',
 	) {
 		if (fieldType === null) {
