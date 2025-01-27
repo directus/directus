@@ -14,17 +14,16 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Que
 	for (const field of graphqlFields) {
 		const fieldParts = field.split('.');
 
-		const stack = [...fieldParts];
 		let currentCollection = collection;
-		let currentField = stack[0]!;
+		let currentField = fieldParts[0]!;
 		let currentPath = queryFields;
 
-		while (stack.length > 1) {
+		while (fieldParts.length > 1) {
 			const relatedCollection = getRelatedCollection(currentCollection, currentField);
 			currentCollection = relatedCollection!.junctionCollection ?? relatedCollection!.relatedCollection;
 			currentPath = (currentPath[currentField] as QueryFields | undefined) ??= {};
-			stack.shift();
-			currentField = stack[0]!;
+			fieldParts.shift();
+			currentField = fieldParts[0]!;
 		}
 
 		const relatedCollection = getRelatedCollection(currentCollection, currentField);
