@@ -513,7 +513,9 @@ textarea {
 }
 
 .interface-input-rich-text-md.preview :deep(.CodeMirror) {
-	display: none;
+	visibility: hidden;
+	position: absolute;
+	pointer-events: none;
 }
 
 .toolbar {
