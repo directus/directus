@@ -27,8 +27,8 @@ export function applyConditions(item: Record<string, any>, field: Field) {
 						required: matchingCondition.required,
 					},
 					(objValue, srcValue) => {
-						if (isArray(objValue)) {
-							return objValue.concat(srcValue);
+						if (isArray(objValue) && isArray(srcValue)) {
+							return srcValue;
 						}
 					},
 				),
