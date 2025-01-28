@@ -111,7 +111,7 @@ export default defineLayout<LayoutOptions>({
 			return fields;
 		});
 
-		const limit = info.queryLimit?.max && info.queryLimit.max !== -1 ? info.queryLimit.max : 10000;
+		const limit = computed(() => (info.queryLimit?.max && info.queryLimit.max !== -1 ? info.queryLimit.max : 1000));
 
 		const {
 			items,
@@ -127,7 +127,7 @@ export default defineLayout<LayoutOptions>({
 		} = useItems(collection, {
 			sort: computed(() => [primaryKeyField.value?.field || '']),
 			page: ref(1),
-			limit: ref(limit),
+			limit,
 			fields: queryFields,
 			filter: filterWithCalendarView,
 			search: search,
@@ -250,6 +250,8 @@ export default defineLayout<LayoutOptions>({
 			});
 		});
 
+		const isFiltered = computed(() => !!props.filterUser || !!props.search);
+
 		return {
 			items,
 			loading,
@@ -259,6 +261,8 @@ export default defineLayout<LayoutOptions>({
 			totalPages,
 			itemCount,
 			totalCount,
+			isFiltered,
+			limit,
 			changeManualSort,
 			getItems,
 			filterWithCalendarView,

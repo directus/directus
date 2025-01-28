@@ -11,7 +11,9 @@ defineOptions({ inheritAttrs: false });
 const props = withDefaults(
 	defineProps<{
 		collection?: string | null;
+		itemCount: number | null;
 		totalCount: number | null;
+		isFiltered: boolean;
 		limit: number;
 		groupCollection?: string | null;
 		fieldsInCollection?: Field[];
@@ -61,7 +63,10 @@ const { t, n } = useI18n();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
 
-const atLimit = computed(() => (props.totalCount ?? 0) > props.limit);
+const atLimit = computed(() => {
+	const count = (props.isFiltered ? props.itemCount : props.totalCount) ?? 0;
+	return count > props.limit;
+});
 
 function openEditGroup(group: Group) {
 	editDialogOpen.value = group.id;
@@ -126,7 +131,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 		<template v-else>
 			<v-notice v-if="atLimit" type="warning" class="limit">
-				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.totalCount ?? 0) }) }}
+				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
 			</v-notice>
 
 			<div class="kanban">
