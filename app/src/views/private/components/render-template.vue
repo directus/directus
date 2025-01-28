@@ -28,7 +28,7 @@ const templateEl = ref<HTMLElement>();
 const regex = /({{.*?}})/g;
 
 const getNestedValues = (data: any, path: string) => {
-	const pathParts = path.split('.');
+	const pathParts = path.split('.').filter(partWithoutDollarPrefix);
 	let currentData = data;
 
 	for (const part of pathParts) {
@@ -40,6 +40,11 @@ const getNestedValues = (data: any, path: string) => {
 	}
 
 	return Array.isArray(currentData) ? currentData : [currentData];
+
+	function partWithoutDollarPrefix(part: string) {
+		// For example `$thumbnail`
+		return !part.startsWith('$');
+	}
 };
 
 const parts = computed(() =>
