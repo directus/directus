@@ -189,12 +189,12 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="edit" />
 					</v-button>
+
 					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
 						<v-icon name="tune" />
 					</v-button>
-					<v-button v-tooltip="t('deselect')" class="deselect" icon rounded @click="deselect">
-						<v-icon name="close" />
-					</v-button>
+
+					<v-remove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
 				</template>
 			</div>
 
@@ -299,9 +299,9 @@ img {
 		display: flex;
 		justify-content: center;
 		width: 100%;
+		gap: 12px;
 
-		.v-button {
-			margin-right: 12px;
+		::v-deep(.v-button) {
 			transform: translateY(10px);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
@@ -312,14 +312,6 @@ img {
 					transition-delay: $i * 25ms;
 				}
 			}
-		}
-
-		.v-button:last-child {
-			margin-right: 0px;
-		}
-
-		.deselect:hover .v-icon {
-			color: var(--theme--danger);
 		}
 	}
 
@@ -353,7 +345,7 @@ img {
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
-	.actions .v-button {
+	.actions ::v-deep(.v-button) {
 		transform: translateY(0px);
 		opacity: 1;
 	}
