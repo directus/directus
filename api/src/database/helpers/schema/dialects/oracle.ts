@@ -1,5 +1,6 @@
 import type { KNEX_TYPES } from '@directus/constants';
-import type { Field, Relation, Type } from '@directus/types';
+import type { Column } from '@directus/schema';
+import type { Field, RawField, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import crypto from 'node:crypto';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
@@ -70,6 +71,23 @@ export class SchemaHelperOracle extends SchemaHelper {
 			return result[0]?.['SUM(BYTES)'] ? Number(result[0]?.['SUM(BYTES)']) : null;
 		} catch {
 			return null;
+		}
+	}
+
+	/**
+	 * Oracle throws an error when overwriting the nullable option for an existing column with the same value.
+	 */
+	override setNullable(column: Knex.ColumnBuilder, field: RawField | Field, existing: Column | null): void {
+		if (!existing) {
+			super.setNullable(column, field, existing);
+
+			return;
+		}
+
+		if (field.schema?.is_nullable === false && existing.is_nullable === true) {
+			column.notNullable();
+		} else if (field.schema?.is_nullable === true && existing.is_nullable === false) {
+			column.nullable();
 		}
 	}
 
