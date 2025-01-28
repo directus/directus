@@ -61,21 +61,15 @@
 		line-height: 22px;
 	}
 
-	p {
-		margin: 1.5em 0;
-		font-weight: 500;
-		font-size: 15px;
-		line-height: 24px;
-	}
-
 	a {
 		color: var(--theme--primary-accent);
 		text-decoration: none;
 	}
 
+	p,
 	ul,
 	ol {
-		margin: 1.5em 0;
+		margin: 1.6em 0; // 24px (line-height) / 15px (font-size) = 1.6
 		font-weight: 500;
 		font-size: 15px;
 		line-height: 24px;
