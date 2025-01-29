@@ -136,7 +136,7 @@ const parts = computed(() =>
 							:collection="subPart.collection"
 							:field="subPart.field"
 						/>
-						<span>&nbsp;</span>
+						<span v-if="subIndex < part.length - 1">&nbsp;</span>
 					</template>
 					<span v-else-if="typeof subPart === 'string'" :dir="direction">{{ translate(subPart) }}</span>
 					<span v-else>{{ subPart }}</span>
