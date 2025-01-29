@@ -53,7 +53,7 @@ const parts = computed(() =>
 			const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
 
 			// Try getting the value from the item
-			const value = getNestedValues(props.item, fieldKey);
+			let value = getNestedValues(props.item, fieldKey);
 
 			let field: Field | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
 
@@ -62,6 +62,10 @@ const parts = computed(() =>
 			}
 
 			if (!field) return value;
+
+			if (field?.meta?.interface === 'system-input-translated-string') {
+				value = value.map(translate);
+			}
 
 			const component = field?.meta?.display || getDefaultDisplayForType(field.type);
 			const options = field?.meta?.display_options;
@@ -85,7 +89,7 @@ const parts = computed(() =>
 					{
 						component,
 						options,
-						value: value,
+						value,
 						interface: field.meta?.interface,
 						interfaceOptions: field.meta?.options,
 						type: field.type,
@@ -132,7 +136,7 @@ const parts = computed(() =>
 							:collection="subPart.collection"
 							:field="subPart.field"
 						/>
-						<span>&nbsp;</span>
+						<span v-if="subIndex < part.length - 1">&nbsp;</span>
 					</template>
 					<span v-else-if="typeof subPart === 'string'" :dir="direction">{{ translate(subPart) }}</span>
 					<span v-else>{{ subPart }}</span>
