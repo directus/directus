@@ -4,7 +4,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
-import { get, flatMap } from 'lodash';
+import { get } from '@directus/utils';
 import { computed, ref } from 'vue';
 
 const props = withDefaults(
@@ -31,15 +31,16 @@ const getNestedValues = (data: any, path: string) => {
 	const pathParts = path.split('.');
 	let currentData = data;
 
-	for (const part of pathParts) {
-		if (Array.isArray(currentData)) {
-			currentData = flatMap(currentData.map((item) => get(item, part)));
-		} else {
-			currentData = get(currentData, part);
-		}
-	}
+	pathParts.filter(partWithoutDollarPrefix).forEach((part) => {
+		currentData = get(currentData, part);
+	});
 
 	return Array.isArray(currentData) ? currentData : [currentData];
+
+	function partWithoutDollarPrefix(part: string) {
+		// For example `$thumbnail`
+		return !part.startsWith('$');
+	}
 };
 
 const parts = computed(() =>
