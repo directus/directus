@@ -112,7 +112,11 @@ export class UsersService extends ItemsService {
 	 */
 	private async clearUserSessions(userKeys: PrimaryKey[], excludeSession?: string): Promise<void> {
 		if (excludeSession) {
-			await this.knex.from('directus_sessions').whereIn('user', userKeys).andWhereNot('token', '=', excludeSession).delete();
+			await this.knex
+				.from('directus_sessions')
+				.whereIn('user', userKeys)
+				.andWhereNot('token', '=', excludeSession)
+				.delete();
 		} else {
 			await this.knex.from('directus_sessions').whereIn('user', userKeys).delete();
 		}
