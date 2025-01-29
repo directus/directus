@@ -22,7 +22,7 @@ const emit = defineEmits(['action']);
 
 const { t } = useI18n();
 
-const { needsConfirmation, confirmDelete } = useConfirmation();
+const { needsConfirmation, confirmDelete, onConfirmDelete } = useConfirmation();
 
 const deselectable = computed(() => deselect || itemIsLocal);
 
@@ -57,7 +57,12 @@ function useConfirmation() {
 		return confirm || hasItemEdits();
 	});
 
-	return { needsConfirmation, confirmDelete };
+	return { needsConfirmation, confirmDelete, onConfirmDelete };
+
+	function onConfirmDelete() {
+		confirmDelete.value = false;
+		emit('action');
+	}
 
 	function hasItemEdits() {
 		if (!itemInfo?.type || !itemEdits) return false;
@@ -136,7 +141,7 @@ function useConfirmation() {
 				<v-button secondary @click="confirmDelete = false">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button kind="danger" @click="emit('action')">
+				<v-button kind="danger" @click="onConfirmDelete">
 					{{ t('delete_label') }}
 				</v-button>
 			</v-card-actions>
