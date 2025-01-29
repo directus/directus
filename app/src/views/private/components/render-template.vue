@@ -4,7 +4,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
-import { get, flatMap } from 'lodash';
+import { get } from '@directus/utils';
 import { computed, ref } from 'vue';
 
 const props = withDefaults(
@@ -31,15 +31,16 @@ const getNestedValues = (data: any, path: string) => {
 	const pathParts = path.split('.');
 	let currentData = data;
 
-	for (const part of pathParts) {
-		if (Array.isArray(currentData)) {
-			currentData = flatMap(currentData.map((item) => get(item, part)));
-		} else {
-			currentData = get(currentData, part);
-		}
-	}
+	pathParts.filter(partWithoutDollarPrefix).forEach((part) => {
+		currentData = get(currentData, part);
+	});
 
 	return Array.isArray(currentData) ? currentData : [currentData];
+
+	function partWithoutDollarPrefix(part: string) {
+		// For example `$thumbnail`
+		return !part.startsWith('$');
+	}
 };
 
 const parts = computed(() =>
@@ -52,7 +53,7 @@ const parts = computed(() =>
 			const fieldKey = part.replace(/{{/g, '').replace(/}}/g, '').trim();
 
 			// Try getting the value from the item
-			const value = getNestedValues(props.item, fieldKey);
+			let value = getNestedValues(props.item, fieldKey);
 
 			let field: Field | null = props.fields?.find((field) => field.field === fieldKey) ?? null;
 
@@ -61,6 +62,10 @@ const parts = computed(() =>
 			}
 
 			if (!field) return value;
+
+			if (field?.meta?.interface === 'system-input-translated-string') {
+				value = value.map(translate);
+			}
 
 			const component = field?.meta?.display || getDefaultDisplayForType(field.type);
 			const options = field?.meta?.display_options;
@@ -84,7 +89,7 @@ const parts = computed(() =>
 					{
 						component,
 						options,
-						value: value,
+						value,
 						interface: field.meta?.interface,
 						interfaceOptions: field.meta?.options,
 						type: field.type,
@@ -131,7 +136,7 @@ const parts = computed(() =>
 							:collection="subPart.collection"
 							:field="subPart.field"
 						/>
-						<span>&nbsp;</span>
+						<span v-if="subIndex < part.length - 1">&nbsp;</span>
 					</template>
 					<span v-else-if="typeof subPart === 'string'" :dir="direction">{{ translate(subPart) }}</span>
 					<span v-else>{{ subPart }}</span>

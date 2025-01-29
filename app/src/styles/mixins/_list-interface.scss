@@ -24,16 +24,8 @@
 	align-items: center;
 	gap: 4px;
 
-	.v-icon {
+	::v-deep(.v-icon) {
 		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
-
-		&:hover {
-			::v-deep([data-icon='close']),
-			::v-deep([data-icon='delete']),
-			::v-deep([data-icon='settings_backup_restore']) {
-				color: var(--theme--danger);
-			}
-		}
 	}
 
 	@if $item-link {

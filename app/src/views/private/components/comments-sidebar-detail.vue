@@ -43,7 +43,7 @@ const { comments, getComments, loading, refresh, commentsCount, getCommentsCount
 
 onMounted(() => {
 	getCommentsCount();
-	if (open.value) getActivity();
+	if (open.value) getComments();
 });
 
 function onToggle(open: boolean) {

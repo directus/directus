@@ -73,7 +73,6 @@ const activatorDisabled = computed(() => {
 });
 
 const { transition, iconName, onEnableTranslation, onMousedown, onMouseup, onTransitionEnd } = useActivatorButton();
-const { getDeselectTooltip, getDeselectIcon, onToggleDelete } = useDeleteToggle();
 
 function useActivatorButton() {
 	const pressing = ref(false);
@@ -122,35 +121,15 @@ function useActivatorButton() {
 	}
 }
 
-function useDeleteToggle() {
-	return {
-		getDeselectIcon,
-		getDeselectTooltip,
-		onToggleDelete,
-	};
-
-	function getDeselectIcon(item: DisplayItem) {
-		if (item.$type === 'deleted') return 'settings_backup_restore';
-		if (isLocalItem(item)) return 'close';
-		return 'delete';
+function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
+	if (!isEmpty(item)) {
+		remove(item);
+		return;
 	}
 
-	function getDeselectTooltip(item: DisplayItem) {
-		if (item.$type === 'deleted') return 'undo_removed_item';
-		if (isLocalItem(item)) return 'deselect';
-		return 'remove_item';
-	}
+	if (isEmpty(itemInitial)) return;
 
-	function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
-		if (!isEmpty(item)) {
-			remove(item);
-			return;
-		}
-
-		if (isEmpty(itemInitial)) return;
-
-		remove(itemInitial);
-	}
+	remove(itemInitial);
 }
 </script>
 
@@ -185,15 +164,15 @@ function useDeleteToggle() {
 			</template>
 
 			<template #controls="{ active, toggle }">
-				<v-icon
+				<v-remove
 					v-if="item"
-					v-tooltip="!activatorDisabled ? t(getDeselectTooltip(item)) : null"
-					class="delete"
 					:class="{ disabled: activatorDisabled }"
 					:disabled="activatorDisabled"
-					:name="getDeselectIcon(item)"
-					clickable
-					@click.stop="onToggleDelete(item, itemInitial)"
+					:item-type="item.$type"
+					:item-info="relationInfo"
+					:item-is-local="isLocalItem(item)"
+					:item-edits="getItemEdits(item)"
+					@action="onToggleDelete(item, itemInitial)"
 				/>
 
 				<slot name="split-view" :active :toggle />
@@ -232,7 +211,7 @@ function useDeleteToggle() {
 	height: var(--size);
 }
 
-.disabled {
+.v-icon.disabled {
 	--v-icon-color: var(--theme--primary-subdued);
 }
 
@@ -259,7 +238,7 @@ function useDeleteToggle() {
 }
 
 .secondary {
-	.disabled {
+	.v-icon.disabled {
 		--v-icon-color: var(--theme--secondary-subdued);
 	}
 
@@ -272,10 +251,6 @@ function useDeleteToggle() {
 	.v-divider {
 		--v-divider-color: var(--secondary-50);
 	}
-}
-
-.delete:hover {
-	--v-icon-color-hover: var(--theme--danger);
 }
 
 .rotate {

@@ -1,6 +1,6 @@
 import api from '@/api';
-import sdk from '@/sdk';
 import { useExtensions } from '@/extensions';
+import sdk from '@/sdk';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useFlowsStore } from '@/stores/flows';
@@ -13,8 +13,9 @@ import { useRelationsStore } from '@/stores/relations';
 import { useRequestsStore } from '@/stores/requests';
 import { useServerStore } from '@/stores/server';
 import { useSettingsStore } from '@/stores/settings';
+import { useTranslationsStore } from '@/stores/translations';
 import { useUserStore } from '@/stores/user';
-import { API_INJECT, SDK_INJECT, EXTENSIONS_INJECT, STORES_INJECT } from '@directus/constants';
+import { API_INJECT, EXTENSIONS_INJECT, SDK_INJECT, STORES_INJECT } from '@directus/constants';
 import { useAppStore } from '@directus/stores';
 import { provide } from 'vue';
 
@@ -23,6 +24,7 @@ export function useSystem(): void {
 		useAppStore,
 		useCollectionsStore,
 		useFieldsStore,
+		useFlowsStore,
 		useInsightsStore,
 		useLatencyStore,
 		useNotificationsStore,
@@ -32,8 +34,8 @@ export function useSystem(): void {
 		useRequestsStore,
 		useServerStore,
 		useSettingsStore,
+		useTranslationsStore,
 		useUserStore,
-		useFlowsStore,
 	});
 
 	provide(API_INJECT, api);

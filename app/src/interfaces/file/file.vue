@@ -185,7 +185,7 @@ function useURLImport() {
 								<template v-if="file">
 									<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click.stop="editDrawerActive = true" />
 
-									<v-icon v-if="!disabled" v-tooltip="t('deselect')" name="close" @click.stop="remove" />
+									<v-remove v-if="!disabled" :item-info="relationInfo" :item-edits="edits" deselect @action="remove" />
 								</template>
 
 								<v-icon v-else name="attach_file" />

@@ -93,18 +93,6 @@ const query = computed<RelationQueryMultiple>(() => ({
 const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
 	useRelationMultiple(value, query, relationInfo, primaryKey);
 
-function getDeselectIcon(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'close';
-	return 'delete';
-}
-
-function getDeselectTooltip(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (isLocalItem(item)) return 'deselect';
-	return 'remove_item';
-}
-
 const selectDrawer = ref(false);
 
 const dragOptions = {
@@ -227,8 +215,7 @@ function stageEdits(item: Record<string, any>) {
 					:relation-info="relationInfo"
 					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
 					:deleted="element.$type === 'deleted'"
-					:delete-icon="getDeselectIcon(element)"
-					:delete-tooltip="t(getDeselectTooltip(element))"
+					:is-local-item="isLocalItem(element)"
 					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
 					@input="stageEdits"
 					@deselect="remove(element)"
