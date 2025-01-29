@@ -238,13 +238,7 @@ function closeDrawer() {
 					<div class="spacer" />
 
 					<div class="item-actions">
-						<v-icon
-							v-if="!disabled"
-							v-tooltip="$t('deselect')"
-							name="close"
-							clickable
-							@click.stop="removeItem(element)"
-						/>
+						<v-remove v-if="!disabled" confirm @action="removeItem(element)" />
 					</div>
 				</v-list-item>
 			</template>

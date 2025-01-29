@@ -237,6 +237,8 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
+		const isFiltered = computed(() => !!props.filterUser || !!props.search);
+
 		const { canReorderGroups, canReorderItems, canUpdateGroupTitle, canDeleteGroups } = useLayoutPermissions();
 
 		return {
@@ -263,6 +265,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			itemCount,
 			totalCount,
 			showingCount,
+			isFiltered,
 			fieldsInCollection,
 			fields,
 			limit,

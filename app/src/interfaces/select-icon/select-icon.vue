@@ -67,7 +67,7 @@ function setIcon(icon: string | null) {
 
 				<template #append>
 					<div class="item-actions">
-						<v-icon v-if="value !== null" clickable name="close" @click="setIcon(null)" />
+						<v-remove v-if="value !== null" deselect @action="setIcon(null)" />
 
 						<v-icon
 							v-else
