@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Added support for cc, bcc, and replyTo fields in the email operator.
+Added support for cc, bcc, and replyTo fields to the email operation
