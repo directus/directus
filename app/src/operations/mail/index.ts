@@ -18,18 +18,20 @@ export default defineOperationApp({
 			label: '$t:type',
 			text: type || 'markdown',
 		},
-		{
-			label: '$t:operations.mail.cc',
-			text: Array.isArray(cc) ? cc.join(', ') : cc,
-		},
-		{
-			label: '$t:operations.mail.bcc',
-			text: Array.isArray(bcc) ? bcc.join(', ') : bcc,
-		},
-		{
-			label: '$t:operations.mail.reply_to',
-			text: Array.isArray(replyTo) ? replyTo.join(', ') : replyTo,
-		},
+		...[
+			cc && {
+				label: '$t:operations.mail.cc',
+				text: Array.isArray(cc) ? cc.join(', ') : cc,
+			},
+			bcc && {
+				label: '$t:operations.mail.bcc',
+				text: Array.isArray(bcc) ? bcc.join(', ') : bcc,
+			},
+			replyTo && {
+				label: '$t:operations.mail.reply_to',
+				text: Array.isArray(replyTo) ? replyTo.join(', ') : replyTo,
+			},
+		].filter((v) => v),
 	],
 	options: (panel) => {
 		return [
