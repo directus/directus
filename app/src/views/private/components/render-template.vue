@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { getDefaultDisplayForType } from '@/utils/get-default-display-for-type';
 import { translate } from '@/utils/translate-literal';
 import { Field } from '@directus/types';
@@ -22,6 +23,7 @@ const props = withDefaults(
 );
 
 const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 
 const templateEl = ref<HTMLElement>();
 
@@ -32,7 +34,12 @@ const getNestedValues = (data: any, path: string) => {
 	let currentData = data;
 
 	pathParts.filter(partWithoutDollarPrefix).forEach((part) => {
-		currentData = get(currentData, part);
+		if (props.collection && partIsM2AItem(part)) {
+			const [itemField = '', anyCollection = ''] = part.split(':');
+			if (!anyCollection || anyCollection !== getM2AJunctionCollectionField(props.collection, itemField)) return;
+		}
+
+		currentData = get(currentData, part) ?? null;
 	});
 
 	return Array.isArray(currentData) ? currentData : [currentData];
@@ -40,6 +47,20 @@ const getNestedValues = (data: any, path: string) => {
 	function partWithoutDollarPrefix(part: string) {
 		// For example `$thumbnail`
 		return !part.startsWith('$');
+	}
+
+	function partIsM2AItem(part: string) {
+		// For example `item:posts`
+		return part.includes(':');
+	}
+
+	function getM2AJunctionCollectionField(collection: string, itemField: string) {
+		const relations = relationsStore.getRelationsForField(collection, itemField);
+
+		const collectionField =
+			relations.find((relation) => relation.meta?.one_collection_field)?.meta?.one_collection_field ?? '';
+
+		return currentData[collectionField];
 	}
 };
 
