@@ -18,7 +18,7 @@ import { OAS_REQUIRED_SCHEMAS } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
-import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { fetchFieldMaps } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-maps.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
@@ -65,15 +65,16 @@ class OASSpecsService implements SpecificationSubService {
 		let permissions: Permission[] = [];
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const allowedFields = await fetchAllowedFieldMap(
+			const fieldMaps = await fetchFieldMaps(
 				{
 					accountability: this.accountability,
 					action: 'read',
+					fieldMapTypes: ['allowed'],
 				},
 				{ schema: this.schema, knex: this.knex },
 			);
 
-			schemaForSpec = reduceSchema(this.schema, allowedFields);
+			schemaForSpec = reduceSchema(this.schema, fieldMaps.allowed);
 
 			const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
 

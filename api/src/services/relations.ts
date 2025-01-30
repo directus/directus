@@ -12,7 +12,7 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
-import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
+import { fetchFieldMaps } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-maps.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
@@ -555,15 +555,16 @@ export class RelationsService {
 	private async filterForbidden(relations: Relation[]): Promise<Relation[]> {
 		if (this.accountability === null || this.accountability?.admin === true) return relations;
 
-		const allowedFields = await fetchAllowedFieldMap(
+		const fieldMaps = await fetchFieldMaps(
 			{
 				accountability: this.accountability,
 				action: 'read',
+				fieldMapTypes: ['allowed'],
 			},
 			{ schema: this.schema, knex: this.knex },
 		);
 
-		const allowedCollections = Object.keys(allowedFields);
+		const allowedCollections = Object.keys(fieldMaps.allowed);
 
 		relations = toArray(relations);
 
@@ -587,9 +588,9 @@ export class RelationsService {
 			}
 
 			if (
-				!allowedFields[relation.collection] ||
-				(allowedFields[relation.collection]?.includes('*') === false &&
-					allowedFields[relation.collection]?.includes(relation.field) === false)
+				!fieldMaps.allowed[relation.collection] ||
+				(fieldMaps.allowed[relation.collection]?.includes('*') === false &&
+					fieldMaps.allowed[relation.collection]?.includes(relation.field) === false)
 			) {
 				fieldsAllowed = false;
 			}
@@ -597,9 +598,9 @@ export class RelationsService {
 			if (
 				relation.related_collection &&
 				relation.meta?.one_field &&
-				(!allowedFields[relation.related_collection] ||
-					(allowedFields[relation.related_collection]?.includes('*') === false &&
-						allowedFields[relation.related_collection]?.includes(relation.meta.one_field) === false))
+				(!fieldMaps.allowed[relation.related_collection] ||
+					(fieldMaps.allowed[relation.related_collection]?.includes('*') === false &&
+						fieldMaps.allowed[relation.related_collection]?.includes(relation.meta.one_field) === false))
 			) {
 				fieldsAllowed = false;
 			}

@@ -1,15 +1,15 @@
 import { schemaPermissions } from '@directus/system-data';
 import type { Accountability, Filter, Permission, SchemaOverview } from '@directus/types';
 import { set, uniq } from 'lodash-es';
-import { fetchAllowedFieldMap } from '../modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
-import type { Context } from '../types.js';
-import { fetchShareInfo } from './fetch-share-info.js';
-import { mergePermissions } from './merge-permissions.js';
+import { reduceSchema } from '../../utils/reduce-schema.js';
 import { fetchPermissions } from '../lib/fetch-permissions.js';
 import { fetchPolicies } from '../lib/fetch-policies.js';
 import { fetchRolesTree } from '../lib/fetch-roles-tree.js';
-import { reduceSchema } from '../../utils/reduce-schema.js';
+import { fetchFieldMaps } from '../modules/fetch-allowed-field-map/fetch-allowed-field-maps.js';
 import { fetchGlobalAccess } from '../modules/fetch-global-access/fetch-global-access.js';
+import type { Context } from '../types.js';
+import { fetchShareInfo } from './fetch-share-info.js';
+import { mergePermissions } from './merge-permissions.js';
 
 export async function getPermissionsForShare(
 	accountability: Pick<Accountability, 'share' | 'ip'>,
@@ -52,24 +52,26 @@ export async function getPermissionsForShare(
 		{ admin: userIsAdmin },
 		userPermissions,
 		sharePermissions,
-		shareFieldMap,
-		userFieldMap,
+		shareFieldMaps,
+		userFieldMaps,
 	] = await Promise.all([
 		fetchGlobalAccess(shareAccountability, context.knex),
 		fetchGlobalAccess(userAccountability, context.knex),
 		getPermissionsForAccountability(userAccountability, context),
 		getPermissionsForAccountability(shareAccountability, context),
-		fetchAllowedFieldMap(
+		fetchFieldMaps(
 			{
 				accountability: shareAccountability,
 				action: 'read',
+				fieldMapTypes: ['allowed'],
 			},
 			context,
 		),
-		fetchAllowedFieldMap(
+		fetchFieldMaps(
 			{
 				accountability: userAccountability,
 				action: 'read',
+				fieldMapTypes: ['allowed'],
 			},
 			context,
 		),
@@ -85,14 +87,14 @@ export async function getPermissionsForShare(
 		reducedSchema = context.schema;
 	} else if (userIsAdmin && !shareIsAdmin) {
 		permissions = sharePermissions;
-		reducedSchema = reduceSchema(context.schema, shareFieldMap);
+		reducedSchema = reduceSchema(context.schema, shareFieldMaps.allowed);
 	} else if (shareIsAdmin && !userIsAdmin) {
 		permissions = userPermissions;
-		reducedSchema = reduceSchema(context.schema, userFieldMap);
+		reducedSchema = reduceSchema(context.schema, userFieldMaps.allowed);
 	} else {
 		permissions = mergePermissions('intersection', sharePermissions, userPermissions);
-		reducedSchema = reduceSchema(context.schema, shareFieldMap);
-		reducedSchema = reduceSchema(reducedSchema, userFieldMap);
+		reducedSchema = reduceSchema(context.schema, shareFieldMaps.allowed);
+		reducedSchema = reduceSchema(reducedSchema, userFieldMaps.allowed);
 	}
 
 	const parentPrimaryKeyField = context.schema.collections[collection]!.primary;
