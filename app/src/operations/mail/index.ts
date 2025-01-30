@@ -27,7 +27,7 @@ export default defineOperationApp({
 			text: Array.isArray(bcc) ? bcc.join(', ') : bcc,
 		},
 		{
-			label: '$t:operations.mail.replyTo',
+			label: '$t:operations.mail.reply_to',
 			text: Array.isArray(replyTo) ? replyTo.join(', ') : replyTo,
 		},
 	],
@@ -87,13 +87,13 @@ export default defineOperationApp({
 			},
 			{
 				field: 'replyTo',
-				name: '$t:operations.mail.replyTo',
+				name: '$t:operations.mail.reply_to',
 				type: 'csv',
 				meta: {
 					width: 'full',
 					interface: 'tags',
 					options: {
-						placeholder: '$t:operations.mail.replyTo_placeholder',
+						placeholder: '$t:operations.mail.reply_to_placeholder',
 						iconRight: 'reply',
 					},
 				},
