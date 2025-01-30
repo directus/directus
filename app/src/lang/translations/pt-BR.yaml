@@ -2426,7 +2426,6 @@ operations:
     name: Enviar E-mail
     description: Enviar um e-mail para uma ou mais pessoas
     to: Para
-    to_placeholder: Adicione endereços de e-mail e pressione Enter...
     body: Corpo
     template: Template
     data: Dados
