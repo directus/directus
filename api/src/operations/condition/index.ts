@@ -20,7 +20,7 @@ export default defineOperationApi<Options>({
 				)
 				.flat();
 
-			throw validationErrors;
+			throw validationErrors.length === 1 ? validationErrors[0] : validationErrors;
 		} else {
 			return null;
 		}
