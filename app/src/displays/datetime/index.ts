@@ -1,10 +1,11 @@
-import { i18n } from '@/lang';
-import { localizedFormat } from '@/utils/localized-format';
-import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import type { DeepPartial, Field } from '@directus/types';
 import { defineDisplay } from '@directus/extensions';
-import { parse, parseISO } from 'date-fns';
+import { formatDate } from '@/utils/format-date';
 import DisplayDateTime from './datetime.vue';
+
+function isFormatDateType(type: unknown): type is 'dateTime' | 'date' | 'time' | 'timestamp' {
+	return ['dateTime', 'date', 'time', 'timestamp'].includes(type as any);
+}
 
 export default defineDisplay({
 	id: 'datetime',
@@ -14,41 +15,12 @@ export default defineDisplay({
 	component: DisplayDateTime,
 	handler: (value, options, { field }) => {
 		if (!value) return value;
+		if (!field?.type || !isFormatDateType(field?.type)) return value;
 
-		const relativeFormat = (value: Date) =>
-			localizedFormatDistance(value, new Date(), {
-				addSuffix: true,
-			});
-
-		if (field?.type === 'timestamp') {
-			value = parseISO(value);
-		} else if (field?.type === 'dateTime') {
-			value = parse(value, "yyyy-MM-dd'T'HH:mm:ss", new Date());
-		} else if (field?.type === 'date') {
-			value = parse(value, 'yyyy-MM-dd', new Date());
-		} else if (field?.type === 'time') {
-			value = parse(value, 'HH:mm:ss', new Date());
-		}
-
-		if (options.relative) {
-			return relativeFormat(value);
-		} else {
-			let format;
-
-			if (options?.format === undefined || options.format === 'long') {
-				format = `${i18n.global.t('date-fns_date')} ${i18n.global.t('date-fns_time')}`;
-				if (field?.type === 'date') format = String(i18n.global.t('date-fns_date'));
-				if (field?.type === 'time') format = String(i18n.global.t('date-fns_time'));
-			} else if (options.format === 'short') {
-				format = `${i18n.global.t('date-fns_date_short')} ${i18n.global.t('date-fns_time_short')}`;
-				if (field?.type === 'date') format = String(i18n.global.t('date-fns_date_short'));
-				if (field?.type === 'time') format = String(i18n.global.t('date-fns_time_short'));
-			} else {
-				format = options.format;
-			}
-
-			return localizedFormat(value, format);
-		}
+		return formatDate(value, {
+			type: field.type,
+			...options,
+		});
 	},
 	options: ({ field }) => {
 		const options = field.meta?.display_options || {};
@@ -72,26 +44,52 @@ export default defineDisplay({
 		];
 
 		if (!options.relative) {
-			fields.push({
-				field: 'format',
-				name: '$t:displays.datetime.format',
-				type: 'string',
-				meta: {
-					interface: 'select-dropdown',
-					width: 'half',
-					options: {
-						choices: [
-							{ text: '$t:displays.datetime.long', value: 'long' },
-							{ text: '$t:displays.datetime.short', value: 'short' },
-						],
-						allowOther: true,
+			fields.push(
+				{
+					field: 'format',
+					name: '$t:displays.datetime.format',
+					type: 'string',
+					meta: {
+						interface: 'select-dropdown',
+						width: 'half',
+						options: {
+							choices: [
+								{ text: '$t:displays.datetime.long', value: 'long' },
+								{ text: '$t:displays.datetime.short', value: 'short' },
+							],
+							allowOther: true,
+						},
+						note: '$t:displays.datetime.format_note',
 					},
-					note: '$t:displays.datetime.format_note',
+					schema: {
+						default_value: 'long',
+					},
 				},
-				schema: {
-					default_value: 'long',
+				{
+					field: 'includeSeconds',
+					name: '$t:interfaces.datetime.include_seconds',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+					},
+					schema: {
+						default_value: false,
+					},
 				},
-			});
+				{
+					field: 'use24',
+					name: '$t:interfaces.datetime.use_24',
+					type: 'boolean',
+					meta: {
+						width: 'half',
+						interface: 'boolean',
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+			);
 		} else {
 			fields.push(
 				{

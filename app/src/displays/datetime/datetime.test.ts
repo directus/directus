@@ -30,7 +30,7 @@ function getCurrentTestDate() {
 }
 
 test.each([
-	{ format: 'long', expected: 'January 1st, 2023 12:00:00 AM' },
+	{ format: 'long', expected: 'January 1st, 2023 12:00 AM' },
 	{ format: 'short', expected: 'Jan 1, 2023 12:00AM' },
 ])('should display $format formatted string of current timestamp value', ({ format, expected }) => {
 	const now = getCurrentTestDate();

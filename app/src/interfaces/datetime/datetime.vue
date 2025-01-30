@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { localizedFormat } from '@/utils/localized-format';
-import { isValid, parse, parseISO } from 'date-fns';
+import { isValid } from 'date-fns';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { parseDate } from '@/utils/parse-date';
+import { formatDate } from '@/utils/format-date';
 
 const props = withDefaults(
 	defineProps<{
@@ -11,9 +12,19 @@ const props = withDefaults(
 		disabled?: boolean;
 		includeSeconds?: boolean;
 		use24?: boolean;
+		relative?: boolean;
+		suffix?: boolean;
+		strict?: boolean;
+		round?: 'round' | 'floor' | 'ceil';
+		format?: 'short' | 'long';
 	}>(),
 	{
 		use24: true,
+		format: 'long',
+		relative: false,
+		strict: false,
+		round: 'round',
+		suffix: true,
 	},
 );
 
@@ -30,7 +41,7 @@ const { displayValue, isValidValue } = useDisplayValue();
 function useDisplayValue() {
 	const displayValue = ref<string | null>(null);
 
-	const isValidValue = computed(() => (props.value ? isValid(parseValue(props.value)) : false));
+	const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
 	watch(() => props.value, setDisplayValue, { immediate: true });
 
@@ -42,26 +53,9 @@ function useDisplayValue() {
 			return;
 		}
 
-		let timeFormat = props.includeSeconds ? 'date-fns_time' : 'date-fns_time_no_seconds';
-		if (props.use24) timeFormat = props.includeSeconds ? 'date-fns_time_24hour' : 'date-fns_time_no_seconds_24hour';
-		let format = `${t('date-fns_date')} ${t(timeFormat)}`;
-		if (props.type === 'date') format = String(t('date-fns_date'));
-		if (props.type === 'time') format = String(t(timeFormat));
-
-		displayValue.value = localizedFormat(parseValue(props.value), format);
-	}
-
-	function parseValue(value: string): Date {
-		switch (props.type) {
-			case 'dateTime':
-				return parse(value, "yyyy-MM-dd'T'HH:mm:ss", new Date());
-			case 'date':
-				return parse(value, 'yyyy-MM-dd', new Date());
-			case 'time':
-				return parse(value, 'HH:mm:ss', new Date());
-			case 'timestamp':
-				return parseISO(value);
-		}
+		displayValue.value = formatDate(props.value, {
+			...props,
+		});
 	}
 }
 

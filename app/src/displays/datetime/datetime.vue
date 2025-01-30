@@ -7,6 +7,7 @@ withDefaults(defineProps<Props>(), {
 	strict: false,
 	round: 'round',
 	suffix: true,
+	use24: false,
 });
 </script>
 
