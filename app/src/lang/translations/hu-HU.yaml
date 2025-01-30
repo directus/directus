@@ -2042,7 +2042,6 @@ operations:
     name: Küldjön e-mailt
     description: Küldjön e-mailt egy vagy több személynek
     to: Neki
-    to_placeholder: Adjon hozzá e-mail címeket, és nyomja meg az entert...
     body: Törzsszöveg
     template: Sablon
     data: Adat
