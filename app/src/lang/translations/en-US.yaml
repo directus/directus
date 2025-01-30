@@ -2476,10 +2476,16 @@ operations:
     name: Send Email
     description: Send an email to one or more people
     to: To
-    to_placeholder: Add e-mail addresses and press enter...
+    to_placeholder: Add email addresses and press enter...
     body: Body
     template: Template
     data: Data
+    cc: CC
+    cc_placeholder: Add CC email addresses and press enter...
+    bcc: BCC
+    bcc_placeholder: Add BCC email addresses and press enter...
+    reply_to: Reply To
+    reply_to_placeholder: Add reply-to email addresses and press enter...
   notification:
     name: Send Notification
     description: Send an in-app notification to one or more users
