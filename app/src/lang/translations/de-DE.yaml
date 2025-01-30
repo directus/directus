@@ -2426,7 +2426,6 @@ operations:
     name: Email senden
     description: Sende eine E-Mail an eine oder mehrere Personen
     to: An
-    to_placeholder: E-Mail-Adressen hinzufügen und Enter drücken...
     body: Inhalt
     template: Vorlage
     data: Daten
