@@ -41,7 +41,7 @@ test('Returns allowed field map of the whole schema if admin is true', async () 
 		},
 	} as unknown as SchemaOverview;
 
-	const maps = await fetchFieldMaps({ accountability, action, fieldMapTypes: ['allowed'] }, { schema } as Context);
+	const maps = await fetchFieldMaps({ accountability, action, types: ['allowed'] }, { schema } as Context);
 
 	expect(maps.allowed).toEqual({
 		'collection-a': ['field-a', 'field-b'],
@@ -66,7 +66,7 @@ test('Returns allowed field map from permissions for given accountability', asyn
 		{ collection: 'collection-b', fields: ['field-b'] },
 	] as Permission[]);
 
-	const maps = await fetchFieldMaps({ accountability, action, fieldMapTypes: ['allowed'] }, {} as Context);
+	const maps = await fetchFieldMaps({ accountability, action, types: ['allowed'] }, {} as Context);
 
 	expect(maps.allowed).toEqual({
 		'collection-a': ['field-a', 'field-b'],
@@ -98,7 +98,7 @@ test('Returns inconsistent field map of the whole schema if admin is true', asyn
 		},
 	} as unknown as SchemaOverview;
 
-	const maps = await fetchFieldMaps({ accountability, action, fieldMapTypes: ['inconsistent'] }, {
+	const maps = await fetchFieldMaps({ accountability, action, types: ['inconsistent'] }, {
 		schema,
 	} as Context);
 
@@ -127,7 +127,7 @@ test('Returns inconsistent field map from permissions for given accountability',
 		{ collection: 'collection-c', fields: ['field-a'] },
 	] as Permission[]);
 
-	const maps = await fetchFieldMaps({ accountability, action, fieldMapTypes: ['inconsistent'] }, {} as Context);
+	const maps = await fetchFieldMaps({ accountability, action, types: ['inconsistent'] }, {} as Context);
 
 	expect(maps.inconsistent).toEqual({
 		'collection-a': ['field-a', 'field-b'],
@@ -152,7 +152,7 @@ test('Returns cached inconsistent field map from permissions for given accountab
 		{ collection: 'collection-c', fields: ['field-a'] },
 	] as Permission[]);
 
-	const maps = await fetchFieldMaps({ accountability, action, fieldMapTypes: ['inconsistent'] }, {} as Context);
+	const maps = await fetchFieldMaps({ accountability, action, types: ['inconsistent'] }, {} as Context);
 
 	// Cache from previous test is returned
 	expect(maps.inconsistent).toEqual({

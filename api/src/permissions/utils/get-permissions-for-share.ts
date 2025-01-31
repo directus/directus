@@ -63,7 +63,7 @@ export async function getPermissionsForShare(
 			{
 				accountability: shareAccountability,
 				action: 'read',
-				fieldMapTypes: ['allowed'],
+				types: ['allowed'],
 			},
 			context,
 		),
@@ -71,7 +71,7 @@ export async function getPermissionsForShare(
 			{
 				accountability: userAccountability,
 				action: 'read',
-				fieldMapTypes: ['allowed'],
+				types: ['allowed'],
 			},
 			context,
 		),

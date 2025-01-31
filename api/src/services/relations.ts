@@ -559,7 +559,7 @@ export class RelationsService {
 			{
 				accountability: this.accountability,
 				action: 'read',
-				fieldMapTypes: ['allowed'],
+				types: ['allowed'],
 			},
 			{ schema: this.schema, knex: this.knex },
 		);

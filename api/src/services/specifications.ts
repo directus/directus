@@ -69,7 +69,7 @@ class OASSpecsService implements SpecificationSubService {
 				{
 					accountability: this.accountability,
 					action: 'read',
-					fieldMapTypes: ['allowed'],
+					types: ['allowed'],
 				},
 				{ schema: this.schema, knex: this.knex },
 			);

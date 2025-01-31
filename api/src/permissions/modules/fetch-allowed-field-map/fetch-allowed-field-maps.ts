@@ -1,9 +1,9 @@
 import type { Accountability, PermissionsAction } from '@directus/types';
 import { difference, intersection, uniq } from 'lodash-es';
+import { useCache } from '../../cache.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import { useCache } from '../../cache.js';
 
 export type FieldMap = Record<string, string[]>;
 export type FieldMapsResult = { allowed: FieldMap; inconsistent: FieldMap };
@@ -11,7 +11,7 @@ export type FieldMapsResult = { allowed: FieldMap; inconsistent: FieldMap };
 export interface FetchFieldMapsOptions {
 	accountability: Pick<Accountability, 'user' | 'role' | 'roles' | 'ip' | 'admin' | 'app'> | null;
 	action: PermissionsAction;
-	fieldMapTypes: ('allowed' | 'inconsistent')[];
+	types: ('allowed' | 'inconsistent')[];
 }
 
 export async function fetchFieldMaps(options: FetchFieldMapsOptions, context: Context) {
@@ -19,14 +19,14 @@ export async function fetchFieldMaps(options: FetchFieldMapsOptions, context: Co
 
 	const key = `fields_map_${options.accountability?.role}_${options.accountability?.user}_${
 		options.action
-	}_${options.fieldMapTypes.join('_')}`;
+	}_${options.types.join('_')}`;
 
 	let cachedFieldMaps = await cache.get<FieldMapsResult>(key);
 
 	if (cachedFieldMaps) return cachedFieldMaps;
 
 	// Check if an alternate cache is available
-	if (options.fieldMapTypes.length > 1) {
+	if (options.types.length > 1) {
 		cachedFieldMaps = await cache.get<FieldMapsResult>(
 			`fields_map_${options.accountability?.role}_${options.accountability?.user}_${options.action}_allowed_inconsistent`,
 		);
@@ -42,7 +42,7 @@ export async function fetchFieldMaps(options: FetchFieldMapsOptions, context: Co
 }
 
 export async function _fetchFieldMaps(
-	{ accountability, action, fieldMapTypes = ['allowed'] }: FetchFieldMapsOptions,
+	{ accountability, action, types: fieldMapTypes = ['allowed'] }: FetchFieldMapsOptions,
 	{ knex, schema }: Context,
 ) {
 	const fieldMaps: FieldMapsResult = {

@@ -298,7 +298,7 @@ export class GraphQLService {
 					{
 						accountability: this.accountability,
 						action: 'read',
-						fieldMapTypes: ['inconsistent'],
+						types: ['inconsistent'],
 					},
 					{ schema: this.schema, knex: this.knex },
 				),
@@ -306,7 +306,7 @@ export class GraphQLService {
 					{
 						accountability: this.accountability,
 						action: 'create',
-						fieldMapTypes: ['inconsistent'],
+						types: ['inconsistent'],
 					},
 					{ schema: this.schema, knex: this.knex },
 				),
@@ -314,7 +314,7 @@ export class GraphQLService {
 					{
 						accountability: this.accountability,
 						action: 'update',
-						fieldMapTypes: ['inconsistent'],
+						types: ['inconsistent'],
 					},
 					{ schema: this.schema, knex: this.knex },
 				),
@@ -322,7 +322,7 @@ export class GraphQLService {
 					{
 						accountability: this.accountability,
 						action: 'delete',
-						fieldMapTypes: ['inconsistent'],
+						types: ['inconsistent'],
 					},
 					{ schema: this.schema, knex: this.knex },
 				),
@@ -333,7 +333,7 @@ export class GraphQLService {
 					{
 						accountability: this.accountability,
 						action: 'read',
-						fieldMapTypes: ['allowed', 'inconsistent'],
+						types: ['allowed', 'inconsistent'],
 					},
 					{ schema: this.schema, knex: this.knex },
 				),
@@ -341,7 +341,7 @@ export class GraphQLService {
 					{
 						accountability: this.accountability,
 						action: 'create',
-						fieldMapTypes: ['allowed', 'inconsistent'],
+						types: ['allowed', 'inconsistent'],
 					},
 					{ schema: this.schema, knex: this.knex },
 				),
@@ -349,7 +349,7 @@ export class GraphQLService {
 					{
 						accountability: this.accountability,
 						action: 'update',
-						fieldMapTypes: ['allowed', 'inconsistent'],
+						types: ['allowed', 'inconsistent'],
 					},
 					{ schema: this.schema, knex: this.knex },
 				),
@@ -357,7 +357,7 @@ export class GraphQLService {
 					{
 						accountability: this.accountability,
 						action: 'delete',
-						fieldMapTypes: ['allowed', 'inconsistent'],
+						types: ['allowed', 'inconsistent'],
 					},
 					{ schema: this.schema, knex: this.knex },
 				),
