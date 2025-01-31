@@ -125,6 +125,12 @@ function processValue(event: KeyboardEvent) {
 
 	const value = (event.target as HTMLInputElement).value;
 
+	if (props.type === 'number' && key === '.') {
+		// Prevent entering a decimal point for number type inputs
+		event.preventDefault();
+		return;
+	}
+
 	if (props.slug === true) {
 		const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789-_~ '.split('');
 
@@ -175,6 +181,12 @@ function emitValue(event: InputEvent) {
 
 	if (props.type === 'number') {
 		const parsedNumber = Number(value);
+
+		// Check if the number is an integer
+		if (!Number.isInteger(parsedNumber)) {
+			// If not an integer, prevent further processing
+			return;
+		}
 
 		// Ignore if numeric value remains unchanged
 		if (props.modelValue !== parsedNumber) {
