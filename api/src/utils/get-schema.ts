@@ -76,11 +76,12 @@ export async function getSchema(
 			bus.subscribe(messageKey, busListener).catch(reject);
 
 			function busListener(options: { schema: SchemaOverview | null }) {
+				cleanup();
+
 				if (options.schema === null) {
 					return reject();
 				}
 
-				cleanup();
 				setLocalSchemaCache(options.schema).catch(reject);
 				resolve(options.schema);
 			}
