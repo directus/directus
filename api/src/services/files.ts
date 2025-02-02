@@ -266,7 +266,13 @@ export class FilesService extends ItemsService<File> {
 	 */
 	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
-		const files = await super.readMany(keys, { fields: ['id', 'storage', 'filename_disk'], limit: -1 });
+
+		const sudoFilesItemsService = new FilesService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const files = await sudoFilesItemsService.readMany(keys, { fields: ['id', 'storage', 'filename_disk'], limit: -1 });
 
 		if (!files) {
 			throw new ForbiddenError();
