@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, File, PrimaryKey, Query } from '@directus/types';
 import { toArray } from '@directus/utils';
@@ -273,10 +273,6 @@ export class FilesService extends ItemsService<File> {
 		});
 
 		const files = await sudoFilesItemsService.readMany(keys, { fields: ['id', 'storage', 'filename_disk'], limit: -1 });
-
-		if (!files) {
-			throw new ForbiddenError();
-		}
 
 		await super.deleteMany(keys);
 
