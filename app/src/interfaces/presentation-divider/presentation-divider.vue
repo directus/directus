@@ -9,6 +9,7 @@ defineProps<{
 
 <template>
 	<v-divider
+		class="presentation-divider"
 		:class="{ 'add-margin-top': icon || title }"
 		:style="{
 			'--v-divider-label-color': color,

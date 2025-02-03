@@ -425,7 +425,7 @@ function useRawEditor() {
 .v-form {
 	@include mixins.form-grid;
 
-	.first-visible-field :deep(.v-divider) {
+	.first-visible-field :deep(.presentation-divider) {
 		margin-top: 0;
 	}
 
