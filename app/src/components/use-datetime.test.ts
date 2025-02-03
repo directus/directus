@@ -3,7 +3,7 @@ import { i18n } from '@/lang';
 import { mount } from '@vue/test-utils';
 import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 import { nextTick } from 'vue';
-import Datetime from './datetime.vue';
+import UseDatetime from './use-datetime.vue';
 
 const global: GlobalMountOptions = {
 	plugins: [i18n],
@@ -29,53 +29,33 @@ function getCurrentTestDate() {
 	return nowUTC;
 }
 
-test.each([
-	{ format: 'long', expected: 'January 1st, 2023 12:00:00 AM' },
-	{ format: 'short', expected: 'Jan 1, 2023 12:00AM' },
-])('should display $format formatted string of current timestamp value', ({ format, expected }) => {
+test('should provide datetime value', () => {
 	const now = getCurrentTestDate();
 
-	const wrapper = mount(Datetime, {
+	const wrapper = mount(UseDatetime, {
+		slots: {
+			default: '<template v-slot="{ datetime }">{{ datetime }}</template>',
+		},
 		props: {
 			value: now.toISOString(),
 			type: 'timestamp',
-			format,
 		},
 		global,
 	});
 
-	expect(wrapper.find('.datetime').element.textContent).toBe(expected);
+	expect(wrapper.html()).toBe('January 1st, 2023 12:00 AM');
 });
 
-test.each([
-	{ strict: true, expected: '0 seconds ago' },
-	{ strict: false, expected: 'less than a minute ago' },
-])('should display "$expected" relative formatted string when strict is $strict', async ({ strict, expected }) => {
+test('should refresh the value every minute when relative is true', async () => {
 	const now = getCurrentTestDate();
 
 	// set system time to be the same time as the tested time
 	vi.setSystemTime(now.valueOf());
 
-	const wrapper = mount(Datetime, {
-		props: {
-			value: now.toISOString(),
-			type: 'timestamp',
-			relative: true,
-			strict,
+	const wrapper = mount(UseDatetime, {
+		slots: {
+			default: '<template v-slot="{ datetime }">{{ datetime }}</template>',
 		},
-		global,
-	});
-
-	expect(wrapper.find('.datetime').element.textContent).toBe(expected);
-});
-
-test('should refresh the display every minute when relative is true', async () => {
-	const now = getCurrentTestDate();
-
-	// set system time to be the same time as the tested time
-	vi.setSystemTime(now.valueOf());
-
-	const wrapper = mount(Datetime, {
 		props: {
 			value: now.toISOString(),
 			type: 'timestamp',
@@ -84,7 +64,7 @@ test('should refresh the display every minute when relative is true', async () =
 		global,
 	});
 
-	expect(wrapper.find('.datetime').element.textContent).toBe('less than a minute ago');
+	expect(wrapper.html()).toBe('less than a minute ago');
 
 	// fast forward one minute
 	vi.advanceTimersByTime(60000);
@@ -92,7 +72,7 @@ test('should refresh the display every minute when relative is true', async () =
 	// make sure the dom is updated
 	await nextTick();
 
-	expect(wrapper.find('.datetime').element.textContent).toBe('1 minute ago');
+	expect(wrapper.html()).toBe('1 minute ago');
 
 	// fast forward one minute again
 	vi.advanceTimersByTime(60000);
@@ -100,5 +80,5 @@ test('should refresh the display every minute when relative is true', async () =
 	// make sure the dom is updated again
 	await nextTick();
 
-	expect(wrapper.find('.datetime').element.textContent).toBe('2 minutes ago');
+	expect(wrapper.html()).toBe('2 minutes ago');
 });
