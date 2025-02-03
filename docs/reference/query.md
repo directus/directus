@@ -616,7 +616,10 @@ const result = await client.request(
 
 ## Deep
 
-Deep allows you to set any of the other query parameters on a nested relational dataset.
+Deep allows you to set any of the other query parameters (expect for [Fields](#fields) and [Deep](#deep) itself) on a
+nested relational dataset.
+
+The nested query parameters are to be prefixed with an underscore.
 
 ### Examples
 
