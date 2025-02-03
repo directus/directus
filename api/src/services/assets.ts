@@ -46,7 +46,7 @@ export class AssetsService {
 		id: string,
 		transformation?: TransformationSet,
 		range?: Range,
-	): Promise<{ stream: Readable; file: any; stat: Stat }> {
+	): Promise<{ stream: () => Promise<Readable>; file: any; stat: Stat }> {
 		const storage = await getStorage();
 
 		const publicSettings = await this.knex
@@ -141,7 +141,7 @@ export class AssetsService {
 
 			if (exists) {
 				return {
-					stream: await storage.location(file.storage).read(assetFilename, { range }),
+					stream: () => storage.location(file.storage).read(assetFilename, { range }),
 					file,
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
@@ -205,12 +205,12 @@ export class AssetsService {
 			}
 
 			return {
-				stream: await storage.location(file.storage).read(assetFilename, { range, version }),
+				stream: () => storage.location(file.storage).read(assetFilename, { range, version }),
 				stat: await storage.location(file.storage).stat(assetFilename),
 				file,
 			};
 		} else {
-			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
+			const readStream = () => storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
 			return { stream: readStream, file, stat };
 		}

@@ -238,7 +238,7 @@ router.get(
 			return res.end();
 		}
 
-		stream
+		(await stream())
 			.on('error', (error) => {
 				logger.error(error, `Couldn't stream file ${file.id} to the client`);
 
