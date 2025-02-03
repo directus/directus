@@ -32,35 +32,6 @@ export default defineInterface({
 			},
 		];
 
-		if (field.type !== 'date') {
-			fields.unshift(
-				{
-					field: 'includeSeconds',
-					name: '$t:interfaces.datetime.include_seconds',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-					},
-					schema: {
-						default_value: false,
-					},
-				},
-				{
-					field: 'use24',
-					name: '$t:interfaces.datetime.use_24',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-					},
-					schema: {
-						default_value: true,
-					},
-				},
-			);
-		}
-
 		if (!options.relative) {
 			fields.push({
 				field: 'format',
@@ -82,6 +53,35 @@ export default defineInterface({
 					default_value: 'long',
 				},
 			});
+
+			if (field.type !== 'date') {
+				fields.push(
+					{
+						field: 'includeSeconds',
+						name: '$t:interfaces.datetime.include_seconds',
+						type: 'boolean',
+						meta: {
+							width: 'half',
+							interface: 'boolean',
+						},
+						schema: {
+							default_value: false,
+						},
+					},
+					{
+						field: 'use24',
+						name: '$t:interfaces.datetime.use_24',
+						type: 'boolean',
+						meta: {
+							width: 'half',
+							interface: 'boolean',
+						},
+						schema: {
+							default_value: true,
+						},
+					},
+				);
+			}
 		} else {
 			fields.push(
 				{

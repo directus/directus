@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import UseDatetime, { type Props } from '@/components/use-datetime.vue';
+import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<UseDatetimeProps>(), {
 	format: 'long',
 	relative: false,
 	strict: false,

@@ -1,63 +1,30 @@
 <script setup lang="ts">
 import { isValid } from 'date-fns';
-import { computed, ref, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, ref } from 'vue';
 import { parseDate } from '@/utils/parse-date';
-import { formatDate } from '@/utils/format-date';
+import UseDatetime, { type Props as UseDatetimeProps } from '@/components/use-datetime.vue';
 
-const props = withDefaults(
-	defineProps<{
-		value: string | null;
-		type: 'timestamp' | 'dateTime' | 'time' | 'date';
-		disabled?: boolean;
-		includeSeconds?: boolean;
-		use24?: boolean;
-		relative?: boolean;
-		suffix?: boolean;
-		strict?: boolean;
-		round?: 'round' | 'floor' | 'ceil';
-		format?: 'short' | 'long';
-	}>(),
-	{
-		use24: true,
-		format: 'long',
-		relative: false,
-		strict: false,
-		round: 'round',
-		suffix: true,
-	},
-);
+interface Props extends Omit<UseDatetimeProps, 'value'> {
+	value: string | null;
+	disabled?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	use24: true,
+	format: 'long',
+	relative: false,
+	strict: false,
+	round: 'round',
+	suffix: true,
+});
 
 const emit = defineEmits<{
 	(e: 'input', value: string | null): void;
 }>();
 
-const { t } = useI18n();
-
 const dateTimeMenu = ref();
 
-const { displayValue, isValidValue } = useDisplayValue();
-
-function useDisplayValue() {
-	const displayValue = ref<string | null>(null);
-
-	const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
-
-	watch(() => props.value, setDisplayValue, { immediate: true });
-
-	return { displayValue, isValidValue };
-
-	function setDisplayValue() {
-		if (!props.value || !isValidValue.value) {
-			displayValue.value = null;
-			return;
-		}
-
-		displayValue.value = formatDate(props.value, {
-			...props,
-		});
-	}
-}
+const isValidValue = computed(() => (props.value ? isValid(parseDate(props.value, props.type)) : false));
 
 function unsetValue(e: any) {
 	e.preventDefault();
@@ -73,11 +40,15 @@ function unsetValue(e: any) {
 				:active="active"
 				clickable
 				readonly
-				:model-value="displayValue"
 				:disabled="disabled"
-				:placeholder="!isValidValue ? value : t('enter_a_value')"
+				:placeholder="!isValidValue ? value : undefined"
 				@click="toggle"
 			>
+				<template v-if="isValidValue" #prepend>
+					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
+						{{ datetime }}
+					</use-datetime>
+				</template>
 				<template v-if="!disabled" #append>
 					<v-icon
 						:name="value ? 'clear' : 'today'"

@@ -1,17 +1,9 @@
 <script setup lang="ts">
+import { formatDate, type FormatDateOptions } from '@/utils/format-date';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
-import { formatDate } from '@/utils/format-date';
 
-export interface Props {
+export interface Props extends FormatDateOptions {
 	value: string;
-	type: 'dateTime' | 'date' | 'time' | 'timestamp';
-	format?: string | 'short' | 'long';
-	relative?: boolean;
-	strict?: boolean;
-	round?: 'floor' | 'round' | 'ceil';
-	suffix?: boolean;
-	includeSeconds?: boolean;
-	use24?: boolean;
 }
 
 defineOptions({ inheritAttrs: false });
@@ -40,7 +32,6 @@ onMounted(() => {
 	if (!props.relative) return;
 
 	refreshInterval = window.setInterval(() => {
-		if (!props.value) return;
 		displayValue.value = formatDate(props.value, props);
 	}, 60_000);
 });

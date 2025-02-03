@@ -6,7 +6,8 @@ import { parseDate } from '@/utils/parse-date';
 
 export interface FormatDateOptions {
 	type: 'dateTime' | 'date' | 'time' | 'timestamp';
-	format?: string | 'short' | 'long';
+	/** 'short', 'long' or custom (https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table) */
+	format?: string;
 	relative?: boolean;
 	strict?: boolean;
 	round?: 'floor' | 'round' | 'ceil';

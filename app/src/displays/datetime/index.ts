@@ -1,11 +1,7 @@
 import type { DeepPartial, Field } from '@directus/types';
 import { defineDisplay } from '@directus/extensions';
-import { formatDate } from '@/utils/format-date';
+import { formatDate, FormatDateOptions } from '@/utils/format-date';
 import DisplayDateTime from './datetime.vue';
-
-function isFormatDateType(type: unknown): type is 'dateTime' | 'date' | 'time' | 'timestamp' {
-	return ['dateTime', 'date', 'time', 'timestamp'].includes(type as any);
-}
 
 export default defineDisplay({
 	id: 'datetime',
@@ -15,10 +11,9 @@ export default defineDisplay({
 	component: DisplayDateTime,
 	handler: (value, options, { field }) => {
 		if (!value) return value;
-		if (!field?.type || !isFormatDateType(field?.type)) return value;
 
 		return formatDate(value, {
-			type: field.type,
+			type: field!.type as FormatDateOptions['type'],
 			...options,
 		});
 	},
@@ -44,52 +39,55 @@ export default defineDisplay({
 		];
 
 		if (!options.relative) {
-			fields.push(
-				{
-					field: 'format',
-					name: '$t:displays.datetime.format',
-					type: 'string',
-					meta: {
-						interface: 'select-dropdown',
-						width: 'half',
-						options: {
-							choices: [
-								{ text: '$t:displays.datetime.long', value: 'long' },
-								{ text: '$t:displays.datetime.short', value: 'short' },
-							],
-							allowOther: true,
+			fields.push({
+				field: 'format',
+				name: '$t:displays.datetime.format',
+				type: 'string',
+				meta: {
+					interface: 'select-dropdown',
+					width: 'half',
+					options: {
+						choices: [
+							{ text: '$t:displays.datetime.long', value: 'long' },
+							{ text: '$t:displays.datetime.short', value: 'short' },
+						],
+						allowOther: true,
+					},
+					note: '$t:displays.datetime.format_note',
+				},
+				schema: {
+					default_value: 'long',
+				},
+			});
+
+			if (field.type !== 'date') {
+				fields.push(
+					{
+						field: 'includeSeconds',
+						name: '$t:interfaces.datetime.include_seconds',
+						type: 'boolean',
+						meta: {
+							width: 'half',
+							interface: 'boolean',
 						},
-						note: '$t:displays.datetime.format_note',
+						schema: {
+							default_value: false,
+						},
 					},
-					schema: {
-						default_value: 'long',
+					{
+						field: 'use24',
+						name: '$t:interfaces.datetime.use_24',
+						type: 'boolean',
+						meta: {
+							width: 'half',
+							interface: 'boolean',
+						},
+						schema: {
+							default_value: false,
+						},
 					},
-				},
-				{
-					field: 'includeSeconds',
-					name: '$t:interfaces.datetime.include_seconds',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-					},
-					schema: {
-						default_value: false,
-					},
-				},
-				{
-					field: 'use24',
-					name: '$t:interfaces.datetime.use_24',
-					type: 'boolean',
-					meta: {
-						width: 'half',
-						interface: 'boolean',
-					},
-					schema: {
-						default_value: false,
-					},
-				},
-			);
+				);
+			}
 		} else {
 			fields.push(
 				{
