@@ -246,11 +246,12 @@ export class GraphQLService {
 					bus.subscribe(messageKey, busListener).catch(reject);
 
 					function busListener(options: { schema: SchemaOverview | null }) {
+						cleanup();
+
 						if (options.schema === null) {
 							return reject();
 						}
 
-						cleanup();
 						cache.globalSanitizedSchema = options.schema;
 						resolve(options.schema);
 					}
