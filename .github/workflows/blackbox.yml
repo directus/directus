@@ -11,6 +11,13 @@ on:
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/blackbox.yml
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+      - labeled
 
 concurrency:
   group: blackbox-${{ github.ref }}
@@ -22,6 +29,9 @@ env:
 jobs:
   common:
     name: common
+    if: >
+      github.event_name == 'push' || (github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'Run Blackbox'))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -40,6 +50,9 @@ jobs:
 
   db:
     name: ${{ matrix.vendor }}
+    if: >
+      github.event_name == 'push' || (github.event_name == 'pull_request' &&
+      contains(github.event.pull_request.labels.*.name, 'Run Blackbox'))
     runs-on: ${{ matrix.vendor == 'mssql' && 'ubuntu-20.04' || 'ubuntu-latest' }}
     timeout-minutes: 60
     strategy:
