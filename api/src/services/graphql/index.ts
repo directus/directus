@@ -64,7 +64,6 @@ import {
 	SESSION_COOKIE_OPTIONS,
 } from '../../constants.js';
 import getDatabase from '../../database/index.js';
-import { useLogger } from '../../logger/index.js';
 import { rateLimiter } from '../../middleware/rate-limiter-registration.js';
 import { fetchAccountabilityCollectionAccess } from '../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
 import { fetchAccountabilityPolicyGlobals } from '../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
@@ -113,7 +112,6 @@ import processError from './utils/process-error.js';
 import { sanitizeGraphqlSchema } from './utils/sanitize-gql-schema.js';
 
 const env = useEnv();
-const logger = useLogger();
 const mutex = new Mutex();
 
 const validationRules = Array.from(specifiedRules);
