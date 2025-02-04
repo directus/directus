@@ -114,11 +114,6 @@ TEST_SAVE_LOGS=info pnpm --workspace-root test:blackbox
 
 The log files will be available under `tests/blackbox/server-logs-*`.
 
-### Run Blackbox Tests in Pull Requests
-
-Full blackbox tests run automatically when changes are merged into `main`. To trigger blackbox tests on a pull request,
-add the `Run Blackbox` label.
-
 ## Writing Unit Tests
 
 Unit Tests are written throughout the codebase in a vite native unit test framework called [Vitest](https://vitest.dev).
