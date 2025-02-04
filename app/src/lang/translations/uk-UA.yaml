@@ -2425,7 +2425,6 @@ operations:
     name: Надіслати Email
     description: Відправити лист одному або декільком людям
     to: До
-    to_placeholder: Додайте адреси електронної пошти та натисніть enter...
     body: Тіло
     template: Шаблон
     data: Дані

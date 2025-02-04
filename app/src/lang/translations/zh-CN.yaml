@@ -2424,7 +2424,6 @@ operations:
     name: 发送电子邮件
     description: 向一个或多个用户发送电子邮件
     to: 至
-    to_placeholder: 添加电子邮件地址并按回车...
     body: 正文内容
     template: 模板
     data: 数据

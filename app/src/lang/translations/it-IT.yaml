@@ -2425,7 +2425,6 @@ operations:
     name: Invia un'email
     description: Invia un'email a una o più persone
     to: A
-    to_placeholder: Aggiungi gli indirizzi e-mail e premi invio...
     body: Contenuto
     template: Template
     data: Dati
