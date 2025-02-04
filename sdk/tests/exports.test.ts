@@ -1,26 +1,25 @@
+import type { Dirent } from 'node:fs';
 import { glob, readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 
 import { assert, describe, test } from 'vitest';
-
-// Or enable "ESNext" in tsconfig.json#compilerOptions.lib
-declare global {
-	interface ArrayConstructor {
-		fromAsync<T>(iterator: AsyncIterable<T>): Promise<T[]>;
-	}
-}
 
 function getPackageRoot() {
 	return resolve(join(import.meta.dirname, '..'));
 }
 
 async function getNonIndexFileNamesIn(dir: string) {
+	const files: Dirent[] = [];
+
 	const iterator = glob('*.ts', {
 		withFileTypes: true,
 		cwd: join(getPackageRoot(), dir),
 	});
 
-	const files = await Array.fromAsync(iterator);
+	for await (const file of iterator) {
+		files.push(file);
+	}
+
 	return files
 		.filter((file) => file.isFile())
 		.filter((file) => file.name != 'index.ts')
