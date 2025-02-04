@@ -2,6 +2,7 @@ export * from './access.js';
 export * from './activity.js';
 export * from './collection.js';
 export * from './core.js';
+export * from './comment.js';
 export * from './dashboard.js';
 export * from './extension.js';
 export * from './field.js';
