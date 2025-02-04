@@ -1,5 +1,6 @@
 import { useExtension } from '@/composables/use-extension';
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 import { renderPlainStringTemplate } from '@/utils/render-string-template';
@@ -117,6 +118,20 @@ export default defineDisplay({
 
 			if (!fields.includes(primaryKeyFieldValue)) {
 				fields.push(primaryKeyFieldValue);
+			}
+		}
+
+		const fieldStoreField = fieldsStore.getField(collection, field);
+
+		if (fieldStoreField?.meta?.special?.includes('m2a')) {
+			const relationsStore = useRelationsStore();
+			const relations = relationsStore.getRelationsForField(collection, field);
+
+			const collectionField = relations.find((relation) => relation.meta?.one_collection_field)?.meta
+				?.one_collection_field;
+
+			if (collectionField && !fields.find((field) => field === collectionField)) {
+				fields.push(collectionField);
 			}
 		}
 
