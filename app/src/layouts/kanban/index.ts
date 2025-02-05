@@ -561,36 +561,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 
 			async function editGroup(id: string | number, title: string) {
-				if (isRelational.value) {
-					if (groupTitle.value === null || !groupsCollection.value) return;
+				if (!isRelational.value || groupTitle.value === null || !groupsCollection.value) return;
 
 					await api.patch(`${getEndpoint(groupsCollection.value)}/${id}`, {
 						[groupTitle.value]: title,
 					});
-				} else {
-					if (!selectedGroup.value) return;
-
-					const updatedChoices = ((selectedGroup.value?.meta?.options?.choices as Record<string, any>[]) ?? []).map(
-						(choice) => {
-							if (choice.value === id) {
-								return {
-									...choice,
-									text: title,
-								};
-							}
-
-							return choice;
-						},
-					);
-
-					try {
-						await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
-							meta: { options: { choices: updatedChoices } },
-						});
-					} catch (error) {
-						unexpectedError(error);
-					}
-				}
 
 				await getGroups();
 			}
