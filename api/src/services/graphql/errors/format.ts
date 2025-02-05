@@ -1,9 +1,6 @@
 import { type DirectusError } from '@directus/errors';
-import {
-	GraphQLError
-} from 'graphql';
+import { GraphQLError } from 'graphql';
 import { set } from 'lodash-es';
-
 
 /**
  * Convert Directus-Exception into a GraphQL format, so it can be returned by GraphQL properly.

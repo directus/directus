@@ -1,6 +1,4 @@
-import type {
-	GraphQLResolveInfo
-} from 'graphql';
+import type { GraphQLResolveInfo } from 'graphql';
 import {
 	GraphQLBoolean,
 	GraphQLFloat,
@@ -8,14 +6,14 @@ import {
 	GraphQLInt,
 	GraphQLList,
 	GraphQLNonNull,
-	GraphQLString
+	GraphQLString,
 } from 'graphql';
 import type {
 	InputTypeComposerFieldConfigMapDefinition,
 	ObjectTypeComposerFieldConfigAsObjectDefinition,
 	ObjectTypeComposerFieldConfigMapDefinition,
 	ResolverDefinition,
-	SchemaComposer
+	SchemaComposer,
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer } from 'graphql-compose';
 import { getGraphQLType } from '../../../utils/get-graphql-type.js';
@@ -30,12 +28,22 @@ import { GraphQLStringOrFloat } from '../types/string-or-float.js';
 import type { InconsistentFields, Schema } from './index.js';
 import { getTypes } from './get-types.js';
 
-
 /**
  * Create readable types and attach resolvers for each. Also prepares full filter argument structures
  */
-export function getReadableTypes(gql: GraphQLService, schemaComposer: SchemaComposer, schema: Schema, inconsistentFields: InconsistentFields) {
-	const { CollectionTypes: ReadCollectionTypes, VersionTypes: VersionCollectionTypes } = getTypes(schemaComposer, gql.scope, schema, inconsistentFields, 'read');
+export function getReadableTypes(
+	gql: GraphQLService,
+	schemaComposer: SchemaComposer,
+	schema: Schema,
+	inconsistentFields: InconsistentFields,
+) {
+	const { CollectionTypes: ReadCollectionTypes, VersionTypes: VersionCollectionTypes } = getTypes(
+		schemaComposer,
+		gql.scope,
+		schema,
+		inconsistentFields,
+		'read',
+	);
 
 	const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
 
@@ -540,8 +548,8 @@ export function getReadableTypes(gql: GraphQLService, schemaComposer: SchemaComp
 			type: collection.singleton
 				? ReadCollectionTypes[collection.collection]!
 				: new GraphQLNonNull(
-					new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-				),
+						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+				  ),
 			resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 				const result = await resolveQuery(gql, info);
 				context['data'] = result;
@@ -631,9 +639,9 @@ export function getReadableTypes(gql: GraphQLService, schemaComposer: SchemaComp
 				args: collection.singleton
 					? { version: new GraphQLNonNull(GraphQLString) }
 					: {
-						version: new GraphQLNonNull(GraphQLString),
-						id: new GraphQLNonNull(GraphQLID),
-					},
+							version: new GraphQLNonNull(GraphQLString),
+							id: new GraphQLNonNull(GraphQLID),
+					  },
 				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 					const result = await resolveQuery(gql, info);
 					context['data'] = result;

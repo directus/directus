@@ -1,26 +1,33 @@
-import type {
-	GraphQLResolveInfo
-} from 'graphql';
-import {
-	GraphQLBoolean,
-	GraphQLID,
-	GraphQLList,
-	GraphQLNonNull
-} from 'graphql';
-import type {
-	ResolverDefinition,
-	SchemaComposer
-} from 'graphql-compose';
+import type { GraphQLResolveInfo } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
+import type { ResolverDefinition, SchemaComposer } from 'graphql-compose';
 import { ObjectTypeComposer, toInputObjectType } from 'graphql-compose';
 import { GraphQLService, SYSTEM_DENY_LIST } from '../index.js';
 import { resolveMutation } from '../resolvers/mutation.js';
 import { getTypes } from './get-types.js';
 import type { InconsistentFields, Schema } from './index.js';
 
-
-export function getWritableTypes(gql: GraphQLService, schemaComposer: SchemaComposer, schema: Schema, inconsistentFields: InconsistentFields, ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>) {
-	const { CollectionTypes: CreateCollectionTypes } = getTypes(schemaComposer, gql.scope, schema, inconsistentFields, 'create');
-	const { CollectionTypes: UpdateCollectionTypes } = getTypes(schemaComposer, gql.scope, schema, inconsistentFields, 'update');
+export function getWritableTypes(
+	gql: GraphQLService,
+	schemaComposer: SchemaComposer,
+	schema: Schema,
+	inconsistentFields: InconsistentFields,
+	ReadCollectionTypes: Record<string, ObjectTypeComposer<any, any>>,
+) {
+	const { CollectionTypes: CreateCollectionTypes } = getTypes(
+		schemaComposer,
+		gql.scope,
+		schema,
+		inconsistentFields,
+		'create',
+	);
+	const { CollectionTypes: UpdateCollectionTypes } = getTypes(
+		schemaComposer,
+		gql.scope,
+		schema,
+		inconsistentFields,
+		'update',
+	);
 	const DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>> = {};
 
 	for (const collection of Object.values(schema.create.collections)) {
@@ -37,8 +44,8 @@ export function getWritableTypes(gql: GraphQLService, schemaComposer: SchemaComp
 				name: `create_${collection.collection}_items`,
 				type: collectionIsReadable
 					? new GraphQLNonNull(
-						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-					)
+							new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+					  )
 					: GraphQLBoolean,
 				resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 					await resolveMutation(gql, args, info),
@@ -60,9 +67,7 @@ export function getWritableTypes(gql: GraphQLService, schemaComposer: SchemaComp
 			});
 
 			CreateCollectionTypes[collection.collection]!.getResolver(`create_${collection.collection}_items`).addArgs({
-				...CreateCollectionTypes[collection.collection]!.getResolver(
-					`create_${collection.collection}_items`,
-				).getArgs(),
+				...CreateCollectionTypes[collection.collection]!.getResolver(`create_${collection.collection}_items`).getArgs(),
 				data: [
 					toInputObjectType(CreateCollectionTypes[collection.collection]!).setTypeName(
 						`create_${collection.collection}_input`,
@@ -71,9 +76,7 @@ export function getWritableTypes(gql: GraphQLService, schemaComposer: SchemaComp
 			});
 
 			CreateCollectionTypes[collection.collection]!.getResolver(`create_${collection.collection}_item`).addArgs({
-				...CreateCollectionTypes[collection.collection]!.getResolver(
-					`create_${collection.collection}_item`,
-				).getArgs(),
+				...CreateCollectionTypes[collection.collection]!.getResolver(`create_${collection.collection}_item`).getArgs(),
 				data: toInputObjectType(CreateCollectionTypes[collection.collection]!).setTypeName(
 					`create_${collection.collection}_input`,
 				).NonNull,
@@ -108,8 +111,8 @@ export function getWritableTypes(gql: GraphQLService, schemaComposer: SchemaComp
 					name: `update_${collection.collection}_batch`,
 					type: collectionIsReadable
 						? new GraphQLNonNull(
-							new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-						)
+								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+						  )
 						: GraphQLBoolean,
 					args: {
 						...(collectionIsReadable
@@ -129,8 +132,8 @@ export function getWritableTypes(gql: GraphQLService, schemaComposer: SchemaComp
 					name: `update_${collection.collection}_items`,
 					type: collectionIsReadable
 						? new GraphQLNonNull(
-							new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-						)
+								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+						  )
 						: GraphQLBoolean,
 					args: {
 						...(collectionIsReadable

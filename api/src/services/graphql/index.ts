@@ -1,21 +1,7 @@
 import { useEnv } from '@directus/env';
-import type {
-	Accountability,
-	Item,
-	Query,
-	SchemaOverview
-} from '@directus/types';
-import type {
-	ExecutionResult,
-	FormattedExecutionResult,
-	GraphQLSchema
-} from 'graphql';
-import {
-	NoSchemaIntrospectionCustomRule,
-	execute,
-	specifiedRules,
-	validate
-} from 'graphql';
+import type { Accountability, Item, Query, SchemaOverview } from '@directus/types';
+import type { ExecutionResult, FormattedExecutionResult, GraphQLSchema } from 'graphql';
+import { NoSchemaIntrospectionCustomRule, execute, specifiedRules, validate } from 'graphql';
 import type { Knex } from 'knex';
 import getDatabase from '../../database/index.js';
 import type { AbstractServiceOptions, GraphQLParams } from '../../types/index.js';

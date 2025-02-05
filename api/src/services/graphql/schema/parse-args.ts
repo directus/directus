@@ -1,9 +1,4 @@
-import type {
-	ArgumentNode,
-	GraphQLResolveInfo,
-	ValueNode
-} from 'graphql';
-
+import type { ArgumentNode, GraphQLResolveInfo, ValueNode } from 'graphql';
 
 /**
  * GraphQL's regular resolver `args` variable only contains the "top-level" arguments. Seeing that we convert the
@@ -12,7 +7,10 @@ import type {
  * In order to do that, we'll parse over all ArgumentNodes and ObjectFieldNodes to manually recreate an object structure
  * of arguments
  */
-export function parseArgs(args: readonly ArgumentNode[], variableValues: GraphQLResolveInfo['variableValues']): Record<string, any> {
+export function parseArgs(
+	args: readonly ArgumentNode[],
+	variableValues: GraphQLResolveInfo['variableValues'],
+): Record<string, any> {
 	if (!args || args['length'] === 0) return {};
 
 	const parse = (node: ValueNode): any => {

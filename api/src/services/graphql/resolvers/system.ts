@@ -1,7 +1,5 @@
 import { useEnv } from '@directus/env';
-import type {
-	CollectionAccess
-} from '@directus/types';
+import type { CollectionAccess } from '@directus/types';
 import { toBoolean } from '@directus/utils';
 import {
 	GraphQLBoolean,
@@ -10,11 +8,11 @@ import {
 	GraphQLList,
 	GraphQLNonNull,
 	GraphQLObjectType,
-	GraphQLString
+	GraphQLString,
 } from 'graphql';
 import type {
 	ObjectTypeComposerFieldConfigAsObjectDefinition,
-	ObjectTypeComposerFieldConfigDefinition
+	ObjectTypeComposerFieldConfigDefinition,
 } from 'graphql-compose';
 import { GraphQLJSON, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import getDatabase from '../../../database/index.js';
@@ -40,23 +38,19 @@ import { globalResolvers } from './system-global.js';
 const env = useEnv();
 
 export type BaseTypeComposers = {
-	Collection: ObjectTypeComposer<any, any>,
-	Field: ObjectTypeComposer<any, any>,
-	Relation: ObjectTypeComposer<any, any>,
-	Extension: ObjectTypeComposer<any, any>,
-}
+	Collection: ObjectTypeComposer<any, any>;
+	Field: ObjectTypeComposer<any, any>;
+	Relation: ObjectTypeComposer<any, any>;
+	Extension: ObjectTypeComposer<any, any>;
+};
 
 export function injectSystemResolvers(
 	gql: GraphQLService,
 	schemaComposer: SchemaComposer<GraphQLParams['contextValue']>,
-	{
-		CreateCollectionTypes,
-		ReadCollectionTypes,
-		UpdateCollectionTypes,
-	}: CollectionTypes,
+	{ CreateCollectionTypes, ReadCollectionTypes, UpdateCollectionTypes }: CollectionTypes,
 	schema: Schema,
 ): SchemaComposer<any> {
-	globalResolvers(gql, schemaComposer)
+	globalResolvers(gql, schemaComposer);
 
 	const ServerInfo = schemaComposer.createObjectTC({
 		name: 'server_info',
@@ -86,77 +80,77 @@ export function injectSystemResolvers(
 		ServerInfo.addFields({
 			rateLimit: env['RATE_LIMITER_ENABLED']
 				? {
-					type: new GraphQLObjectType({
-						name: 'server_info_rate_limit',
-						fields: {
-							points: { type: GraphQLInt },
-							duration: { type: GraphQLInt },
-						},
-					}),
-				}
+						type: new GraphQLObjectType({
+							name: 'server_info_rate_limit',
+							fields: {
+								points: { type: GraphQLInt },
+								duration: { type: GraphQLInt },
+							},
+						}),
+				  }
 				: GraphQLBoolean,
 			rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
 				? {
-					type: new GraphQLObjectType({
-						name: 'server_info_rate_limit_global',
-						fields: {
-							points: { type: GraphQLInt },
-							duration: { type: GraphQLInt },
-						},
-					}),
-				}
+						type: new GraphQLObjectType({
+							name: 'server_info_rate_limit_global',
+							fields: {
+								points: { type: GraphQLInt },
+								duration: { type: GraphQLInt },
+							},
+						}),
+				  }
 				: GraphQLBoolean,
 			websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
 				? {
-					type: new GraphQLObjectType({
-						name: 'server_info_websocket',
-						fields: {
-							rest: {
-								type: toBoolean(env['WEBSOCKETS_REST_ENABLED'])
-									? new GraphQLObjectType({
-										name: 'server_info_websocket_rest',
-										fields: {
-											authentication: {
-												type: new GraphQLEnumType({
-													name: 'server_info_websocket_rest_authentication',
-													values: {
-														public: { value: 'public' },
-														handshake: { value: 'handshake' },
-														strict: { value: 'strict' },
+						type: new GraphQLObjectType({
+							name: 'server_info_websocket',
+							fields: {
+								rest: {
+									type: toBoolean(env['WEBSOCKETS_REST_ENABLED'])
+										? new GraphQLObjectType({
+												name: 'server_info_websocket_rest',
+												fields: {
+													authentication: {
+														type: new GraphQLEnumType({
+															name: 'server_info_websocket_rest_authentication',
+															values: {
+																public: { value: 'public' },
+																handshake: { value: 'handshake' },
+																strict: { value: 'strict' },
+															},
+														}),
 													},
-												}),
-											},
-											path: { type: GraphQLString },
-										},
-									})
-									: GraphQLBoolean,
-							},
-							graphql: {
-								type: toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
-									? new GraphQLObjectType({
-										name: 'server_info_websocket_graphql',
-										fields: {
-											authentication: {
-												type: new GraphQLEnumType({
-													name: 'server_info_websocket_graphql_authentication',
-													values: {
-														public: { value: 'public' },
-														handshake: { value: 'handshake' },
-														strict: { value: 'strict' },
+													path: { type: GraphQLString },
+												},
+										  })
+										: GraphQLBoolean,
+								},
+								graphql: {
+									type: toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
+										? new GraphQLObjectType({
+												name: 'server_info_websocket_graphql',
+												fields: {
+													authentication: {
+														type: new GraphQLEnumType({
+															name: 'server_info_websocket_graphql_authentication',
+															values: {
+																public: { value: 'public' },
+																handshake: { value: 'handshake' },
+																strict: { value: 'strict' },
+															},
+														}),
 													},
-												}),
-											},
-											path: { type: GraphQLString },
-										},
-									})
-									: GraphQLBoolean,
+													path: { type: GraphQLString },
+												},
+										  })
+										: GraphQLBoolean,
+								},
+								heartbeat: {
+									type: toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) ? GraphQLInt : GraphQLBoolean,
+								},
 							},
-							heartbeat: {
-								type: toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) ? GraphQLInt : GraphQLBoolean,
-							},
-						},
-					}),
-				}
+						}),
+				  }
 				: GraphQLBoolean,
 			queryLimit: {
 				type: new GraphQLObjectType({
@@ -249,7 +243,7 @@ export function injectSystemResolvers(
 		Field,
 		Relation,
 		Extension,
-	}
+	};
 
 	if ('directus_collections' in schema.read.collections) {
 		Collection.addFields({
@@ -475,7 +469,7 @@ export function injectSystemResolvers(
 		});
 	}
 
-	resolveSystemAdmin(gql, schemaComposer, composers)
+	resolveSystemAdmin(gql, schemaComposer, composers);
 
 	if ('directus_users' in schema.read.collections) {
 		schemaComposer.Query.addFields({
@@ -485,10 +479,7 @@ export function injectSystemResolvers(
 					if (!gql.accountability?.user) return null;
 					const service = new UsersService({ schema: gql.schema, accountability: gql.accountability });
 
-					const selections = replaceFragmentsInSelections(
-						info.fieldNodes[0]?.selectionSet?.selections,
-						info.fragments,
-					);
+					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
 					const query = getQuery(args, selections || [], info.variableValues, gql.accountability);
 
@@ -532,10 +523,7 @@ export function injectSystemResolvers(
 						schema: gql.schema,
 					});
 
-					const selections = replaceFragmentsInSelections(
-						info.fieldNodes[0]?.selectionSet?.selections,
-						info.fragments,
-					);
+					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
 					const query = getQuery(args, selections || [], info.variableValues, gql.accountability);
 					query.limit = -1;
@@ -613,9 +601,7 @@ export function injectSystemResolvers(
 				type: ReadCollectionTypes['directus_files'] ?? GraphQLBoolean,
 				args: {
 					url: new GraphQLNonNull(GraphQLString),
-					data: toInputObjectType(CreateCollectionTypes['directus_files']!).setTypeName(
-						'create_directus_files_input',
-					),
+					data: toInputObjectType(CreateCollectionTypes['directus_files']!).setTypeName('create_directus_files_input'),
 				},
 				resolve: async (_, args, __, info) => {
 					const service = new FilesService({

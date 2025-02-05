@@ -1,19 +1,10 @@
-import type {
-	Accountability,
-	Query
-} from '@directus/types';
-import type {
-	FieldNode,
-	GraphQLResolveInfo,
-	InlineFragmentNode,
-	SelectionNode
-} from 'graphql';
+import type { Accountability, Query } from '@directus/types';
+import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, set, uniq } from 'lodash-es';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
 import { parseArgs } from './parse-args.js';
-
 
 /**
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
@@ -23,7 +14,7 @@ export function getQuery(
 	rawQuery: Query,
 	selections: readonly SelectionNode[],
 	variableValues: GraphQLResolveInfo['variableValues'],
-	accountability?: Accountability | null
+	accountability?: Accountability | null,
 ): Query {
 	const query: Query = sanitizeQuery(rawQuery, accountability);
 

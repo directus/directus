@@ -1,11 +1,6 @@
-import type {
-	Item,
-	Query
-} from '@directus/types';
+import type { Item, Query } from '@directus/types';
 import { parseFilterFunctionPath } from '@directus/utils';
-import type {
-	GraphQLResolveInfo
-} from 'graphql';
+import type { GraphQLResolveInfo } from 'graphql';
 import { omit } from 'lodash-es';
 import { mergeVersionsRaw, mergeVersionsRecursive } from '../../../utils/merge-version-data.js';
 import { VersionsService } from '../../versions.js';
@@ -15,11 +10,10 @@ import type { GraphQLService } from '../index.js';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
 
-
 /**
-	 * Generic resolver that's used for every "regular" items/system query. Converts the incoming GraphQL AST / fragments into
-	 * Directus' query structure which is then executed by the services.
-	 */
+ * Generic resolver that's used for every "regular" items/system query. Converts the incoming GraphQL AST / fragments into
+ * Directus' query structure which is then executed by the services.
+ */
 export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo): Promise<Partial<Item> | null> {
 	let collection = info.fieldName;
 	if (gql.scope === 'system') collection = `directus_${collection}`;

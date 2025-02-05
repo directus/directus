@@ -1,8 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
-import type {
-	Accountability
-} from '@directus/types';
+import type { Accountability } from '@directus/types';
 import argon2 from 'argon2';
 import {
 	GraphQLBoolean,
@@ -11,15 +9,11 @@ import {
 	GraphQLInt,
 	GraphQLNonNull,
 	GraphQLObjectType,
-	GraphQLString
+	GraphQLString,
 } from 'graphql';
 import { SchemaComposer } from 'graphql-compose';
 import { clearSystemCache, getCache } from '../../../cache.js';
-import {
-	DEFAULT_AUTH_PROVIDER,
-	REFRESH_COOKIE_OPTIONS,
-	SESSION_COOKIE_OPTIONS
-} from '../../../constants.js';
+import { DEFAULT_AUTH_PROVIDER, REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../../constants.js';
 import { rateLimiter } from '../../../middleware/rate-limiter-registration.js';
 import { createDefaultAccountability } from '../../../permissions/utils/create-default-accountability.js';
 import type { AuthenticationMode, GraphQLParams } from '../../../types/index.js';
@@ -42,10 +36,7 @@ const env = useEnv();
 /**
  * Globally available mutations
  */
-export function globalResolvers(
-	gql: GraphQLService,
-	schemaComposer: SchemaComposer<GraphQLParams['contextValue']>,
-) {
+export function globalResolvers(gql: GraphQLService, schemaComposer: SchemaComposer<GraphQLParams['contextValue']>) {
 	const AuthTokens = schemaComposer.createObjectTC({
 		name: 'auth_tokens',
 		fields: {
@@ -91,14 +82,10 @@ export function globalResolvers(
 
 				const mode: AuthenticationMode = args['mode'] ?? 'json';
 
-				const { accessToken, refreshToken, expires } = await authenticationService.login(
-					DEFAULT_AUTH_PROVIDER,
-					args,
-					{
-						session: mode === 'session',
-						otp: args?.otp,
-					},
-				);
+				const { accessToken, refreshToken, expires } = await authenticationService.login(DEFAULT_AUTH_PROVIDER, args, {
+					session: mode === 'session',
+					otp: args?.otp,
+				});
 
 				const payload = { expires } as { expires: number; access_token?: string; refresh_token?: string };
 

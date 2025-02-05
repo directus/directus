@@ -1,10 +1,4 @@
-import {
-	GraphQLBoolean,
-	GraphQLID,
-	GraphQLList,
-	GraphQLNonNull,
-	GraphQLString
-} from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLString } from 'graphql';
 import { SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { GraphQLParams } from '../../../types/index.js';
 import { CollectionsService } from '../../collections.js';
@@ -17,12 +11,7 @@ import type { BaseTypeComposers } from './system.js';
 export function resolveSystemAdmin(
 	gql: GraphQLService,
 	schemaComposer: SchemaComposer<GraphQLParams['contextValue']>,
-	{
-		Collection,
-		Field,
-		Relation,
-		Extension,
-	}: BaseTypeComposers
+	{ Collection, Field, Relation, Extension }: BaseTypeComposers,
 ) {
 	if (gql.accountability?.admin === true) {
 		schemaComposer.Mutation.addFields({

@@ -1,13 +1,10 @@
 import { FUNCTIONS } from '@directus/constants';
-import type {
-	Filter
-} from '@directus/types';
+import type { Filter } from '@directus/types';
 import { transform } from 'lodash-es';
 
-
 /**
-	 * Replace functions from GraphQL format to Directus-Filter format
-	 */
+ * Replace functions from GraphQL format to Directus-Filter format
+ */
 export function replaceFuncs(filter: Filter): Filter {
 	return replaceFuncDeep(filter);
 

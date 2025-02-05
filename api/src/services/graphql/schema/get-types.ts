@@ -1,33 +1,28 @@
-import type {
-	GraphQLNullableType
-} from 'graphql';
-import {
-	GraphQLID,
-	GraphQLInt,
-	GraphQLNonNull,
-	GraphQLScalarType,
-	GraphQLUnionType
-} from 'graphql';
+import type { GraphQLNullableType } from 'graphql';
+import { GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLScalarType, GraphQLUnionType } from 'graphql';
 import type {
 	ObjectTypeComposerFieldConfigAsObjectDefinition,
 	ObjectTypeComposerFieldConfigDefinition,
-	SchemaComposer
+	SchemaComposer,
 } from 'graphql-compose';
 import { GraphQLJSON, ObjectTypeComposer } from 'graphql-compose';
 import { mapKeys, pick } from 'lodash-es';
-import {
-	GENERATE_SPECIAL
-} from '../../../constants.js';
+import { GENERATE_SPECIAL } from '../../../constants.js';
 import { getGraphQLType } from '../../../utils/get-graphql-type.js';
 import { SYSTEM_DENY_LIST, type GQLScope } from '../index.js';
 import type { InconsistentFields, Schema } from './index.js';
-
 
 /**
  * Construct an object of types for every collection, using the permitted fields per action type
  * as it's fields.
  */
-export function getTypes(schemaComposer: SchemaComposer, scope: GQLScope, schema: Schema, inconsistentFields: InconsistentFields, action: 'read' | 'create' | 'update' | 'delete') {
+export function getTypes(
+	schemaComposer: SchemaComposer,
+	scope: GQLScope,
+	schema: Schema,
+	inconsistentFields: InconsistentFields,
+	action: 'read' | 'create' | 'update' | 'delete',
+) {
 	const CollectionTypes: Record<string, ObjectTypeComposer> = {};
 	const VersionTypes: Record<string, ObjectTypeComposer> = {};
 
@@ -92,10 +87,7 @@ export function getTypes(schemaComposer: SchemaComposer, scope: GQLScope, schema
 			name: action === 'read' ? collection.collection : `${action}_${collection.collection}`,
 			fields: Object.values(collection.fields).reduce(
 				(acc, field) => {
-					let type: GraphQLScalarType | GraphQLNonNull<GraphQLNullableType> = getGraphQLType(
-						field.type,
-						field.special,
-					);
+					let type: GraphQLScalarType | GraphQLNonNull<GraphQLNullableType> = getGraphQLType(field.type, field.special);
 
 					const fieldIsInconsistent = inconsistentFields[action][collection.collection]?.includes(field.field);
 
@@ -158,9 +150,7 @@ export function getTypes(schemaComposer: SchemaComposer, scope: GQLScope, schema
 							acc[`${field.field}_func`] = {
 								type: DateTimeFunctions,
 								resolve: (obj: Record<string, any>) => {
-									const funcFields = Object.keys(DateTimeFunctions.getFields()).map(
-										(key) => `${field.field}_${key}`,
-									);
+									const funcFields = Object.keys(DateTimeFunctions.getFields()).map((key) => `${field.field}_${key}`);
 
 									return mapKeys(pick(obj, funcFields), (_value, key) => key.substring(field.field.length + 1));
 								},
@@ -240,9 +230,7 @@ export function getTypes(schemaComposer: SchemaComposer, scope: GQLScope, schema
 				[relation.field]: {
 					type: new GraphQLUnionType({
 						name: `${relation.collection}_${relation.field}_union`,
-						types: relation.meta.one_allowed_collections.map((collection) =>
-							CollectionTypes[collection]!.getType(),
-						),
+						types: relation.meta.one_allowed_collections.map((collection) => CollectionTypes[collection]!.getType()),
 						resolveType(_value, context, info) {
 							let path: (string | number)[] = [];
 							let currentPath = info.path;
