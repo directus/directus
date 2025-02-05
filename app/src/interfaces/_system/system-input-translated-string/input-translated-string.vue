@@ -5,6 +5,7 @@ import { useTranslationsStore } from '@/stores/translations';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
+import { snakeCase } from 'lodash';
 import { computed, ref, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import CustomTranslationsTooltip from './custom-translations-tooltip.vue';
@@ -124,6 +125,12 @@ function openNewCustomTranslationDrawer() {
 	menuEl.value.deactivate();
 	isCustomTranslationDrawerOpen.value = true;
 }
+
+const newTranslationDefaults = computed(() => ({
+	language: getCurrentLanguage(),
+	value: localValue.value,
+	key: snakeCase(localValue.value ?? ''),
+}));
 </script>
 
 <template>
