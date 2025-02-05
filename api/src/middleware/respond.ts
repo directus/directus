@@ -10,6 +10,8 @@ import { getCacheKey } from '../utils/get-cache-key.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
+import getDatabase from '../database/index.js';
+import { permissionsCachable } from '../utils/permissions-cachable.js';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
@@ -18,6 +20,11 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const { cache } = getCache();
 
 	let exceedsMaxSize = false;
+
+	const arePermissionsCachable = await permissionsCachable(req.collection, {
+		knex: getDatabase(),
+		schema: req.schema,
+	}, req.accountability);
 
 	if (env['CACHE_VALUE_MAX_SIZE'] !== false) {
 		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
@@ -32,7 +39,8 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		cache &&
 		!req.sanitizedQuery.export &&
 		res.locals['cache'] !== false &&
-		exceedsMaxSize === false
+		exceedsMaxSize === false &&
+		arePermissionsCachable
 	) {
 		const key = await getCacheKey(req);
 

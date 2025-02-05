@@ -1,0 +1,40 @@
+import type { Accountability, Filter } from "@directus/types";
+import { fetchPermissions } from "../permissions/lib/fetch-permissions.js";
+import { fetchPolicies } from "../permissions/lib/fetch-policies.js";
+import type { Context } from "../permissions/types.js";
+import { createDefaultAccountability } from "../permissions/utils/create-default-accountability.js";
+
+export async function permissionsCachable(collection: string, context: Context, accountability?: Accountability) {
+	if (!accountability) {
+		accountability = createDefaultAccountability();
+	}
+
+	const policies = await fetchPolicies(accountability, context);
+
+	const permissions = await fetchPermissions(
+		{ action: 'read', policies, collections: [collection], accountability, bypassDynamicVariableProcessing: true },
+		context,
+	);
+
+	return permissions.some((permission) => {
+		if (!permission.permissions) {
+			return false;
+		}
+
+		return filter_has_now(permission.permissions)
+	})
+}
+
+export function filter_has_now(filter: Filter): boolean {
+	return Object.entries(filter).some(([key, value]) => {
+		if (key === '_and' || key === '_or') {
+			return (value as Filter[]).some((sub_filter) => filter_has_now(sub_filter));
+		} else if (typeof value === 'object') {
+			return filter_has_now(value);
+		} else if (typeof value === 'string') {
+			return value === '$NOW';
+		}
+
+		return false;
+	});
+}
