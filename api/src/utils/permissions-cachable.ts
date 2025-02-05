@@ -36,7 +36,7 @@ export function filter_has_now(filter: Filter): boolean {
 		} else if (typeof value === 'object') {
 			return filter_has_now(value);
 		} else if (typeof value === 'string') {
-			return value === '$NOW';
+			return value.startsWith('$NOW');
 		}
 
 		return false;

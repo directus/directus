@@ -28,7 +28,7 @@ test('filter has $NOW', () => {
 			{
 				created_on: {
 					some: {
-						_gt: '$NOW',
+						_gt: '$NOW(-1 year)',
 					},
 				},
 			},
