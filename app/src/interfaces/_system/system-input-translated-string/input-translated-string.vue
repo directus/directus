@@ -126,11 +126,20 @@ function openNewCustomTranslationDrawer() {
 	isCustomTranslationDrawerOpen.value = true;
 }
 
-const newTranslationDefaults = computed(() => ({
-	language: getCurrentLanguage(),
-	value: localValue.value,
-	key: snakeCase(localValue.value ?? ''),
-}));
+const newTranslationDefaults = computed(() => {
+	const defaults = {
+		language: getCurrentLanguage(),
+	};
+
+	if (localValue.value && !localValue.value.startsWith(translationPrefix)) {
+		Object.assign(defaults, {
+			key: snakeCase(localValue.value),
+			value: localValue.value,
+		});
+	}
+
+	return defaults;
+});
 </script>
 
 <template>
