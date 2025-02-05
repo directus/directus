@@ -2,4 +2,4 @@
 "@directus/app": patch
 ---
 
-Fixed trimmed fields no saving null for empty strings
+Fixed trimmed fields not saving null for empty strings
