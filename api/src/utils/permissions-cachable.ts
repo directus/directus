@@ -1,8 +1,8 @@
-import type { Accountability, Filter } from "@directus/types";
-import { fetchPermissions } from "../permissions/lib/fetch-permissions.js";
-import { fetchPolicies } from "../permissions/lib/fetch-policies.js";
-import type { Context } from "../permissions/types.js";
-import { createDefaultAccountability } from "../permissions/utils/create-default-accountability.js";
+import type { Accountability, Filter } from '@directus/types';
+import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import type { Context } from '../permissions/types.js';
+import { createDefaultAccountability } from '../permissions/utils/create-default-accountability.js';
 
 /**
  * Check if the read permissions for a collection contain the dynamic variable $NOW.
@@ -25,8 +25,8 @@ export async function permissionsCachable(collection: string, context: Context, 
 			return true;
 		}
 
-		return !filter_has_now(permission.permissions)
-	})
+		return !filter_has_now(permission.permissions);
+	});
 }
 
 export function filter_has_now(filter: Filter): boolean {
