@@ -1966,7 +1966,6 @@ operations:
     name: 傳送電子郵件
     description: 傳送電子郵件給一或多個人
     to: 收件人
-    to_placeholder: 輸入電子郵件信箱並按下Enter...
     body: 郵件內文
     template: 模板
     data: 資料

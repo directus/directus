@@ -2136,7 +2136,6 @@ operations:
     name: فرستادن رایانامه
     description: فرستادن رایانامه به یک یا چند نفر
     to: به
-    to_placeholder: نشانی‌های رایانامه را وارد کرده و اینتر بزنید...
     body: متن
     template: پوسته
     data: داده Data
