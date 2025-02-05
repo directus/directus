@@ -92,15 +92,25 @@ function filter(field: Field, parent?: FieldNode): boolean {
 		? fieldsStore.getFieldGroupChildren(field.collection, field.field)
 		: fieldsStore.getFieldsForCollection(field.schema!.foreign_key_table);
 
-	return children?.some(nestedFieldsInGroups) || matchesSearch(field) || (!!parent && matchesSearch(parent));
+	return children?.some(matchesInNestedGroups) || matchesSearch(field) || (!!parent && matchesSearch(parent));
 
 	function matchesSearch(field: Field | FieldNode) {
 		return field.name.toLowerCase().includes(search.value.toLowerCase());
 	}
 
-	function nestedFieldsInGroups(field: Field) {
+	function matchesInNestedGroups(field: Field) {
 		const groupChildren = fieldsStore.getFieldGroupChildren(field.collection, field.field);
-		return groupChildren?.some(nestedFieldsInGroups) || matchesSearch(field);
+
+		if (groupChildren?.some(matchesInNestedGroups)) return true;
+
+		const isRelationalFieldOfRootCollection =
+			!isNil(field.schema?.foreign_key_table) && field.collection === props.collection;
+
+		const relationalChildren = isRelationalFieldOfRootCollection
+			? fieldsStore.getFieldsForCollection(field.schema!.foreign_key_table!)
+			: null;
+
+		return relationalChildren?.some((field) => matchesSearch(field)) || matchesSearch(field);
 	}
 }
 </script>
