@@ -18,14 +18,18 @@ router.get(
 		// support Bearer Token of type `Metrics`
 		const metricTokens = env['METRICS_TOKENS'] as string[] | undefined;
 
-		if (req.headers && req.headers.authorization && metricTokens) {
-			const parts = req.headers.authorization.split(' ');
+		if (!req.headers || !req.headers.authorization || !metricTokens) {
+			throw new ForbiddenError();
+		}
 
-			if (parts.length === 2 && parts[0]!.toLowerCase() === 'metrics') {
-				if (metricTokens.find((mt) => mt.toString() === parts[1]) !== undefined) {
-					return next();
-				}
-			}
+		const parts = req.headers.authorization.split(' ');
+
+		if (parts.length !== 2 || parts[0]!.toLowerCase() !== 'metrics') {
+			throw new ForbiddenError();
+		}
+
+		if (metricTokens.find((mt) => mt.toString() === parts[1]) !== undefined) {
+			return next();
 		}
 
 		throw new ForbiddenError();
