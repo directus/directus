@@ -8,24 +8,28 @@ const env = useEnv();
 const metrics = useMetrics();
 const router = Router();
 
-const checkAccess = asyncHandler(async (req, _res, next) => {
-	const token = req.headers.authorization;
-	const metricTokens = env['METRICS_TOKENS'] as string[] | undefined;
-
-	if (req.accountability?.admin === true) {
-		return next();
-	}
-
-	if (!token || !metricTokens?.find((metricToken) => metricToken.toString() === token)) {
-		throw new ForbiddenError();
-	}
-
-	return next();
-});
-
 router.get(
 	'/',
-	checkAccess,
+	asyncHandler(async (req, _res, next) => {
+		if (req.accountability?.admin === true) {
+			return next();
+		}
+
+		// support Bearer Token of type `Metrics`
+		const metricTokens = env['METRICS_TOKENS'] as string[] | undefined;
+
+		if (req.headers && req.headers.authorization && metricTokens) {
+			const parts = req.headers.authorization.split(' ');
+
+			if (parts.length === 2 && parts[0]!.toLowerCase() === 'metrics') {
+				if (metricTokens.find((mt) => mt.toString() === parts[1]) !== undefined) {
+					return next();
+				}
+			}
+		}
+
+		throw new ForbiddenError();
+	}),
 	asyncHandler(async (_req, res) => {
 		res.set('Content-Type', 'text/plain');
 		// Don't cache anything by default
