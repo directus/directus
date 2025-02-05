@@ -161,7 +161,13 @@ function processValue(event: KeyboardEvent) {
 
 function trimIfEnabled() {
 	if (props.modelValue && props.trim && ['string', 'text'].includes(props.type)) {
-		emit('update:modelValue', String(props.modelValue).trim());
+		const trimmedValue = String(props.modelValue).trim();
+
+		if (props.nullable === true && trimmedValue === '') {
+			emit('update:modelValue', null);
+		} else {
+			emit('update:modelValue', trimmedValue);
+		}
 	}
 }
 
