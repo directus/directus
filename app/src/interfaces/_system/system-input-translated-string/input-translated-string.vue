@@ -213,7 +213,7 @@ const newTranslationDefaults = computed(() => ({
 			v-model:active="isCustomTranslationDrawerOpen"
 			collection="directus_translations"
 			primary-key="+"
-			:edits="{ language: getCurrentLanguage() }"
+			:edits="newTranslationDefaults"
 			@input="create"
 		/>
 	</div>
