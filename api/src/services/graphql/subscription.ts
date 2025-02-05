@@ -6,6 +6,7 @@ import type { GraphQLResolveInfo, SelectionNode } from 'graphql';
 import { getPayload } from '../../websocket/utils/items.js';
 import type { Subscription } from '../../websocket/types.js';
 import type { WebSocketEvent } from '../../websocket/messages.js';
+import { getQuery } from './schema/parse-query.js';
 
 const messages = createPubSub(new EventEmitter());
 
@@ -17,9 +18,9 @@ export function bindPubSub() {
 	});
 }
 
-export function createSubscriptionGenerator(self: GraphQLService, event: string) {
+export function createSubscriptionGenerator(gql: GraphQLService, event: string) {
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: GraphQLResolveInfo) {
-		const fields = parseFields(self, request);
+		const fields = parseFields(gql, request);
 		const args = parseArguments(request);
 
 		for await (const payload of messages.subscribe(event)) {
@@ -47,7 +48,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 			if (eventData['action'] === 'create') {
 				try {
 					subscription.item = eventData['key'];
-					const result = await getPayload(subscription, self.accountability, schema, eventData);
+					const result = await getPayload(subscription, gql.accountability, schema, eventData);
 
 					yield {
 						[event]: {
@@ -65,7 +66,7 @@ export function createSubscriptionGenerator(self: GraphQLService, event: string)
 				for (const key of eventData['keys']) {
 					try {
 						subscription.item = key;
-						const result = await getPayload(subscription, self.accountability, schema, eventData);
+						const result = await getPayload(subscription, gql.accountability, schema, eventData);
 
 						yield {
 							[event]: {
@@ -97,7 +98,7 @@ function createPubSub<P extends { [key: string]: unknown }>(emitter: EventEmitte
 	};
 }
 
-function parseFields(service: GraphQLService, request: GraphQLResolveInfo) {
+function parseFields(gql: GraphQLService, request: GraphQLResolveInfo) {
 	const selections = request.fieldNodes[0]?.selectionSet?.selections ?? [];
 
 	const dataSelections = selections.reduce((result: readonly SelectionNode[], selection: SelectionNode) => {
@@ -112,7 +113,7 @@ function parseFields(service: GraphQLService, request: GraphQLResolveInfo) {
 		return result;
 	}, []);
 
-	const { fields } = service.getQuery({}, dataSelections, request.variableValues);
+	const { fields } = getQuery({}, dataSelections, request.variableValues, gql.accountability);
 	return fields ?? [];
 }
 
