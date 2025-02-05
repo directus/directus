@@ -290,8 +290,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 .kanban {
 	display: flex;
 	height: 100%;
-	overflow-x: auto;
-	overflow-y: hidden;
 	--user-spacing: 16px;
 
 	.draggable {
