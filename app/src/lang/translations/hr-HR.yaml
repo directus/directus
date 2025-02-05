@@ -2330,7 +2330,6 @@ operations:
     name: Pošalji email
     description: Pošalji e-poštom jednoj ili više osoba
     to: Za
-    to_placeholder: Dodajte adrese e-pošte i pritisnite enter...
     body: Sadržaj
     template: Predložak
     data: Podaci
