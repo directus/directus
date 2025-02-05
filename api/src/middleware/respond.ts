@@ -21,8 +21,6 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 	let exceedsMaxSize = false;
 
-	console.log(req.collection);
-
 	const arePermissionsCachable = await permissionsCachable(
 		req.collection,
 		{
