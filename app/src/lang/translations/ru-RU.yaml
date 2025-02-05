@@ -2425,7 +2425,6 @@ operations:
     name: Отправить эл. письмо
     description: Отправить письмо одному или нескольким людям
     to: Кому
-    to_placeholder: Добавьте адреса эл. почты и нажмите Enter...
     body: Тело
     template: Шаблон
     data: Данные
