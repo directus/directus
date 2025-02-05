@@ -22,20 +22,6 @@ if (env['GRAPHQL_INTROSPECTION'] === false) {
 	validationRules.push(NoSchemaIntrospectionCustomRule);
 }
 
-/**
- * These should be ignored in the context of GraphQL, and/or are replaced by a custom resolver (for non-standard structures)
- */
-export const SYSTEM_DENY_LIST = [
-	'directus_collections',
-	'directus_fields',
-	'directus_relations',
-	'directus_migrations',
-	'directus_sessions',
-	'directus_extensions',
-];
-
-export const READ_ONLY = ['directus_activity', 'directus_revisions'];
-
 export class GraphQLService {
 	accountability: Accountability | null;
 	knex: Knex;

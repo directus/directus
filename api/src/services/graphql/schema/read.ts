@@ -17,7 +17,7 @@ import type {
 } from 'graphql-compose';
 import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer } from 'graphql-compose';
 import { getGraphQLType } from '../../../utils/get-graphql-type.js';
-import { GraphQLService, SYSTEM_DENY_LIST } from '../index.js';
+import { GraphQLService } from '../index.js';
 import { resolveQuery } from '../resolvers/query.js';
 import { createSubscriptionGenerator } from '../subscription.js';
 import { GraphQLBigInt } from '../types/bigint.js';
@@ -25,7 +25,7 @@ import { GraphQLDate } from '../types/date.js';
 import { GraphQLGeoJSON } from '../types/geojson.js';
 import { GraphQLHash } from '../types/hash.js';
 import { GraphQLStringOrFloat } from '../types/string-or-float.js';
-import type { InconsistentFields, Schema } from './index.js';
+import { SYSTEM_DENY_LIST, type InconsistentFields, type Schema } from './index.js';
 import { getTypes } from './get-types.js';
 
 /**
@@ -548,8 +548,8 @@ export function getReadableTypes(
 			type: collection.singleton
 				? ReadCollectionTypes[collection.collection]!
 				: new GraphQLNonNull(
-						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-				  ),
+					new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+				),
 			resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 				const result = await resolveQuery(gql, info);
 				context['data'] = result;
@@ -639,9 +639,9 @@ export function getReadableTypes(
 				args: collection.singleton
 					? { version: new GraphQLNonNull(GraphQLString) }
 					: {
-							version: new GraphQLNonNull(GraphQLString),
-							id: new GraphQLNonNull(GraphQLID),
-					  },
+						version: new GraphQLNonNull(GraphQLString),
+						id: new GraphQLNonNull(GraphQLID),
+					},
 				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 					const result = await resolveQuery(gql, info);
 					context['data'] = result;

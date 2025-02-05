@@ -2,10 +2,10 @@ import type { GraphQLResolveInfo } from 'graphql';
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull } from 'graphql';
 import type { ResolverDefinition, SchemaComposer } from 'graphql-compose';
 import { ObjectTypeComposer, toInputObjectType } from 'graphql-compose';
-import { GraphQLService, SYSTEM_DENY_LIST } from '../index.js';
+import { GraphQLService } from '../index.js';
 import { resolveMutation } from '../resolvers/mutation.js';
 import { getTypes } from './get-types.js';
-import type { InconsistentFields, Schema } from './index.js';
+import { SYSTEM_DENY_LIST, type InconsistentFields, type Schema } from './index.js';
 
 export function getWritableTypes(
 	gql: GraphQLService,
@@ -46,8 +46,8 @@ export function getWritableTypes(
 				name: `create_${collection.collection}_items`,
 				type: collectionIsReadable
 					? new GraphQLNonNull(
-							new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-					  )
+						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+					)
 					: GraphQLBoolean,
 				resolve: async ({ args, info }: { args: Record<string, any>; info: GraphQLResolveInfo }) =>
 					await resolveMutation(gql, args, info),
@@ -113,8 +113,8 @@ export function getWritableTypes(
 					name: `update_${collection.collection}_batch`,
 					type: collectionIsReadable
 						? new GraphQLNonNull(
-								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-						  )
+							new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+						)
 						: GraphQLBoolean,
 					args: {
 						...(collectionIsReadable
@@ -134,8 +134,8 @@ export function getWritableTypes(
 					name: `update_${collection.collection}_items`,
 					type: collectionIsReadable
 						? new GraphQLNonNull(
-								new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-						  )
+							new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+						)
 						: GraphQLBoolean,
 					args: {
 						...(collectionIsReadable
