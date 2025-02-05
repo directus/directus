@@ -8,7 +8,7 @@ import type { AbstractServiceOptions, GraphQLParams } from '../../types/index.js
 import { getService } from '../../utils/get-service.js';
 import { formatError } from './errors/format.js';
 import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js';
-import { _getSchema } from './schema/index.js';
+import { generateSchema } from './schema/index.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
 
@@ -102,7 +102,7 @@ export class GraphQLService {
 	async getSchema(type: 'schema'): Promise<GraphQLSchema>;
 	async getSchema(type: 'sdl'): Promise<GraphQLSchema | string>;
 	async getSchema(type: 'schema' | 'sdl' = 'schema'): Promise<GraphQLSchema | string> {
-		return _getSchema(this, type);
+		return generateSchema(this, type);
 	}
 
 	/**
