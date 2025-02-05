@@ -141,6 +141,7 @@ export async function _getSchema(
 		schema,
 		inconsistentFields,
 	);
+
 	const { CreateCollectionTypes, UpdateCollectionTypes, DeleteCollectionTypes } = getWritableTypes(
 		gql,
 		schemaComposer,
@@ -148,6 +149,7 @@ export async function _getSchema(
 		inconsistentFields,
 		ReadCollectionTypes,
 	);
+
 	const CollectionTypes: CollectionTypes = {
 		CreateCollectionTypes,
 		ReadCollectionTypes,

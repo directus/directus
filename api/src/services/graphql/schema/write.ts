@@ -21,6 +21,7 @@ export function getWritableTypes(
 		inconsistentFields,
 		'create',
 	);
+
 	const { CollectionTypes: UpdateCollectionTypes } = getTypes(
 		schemaComposer,
 		gql.scope,
@@ -28,6 +29,7 @@ export function getWritableTypes(
 		inconsistentFields,
 		'update',
 	);
+
 	const DeleteCollectionTypes: Record<string, ObjectTypeComposer<any, any>> = {};
 
 	for (const collection of Object.values(schema.create.collections)) {
