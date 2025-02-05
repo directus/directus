@@ -469,6 +469,7 @@ function getLinkForItem(item: DisplayItem) {
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
 				:items="displayItems"
+				:item-key="relationInfo.relatedPrimaryKeyField.field"
 				:row-height="tableRowHeight"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
