@@ -97,6 +97,7 @@
 		"@tus/utils": "0.5.0",
 		"argon2": "0.41.1",
 		"async": "3.2.6",
+		"async-mutex": "0.5.0",
 		"axios": "1.7.9",
 		"busboy": "1.6.0",
 		"bytes": "3.1.2",
