@@ -4,6 +4,10 @@ import { fetchPolicies } from "../permissions/lib/fetch-policies.js";
 import type { Context } from "../permissions/types.js";
 import { createDefaultAccountability } from "../permissions/utils/create-default-accountability.js";
 
+/**
+ * Check if the read permissions for a collection contain the dynamic variable $NOW.
+ * If they do, the permissions are not cachable.
+ */
 export async function permissionsCachable(collection: string, context: Context, accountability?: Accountability) {
 	if (!accountability) {
 		accountability = createDefaultAccountability();
@@ -18,10 +22,10 @@ export async function permissionsCachable(collection: string, context: Context, 
 
 	return permissions.some((permission) => {
 		if (!permission.permissions) {
-			return false;
+			return true;
 		}
 
-		return filter_has_now(permission.permissions)
+		return !filter_has_now(permission.permissions)
 	})
 }
 
