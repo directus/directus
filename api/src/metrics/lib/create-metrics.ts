@@ -139,6 +139,7 @@ export function createMetrics() {
 			metric = new Histogram({
 				name: `directus_db_${client}_response_time_ms`,
 				help: `${client} Database connection response time`,
+				buckets: [1, 10, 20, 40, 60, 80, 100, 200, 500, 750, 1000],
 			});
 		}
 
