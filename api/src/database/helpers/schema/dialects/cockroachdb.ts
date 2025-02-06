@@ -4,6 +4,7 @@ import type { Options, SortRecord, Sql } from '../types.js';
 import { SchemaHelper } from '../types.js';
 import { useEnv } from '@directus/env';
 import { prepQueryParams } from '../utils/prep-query-params.js';
+import type { SchemaOverview } from '@directus/types';
 
 const env = useEnv();
 
@@ -41,8 +42,8 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		}
 	}
 
-	override prepQueryParams(queryParams: Sql): Sql {
-		return prepQueryParams(queryParams, { format: (index) => `$${index + 1}` });
+	override prepQueryParams(queryParams: Sql, schema: SchemaOverview): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `$${index + 1}` }, schema);
 	}
 
 	override addInnerSortFieldsToGroupBy(

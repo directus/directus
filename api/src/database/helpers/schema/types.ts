@@ -1,6 +1,6 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Column } from '@directus/schema';
-import type { Field, RawField, Relation, Type } from '@directus/types';
+import type { Field, RawField, Relation, SchemaOverview, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import type { DatabaseClient } from '../../../types/index.js';
 import { getDefaultIndexName } from '../../../utils/get-default-index-name.js';
@@ -173,7 +173,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return null;
 	}
 
-	prepQueryParams(queryParams: Sql): Sql {
+	prepQueryParams(queryParams: Sql, _schema: SchemaOverview): Sql {
 		return queryParams;
 	}
 

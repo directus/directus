@@ -1,6 +1,7 @@
 import { isString } from 'lodash-es';
 import type { Knex } from 'knex';
 import type { Sql } from '../types.js';
+import type { SchemaOverview } from '@directus/types';
 
 export type PrepQueryParamsOptions = {
 	format(index: number): string;
@@ -12,6 +13,7 @@ export type PrepQueryParamsOptions = {
 export function prepQueryParams(
 	queryParams: (Partial<Sql> & Pick<Sql, 'sql'>) | string,
 	options: PrepQueryParamsOptions,
+	_schema: SchemaOverview,
 ) {
 	const query: Sql = { bindings: [], ...(isString(queryParams) ? { sql: queryParams } : queryParams) };
 

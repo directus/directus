@@ -1,6 +1,6 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Column } from '@directus/schema';
-import type { Field, RawField, Relation, Type } from '@directus/types';
+import type { Field, RawField, Relation, SchemaOverview, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import crypto from 'node:crypto';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
@@ -91,8 +91,8 @@ export class SchemaHelperOracle extends SchemaHelper {
 		}
 	}
 
-	override prepQueryParams(queryParams: Sql): Sql {
-		return prepQueryParams(queryParams, { format: (index) => `:${index + 1}` });
+	override prepQueryParams(queryParams: Sql, schema: SchemaOverview): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `:${index + 1}` }, schema);
 	}
 
 	override prepBindings(bindings: Knex.Value[]): any {

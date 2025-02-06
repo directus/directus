@@ -58,7 +58,7 @@ export function getDBQuery(
 
 		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
 
-		withPreprocessBindings(knex, dbQuery);
+		withPreprocessBindings(knex, dbQuery, schema);
 
 		return dbQuery;
 	}
