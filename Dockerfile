@@ -1,11 +1,12 @@
 # syntax=docker/dockerfile:1.4
 
 ARG NODE_VERSION=22
+ARG ALPINE_VERSION=""
 
 ####################################################################################################
 ## Build Packages
 
-FROM node:${NODE_VERSION}-alpine AS builder
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
 
 # Remove again once corepack >= 0.31 made it into base image
 # (see https://github.com/directus/directus/issues/24514)
@@ -52,7 +53,7 @@ EOF
 ####################################################################################################
 ## Create Production Image
 
-FROM node:${NODE_VERSION}-alpine AS runtime
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS runtime
 
 RUN npm install --global \
 	pm2@5 \
