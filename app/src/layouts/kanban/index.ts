@@ -1,6 +1,5 @@
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
-import { useFieldsStore } from '@/stores/fields';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
@@ -19,7 +18,6 @@ import KanbanActions from './actions.vue';
 import KanbanLayout from './kanban.vue';
 import KanbanOptions from './options.vue';
 import type { ChangeEvent, Group, Item, LayoutOptions, LayoutQuery } from './types';
-import { unexpectedError } from '@/utils/unexpected-error';
 
 export default defineLayout<LayoutOptions, LayoutQuery>({
 	id: 'kanban',
@@ -35,7 +33,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	},
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
-		const fieldsStore = useFieldsStore();
 		const permissionsStore = usePermissionsStore();
 		const relationsStore = useRelationsStore();
 		const { info: serverInfo } = useServerStore();
@@ -115,6 +112,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			tagsField,
 			userField,
 			showUngrouped,
+			groupOrder,
 			userFieldJunction,
 			userFieldType,
 		} = useLayoutOptions();
@@ -165,7 +163,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			if (isRelational.value && !groupTitleField) return [];
 
-			groups.value.forEach((group, index) => {
+			groups.value.forEach((group: Record<string, any>, index: number) => {
 				const id =
 					isRelational.value && groupsCollectionPrimaryKeyField ? group[groupsCollectionPrimaryKeyField] : group.value;
 
@@ -391,6 +389,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const textField = createViewOption<string | null>('textField', () => fieldGroups.value.text[0]?.field ?? null);
 			const showUngrouped = createViewOption<boolean>('showUngrouped', () => false);
 
+			const groupOrder = createViewOption<LayoutOptions['groupOrder']>('groupOrder', () => ({
+				groupField: null,
+				sortMap: {},
+			}));
+
 			const imageSource = createViewOption<string | null>(
 				'imageSource',
 				() => fieldGroups.value.file[0]?.field ?? null,
@@ -432,6 +435,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				tagsField,
 				userField,
 				showUngrouped,
+				groupOrder,
 				userFieldJunction,
 				userFieldType,
 			};
@@ -514,9 +518,36 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				search: ref(null),
 			});
 
+			const choices = computed(() => (isRelational.value ? [] : selectedGroup.value?.meta?.options?.choices ?? []));
+
+			watch(
+				() => groupField.value,
+				(newGroupField) => {
+					if (!isRelational.value && groupOrder.value.groupField !== newGroupField) {
+						const sortMap: LayoutOptions['groupOrder']['sortMap'] = {};
+
+						choices.value.forEach((item: Record<string, any>, index: number) => {
+							sortMap[item.value] = index;
+						});
+
+						groupOrder.value = { groupField: newGroupField, sortMap };
+					}
+				},
+				{ immediate: true },
+			);
+
 			const groups = computed(() => {
 				if (isRelational.value) return relationalGroupsItems.value;
-				return (selectedGroup.value?.meta?.options?.choices ?? []) as Record<string, any>[];
+
+				if (groupOrder.value.groupField !== groupField.value || !groupOrder.value.sortMap) return choices.value;
+
+				choices.value.sort((a: Record<string, string>, b: Record<string, string>) => {
+					const aOrder = a.value ? groupOrder.value.sortMap[a.value] ?? 0 : 0;
+					const bOrder = b.value ? groupOrder.value.sortMap[b.value] ?? 0 : 0;
+					return aOrder - bOrder;
+				});
+
+				return choices.value;
 			});
 
 			return {
@@ -561,36 +592,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 
 			async function editGroup(id: string | number, title: string) {
-				if (isRelational.value) {
-					if (groupTitle.value === null || !groupsCollection.value) return;
+				if (!isRelational.value || groupTitle.value === null || !groupsCollection.value) return;
 
-					await api.patch(`${getEndpoint(groupsCollection.value)}/${id}`, {
-						[groupTitle.value]: title,
-					});
-				} else {
-					if (!selectedGroup.value) return;
-
-					const updatedChoices = ((selectedGroup.value?.meta?.options?.choices as Record<string, any>[]) ?? []).map(
-						(choice) => {
-							if (choice.value === id) {
-								return {
-									...choice,
-									text: title,
-								};
-							}
-
-							return choice;
-						},
-					);
-
-					try {
-						await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
-							meta: { options: { choices: updatedChoices } },
-						});
-					} catch (error) {
-						unexpectedError(error);
-					}
-				}
+				await api.patch(`${getEndpoint(groupsCollection.value)}/${id}`, {
+					[groupTitle.value]: title,
+				});
 
 				await getGroups();
 			}
@@ -598,9 +604,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			async function changeGroupSort(event: ChangeEvent<Group>) {
 				if (!event.moved) return;
 
-				const offset = showUngrouped.value ? 1 : 0;
-				const item = groupedItems.value[event.moved.oldIndex - offset]?.id;
-				const to = groupedItems.value[event.moved.newIndex - offset]?.id;
+				const item = groupedItems.value[event.moved.oldIndex]?.id;
+				const to = groupedItems.value[event.moved.newIndex]?.id;
+
 				// the special "ungrouped" group has null id
 				if (!item || !to) return;
 
@@ -609,25 +615,16 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					await groupsChangeManualSort({ item, to });
 				} else {
 					if (!selectedGroup.value) return;
-					const groupedIds = groupedItems.value.map((item) => item.id);
+					const groupedIds = groupedItems.value.map((item) => item.id).filter((item) => item !== null);
 					const currentIndex = groupedIds.indexOf(item);
 					const targetIndex = groupedIds.indexOf(to);
+					const sortMap: LayoutOptions['groupOrder']['sortMap'] = {};
 
-					const newSortedChoices = moveInArray(
-						groupedItems.value.map((item) => {
-							return { text: item.title, value: item.id };
-						}),
-						currentIndex,
-						targetIndex,
-					);
+					moveInArray(groupedIds, currentIndex, targetIndex).forEach((id, index) => {
+						if (id !== null) sortMap[id] = index;
+					});
 
-					try {
-						await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
-							meta: { options: { choices: newSortedChoices } },
-						});
-					} catch (error) {
-						unexpectedError(error);
-					}
+					groupOrder.value = { ...groupOrder.value, sortMap };
 				}
 			}
 		}
