@@ -8,6 +8,9 @@ pageClass: page-reference
 
 Retrieve monitored metrics for connected services.
 
+This endpoint is disabled by default and, if enabled, only available to admin users or requests containing a metric
+token defined in the `METRICS_TOKENS` list with the authorization header format `Authorization: Metrics <token>`.
+
 The output is based on Prometheus "Time Series Data Model":
 [Prometheus Time Series Data Model](https://prometheus.io/docs/concepts/data_model)
 
