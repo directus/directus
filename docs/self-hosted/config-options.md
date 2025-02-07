@@ -1136,8 +1136,7 @@ Directus collects little and anonymized data about your environment.
 
 ## Metrics
 
-To enable the measurement of performance for directus services Directus allows for collecting metrics. At this time only
-Prometheus is supported.
+To enable performance and error measurement of connected services, Directus can provide Prometheus metrics.
 
 | Variable                   | Description                                                                                              | Default Value  |
 | -------------------------- | -------------------------------------------------------------------------------------------------------- | -------------- |
