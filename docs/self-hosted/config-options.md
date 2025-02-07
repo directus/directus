@@ -1142,7 +1142,7 @@ To enable performance and error measurement of connected services, Directus can 
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | `METRICS_ENABLED`  | Whether or not to enable metrics.                                                                                                  | `false`        |
 | `METRICS_SCHEDULE` | The cron schedule at which to check for removable records, the default is every 5 minutes                                          | `*/5 * * * * ` |
-| `METRICS_TOKENS`   | The allowed non bearer token values for the Authorization header. Default is only an admin bearer token                            | --             |
+| `METRICS_TOKENS`   | A CSV of tokens to allow access to via a `Authorization: Metrics <token>` header. By default metrics are restricted to admins      | --             |
 | `METRICS_SERVICES` | A CSV of directus services to observe metrics for. The currently supported services are `database`, `cache`, `redis` and `storage` | --             |
 
 ## Limits & Optimizations
