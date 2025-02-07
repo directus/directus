@@ -50,11 +50,10 @@ export function createMetrics() {
 		]);
 
 		/**
-		 * Sync generated metrics with all pm2 instances
+		 * Push generated metrics to all pm2 instances
 		 */
 		if (isPM2) {
 			try {
-				// sync
 				const apps = await listApps();
 
 				const data = await register.getMetricsAsJSON();
@@ -217,7 +216,6 @@ export function createMetrics() {
 		}
 
 		try {
-			// if no connection indicate issue via zero value
 			if (!(await hasDatabaseConnection())) {
 				metric.inc();
 			}
