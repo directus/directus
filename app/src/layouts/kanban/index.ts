@@ -178,7 +178,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				};
 			});
 
-			if (!ungroupedDisabled.value && showUngrouped.value) {
+			if (ungroupedDisabled.value) {
+				showUngrouped.value = false;
+			} else if (showUngrouped.value) {
 				itemGroups['_ungrouped'] = {
 					id: null,
 					items: [],
