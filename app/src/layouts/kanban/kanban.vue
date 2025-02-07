@@ -155,7 +155,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 									</div>
 									<span class="badge">{{ group.items.length }}</span>
 								</div>
-								<div v-if="group.id !== null && !selectMode" class="actions">
+								<div v-if="isRelational && group.id !== null && !selectMode" class="actions">
 									<v-menu show-arrow placement="bottom-end">
 										<template #activator="{ toggle }">
 											<v-icon name="more_horiz" clickable @click="toggle" />
@@ -171,7 +171,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
 											</v-list-item>
 											<v-list-item
-												v-if="isRelational"
 												:disabled="!canDeleteGroups || selectMode"
 												class="danger"
 												clickable
@@ -291,8 +290,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 .kanban {
 	display: flex;
 	height: 100%;
-	overflow-x: auto;
-	overflow-y: hidden;
 	--user-spacing: 16px;
 
 	.draggable {
