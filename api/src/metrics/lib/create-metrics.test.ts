@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { afterEach, describe, expect, test, vi } from 'vitest';
-import { useMetrics } from './use-metrics.js';
+import { createMetrics } from './create-metrics.js';
 
 vi.mock('@directus/env', () => ({
 	useEnv: vi.fn().mockReturnValue({}),
@@ -10,17 +10,17 @@ afterEach(() => {
 	vi.clearAllMocks();
 });
 
-describe('useMetrics', () => {
-	test('Returns undefined when metrics is disabled', () => {
+describe('createMetrics', () => {
+	test('Returns null when metrics are disabled', () => {
 		vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: false });
 
-		const metrics = useMetrics();
+		const metrics = createMetrics();
 		expect(metrics).toBeNull();
 	});
 
-	test('Returns defined when metrics is enabled', () => {
+	test('Returns the metrics object when metrics are enabled', () => {
 		vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: true });
-		const metrics = useMetrics();
+		const metrics = createMetrics();
 		expect(metrics).not.toBeNull();
 	});
 });
