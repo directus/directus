@@ -2,4 +2,4 @@
 '@directus/utils': patch
 ---
 
-Fix carrying up logical operators in filter
+Fixed shifting logical operators up in filter parsing
