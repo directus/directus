@@ -1,6 +1,1 @@
-export interface ServiceMetric {
-	name: string;
-	value: number | null;
-	type: 'counter' | 'gauge' | 'histogram';
-	help?: string;
-}
+export type MetricService = 'database' | 'cache' | 'redis' | 'storage';

@@ -10,8 +10,7 @@ import { getCache } from '../../cache.js';
 import { hasDatabaseConnection } from '../../database/index.js';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { getStorage } from '../../storage/index.js';
-
-export type MetricService = 'database' | 'cache' | 'redis' | 'storage';
+import type { MetricService } from '../types/metric.js';
 
 const isPM2 = 'PM2_HOME' in process.env;
 const METRICS_SYNC_PACKET = 'directus:metrics---data-sync';
