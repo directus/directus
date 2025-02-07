@@ -199,7 +199,7 @@ export function getDatabase(): Knex {
 				delta = performance.now() - time;
 				times.delete(queryInfo.__knexUid);
 
-				useMetrics().getDatabaseResponseMetric()?.observe(delta);
+				useMetrics()?.getDatabaseResponseMetric()?.observe(delta);
 			}
 
 			// eslint-disable-next-line no-nested-ternary

@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { toArray } from '@directus/utils';
+import { toArray, toBoolean } from '@directus/utils';
 import { randomUUID } from 'node:crypto';
 import { Readable } from 'node:stream';
 import { promisify } from 'node:util';
@@ -19,6 +19,10 @@ const sendDataToProcessId = promisify(pm2.sendDataToProcessId.bind(pm2));
 
 export function createMetrics() {
 	const env = useEnv();
+
+	if (!toBoolean(env['METRICS_ENABLED'])) {
+		return;
+	}
 
 	const aggregates = new Map();
 

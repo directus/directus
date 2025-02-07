@@ -7,7 +7,6 @@ import { validateCron } from '../utils/schedule.js';
 
 const METRICS_LOCK_TIMEOUT = 10 * 60 * 1000; // 10 mins
 
-const metrics = useMetrics();
 let lockedAt = 0;
 const logger = useLogger();
 
@@ -22,7 +21,7 @@ export async function handleMetricsJob() {
 	lockedAt = Date.now();
 
 	try {
-		await metrics.generate();
+		await useMetrics()?.generate();
 	} catch (err) {
 		logger.warn(`An error was thrown while attempting metric generation`);
 		logger.warn(err);
