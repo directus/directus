@@ -63,7 +63,17 @@ function shiftLogicalOperatorsUp(filter: any): any {
 		} else if (childKey.startsWith('_')) {
 			return filter;
 		} else {
-			return { [key]: shiftLogicalOperatorsUp(filter[key]) };
+			const new_filter = { [key]: shiftLogicalOperatorsUp(filter[key]) };
+
+			const childKey = Object.keys(new_filter[key])[0];
+			if (!childKey) return filter;
+
+			// This carries deeply nested logical operators up to the top level
+			if (logicalFilterOperators.includes(childKey)) {
+				return shiftLogicalOperatorsUp(new_filter);
+			}
+
+			return new_filter;
 		}
 	}
 }
