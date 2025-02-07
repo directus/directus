@@ -189,7 +189,8 @@ function emitValue(event: InputEvent) {
 	if (props.type === 'number') {
 		const parsedNumber = Number(value);
 
-		if (props.integer === true && !Number.isInteger(parsedNumber)) {
+		if (props.integer === true && !Number.isInteger(parsedNumber) && Number.isNaN(parsedNumber) === false) {
+			emit('update:modelValue', Math.floor(parsedNumber));
 			return;
 		}
 
