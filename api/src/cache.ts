@@ -47,6 +47,9 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 	});
 }
 
+let isSchemaFrozen = false;
+const freezedSchema: SchemaOverview = { collections: [] as any, relations: [] };
+
 export function getCache(): {
 	cache: Keyv | null;
 	systemCache: Keyv;
@@ -66,8 +69,20 @@ export function getCache(): {
 
 	if (localSchemaCache === null) {
 		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema', {
-			serialize: (v: any) => Object.freeze(v),
-			deserialize: (v: any) => v,
+			serialize: (v: any) => {
+				if (!v) return;
+
+				if (typeof v === 'object' && 'collections' in v && 'relations' in v) {
+					freezedSchema.collections = Object.freeze(v.collections);
+					freezedSchema.relations = Object.freeze(v.relations);
+					isSchemaFrozen = true;
+					return { collections: freezedSchema.collections, relations: freezedSchema.relations } as any;
+				}
+			},
+			deserialize: () =>
+				isSchemaFrozen
+					? ({ collections: freezedSchema.collections, relations: freezedSchema.relations } as any)
+					: undefined,
 		});
 
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
