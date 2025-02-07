@@ -21,7 +21,7 @@ export function createMetrics() {
 	const env = useEnv();
 
 	if (!toBoolean(env['METRICS_ENABLED'])) {
-		return;
+		return null;
 	}
 
 	const aggregates = new Map();

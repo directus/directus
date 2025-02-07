@@ -15,12 +15,12 @@ describe('useMetrics', () => {
 		vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: false });
 
 		const metrics = useMetrics();
-		expect(metrics).toBe(undefined);
+		expect(metrics).toBeNull();
 	});
 
 	test('Returns defined when metrics is disabled', () => {
 		vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: true });
 		const metrics = useMetrics();
-		expect(metrics).not.toBe(undefined);
+		expect(metrics).not.toBeNull();
 	});
 });
