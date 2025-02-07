@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Ensured bulk selection in table layout of O2M and M2M interfaces works as expected
+Ensured that bulk selection and editing in the table layout of the O2M and M2M interfaces works as expected
