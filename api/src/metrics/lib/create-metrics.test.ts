@@ -18,7 +18,7 @@ describe('useMetrics', () => {
 		expect(metrics).toBeNull();
 	});
 
-	test('Returns defined when metrics is disabled', () => {
+	test('Returns defined when metrics is enabled', () => {
 		vi.mocked(useEnv).mockReturnValue({ METRICS_ENABLED: true });
 		const metrics = useMetrics();
 		expect(metrics).not.toBeNull();
