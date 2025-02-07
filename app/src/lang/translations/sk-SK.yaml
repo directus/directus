@@ -2421,7 +2421,6 @@ operations:
     name: Poslať Email
     description: Pošle email jednému alebo viacerým ľuďom
     to: Komu
-    to_placeholder: Zadajte emailové adresy a stlačte enter...
     body: Telo správy
     template: Šablóna
     data: Údaje

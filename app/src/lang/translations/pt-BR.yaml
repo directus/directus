@@ -941,6 +941,7 @@ run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, 
 run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow: Executar Fluxo
 run_flow_success: Fluxo "{flow}" executado com sucesso
+trigger_flow_success: O fluxo “{flow}” foi acionado com sucesso. Ele será executado em segundo plano
 field_name_placeholder: Inserir nome do campo...
 field_key_placeholder: Inserir a chave do campo...
 trigger: Acionar
@@ -2425,7 +2426,6 @@ operations:
     name: Enviar E-mail
     description: Enviar um e-mail para uma ou mais pessoas
     to: Para
-    to_placeholder: Adicione endereços de e-mail e pressione Enter...
     body: Corpo
     template: Template
     data: Dados

@@ -2422,7 +2422,6 @@ operations:
     name: Odeslat e-mail
     description: Poslat e-mail jednomu nebo více lidem
     to: Komu
-    to_placeholder: Přidejte e-mailové adresy a stiskněte Enter...
     body: Tělo
     template: Šablona
     data: Údaje

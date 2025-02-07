@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
-import { useFieldsStore } from '@/stores/fields';
+import { usePermissionsStore } from '@/stores/permissions';
 import { useRelationsStore } from '@/stores/relations';
 import { useServerStore } from '@/stores/server';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
@@ -9,7 +9,7 @@ import { translate } from '@/utils/translate-literal';
 import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { useCollection, useFilterFields, useItems, useSync } from '@directus/composables';
 import { defineLayout } from '@directus/extensions';
-import { Field, User } from '@directus/types';
+import { Field, User, PermissionsAction } from '@directus/types';
 import { getEndpoint, getRelationType, moveInArray } from '@directus/utils';
 import { uniq } from 'lodash';
 import { computed, ref, toRefs, watch } from 'vue';
@@ -33,7 +33,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 	},
 	setup(props, { emit }) {
 		const { t, n } = useI18n();
-		const fieldsStore = useFieldsStore();
+		const permissionsStore = usePermissionsStore();
 		const relationsStore = useRelationsStore();
 		const { info: serverInfo } = useServerStore();
 
@@ -112,6 +112,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			tagsField,
 			userField,
 			showUngrouped,
+			groupOrder,
 			userFieldJunction,
 			userFieldType,
 		} = useLayoutOptions();
@@ -162,7 +163,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			if (isRelational.value && !groupTitleField) return [];
 
-			groups.value.forEach((group, index) => {
+			groups.value.forEach((group: Record<string, any>, index: number) => {
 				const id =
 					isRelational.value && groupsCollectionPrimaryKeyField ? group[groupsCollectionPrimaryKeyField] : group.value;
 
@@ -234,8 +235,16 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			});
 		});
 
+		const isFiltered = computed(() => !!props.filterUser || !!props.search);
+
+		const { canReorderGroups, canReorderItems, canUpdateGroupTitle, canDeleteGroups } = useLayoutPermissions();
+
 		return {
 			isRelational,
+			canReorderGroups,
+			canReorderItems,
+			canUpdateGroupTitle,
+			canDeleteGroups,
 			groupedItems,
 			groupsPrimaryKeyField,
 			groups,
@@ -254,6 +263,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			itemCount,
 			totalCount,
 			showingCount,
+			isFiltered,
 			fieldsInCollection,
 			fields,
 			limit,
@@ -379,6 +389,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			const textField = createViewOption<string | null>('textField', () => fieldGroups.value.text[0]?.field ?? null);
 			const showUngrouped = createViewOption<boolean>('showUngrouped', () => false);
 
+			const groupOrder = createViewOption<LayoutOptions['groupOrder']>('groupOrder', () => ({
+				groupField: null,
+				sortMap: {},
+			}));
+
 			const imageSource = createViewOption<string | null>(
 				'imageSource',
 				() => fieldGroups.value.file[0]?.field ?? null,
@@ -420,6 +435,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				tagsField,
 				userField,
 				showUngrouped,
+				groupOrder,
 				userFieldJunction,
 				userFieldType,
 			};
@@ -502,9 +518,36 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				search: ref(null),
 			});
 
+			const choices = computed(() => (isRelational.value ? [] : selectedGroup.value?.meta?.options?.choices ?? []));
+
+			watch(
+				() => groupField.value,
+				(newGroupField) => {
+					if (!isRelational.value && groupOrder.value.groupField !== newGroupField) {
+						const sortMap: LayoutOptions['groupOrder']['sortMap'] = {};
+
+						choices.value.forEach((item: Record<string, any>, index: number) => {
+							sortMap[item.value] = index;
+						});
+
+						groupOrder.value = { groupField: newGroupField, sortMap };
+					}
+				},
+				{ immediate: true },
+			);
+
 			const groups = computed(() => {
 				if (isRelational.value) return relationalGroupsItems.value;
-				return (selectedGroup.value?.meta?.options?.choices ?? []) as Record<string, any>[];
+
+				if (groupOrder.value.groupField !== groupField.value || !groupOrder.value.sortMap) return choices.value;
+
+				choices.value.sort((a: Record<string, string>, b: Record<string, string>) => {
+					const aOrder = a.value ? groupOrder.value.sortMap[a.value] ?? 0 : 0;
+					const bOrder = b.value ? groupOrder.value.sortMap[b.value] ?? 0 : 0;
+					return aOrder - bOrder;
+				});
+
+				return choices.value;
 			});
 
 			return {
@@ -549,32 +592,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			}
 
 			async function editGroup(id: string | number, title: string) {
-				if (isRelational.value) {
-					if (groupTitle.value === null || !groupsCollection.value) return;
+				if (!isRelational.value || groupTitle.value === null || !groupsCollection.value) return;
 
-					await api.patch(`${getEndpoint(groupsCollection.value)}/${id}`, {
-						[groupTitle.value]: title,
-					});
-				} else {
-					if (!selectedGroup.value) return;
-
-					const updatedChoices = ((selectedGroup.value?.meta?.options?.choices as Record<string, any>[]) ?? []).map(
-						(choice) => {
-							if (choice.value === id) {
-								return {
-									...choice,
-									text: title,
-								};
-							}
-
-							return choice;
-						},
-					);
-
-					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
-						meta: { options: { choices: updatedChoices } },
-					});
-				}
+				await api.patch(`${getEndpoint(groupsCollection.value)}/${id}`, {
+					[groupTitle.value]: title,
+				});
 
 				await getGroups();
 			}
@@ -582,9 +604,9 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			async function changeGroupSort(event: ChangeEvent<Group>) {
 				if (!event.moved) return;
 
-				const offset = showUngrouped.value ? 1 : 0;
-				const item = groupedItems.value[event.moved.oldIndex - offset]?.id;
-				const to = groupedItems.value[event.moved.newIndex - offset]?.id;
+				const item = groupedItems.value[event.moved.oldIndex]?.id;
+				const to = groupedItems.value[event.moved.newIndex]?.id;
+
 				// the special "ungrouped" group has null id
 				if (!item || !to) return;
 
@@ -593,22 +615,68 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					await groupsChangeManualSort({ item, to });
 				} else {
 					if (!selectedGroup.value) return;
-					const groupedIds = groupedItems.value.map((item) => item.id);
+					const groupedIds = groupedItems.value.map((item) => item.id).filter((item) => item !== null);
 					const currentIndex = groupedIds.indexOf(item);
 					const targetIndex = groupedIds.indexOf(to);
+					const sortMap: LayoutOptions['groupOrder']['sortMap'] = {};
 
-					const newSortedChoices = moveInArray(
-						groupedItems.value.map((item) => {
-							return { text: item.title, value: item.id };
-						}),
-						currentIndex,
-						targetIndex,
-					);
-
-					await fieldsStore.updateField(selectedGroup.value.collection, selectedGroup.value.field, {
-						meta: { options: { choices: newSortedChoices } },
+					moveInArray(groupedIds, currentIndex, targetIndex).forEach((id, index) => {
+						if (id !== null) sortMap[id] = index;
 					});
+
+					groupOrder.value = { ...groupOrder.value, sortMap };
 				}
+			}
+		}
+
+		function useLayoutPermissions() {
+			const canUpdateLocalField = computed(() => {
+				if (selectedGroup.value?.meta?.readonly) return false;
+
+				return hasFieldPermissions(collection.value, 'update', selectedGroup.value?.field);
+			});
+
+			const canReorderGroups = computed(() => {
+				if (!canUpdateLocalField.value) return false;
+
+				if (isRelational.value) return hasFieldPermissions(groupsCollection.value, 'update', groupsSortField.value);
+
+				return true;
+			});
+
+			const canReorderItems = computed(() => canUpdateLocalField.value);
+
+			const canUpdateGroupTitle = computed(() => {
+				if (!canUpdateLocalField.value) return false;
+
+				if (isRelational.value) return hasFieldPermissions(groupsCollection.value, 'update', groupTitle?.value);
+
+				return true;
+			});
+
+			const canDeleteGroups = computed(() => {
+				if (!canUpdateLocalField.value) return false;
+
+				if (isRelational.value) return permissionsStore.hasPermission(groupsCollection.value ?? '', 'delete');
+
+				return true;
+			});
+
+			return { canReorderGroups, canReorderItems, canUpdateGroupTitle, canDeleteGroups };
+
+			function hasFieldPermissions(
+				collection: string | null,
+				action: PermissionsAction,
+				field: Field['field'] | undefined | null,
+			) {
+				if (!collection || !field) return false;
+
+				const permissions = permissionsStore.getPermission(collection, action);
+				if (permissions?.access === 'none') return false;
+
+				if (permissions?.fields?.[0] === '*' || permissions?.fields?.includes(field)) return true;
+
+				return false;
 			}
 		}
 
@@ -685,11 +753,18 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					}
 				}
 
-				[groupField.value, titleField.value, textField.value, tagsField.value, dateField.value].forEach((val) => {
-					if (val !== null) fields.push(val);
-				});
+				[groupField.value, tagsField.value, dateField.value].forEach(addFieldIfNotNull);
 
-				return uniq(adjustFieldsForDisplays(fields, collection.value!));
+				adjustFieldsForDisplays(
+					[titleField.value, textField.value].filter((val) => val !== null),
+					collection.value!,
+				)?.forEach(addFieldIfNotNull);
+
+				return uniq(fields);
+
+				function addFieldIfNotNull(val: string | null) {
+					if (val !== null) fields.push(val);
+				}
 			});
 
 			return { sort, limit, page, fields };

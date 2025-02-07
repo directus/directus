@@ -1,16 +1,22 @@
 # syntax=docker/dockerfile:1.4
 
+ARG NODE_VERSION=22
+
 ####################################################################################################
 ## Build Packages
 
-FROM node:18-alpine AS builder
+FROM node:${NODE_VERSION}-alpine AS builder
+
+# Remove again once corepack >= 0.31 made it into base image
+# (see https://github.com/directus/directus/issues/24514)
+RUN npm install --global corepack@latest
 
 ARG TARGETPLATFORM
 RUN <<EOF
-  if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then
-  	apk --no-cache add python3 build-base
-  	ln -sf /usr/bin/python3 /usr/bin/python
-  fi
+	if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then
+		apk --no-cache add python3 build-base
+		ln -sf /usr/bin/python3 /usr/bin/python
+	fi
 EOF
 
 WORKDIR /directus
@@ -46,9 +52,11 @@ EOF
 ####################################################################################################
 ## Create Production Image
 
-FROM node:18-alpine AS runtime
+FROM node:${NODE_VERSION}-alpine AS runtime
 
-RUN npm install --global pm2@5
+RUN npm install --global \
+	pm2@5 \
+	corepack@latest # Remove again once corepack >= 0.31 made it into base image
 
 USER node
 
