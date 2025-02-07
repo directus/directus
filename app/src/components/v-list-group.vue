@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import { useGroupable } from '@directus/composables';
 
 interface Props {
@@ -25,6 +25,8 @@ interface Props {
 	dense?: boolean;
 	/** Overrides the internal open state */
 	open?: boolean;
+	/** Collapse group on value change */
+	collapseOnChange?: unknown;
 	/** Where the visual arrow should be placed */
 	arrowPlacement?: 'before' | 'after' | false;
 }
@@ -46,12 +48,21 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(['click']);
 
-const { active: groupableActive, toggle } = useGroupable({
+const {
+	active: groupableActive,
+	toggle,
+	deactivate,
+} = useGroupable({
 	group: props.scope,
 	value: props.value,
 });
 
 const groupActive = computed(() => groupableActive.value || props.open);
+
+watch(
+	() => props.collapseOnChange,
+	() => deactivate(),
+);
 
 function onClick(event: MouseEvent) {
 	if (props.to) return null;

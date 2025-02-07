@@ -61,6 +61,7 @@ const openWhileSearching = computed(() => {
 		v-if="field.children || supportedFunctions.length > 0"
 		:clickable="!field.disabled && (relationalFieldSelectable || !field.relatedCollection)"
 		:open="openWhileSearching"
+		:collapse-on-change="search"
 		:value="field.path"
 		:class="{ 'raw-field-names': rawFieldNames }"
 		@click="$emit('add', [field.key])"
