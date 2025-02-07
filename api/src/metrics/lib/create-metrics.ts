@@ -11,6 +11,8 @@ import { hasDatabaseConnection } from '../../database/index.js';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { getStorage } from '../../storage/index.js';
 
+export type MetricService = 'database' | 'cache' | 'redis' | 'storage';
+
 const isPM2 = 'PM2_HOME' in process.env;
 const METRICS_SYNC_PACKET = 'directus:metrics---data-sync';
 
@@ -24,6 +26,7 @@ export function createMetrics() {
 		return null;
 	}
 
+	const services: MetricService[] = (env['METRICS_SERVICES'] as MetricService[] | undefined) ?? [];
 	const aggregates = new Map();
 
 	/**
@@ -112,7 +115,7 @@ export function createMetrics() {
 	}
 
 	function getDatabaseErrorMetric(): Counter | null {
-		if (env['METRICS_DATABASE_ENABLED'] !== true) {
+		if (services.includes('database') === false) {
 			return null;
 		}
 
@@ -131,7 +134,7 @@ export function createMetrics() {
 	}
 
 	function getDatabaseResponseMetric(): Histogram | null {
-		if (env['METRICS_DATABASE_ENABLED'] !== true) {
+		if (services.includes('database') === false) {
 			return null;
 		}
 
@@ -151,7 +154,7 @@ export function createMetrics() {
 	}
 
 	function getCacheErrorMetric(): Counter | null {
-		if (env['METRICS_CACHE_ENABLED'] !== true || env['CACHE_ENABLED'] !== true) {
+		if (services.includes('cache') === false || env['CACHE_ENABLED'] !== true) {
 			return null;
 		}
 
@@ -174,7 +177,7 @@ export function createMetrics() {
 	}
 
 	function getRedisErrorMetric(): Counter | null {
-		if (env['METRICS_REDIS_ENABLED'] !== true || redisConfigAvailable() !== true) {
+		if (services.includes('redis') === false || redisConfigAvailable() !== true) {
 			return null;
 		}
 
@@ -191,7 +194,7 @@ export function createMetrics() {
 	}
 
 	function getStorageErrorMetric(location: string): Counter | null {
-		if (env['METRICS_STORAGE_ENABLED'] !== true) {
+		if (services.includes('storage') === false) {
 			return null;
 		}
 
@@ -263,7 +266,7 @@ export function createMetrics() {
 	}
 
 	async function trackStorageMetric(checkId: string) {
-		if (env['METRICS_STORAGE_ENABLED'] !== true) {
+		if (services.includes('storage') === false) {
 			return;
 		}
 

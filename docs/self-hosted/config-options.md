@@ -1138,15 +1138,12 @@ Directus collects little and anonymized data about your environment.
 
 To enable performance and error measurement of connected services, Directus can provide Prometheus metrics.
 
-| Variable                   | Description                                                                                              | Default Value  |
-| -------------------------- | -------------------------------------------------------------------------------------------------------- | -------------- |
-| `METRICS_ENABLED`          | Whether or not to enable metrics.                                                                        | `false`        |
-| `METRICS_SCHEDULE`         | The cron schedule at which to check for removable records, the default is every 5 minutes                | `*/5 * * * * ` |
-| `METRICS_TOKENS`           | The allowed non bearer token values for the Authorization header. Default is only an admin bearer token. | --             |
-| `METRICS_DATABASE_ENABLED` | Whether or not to add the database response time                                                         | `true`         |
-| `METRICS_CACHE_ENABLED`    | Whether or not to add the cache response time.                                                           | `true`         |
-| `METRICS_REDIS_ENABLED`    | Whether or not to add the Redis response time.                                                           | `true`         |
-| `METRICS_STORAGE_ENABLED`  | Whether or not to add the storage response time(s).                                                      | `true`         |
+| Variable           | Description                                                                                                                        | Default Value  |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `METRICS_ENABLED`  | Whether or not to enable metrics.                                                                                                  | `false`        |
+| `METRICS_SCHEDULE` | The cron schedule at which to check for removable records, the default is every 5 minutes                                          | `*/5 * * * * ` |
+| `METRICS_TOKENS`   | The allowed non bearer token values for the Authorization header. Default is only an admin bearer token                            | --             |
+| `METRICS_SERVICES` | A CSV of directus services to observe metrics for. The currently supported services are `database`, `cache`, `redis` and `storage` | --             |
 
 ## Limits & Optimizations
 
