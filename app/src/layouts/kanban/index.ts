@@ -129,6 +129,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			editGroup,
 			deleteGroup,
 			isRelational,
+			ungroupedDisabled,
 		} = useGrouping();
 
 		const {
@@ -150,6 +151,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filter,
 			search,
 			filterSystem,
+		});
+
+		watch(ungroupedDisabled, (disabled) => {
+			if (disabled && showUngrouped.value) showUngrouped.value = false;
 		});
 
 		const groupedItems = computed<Group[]>(() => {
@@ -177,7 +182,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				};
 			});
 
-			if (showUngrouped.value) {
+			if (!ungroupedDisabled.value && showUngrouped.value) {
 				itemGroups['_ungrouped'] = {
 					id: null,
 					items: [],
@@ -241,6 +246,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 		return {
 			isRelational,
+			ungroupedDisabled,
 			canReorderGroups,
 			canReorderItems,
 			canUpdateGroupTitle,
@@ -550,6 +556,11 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				return choices.value;
 			});
 
+			const ungroupedDisabled = computed(() => {
+				if (isRelational.value || selectedGroup.value?.schema?.is_nullable) return false;
+				return true;
+			});
+
 			return {
 				groups,
 				groupsLoading,
@@ -567,6 +578,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				deleteGroup,
 				changeGroupSort,
 				isRelational,
+				ungroupedDisabled,
 			};
 
 			async function deleteGroup(id: string | number) {
