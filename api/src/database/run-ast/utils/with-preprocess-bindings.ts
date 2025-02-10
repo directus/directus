@@ -1,8 +1,8 @@
 import type { Knex } from 'knex';
 import { getHelpers } from '../../helpers/index.js';
-import type { SchemaOverview } from '@directus/types';
 
-export function withPreprocessBindings(knex: Knex, dbQuery: Knex.QueryBuilder, schema: SchemaOverview) {
+
+export function withPreprocessBindings(knex: Knex, dbQuery: Knex.QueryBuilder) {
 	const schemaHelper = getHelpers(knex).schema;
 
 	dbQuery.client = new Proxy(dbQuery.client, {
@@ -11,7 +11,7 @@ export function withPreprocessBindings(knex: Knex, dbQuery: Knex.QueryBuilder, s
 				return (connection: Knex, queryParams: Knex.Sql) =>
 					Reflect.get(target, prop, receiver).bind(dbQuery.client)(
 						connection,
-						schemaHelper.prepQueryParams(queryParams, schema),
+						schemaHelper.prepQueryParams(queryParams),
 					);
 			}
 

@@ -3,7 +3,6 @@ import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { SchemaHelper, type SortRecord, type Sql } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
-import type { SchemaOverview } from '@directus/types';
 
 const env = useEnv();
 
@@ -26,8 +25,8 @@ export class SchemaHelperPostgres extends SchemaHelper {
 		}
 	}
 
-	override prepQueryParams(queryParams: Sql, schema: SchemaOverview): Sql {
-		return prepQueryParams(queryParams, { format: (index) => `$${index + 1}` }, schema);
+	override prepQueryParams(queryParams: Sql): Sql {
+		return prepQueryParams(queryParams, { format: (index) => `$${index + 1}` }, false);
 	}
 
 	override addInnerSortFieldsToGroupBy(

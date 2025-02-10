@@ -77,7 +77,6 @@ describe('Replaces question marks with $1, $2, etc.', () => {
 		const bindings = prepQueryParams(
 			{ sql: `SELECT * FROM table WHERE column = ? LIMIT ?`, bindings: [1, 100] },
 			{ format },
-			sampleSchema,
 		);
 
 		expect(bindings.sql).toEqual('SELECT * FROM table WHERE column = $1 LIMIT $2');
@@ -91,7 +90,6 @@ describe('Replaces question marks with $1, $2, etc.', () => {
 				bindings: [10, 'foo', 10],
 			},
 			{ format },
-			sampleSchema,
 		);
 
 		expect(bindings.sql).toEqual('SELECT * FROM table WHERE column = $1 AND other = $2 LIMIT $1');
@@ -105,7 +103,6 @@ describe('Replaces question marks with $1, $2, etc.', () => {
 				bindings: [1, 1, 1, 100, 5, 100],
 			},
 			{ format },
-			sampleSchema,
 		);
 
 		expect(bindings.sql).toEqual('SELECT * FROM table WHERE column in [$1, $1, $1] and other in [$2, $3] LIMIT $2');
@@ -119,7 +116,7 @@ describe('Replaces question marks with $1, $2, etc.', () => {
 				bindings: ['123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-426614174000'],
 			},
 			{ format },
-			sampleSchema,
+			false
 		);
 
 		expect(bindings.sql).toEqual('SELECT * FROM table WHERE other = $1 AND yet_another = $2');

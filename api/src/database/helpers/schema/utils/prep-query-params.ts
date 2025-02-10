@@ -1,7 +1,6 @@
 import { isString } from 'lodash-es';
 import type { Knex } from 'knex';
 import type { Sql } from '../types.js';
-import type { SchemaOverview } from '@directus/types';
 
 export type PrepQueryParamsOptions = {
 	format(index: number): string;
@@ -13,7 +12,7 @@ export type PrepQueryParamsOptions = {
 export function prepQueryParams(
 	queryParams: (Partial<Sql> & Pick<Sql, 'sql'>) | string,
 	options: PrepQueryParamsOptions,
-	_schema: SchemaOverview,
+	deduplicate_uuids: boolean = true,
 ) {
 	const query: Sql = { bindings: [], ...(isString(queryParams) ? { sql: queryParams } : queryParams) };
 
@@ -22,6 +21,9 @@ export function prepQueryParams(
 
 	// The new, deduplicated bindings
 	const bindings: Knex.Value[] = [];
+
+	// Regular expression to match UUIDs
+	const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 	let matchIndex = 0;
 	let nextBindingIndex = 0;
@@ -35,7 +37,13 @@ export function prepQueryParams(
 		const binding = query.bindings[matchIndex]!;
 		let bindingIndex: number;
 
-		if (bindingIndices.has(binding)) {
+		const isUuid = typeof binding === 'string' && uuidRegex.test(binding);
+
+		// If deduplicate_uuids is false and the binding is a UUID, do not deduplicate it
+		if (deduplicate_uuids === false && isUuid) {
+			bindingIndex = nextBindingIndex++;
+			bindings.push(binding);
+		} else if (bindingIndices.has(binding)) {
 			// This index belongs to a binding that has been encountered before.
 			bindingIndex = bindingIndices.get(binding)!;
 		} else {
