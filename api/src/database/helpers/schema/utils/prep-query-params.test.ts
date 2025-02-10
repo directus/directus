@@ -1,73 +1,14 @@
 import { test, expect, describe } from 'vitest';
 import { prepQueryParams } from './prep-query-params.js';
-import type { SchemaOverview } from '@directus/types';
 
 const format = (index: number) => `$${index + 1}`;
 
-const sampleSchema: SchemaOverview = {
-	collections: {
-		users: {
-			collection: 'table',
-			primary: 'column',
-			singleton: false,
-			sortField: 'created_at',
-			note: 'Collection for user data.',
-			accountability: 'all',
-			fields: {
-				column: {
-					field: 'column',
-					defaultValue: null,
-					nullable: false,
-					generated: true,
-					type: 'integer',
-					dbType: 'int',
-					precision: 10,
-					scale: null,
-					special: ['primary', 'auto_increment'],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				other: {
-					field: 'other',
-					defaultValue: '',
-					nullable: false,
-					generated: false,
-					type: 'string',
-					dbType: 'varchar(255)',
-					precision: 255,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				yet_another: {
-					field: 'yet_another',
-					defaultValue: '',
-					nullable: false,
-					generated: false,
-					type: 'uuid',
-					dbType: 'uuid',
-					precision: 255,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-			},
-		},
-	},
-	relations: [],
-};
-
 test('Returns an escaped question mark, so it stays escaped', () => {
-	expect(prepQueryParams(`SELECT * FROM table WHERE column = "\\?"`, { format }, sampleSchema).sql).toEqual(
+	expect(prepQueryParams(`SELECT * FROM table WHERE column = "\\?"`, { format }).sql).toEqual(
 		'SELECT * FROM table WHERE column = "\\?"',
 	);
 
-	expect(prepQueryParams(`SELECT * FROM table WHERE column = "\\\\\\?"`, { format }, sampleSchema).sql).toEqual(
+	expect(prepQueryParams(`SELECT * FROM table WHERE column = "\\\\\\?"`, { format }).sql).toEqual(
 		'SELECT * FROM table WHERE column = "\\\\\\?"',
 	);
 });
@@ -116,7 +57,7 @@ describe('Replaces question marks with $1, $2, etc.', () => {
 				bindings: ['123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-426614174000'],
 			},
 			{ format },
-			false
+			false,
 		);
 
 		expect(bindings.sql).toEqual('SELECT * FROM table WHERE other = $1 AND yet_another = $2');
