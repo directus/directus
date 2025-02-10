@@ -168,6 +168,7 @@ export const DEFAULTS = {
 	PRESSURE_LIMITER_RETRY_AFTER: false,
 
 	METRICS_ENABLED: false,
+	METRICS_SERVICES: 'database,cache,redis,storage',
 	METRICS_SCHEDULE: '*/5 * * * *',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
