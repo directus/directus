@@ -153,6 +153,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			filterSystem,
 		});
 
+		watch(ungroupedDisabled, (disabled) => {
+			if (disabled && showUngrouped.value) showUngrouped.value = false;
+		});
+
 		const groupedItems = computed<Group[]>(() => {
 			const groupsCollectionPrimaryKeyField = groupsPrimaryKeyField.value?.field;
 			const groupTitleField = groupTitle?.value || groupsCollectionPrimaryKeyField;
@@ -178,9 +182,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 				};
 			});
 
-			if (ungroupedDisabled.value) {
-				showUngrouped.value = false;
-			} else if (showUngrouped.value) {
+			if (!ungroupedDisabled.value && showUngrouped.value) {
 				itemGroups['_ungrouped'] = {
 					id: null,
 					items: [],
