@@ -590,7 +590,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 				await api.delete(`${getEndpoint(groupsCollection.value)}/${id}`);
 
-				await getGroups();
+				refresh();
 			}
 
 			async function addGroup(title: string) {
