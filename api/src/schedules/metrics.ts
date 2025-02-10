@@ -9,6 +9,7 @@ const METRICS_LOCK_TIMEOUT = 10 * 60 * 1000; // 10 mins
 
 let lockedAt = 0;
 const logger = useLogger();
+const metrics = useMetrics();
 
 export async function handleMetricsJob() {
 	const now = Date.now();
@@ -21,7 +22,7 @@ export async function handleMetricsJob() {
 	lockedAt = Date.now();
 
 	try {
-		await useMetrics()?.generate();
+		await metrics?.generate();
 	} catch (err) {
 		logger.warn(`An error was thrown while attempting metric generation`);
 		logger.warn(err);

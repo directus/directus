@@ -6,6 +6,7 @@ import asyncHandler from '../utils/async-handler.js';
 
 const env = useEnv();
 const router = Router();
+const metrics = useMetrics();
 
 router.get(
 	'/',
@@ -39,7 +40,7 @@ router.get(
 		res.setHeader('Cache-Control', 'no-cache');
 		res.setHeader('Vary', 'Origin, Cache-Control');
 
-		return res.send(await useMetrics()?.readAll());
+		return res.send(await metrics?.readAll());
 	}),
 );
 

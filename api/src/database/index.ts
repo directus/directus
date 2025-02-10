@@ -41,6 +41,7 @@ export function getDatabase(): Knex {
 
 	const env = useEnv();
 	const logger = useLogger();
+	const metrics = useMetrics();
 
 	const {
 		client,
@@ -199,7 +200,7 @@ export function getDatabase(): Knex {
 				delta = performance.now() - time;
 				times.delete(queryInfo.__knexUid);
 
-				useMetrics()?.getDatabaseResponseMetric()?.observe(delta);
+				metrics?.getDatabaseResponseMetric()?.observe(delta);
 			}
 
 			// eslint-disable-next-line no-nested-ternary
