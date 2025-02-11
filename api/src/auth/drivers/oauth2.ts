@@ -123,6 +123,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 	}
 
 	override async getUserID(payload: Record<string, any>): Promise<string> {
+		const env = useEnv();
 		const logger = useLogger();
 
 		if (!payload['code'] || !payload['codeVerifier'] || !payload['state']) {
@@ -130,7 +131,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
-		const { plainCodeChallenge } = this.config;
+		const { plainCodeChallenge, provider: providerName } = this.config;
 
 		let tokenSet;
 		let userInfo;
@@ -140,10 +141,22 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 				? payload['codeVerifier']
 				: generators.codeChallenge(payload['codeVerifier']);
 
-			tokenSet = await this.client.oauthCallback(
-				this.redirectUrl,
-				{ code: payload['code'], state: payload['state'] },
-				{ code_verifier: payload['codeVerifier'], state: codeChallenge },
+			let additionalOptions={}
+			let checks = { code_verifier: payload['codeVerifier'], state: codeChallenge }
+			const requiresClientCredentials = env[`AUTH_${providerName.toUpperCase()}_ACCESS_TOKEN_REQUIRES_CLIENT_CREDENTIALS`] ?? false
+			if(requiresClientCredentials){
+				additionalOptions.exchangeBody={
+					client_id: client.client_id,
+					client_secret: client.client_secret
+				}
+				delete checks["code_verifier"]
+			}
+			
+			tokenSet = await client.callback(
+				this.redirectUrl, 
+				{ code: payload['code'], state: payload['state'] }, 
+				checks,
+				additionalOptions   
 			);
 
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
