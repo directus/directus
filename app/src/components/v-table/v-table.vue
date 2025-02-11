@@ -178,6 +178,10 @@ const columnStyle = computed<{ header: string; rows: string }>(() => {
 	}
 });
 
+function itemHasNoKeyYet(item: Item) {
+	return !item[props.itemKey] && item.$index !== undefined;
+}
+
 function onItemSelected(event: ItemSelectEvent) {
 	if (props.disabled) return;
 
@@ -192,7 +196,11 @@ function onItemSelected(event: ItemSelectEvent) {
 			selection.push(event.item);
 		}
 	} else {
-		selection = selection.filter((item) => {
+		selection = selection.filter((item: Item) => {
+			if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
+				return item.$index !== event.item.$index;
+			}
+
 			if (props.selectionUseKeys) {
 				return item !== event.item[props.itemKey];
 			}
@@ -209,6 +217,11 @@ function onItemSelected(event: ItemSelectEvent) {
 }
 
 function getSelectedState(item: Item) {
+	if (!props.selectionUseKeys && itemHasNoKeyYet(item)) {
+		const selectedKeys = props.modelValue.map((item) => item.$index);
+		return selectedKeys.includes(item.$index);
+	}
+
 	const selectedKeys = props.selectionUseKeys ? props.modelValue : props.modelValue.map((item) => item[props.itemKey]);
 
 	return selectedKeys.includes(item[props.itemKey]);
