@@ -41,7 +41,7 @@ export function useRelationMultiple(
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
-	const { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty, applySort } = useUtil();
+	const { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty } = useUtil();
 
 	const _value = computed<ChangesItem>({
 		get() {
@@ -176,8 +176,8 @@ export function useRelationMultiple(
 					case 'm2a': {
 						const itemCollection = item[relation.value.collectionField.field];
 						const editCollection = edit[relation.value.collectionField.field];
-						const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection]!.field;
-						const editPkField = relation.value.relationPrimaryKeyFields[editCollection]!.field;
+						const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection].field;
+						const editPkField = relation.value.relationPrimaryKeyFields[editCollection].field;
 
 						return (
 							itemCollection === editCollection &&
@@ -225,11 +225,8 @@ export function useRelationMultiple(
 		return { create, update, remove, select };
 
 		function create(...items: Record<string, any>[]) {
-			let sortCount = totalItemCount.value;
-
 			for (const item of items) {
-				const finalItem = applySort(cleanItem(item), sortCount++);
-				target.value.create.push(finalItem);
+				target.value.create.push(cleanItem(item));
 			}
 
 			updateValue();
@@ -238,24 +235,20 @@ export function useRelationMultiple(
 		function update(...items: DisplayItem[]) {
 			if (!relation.value) return;
 
-			let sortCount = totalItemCount.value;
-
 			for (const item of items) {
-				const finalItem = cleanItem(item);
-
 				if (item.$type === undefined || item.$index === undefined) {
-					target.value.update.push(applySort(finalItem, sortCount++));
+					target.value.update.push(cleanItem(item));
 				} else if (item.$type === 'created') {
-					target.value.create[item.$index] = finalItem;
+					target.value.create[item.$index] = cleanItem(item);
 				} else if (item.$type === 'updated') {
 					if (isEmpty(item)) target.value.update.splice(item.$index, 1);
-					else target.value.update[item.$index] = finalItem;
+					else target.value.update[item.$index] = cleanItem(item);
 				} else if (item.$type === 'deleted') {
 					if (item.$edits !== undefined) {
 						if (isEmpty(item)) target.value.update.splice(item.$index, 1);
-						else target.value.update[item.$edits] = finalItem;
+						else target.value.update[item.$edits] = cleanItem(item);
 					} else {
-						target.value.update.push(finalItem);
+						target.value.update.push(cleanItem(item));
 					}
 				}
 			}
@@ -316,7 +309,7 @@ export function useRelationMultiple(
 							[info.reverseJunctionField.field]: itemId.value,
 							[info.collectionField.field]: collection,
 							[info.junctionField.field]: {
-								[info.relationPrimaryKeyFields[collection]!.field]: item,
+								[info.relationPrimaryKeyFields[collection].field]: item,
 							},
 						};
 					}
@@ -351,7 +344,7 @@ export function useRelationMultiple(
 				fields.add(relation.value.collectionField.field);
 
 				for (const collection of relation.value.allowedCollections) {
-					const pkField = relation.value.relationPrimaryKeyFields[collection.collection]!;
+					const pkField = relation.value.relationPrimaryKeyFields[collection.collection];
 					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField.field}`);
 				}
 
@@ -509,7 +502,7 @@ export function useRelationMultiple(
 
 				case 'm2a': {
 					const collection = item[relation.value.collectionField.field];
-					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection]!.field];
+					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection].field];
 				}
 			}
 
@@ -613,7 +606,7 @@ export function useRelationMultiple(
 
 			const responses = await Promise.all(
 				Object.entries(selectGrouped).map(([collection, items]) => {
-					const pkField = relation.relationPrimaryKeyFields[collection]!.field;
+					const pkField = relation.relationPrimaryKeyFields[collection].field;
 
 					const fields = new Set(
 						previewQuery.value.fields.reduce<string[]>((acc, field) => {
@@ -656,17 +649,6 @@ export function useRelationMultiple(
 	}
 
 	function useUtil() {
-		function applySort(item: Record<string, any>, totalSortCount = 0): Record<string, any> {
-			const sortField = relation.value?.sortField;
-
-			if (!sortField || totalSortCount > previewQuery.value.limit || item[sortField] !== undefined) return item;
-
-			return {
-				...item,
-				[sortField]: totalSortCount + 1,
-			};
-		}
-
 		function cleanItem(item: DisplayItem) {
 			return Object.entries(item).reduce((acc, [key, value]) => {
 				if (!key.startsWith('$')) acc[key] = value;
@@ -767,7 +749,7 @@ export function useRelationMultiple(
 			return edits;
 		}
 
-		return { applySort, cleanItem, getPage, isLocalItem, getItemEdits, isEmpty };
+		return { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty };
 	}
 
 	return {
