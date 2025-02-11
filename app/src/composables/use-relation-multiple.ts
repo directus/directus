@@ -716,37 +716,30 @@ export function useRelationMultiple(
 		}
 
 		function getItemEdits(item: DisplayItem) {
-			const sortField = relation.value?.sortField;
-			let edits: DisplayItem = {};
-
 			if ('$type' in item && item.$index !== undefined) {
 				if (item.$type === 'created') {
-					edits = {
+					return {
 						..._value.value.create[item.$index],
-						$type: item.$type,
+						$type: 'created',
 						$index: item.$index,
 					};
 				} else if (item.$type === 'updated') {
-					edits = {
+					return {
 						..._value.value.update[item.$index],
-						$type: item.$type,
+						$type: 'updated',
 						$index: item.$index,
 					};
 				} else if (item.$type === 'deleted' && item.$edits !== undefined) {
-					edits = {
+					return {
 						..._value.value.update[item.$edits],
-						$type: item.$type,
+						$type: 'deleted',
 						$index: item.$index,
 						$edits: item.$edits,
 					};
 				}
 			}
 
-			if (sortField && item[sortField] !== undefined && edits[sortField] === undefined) {
-				edits[sortField] = item[sortField];
-			}
-
-			return edits;
+			return {};
 		}
 
 		return { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty };
