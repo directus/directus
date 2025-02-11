@@ -222,21 +222,16 @@ function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, kne
 		if (!existingAlias) {
 			const alias = generateAlias();
 
-			const aliasKey = parentFields
-				? `${parentFields}.${pathParts[0]}`
-				: pathParts[0]!;
+			const aliasKey = parentFields ? `${parentFields}.${pathParts[0]}` : pathParts[0]!;
 
 			// If we're in an _and context, make the key unique using the index
-			const finalAliasKey = indexInAndArray !== undefined
-				? `${aliasKey}__and${indexInAndArray}`
-				: aliasKey;
+			const finalAliasKey = indexInAndArray !== undefined ? `${aliasKey}__and${indexInAndArray}` : aliasKey;
 
 			aliasMap[finalAliasKey] = { alias, collection: '' };
 
 			// For parent lookup, we need to use the same suffix if it exists
-			const parentAliasKey = parentFields && indexInAndArray !== undefined
-				? `${parentFields}__and${indexInAndArray}`
-				: parentFields ?? '';
+			const parentAliasKey =
+				parentFields && indexInAndArray !== undefined ? `${parentFields}__and${indexInAndArray}` : parentFields ?? '';
 
 			const aliasedParentCollection = aliasMap[parentAliasKey]?.alias || parentCollection;
 
@@ -553,9 +548,13 @@ export function applyFilter(
 				/** @NOTE this callback function isn't called until Knex runs the query */
 				dbQuery[logical].where((subQuery) => {
 					value.forEach((subFilter: Record<string, any>, index: number) => {
-						addWhereClauses(knex, subQuery, subFilter, collection,
-						  key === '_and' ? 'and' : 'or',
-						  key === '_and' ? index : undefined
+						addWhereClauses(
+							knex,
+							subQuery,
+							subFilter,
+							collection,
+							key === '_and' ? 'and' : 'or',
+							key === '_and' ? index : undefined,
 						);
 					});
 				});
@@ -640,7 +639,7 @@ export function applyFilter(
 					relations,
 					aliasMap,
 					schema,
-					indexInAndArray
+					indexInAndArray,
 				});
 
 				if (addNestedPkField) {
