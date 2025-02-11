@@ -55,6 +55,8 @@ interface Props {
 	autocomplete?: string;
 	/** Makes the input smaller */
 	small?: boolean;
+	/** If the input should be an integer */
+	integer?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -125,6 +127,11 @@ function processValue(event: KeyboardEvent) {
 
 	const value = (event.target as HTMLInputElement).value;
 
+	if (props.integer === true && ['.', ','].includes(key)) {
+		event.preventDefault();
+		return;
+	}
+
 	if (props.slug === true) {
 		const slugSafeCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789-_~ '.split('');
 
@@ -181,6 +188,11 @@ function emitValue(event: InputEvent) {
 
 	if (props.type === 'number') {
 		const parsedNumber = Number(value);
+
+		if (props.integer === true && !Number.isInteger(parsedNumber) && Number.isNaN(parsedNumber) === false) {
+			emit('update:modelValue', Math.floor(parsedNumber));
+			return;
+		}
 
 		// Ignore if numeric value remains unchanged
 		if (props.modelValue !== parsedNumber) {
