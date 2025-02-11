@@ -75,7 +75,7 @@ const props = withDefaults(defineProps<Props>(), {
 	hideArrows: false,
 	max: undefined,
 	min: undefined,
-	step: undefined,
+	step: 1,
 	active: false,
 	dbSafe: false,
 	trim: false,
