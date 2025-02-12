@@ -1,5 +1,5 @@
 ---
-description: REST and GraphQL API documentation on the Metric endpoint in Directus.
+description: REST API documentation on the Metric endpoint in Directus.
 readTime: 4 min read
 pageClass: page-reference
 ---
