@@ -169,7 +169,7 @@ export const DEFAULTS = {
 
 	METRICS_ENABLED: false,
 	METRICS_SERVICES: 'database,cache,redis,storage',
-	METRICS_SCHEDULE: '*/5 * * * *',
+	METRICS_SCHEDULE: '*/1 * * * *',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 } as const;
