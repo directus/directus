@@ -352,11 +352,21 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 				refresh();
 				break;
 			case 'quit':
-				if (!props.singleton) router.push(`/content/${props.collection}`);
+				redirectAfterSave();
 				break;
 		}
 	} catch {
 		// Save version shows unexpected error dialog
+	}
+}
+
+function redirectAfterSave() {
+	const redirect = router.currentRoute.value.query?.redirect;
+
+	if (redirect && typeof redirect === 'string') {
+		router.push(redirect);
+	} else if (!props.singleton) {
+		router.push(getCollectionRoute(props.collection));
 	}
 }
 
@@ -365,7 +375,7 @@ async function saveAndQuit() {
 
 	try {
 		await save();
-		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
+		redirectAfterSave();
 	} catch {
 		// Save shows unexpected error dialog
 	}
