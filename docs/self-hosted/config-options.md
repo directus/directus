@@ -1138,12 +1138,12 @@ Directus collects little and anonymized data about your environment.
 
 To enable performance and error measurement of connected services, Directus can provide Prometheus metrics.
 
-| Variable           | Description                                                                                                                        | Default Value                  |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| `METRICS_ENABLED`  | Whether or not to enable metrics.                                                                                                  | `false`                        |
-| `METRICS_SCHEDULE` | The cron schedule at which to check for removable records, the default is every minute                                             | `*/1 * * * *`                  |
-| `METRICS_TOKENS`   | A CSV of tokens to allow access to via a `Authorization: Metrics <token>` header. By default metrics are restricted to admins      | --                             |
-| `METRICS_SERVICES` | A CSV of directus services to observe metrics for. The currently supported services are `database`, `cache`, `redis` and `storage` | `database,cache,redis,storage` |
+| Variable           | Description                                                                                                                                                                                        | Default Value                  |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `METRICS_ENABLED`  | Whether or not to enable metrics.                                                                                                                                                                  | `false`                        |
+| `METRICS_SCHEDULE` | The cron schedule at which to generate the metrics, the default is every minute. Metrics are not generated at request time but instead return the last generated values per the specified schedule | `*/1 * * * *`                  |
+| `METRICS_TOKENS`   | A CSV of tokens to allow access to via a `Authorization: Metrics <token>` header. By default metrics are restricted to admins                                                                      | --                             |
+| `METRICS_SERVICES` | A CSV of directus services to observe metrics for. The currently supported services are `database`, `cache`, `redis` and `storage`                                                                 | `database,cache,redis,storage` |
 
 ## Limits & Optimizations
 
