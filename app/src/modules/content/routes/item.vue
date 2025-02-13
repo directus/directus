@@ -461,6 +461,15 @@ function revert(values: Record<string, any>) {
 		...values,
 	};
 }
+
+const shouldShowVersioning = computed(
+	() =>
+		collectionInfo.value?.meta?.versioning &&
+		!isNew.value &&
+		internalPrimaryKey.value !== '+' &&
+		readVersionsAllowed.value &&
+		!versionsLoading.value,
+);
 </script>
 
 <template>
@@ -514,23 +523,25 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #headline>
-			<v-breadcrumb
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: t('content'), to: '/content' }]"
-			/>
-			<v-breadcrumb v-else :items="breadcrumb" />
+			<div class="headline-wrapper">
+				<v-breadcrumb
+					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
+					:items="[{ name: t('content'), to: '/content' }]"
+				/>
+				<v-breadcrumb v-else :items="breadcrumb" />
+
+				<div v-if="shouldShowVersioning" class="version-current" :class="{ 'has-changes': hasEdits }">
+					<v-icon name="history" small class="version-icon" />
+					{{ currentVersion?.name ?? t('main') }}
+				</div>
+			</div>
 		</template>
 
-		<template #title-outer:append>
+		<template #title-outer:append></template>
+
+		<template #actions>
 			<version-menu
-				v-if="
-					collectionInfo.meta &&
-					collectionInfo.meta.versioning &&
-					!isNew &&
-					internalPrimaryKey !== '+' &&
-					readVersionsAllowed &&
-					!versionsLoading
-				"
+				v-if="shouldShowVersioning"
 				:collection="collection"
 				:primary-key="internalPrimaryKey"
 				:update-allowed="updateAllowed"
@@ -542,9 +553,6 @@ function revert(values: Record<string, any>) {
 				@delete="deleteVersion"
 				@switch="currentVersion = $event"
 			/>
-		</template>
-
-		<template #actions>
 			<v-button
 				v-if="previewUrl"
 				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
@@ -789,5 +797,19 @@ function revert(values: Record<string, any>) {
 	&:hover {
 		color: var(--theme--foreground);
 	}
+}
+
+.type-title {
+	margin-top: 12px;
+}
+
+.headline-wrapper {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.version-current {
+	color: var(--theme--foreground-subdued);
 }
 </style>

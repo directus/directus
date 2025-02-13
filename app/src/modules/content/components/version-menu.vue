@@ -225,12 +225,19 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	<div class="version-menu-wrapper">
 		<v-menu class="version-menu" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
-				<button class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
+				<v-button
+					rounded
+					icon
+					secondary
+					class="version-button"
+					:class="{ main: currentVersion === null }"
+					@click="toggle"
+				>
 					<span class="version-name">
 						<v-text-overflow :text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')" />
 					</span>
-					<v-icon name="arrow_drop_down" />
-				</button>
+					<v-icon name="history" />
+				</v-button>
 			</template>
 
 			<v-list>
@@ -418,7 +425,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 }
 
 .version-menu {
-	flex-shrink: 0;
+	flex-shrink: 1;
 }
 
 .version-item {
@@ -428,36 +435,12 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	--v-list-item-background-color-active-hover: var(--theme--primary-accent);
 }
 
-.version-button {
-	display: flex;
-	align-items: center;
-	padding: 2px;
-	background-color: var(--theme--background-normal);
-	color: var(--theme--foreground);
-	border-radius: 24px;
-	width: 100%;
-
-	.version-name {
-		padding-left: 8px;
-		overflow: hidden;
-	}
-
-	&:hover {
-		background-color: var(--theme--background-accent);
-	}
-
-	&.main {
-		background-color: var(--theme--primary);
-		color: var(--white);
-
-		&:hover {
-			background-color: var(--theme--primary-accent);
-		}
-	}
-}
-
 .version-delete {
 	--v-list-item-color: var(--theme--danger);
 	--v-list-item-color-hover: var(--theme--danger);
+}
+
+.version-name {
+	display: none;
 }
 </style>
