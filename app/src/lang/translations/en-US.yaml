@@ -2330,6 +2330,8 @@ show_legend: Show Legend
 right: Right
 left: Left
 donut: Donut
+continuous: Continuous
+gap: Gap
 
 panels:
   metric:
@@ -2346,6 +2348,7 @@ panels:
     value_field: Value Field
     fill_type: Fill Type
     curve_type: Curve Type
+    missing_data: Missing Data
   label:
     name: Label
     description: Show some text
