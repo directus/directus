@@ -42,7 +42,7 @@ function shiftLogicalOperatorsUp(filter: any): any {
 
 	if (logicalFilterOperators.includes(key)) {
 		return {
-			[key]: toArray(filter[key]).map((childFilter: any) => shiftLogicalOperatorsUp(childFilter)),
+			[key]: filter[key].map(shiftLogicalOperatorsUp),
 		};
 	} else if (key.startsWith('_')) {
 		return filter;
