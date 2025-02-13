@@ -361,10 +361,10 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 }
 
 function redirectAfterSave() {
-	const redirect = router.currentRoute.value.query?.redirect;
+	const returnToPreviousPage = router.currentRoute.value.query?.return;
 
-	if (redirect && typeof redirect === 'string') {
-		router.push(redirect);
+	if (returnToPreviousPage === 'true' && !props.singleton) {
+		router.back();
 	} else if (!props.singleton) {
 		router.push(getCollectionRoute(props.collection));
 	}
