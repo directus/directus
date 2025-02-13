@@ -1147,8 +1147,8 @@ To enable performance and error measurement of connected services, Directus can 
 
 ::: warning Metric Aggregation
 
-If directus is running within a PM2 context then metrics will be aggregated on a per scheduled job frequency. Ensure
-Prometheus's scrape frequency takes that into account
+If Directus is running within a PM2 context, then metrics will be aggregated on a per scheduled job frequency. Ensure
+Prometheus' scrape frequency takes that into account.
 
 :::
 
