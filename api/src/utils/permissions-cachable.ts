@@ -20,13 +20,15 @@ export async function permissionsCachable(collection: string, context: Context, 
 		context,
 	);
 
-	return permissions.some((permission) => {
+	const has_now = permissions.some((permission) => {
 		if (!permission.permissions) {
-			return true;
+			return false;
 		}
 
-		return !filter_has_now(permission.permissions);
+		return filter_has_now(permission.permissions);
 	});
+
+	return !has_now;
 }
 
 export function filter_has_now(filter: Filter): boolean {
