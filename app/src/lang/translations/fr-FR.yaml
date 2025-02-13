@@ -75,7 +75,7 @@ extension_layouts: Mises en page
 extension_modules: Modules
 extension_panels: Panneaux
 extension_themes: Thèmes
-extension_hooks: Hooks
+extension_hooks: Crochets
 extension_endpoints: Points d'accès
 extension_operations: Opérations
 extension_bundles: Lots
@@ -1226,6 +1226,7 @@ directus_collection:
   directus_access: Polices attachées
   directus_activity: Journaux de traçabilité de tous les événements
   directus_collections: Configuration de la collection supplémentaire et métadonnées
+  directus_comments: Commentez pour items
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
@@ -2296,6 +2297,7 @@ panels:
     value_field: Type de champ
     fill_type: Remplissage
     curve_type: Format de courbe
+    missing_data: Informations manquantes
   label:
     name: Étiquette
     description: Afficher le texte de base
