@@ -35,6 +35,7 @@ type ApplyQueryOptions = {
 	isInnerQuery?: boolean;
 	hasMultiRelationalSort?: boolean | undefined;
 	groupWhenCases?: number[][] | undefined;
+	selectAliasMap?: Record<string, string> | undefined;
 };
 
 /**
@@ -95,26 +96,32 @@ export default function applyQuery(
 	}
 
 	if (query.group) {
+		const helpers = getHelpers(knex);
 		const rawColumns = query.group.map((column) => getColumn(knex, collection, column, false, schema));
 		let columns;
 
 		if (options?.groupWhenCases) {
-			columns = rawColumns.map((column, index) =>
-				applyCaseWhen(
-					{
-						columnCases: options.groupWhenCases![index]!.map((caseIndex) => cases[caseIndex]!),
-						column,
-						aliasMap,
-						cases,
-						table: collection,
-						permissions,
-					},
-					{
-						knex,
-						schema,
-					},
-				),
-			);
+			if (helpers.capabilities.supportsAliasInGroupBy() && options.selectAliasMap) {
+				// this can be streamlined for databases that support reusing the alias in group by expressions
+				columns = query.group.map((column) => options.selectAliasMap![column] ?? column);
+			} else {
+				columns = rawColumns.map((column, index) =>
+					applyCaseWhen(
+						{
+							columnCases: options.groupWhenCases![index]!.map((caseIndex) => cases[caseIndex]!),
+							column,
+							aliasMap,
+							cases,
+							table: collection,
+							permissions,
+						},
+						{
+							knex,
+							schema,
+						},
+					),
+				);
+			}
 
 			if (query.sort && query.sort.length === 1 && query.sort[0] === query.group[0]) {
 				// Special case, where the sort query is injected by the group by operation
