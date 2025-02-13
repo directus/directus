@@ -16,7 +16,7 @@ export function resolveSystemAdmin(
 	schema: Schema,
 	schemaComposer: SchemaComposer<GraphQLParams['contextValue']>,
 ) {
-	if (gql.accountability?.admin === false) {
+	if (!gql.accountability?.admin) {
 		return;
 	}
 
