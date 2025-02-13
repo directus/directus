@@ -45,14 +45,14 @@ export function getDBQuery(
 	if (queryCopy.aggregate || queryCopy.group) {
 		const flatQuery = knex.from(table);
 
+		const groupFieldNodes =
+			queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)!) ?? [];
+
 		// Map the group fields to their respective field nodes
-		const groupWhenCases = hasCaseWhen
-			? queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)?.whenCase ?? [])
-			: undefined;
+		const groupWhenCases = hasCaseWhen ? groupFieldNodes.map((node) => node.whenCase ?? []) : undefined;
 
 		const selectAliasMap = Object.fromEntries(
-			queryCopy.group?.map((field) => [field, getNodeAlias(fieldNodes.find(({ fieldKey }) => fieldKey === field)!)]) ??
-				[],
+			queryCopy.group?.map((field, index) => [field, getNodeAlias(groupFieldNodes[index]!)]) ?? [],
 		);
 
 		const dbQuery = applyQuery(knex, table, flatQuery, queryCopy, schema, cases, permissions, {
