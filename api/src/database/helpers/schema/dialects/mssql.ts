@@ -1,7 +1,6 @@
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type SortRecord, type Sql } from '../types.js';
-import { prepQueryParams } from '../utils/prep-query-params.js';
+import { SchemaHelper, type SortRecord } from '../types.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
 	override generateIndexName(
@@ -39,10 +38,6 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		} catch {
 			return null;
 		}
-	}
-
-	override prepQueryParams(queryParams: Sql): Sql {
-		return prepQueryParams(queryParams, { format: (index) => `@p${index}` });
 	}
 
 	override addInnerSortFieldsToGroupBy(

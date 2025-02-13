@@ -4,9 +4,8 @@ import type { Field, RawField, Relation, Type } from '@directus/types';
 import type { Knex } from 'knex';
 import crypto from 'node:crypto';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import type { Options, SortRecord, Sql } from '../types.js';
+import type { Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
-import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperOracle extends SchemaHelper {
 	override generateIndexName(
@@ -89,16 +88,6 @@ export class SchemaHelperOracle extends SchemaHelper {
 		} else if (field.schema?.is_nullable === true && existing.is_nullable === false) {
 			column.nullable();
 		}
-	}
-
-	override prepQueryParams(queryParams: Sql): Sql {
-		return prepQueryParams(queryParams, { format: (index) => `:${index + 1}` });
-	}
-
-	override prepBindings(bindings: Knex.Value[]): any {
-		// Create an object with keys 1, 2, 3, ... and the bindings as values
-		// This will use the "named" binding syntax in the oracledb driver instead of the positional binding
-		return Object.fromEntries(bindings.map((binding: any, index: number) => [index + 1, binding]));
 	}
 
 	override addInnerSortFieldsToGroupBy(

@@ -102,9 +102,10 @@ export default function applyQuery(
 
 		if (options?.groupWhenCases) {
 			if (helpers.capabilities.supportsAliasInGroupBy() && options.selectAliasMap) {
-				// this can be streamlined for databases that support reusing the alias in group by expressions
+				// This can be streamlined for databases that support reusing the alias in group by expressions
 				columns = query.group.map((column) => options.selectAliasMap![column] ?? column);
 			} else {
+				// Reconstruct the columns with the case/when logic
 				columns = rawColumns.map((column, index) =>
 					applyCaseWhen(
 						{
