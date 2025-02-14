@@ -21,15 +21,6 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 
 	let exceedsMaxSize = false;
 
-	const arePermissionsCachable = await permissionsCachable(
-		req.collection,
-		{
-			knex: getDatabase(),
-			schema: req.schema,
-		},
-		req.accountability,
-	);
-
 	if (env['CACHE_VALUE_MAX_SIZE'] !== false) {
 		const valueSize = res.locals['payload'] ? stringByteSize(JSON.stringify(res.locals['payload'])) : 0;
 		const maxSize = parseBytesConfiguration(env['CACHE_VALUE_MAX_SIZE'] as string);
@@ -44,7 +35,14 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		!req.sanitizedQuery.export &&
 		res.locals['cache'] !== false &&
 		exceedsMaxSize === false &&
-		arePermissionsCachable
+		await permissionsCachable(
+			req.collection,
+			{
+				knex: getDatabase(),
+				schema: req.schema,
+			},
+			req.accountability,
+		)
 	) {
 		const key = await getCacheKey(req);
 
