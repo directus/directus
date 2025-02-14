@@ -225,19 +225,17 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	<div class="version-menu-wrapper">
 		<v-menu class="version-menu" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
-				<v-button
-					rounded
-					icon
-					secondary
-					class="version-button"
-					:class="{ main: currentVersion === null }"
-					@click="toggle"
-				>
+				<button secondary rounded class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
 					<span class="version-name">
 						<v-text-overflow :text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')" />
 					</span>
-					<v-icon name="history" />
-				</v-button>
+					<div class="version-current" :class="{ 'has-changes': hasEdits }">
+						v:
+						{{ currentVersion?.name ?? t('main') }}
+
+						<v-icon name="arrow_drop_down" />
+					</div>
+				</button>
 			</template>
 
 			<v-list>
@@ -442,5 +440,10 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-name {
 	display: none;
+}
+
+.version-button {
+	color: var(--theme--foreground-subdued);
+	font-size: 12px;
 }
 </style>

@@ -530,29 +530,30 @@ const shouldShowVersioning = computed(
 				/>
 				<v-breadcrumb v-else :items="breadcrumb" />
 
-				<div v-if="shouldShowVersioning" class="version-current" :class="{ 'has-changes': hasEdits }">
+				<!--<div v-if="shouldShowVersioning" class="version-current" :class="{ 'has-changes': hasEdits }">
 					<v-icon name="history" small class="version-icon" />
 					{{ currentVersion?.name ?? t('main') }}
-				</div>
+				</div>-->
+
+				<version-menu
+					v-if="shouldShowVersioning"
+					:collection="collection"
+					:primary-key="internalPrimaryKey"
+					:update-allowed="updateAllowed"
+					:has-edits="hasEdits"
+					:current-version="currentVersion"
+					:versions="versions"
+					@add="addVersion"
+					@update="updateVersion"
+					@delete="deleteVersion"
+					@switch="currentVersion = $event"
+				/>
 			</div>
 		</template>
 
 		<template #title-outer:append></template>
 
 		<template #actions>
-			<version-menu
-				v-if="shouldShowVersioning"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:update-allowed="updateAllowed"
-				:has-edits="hasEdits"
-				:current-version="currentVersion"
-				:versions="versions"
-				@add="addVersion"
-				@update="updateVersion"
-				@delete="deleteVersion"
-				@switch="currentVersion = $event"
-			/>
 			<v-button
 				v-if="previewUrl"
 				v-tooltip.bottom="t(livePreviewMode === null ? 'live_preview.enable' : 'live_preview.disable')"
@@ -800,7 +801,7 @@ const shouldShowVersioning = computed(
 }
 
 .type-title {
-	margin-top: 12px;
+	margin-top: 14px;
 }
 
 .headline-wrapper {
