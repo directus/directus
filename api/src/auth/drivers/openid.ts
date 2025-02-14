@@ -160,6 +160,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	}
 
 	override async getUserID(payload: Record<string, any>): Promise<string> {
+		const env = useEnv();
 		const logger = useLogger();
 
 		if (!payload['code'] || !payload['codeVerifier'] || !payload['state']) {
@@ -167,7 +168,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidCredentialsError();
 		}
 
-		const { plainCodeChallenge } = this.config;
+		const { plainCodeChallenge, provider: providerName } = this.config;
 
 		let tokenSet;
 		let userInfo;
@@ -179,10 +180,24 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 				? payload['codeVerifier']
 				: generators.codeChallenge(payload['codeVerifier']);
 
+
+			let additionalOptions={}
+			let checks = { code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge }
+			const requiresClientCredentials = env[`AUTH_${providerName.toUpperCase()}_ACCESS_TOKEN_REQUIRES_CLIENT_CREDENTIALS`] ?? false
+			if(requiresClientCredentials){
+				additionalOptions.exchangeBody={
+					client_id: client.client_id,
+					client_secret: client.client_secret
+				}
+				delete checks["code_verifier"]
+				delete checks["nonce"]
+			}
+			
 			tokenSet = await client.callback(
-				this.redirectUrl,
-				{ code: payload['code'], state: payload['state'], iss: payload['iss'] },
-				{ code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge },
+				this.redirectUrl, 
+				{ code: payload['code'], state: payload['state'], iss: payload['iss'] }, 
+				checks,
+				additionalOptions   
 			);
 
 			userInfo = tokenSet.claims();
