@@ -1,9 +1,8 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import { type Knex } from 'knex';
-import type { Options, SortRecord, Sql } from '../types.js';
+import type { Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
 import { useEnv } from '@directus/env';
-import { prepQueryParams } from '../utils/prep-query-params.js';
 
 const env = useEnv();
 
@@ -39,10 +38,6 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		} catch {
 			return null;
 		}
-	}
-
-	override prepQueryParams(queryParams: Sql): Sql {
-		return prepQueryParams(queryParams, { format: (index) => `$${index + 1}` });
 	}
 
 	override addInnerSortFieldsToGroupBy(
