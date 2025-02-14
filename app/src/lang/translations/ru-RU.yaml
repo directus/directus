@@ -941,6 +941,7 @@ run_flow_on_current_edited_confirm: Этот элемент может быть 
 run_flow_on_selected: Сначала выберите один или несколько элементов | Запустить процесс с выбранным элементом | Запустить процесс с {n} выбранными элементами
 run_flow: Запуск потока
 run_flow_success: Процесс «{flow}» успешно завершён
+trigger_flow_success: Процесс "{flow}" успешно запущен. Он будет работать в фоновом режиме
 field_name_placeholder: Введите имя поля...
 field_key_placeholder: Введите ключ поля...
 trigger: Триггер
@@ -2282,6 +2283,7 @@ show_legend: Показать легенду
 right: Справа
 left: Слева
 donut: Кольцевая диаграмма
+gap: Разрыв
 panels:
   metric:
     name: Метрика
@@ -2297,6 +2299,7 @@ panels:
     value_field: Поле значения
     fill_type: Тип заполнения
     curve_type: Тип кривой
+    missing_data: Отсутствуют данные
   label:
     name: Описание
     description: Показать немного текста
@@ -2425,9 +2428,13 @@ operations:
     name: Отправить эл. письмо
     description: Отправить письмо одному или нескольким людям
     to: Кому
+    to_placeholder: Добавьте адреса электронной почты и нажмите Enter...
     body: Тело
     template: Шаблон
     data: Данные
+    cc: Копия
+    cc_placeholder: Добавьте адреса электронной почты для копий и нажмите Enter...
+    bcc: Скрытая копия
   notification:
     name: Отправить уведомление
     description: Отправить уведомление одному или нескольким пользователям
