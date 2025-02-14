@@ -518,6 +518,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: MMM d
 minutes: Minuti
 hours: Ore
@@ -941,6 +942,7 @@ run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato d
 run_flow_on_selected: Seleziona prima uno o più elementi | Esegui il flusso sull'elemento selezionato | Esegui il flusso sui {n} elementi selezionati
 run_flow: Esegui il flusso
 run_flow_success: Flusso "{flow}" eseguito con successo
+trigger_flow_success: Flusso "{flow}" attivato con successo. Sarà eseguito in background
 field_name_placeholder: Inserisci il nome del campo...
 field_key_placeholder: Inserisci la chiave del campo...
 trigger: Trigger
@@ -2282,6 +2284,8 @@ show_legend: Mostra legenda
 right: Destra
 left: Sinistra
 donut: Ciambella
+continuous: Continuo
+gap: Intervallo
 panels:
   metric:
     name: Metrica
@@ -2297,6 +2301,7 @@ panels:
     value_field: Campo valore
     fill_type: Tipo di riempimento
     curve_type: Tipo di curva
+    missing_data: Dati mancanti
   label:
     name: Etichetta
     description: Mostra del testo
@@ -2425,9 +2430,16 @@ operations:
     name: Invia un'email
     description: Invia un'email a una o più persone
     to: A
+    to_placeholder: Aggiungi gli indirizzi e-mail e premi invio...
     body: Contenuto
     template: Template
     data: Dati
+    cc: CC
+    cc_placeholder: Aggiungi gli indirizzi e-mail in CC e premi invio...
+    bcc: CCN
+    bcc_placeholder: Aggiungi gli indirizzi e-mail in CCN e premi invio...
+    reply_to: Rispondi a
+    reply_to_placeholder: Aggiungi indirizzi email di risposta e premi invio...
   notification:
     name: Invia una notifica
     description: Invia una notifica in app a uno o più utenti
