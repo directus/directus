@@ -76,7 +76,7 @@ extension_modules: Модули
 extension_panels: Панели
 extension_themes: Темы
 extension_hooks: Хуки
-extension_endpoints: Конечные точки
+extension_endpoints: Эндпоинты
 extension_operations: Операции
 extension_bundles: Пакеты
 extension_missing: Отсутствует
