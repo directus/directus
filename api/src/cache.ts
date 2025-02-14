@@ -47,6 +47,9 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 	});
 }
 
+let isSchemaFrozen = false;
+const freezedSchema: SchemaOverview = { collections: [] as any, relations: [] };
+
 export function getCache(): {
 	cache: Keyv | null;
 	systemCache: Keyv;
@@ -65,7 +68,23 @@ export function getCache(): {
 	}
 
 	if (localSchemaCache === null) {
-		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema');
+		localSchemaCache = getKeyvInstance('memory', getMilliseconds(env['CACHE_SYSTEM_TTL']), '_schema', {
+			serialize: (v: any) => {
+				if (!v) return;
+
+				if (typeof v === 'object' && 'collections' in v && 'relations' in v) {
+					freezedSchema.collections = Object.freeze(v.collections);
+					freezedSchema.relations = Object.freeze(v.relations);
+					isSchemaFrozen = true;
+					return { collections: freezedSchema.collections, relations: freezedSchema.relations } as any;
+				}
+			},
+			deserialize: () =>
+				isSchemaFrozen
+					? ({ collections: freezedSchema.collections, relations: freezedSchema.relations } as any)
+					: undefined,
+		});
+
 		localSchemaCache.on('error', (err) => logger.warn(err, `[schema-cache] ${err}`));
 	}
 
@@ -147,17 +166,27 @@ export async function getCacheValue(cache: Keyv, key: string): Promise<any> {
 	return decompressed;
 }
 
-function getKeyvInstance(store: Store, ttl: number | undefined, namespaceSuffix?: string): Keyv {
+function getKeyvInstance(
+	store: Store,
+	ttl: number | undefined,
+	namespaceSuffix?: string,
+	configOverrides?: Partial<KeyvOptions>,
+): Keyv {
 	switch (store) {
 		case 'redis':
-			return new Keyv(getConfig('redis', ttl, namespaceSuffix));
+			return new Keyv(getConfig('redis', ttl, namespaceSuffix, configOverrides));
 		case 'memory':
 		default:
-			return new Keyv(getConfig('memory', ttl, namespaceSuffix));
+			return new Keyv(getConfig('memory', ttl, namespaceSuffix, configOverrides));
 	}
 }
 
-function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSuffix = ''): KeyvOptions {
+function getConfig(
+	store: Store = 'memory',
+	ttl: number | undefined,
+	namespaceSuffix = '',
+	configOverrides?: Partial<KeyvOptions>,
+): KeyvOptions {
 	const config: KeyvOptions = {
 		namespace: `${env['CACHE_NAMESPACE']}${namespaceSuffix}`,
 		...(ttl && { ttl }),
@@ -168,5 +197,5 @@ function getConfig(store: Store = 'memory', ttl: number | undefined, namespaceSu
 		config.store = new KeyvRedis(env['REDIS'] || getConfigFromEnv('REDIS'), { useRedisSets: false });
 	}
 
-	return config;
+	return { ...config, ...configOverrides };
 }
