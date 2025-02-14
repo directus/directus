@@ -21,7 +21,7 @@ test('Returns object for relational fields', () => {
 });
 
 test('Returns number for numeric fields', () => {
-	const numericTypes = ['bigInteger', 'integer', 'float', 'decimal'];
+	const numericTypes = ['integer', 'float', 'decimal'];
 
 	for (const fieldType of numericTypes) {
 		expect(
@@ -36,7 +36,7 @@ test('Returns number for numeric fields', () => {
 });
 
 test('Returns string for string fields', () => {
-	const stringTypes = ['string', 'text', 'uuid', 'hash'];
+	const stringTypes = ['string', 'text', 'uuid', 'hash', 'bigInteger'];
 
 	for (const fieldType of stringTypes) {
 		expect(

@@ -223,7 +223,7 @@ export default defineInterface({
 			},
 		];
 
-		if (field.type && ['bigInteger', 'integer', 'float', 'decimal'].includes(field.type)) {
+		if (field.type && ['integer', 'float', 'decimal'].includes(field.type)) {
 			return numberOptions;
 		}
 

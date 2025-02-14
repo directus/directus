@@ -9,11 +9,11 @@ export function getJSType(field: Field): string {
 	}
 
 	switch (field.type) {
-		case 'bigInteger':
 		case 'integer':
 		case 'float':
 		case 'decimal':
 			return 'number';
+		case 'bigInteger':
 		case 'string':
 		case 'text':
 		case 'uuid':
