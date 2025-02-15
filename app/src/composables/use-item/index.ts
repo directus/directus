@@ -1,4 +1,5 @@
 import api from '@/api';
+import { useNestedValidation } from '@/composables/use-nested-validation';
 import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
@@ -10,15 +11,16 @@ import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
-import { useNestedValidation } from '@/composables/use-nested-validation';
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { AxiosResponse } from 'axios';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
-import { UsablePermissions, usePermissions } from './use-permissions';
+import { UsablePermissions, usePermissions } from '../use-permissions';
+import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -183,12 +185,32 @@ export function useItem<T extends Item>(
 		saving.value = true;
 		validationErrors.value = [];
 
-		const fields = collectionInfo.value?.meta?.item_duplication_fields || ['*'];
+		const fields = collectionInfo.value?.meta?.item_duplication_fields ?? [];
 
-		const itemData = await api.get(itemEndpoint.value, { params: { fields } });
+		let itemData: any = null;
+
+		if (isSystemCollection(collection.value)) {
+			itemData = (await api.get(itemEndpoint.value, { params: { fields } })).data.data;
+		} else {
+			const queryFields = getGraphqlQueryFields(fields, collection.value);
+
+			const query = jsonToGraphQLQuery({
+				query: {
+					item: {
+						__aliasFor: `${collection.value}_by_id`,
+						__args: {
+							id: primaryKey.value,
+						},
+						...queryFields,
+					},
+				},
+			});
+
+			itemData = (await api.post(`/graphql`, { query })).data.data.item;
+		}
 
 		const newItem: Item = {
-			...(itemData.data.data || {}),
+			...(itemData || {}),
 			...edits.value,
 		};
 
@@ -214,7 +236,7 @@ export function useItem<T extends Item>(
 			if (!oneField || !(oneField in newItem)) continue;
 
 			const fieldsToFetch = fields
-				.filter((field) => field.split('.')[0] === oneField || field === '*')
+				.filter((field) => field.split('.')[0] === oneField)
 				.map((field) => (field.includes('.') ? field.split('.').slice(1).join('.') : '*'));
 
 			if (Array.isArray(newItem[oneField])) {
@@ -222,7 +244,8 @@ export function useItem<T extends Item>(
 
 				newItem[oneField] = newItem[oneField].map((relatedItem: any) => {
 					if (typeof relatedItem !== 'object' && existingItems.length > 0) {
-						relatedItem = existingItems.find((existingItem) => existingItem.id === relatedItem);
+						// Loose equality because GraphQL always returns primary key as string
+						relatedItem = existingItems.find((existingItem) => existingItem.id == relatedItem);
 					}
 
 					delete relatedItem[relatedPrimaryKeyField.field];
