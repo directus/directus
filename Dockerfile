@@ -14,7 +14,7 @@ RUN npm install --global corepack@latest
 ARG TARGETPLATFORM
 RUN <<EOF
 	if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then
-		apk --no-cache add python3 build-base
+		apk --no-cache add python3 py3-pip build-base
 		ln -sf /usr/bin/python3 /usr/bin/python
 	fi
 EOF
