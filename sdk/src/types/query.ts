@@ -1,7 +1,7 @@
 import type { QueryDeep } from './deep.js';
-import type { HasNestedFields, QueryFields } from './fields.js';
+import type { HasManyToAnyRelation, HasNestedFields, QueryFields } from './fields.js';
 import type { QueryFilter } from './filters.js';
-import type { ItemType } from './schema.js';
+import type { ItemType, RelationalFields } from './schema.js';
 import type { IfAny, UnpackList } from './utils.js';
 
 /**
@@ -56,14 +56,24 @@ export type MergeFields<FieldList> = HasNestedFields<FieldList> extends never
 	: Extract<UnpackList<FieldList>, string> | MergeRelationalFields<FieldList>;
 
 /**
- * Query sort
- * TODO expand to relational sorting (same object notation as fields i guess)
+ * Query sort with support for nested relational fields
  */
-export type QuerySort<_Schema, Item> = UnpackList<Item> extends infer FlatItem
-	? {
-			[Field in keyof FlatItem]: Field | `-${Field & string}`;
-	  }[keyof FlatItem]
+export type QuerySort<Schema, Item> = UnpackList<Item> extends infer FlatItem
+	? readonly (keyof FlatItem | `-${keyof FlatItem & string}` | RelationalSort<Schema, FlatItem>)[]
 	: never;
+
+/**
+ * Handle relational field sorting using dot notation
+ */
+type RelationalSort<Schema, Item> = {
+	[Key in RelationalFields<Schema, Item>]: Extract<Item[Key], ItemType<Schema>> extends infer RelatedCollection
+		? RelatedCollection extends any[]
+			? HasManyToAnyRelation<RelatedCollection> extends never
+				? never // many-to-many or one-to-many should not be sortable
+				: never // many-to-any
+			: `${Key & string}.${keyof RelatedCollection & string}` | `-${Key & string}.${keyof RelatedCollection & string}` // many-to-one only
+		: never;
+}[RelationalFields<Schema, Item>];
 
 export type MergeObjects<A, B> = object extends A ? (object extends B ? A & B : A) : object extends B ? B : never;
 
