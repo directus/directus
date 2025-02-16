@@ -14,7 +14,6 @@ import { applyCaseWhen } from '../utils/apply-case-when.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
-import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
 
 export type DBQueryOptions = {
 	table: string;
@@ -46,19 +45,23 @@ export function getDBQuery(
 	if (queryCopy.aggregate || queryCopy.group) {
 		const flatQuery = knex.from(table);
 
+		const groupFieldNodes =
+			queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)!) ?? [];
+
 		// Map the group fields to their respective field nodes
-		const groupWhenCases = hasCaseWhen
-			? queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)?.whenCase ?? [])
-			: undefined;
+		const groupWhenCases = hasCaseWhen ? groupFieldNodes.map((node) => node.whenCase ?? []) : undefined;
+
+		const selectAliasMap = Object.fromEntries(
+			queryCopy.group?.map((field, index) => [field, getNodeAlias(groupFieldNodes[index]!)]) ?? [],
+		);
 
 		const dbQuery = applyQuery(knex, table, flatQuery, queryCopy, schema, cases, permissions, {
 			aliasMap,
 			groupWhenCases,
+			selectAliasMap,
 		}).query;
 
 		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
-
-		withPreprocessBindings(knex, dbQuery);
 
 		return dbQuery;
 	}
