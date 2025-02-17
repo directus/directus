@@ -110,6 +110,7 @@ field_name_translations: Prijevodi naziva polja
 enter_password_to_enable_tfa: Unesite svoju lozinku za aktivaciju dvofaktorske autentifikacije
 add_field: Dodaj polje
 role_name: Naziv uloge
+policy_name: Naziv Pravila
 branch: Grana
 leaf: List
 indeterminate: Neodređeno
@@ -127,6 +128,7 @@ requires_value: Obavezna vrijednost
 create_preset: Izrada unaprijed postavljene konfiguracije
 create_panel: Kreiraj ploču
 create_role: Stvori novu ulogu
+create_policy: Kreiraj Pravilo
 create_user: Dodaj korisnika
 message: Poruka
 delete_panel: Ukloni ploču
@@ -1348,6 +1350,7 @@ fields:
     description: Opis
     users: Korisnici s ulogom
   directus_policies:
+    name: Naziv Pravila
     description: Opis
   directus_webhooks:
     name: Ime
