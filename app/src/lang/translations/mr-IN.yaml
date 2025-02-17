@@ -2425,7 +2425,6 @@ operations:
     name: ईमेल पाठवा
     description: एक किंवा अधिक लोकांना ईमेल पाठवा
     to: ला
-    to_placeholder: ई-मेल पत्ते जोडा आणि एंटर दाबा...
     body: बॉडी
     template: टेम्प्लेट
     data: डेटा
