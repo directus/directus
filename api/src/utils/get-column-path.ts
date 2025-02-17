@@ -10,6 +10,7 @@ export type ColPathProps = {
 	aliasMap: AliasMap;
 	relations: Relation[];
 	schema?: SchemaOverview;
+	indexInAndArray?: number | undefined;
 };
 
 export type ColPathResult = {
@@ -24,7 +25,7 @@ export type ColPathResult = {
  * Also returns the target collection of the column: 'directus_roles'
  * If the last filter path is an alias field, a nested PK is appended to the path
  */
-export function getColumnPath({ path, collection, aliasMap, relations, schema }: ColPathProps) {
+export function getColumnPath({ path, collection, aliasMap, relations, schema, indexInAndArray }: ColPathProps) {
 	return followRelation(path);
 
 	function followRelation(
@@ -43,7 +44,14 @@ export function getColumnPath({ path, collection, aliasMap, relations, schema }:
 			throw new InvalidQueryError({ reason: `"${parentCollection}.${pathRoot}" is not a relational field` });
 		}
 
-		const alias = parentFields ? aliasMap[`${parentFields}.${pathParts[0]}`]?.alias : aliasMap[pathParts[0]!]?.alias;
+		const getAliasKey = (key: string) => {
+			return indexInAndArray !== undefined ? `${key}__and${indexInAndArray}` : key;
+		};
+
+		const alias = parentFields
+			? aliasMap[getAliasKey(`${parentFields}.${pathParts[0]}`)]?.alias
+			: aliasMap[getAliasKey(pathParts[0]!)]?.alias;
+
 		const remainingParts = pathParts.slice(1);
 
 		let parent: string;
