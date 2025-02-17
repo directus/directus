@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import { parse as parseBytesConfiguration } from 'bytes';
 import type { RequestHandler } from 'express';
 import { getCache, setCacheValue } from '../cache.js';
+import getDatabase from '../database/index.js';
 import { useLogger } from '../logger/index.js';
 import { ExportService } from '../services/import-export.js';
 import asyncHandler from '../utils/async-handler.js';
@@ -10,6 +11,7 @@ import { getCacheKey } from '../utils/get-cache-key.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { stringByteSize } from '../utils/get-string-byte-size.js';
+import { permissionsCachable } from '../utils/permissions-cachable.js';
 
 export const respond: RequestHandler = asyncHandler(async (req, res) => {
 	const env = useEnv();
@@ -32,7 +34,15 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 		cache &&
 		!req.sanitizedQuery.export &&
 		res.locals['cache'] !== false &&
-		exceedsMaxSize === false
+		exceedsMaxSize === false &&
+		(await permissionsCachable(
+			req.collection,
+			{
+				knex: getDatabase(),
+				schema: req.schema,
+			},
+			req.accountability,
+		))
 	) {
 		const key = await getCacheKey(req);
 
