@@ -1,4 +1,5 @@
 ---
+'directus': minor
 '@directus/env': patch
 'docs': patch
 '@directus/api': minor
