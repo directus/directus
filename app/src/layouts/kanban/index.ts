@@ -409,8 +409,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			const selectedGroup = computed(() => fieldGroups.value.group.find((group) => group.field === groupField.value));
 
-			watch(groupField, () => {
-				groupTitle.value = null;
+			watch([groupField, () => props.collection], ([newField, newCollection], [oldField, oldCollection]) => {
+				if (groupTitle.value === null) return;
+				const groupFieldChangedWithinCollection = newCollection === oldCollection && newField !== oldField;
+				if (groupFieldChangedWithinCollection) groupTitle.value = null;
 			});
 
 			const userFieldJunction = computed(() => {
