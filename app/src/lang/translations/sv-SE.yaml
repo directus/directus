@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Om
 identifier: Identifierare
 avatar: Profilbild
 application: Applikation
@@ -11,6 +32,7 @@ extensions: Tillägg
 modules: Moduler
 module_bar: Modulfält
 logs: Loggar
+unknown: Okänd
 reset_width: Återställ bredd
 tile_size: Rutstorlek
 edit_field: Redigera fält
@@ -53,9 +75,13 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Aktiviteter
 extension_bundles: Paket
+extension_missing: Saknas
 extension_reload_required: Siduppdatering krävs
 extension_reload_required_copy: Sidan måste laddas om för att kunna se ändringarna efter att ha aktiverad eller inaktiverad tillägg.
 extension_reload_now: Ladda om nu
+verified: Verifierad
+github: GitHub
+beta: Beta
 enable: Aktivera
 disable: Inaktivera
 custom: Anpassad
@@ -267,6 +293,8 @@ time: Time
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+theme_light: Ljust läge
+theme_dark: Mörkt läge
 not_available_for_type: Inte tillgänglig för denna typ
 create_translations: Skapa översättningar
 auto_refresh: Uppdatera automatiskt
@@ -320,6 +348,7 @@ soft_length: Mjuk gräns
 precision_scale: Precision & skala
 readonly: Skrivskyddad
 unique: Unik
+index: Index
 updated_on: Uppdaterad den
 updated_by: Uppdaterad av
 primary_key: Primärnyckel
@@ -342,6 +371,7 @@ clear_items: Rensa objekt
 reset_to_default: Återställ Till Standard
 undo_changes: Ångra ändringar
 notifications: Aviseringar
+archive_all: Arkivera alla
 show_all_activity: Visa all aktivitet
 page_not_found: Sidan hittades inte
 page_not_found_body: Sidan du letar efter verkar inte finnas.
@@ -495,6 +525,7 @@ enable_select_button: Aktivera markerings knapp
 allow_duplicates: Tillåt dubbletter
 comments: Kommentarer
 no_comments: Inga kommentarer ännu
+expand: Expandera
 select_item: Välj objekt
 no_items: Inga objekt
 disabled: Inaktiverad

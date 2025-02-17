@@ -243,9 +243,13 @@ export async function parseFields(
 				}
 			}
 
+			const childQuery = { ...options.query };
+
 			// update query alias for children parseFields
 			const deepAlias = getDeepQuery(options.deep?.[fieldKey] || {})?.['alias'];
-			if (!isEmpty(deepAlias)) options.query.alias = deepAlias;
+
+			// reset alias to empty if none are present
+			childQuery.alias = isEmpty(deepAlias) ? {} : deepAlias;
 
 			child = {
 				type: relationType,
@@ -259,7 +263,7 @@ export async function parseFields(
 					{
 						parentCollection: relatedCollection,
 						fields: nestedFields as string[],
-						query: options.query,
+						query: childQuery,
 						deep: options.deep?.[fieldKey] || {},
 						accountability: options.accountability,
 					},
