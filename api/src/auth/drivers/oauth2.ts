@@ -31,6 +31,7 @@ import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
+import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 
@@ -353,9 +354,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`oauth2.${providerName}`], getSecret(), {
-					issuer: 'directus',
-				}) as {
+				tokenData = verifyJWT(req.cookies[`oauth2.${providerName}`], getSecret()) as {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;
