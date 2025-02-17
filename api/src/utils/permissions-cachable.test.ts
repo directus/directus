@@ -118,7 +118,7 @@ test('permissions are not cached on many policies with $NOW', async () => {
 	expect(result).toBe(false);
 });
 
-test('permissions cachable on many policies', async () => {
+test('permissions are cacheable on many policies without $NOW', async () => {
 	vi.mocked(fetchPolicies).mockResolvedValue(['policy1', 'policy2', 'policy3']);
 
 	const permissions: Permission[] = [
