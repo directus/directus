@@ -4,8 +4,9 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
 import { isNil } from 'lodash';
-import { ref, toRefs, unref } from 'vue';
+import { ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import slugify from '@sindresorhus/slugify';
 import VersionPromoteDrawer from './version-promote-drawer.vue';
 
 interface Props {
@@ -76,6 +77,24 @@ function useCreateDialog() {
 	const creating = ref(false);
 	const newVersionKey = ref<string | null>(null);
 	const newVersionName = ref<string | null>(null);
+
+	watch(
+		newVersionName,
+		(newName, oldName) => {
+			if (
+				newName === null ||
+				newVersionKey.value ===
+					slugify(oldName ?? '', {
+						separator: '_',
+					})
+			) {
+				newVersionKey.value = slugify(newName ?? '', {
+					separator: '_',
+				});
+			}
+		},
+		{ immediate: true },
+	);
 
 	return {
 		newVersionKey,
@@ -311,23 +330,24 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 					<div class="grid">
 						<div class="field">
 							<v-input
-								v-model="newVersionKey"
-								class="full"
-								:placeholder="t('version_key')"
-								autofocus
-								slug
-								trim
-								:max-length="64"
-								@keyup.enter="createVersion"
-							/>
-						</div>
-						<div class="field">
-							<v-input
 								v-model="newVersionName"
 								class="full"
 								:placeholder="t('version_name')"
+								autofocus
 								trim
 								:max-length="255"
+								@keyup.enter="createVersion"
+							/>
+						</div>
+
+						<div class="field">
+							<v-input
+								v-model="newVersionKey"
+								class="full"
+								:placeholder="t('version_key')"
+								slug
+								trim
+								:max-length="64"
 								@keyup.enter="createVersion"
 							/>
 						</div>
