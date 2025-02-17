@@ -13,6 +13,7 @@ import { get } from 'lodash';
 import { render } from 'micromustache';
 import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { getItemRoute } from '@/utils/get-route';
 
 const props = withDefaults(
 	defineProps<{
@@ -26,6 +27,7 @@ const props = withDefaults(
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		loading?: boolean;
+		enableLink?: boolean;
 	}>(),
 	{
 		value: null,
@@ -35,6 +37,7 @@ const props = withDefaults(
 		filter: null,
 		enableCreate: true,
 		enableSelect: true,
+		enableLink: false,
 	},
 );
 
@@ -98,7 +101,7 @@ const { update, remove, displayItem, loading } = useRelationSingle(value, query,
 	enabled: computed(() => !props.loading),
 });
 
-const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo);
+const { createAllowed } = useRelationPermissionsM2O(relationInfo);
 
 const currentPrimaryKey = computed<string | number>(() => {
 	if (!displayItem.value || !props.value || !relationInfo.value) return '+';
@@ -158,6 +161,11 @@ function onSelection(selection: (number | string)[] | null) {
 
 	selectModalActive.value = false;
 }
+
+function getLinkForItem() {
+	if (!collection.value || !currentPrimaryKey.value || !relationInfo.value) return '';
+	return getItemRoute(relationInfo.value.relatedCollection.collection, currentPrimaryKey.value);
+}
 </script>
 
 <template>
@@ -173,6 +181,7 @@ function onSelection(selection: (number | string)[] | null) {
 	<v-notice v-else-if="!enableCreate && !enableSelect && !displayItem">
 		{{ t('no_items') }}
 	</v-notice>
+
 	<div v-else class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
 		<v-input
@@ -193,26 +202,41 @@ function onSelection(selection: (number | string)[] | null) {
 			</template>
 
 			<template #append>
-				<template v-if="displayItem">
-					<v-icon v-tooltip="t('edit')" name="open_in_new" class="edit" @click="editModalActive = true" />
-					<v-icon
-						v-if="!disabled"
-						v-tooltip="t('deselect')"
-						name="close"
-						class="deselect"
-						@click.stop="$emit('input', null)"
-					/>
-				</template>
-				<template v-else>
-					<v-icon
-						v-if="createAllowed && enableCreate"
-						v-tooltip="t('create_item')"
-						class="add"
-						name="add"
-						@click="editModalActive = true"
-					/>
-					<v-icon v-if="enableSelect" class="expand" name="expand_more" />
-				</template>
+				<div class="item-actions">
+					<template v-if="displayItem">
+						<router-link
+							v-if="enableLink"
+							v-tooltip="t('navigate_to_item')"
+							:to="getLinkForItem()"
+							class="item-link"
+							@click.stop
+						>
+							<v-icon name="launch" />
+						</router-link>
+
+						<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+
+						<v-remove
+							v-if="!disabled"
+							deselect
+							:item-info="relationInfo"
+							:item-edits="edits"
+							@action="$emit('input', null)"
+						/>
+					</template>
+
+					<template v-else>
+						<v-icon
+							v-if="createAllowed && enableCreate"
+							v-tooltip="t('create_item')"
+							class="add"
+							name="add"
+							@click="editModalActive = true"
+						/>
+
+						<v-icon v-if="enableSelect" class="expand" name="expand_more" />
+					</template>
+				</div>
 			</template>
 		</v-input>
 
@@ -222,7 +246,7 @@ function onSelection(selection: (number | string)[] | null) {
 			:primary-key="currentPrimaryKey"
 			:edits="edits"
 			:circular-field="relationInfo.relation.meta?.one_field ?? undefined"
-			:disabled="!updateAllowed || disabled"
+			:disabled="disabled"
 			@input="onDrawerItemInput"
 		/>
 
@@ -238,11 +262,22 @@ function onSelection(selection: (number | string)[] | null) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions($item-link: true);
+
+	.add:hover {
+		--v-icon-color: var(--theme--primary);
+	}
+}
+
 .many-to-one {
 	position: relative;
 
 	:deep(.v-input .append) {
 		display: flex;
+		gap: 4px;
 	}
 }
 
@@ -264,21 +299,5 @@ function onSelection(selection: (number | string)[] | null) {
 	&.active {
 		transform: scaleY(-1);
 	}
-}
-
-.edit {
-	margin-right: 4px;
-
-	&:hover {
-		--v-icon-color: var(--theme--form--field--input--foreground);
-	}
-}
-
-.add:hover {
-	--v-icon-color: var(--theme--primary);
-}
-
-.deselect:hover {
-	--v-icon-color: var(--theme--danger);
 }
 </style>

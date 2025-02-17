@@ -10,8 +10,23 @@ export async function seed(knex) {
 		{
 			id: 'd70c0943-5b55-4c5d-a613-f539a27a57f5',
 			name: 'Tests Flow Role',
+		},
+	]);
+
+	await knex('directus_policies').insert([
+		{
+			id: '9cd8b17c-474b-4abb-b366-09dcdb45e177',
+			name: 'Tests Flow Policy',
 			admin_access: true,
 			app_access: true,
+		},
+	]);
+
+	await knex('directus_access').insert([
+		{
+			id: '27029bb1-8b2e-43c2-b966-eb049f84ea68',
+			role: 'd70c0943-5b55-4c5d-a613-f539a27a57f5',
+			policy: '9cd8b17c-474b-4abb-b366-09dcdb45e177',
 		},
 	]);
 

@@ -107,7 +107,7 @@ onMounted(async () => {
 	}
 
 	if (markdownInterface.value) {
-		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0];
+		const previewBox = markdownInterface.value.getElementsByClassName('preview-box')[0] as HTMLDivElement;
 
 		const observer = new MutationObserver(() => {
 			count.value = previewBox?.textContent?.replace('\n', '')?.length ?? 0;
@@ -206,13 +206,8 @@ function edit(type: Alteration, options?: Record<string, any>) {
 <template>
 	<div ref="markdownInterface" class="interface-input-rich-text-md" :class="[view, { disabled }]">
 		<div class="toolbar">
-			<template v-if="view !== 'preview'">
-				<v-menu
-					v-if="toolbar?.includes('heading')"
-					show-arrow
-					placement="bottom-start"
-					:class="[{ active: view !== 'preview' }]"
-				>
+			<template v-if="view === 'editor'">
+				<v-menu v-if="toolbar?.includes('heading')" show-arrow placement="bottom-start">
 					<template #activator="{ toggle }">
 						<v-button v-tooltip="t('wysiwyg_options.heading')" :disabled="disabled" small icon @click="toggle">
 							<v-icon name="format_size" />
@@ -398,7 +393,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 		<div
 			v-md="markdownString"
 			class="preview-box"
-			:style="{ display: view[0] === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
+			:style="{ display: view === 'preview' ? 'block' : 'none', direction: direction === 'rtl' ? direction : 'ltr' }"
 		></div>
 
 		<v-dialog
@@ -420,7 +415,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
@@ -463,11 +458,11 @@ textarea {
 
 .preview-box {
 	display: none;
-	padding: 20px;
+	padding: 20px 24px;
 	font-family: v-bind(previewFamily), serif;
 
 	:deep() {
-		@import '@/styles/markdown';
+		@include mixins.markdown;
 	}
 }
 
@@ -513,12 +508,10 @@ textarea {
 	margin-bottom: 20px;
 }
 
-.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-scroll) {
-	min-height: 260px;
-}
-
 .interface-input-rich-text-md.preview :deep(.CodeMirror) {
-	display: none;
+	visibility: hidden;
+	position: absolute;
+	pointer-events: none;
 }
 
 .toolbar {
@@ -549,12 +542,11 @@ textarea {
 }
 
 .table-options {
-	@include form-grid;
-
 	--theme--form--row-gap: 12px;
 	--theme--form--column-gap: 12px;
 
 	padding: 12px;
+	@include mixins.form-grid;
 
 	.v-input {
 		min-width: 100px;

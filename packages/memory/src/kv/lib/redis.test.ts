@@ -20,8 +20,8 @@ let mockNamespace: string;
 let mockKey: string;
 let mockNamespacedKey: string;
 let mockRedis: Redis;
-let mockBuffer: Buffer;
 let mockUint8Array: Uint8Array;
+let mockBuffer: Buffer<Uint8Array>;
 let mockCompressedUint8Array: Uint8Array;
 let mockDecompressedUint8Array: Uint8Array;
 let mockValue: string;
@@ -32,8 +32,8 @@ beforeEach(() => {
 	mockNamespace = 'test';
 	mockNamespacedKey = 'namespaced:test-key';
 
-	mockBuffer = Buffer.from('test');
 	mockUint8Array = new Uint8Array();
+	mockBuffer = Buffer.from(mockUint8Array);
 	mockCompressedUint8Array = new Uint8Array([1, 2, 3]);
 	mockDecompressedUint8Array = new Uint8Array([1, 2, 3]);
 

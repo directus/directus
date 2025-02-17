@@ -56,6 +56,7 @@ import VPagination from './v-pagination.vue';
 import VProgressCircular from './v-progress-circular.vue';
 import VProgressLinear from './v-progress-linear.vue';
 import VRadio from './v-radio.vue';
+import VRemove from './v-remove.vue';
 import VResizeable from './v-resizeable.vue';
 import VSelect from './v-select/v-select.vue';
 import VSheet from './v-sheet.vue';
@@ -111,6 +112,7 @@ export function registerComponents(app: App): void {
 	app.component('VListItemContent', VListItemContent);
 	app.component('VListItemHint', VListItemHint);
 	app.component('VListItemIcon', VListItemIcon);
+	app.component('VRemove', VRemove);
 	app.component('VListItem', VListItem);
 	app.component('VList', VList);
 	app.component('VMenu', VMenu);

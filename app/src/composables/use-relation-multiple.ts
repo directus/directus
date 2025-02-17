@@ -79,7 +79,15 @@ export function useRelationMultiple(
 		}
 	});
 
-	watch([previewQuery, itemId, relation], updateFetchedItems, { immediate: true });
+	watch(
+		[previewQuery, itemId, relation],
+		(newData, oldData) => {
+			if (!isEqual(newData, oldData)) {
+				updateFetchedItems();
+			}
+		},
+		{ immediate: true },
+	);
 
 	const { fetchedSelectItems, selected, isItemSelected, selectedOnPage } = useSelected();
 
@@ -168,8 +176,11 @@ export function useRelationMultiple(
 					case 'm2a': {
 						const itemCollection = item[relation.value.collectionField.field];
 						const editCollection = edit[relation.value.collectionField.field];
-						const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection].field;
-						const editPkField = relation.value.relationPrimaryKeyFields[editCollection].field;
+						const itemPkField = relation.value.relationPrimaryKeyFields[itemCollection]?.field;
+						const editPkField = relation.value.relationPrimaryKeyFields[editCollection]?.field;
+
+						if (!itemPkField) throw new Error(`No primary key field found for collection ${itemCollection}`);
+						if (!editPkField) throw new Error(`No primary key field found for collection ${editCollection}`);
 
 						return (
 							itemCollection === editCollection &&
@@ -296,12 +307,15 @@ export function useRelationMultiple(
 
 					case 'm2a': {
 						if (!collection) throw new Error('You need to provide a collection on an m2a');
+						const pkField = info.relationPrimaryKeyFields[collection];
+
+						if (!pkField) throw new Error(`No primary key field found for collection ${collection}`);
 
 						return {
 							[info.reverseJunctionField.field]: itemId.value,
 							[info.collectionField.field]: collection,
 							[info.junctionField.field]: {
-								[info.relationPrimaryKeyFields[collection].field]: item,
+								[pkField.field]: item,
 							},
 						};
 					}
@@ -337,6 +351,7 @@ export function useRelationMultiple(
 
 				for (const collection of relation.value.allowedCollections) {
 					const pkField = relation.value.relationPrimaryKeyFields[collection.collection];
+					if (!pkField) throw new Error(`No primary key field found for collection ${collection.collection}`);
 					fields.add(`${relation.value.junctionField.field}:${collection.collection}.${pkField.field}`);
 				}
 
@@ -494,7 +509,9 @@ export function useRelationMultiple(
 
 				case 'm2a': {
 					const collection = item[relation.value.collectionField.field];
-					return item[relation.value.junctionField.field][relation.value.relationPrimaryKeyFields[collection].field];
+					const pkField = relation.value.relationPrimaryKeyFields[collection]?.field;
+					if (!pkField) throw new Error(`No primary key field found for collection ${collection}`);
+					return item[relation.value.junctionField.field][pkField];
 				}
 			}
 
@@ -598,7 +615,8 @@ export function useRelationMultiple(
 
 			const responses = await Promise.all(
 				Object.entries(selectGrouped).map(([collection, items]) => {
-					const pkField = relation.relationPrimaryKeyFields[collection].field;
+					const pkField = relation.relationPrimaryKeyFields[collection]?.field;
+					if (!pkField) throw new Error(`No primary key field found for collection ${collection}`);
 
 					const fields = new Set(
 						previewQuery.value.fields.reduce<string[]>((acc, field) => {

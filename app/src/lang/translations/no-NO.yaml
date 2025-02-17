@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Om
 identifier: Identifikator
 avatar: Profilbilde
 application: Applikasjon
@@ -7,14 +28,18 @@ method: Metode
 published: Publisert
 draft: Utkast
 archived: Arkivert
+marketplace: Markedsplass
+extensions: Utvidelser
 modules: Moduler
 module_bar: Modul Bar
 logs: Logger
+unknown: Ukjent
 reset_width: Reset Width
 tile_size: Flisstørrelse
 edit_field: Rediger felt
 conditions: Betingelser
 location: Lokasjon
+collection_names_are_case_sensitive: Samlingens navn er case følsomme
 condition_rules: Betingelser Regler
 input: Input
 maps: Kart
@@ -26,6 +51,8 @@ duplicate_field: Dupliser felt
 half_width: Halv vidde
 full_width: Fullbredde
 group: Gruppe
+popular: Populær
+recent: Siste
 export_items: Eksporter produkter
 and: Og
 or: Eller
@@ -34,8 +61,46 @@ dataset_too_large_currently_showing_n_items: Datasettet er for stort. For øyebl
 modifier: Modifikator
 extension_interface: Grensesnitt
 extension_display: Visning
+extension_layout: Oppsett
+extension_module: Modul
+extension_panel: Panel
+extension_theme: Tema
 extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operasjon
+extension_bundle: Pakke
+extension_interfaces: Grensesnitt
+extension_displays: Visning
+extension_layouts: Oppsett
 extension_modules: Moduler
+extension_panels: Paneler
+extension_themes: Temaer
+extension_hooks: Hook
+extension_endpoints: Endepunkter
+extension_operations: Operasjoner
+extension_bundles: Pakker
+extension_missing: Mangler
+extension_reload_required: Oppdatering av side kreves
+extension_reload_required_copy: En reload av side er nødvendig for å se endringene etter aktivering eller deaktivering av apputvidelser.
+extension_reload_now: Oppdater nå
+published_relative: Publisert {relativeTime}
+compatible_with_your_project: Kompatibel med ditt prosjekt
+last_updated_relative: Sist oppdatert {relativeTime}
+n_files: '{n} Filer'
+verified: Verifisert
+homepage: Hjemmeside
+repository: Repository
+reload_page: Last inn side på nytt
+reload_required: Oppdater kreves
+report_an_issue: Rapporter en feil
+website: Nettside
+github: GitHub
+beta: Beta
+n_downloads: '{n} nedlastinger'
+downloads: Nedlastinger
+compatibility_not_guaranteed: Kompatibilitet ikke garantert
+enable: Aktiver
+disable: Deaktiver
 custom: Egendefinert
 hook: Hook
 fill_width: Fyll vidde
@@ -43,6 +108,7 @@ field_name_translations: Feltnavn oversettelser
 enter_password_to_enable_tfa: Fyll inn passord for å skru på To-Faktor Autentisering
 add_field: Legg til felt
 role_name: Rollenavn
+policy_name: Navn på rettighet
 branch: Gren
 leaf: Blad
 indeterminate: Ubestemt
@@ -60,6 +126,7 @@ requires_value: Krever verdi
 create_preset: Opprett forhåndsinnstilling
 create_panel: Opprett panel
 create_role: Opprett rolle
+create_policy: Opprett vilkår
 create_user: Opprett bruker
 message: Melding
 delete_panel: Slett panel
@@ -67,6 +134,7 @@ create_webhook: Lag Webhook
 create_custom_translation: Opprett egendefinert oversettelse
 edit_custom_translation: Rediger egendefinert oversettelse
 no_custom_translations: Ingen egendefinerte oversettelser
+no_custom_translations_copy: Det finnes ingen egendefinerte oversettelser ennå.
 invite_users: Invitere brukere
 invite: Inviter
 email_already_invited: E-postadressen "{email}" er allerede invitert
@@ -82,6 +150,15 @@ rename_folder: Endre mappenavn
 delete_folder: Slett mappe
 prefix: Prefiks
 suffix: Suffiks
+keep: Behold
+version: Versjon
+version_key: Versjon nøkkel
+version_name: Versjon Navn
+main_version: Hoved
+switch_version: Bytt versjon
+switch_version_copy: Er du sikker på at du vil bytte til versjon "{version}"? Ulagrede endringer vil gå tapt.
+create_version: Opprett versjon
+rename_version: Gi versjon nytt navn
 reset_bookmark: Tilbakestill bokmerke
 update_bookmark: Oppdater bokmerke
 delete_bookmark: Slett bokmerke
@@ -405,6 +482,7 @@ creating_new_collection: Oppretter ny samling
 created_by: Opprettet av
 created_on: Opprettet den
 generated_uuid: Generert UUID
+save_and_create_new: Lagre og opprett ny
 save_and_stay: Lagre og fortsett
 save_as_copy: Lagre som kopi
 add_existing: Legge til eksisterende
@@ -611,6 +689,7 @@ wysiwyg_options:
   selectall: Merk alt
   table: Tabell
 deselect: Velg bort
+creating_in: 'Oppretter element i {collection}'
 editing_in_batch: 'Batch Editing {count} elementer'
 settings_project: Innstillinger
 settings_webhooks: Webhooks
@@ -623,8 +702,10 @@ all: Alle
 batch_delete_confirm: >-
   Ingen elementer har blitt valgt | Er du sikker på at du vil slette dette elementet? Handlingen kan ikke angres. | Er du sikker på at du vil slette disse {count} elementene? Handlingen kan ikke angres.
 cancel: Avbryt
+source_registry: Markedsplass
 collection: Kolleksjon
 collections: Kolleksjoner
+content: Innhold
 fields:
   directus_activity:
     item: Element Hovednøkkel
@@ -653,17 +734,21 @@ fields:
     charset: Charset
     duration: Varighet
   directus_users:
+    first_name: Fornavn
+    last_name: Etternavn
     email: E-post
     password: Passord
     location: Lokasjon
     title: Tittel
     description: Beskrivelse
     tags: Etiketter
+    user_preferences: Brukerinnstillinger
     language: Språk
     status: Status
     status_active: Aktiv
     last_page: Siste side
     last_access: Siste tilgang
+    email_notifications: E-postvarsler
   directus_settings:
     project_name: Prosjektnavn
     module_bar: Modul Bar
@@ -678,6 +763,7 @@ fields:
     name: Rollenavn
     description: Beskrivelse
   directus_policies:
+    name: Navn på rettighet
     description: Beskrivelse
   directus_webhooks:
     name: Navn
@@ -700,6 +786,7 @@ field_options:
       name_name: Navn
     collections_name: Kolleksjoner
   directus_users:
+    preferences_divider: Brukerinnstillinger
     status_dropdown_active: Aktiv
   directus_webhooks:
     status_options_active: Aktiv

@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { ContentTooLargeError, ForbiddenError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
 import type { BusboyFileStream, File, PrimaryKey, Query } from '@directus/types';
 import { toArray } from '@directus/utils';
@@ -167,12 +167,12 @@ export class FilesService extends ItemsService<File> {
 
 		// We do this in a service without accountability. Even if you don't have update permissions to the file,
 		// we still want to be able to set the extracted values from the file on create
-		const sudoService = new ItemsService('directus_files', {
+		const sudoFilesItemsService = new ItemsService('directus_files', {
 			knex: this.knex,
 			schema: this.schema,
 		});
 
-		await sudoService.updateOne(primaryKey, { ...payload, ...metadata }, { emitEvents: false });
+		await sudoFilesItemsService.updateOne(primaryKey, { ...payload, ...metadata }, { emitEvents: false });
 
 		if (opts?.emitEvents !== false) {
 			emitter.emitAction(
@@ -266,11 +266,13 @@ export class FilesService extends ItemsService<File> {
 	 */
 	override async deleteMany(keys: PrimaryKey[]): Promise<PrimaryKey[]> {
 		const storage = await getStorage();
-		const files = await super.readMany(keys, { fields: ['id', 'storage', 'filename_disk'], limit: -1 });
 
-		if (!files) {
-			throw new ForbiddenError();
-		}
+		const sudoFilesItemsService = new FilesService({
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		const files = await sudoFilesItemsService.readMany(keys, { fields: ['id', 'storage', 'filename_disk'], limit: -1 });
 
 		await super.deleteMany(keys);
 

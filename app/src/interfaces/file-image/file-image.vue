@@ -23,6 +23,7 @@ const props = withDefaults(
 		field: string;
 		width: string;
 		crop?: boolean;
+		letterbox?: boolean;
 	}>(),
 	{
 		crop: true,
@@ -143,7 +144,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			{{ t('no_image_selected') }}
 		</v-notice>
 
-		<div v-else-if="image" class="image-preview" :class="{ 'is-svg': image.type && image.type.includes('svg') }">
+		<div v-else-if="image" class="image-preview">
 			<div v-if="imageError || !src" class="image-error">
 				<v-icon large :name="imageError === 'UNKNOWN' ? 'error' : 'info'" />
 
@@ -155,6 +156,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<v-image
 				v-else-if="image.type?.startsWith('image') && isImage"
 				:src="src"
+				:class="{ 'is-letterbox': letterbox }"
 				:width="image.width"
 				:height="image.height"
 				alt=""
@@ -172,6 +174,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<v-button v-tooltip="t('zoom')" icon rounded @click="lightboxActive = true">
 					<v-icon name="zoom_in" />
 				</v-button>
+
 				<v-button
 					v-tooltip="t('download')"
 					icon
@@ -181,16 +184,17 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				>
 					<v-icon name="download" />
 				</v-button>
+
 				<template v-if="!disabled">
 					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
-						<v-icon name="open_in_new" />
+						<v-icon name="edit" />
 					</v-button>
+
 					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
 						<v-icon name="tune" />
 					</v-button>
-					<v-button v-tooltip="t('deselect')" icon rounded @click="deselect">
-						<v-icon name="close" />
-					</v-button>
+
+					<v-remove button deselect :item-info="relationInfo" :item-edits="edits" @action="deselect" />
 				</template>
 			</div>
 
@@ -202,7 +206,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<drawer-item
 				v-if="image"
 				v-model:active="editImageDetails"
-				:disabled="disabled || !updateAllowed"
+				:disabled="disabled"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -241,12 +245,8 @@ img {
 	object-fit: contain;
 }
 
-.is-svg {
+.is-letterbox {
 	padding: 32px;
-
-	img {
-		object-fit: contain;
-	}
 }
 
 .image-error {
@@ -299,9 +299,9 @@ img {
 		display: flex;
 		justify-content: center;
 		width: 100%;
+		gap: 12px;
 
-		.v-button {
-			margin-right: 12px;
+		::v-deep(.v-button) {
 			transform: translateY(10px);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
@@ -312,10 +312,6 @@ img {
 					transition-delay: $i * 25ms;
 				}
 			}
-		}
-
-		.v-button:last-child {
-			margin-right: 0px;
 		}
 	}
 
@@ -349,7 +345,7 @@ img {
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
-	.actions .v-button {
+	.actions ::v-deep(.v-button) {
 		transform: translateY(0px);
 		opacity: 1;
 	}

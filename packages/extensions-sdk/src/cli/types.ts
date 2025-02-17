@@ -6,9 +6,17 @@ export type LanguageShort = 'js' | 'ts';
 
 export type Config = {
 	plugins?: Plugin[];
+	watch?: {
+		clearScreen?: boolean;
+	};
 };
 
 export type RollupConfig = { rollupOptions: RollupOptions; rollupOutputOptions: RollupOutputOptions };
 export type RollupMode = 'browser' | 'node';
 
 export type Format = 'esm' | 'cjs';
+
+export type Report = {
+	level: 'info' | 'warn' | 'error';
+	message: string;
+};

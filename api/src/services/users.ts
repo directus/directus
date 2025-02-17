@@ -126,7 +126,10 @@ export class UsersService extends ItemsService {
 	private inviteUrl(email: string, url: string | null): string {
 		const payload = { email, scope: 'invite' };
 
-		const token = jwt.sign(payload, getSecret(), { expiresIn: '7d', issuer: 'directus' });
+		const token = jwt.sign(payload, getSecret(), {
+			expiresIn: env['USER_INVITE_TOKEN_TTL'] as string,
+			issuer: 'directus',
+		});
 
 		return (url ? new Url(url) : new Url(env['PUBLIC_URL'] as string).addPath('admin', 'accept-invite'))
 			.setQuery('token', token)
@@ -158,7 +161,7 @@ export class UsersService extends ItemsService {
 	 */
 	override async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
 		try {
-			if ('email' in data) {
+			if ('email' in data && data['email'] !== undefined) {
 				this.validateEmail(data['email']);
 				await this.checkUniqueEmails([data['email']]);
 			}
@@ -312,6 +315,7 @@ export class UsersService extends ItemsService {
 		}
 
 		// Manual constraint, see https://github.com/directus/directus/pull/19912
+		await this.knex('directus_comments').update({ user_updated: null }).whereIn('user_updated', keys);
 		await this.knex('directus_notifications').update({ sender: null }).whereIn('sender', keys);
 		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 

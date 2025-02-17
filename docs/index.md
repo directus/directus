@@ -9,6 +9,15 @@ import Github from '@/components/home/icons/Github.vue';
 import Badge from '@/components/Badge.vue';
 </script>
 
+<section :class="[$style.hero, $style.paddingBox]" style="margin-top: 64px;">
+	<Card
+		title="New Documentation!"
+		text="We've completely revamped our docs which will replace these ones soon. Take a look on https://directus.io/docs and let us know what you think!"
+		url="https://directus.io/docs"
+		icon="book"
+	/>
+</section>
+
 <section :class="[$style.hero, $style.paddingBox]">
 	<div :class="[$style.sectionContainer, $style.sectionContainerHero, $style.flex]">
 		<div :class="[$style.heroContent, $style.sectionPaddingHero]">
@@ -56,8 +65,8 @@ const item = await client.request(
 <template #authentication>
 
 ```js
-import { createDirectus, rest, createUser } from '@directus/sdk';
-const client = createDirectus('https://xyz.directus.app').with(rest());
+import { createDirectus, rest, createUser, authentication } from '@directus/sdk';
+const client = createDirectus('https://xyz.directus.app').with(rest()).with(authentication());
 
 const newUser = await client.request(
 	createUser({

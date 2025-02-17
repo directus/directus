@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { getItemRoute } from '@/utils/get-route';
 import { getAssetUrl } from '@/utils/get-asset-url';
-import type { Field } from '@directus/types';
+import type { Field, PrimaryKey } from '@directus/types';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Draggable from 'vuedraggable';
@@ -12,7 +11,9 @@ defineOptions({ inheritAttrs: false });
 const props = withDefaults(
 	defineProps<{
 		collection?: string | null;
+		itemCount: number | null;
 		totalCount: number | null;
+		isFiltered: boolean;
 		limit: number;
 		groupCollection?: string | null;
 		fieldsInCollection?: Field[];
@@ -26,12 +27,19 @@ const props = withDefaults(
 		editGroup: (id: string | number, title: string) => Promise<void>;
 		deleteGroup: (id: string | number) => Promise<void>;
 		isRelational?: boolean;
+		canReorderGroups: boolean;
+		canReorderItems: boolean;
+		canUpdateGroupTitle: boolean;
+		canDeleteGroups: boolean;
 		sortField?: string | null;
 		userField?: string | null;
 		groupsSortField?: string | null;
-		layoutOptions: LayoutOptions;
+		layoutOptions: LayoutOptions | null;
 		resetPresetAndRefresh: () => Promise<void>;
 		error?: any;
+		selection: PrimaryKey[];
+		selectMode?: boolean;
+		onClick: (options: { item: Item; event: MouseEvent }) => void;
 	}>(),
 	{
 		collection: null,
@@ -55,7 +63,10 @@ const { t, n } = useI18n();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
 
-const atLimit = computed(() => (props.totalCount ?? 0) > props.limit);
+const atLimit = computed(() => {
+	const count = (props.isFiltered ? props.itemCount : props.totalCount) ?? 0;
+	return count > props.limit;
+});
 
 function openEditGroup(group: Group) {
 	editDialogOpen.value = group.id;
@@ -86,9 +97,32 @@ function saveChanges() {
 	editTitle.value = '';
 }
 
-const textFieldConfiguration = computed<Field | undefined>(() => {
-	return props.fieldsInCollection.find((field) => field.field === props.layoutOptions.textField);
+const fieldDisplay = computed(() => {
+	return {
+		titleField: getRenderDisplayOptions('titleField'),
+		textField: getRenderDisplayOptions('textField'),
+	};
+
+	function getRenderDisplayOptions(fieldName: keyof LayoutOptions) {
+		const fieldConfiguration = props.fieldsInCollection.find(
+			(field) => field.field === props.layoutOptions?.[fieldName],
+		);
+
+		if (!fieldConfiguration) return;
+		const { field, type, meta } = fieldConfiguration;
+		return {
+			collection: props.collection,
+			field,
+			type,
+			display: meta?.display,
+			options: meta?.display_options,
+			interface: meta?.interface,
+			interfaceOptions: meta?.options,
+		};
+	}
 });
+
+const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.selectMode);
 </script>
 
 <template>
@@ -97,7 +131,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 
 		<template v-else>
 			<v-notice v-if="atLimit" type="warning" class="limit">
-				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.totalCount ?? 0) }) }}
+				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
 			</v-notice>
 
 			<div class="kanban">
@@ -106,13 +140,14 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					group="groups"
 					item-key="id"
 					draggable=".draggable"
+					:disabled="reorderGroupsDisabled"
 					:animation="150"
 					class="draggable"
 					:class="{ sortable: groupsSortField !== null }"
 					@change="changeGroupSort"
 				>
 					<template #item="{ element: group }">
-						<div class="group" :class="{ draggable: group.id !== null }">
+						<div class="group" :class="{ draggable: group.id !== null, disabled: reorderGroupsDisabled }">
 							<div class="header">
 								<div class="title">
 									<div class="title-content">
@@ -120,18 +155,27 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 									</div>
 									<span class="badge">{{ group.items.length }}</span>
 								</div>
-								<div v-if="group.id !== null" class="actions">
+								<div v-if="isRelational && group.id !== null && !selectMode" class="actions">
 									<v-menu show-arrow placement="bottom-end">
 										<template #activator="{ toggle }">
 											<v-icon name="more_horiz" clickable @click="toggle" />
 										</template>
 
 										<v-list>
-											<v-list-item clickable @click="openEditGroup(group)">
+											<v-list-item
+												:disabled="!canUpdateGroupTitle || selectMode"
+												clickable
+												@click="openEditGroup(group)"
+											>
 												<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
 											</v-list-item>
-											<v-list-item v-if="isRelational" class="danger" clickable @click="deleteGroup(group.id)">
+											<v-list-item
+												:disabled="!canDeleteGroups || selectMode"
+												class="danger"
+												clickable
+												@click="deleteGroup(group.id)"
+											>
 												<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 												<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
 											</v-list-item>
@@ -143,6 +187,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 								:model-value="group.items"
 								group="items"
 								draggable=".item"
+								:disabled="!canReorderItems || selectMode"
 								:animation="150"
 								:sort="sortField !== null"
 								class="items"
@@ -150,19 +195,26 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 								@change="change(group, $event)"
 							>
 								<template #item="{ element }">
-									<router-link :to="getItemRoute(collection, element.id)" class="item">
-										<div v-if="element.title" class="title">{{ element.title }}</div>
-										<img v-if="element.image" class="image" :src="element.image" />
-										<render-display
-											v-if="element.text && textFieldConfiguration"
-											:collection="collection"
-											:value="element.text"
-											:type="textFieldConfiguration.type"
-											:field="layoutOptions?.textField"
-											:display="textFieldConfiguration.meta?.display"
-											:options="textFieldConfiguration.meta?.options"
-											:interface="textFieldConfiguration.meta?.interface"
-										/>
+									<div
+										class="item"
+										:class="{ selected: selection.includes(element[primaryKeyField?.field]) }"
+										@click="onClick({ item: element, event: $event })"
+									>
+										<div v-if="element.title" class="title">
+											<render-display
+												v-if="fieldDisplay.titleField"
+												v-bind="fieldDisplay.titleField"
+												:value="element.title"
+											/>
+										</div>
+										<img v-if="element.image" class="image" :src="element.image" draggable="false" />
+										<div v-if="element.text" class="text">
+											<render-display
+												v-if="fieldDisplay.textField"
+												v-bind="fieldDisplay.textField"
+												:value="element.text"
+											/>
+										</div>
 										<display-labels
 											v-if="element.tags"
 											:value="element.tags"
@@ -190,7 +242,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 												</v-avatar>
 											</div>
 										</div>
-									</router-link>
+									</div>
 								</template>
 							</draggable>
 						</div>
@@ -238,8 +290,6 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 .kanban {
 	display: flex;
 	height: 100%;
-	overflow-x: auto;
-	overflow-y: hidden;
 	--user-spacing: 16px;
 
 	.draggable {
@@ -256,7 +306,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 			margin-right: 20px;
 			transition: border-color var(--transition) var(--fast);
 
-			&:active {
+			&:not(.disabled).active {
 				border-color: var(--theme--form--field--input--border-color-hover);
 				cursor: move;
 			}
@@ -320,10 +370,18 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					padding: 12px 16px;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
+					cursor: pointer;
 
 					&:hover .title {
-						// color: var(--theme--primary);
 						text-decoration: underline;
+
+						& * {
+							color: var(--theme--primary);
+						}
+					}
+
+					&.selected {
+						outline: 2px solid var(--theme--primary);
 					}
 				}
 
@@ -331,17 +389,22 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
-					line-height: 1.25;
 					margin-bottom: 4px;
 				}
 
+				.title,
 				.text {
-					font-size: 14px;
-					line-height: 1.4em;
-					-webkit-line-clamp: 4;
-					-webkit-box-orient: vertical;
-					overflow: hidden;
-					display: -webkit-box;
+					line-height: 24px;
+					height: 24px;
+
+					& * {
+						line-height: inherit;
+					}
+
+					// This fixes the broken underline spacing when rendering a related field as title
+					& > :deep(.render-template) > span:not(.vertical-aligner) {
+						vertical-align: baseline;
+					}
 				}
 
 				.image {
@@ -379,6 +442,7 @@ const textFieldConfiguration = computed<Field | undefined>(() => {
 					align-items: center;
 					margin-top: 8px;
 					margin-bottom: 2px;
+
 					.datetime {
 						display: inline-block;
 						color: var(--theme--foreground-subdued);

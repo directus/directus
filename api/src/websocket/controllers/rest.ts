@@ -8,18 +8,20 @@ import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
 import SocketController from './base.js';
+import { registerWebSocketEvents } from './hooks.js';
 
 const logger = useLogger();
 
 export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_REST');
+		registerWebSocketEvents();
 
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
 
-		logger.info(`WebSocket Server started at ws://${getAddress(httpServer)}${this.endpoint}`);
+		logger.info(`WebSocket Server started at ${getAddress(httpServer)}${this.endpoint}`);
 	}
 
 	private bindEvents(client: WebSocketClient) {
@@ -49,7 +51,7 @@ export class WebSocketController extends SocketController {
 
 		try {
 			message = parseJSON(data);
-		} catch (err: any) {
+		} catch {
 			throw new WebSocketError('server', 'INVALID_PAYLOAD', 'Unable to parse the incoming message.');
 		}
 

@@ -1,6 +1,15 @@
+import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { SchemaHelper } from '../types.js';
 
 export class SchemaHelperSQLite extends SchemaHelper {
+	override generateIndexName(
+		type: 'unique' | 'foreign' | 'index',
+		collection: string,
+		fields: string | string[],
+	): string {
+		return getDefaultIndexName(type, collection, fields, { maxLength: Infinity });
+	}
+
 	override async preColumnChange(): Promise<boolean> {
 		const foreignCheckStatus = (await this.knex.raw('PRAGMA foreign_keys'))[0].foreign_keys === 1;
 
@@ -25,5 +34,9 @@ export class SchemaHelperSQLite extends SchemaHelper {
 		} catch {
 			return null;
 		}
+	}
+
+	override addInnerSortFieldsToGroupBy() {
+		// SQLite does not need any special handling for inner query sort columns
 	}
 }

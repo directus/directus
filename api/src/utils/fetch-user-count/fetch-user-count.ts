@@ -3,7 +3,7 @@ import { fetchAccessLookup, type FetchAccessLookupOptions } from './fetch-access
 import { fetchAccessRoles } from './fetch-access-roles.js';
 import { getUserCountQuery } from './get-user-count-query.js';
 
-export interface FetchUserCountOptions extends FetchAccessLookupOptions {}
+export type FetchUserCountOptions = FetchAccessLookupOptions;
 
 export interface UserCount {
 	admin: number;

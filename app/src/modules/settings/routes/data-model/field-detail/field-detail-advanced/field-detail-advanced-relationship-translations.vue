@@ -181,8 +181,7 @@ const relatedPrimaryKey = computed(
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
-@import '@/styles/mixins/no-wrap';
+@use '@/styles/mixins';
 
 .grid {
 	--v-select-font-family: var(--theme--fonts--monospace--font-family);
@@ -220,7 +219,7 @@ const relatedPrimaryKey = computed(
 .type-label {
 	margin-bottom: 8px;
 
-	@include no-wrap;
+	@include mixins.no-wrap;
 }
 
 .v-divider {
@@ -239,7 +238,7 @@ const relatedPrimaryKey = computed(
 	--theme--form--column-gap: 12px;
 	--theme--form--row-gap: 24px;
 
-	@include form-grid;
+	@include mixins.form-grid;
 
 	.v-divider {
 		margin-top: 48px;

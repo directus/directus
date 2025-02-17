@@ -23,8 +23,8 @@ let mockNamespace: string;
 let mockChannel: string;
 let mockNamespacedChannel: string;
 let mockNamespacedChannelBuffer: Buffer;
-let mockBuffer: Buffer;
 let mockUint8Array: Uint8Array;
+let mockBuffer: Buffer<Uint8Array>;
 let mockCompressedUint8Array: Uint8Array;
 let mockDecompressedUint8Array: Uint8Array;
 let mockMessage: string;
@@ -44,8 +44,8 @@ beforeEach(() => {
 	mockMessage = 'test-message';
 	mockHandler = vi.fn();
 
-	mockBuffer = Buffer.from('test');
 	mockUint8Array = new Uint8Array([1, 2, 3]);
+	mockBuffer = Buffer.from(mockUint8Array);
 	mockCompressedUint8Array = new Uint8Array([1]);
 	mockDecompressedUint8Array = new Uint8Array([1, 2, 3]);
 

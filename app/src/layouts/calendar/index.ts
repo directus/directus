@@ -1,9 +1,8 @@
 import api from '@/api';
-import { router } from '@/router';
+import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useServerStore } from '@/stores/server';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
-import { getItemRoute } from '@/utils/get-route';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
 import { saveAsCSV } from '@/utils/save-as-csv';
 import { syncRefProperty } from '@/utils/sync-ref-property';
@@ -48,9 +47,11 @@ export default defineLayout<LayoutOptions>({
 		const selection = useSync(props, 'selection', emit);
 		const layoutOptions = useSync(props, 'layoutOptions', emit);
 
-		const { collection, search, filterSystem } = toRefs(props);
+		const { collection, search, filterSystem, selectMode, showSelect } = toRefs(props);
 
 		const { primaryKeyField, fields: fieldsInCollection } = useCollection(collection);
+
+		const { onClick } = useLayoutClickHandler({ props, selection, primaryKeyField });
 
 		const dateFields = computed(() =>
 			fieldsInCollection.value.filter((field: Field) => {
@@ -110,7 +111,7 @@ export default defineLayout<LayoutOptions>({
 			return fields;
 		});
 
-		const limit = info.queryLimit?.max && info.queryLimit.max !== -1 ? info.queryLimit.max : 10000;
+		const limit = computed(() => (info.queryLimit?.max && info.queryLimit.max !== -1 ? info.queryLimit.max : 1000));
 
 		const {
 			items,
@@ -126,7 +127,7 @@ export default defineLayout<LayoutOptions>({
 		} = useItems(collection, {
 			sort: computed(() => [primaryKeyField.value?.field || '']),
 			page: ref(1),
-			limit: ref(limit),
+			limit,
 			fields: queryFields,
 			filter: filterWithCalendarView,
 			search: search,
@@ -138,6 +139,8 @@ export default defineLayout<LayoutOptions>({
 		);
 
 		const fullFullCalendarOptions = computed<FullCalendarOptions>(() => {
+			const displayEventTime = startDateFieldInfo.value?.type !== 'date';
+
 			const options: FullCalendarOptions = {
 				editable: true,
 				eventStartEditable: true,
@@ -156,36 +159,26 @@ export default defineLayout<LayoutOptions>({
 				},
 				views: {
 					dayGridMonth: {
+						displayEventTime,
 						eventTimeFormat: {
 							hour: 'numeric',
 							minute: '2-digit',
 							meridiem: 'narrow',
 						},
 					},
+					week: { displayEventTime },
+					day: { displayEventTime },
 				},
 				events: events.value,
 				initialDate: viewInfo.value?.startDateStr ?? formatISO(new Date()),
 				eventClick(info) {
 					if (!collection.value) return;
 
-					if (props.selectMode || selection.value?.length > 0) {
-						const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
+					const item = items.value.find((item) => item[primaryKeyField.value!.field] == info.event.id);
 
-						if (item) {
-							const primaryKey = item[primaryKeyField.value!.field];
-
-							if (selection.value.includes(primaryKey)) {
-								selection.value = selection.value.filter((selected) => selected !== primaryKey);
-							} else {
-								selection.value = [...selection.value, primaryKey];
-							}
-
-							updateCalendar();
-						}
-					} else {
-						const primaryKey = info.event.id;
-
-						router.push(getItemRoute(collection.value, primaryKey));
+					if (item) {
+						onClick({ item, event: info.jsEvent });
+						updateCalendar();
 					}
 				},
 				async eventChange(info) {
@@ -253,16 +246,23 @@ export default defineLayout<LayoutOptions>({
 				totalItems: totalCount.value,
 				currentItems: itemCount.value,
 				isFiltered: !!props.filterUser,
+				i18n: { t, n },
 			});
 		});
+
+		const isFiltered = computed(() => !!props.filterUser || !!props.search);
 
 		return {
 			items,
 			loading,
 			error,
+			selectMode,
+			showSelect,
 			totalPages,
 			itemCount,
 			totalCount,
+			isFiltered,
+			limit,
 			changeManualSort,
 			getItems,
 			filterWithCalendarView,

@@ -13,6 +13,8 @@ import { ConnectionParams, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, GraphQLSocket, UpgradeContext, WebSocketClient } from '../types.js';
 import { getMessageType } from '../utils/message.js';
 import SocketController from './base.js';
+import { registerWebSocketEvents } from './hooks.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 
 const logger = useLogger();
 
@@ -20,6 +22,7 @@ export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
 		super(httpServer, 'WEBSOCKETS_GRAPHQL');
+		registerWebSocketEvents();
 
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
@@ -41,7 +44,8 @@ export class GraphQLSubscriptionController extends SocketController {
 		});
 
 		bindPubSub();
-		logger.info(`GraphQL Subscriptions started at ws://${getAddress(httpServer)}${this.endpoint}`);
+
+		logger.info(`GraphQL Subscriptions started at ${getAddress(httpServer)}${this.endpoint}`);
 	}
 
 	private bindEvents(client: WebSocketClient) {
@@ -114,7 +118,7 @@ export class GraphQLSubscriptionController extends SocketController {
 
 	protected override async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
-			this.server.emit('connection', ws, { accountability: null, expires_at: null });
+			this.server.emit('connection', ws, { accountability: createDefaultAccountability(), expires_at: null });
 			// actual enforcement is handled by the setTokenExpireTimer function
 		});
 	}

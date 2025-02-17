@@ -1,7 +1,8 @@
 import { useEnv } from '@directus/env';
-import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
+import type { Filter, Permission, Query } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
+import type { Context } from '../../../permissions/types.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
 import type { ColumnSortRecord } from '../../../utils/apply-query.js';
 import applyQuery, { applyLimit, applySort, generateAlias } from '../../../utils/apply-query.js';
@@ -15,19 +16,23 @@ import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
 
+export type DBQueryOptions = {
+	table: string;
+	fieldNodes: (FieldNode | FunctionFieldNode)[];
+	o2mNodes: O2MNode[];
+	query: Query;
+	cases: Filter[];
+	permissions: Permission[];
+	permissionsOnly?: boolean;
+};
+
 export function getDBQuery(
-	schema: SchemaOverview,
-	knex: Knex,
-	table: string,
-	fieldNodes: (FieldNode | FunctionFieldNode)[],
-	o2mNodes: O2MNode[],
-	query: Query,
-	cases: Filter[],
-	permissions: Permission[],
+	{ table, fieldNodes, o2mNodes, query, cases, permissions, permissionsOnly }: DBQueryOptions,
+	{ knex, schema }: Context,
 ): Knex.QueryBuilder {
 	const aliasMap: AliasMap = Object.create(null);
 	const env = useEnv();
-	const preProcess = getColumnPreprocessor(knex, schema, table, cases, permissions, aliasMap);
+	const preProcess = getColumnPreprocessor(knex, schema, table, cases, permissions, aliasMap, permissionsOnly);
 	const queryCopy = cloneDeep(query);
 	const helpers = getHelpers(knex);
 
@@ -61,7 +66,7 @@ export function getDBQuery(
 	const primaryKey = schema.collections[table]!.primary;
 	let dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
-	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc' }[] = [];
+	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc'; column: Knex.Raw }[] = [];
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
@@ -126,21 +131,24 @@ export function getDBQuery(
 
 				const sortAlias = `sort_${generateAlias()}`;
 
+				let orderByColumn: Knex.Raw;
+
 				if (sortRecord.column.includes('.')) {
 					const [alias, field] = sortRecord.column.split('.');
 					const originalCollectionName = getCollectionFromAlias(alias!, aliasMap);
 					dbQuery.select(getColumn(knex, alias!, field!, sortAlias, schema, { originalCollectionName }));
 
 					orderByString += `?? ${sortRecord.order}`;
-					orderByFields.push(getColumn(knex, alias!, field!, false, schema, { originalCollectionName }));
+					orderByColumn = getColumn(knex, alias!, field!, false, schema, { originalCollectionName });
 				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
 
 					orderByString += `?? ${sortRecord.order}`;
-					orderByFields.push(getColumn(knex, table, sortRecord.column, false, schema));
+					orderByColumn = getColumn(knex, table, sortRecord.column, false, schema);
 				}
 
-				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order });
+				orderByFields.push(orderByColumn);
+				innerQuerySortRecords.push({ alias: sortAlias, order: sortRecord.order, column: orderByColumn });
 			});
 
 			if (hasMultiRelationalSort) {
@@ -238,11 +246,20 @@ export function getDBQuery(
 
 		const groupByFields = [knex.raw('??.??', [table, primaryKey])];
 
-		if (hasMultiRelationalSort) {
-			// Sort fields that are not directly in the table the primary key is from need to be included in the group
-			// by clause, otherwise this causes problems on some DBs
-			groupByFields.push(...innerQuerySortRecords.map(({ alias }) => knex.raw('??', alias)));
-		}
+		// For some DB vendors sort fields need to be included in the group by clause, otherwise this causes problems those DBs
+		// since sort fields are selected in the inner query, and they expect all selected columns to be in
+		// the group by clause or aggregated over.
+		// For some DBs the field needs to be the actual raw column expression, since aliases are not available in the
+		// group by clause.
+		// Since the fields are expected to be the same for a single primary key it is safe to include them in the
+		// group by without influencing the result.
+
+		// This inclusion depends on the DB vendor, as such it is handled in a dialect specific helper.
+		helpers.schema.addInnerSortFieldsToGroupBy(
+			groupByFields,
+			innerQuerySortRecords,
+			(hasMultiRelationalSort || sortRecords?.some(({ column }) => column.includes('.'))) ?? false,
+		);
 
 		dbQuery.groupBy(groupByFields);
 	}
