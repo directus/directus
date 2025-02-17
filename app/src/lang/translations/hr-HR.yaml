@@ -110,6 +110,7 @@ field_name_translations: Prijevodi naziva polja
 enter_password_to_enable_tfa: Unesite svoju lozinku za aktivaciju dvofaktorske autentifikacije
 add_field: Dodaj polje
 role_name: Naziv uloge
+policy_name: Naziv Pravila
 branch: Grana
 leaf: List
 indeterminate: Neodređeno
@@ -127,6 +128,7 @@ requires_value: Obavezna vrijednost
 create_preset: Izrada unaprijed postavljene konfiguracije
 create_panel: Kreiraj ploču
 create_role: Stvori novu ulogu
+create_policy: Kreiraj Pravilo
 create_user: Dodaj korisnika
 message: Poruka
 delete_panel: Ukloni ploču
@@ -188,7 +190,10 @@ logoutReason:
   SESSION_EXPIRED: Istekla sesija
 public_label: Javno
 public_description: Određuje koji su API podaci dostupni bez provjere autentičnosti.
+public_role_info: >-
+  Javna uloga određuje koji su API podaci dostupni neautentificiranim korisnicima ili korisnicima bez uloge. Zahtjevi s javnom ulogom ne mogu imati pristup aplikaciji ili administratorskom sučelju. Ako su pristup aplikaciji ili administraciji dodijeljeni pravilu povezanom s javnom ulogom, bit će ignorirani.
 admin_description: Početna administrativna uloga s neograničenim pristupom aplikaciji/API-ju.
+admin_policy_description: Početno administrativno pravilo s neograničenim pristupom aplikaciji i API-ju.
 no_description: Nema opisa...
 reached_maximum_number_of_extensions: Dostigli ste maksimalni broj dodataka za ovaj projekt ({n}). Za više informacija kontaktirajte svog sistemskog administratora.
 not_allowed: Nije dopušteno
@@ -255,9 +260,13 @@ field_permissions: Dopuštenja polja
 field_validation: Validacija polja
 field_presets: Postavke polja
 permissions_for_role: 'Stavke koje {role} može {action}.'
+permissions_for_policy: 'Stavke koje pravilo {policy} može {action}.'
 fields_for_role: 'Stavke koje {role} može {action}.'
+fields_for_policy: 'Polja koja pravilo {policy} može {action}.'
 validation_for_role: 'Polje {action} diktira {role} mora poštivati.'
+validation_for_policy: 'Pravila {action} polja koja pravilo {policy} mora poštovati.'
 presets_for_role: 'Zadane vrijednosti polja za ulogu {role}.'
+presets_for_policy: 'Zadane vrijednosti polja za pravilo {policy}.'
 presets_field_warning: 'Relacijske predloške za polje "{field}" treba konfigurirati pomoću "detaljne" sintakse.'
 presentation_and_aliases: Prezentacija i pseudonimi
 revision_post_create: Evo kako je ova stavka izgledala kada je nastala.
@@ -363,6 +372,7 @@ no_collections_found: Nije pronađena nijedna zbirka.
 new_data_alert: 'Sljedeće će se stvoriti unutar vašeg podatkovnog modela:'
 search_collection: Pretraži zbirku...
 search_role: Pretraga Role...
+search_policy: Pretraži Pravilo...
 search_field: Pretraga Polja...
 new_field: 'Novo polje'
 new_collection: 'Nova zbirka'
@@ -403,6 +413,7 @@ soft_length: Soft limit
 precision_scale: Preciznost i razmjer
 readonly: Samo za čitanje
 unique: Jedinstven
+index: Indeks
 updated_on: Ažurirano
 updated_by: Ažurirao/la
 primary_key: Primarni ključ
@@ -448,6 +459,7 @@ revision_delta_other: Revizija
 revision_delta_by: '{date} od strane {user}'
 presentation_text_values_cannot_be_reimported: 'Koristi prezentacijski tekst, vrijednosti se ne mogu ponovno uvesti.'
 download_page_as_csv: 'Preuzmite stranicu kao CSV'
+download_page_as_csv_unsupported: Ovaj raspored ne podržava preuzimanje trenutne stranice.
 private_user: Privatni korisnik
 creation_preview: Pretpregled izrade
 revision_preview: Pretpregled revizije
@@ -506,12 +518,18 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: MMM d
 minutes: Minuta
 hours: Sati
 month: Mjesec
 year: Godina
 select_all: Odaberi sve
+permissionsLevel:
+  all: Potpuni pristup {action}
+  partial: Djelomičan pristup {action}
+  custom: Djelomičan pristup {action}
+  none: Nema pristupa {action}
 months:
   january: Siječanj
   february: Veljača
@@ -538,6 +556,7 @@ file_details: Pojedinosti datoteke
 dimensions: Dimenzije
 size: Veličina
 created: Kreirano
+uploaded: Preneseno
 modified: Izmijenjeno
 owner: Vlasnik
 edited_by: Uredio/la
@@ -595,6 +614,7 @@ comments: Komentari
 no_comments: Još nema komentara
 expand: Proširi
 expand_all: Proširi sve
+expand_none: Ne proširuj ništa
 collapse: Sažmi
 collapse_all: Sažmi sve
 select_item: Odaberi stavku
@@ -613,12 +633,17 @@ display_not_found: 'Prikaz "{display}" nije pronađen.'
 reset_display: Resetiraj prikaz
 list-m2a: Graditelj (M2A)
 item_count: 'Nema stavki | Jedna stavka | {count} stavki'
+filtered_item_count: 'Nema filtriranih stavki | Jedna filtrirana stavka | {count} filtriranih stavki'
 no_items_copy: Nema stavki u ovoj zbirci.
 file_count: 'Nema datoteka | Jedna datoteka | Broj datoteka: {count}'
 no_files_copy: Nema datoteka.
 user_count: 'Nema korisnika | Jedan korisnik | Broj korisnika: {count}'
 no_users_copy: Još nema korisnika s ovom ulogom.
 webhooks_count: 'Nema web-dojavnika| Jedan web-dojavnik | {count} web-dojavnika'
+webhooks_deprecation_notice: |
+  Webhookovi su zastarjeli i njihova daljnja upotreba se ne preporučuje.
+
+  Umjesto toga, koristite Tokove **Flows** s operacijom [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Još nije konfiguriran nijedan web-dojavnik. Započnite stvaranjem jednog u nastavku.
 no_notifications: Nema obavijesti
 no_notifications_copy: Upoznati ste s svime!
@@ -643,6 +668,7 @@ copy_to: Kopiraj u...
 no_other_dashboards_copy: Još nemate nijednu drugu nadzornu ploču.
 inactive: Neaktivan
 users: Korisnici
+roles: Uloge
 activity: Aktivnost
 activity_item: Stavka aktivnosti
 action: Radnja
@@ -745,6 +771,7 @@ cannot_edit_global_bookmarks: Nije moguće uređivati globalne oznake
 bookmarks: Oznake
 presets: Unaprijed postavljene postavke
 unexpected_error: Neočekivana greška
+unexpected_error_copy: Došlo je do neočekivane pogreške. Molimo pokušajte ponovno.
 copy_details: Kopiraj pojedinosti
 no_app_access: Nema pristupa aplikaciji
 no_app_access_copy: Ovom korisniku nije dopušteno korištenje administratorske aplikacije.
@@ -769,6 +796,9 @@ make_collection_hidden: Učini zbirku skrivenom
 make_folder_visible: Učini mapu vidljivom
 make_folder_hidden: Učini mapu skrivenom
 goto_collection_content: Pregledaj sadržaj
+count_of_total_items: '{count} od {total} Stavki'
+start_end_of_count_items: '{start}-{end} od {count} Stavki'
+start_end_of_count_filtered_items: '{start}-{end} od {count} Filtriranih Stavki'
 delete_collection_are_you_sure: >-
   Jeste li sigurni da želite izbrisati zbirku "{collection}"? Ovo će izbrisati zbirku i sve stavke u njoj. Ova akcija je trajna.
 delete_folder_are_you_sure: Jeste li sigurni da želite izbrisati mapu "{folder}"? Ugniježđene mape i zbirke bit će premještene na najvišu razinu.
@@ -855,11 +885,13 @@ columns: Stupci
 collection_setup: Postavljanje zbirke
 optional_system_fields: Neobvezna Polja
 value_unique: Vrijednost mora biti jedinsrvena
+value_index: Polje je indeksirano
 all_activity: Sve aktivnosti
 create_item: Dodaj novu stavku
 display_template: Predložak prikaza
 language_display_template: Predložak prikaza jezika
 translations_display_template: Predložak prikaza prijevoda
+n_items_selected: 'Nema Odabranih Stavki | Jedna Stavka Odabrana | {n} Stavki Odabrano'
 per_page: Po stranici
 all_files: Sve datoteke
 my_files: Moje datoteke
@@ -910,6 +942,7 @@ run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, j
 run_flow_on_selected: Prvo Odaberite Jednu ili Više Stavki | Pokreni Tok na 1 Odabranoj Stavci | Pokreni Tok na {n} Odabranih Stavki
 run_flow: Pokreni Tok
 run_flow_success: Tok "{flow}" je uspješno izvršen
+trigger_flow_success: Tok "{flow}" je uspješno pokrenut. Izvršit će se u pozadini
 field_name_placeholder: Unesite naziv polja...
 field_key_placeholder: Unesite ključ polja...
 trigger: Okidač
@@ -971,6 +1004,22 @@ no_data_in_flow: Nikakvi podaci nisu proizvedeni niti im je pristupljeno unutar 
 accountability: Odgovornost
 payload: Payload
 details: Pojedinosti
+resume_streaming_logs: Nastavi prijenos zapisnika (logova) u stvarnom vremenu
+pause_streaming_logs: Pauziraj prijenos zapisnika (logova) u stvarnom vremenu
+logs_session_resumed: Sesija zapisnika (logova) je nastavljena...
+logs_session_paused: Sesija zapisnika (logova) je pauzirana...
+logs_stream_disconnected: Prijenos zapisnika (logova) je prekinut...
+log_detail_filter_paths: 'Filtriraj putanje (npr. req.method, res.statusCode)'
+logs_beginning: Ovo je početak vaše sesije zapisnika (logova)...
+logs_waiting: 'Čekam dodatne zapisnike (logove)...'
+logs_unread_count: '{count} nepročitanih'
+clear_logs: Obriši zapisnike (logove)
+search_logs: Pretraži zapisnike (logove)...
+all_instances: Sve instance
+instance_count: 'Nema instanci | Jedna instanca | {count} instanci'
+all_log_levels: Sve razine zapisnika (logova)
+log_level_count: 'Nema razine zapisnika | Jedna razina zapisnika | {count} razina zapisnika'
+soft_wrap_lines: Meko prelamanje redaka
 full_screen: Puni zaslon
 full_text_search: Pretraživanje cijelog teksta
 edit_panels: Uredi ploče
@@ -999,6 +1048,7 @@ tooltip: Kratka Poruka
 tooltip_placeholder: Unesite tooltip...
 unlimited: Neograničeno
 open_link_in: Otvori poveznicu u
+new_tab: Nova Kartica
 save_image: Spremi sliku
 save_media: Spremi medijski zapis
 wysiwyg_options:
@@ -1348,6 +1398,7 @@ fields:
     description: Opis
     users: Korisnici s ulogom
   directus_policies:
+    name: Naziv Pravila
     description: Opis
   directus_webhooks:
     name: Ime
