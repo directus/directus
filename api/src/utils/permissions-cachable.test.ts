@@ -79,7 +79,7 @@ test('filter does not have $NOW', () => {
 	expect(filter_has_now(filter)).toBe(false);
 });
 
-test('permissions are not cached on many policies with $NOW', async () => {
+test('permissions are not cacheable on many policies with $NOW', async () => {
 	vi.mocked(fetchPolicies).mockResolvedValue(['policy1', 'policy2', 'policy3']);
 
 	const permissions: Permission[] = [
