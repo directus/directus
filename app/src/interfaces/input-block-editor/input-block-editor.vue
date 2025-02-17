@@ -95,7 +95,7 @@ onMounted(async () => {
 	}
 
 	editorjsRef.value.on(BlockChanged, () => {
-		if(!editorjsRef.value || !editorjsIsReady.value) return;
+		if (!editorjsRef.value || !editorjsIsReady.value) return;
 		emitValue(editorjsRef.value!);
 	});
 
