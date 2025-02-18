@@ -10,7 +10,11 @@ import { fetchDynamicVariableContext } from '../permissions/utils/fetch-dynamic-
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import getDatabase from '../database/index.js';
 
-export async function sanitizeQuery(rawQuery: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null,): Promise<Query> {
+export async function sanitizeQuery(
+	rawQuery: Record<string, any>,
+	schema: SchemaOverview,
+	accountability?: Accountability | null,
+): Promise<Query> {
 	const env = useEnv();
 
 	const query: Query = {};
@@ -158,8 +162,8 @@ async function sanitizeFilter(rawFilter: any, schema: SchemaOverview, accountabi
 		if (accountability) {
 			const context = {
 				schema,
-				knex: getDatabase()
-			}
+				knex: getDatabase(),
+			};
 
 			const dynamicVariableContext = extractRequiredDynamicVariableContext(filters);
 			const policies = await fetchPolicies(accountability, context);
