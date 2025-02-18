@@ -11,18 +11,22 @@ const sanitizeQueryMiddleware: RequestHandler = async (req, _res, next) => {
 	req.sanitizedQuery = {};
 	if (!req.query) return;
 
-	req.sanitizedQuery = await sanitizeQuery(
-		{
-			fields: req.query['fields'] || '*',
-			...req.query,
-		},
-		req.schema,
-		req.accountability || null,
-	);
+	try {
+		req.sanitizedQuery = await sanitizeQuery(
+			{
+				fields: req.query['fields'] || '*',
+				...req.query,
+			},
+			req.schema,
+			req.accountability || null,
+		);
 
-	Object.freeze(req.sanitizedQuery);
+		Object.freeze(req.sanitizedQuery);
 
-	validateQuery(req.sanitizedQuery);
+		validateQuery(req.sanitizedQuery);
+	} catch (error) {
+		return next(error);
+	}
 
 	return next();
 };
