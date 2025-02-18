@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { Field } from '@directus/types';
@@ -7,6 +8,8 @@ import { debounce, isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
+
+const collectionsStore = useCollectionsStore();
 
 const props = withDefaults(
 	defineProps<{
@@ -54,13 +57,51 @@ const showSearch = computed(() => {
 	return false;
 });
 
-const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, undefined, filter);
+const { t } = useI18n();
+
+const additionalFields = computed(() => {
+	const collectionInfo = collectionsStore.getCollection(collection.value);
+	const versioningEnabled = collectionInfo?.meta?.versioning;
+
+	if (!versioningEnabled) return null;
+
+	const versionField: Field = {
+		collection: unref(collection),
+		field: '$version',
+		schema: null,
+		name: t('version'),
+		type: 'string',
+		meta: {
+			id: -1,
+			collection: unref(collection),
+			field: '$version',
+			sort: null,
+			special: null,
+			interface: null,
+			options: null,
+			display: null,
+			display_options: null,
+			hidden: false,
+			translations: null,
+			readonly: true,
+			width: 'full',
+			group: null,
+			note: null,
+			required: false,
+			conditions: null,
+			validation: null,
+			validation_message: null,
+		},
+	};
+
+	return { fields: [versionField] };
+});
+
+const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, additionalFields, filter);
 
 const debouncedRefresh = debounce(() => refresh(), 250);
 
 watch(search, () => debouncedRefresh());
-
-const { t } = useI18n();
 
 const selectAllDisabled = computed(() => unref(treeList).every((field) => field.disabled === true));
 
