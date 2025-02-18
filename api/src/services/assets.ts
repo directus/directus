@@ -155,8 +155,10 @@ export class AssetsService {
 			}
 
 			if (exists) {
+				const assetStream = () => storage.location(file.storage).read(assetFilename, { range });
+
 				return {
-					stream: await storage.location(file.storage).read(assetFilename, { range }),
+					stream: deferStream ? assetStream : await assetStream(),
 					file,
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
