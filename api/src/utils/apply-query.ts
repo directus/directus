@@ -35,7 +35,7 @@ type ApplyQueryOptions = {
 	isInnerQuery?: boolean;
 	hasMultiRelationalSort?: boolean | undefined;
 	groupWhenCases?: number[][] | undefined;
-	selectAliasMap?: Record<string, string> | undefined;
+	groupColumnPositions?: number[] | undefined;
 };
 
 /**
@@ -101,9 +101,11 @@ export default function applyQuery(
 		let columns;
 
 		if (options?.groupWhenCases) {
-			if (helpers.capabilities.supportsAliasInGroupBy() && options.selectAliasMap) {
+			if (helpers.capabilities.supportsAliasInGroupBy() && options.groupColumnPositions) {
 				// This can be streamlined for databases that support reusing the alias in group by expressions
-				columns = query.group.map((column) => options.selectAliasMap![column] ?? column);
+				columns = query.group.map((column, index) =>
+					options.groupColumnPositions![index] !== undefined ? knex.raw(options.groupColumnPositions![index]) : column,
+				);
 			} else {
 				// Reconstruct the columns with the case/when logic
 				columns = rawColumns.map((column, index) =>
