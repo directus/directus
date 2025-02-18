@@ -62,7 +62,7 @@ export function sanitizeGraphqlSchema(schema: Readonly<SchemaOverview>): SchemaO
 
 	const collections = Object.fromEntries(collectionEntries);
 
-	const collectionExists = (collection: string) => Boolean(schema.collections[collection]);
+	const collectionExists = (collection: string) => Boolean(collections[collection]);
 
 	const skipRelation = (relation: Relation) => {
 		const relationName = relation.schema?.constraint_name ?? `${relation.collection}.${relation.field}`;
