@@ -83,7 +83,7 @@ export async function sanitizeQuery(rawQuery: Record<string, any>, schema: Schem
 	if (rawQuery['deep'] as Record<string, any>) {
 		if (!query.deep) query.deep = {};
 
-		query.deep = sanitizeDeep(rawQuery['deep'], schema, accountability);
+		query.deep = await sanitizeDeep(rawQuery['deep'], schema, accountability);
 	}
 
 	if (rawQuery['alias']) {
@@ -209,7 +209,7 @@ function sanitizeMeta(rawMeta: any) {
 	return [rawMeta];
 }
 
-function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {
+async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {
 	const logger = useLogger();
 
 	const result: Record<string, any> = {};
@@ -222,11 +222,11 @@ function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, account
 		}
 	}
 
-	parse(deep);
+	await parse(deep);
 
 	return result;
 
-	function parse(level: Record<string, any>, path: string[] = []) {
+	async function parse(level: Record<string, any>, path: string[] = []) {
 		const subQuery: Record<string, any> = {};
 		const parsedLevel: Record<string, any> = {};
 
@@ -243,7 +243,7 @@ function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, account
 
 		if (Object.keys(subQuery).length > 0) {
 			// Sanitize the entire sub query
-			const parsedSubQuery = sanitizeQuery(subQuery, schema, accountability);
+			const parsedSubQuery = await sanitizeQuery(subQuery, schema, accountability);
 
 			for (const [parsedKey, parsedValue] of Object.entries(parsedSubQuery)) {
 				parsedLevel[`_${parsedKey}`] = parsedValue;
