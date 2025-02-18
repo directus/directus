@@ -1,4 +1,4 @@
-import type { SchemaOverview } from "@directus/types";
+import type { SchemaOverview } from '@directus/types';
 
 export function freezeSchema(schema: SchemaOverview): Readonly<SchemaOverview> {
 	// freeze collections
