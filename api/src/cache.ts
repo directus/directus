@@ -123,7 +123,11 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 }
 
 export async function setLocalSchemaCache(schema: SchemaOverview): Promise<void> {
-	memorySchemaCache = freezeSchema(schema);
+	if (Object.isFrozen(schema)) {
+		memorySchemaCache = schema;
+	} else {
+		memorySchemaCache = freezeSchema(schema);
+	}
 }
 
 export async function getLocalSchemaCache(): Promise<Readonly<SchemaOverview> | undefined> {

@@ -1,4 +1,5 @@
 import type { SchemaOverview } from '@directus/types';
+import { cloneDeep } from 'lodash-es';
 
 export function freezeSchema(schema: SchemaOverview): Readonly<SchemaOverview> {
 	// freeze collections
@@ -27,6 +28,10 @@ export function freezeSchema(schema: SchemaOverview): Readonly<SchemaOverview> {
 	return Object.freeze(schema);
 }
 
-// export function unfreezeSchema(schema: Readonly<SchemaOverview>): SchemaOverview {
-
-// }
+export function unfreezeSchema(schema: Readonly<SchemaOverview>): SchemaOverview {
+	if (Object.isFrozen(schema)) {
+		return cloneDeep(schema);
+	} else {
+		return schema;
+	}
+}
