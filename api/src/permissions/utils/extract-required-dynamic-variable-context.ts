@@ -1,4 +1,4 @@
-import type { Filter, Permission } from '@directus/types';
+import type { Permission } from '@directus/types';
 import { deepMap } from '@directus/utils';
 
 export interface DynamicVariableContext {
@@ -21,6 +21,7 @@ export function extractRequiredDynamicVariableContextForPermissions(permissions:
 			permissionContext,
 			extractRequiredDynamicVariableContext(permission.permissions),
 		);
+
 		permissionContext = merge_contexts(permissionContext, extractRequiredDynamicVariableContext(permission.validation));
 		permissionContext = merge_contexts(permissionContext, extractRequiredDynamicVariableContext(permission.presets));
 	}
