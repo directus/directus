@@ -131,9 +131,7 @@ export async function setLocalSchemaCache(schema: SchemaOverview): Promise<void>
 }
 
 export async function getLocalSchemaCache(): Promise<Readonly<SchemaOverview> | undefined> {
-	if (!memorySchemaCache) return undefined;
-
-	return memorySchemaCache;
+	return memorySchemaCache ?? undefined;
 }
 
 export async function setCacheValue(
