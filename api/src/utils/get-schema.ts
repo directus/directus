@@ -42,7 +42,7 @@ export async function getSchema(
 		return await getDatabaseSchema(database, schemaInspector);
 	}
 
-	const cached = await getLocalSchemaCache();
+	const cached = getLocalSchemaCache();
 
 	if (cached) {
 		return cached;
@@ -82,8 +82,12 @@ export async function getSchema(
 					return reject();
 				}
 
-				setLocalSchemaCache(options.schema).catch(reject);
-				resolve(options.schema);
+				try {
+					setLocalSchemaCache(options.schema);
+					resolve(options.schema);
+				} catch (e) {
+					reject(e);
+				}
 			}
 
 			function cleanup() {
@@ -101,7 +105,7 @@ export async function getSchema(
 		const schemaInspector = createInspector(database);
 
 		schema = await getDatabaseSchema(database, schemaInspector);
-		await setLocalSchemaCache(schema);
+		setLocalSchemaCache(schema);
 		return schema;
 	} finally {
 		await bus.publish(messageKey, { schema });
