@@ -11,6 +11,7 @@ import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
+import { freezeSchema } from './utils/deep-freeze.js';
 
 const logger = useLogger();
 const env = useEnv();
@@ -19,9 +20,11 @@ const require = createRequire(import.meta.url);
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
-let localSchemaCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
 let messengerSubscribed = false;
+
+let localSchemaCache: Keyv | null = null;
+let memorySchemaCache: Readonly<SchemaOverview> | null = null;
 
 type Store = 'memory' | 'redis';
 
@@ -44,6 +47,7 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 		}
 
 		await localSchemaCache?.clear();
+		memorySchemaCache = null;
 	});
 }
 
@@ -119,15 +123,13 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 }
 
 export async function setLocalSchemaCache(schema: SchemaOverview): Promise<void> {
-	const { localSchemaCache } = getCache();
-
-	await localSchemaCache.set('schema', schema);
+	memorySchemaCache = freezeSchema(schema);
 }
 
-export async function getLocalSchemaCache(): Promise<SchemaOverview | undefined> {
-	const { localSchemaCache } = getCache();
+export async function getLocalSchemaCache(): Promise<Readonly<SchemaOverview> | undefined> {
+	if (!memorySchemaCache) return undefined;
 
-	return await localSchemaCache.get('schema');
+	return memorySchemaCache;
 }
 
 export async function setCacheValue(
