@@ -101,7 +101,7 @@ export default function applyQuery(
 		let columns;
 
 		if (options?.groupWhenCases) {
-			if (helpers.capabilities.supportsAliasInGroupBy() && options.groupColumnPositions) {
+			if (helpers.capabilities.supportsColumnPositionInGroupBy() && options.groupColumnPositions) {
 				// This can be streamlined for databases that support reusing the alias in group by expressions
 				columns = query.group.map((column, index) =>
 					options.groupColumnPositions![index] !== undefined ? knex.raw(options.groupColumnPositions![index]) : column,
