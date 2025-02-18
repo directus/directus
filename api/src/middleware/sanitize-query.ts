@@ -7,15 +7,16 @@ import type { RequestHandler } from 'express';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { validateQuery } from '../utils/validate-query.js';
 
-const sanitizeQueryMiddleware: RequestHandler = (req, _res, next) => {
+const sanitizeQueryMiddleware: RequestHandler = async (req, _res, next) => {
 	req.sanitizedQuery = {};
 	if (!req.query) return;
 
-	req.sanitizedQuery = sanitizeQuery(
+	req.sanitizedQuery = await sanitizeQuery(
 		{
 			fields: req.query['fields'] || '*',
 			...req.query,
 		},
+		req.schema,
 		req.accountability || null,
 	);
 

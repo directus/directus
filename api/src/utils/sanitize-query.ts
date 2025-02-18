@@ -1,12 +1,16 @@
 import { useEnv } from '@directus/env';
 import { InvalidQueryError } from '@directus/errors';
-import type { Accountability, Aggregate, Query } from '@directus/types';
+import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus/types';
 import { parseFilter, parseJSON } from '@directus/utils';
 import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 import { Meta } from '../types/index.js';
+import { extractRequiredDynamicVariableContext } from '../permissions/utils/extract-required-dynamic-variable-context.js';
+import { fetchDynamicVariableContext } from '../permissions/utils/fetch-dynamic-variable-context.js';
+import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
+import getDatabase from '../database/index.js';
 
-export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Accountability | null): Query {
+export async function sanitizeQuery(rawQuery: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null,): Promise<Query> {
 	const env = useEnv();
 
 	const query: Query = {};
@@ -44,7 +48,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	}
 
 	if (rawQuery['filter']) {
-		query.filter = sanitizeFilter(rawQuery['filter'], accountability || null);
+		query.filter = await sanitizeFilter(rawQuery['filter'], schema, accountability || null);
 	}
 
 	if (rawQuery['offset'] !== undefined) {
@@ -79,7 +83,7 @@ export function sanitizeQuery(rawQuery: Record<string, any>, accountability?: Ac
 	if (rawQuery['deep'] as Record<string, any>) {
 		if (!query.deep) query.deep = {};
 
-		query.deep = sanitizeDeep(rawQuery['deep'], accountability);
+		query.deep = sanitizeDeep(rawQuery['deep'], schema, accountability);
 	}
 
 	if (rawQuery['alias']) {
@@ -137,7 +141,7 @@ function sanitizeAggregate(rawAggregate: any): Aggregate {
 	return aggregate as Aggregate;
 }
 
-function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
+async function sanitizeFilter(rawFilter: any, schema: SchemaOverview, accountability: Accountability | null) {
 	let filters = rawFilter;
 
 	if (typeof filters === 'string') {
@@ -149,7 +153,28 @@ function sanitizeFilter(rawFilter: any, accountability: Accountability | null) {
 	}
 
 	try {
-		return parseFilter(filters, accountability);
+		let filterContext;
+
+		if (accountability) {
+			const context = {
+				schema,
+				knex: getDatabase()
+			}
+
+			const dynamicVariableContext = extractRequiredDynamicVariableContext(filters);
+			const policies = await fetchPolicies(accountability, context);
+
+			filterContext = await fetchDynamicVariableContext(
+				{
+					dynamicVariableContext,
+					accountability,
+					policies,
+				},
+				context,
+			);
+		}
+
+		return parseFilter(filters, accountability, filterContext);
 	} catch {
 		throw new InvalidQueryError({ reason: 'Invalid filter object' });
 	}
@@ -184,7 +209,7 @@ function sanitizeMeta(rawMeta: any) {
 	return [rawMeta];
 }
 
-function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability | null) {
+function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {
 	const logger = useLogger();
 
 	const result: Record<string, any> = {};
@@ -218,7 +243,7 @@ function sanitizeDeep(deep: Record<string, any>, accountability?: Accountability
 
 		if (Object.keys(subQuery).length > 0) {
 			// Sanitize the entire sub query
-			const parsedSubQuery = sanitizeQuery(subQuery, accountability);
+			const parsedSubQuery = sanitizeQuery(subQuery, schema, accountability);
 
 			for (const [parsedKey, parsedValue] of Object.entries(parsedSubQuery)) {
 				parsedLevel[`_${parsedKey}`] = parsedValue;

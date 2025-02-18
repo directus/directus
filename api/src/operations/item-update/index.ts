@@ -43,7 +43,7 @@ export default defineOperationApi<Options>({
 		const payloadObject: Partial<Item> | Partial<Item>[] | null = optionToObject(payload) ?? null;
 
 		const queryObject = query ? optionToObject(query) : {};
-		const sanitizedQueryObject = sanitizeQuery(queryObject, customAccountability);
+		const sanitizedQueryObject = await sanitizeQuery(queryObject, schema, customAccountability);
 
 		if (!payloadObject) {
 			return null;

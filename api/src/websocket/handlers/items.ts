@@ -46,7 +46,7 @@ export class ItemsHandler {
 		let result, meta;
 
 		if (message.action === 'create') {
-			const query = sanitizeQuery(message?.query ?? {}, accountability);
+			const query = await sanitizeQuery(message?.query ?? {}, schema, accountability);
 
 			if (Array.isArray(message.data)) {
 				const keys = await service.createMany(message.data);
@@ -58,7 +58,7 @@ export class ItemsHandler {
 		}
 
 		if (message.action === 'read') {
-			const query = sanitizeQuery(message.query ?? {}, accountability);
+			const query = await sanitizeQuery(message.query ?? {}, schema, accountability);
 
 			if (message.id) {
 				result = await service.readOne(message.id, query);
@@ -74,7 +74,7 @@ export class ItemsHandler {
 		}
 
 		if (message.action === 'update') {
-			const query = sanitizeQuery(message.query ?? {}, accountability);
+			const query = await sanitizeQuery(message.query ?? {}, schema, accountability);
 
 			if (message.id) {
 				const key = await service.updateOne(message.id, message.data);
@@ -101,7 +101,7 @@ export class ItemsHandler {
 				await service.deleteMany(message.ids);
 				result = message.ids;
 			} else if (message.query) {
-				const query = sanitizeQuery(message.query, accountability);
+				const query = await sanitizeQuery(message.query, schema, accountability);
 				result = await service.deleteByQuery(query);
 			} else {
 				throw new WebSocketError(
