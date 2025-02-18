@@ -4,6 +4,7 @@ import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-con
 import { fetchRawPermissions } from '../utils/fetch-raw-permissions.js';
 import { processPermissions } from '../utils/process-permissions.js';
 import { getPermissionsForShare } from '../utils/get-permissions-for-share.js';
+import { extractRequiredDynamicVariableContextForPermissions } from '../utils/extract-required-dynamic-variable-context.js';
 
 export interface FetchPermissionsOptions {
 	action?: PermissionsAction;
@@ -20,11 +21,13 @@ export async function fetchPermissions(options: FetchPermissionsOptions, context
 	);
 
 	if (options.accountability && !options.bypassDynamicVariableProcessing) {
+		const permissionContext = extractRequiredDynamicVariableContextForPermissions(permissions);
+
 		const permissionsContext = await fetchDynamicVariableContext(
 			{
 				accountability: options.accountability,
 				policies: options.policies,
-				permissions,
+				dynamicVariableContext: permissionContext,
 			},
 			context,
 		);

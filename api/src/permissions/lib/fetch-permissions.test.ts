@@ -112,7 +112,12 @@ test('Injects dynamic variables by calling process permissions', async () => {
 		{
 			accountability,
 			policies: ['policy-1'],
-			permissions,
+			dynamicVariableContext: {
+				$CURRENT_POLICIES: new Set(),
+				$CURRENT_ROLE: new Set(),
+				$CURRENT_ROLES: new Set(),
+				$CURRENT_USER: new Set(),
+			},
 		},
 		{},
 	);
