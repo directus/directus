@@ -11,7 +11,7 @@ import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
-import { freezeSchema } from './utils/deep-freeze.js';
+import { freezeSchema } from './utils/freeze-schema.js';
 
 const logger = useLogger();
 const env = useEnv();
