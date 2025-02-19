@@ -549,8 +549,8 @@ export function getReadableTypes(
 			type: collection.singleton
 				? ReadCollectionTypes[collection.collection]!
 				: new GraphQLNonNull(
-					new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-				),
+						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+				  ),
 			resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 				const result = await resolveQuery(gql, info);
 				context['data'] = result;
@@ -640,9 +640,9 @@ export function getReadableTypes(
 				args: collection.singleton
 					? { version: new GraphQLNonNull(GraphQLString) }
 					: {
-						version: new GraphQLNonNull(GraphQLString),
-						id: new GraphQLNonNull(GraphQLID),
-					},
+							version: new GraphQLNonNull(GraphQLString),
+							id: new GraphQLNonNull(GraphQLID),
+					  },
 				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 					const result = await resolveQuery(gql, info);
 					context['data'] = result;
@@ -676,12 +676,12 @@ export function getReadableTypes(
 	}
 
 	for (const collection in ReadableCollectionFilterTypes) {
-		const quantifier_collection = ReadableCollectionFilterTypes[collection]?.clone(`${collection}_quantifier_filter`)
+		const quantifier_collection = ReadableCollectionFilterTypes[collection]?.clone(`${collection}_quantifier_filter`);
 
 		quantifier_collection?.addFields({
 			_some: ReadableCollectionFilterTypes[collection]!,
 			_none: ReadableCollectionFilterTypes[collection]!,
-		})
+		});
 
 		ReadableCollectionQuantifierFilterTypes[collection] = quantifier_collection!;
 	}
@@ -763,4 +763,3 @@ export function getReadableTypes(
 
 	return { ReadCollectionTypes, VersionCollectionTypes, ReadableCollectionFilterTypes };
 }
-
