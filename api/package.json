@@ -222,7 +222,7 @@
 		"get-port": "7.1.0",
 		"knex-mock-client": "3.0.2",
 		"typescript": "5.7.3",
-		"vitest": "2.1.8"
+		"vitest": "2.1.9"
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "3.0.1",
