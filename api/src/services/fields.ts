@@ -9,7 +9,7 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
-import { addFieldFlag, toArray } from '@directus/utils';
+import { addFieldFlag, parseJSON, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
@@ -641,6 +641,151 @@ export class FieldsService {
 		}
 	}
 
+	private async metaUpdates(collection: string, field: string) {
+		const forwards = new Map<string, string[]>();
+		const backwards = new Map<string, string[]>();
+		const links = new Set<string>();
+		const fields = new Map<string, string>();
+
+		const schema = this.schema;
+
+		schema.relations.forEach((relation) => {
+			const forward = forwards.get(relation.collection) ?? [];
+
+			if (relation.related_collection) {
+				const backward = backwards.get(relation.related_collection) ?? [];
+
+				backward.push(relation.collection);
+				backwards.set(relation.related_collection, backward);
+
+				forward.push(relation.related_collection);
+				forwards.set(relation.collection, forward);
+
+				fields.set(`${relation.collection}::${relation.field}`, relation.related_collection);
+
+				if (relation.meta?.one_field) {
+					fields.set(`${relation.related_collection}::${relation.meta.one_field}`, relation.collection);
+				}
+			}
+		});
+
+		buildTreeLinks(collection);
+
+		const collections = await this.knex
+			.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
+			.from('directus_collections')
+			.where({ collection })
+			.orWhere(function () {
+				this.whereIn('collection', Array.from(links.keys())).whereNotNull('item_duplication_fields');
+			});
+
+		const metaUpdates = [];
+
+		for (const metaCollection of collections) {
+			let hasUpdates = false;
+
+			const meta: { collection: string; updates: Record<string, string | null> } = {
+				collection: metaCollection,
+				updates: {},
+			};
+
+			if (metaCollection === collection && metaCollection.archive_field === field) {
+				meta.updates['archive_field'] = null;
+				hasUpdates = true;
+			}
+
+			if (metaCollection === collection && metaCollection.sort_field === field) {
+				meta.updates['sort_field'] = null;
+				hasUpdates = true;
+			}
+
+			const duplication =
+				typeof metaCollection.item_duplication_fields === 'string'
+					? parseJSON(metaCollection.item_duplication_fields)
+					: metaCollection.item_duplication_fields;
+
+			if (duplication) {
+				const paths = validatePaths(duplication, metaCollection.collection);
+
+				if (paths) {
+					meta.updates['item_duplication_fields'] = paths;
+					hasUpdates = true;
+				}
+			}
+
+			if (hasUpdates) {
+				metaUpdates.push(meta);
+			}
+		}
+
+		return metaUpdates;
+
+		function buildTreeLinks(collection: string) {
+			const backward = backwards.get(collection) ?? [];
+			const forward = forwards.get(collection) ?? [];
+
+			if (backward.length === 0 && forward.length === 0) return;
+
+			for (const node of backward) {
+				getNode(node);
+			}
+
+			for (const node of forward) {
+				getNode(node);
+			}
+		}
+
+		function getNode(node: string) {
+			// circular reference
+			if (node === collection || links.has(node)) return;
+
+			links.add(node);
+
+			buildTreeLinks(node);
+		}
+
+		function validatePath(path: string, root: string) {
+			let currentCollection = root;
+
+			const parts = path.split('.');
+
+			const fixedParts = [];
+
+			for (let index = 0; index < parts.length; index++) {
+				const part = parts[index];
+
+				if (!part) return;
+
+				if (currentCollection === collection && part === field) return;
+
+				const nextCollection = fields.get(`${currentCollection}::${part}`);
+
+				// old deleted collections
+				if (!nextCollection) return;
+
+				currentCollection = nextCollection;
+
+				fixedParts.push(part);
+			}
+
+			return fixedParts;
+		}
+
+		function validatePaths(paths: string[], root: string) {
+			const fixedPaths = [];
+
+			for (const path of paths) {
+				const validatedParts = validatePath(path, root);
+
+				if (validatedParts && validatedParts.length) {
+					fixedPaths.push(validatedParts.join('.'));
+				}
+			}
+
+			return fixedPaths.length !== 0 ? JSON.stringify(fixedPaths) : undefined;
+		}
+	}
+
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -730,24 +875,12 @@ export class FieldsService {
 					});
 				}
 
-				const collectionMeta = await trx
-					.select('archive_field', 'sort_field')
-					.from('directus_collections')
-					.where({ collection })
-					.first();
+				const metaUpdates = await this.metaUpdates(collection, field);
 
-				const collectionMetaUpdates: Record<string, null> = {};
-
-				if (collectionMeta?.archive_field === field) {
-					collectionMetaUpdates['archive_field'] = null;
-				}
-
-				if (collectionMeta?.sort_field === field) {
-					collectionMetaUpdates['sort_field'] = null;
-				}
-
-				if (Object.keys(collectionMetaUpdates).length > 0) {
-					await trx('directus_collections').update(collectionMetaUpdates).where({ collection });
+				if (metaUpdates.length !== 0) {
+					for (const meta of metaUpdates) {
+						await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
+					}
 				}
 
 				// Cleanup directus_fields
