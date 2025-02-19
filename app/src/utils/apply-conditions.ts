@@ -25,8 +25,8 @@ export function applyConditions(
 			return errors.length === 0;
 		});
 
-		if (matchingCondition) {
-			return {
+	if (matchingCondition) {
+			const updatedField = {
 				...field,
 				meta: mergeWith(
 					{},
@@ -41,13 +41,15 @@ export function applyConditions(
 						if (isArray(objValue) && isArray(srcValue)) {
 							return srcValue;
 						}
+
+						return undefined;
 					},
 				),
 			};
-		}
 
-		return field;
-	} else {
-		return field;
+			return updatedField;
+		}
 	}
+
+	return field;
 }
