@@ -642,75 +642,79 @@ export class FieldsService {
 	}
 
 	private async metaUpdates(collection: string, field: string) {
-		const forwards = new Map<string, string[]>();
-		const backwards = new Map<string, string[]>();
-		const links = new Set<string>();
-		const fields = new Map<string, string>();
+		const forwardLinkedCollections = new Map<string, string[]>();
+		const backwardLinkedCollections = new Map<string, string[]>();
+		const linkedCollectionList = new Set<string>();
+		const relationalFieldToCollection = new Map<string, string>();
 
 		const schema = this.schema;
 
 		schema.relations.forEach((relation) => {
-			const forward = forwards.get(relation.collection) ?? [];
+			const forward = forwardLinkedCollections.get(relation.collection) ?? [];
 
 			if (relation.related_collection) {
-				const backward = backwards.get(relation.related_collection) ?? [];
+				const backward = backwardLinkedCollections.get(relation.related_collection) ?? [];
 
 				backward.push(relation.collection);
-				backwards.set(relation.related_collection, backward);
+				backwardLinkedCollections.set(relation.related_collection, backward);
 
 				forward.push(relation.related_collection);
-				forwards.set(relation.collection, forward);
+				forwardLinkedCollections.set(relation.collection, forward);
 
-				fields.set(`${relation.collection}::${relation.field}`, relation.related_collection);
+				relationalFieldToCollection.set(`${relation.collection}::${relation.field}`, relation.related_collection);
 
 				if (relation.meta?.one_field) {
-					fields.set(`${relation.related_collection}::${relation.meta.one_field}`, relation.collection);
+					relationalFieldToCollection.set(
+						`${relation.related_collection}::${relation.meta.one_field}`,
+						relation.collection,
+					);
 				}
 			}
 		});
 
-		buildTreeLinks(collection);
+		buildLinkedCollectionList(collection);
 
-		const collections = await this.knex
+		const collectionMetaQuery = this.knex
+			.queryBuilder()
 			.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
 			.from('directus_collections')
-			.where({ collection })
-			.orWhere(function () {
-				this.whereIn('collection', Array.from(links.keys())).whereNotNull('item_duplication_fields');
+			.where({ collection });
+
+		if (linkedCollectionList.size !== 0) {
+			collectionMetaQuery.orWhere(function () {
+				this.whereIn('collection', Array.from(linkedCollectionList.keys())).whereNotNull('item_duplication_fields');
 			});
+		}
+
+		const collectionMetas = await collectionMetaQuery;
 
 		const metaUpdates = [];
 
-		for (const metaCollection of collections) {
+		for (const metaCollection of collectionMetas) {
 			let hasUpdates = false;
 
-			const meta: { collection: string; updates: Record<string, string | null> } = {
+			const meta: { collection: string; updates: Record<string, string | string[] | null> } = {
 				collection: metaCollection,
 				updates: {},
 			};
 
-			if (metaCollection === collection && metaCollection.archive_field === field) {
-				meta.updates['archive_field'] = null;
-				hasUpdates = true;
-			}
-
-			if (metaCollection === collection && metaCollection.sort_field === field) {
-				meta.updates['sort_field'] = null;
-				hasUpdates = true;
-			}
-
-			const duplication =
-				typeof metaCollection.item_duplication_fields === 'string'
-					? parseJSON(metaCollection.item_duplication_fields)
-					: metaCollection.item_duplication_fields;
-
-			if (duplication) {
-				const paths = validatePaths(duplication, metaCollection.collection);
-
-				if (paths) {
-					meta.updates['item_duplication_fields'] = paths;
+			if (metaCollection.collection === collection) {
+				if (metaCollection.archive_field === field) {
+					meta.updates['archive_field'] = null;
 					hasUpdates = true;
 				}
+
+				if (metaCollection.sort_field === field) {
+					meta.updates['sort_field'] = null;
+					hasUpdates = true;
+				}
+			}
+
+			if (metaCollection.item_duplication_fields !== null) {
+				const paths = validateDuplicatePaths(metaCollection.item_duplication_fields, metaCollection.collection);
+
+				meta.updates['item_duplication_fields'] = paths || null;
+				hasUpdates = true;
 			}
 
 			if (hasUpdates) {
@@ -720,31 +724,31 @@ export class FieldsService {
 
 		return metaUpdates;
 
-		function buildTreeLinks(collection: string) {
-			const backward = backwards.get(collection) ?? [];
-			const forward = forwards.get(collection) ?? [];
+		function buildLinkedCollectionList(collection: string) {
+			const backward = backwardLinkedCollections.get(collection) ?? [];
+			const forward = forwardLinkedCollections.get(collection) ?? [];
 
 			if (backward.length === 0 && forward.length === 0) return;
 
 			for (const node of backward) {
-				getNode(node);
+				setNextCollectionNode(node);
 			}
 
 			for (const node of forward) {
-				getNode(node);
+				setNextCollectionNode(node);
 			}
 		}
 
-		function getNode(node: string) {
+		function setNextCollectionNode(node: string) {
 			// circular reference
-			if (node === collection || links.has(node)) return;
+			if (node === collection || linkedCollectionList.has(node)) return;
 
-			links.add(node);
+			linkedCollectionList.add(node);
 
-			buildTreeLinks(node);
+			buildLinkedCollectionList(node);
 		}
 
-		function validatePath(path: string, root: string) {
+		function validateDuplicatePath(path: string, root: string) {
 			let currentCollection = root;
 
 			const parts = path.split('.');
@@ -758,7 +762,7 @@ export class FieldsService {
 
 				if (currentCollection === collection && part === field) return;
 
-				const nextCollection = fields.get(`${currentCollection}::${part}`);
+				const nextCollection = relationalFieldToCollection.get(`${currentCollection}::${part}`);
 
 				// old deleted collections
 				if (!nextCollection) return;
@@ -771,18 +775,22 @@ export class FieldsService {
 			return fixedParts;
 		}
 
-		function validatePaths(paths: string[], root: string) {
+		function validateDuplicatePaths(paths: string | string[], root: string) {
 			const fixedPaths = [];
 
+			paths = typeof paths === 'string' ? (parseJSON(paths) as string[]) : paths;
+
 			for (const path of paths) {
-				const validatedParts = validatePath(path, root);
+				const validatedParts = validateDuplicatePath(path, root);
 
 				if (validatedParts && validatedParts.length) {
 					fixedPaths.push(validatedParts.join('.'));
 				}
 			}
 
-			return fixedPaths.length !== 0 ? JSON.stringify(fixedPaths) : undefined;
+			if (fixedPaths.length === 0) return;
+
+			return typeof paths === 'string' ? JSON.stringify(fixedPaths) : fixedPaths;
 		}
 	}
 
@@ -877,10 +885,8 @@ export class FieldsService {
 
 				const metaUpdates = await this.metaUpdates(collection, field);
 
-				if (metaUpdates.length !== 0) {
-					for (const meta of metaUpdates) {
-						await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
-					}
+				for (const meta of metaUpdates) {
+					await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
 				}
 
 				// Cleanup directus_fields
