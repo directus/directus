@@ -18,6 +18,7 @@ const props = withDefaults(
 		disabledFields?: string[];
 		includeFunctions?: boolean;
 		includeRelations?: boolean;
+		includeVirtualFields?: boolean;
 		relationalFieldSelectable?: boolean;
 		allowSelectAll?: boolean;
 		rawFieldNames?: boolean;
@@ -27,6 +28,7 @@ const props = withDefaults(
 		disabledFields: () => [],
 		includeFunctions: false,
 		includeRelations: true,
+		includeVirtualFields: false,
 		relationalFieldSelectable: true,
 		allowSelectAll: false,
 		rawFieldNames: false,
@@ -59,9 +61,9 @@ const showSearch = computed(() => {
 
 const { t } = useI18n();
 
-const additionalFields = computed(() => {
+const virtualFields = computed(() => {
 	const collectionInfo = collectionsStore.getCollection(collection.value);
-	const versioningEnabled = collectionInfo?.meta?.versioning;
+	const versioningEnabled = collectionInfo?.meta?.versioning && props.includeVirtualFields;
 
 	if (!versioningEnabled) return null;
 
@@ -97,7 +99,7 @@ const additionalFields = computed(() => {
 	return { fields: [versionField] };
 });
 
-const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, additionalFields, filter);
+const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, virtualFields, filter);
 
 const debouncedRefresh = debounce(() => refresh(), 250);
 
