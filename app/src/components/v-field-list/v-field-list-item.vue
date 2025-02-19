@@ -129,7 +129,9 @@ const openWhileSearching = computed(() => {
 	>
 		<v-list-item-content>
 			<div class="item-content">
-				<v-icon v-if="field.field === '$version'" name="auto_awesome" small color="var(--theme--primary)" />
+				<v-list-item-icon v-if="field.field.startsWith('$')">
+					<v-icon name="auto_awesome" small color="var(--theme--primary)" />
+				</v-list-item-icon>
 				<v-text-overflow
 					:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
 					:highlight="search"
