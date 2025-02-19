@@ -1134,6 +1134,24 @@ Directus collects little and anonymized data about your environment.
 | `TELEMETRY_URL`           | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
 | `TELEMETRY_AUTHORIZATION` | Optional authorization header value.                              | --                               |
 
+## Metrics
+
+To enable performance and error measurement of connected services, Directus can provide Prometheus metrics.
+
+| Variable           | Description                                                                                                             | Default Value                  |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `METRICS_ENABLED`  | Whether or not to enable metrics.                                                                                       | `false`                        |
+| `METRICS_SCHEDULE` | The cron schedule at which to generate the metrics, the default is every minute                                         | `*/1 * * * *`                  |
+| `METRICS_TOKENS`   | A CSV of tokens to allow access to via a `Authorization: Metrics <token>` header. By default it is restricted to admins | --                             |
+| `METRICS_SERVICES` | A CSV of directus services to observe metrics for. Currently `database`, `cache`, `redis` and `storage` are supported   | `database,cache,redis,storage` |
+
+::: warning Metric Aggregation
+
+If Directus is running within a PM2 context, then metrics will be aggregated on a per scheduled job frequency. Ensure
+Prometheus' scrape frequency takes that into account.
+
+:::
+
 ## Limits & Optimizations
 
 Allows you to configure hard technical limits, to prevent abuse and optimize for your particular server environment.

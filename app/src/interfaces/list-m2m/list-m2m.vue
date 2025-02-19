@@ -355,13 +355,15 @@ function deleteItem(item: DisplayItem) {
 const batchEditActive = ref(false);
 const selection = ref<DisplayItem[]>([]);
 
-const relatedPrimaryKeys = computed(() => {
+const selectedKeys = computed(() => {
 	if (!relationInfo.value) return [];
 
-	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
-	const junctionField = relationInfo.value.junctionField.field;
-
-	return selection.value.map((item) => get(item, [junctionField, relatedPkField], null)).filter((key) => !isNil(key));
+	return selection.value
+		.map(
+			// use `$index` for newly created items that don’t have a PK yet
+			(item) => item[relationInfo.value!.junctionPrimaryKeyField.field] ?? item.$index ?? null,
+		)
+		.filter((key) => !isNil(key));
 });
 
 function stageBatchEdits(edits: Record<string, any>) {
@@ -485,7 +487,7 @@ function getLinkForItem(item: DisplayItem) {
 				</div>
 
 				<v-button
-					v-if="!disabled && updateAllowed && relatedPrimaryKeys.length > 0"
+					v-if="!disabled && updateAllowed && selectedKeys.length"
 					v-tooltip.bottom="t('edit')"
 					rounded
 					icon
@@ -525,6 +527,7 @@ function getLinkForItem(item: DisplayItem) {
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
 				:items="displayItems"
+				:item-key="relationInfo.junctionPrimaryKeyField.field"
 				:row-height="tableRowHeight"
 				:disabled="disabled"
 				:show-manual-sort="allowDrag"
@@ -694,7 +697,7 @@ function getLinkForItem(item: DisplayItem) {
 
 		<drawer-batch
 			v-model:active="batchEditActive"
-			:primary-keys="relatedPrimaryKeys"
+			:primary-keys="selectedKeys"
 			:collection="relationInfo.relatedCollection.collection"
 			stage-on-save
 			@input="stageBatchEdits"
