@@ -144,7 +144,7 @@
 		"typescript": "5.7.3",
 		"vite": "5.4.11",
 		"vite-plugin-vue-devtools": "7.7.0",
-		"vitest": "2.1.8",
+		"vitest": "2.1.9",
 		"vue": "3.5.13",
 		"vue-i18n": "11.0.1",
 		"vue-router": "4.5.0",
