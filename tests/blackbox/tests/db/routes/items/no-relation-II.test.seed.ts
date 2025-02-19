@@ -1,4 +1,4 @@
-import { CreateCollection, CreateField, CreateItem, DeleteCollection } from '@common/functions';
+import { CreateCollection, CreateField, CreateItem, CreatePermission, DeleteCollection } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { randomUUID, type UUID } from 'node:crypto';
 import { expect, it } from 'vitest';
@@ -27,6 +27,48 @@ export const seedDBStructure = () => {
 					collection: collection,
 					field: 'user_created',
 					type: 'uuid',
+				});
+
+				await CreateField(vendor, {
+					collection: collection,
+					field: 'date_created',
+					type: 'timestamp',
+				});
+
+				await CreatePermission(vendor, {
+					role: 'APP_ACCESS',
+					permission: {
+						action: 'read',
+						fields: ['user_created', 'date_created'],
+						collection: collection,
+						permissions: {
+							_and: [
+								{
+									user_created: {
+										id: {
+											_eq: '$CURRENT_USER',
+										},
+									},
+								},
+							],
+						},
+						policy: 'custom',
+						validation: null,
+						presets: null,
+					},
+				});
+
+				await CreatePermission(vendor, {
+					role: 'APP_ACCESS',
+					permission: {
+						action: 'create',
+						fields: ['id', 'user_created', 'date_created'],
+						collection: collection,
+						permissions: null,
+						policy: 'custom',
+						validation: null,
+						presets: null,
+					},
 				});
 
 				expect(true).toBeTruthy();
