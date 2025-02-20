@@ -360,17 +360,6 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	}
 }
 
-async function saveAndQuit() {
-	if (isSavable.value === false) return;
-
-	try {
-		await save();
-		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
-	} catch {
-		// Save shows unexpected error dialog
-	}
-}
-
 async function saveAndStay() {
 	if (isSavable.value === false) return;
 
@@ -633,7 +622,7 @@ function revert(values: Record<string, any>) {
 				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
-				@click="saveAndQuit"
+				@click="saveAndStay"
 			>
 				<v-icon name="check" />
 
@@ -655,7 +644,7 @@ function revert(values: Record<string, any>) {
 				:tooltip="t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
-				@click="saveVersionAction('main')"
+				@click="saveVersionAction('stay')"
 			>
 				<v-icon name="beenhere" />
 

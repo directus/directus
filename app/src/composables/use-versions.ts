@@ -25,7 +25,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			let version;
 
-			if (queryVersion) {
+			if (queryVersion.value) {
 				version = newVersions.find((version) => version.key === newQueryVersion);
 			}
 
@@ -117,8 +117,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	async function addVersion(version: ContentVersion) {
 		versions.value = [...(versions.value ? versions.value : []), version];
-
-		currentVersion.value = version;
+		queryVersion.value = version.key;
 	}
 
 	async function updateVersion(updates: { key: string; name?: string | null }) {
