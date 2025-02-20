@@ -715,17 +715,17 @@ export type OptionsCreatePolicy = {
 	role?: keyof typeof ROLE;
 };
 
-export async function CreatePolicyWithRole(vendor: Vendor, options: OptionsCreatePolicy) {
+export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy) {
 	// Action
-	const policyResponse = await request(getUrl(vendor))
+	const roleResponse = await request(getUrl(vendor))
 		.get(`/policies`)
 		.query({
 			filter: { name: { _eq: options.name } },
 		})
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
-	if (policyResponse.body.data.length > 0) {
-		return policyResponse.body.data[0];
+	if (roleResponse.body.data.length > 0) {
+		return roleResponse.body.data[0];
 	}
 
 	let roleId = options.role;
@@ -755,14 +755,11 @@ export async function CreatePolicyWithRole(vendor: Vendor, options: OptionsCreat
 export type OptionsCreatePermission = {
 	role: keyof typeof ROLE;
 	permission: Omit<Partial<Permission>, 'id' | 'role' | 'system'>;
-} & OptionsCreatePermissionPolicy;
-
-export type OptionsCreatePermissionPolicy = {
 	policy?: string;
 	policyName?: string;
-}
+};
 
-export async function CreatePermissionWithPolicy(vendor: Vendor, options: OptionsCreatePermission) {
+export async function CreatePermission(vendor: Vendor, options: OptionsCreatePermission) {
 	let policyId = options.policy;
 	let roleId = options.role;
 
@@ -776,7 +773,7 @@ export async function CreatePermissionWithPolicy(vendor: Vendor, options: Option
 	}
 
 	if (!policyId) {
-		const policy = await CreatePolicyWithRole(vendor, {
+		const policy = await CreatePolicy(vendor, {
 			role: roleId,
 			adminAccessEnabled: false,
 			appAccessEnabled: false,

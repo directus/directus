@@ -9,7 +9,7 @@ import {
 	CreateFieldM2O,
 	CreateFieldO2M,
 	CreateItem,
-	CreatePolicyWithRole,
+	CreatePolicy,
 	CreateRole,
 	CreateUser,
 	DeleteCollection,
@@ -53,7 +53,7 @@ describe('Common', () => {
 					role,
 				};
 
-				await CreatePolicyWithRole(vendor, policyOptions);
+				await CreatePolicy(vendor, policyOptions);
 
 				const roleResponse = await request(getUrl(vendor))
 					.get(`/roles`)
@@ -116,7 +116,7 @@ describe('Common', () => {
 					role,
 				};
 
-				await CreatePolicyWithRole(vendor, policyOptions);
+				await CreatePolicy(vendor, policyOptions);
 
 				const roleResponse = await request(getUrl(vendor))
 					.get(`/roles`)
@@ -179,7 +179,7 @@ describe('Common', () => {
 					role,
 				};
 
-				await CreatePolicyWithRole(vendor, policyOptions);
+				await CreatePolicy(vendor, policyOptions);
 
 				const roleResponse = await request(getUrl(vendor))
 					.get(`/roles`)
