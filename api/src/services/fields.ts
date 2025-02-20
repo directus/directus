@@ -711,7 +711,7 @@ export class FieldsService {
 			}
 
 			if (metaCollection.item_duplication_fields !== null) {
-				const paths = validateDuplicatePaths(metaCollection.item_duplication_fields, metaCollection.collection);
+				const paths = validateFieldDuplicationPaths(metaCollection.item_duplication_fields, metaCollection.collection);
 
 				meta.updates['item_duplication_fields'] = paths || null;
 				hasUpdates = true;
@@ -740,7 +740,7 @@ export class FieldsService {
 		}
 
 		function setNextCollectionNode(node: string) {
-			// circular reference
+			// skip circular reference and existing linked nodes
 			if (node === collection || linkedCollectionList.has(node)) return;
 
 			linkedCollectionList.add(node);
@@ -748,7 +748,7 @@ export class FieldsService {
 			buildLinkedCollectionList(node);
 		}
 
-		function validateDuplicatePath(path: string, root: string) {
+		function validateFieldDuplicationPath(path: string, root: string) {
 			let currentCollection = root;
 
 			const parts = path.split('.');
@@ -760,11 +760,12 @@ export class FieldsService {
 
 				if (!part) return;
 
+				// Invalid path for field that is currently being remove
 				if (currentCollection === collection && part === field) return;
 
 				const nextCollection = relationalFieldToCollection.get(`${currentCollection}::${part}`);
 
-				// old deleted collections
+				// Invalid path for old deleted or currently removed collections
 				if (!nextCollection) return;
 
 				currentCollection = nextCollection;
@@ -775,13 +776,13 @@ export class FieldsService {
 			return fixedParts;
 		}
 
-		function validateDuplicatePaths(paths: string | string[], root: string) {
+		function validateFieldDuplicationPaths(paths: string | string[], root: string) {
 			const fixedPaths = [];
 
-			paths = typeof paths === 'string' ? (parseJSON(paths) as string[]) : paths;
+			const duplicateFieldPaths: string[] = typeof paths === 'string' ? parseJSON(paths) : paths;
 
-			for (const path of paths) {
-				const validatedParts = validateDuplicatePath(path, root);
+			for (const path of duplicateFieldPaths) {
+				const validatedParts = validateFieldDuplicationPath(path, root);
 
 				if (validatedParts && validatedParts.length) {
 					fixedPaths.push(validatedParts.join('.'));
