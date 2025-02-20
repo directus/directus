@@ -26,18 +26,18 @@ export const seedDBStructure = () => {
 				await DeleteCollection(vendor, { collection });
 
 				await CreateCollection(vendor, {
-					collection: collection,
+					collection,
 					primaryKeyType: 'integer',
 				});
 
 				await CreateField(vendor, {
-					collection: collection,
+					collection,
 					field: 'user_created',
 					type: 'uuid',
 				});
 
 				await CreateField(vendor, {
-					collection: collection,
+					collection,
 					field: 'date_created',
 					type: 'timestamp',
 				});
@@ -55,7 +55,7 @@ export const seedDBStructure = () => {
 					permission: {
 						action: 'read',
 						fields: ['user_created', 'date_created'],
-						collection: collection,
+						collection,
 						permissions: {
 							_and: [
 								{
@@ -79,7 +79,7 @@ export const seedDBStructure = () => {
 					permission: {
 						action: 'create',
 						fields: ['id', 'user_created', 'date_created'],
-						collection: collection,
+						collection,
 						permissions: null,
 						policy: policyOptions.policy as string,
 						validation: null,

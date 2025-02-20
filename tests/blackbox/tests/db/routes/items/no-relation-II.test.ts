@@ -22,6 +22,8 @@ describe(`GET /${collection}`, () => {
 				.get(`/items/${collection}/articles?groupBy=day(date_created)&aggregate[count]=*`)
 				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
+			console.log(response.body);
+
 			expect(response.statusCode).toEqual(200);
 			expect(response.body.data.length).toBe(1);
 		});
