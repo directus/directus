@@ -1,4 +1,11 @@
-import { CreateCollection, CreateField, CreateItem, CreatePermission, DeleteCollection } from '@common/functions';
+import {
+	CreateCollection,
+	CreateField,
+	CreateItem,
+	CreatePermissionWithPolicy,
+	DeleteCollection,
+	type OptionsCreatePermissionPolicy,
+} from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { randomUUID, type UUID } from 'node:crypto';
 import { expect, it } from 'vitest';
@@ -35,8 +42,16 @@ export const seedDBStructure = () => {
 					type: 'timestamp',
 				});
 
-				await CreatePermission(vendor, {
-					role: 'APP_ACCESS',
+				const policyOptions: OptionsCreatePermissionPolicy = {
+					policy: 'sample-policy',
+					policyName: 'sample-policy',
+				};
+
+				const role = 'APP_ACCESS';
+
+				await CreatePermissionWithPolicy(vendor, {
+					...policyOptions,
+					role,
 					permission: {
 						action: 'read',
 						fields: ['user_created', 'date_created'],
@@ -52,20 +67,21 @@ export const seedDBStructure = () => {
 								},
 							],
 						},
-						policy: 'custom',
+						policy: policyOptions.policy as string,
 						validation: null,
 						presets: null,
 					},
 				});
 
-				await CreatePermission(vendor, {
-					role: 'APP_ACCESS',
+				await CreatePermissionWithPolicy(vendor, {
+					...policyOptions,
+					role,
 					permission: {
 						action: 'create',
 						fields: ['id', 'user_created', 'date_created'],
 						collection: collection,
 						permissions: null,
-						policy: 'custom',
+						policy: policyOptions.policy as string,
 						validation: null,
 						presets: null,
 					},
