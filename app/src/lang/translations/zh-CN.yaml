@@ -1834,7 +1834,7 @@ interfaces:
     hash: Hash
     description: 输入一个hash值
     masked: Masked
-    masked_label: Hide the true values
+    masked_label: 隐藏真实值
   select-icon:
     icon: 图标
     description: 从下拉列表中选择一个图标
