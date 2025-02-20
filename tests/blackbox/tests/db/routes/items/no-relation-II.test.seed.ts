@@ -22,7 +22,7 @@ export type Result = {
 	apiToken: string | null;
 };
 
-export const collection = 'test_filter';
+export const collection = 'articles';
 
 export const seedDBStructure = () => {
 	it.each(vendors)(
