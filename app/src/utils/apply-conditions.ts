@@ -4,11 +4,7 @@ import { validatePayload } from '@directus/utils';
 import { isArray, mergeWith } from 'lodash';
 import { ContentVersion } from '@directus/types';
 
-export function applyConditions(
-	item: Record<string, any>,
-	field: Field,
-	version: ContentVersion | null = null
-) {
+export function applyConditions(item: Record<string, any>, field: Field, version: ContentVersion | null = null) {
 	if (field.meta && Array.isArray(field.meta?.conditions)) {
 		const conditions = [...field.meta.conditions].reverse();
 
@@ -17,7 +13,7 @@ export function applyConditions(
 
 			const validationContext = {
 				...item,
-				$version: version?.name ?? null
+				$version: version?.name ?? null,
 			};
 
 			const rule = parseFilter(condition.rule);
@@ -25,7 +21,7 @@ export function applyConditions(
 			return errors.length === 0;
 		});
 
-	if (matchingCondition) {
+		if (matchingCondition) {
 			const updatedField = {
 				...field,
 				meta: mergeWith(
