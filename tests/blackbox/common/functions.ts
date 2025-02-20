@@ -1,4 +1,4 @@
-import type { Permission, Query } from '@directus/types';
+import type { Permission, Query, User } from '@directus/types';
 import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
@@ -82,7 +82,7 @@ export type OptionsCreateUser = {
 	roleName?: string; // to generate role
 };
 
-export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateUser>) {
+export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateUser>): Promise<User> {
 	// Validate options
 	if (!options.token) {
 		throw new Error('Missing required field: token');
@@ -760,7 +760,7 @@ export type OptionsCreatePermission = {
 export type OptionsCreatePermissionPolicy = {
 	policy?: string;
 	policyName?: string;
-}
+};
 
 export async function CreatePermissionWithPolicy(vendor: Vendor, options: OptionsCreatePermission) {
 	let policyId = options.policy;
