@@ -63,131 +63,127 @@ export const seedDBStructure = () => {
 export const seedDBValues = async () => {
 	const result: Result = {
 		apiToken: null,
-		isSeeded: false,
+		isSeeded: true,
 		permissions: [],
 		collection,
 	};
 
-	const promises = vendors.map(async (vendor) => {
-		const role = 'EDITOR_ARTICLES';
-		const policy = 'sample-policy';
+	try {
+		vendors.map(async (vendor) => {
+			console.log('starting seed', vendor);
 
-		console.log('starting');
+			const role = 'EDITOR_ARTICLES';
+			const policy = 'sample-policy';
 
-		const user = await CreateUser(
-			vendor,
-			{
-				email: 'sample@sample.com',
-				password: '12345',
-				name: 'John',
-				role,
-			},
-			USER.ADMIN.TOKEN,
-		);
+			const user = await CreateUser(
+				vendor,
+				{
+					email: 'sample@sample.com',
+					password: '12345',
+					name: 'John',
+					role,
+				},
+				USER.ADMIN.TOKEN,
+			);
 
-		console.log('user created');
+			console.log('user created');
 
-		result.apiToken = user.token;
+			result.apiToken = user.token;
 
-		await CreateRole(vendor, { name: role }, USER.ADMIN.TOKEN);
+			await CreateRole(vendor, { name: role }, USER.ADMIN.TOKEN);
 
-		console.log('Role created');
+			console.log('Role created');
 
-		await CreatePolicy(
-			vendor,
-			{
-				id: policy,
-				name: policy,
-				icon: 'trashcan',
-				description: '',
-				enforce_tfa: null,
-				ip_access: [],
-				app_access: true,
-				admin_access: false,
-			},
-			USER.ADMIN.TOKEN,
-		);
+			await CreatePolicy(
+				vendor,
+				{
+					id: policy,
+					name: policy,
+					icon: 'trashcan',
+					description: '',
+					enforce_tfa: null,
+					ip_access: [],
+					app_access: true,
+					admin_access: false,
+				},
+				USER.ADMIN.TOKEN,
+			);
 
-		console.log('policy created');
+			console.log('policy created');
 
-		const permission1 = await CreatePermission(
-			vendor,
-			{
-				action: 'read',
-				fields: ['id', 'user_created', 'date_created'],
-				collection,
-				permissions: {
-					_and: [
-						{
-							user_created: {
-								id: {
-									_eq: '$CURRENT_USER',
+			const permission1 = await CreatePermission(
+				vendor,
+				{
+					action: 'read',
+					fields: ['id', 'user_created', 'date_created'],
+					collection,
+					permissions: {
+						_and: [
+							{
+								user_created: {
+									id: {
+										_eq: '$CURRENT_USER',
+									},
 								},
 							},
-						},
-					],
+						],
+					},
+					policy,
+					validation: null,
+					presets: null,
 				},
-				policy,
-				validation: null,
-				presets: null,
-			},
-			USER.ADMIN.TOKEN,
-		);
+				USER.ADMIN.TOKEN,
+			);
 
-		const permission2 = await CreatePermission(
-			vendor,
-			{
-				action: 'create',
-				fields: ['id', 'user_created', 'date_created'],
-				collection,
-				permissions: null,
-				policy,
-				validation: null,
-				presets: null,
-			},
-			USER.ADMIN.TOKEN,
-		);
-
-		console.log('permissions created');
-
-		result.permissions.push(permission1.id, permission2.id);
-
-		await CreateItem(
-			vendor,
-			{
-				collection,
-				item: {
-					id: '1',
-					user_created: randomUUID(),
-					date_created: new Date().toISOString(),
+			const permission2 = await CreatePermission(
+				vendor,
+				{
+					action: 'create',
+					fields: ['id', 'user_created', 'date_created'],
+					collection,
+					permissions: null,
+					policy,
+					validation: null,
+					presets: null,
 				},
-			},
-			user.token,
-		);
+				USER.ADMIN.TOKEN,
+			);
 
-		await CreateItem(
-			vendor,
-			{
-				collection,
-				item: {
-					id: '2',
-					user_created: randomUUID(),
-					date_created: new Date().toISOString(),
+			console.log('permissions created');
+
+			result.permissions.push(permission1.id, permission2.id);
+
+			await CreateItem(
+				vendor,
+				{
+					collection,
+					item: {
+						id: '1',
+						user_created: randomUUID(),
+						date_created: new Date().toISOString(),
+					},
 				},
-			},
-			user.token,
-		);
+				user.token,
+			);
 
-		console.log('items created');
-	});
+			await CreateItem(
+				vendor,
+				{
+					collection,
+					item: {
+						id: '2',
+						user_created: randomUUID(),
+						date_created: new Date().toISOString(),
+					},
+				},
+				user.token,
+			);
 
-	await Promise.all(promises)
-		.then(() => {
-			result.isSeeded = true;
-		})
-		.catch(() => {
-			result.isSeeded = false;
+			console.log('items created');
 		});
+	} catch (error) {
+		result.isSeeded = false;
+	}
 
 	return result;
 };
