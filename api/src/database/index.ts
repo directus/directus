@@ -13,6 +13,7 @@ import { performance } from 'perf_hooks';
 import { promisify } from 'util';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../logger/index.js';
+import { useMetrics } from '../metrics/index.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
@@ -40,6 +41,7 @@ export function getDatabase(): Knex {
 
 	const env = useEnv();
 	const logger = useLogger();
+	const metrics = useMetrics();
 
 	const {
 		client,
@@ -197,6 +199,8 @@ export function getDatabase(): Knex {
 			if (time) {
 				delta = performance.now() - time;
 				times.delete(queryInfo.__knexUid);
+
+				metrics?.getDatabaseResponseMetric()?.observe(delta);
 			}
 
 			// eslint-disable-next-line no-nested-ternary
