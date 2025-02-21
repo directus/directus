@@ -185,11 +185,13 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			const additionalOptions={}
 			const checks = { code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge }
 			const requiresClientCredentials = env[`AUTH_${providerName.toUpperCase()}_ACCESS_TOKEN_REQUIRES_CLIENT_CREDENTIALS`] ?? false
+			
 			if(requiresClientCredentials){
 				additionalOptions.exchangeBody={
 					client_id: client.client_id,
 					client_secret: client.client_secret
 				}
+				
 				delete checks["code_verifier"]
 				delete checks["nonce"]
 			}
