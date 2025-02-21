@@ -114,10 +114,7 @@ export async function CreateUser(
 	}
 
 	// Action
-	const response = await request(getUrl(vendor))
-		.post(`/users`)
-		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send(options);
+	const response = await request(getUrl(vendor)).post(`/users`).set('Authorization', `Bearer ${token}`).send(options);
 
 	return response.body.data;
 }
