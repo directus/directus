@@ -12,7 +12,7 @@ vi.mock('../../services/permissions.js', () => ({
 }));
 
 vi.mock('./with-app-minimal-permissions.js');
-vi.mock('../utils/fetch-dynamic-variable-context.js');
+vi.mock('../utils/fetch-dynamic-variable-data.js');
 vi.mock('../utils/process-permissions.js');
 
 beforeEach(() => {
