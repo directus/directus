@@ -184,6 +184,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 			const additionalOptions={};
 			const checks = { code_verifier: payload['codeVerifier'], state: codeChallenge, nonce: codeChallenge };
+			
 			const requiresClientCredentials = 
 				env[`AUTH_${providerName.toUpperCase()}_ACCESS_TOKEN_REQUIRES_CLIENT_CREDENTIALS`] ?? false;
 
