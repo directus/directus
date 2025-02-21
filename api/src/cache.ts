@@ -101,6 +101,7 @@ export async function clearSystemCache(opts?: {
 	}
 
 	await localSchemaCache.clear();
+	memorySchemaCache = null;
 
 	// Since a lot of cached permission function rely on the schema it needs to be cleared as well
 	await clearPermissionCache();
