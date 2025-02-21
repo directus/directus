@@ -8,6 +8,7 @@ import {
 	CreateUser,
 } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
 import { randomUUID, type UUID } from 'node:crypto';
 import { expect, it } from 'vitest';
 
@@ -69,16 +70,20 @@ export const seedDBValues = async () => {
 		const role = 'EDITOR_ARTICLES';
 		const policy = 'sample-policy';
 
-		const user = await CreateUser(vendor, {
-			email: 'sample@sample.com',
-			password: '12345',
-			name: 'John',
-			role,
-		});
+		const user = await CreateUser(
+			vendor,
+			{
+				email: 'sample@sample.com',
+				password: '12345',
+				name: 'John',
+				role,
+			},
+			USER.ADMIN.TOKEN,
+		);
 
 		result.apiToken = user.token;
 
-		await CreateRole(vendor, { name: role }, user.token);
+		await CreateRole(vendor, { name: role }, USER.ADMIN.TOKEN);
 
 		await CreatePolicy(
 			vendor,
@@ -92,7 +97,7 @@ export const seedDBValues = async () => {
 				app_access: true,
 				admin_access: false,
 			},
-			user.token,
+			USER.ADMIN.TOKEN,
 		);
 
 		const permission1 = await CreatePermission(
@@ -116,7 +121,7 @@ export const seedDBValues = async () => {
 				validation: null,
 				presets: null,
 			},
-			user.token,
+			USER.ADMIN.TOKEN,
 		);
 
 		const permission2 = await CreatePermission(
@@ -130,28 +135,36 @@ export const seedDBValues = async () => {
 				validation: null,
 				presets: null,
 			},
-			user.token,
+			USER.ADMIN.TOKEN,
 		);
 
 		result.permissions.push(permission1.id, permission2.id);
 
-		await CreateItem(vendor, {
-			collection,
-			item: {
-				id: '1',
-				user_created: randomUUID(),
-				date_created: new Date().toISOString(),
+		await CreateItem(
+			vendor,
+			{
+				collection,
+				item: {
+					id: '1',
+					user_created: randomUUID(),
+					date_created: new Date().toISOString(),
+				},
 			},
-		});
+			user.token,
+		);
 
-		await CreateItem(vendor, {
-			collection,
-			item: {
-				id: '2',
-				user_created: randomUUID(),
-				date_created: new Date().toISOString(),
+		await CreateItem(
+			vendor,
+			{
+				collection,
+				item: {
+					id: '2',
+					user_created: randomUUID(),
+					date_created: new Date().toISOString(),
+				},
 			},
-		});
+			user.token,
+		);
 	});
 
 	await Promise.all(promises)

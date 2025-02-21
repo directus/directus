@@ -19,17 +19,15 @@ test('Seed Database Values', () => {
 	expect(seedResult.isSeeded).toStrictEqual(true);
 });
 
-describe(`GET /${collection}`, () => {
-	describe('retrieves items with filters', () => {
-		it.each(vendors)('%s', async (vendor) => {
-			const response = await request(getUrl(vendor))
-				.get(`/items/${collection}/articles?groupBy=day(date_created)&aggregate[count]=*`)
-				.set('Authorization', `Bearer ${seedResult.apiToken}`);
+describe('retrieves items with filters', () => {
+	it.each(vendors)('%s', async (vendor) => {
+		const response = await request(getUrl(vendor))
+			.get(`/items/${collection}/articles?groupBy=day(date_created)&aggregate[count]=*`)
+			.set('Authorization', `Bearer ${seedResult.apiToken}`);
 
-			console.log(response.body);
+		console.log(response.body);
 
-			expect(response.statusCode).toEqual(200);
-			expect(response.body.data.length).toBe(1);
-		});
+		expect(response.statusCode).toEqual(200);
+		expect(response.body.data.length).toBe(1);
 	});
 });

@@ -82,7 +82,11 @@ export type OptionsCreateUser = {
 	roleName?: string; // to generate role
 };
 
-export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateUser>): Promise<User> {
+export async function CreateUser(
+	vendor: Vendor,
+	options: Partial<OptionsCreateUser>,
+	token: string = USER.TESTS_FLOW.TOKEN,
+): Promise<User> {
 	// Validate options
 	if (!options.token) {
 		throw new Error('Missing required field: token');
@@ -99,7 +103,7 @@ export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateU
 				filter: { name: { _eq: options.roleName } },
 				fields: ['id', 'name'],
 			})
-			.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
+			.set('Authorization', `Bearer ${token}`);
 
 		if (roleResponse.body.data.length === 0) {
 			throw new Error(`Role ${options.roleName} does not exist`);
@@ -660,11 +664,11 @@ export type OptionsCreateItem = {
 	item: any;
 };
 
-export async function CreateItem(vendor: Vendor, options: OptionsCreateItem) {
+export async function CreateItem(vendor: Vendor, options: OptionsCreateItem, token: string = USER.TESTS_FLOW.TOKEN) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.post(`/items/${options.collection}`)
-		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${token}`)
 		.send(options.item);
 
 	return response.body.data;
