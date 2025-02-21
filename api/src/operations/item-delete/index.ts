@@ -37,7 +37,7 @@ export default defineOperationApi<Options>({
 		});
 
 		const queryObject = query ? optionToObject(query) : {};
-		const sanitizedQueryObject = sanitizeQuery(queryObject, customAccountability);
+		const sanitizedQueryObject = await sanitizeQuery(queryObject, schema, customAccountability);
 
 		let result: PrimaryKey | PrimaryKey[] | null;
 

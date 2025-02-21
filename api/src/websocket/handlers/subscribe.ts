@@ -163,7 +163,7 @@ export class SubscribeHandler {
 				}
 
 				if ('query' in message) {
-					subscription.query = sanitizeQuery(message.query!, accountability);
+					subscription.query = await sanitizeQuery(message.query!, schema, accountability);
 				}
 
 				if ('item' in message) subscription.item = String(message.item);
