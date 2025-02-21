@@ -49,6 +49,8 @@ export const seedDBStructure = () => {
 					type: 'timestamp',
 				});
 
+				console.log('setup schema ');
+
 				expect(true).toBeTruthy();
 			} catch (error) {
 				expect(error).toBeFalsy();
@@ -85,6 +87,8 @@ export const seedDBValues = async () => {
 
 		await CreateRole(vendor, { name: role }, USER.ADMIN.TOKEN);
 
+		console.log('Role created');
+
 		await CreatePolicy(
 			vendor,
 			{
@@ -99,6 +103,8 @@ export const seedDBValues = async () => {
 			},
 			USER.ADMIN.TOKEN,
 		);
+
+		console.log('policy created');
 
 		const permission1 = await CreatePermission(
 			vendor,
@@ -138,6 +144,8 @@ export const seedDBValues = async () => {
 			USER.ADMIN.TOKEN,
 		);
 
+		console.log('permissions created');
+
 		result.permissions.push(permission1.id, permission2.id);
 
 		await CreateItem(
@@ -165,6 +173,8 @@ export const seedDBValues = async () => {
 			},
 			user.token,
 		);
+
+		console.log('items created');
 	});
 
 	await Promise.all(promises)
