@@ -641,25 +641,24 @@ export class FieldsService {
 		}
 	}
 
-	private async metaUpdates(collection: string, field: string) {
-		const forwardLinkedCollections = new Map<string, string[]>();
-		const backwardLinkedCollections = new Map<string, string[]>();
-		const linkedCollectionList = new Set<string>();
-		const relationalFieldToCollection = new Map<string, string>();
-
+	private async collectionMetaUpdates(collection: string, field: string) {
 		const schema = this.schema;
 
-		schema.relations.forEach((relation) => {
-			const forward = forwardLinkedCollections.get(relation.collection) ?? [];
+		const outwardLinkedCollections = new Map<string, string[]>();
+		const inwardLinkedCollections = new Map<string, string[]>();
+		const relationalFieldToCollection = new Map<string, string>();
+
+		for (const relation of schema.relations) {
+			const outward = outwardLinkedCollections.get(relation.collection) ?? [];
 
 			if (relation.related_collection) {
-				const backward = backwardLinkedCollections.get(relation.related_collection) ?? [];
+				const inward = inwardLinkedCollections.get(relation.related_collection) ?? [];
 
-				backward.push(relation.collection);
-				backwardLinkedCollections.set(relation.related_collection, backward);
+				inward.push(relation.collection);
+				inwardLinkedCollections.set(relation.related_collection, inward);
 
-				forward.push(relation.related_collection);
-				forwardLinkedCollections.set(relation.collection, forward);
+				outward.push(relation.related_collection);
+				outwardLinkedCollections.set(relation.collection, outward);
 
 				relationalFieldToCollection.set(`${relation.collection}::${relation.field}`, relation.related_collection);
 
@@ -670,9 +669,9 @@ export class FieldsService {
 					);
 				}
 			}
-		});
+		}
 
-		buildLinkedCollectionList(collection);
+		const collectionLinks = getRelatedCollections(collection);
 
 		const collectionMetaQuery = this.knex
 			.queryBuilder()
@@ -680,118 +679,124 @@ export class FieldsService {
 			.from('directus_collections')
 			.where({ collection });
 
-		if (linkedCollectionList.size !== 0) {
+		if (collectionLinks.size !== 0) {
 			collectionMetaQuery.orWhere(function () {
-				this.whereIn('collection', Array.from(linkedCollectionList.keys())).whereNotNull('item_duplication_fields');
+				this.whereIn('collection', Array.from(collectionLinks)).whereNotNull('item_duplication_fields');
 			});
 		}
 
 		const collectionMetas = await collectionMetaQuery;
 
-		const metaUpdates = [];
+		const collectionMetaUpdates = [];
 
-		for (const metaCollection of collectionMetas) {
+		for (const collectionMeta of collectionMetas) {
 			let hasUpdates = false;
 
-			const meta: { collection: string; updates: Record<string, string | string[] | null> } = {
-				collection: metaCollection,
+			const meta: { collection: string; updates: Record<string, Knex.Value> } = {
+				collection: collectionMeta.collection,
 				updates: {},
 			};
 
-			if (metaCollection.collection === collection) {
-				if (metaCollection.archive_field === field) {
+			if (collectionMeta.collection === collection) {
+				if (collectionMeta.archive_field === field) {
 					meta.updates['archive_field'] = null;
 					hasUpdates = true;
 				}
 
-				if (metaCollection.sort_field === field) {
+				if (collectionMeta.sort_field === field) {
 					meta.updates['sort_field'] = null;
 					hasUpdates = true;
 				}
 			}
 
-			if (metaCollection.item_duplication_fields !== null) {
-				const paths = validateFieldDuplicationPaths(metaCollection.item_duplication_fields, metaCollection.collection);
+			if (collectionMeta.item_duplication_fields !== null) {
+				const paths = updateItemDuplicationPaths(collectionMeta.item_duplication_fields, collectionMeta.collection);
 
 				meta.updates['item_duplication_fields'] = paths || null;
 				hasUpdates = true;
 			}
 
 			if (hasUpdates) {
-				metaUpdates.push(meta);
+				collectionMetaUpdates.push(meta);
 			}
 		}
 
-		return metaUpdates;
+		return collectionMetaUpdates;
 
-		function buildLinkedCollectionList(collection: string) {
-			const backward = backwardLinkedCollections.get(collection) ?? [];
-			const forward = forwardLinkedCollections.get(collection) ?? [];
+		function getRelatedCollections(collection: string) {
+			const relatedCollections = new Set<string>();
 
-			if (backward.length === 0 && forward.length === 0) return;
+			traverseRelatedCollections(collection);
 
-			for (const node of backward) {
-				setNextCollectionNode(node);
-			}
+			function traverseRelatedCollections(root: string) {
+				const inward = inwardLinkedCollections.get(root) ?? [];
+				const outward = outwardLinkedCollections.get(root) ?? [];
 
-			for (const node of forward) {
-				setNextCollectionNode(node);
-			}
-		}
+				if (inward.length === 0 && outward.length === 0) return;
 
-		function setNextCollectionNode(node: string) {
-			// skip circular reference and existing linked nodes
-			if (node === collection || linkedCollectionList.has(node)) return;
+				for (const node of inward) {
+					addNode(node);
+				}
 
-			linkedCollectionList.add(node);
-
-			buildLinkedCollectionList(node);
-		}
-
-		function validateFieldDuplicationPath(path: string, root: string) {
-			let currentCollection = root;
-
-			const parts = path.split('.');
-
-			const fixedParts = [];
-
-			for (let index = 0; index < parts.length; index++) {
-				const part = parts[index];
-
-				if (!part) return;
-
-				// Invalid path for field that is currently being remove
-				if (currentCollection === collection && part === field) return;
-
-				const nextCollection = relationalFieldToCollection.get(`${currentCollection}::${part}`);
-
-				// Invalid path for old deleted or currently removed collections
-				if (!nextCollection) return;
-
-				currentCollection = nextCollection;
-
-				fixedParts.push(part);
-			}
-
-			return fixedParts;
-		}
-
-		function validateFieldDuplicationPaths(paths: string | string[], root: string) {
-			const fixedPaths = [];
-
-			const duplicateFieldPaths: string[] = typeof paths === 'string' ? parseJSON(paths) : paths;
-
-			for (const path of duplicateFieldPaths) {
-				const validatedParts = validateFieldDuplicationPath(path, root);
-
-				if (validatedParts && validatedParts.length) {
-					fixedPaths.push(validatedParts.join('.'));
+				for (const node of outward) {
+					addNode(node);
 				}
 			}
 
-			if (fixedPaths.length === 0) return;
+			function addNode(node: string) {
+				// skip circular reference and existing linked nodes
+				if (node === collection || relatedCollections.has(node)) return;
 
-			return typeof paths === 'string' ? JSON.stringify(fixedPaths) : fixedPaths;
+				relatedCollections.add(node);
+
+				traverseRelatedCollections(node);
+			}
+
+			return relatedCollections;
+		}
+
+		function updateItemDuplicationPaths(paths: string | string[], root: string) {
+			const updatedPaths = [];
+
+			const itemDuplicationPaths: string[] = typeof paths === 'string' ? parseJSON(paths) : paths;
+
+			for (const path of itemDuplicationPaths) {
+				const updatedPath = updateItemDuplicationPath(path, root);
+
+				if (updatedPath && updatedPath.length !== 0) {
+					updatedPaths.push(updatedPath.join('.'));
+				}
+			}
+
+			if (updatedPaths.length === 0) return;
+
+			return updatedPaths;
+
+			function updateItemDuplicationPath(path: string, root: string) {
+				let currentCollection = root;
+
+				const parts = path.split('.');
+
+				const updatedParts = [];
+
+				for (let index = 0; index < parts.length; index++) {
+					const part = parts[index]!;
+
+					// Invalid path for field that is currently being remove
+					if (currentCollection === collection && part === field) return;
+
+					const nextCollection = relationalFieldToCollection.get(`${currentCollection}::${part}`);
+
+					// Invalid path for old deleted collections
+					if (!nextCollection) return;
+
+					currentCollection = nextCollection;
+
+					updatedParts.push(part);
+				}
+
+				return updatedParts;
+			}
 		}
 	}
 
@@ -884,9 +889,9 @@ export class FieldsService {
 					});
 				}
 
-				const metaUpdates = await this.metaUpdates(collection, field);
+				const collectionMetaUpdates = await this.collectionMetaUpdates(collection, field);
 
-				for (const meta of metaUpdates) {
+				for (const meta of collectionMetaUpdates) {
 					await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
 				}
 
