@@ -7,7 +7,7 @@ import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';
 import { useBus } from '../bus/index.js';
-import { getLocalSchemaCache, setLocalSchemaCache } from '../cache.js';
+import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLock } from '../lock/index.js';
@@ -42,7 +42,7 @@ export async function getSchema(
 		return await getDatabaseSchema(database, schemaInspector);
 	}
 
-	const cached = getLocalSchemaCache();
+	const cached = getMemorySchemaCache();
 
 	if (cached) {
 		return cached;
@@ -83,7 +83,7 @@ export async function getSchema(
 				}
 
 				try {
-					setLocalSchemaCache(options.schema);
+					setMemorySchemaCache(options.schema);
 					resolve(options.schema);
 				} catch (e) {
 					reject(e);
@@ -105,7 +105,7 @@ export async function getSchema(
 		const schemaInspector = createInspector(database);
 
 		schema = await getDatabaseSchema(database, schemaInspector);
-		setLocalSchemaCache(schema);
+		setMemorySchemaCache(schema);
 		return schema;
 	} finally {
 		await bus.publish(messageKey, { schema });

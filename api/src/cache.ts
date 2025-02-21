@@ -123,7 +123,7 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 	return await getCacheValue(systemCache, key);
 }
 
-export function setLocalSchemaCache(schema: SchemaOverview) {
+export function setMemorySchemaCache(schema: SchemaOverview) {
 	if (Object.isFrozen(schema)) {
 		memorySchemaCache = schema;
 	} else {
@@ -131,7 +131,7 @@ export function setLocalSchemaCache(schema: SchemaOverview) {
 	}
 }
 
-export function getLocalSchemaCache(): Readonly<SchemaOverview> | undefined {
+export function getMemorySchemaCache(): Readonly<SchemaOverview> | undefined {
 	return memorySchemaCache ?? undefined;
 }
 
