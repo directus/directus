@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import { CSSProperties, computed, onMounted, ref } from 'vue';
+import { CSSProperties, computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 declare global {
@@ -9,8 +9,8 @@ declare global {
 	}
 }
 
-defineProps<{
-	url: string;
+const { url } = defineProps<{
+	url: string | string[];
 	inPopup?: boolean;
 }>();
 
@@ -19,6 +19,21 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+
+const multipleUrls = computed(() => Array.isArray(url) && url.length > 1);
+const activeUrl = ref<string>();
+
+watch(
+	() => url,
+	() => {
+		if (Array.isArray(url)) {
+			activeUrl.value = url[0];
+		} else {
+			activeUrl.value = url;
+		}
+	},
+	{ immediate: true },
+);
 
 const width = ref<number>();
 const height = ref<number>();
@@ -131,17 +146,36 @@ onMounted(() => {
 				icon
 				rounded
 				secondary
-				:disabled="isRefreshing"
+				:disabled="isRefreshing || !activeUrl"
 				@click="refresh(null)"
 			>
 				<v-progress-circular v-if="isRefreshing" indeterminate x-small />
 				<v-icon v-else small name="refresh" />
 			</v-button>
-			<span class="url">
-				<v-text-overflow :text="url" placement="bottom" />
-			</span>
+
+			<v-menu v-if="activeUrl" class="url" show-arrow :class="{ multiple: multipleUrls }" :disabled="!multipleUrls">
+				<template #activator="{ toggle }">
+					<div class="activator" @click="toggle">
+						<v-text-overflow :text="activeUrl" placement="bottom" />
+						<v-icon v-if="multipleUrls" name="expand_more" />
+					</div>
+				</template>
+
+				<v-list>
+					<v-list-item
+						v-for="(urlItem, index) in url"
+						:key="index"
+						:active="urlItem === activeUrl"
+						clickable
+						@click="activeUrl = urlItem"
+					>
+						<v-list-item-content>{{ urlItem }}</v-list-item-content>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+
 			<div class="spacer" />
-			<div class="dimensions" :class="{ disabled: fullscreen }">
+			<div v-if="activeUrl" class="dimensions" :class="{ disabled: fullscreen }">
 				<input
 					:value="displayWidth"
 					class="width"
@@ -175,12 +209,18 @@ onMounted(() => {
 				icon
 				rounded
 				:secondary="fullscreen"
+				:disabled="!activeUrl"
 				@click="toggleFullscreen"
 			>
 				<v-icon small name="devices" />
 			</v-button>
 		</div>
-		<div class="container">
+
+		<v-info v-if="!activeUrl" :title="t('no_url')" icon="edit_square" center>
+			{{ t('no_url_copy') }}
+		</v-info>
+
+		<div v-else class="container">
 			<div class="iframe-view" :style="iframeViewStyle">
 				<div
 					ref="resizeHandle"
@@ -193,8 +233,8 @@ onMounted(() => {
 						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
 					}"
 				>
-					<iframe id="frame" ref="frameEl" :src="url" @load="onIframeLoad" />
-					<slot name="overlay" :frame-el />
+					<iframe id="frame" ref="frameEl" :src="activeUrl" @load="onIframeLoad" />
+					<slot name="overlay" :frame-el :active-url />
 				</div>
 			</div>
 		</div>
@@ -232,6 +272,21 @@ onMounted(() => {
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+
+			&.multiple {
+				cursor: pointer;
+				color: var(--foreground-inverted);
+			}
+
+			.activator {
+				display: flex;
+				align-items: center;
+				min-width: 0;
+
+				.v-icon {
+					top: 1px;
+				}
+			}
 		}
 
 		.spacer {

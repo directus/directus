@@ -10,16 +10,16 @@ import EditingLayer from '../components/editing-layer.vue';
 const { t } = useI18n();
 useHead({ title: t('visual_editor') });
 
-const url = 'http://localhost:3000';
+const urls = ['http://localhost:3000', 'http://localhost:3000/blog', 'http://localhost:3000/privacy-policy'];
 </script>
 
 <template>
 	<div class="module">
 		<module-bar />
 
-		<live-preview :url>
-			<template #overlay="{ frameEl }">
-				<editing-layer :url :frame-el />
+		<live-preview :url="urls">
+			<template #overlay="{ frameEl, activeUrl }">
+				<editing-layer :url="activeUrl" :frame-el />
 			</template>
 		</live-preview>
 
