@@ -9,11 +9,8 @@ let seedResult: Result = null;
 
 beforeAll(async () => {
 	console.log('seed db');
-
 	seedResult = await seedDBValues();
 	console.log('seeded db', seedResult.isSeeded);
-
-
 }, 300_000);
 
 afterAll(async () => {
@@ -27,7 +24,7 @@ test('Seed Database Values', () => {
 describe('retrieves items with filters', () => {
 	it.each(vendors)('%s', async (vendor) => {
 		const response = await request(getUrl(vendor))
-			.get(`/items/${collection}/articles?groupBy=day(date_created)&aggregate[count]=*`)
+			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
 			.set('Authorization', `Bearer ${seedResult.apiToken}`);
 
 		console.log(response.body);
