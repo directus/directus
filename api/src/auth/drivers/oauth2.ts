@@ -144,22 +144,23 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 			const additionalOptions={}
 			const checks = { code_verifier: payload['codeVerifier'], state: codeChallenge }
-			const requiresClientCredentials = env[`AUTH_${providerName.toUpperCase()}_ACCESS_TOKEN_REQUIRES_CLIENT_CREDENTIALS`] ?? false
-			
+			const requiresClientCredentials = 
+				env[`AUTH_${providerName.toUpperCase()}_ACCESS_TOKEN_REQUIRES_CLIENT_CREDENTIALS`] ?? false;
+
 			if(requiresClientCredentials){
 				additionalOptions.exchangeBody={
 					client_id: client.client_id,
-					client_secret: client.client_secret
-				}
-				
-				delete checks["code_verifier"]
+					client_secret: client.client_secret,
+				};
+
+				delete checks["code_verifier"];
 			}
-			
+
 			tokenSet = await client.callback(
-				this.redirectUrl, 
-				{ code: payload['code'], state: payload['state'] }, 
+				this.redirectUrl,
+				{ code: payload['code'], state: payload['state'] },
 				checks,
-				additionalOptions   
+				additionalOptions,
 			);
 
 			userInfo = await this.client.userinfo(tokenSet.access_token!);
