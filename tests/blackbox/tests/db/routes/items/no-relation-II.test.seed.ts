@@ -82,6 +82,7 @@ export const seedDBValues = async () => {
 					password: '12345',
 					name: 'John',
 					role,
+					token: USER.ADMIN.TOKEN,
 				},
 				USER.ADMIN.TOKEN,
 			);
