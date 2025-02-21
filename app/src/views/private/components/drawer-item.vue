@@ -256,6 +256,7 @@ function useItem() {
 
 			initialValues.value = response.data.data;
 		} catch (error) {
+			internalActive.value = false;
 			unexpectedError(error);
 		} finally {
 			loading.value = false;
@@ -283,6 +284,7 @@ function useItem() {
 				[junctionFieldInfo.value.field]: response.data.data,
 			};
 		} catch (error) {
+			internalActive.value = false;
 			unexpectedError(error);
 		} finally {
 			loading.value = false;
