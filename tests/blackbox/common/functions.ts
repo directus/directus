@@ -1,4 +1,4 @@
-import type { Collection, Field, Permission, Policy, Query, Relation, User } from '@directus/types';
+import type { Collection, Field, Item, Permission, Policy, Query, Relation, User } from '@directus/types';
 import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
@@ -115,6 +115,10 @@ export async function CreateUser(
 
 	// Action
 	const response = await request(getUrl(vendor)).post(`/users`).set('Authorization', `Bearer ${token}`).send(options);
+
+	if (response.statusCode !== 201) {
+		throw new Error('Could not create user');
+	}
 
 	return response.body.data;
 }
@@ -661,12 +665,20 @@ export type OptionsCreateItem = {
 	item: any;
 };
 
-export async function CreateItem(vendor: Vendor, options: OptionsCreateItem, token: string = USER.TESTS_FLOW.TOKEN) {
+export async function CreateItem(
+	vendor: Vendor,
+	options: OptionsCreateItem,
+	token: string = USER.TESTS_FLOW.TOKEN,
+): Promise<Item> {
 	// Action
 	const response = await request(getUrl(vendor))
 		.post(`/items/${options.collection}`)
 		.set('Authorization', `Bearer ${token}`)
 		.send(options.item);
+
+	if (response.statusCode !== 201) {
+		throw new Error('Could not create item');
+	}
 
 	return response.body.data;
 }
@@ -806,6 +818,10 @@ export async function CreatePermission(vendor: Vendor, options: Permission, toke
 		.set('Authorization', `Bearer ${token}`)
 		.send(options);
 
+	if (response.statusCode !== 201) {
+		throw new Error('Could not create permission');
+	}
+
 	return response.body.data;
 }
 
@@ -814,6 +830,10 @@ export async function CreatePolicy(vendor: Vendor, options: Policy, token: strin
 		.post(`/policies/`)
 		.set('Authorization', `Bearer ${token}`)
 		.send(options);
+
+	if (response.statusCode !== 201) {
+		throw new Error('Could not create policy');
+	}
 
 	return response.body.data;
 }
