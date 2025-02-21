@@ -72,6 +72,8 @@ export const seedDBValues = async () => {
 		const role = 'EDITOR_ARTICLES';
 		const policy = 'sample-policy';
 
+		console.log('starting');
+
 		const user = await CreateUser(
 			vendor,
 			{
@@ -82,6 +84,8 @@ export const seedDBValues = async () => {
 			},
 			USER.ADMIN.TOKEN,
 		);
+
+		console.log('user created');
 
 		result.apiToken = user.token;
 

@@ -8,7 +8,12 @@ import { unseed } from './no-relation-II.test.unseed';
 let seedResult: Result = null;
 
 beforeAll(async () => {
+	console.log('seed db');
+
 	seedResult = await seedDBValues();
+	console.log('seeded db', seedResult.isSeeded);
+
+
 }, 300_000);
 
 afterAll(async () => {
