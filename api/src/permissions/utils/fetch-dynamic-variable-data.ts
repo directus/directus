@@ -11,7 +11,7 @@ export interface FetchDynamicVariableContext {
 	dynamicVariableContext: DynamicVariableContext;
 }
 
-export async function fetchDynamicVariableContext(options: FetchDynamicVariableContext, context: Context) {
+export async function fetchDynamicVariableData(options: FetchDynamicVariableContext, context: Context) {
 	const { UsersService } = await import('../../services/users.js');
 	const { RolesService } = await import('../../services/roles.js');
 	const { PoliciesService } = await import('../../services/policies.js');

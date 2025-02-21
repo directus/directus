@@ -4,7 +4,7 @@ import { PoliciesService } from '../../services/policies.js';
 import { UsersService } from '../../services/users.js';
 import { RolesService } from '../../services/roles.js';
 import type { Context } from '../types.js';
-import { fetchDynamicVariableContext } from './fetch-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from './fetch-dynamic-variable-data.js';
 import type { DynamicVariableContext } from './extract-required-dynamic-variable-context.js';
 
 vi.mock('../../services/users.js', () => ({
@@ -38,7 +38,7 @@ test('Returns filter context for current user', async () => {
 
 	vi.mocked(UsersService.prototype.readOne).mockResolvedValue(user);
 
-	const res = await fetchDynamicVariableContext(
+	const res = await fetchDynamicVariableData(
 		{
 			accountability: { user: 'user', roles: [] as string[] } as Accountability,
 			policies: [],
@@ -63,7 +63,7 @@ test('Returns filter context for current role', async () => {
 
 	vi.mocked(RolesService.prototype.readOne).mockResolvedValue(role);
 
-	const res = await fetchDynamicVariableContext(
+	const res = await fetchDynamicVariableData(
 		{
 			dynamicVariableContext,
 			accountability: { role: 'role', roles: [] as string[] } as Accountability,
@@ -88,7 +88,7 @@ test('Returns filter context for current policies', async () => {
 
 	vi.mocked(PoliciesService.prototype.readMany).mockResolvedValue(policies);
 
-	const res = await fetchDynamicVariableContext(
+	const res = await fetchDynamicVariableData(
 		{
 			dynamicVariableContext,
 			accountability: { roles: [] as string[] } as Accountability,
