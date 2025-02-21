@@ -20,6 +20,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'array',
 	CACHE_SCHEMA_MAX_ITERATIONS: 'number',
 	CACHE_SCHEMA_SYNC_TIMEOUT: 'number',
+	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 
 	IMPORT_IP_DENY_LIST: 'array',
 

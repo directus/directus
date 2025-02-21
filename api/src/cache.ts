@@ -11,7 +11,7 @@ import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
-import { freezeSchema } from './utils/freeze-schema.js';
+import { freezeSchema, unfreezeSchema } from './utils/freeze-schema.js';
 
 const logger = useLogger();
 const env = useEnv();
@@ -132,7 +132,13 @@ export function setMemorySchemaCache(schema: SchemaOverview) {
 }
 
 export function getMemorySchemaCache(): Readonly<SchemaOverview> | undefined {
-	return memorySchemaCache ?? undefined;
+	if (env['CACHE_SCHEMA_FREEZE_ENABLED']) {
+		return memorySchemaCache ?? undefined;
+	} else if (memorySchemaCache) {
+		return unfreezeSchema(memorySchemaCache);
+	}
+
+	return undefined;
 }
 
 export async function setCacheValue(
