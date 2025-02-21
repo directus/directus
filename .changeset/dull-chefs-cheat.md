@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fix parsing of field validation
+Fixed dynamic variables parsing on field validation
