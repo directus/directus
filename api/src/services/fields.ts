@@ -781,16 +781,25 @@ export class FieldsService {
 
 				for (let index = 0; index < parts.length; index++) {
 					const part = parts[index]!;
+					const isLastPart = index === parts.length - 1;
 
-					// Invalid path for field that is currently being remove
+					// Invalid path for the field that is currently being removed
 					if (currentCollection === collection && part === field) return;
 
-					const nextCollection = relationalFieldToCollection.get(`${currentCollection}::${part}`);
+					const nextCollectionNode = relationalFieldToCollection.get(`${currentCollection}::${part}`);
+
+					const isLocalField = typeof schema.collections[currentCollection]?.['fields'][part] !== 'undefined';
 
 					// Invalid path for old deleted collections
-					if (!nextCollection) return;
+					if (!nextCollectionNode && !isLastPart) return;
 
-					currentCollection = nextCollection;
+					// Invalid path for old deleted fields
+					if (!nextCollectionNode && isLastPart && !isLocalField) return;
+
+					// next/last path is relational
+					if (nextCollectionNode) {
+						currentCollection = nextCollectionNode;
+					}
 
 					updatedParts.push(part);
 				}
