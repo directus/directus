@@ -1,4 +1,4 @@
-import type { Permission, Query, User } from '@directus/types';
+import type { Permission, Policy, Query, User } from '@directus/types';
 import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
@@ -51,14 +51,14 @@ export type OptionsCreateRole = {
 	name: string;
 };
 
-export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
+export async function CreateRole(vendor: Vendor, options: OptionsCreateRole, token: string) {
 	// Action
 	const roleResponse = await request(getUrl(vendor))
 		.get(`/roles`)
 		.query({
 			filter: { name: { _eq: options.name } },
 		})
-		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
+		.set('Authorization', `Bearer ${token}`);
 
 	if (roleResponse.body.data.length > 0) {
 		return roleResponse.body.data[0];
@@ -758,12 +758,15 @@ export type OptionsCreatePermission = {
 } & OptionsCreatePermissionPolicy;
 
 export type OptionsCreatePermissionPolicy = {
-	policy?: string;
+	policyId?: string;
 	policyName?: string;
 };
 
-export async function CreatePermissionWithPolicy(vendor: Vendor, options: OptionsCreatePermission) {
-	let policyId = options.policy;
+export async function CreatePermissionWithPolicy(
+	vendor: Vendor,
+	options: OptionsCreatePermission,
+): Promise<Permission> {
+	let policyId = options.policyId;
 	let roleId = options.role;
 
 	if (roleId in ROLE) {
@@ -789,11 +792,36 @@ export async function CreatePermissionWithPolicy(vendor: Vendor, options: Option
 	const response = await request(getUrl(vendor))
 		.patch(`/policies/${policyId}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send({ permissions: { create: [{ ...options.permission, policy: options.policy }], update: [], delete: [] } });
+		.send({ permissions: { create: [{ ...options.permission, policy: options.policyId }], update: [], delete: [] } });
 
 	return response.body.data;
 }
 
+// export type OptionsCreatePlainPermission = Omit<Partial<Permission>, 'id' | 'role' | 'system'>;
+
+export async function CreatePermission(vendor: Vendor, options: Permission, token: string): Promise<Permission> {
+	const response = await request(getUrl(vendor))
+		.post(`/permissions/`)
+		.set('Authorization', `Bearer ${token}`)
+		.send(options);
+
+	return response.body.data;
+}
+
+export async function CreatePolicy(vendor: Vendor, options: Policy, token: string): Promise<Policy> {
+	const response = await request(getUrl(vendor))
+		.post(`/policies/`)
+		.set('Authorization', `Bearer ${token}`)
+		.send(options);
+
+	return response.body.data;
+}
+
+export async function DeletePermissions(vendor: Vendor, ids: number[], token: string): Promise<void> {
+	ids.forEach(async (id) => {
+		await request(getUrl(vendor)).delete(`/permissions/${id}`).set('Authorization', `Bearer ${token}`);
+	});
+}
+
 // TODO
 // export async function UpdatePermission() {}
-// export async function DeletePermission() {}

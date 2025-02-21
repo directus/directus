@@ -44,7 +44,7 @@ describe('Common', () => {
 				};
 
 				// Action
-				const role = await CreateRole(vendor, roleOptions);
+				const role = await CreateRole(vendor, roleOptions, USER.TESTS_FLOW.TOKEN);
 
 				const policyOptions: OptionsCreatePolicy = {
 					name: policyName,
@@ -107,7 +107,7 @@ describe('Common', () => {
 				};
 
 				// Action
-				const role = await CreateRole(vendor, roleOptions);
+				const role = await CreateRole(vendor, roleOptions, USER.TESTS_FLOW.TOKEN);
 
 				const policyOptions: OptionsCreatePolicy = {
 					name: policyName,
@@ -170,7 +170,7 @@ describe('Common', () => {
 				};
 
 				// Action
-				const role = await CreateRole(vendor, roleOptions);
+				const role = await CreateRole(vendor, roleOptions, USER.TESTS_FLOW.TOKEN);
 
 				const policyOptions: OptionsCreatePolicy = {
 					name: policyName,

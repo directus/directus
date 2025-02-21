@@ -2,10 +2,10 @@ import {
 	CreateCollection,
 	CreateField,
 	CreateItem,
-	CreatePermissionWithPolicy,
+	CreatePermission,
+	CreatePolicy,
+	CreateRole,
 	CreateUser,
-	DeleteCollection,
-	type OptionsCreatePermissionPolicy,
 } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { randomUUID, type UUID } from 'node:crypto';
@@ -19,7 +19,9 @@ export type Articles = {
 
 export type Result = {
 	isSeeded: boolean;
+	collection: string;
 	apiToken: string | null;
+	permissions: number[];
 };
 
 export const collection = 'articles';
@@ -29,8 +31,6 @@ export const seedDBStructure = () => {
 		'%s',
 		async (vendor) => {
 			try {
-				await DeleteCollection(vendor, { collection });
-
 				await CreateCollection(vendor, {
 					collection,
 					primaryKeyType: 'integer',
@@ -58,35 +58,48 @@ export const seedDBStructure = () => {
 };
 
 export const seedDBValues = async () => {
-
 	const result: Result = {
 		apiToken: null,
 		isSeeded: false,
-	}
+		permissions: [],
+		collection,
+	};
 
 	const promises = vendors.map(async (vendor) => {
-		const policyOptions: OptionsCreatePermissionPolicy = {
-			policy: 'sample-policy',
-			policyName: 'sample-policy',
-		};
+		const role = 'EDITOR_ARTICLES';
+		const policy = 'sample-policy';
 
 		const user = await CreateUser(vendor, {
 			email: 'sample@sample.com',
 			password: '12345',
 			name: 'John',
-			...policyOptions,
+			role,
 		});
 
 		result.apiToken = user.token;
 
-		const role = 'APP_ACCESS';
+		await CreateRole(vendor, { name: role }, user.token);
 
-		await CreatePermissionWithPolicy(vendor, {
-			...policyOptions,
-			role,
-			permission: {
+		await CreatePolicy(
+			vendor,
+			{
+				id: policy,
+				name: policy,
+				icon: 'trashcan',
+				description: '',
+				enforce_tfa: null,
+				ip_access: [],
+				app_access: true,
+				admin_access: false,
+			},
+			user.token,
+		);
+
+		const permission1 = await CreatePermission(
+			vendor,
+			{
 				action: 'read',
-				fields: ['user_created', 'date_created'],
+				fields: ['id', 'user_created', 'date_created'],
 				collection,
 				permissions: {
 					_and: [
@@ -99,25 +112,28 @@ export const seedDBValues = async () => {
 						},
 					],
 				},
-				policy: policyOptions.policy as string,
+				policy,
 				validation: null,
 				presets: null,
 			},
-		});
+			user.token,
+		);
 
-		await CreatePermissionWithPolicy(vendor, {
-			...policyOptions,
-			role,
-			permission: {
+		const permission2 = await CreatePermission(
+			vendor,
+			{
 				action: 'create',
 				fields: ['id', 'user_created', 'date_created'],
 				collection,
 				permissions: null,
-				policy: policyOptions.policy as string,
+				policy,
 				validation: null,
 				presets: null,
 			},
-		});
+			user.token,
+		);
+
+		result.permissions.push(permission1.id, permission2.id);
 
 		await CreateItem(vendor, {
 			collection,
