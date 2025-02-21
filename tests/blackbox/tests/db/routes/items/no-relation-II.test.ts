@@ -27,7 +27,8 @@ describe('retrieves items with filters', () => {
 			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
 			.set('Authorization', `Bearer ${seedResult.apiToken}`);
 
-		console.log(response.body);
+		console.log(response);
+		console.log(JSON.stringify(response, null, 4));
 
 		expect(response.statusCode).toEqual(200);
 		expect(response.body.data.length).toBe(1);
