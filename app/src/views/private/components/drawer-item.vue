@@ -34,6 +34,7 @@ interface Props {
 	// that relates back to the parent item.
 	circularField?: string | null;
 	junctionFieldLocation?: string;
+	selectedFields?: string[] | null;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -120,17 +121,16 @@ const {
 );
 
 const fields = computed(() => {
-	if (props.circularField) {
-		return fieldsWithPermissions.value.map((field: Field) => {
-			if (field.field === props.circularField) {
-				set(field, 'meta.readonly', true);
-			}
+	const availableFields = fieldsWithPermissions.value.map((field: Field) => {
+		if (props.circularField && field.field === props.circularField) set(field, 'meta.readonly', true);
+		return field;
+	});
 
-			return field;
-		});
-	} else {
-		return fieldsWithPermissions.value;
-	}
+	if (!props.selectedFields?.length) return availableFields;
+
+	const selectedFieldNames = availableFields.filter((field) => props.selectedFields!.includes(field.field));
+
+	return selectedFieldNames.length ? selectedFieldNames : availableFields;
 });
 
 const fieldsWithoutCircular = computed(() => {

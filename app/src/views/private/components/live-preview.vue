@@ -194,6 +194,7 @@ onMounted(() => {
 					}"
 				>
 					<iframe id="frame" ref="frameEl" :src="url" @load="onIframeLoad" />
+					<slot name="overlay" :frame-el />
 				</div>
 			</div>
 		</div>
