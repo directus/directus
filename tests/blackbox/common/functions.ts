@@ -1,4 +1,4 @@
-import type { Permission, Policy, Query, User } from '@directus/types';
+import type { Collection, Field, Permission, Policy, Query, Relation, User } from '@directus/types';
 import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
@@ -129,7 +129,7 @@ export type OptionsCreateCollection = {
 	primaryKeyType?: PrimaryKeyType;
 };
 
-export async function CreateCollection(vendor: Vendor, options: Partial<OptionsCreateCollection>) {
+export async function CreateCollection(vendor: Vendor, options: Partial<OptionsCreateCollection>): Promise<Collection> {
 	// Validate options
 	if (!options.collection) {
 		throw new Error('Missing required field: collection');
@@ -232,7 +232,7 @@ export type OptionsCreateField = {
 	schema?: any;
 };
 
-export async function CreateField(vendor: Vendor, options: OptionsCreateField) {
+export async function CreateField(vendor: Vendor, options: OptionsCreateField): Promise<Field> {
 	// Parse options
 	const defaultOptions = {
 		meta: {},
@@ -258,7 +258,7 @@ export type OptionsCreateRelation = {
 	schema?: any;
 };
 
-export async function CreateRelation(vendor: Vendor, options: OptionsCreateRelation) {
+export async function CreateRelation(vendor: Vendor, options: OptionsCreateRelation): Promise<Relation> {
 	// Parse options
 	const defaultOptions = {
 		meta: {},
