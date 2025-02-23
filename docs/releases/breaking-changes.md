@@ -167,7 +167,7 @@ removed in favor of relying on the `package.json` file for metadata including ex
 
 If your extensions are already relying on the up-to-date extensions folder paradigm (extensions in the root of your
 extensions folder prefixed with `directus-extension-`) no action is required at this point. If you're currently relying
-on the legacy format for extensions, recognizable by each extension type having it's own folder, like `endpoints`,
+on the legacy format for extensions, recognizable by each extension type having its own folder, like `endpoints`,
 `hooks`, etc, you will have to update your extensions before upgrading to this version.
 
 Directus will ignore extensions that use the legacy format starting in this version.

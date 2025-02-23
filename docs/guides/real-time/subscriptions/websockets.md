@@ -1,6 +1,6 @@
 ---
 contributors: Kevin Lewis
-description: "Learn how to get started with Directus' WebSockets subscriptons."
+description: "Learn how to get started with Directus' WebSockets subscriptions."
 ---
 
 # WebSockets Subscriptions

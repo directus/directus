@@ -187,7 +187,7 @@ Items are referenced (both individually and relationally) by their unique [prima
 
 ## Junction Collections
 
-The platform allows you to group Items within different Collections. But often times it is important to "link" items
+The platform allows you to group Items within different Collections. But oftentimes it is important to "link" items
 across different collections (such as relating `recipes` and `ingredients`) — this is called a relationship. There are
 several different types of relationships, but only some (M2M and M2A) require an additional collection to properly
 connect data. For instance, if you have a `recipes` collection and an `ingredients` collection, you would also need a

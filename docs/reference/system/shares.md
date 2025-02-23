@@ -846,7 +846,7 @@ const result = await client.request(
 Authenticate as a share user.
 
 > Shares work by returning a token, as it is the case with the regular login endpoint. These tokens are limited to a
-> permissions set that only allows access to the item that was shared, and any relationally linked items that that
+> permissions set that only allows access to the item that was shared, and any relationally linked items that
 > associated role has access to. This means that all regular endpoints can be used with the token returned by this
 > endpoint.
 

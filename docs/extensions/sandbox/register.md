@@ -108,7 +108,7 @@ export default (router: SandboxEndpointRouter) => {
 
 ## Operations
 
-Usage of the App registration is identical to it's non-sandboxed counterpart, so please refer to the existing
+Usage of the App registration is identical to its non-sandboxed counterpart, so please refer to the existing
 documentation on [Operations](/extensions/operations) for more information.
 
 The API entrypoint is identical in basic structure. To register the API entrypoint for a custom operation, return an

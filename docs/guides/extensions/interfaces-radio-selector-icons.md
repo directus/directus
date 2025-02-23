@@ -511,7 +511,7 @@ export default {
 	id: 'icon-radio',
 	name: 'Icon Button Group',
 	type: 'interface',
-	description: 'Radio selction group with icon buttons',
+	description: 'Radio selection group with icon buttons',
 	icon: 'view_carousel',
 	component: InterfaceIconRadio,
 	types: ['string'],
