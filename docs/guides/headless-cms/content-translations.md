@@ -113,7 +113,7 @@ within, you can choose to Continue in Advanced Field Creation Mode.
 
    - title (Type: String, Interface: Input )
    - slug (Type: String, Interface: Input)
-   - summary (Type: Text, Inteface: Textarea)
+   - summary (Type: Text, Interface: Textarea)
    - content (Type: Text, Interface: WYSIWYG)
    ```
 

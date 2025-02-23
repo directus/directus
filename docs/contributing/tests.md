@@ -50,7 +50,7 @@ Install [Docker](https://docs.docker.com/get-docker/) and ensure that the servic
 Run the following commands to start the blackbox tests:
 
 ```bash
-# Ensure that you are testing against the lastest state of the codebase
+# Ensure that you are testing against the latest state of the codebase
 pnpm --workspace-root build
 
 # Clean up in case you ran the tests before

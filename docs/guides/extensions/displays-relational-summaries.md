@@ -385,7 +385,7 @@ export default {
 			{
 				field: 'sum',
 				type: 'boolean',
-				name: 'Calulate Sum',
+				name: 'Calculate Sum',
 				meta: {
 					interface: 'boolean',
 					options: {

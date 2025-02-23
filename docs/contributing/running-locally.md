@@ -170,7 +170,7 @@ To debug computed properties, it can be helpful to have a look at this
 
 ### Debugging The API in VS Code
 
-To debug the API, we recommend to use [Visual Studio Code](https://code.visualstudio.com/) with it's built in debugger.
+To debug the API, we recommend to use [Visual Studio Code](https://code.visualstudio.com/) with its built in debugger.
 
 1. First you need to setup the config for the debugger. Create the following file `./directus/api/.vscode/launch.json`
    and paste in the following structure.
@@ -208,7 +208,7 @@ tests yourself.
 Install [Docker](https://docs.docker.com/get-docker) and ensure that the service is running.
 
 ```bash
-# Ensure that you are testing on the lastest codebase
+# Ensure that you are testing on the latest codebase
 pnpm build
 
 # Run the unit tests

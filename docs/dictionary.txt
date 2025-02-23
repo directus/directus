@@ -321,7 +321,7 @@ OracleDB
 OracleDB's
 OSS
 OTP
-overwriteable
+overwritable
 pageClass
 param
 paywalled
