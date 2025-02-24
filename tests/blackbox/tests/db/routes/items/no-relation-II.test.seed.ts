@@ -1,16 +1,11 @@
-import {
-	CreateCollection,
-	CreateField,
-	CreateItem,
-	CreatePermission,
-	CreatePolicy,
-	CreateRole,
-	CreateUser,
-} from '@common/functions';
-import vendors from '@common/get-dbs-to-test';
+import { CreateCollection, CreateField, DeleteCollection } from '@common/functions';
+import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
+import type { Item, Permission, Policy, User } from '@directus/types';
 import { randomUUID, type UUID } from 'node:crypto';
 import { expect, it } from 'vitest';
+import request from 'supertest';
+import { getUrl } from '@common/config';
 
 export type Articles = {
 	id?: number | string;
@@ -20,9 +15,7 @@ export type Articles = {
 
 export type Result = {
 	isSeeded: boolean;
-	collection: string;
-	apiToken: string | null;
-	permissions: number[];
+	editorToken: string | null;
 };
 
 export const collection = 'articles';
@@ -32,6 +25,8 @@ export const seedDBStructure = () => {
 		'%s',
 		async (vendor) => {
 			try {
+				await DeleteCollection(vendor, { collection });
+
 				await CreateCollection(vendor, {
 					collection,
 					primaryKeyType: 'integer',
@@ -62,122 +57,96 @@ export const seedDBStructure = () => {
 
 export const seedDBValues = async () => {
 	const result: Result = {
-		apiToken: null,
+		editorToken: null,
 		isSeeded: true,
-		permissions: [],
-		collection,
 	};
 
 	try {
 		vendors.map(async (vendor) => {
 			console.log('starting seed', vendor);
 
-			const role = 'EDITOR_ARTICLES';
 			const policy = 'sample-policy';
 
-			const user = await CreateUser(
-				vendor,
-				{
-					email: 'sample@sample.com',
-					password: '12345',
-					name: 'John',
-					role,
-					token: "sample-user-token",
-				},
-				USER.ADMIN.TOKEN,
-			);
+			await deleteUser(vendor, 'sample-user-id');
 
-			console.log('user created');
+			const editor = await createEditor(vendor);
+			console.log('editor created');
 
-			result.apiToken = user.token;
+			result.editorToken = editor.token;
 
-			await CreateRole(vendor, { name: role }, USER.ADMIN.TOKEN);
+			await deletePolicy(vendor, policy);
 
-			console.log('Role created');
-
-			await CreatePolicy(
-				vendor,
-				{
-					id: policy,
-					name: policy,
-					icon: 'trashcan',
-					description: '',
-					enforce_tfa: null,
-					ip_access: [],
-					app_access: true,
-					admin_access: false,
-				},
-				USER.ADMIN.TOKEN,
-			);
+			await CreatePolicy(vendor, {
+				id: policy,
+				name: policy,
+				icon: 'trashcan',
+				description: '',
+				enforce_tfa: null,
+				ip_access: [],
+				app_access: true,
+				admin_access: false,
+			});
 
 			console.log('policy created');
 
-			const permission1 = await CreatePermission(
-				vendor,
-				{
-					action: 'read',
-					fields: ['id', 'user_created', 'date_created'],
-					collection,
-					permissions: {
-						_and: [
-							{
-								user_created: {
-									id: {
-										_eq: '$CURRENT_USER',
-									},
+			const permissionIds: [number, number] = [93827, 93828];
+
+			await DeletePermissions(vendor, permissionIds);
+
+			await CreatePermission(vendor, {
+				id: permissionIds[0],
+				action: 'read',
+				fields: ['id', 'user_created', 'date_created'],
+				collection,
+				permissions: {
+					_and: [
+						{
+							user_created: {
+								id: {
+									_eq: '$CURRENT_USER',
 								},
 							},
-						],
-					},
-					policy,
-					validation: null,
-					presets: null,
+						},
+					],
 				},
-				USER.ADMIN.TOKEN,
-			);
+				policy,
+				validation: null,
+				presets: null,
+			});
 
-			const permission2 = await CreatePermission(
-				vendor,
-				{
-					action: 'create',
-					fields: ['id', 'user_created', 'date_created'],
-					collection,
-					permissions: null,
-					policy,
-					validation: null,
-					presets: null,
-				},
-				USER.ADMIN.TOKEN,
-			);
+			await CreatePermission(vendor, {
+				id: permissionIds[1],
+				action: 'create',
+				fields: ['id', 'user_created', 'date_created'],
+				collection,
+				permissions: null,
+				validation: null,
+				presets: null,
+				policy,
+			});
 
 			console.log('permissions created');
 
-			result.permissions.push(permission1.id, permission2.id);
-
 			await CreateItem(
 				vendor,
+				collection,
 				{
-					collection,
-					item: {
-						id: '1',
-						user_created: randomUUID(),
-						date_created: new Date().toISOString(),
-					},
+					id: '1',
+					user_created: randomUUID(),
+					date_created: new Date().toISOString(),
 				},
-				user.token,
+				editor.token,
 			);
 
 			await CreateItem(
 				vendor,
+				collection,
 				{
-					collection,
-					item: {
-						id: '2',
-						user_created: randomUUID(),
-						date_created: new Date().toISOString(),
-					},
+					id: '2',
+					user_created: randomUUID(),
+					date_created: new Date().toISOString(),
 				},
-				user.token,
+				editor.token,
 			);
 
 			console.log('items created');
@@ -188,3 +157,74 @@ export const seedDBValues = async () => {
 
 	return result;
 };
+
+async function createEditor(vendor: Vendor): Promise<User> {
+	const newUser = {
+		id: 'sample-user-id',
+		email: 'sample@sample.com',
+		password: '12345',
+		name: 'John',
+		token: 'sample-user-token',
+	};
+
+	const response = await request(getUrl(vendor))
+		.post(`/users`)
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+		.send(newUser);
+
+	if (response.statusCode !== 200) {
+		throw new Error('Could not create user');
+	}
+
+	return response.body.data;
+}
+
+async function deleteUser(vendor: Vendor, id: string): Promise<void> {
+	await request(getUrl(vendor)).delete(`/users/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`).expect(200);
+}
+
+async function CreatePermission(vendor: Vendor, options: Permission): Promise<Permission> {
+	const response = await request(getUrl(vendor))
+		.post(`/permissions/`)
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+		.send(options);
+
+	if (response.statusCode !== 200) {
+		throw new Error('Could not create permission');
+	}
+
+	return response.body.data;
+}
+
+async function CreatePolicy(vendor: Vendor, options: Policy): Promise<Policy> {
+	const response = await request(getUrl(vendor))
+		.post(`/policies/`)
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+		.send(options)
+		.expect(200);
+
+	return response.body.data;
+}
+
+async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
+	await request(getUrl(vendor))
+		.delete(`/policies/${id}`)
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+		.expect(200);
+}
+
+async function DeletePermissions(vendor: Vendor, ids: number[]): Promise<void> {
+	ids.forEach(async (id) => {
+		await request(getUrl(vendor)).delete(`/permissions/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+	});
+}
+
+async function CreateItem(vendor: Vendor, collection: string, item: any, token: string): Promise<Item> {
+	const response = await request(getUrl(vendor))
+		.post(`/items/${collection}`)
+		.set('Authorization', `Bearer ${token}`)
+		.send(item)
+		.expect(200);
+
+	return response.body.data;
+}

@@ -1,11 +1,10 @@
 import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import request from 'supertest';
-import { afterAll, beforeAll, describe, expect, it, test } from 'vitest';
-import { collection, Result, seedDBValues } from './no-relation-II.test.seed';
-import { unseed } from './no-relation-II.test.unseed';
+import { beforeAll, describe, expect, it, test } from 'vitest';
+import { collection, type Result, seedDBValues } from './no-relation-II.test.seed';
 
-let seedResult: Result = null;
+let seedResult: Result | null = null;
 
 beforeAll(async () => {
 	console.log('seed db');
@@ -13,19 +12,20 @@ beforeAll(async () => {
 	console.log('seeded db', seedResult.isSeeded);
 }, 300_000);
 
-afterAll(async () => {
-	await unseed(seedResult.collection, seedResult.permissions, seedResult.apiToken);
-}, 300_000);
-
 test('Seed Database Values', () => {
-	expect(seedResult.isSeeded).toStrictEqual(true);
+	if (!seedResult) {
+		expect(seedResult).toStrictEqual(true);
+		return;
+	} else {
+		throw new Error('Seed Database Values failed');
+	}
 });
 
 describe('retrieves items with filters', () => {
 	it.each(vendors)('%s', async (vendor) => {
 		const response = await request(getUrl(vendor))
 			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
-			.set('Authorization', `Bearer ${seedResult.apiToken}`);
+			.set('Authorization', `Bearer ${seedResult? seedResult.editorToken : ''}`);
 
 		console.log(response);
 		console.log(JSON.stringify(response, null, 4));
