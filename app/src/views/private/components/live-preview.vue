@@ -11,6 +11,8 @@ declare global {
 
 const { url } = defineProps<{
 	url: string | string[];
+	headerExpanded?: boolean;
+	hidePopupButton?: boolean;
 	inPopup?: boolean;
 }>();
 
@@ -129,8 +131,11 @@ onMounted(() => {
 
 <template>
 	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen }">
-		<div class="header">
+		<div class="header" :class="{ 'header-expanded': headerExpanded }">
+			<slot name="prepend-header" />
+
 			<v-button
+				v-if="!hidePopupButton"
 				v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
 				x-small
 				rounded
@@ -262,6 +267,16 @@ onMounted(() => {
 		z-index: 10;
 		gap: 8px;
 		padding: 0px 8px;
+		transition:
+			padding var(--medium) var(--transition),
+			height var(--medium) var(--transition);
+
+		&.header-expanded {
+			--header-expanded-height: 60px;
+
+			height: var(--header-expanded-height);
+			padding: 8px 16px;
+		}
 
 		.v-button.secondary {
 			--v-button-background-color: var(--theme--background-subdued);
@@ -304,7 +319,7 @@ onMounted(() => {
 		input {
 			border: none;
 			width: 50px;
-			background-color: var(--background-inverted);
+			background-color: transparent;
 
 			&:first-child {
 				text-align: right;

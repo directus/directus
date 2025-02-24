@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useHead } from '@unhead/vue';
 import ModuleBar from '@/views/private/components/module-bar.vue';
@@ -11,13 +12,30 @@ const { t } = useI18n();
 useHead({ title: t('visual_editor') });
 
 const urls = ['http://localhost:3000', 'http://localhost:3000/blog', 'http://localhost:3000/privacy-policy'];
+
+const moduleBarOpen = ref(true);
 </script>
 
 <template>
 	<div class="module">
-		<module-bar />
+<transition-expand x-axis>
+		<module-bar v-if="moduleBarOpen" />
+</transition-expand>
 
-		<live-preview :url="urls">
+		<live-preview :url="urls" :header-expanded="moduleBarOpen" hide-popup-button>
+			<template #prepend-header>
+				<v-button
+					v-tooltip.bottom.end="t('toggle_navigation')"
+					x-small
+					rounded
+					icon
+					secondary
+					@click="moduleBarOpen = !moduleBarOpen"
+				>
+					<v-icon small :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
+				</v-button>
+			</template>
+
 			<template #overlay="{ frameEl, activeUrl }">
 				<editing-layer :url="activeUrl" :frame-el />
 			</template>
