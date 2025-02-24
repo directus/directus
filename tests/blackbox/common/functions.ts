@@ -113,11 +113,8 @@ export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateU
 	const response = await request(getUrl(vendor))
 		.post(`/users`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send(options);
-
-	if (response.statusCode !== 200) {
-		throw new Error('Could not create user');
-	}
+		.send(options)
+		.expect(200);
 
 	return response.body.data;
 }
@@ -669,11 +666,8 @@ export async function CreateItem(vendor: Vendor, options: OptionsCreateItem): Pr
 	const response = await request(getUrl(vendor))
 		.post(`/items/${options.collection}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send(options.item);
-
-	if (response.statusCode !== 200) {
-		throw new Error('Could not create item');
-	}
+		.send(options.item)
+		.expect(200);
 
 	return response.body.data;
 }
