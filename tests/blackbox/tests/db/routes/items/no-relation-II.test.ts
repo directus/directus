@@ -9,6 +9,7 @@ let seedResult: Result | null = null;
 
 beforeAll(async () => {
 	console.log('seed db');
+	// await seedDBStructure();
 	seedResult = await seedDBValues();
 	console.log('seeded db', seedResult.isSeeded);
 }, 300_000);

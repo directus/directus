@@ -27,6 +27,8 @@ const policy = 'sample-policy';
 const permissionIds: [number, number] = [93827, 93828];
 
 export const seedDBStructure = () => {
+	console.log('seed db structure...');
+
 	it.each(vendors)(
 		'%s',
 		async (vendor) => {
