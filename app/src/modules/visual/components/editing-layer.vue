@@ -22,8 +22,9 @@ type ReceiveData = { action: ReceiveAction | null; data: unknown };
 type SendAction = 'confirm' | 'saved';
 type SavedData = {
 	key: string;
-	form: Pick<Form, 'collection' | 'item'>;
-	edits: Record<string, any>;
+	collection: Form['collection'];
+	item: Form['item'];
+	payload: Record<string, any>;
 };
 
 const { url, frameEl } = defineProps<{ url: string; frameEl?: HTMLIFrameElement }>();
@@ -135,8 +136,9 @@ function useItem() {
 
 			sendSaved({
 				key: msgKey.value,
-				form: { collection: collection.value, item: primaryKey.value },
-				edits: JSON.parse(JSON.stringify(edits.value)),
+				collection: collection.value,
+				item: primaryKey.value,
+				payload: JSON.parse(JSON.stringify(edits.value)),
 			});
 
 			resetEdits();
