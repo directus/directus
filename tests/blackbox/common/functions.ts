@@ -116,7 +116,7 @@ export async function CreateUser(
 	// Action
 	const response = await request(getUrl(vendor)).post(`/users`).set('Authorization', `Bearer ${token}`).send(options);
 
-	if (response.statusCode !== 201) {
+	if (response.statusCode !== 200) {
 		throw new Error('Could not create user');
 	}
 
@@ -676,7 +676,7 @@ export async function CreateItem(
 		.set('Authorization', `Bearer ${token}`)
 		.send(options.item);
 
-	if (response.statusCode !== 201) {
+	if (response.statusCode !== 200) {
 		throw new Error('Could not create item');
 	}
 
@@ -818,7 +818,7 @@ export async function CreatePermission(vendor: Vendor, options: Permission, toke
 		.set('Authorization', `Bearer ${token}`)
 		.send(options);
 
-	if (response.statusCode !== 201) {
+	if (response.statusCode !== 200) {
 		throw new Error('Could not create permission');
 	}
 
@@ -831,7 +831,7 @@ export async function CreatePolicy(vendor: Vendor, options: Policy, token: strin
 		.set('Authorization', `Bearer ${token}`)
 		.send(options);
 
-	if (response.statusCode !== 201) {
+	if (response.statusCode !== 200) {
 		throw new Error('Could not create policy');
 	}
 
