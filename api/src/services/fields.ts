@@ -8,7 +8,6 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
 import { addFieldFlag, parseJSON, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -649,8 +648,10 @@ export class FieldsService {
 		const inwardLinkedCollections = new Map<string, string[]>();
 		const relationalFieldToCollection = new Map<string, string>();
 
+		// build collection relation tree
 		for (const relation of schema.relations) {
-			const outward = outwardLinkedCollections.get(relation.collection) ?? [];
+			// system collections cannot have duplication fields and therfore can be skipped
+			if (relation.meta?.system === true) continue;
 
 			let relatedCollections = [];
 
@@ -659,20 +660,26 @@ export class FieldsService {
 			} else if (relation.meta?.one_collection_field && relation.meta?.one_allowed_collections) {
 				relatedCollections = relation.meta?.one_allowed_collections;
 			} else {
+				// safe guard
 				continue;
 			}
+
+			const outward = outwardLinkedCollections.get(relation.collection) ?? [];
 
 			for (const relatedCollection of relatedCollections) {
 				const inward = inwardLinkedCollections.get(relatedCollection) ?? [];
 
+				// a -> b
 				inward.push(relation.collection);
 				inwardLinkedCollections.set(relatedCollection, inward);
+				// track collection links on a per collection + field basis
+				relationalFieldToCollection.set(`${relation.collection}::${relation.field}`, relatedCollection);
 
+				// b <- a
 				outward.push(relatedCollection);
 				outwardLinkedCollections.set(relation.collection, outward);
 
-				relationalFieldToCollection.set(`${relation.collection}::${relation.field}`, relatedCollection);
-
+				// O2M can have outward duplication path
 				if (relation.meta?.one_field) {
 					relationalFieldToCollection.set(`${relatedCollection}::${relation.meta.one_field}`, relation.collection);
 				}
@@ -752,9 +759,6 @@ export class FieldsService {
 			}
 
 			function addNode(node: string) {
-				// system collections cannot have duplication fields and therfore can be skipped
-				if (isSystemCollection(node)) return;
-
 				// skip circular reference and existing linked nodes
 				if (node === collection || relatedCollections.has(node)) return;
 
@@ -798,14 +802,13 @@ export class FieldsService {
 
 				for (let index = 0; index < parts.length; index++) {
 					const part = parts[index]!;
-					const isLastPart = index === parts.length - 1;
 
 					// Invalid path for the field that is currently being removed
 					if (currentCollection === collection && part === field) return;
 
-					const nextCollectionNode = relationalFieldToCollection.get(`${currentCollection}::${part}`);
-
+					const isLastPart = index === parts.length - 1;
 					const isLocalField = typeof schema.collections[currentCollection]?.['fields'][part] !== 'undefined';
+					const nextCollectionNode = relationalFieldToCollection.get(`${currentCollection}::${part}`);
 
 					// Invalid path for old deleted collections
 					if (!nextCollectionNode && !isLastPart) return;
