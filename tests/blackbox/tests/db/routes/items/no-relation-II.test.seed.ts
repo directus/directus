@@ -20,6 +20,11 @@ export type Result = {
 
 export const collection = 'articles';
 
+const userId = 'sample-user-id';
+const userToken = 'sample-user-token';
+const policy = 'sample-policy';
+const permissionIds: [number, number] = [93827, 93828];
+
 export const seedDBStructure = () => {
 	it.each(vendors)(
 		'%s',
@@ -65,15 +70,6 @@ export const seedDBValues = async () => {
 		vendors.map(async (vendor) => {
 			console.log('starting seed', vendor);
 
-			const policy = 'sample-policy';
-
-			await deleteUser(vendor, 'sample-user-id');
-
-			const editor = await createEditor(vendor);
-			console.log('editor created');
-
-			result.editorToken = editor.token;
-
 			await deletePolicy(vendor, policy);
 
 			await CreatePolicy(vendor, {
@@ -88,8 +84,6 @@ export const seedDBValues = async () => {
 			});
 
 			console.log('policy created');
-
-			const permissionIds: [number, number] = [93827, 93828];
 
 			await DeletePermissions(vendor, permissionIds);
 
@@ -127,6 +121,12 @@ export const seedDBValues = async () => {
 
 			console.log('permissions created');
 
+			await deleteUser(vendor, userId);
+			const editor = await createEditor(vendor);
+			console.log('editor created');
+
+			result.editorToken = editor.token;
+
 			await CreateItem(
 				vendor,
 				collection,
@@ -135,7 +135,7 @@ export const seedDBValues = async () => {
 					user_created: randomUUID(),
 					date_created: new Date().toISOString(),
 				},
-				editor.token,
+				userToken,
 			);
 
 			await CreateItem(
@@ -146,7 +146,7 @@ export const seedDBValues = async () => {
 					user_created: randomUUID(),
 					date_created: new Date().toISOString(),
 				},
-				editor.token,
+				userToken,
 			);
 
 			console.log('items created');
@@ -160,11 +160,12 @@ export const seedDBValues = async () => {
 
 async function createEditor(vendor: Vendor): Promise<User> {
 	const newUser = {
-		id: 'sample-user-id',
+		id: userId,
 		email: 'sample@sample.com',
 		password: '12345',
 		name: 'John',
-		token: 'sample-user-token',
+		token: userToken,
+		policies: [policy],
 	};
 
 	const response = await request(getUrl(vendor))
