@@ -8,6 +8,7 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
 import { addFieldFlag, parseJSON, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -651,22 +652,29 @@ export class FieldsService {
 		for (const relation of schema.relations) {
 			const outward = outwardLinkedCollections.get(relation.collection) ?? [];
 
+			let relatedCollections = [];
+
 			if (relation.related_collection) {
-				const inward = inwardLinkedCollections.get(relation.related_collection) ?? [];
+				relatedCollections.push(relation.related_collection);
+			} else if (relation.meta?.one_collection_field && relation.meta?.one_allowed_collections) {
+				relatedCollections = relation.meta?.one_allowed_collections;
+			} else {
+				return;
+			}
+
+			for (const relatedCollection of relatedCollections) {
+				const inward = inwardLinkedCollections.get(relatedCollection) ?? [];
 
 				inward.push(relation.collection);
-				inwardLinkedCollections.set(relation.related_collection, inward);
+				inwardLinkedCollections.set(relatedCollection, inward);
 
-				outward.push(relation.related_collection);
+				outward.push(relatedCollection);
 				outwardLinkedCollections.set(relation.collection, outward);
 
-				relationalFieldToCollection.set(`${relation.collection}::${relation.field}`, relation.related_collection);
+				relationalFieldToCollection.set(`${relation.collection}::${relation.field}`, relatedCollection);
 
 				if (relation.meta?.one_field) {
-					relationalFieldToCollection.set(
-						`${relation.related_collection}::${relation.meta.one_field}`,
-						relation.collection,
-					);
+					relationalFieldToCollection.set(`${relatedCollection}::${relation.meta.one_field}`, relation.collection);
 				}
 			}
 		}
@@ -744,6 +752,9 @@ export class FieldsService {
 			}
 
 			function addNode(node: string) {
+				// system collections cannot have duplication fields and therfore can be skipped
+				if (isSystemCollection(node)) return;
+
 				// skip circular reference and existing linked nodes
 				if (node === collection || relatedCollections.has(node)) return;
 
