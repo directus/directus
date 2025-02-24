@@ -11,8 +11,10 @@ import { useBus } from './bus';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
 
-// https://github.com/codex-team/editor.js/blob/057bf17a6fc2d5e05c662107918d7c3e943d077c/src/components/events/RedactorDomChanged.ts#L4
-const RedactorDomChanged = 'redactor dom changed';
+import './editorjs-overrides.css';
+
+// https://github.com/codex-team/editor.js/blob/7399e55f7e2ea6cf019cf659cb6cbd937e7d2e0c/src/components/events/BlockChanged.ts#L6
+const BlockChanged = 'block changed';
 
 const props = withDefaults(
 	defineProps<{
@@ -92,7 +94,7 @@ onMounted(async () => {
 		editorjsRef.value.focus();
 	}
 
-	editorjsRef.value.on(RedactorDomChanged, () => {
+	editorjsRef.value.on(BlockChanged, () => {
 		emitValue(editorjsRef.value!);
 	});
 
@@ -193,10 +195,6 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	</div>
 </template>
 
-<style lang="scss">
-@import './editorjs-overrides.css';
-</style>
-
 <style lang="scss" scoped>
 .btn--default {
 	color: #fff !important;
@@ -226,7 +224,8 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
-	&:focus-within {
+	&:focus-within,
+	&:has(.ce-popover--opened) {
 		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 }

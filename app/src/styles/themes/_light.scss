@@ -1,9 +1,11 @@
+@use 'mixins';
+@use '../colors';
+
 // Default / Light Mode
 @mixin light {
 	color-scheme: light;
 
 	--foreground-inverted: #fff;
-
 	--background-normal-alt: #e4eaf1;
 	--background-highlight: #f7f9fd;
 	--background-input: #ffffff;
@@ -17,7 +19,7 @@
 	--sidebar-shadow: -4px 0 7px -4px rgb(0 0 0 / 0.2);
 
 	// Generate color variations
-	@include generate-colors($color-mapping, $light-theme-tint, $light-theme-shade);
+	@include mixins.generate-colors(colors.$color-mapping, colors.$light-theme-tint, colors.$light-theme-shade);
 
 	--purple-alt: var(--purple-10);
 	--blue-alt: var(--blue-10);

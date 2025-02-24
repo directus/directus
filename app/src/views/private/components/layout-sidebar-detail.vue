@@ -48,13 +48,13 @@ const currentLayout = computed(() => selectedLayout.value ?? fallbackLayout.valu
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 :deep(.layout-options) {
 	--theme--form--row-gap: 20px;
 
 	margin-bottom: 4px;
 
-	@include form-grid;
+	@include mixins.form-grid;
 }
 </style>

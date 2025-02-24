@@ -155,6 +155,6 @@ export const AUTH_SSO_DRIVERS = ['oauth2', 'openid', 'saml'];
 
 export const DEFAULT_REPORT_BUG_URL = 'https://github.com/directus/directus/issues/new?template=bug_report.yml';
 export const DEFAULT_REPORT_FEATURE_URL =
-	'https://github.com/directus/directus/discussions/new?category=feature-requests';
+	'https://github.com/directus/directus/discussions/new?category=draft-feature-requests';
 
 export const SDK_AUTH_REFRESH_BEFORE_EXPIRES = 10_000;

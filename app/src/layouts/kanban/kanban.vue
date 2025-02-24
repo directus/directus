@@ -11,7 +11,9 @@ defineOptions({ inheritAttrs: false });
 const props = withDefaults(
 	defineProps<{
 		collection?: string | null;
+		itemCount: number | null;
 		totalCount: number | null;
+		isFiltered: boolean;
 		limit: number;
 		groupCollection?: string | null;
 		fieldsInCollection?: Field[];
@@ -25,6 +27,10 @@ const props = withDefaults(
 		editGroup: (id: string | number, title: string) => Promise<void>;
 		deleteGroup: (id: string | number) => Promise<void>;
 		isRelational?: boolean;
+		canReorderGroups: boolean;
+		canReorderItems: boolean;
+		canUpdateGroupTitle: boolean;
+		canDeleteGroups: boolean;
 		sortField?: string | null;
 		userField?: string | null;
 		groupsSortField?: string | null;
@@ -57,7 +63,10 @@ const { t, n } = useI18n();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
 
-const atLimit = computed(() => (props.totalCount ?? 0) > props.limit);
+const atLimit = computed(() => {
+	const count = (props.isFiltered ? props.itemCount : props.totalCount) ?? 0;
+	return count > props.limit;
+});
 
 function openEditGroup(group: Group) {
 	editDialogOpen.value = group.id;
@@ -112,6 +121,8 @@ const fieldDisplay = computed(() => {
 		};
 	}
 });
+
+const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.selectMode);
 </script>
 
 <template>
@@ -120,7 +131,7 @@ const fieldDisplay = computed(() => {
 
 		<template v-else>
 			<v-notice v-if="atLimit" type="warning" class="limit">
-				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.totalCount ?? 0) }) }}
+				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
 			</v-notice>
 
 			<div class="kanban">
@@ -129,14 +140,14 @@ const fieldDisplay = computed(() => {
 					group="groups"
 					item-key="id"
 					draggable=".draggable"
-					:disabled="selectMode"
+					:disabled="reorderGroupsDisabled"
 					:animation="150"
 					class="draggable"
 					:class="{ sortable: groupsSortField !== null }"
 					@change="changeGroupSort"
 				>
 					<template #item="{ element: group }">
-						<div class="group" :class="{ draggable: group.id !== null, disabled: selectMode }">
+						<div class="group" :class="{ draggable: group.id !== null, disabled: reorderGroupsDisabled }">
 							<div class="header">
 								<div class="title">
 									<div class="title-content">
@@ -144,18 +155,27 @@ const fieldDisplay = computed(() => {
 									</div>
 									<span class="badge">{{ group.items.length }}</span>
 								</div>
-								<div v-if="group.id !== null && !selectMode" class="actions">
+								<div v-if="isRelational && group.id !== null && !selectMode" class="actions">
 									<v-menu show-arrow placement="bottom-end">
 										<template #activator="{ toggle }">
 											<v-icon name="more_horiz" clickable @click="toggle" />
 										</template>
 
 										<v-list>
-											<v-list-item clickable @click="openEditGroup(group)">
+											<v-list-item
+												:disabled="!canUpdateGroupTitle || selectMode"
+												clickable
+												@click="openEditGroup(group)"
+											>
 												<v-list-item-icon><v-icon name="edit" /></v-list-item-icon>
 												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
 											</v-list-item>
-											<v-list-item v-if="isRelational" class="danger" clickable @click="deleteGroup(group.id)">
+											<v-list-item
+												:disabled="!canDeleteGroups || selectMode"
+												class="danger"
+												clickable
+												@click="deleteGroup(group.id)"
+											>
 												<v-list-item-icon><v-icon name="delete" /></v-list-item-icon>
 												<v-list-item-content>{{ t('layouts.kanban.delete_group') }}</v-list-item-content>
 											</v-list-item>
@@ -167,7 +187,7 @@ const fieldDisplay = computed(() => {
 								:model-value="group.items"
 								group="items"
 								draggable=".item"
-								:disabled="selectMode"
+								:disabled="!canReorderItems || selectMode"
 								:animation="150"
 								:sort="sortField !== null"
 								class="items"
@@ -187,7 +207,7 @@ const fieldDisplay = computed(() => {
 												:value="element.title"
 											/>
 										</div>
-										<img v-if="element.image" class="image" :src="element.image" />
+										<img v-if="element.image" class="image" :src="element.image" draggable="false" />
 										<div v-if="element.text" class="text">
 											<render-display
 												v-if="fieldDisplay.textField"
@@ -270,8 +290,6 @@ const fieldDisplay = computed(() => {
 .kanban {
 	display: flex;
 	height: 100%;
-	overflow-x: auto;
-	overflow-y: hidden;
 	--user-spacing: 16px;
 
 	.draggable {

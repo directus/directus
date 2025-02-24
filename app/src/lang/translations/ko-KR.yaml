@@ -2346,7 +2346,6 @@ operations:
     name: 이메일 전송
     description: 한 명 이상의 사람에게 이메일 보내기
     to: 에게
-    to_placeholder: 이메일 주소를 추가하고 엔터를 누르세요...
     body: 본문
     template: 템플릿
     data: 데이터

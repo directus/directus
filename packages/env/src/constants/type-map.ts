@@ -35,5 +35,8 @@ export const TYPE_MAP: Record<string, EnvType> = {
 
 	REDIS_ENABLED: 'boolean',
 
+	METRICS_TOKENS: 'array',
+	METRICS_SERVICES: 'array',
+
 	DB_SSL__CA_FILE: 'string',
 } as const;

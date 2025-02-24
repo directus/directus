@@ -56,9 +56,11 @@ const percentageRemaining = computed(() => {
 
 const inputType = computed(() => {
 	if (props.masked) return 'password';
-	if (['bigInteger', 'integer', 'float', 'decimal'].includes(props.type!)) return 'number';
+	if (['integer', 'float', 'decimal'].includes(props.type!)) return 'number';
 	return 'text';
 });
+
+const isInteger = computed(() => ['bigInteger', 'integer'].includes(props.type!));
 </script>
 
 <template>
@@ -78,6 +80,7 @@ const inputType = computed(() => {
 		:max-length="length"
 		:step="step"
 		:dir="direction"
+		:integer="isInteger"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		@update:model-value="$emit('input', $event)"
 	>

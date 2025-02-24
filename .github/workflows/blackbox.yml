@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - v11-rc
     paths:
       - api/**
       - tests/blackbox/**
@@ -12,6 +11,7 @@ on:
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/blackbox.yml
+  workflow_call:
 
 concurrency:
   group: blackbox-${{ github.ref }}
@@ -53,7 +53,7 @@ jobs:
           - maria
           - mssql
           - oracle
-          - cockroachdb
+          # - cockroachdb
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

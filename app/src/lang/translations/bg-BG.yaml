@@ -2316,7 +2316,6 @@ operations:
     name: Изпращане на имейл
     description: Изпращане на имейл до един или няколко човека
     to: До
-    to_placeholder: Добавете имейл адрес и натиснете enter...
     body: Съдържание
     template: Шаблон
     data: Данни

@@ -5,41 +5,29 @@ import { validatePayload } from '@directus/utils';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
 
-export function validateItem(item: Record<string, any>, fields: Field[], isNew: boolean) {
+export function validateItem(
+	item: Record<string, any>,
+	fields: Field[],
+	isNew: boolean,
+	includeCustomValidations = false,
+) {
 	const relationsStore = useRelationsStore();
-
-	const validationRules = {
-		_and: [],
-	} as LogicalFilterAND;
-
+	const validationRules: LogicalFilterAND = { _and: [] };
+	const updatedItem = cloneDeep(item);
 	const fieldsWithConditions = fields.map((field) => applyConditions(item, field));
-
 	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
-	const updatedItem = cloneDeep(item);
-
-	for (const field of requiredFields) {
-		if (isNew && isNil(field.schema?.default_value)) {
-			validationRules._and.push({
-				[field.field]: {
-					_submitted: true,
-				},
-			});
-		}
+	requiredFields.forEach((field) => {
+		applyRulesForRequiredFields(field.field, field, isNew);
 
 		const relation = relationsStore.getRelationsForField(field.collection, field.field);
+		if (!relation.length) return;
 
-		// Check if we are dealing with a relational field that has an empty array as its value
-		if (relation.length > 0 && Array.isArray(updatedItem[field.field]) && isEmpty(updatedItem[field.field])) {
-			updatedItem[field.field] = null;
-		}
+		const isEmptyArray = Array.isArray(updatedItem[field.field]) && isEmpty(updatedItem[field.field]);
+		if (isEmptyArray) updatedItem[field.field] = null;
+	});
 
-		validationRules._and.push({
-			[field.field]: {
-				_nnull: true,
-			},
-		});
-	}
+	if (includeCustomValidations) fields.forEach(applyValidationRules);
 
 	return flatten(
 		validatePayload(validationRules, updatedItem).map((error) =>
@@ -51,4 +39,28 @@ export function validateItem(item: Record<string, any>, fields: Field[], isNew: 
 		const errorField = fields.find((field) => field.field === error.field);
 		return { ...error, hidden: errorField?.meta?.hidden, group: errorField?.meta?.group };
 	});
+
+	function applyRulesForRequiredFields(fieldKey: string, field: Field, isNew: boolean) {
+		if (isNew && isNil(field.schema?.default_value)) {
+			validationRules._and.push({
+				[fieldKey]: {
+					_submitted: true,
+				},
+			});
+		}
+
+		validationRules._and.push({
+			[fieldKey]: {
+				_nnull: true,
+			},
+		});
+	}
+
+	function applyValidationRules(field: Field) {
+		if (isNil(updatedItem[field.field])) return;
+
+		(field.meta?.validation as LogicalFilterAND)?._and?.forEach((validation: any) => {
+			validationRules._and.push(validation);
+		});
+	}
 }

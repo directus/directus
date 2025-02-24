@@ -19,6 +19,7 @@ const props = withDefaults(
 		allowSelectAll?: boolean;
 		parent?: string | null;
 		rawFieldNames?: boolean;
+		parentOpen?: boolean;
 	}>(),
 	{
 		search: undefined,
@@ -27,6 +28,7 @@ const props = withDefaults(
 		allowSelectAll: false,
 		parent: null,
 		rawFieldNames: false,
+		parentOpen: true,
 	},
 );
 
@@ -48,12 +50,18 @@ const addAll = () => {
 
 	emit('add', selectedFields);
 };
+
+const openWhileSearching = computed(() => {
+	return !!props.search && props.parentOpen && !!props.field.group;
+});
 </script>
 
 <template>
 	<v-list-group
 		v-if="field.children || supportedFunctions.length > 0"
 		:clickable="!field.disabled && (relationalFieldSelectable || !field.relatedCollection)"
+		:open="openWhileSearching"
+		:collapse-on-change="search"
 		:value="field.path"
 		:class="{ 'raw-field-names': rawFieldNames }"
 		@click="$emit('add', [field.key])"
@@ -107,6 +115,7 @@ const addAll = () => {
 			:parent="field.field"
 			:allow-select-all="allowSelectAll"
 			:raw-field-names="rawFieldNames"
+			:parent-open="openWhileSearching"
 			@add="$emit('add', $event)"
 		/>
 	</v-list-group>
