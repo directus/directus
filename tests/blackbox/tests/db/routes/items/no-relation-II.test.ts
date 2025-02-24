@@ -2,14 +2,13 @@ import { getUrl } from '@common/config';
 import vendors from '@common/get-dbs-to-test';
 import request from 'supertest';
 import { beforeAll, describe, expect, it, test } from 'vitest';
-import { collection, type Result, seedDBValues } from './no-relation-II.test.seed';
+import { collection, type Result, seedDBValues } from './no-relation-II.seed';
 import { USER } from '@common/variables';
 
 let seedResult: Result | null = null;
 
 beforeAll(async () => {
 	console.log('seed db');
-	// await seedDBStructure();
 	seedResult = await seedDBValues();
 	console.log('seeded db', seedResult.isSeeded);
 }, 300_000);
