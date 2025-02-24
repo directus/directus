@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useHead } from '@unhead/vue';
+import { useSettingsStore } from '@/stores/settings';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
 import NotificationsGroup from '@/views/private/components/notifications-group.vue';
@@ -11,16 +12,30 @@ import EditingLayer from '../components/editing-layer.vue';
 const { t } = useI18n();
 useHead({ title: t('visual_editor') });
 
-const urls = ['http://localhost:3000', 'http://localhost:3000/blog', 'http://localhost:3000/privacy-policy'];
+const { settings } = useSettingsStore();
+
+const urls = computed<string[]>(() => {
+	const urls: string[] = [];
+
+	if (settings?.visual_editor_project_url && settings?.project_url) {
+		urls.push(settings.project_url);
+	}
+
+	settings?.visual_editor_urls?.forEach((item) => {
+		if (item.url) urls.push(item.url);
+	});
+
+	return urls;
+});
 
 const moduleBarOpen = ref(true);
 </script>
 
 <template>
 	<div class="module">
-<transition-expand x-axis>
-		<module-bar v-if="moduleBarOpen" />
-</transition-expand>
+		<transition-expand x-axis>
+			<module-bar v-if="moduleBarOpen" />
+		</transition-expand>
 
 		<live-preview :url="urls" :header-expanded="moduleBarOpen" hide-popup-button>
 			<template #prepend-header>
