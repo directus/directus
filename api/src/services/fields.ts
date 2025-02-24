@@ -659,7 +659,7 @@ export class FieldsService {
 			} else if (relation.meta?.one_collection_field && relation.meta?.one_allowed_collections) {
 				relatedCollections = relation.meta?.one_allowed_collections;
 			} else {
-				return;
+				continue;
 			}
 
 			for (const relatedCollection of relatedCollections) {
