@@ -39,15 +39,45 @@ tile_size: Plytelių dydis
 edit_field: Redaguoti lauką
 conditions: Sąlygos
 location: Vietovė
+input: Įvestis
 item_revision: Elemento pakeitimai
 duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
 full_width: Pilno pločio
 group: Grupė
+popular: Populiarūs
+recent: Naujausi
+export_items: Eksportuoti įrašus
+and: Ir
+or: Arba
 extension_interface: Sąsaja
 extension_display: Rodymas
 extension_layout: Išdėstymas
+extension_module: Modulis
+extension_panel: Skydelis
+extension_theme: Tema
+extension_operation: Operacija
+extension_interfaces: Sąsajos
+extension_displays: Valdikliai
+extension_layouts: Išdėstymai
 extension_modules: Moduliai
+extension_panels: Skydeliai
+extension_themes: Temos
+extension_reload_required: Reikalingas puslapio perkrovimas
+extension_reload_required_copy: Reikalingas puslapio perkrovimas, kad būtų įjungti arba išjungti plėtiniai.
+extension_reload_now: Perkraukite puslapį
+published_relative: Publikuota {relativeTime}
+compatible_with_your_project: Suderinama su šiuo projektu
+last_updated_relative: Paskutinį kartą atnaujinta {relativeTime}
+n_files: '{n} rinkmenų'
+verified: Patvirtinta
+homepage: Pradinis puslapis
+reload_page: Perkrauti puslapį
+reload_required: Reikalingas puslapio perkrovimas
+report_an_issue: Pranešti apie problemą
+website: Svetainė
+github: GitHub
+n_downloads: '{n} atsisiuntimų'
 fill_width: Užpildyti visą plotį
 field_name_translations: Laukų pavadinimų vertimai
 enter_password_to_enable_tfa: Norint įjungti dviejų veiksmų autentifikavimą, reikia įvesti savo slaptažodį
@@ -597,6 +627,7 @@ no_options_available: Nėra parinkčių
 settings_data_model: Duomenų modelis
 settings_project: Nustatymai
 settings_webhooks: '„Webhook“''ai'
+settings_system_logs: Sistemos žurnalas
 settings_presets: Žymės
 settings_translations: Vertimai
 scope: Apimtis
