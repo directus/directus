@@ -3,6 +3,7 @@ import vendors from '@common/get-dbs-to-test';
 import request from 'supertest';
 import { beforeAll, describe, expect, it, test } from 'vitest';
 import { collection, type Result, seedDBValues } from './no-relation-II.test.seed';
+import { USER } from '@common/variables';
 
 let seedResult: Result | null = null;
 
@@ -23,12 +24,25 @@ test('Seed Database Values', () => {
 
 describe('retrieves items with filters', () => {
 	it.each(vendors)('%s', async (vendor) => {
+		const response0 = await request(getUrl(vendor))
+			.get(`/items/${collection}`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+		console.log('as admin: ', response0);
+
+		const response1 = await request(getUrl(vendor))
+			.get(`/items/${collection}`)
+			.set('Authorization', `Bearer ${seedResult ? seedResult.editorToken : ''}`);
+
+		console.log('as editor without filters', response1);
+
 		const response = await request(getUrl(vendor))
 			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
-			.set('Authorization', `Bearer ${seedResult? seedResult.editorToken : ''}`);
+			.set('Authorization', `Bearer ${seedResult ? seedResult.editorToken : ''}`);
 
-		console.log(response);
-		console.log(JSON.stringify(response, null, 4));
+		console.log('as editor with filters', response);
+
+		// console.log(JSON.stringify(response, null, 4));
 
 		expect(response.statusCode).toEqual(200);
 		expect(response.body.data.length).toBe(1);
