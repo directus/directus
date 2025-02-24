@@ -51,14 +51,14 @@ export type OptionsCreateRole = {
 	name: string;
 };
 
-export async function CreateRole(vendor: Vendor, options: OptionsCreateRole, token: string) {
+export async function CreateRole(vendor: Vendor, options: OptionsCreateRole) {
 	// Action
 	const roleResponse = await request(getUrl(vendor))
 		.get(`/roles`)
 		.query({
 			filter: { name: { _eq: options.name } },
 		})
-		.set('Authorization', `Bearer ${token}`);
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 	if (roleResponse.body.data.length > 0) {
 		return roleResponse.body.data[0];
@@ -665,15 +665,11 @@ export type OptionsCreateItem = {
 	item: any;
 };
 
-export async function CreateItem(
-	vendor: Vendor,
-	options: OptionsCreateItem,
-	token: string = USER.TESTS_FLOW.TOKEN,
-): Promise<Item> {
+export async function CreateItem(vendor: Vendor, options: OptionsCreateItem): Promise<Item> {
 	// Action
 	const response = await request(getUrl(vendor))
 		.post(`/items/${options.collection}`)
-		.set('Authorization', `Bearer ${token}`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
 
 	if (response.statusCode !== 200) {
@@ -728,7 +724,7 @@ export type OptionsCreatePolicy = {
 	role?: keyof typeof ROLE;
 };
 
-export async function CreatePolicyWithRole(vendor: Vendor, options: OptionsCreatePolicy) {
+export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy) {
 	// Action
 	const policyResponse = await request(getUrl(vendor))
 		.get(`/policies`)
@@ -768,17 +764,11 @@ export async function CreatePolicyWithRole(vendor: Vendor, options: OptionsCreat
 export type OptionsCreatePermission = {
 	role: keyof typeof ROLE;
 	permission: Omit<Partial<Permission>, 'id' | 'role' | 'system'>;
-} & OptionsCreatePermissionPolicy;
-
-export type OptionsCreatePermissionPolicy = {
 	policyId?: string;
 	policyName?: string;
 };
 
-export async function CreatePermissionWithPolicy(
-	vendor: Vendor,
-	options: OptionsCreatePermission,
-): Promise<Permission> {
+export async function CreatePermission(vendor: Vendor, options: OptionsCreatePermission): Promise<Permission> {
 	let policyId = options.policyId;
 	let roleId = options.role;
 
@@ -792,7 +782,7 @@ export async function CreatePermissionWithPolicy(
 	}
 
 	if (!policyId) {
-		const policy = await CreatePolicyWithRole(vendor, {
+		const policy = await CreatePolicy(vendor, {
 			role: roleId,
 			adminAccessEnabled: false,
 			appAccessEnabled: false,
@@ -808,40 +798,6 @@ export async function CreatePermissionWithPolicy(
 		.send({ permissions: { create: [{ ...options.permission, policy: options.policyId }], update: [], delete: [] } });
 
 	return response.body.data;
-}
-
-// export type OptionsCreatePlainPermission = Omit<Partial<Permission>, 'id' | 'role' | 'system'>;
-
-export async function CreatePermission(vendor: Vendor, options: Permission, token: string): Promise<Permission> {
-	const response = await request(getUrl(vendor))
-		.post(`/permissions/`)
-		.set('Authorization', `Bearer ${token}`)
-		.send(options);
-
-	if (response.statusCode !== 200) {
-		throw new Error('Could not create permission');
-	}
-
-	return response.body.data;
-}
-
-export async function CreatePolicy(vendor: Vendor, options: Policy, token: string): Promise<Policy> {
-	const response = await request(getUrl(vendor))
-		.post(`/policies/`)
-		.set('Authorization', `Bearer ${token}`)
-		.send(options);
-
-	if (response.statusCode !== 200) {
-		throw new Error('Could not create policy');
-	}
-
-	return response.body.data;
-}
-
-export async function DeletePermissions(vendor: Vendor, ids: number[], token: string): Promise<void> {
-	ids.forEach(async (id) => {
-		await request(getUrl(vendor)).delete(`/permissions/${id}`).set('Authorization', `Bearer ${token}`);
-	});
 }
 
 // TODO
