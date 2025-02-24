@@ -1,5 +1,5 @@
 import { getUrl } from '@common/config';
-import { CreatePermissionWithPolicy } from '@common/functions';
+import { CreatePermission } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import request from 'supertest';
@@ -59,7 +59,7 @@ describe('/permissions/me/:collection/:id?', () => {
 						share: { access: false },
 					});
 
-					await CreatePermissionWithPolicy(vendor, {
+					await CreatePermission(vendor, {
 						role: USER.APP_ACCESS.KEY,
 						permission: {
 							collection,
@@ -103,7 +103,7 @@ describe('/permissions/me/:collection/:id?', () => {
 						share: { access: false },
 					});
 
-					await CreatePermissionWithPolicy(vendor, {
+					await CreatePermission(vendor, {
 						role: USER.APP_ACCESS.KEY,
 						permission: {
 							collection: singleton,

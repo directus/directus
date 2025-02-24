@@ -8,7 +8,7 @@ import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { collection, type Collection } from './cache-purge.seed';
-import { CreatePolicyWithRole } from '@common/functions';
+import { CreatePolicy } from '@common/functions';
 
 describe('Permissions Cache Purging Tests', () => {
 	const cacheStatusHeader = 'x-cache-status';
@@ -184,7 +184,7 @@ describe('Permissions Cache Purging Tests', () => {
 
 				await awaitDirectusConnection(newServerPort);
 
-				const newPolicy = await CreatePolicyWithRole(vendor, {
+				const newPolicy = await CreatePolicy(vendor, {
 					adminAccessEnabled: false,
 					appAccessEnabled: false,
 					name: 'Cache Purge Test',
