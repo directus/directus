@@ -209,7 +209,7 @@ describe('applySearch', () => {
 		expect(queryBuilder['orWhereRaw']).toBeCalledWith('1 = 0');
 	});
 
-	test('Remove forbidden field(s) "text" from search', () => {
+	test('Remove forbidden field "text" from search', () => {
 		const db = mockDatabase();
 		const queryBuilder = db as any;
 
@@ -241,7 +241,7 @@ describe('applySearch', () => {
 		expect(queryBuilder['and']['whereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text1', `%directus%`]);
 	});
 
-	test('Add field(s) without filter for full permissions', () => {
+	test('Add all fields for * field rule and no item rule', () => {
 		const db = mockDatabase();
 		const queryBuilder = db as any;
 
@@ -255,13 +255,114 @@ describe('applySearch', () => {
 			return queryBuilder;
 		});
 
-		applySearch(db as any, FAKE_SCHEMA, queryBuilder, 'directus', 'test', {}, []);
+		applySearch(db as any, FAKE_SCHEMA, queryBuilder, `1`, 'test', {}, [
+			{
+				collection: 'test',
+				action: 'read',
+				fields: ['*'],
+				permissions: null,
+			} as unknown as Permission,
+		]);
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
 		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
 		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
-		expect(queryBuilder['or']['whereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text', `%directus%`]);
+		expect(queryBuilder['or']['where']).toBeCalledTimes(2);
+	});
+
+	test('Add all fields for * field rule and item rules', () => {
+		const db = mockDatabase();
+		const queryBuilder = db as any;
+
+		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
+			{
+				collection: 'test',
+				action: 'read',
+				fields: ['*'],
+				permissions: {
+					text: {},
+				},
+			} as unknown as Permission,
+		]);
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
+		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
+		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
+		expect(queryBuilder['or']['where']).toBeCalledTimes(2);
+	});
+
+	test('Add all fields when at least one policy contains a * field rule', () => {
+		const db = mockDatabase();
+		const queryBuilder = db as any;
+
+		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
+			{
+				collection: 'test',
+				action: 'read',
+				fields: ['text'],
+				permissions: {
+					text: {},
+				},
+			} as unknown as Permission,
+			{
+				collection: 'test',
+				action: 'read',
+				fields: ['*'],
+				permissions: {
+					text: {},
+				},
+			} as unknown as Permission,
+		]);
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(queryBuilder['orWhere']).toBeCalledTimes(1);
+		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
+		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
+		expect(queryBuilder['or']['where']).toBeCalledTimes(3);
+	});
+
+	test('Add field(s) without permissions for admin', () => {
+		const db = mockDatabase();
+		const queryBuilder = db as any;
+
+		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, []);
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
+		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
+		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
 	});
 });
 
