@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Added mutex to GraphQL schema generation
+Added semaphore to GraphQL schema generation
