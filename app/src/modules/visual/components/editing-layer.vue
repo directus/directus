@@ -15,7 +15,7 @@ type Form = {
 	collection: string;
 	item: PrimaryKey | null;
 	fields?: string[];
-	overlay: 'drawer';
+	mode: 'drawer';
 };
 type ReceiveAction = 'connect' | 'edit';
 type ReceiveData = { action: ReceiveAction | null; data: unknown };
@@ -72,10 +72,10 @@ function useItem() {
 	const edits = ref<Record<string, any>>({});
 	const editOverlayActive = ref(false);
 	const msgKey = ref('');
-	const collection = ref('');
+	const collection = ref<Form['collection']>('');
 	const primaryKey = ref<PrimaryKey>('');
-	const fields = ref<string[]>([]);
-	const overlay = ref<'drawer'>('drawer');
+	const fields = ref<Form['fields']>([]);
+	const mode = ref<Form['mode']>('drawer');
 	const isNew = computed(() => primaryKey.value === '+');
 	const itemEndpoint = computed(getItemEndpoint);
 	const itemRoute = computed(getContentRoute);
@@ -174,7 +174,7 @@ function useItem() {
 		collection.value = '';
 		primaryKey.value = '';
 		fields.value = [];
-		overlay.value = 'drawer';
+		mode.value = 'drawer';
 	}
 
 	async function onClickEdit(data: unknown) {
