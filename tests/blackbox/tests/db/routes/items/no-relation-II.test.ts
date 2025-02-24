@@ -28,19 +28,19 @@ describe('retrieves items with filters', () => {
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		console.log('as admin: ', response0);
+		console.log('as admin: ', response0.body.data);
 
 		const response1 = await request(getUrl(vendor))
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${seedResult ? seedResult.editorToken : ''}`);
 
-		console.log('as editor without filters', response1);
+		console.log('as editor without filters', response1.body.data);
 
-		const response = await request(getUrl(vendor))
-			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
-			.set('Authorization', `Bearer ${seedResult ? seedResult.editorToken : ''}`);
+		// const response = await request(getUrl(vendor))
+		// 	.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
+		// 	.set('Authorization', `Bearer ${seedResult ? seedResult.editorToken : ''}`);
 
-		console.log('as editor with filters', response);
+		// console.log('as editor with filters', response);
 
 		// console.log(JSON.stringify(response, null, 4));
 

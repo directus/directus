@@ -6,6 +6,7 @@ import { randomUUID, type UUID } from 'node:crypto';
 import { expect, it } from 'vitest';
 import request from 'supertest';
 import { getUrl } from '@common/config';
+import { log } from 'node:console';
 
 export type Articles = {
 	id?: number | string;
@@ -65,6 +66,8 @@ export const seedDBValues = async () => {
 		editorToken: null,
 		isSeeded: true,
 	};
+
+	log('seeding db . . . .. ');
 
 	try {
 		vendors.map(async (vendor) => {
