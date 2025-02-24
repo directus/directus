@@ -64,6 +64,11 @@ export async function generateSchema(
 	if (cachedSchema) return cachedSchema;
 
 	return mutex.runExclusive(async () => {
+		// Check the cache again after acquiring the lock
+		const cachedSchema = cache.get(key);
+
+		if (cachedSchema) return cachedSchema;
+
 		const schemaComposer = new SchemaComposer<GraphQLParams['contextValue']>();
 
 		let schema: Schema;
