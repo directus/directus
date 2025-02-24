@@ -788,6 +788,12 @@ export class FieldsService {
 
 				const parts = path.split('.');
 
+				// if the field name is not present in the path
+				// then we don't need to check for any required updates
+				if ([field, `.${field}`, `.${field}.`, `${field}.`].some((fieldPart) => path.includes(fieldPart)) === false) {
+					return parts;
+				}
+
 				const updatedParts = [];
 
 				for (let index = 0; index < parts.length; index++) {
