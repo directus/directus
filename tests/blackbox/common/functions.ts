@@ -82,11 +82,7 @@ export type OptionsCreateUser = {
 	roleName?: string; // to generate role
 };
 
-export async function CreateUser(
-	vendor: Vendor,
-	options: Partial<OptionsCreateUser>,
-	token: string = USER.TESTS_FLOW.TOKEN,
-): Promise<User> {
+export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateUser>): Promise<User> {
 	// Validate options
 	if (!options.token) {
 		throw new Error('Missing required field: token');
@@ -103,7 +99,7 @@ export async function CreateUser(
 				filter: { name: { _eq: options.roleName } },
 				fields: ['id', 'name'],
 			})
-			.set('Authorization', `Bearer ${token}`);
+			.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
 		if (roleResponse.body.data.length === 0) {
 			throw new Error(`Role ${options.roleName} does not exist`);
@@ -114,7 +110,10 @@ export async function CreateUser(
 	}
 
 	// Action
-	const response = await request(getUrl(vendor)).post(`/users`).set('Authorization', `Bearer ${token}`).send(options);
+	const response = await request(getUrl(vendor))
+		.post(`/users`)
+		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.send(options);
 
 	if (response.statusCode !== 200) {
 		throw new Error('Could not create user');
