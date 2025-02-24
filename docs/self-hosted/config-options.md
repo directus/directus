@@ -229,28 +229,29 @@ Explicit casting is also available when reading from a file with the `_FILE` suf
 
 ## General
 
-| Variable                        | Description                                                                                                                 | Default Value                |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `CONFIG_PATH`                   | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
-| `HOST`                          | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
-| `PORT`                          | What port to run the API under.                                                                                             | `8055`                       |
-| `UNIX_SOCKET_PATH`              | The Unix socket the API listens on, `PORT` and `HOST` will be ignored if this is provided.                                  | --                           |
-| `PUBLIC_URL`<sup>[1]</sup>      | URL where your API can be reached on the web.                                                                               | `/`                          |
-| `LOG_LEVEL`                     | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
-| `LOG_STYLE`                     | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
-| `LOG_HTTP_IGNORE_PATHS`         | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
-| `MAX_PAYLOAD_SIZE`              | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
-| `ROOT_REDIRECT`                 | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                     | Whether or not to serve the Data Studio                                                                                     | `true`                       |
-| `GRAPHQL_INTROSPECTION`         | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
-| `GRAPHQL_SCHEMA_CACHE_CAPACITY` | How many user GraphQL schemas to store in memory                                                                            | `100`                        |
-| `MAX_BATCH_MUTATION`            | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
-| `MAX_RELATIONAL_DEPTH`          | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
-| `QUERY_LIMIT_DEFAULT`           | The default query limit used when not defined in the API request.                                                           | `100`                        |
-| `QUERY_LIMIT_MAX`               | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
-| `ROBOTS_TXT`                    | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
-| `TEMP_PATH`                     | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
-| `MIGRATIONS_PATH`               | Where custom migrations are located                                                                                         | `./migrations`               |
+| Variable                                   | Description                                                                                                                 | Default Value                |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `CONFIG_PATH`                              | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
+| `HOST`                                     | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
+| `PORT`                                     | What port to run the API under.                                                                                             | `8055`                       |
+| `UNIX_SOCKET_PATH`                         | The Unix socket the API listens on, `PORT` and `HOST` will be ignored if this is provided.                                  | --                           |
+| `PUBLIC_URL`<sup>[1]</sup>                 | URL where your API can be reached on the web.                                                                               | `/`                          |
+| `LOG_LEVEL`                                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
+| `LOG_STYLE`                                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
+| `LOG_HTTP_IGNORE_PATHS`                    | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
+| `MAX_PAYLOAD_SIZE`                         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
+| `ROOT_REDIRECT`                            | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
+| `SERVE_APP`                                | Whether or not to serve the Data Studio                                                                                     | `true`                       |
+| `GRAPHQL_INTROSPECTION`                    | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
+| `GRAPHQL_SCHEMA_CACHE_CAPACITY`            | How many user GraphQL schemas to store in memory                                                                            | `100`                        |
+| `GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT` | How many GraphQL schemas can be generated simultaneously                                                                    | `5`                          |
+| `MAX_BATCH_MUTATION`                       | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
+| `MAX_RELATIONAL_DEPTH`                     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
+| `QUERY_LIMIT_DEFAULT`                      | The default query limit used when not defined in the API request.                                                           | `100`                        |
+| `QUERY_LIMIT_MAX`                          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
+| `ROBOTS_TXT`                               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
+| `TEMP_PATH`                                | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
+| `MIGRATIONS_PATH`                          | Where custom migrations are located                                                                                         | `./migrations`               |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
