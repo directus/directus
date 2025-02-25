@@ -185,6 +185,8 @@ fields:
     width: half
     options:
       label: $t:enabled
+    schema:
+      is_nullable: false
     special:
       - cast-boolean
 
