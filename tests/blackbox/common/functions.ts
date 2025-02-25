@@ -1,4 +1,4 @@
-import type { Collection, Field, Item, Permission, Policy, Query, Relation, User } from '@directus/types';
+import type { Permission, Query } from '@directus/types';
 import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
@@ -82,7 +82,7 @@ export type OptionsCreateUser = {
 	roleName?: string; // to generate role
 };
 
-export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateUser>): Promise<User> {
+export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateUser>) {
 	// Validate options
 	if (!options.token) {
 		throw new Error('Missing required field: token');
@@ -115,10 +115,6 @@ export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateU
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options);
 
-	if (!response.ok) {
-		throw new Error('Could not create user', response.body);
-	}
-
 	return response.body.data;
 }
 
@@ -132,7 +128,7 @@ export type OptionsCreateCollection = {
 	primaryKeyType?: PrimaryKeyType;
 };
 
-export async function CreateCollection(vendor: Vendor, options: Partial<OptionsCreateCollection>): Promise<Collection> {
+export async function CreateCollection(vendor: Vendor, options: Partial<OptionsCreateCollection>) {
 	// Validate options
 	if (!options.collection) {
 		throw new Error('Missing required field: collection');
@@ -210,13 +206,6 @@ export async function DeleteCollection(vendor: Vendor, options: OptionsDeleteCol
 		.delete(`/collections/${options.collection}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
-	// @TODO - enable this as soon as the API returns the correct status code
-	// https://github.com/directus/directus/issues/23724
-	//
-	// if (!response.ok) {
-	// 	throw new Error('Could not delete collection', response.body);
-	// }
-
 	return response.body;
 }
 
@@ -242,7 +231,7 @@ export type OptionsCreateField = {
 	schema?: any;
 };
 
-export async function CreateField(vendor: Vendor, options: OptionsCreateField): Promise<Field> {
+export async function CreateField(vendor: Vendor, options: OptionsCreateField) {
 	// Parse options
 	const defaultOptions = {
 		meta: {},
@@ -268,7 +257,7 @@ export type OptionsCreateRelation = {
 	schema?: any;
 };
 
-export async function CreateRelation(vendor: Vendor, options: OptionsCreateRelation): Promise<Relation> {
+export async function CreateRelation(vendor: Vendor, options: OptionsCreateRelation) {
 	// Parse options
 	const defaultOptions = {
 		meta: {},
@@ -282,7 +271,7 @@ export async function CreateRelation(vendor: Vendor, options: OptionsCreateRelat
 		.get(`/relations/${options.collection}/${options.field}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
-	if (!relationResponse.ok) {
+	if (relationResponse.statusCode === 200) {
 		return relationResponse.body.data;
 	}
 
@@ -671,19 +660,12 @@ export type OptionsCreateItem = {
 	item: any;
 };
 
-export async function CreateItem(vendor: Vendor, options: OptionsCreateItem): Promise<Item> {
+export async function CreateItem(vendor: Vendor, options: OptionsCreateItem) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.post(`/items/${options.collection}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
-
-		console.log('item creation commons', response.statusCode);
-
-
-	// if (!response.ok) {
-	// 	throw new Error('Could not create item', response.body);
-	// }
 
 	return response.body.data;
 }
@@ -735,15 +717,15 @@ export type OptionsCreatePolicy = {
 
 export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy) {
 	// Action
-	const policyResponse = await request(getUrl(vendor))
+	const roleResponse = await request(getUrl(vendor))
 		.get(`/policies`)
 		.query({
 			filter: { name: { _eq: options.name } },
 		})
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
-	if (policyResponse.body.data.length > 0) {
-		return policyResponse.body.data[0];
+	if (roleResponse.body.data.length > 0) {
+		return roleResponse.body.data[0];
 	}
 
 	let roleId = options.role;
@@ -773,12 +755,12 @@ export async function CreatePolicy(vendor: Vendor, options: OptionsCreatePolicy)
 export type OptionsCreatePermission = {
 	role: keyof typeof ROLE;
 	permission: Omit<Partial<Permission>, 'id' | 'role' | 'system'>;
-	policyId?: string;
+	policy?: string;
 	policyName?: string;
 };
 
-export async function CreatePermission(vendor: Vendor, options: OptionsCreatePermission): Promise<Permission> {
-	let policyId = options.policyId;
+export async function CreatePermission(vendor: Vendor, options: OptionsCreatePermission) {
+	let policyId = options.policy;
 	let roleId = options.role;
 
 	if (roleId in ROLE) {
@@ -804,10 +786,11 @@ export async function CreatePermission(vendor: Vendor, options: OptionsCreatePer
 	const response = await request(getUrl(vendor))
 		.patch(`/policies/${policyId}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send({ permissions: { create: [{ ...options.permission, policy: options.policyId }], update: [], delete: [] } });
+		.send({ permissions: { create: [{ ...options.permission, policy: options.policy }], update: [], delete: [] } });
 
 	return response.body.data;
 }
 
 // TODO
 // export async function UpdatePermission() {}
+// export async function DeletePermission() {}
