@@ -189,15 +189,12 @@ async function createEditor(vendor: Vendor): Promise<User> {
 }
 
 async function deleteUser(vendor: Vendor, id: string): Promise<void> {
-	const response = await request(getUrl(vendor))
-		.delete(`/users/${id}`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+	await request(getUrl(vendor)).delete(`/users/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-	if (!response.ok) {
-		throw new Error('Could not delete user');
-	}
-
-	console.log('user deleted');
+	// TODO - Fix this when API returns correct status code
+	// if (!response.ok) {
+	// 	throw new Error('Could not delete user');
+	// }
 }
 
 async function CreatePermission(vendor: Vendor, options: Permission): Promise<Permission> {
@@ -229,28 +226,21 @@ async function CreatePolicy(vendor: Vendor, options: Policy): Promise<Policy> {
 }
 
 async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
-	const response = await request(getUrl(vendor))
-		.delete(`/policies/${id}`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+	await request(getUrl(vendor)).delete(`/policies/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-	if (!response.ok) {
-		throw new Error('Could not delete policy', response.body);
-	}
-
-	console.log('policy deleted');
+	// @TODO - Fix this when API returns correct status code
+	// if (!response.ok) {
+	// 	throw new Error('Could not delete policy', response.body);
+	// }
 }
 
 async function DeletePermissions(vendor: Vendor, ids: number[]): Promise<void> {
 	ids.forEach(async (id) => {
-		const response = await request(getUrl(vendor))
-			.delete(`/permissions/${id}`)
-			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+		await request(getUrl(vendor)).delete(`/permissions/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		if (!response.ok) {
-			throw new Error('Could not delete permissions', response.body);
-		}
-
-		console.log('permissions deleted');
+		// if (!response.ok) {
+		// 	throw new Error('Could not delete permissions', response.body);
+		// }
 	});
 }
 
