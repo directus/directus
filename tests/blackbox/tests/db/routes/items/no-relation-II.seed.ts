@@ -34,6 +34,7 @@ export const seedDBStructure = () => {
 		async (vendor) => {
 			try {
 				await DeleteCollection(vendor, { collection });
+				console.log('deleted collection');
 
 				await CreateCollection(vendor, {
 					collection,
@@ -186,7 +187,13 @@ async function createEditor(vendor: Vendor): Promise<User> {
 }
 
 async function deleteUser(vendor: Vendor, id: string): Promise<void> {
-	await request(getUrl(vendor)).delete(`/users/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`).expect(200);
+	const res = await request(getUrl(vendor)).delete(`/users/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+	if (res.statusCode !== 200) {
+		throw new Error('Could not delete user');
+	}
+
+	console.log('user deleted');
 }
 
 async function CreatePermission(vendor: Vendor, options: Permission): Promise<Permission> {
@@ -206,22 +213,39 @@ async function CreatePolicy(vendor: Vendor, options: Policy): Promise<Policy> {
 	const response = await request(getUrl(vendor))
 		.post(`/policies/`)
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-		.send(options)
-		.expect(200);
+		.send(options);
+
+	if (response.statusCode !== 200) {
+		throw new Error('Could not delete policy');
+	}
+
+	console.log('policy created');
 
 	return response.body.data;
 }
 
 async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
-	await request(getUrl(vendor))
+	const res = await request(getUrl(vendor))
 		.delete(`/policies/${id}`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-		.expect(200);
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+	if (res.statusCode !== 200) {
+		throw new Error('Could not delete policy');
+	}
+
+	console.log('policy deleted');
 }
 
 async function DeletePermissions(vendor: Vendor, ids: number[]): Promise<void> {
 	ids.forEach(async (id) => {
-		await request(getUrl(vendor)).delete(`/permissions/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+		const res = await request(getUrl(vendor))
+			.delete(`/permissions/${id}`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+		if (res.statusCode !== 200) {
+			throw new Error('Could not delete permissions');
+		}
+		console.log('permissions deleted');
 	});
 }
 
@@ -229,8 +253,13 @@ async function CreateItem(vendor: Vendor, collection: string, item: any, token: 
 	const response = await request(getUrl(vendor))
 		.post(`/items/${collection}`)
 		.set('Authorization', `Bearer ${token}`)
-		.send(item)
-		.expect(200);
+		.send(item);
+
+	if (response.statusCode !== 200) {
+		throw new Error('Could not create item');
+	}
+
+	console.log('item created');
 
 	return response.body.data;
 }

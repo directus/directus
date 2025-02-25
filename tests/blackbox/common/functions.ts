@@ -207,6 +207,10 @@ export async function DeleteCollection(vendor: Vendor, options: OptionsDeleteCol
 		.delete(`/collections/${options.collection}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
+	if (response.statusCode !== 200) {
+		console.error('could not delete collection', response.body);
+	}
+
 	return response.body;
 }
 
