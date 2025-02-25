@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { freezeSchema } from './freeze-schema.js';
 
-test('freeze emtpy schema', () => {
+test('freeze empty schema', () => {
 	const schema = freezeSchema({
 		collections: {},
 		relations: [],
