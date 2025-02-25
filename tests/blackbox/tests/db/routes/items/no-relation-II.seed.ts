@@ -139,7 +139,7 @@ export const seedDBValues = async () => {
 					user_created: randomUUID(),
 					date_created: new Date().toISOString(),
 				},
-				userToken,
+				USER.ADMIN.TOKEN,
 			);
 
 			await CreateItem(
@@ -150,7 +150,7 @@ export const seedDBValues = async () => {
 					user_created: randomUUID(),
 					date_created: new Date().toISOString(),
 				},
-				userToken,
+				USER.ADMIN.TOKEN,
 			);
 
 			console.log('items created');
