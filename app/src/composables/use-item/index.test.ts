@@ -37,7 +37,6 @@ afterEach(() => {
 });
 
 describe('Save As Copy', () => {
-	const apiGetSpy = vi.spyOn(api, 'get');
 	const apiPostSpy = vi.spyOn(api, 'post');
 
 	const item = { id: 1 };
@@ -58,34 +57,7 @@ describe('Save As Copy', () => {
 		collection: 'test',
 	} as AppCollection;
 
-	test('should use rest api to fetch item for system collections', async () => {
-		apiGetSpy.mockResolvedValue(mockRestResponse);
-		apiPostSpy.mockResolvedValue(mockRestResponse);
-
-		const mockCollection = {
-			collection: 'directus_users',
-		} as AppCollection;
-
-		const mockPrimaryKeyField = {
-			field: 'id',
-		} as Field;
-
-		const mockFields = [mockPrimaryKeyField] as Field[];
-
-		vi.mocked(useCollection).mockReturnValue({
-			info: computed(() => mockCollection),
-			primaryKeyField: computed(() => mockPrimaryKeyField),
-			fields: computed(() => mockFields),
-		} as any);
-
-		const { saveAsCopy } = useItem(ref('directus_users'), ref(1));
-
-		await saveAsCopy();
-
-		expect(apiGetSpy).toHaveBeenCalledWith('/users/1', { params: { fields: [] } });
-	});
-
-	test('should use graphql to fetch item for custom collections', async () => {
+	test('should use graphql to fetch existing item', async () => {
 		apiPostSpy.mockResolvedValue(mockGraphqlResponse);
 		apiPostSpy.mockResolvedValue(mockRestResponse);
 

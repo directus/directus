@@ -1,13 +1,20 @@
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { getRelatedCollection } from '@/utils/get-related-collection';
 
-type QueryFields = { [key: string]: string | boolean | QueryFields | QueryFields[] };
+type QueryFields = { [key: string]: any };
 
 export function getGraphqlQueryFields(fields: string[], collection: string): QueryFields {
 	const fieldsStore = useFieldsStore();
+	const relationsStore = useRelationsStore();
 
 	const graphqlFields =
-		fields.length > 0 ? fields : fieldsStore.getFieldsForCollection(collection).map((field) => field.field);
+		fields.length > 0
+			? fields
+			: fieldsStore
+					.getFieldsForCollection(collection)
+					.filter((field) => !field.meta?.special?.includes('no-data'))
+					.map((field) => field.field);
 
 	const queryFields: QueryFields = {};
 
@@ -19,7 +26,7 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Que
 		let currentPath = queryFields;
 
 		while (fieldParts.length > 1) {
-			const manyToAny = adjustForManyToAny(currentField, currentPath);
+			const manyToAny = adjustForManyToAny(currentField, currentCollection, currentPath);
 
 			if (manyToAny) {
 				currentCollection = manyToAny.relatedCollection;
@@ -27,14 +34,14 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Que
 			} else {
 				const relatedCollection = getRelatedCollection(currentCollection, currentField);
 				currentCollection = relatedCollection!.junctionCollection ?? relatedCollection!.relatedCollection;
-				currentPath = (currentPath[currentField] as QueryFields | undefined) ??= {};
+				currentPath = currentPath[currentField] ??= {};
 			}
 
 			fieldParts.shift();
 			currentField = fieldParts[0];
 		}
 
-		const manyToAny = adjustForManyToAny(currentField, currentPath);
+		const manyToAny = adjustForManyToAny(currentField, currentCollection, currentPath);
 
 		let relatedCollection;
 
@@ -63,17 +70,26 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Que
 	}
 
 	return queryFields;
-}
 
-function adjustForManyToAny(field: string, currentPath: QueryFields) {
-	const isManyToAny = field.includes(':');
+	function adjustForManyToAny(field: string, currentCollection: string, currentPath: QueryFields) {
+		const isManyToAny = field.includes(':');
+		if (!isManyToAny) return;
 
-	if (isManyToAny) {
 		const [sourceField, relatedCollection] = field.split(':') as [string, string];
 
-		const manyToAnyPath = ((currentPath[sourceField] as QueryFields | undefined) ??= {});
-		const fragments = (manyToAnyPath.__on ??= []) as QueryFields[];
+		const primaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(currentCollection)!.field;
+		currentPath[primaryKeyField] = true;
 
+		const relation = relationsStore.getRelationForField(currentCollection, sourceField);
+		const collectionField = relation!.meta!.one_collection_field!;
+
+		const args = (currentPath.__args ??= { filter: { [collectionField]: { _in: [] } } });
+
+		if (!args.filter[collectionField]._in.includes(relatedCollection))
+			args.filter[collectionField]._in.push(relatedCollection);
+
+		const itemPath = (currentPath[sourceField] ??= {});
+		const fragments = (itemPath.__on ??= []) as QueryFields[];
 		const existingFragment = fragments.find((fragment) => fragment.__typeName === relatedCollection);
 
 		if (existingFragment) {
@@ -90,6 +106,4 @@ function adjustForManyToAny(field: string, currentPath: QueryFields) {
 
 		return { sourceField, relatedCollection, currentPath };
 	}
-
-	return null;
 }

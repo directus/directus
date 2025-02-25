@@ -1,7 +1,8 @@
 import { mockedStore } from '@/__utils__/store.js';
 import { useFieldsStore } from '@/stores/fields.js';
+import { useRelationsStore } from '@/stores/relations.js';
 import { getRelatedCollection } from '@/utils/get-related-collection.js';
-import { Field } from '@directus/types';
+import { Field, Relation } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
@@ -24,7 +25,10 @@ afterEach(() => {
 it('should return all direct fields for collection if field input is empty', () => {
 	const fieldsStore = mockedStore(useFieldsStore());
 
-	fieldsStore.getFieldsForCollection.mockReturnValue([{ field: 'title' } as Field]);
+	fieldsStore.getFieldsForCollection.mockReturnValue([
+		{ field: 'title' },
+		{ field: 'divider', meta: { special: ['no-data'] } },
+	] as Field[]);
 
 	const fields: string[] = [];
 	const collection = 'articles';
@@ -114,10 +118,26 @@ it('should work with m2a fields', () => {
 	fieldsStore.getPrimaryKeyFieldForCollection.mockImplementation((collection) => {
 		switch (collection) {
 			case 'block_text':
+			case 'pages_blocks':
+			case 'pages_sub_blocks':
 				return { field: 'id' } as Field;
 			default:
 				return null;
 		}
+	});
+
+	const relationsStore = mockedStore(useRelationsStore());
+
+	relationsStore.getRelationForField.mockImplementation((currentCollection, sourceField) => {
+		if (
+			(currentCollection === 'pages_blocks' && sourceField === 'item') ||
+			(currentCollection === 'pages_sub_blocks' && sourceField === 'different_field_for_test')
+		)
+			return {
+				meta: { one_collection_field: 'collection' },
+			} as Relation;
+
+		return null;
 	});
 
 	const fields: string[] = [
@@ -132,6 +152,14 @@ it('should work with m2a fields', () => {
 
 	expect(result).toEqual({
 		blocks: {
+			__args: {
+				filter: {
+					collection: {
+						_in: ['block_text'],
+					},
+				},
+			},
+			id: true,
 			item: {
 				__on: [
 					{
@@ -142,6 +170,13 @@ it('should work with m2a fields', () => {
 			},
 		},
 		sub_blocks: {
+			__args: {
+				filter: {
+					collection: {
+						_in: ['block_paragraph'],
+					},
+				},
+			},
 			different_field_for_test: {
 				__on: [
 					{
@@ -151,6 +186,7 @@ it('should work with m2a fields', () => {
 					},
 				],
 			},
+			id: true,
 		},
 	});
 });

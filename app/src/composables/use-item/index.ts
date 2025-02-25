@@ -14,7 +14,7 @@ import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
-import { getEndpoint } from '@directus/utils';
+import { getEndpoint, isObject } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { mergeWith } from 'lodash';
@@ -187,44 +187,40 @@ export function useItem<T extends Item>(
 
 		const fields = collectionInfo.value?.meta?.item_duplication_fields ?? [];
 
-		let itemData: any = null;
+		const queryFields = getGraphqlQueryFields(fields, collection.value);
+		const alias = isSystemCollection(collection.value) ? collection.value.substring(9) : collection.value;
 
-		if (isSystemCollection(collection.value)) {
-			itemData = (await api.get(itemEndpoint.value, { params: { fields } })).data.data;
-		} else {
-			const queryFields = getGraphqlQueryFields(fields, collection.value);
-
-			const query = jsonToGraphQLQuery({
-				query: {
-					item: {
-						__aliasFor: `${collection.value}_by_id`,
-						__args: {
-							id: primaryKey.value,
-						},
-						...queryFields,
+		const query = jsonToGraphQLQuery({
+			query: {
+				item: {
+					__aliasFor: `${alias}_by_id`,
+					__args: {
+						id: primaryKey.value,
 					},
+					...queryFields,
 				},
-			});
+			},
+		});
 
-			itemData = (await api.post(`/graphql`, { query })).data.data.item;
-		}
+		const graphqlEndpoint = isSystemCollection(collection.value) ? '/graphql/system' : '/graphql';
+		const response = await api.post(graphqlEndpoint, { query });
+		const itemData = response.data.data.item;
 
 		const newItem: Item = {
 			...(itemData || {}),
 			...edits.value,
 		};
 
-		if (primaryKeyField.value && primaryKeyField.value.field in newItem) {
-			if (primaryKeyField.value.schema?.has_auto_increment || primaryKeyField.value.meta?.special?.includes('uuid')) {
-				delete newItem[primaryKeyField.value.field];
-			}
-		}
+		clearPrimaryKey(primaryKeyField.value, newItem);
 
 		const fieldsStore = useFieldsStore();
 		const relationsStore = useRelationsStore();
 		const relations = relationsStore.getRelationsForCollection(collection.value);
 
 		for (const relation of relations) {
+			const oneField = relation.meta?.one_field;
+			if (!oneField || !(oneField in newItem)) continue;
+
 			const relatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(relation.collection);
 			if (!relatedPrimaryKeyField) continue;
 
@@ -232,55 +228,65 @@ export function useItem<T extends Item>(
 				(r) => r.collection === relation.collection && r.meta?.many_field === relation.meta?.junction_field,
 			);
 
-			const oneField = relation.meta?.one_field;
-			if (!oneField || !(oneField in newItem)) continue;
-
-			const fieldsToFetch = fields
-				.filter((field) => field.split('.')[0] === oneField)
-				.map((field) => (field.includes('.') ? field.split('.').slice(1).join('.') : '*'));
-
 			if (Array.isArray(newItem[oneField])) {
-				const existingItems = await findExistingRelatedItems(newItem, relation, relatedPrimaryKeyField, fieldsToFetch);
+				const existingItems = await findExistingRelatedItems(relation, relatedPrimaryKeyField);
 
-				newItem[oneField] = newItem[oneField].map((relatedItem: any) => {
-					if (typeof relatedItem !== 'object' && existingItems.length > 0) {
-						// Loose equality because GraphQL always returns primary key as string
-						relatedItem = existingItems.find((existingItem) => existingItem.id == relatedItem);
-					}
+				if (existingItems.length > 0) {
+					newItem[oneField] = newItem[oneField].map((relatedItem: Item | PrimaryKey) => {
+						const existingItem = existingItems.find(
+							(existingItem) =>
+								// Loose equality because GraphQL always returns primary key as string
+								existingItem[relatedPrimaryKeyField.field] ==
+								(isObject(relatedItem) ? relatedItem[relatedPrimaryKeyField.field] : relatedItem),
+						);
 
-					delete relatedItem[relatedPrimaryKeyField.field];
+						if (existingItem) {
+							clearPrimaryKey(primaryKeyField.value, existingItem);
+							clearJunctionRelatedKey(relation, existsJunctionRelated, existingItem);
+							relatedItem = existingItem;
+						}
 
-					updateJunctionRelatedKey(relation, existsJunctionRelated, relatedItem);
-					return relatedItem;
-				});
-			} else {
-				const newRelatedItem: Alterations = newItem[oneField];
+						return relatedItem;
+					});
+				}
+			} else if (isObject(newItem[oneField])) {
+				const newRelatedItem = newItem[oneField] as Alterations;
 
-				let existingItems = await findExistingRelatedItems(
-					item.value as Item,
-					relation,
-					relatedPrimaryKeyField,
-					fieldsToFetch,
-				);
-
-				existingItems = existingItems.filter(
+				const existingItems = (await findExistingRelatedItems(relation, relatedPrimaryKeyField)).filter(
 					(item) => !newRelatedItem.delete.includes(item[relatedPrimaryKeyField.field]),
 				);
 
 				for (const item of newRelatedItem.update) {
-					updateJunctionRelatedKey(relation, existsJunctionRelated, item);
+					let data;
+
+					const existingItemIndex = existingItems.findIndex(
+						(existingItem) => existingItem[relatedPrimaryKeyField.field] === item[relatedPrimaryKeyField.field],
+					);
+
+					if (existingItemIndex > -1) {
+						data = mergeWith(existingItems[existingItemIndex], item, (objValue) => {
+							if (Array.isArray(objValue)) return objValue;
+							return;
+						});
+
+						existingItems.splice(existingItemIndex, 1);
+					} else {
+						data = item;
+					}
+
+					clearPrimaryKey(relatedPrimaryKeyField, data);
+					clearJunctionRelatedKey(relation, existsJunctionRelated, data);
+
+					newRelatedItem.create.push(data);
 				}
 
 				for (const item of existingItems) {
-					updateExistingRelatedItems(newRelatedItem.update, item, relatedPrimaryKeyField, relation);
+					clearPrimaryKey(relatedPrimaryKeyField, item);
+
+					newRelatedItem.create.push(item);
 				}
 
 				newRelatedItem.update.length = 0;
-
-				for (const item of existingItems) {
-					delete item[relatedPrimaryKeyField!.field];
-					newRelatedItem.create.push(item);
-				}
 			}
 		}
 
@@ -310,58 +316,67 @@ export function useItem<T extends Item>(
 			saving.value = false;
 		}
 
-		async function findExistingRelatedItems(
-			item: Item,
-			relation: Relation,
-			relatedPrimaryKeyField: Field,
-			fieldsToFetch: string[],
-		) {
-			const existingIds = item?.[relation.meta!.one_field!].filter((item: any) => typeof item !== 'object');
-			let existingItems: Item[] = [];
+		async function findExistingRelatedItems(relation: Relation, relatedPrimaryKeyField: Field): Promise<Item[]> {
+			const existingRelatedItem = itemData[relation.meta!.one_field!];
 
-			if (existingIds.length > 0) {
-				const response = await api.get(getEndpoint(relation.collection), {
-					params: {
-						fields: [relatedPrimaryKeyField.field, ...fieldsToFetch],
-						[`filter[${relation.field}][_eq]`]: primaryKey.value,
-					},
-				});
+			if (!existingRelatedItem) return [];
 
-				existingItems = response.data.data;
-			}
+			const existingIds = existingRelatedItem.filter(
+				(item: unknown) => isObject(item) && relatedPrimaryKeyField.field in item,
+			);
 
-			return existingItems;
+			if (existingIds.length === 0) return [];
+
+			const fieldsToFetch = new Set(
+				fields.reduce((accumulator, currentValue) => {
+					const [onePart, ...remainingParts] = currentValue.split('.');
+
+					if (onePart === relation.meta!.one_field! && remainingParts.length > 0)
+						accumulator.push(remainingParts.join('.'));
+
+					return accumulator;
+				}, [] as string[]),
+			);
+
+			if (fieldsToFetch.size > 0) fieldsToFetch.add(relatedPrimaryKeyField.field);
+
+			const response = await api.get(getEndpoint(relation.collection), {
+				params: {
+					fields: Array.from(fieldsToFetch),
+					[`filter[${relation.field}][_eq]`]: primaryKey.value,
+				},
+			});
+
+			return response.data.data;
 		}
 
-		function updateExistingRelatedItems(
-			updatedRelatedItems: Item[],
-			item: Item,
-			relatedPrimaryKeyField: Field,
-			relation: Relation,
-		) {
-			for (const updatedItem of updatedRelatedItems) {
-				if (item[relatedPrimaryKeyField.field] !== updatedItem[relatedPrimaryKeyField.field]) continue;
-
-				for (const field of fields) {
-					const [relationField, fieldName] = field.split('.');
-
-					if (relationField !== relation.meta!.one_field!) continue;
-
-					if (fieldName && fieldName in updatedItem) item[fieldName] = updatedItem[fieldName];
-				}
+		function clearPrimaryKey(primaryKeyField: Field | null, item: Item) {
+			if (primaryKeyField?.schema?.has_auto_increment || primaryKeyField?.meta?.special?.includes('uuid')) {
+				delete item[primaryKeyField.field];
 			}
 		}
 
-		function updateJunctionRelatedKey(relation: Relation, existsJunctionRelated: Relation | undefined, item: Item) {
-			if (relation.meta?.junction_field && existsJunctionRelated?.related_collection) {
-				const junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
+		function clearJunctionRelatedKey(relation: Relation, existsJunctionRelated: Relation | undefined, item: Item) {
+			if (!relation.meta?.junction_field || !isObject(item[relation.meta.junction_field]) || !existsJunctionRelated)
+				return;
+
+			let junctionRelatedPrimaryKeyField = null;
+
+			if (existsJunctionRelated.related_collection)
+				junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
 					existsJunctionRelated.related_collection,
 				);
+			else if (
+				existsJunctionRelated.meta?.one_collection_field &&
+				item[existsJunctionRelated.meta.one_collection_field]
+			)
+				junctionRelatedPrimaryKeyField = fieldsStore.getPrimaryKeyFieldForCollection(
+					item[existsJunctionRelated.meta.one_collection_field],
+				);
 
-				if (relation.meta.junction_field in item && junctionRelatedPrimaryKeyField?.schema!.is_generated) {
-					delete item[relation.meta.junction_field][junctionRelatedPrimaryKeyField!.field];
-				}
-			}
+			const relatedItem = item[relation.meta.junction_field];
+
+			if (isObject(relatedItem)) clearPrimaryKey(junctionRelatedPrimaryKeyField, relatedItem);
 		}
 	}
 
