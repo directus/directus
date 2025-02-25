@@ -216,7 +216,7 @@ async function CreatePolicy(vendor: Vendor, options: Policy): Promise<Policy> {
 		.send(options);
 
 	if (response.statusCode !== 200) {
-		throw new Error('Could not delete policy');
+		throw new Error('Could not create policy', response.body);
 	}
 
 	console.log('policy created');
