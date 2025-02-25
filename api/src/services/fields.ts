@@ -723,10 +723,20 @@ export class FieldsService {
 			}
 
 			if (collectionMeta.item_duplication_fields !== null) {
-				const paths = updateItemDuplicationPaths(collectionMeta.item_duplication_fields, collectionMeta.collection);
+				const itemDuplicationPaths: string[] =
+					typeof collectionMeta.item_duplication_fields === 'string'
+						? parseJSON(collectionMeta.item_duplication_fields)
+						: collectionMeta.item_duplication_fields;
+
+				const paths = updateItemDuplicationPaths(itemDuplicationPaths, collectionMeta.collection);
 
 				meta.updates['item_duplication_fields'] = paths || null;
 				hasUpdates = true;
+
+				// do not update on no change
+				if (paths && paths.length === itemDuplicationPaths.length) {
+					hasUpdates = false;
+				}
 			}
 
 			if (hasUpdates) {
@@ -771,12 +781,10 @@ export class FieldsService {
 			return relatedCollections;
 		}
 
-		function updateItemDuplicationPaths(paths: string | string[], root: string) {
+		function updateItemDuplicationPaths(paths: string[], root: string) {
 			const updatedPaths = [];
 
-			const itemDuplicationPaths: string[] = typeof paths === 'string' ? parseJSON(paths) : paths;
-
-			for (const path of itemDuplicationPaths) {
+			for (const path of paths) {
 				const updatedPath = updateItemDuplicationPath(path, root);
 
 				if (updatedPath && updatedPath.length !== 0) {
@@ -793,8 +801,7 @@ export class FieldsService {
 
 				const parts = path.split('.');
 
-				// if the field name is not present in the path
-				// then we don't need to check for any required updates
+				// if the field name is not present in the path we can skip processing as no possible match
 				if ([field, `.${field}`, `.${field}.`, `${field}.`].some((fieldPart) => path.includes(fieldPart)) === false) {
 					return parts;
 				}
