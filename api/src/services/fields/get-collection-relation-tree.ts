@@ -1,7 +1,6 @@
-import { isSystemCollection } from '@directus/system-data';
 import type { Relation } from '@directus/types';
 
-export function getCollectionReferences(collection: string, relations: Relation[]) {
+export function getCollectionReferenceTree(relations: Relation[]) {
 	const outwardLinkedCollections = new Map<string, string[]>();
 	const inwardLinkedCollections = new Map<string, string[]>();
 	const relationalFieldToCollection = new Map<string, string>();
@@ -41,49 +40,9 @@ export function getCollectionReferences(collection: string, relations: Relation[
 		}
 	}
 
-	const collectionLinks = getRelatedCollections(collection, outwardLinkedCollections, inwardLinkedCollections);
-
 	return {
-		collectionLinks,
+		outwardLinkedCollections,
+		inwardLinkedCollections,
 		relationalFieldToCollection,
 	};
-}
-
-function getRelatedCollections(
-	collection: string,
-	outwardLinkedCollections: Map<string, string[]>,
-	inwardLinkedCollections: Map<string, string[]>,
-) {
-	const relatedCollections = new Set<string>();
-
-	traverseRelatedCollections(collection);
-
-	function traverseRelatedCollections(root: string) {
-		const inward = inwardLinkedCollections.get(root) ?? [];
-		const outward = outwardLinkedCollections.get(root) ?? [];
-
-		if (inward.length === 0 && outward.length === 0) return;
-
-		for (const node of inward) {
-			addNode(node);
-		}
-
-		for (const node of outward) {
-			addNode(node);
-		}
-	}
-
-	function addNode(node: string) {
-		// system collections cannot have duplication fields and therfore can be skipped
-		if (isSystemCollection(node)) return;
-
-		// skip circular reference and existing linked nodes
-		if (node === collection || relatedCollections.has(node)) return;
-
-		relatedCollections.add(node);
-
-		traverseRelatedCollections(node);
-	}
-
-	return relatedCollections;
 }

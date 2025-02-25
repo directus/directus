@@ -32,7 +32,8 @@ import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
-import { getCollectionReferences } from './fields/get-collection-reference.js';
+import { getCollectionReferenceTree } from './fields/get-collection-relation-tree.js';
+import { getRelatedCollections } from './fields/get-related-collections.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
@@ -732,9 +733,13 @@ export class FieldsService {
 					});
 				}
 
-				const { collectionLinks, relationalFieldToCollection } = await getCollectionReferences(
+				const { outwardLinkedCollections, inwardLinkedCollections, relationalFieldToCollection } =
+					await getCollectionReferenceTree(this.schema.relations);
+
+				const collectionReferences = getRelatedCollections(
 					collection,
-					this.schema.relations,
+					outwardLinkedCollections,
+					inwardLinkedCollections,
 				);
 
 				const collectionMetaQuery = trx
@@ -743,9 +748,9 @@ export class FieldsService {
 					.from('directus_collections')
 					.where({ collection });
 
-				if (collectionLinks.size !== 0) {
+				if (collectionReferences.size !== 0) {
 					collectionMetaQuery.orWhere(function () {
-						this.whereIn('collection', Array.from(collectionLinks)).whereNotNull('item_duplication_fields');
+						this.whereIn('collection', Array.from(collectionReferences)).whereNotNull('item_duplication_fields');
 					});
 				}
 
