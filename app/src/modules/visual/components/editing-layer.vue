@@ -19,7 +19,7 @@ type Form = {
 };
 type ReceiveAction = 'connect' | 'edit';
 type ReceiveData = { action: ReceiveAction | null; data: unknown };
-type SendAction = 'confirm' | 'saved';
+type SendAction = 'confirm' | 'showEditableElements' | 'saved';
 type SavedData = {
 	key: string;
 	collection: Form['collection'];
@@ -27,7 +27,11 @@ type SavedData = {
 	payload: Record<string, any>;
 };
 
-const { url, frameEl } = defineProps<{ url: string; frameEl?: HTMLIFrameElement }>();
+const { url, frameEl, showEditableElements } = defineProps<{
+	url: string;
+	frameEl?: HTMLIFrameElement;
+	showEditableElements?: boolean;
+}>();
 
 const { t } = useI18n();
 
@@ -41,9 +45,20 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 		const { action = null, data = null }: ReceiveData = event.data;
 
-		if (action === 'connect') sendConfirm();
+		if (action === 'connect') {
+			sendConfirm();
+			if (showEditableElements) sendShowEditableElements(true);
+		}
+
 		if (action === 'edit') onClickEdit(data);
 	});
+
+	watch(
+		() => showEditableElements,
+		(newValue, oldValue) => {
+			if (newValue !== oldValue) sendShowEditableElements(newValue);
+		},
+	);
 
 	return { sendSaved };
 
@@ -53,6 +68,10 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	function sendConfirm() {
 		send('confirm', null);
+	}
+
+	function sendShowEditableElements(show: boolean) {
+		send('showEditableElements', show);
 	}
 
 	function sendSaved(data: SavedData) {

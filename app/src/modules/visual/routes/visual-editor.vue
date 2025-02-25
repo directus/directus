@@ -29,6 +29,7 @@ const urls = computed<string[]>(() => {
 });
 
 const moduleBarOpen = ref(true);
+const showEditableElements = ref(false);
 </script>
 
 <template>
@@ -49,10 +50,21 @@ const moduleBarOpen = ref(true);
 				>
 					<v-icon small :name="moduleBarOpen ? 'left_panel_close' : 'left_panel_open'" outline />
 				</v-button>
+
+				<v-button
+					v-tooltip.bottom.end="t('toggle_editable_elements')"
+					x-small
+					rounded
+					icon
+					:secondary="!showEditableElements"
+					@click="showEditableElements = !showEditableElements"
+				>
+					<v-icon small name="dashboard" outline />
+				</v-button>
 			</template>
 
 			<template #overlay="{ frameEl, activeUrl }">
-				<editing-layer :url="activeUrl" :frame-el />
+				<editing-layer :url="activeUrl" :frame-el :show-editable-elements />
 			</template>
 		</live-preview>
 
