@@ -19,7 +19,7 @@ test('get relations for no m2o relation', () => {
 	]);
 
 	expect(relations).toEqual({
-		collectionRelationTree: new Map([['A', new Set(['B'])]]),
+		collectionRelationTree: new Map([['B', new Set(['A'])]]),
 		fieldToCollectionList: new Map([['A:a', 'B']]),
 	});
 });
@@ -64,7 +64,10 @@ test('get relations for no m2a relation', () => {
 	]);
 
 	expect(relations).toEqual({
-		collectionRelationTree: new Map([['A', new Set(['B', 'C'])]]),
+		collectionRelationTree: new Map([
+			['B', new Set(['A'])],
+			['C', new Set(['A'])],
+		]),
 		fieldToCollectionList: new Map([
 			['A:a:B', 'B'],
 			['A:a:C', 'C'],

@@ -19,19 +19,19 @@ export function buildCollectionAndFieldRelations(relations: Relation[]) {
 
 		for (const relatedCollection of relatedCollections) {
 			let fieldToCollectionListKey = relation.collection + ':' + relation.field;
-			const collectionList = collectionRelationTree.get(relation.collection) ?? new Set<string>();
+			const collectionList = collectionRelationTree.get(relatedCollection) ?? new Set<string>();
 
-			collectionList.add(relatedCollection);
+			collectionList.add(relation.collection);
 
 			// O2M can have outward duplication path
 			if (relation.meta?.one_field) {
 				const relatedfieldToCollectionListKey = relatedCollection + ':' + relation.meta.one_field;
-				const realatedCollectionList = collectionRelationTree.get(relatedCollection) ?? new Set<string>();
+				const realatedCollectionList = collectionRelationTree.get(relation.collection) ?? new Set<string>();
 
-				realatedCollectionList.add(relation.collection);
+				realatedCollectionList.add(relatedCollection);
 
 				fieldToCollectionList.set(relatedfieldToCollectionListKey, relation.collection);
-				collectionRelationTree.set(relatedCollection, realatedCollectionList);
+				collectionRelationTree.set(relation.collection, realatedCollectionList);
 			}
 
 			// m2a fields show as field:collection in duplication path
@@ -40,7 +40,7 @@ export function buildCollectionAndFieldRelations(relations: Relation[]) {
 			}
 
 			fieldToCollectionList.set(fieldToCollectionListKey, relatedCollection);
-			collectionRelationTree.set(relation.collection, collectionList);
+			collectionRelationTree.set(relatedCollection, collectionList);
 		}
 	}
 
