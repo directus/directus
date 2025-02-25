@@ -8,9 +8,8 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
-import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
-import { addFieldFlag, parseJSON, toArray } from '@directus/utils';
+import { addFieldFlag, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
 import { isEqual, isNil, merge } from 'lodash-es';
@@ -32,6 +31,8 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
+import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
+import { getCollectionReferences } from './fields/get-collection-reference.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
@@ -642,201 +643,6 @@ export class FieldsService {
 		}
 	}
 
-	private async collectionMetaUpdates(collection: string, field: string) {
-		const schema = this.schema;
-
-		const outwardLinkedCollections = new Map<string, string[]>();
-		const inwardLinkedCollections = new Map<string, string[]>();
-		const relationalFieldToCollection = new Map<string, string>();
-
-		// build collection relation tree
-		for (const relation of schema.relations) {
-			let relatedCollections = [];
-
-			if (relation.related_collection) {
-				relatedCollections.push(relation.related_collection);
-			} else if (relation.meta?.one_collection_field && relation.meta?.one_allowed_collections) {
-				relatedCollections = relation.meta?.one_allowed_collections;
-			} else {
-				// safe guard
-				continue;
-			}
-
-			const outward = outwardLinkedCollections.get(relation.collection) ?? [];
-
-			for (const relatedCollection of relatedCollections) {
-				const inward = inwardLinkedCollections.get(relatedCollection) ?? [];
-
-				// a -> b
-				inward.push(relation.collection);
-				inwardLinkedCollections.set(relatedCollection, inward);
-				// track collection links on a per collection + field basis
-				relationalFieldToCollection.set(`${relation.collection}::${relation.field}`, relatedCollection);
-
-				// b <- a
-				outward.push(relatedCollection);
-				outwardLinkedCollections.set(relation.collection, outward);
-
-				// O2M can have outward duplication path
-				if (relation.meta?.one_field) {
-					relationalFieldToCollection.set(`${relatedCollection}::${relation.meta.one_field}`, relation.collection);
-				}
-			}
-		}
-
-		const collectionLinks = getRelatedCollections(collection);
-
-		const collectionMetaQuery = this.knex
-			.queryBuilder()
-			.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
-			.from('directus_collections')
-			.where({ collection });
-
-		if (collectionLinks.size !== 0) {
-			collectionMetaQuery.orWhere(function () {
-				this.whereIn('collection', Array.from(collectionLinks)).whereNotNull('item_duplication_fields');
-			});
-		}
-
-		const collectionMetas = await collectionMetaQuery;
-
-		const collectionMetaUpdates = [];
-
-		for (const collectionMeta of collectionMetas) {
-			let hasUpdates = false;
-
-			const meta: { collection: string; updates: Record<string, Knex.Value> } = {
-				collection: collectionMeta.collection,
-				updates: {},
-			};
-
-			if (collectionMeta.collection === collection) {
-				if (collectionMeta.archive_field === field) {
-					meta.updates['archive_field'] = null;
-					hasUpdates = true;
-				}
-
-				if (collectionMeta.sort_field === field) {
-					meta.updates['sort_field'] = null;
-					hasUpdates = true;
-				}
-			}
-
-			if (collectionMeta.item_duplication_fields !== null) {
-				const itemDuplicationPaths: string[] =
-					typeof collectionMeta.item_duplication_fields === 'string'
-						? parseJSON(collectionMeta.item_duplication_fields)
-						: collectionMeta.item_duplication_fields;
-
-				const paths = updateItemDuplicationPaths(itemDuplicationPaths, collectionMeta.collection);
-
-				meta.updates['item_duplication_fields'] = paths || null;
-				hasUpdates = true;
-
-				// do not update on no change
-				if (paths && paths.length === itemDuplicationPaths.length) {
-					hasUpdates = false;
-				}
-			}
-
-			if (hasUpdates) {
-				collectionMetaUpdates.push(meta);
-			}
-		}
-
-		return collectionMetaUpdates;
-
-		function getRelatedCollections(collection: string) {
-			const relatedCollections = new Set<string>();
-
-			traverseRelatedCollections(collection);
-
-			function traverseRelatedCollections(root: string) {
-				const inward = inwardLinkedCollections.get(root) ?? [];
-				const outward = outwardLinkedCollections.get(root) ?? [];
-
-				if (inward.length === 0 && outward.length === 0) return;
-
-				for (const node of inward) {
-					addNode(node);
-				}
-
-				for (const node of outward) {
-					addNode(node);
-				}
-			}
-
-			function addNode(node: string) {
-				// system collections cannot have duplication fields and therfore can be skipped
-				if (isSystemCollection(node)) return;
-
-				// skip circular reference and existing linked nodes
-				if (node === collection || relatedCollections.has(node)) return;
-
-				relatedCollections.add(node);
-
-				traverseRelatedCollections(node);
-			}
-
-			return relatedCollections;
-		}
-
-		function updateItemDuplicationPaths(paths: string[], root: string) {
-			const updatedPaths = [];
-
-			for (const path of paths) {
-				const updatedPath = updateItemDuplicationPath(path, root);
-
-				if (updatedPath && updatedPath.length !== 0) {
-					updatedPaths.push(updatedPath.join('.'));
-				}
-			}
-
-			if (updatedPaths.length === 0) return;
-
-			return updatedPaths;
-
-			function updateItemDuplicationPath(path: string, root: string) {
-				let currentCollection = root;
-
-				const parts = path.split('.');
-
-				// if the field name is not present in the path we can skip processing as no possible match
-				if ([field, `.${field}`, `.${field}.`, `${field}.`].some((fieldPart) => path.includes(fieldPart)) === false) {
-					return parts;
-				}
-
-				const updatedParts = [];
-
-				for (let index = 0; index < parts.length; index++) {
-					const part = parts[index]!;
-
-					// Invalid path for the field that is currently being removed
-					if (currentCollection === collection && part === field) return;
-
-					const isLastPart = index === parts.length - 1;
-					const isLocalField = typeof schema.collections[currentCollection]?.['fields'][part] !== 'undefined';
-					const nextCollectionNode = relationalFieldToCollection.get(`${currentCollection}::${part}`);
-
-					// Invalid path for old deleted collections
-					if (!nextCollectionNode && !isLastPart) return;
-
-					// Invalid path for old deleted fields
-					if (!nextCollectionNode && isLastPart && !isLocalField) return;
-
-					// next/last path is relational
-					if (nextCollectionNode) {
-						currentCollection = nextCollectionNode;
-					}
-
-					updatedParts.push(part);
-				}
-
-				return updatedParts;
-			}
-		}
-	}
-
 	async deleteField(collection: string, field: string, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -926,7 +732,32 @@ export class FieldsService {
 					});
 				}
 
-				const collectionMetaUpdates = await this.collectionMetaUpdates(collection, field);
+				const { collectionLinks, relationalFieldToCollection } = await getCollectionReferences(
+					collection,
+					this.schema.relations,
+				);
+
+				const collectionMetaQuery = trx
+					.queryBuilder()
+					.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
+					.from('directus_collections')
+					.where({ collection });
+
+				if (collectionLinks.size !== 0) {
+					collectionMetaQuery.orWhere(function () {
+						this.whereIn('collection', Array.from(collectionLinks)).whereNotNull('item_duplication_fields');
+					});
+				}
+
+				const collectionMetas = await collectionMetaQuery;
+
+				const collectionMetaUpdates = getCollectionMetaUpdates(
+					collection,
+					field,
+					collectionMetas,
+					this.schema.collections,
+					relationalFieldToCollection,
+				);
 
 				for (const meta of collectionMetaUpdates) {
 					await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
