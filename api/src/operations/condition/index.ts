@@ -14,6 +14,7 @@ export default defineOperationApi<Options>({
 		const errors = validatePayload(filter, data, { requireAll: true });
 
 		if (errors.length > 0) {
+			// sanitize and format errors
 			const validationErrors = errors
 				.map((error) =>
 					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details))),
