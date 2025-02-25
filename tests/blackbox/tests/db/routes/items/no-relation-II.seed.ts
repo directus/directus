@@ -23,7 +23,8 @@ export const collection = 'articles';
 
 const userId = 'sample-user-id';
 const userToken = 'sample-user-token';
-const policy = 'sample-policy';
+const policyName = 'sample-policy';
+const policyId = '74f5ef86-db06-4a88-8447-506688d0ff52';
 const permissionIds: [number, number] = [93827, 93828];
 
 export const seedDBStructure = () => {
@@ -76,11 +77,11 @@ export const seedDBValues = async () => {
 		vendors.map(async (vendor) => {
 			console.log('starting seed', vendor);
 
-			await deletePolicy(vendor, policy);
+			await deletePolicy(vendor, policyId);
 
 			await CreatePolicy(vendor, {
-				id: policy,
-				name: policy,
+				id: policyId,
+				name: policyName,
 				icon: 'trashcan',
 				description: '',
 				enforce_tfa: null,
@@ -173,7 +174,7 @@ async function createEditor(vendor: Vendor): Promise<User> {
 		password: '12345',
 		name: 'John',
 		token: userToken,
-		policies: [policy],
+		policies: [policyId],
 	};
 
 	const response = await request(getUrl(vendor))
