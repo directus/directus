@@ -251,3 +251,61 @@ test('updates only the item_duplication_fields that have the deleted field', () 
 		},
 	]);
 });
+
+test('updates only the item_duplication_fields that have the deleted field for m2a', () => {
+	const updates = getCollectionMetaUpdates(
+		'collectionA',
+		'title',
+		[
+			{
+				collection: 'collectionA',
+				archive_field: null,
+				sort_field: null,
+				item_duplication_fields: ['title'],
+			},
+			{
+				collection: 'collectionB',
+				archive_field: null,
+				sort_field: null,
+				item_duplication_fields: ['builder.item:collectionA.title', 'builder.item:collectionC.title'],
+			},
+		],
+		{
+			collectionA: {
+				fields: {
+					title: {},
+				},
+			},
+			collectionB: {
+				fields: {
+					builder: {},
+				},
+			},
+			collectionC: {
+				fields: {
+					title: {},
+				},
+			},
+		} as any,
+		new Map([
+			['collectionB:builder', 'collectionD'],
+			['collectionD:item:collectionA', 'collectionA'],
+			['collectionD:item:collectionC', 'collectionC'],
+		]),
+	);
+
+	expect(updates).toEqual([
+		{
+			collection: 'collectionA',
+			updates: {
+				item_duplication_fields: null,
+			},
+		},
+		{
+			collection: 'collectionB',
+			updates: {
+				item_duplication_fields: ['builder.item:collectionC.title'],
+			},
+		},
+	]);
+});
