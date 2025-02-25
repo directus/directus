@@ -1,11 +1,16 @@
-import type { CollectionMeta, CollectionsOverview } from '@directus/types';
+import type { CollectionsOverview } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import type { Knex } from 'knex';
 
 export function getCollectionMetaUpdates(
 	collection: string,
 	field: string,
-	collectionMetas: Pick<CollectionMeta, 'archive_field' | 'sort_field' | 'item_duplication_fields' | 'collection'>[],
+	collectionMetas: {
+		archive_field?: null | string;
+		sort_field?: null | string;
+		item_duplication_fields?: null | string | string[];
+		collection: string;
+	}[],
 	collections: CollectionsOverview,
 	fieldToCollectionList: Map<string, string>,
 ) {
@@ -20,18 +25,18 @@ export function getCollectionMetaUpdates(
 		};
 
 		if (collectionMeta.collection === collection) {
-			if (collectionMeta.archive_field === field) {
+			if (collectionMeta?.archive_field === field) {
 				meta.updates['archive_field'] = null;
 				hasUpdates = true;
 			}
 
-			if (collectionMeta.sort_field === field) {
+			if (collectionMeta?.sort_field === field) {
 				meta.updates['sort_field'] = null;
 				hasUpdates = true;
 			}
 		}
 
-		if (collectionMeta.item_duplication_fields !== null) {
+		if (collectionMeta?.item_duplication_fields) {
 			const itemDuplicationPaths: string[] =
 				typeof collectionMeta.item_duplication_fields === 'string'
 					? parseJSON(collectionMeta.item_duplication_fields)
