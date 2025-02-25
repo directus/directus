@@ -49,6 +49,7 @@ export function getCollectionMetaUpdates(
 					path,
 					collectionMeta.collection,
 					field,
+					collection,
 					collections,
 					fieldToCollectionList,
 				);
@@ -79,6 +80,7 @@ function updateItemDuplicationPath(
 	path: string,
 	root: string,
 	field: string,
+	collection: string,
 	collections: CollectionsOverview,
 	fieldToCollectionList: Map<string, string>,
 ) {
@@ -97,7 +99,7 @@ function updateItemDuplicationPath(
 		const part = parts[index]!;
 
 		// Invalid path for the field that is currently being removed
-		if (currentCollection === root && part === field) return;
+		if (currentCollection === collection && part === field) return;
 
 		const isLastPart = index === parts.length - 1;
 		const isLocalField = typeof collections[currentCollection]?.['fields'][part] !== 'undefined';
