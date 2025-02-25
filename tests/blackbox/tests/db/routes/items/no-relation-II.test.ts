@@ -31,13 +31,13 @@ describe('retrieves items with filters', () => {
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		console.log('as admin: ', response0.body.data, response0);
+		console.log('as admin: ', response0.body.data);
 
-		const response1 = await request(getUrl(vendor))
-			.get(`/items/${collection}`)
-			.set('Authorization', `Bearer ${seedResult ? seedResult.editorToken : ''}`);
+		// const response1 = await request(getUrl(vendor))
+		// 	.get(`/items/${collection}`)
+		// 	.set('Authorization', `Bearer ${seedResult ? seedResult.editorToken : ''}`);
 
-		console.log('as editor without filters', response1.body.data, response1);
+		// console.log('as editor without filters', response1.body.data, response1);
 
 		// const response = await request(getUrl(vendor))
 		// 	.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)

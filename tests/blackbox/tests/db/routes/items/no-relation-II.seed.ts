@@ -89,8 +89,6 @@ export const seedDBValues = async () => {
 				admin_access: false,
 			});
 
-			console.log('policy created');
-
 			await DeletePermissions(vendor, permissionIds);
 
 			await CreatePermission(vendor, {
@@ -164,6 +162,10 @@ export const seedDBValues = async () => {
 	return result;
 };
 
+// - - - - - API calls - - - - -
+// Those are in here temporarily.
+// They will be moved to a common place with a separate refactoring.
+
 async function createEditor(vendor: Vendor): Promise<User> {
 	const newUser = {
 		id: userId,
@@ -203,7 +205,7 @@ async function CreatePermission(vendor: Vendor, options: Permission): Promise<Pe
 		.send(options);
 
 	if (response.statusCode !== 200) {
-		throw new Error('Could not create permission');
+		throw new Error('Could not create permission', response.body);
 	}
 
 	return response.body.data;
@@ -230,7 +232,7 @@ async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 	if (res.statusCode !== 200) {
-		throw new Error('Could not delete policy');
+		throw new Error('Could not delete policy', res.body);
 	}
 
 	console.log('policy deleted');
@@ -243,8 +245,9 @@ async function DeletePermissions(vendor: Vendor, ids: number[]): Promise<void> {
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 		if (res.statusCode !== 200) {
-			throw new Error('Could not delete permissions');
+			throw new Error('Could not delete permissions', res.body);
 		}
+
 		console.log('permissions deleted');
 	});
 }
@@ -256,7 +259,7 @@ async function CreateItem(vendor: Vendor, collection: string, item: any, token: 
 		.send(item);
 
 	if (response.statusCode !== 200) {
-		throw new Error('Could not create item');
+		throw new Error('Could not create item', response.body);
 	}
 
 	console.log('item created');
