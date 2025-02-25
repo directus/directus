@@ -1,7 +1,7 @@
 import { Field } from '@directus/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { validatePayload } from '@directus/utils';
-import { merge } from 'lodash';
+import { isArray, mergeWith } from 'lodash';
 
 export function applyConditions(item: Record<string, any>, field: Field) {
 	if (field.meta && Array.isArray(field.meta?.conditions)) {
@@ -17,12 +17,21 @@ export function applyConditions(item: Record<string, any>, field: Field) {
 		if (matchingCondition) {
 			return {
 				...field,
-				meta: merge({}, field.meta || {}, {
-					readonly: matchingCondition.readonly,
-					options: matchingCondition.options,
-					hidden: matchingCondition.hidden,
-					required: matchingCondition.required,
-				}),
+				meta: mergeWith(
+					{},
+					field.meta || {},
+					{
+						readonly: matchingCondition.readonly,
+						options: matchingCondition.options,
+						hidden: matchingCondition.hidden,
+						required: matchingCondition.required,
+					},
+					(objValue, srcValue) => {
+						if (isArray(objValue) && isArray(srcValue)) {
+							return srcValue;
+						}
+					},
+				),
 			};
 		}
 

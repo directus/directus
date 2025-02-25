@@ -46,7 +46,7 @@ function deleteItem(elem: Record<string, any>) {
 				<div class="spacer" />
 
 				<div class="item-actions">
-					<v-icon v-tooltip="t('deselect')" name="close" clickable @click.stop="deleteItem(element)" />
+					<v-remove deselect @action="deleteItem(element)" />
 				</div>
 			</v-list-item>
 		</v-list>

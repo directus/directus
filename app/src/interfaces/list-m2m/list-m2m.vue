@@ -252,18 +252,6 @@ const allowDrag = computed(
 	() => totalItemCount.value <= limit.value && relationInfo.value?.sortField !== undefined && !props.disabled,
 );
 
-function getDeselectIcon(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'close';
-	return 'delete';
-}
-
-function getDeselectTooltip(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (isLocalItem(item)) return 'deselect';
-	return 'remove_item';
-}
-
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
 	const sortField = info?.sortField;
@@ -367,13 +355,15 @@ function deleteItem(item: DisplayItem) {
 const batchEditActive = ref(false);
 const selection = ref<DisplayItem[]>([]);
 
-const relatedPrimaryKeys = computed(() => {
+const selectedKeys = computed(() => {
 	if (!relationInfo.value) return [];
 
-	const relatedPkField = relationInfo.value.relatedPrimaryKeyField.field;
-	const junctionField = relationInfo.value.junctionField.field;
-
-	return selection.value.map((item) => get(item, [junctionField, relatedPkField], null)).filter((key) => !isNil(key));
+	return selection.value
+		.map(
+			// use `$index` for newly created items that don’t have a PK yet
+			(item) => item[relationInfo.value!.junctionPrimaryKeyField.field] ?? item.$index ?? null,
+		)
+		.filter((key) => !isNil(key));
 });
 
 function stageBatchEdits(edits: Record<string, any>) {
@@ -497,7 +487,7 @@ function getLinkForItem(item: DisplayItem) {
 				</div>
 
 				<v-button
-					v-if="!disabled && updateAllowed && relatedPrimaryKeys.length > 0"
+					v-if="!disabled && updateAllowed && selectedKeys.length"
 					v-tooltip.bottom="t('edit')"
 					rounded
 					icon
@@ -537,6 +527,7 @@ function getLinkForItem(item: DisplayItem) {
 				:class="{ 'no-last-border': totalItemCount <= 10 }"
 				:loading="loading"
 				:items="displayItems"
+				:item-key="relationInfo.junctionPrimaryKeyField.field"
 				:row-height="tableRowHeight"
 				:disabled="disabled"
 				:show-manual-sort="allowDrag"
@@ -568,13 +559,14 @@ function getLinkForItem(item: DisplayItem) {
 							<v-icon name="launch" />
 						</router-link>
 
-						<v-icon
+						<v-remove
 							v-if="!disabled && (deleteAllowed || isLocalItem(item))"
-							v-tooltip="t(getDeselectTooltip(item))"
 							:class="{ deleted: item.$type === 'deleted' }"
-							:name="getDeselectIcon(item)"
-							clickable
-							@click.stop="deleteItem(item)"
+							:item-type="item.$type"
+							:item-info="relationInfo"
+							:item-is-local="isLocalItem(item)"
+							:item-edits="getItemEdits(item)"
+							@action="deleteItem(item)"
 						/>
 					</div>
 				</template>
@@ -633,12 +625,13 @@ function getLinkForItem(item: DisplayItem) {
 									<v-icon name="launch" />
 								</router-link>
 
-								<v-icon
+								<v-remove
 									v-if="!disabled && (deleteAllowed || isLocalItem(element))"
-									v-tooltip="t(getDeselectTooltip(element))"
-									:name="getDeselectIcon(element)"
-									clickable
-									@click.stop="deleteItem(element)"
+									:item-type="element.$type"
+									:item-info="relationInfo"
+									:item-is-local="isLocalItem(element)"
+									:item-edits="getItemEdits(element)"
+									@action="deleteItem(element)"
 								/>
 							</div>
 						</v-list-item>
@@ -704,7 +697,7 @@ function getLinkForItem(item: DisplayItem) {
 
 		<drawer-batch
 			v-model:active="batchEditActive"
-			:primary-keys="relatedPrimaryKeys"
+			:primary-keys="selectedKeys"
 			:collection="relationInfo.relatedCollection.collection"
 			stage-on-save
 			@input="stageBatchEdits"

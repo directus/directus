@@ -139,4 +139,29 @@ describe('Operations / Mail', () => {
 
 		expect(mdSpy).toHaveBeenCalled();
 	});
+
+	test('include cc, bcc, and replyTo in email options', async () => {
+		const options: Options = {
+			to: 'test@example.com',
+			subject: 'Test',
+			type: 'wysiwyg',
+			body: 'test body',
+			cc: 'cc@example.com',
+			bcc: 'bcc@example.com',
+			replyTo: 'replyto@example.com',
+		};
+
+		await config.handler(options, mockOperationContext);
+
+		expect(mailServiceSendSpy).toHaveBeenCalledWith(
+			expect.objectContaining({
+				to: options.to,
+				subject: options.subject,
+				html: options.body,
+				cc: options.cc,
+				bcc: options.bcc,
+				replyTo: options.replyTo,
+			}),
+		);
+	});
 });

@@ -11,7 +11,9 @@ defineOptions({ inheritAttrs: false });
 const props = withDefaults(
 	defineProps<{
 		collection?: string | null;
+		itemCount: number | null;
 		totalCount: number | null;
+		isFiltered: boolean;
 		limit: number;
 		groupCollection?: string | null;
 		fieldsInCollection?: Field[];
@@ -61,7 +63,10 @@ const { t, n } = useI18n();
 const editDialogOpen = ref<string | number | null>(null);
 const editTitle = ref('');
 
-const atLimit = computed(() => (props.totalCount ?? 0) > props.limit);
+const atLimit = computed(() => {
+	const count = (props.isFiltered ? props.itemCount : props.totalCount) ?? 0;
+	return count > props.limit;
+});
 
 function openEditGroup(group: Group) {
 	editDialogOpen.value = group.id;
@@ -126,7 +131,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 		<template v-else>
 			<v-notice v-if="atLimit" type="warning" class="limit">
-				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.totalCount ?? 0) }) }}
+				{{ t('dataset_too_large_currently_showing_n_items', { n: n(props.limit ?? 0) }) }}
 			</v-notice>
 
 			<div class="kanban">
@@ -150,7 +155,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 									</div>
 									<span class="badge">{{ group.items.length }}</span>
 								</div>
-								<div v-if="group.id !== null && !selectMode" class="actions">
+								<div v-if="isRelational && group.id !== null && !selectMode" class="actions">
 									<v-menu show-arrow placement="bottom-end">
 										<template #activator="{ toggle }">
 											<v-icon name="more_horiz" clickable @click="toggle" />
@@ -166,7 +171,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 												<v-list-item-content>{{ t('layouts.kanban.edit_group') }}</v-list-item-content>
 											</v-list-item>
 											<v-list-item
-												v-if="isRelational"
 												:disabled="!canDeleteGroups || selectMode"
 												class="danger"
 												clickable
@@ -286,8 +290,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 .kanban {
 	display: flex;
 	height: 100%;
-	overflow-x: auto;
-	overflow-y: hidden;
 	--user-spacing: 16px;
 
 	.draggable {

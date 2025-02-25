@@ -458,7 +458,7 @@ textarea {
 
 .preview-box {
 	display: none;
-	padding: 20px;
+	padding: 20px 24px;
 	font-family: v-bind(previewFamily), serif;
 
 	:deep() {
@@ -508,12 +508,10 @@ textarea {
 	margin-bottom: 20px;
 }
 
-.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-scroll) {
-	min-height: 260px;
-}
-
 .interface-input-rich-text-md.preview :deep(.CodeMirror) {
-	display: none;
+	visibility: hidden;
+	position: absolute;
+	pointer-events: none;
 }
 
 .toolbar {

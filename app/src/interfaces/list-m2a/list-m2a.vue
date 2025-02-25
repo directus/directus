@@ -123,18 +123,6 @@ const {
 	getItemEdits,
 } = useRelationMultiple(value, query, relationInfo, primaryKey);
 
-function getDeselectIcon(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'close';
-	return 'delete';
-}
-
-function getDeselectTooltip(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'undo_removed_item';
-	if (isLocalItem(item)) return 'deselect';
-	return 'remove_item';
-}
-
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
 	const sortField = info?.sortField;
@@ -392,12 +380,13 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						<div class="spacer" />
 
 						<div class="item-actions">
-							<v-icon
+							<v-remove
 								v-if="!disabled && (deleteAllowed[element[relationInfo.collectionField.field]] || isLocalItem(element))"
-								v-tooltip="t(getDeselectTooltip(element))"
-								:name="getDeselectIcon(element)"
-								clickable
-								@click.stop="deleteItem(element)"
+								:item-type="element.$type"
+								:item-info="relationInfo"
+								:item-is-local="isLocalItem(element)"
+								:item-edits="getItemEdits(element)"
+								@action="deleteItem(element)"
 							/>
 						</div>
 					</v-list-item>
@@ -410,12 +399,13 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 						<div class="spacer" />
 
 						<div class="item-actions">
-							<v-icon
+							<v-remove
 								v-if="!disabled"
-								v-tooltip="t(getDeselectTooltip(element))"
-								:name="getDeselectIcon(element)"
-								clickable
-								@click.stop="deleteItem(element)"
+								:item-type="element.$type"
+								:item-info="relationInfo"
+								:item-is-local="isLocalItem(element)"
+								:item-edits="getItemEdits(element)"
+								@action="deleteItem(element)"
 							/>
 						</div>
 					</v-list-item>

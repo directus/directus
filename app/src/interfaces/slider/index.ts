@@ -8,7 +8,7 @@ export default defineInterface({
 	description: '$t:interfaces.slider.description',
 	icon: 'linear_scale',
 	component: InterfaceSlider,
-	types: ['integer', 'decimal', 'float', 'bigInteger'],
+	types: ['integer', 'decimal', 'float'],
 	group: 'other',
 	options: [
 		{

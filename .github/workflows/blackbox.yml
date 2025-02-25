@@ -11,6 +11,7 @@ on:
       - package.json
       - pnpm-lock.yaml
       - .github/workflows/blackbox.yml
+  workflow_call:
 
 concurrency:
   group: blackbox-${{ github.ref }}

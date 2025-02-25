@@ -5,12 +5,15 @@ import { md } from '../../utils/md.js';
 import { useLogger } from '../../logger/index.js';
 
 export type Options = {
-	body?: string;
-	template?: string;
-	data?: Record<string, any>;
 	to: string;
 	type: 'wysiwyg' | 'markdown' | 'template';
 	subject: string;
+	body?: string;
+	template?: string;
+	data?: Record<string, any>;
+	cc?: string;
+	bcc?: string;
+	replyTo?: string;
 };
 
 const logger = useLogger();
@@ -18,9 +21,12 @@ const logger = useLogger();
 export default defineOperationApi<Options>({
 	id: 'mail',
 
-	handler: async ({ body, template, data, to, type, subject }, { accountability, database, getSchema }) => {
+	handler: async (
+		{ body, template, data, to, type, subject, cc, bcc, replyTo },
+		{ accountability, database, getSchema },
+	) => {
 		const mailService = new MailService({ schema: await getSchema({ database }), accountability, knex: database });
-		const mailObject: EmailOptions = { to, subject };
+		const mailObject: EmailOptions = { to, subject, cc, bcc, replyTo };
 		const safeBody = typeof body !== 'string' ? JSON.stringify(body) : body;
 
 		if (type === 'template') {
