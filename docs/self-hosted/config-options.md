@@ -551,6 +551,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                      | `true`                               |
 | `CACHE_SCHEMA_MAX_ITERATIONS`<sup>[4]</sup>  | Safe value to limit max iterations on get schema cache. This value should only be adjusted for high scaling applications. | `100`                                |
 | `CACHE_SCHEMA_SYNC_TIMEOUT`                  | How long to wait for other containers to message before trying again                                                      | `10000`                              |
+| `CACHE_SCHEMA_FREEZE_ENABLED`                | Whether or not to freeze the schema to improve memory efficiency                                                          | false                                |
 | `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                              | `system-cache`                       |
 | `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                  | `memory`                             |
 | `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                          | --                                   |
