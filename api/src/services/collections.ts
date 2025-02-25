@@ -617,6 +617,12 @@ export class CollectionsService {
 						schema: this.schema,
 					});
 
+					await Promise.all(
+						Object.keys(this.schema.collections[collectionKey]?.fields ?? {}).map((fieldKey) =>
+							fieldsService.deleteField(collectionKey, fieldKey, opts),
+						),
+					);
+
 					await trx('directus_fields').delete().where('collection', '=', collectionKey);
 					await trx('directus_presets').delete().where('collection', '=', collectionKey);
 
@@ -641,32 +647,6 @@ export class CollectionsService {
 					await trx('directus_activity').delete().where('collection', '=', collectionKey);
 					await trx('directus_permissions').delete().where('collection', '=', collectionKey);
 					await trx('directus_relations').delete().where({ many_collection: collectionKey });
-
-					const relations = this.schema.relations.filter((relation) => {
-						return relation.collection === collectionKey || relation.related_collection === collectionKey;
-					});
-
-					for (const relation of relations) {
-						// Delete related o2m fields that point to current collection
-						if (relation.related_collection && relation.meta?.one_field) {
-							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field, {
-								autoPurgeCache: false,
-								autoPurgeSystemCache: false,
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							});
-						}
-
-						// Delete related m2o fields that point to current collection
-						if (relation.related_collection === collectionKey) {
-							await fieldsService.deleteField(relation.collection, relation.field, {
-								autoPurgeCache: false,
-								autoPurgeSystemCache: false,
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							});
-						}
-					}
 
 					const a2oRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
 						return relation.meta?.one_allowed_collections?.includes(collectionKey);
