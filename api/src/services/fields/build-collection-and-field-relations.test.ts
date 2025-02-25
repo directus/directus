@@ -1,14 +1,14 @@
 import { expect, test } from 'vitest';
 import { buildCollectionAndFieldRelations } from './build-collection-and-field-relations.js';
 
-test('get references for no relations', () => {
-	const references = buildCollectionAndFieldRelations([]);
+test('get relations for no relations', () => {
+	const relations = buildCollectionAndFieldRelations([]);
 
-	expect(references).toEqual({ collectionRelationTree: new Map(), fieldToCollectionList: new Map() });
+	expect(relations).toEqual({ collectionRelationTree: new Map(), fieldToCollectionList: new Map() });
 });
 
-test('get references for no m2o relation', () => {
-	const references = buildCollectionAndFieldRelations([
+test('get relations for no m2o relation', () => {
+	const relations = buildCollectionAndFieldRelations([
 		{
 			collection: 'A',
 			field: 'a',
@@ -18,14 +18,14 @@ test('get references for no m2o relation', () => {
 		},
 	]);
 
-	expect(references).toEqual({
+	expect(relations).toEqual({
 		collectionRelationTree: new Map([['A', new Set(['B'])]]),
 		fieldToCollectionList: new Map([['A:a', 'B']]),
 	});
 });
 
-test('get references for no o2m relation', () => {
-	const references = buildCollectionAndFieldRelations([
+test('get relations for no o2m relation', () => {
+	const relations = buildCollectionAndFieldRelations([
 		{
 			collection: 'A',
 			field: 'a',
@@ -37,7 +37,7 @@ test('get references for no o2m relation', () => {
 		},
 	]);
 
-	expect(references).toEqual({
+	expect(relations).toEqual({
 		collectionRelationTree: new Map([
 			['B', new Set(['A'])],
 			['A', new Set(['B'])],
@@ -49,8 +49,8 @@ test('get references for no o2m relation', () => {
 	});
 });
 
-test('get references for no m2a relation', () => {
-	const references = buildCollectionAndFieldRelations([
+test('get relations for no m2a relation', () => {
+	const relations = buildCollectionAndFieldRelations([
 		{
 			collection: 'A',
 			field: 'a',
@@ -63,7 +63,7 @@ test('get references for no m2a relation', () => {
 		},
 	]);
 
-	expect(references).toEqual({
+	expect(relations).toEqual({
 		collectionRelationTree: new Map([['A', new Set(['B', 'C'])]]),
 		fieldToCollectionList: new Map([
 			['A:a:B', 'B'],
