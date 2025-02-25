@@ -108,7 +108,7 @@ export const seedDBValues = async () => {
 						},
 					],
 				},
-				policy,
+				policy: policyId,
 				validation: null,
 				presets: null,
 			});
@@ -121,7 +121,7 @@ export const seedDBValues = async () => {
 				permissions: null,
 				validation: null,
 				presets: null,
-				policy,
+				policy: policyId
 			});
 
 			console.log('permissions created');

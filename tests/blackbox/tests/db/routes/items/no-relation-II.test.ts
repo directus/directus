@@ -24,9 +24,6 @@ test('Seed Database Values', () => {
 
 describe('retrieves items with filters', () => {
 	it.each(vendors)('%s', async (vendor) => {
-		const re = await request(getUrl(vendor)).get(`/collections`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-		console.log('collections: ', re.body.data, re);
-
 		const response0 = await request(getUrl(vendor))
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
