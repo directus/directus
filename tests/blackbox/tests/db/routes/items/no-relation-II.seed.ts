@@ -181,7 +181,7 @@ async function createEditor(vendor: Vendor): Promise<User> {
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 		.send(newUser);
 
-	if (response.statusCode !== 200) {
+	if (!response.ok) {
 		throw new Error('Could not create user');
 	}
 
@@ -189,9 +189,11 @@ async function createEditor(vendor: Vendor): Promise<User> {
 }
 
 async function deleteUser(vendor: Vendor, id: string): Promise<void> {
-	const res = await request(getUrl(vendor)).delete(`/users/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+	const response = await request(getUrl(vendor))
+		.delete(`/users/${id}`)
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-	if (res.statusCode !== 200) {
+	if (!response.ok) {
 		throw new Error('Could not delete user');
 	}
 
@@ -204,7 +206,7 @@ async function CreatePermission(vendor: Vendor, options: Permission): Promise<Pe
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 		.send(options);
 
-	if (response.statusCode !== 200) {
+	if (!response.ok) {
 		throw new Error('Could not create permission', response.body);
 	}
 
@@ -217,7 +219,7 @@ async function CreatePolicy(vendor: Vendor, options: Policy): Promise<Policy> {
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 		.send(options);
 
-	if (response.statusCode !== 200) {
+	if (!response.ok) {
 		throw new Error('Could not create policy', response.body);
 	}
 
@@ -227,12 +229,12 @@ async function CreatePolicy(vendor: Vendor, options: Policy): Promise<Policy> {
 }
 
 async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
-	const res = await request(getUrl(vendor))
+	const response = await request(getUrl(vendor))
 		.delete(`/policies/${id}`)
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-	if (res.statusCode !== 200) {
-		throw new Error('Could not delete policy', res.body);
+	if (!response.ok) {
+		throw new Error('Could not delete policy', response.body);
 	}
 
 	console.log('policy deleted');
@@ -240,12 +242,12 @@ async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
 
 async function DeletePermissions(vendor: Vendor, ids: number[]): Promise<void> {
 	ids.forEach(async (id) => {
-		const res = await request(getUrl(vendor))
+		const response = await request(getUrl(vendor))
 			.delete(`/permissions/${id}`)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		if (res.statusCode !== 200) {
-			throw new Error('Could not delete permissions', res.body);
+		if (!response.ok) {
+			throw new Error('Could not delete permissions', response.body);
 		}
 
 		console.log('permissions deleted');
@@ -258,7 +260,7 @@ async function CreateItem(vendor: Vendor, collection: string, item: any, token: 
 		.set('Authorization', `Bearer ${token}`)
 		.send(item);
 
-	if (response.statusCode !== 200) {
+	if (!response.ok) {
 		throw new Error('Could not create item', response.body);
 	}
 

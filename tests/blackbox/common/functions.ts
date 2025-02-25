@@ -113,8 +113,11 @@ export async function CreateUser(vendor: Vendor, options: Partial<OptionsCreateU
 	const response = await request(getUrl(vendor))
 		.post(`/users`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send(options)
-		.expect(200);
+		.send(options);
+
+	if (!response.ok) {
+		throw new Error('Could not create user', response.body);
+	}
 
 	return response.body.data;
 }
@@ -207,8 +210,8 @@ export async function DeleteCollection(vendor: Vendor, options: OptionsDeleteCol
 		.delete(`/collections/${options.collection}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
-	if (response.statusCode !== 200) {
-		console.error('could not delete collection', response.body);
+	if (!response.ok) {
+		throw new Error('Could not delete collection', response.body);
 	}
 
 	return response.body;
@@ -276,7 +279,7 @@ export async function CreateRelation(vendor: Vendor, options: OptionsCreateRelat
 		.get(`/relations/${options.collection}/${options.field}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`);
 
-	if (relationResponse.statusCode === 200) {
+	if (!relationResponse.ok) {
 		return relationResponse.body.data;
 	}
 
@@ -670,8 +673,11 @@ export async function CreateItem(vendor: Vendor, options: OptionsCreateItem): Pr
 	const response = await request(getUrl(vendor))
 		.post(`/items/${options.collection}`)
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-		.send(options.item)
-		.expect(200);
+		.send(options.item);
+
+	if (!response.ok) {
+		throw new Error('Could not create item', response.body);
+	}
 
 	return response.body.data;
 }
