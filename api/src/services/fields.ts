@@ -8,6 +8,7 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { Column, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
+import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, Field, FieldMeta, RawField, SchemaOverview, Type } from '@directus/types';
 import { addFieldFlag, parseJSON, toArray } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -650,9 +651,6 @@ export class FieldsService {
 
 		// build collection relation tree
 		for (const relation of schema.relations) {
-			// system collections cannot have duplication fields and therfore can be skipped
-			if (relation.meta?.system === true) continue;
-
 			let relatedCollections = [];
 
 			if (relation.related_collection) {
@@ -759,6 +757,9 @@ export class FieldsService {
 			}
 
 			function addNode(node: string) {
+				// system collections cannot have duplication fields and therfore can be skipped
+				if (isSystemCollection(node)) return;
+
 				// skip circular reference and existing linked nodes
 				if (node === collection || relatedCollections.has(node)) return;
 
