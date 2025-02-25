@@ -678,6 +678,9 @@ export async function CreateItem(vendor: Vendor, options: OptionsCreateItem): Pr
 		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
 
+		console.log('item creation commons', response.statusCode);
+
+
 	// if (!response.ok) {
 	// 	throw new Error('Could not create item', response.body);
 	// }
