@@ -934,7 +934,7 @@ export function applySearch(
 
 	const { cases, caseMap } = getCases(collection, permissions, []);
 
-	// Add field applicable restrictions if non-admin and "everything" is not allowed
+	// Add field restrictions if non-admin and "everything" is not allowed
 	if (cases.length !== 0 && !allowedFields.has('*')) {
 		fields = fields.filter((field) => allowedFields.has(field[0]));
 	}
