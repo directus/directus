@@ -1846,23 +1846,102 @@ interfaces:
     crop: Apkirpti, kad tilptų į mąstelį
     crop_label: Apkirpti laisvu rėžimu
     letterbox: Letterbox
+    letterbox_label: Pridėti atitraukimus prie paveikslėlio peržiūros
   system-interface:
     interface: Sąsaja
+    description: Pasirinkti egzistuojančią sąsają
+    placeholder: Pasirinkti sąsają...
+  system-interface-options:
+    interface-options: Sąsajos nustatymai
+    description: Iššokantysis langas sąsajos nustatymų pasirinkimui
   system-display:
     display: Rodymas
+    description: Pasirinkti egzistuojantį atvaizdavimą
+    placeholder: Pasirinkite atvaizdavimą...
   system-display-options:
     display-options: Atvaizdavimo nustatymai
+    description: Iššokantysis langas atvaizdavimo nustatymų pasirinkimui
+  list-m2m:
+    many-to-many: Many to Many
+    description: Pasirinkite jungiamuosius įrašus
+    columns_configure_notice: Galėsite nustatyti stulpelius po lauko sukūrimo.
+    display_template_configure_notice: Galėsite nustatyti atvaizdavimą po lauko sukūrimo.
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Pasirinkite jungiamajį įrašą
     display_template: Rodymo šablonas
+  collection-item-dropdown:
+    collection-item-dropdown: Kolekcijos pasirinkimas
+    description: Psairinkite elementą iš kolekcijos JSON formatu
   input-rich-text-md:
+    markdown: Pažymėjimas
+    description: Įveskite ir peržiūrėkite žymėjimą
     edit: Redaguoti
+    preview: Peržiūra
+    editorFont: Redaktoriaus šriftas
+    previewFont: Peržiūros šriftas
+    default_view: Numatytasis atvaizdavimas
+    default_view_editor: Redaktorius
+    default_view_preview: Peržiūra
+    customSyntax: Pasirinktiniai (custom) blokai
+    customSyntax_label: Pridėti kitą sintaksės tipą
+    customSyntax_add: Pridėti kitą sintaksę
+    box: Bloku / Eilute
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
   map:
+    map: Žemėlapis
+    description: Pasirinkite vietą žemėlapyje
     zoom: Padidinti
+    geometry_type: Geometrijos tipas
+    geometry_format: Geometrijos formatas
+    default_view: Numatytasis atvaizdavimas
+    invalid_options: Negalimi nustatymai
+    invalid_format: Netinkamas formatas ({format})
+    unexpected_geometry: Tikėtasi {expected}, bet gauta {got}
+    fit_bounds: Pritaikyti atvaizdavimą prie duomenų
+    native: Vietinis
+    geojson: GeoJSON
+    lnglat: Ilguma, platuma
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Spauskite norėdami pasirinkti {geometry}
+  presentation-notice:
+    notice: Pranešimas
+    description: Rodyti trumpą pranešimą
+    text: Pranešimo turinys...
+    no_text: Tekstas nesukonfigūruotas...
+  list-o2m:
+    one-to-many: One to Many
+    description: Pasirinkite jungiamuosius įrašus
+    no_collection: Kolekcija nerasta
+  system-folder:
+    folder: Pagrindinis katalogas
+    description: Pasirinkite katalogą
+    field_hint: Numatytasis katalogas įkeliamiems dokumentams, kuriems nenurodytas katalogas.
+    root_name: Failų saugyklos pagrindinis taškas
+    system_default: Sistemos numatytieji nustatymai
+  select-radio:
+    radio-buttons: Pasirinkties akutės
+    description: Pasirinkties akučių pasirinkimai
   list:
+    repeater: Pasikartojanti forma
+    description: Sukurti keletą tos pačios struktūros įrašų
+    edit_fields: Redaguoti laukus
+    add_label: '"Kurti naują" pavadinimas'
     sort: Rūšiuoti
+    sort_placeholder: Rankiniu būdu
+    field_note_placeholder: Įvesti lauko pastabą...
+    incompatible_data: Dabartiniai duomenys nesuderinami su pasikartojančia forma ir bus pašalinti pridedant elementus prie jos
+    interface_group: Sąsajos nustatymai
     display_group: Atvaizdavimo nustatymai
+  slider:
+    slider: Slankiklis
+    description: Pasirinkti skaičių naudojantis slankikliu
+    always_show_value: Visada rodyti reikšmę
   tags:
     tags: Žymos
+    description: Pasirinti arba pridėti žymas
     whitespace: Matomi tarpai
     hyphen: Pakeisti į brūkšnelius
     underscore: Pakeisti į pabraukimo brūkšnelius
@@ -1873,16 +1952,49 @@ interfaces:
     auto_formatter: Naudoti automatinį antraštės formatavimą
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
+    add_tags: Įveskite žymą ir spauskite enter...
   input:
+    input: Įvestis
+    description: Reikmės įvedimas
+    trim: Apkarpymas (trim)
+    trim_label: Apkarpyti iš abiejų pusių
     mask: Paslėptas
+    mask_label: Paslėpti tikrąją reikšmę
+    clear: Išvalyta reikšmė
+    clear_label: Saugoti kaip tuščią simbolių eilutę
+    minimum_value: Mažiausia reikšmė
+    maximum_value: Didžiausia reikšmė
+    step_interval: Žingsnio intervalas
+    slug: Slugify
+    slug_label: Automatiškai padaryti įvestą URL saugiu
+  input-multiline:
+    textarea: Teksto laukas
+    description: Įveskite kelių eilučių neformatuotą tesktą
+  input-translated-string:
+    input-translated-string: Verčiami tekstai
+    description: Pasirinkite arba pridėkite vertimą
+    search_placeholder: Ieškoti...
+    new_custom_translation: Naujas vertimas
   boolean:
     toggle: Perjungti
+    description: Įjungti / Išjungti
     color_on: Spalva, kai įjungta
     color_off: Spalva, kai išjungta
+    label_placeholder: Įveskite pavadinimą...
     label_default: Įjungtas
   translations:
     display_template: Rodymo šablonas
     no_collection: Nėra kolekcijos
+    toggle_split_view: Rodyti padalintu vaizdu
+    enable: Įjungti
+    default_split_view_state: Rodyti padalintu vaizdu atidarant
+    user_language: Naudoti esamą prisijungusio naudotojo kalbą
+    default_language: Numatytoji kalba
+    language_field: Kalbos identifikavimo laukas
+    language_direction_field: Kalbos krypties laukas
+  list-o2m-tree-view:
+    description: Rotyti kelių lygių one-to-many laukus medžio struktūra
+    recursive_only: Medžio struktūros atvaizdavimas veiki tik rekursiškiems ryšiams.
   user:
     user: Vartotojas
     description: Pasirinkti egzistuojantį Directus vartotoją
@@ -1891,19 +2003,80 @@ interfaces:
       auto: Automatiškai
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Formatuoto HTML teksto redaktorius
+    toolbar: Įrankių juosta
+    custom_formats: Kiti formatai
+    custom_formats_note: List of TinyMCE Content Formats. See the TinyMCE documentation about [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
+    options_override: Parinkčių perrašymas
+    options_override_note: The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
+    folder_note: Katalogas įkeltiems failams. Esami failai bus nepakeisti.
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
   input-block-editor:
+    input-block-editor: Blokų redaktorius
+    description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
+    tools: Įrankių juosta
     tools_options:
       header: Header
+      nestedlist: Sąrašas
       embed: Įterptas
+      paragraph: Pastraipa
       code: Kodas
       image: Paveikslėlis
+      attaches: Priedai
       table: Lentelė
+      quote: Citata
       underline: Pabrauktas
+      inlinecode: Įterptas kodas
+      delimiter: Skirtukas
+      checklist: Žymimasis sąrašas
+      toggle: Perjungti bloką
+      alignment: Lygiavimas
+      raw: Neapdorotas HTML
+  input-autocomplete-api:
+    input-autocomplete-api: Automatinio užbaigimo įvestis (API)
+    description: Pasirinkimai gaunami per API sąsają
+    results_path: Results Path
+    value_path: Value Path
+    text_path: Text Path
+    trigger: Trigger
+    rate: Rate
+  group-raw:
+    name: Elementų grupė
+    description: Atvaizduoja elementus tokius kokie yra
+  group-detail:
+    name: Suskleidžiama grupė
+    description: Atvaizduoja elementus suskleidžiamoje kortelėje
+    show_header: Rodyti grupės antraštę
+    header_icon: Antraštės ikona
+    header_color: Antraštės spalva
+    start_open: Atidaryti išskleistą
+    start_closed: Atidaryti suskleistą
   system-token:
     system-token: Token
+    description: Valdyti prieigos raktus
+    placeholder: Spauskite "Generuoti prieigos raktą" norėdami sukurti naują prieigos raktą
+    value_securely_saved: Reikšmė saugiai išsaugota
+    generate: Generuoti prieigos raktą
+    regenerate: Generuoti raktą iš naujo
+    generate_success_copy: Išsisaugokite aukščiau esantį prieigos raktą. Saugumo sumetimais išsaugoję ir išėję iš šio puslapio negalėsite dar kartą peržiūrėti prieigos rakto.
+    remove_token: Pašalinti prieigos raktą
+  system-raw-editor:
+    system-raw-editor: Redaguoti neformatuotą
+    description: Leisti įvesti neapdorotą arba dinaminę reikšmę
+  input-password:
+    input-password: Slaptažodžio įvedimas
+    description: Slaptažodžio įvedimo laukas, su reikšmės paslėpimo galimybe
 displays:
   translations:
     translations: Vertimai
+    description: Įrašo peržiūros vertimai
+    enable: Įjungti
+    user_language: Naudoti prisijungusio naudotojo kalbą
+    default_language: Numatytoji kalba
+    language_field: Kalbos identifikavimo laukas
   boolean:
     boolean: Loginis
     description: Rodyti įjungimo/išjungimo būsenas
@@ -1934,6 +2107,16 @@ displays:
     relative: Santykinis
     relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
     suffix: Priesaga
+    suffix_label: Rodyti reliatyvią indikaciją
+    suffix_note: Aprašo datą ir laiką apibrėžiant kiek ji skiriasi nuo dabarties 
+    strict: Griežtas
+    strict_label: Naudoja griežtus laiko apibrėžimus
+    strict_note: Aprašo datą su griežtu laiko įvardinimu
+    round: Apvaninamas
+    round_note: Pasirinkite apvalinimo funkciją
+    down: Žemyn
+    nearest: Artimiausias
+    up: Į viršų
   file:
     file: Failas
     description: Rodyti failus
@@ -1944,23 +2127,34 @@ displays:
     formatted-value: Suformatuota reikšmė
     description: Rodyti suformatuotą teksto versiją
     format: Formatas
+    format_label: Automatiškai
     font: Šriftas
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Vienodo pločio
     bold: Paryškintas
     bold_label: Naudoti paryškintą stilių
     italic: Pasviręs
+    italic_label: Italic
     prefix: Priešdėlis
+    prefix_label: Pridėti tekstą pradžioje
     suffix: Priesaga
+    suffix_label: Pridėti tekstą pabaigoje
     color: Spalva
+    background: Fonas
     icon: Ikona
+    border: Rėmelis
+    border_label: Rodyti rėmelį
     mask: Paslėptas
+    mask_label: Paslėpti tikrąją reikšmę
     text: Tekstas
+    text_placeholder: Reikšmės pakeitimas...
   formatted-json-value:
     formatted-json-value: Suformatuota JSON reikšmė
     description: Rodyti suformatuotą objekto versiją
   hash:
     hash: Maiša
+    description: Rodyti suformatuotą reikšmės versiją
   icon:
     icon: Ikona
     description: Rodyti ikoną
@@ -1979,20 +2173,57 @@ displays:
     format_label: Formatuoti kiekvieną žymą
     show_as_dot: Rodyti kaip tašką
     choices_value_placeholder: Įveskite reikšmę...
+    choices_text_placeholder: Įveskite tekstą...
+  mime-type:
+    mime-type: MIME tipas
+    description: Rodyti failo MIME tipą
+    extension_only: Tik plėtinys
+    extension_only_label: Rodyti tik failo plėtinį
+  rating:
+    rating: Vertinimas
+    description: Atvaizduoti skaičių kaip įvertinimą žvaigždutėmis lyginant su maksimalia reikšme
+    simple: Paprastas
+    simple_label: Atvaiztuoti žvaigždutes paprastu formatu
+  raw:
+    raw: Neapdorota reikšmė
+  related-values:
+    related-values: Susijusios reikšmės
+    description: Rodyti lauko sąsajų reikšmes
+    display_template_configure_notice: Galėsite nustatyti atvaizdavimą po lauko sukūrimo.
   user:
     user: Vartotojas
+    description: Rodyti Directus naudotoją
     avatar: Nuotrauka
     name: Pavadinimas
     both: Abu
+    circle_label: Rodyti naudotoją apibrėžtą apskritimu
 layouts:
   cards:
+    cards: Kortelės
+    image_source: Paveikslėlio šaltinis
+    image_fit: Paveikslėlio talpinimas
+    crop: Apkarpyti
+    contain: Talpinti
     title: Pavadinmas
+    subtitle: Paantraštė
   tabular:
     tabular: Lentelė
+    spacing: Atskyrimas
     comfortable: Patogus
     compact: Kompaktiškas
     cozy: Jaukus
+  calendar:
+    calendar: Kalendorius
+    start_date_field: Pradžios datos laukas
+    end_date_field: Pabaigos datos laukas
+    optional: Neprivalomas
+    first_day: Pirma savaitės diena
+  map:
+    map: Žemėlapis
+    basemap: Basemap
+    layers: Layers
   kanban:
+    crop: Apkarpyti
     advanced: Išplėstiniai nustatymai
 both: Abu
 panels:
