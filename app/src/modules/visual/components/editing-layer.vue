@@ -7,6 +7,7 @@ import { PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import api from '@/api';
 import { useNotificationsStore } from '@/stores/notifications';
+import OverlayItem from '@/views/private/components/overlay-item.vue';
 import { getItemRoute, getCollectionRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -206,9 +207,10 @@ function useItem() {
 
 <template>
 	<div class="editing-layer">
-		<drawer-item
+		<overlay-item
 			v-if="collection"
 			v-model:active="editOverlayActive"
+			overlay="drawer"
 			:collection
 			:primary-key
 			:selected-fields="fields"
@@ -228,7 +230,7 @@ function useItem() {
 					<v-icon name="launch" />
 				</v-button>
 			</template>
-		</drawer-item>
+		</overlay-item>
 	</div>
 </template>
 
