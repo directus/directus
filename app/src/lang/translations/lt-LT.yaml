@@ -110,11 +110,31 @@ rename_folder: Pervadinti aplanką
 delete_folder: Trinti aplanką
 prefix: Priešdėlis
 suffix: Priesaga
+rename_version: Pervadinti versiją
+compare_version: Palyginti versijas
+save_version: Išsaugoti versiją
+promote_version: Pakelti versiją
+promote_version_disabled: Nėra pakeitimų
+promote_version_drawer_title: Pakelti {version} į pagrindinę
+promote_version_changes: Pakeitimai
+promote_version_preview: Peržiūrėti
+outdated_notice: >-
+  Pagrindinė versija buvo atnaujinta po šios versijos sukūrimo. Peržiūrėkite laukų reikšmes žemiau ir patvirtinkite kuri versija turėtų būti naudojama kaip pagrindinė.
+promote_notice: >-
+  Peržiūrėkite laukų reikšmes žemiau ir patvirtinkite kuri versija turėtų būti naudojama kaip pagrindinė.
+delete_version: Pašalinti versiją
+delete_version_copy: >-
+  Ar tikrai norite pašalinti "{version}" versiją? Šio veiksmo nebus galima atšaukti.
+delete_on_promote_copy: >-
+  Ar nortie ištrinti ar pasilikti "{version}" po pakėlimo į pagrindinę versiją?
 reset_bookmark: Atstatyti skirtuką
 update_bookmark: Atnaujinti žymę
 delete_bookmark: Ištrinti žymę
 delete_bookmark_copy: >-
   Ar tikrai norite ištrinti "{bookmark}" skirtuką? Šio veiksmo atšaukti negalima.
+delete_personal_bookmark: Pašalinti asmeninį skirtuką
+delete_role_bookmark: Pašalinti rolės skirtuką
+delete_global_bookmark: Pašalinti globalų skirtuką
 logoutReason:
   SIGN_OUT: Atsijungti
   SESSION_EXPIRED: Sesijos laikas baigėsi
@@ -149,11 +169,21 @@ validationError:
   required: Reikšmė turi būti užpildyta
   unique: Reikšmė turi būti unikali
   regex: Vertė neteisingo formato
+  starts_with: Reikšmė turi prasidėti su "{substring}"
+  istarts_with: Reikšmė turi prasidėti su "{substring}"
+  nstarts_with: Reikšmė negali prasidėti su "{substring}"
+  nistarts_with: Reikšmė negali prasidėti su "{substring}"
+  ends_with: Reikšmė turi baigtis su "{substring}"
+  iends_with: Reikšmė turi baigtis su "{substring}"
+  nends_with: Reikšmė negali baigtis su "{substring}"
+  niends_with: Reikšmė negali baigtis su "{substring}"
 all_access: Pilna prieiga
 no_access: Jokios prieigos
 use_custom: Pasirinktinai
 nullable: Gali būti Null
 allow_null_value: Leisti NULL vertę
+allow_multiple: Rinktis kelias reikšmes
+allow_multiple_to_be_open: Leisti atidaryti kelias reikšmes
 enter_value_to_replace_nulls: Prašome įvesti naują vertę, kuri pakeistų visus NULL esančius šiame lauke.
 field_standard: Standartinis
 field_presentation: Atvaizdavimas ir sinonimai
@@ -174,6 +204,12 @@ fields_for_role: 'Laukai, kuriuos {role} vaidmuo gali {action}.'
 validation_for_role: 'Lauko {action} taisyklės, kurių {role} vaidmuo turi laikytis.'
 presets_for_role: 'Lauko vertė pagal nutylėjimą {role} vaidmeniui.'
 presentation_and_aliases: Atvaizdavimas ir sinonimai
+revision_post_create: Įrašo reikšmės jo sukūrimo metu.
+revision_post_update: Įrašo reikšmės po atnaujinimo.
+changes_made: Žemiau yra išvardinti šio pakeitimo laukai.
+no_relational_data: Atkreipkite dėmesį, kad reliatyvių laukų informacija čia neatvaizduojama.
+junction_field_location: Jungiamųjų laukų vieta
+hide_field: Paslėpti lauką
 hide_field_on_detail: Slėpti lauką detalėse
 show_field_on_detail: Rodyti lauką detalėse
 delete_field: Trinti lauką
@@ -182,9 +218,22 @@ field_create_success: 'Sukurtas laukas: "{field}"'
 field_update_success: 'Atnaujintas laukas: "{field}"'
 duplicate_where_to: Kur norėtumėte perkelti šio laiko kopiją?
 language: Kalba
+language_placeholder: Pasirinkite kalbą...
 global: Bendras
 admins_have_all_permissions: Administratoriai turi visus leidimus
 camera: Kamera
+show_zero: Rodyti nulį
+create_in_advanced_field_creation_mode: Kurti lauką išplėstiniame rėžime
+continue_in_advanced_field_creation_mode: Tęsti išplėstiniame lauko kūrimo rėžime
+validation: Validacija
+sum: Suma
+sum_distinct: Unikalių įrašų suma
+avg: Vidurkis
+avg_distinct: Unikalių įrašų vidurkis
+count: Kiekis
+count_distinct: Unikalių įrašų kiekis
+min: Min
+max: Max
 exposure: Išlaikymas
 shutter: Užraktas
 iso: ISO
@@ -202,19 +251,37 @@ alias: Sinonimas
 bigInteger: Didelis sveikasis skaičius
 boolean: Loginis
 date: Data
+date_range: Datos rėžis
+translation_key_placeholder: Įveskite pavadinimą...
 datetime: Data ir laikas
 dateTime: Data ir laikas
+precision: Tikslumas
 decimal: Dešimtainis skaičius
 float: Slankiojo kablelio skaičius
 integer: Sveikasis skaičius
 json: JSON
 xml: XML
+yaml: YAML
 string: Simbolių eilutė
 text: Tekstas
 time: Laikas
 timestamp: Laiko žyma
 uuid: UUID
 hash: Maiša
+geometry:
+  All: Geometrija (Visi)
+  Point: Taškas
+  LineString: Linija
+  Polygon: Poligonas
+  MultiPoint: Taškas (daugialypis)
+  MultiLineString: Linija (daugialypė)
+  MultiPolygon: Poligonas (daugialypis)
+theme_auto: Automatinė tema (pagal sistemos nustatymus)
+theme_light: Šviesi tema
+theme_dark: Tamsi tema
+theme_directus_default: Directus numatytoji tema
+theme_directus_minimal: Direktus minimalistinė tema
+theme_directus_colormatch: Direktus suderintų spalvų tema
 not_available_for_type: Šiam tipui neprieinama
 create_translations: Sukurti vertimus
 auto_refresh: Automatinis atnaujinimas
@@ -226,17 +293,26 @@ auto_generate: Generuoti Automatiškai
 this_will_auto_setup_fields_relations: Bus automatiškai sukurti visi reikalingi laukai ir sąryšiai.
 click_here: Spauskite čia
 to_manually_setup_translations: ', kad savarankiškai nustatyti vertimus.'
+manage: Tvarkyti
 click_to_manage_translated_fields: >-
   Dar nėra laukų su vertimais. Paspauskite čia, kad juos sukurtumėte | Yra vienas laukas su vertimais. Paspauskite čia norėdami redaguoti | Yra {count} laukų su vertimais. Paspauskite čia norėdami redaguoti.
 fields_group: Laukų grupė
 no_collections_found: Kolekcijų nerasta.
 new_data_alert: 'Jūsų duomenų modelyje bus sukurta:'
 search_collection: Ieškoti kolekcijoje...
+search_role: Ieškoti rolės...
+search_policy: Ieškoti polisų...
+search_field: Ieškoti laukų...
 new_field: 'Naujas laukas'
 new_collection: 'Nauja kolekcija'
+add_m2o_to_collection: 'Pridėti M2O ryšį prie "{collection}"'
+add_o2m_to_collection: 'Pridėti O2M ryšį prie "{collection}"'
+add_m2m_to_collection: 'Pridėti M2M ryšį prie "{collection}"'
 choose_a_type: Pasirinkite tipą...
 determined_by_relationship: Nustatoma pagal sąryšį
 add_note: Pridėkite paaiškinimą vartotojui...
+add_link: Pridėti nuorodą
+custom_link: Konfigūruojama nuoroda
 default_value: Numatytoji reikšmė
 standard_field: Standartinis laukas
 single_file: Vienas failas
@@ -245,10 +321,18 @@ m2o_relationship: Daug su vienu sąrašis
 o2m_relationship: Vienas su daug sąryšis
 m2m_relationship: Daug su daug sąryšis
 m2a_relationship: Daug su bet kiek sąryšis
+require_confirmation: Reikalauti patvirtinimo
+dialog: Dialogas
 modal: Dialogas
+confirmation_dialog: Patvirtinimo dialogas
+confirmation_description: Patvirtinimo aprašymas
+confirmation_input_fields: Patvirtinimo įvesties laukai
 next: Tęsti
 field_name: Lauko pavadinimas
 translations: Vertimai
+no_translations: Nėra vertimų
+left_to_right: Iš kairės į dešinę
+right_to_left: Iš dešinės į kairę
 note: Pastaba
 enter_a_value: Įveskite reikšmę...
 enter_a_placeholder: Įveskite pagalbinį tesktą...
@@ -256,16 +340,32 @@ length: Ilgis
 precision_scale: Tikslumas ir dydis
 readonly: Tik skaitomas
 unique: Unikalus
+index: Indeksas
 updated_on: Atnaujinta
 updated_by: Atnaujino
 primary_key: Pirminis raktas
 foreign_key: Išorinis raktas
+field_key: Lauko identifikatorius
 finish_setup: Pabaigti konfigūravimą
 dismiss: Atmesti
+toggle_raw_editor: Rodyti neformatuotą reikšmę
 raw_value: Neapdorota reikšmė
+copy_raw_value: Kopijuoti neformatuotą reikšmę
+copy_raw_value_success: Nukopijuota
+copy_raw_value_fail: Kopijuoti nepavyko
+paste_raw_value: Įklijuoti neformatuotą reikšmę
+paste_raw_value_success: Įklijuota
+paste_raw_value_fail: Įklijuoti nepavyko
+view_raw_value: Rodyti neformatuotą reikšmę
 edit_raw_value: Redaguoti neapdorotą reikšmę
 enter_raw_value: Įvesti neapdorotą reikšmę...
+clear_value: Išvalyti reikšmę
+clear_changes: Išvalyti pakeitimus
+clear_items: Išvalyti įrašus
+reset_to_default: Atkurti į numatytuosius nustatymus
+undo_changes: Atšaukti pakeitimus
 notifications: Pranešimai
+archive_all: Archyvuoti visus
 show_all_activity: Rodyti visą veiklos istoriją
 page_not_found: Puslapis nerastas
 page_not_found_body: Panašu, kad puslapis kurio ieškote neegzistuoja.
@@ -278,21 +378,35 @@ revision_delta_created: Sukurta
 revision_delta_created_externally: Sukurta išorėje
 revision_delta_updated: 'Atnaujintas 1 laujas | Atnaujinta {count} laukų'
 revision_delta_deleted: Ištrintas
+revision_delta_version_saved: 'Saugoti versiją (atnaujintas 1 laukas) | Saugoti versiją (atnaujinti {count} laukai)'
 revision_delta_reverted: Atstatytas
+revision_delta_update_message: Laukas buvo atnaujintas. Reikšmė yra užslaptinta.
 revision_delta_other: Pakeitimas
 revision_delta_by: '{date} {user}'
+download_page_as_csv: 'Išsaugoti puslapį CSV formatu'
+download_page_as_csv_unsupported: Nustatytas puslapio atvaizdavimo rėžimas nepalaiko puslapio išsaugojimo.
 private_user: Privatus vartotojas
+creation_preview: Sukūrimo peržiūra
 revision_preview: Pakeitimo peržiūra
 updates_made: Atlikti atnaujinimai
 leave_comment: Palikite komentarą...
 post_comment_success: Komentaras paskelbtas
+post_comment_updated: Komentaras atnaujintas
 item_create_success: Elementas sukurtas | Elementai sukurti
 item_update_success: Elementas atnaujintas | Elementai atnaujinti
 item_delete_success: Elementas pašalintas | Elementai pašalinti
 this_collection: Ši kolekcija
 related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
+translations_collection: Vertimų kolekcija
 languages_collection: Kalbų kolekcija
+import_data_input_placeholder: CSV arba JSON...
+import_data_button: Pradėti importavimą
+import_data_indeterminate: Importuojami duomenys…
+import_data_success: Duomenys sėkmingai importuoti iš {filename}
+import_data_error: Rinkmenos duomenų struktūra neatitinka kolekcijos struktūros.
+label_import: Importuoti
+label_export: Eksportuoti
 format: Formatas
 last_page: Paskutinis puslapis
 last_access: Paskutinė prieiga
@@ -313,6 +427,7 @@ delete_comment: Ištrinti komentarą
 functions:
   year: Metai
   month: Mėnuo
+  count: Kiekis
 month: Mėnuo
 year: Metai
 select_all: Pažymėti visus
@@ -788,6 +903,9 @@ field_options:
       name_name: Pavadinimas
     collections_name: Kolekcijos
   directus_users:
+    dropdown_auto: Automatinė tema (pagal sistemos nustatymus)
+    dropdown_light: Šviesi tema
+    dropdown_dark: Tamsi tema
     status_dropdown_active: Aktyvus
   directus_webhooks:
     status_options_active: Aktyvus
