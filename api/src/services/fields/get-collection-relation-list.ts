@@ -1,9 +1,11 @@
 import { isSystemCollection } from '@directus/system-data';
 
-export function getRelatedCollections(collection: string, collectionRelationTree: Map<string, Set<string>>) {
-	const relatedCollectionList = new Set<string>();
+export function getCollectionRelationList(collection: string, collectionRelationTree: Map<string, Set<string>>) {
+	const collectionRelationList = new Set<string>();
 
 	traverseCollectionRelationTree(collection);
+
+	return collectionRelationList;
 
 	function traverseCollectionRelationTree(root: string) {
 		const relationTree = collectionRelationTree.get(root);
@@ -20,12 +22,10 @@ export function getRelatedCollections(collection: string, collectionRelationTree
 		if (isSystemCollection(node)) return;
 
 		// skip circular reference and existing linked nodes
-		if (node === collection || relatedCollectionList.has(node)) return;
+		if (node === collection || collectionRelationList.has(node)) return;
 
-		relatedCollectionList.add(node);
+		collectionRelationList.add(node);
 
 		traverseCollectionRelationTree(node);
 	}
-
-	return relatedCollectionList;
 }

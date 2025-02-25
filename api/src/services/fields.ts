@@ -33,7 +33,7 @@ import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
-import { getRelatedCollections } from './fields/get-related-collections.js';
+import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
@@ -737,7 +737,7 @@ export class FieldsService {
 					this.schema.relations,
 				);
 
-				const collectionReferences = getRelatedCollections(collection, collectionRelationTree);
+				const collectionRelationList = getCollectionRelationList(collection, collectionRelationTree);
 
 				const collectionMetaQuery = trx
 					.queryBuilder()
@@ -745,9 +745,9 @@ export class FieldsService {
 					.from('directus_collections')
 					.where({ collection });
 
-				if (collectionReferences.size !== 0) {
+				if (collectionRelationList.size !== 0) {
 					collectionMetaQuery.orWhere(function () {
-						this.whereIn('collection', Array.from(collectionReferences)).whereNotNull('item_duplication_fields');
+						this.whereIn('collection', Array.from(collectionRelationList)).whereNotNull('item_duplication_fields');
 					});
 				}
 
