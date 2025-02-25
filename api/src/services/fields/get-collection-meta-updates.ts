@@ -7,7 +7,7 @@ export function getCollectionMetaUpdates(
 	field: string,
 	collectionMetas: Pick<CollectionMeta, 'archive_field' | 'sort_field' | 'item_duplication_fields' | 'collection'>[],
 	collections: CollectionsOverview,
-	relationalFieldToCollection: Map<string, string>,
+	fieldToCollectionList: Map<string, string>,
 ) {
 	const collectionMetaUpdates = [];
 
@@ -45,7 +45,7 @@ export function getCollectionMetaUpdates(
 					collectionMeta.collection,
 					field,
 					collections,
-					relationalFieldToCollection,
+					fieldToCollectionList,
 				);
 
 				if (updatedPath && updatedPath.length !== 0) {
@@ -75,7 +75,7 @@ function updateItemDuplicationPath(
 	root: string,
 	field: string,
 	collections: CollectionsOverview,
-	relationalFieldToCollection: Map<string, string>,
+	fieldToCollectionList: Map<string, string>,
 ) {
 	let currentCollection = root;
 
@@ -96,7 +96,7 @@ function updateItemDuplicationPath(
 
 		const isLastPart = index === parts.length - 1;
 		const isLocalField = typeof collections[currentCollection]?.['fields'][part] !== 'undefined';
-		const nextCollectionNode = relationalFieldToCollection.get(`${currentCollection}::${part}`);
+		const nextCollectionNode = fieldToCollectionList.get(`${currentCollection}:${part}`);
 
 		// Invalid path for old deleted collections
 		if (!nextCollectionNode && !isLastPart) return;

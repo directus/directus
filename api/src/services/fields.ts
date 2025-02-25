@@ -31,8 +31,8 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
+import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
-import { getCollectionReferenceTree } from './fields/get-collection-relation-tree.js';
 import { getRelatedCollections } from './fields/get-related-collections.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
@@ -733,14 +733,11 @@ export class FieldsService {
 					});
 				}
 
-				const { outwardLinkedCollections, inwardLinkedCollections, relationalFieldToCollection } =
-					await getCollectionReferenceTree(this.schema.relations);
-
-				const collectionReferences = getRelatedCollections(
-					collection,
-					outwardLinkedCollections,
-					inwardLinkedCollections,
+				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
+					this.schema.relations,
 				);
+
+				const collectionReferences = getRelatedCollections(collection, collectionRelationTree);
 
 				const collectionMetaQuery = trx
 					.queryBuilder()
@@ -761,7 +758,7 @@ export class FieldsService {
 					field,
 					collectionMetas,
 					this.schema.collections,
-					relationalFieldToCollection,
+					fieldToCollectionList,
 				);
 
 				for (const meta of collectionMetaUpdates) {
