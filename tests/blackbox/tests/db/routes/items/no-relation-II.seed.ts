@@ -11,7 +11,7 @@ import { log } from 'node:console';
 export type Articles = {
 	id?: number | string;
 	user_created: UUID;
-	date_created: string;
+	// date_created: string;
 };
 
 export type Result = {
@@ -48,11 +48,11 @@ export const seedDBStructure = () => {
 					type: 'uuid',
 				});
 
-				await CreateField(vendor, {
-					collection,
-					field: 'date_created',
-					type: 'timestamp',
-				});
+				// await CreateField(vendor, {
+				// 	collection,
+				// 	field: 'date_created',
+				// 	type: 'timestamp',
+				// });
 
 				console.log('setup schema ');
 
@@ -95,7 +95,7 @@ export const seedDBValues = async () => {
 			await CreatePermission(vendor, {
 				id: permissionIds[0],
 				action: 'read',
-				fields: ['id', 'user_created', 'date_created'],
+				fields: ['id', 'user_created'], //'date_created'
 				collection,
 				permissions: {
 					_and: [
@@ -116,12 +116,12 @@ export const seedDBValues = async () => {
 			await CreatePermission(vendor, {
 				id: permissionIds[1],
 				action: 'create',
-				fields: ['id', 'user_created', 'date_created'],
+				fields: ['id', 'user_created'],
 				collection,
 				permissions: null,
 				validation: null,
 				presets: null,
-				policy: policyId
+				policy: policyId,
 			});
 
 			console.log('permissions created');
@@ -138,7 +138,6 @@ export const seedDBValues = async () => {
 				{
 					id: '1',
 					user_created: randomUUID(),
-					date_created: new Date().toISOString(),
 				},
 				USER.ADMIN.TOKEN,
 			);
@@ -149,12 +148,10 @@ export const seedDBValues = async () => {
 				{
 					id: '2',
 					user_created: randomUUID(),
-					date_created: new Date().toISOString(),
 				},
 				USER.ADMIN.TOKEN,
 			);
 
-			console.log('items created');
 		});
 	} catch (error) {
 		result.isSeeded = false;
@@ -252,6 +249,7 @@ async function CreateItem(vendor: Vendor, collection: string, item: any, token: 
 		.send(item);
 
 	if (!response.ok) {
+		console.log('item creation failed', response.body);
 		throw new Error('Could not create item', response.body);
 	}
 
