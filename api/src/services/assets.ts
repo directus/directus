@@ -46,7 +46,22 @@ export class AssetsService {
 		id: string,
 		transformation?: TransformationSet,
 		range?: Range,
-	): Promise<{ stream: Readable; file: any; stat: Stat }> {
+		deferStream?: false,
+	): Promise<{ stream: Readable; file: any; stat: Stat }>;
+
+	async getAsset(
+		id: string,
+		transformation?: TransformationSet,
+		range?: Range,
+		deferStream?: true,
+	): Promise<{ stream: () => Promise<Readable>; file: any; stat: Stat }>;
+
+	async getAsset(
+		id: string,
+		transformation?: TransformationSet,
+		range?: Range,
+		deferStream: boolean = false,
+	): Promise<{ stream: (() => Promise<Readable>) | Readable; file: any; stat: Stat }> {
 		const storage = await getStorage();
 
 		const publicSettings = await this.knex
@@ -140,8 +155,10 @@ export class AssetsService {
 			}
 
 			if (exists) {
+				const assetStream = () => storage.location(file.storage).read(assetFilename, { range });
+
 				return {
-					stream: await storage.location(file.storage).read(assetFilename, { range }),
+					stream: deferStream ? assetStream : await assetStream(),
 					file,
 					stat: await storage.location(file.storage).stat(assetFilename),
 				};
@@ -204,15 +221,17 @@ export class AssetsService {
 				}
 			}
 
+			const assetStream = () => storage.location(file.storage).read(assetFilename, { range, version });
+
 			return {
-				stream: await storage.location(file.storage).read(assetFilename, { range, version }),
+				stream: deferStream ? assetStream : await assetStream(),
 				stat: await storage.location(file.storage).stat(assetFilename),
 				file,
 			};
 		} else {
-			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
+			const assetStream = () => storage.location(file.storage).read(file.filename_disk, { range, version });
 			const stat = await storage.location(file.storage).stat(file.filename_disk);
-			return { stream: readStream, file, stat };
+			return { stream: deferStream ? assetStream : await assetStream(), file, stat };
 		}
 	}
 }
