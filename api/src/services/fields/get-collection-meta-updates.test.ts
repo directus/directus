@@ -252,6 +252,39 @@ test('updates only the item_duplication_fields that have the deleted field', () 
 	]);
 });
 
+test('updates the item_duplication_fields and re-stringifies if string provided', () => {
+	const updates = getCollectionMetaUpdates(
+		'collectionA',
+		'field',
+		[
+			{
+				collection: 'collectionA',
+				archive_field: null,
+				sort_field: null,
+				item_duplication_fields: JSON.stringify(['title', 'field']),
+			},
+		],
+		{
+			collection: {
+				fields: {
+					field: {},
+					title: {},
+				},
+			},
+		} as any,
+		new Map(),
+	);
+
+	expect(updates).toEqual([
+		{
+			collection: 'collectionA',
+			updates: {
+				item_duplication_fields: JSON.stringify(['title']),
+			},
+		},
+	]);
+});
+
 test('updates only the item_duplication_fields that have the deleted field for m2a', () => {
 	const updates = getCollectionMetaUpdates(
 		'collectionA',
