@@ -1821,8 +1821,8 @@ importers:
         specifier: 0.20.2
         version: 0.20.2
       esbuild-yaml:
-        specifier: 1.2.0
-        version: 1.2.0(esbuild@0.20.2)
+        specifier: 2.0.0
+        version: 2.0.0(esbuild@0.20.2)
       tsup:
         specifier: 8.3.5
         version: 8.3.5(@microsoft/api-extractor@7.49.1(@types/node@22.10.5))(jiti@1.21.7)(postcss@8.4.49)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.7.0)
@@ -7334,10 +7334,10 @@ packages:
   esbuild-plugin-replace@1.4.0:
     resolution: {integrity: sha512-lP3ZAyzyRa5JXoOd59lJbRKNObtK8pJ/RO7o6vdjwLi71GfbL32NR22ZuS7/cLZkr10/L1lutoLma8E4DLngYg==}
 
-  esbuild-yaml@1.2.0:
-    resolution: {integrity: sha512-XnYNh8xsBNg0b7n4qI7S0Zt+eam3eT6VNCmJ/dtH0fvRy+BfUhurlbY0gEIY4XMhk4rM8UC3IcLOCWrj29LWbQ==}
+  esbuild-yaml@2.0.0:
+    resolution: {integrity: sha512-p0os14j1o816Rw0zcFHMIe5x8yt/V2y4IAeAPPhRdsk/lp1rQ7JVys+PDDuWypx/KWbo8eQfNCPjiKiAxElYVQ==}
     peerDependencies:
-      esbuild: '>=0.18'
+      esbuild: '>=0.19.0'
 
   esbuild@0.17.19:
     resolution: {integrity: sha512-XQ0jAPFkK/u3LcVRcvVHQcTIqD6E2H1fvZMA5dQPSOWb3suUbWbfbRf94pjc0bNzRYLfIrDRQXr7X+LHIm5oHw==}
@@ -18370,10 +18370,10 @@ snapshots:
     dependencies:
       magic-string: 0.25.9
 
-  esbuild-yaml@1.2.0(esbuild@0.20.2):
+  esbuild-yaml@2.0.0(esbuild@0.20.2):
     dependencies:
       esbuild: 0.20.2
-      js-yaml: 4.1.0
+      yaml: 2.7.0
 
   esbuild@0.17.19:
     optionalDependencies:
