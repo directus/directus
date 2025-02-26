@@ -113,16 +113,16 @@ describe('retrieves items with filters', async () => {
 		expect(response1.statusCode).toEqual(200);
 		expect(response1.body.data.length).toBe(2);
 
-		const response = await request(getUrl(vendor))
+		const response2 = await request(getUrl(vendor))
 			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
 			.set('Authorization', `Bearer ${userToken}`);
 
 		console.log('as editor with filters', response);
 
-		console.log(JSON.stringify(response, null, 4));
+		console.log(JSON.stringify(response2, null, 4));
 
-		expect(response.statusCode).toEqual(200);
-		expect(response.body.data.length).toBe(1);
+		expect(response2.statusCode).toEqual(200);
+		expect(response2.body.data.length).toBe(1);
 	});
 
 	// await deletePolicy(vendor, policyId);
