@@ -89,8 +89,6 @@ describe('retrieves items with filters', async () => {
 					],
 				},
 				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
-				validation: null,
-				presets: null,
 			},
 			{
 				id: permissionIds[1],
@@ -98,8 +96,6 @@ describe('retrieves items with filters', async () => {
 				fields: ['id', 'user_created'],
 				collection,
 				permissions: null,
-				validation: null,
-				presets: null,
 				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
 			},
 		]);
@@ -164,13 +160,15 @@ async function deleteUser(vendor: Vendor, id: string): Promise<void> {
 	// }
 }
 
-async function CreatePermissions(vendor: Vendor, permissions: Permission[]): Promise<Permission> {
+async function CreatePermissions(vendor: Vendor, permissions: Partial<Permission>[]): Promise<Permission> {
 	const response = await request(getUrl(vendor))
 		.post(`/permissions/`)
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 		.send(permissions);
 
 	if (!response.ok) {
+		console.log(repsonse.body);
+
 		throw new Error('Could not create permission', response.body);
 	}
 
