@@ -132,54 +132,57 @@ onMounted(() => {
 <template>
 	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen }">
 		<div class="header" :class="{ 'header-expanded': headerExpanded }">
-			<slot name="prepend-header" />
+			<div class="group">
+				<slot name="prepend-header" />
 
-			<v-button
-				v-if="!hidePopupButton"
-				v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
-				x-small
-				rounded
-				icon
-				secondary
-				@click="emit('new-window')"
-			>
-				<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
-			</v-button>
-			<v-button
-				v-tooltip.bottom.end="t('live_preview.refresh')"
-				x-small
-				icon
-				rounded
-				secondary
-				:disabled="isRefreshing || !activeUrl"
-				@click="refresh(null)"
-			>
-				<v-progress-circular v-if="isRefreshing" indeterminate x-small />
-				<v-icon v-else small name="refresh" />
-			</v-button>
+				<v-button
+					v-if="!hidePopupButton"
+					v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
+					x-small
+					rounded
+					icon
+					secondary
+					@click="emit('new-window')"
+				>
+					<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
+				</v-button>
+				<v-button
+					v-tooltip.bottom.end="t('live_preview.refresh')"
+					x-small
+					icon
+					rounded
+					secondary
+					:disabled="isRefreshing || !activeUrl"
+					@click="refresh(null)"
+				>
+					<v-progress-circular v-if="isRefreshing" indeterminate x-small />
+					<v-icon v-else small name="refresh" />
+				</v-button>
 
-			<v-menu v-if="activeUrl" class="url" show-arrow :class="{ multiple: multipleUrls }" :disabled="!multipleUrls">
-				<template #activator="{ toggle }">
-					<div class="activator" @click="toggle">
-						<v-text-overflow :text="activeUrl" placement="bottom" />
-						<v-icon v-if="multipleUrls" name="expand_more" />
-					</div>
-				</template>
+				<v-menu v-if="activeUrl" class="url" show-arrow :class="{ multiple: multipleUrls }" :disabled="!multipleUrls">
+					<template #activator="{ toggle }">
+						<div class="activator" @click="toggle">
+							<v-text-overflow :text="activeUrl" placement="bottom" />
+							<v-icon v-if="multipleUrls" name="expand_more" />
+						</div>
+					</template>
 
-				<v-list>
-					<v-list-item
-						v-for="(urlItem, index) in url"
-						:key="index"
-						:active="urlItem === activeUrl"
-						clickable
-						@click="activeUrl = urlItem"
-					>
-						<v-list-item-content>{{ urlItem }}</v-list-item-content>
-					</v-list-item>
-				</v-list>
-			</v-menu>
+					<v-list>
+						<v-list-item
+							v-for="(urlItem, index) in url"
+							:key="index"
+							:active="urlItem === activeUrl"
+							clickable
+							@click="activeUrl = urlItem"
+						>
+							<v-list-item-content>{{ urlItem }}</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</div>
 
 			<div class="spacer" />
+
 			<div v-if="activeUrl" class="dimensions" :class="{ disabled: fullscreen }">
 				<input
 					:value="displayWidth"
@@ -254,13 +257,21 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .live-preview {
+	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #ffffff);
+	--preview--color-disabled: var(--theme--foreground-subdued);
+	--preview--header--background-color: var(--theme--navigation--modules--background);
+	--preview--header--border-width: var(--theme--navigation--modules--border-width);
+	--preview--header--border-color: var(--theme--navigation--modules--border-color);
+
+	container-type: inline-size;
 	width: 100%;
 	height: 100%;
 
 	.header {
 		width: 100%;
-		color: var(--foreground-inverted);
-		background-color: var(--background-inverted);
+		color: var(--preview--color);
+		background-color: var(--preview--header--background-color);
+		border-bottom: var(--preview--header--border-width) solid var(--preview--header--border-color);
 		height: 44px;
 		display: flex;
 		align-items: center;
@@ -278,19 +289,28 @@ onMounted(() => {
 			padding: 8px 16px;
 		}
 
-		.v-button.secondary {
-			--v-button-background-color: var(--theme--background-subdued);
+		:deep(.v-button.secondary) {
+			--v-button-color-hover: var(--theme--foreground-accent);
+
+			button:focus:not(:hover) {
+				color: var(--v-button-color);
+				background-color: var(--v-button-background-color);
+			}
+		}
+
+		.group {
+			display: contents;
 		}
 
 		.url {
-			color: var(--theme--foreground-subdued);
+			color: var(--preview--color-disabled);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
 
 			&.multiple {
 				cursor: pointer;
-				color: var(--foreground-inverted);
+				color: var(--preview--color);
 			}
 
 			.activator {
@@ -311,8 +331,9 @@ onMounted(() => {
 		.dimensions {
 			display: flex;
 			align-items: center;
+
 			&.disabled {
-				color: var(--theme--foreground-subdued);
+				color: var(--preview--color-disabled);
 			}
 		}
 
@@ -323,6 +344,16 @@ onMounted(() => {
 
 			&:first-child {
 				text-align: right;
+			}
+		}
+
+		@container (max-width: 480px) {
+			.dimensions.disabled {
+				display: none;
+			}
+
+			.group:has(~ .dimensions:not(.disabled)) {
+				display: none;
 			}
 		}
 	}
