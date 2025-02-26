@@ -2147,8 +2147,8 @@ importers:
         specifier: 11.0.4
         version: 11.0.4
       vite-tsconfig-paths:
-        specifier: 4.3.2
-        version: 4.3.2(typescript@5.7.3)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(sass@1.83.4)(terser@5.37.0))
+        specifier: 5.1.4
+        version: 5.1.4(typescript@5.7.3)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(sass@1.83.4)(terser@5.37.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@types/node@22.10.5)(happy-dom@16.5.3)(jsdom@20.0.3)(sass-embedded@1.83.1)(sass@1.83.4)(terser@5.37.0)
@@ -4896,6 +4896,7 @@ packages:
   '@shopify/semaphore@3.1.0':
     resolution: {integrity: sha512-LxonkiWEu12FbZhuOMhsdocpxCqm7By8C/2U9QgNuEoXUx2iMrlXjJv3p93RwfNC6TrdlNRo17gRer1z1309VQ==}
     engines: {node: '>=18.12.0'}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   '@sideway/address@4.1.5':
     resolution: {integrity: sha512-IqO/DUQHUkPeixNQ8n0JA6102hT9CmaljNTPmQ1u8MEhBo/R4Q8eKLN/vGZxuebwOroDB4cbpjheD4+/sKFK4Q==}
@@ -9663,6 +9664,7 @@ packages:
   oracledb@6.7.1:
     resolution: {integrity: sha512-dOXqgJ8re9kw5Nv9zLlljhBcjsGCUELDD/VEecQlXl2R8IMNxJqdceR+VeKS4gAyVNzq0MOz45lXOiC8OqG1qw==}
     engines: {node: '>=14.6'}
+    deprecated: Deprecated due to packaging issue
 
   os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
@@ -12101,8 +12103,8 @@ packages:
     peerDependencies:
       vite: ^3.0.0-0 || ^4.0.0-0 || ^5.0.0-0 || ^6.0.0-0
 
-  vite-tsconfig-paths@4.3.2:
-    resolution: {integrity: sha512-0Vd/a6po6Q+86rPlntHye7F31zA2URZMbH8M3saAZ/xR9QoGN/L21bxEGfXdWmFdNkqPpRdxFT7nmNe12e9/uA==}
+  vite-tsconfig-paths@5.1.4:
+    resolution: {integrity: sha512-cYj0LRuLV2c2sMqhqhGpaO3LretdtMn/BVX4cPLanIZuwwrkVl+lK84E/miEXkCHWXuq65rhNN4rXsBcOB3S4w==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
@@ -24177,7 +24179,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@4.3.2(typescript@5.7.3)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(sass@1.83.4)(terser@5.37.0)):
+  vite-tsconfig-paths@5.1.4(typescript@5.7.3)(vite@5.4.11(@types/node@22.10.5)(sass-embedded@1.83.1)(sass@1.83.4)(terser@5.37.0)):
     dependencies:
       debug: 4.4.0(supports-color@5.5.0)
       globrex: 0.1.2
