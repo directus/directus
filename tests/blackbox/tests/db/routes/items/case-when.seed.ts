@@ -61,7 +61,7 @@ export const seedDBStructure = () => {
 };
 
 // Only custom collections, no item creation for system collections
-export const seedDBValues = async (): Promise<void> => {
+export const seedDBValues = async (userId: string): Promise<void> => {
 	log('seeding db . . . .. ');
 
 	const promises = vendors.map(async (vendor) => {
@@ -72,7 +72,7 @@ export const seedDBValues = async (): Promise<void> => {
 				vendor,
 				collection,
 				{
-					user_created: randomUUID(),
+					user_created: userId,
 				},
 				USER.ADMIN.TOKEN,
 			);
@@ -83,7 +83,7 @@ export const seedDBValues = async (): Promise<void> => {
 				vendor,
 				collection,
 				{
-					user_created: randomUUID(),
+					user_created: userId,
 				},
 				USER.ADMIN.TOKEN,
 			);

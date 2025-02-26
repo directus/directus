@@ -23,13 +23,13 @@ import type { Item, Permission, Policy, User } from '@directus/types';
 // });
 
 describe('retrieves items with filters', async () => {
-	// const userId = randomUUID();
+	const userId = '93016b62-4207-4137-80e9-44cec5ff8f73';
 	const userToken = 'test-case-when-user-token';
 	// const policyName = 'sample-policy';
 	// const policyId: UUID = '74f5ef86-db06-4a88-8447-506688d0ff52';
 	const permissionIds: [number, number] = [93827, 93828];
 
-	await seedDBValues();
+	await seedDBValues(userId);
 	// console.log('seeded db', seedResult);
 
 	it.each(vendors)('%s', async (vendor) => {
