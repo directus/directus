@@ -61,11 +61,7 @@ export function getCollectionMetaUpdates(
 
 			// only add updates on change
 			if (updatedPaths.length !== itemDuplicationPaths.length) {
-				meta.updates['item_duplication_fields'] = updatedPaths.length !== 0 ? updatedPaths : null;
-
-				if (meta.updates['item_duplication_fields'] && typeof collectionMeta.item_duplication_fields === 'string') {
-					meta.updates['item_duplication_fields'] = JSON.stringify(meta.updates['item_duplication_fields']);
-				}
+				meta.updates['item_duplication_fields'] = updatedPaths.length !== 0 ? JSON.stringify(updatedPaths) : null;
 
 				hasUpdates = true;
 			}
