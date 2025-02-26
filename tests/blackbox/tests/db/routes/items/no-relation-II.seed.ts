@@ -1,7 +1,7 @@
 import { CreateCollection, CreateField, DeleteCollection } from '@common/functions';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
-import type { Item, Permission, Policy, User } from '@directus/types';
+import type { Item } from '@directus/types';
 import { randomUUID, type UUID } from 'node:crypto';
 import { expect, it } from 'vitest';
 import request from 'supertest';
@@ -19,13 +19,7 @@ export type Result = {
 	editorToken: string | null;
 };
 
-export const collection = 'articles';
-
-const userId = 'sample-user-id';
-const userToken = 'sample-user-token';
-const policyName = 'sample-policy';
-const policyId = '74f5ef86-db06-4a88-8447-506688d0ff52';
-const permissionIds: [number, number] = [93827, 93828];
+export const collection = 'test_case_when_articles';
 
 export const seedDBStructure = () => {
 	console.log('seed db structure...');
@@ -35,6 +29,7 @@ export const seedDBStructure = () => {
 		async (vendor) => {
 			try {
 				await DeleteCollection(vendor, { collection });
+
 				console.log('deleted collection');
 
 				await CreateCollection(vendor, {
@@ -65,6 +60,7 @@ export const seedDBStructure = () => {
 	);
 };
 
+// Only custom collections, no item creation for system collections
 export const seedDBValues = async () => {
 	const result: Result = {
 		editorToken: null,
@@ -75,62 +71,7 @@ export const seedDBValues = async () => {
 
 	try {
 		vendors.map(async (vendor) => {
-			console.log('starting seed', vendor);
-
-			await deletePolicy(vendor, policyId);
-
-			await CreatePolicy(vendor, {
-				id: policyId,
-				name: policyName,
-				icon: 'trashcan',
-				description: '',
-				enforce_tfa: null,
-				ip_access: [],
-				app_access: true,
-				admin_access: false,
-			});
-
-			await DeletePermissions(vendor, permissionIds);
-
-			await CreatePermission(vendor, {
-				id: permissionIds[0],
-				action: 'read',
-				fields: ['id', 'user_created'], //'date_created'
-				collection,
-				permissions: {
-					_and: [
-						{
-							user_created: {
-								id: {
-									_eq: '$CURRENT_USER',
-								},
-							},
-						},
-					],
-				},
-				policy: policyId,
-				validation: null,
-				presets: null,
-			});
-
-			await CreatePermission(vendor, {
-				id: permissionIds[1],
-				action: 'create',
-				fields: ['id', 'user_created'],
-				collection,
-				permissions: null,
-				validation: null,
-				presets: null,
-				policy: policyId,
-			});
-
-			console.log('permissions created');
-
-			await deleteUser(vendor, userId);
-			const editor = await createEditor(vendor);
-			console.log('editor created');
-
-			result.editorToken = editor.token;
+			console.log('starting value seed', vendor);
 
 			await CreateItem(
 				vendor,
@@ -151,7 +92,6 @@ export const seedDBValues = async () => {
 				},
 				USER.ADMIN.TOKEN,
 			);
-
 		});
 	} catch (error) {
 		result.isSeeded = false;
@@ -159,88 +99,6 @@ export const seedDBValues = async () => {
 
 	return result;
 };
-
-// - - - - - API calls - - - - -
-// Those are in here temporarily.
-// They will be moved to a common place with a separate refactoring.
-
-async function createEditor(vendor: Vendor): Promise<User> {
-	const newUser = {
-		id: userId,
-		email: 'sample@sample.com',
-		password: '12345',
-		name: 'John',
-		token: userToken,
-		policies: [policyId],
-	};
-
-	const response = await request(getUrl(vendor))
-		.post(`/users`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-		.send(newUser);
-
-	if (!response.ok) {
-		throw new Error('Could not create user');
-	}
-
-	return response.body.data;
-}
-
-async function deleteUser(vendor: Vendor, id: string): Promise<void> {
-	await request(getUrl(vendor)).delete(`/users/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-	// TODO - Fix this when API returns correct status code
-	// if (!response.ok) {
-	// 	throw new Error('Could not delete user');
-	// }
-}
-
-async function CreatePermission(vendor: Vendor, options: Permission): Promise<Permission> {
-	const response = await request(getUrl(vendor))
-		.post(`/permissions/`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-		.send(options);
-
-	if (!response.ok) {
-		throw new Error('Could not create permission', response.body);
-	}
-
-	return response.body.data;
-}
-
-async function CreatePolicy(vendor: Vendor, options: Policy): Promise<Policy> {
-	const response = await request(getUrl(vendor))
-		.post(`/policies/`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-		.send(options);
-
-	if (!response.ok) {
-		throw new Error('Could not create policy', response.body);
-	}
-
-	console.log('policy created');
-
-	return response.body.data;
-}
-
-async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
-	await request(getUrl(vendor)).delete(`/policies/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-	// @TODO - Fix this when API returns correct status code
-	// if (!response.ok) {
-	// 	throw new Error('Could not delete policy', response.body);
-	// }
-}
-
-async function DeletePermissions(vendor: Vendor, ids: number[]): Promise<void> {
-	ids.forEach(async (id) => {
-		await request(getUrl(vendor)).delete(`/permissions/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-		// if (!response.ok) {
-		// 	throw new Error('Could not delete permissions', response.body);
-		// }
-	});
-}
 
 async function CreateItem(vendor: Vendor, collection: string, item: any, token: string): Promise<Item> {
 	const response = await request(getUrl(vendor))
