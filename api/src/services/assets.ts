@@ -171,8 +171,6 @@ export class AssetsService {
 				});
 			}
 
-			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
-
 			const transformer = getSharpInstance();
 
 			transformer.timeout({
@@ -182,6 +180,8 @@ export class AssetsService {
 			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
 
 			transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
+
+			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
 
 			readStream.on('error', (e: Error) => {
 				logger.error(e, `Couldn't transform file ${file.id}`);
