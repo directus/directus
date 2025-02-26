@@ -1,32 +1,27 @@
 import { useEnv } from '@directus/env';
-import type { Accountability, Permission } from '@directus/types';
+import type { Accountability } from '@directus/types';
 import { getSimpleHash } from '@directus/utils';
 import { getCache, getCacheValue, setCacheValue } from '../../cache.js';
 import type { Context } from '../types.js';
-import {
-	extractRequiredDynamicVariableContext,
-	type RequiredPermissionContext,
-} from './extract-required-dynamic-variable-context.js';
+import { type DynamicVariableContext } from './extract-required-dynamic-variable-context.js';
 
 export interface FetchDynamicVariableContext {
 	accountability: Pick<Accountability, 'user' | 'role' | 'roles'>;
 	policies: string[];
-	permissions: Permission[];
+	dynamicVariableContext: DynamicVariableContext;
 }
 
-export async function fetchDynamicVariableContext(options: FetchDynamicVariableContext, context: Context) {
+export async function fetchDynamicVariableData(options: FetchDynamicVariableContext, context: Context) {
 	const { UsersService } = await import('../../services/users.js');
 	const { RolesService } = await import('../../services/roles.js');
 	const { PoliciesService } = await import('../../services/policies.js');
 
 	const contextData: Record<string, any> = {};
 
-	const permissionContext = extractRequiredDynamicVariableContext(options.permissions);
-
-	if (options.accountability.user && (permissionContext.$CURRENT_USER?.size ?? 0) > 0) {
+	if (options.accountability.user && (options.dynamicVariableContext.$CURRENT_USER?.size ?? 0) > 0) {
 		contextData['$CURRENT_USER'] = await fetchContextData(
 			'$CURRENT_USER',
-			permissionContext,
+			options.dynamicVariableContext,
 			{ user: options.accountability.user },
 			async (fields) => {
 				const usersService = new UsersService(context);
@@ -38,10 +33,10 @@ export async function fetchDynamicVariableContext(options: FetchDynamicVariableC
 		);
 	}
 
-	if (options.accountability.role && (permissionContext.$CURRENT_ROLE?.size ?? 0) > 0) {
+	if (options.accountability.role && (options.dynamicVariableContext.$CURRENT_ROLE?.size ?? 0) > 0) {
 		contextData['$CURRENT_ROLE'] = await fetchContextData(
 			'$CURRENT_ROLE',
-			permissionContext,
+			options.dynamicVariableContext,
 			{ role: options.accountability.role },
 			async (fields) => {
 				const rolesService = new RolesService(context);
@@ -53,10 +48,10 @@ export async function fetchDynamicVariableContext(options: FetchDynamicVariableC
 		);
 	}
 
-	if (options.accountability.roles.length > 0 && (permissionContext.$CURRENT_ROLES?.size ?? 0) > 0) {
+	if (options.accountability.roles.length > 0 && (options.dynamicVariableContext.$CURRENT_ROLES?.size ?? 0) > 0) {
 		contextData['$CURRENT_ROLES'] = await fetchContextData(
 			'$CURRENT_ROLES',
-			permissionContext,
+			options.dynamicVariableContext,
 			{ roles: options.accountability.roles },
 			async (fields) => {
 				const rolesService = new RolesService(context);
@@ -69,13 +64,13 @@ export async function fetchDynamicVariableContext(options: FetchDynamicVariableC
 	}
 
 	if (options.policies.length > 0) {
-		if ((permissionContext.$CURRENT_POLICIES?.size ?? 0) > 0) {
+		if ((options.dynamicVariableContext.$CURRENT_POLICIES?.size ?? 0) > 0) {
 			// Always add the id field
-			permissionContext.$CURRENT_POLICIES.add('id');
+			options.dynamicVariableContext.$CURRENT_POLICIES.add('id');
 
 			contextData['$CURRENT_POLICIES'] = await fetchContextData(
 				'$CURRENT_POLICIES',
-				permissionContext,
+				options.dynamicVariableContext,
 				{ policies: options.policies },
 				async (fields) => {
 					const policiesService = new PoliciesService(context);
@@ -95,8 +90,8 @@ export async function fetchDynamicVariableContext(options: FetchDynamicVariableC
 }
 
 async function fetchContextData(
-	key: keyof RequiredPermissionContext,
-	permissionContext: RequiredPermissionContext,
+	key: keyof DynamicVariableContext,
+	permissionContext: DynamicVariableContext,
 	cacheContext: Record<string, any>,
 	fetch: (fields: string[]) => Promise<Record<string, any>>,
 ) {
