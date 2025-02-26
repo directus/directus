@@ -24,10 +24,10 @@ import type { Item, Permission, Policy, User } from '@directus/types';
 
 describe('retrieves items with filters', async () => {
 	// const userId = randomUUID();
-	// const userToken = 'test-case-when-user-token';
+	const userToken = 'test-case-when-user-token';
 	// const policyName = 'sample-policy';
 	// const policyId: UUID = '74f5ef86-db06-4a88-8447-506688d0ff52';
-	// const permissionIds: [number, number] = [93827, 93828];
+	const permissionIds: [number, number] = [93827, 93828];
 
 	await seedDBValues();
 	// console.log('seeded db', seedResult);
@@ -45,94 +45,96 @@ describe('retrieves items with filters', async () => {
 
 		expect(response.statusCode).toEqual(200);
 		expect(response.body.data.length).toBe(2);
+
+		createEditor(vendor, {
+			id: '93016b62-4207-4137-80e9-44cec5ff8f73',
+			email: 'sample@sample.com',
+			password: '12345',
+			first_name: 'John',
+			last_name: 'Doe',
+			status: 'active',
+			token: 'test-case-when-user-token',
+			policies: [
+				{
+					user: '93016b62-4207-4137-80e9-44cec5ff8f73',
+					policy: {
+						id: '74f5ef86-db06-4a88-8447-506688d0ff53',
+						name: 'policyName',
+						icon: 'trashcan',
+						description: '',
+						enforce_tfa: false,
+						ip_access: [],
+						app_access: true,
+						admin_access: false,
+					},
+				},
+			],
+		});
+
+		await CreatePermissions(vendor, [
+			{
+				id: permissionIds[0],
+				action: 'read',
+				fields: ['id', 'user_created'], //'date_created'
+				collection,
+				permissions: {
+					_and: [
+						{
+							user_created: {
+								id: {
+									_eq: '$CURRENT_USER',
+								},
+							},
+						},
+					],
+				},
+				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
+				validation: null,
+				presets: null,
+			},
+			{
+				id: permissionIds[1],
+				action: 'create',
+				fields: ['id', 'user_created'],
+				collection,
+				permissions: null,
+				validation: null,
+				presets: null,
+				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
+			},
+		]);
+
+		const response1 = await request(getUrl(vendor))
+			.get(`/items/${collection}`)
+			.set('Authorization', `Bearer ${userToken}`);
+
+		console.log('as editor without filters', response1.body.data, response1);
+
+		expect(response1.statusCode).toEqual(200);
+		expect(response1.body.data.length).toBe(2);
+
+		const response = await request(getUrl(vendor))
+			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
+			.set('Authorization', `Bearer ${userToken}`);
+
+		console.log('as editor with filters', response);
+
+		console.log(JSON.stringify(response, null, 4));
+
+		expect(response.statusCode).toEqual(200);
+		expect(response.body.data.length).toBe(1);
 	});
 
 	// await deletePolicy(vendor, policyId);
-
-	// createEditor(vendor, {
-	// 	id: '93016b62-4207-4137-80e9-44cec5ff8f73',
-	// 	email: 'sample@sample.com',
-	// 	password: '12345',
-	// 	first_name: 'John',
-	// 	last_name: 'Doe',
-	// 	status: 'active',
-	// 	token: 'test-case-when-user-token',
-	// 	policies: [
-	// 		{
-	// 			user: '93016b62-4207-4137-80e9-44cec5ff8f73',
-	// 			policy: {
-	// 				id: '74f5ef86-db06-4a88-8447-506688d0ff53',
-	// 				name: 'policyName',
-	// 				icon: 'trashcan',
-	// 				description: '',
-	// 				enforce_tfa: false,
-	// 				ip_access: [],
-	// 				app_access: true,
-	// 				admin_access: false,
-	// 			},
-	// 		},
-	// 	],
-	// });
 
 	// console.log('editor created');
 
 	// await DeletePermissions(vendor, permissionIds);
 
-	// await CreatePermissions(vendor, [
-	// 	{
-	// 		id: permissionIds[0],
-	// 		action: 'read',
-	// 		fields: ['id', 'user_created'], //'date_created'
-	// 		collection,
-	// 		permissions: {
-	// 			_and: [
-	// 				{
-	// 					user_created: {
-	// 						id: {
-	// 							_eq: '$CURRENT_USER',
-	// 						},
-	// 					},
-	// 				},
-	// 			],
-	// 		},
-	// 		policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
-	// 		validation: null,
-	// 		presets: null,
-	// 	},
-	// 	{
-	// 		id: permissionIds[1],
-	// 		action: 'create',
-	// 		fields: ['id', 'user_created'],
-	// 		collection,
-	// 		permissions: null,
-	// 		validation: null,
-	// 		presets: null,
-	// 		policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
-	// 	},
-	// ]);
-
 	// console.log('permissions created');
 
 	// await deleteUser(vendor, userId);
 
-	// const response1 = await request(getUrl(vendor))
-	// 	.get(`/items/${collection}`)
-	// 	.set('Authorization', `Bearer ${userToken}`);
-
-	// console.log('as editor without filters', response1.body.data, response1);
-	// expect(response1.statusCode).toEqual(200);
-	// expect(response1.body.data.length).toBe(2);
-
-	// const response = await request(getUrl(vendor))
-	// 	.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
-	// 	.set('Authorization', `Bearer ${seedResult ? seedResult.editorToken : ''}`);
-
-	// console.log('as editor with filters', response);
-
-	// console.log(JSON.stringify(response, null, 4));
-
-	// expect(response.statusCode).toEqual(200);
-	// expect(response.body.data.length).toBe(1);
 	// });
 });
 
