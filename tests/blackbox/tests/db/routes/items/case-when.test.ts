@@ -167,7 +167,7 @@ async function CreatePermissions(vendor: Vendor, permissions: Partial<Permission
 		.send(permissions);
 
 	if (!response.ok) {
-		console.log(repsonse.body);
+		console.log(response.body);
 
 		throw new Error('Could not create permission', response.body);
 	}
