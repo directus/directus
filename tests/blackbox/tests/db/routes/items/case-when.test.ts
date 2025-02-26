@@ -175,6 +175,9 @@ async function deleteUser(vendor: Vendor, id: string): Promise<void> {
 }
 
 async function CreatePermissions(vendor: Vendor, permissions: Partial<Permission>[]): Promise<Permission> {
+
+	console.log('creating permissions', permissions);
+
 	const response = await request(getUrl(vendor))
 		.post(`/permissions/`)
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
