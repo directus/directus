@@ -61,11 +61,11 @@ export const seedDBStructure = () => {
 };
 
 // Only custom collections, no item creation for system collections
-export const seedDBValues = async () => {
+export const seedDBValues = (): void => {
 	log('seeding db . . . .. ');
 
 	try {
-		vendors.map(async (vendor) => {
+		vendors.forEach(async (vendor) => {
 			console.log('starting value seed', vendor);
 
 			await CreateItem(
@@ -78,6 +78,8 @@ export const seedDBValues = async () => {
 				USER.ADMIN.TOKEN,
 			);
 
+			console.log('first item created');
+
 			await CreateItem(
 				vendor,
 				collection,
@@ -87,12 +89,11 @@ export const seedDBValues = async () => {
 				},
 				USER.ADMIN.TOKEN,
 			);
+			console.log('second item created');
 		});
 	} catch (error) {
-		return false;
+		throw new Error('Seed Database Values failed');
 	}
-
-	return true;
 };
 
 async function CreateItem(vendor: Vendor, collection: string, item: any, token: string): Promise<Item> {
