@@ -2,4 +2,4 @@
 '@directus/api': major
 ---
 
-Changed error message for webhook Flows when a condition operation fails
+Changed error message when a Flow condition operation fails
