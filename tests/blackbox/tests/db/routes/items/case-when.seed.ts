@@ -72,7 +72,6 @@ export const seedDBValues = async (): Promise<void> => {
 				vendor,
 				collection,
 				{
-					id: '1',
 					user_created: randomUUID(),
 				},
 				USER.ADMIN.TOKEN,
@@ -84,11 +83,11 @@ export const seedDBValues = async (): Promise<void> => {
 				vendor,
 				collection,
 				{
-					id: '2',
 					user_created: randomUUID(),
 				},
 				USER.ADMIN.TOKEN,
 			);
+
 			console.log('second item created');
 		} catch (error) {
 			throw new Error('Seed Database Values failed');
