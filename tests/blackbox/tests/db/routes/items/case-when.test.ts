@@ -74,6 +74,14 @@ describe('retrieves items with filters', async () => {
 		// await deletePolicy(vendor, policyId);
 		await DeletePermissions(vendor, permissionIds);
 
+		const policies = await request(getUrl(vendor)).get(`/policies`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+		if (!policies.ok) {
+			throw new Error('Could not get policies');
+		}
+
+		console.log('policies', policies.body.data);
+
 		await CreatePermissions(vendor, [
 			{
 				id: permissionIds[0],
