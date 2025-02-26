@@ -32,15 +32,18 @@ describe('retrieves items with filters', async () => {
 	await seedDBValues();
 	// console.log('seeded db', seedResult);
 
-	// it.each(vendors)('%s', async (vendor) => {
-	// 	const response0 = await request(getUrl(vendor))
-	// 		.get(`/items/${collection}`)
-	// 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+	it.each(vendors)('%s', async (vendor) => {
+		console.log('querying articlesas admin: ');
 
-	// 	console.log('articles query as admin: ', response0.body.data);
+		const response = await request(getUrl(vendor))
+			.get(`/items/${collection}`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-	// 	expect(response0.statusCode).toEqual(200);
-	// 	expect(response0.body.data.length).toBe(2);
+		console.log('articles query as admin: ', response.body.data);
+
+		expect(response.statusCode).toEqual(200);
+		expect(response.body.data.length).toBe(2);
+	});
 
 	// await deletePolicy(vendor, policyId);
 
