@@ -20,12 +20,14 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	CACHE_AUTO_PURGE_IGNORE_LIST: 'array',
 	CACHE_SCHEMA_MAX_ITERATIONS: 'number',
 	CACHE_SCHEMA_SYNC_TIMEOUT: 'number',
+	CACHE_SCHEMA_FREEZE_ENABLED: 'boolean',
 
 	IMPORT_IP_DENY_LIST: 'array',
 
 	FILE_METADATA_ALLOW_LIST: 'array',
 
 	GRAPHQL_INTROSPECTION: 'boolean',
+	GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT: 'number',
 
 	MAX_BATCH_MUTATION: 'number',
 
@@ -34,6 +36,9 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	LOG_HTTP_IGNORE_PATHS: 'array',
 
 	REDIS_ENABLED: 'boolean',
+
+	METRICS_TOKENS: 'array',
+	METRICS_SERVICES: 'array',
 
 	DB_SSL__CA_FILE: 'string',
 } as const;
