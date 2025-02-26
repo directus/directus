@@ -71,6 +71,9 @@ describe('retrieves items with filters', async () => {
 			],
 		});
 
+		// await deletePolicy(vendor, policyId);
+		await DeletePermissions(vendor, permissionIds);
+
 		await CreatePermissions(vendor, [
 			{
 				id: permissionIds[0],
@@ -121,11 +124,7 @@ describe('retrieves items with filters', async () => {
 		expect(response2.body.data.length).toBe(1);
 	});
 
-	// await deletePolicy(vendor, policyId);
-
 	// console.log('editor created');
-
-	// await DeletePermissions(vendor, permissionIds);
 
 	// console.log('permissions created');
 
@@ -201,10 +200,12 @@ async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
 
 async function DeletePermissions(vendor: Vendor, ids: number[]): Promise<void> {
 	ids.forEach(async (id) => {
-		await request(getUrl(vendor)).delete(`/permissions/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+		const res = await request(getUrl(vendor))
+			.delete(`/permissions/${id}`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		// if (!response.ok) {
-		// 	throw new Error('Could not delete permissions', response.body);
-		// }
+		if (!res.ok) {
+			throw new Error('Could not delete permissions', res.body);
+		}
 	});
 }
