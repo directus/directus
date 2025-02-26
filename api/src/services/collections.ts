@@ -21,6 +21,9 @@ import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { FieldsService } from './fields.js';
+import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
+import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
+import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
 
 export type RawCollection = {
@@ -617,10 +620,6 @@ export class CollectionsService {
 						schema: this.schema,
 					});
 
-					await Promise.all(
-						Object.keys(this.schema.collections[collectionKey]?.fields ?? {}).map((fieldKey) =>
-							fieldsService.deleteField(collectionKey, fieldKey, opts),
-						),
 					);
 
 					await trx('directus_fields').delete().where('collection', '=', collectionKey);
@@ -647,6 +646,63 @@ export class CollectionsService {
 					await trx('directus_activity').delete().where('collection', '=', collectionKey);
 					await trx('directus_permissions').delete().where('collection', '=', collectionKey);
 					await trx('directus_relations').delete().where({ many_collection: collectionKey });
+
+					const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
+						this.schema.relations,
+					);
+
+					const collectionRelationList = getCollectionRelationList(collectionKey, collectionRelationTree);
+
+					// only process duplication fields if related collections have them
+					if (collectionRelationList.size !== 0) {
+						const collectionMetas = await trx
+							.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
+							.from('directus_collections')
+							.whereIn('collection', Array.from(collectionRelationList))
+							.whereNotNull('item_duplication_fields');
+
+						await Promise.all(
+							Object.keys(this.schema.collections[collectionKey]?.fields ?? {}).map(async (fieldKey) => {
+								const collectionMetaUpdates = getCollectionMetaUpdates(
+									collectionKey,
+									fieldKey,
+									collectionMetas,
+									this.schema.collections,
+									fieldToCollectionList,
+								);
+
+								for (const meta of collectionMetaUpdates) {
+									await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
+								}
+							}),
+						);
+					}
+
+					const relations = this.schema.relations.filter((relation) => {
+						return relation.collection === collectionKey || relation.related_collection === collectionKey;
+					});
+
+					for (const relation of relations) {
+						// Delete related o2m fields that point to current collection
+						if (relation.related_collection && relation.meta?.one_field) {
+							await fieldsService.deleteField(relation.related_collection, relation.meta.one_field, {
+								autoPurgeCache: false,
+								autoPurgeSystemCache: false,
+								bypassEmitAction: (params) =>
+									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							});
+						}
+
+						// Delete related m2o fields that point to current collection
+						if (relation.related_collection === collectionKey) {
+							await fieldsService.deleteField(relation.collection, relation.field, {
+								autoPurgeCache: false,
+								autoPurgeSystemCache: false,
+								bypassEmitAction: (params) =>
+									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							});
+						}
+					}
 
 					const a2oRelationsThatIncludeThisCollection = this.schema.relations.filter((relation) => {
 						return relation.meta?.one_allowed_collections?.includes(collectionKey);
