@@ -188,7 +188,7 @@ function useItem() {
 			});
 
 			resetEditConfigData();
-			return;
+			return false;
 		}
 
 		msgKey.value = key;
@@ -203,6 +203,8 @@ function useItem() {
 			width: rect.width ?? 0,
 			height: rect.height ?? 0,
 		};
+
+		return true;
 	}
 
 	function resetEditConfigData() {
@@ -214,7 +216,8 @@ function useItem() {
 	}
 
 	async function onClickEdit(data: unknown) {
-		setEditConfigData(data);
+		const success = setEditConfigData(data);
+		if (!success) return;
 		await nextTick();
 		editOverlayActive.value = true;
 	}
