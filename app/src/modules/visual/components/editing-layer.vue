@@ -12,7 +12,7 @@ import { getItemRoute, getCollectionRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 
-type Form = {
+type EditConfig = {
 	collection: string;
 	item: PrimaryKey | null;
 	fields?: string[];
@@ -23,8 +23,8 @@ type ReceiveData = { action: ReceiveAction | null; data: unknown };
 type SendAction = 'confirm' | 'showEditableElements' | 'saved';
 type SavedData = {
 	key: string;
-	collection: Form['collection'];
-	item: Form['item'];
+	collection: EditConfig['collection'];
+	item: EditConfig['item'];
 	payload: Record<string, any>;
 };
 
@@ -95,11 +95,11 @@ function useItem() {
 	const edits = ref<Record<string, any>>({});
 	const editOverlayActive = ref(false);
 	const msgKey = ref('');
-	const collection = ref<Form['collection']>('');
+	const collection = ref<EditConfig['collection']>('');
 	const primaryKey = ref<PrimaryKey>('');
-	const fields = ref<Form['fields']>([]);
-	const availableModes: Form['mode'][] = ['drawer', 'popover'];
-	const mode = ref<Form['mode']>('drawer');
+	const fields = ref<EditConfig['fields']>([]);
+	const availableModes: EditConfig['mode'][] = ['drawer', 'popover'];
+	const mode = ref<EditConfig['mode']>('drawer');
 	const position = ref<Pick<DOMRect, 'top' | 'left' | 'width' | 'height'>>({ top: 0, left: 0, width: 0, height: 0 });
 	const isNew = computed(() => primaryKey.value === '+');
 	const itemEndpoint = computed(getItemEndpoint);
@@ -174,28 +174,28 @@ function useItem() {
 		}
 	}
 
-	function setFormData(data: unknown, createNew = false) {
-		const { key, form, rect } = data as { key: string; form: Form; rect: DOMRect };
+	function setEditConfigData(data: unknown, createNew = false) {
+		const { key, editConfig, rect } = data as { key: string; editConfig: EditConfig; rect: DOMRect };
 
-		if (!key || !form?.collection || !form.item || (!createNew && form.item === '+')) {
+		if (!key || !editConfig?.collection || !editConfig.item || (!createNew && editConfig.item === '+')) {
 			notificationsStore.add({
 				title: t(`errors.ITEM_NOT_FOUND`),
-				text: `${t('collection')}: ${JSON.stringify(form.collection)}, ${t('primary_key')}: ${JSON.stringify(
-					form.item,
+				text: `${t('collection')}: ${JSON.stringify(editConfig.collection)}, ${t('primary_key')}: ${JSON.stringify(
+					editConfig.item,
 				)}`,
 				type: 'error',
 				dialog: true,
 			});
 
-			resetFormData();
+			resetEditConfigData();
 			return;
 		}
 
 		msgKey.value = key;
-		collection.value = form.collection;
-		primaryKey.value = form.item;
-		fields.value = form.fields ?? [];
-		mode.value = availableModes.includes(form.mode) ? form.mode : 'drawer';
+		collection.value = editConfig.collection;
+		primaryKey.value = editConfig.item;
+		fields.value = editConfig.fields ?? [];
+		mode.value = availableModes.includes(editConfig.mode) ? editConfig.mode : 'drawer';
 
 		position.value = {
 			top: rect.top ?? 0,
@@ -205,7 +205,7 @@ function useItem() {
 		};
 	}
 
-	function resetFormData() {
+	function resetEditConfigData() {
 		collection.value = '';
 		primaryKey.value = '';
 		fields.value = [];
@@ -214,7 +214,7 @@ function useItem() {
 	}
 
 	async function onClickEdit(data: unknown) {
-		setFormData(data);
+		setEditConfigData(data);
 		await nextTick();
 		editOverlayActive.value = true;
 	}
