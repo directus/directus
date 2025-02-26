@@ -40,7 +40,9 @@ watchEffect(async () => {
 const navigateBack = () => {
 	const backState = router.options.history.state.back;
 
-	if (typeof backState !== 'string' || !backState.startsWith('/login')) {
+	const isBackStateValid = backState && !(typeof backState === 'string' && backState.startsWith('/login'));
+
+	if (isBackStateValid) {
 		router.back();
 		return;
 	}
