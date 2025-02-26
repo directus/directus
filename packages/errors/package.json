@@ -32,7 +32,7 @@
 	"devDependencies": {
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "3.0.0",
-		"@types/ms": "0.7.34",
+		"@types/ms": "2.1.0",
 		"@vitest/coverage-v8": "2.1.8",
 		"tsup": "8.3.5",
 		"typescript": "5.7.3",
