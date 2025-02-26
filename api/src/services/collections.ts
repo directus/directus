@@ -620,9 +620,24 @@ export class CollectionsService {
 						schema: this.schema,
 					});
 
+					const fieldItemsService = new ItemsService('directus_fields', {
+						knex: trx,
+						accountability: this.accountability,
+						schema: this.schema,
+					});
+
+					await fieldItemsService.deleteByQuery(
+						{
+							filter: {
+								collection: { _eq: collectionKey },
+							},
+						},
+						{
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						},
 					);
 
-					await trx('directus_fields').delete().where('collection', '=', collectionKey);
 					await trx('directus_presets').delete().where('collection', '=', collectionKey);
 
 					const revisionsToDelete = await trx
