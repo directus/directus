@@ -62,11 +62,6 @@ export const seedDBStructure = () => {
 
 // Only custom collections, no item creation for system collections
 export const seedDBValues = async () => {
-	const result: Result = {
-		editorToken: null,
-		isSeeded: true,
-	};
-
 	log('seeding db . . . .. ');
 
 	try {
@@ -94,10 +89,10 @@ export const seedDBValues = async () => {
 			);
 		});
 	} catch (error) {
-		result.isSeeded = false;
+		return false;
 	}
 
-	return result;
+	return true;
 };
 
 async function CreateItem(vendor: Vendor, collection: string, item: any, token: string): Promise<Item> {
