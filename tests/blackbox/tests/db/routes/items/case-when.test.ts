@@ -76,6 +76,8 @@ describe('retrieves items with filters', async () => {
 
 		const newPolicyId = user.policies[0];
 
+		console.log('new policy', newPolicyId);
+
 		// await deletePolicy(vendor, policyId);
 		await DeletePermissions(vendor, permissionIds);
 
@@ -180,6 +182,7 @@ async function CreatePermissions(vendor: Vendor, permissions: Partial<Permission
 
 	if (!response.ok) {
 		console.log(response.body);
+		console.log(response);
 
 		throw new Error('Could not create permission', response.body);
 	}
