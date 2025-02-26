@@ -70,6 +70,9 @@ describe('retrieves items with filters', async () => {
 			],
 		});
 
+		console.log('user created', user);
+
+
 		if (!user.policies[0]) {
 			throw new Error('Policy for user was not created. ');
 		}
