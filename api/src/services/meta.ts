@@ -42,9 +42,11 @@ export class MetaService {
 	}
 
 	async filterCount(collection: string, query: Query): Promise<number> {
+		const primaryKeyName = this.schema.collections[collection]!.primary;
+
 		const aggregateQuery: Query = {
 			aggregate: {
-				count: ['*'],
+				countDistinct: [primaryKeyName],
 			},
 			search: query.search ?? null,
 			filter: query.filter ?? null,
@@ -71,6 +73,9 @@ export class MetaService {
 			knex: this.knex,
 		});
 
-		return Number((isArray(records) ? records[0]?.['count'] : records?.['count']) ?? 0);
+		return Number(
+			(isArray(records) ? records[0]?.['countDistinct'][primaryKeyName] : records?.['countDistinct'][primaryKeyName]) ??
+				0,
+		);
 	}
 }
