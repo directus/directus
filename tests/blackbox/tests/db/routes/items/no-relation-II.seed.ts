@@ -108,5 +108,15 @@ async function CreateItem(vendor: Vendor, collection: string, item: any, token: 
 
 	console.log('item created');
 
+	const response0 = await request(getUrl(vendor))
+		.get(`/items/${collection}`)
+		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+	if (!response0.ok) {
+		throw new Error('Could not get item');
+	}
+
+	console.log('item fetched', response0.body.data);
+
 	return response.body.data;
 }
