@@ -41,6 +41,8 @@ describe('retrieves items with filters', async () => {
 
 		console.log('articles query as admin: ', response.body.data);
 
+		console.log('response', response);
+
 		expect(response.statusCode).toEqual(200);
 		expect(response.body.data.length).toBe(2);
 	});
