@@ -274,6 +274,7 @@ function useItem() {
 	}
 
 	.popover-rect {
+		pointer-events: none;
 		position: absolute;
 		top: 0;
 		left: 0;
