@@ -2,7 +2,7 @@ import { getUrl } from '@common/config';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import request from 'supertest';
 import { beforeAll, describe, expect, it, test } from 'vitest';
-import { collection, seedDBValues } from './no-relation-II.seed';
+import { collection, seedDBValues } from './case-when.seed';
 import { USER } from '@common/variables';
 // import { randomUUID, type UUID } from 'node:crypto';
 import type { Item, Permission, Policy, User } from '@directus/types';
