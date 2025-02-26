@@ -1,10 +1,27 @@
 import type { Relation } from '@directus/types';
 
+/**
+ * Builds two maps where collectionRelationTree is a map of collection to related collections
+ * and fieldToCollectionList is a map of field:collection to related collection.
+ *
+ * @example
+ * returns {
+ * 		collectionRelationTree: new Map([
+ * 			['B', new Set(['A'])],
+ * 			['A', new Set(['B'])],
+ * 		]),
+ * 		fieldToCollectionList: new Map([
+ * 			['B:b', 'A'],
+ * 			['A:a', 'B'],
+ * 		]),
+ * }
+ */
 export function buildCollectionAndFieldRelations(relations: Relation[]) {
+	// Map<Collection, Set<RelatedCollection>>
 	const collectionRelationTree = new Map<string, Set<string>>();
+	// Map<Field:Collection, RelatedCollection>
 	const fieldToCollectionList = new Map<string, string>();
 
-	// build collection relation tree
 	for (const relation of relations) {
 		let relatedCollections = [];
 
