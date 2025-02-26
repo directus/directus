@@ -46,7 +46,7 @@ describe('retrieves items with filters', async () => {
 		expect(response.statusCode).toEqual(200);
 		expect(response.body.data.length).toBe(2);
 
-		createEditor(vendor, {
+		const user = await createEditor(vendor, {
 			id: '93016b62-4207-4137-80e9-44cec5ff8f73',
 			email: 'sample@sample.com',
 			password: '12345',
@@ -58,7 +58,6 @@ describe('retrieves items with filters', async () => {
 				{
 					user: '93016b62-4207-4137-80e9-44cec5ff8f73',
 					policy: {
-						id: '74f5ef86-db06-4a88-8447-506688d0ff53',
 						name: 'policyName',
 						icon: 'trashcan',
 						description: '',
@@ -70,6 +69,12 @@ describe('retrieves items with filters', async () => {
 				},
 			],
 		});
+
+		if (!user.policies[0]) {
+			throw new Error('Policy for user was not created. ');
+		}
+
+		const newPolicyId = user.policies[0];
 
 		// await deletePolicy(vendor, policyId);
 		await DeletePermissions(vendor, permissionIds);
@@ -99,7 +104,7 @@ describe('retrieves items with filters', async () => {
 						},
 					],
 				},
-				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
+				policy: newPolicyId,
 			},
 			{
 				id: permissionIds[1],
@@ -107,7 +112,7 @@ describe('retrieves items with filters', async () => {
 				fields: ['id', 'user_created'],
 				collection,
 				permissions: null,
-				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
+				policy: newPolicyId,
 			},
 		]);
 
@@ -145,7 +150,7 @@ describe('retrieves items with filters', async () => {
 // Those are in here temporarily.
 // They will be moved to a common place with a separate refactoring.
 
-async function createEditor(vendor: Vendor, user: Item): Promise<User> {
+async function createEditor(vendor: Vendor, user: Item) {
 	const response = await request(getUrl(vendor))
 		.post(`/users`)
 		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
