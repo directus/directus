@@ -72,25 +72,25 @@ describe('retrieves items with filters', async () => {
 
 		console.log('user created', user);
 
-
 		if (!user.policies[0]) {
 			throw new Error('Policy for user was not created. ');
 		}
 
-		const newPolicyId = user.policies[0];
-
-		console.log('new policy', newPolicyId);
-
+		// const newPolicyId = user.policies[0];
+		// console.log('new policy', newPolicyId);
 		// await deletePolicy(vendor, policyId);
+
 		await DeletePermissions(vendor, permissionIds);
 
-		const policies = await request(getUrl(vendor)).get(`/policies`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+		const newPolicyIdRes = await request(getUrl(vendor))
+			.get(`/policies?filter[name][_eq]=policyName`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		if (!policies.ok) {
+		if (!newPolicyIdRes.ok) {
 			throw new Error('Could not get policies');
 		}
 
-		console.log('policies', policies.body.data);
+		console.log('policies', newPolicyIdRes.body.data);
 
 		await CreatePermissions(vendor, [
 			{
@@ -109,7 +109,7 @@ describe('retrieves items with filters', async () => {
 						},
 					],
 				},
-				policy: newPolicyId,
+				policy: newPolicyIdRes.body.data[0].id,
 			},
 			{
 				id: permissionIds[1],
@@ -117,7 +117,7 @@ describe('retrieves items with filters', async () => {
 				fields: ['id', 'user_created'],
 				collection,
 				permissions: null,
-				policy: newPolicyId,
+				policy: newPolicyIdRes.body.data[0].id,
 			},
 		]);
 
@@ -178,7 +178,6 @@ async function deleteUser(vendor: Vendor, id: string): Promise<void> {
 }
 
 async function CreatePermissions(vendor: Vendor, permissions: Partial<Permission>[]): Promise<Permission> {
-
 	console.log('creating permissions', permissions);
 
 	const response = await request(getUrl(vendor))
