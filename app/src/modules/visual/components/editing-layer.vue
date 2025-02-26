@@ -16,7 +16,7 @@ type Form = {
 	collection: string;
 	item: PrimaryKey | null;
 	fields?: string[];
-	mode: 'drawer';
+	mode: 'drawer' | 'popover';
 };
 type ReceiveAction = 'connect' | 'edit';
 type ReceiveData = { action: ReceiveAction | null; data: unknown };
@@ -36,7 +36,10 @@ const { url, frameEl, showEditableElements } = defineProps<{
 
 const { t } = useI18n();
 
-const { collection, primaryKey, fields, isNew, edits, editOverlayActive, itemRoute, onClickEdit } = useItem();
+const { collection, primaryKey, fields, mode, position, isNew, edits, editOverlayActive, itemRoute, onClickEdit } =
+	useItem();
+
+const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : null));
 
 const { sendSaved } = useWebsiteFrame({ onClickEdit });
 
@@ -95,11 +98,13 @@ function useItem() {
 	const collection = ref<Form['collection']>('');
 	const primaryKey = ref<PrimaryKey>('');
 	const fields = ref<Form['fields']>([]);
+	const availableModes: Form['mode'][] = ['drawer', 'popover'];
 	const mode = ref<Form['mode']>('drawer');
+	const position = ref<Pick<DOMRect, 'top' | 'left' | 'width' | 'height'>>({ top: 0, left: 0, width: 0, height: 0 });
 	const isNew = computed(() => primaryKey.value === '+');
 	const itemEndpoint = computed(getItemEndpoint);
 	const itemRoute = computed(getContentRoute);
-	const store = useNotificationsStore();
+	const notificationsStore = useNotificationsStore();
 	const { info: collectionInfo } = useCollection(collection);
 
 	watch(edits, (newEdits) => {
@@ -112,6 +117,8 @@ function useItem() {
 		collection,
 		primaryKey,
 		fields,
+		mode,
+		position,
 		isNew,
 		edits,
 		editOverlayActive,
@@ -168,10 +175,10 @@ function useItem() {
 	}
 
 	function setFormData(data: unknown, createNew = false) {
-		const { key, form } = data as { key: string; form: Form };
+		const { key, form, rect } = data as { key: string; form: Form; rect: DOMRect };
 
 		if (!key || !form?.collection || !form.item || (!createNew && form.item === '+')) {
-			store.add({
+			notificationsStore.add({
 				title: t(`errors.ITEM_NOT_FOUND`),
 				text: `${t('collection')}: ${JSON.stringify(form.collection)}, ${t('primary_key')}: ${JSON.stringify(
 					form.item,
@@ -188,6 +195,14 @@ function useItem() {
 		collection.value = form.collection;
 		primaryKey.value = form.item;
 		fields.value = form.fields ?? [];
+		mode.value = availableModes.includes(form.mode) ? form.mode : 'drawer';
+
+		position.value = {
+			top: rect.top ?? 0,
+			left: rect.left ?? 0,
+			width: rect.width ?? 0,
+			height: rect.height ?? 0,
+		};
 	}
 
 	function resetFormData() {
@@ -195,10 +210,11 @@ function useItem() {
 		primaryKey.value = '';
 		fields.value = [];
 		mode.value = 'drawer';
+		position.value = { top: 0, left: 0, width: 0, height: 0 };
 	}
 
 	async function onClickEdit(data: unknown) {
-		setFormData(data, true);
+		setFormData(data);
 		await nextTick();
 		editOverlayActive.value = true;
 	}
@@ -206,28 +222,40 @@ function useItem() {
 </script>
 
 <template>
-	<div class="editing-layer">
+	<div class="editing-layer" :class="{ editing: editOverlayActive }">
 		<overlay-item
 			v-if="collection"
 			v-model:active="editOverlayActive"
-			overlay="drawer"
+			:overlay="mode"
 			:collection
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
 			@input="(value: any) => (edits = value)"
 		>
+			<template #popover-activator>
+				<div
+					class="popover-rect"
+					:style="{
+						width: `${position.width}px`,
+						height: `${position.height}px`,
+						transform: `translate(${position.left}px,${position.top}px)`,
+					}"
+				></div>
+			</template>
+
 			<template #actions>
 				<v-button
 					v-if="primaryKey"
-					v-tooltip.bottom="t('navigate_to_item')"
+					v-tooltip:[tooltipPlacement]="t('navigate_to_item')"
 					:to="itemRoute"
 					:disabled="isNew"
+					:x-small="mode === 'popover'"
 					secondary
 					icon
 					rounded
 				>
-					<v-icon name="launch" />
+					<v-icon name="launch" :small="mode === 'popover'" />
 				</v-button>
 			</template>
 		</overlay-item>
@@ -240,5 +268,15 @@ function useItem() {
 	inset: 0;
 	pointer-events: none;
 	overflow: hidden;
+
+	&.editing {
+		pointer-events: all;
+	}
+
+	.popover-rect {
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
 }
 </style>

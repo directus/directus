@@ -20,7 +20,7 @@ import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
 
 export interface OverlayItemProps {
-	overlay?: 'drawer';
+	overlay?: 'drawer' | 'popover';
 	collection: string;
 	active?: boolean;
 	primaryKey?: PrimaryKey | null;
@@ -66,7 +66,7 @@ const { internalActive } = useActiveState();
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, relatedPrimaryKeyField } = useRelation();
 
 const { internalEdits, loading, initialValues, refresh } = useItem();
-const { save, cancel } = useActions();
+const { save, cancel, overlayActive } = useActions();
 
 const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
@@ -308,7 +308,17 @@ function useActions() {
 		if (!active) resetNestedValidationErrors();
 	});
 
-	return { save, cancel };
+	const overlayActive = computed({
+		get() {
+			return internalActive.value;
+		},
+		set(newActive: boolean) {
+			if (newActive) internalActive.value = true;
+			else cancel();
+		},
+	});
+
+	return { save, cancel, overlayActive };
 
 	function save() {
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
@@ -360,7 +370,7 @@ function useActions() {
 <template>
 	<v-drawer
 		v-if="overlay === 'drawer'"
-		v-model="internalActive"
+		v-model="overlayActive"
 		:title="title"
 		:icon="collectionInfo?.meta?.icon ?? undefined"
 		persistent
@@ -404,6 +414,51 @@ function useActions() {
 		/>
 	</v-drawer>
 
+	<v-menu
+		v-else-if="overlay === 'popover'"
+		v-model="overlayActive"
+		:close-on-content-click="false"
+		show-arrow
+		seamless
+		placement="top"
+	>
+		<template #activator="activatorProps">
+			<slot name="popover-activator" v-bind="activatorProps" />
+		</template>
+
+		<div class="popover-actions">
+			<div class="popover-actions-inner">
+				<slot name="actions" />
+
+				<v-button v-tooltip="t('cancel')" x-small rounded icon secondary @click="cancel">
+					<v-icon small name="close" outline />
+				</v-button>
+
+				<v-button v-tooltip="t('save')" x-small rounded icon :disabled="!isSavable" @click="save">
+					<v-icon small name="check" outline />
+				</v-button>
+			</div>
+		</div>
+
+		<overlay-item-content
+			v-model:internal-edits="internalEdits"
+			:collection
+			:primary-key
+			:junction-field
+			:related-collection
+			:initial-values
+			:fields
+			:disabled
+			:loading
+			:validation-errors
+			:junction-field-location
+			:related-collection-fields
+			:related-primary-key
+			:refresh
+			class="popover-item-content"
+		/>
+	</v-menu>
+
 	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
 		<v-card>
 			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
@@ -417,3 +472,49 @@ function useActions() {
 		</v-card>
 	</v-dialog>
 </template>
+
+<style lang="scss" scoped>
+.popover-item-content {
+	--content-padding: 16px;
+	--content-padding-bottom: 24px;
+	--theme--form--column-gap: var(--content-padding);
+
+	padding-top: var(--content-padding-bottom);
+	position: relative;
+	z-index: 0;
+	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
+	max-width: 90vw;
+
+	:deep(.v-form:first-child .first-visible-field .field-label),
+	:deep(.v-form:first-child .first-visible-field.half + .half-right .field-label) {
+		--popover-action-width: 100px; // 3 * 28 (button) + 2 * 8 (gap)
+
+		max-width: calc(100% - var(--popover-action-width));
+	}
+
+	&.empty {
+		min-height: 232px;
+	}
+}
+
+.popover-actions {
+	position: sticky;
+	top: 0;
+	left: 0;
+	z-index: 1;
+}
+
+.popover-actions-inner {
+	position: relative;
+	display: flex;
+	justify-content: right;
+	gap: 8px;
+	top: 12px;
+	right: 16px;
+}
+
+// Puts the action buttons closer to the field
+.popover-actions:has(+ .popover-item-content .v-form:first-child > .field:first-child) .popover-actions-inner {
+	position: absolute;
+}
+</style>

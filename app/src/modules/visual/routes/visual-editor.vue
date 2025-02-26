@@ -79,6 +79,7 @@ const showEditableElements = ref(false);
 	display: flex;
 	height: 100%;
 	width: 100%;
+	overflow: hidden;
 }
 
 .live-preview {

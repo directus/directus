@@ -63,7 +63,7 @@ function useFile() {
 </script>
 
 <template>
-	<div class="overlay-item-content">
+	<div class="overlay-item-content" :class="{ empty: emptyForm }">
 		<file-preview-replace v-if="file" class="preview" :file="file" in-modal @replace="refresh" />
 
 		<v-info v-if="emptyForm" :title="t('no_visible_fields')" icon="search" center>
