@@ -600,9 +600,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
 
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, keys);
-
 		return keys.length ? await this.updateMany(keys, data, opts) : [];
 	}
 

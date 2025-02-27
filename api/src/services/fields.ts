@@ -81,7 +81,7 @@ export class FieldsService {
 			columnInfo = await this.schemaInspector.columnInfo();
 
 			if (schemaCacheIsEnabled) {
-				setCacheValue(this.schemaCache, 'columnInfo', columnInfo);
+				await setCacheValue(this.schemaCache, 'columnInfo', columnInfo);
 			}
 		}
 

@@ -72,10 +72,6 @@ export default function applyQuery(
 		}
 	}
 
-	if (query.search) {
-		applySearch(knex, schema, dbQuery, query.search, collection);
-	}
-
 	// `cases` are the permissions cases that are required for the current data set. We're
 	// dynamically adding those into the filters that the user provided to enforce the permission
 	// rules. You should be able to read an item if one or more of the cases matches. The actual case
@@ -135,6 +131,10 @@ export default function applyQuery(
 		}
 
 		dbQuery.groupBy(columns);
+	}
+
+	if (query.search) {
+		applySearch(knex, schema, dbQuery, query.search, collection, aliasMap, permissions);
 	}
 
 	if (query.aggregate) {
@@ -923,38 +923,94 @@ export function applySearch(
 	dbQuery: Knex.QueryBuilder,
 	searchQuery: string,
 	collection: string,
+	aliasMap: AliasMap,
+	permissions: Permission[],
 ) {
 	const { number: numberHelper } = getHelpers(knex);
-	const fields = Object.entries(schema.collections[collection]!.fields);
 
-	dbQuery.andWhere(function () {
+	const allowedFields = new Set(permissions.filter((p) => p.collection === collection).flatMap((p) => p.fields ?? []));
+
+	let fields = Object.entries(schema.collections[collection]!.fields);
+
+	const { cases, caseMap } = getCases(collection, permissions, []);
+
+	// Add field restrictions if non-admin and "everything" is not allowed
+	if (cases.length !== 0 && !allowedFields.has('*')) {
+		fields = fields.filter((field) => allowedFields.has(field[0]));
+	}
+
+	dbQuery.andWhere(function (queryBuilder) {
 		let needsFallbackCondition = true;
 
 		fields.forEach(([name, field]) => {
-			if (['text', 'string'].includes(field.type)) {
-				this.orWhereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
-				needsFallbackCondition = false;
-			} else if (isNumericField(field)) {
-				const number = parseNumericString(searchQuery);
+			const whenCases = (caseMap[name] ?? []).map((caseIndex) => cases[caseIndex]!);
 
-				if (number === null) {
-					return; // unable to parse
-				}
+			const fieldType = getFieldType(field);
 
-				if (numberHelper.isNumberValid(number, field)) {
-					numberHelper.addSearchCondition(this, collection, name, number);
-					needsFallbackCondition = false;
-				}
-			} else if (field.type === 'uuid' && isValidUuid(searchQuery)) {
-				this.orWhere({ [`${collection}.${name}`]: searchQuery });
+			if (fieldType !== null) {
 				needsFallbackCondition = false;
+			} else {
+				return;
+			}
+
+			if (cases.length !== 0 && whenCases?.length !== 0) {
+				queryBuilder.orWhere((subQuery) => {
+					addSearchCondition(subQuery, name, fieldType, 'and');
+
+					applyFilter(knex, schema, subQuery, { _or: whenCases }, collection, aliasMap, cases, permissions);
+				});
+			} else {
+				addSearchCondition(queryBuilder, name, fieldType, 'or');
 			}
 		});
 
 		if (needsFallbackCondition) {
-			this.orWhereRaw('1 = 0');
+			queryBuilder.orWhereRaw('1 = 0');
 		}
 	});
+
+	function addSearchCondition(
+		queryBuilder: Knex.QueryBuilder,
+		name: string,
+		fieldType: 'string' | 'numeric' | 'uuid',
+		logical: 'and' | 'or',
+	) {
+		if (fieldType === null) {
+			return;
+		}
+
+		if (fieldType === 'string') {
+			queryBuilder[logical].whereRaw(`LOWER(??) LIKE ?`, [`${collection}.${name}`, `%${searchQuery.toLowerCase()}%`]);
+		} else if (fieldType === 'numeric') {
+			numberHelper.addSearchCondition(queryBuilder, collection, name, parseNumericString(searchQuery)!, logical);
+		} else if (fieldType === 'uuid') {
+			queryBuilder[logical].where({ [`${collection}.${name}`]: searchQuery });
+		}
+	}
+
+	function getFieldType(field: FieldOverview): null | 'string' | 'numeric' | 'uuid' {
+		if (['text', 'string'].includes(field.type)) {
+			return 'string';
+		}
+
+		if (isNumericField(field)) {
+			const number = parseNumericString(searchQuery);
+
+			if (number === null) {
+				return null;
+			}
+
+			if (numberHelper.isNumberValid(number, field)) {
+				return 'numeric';
+			}
+		}
+
+		if (field.type === 'uuid' && isValidUuid(searchQuery)) {
+			return 'uuid';
+		}
+
+		return null;
+	}
 }
 
 export function applyAggregate(

@@ -2426,6 +2426,7 @@ operations:
     body: Trupi
     template: Template
     data: Të Dhënat
+    bcc_placeholder: ...
   notification:
     name: Dërgo Njoftim
     description: Një njoftim në aplikacion për një ose më shumë përdorues
