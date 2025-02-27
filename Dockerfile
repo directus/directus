@@ -11,13 +11,9 @@ FROM node:${NODE_VERSION}-alpine AS builder
 # (see https://github.com/directus/directus/issues/24514)
 RUN npm install --global corepack@latest
 
-ARG TARGETPLATFORM
 RUN <<EOF
-	if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then
-		apk --no-cache add python3 build-base
-		ln -sf /usr/bin/python3 /usr/bin/python
-	fi
-EOF
+	apk --no-cache add python3 build-base py3-setuptools
+	ln -sf /usr/bin/python3 /usr/bin/python
 
 WORKDIR /directus
 
