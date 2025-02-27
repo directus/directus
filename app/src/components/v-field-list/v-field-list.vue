@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useFieldTree } from '@/composables/use-field-tree';
+import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useFieldsStore } from '@/stores/fields';
+import { useRelationsStore } from '@/stores/relations';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -32,12 +33,26 @@ const props = withDefaults(
 const emit = defineEmits(['add']);
 
 const fieldsStore = useFieldsStore();
+const relationsStore = useRelationsStore();
 
 const { collection, includeRelations } = toRefs(props);
 
-const fieldsCount = computed(() => fieldsStore.getFieldsForCollection(collection.value)?.length ?? 0);
-
 const search = ref('');
+
+const showSearch = computed(() => {
+	const fields = fieldsStore.getFieldsForCollection(collection.value);
+	if (!fields.length) return false;
+
+	if (fields?.length > 10) return true;
+
+	const anyGroupExists = fields.some((field) => field.meta?.group !== null);
+	if (anyGroupExists) return true;
+
+	const anyRelationExists = relationsStore.getRelationsForCollection(collection.value)?.length;
+	if (anyRelationExists) return true;
+
+	return false;
+});
 
 const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, undefined, filter);
 
@@ -76,7 +91,7 @@ const addAll = () => {
 	emit('add', unref(allFields));
 };
 
-function filter(field: Field): boolean {
+function filter(field: Field, parent?: FieldNode): boolean {
 	if (
 		!includeRelations.value &&
 		(field.collection !== collection.value || (field.type === 'alias' && !field.meta?.special?.includes('group')))
@@ -92,10 +107,25 @@ function filter(field: Field): boolean {
 		? fieldsStore.getFieldGroupChildren(field.collection, field.field)
 		: fieldsStore.getFieldsForCollection(field.schema!.foreign_key_table);
 
-	return children?.some((field) => matchesSearch(field)) || matchesSearch(field);
+	return children?.some(matchesInNestedGroups) || matchesSearch(field) || (!!parent && matchesSearch(parent));
 
-	function matchesSearch(field: Field) {
+	function matchesSearch(field: Field | FieldNode) {
 		return field.name.toLowerCase().includes(search.value.toLowerCase());
+	}
+
+	function matchesInNestedGroups(field: Field) {
+		const groupChildren = fieldsStore.getFieldGroupChildren(field.collection, field.field);
+
+		if (groupChildren?.some(matchesInNestedGroups)) return true;
+
+		const isRelationalFieldOfRootCollection =
+			!isNil(field.schema?.foreign_key_table) && field.collection === props.collection;
+
+		const relationalChildren = isRelationalFieldOfRootCollection
+			? fieldsStore.getFieldsForCollection(field.schema!.foreign_key_table!)
+			: null;
+
+		return relationalChildren?.some((field) => matchesSearch(field)) || matchesSearch(field);
 	}
 }
 </script>
@@ -103,7 +133,7 @@ function filter(field: Field): boolean {
 <template>
 	<v-list :mandatory="false" @toggle="loadFieldRelations($event.value)">
 		<slot name="prepend" />
-		<v-list-item v-if="fieldsCount > 10">
+		<v-list-item v-if="showSearch">
 			<v-list-item-content>
 				<v-input v-model="search" autofocus small :placeholder="t('search')" @click.stop>
 					<template #append>

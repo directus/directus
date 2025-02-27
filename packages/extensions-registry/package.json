@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-registry",
-	"version": "3.0.1",
+	"version": "3.0.2",
 	"description": "Abstraction for exploring Directus extensions on a package registry",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -36,6 +36,6 @@
 		"@vitest/coverage-v8": "2.1.8",
 		"tsup": "8.3.5",
 		"typescript": "5.7.3",
-		"vitest": "2.1.8"
+		"vitest": "2.1.9"
 	}
 }
