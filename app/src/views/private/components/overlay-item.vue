@@ -480,6 +480,7 @@ function useActions() {
 	--content-padding: 16px;
 	--content-padding-bottom: 24px;
 	--theme--form--column-gap: var(--content-padding);
+	--theme--form--row-gap: 24px;
 
 	padding-top: var(--content-padding-bottom);
 	position: relative;
