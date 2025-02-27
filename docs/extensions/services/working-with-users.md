@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
   });
 
   const data = await usersService.readByQuery({
-    fields: ['*'],
+		fields: ['*'],
 		filter: { email: { _eq: 'email' } },
 	});
 
