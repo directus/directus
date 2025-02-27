@@ -41,6 +41,8 @@ interface Props {
 	fullHeight?: boolean;
 	/** Removes any styling from the menu */
 	seamless?: boolean;
+	/** Lets other overlays (drawer, dialog) open on top */
+	keepBehind?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -118,6 +120,8 @@ watch(isActive, (newActive) => {
 });
 
 const { onClick, onPointerEnter, onPointerLeave } = useEvents();
+
+const zIndex = computed(() => (props.keepBehind ? 490 : 600));
 
 function useActiveState() {
 	const localIsActive = ref(false);
@@ -464,7 +468,7 @@ function usePopper(
 .v-menu-popper {
 	position: fixed;
 	left: -999px;
-	z-index: 600;
+	z-index: v-bind(zIndex);
 	min-width: 100px;
 	transform: translateY(2px);
 	pointer-events: none;

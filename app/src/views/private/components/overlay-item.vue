@@ -417,10 +417,12 @@ function useActions() {
 	<v-menu
 		v-else-if="overlay === 'popover'"
 		v-model="overlayActive"
+		:close-on-click="false"
 		:close-on-content-click="false"
+		placement="top"
 		show-arrow
 		seamless
-		placement="top"
+		keep-behind
 	>
 		<template #activator="activatorProps">
 			<slot name="popover-activator" v-bind="activatorProps" />

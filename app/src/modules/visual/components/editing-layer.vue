@@ -225,7 +225,7 @@ function useItem() {
 </script>
 
 <template>
-	<div class="editing-layer" :class="{ editing: editOverlayActive }">
+	<div class="editing-layer" :class="{ editing: editOverlayActive }" @click="editOverlayActive = false">
 		<overlay-item
 			v-if="collection"
 			v-model:active="editOverlayActive"
