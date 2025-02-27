@@ -85,11 +85,11 @@ function useCreateDialog() {
 				newName === null ||
 				newVersionKey.value ===
 					slugify(oldName ?? '', {
-						separator: '_',
+						separator: '-',
 					})
 			) {
 				newVersionKey.value = slugify(newName ?? '', {
-					separator: '_',
+					separator: '-',
 				});
 			}
 		},
