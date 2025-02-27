@@ -63,9 +63,9 @@
 		"@types/fs-extra": "11.0.4",
 		"@types/inquirer": "9.0.7",
 		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "2.1.8",
+		"@vitest/coverage-v8": "3.0.7",
 		"typescript": "5.7.3",
-		"vitest": "2.1.9"
+		"vitest": "3.0.7"
 	},
 	"engines": {
 		"node": ">=12.20.0"

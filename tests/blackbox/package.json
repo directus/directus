@@ -32,7 +32,7 @@
 		"typescript": "5.7.3",
 		"uuid": "11.0.4",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "1.6.1",
+		"vitest": "3.0.7",
 		"ws": "8.18.0"
 	}
 }

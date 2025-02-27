@@ -217,13 +217,13 @@
 		"@types/stream-json": "1.7.8",
 		"@types/wellknown": "0.5.8",
 		"@types/ws": "8.5.13",
-		"@vitest/coverage-v8": "2.1.8",
+		"@vitest/coverage-v8": "3.0.7",
 		"copyfiles": "2.4.1",
 		"form-data": "4.0.1",
 		"get-port": "7.1.0",
 		"knex-mock-client": "3.0.2",
 		"typescript": "5.7.3",
-		"vitest": "2.1.9"
+		"vitest": "3.0.7"
 	},
 	"optionalDependencies": {
 		"@keyv/redis": "3.0.1",
