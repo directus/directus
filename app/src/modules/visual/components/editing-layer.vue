@@ -16,7 +16,7 @@ type EditConfig = {
 	collection: string;
 	item: PrimaryKey | null;
 	fields?: string[];
-	mode: 'drawer' | 'popover';
+	mode: 'drawer' | 'modal' | 'popover';
 };
 type ReceiveAction = 'connect' | 'edit';
 type ReceiveData = { action: ReceiveAction | null; data: unknown };
@@ -98,7 +98,7 @@ function useItem() {
 	const collection = ref<EditConfig['collection']>('');
 	const primaryKey = ref<PrimaryKey>('');
 	const fields = ref<EditConfig['fields']>([]);
-	const availableModes: EditConfig['mode'][] = ['drawer', 'popover'];
+	const availableModes: EditConfig['mode'][] = ['drawer', 'modal', 'popover'];
 	const mode = ref<EditConfig['mode']>('drawer');
 	const position = ref<Pick<DOMRect, 'top' | 'left' | 'width' | 'height'>>({ top: 0, left: 0, width: 0, height: 0 });
 	const isNew = computed(() => primaryKey.value === '+');
@@ -248,18 +248,24 @@ function useItem() {
 			</template>
 
 			<template #actions>
-				<v-button
-					v-if="primaryKey"
-					v-tooltip:[tooltipPlacement]="t('navigate_to_item')"
-					:to="itemRoute"
-					:disabled="isNew"
-					:x-small="mode === 'popover'"
-					secondary
-					icon
-					rounded
-				>
-					<v-icon name="launch" :small="mode === 'popover'" />
-				</v-button>
+				<template v-if="primaryKey">
+					<v-button v-if="mode === 'modal'" secondary :to="itemRoute" :disabled="isNew">
+						{{ t('navigate_to_item') }}
+					</v-button>
+
+					<v-button
+						v-else
+						v-tooltip:[tooltipPlacement]="t('navigate_to_item')"
+						:to="itemRoute"
+						:disabled="isNew"
+						:x-small="mode === 'popover'"
+						secondary
+						icon
+						rounded
+					>
+						<v-icon name="launch" :small="mode === 'popover'" />
+					</v-button>
+				</template>
 			</template>
 		</overlay-item>
 	</div>

@@ -20,7 +20,7 @@ import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
 
 export interface OverlayItemProps {
-	overlay?: 'drawer' | 'popover';
+	overlay?: 'drawer' | 'modal' | 'popover';
 	collection: string;
 	active?: boolean;
 	primaryKey?: PrimaryKey | null;
@@ -411,8 +411,42 @@ function useActions() {
 			:related-collection-fields
 			:related-primary-key
 			:refresh
+			class="drawer-item-content"
 		/>
 	</v-drawer>
+
+	<v-dialog v-else-if="overlay === 'modal'" v-model="overlayActive" persistent @esc="cancel">
+		<v-card class="modal-card">
+			<v-card-title>
+				<v-icon :name="collectionInfo?.meta?.icon ?? undefined" class="modal-title-icon" />
+				{{ title }}
+			</v-card-title>
+
+			<overlay-item-content
+				v-model:internal-edits="internalEdits"
+				:collection
+				:primary-key
+				:junction-field
+				:related-collection
+				:initial-values
+				:fields
+				:disabled
+				:loading
+				:validation-errors
+				:junction-field-location
+				:related-collection-fields
+				:related-primary-key
+				:refresh
+				class="modal-item-content"
+			/>
+
+			<v-card-actions>
+				<slot name="actions" />
+				<v-button secondary @click="cancel">{{ t('cancel') }}</v-button>
+				<v-button :disabled="!isSavable" @click="save">{{ t('save') }}</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
 
 	<v-menu
 		v-else-if="overlay === 'popover'"
@@ -476,11 +510,30 @@ function useActions() {
 </template>
 
 <style lang="scss" scoped>
+.modal-card,
+.modal-item-content,
 .popover-item-content {
-	--content-padding: 16px;
-	--content-padding-bottom: 24px;
-	--theme--form--column-gap: var(--content-padding);
+	--theme--form--column-gap: 16px;
 	--theme--form--row-gap: 24px;
+}
+
+.modal-card {
+	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)) !important;
+	max-width: 90vw !important;
+}
+
+.modal-title-icon {
+	margin-right: 8px;
+}
+
+.modal-item-content {
+	padding: var(--v-card-padding);
+	padding-bottom: var(--theme--form--column-gap);
+}
+
+.popover-item-content {
+	--content-padding: var(--theme--form--column-gap);
+	--content-padding-bottom: var(--theme--form--row-gap);
 
 	padding-top: var(--content-padding-bottom);
 	position: relative;
