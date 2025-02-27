@@ -415,7 +415,7 @@ function useActions() {
 		/>
 	</v-drawer>
 
-	<v-dialog v-else-if="overlay === 'modal'" v-model="overlayActive" persistent @esc="cancel">
+	<v-dialog v-else-if="overlay === 'modal'" v-model="overlayActive" persistent keep-behind @esc="cancel">
 		<v-card class="modal-card">
 			<v-card-title>
 				<v-icon :name="collectionInfo?.meta?.icon ?? undefined" class="modal-title-icon" />
