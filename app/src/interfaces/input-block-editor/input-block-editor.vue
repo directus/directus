@@ -13,8 +13,8 @@ import { useFileHandler } from './use-file-handler';
 
 import './editorjs-overrides.css';
 
-// https://github.com/codex-team/editor.js/blob/057bf17a6fc2d5e05c662107918d7c3e943d077c/src/components/events/RedactorDomChanged.ts#L4
-const RedactorDomChanged = 'redactor dom changed';
+// https://github.com/codex-team/editor.js/blob/7399e55f7e2ea6cf019cf659cb6cbd937e7d2e0c/src/components/events/BlockChanged.ts#L6
+const BlockChanged = 'block changed';
 
 const props = withDefaults(
 	defineProps<{
@@ -94,7 +94,7 @@ onMounted(async () => {
 		editorjsRef.value.focus();
 	}
 
-	editorjsRef.value.on(RedactorDomChanged, () => {
+	editorjsRef.value.on(BlockChanged, () => {
 		emitValue(editorjsRef.value!);
 	});
 
