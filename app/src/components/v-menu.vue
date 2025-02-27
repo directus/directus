@@ -121,8 +121,6 @@ watch(isActive, (newActive) => {
 
 const { onClick, onPointerEnter, onPointerLeave } = useEvents();
 
-const zIndex = computed(() => (props.keepBehind ? 490 : 600));
-
 function useActiveState() {
 	const localIsActive = ref(false);
 
@@ -428,7 +426,7 @@ function usePopper(
 						events: ['click'],
 					}"
 					class="v-menu-popper"
-					:class="{ active: isActive, attached }"
+					:class="{ active: isActive, attached, 'keep-behind': keepBehind }"
 					:data-placement="popperPlacement"
 					:style="styles"
 				>
@@ -468,13 +466,17 @@ function usePopper(
 .v-menu-popper {
 	position: fixed;
 	left: -999px;
-	z-index: v-bind(zIndex);
+	z-index: 600;
 	min-width: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 
 	&.active {
 		pointer-events: all;
+	}
+
+	&.keep-behind {
+		z-index: 490;
 	}
 }
 
