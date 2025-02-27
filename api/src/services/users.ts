@@ -108,6 +108,21 @@ export class UsersService extends ItemsService {
 	}
 
 	/**
+	 * Clear users' sessions to log them out
+	 */
+	private async clearUserSessions(userKeys: PrimaryKey[], excludeSession?: string): Promise<void> {
+		if (excludeSession) {
+			await this.knex
+				.from('directus_sessions')
+				.whereIn('user', userKeys)
+				.andWhereNot('token', '=', excludeSession)
+				.delete();
+		} else {
+			await this.knex.from('directus_sessions').whereIn('user', userKeys).delete();
+		}
+	}
+
+	/**
 	 * Get basic information of user identified by email
 	 */
 	private async getUserByEmail(
@@ -292,6 +307,12 @@ export class UsersService extends ItemsService {
 
 		const result = await super.updateMany(keys, data, opts);
 
+		if (data['status'] !== undefined && data['status'] !== 'active') {
+			await this.clearUserSessions(keys);
+		} else if (data['password'] !== undefined || data['email'] !== undefined) {
+			await this.clearUserSessions(keys, this.accountability?.session);
+		}
+
 		// Only clear the caches if the role has been updated
 		if ('role' in data) {
 			await this.clearCaches(opts);
@@ -320,6 +341,8 @@ export class UsersService extends ItemsService {
 		await this.knex('directus_versions').update({ user_updated: null }).whereIn('user_updated', keys);
 
 		await super.deleteMany(keys, opts);
+		await this.clearUserSessions(keys);
+
 		return keys;
 	}
 
