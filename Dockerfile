@@ -14,6 +14,7 @@ RUN npm install --global corepack@latest
 RUN <<EOF
 	apk --no-cache add python3 build-base py3-setuptools
 	ln -sf /usr/bin/python3 /usr/bin/python
+EOF
 
 WORKDIR /directus
 
