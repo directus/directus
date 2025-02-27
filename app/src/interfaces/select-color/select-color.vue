@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Color from 'color';
+import Color, { ColorInstance } from 'color';
 import { isHex } from '@/utils/is-hex';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { cssVar } from '@directus/utils/browser';
@@ -137,7 +137,7 @@ function activateColorPicker() {
 }
 
 function useColor() {
-	const color = ref<Color | null>(null);
+	const color = ref<ColorInstance | null>(null);
 
 	const getHexa = (): string | null => {
 		if (color.value !== null) {
@@ -252,7 +252,7 @@ function useColor() {
 
 	return { rgb, hsl, hex, alpha, color, input };
 
-	function setColor(newColor: Color | null) {
+	function setColor(newColor: ColorInstance | null) {
 		color.value = newColor;
 
 		if (newColor === null) {

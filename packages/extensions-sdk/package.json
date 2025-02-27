@@ -1,6 +1,6 @@
 {
 	"name": "@directus/extensions-sdk",
-	"version": "13.0.1",
+	"version": "13.0.2",
 	"description": "A toolkit to develop extensions to extend Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -65,7 +65,7 @@
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "2.1.8",
 		"typescript": "5.7.3",
-		"vitest": "2.1.8"
+		"vitest": "2.1.9"
 	},
 	"engines": {
 		"node": ">=12.20.0"

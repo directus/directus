@@ -1,6 +1,6 @@
 {
 	"name": "@directus/composables",
-	"version": "11.1.6",
+	"version": "11.1.7",
 	"description": "Shared Vue composables for Directus use",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -43,7 +43,7 @@
 		"@vue/test-utils": "2.4.6",
 		"tsup": "8.3.5",
 		"typescript": "5.7.3",
-		"vitest": "2.1.8",
+		"vitest": "2.1.9",
 		"vue": "3.5.13"
 	},
 	"peerDependencies": {
