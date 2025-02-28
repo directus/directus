@@ -372,6 +372,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 						<div class="field">
 							<v-input
 								v-model="newVersionName"
+								autofocus
 								class="full"
 								:placeholder="t('version_name')"
 								trim
@@ -384,7 +385,6 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								v-model="newVersionKey"
 								class="full"
 								:placeholder="t('version_key')"
-								autofocus
 								slug
 								trim
 								:max-length="64"
