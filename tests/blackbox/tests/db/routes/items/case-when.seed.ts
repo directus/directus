@@ -30,26 +30,70 @@ export const seedDBStructure = () => {
 			try {
 				await DeleteCollection(vendor, { collection });
 
-				console.log('deleted collection');
+				const collectionResponse = await request(getUrl(vendor))
+					.post(`/collections/${collection}`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.send({
+						collection: 'articles_case_when',
+						fields: [
+							{
+								field: 'id',
+								type: 'integer',
+								meta: { hidden: true, interface: 'input', readonly: true },
+								schema: { is_primary_key: true, has_auto_increment: true },
+							},
+							{
+								field: 'user_created',
+								type: 'uuid',
+								meta: {
+									special: ['user-created'],
+									interface: 'select-dropdown-m2o',
+									options: { template: '{{avatar}} {{first_name}} {{last_name}}' },
+									display: 'user',
+									readonly: true,
+									hidden: true,
+									width: 'half',
+								},
+								schema: {},
+							},
+							{
+								field: 'date_created',
+								type: 'timestamp',
+								meta: {
+									special: ['date-created'],
+									interface: 'datetime',
+									readonly: true,
+									hidden: true,
+									width: 'half',
+									display: 'datetime',
+									display_options: { relative: true },
+								},
+								schema: {},
+							},
+						],
+						schema: {},
+						meta: { singleton: false },
+					});
 
-				await CreateCollection(vendor, {
-					collection,
-					primaryKeyType: 'integer',
-				});
+				if (!collectionResponse.ok) {
+					throw new Error('Could not create collection', collectionResponse.body);
+				}
 
-				await CreateField(vendor, {
-					collection,
-					field: 'user_created',
-					type: 'uuid',
-				});
+				const relationsResponse = await request(getUrl(vendor))
+					.post(`/relations`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.send({
+						collection: 'articles_case_when',
+						field: 'user_created',
+						related_collection: 'directus_users',
+						schema: {},
+					});
 
-				// await CreateField(vendor, {
-				// 	collection,
-				// 	field: 'date_created',
-				// 	type: 'timestamp',
-				// });
+				if (!relationsResponse.ok) {
+					throw new Error('Could not create collection', collectionResponse.body);
+				}
 
-				console.log('setup schema ');
+				console.log('schema is setup');
 
 				expect(true).toBeTruthy();
 			} catch (error) {
@@ -61,29 +105,11 @@ export const seedDBStructure = () => {
 };
 
 // Only custom collections, no item creation for system collections
-export async function seedDBValues(vendor: Vendor, userId: string, userToken: string): Promise<void> {
+export async function seedDBValues(vendor: Vendor, userToken: string): Promise<void> {
 	log('seeding db ...');
-
-	await CreateItem(
-		vendor,
-		collection,
-		{
-			user_created: userId,
-		},
-		USER.ADMIN.TOKEN,
-	);
-
+	await CreateItem(vendor, collection, {}, userToken);
 	console.log('first item created');
-
-	await CreateItem(
-		vendor,
-		collection,
-		{
-			user_created: userId,
-		},
-		userToken,
-	);
-
+	await CreateItem(vendor, collection, {}, userToken);
 	console.log('second item created');
 }
 

@@ -23,45 +23,79 @@ import type { Item, Permission, Policy, User } from '@directus/types';
 // });
 
 describe('retrieves items with filters', async () => {
-	const userId = '93016b62-4207-4137-80e9-44cec5ff8f73';
-	const userToken = 'test-case-when-user-token';
+	// const userId = '93016b62-4207-4137-80e9-44cec5ff8f73';
+	// const userToken = 'test-case-when-user-token';
 	// const policyName = 'sample-policy';
 	// const policyId: UUID = '74f5ef86-db06-4a88-8447-506688d0ff52';
-	const permissionIds: [number, number] = [93827, 93828];
-
+	// const permissionIds: [number, number] = [93827, 93828];
 	// console.log('seeded db', seedResult);
 
 	it.each(vendors)('%s', async (vendor) => {
-		await createEditor(vendor, {
-			id: '93016b62-4207-4137-80e9-44cec5ff8f73',
-			email: 'sample@sample.com',
-			password: '12345',
-			first_name: 'John',
-			last_name: 'Doe',
-			status: 'active',
-			token: 'test-case-when-user-token',
-			policies: [
-				{
-					user: '93016b62-4207-4137-80e9-44cec5ff8f73',
-					policy: {
-						id: '74f5ef86-db06-4a88-8447-506688d0ff53',
-						name: 'policyName',
-						icon: 'trashcan',
-						description: '',
-						enforce_tfa: false,
-						ip_access: [],
-						app_access: true,
-						admin_access: false,
-					},
+		const userResponse = await request(getUrl(vendor))
+			.post(`/users`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+			.send({
+				first_name: 'john',
+				email: 'j@mail.com',
+				password: '12345',
+				token: 'pp2KIAA3mGdgqngRVDuegxNuVj7gM-es',
+				policies: {
+					create: [
+						{
+							policy: {
+								name: 'sample',
+								permissions: {
+									create: [
+										{
+											policy: '+',
+											permissions: {
+												_and: [
+													{
+														user_created: {
+															id: {
+																_eq: '$CURRENT_USER',
+															},
+														},
+													},
+												],
+											},
+											validation: null,
+											fields: ['id', 'user_created', 'date_created'],
+											presets: null,
+											collection: 'articles_case_when',
+											action: 'read',
+										},
+										{
+											policy: '+',
+											permissions: null,
+											validation: null,
+											fields: ['*'],
+											presets: null,
+											collection: 'articles_case_when',
+											action: 'create',
+										},
+									],
+									update: [],
+									delete: [],
+								},
+								app_access: true,
+							},
+						},
+					],
+					update: [],
+					delete: [],
 				},
-			],
-		});
+			});
+
+		if (!userResponse.ok) {
+			throw new Error('Could not create user', userResponse.body);
+		}
 
 		// const newPolicyId = user.policies[0];
 		// console.log('new policy', newPolicyId);
 		// await deletePolicy(vendor, policyId);
 
-		await DeletePermissions(vendor, permissionIds);
+		// await DeletePermissions(vendor, permissionIds);
 
 		// const newPolicyIdRes = await request(getUrl(vendor))
 		// 	.get(`/policies?filter[name][_eq]=policyName`)
@@ -73,38 +107,7 @@ describe('retrieves items with filters', async () => {
 
 		// console.log('policies', newPolicyIdRes.body.data);
 
-		await CreatePermissions(vendor, [
-			{
-				id: permissionIds[0],
-				action: 'read',
-				fields: ['id', 'user_created'], //'date_created'
-				collection,
-				permissions: {
-					_and: [
-						{
-							user_created: {
-								id: {
-									_eq: '$CURRENT_USER',
-								},
-							},
-						},
-					],
-				},
-				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
-			},
-			{
-				id: permissionIds[1],
-				action: 'create',
-				fields: ['id', 'user_created'],
-				collection,
-				permissions: null,
-				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
-			},
-		]);
-
-		await new Promise((resolve) => setTimeout(resolve, 3000));
-
-		await seedDBValues(vendor, userId, userToken);
+		await seedDBValues(vendor, 'pp2KIAA3mGdgqngRVDuegxNuVj7gM-es');
 
 		// Admin can query both articles
 		console.log('querying articlesas admin: ');
@@ -143,21 +146,6 @@ describe('retrieves items with filters', async () => {
 // Those are in here temporarily.
 // They will be moved to a common place with a separate refactoring.
 
-async function createEditor(vendor: Vendor, user: Item) {
-	const response = await request(getUrl(vendor))
-		.post(`/users`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-		.send(user);
-
-	if (!response.ok) {
-		throw new Error('Could not create user');
-	}
-
-	console.log('editor created');
-
-	return response.body.data;
-}
-
 async function deleteUser(vendor: Vendor, id: string): Promise<void> {
 	await request(getUrl(vendor)).delete(`/users/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -165,40 +153,6 @@ async function deleteUser(vendor: Vendor, id: string): Promise<void> {
 	// if (!response.ok) {
 	// 	throw new Error('Could not delete user');
 	// }
-}
-
-async function CreatePermissions(vendor: Vendor, permissions: Partial<Permission>[]): Promise<Permission> {
-	console.log('creating permissions', permissions);
-
-	const response = await request(getUrl(vendor))
-		.post(`/permissions/`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-		.send(permissions);
-
-	if (!response.ok) {
-		console.log(response.body);
-		console.log(response);
-		throw new Error('Could not create permission', response.body);
-	}
-
-	console.log('permissions created');
-
-	return response.body.data;
-}
-
-async function CreatePolicy(vendor: Vendor, options: Policy): Promise<Policy> {
-	const response = await request(getUrl(vendor))
-		.post(`/policies/`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
-		.send(options);
-
-	if (!response.ok) {
-		throw new Error('Could not create policy', response.body);
-	}
-
-	console.log('policy created');
-
-	return response.body.data;
 }
 
 async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
