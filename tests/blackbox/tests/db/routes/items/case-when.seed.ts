@@ -19,7 +19,7 @@ export type Result = {
 	editorToken: string | null;
 };
 
-export const collection = 'test_case_when_articles';
+export const collection = 'articles_case_when';
 
 export const seedDBStructure = () => {
 	console.log('seeding db structure...');
