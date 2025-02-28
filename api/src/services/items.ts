@@ -121,6 +121,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Create a single new item.
 	 */
 	async createOne(data: Partial<Item>, opts: MutationOptions = {}): Promise<PrimaryKey> {
+		console.log('creating item');
+
 		if (!opts.mutationTracker) opts.mutationTracker = this.createMutationTracker();
 
 		if (!opts.bypassLimits) {
@@ -139,6 +141,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		const payload: AnyItem = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
+
+		console.log('starting transaction');
 
 		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
 		// changes in the DB if any of the parts contained within throws an error. This also means
@@ -192,6 +196,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			if (opts.preMutationError) {
 				throw opts.preMutationError;
 			}
+
+			console.log('payload processed');
 
 			const {
 				payload: payloadWithM2O,
@@ -357,6 +363,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			return primaryKey;
 		});
+
+		console.log('transaction finished');
 
 		if (opts.emitEvents !== false) {
 			const actionEvent = {
