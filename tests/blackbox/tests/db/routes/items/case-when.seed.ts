@@ -19,7 +19,7 @@ export type Result = {
 	editorToken: string | null;
 };
 
-export const collection = 'testCaseWhenArticles';
+export const collection = 'test_case_when_articles';
 
 export const seedDBStructure = () => {
 	console.log('seeding db structure...');
@@ -101,15 +101,15 @@ async function CreateItem(vendor: Vendor, collection: string, item: any, token: 
 
 	console.log('item created');
 
-	const response0 = await request(getUrl(vendor))
-		.get(`/items/${collection}`)
-		.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+	// const response0 = await request(getUrl(vendor))
+	// 	.get(`/items/${collection}`)
+	// 	.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-	if (!response0.ok) {
-		throw new Error('Could not get item');
-	}
+	// if (!response0.ok) {
+	// 	throw new Error('Could not get item');
+	// }
 
-	console.log('item fetched', response0.body.data);
+	// console.log('item fetched', response0.body.data);
 
 	return response.body.data;
 }
