@@ -17,6 +17,8 @@ router.post(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
+		console.log('creating an item');
+
 		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
 
 		if (req.singleton) {
@@ -30,6 +32,8 @@ router.post(
 
 		const savedKeys: PrimaryKey[] = [];
 
+		console.log('using service to create item');
+
 		if (Array.isArray(req.body)) {
 			const keys = await service.createMany(req.body);
 			savedKeys.push(...keys);
@@ -37,6 +41,9 @@ router.post(
 			const key = await service.createOne(req.body);
 			savedKeys.push(key);
 		}
+
+		console.log('item created');
+
 
 		try {
 			if (Array.isArray(req.body)) {
