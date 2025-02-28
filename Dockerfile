@@ -11,7 +11,7 @@ FROM node:${NODE_VERSION}-alpine AS builder
 # (see https://github.com/directus/directus/issues/24514)
 RUN npm install --global corepack@latest
 
-RUN apk --no-cache add python3 build-base py3-setuptools && ln -sf /usr/bin/python3 /usr/bin/python
+RUN apk --no-cache add python3 py3-setuptools build-base
 
 WORKDIR /directus
 
