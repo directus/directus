@@ -1,3 +1,12 @@
+#
+# due to our netlify configuration which declares .vitepress/dist
+# as the build directory, the _redirects file isn't detected
+#
+# to preserve the readability of the _redirects file, we've put
+# together a quick generator which still references this file,
+# but creates the appropriate entries in the netlify.toml
+#
+
 /app/data-model.html                                                                                https://directus.io/docs/getting-started/data-model
 /app/data-model/collections.html                                                                    https://directus.io/docs/guides/data-model/collections
 /app/data-model/fields.html                                                                         https://directus.io/docs/guides/data-model/fields
