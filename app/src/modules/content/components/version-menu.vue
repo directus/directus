@@ -371,6 +371,16 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 					<div class="grid">
 						<div class="field">
 							<v-input
+								v-model="newVersionName"
+								class="full"
+								:placeholder="t('version_name')"
+								trim
+								:max-length="255"
+								@keyup.enter="renameVersion"
+							/>
+						</div>
+						<div class="field">
+							<v-input
 								v-model="newVersionKey"
 								class="full"
 								:placeholder="t('version_key')"
@@ -378,16 +388,6 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								slug
 								trim
 								:max-length="64"
-								@keyup.enter="renameVersion"
-							/>
-						</div>
-						<div class="field">
-							<v-input
-								v-model="newVersionName"
-								class="full"
-								:placeholder="t('version_name')"
-								trim
-								:max-length="255"
 								@keyup.enter="renameVersion"
 							/>
 						</div>
