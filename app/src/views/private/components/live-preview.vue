@@ -159,7 +159,14 @@ onMounted(() => {
 					<v-icon v-else small name="refresh" />
 				</v-button>
 
-				<v-menu v-if="activeUrl" class="url" show-arrow :class="{ multiple: multipleUrls }" :disabled="!multipleUrls">
+				<v-menu
+					v-if="activeUrl"
+					class="url"
+					:class="{ multiple: multipleUrls }"
+					:disabled="!multipleUrls"
+					show-arrow
+					placement="bottom-start"
+				>
 					<template #activator="{ toggle }">
 						<div class="activator" @click="toggle">
 							<v-text-overflow :text="activeUrl" placement="bottom" />
