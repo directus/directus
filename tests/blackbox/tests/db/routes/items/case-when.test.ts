@@ -102,6 +102,8 @@ describe('retrieves items with filters', async () => {
 			},
 		]);
 
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
 		await seedDBValues(vendor, userId, userToken);
 
 		// Admin can query both articles
