@@ -1,42 +1,9 @@
-import type { Dirent } from 'node:fs';
-import { glob, readFile } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
-
-import { assert, describe, test } from 'vitest';
-
-function getPackageRoot() {
-	return resolve(join(import.meta.dirname, '..'));
-}
-
-async function getNonIndexFileNamesIn(dir: string) {
-	const files: Dirent[] = [];
-
-	const iterator = glob('*.ts', {
-		withFileTypes: true,
-		cwd: join(getPackageRoot(), dir),
-	});
-
-	for await (const file of iterator) {
-		files.push(file);
-	}
-
-	return files
-		.filter((file) => file.isFile())
-		.filter((file) => file.name != 'index.ts')
-		.map((file) => file.name.replace(/\.ts$/, ''));
-}
-
-async function getFileLines(file: string) {
-	const contents = await readFile(join(getPackageRoot(), file), 'utf-8');
-	return contents.split('\n');
-}
-
-function isExportingAllFrom(file: string, lines: string[]) {
-	return lines.includes(`export * from './${file}.js';`) || lines.includes(`export type * from './${file}.js';`);
-}
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { assert, describe, it } from 'vitest';
 
 describe('Test Exported Types', () => {
-	test('all schema files must be exported', async () => {
+	it('should export all schema files', async () => {
 		const index = await getFileLines('src/schema/index.ts');
 		const files = await getNonIndexFileNamesIn('src/schema');
 
@@ -45,7 +12,7 @@ describe('Test Exported Types', () => {
 		}
 	});
 
-	test('all type file must be exported', async () => {
+	it('should export all type files', async () => {
 		const index = await getFileLines('src/types/index.ts');
 		const files = await getNonIndexFileNamesIn('src/types');
 
@@ -54,3 +21,30 @@ describe('Test Exported Types', () => {
 		}
 	});
 });
+
+const packageRoot = path.resolve(path.join(import.meta.dirname, '..'));
+
+async function getNonIndexFileNamesIn(dir: string) {
+	const files: string[] = [];
+
+	const iterator = fs.glob('*.ts', {
+		withFileTypes: true,
+		cwd: path.join(packageRoot, dir),
+	});
+
+	for await (const entry of iterator) {
+		if (!entry.isFile() || entry.name === 'index.ts') continue;
+		files.push(entry.name.replace(/\.ts$/, ''));
+	}
+
+	return files;
+}
+
+async function getFileLines(file: string) {
+	const contents = await fs.readFile(path.join(packageRoot, file), 'utf8');
+	return contents.split('\n');
+}
+
+function isExportingAllFrom(file: string, lines: string[]) {
+	return lines.includes(`export * from './${file}.js';`) || lines.includes(`export type * from './${file}.js';`);
+}
