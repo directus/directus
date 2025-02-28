@@ -29,7 +29,6 @@ describe('retrieves items with filters', async () => {
 	// const policyId: UUID = '74f5ef86-db06-4a88-8447-506688d0ff52';
 	const permissionIds: [number, number] = [93827, 93828];
 
-	await seedDBValues(userId);
 	// console.log('seeded db', seedResult);
 
 	it.each(vendors)('%s', async (vendor) => {
@@ -116,6 +115,8 @@ describe('retrieves items with filters', async () => {
 			},
 		]);
 
+		await seedDBValues(vendor, userId, userToken);
+
 		const response1 = await request(getUrl(vendor))
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${userToken}`);
@@ -184,9 +185,10 @@ async function CreatePermissions(vendor: Vendor, permissions: Partial<Permission
 	if (!response.ok) {
 		console.log(response.body);
 		console.log(response);
-
 		throw new Error('Could not create permission', response.body);
 	}
+
+	console.log('permissions created');
 
 	return response.body.data;
 }
