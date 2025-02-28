@@ -90,7 +90,7 @@ export const seedDBStructure = () => {
 					});
 
 				if (!relationsResponse.ok) {
-					throw new Error('Could not create collection', collectionResponse.body);
+					throw new Error('Could not create relation', relationsResponse.body);
 				}
 
 				console.log('schema is setup');
