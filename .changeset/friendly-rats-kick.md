@@ -2,4 +2,4 @@
 'directus': patch
 ---
 
-Fixed docker image build
+Fixed sqlite in docker image
