@@ -22,7 +22,7 @@ export type Result = {
 export const collection = 'test_case_when_articles';
 
 export const seedDBStructure = () => {
-	console.log('seed db structure...');
+	console.log('seeding db structure...');
 
 	it.each(vendors)(
 		'%s',
@@ -70,7 +70,7 @@ export async function seedDBValues(vendor: Vendor, userId: string, userToken: st
 		{
 			user_created: userId,
 		},
-		userToken,
+		USER.ADMIN.TOKEN,
 	);
 
 	console.log('first item created');
