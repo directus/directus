@@ -24,7 +24,7 @@ import type { Item, Permission, Policy, User } from '@directus/types';
 
 describe('retrieves items with filters', async () => {
 	// const userId = '93016b62-4207-4137-80e9-44cec5ff8f73';
-	// const userToken = 'test-case-when-user-token';
+	const userToken = 'pp2KIAA3mGdgqngRVDuegxNuVj7gM-es';
 	// const policyName = 'sample-policy';
 	// const policyId: UUID = '74f5ef86-db06-4a88-8447-506688d0ff52';
 	// const permissionIds: [number, number] = [93827, 93828];
@@ -107,7 +107,7 @@ describe('retrieves items with filters', async () => {
 
 		// console.log('policies', newPolicyIdRes.body.data);
 
-		await seedDBValues(vendor, 'pp2KIAA3mGdgqngRVDuegxNuVj7gM-es');
+		await seedDBValues(vendor, userToken);
 
 		// Admin can query both articles
 		console.log('querying articlesas admin: ');
