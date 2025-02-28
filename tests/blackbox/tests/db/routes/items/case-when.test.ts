@@ -46,7 +46,7 @@ describe('retrieves items with filters', async () => {
 		expect(response.statusCode).toEqual(200);
 		expect(response.body.data.length).toBe(2);
 
-		const user = await createEditor(vendor, {
+		await createEditor(vendor, {
 			id: '93016b62-4207-4137-80e9-44cec5ff8f73',
 			email: 'sample@sample.com',
 			password: '12345',
@@ -58,6 +58,7 @@ describe('retrieves items with filters', async () => {
 				{
 					user: '93016b62-4207-4137-80e9-44cec5ff8f73',
 					policy: {
+						id: '74f5ef86-db06-4a88-8447-506688d0ff53',
 						name: 'policyName',
 						icon: 'trashcan',
 						description: '',
@@ -70,27 +71,21 @@ describe('retrieves items with filters', async () => {
 			],
 		});
 
-		console.log('user created', user);
-
-		if (!user.policies[0]) {
-			throw new Error('Policy for user was not created. ');
-		}
-
 		// const newPolicyId = user.policies[0];
 		// console.log('new policy', newPolicyId);
 		// await deletePolicy(vendor, policyId);
 
 		await DeletePermissions(vendor, permissionIds);
 
-		const newPolicyIdRes = await request(getUrl(vendor))
-			.get(`/policies?filter[name][_eq]=policyName`)
-			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+		// const newPolicyIdRes = await request(getUrl(vendor))
+		// 	.get(`/policies?filter[name][_eq]=policyName`)
+		// 	.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		if (!newPolicyIdRes.ok) {
-			throw new Error('Could not get policies');
-		}
+		// if (!newPolicyIdRes.ok) {
+		// 	throw new Error('Could not get policies');
+		// }
 
-		console.log('policies', newPolicyIdRes.body.data);
+		// console.log('policies', newPolicyIdRes.body.data);
 
 		await CreatePermissions(vendor, [
 			{
@@ -109,7 +104,7 @@ describe('retrieves items with filters', async () => {
 						},
 					],
 				},
-				policy: newPolicyIdRes.body.data[0].id,
+				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
 			},
 			{
 				id: permissionIds[1],
@@ -117,7 +112,7 @@ describe('retrieves items with filters', async () => {
 				fields: ['id', 'user_created'],
 				collection,
 				permissions: null,
-				policy: newPolicyIdRes.body.data[0].id,
+				policy: '74f5ef86-db06-4a88-8447-506688d0ff53',
 			},
 		]);
 
@@ -135,8 +130,7 @@ describe('retrieves items with filters', async () => {
 			.set('Authorization', `Bearer ${userToken}`);
 
 		console.log('as editor with filters', response);
-
-		console.log(JSON.stringify(response2, null, 4));
+		// console.log(JSON.stringify(response2, null, 4));
 
 		expect(response2.statusCode).toEqual(200);
 		expect(response2.body.data.length).toBe(1);
@@ -164,6 +158,8 @@ async function createEditor(vendor: Vendor, user: Item) {
 	if (!response.ok) {
 		throw new Error('Could not create user');
 	}
+
+	console.log('editor created');
 
 	return response.body.data;
 }
