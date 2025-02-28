@@ -130,8 +130,8 @@ onMounted(() => {
 </script>
 
 <template>
-	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen }">
-		<div class="header" :class="{ 'header-expanded': headerExpanded }">
+	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen, 'header-expanded': headerExpanded }">
+		<div class="header">
 			<div class="group">
 				<slot name="prepend-header" />
 
@@ -262,17 +262,26 @@ onMounted(() => {
 	--preview--header--background-color: var(--theme--navigation--modules--background);
 	--preview--header--border-width: var(--theme--navigation--modules--border-width);
 	--preview--header--border-color: var(--theme--navigation--modules--border-color);
+	--preview--header--height: 44px;
 
 	container-type: inline-size;
 	width: 100%;
 	height: 100%;
+
+	&.header-expanded {
+		--preview--header--height: 60px;
+
+		.header {
+			padding: 8px 16px;
+		}
+	}
 
 	.header {
 		width: 100%;
 		color: var(--preview--color);
 		background-color: var(--preview--header--background-color);
 		border-bottom: var(--preview--header--border-width) solid var(--preview--header--border-color);
-		height: 44px;
+		height: var(--preview--header--height);
 		display: flex;
 		align-items: center;
 		z-index: 10;
@@ -281,13 +290,6 @@ onMounted(() => {
 		transition:
 			padding var(--medium) var(--transition),
 			height var(--medium) var(--transition);
-
-		&.header-expanded {
-			--header-expanded-height: 60px;
-
-			height: var(--header-expanded-height);
-			padding: 8px 16px;
-		}
 
 		:deep(.v-button.secondary) {
 			--v-button-color-hover: var(--theme--foreground-accent);
@@ -360,7 +362,7 @@ onMounted(() => {
 
 	.container {
 		width: 100%;
-		height: calc(100% - 44px);
+		height: calc(100% - var(--preview--header--height));
 		overflow: auto;
 	}
 
