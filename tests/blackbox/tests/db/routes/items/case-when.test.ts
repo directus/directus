@@ -32,19 +32,6 @@ describe('retrieves items with filters', async () => {
 	// console.log('seeded db', seedResult);
 
 	it.each(vendors)('%s', async (vendor) => {
-		console.log('querying articlesas admin: ');
-
-		const response = await request(getUrl(vendor))
-			.get(`/items/${collection}`)
-			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-		console.log('articles query as admin: ', response.body.data);
-
-		console.log('response', response);
-
-		expect(response.statusCode).toEqual(200);
-		expect(response.body.data.length).toBe(2);
-
 		await createEditor(vendor, {
 			id: '93016b62-4207-4137-80e9-44cec5ff8f73',
 			email: 'sample@sample.com',
@@ -117,12 +104,24 @@ describe('retrieves items with filters', async () => {
 
 		await seedDBValues(vendor, userId, userToken);
 
+		// Admin can query both articles
+		console.log('querying articlesas admin: ');
+
+		const response = await request(getUrl(vendor))
+			.get(`/items/${collection}`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+		console.log('articles query as admin: ', response.body.data);
+		console.log('response', response);
+		expect(response.statusCode).toEqual(200);
+		expect(response.body.data.length).toBe(2);
+
+		// Editor can only query articles created by them
 		const response1 = await request(getUrl(vendor))
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${userToken}`);
 
 		console.log('as editor without filters', response1.body.data, response1);
-
 		expect(response1.statusCode).toEqual(200);
 		expect(response1.body.data.length).toBe(2);
 
@@ -136,14 +135,6 @@ describe('retrieves items with filters', async () => {
 		expect(response2.statusCode).toEqual(200);
 		expect(response2.body.data.length).toBe(1);
 	});
-
-	// console.log('editor created');
-
-	// console.log('permissions created');
-
-	// await deleteUser(vendor, userId);
-
-	// });
 });
 
 // - - - - - API calls - - - - -
