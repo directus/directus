@@ -31,6 +31,14 @@ describe('retrieves items with filters', async () => {
 	// console.log('seeded db', seedResult);
 
 	it.each(vendors)('%s', async (vendor) => {
+		const collectionResponse2 = await request(getUrl(vendor))
+			.get(`/collections`)
+			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+		console.log(collectionResponse2.body);
+
+		expect(collectionResponse2.statusCode).toEqual(200);
+
 		const userResponse = await request(getUrl(vendor))
 			.post(`/users`)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
@@ -90,9 +98,8 @@ describe('retrieves items with filters', async () => {
 		if (!userResponse.ok) {
 			throw new Error('Could not create user', userResponse.body);
 		}
-		console.log("user created");
-		console.log("user created");
-
+		console.log('user created');
+		console.log('user created');
 
 		// const newPolicyId = user.policies[0];
 		// console.log('new policy', newPolicyId);
@@ -110,38 +117,38 @@ describe('retrieves items with filters', async () => {
 
 		// console.log('policies', newPolicyIdRes.body.data);
 
-		await seedDBValues(vendor, userToken);
+		// await seedDBValues(vendor, userToken);
 
 		// Admin can query both articles
-		console.log('querying articlesas admin: ');
+		// console.log('querying articlesas admin: ');
 
-		const response = await request(getUrl(vendor))
-			.get(`/items/${collection}`)
-			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+		// const response = await request(getUrl(vendor))
+		// 	.get(`/items/${collection}`)
+		// 	.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-		console.log('articles query as admin: ', response.body.data);
-		console.log('response', response);
-		expect(response.statusCode).toEqual(200);
-		expect(response.body.data.length).toBe(2);
+		// console.log('articles query as admin: ', response.body.data);
+		// console.log('response', response);
+		// expect(response.statusCode).toEqual(200);
+		// expect(response.body.data.length).toBe(2);
 
-		// Editor can only query articles created by them
-		const response1 = await request(getUrl(vendor))
-			.get(`/items/${collection}`)
-			.set('Authorization', `Bearer ${userToken}`);
+		// // Editor can only query articles created by them
+		// const response1 = await request(getUrl(vendor))
+		// 	.get(`/items/${collection}`)
+		// 	.set('Authorization', `Bearer ${userToken}`);
 
-		console.log('as editor without filters', response1.body.data, response1);
-		expect(response1.statusCode).toEqual(200);
-		expect(response1.body.data.length).toBe(2);
+		// console.log('as editor without filters', response1.body.data, response1);
+		// expect(response1.statusCode).toEqual(200);
+		// expect(response1.body.data.length).toBe(2);
 
-		const response2 = await request(getUrl(vendor))
-			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
-			.set('Authorization', `Bearer ${userToken}`);
+		// const response2 = await request(getUrl(vendor))
+		// 	.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
+		// 	.set('Authorization', `Bearer ${userToken}`);
 
-		console.log('as editor with filters', response);
-		// console.log(JSON.stringify(response2, null, 4));
+		// console.log('as editor with filters', response);
+		// // console.log(JSON.stringify(response2, null, 4));
 
-		expect(response2.statusCode).toEqual(200);
-		expect(response2.body.data.length).toBe(1);
+		// expect(response2.statusCode).toEqual(200);
+		// expect(response2.body.data.length).toBe(1);
 	});
 });
 

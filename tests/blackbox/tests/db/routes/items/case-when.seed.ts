@@ -99,11 +99,7 @@ export const seedDBStructure = () => {
 
 				console.log('relation created');
 
-				const collectionResponse2 = await request(getUrl(vendor))
-					.get(`/collections`)
-					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-				console.log(collectionResponse2.body);
+			
 				console.log('schema is setup');
 
 				expect(true).toBeTruthy();
