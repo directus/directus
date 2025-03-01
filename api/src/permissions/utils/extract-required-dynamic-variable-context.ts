@@ -17,10 +17,7 @@ export function extractRequiredDynamicVariableContextForPermissions(permissions:
 	};
 
 	for (const permission of permissions) {
-		permissionContext = mergeContexts(
-			permissionContext,
-			extractRequiredDynamicVariableContext(permission.permissions),
-		);
+		permissionContext = mergeContexts(permissionContext, extractRequiredDynamicVariableContext(permission.permissions));
 
 		permissionContext = mergeContexts(permissionContext, extractRequiredDynamicVariableContext(permission.validation));
 		permissionContext = mergeContexts(permissionContext, extractRequiredDynamicVariableContext(permission.presets));
