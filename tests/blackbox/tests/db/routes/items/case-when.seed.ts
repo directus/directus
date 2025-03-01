@@ -30,75 +30,54 @@ export const seedDBStructure = () => {
 			try {
 				await DeleteCollection(vendor, { collection });
 
-				const res = await CreateCollection(vendor, {
-					collection,
-					primaryKeyType: 'integer',
-				});
+				const collectionResponse = await request(getUrl(vendor))
+					.post(`/collections`)
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.send({
+						collection: 'articles_case_when',
+						fields: [
+							{
+								field: 'id',
+								type: 'integer',
+								meta: { hidden: true, interface: 'input', readonly: true },
+								schema: { is_primary_key: true, has_auto_increment: true },
+							},
+							{
+								field: 'user_created',
+								type: 'uuid',
+								meta: {
+									special: ['user-created'],
+									interface: 'select-dropdown-m2o',
+									options: { template: '{{avatar}} {{first_name}} {{last_name}}' },
+									display: 'user',
+									readonly: true,
+									hidden: true,
+									width: 'half',
+								},
+								schema: {},
+							},
+							{
+								field: 'date_created',
+								type: 'timestamp',
+								meta: {
+									special: ['date-created'],
+									interface: 'datetime',
+									readonly: true,
+									hidden: true,
+									width: 'half',
+									display: 'datetime',
+									display_options: { relative: true },
+								},
+								schema: {},
+							},
+						],
+						schema: {},
+						meta: { singleton: false },
+					});
 
-				if (!res.ok) {
-					throw new Error('Could not create collection', res.body);
+				if (!collectionResponse.ok) {
+					throw new Error('Could not create relation', collectionResponse.body);
 				}
-
-				const fieldRes = await CreateField(vendor, {
-					collection,
-					field: 'user_created',
-					type: 'uuid',
-				});
-
-				if (!fieldRes.ok) {
-					throw new Error('Could not create field', fieldRes.body);
-				}
-
-				await CreateField(vendor, {
-					collection,
-					field: 'date_created',
-					type: 'timestamp',
-				});
-
-				// const collectionResponse = await request(getUrl(vendor))
-				// 	.post(`/collections/${collection}`)
-				// 	.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
-				// 	.send({
-				// 		collection: 'articles_case_when',
-				// 		fields: [
-				// 			{
-				// 				field: 'id',
-				// 				type: 'integer',
-				// 				meta: { hidden: true, interface: 'input', readonly: true },
-				// 				schema: { is_primary_key: true, has_auto_increment: true },
-				// 			},
-				// 			{
-				// 				field: 'user_created',
-				// 				type: 'uuid',
-				// 				meta: {
-				// 					special: ['user-created'],
-				// 					interface: 'select-dropdown-m2o',
-				// 					options: { template: '{{avatar}} {{first_name}} {{last_name}}' },
-				// 					display: 'user',
-				// 					readonly: true,
-				// 					hidden: true,
-				// 					width: 'half',
-				// 				},
-				// 				schema: {},
-				// 			},
-				// 			{
-				// 				field: 'date_created',
-				// 				type: 'timestamp',
-				// 				meta: {
-				// 					special: ['date-created'],
-				// 					interface: 'datetime',
-				// 					readonly: true,
-				// 					hidden: true,
-				// 					width: 'half',
-				// 					display: 'datetime',
-				// 					display_options: { relative: true },
-				// 				},
-				// 				schema: {},
-				// 			},
-				// 		],
-				// 		schema: {},
-				// 		meta: { singleton: false },
-				// 	});
 
 				const relationsResponse = await request(getUrl(vendor))
 					.post(`/relations`)
@@ -114,12 +93,11 @@ export const seedDBStructure = () => {
 					throw new Error('Could not create relation', relationsResponse.body);
 				}
 
-				const collectionResponse = await request(getUrl(vendor))
-					.get(`/collections`)
-					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+				// const collectionResponse2 = await request(getUrl(vendor))
+				// 	.get(`/collections`)
+				// 	.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
-				console.log(collectionResponse.body);
-
+				// console.log(collectionResponse2.body);
 				console.log('schema is setup');
 
 				expect(true).toBeTruthy();
