@@ -17,13 +17,13 @@ export function extractRequiredDynamicVariableContextForPermissions(permissions:
 	};
 
 	for (const permission of permissions) {
-		permissionContext = merge_contexts(
+		permissionContext = mergeContexts(
 			permissionContext,
 			extractRequiredDynamicVariableContext(permission.permissions),
 		);
 
-		permissionContext = merge_contexts(permissionContext, extractRequiredDynamicVariableContext(permission.validation));
-		permissionContext = merge_contexts(permissionContext, extractRequiredDynamicVariableContext(permission.presets));
+		permissionContext = mergeContexts(permissionContext, extractRequiredDynamicVariableContext(permission.validation));
+		permissionContext = mergeContexts(permissionContext, extractRequiredDynamicVariableContext(permission.presets));
 	}
 
 	return permissionContext;
@@ -55,7 +55,7 @@ export function extractRequiredDynamicVariableContext(val: any) {
 	}
 }
 
-function merge_contexts(context1: DynamicVariableContext, context2: DynamicVariableContext) {
+function mergeContexts(context1: DynamicVariableContext, context2: DynamicVariableContext) {
 	const permissionContext: DynamicVariableContext = {
 		$CURRENT_USER: new Set([...context1.$CURRENT_USER, ...context2.$CURRENT_USER]),
 		$CURRENT_ROLE: new Set([...context1.$CURRENT_ROLE, ...context2.$CURRENT_ROLE]),
