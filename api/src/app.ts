@@ -265,11 +265,11 @@ export default async function createApp(): Promise<express.Application> {
 
 	app.use(authenticate);
 
-	app.use(sanitizeQuery);
-
 	app.use(cache);
 
 	app.use(schema);
+
+	app.use(sanitizeQuery);
 
 	await emitter.emitInit('middlewares.after', { app });
 
