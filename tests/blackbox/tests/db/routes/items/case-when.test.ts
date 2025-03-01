@@ -90,6 +90,9 @@ describe('retrieves items with filters', async () => {
 		if (!userResponse.ok) {
 			throw new Error('Could not create user', userResponse.body);
 		}
+		console.log("user created");
+		console.log("user created");
+
 
 		// const newPolicyId = user.policies[0];
 		// console.log('new policy', newPolicyId);

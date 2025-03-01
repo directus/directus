@@ -81,6 +81,8 @@ export const seedDBStructure = () => {
 					throw new Error('Could not create collection', collectionResponse.body);
 				}
 
+				console.log('collection created');
+
 				const relationsResponse = await request(getUrl(vendor))
 					.post(`/relations`)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
@@ -94,6 +96,7 @@ export const seedDBStructure = () => {
 				if (!relationsResponse.ok) {
 					throw new Error('Could not create relation', relationsResponse.body);
 				}
+				console.log('relation created');
 
 				// const collectionResponse2 = await request(getUrl(vendor))
 				// 	.get(`/collections`)
