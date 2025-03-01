@@ -15,13 +15,13 @@
 		"@types/lodash-es": "4.17.12",
 		"@types/seedrandom": "3.0.8",
 		"@types/supertest": "6.0.2",
-		"@types/ws": "8.5.13",
+		"@types/ws": "8.5.14",
 		"argon2": "0.41.1",
 		"autocannon": "8.0.0",
-		"axios": "1.7.9",
+		"axios": "1.8.1",
 		"get-port": "7.1.0",
-		"globby": "14.0.2",
-		"graphql-ws": "5.16.1",
+		"globby": "14.1.0",
+		"graphql-ws": "5.16.2",
 		"js-yaml": "4.1.0",
 		"json-to-graphql-query": "2.3.0",
 		"knex": "3.1.0",
@@ -30,9 +30,9 @@
 		"seedrandom": "3.0.5",
 		"supertest": "7.0.0",
 		"typescript": "5.7.3",
-		"uuid": "11.0.4",
+		"uuid": "11.1.0",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "1.6.1",
-		"ws": "8.18.0"
+		"ws": "8.18.1"
 	}
 }

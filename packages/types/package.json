@@ -27,7 +27,7 @@
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/schema": "workspace:*",
-		"@types/geojson": "7946.0.15"
+		"@types/geojson": "7946.0.16"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",

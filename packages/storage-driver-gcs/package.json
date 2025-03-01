@@ -29,13 +29,13 @@
 		"@directus/constants": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@google-cloud/storage": "7.15.0"
+		"@google-cloud/storage": "7.15.2"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",
 		"@ngneat/falso": "7.3.0",
-		"@vitest/coverage-v8": "2.1.8",
-		"tsup": "8.3.5",
+		"@vitest/coverage-v8": "2.1.9",
+		"tsup": "8.4.0",
 		"typescript": "5.7.3",
 		"vitest": "2.1.9"
 	}
