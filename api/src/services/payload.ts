@@ -22,6 +22,7 @@ import getDatabase from '../database/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
+import { addPathToFailedValidation } from '@directus/validation';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -424,55 +425,66 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-			// If the required a2o configuration fields are missing, this is a m2o instead of an a2o
-			if (!relation.meta?.one_collection_field || !relation.meta?.one_allowed_collections) continue;
+			try {
+				// If the required a2o configuration fields are missing, this is a m2o instead of an a2o
+				if (!relation.meta?.one_collection_field || !relation.meta?.one_allowed_collections) continue;
 
-			const relatedCollection = payload[relation.meta.one_collection_field];
+				const relatedCollection = payload[relation.meta.one_collection_field];
 
-			if (!relatedCollection) {
-				throw new InvalidPayloadError({
-					reason: `Can't update nested record "${relation.collection}.${relation.field}" without field "${relation.collection}.${relation.meta.one_collection_field}" being set`,
+				if (!relatedCollection) {
+					throw new InvalidPayloadError({
+						reason: `Can't update nested record "${relation.collection}.${relation.field}" without field "${relation.collection}.${relation.meta.one_collection_field}" being set`,
+					});
+				}
+
+				const allowedCollections = relation.meta.one_allowed_collections;
+
+				if (allowedCollections.includes(relatedCollection) === false) {
+					throw new InvalidPayloadError({
+						reason: `"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`,
+					});
+				}
+
+				const { getService } = await import('../utils/get-service.js');
+
+				const service = getService(relatedCollection, {
+					accountability: this.accountability,
+					knex: this.knex,
+					schema: this.schema,
 				});
-			}
 
-			const allowedCollections = relation.meta.one_allowed_collections;
+				const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
+				const relatedRecord: Partial<Item> = payload[relation.field];
 
-			if (allowedCollections.includes(relatedCollection) === false) {
-				throw new InvalidPayloadError({
-					reason: `"${relation.collection}.${relation.field}" can't be linked to collection "${relatedCollection}"`,
-				});
-			}
+				if (['string', 'number'].includes(typeof relatedRecord)) continue;
 
-			const { getService } = await import('../utils/get-service.js');
+				const hasPrimaryKey = relatedPrimaryKeyField in relatedRecord;
 
-			const service = getService(relatedCollection, {
-				accountability: this.accountability,
-				knex: this.knex,
-				schema: this.schema,
-			});
+				let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimaryKeyField];
 
-			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
-			const relatedRecord: Partial<Item> = payload[relation.field];
+				const exists =
+					hasPrimaryKey &&
+					!!(await this.knex
+						.select(relatedPrimaryKeyField)
+						.from(relatedCollection)
+						.where({ [relatedPrimaryKeyField]: relatedPrimaryKey })
+						.first());
 
-			if (['string', 'number'].includes(typeof relatedRecord)) continue;
+				if (exists) {
+					const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
 
-			const hasPrimaryKey = relatedPrimaryKeyField in relatedRecord;
-
-			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimaryKeyField];
-
-			const exists =
-				hasPrimaryKey &&
-				!!(await this.knex
-					.select(relatedPrimaryKeyField)
-					.from(relatedCollection)
-					.where({ [relatedPrimaryKeyField]: relatedPrimaryKey })
-					.first());
-
-			if (exists) {
-				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
-
-				if (Object.keys(record).length > 0) {
-					await service.updateOne(relatedPrimaryKey, record, {
+					if (Object.keys(record).length > 0) {
+						await service.updateOne(relatedPrimaryKey, record, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
+						});
+					}
+				} else {
+					relatedPrimaryKey = await service.createOne(relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
@@ -481,19 +493,12 @@ export class PayloadService {
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
-			} else {
-				relatedPrimaryKey = await service.createOne(relatedRecord, {
-					onRevisionCreate: (pk) => revisions.push(pk),
-					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-					bypassEmitAction: (params) =>
-						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					emitEvents: opts?.emitEvents,
-					mutationTracker: opts?.mutationTracker,
-				});
-			}
 
-			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
-			payload[relation.field] = relatedPrimaryKey;
+				// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
+				payload[relation.field] = relatedPrimaryKey;
+			} catch (error: any) {
+				addPathToFailedValidation(error, relation.field);
+			}
 		}
 
 		return { payload, revisions, nestedActionEvents, userIntegrityCheckFlags };
@@ -529,39 +534,50 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-			// If no "one collection" exists, this is a A2O, not a M2O
-			if (!relation.related_collection) continue;
-			const relatedPrimaryKeyField = this.schema.collections[relation.related_collection]!.primary;
+			try {
+				// If no "one collection" exists, this is a A2O, not a M2O
+				if (!relation.related_collection) continue;
+				const relatedPrimaryKeyField = this.schema.collections[relation.related_collection]!.primary;
 
-			const { getService } = await import('../utils/get-service.js');
+				const { getService } = await import('../utils/get-service.js');
 
-			const service = getService(relation.related_collection, {
-				accountability: this.accountability,
-				knex: this.knex,
-				schema: this.schema,
-			});
+				const service = getService(relation.related_collection, {
+					accountability: this.accountability,
+					knex: this.knex,
+					schema: this.schema,
+				});
 
-			const relatedRecord: Partial<Item> = payload[relation.field];
+				const relatedRecord: Partial<Item> = payload[relation.field];
 
-			if (['string', 'number'].includes(typeof relatedRecord)) continue;
+				if (['string', 'number'].includes(typeof relatedRecord)) continue;
 
-			const hasPrimaryKey = relatedPrimaryKeyField in relatedRecord;
+				const hasPrimaryKey = relatedPrimaryKeyField in relatedRecord;
 
-			let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimaryKeyField];
+				let relatedPrimaryKey: PrimaryKey = relatedRecord[relatedPrimaryKeyField];
 
-			const exists =
-				hasPrimaryKey &&
-				!!(await this.knex
-					.select(relatedPrimaryKeyField)
-					.from(relation.related_collection)
-					.where({ [relatedPrimaryKeyField]: relatedPrimaryKey })
-					.first());
+				const exists =
+					hasPrimaryKey &&
+					!!(await this.knex
+						.select(relatedPrimaryKeyField)
+						.from(relation.related_collection)
+						.where({ [relatedPrimaryKeyField]: relatedPrimaryKey })
+						.first());
 
-			if (exists) {
-				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
+				if (exists) {
+					const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
 
-				if (Object.keys(record).length > 0) {
-					await service.updateOne(relatedPrimaryKey, record, {
+					if (Object.keys(record).length > 0) {
+						await service.updateOne(relatedPrimaryKey, record, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
+						});
+					}
+				} else {
+					relatedPrimaryKey = await service.createOne(relatedRecord, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
@@ -570,19 +586,12 @@ export class PayloadService {
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
-			} else {
-				relatedPrimaryKey = await service.createOne(relatedRecord, {
-					onRevisionCreate: (pk) => revisions.push(pk),
-					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-					bypassEmitAction: (params) =>
-						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-					emitEvents: opts?.emitEvents,
-					mutationTracker: opts?.mutationTracker,
-				});
-			}
 
-			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
-			payload[relation.field] = relatedPrimaryKey;
+				// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
+				payload[relation.field] = relatedPrimaryKey;
+			} catch (error: any) {
+				addPathToFailedValidation(error, relation.field);
+			}
 		}
 
 		return { payload, revisions, nestedActionEvents, userIntegrityCheckFlags };
@@ -620,197 +629,82 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-			if (!relation.meta) continue;
+			try {
+				if (!relation.meta) continue;
 
-			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!]!.primary;
-			const relatedPrimaryKeyField = this.schema.collections[relation.collection]!.primary;
+				const currentPrimaryKeyField = this.schema.collections[relation.related_collection!]!.primary;
+				const relatedPrimaryKeyField = this.schema.collections[relation.collection]!.primary;
 
-			const { getService } = await import('../utils/get-service.js');
+				const { getService } = await import('../utils/get-service.js');
 
-			const service = getService(relation.collection, {
-				accountability: this.accountability,
-				knex: this.knex,
-				schema: this.schema,
-			});
+				const service = getService(relation.collection, {
+					accountability: this.accountability,
+					knex: this.knex,
+					schema: this.schema,
+				});
 
-			const recordsToUpsert: Partial<Item>[] = [];
-			const savedPrimaryKeys: PrimaryKey[] = [];
+				const recordsToUpsert: Partial<Item>[] = [];
+				const savedPrimaryKeys: PrimaryKey[] = [];
 
-			// Nested array of individual items
-			const field = payload[relation.meta!.one_field!];
+				// Nested array of individual items
+				const field = payload[relation.meta!.one_field!];
 
-			if (!field || Array.isArray(field)) {
-				const updates = field || []; // treat falsey values as removing all children
+				if (!field || Array.isArray(field)) {
+					const updates = field || []; // treat falsey values as removing all children
 
-				for (let i = 0; i < updates.length; i++) {
-					const relatedRecord = updates[i];
+					for (let i = 0; i < updates.length; i++) {
+						const relatedRecord = updates[i];
 
-					let record = cloneDeep(relatedRecord);
+						let record = cloneDeep(relatedRecord);
 
-					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
-						const existingRecord = await this.knex
-							.select(relatedPrimaryKeyField, relation.field)
-							.from(relation.collection)
-							.where({ [relatedPrimaryKeyField]: record })
-							.first();
+						if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
+							const existingRecord = await this.knex
+								.select(relatedPrimaryKeyField, relation.field)
+								.from(relation.collection)
+								.where({ [relatedPrimaryKeyField]: record })
+								.first();
 
-						if (!!existingRecord === false) {
-							throw new ForbiddenError();
+							if (!!existingRecord === false) {
+								throw new ForbiddenError();
+							}
+
+							// If the related item is already associated to the current item, and there's no
+							// other updates (which is indicated by the fact that this is just the PK, we can
+							// ignore updating this item. This makes sure we don't trigger any update logic
+							// for items that aren't actually being updated. NOTE: We use == here, as the
+							// primary key might be reported as a string instead of number, coming from the
+							// http route, and or a bigInteger in the DB
+							if (
+								isNil(existingRecord[relation.field]) === false &&
+								(existingRecord[relation.field] == parent ||
+									existingRecord[relation.field] == payload[currentPrimaryKeyField])
+							) {
+								savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
+								continue;
+							}
+
+							record = {
+								[relatedPrimaryKeyField]: relatedRecord,
+							};
 						}
 
-						// If the related item is already associated to the current item, and there's no
-						// other updates (which is indicated by the fact that this is just the PK, we can
-						// ignore updating this item. This makes sure we don't trigger any update logic
-						// for items that aren't actually being updated. NOTE: We use == here, as the
-						// primary key might be reported as a string instead of number, coming from the
-						// http route, and or a bigInteger in the DB
-						if (
-							isNil(existingRecord[relation.field]) === false &&
-							(existingRecord[relation.field] == parent ||
-								existingRecord[relation.field] == payload[currentPrimaryKeyField])
-						) {
-							savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
-							continue;
-						}
-
-						record = {
-							[relatedPrimaryKeyField]: relatedRecord,
-						};
+						recordsToUpsert.push({
+							...record,
+							[relation.field]: parent || payload[currentPrimaryKeyField],
+						});
 					}
 
-					recordsToUpsert.push({
-						...record,
-						[relation.field]: parent || payload[currentPrimaryKeyField],
-					});
-				}
-
-				savedPrimaryKeys.push(
-					...(await service.upsertMany(recordsToUpsert, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						mutationTracker: opts?.mutationTracker,
-					})),
-				);
-
-				const query: Query = {
-					filter: {
-						_and: [
-							{
-								[relation.field]: {
-									_eq: parent,
-								},
-							},
-							{
-								[relatedPrimaryKeyField]: {
-									_nin: savedPrimaryKeys,
-								},
-							},
-						],
-					},
-				};
-
-				// Nullify all related items that aren't included in the current payload
-				if (relation.meta.one_deselect_action === 'delete') {
-					// There's no revision for a deletion
-					await service.deleteByQuery(query, {
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						mutationTracker: opts?.mutationTracker,
-					});
-				} else {
-					await service.updateByQuery(
-						query,
-						{ [relation.field]: null },
-						{
+					savedPrimaryKeys.push(
+						...(await service.upsertMany(recordsToUpsert, {
 							onRevisionCreate: (pk) => revisions.push(pk),
 							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
 							mutationTracker: opts?.mutationTracker,
-						},
+						})),
 					);
-				}
-			}
-			// "Updates" object w/ create/update/delete
-			else {
-				const alterations = field as Alterations;
-				const { error } = nestedUpdateSchema.validate(alterations);
-				if (error) throw new InvalidPayloadError({ reason: `Invalid one-to-many update structure: ${error.message}` });
 
-				if (alterations.create) {
-					const sortField = relation.meta.sort_field;
-
-					let createPayload: Alterations['create'];
-
-					if (sortField !== null) {
-						const highestOrderNumber: Record<'max', number | null> | undefined = await this.knex
-							.from(relation.collection)
-							.where({ [relation.field]: parent })
-							.whereNotNull(sortField)
-							.max(sortField, { as: 'max' })
-							.first();
-
-						createPayload = alterations.create.map((item, index) => {
-							const record = cloneDeep(item);
-
-							// add sort field value if it is not supplied in the item
-							if (parent !== null && record[sortField] === undefined) {
-								record[sortField] = highestOrderNumber?.max ? highestOrderNumber.max + index + 1 : index + 1;
-							}
-
-							return {
-								...record,
-								[relation.field]: parent || payload[currentPrimaryKeyField],
-							};
-						});
-					} else {
-						createPayload = alterations.create.map((item) => ({
-							...item,
-							[relation.field]: parent || payload[currentPrimaryKeyField],
-						}));
-					}
-
-					await service.createMany(createPayload, {
-						onRevisionCreate: (pk) => revisions.push(pk),
-						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-						bypassEmitAction: (params) =>
-							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-						emitEvents: opts?.emitEvents,
-						mutationTracker: opts?.mutationTracker,
-					});
-				}
-
-				if (alterations.update) {
-					const primaryKeyField = this.schema.collections[relation.collection]!.primary;
-
-					for (const item of alterations.update) {
-						const { [primaryKeyField]: key, ...record } = item;
-
-						await service.updateOne(
-							key,
-							{
-								...record,
-								[relation.field]: parent || payload[currentPrimaryKeyField],
-							},
-							{
-								onRevisionCreate: (pk) => revisions.push(pk),
-								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-								emitEvents: opts?.emitEvents,
-								mutationTracker: opts?.mutationTracker,
-							},
-						);
-					}
-				}
-
-				if (alterations.delete) {
 					const query: Query = {
 						filter: {
 							_and: [
@@ -821,14 +715,16 @@ export class PayloadService {
 								},
 								{
 									[relatedPrimaryKeyField]: {
-										_in: alterations.delete,
+										_nin: savedPrimaryKeys,
 									},
 								},
 							],
 						},
 					};
 
+					// Nullify all related items that aren't included in the current payload
 					if (relation.meta.one_deselect_action === 'delete') {
+						// There's no revision for a deletion
 						await service.deleteByQuery(query, {
 							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 							bypassEmitAction: (params) =>
@@ -851,6 +747,124 @@ export class PayloadService {
 						);
 					}
 				}
+				// "Updates" object w/ create/update/delete
+				else {
+					const alterations = field as Alterations;
+					const { error } = nestedUpdateSchema.validate(alterations);
+					if (error)
+						throw new InvalidPayloadError({ reason: `Invalid one-to-many update structure: ${error.message}` });
+
+					if (alterations.create) {
+						const sortField = relation.meta.sort_field;
+
+						let createPayload: Alterations['create'];
+
+						if (sortField !== null) {
+							const highestOrderNumber: Record<'max', number | null> | undefined = await this.knex
+								.from(relation.collection)
+								.where({ [relation.field]: parent })
+								.whereNotNull(sortField)
+								.max(sortField, { as: 'max' })
+								.first();
+
+							createPayload = alterations.create.map((item, index) => {
+								const record = cloneDeep(item);
+
+								// add sort field value if it is not supplied in the item
+								if (parent !== null && record[sortField] === undefined) {
+									record[sortField] = highestOrderNumber?.max ? highestOrderNumber.max + index + 1 : index + 1;
+								}
+
+								return {
+									...record,
+									[relation.field]: parent || payload[currentPrimaryKeyField],
+								};
+							});
+						} else {
+							createPayload = alterations.create.map((item) => ({
+								...item,
+								[relation.field]: parent || payload[currentPrimaryKeyField],
+							}));
+						}
+
+						await service.createMany(createPayload, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
+						});
+					}
+
+					if (alterations.update) {
+						const primaryKeyField = this.schema.collections[relation.collection]!.primary;
+
+						for (const item of alterations.update) {
+							const { [primaryKeyField]: key, ...record } = item;
+
+							await service.updateOne(
+								key,
+								{
+									...record,
+									[relation.field]: parent || payload[currentPrimaryKeyField],
+								},
+								{
+									onRevisionCreate: (pk) => revisions.push(pk),
+									onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+									bypassEmitAction: (params) =>
+										opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+									emitEvents: opts?.emitEvents,
+									mutationTracker: opts?.mutationTracker,
+								},
+							);
+						}
+					}
+
+					if (alterations.delete) {
+						const query: Query = {
+							filter: {
+								_and: [
+									{
+										[relation.field]: {
+											_eq: parent,
+										},
+									},
+									{
+										[relatedPrimaryKeyField]: {
+											_in: alterations.delete,
+										},
+									},
+								],
+							},
+						};
+
+						if (relation.meta.one_deselect_action === 'delete') {
+							await service.deleteByQuery(query, {
+								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+								bypassEmitAction: (params) =>
+									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+								emitEvents: opts?.emitEvents,
+								mutationTracker: opts?.mutationTracker,
+							});
+						} else {
+							await service.updateByQuery(
+								query,
+								{ [relation.field]: null },
+								{
+									onRevisionCreate: (pk) => revisions.push(pk),
+									onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+									bypassEmitAction: (params) =>
+										opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+									emitEvents: opts?.emitEvents,
+									mutationTracker: opts?.mutationTracker,
+								},
+							);
+						}
+					}
+				}
+			} catch (error: any) {
+				addPathToFailedValidation(error, relation.meta!.one_field!);
 			}
 		}
 
