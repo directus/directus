@@ -104,15 +104,14 @@ export function addPathToFailedValidation(error: any, path: string) {
 	if (Array.isArray(error)) {
 		const err = error.map((err) => {
 			if (err?.code === 'FAILED_VALIDATION') {
-
 				return new FailedValidationError({
 					...err.extensions,
-					path: [path, ...err.extensions.path]
-				})
+					path: [path, ...err.extensions.path],
+				});
 			}
 
 			return err;
-		})
+		});
 
 		throw err;
 	} else {
@@ -121,8 +120,8 @@ export function addPathToFailedValidation(error: any, path: string) {
 
 			throw new FailedValidationError({
 				...error.extensions,
-				path: [path, ...error.extensions.path]
-			})
+				path: [path, ...error.extensions.path],
+			});
 		}
 	}
 }
