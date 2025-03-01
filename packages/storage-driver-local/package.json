@@ -30,10 +30,10 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",
-		"@types/node": "22.10.5",
+		"@types/node": "22.13.8",
 		"@ngneat/falso": "7.3.0",
-		"@vitest/coverage-v8": "2.1.8",
-		"tsup": "8.3.5",
+		"@vitest/coverage-v8": "2.1.9",
+		"tsup": "8.4.0",
 		"typescript": "5.7.3",
 		"vitest": "2.1.9"
 	}

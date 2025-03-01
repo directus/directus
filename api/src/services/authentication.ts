@@ -1,5 +1,3 @@
-import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
-import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { Action } from '@directus/constants';
 import { useEnv } from '@directus/env';
 import {
@@ -12,11 +10,14 @@ import type { Accountability, SchemaOverview } from '@directus/types';
 import jwt from 'jsonwebtoken';
 import type { Knex } from 'knex';
 import { clone, cloneDeep } from 'lodash-es';
+import type { StringValue } from 'ms';
 import { performance } from 'perf_hooks';
 import { getAuthProvider } from '../auth.js';
 import { DEFAULT_AUTH_PROVIDER } from '../constants.js';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
+import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
+import { fetchGlobalAccess } from '../permissions/modules/fetch-global-access/fetch-global-access.js';
 import { RateLimiterRes, createRateLimiter } from '../rate-limiter.js';
 import type { AbstractServiceOptions, DirectusTokenPayload, LoginResult, Session, User } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
@@ -221,7 +222,7 @@ export class AuthenticationService {
 			},
 		);
 
-		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as StringValue | number;
 
 		const accessToken = jwt.sign(customClaims, getSecret(), {
 			expiresIn: TTL,
@@ -401,7 +402,7 @@ export class AuthenticationService {
 			},
 		);
 
-		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as StringValue | number;
 
 		const accessToken = jwt.sign(customClaims, getSecret(), {
 			expiresIn: TTL,
