@@ -30,6 +30,8 @@ export const seedDBStructure = () => {
 			try {
 				await DeleteCollection(vendor, { collection });
 
+				log('creating collection');
+
 				const collectionResponse = await request(getUrl(vendor))
 					.post(`/collections`)
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
@@ -76,7 +78,7 @@ export const seedDBStructure = () => {
 					});
 
 				if (!collectionResponse.ok) {
-					throw new Error('Could not create relation', collectionResponse.body);
+					throw new Error('Could not create collection', collectionResponse.body);
 				}
 
 				const relationsResponse = await request(getUrl(vendor))
