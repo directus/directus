@@ -1,1 +1,1 @@
-export { FailedValidationError } from './failed-validation.js';
+export { FailedValidationError, addPathToFailedValidation } from './failed-validation.js';

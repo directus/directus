@@ -6,6 +6,7 @@ export const joiValidationErrorItemToErrorExtensions = (
 ): FailedValidationErrorExtensions => {
 	const extensions: Partial<FailedValidationErrorExtensions> = {
 		field: validationErrorItem.path[0] as string,
+		path: validationErrorItem.path.slice(1)
 	};
 
 	const joiType = validationErrorItem.type;

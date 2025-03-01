@@ -4,6 +4,7 @@ import { toArray } from '@directus/utils';
 
 export interface FailedValidationErrorExtensions {
 	field: string;
+	path: (string | number)[];
 	type: ClientFilterOperator | 'required' | 'email';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
@@ -11,7 +12,8 @@ export interface FailedValidationErrorExtensions {
 }
 
 export const messageConstructor = (extensions: FailedValidationErrorExtensions): string => {
-	let message = `Validation failed for field "${extensions.field}".`;
+	const atPath = extensions.path.length > 0 ? ` at ${extensions.path.join('.')}` : '';
+	let message = `Validation failed for field "${extensions.field}"${atPath}.`;
 
 	if ('valid' in extensions) {
 		switch (extensions.type) {
@@ -97,3 +99,30 @@ export const FailedValidationError = createError<FailedValidationErrorExtensions
 	messageConstructor,
 	400,
 );
+
+export function addPathToFailedValidation(error: any, path: string) {
+	if (Array.isArray(error)) {
+		const err = error.map((err) => {
+			if (err?.code === 'FAILED_VALIDATION') {
+
+				return new FailedValidationError({
+					...err.extensions,
+					path: [path, ...err.extensions.path]
+				})
+			}
+
+			return err;
+		})
+
+		throw err;
+	} else {
+		if (error?.code === 'FAILED_VALIDATION') {
+			error.extensions?.path?.push(path);
+
+			throw new FailedValidationError({
+				...error.extensions,
+				path: [path, ...error.extensions.path]
+			})
+		}
+	}
+}
