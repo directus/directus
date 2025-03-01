@@ -30,9 +30,14 @@ export const seedDBStructure = () => {
 			try {
 				await DeleteCollection(vendor, { collection });
 
+				// await CreateCollection(vendor, {
+				// 	collection,
+				// 	primaryKeyType: 'integer',
+				// });
+
 				const collectionResponse = await request(getUrl(vendor))
 					.post(`/collections/${collection}`)
-					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 					.send({
 						collection: 'articles_case_when',
 						fields: [
