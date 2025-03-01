@@ -39,7 +39,10 @@ router.get('/', async (req, res) => {
     accountability: req.accountability
   });
 
-  const data = await usersService.getUserByEmail('email');
+  const data = await usersService.readByQuery({
+		fields: ['*'],
+		filter: { email: { _eq: 'email' } },
+	});
 
   res.json(data);
 });
