@@ -127,12 +127,6 @@ function validateFilterPrimitive(value: any, key: string) {
 		throw new InvalidQueryError({ reason: `The filter value for "${key}" is not a valid number` });
 	}
 
-	if (typeof value === 'string' && value.length === 0) {
-		throw new InvalidQueryError({
-			reason: `You can't filter for an empty string in "${key}". Use "_empty" or "_nempty" instead`,
-		});
-	}
-
 	return true;
 }
 
