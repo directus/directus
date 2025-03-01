@@ -166,6 +166,7 @@ export class UsersService extends ItemsService {
 				throw new FailedValidationError({
 					field: 'email',
 					type: 'email',
+					path: []
 				});
 			}
 		}
