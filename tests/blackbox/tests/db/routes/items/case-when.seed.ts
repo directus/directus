@@ -30,7 +30,7 @@ export const seedDBStructure = () => {
 			try {
 				await DeleteCollection(vendor, { collection });
 
-				let res = await CreateCollection(vendor, {
+				const res = await CreateCollection(vendor, {
 					collection,
 					primaryKeyType: 'integer',
 				});
@@ -39,11 +39,15 @@ export const seedDBStructure = () => {
 					throw new Error('Could not create collection', res.body);
 				}
 
-				await CreateField(vendor, {
+				const fieldRes = await CreateField(vendor, {
 					collection,
 					field: 'user_created',
 					type: 'uuid',
 				});
+
+				if (!fieldRes.ok) {
+					throw new Error('Could not create field', fieldRes.body);
+				}
 
 				await CreateField(vendor, {
 					collection,
