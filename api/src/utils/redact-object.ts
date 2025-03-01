@@ -147,7 +147,8 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 
 			for (const [redactKey, valueToRedact] of filteredValues) {
 				if (finalValue.includes(valueToRedact)) {
-					finalValue = finalValue.replace(new RegExp(valueToRedact, 'g'), replacement(redactKey));
+					const regexp = new RegExp(escapeRegexString(valueToRedact), 'g');
+					finalValue = finalValue.replace(regexp, replacement(redactKey));
 				}
 			}
 
@@ -157,4 +158,8 @@ export function getReplacer(replacement: Replacement, values?: Values) {
 
 	const seen = new WeakSet();
 	return replacer(seen);
+}
+
+function escapeRegexString(string: string): string {
+	return string.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
 }
