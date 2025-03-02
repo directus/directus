@@ -34,7 +34,7 @@
 		"@types/express": "4.17.21",
 		"@vitest/coverage-v8": "2.1.9",
 		"tsup": "8.4.0",
-		"typescript": "5.7.3",
+		"typescript": "5.8.2",
 		"vitest": "2.1.9"
 	}
 }

@@ -222,7 +222,7 @@
 		"form-data": "4.0.2",
 		"get-port": "7.1.0",
 		"knex-mock-client": "3.0.2",
-		"typescript": "5.7.3",
+		"typescript": "5.8.2",
 		"vitest": "2.1.9"
 	},
 	"optionalDependencies": {

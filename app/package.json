@@ -140,7 +140,7 @@
 		"string-width": "7.2.0",
 		"tinymce": "6.8.5",
 		"tus-js-client": "4.3.1",
-		"typescript": "5.7.3",
+		"typescript": "5.8.2",
 		"vite": "5.4.14",
 		"vite-plugin-vue-devtools": "7.7.2",
 		"vitest": "2.1.9",

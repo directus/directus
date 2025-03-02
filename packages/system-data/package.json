@@ -32,6 +32,6 @@
 		"esbuild": "0.20.2",
 		"esbuild-yaml": "2.0.0",
 		"tsup": "8.4.0",
-		"typescript": "5.7.3"
+		"typescript": "5.8.2"
 	}
 }
