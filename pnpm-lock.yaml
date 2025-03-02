@@ -890,8 +890,8 @@ importers:
         specifier: 4.5.0
         version: 4.5.0(vue@3.5.13(typescript@5.7.3))
       vue-tsc:
-        specifier: 2.2.6
-        version: 2.2.6(typescript@5.7.3)
+        specifier: 2.2.8
+        version: 2.2.8(typescript@5.7.3)
       vue-virtual-scroller:
         specifier: 2.0.0-beta.8
         version: 2.0.0-beta.8(vue@3.5.13(typescript@5.7.3))
@@ -5597,8 +5597,8 @@ packages:
       typescript:
         optional: true
 
-  '@vue/language-core@2.2.6':
-    resolution: {integrity: sha512-7IQTvwVOvhYSzcizZ2hAdqJjI+SaJS2GO7EnDlSlQ77drwl5UzNa2IZm9pO9MdMxrlw24CGI/Lo3xpCjM26veg==}
+  '@vue/language-core@2.2.8':
+    resolution: {integrity: sha512-rrzB0wPGBvcwaSNRriVWdNAbHQWSf0NlGqgKHK5mEkXpefjUlVRP62u03KvwZpvKVjRnBIQ/Lwre+Mx9N6juUQ==}
     peerDependencies:
       typescript: '*'
     peerDependenciesMeta:
@@ -12224,8 +12224,8 @@ packages:
     peerDependencies:
       vue: ^3.2.0
 
-  vue-tsc@2.2.6:
-    resolution: {integrity: sha512-TI6eAnWPatONEpVAZt1etbSrh8tDpHOLSlRqKGudOK5WKVnBGzHXUi0KR4UCsf2o5P+5285w4HF+5avhfH7IMA==}
+  vue-tsc@2.2.8:
+    resolution: {integrity: sha512-jBYKBNFADTN+L+MdesNX/TB3XuDSyaWynKMDgR+yCSln0GQ9Tfb7JS2lr46s2LiFUT1WsmfWsSvIElyxzOPqcQ==}
     hasBin: true
     peerDependencies:
       typescript: '>=5.0.0'
@@ -16692,7 +16692,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.7.3
 
-  '@vue/language-core@2.2.6(typescript@5.7.3)':
+  '@vue/language-core@2.2.8(typescript@5.7.3)':
     dependencies:
       '@volar/language-core': 2.4.11
       '@vue/compiler-dom': 3.5.13
@@ -24231,10 +24231,10 @@ snapshots:
       '@vue/devtools-api': 6.6.4
       vue: 3.5.13(typescript@5.7.3)
 
-  vue-tsc@2.2.6(typescript@5.7.3):
+  vue-tsc@2.2.8(typescript@5.7.3):
     dependencies:
       '@volar/typescript': 2.4.11
-      '@vue/language-core': 2.2.6(typescript@5.7.3)
+      '@vue/language-core': 2.2.8(typescript@5.7.3)
       typescript: 5.7.3
 
   vue-virtual-scroller@2.0.0-beta.8(vue@3.5.13(typescript@5.7.3)):
