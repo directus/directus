@@ -48,14 +48,14 @@
 		"commander": "10.0.1",
 		"esbuild": "0.17.19",
 		"execa": "7.2.0",
-		"fs-extra": "11.2.0",
-		"inquirer": "12.3.0",
+		"fs-extra": "11.3.0",
+		"inquirer": "12.4.2",
 		"ora": "6.3.1",
 		"rollup": "3.29.5",
 		"rollup-plugin-esbuild": "5.0.0",
 		"rollup-plugin-styles": "4.0.0",
-		"semver": "7.6.3",
-		"vite": "4.5.5",
+		"semver": "7.7.1",
+		"vite": "4.5.9",
 		"vue": "3.5.13"
 	},
 	"devDependencies": {
@@ -63,7 +63,7 @@
 		"@types/fs-extra": "11.0.4",
 		"@types/inquirer": "9.0.7",
 		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "2.1.8",
+		"@vitest/coverage-v8": "2.1.9",
 		"typescript": "5.7.3",
 		"vitest": "2.1.9"
 	},
