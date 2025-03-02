@@ -2,7 +2,7 @@ import type { Accountability, Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { PermissionsService } from '../../services/permissions.js';
 import type { Context } from '../types.js';
-import { fetchDynamicVariableContext } from '../utils/fetch-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from '../utils/fetch-dynamic-variable-data.js';
 import { processPermissions } from '../utils/process-permissions.js';
 import { fetchPermissions } from './fetch-permissions.js';
 import { withAppMinimalPermissions } from './with-app-minimal-permissions.js';
@@ -12,13 +12,13 @@ vi.mock('../../services/permissions.js', () => ({
 }));
 
 vi.mock('./with-app-minimal-permissions.js');
-vi.mock('../utils/fetch-dynamic-variable-context.js');
+vi.mock('../utils/fetch-dynamic-variable-data.js');
 vi.mock('../utils/process-permissions.js');
 
 beforeEach(() => {
 	PermissionsService.prototype.readByQuery = vi.fn();
 
-	vi.mocked(fetchDynamicVariableContext).mockResolvedValue({});
+	vi.mocked(fetchDynamicVariableData).mockResolvedValue({});
 
 	vi.mocked(withAppMinimalPermissions).mockImplementation((_, permissions) => permissions);
 	vi.mocked(processPermissions).mockImplementation(({ permissions }) => permissions);
@@ -108,11 +108,16 @@ test('Injects dynamic variables by calling process permissions', async () => {
 
 	expect(res).toStrictEqual(permissions);
 
-	expect(fetchDynamicVariableContext).toHaveBeenCalledWith(
+	expect(fetchDynamicVariableData).toHaveBeenCalledWith(
 		{
 			accountability,
 			policies: ['policy-1'],
-			permissions,
+			dynamicVariableContext: {
+				$CURRENT_POLICIES: new Set(),
+				$CURRENT_ROLE: new Set(),
+				$CURRENT_ROLES: new Set(),
+				$CURRENT_USER: new Set(),
+			},
 		},
 		{},
 	);
