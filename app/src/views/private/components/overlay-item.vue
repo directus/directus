@@ -127,9 +127,58 @@ const fields = computed(() => {
 
 	if (!props.selectedFields?.length) return availableFields;
 
-	const selectedFieldNames = availableFields.filter((field) => props.selectedFields!.includes(field.field));
+	const selectedGroupKeys = getSelectedGroupKeys();
 
-	return selectedFieldNames.length ? selectedFieldNames : availableFields;
+	const selectedAvailableFields = availableFields.filter((field) => {
+		const groupKey = field.meta?.group;
+
+		if (groupKey && selectedGroupKeys.includes(groupKey)) return true;
+
+		if (groupKey && !selectedGroupKeys.includes(groupKey)) field.meta!.group = null;
+		return isSelected(field.field);
+	});
+
+	if (!selectedAvailableFields.length) return availableFields;
+
+	return selectedAvailableFields;
+
+	function isSelected(fieldKey: string) {
+		return props.selectedFields!.includes(fieldKey);
+	}
+
+	function getSelectedGroupKeys() {
+		const groupKeys: string[] = [];
+
+		availableFields.forEach((field) => {
+			const isGroup = field.meta?.special?.includes('group');
+			if (!isGroup) return;
+
+			if (isSelected(field.field)) groupKeys.push(field.field);
+		});
+
+		return addNestedGroupKeys(groupKeys);
+	}
+
+	function addNestedGroupKeys(groupKeys: string[]) {
+		availableFields.forEach((field) => {
+			const isGroup = field.meta?.special?.includes('group');
+			if (!isGroup) return;
+
+			const groupIsAlreadySelected = groupKeys.includes(field.field);
+			if (groupIsAlreadySelected) return;
+
+			const groupKey = field.meta?.group;
+			if (!groupKey) return;
+
+			const parentGroupIsSelected = groupKeys.includes(groupKey);
+			if (!parentGroupIsSelected) return;
+
+			groupKeys.push(field.field);
+			groupKeys = addNestedGroupKeys(groupKeys);
+		});
+
+		return groupKeys;
+	}
 });
 
 const fieldsWithoutCircular = computed(() => {
