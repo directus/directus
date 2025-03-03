@@ -536,6 +536,7 @@ file_details: Детайли за файл
 dimensions: Размери
 size: Големина
 created: Създаден
+uploaded: Качено
 modified: Променен
 owner: Собственик
 edited_by: Променен от
@@ -642,6 +643,7 @@ copy_to: Копиране в...
 no_other_dashboards_copy: Все още нямате други табла.
 inactive: Неактивен
 users: Потребители
+roles: Роли
 activity: Активности
 activity_item: Предмет на дейността
 action: Действие
@@ -1243,6 +1245,8 @@ fields:
     height: Височина
     charset: Набор символи
     duration: Продължителност
+    focal_point_x: Координата по X
+    focal_point_y: Координата по Y
   directus_users:
     first_name: Име
     last_name: Фамилия
@@ -1610,6 +1614,8 @@ navigate_to_item: Навигиране до записа
 undo_removed_item: Отмяна на премахването
 remove_item: Премахване на запис
 delete_item: Изтриване на запис
+pause: Пауза
+resume: Възобновяване
 interfaces:
   list-m2a:
     prefix_note: Използва името на колекцията на свързания елемент по подразбиране.
@@ -1775,6 +1781,7 @@ interfaces:
     editorFont: Шрифт при редактиране
     previewFont: Шрифт при преглед
     default_view: Изглед по подразбиране
+    default_view_editor: Редактор
     default_view_preview: Преглед
     customSyntax: Собствени блокове
     customSyntax_label: Добавяне на собствени синтактични типове
@@ -2152,6 +2159,7 @@ layouts:
     no_group: Без групиране
 horizontal: Хоризонтала
 vertical: Вертикална
+axis: Ос
 x_axis: Оста X
 y_axis: Оста X
 y_axis_function: Функция по Y-Axis
@@ -2400,3 +2408,5 @@ duplicate_dashboard: Дублирано табло за управление
 search_dashboard: Търсене в таблото за управление...
 search_flow: Поток на търсене...
 percent: Процент
+show_password: Показване на паролата
+hide_password: Скриване на паролата

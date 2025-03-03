@@ -15,5 +15,7 @@ export const systemCollectionNames: string[] = (systemData['data'] as DataCollec
 );
 
 export function isSystemCollection(collection: string): boolean {
+	if (!collection.startsWith('directus_')) return false;
+
 	return systemCollectionNames.includes(collection);
 }

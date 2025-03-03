@@ -1,10 +1,11 @@
-import type { Accountability, Permission } from '@directus/types';
+import type { Accountability } from '@directus/types';
 import { beforeEach, test, vi, expect } from 'vitest';
 import { PoliciesService } from '../../services/policies.js';
 import { UsersService } from '../../services/users.js';
 import { RolesService } from '../../services/roles.js';
 import type { Context } from '../types.js';
-import { fetchDynamicVariableContext } from './fetch-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from './fetch-dynamic-variable-data.js';
+import type { DynamicVariableContext } from './extract-required-dynamic-variable-context.js';
 
 vi.mock('../../services/users.js', () => ({
 	UsersService: vi.fn(),
@@ -28,21 +29,20 @@ beforeEach(() => {
 test('Returns filter context for current user', async () => {
 	const user = {};
 
-	const permissions = [
-		{
-			permissions: {
-				key: { _eq: '$CURRENT_USER.email' },
-			},
-		},
-	] as unknown as Permission[];
+	const dynamicVariableContext: DynamicVariableContext = {
+		$CURRENT_USER: new Set(['email']),
+		$CURRENT_ROLE: new Set(),
+		$CURRENT_ROLES: new Set(),
+		$CURRENT_POLICIES: new Set(),
+	};
 
 	vi.mocked(UsersService.prototype.readOne).mockResolvedValue(user);
 
-	const res = await fetchDynamicVariableContext(
+	const res = await fetchDynamicVariableData(
 		{
-			permissions,
 			accountability: { user: 'user', roles: [] as string[] } as Accountability,
 			policies: [],
+			dynamicVariableContext,
 		},
 		{} as Context,
 	);
@@ -54,19 +54,18 @@ test('Returns filter context for current user', async () => {
 test('Returns filter context for current role', async () => {
 	const role = {};
 
-	const permissions = [
-		{
-			permissions: {
-				key: { _eq: '$CURRENT_ROLE.name' },
-			},
-		},
-	] as unknown as Permission[];
+	const dynamicVariableContext: DynamicVariableContext = {
+		$CURRENT_USER: new Set(),
+		$CURRENT_ROLE: new Set(['name']),
+		$CURRENT_ROLES: new Set(),
+		$CURRENT_POLICIES: new Set(),
+	};
 
 	vi.mocked(RolesService.prototype.readOne).mockResolvedValue(role);
 
-	const res = await fetchDynamicVariableContext(
+	const res = await fetchDynamicVariableData(
 		{
-			permissions,
+			dynamicVariableContext,
 			accountability: { role: 'role', roles: [] as string[] } as Accountability,
 			policies: [],
 		},
@@ -80,19 +79,18 @@ test('Returns filter context for current role', async () => {
 test('Returns filter context for current policies', async () => {
 	const policies: any[] = [];
 
-	const permissions = [
-		{
-			permissions: {
-				key: { _in: '$CURRENT_POLICIES.name' },
-			},
-		},
-	] as unknown as Permission[];
+	const dynamicVariableContext: DynamicVariableContext = {
+		$CURRENT_USER: new Set(),
+		$CURRENT_ROLE: new Set(),
+		$CURRENT_ROLES: new Set(),
+		$CURRENT_POLICIES: new Set(['name']),
+	};
 
 	vi.mocked(PoliciesService.prototype.readMany).mockResolvedValue(policies);
 
-	const res = await fetchDynamicVariableContext(
+	const res = await fetchDynamicVariableData(
 		{
-			permissions,
+			dynamicVariableContext,
 			accountability: { roles: [] as string[] } as Accountability,
 			policies: ['policy-1'],
 		},
