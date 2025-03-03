@@ -87,9 +87,8 @@ describe('retrieves items with filters', async () => {
 
 		expect(groupByWithAggregationResponse.statusCode).toEqual(200);
 		expect(groupByWithAggregationResponse.body.data.length).toBe(1);
-		// It would be nice to also check the actual result, but the result is not deterministic.
-		// Depending on the database, it returns either an integer or a string.
-		// expect(groupByWithAggregationResponse.body.data[0].count).toBe(2);
+		// Depending on the database, it returns either an integer or a string, so is is being casted here.
+		expect(Number(groupByWithAggregationResponse.body.data[0].count)).toBe(2);
 
 		// A query which produces a case when statement in the final query
 		// where the fields to compare, have different data types:
