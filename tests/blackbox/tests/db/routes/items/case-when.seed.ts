@@ -2,16 +2,9 @@ import { DeleteCollection } from '@common/functions';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import type { Item } from '@directus/types';
-import { type UUID } from 'node:crypto';
 import { expect, it } from 'vitest';
 import request from 'supertest';
 import { getUrl } from '@common/config';
-
-export type Articles = {
-	id?: number | string;
-	user_created: UUID;
-	// date_created: string;
-};
 
 export type Result = {
 	isSeeded: boolean;
