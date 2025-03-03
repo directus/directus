@@ -22,7 +22,7 @@ const {
 	disabled: boolean;
 	loading: boolean;
 	validationErrors: any[];
-	junctionFieldLocation: string;
+	junctionFieldLocation?: string;
 	relatedCollectionFields: Field[];
 	relatedPrimaryKey: PrimaryKey;
 	refresh: () => void;
