@@ -11,22 +11,7 @@ import OverlayItem from '@/views/private/components/overlay-item.vue';
 import { getItemRoute, getCollectionRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-
-type EditConfig = {
-	collection: string;
-	item: PrimaryKey | null;
-	fields?: string[];
-	mode: 'drawer' | 'modal' | 'popover';
-};
-type ReceiveAction = 'connect' | 'edit';
-type ReceiveData = { action: ReceiveAction | null; data: unknown };
-type SendAction = 'confirm' | 'showEditableElements' | 'saved';
-type SavedData = {
-	key: string;
-	collection: EditConfig['collection'];
-	item: EditConfig['item'];
-	payload: Record<string, any>;
-};
+import type { EditConfig, ReceiveData, SendAction, SavedData } from '../types';
 
 const { url, frameEl, showEditableElements } = defineProps<{
 	url: string;
