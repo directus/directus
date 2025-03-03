@@ -714,6 +714,7 @@ function revert(values: Record<string, any>) {
 			:fields="fields"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
+			:current-version="currentVersion"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
