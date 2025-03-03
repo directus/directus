@@ -7,7 +7,6 @@
 # but creates the appropriate entries in the netlify.toml
 #
 
-/app/data-model.html                                                                                https://directus.io/docs/getting-started/data-model
 /app/data-model/collections.html                                                                    https://directus.io/docs/guides/data-model/collections
 /app/data-model/fields.html                                                                         https://directus.io/docs/guides/data-model/fields
 /app/data-model/fields/groups.html                                                                  https://directus.io/docs/guides/data-model/interfaces
@@ -17,15 +16,17 @@
 /app/data-model/fields/selection.html                                                               https://directus.io/docs/guides/data-model/interfaces
 /app/data-model/fields/text-numbers.html                                                            https://directus.io/docs/guides/data-model/interfaces
 /app/data-model/relationships.html                                                                  https://directus.io/docs/guides/data-model/relationships
-/app/faq.html                                                                                       https://directus.io/docs/community/reporting-and-support/troubleshooting-steps
-/app/flows.html                                                                                     https://directus.io/docs/guides/automate/flows
+
 /app/flows/operations.html                                                                          https://directus.io/docs/guides/automate/operations
 /app/flows/triggers.html                                                                            https://directus.io/docs/guides/automate/triggers
+
+/app/data-model.html                                                                                https://directus.io/docs/getting-started/data-model
+/app/faq.html                                                                                       https://directus.io/docs/community/reporting-and-support/troubleshooting-steps
+/app/flows.html                                                                                     https://directus.io/docs/guides/automate/flows
 /app/presets-bookmarks.html                                                                         https://directus.io/docs/guides/content/explore
 /app/security.html                                                                                  https://directus.io/docs/configuration/security-limits
 
 /blog/guest-author.html                                                                             https://directus.io/docs/community/programs/guest-authors
-/blog/                                                                                              https://directus.io/docs/tutorials
 
 /contributing/code-of-conduct.html                                                                  https://directus.io/docs/community/overview/conduct
 /contributing/codebase-overview.html                                                                https://directus.io/docs/community/codebase/overview
@@ -130,8 +131,6 @@
 /guides/sdk/types.html                                                                              https://directus.io/docs/guides/connect/sdk
 /guides/template_shell.html                                                                         https://directus.io/docs/
 
-/                                                                                                   https://directus.io/docs/
-/plus/                                                                                              https://directus.io/docs/
 
 /reference/authentication.html                                                                      https://directus.io/docs/api/authentication
 /reference/files.html                                                                               https://directus.io/docs/api/files
@@ -140,6 +139,7 @@
 /reference/items.html                                                                               https://directus.io/docs/api/items
 /reference/old-sdk.html                                                                             https://directus.io/docs/api
 /reference/query.html                                                                               https://directus.io/docs/api
+
 /reference/system/activity.html                                                                     https://directus.io/docs/api
 /reference/system/collections.html                                                                  https://directus.io/docs/api/collections
 /reference/system/comments.html                                                                     https://directus.io/docs/api/comments
@@ -189,6 +189,7 @@
 /user-guide/cloud/projects.html                                                                     https://directus.io/docs/cloud/projects/create
 /user-guide/cloud/teams.html                                                                        https://directus.io/docs/cloud/getting-started/teams
 /user-guide/cloud/variables.html                                                                    https://directus.io/docs/cloud/configuration/environment-variables
+
 /user-guide/content-module/content.html                                                             https://directus.io/docs/guides/content/explore
 /user-guide/content-module/content/collections.html                                                 https://directus.io/docs/guides/content/explore
 /user-guide/content-module/content/items.html                                                       https://directus.io/docs/guides/content/editor
@@ -198,20 +199,26 @@
 /user-guide/content-module/import-export.html                                                       https://directus.io/docs/guides/content/import-export
 /user-guide/content-module/layouts.html                                                             https://directus.io/docs/guides/content/layouts
 /user-guide/content-module/translation-strings.html                                                 https://directus.io/docs/guides/content/translations
+
 /user-guide/file-library/files.html                                                                 https://directus.io/docs/getting-started/upload-files
 /user-guide/file-library/folders.html                                                               https://directus.io/docs/guides/files/manage
+
 /user-guide/insights/charts.html                                                                    https://directus.io/docs/guides/insights/panels
 /user-guide/insights/dashboards.html                                                                https://directus.io/docs/guides/insights/overview
 /user-guide/insights/panels.html                                                                    https://directus.io/docs/guides/insights/panels
+
 /user-guide/marketplace/overview.html                                                               https://directus.io/docs/guides/extensions/marketplace
+
 /user-guide/overview/data-studio-app.html                                                           https://directus.io/docs/guides/content/editor
 /user-guide/overview/glossary.html                                                                  https://directus.io/docs/guides/content/editor
 /user-guide/overview/quickstart.html                                                                https://directus.io/docs/guides/content/editor
+
 /user-guide/settings/activity-log.html                                                              https://directus.io/docs/guides/auth/accountability
 /user-guide/settings/presets-bookmarks.html                                                         https://directus.io/docs/guides/content/explore
 /user-guide/settings/project-settings.html                                                          https://directus.io/docs/configuration/general
 /user-guide/settings/system-logs.html                                                               https://directus.io/docs/configuration/general
 /user-guide/settings/theming.html                                                                   https://directus.io/docs/configuration/theming
+
 /user-guide/user-management/permissions.html                                                        https://directus.io/docs/guides/auth/access-control
 /user-guide/user-management/roles.html                                                              https://directus.io/docs/guides/auth/access-control
 /user-guide/user-management/user-directory.html                                                     https://directus.io/docs/guides/auth/creating-users
@@ -220,7 +227,6 @@
 
 /blog/getting-started-with-directus-and-angular.html                                                https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-angular
 /blog/migrating-notion-to-directus.html                                                             https://directus.io/docs/tutorials/migration/migrate-from-notion-to-directus
-/blog/hello-world.html                                                                              https://directus.io/docs/tutorials
 /blog/getting-started-directus-astro.html                                                           https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-astro
 /blog/creating-git-hub-issues-with-directus-automate.html                                           https://directus.io/docs/tutorials/workflows/create-github-issues-with-directus-automate
 /blog/directus-auth-nextauth.html                                                                   https://directus.io/docs/tutorials/getting-started/using-authentication-in-next-js
@@ -232,26 +238,16 @@
 /blog/generating-social-posts-gpt-4-directus-automa.html                                            https://directus.io/docs/tutorials/workflows/generate-social-posts-with-gpt-4-and-directus-automate
 /blog/configuring-okta-sso.html                                                                     https://directus.io/docs/tutorials/self-hosting/configure-okta-as-a-single-sign-on-provider
 /blog/monitoring-pipeline-flows-extensions.html                                                     https://directus.io/docs/tutorials/tips-and-tricks/build-a-monitoring-pipeline-for-flows-and-extensions
-/blog/the-changelog-1.html                                                                          https://directus.io/docs/releases/changelog
 /blog/getting-started-with-directus-django.html                                                     https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-django
 /blog/build-an-e-commerce-website-with-directus-and-next-js.html                                    https://directus.io/docs/tutorials/projects/build-an-ecommerce-platform-with-next-js-stripe-and-directus-automate
 /blog/getting-started-directus-and-eleventy-11ty-3.html                                             https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-eleventy-3
-/blog/devcycle-feature-flag-control-panel.html                                                      https://directus.io/docs/tutorials
 /blog/getting-started-with-directus-and-flask.html                                                  https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-flask
-/blog/announcing-panel-quest-hackathon.html                                                         https://directus.io/docs/tutorials
 /blog/building-directus-garden.html                                                                 https://directus.io/docs/tutorials/projects/build-directus-garden-a-passive-collaborative-event-booth-demo
 /blog/ai-santa-roast-app-with-directus-nuxt.html                                                    https://directus.io/docs/tutorials/projects/how-i-built-an-ai-open-source-santa-roast-app-with-directus-and-nuxt#naughty-or-nice-scoring-algorithm
 /blog/getting-started-directus-hugo.html                                                            https://directus.io/docs/tutorials/getting-started
 /blog/external-weather-api-data-custom-panel-extension.html                                         https://directus.io/docs/tutorials/extensions/display-external-weather-api-data-in-custom-panels
-/blog/hooks-monitoring-error-tracking-sentry.html                                                   https://directus.io/docs/tutorials
 /blog/using-directus-as-a-baby-health-tracker.html                                                  https://directus.io/docs/tutorials/projects/use-directus-as-a-baby-health-tracker-with-owlet-and-ops-genie
 /blog/preview-and-content-versioning-with-nextjs.html                                               https://directus.io/docs/tutorials/workflows/combine-live-preview-and-content-versioning-with-next-js
-/blog/the-changelog-3.html                                                                          https://directus.io/docs/releases/changelog
-/blog/the-changelog-4.html                                                                          https://directus.io/docs/releases/changelog
-/blog/the-changelog-2.html                                                                          https://directus.io/docs/releases/changelog
-/blog/the-changelog-5.html                                                                          https://directus.io/docs/releases/changelog
-/blog/directus-ai-hackathon-vote.html                                                               https://directus.io/docs/tutorials
-/blog/directus-panel-quest-hackathon-projects.html                                                  https://directus.io/docs/tutorials
 /blog/directus-and-iot-sensor-data-with-an-esp-32.html                                              https://directus.io/docs/tutorials/projects/integrate-directus-with-esp-32-hardware-sensors
 /blog/integrating-algolia-indexing-and-directus.html                                                https://directus.io/docs/tutorials/extensions/integrate-algolia-indexing-with-custom-hooks
 /blog/integrating-elasticsearch-indexing-with-directus.html                                         https://directus.io/docs/tutorials/extensions/integrate-elasticsearch-indexing-with-custom-hooks
@@ -260,13 +256,8 @@
 /blog/nuxt-directus-getting-started.html                                                            https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-nuxt
 /blog/directus-auth-sveltekit.html                                                                  https://directus.io/docs/tutorials/getting-started/using-authentication-in-sveltekit
 /blog/deploy-directus-digital-ocean-docker.html                                                     https://directus.io/docs/tutorials/self-hosting/deploy-directus-to-digital-ocean
-/blog/sync-google-calendar-directus-automate.html                                                   https://directus.io/docs/tutorials
 /blog/importing-files-in-directus-automate.html                                                     https://directus.io/docs/tutorials/tips-and-tricks/importing-files-in-directus-automate
-/blog/building-a-personal-travel-journal-with-vue-js-and-directus.html                              https://directus.io/docs/tutorials
-/blog/passwordless-sms-authentication-with-plivo-and-directus-automate.html                         https://directus.io/docs/tutorials
-/blog/build-a-url-shortener-with-react-type-script-and-directus.html                                https://directus.io/docs/tutorials
 /blog/building-a-testimonial-widget-with-sveltekit-and-directus.html                                https://directus.io/docs/tutorials/projects/build-a-testimonial-widget-with-sveltekit-and-directus
-/blog/building-a-job-board-platform-with-directus-and-solid-start-js.html                           https://directus.io/docs/tutorials
 /blog/building-a-hotel-booking-system-with-directus-next-js-and-stripe.html                         https://directus.io/docs/tutorials/projects/build-an-hotel-booking-platform-with-next-js-stripe-and-directus-automate
 /blog/building-a-video-streaming-app-with-sveltekit-and-directus.html                               https://directus.io/docs/tutorials/projects/build-a-video-streaming-app-with-sveltekit-and-directus
 /blog/getting-started-with-directus-and-laravel.html                                                https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-laravel
@@ -277,64 +268,29 @@
 /blog/deploying-directus-to-google-cloud-platform-with-docker.html                                  https://directus.io/docs/tutorials/self-hosting/deploy-directus-to-google-cloud-platform
 /blog/implement-directus-auth-in-next-js-14.html                                                    https://directus.io/docs/tutorials/getting-started/using-authentication-in-next-js
 /blog/getting-started-with-directus-and-android-with-kotlin.html                                    https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-in-android-with-kotlin
-/blog/tracking-github-issues-and-pull-requests-with-directus-automate.html                          https://directus.io/docs/tutorials
-/blog/advanced-filtering-dates-aggregation-and-grouping-and-combining-filters.html                  https://directus.io/docs/tutorials
 /blog/migrating-from-word-press-to-directus.html                                                    https://directus.io/docs/tutorials/migration/migrate-from-wordpress-to-directus
-/blog/understanding-policy-based-access-control.html                                                https://directus.io/docs/tutorials
 /blog/building-the-leap-week-registration-and-referral-system.html                                  https://directus.io/docs/tutorials/projects/build-the-leap-week-registration-and-referral-system
-/blog/building-a-job-board.html                                                                     https://directus.io/docs/tutorials
-/blog/5-automations-to-level-up-your-blog-with-directus.html                                        https://directus.io/docs/tutorials
-/blog/wedding-invite-vonage.html                                                                    https://directus.io/docs/tutorials
 /blog/building-user-feedback-widget-with-vuejs-directus.html                                        https://directus.io/docs/tutorials/projects/build-a-user-feedback-widget-with-vue-js
 /blog/mastering-multilingual-content-crowdin.html                                                   https://directus.io/docs/tutorials/workflows/integrating-multilingual-content-with-directus-and-crowdin
-/blog/getting-started-with-directus-and-preact.html                                                 https://directus.io/docs/tutorials
-/blog/getting-started-with-directus-and-qwik-city.html                                              https://directus.io/docs/tutorials
-/blog/getting-started-with-directus-and-remix.html                                                  https://directus.io/docs/tutorials
 /blog/directus-seo-tips-tricks.html                                                                 https://directus.io/docs/tutorials/tips-and-tricks/search-engine-optimization-best-practices
 /blog/getting-started-solidstart.html                                                               https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-solidstart
 /blog/getting-started-directus-sveltekit.html                                                       https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-sveltekit
 /blog/enrich-user-data-clearbit-directus-automate.html                                              https://directus.io/docs/tutorials/workflows/enrich-user-data-with-clearbit-and-directus-automate
 /blog/devs-intro-to-composable.html                                                                 https://directus.io/docs/guides/extensions/app-extensions/composables
 /blog/building-a-notebook-chrome-extension-with-directus.html                                       https://directus.io/docs/tutorials/projects/build-a-notebook-chrome-extension-with-directus-auth
-/blog/building-a-support-system-in-the-directus-data-studio.html                                    https://directus.io/docs/tutorials
 /blog/deploying-directus-to-azure-web-apps-with-docker.html                                         https://directus.io/docs/tutorials/self-hosting/deploy-directus-to-azure-web-apps
 /blog/getting-started-with-directus-spring-boot.html                                                https://directus.io/docs/tutorials/getting-started/fetch-data-from-directus-with-spring-boot
 /blog/google-docs-preview.html                                                                      https://directus.io/docs/tutorials/tips-and-tricks/preview-files-in-live-preview-with-google-docs-previews
 /blog/automatic-transcripts-deepgram.html                                                           https://directus.io/docs/tutorials/workflows/generate-transcripts-with-deepgram-and-directus-automate
-/blog/building-a-form-data-collection-and-email-notification-system-with-directus-and-next-js.html  https://directus.io/docs/tutorials
-/blog/announcing-directus-ai-hackathon.html                                                         https://directus.io/docs/tutorials
 /blog/detecting-high-risk-phone-numbers-vonage-automate.html                                        https://directus.io/docs/tutorials/workflows/detect-high-risk-phone-numbers-with-vonage-and-directus-automate
 /blog/implementing-pagination-and-infinite-scrolling-in-next-js.html                                https://directus.io/docs/tutorials/tips-and-tricks/implement-pagination-and-infinite-scrolling-in-next-js
 /blog/understanding-kubernetes.html                                                                 https://directus.io/docs/tutorials/self-hosting/understanding-kubernetes
 /blog/building-ai-venture-game.html                                                                 https://directus.io/docs/tutorials/projects/building-ai-venture-an-ai-powered-game-with-directus
 /blog/content-versioning-pre-release.html                                                           https://directus.io/docs/guides/content/content-versioning
-/blog/tags/connect.html                                                                             https://directus.io/docs/tutorials
-/blog/tags/automate.html                                                                            https://directus.io/docs/tutorials
-/blog/tags/concept.html                                                                             https://directus.io/docs/tutorials
-/blog/tags/extensions.html                                                                          https://directus.io/docs/tutorials
-/blog/tags/nuxt.html                                                                                https://directus.io/docs/tutorials
-/blog/tags/vue.html                                                                                 https://directus.io/docs/tutorials
-/blog/tags/auth.html                                                                                https://directus.io/docs/tutorials
-/blog/tags/guest-author.html                                                                        https://directus.io/docs/tutorials
-/blog/tags/vonage.html                                                                              https://directus.io/docs/tutorials
-/blog/tags/netlify.html                                                                             https://directus.io/docs/tutorials
-/blog/tags/ios.html                                                                                 https://directus.io/docs/tutorials
-/blog/tags/migration.html                                                                           https://directus.io/docs/tutorials
-/blog/tags/solid-js.html                                                                            https://directus.io/docs/tutorials
-/blog/tags/next.html                                                                                https://directus.io/docs/tutorials
-/blog/tags/getting-started.html                                                                     https://directus.io/docs/tutorials
-/blog/tags/insights.html                                                                            https://directus.io/docs/tutorials
-/blog/tags/react.html                                                                               https://directus.io/docs/tutorials
-/blog/tags/tips-tricks.html                                                                         https://directus.io/docs/tutorials
-/blog/tags/changelog.html                                                                           https://directus.io/docs/tutorials
-/blog/tags/svelte.html                                                                              https://directus.io/docs/tutorials
-/blog/tags/project.html                                                                             https://directus.io/docs/tutorials
-/blog/tags/node.html                                                                                https://directus.io/docs/tutorials
-/blog/tags/update.html                                                                              https://directus.io/docs/tutorials
-/blog/tags/self-hosting.html                                                                        https://directus.io/docs/tutorials
-/blog/tags/astro.html                                                                               https://directus.io/docs/tutorials
-/blog/tags/deployment.html                                                                          https://directus.io/docs/tutorials
-/blog/tags/ai.html                                                                                  https://directus.io/docs/tutorials
+
+/blog/the-changelog-*                                                                               https://directus.io/docs/changelog
+/blog/*                                                                                             https://directus.io/docs/tutorials
+/blog                                                                                               https://directus.io/docs/tutorials
 
 /guides/sdk.html                                                                                    https://directus.io/docs/guides/connect/sdk
 /guides/frameworks.html                                                                             https://directus.io/docs/tutorials/getting-started
@@ -343,11 +299,7 @@
 /guides/extensions.html                                                                             https://directus.io/docs/guides/extensions/overview
 /guides/administration.html                                                                         https://directus.io/docs/tutorials/migration/promoting-changes-between-environments-in-directus
 
-/plus/multi-tenant-saas.html                                                                        https://directus.io/plus
-/plus/onboarding-checklist.html                                                                     https://directus.io/plus
-/plus/streaming-platform.html                                                                       https://directus.io/plus
-/plus/introduction.html                                                                             https://directus.io/plus
-/plus/pim.html                                                                                      https://directus.io/plus
-/plus/plus-installation.html                                                                        https://directus.io/plus
-/plus/headless-lms.html                                                                             https://directus.io/plus
-/plus/status-page.html                                                                              https://directus.io/plus
+/plus/                                                                                              https://directus.io/docs/
+/plus/*                                                                                             https://directus.io/plus
+
+/                                                                                                   https://directus.io/docs/
