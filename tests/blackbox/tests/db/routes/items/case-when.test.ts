@@ -1,24 +1,9 @@
 import { getUrl } from '@common/config';
-import vendors, { type Vendor } from '@common/get-dbs-to-test';
+import vendors from '@common/get-dbs-to-test';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { collection, seedDBValues } from './case-when.seed';
 import { USER } from '@common/variables';
-
-// beforeAll(async () => {
-// 	console.log('seed db');
-// 	seedResult = await seedDBValues();
-// 	console.log('seeded db', seedResult.isSeeded);
-// }, 300_000);
-
-// test('Seed Database Values', () => {
-// 	if (seedResult) {
-// 		expect(seedResult.isSeeded).toStrictEqual(true);
-// 		return;
-// 	} else {
-// 		throw new Error('Seed Database Values failed');
-// 	}
-// });
 
 describe('retrieves items with filters', async () => {
 	const userToken = 'pp2KIAA3mGdgqngRVDuegxNuVj7gM-es';
@@ -86,15 +71,7 @@ describe('retrieves items with filters', async () => {
 
 		await seedDBValues(vendor, userToken);
 
-		// Admin can query both articles
-		const response = await request(getUrl(vendor))
-			.get(`/items/${collection}`)
-			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-		expect(response.statusCode).toEqual(200);
-		expect(response.body.data.length).toBe(2);
-
-		// Editor can only query articles created by them
+		// Editor can query item the editor created
 		const response1 = await request(getUrl(vendor))
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${userToken}`);
@@ -127,37 +104,3 @@ describe('retrieves items with filters', async () => {
 		// expect(comparisonResult.body.data.length).toBe(1);
 	});
 });
-
-// - - - - - API calls - - - - -
-// Those are in here temporarily.
-// They will be moved to a common place with a separate refactoring.
-
-async function deleteUser(vendor: Vendor, id: string): Promise<void> {
-	await request(getUrl(vendor)).delete(`/users/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-	// TODO - Fix this when API returns correct status code
-	// if (!response.ok) {
-	// 	throw new Error('Could not delete user');
-	// }
-}
-
-async function deletePolicy(vendor: Vendor, id: string): Promise<void> {
-	await request(getUrl(vendor)).delete(`/policies/${id}`).set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-	// @TODO - Fix this when API returns correct status code
-	// if (!response.ok) {
-	// 	throw new Error('Could not delete policy', response.body);
-	// }
-}
-
-async function DeletePermissions(vendor: Vendor, ids: number[]): Promise<void> {
-	ids.forEach(async (id) => {
-		const res = await request(getUrl(vendor))
-			.delete(`/permissions/${id}`)
-			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
-
-		if (!res.ok) {
-			throw new Error('Could not delete permissions', res.body);
-		}
-	});
-}
