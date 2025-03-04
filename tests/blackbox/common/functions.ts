@@ -1,4 +1,4 @@
-import type { Item, Permission, Query } from '@directus/types';
+import type { Permission, Query } from '@directus/types';
 import { omit } from 'lodash-es';
 import { randomUUID } from 'node:crypto';
 import request from 'supertest';
