@@ -658,13 +658,14 @@ export async function CreateFieldM2A(vendor: Vendor, options: OptionsCreateField
 export type OptionsCreateItem = {
 	collection: string;
 	item: any;
+	token?: string;
 };
 
 export async function CreateItem(vendor: Vendor, options: OptionsCreateItem) {
 	// Action
 	const response = await request(getUrl(vendor))
 		.post(`/items/${options.collection}`)
-		.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+		.set('Authorization', `Bearer ${options.token ?? USER.TESTS_FLOW.TOKEN}`)
 		.send(options.item);
 
 	return response.body.data;
