@@ -100,6 +100,6 @@ describe('retrieves items with filters', async () => {
 			.set('Authorization', `Bearer ${userToken}`);
 
 		expect(comparisonResult.statusCode).toEqual(200);
-		expect(Number(comparisonResult.body.data[0].count)).toBe(0);
+		expect(Number(comparisonResult.body.data[0].count.id)).toBe(0);
 	});
 });
