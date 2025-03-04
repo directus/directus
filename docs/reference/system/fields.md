@@ -51,6 +51,9 @@ The configured options for the used display.
 `readonly` **boolean**\
 If the field is considered readonly in the Data Studio.
 
+`required` **boolean**\
+If the field is considered required in the Data Studio.
+
 `hidden` **boolean**\
 If the field is hidden from the edit page in the Data Studio.
 
@@ -136,6 +139,7 @@ Comment as stored in the database.
 		"display": null,
 		"display_options": null,
 		"readonly": true,
+		"required": true,
 		"hidden": true,
 		"sort": 1,
 		"width": "full",

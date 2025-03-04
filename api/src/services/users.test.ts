@@ -89,6 +89,10 @@ describe('Integration Tests', () => {
 			.spyOn(UsersService.prototype as any, 'checkPasswordPolicy')
 			.mockResolvedValue(() => vi.fn());
 
+		const clearUserSessionsSpy = vi
+			.spyOn(UsersService.prototype as any, 'clearUserSessions')
+			.mockResolvedValue(() => vi.fn());
+
 		afterEach(() => {
 			vi.clearAllMocks();
 		});
@@ -170,6 +174,7 @@ describe('Integration Tests', () => {
 				await service.updateMany([randomUUID()], {}, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(undefined);
+				expect(clearUserSessionsSpy).not.toBeCalled();
 			});
 
 			it('should request all user integrity checks if role is changed', async () => {
@@ -186,6 +191,7 @@ describe('Integration Tests', () => {
 				await service.updateMany([randomUUID()], { status: 'inactive' }, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.All);
+				expect(clearUserSessionsSpy).toBeCalled();
 			});
 
 			it('should request user limit checks if status is changed to "active"', async () => {
@@ -194,6 +200,7 @@ describe('Integration Tests', () => {
 				await service.updateMany([randomUUID()], { status: 'active' }, opts);
 
 				expect(opts.userIntegrityCheckFlags).toBe(UserIntegrityCheckFlag.UserLimits);
+				expect(clearUserSessionsSpy).not.toBeCalled();
 			});
 
 			it('should clear caches if role is changed', async () => {
@@ -214,6 +221,7 @@ describe('Integration Tests', () => {
 				await service.updateMany([randomUUID()], { email: 'test@example.com' });
 
 				expect(checkUniqueEmailsSpy).toBeCalledTimes(1);
+				expect(clearUserSessionsSpy).toBeCalled();
 			});
 
 			it('should disallow updating multiple items to same email', async () => {
@@ -227,18 +235,22 @@ describe('Integration Tests', () => {
 						field: 'email',
 					}),
 				);
+
+				expect(clearUserSessionsSpy).toBeCalled();
 			});
 
 			it('should not checkPasswordPolicy', async () => {
 				await service.updateMany([randomUUID()], {});
 
 				expect(checkPasswordPolicySpy).not.toBeCalled();
+				expect(clearUserSessionsSpy).not.toBeCalled();
 			});
 
 			it('should checkPasswordPolicy once', async () => {
 				await service.updateMany([randomUUID()], { password: 'testpassword' });
 
 				expect(checkPasswordPolicySpy).toBeCalledTimes(1);
+				expect(clearUserSessionsSpy).toBeCalled();
 			});
 
 			describe('restricted auth fields', () => {
@@ -305,6 +317,7 @@ describe('Integration Tests', () => {
 				await service.deleteMany([randomUUID()]);
 
 				expect(validateRemainingAdminUsers).toHaveBeenCalled();
+				expect(clearUserSessionsSpy).toBeCalled();
 			});
 		});
 
