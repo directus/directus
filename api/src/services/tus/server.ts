@@ -66,6 +66,8 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 
 			if (!file) return res;
 
+			let fileData;
+
 			// update metadata when file is replaced
 			if (file.tus_data?.['metadata']?.['replace_id']) {
 				const newFile = await service.readOne(file.tus_data['metadata']['replace_id']);
@@ -81,6 +83,13 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 					...metadata,
 				});
 
+				fileData = {
+					...newFile,
+					...updateFields,
+					...metadata,
+					id: file.tus_data['metadata']['replace_id'],
+				};
+
 				await service.deleteOne(file.id);
 			} else {
 				const metadata = await extractMetadata(file.storage, file);
@@ -90,21 +99,28 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 					tus_id: null,
 					tus_data: null,
 				});
+
+				fileData = {
+					...file,
+					...metadata,
+					tus_id: null,
+					tus_data: null,
+				};
 			}
 
-			const eventMeta = {
-				payload: await service.readOne(file.id),
-				key: file.id,
-				collection: 'directus_files',
-			};
-
-			const eventContext = {
-				database: getDatabase(),
-				schema: req.schema,
-				accountability: req.accountability,
-			};
-
-			emitter.emitAction('files.upload', eventMeta, eventContext);
+			emitter.emitAction(
+				'files.upload',
+				{
+					payload: fileData,
+					key: fileData.id,
+					collection: 'directus_files',
+				},
+				{
+					database: getDatabase(),
+					schema: req.schema,
+					accountability: req.accountability,
+				},
+			);
 
 			return res;
 		},
