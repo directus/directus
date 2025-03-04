@@ -1,9 +1,10 @@
 import { getUrl } from '@common/config';
+import { CreateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import { collection, seedDBValues } from './case-when.seed';
-import { USER } from '@common/variables';
+import { collection } from './case-when.seed';
 
 describe('retrieves items with filters', async () => {
 	const userToken = 'pp2KIAA3mGdgqngRVDuegxNuVj7gM-es';
@@ -67,7 +68,8 @@ describe('retrieves items with filters', async () => {
 			throw new Error('Could not create user', userResponse.body);
 		}
 
-		await seedDBValues(vendor, userToken);
+		// Create two items
+		await CreateItem(vendor, { collection, item: [{}, {}], token: userToken });
 
 		// Editor can query item the editor created
 		const itemsResponse = await request(getUrl(vendor))

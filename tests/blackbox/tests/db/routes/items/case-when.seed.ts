@@ -1,10 +1,9 @@
-import { DeleteCollection } from '@common/functions';
-import vendors, { type Vendor } from '@common/get-dbs-to-test';
-import { USER } from '@common/variables';
-import type { Item } from '@directus/types';
-import { expect, it } from 'vitest';
-import request from 'supertest';
 import { getUrl } from '@common/config';
+import { DeleteCollection } from '@common/functions';
+import vendors from '@common/get-dbs-to-test';
+import { USER } from '@common/variables';
+import request from 'supertest';
+import { expect, it } from 'vitest';
 
 export type Result = {
 	isSeeded: boolean;
@@ -104,22 +103,3 @@ export const seedDBStructure = () => {
 		300000,
 	);
 };
-
-// Only custom collections, no item creation for system collections
-export async function seedDBValues(vendor: Vendor, userToken: string): Promise<void> {
-	await CreateItem(vendor, collection, userToken);
-	await CreateItem(vendor, collection, userToken);
-}
-
-async function CreateItem(vendor: Vendor, collection: string, token: string): Promise<Item> {
-	const response = await request(getUrl(vendor))
-		.post(`/items/${collection}`)
-		.set('Authorization', `Bearer ${token}`)
-		.send({});
-
-	if (!response.ok) {
-		throw new Error('Could not create item', response.body);
-	}
-
-	return response.body.data;
-}
