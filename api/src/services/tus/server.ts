@@ -16,6 +16,8 @@ import { ItemsService } from '../index.js';
 import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
 import { pick } from 'lodash-es';
+import emitter from '../../emitter.js';
+import getDatabase from '../../database/index.js';
 
 type Context = {
 	schema: SchemaOverview;
@@ -89,6 +91,20 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 					tus_data: null,
 				});
 			}
+
+			const eventMeta = {
+				payload: await service.readOne(file.id),
+				key: file.id,
+				collection: 'directus_files',
+			};
+
+			const eventContext = {
+				database: getDatabase(),
+				schema: req.schema,
+				accountability: req.accountability,
+			};
+
+			emitter.emitAction('files.upload', eventMeta, eventContext);
 
 			return res;
 		},
