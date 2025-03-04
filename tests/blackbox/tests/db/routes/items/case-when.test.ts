@@ -13,15 +13,13 @@ describe('retrieves items with filters', async () => {
 			.post(`/users`)
 			.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`)
 			.send({
-				first_name: 'john',
-				email: 'j@mail.com',
-				password: '12345',
-				token: 'pp2KIAA3mGdgqngRVDuegxNuVj7gM-es',
+				first_name: `${collection} user`,
+				token: userToken,
 				policies: {
 					create: [
 						{
 							policy: {
-								name: 'sample',
+								name: `${collection} policy`,
 								permissions: {
 									create: [
 										{
@@ -40,7 +38,7 @@ describe('retrieves items with filters', async () => {
 											validation: null,
 											fields: ['id', 'user_created', 'date_created'],
 											presets: null,
-											collection: 'articles_case_when',
+											collection,
 											action: 'read',
 										},
 										{
@@ -49,7 +47,7 @@ describe('retrieves items with filters', async () => {
 											validation: null,
 											fields: ['*'],
 											presets: null,
-											collection: 'articles_case_when',
+											collection,
 											action: 'create',
 										},
 									],
@@ -72,12 +70,12 @@ describe('retrieves items with filters', async () => {
 		await seedDBValues(vendor, userToken);
 
 		// Editor can query item the editor created
-		const response1 = await request(getUrl(vendor))
+		const itemsResponse = await request(getUrl(vendor))
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${userToken}`);
 
-		expect(response1.statusCode).toEqual(200);
-		expect(response1.body.data.length).toBe(2);
+		expect(itemsResponse.statusCode).toEqual(200);
+		expect(itemsResponse.body.data.length).toBe(2);
 
 		// A groupBy query with aggregation
 		// The query for which the deduplication was implemented
