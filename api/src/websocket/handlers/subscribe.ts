@@ -162,12 +162,12 @@ export class SubscribeHandler {
 					subscription.event = message.event as SubscriptionEvent;
 				}
 
-				if ('query' in message) {
-					if (typeof message.query === 'object') {
+				if (message.query) {
+					if (typeof message.query === 'object' && !Array.isArray(message.query)) {
 						throw new WebSocketError('subscribe', 'INVALID_QUERY', 'The provided query must be an object', message.uid);
 					}
 
-					subscription.query = sanitizeQuery(message.query ?? {}, accountability);
+					subscription.query = sanitizeQuery(message.query, accountability);
 				}
 
 				if ('item' in message) subscription.item = String(message.item);
