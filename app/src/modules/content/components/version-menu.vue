@@ -249,10 +249,10 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 						<v-text-overflow :text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')" />
 					</span>
 					<div class="version-current" :class="{ 'has-changes': hasEdits }">
-						v:
+						<v-icon class="version-icon" name="history" />
 						{{ currentVersion?.name ?? t('main') }}
 
-						<v-icon name="arrow_drop_down" />
+						<v-icon small name="arrow_drop_down" />
 					</div>
 				</button>
 			</template>
@@ -440,10 +440,34 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-menu-wrapper {
 	overflow: hidden;
+	position: relative;
+	display: flex;
+	align-items: center;
+
+	@media (min-width: 600px) {
+		padding-left: 1rem; // Add space for the bullet
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 0.25rem;
+			width: 0.25rem;
+			height: 0.25rem;
+			border-radius: 50%;
+			transform: translateY(-50%);
+			background-color: var(--theme--foreground-subdued);
+		}
+	}
 }
 
 .version-menu {
 	flex-shrink: 1;
+}
+
+.version-current {
+	display: flex;
+	align-items: center;
 }
 
 .version-item {
@@ -460,6 +484,11 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-name {
 	display: none;
+}
+
+.version-icon {
+	--v-icon-size: 1rem;
+	--v-icon-color: var(--theme--foreground-subdued);
 }
 
 .version-button {

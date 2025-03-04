@@ -491,7 +491,13 @@ const shouldShowVersioning = computed(
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view v-else v-model:split-view="splitView" :split-view-min-width="310" :title="title">
+	<private-view
+		v-else
+		v-model:split-view="splitView"
+		:class="{ 'has-content-versioning': shouldShowVersioning }"
+		:split-view-min-width="310"
+		:title="title"
+	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
@@ -537,17 +543,13 @@ const shouldShowVersioning = computed(
 		</template>
 
 		<template #headline>
-			<div class="headline-wrapper">
+			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
 				<v-breadcrumb
 					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
 					:items="[{ name: t('content'), to: '/content' }]"
+					class="headline-breadcrumb"
 				/>
-				<v-breadcrumb v-else :items="breadcrumb" />
-
-				<!--<div v-if="shouldShowVersioning" class="version-current" :class="{ 'has-changes': hasEdits }">
-					<v-icon name="history" small class="version-icon" />
-					{{ currentVersion?.name ?? t('main') }}
-				</div>-->
+				<v-breadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
 
 				<version-menu
 					v-if="shouldShowVersioning"
@@ -818,10 +820,44 @@ const shouldShowVersioning = computed(
 	margin-top: 14px;
 }
 
-.headline-wrapper {
-	display: flex;
-	align-items: center;
-	gap: 12px;
+.has-content-versioning {
+	.type-title {
+		margin-top: 0;
+		line-height: 1;
+	}
+
+	:deep(.header-bar .title-container) {
+		flex-direction: column;
+		justify-content: center;
+		gap: 0;
+		align-items: start;
+
+		.headline {
+			position: relative;
+			opacity: 1;
+		}
+
+		@media (min-width: 600px) {
+			opacity: 1;
+		}
+	}
+
+	.headline-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	:deep(.header-bar.collapsed.shadow .title-container .headline) {
+		opacity: 1;
+		pointer-events: auto;
+	}
+}
+
+.headline-wrapper.has-version-menu .headline-breadcrumb {
+	@media (max-width: 600px) {
+		display: none;
+	}
 }
 
 .version-current {
