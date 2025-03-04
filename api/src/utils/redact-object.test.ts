@@ -308,17 +308,13 @@ describe('getReplacer tests', () => {
 	});
 });
 
-describe("regex escape special characters (issue #24641)", () => {
+describe('regex escape special characters (issue #24641)', () => {
 	test("escaping 'x)yMQt7ZNK3k'", () => {
 		const redactValues = {
-			'some_password': 'x)yMQt7ZNK3k',
+			some_password: 'x)yMQt7ZNK3k',
 		};
 
-		const result = redactObject(
-			input,
-			{ values: redactValues },
-			getRedactedString,
-		);
+		const result = redactObject(input, { values: redactValues }, getRedactedString);
 
 		expect(result).toEqual(
 			merge({}, input, {
@@ -335,14 +331,10 @@ describe("regex escape special characters (issue #24641)", () => {
 
 	test("escaping '^.+.*?^)(][}{|$'", () => {
 		const redactValues = {
-			'some_password': '^.+.*?^)(][}{|$',
+			some_password: '^.+.*?^)(][}{|$',
 		};
 
-		const result = redactObject(
-			input,
-			{ values: redactValues },
-			getRedactedString,
-		);
+		const result = redactObject(input, { values: redactValues }, getRedactedString);
 
 		expect(result).toEqual(
 			merge({}, input, {
