@@ -3,6 +3,7 @@ import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
 import { SchemaHelper, type SortRecord } from '../types.js';
 
+
 const env = useEnv();
 
 export class SchemaHelperPostgres extends SchemaHelper {
