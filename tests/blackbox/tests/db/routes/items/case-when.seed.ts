@@ -23,7 +23,7 @@ export const seedDBStructure = () => {
 					.post(`/collections`)
 					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 					.send({
-						collection: 'articles_case_when',
+						collection,
 						fields: [
 							{
 								field: 'id',
@@ -85,7 +85,7 @@ export const seedDBStructure = () => {
 					.post(`/relations`)
 					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
 					.send({
-						collection: 'articles_case_when',
+						collection,
 						field: 'user_created',
 						related_collection: 'directus_users',
 						schema: {},
