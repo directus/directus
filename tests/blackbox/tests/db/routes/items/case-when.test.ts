@@ -77,18 +77,18 @@ describe('retrieves items with filters', async () => {
 		// User with the above policy should only be able to read items that they have created themselves.
 		const itemsResponse = await request(getUrl(vendor))
 			.get(`/items/${collection}`)
-			.set('Authorization', `Bearer ${userToken}`);
+			.set('Authorization', `Bearer ${userToken}`)
+			.expect(200);
 
-		expect(itemsResponse.statusCode).toEqual(200);
 		expect(itemsResponse.body.data.length).toBe(2);
 
 		// A groupBy query with aggregation
 		// The query for which the deduplication was implemented
 		const groupByWithAggregationResponse = await request(getUrl(vendor))
 			.get(`/items/${collection}?groupBy=day(date_created)&aggregate[count]=*`)
-			.set('Authorization', `Bearer ${userToken}`);
+			.set('Authorization', `Bearer ${userToken}`)
+			.expect(200);
 
-		expect(groupByWithAggregationResponse.statusCode).toEqual(200);
 		expect(groupByWithAggregationResponse.body.data.length).toBe(1);
 		// Depending on the database, it returns either an integer or a string, so is is being casted here.
 		expect(Number(groupByWithAggregationResponse.body.data[0].count)).toBe(2);
@@ -100,9 +100,9 @@ describe('retrieves items with filters', async () => {
 			.get(
 				`/comments?filter[_and][0][collection][_eq]=directus_users&filter[_and][1][item][_eq]=${userResponse.body.data.id}&aggregate[count]=id`,
 			)
-			.set('Authorization', `Bearer ${userToken}`);
+			.set('Authorization', `Bearer ${userToken}`)
+			.expect(200);
 
-		expect(comparisonResult.statusCode).toEqual(200);
 		expect(Number(comparisonResult.body.data[0].count.id)).toBe(0);
 	});
 });
