@@ -6,4 +6,11 @@ export class CapabilitiesHelperPostgres extends CapabilitiesHelper {
 		// Supported in CockroachDB (tested manually)
 		return true;
 	}
+
+	override supportsSameValuesWithDifferentTypesInParameters(): boolean {
+		// Postgres infers the type from the context in which the parameter is first referenced.
+		// This causes issues when the same parameter is used in different contexts with different types.
+		// See https://www.postgresql.org/docs/current/sql-prepare.html
+		return false;
+	}
 }

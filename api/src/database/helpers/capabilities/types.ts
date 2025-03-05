@@ -5,7 +5,17 @@ export class CapabilitiesHelper extends DatabaseHelper {
 		return false;
 	}
 
+	/**
+	 * Indicates if the values within the list of parameters can be safely deduplicated.
+	 * This is useful for databases that do not automatically cast the value for cases when a parameter is referenced multiple times in the query,
+	 * but the targeting type is different. For example when referencing a parameter which a UUID, postgres cannot use the same parameter reference
+	 * to compare it against column of type UUID and at the same time against a column of type a string.
+	 */
 	supportsSameValuesWithDifferentTypesInParameters(): boolean {
-		return false;
+		return true;
+	}
+
+	supportsAliasReuse(): boolean {
+		return true;
 	}
 }

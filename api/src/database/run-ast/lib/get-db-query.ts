@@ -48,7 +48,10 @@ export function getDBQuery(
 
 		let dbQuery;
 
-		if (helpers.capabilities.supportsSameValuesWithDifferentTypesInParameters()) {
+		if (
+			helpers.capabilities.supportsSameValuesWithDifferentTypesInParameters() &&
+			!helpers.capabilities.supportsAliasReuse()
+		) {
 			// Map the group fields to their respective field nodes
 			const groupWhenCases = hasCaseWhen
 				? queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)?.whenCase ?? [])
