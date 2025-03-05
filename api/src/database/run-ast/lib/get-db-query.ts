@@ -49,7 +49,7 @@ export function getDBQuery(
 		let dbQuery;
 
 		if (
-			helpers.capabilities.supportsSameValuesWithDifferentTypesInParameters() &&
+			helpers.capabilities.supportsDeduplicationOfParameters() &&
 			!helpers.capabilities.supportsAliasReuse()
 		) {
 			// Map the group fields to their respective field nodes

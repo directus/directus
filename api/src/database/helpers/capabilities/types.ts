@@ -11,7 +11,7 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	 * but the targeting type is different. For example when referencing a parameter which a UUID, postgres cannot use the same parameter reference
 	 * to compare it against column of type UUID and at the same time against a column of type a string.
 	 */
-	supportsSameValuesWithDifferentTypesInParameters(): boolean {
+	supportsDeduplicationOfParameters(): boolean {
 		return true;
 	}
 
