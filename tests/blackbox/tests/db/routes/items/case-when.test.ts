@@ -69,7 +69,7 @@ describe('retrieves items with filters', async () => {
 		}
 
 		// Create a single item with the admin token
-		await CreateItem(vendor, { collection, item: {}, token: USER.ADMIN.TOKEN });
+		await CreateItem(vendor, { collection, item: {}, token: 'USER.ADMIN.TOKEN' });
 
 		// Create two items with user token
 		await CreateItem(vendor, { collection, item: [{}, {}], token: userToken });
