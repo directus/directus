@@ -163,7 +163,7 @@ export class SubscribeHandler {
 				}
 
 				if (message.query) {
-					if (typeof message.query === 'object' && !Array.isArray(message.query)) {
+					if (typeof message.query !== 'object' || Array.isArray(message.query)) {
 						throw new WebSocketError('subscribe', 'INVALID_QUERY', 'The provided query must be an object', message.uid);
 					}
 
