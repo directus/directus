@@ -48,7 +48,7 @@ export function getDBQuery(
 
 		let dbQuery;
 
-		if (helpers.capabilities.supportsSameValuesInQueryParameter()) {
+		if (helpers.capabilities.supportsSameValuesWithDifferentTypesInParameters()) {
 			// Map the group fields to their respective field nodes
 			const groupWhenCases = hasCaseWhen
 				? queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)?.whenCase ?? [])
@@ -58,6 +58,8 @@ export function getDBQuery(
 				aliasMap,
 				groupWhenCases,
 			}).query;
+
+			flatQuery.select(fieldNodes.map((node) => preProcess(node)));
 
 			withPreprocessBindings(knex, dbQuery);
 		} else {
@@ -88,9 +90,9 @@ export function getDBQuery(
 				groupWhenCases,
 				groupColumnPositions,
 			}).query;
-		}
 
-		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
+			flatQuery.select(fieldNodes.map((node) => preProcess(node)));
+		}
 
 		return dbQuery;
 	}

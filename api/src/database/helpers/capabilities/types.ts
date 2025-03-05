@@ -5,7 +5,7 @@ export class CapabilitiesHelper extends DatabaseHelper {
 		return false;
 	}
 
-	supportsSameValuesInQueryParameter(): boolean {
+	supportsSameValuesWithDifferentTypesInParameters(): boolean {
 		return false;
 	}
 }
