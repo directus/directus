@@ -852,6 +852,9 @@ const shouldShowVersioning = computed(
 		opacity: 1;
 		pointer-events: auto;
 	}
+	:deep(.header-bar.small.shadow .title-container .headline) {
+		opacity: 1;
+	}
 }
 
 .headline-wrapper.has-version-menu .headline-breadcrumb {
