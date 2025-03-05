@@ -82,6 +82,15 @@ describe('retrieves items with filters', async () => {
 
 		expect(itemsResponse.body.data.length).toBe(2);
 
+		// A simple groupBy query
+		// The query for which the deduplication was implemented
+		const groupByResponse = await request(getUrl(vendor))
+			.get(`/items/${collection}?groupBy=user_created`)
+			.set('Authorization', `Bearer ${userToken}`)
+			.expect(200);
+
+		expect(groupByResponse.body.data.length).toBe(1);
+
 		// A groupBy query with aggregation
 		// The query for which the deduplication was implemented
 		const groupByWithAggregationResponse = await request(getUrl(vendor))
