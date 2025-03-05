@@ -23,6 +23,7 @@ const input = {
 				last_name: 'User',
 				email: 'user@example.com',
 				password: 'secret',
+				secret: '^.+.*?^)(][}{|$',
 			},
 			key: 'eb641950-fffa-4388-8606-aede594ae487',
 			collection: 'directus_users',
@@ -34,6 +35,7 @@ const input = {
 				last_name: 'User',
 				email: 'user@example.com',
 				password: 'secret',
+				secret: 'x)yMQt7ZNK3k',
 			},
 			key: 'eb641950-fffa-4388-8606-aede594ae487',
 			collection: 'directus_users',
@@ -303,5 +305,47 @@ describe('getReplacer tests', () => {
 		delete result.error.stack;
 
 		expect(result).toStrictEqual(expectedResult);
+	});
+});
+
+describe('regex escape special characters (issue #24641)', () => {
+	test("escaping 'x)yMQt7ZNK3k'", () => {
+		const redactValues = {
+			some_password: 'x)yMQt7ZNK3k',
+		};
+
+		const result = redactObject(input, { values: redactValues }, getRedactedString);
+
+		expect(result).toEqual(
+			merge({}, input, {
+				exec_fm27u: {
+					$last: {
+						payload: {
+							secret: '--redacted:some_password--',
+						},
+					},
+				},
+			}),
+		);
+	});
+
+	test("escaping '^.+.*?^)(][}{|$'", () => {
+		const redactValues = {
+			some_password: '^.+.*?^)(][}{|$',
+		};
+
+		const result = redactObject(input, { values: redactValues }, getRedactedString);
+
+		expect(result).toEqual(
+			merge({}, input, {
+				exec_fm27u: {
+					$trigger: {
+						payload: {
+							secret: '--redacted:some_password--',
+						},
+					},
+				},
+			}),
+		);
 	});
 });
