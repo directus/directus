@@ -68,10 +68,13 @@ describe('retrieves items with filters', async () => {
 			throw new Error('Could not create user', userResponse.body);
 		}
 
-		// Create two items
+		// Create a single item with the admin token
+		await CreateItem(vendor, { collection, item: {}, token: USER.ADMIN.TOKEN });
+
+		// Create two items with user token
 		await CreateItem(vendor, { collection, item: [{}, {}], token: userToken });
 
-		// Editor can query item the editor created
+		// User with the above policy should only be able to read items that they have created themselves.
 		const itemsResponse = await request(getUrl(vendor))
 			.get(`/items/${collection}`)
 			.set('Authorization', `Bearer ${userToken}`);
