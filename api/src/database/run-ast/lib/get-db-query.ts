@@ -50,7 +50,7 @@ export function getDBQuery(
 
 		if (
 			helpers.capabilities.supportsDeduplicationOfParameters() &&
-			!helpers.capabilities.supportsAliasReuse()
+			!helpers.capabilities.supportsColumnPositionInGroupBy()
 		) {
 			// Map the group fields to their respective field nodes
 			const groupWhenCases = hasCaseWhen

@@ -14,8 +14,4 @@ export class CapabilitiesHelper extends DatabaseHelper {
 	supportsDeduplicationOfParameters(): boolean {
 		return true;
 	}
-
-	supportsAliasReuse(): boolean {
-		return true;
-	}
 }
