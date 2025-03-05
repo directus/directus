@@ -1,4 +1,3 @@
-
 import type { Knex } from 'knex';
 import { getHelpers } from '../../helpers/index.js';
 
