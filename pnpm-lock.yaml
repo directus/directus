@@ -599,8 +599,8 @@ importers:
         specifier: 1.4.2
         version: 1.4.2
       '@editorjs/editorjs':
-        specifier: 2.30.8
-        version: 2.30.8
+        specifier: 2.29.1
+        version: 2.29.1
       '@editorjs/embed':
         specifier: 2.7.6
         version: 2.7.6
@@ -2790,6 +2790,9 @@ packages:
 
   '@editorjs/dom@0.0.5':
     resolution: {integrity: sha512-SZ78Gwpkp3EUhjBIp0lSojeQ35V9acF8SubJsMeOH/vlOUE40GOnvvwWZnF05lO7bIB0dOHhhJy4N7IIAWxP2w==}
+
+  '@editorjs/editorjs@2.29.1':
+    resolution: {integrity: sha512-WRT2pCfikMsvySQJqpCU21LfTZaPuxUWsDO8aFGrPx4MKzOR9D+Ur4mNb3jq0FXx2EMqvIWfTyFixJxtjGHTyQ==}
 
   '@editorjs/editorjs@2.30.8':
     resolution: {integrity: sha512-ClFuxI1qZTfXPJTacQfsJtOUP6bKoIe6BQNdAvGsDTDVwMnZEzoaSOwvUpdZEE56xppVfQueNK/1MElV9SJKHg==}
@@ -13783,6 +13786,8 @@ snapshots:
   '@editorjs/dom@0.0.5':
     dependencies:
       '@editorjs/helpers': 0.0.4
+
+  '@editorjs/editorjs@2.29.1': {}
 
   '@editorjs/editorjs@2.30.8': {}
 
