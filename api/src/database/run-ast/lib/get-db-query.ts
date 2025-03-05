@@ -14,6 +14,7 @@ import { applyCaseWhen } from '../utils/apply-case-when.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
+import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
 
 export type DBQueryOptions = {
 	table: string;
@@ -74,6 +75,13 @@ export function getDBQuery(
 		}).query;
 
 		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
+
+		if (
+			helpers.capabilities.supportsDeduplicationOfParameters() &&
+			!helpers.capabilities.supportsColumnPositionInGroupBy()
+		) {
+			withPreprocessBindings(knex, dbQuery);
+		}
 
 		return dbQuery;
 	}
