@@ -1,5 +1,6 @@
 import { InvalidPayloadError } from '@directus/errors';
 import { type Bus } from '@directus/memory';
+import { isObject } from '@directus/utils';
 import { useBus } from '../../bus/index.js';
 import emitter from '../../emitter.js';
 import { getSchema } from '../../utils/get-schema.js';
@@ -162,8 +163,8 @@ export class SubscribeHandler {
 					subscription.event = message.event as SubscriptionEvent;
 				}
 
-				if (message.query) {
-					if (typeof message.query !== 'object' || Array.isArray(message.query)) {
+				if ('query' in message) {
+					if (!isObject(message.query)) {
 						throw new WebSocketError('subscribe', 'INVALID_QUERY', 'The provided query must be an object', message.uid);
 					}
 
