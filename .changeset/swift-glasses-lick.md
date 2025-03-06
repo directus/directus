@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed flow erroring on new pointer references to existing links
+Fixed re-linking new pointer references to existing links
