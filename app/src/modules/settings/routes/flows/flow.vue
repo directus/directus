@@ -98,13 +98,37 @@ const stagedPanels = ref<Partial<OperationRaw & { borderRadius: [boolean, boolea
 const panelsToBeDeleted = ref<string[]>([]);
 const hoveredPanelID = ref<string | null>(null);
 
-const panels = computed(() => {
-	const savedPanels = (flow.value?.operations || []).filter(
-		(panel) => panelsToBeDeleted.value.includes(panel.id) === false,
-	);
+const savedPanels = computed(() =>
+	(flow.value?.operations || []).filter((panel) => panelsToBeDeleted.value.includes(panel.id) === false),
+);
 
+const resolveReferences = computed(() => {
+	const references = new Map();
+
+	for (const rawPanel of savedPanels.value) {
+		if (rawPanel.resolve && rawPanel.id) {
+			references.set(rawPanel.resolve, rawPanel.id);
+		}
+	}
+
+	return references;
+});
+
+const rejectReferences = computed(() => {
+	const references = new Map();
+
+	for (const rawPanel of savedPanels.value) {
+		if (rawPanel.reject && rawPanel.id) {
+			references.set(rawPanel.reject, rawPanel.id);
+		}
+	}
+
+	return references;
+});
+
+const panels = computed(() => {
 	const raw = [
-		...savedPanels.map((panel) => {
+		...savedPanels.value.map((panel) => {
 			const updates = stagedPanels.value.find((updatedPanel) => updatedPanel.id === panel.id);
 
 			if (updates) {
@@ -294,6 +318,30 @@ async function saveChanges() {
 			const trigger = trees.find((tree) => tree.id === '$trigger');
 
 			if (trigger && trigger.resolve !== undefined) changes.operation = trigger.resolve;
+
+			const operationReferenceResets = [];
+
+			for (const panel of stagedPanels.value) {
+				if (panel.resolve && !panel.resolve.startsWith('_')) {
+					const resolve = resolveReferences.value.get(panel.resolve);
+
+					if (resolve !== panel.id) {
+						operationReferenceResets.push({ id: resolve, resolve: null });
+					}
+				}
+
+				if (panel.reject && !panel.reject.startsWith('_')) {
+					const reject = rejectReferences.value.get(panel.reject);
+
+					if (reject !== panel.id) {
+						operationReferenceResets.push({ id: reject, reject: null });
+					}
+				}
+			}
+
+			if (operationReferenceResets.length) {
+				await api.patch(`/operations`, operationReferenceResets);
+			}
 
 			await api.patch(`/flows/${props.primaryKey}`, changes);
 		}
