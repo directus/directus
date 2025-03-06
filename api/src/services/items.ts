@@ -703,7 +703,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					action: 'update',
 					collection: this.collection,
 					primaryKeys: keys,
-					fields: Object.keys(payload).filter(f => f in this.schema.collections[this.collection]!.fields);
+					fields: Object.keys(payload).filter(f => f in this.schema.collections[this.collection]!.fields),
 				},
 				{
 					schema: this.schema,
