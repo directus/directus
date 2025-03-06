@@ -105,7 +105,7 @@ const savedPanels = computed(() =>
 const resolveReferences = computed(() => {
 	const references = new Map();
 
-	for (const savedPanel of savedPanels.value) {
+	for (const savedPanel of flow.value?.operations ?? []) {
 		if (savedPanel.resolve && savedPanel.id) {
 			references.set(savedPanel.resolve, savedPanel.id);
 		}
@@ -117,7 +117,7 @@ const resolveReferences = computed(() => {
 const rejectReferences = computed(() => {
 	const references = new Map();
 
-	for (const savedPanel of savedPanels.value) {
+	for (const savedPanel of flow.value?.operations ?? []) {
 		if (savedPanel.reject && savedPanel.id) {
 			references.set(savedPanel.reject, savedPanel.id);
 		}
@@ -322,8 +322,13 @@ async function saveChanges() {
 			const operationReferenceResetUpdates = [];
 
 			/**
-			 * Prevent existing A -> B re-linked to A -> C -> B
+			 * Prevents the following from occuring:
+			 *
+			 * Existing A -> B re-linked to A -> C -> B via new panel
 			 * not nullifying A -> B link before attempting to link C -> B
+			 *
+			 * Existing A -> B -> C re-linked to A -> C via delete
+			 * not nullifying B -> C link before attempting to link A -> C
 			 */
 			for (const stagedPanel of stagedPanels.value) {
 				if (stagedPanel.resolve && !stagedPanel.resolve.startsWith('_')) {
