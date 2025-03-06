@@ -848,6 +848,12 @@ const shouldShowVersioning = computed(
 		gap: 0.25rem;
 	}
 
+	:deep(.header-bar .title-container .headline) {
+		@media (min-width: 600px) {
+			top: 0;
+		}
+	}
+
 	:deep(.header-bar.collapsed.shadow .title-container .headline) {
 		opacity: 1;
 		pointer-events: auto;

@@ -497,4 +497,11 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	color: var(--theme--foreground-subdued);
 	font-size: 12px;
 }
+
+.version-button:hover {
+	color: var(--theme--foreground);
+	.version-icon {
+		color: var(--theme--foreground);
+	}
+}
 </style>
