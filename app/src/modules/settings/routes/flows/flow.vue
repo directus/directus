@@ -105,9 +105,9 @@ const savedPanels = computed(() =>
 const resolveReferences = computed(() => {
 	const references = new Map();
 
-	for (const rawPanel of savedPanels.value) {
-		if (rawPanel.resolve && rawPanel.id) {
-			references.set(rawPanel.resolve, rawPanel.id);
+	for (const savedPanel of savedPanels.value) {
+		if (savedPanel.resolve && savedPanel.id) {
+			references.set(savedPanel.resolve, savedPanel.id);
 		}
 	}
 
@@ -117,9 +117,9 @@ const resolveReferences = computed(() => {
 const rejectReferences = computed(() => {
 	const references = new Map();
 
-	for (const rawPanel of savedPanels.value) {
-		if (rawPanel.reject && rawPanel.id) {
-			references.set(rawPanel.reject, rawPanel.id);
+	for (const savedPanel of savedPanels.value) {
+		if (savedPanel.reject && savedPanel.id) {
+			references.set(savedPanel.reject, savedPanel.id);
 		}
 	}
 
@@ -319,28 +319,32 @@ async function saveChanges() {
 
 			if (trigger && trigger.resolve !== undefined) changes.operation = trigger.resolve;
 
-			const operationReferenceResets = [];
+			const operationReferenceResetUpdates = [];
 
-			for (const panel of stagedPanels.value) {
-				if (panel.resolve && !panel.resolve.startsWith('_')) {
-					const resolve = resolveReferences.value.get(panel.resolve);
+			/**
+			 * Prevent existing A -> B re-linked to A -> C -> B
+			 * not nullifying A -> B link before attempting to link C -> B
+			 */
+			for (const stagedPanel of stagedPanels.value) {
+				if (stagedPanel.resolve && !stagedPanel.resolve.startsWith('_')) {
+					const resolve = resolveReferences.value.get(stagedPanel.resolve);
 
-					if (resolve !== panel.id) {
-						operationReferenceResets.push({ id: resolve, resolve: null });
+					if (resolve !== stagedPanel.id) {
+						operationReferenceResetUpdates.push({ id: resolve, resolve: null });
 					}
 				}
 
-				if (panel.reject && !panel.reject.startsWith('_')) {
-					const reject = rejectReferences.value.get(panel.reject);
+				if (stagedPanel.reject && !stagedPanel.reject.startsWith('_')) {
+					const reject = rejectReferences.value.get(stagedPanel.reject);
 
-					if (reject !== panel.id) {
-						operationReferenceResets.push({ id: reject, reject: null });
+					if (reject !== stagedPanel.id) {
+						operationReferenceResetUpdates.push({ id: reject, reject: null });
 					}
 				}
 			}
 
-			if (operationReferenceResets.length) {
-				await api.patch(`/operations`, operationReferenceResets);
+			if (operationReferenceResetUpdates.length) {
+				await api.patch(`/operations`, operationReferenceResetUpdates);
 			}
 
 			await api.patch(`/flows/${props.primaryKey}`, changes);
