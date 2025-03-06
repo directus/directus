@@ -693,6 +693,25 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const payload: Partial<AnyItem> = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
 
+		// Sort keys to ensure that the order is maintained
+		keys.sort();
+
+		if (this.accountability) {
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'update',
+					collection: this.collection,
+					primaryKeys: keys,
+					fields: Object.keys(payload).filter(f => f in this.schema.collections[this.collection]!.fields);
+				},
+				{
+					schema: this.schema,
+					knex: this.knex,
+				},
+			);
+		}
+
 		// Run all hooks that are attached to this event so the end user has the chance to augment the
 		// item that is about to be saved
 		const payloadAfterHooks =
@@ -713,25 +732,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						},
 				  )
 				: payload;
-
-		// Sort keys to ensure that the order is maintained
-		keys.sort();
-
-		if (this.accountability) {
-			await validateAccess(
-				{
-					accountability: this.accountability,
-					action: 'update',
-					collection: this.collection,
-					primaryKeys: keys,
-					fields: Object.keys(payloadAfterHooks),
-				},
-				{
-					schema: this.schema,
-					knex: this.knex,
-				},
-			);
-		}
 
 		const payloadWithPresets = this.accountability
 			? await processPayload(
