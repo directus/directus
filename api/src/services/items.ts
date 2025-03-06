@@ -740,6 +740,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						action: 'update',
 						collection: this.collection,
 						payload: payloadAfterHooks,
+						keys,
 					},
 					{
 						knex: this.knex,
