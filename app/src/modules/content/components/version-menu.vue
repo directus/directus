@@ -245,7 +245,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 		<v-menu class="version-menu" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
 				<button secondary rounded class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
-					<div class="version-current" :class="{ 'has-changes': hasEdits }">
+					<div class="version-current">
 						<v-icon class="version-icon" name="history" />
 						<span class="version-name">
 							<v-text-overflow
@@ -496,12 +496,13 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 .version-button {
 	color: var(--theme--foreground-subdued);
 	font-size: 12px;
-}
 
-.version-button:hover {
-	color: var(--theme--foreground);
-	.version-icon {
+	&:hover {
 		color: var(--theme--foreground);
+
+		.version-icon {
+			color: var(--theme--foreground);
+		}
 	}
 }
 </style>
