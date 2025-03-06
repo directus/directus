@@ -329,7 +329,7 @@ async function saveChanges() {
 				if (stagedPanel.resolve && !stagedPanel.resolve.startsWith('_')) {
 					const resolve = resolveReferences.value.get(stagedPanel.resolve);
 
-					if (resolve !== stagedPanel.id) {
+					if (resolve && resolve !== stagedPanel.id) {
 						operationReferenceResetUpdates.push({ id: resolve, resolve: null });
 					}
 				}
@@ -337,7 +337,7 @@ async function saveChanges() {
 				if (stagedPanel.reject && !stagedPanel.reject.startsWith('_')) {
 					const reject = rejectReferences.value.get(stagedPanel.reject);
 
-					if (reject !== stagedPanel.id) {
+					if (reject && reject !== stagedPanel.id) {
 						operationReferenceResetUpdates.push({ id: reject, reject: null });
 					}
 				}
