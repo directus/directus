@@ -303,7 +303,6 @@ force= true
 
 [[redirects]]
 from = "/guides/extensions/displays-date-to-age.html"
-force= true
 to   = "https://directus.io/docs/tutorials/extensions/"
 force= true
 
