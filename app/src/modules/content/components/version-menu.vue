@@ -244,18 +244,14 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	<div class="version-menu-wrapper">
 		<v-menu class="version-menu" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
-				<button secondary rounded class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
-					<div class="version-current">
-						<v-icon class="version-icon" name="history" />
-						<span class="version-name">
-							<v-text-overflow
-								:text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')"
-								placement="bottom"
-							/>
-						</span>
-
-						<v-icon small name="arrow_drop_down" />
-					</div>
+				<button class="version-button" type="button" @click="toggle">
+					<v-icon name="published_with_changes" />
+					<v-text-overflow
+						class="version-name"
+						:text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')"
+						placement="bottom"
+					/>
+					<v-icon small name="arrow_drop_down" />
 				</button>
 			</template>
 
@@ -442,34 +438,20 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-menu-wrapper {
 	overflow: hidden;
-	position: relative;
 	display: flex;
 	align-items: center;
 
 	@media (min-width: 600px) {
-		padding-left: 1rem; // Add space for the bullet
-
 		&::before {
-			content: '';
-			position: absolute;
-			top: 50%;
-			left: 0.25rem;
-			width: 0.25rem;
-			height: 0.25rem;
-			border-radius: 50%;
-			transform: translateY(-50%);
-			background-color: var(--theme--foreground-subdued);
+			content: '•';
+			padding-right: 0.25rem;
+			color: var(--theme--foreground-subdued);
 		}
 	}
 }
 
 .version-menu {
 	flex-shrink: 1;
-}
-
-.version-current {
-	display: flex;
-	align-items: center;
 }
 
 .version-item {
@@ -485,24 +467,16 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 }
 
 .version-name {
-	max-width: 80%;
-}
-
-.version-icon {
-	--v-icon-size: 1rem;
-	--v-icon-color: var(--theme--foreground-subdued);
+	margin-left: 0.15em;
 }
 
 .version-button {
+	--v-icon-size: 1rem;
 	color: var(--theme--foreground-subdued);
-	font-size: 12px;
-
+	display: flex;
+	align-items: center;
 	&:hover {
 		color: var(--theme--foreground);
-
-		.version-icon {
-			color: var(--theme--foreground);
-		}
 	}
 }
 </style>

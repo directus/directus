@@ -554,7 +554,7 @@ const shouldShowVersioning = computed(
 				<version-menu
 					v-if="shouldShowVersioning"
 					:collection="collection"
-					:primary-key="internalPrimaryKey"
+					:primary-key="internalPrimaryKey!"
 					:update-allowed="updateAllowed"
 					:has-edits="hasEdits"
 					:current-version="currentVersion"
@@ -816,16 +816,7 @@ const shouldShowVersioning = computed(
 	}
 }
 
-.type-title {
-	margin-top: 14px;
-}
-
 .has-content-versioning {
-	.type-title {
-		margin-top: 0;
-		line-height: 1;
-	}
-
 	:deep(.header-bar .title-container) {
 		flex-direction: column;
 		justify-content: center;
@@ -834,6 +825,11 @@ const shouldShowVersioning = computed(
 
 		.headline {
 			opacity: 1;
+			top: 3px;
+		}
+
+		.title {
+			top: 4px;
 		}
 
 		@media (min-width: 600px) {
@@ -860,9 +856,5 @@ const shouldShowVersioning = computed(
 	@media (max-width: 600px) {
 		display: none;
 	}
-}
-
-.version-current {
-	color: var(--theme--foreground-subdued);
 }
 </style>
