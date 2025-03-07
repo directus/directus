@@ -333,7 +333,6 @@ force= true
 
 [[redirects]]
 from = "/guides/extensions/hooks-add-stripe-customer.html"
-force= true
 to   = "https://directus.io/docs/tutorials/extensions/create-new-customers-in-stripe-in-a-custom-hook"
 force= true
 
