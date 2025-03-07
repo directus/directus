@@ -153,6 +153,18 @@ useShortcut(
 	form,
 );
 
+useShortcut(
+	'meta+alt+s',
+	() => {
+		if (unref(currentVersion) === null) {
+			saveAndReturnToMain();
+		} else {
+			saveVersionAction('main');
+		}
+	},
+	form,
+);
+
 const isSavable = computed(() => {
 	if (saveAllowed.value === false && currentVersion.value === null) return false;
 	if (hasEdits.value === true) return true;
@@ -360,17 +372,6 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	}
 }
 
-async function saveAndQuit() {
-	if (isSavable.value === false) return;
-
-	try {
-		await save();
-		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
-	} catch {
-		// Save shows unexpected error dialog
-	}
-}
-
 async function saveAndStay() {
 	if (isSavable.value === false) return;
 
@@ -402,6 +403,19 @@ async function saveAndAddNew() {
 		} else {
 			router.push(getItemRoute(props.collection, '+'));
 		}
+	} catch {
+		// Save shows unexpected error dialog
+	}
+}
+
+async function saveAndReturnToMain() {
+	if (isSavable.value === false) return;
+	if (unref(currentVersion) !== null) return;
+
+	try {
+		await save();
+		currentVersion.value = null;
+		refresh();
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -633,7 +647,7 @@ function revert(values: Record<string, any>) {
 				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
-				@click="saveAndQuit"
+				@click="saveAndStay"
 			>
 				<v-icon name="check" />
 
@@ -655,7 +669,7 @@ function revert(values: Record<string, any>) {
 				:tooltip="t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
-				@click="saveVersionAction('main')"
+				@click="saveVersionAction('stay')"
 			>
 				<v-icon name="beenhere" />
 
@@ -666,10 +680,10 @@ function revert(values: Record<string, any>) {
 						</template>
 
 						<v-list>
-							<v-list-item clickable @click="saveVersionAction('stay')">
-								<v-list-item-icon><v-icon name="beenhere" /></v-list-item-icon>
-								<v-list-item-content>{{ t('save_and_stay') }}</v-list-item-content>
-								<v-list-item-hint>{{ translateShortcut(['meta', 's']) }}</v-list-item-hint>
+							<v-list-item clickable @click="saveVersionAction('main')">
+								<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
+								<v-list-item-content>{{ t('save_and_return_to_main') }}</v-list-item-content>
+								<v-list-item-hint>{{ translateShortcut(['meta', 'alt', 's']) }}</v-list-item-hint>
 							</v-list-item>
 							<v-list-item clickable @click="saveVersionAction('quit')">
 								<v-list-item-icon><v-icon name="done_all" /></v-list-item-icon>

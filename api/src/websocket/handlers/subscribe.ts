@@ -162,8 +162,8 @@ export class SubscribeHandler {
 					subscription.event = message.event as SubscriptionEvent;
 				}
 
-				if ('query' in message) {
-					subscription.query = sanitizeQuery(message.query!, accountability);
+				if (message.query) {
+					subscription.query = sanitizeQuery(message.query, accountability);
 				}
 
 				if ('item' in message) subscription.item = String(message.item);

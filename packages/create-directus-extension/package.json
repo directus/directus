@@ -1,6 +1,6 @@
 {
 	"name": "create-directus-extension",
-	"version": "11.0.10",
+	"version": "11.0.11",
 	"description": "A small util that will scaffold a Directus extension",
 	"keywords": [
 		"directus",
@@ -35,6 +35,6 @@
 	"dependencies": {
 		"@directus/extensions": "workspace:*",
 		"@directus/extensions-sdk": "workspace:*",
-		"inquirer": "12.3.0"
+		"inquirer": "12.4.2"
 	}
 }
