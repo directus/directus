@@ -53,9 +53,7 @@ export async function getMetadata(
 
 				if (sharpMetadata.exif) {
 					try {
-						const { Image, ThumbnailTags, Iop, GPSInfo, Photo } = (exif as unknown as typeof exif.default)(
-							sharpMetadata.exif,
-						);
+						const { Image, ThumbnailTags, Iop, GPSInfo, Photo } = exif(sharpMetadata.exif);
 
 						if (Image) {
 							fullMetadata.ifd0 = Image;

@@ -30,7 +30,7 @@ import { isReadableStream } from '@directus/utils/node';
 import { Permit, Semaphore } from '@shopify/semaphore';
 import { NodeHttpHandler } from '@smithy/node-http-handler';
 import { ERRORS, StreamSplitter, TUS_RESUMABLE } from '@tus/utils';
-import ms from 'ms';
+import ms, { type StringValue } from 'ms';
 import fs, { promises as fsProm } from 'node:fs';
 import { Agent as HttpAgent } from 'node:http';
 import { Agent as HttpsAgent } from 'node:https';
@@ -84,8 +84,8 @@ export class DriverS3 implements TusDriver {
 		 * often in rapid succession, hitting the maxSockets limit of 50.
 		 * The requestHandler is customized to get around this.
 		 */
-		const connectionTimeout = ms(String(this.config.connectionTimeout ?? 5000));
-		const socketTimeout = ms(String(this.config.socketTimeout ?? 120000));
+		const connectionTimeout = ms(String(this.config.connectionTimeout ?? 5000) as StringValue);
+		const socketTimeout = ms(String(this.config.socketTimeout ?? 120000) as StringValue);
 		const maxSockets = this.config.maxSockets ?? 500;
 		const keepAlive = this.config.keepAlive ?? true;
 

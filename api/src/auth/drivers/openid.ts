@@ -14,6 +14,7 @@ import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
 import { flatten } from 'flat';
 import jwt from 'jsonwebtoken';
+import type { StringValue } from 'ms';
 import type { Client } from 'openid-client';
 import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
@@ -32,6 +33,7 @@ import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
+import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 
@@ -392,7 +394,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			}
 
 			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
-				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as string,
+				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as StringValue | number,
 				issuer: 'directus',
 			});
 
@@ -423,9 +425,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], getSecret(), {
-					issuer: 'directus',
-				}) as {
+				tokenData = verifyJWT(req.cookies[`openid.${providerName}`], getSecret()) as {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;
