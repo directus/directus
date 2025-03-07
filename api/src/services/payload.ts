@@ -653,11 +653,16 @@ export class PayloadService {
 
 					let record = cloneDeep(relatedRecord);
 
-					const existingRecord = await this.knex
-						.select(relatedPrimaryKeyField, relation.field)
-						.from(relation.collection)
-						.where({ [relatedPrimaryKeyField]: relatedId })
-						.first();
+					let existingRecord;
+
+					// No relatedId means it's a new record
+					if (relatedId) {
+						await this.knex
+							.select(relatedPrimaryKeyField, relation.field)
+							.from(relation.collection)
+							.where({ [relatedPrimaryKeyField]: relatedId })
+							.first();
+					}
 
 					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
 						if (!existingRecord) {
