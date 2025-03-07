@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useElementSize } from '@directus/composables';
-import { CSSProperties, computed, onMounted, ref } from 'vue';
+import { CSSProperties, computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 declare global {
@@ -9,8 +9,10 @@ declare global {
 	}
 }
 
-defineProps<{
-	url: string;
+const { url } = defineProps<{
+	url: string | string[];
+	headerExpanded?: boolean;
+	hidePopupButton?: boolean;
 	inPopup?: boolean;
 }>();
 
@@ -19,6 +21,21 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+
+const multipleUrls = computed(() => Array.isArray(url) && url.length > 1);
+const activeUrl = ref<string>();
+
+watch(
+	() => url,
+	() => {
+		if (Array.isArray(url)) {
+			activeUrl.value = url[0];
+		} else {
+			activeUrl.value = url;
+		}
+	},
+	{ immediate: true },
+);
 
 const width = ref<number>();
 const height = ref<number>();
@@ -113,35 +130,67 @@ onMounted(() => {
 </script>
 
 <template>
-	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen }">
+	<div ref="livePreviewEl" class="live-preview" :class="{ fullscreen, 'header-expanded': headerExpanded }">
 		<div class="header">
-			<v-button
-				v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
-				x-small
-				rounded
-				icon
-				secondary
-				@click="emit('new-window')"
-			>
-				<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
-			</v-button>
-			<v-button
-				v-tooltip.bottom.end="t('live_preview.refresh')"
-				x-small
-				icon
-				rounded
-				secondary
-				:disabled="isRefreshing"
-				@click="refresh(null)"
-			>
-				<v-progress-circular v-if="isRefreshing" indeterminate x-small />
-				<v-icon v-else small name="refresh" />
-			</v-button>
-			<span class="url">
-				<v-text-overflow :text="url" placement="bottom" />
-			</span>
+			<div class="group">
+				<slot name="prepend-header" />
+
+				<v-button
+					v-if="!hidePopupButton"
+					v-tooltip.bottom.end="t(inPopup ? 'live_preview.close_window' : 'live_preview.new_window')"
+					x-small
+					rounded
+					icon
+					secondary
+					@click="emit('new-window')"
+				>
+					<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
+				</v-button>
+				<v-button
+					v-tooltip.bottom.end="t('live_preview.refresh')"
+					x-small
+					icon
+					rounded
+					secondary
+					:disabled="isRefreshing || !activeUrl"
+					@click="refresh(null)"
+				>
+					<v-progress-circular v-if="isRefreshing" indeterminate x-small />
+					<v-icon v-else small name="refresh" />
+				</v-button>
+
+				<v-menu
+					v-if="activeUrl"
+					class="url"
+					:class="{ multiple: multipleUrls }"
+					:disabled="!multipleUrls"
+					show-arrow
+					placement="bottom-start"
+				>
+					<template #activator="{ toggle }">
+						<div class="activator" @click="toggle">
+							<v-text-overflow :text="activeUrl" placement="bottom" />
+							<v-icon v-if="multipleUrls" name="expand_more" />
+						</div>
+					</template>
+
+					<v-list>
+						<v-list-item
+							v-for="(urlItem, index) in url"
+							:key="index"
+							:active="urlItem === activeUrl"
+							clickable
+							@click="activeUrl = urlItem"
+						>
+							<v-list-item-content>{{ urlItem }}</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</div>
+
 			<div class="spacer" />
-			<div class="dimensions" :class="{ disabled: fullscreen }">
+
+			<div v-if="activeUrl" class="dimensions" :class="{ disabled: fullscreen }">
 				<input
 					:value="displayWidth"
 					class="width"
@@ -175,12 +224,18 @@ onMounted(() => {
 				icon
 				rounded
 				:secondary="fullscreen"
+				:disabled="!activeUrl"
 				@click="toggleFullscreen"
 			>
 				<v-icon small name="devices" />
 			</v-button>
 		</div>
-		<div class="container">
+
+		<v-info v-if="!activeUrl" :title="t('no_url')" icon="edit_square" center>
+			{{ t('no_url_copy') }}
+		</v-info>
+
+		<div v-else class="container">
 			<div class="iframe-view" :style="iframeViewStyle">
 				<div
 					ref="resizeHandle"
@@ -193,7 +248,8 @@ onMounted(() => {
 						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
 					}"
 				>
-					<iframe id="frame" ref="frameEl" :src="url" @load="onIframeLoad" />
+					<iframe id="frame" ref="frameEl" :src="activeUrl" @load="onIframeLoad" />
+					<slot name="overlay" :frame-el :active-url />
 				</div>
 			</div>
 		</div>
@@ -208,29 +264,73 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .live-preview {
+	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #ffffff);
+	--preview--color-disabled: var(--theme--foreground-subdued);
+	--preview--header--background-color: var(--theme--navigation--modules--background);
+	--preview--header--border-width: var(--theme--navigation--modules--border-width);
+	--preview--header--border-color: var(--theme--navigation--modules--border-color);
+	--preview--header--height: 44px;
+
+	container-type: inline-size;
 	width: 100%;
 	height: 100%;
 
+	&.header-expanded {
+		--preview--header--height: 60px;
+
+		.header {
+			padding: 8px 16px;
+		}
+	}
+
 	.header {
 		width: 100%;
-		color: var(--foreground-inverted);
-		background-color: var(--background-inverted);
-		height: 44px;
+		color: var(--preview--color);
+		background-color: var(--preview--header--background-color);
+		border-bottom: var(--preview--header--border-width) solid var(--preview--header--border-color);
+		height: var(--preview--header--height);
 		display: flex;
 		align-items: center;
 		z-index: 10;
 		gap: 8px;
 		padding: 0px 8px;
+		transition:
+			padding var(--medium) var(--transition),
+			height var(--medium) var(--transition);
 
-		.v-button.secondary {
-			--v-button-background-color: var(--theme--background-subdued);
+		:deep(.v-button.secondary) {
+			--v-button-color-hover: var(--theme--foreground-accent);
+
+			button:focus:not(:hover) {
+				color: var(--v-button-color);
+				background-color: var(--v-button-background-color);
+			}
+		}
+
+		.group {
+			display: contents;
 		}
 
 		.url {
-			color: var(--theme--foreground-subdued);
+			color: var(--preview--color-disabled);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+
+			&.multiple {
+				cursor: pointer;
+				color: var(--preview--color);
+			}
+
+			.activator {
+				display: flex;
+				align-items: center;
+				min-width: 0;
+
+				.v-icon {
+					top: 1px;
+				}
+			}
 		}
 
 		.spacer {
@@ -240,25 +340,36 @@ onMounted(() => {
 		.dimensions {
 			display: flex;
 			align-items: center;
+
 			&.disabled {
-				color: var(--theme--foreground-subdued);
+				color: var(--preview--color-disabled);
 			}
 		}
 
 		input {
 			border: none;
 			width: 50px;
-			background-color: var(--background-inverted);
+			background-color: transparent;
 
 			&:first-child {
 				text-align: right;
+			}
+		}
+
+		@container (max-width: 480px) {
+			.dimensions.disabled {
+				display: none;
+			}
+
+			.group:has(~ .dimensions:not(.disabled)) {
+				display: none;
 			}
 		}
 	}
 
 	.container {
 		width: 100%;
-		height: calc(100% - 44px);
+		height: calc(100% - var(--preview--header--height));
 		overflow: auto;
 	}
 

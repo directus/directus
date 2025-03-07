@@ -208,8 +208,8 @@ const runManualFlow = async (flowId: string) => {
 			</div>
 		</div>
 
-		<v-dialog :model-value="displayUnsavedChangesDialog" @esc="resetConfirm">
-			<v-card class="allow-drawer">
+		<v-dialog :model-value="displayUnsavedChangesDialog" keep-behind @esc="resetConfirm">
+			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
 
@@ -224,8 +224,8 @@ const runManualFlow = async (flowId: string) => {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
-			<v-card class="allow-drawer">
+		<v-dialog :model-value="displayCustomConfirmDialog" keep-behind @esc="resetConfirm">
+			<v-card>
 				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
 				<v-card-text class="confirm-form">
 					<v-form
