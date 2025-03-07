@@ -41,12 +41,11 @@ const collection = computed(() => {
 	return collectionName;
 });
 
+const versioningEnabled = computed(() => values.value['versioning']);
+const { versionField } = useVersionField(collection, props.injectVersionField ?? false, versioningEnabled.value);
+
 const injectValue = computed(() => {
 	if (!props.injectVersionField) return null;
-
-	const versioningEnabled = values.value['versioning'];
-
-	const { versionField } = useVersionField(collection, props.injectVersionField, !!versioningEnabled);
 	return versionField.value ? { fields: [versionField.value] } : null;
 });
 
