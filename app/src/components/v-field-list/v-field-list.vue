@@ -18,7 +18,7 @@ const props = withDefaults(
 		disabledFields?: string[];
 		includeFunctions?: boolean;
 		includeRelations?: boolean;
-		includeVirtualFields?: boolean;
+		injectVersionField?: boolean;
 		relationalFieldSelectable?: boolean;
 		allowSelectAll?: boolean;
 		rawFieldNames?: boolean;
