@@ -127,27 +127,19 @@ const openWhileSearching = computed(() => {
 		clickable
 		@click="$emit('add', [field.key])"
 	>
+		<v-list-item-icon v-if="field.field.startsWith('$')">
+			<v-icon name="auto_awesome" small color="var(--theme--primary)" />
+		</v-list-item-icon>
 		<v-list-item-content>
-			<div class="item-content">
-				<v-list-item-icon v-if="field.field.startsWith('$')">
-					<v-icon name="auto_awesome" small color="var(--theme--primary)" />
-				</v-list-item-icon>
-				<v-text-overflow
-					:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
-					:highlight="search"
-				/>
-			</div>
+			<v-text-overflow
+				:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"
+				:highlight="search"
+			/>
 		</v-list-item-content>
 	</v-list-item>
 </template>
 
 <style lang="scss" scoped>
-.item-content {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-}
-
 .functions {
 	--v-icon-color: var(--theme--primary);
 	--v-list-item-color: var(--theme--primary);

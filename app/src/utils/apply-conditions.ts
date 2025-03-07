@@ -1,8 +1,7 @@
-import { Field } from '@directus/types';
+import { Field, ContentVersion } from '@directus/types';
 import { parseFilter } from '@/utils/parse-filter';
 import { validatePayload } from '@directus/utils';
 import { isArray, mergeWith } from 'lodash';
-import { ContentVersion } from '@directus/types';
 
 export function applyConditions(item: Record<string, any>, field: Field, version: ContentVersion | null = null) {
 	if (field.meta && Array.isArray(field.meta?.conditions)) {

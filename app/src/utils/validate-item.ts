@@ -10,7 +10,7 @@ export function validateItem(
 	fields: Field[],
 	isNew: boolean,
 	includeCustomValidations = false,
-	currentVersion: ContentVersion | null,
+	currentVersion: ContentVersion | null = null,
 ) {
 	const relationsStore = useRelationsStore();
 	const validationRules: LogicalFilterAND = { _and: [] };

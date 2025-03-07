@@ -28,7 +28,7 @@ const props = withDefaults(
 		disabledFields: () => [],
 		includeFunctions: false,
 		includeRelations: true,
-		includeVirtualFields: false,
+		injectVersionField: false,
 		relationalFieldSelectable: true,
 		allowSelectAll: false,
 		rawFieldNames: false,
@@ -63,7 +63,7 @@ const { t } = useI18n();
 
 const virtualFields = computed(() => {
 	const collectionInfo = collectionsStore.getCollection(collection.value);
-	const versioningEnabled = collectionInfo?.meta?.versioning && props.includeVirtualFields;
+	const versioningEnabled = collectionInfo?.meta?.versioning && props.injectVersionField;
 
 	if (!versioningEnabled) return null;
 
@@ -72,7 +72,7 @@ const virtualFields = computed(() => {
 		field: '$version',
 		schema: null,
 		name: t('version'),
-		type: 'string',
+		type: 'integer',
 		meta: {
 			id: -1,
 			collection: unref(collection),

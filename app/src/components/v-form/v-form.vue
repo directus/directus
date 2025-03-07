@@ -43,7 +43,7 @@ const props = withDefaults(
 		direction?: string;
 		showDivider?: boolean;
 		inline?: boolean;
-		currentVersion?: ContentVersion | null;
+		version?: ContentVersion | null;
 	}>(),
 	{
 		collection: undefined,
@@ -57,7 +57,7 @@ const props = withDefaults(
 		showValidationErrors: true,
 		showNoVisibleFields: true,
 		direction: undefined,
-		currentVersion: null,
+		version: null,
 	},
 );
 
@@ -157,7 +157,7 @@ function useForm() {
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
 		let fields = formFields.value.map((field) =>
-			applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field), props.currentVersion),
+			applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field), props.version),
 		);
 
 		fields = pushGroupOptionsDown(fields);
