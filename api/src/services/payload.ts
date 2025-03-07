@@ -497,7 +497,7 @@ export class PayloadService {
 				// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
 				payload[relation.field] = relatedPrimaryKey;
 			} catch (error: any) {
-				addPathToFailedValidation(error, relation.field);
+				throw addPathToFailedValidation(error, relation.field);
 			}
 		}
 
@@ -590,7 +590,7 @@ export class PayloadService {
 				// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
 				payload[relation.field] = relatedPrimaryKey;
 			} catch (error: any) {
-				addPathToFailedValidation(error, relation.field);
+				throw addPathToFailedValidation(error, relation.field);
 			}
 		}
 
@@ -864,7 +864,7 @@ export class PayloadService {
 					}
 				}
 			} catch (error: any) {
-				addPathToFailedValidation(error, relation.meta!.one_field!);
+				throw addPathToFailedValidation(error, relation.meta!.one_field!);
 			}
 		}
 

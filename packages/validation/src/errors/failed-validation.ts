@@ -113,15 +113,17 @@ export function addPathToFailedValidation(error: any, path: string) {
 			return err;
 		});
 
-		throw err;
-	} else {
-		if (error?.code === 'FAILED_VALIDATION') {
-			error.extensions?.path?.push(path);
-
-			throw new FailedValidationError({
-				...error.extensions,
-				path: [path, ...error.extensions.path],
-			});
-		}
+		return err;
 	}
+
+	if (error?.code === 'FAILED_VALIDATION') {
+		error.extensions?.path?.push(path);
+
+		return new FailedValidationError({
+			...error.extensions,
+			path: [path, ...error.extensions.path],
+		});
+	}
+
+	return error;
 }
