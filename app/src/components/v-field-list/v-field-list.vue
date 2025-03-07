@@ -3,6 +3,7 @@ import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { useVersionField } from '@/composables/use-version-field';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -65,38 +66,8 @@ const virtualFields = computed(() => {
 	const collectionInfo = collectionsStore.getCollection(collection.value);
 	const versioningEnabled = collectionInfo?.meta?.versioning && props.injectVersionField;
 
-	if (!versioningEnabled) return null;
-
-	const versionField: Field = {
-		collection: unref(collection),
-		field: '$version',
-		schema: null,
-		name: t('version'),
-		type: 'integer',
-		meta: {
-			id: -1,
-			collection: unref(collection),
-			field: '$version',
-			sort: null,
-			special: null,
-			interface: null,
-			options: null,
-			display: null,
-			display_options: null,
-			hidden: false,
-			translations: null,
-			readonly: true,
-			width: 'full',
-			group: null,
-			note: null,
-			required: false,
-			conditions: null,
-			validation: null,
-			validation_message: null,
-		},
-	};
-
-	return { fields: [versionField] };
+	const { versionField } = useVersionField(collection, props.injectVersionField, !!versioningEnabled);
+	return versionField.value ? { fields: [versionField.value] } : null;
 });
 
 const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, virtualFields, filter);

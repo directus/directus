@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
-import type { Field } from '@directus/types';
-import { computed, inject, ref, unref } from 'vue';
+import { useVersionField } from '@/composables/use-version-field';
+import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -46,38 +46,8 @@ const injectValue = computed(() => {
 
 	const versioningEnabled = values.value['versioning'];
 
-	if (!versioningEnabled) return null;
-
-	const fakeVersionField: Field = {
-		collection: unref(collection),
-		field: '$version',
-		schema: null,
-		name: t('version'),
-		type: 'integer',
-		meta: {
-			id: -1,
-			collection: unref(collection),
-			field: '$version',
-			sort: null,
-			special: null,
-			interface: null,
-			options: null,
-			display: null,
-			display_options: null,
-			hidden: false,
-			translations: null,
-			readonly: true,
-			width: 'full',
-			group: null,
-			note: null,
-			required: false,
-			conditions: null,
-			validation: null,
-			validation_message: null,
-		},
-	};
-
-	return { fields: [fakeVersionField] };
+	const { versionField } = useVersionField(collection, props.injectVersionField, !!versioningEnabled);
+	return versionField.value ? { fields: [versionField.value] } : null;
 });
 
 const { treeList, loadFieldRelations } = useFieldTree(collection, injectValue);
