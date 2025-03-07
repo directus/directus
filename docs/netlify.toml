@@ -788,7 +788,7 @@ force = true
 
 [[redirects]]
 from  = "/self-hosted/config-options.html"
-to    = "https://directus.io/docs/getting-started/overview"
+to    = "https://directus.io/docs/configuration/general"
 force = true
 
 [[redirects]]
@@ -978,7 +978,7 @@ force = true
 
 [[redirects]]
 from  = "/user-guide/settings/system-logs.html"
-to    = "https://directus.io/docs/configuration/general"
+to    = "https://directus.io/docs/configuration/logging"
 force = true
 
 [[redirects]]
