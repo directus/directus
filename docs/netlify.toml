@@ -634,7 +634,7 @@ to   = "https://directus.io/docs/getting-started/overview"
 
 [[redirects]]
 from = "/self-hosted/config-options.html"
-to   = "https://directus.io/docs/configuration/general"
+to   = "https://directus.io/docs/getting-started/overview"
 
 [[redirects]]
 from = "/self-hosted/docker-guide.html"
@@ -786,7 +786,7 @@ to   = "https://directus.io/docs/configuration/general"
 
 [[redirects]]
 from = "/user-guide/settings/system-logs.html"
-to   = "https://directus.io/docs/configuration/logging"
+to   = "https://directus.io/docs/configuration/general"
 
 [[redirects]]
 from = "/user-guide/settings/theming.html"
