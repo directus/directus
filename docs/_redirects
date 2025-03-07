@@ -170,7 +170,7 @@
 /releases/breaking-changes.html                                                                     https://directus.io/docs/releases/breaking-changes
 
 /self-hosted/cli.html                                                                               https://directus.io/docs/getting-started/overview
-/self-hosted/config-options.html                                                                    https://directus.io/docs/configuration/general
+/self-hosted/config-options.html                                                                    https://directus.io/docs/getting-started/overview
 /self-hosted/docker-guide.html                                                                      https://directus.io/docs/getting-started/overview
 /self-hosted/email-templates.html                                                                   https://directus.io/docs/getting-started/overview
 /self-hosted/migrations.html                                                                        https://directus.io/docs/getting-started/overview
@@ -210,7 +210,7 @@
 /user-guide/settings/activity-log.html                                                              https://directus.io/docs/guides/auth/accountability
 /user-guide/settings/presets-bookmarks.html                                                         https://directus.io/docs/guides/content/explore
 /user-guide/settings/project-settings.html                                                          https://directus.io/docs/configuration/general
-/user-guide/settings/system-logs.html                                                               https://directus.io/docs/configuration/logging
+/user-guide/settings/system-logs.html                                                               https://directus.io/docs/configuration/general
 /user-guide/settings/theming.html                                                                   https://directus.io/docs/configuration/theming
 /user-guide/user-management/permissions.html                                                        https://directus.io/docs/guides/auth/access-control
 /user-guide/user-management/roles.html                                                              https://directus.io/docs/guides/auth/access-control
