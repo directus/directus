@@ -343,7 +343,6 @@ force= true
 
 [[redirects]]
 from = "/guides/extensions/interfaces-radio-selector-icons.html"
-force= true
 to   = "https://directus.io/docs/tutorials/extensions/"
 force= true
 
@@ -999,7 +998,6 @@ force= true
 
 [[redirects]]
 from = "/user-guide/user-management/user-directory.html"
-force= true
 to   = "https://directus.io/docs/guides/auth/creating-users"
 force= true
 
@@ -1020,7 +1018,6 @@ force= true
 
 [[redirects]]
 from = "/blog/migrating-notion-to-directus.html"
-force= true
 to   = "https://directus.io/docs/tutorials/migration/migrate-from-notion-to-directus"
 force= true
 
@@ -1036,7 +1033,6 @@ force= true
 
 [[redirects]]
 from = "/blog/creating-git-hub-issues-with-directus-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials/workflows/create-github-issues-with-directus-automate"
 force= true
 
@@ -1047,7 +1043,6 @@ force= true
 
 [[redirects]]
 from = "/blog/migrating-nuxt-content-to-directus.html"
-force= true
 to   = "https://directus.io/docs/tutorials/migration/migrate-from-nuxt-content-to-directus"
 force= true
 
@@ -1063,19 +1058,16 @@ force= true
 
 [[redirects]]
 from = "/blog/tagging-files-automatically-clarifai-directus-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials/workflows/tag-images-with-clarifai-and-directus-automate"
 force= true
 
 [[redirects]]
 from = "/blog/generating-images-with-dalle-and-directus-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials/workflows/generate-images-with-dall-e-and-directus-automate"
 force= true
 
 [[redirects]]
 from = "/blog/generating-social-posts-gpt-4-directus-automa.html"
-force= true
 to   = "https://directus.io/docs/tutorials/workflows/generate-social-posts-with-gpt-4-and-directus-automate"
 force= true
 
@@ -1086,7 +1078,6 @@ force= true
 
 [[redirects]]
 from = "/blog/monitoring-pipeline-flows-extensions.html"
-force= true
 to   = "https://directus.io/docs/tutorials/tips-and-tricks/build-a-monitoring-pipeline-for-flows-and-extensions"
 force= true
 
@@ -1142,13 +1133,11 @@ force= true
 
 [[redirects]]
 from = "/blog/external-weather-api-data-custom-panel-extension.html"
-force= true
 to   = "https://directus.io/docs/tutorials/extensions/display-external-weather-api-data-in-custom-panels"
 force= true
 
 [[redirects]]
 from = "/blog/hooks-monitoring-error-tracking-sentry.html"
-force= true
 to   = "https://directus.io/docs/tutorials"
 force= true
 
@@ -1234,13 +1223,11 @@ force= true
 
 [[redirects]]
 from = "/blog/sync-google-calendar-directus-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials"
 force= true
 
 [[redirects]]
 from = "/blog/importing-files-in-directus-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials/tips-and-tricks/importing-files-in-directus-automate"
 force= true
 
@@ -1251,7 +1238,6 @@ force= true
 
 [[redirects]]
 from = "/blog/passwordless-sms-authentication-with-plivo-and-directus-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials"
 force= true
 
@@ -1302,13 +1288,11 @@ force= true
 
 [[redirects]]
 from = "/blog/deploying-directus-to-aws-ec2-with-docker.html"
-force= true
 to   = "https://directus.io/docs/tutorials/self-hosting/deploy-directus-to-aws-ec2"
 force= true
 
 [[redirects]]
 from = "/blog/deploying-directus-to-google-cloud-platform-with-docker.html"
-force= true
 to   = "https://directus.io/docs/tutorials/self-hosting/deploy-directus-to-google-cloud-platform"
 force= true
 
@@ -1324,7 +1308,6 @@ force= true
 
 [[redirects]]
 from = "/blog/tracking-github-issues-and-pull-requests-with-directus-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials"
 force= true
 
@@ -1335,7 +1318,6 @@ force= true
 
 [[redirects]]
 from = "/blog/migrating-from-word-press-to-directus.html"
-force= true
 to   = "https://directus.io/docs/tutorials/migration/migrate-from-wordpress-to-directus"
 force= true
 
@@ -1356,7 +1338,6 @@ force= true
 
 [[redirects]]
 from = "/blog/5-automations-to-level-up-your-blog-with-directus.html"
-force= true
 to   = "https://directus.io/docs/tutorials"
 force= true
 
@@ -1407,13 +1388,11 @@ force= true
 
 [[redirects]]
 from = "/blog/enrich-user-data-clearbit-directus-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials/workflows/enrich-user-data-with-clearbit-and-directus-automate"
 force= true
 
 [[redirects]]
 from = "/blog/devs-intro-to-composable.html"
-force= true
 to   = "https://directus.io/docs/guides/extensions/app-extensions/composables"
 force= true
 
@@ -1429,7 +1408,6 @@ force= true
 
 [[redirects]]
 from = "/blog/deploying-directus-to-azure-web-apps-with-docker.html"
-force= true
 to   = "https://directus.io/docs/tutorials/self-hosting/deploy-directus-to-azure-web-apps"
 force= true
 
@@ -1445,7 +1423,6 @@ force= true
 
 [[redirects]]
 from = "/blog/automatic-transcripts-deepgram.html"
-force= true
 to   = "https://directus.io/docs/tutorials/workflows/generate-transcripts-with-deepgram-and-directus-automate"
 force= true
 
@@ -1461,7 +1438,6 @@ force= true
 
 [[redirects]]
 from = "/blog/detecting-high-risk-phone-numbers-vonage-automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials/workflows/detect-high-risk-phone-numbers-with-vonage-and-directus-automate"
 force= true
 
@@ -1492,7 +1468,6 @@ force= true
 
 [[redirects]]
 from = "/blog/tags/automate.html"
-force= true
 to   = "https://directus.io/docs/tutorials"
 force= true
 
