@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Info
 identifier: Identifikaator
 avatar: Avatar
 application: Rakendus
@@ -7,9 +28,12 @@ method: Meetod
 published: Avaldatud
 draft: Mustand
 archived: Arhiveeritud
+marketplace: Turg
+extensions: Laiendused
 modules: Moodulid
 module_bar: Mooduliriba
 logs: Logid
+unknown: Tundmatu
 reset_width: Lähtesta Laius
 tile_size: Failisuurus
 edit_field: Muuda Välja
@@ -27,6 +51,8 @@ duplicate_field: Korduv Väli
 half_width: Pool Laiust
 full_width: Täislaius
 group: Grupp
+popular: Populaarsed
+recent: Hiljutised
 export_items: Ekspordi Kirjed
 and: Ja
 or: Või
@@ -36,9 +62,35 @@ modifier: Muutja
 extension_interface: Kasutajaliides
 extension_display: Vaade
 extension_layout: Paigutus
+extension_module: Moodul
+extension_panel: Paneel
+extension_theme: Teema
 extension_hook: Haak
+extension_endpoint: Lõpp-punkt
+extension_operation: Operaator
+extension_bundle: Pakk
 extension_interfaces: Kasutajaliidesed
+extension_layouts: Paigutused
 extension_modules: Moodulid
+extension_panels: Paneelid
+extension_themes: Teemad
+extension_hooks: Haagid
+extension_endpoints: Lõpp-punktid
+extension_operations: Operatsioonid
+extension_bundles: Pakid
+verified: Kinnitatud
+homepage: Avaleht
+repository: Hoidla
+reload_page: Laadi leht uuesti
+reload_required: Uuesti laadimine on nõutud
+report_an_issue: Teata veast
+website: Veebileht
+github: GitHub
+beta: Beeta
+n_downloads: '{n} allalaadimist'
+downloads: Allalaadimised
+enable: Lülita sisse
+disable: Lülita välja
 custom: Kohandatud
 hook: Haak
 fill_width: Täislaius
@@ -63,6 +115,7 @@ requires_value: Väärtus nõutud
 create_preset: Loo Seadistus
 create_panel: Loomise Paneel
 create_role: Loo Roll
+create_policy: Loo poliitika
 create_user: Loo Kasutaja
 message: Sõnum
 delete_panel: Kustutamise Paneel
@@ -86,6 +139,10 @@ rename_folder: Nimeta Kaust Ümber
 delete_folder: Kustuta Kaust
 prefix: Eesliide
 suffix: Järelliide
+keep: Säilita
+version: Versioon
+version_key: Versiooni võti
+version_name: Versiooni nimi
 promote_version_preview: Eelvaade
 reset_bookmark: Kustuta Järjehoidja
 update_bookmark: Järjehoidja Uuendamine
@@ -229,6 +286,8 @@ time: Kellaaeg
 timestamp: Timestamp
 uuid: UUID
 hash: Hash (räsi)
+theme_light: Hele režiim
+theme_dark: Tume režiim
 not_available_for_type: Pole selle tüübi korral saadaval
 create_translations: Lisa Tõlkeid
 auto_refresh: Automaatne Värskendamine
@@ -240,12 +299,16 @@ auto_generate: Automaatselt loodud
 this_will_auto_setup_fields_relations: See seadistab automaatselt kõik väljad ja seosed.
 click_here: Kliki siia
 to_manually_setup_translations: et käsitsi tõlkeid uuendada.
+manage: Halda
 click_to_manage_translated_fields: >-
   Tõlkeid ei leitud. Lisamiseks klõpsa siia. | Leiti üks tõlgitud väli. Muutmiseks klõpsa siia. | Leiti {count} tõlgitud välja. Nende muutmiseks klõpsa siia.
 fields_group: Väljade grupp
 no_collections_found: Andmedkogusid ei leitud.
 new_data_alert: 'Sinu andmemudelisse lisatakse:'
 search_collection: Otsi Andmekogu...
+search_role: Otsi rolli...
+search_policy: Otsi poliitikat...
+search_field: Otsi välja...
 new_field: 'Uus Väli'
 new_collection: 'Uus Kogumik'
 choose_a_type: Vali Tüüp...
@@ -322,6 +385,8 @@ import_data_button: Alusta importi
 import_data_indeterminate: Laeb Andmeid...
 import_data_success: Andmed edukalt laetud {filename}
 label_import: Impordi
+label_export: Ekspordi
+import_export: Import / Eksport
 format: Vorming
 last_page: Viimane leht
 last_access: Viimati vaadatud
@@ -353,6 +418,7 @@ date-fns_date: PPP
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
 date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd. MMM'
 date-fns_time_short: 'H:mm'
 date-fns_date_short_no_year: d. MMM
@@ -383,10 +449,12 @@ file_details: Faili Üksikasjad
 dimensions: Mõõtmed
 size: Suurus
 created: Loodud
+uploaded: Üleslaaditud
 modified: Muudetud
 owner: Omanik
 edited_by: Muutis
 folder: Kaust
+folders: Kaustad
 zoom: Suurenda
 download: Laadi alla
 open: Ava
@@ -400,8 +468,10 @@ import_from_url: Lae aadressilt
 replace_from_device: Asenda Fail seadmest
 replace_from_library: Asenda Fail teegist
 replace_from_url: Asenda Fail aadressilt
+no_image_selected: Ühtegi pilti pole valitud
 no_file_selected: Faili pole valitud
 download_file: Lae fail alla
+open_file_in_tab: Ava fail uuel vahekaardil
 start_export: Alusta Eksporti
 collection_key: Kogumi võti
 name: Nimi
@@ -417,6 +487,8 @@ generated_uuid: Genereeritud UUID
 manual_string: Sisesta sõne käsitsi
 save_and_create_new: Salvesta ja Lisa Uus
 save_and_stay: Salvesta ja jää
+save_and_quit: Salvesta ja lahku
+save_and_return_to_main: Salvesta ja tagasi avalehele
 save_as_copy: Salvesta koopiana
 add_existing: Lisa olemasolev
 creating_items: Kirjete loomine
@@ -426,6 +498,8 @@ enable_select_button: Luba valimise nupp
 allow_duplicates: Luba duplikaadid
 comments: Kommentaarid
 no_comments: Kommentaarid puuduvad
+expand: Laienda
+expand_all: Laienda kõiki
 select_item: Vali kirje
 no_items: Kirjeid pole
 disabled: keelatud
@@ -465,6 +539,7 @@ copy: Kopeeri
 copy_to: Kopeeri...
 inactive: Mitteaktiivne
 users: Kasutajad
+roles: Rollid
 activity: Tegevus
 action: Tegevus
 ip_address: IP aadress
@@ -665,6 +740,7 @@ update: Uuenda
 delete: Kustuta
 select_fields: Vali väljad
 format_text: Vormista tekst
+operator: Operaator
 bold: Paks kiri
 toggle: Lülita
 icon_on: Ikoon sees
@@ -675,6 +751,8 @@ flow_name: Nimi
 flow_tracking_activity: Jälgi ainult aktiivsust
 flow_tracking_null: Ära jälgi midagi
 code: Kood
+dashboard: Töölaud
+panel: Paneel
 details: Üksikasjad
 full_screen: Täisekraan
 image_url: Pildi URL
@@ -806,6 +884,7 @@ no_layout_collection_selected_yet: Vaadet/andmekogu pole valitud
 batch_delete_confirm: >-
   Ühtegi kirjet pole valitud | Oled sa kindel, et soovid selle kirje kustutada? Seda toimingut ei saa tagasi võtta. | Oled sa kindel, et soovid need {count} ühikut kustutada? Seda toimingut ei saa tagasi võtta.
 cancel: Loobu
+source_registry: Turg
 collection: Kogud
 collections: Kogud
 content: Sisu
@@ -943,6 +1022,8 @@ field_options:
       name_placeholder: Sisesta pealkiri...
     collections_name: Kogud
   directus_users:
+    dropdown_light: Hele režiim
+    dropdown_dark: Tume režiim
     status_dropdown_active: aktiivne
     status_dropdown_archived: Arhiveeritud
   directus_webhooks:
