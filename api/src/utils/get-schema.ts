@@ -7,7 +7,7 @@ import { parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { mapValues } from 'lodash-es';
 import { useBus } from '../bus/index.js';
-import { getMemorySchemaCache, setMemorySchemaCache } from '../cache.js';
+import { getMemorySchemaCache, getSystemCache, setMemorySchemaCache } from '../cache.js';
 import { ALIAS_TYPES } from '../constants.js';
 import getDatabase from '../database/index.js';
 import { useLock } from '../lock/index.js';
@@ -104,7 +104,12 @@ export async function getSchema(
 		const database = options?.database || getDatabase();
 		const schemaInspector = createInspector(database);
 
-		schema = await getDatabaseSchema(database, schemaInspector);
+		schema = (await getSystemCache('schema')) as SchemaOverview;
+
+		if (!schema) {
+			schema = await getDatabaseSchema(database, schemaInspector);
+			await setSystemCache('schema', schema, 86_400_000 * 7);
+		}
 		setMemorySchemaCache(schema);
 		return schema;
 	} finally {
