@@ -110,6 +110,7 @@ export async function getSchema(
 			schema = await getDatabaseSchema(database, schemaInspector);
 			await setSystemCache('schema', schema, 86_400_000 * 7);
 		}
+
 		setMemorySchemaCache(schema);
 		return schema;
 	} finally {
