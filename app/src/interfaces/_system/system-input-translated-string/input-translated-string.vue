@@ -240,6 +240,7 @@ const newTranslationDefaults = computed(() => {
 		transition-property: background-color, color;
 		user-select: none;
 		font-family: var(--theme--fonts--monospace--font-family);
+		overflow-x: hidden;
 	}
 
 	:deep(button:not(:disabled):hover) {
