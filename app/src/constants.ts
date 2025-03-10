@@ -47,6 +47,11 @@ export const MODULE_BAR_DEFAULT = [
 	},
 	{
 		type: 'module',
+		id: 'visual',
+		enabled: true,
+	},
+	{
+		type: 'module',
 		id: 'users',
 		enabled: true,
 	},
