@@ -499,7 +499,6 @@ export class PayloadService {
 
 			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
 			payload[relation.field] = relatedPrimaryKey;
-
 		}
 
 		return { payload, revisions, nestedActionEvents, userIntegrityCheckFlags };
@@ -535,7 +534,6 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-
 			// If no "one collection" exists, this is a A2O, not a M2O
 			if (!relation.related_collection) continue;
 			const relatedPrimaryKeyField = this.schema.collections[relation.related_collection]!.primary;
@@ -594,7 +592,6 @@ export class PayloadService {
 
 			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
 			payload[relation.field] = relatedPrimaryKey;
-
 		}
 
 		return { payload, revisions, nestedActionEvents, userIntegrityCheckFlags };
@@ -632,7 +629,6 @@ export class PayloadService {
 		});
 
 		for (const relation of relationsToProcess) {
-
 			if (!relation.meta) continue;
 
 			const currentPrimaryKeyField = this.schema.collections[relation.related_collection!]!.primary;
@@ -717,7 +713,6 @@ export class PayloadService {
 						})),
 					);
 
-
 					const query: Query = {
 						filter: {
 							_and: [
@@ -767,8 +762,7 @@ export class PayloadService {
 			else {
 				const alterations = field as Alterations;
 				const { error } = nestedUpdateSchema.validate(alterations);
-				if (error)
-					throw new InvalidPayloadError({ reason: `Invalid one-to-many update structure: ${error.message}` });
+				if (error) throw new InvalidPayloadError({ reason: `Invalid one-to-many update structure: ${error.message}` });
 
 				if (alterations.create) {
 					const sortField = relation.meta.sort_field;
