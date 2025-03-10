@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
-import { useExtensions } from '@/extensions';
 import { useGroupable } from '@directus/composables';
 import { Action } from '@directus/constants';
 import type { FlowRaw } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getTriggers } from '../triggers';
+import LogsDrawer from './logs-drawer.vue';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -22,13 +21,6 @@ const title = computed(() => t('logs'));
 const { active: open } = useGroupable({
 	value: title.value,
 	group: 'sidebar-detail',
-});
-
-const { triggers } = getTriggers();
-const { operations } = useExtensions();
-
-const usedTrigger = computed(() => {
-	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
 });
 
 const page = ref<number>(1);
@@ -56,51 +48,6 @@ onMounted(() => {
 });
 
 const previewing = ref();
-
-const triggerData = computed(() => {
-	if (!unref(previewing)?.data) return { trigger: null, accountability: null, options: null };
-
-	const { data } = unref(previewing).data;
-
-	return {
-		trigger: data.$trigger,
-		accountability: data.$accountability,
-		options: props.flow.options,
-	};
-});
-
-const steps = computed(() => {
-	if (!unref(previewing)?.data?.steps) return [];
-	const { steps } = unref(previewing).data;
-
-	return steps.map(
-		({
-			operation,
-			status,
-			key,
-			options,
-		}: {
-			operation: string;
-			status: 'reject' | 'resolve' | 'unknown';
-			key: string;
-			options: Record<string, any>;
-		}) => {
-			const operationConfiguration = props.flow.operations.find((operationConfig) => operationConfig.id === operation);
-
-			const operationType = operations.value.find((operation) => operation.id === operationConfiguration?.type);
-
-			return {
-				id: operation,
-				name: operationConfiguration?.name ?? key,
-				data: unref(previewing).data?.data?.[key] ?? null,
-				options: options ?? null,
-				operationType: operationType?.name ?? operationConfiguration?.type ?? '--',
-				key,
-				status,
-			};
-		},
-	);
-});
 
 function onToggle(open: boolean) {
 	if (open && revisionsByDate.value === null) getRevisions();
@@ -139,61 +86,7 @@ function onToggle(open: boolean) {
 		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 	</sidebar-detail>
 
-	<v-drawer
-		:model-value="!!previewing"
-		:title="previewing ? previewing.timestampFormatted : t('logs')"
-		icon="fact_check"
-		@cancel="previewing = null"
-		@esc="previewing = null"
-	>
-		<div class="content">
-			<div class="steps">
-				<div class="step">
-					<div class="header">
-						<span class="dot" />
-						<span class="type-label">
-							{{ t('trigger') }}
-							<span class="subdued">&nbsp;{{ usedTrigger?.name }}</span>
-						</span>
-					</div>
-
-					<div class="inset">
-						<v-detail v-if="triggerData.options" :label="t('options')">
-							<pre class="json selectable">{{ triggerData.options }}</pre>
-						</v-detail>
-
-						<v-detail v-if="triggerData.trigger" :label="t('payload')">
-							<pre class="json selectable">{{ triggerData.trigger }}</pre>
-						</v-detail>
-
-						<v-detail v-if="triggerData.accountability" :label="t('accountability')">
-							<pre class="json selectable">{{ triggerData.accountability }}</pre>
-						</v-detail>
-					</div>
-				</div>
-
-				<div v-for="step of steps" :key="step.id" class="step">
-					<div class="header">
-						<span class="dot" :class="step.status" />
-						<span v-tooltip="step.key" class="type-label">
-							{{ step.name }}
-							<span class="subdued">&nbsp;{{ step.operationType }}</span>
-						</span>
-					</div>
-
-					<div class="inset">
-						<v-detail v-if="step.options" :label="t('options')">
-							<pre class="json selectable">{{ step.options }}</pre>
-						</v-detail>
-
-						<v-detail v-if="step.data !== null" :label="t('payload')">
-							<pre class="json selectable">{{ step.data }}</pre>
-						</v-detail>
-					</div>
-				</div>
-			</div>
-		</div>
-	</v-drawer>
+	<LogsDrawer :revision-id="previewing?.id" :flow="props.flow" @close="previewing = null" />
 </template>
 
 <style lang="scss" scoped>

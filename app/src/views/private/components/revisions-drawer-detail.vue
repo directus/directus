@@ -42,7 +42,7 @@ const {
 	getRevisions,
 	loadingCount,
 	getRevisionsCount,
-} = useRevisions(collection, primaryKey, version);
+} = useRevisions(collection, primaryKey, version, { full: true });
 
 onMounted(() => {
 	getRevisionsCount();
