@@ -29,6 +29,7 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	injectVersionField?: boolean;
 	relationalFieldSelectable?: boolean;
 	rawFieldNames?: boolean;
 }
@@ -43,6 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	injectVersionField: false,
 	relationalFieldSelectable: true,
 	rawFieldNames: false,
 });
@@ -197,13 +199,13 @@ function addKeyAsNode() {
 						<v-icon name="expand_more" class="expand_more" />
 					</button>
 				</template>
-
 				<v-field-list
 					v-if="collectionRequired"
 					:collection="collection"
 					include-functions
 					:include-relations="includeRelations"
 					:relational-field-selectable="relationalFieldSelectable"
+					:inject-version-field="injectVersionField"
 					:allow-select-all="false"
 					:raw-field-names="rawFieldNames"
 					@add="addNode($event[0])"

@@ -61,6 +61,7 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 			options: {
 				collectionName: collection.value,
 				includeRelations: false,
+				injectVersionField: true,
 			},
 		},
 	},

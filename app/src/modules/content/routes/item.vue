@@ -725,6 +725,7 @@ const shouldShowVersioning = computed(
 			:fields="fields"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
+			:version="currentVersion"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
