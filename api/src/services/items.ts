@@ -140,58 +140,56 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const payload: AnyItem = cloneDeep(data);
 		const nestedActionEvents: ActionEventParams[] = [];
 
+		// Run all hooks that are attached to this event so the end user has the chance to augment the
+		// item that is about to be saved
+		const payloadAfterHooks =
+			opts.emitEvents !== false
+				? await emitter.emitFilter(
+						this.eventScope === 'items'
+							? ['items.create', `${this.collection}.items.create`]
+							: `${this.eventScope}.create`,
+						payload,
+						{
+							collection: this.collection,
+						},
+						{
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+				  )
+				: payload;
+
+		const payloadWithPresets = this.accountability
+			? await processPayload(
+					{
+						accountability: this.accountability,
+						action: 'create',
+						collection: this.collection,
+						payload: payloadAfterHooks,
+					},
+					{
+						knex: this.knex,
+						schema: this.schema,
+					},
+			  )
+			: payloadAfterHooks;
+
+		if (opts.preMutationError) {
+			throw opts.preMutationError;
+		}
+
 		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
 		// changes in the DB if any of the parts contained within throws an error. This also means
 		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
 		// update tree
 		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
-			const serviceOptions: AbstractServiceOptions = {
+			// We're creating new services instances so they can use the transaction as their Knex interface
+			const payloadService = new PayloadService(this.collection, {
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
-			};
-
-			// We're creating new services instances so they can use the transaction as their Knex interface
-			const payloadService = new PayloadService(this.collection, serviceOptions);
-
-			// Run all hooks that are attached to this event so the end user has the chance to augment the
-			// item that is about to be saved
-			const payloadAfterHooks =
-				opts.emitEvents !== false
-					? await emitter.emitFilter(
-							this.eventScope === 'items'
-								? ['items.create', `${this.collection}.items.create`]
-								: `${this.eventScope}.create`,
-							payload,
-							{
-								collection: this.collection,
-							},
-							{
-								database: trx,
-								schema: this.schema,
-								accountability: this.accountability,
-							},
-					  )
-					: payload;
-
-			const payloadWithPresets = this.accountability
-				? await processPayload(
-						{
-							accountability: this.accountability,
-							action: 'create',
-							collection: this.collection,
-							payload: payloadAfterHooks,
-						},
-						{
-							knex: trx,
-							schema: this.schema,
-						},
-				  )
-				: payloadAfterHooks;
-
-			if (opts.preMutationError) {
-				throw opts.preMutationError;
-			}
+			});
 
 			const {
 				payload: payloadWithM2O,
@@ -363,7 +361,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						? ['items.create', `${this.collection}.items.create`]
 						: `${this.eventScope}.create`,
 				meta: {
-					payload,
+					payload: payloadWithPresets,
 					key: primaryKey,
 					collection: this.collection,
 				},
