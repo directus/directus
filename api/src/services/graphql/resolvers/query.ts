@@ -28,10 +28,10 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 	const isAggregate = collection.endsWith('_aggregated') && collection in gql.schema.collections === false;
 
 	if (isAggregate) {
-		query = getAggregateQuery(args, selections, gql.accountability);
+		query = await getAggregateQuery(args, selections, gql.schema, gql.accountability);
 		collection = collection.slice(0, -11);
 	} else {
-		query = getQuery(args, selections, info.variableValues, gql.accountability);
+		query = await getQuery(args, selections, info.variableValues, gql.schema, gql.accountability);
 
 		if (collection.endsWith('_by_id') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -6);

@@ -23,7 +23,7 @@ export const validateBatch = (scope: 'read' | 'update' | 'delete') =>
 
 		// In reads, the query in the body should override the query params for searching
 		if (scope === 'read' && req.body.query) {
-			req.sanitizedQuery = sanitizeQuery(req.body.query, req.accountability);
+			req.sanitizedQuery = await sanitizeQuery(req.body.query, req.schema, req.accountability);
 
 			validateQuery(req.sanitizedQuery);
 		}
