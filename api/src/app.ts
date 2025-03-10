@@ -196,7 +196,7 @@ export default async function createApp(): Promise<express.Application> {
 				limit: env['MAX_PAYLOAD_SIZE'] as string,
 			}) as RequestHandler
 		)(req, res, (err: any) => {
-			if (req.method !== 'GET' && typeof req.headers['content-type'] !== 'string') {
+			if (req.method !== 'GET' && req.headers['content-length'] && typeof req.headers['content-type'] !== 'string') {
 				return next(new InvalidPayloadError({ reason: 'A Content-Type is required' }));
 			}
 
