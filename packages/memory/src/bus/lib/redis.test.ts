@@ -24,7 +24,7 @@ let mockChannel: string;
 let mockNamespacedChannel: string;
 let mockNamespacedChannelBuffer: Buffer;
 let mockUint8Array: Uint8Array;
-let mockBuffer: Buffer<Uint8Array>;
+let mockBuffer: Buffer;
 let mockCompressedUint8Array: Uint8Array;
 let mockDecompressedUint8Array: Uint8Array;
 let mockMessage: string;
