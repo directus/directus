@@ -12,7 +12,4 @@ export default defineModule({
 			component: VisualEditor,
 		},
 	],
-	preRegisterCheck(user) {
-		return user.admin_access === true;
-	},
 });
