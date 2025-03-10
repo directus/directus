@@ -10,6 +10,9 @@ import { fetchDynamicVariableContext } from '../permissions/utils/fetch-dynamic-
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import getDatabase from '../database/index.js';
 
+/**
+ * Sanitize the query parameters and parse them where necessary.
+ */
 export async function sanitizeQuery(
 	rawQuery: Record<string, any>,
 	schema: SchemaOverview,
