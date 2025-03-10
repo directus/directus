@@ -210,14 +210,14 @@ describe('filter', () => {
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
 	});
 
-	test('should throw error on invalid filter', () => {
+	test('should throw error on invalid filter', async () => {
 		const filter = { field_a: null };
 
 		vi.mocked(parseFilter).mockImplementationOnce(() => {
 			throw new Error();
 		});
 
-		expect(async () => await sanitizeQuery({ filter }, null as any)).toThrowError(
+		await expect(async () => await sanitizeQuery({ filter }, null as any)).rejects.toThrowError(
 			'Invalid query. Invalid filter object.',
 		);
 	});
@@ -230,14 +230,14 @@ describe('filter', () => {
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
 	});
 
-	test('should throw error on invalid json', () => {
+	test('should throw error on invalid json', async () => {
 		const filter = '{ "field_a": }';
 
 		vi.mocked(parseJSON).mockImplementationOnce(() => {
 			throw new Error();
 		});
 
-		expect(async () => await sanitizeQuery({ filter }, null as any)).toThrowError(
+		await expect(async () => await sanitizeQuery({ filter }, null as any)).rejects.toThrowError(
 			'Invalid query. Invalid JSON for filter object.',
 		);
 	});
