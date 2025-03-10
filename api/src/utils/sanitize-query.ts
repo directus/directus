@@ -6,7 +6,7 @@ import { flatten, get, isPlainObject, merge, set } from 'lodash-es';
 import { useLogger } from '../logger/index.js';
 import { Meta } from '../types/index.js';
 import { extractRequiredDynamicVariableContext } from '../permissions/utils/extract-required-dynamic-variable-context.js';
-import { fetchDynamicVariableContext } from '../permissions/utils/fetch-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import getDatabase from '../database/index.js';
 
@@ -171,7 +171,7 @@ async function sanitizeFilter(rawFilter: any, schema: SchemaOverview, accountabi
 			const dynamicVariableContext = extractRequiredDynamicVariableContext(filters);
 			const policies = await fetchPolicies(accountability, context);
 
-			filterContext = await fetchDynamicVariableContext(
+			filterContext = await fetchDynamicVariableData(
 				{
 					dynamicVariableContext,
 					accountability,
