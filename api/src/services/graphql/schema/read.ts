@@ -51,6 +51,69 @@ export function getReadableTypes(
 	const AggregatedFields: Record<string, ObjectTypeComposer<any, any>> = {};
 	const AggregateMethods: Record<string, ObjectTypeComposerFieldConfigMapDefinition<any, any>> = {};
 
+	const IDFilterOperators = schemaComposer.createInputTC({
+		name: 'id_filter_operators',
+		fields: {
+			_eq: {
+				type: GraphQLID,
+			},
+			_neq: {
+				type: GraphQLID,
+			},
+			_contains: {
+				type: GraphQLID,
+			},
+			_icontains: {
+				type: GraphQLID,
+			},
+			_ncontains: {
+				type: GraphQLID,
+			},
+			_starts_with: {
+				type: GraphQLID,
+			},
+			_nstarts_with: {
+				type: GraphQLID,
+			},
+			_istarts_with: {
+				type: GraphQLID,
+			},
+			_nistarts_with: {
+				type: GraphQLID,
+			},
+			_ends_with: {
+				type: GraphQLID,
+			},
+			_nends_with: {
+				type: GraphQLID,
+			},
+			_iends_with: {
+				type: GraphQLID,
+			},
+			_niends_with: {
+				type: GraphQLID,
+			},
+			_in: {
+				type: new GraphQLList(GraphQLID),
+			},
+			_nin: {
+				type: new GraphQLList(GraphQLID),
+			},
+			_null: {
+				type: GraphQLBoolean,
+			},
+			_nnull: {
+				type: GraphQLBoolean,
+			},
+			_empty: {
+				type: GraphQLBoolean,
+			},
+			_nempty: {
+				type: GraphQLBoolean,
+			},
+		},
+	});
+
 	const StringFilterOperators = schemaComposer.createInputTC({
 		name: 'string_filter_operators',
 		fields: {
@@ -399,6 +462,9 @@ export function getReadableTypes(
 						break;
 					case GraphQLHash:
 						filterOperatorType = HashFilterOperators;
+						break;
+					case GraphQLID:
+						filterOperatorType = IDFilterOperators;
 						break;
 					default:
 						filterOperatorType = StringFilterOperators;

@@ -11,7 +11,7 @@ import { processPayload } from './process-payload.js';
 vi.mock('../../lib/fetch-permissions.js');
 vi.mock('../../lib/fetch-policies.js');
 vi.mock('./lib/is-field-nullable.js');
-vi.mock('../../utils/fetch-dynamic-variable-context.js');
+vi.mock('../../utils/fetch-dynamic-variable-data.js');
 
 vi.mock('../../../services/permissions.js', () => ({
 	PermissionsService: vi.fn(),

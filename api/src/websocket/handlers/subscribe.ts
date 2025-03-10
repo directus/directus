@@ -162,7 +162,7 @@ export class SubscribeHandler {
 					subscription.event = message.event as SubscriptionEvent;
 				}
 
-				if ('query' in message) {
+				if (message.query) {
 					subscription.query = await sanitizeQuery(message.query!, schema, accountability);
 				}
 

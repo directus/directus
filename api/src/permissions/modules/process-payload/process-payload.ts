@@ -7,7 +7,7 @@ import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { isFieldNullable } from './lib/is-field-nullable.js';
-import { fetchDynamicVariableContext } from '../../utils/fetch-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from '../../utils/fetch-dynamic-variable-data.js';
 import { extractRequiredDynamicVariableContext } from '../../utils/extract-required-dynamic-variable-context.js';
 
 export interface ProcessPayloadOptions {
@@ -85,7 +85,7 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 
 		const permissionContext = extractRequiredDynamicVariableContext(field.validation);
 
-		const filterContext = await fetchDynamicVariableContext(
+		const filterContext = await fetchDynamicVariableData(
 			{
 				accountability: options.accountability,
 				policies,
