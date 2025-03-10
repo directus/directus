@@ -14,20 +14,7 @@ useHead({ title: t('visual_editor') });
 
 const { settings } = useSettingsStore();
 
-const urls = computed<string[]>(() => {
-	const urls: string[] = [];
-
-	if (settings?.visual_editor_project_url && settings?.project_url) {
-		urls.push(settings.project_url);
-	}
-
-	settings?.visual_editor_urls?.forEach((item) => {
-		if (item.url) urls.push(item.url);
-	});
-
-	return urls;
-});
-
+const urls = computed(() => settings?.visual_editor_urls?.map((item) => item.url).filter(Boolean) || []);
 const moduleBarOpen = ref(true);
 const showEditableElements = ref(false);
 </script>

@@ -1433,7 +1433,6 @@ fields:
     public_registration_verify_email: Verify Email
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
-    visual_editor_project_url: Use Project URL
     visual_editor_urls: Visual Editor URLs
   directus_shares:
     name: Name

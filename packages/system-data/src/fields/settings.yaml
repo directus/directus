@@ -180,16 +180,6 @@ fields:
       - no-data
     width: full
 
-  - field: visual_editor_project_url
-    interface: boolean
-    width: half
-    options:
-      label: $t:enabled
-    schema:
-      is_nullable: false
-    special:
-      - cast-boolean
-
   - field: visual_editor_urls
     interface: list
     special:
