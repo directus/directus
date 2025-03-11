@@ -123,7 +123,7 @@ const systemUpdateSchema = Joi.object({
 	field: Joi.string(),
 	schema: Joi.object({
 		is_indexed: Joi.bool(),
-	})
+	}),
 });
 
 router.patch(
