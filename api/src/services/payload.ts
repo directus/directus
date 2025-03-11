@@ -451,7 +451,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [relation.field, ...this.nested]
+				nested: [relation.field, ...this.nested],
 			});
 
 			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
@@ -542,7 +542,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [relation.field, ...this.nested]
+				nested: [relation.field, ...this.nested],
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
@@ -560,7 +560,6 @@ export class PayloadService {
 					.from(relation.related_collection)
 					.where({ [relatedPrimaryKeyField]: relatedPrimaryKey })
 					.first());
-
 
 			if (exists) {
 				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
@@ -585,7 +584,6 @@ export class PayloadService {
 					mutationTracker: opts?.mutationTracker,
 				});
 			}
-
 
 			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
 			payload[relation.field] = relatedPrimaryKey;
@@ -637,7 +635,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [relation.meta!.one_field!, ...this.nested]
+				nested: [relation.meta!.one_field!, ...this.nested],
 			});
 
 			const recordsToUpsert: Partial<Item>[] = [];

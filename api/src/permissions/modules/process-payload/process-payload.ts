@@ -116,7 +116,9 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 		validationErrors.push(
 			...validatePayload({ _and: validationRules }, payloadWithPresets)
 				.map((error) =>
-					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details, options.nested))),
+					error.details.map(
+						(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details, options.nested)),
+					),
 				)
 				.flat(),
 		);
