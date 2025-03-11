@@ -2,8 +2,9 @@ import { useEnv } from '@directus/env';
 import {
 	ForbiddenError,
 	IllegalAssetTransformationError,
+	InvalidQueryError,
 	RangeNotSatisfiableError,
-	ServiceUnavailableError,
+	ServiceUnavailableError
 } from '@directus/errors';
 import type { Range, Stat } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
@@ -196,7 +197,13 @@ export class AssetsService {
 
 			if (transforms.find((transform) => transform[0] === 'rotate') === undefined) transformer.rotate();
 
-			transforms.forEach(([method, ...args]) => (transformer[method] as any).apply(transformer, args));
+			transforms.forEach(([method, ...args]) => {
+				try {
+					(transformer[method] as any).apply(transformer, args)
+				} catch (error: Error) {
+					throw error.message.startsWith('Expected') ? new InvalidQueryError({ reason: error.message }) : error;
+				}
+			});
 
 			const readStream = await storage.location(file.storage).read(file.filename_disk, { range, version });
 
