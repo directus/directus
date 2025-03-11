@@ -187,6 +187,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				throw opts.preMutationError;
 			}
 
+			// Ensure the action hook payload has the post filter hook + preset changes
 			actionHookPayload = payloadWithPresets;
 
 			// We're creating new services instances so they can use the transaction as their Knex interface
