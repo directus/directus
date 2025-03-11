@@ -198,7 +198,7 @@ export class PayloadService {
 		}
 
 		this.processGeometries(processedPayload, action);
-		this.processDates(processedPayload, action);
+		this.processDates(processedPayload, action, aliasMap);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -291,8 +291,26 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
+	processDates(
+		payloads: Partial<Record<string, any>>[],
+		action: Action,
+		aliasMap: Record<string, string> = {},
+	): Partial<Record<string, any>>[] {
 		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
+
+		for (const alias in aliasMap) {
+			const field = fieldsInCollection.find(([name, _]) => name === aliasMap[alias]);
+
+			if (field) {
+				fieldsInCollection.push([
+					alias,
+					{
+						...field[1],
+						field: alias,
+					},
+				]);
+			}
+		}
 
 		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
 			['dateTime', 'date', 'timestamp'].includes(field.type),
