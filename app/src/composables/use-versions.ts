@@ -8,6 +8,9 @@ import { mergeWith } from 'lodash';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { validateItem } from '@/utils/validate-item';
 import { useNestedValidation } from '@/composables/use-nested-validation';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { APIError } from '@/types/error';
+import { VALIDATION_TYPES } from '@/constants';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
 	const currentVersion = ref<ContentVersion | null>(null);
@@ -15,7 +18,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const loading = ref(false);
 	const saveVersionLoading = ref(false);
 	const validationErrors = ref<any[]>([]);
-	const saving = ref(false);
 
 	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
 
@@ -27,6 +29,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	const permissions = usePermissions(collection, primaryKey, false);
 	const fieldsWithPermissions = permissions.itemPermissions.fields;
 	const { nestedValidationErrors } = useNestedValidation();
+	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
 	watch(
 		[queryVersion, versions],
@@ -41,6 +44,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 			if (version?.key === currentVersion.value?.key) return;
 
+			validationErrors.value = [];
 			currentVersion.value = version ?? null;
 		},
 		{ immediate: true },
@@ -48,6 +52,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	watch(currentVersion, (newCurrentVersion) => {
 		queryVersion.value = newCurrentVersion?.key ?? null;
+		validationErrors.value = [];
 	});
 
 	const query = computed<Query>(() => {
@@ -80,7 +85,30 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		deleteVersion,
 		saveVersionLoading,
 		saveVersion,
+		validationErrors,
 	};
+
+	function saveVersionErrorHandler(error: any) {
+		if (error?.response?.data?.errors) {
+			validationErrors.value = error.response.data.errors
+				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
+				.map((err: APIError) => {
+					return err.extensions;
+				});
+
+			const otherErrors = error.response.data.errors.filter(
+				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
+			);
+
+			if (otherErrors.length > 0) {
+				otherErrors.forEach(unexpectedError);
+			}
+		} else {
+			unexpectedError(error);
+		}
+
+		throw error;
+	}
 
 	async function getVersions() {
 		if (!readVersionsAllowed.value) return;
@@ -158,33 +186,44 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	}
 
 	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Record<string, any>>) {
-		if (!currentVersion.value) return;
-
 		saveVersionLoading.value = true;
 
-		const payloadToValidate = mergeWith({}, item.value, edits.value, function (_from: any, to: any) {
-			if (typeof to !== 'undefined') {
-				return to;
-			}
-		});
+		if (!currentVersion.value) return;
+
+		const payloadToValidate = mergeWith(
+			{},
+			defaultValues.value,
+			item.value,
+			edits.value,
+			function (_from: any, to: any) {
+				if (typeof to !== 'undefined') {
+					return to;
+				}
+			},
+		);
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
 		const errors = validateItem(payloadToValidate, fields, false, false, currentVersion.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
-		//FIXME: Conditions based on $version are not producing validation errors when they should, and are being passed to the server
 		if (errors.length > 0) {
 			validationErrors.value = errors;
-			saving.value = false;
+			saveVersionLoading.value = false;
 			throw errors;
 		}
 
 		try {
-			await api.post(`/versions/${currentVersion.value.id}/save`, unref(edits));
+			const response = await api.post(`/versions/${currentVersion.value.id}/save`, unref(edits));
+			const savedData = response.data.data;
+
+			// Update local item with the saved changes
+			Object.assign(item.value, savedData);
+			edits.value = {};
+
+			return savedData;
 		} catch (error) {
-			unexpectedError(error);
-			throw error;
+			saveVersionErrorHandler(error);
 		} finally {
 			saveVersionLoading.value = false;
 		}
