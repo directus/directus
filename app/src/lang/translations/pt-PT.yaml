@@ -193,6 +193,8 @@ public_description: Controla quais dados da API estão disponíveis sem autentic
 public_role_info: >-
   O papel público controla quais dados de API estão disponíveis para utilizadores não autenticados ou sem uma função. Pedidos com o papel público não podem ter acesso à aplicação ou ao administrador. Se for concedido acesso à aplicação ou ao administrador numa política atribuída ao papel público, esse acesso será ignorado.
 admin_description: Função administrativa inicial com acesso irrestrito à Aplicação/API.
+no_description: Sem descrição...
+reached_maximum_number_of_extensions: Atingiu o número máximo de extensões para este projeto ({n}). Contacte o administrador de sistema para mais informação.
 not_allowed: Não permitido
 archive: Arquivar
 archive_confirm: Tem a certeza que pretende arquivar este documento?
@@ -438,6 +440,7 @@ functions:
   hour: Hora
   minute: Minuto
   second: Segundo
+  count: Contagem
 date-fns_date: dd MMM u
 date-fns_time: 'HH:mm:ss'
 date-fns_time_no_seconds: 'HH:mm'
@@ -508,6 +511,7 @@ generated_uuid: UUID gerado
 manual_string: String inserida manualmente
 save_and_create_new: Guardar e criar novo
 save_and_stay: Guardar e permanecer
+save_and_quit: Guardar e Fechar
 save_as_copy: Guardar como cópia
 add_existing: Adicionar existente
 creating_items: Criando Itens
@@ -535,6 +539,7 @@ user_count: 'Nenhum utilizador | Um utilizador | {count} utilizadores'
 no_users_copy: Ainda não existem utilizadores neste estatuto.
 webhooks_count: 'Nenhum webhook | Um webhook | {count} webhooks'
 no_notifications: Sem notificações
+no_notifications_copy: Tudo em dia!
 activity_log: Registo de Atividade
 all_items: Todos os documentos
 csv: CSV
@@ -739,6 +744,7 @@ flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada
 operation_key_unique_error: Chaves de operação devem ser únicas em um fluxo
+visible: Visível
 full_screen: Ecrã completo
 save_image: Guardar imagem
 wysiwyg_options:
