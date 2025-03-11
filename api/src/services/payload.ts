@@ -22,7 +22,6 @@ import getDatabase from '../database/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
-import { addPathToFailedValidation } from '@directus/validation';
 
 type Action = 'create' | 'read' | 'update';
 
@@ -53,6 +52,7 @@ export class PayloadService {
 	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
+	nested: string[];
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -60,6 +60,7 @@ export class PayloadService {
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
+		this.nested = options.nested ?? [];
 
 		return this;
 	}
@@ -450,6 +451,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [relation.field, ...this.nested]
 			});
 
 			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
@@ -469,22 +471,11 @@ export class PayloadService {
 					.where({ [relatedPrimaryKeyField]: relatedPrimaryKey })
 					.first());
 
-			try {
-				if (exists) {
-					const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
+			if (exists) {
+				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
 
-					if (Object.keys(record).length > 0) {
-						await service.updateOne(relatedPrimaryKey, record, {
-							onRevisionCreate: (pk) => revisions.push(pk),
-							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
-							mutationTracker: opts?.mutationTracker,
-						});
-					}
-				} else {
-					relatedPrimaryKey = await service.createOne(relatedRecord, {
+				if (Object.keys(record).length > 0) {
+					await service.updateOne(relatedPrimaryKey, record, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
@@ -493,8 +484,15 @@ export class PayloadService {
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
-			} catch (error: any) {
-				throw addPathToFailedValidation(error, relation.field);
+			} else {
+				relatedPrimaryKey = await service.createOne(relatedRecord, {
+					onRevisionCreate: (pk) => revisions.push(pk),
+					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+					bypassEmitAction: (params) =>
+						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+					emitEvents: opts?.emitEvents,
+					mutationTracker: opts?.mutationTracker,
+				});
 			}
 
 			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
@@ -544,6 +542,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [relation.field, ...this.nested]
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
@@ -562,22 +561,12 @@ export class PayloadService {
 					.where({ [relatedPrimaryKeyField]: relatedPrimaryKey })
 					.first());
 
-			try {
-				if (exists) {
-					const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
 
-					if (Object.keys(record).length > 0) {
-						await service.updateOne(relatedPrimaryKey, record, {
-							onRevisionCreate: (pk) => revisions.push(pk),
-							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
-							mutationTracker: opts?.mutationTracker,
-						});
-					}
-				} else {
-					relatedPrimaryKey = await service.createOne(relatedRecord, {
+			if (exists) {
+				const { [relatedPrimaryKeyField]: _, ...record } = relatedRecord;
+
+				if (Object.keys(record).length > 0) {
+					await service.updateOne(relatedPrimaryKey, record, {
 						onRevisionCreate: (pk) => revisions.push(pk),
 						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 						bypassEmitAction: (params) =>
@@ -586,9 +575,17 @@ export class PayloadService {
 						mutationTracker: opts?.mutationTracker,
 					});
 				}
-			} catch (error: any) {
-				throw addPathToFailedValidation(error, relation.field);
+			} else {
+				relatedPrimaryKey = await service.createOne(relatedRecord, {
+					onRevisionCreate: (pk) => revisions.push(pk),
+					onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+					bypassEmitAction: (params) =>
+						opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+					emitEvents: opts?.emitEvents,
+					mutationTracker: opts?.mutationTracker,
+				});
 			}
+
 
 			// Overwrite the nested object with just the primary key, so the parent level can be saved correctly
 			payload[relation.field] = relatedPrimaryKey;
@@ -640,6 +637,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [relation.meta!.one_field!, ...this.nested]
 			});
 
 			const recordsToUpsert: Partial<Item>[] = [];
@@ -701,61 +699,57 @@ export class PayloadService {
 					recordsToUpsert.push(record);
 				}
 
-				try {
-					savedPrimaryKeys.push(
-						...(await service.upsertMany(recordsToUpsert, {
+				savedPrimaryKeys.push(
+					...(await service.upsertMany(recordsToUpsert, {
+						onRevisionCreate: (pk) => revisions.push(pk),
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+						bypassEmitAction: (params) =>
+							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
+					})),
+				);
+
+				const query: Query = {
+					filter: {
+						_and: [
+							{
+								[relation.field]: {
+									_eq: parent,
+								},
+							},
+							{
+								[relatedPrimaryKeyField]: {
+									_nin: savedPrimaryKeys,
+								},
+							},
+						],
+					},
+				};
+
+				// Nullify all related items that aren't included in the current payload
+				if (relation.meta.one_deselect_action === 'delete') {
+					// There's no revision for a deletion
+					await service.deleteByQuery(query, {
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+						bypassEmitAction: (params) =>
+							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
+					});
+				} else {
+					await service.updateByQuery(
+						query,
+						{ [relation.field]: null },
+						{
 							onRevisionCreate: (pk) => revisions.push(pk),
 							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 							bypassEmitAction: (params) =>
 								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 							emitEvents: opts?.emitEvents,
 							mutationTracker: opts?.mutationTracker,
-						})),
-					);
-
-					const query: Query = {
-						filter: {
-							_and: [
-								{
-									[relation.field]: {
-										_eq: parent,
-									},
-								},
-								{
-									[relatedPrimaryKeyField]: {
-										_nin: savedPrimaryKeys,
-									},
-								},
-							],
 						},
-					};
-
-					// Nullify all related items that aren't included in the current payload
-					if (relation.meta.one_deselect_action === 'delete') {
-						// There's no revision for a deletion
-						await service.deleteByQuery(query, {
-							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
-							mutationTracker: opts?.mutationTracker,
-						});
-					} else {
-						await service.updateByQuery(
-							query,
-							{ [relation.field]: null },
-							{
-								onRevisionCreate: (pk) => revisions.push(pk),
-								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-								emitEvents: opts?.emitEvents,
-								mutationTracker: opts?.mutationTracker,
-							},
-						);
-					}
-				} catch (error: any) {
-					throw addPathToFailedValidation(error, relation.meta!.one_field!);
+					);
 				}
 			}
 			// "Updates" object w/ create/update/delete
@@ -797,18 +791,14 @@ export class PayloadService {
 						}));
 					}
 
-					try {
-						await service.createMany(createPayload, {
-							onRevisionCreate: (pk) => revisions.push(pk),
-							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-							bypassEmitAction: (params) =>
-								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-							emitEvents: opts?.emitEvents,
-							mutationTracker: opts?.mutationTracker,
-						});
-					} catch (error: any) {
-						throw addPathToFailedValidation(error, relation.meta!.one_field!);
-					}
+					await service.createMany(createPayload, {
+						onRevisionCreate: (pk) => revisions.push(pk),
+						onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+						bypassEmitAction: (params) =>
+							opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+						emitEvents: opts?.emitEvents,
+						mutationTracker: opts?.mutationTracker,
+					});
 				}
 
 				if (alterations.update) {
@@ -825,18 +815,14 @@ export class PayloadService {
 							record[relation.field] = parent || payload[currentPrimaryKeyField];
 						}
 
-						try {
-							await service.updateOne(key, record, {
-								onRevisionCreate: (pk) => revisions.push(pk),
-								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-								emitEvents: opts?.emitEvents,
-								mutationTracker: opts?.mutationTracker,
-							});
-						} catch (error: any) {
-							throw addPathToFailedValidation(error, relation.meta!.one_field!);
-						}
+						await service.updateOne(key, record, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
+						});
 					}
 				}
 
@@ -858,31 +844,27 @@ export class PayloadService {
 						},
 					};
 
-					try {
-						if (relation.meta.one_deselect_action === 'delete') {
-							await service.deleteByQuery(query, {
+					if (relation.meta.one_deselect_action === 'delete') {
+						await service.deleteByQuery(query, {
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
+						});
+					} else {
+						await service.updateByQuery(
+							query,
+							{ [relation.field]: null },
+							{
+								onRevisionCreate: (pk) => revisions.push(pk),
 								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
 								bypassEmitAction: (params) =>
 									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
 								emitEvents: opts?.emitEvents,
 								mutationTracker: opts?.mutationTracker,
-							});
-						} else {
-							await service.updateByQuery(
-								query,
-								{ [relation.field]: null },
-								{
-									onRevisionCreate: (pk) => revisions.push(pk),
-									onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-									bypassEmitAction: (params) =>
-										opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-									emitEvents: opts?.emitEvents,
-									mutationTracker: opts?.mutationTracker,
-								},
-							);
-						}
-					} catch (error: any) {
-						throw addPathToFailedValidation(error, relation.meta!.one_field!);
+							},
+						);
 					}
 				}
 			}

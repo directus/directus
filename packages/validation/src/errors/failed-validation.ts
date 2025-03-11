@@ -12,7 +12,7 @@ export interface FailedValidationErrorExtensions {
 }
 
 export const messageConstructor = (extensions: FailedValidationErrorExtensions): string => {
-	const atPath = extensions.path.length > 0 ? ` at ${extensions.path.join('.')}` : '';
+	const atPath = extensions.path.length > 0 ? ` at "${extensions.path.join('.')}"` : '';
 	let message = `Validation failed for field "${extensions.field}"${atPath}.`;
 
 	if ('valid' in extensions) {
@@ -99,31 +99,3 @@ export const FailedValidationError = createError<FailedValidationErrorExtensions
 	messageConstructor,
 	400,
 );
-
-export function addPathToFailedValidation(error: any, path: string) {
-	if (Array.isArray(error)) {
-		const err = error.map((err) => {
-			if (err?.code === 'FAILED_VALIDATION') {
-				return new FailedValidationError({
-					...err.extensions,
-					path: [path, ...err.extensions.path],
-				});
-			}
-
-			return err;
-		});
-
-		return err;
-	}
-
-	if (error?.code === 'FAILED_VALIDATION') {
-		error.extensions?.path?.push(path);
-
-		return new FailedValidationError({
-			...error.extensions,
-			path: [path, ...error.extensions.path],
-		});
-	}
-
-	return error;
-}
