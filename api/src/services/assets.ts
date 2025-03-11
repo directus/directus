@@ -4,7 +4,7 @@ import {
 	IllegalAssetTransformationError,
 	InvalidQueryError,
 	RangeNotSatisfiableError,
-	ServiceUnavailableError
+	ServiceUnavailableError,
 } from '@directus/errors';
 import type { Range, Stat } from '@directus/storage';
 import type { Accountability, File, SchemaOverview } from '@directus/types';
@@ -199,7 +199,7 @@ export class AssetsService {
 
 			transforms.forEach(([method, ...args]) => {
 				try {
-					(transformer[method] as any).apply(transformer, args)
+					(transformer[method] as any).apply(transformer, args);
 				} catch (error: Error) {
 					throw error.message.startsWith('Expected') ? new InvalidQueryError({ reason: error.message }) : error;
 				}
