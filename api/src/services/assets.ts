@@ -200,8 +200,12 @@ export class AssetsService {
 			transforms.forEach(([method, ...args]) => {
 				try {
 					(transformer[method] as any).apply(transformer, args);
-				} catch (error: Error) {
-					throw error.message.startsWith('Expected') ? new InvalidQueryError({ reason: error.message }) : error;
+				} catch (error) {
+					if (error instanceof Error && error.message.startsWith('Expected')) {
+						throw new InvalidQueryError({ reason: error.message });
+					}
+
+					throw error;
 				}
 			});
 
