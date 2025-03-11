@@ -23,6 +23,14 @@ vi.mock('@/api', () => {
 
 vi.mock('@directus/composables');
 
+vi.mock('@/composables/use-versions', () => {
+	return {
+		useVersions: () => ({
+			currentVersion: ref(null),
+		}),
+	};
+});
+
 beforeEach(() => {
 	setActivePinia(
 		createTestingPinia({
