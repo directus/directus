@@ -194,9 +194,9 @@ router.patch(
 		});
 
 		if (isSystemField(req.params['collection']!, req.params['field']!)) {
-			const { error } = systemUpdateSchema.validate(req.body);
+			const { error } = systemUpdateSchema.validate(req.body, { abortEarly: false });
 
-			if (error) throw new InvalidPayloadError({ reason: error.message });
+			if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
 		} else {
 			const { error } = updateSchema.validate(req.body);
 
