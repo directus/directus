@@ -7,7 +7,7 @@ export type EditConfig = {
 	collection: string;
 	item: PrimaryKey | null;
 	fields?: string[];
-	mode: 'drawer' | 'modal' | 'popover';
+	mode?: 'drawer' | 'modal' | 'popover';
 };
 
 export type SavedData = {
