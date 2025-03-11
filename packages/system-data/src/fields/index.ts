@@ -29,8 +29,15 @@ import versionFields from './versions.yaml';
 import webhookFields from './webhooks.yaml';
 
 import type { FieldMeta } from '../types.js';
+import { isSystemCollection } from '../collections/index.js';
 
 export const systemFieldRows: FieldMeta[] = [];
+
+export function isSystemField(collection: string, field: string): boolean {
+	if (!isSystemCollection(collection)) return false;
+
+	return !!systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field);
+}
 
 processFields(accessFields);
 processFields(activityFields);
