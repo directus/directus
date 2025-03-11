@@ -3,13 +3,19 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion, Filter, Query } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
 import { Ref, computed, ref, unref, watch } from 'vue';
-import { useCollectionPermissions } from './use-permissions';
+import { useCollectionPermissions, usePermissions } from './use-permissions';
+import { mergeWith } from 'lodash';
+import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
+import { validateItem } from '@/utils/validate-item';
+import { useNestedValidation } from '@/composables/use-nested-validation';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
 	const currentVersion = ref<ContentVersion | null>(null);
 	const versions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
 	const saveVersionLoading = ref(false);
+	const validationErrors = ref<any[]>([]);
+	const saving = ref(false);
 
 	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
 
@@ -17,6 +23,10 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		transform: (value) => (Array.isArray(value) ? value[0] : value),
 		mode: 'push',
 	});
+
+	const permissions = usePermissions(collection, primaryKey, false);
+	const fieldsWithPermissions = permissions.itemPermissions.fields;
+	const { nestedValidationErrors } = useNestedValidation();
 
 	watch(
 		[queryVersion, versions],
@@ -151,6 +161,24 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		if (!currentVersion.value) return;
 
 		saveVersionLoading.value = true;
+
+		const payloadToValidate = mergeWith({}, edits.value, function (_from: any, to: any) {
+			if (typeof to !== 'undefined') {
+				return to;
+			}
+		});
+
+		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
+
+		const errors = validateItem(payloadToValidate, fields, false, false, currentVersion.value);
+		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
+
+		//FIXME: Conditions based on $version are not producing validation errors when they should, and are being passed to the server
+		if (errors.length > 0) {
+			validationErrors.value = errors;
+			saving.value = false;
+			throw errors;
+		}
 
 		try {
 			await api.post(`/versions/${currentVersion.value.id}/save`, unref(edits));

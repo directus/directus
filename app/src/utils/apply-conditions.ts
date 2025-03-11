@@ -10,6 +10,7 @@ export function applyConditions(item: Record<string, any>, field: Field, version
 		const matchingCondition = conditions.find((condition) => {
 			if (!condition.rule || Object.keys(condition.rule).length !== 1) return;
 
+			// because $version is not an item field, we need to add it to the validation context
 			const validationContext = {
 				...item,
 				$version: version?.name ?? null,
