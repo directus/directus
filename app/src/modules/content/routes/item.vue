@@ -352,7 +352,11 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits);
+		await saveVersion(
+			edits,
+			computed(() => item.value ?? {}),
+		);
+
 		edits.value = {};
 
 		switch (action) {

@@ -157,12 +157,12 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function saveVersion(edits: Ref<Record<string, any>>) {
+	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Record<string, any>>) {
 		if (!currentVersion.value) return;
 
 		saveVersionLoading.value = true;
 
-		const payloadToValidate = mergeWith({}, edits.value, function (_from: any, to: any) {
+		const payloadToValidate = mergeWith({}, item.value, edits.value, function (_from: any, to: any) {
 			if (typeof to !== 'undefined') {
 				return to;
 			}
