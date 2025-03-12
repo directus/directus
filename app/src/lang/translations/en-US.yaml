@@ -620,6 +620,7 @@ manual_string: Manually entered string
 save_and_create_new: Save and Create New
 save_and_stay: Save and Stay
 save_and_quit: Save and Quit
+save_and_return_to_main: Save and Return to Main
 save_as_copy: Save as Copy
 add_existing: Add Existing
 creating_items: Creating Items

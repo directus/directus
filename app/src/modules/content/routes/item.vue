@@ -153,6 +153,18 @@ useShortcut(
 	form,
 );
 
+useShortcut(
+	'meta+alt+s',
+	() => {
+		if (unref(currentVersion) === null) {
+			saveAndReturnToMain();
+		} else {
+			saveVersionAction('main');
+		}
+	},
+	form,
+);
+
 const isSavable = computed(() => {
 	if (saveAllowed.value === false && currentVersion.value === null) return false;
 	if (hasEdits.value === true) return true;
@@ -360,17 +372,6 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	}
 }
 
-async function saveAndQuit() {
-	if (isSavable.value === false) return;
-
-	try {
-		await save();
-		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
-	} catch {
-		// Save shows unexpected error dialog
-	}
-}
-
 async function saveAndStay() {
 	if (isSavable.value === false) return;
 
@@ -402,6 +403,19 @@ async function saveAndAddNew() {
 		} else {
 			router.push(getItemRoute(props.collection, '+'));
 		}
+	} catch {
+		// Save shows unexpected error dialog
+	}
+}
+
+async function saveAndReturnToMain() {
+	if (isSavable.value === false) return;
+	if (unref(currentVersion) !== null) return;
+
+	try {
+		await save();
+		currentVersion.value = null;
+		refresh();
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -461,6 +475,15 @@ function revert(values: Record<string, any>) {
 		...values,
 	};
 }
+
+const shouldShowVersioning = computed(
+	() =>
+		collectionInfo.value?.meta?.versioning &&
+		!isNew.value &&
+		internalPrimaryKey.value !== '+' &&
+		readVersionsAllowed.value &&
+		!versionsLoading.value,
+);
 </script>
 
 <template>
@@ -468,7 +491,13 @@ function revert(values: Record<string, any>) {
 		v-if="error || !collectionInfo || (collectionInfo?.meta?.singleton === true && primaryKey !== null)"
 	/>
 
-	<private-view v-else v-model:split-view="splitView" :split-view-min-width="310" :title="title">
+	<private-view
+		v-else
+		v-model:split-view="splitView"
+		:class="{ 'has-content-versioning': shouldShowVersioning }"
+		:split-view-min-width="310"
+		:title="title"
+	>
 		<template v-if="collectionInfo.meta && collectionInfo.meta.singleton === true" #title>
 			<h1 class="type-title">
 				{{ collectionInfo.name }}
@@ -514,35 +543,31 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #headline>
-			<v-breadcrumb
-				v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
-				:items="[{ name: t('content'), to: '/content' }]"
-			/>
-			<v-breadcrumb v-else :items="breadcrumb" />
+			<div class="headline-wrapper" :class="{ 'has-version-menu': shouldShowVersioning }">
+				<v-breadcrumb
+					v-if="collectionInfo.meta && collectionInfo.meta.singleton === true"
+					:items="[{ name: t('content'), to: '/content' }]"
+					class="headline-breadcrumb"
+				/>
+				<v-breadcrumb v-else :items="breadcrumb" class="headline-breadcrumb" />
+
+				<version-menu
+					v-if="shouldShowVersioning"
+					:collection="collection"
+					:primary-key="internalPrimaryKey!"
+					:update-allowed="updateAllowed"
+					:has-edits="hasEdits"
+					:current-version="currentVersion"
+					:versions="versions"
+					@add="addVersion"
+					@update="updateVersion"
+					@delete="deleteVersion"
+					@switch="currentVersion = $event"
+				/>
+			</div>
 		</template>
 
-		<template #title-outer:append>
-			<version-menu
-				v-if="
-					collectionInfo.meta &&
-					collectionInfo.meta.versioning &&
-					!isNew &&
-					internalPrimaryKey !== '+' &&
-					readVersionsAllowed &&
-					!versionsLoading
-				"
-				:collection="collection"
-				:primary-key="internalPrimaryKey"
-				:update-allowed="updateAllowed"
-				:has-edits="hasEdits"
-				:current-version="currentVersion"
-				:versions="versions"
-				@add="addVersion"
-				@update="updateVersion"
-				@delete="deleteVersion"
-				@switch="currentVersion = $event"
-			/>
-		</template>
+		<template #title-outer:append></template>
 
 		<template #actions>
 			<v-button
@@ -633,7 +658,7 @@ function revert(values: Record<string, any>) {
 				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
-				@click="saveAndQuit"
+				@click="saveAndStay"
 			>
 				<v-icon name="check" />
 
@@ -655,7 +680,7 @@ function revert(values: Record<string, any>) {
 				:tooltip="t('save_version')"
 				:loading="saveVersionLoading"
 				:disabled="!isSavable"
-				@click="saveVersionAction('main')"
+				@click="saveVersionAction('stay')"
 			>
 				<v-icon name="beenhere" />
 
@@ -666,10 +691,10 @@ function revert(values: Record<string, any>) {
 						</template>
 
 						<v-list>
-							<v-list-item clickable @click="saveVersionAction('stay')">
-								<v-list-item-icon><v-icon name="beenhere" /></v-list-item-icon>
-								<v-list-item-content>{{ t('save_and_stay') }}</v-list-item-content>
-								<v-list-item-hint>{{ translateShortcut(['meta', 's']) }}</v-list-item-hint>
+							<v-list-item clickable @click="saveVersionAction('main')">
+								<v-list-item-icon><v-icon name="check" /></v-list-item-icon>
+								<v-list-item-content>{{ t('save_and_return_to_main') }}</v-list-item-content>
+								<v-list-item-hint>{{ translateShortcut(['meta', 'alt', 's']) }}</v-list-item-hint>
 							</v-list-item>
 							<v-list-item clickable @click="saveVersionAction('quit')">
 								<v-list-item-icon><v-icon name="done_all" /></v-list-item-icon>
@@ -788,6 +813,48 @@ function revert(values: Record<string, any>) {
 
 	&:hover {
 		color: var(--theme--foreground);
+	}
+}
+
+.has-content-versioning {
+	:deep(.header-bar .title-container) {
+		flex-direction: column;
+		justify-content: center;
+		gap: 0;
+		align-items: start;
+
+		.headline {
+			opacity: 1;
+			top: 3px;
+		}
+
+		.title {
+			top: 4px;
+		}
+
+		@media (min-width: 600px) {
+			opacity: 1;
+		}
+	}
+
+	.headline-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	:deep(.header-bar.collapsed.shadow .title-container .headline) {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	:deep(.header-bar.small.shadow .title-container .headline) {
+		opacity: 1;
+	}
+}
+
+.headline-wrapper.has-version-menu .headline-breadcrumb {
+	@media (max-width: 600px) {
+		display: none;
 	}
 }
 </style>

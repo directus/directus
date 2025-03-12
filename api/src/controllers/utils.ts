@@ -55,9 +55,12 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"hash" is required` });
 		}
 
-		const result = await argon2.verify(req.body.hash, req.body.string);
-
-		return res.json({ data: result });
+		try {
+			const result = await argon2.verify(req.body.hash, req.body.string);
+			return res.json({ data: result });
+		} catch {
+			throw new InvalidPayloadError({ reason: `Invalid "hash" or "string"` });
+		}
 	}),
 );
 

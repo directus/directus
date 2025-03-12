@@ -14,6 +14,7 @@ import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
 import { flatten } from 'flat';
 import jwt from 'jsonwebtoken';
+import type { StringValue } from 'ms';
 import type { Client } from 'openid-client';
 import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
@@ -393,7 +394,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			}
 
 			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
-				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as string,
+				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as StringValue | number,
 				issuer: 'directus',
 			});
 
