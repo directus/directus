@@ -111,9 +111,9 @@ function getFieldPreview(node: Record<string, any>) {
 		const pathPrefix = fieldParts.slice(0, index);
 		const field = fieldsStore.getField(props.collection, [...pathPrefix, key].join('.'));
 
-		// Special case for version field
-		if (key === '$version') {
-			return 'Version';
+		// Injected special fields, such as $version
+		if (!field && key.startsWith('$')) {
+			return t(key.replace('$', ''));
 		}
 
 		const name = (props.rawFieldNames ? field?.field : field?.name) ?? key;
