@@ -156,9 +156,7 @@ useShortcut(
 useShortcut(
 	'meta+alt+s',
 	() => {
-		if (unref(currentVersion) === null) {
-			saveAndReturnToMain();
-		} else {
+		if (unref(currentVersion) !== null) {
 			saveVersionAction('main');
 		}
 	},
@@ -403,19 +401,6 @@ async function saveAndAddNew() {
 		} else {
 			router.push(getItemRoute(props.collection, '+'));
 		}
-	} catch {
-		// Save shows unexpected error dialog
-	}
-}
-
-async function saveAndReturnToMain() {
-	if (isSavable.value === false) return;
-	if (unref(currentVersion) !== null) return;
-
-	try {
-		await save();
-		currentVersion.value = null;
-		refresh();
 	} catch {
 		// Save shows unexpected error dialog
 	}
