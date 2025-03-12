@@ -1,8 +1,8 @@
 import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, SelectionNode } from 'graphql';
-import { replaceFuncs } from './replace-funcs.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
+import { replaceFuncs } from './replace-funcs.js';
 
 /**
  * Resolve the aggregation query based on the requested aggregated fields
