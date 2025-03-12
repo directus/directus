@@ -431,6 +431,17 @@ async function saveAsCopyAndNavigate() {
 	}
 }
 
+async function saveAndQuit() {
+	if (isSavable.value === false) return;
+
+	try {
+		await save();
+		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
+	} catch {
+		// Save shows unexpected error dialog
+	}
+}
+
 async function deleteAndQuit() {
 	try {
 		await remove();
@@ -658,7 +669,7 @@ const shouldShowVersioning = computed(
 				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
-				@click="saveAndStay"
+				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
 
