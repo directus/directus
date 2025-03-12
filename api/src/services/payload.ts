@@ -657,7 +657,7 @@ export class PayloadService {
 
 					// No relatedId means it's a new record
 					if (relatedId) {
-						await this.knex
+						existingRecord = await this.knex
 							.select(relatedPrimaryKeyField, relation.field)
 							.from(relation.collection)
 							.where({ [relatedPrimaryKeyField]: relatedId })
