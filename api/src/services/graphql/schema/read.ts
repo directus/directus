@@ -614,8 +614,8 @@ export function getReadableTypes(
 			type: collection.singleton
 				? ReadCollectionTypes[collection.collection]!
 				: new GraphQLNonNull(
-						new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
-				  ),
+					new GraphQLList(new GraphQLNonNull(ReadCollectionTypes[collection.collection]!.getType())),
+				),
 			resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 				const result = await resolveQuery(gql, info);
 				context['data'] = result;
@@ -705,9 +705,9 @@ export function getReadableTypes(
 				args: collection.singleton
 					? { version: new GraphQLNonNull(GraphQLString) }
 					: {
-							version: new GraphQLNonNull(GraphQLString),
-							id: new GraphQLNonNull(GraphQLID),
-					  },
+						version: new GraphQLNonNull(GraphQLString),
+						id: new GraphQLNonNull(GraphQLID),
+					},
 				resolve: async ({ info, context }: { info: GraphQLResolveInfo; context: Record<string, any> }) => {
 					const result = await resolveQuery(gql, info);
 					context['data'] = result;
@@ -796,7 +796,7 @@ export function getReadableTypes(
 
 			for (const collection of relation.meta.one_allowed_collections) {
 				ReadableCollectionFilterTypes[relation.collection]?.addFields({
-					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
+					[`${relation.field}__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 				});
 			}
 		}

@@ -1,10 +1,11 @@
-import type { Accountability, Query } from '@directus/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, set, uniq } from 'lodash-es';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
 import { parseArgs } from './parse-args.js';
+import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/replace-m2a.js';
 
 /**
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
@@ -15,6 +16,8 @@ export function getQuery(
 	selections: readonly SelectionNode[],
 	variableValues: GraphQLResolveInfo['variableValues'],
 	accountability?: Accountability | null,
+	collection?: string,
+	schema?: SchemaOverview,
 ): Query {
 	const query: Query = sanitizeQuery(rawQuery, accountability);
 
@@ -126,8 +129,20 @@ export function getQuery(
 
 	query.alias = parseAliases(selections);
 	query.fields = parseFields(selections);
-	if (query.filter) query.filter = replaceFuncs(query.filter);
+
+	if (query.filter) {
+		query.filter = replaceFuncs(query.filter)
+	}
+
 	query.deep = replaceFuncs(query.deep as any) as any;
+
+	if (collection && schema) {
+		if (query.filter) {
+			query.filter = filterReplaceM2A(query.filter, collection, schema);
+		}
+
+		query.deep = filterReplaceM2ADeep(query.deep, collection, schema);
+	}
 
 	validateQuery(query);
 
