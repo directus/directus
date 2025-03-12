@@ -76,7 +76,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// while the other services only expect `options`
 		const isItemsService = Service.length === 2;
 
-		const newOptions = { knex: this.knex, accountability: this.accountability, schema: this.schema, ...options };
+		const newOptions = {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+			nested: this.nested,
+			...options,
+		};
 
 		if (isItemsService) {
 			return new ItemsService(this.collection, newOptions);

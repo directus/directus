@@ -451,7 +451,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [relation.field, ...this.nested],
+				nested: [...this.nested, relation.field],
 			});
 
 			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
@@ -542,7 +542,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [relation.field, ...this.nested],
+				nested: [...this.nested, relation.field],
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
@@ -635,7 +635,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [relation.meta!.one_field!, ...this.nested],
+				nested: [...this.nested, relation.meta!.one_field!],
 			});
 
 			const recordsToUpsert: Partial<Item>[] = [];
