@@ -7,9 +7,11 @@ export function filterReplaceM2A(filter_arg: Filter, collection: string, schema:
 		const o2m_relation = schema.relations.find(
 			(relation) => relation.related_collection === collection && relation.meta?.one_field === key,
 		);
+
 		const m2o_relation = schema.relations.find(
 			(relation) => relation.collection === collection && relation.field === key,
 		);
+
 		const a2o_relation = schema.relations.find(
 			(relation) =>
 				relation.collection === collection &&
@@ -49,9 +51,11 @@ export function filterReplaceM2ADeep(
 			const o2m_relation = schema.relations.find(
 				(relation) => relation.related_collection === collection && relation.meta?.one_field === key,
 			);
+
 			const m2o_relation = schema.relations.find(
 				(relation) => relation.collection === collection && relation.field === key,
 			);
+
 			const a2o_relation = schema.relations.find(
 				(relation) =>
 					relation.collection === collection &&

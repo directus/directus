@@ -540,6 +540,7 @@ export function injectSystemResolvers(
 						'directus_roles',
 						gql.schema,
 					);
+
 					query.limit = -1;
 
 					const roles = await service.readMany(gql.accountability.roles, query);
@@ -646,6 +647,7 @@ export function injectSystemResolvers(
 							'directus_files',
 							gql.schema,
 						);
+
 						return await service.readOne(primaryKey, query);
 					}
 
