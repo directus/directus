@@ -131,7 +131,7 @@ export function getQuery(
 	query.fields = parseFields(selections);
 
 	if (query.filter) {
-		query.filter = replaceFuncs(query.filter)
+		query.filter = replaceFuncs(query.filter);
 	}
 
 	query.deep = replaceFuncs(query.deep as any) as any;
