@@ -1,4 +1,5 @@
 import { defineInterface } from '@directus/extensions';
+import { APP_NUMERIC_TYPES } from '@/constants';
 import InterfaceSlider from './slider.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -8,7 +9,8 @@ export default defineInterface({
 	description: '$t:interfaces.slider.description',
 	icon: 'linear_scale',
 	component: InterfaceSlider,
-	types: ['integer', 'decimal', 'float'],
+	// @ts-ignore
+	types: APP_NUMERIC_TYPES,
 	group: 'other',
 	options: [
 		{

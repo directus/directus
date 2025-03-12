@@ -148,6 +148,9 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 	},
 ];
 
+// Treat bigInteger and decimal as string to avoid rounding errors
+export const APP_NUMERIC_TYPES = ['integer', 'float'];
+
 export const DEFAULT_AUTH_PROVIDER = 'local';
 export const DEFAULT_AUTH_DRIVER = 'default';
 

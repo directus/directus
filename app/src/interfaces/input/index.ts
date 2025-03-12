@@ -1,5 +1,6 @@
 import { DeepPartial, Field } from '@directus/types';
 import { defineInterface } from '@directus/extensions';
+import { APP_NUMERIC_TYPES } from '@/constants';
 import InterfaceInput from './input.vue';
 import PreviewSVG from './preview.svg?raw';
 
@@ -223,7 +224,7 @@ export default defineInterface({
 			},
 		];
 
-		if (field.type && ['integer', 'float', 'decimal'].includes(field.type)) {
+		if (field.type && APP_NUMERIC_TYPES.includes(field.type)) {
 			return numberOptions;
 		}
 

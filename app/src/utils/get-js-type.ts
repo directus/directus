@@ -11,9 +11,10 @@ export function getJSType(field: Field): string {
 	switch (field.type) {
 		case 'integer':
 		case 'float':
-		case 'decimal':
 			return 'number';
+		// Treat bigInteger and decimal as string to avoid rounding errors
 		case 'bigInteger':
+		case 'decimal':
 		case 'string':
 		case 'text':
 		case 'uuid':
