@@ -3,9 +3,11 @@ import type { FailedValidationErrorExtensions } from '../errors/failed-validatio
 
 export const joiValidationErrorItemToErrorExtensions = (
 	validationErrorItem: ValidationErrorItem,
+	path?: string[],
 ): FailedValidationErrorExtensions => {
 	const extensions: Partial<FailedValidationErrorExtensions> = {
 		field: validationErrorItem.path[0] as string,
+		path: [...(path ?? []), ...validationErrorItem.path.slice(1)],
 	};
 
 	const joiType = validationErrorItem.type;
