@@ -2,28 +2,36 @@ import { useEnv } from '@directus/env';
 import camelcase from 'camelcase';
 import { set } from 'lodash-es';
 
+export interface GetConfigFromEnvOptions {
+	omitPrefix?: string | string[];
+	omitKey?: string | string[];
+	type?: 'camelcase' | 'underscore';
+}
+
 export function getConfigFromEnv(
 	prefix: string,
-	omitPrefix?: string | string[],
-	type: 'camelcase' | 'underscore' = 'camelcase',
+	{ omitPrefix, omitKey, type = 'camelcase' }?: GetConfigFromEnvOptions = {},
 ): Record<string, any> {
 	const env = useEnv();
 
 	const config: any = {};
 
+	const lowerCasePrefix = prefix.toLowerCase();
+
 	for (const [key, value] of Object.entries(env)) {
-		if (key.toLowerCase().startsWith(prefix.toLowerCase()) === false) continue;
+		const lowerCaseKey = key.toLowerCase();
+		if (lowerCaseKey.startsWith(lowerCasePrefix) === false) continue;
+
+		if (omitKey) {
+			const omitKeyArray = Array.isArray(omitKey) ? omitKey : [omitKey];
+			const isKeyInOmitKeys = omitKeyArray.some((keyToOmit) => lowerCaseKey === keyToOmit.toLowerCase());
+			if (isKeyInOmitKeys) continue;
+		}
 
 		if (omitPrefix) {
-			let matches = false;
-
-			if (Array.isArray(omitPrefix)) {
-				matches = omitPrefix.some((prefix) => key.toLowerCase().startsWith(prefix.toLowerCase()));
-			} else {
-				matches = key.toLowerCase().startsWith(omitPrefix.toLowerCase());
-			}
-
-			if (matches) continue;
+			const omitPrefixArray = Array.isArray(omitPrefix) ? omitPrefix : [omitPrefix];
+			const keyStartsWithAnyPrefix = omitPrefixArray.some((prefix) => lowerCaseKey.startsWith(prefix.toLowerCase()));
+			if (keyStartsWithAnyPrefix) continue;
 		}
 
 		if (key.includes('__')) {
