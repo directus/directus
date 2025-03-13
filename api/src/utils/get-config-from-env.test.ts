@@ -41,6 +41,12 @@ describe('get config from env', () => {
 		});
 	});
 
+	test('Keys with double underscore and type underscore should be an object with snake_case keys', () => {
+		expect(getConfigFromEnv('CAMELCASE_', { type: 'underscore' })).toStrictEqual({
+			object: { first_key: 'firstValue', second_key: 'secondValue' },
+		});
+	});
+
 	test('Keys starting with the prefix(es) listed in omitPrefix should be omitted', () => {
 		expect(getConfigFromEnv('OMIT_PREFIX_', { omitPrefix: 'OMIT_PREFIX_FIRST_KEY' })).toStrictEqual({
 			firstValue: 'firstValue',
