@@ -129,6 +129,7 @@ watch(validationMessages, (newVal, oldVal) => {
 			:direction="direction"
 			:show-no-visible-fields="false"
 			:show-validation-errors="false"
+			:parent-group-visible="!field.meta?.hidden"
 			@update:model-value="$emit('apply', $event)"
 		/>
 	</v-detail>

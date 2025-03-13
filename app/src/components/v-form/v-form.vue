@@ -43,6 +43,7 @@ const props = withDefaults(
 		direction?: string;
 		showDivider?: boolean;
 		inline?: boolean;
+		parentGroupVisible?: boolean;
 	}>(),
 	{
 		collection: undefined,
@@ -56,6 +57,7 @@ const props = withDefaults(
 		showValidationErrors: true,
 		showNoVisibleFields: true,
 		direction: undefined,
+		parentGroupVisible: true,
 	},
 );
 
@@ -374,6 +376,7 @@ function useRawEditor() {
 					:badge="badge"
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
+					:parent-group-visible="parentGroupVisible"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
@@ -407,6 +410,7 @@ function useRawEditor() {
 					:raw-editor-active="rawActiveFields.has(fieldName)"
 					:disabled-menu-options="disabledMenuOptions"
 					:direction="direction"
+					:parent-group-visible="parentGroupVisible"
 					@update:model-value="setValue(fieldName, $event)"
 					@set-field-value="setValue($event.field, $event.value, { force: true })"
 					@unset="unsetValue(fieldsMap[fieldName]!)"

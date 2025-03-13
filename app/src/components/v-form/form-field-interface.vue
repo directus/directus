@@ -17,6 +17,7 @@ const props = defineProps<{
 	rawEditorEnabled?: boolean;
 	rawEditorActive?: boolean;
 	direction?: string;
+	parentGroupVisible?: boolean;
 }>();
 
 defineEmits(['update:modelValue', 'setFieldValue']);
@@ -68,6 +69,7 @@ const value = computed(() =>
 				:primary-key="primaryKey"
 				:length="field.schema && field.schema.max_length"
 				:direction="direction"
+				:parent-group-visible="parentGroupVisible"
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
 			/>

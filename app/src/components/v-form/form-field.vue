@@ -29,6 +29,7 @@ const props = withDefaults(
 		rawEditorActive?: boolean;
 		disabledMenuOptions?: MenuOptions[];
 		direction?: string;
+		parentGroupVisible?: boolean;
 	}>(),
 	{
 		modelValue: undefined,
@@ -37,6 +38,7 @@ const props = withDefaults(
 		validationError: undefined,
 		badge: undefined,
 		direction: undefined,
+		parentGroupVisible: true,
 	},
 );
 
@@ -193,6 +195,7 @@ function useComputedValues() {
 			:raw-editor-enabled="rawEditorEnabled"
 			:raw-editor-active="rawEditorActive"
 			:direction="direction"
+			:parent-group-visible="parentGroupVisible"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
 		/>
