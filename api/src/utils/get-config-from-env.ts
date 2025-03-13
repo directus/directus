@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import camelcase from 'camelcase';
-import { toArray } from 'liquidjs/dist/util/underscore.js';
 import { set } from 'lodash-es';
 
 export interface GetConfigFromEnvOptions {
