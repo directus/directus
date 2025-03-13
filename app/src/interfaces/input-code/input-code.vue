@@ -2,7 +2,7 @@
 import { useWindowSize } from '@/composables/use-window-size';
 import { getStringifiedValue } from '@/utils/get-stringified-value';
 import CodeMirror, { ModeSpec } from 'codemirror';
-import { Ref, computed, onMounted, ref, watch } from 'vue';
+import { Ref, computed, onMounted, ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import importCodemirrorMode from './import-codemirror-mode';
 
@@ -33,10 +33,12 @@ const props = withDefaults(
 		placeholder?: string;
 		language?: string;
 		type?: string;
+		parentGroupVisible?: boolean;
 	}>(),
 	{
 		lineNumber: true,
 		language: 'plaintext',
+		parentGroupVisible: true,
 	},
 );
 
@@ -120,6 +122,18 @@ watch(stringValue, () => {
 		codemirror?.setValue(stringValue.value || '');
 	}
 });
+
+watch(
+	() => props.parentGroupVisible,
+	(isVisible) => {
+		if (isVisible && codemirror) {
+			// fixes formatting issue in this interface when the field is hidden by a parent group, and then shown again
+			nextTick(() => {
+				codemirror?.refresh();
+			});
+		}
+	},
+);
 
 async function setLanguage() {
 	if (codemirror) {
