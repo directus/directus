@@ -64,7 +64,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			'callback',
 		);
 
-		// extract extra client options from env, while ignoring the CLIENT_ID and CLIENT_SECRET so the ones passed into the constructor are used instead
+		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
 		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_CLIENT_`, {
 			omitKey: [
 				`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`,
