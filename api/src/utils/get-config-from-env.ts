@@ -16,8 +16,8 @@ export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptio
 	const config: any = {};
 
 	const lowerCasePrefix = prefix.toLowerCase();
-	const omitKeys = toArray(options?.omitKey ?? []).map((key) => key.toLocaleLowerCase());
-	const omitPrefixes = toArray(options?.omitPrefix ?? []).map((prefix) => prefix.toLocaleLowerCase());
+	const omitKeys = toArray(options?.omitKey ?? []).map((key) => key.toLowerCase());
+	const omitPrefixes = toArray(options?.omitPrefix ?? []).map((prefix) => prefix.toLowerCase());
 
 	for (const [key, value] of Object.entries(env)) {
 		const lowerCaseKey = key.toLowerCase();
