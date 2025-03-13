@@ -5,11 +5,13 @@ export type AbstractServiceOptions = {
 	knex?: Knex | undefined;
 	accountability?: Accountability | null | undefined;
 	schema: SchemaOverview;
+	nested?: string[];
 };
 
 export interface AbstractService {
 	knex: Knex;
 	accountability: Accountability | null | undefined;
+	nested: string[];
 
 	createOne(data: Partial<Item>): Promise<PrimaryKey>;
 	createMany(data: Partial<Item>[]): Promise<PrimaryKey[]>;
