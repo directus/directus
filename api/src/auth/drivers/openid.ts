@@ -64,11 +64,14 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			'callback',
 		);
 
-		const clientOptionsOverrides = getConfigFromEnv(
-			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
-			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
-			'underscore',
-		);
+		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
+		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_CLIENT_`, {
+			omitKey: [
+				`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`,
+				`AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`,
+			],
+			type: 'underscore',
+		});
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
