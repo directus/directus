@@ -145,6 +145,7 @@ delete_folder: Xóa thư mục
 prefix: Tiền tố
 suffix: Hậu tố
 version: Phiên bản
+switch_version_copy: .
 promote_version_disabled: Không có thay đổi
 promote_version_changes: Thay đổi
 reset_bookmark: Đặt lại Dấu trang
