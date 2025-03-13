@@ -172,7 +172,7 @@ export default async function createApp(): Promise<express.Application> {
 	);
 
 	if (env['HSTS_ENABLED']) {
-		app.use(helmet.hsts(getConfigFromEnv('HSTS_', ['HSTS_ENABLED'])));
+		app.use(helmet.hsts(getConfigFromEnv('HSTS_', { omitPrefix: 'HSTS_ENABLED' })));
 	}
 
 	await emitter.emitInit('app.before', { app });

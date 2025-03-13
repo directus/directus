@@ -10,7 +10,7 @@ export interface GetConfigFromEnvOptions {
 
 export function getConfigFromEnv(
 	prefix: string,
-	{ omitPrefix, omitKey, type = 'camelcase' }?: GetConfigFromEnvOptions = {},
+	{ omitPrefix, omitKey, type = 'camelcase' }: GetConfigFromEnvOptions = {},
 ): Record<string, any> {
 	const env = useEnv();
 
