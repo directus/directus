@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import camelcase from 'camelcase';
+import { toArray } from 'liquidjs/dist/util/underscore.js';
 import { set } from 'lodash-es';
 
 export interface GetConfigFromEnvOptions {
@@ -21,14 +22,15 @@ export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptio
 		if (lowerCaseKey.startsWith(lowerCasePrefix) === false) continue;
 
 		if (options?.omitKey) {
-			const omitKeyArray = Array.isArray(options.omitKey) ? options.omitKey : [options.omitKey];
-			const isKeyInOmitKeys = omitKeyArray.some((keyToOmit) => lowerCaseKey === keyToOmit.toLowerCase());
+			const isKeyInOmitKeys = toArray(options.omitKey).some((keyToOmit) => lowerCaseKey === keyToOmit.toLowerCase());
 			if (isKeyInOmitKeys) continue;
 		}
 
 		if (options?.omitPrefix) {
-			const omitPrefixArray = Array.isArray(options.omitPrefix) ? options.omitPrefix : [options.omitPrefix];
-			const keyStartsWithAnyPrefix = omitPrefixArray.some((prefix) => lowerCaseKey.startsWith(prefix.toLowerCase()));
+			const keyStartsWithAnyPrefix = toArray(options.omitPrefix).some((prefix) =>
+				lowerCaseKey.startsWith(prefix.toLowerCase()),
+			);
+
 			if (keyStartsWithAnyPrefix) continue;
 		}
 
