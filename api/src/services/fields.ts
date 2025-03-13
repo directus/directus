@@ -115,7 +115,7 @@ export class FieldsService {
 			);
 		}
 
-		const fields: FieldMeta[] = await this.mergeSystemFields(collection);
+		const fields = await this.mergeSystemFields(collection);
 
 		const columns = (await this.columnInfo(collection)).map((column) => ({
 			...column,
@@ -246,59 +246,53 @@ export class FieldsService {
 	}
 
 	private async mergeSystemFields(collection?: string): Promise<FieldMeta[]> {
-		const nonAuthorizedItemsService = new ItemsService('directus_fields', {
+		const nonAuthorizedItemsService = new ItemsService<FieldMeta, 'directus_fields'>('directus_fields', {
 			knex: this.knex,
 			schema: this.schema,
 		});
 
-		let systemFields;
-		let customFields;
+		const systemFields =
+			collection !== undefined
+				? systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection)
+				: [...systemFieldRows];
 
-		if (collection) {
-			systemFields = systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection);
+		const customFields = await nonAuthorizedItemsService.readByQuery(
+			collection !== undefined
+				? {
+						filter: { collection: { _eq: collection } },
+						limit: -1,
+				  }
+				: { limit: -1 },
+		);
 
-			customFields = (await nonAuthorizedItemsService.readByQuery({
-				filter: { collection: { _eq: collection } },
-				limit: -1,
-			})) as FieldMeta[];
-		} else {
-			systemFields = systemFieldRows;
-			customFields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })) as FieldMeta[];
+		const updatedSystemFields = customFields.filter(({ collection, field }) => isSystemField(collection, field));
+
+		if (updatedSystemFields.length === 0) {
+			return [...systemFields, ...customFields];
 		}
 
-		const ignoreSystem: number[] = [];
-		const ignoreCustom: number[] = [];
 		const mergedFields: FieldMeta[] = [];
+		const compareField = (a: FieldMeta) => (b: FieldMeta) => a.collection === b.collection && a.field === b.field;
 
-		for (let customIndex = 0; customIndex < customFields.length; customIndex++) {
+		for (const updatedSystemField of updatedSystemFields) {
+			const systemIndex = systemFields.findIndex(compareField(updatedSystemField));
+			const customIndex = customFields.findIndex(compareField(updatedSystemField));
+			if (systemIndex < 0 || customIndex < 0) continue;
+
+			const systemField = systemFields[systemIndex];
 			const customField = customFields[customIndex];
-			if (!customField) continue;
+			if (!systemField || !customField) continue;
 
-			if (isSystemField(customField.collection, customField.field)) {
-				const systemIndex = systemFields.findIndex(
-					(systemField) => systemField.collection == customField.collection && systemField.field === customField.field,
-				);
+			mergedFields.push({
+				...systemField,
+				...customField,
+			});
 
-				if (systemIndex < 0) continue;
-
-				const systemField = systemFields[systemIndex];
-				if (!systemField) continue;
-
-				ignoreSystem.push(systemIndex);
-				ignoreCustom.push(customIndex);
-
-				mergedFields.push({
-					...systemField,
-					...customField,
-				});
-			}
+			systemFields.splice(systemIndex, 1);
+			customFields.splice(customIndex, 1);
 		}
 
-		return [
-			...systemFields.filter((_, i) => !ignoreSystem.includes(i)),
-			...mergedFields,
-			...customFields.filter((_, i) => !ignoreCustom.includes(i)),
-		];
+		return [...systemFields, ...mergedFields, ...customFields];
 	}
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
