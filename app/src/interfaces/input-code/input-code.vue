@@ -65,6 +65,17 @@ onMounted(async () => {
 
 		await setLanguage();
 
+		// Add visibility observer to handle hidden group cases
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting && codemirror) {
+					codemirror.refresh();
+				}
+			});
+		});
+
+		observer.observe(codemirrorEl.value);
+
 		codemirror.on('change', (cm, { origin }) => {
 			const content = cm.getValue();
 
