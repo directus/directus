@@ -16,20 +16,20 @@ export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptio
 	const config: any = {};
 
 	const lowerCasePrefix = prefix.toLowerCase();
+	const omitKeys = toArray(options?.omitKey ?? []).map((key) => key.toLocaleLowerCase());
+	const omitPrefixes = toArray(options?.omitPrefix ?? []).map((prefix) => prefix.toLocaleLowerCase());
 
 	for (const [key, value] of Object.entries(env)) {
 		const lowerCaseKey = key.toLowerCase();
 		if (lowerCaseKey.startsWith(lowerCasePrefix) === false) continue;
 
-		if (options?.omitKey) {
-			const isKeyInOmitKeys = toArray(options.omitKey).some((keyToOmit) => lowerCaseKey === keyToOmit.toLowerCase());
+		if (omitKeys.length > 0) {
+			const isKeyInOmitKeys = omitKeys.some((keyToOmit) => lowerCaseKey === keyToOmit);
 			if (isKeyInOmitKeys) continue;
 		}
 
-		if (options?.omitPrefix) {
-			const keyStartsWithAnyPrefix = toArray(options.omitPrefix).some((prefix) =>
-				lowerCaseKey.startsWith(prefix.toLowerCase()),
-			);
+		if (omitPrefixes.length > 0) {
+			const keyStartsWithAnyPrefix = omitPrefixes.some((prefix) => lowerCaseKey.startsWith(prefix));
 
 			if (keyStartsWithAnyPrefix) continue;
 		}
