@@ -8,11 +8,9 @@ export interface GetConfigFromEnvOptions {
 	type?: 'camelcase' | 'underscore';
 }
 
-export function getConfigFromEnv(
-	prefix: string,
-	{ omitPrefix, omitKey, type = 'camelcase' }: GetConfigFromEnvOptions = {},
-): Record<string, any> {
+export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptions): Record<string, any> {
 	const env = useEnv();
+	const type = options?.type ?? 'camelcase';
 
 	const config: any = {};
 
@@ -22,14 +20,14 @@ export function getConfigFromEnv(
 		const lowerCaseKey = key.toLowerCase();
 		if (lowerCaseKey.startsWith(lowerCasePrefix) === false) continue;
 
-		if (omitKey) {
-			const omitKeyArray = Array.isArray(omitKey) ? omitKey : [omitKey];
+		if (options?.omitKey) {
+			const omitKeyArray = Array.isArray(options.omitKey) ? options.omitKey : [options.omitKey];
 			const isKeyInOmitKeys = omitKeyArray.some((keyToOmit) => lowerCaseKey === keyToOmit.toLowerCase());
 			if (isKeyInOmitKeys) continue;
 		}
 
-		if (omitPrefix) {
-			const omitPrefixArray = Array.isArray(omitPrefix) ? omitPrefix : [omitPrefix];
+		if (options?.omitPrefix) {
+			const omitPrefixArray = Array.isArray(options.omitPrefix) ? options.omitPrefix : [options.omitPrefix];
 			const keyStartsWithAnyPrefix = omitPrefixArray.some((prefix) => lowerCaseKey.startsWith(prefix.toLowerCase()));
 			if (keyStartsWithAnyPrefix) continue;
 		}
