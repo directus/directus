@@ -6,13 +6,19 @@ vi.mock('@directus/env');
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({
+		CASING_KEY: 'key',
+		CASING_KEY_value: 'value',
 		OBJECT_BRAND__COLOR: 'purple',
 		OBJECT_BRAND__HEX: '#6644FF',
 		CAMELCASE_OBJECT__FIRST_KEY: 'firstValue',
 		CAMELCASE_OBJECT__SECOND_KEY: 'secondValue',
-		OBJECT2_CLIENT_ID: 0,
-		OBJECT2_CLIENT_ID_ALG: 1,
-		OBJECT2_CLIENT_SECRET: 2,
+		OMIT_PREFIX_FIRST_KEY: 'firstKey',
+		OMIT_PREFIX_FIRST_KEY_VALUE: 'firstValue',
+		OMIT_PREFIX_FIRST_VALUE: 'firstValue',
+		OMIT_PREFIX_SECOND_KEY: 'secondKey',
+		OMIT_PREFIX_SECOND_KEY_VALUE: 'secondValue',
+		OMIT_KEY_FIRST_KEY: 'firstKey',
+		OMIT_KEY_FIRST_KEY_VALUE: 'firstValue',
 	});
 });
 
@@ -21,6 +27,10 @@ afterEach(() => {
 });
 
 describe('get config from env', () => {
+	test('Should return config irrespective of prefix or key casing', () => {
+		expect(getConfigFromEnv('CaSInG_')).toStrictEqual({ key: 'key', keyValue: 'value' });
+	});
+
 	test('Keys with double underscore should be an object', () => {
 		expect(getConfigFromEnv('OBJECT_')).toStrictEqual({ brand: { color: 'purple', hex: '#6644FF' } });
 	});
@@ -31,24 +41,26 @@ describe('get config from env', () => {
 		});
 	});
 
-	test('Any keys that start with a prefix in omitPrefix should be omitted', () => {
-		expect(getConfigFromEnv('OBJECT2_', { omitPrefix: 'OBJECT2_CLIENT_ID' })).toStrictEqual({
-			clientSecret: 2,
+	test('Keys starting with the prefix(es) listed in omitPrefix should be omitted', () => {
+		expect(getConfigFromEnv('OMIT_PREFIX_', { omitPrefix: 'OMIT_PREFIX_FIRST_KEY' })).toStrictEqual({
+			firstValue: 'firstValue',
+			secondKey: 'secondKey',
+			secondKeyValue: 'secondValue',
 		});
 
-		expect(getConfigFromEnv('OBJECT2_', { omitPrefix: ['OBJECT2_CLIENT_ID', 'OBJECT2_CLIENT_SECRET'] })).toStrictEqual(
-			{},
-		);
+		expect(getConfigFromEnv('OMIT_PREFIX_', { omitPrefix: ['OMIT_PREFIX_FIRST_'] })).toStrictEqual({
+			secondKey: 'secondKey',
+			secondKeyValue: 'secondValue',
+		});
 	});
 
-	test('Any keys equal to a key in omitKeys should be omitted', () => {
-		expect(getConfigFromEnv('OBJECT2_', { omitKey: 'OBJECT2_CLIENT_ID' })).toStrictEqual({
-			clientIdAlg: 1,
-			clientSecret: 2,
+	test('Keys equal to the key(s) listed in omitKeys should be omitted', () => {
+		expect(getConfigFromEnv('OMIT_KEY_', { omitKey: 'OMIT_KEY_FIRST_KEY' })).toStrictEqual({
+			firstKeyValue: 'firstValue',
 		});
 
-		expect(getConfigFromEnv('OBJECT2_', { omitKey: ['OBJECT2_CLIENT_ID', 'OBJECT2_CLIENT_SECRET'] })).toStrictEqual({
-			clientIdAlg: 1,
+		expect(getConfigFromEnv('OMIT_KEY_', { omitKey: ['OMIT_KEY_FIRST_KEY_VALUE'] })).toStrictEqual({
+			firstKey: 'firstKey',
 		});
 	});
 });
