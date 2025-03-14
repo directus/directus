@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import { createError, ErrorCode } from '@directus/errors';
 import { toArray } from '@directus/utils';
 import isUrlAllowed from './is-url-allowed.js';
 
@@ -31,7 +32,7 @@ export function isLoginRedirectAllowed(redirect: unknown, provider: string): boo
 	}
 
 	if (URL.canParse(publicUrl) === false) {
-		return false;
+		throw new (createError(ErrorCode.Internal, 'PUBLIC_URL is not parsable', 500))();
 	}
 
 	// allow redirects to the defined PUBLIC_URL
