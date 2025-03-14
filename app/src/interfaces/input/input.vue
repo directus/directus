@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { APP_NUMERIC_TYPES } from '@/constants';
 import { computed } from 'vue';
 
 const props = withDefaults(
@@ -56,7 +57,7 @@ const percentageRemaining = computed(() => {
 
 const inputType = computed(() => {
 	if (props.masked) return 'password';
-	if (['integer', 'float', 'decimal'].includes(props.type!)) return 'number';
+	if (APP_NUMERIC_TYPES.includes(props.type!)) return 'number';
 	return 'text';
 });
 
