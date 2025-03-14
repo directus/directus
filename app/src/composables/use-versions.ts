@@ -1,6 +1,6 @@
 import api from '@/api';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { ContentVersion, Filter, Query } from '@directus/types';
+import { ContentVersion, Filter, Query, Item } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
 import { Ref, computed, ref, unref, watch } from 'vue';
 import { useCollectionPermissions, usePermissions } from './use-permissions';
@@ -185,10 +185,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		}
 	}
 
-	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Record<string, any>>) {
-		saveVersionLoading.value = true;
-
+	async function saveVersion(edits: Ref<Record<string, any>>, item: Ref<Item>) {
 		if (!currentVersion.value) return;
+		saveVersionLoading.value = true;
 
 		const payloadToValidate = mergeWith(
 			{},

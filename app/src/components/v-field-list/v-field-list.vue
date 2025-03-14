@@ -3,10 +3,10 @@ import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
-import { useVersionField } from '@/composables/use-version-field';
+import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
-import { computed, ref, toRefs, unref, watch } from 'vue';
+import { computed, ref, toRef, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
 
@@ -62,12 +62,12 @@ const showSearch = computed(() => {
 
 const { t } = useI18n();
 
-const virtualFields = computed(() => {
-	const collectionInfo = collectionsStore.getCollection(collection.value);
-	const versioningEnabled = collectionInfo?.meta?.versioning && props.injectVersionField;
+const collectionInfo = computed(() => collectionsStore.getCollection(collection.value));
+const versioningEnabled = computed(() => Boolean(collectionInfo.value?.meta?.versioning && props.injectVersionField));
+const { fakeVersionField } = useFakeVersionField(collection, toRef(props, 'injectVersionField'), versioningEnabled);
 
-	const { versionField } = useVersionField(collection, props.injectVersionField, !!versioningEnabled);
-	return versionField.value ? { fields: [versionField.value] } : null;
+const virtualFields = computed(() => {
+	return fakeVersionField.value ? { fields: [fakeVersionField.value] } : null;
 });
 
 const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, virtualFields, filter);

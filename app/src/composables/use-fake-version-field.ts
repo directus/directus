@@ -2,14 +2,14 @@ import type { Field } from '@directus/types';
 import { computed, unref, type Ref, type ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-export function useVersionField(
+export function useFakeVersionField(
 	collection: Ref<string | null>,
-	injectVersionField: boolean,
-	versioningEnabled: boolean,
-): { versionField: ComputedRef<Field | null> } {
+	injectVersionField: Ref<boolean>,
+	versioningEnabled: Ref<boolean>,
+): { fakeVersionField: ComputedRef<Field | null> } {
 	const { t } = useI18n();
 
-	const versionField = computed<Field | null>(() => {
+	const fakeVersionField = computed<Field | null>(() => {
 		const collectionValue = unref(collection);
 		if (!injectVersionField || !versioningEnabled || !collectionValue) return null;
 
@@ -43,5 +43,5 @@ export function useVersionField(
 		};
 	});
 
-	return { versionField };
+	return { fakeVersionField };
 }

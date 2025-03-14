@@ -19,7 +19,6 @@ import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from './use-permissions';
-import { useVersions } from './use-versions';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -59,7 +58,6 @@ export function useItem<T extends Item>(
 	const hasEdits = computed(() => Object.keys(edits.value).length > 0);
 	const isNew = computed(() => primaryKey.value === '+');
 	const isSingle = computed(() => !!collectionInfo.value?.meta?.singleton);
-	const { currentVersion } = useVersions(collection, isSingle, primaryKey as Ref<string | null>);
 
 	const isArchived = computed(() => {
 		if (!collectionInfo.value?.meta?.archive_field) return null;
@@ -263,7 +261,7 @@ export function useItem<T extends Item>(
 			}
 		}
 
-		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value, false, currentVersion.value);
+		const errors = validateItem(newItem, fieldsWithPermissions.value, isNew.value);
 		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
 		if (errors.length > 0) {
