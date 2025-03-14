@@ -30,7 +30,7 @@ export function useRevisions(
 	const loading = ref(false);
 	const loadingCount = ref(false);
 	const revisionsCount = ref(0);
-	const created = ref<{ id: number}>();
+	const created = ref<{ id: number }>();
 	const pagesCount = ref(0);
 
 	watch([collection, primaryKey, version], () => refresh());
