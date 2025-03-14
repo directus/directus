@@ -796,7 +796,7 @@ export function getReadableTypes(
 
 			for (const collection of relation.meta.one_allowed_collections) {
 				ReadableCollectionFilterTypes[relation.collection]?.addFields({
-					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
+					[`${relation.field}__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 				});
 			}
 		}
