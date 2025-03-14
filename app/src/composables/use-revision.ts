@@ -60,14 +60,16 @@ export function useRevision(primaryKey: Ref<number | undefined>) {
 
 			revision.value = {
 				...response.data.data,
-				timestampFormatted: await getFormattedDate(response.data.data.activity?.timestamp),
-				timeRelative: `${getTime(response.data.data.activity?.timestamp)} (${localizedFormatDistance(
-					parseISO(response.data.data.activity?.timestamp),
-					new Date(),
-					{
-						addSuffix: true,
-					},
-				)})`,
+				timestampFormatted: `${localizedFormat(
+					new Date(response.data.data.activity?.timestamp),
+					String(t('date-fns_date_short')),
+				)} (${localizedFormat(new Date(response.data.data.activity?.timestamp), String(t('date-fns_time')))})`,
+				timeRelative: `${format(
+					new Date(response.data.data.activity?.timestamp),
+					String(t('date-fns_time')),
+				)} (${localizedFormatDistance(parseISO(response.data.data.activity?.timestamp), new Date(), {
+					addSuffix: true,
+				})})`,
 			};
 		} catch (error) {
 			unexpectedError(error);
@@ -78,16 +80,5 @@ export function useRevision(primaryKey: Ref<number | undefined>) {
 
 	async function refresh() {
 		await getRevision();
-	}
-
-	function getTime(timestamp: string) {
-		return format(new Date(timestamp), String(t('date-fns_time')));
-	}
-
-	async function getFormattedDate(timestamp: string) {
-		const date = localizedFormat(new Date(timestamp), String(t('date-fns_date_short')));
-		const time = localizedFormat(new Date(timestamp), String(t('date-fns_time')));
-
-		return `${date} (${time})`;
 	}
 }

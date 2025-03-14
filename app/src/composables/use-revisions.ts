@@ -30,7 +30,7 @@ export function useRevisions(
 	const loading = ref(false);
 	const loadingCount = ref(false);
 	const revisionsCount = ref(0);
-	const created = ref<Revision>();
+	const created = ref<{ id: number}>();
 	const pagesCount = ref(0);
 
 	watch([collection, primaryKey, version], () => refresh());
@@ -114,7 +114,7 @@ export function useRevisions(
 			});
 
 			if (!created.value) {
-				const createdResponse = await api.get<{ data: {id: number}[] }>(`/revisions`, {
+				const createdResponse = await api.get<{ data: { id: number }[] }>(`/revisions`, {
 					params: {
 						filter: {
 							collection: {
@@ -168,14 +168,16 @@ export function useRevisions(
 				for (const revision of value) {
 					revisions.push({
 						...revision,
-						timestampFormatted: await getFormattedDate(revision.activity?.timestamp),
-						timeRelative: `${getTime(revision.activity?.timestamp)} (${localizedFormatDistance(
-							parseISO(revision.activity?.timestamp),
-							new Date(),
-							{
-								addSuffix: true,
-							},
-						)})`,
+						timestampFormatted: `${localizedFormat(
+							new Date(revision.activity?.timestamp),
+							String(t('date-fns_date_short')),
+						)} (${localizedFormat(new Date(revision.activity?.timestamp), String(t('date-fns_time')))})`,
+						timeRelative: `${format(
+							new Date(revision.activity?.timestamp),
+							String(t('date-fns_time')),
+						)} (${localizedFormatDistance(parseISO(revision.activity?.timestamp), new Date(), {
+							addSuffix: true,
+						})})`,
 					});
 				}
 
@@ -254,16 +256,5 @@ export function useRevisions(
 	async function refresh(page = 0) {
 		await getRevisionsCount();
 		await getRevisions(page);
-	}
-
-	function getTime(timestamp: string) {
-		return format(new Date(timestamp), String(t('date-fns_time')));
-	}
-
-	async function getFormattedDate(timestamp: string) {
-		const date = localizedFormat(new Date(timestamp), String(t('date-fns_date_short')));
-		const time = localizedFormat(new Date(timestamp), String(t('date-fns_time')));
-
-		return `${date} (${time})`;
 	}
 }
