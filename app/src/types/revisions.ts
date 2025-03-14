@@ -5,8 +5,6 @@ export type Revision = {
 
 export type RevisionPartial = {
 	id: number;
-	data: Record<string, any> | null;
-	delta: Record<string, any> | null;
 	collection: string;
 	item: string | number;
 	activity: {
