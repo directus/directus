@@ -11,7 +11,7 @@ export function useFakeVersionField(
 
 	const fakeVersionField = computed<Field | null>(() => {
 		const collectionValue = unref(collection);
-		if (!injectVersionField || !versioningEnabled || !collectionValue) return null;
+		if (!injectVersionField.value || !versioningEnabled.value || !collectionValue) return null;
 
 		return {
 			collection: collectionValue,
