@@ -101,6 +101,8 @@ export class FieldsService {
 	}
 
 	async readAll(collection?: string): Promise<Field[]> {
+		let fields: FieldMeta[];
+
 		if (this.accountability) {
 			await validateAccess(
 				{
@@ -115,7 +117,27 @@ export class FieldsService {
 			);
 		}
 
-		const fields = await this.mergeSystemFields(collection);
+		const nonAuthorizedItemsService = new ItemsService<FieldMeta, 'directus_fields'>('directus_fields', {
+			knex: this.knex,
+			schema: this.schema,
+		});
+
+		if (collection) {
+			fields = (
+				await nonAuthorizedItemsService.readByQuery({
+					filter: { collection: { _eq: collection } },
+					limit: -1,
+				})
+			).filter((field) => !isSystemField(field.collection, field.field));
+
+			fields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
+		} else {
+			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })).filter(
+				(field) => !isSystemField(field.collection, field.field),
+			);
+
+			fields.push(...systemFieldRows);
+		}
 
 		const columns = (await this.columnInfo(collection)).map((column) => ({
 			...column,
@@ -243,56 +265,6 @@ export class FieldsService {
 		}
 
 		return result;
-	}
-
-	private async mergeSystemFields(collection?: string): Promise<FieldMeta[]> {
-		const nonAuthorizedItemsService = new ItemsService<FieldMeta, 'directus_fields'>('directus_fields', {
-			knex: this.knex,
-			schema: this.schema,
-		});
-
-		const systemFields =
-			collection !== undefined
-				? systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection)
-				: [...systemFieldRows];
-
-		const customFields = await nonAuthorizedItemsService.readByQuery(
-			collection !== undefined
-				? {
-						filter: { collection: { _eq: collection } },
-						limit: -1,
-				  }
-				: { limit: -1 },
-		);
-
-		const updatedSystemFields = customFields.filter(({ collection, field }) => isSystemField(collection, field));
-
-		if (updatedSystemFields.length === 0) {
-			return [...systemFields, ...customFields];
-		}
-
-		const mergedFields: FieldMeta[] = [];
-		const compareField = (a: FieldMeta) => (b: FieldMeta) => a.collection === b.collection && a.field === b.field;
-
-		for (const updatedSystemField of updatedSystemFields) {
-			const systemIndex = systemFields.findIndex(compareField(updatedSystemField));
-			const customIndex = customFields.findIndex(compareField(updatedSystemField));
-			if (systemIndex < 0 || customIndex < 0) continue;
-
-			const systemField = systemFields[systemIndex];
-			const customField = customFields[customIndex];
-			if (!systemField || !customField) continue;
-
-			mergedFields.push({
-				...systemField,
-				...customField,
-			});
-
-			systemFields.splice(systemIndex, 1);
-			customFields.splice(customIndex, 1);
-		}
-
-		return [...systemFields, ...mergedFields, ...customFields];
 	}
 
 	async readOne(collection: string, field: string): Promise<Record<string, any>> {
