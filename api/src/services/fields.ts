@@ -545,7 +545,7 @@ export class FieldsService {
 				}
 			}
 
-			if (hookAdjustedField.meta) {
+			if (hookAdjustedField.meta && !isSystemField(collection, hookAdjustedField.field)) {
 				if (record) {
 					await this.itemsService.updateOne(
 						record.id,
