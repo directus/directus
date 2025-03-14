@@ -87,7 +87,7 @@ export function useRevisions(
 				});
 			}
 
-			type RevisionResponse = { data: RevisionPartial[]; meta: { filter_count: number } };
+			type RevisionResponse = { data: Revision[] | RevisionPartial[]; meta: { filter_count: number } };
 
 			const response = await api.get<RevisionResponse>(`/revisions`, {
 				params: {
@@ -114,7 +114,7 @@ export function useRevisions(
 			});
 
 			if (!created.value) {
-				const createdResponse = await api.get<RevisionResponse>(`/revisions`, {
+				const createdResponse = await api.get<{ data: {id: number}[] }>(`/revisions`, {
 					params: {
 						filter: {
 							collection: {
