@@ -65,7 +65,7 @@ Save the file. Let's step through it:
   `docker-compose.yml` - meaning data is stored and persisted outside of Docker containers.
 - The `environment` section contains any [configuration variables](/self-hosted/config-options.html) we wish to set.
   - `SECRET` is required and should be a secure random value, it's used to sign tokens.
-  - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch.
+  - `ADMIN_EMAIL` and `ADMIN_PASSWORD` is the initial admin user credentials on first launch. You can safely remove these variables once you [persist the data](https://docs.directus.io/self-hosted/docker-guide.html#configure-admin-user).
   - `DB_CLIENT` and `DB_FILENAME` are defining the connection to your database.
   - `WEBSOCKETS_ENABLED` is not required, but enables [Directus Realtime](/guides/real-time/getting-started/index.html).
 
