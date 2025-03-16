@@ -619,9 +619,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.updateMany` under the hood.
 	 */
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, key);
-
 		await this.updateMany([key], data, opts);
 		return key;
 	}
