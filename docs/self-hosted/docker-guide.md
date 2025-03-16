@@ -78,6 +78,8 @@ services:
       - ./extensions:/directus/extensions
       - ./templates:/directus/templates
 ```
+Now your data is persisted and you may remove ADMIN_EMAIL and ADMIN_PASSWORD credentials once you've ran Directus.
+
 
 ## Example Docker Compose
 
