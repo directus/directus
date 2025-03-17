@@ -3,21 +3,18 @@ import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion, Filter, Query, Item } from '@directus/types';
 import { useRouteQuery } from '@vueuse/router';
 import { Ref, computed, ref, unref, watch } from 'vue';
-import { useCollectionPermissions, usePermissions } from './use-permissions';
+import { useCollectionPermissions, usePermissions } from '@/composables/use-permissions';
 import { mergeWith } from 'lodash';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
-import { validateItem } from '@/utils/validate-item';
-import { useNestedValidation } from '@/composables/use-nested-validation';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
-import { APIError } from '@/types/error';
-import { VALIDATION_TYPES } from '@/constants';
+import { useItemValidation } from '@/composables/use-item-validation';
+import { APIErrorResponse } from '@/types/error';
 
 export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, primaryKey: Ref<string | null>) {
 	const currentVersion = ref<ContentVersion | null>(null);
 	const versions = ref<ContentVersion[] | null>(null);
 	const loading = ref(false);
 	const saveVersionLoading = ref(false);
-	const validationErrors = ref<any[]>([]);
 
 	const { readAllowed: readVersionsAllowed } = useCollectionPermissions('directus_versions');
 
@@ -28,8 +25,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 	const permissions = usePermissions(collection, primaryKey, false);
 	const fieldsWithPermissions = permissions.itemPermissions.fields;
-	const { nestedValidationErrors } = useNestedValidation();
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
+
+	const { validate, handleError, validationErrors } = useItemValidation();
 
 	watch(
 		[queryVersion, versions],
@@ -87,28 +85,6 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 		saveVersion,
 		validationErrors,
 	};
-
-	function saveVersionErrorHandler(error: any) {
-		if (error?.response?.data?.errors) {
-			validationErrors.value = error.response.data.errors
-				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
-				.map((err: APIError) => {
-					return err.extensions;
-				});
-
-			const otherErrors = error.response.data.errors.filter(
-				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
-			);
-
-			if (otherErrors.length > 0) {
-				otherErrors.forEach(unexpectedError);
-			}
-		} else {
-			unexpectedError(error);
-		}
-
-		throw error;
-	}
 
 	async function getVersions() {
 		if (!readVersionsAllowed.value) return;
@@ -203,11 +179,9 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		const errors = validateItem(payloadToValidate, fields, false, false, currentVersion.value);
-		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
+		const errors = validate(payloadToValidate, fields, false, currentVersion.value);
 
-		if (errors.length > 0) {
-			validationErrors.value = errors;
+		if (errors) {
 			saveVersionLoading.value = false;
 			throw errors;
 		}
@@ -216,13 +190,12 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 			const response = await api.post(`/versions/${currentVersion.value.id}/save`, unref(edits));
 			const savedData = response.data.data;
 
-			// Update local item with the saved changes
 			Object.assign(item.value, savedData);
 			edits.value = {};
 
 			return savedData;
 		} catch (error) {
-			saveVersionErrorHandler(error);
+			handleError(error as APIErrorResponse);
 		} finally {
 			saveVersionLoading.value = false;
 		}
