@@ -256,16 +256,18 @@ function useItem() {
 		}
 	}
 
+	function getFetchEndpoint(collection: string, primaryKey: PrimaryKey) {
+		const baseEndpoint = getEndpoint(collection);
+		if (isSystemCollection(collection)) return `${baseEndpoint}/${primaryKey}`;
+		return `${baseEndpoint}/${encodeURIComponent(primaryKey)}`;
+	}
+
 	async function fetchItem() {
 		if (!props.primaryKey) return;
 
 		loading.value = true;
 
-		const baseEndpoint = getEndpoint(props.collection);
-
-		const endpoint = isSystemCollection(props.collection)
-			? `${baseEndpoint}/${props.primaryKey}`
-			: `${baseEndpoint}/${encodeURIComponent(props.primaryKey)}`;
+		const endpoint = getFetchEndpoint(props.collection, props.primaryKey);
 
 		let fields = '*';
 
@@ -287,16 +289,11 @@ function useItem() {
 
 	async function fetchRelatedItem() {
 		const collection = relatedCollection.value;
-
 		if (!collection || !junctionFieldInfo.value) return;
 
 		loading.value = true;
 
-		const baseEndpoint = getEndpoint(collection);
-
-		const endpoint = isSystemCollection(collection)
-			? `${baseEndpoint}/${props.relatedPrimaryKey}`
-			: `${baseEndpoint}/${encodeURIComponent(props.relatedPrimaryKey)}`;
+		const endpoint = getFetchEndpoint(collection, props.relatedPrimaryKey);
 
 		try {
 			const response = await api.get(endpoint);
