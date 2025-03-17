@@ -102,8 +102,11 @@ function addNode(key: string) {
 	} else {
 		let type: Type;
 		const field = fieldsStore.getField(collection.value, key);
+		const isVersion = key === '$version';
 
-		if (key.includes('(') && key.includes(')')) {
+		if (isVersion) {
+			type = 'string';
+		} else if (key.includes('(') && key.includes(')')) {
 			const functionName = key.split('(')[0] as FieldFunction;
 			type = getOutputTypeForFunction(functionName);
 			key = parseFilterFunctionPath(key);
@@ -121,7 +124,9 @@ function addNode(key: string) {
 		}
 
 		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
-		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
+
+		const operator =
+			isVersion || (field?.meta?.options?.choices && filterOperators.includes('eq')) ? 'eq' : filterOperators[0];
 
 		const booleanOperators: ClientFilterOperator[] = ['empty', 'nempty', 'null', 'nnull'];
 		const initialValue = operator && booleanOperators.includes(operator) ? true : null;

@@ -242,7 +242,9 @@ function replaceNode(index: number, newFilter: Filter) {
 function getCompareOptions(name: string) {
 	let type: Type;
 
-	if (fieldHasFunction(name)) {
+	if (name === '$version') {
+		type = 'string';
+	} else if (fieldHasFunction(name)) {
 		const functionName = name.split('(')[0] as FieldFunction;
 		type = getOutputTypeForFunction(functionName);
 	} else {
