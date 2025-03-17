@@ -737,7 +737,7 @@ const shouldShowVersioning = computed(
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+			<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 		</template>
 
 		<template #sidebar>

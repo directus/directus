@@ -35,5 +35,5 @@ function closePopup() {
 </script>
 
 <template>
-	<LivePreview v-if="previewUrl" :url="previewUrl" in-popup @new-window="closePopup" />
+	<live-preview v-if="previewUrl" :url="previewUrl" in-popup @new-window="closePopup" />
 </template>
