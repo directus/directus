@@ -72,6 +72,10 @@ const selectItems = computed(() => {
 	return recommendedItems;
 });
 
+const interfaceIsSelectable = computed(
+	() => !!selectItems.value.find((selectItem) => selectItem.value === interfaceId.value),
+);
+
 const selectedInterface = useExtension('interface', interfaceId);
 
 const customOptionsFields = computed(() => {
@@ -105,14 +109,14 @@ const options = computed({
 
 		<v-skeleton-loader v-if="loading" />
 		<template v-else>
-			<v-notice v-if="interfaceId && !selectedInterface" class="not-found" type="danger">
+			<v-notice v-if="interfaceId && (!selectedInterface || !interfaceIsSelectable)" class="not-found" type="danger">
 				{{ t('interface_not_found', { interface: interfaceId }) }}
 				<div class="spacer" />
 				<button @click="interfaceId = null">{{ t('reset_interface') }}</button>
 			</v-notice>
 
 			<extension-options
-				v-if="interfaceId && selectedInterface"
+				v-if="interfaceId && selectedInterface && interfaceIsSelectable"
 				v-model="options"
 				type="interface"
 				:options="customOptionsFields"
