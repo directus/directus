@@ -1,6 +1,7 @@
 import type { Field } from '@directus/types';
-import { computed, unref, type Ref, type ComputedRef } from 'vue';
+import { computed, ref, unref, type Ref, type ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useVersions } from './use-versions';
 
 export function useFakeVersionField(
 	collection: Ref<string | null>,
@@ -8,13 +9,31 @@ export function useFakeVersionField(
 	versioningEnabled: Ref<boolean>,
 ): { fakeVersionField: ComputedRef<Field | null> } {
 	const { t } = useI18n();
+	const isSingleton = ref(false);
+	const primaryKey = ref<string | null>(null);
+
+	// Only create a safe collection ref when we have a non-null collection
+	const safeCollection = computed(() => {
+		const value = unref(collection);
+		return value || null;
+	});
+
+	// Only get versions when we have a valid collection
+	const { versions } = useVersions(
+		safeCollection as Ref<string>, // Type assertion since useVersions expects non-null
+		isSingleton,
+		primaryKey,
+	);
 
 	const fakeVersionField = computed<Field | null>(() => {
 		const collectionValue = unref(collection);
 		if (!injectVersionField.value || !versioningEnabled.value || !collectionValue) return null;
 
-		// TODO: fetch or pass choices when needed (see the other comment)
-		const choices: { text: string; value: any }[] = [];
+		const choices =
+			versions.value?.map((version) => ({
+				text: version.name || version.key,
+				value: version.key,
+			})) ?? [];
 
 		return {
 			collection: collectionValue,

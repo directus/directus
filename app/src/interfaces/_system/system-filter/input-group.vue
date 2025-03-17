@@ -4,10 +4,11 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { FieldFilter } from '@directus/types';
 import { clone, get } from 'lodash';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
+import { useCollection } from '@directus/composables';
 
 const props = defineProps<{
 	field: FieldFilter;
@@ -22,52 +23,21 @@ const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const { t } = useI18n();
 
-// TODO: use the composable instead of the hard-coded fakeField below
-// const { fakeVersionField } = useFakeVersionField(props.collection, );
+const { info: collectionInfo } = useCollection(computed(() => props.collection));
+
+const versioningEnabled = computed(() => collectionInfo.value?.meta?.versioning ?? false);
+
+const { fakeVersionField } = useFakeVersionField(
+	computed(() => props.collection),
+	ref(true),
+	versioningEnabled,
+);
 
 const fieldInfo = computed(() => {
 	const field = getField(props.field);
 
 	if (field === '$version') {
-		// TODO: use useFakeVersionField instead
-		// TODO: disallow other options
-		// TODO: HERE is the place where we need to add choices (pass a parameter to useFakeVersionField)
-		return {
-			collection: props.collection,
-			field: '$version',
-			schema: null,
-			name: t('version'),
-			type: 'string',
-			meta: {
-				field: '$version',
-				collection: props.collection,
-				id: -1,
-				conditions: null,
-				display: null,
-				display_options: null,
-				group: null,
-				hidden: false,
-				interface: 'select-dropdown',
-				note: null,
-				options: {
-					allowOther: false,
-					choices: [
-						{ text: t('main_version'), value: null },
-						{ text: 'one', value: 'one' },
-						{ text: 'two', value: 'two' },
-						{ text: 'three', value: 'three' },
-					],
-				},
-				readonly: true,
-				required: false,
-				sort: null,
-				special: null,
-				translations: null,
-				validation: null,
-				validation_message: null,
-				width: 'full',
-			},
-		};
+		return fakeVersionField.value;
 	}
 
 	const fieldInfo = fieldsStore.getField(props.collection, field);
