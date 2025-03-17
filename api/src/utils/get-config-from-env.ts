@@ -1,29 +1,37 @@
 import { useEnv } from '@directus/env';
+import { toArray } from '@directus/utils';
 import camelcase from 'camelcase';
 import { set } from 'lodash-es';
 
-export function getConfigFromEnv(
-	prefix: string,
-	omitPrefix?: string | string[],
-	type: 'camelcase' | 'underscore' = 'camelcase',
-): Record<string, any> {
+export interface GetConfigFromEnvOptions {
+	omitPrefix?: string | string[];
+	omitKey?: string | string[];
+	type?: 'camelcase' | 'underscore';
+}
+
+export function getConfigFromEnv(prefix: string, options?: GetConfigFromEnvOptions): Record<string, any> {
 	const env = useEnv();
+	const type = options?.type ?? 'camelcase';
 
 	const config: any = {};
 
+	const lowerCasePrefix = prefix.toLowerCase();
+	const omitKeys = toArray(options?.omitKey ?? []).map((key) => key.toLowerCase());
+	const omitPrefixes = toArray(options?.omitPrefix ?? []).map((prefix) => prefix.toLowerCase());
+
 	for (const [key, value] of Object.entries(env)) {
-		if (key.toLowerCase().startsWith(prefix.toLowerCase()) === false) continue;
+		const lowerCaseKey = key.toLowerCase();
+		if (lowerCaseKey.startsWith(lowerCasePrefix) === false) continue;
 
-		if (omitPrefix) {
-			let matches = false;
+		if (omitKeys.length > 0) {
+			const isKeyInOmitKeys = omitKeys.some((keyToOmit) => lowerCaseKey === keyToOmit);
+			if (isKeyInOmitKeys) continue;
+		}
 
-			if (Array.isArray(omitPrefix)) {
-				matches = omitPrefix.some((prefix) => key.toLowerCase().startsWith(prefix.toLowerCase()));
-			} else {
-				matches = key.toLowerCase().startsWith(omitPrefix.toLowerCase());
-			}
+		if (omitPrefixes.length > 0) {
+			const keyStartsWithAnyPrefix = omitPrefixes.some((prefix) => lowerCaseKey.startsWith(prefix));
 
-			if (matches) continue;
+			if (keyStartsWithAnyPrefix) continue;
 		}
 
 		if (key.includes('__')) {
