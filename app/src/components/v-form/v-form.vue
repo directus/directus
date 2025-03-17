@@ -350,8 +350,7 @@ function useRawEditor() {
 			<template v-if="fieldsMap[fieldName]">
 				<component
 					:is="`interface-${fieldsMap[fieldName]!.meta?.interface || 'group-standard'}`"
-					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group')"
-					v-show="!fieldsMap[fieldName]!.meta?.hidden"
+					v-if="fieldsMap[fieldName]!.meta?.special?.includes('group') && !fieldsMap[fieldName]!.meta?.hidden"
 					:ref="
 						(el: Element) => {
 							formFieldEls[fieldName] = el;
