@@ -22,7 +22,7 @@ const { url, frameEl, showEditableElements } = defineProps<{
 const { t } = useI18n();
 
 const { collection, primaryKey, fields, mode, position, isNew, edits, editOverlayActive, itemRoute, onClickEdit } =
-	useItem();
+	useItemWithEdits();
 
 const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : null));
 
@@ -76,7 +76,7 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 	}
 }
 
-function useItem() {
+function useItemWithEdits() {
 	const edits = ref<Record<string, any>>({});
 	const editOverlayActive = ref(false);
 	const msgKey = ref('');
