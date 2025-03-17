@@ -123,18 +123,14 @@ export class FieldsService {
 		});
 
 		if (collection) {
-			fields = (
-				await nonAuthorizedItemsService.readByQuery({
-					filter: { collection: { _eq: collection } },
-					limit: -1,
-				})
-			).filter((field) => !isSystemField(field.collection, field.field));
+			fields = await nonAuthorizedItemsService.readByQuery({
+				filter: { collection: { _eq: collection } },
+				limit: -1,
+			});
 
 			fields.push(...systemFieldRows.filter((fieldMeta) => fieldMeta.collection === collection));
 		} else {
-			fields = (await nonAuthorizedItemsService.readByQuery({ limit: -1 })).filter(
-				(field) => !isSystemField(field.collection, field.field),
-			);
+			fields = await nonAuthorizedItemsService.readByQuery({ limit: -1 });
 
 			fields.push(...systemFieldRows);
 		}
