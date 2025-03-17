@@ -209,6 +209,24 @@ const {
 	loading: templateDataLoading,
 } = useTemplateData(templateCollection, templatePrimaryKey);
 
+const overlayItemContentProps = computed(() => {
+	return {
+		collection: props.collection,
+		primaryKey: props.primaryKey,
+		junctionField: props.junctionField,
+		relatedCollection: relatedCollection.value,
+		initialValues: initialValues.value,
+		fields: fields.value,
+		disabled: props.disabled,
+		loading: loading.value,
+		validationErrors: validationErrors.value,
+		junctionFieldLocation: props.junctionFieldLocation,
+		relatedCollectionFields: relatedCollectionFields.value,
+		relatedPrimaryKey: props.relatedPrimaryKey,
+		refresh,
+	};
+});
+
 function useActiveState() {
 	const localActive = ref(false);
 
@@ -444,19 +462,7 @@ function useActions() {
 
 		<overlay-item-content
 			v-model:internal-edits="internalEdits"
-			:collection
-			:primary-key
-			:junction-field
-			:related-collection
-			:initial-values
-			:fields
-			:disabled
-			:loading
-			:validation-errors
-			:junction-field-location
-			:related-collection-fields
-			:related-primary-key
-			:refresh
+			v-bind="overlayItemContentProps"
 			class="drawer-item-content"
 		/>
 	</v-drawer>
@@ -470,19 +476,7 @@ function useActions() {
 
 			<overlay-item-content
 				v-model:internal-edits="internalEdits"
-				:collection
-				:primary-key
-				:junction-field
-				:related-collection
-				:initial-values
-				:fields
-				:disabled
-				:loading
-				:validation-errors
-				:junction-field-location
-				:related-collection-fields
-				:related-primary-key
-				:refresh
+				v-bind="overlayItemContentProps"
 				class="modal-item-content"
 			/>
 
@@ -524,19 +518,7 @@ function useActions() {
 
 		<overlay-item-content
 			v-model:internal-edits="internalEdits"
-			:collection
-			:primary-key
-			:junction-field
-			:related-collection
-			:initial-values
-			:fields
-			:disabled
-			:loading
-			:validation-errors
-			:junction-field-location
-			:related-collection-fields
-			:related-primary-key
-			:refresh
+			v-bind="overlayItemContentProps"
 			class="popover-item-content"
 		/>
 	</v-menu>
