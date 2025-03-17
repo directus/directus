@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Improved SSO redirection error message
+Added error logging for invalid `PUBLIC_URL` on SSO redirection
