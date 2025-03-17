@@ -1,7 +1,9 @@
 import api from '@/api';
+import { VALIDATION_TYPES } from '@/constants';
 import { i18n } from '@/lang';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { APIError } from '@/types/error';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { notify } from '@/utils/notify';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
@@ -13,12 +15,10 @@ import { useCollection } from '@directus/composables';
 import { isSystemCollection } from '@directus/system-data';
 import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
+import { AxiosResponse } from 'axios';
 import { mergeWith } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from './use-permissions';
-import { useItemValidation } from './use-item-validation';
-import type { APIErrorResponse } from '@/types/error';
-import { AxiosResponse } from 'axios';
 
 type UsableItem<T extends Item> = {
 	edits: Ref<Item>;
@@ -84,12 +84,11 @@ export function useItem<T extends Item>(
 
 	const defaultValues = getDefaultValuesFromFields(fieldsWithPermissions);
 
-	const { nestedValidationErrors } = useNestedValidation();
-	const { validationErrors: itemValidationErrors, validate, handleError } = useItemValidation();
-
 	watch([collection, primaryKey, ...(isRef(query) ? [query] : [])], refresh);
 
 	refreshItem();
+
+	const { nestedValidationErrors } = useNestedValidation();
 
 	return {
 		edits,
@@ -109,7 +108,7 @@ export function useItem<T extends Item>(
 		archiving,
 		saveAsCopy,
 		getItem,
-		validationErrors: itemValidationErrors,
+		validationErrors,
 	};
 
 	async function getItem() {
@@ -128,6 +127,7 @@ export function useItem<T extends Item>(
 
 	async function save() {
 		saving.value = true;
+		validationErrors.value = [];
 
 		const payloadToValidate = mergeWith(
 			{},
@@ -143,9 +143,11 @@ export function useItem<T extends Item>(
 
 		const fields = pushGroupOptionsDown(fieldsWithPermissions.value);
 
-		const errors = validate(payloadToValidate, fields, isNew.value);
+		const errors = validateItem(payloadToValidate, fields, isNew.value);
+		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
 
-		if (errors) {
+		if (errors.length > 0) {
+			validationErrors.value = errors;
 			saving.value = false;
 			throw errors;
 		}
@@ -171,7 +173,7 @@ export function useItem<T extends Item>(
 			edits.value = {};
 			return response.data.data;
 		} catch (error) {
-			handleError(error as APIErrorResponse);
+			saveErrorHandler(error);
 		} finally {
 			saving.value = false;
 		}
@@ -280,7 +282,7 @@ export function useItem<T extends Item>(
 
 			return primaryKeyField.value ? response.data.data[primaryKeyField.value.field] : null;
 		} catch (error) {
-			handleError(error as APIErrorResponse);
+			saveErrorHandler(error);
 		} finally {
 			saving.value = false;
 		}
@@ -338,6 +340,28 @@ export function useItem<T extends Item>(
 				}
 			}
 		}
+	}
+
+	function saveErrorHandler(error: any) {
+		if (error?.response?.data?.errors) {
+			validationErrors.value = error.response.data.errors
+				.filter((err: APIError) => VALIDATION_TYPES.includes(err?.extensions?.code))
+				.map((err: APIError) => {
+					return err.extensions;
+				});
+
+			const otherErrors = error.response.data.errors.filter(
+				(err: APIError) => !VALIDATION_TYPES.includes(err?.extensions?.code),
+			);
+
+			if (otherErrors.length > 0) {
+				otherErrors.forEach(unexpectedError);
+			}
+		} else {
+			unexpectedError(error);
+		}
+
+		throw error;
 	}
 
 	async function archive() {
