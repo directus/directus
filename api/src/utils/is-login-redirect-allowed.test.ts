@@ -1,5 +1,5 @@
-import { vi, expect, test, afterEach } from 'vitest';
 import { useEnv } from '@directus/env';
+import { afterEach, expect, test, vi } from 'vitest';
 import { isLoginRedirectAllowed } from './is-login-redirect-allowed.js';
 
 vi.mock('@directus/env');
@@ -75,4 +75,20 @@ test('isLoginRedirectAllowed returns false if missing protocol', () => {
 
 	expect(isLoginRedirectAllowed('//example.com/admin/content', provider)).toBe(false);
 	expect(isLoginRedirectAllowed('//user@password:example.com/', provider)).toBe(false);
+});
+
+test('isLoginRedirectAllowed throws error if PUBLIC_URL is misconfigured', () => {
+	const provider = 'local';
+
+	vi.mocked(useEnv).mockReturnValue({
+		PUBLIC_URL: '/',
+	});
+
+	try {
+		isLoginRedirectAllowed('http://public.example.com', provider);
+	} catch (err: any) {
+		expect(err.message).toBe('PUBLIC_URL is not parsable');
+	}
+
+	expect.assertions(1);
 });
