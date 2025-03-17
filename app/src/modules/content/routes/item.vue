@@ -162,9 +162,7 @@ useShortcut(
 useShortcut(
 	'meta+alt+s',
 	() => {
-		if (unref(currentVersion) === null) {
-			saveAndReturnToMain();
-		} else {
+		if (unref(currentVersion) !== null) {
 			saveVersionAction('main');
 		}
 	},
@@ -409,24 +407,22 @@ async function saveAndAddNew() {
 	}
 }
 
-async function saveAndReturnToMain() {
-	if (isSavable.value === false) return;
-	if (unref(currentVersion) !== null) return;
-
-	try {
-		await save();
-		currentVersion.value = null;
-		refresh();
-	} catch {
-		// Save shows unexpected error dialog
-	}
-}
-
 async function saveAsCopyAndNavigate() {
 	try {
 		const newPrimaryKey = await saveAsCopy();
 
 		if (newPrimaryKey) router.replace(getItemRoute(props.collection, newPrimaryKey));
+	} catch {
+		// Save shows unexpected error dialog
+	}
+}
+
+async function saveAndQuit() {
+	if (isSavable.value === false) return;
+
+	try {
+		await save();
+		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
 	} catch {
 		// Save shows unexpected error dialog
 	}
@@ -659,7 +655,7 @@ const shouldShowVersioning = computed(
 				:tooltip="saveAllowed ? t('save') : t('not_allowed')"
 				:loading="saving"
 				:disabled="!isSavable"
-				@click="saveAndStay"
+				@click="saveAndQuit"
 			>
 				<v-icon name="check" />
 
