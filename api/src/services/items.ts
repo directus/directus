@@ -52,6 +52,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	eventScope: string;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
+	nested: string[];
 
 	constructor(collection: Collection, options: AbstractServiceOptions) {
 		this.collection = collection;
@@ -60,6 +61,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		this.eventScope = isSystemCollection(this.collection) ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
 		this.cache = getCache().cache;
+		this.nested = options.nested ?? [];
 
 		return this;
 	}
@@ -74,7 +76,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// while the other services only expect `options`
 		const isItemsService = Service.length === 2;
 
-		const newOptions = { knex: this.knex, accountability: this.accountability, schema: this.schema, ...options };
+		const newOptions = {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+			nested: this.nested,
+			...options,
+		};
 
 		if (isItemsService) {
 			return new ItemsService(this.collection, newOptions);
@@ -149,6 +157,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
+				nested: this.nested,
 			};
 
 			// We're creating new services instances so they can use the transaction as their Knex interface
@@ -181,6 +190,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							action: 'create',
 							collection: this.collection,
 							payload: payloadAfterHooks,
+							nested: this.nested,
 						},
 						{
 							knex: trx,
@@ -600,9 +610,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	async updateByQuery(query: Query, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey[]> {
 		const keys = await this.getKeysByQuery(query);
 
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, keys);
-
 		return keys.length ? await this.updateMany(keys, data, opts) : [];
 	}
 
@@ -612,9 +619,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.updateMany` under the hood.
 	 */
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, key);
-
 		await this.updateMany([key], data, opts);
 		return key;
 	}
@@ -743,6 +747,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						action: 'update',
 						collection: this.collection,
 						payload: payloadAfterHooks,
+						nested: this.nested,
 					},
 					{
 						knex: this.knex,
@@ -760,6 +765,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
+				nested: this.nested,
 			});
 
 			const {

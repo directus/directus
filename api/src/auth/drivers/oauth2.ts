@@ -31,6 +31,7 @@ import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
+import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 
@@ -71,11 +72,14 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 			issuer: additionalConfig['provider'],
 		});
 
-		const clientOptionsOverrides = getConfigFromEnv(
-			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
-			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
-			'underscore',
-		);
+		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
+		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_CLIENT_`, {
+			omitKey: [
+				`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`,
+				`AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`,
+			],
+			type: 'underscore',
+		});
 
 		this.client = new issuer.Client({
 			client_id: clientId,
@@ -353,9 +357,7 @@ export function createOAuth2AuthRouter(providerName: string): Router {
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`oauth2.${providerName}`], getSecret(), {
-					issuer: 'directus',
-				}) as {
+				tokenData = verifyJWT(req.cookies[`oauth2.${providerName}`], getSecret()) as {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;

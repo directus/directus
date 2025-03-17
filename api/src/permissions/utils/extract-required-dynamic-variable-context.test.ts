@@ -1,6 +1,9 @@
 import type { Permission } from '@directus/types';
 import { test, expect } from 'vitest';
-import { extractRequiredDynamicVariableContext } from './extract-required-dynamic-variable-context.js';
+import {
+	extractRequiredDynamicVariableContext,
+	extractRequiredDynamicVariableContextForPermissions,
+} from './extract-required-dynamic-variable-context.js';
 
 test('Extracts dynamic variables context from permissions', () => {
 	const permissions = [
@@ -26,12 +29,32 @@ test('Extracts dynamic variables context from permissions', () => {
 		},
 	] as unknown as Permission[];
 
-	const res = extractRequiredDynamicVariableContext(permissions);
+	const res = extractRequiredDynamicVariableContextForPermissions(permissions);
 
 	expect(res).toEqual({
 		$CURRENT_USER: new Set(['id']),
 		$CURRENT_ROLE: new Set(['name']),
 		$CURRENT_ROLES: new Set(['description', 'id']),
 		$CURRENT_POLICIES: new Set(['foo']),
+	});
+});
+
+test('Extracts dynamic variables context arbitrary objects', () => {
+	const result = extractRequiredDynamicVariableContext({
+		some: {
+			yay: '$CURRENT_USER.test.hi',
+		},
+		other: [
+			{
+				other: '$CURRENT_ROLE.name',
+			},
+		],
+	});
+
+	expect(result).toEqual({
+		$CURRENT_USER: new Set(['test.hi']),
+		$CURRENT_ROLE: new Set(['name']),
+		$CURRENT_ROLES: new Set(),
+		$CURRENT_POLICIES: new Set(),
 	});
 });

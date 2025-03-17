@@ -1,18 +1,21 @@
 import { ForbiddenError } from '@directus/errors';
 import type { Accountability, Filter, Item, PermissionsAction } from '@directus/types';
-import { validatePayload } from '@directus/utils';
+import { parseFilter, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import { assign, difference, uniq } from 'lodash-es';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { isFieldNullable } from './lib/is-field-nullable.js';
+import { fetchDynamicVariableData } from '../../utils/fetch-dynamic-variable-data.js';
+import { extractRequiredDynamicVariableContext } from '../../utils/extract-required-dynamic-variable-context.js';
 
 export interface ProcessPayloadOptions {
 	accountability: Accountability;
 	action: PermissionsAction;
 	collection: string;
 	payload: Item;
+	nested: string[];
 }
 
 /**
@@ -23,9 +26,9 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 	let permissions;
 	let permissionValidationRules: (Filter | null)[] = [];
 
-	if (!options.accountability.admin) {
-		const policies = await fetchPolicies(options.accountability, context);
+	const policies = await fetchPolicies(options.accountability, context);
 
+	if (!options.accountability.admin) {
 		permissions = await fetchPermissions(
 			{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
 			context,
@@ -81,7 +84,20 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 			});
 		}
 
-		fieldValidationRules.push(field.validation);
+		const permissionContext = extractRequiredDynamicVariableContext(field.validation);
+
+		const filterContext = await fetchDynamicVariableData(
+			{
+				accountability: options.accountability,
+				policies,
+				dynamicVariableContext: permissionContext,
+			},
+			context,
+		);
+
+		const validationFilter = parseFilter(field.validation, options.accountability, filterContext);
+
+		fieldValidationRules.push(validationFilter);
 	}
 
 	const presets = (permissions ?? []).map((permission) => permission.presets);
@@ -100,7 +116,9 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 		validationErrors.push(
 			...validatePayload({ _and: validationRules }, payloadWithPresets)
 				.map((error) =>
-					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details))),
+					error.details.map(
+						(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details, options.nested)),
+					),
 				)
 				.flat(),
 		);
