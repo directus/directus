@@ -1,8 +1,21 @@
-import { vi, expect, test, afterEach } from 'vitest';
 import { useEnv } from '@directus/env';
+import type { Logger } from 'pino';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { useLogger } from '../logger/index.js';
 import { isLoginRedirectAllowed } from './is-login-redirect-allowed.js';
 
 vi.mock('@directus/env');
+vi.mock('../logger');
+
+let mockLogger: Logger;
+
+beforeEach(() => {
+	mockLogger = {
+		error: vi.fn(),
+	} as unknown as Logger;
+
+	vi.mocked(useLogger).mockReturnValue(mockLogger);
+});
 
 afterEach(() => {
 	vi.clearAllMocks();
@@ -75,4 +88,15 @@ test('isLoginRedirectAllowed returns false if missing protocol', () => {
 
 	expect(isLoginRedirectAllowed('//example.com/admin/content', provider)).toBe(false);
 	expect(isLoginRedirectAllowed('//user@password:example.com/', provider)).toBe(false);
+});
+
+test('isLoginRedirectAllowed throws error if PUBLIC_URL is misconfigured', () => {
+	const provider = 'local';
+
+	vi.mocked(useEnv).mockReturnValue({
+		PUBLIC_URL: '/',
+	});
+
+	expect(isLoginRedirectAllowed('http://public.example.com', provider)).toBe(false);
+	expect(mockLogger.error).toHaveBeenCalledWith('Invalid PUBLIC_URL for login redirect');
 });

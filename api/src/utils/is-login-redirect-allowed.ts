@@ -1,5 +1,6 @@
 import { useEnv } from '@directus/env';
 import { toArray } from '@directus/utils';
+import { useLogger } from '../logger/index.js';
 import isUrlAllowed from './is-url-allowed.js';
 
 /**
@@ -31,6 +32,7 @@ export function isLoginRedirectAllowed(redirect: unknown, provider: string): boo
 	}
 
 	if (URL.canParse(publicUrl) === false) {
+		useLogger().error('Invalid PUBLIC_URL for login redirect');
 		return false;
 	}
 
