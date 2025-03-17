@@ -50,7 +50,7 @@ export function getDatabase(): Knex {
 		connectionString,
 		pool: poolConfig = {},
 		...connectionConfig
-	} = getConfigFromEnv('DB_', ['DB_EXCLUDE_TABLES']);
+	} = getConfigFromEnv('DB_', { omitPrefix: 'DB_EXCLUDE_TABLES' });
 
 	const requiredEnvVars = ['DB_CLIENT'];
 

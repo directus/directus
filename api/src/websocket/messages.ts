@@ -48,7 +48,7 @@ export const WebSocketSubscribeMessage = z.discriminatedUnion('type', [
 		collection: z.string(),
 		event: z.union([z.literal('create'), z.literal('update'), z.literal('delete')]).optional(),
 		item: zodStringOrNumber.optional(),
-		query: z.custom<Query>().optional(),
+		query: z.record(z.any()).optional(),
 	}),
 	WebSocketMessage.extend({
 		type: z.literal('unsubscribe'),
