@@ -11,6 +11,7 @@ import { getFieldType } from './get-field-type.js';
 import { getRelationType } from './get-relation-type.js';
 import { getCollectionType } from './get-collection-type.js';
 import { isSystemField } from '@directus/system-data';
+import { InvalidPayloadError } from '@directus/errors';
 
 export function resolveSystemAdmin(
 	gql: GraphQLService,
@@ -114,12 +115,12 @@ export function resolveSystemAdmin(
 					accountability: gql.accountability,
 					schema: gql.schema,
 				});
-        
-        if (isSystemField(args['collection'], args['field'])) {
-          const { error } = systemFieldUpdateSchema.validate(args['data'], { abortEarly: false });
 
-          if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
-        }
+				if (isSystemField(args['collection'], args['field'])) {
+					const { error } = systemFieldUpdateSchema.validate(args['data'], { abortEarly: false });
+
+					if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
+				}
 
 				await service.updateField(args['collection'], {
 					...args['data'],
