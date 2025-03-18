@@ -129,7 +129,7 @@ router.patch(
 
 		if (Array.isArray(req.body)) {
 			for (const fieldData of req.body) {
-				if (isSystemField(fieldData['collection']!, fieldData['field']!)) {
+				if (isSystemField(req.params['collection']!, fieldData['field']!)) {
 					const { error } = systemFieldUpdateSchema.validate(fieldData);
 
 					if (error) throw new InvalidPayloadError({ reason: error.message });
