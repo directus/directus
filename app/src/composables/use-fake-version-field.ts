@@ -8,34 +8,17 @@ type Choice = { text: string; value: string | null };
 export function useFakeVersionField(
 	collection: Ref<string | null>,
 	versioningEnabled: Ref<boolean>,
-	includeChoices = false,
+	includeChoices = ref(false),
 ): { fakeVersionField: ComputedRef<Field | null> } {
 	const { t } = useI18n();
-	const isSingleton = ref(false);
-	const primaryKey = ref<string | null>(null);
-	let choices = computed<Choice[]>(() => []);
 
-	if (collection.value && includeChoices) {
-		const { versions } = useVersions(collection as Ref<string>, isSingleton, primaryKey);
-
-		choices = computed(() => {
-			if (!versions.value?.length) return [];
-
-			return versions.value
-				?.map((version) => ({
-					text: version.name || version.key,
-					value: version.key,
-				}))
-				.filter(uniqueItems);
-
-			function uniqueItems(version: Choice, index: number, self: Choice[]) {
-				return index === self.findIndex((v) => v.text === version.text && v.value === version.value);
-			}
-		});
-	}
+	// If `includeChoices` is `true`, the versions will be fetched, because they are only fetched if the `isSingleton` parameter of `useVersions` is `true`.
+	const { versions } = useVersions(collection as Ref<string>, includeChoices, ref(null));
 
 	const fakeVersionField = computed<Field | null>(() => {
 		if (!versioningEnabled.value || !collection.value) return null;
+
+		const choices = getChoices();
 
 		return {
 			collection: collection.value,
@@ -56,7 +39,7 @@ export function useFakeVersionField(
 				note: null,
 				options: {
 					allowOther: false,
-					choices: [{ text: t('main_version'), value: null }, ...choices.value],
+					choices: [{ text: t('main_version'), value: null }, ...choices],
 				},
 				readonly: true,
 				required: false,
@@ -71,4 +54,19 @@ export function useFakeVersionField(
 	});
 
 	return { fakeVersionField };
+
+	function getChoices(): Choice[] {
+		if (!includeChoices.value || !versions.value?.length) return [];
+
+		return versions.value
+			?.map((version) => ({
+				text: version.name || version.key,
+				value: version.key,
+			}))
+			.filter(uniqueItems);
+
+		function uniqueItems(version: Choice, index: number, self: Choice[]) {
+			return index === self.findIndex((v) => v.text === version.text && v.value === version.value);
+		}
+	}
 }

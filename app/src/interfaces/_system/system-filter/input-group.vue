@@ -23,23 +23,23 @@ const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const { t } = useI18n();
 
-const { info: collectionInfo } = useCollection(computed(() => props.collection));
+const field = computed(() => getField(props.field));
+const isVersionField = computed(() => field.value === '$version');
 
-const versioningEnabled = computed(() => !!collectionInfo.value?.meta?.versioning);
-const { fakeVersionField } = useFakeVersionField(toRef(props, 'collection'), versioningEnabled, true);
+const { info: collectionInfo } = useCollection(computed(() => props.collection));
+const versioningEnabled = computed(() => !!collectionInfo.value?.meta?.versioning && isVersionField.value);
+const { fakeVersionField } = useFakeVersionField(toRef(props, 'collection'), versioningEnabled, isVersionField);
 
 const fieldInfo = computed(() => {
-	const field = getField(props.field);
-
-	if (field === '$version') {
+	if (isVersionField.value) {
 		return fakeVersionField.value;
 	}
 
-	const fieldInfo = fieldsStore.getField(props.collection, field);
+	const fieldInfo = fieldsStore.getField(props.collection, field.value);
 
 	// Alias uses the foreign key type
 	if (fieldInfo?.type === 'alias') {
-		const relations = relationsStore.getRelationsForField(props.collection, field);
+		const relations = relationsStore.getRelationsForField(props.collection, field.value);
 
 		if (relations[0]) {
 			return fieldsStore.getField(relations[0].collection, relations[0].field);
