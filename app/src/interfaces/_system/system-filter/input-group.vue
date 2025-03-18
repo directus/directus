@@ -28,10 +28,6 @@ const { info: collectionInfo } = useCollection(computed(() => props.collection))
 const versioningEnabled = computed(() => collectionInfo.value?.meta?.versioning ?? false);
 
 const { fakeVersionField } = useFakeVersionField(toRef(props, 'collection'), ref(true), versioningEnabled, true);
-	computed(() => props.collection),
-	ref(true),
-	versioningEnabled,
-);
 
 const fieldInfo = computed(() => {
 	const field = getField(props.field);
