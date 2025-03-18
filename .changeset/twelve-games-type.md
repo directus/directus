@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed PK path parameter not converted to integer when applicable
+Fixed integer primary keys received as strings via path parameter
