@@ -10,16 +10,11 @@ import {
 	GraphQLObjectType,
 	GraphQLString,
 } from 'graphql';
-import type {
-	ObjectTypeComposerFieldConfigAsObjectDefinition,
-	ObjectTypeComposerFieldConfigDefinition,
-} from 'graphql-compose';
-import { GraphQLJSON, ObjectTypeComposer, SchemaComposer, toInputObjectType } from 'graphql-compose';
+import { GraphQLJSON, SchemaComposer, toInputObjectType } from 'graphql-compose';
 import getDatabase from '../../../database/index.js';
 import { fetchAccountabilityCollectionAccess } from '../../../permissions/modules/fetch-accountability-collection-access/fetch-accountability-collection-access.js';
 import { fetchAccountabilityPolicyGlobals } from '../../../permissions/modules/fetch-accountability-policy-globals/fetch-accountability-policy-globals.js';
 import type { GraphQLParams } from '../../../types/index.js';
-import { getGraphQLType } from '../../../utils/get-graphql-type.js';
 import { CollectionsService } from '../../collections.js';
 import { FieldsService } from '../../fields.js';
 import { FilesService } from '../../files.js';
@@ -32,17 +27,13 @@ import { GraphQLService } from '../index.js';
 import { generateSchema, type CollectionTypes, type Schema } from '../schema/index.js';
 import { getQuery } from '../schema/parse-query.js';
 import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
+import { getCollectionType } from './get-collection-type.js';
+import { getFieldType } from './get-field-type.js';
+import { getRelationType } from './get-relation-type.js';
 import { resolveSystemAdmin } from './system-admin.js';
 import { globalResolvers } from './system-global.js';
 
 const env = useEnv();
-
-export type BaseTypeComposers = {
-	Collection: ObjectTypeComposer<any, any>;
-	Field: ObjectTypeComposer<any, any>;
-	Relation: ObjectTypeComposer<any, any>;
-	Extension: ObjectTypeComposer<any, any>;
-};
 
 export function injectSystemResolvers(
 	gql: GraphQLService,
@@ -222,56 +213,8 @@ export function injectSystemResolvers(
 		},
 	});
 
-	const Collection = schemaComposer.createObjectTC({
-		name: 'directus_collections',
-	});
-
-	const Field = schemaComposer.createObjectTC({
-		name: 'directus_fields',
-	});
-
-	const Relation = schemaComposer.createObjectTC({
-		name: 'directus_relations',
-	});
-
-	const Extension = schemaComposer.createObjectTC({
-		name: 'directus_extensions',
-	});
-
-	const composers: BaseTypeComposers = {
-		Collection,
-		Field,
-		Relation,
-		Extension,
-	};
-
 	if ('directus_collections' in schema.read.collections) {
-		Collection.addFields({
-			collection: GraphQLString,
-			meta: schemaComposer.createObjectTC({
-				name: 'directus_collections_meta',
-				fields: Object.values(schema.read.collections['directus_collections']!.fields).reduce(
-					(acc, field) => {
-						acc[field.field] = {
-							type: field.nullable
-								? getGraphQLType(field.type, field.special)
-								: new GraphQLNonNull(getGraphQLType(field.type, field.special)),
-							description: field.note,
-						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
-
-						return acc;
-					},
-					{} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>,
-				),
-			}),
-			schema: schemaComposer.createObjectTC({
-				name: 'directus_collections_schema',
-				fields: {
-					name: GraphQLString,
-					comment: GraphQLString,
-				},
-			}),
-		});
+		const Collection = getCollectionType(schemaComposer, schema, 'read');
 
 		schemaComposer.Query.addFields({
 			collections: {
@@ -304,49 +247,7 @@ export function injectSystemResolvers(
 	}
 
 	if ('directus_fields' in schema.read.collections) {
-		Field.addFields({
-			collection: GraphQLString,
-			field: GraphQLString,
-			type: GraphQLString,
-			meta: schemaComposer.createObjectTC({
-				name: 'directus_fields_meta',
-				fields: Object.values(schema.read.collections['directus_fields']!.fields).reduce(
-					(acc, field) => {
-						acc[field.field] = {
-							type: field.nullable
-								? getGraphQLType(field.type, field.special)
-								: new GraphQLNonNull(getGraphQLType(field.type, field.special)),
-							description: field.note,
-						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
-
-						return acc;
-					},
-					{} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>,
-				),
-			}),
-			schema: schemaComposer.createObjectTC({
-				name: 'directus_fields_schema',
-				fields: {
-					name: GraphQLString,
-					table: GraphQLString,
-					data_type: GraphQLString,
-					default_value: GraphQLString,
-					max_length: GraphQLInt,
-					numeric_precision: GraphQLInt,
-					numeric_scale: GraphQLInt,
-					is_generated: GraphQLBoolean,
-					generation_expression: GraphQLString,
-					is_indexed: GraphQLBoolean,
-					is_nullable: GraphQLBoolean,
-					is_unique: GraphQLBoolean,
-					is_primary_key: GraphQLBoolean,
-					has_auto_increment: GraphQLBoolean,
-					foreign_key_column: GraphQLString,
-					foreign_key_table: GraphQLString,
-					comment: GraphQLString,
-				},
-			}),
-		});
+		const Field = getFieldType(schemaComposer, schema, 'read');
 
 		schemaComposer.Query.addFields({
 			fields: {
@@ -393,37 +294,7 @@ export function injectSystemResolvers(
 	}
 
 	if ('directus_relations' in schema.read.collections) {
-		Relation.addFields({
-			collection: GraphQLString,
-			field: GraphQLString,
-			related_collection: GraphQLString,
-			schema: schemaComposer.createObjectTC({
-				name: 'directus_relations_schema',
-				fields: {
-					table: new GraphQLNonNull(GraphQLString),
-					column: new GraphQLNonNull(GraphQLString),
-					foreign_key_table: new GraphQLNonNull(GraphQLString),
-					foreign_key_column: new GraphQLNonNull(GraphQLString),
-					constraint_name: GraphQLString,
-					on_update: new GraphQLNonNull(GraphQLString),
-					on_delete: new GraphQLNonNull(GraphQLString),
-				},
-			}),
-			meta: schemaComposer.createObjectTC({
-				name: 'directus_relations_meta',
-				fields: Object.values(schema.read.collections['directus_relations']!.fields).reduce(
-					(acc, field) => {
-						acc[field.field] = {
-							type: getGraphQLType(field.type, field.special),
-							description: field.note,
-						} as ObjectTypeComposerFieldConfigDefinition<any, any, any>;
-
-						return acc;
-					},
-					{} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>,
-				),
-			}),
-		});
+		const Relation = getRelationType(schemaComposer, schema, 'read');
 
 		schemaComposer.Query.addFields({
 			relations: {
@@ -469,7 +340,7 @@ export function injectSystemResolvers(
 		});
 	}
 
-	resolveSystemAdmin(gql, schemaComposer, composers);
+	resolveSystemAdmin(gql, schema, schemaComposer);
 
 	if ('directus_users' in schema.read.collections) {
 		schemaComposer.Query.addFields({

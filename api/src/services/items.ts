@@ -52,6 +52,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	eventScope: string;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
+	nested: string[];
 
 	constructor(collection: Collection, options: AbstractServiceOptions) {
 		this.collection = collection;
@@ -60,6 +61,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		this.eventScope = isSystemCollection(this.collection) ? this.collection.substring(9) : 'items';
 		this.schema = options.schema;
 		this.cache = getCache().cache;
+		this.nested = options.nested ?? [];
 
 		return this;
 	}
@@ -74,7 +76,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// while the other services only expect `options`
 		const isItemsService = Service.length === 2;
 
-		const newOptions = { knex: this.knex, accountability: this.accountability, schema: this.schema, ...options };
+		const newOptions = {
+			knex: this.knex,
+			accountability: this.accountability,
+			schema: this.schema,
+			nested: this.nested,
+			...options,
+		};
 
 		if (isItemsService) {
 			return new ItemsService(this.collection, newOptions);
@@ -138,22 +146,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			.map((field) => field.field);
 
 		const payload: AnyItem = cloneDeep(data);
+		let actionHookPayload = payload;
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
-		// changes in the DB if any of the parts contained within throws an error. This also means
-		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
-		// update tree
+		/**
+		 * By wrapping the logic in a transaction, we make sure we automatically roll back all the
+		 * changes in the DB if any of the parts contained within throws an error. This also means
+		 * that any errors thrown in any nested relational changes will bubble up and cancel the whole
+		 * update tree
+		 */
 		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
-			const serviceOptions: AbstractServiceOptions = {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-			};
-
-			// We're creating new services instances so they can use the transaction as their Knex interface
-			const payloadService = new PayloadService(this.collection, serviceOptions);
-
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
 			const payloadAfterHooks =
@@ -181,6 +183,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 							action: 'create',
 							collection: this.collection,
 							payload: payloadAfterHooks,
+							nested: this.nested,
 						},
 						{
 							knex: trx,
@@ -192,6 +195,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			if (opts.preMutationError) {
 				throw opts.preMutationError;
 			}
+
+			// Ensure the action hook payload has the post filter hook + preset changes
+			actionHookPayload = payloadWithPresets;
+
+			// We're creating new services instances so they can use the transaction as their Knex interface
+			const payloadService = new PayloadService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+				nested: this.nested,
+			});
 
 			const {
 				payload: payloadWithM2O,
@@ -270,9 +284,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				// Fetching it with max should be safe, as we're in the context of the current transaction
 				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
 				primaryKey = result.id;
+
 				// Set the primary key on the input item, in order for the "after" event hook to be able
 				// to read from it
-				payload[primaryKeyField] = primaryKey;
+				actionHookPayload[primaryKeyField] = primaryKey;
 			}
 
 			// At this point, the primary key is guaranteed to be set.
@@ -363,7 +378,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						? ['items.create', `${this.collection}.items.create`]
 						: `${this.eventScope}.create`,
 				meta: {
-					payload,
+					payload: actionHookPayload,
 					key: primaryKey,
 					collection: this.collection,
 				},
@@ -609,9 +624,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.updateMany` under the hood.
 	 */
 	async updateOne(key: PrimaryKey, data: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
-		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, key);
-
 		await this.updateMany([key], data, opts);
 		return key;
 	}
@@ -740,6 +752,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						action: 'update',
 						collection: this.collection,
 						payload: payloadAfterHooks,
+						nested: this.nested,
 					},
 					{
 						knex: this.knex,
@@ -757,6 +770,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				accountability: this.accountability,
 				knex: trx,
 				schema: this.schema,
+				nested: this.nested,
 			});
 
 			const {

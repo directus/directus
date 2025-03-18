@@ -7,30 +7,8 @@
 	z-index: 3;
 }
 
-/* Remove once merged: https://github.com/codex-team/editor.js/pull/2679 */
-.codex-editor .ce-block__content [contenteditable] {
-	word-break: break-word;
-}
-
-/* Background color for selected text */
 .codex-editor ::selection {
 	background-color: var(--theme--background-accent);
-}
-
-/* Color of block selection rectangle while dragging cursor */
-.codex-editor .codex-editor-overlay__rectangle {
-	background-color: color-mix(in srgb, var(--theme--primary), transparent 75%);
-}
-
-/* Background for selected blocks */
-.codex-editor .ce-block--selected .ce-block__content {
-	border-radius: var(--theme--border-radius);
-	background: var(--theme--primary-background);
-}
-
-/* Fix pseudo selection background when editing link */
-.codex-editor .ce-block .ce-block__content [style='background-color: rgb(168, 214, 255);'] {
-	background-color: var(--theme--primary-background) !important;
 }
 
 .codex-editor .ce-toolbar__plus,
@@ -76,19 +54,13 @@
 }
 
 .codex-editor .ce-popover {
-	--color-border: var(--theme--form--field--input--border-color);
-	--color-background: var(--theme--form--field--input--background-subdued);
-	--border-radius: var(--theme--border-radius);
-	/* Background color when focusing menu item */
-	--color-background-item-focus: var(--theme--background-accent);
-}
-
-.codex-editor .ce-popover__container {
+	background: var(--theme--form--field--input--background-subdued);
+	border-color: var(--theme--form--field--input--border-color);
 	border-width: var(--theme--border-width);
+	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .ce-popover-item,
-.codex-editor .ce-popover__items button,
 .codex-editor .ce-popover-item--confirmation .ce-popover-item__title {
 	color: var(--theme--form--field--input--foreground);
 }
@@ -114,33 +86,25 @@
 	color: var(--theme--form--field--input--foreground);
 }
 
-.codex-editor .ce-popover-item.ce-popover-item--active,
-.codex-editor .ce-popover-item.ce-popover-item--active:hover,
-.codex-editor .ce-inline-tool.ce-inline-tool--active,
-.codex-editor .ce-inline-tool.ce-inline-tool--active:hover {
+.codex-editor .ce-popover-item--active {
 	background: var(--theme--background-accent);
 }
 
-.codex-editor .ce-popover:not(.ce-popover--inline) .ce-popover-item__icon:not(.ce-popover-item__icon--chevron-right) {
-	margin-right: 4px;
+.codex-editor .ce-popover-item.ce-popover-item--active:hover {
+	background: var(--theme--background-accent);
+}
+
+.codex-editor .ce-popover-item__icon {
+	background: transparent;
+	box-shadow: unset;
 	border: 1px solid var(--theme--foreground-subdued);
-	border-radius: var(--theme--border-radius);
 }
 
 .codex-editor .ce-popover-item--active .ce-popover-item__icon {
 	color: var(--theme--primary);
 }
 
-/* Add small gap between buttons in inline toolbar */
-.codex-editor
-	.ce-popover__items
-	> [class^='ce-popover-item']:not(.ce-popover-item-separator)
-	+ [class^='ce-popover-item']:not(.ce-popover-item-separator) {
-	margin-left: 1px;
-}
-
 .codex-editor .ce-popover-item__icon i {
-	display: inline-flex;
 	font-family: 'Material Symbols', sans-serif;
 	font-style: normal;
 	font-variant: normal;
@@ -155,6 +119,10 @@
 .codex-editor .ce-inline-toolbar__dropdown {
 	margin: 0;
 	border-color: var(--theme--background-subdued);
+}
+
+.codex-editor .ce-inline-tool {
+	padding: 0 10px !important;
 }
 
 .codex-editor .ce-settings__button--confirm.ce-settings__button--confirm {
@@ -205,7 +173,7 @@
 .codex-editor .cdx-settings-button:hover,
 .codex-editor .ce-conversion-tool:hover,
 .codex-editor .ce-inline-toolbar__dropdown:hover,
-.codex-editor .ce-inline-tool:hover,
+.codex-editor .ce-inline-toolbar .ce-inline-tool:hover,
 .codex-editor .ce-settings .ce-settings__button:hover {
 	background: var(--theme--background-normal);
 }
@@ -309,21 +277,12 @@
 	--border-color: var(--theme--form--field--input--border-color);
 }
 
-.codex-editor .image-tool .image-tool__image {
-	border-radius: var(--theme--border-radius);
-}
-
-.codex-editor .image-tool--uploading .image-tool__image {
+.codex-editor .image-tool--loading .image-tool__image {
 	background: var(--theme--background-normal);
 }
 
-.codex-editor .image-tool .image-tool__image-preloader {
-	background-color: var(--theme--foreground-subdued);
-}
-
-.codex-editor .image-tool .image-tool__image-preloader::after {
-	border-color: var(--theme--foreground-subdued);
-	border-top-color: var(--front-color);
+.codex-editor .image-tool--loading .image-tool__image {
+	border-color: var(--theme--form--field--input--border-color);
 }
 
 /* Checklist */
@@ -433,9 +392,7 @@
 	border-radius: 4px;
 }
 
-/* Contrast for highlighted content inside inline code elements */
-.codex-editor .ce-block .inline-code::selection,
-.codex-editor .ce-block .inline-code > *::selection {
+.codex-editor .ce-block .inline-code::selection {
 	background-color: var(--theme--warning);
 }
 
@@ -521,14 +478,6 @@
 	text-align: right;
 }
 
-.codex-editor .ce-align-buttons {
-	padding: var(--item-padding);
-}
-
-.codex-editor .ce-align-buttons .cdx-settings-button {
-	margin-right: 2px;
-}
-
 .codex-editor .ce-align-buttons .cdx-settings-button svg {
 	fill: var(--theme--foreground);
 }
@@ -589,6 +538,16 @@
 
 .codex-editor .ce-block a {
 	color: var(--theme--primary);
+}
+
+.codex-editor .ce-block--selected .ce-block__content {
+	border-radius: var(--theme--border-radius);
+	background: var(--theme--primary-background);
+}
+
+/* Fix link pseudo selection background when editing link */
+.codex-editor .ce-block.ce-block--focused .ce-block__content span[style='background-color: rgb(168, 214, 255);'] {
+	background-color: var(--theme--background-accent) !important;
 }
 
 .codex-editor .ce-block ul,
@@ -666,6 +625,11 @@
 	margin-top: 0.25rem;
 	color: var(--theme--form--field--input--foreground-subdued);
 	text-align: center;
+}
+
+.codex-editor .ce-inline-tool--active {
+	color: var(--theme--primary);
+	background-color: var(--theme--background-normal);
 }
 
 /* Toggle Block */
