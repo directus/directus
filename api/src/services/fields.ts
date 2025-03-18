@@ -38,9 +38,18 @@ import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
 import { isSystemField } from '@directus/system-data';
+import Joi from 'joi';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
+
+export const systemFieldUpdateSchema = Joi.object({
+	collection: Joi.string(),
+	field: Joi.string(),
+	schema: Joi.object({
+		is_indexed: Joi.bool(),
+	}),
+});
 
 export class FieldsService {
 	knex: Knex;
@@ -541,6 +550,7 @@ export class FieldsService {
 				}
 			}
 
+			// Only create/update a database record if this is not a system field
 			if (hookAdjustedField.meta && !isSystemField(collection, hookAdjustedField.field)) {
 				if (record) {
 					await this.itemsService.updateOne(

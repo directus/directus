@@ -3,10 +3,12 @@ import { SchemaComposer, toInputObjectType } from 'graphql-compose';
 import type { GraphQLParams } from '../../../types/index.js';
 import { CollectionsService } from '../../collections.js';
 import { ExtensionsService } from '../../extensions.js';
-import { FieldsService } from '../../fields.js';
+import { FieldsService, systemFieldUpdateSchema } from '../../fields.js';
 import { RelationsService } from '../../relations.js';
 import { GraphQLService } from '../index.js';
 import type { BaseTypeComposers } from './system.js';
+import { isSystemField } from '@directus/system-data';
+import { InvalidPayloadError } from '@directus/errors';
 
 export function resolveSystemAdmin(
 	gql: GraphQLService,
@@ -105,6 +107,12 @@ export function resolveSystemAdmin(
 						accountability: gql.accountability,
 						schema: gql.schema,
 					});
+
+					if (isSystemField(args['collection'], args['field'])) {
+						const { error } = systemFieldUpdateSchema.validate(args['data'], { abortEarly: false });
+
+						if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
+					}
 
 					await service.updateField(args['collection'], {
 						...args['data'],

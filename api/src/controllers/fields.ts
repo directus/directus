@@ -8,7 +8,7 @@ import { ErrorCode, InvalidPayloadError } from '@directus/errors';
 import validateCollection from '../middleware/collection-exists.js';
 import { respond } from '../middleware/respond.js';
 import useCollection from '../middleware/use-collection.js';
-import { FieldsService } from '../services/fields.js';
+import { FieldsService, systemFieldUpdateSchema } from '../services/fields.js';
 import asyncHandler from '../utils/async-handler.js';
 import { isSystemField } from '@directus/system-data';
 
@@ -118,14 +118,6 @@ router.post(
 	respond,
 );
 
-const systemUpdateSchema = Joi.object({
-	collection: Joi.string(),
-	field: Joi.string(),
-	schema: Joi.object({
-		is_indexed: Joi.bool(),
-	}),
-});
-
 router.patch(
 	'/:collection',
 	validateCollection,
@@ -138,7 +130,7 @@ router.patch(
 		if (Array.isArray(req.body)) {
 			for (const fieldData of req.body) {
 				if (isSystemField(fieldData['collection']!, fieldData['field']!)) {
-					const { error } = systemUpdateSchema.validate(fieldData);
+					const { error } = systemFieldUpdateSchema.validate(fieldData);
 
 					if (error) throw new InvalidPayloadError({ reason: error.message });
 				}
@@ -194,7 +186,7 @@ router.patch(
 		});
 
 		if (isSystemField(req.params['collection']!, req.params['field']!)) {
-			const { error } = systemUpdateSchema.validate(req.body, { abortEarly: false });
+			const { error } = systemFieldUpdateSchema.validate(req.body, { abortEarly: false });
 
 			if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
 		} else {
