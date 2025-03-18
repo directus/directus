@@ -7,6 +7,7 @@ import { validateBatch } from '../middleware/validate-batch.js';
 import { MetaService } from '../services/meta.js';
 import { PresetsService } from '../services/presets.js';
 import asyncHandler from '../utils/async-handler.js';
+import { convertPK } from '../utils/convert-pk.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
@@ -90,7 +91,9 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
+		const pk = convertPK('directus_presets', req.params['pk'], { schema: req.schema });
+
+		const record = await service.readOne(pk, req.sanitizedQuery);
 
 		res.locals['payload'] = { data: record || null };
 		return next();
@@ -142,7 +145,9 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
+		const pk = convertPK('directus_presets', req.params['pk'], { schema: req.schema });
+
+		const primaryKey = await service.updateOne(pk, req.body);
 
 		try {
 			const record = await service.readOne(primaryKey, req.sanitizedQuery);
@@ -191,7 +196,9 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params['pk']!);
+		const pk = convertPK('directus_presets', req.params['pk'], { schema: req.schema });
+
+		await service.deleteOne(pk);
 
 		return next();
 	}),

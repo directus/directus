@@ -9,6 +9,7 @@ import { fetchAccountabilityCollectionAccess } from '../permissions/modules/fetc
 import { MetaService } from '../services/meta.js';
 import { PermissionsService } from '../services/permissions.js';
 import asyncHandler from '../utils/async-handler.js';
+import { convertPK } from '../utils/convert-pk.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
@@ -115,7 +116,9 @@ router.get(
 			schema: req.schema,
 		});
 
-		const record = await service.readOne(req.params['pk']!, req.sanitizedQuery);
+		const pk = convertPK('directus_permissions', req.params['pk'], { schema: req.schema });
+
+		const record = await service.readOne(pk, req.sanitizedQuery);
 
 		res.locals['payload'] = { data: record };
 		return next();
@@ -167,7 +170,9 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const primaryKey = await service.updateOne(req.params['pk']!, req.body);
+		const pk = convertPK('directus_permissions', req.params['pk'], { schema: req.schema });
+
+		const primaryKey = await service.updateOne(pk, req.body);
 
 		try {
 			const item = await service.readOne(primaryKey, req.sanitizedQuery);
@@ -216,7 +221,9 @@ router.delete(
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params['pk']!);
+		const pk = convertPK('directus_permissions', req.params['pk'], { schema: req.schema });
+
+		await service.deleteOne(pk);
 
 		return next();
 	}),
@@ -226,14 +233,12 @@ router.delete(
 router.get(
 	'/me/:collection/:pk?',
 	asyncHandler(async (req, res, next) => {
-		const { collection, pk } = req.params;
-
 		const service = new PermissionsService({
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const itemPermissions = await service.getItemPermissions(collection!, pk);
+		const itemPermissions = await service.getItemPermissions(req.collection, req.params['pk']);
 
 		res.locals['payload'] = { data: itemPermissions };
 

@@ -9,6 +9,7 @@ import { validateBatch } from '../middleware/validate-batch.js';
 import { ItemsService } from '../services/items.js';
 import { MetaService } from '../services/meta.js';
 import asyncHandler from '../utils/async-handler.js';
+import { convertPK } from '../utils/convert-pk.js';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 
 const router = express.Router();
@@ -99,14 +100,16 @@ router.get(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.collection)) throw new ForbiddenError();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		const result = await service.readOne(req.params['pk']!, req.sanitizedQuery);
+		const pk = convertPK(req.collection, req.params['pk'], { schema: req.schema });
+
+		const result = await service.readOne(pk, req.sanitizedQuery);
 
 		res.locals['payload'] = {
 			data: result || null,
@@ -169,7 +172,7 @@ router.patch(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.collection)) throw new ForbiddenError();
 
 		if (req.singleton) {
 			throw new RouteNotFoundError({ path: req.path });
@@ -180,7 +183,9 @@ router.patch(
 			schema: req.schema,
 		});
 
-		const updatedPrimaryKey = await service.updateOne(req.params['pk']!, req.body);
+		const pk = convertPK(req.collection, req.params['pk'], { schema: req.schema });
+
+		const updatedPrimaryKey = await service.updateOne(pk, req.body);
 
 		try {
 			const result = await service.readOne(updatedPrimaryKey, req.sanitizedQuery);
@@ -228,14 +233,16 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, _res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.collection)) throw new ForbiddenError();
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
 			schema: req.schema,
 		});
 
-		await service.deleteOne(req.params['pk']!);
+		const pk = convertPK(req.collection, req.params['pk'], { schema: req.schema });
+
+		await service.deleteOne(pk);
 		return next();
 	}),
 	respond,
