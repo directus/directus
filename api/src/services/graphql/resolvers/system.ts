@@ -213,9 +213,9 @@ export function injectSystemResolvers(
 		},
 	});
 
-	const Collection = getCollectionType(schemaComposer, schema, 'read');
-
 	if ('directus_collections' in schema.read.collections) {
+		const Collection = getCollectionType(schemaComposer, schema, 'read');
+
 		schemaComposer.Query.addFields({
 			collections: {
 				type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Collection.getType()))),
@@ -246,9 +246,9 @@ export function injectSystemResolvers(
 		});
 	}
 
-	const Field = getFieldType(schemaComposer, schema, 'read');
-
 	if ('directus_fields' in schema.read.collections) {
+		const Field = getFieldType(schemaComposer, schema, 'read');
+
 		schemaComposer.Query.addFields({
 			fields: {
 				type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Field.getType()))),
@@ -293,9 +293,9 @@ export function injectSystemResolvers(
 		});
 	}
 
-	const Relation = getRelationType(schemaComposer, schema, 'read');
-
 	if ('directus_relations' in schema.read.collections) {
+		const Relation = getRelationType(schemaComposer, schema, 'read');
+
 		schemaComposer.Query.addFields({
 			relations: {
 				type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Relation.getType()))),
