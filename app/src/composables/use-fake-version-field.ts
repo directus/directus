@@ -1,5 +1,5 @@
 import type { Field } from '@directus/types';
-import { computed, ref, unref, type Ref, type ComputedRef } from 'vue';
+import { computed, ref, type Ref, type ComputedRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useVersions } from './use-versions';
 
@@ -7,7 +7,6 @@ type Choice = { text: string; value: string | null };
 
 export function useFakeVersionField(
 	collection: Ref<string | null>,
-	injectVersionField: Ref<boolean>,
 	versioningEnabled: Ref<boolean>,
 	includeChoices = false,
 ): { fakeVersionField: ComputedRef<Field | null> } {
@@ -36,18 +35,17 @@ export function useFakeVersionField(
 	}
 
 	const fakeVersionField = computed<Field | null>(() => {
-		const collectionValue = unref(collection);
-		if (!injectVersionField.value || !versioningEnabled.value || !collectionValue) return null;
+		if (!versioningEnabled.value || !collection.value) return null;
 
 		return {
-			collection: collectionValue,
+			collection: collection.value,
 			field: '$version',
 			schema: null,
 			name: t('version'),
 			type: 'string',
 			meta: {
 				field: '$version',
-				collection: collectionValue,
+				collection: collection.value,
 				id: -1,
 				conditions: null,
 				display: null,

@@ -2,7 +2,7 @@
 import { FieldNode, useFieldTree } from '@/composables/use-field-tree';
 import { useCollectionsStore } from '@/stores/collections';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
-import { computed, inject, ref, toRef } from 'vue';
+import { computed, inject, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -41,15 +41,14 @@ const collection = computed(() => {
 	return collectionName;
 });
 
-const versioningEnabled = computed(() => values.value['versioning']);
-const { fakeVersionField } = useFakeVersionField(collection, toRef(props, 'injectVersionField'), versioningEnabled);
+const versioningEnabled = computed(() => Boolean(values.value.versioning && props.injectVersionField));
+const { fakeVersionField } = useFakeVersionField(collection, versioningEnabled);
 
-const injectValue = computed(() => {
-	if (!props.injectVersionField) return null;
+const injectFields = computed(() => {
 	return fakeVersionField.value ? { fields: [fakeVersionField.value] } : null;
 });
 
-const { treeList, loadFieldRelations } = useFieldTree(collection, injectValue);
+const { treeList, loadFieldRelations } = useFieldTree(collection, injectFields);
 
 const tree = computed(() => {
 	if (props.fields) {

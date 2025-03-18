@@ -6,7 +6,7 @@ import { useRelationsStore } from '@/stores/relations';
 import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
-import { computed, ref, toRef, toRefs, unref, watch } from 'vue';
+import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
 
@@ -64,13 +64,13 @@ const { t } = useI18n();
 
 const collectionInfo = computed(() => collectionsStore.getCollection(collection.value));
 const versioningEnabled = computed(() => Boolean(collectionInfo.value?.meta?.versioning && props.injectVersionField));
-const { fakeVersionField } = useFakeVersionField(collection, toRef(props, 'injectVersionField'), versioningEnabled);
+const { fakeVersionField } = useFakeVersionField(collection, versioningEnabled);
 
-const virtualFields = computed(() => {
+const injectFields = computed(() => {
 	return fakeVersionField.value ? { fields: [fakeVersionField.value] } : null;
 });
 
-const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, virtualFields, filter);
+const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, injectFields, filter);
 
 const debouncedRefresh = debounce(() => refresh(), 250);
 

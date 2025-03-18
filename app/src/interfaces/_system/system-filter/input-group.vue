@@ -4,7 +4,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { FieldFilter } from '@directus/types';
 import { clone, get } from 'lodash';
-import { computed, ref, toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
@@ -25,9 +25,8 @@ const { t } = useI18n();
 
 const { info: collectionInfo } = useCollection(computed(() => props.collection));
 
-const versioningEnabled = computed(() => collectionInfo.value?.meta?.versioning ?? false);
-
-const { fakeVersionField } = useFakeVersionField(toRef(props, 'collection'), ref(true), versioningEnabled, true);
+const versioningEnabled = computed(() => !!collectionInfo.value?.meta?.versioning);
+const { fakeVersionField } = useFakeVersionField(toRef(props, 'collection'), versioningEnabled, true);
 
 const fieldInfo = computed(() => {
 	const field = getField(props.field);
