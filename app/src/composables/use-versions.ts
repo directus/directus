@@ -113,7 +113,7 @@ export function useVersions(collection: Ref<string>, isSingleton: Ref<boolean>, 
 	async function getVersions() {
 		if (!readVersionsAllowed.value) return;
 
-		if ((!isSingleton && !primaryKey.value) || primaryKey.value === '+') return;
+		if ((!isSingleton.value && !primaryKey.value) || primaryKey.value === '+') return;
 
 		loading.value = true;
 
