@@ -8,6 +8,7 @@ export interface ConvertPKContext {
  * Attempt to convert the PK to its proper type
  */
 export function convertPK(collection: string, pk: PrimaryKey | undefined, context: ConvertPKContext): PrimaryKey {
+	// This will trigger a database error as expected, but ensures we remain within the PrimaryKey type return
 	if (!pk) return '';
 
 	const primaryKeyField = context.schema.collections[collection]?.primary;
