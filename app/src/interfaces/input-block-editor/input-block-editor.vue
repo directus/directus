@@ -224,8 +224,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 		border-color: var(--theme--form--field--input--border-color-hover);
 	}
 
-	&:focus-within,
-	&:has(.ce-popover--opened) {
+	&:focus-within {
 		border-color: var(--theme--form--field--input--border-color-focus);
 	}
 }

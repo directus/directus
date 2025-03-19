@@ -62,7 +62,7 @@ export const createLogger = () => {
 		},
 	};
 
-	const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
+	const loggerEnvConfig = getConfigFromEnv('LOGGER_', { omitPrefix: 'LOGGER_HTTP' });
 
 	// Expose custom log levels into formatter function
 	if (loggerEnvConfig['levels']) {
@@ -121,8 +121,8 @@ export const createLogger = () => {
 export const createExpressLogger = () => {
 	const env = useEnv();
 
-	const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', ['LOGGER_HTTP_LOGGER']);
-	const loggerEnvConfig = getConfigFromEnv('LOGGER_', 'LOGGER_HTTP');
+	const httpLoggerEnvConfig = getConfigFromEnv('LOGGER_HTTP', { omitPrefix: 'LOGGER_HTTP_LOGGER' });
+	const loggerEnvConfig = getConfigFromEnv('LOGGER_', { omitPrefix: 'LOGGER_HTTP' });
 
 	const httpLoggerOptions: LoggerOptions = {
 		level: (env['LOG_LEVEL'] as string) || 'info',
