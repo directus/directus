@@ -1,7 +1,10 @@
 export type Revision = {
-	id: number;
 	data: Record<string, any> | null;
 	delta: Record<string, any> | null;
+} & RevisionPartial;
+
+export type RevisionPartial = {
+	id: number;
 	collection: string;
 	item: string | number;
 	activity: {
@@ -21,7 +24,7 @@ export type Revision = {
 	};
 };
 
-export type RevisionWithTime = Revision & {
+export type RevisionWithTime = RevisionPartial & {
 	timestampFormatted: string;
 	timeRelative: string;
 };
