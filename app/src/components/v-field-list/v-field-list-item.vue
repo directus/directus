@@ -127,6 +127,9 @@ const openWhileSearching = computed(() => {
 		clickable
 		@click="$emit('add', [field.key])"
 	>
+		<v-list-item-icon v-if="field.field.startsWith('$')">
+			<v-icon name="auto_awesome" small color="var(--theme--primary)" />
+		</v-list-item-icon>
 		<v-list-item-content>
 			<v-text-overflow
 				:text="rawFieldNames ? field.field : field.name || formatTitle(field.field)"

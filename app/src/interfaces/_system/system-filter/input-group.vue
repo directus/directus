@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { FieldFilter } from '@directus/types';
 import { clone, get } from 'lodash';
-import { computed } from 'vue';
+import { computed, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
+import { useCollection } from '@directus/composables';
 
 const props = defineProps<{
 	field: FieldFilter;
@@ -21,12 +23,23 @@ const fieldsStore = useFieldsStore();
 const relationsStore = useRelationsStore();
 const { t } = useI18n();
 
+const field = computed(() => getField(props.field));
+const isVersionField = computed(() => field.value === '$version');
+
+const { info: collectionInfo } = useCollection(computed(() => props.collection));
+const versioningEnabled = computed(() => !!collectionInfo.value?.meta?.versioning && isVersionField.value);
+const { fakeVersionField } = useFakeVersionField(toRef(props, 'collection'), versioningEnabled, isVersionField);
+
 const fieldInfo = computed(() => {
-	const fieldInfo = fieldsStore.getField(props.collection, getField(props.field));
+	if (isVersionField.value) {
+		return fakeVersionField.value;
+	}
+
+	const fieldInfo = fieldsStore.getField(props.collection, field.value);
 
 	// Alias uses the foreign key type
 	if (fieldInfo?.type === 'alias') {
-		const relations = relationsStore.getRelationsForField(props.collection, getField(props.field));
+		const relations = relationsStore.getRelationsForField(props.collection, field.value);
 
 		if (relations[0]) {
 			return fieldsStore.getField(relations[0].collection, relations[0].field);
