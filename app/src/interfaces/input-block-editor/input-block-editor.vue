@@ -96,7 +96,7 @@ onMounted(async () => {
 	}
 
 	editorjsRef.value.on(BlockChanged, () => {
-		if (editorjsIsInitialized.value == true) {
+		if (editorjsIsInitialized.value === true) {
 			emitValue(editorjsRef.value);
 		}
 	});
