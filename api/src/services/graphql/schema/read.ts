@@ -46,6 +46,7 @@ export function getReadableTypes(
 	);
 
 	const ReadableCollectionFilterTypes: Record<string, InputTypeComposer> = {};
+	const ReadableCollectionQuantifierFilterTypes: Record<string, InputTypeComposer> = {};
 
 	const AggregatedFunctions: Record<string, ObjectTypeComposer<any, any>> = {};
 	const AggregatedFields: Record<string, ObjectTypeComposer<any, any>> = {};
@@ -740,9 +741,24 @@ export function getReadableTypes(
 		}
 	}
 
+	for (const collection in ReadableCollectionFilterTypes) {
+		const quantifier_collection = ReadableCollectionFilterTypes[collection]?.clone(`${collection}_quantifier_filter`);
+
+		quantifier_collection?.addFields({
+			_some: ReadableCollectionFilterTypes[collection]!,
+			_none: ReadableCollectionFilterTypes[collection]!,
+		});
+
+		ReadableCollectionQuantifierFilterTypes[collection] = quantifier_collection!;
+	}
+
 	for (const relation of schema.read.relations) {
 		if (relation.related_collection) {
 			if (SYSTEM_DENY_LIST.includes(relation.related_collection)) continue;
+
+			ReadableCollectionQuantifierFilterTypes[relation.collection]?.addFields({
+				[relation.field]: ReadableCollectionFilterTypes[relation.related_collection]!,
+			});
 
 			ReadableCollectionFilterTypes[relation.collection]?.addFields({
 				[relation.field]: ReadableCollectionFilterTypes[relation.related_collection]!,
@@ -768,8 +784,12 @@ export function getReadableTypes(
 			});
 
 			if (relation.meta?.one_field) {
+				ReadableCollectionQuantifierFilterTypes[relation.related_collection]?.addFields({
+					[relation.meta.one_field]: ReadableCollectionQuantifierFilterTypes[relation.collection]!,
+				});
+
 				ReadableCollectionFilterTypes[relation.related_collection]?.addFields({
-					[relation.meta.one_field]: ReadableCollectionFilterTypes[relation.collection]!,
+					[relation.meta.one_field]: ReadableCollectionQuantifierFilterTypes[relation.collection]!,
 				});
 
 				ReadCollectionTypes[relation.related_collection]?.addFieldArgs(relation.meta.one_field, {
@@ -792,9 +812,14 @@ export function getReadableTypes(
 				});
 			}
 		} else if (relation.meta?.one_allowed_collections) {
+			ReadableCollectionQuantifierFilterTypes[relation.collection]?.removeField('item');
 			ReadableCollectionFilterTypes[relation.collection]?.removeField('item');
 
 			for (const collection of relation.meta.one_allowed_collections) {
+				ReadableCollectionQuantifierFilterTypes[relation.collection]?.addFields({
+					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
+				});
+
 				ReadableCollectionFilterTypes[relation.collection]?.addFields({
 					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 				});
