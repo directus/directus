@@ -48,6 +48,7 @@ const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFil
 
 const editorjsRef = ref<EditorJS>();
 const editorjsIsReady = ref(false);
+const editorjsIsInitialized = ref(false);
 const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
@@ -95,7 +96,9 @@ onMounted(async () => {
 	}
 
 	editorjsRef.value.on(BlockChanged, () => {
-		emitValue(editorjsRef.value!);
+		if (editorjsIsInitialized.value === true) {
+			emitValue(editorjsRef.value);
+		}
 	});
 
 	editorjsIsReady.value = true;
@@ -117,7 +120,10 @@ watch(
 			return;
 		}
 
-		if (isEqual(newVal?.blocks, oldVal?.blocks)) return;
+		if (isEqual(newVal?.blocks, oldVal?.blocks)) {
+			editorjsIsInitialized.value = true;
+			return;
+		}
 
 		try {
 			const sanitizedValue = sanitizeValue(newVal);
@@ -130,6 +136,8 @@ watch(
 		} catch (error) {
 			unexpectedError(error);
 		}
+
+		editorjsIsInitialized.value = true;
 	},
 );
 
@@ -147,11 +155,12 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 		}
 
 		if (isEqual(result.blocks, props.value?.blocks)) return;
-
 		emit('input', result);
 	} catch (error) {
 		unexpectedError(error);
 	}
+
+	editorjsIsInitialized.value = true;
 }
 
 function sanitizeValue(value: any): EditorJS.OutputData | null {
