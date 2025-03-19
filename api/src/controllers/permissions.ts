@@ -238,7 +238,7 @@ router.get(
 			schema: req.schema,
 		});
 
-		const itemPermissions = await service.getItemPermissions(req.collection, req.params['pk']);
+		const itemPermissions = await service.getItemPermissions(req.params['collection']!, req.params['pk']);
 
 		res.locals['payload'] = { data: itemPermissions };
 
