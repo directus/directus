@@ -12,6 +12,7 @@ import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
+import useInlineCode from './useInlineCode';
 import tinymce from 'tinymce/tinymce';
 
 import 'tinymce/skins/ui/oxide/skin.css';
@@ -127,6 +128,8 @@ const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, li
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
+const { inlineCodeButton } = useInlineCode(editorRef);
+
 const internalValue = computed({
 	get() {
 		return props.value || '';
@@ -205,6 +208,7 @@ const editorOptions = computed(() => {
 			'preview',
 			'fullscreen',
 			'directionality',
+			'inlineCode',
 		],
 		branding: false,
 		max_height: 1000,
@@ -268,6 +272,7 @@ function setup(editor: any) {
 
 	const linkShortcut = 'meta+k';
 
+	editor.ui.registry.addToggleButton('inlineCode', inlineCodeButton);
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
 	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
