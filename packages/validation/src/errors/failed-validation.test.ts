@@ -4,12 +4,13 @@ import { messageConstructor } from './failed-validation.js';
 
 /** Can't be randomized, as we're using snapshot tests */
 const field = 'test_field';
+const path: string[] = [];
 
 describe('No value', () => {
 	const types: (FilterOperator | 'required' | 'regex')[] = ['null', 'nnull', 'empty', 'nempty', 'required', 'regex'];
 
 	test.each(types)('Constructs message for "%s"', (type) => {
-		const message = messageConstructor({ field, type });
+		const message = messageConstructor({ field, type, path });
 		expect(message).toMatchSnapshot();
 	});
 });
@@ -21,7 +22,7 @@ describe('Valid value (primitive)', () => {
 	const valid = 15;
 
 	test.each(types)('Constructs message for "%s"', (type) => {
-		const message = messageConstructor({ field, type, valid });
+		const message = messageConstructor({ field, type, valid, path });
 		expect(message).toMatchSnapshot();
 	});
 });
@@ -33,7 +34,7 @@ describe('Valid value (list)', () => {
 	const valid = ['valA', 'valB', 'valC'];
 
 	test.each(types)('Constructs message for "%s"', (type) => {
-		const message = messageConstructor({ field, type, valid });
+		const message = messageConstructor({ field, type, valid, path });
 		expect(message).toMatchSnapshot();
 	});
 });
@@ -45,7 +46,7 @@ describe('Invalid value (primitive)', () => {
 	const invalid = 15;
 
 	test.each(types)('Constructs message for "%s"', (type) => {
-		const message = messageConstructor({ field, type, invalid });
+		const message = messageConstructor({ field, type, invalid, path });
 		expect(message).toMatchSnapshot();
 	});
 });
@@ -57,7 +58,7 @@ describe('Invalid value (list)', () => {
 	const invalid = ['valA', 'valB', 'valC'];
 
 	test.each(types)('Constructs message for "%s"', (type) => {
-		const message = messageConstructor({ field, type, invalid });
+		const message = messageConstructor({ field, type, invalid, path });
 		expect(message).toMatchSnapshot();
 	});
 });
@@ -69,7 +70,7 @@ describe('Substring', () => {
 	const substring = 'test_substring';
 
 	test.each(types)('Constructs message for "%s"', (type) => {
-		const message = messageConstructor({ field, type, substring });
+		const message = messageConstructor({ field, type, substring, path });
 		expect(message).toMatchSnapshot();
 	});
 });

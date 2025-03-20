@@ -4,6 +4,7 @@ import { toArray } from '@directus/utils';
 
 export interface FailedValidationErrorExtensions {
 	field: string;
+	path: (string | number)[];
 	type: ClientFilterOperator | 'required' | 'email';
 	valid?: number | string | (number | string)[];
 	invalid?: number | string | (number | string)[];
@@ -11,7 +12,8 @@ export interface FailedValidationErrorExtensions {
 }
 
 export const messageConstructor = (extensions: FailedValidationErrorExtensions): string => {
-	let message = `Validation failed for field "${extensions.field}".`;
+	const atPath = extensions.path.length > 0 ? ` at "${extensions.path.join('.')}"` : '';
+	let message = `Validation failed for field "${extensions.field}"${atPath}.`;
 
 	if ('valid' in extensions) {
 		switch (extensions.type) {
