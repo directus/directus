@@ -421,7 +421,25 @@ class FlowManager {
 
 		const handler = this.operations.get(operation.type)!;
 
-		const options = applyOptionsData(operation.options, keyedData);
+		let optionData = keyedData;
+
+		if (operation.type === 'log') {
+			optionData = redactObject(
+				keyedData,
+				{
+					keys: [
+						['**', 'headers', 'authorization'],
+						['**', 'headers', 'cookie'],
+						['**', 'query', 'access_token'],
+						['**', 'payload', 'password'],
+					],
+					values: this.envs,
+				},
+				getRedactedString,
+			);
+		}
+
+		const options = applyOptionsData(operation.options, optionData);
 
 		try {
 			let result = await handler(options, {
