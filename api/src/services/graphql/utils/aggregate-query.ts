@@ -1,18 +1,19 @@
-import type { Accountability, Aggregate, Query } from '@directus/types';
+import type { Accountability, Aggregate, Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, SelectionNode } from 'graphql';
-import { replaceFuncs } from './replace-funcs.js';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
+import { replaceFuncs } from './replace-funcs.js';
 
 /**
  * Resolve the aggregation query based on the requested aggregated fields
  */
-export function getAggregateQuery(
+export async function getAggregateQuery(
 	rawQuery: Query,
 	selections: readonly SelectionNode[],
+	schema: SchemaOverview,
 	accountability?: Accountability | null,
-): Query {
-	const query: Query = sanitizeQuery(rawQuery, accountability);
+): Promise<Query> {
+	const query: Query = await sanitizeQuery(rawQuery, schema, accountability);
 
 	query.aggregate = {};
 

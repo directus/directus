@@ -160,7 +160,7 @@ export async function generateSchema(
 			),
 		};
 
-		const { ReadCollectionTypes, VersionCollectionTypes } = getReadableTypes(
+		const { ReadCollectionTypes, VersionCollectionTypes } = await getReadableTypes(
 			gql,
 			schemaComposer,
 			schema,
