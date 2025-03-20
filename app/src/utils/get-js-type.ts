@@ -1,4 +1,5 @@
 import { Field } from '@directus/types';
+import { APP_NUMERIC_TYPES, APP_NUMERIC_STRING_TYPES } from '@/constants';
 
 export function getJSType(field: Field): string {
 	if (
@@ -8,28 +9,27 @@ export function getJSType(field: Field): string {
 		return 'object';
 	}
 
-	switch (field.type) {
-		case 'integer':
-		case 'float':
-		case 'decimal':
-			return 'number';
-		case 'bigInteger':
-		case 'string':
-		case 'text':
-		case 'uuid':
-		case 'hash':
-		case 'time':
-		case 'timestamp':
-		case 'date':
-		case 'dateTime':
-			return 'string';
-		case 'boolean':
-			return 'boolean';
-		case 'json':
-		case 'csv':
-			return 'object';
-	}
+	if (APP_NUMERIC_TYPES.includes(field.type)) return 'number';
+
+	if (field.type === 'boolean') return 'boolean';
+
+	if (['json', 'csv'].includes(field.type)) return 'object';
 
 	if (field.type?.startsWith('geometry')) return 'object';
+
+	const stringTypes = [
+		'string',
+		'text',
+		'uuid',
+		'hash',
+		'time',
+		'timestamp',
+		'date',
+		'dateTime',
+		...APP_NUMERIC_STRING_TYPES,
+	];
+
+	if (stringTypes.includes(field.type)) return 'string';
+
 	return 'undefined';
 }
