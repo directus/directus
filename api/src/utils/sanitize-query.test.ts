@@ -1,21 +1,10 @@
 import { useEnv } from '@directus/env';
-import { parseFilter, parseJSON } from '@directus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { sanitizeQuery } from './sanitize-query.js';
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
 vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
-
-vi.mock('@directus/utils', async () => {
-	const actual = await vi.importActual<typeof import('@directus/utils')>('@directus/utils');
-
-	return {
-		...actual,
-		parseJSON: vi.fn().mockImplementation(actual.parseJSON),
-		parseFilter: vi.fn().mockImplementation((value) => value),
-	};
-});
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({});
@@ -213,10 +202,6 @@ describe('filter', () => {
 	test('should throw error on invalid filter', async () => {
 		const filter = { field_a: null };
 
-		vi.mocked(parseFilter).mockImplementationOnce(() => {
-			throw new Error();
-		});
-
 		await expect(async () => await sanitizeQuery({ filter }, null as any)).rejects.toThrowError(
 			'Invalid query. Invalid filter object.',
 		);
@@ -232,10 +217,6 @@ describe('filter', () => {
 
 	test('should throw error on invalid json', async () => {
 		const filter = '{ "field_a": }';
-
-		vi.mocked(parseJSON).mockImplementationOnce(() => {
-			throw new Error();
-		});
 
 		await expect(async () => await sanitizeQuery({ filter }, null as any)).rejects.toThrowError(
 			'Invalid query. Invalid JSON for filter object.',
