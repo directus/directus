@@ -11,6 +11,12 @@ const sanitizeQueryMiddleware: RequestHandler = async (req, _res, next) => {
 	req.sanitizedQuery = {};
 	if (!req.query) return;
 
+	// Skip sanitization and validation if query is empty
+	if (Object.keys(req.query).length === 0) {
+		Object.freeze(req.sanitizedQuery);
+		return next();
+	}
+
 	try {
 		req.sanitizedQuery = await sanitizeQuery(
 			{
