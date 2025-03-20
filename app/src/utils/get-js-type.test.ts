@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest';
 import { Field } from '@directus/types';
-import { APP_NUMERIC_TYPES } from '@/constants';
+import { APP_NUMERIC_TYPES, APP_NUMERIC_STRING_TYPES } from '@/constants';
 import { getJSType } from './get-js-type';
 
 test('Returns object for relational fields', () => {
@@ -35,8 +35,7 @@ test('Returns number for numeric fields', () => {
 });
 
 test('Returns string for string fields', () => {
-	// Treat bigInteger and decimal as string to avoid rounding errors
-	const stringTypes = ['string', 'text', 'uuid', 'hash', 'bigInteger', 'decimal'];
+	const stringTypes = ['string', 'text', 'uuid', 'hash', ...APP_NUMERIC_STRING_TYPES];
 
 	for (const fieldType of stringTypes) {
 		expect(
