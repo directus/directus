@@ -1,10 +1,15 @@
 import { useEnv } from '@directus/env';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { sanitizeQuery } from './sanitize-query.js';
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
 vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
+
+vi.mock('../database/index.js');
+vi.mock('../permissions/lib/fetch-policies.js');
+vi.mock('../permissions/utils/fetch-dynamic-variable-data.js');
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({});
@@ -221,6 +226,16 @@ describe('filter', () => {
 		await expect(async () => await sanitizeQuery({ filter }, null as any)).rejects.toThrowError(
 			'Invalid query. Invalid JSON for filter object.',
 		);
+	});
+
+	test('should process dynamic variables', async () => {
+		const filter = { field_a: { _eq: '$CURRENT_USER.something' } };
+
+		vi.mocked(fetchDynamicVariableData).mockResolvedValue({ $CURRENT_USER: { something: 'test' } });
+
+		const sanitizedQuery = await sanitizeQuery({ filter }, null as any, {} as any);
+
+		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
 	});
 });
 
