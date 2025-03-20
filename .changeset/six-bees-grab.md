@@ -3,4 +3,4 @@
 '@directus/api': minor
 ---
 
-Added ability to map an OAuth group to a Directus role
+Added ability to map OAuth claim groups to Directus roles
