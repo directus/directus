@@ -853,25 +853,9 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variab
 | `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                                                                                                                                     | `<PROVIDER>`     |
 | `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                                                                                                                          | --               |
 | `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login.                                                                                                          | --               |
-| `AUTH_<PROVIDER>_ROLE_MAPPING`              | A JSON object in the form of `{ "oauth_group_name": "directus_role_id" }` that you can use to map OAuth groups to Directus roles <sup>[3]</sup>. If not specified, falls back to `AUTH_<PROVIDER>_DEFAULT_ROLE_ID` | --               |
-| `AUTH_<PROVIDER>_GROUP_CLAIM_NAME`          | The name of the OAuth claim that contains your user's groups.                                                                                                                                                      | `groups`         |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
-
-<sup>[2]</sup> As directus only allows one role per user, evaluating stops after the first match. An OAuth user that is
-member of both e.g. developer and admin groups may be assigned different roles depending on the order that you specify
-your role-mapping in: In the following example said OAuth user will be assigned the role `directus_developer_role_id`
-
-```
-AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "developer": "directus_developer_role_id", "admin": "directus_admin_role_id" }"
-```
-
-Whereas in the following example the OAuth user will be assigned the role `directus_admin_role_id`
-
-```
-AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "admin": "directus_admin_role_id", "developer": "directus_developer_role_id" }"
-```
 
 ### OpenID
 
