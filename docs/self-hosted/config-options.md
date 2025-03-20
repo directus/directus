@@ -834,25 +834,25 @@ These flows rely on the `PUBLIC_URL` variable for redirecting. Ensure the variab
 
 ### OAuth 2.0
 
-| Variable                                    | Description                                                                                                                                                                                                        | Default Value    |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the OAuth provider.                                                                                                                                                                          | --               |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the OAuth provider.                                                                                                                                                                              | --               |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                                                                                                                            | `email`          |
-| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the OAuth provider.                                                                                                                                                                      | --               |
-| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the OAuth provider.                                                                                                                                                                            | --               |
-| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the OAuth provider.                                                                                                                                                                            | --               |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                                                                                                                                           | --               |
-| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                                                                                                                                            | `email`          |
-| `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                                                                                                                                       | --               |
-| `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                                                                                                                                        | --               |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                                                                                                            | `false`          |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                                                                                                                                        | --               |
-| `AUTH_<PROVIDER>_SYNC_USER_INFO`            | Set user's first name, last name and email from provider's user info on each login.                                                                                                                                | `false`          |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).                                                                                                                  | `account_circle` |
-| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                                                                                                                                     | `<PROVIDER>`     |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                                                                                                                          | --               |
-| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login.                                                                                                          | --               |
+| Variable                                    | Description                                                                                               | Default Value    |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the OAuth provider.                                                                 | --               |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the OAuth provider.                                                                     | --               |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                   | `email`          |
+| `AUTH_<PROVIDER>_AUTHORIZE_URL`             | Authorization page URL of the OAuth provider.                                                             | --               |
+| `AUTH_<PROVIDER>_ACCESS_URL`                | Access token URL of the OAuth provider.                                                                   | --               |
+| `AUTH_<PROVIDER>_PROFILE_URL`               | User profile URL of the OAuth provider.                                                                   | --               |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>. Will default to `EMAIL_KEY`.                                  | --               |
+| `AUTH_<PROVIDER>_EMAIL_KEY`                 | User profile email key.                                                                                   | `email`          |
+| `AUTH_<PROVIDER>_FIRST_NAME_KEY`            | User profile first name key.                                                                              | --               |
+| `AUTH_<PROVIDER>_LAST_NAME_KEY`             | User profile last name key.                                                                               | --               |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`          |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --               |
+| `AUTH_<PROVIDER>_SYNC_USER_INFO`            | Set user's first name, last name and email from provider's user info on each login.                       | `false`          |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).         | `account_circle` |
+| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`     |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --               |
+| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --               |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
