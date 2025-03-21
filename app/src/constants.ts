@@ -48,7 +48,7 @@ export const MODULE_BAR_DEFAULT = [
 	{
 		type: 'module',
 		id: 'visual',
-		enabled: true,
+		enabled: false,
 	},
 	{
 		type: 'module',

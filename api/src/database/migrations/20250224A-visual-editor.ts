@@ -12,10 +12,11 @@ export async function up(knex: Knex): Promise<void> {
 		const visualEditorModule: SettingsModuleBarModule = {
 			type: 'module',
 			id: 'visual',
-			enabled: true,
+			enabled: false,
 		};
 
-		moduleBar.splice(1, 0, visualEditorModule);
+		const contentModuleIndex = moduleBar.findIndex(({ id }: { id: string }) => id === 'content');
+		moduleBar.splice(contentModuleIndex + 1, 0, visualEditorModule);
 
 		return moduleBar;
 	});
