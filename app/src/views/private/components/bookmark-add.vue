@@ -37,12 +37,18 @@ function cancel() {
 </script>
 
 <template>
-	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
+	<v-dialog
+		:model-value="modelValue"
+		persistent
+		keep-behind
+		@update:model-value="$emit('update:modelValue', $event)"
+		@esc="cancel"
+	>
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
-		<v-card class="allow-drawer">
+		<v-card>
 			<v-card-title>{{ t('create_bookmark') }}</v-card-title>
 
 			<v-card-text>

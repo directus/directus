@@ -41,6 +41,8 @@ interface Props {
 	fullHeight?: boolean;
 	/** Removes any styling from the menu */
 	seamless?: boolean;
+	/** Lets other overlays (drawer, dialog) open on top */
+	keepBehind?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -424,7 +426,7 @@ function usePopper(
 						events: ['click'],
 					}"
 					class="v-menu-popper"
-					:class="{ active: isActive, attached }"
+					:class="{ active: isActive, attached, 'keep-behind': keepBehind }"
 					:data-placement="popperPlacement"
 					:style="styles"
 				>
@@ -471,6 +473,10 @@ function usePopper(
 
 	&.active {
 		pointer-events: all;
+	}
+
+	&.keep-behind {
+		z-index: 490;
 	}
 }
 

@@ -2,9 +2,9 @@
 import { useTemplateData } from '@/composables/use-template-data';
 import { useVersions } from '@/composables/use-versions';
 import { renderStringTemplate } from '@/utils/render-string-template';
+import LivePreview from '@/views/private/components/live-preview.vue';
 import { useCollection } from '@directus/composables';
 import { computed, toRefs } from 'vue';
-import LivePreview from '../components/live-preview.vue';
 
 const props = defineProps<{
 	collection: string;
@@ -35,5 +35,5 @@ function closePopup() {
 </script>
 
 <template>
-	<LivePreview v-if="previewUrl" :url="previewUrl" in-popup @new-window="closePopup" />
+	<live-preview v-if="previewUrl" :url="previewUrl" in-popup @new-window="closePopup" />
 </template>

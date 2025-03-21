@@ -170,6 +170,34 @@ fields:
     special:
       - cast-json
 
+  - field: visual_editor_divider
+    interface: presentation-divider
+    options:
+      icon: edit_square
+      title: $t:visual_editor
+    special:
+      - alias
+      - no-data
+    width: full
+
+  - field: visual_editor_urls
+    interface: list
+    special:
+      - cast-json
+    options:
+      template: '{{url}}'
+      fields:
+        - field: url
+          name: $t:url
+          schema:
+            is_nullable: false
+          meta:
+            interface: text-input
+            required: true
+            options:
+              iconRight: link
+              placeholder: https://example.com
+
   - field: security_divider
     interface: presentation-divider
     options:

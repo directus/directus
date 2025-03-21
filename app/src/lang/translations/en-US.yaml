@@ -1001,6 +1001,11 @@ operation_key: Identifier for reference...
 operation_key_unique_error: Operation keys must be unique in a Flow
 operation_handle_resolve: 'Resolve: Click to Add or Drag to Reroute'
 operation_handle_reject: 'Reject: Click to Add or Drag to Reroute'
+visual_editor: Visual Editor
+toggle_navigation: Toggle Navigation
+toggle_editable_elements: Toggle Editable Elements
+no_url: No URL provided
+no_url_copy: Please add a URL in the settings.
 insights: Insights
 dashboard: Dashboard
 panel: Panel
@@ -1428,6 +1433,7 @@ fields:
     public_registration_verify_email: Verify Email
     public_registration_verify_email_note:
       Sends an email to the registering user asking them to click on a verification link before they can sign in.
+    visual_editor_urls: Visual Editor URLs
   directus_shares:
     name: Name
     role: Role

@@ -7,6 +7,8 @@ interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	placement?: 'right' | 'center';
+	/** Lets other overlays (drawer) open on top */
+	keepBehind?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -67,7 +69,7 @@ function nudge() {
 					:is="placement === 'right' ? 'div' : 'span'"
 					v-if="internalActive"
 					class="container"
-					:class="[className, placement]"
+					:class="[className, placement, keepBehind ? 'keep-behind' : null]"
 				>
 					<v-overlay active absolute @click="emitToggle" />
 					<slot />
@@ -92,6 +94,10 @@ function nudge() {
 	display: flex;
 	width: 100%;
 	height: 100%;
+
+	&.keep-behind {
+		z-index: 490;
+	}
 }
 
 .container > :slotted(*) {
@@ -103,10 +109,10 @@ function nudge() {
 	align-items: center;
 	justify-content: center;
 	z-index: 600;
-}
 
-.container.center:has(.allow-drawer) {
-	z-index: 500;
+	&.keep-behind {
+		z-index: 490;
+	}
 }
 
 .container.center.nudge > :slotted(*:not(:first-child)) {
