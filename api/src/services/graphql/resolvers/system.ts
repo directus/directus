@@ -352,7 +352,14 @@ export function injectSystemResolvers(
 
 					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
-					const query = getQuery(args, selections || [], info.variableValues, gql.accountability);
+					const query = getQuery(
+						args,
+						selections || [],
+						info.variableValues,
+						gql.accountability,
+						'directus_users',
+						gql.schema,
+					);
 
 					return await service.readOne(gql.accountability.user, query);
 				},
@@ -396,7 +403,15 @@ export function injectSystemResolvers(
 
 					const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
 
-					const query = getQuery(args, selections || [], info.variableValues, gql.accountability);
+					const query = getQuery(
+						args,
+						selections || [],
+						info.variableValues,
+						gql.accountability,
+						'directus_roles',
+						gql.schema,
+					);
+
 					query.limit = -1;
 
 					const roles = await service.readMany(gql.accountability.roles, query);
@@ -455,7 +470,14 @@ export function injectSystemResolvers(
 							info.fragments,
 						);
 
-						const query = getQuery(args, selections || [], info.variableValues, gql.accountability);
+						const query = getQuery(
+							args,
+							selections || [],
+							info.variableValues,
+							gql.accountability,
+							'directus_users',
+							gql.schema,
+						);
 
 						return await service.readOne(gql.accountability.user, query);
 					}
@@ -488,7 +510,15 @@ export function injectSystemResolvers(
 							info.fragments,
 						);
 
-						const query = getQuery(args, selections || [], info.variableValues, gql.accountability);
+						const query = getQuery(
+							args,
+							selections || [],
+							info.variableValues,
+							gql.accountability,
+							'directus_files',
+							gql.schema,
+						);
+
 						return await service.readOne(primaryKey, query);
 					}
 

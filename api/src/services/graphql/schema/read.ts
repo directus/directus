@@ -821,7 +821,7 @@ export function getReadableTypes(
 				});
 
 				ReadableCollectionFilterTypes[relation.collection]?.addFields({
-					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
+					[`${relation.field}__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 				});
 			}
 		}
