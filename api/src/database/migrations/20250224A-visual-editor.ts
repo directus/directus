@@ -34,7 +34,7 @@ async function updateModuleBar(knex: Knex, modify: (moduleBar: ModuleBar) => Mod
 	const result = await knex('directus_settings').select('module_bar', 'id').first();
 
 	if (result && result.module_bar) {
-		const moduleBar = JSON.parse(result.module_bar);
+		const moduleBar = typeof result.module_bar === 'string' ? JSON.parse(result.module_bar) : result.module_bar;
 
 		const updatedModuleBar = modify(moduleBar);
 
