@@ -60,6 +60,7 @@ const {
 	deleteVersion,
 	saveVersionLoading,
 	saveVersion,
+	validationErrors: versionValidationErrors,
 } = useVersions(collection, isSingleton, primaryKey);
 
 const {
@@ -79,8 +80,13 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
-	validationErrors,
+	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
+
+const validationErrors = computed(() => {
+	if (currentVersion.value === null) return itemValidationErrors.value;
+	return versionValidationErrors.value;
+});
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
@@ -350,23 +356,18 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits);
+		await saveVersion(edits, ref(item.value ?? {}));
 		edits.value = {};
 
-		switch (action) {
-			case 'main':
-				currentVersion.value = null;
-				break;
-			case 'stay':
-				revisionsDrawerDetailRef.value?.refresh?.();
-				refresh();
-				break;
-			case 'quit':
-				if (!props.singleton) router.push(`/content/${props.collection}`);
-				break;
+		if (action === 'main') {
+			currentVersion.value = null;
+		} else if (action === 'stay') {
+			revisionsDrawerDetailRef.value?.refresh?.();
+		} else if (action === 'quit') {
+			if (!props.singleton) router.push(`/content/${props.collection}`);
 		}
 	} catch {
-		// Save version shows unexpected error dialog
+		// Save shows unexpected error dialog
 	}
 }
 
@@ -721,6 +722,7 @@ const shouldShowVersioning = computed(
 			:fields="fields"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
+			:version="currentVersion"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">

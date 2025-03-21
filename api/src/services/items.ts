@@ -146,23 +146,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			.map((field) => field.field);
 
 		const payload: AnyItem = cloneDeep(data);
+		let actionHookPayload = payload;
 		const nestedActionEvents: ActionEventParams[] = [];
 
-		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
-		// changes in the DB if any of the parts contained within throws an error. This also means
-		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
-		// update tree
+		/**
+		 * By wrapping the logic in a transaction, we make sure we automatically roll back all the
+		 * changes in the DB if any of the parts contained within throws an error. This also means
+		 * that any errors thrown in any nested relational changes will bubble up and cancel the whole
+		 * update tree
+		 */
 		const primaryKey: PrimaryKey = await transaction(this.knex, async (trx) => {
-			const serviceOptions: AbstractServiceOptions = {
-				accountability: this.accountability,
-				knex: trx,
-				schema: this.schema,
-				nested: this.nested,
-			};
-
-			// We're creating new services instances so they can use the transaction as their Knex interface
-			const payloadService = new PayloadService(this.collection, serviceOptions);
-
 			// Run all hooks that are attached to this event so the end user has the chance to augment the
 			// item that is about to be saved
 			const payloadAfterHooks =
@@ -202,6 +195,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			if (opts.preMutationError) {
 				throw opts.preMutationError;
 			}
+
+			// Ensure the action hook payload has the post filter hook + preset changes
+			actionHookPayload = payloadWithPresets;
+
+			// We're creating new services instances so they can use the transaction as their Knex interface
+			const payloadService = new PayloadService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+				nested: this.nested,
+			});
 
 			const {
 				payload: payloadWithM2O,
@@ -280,9 +284,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				// Fetching it with max should be safe, as we're in the context of the current transaction
 				const result = await trx.max(primaryKeyField, { as: 'id' }).from(this.collection).first();
 				primaryKey = result.id;
+
 				// Set the primary key on the input item, in order for the "after" event hook to be able
 				// to read from it
-				payload[primaryKeyField] = primaryKey;
+				actionHookPayload[primaryKeyField] = primaryKey;
 			}
 
 			// At this point, the primary key is guaranteed to be set.
@@ -373,7 +378,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						? ['items.create', `${this.collection}.items.create`]
 						: `${this.eventScope}.create`,
 				meta: {
-					payload,
+					payload: actionHookPayload,
 					key: primaryKey,
 					collection: this.collection,
 				},
