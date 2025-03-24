@@ -1,5 +1,5 @@
 ---
-'@directus/api': patch
+'@directus/api': major
 ---
 
 Fixed subscription filtering for GQL introspection
