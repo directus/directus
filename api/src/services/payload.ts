@@ -52,6 +52,7 @@ export class PayloadService {
 	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
+	nested: string[];
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -59,6 +60,7 @@ export class PayloadService {
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
+		this.nested = options.nested ?? [];
 
 		return this;
 	}
@@ -449,6 +451,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.field],
 			});
 
 			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
@@ -539,6 +542,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.field],
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
@@ -631,6 +635,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.meta!.one_field!],
 			});
 
 			const recordsToUpsert: Partial<Item>[] = [];
