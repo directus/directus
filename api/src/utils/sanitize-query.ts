@@ -175,7 +175,7 @@ async function sanitizeFilter(rawFilter: any, schema: SchemaOverview, accountabi
 
 				const policies = await fetchPolicies(accountability, context);
 
-				context.accountability = accountability
+				context.accountability = accountability;
 
 				filterContext = await fetchDynamicVariableData(
 					{
