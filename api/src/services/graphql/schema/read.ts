@@ -734,7 +734,7 @@ export async function getReadableTypes(
 					args: {
 						event: subscriptionEventType,
 					},
-					subscribe: await createSubscriptionGenerator(gql, eventName),
+					subscribe: createSubscriptionGenerator(gql, eventName),
 				},
 			});
 		}

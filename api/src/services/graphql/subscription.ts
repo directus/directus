@@ -18,7 +18,7 @@ export function bindPubSub() {
 	});
 }
 
-export async function createSubscriptionGenerator(gql: GraphQLService, event: string) {
+export function createSubscriptionGenerator(gql: GraphQLService, event: string) {
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: GraphQLResolveInfo) {
 		const fields = await parseFields(gql, request);
 		const args = parseArguments(request);
