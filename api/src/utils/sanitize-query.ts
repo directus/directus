@@ -171,10 +171,11 @@ async function sanitizeFilter(rawFilter: any, schema: SchemaOverview, accountabi
 				const context: Context = {
 					schema,
 					knex: getDatabase(),
-					accountability
 				};
 
 				const policies = await fetchPolicies(accountability, context);
+
+				context.accountability = accountability
 
 				filterContext = await fetchDynamicVariableData(
 					{
