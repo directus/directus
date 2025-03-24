@@ -71,12 +71,16 @@ describe('validate keys', () => {
 
 		it('Does not throw an error when provided with a valid integer key', () => {
 			expect(() => validateKeys(schema, 'pk_integer', 'id', 111)).not.toThrowError();
+			expect(validateKeys(schema, 'pk_integer', 'id', 111)).toBe(111);
 			expect(() => validateKeys(schema, 'pk_integer', 'id', '222')).not.toThrowError();
+			expect(validateKeys(schema, 'pk_integer', 'id', '222')).toBe(222);
 		});
 
 		it('Does not throw an error when provided with an array of valid integer keys', () => {
 			expect(() => validateKeys(schema, 'pk_integer', 'id', [111, 222, 333])).not.toThrowError();
+			expect(validateKeys(schema, 'pk_integer', 'id', [111, 222, 333])).toEqual([111, 222, 333]);
 			expect(() => validateKeys(schema, 'pk_integer', 'id', ['444', '555', '666'])).not.toThrowError();
+			expect(validateKeys(schema, 'pk_integer', 'id', ['444', '555', '666'])).toEqual([444, 555, 666]);
 		});
 	});
 
@@ -99,13 +103,17 @@ describe('validate keys', () => {
 		});
 
 		it('Does not throw an error when provided with a valid uuid key', () => {
-			expect(() => validateKeys(schema, 'pk_uuid', 'id', randomUUID())).not.toThrowError();
+			const uuid = randomUUID();
+			expect(() => validateKeys(schema, 'pk_uuid', 'id', uuid)).not.toThrowError();
+			expect(validateKeys(schema, 'pk_uuid', 'id', uuid)).toBe(uuid);
 		});
 
 		it('Does not throw an error when provided with an array of valid uuid keys', () => {
-			expect(() =>
-				validateKeys(schema, 'pk_uuid', 'id', [randomUUID(), randomUUID(), randomUUID()]),
-			).not.toThrowError();
+			const uuids = [randomUUID(), randomUUID(), randomUUID()];
+
+			expect(() => validateKeys(schema, 'pk_uuid', 'id', uuids)).not.toThrowError();
+
+			expect(validateKeys(schema, 'pk_uuid', 'id', uuids)).toEqual(uuids);
 		});
 	});
 });

@@ -230,7 +230,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			let primaryKey: undefined | PrimaryKey = payloadWithTypeCasting[primaryKeyField];
 
 			if (primaryKey) {
-				validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
+				primaryKey = validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
 			}
 
 			// If a PK of type number was provided, although the PK is set the auto_increment,
@@ -571,7 +571,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 */
 	async readOne(key: PrimaryKey, query: Query = {}, opts?: QueryOptions): Promise<Item> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, key);
+		key = validateKeys(this.schema, this.collection, primaryKeyField, key);
 
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
@@ -592,7 +592,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 */
 	async readMany(keys: PrimaryKey[], query: Query = {}, opts?: QueryOptions): Promise<Item[]> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, keys);
+		keys = validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		const filterWithKey = { _and: [{ [primaryKeyField]: { _in: keys } }, query.filter ?? {}] };
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
@@ -694,7 +694,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const { RevisionsService } = await import('./revisions.js');
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, keys);
+		keys = validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
 
@@ -945,10 +945,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 */
 	async upsertOne(payload: Partial<Item>, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		const primaryKey: PrimaryKey | undefined = payload[primaryKeyField];
+		let primaryKey: PrimaryKey | undefined = payload[primaryKeyField];
 
 		if (primaryKey) {
-			validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
+			primaryKey = validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
 		}
 
 		const exists =
@@ -1001,10 +1001,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 * Uses `this.deleteMany` under the hood.
 	 */
 	async deleteByQuery(query: Query, opts?: MutationOptions): Promise<PrimaryKey[]> {
-		const keys = await this.getKeysByQuery(query);
+		let keys = await this.getKeysByQuery(query);
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, keys);
+		keys = validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		return keys.length ? await this.deleteMany(keys, opts) : [];
 	}
@@ -1016,7 +1016,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	 */
 	async deleteOne(key: PrimaryKey, opts?: MutationOptions): Promise<PrimaryKey> {
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, key);
+		key = validateKeys(this.schema, this.collection, primaryKeyField, key);
 
 		await this.deleteMany([key], opts);
 		return key;
@@ -1035,7 +1035,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const { ActivityService } = await import('./activity.js');
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
-		validateKeys(this.schema, this.collection, primaryKeyField, keys);
+		keys = validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
 		if (this.accountability) {
 			await validateAccess(
