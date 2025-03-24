@@ -29,6 +29,7 @@ interface Props {
 	inline?: boolean;
 	includeValidation?: boolean;
 	includeRelations?: boolean;
+	injectVersionField?: boolean;
 	relationalFieldSelectable?: boolean;
 	rawFieldNames?: boolean;
 }
@@ -43,6 +44,7 @@ const props = withDefaults(defineProps<Props>(), {
 	inline: false,
 	includeValidation: false,
 	includeRelations: true,
+	injectVersionField: false,
 	relationalFieldSelectable: true,
 	rawFieldNames: false,
 });
@@ -100,8 +102,11 @@ function addNode(key: string) {
 	} else {
 		let type: Type;
 		const field = fieldsStore.getField(collection.value, key);
+		const isVersion = key === '$version';
 
-		if (key.includes('(') && key.includes(')')) {
+		if (isVersion) {
+			type = 'string';
+		} else if (key.includes('(') && key.includes(')')) {
 			const functionName = key.split('(')[0] as FieldFunction;
 			type = getOutputTypeForFunction(functionName);
 			key = parseFilterFunctionPath(key);
@@ -119,7 +124,9 @@ function addNode(key: string) {
 		}
 
 		const filterOperators = getFilterOperatorsForType(type, { includeValidation: props.includeValidation });
-		const operator = field?.meta?.options?.choices && filterOperators.includes('eq') ? 'eq' : filterOperators[0];
+
+		const operator =
+			isVersion || (field?.meta?.options?.choices && filterOperators.includes('eq')) ? 'eq' : filterOperators[0];
 
 		const booleanOperators: ClientFilterOperator[] = ['empty', 'nempty', 'null', 'nnull'];
 		const initialValue = operator && booleanOperators.includes(operator) ? true : null;
@@ -197,13 +204,13 @@ function addKeyAsNode() {
 						<v-icon name="expand_more" class="expand_more" />
 					</button>
 				</template>
-
 				<v-field-list
 					v-if="collectionRequired"
 					:collection="collection"
 					include-functions
 					:include-relations="includeRelations"
 					:relational-field-selectable="relationalFieldSelectable"
+					:inject-version-field="injectVersionField"
 					:allow-select-all="false"
 					:raw-field-names="rawFieldNames"
 					@add="addNode($event[0])"
