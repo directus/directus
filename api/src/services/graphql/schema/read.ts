@@ -19,14 +19,13 @@ import { GraphQLJSON, InputTypeComposer, ObjectTypeComposer } from 'graphql-comp
 import { getGraphQLType } from '../../../utils/get-graphql-type.js';
 import { GraphQLService } from '../index.js';
 import { resolveQuery } from '../resolvers/query.js';
-import { createSubscriptionGenerator } from '../subscription.js';
 import { GraphQLBigInt } from '../types/bigint.js';
 import { GraphQLDate } from '../types/date.js';
 import { GraphQLGeoJSON } from '../types/geojson.js';
 import { GraphQLHash } from '../types/hash.js';
 import { GraphQLStringOrFloat } from '../types/string-or-float.js';
-import { SYSTEM_DENY_LIST, type InconsistentFields, type Schema } from './index.js';
 import { getTypes } from './get-types.js';
+import { SYSTEM_DENY_LIST, type InconsistentFields, type Schema } from './index.js';
 
 /**
  * Create readable types and attach resolvers for each. Also prepares full filter argument structures
@@ -424,15 +423,6 @@ export function getReadableTypes(
 		},
 	});
 
-	const subscriptionEventType = schemaComposer.createEnumTC({
-		name: 'EventEnum',
-		values: {
-			create: { value: 'create' },
-			update: { value: 'update' },
-			delete: { value: 'delete' },
-		},
-	});
-
 	for (const collection of Object.values(schema.read.collections)) {
 		if (Object.keys(collection.fields).length === 0) continue;
 		if (SYSTEM_DENY_LIST.includes(collection.collection)) continue;
@@ -713,29 +703,6 @@ export function getReadableTypes(
 					const result = await resolveQuery(gql, info);
 					context['data'] = result;
 					return result;
-				},
-			});
-		}
-
-		const eventName = `${collection.collection}_mutated`;
-
-		if (collection.collection in ReadCollectionTypes) {
-			const subscriptionType = schemaComposer.createObjectTC({
-				name: eventName,
-				fields: {
-					key: new GraphQLNonNull(GraphQLID),
-					event: subscriptionEventType,
-					data: ReadCollectionTypes[collection.collection]!,
-				},
-			});
-
-			schemaComposer.Subscription.addFields({
-				[eventName]: {
-					type: subscriptionType,
-					args: {
-						event: subscriptionEventType,
-					},
-					subscribe: createSubscriptionGenerator(gql, eventName),
 				},
 			});
 		}
