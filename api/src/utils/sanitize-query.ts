@@ -10,6 +10,7 @@ import { contextHasDynamicVariables } from '../permissions/modules/process-ast/u
 import { extractRequiredDynamicVariableContext } from '../permissions/utils/extract-required-dynamic-variable-context.js';
 import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { Meta } from '../types/index.js';
+import type { Context } from '../permissions/types.js';
 
 /**
  * Sanitize the query parameters and parse them where necessary.
@@ -167,9 +168,10 @@ async function sanitizeFilter(rawFilter: any, schema: SchemaOverview, accountabi
 			const dynamicVariableContext = extractRequiredDynamicVariableContext(filters);
 
 			if (contextHasDynamicVariables(dynamicVariableContext)) {
-				const context = {
+				const context: Context = {
 					schema,
 					knex: getDatabase(),
+					accountability
 				};
 
 				const policies = await fetchPolicies(accountability, context);
