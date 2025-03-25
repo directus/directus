@@ -26,6 +26,7 @@ export async function getAccountabilityForToken(
 
 			if ('session' in payload) {
 				await verifySessionJWT(payload);
+				accountability.session = payload.session;
 			}
 
 			if (payload.share) accountability.share = payload.share;

@@ -31,6 +31,9 @@ import { getSchema } from '../utils/get-schema.js';
 import { sanitizeColumn } from '../utils/sanitize-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
+import { buildCollectionAndFieldRelations } from './fields/build-collection-and-field-relations.js';
+import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
+import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
@@ -730,24 +733,36 @@ export class FieldsService {
 					});
 				}
 
-				const collectionMeta = await trx
-					.select('archive_field', 'sort_field')
+				const { collectionRelationTree, fieldToCollectionList } = await buildCollectionAndFieldRelations(
+					this.schema.relations,
+				);
+
+				const collectionRelationList = getCollectionRelationList(collection, collectionRelationTree);
+
+				const collectionMetaQuery = trx
+					.queryBuilder()
+					.select('collection', 'archive_field', 'sort_field', 'item_duplication_fields')
 					.from('directus_collections')
-					.where({ collection })
-					.first();
+					.where({ collection });
 
-				const collectionMetaUpdates: Record<string, null> = {};
-
-				if (collectionMeta?.archive_field === field) {
-					collectionMetaUpdates['archive_field'] = null;
+				if (collectionRelationList.size !== 0) {
+					collectionMetaQuery.orWhere(function () {
+						this.whereIn('collection', Array.from(collectionRelationList)).whereNotNull('item_duplication_fields');
+					});
 				}
 
-				if (collectionMeta?.sort_field === field) {
-					collectionMetaUpdates['sort_field'] = null;
-				}
+				const collectionMetas = await collectionMetaQuery;
 
-				if (Object.keys(collectionMetaUpdates).length > 0) {
-					await trx('directus_collections').update(collectionMetaUpdates).where({ collection });
+				const collectionMetaUpdates = getCollectionMetaUpdates(
+					collection,
+					field,
+					collectionMetas,
+					this.schema.collections,
+					fieldToCollectionList,
+				);
+
+				for (const meta of collectionMetaUpdates) {
+					await trx('directus_collections').update(meta.updates).where({ collection: meta.collection });
 				}
 
 				// Cleanup directus_fields

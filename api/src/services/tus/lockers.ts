@@ -42,12 +42,14 @@ export class KvLock implements Lock {
 		this.kv = useLock();
 	}
 
-	async lock(cancelReq: RequestRelease) {
+	async lock(signal: AbortSignal, cancelReq: RequestRelease) {
 		const abortController = new AbortController();
 
+		const abortSignal = AbortSignal.any([signal, abortController.signal]);
+
 		const lock = await Promise.race([
-			waitTimeout(this.acquireTimeout, abortController.signal),
-			this.acquireLock(this.id, cancelReq, abortController.signal),
+			waitTimeout(this.acquireTimeout, abortSignal),
+			this.acquireLock(this.id, cancelReq, abortSignal),
 		]);
 
 		abortController.abort();
@@ -58,11 +60,12 @@ export class KvLock implements Lock {
 	}
 
 	protected async acquireLock(id: string, requestRelease: RequestRelease, signal: AbortSignal): Promise<boolean> {
+		const lockTime = await this.kv.get(id);
+
 		if (signal.aborted) {
-			return false;
+			return typeof lockTime !== 'undefined';
 		}
 
-		const lockTime = await this.kv.get(id);
 		const now = Date.now();
 
 		if (!lockTime || Number(lockTime) < now - this.lockTimeout) {

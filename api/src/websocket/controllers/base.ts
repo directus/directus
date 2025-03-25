@@ -8,7 +8,7 @@ import { randomUUID } from 'node:crypto';
 import type { RateLimiterAbstract } from 'rate-limiter-flexible';
 import type internal from 'stream';
 import { parse } from 'url';
-import WebSocket, { WebSocketServer } from 'ws';
+import WebSocket, { WebSocketServer, type Server } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
@@ -28,7 +28,7 @@ const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 const logger = useLogger();
 
 export default abstract class SocketController {
-	server: WebSocket.Server;
+	server: Server;
 	clients: Set<WebSocketClient>;
 	authentication: WebSocketAuthentication;
 

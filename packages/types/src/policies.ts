@@ -2,9 +2,9 @@ export interface Policy {
 	id: string;
 	name: string;
 	icon: string;
-	description: string;
+	description: string | null;
 	enforce_tfa: null | boolean;
-	ip_access: string[];
+	ip_access: string[] | null;
 	app_access: boolean;
 	admin_access: boolean;
 }

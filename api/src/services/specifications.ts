@@ -84,7 +84,7 @@ class OASSpecsService implements SpecificationSubService {
 		}
 
 		const tags = await this.generateTags(schemaForSpec);
-		const paths = await this.generatePaths(permissions, tags);
+		const paths = await this.generatePaths(schemaForSpec, permissions, tags);
 		const components = await this.generateComponents(schemaForSpec, tags);
 
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
@@ -159,7 +159,11 @@ class OASSpecsService implements SpecificationSubService {
 		return tags.filter((tag) => tag.name !== 'Items');
 	}
 
-	private async generatePaths(permissions: Permission[], tags: OpenAPIObject['tags']): Promise<OpenAPIObject['paths']> {
+	private async generatePaths(
+		schema: SchemaOverview,
+		permissions: Permission[],
+		tags: OpenAPIObject['tags'],
+	): Promise<OpenAPIObject['paths']> {
 		const paths: OpenAPIObject['paths'] = {};
 
 		if (!tags) return paths;
@@ -255,11 +259,16 @@ class OASSpecsService implements SpecificationSubService {
 															'application/json': {
 																schema: {
 																	properties: {
-																		data: {
-																			items: {
-																				$ref: `#/components/schemas/${tag.name}`,
-																			},
-																		},
+																		data: schema.collections[collection]?.singleton
+																			? {
+																					$ref: `#/components/schemas/${tag.name}`,
+																			  }
+																			: {
+																					type: 'array',
+																					items: {
+																						$ref: `#/components/schemas/${tag.name}`,
+																					},
+																			  },
 																	},
 																},
 															},
