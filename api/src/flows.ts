@@ -388,6 +388,10 @@ class FlowManager {
 			}
 		}
 
+		if (flow.trigger === 'manual' && lastOperationStatus === 'reject') {
+			throw keyedData[LAST_KEY];
+		}
+
 		if (flow.trigger === 'event' && flow.options['type'] === 'filter' && lastOperationStatus === 'reject') {
 			throw keyedData[LAST_KEY];
 		}
