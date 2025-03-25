@@ -267,7 +267,11 @@ export class PayloadService {
 	 * escaped. It's therefore placed as a Knex.Raw object in the payload. Thus the need
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
-	processGeometries<T extends Partial<Record<string, any>>[]>(fieldEntries: [string, FieldOverview][], payloads: T, action: Action): T {
+	processGeometries<T extends Partial<Record<string, any>>[]>(
+		fieldEntries: [string, FieldOverview][],
+		payloads: T,
+		action: Action,
+	): T {
 		const process =
 			action == 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
@@ -311,9 +315,7 @@ export class PayloadService {
 			}
 		}
 
-		const dateColumns = fieldEntries.filter(([_name, field]) =>
-			['dateTime', 'date', 'timestamp'].includes(field.type),
-		);
+		const dateColumns = fieldEntries.filter(([_name, field]) => ['dateTime', 'date', 'timestamp'].includes(field.type));
 
 		const timeColumns = fieldEntries.filter(([_name, field]) => {
 			return field.type === 'time';

@@ -183,7 +183,7 @@ describe('Integration Tests', () => {
 					},
 				},
 				relations: [],
-			}
+			};
 
 			const fieldEntries = Object.entries(schema.collections['test']!.fields);
 
