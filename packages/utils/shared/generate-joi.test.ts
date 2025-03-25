@@ -76,6 +76,30 @@ describe(`generateJoi`, () => {
 	});
 
 	it(`returns the correct schema for an integer _eq match`, () => {
+		const mockFieldFilter = { field: { _eq: 123 } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.any().equal(123, '123'),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for an integer _neq match`, () => {
+		const mockFieldFilter = { field: { _neq: 123 } } as FieldFilter;
+
+		const mockSchema = Joi.object({
+			field: Joi.any().not(123, '123'),
+		})
+			.unknown()
+			.describe();
+
+		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
+	});
+
+	it(`returns the correct schema for a string containing an integer _eq match`, () => {
 		const mockFieldFilter = { field: { _eq: '123' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
@@ -87,7 +111,7 @@ describe(`generateJoi`, () => {
 		expect(generateJoi(mockFieldFilter).describe()).toStrictEqual(mockSchema);
 	});
 
-	it(`returns the correct schema for an integer _neq match`, () => {
+	it(`returns the correct schema for a string containing an integer _neq match`, () => {
 		const mockFieldFilter = { field: { _neq: '123' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
