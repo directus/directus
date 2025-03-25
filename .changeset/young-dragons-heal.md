@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Improved validation for collections endpoint
+Improved validation checks for `createOne` in the collections service
