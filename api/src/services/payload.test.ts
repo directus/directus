@@ -6,6 +6,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vi
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import { PayloadService } from './index.js';
+import type { SchemaOverview } from '@directus/types';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -126,72 +127,77 @@ describe('Integration Tests', () => {
 			const dateTimeFieldId = 'datetime_field';
 			const timestampFieldId = 'timestamp_field';
 
+			const schema: SchemaOverview = {
+				collections: {
+					test: {
+						collection: 'test',
+						primary: 'id',
+						singleton: false,
+						sortField: null,
+						note: null,
+						accountability: null,
+						fields: {
+							[dateFieldId]: {
+								field: dateFieldId,
+								defaultValue: null,
+								nullable: true,
+								generated: false,
+								type: 'date',
+								dbType: 'date',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								validation: null,
+								alias: false,
+							},
+							[dateTimeFieldId]: {
+								field: dateTimeFieldId,
+								defaultValue: null,
+								nullable: true,
+								generated: false,
+								type: 'dateTime',
+								dbType: 'datetime',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								validation: null,
+								alias: false,
+							},
+							[timestampFieldId]: {
+								field: timestampFieldId,
+								defaultValue: null,
+								nullable: true,
+								generated: false,
+								type: 'timestamp',
+								dbType: 'timestamp',
+								precision: null,
+								scale: null,
+								special: [],
+								note: null,
+								validation: null,
+								alias: false,
+							},
+						},
+					},
+				},
+				relations: [],
+			}
+
+			const fieldEntries = Object.entries(schema.collections['test']!.fields);
+
 			beforeEach(() => {
 				service = new PayloadService('test', {
 					knex: db,
-					schema: {
-						collections: {
-							test: {
-								collection: 'test',
-								primary: 'id',
-								singleton: false,
-								sortField: null,
-								note: null,
-								accountability: null,
-								fields: {
-									[dateFieldId]: {
-										field: dateFieldId,
-										defaultValue: null,
-										nullable: true,
-										generated: false,
-										type: 'date',
-										dbType: 'date',
-										precision: null,
-										scale: null,
-										special: [],
-										note: null,
-										validation: null,
-										alias: false,
-									},
-									[dateTimeFieldId]: {
-										field: dateTimeFieldId,
-										defaultValue: null,
-										nullable: true,
-										generated: false,
-										type: 'dateTime',
-										dbType: 'datetime',
-										precision: null,
-										scale: null,
-										special: [],
-										note: null,
-										validation: null,
-										alias: false,
-									},
-									[timestampFieldId]: {
-										field: timestampFieldId,
-										defaultValue: null,
-										nullable: true,
-										generated: false,
-										type: 'timestamp',
-										dbType: 'timestamp',
-										precision: null,
-										scale: null,
-										special: [],
-										note: null,
-										validation: null,
-										alias: false,
-									},
-								},
-							},
-						},
-						relations: [],
-					},
+					schema,
 				});
 			});
 
 			describe('processes dates', () => {
 				test('with zero values', () => {
 					const result = service.processDates(
+						fieldEntries,
 						[
 							{
 								[dateFieldId]: '0000-00-00',
@@ -213,6 +219,7 @@ describe('Integration Tests', () => {
 
 				test('with typical values', () => {
 					const result = service.processDates(
+						fieldEntries,
 						[
 							{
 								[dateFieldId]: '2022-01-10',
@@ -234,6 +241,7 @@ describe('Integration Tests', () => {
 
 				test('with date object values', () => {
 					const result = service.processDates(
+						fieldEntries,
 						[
 							{
 								[dateFieldId]: new Date(1666777777000),

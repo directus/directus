@@ -197,8 +197,8 @@ export class PayloadService {
 			}
 		}
 
-		this.processGeometries(processedPayload, action);
-		this.processDates(processedPayload, action, aliasMap);
+		this.processGeometries(fieldEntries, processedPayload, action);
+		this.processDates(fieldEntries, processedPayload, action, aliasMap);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -267,14 +267,13 @@ export class PayloadService {
 	 * escaped. It's therefore placed as a Knex.Raw object in the payload. Thus the need
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
-	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
+	processGeometries<T extends Partial<Record<string, any>>[]>(fieldEntries: [string, FieldOverview][], payloads: T, action: Action): T {
 		const process =
 			action == 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
 				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? parseJSON(value) : value);
 
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
-		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
+		const geometryColumns = fieldEntries.filter(([_, field]) => field.type.startsWith('geometry'));
 
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
@@ -292,31 +291,31 @@ export class PayloadService {
 	 * shouldn't return with time / timezone info respectively
 	 */
 	processDates(
+		fieldEntries: [string, FieldOverview][],
 		payloads: Partial<Record<string, any>>[],
 		action: Action,
 		aliasMap: Record<string, string> = {},
 	): Partial<Record<string, any>>[] {
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
-
 		for (const alias in aliasMap) {
-			const field = fieldsInCollection.find(([name, _]) => name === aliasMap[alias]);
+			const aliasedField = aliasMap[alias];
+			const field = this.schema.collections[this.collection]!.fields[aliasedField!];
 
 			if (field) {
-				fieldsInCollection.push([
+				fieldEntries.push([
 					alias,
 					{
-						...field[1],
+						...field,
 						field: alias,
 					},
 				]);
 			}
 		}
 
-		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
+		const dateColumns = fieldEntries.filter(([_name, field]) =>
 			['dateTime', 'date', 'timestamp'].includes(field.type),
 		);
 
-		const timeColumns = fieldsInCollection.filter(([_name, field]) => {
+		const timeColumns = fieldEntries.filter(([_name, field]) => {
 			return field.type === 'time';
 		});
 
