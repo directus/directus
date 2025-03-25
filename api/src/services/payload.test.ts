@@ -260,6 +260,52 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
+
+				test('with alias and typical values', () => {
+					const result = service.processDates(
+						fieldEntries,
+						[
+							{
+								'date-alias': '2022-01-10',
+								'datetime-alias': '2021-09-31 12:34:56',
+								'timestamp-alias': '1980-12-08 00:11:22.333',
+							},
+						],
+						'read',
+						{ 'date-alias': dateFieldId, 'datetime-alias': dateTimeFieldId, 'timestamp-alias': timestampFieldId },
+					);
+
+					expect(result).toMatchObject([
+						{
+							'date-alias': '2022-01-10',
+							'datetime-alias': '2021-10-01T12:34:56',
+							'timestamp-alias': new Date('1980-12-08 00:11:22.333').toISOString(),
+						},
+					]);
+				});
+
+				test('with alias and object values', () => {
+					const result = service.processDates(
+						fieldEntries,
+						[
+							{
+								'date-alias': new Date(1666777777000),
+								'datetime-alias': new Date(1666666666000),
+								'timestamp-alias': new Date(1666555444333),
+							},
+						],
+						'read',
+						{ 'date-alias': dateFieldId, 'datetime-alias': dateTimeFieldId, 'timestamp-alias': timestampFieldId },
+					);
+
+					expect(result).toMatchObject([
+						{
+							'date-alias': toLocalISOString(new Date(1666777777000)).slice(0, 10),
+							'datetime-alias': toLocalISOString(new Date(1666666666000)),
+							'timestamp-alias': new Date(1666555444333).toISOString(),
+						},
+					]);
+				});
 			});
 		});
 
