@@ -1,19 +1,33 @@
 <script setup lang="ts">
-withDefaults(
-	defineProps<{
-		value: number | null;
-		disabled?: boolean;
-		minValue?: number;
-		maxValue?: number;
-		stepInterval?: number;
-		alwaysShowValue?: boolean;
-	}>(),
-	{
-		minValue: 0,
-		maxValue: 100,
-		stepInterval: 1,
-	},
-);
+import { computed } from 'vue';
+
+interface BaseProps {
+	disabled?: boolean;
+	minValue?: number;
+	maxValue?: number;
+	stepInterval?: number;
+	alwaysShowValue?: boolean;
+}
+interface NumberProps extends BaseProps {
+	type: 'integer' | 'float';
+	value: number | null;
+}
+interface LegacyNumericStringProps extends BaseProps {
+	type: 'bigInteger' | 'decimal';
+	value: string | null;
+}
+
+const props = withDefaults(defineProps<NumberProps | LegacyNumericStringProps>(), {
+	minValue: 0,
+	maxValue: 100,
+	stepInterval: 1,
+});
+
+const value = computed(() => {
+	if (props.type === 'decimal') return parseFloat(props.value as string);
+	if (props.type === 'bigInteger') return parseInt(props.value as string);
+	return props.value as number | null;
+});
 
 defineEmits(['input']);
 </script>
