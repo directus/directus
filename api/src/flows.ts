@@ -388,7 +388,7 @@ class FlowManager {
 			}
 		}
 
-		if (flow.trigger === 'manual' && lastOperationStatus === 'reject') {
+		if (flow.trigger === 'manual' && flow.options['async'] !== true && lastOperationStatus === 'reject') {
 			throw keyedData[LAST_KEY];
 		}
 
