@@ -1,5 +1,5 @@
 ---
-'@directus/api': major
+'@directus/api': patch
 ---
 
 Improved validation for collections endpoint
