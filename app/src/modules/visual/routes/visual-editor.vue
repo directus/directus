@@ -46,7 +46,7 @@ const showEditableElements = ref(false);
 					:secondary="!showEditableElements"
 					@click="showEditableElements = !showEditableElements"
 				>
-					<v-icon small name="dashboard" outline />
+					<v-icon small name="edit" outline />
 				</v-button>
 			</template>
 
