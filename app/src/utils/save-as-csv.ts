@@ -75,5 +75,5 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 		.toString()
 		.padStart(2, '0')}`;
 
-	saveAs(new Blob([csvContent], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
+	saveAs(new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8' }), `${collection}-${dateString}.csv`);
 }
