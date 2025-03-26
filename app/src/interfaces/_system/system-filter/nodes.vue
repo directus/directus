@@ -94,7 +94,6 @@ const filterInfo = computed<(FilterInfo | FilterInfoField)[]>({
 
 function getFieldPreview(node: Record<string, any>) {
 	const fieldKey = getField(node);
-
 	const fieldParts = fieldKey.split('.');
 
 	const fieldNames = fieldParts.map((fieldKey, index) => {
@@ -111,6 +110,11 @@ function getFieldPreview(node: Record<string, any>) {
 
 		const pathPrefix = fieldParts.slice(0, index);
 		const field = fieldsStore.getField(props.collection, [...pathPrefix, key].join('.'));
+
+		// Injected special fields, such as $version
+		if (!field && key.startsWith('$')) {
+			return t(key.replace('$', ''));
+		}
 
 		const name = (props.rawFieldNames ? field?.field : field?.name) ?? key;
 
@@ -238,7 +242,9 @@ function replaceNode(index: number, newFilter: Filter) {
 function getCompareOptions(name: string) {
 	let type: Type;
 
-	if (fieldHasFunction(name)) {
+	if (name === '$version') {
+		type = 'string';
+	} else if (fieldHasFunction(name)) {
 		const functionName = name.split('(')[0] as FieldFunction;
 		type = getOutputTypeForFunction(functionName);
 	} else {

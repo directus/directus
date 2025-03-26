@@ -15,6 +15,7 @@ export interface ProcessPayloadOptions {
 	action: PermissionsAction;
 	collection: string;
 	payload: Item;
+	nested: string[];
 }
 
 /**
@@ -115,7 +116,9 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 		validationErrors.push(
 			...validatePayload({ _and: validationRules }, payloadWithPresets)
 				.map((error) =>
-					error.details.map((details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details))),
+					error.details.map(
+						(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details, options.nested)),
+					),
 				)
 				.flat(),
 		);
