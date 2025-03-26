@@ -278,17 +278,14 @@ export function createMetrics() {
 				await disk.write(`metric-${checkId}`, Readable.from(['check']));
 				const fileStream = await disk.read(`metric-${checkId}`);
 
-				await new Promise((resolve, reject) =>
-					fileStream.on('data', async () => {
-						try {
-							fileStream.destroy();
-							await disk.delete(`metric-${checkId}`);
-							resolve(null);
-						} catch (error) {
-							reject(error);
-						}
-					}),
-				);
+				fileStream.on('data', async () => {
+					try {
+						fileStream.destroy();
+						await disk.delete(`metric-${checkId}`);
+					} catch {
+						// ignore
+					}
+				});
 			} catch {
 				metric.inc();
 			}
