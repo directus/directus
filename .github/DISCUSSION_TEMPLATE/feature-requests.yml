@@ -1,5 +1,3 @@
-# Please ensure the link in the Directus Studio is updated when renaming this file!
-# This is based on Vue's great RFC template https://github.com/vuejs/rfcs/blob/master/0000-template.md
 body:
   - type: markdown
     attributes:
