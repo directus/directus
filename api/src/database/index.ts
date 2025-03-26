@@ -165,10 +165,11 @@ export function getDatabase(): Knex {
 		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Retrieving database version');
 
-			const version = conn.query('SELECT @@version;');
-			databaseVersion = version[0]['@@version'];
+			conn.query('SELECT @@version;', (_err: any, rows: any[], _fields: any) => {
+				databaseVersion = rows[0]['@@version'];
 
-			callback(null, conn);
+				callback(null, conn);
+			});
 		};
 	}
 
