@@ -27,7 +27,6 @@ type QueryInfo = Partial<Knex.Sql> & {
 
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
-let databaseVersion: string | null = null;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -161,16 +160,6 @@ export function getDatabase(): Knex {
 		if (isObject(knexConfig.connection)) delete knexConfig.connection['filename'];
 
 		Object.assign(knexConfig, { client: 'mysql2' });
-
-		poolConfig.afterCreate = (conn: any, callback: any) => {
-			logger.trace('Retrieving database version');
-
-			conn.query('SELECT @@version;', (_err: any, rows: any[], _fields: any) => {
-				databaseVersion = rows[0]['@@version'];
-
-				callback(null, conn);
-			});
-		};
 	}
 
 	if (client === 'mssql') {
@@ -226,15 +215,6 @@ export function getSchemaInspector(database?: Knex): SchemaInspector {
 	inspector = createInspector(database);
 
 	return inspector;
-}
-
-/**
- * Get database version. Value currently exists for MySQL only.
- *
- * @returns Cached database version
- */
-export function getDatabaseVersion(): string | null {
-	return databaseVersion;
 }
 
 export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {
