@@ -3,7 +3,6 @@ import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
 import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } from '@directus/types';
-import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
@@ -96,7 +95,7 @@ class OASSpecsService implements SpecificationSubService {
 				title: 'Dynamic API Specification',
 				description:
 					'This is a dynamically generated API specification for all endpoints existing on the current project.',
-				version: version,
+				version: (new Date()).toISOString(),
 			},
 			servers: [
 				{
