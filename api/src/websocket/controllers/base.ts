@@ -160,7 +160,7 @@ export default abstract class SocketController {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability: createDefaultAccountability(), expires_at: null } as AuthenticationState;
-			this.server.emit('connection', ws, state);
+			this.server.emit('connection', ws, state, request);
 		});
 	}
 
@@ -197,7 +197,7 @@ export default abstract class SocketController {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
-			this.server.emit('connection', ws, state);
+			this.server.emit('connection', ws, state, request);
 		});
 	}
 
@@ -215,7 +215,7 @@ export default abstract class SocketController {
 
 				ws.send(authenticationSuccess(payload['uid'], state.refresh_token));
 
-				this.server.emit('connection', ws, state);
+				this.server.emit('connection', ws, state, request);
 			} catch {
 				logger.debug('WebSocket authentication handshake failed');
 				const error = new WebSocketError('auth', 'AUTH_FAILED', 'Authentication handshake failed.');

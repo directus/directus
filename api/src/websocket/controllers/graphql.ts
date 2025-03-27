@@ -1,11 +1,13 @@
+import { useEnv } from '@directus/env';
 import type { Server } from 'graphql-ws';
 import { CloseCode, MessageType, makeServer } from 'graphql-ws';
-import type { Server as httpServer } from 'http';
+import type { IncomingMessage, Server as httpServer } from 'http';
+import { parse } from 'url';
 import type { WebSocket } from 'ws';
 import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { bindPubSub } from '../../services/graphql/subscription.js';
-import { GraphQLService } from '../../services/index.js';
+import { GraphQLService, type GQLScope } from '../../services/index.js';
 import { getAddress } from '../../utils/get-address.js';
 import { getSchema } from '../../utils/get-schema.js';
 import { authenticateConnection } from '../authenticate.js';
@@ -17,15 +19,21 @@ import SocketController from './base.js';
 import { registerWebSocketEvents } from './hooks.js';
 
 const logger = useLogger();
+const env = useEnv();
 
 export class GraphQLSubscriptionController extends SocketController {
 	gql: Server<GraphQLSocket>;
+	systemGql: Server<GraphQLSocket>;
 	constructor(httpServer: httpServer) {
 		super(httpServer, { configPrefix: 'WEBSOCKETS_GRAPHQL', endpointsEnv: ['PATH', 'SYSTEM_PATH'] });
 		registerWebSocketEvents();
 
-		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
-			this.bindEvents(this.createClient(ws, auth));
+		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState, request: IncomingMessage) => {
+			const { pathname } = parse(request.url!, false);
+			const systemPath = (env['WEBSOCKETS_GRAPHQL_SYSTEM_PATH'] as string) || '/graphql/system';
+			const scope = pathname && pathname.endsWith(systemPath) ? 'system' : 'items';
+
+			this.bindEvents(this.createClient(ws, auth), scope);
 		});
 
 		this.gql = makeServer<ConnectionParams, GraphQLSocket>({
@@ -43,6 +51,21 @@ export class GraphQLSubscriptionController extends SocketController {
 			},
 		});
 
+		this.systemGql = makeServer<ConnectionParams, GraphQLSocket>({
+			schema: async (ctx) => {
+				const accountability = ctx.extra.client.accountability;
+
+				// for now only the items will be watched, system events tbd
+				const service = new GraphQLService({
+					schema: await getSchema(),
+					scope: 'system',
+					accountability,
+				});
+
+				return service.getSchema();
+			},
+		});
+
 		bindPubSub();
 
 		for (const endpoint of this.endpoints) {
@@ -50,8 +73,10 @@ export class GraphQLSubscriptionController extends SocketController {
 		}
 	}
 
-	private bindEvents(client: WebSocketClient) {
-		const closedHandler = this.gql.opened(
+	private bindEvents(client: WebSocketClient, scope: GQLScope) {
+		const gql = scope === 'system' ? this.systemGql : this.gql;
+
+		const closedHandler = gql.opened(
 			{
 				protocol: client.protocol,
 				send: (data) =>
@@ -120,7 +145,7 @@ export class GraphQLSubscriptionController extends SocketController {
 
 	protected override async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
-			this.server.emit('connection', ws, { accountability: createDefaultAccountability(), expires_at: null });
+			this.server.emit('connection', ws, { accountability: createDefaultAccountability(), expires_at: null }, request);
 			// actual enforcement is handled by the setTokenExpireTimer function
 		});
 	}
