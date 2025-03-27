@@ -1141,9 +1141,11 @@ function isNumericField(field: FieldOverview): field is FieldOverview & { type: 
 }
 
 function addJsonQuery(dbQuery: Knex.QueryBuilder, collection: string, key: string, filterPath: string[], filterOperator: string, filterValue: any) {
-	const jsonPath = ['$', ...filterPath.slice(1)].join('.')
+	const cast = filterOperator === '_between' || filterOperator === '_nbetween' ? 'float' : 'text'
 
-	const bindings = [collection, key, jsonPath]
+	const jsonPath = '(' + ['value', ...filterPath.slice(1).map(() => '?')].join('->>') + ')' + '::' + cast
+
+	const bindings = [collection, key, ...filterPath.slice(1)]
 
 	const values = []
 
@@ -1170,6 +1172,10 @@ function addJsonQuery(dbQuery: Knex.QueryBuilder, collection: string, key: strin
 		case '_lte':
 			values.push(Number.isFinite(parseFloat(filterValue)) ? parseFloat(filterValue) : filterValue)
 			break
+		case '_between':
+		case '_nbetween':
+			values.push(...(Array.isArray(filterValue) ? filterValue : filterValue.split(',').slice(0, 2).map(parseFloat)))
+			break
 		case '_empty':
 		case '_nempty':
 			break
@@ -1177,29 +1183,29 @@ function addJsonQuery(dbQuery: Knex.QueryBuilder, collection: string, key: strin
 			values.push(filterValue)
 	}
 
-	const replacements = values.map(() => `?`).join(', ')
-
 	const operator = {
-		'_eq': `= ${replacements}`,
-		'_neq': `!= ${replacements}`,
-		'_contains': `LIKE ${replacements}`,
-		'_ncontains': `NOT LIKE ${replacements}`,
-		'_icontains': `LIKE ${replacements}`,
-		'_nicontains': `NOT LIKE ${replacements}`,
-		'_starts_with': `LIKE ${replacements}`,
-		'_ends_with': `LIKE ${replacements}`,
-		'_gt': `> ${replacements}`,
-		'_gte': `>= ${replacements}`,
-		'_lt': `< ${replacements}`,
-		'_lte': `<= ${replacements}`,
-		'_in': `IN (${replacements})`,
-		'_nin': `NOT IN (${replacements})`,
+		'_eq': `= ?`,
+		'_neq': `!= ?`,
+		'_contains': `LIKE ?`,
+		'_ncontains': `NOT LIKE ?`,
+		'_icontains': `LIKE ?`,
+		'_nicontains': `NOT LIKE ?`,
+		'_starts_with': `LIKE ?`,
+		'_ends_with': `LIKE ?`,
+		'_gt': `> ?`,
+		'_gte': `>= ?`,
+		'_lt': `< ?`,
+		'_lte': `<= ?`,
+		'_in': `IN (${values.map(() => `?`).join(', ')})`,
+		'_nin': `NOT IN (${values.map(() => `?`).join(', ')})`,
 		'_empty': 'IS NULL',
 		'_nempty': 'IS NOT NULL',
+		'_between': `BETWEEN ? AND ?`,
+		'_nbetween': `NOT BETWEEN ? AND ?`,
 	}[filterOperator]
 
 	bindings.push(...values)
 
 
-	dbQuery.whereRaw(`(select count(*) from json_each(??.??) where json_extract(value, ?) ${operator}) > 0`, bindings)
+	dbQuery.whereRaw(`(select count(*) from json_array_elements(??.??) where ${jsonPath} ${operator}) > 0`, bindings)
 }

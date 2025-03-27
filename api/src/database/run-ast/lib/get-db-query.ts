@@ -74,6 +74,8 @@ export function getDBQuery(
 			groupColumnPositions,
 		}).query;
 
+		console.log('dbQuery', dbQuery.toString());
+
 		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
 
 		if (
