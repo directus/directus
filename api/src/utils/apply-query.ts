@@ -52,6 +52,7 @@ export default function applyQuery(
 	options?: ApplyQueryOptions,
 ) {
 	const aliasMap: AliasMap = options?.aliasMap ?? Object.create(null);
+	const jsonQueries: Record<string, Knex.QueryBuilder> = Object.create(null);
 	let hasJoins = false;
 	let hasMultiRelationalFilter = false;
 
@@ -82,7 +83,7 @@ export default function applyQuery(
 	const filter: Filter | null = joinFilterWithCases(query.filter, cases);
 
 	if (filter) {
-		const filterResult = applyFilter(knex, schema, dbQuery, filter, collection, aliasMap, cases, permissions);
+		const filterResult = applyFilter(knex, schema, dbQuery, filter, collection, aliasMap, jsonQueries, cases, permissions);
 
 		if (!hasJoins) {
 			hasJoins = filterResult.hasJoins;
@@ -461,6 +462,7 @@ export function applyFilter(
 	rootFilter: Filter,
 	collection: string,
 	aliasMap: AliasMap,
+	jsonQueries: Record<string, Knex.QueryBuilder>,
 	cases: Filter[],
 	permissions: Permission[],
 ) {
@@ -471,6 +473,7 @@ export function applyFilter(
 
 	addJoins(rootQuery, rootFilter, collection);
 	addWhereClauses(knex, rootQuery, rootFilter, collection);
+
 
 	return { query: rootQuery, hasJoins, hasMultiRelationalFilter };
 
@@ -574,7 +577,21 @@ export function applyFilter(
 			) 
 			{
 				if (fieldInfo?.type === 'json') {
-					addJsonQuery(dbQuery[logical], collection, key, filterPath, filterOperator, filterValue);
+					const aliasKey = `${collection}.${key}`
+
+					const { alias } = (aliasMap[aliasKey] ??= { 
+						alias: generateAlias(), 
+						collection
+					})
+
+					const aliasQuery = (jsonQueries[alias] ??= knex
+						.select('*')
+						.from(knex.raw(`json_array_elements(??.??) as ${alias}`, [collection, key])))
+
+					addJsonQuery(aliasQuery[logical], collection, key, filterPath, filterOperator, filterValue, alias);
+					
+					dbQuery.whereExists(aliasQuery)
+
 					continue;
 				}
 
@@ -978,7 +995,7 @@ export function applySearch(
 				queryBuilder.orWhere((subQuery) => {
 					addSearchCondition(subQuery, name, fieldType, 'and');
 
-					applyFilter(knex, schema, subQuery, { _or: whenCases }, collection, aliasMap, cases, permissions);
+					applyFilter(knex, schema, subQuery, { _or: whenCases }, collection, aliasMap, {}, cases, permissions);
 				});
 			} else {
 				addSearchCondition(queryBuilder, name, fieldType, 'or');
@@ -1140,10 +1157,10 @@ function isNumericField(field: FieldOverview): field is FieldOverview & { type: 
 	return isIn(field.type, NUMERIC_TYPES);
 }
 
-function addJsonQuery(dbQuery: Knex.QueryBuilder, collection: string, key: string, filterPath: string[], filterOperator: string, filterValue: any) {
+function addJsonQuery(query: Knex.QueryBuilder, collection: string, key: string, filterPath: string[], filterOperator: string, filterValue: any, alias: string) {
 	const cast = filterOperator === '_between' || filterOperator === '_nbetween' ? 'float' : 'text'
 
-	const jsonPath = '(' + ['value', ...filterPath.slice(1).map(() => '?')].join('->>') + ')' + '::' + cast
+	const jsonPath = '(' + [alias, ...filterPath.slice(1).map(() => '?')].join('->>') + ')' + '::' + cast
 
 	const bindings = [collection, key, ...filterPath.slice(1)]
 
@@ -1174,7 +1191,7 @@ function addJsonQuery(dbQuery: Knex.QueryBuilder, collection: string, key: strin
 			break
 		case '_between':
 		case '_nbetween':
-			values.push(...(Array.isArray(filterValue) ? filterValue : filterValue.split(',').slice(0, 2).map(parseFloat)))
+			values.push(...[filterValue[0] ??= 0, filterValue[1] ?? filterValue[0]])
 			break
 		case '_empty':
 		case '_nempty':
@@ -1206,6 +1223,5 @@ function addJsonQuery(dbQuery: Knex.QueryBuilder, collection: string, key: strin
 
 	bindings.push(...values)
 
-
-	dbQuery.whereRaw(`(select count(*) from json_array_elements(??.??) where ${jsonPath} ${operator}) > 0`, bindings)
+	query.whereRaw(`${jsonPath} ${operator}`, [...filterPath.slice(1), ...values])
 }
