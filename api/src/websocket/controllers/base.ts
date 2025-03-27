@@ -12,6 +12,7 @@ import WebSocket, { WebSocketServer, type Server } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
@@ -21,23 +22,26 @@ import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebS
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
-import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
 const logger = useLogger();
 
+export type SocketControllerOptions = {
+	configPrefix: string;
+	endpointsEnv?: string[];
+};
 export default abstract class SocketController {
 	server: Server;
 	clients: Set<WebSocketClient>;
 	authentication: WebSocketAuthentication;
 
-	endpoint: string;
+	endpoints: string[];
 	maxConnections: number;
 	private rateLimiter: RateLimiterAbstract | null;
 	private authInterval: NodeJS.Timeout | null;
 
-	constructor(httpServer: httpServer, configPrefix: string) {
+	constructor(httpServer: httpServer, options: SocketControllerOptions) {
 		this.server = new WebSocketServer({
 			noServer: true,
 			// @ts-ignore TODO Remove once @types/ws has been updated
@@ -47,8 +51,8 @@ export default abstract class SocketController {
 		this.clients = new Set();
 		this.authInterval = null;
 
-		const { endpoint, authentication, maxConnections } = this.getEnvironmentConfig(configPrefix);
-		this.endpoint = endpoint;
+		const { endpoints, authentication, maxConnections } = this.getEnvironmentConfig(options);
+		this.endpoints = endpoints;
 		this.authentication = authentication;
 		this.maxConnections = maxConnections;
 		this.rateLimiter = this.getRateLimiter();
@@ -57,29 +61,34 @@ export default abstract class SocketController {
 		this.checkClientTokens();
 	}
 
-	protected getEnvironmentConfig(configPrefix: string): {
-		endpoint: string;
+	protected getEnvironmentConfig(options: SocketControllerOptions): {
+		endpoints: string[];
 		authentication: WebSocketAuthentication;
 		maxConnections: number;
 	} {
 		const env = useEnv();
 
-		const endpoint = String(env[`${configPrefix}_PATH`]);
-		const authMode = AuthMode.safeParse(String(env[`${configPrefix}_AUTH`]).toLowerCase());
-		const authTimeout = Number(env[`${configPrefix}_AUTH_TIMEOUT`]) * 1000;
+		const endpoints = (options.endpointsEnv || ['PATH']).map((endpoint) =>
+			String(env[`${options.configPrefix}_${endpoint}`]),
+		);
+
+		const authMode = AuthMode.safeParse(String(env[`${options.configPrefix}_AUTH`]).toLowerCase());
+		const authTimeout = Number(env[`${options.configPrefix}_AUTH_TIMEOUT`]) * 1000;
 
 		const maxConnections =
-			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
+			`${options.configPrefix}_CONN_LIMIT` in env
+				? Number(env[`${options.configPrefix}_CONN_LIMIT`])
+				: Number.POSITIVE_INFINITY;
 
 		if (!authMode.success) {
 			throw new InvalidProviderConfigError({
 				provider: 'ws',
-				reason: fromZodError(authMode.error, { prefix: `${configPrefix}_AUTH` }).message,
+				reason: fromZodError(authMode.error, { prefix: `${options.configPrefix}_AUTH` }).message,
 			});
 		}
 
 		return {
-			endpoint,
+			endpoints,
 			maxConnections,
 			authentication: {
 				mode: authMode.data,
@@ -116,7 +125,7 @@ export default abstract class SocketController {
 
 	protected async handleUpgrade(request: IncomingMessage, socket: internal.Duplex, head: Buffer) {
 		const { pathname, query } = parse(request.url!, true);
-		if (pathname !== this.endpoint) return;
+		if (!pathname || !this.endpoints.includes(pathname)) return;
 
 		if (this.clients.size >= this.maxConnections) {
 			logger.debug('WebSocket upgrade denied - max connections reached');

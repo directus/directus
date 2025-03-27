@@ -1,4 +1,5 @@
 import { useEnv } from '@directus/env';
+import type { Accountability } from '@directus/types';
 import type { Server as httpServer } from 'http';
 import type WebSocket from 'ws';
 import emitter from '../../emitter.js';
@@ -6,14 +7,13 @@ import { useLogger } from '../../logger/index.js';
 import { handleWebSocketError, WebSocketError } from '../errors.js';
 import { AuthMode, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, WebSocketClient } from '../types.js';
-import SocketController from './base.js';
-import type { Accountability } from '@directus/types';
+import SocketController, { type SocketControllerOptions } from './base.js';
 
 const logger = useLogger();
 
 export class LogsController extends SocketController {
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WEBSOCKETS_LOGS');
+		super(httpServer, { configPrefix: 'WEBSOCKETS_LOGS', endpointsEnv: ['PATH'] });
 
 		const env = useEnv();
 
@@ -21,19 +21,23 @@ export class LogsController extends SocketController {
 			this.bindEvents(this.createClient(ws, auth));
 		});
 
-		logger.info(`Logs WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${this.endpoint}`);
+		for (const endpoint of this.endpoints) {
+			logger.info(`Logs WebSocket Server started at ws://${env['HOST']}:${env['PORT']}${endpoint}`);
+		}
 	}
 
-	override getEnvironmentConfig(configPrefix: string) {
+	override getEnvironmentConfig(options: SocketControllerOptions) {
 		const env = useEnv();
 
-		const endpoint = String(env[`${configPrefix}_PATH`]);
+		const endpoints = [String(env[`${options.configPrefix}_PATH`])];
 
 		const maxConnections =
-			`${configPrefix}_CONN_LIMIT` in env ? Number(env[`${configPrefix}_CONN_LIMIT`]) : Number.POSITIVE_INFINITY;
+			`${options.configPrefix}_CONN_LIMIT` in env
+				? Number(env[`${options.configPrefix}_CONN_LIMIT`])
+				: Number.POSITIVE_INFINITY;
 
 		return {
-			endpoint,
+			endpoints,
 			maxConnections,
 			authentication: {
 				mode: 'strict' as AuthMode,
