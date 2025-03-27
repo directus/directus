@@ -1,4 +1,5 @@
 ---
+'directus': minor
 '@directus/api': major
 ---
 
