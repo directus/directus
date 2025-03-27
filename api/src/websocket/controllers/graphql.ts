@@ -31,46 +31,36 @@ export class GraphQLSubscriptionController extends SocketController {
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState, request: IncomingMessage) => {
 			const { pathname } = parse(request.url!, false);
 			const systemPath = (env['WEBSOCKETS_GRAPHQL_SYSTEM_PATH'] as string) || '/graphql/system';
-			const scope = pathname && pathname.endsWith(systemPath) ? 'system' : 'items';
+			const scope = pathname === systemPath ? 'system' : 'items';
 
 			this.bindEvents(this.createClient(ws, auth), scope);
 		});
 
-		this.gql = makeServer<ConnectionParams, GraphQLSocket>({
-			schema: async (ctx) => {
-				const accountability = ctx.extra.client.accountability;
-
-				// for now only the items will be watched, system events tbd
-				const service = new GraphQLService({
-					schema: await getSchema(),
-					scope: 'items',
-					accountability,
-				});
-
-				return service.getSchema();
-			},
-		});
-
-		this.systemGql = makeServer<ConnectionParams, GraphQLSocket>({
-			schema: async (ctx) => {
-				const accountability = ctx.extra.client.accountability;
-
-				// for now only the items will be watched, system events tbd
-				const service = new GraphQLService({
-					schema: await getSchema(),
-					scope: 'system',
-					accountability,
-				});
-
-				return service.getSchema();
-			},
-		});
+		this.gql = this.createGqlServer('items');
+		this.systemGql = this.createGqlServer('system');
 
 		bindPubSub();
 
 		for (const endpoint of this.endpoints) {
 			logger.info(`GraphQL Subscriptions started at ${getAddress(httpServer)}${endpoint}`);
 		}
+	}
+
+	private createGqlServer(scope: GQLScope) {
+		return makeServer<ConnectionParams, GraphQLSocket>({
+			schema: async (ctx) => {
+				const accountability = ctx.extra.client.accountability;
+
+				// for now only the items will be watched, system events tbd
+				const service = new GraphQLService({
+					schema: await getSchema(),
+					scope,
+					accountability,
+				});
+
+				return service.getSchema();
+			},
+		});
 	}
 
 	private bindEvents(client: WebSocketClient, scope: GQLScope) {
