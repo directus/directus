@@ -566,11 +566,18 @@ export function applyFilter(
 			if (!operation) continue;
 
 			const { operator: filterOperator, value: filterValue } = operation;
+			const fieldInfo = schema.collections[collection]?.fields[key]
 
 			if (
 				filterPath.length > 1 ||
-				(!(key.includes('(') && key.includes(')')) && schema.collections[collection]?.fields[key]?.type === 'alias')
-			) {
+				(!(key.includes('(') && key.includes(')')) && fieldInfo?.type === 'alias')
+			) 
+			{
+				if (fieldInfo?.type === 'json') {
+					addJsonQuery(dbQuery[logical], collection, key, filterPath, filterOperator, filterValue);
+					continue;
+				}
+
 				if (!relation) continue;
 
 				if (relationType === 'o2m' || relationType === 'o2a') {
@@ -1131,4 +1138,68 @@ function getOperation(key: string, value: Record<string, any>): { operator: stri
 
 function isNumericField(field: FieldOverview): field is FieldOverview & { type: NumericType } {
 	return isIn(field.type, NUMERIC_TYPES);
+}
+
+function addJsonQuery(dbQuery: Knex.QueryBuilder, collection: string, key: string, filterPath: string[], filterOperator: string, filterValue: any) {
+	const jsonPath = ['$', ...filterPath.slice(1)].join('.')
+
+	const bindings = [collection, key, jsonPath]
+
+	const values = []
+
+	switch (filterOperator) {
+		case '_contains':
+		case '_ncontains':
+		case '_icontains':
+		case '_nicontains':
+			values.push(`%${filterValue}%`)
+			break
+		case '_starts_with':
+			values.push(`${filterValue}%`)
+			break
+		case '_ends_with':
+			values.push(`%${filterValue}`)
+			break
+		case '_in':
+		case '_nin':
+			values.push(...(Array.isArray(filterValue) ? filterValue : filterValue.split(',')))
+			break
+		case '_gt':
+		case '_gte':
+		case '_lt':
+		case '_lte':
+			values.push(Number.isFinite(parseFloat(filterValue)) ? parseFloat(filterValue) : filterValue)
+			break
+		case '_empty':
+		case '_nempty':
+			break
+		default:
+			values.push(filterValue)
+	}
+
+	const replacements = values.map(() => `?`).join(', ')
+
+	const operator = {
+		'_eq': `= ${replacements}`,
+		'_neq': `!= ${replacements}`,
+		'_contains': `LIKE ${replacements}`,
+		'_ncontains': `NOT LIKE ${replacements}`,
+		'_icontains': `LIKE ${replacements}`,
+		'_nicontains': `NOT LIKE ${replacements}`,
+		'_starts_with': `LIKE ${replacements}`,
+		'_ends_with': `LIKE ${replacements}`,
+		'_gt': `> ${replacements}`,
+		'_gte': `>= ${replacements}`,
+		'_lt': `< ${replacements}`,
+		'_lte': `<= ${replacements}`,
+		'_in': `IN (${replacements})`,
+		'_nin': `NOT IN (${replacements})`,
+		'_empty': 'IS NULL',
+		'_nempty': 'IS NOT NULL',
+	}[filterOperator]
+
+	bindings.push(...values)
+
+
+	dbQuery.whereRaw(`(select count(*) from json_each(??.??) where json_extract(value, ?) ${operator}) > 0`, bindings)
 }

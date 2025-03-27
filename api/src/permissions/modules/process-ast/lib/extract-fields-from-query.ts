@@ -66,6 +66,10 @@ export function extractFieldsFromQuery(
 					collectionContext = relatedCollection;
 					stack.push(part);
 				}
+
+				if (schema.collections[collectionContext]?.fields[part]?.type === 'json') {
+					break;
+				}
 			}
 		}
 	}

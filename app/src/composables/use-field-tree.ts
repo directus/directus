@@ -81,6 +81,28 @@ export function useFieldTree(
 		const pathContext = parent?.path ? parent.path + '.' : '';
 		const keyContext = parent?.key ? parent.key + '.' : '';
 
+		if (field?.type === 'json') {
+			if (field.meta?.options?.fields) {
+				const node: FieldNode = {
+					name: field.name,
+					field: field.field,
+					collection: field.collection,
+					relatedCollection: undefined,
+					key: keyContext + field.field,
+					path: pathContext + field.field,
+					type: field.type,
+				}
+
+				node.children = field.meta.options.fields.map((field) => ({
+					...makeNode(field, node),
+					path: node.path + '.' + field.field,
+					key: node.key + '.' + field.field,
+				}));
+
+				return node;
+			}
+		}
+
 		if (field?.meta?.special?.includes('group')) {
 			const node: FieldNode = {
 				name: field.name,

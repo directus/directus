@@ -368,6 +368,18 @@ export const useFieldsStore = defineStore('fieldsStore', () => {
 	 */
 	function getField(collection: string, fieldKey: string): Field | null {
 		if (fieldKey.includes('.')) {
+			const root = getField(collection, fieldKey.split('.')[0]!);
+
+			if (root?.type === 'json') {
+				let field: Field | null = root
+			
+				for (const name of fieldKey.split('.').slice(1)) {
+					field = field?.meta?.options?.fields.find((field: Field) => field.field === name);
+				}
+
+				return field
+			}	
+
 			return getRelationalField(collection, fieldKey) || null;
 		} else {
 			return fields.value.find((field) => field.collection === collection && field.field === fieldKey) || null;
