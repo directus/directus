@@ -28,12 +28,12 @@ const FAKE_SCHEMA: SchemaOverview = {
 					validation: null,
 					alias: false,
 				},
-				text1: {
-					field: 'text',
+				string: {
+					field: 'string',
 					defaultValue: null,
 					nullable: false,
 					generated: false,
-					type: 'text',
+					type: 'string',
 					dbType: null,
 					precision: null,
 					scale: null,
@@ -209,100 +209,6 @@ describe('applySearch', () => {
 		expect(queryBuilder['orWhereRaw']).toBeCalledWith('1 = 0');
 	});
 
-	test('Remove forbidden field "text" from search', () => {
-		const db = mockDatabase();
-		const queryBuilder = db as any;
-
-		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
-
-		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
-
-		applySearch(db as any, FAKE_SCHEMA, queryBuilder, 'directus', 'test', {}, [
-			{
-				collection: 'test',
-				action: 'read',
-				fields: ['text1'],
-				permissions: {
-					text: {},
-				},
-			} as unknown as Permission,
-		]);
-
-		expect(db['andWhere']).toBeCalledTimes(1);
-		expect(queryBuilder['orWhere']).toBeCalledTimes(1);
-		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-		expect(queryBuilder['and']['whereRaw']).toBeCalledTimes(1);
-		expect(queryBuilder['and']['whereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.text1', `%directus%`]);
-	});
-
-	test('Add all fields for * field rule and no item rule', () => {
-		const db = mockDatabase();
-		const queryBuilder = db as any;
-
-		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
-
-		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
-
-		applySearch(db as any, FAKE_SCHEMA, queryBuilder, `1`, 'test', {}, [
-			{
-				collection: 'test',
-				action: 'read',
-				fields: ['*'],
-				permissions: null,
-			} as unknown as Permission,
-		]);
-
-		expect(db['andWhere']).toBeCalledTimes(1);
-		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
-		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
-		expect(queryBuilder['or']['where']).toBeCalledTimes(2);
-	});
-
-	test('Add all fields for * field rule and item rules', () => {
-		const db = mockDatabase();
-		const queryBuilder = db as any;
-
-		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
-
-		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
-
-		applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
-			{
-				collection: 'test',
-				action: 'read',
-				fields: ['*'],
-				permissions: {
-					text: {},
-				},
-			} as unknown as Permission,
-		]);
-
-		expect(db['andWhere']).toBeCalledTimes(1);
-		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
-		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
-		expect(queryBuilder['or']['where']).toBeCalledTimes(2);
-	});
-
 	test('Exclude non uuid searchable field(s) when searchQuery has valid uuid value', () => {
 		const db = mockDatabase();
 		const queryBuilder = db as any;
@@ -321,22 +227,20 @@ describe('applySearch', () => {
 			{
 				collection: 'test',
 				action: 'read',
-				fields: ['*', 'id'],
-				permissions: {
-					id: {},
-				},
+				fields: ['id', 'text'],
+				permissions: null,
 			} as unknown as Permission,
 		]);
 
 		expect(db['andWhere']).toBeCalledTimes(1);
-		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
+		expect(queryBuilder['orWhere']).toBeCalledTimes(2);
 		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
+		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(1);
 		expect(queryBuilder['or']['where']).toBeCalledTimes(1);
 		expect(queryBuilder['or']['where']).toBeCalledWith({ 'test.id': '4b9adc65-4ad8-4242-9144-fbfc58400d74' });
 	});
 
-	test('Add all fields for * field rule and minimum app_access item rule', () => {
+	test('Remove forbidden field(s) from search', () => {
 		const db = mockDatabase();
 		const queryBuilder = db as any;
 
@@ -350,52 +254,44 @@ describe('applySearch', () => {
 			return queryBuilder;
 		});
 
-		applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
+		applySearch(db as any, FAKE_SCHEMA, queryBuilder, 'directus', 'test', {}, [
 			{
 				collection: 'test',
 				action: 'read',
-				fields: ['*', 'id'],
-				permissions: {
-					id: {},
-				},
-			} as unknown as Permission,
-		]);
-
-		expect(db['andWhere']).toBeCalledTimes(1);
-		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
-		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
-		expect(queryBuilder['or']['where']).toBeCalledTimes(2);
-	});
-
-	test('Add all fields when at least one policy contains a * field rule', () => {
-		const db = mockDatabase();
-		const queryBuilder = db as any;
-
-		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
-
-		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
-
-		applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
-			{
-				collection: 'test',
-				action: 'read',
-				fields: ['text'],
+				fields: ['string'],
 				permissions: {
 					text: {},
 				},
 			} as unknown as Permission,
+		]);
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(queryBuilder['orWhere']).toBeCalledTimes(1);
+		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
+		expect(queryBuilder['and']['whereRaw']).toBeCalledTimes(1);
+		expect(queryBuilder['and']['whereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.string', `%directus%`]);
+	});
+
+	test('Add all fields for * field rule', () => {
+		const db = mockDatabase();
+		const queryBuilder = db as any;
+
+		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
 			{
 				collection: 'test',
 				action: 'read',
 				fields: ['*'],
-				permissions: {},
+				permissions: null,
 			} as unknown as Permission,
 		]);
 
@@ -406,7 +302,39 @@ describe('applySearch', () => {
 		expect(queryBuilder['or']['where']).toBeCalledTimes(2);
 	});
 
-	test('Add field(s) without permissions for admin', () => {
+	test('Add all fields when * is present in field rule with permission rule present', () => {
+		const db = mockDatabase();
+		const queryBuilder = db as any;
+
+		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
+			callback(queryBuilder);
+			return queryBuilder;
+		});
+
+		applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
+			{
+				collection: 'test',
+				action: 'read',
+				fields: ['*', 'text'],
+				permissions: {
+					text: {},
+				},
+			} as unknown as Permission,
+		]);
+
+		expect(db['andWhere']).toBeCalledTimes(1);
+		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
+		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
+		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
+		expect(queryBuilder['or']['where']).toBeCalledTimes(2);
+	});
+
+	test('All field(s) are searched for admin', () => {
 		const db = mockDatabase();
 		const queryBuilder = db as any;
 
@@ -425,6 +353,7 @@ describe('applySearch', () => {
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(queryBuilder['orWhere']).toBeCalledTimes(0);
 		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
+		expect(queryBuilder['and']['whereRaw']).toBeCalledTimes(2);
 		expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
 	});
 });
