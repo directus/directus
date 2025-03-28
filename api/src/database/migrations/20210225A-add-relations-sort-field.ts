@@ -1,9 +1,13 @@
 import { parseJSON } from '@directus/utils';
 import type { Knex } from 'knex';
+import { getDatabaseClient } from '../index.js';
+import { parseDynamicValues } from '../helpers/parse-dynamic-client-values.js';
 
 export async function up(knex: Knex): Promise<void> {
+	const client = getDatabaseClient(knex);
+
 	await knex.schema.alterTable('directus_relations', (table) => {
-		table.string('sort_field');
+		table.string('sort_field', Number(parseDynamicValues(client, 'MAX_COLUMN_NAME_LENGTH')));
 	});
 
 	const fieldsWithSort = await knex

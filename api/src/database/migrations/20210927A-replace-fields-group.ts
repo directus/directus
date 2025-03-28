@@ -1,7 +1,11 @@
 import type { Knex } from 'knex';
 import { uniq } from 'lodash-es';
+import { getDatabaseClient } from '../index.js';
+import { parseDynamicValues } from '../helpers/parse-dynamic-client-values.js';
 
 export async function up(knex: Knex): Promise<void> {
+	const client = getDatabaseClient(knex);
+
 	const groupsInUse = await knex.select('id', 'group').from('directus_fields').whereNotNull('group');
 
 	const groupIDs: number[] = uniq(groupsInUse.map(({ group }) => group));
@@ -23,7 +27,7 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.alterTable('directus_fields', (table) => {
-		table.string('group', 64);
+		table.string('group', Number(parseDynamicValues(client, 'MAX_COLUMN_NAME_LENGTH')));
 	});
 
 	for (const { id, group } of groupsInUse) {

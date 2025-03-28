@@ -7,6 +7,8 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { getHelpers } from '../helpers/index.js';
+import { getDatabaseClient } from '../index.js';
+import { parseDynamicValues } from '../helpers/parse-dynamic-client-values.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -18,7 +20,7 @@ type TableSeed = {
 			primary?: boolean;
 			nullable?: boolean;
 			default?: any;
-			length?: number;
+			length?: number | string;
 			increments?: boolean;
 			unsigned?: boolean;
 			unique?: boolean;
@@ -31,6 +33,7 @@ type TableSeed = {
 };
 
 export default async function runSeed(database: Knex): Promise<void> {
+	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	const exists = await database.schema.hasTable('directus_collections');
 
@@ -54,7 +57,9 @@ export default async function runSeed(database: Knex): Promise<void> {
 				if (columnInfo.type === 'alias' || columnInfo.type === 'unknown') return;
 
 				if (columnInfo.type === 'string') {
-					column = tableBuilder.string(columnName, columnInfo.length);
+					const length = parseDynamicValues(client, columnInfo.length);
+
+					column = tableBuilder.string(columnName, Number(length));
 				} else if (columnInfo.increments) {
 					column = tableBuilder.increments();
 				} else if (columnInfo.type === 'csv') {

@@ -1,10 +1,18 @@
 import type { Knex } from 'knex';
+import { getDatabaseClient } from '../index.js';
+import { parseDynamicValues } from '../helpers/parse-dynamic-client-values.js';
 
 export async function up(knex: Knex): Promise<void> {
+	const client = getDatabaseClient(knex);
+
 	await knex.schema.createTable('directus_shares', (table) => {
 		table.uuid('id').primary().notNullable();
 		table.string('name');
-		table.string('collection', 64).references('collection').inTable('directus_collections').onDelete('CASCADE');
+		table
+			.string('collection', Number(parseDynamicValues(client, 'MAX_TABLE_NAME_LENGTH')))
+			.references('collection')
+			.inTable('directus_collections')
+			.onDelete('CASCADE');
 		table.string('item');
 		table.uuid('role').references('id').inTable('directus_roles').onDelete('CASCADE');
 		table.string('password');

@@ -1,6 +1,10 @@
 import type { Knex } from 'knex';
+import { getDatabaseClient } from '../index.js';
+import { parseDynamicValues } from '../helpers/parse-dynamic-client-values.js';
 
 export async function up(knex: Knex): Promise<void> {
+	const client = getDatabaseClient(knex);
+
 	await knex.schema.createTable('directus_notifications', (table) => {
 		table.increments();
 		table.timestamp('timestamp').notNullable();
@@ -9,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('sender').notNullable().references('id').inTable('directus_users');
 		table.string('subject').notNullable();
 		table.text('message');
-		table.string('collection', 64);
+		table.string('collection', Number(parseDynamicValues(client, 'MAX_TABLE_NAME_LENGTH')));
 		table.string('item');
 	});
 
