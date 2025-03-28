@@ -32,10 +32,19 @@ router.post('/', async (req, res) => {
     accountability: req.accountability
   });
 
-  const assetKey = await filesService.importOne({
-    url: file_url,
-    data: file_object,
-  });
+	const file_object = {
+			title: 'New File'
+			description: 'my wonderful new file',
+			folder: 'f7ed698a-0d50-49d7-a7ed-a156f1a6206c', 
+			filename_download: 'download.wav',
+			storage: 's3',
+			type: 'audio/wav',
+	};
+
+  const assetKey = await filesService.importOne(
+    file_url,
+    file_object, // optional
+  );
 
   const data = await filesService.readOne(assetKey);
 
