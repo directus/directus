@@ -611,8 +611,7 @@ export function applyFilter(
 						dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
 
 						continue;
-					} else {
-						// Add implicit _some behavior when no operator is provided
+					} else if (!childKey?.startsWith('_')) {
 						dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value, subCases));
 
 						continue;
