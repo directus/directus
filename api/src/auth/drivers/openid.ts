@@ -15,7 +15,7 @@ import express, { Router } from 'express';
 import { flatten } from 'flat';
 import jwt from 'jsonwebtoken';
 import type { StringValue } from 'ms';
-import type { Client } from 'openid-client';
+import type { BaseClient, Client } from 'openid-client';
 import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
@@ -64,18 +64,9 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			'callback',
 		);
 
-		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
-		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_CLIENT_`, {
-			omitKey: [
-				`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`,
-				`AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`,
-			],
-			type: 'underscore',
-		});
-
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
-		this.config = additionalConfig;
+		this.config = config;
 		this.roleMap = {};
 
 		const roleMapping = this.config['roleMapping'];
@@ -94,8 +85,25 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderError();
 		}
 
-		this.client = new Promise((resolve, reject) => {
-			Issuer.discover(issuerUrl)
+		this.client = this.getClient();
+	}
+
+	private getClient() {
+		if (this.client) return this.client;
+
+		const logger = useLogger();
+
+		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
+		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${this.config['provider'].toUpperCase()}_CLIENT_`, {
+			omitKey: [
+				`AUTH_${this.config['provider'].toUpperCase()}_CLIENT_ID`,
+				`AUTH_${this.config['provider'].toUpperCase()}_CLIENT_SECRET`,
+			],
+			type: 'underscore',
+		});
+
+		return new Promise<BaseClient>((resolve, reject) => {
+			Issuer.discover(this.config['issuerUrl'])
 				.then((issuer) => {
 					const supportedTypes = issuer.metadata['response_types_supported'] as string[] | undefined;
 
@@ -104,15 +112,15 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 						reject(
 							new InvalidProviderConfigError({
-								provider: additionalConfig['provider'],
+								provider: this.config['provider'],
 							}),
 						);
 					}
 
 					resolve(
 						new issuer.Client({
-							client_id: clientId,
-							client_secret: clientSecret,
+							client_id: this.config['clientId'],
+							client_secret: this.config['clientSecret'],
 							redirect_uris: [this.redirectUrl],
 							response_types: ['code'],
 							...clientOptionsOverrides,
@@ -120,8 +128,12 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 					);
 				})
 				.catch((e) => {
-					logger.error(e, '[OpenID] Failed to fetch provider config');
-					process.exit(1);
+					if (this.config['issuerMustSucceed'] !== false) {
+						logger.error(e, '[OpenID] Failed to fetch provider config');
+						process.exit(1);
+					} else {
+						logger.error(e, '[OpenID] Failed to fetch provider config');
+					}
 				});
 		});
 	}
@@ -134,7 +146,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const { plainCodeChallenge } = this.config;
 
 		try {
-			const client = await this.client;
+			const client = await this.getClient();
+
 			const codeChallenge = plainCodeChallenge ? codeVerifier : generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
 
@@ -178,7 +191,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		let userInfo;
 
 		try {
-			const client = await this.client;
+			const client = await this.getClient();
 
 			const codeChallenge = plainCodeChallenge
 				? payload['codeVerifier']
@@ -338,7 +351,8 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		if (authData?.['refreshToken']) {
 			try {
-				const client = await this.client;
+				const client = await this.getClient();
+
 				const tokenSet = await client.refresh(authData['refreshToken']);
 
 				// Update user refreshToken if provided
