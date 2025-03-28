@@ -647,6 +647,32 @@ export class PayloadService {
 			if (!field || Array.isArray(field)) {
 				const updates = field || []; // treat falsey values as removing all children
 
+				const keys = [];
+
+				for (const update of updates) {
+					if (typeof update === 'string' || typeof update === 'number') {
+						keys.push(update);
+					} else if (
+						typeof update[relatedPrimaryKeyField] === 'string' ||
+						typeof update[relatedPrimaryKeyField] === 'number'
+					) {
+						keys.push(update[relatedPrimaryKeyField]);
+					}
+				}
+
+				const existingRecordsMap = new Map();
+
+				if (keys.length !== 0) {
+					const existingRecords = await this.knex
+						.select(relatedPrimaryKeyField, relation.field)
+						.from(relation.collection)
+						.whereIn(relatedPrimaryKeyField, keys);
+
+					for (const existingRecord of existingRecords) {
+						existingRecordsMap.set(existingRecord[relatedPrimaryKeyField], existingRecord);
+					}
+				}
+
 				for (let i = 0; i < updates.length; i++) {
 					const currentId = parent || payload[currentPrimaryKeyField];
 					const relatedRecord = updates[i];
@@ -662,11 +688,7 @@ export class PayloadService {
 
 					// No relatedId means it's a new record
 					if (relatedId) {
-						existingRecord = await this.knex
-							.select(relatedPrimaryKeyField, relation.field)
-							.from(relation.collection)
-							.where({ [relatedPrimaryKeyField]: relatedId })
-							.first();
+						existingRecord = existingRecordsMap.get(relatedId);
 					}
 
 					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
@@ -800,14 +822,18 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
+					const keys = alterations.update.map((item) => item[relatedPrimaryKeyField]);
+
+					const existingRecords = await this.knex
+						.select(relatedPrimaryKeyField, relation.field)
+						.from(relation.collection)
+						.whereIn(relatedPrimaryKeyField, keys);
+
+					const existingRecordsMap = new Map(existingRecords.map((record) => [record[relatedPrimaryKeyField], record]));
+
 					for (const item of alterations.update) {
 						const { [relatedPrimaryKeyField]: key, ...record } = item;
-
-						const existingRecord = await this.knex
-							.select(relatedPrimaryKeyField, relation.field)
-							.from(relation.collection)
-							.where({ [relatedPrimaryKeyField]: key })
-							.first();
+						const existingRecord = existingRecordsMap.get(key);
 
 						if (!existingRecord || existingRecord[relation.field] != parent) {
 							record[relation.field] = parent || payload[currentPrimaryKeyField];
