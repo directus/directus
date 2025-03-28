@@ -13,8 +13,8 @@ import { useFileHandler } from './use-file-handler';
 
 import './editorjs-overrides.css';
 
-// https://github.com/codex-team/editor.js/blob/7399e55f7e2ea6cf019cf659cb6cbd937e7d2e0c/src/components/events/BlockChanged.ts#L6
-const BlockChanged = 'block changed';
+// https://github.com/codex-team/editor.js/blob/057bf17a6fc2d5e05c662107918d7c3e943d077c/src/components/events/RedactorDomChanged.ts#L4
+const RedactorDomChanged = 'redactor dom changed';
 
 const props = withDefaults(
 	defineProps<{
@@ -48,7 +48,6 @@ const { currentPreview, setCurrentPreview, fileHandler, setFileHandler, unsetFil
 
 const editorjsRef = ref<EditorJS>();
 const editorjsIsReady = ref(false);
-const editorjsIsInitialized = ref(false);
 const uploaderComponentElement = ref<HTMLElement>();
 const editorElement = ref<HTMLElement>();
 const haveFilesAccess = Boolean(collectionStore.getCollection('directus_files'));
@@ -95,10 +94,8 @@ onMounted(async () => {
 		editorjsRef.value.focus();
 	}
 
-	editorjsRef.value.on(BlockChanged, () => {
-		if (editorjsIsInitialized.value === true) {
-			emitValue(editorjsRef.value);
-		}
+	editorjsRef.value.on(RedactorDomChanged, () => {
+		emitValue(editorjsRef.value!);
 	});
 
 	editorjsIsReady.value = true;
@@ -120,10 +117,7 @@ watch(
 			return;
 		}
 
-		if (isEqual(newVal?.blocks, oldVal?.blocks)) {
-			editorjsIsInitialized.value = true;
-			return;
-		}
+		if (isEqual(newVal?.blocks, oldVal?.blocks)) return;
 
 		try {
 			const sanitizedValue = sanitizeValue(newVal);
@@ -136,8 +130,6 @@ watch(
 		} catch (error) {
 			unexpectedError(error);
 		}
-
-		editorjsIsInitialized.value = true;
 	},
 );
 
@@ -155,12 +147,11 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 		}
 
 		if (isEqual(result.blocks, props.value?.blocks)) return;
+
 		emit('input', result);
 	} catch (error) {
 		unexpectedError(error);
 	}
-
-	editorjsIsInitialized.value = true;
 }
 
 function sanitizeValue(value: any): EditorJS.OutputData | null {
