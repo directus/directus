@@ -2,7 +2,14 @@ import type { Permission, SchemaOverview } from '@directus/types';
 import knex, { Knex } from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { describe, expect, test, vi } from 'vitest';
-import { applyFilter, applySearch } from './apply-query.js';
+
+const aliasFn = vi.fn()
+
+vi.doMock('nanoid/non-secure', () => ({
+	customAlphabet: () => aliasFn,
+}));
+
+const { applyFilter, applySearch } = await import('./apply-query.js');
 
 const FAKE_SCHEMA: SchemaOverview = {
 	collections: {
@@ -90,6 +97,130 @@ const FAKE_SCHEMA: SchemaOverview = {
 	relations: [],
 };
 
+const O2M_FAKE_SCHEMA: SchemaOverview = {
+	collections: {
+		cities: {
+			collection: 'cities',
+			primary: 'id',
+			singleton: false,
+			note: null,
+			sortField: null,
+			accountability: 'all',
+			fields: {
+				id: {
+					field: 'id',
+					defaultValue: 'AUTO_INCREMENT',
+					nullable: false,
+					generated: false,
+					type: 'integer',
+					dbType: 'int',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					alias: false,
+					validation: null,
+				},
+				country: {
+					field: 'country',
+					defaultValue: null,
+					nullable: true,
+					generated: false,
+					type: 'integer',
+					dbType: 'int',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					alias: false,
+					validation: null,
+				},
+				name: {
+					field: 'name',
+					defaultValue: null,
+					nullable: true,
+					generated: false,
+					type: 'string',
+					dbType: 'nvarchar',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					alias: false,
+					validation: null,
+				},
+			},
+		},
+		countries: {
+			collection: 'countries',
+			primary: 'id',
+			singleton: false,
+			note: null,
+			sortField: null,
+			accountability: 'all',
+			fields: {
+				id: {
+					field: 'id',
+					defaultValue: 'AUTO_INCREMENT',
+					nullable: false,
+					generated: false,
+					type: 'integer',
+					dbType: 'int',
+					precision: null,
+					scale: null,
+					special: [],
+					note: null,
+					alias: false,
+					validation: null,
+				},
+				cities: {
+					field: 'cities',
+					defaultValue: null,
+					nullable: true,
+					generated: false,
+					type: 'alias',
+					dbType: null,
+					precision: null,
+					scale: null,
+					special: ['o2m'],
+					note: null,
+					alias: true,
+					validation: null,
+				},
+			},
+		},
+	},
+	relations: [
+		{
+			collection: 'cities',
+			field: 'country',
+			related_collection: 'countries',
+			schema: {
+				table: 'cities',
+				column: 'country',
+				foreign_key_schema: 'dbo',
+				foreign_key_table: 'countries',
+				foreign_key_column: 'id',
+				constraint_name: 'cities_country_foreign',
+				on_update: 'NO ACTION',
+				on_delete: 'SET NULL',
+			},
+			meta: {
+				id: 2,
+				many_collection: 'cities',
+				many_field: 'country',
+				one_collection: 'countries',
+				one_field: 'cities',
+				one_collection_field: null,
+				one_allowed_collections: null,
+				junction_field: null,
+				sort_field: null,
+				one_deselect_action: 'nullify',
+			},
+		},
+	],
+};
+
 const permissions = [
 	{
 		collection: 'test',
@@ -101,7 +232,7 @@ const permissions = [
 	},
 ] as unknown as Permission[];
 
-class Client_SQLite3 extends MockClient {}
+class Client_SQLite3 extends MockClient { }
 
 describe('applySearch', () => {
 	function mockDatabase(dbClient: string = 'Client_SQLite3') {
@@ -548,5 +679,60 @@ describe('applyFilter', () => {
 		const expectedSql = `select * where "${collection}"."${field}" is ${sql}`;
 
 		expect(resultingSelectQuery?.sql).toEqual(expectedSql);
+	});
+
+	test('filter on o2m relation with auto inserted _some', async () => {
+		aliasFn.mockReturnValueOnce("alias")
+
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
+
+		const filter = {
+			"cities": {
+				"name": {
+					"_eq": "abc"
+				}
+			}
+		};
+
+		const { query } = applyFilter(db, O2M_FAKE_SCHEMA, queryBuilder, filter, "countries", {}, [], []);
+
+		const tracker = createTracker(db);
+		tracker.on.select('*').response([]);
+
+		await query;
+
+		const resultingSelectQuery = tracker.history.select[0];
+
+		const expected = `select * left join "cities" as "alias" on "countries"."id" = "alias"."country" where "countries"."id" in (select "cities"."country" as "country" from "cities" where "cities"."country" is not null and "cities"."name" = ?)`
+
+		expect(resultingSelectQuery?.sql).toEqual(expected);
+		expect(resultingSelectQuery?.bindings[0]).toEqual("abc");
+	});
+
+	test('filter on o2m relation with direct operation and no auto inserted _some', async () => {
+		aliasFn.mockReturnValueOnce("alias")
+
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
+
+		const filter = {
+			"cities": {
+				"_null": true
+			}
+		};
+
+		const { query } = applyFilter(db, O2M_FAKE_SCHEMA, queryBuilder, filter, "countries", {}, [], []);
+
+		const tracker = createTracker(db);
+		tracker.on.select('*').response([]);
+
+		await query;
+
+		const resultingSelectQuery = tracker.history.select[0];
+
+		const expected = `select * left join "cities" as "alias" on "countries"."id" = "alias"."country" where "alias"."id" is null`
+
+		expect(resultingSelectQuery?.sql).toEqual(expected);
 	});
 });
