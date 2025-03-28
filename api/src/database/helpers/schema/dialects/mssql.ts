@@ -70,4 +70,12 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 			groupByFields.push(...sortRecords.map(({ column }) => column));
 		}
 	}
+
+	override getColumnMaxLength(): number {
+		return 128;
+	}
+
+	override getTableMaxLength(): number {
+		return 128;
+	}
 }

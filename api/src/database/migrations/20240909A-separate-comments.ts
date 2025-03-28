@@ -1,15 +1,14 @@
 import { Action } from '@directus/constants';
 import type { Knex } from 'knex';
-import { getDatabaseClient } from '../index.js';
-import { parseDynamicValues } from '../helpers/parse-dynamic-client-values.js';
+import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
-	const client = getDatabaseClient(knex);
+	const helpers = getHelpers(knex);
 
 	await knex.schema.createTable('directus_comments', (table) => {
 		table.uuid('id').primary().notNullable();
 
-		table.string('collection', Number(parseDynamicValues(client, 'MAX_TABLE_NAME_LENGTH'))).notNullable();
+		table.string('collection', helpers.schema.getTableMaxLength()).notNullable();
 
 		table.string('item').notNullable();
 		table.text('comment').notNullable();

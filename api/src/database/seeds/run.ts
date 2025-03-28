@@ -7,8 +7,6 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { getHelpers } from '../helpers/index.js';
-import { getDatabaseClient } from '../index.js';
-import { parseDynamicValues } from '../helpers/parse-dynamic-client-values.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -33,7 +31,6 @@ type TableSeed = {
 };
 
 export default async function runSeed(database: Knex): Promise<void> {
-	const client = getDatabaseClient(database);
 	const helpers = getHelpers(database);
 	const exists = await database.schema.hasTable('directus_collections');
 
@@ -57,7 +54,13 @@ export default async function runSeed(database: Knex): Promise<void> {
 				if (columnInfo.type === 'alias' || columnInfo.type === 'unknown') return;
 
 				if (columnInfo.type === 'string') {
-					const length = parseDynamicValues(client, columnInfo.length);
+					let length = columnInfo.length;
+
+					if (length === 'MAX_TABLE_NAME_LENGTH') {
+						length = helpers.schema.getTableMaxLength();
+					} else if (length === 'MAX_COLUMN_NAME_LENGTH') {
+						length = helpers.schema.getColumnMaxLength();
+					}
 
 					column = tableBuilder.string(columnName, Number(length));
 				} else if (columnInfo.increments) {

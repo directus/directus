@@ -1,9 +1,8 @@
 import type { Knex } from 'knex';
-import { getDatabaseClient } from '../index.js';
-import { parseDynamicValues } from '../helpers/parse-dynamic-client-values.js';
+import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
-	const client = getDatabaseClient(knex);
+	const helpers = getHelpers(knex);
 
 	await knex.schema.createTable('directus_versions', (table) => {
 		table.uuid('id').primary().notNullable();
@@ -11,7 +10,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('name');
 
 		table
-			.string('collection', Number(parseDynamicValues(client, 'MAX_TABLE_NAME_LENGTH')))
+			.string('collection', helpers.schema.getTableMaxLength())
 			.notNullable()
 			.references('collection')
 			.inTable('directus_collections')
