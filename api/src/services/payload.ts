@@ -800,14 +800,18 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
+					const keys = alterations.update.map((item) => item[relatedPrimaryKeyField]);
+
+					const existingRecords = await this.knex
+						.select(relatedPrimaryKeyField, relation.field)
+						.from(relation.collection)
+						.whereIn(relatedPrimaryKeyField, keys);
+
+					const existingRecordsMap = new Map(existingRecords.map((record) => [record[relatedPrimaryKeyField], record]));
+
 					for (const item of alterations.update) {
 						const { [relatedPrimaryKeyField]: key, ...record } = item;
-
-						const existingRecord = await this.knex
-							.select(relatedPrimaryKeyField, relation.field)
-							.from(relation.collection)
-							.where({ [relatedPrimaryKeyField]: key })
-							.first();
+						const existingRecord = existingRecordsMap.get(key);
 
 						if (!existingRecord || existingRecord[relation.field] != parent) {
 							record[relation.field] = parent || payload[currentPrimaryKeyField];
