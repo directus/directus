@@ -22,7 +22,7 @@ columns:
     length: 255
   collection:
     type: string
-    length: 64
+    length: 'MAX_TABLE_NAME_LENGTH'
     nullable: false
     references:
       table: directus_collections
