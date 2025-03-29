@@ -84,7 +84,7 @@ our [API reference documentation](/reference/system/versions).
 Under the hood, content versions are stored in the `directus_revisions` collection. In bigger projects this collection
 can get large.
 
-Some Directus users combat this my periodically purging some or all data in this collection. Be aware that this could
+Some Directus users combat this by periodically purging some or all data in this collection. Be aware that this could
 unintentionally purge content versions, so purging logic may have to be updated.
 
 ## Next Steps

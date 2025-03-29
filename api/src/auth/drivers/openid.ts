@@ -14,6 +14,7 @@ import { parseJSON } from '@directus/utils';
 import express, { Router } from 'express';
 import { flatten } from 'flat';
 import jwt from 'jsonwebtoken';
+import type { StringValue } from 'ms';
 import type { Client } from 'openid-client';
 import { errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
@@ -26,11 +27,13 @@ import { createDefaultAccountability } from '../../permissions/utils/create-defa
 import { AuthenticationService } from '../../services/authentication.js';
 import { UsersService } from '../../services/users.js';
 import type { AuthData, AuthDriverOptions, User } from '../../types/index.js';
+import type { RoleMap } from '../../types/rolemap.js';
 import asyncHandler from '../../utils/async-handler.js';
 import { getConfigFromEnv } from '../../utils/get-config-from-env.js';
 import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { getSecret } from '../../utils/get-secret.js';
 import { isLoginRedirectAllowed } from '../../utils/is-login-redirect-allowed.js';
+import { verifyJWT } from '../../utils/jwt.js';
 import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 
@@ -39,6 +42,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 	redirectUrl: string;
 	usersService: UsersService;
 	config: Record<string, any>;
+	roleMap: RoleMap;
 
 	constructor(options: AuthDriverOptions, config: Record<string, any>) {
 		super(options, config);
@@ -60,15 +64,35 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			'callback',
 		);
 
-		const clientOptionsOverrides = getConfigFromEnv(
-			`AUTH_${config['provider'].toUpperCase()}_CLIENT_`,
-			[`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`, `AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`],
-			'underscore',
-		);
+		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
+		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_CLIENT_`, {
+			omitKey: [
+				`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`,
+				`AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`,
+			],
+			type: 'underscore',
+		});
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
 		this.config = additionalConfig;
+		this.roleMap = {};
+
+		const roleMapping = this.config['roleMapping'];
+
+		if (roleMapping) {
+			this.roleMap = roleMapping;
+		}
+
+		// role mapping will fail on login if AUTH_<provider>_ROLE_MAPPING is an array instead of an object.
+		// This happens if the 'json:' prefix is missing from the variable declaration. To save the user from exhaustive debugging, we'll try to fail early here.
+		if (roleMapping instanceof Array) {
+			logger.error(
+				"[OpenID] Expected a JSON-Object as role mapping, got an Array instead. Make sure you declare the variable with 'json:' prefix.",
+			);
+
+			throw new InvalidProviderError();
+		}
 
 		this.client = new Promise((resolve, reject) => {
 			Issuer.discover(issuerUrl)
@@ -178,6 +202,22 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw handleError(e);
 		}
 
+		let role = this.config['defaultRoleId'];
+		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
+		const groups = userInfo[groupClaimName];
+
+		if (Array.isArray(groups)) {
+			for (const key in this.roleMap) {
+				if (groups.includes(key)) {
+					// Overwrite default role if user is member of a group specified in roleMap
+					role = this.roleMap[key];
+					break;
+				}
+			}
+		} else {
+			logger.debug(`[OpenID] Configured group claim with name "${groupClaimName}" does not exist or is empty.`);
+		}
+
 		// Flatten response to support dot indexes
 		userInfo = flatten(userInfo) as Record<string, unknown>;
 
@@ -198,7 +238,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			last_name: userInfo['family_name'],
 			email: email,
 			external_identifier: identifier,
-			role: this.config['defaultRoleId'],
+			role: role,
 			auth_data: tokenSet.refresh_token && JSON.stringify({ refreshToken: tokenSet.refresh_token }),
 		};
 
@@ -210,6 +250,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			let emitPayload: Record<string, unknown> = {
 				auth_data: userPayload.auth_data,
 			};
+
+			// Make sure a user's role gets updated if their openid group or role mapping changes
+			if (this.config['roleMapping']) {
+				emitPayload['role'] = role;
+			}
 
 			if (syncUserInfo) {
 				emitPayload = {
@@ -352,7 +397,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			}
 
 			const token = jwt.sign({ verifier: codeVerifier, redirect, prompt }, getSecret(), {
-				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as string,
+				expiresIn: (env[`AUTH_${providerName.toUpperCase()}_LOGIN_TIMEOUT`] ?? '5m') as StringValue | number,
 				issuer: 'directus',
 			});
 
@@ -383,9 +428,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 			let tokenData;
 
 			try {
-				tokenData = jwt.verify(req.cookies[`openid.${providerName}`], getSecret(), {
-					issuer: 'directus',
-				}) as {
+				tokenData = verifyJWT(req.cookies[`openid.${providerName}`], getSecret()) as {
 					verifier: string;
 					redirect?: string;
 					prompt: boolean;

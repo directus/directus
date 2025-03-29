@@ -2062,7 +2062,6 @@ operations:
     name: Send Email
     description: Send an email to one or more people
     to: To
-    to_placeholder: Add e-mail addresses and press enter...
     body: Body
     template: Template
     data: Data

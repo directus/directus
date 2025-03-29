@@ -127,6 +127,7 @@ export function importCalendarLocale(locale: string): Promise<any> {
 		case 'ms':
 			return import('@fullcalendar/core/locales/ms');
 		case 'nb':
+		case 'no':
 			return import('@fullcalendar/core/locales/nb');
 		case 'ne':
 			return import('@fullcalendar/core/locales/ne');

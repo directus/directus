@@ -52,6 +52,7 @@ export class PayloadService {
 	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
+	nested: string[];
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -59,6 +60,7 @@ export class PayloadService {
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
+		this.nested = options.nested ?? [];
 
 		return this;
 	}
@@ -449,6 +451,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.field],
 			});
 
 			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
@@ -539,6 +542,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.field],
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
@@ -631,6 +635,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.meta!.one_field!],
 			});
 
 			const recordsToUpsert: Partial<Item>[] = [];
@@ -643,18 +648,29 @@ export class PayloadService {
 				const updates = field || []; // treat falsey values as removing all children
 
 				for (let i = 0; i < updates.length; i++) {
+					const currentId = parent || payload[currentPrimaryKeyField];
 					const relatedRecord = updates[i];
+
+					const relatedId =
+						typeof relatedRecord === 'string' || typeof relatedRecord === 'number'
+							? relatedRecord
+							: relatedRecord[relatedPrimaryKeyField];
 
 					let record = cloneDeep(relatedRecord);
 
-					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
-						const existingRecord = await this.knex
+					let existingRecord;
+
+					// No relatedId means it's a new record
+					if (relatedId) {
+						existingRecord = await this.knex
 							.select(relatedPrimaryKeyField, relation.field)
 							.from(relation.collection)
-							.where({ [relatedPrimaryKeyField]: record })
+							.where({ [relatedPrimaryKeyField]: relatedId })
 							.first();
+					}
 
-						if (!!existingRecord === false) {
+					if (typeof relatedRecord === 'string' || typeof relatedRecord === 'number') {
+						if (!existingRecord) {
 							throw new ForbiddenError();
 						}
 
@@ -664,11 +680,7 @@ export class PayloadService {
 						// for items that aren't actually being updated. NOTE: We use == here, as the
 						// primary key might be reported as a string instead of number, coming from the
 						// http route, and or a bigInteger in the DB
-						if (
-							isNil(existingRecord[relation.field]) === false &&
-							(existingRecord[relation.field] == parent ||
-								existingRecord[relation.field] == payload[currentPrimaryKeyField])
-						) {
+						if (isNil(existingRecord[relation.field]) === false && existingRecord[relation.field] == currentId) {
 							savedPrimaryKeys.push(existingRecord[relatedPrimaryKeyField]);
 							continue;
 						}
@@ -678,10 +690,11 @@ export class PayloadService {
 						};
 					}
 
-					recordsToUpsert.push({
-						...record,
-						[relation.field]: parent || payload[currentPrimaryKeyField],
-					});
+					if (!existingRecord || existingRecord[relation.field] != parent) {
+						record[relation.field] = currentId;
+					}
+
+					recordsToUpsert.push(record);
 				}
 
 				savedPrimaryKeys.push(
@@ -787,26 +800,27 @@ export class PayloadService {
 				}
 
 				if (alterations.update) {
-					const primaryKeyField = this.schema.collections[relation.collection]!.primary;
-
 					for (const item of alterations.update) {
-						const { [primaryKeyField]: key, ...record } = item;
+						const { [relatedPrimaryKeyField]: key, ...record } = item;
 
-						await service.updateOne(
-							key,
-							{
-								...record,
-								[relation.field]: parent || payload[currentPrimaryKeyField],
-							},
-							{
-								onRevisionCreate: (pk) => revisions.push(pk),
-								onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
-								bypassEmitAction: (params) =>
-									opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
-								emitEvents: opts?.emitEvents,
-								mutationTracker: opts?.mutationTracker,
-							},
-						);
+						const existingRecord = await this.knex
+							.select(relatedPrimaryKeyField, relation.field)
+							.from(relation.collection)
+							.where({ [relatedPrimaryKeyField]: key })
+							.first();
+
+						if (!existingRecord || existingRecord[relation.field] != parent) {
+							record[relation.field] = parent || payload[currentPrimaryKeyField];
+						}
+
+						await service.updateOne(key, record, {
+							onRevisionCreate: (pk) => revisions.push(pk),
+							onRequireUserIntegrityCheck: (flags) => (userIntegrityCheckFlags |= flags),
+							bypassEmitAction: (params) =>
+								opts?.bypassEmitAction ? opts.bypassEmitAction(params) : nestedActionEvents.push(params),
+							emitEvents: opts?.emitEvents,
+							mutationTracker: opts?.mutationTracker,
+						});
 					}
 				}
 

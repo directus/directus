@@ -5,7 +5,7 @@ export default defineOperationApp({
 	icon: 'mail',
 	name: '$t:operations.mail.name',
 	description: '$t:operations.mail.description',
-	overview: ({ subject, to, type }) => [
+	overview: ({ subject, to, type, cc, bcc, replyTo }) => [
 		{
 			label: '$t:subject',
 			text: subject,
@@ -18,6 +18,20 @@ export default defineOperationApp({
 			label: '$t:type',
 			text: type || 'markdown',
 		},
+		...[
+			cc && {
+				label: '$t:operations.mail.cc',
+				text: Array.isArray(cc) ? cc.join(', ') : cc,
+			},
+			bcc && {
+				label: '$t:operations.mail.bcc',
+				text: Array.isArray(bcc) ? bcc.join(', ') : bcc,
+			},
+			replyTo && {
+				label: '$t:operations.mail.reply_to',
+				text: Array.isArray(replyTo) ? replyTo.join(', ') : replyTo,
+			},
+		].filter((v) => v),
 	],
 	options: (panel) => {
 		return [
@@ -43,6 +57,46 @@ export default defineOperationApp({
 					interface: 'input',
 					options: {
 						iconRight: 'title',
+					},
+				},
+			},
+
+			{
+				field: 'cc',
+				name: '$t:operations.mail.cc',
+				type: 'csv',
+				meta: {
+					width: 'full',
+					interface: 'tags',
+					options: {
+						placeholder: '$t:operations.mail.cc_placeholder',
+						iconRight: 'alternate_email',
+					},
+				},
+			},
+			{
+				field: 'bcc',
+				name: '$t:operations.mail.bcc',
+				type: 'csv',
+				meta: {
+					width: 'full',
+					interface: 'tags',
+					options: {
+						placeholder: '$t:operations.mail.bcc_placeholder',
+						iconRight: 'alternate_email',
+					},
+				},
+			},
+			{
+				field: 'replyTo',
+				name: '$t:operations.mail.reply_to',
+				type: 'csv',
+				meta: {
+					width: 'full',
+					interface: 'tags',
+					options: {
+						placeholder: '$t:operations.mail.reply_to_placeholder',
+						iconRight: 'reply',
 					},
 				},
 			},

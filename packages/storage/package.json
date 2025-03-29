@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage",
-	"version": "11.0.1",
+	"version": "12.0.0",
 	"description": "Object storage abstraction layer for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -26,11 +26,11 @@
 		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "workspace:*",
-		"@types/node": "18.19.55",
-		"@vitest/coverage-v8": "2.1.2",
-		"tsup": "8.3.0",
-		"typescript": "5.6.3",
-		"vitest": "2.1.2"
+		"@directus/tsconfig": "3.0.0",
+		"@types/node": "22.13.8",
+		"@vitest/coverage-v8": "2.1.9",
+		"tsup": "8.4.0",
+		"typescript": "5.8.2",
+		"vitest": "2.1.9"
 	}
 }

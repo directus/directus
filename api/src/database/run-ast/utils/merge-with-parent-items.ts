@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Item, SchemaOverview, PrimaryKey } from '@directus/types';
+import type { Item, PrimaryKey, SchemaOverview } from '@directus/types';
 import { toArray } from '@directus/utils';
 import { clone, isArray } from 'lodash-es';
 import type { NestedCollectionNode } from '../../../types/ast.js';
@@ -18,7 +18,8 @@ export function mergeWithParentItems(
 	if (nestedNode.type === 'm2o') {
 		const parentsByForeignKey = new Map<PrimaryKey, Item[]>();
 
-		parentItems.forEach((parentItem: Item) => {
+		// default all nested nodes to null
+		for (const parentItem of parentItems) {
 			const relationKey = parentItem[nestedNode.relation.field];
 
 			if (!parentsByForeignKey.has(relationKey)) {
@@ -27,12 +28,23 @@ export function mergeWithParentItems(
 
 			parentItem[nestedNode.fieldKey] = null;
 			parentsByForeignKey.get(relationKey)!.push(parentItem);
-		});
+		}
 
-		const nestPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
+		const nestedPrimaryKeyField = schema.collections[nestedNode.relation.related_collection!]!.primary;
 
+		// populate nested items where applicable
 		for (const nestedItem of nestedItems) {
-			const nestedPK = nestedItem[nestPrimaryKeyField];
+			const nestedPK = nestedItem[nestedPrimaryKeyField];
+
+			// user has no access to the nestedItem PK field
+			if (nestedPK === null) {
+				continue;
+			}
+
+			// Existing M2O record (i.e. valid nested PK) but not linked to this (or any) parent item
+			if (!parentsByForeignKey.has(nestedPK)) {
+				continue;
+			}
 
 			for (const parentItem of parentsByForeignKey.get(nestedPK)!) {
 				parentItem[nestedNode.fieldKey] = nestedItem;
@@ -46,10 +58,20 @@ export function mergeWithParentItems(
 
 		const parentsByPrimaryKey = new Map<PrimaryKey, Item>();
 
-		parentItems.forEach((parentItem: Item) => {
-			if (!parentItem[parentRelationField]) parentItem[parentRelationField] = [];
+		for (const parentItem of parentItems) {
+			if (!parentItem[parentRelationField]) {
+				parentItem[parentRelationField] = [];
+			}
 
-			const parentPrimaryKey = parentItem[parentPrimaryKeyField];
+			let parentPrimaryKey: PrimaryKey | null = parentItem[parentPrimaryKeyField];
+
+			// null if the user has no access to parent PK
+			if (parentPrimaryKey === null) {
+				continue;
+			} else {
+				// ensure key access is type agnostic
+				parentPrimaryKey = parentPrimaryKey.toString();
+			}
 
 			if (parentsByPrimaryKey.has(parentPrimaryKey)) {
 				throw new Error(
@@ -58,31 +80,36 @@ export function mergeWithParentItems(
 			}
 
 			parentsByPrimaryKey.set(parentPrimaryKey, parentItem);
-		});
+		}
 
 		const toAddToAllParents: Item[] = [];
 
-		nestedItems.forEach((nestedItem) => {
-			if (nestedItem === null) return;
+		for (const nestedItem of nestedItems) {
+			if (nestedItem === null) {
+				continue;
+			}
 
 			if (Array.isArray(nestedItem[nestedParentKeyField])) {
 				toAddToAllParents.push(nestedItem); // TODO explain this odd case
-				return; // Avoids adding the nestedItem twice
+				continue; // Avoids adding the nestedItem twice
 			}
 
-			const parentPrimaryKey =
+			const parentPrimaryKey: PrimaryKey | null =
 				nestedItem[nestedParentKeyField]?.[parentPrimaryKeyField] ?? nestedItem[nestedParentKeyField];
 
-			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey);
+			if (parentPrimaryKey === null) {
+				continue;
+			}
 
+			const parentItem = parentsByPrimaryKey.get(parentPrimaryKey.toString());
+
+			// null if the user has no access to parent PK
 			if (!parentItem) {
-				throw new Error(
-					`Missing parentItem '${nestedItem[nestedParentKeyField]}' of '${parentCollectionName}' when merging o2m nested items`,
-				);
+				continue;
 			}
 
 			parentItem[parentRelationField].push(nestedItem);
-		});
+		}
 
 		for (const [index, parentItem] of parentItems.entries()) {
 			if (fieldAllowed === false || (isArray(fieldAllowed) && !fieldAllowed[index])) {

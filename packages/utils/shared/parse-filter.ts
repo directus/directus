@@ -41,30 +41,26 @@ function shiftLogicalOperatorsUp(filter: any): any {
 	if (!key) return filter;
 
 	if (logicalFilterOperators.includes(key)) {
-		for (const childKey of Object.keys(filter[key])) {
-			filter[key][childKey] = shiftLogicalOperatorsUp(filter[key][childKey]);
-		}
-
-		return filter;
+		return {
+			[key]: filter[key].map(shiftLogicalOperatorsUp),
+		};
 	} else if (key.startsWith('_')) {
 		return filter;
 	} else {
-		const childKey = Object.keys(filter[key])[0];
-		if (!childKey) return filter;
+		const childResult = shiftLogicalOperatorsUp(filter[key]);
+		const childKey = Object.keys(childResult)[0];
+
+		if (!childKey) return { [key]: childResult };
 
 		if (logicalFilterOperators.includes(childKey)) {
-			return {
-				[childKey]: toArray(filter[key][childKey]).map((childFilter) => {
-					return { [key]: shiftLogicalOperatorsUp(childFilter) };
-				}),
-			};
-		} else if (bypassOperators.includes(childKey)) {
-			return { [key]: { [childKey]: shiftLogicalOperatorsUp(filter[key][childKey]) } };
-		} else if (childKey.startsWith('_')) {
-			return filter;
-		} else {
-			return { [key]: shiftLogicalOperatorsUp(filter[key]) };
+			return shiftLogicalOperatorsUp({
+				[childKey]: childResult[childKey].map((nestedFilter: any) => ({
+					[key]: nestedFilter,
+				})),
+			});
 		}
+
+		return { [key]: childResult };
 	}
 }
 

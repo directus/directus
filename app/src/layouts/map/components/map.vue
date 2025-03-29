@@ -5,7 +5,6 @@ import { BoxSelectControl, ButtonControl } from '@/utils/geometry/controls';
 import type { ShowSelect } from '@directus/extensions';
 import { useAppStore } from '@directus/stores';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
-import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import maplibre, {
 	AnyLayer,
 	AttributionControl,
@@ -19,9 +18,11 @@ import maplibre, {
 	MapboxGeoJSONFeature,
 	NavigationControl,
 } from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
 import { WatchStopHandle, computed, onMounted, onUnmounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 const props = withDefaults(
 	defineProps<{

@@ -1,6 +1,14 @@
 import type { Type } from '@directus/types';
 import type { GraphQLType } from 'graphql';
-import { GraphQLBoolean, GraphQLFloat, GraphQLInt, GraphQLList, GraphQLScalarType, GraphQLString } from 'graphql';
+import {
+	GraphQLBoolean,
+	GraphQLFloat,
+	GraphQLID,
+	GraphQLInt,
+	GraphQLList,
+	GraphQLScalarType,
+	GraphQLString,
+} from 'graphql';
 import { GraphQLJSON } from 'graphql-compose';
 import { GraphQLBigInt } from '../services/graphql/types/bigint.js';
 import { GraphQLDate } from '../services/graphql/types/date.js';
@@ -38,6 +46,8 @@ export function getGraphQLType(
 			return GraphQLDate;
 		case 'hash':
 			return GraphQLHash;
+		case 'uuid':
+			return GraphQLID;
 		default:
 			return GraphQLString;
 	}

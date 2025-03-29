@@ -10,7 +10,7 @@ export const sendReport = async (report: TelemetryReport) => {
 
 	const url = new URL('/v1/metrics', env['TELEMETRY_URL'] as string);
 
-	const headers: HeadersInit = {
+	const headers: ResponseInit['headers'] = {
 		'Content-Type': 'application/json',
 	};
 

@@ -172,13 +172,7 @@ function emitValue() {
 				@click.stop="clear"
 			/>
 			<template v-if="showFilter">
-				<v-icon
-					v-tooltip.bottom="t('filter')"
-					clickable
-					class="icon-filter"
-					name="filter_list"
-					@click.stop="toggleFilter"
-				/>
+				<v-icon v-tooltip.bottom="t('filter')" clickable class="icon-filter" name="filter_list" @click="toggleFilter" />
 
 				<transition-expand @before-enter="filterBorder = true" @after-leave="filterBorder = false">
 					<div v-show="filterActive" ref="filterElement" class="filter" :class="{ active }">

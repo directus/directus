@@ -229,28 +229,29 @@ Explicit casting is also available when reading from a file with the `_FILE` suf
 
 ## General
 
-| Variable                        | Description                                                                                                                 | Default Value                |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `CONFIG_PATH`                   | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
-| `HOST`                          | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
-| `PORT`                          | What port to run the API under.                                                                                             | `8055`                       |
-| `UNIX_SOCKET_PATH`              | The Unix socket the API listens on, `PORT` and `HOST` will be ignored if this is provided.                                  | --                           |
-| `PUBLIC_URL`<sup>[1]</sup>      | URL where your API can be reached on the web.                                                                               | `/`                          |
-| `LOG_LEVEL`                     | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
-| `LOG_STYLE`                     | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
-| `LOG_HTTP_IGNORE_PATHS`         | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
-| `MAX_PAYLOAD_SIZE`              | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
-| `ROOT_REDIRECT`                 | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
-| `SERVE_APP`                     | Whether or not to serve the Data Studio                                                                                     | `true`                       |
-| `GRAPHQL_INTROSPECTION`         | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
-| `GRAPHQL_SCHEMA_CACHE_CAPACITY` | How many user GraphQL schemas to store in memory                                                                            | `100`                        |
-| `MAX_BATCH_MUTATION`            | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
-| `MAX_RELATIONAL_DEPTH`          | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
-| `QUERY_LIMIT_DEFAULT`           | The default query limit used when not defined in the API request.                                                           | `100`                        |
-| `QUERY_LIMIT_MAX`               | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
-| `ROBOTS_TXT`                    | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
-| `TEMP_PATH`                     | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
-| `MIGRATIONS_PATH`               | Where custom migrations are located                                                                                         | `./migrations`               |
+| Variable                                   | Description                                                                                                                 | Default Value                |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| `CONFIG_PATH`                              | Where your config file is located. See [Configuration Files](#configuration-files)                                          | `.env`                       |
+| `HOST`                                     | IP or host the API listens on.                                                                                              | `0.0.0.0`                    |
+| `PORT`                                     | What port to run the API under.                                                                                             | `8055`                       |
+| `UNIX_SOCKET_PATH`                         | The Unix socket the API listens on, `PORT` and `HOST` will be ignored if this is provided.                                  | --                           |
+| `PUBLIC_URL`<sup>[1]</sup>                 | URL where your API can be reached on the web.                                                                               | `/`                          |
+| `LOG_LEVEL`                                | What level of detail to log. One of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`.                         | `info`                       |
+| `LOG_STYLE`                                | Render the logs human readable (pretty) or as JSON. One of `pretty`, `raw`.                                                 | `pretty`                     |
+| `LOG_HTTP_IGNORE_PATHS`                    | List of HTTP request paths which should not appear in the log, for example `/server/ping`.                                  | --                           |
+| `MAX_PAYLOAD_SIZE`                         | Controls the maximum request body size. Accepts number of bytes, or human readable string.                                  | `1mb`                        |
+| `ROOT_REDIRECT`                            | Redirect the root of the application `/` to a specific route. Accepts a relative path, absolute URL, or `false` to disable. | `./admin`                    |
+| `SERVE_APP`                                | Whether or not to serve the Data Studio                                                                                     | `true`                       |
+| `GRAPHQL_INTROSPECTION`                    | Whether or not to enable GraphQL Introspection                                                                              | `true`                       |
+| `GRAPHQL_SCHEMA_CACHE_CAPACITY`            | How many user GraphQL schemas to store in memory                                                                            | `100`                        |
+| `GRAPHQL_SCHEMA_GENERATION_MAX_CONCURRENT` | How many GraphQL schemas can be generated simultaneously                                                                    | `5`                          |
+| `MAX_BATCH_MUTATION`                       | The maximum number of items for batch mutations when creating, updating and deleting.                                       | `Infinity`                   |
+| `MAX_RELATIONAL_DEPTH`                     | The maximum depth when filtering / querying relational fields, with a minimum value of `2`.                                 | `10`                         |
+| `QUERY_LIMIT_DEFAULT`                      | The default query limit used when not defined in the API request.                                                           | `100`                        |
+| `QUERY_LIMIT_MAX`                          | The maximum query limit accepted on API requests.                                                                           | `-1`                         |
+| `ROBOTS_TXT`                               | What the `/robots.txt` endpoint should return                                                                               | `User-agent: *\nDisallow: /` |
+| `TEMP_PATH`                                | Where Directus' temporary files should be managed                                                                           | `./node_modules/.directus`   |
+| `MIGRATIONS_PATH`                          | Where custom migrations are located                                                                                         | `./migrations`               |
 
 <sup>[1]</sup> The PUBLIC_URL value is used for things like OAuth redirects, forgot-password emails, and logos that
 needs to be publicly available on the internet.
@@ -352,6 +353,14 @@ This includes:
 
   Note: `REDIS_SENTINELS` is required for specifying sentinel instances and expects to receive an array of objects:
   `REDIS_SENTINELS=json:[{"host": "127.0.0.1", "port": 26379}, ...]`
+
+  For example:
+
+  ```
+  REDIS_NAME: "redis-cache" # Sentinel cluster name
+  REDIS_SENTINEL_PASSWORD: <password>
+  REDIS_SENTINELS: 'json:[{"host": <fdqn or ip>, "port": 26379}]'
+  ```
 
   Make sure to explicitly prefix the value with `json` so it will be treated as a json array.
 
@@ -543,6 +552,7 @@ than you would cache database content. To learn more, see [Assets](#assets).
 | `CACHE_SCHEMA`<sup>[4]</sup>                 | Whether or not the database schema is cached. One of `false`, `true`                                                      | `true`                               |
 | `CACHE_SCHEMA_MAX_ITERATIONS`<sup>[4]</sup>  | Safe value to limit max iterations on get schema cache. This value should only be adjusted for high scaling applications. | `100`                                |
 | `CACHE_SCHEMA_SYNC_TIMEOUT`                  | How long to wait for other containers to message before trying again                                                      | `10000`                              |
+| `CACHE_SCHEMA_FREEZE_ENABLED`                | Whether or not to freeze the schema to improve memory efficiency                                                          | false                                |
 | `CACHE_NAMESPACE`                            | How to scope the cache data.                                                                                              | `system-cache`                       |
 | `CACHE_STORE`<sup>[5]</sup>                  | Where to store the cache data. Either `memory`, `redis`.                                                                  | `memory`                             |
 | `CACHE_STATUS_HEADER`                        | If set, returns the cache status in the configured header. One of `HIT`, `MISS`.                                          | --                                   |
@@ -851,28 +861,43 @@ Directus users "External Identifier".
 
 OpenID is an authentication protocol built on OAuth 2.0, and should be preferred over standard OAuth 2.0 where possible.
 
-| Variable                                    | Description                                                                                               | Default Value          |
-| ------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                               | --                     |
-| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                                   | --                     |
-| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                   | `openid profile email` |
-| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                                      | --                     |
-| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                               | `sub`<sup>[2]</sup>    |
-| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                   | `false`                |
-| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                                   | `false`                |
-| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                               | --                     |
-| `AUTH_<PROVIDER>_SYNC_USER_INFO`            | Set user's first name, last name and email from provider's user info on each login.                       | `false`                |
-| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).         | `account_circle`       |
-| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                            | `<PROVIDER>`           |
-| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                 | --                     |
-| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login. | --                     |
-| `AUTH_<PROVIDER>_LOGIN_TIMEOUT`             | Time-Out for successful login in SSO.                                                                     | `5m`                   |
+| Variable                                    | Description                                                                                                                                                                                                          | Default Value          |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `AUTH_<PROVIDER>_CLIENT_ID`                 | Client identifier for the external service.                                                                                                                                                                          | --                     |
+| `AUTH_<PROVIDER>_CLIENT_SECRET`             | Client secret for the external service.                                                                                                                                                                              | --                     |
+| `AUTH_<PROVIDER>_SCOPE`                     | A white-space separated list of permissions to request.                                                                                                                                                              | `openid profile email` |
+| `AUTH_<PROVIDER>_ISSUER_URL`                | OpenID `.well-known` discovery document URL of the external service.                                                                                                                                                 | --                     |
+| `AUTH_<PROVIDER>_IDENTIFIER_KEY`            | User profile identifier key <sup>[1]</sup>.                                                                                                                                                                          | `sub`<sup>[2]</sup>    |
+| `AUTH_<PROVIDER>_ALLOW_PUBLIC_REGISTRATION` | Automatically create accounts for authenticating users.                                                                                                                                                              | `false`                |
+| `AUTH_<PROVIDER>_REQUIRE_VERIFIED_EMAIL`    | Require created users to have a verified email address.                                                                                                                                                              | `false`                |
+| `AUTH_<PROVIDER>_DEFAULT_ROLE_ID`           | A Directus role ID to assign created users.                                                                                                                                                                          | --                     |
+| `AUTH_<PROVIDER>_SYNC_USER_INFO`            | Set user's first name, last name and email from provider's user info on each login.                                                                                                                                  | `false`                |
+| `AUTH_<PROVIDER>_ICON`                      | SVG icon to display with the login link. [See options here](/user-guide/overview/glossary#icons).                                                                                                                    | `account_circle`       |
+| `AUTH_<PROVIDER>_LABEL`                     | Text to be presented on SSO button within App.                                                                                                                                                                       | `<PROVIDER>`           |
+| `AUTH_<PROVIDER>_PARAMS`                    | Custom query parameters applied to the authorization URL.                                                                                                                                                            | --                     |
+| `AUTH_<PROVIDER>_REDIRECT_ALLOW_LIST`       | A comma-separated list of external URLs (including paths) allowed for redirecting after successful login.                                                                                                            | --                     |
+| `AUTH_<PROVIDER>_ROLE_MAPPING`              | A JSON object in the form of `{ "openid_group_name": "directus_role_id" }` that you can use to map OpenID groups to Directus roles <sup>[3]</sup>. If not specified, falls back to `AUTH_<PROVIDER>_DEFAULT_ROLE_ID` | --                     |
+| `AUTH_<PROVIDER>_GROUP_CLAIM_NAME`          | The name of the OIDC claim that contains your user's groups.                                                                                                                                                         | `groups`               |
 
 <sup>[1]</sup> When authenticating, Directus will match the identifier value from the external user profile to a
 Directus users "External Identifier".
 
 <sup>[2]</sup> `sub` represents a unique user identifier defined by the OpenID provider. For users not relying on
 `PUBLIC_REGISTRATION` it is recommended to use a human-readable identifier, such as `email`.
+
+<sup>[3]</sup> As directus only allows one role per user, evaluating stops after the first match. An OpenID user that is
+member of both e.g. developer and admin groups may be assigned different roles depending on the order that you specify
+your role-mapping in: In the following example said OpenID user will be assigned the role `directus_developer_role_id`
+
+```
+AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "developer": "directus_developer_role_id", "admin": "directus_admin_role_id" }"
+```
+
+Whereas in the following example the OpenID user will be assigned the role `directus_admin_role_id`
+
+```
+AUTH_<PROVIDER>_ROLE_MAPPING: json:{ "admin": "directus_admin_role_id", "developer": "directus_developer_role_id" }"
+```
 
 ### LDAP (`ldap`)
 
@@ -1110,6 +1135,24 @@ Directus collects little and anonymized data about your environment.
 | `TELEMETRY`               | Allow Directus to collect anonymized data about your environment. | `true`                           |
 | `TELEMETRY_URL`           | URL that the usage report is submitted to.                        | `https://telemetry.directus.io/` |
 | `TELEMETRY_AUTHORIZATION` | Optional authorization header value.                              | --                               |
+
+## Metrics
+
+To enable performance and error measurement of connected services, Directus can provide Prometheus metrics.
+
+| Variable           | Description                                                                                                             | Default Value                  |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| `METRICS_ENABLED`  | Whether or not to enable metrics.                                                                                       | `false`                        |
+| `METRICS_SCHEDULE` | The cron schedule at which to generate the metrics, the default is every minute                                         | `*/1 * * * *`                  |
+| `METRICS_TOKENS`   | A CSV of tokens to allow access to via a `Authorization: Metrics <token>` header. By default it is restricted to admins | --                             |
+| `METRICS_SERVICES` | A CSV of directus services to observe metrics for. Currently `database`, `cache`, `redis` and `storage` are supported   | `database,cache,redis,storage` |
+
+::: warning Metric Aggregation
+
+If Directus is running within a PM2 context, then metrics will be aggregated on a per scheduled job frequency. Ensure
+Prometheus' scrape frequency takes that into account.
+
+:::
 
 ## Limits & Optimizations
 

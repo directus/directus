@@ -3,6 +3,7 @@ import formatTitle from '@directus/format-title';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import icons from './icons.json';
+import { socialIcons } from '@/components/v-icon/social-icons';
 
 withDefaults(
 	defineProps<{
@@ -21,10 +22,18 @@ const { t } = useI18n();
 
 const searchQuery = ref('');
 
-const filteredIcons = computed(() => {
-	if (searchQuery.value.length === 0) return icons;
+const mergedIcons = [
+	...icons,
+	{
+		name: 'Social',
+		icons: socialIcons,
+	},
+];
 
-	return icons.map((group) => {
+const filteredIcons = computed(() => {
+	if (searchQuery.value.length === 0) return mergedIcons;
+
+	return mergedIcons.map((group) => {
 		const icons = group.icons.filter((icon) => icon.includes(searchQuery.value.toLowerCase()));
 
 		return {
@@ -57,15 +66,18 @@ function setIcon(icon: string | null) {
 				</template>
 
 				<template #append>
-					<v-icon v-if="value !== null" clickable name="close" @click="setIcon(null)" />
-					<v-icon
-						v-else
-						clickable
-						name="expand_more"
-						class="open-indicator"
-						:class="{ open: active }"
-						@click="activate"
-					/>
+					<div class="item-actions">
+						<v-remove v-if="value !== null" deselect @action="setIcon(null)" />
+
+						<v-icon
+							v-else
+							clickable
+							name="expand_more"
+							class="open-indicator"
+							:class="{ open: active }"
+							@click="activate"
+						/>
+					</div>
 				</template>
 			</v-input>
 		</template>
@@ -89,6 +101,12 @@ function setIcon(icon: string | null) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
+}
+
 .v-input.has-value {
 	--v-input-placeholder-color: var(--theme--primary);
 

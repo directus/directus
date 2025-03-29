@@ -13,6 +13,7 @@ import { performance } from 'perf_hooks';
 import { promisify } from 'util';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../logger/index.js';
+import { useMetrics } from '../metrics/index.js';
 import type { DatabaseClient } from '../types/index.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';
 import { validateEnv } from '../utils/validate-env.js';
@@ -40,6 +41,7 @@ export function getDatabase(): Knex {
 
 	const env = useEnv();
 	const logger = useLogger();
+	const metrics = useMetrics();
 
 	const {
 		client,
@@ -48,7 +50,7 @@ export function getDatabase(): Knex {
 		connectionString,
 		pool: poolConfig = {},
 		...connectionConfig
-	} = getConfigFromEnv('DB_', ['DB_EXCLUDE_TABLES']);
+	} = getConfigFromEnv('DB_', { omitPrefix: 'DB_EXCLUDE_TABLES' });
 
 	const requiredEnvVars = ['DB_CLIENT'];
 
@@ -143,6 +145,20 @@ export function getDatabase(): Knex {
 		};
 	}
 
+	if (client === 'oracledb') {
+		poolConfig.afterCreate = async (conn: any, callback: any) => {
+			logger.trace('Setting OracleDB NLS_DATE_FORMAT and NLS_TIMESTAMP_FORMAT');
+
+			// enforce proper ISO standard 2024-12-10T10:54:00.123Z for datetime/timestamp
+			await conn.executeAsync('ALTER SESSION SET NLS_TIMESTAMP_FORMAT = \'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"\'');
+
+			// enforce 2024-12-10 date formet
+			await conn.executeAsync("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD'");
+
+			callback(null, conn);
+		};
+	}
+
 	if (client === 'mysql') {
 		// Remove the conflicting `filename` option, defined by default in the Docker Image
 		if (isObject(knexConfig.connection)) delete knexConfig.connection['filename'];
@@ -183,6 +199,8 @@ export function getDatabase(): Knex {
 			if (time) {
 				delta = performance.now() - time;
 				times.delete(queryInfo.__knexUid);
+
+				metrics?.getDatabaseResponseMetric()?.observe(delta);
 			}
 
 			// eslint-disable-next-line no-nested-ternary

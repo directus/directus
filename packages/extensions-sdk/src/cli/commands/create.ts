@@ -188,6 +188,7 @@ function getPackageManifest(name: string, options: ExtensionOptions, deps: Recor
 			build: 'directus-extension build',
 			dev: 'directus-extension build -w --no-minify',
 			link: 'directus-extension link',
+			validate: 'directus-extension validate',
 		},
 		devDependencies: deps,
 	};

@@ -1,8 +1,17 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended", ":disableDependencyDashboard"],
+	"extends": [
+		":semanticPrefixFixDepsChoreOthers",
+		"group:monorepos",
+		"group:recommended",
+		"replacements:all",
+		"workarounds:all"
+	],
 	"labels": [":robot: Dependency"],
 	"enabledManagers": ["npm", "github-actions"],
+	"vulnerabilityAlerts": {
+		"enabled": false
+	},
 	"packageRules": [
 		{
 			"groupName": "all non-major dependencies",
@@ -41,6 +50,12 @@
 		{
 			"description": "hold - https://github.com/prettier/prettier/issues/15783",
 			"matchPackageNames": ["prettier"],
+			"enabled": false
+		},
+		{
+			"description": "hold - https://github.com/directus/directus/pull/24181",
+			"matchPackageNames": ["tinymce"],
+			"matchUpdateTypes": ["major"],
 			"enabled": false
 		},
 		{

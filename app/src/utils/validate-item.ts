@@ -1,54 +1,73 @@
 import { useRelationsStore } from '@/stores/relations';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
-import { Field, LogicalFilterAND } from '@directus/types';
+import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
 
-export function validateItem(item: Record<string, any>, fields: Field[], isNew: boolean) {
+export function validateItem(
+	item: Record<string, any>,
+	fields: Field[],
+	isNew: boolean,
+	includeCustomValidations = false,
+	currentVersion: ContentVersion | null = null,
+) {
 	const relationsStore = useRelationsStore();
+	const validationRules: LogicalFilterAND = { _and: [] };
+	const updatedItem = cloneDeep(item);
 
-	const validationRules = {
-		_and: [],
-	} as LogicalFilterAND;
+	const fieldsWithConditions = fields.map((field) => {
+		const conditionedField = applyConditions(item, field, currentVersion);
 
-	const fieldsWithConditions = fields.map((field) => applyConditions(item, field));
+		return conditionedField;
+	});
 
 	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
-	const updatedItem = cloneDeep(item);
+	requiredFields.forEach((field) => {
+		applyRulesForRequiredFields(field.field, field, isNew);
 
-	for (const field of requiredFields) {
+		const relation = relationsStore.getRelationsForField(field.collection, field.field);
+		if (!relation.length) return;
+
+		const isEmptyArray = Array.isArray(updatedItem[field.field]) && isEmpty(updatedItem[field.field]);
+		if (isEmptyArray) updatedItem[field.field] = null;
+	});
+
+	if (includeCustomValidations) fields.forEach(applyValidationRules);
+
+	const errors = validatePayload(validationRules, updatedItem).map((error) =>
+		error.details.map(
+			(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)).extensions,
+		),
+	);
+
+	return flatten(errors).map((error) => {
+		const errorField = fields.find((field) => field.field === error.field);
+		return { ...error, hidden: errorField?.meta?.hidden, group: errorField?.meta?.group };
+	});
+
+	function applyRulesForRequiredFields(fieldKey: string, field: Field, isNew: boolean) {
 		if (isNew && isNil(field.schema?.default_value)) {
 			validationRules._and.push({
-				[field.field]: {
+				[fieldKey]: {
 					_submitted: true,
 				},
 			});
 		}
 
-		const relation = relationsStore.getRelationsForField(field.collection, field.field);
-
-		// Check if we are dealing with a relational field that has an empty array as its value
-		if (relation.length > 0 && Array.isArray(updatedItem[field.field]) && isEmpty(updatedItem[field.field])) {
-			updatedItem[field.field] = null;
-		}
-
 		validationRules._and.push({
-			[field.field]: {
+			[fieldKey]: {
 				_nnull: true,
 			},
 		});
 	}
 
-	return flatten(
-		validatePayload(validationRules, updatedItem).map((error) =>
-			error.details.map(
-				(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)).extensions,
-			),
-		),
-	).map((error) => {
-		const errorField = fields.find((field) => field.field === error.field);
-		return { ...error, hidden: errorField?.meta?.hidden, group: errorField?.meta?.group };
-	});
+	function applyValidationRules(field: Field) {
+		if (isNil(updatedItem[field.field])) return;
+
+		(field.meta?.validation as LogicalFilterAND)?._and?.forEach((validation: any) => {
+			validationRules._and.push(validation);
+		});
+	}
 }

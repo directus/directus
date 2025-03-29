@@ -24,6 +24,7 @@ const props = withDefaults(
 		tagsField?: string | null;
 		userField?: string | null;
 		showUngrouped: boolean;
+		ungroupedDisabled: boolean;
 	}>(),
 	{
 		groupTitleFields: () => [],
@@ -173,7 +174,7 @@ const userFieldSync = useSync(props, 'userField', emit);
 
 			<div class="field">
 				<div class="type-label">{{ t('layouts.kanban.show_ungrouped') }}</div>
-				<v-checkbox v-model="showUngroupedSync" block :label="t('layouts.kanban.show')" />
+				<v-checkbox v-model="showUngroupedSync" block :disabled="ungroupedDisabled" :label="t('layouts.kanban.show')" />
 			</div>
 		</div>
 	</v-detail>

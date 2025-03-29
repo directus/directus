@@ -163,29 +163,25 @@ export const useCollectionsStore = defineStore('collectionsStore', () => {
 		// Strip out any fields the app might've auto-generated at some point
 		const rawValues = omit(values, ['name', 'type', 'icon', 'color']);
 
-		try {
-			if (existing) {
-				if (isEqual(existing, values)) return;
+		if (existing) {
+			if (isEqual(existing, values)) return;
 
-				const updatedCollectionResponse = await api.patch<{ data: CollectionRaw }>(
-					`/collections/${collection}`,
-					rawValues,
-				);
+			const updatedCollectionResponse = await api.patch<{ data: CollectionRaw }>(
+				`/collections/${collection}`,
+				rawValues,
+			);
 
-				collections.value = collections.value.map((existingCollection: Collection) => {
-					if (existingCollection.collection === collection) {
-						return prepareCollectionForApp(updatedCollectionResponse.data.data);
-					}
+			collections.value = collections.value.map((existingCollection: Collection) => {
+				if (existingCollection.collection === collection) {
+					return prepareCollectionForApp(updatedCollectionResponse.data.data);
+				}
 
-					return existingCollection;
-				});
-			} else {
-				const createdCollectionResponse = await api.post<{ data: CollectionRaw }>('/collections', rawValues);
+				return existingCollection;
+			});
+		} else {
+			const createdCollectionResponse = await api.post<{ data: CollectionRaw }>('/collections', rawValues);
 
-				collections.value = [...collections.value, prepareCollectionForApp(createdCollectionResponse.data.data)];
-			}
-		} catch (error) {
-			unexpectedError(error);
+			collections.value = [...collections.value, prepareCollectionForApp(createdCollectionResponse.data.data)];
 		}
 	}
 

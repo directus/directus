@@ -27,7 +27,8 @@ const collapsed = ref(false);
 
 const observer = new IntersectionObserver(
 	([e]) => {
-		collapsed.value = e.boundingClientRect.y === -1;
+		if (!e) return;
+		collapsed.value = e.boundingClientRect.y < 0;
 	},
 	{ threshold: [1] },
 );
@@ -95,7 +96,7 @@ onUnmounted(() => {
 	margin: 0;
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
-	box-shadow: 0;
+	box-shadow: none;
 	transition:
 		box-shadow var(--medium) var(--transition),
 		margin var(--fast) var(--transition);

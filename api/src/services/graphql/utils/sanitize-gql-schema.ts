@@ -38,10 +38,10 @@ const GRAPHQL_RESERVED_NAMES = [
  * @param schema
  * @returns sanitized schema
  */
-export function sanitizeGraphqlSchema(schema: SchemaOverview) {
+export function sanitizeGraphqlSchema(schema: Readonly<SchemaOverview>): SchemaOverview {
 	const logger = useLogger();
 
-	const collections = Object.entries(schema.collections).filter(([collectionName, _data]) => {
+	const collectionEntries = Object.entries(schema.collections).filter(([collectionName, _data]) => {
 		// double underscore __ is reserved for GraphQL introspection
 		if (collectionName.startsWith('__') || !collectionName.match(GRAPHQL_NAME_REGEX)) {
 			logger.warn(
@@ -60,9 +60,9 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 		return true;
 	});
 
-	schema.collections = Object.fromEntries(collections);
+	const collections = Object.fromEntries(collectionEntries);
 
-	const collectionExists = (collection: string) => Boolean(schema.collections[collection]);
+	const collectionExists = (collection: string) => Boolean(collections[collection]);
 
 	const skipRelation = (relation: Relation) => {
 		const relationName = relation.schema?.constraint_name ?? `${relation.collection}.${relation.field}`;
@@ -74,7 +74,7 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 		return false;
 	};
 
-	schema.relations = schema.relations.filter((relation) => {
+	const relations = schema.relations.filter((relation) => {
 		if (relation.collection && !collectionExists(relation.collection)) {
 			return skipRelation(relation);
 		}
@@ -103,5 +103,5 @@ export function sanitizeGraphqlSchema(schema: SchemaOverview) {
 		return true;
 	});
 
-	return schema;
+	return { collections, relations };
 }

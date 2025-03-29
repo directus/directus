@@ -147,7 +147,7 @@ const options = computed({
 </template>
 
 <style scoped lang="scss">
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .field-configuration {
 	--v-button-background-color-disabled: var(--theme--background-normal);
@@ -179,7 +179,7 @@ const options = computed({
 
 .schema {
 	margin-bottom: 20px;
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .monospace {

@@ -169,7 +169,7 @@ export default class SQLite implements SchemaInspector {
 				table,
 			);
 
-			const indexList = await this.knex.raw<{ name: string; unique: boolean }[]>(`PRAGMA index_list(??)`, table);
+			const indexList = await this.knex.raw<{ name: string; unique: number }[]>(`PRAGMA index_list(??)`, table);
 
 			const indexInfoList = await Promise.all(
 				indexList.map((index) =>
@@ -180,9 +180,28 @@ export default class SQLite implements SchemaInspector {
 			return columns.map((raw): Column => {
 				const foreignKey = foreignKeys.find((fk) => fk.from === raw.name);
 
-				const indexIndex = indexInfoList.findIndex((list) => list.find((fk) => fk.name === raw.name));
-				const index = indexList[indexIndex];
-				const indexInfo = indexInfoList[indexIndex];
+				let isUniqueColumn = false;
+				let isIndexedColumn = false;
+
+				for (let i = 0; i < indexInfoList.length; i++) {
+					if (!indexInfoList[i]?.find((fk) => fk.name === raw.name)) {
+						continue;
+					}
+
+					if (indexInfoList[i]?.length !== 1 || !indexList[i]) {
+						continue;
+					}
+
+					if (indexList[i]!.unique === 1) {
+						isUniqueColumn = true;
+					} else if (indexList[i]!.name.length > 0) {
+						isIndexedColumn = true;
+					}
+
+					if (isUniqueColumn && isIndexedColumn) {
+						break;
+					}
+				}
 
 				return {
 					name: raw.name,
@@ -196,8 +215,8 @@ export default class SQLite implements SchemaInspector {
 					is_generated: raw.hidden !== 0,
 					generation_expression: null,
 					is_nullable: raw.notnull === 0,
-					is_unique: !!index?.unique && indexInfo?.length === 1,
-					is_indexed: !!index?.name && index.name.length > 0 && indexInfo?.length === 1,
+					is_unique: isUniqueColumn,
+					is_indexed: isIndexedColumn,
 					is_primary_key: raw.pk === 1,
 					has_auto_increment: raw.pk === 1 && tablesWithAutoIncrementPrimaryKeys.includes(table),
 					foreign_key_column: foreignKey?.to || null,

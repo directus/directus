@@ -9,6 +9,7 @@ import {
 	CreateFieldM2O,
 	CreateFieldO2M,
 	CreateItem,
+	CreatePolicy,
 	CreateRole,
 	CreateUser,
 	DeleteCollection,
@@ -19,37 +20,56 @@ import {
 	type OptionsCreateFieldM2O,
 	type OptionsCreateFieldO2M,
 	type OptionsCreateItem,
+	type OptionsCreatePolicy,
 	type OptionsCreateRole,
 	type OptionsCreateUser,
 	type OptionsDeleteCollection,
 	type OptionsDeleteField,
 } from './functions';
 import vendors from './get-dbs-to-test';
-import { USER, ROLE } from './variables';
+import { ROLE, USER } from './variables';
 
 describe('Common', () => {
 	DisableTestCachingSetup();
 
 	describe('createRole()', () => {
-		describe('Creates default admin role', () => {
+		describe('Creates default admin role and policy', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Setup
 				const roleName = ROLE.ADMIN.NAME;
+				const policyName = `${roleName}'s Policy`;
 
-				const options: OptionsCreateRole = {
+				const roleOptions: OptionsCreateRole = {
 					name: roleName,
-					appAccessEnabled: true,
-					adminAccessEnabled: true,
 				};
 
 				// Action
-				await CreateRole(vendor, options);
+				const role = await CreateRole(vendor, roleOptions);
 
-				// Assert
-				const response = await request(getUrl(vendor))
+				const policyOptions: OptionsCreatePolicy = {
+					name: policyName,
+					appAccessEnabled: true,
+					adminAccessEnabled: true,
+					role,
+				};
+
+				await CreatePolicy(vendor, policyOptions);
+
+				const roleResponse = await request(getUrl(vendor))
 					.get(`/roles`)
 					.query({
 						filter: { name: { _eq: roleName } },
+						fields: ['id', 'name'],
+						limit: 1,
+					})
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const policyResponse = await request(getUrl(vendor))
+					.get(`/policies`)
+					.query({
+						filter: { name: { _eq: policyName } },
 						fields: ['id', 'name', 'app_access', 'admin_access'],
 						limit: 1,
 					})
@@ -57,10 +77,18 @@ describe('Common', () => {
 					.expect('Content-Type', /application\/json/)
 					.expect(200);
 
-				expect(response.body.data).toEqual([
+				// Assert
+				expect(roleResponse.body.data).toEqual([
 					{
 						id: expect.any(String),
 						name: roleName,
+					},
+				]);
+
+				expect(policyResponse.body.data).toEqual([
+					{
+						id: expect.any(String),
+						name: policyName,
 						app_access: true,
 						admin_access: true,
 					},
@@ -68,24 +96,43 @@ describe('Common', () => {
 			});
 		});
 
-		describe('Creates default app access role', () => {
+		describe('Creates default app access role and policy', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Setup
 				const roleName = ROLE.APP_ACCESS.NAME;
+				const policyName = `${roleName}'s Policy`;
 
-				const options: OptionsCreateRole = {
+				const roleOptions: OptionsCreateRole = {
 					name: roleName,
-					appAccessEnabled: true,
-					adminAccessEnabled: false,
 				};
 
 				// Action
-				await CreateRole(vendor, options);
+				const role = await CreateRole(vendor, roleOptions);
 
-				const response = await request(getUrl(vendor))
+				const policyOptions: OptionsCreatePolicy = {
+					name: policyName,
+					appAccessEnabled: true,
+					adminAccessEnabled: false,
+					role,
+				};
+
+				await CreatePolicy(vendor, policyOptions);
+
+				const roleResponse = await request(getUrl(vendor))
 					.get(`/roles`)
 					.query({
 						filter: { name: { _eq: roleName } },
+						fields: ['id', 'name'],
+						limit: 1,
+					})
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const policyResponse = await request(getUrl(vendor))
+					.get(`/policies`)
+					.query({
+						filter: { name: { _eq: policyName } },
 						fields: ['id', 'name', 'app_access', 'admin_access'],
 						limit: 1,
 					})
@@ -94,10 +141,17 @@ describe('Common', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body.data).toEqual([
+				expect(roleResponse.body.data).toEqual([
 					{
 						id: expect.any(String),
 						name: roleName,
+					},
+				]);
+
+				expect(policyResponse.body.data).toEqual([
+					{
+						id: expect.any(String),
+						name: policyName,
 						app_access: true,
 						admin_access: false,
 					},
@@ -105,24 +159,43 @@ describe('Common', () => {
 			});
 		});
 
-		describe('Creates default API only role', () => {
+		describe('Creates default API only role and policy', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Setup
 				const roleName = ROLE.API_ONLY.NAME;
+				const policyName = `${roleName}'s Policy`;
 
-				const options: OptionsCreateRole = {
+				const roleOptions: OptionsCreateRole = {
 					name: roleName,
-					appAccessEnabled: false,
-					adminAccessEnabled: false,
 				};
 
 				// Action
-				await CreateRole(vendor, options);
+				const role = await CreateRole(vendor, roleOptions);
 
-				const response = await request(getUrl(vendor))
+				const policyOptions: OptionsCreatePolicy = {
+					name: policyName,
+					appAccessEnabled: false,
+					adminAccessEnabled: false,
+					role,
+				};
+
+				await CreatePolicy(vendor, policyOptions);
+
+				const roleResponse = await request(getUrl(vendor))
 					.get(`/roles`)
 					.query({
 						filter: { name: { _eq: roleName } },
+						fields: ['id', 'name'],
+						limit: 1,
+					})
+					.set('Authorization', `Bearer ${USER.TESTS_FLOW.TOKEN}`)
+					.expect('Content-Type', /application\/json/)
+					.expect(200);
+
+				const policyResponse = await request(getUrl(vendor))
+					.get(`/policies`)
+					.query({
+						filter: { name: { _eq: policyName } },
 						fields: ['id', 'name', 'app_access', 'admin_access'],
 						limit: 1,
 					})
@@ -131,10 +204,17 @@ describe('Common', () => {
 					.expect(200);
 
 				// Assert
-				expect(response.body.data).toEqual([
+				expect(roleResponse.body.data).toEqual([
 					{
 						id: expect.any(String),
 						name: roleName,
+					},
+				]);
+
+				expect(policyResponse.body.data).toEqual([
+					{
+						id: expect.any(String),
+						name: policyName,
 						app_access: false,
 						admin_access: false,
 					},

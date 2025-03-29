@@ -14,7 +14,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		open?: boolean;
 		deleted: boolean;
-		deleteIcon: string;
+		isLocalItem: boolean;
 	}>(),
 	{
 		disabled: false,
@@ -35,11 +35,21 @@ const editActive = ref(false);
 			clickable
 			@click="emit('update:open', !props.open)"
 		/>
+
 		<render-template :collection="collection" :template="template" :item="item" />
+
 		<div class="spacer" />
-		<div v-if="!disabled" class="actions">
-			<v-icon v-tooltip="t('edit')" name="launch" clickable @click="editActive = true" />
-			<v-icon v-tooltip="t('deselect')" :name="deleteIcon" class="deselect" clickable @click="$emit('deselect')" />
+
+		<div v-if="!disabled" class="item-actions">
+			<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click="editActive = true" />
+
+			<v-remove
+				:item-type="item.$type"
+				:item-info="relationInfo"
+				:item-is-local="isLocalItem"
+				:item-edits="edits"
+				@action="$emit('deselect')"
+			/>
 		</div>
 
 		<drawer-item
@@ -54,42 +64,35 @@ const editActive = ref(false);
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .preview {
 	display: flex;
 	height: var(--theme--form--field--input--height);
 	align-items: center;
 
-	&:not(.open) {
-		margin-bottom: 12px;
-	}
-
 	.spacer {
 		flex-grow: 1;
 	}
 
-	.actions {
-		--v-icon-color: var(--theme--form--field--input--foreground-subdued);
-		--v-icon-color-hover: var(--theme--form--field--input--foreground);
-		flex-shrink: 0;
-		margin-left: 8px;
-
-		.v-icon + .v-icon {
-			margin-left: 4px;
-		}
-
-		.deselect {
-			--v-icon-color-hover: var(--theme--danger);
-		}
-	}
-
-	&.deleted {
+	.row &.deleted {
 		color: var(--theme--danger);
 		background-color: var(--danger-10);
+		border-color: var(--danger-25);
 
-		.actions {
-			--v-icon-color: var(--danger-50);
+		&:hover {
+			background-color: var(--danger-25);
+			border-color: var(--danger-50);
+		}
+
+		.item-actions .v-icon {
+			--v-icon-color: var(--danger-75);
 			--v-icon-color-hover: var(--theme--danger);
 		}
 	}
+}
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
 }
 </style>

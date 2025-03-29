@@ -1,18 +1,21 @@
+@use 'mixins';
+@use '../colors';
+@use 'sass:map';
+
 // Dark Mode
 @mixin dark {
 	$purple: #8866ff;
-	$color-mapping: map-merge(
-		$color-mapping,
+	$color-mapping: map.merge(
+		colors.$color-mapping,
 		(
 			'primary': $purple,
-			'secondary': $pink,
+			'secondary': colors.$pink,
 		)
 	);
 
 	color-scheme: dark;
 
 	--foreground-inverted: #0d1117;
-
 	--background-normal-alt: #30363d;
 	--background-subdued: #161b22;
 	--background-highlight: #1d1d21;
@@ -27,7 +30,7 @@
 	--sidebar-shadow: var(--navigation-shadow);
 
 	// Generate color variations
-	@include generate-colors($color-mapping, $dark-theme-shade, $dark-theme-tint);
+	@include mixins.generate-colors($color-mapping, colors.$dark-theme-shade, colors.$dark-theme-tint);
 
 	--purple-alt: var(--purple-10);
 	--blue-alt: var(--blue-10);

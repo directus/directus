@@ -1,17 +1,17 @@
-@import './mixins/type-styles.scss';
+@use 'mixins';
 
 .type-title {
-	@include type-title;
+	@include mixins.type-title;
 }
 
 .type-label {
-	@include type-label;
+	@include mixins.type-label;
 }
 
 .type-text {
-	@include type-text;
+	@include mixins.type-text;
 }
 
 .type-note {
-	@include type-note;
+	@include mixins.type-note;
 }

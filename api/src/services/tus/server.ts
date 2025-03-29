@@ -16,6 +16,8 @@ import { ItemsService } from '../index.js';
 import { TusDataStore } from './data-store.js';
 import { getTusLocker } from './lockers.js';
 import { pick } from 'lodash-es';
+import emitter from '../../emitter.js';
+import getDatabase from '../../database/index.js';
 
 type Context = {
 	schema: SchemaOverview;
@@ -49,7 +51,7 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 		path: '/files/tus',
 		datastore: store,
 		locker: getTusLocker(),
-		maxSize: RESUMABLE_UPLOADS.MAX_SIZE,
+		...(RESUMABLE_UPLOADS.MAX_SIZE !== null && { maxSize: RESUMABLE_UPLOADS.MAX_SIZE }),
 		async onUploadFinish(req: any, res, upload) {
 			const service = new ItemsService<File>('directus_files', {
 				schema: req.schema,
@@ -63,6 +65,8 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 			)[0];
 
 			if (!file) return res;
+
+			let fileData;
 
 			// update metadata when file is replaced
 			if (file.tus_data?.['metadata']?.['replace_id']) {
@@ -79,6 +83,13 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 					...metadata,
 				});
 
+				fileData = {
+					...newFile,
+					...updateFields,
+					...metadata,
+					id: file.tus_data['metadata']['replace_id'],
+				};
+
 				await service.deleteOne(file.id);
 			} else {
 				const metadata = await extractMetadata(file.storage, file);
@@ -88,7 +99,28 @@ export async function createTusServer(context: Context): Promise<[Server, () => 
 					tus_id: null,
 					tus_data: null,
 				});
+
+				fileData = {
+					...file,
+					...metadata,
+					tus_id: null,
+					tus_data: null,
+				};
 			}
+
+			emitter.emitAction(
+				'files.upload',
+				{
+					payload: fileData,
+					key: fileData.id,
+					collection: 'directus_files',
+				},
+				{
+					database: getDatabase(),
+					schema: req.schema,
+					accountability: req.accountability,
+				},
+			);
 
 			return res;
 		},

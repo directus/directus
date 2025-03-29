@@ -90,6 +90,7 @@ async function onSubmit() {
 	} catch (err: any) {
 		if (err.errors?.[0]?.extensions?.code === 'INVALID_OTP' && requiresTFA.value === false) {
 			requiresTFA.value = true;
+			error.value = null;
 		} else {
 			error.value = err.errors?.[0]?.extensions?.code || err;
 		}

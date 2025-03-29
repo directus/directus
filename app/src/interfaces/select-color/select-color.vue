@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Color from 'color';
+import Color, { ColorInstance } from 'color';
 import { isHex } from '@/utils/is-hex';
 import { isCssVar as isCssVarUtil } from '@/utils/is-css-var';
 import { cssVar } from '@directus/utils/browser';
@@ -137,7 +137,7 @@ function activateColorPicker() {
 }
 
 function useColor() {
-	const color = ref<Color | null>(null);
+	const color = ref<ColorInstance | null>(null);
 
 	const getHexa = (): string | null => {
 		if (color.value !== null) {
@@ -252,7 +252,7 @@ function useColor() {
 
 	return { rgb, hsl, hex, alpha, color, input };
 
-	function setColor(newColor: Color | null) {
+	function setColor(newColor: ColorInstance | null) {
 		color.value = newColor;
 
 		if (newColor === null) {
@@ -311,7 +311,11 @@ function useColor() {
 					</v-button>
 				</template>
 				<template #append>
-					<v-icon :name="isValidColor ? 'close' : 'palette'" :clickable="isValidColor" @click="unsetColor" />
+					<div class="item-actions">
+						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
+
+						<v-icon v-else name="palette" />
+					</div>
 				</template>
 			</v-input>
 		</template>
@@ -437,6 +441,12 @@ function useColor() {
 </template>
 
 <style scoped lang="scss">
+@use '@/styles/mixins';
+
+.item-actions {
+	@include mixins.list-interface-item-actions;
+}
+
 .swatch {
 	--v-button-padding: 6px;
 	--v-button-background-color: transparent;

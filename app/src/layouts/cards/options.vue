@@ -86,9 +86,9 @@ export default defineComponent({
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .nested-options {
-	@include form-grid;
+	@include mixins.form-grid;
 }
 </style>
