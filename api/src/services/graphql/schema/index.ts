@@ -2,7 +2,7 @@ import { useEnv } from '@directus/env';
 import { isSystemCollection } from '@directus/system-data';
 import type { SchemaOverview } from '@directus/types';
 import { Semaphore } from 'async-mutex';
-import { GraphQLSchema } from 'graphql';
+import { GraphQLID, GraphQLNonNull, GraphQLSchema } from 'graphql';
 import type { ObjectTypeComposer, ObjectTypeComposerFieldConfigAsObjectDefinition } from 'graphql-compose';
 import { SchemaComposer } from 'graphql-compose';
 import {
@@ -15,6 +15,7 @@ import { reduceSchema } from '../../../utils/reduce-schema.js';
 import { GraphQLService } from '../index.js';
 import { injectSystemResolvers } from '../resolvers/system.js';
 import { cache } from '../schema-cache.js';
+import { createSubscriptionGenerator } from '../subscription.js';
 import { GraphQLVoid } from '../types/void.js';
 import { sanitizeGraphqlSchema } from '../utils/sanitize-gql-schema.js';
 import { getReadableTypes } from './read.js';
@@ -182,6 +183,15 @@ export async function generateSchema(
 			DeleteCollectionTypes,
 		};
 
+		const subscriptionEventType = schemaComposer.createEnumTC({
+			name: 'EventEnum',
+			values: {
+				create: { value: 'create' },
+				update: { value: 'update' },
+				delete: { value: 'delete' },
+			},
+		});
+
 		const scopeFilter = (collection: SchemaOverview['collections'][string]) => {
 			if (gql.scope === 'items' && isSystemCollection(collection.collection)) return false;
 
@@ -229,6 +239,29 @@ export async function generateSchema(
 					{} as ObjectTypeComposerFieldConfigAsObjectDefinition<any, any>,
 				),
 			);
+
+			for (const collection of readableCollections) {
+				const eventName = `${collection.collection}_mutated`;
+
+				const subscriptionType = schemaComposer.createObjectTC({
+					name: eventName,
+					fields: {
+						key: new GraphQLNonNull(GraphQLID),
+						event: subscriptionEventType,
+						data: ReadCollectionTypes[collection.collection]!,
+					},
+				});
+
+				schemaComposer.Subscription.addFields({
+					[eventName]: {
+						type: subscriptionType,
+						args: {
+							event: subscriptionEventType,
+						},
+						subscribe: createSubscriptionGenerator(gql, eventName),
+					},
+				});
+			}
 		} else {
 			schemaComposer.Query.addFields({
 				_empty: {
