@@ -103,6 +103,7 @@ function setValueAt(index: number, newVal: any) {
 
 function handleCommaEntered(index: number, valueWithComma: string) {
 	const parts = valueWithComma.split(',').filter((p: any) => p !== '');
+
 	if (parts.length === 1) {
 		const firstPart = parts[0]?.trim() || '';
 		const newArray = Array.isArray(value.value) ? clone(value.value) : [];
@@ -110,8 +111,10 @@ function handleCommaEntered(index: number, valueWithComma: string) {
 		const insertPosition = index + 1;
 		newArray.splice(insertPosition, 0, '');
 		value.value = newArray;
+
 		nextTick(() => {
 			const inputElements = document.querySelectorAll('.list .value input');
+			
 			if (inputElements.length > index + 1) {
 				(inputElements[index + 1] as HTMLElement).focus();
 			}
@@ -121,8 +124,10 @@ function handleCommaEntered(index: number, valueWithComma: string) {
 		const newArray = Array.isArray(value.value) ? clone(value.value) : [];
 		newArray.splice(index, 1, ...parts.filter((p: any) => p !== ''));
 		value.value = newArray;
+
 		nextTick(() => {
 			const inputElements = document.querySelectorAll('.list .value input');
+
 			if (inputElements.length > 0) {
 				const lastIndex = inputElements.length - 1;
 				(inputElements[lastIndex] as HTMLElement).focus();

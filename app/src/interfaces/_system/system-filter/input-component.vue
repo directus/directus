@@ -107,9 +107,11 @@ function onInput(value: string | number | Record<string, unknown> | boolean | nu
 	if (isInputValid.value) {
 		if (typeof value === 'string' && value.includes(',') && props.commaAllowed) {
 			const valueWithoutComma = value.replace(/,/g, '');
+			
 			if (inputEl.value) {
 				inputEl.value.value = valueWithoutComma;
 			}
+
 			emit('commaEntered', value);
 		} else {
 			emit('input', value === '' ? null : value);
