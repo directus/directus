@@ -127,7 +127,7 @@ function handleCommaEntered(index: number, valueWithComma: string) {
 
 		nextTick(() => {
 			const inputElements = document.querySelectorAll('.list .value input');
-			
+
 			if (inputElements.length > index + 1) {
 				(inputElements[index + 1] as HTMLElement).focus();
 			}
