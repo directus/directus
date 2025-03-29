@@ -26,6 +26,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
 	input: [value: string | number | Record<string, unknown> | boolean | null];
+	commaEntered: [value: string];
 }>();
 
 const { t } = useI18n();
@@ -100,11 +101,19 @@ function onEffect(value: typeof props.value) {
 	isInputValid.value = isValueValid(value);
 }
 
-function onInput(value: string | null) {
+function onInput(value: string | number | Record<string, unknown> | boolean | null) {
 	isInputValid.value = isValueValid(value);
 
 	if (isInputValid.value) {
-		emit('input', value === '' ? null : value);
+		if (typeof value === 'string' && value.includes(',') && props.commaAllowed) {
+			const valueWithoutComma = value.replace(/,/g, '');
+			if (inputEl.value) {
+				inputEl.value.value = valueWithoutComma;
+			}
+			emit('commaEntered', value);
+		} else {
+			emit('input', value === '' ? null : value);
+		}
 	}
 }
 </script>
