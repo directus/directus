@@ -6,7 +6,6 @@
 	height: 36px;
 	margin: 0;
 	color: var(--theme--form--field--input--foreground);
-	background: transparent;
 }
 
 .tox .tox-tbtn:focus {
@@ -390,10 +389,6 @@ body.dark .tox .tox-toolbar__overflow {
 .tox:not([dir='rtl']) .tox-toolbar__group:not(:last-of-type),
 .tox .tox-collection--list .tox-collection__group {
 	border-color: var(--theme--form--field--input--border-color);
-}
-
-.tox .tox-insert-table-picker {
-	background-color: unset;
 }
 
 .tox .tox-insert-table-picker__label {

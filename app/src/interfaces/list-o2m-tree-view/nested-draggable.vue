@@ -93,12 +93,6 @@ const query = computed<RelationQueryMultiple>(() => ({
 const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
 	useRelationMultiple(value, query, relationInfo, primaryKey);
 
-function getDeselectIcon(item: DisplayItem) {
-	if (item.$type === 'deleted') return 'settings_backup_restore';
-	if (isLocalItem(item)) return 'delete';
-	return 'close';
-}
-
 const selectDrawer = ref(false);
 
 const dragOptions = {
@@ -221,7 +215,7 @@ function stageEdits(item: Record<string, any>) {
 					:relation-info="relationInfo"
 					:open="open[element[relationInfo.relatedPrimaryKeyField.field]] ?? false"
 					:deleted="element.$type === 'deleted'"
-					:delete-icon="getDeselectIcon(element)"
+					:is-local-item="isLocalItem(element)"
 					@update:open="open[element[relationInfo.relatedPrimaryKeyField.field]] = $event"
 					@input="stageEdits"
 					@deselect="remove(element)"
@@ -247,9 +241,9 @@ function stageEdits(item: Record<string, any>) {
 	</draggable>
 
 	<template v-if="root">
-		<div v-if="!disabled" class="actions">
-			<v-button v-if="enableCreate" @click="addNewActive = true">{{ t('create_new') }}</v-button>
-			<v-button v-if="enableSelect" @click="selectDrawer = true">{{ t('add_existing') }}</v-button>
+		<div class="actions">
+			<v-button v-if="enableCreate" :disabled @click="addNewActive = true">{{ t('create_new') }}</v-button>
+			<v-button v-if="enableSelect" :disabled @click="selectDrawer = true">{{ t('add_existing') }}</v-button>
 		</div>
 
 		<drawer-item
@@ -276,6 +270,8 @@ function stageEdits(item: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
+@use '@/styles/mixins';
+
 .drag-area {
 	min-height: 12px;
 
@@ -294,6 +290,8 @@ function stageEdits(item: Record<string, any>) {
 	}
 
 	&.v-list {
+		@include mixins.list-interface;
+
 		overflow: hidden;
 	}
 }
@@ -308,14 +306,22 @@ function stageEdits(item: Record<string, any>) {
 		border-radius: var(--theme--border-radius);
 
 		& + .drag-area {
-			padding-bottom: 0px;
-			padding-top: 12px;
+			padding: 0;
+
+			> .v-list-item:first-child {
+				margin-top: 8px;
+			}
 		}
 	}
 
 	&.v-list-item {
 		display: block;
 		--v-list-item-padding: 0;
+		--v-list-item-margin: 0;
+
+		+ .v-list-item {
+			margin-top: 8px;
+		}
 	}
 
 	&:not(.draggable) .preview {
@@ -328,10 +334,6 @@ function stageEdits(item: Record<string, any>) {
 }
 
 .actions {
-	margin-top: 12px;
-}
-
-.actions .v-button + .v-button {
-	margin-left: 12px;
+	@include mixins.list-interface-actions;
 }
 </style>

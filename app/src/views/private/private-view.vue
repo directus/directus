@@ -421,7 +421,9 @@ function getWidth(input: unknown, fallback: number): number {
 				--v-divider-color: var(--theme--navigation--list--divider--border-color);
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 
-				height: calc(100% - 64px);
+				--project-header-height: 60px;
+
+				height: calc(100% - var(--project-header-height));
 				overflow-x: hidden;
 				overflow-y: auto;
 			}
@@ -430,6 +432,8 @@ function getWidth(input: unknown, fallback: number): number {
 		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
+			// this prevents the layout from moving up when an element is automatically scrolled into the view
+			overflow-y: clip;
 		}
 	}
 

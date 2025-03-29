@@ -11,6 +11,7 @@ export type LayoutOptions = {
 	imageSource?: string;
 	crop: boolean;
 	showUngrouped: boolean;
+	groupOrder: { groupField: string | null; sortMap: Record<string, number> };
 };
 
 export type LayoutQuery = {

@@ -1,5 +1,5 @@
 import { beforeEach, expect, test, vi } from 'vitest';
-import type { Project } from '@pnpm/find-workspace-packages';
+import type { Project } from '@pnpm/workspace.find-packages';
 import { Config } from '../types.js';
 
 vi.mock('../config.js', () => {
@@ -31,7 +31,7 @@ vi.doMock('node:fs', () => {
 
 let packages: Partial<Project>[] = [];
 
-vi.doMock('@pnpm/find-workspace-packages', () => ({
+vi.doMock('@pnpm/workspace.find-packages', () => ({
 	findWorkspacePackagesNoCheck: () => packages,
 }));
 
@@ -41,7 +41,7 @@ beforeEach(() => {
 });
 
 const generatePackage = (name: string, version: string, opts?: Record<string, any>): Partial<Project> => ({
-	dir: opts?.['bumped'] !== false ? 'mock' : 'nomock',
+	rootDir: (opts?.['bumped'] !== false ? 'mock' : 'nomock') as Project['rootDir'],
 	manifest: {
 		name,
 		version,

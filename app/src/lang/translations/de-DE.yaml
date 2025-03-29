@@ -28,7 +28,7 @@ method: Methode
 published: Veröffentlicht
 draft: Entwurf
 archived: Archiviert
-marketplace: Marktplatz
+marketplace: Marketplace
 extensions: Erweiterungen
 modules: Module
 module_bar: Modulleiste
@@ -61,10 +61,10 @@ dataset_too_large_currently_showing_n_items: Datensatz ist zu groß. Derzeit wer
 modifier: Geändert von
 extension_interface: Benutzeroberfläche
 extension_display: Anzeige
-extension_layout: Ansicht
+extension_layout: Layout
 extension_module: Modul
 extension_panel: Panel
-extension_theme: Design
+extension_theme: Theme
 extension_hook: Hook
 extension_endpoint: Endpunkt
 extension_operation: Operation
@@ -74,7 +74,7 @@ extension_displays: Darstellungen
 extension_layouts: Layouts
 extension_modules: Module
 extension_panels: Panels
-extension_themes: Erscheinungsbilder
+extension_themes: Themes
 extension_hooks: Hooks
 extension_endpoints: Endpunkte
 extension_operations: Operationen
@@ -89,7 +89,7 @@ compatible_with_your_project_copy: Der Autor hat die Kompatibilität dieser Erwe
 last_updated_relative: Letzte Aktualisierung {relativeTime}
 n_files: '{n} Dateien'
 verified: Verifiziert
-homepage: Hello world
+homepage: Homepage
 repository: Repository
 reload_page: Seite neu laden
 reload_required: Erneutes Laden erforderlich
@@ -97,9 +97,10 @@ report_an_issue: Problem melden
 website: Webseite
 github: GitHub
 beta: Beta
-n_downloads: '{n} downloads'
+n_downloads: '{n} Downloads'
 downloads: Downloads
 compatibility_not_guaranteed: Kompatibilität nicht garantiert
+compatibility_not_guaranteed_copy: Der Autor hat die Kompatibilität dieser Erweiterung mit {hostVersion} angegeben, welche nicht mit der Version Ihres Projekts ({currentVersion}) übereinstimmt
 enable: Aktivieren
 disable: Deaktivieren
 custom: Eigene
@@ -189,8 +190,12 @@ logoutReason:
   SESSION_EXPIRED: Sitzung abgelaufen
 public_label: Öffentlich
 public_description: Bestimmt, welche API-Daten ohne Authentifizierung zugänglich sind.
+public_role_info: >-
+  Die öffentliche Rolle kontrolliert, welche API-Daten unauthentifizierten Benutzern oder Benutzern ohne Rolle zur Verfügung stehen. Anfragen mit öffentlicher Rolle können keinen App- oder Administratorzugriff haben. Wenn App- oder Administratorzugriff auf Richtlinien gewährt wird, die der öffentlichen Rolle zugewiesen sind, werden sie ignoriert.
 admin_description: Initiale administrative Rolle mit uneingeschränktem App/API-Zugriff.
+admin_policy_description: Initiale Administrator-Richtlinie mit uneingeschränktem App-/API-Zugriff.
 no_description: Keine Beschreibung ...
+reached_maximum_number_of_extensions: Sie haben die maximale Anzahl an Erweiterungen für dieses Projekt erreicht ({n}). Kontaktieren Sie Ihren Systemadministrator für weitere Informationen.
 not_allowed: Nicht erlaubt
 archive: Archivieren
 archive_confirm: Sind Sie sicher, dass Sie dieses Element archivieren möchten?
@@ -254,10 +259,14 @@ item_permissions: Item Berechtigungen
 field_permissions: Feldberechtigungen
 field_validation: Feldüberprüfung
 field_presets: Feld-Vorlagen
-permissions_for_role: 'Elemente, die {role} Rolle {action} kann.'
-fields_for_role: 'Felder die von der {role} Rolle {action} werden können.'
+permissions_for_role: 'Elemente, welche die {role} Rolle {action} kann.'
+permissions_for_policy: 'Elemente, welche die {policy} Richtlinie {action} kann.'
+fields_for_role: 'Felder, welche die {role} Rolle {action} kann.'
+fields_for_policy: 'Felder, welche die {policy} Richtlinie {action} kann.'
 validation_for_role: 'Feld {action} Regeln, welche die {role} Rolle befolgen muss.'
+validation_for_policy: 'Feld {action} Regeln, welche die {policy} Richtlinie befolgen muss.'
 presets_for_role: 'Standardwert für die {role} Rolle.'
+presets_for_policy: 'Standardwert für die {policy} Richtlinie.'
 presets_field_warning: 'Relationale Voreinstellungen für das Feld "{field}" sollten mit der "detaillierten" Syntax konfiguriert werden.'
 presentation_and_aliases: Darstellung & Aliase
 revision_post_create: So sah dieses Element bei der Erstellung aus.
@@ -271,7 +280,7 @@ hide_field: Felder ausblenden
 hide_field_on_detail: In Detailansicht ausblenden
 show_field_on_detail: In Detailansicht einblenden
 delete_field: Feld löschen
-fields_and_layout: Felder & Ansicht
+fields_and_layout: Felder & Layout
 field_create_success: 'Erstelltes Feld: "{field}"'
 field_update_success: 'Geändertes Feld: "{field}"'
 duplicate_where_to: Wohin möchten Sie dieses Feld duplizieren?
@@ -343,7 +352,7 @@ theme_light: Heller Modus
 theme_dark: Dunkler Modus
 theme_directus_default: Directus Standard
 theme_directus_minimal: Directus Minimal
-theme_directus_colormatch: Directus-Farbwiedergabe
+theme_directus_colormatch: Directus Farbabstimmung
 not_available_for_type: Nicht verfügbar für diesen Typ
 create_translations: Übersetzungen erstellen
 auto_refresh: Auto-Aktualisierung
@@ -362,7 +371,8 @@ fields_group: Feldergruppe
 no_collections_found: Keine Sammlungen gefunden.
 new_data_alert: 'Folgendes wird innerhalb Ihres Datenmodells erstellt:'
 search_collection: Sammlung suchen...
-search_policy: '" Suchrichtlinien "...'
+search_role: Suche Rolle...
+search_policy: Suche Richtlinien...
 search_field: Suchfeld...
 new_field: 'Neues Feld'
 new_collection: 'Neue Sammlung'
@@ -372,8 +382,8 @@ add_m2m_to_collection: 'M2M zu "{collection} " hinzufügen'
 choose_a_type: Wähle einen Typ...
 determined_by_relationship: Bestimmt durch Beziehung
 add_note: Füge eine hilfreiche Beschreibung für die Benutzer hinzu...
-add_link: Verknüpfung hinzufügen
-custom_link: Benutzerdefinierte Verknüpfung
+add_link: Link hinzufügen
+custom_link: Benutzerdefinierter Link
 default_value: Standardwert
 standard_field: Standardfeld
 single_file: Eine Datei
@@ -449,6 +459,7 @@ revision_delta_other: Revision
 revision_delta_by: '{date} von {user}'
 presentation_text_values_cannot_be_reimported: 'Verwendet Präsentationstext, Werte können nicht neu importiert werden.'
 download_page_as_csv: 'Als CSV herunterladen'
+download_page_as_csv_unsupported: Dieses Layout unterstützt das Herunterladen der aktuellen Seite nicht.
 private_user: Privater Benutzer
 creation_preview: Erstellungs-Vorschau
 revision_preview: Überarbeitungs-Vorschau
@@ -507,12 +518,18 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: d MMM
 minutes: Minuten
 hours: Stunden
 month: Monat
 year: Jahr
 select_all: Alle auswählen
+permissionsLevel:
+  all: Voller "{action}" Zugriff
+  partial: Partieller "{action}" Zugriff
+  custom: Partieller "{action}" Zugriff
+  none: Kein "{action}" Zugriff
 months:
   january: Januar
   february: Februar
@@ -527,7 +544,11 @@ months:
   november: November
   december: Dezember
 drag_mode: Drag-Modus
+move_tool: Verschieben-Werkzeug
+crop_tool: Zuschneiden-Werkzeug
+focal_point_tool: Fokuspunkt-Werkzeug
 cancel_crop: Zuschneiden abbrechen
+cancel_selection: Auswahl abbrechen
 original: Original
 url: URL
 import_label: Import
@@ -585,14 +606,17 @@ save_and_quit: Speichern und schließen
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
 creating_items: Elemente erstellen
-enable_create_button: Knopf zum Erstellen aktivieren
+enable_create_button: Button zum Erstellen aktivieren
 selecting_items: Elemente auswählen
-enable_select_button: Knopf zum Auswählen aktivieren
+enable_select_button: Button zum Auswählen aktivieren
 allow_duplicates: Duplikate erlauben
 comments: Kommentare
 no_comments: Noch keine Kommentare
 expand: Ausklappen
+expand_all: Alles aufklappen
+expand_none: Keine erweitern
 collapse: Einklappen
+collapse_all: Alle einklappen
 select_item: Element auswählen
 no_items: Keine Elemente
 search_items: Elemente suchen ...
@@ -609,12 +633,17 @@ display_not_found: 'Anzeige "{display}" nicht gefunden.'
 reset_display: Anzeige zurücksetzen
 list-m2a: Builder (n:x, Many to Any)
 item_count: 'Keine Elemente | Ein Element | {count} Elemente'
+filtered_item_count: 'Keine gefilterten Elemente | Ein gefiltertes Element | {count} gefilterte Elemente'
 no_items_copy: Bisher gibt es noch keine Elemente in dieser Sammlung.
 file_count: 'Keine Dateien | Eine Datei | {count} Dateien'
 no_files_copy: Keine Dateien vorhanden.
 user_count: 'Keine Benutzer | Ein Benutzer | {count} Benutzer'
 no_users_copy: Es gibt noch keine Benutzer in dieser Rolle.
 webhooks_count: 'Keine Webhooks | Ein Webhook | {count} Webhooks'
+webhooks_deprecation_notice: |
+  Webhooks sind veraltet und ihre weitere Nutzung wird nicht empfohlen.
+
+  Bitte benutze stattdessen **Flows** mit der [Webhook / Request URL Operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: Es wurden noch keine Webhooks konfiguriert.
 no_notifications: Keine Benachrichtigungen
 no_notifications_copy: Du bist auf dem neusten Stand!
@@ -742,6 +771,7 @@ cannot_edit_global_bookmarks: Globales Lesezeichen kann nicht bearbeitet werden
 bookmarks: Lesezeichen
 presets: Vorlagen
 unexpected_error: Unerwarteter Fehler
+unexpected_error_copy: Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.
 copy_details: Details kopieren
 no_app_access: Kein App-Zugriff
 no_app_access_copy: Dieser Benutzer darf die Admin-App nicht verwenden.
@@ -849,17 +879,19 @@ drag_file_here: Datei hierher ziehen
 click_to_browse: Zum Durchsuchen klicken
 interface_options: Schnittstellenoptionen
 display_options: Anzeige-Optionen
-layout_options: Ansichtsoptionen
+layout_options: Layout-Optionen
 rows: Reihen
 columns: Spalten
 collection_setup: Einrichtung Sammlung
 optional_system_fields: Optionale Felder
 value_unique: Wert muss eindeutig sein
+value_index: Feld ist indiziert
 all_activity: Alle Aktivitäten
 create_item: Element erstellen
 display_template: Anzeigevorlage
 language_display_template: Anzeigevorlage Sprache
 translations_display_template: Anzeigevorlage Übersetzungen
+n_items_selected: 'Keine Elemente ausgewählt | Ein Element ausgewählt | {n} Elemente ausgewählt'
 per_page: Pro Seite
 all_files: Alle Dateien
 my_files: Meine Dateien
@@ -910,6 +942,7 @@ run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktual
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
 run_flow: Flow ausführen
 run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
+trigger_flow_success: Der Flow "{flow}" wurde erfolgreich ausgelöst. Er wird im Hintergrund ausgeführt
 field_name_placeholder: Feldnamen eingeben ...
 field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger
@@ -971,14 +1004,22 @@ no_data_in_flow: Es wurden keine Daten verarbeitet
 accountability: Verantwortlichkeit
 payload: Nutzdaten
 details: Details
+resume_streaming_logs: Streaming-Logs fortsetzen
+pause_streaming_logs: Streaming-Logs pausieren
+logs_session_resumed: Log-Sitzung fortgesetzt...
 logs_session_paused: '"Log Sitzung pausiert"'
+logs_stream_disconnected: Log-Stream getrennt...
+log_detail_filter_paths: 'Pfade filtern (z.B.: req.method, res.statusCode)'
 logs_beginning: '"Dies ist der Anfang Deiner Log-Sitzung"......'
+logs_waiting: 'Warte auf weitere Protokolle...'
 logs_unread_count: '{count} ungelesen'
 clear_logs: Logs leeren
 search_logs: Logs suchen...
 all_instances: '"alle Instanzen "'
+instance_count: 'Keine Instanz | Eine Instanz | {count} Instanzen'
 all_log_levels: Alle Log-Levels
 log_level_count: 'Kein Log-Level | Ein Log-Level | {count} Log-Levels'
+soft_wrap_lines: Weiche Zeilenumbrüche
 full_screen: Vollbild
 full_text_search: Volltextsuche
 edit_panels: Panel bearbeiten
@@ -1064,8 +1105,8 @@ choices: Optionen
 choices_option_configured_incorrectly: Auswahl falsch konfiguriert
 deselect: Abwählen
 deselect_all: Alle abwählen
-theme: Design
-select_a_theme: Design auswählen
+theme: Theme
+select_a_theme: Theme auswählen
 default_sync_with_project: Standard (Projekt folgen)
 appearance_auto: Automatisch (System folgen)
 appearance_light: Hell
@@ -1082,7 +1123,7 @@ editing_in_batch: '{count} Elemente werden bearbeitet'
 no_options_available: Keine Optionen verfügbar
 settings_data_model: Datenmodell
 settings_roles: Benutzerrollen
-settings_permissions: '"Zugangsrichtlinien "'
+settings_permissions: Zugangsrichtlinien
 settings_project: Einstellungen
 settings_appearance: Erscheinung
 settings_webhooks: Webhooks
@@ -1095,16 +1136,16 @@ configure_field_key_to_continue: Feldschlüssel konfigurieren, um fortzufahren
 scope: Bereich
 actions: Aktionen
 select: Auswählen...
-layout: Ansicht
+layout: Layout
 tree_view: Baumansicht
 changes_are_permanent: Änderungen können nicht rückgängig gemacht werden
 preset_name_placeholder: Standardwert, wenn leer...
 preset_search_placeholder: Suchabfrage...
 editing_preset: Vorlage bearbeiten
-layout_preview: Vorschau der Ansicht
-layout_setup: Einrichtung Ansicht
+layout_preview: Layout-Vorschau
+layout_setup: Layout-Einrichtung
 data: Daten
-theme-overrides: Design-Überschreibungen
+theme-overrides: Theme-Überschreibungen
 unsaved_changes: Nicht gespeicherte Änderungen
 unsaved_changes_copy: Möchten Sie diese Seite wirklich verlassen?
 discard_changes: Änderungen verwerfen
@@ -1115,11 +1156,11 @@ show_y_axis: Y-Achse anzeigen
 keep_editing: Weiter bearbeiten
 page_help_collections_overview: '**Sammlungsübersicht** — Liste aller Sammlungen, auf die Sie Zugriff haben.'
 page_help_collections_collection: >-
-  **Durchsuche Elemente** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Ansicht, Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
+  **Elemente durchstöbern** — Auflistung aller Elemente in {collection}, auf welche Sie Zugriff haben. Passen Sie Layout, Filter und Sortierung an und speichern Sie diese Konfiguration bei Bedarf als Lesezeichen für einen schnelleren Zugriff ab.
 page_help_collections_item: >-
   **Elementdetails** — Ein Formular zum Betrachten und Verwalten dieses Elements. Diese Sidebar enthält auch einen vollständigen Verlauf von Revisionen und eingebetteten Kommentaren.
 page_help_activity_collection: >-
-  **Aktivität durchsuchen** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
+  **Aktivität durchstöbern** — Eine umfassende Auflistung aller System- und Inhaltstätigkeiten Ihres Benutzers.
 page_help_docs_global: >-
   **Dokumentationsübersicht** — Dokumentation, die speziell auf die Version und das Schema dieses Projekts zugeschnitten ist.
 page_help_files_collection: >-
@@ -1134,28 +1175,34 @@ page_help_settings_datamodel_collections: >-
 page_help_settings_datamodel_fields: >-
   **Datenmodell: Sammlung** — Ein Formular zur Verwaltung dieser Sammlung und ihrer Felder.
 page_help_settings_system_logs: '**Systemprotokolle** — Greifen Sie auf einen Live-Stream der Systemprotokolle zu.'
+page_help_settings_policies_collection: '**Richtlinien durchstöbern** — Auflistung aller Richtlinien innerhalb des Projekts.'
+page_help_settings_policies_item: "**Richtlinien-Detail** — Verwalten Sie die Berechtigungen einer Richtlinie sowie weitere Einstellungen."
+page_help_settings_roles_collection: '**Rollen durchstöbern** — Auflistung aller Benutzerrollen innerhalb des Projekts.'
 page_help_settings_roles_item: "**Rollen-Detail** — Berechtigungen und andere Einstellungen einer Rolle verwalten."
 page_help_settings_presets_collection: >-
-  **Vorlagen durchsuchen** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
+  **Vorlagen durchstöbern** — Auflistung aller Vorlagen im Projekt, einschließlich: Benutzer, Rolle, globale Lesezeichen, sowie Standardansichten.
 page_help_settings_presets_item: >-
   **Vorlagen-Details** — Ein Formular zur Verwaltung von Lesezeichen und Vorlagen für Sammlungen.
-page_help_settings_webhooks_collection: '**Durchsuche Webhooks** — Auflistung aller Webhooks in diesem Projekt.'
+page_help_settings_webhooks_collection: '**Webhooks durchstöbern** — Auflistung aller Webhooks innerhalb des Projektes.'
 page_help_settings_webhooks_item: '**Webhook-Detail** — Ein Formular zum Erstellen und Verwalten von Webhooks.'
-page_help_settings_flows_collection: '**Flows anzeigen** — Zeige alle Flows des Projektes.'
+page_help_settings_flows_collection: '**Flows durchstöbern** — Auflistung aller Flows innerhalb des Projektes.'
 page_help_settings_flows_item: '**Flow Details** — Verwaltung einer oder mehrerer Operationen.'
-page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchsuchen** — Listet alle benutzerdefinierten Übersetzungen im Projekt auf.'
+page_help_settings_translations_collection: '**Benutzerdefinierte Übersetzungen durchstöbern** — Auflistung aller benutzerdefinierten Übersetzungen innerhalb des Projektes.'
 page_help_settings_translations_item: '**Detailansicht Benutzerdefinierte Übersetzungen** — Ein Formular zum Betrachten und Verwalten dieser Übersetzung.'
 page_help_users_collection: '**Benutzerverzeichnis** — Auflistung aller Benutzer in diesem Projekt.'
 page_help_users_item: >-
   **Benutzer-Detail** — Kontoinformationen verwalten oder Details anderer Benutzer anzeigen.
 page_help_insights_overview: '**Einblicke** — Liste der Dashboards, auf welche Sie Zugriff haben.'
 page_help_insights_dashboard: '**Dashboard** — Arbeitsbereich für die Verwaltung von einer oder mehreren Panels'
+page_help_marketplace_account: '**Benutzerkonto** — Herausgeber oder Betreuer einer veröffentlichten Erweiterung.'
+page_help_marketplace_registry: '**Registry** — Im Directus Marketplace verfügbare Erweiterungen.'
+page_help_marketplace_extension: '**Erweiterung** — Erweiterung im Directus Marketplace.'
 activity_feed: Aktivitätenverlauf
 add_new: Neu erstellen
 create_new: Neu anlegen
 all: Alle
 none: Kein/e
-no_layout_collection_selected_yet: Noch keine Ansicht oder Sammlung ausgewählt
+no_layout_collection_selected_yet: Noch kein Layout / keine Sammlung ausgewählt
 batch_delete_confirm: >-
   Keine Elemente ausgewählt | Möchten Sie dieses Element wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden. | Möchten Sie diese {count} Elemente wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.
 cancel: Abbrechen
@@ -1163,12 +1210,14 @@ no_upscale: Bilder nicht hochskalieren
 no_extensions: Keine Erweiterungen
 no_extensions_copy: Es wurden noch keine Erweiterungen installiert.
 install_extension: Erweiterung installieren
+uninstall_locked: Erweiterungen, die nicht über den Marketplace installiert wurden, können nicht deinstalliert werden
 uninstall: Deinstallieren
 installed: Installiert
 reinstall: Neu installieren
 open_in_marketplace: Im Marketplace öffnen
-source_registry: Marktplatz
+source_registry: Marketplace
 source_local: Lokal
+source_module: Node Module
 collection: Sammlung
 collections: Sammlungen
 content: Inhalt
@@ -1176,8 +1225,10 @@ singleton: Singleton
 singleton_label: Als einzelnes Objekt behandeln
 system_fields_locked: Systemfelder sind gesperrt und können nicht bearbeitet werden
 directus_collection:
+  directus_access: Richtlinien-Zuweisungen
   directus_activity: Verantwortungsprotokoll für alle Ereignisse
   directus_collections: Weitere Konfiguration und Metadaten
+  directus_comments: Kommentare für Elemente
   directus_dashboards: Dashboards innerhalb des Moduls "Einblicke"
   directus_fields: Weitere Felder und Metadaten
   directus_files: Metadaten für alle verwalteten Dateien
@@ -1187,6 +1238,8 @@ directus_collection:
   directus_notifications: Benachrichtigungen an Benutzer gesendet
   directus_operations: In Flows ausgeführte Operationen
   directus_panels: Individuelle Panels in Einblicke-Dashboards
+  directus_permissions: Zugriffsrechte für jede Richtlinie
+  directus_policies: Zugriffskontrollrichtlinien
   directus_presets: Vorlagen für Sammlung und Lesezeichen
   directus_relations: Relationen und Metadaten
   directus_revisions: Speicherabzug für alle Aktivitäten
@@ -1271,6 +1324,7 @@ fields:
     status: Status
     status_draft: Entwurf
     status_invited: Eingeladen
+    status_unverified: Ungeprüft
     status_active: Aktiv
     status_suspended: Gesperrt
     status_archived: Archiviert
@@ -1282,16 +1336,17 @@ fields:
     last_access: Letzter Zugriff
     email_notifications: E-Mail Benachrichtigungen
     appearance: Erscheinung
-    theme_light: Helles Erscheinungsbild
-    theme_dark: Dunkles Erscheinungsbild
-    theme_light_overrides: Anpassung des hellen Designs
-    theme_dark_overrides: Anpassung des dunklen Designs
+    theme_light: Helles Theme
+    theme_dark: Dunkles Theme
+    theme_light_overrides: Anpassung des hellen Themes
+    theme_dark_overrides: Anpassung des dunklen Themes
   directus_settings:
     jpg: JPEG
     png: PNG
     webP: WebP
     tiff: Tiff
     avif: AVIF
+    reporting: Berichte
     mapping: Kartografie
     basemaps: Basiskarte
     basemaps_raster: Raster
@@ -1315,8 +1370,8 @@ fields:
     public_note: Öffentliche Anmerkung
     theming: Design-Standardwerte
     default_appearance: Standard-Erscheinung
-    default_theme_light: 'Standard Erscheinungsbild: Hell'
-    default_theme_dark: 'Standard Erscheinungsbild: Dunkel'
+    default_theme_light: Helles Standard-Theme
+    default_theme_dark: Dunkles Standard-Theme
     auth_password_policy: Kennwortrichtlinie
     auth_login_attempts: Maximale Anmeldeversuche
     files_and_thumbnails: Dateien & Speicher
@@ -1331,10 +1386,16 @@ fields:
     transformations_presets: Transformationen auf untenstehende Voreinstellungen begrenzen
     image_editor: Bildeditor
     custom_aspect_ratios: Benutzerdefiniertes Seitenverhältnis
-    theme_light_overrides: Anpassung des hellen Designs
-    theme_dark_overrides: Anpassung des dunklen Designs
+    theme_light_overrides: Anpassung des hellen Themes
+    theme_dark_overrides: Anpassung des dunklen Themes
     public_registration: Benutzerregistrierung
+    public_registration_note: Erlaubt Benutzern sich über die [Registrierungsroute](/admin/register) zu registrieren.
     public_registration_role: Benutzerrolle
+    public_registration_role_note: Diese Rolle ist Benutzern zugewiesen, die sich über diese Methode registrieren. Wirkt sich nicht auf bereits registrierte Benutzer aus.
+    public_registration_email_filter: E-Mail-Adressenfilter
+    public_registration_email_filter_note: Nur E-Mail-Adressen, welche diesem Filter entsprechen, können sich registrieren.
+    public_registration_verify_email: E-Mail-Adresse bestätigen
+    public_registration_verify_email_note: Sendet eine E-Mail an den registrierenden Benutzer mit einem Bestätigungslink, welcher zuerst angeklickt werden muss, bevor man sich anmelden kann.
   directus_shares:
     name: Name
     role: Rolle
@@ -1348,7 +1409,7 @@ fields:
     icon: Sammlungsicon
     note: Notiz
     hidden: Ausgeblendet
-    singleton: Einzelnes Element
+    singleton: Singleton
     translation: Feldnamen-Übersetzungen
     display_template: Vorlage
   directus_roles:
@@ -1361,6 +1422,10 @@ fields:
   directus_policies:
     name: Richtlinienname
     description: Beschreibung
+    app_access: App-Zugriff
+    admin_access: Admin-Zugriff
+    ip_access: IP-Zugriff
+    enforce_tfa: 2FA erzwingen
   directus_webhooks:
     name: Name
     method: Methode
@@ -1444,8 +1509,11 @@ field_options:
     filename_disk: Name auf Festplatte...
     filename_download: Name während des Downloads...
   directus_policies:
-    name: Ein einzigartiger Name für diese Richtlinie...
+    name: Ein eindeutiger Name für diese Richtlinie...
     description: Eine Beschreibung dieser Richtlinie...
+    ip_access: Erlaubte IP-Adressen, IP-Bereiche und CIDR-Blöcke hinzufügen. Leer lassen, um alle zuzulassen...
+    enforce_tfa: Zwei-Faktor-Authentifizierung erzwingen
+    assigned_to: Zugewiesen an
   directus_roles:
     name: Der einzigartige Name für diese Rolle...
     description: Eine Beschreibung von dieser Rolle...
@@ -1455,6 +1523,8 @@ field_options:
       name_placeholder: Titel eingeben...
       link_name: Link
       link_placeholder: Relative oder absolute URL...
+    parent_note: Optionale übergeordnete Rolle, von der diese Rolle Berechtigungen erbt
+    children_note: Verschachtelte untergeordnete Rollen, welche die Rechte dieser Rolle erben
     collections_name: Sammlungen
     collections_addLabel: Sammlung hinzufügen...
   directus_users:
@@ -1505,6 +1575,7 @@ live_preview:
   toggle_3d: 3D umschalten
 shares: Freigaben
 unlimited_usage: Unbegrenzte Nutzung
+uses_left: Keine Verwendungen übrig | Eine Verwendung übrig | {n} Verwendungen übrig
 no_shares: Keine Freigaben zum Anzeigen
 new_share: Neue Freigabe
 expired: Abgelaufen
@@ -1538,6 +1609,8 @@ continue_label: Weiter
 continue_as: >-
   {name} ist derzeit angemeldet. Wenn Sie dieses Konto kennen, drücken Sie auf Fortfahren.
 editing_role: '{role} Rolle'
+editing_policy: '{policy} Richtlinie'
+no_permissions: Keine Berechtigungen
 permission_add_collection: Sammlung hinzufügen
 creating_webhook: Webhook erstellen
 default_label: Standard
@@ -1584,6 +1657,7 @@ authenticated: Authentifiziert
 options: Optionen
 otp: Einmaliges Passwort
 password: Passwort
+confirm_password: Passwort bestätigen
 permissions: Berechtigungen
 relationship: Beziehung
 reset: Zurücksetzen
@@ -1600,6 +1674,14 @@ select_field_type: Feldtyp wählen
 select_interface: Wähle eine Schnittstelle
 select_display: Anzeige auswählen
 settings: Einstellungen
+register: Registrieren
+registration_successful_headline: Erfolgreich!
+registration_successful_note: Sie können nun zur Anmeldeseite fortfahren.
+registration_successful_check_email_note: |
+  Bitte beachten Sie, dass Sie Ihre E-Mail-Adresse bestätigen müssen, bevor Sie sich anmelden können, indem Sie auf den Ihnen zugesandten Bestätigungslink klicken.
+dont_have_an_account: Sie haben noch kein Konto?
+already_have_an_account: Sie haben bereits ein Konto?
+sign_up_now: Jetzt registrieren
 sign_in: Login
 sign_out: Ausloggen
 sign_out_confirm: Möchten Sie sich wirklich abmelden?
@@ -1629,9 +1711,12 @@ navigate_to_item: Zum Element navigieren
 undo_removed_item: Entferntes Item rückgängig
 remove_item: Item entfernen
 delete_item: Item löschen
+pause: Pause
+resume: Fortsetzen
 interfaces:
   list-m2a:
     prefix_note: Verwendet standardmäßig den Namen der Sammlung des zugehörigen Elements.
+    sorting_disabled: Sortieren ist deaktiviert, da es mehr Elemente gibt, als auf eine Seite passen.
   filter:
     name: Filter
     description: Ein Filterobjekt konfigurieren.
@@ -1760,6 +1845,8 @@ interfaces:
     description: Bild auswählen oder hochladen
     crop: Zuschneiden auf Passform
     crop_label: Bild nach Bedarf zuschneiden
+    letterbox: Briefkasten
+    letterbox_label: Füge Leerraum zur Bildvorschau hinzu
   system-interface:
     interface: Benutzeroberfläche
     description: Vorhandene Schnittstelle auswählen
@@ -1794,6 +1881,7 @@ interfaces:
     editorFont: Editor Schriftart
     previewFont: Vorschau Schriftart
     default_view: Standard-Ansicht
+    default_view_editor: Editor
     default_view_preview: Vorschau
     customSyntax: Benutzerdefinierte Blöcke
     customSyntax_label: Eigene Syntaxtypen hinzufügen
@@ -1899,10 +1987,11 @@ interfaces:
     no_collection: Keine Sammlung
     toggle_split_view: Teil-Ansicht umschalten
     enable: Aktivieren
+    default_split_view_state: Standardstatus der geteilten Ansicht
     user_language: Aktuelle Benutzersprache verwenden
     default_language: Standardsprache
     language_field: Sprachindikatorfeld
-    language_direction_field: Schreibrichtung Feld
+    language_direction_field: Schreibrichtung-Feld
   list-o2m-tree-view:
     description: Baumansicht für verschachtelte rekursive 1:n-Elemente
     recursive_only: Die Baumansicht funktioniert nur für rekursive Beziehungen.
@@ -1977,6 +2066,9 @@ interfaces:
   system-raw-editor:
     system-raw-editor: Quelltext-Editor
     description: Eingabe von Rohwerten oder Mustache-Templates erlauben
+  input-password:
+    input-password: Passwort eingeben
+    description: Passwort-Eingabe mit Schalter zum Verstecken des Wertes
 displays:
   translations:
     translations: Übersetzungen
@@ -2122,8 +2214,8 @@ layouts:
     cozy: Mittel
   calendar:
     calendar: Kalender
-    start_date_field: Datumsfeld Start
-    end_date_field: Datumsfeld Ende
+    start_date_field: Start-Datum Feld
+    end_date_field: End-Datum Feld
     optional: Optional
     first_day: Erster Tag der Woche
   map:
@@ -2192,6 +2284,8 @@ show_legend: Legende anzeigen
 right: Rechts
 left: Links
 donut: Donut
+continuous: Kontinuierlich
+gap: Abstand
 panels:
   metric:
     name: Metrik
@@ -2207,6 +2301,7 @@ panels:
     value_field: Wert-Feld
     fill_type: Füllart
     curve_type: Kurventyp
+    missing_data: Fehlende Daten
   label:
     name: Label
     description: Einen Text anzeigen
@@ -2339,6 +2434,12 @@ operations:
     body: Inhalt
     template: Vorlage
     data: Daten
+    cc: CC
+    cc_placeholder: CC-E-Mail-Adressen hinzufügen und Enter drücken...
+    bcc: BCC
+    bcc_placeholder: BCC-E-Mail-Adressen hinzufügen und Enter drücken...
+    reply_to: Antwort an
+    reply_to_placeholder: Antwort-E-Mail-Adressen hinzufügen und Enter drücken...
   notification:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden

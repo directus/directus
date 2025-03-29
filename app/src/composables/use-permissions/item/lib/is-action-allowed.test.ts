@@ -1,16 +1,14 @@
 import { mockedStore } from '@/__utils__/store';
 import { usePermissionsStore } from '@/stores/permissions';
 import { useUserStore } from '@/stores/user';
+import { ActionPermission } from '@/types/permissions';
 import { randomIdentifier } from '@directus/random';
-import { ItemPermissions, Permission } from '@directus/types';
+import { ItemPermissions } from '@directus/types';
 import { createTestingPinia } from '@pinia/testing';
 import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Ref, computed } from 'vue';
-import { isFullPermission } from '../utils/is-full-permission';
 import { isActionAllowed } from './is-action-allowed';
-
-vi.mock('../utils/is-full-permission');
 
 let sample: {
 	collection: string;
@@ -110,7 +108,7 @@ describe('non-admin users', () => {
 			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
 		});
 
-		it('should be disallowed if user has no permission', () => {
+		it('should be disallowed if no permissions are configured', () => {
 			const permissionsStore = mockedStore(usePermissionsStore());
 			permissionsStore.getPermission.mockReturnValue(null);
 
@@ -122,11 +120,21 @@ describe('non-admin users', () => {
 			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
 		});
 
+		it('should be disallowed if user has no permission', () => {
+			const permissionsStore = mockedStore(usePermissionsStore());
+			permissionsStore.getPermission.mockReturnValue({ access: 'none' } as ActionPermission);
+
+			const isNew = false;
+
+			const result = isActionAllowed(sample.collection, isNew, fetchedItemPermissions, action);
+
+			expect(result.value).toBe(false);
+			expect(fetchedItemPermissionsSpy).not.toHaveBeenCalled();
+		});
+
 		it('should be allowed if user has full permission', () => {
 			const permissionsStore = mockedStore(usePermissionsStore());
-			permissionsStore.getPermission.mockReturnValue({} as Permission);
-
-			vi.mocked(isFullPermission).mockReturnValue(true);
+			permissionsStore.getPermission.mockReturnValue({ access: 'full' } as ActionPermission);
 
 			const isNew = false;
 
@@ -138,9 +146,7 @@ describe('non-admin users', () => {
 
 		it('should check item-based permission for conditional permission rules', () => {
 			const permissionsStore = mockedStore(usePermissionsStore());
-			permissionsStore.getPermission.mockReturnValue({} as Permission);
-
-			vi.mocked(isFullPermission).mockReturnValue(false);
+			permissionsStore.getPermission.mockReturnValue({ access: 'partial' } as ActionPermission);
 
 			const isNew = false;
 

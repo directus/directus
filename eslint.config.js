@@ -1,16 +1,17 @@
 // @ts-check
 
-import eslint from '@eslint/js';
+import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginVue from 'eslint-plugin-vue';
 import globals from 'globals';
-import tseslint from 'typescript-eslint';
+import process from 'node:process';
+import typescriptEslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default typescriptEslint.config(
 	// Global config
 	{
 		languageOptions: {
-			ecmaVersion: 2022,
+			ecmaVersion: 2023,
 			sourceType: 'module',
 			globals: {
 				...globals.browser,
@@ -25,7 +26,7 @@ export default tseslint.config(
 	},
 
 	// Enable recommended rules for JS files
-	eslint.configs.recommended,
+	eslintJs.configs.recommended,
 
 	// Custom basic rules
 	{
@@ -77,16 +78,16 @@ export default tseslint.config(
 	},
 
 	// Enable TypeScript plugin and recommended rules for TypeScript files
-	...tseslint.configs.recommended,
+	...typescriptEslint.configs.recommended,
 
 	// Enable Vue plugin and recommended rules for Vue files
-	// @ts-expect-error untyped package
 	...eslintPluginVue.configs['flat/recommended'],
 	{
 		files: ['**/*.vue'],
-		languageOptions: { parserOptions: { parser: tseslint.parser } },
+		languageOptions: { parserOptions: { parser: typescriptEslint.parser } },
 		// Apply recommended TypeScript rules to Vue files as well
-		rules: tseslint.configs.recommended.reduce((rules, config) => ({ ...rules, ...config.rules }), {}),
+		// @ts-expect-error wrong type assertion
+		rules: typescriptEslint.configs.recommended.reduce((rules, config) => ({ ...rules, ...config.rules }), {}),
 	},
 
 	// Custom TypeScript rules
@@ -104,7 +105,7 @@ export default tseslint.config(
 
 	// Custom Vue rules
 	{
-		files: ['**/*.{ts,vue}'],
+		files: ['**/*.vue'],
 		rules: {
 			// Same ordering of component tags everywhere
 			'vue/component-tags-order': [

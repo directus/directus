@@ -2,6 +2,7 @@
 import api from '@/api';
 import type { File } from '@directus/types';
 import { emitter, Events } from '@/events';
+import { useFilesStore } from '@/stores/files.js';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
@@ -63,16 +64,20 @@ function validFiles(files: FileList) {
 }
 
 function useUpload() {
-	const uploading = ref(false);
-	const progress = ref(0);
-	const numberOfFiles = ref(0);
-	const done = ref(0);
+	const filesStore = useFilesStore();
+	const newUpload = filesStore.upload();
 
-	return { uploading, progress, upload, onBrowseSelect, numberOfFiles, done };
+	return {
+		uploading: newUpload.uploading,
+		progress: newUpload.progress,
+		upload,
+		onBrowseSelect,
+		numberOfFiles: newUpload.numberOfFiles,
+		done: newUpload.done,
+	};
 
 	async function upload(files: FileList) {
-		uploading.value = true;
-		progress.value = 0;
+		newUpload.start(files.length);
 
 		const preset = {
 			...props.preset,
@@ -83,8 +88,6 @@ function useUpload() {
 			if (!validFiles(files)) {
 				throw new Error('An error has occurred while uploading the files.');
 			}
-
-			numberOfFiles.value = files.length;
 
 			if (props.multiple === true) {
 				const fileSizes = Array.from(files).map((file) => file.size);
@@ -102,7 +105,7 @@ function useUpload() {
 
 				const uploadedFiles = await uploadFiles(Array.from(files), {
 					onProgressChange: (percentages) => {
-						progress.value = Math.round(
+						newUpload.progress.value = Math.round(
 							(sum(fileSizes.map((total, i) => total * (percentages[i]! / 100))) / totalBytes) * 100,
 						);
 
@@ -111,7 +114,7 @@ function useUpload() {
 							.filter(([p]) => p === 100)
 							.map(([, i]) => i!);
 
-						done.value = doneIndices.length;
+						newUpload.done.value = doneIndices.length;
 
 						// Nullify controller for done uploads, to prevent resuming after pausing
 						for (const idx of doneIndices) {
@@ -138,8 +141,8 @@ function useUpload() {
 			} else {
 				const uploadedFile = await uploadFile(Array.from(files)[0]!, {
 					onProgressChange: (percentage) => {
-						progress.value = percentage;
-						done.value = percentage === 100 ? 1 : 0;
+						newUpload.progress.value = percentage;
+						newUpload.done.value = percentage === 100 ? 1 : 0;
 					},
 					onChunkedUpload: (controller) => {
 						uploadController = controller;
@@ -156,9 +159,7 @@ function useUpload() {
 			unexpectedError(error);
 			emit('input', null);
 		} finally {
-			uploading.value = false;
-			done.value = 0;
-			numberOfFiles.value = 0;
+			newUpload.finish();
 		}
 	}
 

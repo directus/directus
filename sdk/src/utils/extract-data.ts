@@ -25,6 +25,10 @@ export async function extractData(response: unknown) {
 			return result;
 		}
 
+		if (response.status === 204) {
+			return null;
+		}
+
 		// fallback for anything else
 		return response;
 	}

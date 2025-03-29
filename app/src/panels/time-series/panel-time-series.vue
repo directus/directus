@@ -30,7 +30,7 @@ const props = withDefaults(
 		dateField: string;
 		valueField: string;
 		function: PanelFunction;
-		precision?: string;
+		precision?: 'second' | 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
 		range?: string;
 		color?: string | null;
 		fillType?: string;
@@ -41,6 +41,7 @@ const props = withDefaults(
 		filter?: Filter;
 		showXAxis?: boolean;
 		showYAxis?: boolean;
+		missingData?: 'null' | 'ignore' | string;
 	}>(),
 	{
 		showHeader: false,
@@ -56,6 +57,7 @@ const props = withDefaults(
 		filter: () => ({}),
 		showXAxis: true,
 		showYAxis: true,
+		missingData: 'null',
 	},
 );
 
@@ -63,7 +65,8 @@ const { d, t, n } = useI18n();
 
 const fieldsStore = useFieldsStore();
 
-const metrics = ref<Record<string, any>[]>([]);
+type DateMetric = { x: number; y: number | null };
+const metrics = ref<DateMetric[]>([]);
 const chartEl = ref();
 const chart = ref<ApexCharts>();
 
@@ -100,6 +103,7 @@ watch(
 		() => props.max,
 		() => props.showXAxis,
 		() => props.showYAxis,
+		() => props.missingData,
 	],
 	() => {
 		chart.value?.destroy();
@@ -114,6 +118,51 @@ onUnmounted(() => {
 	chart.value?.destroy();
 });
 
+function fillGaps(data: DateMetric[], precision: typeof props.precision): DateMetric[] {
+	if (props.missingData === 'ignore') return data;
+	if (data.length === 0 || !data[0]) return [];
+
+	const result = [data[0]];
+
+	for (const [index, current] of data.entries()) {
+		if (index === 0) continue;
+		const prev = data[index - 1];
+		if (!prev || !current) continue;
+
+		const prevDate = new Date(prev.x);
+		const currentDate = new Date(current.x);
+
+		const expectedNextDate = adjustDate(prevDate, '1 ' + precision);
+		const expectedPrevDate = adjustDate(currentDate, '-1 ' + precision);
+
+		let filler;
+
+		if (props.missingData === 'null') {
+			filler = null;
+		} else if (props.missingData === '0') {
+			filler = 0;
+		} else {
+			const parsedNumber = Number(props.missingData);
+			filler = isNaN(parsedNumber) ? null : parsedNumber;
+		}
+
+		if (expectedNextDate && expectedPrevDate && expectedNextDate.getTime() < current.x) {
+			result.push({ x: expectedNextDate.getTime(), y: filler });
+
+			if (
+				expectedNextDate.getTime() !== expectedPrevDate.getTime() &&
+				expectedNextDate.getTime() < expectedPrevDate.getTime()
+			) {
+				result.push({ x: expectedPrevDate.getTime(), y: filler });
+			}
+		}
+
+		result.push(current);
+	}
+
+	return result;
+}
+
 function setupChart() {
 	metrics.value = [];
 
@@ -126,13 +175,19 @@ function setupChart() {
 	const minDate = Math.min(...allDates);
 	const maxDate = Math.max(...allDates);
 
-	metrics.value = orderBy(
+	let series = orderBy(
 		props.data.map((metric) => ({
 			x: toIncludeTimezoneOffset(metric.group, isFieldTimestamp),
 			y: Number(Number(metric[props.function][props.valueField]).toFixed(props.decimals ?? 0)),
 		})),
 		'x',
-	);
+	) as DateMetric[];
+
+	if (series.length > 0 && props.precision) {
+		series = fillGaps(series, props.precision);
+	}
+
+	metrics.value = series;
 
 	chart.value = new ApexCharts(chartEl.value, {
 		colors: [props.color ? props.color : 'var(--theme--primary)'],

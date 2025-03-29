@@ -28,7 +28,7 @@ import userFields from './users.yaml';
 import versionFields from './versions.yaml';
 import webhookFields from './webhooks.yaml';
 
-import { FieldMeta } from '../types.js';
+import type { FieldMeta } from '../types.js';
 
 export const systemFieldRows: FieldMeta[] = [];
 

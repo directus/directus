@@ -398,10 +398,11 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 		<v-dialog
 			:model-value="imageDialogOpen"
+			keep-behind
 			@esc="imageDialogOpen = false"
 			@update:model-value="imageDialogOpen = false"
 		>
-			<v-card class="allow-drawer">
+			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
@@ -415,7 +416,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .interface-input-rich-text-md {
 	--v-button-background-color: transparent;
@@ -458,11 +459,11 @@ textarea {
 
 .preview-box {
 	display: none;
-	padding: 20px;
+	padding: 20px 24px;
 	font-family: v-bind(previewFamily), serif;
 
 	:deep() {
-		@import '@/styles/markdown';
+		@include mixins.markdown;
 	}
 }
 
@@ -508,12 +509,10 @@ textarea {
 	margin-bottom: 20px;
 }
 
-.interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-scroll) {
-	min-height: 260px;
-}
-
 .interface-input-rich-text-md.preview :deep(.CodeMirror) {
-	display: none;
+	visibility: hidden;
+	position: absolute;
+	pointer-events: none;
 }
 
 .toolbar {
@@ -548,7 +547,7 @@ textarea {
 	--theme--form--column-gap: 12px;
 
 	padding: 12px;
-	@include form-grid;
+	@include mixins.form-grid;
 
 	.v-input {
 		min-width: 100px;

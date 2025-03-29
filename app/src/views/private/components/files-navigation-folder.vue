@@ -116,8 +116,6 @@ function useDeleteFolder() {
 			const folderKeys = foldersToUpdate.data.data.map((folder: { id: string }) => folder.id);
 			const fileKeys = filesToUpdate.data.data.map((file: { id: string }) => file.id);
 
-			await api.delete(`/folders/${props.folder.id}`);
-
 			if (folderKeys.length > 0) {
 				await api.patch(`/folders`, {
 					keys: folderKeys,
@@ -135,6 +133,8 @@ function useDeleteFolder() {
 					},
 				});
 			}
+
+			await api.delete(`/folders/${props.folder.id}`);
 
 			if (newParent) {
 				router.replace(`/files/folders/${newParent}`);

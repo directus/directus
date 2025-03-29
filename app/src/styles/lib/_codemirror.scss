@@ -6,7 +6,7 @@
 	color: var(--theme--foreground);
 	font-weight: inherit;
 	font-family: var(--theme--fonts--monospace--font-family);
-	line-height: 22px;
+	line-height: 24px;
 	direction: ltr;
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -139,8 +139,7 @@
 }
 
 /* Can style cursor different in overwrite (non-insert) mode */
-.CodeMirror-overwrite .CodeMirror-cursor {
-}
+// .CodeMirror-overwrite .CodeMirror-cursor { }
 
 .cm-tab {
 	display: inline-block;
@@ -202,11 +201,11 @@
 .cm-s-default .cm-def {
 	color: var(--theme--primary);
 }
-.cm-s-default .cm-variable,
-.cm-s-default .cm-punctuation,
-.cm-s-default .cm-property,
-.cm-s-default .cm-operator {
-}
+// .cm-s-default .cm-variable,
+// .cm-s-default .cm-punctuation,
+// .cm-s-default .cm-property,
+// .cm-s-default .cm-operator {
+// }
 .cm-s-default .cm-variable-2 {
 	color: var(--theme--primary);
 }
@@ -474,8 +473,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	padding: 0.1px; /* Force widget margins to stay inside of the container */
 }
 
-.CodeMirror-widget {
-}
+// .CodeMirror-widget {}
 
 .CodeMirror-rtl pre {
 	direction: rtl;

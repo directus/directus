@@ -38,15 +38,41 @@ export type IsDateTime<T, Y, N> = T extends 'datetime' ? Y : N;
 export type IsNumber<T, Y, N> = T extends number ? Y : N;
 export type IsString<T, Y, N> = T extends string ? Y : N;
 
-export type NestedPartial<Item extends object> = {
-	[Key in keyof Item]?: NonNullable<Item[Key]> extends infer NestedItem
-		? NestedItem extends object[]
-			? NestedPartial<UnpackList<NestedItem>>[] | Exclude<Item[Key], NestedItem>
-			: NestedItem extends object
-			  ? NestedPartial<NestedItem> | Exclude<Item[Key], NestedItem>
-			  : Item[Key]
-		: Item[Key];
-};
+/**
+ * Helpers for working with unions
+ */
+type UnionToParm<U> = U extends any ? (k: U) => void : never;
+type UnionToSect<U> = UnionToParm<U> extends (k: infer I) => void ? I : never;
+type ExtractParm<F> = F extends { (a: infer A): void } ? A : never;
+
+type SpliceOne<Union> = Exclude<Union, ExtractOne<Union>>;
+type ExtractOne<Union> = ExtractParm<UnionToSect<UnionToParm<Union>>>;
+
+export type ToTuple<Union> = ToTupleRec<Union, []>;
+
+type ToTupleRec<Union, Rslt extends any[]> = SpliceOne<Union> extends never
+	? [ExtractOne<Union>, ...Rslt]
+	: ToTupleRec<SpliceOne<Union>, [ExtractOne<Union>, ...Rslt]>;
+
+export type TupleToUnion<T extends unknown[]> = T[number];
+
+/**
+ * Recursively make properties optional
+ */
+export type NestedPartial<Item> = Item extends any[]
+	? UnpackList<Item> extends infer RawItem
+		? NestedPartial<RawItem>[]
+		: never
+	: Item extends object
+	  ? { [Key in keyof Item]?: NestedUnion<Item[Key]> }
+	  : Item;
+
+type NestedUnion<Item> = TupleToUnion<ToTuplePartial<Item>>;
+
+type ToTuplePartial<Union> = ToTuplePartialRec<Union, []>;
+type ToTuplePartialRec<Union, Rslt extends any[]> = SpliceOne<Union> extends never
+	? [NestedPartial<ExtractOne<Union>>, ...Rslt]
+	: ToTuplePartialRec<SpliceOne<Union>, [NestedPartial<ExtractOne<Union>>, ...Rslt]>;
 
 /**
  * Reduces a complex object type to make it readable in IDEs.

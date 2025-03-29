@@ -1,5 +1,5 @@
 import { findWorkspaceDir } from '@pnpm/find-workspace-dir';
-import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/find-workspace-packages';
+import { findWorkspacePackagesNoCheck, type Project } from '@pnpm/workspace.find-packages';
 import { defineLoader } from 'vitepress';
 
 export default defineLoader({

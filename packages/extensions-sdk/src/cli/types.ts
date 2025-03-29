@@ -15,3 +15,8 @@ export type RollupConfig = { rollupOptions: RollupOptions; rollupOutputOptions: 
 export type RollupMode = 'browser' | 'node';
 
 export type Format = 'esm' | 'cjs';
+
+export type Report = {
+	level: 'info' | 'warn' | 'error';
+	message: string;
+};

@@ -1,11 +1,19 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
-import { SchemaHelper, type SortRecord, type Sql } from '../types.js';
-import { prepQueryParams } from '../utils/prep-query-params.js';
+import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
+import { SchemaHelper, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
 export class SchemaHelperPostgres extends SchemaHelper {
+	override generateIndexName(
+		type: 'unique' | 'foreign' | 'index',
+		collection: string,
+		fields: string | string[],
+	): string {
+		return getDefaultIndexName(type, collection, fields, { maxLength: 63 });
+	}
+
 	override async getDatabaseSize(): Promise<number | null> {
 		try {
 			const result = await this.knex.select(this.knex.raw(`pg_database_size(?) as size;`, [env['DB_DATABASE']]));
@@ -14,10 +22,6 @@ export class SchemaHelperPostgres extends SchemaHelper {
 		} catch {
 			return null;
 		}
-	}
-
-	override prepQueryParams(queryParams: Sql): Sql {
-		return prepQueryParams(queryParams, { format: (index) => `$${index + 1}` });
 	}
 
 	override addInnerSortFieldsToGroupBy(

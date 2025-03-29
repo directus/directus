@@ -91,7 +91,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .type-title {
 	margin-bottom: 32px;
@@ -101,7 +101,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 	--theme--form--row-gap: 32px;
 	--theme--form--column-gap: 32px;
 
-	@include form-grid;
+	@include mixins.form-grid;
 }
 
 .monospace {

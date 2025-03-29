@@ -153,7 +153,7 @@ const onDeleteOptions = computed(() =>
 </template>
 
 <style lang="scss" scoped>
-@import '@/styles/mixins/form-grid';
+@use '@/styles/mixins';
 
 .grid {
 	--v-select-font-family: var(--theme--fonts--monospace--font-family);
@@ -212,7 +212,7 @@ const onDeleteOptions = computed(() =>
 	--theme--form--column-gap: 12px;
 	--theme--form--row-gap: 24px;
 
-	@include form-grid;
+	@include mixins.form-grid;
 
 	.v-divider {
 		margin-top: 48px;

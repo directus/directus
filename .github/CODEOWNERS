@@ -37,5 +37,6 @@
 
 /.github/actions/ @directus/infra
 /.github/workflows/ @directus/infra
+/Dockerfile @directus/infra
 /packages/release-notes-generator @directus/infra
 /packages/update-check @directus/infra

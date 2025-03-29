@@ -374,6 +374,35 @@ export default definePanel({
 			},
 		},
 		{
+			field: 'missingData',
+			type: 'string',
+			name: '$t:panels.time_series.missing_data',
+			meta: {
+				interface: 'select-dropdown',
+				width: 'half',
+				options: {
+					choices: [
+						{
+							text: '$t:continuous',
+							value: 'ignore',
+						},
+						{
+							text: '$t:gap',
+							value: 'null',
+						},
+						{
+							text: '0',
+							value: '0',
+						},
+					],
+					allowOther: true,
+				},
+			},
+			schema: {
+				default_value: null,
+			},
+		},
+		{
 			field: 'filter',
 			type: 'json',
 			name: '$t:filter',

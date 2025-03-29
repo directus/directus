@@ -1260,7 +1260,6 @@ operations:
   mail:
     name: Sendi retpoŝtmesaĝon
     to: Al
-    to_placeholder: Aldoni retpoŝtadresojn kaj premi Enter...
     body: Enhavo
     template: Ŝablono
     data: Datumoj

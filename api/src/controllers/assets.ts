@@ -202,7 +202,7 @@ router.get(
 			}
 		}
 
-		const { stream, file, stat } = await service.getAsset(id, { transformationParams, acceptFormat }, range);
+		const { stream, file, stat } = await service.getAsset(id, { transformationParams, acceptFormat }, range, true);
 
 		const filename = req.params['filename'] ?? file.filename_download;
 		res.attachment(filename);
@@ -238,7 +238,7 @@ router.get(
 			return res.end();
 		}
 
-		stream
+		(await stream())
 			.on('error', (error) => {
 				logger.error(error, `Couldn't stream file ${file.id} to the client`);
 

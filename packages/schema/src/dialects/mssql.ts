@@ -339,7 +339,6 @@ export default class MSSQL implements SchemaInspector {
 				object_definition ([c].[default_object_id]) AS [default_value],
 				[i].[is_primary_key],
 				[i].[is_unique],
-				[i].[index_name],
 				CASE WHEN [i].[object_id] IS NOT NULL AND [i].[is_unique] = 0 AND [i].[index_name] IS NOT NULL THEN 
 					[i].[index_name]
 				ELSE
