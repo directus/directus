@@ -10,7 +10,6 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { performance } from 'perf_hooks';
-import { promisify } from 'util';
 import { getExtensionsPath } from '../extensions/lib/get-extensions-path.js';
 import { useLogger } from '../logger/index.js';
 import { useMetrics } from '../metrics/index.js';
@@ -28,7 +27,6 @@ type QueryInfo = Partial<Knex.Sql> & {
 
 let database: Knex | null = null;
 let inspector: SchemaInspector | null = null;
-let databaseVersion: string | null = null;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -123,37 +121,35 @@ export function getDatabase(): Knex {
 	if (client === 'sqlite3') {
 		knexConfig.useNullAsDefault = true;
 
-		poolConfig.afterCreate = async (conn: any, callback: any) => {
+		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Enabling SQLite Foreign Keys support...');
 
-			const run = promisify(conn.run.bind(conn));
-			await run('PRAGMA foreign_keys = ON');
+			conn.run('PRAGMA foreign_keys = ON');
 
 			callback(null, conn);
 		};
 	}
 
 	if (client === 'cockroachdb') {
-		poolConfig.afterCreate = async (conn: any, callback: any) => {
+		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Setting CRDB serial_normalization and default_int_size');
-			const run = promisify(conn.query.bind(conn));
 
-			await run('SET serial_normalization = "sql_sequence"');
-			await run('SET default_int_size = 4');
+			conn.query('SET serial_normalization = "sql_sequence"');
+			conn.query('SET default_int_size = 4');
 
 			callback(null, conn);
 		};
 	}
 
 	if (client === 'oracledb') {
-		poolConfig.afterCreate = async (conn: any, callback: any) => {
+		poolConfig.afterCreate = (conn: any, callback: any) => {
 			logger.trace('Setting OracleDB NLS_DATE_FORMAT and NLS_TIMESTAMP_FORMAT');
 
 			// enforce proper ISO standard 2024-12-10T10:54:00.123Z for datetime/timestamp
-			await conn.executeAsync('ALTER SESSION SET NLS_TIMESTAMP_FORMAT = \'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"\'');
+			conn.execute('ALTER SESSION SET NLS_TIMESTAMP_FORMAT = \'YYYY-MM-DD"T"HH24:MI:SS.FF3"Z"\'');
 
 			// enforce 2024-12-10 date formet
-			await conn.executeAsync("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD'");
+			conn.execute("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD'");
 
 			callback(null, conn);
 		};
@@ -164,16 +160,6 @@ export function getDatabase(): Knex {
 		if (isObject(knexConfig.connection)) delete knexConfig.connection['filename'];
 
 		Object.assign(knexConfig, { client: 'mysql2' });
-
-		poolConfig.afterCreate = async (conn: any, callback: any) => {
-			logger.trace('Retrieving database version');
-			const run = promisify(conn.query.bind(conn));
-
-			const version = await run('SELECT @@version;');
-			databaseVersion = version[0]['@@version'];
-
-			callback(null, conn);
-		};
 	}
 
 	if (client === 'mssql') {
@@ -229,15 +215,6 @@ export function getSchemaInspector(database?: Knex): SchemaInspector {
 	inspector = createInspector(database);
 
 	return inspector;
-}
-
-/**
- * Get database version. Value currently exists for MySQL only.
- *
- * @returns Cached database version
- */
-export function getDatabaseVersion(): string | null {
-	return databaseVersion;
 }
 
 export async function hasDatabaseConnection(database?: Knex): Promise<boolean> {

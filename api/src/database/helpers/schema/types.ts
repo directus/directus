@@ -146,22 +146,6 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return 'CAST(?? AS CHAR(255))';
 	}
 
-	applyMultiRelationalSort(
-		knex: Knex,
-		dbQuery: Knex.QueryBuilder,
-		table: string,
-		primaryKey: string,
-		orderByString: string,
-		orderByFields: Knex.Raw[],
-	): Knex.QueryBuilder {
-		dbQuery.rowNumber(
-			knex.ref('directus_row_number').toQuery(),
-			knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields]),
-		);
-
-		return dbQuery;
-	}
-
 	formatUUID(uuid: string): string {
 		return uuid; // no-op by default
 	}

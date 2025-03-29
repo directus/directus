@@ -3,7 +3,6 @@ import type { Knex } from 'knex';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { promisify } from 'util';
 import type { Driver } from '../../types/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -68,11 +67,9 @@ export default function createDBConnection(client: Driver, credentials: Credenti
 	}
 
 	if (client === 'cockroachdb') {
-		knexConfig.pool!.afterCreate = async (conn: any, callback: any) => {
-			const run = promisify(conn.query.bind(conn));
-
-			await run('SET serial_normalization = "sql_sequence"');
-			await run('SET default_int_size = 4');
+		knexConfig.pool!.afterCreate = (conn: any, callback: any) => {
+			conn.query('SET serial_normalization = "sql_sequence"');
+			conn.query('SET default_int_size = 4');
 
 			callback(null, conn);
 		};
