@@ -6,9 +6,10 @@ import { assign, difference, uniq } from 'lodash-es';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
-import { isFieldNullable } from './lib/is-field-nullable.js';
-import { fetchDynamicVariableData } from '../../utils/fetch-dynamic-variable-data.js';
 import { extractRequiredDynamicVariableContext } from '../../utils/extract-required-dynamic-variable-context.js';
+import { fetchDynamicVariableData } from '../../utils/fetch-dynamic-variable-data.js';
+import { contextHasDynamicVariables } from '../process-ast/utils/context-has-dynamic-variables.js';
+import { isFieldNullable } from './lib/is-field-nullable.js';
 
 export interface ProcessPayloadOptions {
 	accountability: Accountability;
@@ -84,20 +85,24 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 			});
 		}
 
-		const permissionContext = extractRequiredDynamicVariableContext(field.validation);
+		if (field.validation) {
+			const permissionContext = extractRequiredDynamicVariableContext(field.validation);
 
-		const filterContext = await fetchDynamicVariableData(
-			{
-				accountability: options.accountability,
-				policies,
-				dynamicVariableContext: permissionContext,
-			},
-			context,
-		);
+			const filterContext = contextHasDynamicVariables(permissionContext)
+				? await fetchDynamicVariableData(
+						{
+							accountability: options.accountability,
+							policies,
+							dynamicVariableContext: permissionContext,
+						},
+						context,
+				  )
+				: undefined;
 
-		const validationFilter = parseFilter(field.validation, options.accountability, filterContext);
+			const validationFilter = parseFilter(field.validation, options.accountability, filterContext);
 
-		fieldValidationRules.push(validationFilter);
+			fieldValidationRules.push(validationFilter);
+		}
 	}
 
 	const presets = (permissions ?? []).map((permission) => permission.presets);
