@@ -27,9 +27,11 @@ export async function processPayload(options: ProcessPayloadOptions, context: Co
 	let permissions;
 	let permissionValidationRules: (Filter | null)[] = [];
 
-	const policies = await fetchPolicies(options.accountability, context);
+	let policies: string[] = [];
 
 	if (!options.accountability.admin) {
+		policies = await fetchPolicies(options.accountability, context);
+
 		permissions = await fetchPermissions(
 			{ action: options.action, policies, collections: [options.collection], accountability: options.accountability },
 			context,
