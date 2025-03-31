@@ -11,13 +11,7 @@ FROM node:${NODE_VERSION}-alpine AS builder
 # (see https://github.com/directus/directus/issues/24514)
 RUN npm install --global corepack@latest
 
-ARG TARGETPLATFORM
-RUN <<EOF
-	if [ "$TARGETPLATFORM" = 'linux/arm64' ]; then
-		apk --no-cache add python3 build-base
-		ln -sf /usr/bin/python3 /usr/bin/python
-	fi
-EOF
+RUN apk --no-cache add python3 py3-setuptools build-base
 
 WORKDIR /directus
 
@@ -36,6 +30,7 @@ RUN pnpm fetch
 
 COPY --chown=node:node . .
 RUN <<EOF
+	set -ex
 	pnpm install --recursive --offline --frozen-lockfile
 	npm_config_workspace_concurrency=1 pnpm run build
 	pnpm --filter directus deploy --prod dist

@@ -3,8 +3,10 @@ import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
 import type { Item, PrimaryKey } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import type { StringValue } from 'ms';
 import { nanoid } from 'nanoid';
 import { useLogger } from '../logger/index.js';
+import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type {
 	AbstractServiceOptions,
@@ -21,7 +23,6 @@ import { userName } from '../utils/user-name.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { UsersService } from './users.js';
-import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 
 const env = useEnv();
 const logger = useLogger();
@@ -116,7 +117,7 @@ export class SharesService extends ItemsService {
 			tokenPayload.session = refreshToken;
 		}
 
-		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as string;
+		const TTL = env[options?.session ? 'SESSION_COOKIE_TTL' : 'ACCESS_TOKEN_TTL'] as StringValue | number;
 
 		const accessToken = jwt.sign(tokenPayload, getSecret(), {
 			expiresIn: TTL,

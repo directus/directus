@@ -1,6 +1,6 @@
+import type { NumericValue } from '@directus/types';
 import type { Knex } from 'knex';
 import { NumberDatabaseHelper } from '../types.js';
-import type { NumericValue } from '@directus/types';
 import { maybeStringifyBigInt } from '../utils/maybe-stringify-big-int.js';
 
 export class NumberHelperSQLite extends NumberDatabaseHelper {
@@ -9,7 +9,8 @@ export class NumberHelperSQLite extends NumberDatabaseHelper {
 		collection: string,
 		name: string,
 		value: NumericValue,
+		logical: 'and' | 'or',
 	): Knex.QueryBuilder {
-		return dbQuery.orWhere({ [`${collection}.${name}`]: maybeStringifyBigInt(value) });
+		return dbQuery[logical].where({ [`${collection}.${name}`]: maybeStringifyBigInt(value) });
 	}
 }

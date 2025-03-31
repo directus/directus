@@ -518,6 +518,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'H:mm'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: d MMM
 minutes: Minuten
 hours: Stunden
@@ -2283,6 +2284,8 @@ show_legend: Legende anzeigen
 right: Rechts
 left: Links
 donut: Donut
+continuous: Kontinuierlich
+gap: Abstand
 panels:
   metric:
     name: Metrik
@@ -2298,6 +2301,7 @@ panels:
     value_field: Wert-Feld
     fill_type: Füllart
     curve_type: Kurventyp
+    missing_data: Fehlende Daten
   label:
     name: Label
     description: Einen Text anzeigen
@@ -2426,9 +2430,16 @@ operations:
     name: Email senden
     description: Sende eine E-Mail an eine oder mehrere Personen
     to: An
+    to_placeholder: E-Mail-Adressen hinzufügen und Enter drücken...
     body: Inhalt
     template: Vorlage
     data: Daten
+    cc: CC
+    cc_placeholder: CC-E-Mail-Adressen hinzufügen und Enter drücken...
+    bcc: BCC
+    bcc_placeholder: BCC-E-Mail-Adressen hinzufügen und Enter drücken...
+    reply_to: Antwort an
+    reply_to_placeholder: Antwort-E-Mail-Adressen hinzufügen und Enter drücken...
   notification:
     name: Benachrichtigung senden
     description: App-Interne Benachrichtigung an einen oder mehrere Benutzer senden

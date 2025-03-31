@@ -4,8 +4,9 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
 import { isNil } from 'lodash';
-import { ref, toRefs, unref } from 'vue';
+import { ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import slugify from '@sindresorhus/slugify';
 import VersionPromoteDrawer from './version-promote-drawer.vue';
 
 interface Props {
@@ -76,6 +77,24 @@ function useCreateDialog() {
 	const creating = ref(false);
 	const newVersionKey = ref<string | null>(null);
 	const newVersionName = ref<string | null>(null);
+
+	watch(
+		newVersionName,
+		(newName, oldName) => {
+			if (
+				newName === null ||
+				newVersionKey.value ===
+					slugify(oldName ?? '', {
+						separator: '-',
+					})
+			) {
+				newVersionKey.value = slugify(newName ?? '', {
+					separator: '-',
+				});
+			}
+		},
+		{ immediate: true },
+	);
 
 	return {
 		newVersionKey,
@@ -225,11 +244,14 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	<div class="version-menu-wrapper">
 		<v-menu class="version-menu" placement="bottom-start" show-arrow>
 			<template #activator="{ toggle }">
-				<button class="version-button" :class="{ main: currentVersion === null }" @click="toggle">
-					<span class="version-name">
-						<v-text-overflow :text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')" />
-					</span>
-					<v-icon name="arrow_drop_down" />
+				<button class="version-button" type="button" @click="toggle">
+					<v-icon name="published_with_changes" />
+					<v-text-overflow
+						class="version-name"
+						:text="currentVersion ? getVersionDisplayName(currentVersion) : t('main_version')"
+						placement="bottom"
+					/>
+					<v-icon small name="arrow_drop_down" />
 				</button>
 			</template>
 
@@ -311,23 +333,24 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 					<div class="grid">
 						<div class="field">
 							<v-input
-								v-model="newVersionKey"
-								class="full"
-								:placeholder="t('version_key')"
-								autofocus
-								slug
-								trim
-								:max-length="64"
-								@keyup.enter="createVersion"
-							/>
-						</div>
-						<div class="field">
-							<v-input
 								v-model="newVersionName"
 								class="full"
 								:placeholder="t('version_name')"
+								autofocus
 								trim
 								:max-length="255"
+								@keyup.enter="createVersion"
+							/>
+						</div>
+
+						<div class="field">
+							<v-input
+								v-model="newVersionKey"
+								class="full"
+								:placeholder="t('version_key')"
+								slug
+								trim
+								:max-length="64"
 								@keyup.enter="createVersion"
 							/>
 						</div>
@@ -351,23 +374,23 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 					<div class="grid">
 						<div class="field">
 							<v-input
-								v-model="newVersionKey"
-								class="full"
-								:placeholder="t('version_key')"
+								v-model="newVersionName"
 								autofocus
-								slug
+								class="full"
+								:placeholder="t('version_name')"
 								trim
-								:max-length="64"
+								:max-length="255"
 								@keyup.enter="renameVersion"
 							/>
 						</div>
 						<div class="field">
 							<v-input
-								v-model="newVersionName"
+								v-model="newVersionKey"
 								class="full"
-								:placeholder="t('version_name')"
+								:placeholder="t('version_key')"
+								slug
 								trim
-								:max-length="255"
+								:max-length="64"
 								@keyup.enter="renameVersion"
 							/>
 						</div>
@@ -415,10 +438,20 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-menu-wrapper {
 	overflow: hidden;
+	display: flex;
+	align-items: center;
+
+	@media (min-width: 600px) {
+		&::before {
+			content: '•';
+			padding-right: 0.25rem;
+			color: var(--theme--foreground-subdued);
+		}
+	}
 }
 
 .version-menu {
-	flex-shrink: 0;
+	flex-shrink: 1;
 }
 
 .version-item {
@@ -428,36 +461,22 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	--v-list-item-background-color-active-hover: var(--theme--primary-accent);
 }
 
-.version-button {
-	display: flex;
-	align-items: center;
-	padding: 2px;
-	background-color: var(--theme--background-normal);
-	color: var(--theme--foreground);
-	border-radius: 24px;
-	width: 100%;
-
-	.version-name {
-		padding-left: 8px;
-		overflow: hidden;
-	}
-
-	&:hover {
-		background-color: var(--theme--background-accent);
-	}
-
-	&.main {
-		background-color: var(--theme--primary);
-		color: var(--white);
-
-		&:hover {
-			background-color: var(--theme--primary-accent);
-		}
-	}
-}
-
 .version-delete {
 	--v-list-item-color: var(--theme--danger);
 	--v-list-item-color-hover: var(--theme--danger);
+}
+
+.version-name {
+	margin-left: 0.15em;
+}
+
+.version-button {
+	--v-icon-size: 1rem;
+	color: var(--theme--foreground-subdued);
+	display: flex;
+	align-items: center;
+	&:hover {
+		color: var(--theme--foreground);
+	}
 }
 </style>
