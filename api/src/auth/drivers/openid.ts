@@ -16,7 +16,7 @@ import { flatten } from 'flat';
 import jwt from 'jsonwebtoken';
 import type { StringValue } from 'ms';
 import type { Client } from 'openid-client';
-import { errors, generators, Issuer } from 'openid-client';
+import { custom, errors, generators, Issuer } from 'openid-client';
 import { getAuthProvider } from '../../auth.js';
 import { REFRESH_COOKIE_OPTIONS, SESSION_COOKIE_OPTIONS } from '../../constants.js';
 import getDatabase from '../../database/index.js';
@@ -102,6 +102,18 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const logger = useLogger();
 		const { issuerUrl, clientId, clientSecret, provider } = this.config;
 
+		// extract client http overrides/options
+		const clientHttpOptions = getConfigFromEnv(`AUTH_${provider.toUpperCase()}_CLIENT_HTTP_`);
+
+		if (clientHttpOptions) {
+			Issuer[custom.http_options] = (_, options) => {
+				return {
+					...options,
+					...clientHttpOptions,
+				};
+			};
+		}
+
 		const issuer = await Issuer.discover(issuerUrl);
 
 		const supportedTypes = issuer.metadata['response_types_supported'] as string[] | undefined;
@@ -116,6 +128,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
 		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${provider.toUpperCase()}_CLIENT_`, {
 			omitKey: [`AUTH_${provider.toUpperCase()}_CLIENT_ID`, `AUTH_${provider.toUpperCase()}_CLIENT_SECRET`],
+			omitPrefix: [`AUTH_${provider.toUpperCase()}_CLIENT_HTTP_`],
 			type: 'underscore',
 		});
 
@@ -126,6 +139,15 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			response_types: ['code'],
 			...clientOptionsOverrides,
 		});
+
+		if (clientHttpOptions) {
+			client[custom.http_options] = (_, options) => {
+				return {
+					...options,
+					...clientHttpOptions,
+				};
+			};
+		}
 
 		this.client = client;
 
