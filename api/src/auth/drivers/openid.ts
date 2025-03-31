@@ -38,7 +38,7 @@ import { Url } from '../../utils/url.js';
 import { LocalAuthDriver } from './local.js';
 
 export class OpenIDAuthDriver extends LocalAuthDriver {
-	client: Promise<Client>;
+	client: null | Client;
 	redirectUrl: string;
 	usersService: UsersService;
 	config: Record<string, any>;
@@ -50,32 +50,18 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const env = useEnv();
 		const logger = useLogger();
 
-		const { issuerUrl, clientId, clientSecret, ...additionalConfig } = config;
+		const { issuerUrl, clientId, clientSecret, provider } = config;
 
-		if (!issuerUrl || !clientId || !clientSecret || !additionalConfig['provider']) {
+		if (!issuerUrl || !clientId || !clientSecret || !provider) {
 			logger.error('Invalid provider config');
-			throw new InvalidProviderConfigError({ provider: additionalConfig['provider'] });
+			throw new InvalidProviderConfigError({ provider });
 		}
 
-		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath(
-			'auth',
-			'login',
-			additionalConfig['provider'],
-			'callback',
-		);
-
-		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
-		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${config['provider'].toUpperCase()}_CLIENT_`, {
-			omitKey: [
-				`AUTH_${config['provider'].toUpperCase()}_CLIENT_ID`,
-				`AUTH_${config['provider'].toUpperCase()}_CLIENT_SECRET`,
-			],
-			type: 'underscore',
-		});
+		const redirectUrl = new Url(env['PUBLIC_URL'] as string).addPath('auth', 'login', provider, 'callback');
 
 		this.redirectUrl = redirectUrl.toString();
 		this.usersService = new UsersService({ knex: this.knex, schema: this.schema });
-		this.config = additionalConfig;
+		this.config = config;
 		this.roleMap = {};
 
 		const roleMapping = this.config['roleMapping'];
@@ -94,36 +80,49 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 			throw new InvalidProviderError();
 		}
 
-		this.client = new Promise((resolve, reject) => {
-			Issuer.discover(issuerUrl)
-				.then((issuer) => {
-					const supportedTypes = issuer.metadata['response_types_supported'] as string[] | undefined;
+		this.client = null;
 
-					if (!supportedTypes?.includes('code')) {
-						logger.error('OpenID provider does not support required code flow');
-
-						reject(
-							new InvalidProviderConfigError({
-								provider: additionalConfig['provider'],
-							}),
-						);
-					}
-
-					resolve(
-						new issuer.Client({
-							client_id: clientId,
-							client_secret: clientSecret,
-							redirect_uris: [this.redirectUrl],
-							response_types: ['code'],
-							...clientOptionsOverrides,
-						}),
-					);
-				})
-				.catch((e) => {
-					logger.error(e, '[OpenID] Failed to fetch provider config');
-					process.exit(1);
-				});
+		// preload client
+		this.getClient().catch((e) => {
+			logger.error(e, '[OpenID] Failed to fetch provider config');
+			process.exit(1);
 		});
+	}
+
+	private async getClient() {
+		if (this.client) return this.client;
+
+		const logger = useLogger();
+		const { issuerUrl, clientId, clientSecret, provider } = this.config;
+
+		const issuer = await Issuer.discover(issuerUrl);
+
+		const supportedTypes = issuer.metadata['response_types_supported'] as string[] | undefined;
+
+		if (!supportedTypes?.includes('code')) {
+			logger.error('OpenID provider does not support required code flow');
+			throw new InvalidProviderConfigError({
+				provider,
+			});
+		}
+
+		// extract client overrides/options excluding CLIENT_ID and CLIENT_SECRET as they are passed directly
+		const clientOptionsOverrides = getConfigFromEnv(`AUTH_${provider.toUpperCase()}_CLIENT_`, {
+			omitKey: [`AUTH_${provider.toUpperCase()}_CLIENT_ID`, `AUTH_${provider.toUpperCase()}_CLIENT_SECRET`],
+			type: 'underscore',
+		});
+
+		const client = new issuer.Client({
+			client_id: clientId,
+			client_secret: clientSecret,
+			redirect_uris: [this.redirectUrl],
+			response_types: ['code'],
+			...clientOptionsOverrides,
+		});
+
+		this.client = client;
+
+		return client;
 	}
 
 	generateCodeVerifier(): string {
@@ -134,7 +133,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const { plainCodeChallenge } = this.config;
 
 		try {
-			const client = await this.client;
+			const client = await this.getClient();
 			const codeChallenge = plainCodeChallenge ? codeVerifier : generators.codeChallenge(codeVerifier);
 			const paramsConfig = typeof this.config['params'] === 'object' ? this.config['params'] : {};
 
@@ -178,7 +177,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		let userInfo;
 
 		try {
-			const client = await this.client;
+			const client = await this.getClient();
 
 			const codeChallenge = plainCodeChallenge
 				? payload['codeVerifier']
@@ -338,7 +337,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 
 		if (authData?.['refreshToken']) {
 			try {
-				const client = await this.client;
+				const client = await this.getClient();
 				const tokenSet = await client.refresh(authData['refreshToken']);
 
 				// Update user refreshToken if provided
