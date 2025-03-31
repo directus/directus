@@ -50,7 +50,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const env = useEnv();
 		const logger = useLogger();
 
-		const { issuerUrl, clientId, clientSecret, provider } = config;
+		const { issuerUrl, clientId, clientSecret, provider, issuerDiscoveryMustSucceed } = config;
 
 		if (!issuerUrl || !clientId || !clientSecret || !provider) {
 			logger.error('Invalid provider config');
@@ -85,7 +85,14 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		// preload client
 		this.getClient().catch((e) => {
 			logger.error(e, '[OpenID] Failed to fetch provider config');
-			process.exit(1);
+
+			if (issuerDiscoveryMustSucceed !== false) {
+				logger.error(
+					`AUTH_${provider.toUpperCase()}_ISSUER_DISCOVERY_MUST_SUCCEED is enabled and discovery failed, exiting`,
+				);
+
+				process.exit(1);
+			}
 		});
 	}
 
