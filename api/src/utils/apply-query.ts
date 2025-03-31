@@ -574,9 +574,8 @@ export function applyFilter(
 				if (!relation) continue;
 
 				if (relationType === 'o2m' || relationType === 'o2a') {
-					let pkField: Knex.Raw<any> | string = `${collection}.${
-						schema.collections[relation!.related_collection!]!.primary
-					}`;
+					let pkField: Knex.Raw<any> | string = `${collection}.${schema.collections[relation!.related_collection!]!.primary
+						}`;
 
 					if (relationType === 'o2a') {
 						pkField = knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), [pkField]);
@@ -584,46 +583,41 @@ export function applyFilter(
 
 					const childKey = Object.keys(value)?.[0];
 
-					const subQueryBuilder =
-						(filter: Filter, cases: Filter[]) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
-							const field = relation!.field;
-							const collection = relation!.collection;
-							const column = `${collection}.${field}`;
+					if (childKey === '_none' || childKey === '_some') {
+						const subQueryBuilder =
+							(filter: Filter, cases: Filter[]) => (subQueryKnex: Knex.QueryBuilder<any, unknown[]>) => {
+								const field = relation!.field;
+								const collection = relation!.collection;
+								const column = `${collection}.${field}`;
 
-							subQueryKnex
-								.select({ [field]: column })
-								.from(collection)
-								.whereNotNull(column);
+								subQueryKnex
+									.select({ [field]: column })
+									.from(collection)
+									.whereNotNull(column);
 
-							applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases, permissions);
-						};
+								applyQuery(knex, relation!.collection, subQueryKnex, { filter }, schema, cases, permissions);
+							};
 
-					const { cases: subCases } = getCases(relation!.collection, permissions, []);
+						const { cases: subCases } = getCases(relation!.collection, permissions, []);
 
-					if (childKey === '_none') {
-						dbQuery[logical].whereNotIn(
-							pkField as string,
-							subQueryBuilder(Object.values(value)[0] as Filter, subCases),
-						);
+						if (childKey === '_none') {
+							dbQuery[logical].whereNotIn(
+								pkField as string,
+								subQueryBuilder(Object.values(value)[0] as Filter, subCases),
+							);
 
-						continue;
-					} else if (childKey === '_some') {
-						dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
-
-						continue;
-					} else {
-						// Add implicit _some behavior when no operator is provided
-						dbQuery[logical].whereIn(pkField as string, subQueryBuilder(value, subCases));
-
-						continue;
+							continue;
+						} else if (childKey === '_some') {
+							dbQuery[logical].whereIn(pkField as string, subQueryBuilder(Object.values(value)[0] as Filter, subCases));
+							continue;
+						}
 					}
 				}
 
 				if (filterPath.includes('_none') || filterPath.includes('_some')) {
 					throw new InvalidQueryError({
-						reason: `"${
-							filterPath.includes('_none') ? '_none' : '_some'
-						}" can only be used with top level relational alias field`,
+						reason: `"${filterPath.includes('_none') ? '_none' : '_some'
+							}" can only be used with top level relational alias field`,
 					});
 				}
 
