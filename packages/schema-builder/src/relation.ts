@@ -1,5 +1,5 @@
-import { Relation, RelationMeta } from "@directus/types";
-import { ForeignKey } from "../../schema/dist";
+import { Relation, RelationMeta } from '@directus/types';
+import { ForeignKey } from '../../schema/dist';
 
 export class RelationBuilder {
 	_collection: string;
@@ -9,8 +9,6 @@ export class RelationBuilder {
 	_meta: RelationMeta | null;
 
 	build(): Relation {
-		return {
-
-		} as any
+		return {} as any;
 	}
 }
