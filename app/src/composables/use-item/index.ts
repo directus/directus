@@ -203,7 +203,16 @@ export function useItem<T extends Item>(
 		});
 
 		const graphqlEndpoint = isSystemCollection(collection.value) ? '/graphql/system' : '/graphql';
-		const response = await api.post(graphqlEndpoint, { query });
+		let response;
+
+		try {
+			response = await api.post(graphqlEndpoint, { query });
+		} catch (error) {
+			saving.value = false;
+			unexpectedError(error);
+			throw error;
+		}
+
 		const itemData = response.data.data.item;
 
 		const newItem: Item = {
