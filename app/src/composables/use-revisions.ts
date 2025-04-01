@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useServerStore } from '@/stores/server';
-import type { Revision, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
+import type { Revision, RevisionPartial, RevisionWithTime, RevisionsByDate } from '@/types/revisions';
 import { localizedFormat } from '@/utils/localized-format';
 import { localizedFormatDistance } from '@/utils/localized-format-distance';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -13,6 +13,7 @@ import { useI18n } from 'vue-i18n';
 
 type UseRevisionsOptions = {
 	action?: Action;
+	full?: boolean;
 };
 
 export function useRevisions(
@@ -24,12 +25,12 @@ export function useRevisions(
 	const { t } = useI18n();
 	const { info } = useServerStore();
 
-	const revisions = ref<Revision[] | null>(null);
+	const revisions = ref<RevisionPartial[] | null>(null);
 	const revisionsByDate = ref<RevisionsByDate[] | null>(null);
 	const loading = ref(false);
 	const loadingCount = ref(false);
 	const revisionsCount = ref(0);
-	const created = ref<Revision>();
+	const created = ref<{ id: number }>();
 	const pagesCount = ref(0);
 
 	watch([collection, primaryKey, version], () => refresh());
@@ -86,7 +87,7 @@ export function useRevisions(
 				});
 			}
 
-			type RevisionResponse = { data: Revision[]; meta: { filter_count: number } };
+			type RevisionResponse = { data: Revision[] | RevisionPartial[]; meta: { filter_count: number } };
 
 			const response = await api.get<RevisionResponse>(`/revisions`, {
 				params: {
@@ -96,8 +97,6 @@ export function useRevisions(
 					page,
 					fields: [
 						'id',
-						'data',
-						'delta',
 						'collection',
 						'item',
 						'activity.action',
@@ -109,12 +108,13 @@ export function useRevisions(
 						'activity.ip',
 						'activity.user_agent',
 						'activity.origin',
+						...(options?.full ? ['data', 'delta'] : []),
 					],
 				},
 			});
 
 			if (!created.value) {
-				const createdResponse = await api.get<RevisionResponse>(`/revisions`, {
+				const createdResponse = await api.get<{ data: { id: number }[] }>(`/revisions`, {
 					params: {
 						filter: {
 							collection: {
@@ -132,22 +132,7 @@ export function useRevisions(
 						},
 						sort: '-id',
 						limit: 1,
-						fields: [
-							'id',
-							'data',
-							'delta',
-							'collection',
-							'item',
-							'activity.action',
-							'activity.timestamp',
-							'activity.user.id',
-							'activity.user.email',
-							'activity.user.first_name',
-							'activity.user.last_name',
-							'activity.ip',
-							'activity.user_agent',
-							'activity.origin',
-						],
+						fields: ['id'],
 					},
 				});
 
@@ -183,14 +168,16 @@ export function useRevisions(
 				for (const revision of value) {
 					revisions.push({
 						...revision,
-						timestampFormatted: await getFormattedDate(revision.activity?.timestamp),
-						timeRelative: `${getTime(revision.activity?.timestamp)} (${localizedFormatDistance(
-							parseISO(revision.activity?.timestamp),
-							new Date(),
-							{
-								addSuffix: true,
-							},
-						)})`,
+						timestampFormatted: `${localizedFormat(
+							new Date(revision.activity?.timestamp),
+							String(t('date-fns_date_short')),
+						)} (${localizedFormat(new Date(revision.activity?.timestamp), String(t('date-fns_time')))})`,
+						timeRelative: `${format(
+							new Date(revision.activity?.timestamp),
+							String(t('date-fns_time')),
+						)} (${localizedFormatDistance(parseISO(revision.activity?.timestamp), new Date(), {
+							addSuffix: true,
+						})})`,
 					});
 				}
 
@@ -269,16 +256,5 @@ export function useRevisions(
 	async function refresh(page = 0) {
 		await getRevisionsCount();
 		await getRevisions(page);
-	}
-
-	function getTime(timestamp: string) {
-		return format(new Date(timestamp), String(t('date-fns_time')));
-	}
-
-	async function getFormattedDate(timestamp: string) {
-		const date = localizedFormat(new Date(timestamp), String(t('date-fns_date_short')));
-		const time = localizedFormat(new Date(timestamp), String(t('date-fns_time')));
-
-		return `${date} (${time})`;
 	}
 }

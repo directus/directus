@@ -1,4 +1,4 @@
-import type { Accountability, Query } from '@directus/types';
+import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { FieldNode, GraphQLResolveInfo, InlineFragmentNode, SelectionNode } from 'graphql';
 import { get, mapKeys, merge, set, uniq } from 'lodash-es';
 import { sanitizeQuery } from '../../../utils/sanitize-query.js';
@@ -10,13 +10,14 @@ import { parseArgs } from './parse-args.js';
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
  * Directus' `fields` query for use in the resolver. Also applies variables where appropriate.
  */
-export function getQuery(
+export async function getQuery(
 	rawQuery: Query,
 	selections: readonly SelectionNode[],
 	variableValues: GraphQLResolveInfo['variableValues'],
+	schema: SchemaOverview,
 	accountability?: Accountability | null,
-): Query {
-	const query: Query = sanitizeQuery(rawQuery, accountability);
+): Promise<Query> {
+	const query: Query = await sanitizeQuery(rawQuery, schema, accountability);
 
 	const parseAliases = (selections: readonly SelectionNode[]) => {
 		const aliases: Record<string, string> = {};
@@ -32,7 +33,7 @@ export function getQuery(
 		return aliases;
 	};
 
-	const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
+	const parseFields = async (selections: readonly SelectionNode[], parent?: string): Promise<string[]> => {
 		const fields: string[] = [];
 
 		for (let selection of selections) {
@@ -94,7 +95,7 @@ export function getQuery(
 						children.push(`${subSelection.name!.value}(${rootField})`);
 					}
 				} else {
-					children = parseFields(selection.selectionSet.selections, currentAlias ?? current);
+					children = await parseFields(selection.selectionSet.selections, currentAlias ?? current);
 				}
 
 				fields.push(...children);
@@ -114,7 +115,7 @@ export function getQuery(
 						merge(
 							{},
 							get(query.deep, currentAlias ?? current),
-							mapKeys(sanitizeQuery(args, accountability), (_value, key) => `_${key}`),
+							mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
 						),
 					);
 				}
@@ -125,7 +126,7 @@ export function getQuery(
 	};
 
 	query.alias = parseAliases(selections);
-	query.fields = parseFields(selections);
+	query.fields = await parseFields(selections);
 	if (query.filter) query.filter = replaceFuncs(query.filter);
 	query.deep = replaceFuncs(query.deep as any) as any;
 

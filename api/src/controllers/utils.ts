@@ -55,9 +55,12 @@ router.post(
 			throw new InvalidPayloadError({ reason: `"hash" is required` });
 		}
 
-		const result = await argon2.verify(req.body.hash, req.body.string);
-
-		return res.json({ data: result });
+		try {
+			const result = await argon2.verify(req.body.hash, req.body.string);
+			return res.json({ data: result });
+		} catch {
+			throw new InvalidPayloadError({ reason: `Invalid "hash" or "string"` });
+		}
 	}),
 );
 
@@ -157,7 +160,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability ?? null);
+		const sanitizedQuery = await sanitizeQuery(req.body.query, req.schema, req.accountability ?? null);
 
 		// We're not awaiting this, as it's supposed to run async in the background
 		service.exportToFile(req.params['collection']!, sanitizedQuery, req.body.format, {
