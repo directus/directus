@@ -47,6 +47,11 @@ export const MODULE_BAR_DEFAULT = [
 	},
 	{
 		type: 'module',
+		id: 'visual',
+		enabled: false,
+	},
+	{
+		type: 'module',
 		id: 'users',
 		enabled: true,
 	},
@@ -147,6 +152,11 @@ export const FIELD_TYPES_SELECT: Array<{ value: Type; text: string } | { divider
 		value: 'hash',
 	},
 ];
+
+/** Contains `integer` and `float` – exclude `bigInteger` and `decimal` to avoid rounding errors. */
+export const APP_NUMERIC_TYPES = ['integer', 'float'];
+/** Treat `bigInteger` and `decimal` as strings to avoid rounding errors. */
+export const APP_NUMERIC_STRING_TYPES = ['bigInteger', 'decimal'];
 
 export const DEFAULT_AUTH_PROVIDER = 'local';
 export const DEFAULT_AUTH_DRIVER = 'default';

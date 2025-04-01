@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema",
-	"version": "13.0.0",
+	"version": "13.0.1",
 	"description": "Utility for extracting information about existing DB schema",
 	"keywords": [
 		"sql",
@@ -39,7 +39,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",
-		"tsup": "8.3.5",
-		"typescript": "5.7.3"
+		"tsup": "8.4.0",
+		"typescript": "5.8.2"
 	}
 }

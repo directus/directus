@@ -63,7 +63,7 @@ const firstLang = ref<string>();
 const secondLang = ref<string>();
 
 watch(splitView, (splitViewEnabled) => {
-	if (splitViewEnabled) {
+	if (splitViewEnabled && secondLang.value === firstLang.value) {
 		const lang = languageOptions.value;
 		const alternativeLang = lang.find((l) => l.value !== firstLang.value);
 		secondLang.value = alternativeLang?.value ?? lang[0]?.value;

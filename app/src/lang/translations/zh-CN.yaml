@@ -153,7 +153,7 @@ delete_folder: 删除文件夹
 prefix: 前缀
 suffix: 后缀
 keep: 保持
-version: 版本
+version: 版本号
 version_key: 版本密钥
 version_name: 版本名称
 main_version: 主要
@@ -941,6 +941,7 @@ run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定�
 run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上运行 | 在 {n} 个选定项目 上运行
 run_flow: 运行流程
 run_flow_success: 流程 "{flow}" 运行成功
+trigger_flow_success: 流程“{flow}”已成功触发，它将在后台运行
 field_name_placeholder: 输入字段名称...
 field_key_placeholder: 请输入字段键...
 trigger: 触发器
@@ -1226,6 +1227,7 @@ directus_collection:
   directus_access: 策略附件
   directus_activity: 所有事件操作日志
   directus_collections: 其他集合配置和元数据
+  directus_comments: 评论此条目
   directus_dashboards: Insights模块中的仪表板
   directus_fields: 其他字段配置和元数据
   directus_files: 文件资源元数据
@@ -1832,7 +1834,7 @@ interfaces:
     hash: Hash
     description: 输入一个hash值
     masked: Masked
-    masked_label: Hide the true values
+    masked_label: 隐藏真实值
   select-icon:
     icon: 图标
     description: 从下拉列表中选择一个图标
@@ -2281,6 +2283,8 @@ show_legend: 显示图例
 right: 右
 left: 左
 donut: 圆环图
+continuous: 继续
+gap: 间隙
 panels:
   metric:
     name: 公制
@@ -2296,6 +2300,7 @@ panels:
     value_field: 值字段
     fill_type: 填充类型
     curve_type: 曲线类型
+    missing_data: 缺失数据
   label:
     name: 标签
     description: 显示一些文本
@@ -2424,9 +2429,16 @@ operations:
     name: 发送电子邮件
     description: 向一个或多个用户发送电子邮件
     to: 至
+    to_placeholder: 添加电子邮件地址并按回车……
     body: 正文内容
     template: 模板
     data: 数据
+    cc: 抄送
+    cc_placeholder: 添加电子邮件地址并按回车……
+    bcc: 密送
+    bcc_placeholder: 添加密送电子邮件地址并按回车……
+    reply_to: 回复给
+    reply_to_placeholder: 添加回复邮件地址并按回车键……
   notification:
     name: 发送通知
     description: 向一个或多个用户发送应用内通知

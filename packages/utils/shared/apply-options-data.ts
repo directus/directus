@@ -58,7 +58,7 @@ function renderMustache<T extends JsonValue>(item: T, scope: Scope, skipUndefine
 }
 
 export function optionToObject<T>(option: T): Exclude<T, string> {
-	return typeof option === 'string' ? parseJSON(option) : option;
+	return typeof option === 'string' ? parseJSON(option) : (option as Exclude<T, string>);
 }
 
 export function optionToString(option: unknown): string {

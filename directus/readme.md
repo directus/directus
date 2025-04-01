@@ -50,22 +50,26 @@ Please read our [Contributing Guide](./contributing.md) before submitting Pull R
 All security vulnerabilities should be reported in accordance with our
 [Security Policy](https://docs.directus.io/contributing/introduction/#reporting-security-vulnerabilities).
 
-Directus is made possible with support from our passionate core team, talented contributors, and
-amazing [GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
+Directus is made possible with support from our passionate core team, talented contributors, and amazing
+[GitHub Sponsors](https://github.com/sponsors/directus). Thank you all!
 
 <br />
 
 ## 📄 Understanding Our License
 
-Directus is licensed under [the Business Source License (BSL) 1.1](./license) with a permissive additional use grant. For most users, it operates just like open source! Here's what that means for you:
+Directus is licensed under [the Business Source License (BSL) 1.1](./license) with a permissive additional use grant.
+For most users, it operates just like open source! Here's what that means for you:
 
 ### Free for Most Users
 
-If your organization has less than $5M in annual revenue and/or funding combined, you can use Directus freely in any way you'd like. Build that side project, launch your startup, or experiment with the platform — no strings attached.
+If your organization has less than $5M in annual revenue and/or funding combined, you can use Directus freely in any way
+you'd like. Build that side project, launch your startup, or experiment with the platform — no strings attached.
 
 ### Enterprise Usage
 
-For larger organizations (>$5M in annual revenue/funding) using Directus in production, we require a commercial license. This model helps us maintain a sustainable balance: keeping Directus free for the majority of our community while ensuring larger organizations who benefit from the platform contribute to its continued development.
+For larger organizations (>$5M in annual revenue/funding) using Directus in production, we require a commercial license.
+This model helps us maintain a sustainable balance: keeping Directus free for the majority of our community while
+ensuring larger organizations who benefit from the platform contribute to its continued development.
 
 ### Why This Approach?
 

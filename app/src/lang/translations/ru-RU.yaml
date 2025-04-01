@@ -28,7 +28,7 @@ method: Метод
 published: Опубликовано
 draft: Черновик
 archived: Архивировано
-marketplace: Маркетплейс
+marketplace: Магазин расширений
 extensions: Расширения
 modules: Модули
 module_bar: Панель модулей
@@ -66,8 +66,8 @@ extension_module: Модуль
 extension_panel: Панель
 extension_theme: Тема
 extension_hook: Хук
-extension_endpoint: Endpoint
-extension_operation: Действие
+extension_endpoint: Эндпоинт
+extension_operation: Операция
 extension_bundle: Набор
 extension_interfaces: Интерфейсы
 extension_displays: Отображения
@@ -76,7 +76,7 @@ extension_modules: Модули
 extension_panels: Панели
 extension_themes: Темы
 extension_hooks: Хуки
-extension_endpoints: Конечные точки
+extension_endpoints: Эндпоинты
 extension_operations: Операции
 extension_bundles: Пакеты
 extension_missing: Отсутствует
@@ -176,7 +176,7 @@ delete_version: Удалить версию
 delete_version_copy: >-
   Вы уверены, что хотите удалить версию «{version}»? Это действие нельзя отменить.
 delete_on_promote_copy: >-
-  Вы хотите удалить или сохранить версию "{version}" после продвижения?
+  Вы хотите удалить или сохранить версию «{version}» после продвижения?
 reset_bookmark: Сбросить закладку
 update_bookmark: Обновить закладку
 delete_bookmark: Удалить закладку
@@ -341,12 +341,12 @@ uuid: UUID
 hash: Хэш
 geometry:
   All: Геометрия (все)
-  Point: Точка
-  LineString: Линейная строка
-  Polygon: Многоугольник
-  MultiPoint: Многоточечный
+  Point: Point
+  LineString: LineString
+  Polygon: Polygon
+  MultiPoint: MultiPoint
   MultiLineString: Строковый Многострочный блок
-  MultiPolygon: Мультиполигон
+  MultiPolygon: MultiPolygon
 theme_auto: Автоматически (в зависимости от системы)
 theme_light: Светлая тема
 theme_dark: Тёмная тема
@@ -518,6 +518,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'd MMM u'
 date-fns_time_short: 'HH:mm'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: d MMM
 minutes: Минут
 hours: Часов
@@ -941,6 +942,7 @@ run_flow_on_current_edited_confirm: Этот элемент может быть 
 run_flow_on_selected: Сначала выберите один или несколько элементов | Запустить процесс с выбранным элементом | Запустить процесс с {n} выбранными элементами
 run_flow: Запуск потока
 run_flow_success: Процесс «{flow}» успешно завершён
+trigger_flow_success: Процесс "{flow}" успешно запущен. Он будет работать в фоновом режиме
 field_name_placeholder: Введите имя поля...
 field_key_placeholder: Введите ключ поля...
 trigger: Триггер
@@ -2282,6 +2284,7 @@ show_legend: Показать легенду
 right: Справа
 left: Слева
 donut: Кольцевая диаграмма
+gap: Разрыв
 panels:
   metric:
     name: Метрика
@@ -2297,6 +2300,7 @@ panels:
     value_field: Поле значения
     fill_type: Тип заполнения
     curve_type: Тип кривой
+    missing_data: Отсутствуют данные
   label:
     name: Описание
     description: Показать немного текста
@@ -2425,9 +2429,16 @@ operations:
     name: Отправить эл. письмо
     description: Отправить письмо одному или нескольким людям
     to: Кому
+    to_placeholder: Добавьте адреса электронной почты и нажмите Enter...
     body: Тело
     template: Шаблон
     data: Данные
+    cc: Копия
+    cc_placeholder: Добавьте адреса электронной почты для копий и нажмите Enter...
+    bcc: Скрытая копия
+    bcc_placeholder: Добавьте адреса электронной почты для скрытых копий и нажмите Enter...
+    reply_to: Ответить
+    reply_to_placeholder: Добавьте адреса электронной почты для ответа и нажмите Enter...
   notification:
     name: Отправить уведомление
     description: Отправить уведомление одному или нескольким пользователям

@@ -42,7 +42,7 @@ function getConfig(
 	configPrefix = 'RATE_LIMITER',
 	overrides?: IRateLimiterOptionsOverrides,
 ): IRateLimiterOptions | IRateLimiterStoreOptions {
-	const config: any = getConfigFromEnv(`${configPrefix}_`, `${configPrefix}_${store}_`);
+	const config: any = getConfigFromEnv(`${configPrefix}_`, { omitPrefix: `${configPrefix}_${store}_` });
 
 	if (store === 'redis') {
 		const Redis = require('ioredis');

@@ -39,37 +39,109 @@ tile_size: Plytelių dydis
 edit_field: Redaguoti lauką
 conditions: Sąlygos
 location: Vietovė
+collection_names_are_case_sensitive: Kolekcijos pavadinimai atsižvelgia į didžiąsias ir mažąsias raides
+condition_rules: Sąlygų nustatymai
+input: Įvestis
+maps: Žemėlapiai
+switch_user: Pakeisti naudotoją
+item_creation: Įrašo sukūrimas
 item_revision: Elemento pakeitimai
+enter_a_name: Įveskite pavadinimą...
 duplicate_field: Dubliuoti lauką
 half_width: Pusė pločio
 full_width: Pilno pločio
 group: Grupė
+popular: Populiarūs
+recent: Naujausi
+export_items: Eksportuoti įrašus
+and: Ir
+or: Arba
+init: Init
+dataset_too_large_currently_showing_n_items: Duomenų rinkinys per didelis. Dabar rodoma {n} įrašų.
+modifier: Redaguotojas
 extension_interface: Sąsaja
 extension_display: Rodymas
 extension_layout: Išdėstymas
+extension_module: Modulis
+extension_panel: Skydelis
+extension_theme: Tema
+extension_hook: Hook
+extension_endpoint: Išeities taškas
+extension_operation: Operacija
+extension_bundle: Rinkinys
+extension_interfaces: Sąsajos
+extension_displays: Valdikliai
+extension_layouts: Išdėstymai
 extension_modules: Moduliai
+extension_panels: Skydeliai
+extension_themes: Temos
+extension_hooks: Hooks
+extension_endpoints: Išeities taškai
+extension_operations: Operacijos
+extension_bundles: Rinkiniai
+extension_missing: Trūkstama
+extension_reload_required: Reikalingas puslapio perkrovimas
+extension_reload_required_copy: Reikalingas puslapio perkrovimas, kad būtų įjungti arba išjungti plėtiniai.
+extension_reload_now: Perkraukite puslapį
+published_relative: Publikuota {relativeTime}
+compatible_with_your_project: Suderinama su šiuo projektu
+compatible_with_your_project_copy: Plėtinio autorius nurodė plėtinio suderinamumą su {hostVersion}, kuri yra suderinama su dabartinio projekto versija ({currentVersion})
+last_updated_relative: Paskutinį kartą atnaujinta {relativeTime}
+n_files: '{n} rinkmenų'
+verified: Patvirtinta
+homepage: Pradinis puslapis
+repository: Repozitorija
+reload_page: Perkrauti puslapį
+reload_required: Reikalingas puslapio perkrovimas
+report_an_issue: Pranešti apie problemą
+website: Svetainė
+github: GitHub
+beta: Beta
+n_downloads: '{n} atsisiuntimų'
+downloads: Atsisiuntimai
+compatibility_not_guaranteed: Suderinamumas negarantuojamas
+compatibility_not_guaranteed_copy: Plėtinio autorius nurodė plėtinio suderinamumą su {hostVersion}, kuri yra nesuderinama su dabartinio projekto versija ({currentVersion})
+enable: Įjungti
+disable: Išjungti
+custom: Kita
+hook: Hook
 fill_width: Užpildyti visą plotį
 field_name_translations: Laukų pavadinimų vertimai
 enter_password_to_enable_tfa: Norint įjungti dviejų veiksmų autentifikavimą, reikia įvesti savo slaptažodį
 add_field: Pridėti lauką
 role_name: Vaidmens pavadinimas
+policy_name: Poliso pavadinimas
 branch: Šaka
 leaf: Lapas
 indeterminate: Neapibrėžta
+edit_collection: Redaguoti kolekciją
 exclusive: Išskirtinis
 children: Vaikai
+db_only_click_to_configure: 'Sukurtas tik duomenų bazėje: spauskite norėdami konfigūruoti'
+show_active_items: Rodyti aktyvius įrašus
 show_archived_items: Rodyti archyvuotus elementus
+show_all_items: Rodyti visus įrašus
 edited: Vertė redaguota
 required: Privalomas
 required_for_app_access: Reikalinga aplikacijos prieigai
 requires_value: Reikalinga reikšmė
 create_preset: Sukurti išankstinę parinktį
+create_panel: Sukurti skydelį
 create_role: Kurti vaidmenį
+create_policy: Sukurti polisą
 create_user: Sukurti vartotojo paskyrą
+message: Pranešimas
+delete_panel: Pašalinti skydelį
 create_webhook: Sukurti Webhook'ą
+create_custom_translation: Sukurti vertimą
+edit_custom_translation: Redaguoti vertimą
+no_custom_translations: Vertimų nėra
+no_custom_translations_copy: Šiuo metu nėra išsaugota vertimų.
 invite_users: Pakviesti vartotojus
 invite: Pakviesti
 email_already_invited: El. pašto "{email}" adresatas jau buvo pakviestas
+subject: Tema
+inbox: Gautieji
 emails: El. pašto adresai
 connection_excellent: Puiki ryšio kokybė
 connection_good: Gera ryšio kokybė
@@ -80,15 +152,50 @@ rename_folder: Pervadinti aplanką
 delete_folder: Trinti aplanką
 prefix: Priešdėlis
 suffix: Priesaga
+keep: Pasilikti
+version: Versija
+version_key: Versijos identifikatorius
+version_name: Versijos pavadinimas
+main_version: Pagrindinė
+switch_version: Perjungti versiją
+switch_version_copy: Ar tikrai norite persijungti į "{version}" versiją? Neišsaugoti pakeitimai bus prarasti.
+create_version: Sukurti versiją
+rename_version: Pervadinti versiją
+compare_version: Palyginti versijas
+save_version: Išsaugoti versiją
+promote_version: Pakelti versiją
+promote_version_disabled: Nėra pakeitimų
+promote_version_drawer_title: Pakelti {version} į pagrindinę
+promote_version_changes: Pakeitimai
+promote_version_preview: Peržiūrėti
+outdated_notice: >-
+  Pagrindinė versija buvo atnaujinta po šios versijos sukūrimo. Peržiūrėkite laukų reikšmes žemiau ir patvirtinkite kuri versija turėtų būti naudojama kaip pagrindinė.
+promote_notice: >-
+  Peržiūrėkite laukų reikšmes žemiau ir patvirtinkite kuri versija turėtų būti naudojama kaip pagrindinė.
+delete_version: Pašalinti versiją
+delete_version_copy: >-
+  Ar tikrai norite pašalinti "{version}" versiją? Šio veiksmo nebus galima atšaukti.
+delete_on_promote_copy: >-
+  Ar norite ištrinti ar pasilikti "{version}" po pakėlimo į pagrindinę versiją?
 reset_bookmark: Atstatyti skirtuką
 update_bookmark: Atnaujinti žymę
 delete_bookmark: Ištrinti žymę
 delete_bookmark_copy: >-
   Ar tikrai norite ištrinti "{bookmark}" skirtuką? Šio veiksmo atšaukti negalima.
+delete_personal_bookmark: Pašalinti asmeninį skirtuką
+delete_role_bookmark: Pašalinti rolės skirtuką
+delete_global_bookmark: Pašalinti globalų skirtuką
 logoutReason:
   SIGN_OUT: Atsijungti
   SESSION_EXPIRED: Sesijos laikas baigėsi
+public_label: Vieša
 public_description: Nustato kokie API duomenys yra prieinami neprisijungus.
+public_role_info: >-
+  Vieša rolė valdo kokia informacija per API yra pateikiama neautentifikuotiems naudotojams arba naudotojams be rolės. Užklausos su vieša role negali turėti aplikacijos arba administratoriaus prieigos. Jeigu šiai rolei bus suteikta aplikacijos arba administratoriaus prieiga tai ji bus ignoruojama.
+admin_description: Pradinė administratoriaus rolė su neribojama prieiga prie aplikacijos ir API.
+admin_policy_description: Pradinė administratoriaus rolė su neribojama prieiga prie aplikacijos ir API.
+no_description: Nėra aprašymo...
+reached_maximum_number_of_extensions: Pasiekėte maksimalų plėtinių skaičių projekte ({n}). Dėl daugiau informacijos susisiekite su sistemos administratoriumi.
 not_allowed: Neleidžiama
 archive: Archyvuoti
 archive_confirm: Ar tikrai norite archyvuoti šį elementą?
@@ -96,11 +203,13 @@ archive_confirm_count: >-
   Nėra pasirinktų elementų | Ar tikrai norite archyvuoti šį elementą? | Ar tikrai norite archyvuoti {count} elementus?
 reset_system_permissions_to: 'Atstatyti sisteminius leidimus į:'
 reset_system_permissions_copy: Šis veiksmas perrašys visus pasirinktinus leidimus, kuriuos galėjote pritaikyti sistemos rinkiniams. Ar jūs įsitikinę?
+the_following_are_minimum_permissions: Toliau išvardintos teisės yra automatiškai suteikiamos kai prieiga prie aplikacijos yra įjungta. Jūs galite suteikti daugiau teisių jei reikia, tačiau negalite jų sumažinti mažiau nei numatyta.
 app_access_minimum: Aplikacijos prieigos minimumas
 recommended_defaults: Rekomenduojami "Pagal nutylėjimą"
 unarchive: Išarchyvuoti
 unarchive_confirm: Ar tikrai norite išarchyvuoti šį elementą?
 nested_files_folders_will_be_moved: Kelių lygių failai ir aplankai bus perkelti vienu lygiu aukštyn.
+validation_errors_notice: 'Laukai turintys netinkamas reikšmes:'
 validationError:
   eq: Reikšmė turi būti {valid}
   neq: Reikšmė negali būti {invalid}
@@ -118,12 +227,23 @@ validationError:
   nnull: Reikšmė negali būti null
   required: Reikšmė turi būti užpildyta
   unique: Reikšmė turi būti unikali
+  email: Reikšmė turi būti validus el. pašto adresas
   regex: Vertė neteisingo formato
+  starts_with: Reikšmė turi prasidėti su "{substring}"
+  istarts_with: Reikšmė turi prasidėti su "{substring}"
+  nstarts_with: Reikšmė negali prasidėti su "{substring}"
+  nistarts_with: Reikšmė negali prasidėti su "{substring}"
+  ends_with: Reikšmė turi baigtis su "{substring}"
+  iends_with: Reikšmė turi baigtis su "{substring}"
+  nends_with: Reikšmė negali baigtis su "{substring}"
+  niends_with: Reikšmė negali baigtis su "{substring}"
 all_access: Pilna prieiga
 no_access: Jokios prieigos
 use_custom: Pasirinktinai
 nullable: Gali būti Null
 allow_null_value: Leisti NULL vertę
+allow_multiple: Rinktis kelias reikšmes
+allow_multiple_to_be_open: Leisti atidaryti kelias reikšmes
 enter_value_to_replace_nulls: Prašome įvesti naują vertę, kuri pakeistų visus NULL esančius šiame lauke.
 field_standard: Standartinis
 field_presentation: Atvaizdavimas ir sinonimai
@@ -140,10 +260,23 @@ field_permissions: Lauko leidimai
 field_validation: Lauko validacija
 field_presets: Lauko ruošiniai
 permissions_for_role: 'Dalykai, kuriuos {role} vaidmuo gali {action}.'
+permissions_for_policy: 'Įrašai {policy} polise gali {action}.'
 fields_for_role: 'Laukai, kuriuos {role} vaidmuo gali {action}.'
+fields_for_policy: 'Laukai {policy} polise gali {action}.'
 validation_for_role: 'Lauko {action} taisyklės, kurių {role} vaidmuo turi laikytis.'
+validation_for_policy: 'Lauko {action} taisyklės privalo būti suderinti su {policy} polisu.'
 presets_for_role: 'Lauko vertė pagal nutylėjimą {role} vaidmeniui.'
+presets_for_policy: 'Lauko reikšmių numatytieji nustatymai {policy} polisui.'
+presets_field_warning: 'Reliaciniai nustatymai laukui "{field}" turi būti sukonfigūruoti išplėstiniu rėžimu.'
 presentation_and_aliases: Atvaizdavimas ir sinonimai
+revision_post_create: Įrašo reikšmės jo sukūrimo metu.
+revision_post_update: Įrašo reikšmės po atnaujinimo.
+changes_made: Žemiau yra išvardinti šio pakeitimo laukai.
+no_relational_data: Atkreipkite dėmesį, kad reliatyvių laukų informacija čia neatvaizduojama.
+junction_field_location: Jungiamųjų laukų vieta
+top: Viršus
+bottom: Apačia
+hide_field: Paslėpti lauką
 hide_field_on_detail: Slėpti lauką detalėse
 show_field_on_detail: Rodyti lauką detalėse
 delete_field: Trinti lauką
@@ -152,9 +285,26 @@ field_create_success: 'Sukurtas laukas: "{field}"'
 field_update_success: 'Atnaujintas laukas: "{field}"'
 duplicate_where_to: Kur norėtumėte perkelti šio laiko kopiją?
 language: Kalba
+language_placeholder: Pasirinkite kalbą...
+aggregate_function: Agregacinė funkcija
+aggregate_precision: Agregacinės funkcijos tikslumas
+group_aggregation: Grupavimas
+group_precision: Grupavimo tikslumas
 global: Bendras
 admins_have_all_permissions: Administratoriai turi visus leidimus
 camera: Kamera
+show_zero: Rodyti nulį
+create_in_advanced_field_creation_mode: Kurti lauką išplėstiniame rėžime
+continue_in_advanced_field_creation_mode: Tęsti išplėstiniame lauko kūrimo rėžime
+validation: Validacija
+sum: Suma
+sum_distinct: Unikalių įrašų suma
+avg: Vidurkis
+avg_distinct: Unikalių įrašų vidurkis
+count: Kiekis
+count_distinct: Unikalių įrašų kiekis
+min: Min
+max: Max
 exposure: Išlaikymas
 shutter: Užraktas
 iso: ISO
@@ -172,19 +322,37 @@ alias: Sinonimas
 bigInteger: Didelis sveikasis skaičius
 boolean: Loginis
 date: Data
+date_range: Datos rėžis
+translation_key_placeholder: Įveskite pavadinimą...
 datetime: Data ir laikas
 dateTime: Data ir laikas
+precision: Tikslumas
 decimal: Dešimtainis skaičius
 float: Slankiojo kablelio skaičius
 integer: Sveikasis skaičius
 json: JSON
 xml: XML
+yaml: YAML
 string: Simbolių eilutė
 text: Tekstas
 time: Laikas
 timestamp: Laiko žyma
 uuid: UUID
 hash: Maiša
+geometry:
+  All: Geometrija (Visi)
+  Point: Taškas
+  LineString: Linija
+  Polygon: Poligonas
+  MultiPoint: Taškas (daugialypis)
+  MultiLineString: Linija (daugialypė)
+  MultiPolygon: Poligonas (daugialypis)
+theme_auto: Automatinė tema (pagal sistemos nustatymus)
+theme_light: Šviesi tema
+theme_dark: Tamsi tema
+theme_directus_default: Directus numatytoji tema
+theme_directus_minimal: Direktus minimalistinė tema
+theme_directus_colormatch: Direktus suderintų spalvų tema
 not_available_for_type: Šiam tipui neprieinama
 create_translations: Sukurti vertimus
 auto_refresh: Automatinis atnaujinimas
@@ -196,17 +364,26 @@ auto_generate: Generuoti Automatiškai
 this_will_auto_setup_fields_relations: Bus automatiškai sukurti visi reikalingi laukai ir sąryšiai.
 click_here: Spauskite čia
 to_manually_setup_translations: ', kad savarankiškai nustatyti vertimus.'
+manage: Tvarkyti
 click_to_manage_translated_fields: >-
   Dar nėra laukų su vertimais. Paspauskite čia, kad juos sukurtumėte | Yra vienas laukas su vertimais. Paspauskite čia norėdami redaguoti | Yra {count} laukų su vertimais. Paspauskite čia norėdami redaguoti.
 fields_group: Laukų grupė
 no_collections_found: Kolekcijų nerasta.
 new_data_alert: 'Jūsų duomenų modelyje bus sukurta:'
 search_collection: Ieškoti kolekcijoje...
+search_role: Ieškoti rolės...
+search_policy: Ieškoti polisų...
+search_field: Ieškoti laukų...
 new_field: 'Naujas laukas'
 new_collection: 'Nauja kolekcija'
+add_m2o_to_collection: 'Pridėti M2O ryšį prie "{collection}"'
+add_o2m_to_collection: 'Pridėti O2M ryšį prie "{collection}"'
+add_m2m_to_collection: 'Pridėti M2M ryšį prie "{collection}"'
 choose_a_type: Pasirinkite tipą...
 determined_by_relationship: Nustatoma pagal sąryšį
 add_note: Pridėkite paaiškinimą vartotojui...
+add_link: Pridėti nuorodą
+custom_link: Konfigūruojama nuoroda
 default_value: Numatytoji reikšmė
 standard_field: Standartinis laukas
 single_file: Vienas failas
@@ -215,27 +392,54 @@ m2o_relationship: Daug su vienu sąrašis
 o2m_relationship: Vienas su daug sąryšis
 m2m_relationship: Daug su daug sąryšis
 m2a_relationship: Daug su bet kiek sąryšis
+invalid_item: Nevalidus įrašas
+require_confirmation: Reikalauti patvirtinimo
+dialog: Dialogas
 modal: Dialogas
+confirmation_dialog: Patvirtinimo dialogas
+confirmation_description: Patvirtinimo aprašymas
+confirmation_input_fields: Patvirtinimo įvesties laukai
 next: Tęsti
 field_name: Lauko pavadinimas
 translations: Vertimai
+no_translations: Nėra vertimų
+left_to_right: Iš kairės į dešinę
+right_to_left: Iš dešinės į kairę
 note: Pastaba
 enter_a_value: Įveskite reikšmę...
 enter_a_placeholder: Įveskite pagalbinį tesktą...
 length: Ilgis
+soft_length: Limitas
 precision_scale: Tikslumas ir dydis
 readonly: Tik skaitomas
 unique: Unikalus
+index: Indeksas
 updated_on: Atnaujinta
 updated_by: Atnaujino
 primary_key: Pirminis raktas
 foreign_key: Išorinis raktas
+field_key: Lauko identifikatorius
 finish_setup: Pabaigti konfigūravimą
 dismiss: Atmesti
+toggle_raw_editor: Rodyti neformatuotą reikšmę
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'"
 raw_value: Neapdorota reikšmė
+copy_raw_value: Kopijuoti neformatuotą reikšmę
+copy_raw_value_success: Nukopijuota
+copy_raw_value_fail: Kopijuoti nepavyko
+paste_raw_value: Įklijuoti neformatuotą reikšmę
+paste_raw_value_success: Įklijuota
+paste_raw_value_fail: Įklijuoti nepavyko
+view_raw_value: Rodyti neformatuotą reikšmę
 edit_raw_value: Redaguoti neapdorotą reikšmę
 enter_raw_value: Įvesti neapdorotą reikšmę...
+clear_value: Išvalyti reikšmę
+clear_changes: Išvalyti pakeitimus
+clear_items: Išvalyti įrašus
+reset_to_default: Atkurti į numatytuosius nustatymus
+undo_changes: Atšaukti pakeitimus
 notifications: Pranešimai
+archive_all: Archyvuoti visus
 show_all_activity: Rodyti visą veiklos istoriją
 page_not_found: Puslapis nerastas
 page_not_found_body: Panašu, kad puslapis kurio ieškote neegzistuoja.
@@ -248,21 +452,37 @@ revision_delta_created: Sukurta
 revision_delta_created_externally: Sukurta išorėje
 revision_delta_updated: 'Atnaujintas 1 laujas | Atnaujinta {count} laukų'
 revision_delta_deleted: Ištrintas
+revision_delta_version_saved: 'Saugoti versiją (atnaujintas 1 laukas) | Saugoti versiją (atnaujinti {count} laukai)'
 revision_delta_reverted: Atstatytas
+revision_delta_update_message: Laukas buvo atnaujintas. Reikšmė yra paslėpta.
 revision_delta_other: Pakeitimas
 revision_delta_by: '{date} {user}'
+presentation_text_values_cannot_be_reimported: 'Reikšmė negali būti importuojama.'
+download_page_as_csv: 'Išsaugoti puslapį CSV formatu'
+download_page_as_csv_unsupported: Nustatytas puslapio atvaizdavimo rėžimas nepalaiko puslapio išsaugojimo.
 private_user: Privatus vartotojas
+creation_preview: Sukūrimo peržiūra
 revision_preview: Pakeitimo peržiūra
 updates_made: Atlikti atnaujinimai
 leave_comment: Palikite komentarą...
 post_comment_success: Komentaras paskelbtas
+post_comment_updated: Komentaras atnaujintas
 item_create_success: Elementas sukurtas | Elementai sukurti
 item_update_success: Elementas atnaujintas | Elementai atnaujinti
 item_delete_success: Elementas pašalintas | Elementai pašalinti
 this_collection: Ši kolekcija
 related_collection: Susijusi kolekcija
 related_collections: Susijusios kolekcijos
+translations_collection: Vertimų kolekcija
 languages_collection: Kalbų kolekcija
+import_data_input_placeholder: CSV arba JSON...
+import_data_button: Pradėti importavimą
+import_data_indeterminate: Importuojami duomenys...
+import_data_success: Duomenys sėkmingai importuoti iš {filename}
+import_data_error: Rinkmenos duomenų struktūra neatitinka kolekcijos struktūros.
+label_import: Importuoti
+label_export: Eksportuoti
+import_export: Importuoti / Eksportuoti
 format: Formatas
 last_page: Paskutinis puslapis
 last_access: Paskutinė prieiga
@@ -280,12 +500,36 @@ display_label: Rodymas
 today: Šiandien
 yesterday: Vakar
 delete_comment: Ištrinti komentarą
+delete_share: Pašalinti pasidalinimą
 functions:
   year: Metai
   month: Mėnuo
+  week: Savaitė
+  day: Diena
+  weekday: Savaitės diena
+  hour: Valanda
+  minute: Minutė
+  second: Sekundė
+  count: Kiekis
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
+date-fns_date_short_no_year: MMM d
+minutes: Minutės
+hours: Valandos
 month: Mėnuo
 year: Metai
 select_all: Pažymėti visus
+permissionsLevel:
+  all: Pilna {action} prieiga
+  partial: Dalinė {action} prieiga
+  custom: Dalinė {action} prieiga
+  none: Uždrausta {action} prieiga
 months:
   january: Sausis
   february: Vasaris
@@ -300,21 +544,29 @@ months:
   november: Lakpritis
   december: Gruodis
 drag_mode: Vilkimo režimas
+move_tool: Slankioti
+crop_tool: Karpyti
+focal_point_tool: Centruoti
 cancel_crop: Atšaukti apkarpymą
+cancel_selection: Atšaukti pasirinkimą
 original: Originalas
 url: URL
+import_label: Importuoti
 file_details: Failo duomenys
 dimensions: Matmenys
 size: Dydis
 created: Sukurta
+uploaded: Įkelta
 modified: Modifikuota
 owner: Savininkas
 edited_by: Redaguota
 folder: Aplankas
+folders: Katalogai
 zoom: Padidinti
 download: Parsisiųsti
 open: Atidaryti
 open_in_new_window: Atversti naujame lange
+open_folder: Atidaryti "{folder}" katalogą
 foreground_color: Teksto spalva
 background_color: Fono spalva
 upload_from_device: Įkelti failą iš įrenginio
@@ -323,8 +575,18 @@ import_from_url: Įkelti failą iš internetinio adreso
 replace_from_device: Pakeisti failą iš įrenginio
 replace_from_library: Pakeisti failą iš bibliotekos
 replace_from_url: Pakeisti failą iš internetinio adreso
+no_image_selected: Nuotrauka nepasirinkta
 no_file_selected: Nepasirinktas failas
 download_file: Atsisiųsti failą
+open_file_in_tab: Atidaryti nuorodą kitame skirtuke
+start_export: Pradėti eksportavimą
+not_available_for_local_downloads: Negalima atsisiųsti
+exporting_all_items_in_collection: Eksportuojami visi įrašai ({total}) iš {collection} kolekcijos.
+exporting_limited_items_in_collection: '{count} iš {total} įrašų iš {collection} kolekcijos bus išeksportuoti.'
+exporting_no_items_to_export: Nėra eksportuojamų įrašų. Atnaujinkite eksportavimo nustatymus ir/arba sukurkite įrašų kolekcijoje.
+exporting_download_hint: Kai {format} dokumentas bus suformuotas, jis bus atsiųstas į Jūsų įrenginį.
+exporting_library_hint: Kai {format} dokumentas bus suformuotas, jis bus išsaugotas failų bibliotekoje.
+exporting_library_hint_forced: Eksportas turi būti atliekamas dalimis. Pasibaigus eksportui {format} dokumentas bus išsaugotas failų bibliotekoje.
 collection_key: Kolekcijos raktas
 name: Pavadinimas
 primary_key_field: Pirminio rakto laukas
@@ -335,49 +597,90 @@ created_on: Sukurta
 creating_collection_info: Įveskite kolekcijos pavadinimą ir nustatykite jos unikalaus rakto lauką...
 creating_collection_system: Įjunkite ir pervadinkite bet kuriuos iš šių neprivalomų laukų.
 auto_increment_integer: Iš eilės generuojamas sveikasis skaičius
+auto_increment_big_integer: Automatiškai didėjantis "Big Integer"
 generated_uuid: Generuojamas UUID
 manual_string: Rankiniu būdu įvedamas tekstas
 save_and_create_new: Išsaugoti ir sukurti naują
 save_and_stay: Išsaugoti ir pasilikti
+save_and_quit: Išsaugoti ir išeiti
 save_as_copy: Išsaugoti kaip kopiją
 add_existing: Pridėti esamą
+creating_items: Įrašų sukūrimas
+enable_create_button: Leisti sukurti įrašus
+selecting_items: Įrašų pasirinkimas
+enable_select_button: Leisti pasirinkti įrašus
+allow_duplicates: Leisti įrašų dublikatus
 comments: Komentarai
 no_comments: Dar nėra komentarų
+expand: Išskleisti
+expand_all: Išskleisti viską
+expand_none: Išskleisti nei vieno
+collapse: Suskleisti
+collapse_all: Suskleisti visus
 select_item: Pasirinkti elementą
 no_items: Nėra elementų
+search_items: Ieškoti įrašų...
+search_extensions: Ieškoti plėtinių...
 disabled: Išjungta
 information: Informacija
 report_bug: Pranešti apie klaidą
 request_feature: Funkcionalumo užklausa
+request_body: Užklausos "Body"
 interface_not_found: 'Sąsaja "{interface}" nerasta.'
+operation_not_found: 'Operacija "{operation}" nerasta.'
 reset_interface: Atstatyti sąsają
 display_not_found: 'Atvaizdavimo šablonas "{display}" nerastas.'
 reset_display: Atstatyti atvaizdavimo šabloną
+list-m2a: Sąsaja su kitomis kolekcijomis (M2A)
 item_count: 'Nėra elementų | Vienas elementas | {count} elementai/ų'
+filtered_item_count: 'Nėra atfiltruotų įrašų | Vienas atfiltruotas įrašas | {count} atfiltruotų įrašų'
 no_items_copy: Kolekcijoje dar nėra elementų.
 file_count: 'Nėra failų | Vienas failas | {count} failų'
 no_files_copy: Nėra failų.
 user_count: 'Nėra vartotojų | Vienas vartotojas | {count} vartotojų'
 no_users_copy: Nėra vartotojų šioje grupėje.
 webhooks_count: 'Nėra "Webhook"ų | Vienas "Webhook"as | {count} "Webhook"ų"'
+webhooks_deprecation_notice: |
+  Webhooks are deprecated and further use is discouraged.
+
+  Please use **Flows** with the [Webhook / Request URL operation](https://docs.directus.io/app/flows/operations.html#webhook-request-url) instead.
+no_webhooks_copy: Nėra sukurtų "webhooks".
+no_notifications: Nėra pranešimų
+no_notifications_copy: Perskaitėte visus pranešimus!
+activity_log: Įvykių žurnalas
 all_items: Visi elementai
+any: Bet kuris
 csv: CSV
 no_collections: Nėra kolekcijų
 create_collection: Kurti rinkinį
 no_collections_copy_admin: Kol kas nėra sukurtų kolekcijų. Paspauskite mygtuką, norėdami pradėti.
 no_collections_copy: Kol kas nėra sukurtų kolekcijų. Susisiekite su savo administratoriumi.
 relationship_not_setup: Sąryšis sukonfigūruotas neteisingai
+no_singleton_relations: Negalima sukurti ryšio su "Singleton" objektais
 display_template_not_setup: Blogai sukonfigūruota atvaizdavimo šablono parinktis
 collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
 select_a_collection: Pasirinkite kolekciją
+select_a_field: Pasirinkite lauką
 active: Aktyvus
+move_to: Perkelti į...
 copy: Kopijuoti
+copy_to: Kopijuoti į...
+no_other_dashboards_copy: Jūs neturite sukurtų jokių kitų skydelių.
+inactive: Neaktyvus
 users: Vartotojai
+roles: Rolės
 activity: Veiksmas
+activity_item: Aktyvumo įrašas
 action: Veiksmas
 ip_address: IP adresas
 user_agent: Naršyklė
+origin: Šaltinis
 webhooks: '„Webhook“''ai'
+decimals: Trupmeniniai skaičiai
+value_decimals: Trupmeninio skaičiaus reikšmė
+min_value: Mažiausia reikšmė
+max_value: Didžiausia reikšmė
+automatic: Automatinė
 field_width: Laukelio plotis
 add_filter: Pridėti filtrą
 upper_limit: Viršutinis limitas...
@@ -387,11 +690,13 @@ documentation: Dokumentacija
 sidebar: Šoninė juosta
 duration: Trukmė
 charset: Simbolių rinkinys
+second: sekundė
 file_moved: Failas perkeltas
 collection_created: Kolekcija sukurta
 modified_on: Pakeista
 card_size: Kortelės dydis
 sort_field: Rūšiavimo laukas
+add_sort_field: Pridėti rikiavimo lauką
 sort: Rūšiuoti
 status: Būsena
 remove: Pašalinti
@@ -401,8 +706,15 @@ bookmark_doesnt_exist_copy: Žymė, kurią bandote atidaryti, neegzistuoja.
 bookmark_doesnt_exist_cta: Grįžti į kolekciją
 select_an_item: Pasirinkti elementą...
 edit: Redaguoti
+edit_item: Redaguoti įrašą
 enabled: Įjungtas
+partially_enabled: Dalinai įjungtas
+enable_all: Įjungti visus
+disable_all: Išjungti visus
+enabled_dev_tooltip: Aplikacijos plėtiniai yra visada įjungti "dev" rėžime
 disable_tfa: Išjungti 2VA
+admin_disable_tfa_text: Ar tikrai norite išjungti dviejų faktorių autentifikaciją šiam naudotojui?
+tfa_setup: Nustatyti dviejų faktorių autentifikaciją
 tfa_scan_code: Norėdami pabaigti konfigūruoti 2FA, nuskenuokite kodą autentifikatoriaus programėlėje
 enter_otp_to_disable_tfa: Įveskite OTP (vienkartinį slaptažodį) norėdami išjungti 2FA
 create_account: Sukurti paskyrą
@@ -411,32 +723,63 @@ auto_fill: Automatinis užpildymas
 corresponding_field: Atitinkamas laukas
 errors:
   COLLECTION_NOT_FOUND: "Kolekcija neegzistuoja"
+  CONTAINS_NULL_VALUES: Laukas turi "null" reikšmių
+  CONTENT_TOO_LARGE: Saugomas įrašas / dokumentas yra per didelis
   FIELD_NOT_FOUND: Laukas nerastas
   FORBIDDEN: Draudžiama
+  GRAPHQL_VALIDATION: GraphQL validacija
+  ILLEGAL_ASSET_TRANSFORMATION: Nuotrauka yra per didelė, kad būtų galima peržiūrėti
   INTERNAL_SERVER_ERROR: Nenumatyta klaida
+  INVALID_CONFIG: Netinkama konfigūracija
   INVALID_CREDENTIALS: Klaidingas prisijungimo vardas ir slaptažodis
+  INVALID_FOREIGN_KEY: Netinkamas išorinis raktas
+  INVALID_IP: IP adresas yra neleistinas
   INVALID_OTP: Klaidingas vienkartinis slaptažodis
   INVALID_PAYLOAD: Neteisingi duomenys
+  INVALID_PROVIDER: Naudotojas priklauso kitam autentifikacijos tiekėjui
   INVALID_QUERY: Neteisinga užklausa
+  INVALID_TOKEN: Netinkamas token
+  INVALID_USER: Nepavyko naudotojo autentifikuoti
   ITEM_LIMIT_REACHED: Pasiektas elementų limitas
   ITEM_NOT_FOUND: Elementas nerastas
   LIMIT_EXCEEDED: 'Limitas viršytas'
+  METHOD_NOT_ALLOWED: Neleistinas užklausos metodas
   NOT_NULL_VIOLATION: Reikšmė negali būti null
+  RANGE_NOT_SATISFIABLE: Neleistina imtis
+  RECORD_NOT_UNIQUE: Yra pasikartojančių reikšmių
   REQUESTS_EXCEEDED: Užklausų limitas viršytas
   ROUTE_NOT_FOUND: Nerasta
+  SERVICE_UNAVAILABLE: Sistema nepasiekiama
+  TOKEN_EXPIRED: Pasibaigė token galiojimas
+  UNEXPECTED_RESPONSE: Bloga užklausa
   UNKNOWN: Nenumatyta klaida
+  UNPROCESSABLE_CONTENT: Bloga užklausa
+  UNSUPPORTED_MEDIA_TYPE: Bloga užklausa
+  USER_SUSPENDED: Naudotojas neaktyvus
+  VALUE_OUT_OF_RANGE: Reikšmė yra už imties ribų
+  VALUE_TOO_LONG: Reikšmė yra per ilga
+security: Apsauga
 value_hashed: Reikšmė saugiai išsaugota
 bookmark_name: Žymės pavadinimas...
 create_bookmark: Kurti žymę
 edit_bookmark: Redaguoti žymę
+edit_personal_bookmark: Redaguoti asmeninį skirtuką
+edit_role_bookmark: Redaguoti rolių skirtuką
+edit_global_bookmark: Redaguoti globalų skirtuką
+cannot_edit_role_bookmarks: Negalima redaguoti rolių skirtukų
+cannot_edit_global_bookmarks: Negalima redaguoti globalių skirtukų
 bookmarks: Žymės
 presets: Ruošiniai
 unexpected_error: Nenumatyta klaida
+unexpected_error_copy: Įvyko nenumatyta klaida. Bandykite dar kartą.
 copy_details: Kopijuoti detales
 no_app_access: Nėra prieigos prie aplikacijos
 no_app_access_copy: Šis vartotojas negali naudotis administravimo aplikacija.
+password_reset_sent: Jeigu Jūs turite paskyrą, tai Jums bus išsiųsta nuorodą su slaptažodžio atstatymo instrukcija
 password_reset_successful: Slaptažodis sėkmingai atstatytas
 back: Atgal
+filter: Filtras
+edit_image: Redaguoti nuotrauką
 editing_image: Paveikslėlio redagavimas
 square: Kvadratas
 free: Laisvas
@@ -448,14 +791,30 @@ all_users: Visi vartotojai
 delete_collection: Trinti kolekciją
 update_collection_success: Atnaujinti kolekciją
 delete_collection_success: Kolekcija ištrinta
+make_collection_visible: Rodyti kolekciją
+make_collection_hidden: Paslėpti kolekciją
+make_folder_visible: Rodyti katalogą
+make_folder_hidden: Paslėpti katalogą
+goto_collection_content: Rodyti įrašus
+count_of_total_items: '{count} iš {total} įrašų'
+start_end_of_count_items: '{start}-{end} iš {count} įrašų'
+start_end_of_count_filtered_items: '{start}-{end} iš {count} filtruotų įrašų'
+delete_collection_are_you_sure: >-
+  Ar tikrai norite pašalinti kolekciją "{collection}"? Šis veiksmas neatšaukiamas ir bus pašalinta kolekcija ir visi įrašai joje.
+delete_folder_are_you_sure: Ar tikrai norite pašalinti katalogą "{folder}"? Vaikiniai katalogai ir kolekcijos bus perkelti į aukštesnį lygį.
+delete_collection_peer_dependencies: Šie laukai bus pašalinti taip pat, nes jie yra susiję su dabartine kolekcija.
 collections_shown: Rodomos kolekcijos
 visible_collections: Matomos kolekcijos
 hidden_collections: Paslėptos kolekcijos
+show_hidden_collections: Rodyti paslėptas kolekcijas
+hide_hidden_collections: Nerodyti paslėptų kolekcijų
+show_header: Rodyti antraštę
 unmanaged_collections: Nesukonfigūruotos kolekcijos
 system_collections: Sisteminės kolekcijos
 placeholder: Pagalbinis tekstas
 icon_left: Ikona kairėje
 icon_right: Ikona dešinėje
+count_other_revisions: '{count} kitų pakeitimų'
 font: Šriftas
 sans_serif: Sans Serif
 serif: Serif
@@ -465,9 +824,12 @@ color: Spalva
 circle: Apskritimas
 empty_item: Tuščias elementas
 log_in_with: 'Prisijungti su {provider}'
+conditional_styles: Atvaizdavimo nustatymai
+advanced_settings: Išplėstiniai nustatymai
 advanced_filter: Sudėtingesnis filtravimas
 delete_advanced_filter: Trinti filtrą
 change_advanced_filter_operator: Pakeisti operatorių
+advanced: Išplėstiniai nustatymai
 operators:
   eq: Lygu
   neq: Nelygu
@@ -481,14 +843,32 @@ operators:
   nnull: Nėra null
   contains: Turi
   ncontains: Nesusideda iš
+  icontains: Turi (insensitive)
+  starts_with: Prasideda
+  nstarts_with: Neprasideda
+  istarts_with: Prasideda (insensitive)
+  nistarts_with: Neprasideda (insensitive)
+  ends_with: Baigiasi
+  nends_with: Nesibaigia
+  iends_with: Baigiasi (insensitive)
+  niends_with: Nesibaigia (insensitive)
   between: Yra tarp
   nbetween: Nėra tarp
   empty: Yra tuščias
   nempty: Nėra tuščias
   all: Sudarytas iš šių elementų
   has: Sudarytas iš kai kurių iš šių elementų
+  intersects: Persidengia
+  nintersects: Nepersidengia
+  intersects_bbox: Persidengia (geometrija)
+  nintersects_bbox: Nepersidengia (geometrija)
+  regex: Atitinka RegExp
+custom_validation_message: Validacinis pranešimas
 loading: Kraunasi...
+extension_readme_missing: Šis plėtinys neturi aprašymo.
 drop_to_upload: Vilkite norėdami įkelti
+item: Įrašas
+items: Įrašai
 upload_file: Įkelti failą
 upload_file_indeterminate: Failas įkeliamas...
 upload_file_success: Failas įkeltas
@@ -497,48 +877,180 @@ upload_files_success: '{count} failai įkelti'
 upload_pending: Laukiama įkėlimo
 drag_file_here: Tempkite ir paleiskite failą čia
 click_to_browse: Paspauskite norėdami naršyti
+interface_options: Sąsajos nustatymai
+display_options: Atvaizdavimo nustatymai
 layout_options: Išdėstymo nustatymai
 rows: Eilutės
 columns: Stulpeliai
 collection_setup: Kolekcijos konfigūracija
+optional_system_fields: Kiti laukai
 value_unique: Reikšmė turi būti unikali
+value_index: Laukas turi būti indeksuojamas
 all_activity: Visa Veikla
 create_item: Sukurti elementą
 display_template: Rodymo šablonas
+language_display_template: Kalbos atvaizdavimo šablonas
+translations_display_template: Vertimų atvaizdavimo šablonas
+n_items_selected: 'Nepasirinkti įrašai | Pasirinktas vienas įrašas | Pasirinkta {n} įrašų'
 per_page: Puslapyje
 all_files: Visi failai
 my_files: Mano failai
 recent_files: Paskiausiai naudoti failai
 create_folder: Sukurti aplanką
+edit_folder: Redaguoti katalogą
 folder_name: Aplanko pavadinimas...
+folder_key: Katalogo identifikatorius...
 add_file: Pridėti failą
 replace_file: Pakeisti failą
 no_results: Rezultatų nerasta
 no_results_copy: Pakoreguokite ar išvalykite paieškos filtrus norėdami matyti rezultatus.
+no_visible_fields: Tuščia forma
+no_visible_fields_copy: Forma neturi matomų laukų.
 clear_filters: Išvalyti filtrus
 saves_automatically: Išsaugoma automatiškai
 role: Vaidmuo
+edit_role: Redaguoti rolę
+rule: Taisyklė
 user: Vartotojas
 no_presets: Nėra ruošinių
 no_presets_copy: Dar nėra išsaugotų ruošinių ar žymų.
 no_presets_cta: Pridėti ruošinį
+presets_only: Tik išankstiniai nustatymai
 create: Kurti
 on_create: Sukūrimo metu
 on_update: Atnaujinimo metu
 read: Skaityti
 update: Atnaujinti
+delete: Šalinti
 select_fields: Pasirinkti laukus
 format_text: Formatuoti tekstą
+format_value: Formatuoti reikšmę
+abbreviate_value: Sutrumpinti reikšmę
+operator: Operatorius
 bold: Paryškintas
 toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
+flows: Flows
+flow: Flow
+select_a_flow: Pasirinkite Flow
+run_flow_confirm: Ar tikrai norite įvykdyti šį Flow?
+run_flow_on_current_collection: Įvykdyti Flow šiai kolekcijai
+run_flow_on_current: Įvykdyti Flow šiam įrašui
+run_flow_on_current_edited_confirm: Šis Flow gali atnaujinti įrašą. Ar tikrai norite jį įvykdyti?
+run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti Flow vienam įrašui | Vykdyti flow {n} įrašams
+run_flow: Vykdyti Flow
+run_flow_success: Flow "{flow}" įvykdytas sėkmingai
+trigger_flow_success: Flow "{flow}" pradėtas sėkmingai. Jis bus vykdomas fone
+field_name_placeholder: Įveskite lauko pavadinimą...
+field_key_placeholder: Įveskite lauko identifikatorių...
+trigger: Trigeris
+trigger_options: Trigerio nustatymai
+view_trigger: Peržiūrėti trigerį
+create_trigger: Sukurti trigerį
+trigger_setup: Trigerio sukūrimas
+change_trigger: Pakeisti trigerį
+flow_delete_confirm: Ar tikrai norite pašalinti Flow "{flow}"? Šio veiksmo atšaukti negalima.
+set_flow_active: Aktyvuoti Flow
+set_flow_inactive: Deaktyvuoti Flow
+edit_flow: Redaguoti Flow
+delete_flow: Pašalinti Flow
+no_other_flows_copy: Jūs neturite kitų Flows.
+no_flows: Nėra Flows
+no_flows_copy: Nėra sukurtų Flows.
+create_flow: Sukurti Flow
+creating_new_flow: Flow sukūrimas
+updating_flow: Flow atnaujinimas
+flow_setup: Flow sukūrimas
 flow_name: Pavadinimas
+flow_tracking: Įvykių žurnalas
+flow_tracking_all: Saugoti visus įvykius ir rezultatus
+flow_tracking_activity: Saugoti įvykius
+flow_tracking_null: Nesaugoti jokių įvykių
+start_flow: Pradėti Flow
+stop_flow: Sustabdyti Flow
+create_operation: Sukurti operaciją
+edit_operation: Redaguoti operaciją
 code: Kodas
+operation_options: Operacijos nustatymai
+operation_name: Operacijos pavadinimas...
+operation_key: Identifikatorius...
+operation_key_unique_error: Operacijos pavadinimai turi būti unikalūs esamam Flow
+operation_handle_resolve: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
+operation_handle_reject: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
+insights: Įžvalgos
+dashboard: Prietaisų skydelis
+panel: Skydelis
+panel_options: Skydelio nustatymai
+panel_header: Skydelio antraštė
+panel_name_placeholder: Įveskite skydelio pavadinimą...
+panel_note_placeholder: Skydelio aprašymas...
+panel_delete_confirm: Ar tikrai norite pašalintį šį skydelį? Šio veiksmo atšaukti negalima.
+list_panel_allow_edit: Leisti tiesioginį redagavimą
+dashboard_delete_confirm: Ar tikrai norite pašalintį šį prietaisų skydelį? Šio veiksmo atšaukti negalima.
+edit_dashboard: Redaguoti prietaisų skydelį
+delete_dashboard: Pašalinti prietaisų skydelį
+visible: Matomas
+prefix_placeholder: Prefikso reikšmė...
+suffix_placeholder: Sufikso reikšmė...
+decimals_placeholder: Trupmeninių skaitmenų skaičius...
+no_dashboards: Nėra prietaisų skydelių
+no_dashboards_copy: Nėra sukurta jokių prietaisų skydelių.
+create_dashboard: Sukurti prietaisų skydelį
+dashboard_name: Prietaisų skydelio pavadinimas
+no_data: Nėra duomenų
+no_data_in_flow: Šis flow nepateikė ir negavo jokių duomenų
+accountability: Atsakomybė
+payload: Payload
+details: Išsamesnė informacija
+resume_streaming_logs: Tęsti srautinį žurnalų perdavimą
+pause_streaming_logs: Sustabdyti srautinį žurnalų perdavimą
+logs_session_resumed: Žurnalų perdavimas pratęstas...
+logs_session_paused: Žurnalų perdavimas sustabdytas...
+logs_stream_disconnected: Žurnalų perdavimas nutrūko...
+log_detail_filter_paths: 'Filtruoti laukus (eg: req.method, res.statusCode)'
+logs_beginning: Įvykių žurnalo pradžia...
+logs_waiting: 'Laukiama naujų įvykių...'
+logs_unread_count: '{count} neperskaityta'
+clear_logs: Išvalyti įvykius
+search_logs: Ieškoti įvykių...
+all_instances: Visi atvejai
+instance_count: 'Nei vieno atvejo | Vienas atvejis | {count} atvejai'
+all_log_levels: Visi įvykių lygiai
+log_level_count: 'Nei vieno įvykio | Vienas įvykių lygis | {count} įvykių lygių'
+soft_wrap_lines: Kirpti eilutes
 full_screen: Per visą ekraną
+full_text_search: Pilno teksto paieška
+edit_panels: Redaguoti skydelius
+center_align: Lygiuoti per vidurį
+left_align: Lygiuoti kairėje
+right_align: Lygiuoti dešinėje
+fit_to_screen: Per visą ekraną
+image_url: Nuotraukos URL
+alt_text: Alternatyvus tekstas
+media: Medija
+quality: Kokybė
 width: Plotis
 height: Aukštis
+transformation_preset_key: Transformavimo šablono raktas
+source: Šaltinis
+url_placeholder: Įveskite URL...
+display_text: Tekstas
+display_text_placeholder: Įveskite tekstą...
+interface_group_text_and_numbers: Tekstas ir skaičiai
+interface_group_selection: Pasirinkimas
+interface_group_relational: Reliacinis
+interface_group_presentation: Atvaizdavimo
+interface_group_groups: Grupės
+interface_group_other: Kita
+tooltip: Paaiškinamasis tekstas
+tooltip_placeholder: Įveskite tekstą...
+unlimited: Neribojamas
+open_link_in: Nuorodos atidarymas
+new_tab: Naujame skirtuke
+save_image: Saugoti nuotrauką
+save_media: Saugoti mediją
 wysiwyg_options:
   aligncenter: Vidurinė lygiuotė
   alignjustify: Abipusė lygiuotė
@@ -558,7 +1070,10 @@ wysiwyg_options:
   bullist: Suženklintasis sąrašas
   numlist: Numeruotasis sąrašas
   hr: Horizontali linija
+  link: Pridėti / redaguoti nuorodą
   unlink: Pašalinti nuorodą
+  media: Pridėti / redaguoti mediją
+  image: Pridėti / redaguoti nuotrauką
   copy: Kopijuoti
   cut: Iškirpti
   paste: Įklijuoti
@@ -580,35 +1095,66 @@ wysiwyg_options:
   selectall: Pažymėti visus
   table: Lentelė
   visualaid: Peržiūrėti nematomos elementus
+  source_code: Redaguoti šaltinį
   fullscreen: Per visą ekraną
   directionality: Kryptingumas
+  lazy_loading: Nuotrauką užkrauti asinchroniškai
+  lazy_loading_label: Leisti asinchroninį krovimą
 dropdown: Išskleidžiamasis meniu
 choices: Pasirinkimai
 choices_option_configured_incorrectly: Neteisingai sukonfigūruoti pasirinkimai
 deselect: Atžymėti
 deselect_all: Atžymėti viską
+theme: Tema
+select_a_theme: Pasirinkite temą
+default_sync_with_project: Numatytoji (projekto numatytoji)
+appearance_auto: Automatinė (sistemos numatytoji)
+appearance_light: Šviesi
+appearance_dark: Tamsi
 other: Kita...
 adding_user: Pridedamas vartotojas
 unknown_user: Nežinomas vartotojas
 creating_in: 'Kuriamas elementas kolekcijoje: {collection}'
 editing_in: 'Redaguojamas elementas kolekcijoje: {collection}'
+viewing_in: 'Rodomas įrašas {collection}'
+creating_unit: 'Sukuriamas {unit}'
+editing_unit: 'Redaguojamas {unit}'
 editing_in_batch: 'Redaguojami {count} elementai'
 no_options_available: Nėra parinkčių
 settings_data_model: Duomenų modelis
+settings_roles: Naudotojo rolės
+settings_permissions: Prieigos polisai
 settings_project: Nustatymai
+settings_appearance: Atvaizdavimas
 settings_webhooks: '„Webhook“''ai'
+settings_flows: Flows
+settings_system_logs: Sistemos žurnalas
 settings_presets: Žymės
 settings_translations: Vertimai
+one_or_more_options_are_missing: Trūksta vieno ar daugiau pasirinkimų
+configure_field_key_to_continue: Nurodykite lauko identifikatorių
 scope: Apimtis
+actions: Veiksmai
+select: Pasirinkti...
 layout: Išdėstymas
+tree_view: Medžio struktūra
 changes_are_permanent: Pakeitimai neatstatomi
+preset_name_placeholder: Yra kaip numatytasis, kai tuščias...
+preset_search_placeholder: Paieškos užklausa...
 editing_preset: Redaguojamas ruošinys
 layout_preview: Išdėstymo peržiūra
 layout_setup: Išdėstymo nustatymai
+data: Duomenys
+theme-overrides: Temos pakeitimai
 unsaved_changes: Neįrašyti pakeitimai
 unsaved_changes_copy: Ar tikrai norite išeiti iš šio puslapio?
 discard_changes: Atšaukti pakeitimus
+discard_all_changes: Atšaukti pakeitimus
+discard_changes_copy: Ar tikrai norite atšaukti visus pakeitimus?
+show_x_axis: Rodyti X ašį
+show_y_axis: Rodyti Y ašį
 keep_editing: Redaguoti toliau
+page_help_collections_overview: '**Kolekcijų peržiūra** — rodomos visos kolekcijos, prie kurių turite prieigą.'
 page_help_collections_collection: >-
   **Peržiūrėti elementus** — rodomi visi kolekcijos {collection} elementai, prie kurių turite prieigą. Redaguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_collections_item: >-
@@ -621,19 +1167,36 @@ page_help_files_collection: >-
   ***Failų biblioteka** — rodomi visi projekto failai. Koreguokite išdėstymą, filtrus rikiavimą ir pritaikykite atvaizdavimą savo poreikiams. Galite išsaugoti šiuos nustatymus kaip žymas, kad greitai pasiektumėte norimą išdėstymo konfigūraciją.
 page_help_files_item: >-
   **Failo duomenys** — forma failo meta duomenų tvarkymui, originalaus failo redagavimui ir prieigos nustatymų atnaujinimui.
+page_help_settings_project: "**Projekto nustatymai** — globali projekto konfigūracija."
+page_help_settings_appearance: "**Atvaizdavimas** — projekto atvaizdavimas ir temos nustatymai."
+page_help_settings_extensions: '**Plėtiniai** — projekto plėtiniai ir jų nustatymai.'
 page_help_settings_datamodel_collections: >-
   **Duomenų modelis: Kolekcijos** — atvaizduojamos visos kolekcijos, įskaitant matomas, paslėptas bei sistemines kolekcijas, taip pat naujas duomenų bazės lenteles, kurios gali būti pridėtos.
 page_help_settings_datamodel_fields: >-
   **Duomenų modelis: Kolekcija** — forma kolekcijos ir jos laukų valdymui.
+page_help_settings_system_logs: '**Sistemos žurnalas** — projekto sistemos įvykių žurnalas.'
+page_help_settings_policies_collection: '**Peržiūrėti polisus** - rodomi visi projekto polisai.'
+page_help_settings_policies_item: "**Polisų informacija** - polisų prieigos valdymas ir kiti nustatymai."
+page_help_settings_roles_collection: '**Peržiūrėti roles** - projekto rolės ir naudotojai.'
 page_help_settings_roles_item: "**Grupės duomenys** — Valdykite grupės prieigą prie duomenų ir kitus nustatymus."
 page_help_settings_presets_collection: >-
   **Peržiurėti ruošinius** — atvaizduojami visi projekto ruošiniai, įskaitant vartotojų, grupių ir bendras žymas bei numatytuosius langus.
 page_help_settings_presets_item: >-
   **Ruošinio duomenys** — forma žymų ir numatytųjų kolekcijos ruošinių valdymui.
 page_help_settings_webhooks_collection: '**Peržiūrėti Webhook''us** - Rodomi visi projekto Webhook''ai.'
+page_help_settings_webhooks_item: '**Webhook informacija** — projekto webhooks nustatymai.'
+page_help_settings_flows_collection: '**Peržiūrėti flows** - rodomi visi projekto flows.'
+page_help_settings_flows_item: '**Flow informacija** — projekto flow operacijų nustatymai.'
+page_help_settings_translations_collection: '**Bendriniai projekto vertimai** — bendrinių projekto vertimų sąrašas.'
+page_help_settings_translations_item: '**Bendrinių projekto vertimų informacija** — bendrinių projekto vertimų nustatymai.'
 page_help_users_collection: '**Vartotojų aplankas** — rodomi visi šio projekto vartotojai.'
 page_help_users_item: >-
   **Vartotojo duomenys** — valdykite savo paskyros informaciją arba peržiūrėkite kitų vartotojų duomenis.
+page_help_insights_overview: '**Įžvalgos** — projekto prietaisų skydeliai.'
+page_help_insights_dashboard: '**Prietaisų skydelis** — prietaisų skydelių nustatymai.'
+page_help_marketplace_account: '**Paskyra** — plėtinio kūrėjas arba prižiūrėtojas.'
+page_help_marketplace_registry: '**Registras** — plėtiniai, kurie yra pasiekiami iš Direktus turgavietės.'
+page_help_marketplace_extension: '**Plėtiniai** — Direktus turgavietės plėtiniai.'
 activity_feed: Veiklos srautas
 add_new: Pridėti Naują
 create_new: Sukurti naują
@@ -643,12 +1206,52 @@ no_layout_collection_selected_yet: Nepasirinktas išdėstymas/kolekcija
 batch_delete_confirm: >-
   Įrašai nepažymėti | Ar įsitikinę, jog norite trinti įrašą? Išsitrins negrįštamai. | Ar įsitikinę, jog norite trinti šiuos {count} įrašus? Išsitrins negrįštamai.
 cancel: Atšaukti
+no_upscale: Nedidinti nuotraukų rezoliucijos automatiškai
+no_extensions: Nėra plėtinių
+no_extensions_copy: Nėra įdiegtų plėtinių.
+install_extension: Įdiegti plėtinį
+uninstall_locked: Negalima pašalinti plėtinių kurie nebuvo įdiegti iš turgavietės
+uninstall: Pašalinti
+installed: Įdiegtas
+reinstall: Įdiegti iš naujo
+open_in_marketplace: Atidaryti turgavietėje
 source_registry: Turgavietė
+source_local: Vietinis
+source_module: Node modulis
 collection: Rinkinys
 collections: Kolekcijos
+content: Turinys
 singleton: Singleton objektas
 singleton_label: Laikyti vienu objektu
 system_fields_locked: Sisteminiai laukai yra užrakinti ir negali būti redaguojami
+directus_collection:
+  directus_access: Poliso dokumentai
+  directus_activity: Visų įvykių atskaitomybės žurnalai
+  directus_collections: Papildomi kolekcijos nustatymai ir metaduomenys
+  directus_comments: Įrašų komentarai
+  directus_dashboards: Prietaisų skydeliai įžvalgų modulyje
+  directus_fields: Papildomi lauko nustatymai ir metaduomenys
+  directus_files: Visų tvarkomų failų metaduomenys
+  directus_flows: Automation flows
+  directus_folders: Pateikia virtualius katalogus failams
+  directus_migrations: Naudojama duomenų bazės versija
+  directus_notifications: Pranešimai išsiųsti naudotojams
+  directus_operations: Operacijos kurios yra vykdomos flows
+  directus_panels: Individualūs skydeliai įžvalgų modulyje
+  directus_permissions: Polisų prieigos teisės
+  directus_policies: Prieigos teisės
+  directus_presets: Kolekcijų ir žymų numatytieji šablonai
+  directus_relations: Sąryšių nustatymai ir metaduomenys
+  directus_revisions: Duomenų visų įvykių snapshot
+  directus_roles: Teisių grupės sisteminiams naudotojams
+  directus_sessions: Naudotojo sesijos informacija
+  directus_settings: Projekto nustatymų parinktys
+  directus_shares: Išoriškai pasidalintų įrašų sekimas
+  directus_users: Sisteminiai platformos naudotojai
+  directus_webhooks: Event-based HTTP užklausų nustatymai
+  directus_translations: Pasirinktiniai vertimai
+  directus_versions: Įrašų turinio versijos
+  directus_extensions: Plėtinių nustatymai
 fields:
   directus_activity:
     item: Įrašo Pirminis Raktas
@@ -658,6 +1261,7 @@ fields:
     user: Veiksmas atliktas
     comment: Komentaras
     user_agent: Naršyklė
+    origin: Šaltinis
     ip: IP adresas
     revisions: Pakeitimai
   directus_collections:
@@ -668,14 +1272,28 @@ fields:
     display_template: Rodymo šablonas
     hidden: Paslėptas
     singleton: Singleton objektas
+    translations: Kolekcijos pavadinimo vertimai
+    archive_app_filter: Archyvuotų aplikacijų filtras
+    archive_value: Archyvuoti reikšmę
+    unarchive_value: Išarchyvuoti reikšmę
     sort_field: Rūšiavimo laukas
+    accountability: Įvykių žurnalas
+    versioning: Versijavimas
+    archive_field: Archyvuoti lauką
+    item_duplication_fields: Įrašo dublikuojami laukai
   directus_files:
+    $thumbnail: Thumbnail
     title: Pavadinmas
     description: Aprašymas
     tags: Žymos
     location: Vietovė
+    storage: Saugykla
+    filename_disk: Failo pavadinimas (diske)
+    filename_download: Failo pavadinimas (atsisiuntus)
     metadata: Meta duomenys
+    type: MIME tipas
     filesize: Failo dydis
+    modified_by: Redagavo
     modified_on: Pakeista
     created_on: Sukurta
     created_by: Sukūrė
@@ -687,6 +1305,8 @@ fields:
     height: Aukštis
     charset: Simbolių rinkinys
     duration: Trukmė
+    focal_point_x: X Koordinatė
+    focal_point_y: Y Koordinatė
   directus_users:
     first_name: Vardas
     last_name: Pavardė
@@ -697,28 +1317,93 @@ fields:
     title: Pavadinmas
     description: Aprašymas
     tags: Žymos
+    user_preferences: Naudotojo nustatymai
     language: Kalba
     tfa_secret: Dviejų lygių autentifikavimas
+    admin_options: Administratoriaus nustatymai
     status: Būsena
+    status_draft: Juodraštis
+    status_invited: Pakviestas
+    status_unverified: Nepatvirtintas
     status_active: Aktyvus
+    status_suspended: Sustabdytas
+    status_archived: Archyvuotas
     role: Vaidmuo
+    token: Token
+    provider: Teikėjas
+    external_identifier: Išorinis identifikatorius
     last_page: Paskutinis puslapis
     last_access: Paskutinė prieiga
+    email_notifications: El. pašto pranešimai
+    appearance: Atvaizdavimas
+    theme_light: Šviesi tema
+    theme_dark: Tamsi tema
+    theme_light_overrides: Šviesios temos nustatymai
+    theme_dark_overrides: Tamsios temos nustatymai
   directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    reporting: Reporting
+    mapping: Mapping
+    basemaps: Basemaps
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
+    mapbox_key: Mapbox Access Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Attribution
+    attribution_placeholder: '© OpenStreetMap contributors'
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    additional_transforms: Papildomos transformacijos
     project_name: Projekto pavadinimas
+    project_descriptor: Projekto aprašymas
     project_url: Projekto adresas
     project_color: Projekto spalva
     project_logo: Projekto logotipas
+    default_language: Numatytoji kalba
+    branding: Branding
     public_foreground: Vieša matoma teksto spalva
     public_background: Projekto fonas
     public_note: Vieša pastaba
+    theming: Temos numatytieji nustatymai
+    default_appearance: Numatytoji tema
+    default_theme_light: Numatytoji tema (šviesi)
+    default_theme_dark: Numatytoji tema (tamsi)
     auth_password_policy: Slaptažodžių politika
     auth_login_attempts: Max. bandymų prisijungti kiekis
+    files_and_thumbnails: Dokumentų saugykla
+    storage_default_folder: Numatytasis katalogas
+    storage_asset_presets: Transformavimo nustatymai
+    storage_asset_transform: Leistinos transformacijos
+    overrides: App Overrides
+    custom_css: CSS stilius
     module_bar: Modulių juosta
+    transformations_all: Leisti visas transformacijas
+    transformations_none: Neleisti transformacijų
+    transformations_presets: Leisti transformacijas tik pagal šablonus
+    image_editor: Nuotraukų redaguotojas
+    custom_aspect_ratios: Kiti Aspect Ratios
+    theme_light_overrides: Šviesios temos nustatymai
+    theme_dark_overrides: Tamsios temos nustatymai
+    public_registration: Naudotojų registracija
+    public_registration_note: Leisti naudotojams registruotis sistemoje.
+    public_registration_role: Naudotojo rolė
+    public_registration_role_note: Ši rolė suteikiama naudotojams registruojantis šiuo būdu. Esamų naudotojų rolės nebus keičiamos.
+    public_registration_email_filter: El. pašto adreso filtras
+    public_registration_email_filter_note: Tik el. pašto adresai, kurie atitinka šį filtrą gali registruotis sistemoje.
+    public_registration_verify_email: El. pašto patvirtinimas
+    public_registration_verify_email_note: Naudotojui bus išsiųstas el. laiškas su patvirtinimo nuoroda.
   directus_shares:
     name: Pavadinimas
     role: Vaidmuo
     password: Slaptažodis
+    date_start: Pradžios data
+    date_end: Pabaigos data
+    max_uses: Maksimalus panaudos skaičius
+    times_used: Kartų panaudota
   directus_fields:
     collection: Kolekcijos pavadinimas
     icon: Kolekcijos ikonėlė
@@ -732,51 +1417,204 @@ fields:
     icon: Grupės ikonėlė
     description: Aprašymas
     users: Vartotojai grupėje
+    parent: Tėvinė rolė
+    children: Vaikinės rolės
   directus_policies:
+    name: Poliso pavadinimas
     description: Aprašymas
+    app_access: Prieiga prie aplikacijos
+    admin_access: Administratoriaus prieiga
+    ip_access: IP adresų filtras
+    enforce_tfa: Reikalauti 2FA
   directus_webhooks:
     name: Pavadinimas
+    method: Method
     status: Būsena
+    data: Data
+    header: Header
     value: Reikšmė
+    headers: Request Headers
+    data_label: Send Event Data
+    triggers: Triggers
+    actions: Actions
     collections: Kolekcijos
 field_options:
+  directus_settings:
+    project_name_placeholder: Projektas...
+    project_color_note: Prisijungimo puslapis
+    project_logo_note: White 40×40 SVG/PNG
+    project_favicon_note: 32×32 ICO
+    public_note_placeholder: A short, public message that supports markdown formatting...
+    security_divider_title: Apsauga
+    auth_password_policy:
+      none_text: Nėra (nerekomenduojama)
+      weak_text: Silpnas - mažiausiai 8 simboliai
+      strong_text: Stiprus - didžiosios / mažosios / skaičiai / spec. simboliai
+    storage_asset_presets:
+      fit_label: Talpinti
+      upscaling: Mastelio keitimas
+      fit:
+        contain_text: Talpinti (išlaikyti mastelį)
+        cover_text: Viršelis (priverčia tikslų dydį)
+        fit_text: Talpinti viduje
+        outside_text: Talpinti išorėje
+    additional_transforms: Papildomos transformacijos
+    transforms_note: The Sharp method name and its arguments. See https://sharp.pixelplumbing.com/api-constructor for more information.
+    mapbox_key: Mapbox Access Token
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Basemaps
+    basemaps_name_placeholder: Įvesti basemap pavadinimą...
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Mapbox Style
+    files_divider_title: Failai ir miniatiūros
+    overrides_divider_title: App Overrides
   directus_activity:
+    login: Prisijungimas
     create: Kurti
     update: Atnaujinti
+    delete: Pašalinimas
   directus_collections:
+    track_activity_revisions: Sekti įvykius ir pakeitimus
+    only_track_activity: Sekti tik įvykius
+    do_not_track_anything: Nesekti jokių įvykių
     collection_setup: Kolekcijos konfigūracija
+    note_placeholder: Kolekcijos aprašymas...
+    hidden_label: Nerodyti aplikacijoje
     singleton: Laikyti vienu objektu
     language: Kalba
     translation: Vertimas
+    translation_placeholder: Įveskite lauko vertimą...
     collection_name: Kolekcijos pavadinimas
+    singular_unit: Vienaskaita
+    plural_unit: Daugiskaita
     archive_divider: Archyvuoti
+    archive_field_placeholder: Pasirinkti lauką...
+    archive_app_filter: Įjungti archyvuotų įrašų filtravimą
+    archive_value: Reikšmė išsaugota archyvavimo metu...
+    unarchive_value: Reikšmė išsaugota išarchyvavimo metu...
     sort_divider: Rūšiuoti
+    sort_field: Pasirinkite lauką...
+    accountability_divider: Atsakomybė
+    duplication_divider: Laukų dublikavimas
+    preview_divider: Įrašų peržiūra
+    content_versioning_divider: Įrašų versijavimas
+    enable_versioning: Įjungti versijavimą
+  directus_files:
+    title: Unikali antraštė...
+    description: Aprašymas...
+    location: Vietovė...
+    storage_divider: Failų pavadinimai
+    focal_point_divider: Atvaizdavimo taškas
+    filename_disk: Pavadinimas failų saugykloje...
+    filename_download: Pavadinimas atsisiuntimo metu...
+  directus_policies:
+    name: Poliso unikalus pavadinimas...
+    description: Poliso aprašymas...
+    ip_access: Pridėti leistinus IP adresus, IP adresų rėžius ar CIDR blokus. Tuščia reikšmė leidžia visus...
+    enforce_tfa: Privaloma dviejų faktorių autentifikacija
+    assigned_to: Priskirta
   directus_roles:
+    name: Rolės unikalus pavadinimas...
+    description: Rolės aprašymas...
     fields:
       icon_name: Ikona
       name_name: Pavadinimas
+      name_placeholder: Pavadinimas...
+      link_name: Nuoroda
+      link_placeholder: Santykinis arba absoliutus URL...
+    parent_note: Tėvinė rolė iš kurios bus paveldimos teisės
+    children_note: Vaikinės rolės kurios paveldės šios rolės teises
     collections_name: Kolekcijos
+    collections_addLabel: Pridėti kolekciją...
   directus_users:
+    preferences_divider: Naudotojo nustatymai
+    dropdown_auto: Automatinė tema (pagal sistemos nustatymus)
+    dropdown_light: Šviesi tema
+    dropdown_dark: Tamsi tema
+    admin_divider: Administratoriaus nustatymai
+    status_dropdown_draft: Juodraštis
+    status_dropdown_invited: Pakviestas
     status_dropdown_active: Aktyvus
+    status_dropdown_suspended: Sustabdytas
+    status_dropdown_archived: Archyvuotas
+    token: Įveskite slaptą access token...
   directus_webhooks:
     status_options_active: Aktyvus
+    status_options_inactive: Neaktyvus
+    data_label: Send Event Data
+    triggers_divider: Triggers
     actions_create: Kurti
     actions_update: Atnaujinti
+    actions_delete: Pašalinti
+    actions_login: Prisijungti
     headers:
+      header: Header
       value: Reikšmė
+      add: Add Header
 no_fields_in_collection: 'Kolekcijoje "{collection}" dar nėra elementų'
+no_value: Nėra reikšmės
 do_nothing: Nieko nedaryti
 generate_and_save_uuid: Generuoti ir išsaugoti UUID
 save_current_user_id: Išsaugoti dabartinio vartotojo ID
 save_current_user_role: Išsaugoti dabartinio vartotojo grupę
 save_current_datetime: Išsaugoti dabartinį datą/laiką
+always_open: Visą laiką atidarytas
+start_open: Iš pradžių atidarytas
+start_collapsed: Iš pradžių suskleistas
 block: Blokas
 inline: Toje pačioje eilutėje
 comment: Komentaras
 live_preview:
+  enable: Įgalinti peržiūros rėžimą
+  disable: Išjungti peržiūros rėžimą
+  change_size: Pakeisti atvaizdavimo matmenis
+  refresh: Perkrauti peržiūrą
   new_window: Atversti naujame lange
+  close_window: Atidaryti padalinto vaizdo rėžimu
+  toggle_3d: Perjungti į 3D
+shares: Pasidalinimai
+unlimited_usage: Be naudojimo limitų
+uses_left: Išnaudotas naudojimo limitas | Vienas panaudojimas liko | {n} panaudojimų liko
+no_shares: Nėra pasidalinimų
+new_share: Naujas pasidalinimas
+expired: Nebegalioja
+upcoming: Būsimas
+share: Dalintis
+share_item: Dalintis įrašu
+shared_with_you: Su Jumis buvo pasidalintas įrašas
+shared_enter_passcode: Įveskite slaptažodį norėdami tęsti...
+shared_leave_blank_for_passwordless_access: Palikite tuščią jei norite dalintis neapsaugotai
+shared_leave_blank_for_unlimited: Palikite tuščią jei norite dalintis neribotą kartų skaičių
+shared_times_remaining: Ši nuoroda galioja tik {n} kartų
+shared_last_remaining: Ši nuoroda gali būti panaudota tik vieną kartą
+shared_uses_left: Siekiant didesnio saugumo, šis bendrinamas puslapis buvo sukonfigūruotas su ribotu peržiūrų skaičiumi. Šiuo metu liko {n} peržiūrų, po kurių puslapis nebebus pasiekiamas.
+share_access_page: Atidaryti pasidalintą puslapį
+share_access_not_found: Puslapis nerastas arba yra nebegaliojantis.
+share_access_not_found_desc: Susisiekite su autorizuotu projekto naudotoju, kad suteiktų prieigą.
+share_access_not_found_title: Nežinomas pasidalintas puslapis
+share_copy_link: Kopijuoti nuorodą
+share_copy_link_success: Nuoroda nukopijuota
+share_copy_link_error: Nepavyko nukopijuoti nuorodos
+share_send_link: Siųsti nuorodą
+relational_triggers: Susijusių kolekcijų veiksmai
+referential_action_field_label_m2o: Pašalinant {collection}...
+referential_action_field_label_o2m: Atžymint {collection}...
+referential_action_no_action: Neleisti ištrinti
+referential_action_cascade: Ištrinti {collection} įrašą (cascade)
+referential_action_set_null: Išvalyti {field} lauką
+referential_action_set_default: Nustatyti {field} laukui numatytąją reikšmę
+choose_action: Pasirinkite veiksmą
+continue_label: Tęsti
+continue_as: >-
+  {name} šiuo metu yra neautentifikuotas. Jeigu atpažįstate šią paskyrą, spauskite tęsti.
 editing_role: '{role} grupė'
+editing_policy: '{policy} polisas'
+no_permissions: Nėra teisių
+permission_add_collection: Pridėti kolekciją
 creating_webhook: Kuriamas Webhook'ą
+default_label: Numatytasis
+delete_label: Pašalinti
 delete_are_you_sure: >-
   Šis veiksmas negali būti atšauktas. Ar tikrai norite tęsti?
 delete_field_are_you_sure: >-
@@ -784,6 +1622,7 @@ delete_field_are_you_sure: >-
 description: Aprašymas
 done: Atlikta
 duplicate: Dublikatas
+limit: Limitas
 email: El. paštas
 embed: Įterptas
 fallback_icon: Atsarginė ikona
@@ -792,12 +1631,23 @@ file: Failas
 file_library: Failų biblioteka
 forgot_password: Pamiršote slaptažodį
 hidden: Paslėptas
+hidden_in_group: Paslėptas {group}
 icon: Ikona
 info: Informacija
 normal: Normalus
 success: Pavyko
 warning: Įspėjimas
 danger: Pavojus
+colors:
+  purple: Violetinė
+  blue: Mėlyna
+  green: Žalia
+  yellow: Geltona
+  orange: Oranžinė
+  red: Raudona
+  black: Juoda
+  gray: Pilka
+  white: Balta
 junction_collection: Jungiamoji kolekcija
 latency: Vėlavimas
 login: Prisijungti
@@ -807,11 +1657,14 @@ authenticated: Prisijungta
 options: Parinktys
 otp: Vienkartinis slaptažodis
 password: Slaptažodis
+confirm_password: Pakartoti slaptažodį
 permissions: Leidimai
 relationship: Sąryšis
 reset: Atstatyti
 reset_password: Atstatyti slaptažodį
 revisions: Pakeitimai
+no_revisions: Nėra pakeitimų
+no_logs: Nėra įvykių
 revert: Atstatyti
 save: Išsaugoti
 schema: Schema
@@ -819,28 +1672,106 @@ search: Paieška
 select_existing: Pasirinkti esamą
 select_field_type: Pasirinkti lauko tipą
 select_interface: Pasirinkti sąsają
+select_display: Pasirinkite atvaizdavimą
 settings: Nustatymai
+register: Registruotis
+registration_successful_headline: Registracija sėkminga!
+registration_successful_note: Galite jungtis į sistemą.
+registration_successful_check_email_note: |
+  Atminkite, kad prieš prisijungdami turėsite patvirtinti savo el. pašto adresą spustelėdami jums atsiųstą patvirtinimo nuorodą.
+dont_have_an_account: Neturite paskyros?
+already_have_an_account: Aš jau turiu paskyrą
+sign_up_now: Registruotis dabar
 sign_in: Prisijungti
 sign_out: Atsijungti
 sign_out_confirm: Ar tikrai norite atsijungti?
 something_went_wrong: Įvyko klaida.
 sort_direction: Rūšiavimo kryptis
+export_location: Eksportavimo vieta
+export_started: Eksportavimas pradėtas
+export_started_copy: Eksportavimas pradėtas. Būsite informuotas, kada bus galima atsisiųsti dokumentą.
 sort_asc: Rūšiuoti didėjimo tvarka
 sort_desc: Rūšiuoti mažėjimo tvarka
+disable_sort: Išjungti rikiavimą
 template: Šablonas
+require_value_to_be_set: Reikšmė privaloma sukūrimo metu
 translation: Vertimas
+translation_placeholder: Įveskite lauko vertimą...
 value: Reikšmė
 view_project: Peržiūrėti projektą
 report_error: Pranešti apie klaidą
+start: Pradžia
 table: Lentelė
+list: Sąrašas
+search_filter: Paieška ir filtravimas
+enable_search_filter: Leisti ieškoti ir filtruoti
+item_link: Įrašo nuoroda
+show_link_to_item: Rodyti nuorodą į įrašą
+navigate_to_item: Atidaryti įrašą
+undo_removed_item: Atšaukti įrašo pašalinimą
+remove_item: Pašalinti įrašą
+delete_item: Ištrinti įrašą
+pause: Sustabdyti
+resume: Pratęsti
 interfaces:
+  list-m2a:
+    prefix_note: Naudoti susijusios kolekcijos pavadinimą kaip numatytąjį
+    sorting_disabled: Rikiavimas negalimas, nes įrašų yra daugiau nei telpa į puslapį.
   filter:
+    name: Filtras
+    description: Redaguoti filtrą.
     add_filter: Pridėti filtrą
+    add_group: Ir / Arba grupė
+    add_value: Pridėti reikšmę
+    logic_type_and: AND
+    logic_type_or: OR
     all: Visi
+    any: Bet kuris
+    and: ir
+    of_the_following: iš šių
+    no_rules: Nėra pridėtų taisyklių
+    change_value: Spauskite norėdami pakeisti reikšmę
+    placeholder: Įtempkite taisykles čia
+    add_key_placeholder: Įveskite reikšmę ir spauskite enter...
+  fields:
+    name: Laukai
+  group-accordion:
+    name: Suskleidžiamos kortelės
+    description: Rodyti laukus ar grupes kaip suskleidžiamas korteles
+    start: Atidaryti
+    all_closed: Viskas suskleista
+    first_opened: Pirma išskleista
+    all_opened: Viskas išskleista
+    accordion_mode: Suskleidžiamų kortelių rėžimas
+    max_one_section_open: Vienu metu išskleista tik viena
   presentation-links:
+    presentation-links: Mygtukų nuorodos
+    links: Nuorodos
+    description: Konfigūruojamos mygtukų nuorodos, dinaminių URL kvietimui
+    style: Stilius
     primary: Pirminis
+    link: Nuorodos
+    button: Mygtukai
+    error: Negalima atlikti veiksmo
+  select-multiple-checkbox:
+    checkboxes: Žymimieji laukeliai
+    description: Pasirinkite tarp kelių variantų naudodami žymimuosius laukelius
+    allow_other: Leisti kitas reikšmes
+    show_more: 'Rodyti {count} daugiau'
+    items_shown: Rodoma įrašų
+  select-multiple-checkbox-tree:
+    name: Žymimieji laukeliai (kelių lygių)
+    description: Pasirinkite tarp kelių variantų naudodami kelių lygių žymimuosius laukelius
+    value_combining: Reikšmių apjungimas
+    value_combining_note: Nustato kuri reikšmė yra išsaugoma kai renkamasi iš kelių lygių reikšmių.
+    show_all: Rodyti visus
+    show_selected: Rodyti pasirinktus
   input-code:
     code: Kodas
+    description: Rašyti arba dalintis kodo iškarpomis
+    line_number: Eilutės numeris
+    line_wrapping: Eilučių kirpimas
+    placeholder: Įveskite kodą...
   system-collection:
     collection: Rinkinys
     description: Pasirinkite tarp egzistuojančių kolekcijų
@@ -851,22 +1782,49 @@ interfaces:
     include_system_collections: Įtraukti sistemines kolekcijas
   select-color:
     color: Spalva
+    description: Įveskite arba pasirinkite spalvą
+    placeholder: Pasirinkite spalvą...
+    preset_colors: Standartinės spalvos
+    opacity: Permatomumas
+    preset_colors_add_label: Pridėti naują spalvą...
+    name_placeholder: Spalvos pavadinimas...
   datetime:
     datetime: Data ir laikas
     description: Įvesti datas ir laikus
     include_seconds: Įtraukti sekundes
     set_to_now: Nustatyti į dabartinį laiką
     use_24: Naudoti 24 val. laikrodį
+    placeholder: Pasirinkite datą ir laiką...
   system-fields:
     select_a_collection: Pasirinkite kolekciją
+    no_fields: Nėra laukų
   system-display-template:
     display-template: Rodymo šablonas
+    description: Statinės ir dinaminės laukų reikšmės
+    collection_field: Kolekcijos laukas
     collection_field_not_setup: Blogai sukonfigūruota kolekcijos lauko parinktis
     select_a_collection: Pasirinkite kolekciją
   presentation-divider:
     divider: Skyriklis
+    description: Užvadinti ir skaidyti laukus į grupes
+    title_placeholder: Įveskite pavadinimą (palikite tuščią, kad būtų rodoma tik linija)...
+    inline_title: Pavadinimas toje pačioje eilutėje
+    inline_title_label: Rodyti pavadinimą virš linijos
+    margin_top: Atitraukimas nuo viršaus
+    margin_top_label: Padidinti atitraukimą nuo viršaus
   select-dropdown:
+    description: Pasirinkite reikšmę iš sąrašo
+    choices_placeholder: Pridėti naują pasirinkimą
+    allow_other: Leisti kitus
+    allow_other_label: Leisti kitas reikšmes
+    allow_none: Leisti tuščią reikšmę
+    allow_none_label: Leisti nepasirinkti nieko
+    choices_name_placeholder: Įveskite pavadinimą...
     choices_value_placeholder: Įveskite reikšmę...
+    preview_threshold: Peržiūros riba
+  select-multiple-dropdown:
+    select-multiple-dropdown: Pasirinkimas (kelios reikšmės)
+    description: Pasirinkite kelias reikšmes iš sąrašo
   file:
     file: Failas
     description: Pasirinkite arba įkelkite failą
@@ -875,24 +1833,115 @@ interfaces:
     description: Pasirinkite arba įkelkite kelis failus
   input-hash:
     hash: Maiša
+    description: Įveskite reikšmę užkodavimui
+    masked: Paslėptas
+    masked_label: Paslėpti tikrąsias reikšmes
   select-icon:
     icon: Ikona
+    description: Pasirinkite ikonėlę iš sąrašo
+    search_for_icon: Ieškoti ikonėlių...
   file-image:
     image: Paveikslėlis
+    description: Pasirinkite arba įkelkite paveikslėlį
+    crop: Apkirpti, kad tilptų į mastelį
+    crop_label: Apkirpti laisvu rėžimu
+    letterbox: Letterbox
+    letterbox_label: Pridėti atitraukimus prie paveikslėlio peržiūros
   system-interface:
     interface: Sąsaja
+    description: Pasirinkti egzistuojančią sąsają
+    placeholder: Pasirinkti sąsają...
+  system-interface-options:
+    interface-options: Sąsajos nustatymai
+    description: Iššokantysis langas sąsajos nustatymų pasirinkimui
   system-display:
     display: Rodymas
+    description: Pasirinkti egzistuojantį atvaizdavimą
+    placeholder: Pasirinkite atvaizdavimą...
+  system-display-options:
+    display-options: Atvaizdavimo nustatymai
+    description: Iššokantysis langas atvaizdavimo nustatymų pasirinkimui
+  list-m2m:
+    many-to-many: Many to Many
+    description: Pasirinkite jungiamuosius įrašus
+    columns_configure_notice: Galėsite nustatyti stulpelius po lauko sukūrimo.
+    display_template_configure_notice: Galėsite nustatyti atvaizdavimą po lauko sukūrimo.
   select-dropdown-m2o:
+    many-to-one: Many to One
+    description: Pasirinkite jungiamąjį įrašą
     display_template: Rodymo šablonas
+  collection-item-dropdown:
+    collection-item-dropdown: Kolekcijos pasirinkimas
+    description: Pasirinkite elementą iš kolekcijos JSON formatu
   input-rich-text-md:
+    markdown: Pažymėjimas
+    description: Įveskite ir peržiūrėkite žymėjimą
     edit: Redaguoti
+    preview: Peržiūra
+    editorFont: Redaktoriaus šriftas
+    previewFont: Peržiūros šriftas
+    default_view: Numatytasis atvaizdavimas
+    default_view_editor: Redaktorius
+    default_view_preview: Peržiūra
+    customSyntax: Pasirinktiniai (custom) blokai
+    customSyntax_label: Pridėti kitą sintaksės tipą
+    customSyntax_add: Pridėti kitą sintaksę
+    box: Bloku / Eilute
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
   map:
+    map: Žemėlapis
+    description: Pasirinkite vietą žemėlapyje
     zoom: Padidinti
+    geometry_type: Geometrijos tipas
+    geometry_format: Geometrijos formatas
+    default_view: Numatytasis atvaizdavimas
+    invalid_options: Negalimi nustatymai
+    invalid_format: Netinkamas formatas ({format})
+    unexpected_geometry: Tikėtasi {expected}, bet gauta {got}
+    fit_bounds: Pritaikyti atvaizdavimą prie duomenų
+    native: Vietinis
+    geojson: GeoJSON
+    lnglat: Ilguma, platuma
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Spauskite norėdami pasirinkti {geometry}
+  presentation-notice:
+    notice: Pranešimas
+    description: Rodyti trumpą pranešimą
+    text: Pranešimo turinys...
+    no_text: Tekstas nesukonfigūruotas...
+  list-o2m:
+    one-to-many: One to Many
+    description: Pasirinkite jungiamuosius įrašus
+    no_collection: Kolekcija nerasta
+  system-folder:
+    folder: Pagrindinis katalogas
+    description: Pasirinkite katalogą
+    field_hint: Numatytasis katalogas įkeliamiems dokumentams, kuriems nenurodytas katalogas.
+    root_name: Failų saugyklos pagrindinis taškas
+    system_default: Sistemos numatytieji nustatymai
+  select-radio:
+    radio-buttons: Pasirinkties akutės
+    description: Pasirinkties akučių pasirinkimai
   list:
+    repeater: Pasikartojanti forma
+    description: Sukurti keletą tos pačios struktūros įrašų
+    edit_fields: Redaguoti laukus
+    add_label: '"Kurti naują" pavadinimas'
     sort: Rūšiuoti
+    sort_placeholder: Rankiniu būdu
+    field_note_placeholder: Įvesti lauko pastabą...
+    incompatible_data: Dabartiniai duomenys nesuderinami su pasikartojančia forma ir bus pašalinti pridedant elementus prie jos
+    interface_group: Sąsajos nustatymai
+    display_group: Atvaizdavimo nustatymai
+  slider:
+    slider: Slankiklis
+    description: Pasirinkti skaičių naudojantis slankikliu
+    always_show_value: Visada rodyti reikšmę
   tags:
     tags: Žymos
+    description: Pasirinkti arba pridėti žymas
     whitespace: Matomi tarpai
     hyphen: Pakeisti į brūkšnelius
     underscore: Pakeisti į pabraukimo brūkšnelius
@@ -903,14 +1952,49 @@ interfaces:
     auto_formatter: Naudoti automatinį antraštės formatavimą
     alphabetize: Pagal abėcėlę
     alphabetize_label: Priversti rikiavimą abėcėlės tvarka
+    add_tags: Įveskite žymą ir spauskite enter...
+  input:
+    input: Įvestis
+    description: Reikmės įvedimas
+    trim: Apkarpymas (trim)
+    trim_label: Apkarpyti iš abiejų pusių
+    mask: Paslėptas
+    mask_label: Paslėpti tikrąją reikšmę
+    clear: Išvalyta reikšmė
+    clear_label: Saugoti kaip tuščią simbolių eilutę
+    minimum_value: Mažiausia reikšmė
+    maximum_value: Didžiausia reikšmė
+    step_interval: Žingsnio intervalas
+    slug: Slugify
+    slug_label: Automatiškai padaryti įvestą URL saugiu
+  input-multiline:
+    textarea: Teksto laukas
+    description: Įveskite kelių eilučių neformatuotą tekstą
+  input-translated-string:
+    input-translated-string: Verčiami tekstai
+    description: Pasirinkite arba pridėkite vertimą
+    search_placeholder: Ieškoti...
+    new_custom_translation: Naujas vertimas
   boolean:
     toggle: Perjungti
+    description: Įjungti / Išjungti
     color_on: Spalva, kai įjungta
     color_off: Spalva, kai išjungta
+    label_placeholder: Įveskite pavadinimą...
     label_default: Įjungtas
   translations:
     display_template: Rodymo šablonas
     no_collection: Nėra kolekcijos
+    toggle_split_view: Rodyti padalintu vaizdu
+    enable: Įjungti
+    default_split_view_state: Rodyti padalintu vaizdu atidarant
+    user_language: Naudoti esamą prisijungusio naudotojo kalbą
+    default_language: Numatytoji kalba
+    language_field: Kalbos identifikavimo laukas
+    language_direction_field: Kalbos krypties laukas
+  list-o2m-tree-view:
+    description: Rodyti kelių lygių one-to-many laukus medžio struktūra
+    recursive_only: Medžio struktūros atvaizdavimas veiki tik rekursiškiems ryšiams.
   user:
     user: Vartotojas
     description: Pasirinkti egzistuojantį Directus vartotoją
@@ -919,16 +2003,80 @@ interfaces:
       auto: Automatiškai
       dropdown: Išskleidžiamasis meniu
       modal: Dialogas
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Formatuoto HTML teksto redaktorius
+    toolbar: Įrankių juosta
+    custom_formats: Kiti formatai
+    custom_formats_note: List of TinyMCE Content Formats. See the TinyMCE documentation about [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) for more information.
+    options_override: Parinkčių perrašymas
+    options_override_note: The TinyMCE User Formatting keys and their values. See the TinyMCE documentation about [User Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) for more information.
+    folder_note: Katalogas įkeltiems failams. Esami failai bus nepakeisti.
+    imageToken: Static Access Token
+    imageToken_label: Static access token is appended to the assets' URL
   input-block-editor:
+    input-block-editor: Blokų redaktorius
+    description: Block-styled editor for rich media stories, outputs clean data in JSON using Editor.js
+    tools: Įrankių juosta
     tools_options:
+      header: Header
+      nestedlist: Sąrašas
       embed: Įterptas
+      paragraph: Pastraipa
       code: Kodas
       image: Paveikslėlis
+      attaches: Priedai
       table: Lentelė
+      quote: Citata
       underline: Pabrauktas
+      inlinecode: Įterptas kodas
+      delimiter: Skirtukas
+      checklist: Žymimasis sąrašas
+      toggle: Perjungti bloką
+      alignment: Lygiavimas
+      raw: Neapdorotas HTML
+  input-autocomplete-api:
+    input-autocomplete-api: Automatinio užbaigimo įvestis (API)
+    description: Pasirinkimai gaunami per API sąsają.
+    results_path: Results Path
+    value_path: Value Path
+    text_path: Text Path
+    trigger: Trigger
+    rate: Rate
+  group-raw:
+    name: Elementų grupė
+    description: Atvaizduoja elementus tokius kokie yra
+  group-detail:
+    name: Suskleidžiama grupė
+    description: Atvaizduoja elementus suskleidžiamoje kortelėje
+    show_header: Rodyti grupės antraštę
+    header_icon: Antraštės ikona
+    header_color: Antraštės spalva
+    start_open: Atidaryti išskleistą
+    start_closed: Atidaryti suskleistą
+  system-token:
+    system-token: Token
+    description: Valdyti prieigos raktus
+    placeholder: Spauskite "Generuoti prieigos raktą" norėdami sukurti naują prieigos raktą
+    value_securely_saved: Reikšmė saugiai išsaugota
+    generate: Generuoti prieigos raktą
+    regenerate: Generuoti raktą iš naujo
+    generate_success_copy: Išsisaugokite aukščiau esantį prieigos raktą. Saugumo sumetimais išsaugoję ir išėję iš šio puslapio negalėsite dar kartą peržiūrėti prieigos rakto.
+    remove_token: Pašalinti prieigos raktą
+  system-raw-editor:
+    system-raw-editor: Redaguoti neformatuotą
+    description: Leisti įvesti neapdorotą arba dinaminę reikšmę
+  input-password:
+    input-password: Slaptažodžio įvedimas
+    description: Slaptažodžio įvedimo laukas, su reikšmės paslėpimo galimybe
 displays:
   translations:
     translations: Vertimai
+    description: Įrašo peržiūros vertimai
+    enable: Įjungti
+    user_language: Naudoti prisijungusio naudotojo kalbą
+    default_language: Numatytoji kalba
+    language_field: Kalbos identifikavimo laukas
   boolean:
     boolean: Loginis
     description: Rodyti įjungimo/išjungimo būsenas
@@ -959,6 +2107,16 @@ displays:
     relative: Santykinis
     relative_label: 'Rodyti santykinį laiką, pvz.: prieš 5 minutes'
     suffix: Priesaga
+    suffix_label: Rodyti reliatyvią indikaciją
+    suffix_note: Aprašo datą ir laiką apibrėžiant kiek ji skiriasi nuo dabarties
+    strict: Griežtas
+    strict_label: Naudoja griežtus laiko apibrėžimus
+    strict_note: Aprašo datą su griežtu laiko įvardinimu
+    round: Apvalinimas
+    round_note: Pasirinkite apvalinimo funkciją
+    down: Žemyn
+    nearest: Artimiausias
+    up: Į viršų
   file:
     file: Failas
     description: Rodyti failus
@@ -969,22 +2127,34 @@ displays:
     formatted-value: Suformatuota reikšmė
     description: Rodyti suformatuotą teksto versiją
     format: Formatas
+    format_label: Automatiškai
     font: Šriftas
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Vienodo pločio
     bold: Paryškintas
     bold_label: Naudoti paryškintą stilių
     italic: Pasviręs
+    italic_label: Italic
     prefix: Priešdėlis
+    prefix_label: Pridėti tekstą pradžioje
     suffix: Priesaga
+    suffix_label: Pridėti tekstą pabaigoje
     color: Spalva
+    background: Fonas
     icon: Ikona
+    border: Rėmelis
+    border_label: Rodyti rėmelį
+    mask: Paslėptas
+    mask_label: Paslėpti tikrąją reikšmę
     text: Tekstas
+    text_placeholder: Reikšmės pakeitimas...
   formatted-json-value:
     formatted-json-value: Suformatuota JSON reikšmė
     description: Rodyti suformatuotą objekto versiją
   hash:
     hash: Maiša
+    description: Rodyti suformatuotą reikšmės versiją
   icon:
     icon: Ikona
     description: Rodyti ikoną
@@ -1003,36 +2173,353 @@ displays:
     format_label: Formatuoti kiekvieną žymą
     show_as_dot: Rodyti kaip tašką
     choices_value_placeholder: Įveskite reikšmę...
+    choices_text_placeholder: Įveskite tekstą...
+  mime-type:
+    mime-type: MIME tipas
+    description: Rodyti failo MIME tipą
+    extension_only: Tik plėtinys
+    extension_only_label: Rodyti tik failo plėtinį
+  rating:
+    rating: Vertinimas
+    description: Atvaizduoti skaičių kaip įvertinimą žvaigždutėmis lyginant su maksimalia reikšme
+    simple: Paprastas
+    simple_label: Atvaizduoti žvaigždutes paprastu formatu
+  raw:
+    raw: Neapdorota reikšmė
+  related-values:
+    related-values: Susijusios reikšmės
+    description: Rodyti lauko sąsajų reikšmes
+    display_template_configure_notice: Galėsite nustatyti atvaizdavimą po lauko sukūrimo.
   user:
     user: Vartotojas
+    description: Rodyti Directus naudotoją
     avatar: Nuotrauka
     name: Pavadinimas
     both: Abu
+    circle_label: Rodyti naudotoją apibrėžtą apskritimu
 layouts:
   cards:
+    cards: Kortelės
+    image_source: Paveikslėlio šaltinis
+    image_fit: Paveikslėlio talpinimas
+    crop: Apkarpyti
+    contain: Talpinti
     title: Pavadinmas
+    subtitle: Paantraštė
   tabular:
     tabular: Lentelė
+    spacing: Atskyrimas
     comfortable: Patogus
     compact: Kompaktiškas
     cozy: Jaukus
+  calendar:
+    calendar: Kalendorius
+    start_date_field: Pradžios datos laukas
+    end_date_field: Pabaigos datos laukas
+    optional: Neprivalomas
+    first_day: Pirma savaitės diena
+  map:
+    map: Žemėlapis
+    basemap: Basemap
+    layers: Layers
+    cluster_options: Clustering options
+    cluster: Cluster Nearby Data
+    cluster_radius: Cluster radius
+    cluster_minpoints: Cluster minimum size
+    cluster_maxzoom: Maximum zoom for clustering
+    field: Geospatial Field
+    invalid_geometry: Invalid geometry
+    find_location: Ieškoti vietovės...
+    default_template: Naudoti kolekcijos numatytąją reikšmę...
+    no_compatible_fields: No compatible fields
+  kanban:
+    name: Kanban
+    group_field: Grupuoti pagal
+    group_field_placeholder: Grupavimo laukas...
+    group_title: Grupės pavadinimas
+    group_title_placeholder: Grupės pavadinimų laukas...
+    title: Kortelės pavadinimas
+    title_placeholder: Kortelės pavadinimo laukas...
+    text: Kortelės tekstas
+    text_placeholder: Kortelės teksto laukas...
+    date: Kortelės data
+    date_placeholder: Kortelės datos laukas...
+    tags: Kortelės žymos
+    tags_placeholder: Kortelės žymų laukas...
+    user: Kortelės naudotojas
+    user_placeholder: Kortelės naudotojo laukas...
+    image: Kortelės paveikslėlis
+    image_placeholder: Kortelės paveikslėlio laukas...
+    image_fit: Kortelės paveikslėlio talpinimas
+    crop: Apkarpyti
+    advanced: Išplėstiniai nustatymai
+    edit_group: Redaguoti grupę
+    delete_group: Pašalinti grupę
+    add_group: Pridėti grupę
+    add_group_placeholder: Įveskite grupės pavadinimą...
+    show_ungrouped: Rodyti negrupuotai
+    show: Rodyti
+    no_group: Nėra grupės
+horizontal: Horizontaliai
+vertical: Vertikaliai
+axis: Ašis
+x_axis: X ašis
+y_axis: Y ašis
+y_axis_function: Y ašies funkcija
+show_x_only: Rodyti tik X ašį
+show_y_only: Rodyti tik Y ašį
+show_data_label: Rodyti duomenų antraštę
 both: Abu
+show_axis_labels: Rodyti ašių antraštes
+function: Funkcija
+half_circle: Pusę apskritimo
+full_circle: Pilnas apskritimas
+stroke_width: Linijos plotis
+rounded_stroke: Apvalinta linija
+thin: Plonas
+medium: Vidutinis
+broad: Platus
+show_labels: Rodyti antraštes
+show_legend: Rodyti legendą
+right: Dešinėje
+left: Kairėje
+donut: Žiedinė
+continuous: Nuolatinė
+gap: Tarpas
 panels:
+  metric:
+    name: Metrika
+    description: Rodyti vieną reikšmę priklausomai nuo užklausos
+    field: Laukas
+  metric_list:
+    name: Metrikų sąrašas
+    description: Atvaizduoti ir vizualizuoti agreguotų metrikų sąrašą iš kolekcijos
+  time_series:
+    name: Grafikas laike
+    description: Atvaizduoti linijinį grafiką pagal reikšmių kitimą einant laikui
+    date_field: Datos laukas
+    value_field: Reikšmės laukas
+    fill_type: Užpildymo tipas
+    curve_type: Kreivės tipas
+    missing_data: Trūkstami duomenys
   label:
     name: Žyma
+    description: Rodyti tekstą
+  list:
+    name: Sąrašas
+    description: Filtruoti ir išvardinti laukus iš kolekcijos
+  barchart:
+    name: Juostinė diagrama
+    description: Juostų ar stulpelių diagramos palygintų reikšmių grupėms
+    horizontal: Horizontali
+    select_collection: Reikia pasirinkti kolekciją.
+  linechart:
+    name: Linijinė diagrama
+    description: Linijinė diagrama lauko pasikeitimų palyginimui
+    disabled_grouping: Neaktyvi kai grupavimas yra pasirinktas.
+    disabled_no_grouping: Neaktyvi kai grupavimas nepasirinktas.
+    show_marker: Rodyti pagalbinį tekstą
+    curve_type: Kreivės tipas
+    smooth: Glotni
+    straight: Tiesi
+    step_line: Pakopinė
+    show_legend: Rodyti legendą
+  meter:
+    name: Metrika
+    description: Metrika skirta sekti reikšmėms
+  piechart:
+    name: Apskrita diagrama
+    description: Apskrita diagrama skirta atvaizduoti grupių santykiui stulpelyje
+  variable:
+    name: Globalus kintamasis
+    description: Nurodyti globalų kintamąjį, kurį galima naudoti kituose skydelio filtruose
+    variable_key: Kintamojo identifikatorius
+  relational-variable:
+    name: Globalaus reliacinio kintamojo pavadinimas
+    description: Nurodyti reliacinį globalų kintamąjį, kurį galima naudoti kituose skydelio filtruose
+    variable_key: Kintamojo identifikatorius
+    multiple: Kelios reikšmės
+    multiple-label: Pasirinkti keletą reikšmių
+triggers:
+  common:
+    response_body: Atsakymo reikšmė
+    response_body_all: Visi duomenys
+    response_body_last: Paskutinės operacijos duomenys
+  event:
+    name: Event Hook
+    description: Triggers on platform or data events
+    action: 'Action (Non-Blocking)'
+    filter: 'Filter (Blocking)'
+  webhook:
+    name: Webhook
+    description: Triggers on an incoming HTTP request
+    method: Method
+    async: Asynchronous
+  operation:
+    name: Another Flow
+    description: Triggered by another Flow, for chaining
+    preview: Triggered by an operation in a different Flow
+  schedule:
+    name: Schedule (CRON)
+    description: Triggers at regular points in time
+    cron: Interval
+  manual:
+    name: Manual
+    description: Triggers on manual run within selected collection(s)
+    collection_and_item: Collection & Item Pages
+    collection_only: Collection Page Only
+    item_only: Item Page Only
+    collection_page: Collection Page
+    require_selection: Requires Selection
+a_flow_uuid: Select a Flow to trigger...
+any_string_or_json: Any string or JSON...
+item_payload_placeholder: This is the JSON used to update the item's field values...
+operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
+  condition:
+    name: Condition
+    description: Route a flow based on If / Else logic
+  exec:
+    name: Run Script
+    description: Execute arbitrary code to modify the payload
+    modules: 'The following **Node modules** can be used'
+  item-create:
+    name: Create Data
+    description: Create items in the database
+    payload: Payload
+    emit_events: Emit Events
+  item-delete:
+    name: Delete Data
+    description: Delete items in the database
+    emit_events: Emit Events
+    key: IDs
+    query: Query
+  item-read:
+    name: Read Data
+    description: Read items from the database
+    key: IDs
+    query: Query
+    emit_events: Emit Events
+  item-update:
+    name: Update Data
+    description: Update items in the database
+    emit_events: Emit Events
+    key: IDs
+    payload: Payload
+    query: Query
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Sign and verify JSON Web Tokens
+    operation: Operation
+    secret: Secret
+    secret_placeholder: Enter a secret...
+    payload: Payload
+    token: Token
+    token_placeholder: eyJhbGciOi......
     options: Parinktys
+    options_placeholder: 'Refer to https://www.npmjs.com/package/jsonwebtoken#usage for the available options'
+    sign: Sign Token
+    verify: Verify Token
+    decode: Decode Token
+  log:
+    name: Log to Console
+    description: Output something to the console
+    message: Pranešimas
+    message_placeholder: Enter a message to show in the console...
   mail:
+    name: Send Email
+    description: Send an email to one or more people
+    to: To
+    to_placeholder: Add email addresses and press enter...
+    body: Body
     template: Šablonas
+    data: Data
+    cc: CC
+    cc_placeholder: Add CC email addresses and press enter...
+    bcc: BCC
+    bcc_placeholder: Add BCC email addresses and press enter...
+    reply_to: Reply To
+    reply_to_placeholder: Add reply-to email addresses and press enter...
   notification:
+    name: Send Notification
+    description: Send an in-app notification to one or more users
     recipient: Vartotojas
+    recipient_placeholder: Enter a UUID...
+    recipient_note: Add user UUID and press enter...
+    item_note: Item Key or Relative URL
+    message: Pranešimas
+    subject: Tema
   request:
+    name: Webhook / Request URL
+    description: 'Make a request to a URL'
     url: URL
+    url_placeholder: https://example.com/example
+    method: Method
+    data: Data
+    headers: Headers
+    header: Header
+    header_placeholder: Authorization...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Sleep
+    description: Wait a given number of milliseconds
+    milliseconds: Milliseconds
+  transform:
+    name: Transform Payload
+    description: Alter the Flow's JSON payload
+  trigger:
+    name: Trigger Flow
+    description: Pass this data to another flow
+    flows: Flows
+    flow: Flow
+    data: Data
+    iteration_mode: Iteration Mode
+    iteration_mode_note: Mode for iterating over arrays.
+    serial: Serial
+    parallel: Parallel
+    batch: Batch
+    batch_size: Batch Size
+    cache: Cache
+unit: Unit
 standard: Standartinis
+scientific: Scientific
+engineering: Engineering
 compact: Kompaktiškas
+currency: Valiuta
+notation: Ntoacija
+style: Stilius
 fonts:
+  thin: Plonas
+  extra_light: Extra Light
+  light: Light
   normal: Normalus
+  medium: Vidutinis
+  semi_bold: Semi Bold
   bold: Paryškintas
+  extra_bold: Extra Bold
+  black: Juoda
   italic: Pasviręs
+  oblique: Oblique
+  small: Small
+  large: Large
   auto: Automatiškai
+text_wrap: Text Wrap
+center: Center
+justify: Justify
+text_align: Lygiavimas
+font_weight: Šrifto storumas
+font_style: Šrifto stilius
+font_size: Šrifto dydis
+minimum_fraction_digits: Mažiausia trupmeninė dalis
+maximum_fraction_digits: Didžiausia trupmeninė dalis
+show_percentage: Rodyti procentus
+aggregation: Agregacija
+series_grouping: Grupavimas
+date_precision: Datos tikslumas
+export_dashboard: Eksportuoti skydelį
+duplicate_dashboard: Dublikuoti skydelį
+search_dashboard: Ieškoti skydelio...
+search_flow: Ieškoti flow...
+percent: Procentai
+show_password: Rodyti slaptažodį
+hide_password: Nerodyti slaptažodžio

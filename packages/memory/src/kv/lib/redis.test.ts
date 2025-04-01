@@ -21,7 +21,7 @@ let mockKey: string;
 let mockNamespacedKey: string;
 let mockRedis: Redis;
 let mockUint8Array: Uint8Array;
-let mockBuffer: Buffer<Uint8Array>;
+let mockBuffer: Buffer;
 let mockCompressedUint8Array: Uint8Array;
 let mockDecompressedUint8Array: Uint8Array;
 let mockValue: string;

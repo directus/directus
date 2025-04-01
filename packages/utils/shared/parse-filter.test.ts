@@ -67,6 +67,303 @@ describe('#parseFilter', () => {
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
 
+	it('properly shifts up implicit logical operator twice', () => {
+		const mockFilter = {
+			article_field: {
+				date_field: {
+					_and: [
+						{
+							_gte: '2023-10-01T00:00:00',
+						},
+						{
+							_lt: '2023-11-01T00:00:00',
+						},
+					],
+				},
+			},
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					article_field: {
+						date_field: {
+							_gte: '2023-10-01T00:00:00',
+						},
+					},
+				},
+				{
+					article_field: {
+						date_field: {
+							_lt: '2023-11-01T00:00:00',
+						},
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
+	it('properly shifts up implicit logical operator three times', () => {
+		const mockFilter = {
+			i_really_dont_know: {
+				article_field: {
+					date_field: {
+						_and: [
+							{
+								_gte: '2023-10-01T00:00:00',
+							},
+							{
+								_lt: '2023-11-01T00:00:00',
+							},
+						],
+					},
+				},
+			},
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					i_really_dont_know: {
+						article_field: {
+							date_field: {
+								_gte: '2023-10-01T00:00:00',
+							},
+						},
+					},
+				},
+				{
+					i_really_dont_know: {
+						article_field: {
+							date_field: {
+								_lt: '2023-11-01T00:00:00',
+							},
+						},
+					},
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
+	it('properly shifts up nested implicit logical operators', () => {
+		const mockFilter = {
+			i_really_dont_know: {
+				_or: [
+					{
+						article_field: {
+							date_field: {
+								_and: [
+									{
+										_gte: '2023-10-01T00:00:00',
+									},
+									{
+										_lt: '2023-11-01T00:00:00',
+									},
+								],
+							},
+						},
+					},
+					{
+						other_field: {
+							date_field: {
+								_and: [
+									{
+										_gte: '2023-10-01T00:00:00',
+									},
+									{
+										_lt: '2023-11-01T00:00:00',
+									},
+								],
+							},
+						},
+					},
+				],
+			},
+		} as Filter;
+
+		const mockResult = {
+			_or: [
+				{
+					_and: [
+						{
+							i_really_dont_know: {
+								article_field: { date_field: { _gte: '2023-10-01T00:00:00' } },
+							},
+						},
+						{
+							i_really_dont_know: {
+								article_field: { date_field: { _lt: '2023-11-01T00:00:00' } },
+							},
+						},
+					],
+				},
+				{
+					_and: [
+						{
+							i_really_dont_know: {
+								other_field: { date_field: { _gte: '2023-10-01T00:00:00' } },
+							},
+						},
+						{
+							i_really_dont_know: {
+								other_field: { date_field: { _lt: '2023-11-01T00:00:00' } },
+							},
+						},
+					],
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
+	it('properly shifts up nested implicit logical operators', () => {
+		const mockFilter = {
+			i_really_dont_know: {
+				some_field: {
+					_or: [
+						{
+							article_field: {
+								date_field: {
+									_and: [
+										{
+											_gte: '2023-10-01T00:00:00',
+										},
+										{
+											_lt: '2023-11-01T00:00:00',
+										},
+									],
+								},
+							},
+						},
+						{
+							other_field: {
+								date_field: {
+									_and: [
+										{
+											_gte: '2023-10-01T00:00:00',
+										},
+										{
+											_lt: '2023-11-01T00:00:00',
+										},
+									],
+								},
+							},
+						},
+					],
+				},
+			},
+		} as Filter;
+
+		const mockResult = {
+			_or: [
+				{
+					_and: [
+						{
+							i_really_dont_know: {
+								some_field: {
+									article_field: { date_field: { _gte: '2023-10-01T00:00:00' } },
+								},
+							},
+						},
+						{
+							i_really_dont_know: {
+								some_field: {
+									article_field: { date_field: { _lt: '2023-11-01T00:00:00' } },
+								},
+							},
+						},
+					],
+				},
+				{
+					_and: [
+						{
+							i_really_dont_know: {
+								some_field: {
+									other_field: { date_field: { _gte: '2023-10-01T00:00:00' } },
+								},
+							},
+						},
+						{
+							i_really_dont_know: {
+								some_field: {
+									other_field: { date_field: { _lt: '2023-11-01T00:00:00' } },
+								},
+							},
+						},
+					],
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
+	it('properly shifts up nested implicit logical operators', () => {
+		const mockFilter = {
+			_and: [
+				{
+					_or: [
+						{
+							some_field: {
+								_and: [
+									{
+										article_field: {
+											date_field: {
+												_gte: '2023-10-01T00:00:00',
+											},
+										},
+									},
+									{
+										article_field: {
+											date_field: {
+												_lt: '2023-11-01T00:00:00',
+											},
+										},
+									},
+								],
+							},
+						},
+					],
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					_or: [
+						{
+							_and: [
+								{
+									some_field: {
+										article_field: { date_field: { _gte: '2023-10-01T00:00:00' } },
+									},
+								},
+								{
+									some_field: {
+										article_field: { date_field: { _lt: '2023-11-01T00:00:00' } },
+									},
+								},
+							],
+						},
+					],
+				},
+			],
+		} as Filter;
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
+	});
+
 	it('leaves explicit logical operator as is', () => {
 		const mockFilter = {
 			_and: [

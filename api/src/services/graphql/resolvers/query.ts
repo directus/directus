@@ -4,11 +4,11 @@ import type { GraphQLResolveInfo } from 'graphql';
 import { omit } from 'lodash-es';
 import { mergeVersionsRaw, mergeVersionsRecursive } from '../../../utils/merge-version-data.js';
 import { VersionsService } from '../../versions.js';
-import { getAggregateQuery } from '../utils/aggrgate-query.js';
-import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 import type { GraphQLService } from '../index.js';
 import { parseArgs } from '../schema/parse-args.js';
 import { getQuery } from '../schema/parse-query.js';
+import { getAggregateQuery } from '../utils/aggregate-query.js';
+import { replaceFragmentsInSelections } from '../utils/replace-fragments.js';
 
 /**
  * Generic resolver that's used for every "regular" items/system query. Converts the incoming GraphQL AST / fragments into
@@ -28,10 +28,10 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 	const isAggregate = collection.endsWith('_aggregated') && collection in gql.schema.collections === false;
 
 	if (isAggregate) {
-		query = getAggregateQuery(args, selections, gql.accountability);
+		query = await getAggregateQuery(args, selections, gql.schema, gql.accountability);
 		collection = collection.slice(0, -11);
 	} else {
-		query = getQuery(args, selections, info.variableValues, gql.accountability);
+		query = await getQuery(args, selections, info.variableValues, gql.schema, gql.accountability);
 
 		if (collection.endsWith('_by_id') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -6);

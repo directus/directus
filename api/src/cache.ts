@@ -11,6 +11,7 @@ import { getMilliseconds } from './utils/get-milliseconds.js';
 import { validateEnv } from './utils/validate-env.js';
 
 import { createRequire } from 'node:module';
+import { freezeSchema, unfreezeSchema } from './utils/freeze-schema.js';
 
 const logger = useLogger();
 const env = useEnv();
@@ -19,9 +20,11 @@ const require = createRequire(import.meta.url);
 
 let cache: Keyv | null = null;
 let systemCache: Keyv | null = null;
-let localSchemaCache: Keyv | null = null;
 let lockCache: Keyv | null = null;
 let messengerSubscribed = false;
+
+let localSchemaCache: Keyv | null = null;
+let memorySchemaCache: Readonly<SchemaOverview> | null = null;
 
 type Store = 'memory' | 'redis';
 
@@ -44,6 +47,7 @@ if (redisConfigAvailable() && !messengerSubscribed) {
 		}
 
 		await localSchemaCache?.clear();
+		memorySchemaCache = null;
 	});
 }
 
@@ -97,6 +101,7 @@ export async function clearSystemCache(opts?: {
 	}
 
 	await localSchemaCache.clear();
+	memorySchemaCache = null;
 
 	// Since a lot of cached permission function rely on the schema it needs to be cleared as well
 	await clearPermissionCache();
@@ -118,16 +123,22 @@ export async function getSystemCache(key: string): Promise<Record<string, any>> 
 	return await getCacheValue(systemCache, key);
 }
 
-export async function setLocalSchemaCache(schema: SchemaOverview): Promise<void> {
-	const { localSchemaCache } = getCache();
-
-	await localSchemaCache.set('schema', schema);
+export function setMemorySchemaCache(schema: SchemaOverview) {
+	if (Object.isFrozen(schema)) {
+		memorySchemaCache = schema;
+	} else {
+		memorySchemaCache = freezeSchema(schema);
+	}
 }
 
-export async function getLocalSchemaCache(): Promise<SchemaOverview | undefined> {
-	const { localSchemaCache } = getCache();
+export function getMemorySchemaCache(): Readonly<SchemaOverview> | undefined {
+	if (env['CACHE_SCHEMA_FREEZE_ENABLED']) {
+		return memorySchemaCache ?? undefined;
+	} else if (memorySchemaCache) {
+		return unfreezeSchema(memorySchemaCache);
+	}
 
-	return await localSchemaCache.get('schema');
+	return undefined;
 }
 
 export async function setCacheValue(

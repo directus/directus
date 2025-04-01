@@ -46,19 +46,42 @@ export function getDBQuery(
 	if (queryCopy.aggregate || queryCopy.group) {
 		const flatQuery = knex.from(table);
 
+		const fieldNodeMap = Object.fromEntries(
+			fieldNodes.map((node, index): [string, [FieldNode | FunctionFieldNode, number]] => [
+				node.fieldKey,
+				[node, index],
+			]),
+		);
+
+		const groupFieldNodes = queryCopy.group?.map((field) => fieldNodeMap[field]![0]) ?? [];
+
 		// Map the group fields to their respective field nodes
-		const groupWhenCases = hasCaseWhen
-			? queryCopy.group?.map((field) => fieldNodes.find(({ fieldKey }) => fieldKey === field)?.whenCase ?? [])
-			: undefined;
+		const groupWhenCases = hasCaseWhen ? groupFieldNodes.map((node) => node.whenCase ?? []) : undefined;
+
+		// Determine the number of aggregates that will be selected
+		const aggregateCount = Object.entries(queryCopy.aggregate ?? {}).reduce(
+			(acc, [_, fields]) => acc + fields.length,
+			0,
+		);
+
+		// Map the group field to their respective select column positions (1 based, offset by the number of aggregate terms that are applied in applyQuery)
+		// The positions need to be offset by the number of aggregate terms, since the aggregate terms are selected first
+		const groupColumnPositions = queryCopy.group?.map((field) => fieldNodeMap[field]![1] + 1 + aggregateCount) ?? [];
 
 		const dbQuery = applyQuery(knex, table, flatQuery, queryCopy, schema, cases, permissions, {
 			aliasMap,
 			groupWhenCases,
+			groupColumnPositions,
 		}).query;
 
 		flatQuery.select(fieldNodes.map((node) => preProcess(node)));
 
-		withPreprocessBindings(knex, dbQuery);
+		if (
+			helpers.capabilities.supportsDeduplicationOfParameters() &&
+			!helpers.capabilities.supportsColumnPositionInGroupBy()
+		) {
+			withPreprocessBindings(knex, dbQuery);
+		}
 
 		return dbQuery;
 	}

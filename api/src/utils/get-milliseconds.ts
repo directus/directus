@@ -1,4 +1,4 @@
-import ms from 'ms';
+import ms, { type StringValue } from 'ms';
 
 /**
  * Safely parse human readable time format into milliseconds
@@ -8,5 +8,5 @@ export function getMilliseconds<T = undefined>(value: unknown, fallback?: T): nu
 		return fallback as T;
 	}
 
-	return ms(String(value)) ?? fallback;
+	return ms(String(value) as StringValue) ?? fallback;
 }
