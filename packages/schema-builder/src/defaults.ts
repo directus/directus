@@ -1,7 +1,11 @@
-import { CollectionOverview, FieldOverview } from '@directus/types';
+import type { CollectionOverview, FieldOverview, Relation } from '@directus/types';
 
 export type CollectionDefaults = Partial<Omit<CollectionOverview, 'fields'>>;
 export type FieldDefaults = Partial<FieldOverview>;
+export type RelationDefaults = {
+	meta: Partial<Relation['meta']>;
+	schema: Partial<Relation['schema']>;
+};
 
 /*
 Note that `dbType` varies across databases. This is based on Postgres.
@@ -24,13 +28,6 @@ export const FIELD_DEFAULTS = {
 	note: null,
 	validation: null,
 	alias: false,
-} satisfies FieldDefaults;
-
-export const RELATION_DEFAULT = {
-	...FIELD_DEFAULTS,
-	type: 'alias',
-	dbType: null,
-	alias: true,
 } satisfies FieldDefaults;
 
 export const INTEGER_FIELD = {
@@ -132,3 +129,15 @@ export const BOOLEAN_FIELD = {
 	dbType: 'boolean',
 	special: ['cast-boolean'],
 } satisfies FieldDefaults;
+
+export const RELATION_DEFAULTS = {
+	meta: {
+		sort_field: null,
+		one_deselect_action: 'nullify',
+	},
+	schema: {
+		foreign_key_schema: 'public',
+		on_update: 'NO ACTION',
+		on_delete: 'SET NULL',
+	},
+} satisfies RelationDefaults;

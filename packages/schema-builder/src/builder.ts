@@ -1,12 +1,13 @@
-import { SchemaOverview } from '@directus/types';
-import { CollectionBuilder, CollectionOveriewBuilderOptions } from './collection';
-import { RelationBuilder } from './relation';
+import type { SchemaOverview } from '@directus/types';
+import { CollectionBuilder, type CollectionOveriewBuilderOptions } from './collection.js';
+import { RelationBuilder } from './relation.js';
 import { ok as assert } from 'node:assert/strict';
 
 export class SchemaBuilder {
 	_collections: CollectionBuilder[] = [];
 	_relations: RelationBuilder[] = [];
 	_last_collection_configured = true;
+	_relation_counter = 0;
 
 	collection(name: string, callback: (collection: CollectionBuilder) => void) {
 		const collection = new CollectionBuilder(name, this);
@@ -21,14 +22,15 @@ export class SchemaBuilder {
 		assert(this._collections.length > 0, "You need at least 1 collection to configure it's options");
 		assert(this._last_collection_configured === false, 'You can only configure a collection once');
 
-		const lastCollection = this._collections.at(-1);
+		const lastCollection = this._collections.at(-1)!;
 
-		lastCollection._data = {
-			...lastCollection._data,
-			...options,
-		};
+		Object.assign(lastCollection._data, options);
 
 		this._last_collection_configured = true;
+	}
+
+	next_relation_index() {
+		return this._relation_counter++;
 	}
 
 	build(): SchemaOverview {
@@ -38,12 +40,18 @@ export class SchemaBuilder {
 		};
 
 		for (const collectionBuilder of this._collections) {
-			const collection = collectionBuilder.build();
+			const collection = collectionBuilder.build(schema);
+
+			assert(
+				collection.collection in schema.collections === false,
+				`Collection ${collection.collection} already exists`,
+			);
+
 			schema.collections[collection.collection] = collection;
 		}
 
 		for (const relationBuilder of this._relations) {
-			const relation = relationBuilder.build();
+			const relation = relationBuilder.build(schema);
 			schema.relations.push(relation);
 		}
 

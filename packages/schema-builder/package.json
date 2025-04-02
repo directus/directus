@@ -36,10 +36,12 @@
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
-		"@directus/types": "workspace:*"
+		"@directus/types": "workspace:*",
+		"lodash-es": "4.17.21"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",
+		"@types/lodash-es": "4.17.12",
 		"tsup": "8.4.0",
 		"typescript": "5.8.2",
 		"vitest": "2.1.9"

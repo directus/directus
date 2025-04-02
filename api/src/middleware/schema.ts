@@ -11,7 +11,7 @@ const schema: RequestHandler = asyncHandler(async (req, _res, next) => {
 			return collection.collection.startsWith("directus_") === false
 		})),
 		relations: req.schema.relations.filter((relation) => {
-			return relation.collection.startsWith("directus_") === false && relation.related_collection?.startsWith("directus_") === false
+			return relation.collection.startsWith("directus_") === false && (relation.related_collection ?? '').startsWith("directus_") === false
 		})
 	}
 

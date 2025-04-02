@@ -1,8 +1,8 @@
-import { CollectionOverview } from '@directus/types';
-import { SchemaBuilder } from './builder';
-import { FieldBuilder } from './field';
+import type { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from './builder.js';
+import { FieldBuilder } from './field.js';
 import { ok as assert } from 'node:assert/strict';
-import { COLLECTION_DEFAULTS } from './defaults';
+import { COLLECTION_DEFAULTS } from './defaults.js';
 
 type InitialCollectionOverview = Omit<CollectionOverview, 'primary' | 'fields'>;
 type FinalCollectionOverview = Omit<CollectionOverview, 'fields'>;
@@ -12,7 +12,7 @@ export type CollectionOveriewBuilderOptions = Partial<
 >;
 
 export class CollectionBuilder {
-	_schemaBuilder: SchemaBuilder;
+	_schemaBuilder: SchemaBuilder | undefined;
 	_data: InitialCollectionOverview | FinalCollectionOverview;
 	_fields: FieldBuilder[] = [];
 
@@ -31,13 +31,19 @@ export class CollectionBuilder {
 		return field;
 	}
 
-	build(): CollectionOverview {
+	get_name() {
+		return this._data.collection;
+	}
+
+	build(schema: SchemaOverview): CollectionOverview {
 		assert('primary' in this._data, 'The collection needs a primary key');
 
-		const fields = {};
+		const fields: Record<string, FieldOverview> = {};
 
 		for (const fieldBuilder of this._fields) {
-			const field = fieldBuilder.build();
+			const field = fieldBuilder.build(schema);
+			assert(field.field in fields === false, `Field ${field.field} already exists`);
+
 			fields[field.field] = field;
 		}
 
