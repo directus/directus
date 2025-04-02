@@ -27,7 +27,7 @@ const props = withDefaults(
 const emit = defineEmits<{
 	input: [value: string | number | Record<string, unknown> | boolean | null];
 	commaEntered: [value: string];
-	commaKeyPressed: [value: string];
+	commaKeyPressed: [];
 	commaValuePasted: [value: string];
 }>();
 
@@ -112,8 +112,7 @@ function onInput(value: string | number | Record<string, unknown> | boolean | nu
 function onKeyDown(event: KeyboardEvent) {
 	if (event.key === ',' && props.commaAllowed) {
 		event.preventDefault();
-		const currentValue = inputEl.value?.value || '';
-		emit('commaKeyPressed', currentValue);
+		emit('commaKeyPressed');
 	}
 }
 
