@@ -36,7 +36,7 @@ export class CollectionBuilder {
 	}
 
 	build(schema: SchemaOverview): CollectionOverview {
-		assert('primary' in this._data, 'The collection needs a primary key');
+		assert('primary' in this._data, `The collection ${this.get_name()} needs a primary key`);
 
 		const fields: Record<string, FieldOverview> = {};
 

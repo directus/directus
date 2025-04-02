@@ -695,3 +695,52 @@ test('Create m2a relation', () => {
 		}
 	`);
 });
+
+test('create empty collection', () => {
+	const schema = new SchemaBuilder()
+		.collection('blog', (_) => { })
+
+	expect(() => { schema.build() }).toThrowError("The collection blog needs a primary key")
+})
+
+test('create duplicate collection', () => {
+	const schema = new SchemaBuilder()
+		.collection('blog', (c) => {
+			c.field("id").id()
+		})
+		.collection('blog', (c) => {
+			c.field("id").id()
+		})
+
+	expect(() => { schema.build() }).toThrowError("Collection blog already exists")
+})
+
+test('create duplicate id', () => {
+	expect(() => {
+		new SchemaBuilder()
+			.collection('blog', (c) => {
+				c.field("id").id()
+				c.field("id").id()
+			})
+	}).toThrowError("The primary key is already set on the collection blog")
+})
+
+test('create duplicate field', () => {
+	const schema = new SchemaBuilder()
+		.collection('blog', (c) => {
+			c.field("id").id()
+			c.field("name").string()
+			c.field("name").string()
+		})
+
+	expect(() => { schema.build() }).toThrowError("Field name already exists")
+})
+
+test('define type twice', () => {
+	expect(() => {
+		new SchemaBuilder()
+			.collection('blog', (c) => {
+				c.field("id").id().string()
+			})
+	}).toThrowError("Field type was already set")
+})

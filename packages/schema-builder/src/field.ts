@@ -69,7 +69,7 @@ export class FieldBuilder {
 
 	primary() {
 		assert(this._collection, 'Can only set to primary on a collection');
-		assert('primary' in this._collection._data === false, 'The primary key is already set on the collection');
+		assert('primary' in this._collection._data === false, `The primary key is already set on the collection ${this._collection.get_name()}`);
 
 		this._collection._data = {
 			primary: this._data.field,
