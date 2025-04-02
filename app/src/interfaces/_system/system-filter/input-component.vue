@@ -27,6 +27,8 @@ const props = withDefaults(
 const emit = defineEmits<{
 	input: [value: string | number | Record<string, unknown> | boolean | null];
 	commaEntered: [value: string];
+	commaKeyPressed: [value: string];
+	commaValuePasted: [value: string];
 }>();
 
 const { t } = useI18n();
@@ -104,20 +106,33 @@ function onEffect(value: typeof props.value) {
 function onInput(value: string | number | Record<string, unknown> | boolean | null) {
 	isInputValid.value = isValueValid(value);
 
-	if (isInputValid.value) {
-		if (typeof value === 'string' && value.includes(',') && props.commaAllowed) {
-			const valueWithoutComma = value.replace(/,/g, '');
+	if (isInputValid.value) emit('input', value === '' ? null : value);
+}
 
-			if (inputEl.value) {
-				inputEl.value.value = valueWithoutComma;
-			}
-
-			emit('commaEntered', value);
-		} else {
-			emit('input', value === '' ? null : value);
-		}
+function onKeyDown(event: KeyboardEvent) {
+	if (event.key === ',' && props.commaAllowed) {
+		event.preventDefault();
+		const currentValue = inputEl.value?.value || '';
+		emit('commaKeyPressed', currentValue);
 	}
 }
+
+function onPaste(event: ClipboardEvent) {
+	if (!props.commaAllowed) return;
+
+	const clipboardData = event.clipboardData?.getData('text') || '';
+
+	if (clipboardData.includes(',')) {
+		event.preventDefault();
+		emit('commaValuePasted', clipboardData);
+	}
+}
+
+defineExpose({
+	focus() {
+		inputEl.value?.focus();
+	},
+});
 </script>
 
 <template>
@@ -138,6 +153,8 @@ function onInput(value: string | number | Record<string, unknown> | boolean | nu
 		:value="value"
 		placeholder="--"
 		@input="onInput(($event.target as HTMLInputElement).value)"
+		@keydown="onKeyDown"
+		@paste="onPaste"
 	/>
 	<v-select
 		v-else-if="is === 'select'"
