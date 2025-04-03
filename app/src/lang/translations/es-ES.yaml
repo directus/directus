@@ -2436,6 +2436,7 @@ operations:
     template: Plantilla
     data: Datos
     cc: CC
+    bcc: CCO
     reply_to: Responder a
   notification:
     name: Enviar notificación
