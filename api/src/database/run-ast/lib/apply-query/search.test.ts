@@ -1,93 +1,17 @@
-import type { Permission, SchemaOverview } from '@directus/types';
+import type { Permission } from '@directus/types';
 import { Knex } from 'knex';
 import { expect, test, vi } from 'vitest';
 import { applySearch } from './search.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
-const FAKE_SCHEMA: SchemaOverview = {
-	collections: {
-		test: {
-			collection: 'test',
-			primary: 'id',
-			singleton: false,
-			sortField: null,
-			note: null,
-			accountability: null,
-			fields: {
-				text: {
-					field: 'text',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'text',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				string: {
-					field: 'string',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'string',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				float: {
-					field: 'float',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'float',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				integer: {
-					field: 'integer',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'integer',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				id: {
-					field: 'id',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'uuid',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-			},
-		},
-	},
-	relations: [],
-};
+const schema = new SchemaBuilder()
+	.collection('test', (c) => {
+		c.field('id').uuid().primary()
+		c.field('text').text()
+		c.field('string').string()
+		c.field('float').float()
+		c.field('integer').integer()
+	}).build()
 
 const permissions = [
 	{
@@ -138,7 +62,7 @@ test.each(['0x56071c902718e681e274DB0AaC9B4Ed2d027924d', '0b11111', '0.42e3', 'I
 			return queryBuilder;
 		});
 
-		applySearch(db as any, FAKE_SCHEMA, queryBuilder, number, 'test', {}, permissions);
+		applySearch(db as any, schema, queryBuilder, number, 'test', {}, permissions);
 
 		expect(db['andWhere']).toBeCalledTimes(1);
 		expect(queryBuilder['orWhere']).toBeCalledTimes(1);
@@ -166,7 +90,7 @@ test.each(['1234', '-128', '12.34'])('Casting number %s', async (number) => {
 		return queryBuilder;
 	});
 
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, number, 'test', {}, permissions);
+	applySearch(db as any, schema, queryBuilder, number, 'test', {}, permissions);
 
 	expect(db['andWhere']).toBeCalledTimes(1);
 	expect(queryBuilder['orWhere']).toBeCalledTimes(3);
@@ -183,7 +107,7 @@ test('Query is falsy if no other clause is added', async () => {
 	const db = mockDatabase();
 	const queryBuilder = db as any;
 
-	const schemaWithStringFieldRemoved = JSON.parse(JSON.stringify(FAKE_SCHEMA));
+	const schemaWithStringFieldRemoved = JSON.parse(JSON.stringify(schema));
 
 	delete schemaWithStringFieldRemoved.collections.test.fields.text;
 
@@ -219,7 +143,7 @@ test('Exclude non uuid searchable field(s) when searchQuery has valid uuid value
 		return queryBuilder;
 	});
 
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, '4b9adc65-4ad8-4242-9144-fbfc58400d74', 'test', {}, [
+	applySearch(db as any, schema, queryBuilder, '4b9adc65-4ad8-4242-9144-fbfc58400d74', 'test', {}, [
 		{
 			collection: 'test',
 			action: 'read',
@@ -250,7 +174,7 @@ test('Remove forbidden field(s) from search', () => {
 		return queryBuilder;
 	});
 
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, 'directus', 'test', {}, [
+	applySearch(db as any, schema, queryBuilder, 'directus', 'test', {}, [
 		{
 			collection: 'test',
 			action: 'read',
@@ -282,7 +206,7 @@ test('Add all fields for * field rule', () => {
 		return queryBuilder;
 	});
 
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
+	applySearch(db as any, schema, queryBuilder, '1', 'test', {}, [
 		{
 			collection: 'test',
 			action: 'read',
@@ -312,7 +236,7 @@ test('Add all fields when * is present in field rule with permission rule presen
 		return queryBuilder;
 	});
 
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
+	applySearch(db as any, schema, queryBuilder, '1', 'test', {}, [
 		{
 			collection: 'test',
 			action: 'read',
@@ -344,7 +268,7 @@ test('All field(s) are searched for admin', () => {
 		return queryBuilder;
 	});
 
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, []);
+	applySearch(db as any, schema, queryBuilder, '1', 'test', {}, []);
 
 	expect(db['andWhere']).toBeCalledTimes(1);
 	expect(queryBuilder['orWhere']).toBeCalledTimes(0);

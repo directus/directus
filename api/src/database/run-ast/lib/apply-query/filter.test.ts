@@ -3,94 +3,10 @@ import knex from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { describe, expect, test, vi } from 'vitest';
 import { applyFilter } from './filter.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
-const FAKE_SCHEMA: SchemaOverview = {
-	collections: {
-		test: {
-			collection: 'test',
-			primary: 'id',
-			singleton: false,
-			sortField: null,
-			note: null,
-			accountability: null,
-			fields: {
-				text: {
-					field: 'text',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'text',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				string: {
-					field: 'string',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'string',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				float: {
-					field: 'float',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'float',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				integer: {
-					field: 'integer',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'integer',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				id: {
-					field: 'id',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'uuid',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-			},
-		},
-	},
-	relations: [],
-};
 
-class Client_SQLite3 extends MockClient {}
+class Client_SQLite3 extends MockClient { }
 
 describe('boolean filter operators', () => {
 	const operators = [
@@ -123,6 +39,15 @@ describe('boolean filter operators', () => {
 		return acc;
 	}, operators);
 
+	const schema = new SchemaBuilder()
+		.collection('test', (c) => {
+			c.field('id').uuid().primary()
+			c.field('text').text()
+			c.field('string').string()
+			c.field('float').float()
+			c.field('integer').integer()
+		}).build()
+
 	for (const { filterOperator, sqlWhereClause } of withReverseOperators) {
 		for (const filterValue of [true, '', false]) {
 			test(`${filterOperator} with value ${filterValue}`, async () => {
@@ -136,7 +61,7 @@ describe('boolean filter operators', () => {
 					_and: [{ [field]: { [`_${filterOperator}`]: filterValue } }],
 				};
 
-				const { query } = applyFilter(db, FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, [], []);
+				const { query } = applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
 
 				const tracker = createTracker(db);
 				tracker.on.select('*').response([]);
@@ -160,35 +85,11 @@ test(`filter values on bigint fields are correctly passed as such to db query`, 
 	const collection = 'test';
 	const field = 'bigInteger';
 
-	const BIGINT_FAKE_SCHEMA: SchemaOverview = {
-		collections: {
-			[collection]: {
-				collection: 'test',
-				primary: 'id',
-				singleton: false,
-				sortField: null,
-				note: null,
-				accountability: null,
-				fields: {
-					[field]: {
-						field: field,
-						defaultValue: null,
-						nullable: false,
-						generated: false,
-						type: 'bigInteger',
-						dbType: null,
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						validation: null,
-						alias: false,
-					},
-				},
-			},
-		},
-		relations: [],
-	};
+	const schema = new SchemaBuilder()
+		.collection(collection, (c) => {
+			c.field("id").id()
+			c.field(field).bigInteger()
+		}).build()
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
@@ -202,7 +103,7 @@ test(`filter values on bigint fields are correctly passed as such to db query`, 
 		},
 	};
 
-	const { query } = applyFilter(db, BIGINT_FAKE_SCHEMA, queryBuilder, rootFilter, collection, {}, [], []);
+	const { query } = applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
 
 	const tracker = createTracker(db);
 	tracker.on.select('*').response([]);
@@ -223,35 +124,11 @@ test.each([
 	const collection = 'test';
 	const field = 'string';
 
-	const sampleSchema: SchemaOverview = {
-		collections: {
-			[collection]: {
-				collection,
-				primary: 'id',
-				singleton: false,
-				sortField: null,
-				note: null,
-				accountability: null,
-				fields: {
-					[field]: {
-						field,
-						defaultValue: null,
-						nullable: false,
-						generated: false,
-						type: 'string',
-						dbType: null,
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						validation: null,
-						alias: false,
-					},
-				},
-			},
-		},
-		relations: [],
-	};
+	const schema = new SchemaBuilder()
+		.collection(collection, (c) => {
+			c.field("id").id()
+			c.field(field).string()
+		}).build()
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
@@ -262,7 +139,7 @@ test.each([
 		},
 	};
 
-	const { query } = applyFilter(db, sampleSchema, queryBuilder, rootFilter, collection, {}, [], []);
+	const { query } = applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
 
 	const tracker = createTracker(db);
 	tracker.on.select('*').response([]);
