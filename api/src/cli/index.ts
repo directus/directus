@@ -109,6 +109,13 @@ export async function createCli(): Promise<Command> {
 		.argument('<path>', 'Path to snapshot file')
 		.action(apply);
 
+		const mcpCommands = program.command('mcp');
+	mcpCommands
+	.command('start')
+	.description('Start the MCP server')
+	.option('--port <port>', 'Port to run the MCP server on', '3000')
+	.option('')
+
 	await emitter.emitInit('cli.after', { program });
 
 	return program;

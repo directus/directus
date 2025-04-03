@@ -90,6 +90,7 @@
 		"@directus/utils": "workspace:*",
 		"@directus/validation": "workspace:*",
 		"@godaddy/terminus": "4.12.1",
+		"@modelcontextprotocol/sdk": "1.8.0",
 		"@rollup/plugin-alias": "5.1.1",
 		"@rollup/plugin-node-resolve": "15.3.1",
 		"@rollup/plugin-virtual": "3.0.2",

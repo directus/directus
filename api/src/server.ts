@@ -26,6 +26,7 @@ import {
 	getWebSocketController,
 } from './websocket/controllers/index.js';
 import { startWebSocketHandlers } from './websocket/handlers/index.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 
 export let SERVER_ONLINE = true;
 
@@ -105,6 +106,64 @@ export async function createServer(): Promise<http.Server> {
 		createLogsController(server);
 
 		startWebSocketHandlers();
+	}
+
+	if (toBoolean(env['MCP_ENABLED']) === true) {
+		const { setupMCPServer } = await import('./mcp-server.js');
+		const mcpServer = setupMCPServer();
+
+		let transport: SSEServerTransport | null = null;
+
+		// Create HTTP server for MCP SSE transport
+		const mcpHttpServer = http.createServer();
+
+		// Handle SSE endpoint
+		mcpHttpServer.on('request', (req, res) => {
+			console.log(`Received request: ${req.method} ${req.url}`);
+			if (req.url === '/sse' && req.method === 'GET') {
+				console.log('SSE connection established');
+				transport = new SSEServerTransport('/messages', res);
+				mcpServer.connect(transport);
+				transport.start().catch((error) => {
+					logger.error(`Failed to start SSE transport: ${error}`);
+				});
+				transport.handlePostMessage(req, res).catch((error) => {
+					logger.error(`Error handling SSE connection: ${error}`);
+				});
+			} else if (req.url === '/messages' && req.method === 'POST') {
+				// Handle message posts
+				if (transport) {
+					let body = '';
+					req.on('data', (chunk) => {
+						body += chunk.toString();
+					});
+					req.on('end', () => {
+						try {
+							const parsedBody = JSON.parse(body);
+							transport?.handlePostMessage(req, res, parsedBody).catch((error) => {
+								logger.error(`Error handling message post: ${error}`);
+							});
+						} catch (error) {
+							logger.error(`Failed to parse message body: ${error}`);
+							res.statusCode = 400;
+							res.end('Invalid JSON');
+						}
+					});
+				} else {
+					res.statusCode = 503;
+					res.end('No active SSE connection');
+				}
+			} else {
+				res.statusCode = 404;
+				res.end();
+			}
+		});
+
+		// Start the MCP HTTP server
+		const mcpPort = Number(env['MCP_PORT'] || 3000);
+		mcpHttpServer.listen(mcpPort, () => {
+			logger.info(`MCP SSE server started at http://localhost:${mcpPort}`);
+		});
 	}
 
 	const terminusOptions: TerminusOptions = {
