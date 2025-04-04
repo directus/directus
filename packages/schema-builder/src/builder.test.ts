@@ -574,6 +574,20 @@ test('Create m2a relation', () => {
 		          "type": "integer",
 		          "validation": null,
 		        },
+		        "collection": {
+		          "alias": false,
+		          "dbType": "character varying",
+		          "defaultValue": null,
+		          "field": "collection",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "string",
+		          "validation": null,
+		        },
 		        "id": {
 		          "alias": false,
 		          "dbType": "integer",
@@ -582,6 +596,20 @@ test('Create m2a relation', () => {
 		          "generated": false,
 		          "note": null,
 		          "nullable": false,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		        "item": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": null,
+		          "field": "item",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
 		          "precision": null,
 		          "scale": null,
 		          "special": [],
@@ -696,8 +724,227 @@ test('Create m2a relation', () => {
 	`);
 });
 
+test('Create a2o relation', () => {
+	const schema = new SchemaBuilder()
+		.collection('blog', (c) => {
+			c.field('id').id();
+			c.field('blocks').m2a('text', 'image');
+		})
+		.build();
+
+	expect(schema).toMatchInlineSnapshot(`
+		{
+		  "collections": {
+		    "blog": {
+		      "accountability": "all",
+		      "collection": "blog",
+		      "fields": {
+		        "blocks": {
+		          "alias": false,
+		          "dbType": null,
+		          "defaultValue": null,
+		          "field": "blocks",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [
+		            "m2a",
+		          ],
+		          "type": "alias",
+		          "validation": null,
+		        },
+		        "id": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": "AUTO_INCREMENT",
+		          "field": "id",
+		          "generated": false,
+		          "note": null,
+		          "nullable": false,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		      },
+		      "note": null,
+		      "primary": "id",
+		      "singleton": false,
+		      "sortField": null,
+		    },
+		    "blog_builder": {
+		      "accountability": "all",
+		      "collection": "blog_builder",
+		      "fields": {
+		        "blog_id": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": null,
+		          "field": "blog_id",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		        "collection": {
+		          "alias": false,
+		          "dbType": "character varying",
+		          "defaultValue": null,
+		          "field": "collection",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "string",
+		          "validation": null,
+		        },
+		        "id": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": "AUTO_INCREMENT",
+		          "field": "id",
+		          "generated": false,
+		          "note": null,
+		          "nullable": false,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		        "item": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": null,
+		          "field": "item",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		      },
+		      "note": null,
+		      "primary": "id",
+		      "singleton": false,
+		      "sortField": null,
+		    },
+		    "image": {
+		      "accountability": "all",
+		      "collection": "image",
+		      "fields": {
+		        "id": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": "AUTO_INCREMENT",
+		          "field": "id",
+		          "generated": false,
+		          "note": null,
+		          "nullable": false,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		      },
+		      "note": null,
+		      "primary": "id",
+		      "singleton": false,
+		      "sortField": null,
+		    },
+		    "text": {
+		      "accountability": "all",
+		      "collection": "text",
+		      "fields": {
+		        "id": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": "AUTO_INCREMENT",
+		          "field": "id",
+		          "generated": false,
+		          "note": null,
+		          "nullable": false,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		      },
+		      "note": null,
+		      "primary": "id",
+		      "singleton": false,
+		      "sortField": null,
+		    },
+		  },
+		  "relations": [
+		    {
+		      "collection": "blog_builder",
+		      "field": "blog_id",
+		      "meta": {
+		        "id": 0,
+		        "junction_field": "item",
+		        "many_collection": "blog_builder",
+		        "many_field": "blog_id",
+		        "one_allowed_collections": null,
+		        "one_collection": "blog",
+		        "one_collection_field": null,
+		        "one_deselect_action": "nullify",
+		        "one_field": "blocks",
+		        "sort_field": null,
+		      },
+		      "related_collection": "blog",
+		      "schema": {
+		        "column": "blocks",
+		        "constraint_name": "blog_blocks_foreign",
+		        "foreign_key_schema": "public",
+		        "foreign_key_table": "blog_builder",
+		        "on_delete": "SET NULL",
+		        "on_update": "NO ACTION",
+		        "table": "blog",
+		      },
+		    },
+		    {
+		      "collection": "blog_builder",
+		      "field": "item",
+		      "meta": {
+		        "id": 0,
+		        "junction_field": "blog_id",
+		        "many_collection": "blog_builder",
+		        "many_field": "item",
+		        "one_allowed_collections": [
+		          "text",
+		          "image",
+		        ],
+		        "one_collection": null,
+		        "one_collection_field": "collection",
+		        "one_deselect_action": "nullify",
+		        "one_field": null,
+		        "sort_field": null,
+		      },
+		      "related_collection": null,
+		      "schema": null,
+		    },
+		  ],
+		}
+	`)
+})
+
 test('create empty collection', () => {
-	const schema = new SchemaBuilder().collection('blog', (_) => {});
+	const schema = new SchemaBuilder().collection('blog', (_) => { });
 
 	expect(() => {
 		schema.build();

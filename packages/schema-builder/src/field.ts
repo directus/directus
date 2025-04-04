@@ -391,6 +391,28 @@ export class FieldBuilder {
 		return this;
 	}
 
+	a2o(related_collections: string[]) {
+		assert(this._data._kind === 'initial', 'Field type was already set');
+		assert(this._schema && this._collection, 'Field needs to be part of a schema');
+
+		this._data = {
+			field: this._data.field,
+			...FIELD_DEFAULTS,
+			type: 'integer',
+			dbType: 'integer',
+			special: [],
+			_kind: 'finished',
+		};
+
+		const relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(
+			related_collections
+		);
+
+		this._schema._relations.push(relation);
+
+		return this;
+	}
+
 	get_name() {
 		return this._data.field;
 	}
