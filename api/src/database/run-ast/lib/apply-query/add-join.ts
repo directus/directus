@@ -50,13 +50,12 @@ type AddJoinProps = {
 	path: string[];
 	collection: string;
 	aliasMap: AliasMap;
-	relations: Relation[];
 	rootQuery: Knex.QueryBuilder;
 	schema: SchemaOverview;
 	knex: Knex;
 };
 
-export function addJoin({ path, collection, aliasMap, rootQuery, schema, relations, knex }: AddJoinProps) {
+export function addJoin({ path, collection, aliasMap, rootQuery, schema, knex }: AddJoinProps) {
 	let hasMultiRelational = false;
 	let isJoinAdded = false;
 
@@ -71,7 +70,7 @@ export function addJoin({ path, collection, aliasMap, rootQuery, schema, relatio
 		 */
 		const pathRoot = pathParts[0]!.split(':')[0]!;
 
-		const { relation, relationType } = getRelationInfo(relations, parentCollection, pathRoot);
+		const { relation, relationType } = getRelationInfo(schema.relations, parentCollection, pathRoot);
 
 		if (!relation) {
 			return;
