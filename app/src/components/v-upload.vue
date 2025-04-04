@@ -8,7 +8,7 @@ import { uploadFile } from '@/utils/upload-file';
 import { uploadFiles } from '@/utils/upload-files';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import { sum } from 'lodash';
-import { computed, onUnmounted, ref } from 'vue';
+import { computed, onUnmounted, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { Upload } from 'tus-js-client';
 
@@ -51,7 +51,29 @@ const input = ref<HTMLInputElement>();
 
 onUnmounted(() => {
 	uploadController?.abort();
+	window.removeEventListener('paste', handlePaste);
 });
+
+onMounted(() => {
+	window.addEventListener('paste', handlePaste);
+})
+
+function handlePaste(event: ClipboardEvent){
+	if (!props.fromUser) return;
+	const items = event.clipboardData?.items;
+	if (!items) return;
+	for (const item of items){
+		if (item.kind === 'file' && item.type.startsWith('image/')) {
+			const file = item.getAsFile();
+			if (file) {
+				const dataTransfer = new DataTransfer();
+				dataTransfer.items.add(file);
+				const fileList = dataTransfer.files;
+				upload(fileList)
+			}
+		}
+	}
+}
 
 function validFiles(files: FileList) {
 	if (files.length === 0) return false;
