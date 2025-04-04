@@ -5,7 +5,7 @@ import { isObject } from '@directus/utils';
 import fse from 'fs-extra';
 import type { Knex } from 'knex';
 import knex from 'knex';
-import { isArray, merge } from 'lodash-es';
+import { isArray, merge, toArray } from 'lodash-es';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -358,9 +358,13 @@ async function validateDatabaseCharset(database?: Knex): Promise<void> {
 			.where({ TABLE_SCHEMA: env['DB_DATABASE'] })
 			.whereNot({ COLLATION_NAME: collation });
 
+		const excludedTables: string[] = toArray(env['DB_EXCLUDE_TABLES']);
+
 		let inconsistencies = '';
 
 		for (const table of tables) {
+			if (excludedTables.includes(table.name)) continue;
+
 			const tableColumns = columns.filter((column) => column.table_name === table.name);
 			const tableHasInvalidCollation = table.collation !== collation;
 
