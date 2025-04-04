@@ -105,6 +105,7 @@ export class ServerService {
 					? {
 							authentication: env['WEBSOCKETS_GRAPHQL_AUTH'],
 							path: env['WEBSOCKETS_GRAPHQL_PATH'],
+							systemPath: env['WEBSOCKETS_GRAPHQL_SYSTEM_PATH'],
 					  }
 					: false;
 
