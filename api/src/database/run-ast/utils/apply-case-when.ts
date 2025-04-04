@@ -1,6 +1,6 @@
 import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { applyFilter } from '../../../utils/apply-query.js';
+import { applyFilter } from '../lib/apply-query/filter.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 
 export interface ApplyCaseWhenOptions {
