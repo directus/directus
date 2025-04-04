@@ -9,6 +9,7 @@ import { useI18n } from 'vue-i18n';
 import { useExtensions } from '@/extensions';
 import { useExtension } from '@/composables/use-extension';
 import { customAlphabet } from 'nanoid/non-secure';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 
 const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 
@@ -118,12 +119,14 @@ const operationOptions = computed(() => {
 function saveOperation() {
 	saving.value = true;
 
+	const defaultValues = getDefaultValuesFromFields(selectedOperation.value?.options);
+
 	emit('save', {
 		flow: props.primaryKey,
 		name: operationName.value || generatedName.value,
 		key: operationKey.value || generatedKey.value,
 		type: operationType.value,
-		options: options.value,
+		options: { ...defaultValues.value, ...options.value },
 	});
 }
 </script>
@@ -211,6 +214,7 @@ function saveOperation() {
 .v-divider {
 	margin: 52px 0;
 }
+
 .type-label {
 	margin-bottom: 8px;
 }
