@@ -7,7 +7,7 @@ export type FieldOverview = {
 	defaultValue: any;
 	nullable: boolean;
 	generated: boolean;
-	type: Type | 'unknown' | 'alias';
+	type: Type;
 	dbType: string | null;
 	precision: number | null;
 	scale: number | null;
@@ -17,18 +17,20 @@ export type FieldOverview = {
 	alias: boolean;
 };
 
-export type CollectionsOverview = {
-	[name: string]: {
-		collection: string;
-		primary: string;
-		singleton: boolean;
-		sortField: string | null;
-		note: string | null;
-		accountability: 'all' | 'activity' | null;
-		fields: {
-			[name: string]: FieldOverview;
-		};
+export type CollectionOverview = {
+	collection: string;
+	primary: string;
+	singleton: boolean;
+	sortField: string | null;
+	note: string | null;
+	accountability: 'all' | 'activity' | null;
+	fields: {
+		[name: string]: FieldOverview;
 	};
+};
+
+export type CollectionsOverview = {
+	[name: string]: CollectionOverview;
 };
 
 export type SchemaOverview = {
