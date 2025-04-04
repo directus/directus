@@ -478,5 +478,6 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	&:hover {
 		color: var(--theme--foreground);
 	}
+	pointer-events: all;
 }
 </style>
