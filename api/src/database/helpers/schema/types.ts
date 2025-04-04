@@ -172,4 +172,12 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	): void {
 		// no-op by default
 	}
+
+	getColumnMaxLength() {
+		return 64;
+	}
+
+	getTableMaxLength() {
+		return 64;
+	}
 }
