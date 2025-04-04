@@ -84,7 +84,6 @@ export function applySort(
 			aliasMap,
 			rootQuery,
 			schema,
-			relations,
 			knex,
 		});
 

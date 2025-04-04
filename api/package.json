@@ -78,6 +78,7 @@
 		"@directus/memory": "workspace:*",
 		"@directus/pressure": "workspace:*",
 		"@directus/schema": "workspace:*",
+		"@directus/schema-builder": "workspace:*",
 		"@directus/specs": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/storage-driver-azure": "workspace:*",
