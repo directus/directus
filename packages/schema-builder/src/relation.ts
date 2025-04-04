@@ -124,6 +124,7 @@ export class RelationBuilder {
 	build(schema: SchemaOverview): Relation {
 		assert(this._data._kind === 'finished', 'Relation type is not configured');
 
+		// Generate related collection if not exists
 		if (this._data._type === 'm2o' || this._data._type === 'o2m') {
 			if (this._data.related_collection && this._data.related_collection in schema.collections === false) {
 				const collection = new CollectionBuilder(this._data.related_collection);
@@ -131,30 +132,43 @@ export class RelationBuilder {
 				collection.field('id').id();
 				schema.collections[this._data.related_collection] = collection.build(schema);
 			}
+		}
 
-			if (this._data.collection && this._data.collection in schema.collections === false) {
-				const collection = new CollectionBuilder(this._data.collection);
+		// Generate existing collection, if not exists
+		if (this._data.collection && this._data.collection in schema.collections === false) {
+			const collection = new CollectionBuilder(this._data.collection);
 
-				collection.field('id').id();
+			collection.field('id').id();
 
-				schema.collections[this._data.collection] = collection.build(schema);
+			schema.collections[this._data.collection] = collection.build(schema);
+		}
+
+		const collection = schema.collections[this._data.collection]!;
+
+		// Generate field for collection, if not exists
+		if (this._data.field && this._data.field in collection.fields === false) {
+			const key_type = collection.fields[collection.primary]!.type;
+
+			assert(
+				key_type === 'integer' || key_type === 'string',
+				`Cannot generate related field for primary key type ${key_type}`,
+			);
+
+			const field = new FieldBuilder(this._data.field)[key_type]();
+
+			collection.fields[this._data.field] = field.build(schema);
+		}
+
+		// Generate collection field and related a2o collections, for those that don't exist
+		if (this._data._type === 'a2o') {
+			const collection_field = this._data.meta?.one_collection_field
+
+			if (collection_field && collection_field in collection.fields === false) {
+				const field = new FieldBuilder(collection_field).string();
+
+				collection.fields[collection_field] = field.build(schema);
 			}
 
-			const collection = schema.collections[this._data.collection]!;
-
-			if (this._data.field && this._data.field in collection.fields === false) {
-				const key_type = collection.fields[collection.primary]!.type;
-
-				assert(
-					key_type === 'integer' || key_type === 'string',
-					`Cannot generate related field for primary key type ${key_type}`,
-				);
-
-				const field = new FieldBuilder(this._data.field)[key_type]();
-
-				collection.fields[this._data.field] = field.build(schema);
-			}
-		} else {
 			for (const collection_name of this._data.meta?.one_allowed_collections ?? []) {
 				if (collection_name in schema.collections) continue;
 
