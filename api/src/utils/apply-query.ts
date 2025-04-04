@@ -953,7 +953,8 @@ export function applySearch(
 		let needsFallbackCondition = true;
 
 		fields.forEach(([name, field]) => {
-			const whenCases = (caseMap[name] ?? []).map((caseIndex) => cases[caseIndex]!);
+			// only account for when cases when full access is not given
+			const whenCases = allowedFields.has('*') ? [] : (caseMap[name] ?? []).map((caseIndex) => cases[caseIndex]!);
 
 			const fieldType = getFieldType(field);
 

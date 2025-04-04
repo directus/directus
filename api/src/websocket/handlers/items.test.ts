@@ -224,6 +224,36 @@ describe('WebSocket heartbeat handler', () => {
 		expect(fakeClient.send).toBeCalled();
 	});
 
+	test('batch update multiple items', async () => {
+		// do mocking
+		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
+
+		const updateBatch = vi.fn(),
+			readMany = vi.fn();
+
+		(ItemsService as Mock).mockImplementation(() => ({ updateBatch, readMany }));
+		const getMetaForQuery = vi.fn();
+		(MetaService as Mock).mockImplementation(() => ({ getMetaForQuery }));
+		// receive message
+		const fakeClient = mockClient();
+
+		emitter.emitAction(
+			'websocket.message',
+			{
+				client: fakeClient,
+				message: { type: 'items', collection: 'test', action: 'update', data: [{ id: '123' }, { id: '456' }] },
+			},
+			{} as EventContext,
+		);
+
+		await vi.runAllTimersAsync(); // flush promises to make sure the event is handled
+		// expect service functions
+		expect(updateBatch).toBeCalled();
+		expect(getMetaForQuery).toBeCalled();
+		expect(readMany).toBeCalled();
+		expect(fakeClient.send).toBeCalled();
+	});
+
 	test('delete one item', async () => {
 		// do mocking
 		(getSchema as Mock).mockImplementation(() => ({ collections: { test: [] } }));
