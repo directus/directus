@@ -421,9 +421,11 @@ class FlowManager {
 
 		const handler = this.operations.get(operation.type)!;
 
-		const options = applyOptionsData(operation.options, keyedData);
+		let options = null;
 
 		try {
+			options = applyOptionsData(operation.options, keyedData);
+
 			let result = await handler(options, {
 				services,
 				env: useEnv(),
