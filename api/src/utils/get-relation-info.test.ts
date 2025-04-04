@@ -1,9 +1,10 @@
 import type { DeepPartial, Relation } from '@directus/types';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { getRelationInfo } from './get-relation-info.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 describe('getRelationInfo', () => {
-	it('Errors on suspiciously long implicit $FOLLOW', () => {
+	test('Error on suspiciously long implicit $FOLLOW', () => {
 		expect(() =>
 			getRelationInfo(
 				[],
@@ -13,7 +14,7 @@ describe('getRelationInfo', () => {
 		).toThrowError(Error);
 	});
 
-	it('Generates a new relation object for an implicit o2m relation', () => {
+	test('Generate a new relation object for an implicit o2m relation', () => {
 		const result = getRelationInfo([], 'related_test_collection', '$FOLLOW(test_collection, test_field)');
 
 		expect(result).toEqual({
@@ -28,7 +29,7 @@ describe('getRelationInfo', () => {
 		});
 	});
 
-	it('Generates a new relation object for an implicit o2a relation', () => {
+	test('Generate a new relation object for an implicit o2a relation', () => {
 		const result = getRelationInfo(
 			[],
 			'related_test_collection',
@@ -49,7 +50,15 @@ describe('getRelationInfo', () => {
 		});
 	});
 
-	it('Returns the correct existing relation for the given collection/field', () => {
+	test('Returns the correct existing relation for the given collection/field', () => {
+		const schema = new SchemaBuilder()
+			.collection('test', (c) => {
+				c.field("id").id()
+				c.field("o2m").o2m("related_collection", "related_field")
+				c.field("o2m").m2o("related_collection", "related_field")
+
+			})
+
 		const testRelations: DeepPartial<Relation>[] = [
 			// o2m
 			{

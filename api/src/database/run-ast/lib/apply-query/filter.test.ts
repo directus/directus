@@ -1,12 +1,9 @@
-import type { SchemaOverview } from '@directus/types';
 import knex from 'knex';
-import { MockClient, createTracker } from 'knex-mock-client';
+import { createTracker } from 'knex-mock-client';
 import { describe, expect, test, vi } from 'vitest';
 import { applyFilter } from './filter.js';
 import { SchemaBuilder } from '@directus/schema-builder';
-
-
-class Client_SQLite3 extends MockClient { }
+import { Client_SQLite3 } from './mock.js';
 
 describe('boolean filter operators', () => {
 	const operators = [
