@@ -26,5 +26,8 @@
 	"engines": {
 		"node": "22",
 		"pnpm": "9"
+	},
+	"resolutions": {
+		"rollup": "4.34.9"
 	}
 }
