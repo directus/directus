@@ -5,13 +5,13 @@ import { Client_SQLite3 } from "./mock.js";
 import { applyAggregate } from "./aggregate.js";
 import { createTracker } from "knex-mock-client";
 
-test('aggregate empty', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id()
-			c.field('author').m2o('users')
-		}).build()
+const schema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').id()
+		c.field('author').m2o('users')
+	}).build()
 
+test('aggregate empty', async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -29,13 +29,6 @@ test('aggregate empty', async () => {
 })
 
 test('aggregate counting id and title', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id()
-			c.field('title').string()
-			c.field('author').m2o('users')
-		}).build()
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -55,13 +48,6 @@ test('aggregate counting id and title', async () => {
 })
 
 test('aggregate counting *', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id()
-			c.field('title').string()
-			c.field('author').m2o('users')
-		}).build()
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -81,13 +67,6 @@ test('aggregate counting *', async () => {
 })
 
 test('aggregate countDistinct title', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id()
-			c.field('title').string()
-			c.field('author').m2o('users')
-		}).build()
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -107,13 +86,6 @@ test('aggregate countDistinct title', async () => {
 })
 
 test('aggregate countDistinct id as it is unique', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id()
-			c.field('title').string()
-			c.field('author').m2o('users')
-		}).build()
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -133,13 +105,6 @@ test('aggregate countDistinct id as it is unique', async () => {
 })
 
 test('aggregate countAll', async () => {
-	const schema = new SchemaBuilder()
-		.collection('articles', (c) => {
-			c.field('id').id()
-			c.field('title').string()
-			c.field('author').m2o('users')
-		}).build()
-
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
@@ -155,5 +120,31 @@ test('aggregate countAll', async () => {
 	const rawQuery = tracker.history.all[0]!
 
 	expect(rawQuery.sql).toEqual(`select count(*) as "countAll"`)
+	expect(rawQuery.bindings).toEqual([])
+})
+
+test('aggregate count o2m', async () => {
+	const o2mSchema = new SchemaBuilder()
+		.collection('articles', (c) => {
+			c.field('id').id()
+			c.field('title').string()
+			c.field('links').o2m('link_list', 'article_id')
+		}).build()
+
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
+
+	applyAggregate(o2mSchema, queryBuilder, {
+		count: ['links']
+	}, 'articles', false)
+
+	const tracker = createTracker(db);
+	tracker.on.select('count').response([]);
+
+	await queryBuilder;
+
+	const rawQuery = tracker.history.all[0]!
+
+	expect(rawQuery.sql).toEqual(`select count("articles"."links") as "count->links"`)
 	expect(rawQuery.bindings).toEqual([])
 })
