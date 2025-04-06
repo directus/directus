@@ -107,11 +107,10 @@ test(`filter values on bigint fields are correctly passed as such to db query`, 
 
 	await query;
 
-	const resultingSelectQuery = tracker.history.select[0];
-	const expectedSql = `select * where "${collection}"."${field}" = ?`;
+	const rawQuery = tracker.history.select[0]!;
 
-	expect(resultingSelectQuery?.sql).toEqual(expectedSql);
-	expect(resultingSelectQuery?.bindings[0]).toEqual(bigintId.toString());
+	expect(rawQuery.sql).toEqual(`select * where "${collection}"."${field}" = ?`);
+	expect(rawQuery.bindings).toEqual([bigintId.toString()]);
 });
 
 test.each([
@@ -143,8 +142,9 @@ test.each([
 
 	await query;
 
-	const resultingSelectQuery = tracker.history.select[0];
-	const expectedSql = `select * where "${collection}"."${field}" is ${sql}`;
+	const rawQuery = tracker.history.select[0]!;
 
-	expect(resultingSelectQuery?.sql).toEqual(expectedSql);
+	expect(rawQuery.sql).toEqual(`select * where "${collection}"."${field}" is ${sql}`);
+	expect(rawQuery.bindings).toEqual([]);
+
 });
