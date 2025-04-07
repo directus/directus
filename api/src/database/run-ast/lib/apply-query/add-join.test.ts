@@ -176,7 +176,6 @@ test('dont overwrite already aliased relations', async () => {
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias');
 
 	addJoin({
 		aliasMap: {

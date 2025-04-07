@@ -3,18 +3,18 @@ import type { Knex } from 'knex';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { DatabaseHelper } from '../types.js';
 import { generateAlias } from '../../run-ast/lib/apply-query/index.js';
-import { applyFilter } from '../../run-ast/lib/apply-query/filter.js';
+import { applyFilter } from '../../run-ast/lib/apply-query/filter/index.js';
 
 export type FnHelperOptions = {
 	type: string | undefined;
 	originalCollectionName: string | undefined;
 	relationalCountOptions:
-		| {
-				query: Query;
-				cases: Filter[];
-				permissions: Permission[];
-		  }
-		| undefined;
+	| {
+		query: Query;
+		cases: Filter[];
+		permissions: Permission[];
+	}
+	| undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {

@@ -7,7 +7,7 @@ import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { isValidUuid } from '../../../../utils/is-valid-uuid.js';
 import { parseNumericString } from '../../../../utils/parse-numeric-string.js';
 import { getHelpers } from '../../../helpers/index.js';
-import { applyFilter } from './filter.js';
+import { applyFilter } from './filter/index.js';
 
 export function applySearch(
 	knex: Knex,

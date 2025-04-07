@@ -11,7 +11,7 @@ vi.doMock('nanoid/non-secure', () => ({
 
 const { getColumn } = await import("./get-column.js");
 
-test('colum for simple field', async () => {
+test('column for simple field', async () => {
 	const schema = new SchemaBuilder()
 		.collection('articles', (c) => {
 			c.field('id').id()
@@ -25,7 +25,7 @@ test('colum for simple field', async () => {
 	expect(rawQuery.bindings).toEqual([])
 })
 
-test('colum for alias', async () => {
+test('column for alias', async () => {
 	const schema = new SchemaBuilder()
 		.collection('articles', (c) => {
 			c.field('id').id()
@@ -39,7 +39,7 @@ test('colum for alias', async () => {
 	expect(rawQuery.bindings).toEqual([])
 })
 
-test('colum for count function', async () => {
+test('column for count function', async () => {
 	const schema = new SchemaBuilder()
 		.collection('articles', (c) => {
 			c.field('id').id()
@@ -55,7 +55,7 @@ test('colum for count function', async () => {
 	expect(rawQuery.bindings).toEqual([])
 })
 
-test('colum for date function', async () => {
+test('column for date function', async () => {
 	const schema = new SchemaBuilder()
 		.collection('articles', (c) => {
 			c.field('id').id()
@@ -70,7 +70,7 @@ test('colum for date function', async () => {
 	expect(rawQuery.bindings).toEqual([])
 })
 
-test('colum for invalid function', async () => {
+test('column for invalid function', async () => {
 	const schema = new SchemaBuilder()
 		.collection('articles', (c) => {
 			c.field('id').id()

@@ -8,7 +8,7 @@ import { getColumn } from '../../utils/get-column.js';
 import { applyLimit, applyOffset } from './pagination.js';
 import { joinFilterWithCases } from './join-filter-with-cases.js';
 import { applySort } from './sort.js';
-import { applyFilter } from './filter.js';
+import { applyFilter } from './filter/index.js';
 import { applySearch } from './search.js';
 import { applyAggregate } from './aggregate.js';
 
