@@ -9,11 +9,14 @@ declare global {
 	}
 }
 
-const { url } = defineProps<{
+const { url, singleUrlSubdued = true } = defineProps<{
 	url: string | string[];
+	singleUrlSubdued: boolean;
 	headerExpanded?: boolean;
+	hideRefreshButton?: boolean;
 	hidePopupButton?: boolean;
 	inPopup?: boolean;
+	centered?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -146,7 +149,9 @@ onMounted(() => {
 				>
 					<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
 				</v-button>
+
 				<v-button
+					v-if="!hideRefreshButton"
 					v-tooltip.bottom.end="t('live_preview.refresh')"
 					x-small
 					icon
@@ -159,13 +164,15 @@ onMounted(() => {
 					<v-icon v-else small name="refresh" />
 				</v-button>
 
+				<div v-if="centered" class="spacer" />
+
 				<v-menu
 					v-if="activeUrl"
 					class="url"
-					:class="{ multiple: multipleUrls }"
+					:class="{ disabled: singleUrlSubdued, clickable: multipleUrls }"
 					:disabled="!multipleUrls"
 					show-arrow
-					placement="bottom-start"
+					:placement="centered ? 'bottom' : 'bottom-start'"
 				>
 					<template #activator="{ toggle }">
 						<div class="activator" @click="toggle">
@@ -312,14 +319,17 @@ onMounted(() => {
 		}
 
 		.url {
-			color: var(--preview--color-disabled);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+			color: var(--preview--color);
 
-			&.multiple {
+			&.disabled {
+				color: var(--preview--color-disabled);
+			}
+
+			&.clickable {
 				cursor: pointer;
-				color: var(--preview--color);
 			}
 
 			.activator {

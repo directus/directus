@@ -25,7 +25,14 @@ const showEditableElements = ref(false);
 			<module-bar v-if="moduleBarOpen" />
 		</transition-expand>
 
-		<live-preview :url="urls" :header-expanded="moduleBarOpen" hide-popup-button>
+		<live-preview
+			:url="urls"
+			:single-url-subdued="false"
+			:header-expanded="moduleBarOpen"
+			hide-refresh-button
+			hide-popup-button
+			centered
+		>
 			<template #prepend-header>
 				<v-button
 					v-tooltip.bottom.end="t('toggle_navigation')"
