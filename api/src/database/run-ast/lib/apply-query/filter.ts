@@ -14,7 +14,7 @@ import type { Knex } from 'knex';
 import { getCases } from '../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../utils/get-column-path.js';
-import { getColumn } from '../../../../utils/get-column.js';
+import { getColumn } from '../../utils/get-column.js';
 import { getRelationInfo } from '../../../../utils/get-relation-info.js';
 import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
 import { getHelpers } from '../../../helpers/index.js';

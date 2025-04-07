@@ -7,7 +7,7 @@ import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.j
 import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
-import { getColumn } from '../../../utils/get-column.js';
+import { getColumn } from '../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
 import { applyCaseWhen } from '../utils/apply-case-when.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';

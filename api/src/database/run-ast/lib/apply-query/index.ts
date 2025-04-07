@@ -4,7 +4,7 @@ import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../../../helpers/index.js';
 import { applyCaseWhen } from '../../utils/apply-case-when.js';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
-import { getColumn } from '../../../../utils/get-column.js';
+import { getColumn } from '../../utils/get-column.js';
 import { applyLimit, applyOffset } from './pagination.js';
 import { joinFilterWithCases } from './join-filter-with-cases.js';
 import { applySort } from './sort.js';

@@ -1,8 +1,7 @@
+import { SchemaBuilder } from "@directus/schema-builder";
 import knex from "knex";
 import { expect, test, vi } from "vitest";
 import { Client_SQLite3 } from "./mock.js";
-import { createTracker } from "knex-mock-client";
-import { SchemaBuilder } from "@directus/schema-builder";
 
 const aliasFn = vi.fn();
 
@@ -31,12 +30,7 @@ test('add join non existed relation', async () => {
 		schema
 	})
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select *`)
 	expect(rawQuery.bindings).toEqual([])
@@ -62,12 +56,7 @@ test('add join for m2o relation', async () => {
 		schema
 	})
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * left join "users" as "alias" on "articles"."author" = "alias"."id"`)
 	expect(rawQuery.bindings).toEqual([])
@@ -93,12 +82,7 @@ test('add join for o2m relation', async () => {
 		schema
 	})
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * left join "links_list" as "alias" on "articles"."id" = "alias"."article_id"`)
 	expect(rawQuery.bindings).toEqual([])
@@ -146,12 +130,7 @@ test('add join for a2o relation', async () => {
 		schema
 	})
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * left join "images" as "alias" on "articles"."collection" = ? and "articles"."title_component" = CAST("alias"."id" AS CHAR(255))`)
 	expect(rawQuery.bindings).toEqual(["images"])
@@ -182,12 +161,7 @@ test('add join for m2m relation', async () => {
 		schema
 	})
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * left join "articles_tags_list_junction" as "alias" on "articles"."id" = "alias"."articles_id" left join "tags_list" as "alias2" on "alias"."tags_list_id" = "alias2"."id"`)
 	expect(rawQuery.bindings).toEqual([])
@@ -218,12 +192,7 @@ test('dont overwrite already aliased relations', async () => {
 		schema
 	})
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select *`)
 	expect(rawQuery.bindings).toEqual([])

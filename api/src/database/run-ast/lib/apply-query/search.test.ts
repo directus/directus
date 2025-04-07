@@ -33,12 +33,7 @@ for (const number of ['0x56071c902718e681e274DB0AaC9B4Ed2d027924d', '0b11111', '
 
 		applySearch(db as any, schema, queryBuilder, number, 'test', {}, permissions);
 
-		const tracker = createTracker(db);
-		tracker.on.select('*').response([]);
-
-		await queryBuilder;
-
-		const rawQuery = tracker.history.all[0]!
+		const rawQuery = queryBuilder.toSQL();
 
 		expect(rawQuery.sql).toEqual(`select * where ((LOWER("test"."text") LIKE ?))`)
 		expect(rawQuery.bindings).toEqual([`%${number.toLowerCase()}%`])
@@ -52,12 +47,7 @@ for (const number of ['1234', '-128', '12.34']) {
 
 		applySearch(db as any, schema, queryBuilder, number, 'test', {}, permissions);
 
-		const tracker = createTracker(db);
-		tracker.on.select('*').response([]);
-
-		await queryBuilder;
-
-		const rawQuery = tracker.history.all[0]!
+		const rawQuery = queryBuilder.toSQL();
 
 		expect(rawQuery.sql).toEqual(`select * where ((LOWER("test"."text") LIKE ?) or ("test"."float" = ?) or ("test"."integer" = ?))`)
 		expect(rawQuery.bindings).toEqual([`%${number.toLowerCase()}%`, Number(number), Number(number)])
@@ -78,12 +68,7 @@ test(`Query is falsy if no other clause is added`, async () => {
 
 	applySearch(db as any, schema, queryBuilder, 'searchstring', 'test', {}, permissions);
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where (1 = 0)`)
 	expect(rawQuery.bindings).toEqual([])
@@ -102,12 +87,7 @@ test(`Exclude non uuid searchable field(s) when searchQuery has valid uuid value
 		} as unknown as Permission,
 	]);
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where (("test"."id" = ?) or (LOWER("test"."text") LIKE ?))`)
 	expect(rawQuery.bindings).toEqual(["4b9adc65-4ad8-4242-9144-fbfc58400d74", "%4b9adc65-4ad8-4242-9144-fbfc58400d74%"])
@@ -128,12 +108,7 @@ test(`Remove forbidden field(s) from search`, async () => {
 		} as unknown as Permission,
 	]);
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where ((LOWER("test"."string") LIKE ?))`)
 	expect(rawQuery.bindings).toEqual(["%directus%"])
@@ -152,12 +127,7 @@ test(`Add all fields for * field rule`, async () => {
 		} as unknown as Permission,
 	]);
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`)
 	expect(rawQuery.bindings).toEqual(["%1%", "%1%", 1, 1])
@@ -178,12 +148,7 @@ test(`Add all fields when * is present in field rule with permission rule presen
 		} as unknown as Permission,
 	]);
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`)
 	expect(rawQuery.bindings).toEqual(["%1%", "%1%", 1, 1])
@@ -195,12 +160,7 @@ test(`All field(s) are searched for admin`, async () => {
 
 	applySearch(db as any, schema, queryBuilder, '1', 'test', {}, []);
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await queryBuilder;
-
-	const rawQuery = tracker.history.all[0]!
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`)
 	expect(rawQuery.bindings).toEqual(["%1%", "%1%", 1, 1])

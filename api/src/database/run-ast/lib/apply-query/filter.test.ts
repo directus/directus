@@ -1,8 +1,7 @@
+import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
-import { createTracker } from 'knex-mock-client';
 import { describe, expect, test, vi } from 'vitest';
 import { applyFilter } from './filter.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 import { Client_SQLite3 } from './mock.js';
 
 describe('boolean filter operators', () => {
@@ -58,21 +57,16 @@ describe('boolean filter operators', () => {
 					_and: [{ [field]: { [`_${filterOperator}`]: filterValue } }],
 				};
 
-				const { query } = applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
+				applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
 
-				const tracker = createTracker(db);
-				tracker.on.select('*').response([]);
-
-				await query;
-
-				const sql = tracker.history.select[0]?.sql.match(/select \* where \((.*)\)/)?.[1];
+				const rawQuery = queryBuilder.toSQL();
 
 				const expectedSql = sqlWhereClause[filterValue === false ? 'false' : 'true'].replaceAll(
 					'$column',
 					`"${collection}"."${field}"`,
 				);
 
-				expect(sql).toEqual(expectedSql);
+				expect(rawQuery.sql).toEqual(`select * where (${expectedSql})`);
 			});
 		}
 	}
@@ -100,14 +94,9 @@ test(`filter values on bigint fields are correctly passed as such to db query`, 
 		},
 	};
 
-	const { query } = applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
+	applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await query;
-
-	const rawQuery = tracker.history.select[0]!;
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where "${collection}"."${field}" = ?`);
 	expect(rawQuery.bindings).toEqual([bigintId.toString()]);
@@ -135,14 +124,9 @@ test.each([
 		},
 	};
 
-	const { query } = applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
+	applyFilter(db, schema, queryBuilder, rootFilter, collection, {}, [], []);
 
-	const tracker = createTracker(db);
-	tracker.on.select('*').response([]);
-
-	await query;
-
-	const rawQuery = tracker.history.select[0]!;
+	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where "${collection}"."${field}" is ${sql}`);
 	expect(rawQuery.bindings).toEqual([]);
