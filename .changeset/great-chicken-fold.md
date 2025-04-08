@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed manually triggered synchronous flow not erroring when the last operation failed
+Added an `Error on Reject` option to manually triggered flows
