@@ -170,7 +170,7 @@ const runManualFlow = async (flowId: string) => {
 		emit('refresh');
 
 		notify({
-			title: t('run_flow_triggered', { flow: selectedFlow.name }),
+			title: t('run_flow_success', { flow: selectedFlow.name }),
 		});
 
 		await notificationStore.refreshUnreadCount();
