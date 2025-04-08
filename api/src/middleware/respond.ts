@@ -97,6 +97,12 @@ export const respond: RequestHandler = asyncHandler(async (req, res) => {
 			res.set('Content-Type', 'text/yaml');
 			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'yaml'));
 		}
+
+		if (req.sanitizedQuery.export === 'xls') {
+			res.attachment(`${filename}.xls`);
+			res.set('Content-Type', 'application/vnd.ms-excel');
+			return res.status(200).send(exportService.transform(res.locals['payload']?.data, 'xls'));
+		}
 	}
 
 	if (Buffer.isBuffer(res.locals['payload'])) {

@@ -475,7 +475,7 @@ related_collection: 相关模型
 related_collections: 相关模型
 translations_collection: 翻译模型
 languages_collection: 语言模型
-import_data_input_placeholder: CSV 或 JSON
+import_data_input_placeholder: CSV, JSON 或 XLS
 import_data_button: 开始导入
 import_data_indeterminate: 导入数据中
 import_data_success: 成功从 {filename} 导入数据

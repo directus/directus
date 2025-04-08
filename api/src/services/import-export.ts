@@ -20,6 +20,7 @@ import { appendFile } from 'node:fs/promises';
 import type { Readable, Stream } from 'node:stream';
 import Papa from 'papaparse';
 import StreamArray from 'stream-json/streamers/StreamArray.js';
+import { utils as xlsxUtils, write as xlsxWrite, read as xlsxRead } from 'xlsx';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
@@ -44,7 +45,7 @@ import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js'
 const env = useEnv();
 const logger = useLogger();
 
-type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
+type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml' | 'xls';
 
 export class ImportService {
 	knex: Knex;
@@ -90,8 +91,10 @@ export class ImportService {
 			case 'application/json':
 				return await this.importJSON(collection, stream);
 			case 'text/csv':
-			case 'application/vnd.ms-excel':
 				return await this.importCSV(collection, stream);
+			case 'application/vnd.ms-excel':
+			case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+				return await this.importXLS(collection, stream);
 			default:
 				throw new UnsupportedMediaTypeError({ mediaType: mimetype, where: 'file import' });
 		}
@@ -258,6 +261,98 @@ export class ImportService {
 			});
 		});
 	}
+
+	async importXLS(collection: string, stream: Readable): Promise<void> {
+		const tmpFile = await createTmpFile().catch(() => null);
+		if (!tmpFile) throw new Error('Failed to create temporary file for import');
+
+		const nestedActionEvents: ActionEventParams[] = [];
+
+		return transaction(this.knex, (trx) => {
+			const service = getService(collection, {
+				knex: trx,
+				schema: this.schema,
+				accountability: this.accountability,
+			});
+
+			const saveQueue = queue(async (value: Record<string, unknown>) => {
+				return await service.upsertOne(value, { bypassEmitAction: (params) => nestedActionEvents.push(params) });
+			});
+
+			return new Promise<void>((resolve, reject) => {
+				const writeStream = createWriteStream(tmpFile.path);
+				stream.pipe(writeStream);
+
+				writeStream.on('finish', async () => {
+					try {
+						const workbook = xlsxRead(tmpFile.path, {
+							type: 'file',
+							raw: true,
+							cellDates: true,
+							cellNF: true,
+							cellText: true
+						});
+
+						if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+							throw new Error('No sheets found in the Excel file');
+						}
+
+						const firstSheetName = workbook.SheetNames[0];
+
+						if (!firstSheetName) {
+							throw new Error('First sheet name is undefined');
+						}
+
+						const worksheet = workbook.Sheets[firstSheetName];
+
+						if (!worksheet) {
+							throw new Error('Worksheet not found in the Excel file');
+						}
+
+						const data = xlsxUtils.sheet_to_json<Record<string, unknown>>(worksheet, {
+							raw: true,
+							dateNF: 'yyyy-mm-dd',
+							blankrows: true,
+							defval: null,
+							header: 1
+						});
+
+						const headers = Object.values(data[0] || {}) as string[];
+
+						const processedData = data.slice(1).map(row => {
+							const item: Record<string, unknown> = {};
+
+							headers.forEach((header, index) => {
+								item[header] = row[index];
+							});
+
+							return item;
+						});
+
+						for (const row of processedData) {
+							saveQueue.push(row);
+						}
+
+						saveQueue.drain(() => {
+							for (const nestedActionEvent of nestedActionEvents) {
+								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+							}
+							
+							resolve();
+						});
+					} catch (error) {
+						reject(error);
+					} finally {
+						await tmpFile.cleanup();
+					}
+				});
+
+				writeStream.on('error', (error) => {
+					reject(error);
+				});
+			});
+		});
+	}
 }
 
 export class ExportService {
@@ -295,6 +390,7 @@ export class ExportService {
 				json: 'application/json',
 				xml: 'text/xml',
 				yaml: 'text/yaml',
+				xls: 'application/vnd.ms-excel',
 			};
 
 			const database = getDatabase();
@@ -463,7 +559,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 			includeFooter?: boolean;
 			fields?: string[] | null;
 		},
-	): string {
+	): string | Buffer {
 		if (format === 'json') {
 			let string = JSON.stringify(input || null, null, '\t');
 
@@ -509,6 +605,13 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 			}
 
 			return string;
+		}
+
+		if (format === 'xls') {
+			const worksheet = xlsxUtils.json_to_sheet(input);
+			const workbook = xlsxUtils.book_new();
+			xlsxUtils.book_append_sheet(workbook, worksheet, 'Sheet1');
+			return xlsxWrite(workbook, { type: 'buffer', bookType: 'xls' });
 		}
 
 		if (format === 'yaml') {

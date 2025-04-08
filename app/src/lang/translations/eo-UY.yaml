@@ -270,7 +270,7 @@ related_collection: Rilata kolekto
 related_collections: Rilataj kolektoj
 translations_collection: Kolekto de tradukoj
 languages_collection: Kolekto de lingvoj
-import_data_input_placeholder: CSV aŭ JSON...
+import_data_input_placeholder: CSV, JSON aŭ XLS...
 import_data_button: Komenci importi
 import_data_success: Datumoj sukcese importitaj de {filename}
 label_import: Importi

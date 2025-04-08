@@ -285,7 +285,7 @@ related_collection: คอลเลกชันที่เกี่ยวข้
 related_collections: คอลเลกชันที่เกี่ยวข้อง
 translations_collection: การแปลตาราง
 languages_collection: คอลเลกชันภาษา
-import_data_input_placeholder: CSV หรือ JSON
+import_data_input_placeholder: CSV, JSON หรือ XLS
 import_data_button: เริ่มการนำเข้า
 import_data_indeterminate: กำลังนำเข้าข้อมูล...
 import_data_success: นำเข้าข้อมูลจากไฟล์ {filename} สำเร็จ
