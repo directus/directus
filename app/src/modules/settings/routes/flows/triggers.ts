@@ -380,6 +380,18 @@ export function getTriggers() {
 					},
 				},
 				{
+					field: 'error_on_reject',
+					name: t('triggers.manual.error_on_reject'),
+					type: 'boolean',
+					meta: {
+						width: 'half' as Width,
+						interface: 'toggle',
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+				{
 					field: 'location',
 					name: t('location'),
 					meta: {
