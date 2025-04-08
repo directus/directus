@@ -87,7 +87,7 @@ export function getDBQuery(
 	}
 
 	const primaryKey = schema.collections[table]!.primary;
-	let dbQuery = knex.from(table);
+	const dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
 	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc'; column: Knex.Raw }[] = [];
 	let hasMultiRelationalSort: boolean | undefined;
@@ -175,13 +175,9 @@ export function getDBQuery(
 			});
 
 			if (hasMultiRelationalSort) {
-				dbQuery = helpers.schema.applyMultiRelationalSort(
-					knex,
-					dbQuery,
-					table,
-					primaryKey,
-					orderByString,
-					orderByFields,
+				dbQuery.rowNumber(
+					knex.ref('directus_row_number').toQuery(),
+					knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields]),
 				);
 
 				// Start order by with directus_row_number. The directus_row_number is derived from a window function that

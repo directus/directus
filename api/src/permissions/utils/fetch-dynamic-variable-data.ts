@@ -48,7 +48,11 @@ export async function fetchDynamicVariableData(options: FetchDynamicVariableCont
 		);
 	}
 
-	if (options.accountability.roles.length > 0 && (options.dynamicVariableContext.$CURRENT_ROLES?.size ?? 0) > 0) {
+	if (
+		options.accountability.roles &&
+		options.accountability.roles.length > 0 &&
+		(options.dynamicVariableContext.$CURRENT_ROLES?.size ?? 0) > 0
+	) {
 		contextData['$CURRENT_ROLES'] = await fetchContextData(
 			'$CURRENT_ROLES',
 			options.dynamicVariableContext,
