@@ -1,20 +1,22 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useHead } from '@unhead/vue';
-import { useSettingsStore } from '@/stores/settings';
 import ModuleBar from '@/views/private/components/module-bar.vue';
 import NotificationDialogs from '@/views/private/components/notification-dialogs.vue';
 import NotificationsGroup from '@/views/private/components/notifications-group.vue';
 import LivePreview from '@/views/private/components/live-preview.vue';
 import EditingLayer from '../components/editing-layer.vue';
 
+defineProps<{
+	urls: string[];
+	dynamicUrl?: string;
+	invalidUrl?: boolean;
+}>();
+
 const { t } = useI18n();
 useHead({ title: t('visual_editor') });
 
-const { settings } = useSettingsStore();
-
-const urls = computed(() => settings?.visual_editor_urls?.map((item) => item.url).filter(Boolean) || []);
 const moduleBarOpen = ref(true);
 const showEditableElements = ref(false);
 </script>
@@ -27,6 +29,8 @@ const showEditableElements = ref(false);
 
 		<live-preview
 			:url="urls"
+			:dynamic-url
+			:invalid-url
 			:single-url-subdued="false"
 			:header-expanded="moduleBarOpen"
 			hide-refresh-button
@@ -80,6 +84,10 @@ const showEditableElements = ref(false);
 	height: 100%;
 	width: 100%;
 	min-width: 0;
+}
+
+.spacer {
+	flex: 1;
 }
 
 .notifications-group {
