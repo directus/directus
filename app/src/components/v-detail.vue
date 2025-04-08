@@ -56,7 +56,7 @@ function toggle() {
 			</v-divider>
 		</slot>
 		<transition-expand>
-			<div v-if="internalActive" class="content">
+			<div v-show="internalActive" class="content">
 				<slot />
 			</div>
 		</transition-expand>
