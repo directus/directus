@@ -1,3 +1,1 @@
-import { SchemaBuilder } from './builder.js';
-
-export { SchemaBuilder };
+export { SchemaBuilder } from './builder.js';
