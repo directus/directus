@@ -404,9 +404,7 @@ export class FieldBuilder {
 			_kind: 'finished',
 		};
 
-		const relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(
-			related_collections
-		);
+		const relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(related_collections);
 
 		this._schema._relations.push(relation);
 

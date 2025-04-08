@@ -1,10 +1,5 @@
 import { InvalidQueryError } from '@directus/errors';
-import type {
-	Filter,
-	Permission,
-	Relation,
-	SchemaOverview
-} from '@directus/types';
+import type { Filter, Permission, Relation, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { getCases } from '../../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../../utils/get-column-path.js';
@@ -137,8 +132,9 @@ export function applyFilter(
 				if (!relation) continue;
 
 				if (relationType === 'o2m' || relationType === 'o2a') {
-					let pkField: Knex.Raw<any> | string = `${collection}.${schema.collections[relation!.related_collection!]!.primary
-						}`;
+					let pkField: Knex.Raw<any> | string = `${collection}.${
+						schema.collections[relation!.related_collection!]!.primary
+					}`;
 
 					if (relationType === 'o2a') {
 						pkField = knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), [pkField]);
@@ -179,8 +175,9 @@ export function applyFilter(
 
 				if (filterPath.includes('_none') || filterPath.includes('_some')) {
 					throw new InvalidQueryError({
-						reason: `"${filterPath.includes('_none') ? '_none' : '_some'
-							}" can only be used with top level relational alias field`,
+						reason: `"${
+							filterPath.includes('_none') ? '_none' : '_some'
+						}" can only be used with top level relational alias field`,
 					});
 				}
 
@@ -214,7 +211,16 @@ export function applyFilter(
 
 				const aliasedCollection = aliasMap['']?.alias || collection;
 
-				applyOperator(knex, dbQuery, schema, `${aliasedCollection}.${filterPath[0]}`, filterOperator, filterValue, logical, collection);
+				applyOperator(
+					knex,
+					dbQuery,
+					schema,
+					`${aliasedCollection}.${filterPath[0]}`,
+					filterOperator,
+					filterValue,
+					logical,
+					collection,
+				);
 			}
 		}
 	}

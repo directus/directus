@@ -4,7 +4,7 @@ import { getFunctionsForType } from '@directus/utils';
 import type { Knex } from 'knex';
 import { getFunctions } from '../../helpers/index.js';
 import { InvalidQueryError } from '@directus/errors';
-import { applyFunctionToColumnName } from './apply-function-to-column-name.js'
+import { applyFunctionToColumnName } from './apply-function-to-column-name.js';
 
 type FunctionColumnOptions = {
 	query: Query;
@@ -57,10 +57,10 @@ export function getColumn(
 				type,
 				relationalCountOptions: isFunctionColumnOptions(options)
 					? {
-						query: options.query,
-						cases: options.cases,
-						permissions: options.permissions,
-					}
+							query: options.query,
+							cases: options.cases,
+							permissions: options.permissions,
+					  }
 					: undefined,
 				originalCollectionName: options?.originalCollectionName,
 			}) as Knex.Raw;

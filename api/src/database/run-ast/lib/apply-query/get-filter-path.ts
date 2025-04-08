@@ -8,7 +8,7 @@ export function getFilterPath(key: string, value: Record<string, any>) {
 		return path;
 	}
 
-	const nested_value = Object.values(value)[0]
+	const nested_value = Object.values(value)[0];
 
 	if (isObject(value)) {
 		path.push(...getFilterPath(childKey, nested_value));

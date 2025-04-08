@@ -1,16 +1,16 @@
-import { expect, test } from "vitest";
-import { getRelation } from "./get-relation.js";
-import { SchemaBuilder } from "@directus/schema-builder";
-
+import { expect, test } from 'vitest';
+import { getRelation } from './get-relation.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 test('relation on m2o field', () => {
 	const schema = new SchemaBuilder()
 		.collection('article', (c) => {
-			c.field('id').id()
-			c.field('author').m2o('users', 'articles')
-		}).build()
+			c.field('id').id();
+			c.field('author').m2o('users', 'articles');
+		})
+		.build();
 
-	const result = getRelation(schema, 'article', 'author')
+	const result = getRelation(schema, 'article', 'author');
 
 	expect(result).toMatchInlineSnapshot(`
 		{
@@ -39,19 +39,20 @@ test('relation on m2o field', () => {
 		    "table": "article",
 		  },
 		}
-	`)
+	`);
 
-	expect(result).toEqual(getRelation(schema, 'users', 'articles'))
-})
+	expect(result).toEqual(getRelation(schema, 'users', 'articles'));
+});
 
 test('relation on o2m field', () => {
 	const schema = new SchemaBuilder()
 		.collection('article', (c) => {
-			c.field('id').id()
-			c.field('tags').o2m('tags', 'article_id')
-		}).build()
+			c.field('id').id();
+			c.field('tags').o2m('tags', 'article_id');
+		})
+		.build();
 
-	const result = getRelation(schema, 'article', 'tags')
+	const result = getRelation(schema, 'article', 'tags');
 
 	expect(result).toMatchInlineSnapshot(`
 		{
@@ -80,31 +81,33 @@ test('relation on o2m field', () => {
 		    "table": "article",
 		  },
 		}
-	`)
+	`);
 
-	expect(result).toEqual(getRelation(schema, 'tags', 'article_id'))
-})
+	expect(result).toEqual(getRelation(schema, 'tags', 'article_id'));
+});
 
 test('relation on wrong collection', () => {
 	const schema = new SchemaBuilder()
 		.collection('article', (c) => {
-			c.field('id').id()
-			c.field('tags').o2m('tags', 'article_id')
-		}).build()
+			c.field('id').id();
+			c.field('tags').o2m('tags', 'article_id');
+		})
+		.build();
 
-	const result = getRelation(schema, 'wrong', 'tags')
+	const result = getRelation(schema, 'wrong', 'tags');
 
-	expect(result).toBeUndefined()
-})
+	expect(result).toBeUndefined();
+});
 
 test('relation on wrong field', () => {
 	const schema = new SchemaBuilder()
 		.collection('article', (c) => {
-			c.field('id').id()
-			c.field('tags').o2m('tags', 'article_id')
-		}).build()
+			c.field('id').id();
+			c.field('tags').o2m('tags', 'article_id');
+		})
+		.build();
 
-	const result = getRelation(schema, 'article', 'wrong')
+	const result = getRelation(schema, 'article', 'wrong');
 
-	expect(result).toBeUndefined()
-})
+	expect(result).toBeUndefined();
+});

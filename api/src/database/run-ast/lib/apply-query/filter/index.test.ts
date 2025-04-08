@@ -11,7 +11,7 @@ vi.doMock('nanoid/non-secure', () => ({
 	customAlphabet: () => aliasFn,
 }));
 
-const { applyFilter } = await import("./index.js");
+const { applyFilter } = await import('./index.js');
 
 describe('boolean filter operators', () => {
 	const operators = [
@@ -46,12 +46,13 @@ describe('boolean filter operators', () => {
 
 	const schema = new SchemaBuilder()
 		.collection('test', (c) => {
-			c.field('id').uuid().primary()
-			c.field('text').text()
-			c.field('string').string()
-			c.field('float').float()
-			c.field('integer').integer()
-		}).build()
+			c.field('id').uuid().primary();
+			c.field('text').text();
+			c.field('string').string();
+			c.field('float').float();
+			c.field('integer').integer();
+		})
+		.build();
 
 	for (const { filterOperator, sqlWhereClause } of withReverseOperators) {
 		for (const filterValue of [true, '', false]) {
@@ -81,9 +82,10 @@ describe('boolean filter operators', () => {
 test(`filter values on bigint fields are correctly passed as such to db query`, async () => {
 	const schema = new SchemaBuilder()
 		.collection('test', (c) => {
-			c.field("id").id()
-			c.field("bigInteger").bigInteger()
-		}).build()
+			c.field('id').id();
+			c.field('bigInteger').bigInteger();
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
@@ -91,11 +93,20 @@ test(`filter values on bigint fields are correctly passed as such to db query`, 
 	// testing with value greater than Number.MAX_SAFE_INTEGER
 	const bigintId = 9007199254740991477n;
 
-	applyFilter(db, schema, queryBuilder, {
-		bigInteger: {
-			_eq: bigintId.toString(),
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			bigInteger: {
+				_eq: bigintId.toString(),
+			},
 		},
-	}, 'test', {}, [], []);
+		'test',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
@@ -108,21 +119,30 @@ for (const { operator, replacement, sql } of [
 	{ operator: '_neq', replacement: '_nnull', sql: 'not null' },
 ]) {
 	test(`${operator} = null should behave as ${replacement} = true`, async () => {
-
 		const schema = new SchemaBuilder()
-			.collection("test", (c) => {
-				c.field("id").id()
-				c.field("string").string()
-			}).build()
+			.collection('test', (c) => {
+				c.field('id').id();
+				c.field('string').string();
+			})
+			.build();
 
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 		const queryBuilder = db.queryBuilder();
 
-		applyFilter(db, schema, queryBuilder, {
-			string: {
-				[operator]: null,
+		applyFilter(
+			db,
+			schema,
+			queryBuilder,
+			{
+				string: {
+					[operator]: null,
+				},
 			},
-		}, 'test', {}, [], []);
+			'test',
+			{},
+			[],
+			[],
+		);
 
 		const rawQuery = queryBuilder.toSQL();
 
@@ -132,325 +152,463 @@ for (const { operator, replacement, sql } of [
 }
 
 test(`filtering m2o relation`, async () => {
-
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("author").m2o("users")
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('users');
 		})
-		.collection("users", (c) => {
-			c.field("id").id()
-			c.field("name").string()
-		}).build()
+		.collection('users', (c) => {
+			c.field('id').id();
+			c.field('name').string();
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce("alias")
+	aliasFn.mockReturnValueOnce('alias');
 
-	applyFilter(db, schema, queryBuilder, {
-		author: {
-			name: {
-				_eq: "username"
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			author: {
+				name: {
+					_eq: 'username',
+				},
 			},
 		},
-	}, 'article', {}, [], []);
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(rawQuery.sql).toEqual(`select * left join "users" as "alias" on "article"."author" = "alias"."id" where "alias"."name" = ?`);
-	expect(rawQuery.bindings).toEqual(["username"]);
+	expect(rawQuery.sql).toEqual(
+		`select * left join "users" as "alias" on "article"."author" = "alias"."id" where "alias"."name" = ?`,
+	);
+	expect(rawQuery.bindings).toEqual(['username']);
 });
 
 const o2m_schema = new SchemaBuilder()
-	.collection("article", (c) => {
-		c.field("id").id()
-		c.field("links").o2m("links_list", "article_id")
+	.collection('article', (c) => {
+		c.field('id').id();
+		c.field('links').o2m('links_list', 'article_id');
 	})
-	.collection("links_list", (c) => {
-		c.field("id").id()
-		c.field("name").string()
-	}).build()
+	.collection('links_list', (c) => {
+		c.field('id').id();
+		c.field('name').string();
+	})
+	.build();
 
 test(`filtering o2m relation`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce("alias")
+	aliasFn.mockReturnValueOnce('alias');
 
-	applyFilter(db, o2m_schema, queryBuilder, {
-		links: {
-			name: {
-				_eq: 2
+	applyFilter(
+		db,
+		o2m_schema,
+		queryBuilder,
+		{
+			links: {
+				name: {
+					_eq: 2,
+				},
 			},
 		},
-	}, 'article', {}, [], []);
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(rawQuery.sql).toEqual(`select * left join "links_list" as "alias" on "article"."id" = "alias"."article_id" where "alias"."name" = ?`);
+	expect(rawQuery.sql).toEqual(
+		`select * left join "links_list" as "alias" on "article"."id" = "alias"."article_id" where "alias"."name" = ?`,
+	);
 	expect(rawQuery.bindings).toEqual([2]);
 });
 
-for (const quantifier of ["_some", "_none"]) {
+for (const quantifier of ['_some', '_none']) {
 	test(`filtering o2m relation with ${quantifier}`, async () => {
 		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 		const queryBuilder = db.queryBuilder();
-		aliasFn.mockReturnValueOnce("alias")
+		aliasFn.mockReturnValueOnce('alias');
 
-		applyFilter(db, o2m_schema, queryBuilder, {
-			links: {
-				[quantifier]: {
-					name: {
-						_eq: 2
+		applyFilter(
+			db,
+			o2m_schema,
+			queryBuilder,
+			{
+				links: {
+					[quantifier]: {
+						name: {
+							_eq: 2,
+						},
 					},
-				}
+				},
 			},
-		}, 'article', {}, [], []);
+			'article',
+			{},
+			[],
+			[],
+		);
 
 		const rawQuery = queryBuilder.toSQL();
 
-		expect(rawQuery.sql).toEqual(`select * left join "links_list" as "alias" on "article"."id" = "alias"."article_id" where "article"."id"${quantifier === "_none" ? " not" : ""} in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`);
+		expect(rawQuery.sql).toEqual(
+			`select * left join "links_list" as "alias" on "article"."id" = "alias"."article_id" where "article"."id"${
+				quantifier === '_none' ? ' not' : ''
+			} in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
+		);
 		expect(rawQuery.bindings).toEqual([2]);
 	});
 }
 
 test(`filtering a2o relation`, async () => {
-
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("header").a2o(["image", "video"])
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('header').a2o(['image', 'video']);
 		})
-		.build()
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce("alias123")
-	aliasFn.mockReturnValueOnce("alias456")
+	aliasFn.mockReturnValueOnce('alias123');
+	aliasFn.mockReturnValueOnce('alias456');
 
-	applyFilter(db, schema, queryBuilder, {
-		"header:image": {
-			id: {
-				_eq: 1
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			'header:image': {
+				id: {
+					_eq: 1,
+				},
+			},
+			'header:video': {
+				id: {
+					_eq: 2,
+				},
 			},
 		},
-		"header:video": {
-			id: {
-				_eq: 2
-			},
-		},
-	}, 'article', {}, [], []);
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(rawQuery.sql).toEqual(`select * left join "image" as "alias123" on "article"."collection" = ? and "article"."header" = CAST("alias123"."id" AS CHAR(255)) left join "video" as "alias456" on "article"."collection" = ? and "article"."header" = CAST("alias456"."id" AS CHAR(255)) where "alias123"."id" = ? and "alias456"."id" = ?`);
-	expect(rawQuery.bindings).toEqual(["image", "video", 1, 2]);
+	expect(rawQuery.sql).toEqual(
+		`select * left join "image" as "alias123" on "article"."collection" = ? and "article"."header" = CAST("alias123"."id" AS CHAR(255)) left join "video" as "alias456" on "article"."collection" = ? and "article"."header" = CAST("alias456"."id" AS CHAR(255)) where "alias123"."id" = ? and "alias456"."id" = ?`,
+	);
+	expect(rawQuery.bindings).toEqual(['image', 'video', 1, 2]);
 });
 
 test(`filtering _between`, async () => {
-
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("created").date()
-		}).build()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('created').date();
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-	applyFilter(db, schema, queryBuilder, {
-		created: {
-			_between: ["2024-01-01", "2024-12-31"]
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			created: {
+				_between: ['2024-01-01', '2024-12-31'],
+			},
 		},
-	}, 'article', {}, [], []);
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where "article"."created" between ? and ?`);
-	expect(rawQuery.bindings).toEqual(["1704067200000", "1735603200000"]);
+	expect(rawQuery.bindings).toEqual(['1704067200000', '1735603200000']);
 });
 
 test(`filtering _in`, async () => {
-
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("title").string()
-		}).build()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-	applyFilter(db, schema, queryBuilder, {
-		title: {
-			_in: ["title1", "title2"]
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			title: {
+				_in: ['title1', 'title2'],
+			},
 		},
-	}, 'article', {}, [], []);
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where "article"."title" in (?, ?)`);
-	expect(rawQuery.bindings).toEqual(["title1", "title2"]);
+	expect(rawQuery.bindings).toEqual(['title1', 'title2']);
 });
 
 test(`filtering _contains`, async () => {
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("title").string()
-		}).build()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-	applyFilter(db, schema, queryBuilder, {
-		title: {
-			_contains: "abc"
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			title: {
+				_contains: 'abc',
+			},
 		},
-	}, 'article', {}, [], []);
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where "article"."title" like ?`);
-	expect(rawQuery.bindings).toEqual(["%abc%"]);
+	expect(rawQuery.bindings).toEqual(['%abc%']);
 });
 
 const operator_schema = new SchemaBuilder()
-	.collection("article", (c) => {
-		c.field("id").id()
-		c.field("title").string()
-		c.field("likes").integer()
-	}).build()
+	.collection('article', (c) => {
+		c.field('id').id();
+		c.field('title').string();
+		c.field('likes').integer();
+	})
+	.build();
 
 test(`filtering _and`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-	applyFilter(db, operator_schema, queryBuilder, {
-		_and: [
-			{
-				title: {
-					_contains: "norge er kult"
-				}
-			},
-			{
-				likes: {
-					_gte: 2000
-				}
-			}
-		],
-	}, 'article', {}, [], []);
+	applyFilter(
+		db,
+		operator_schema,
+		queryBuilder,
+		{
+			_and: [
+				{
+					title: {
+						_contains: 'norge er kult',
+					},
+				},
+				{
+					likes: {
+						_gte: 2000,
+					},
+				},
+			],
+		},
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where ("article"."title" like ? and "article"."likes" >= ?)`);
-	expect(rawQuery.bindings).toEqual(["%norge er kult%", 2000]);
+	expect(rawQuery.bindings).toEqual(['%norge er kult%', 2000]);
 });
 
 test(`filtering _or`, async () => {
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
 
-	applyFilter(db, operator_schema, queryBuilder, {
-		_or: [
-			{
-				title: {
-					_contains: "norge er kult"
-				}
-			},
-			{
-				likes: {
-					_gte: 2000
-				}
-			}
-		],
-	}, 'article', {}, [], []);
+	applyFilter(
+		db,
+		operator_schema,
+		queryBuilder,
+		{
+			_or: [
+				{
+					title: {
+						_contains: 'norge er kult',
+					},
+				},
+				{
+					likes: {
+						_gte: 2000,
+					},
+				},
+			],
+		},
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(rawQuery.sql).toEqual(`select * where ("article"."title" like ? or "article"."likes" >= ?)`);
-	expect(rawQuery.bindings).toEqual(["%norge er kult%", 2000]);
+	expect(rawQuery.bindings).toEqual(['%norge er kult%', 2000]);
 });
 
 test(`filtering $FOLLOW against reverse o2m`, async () => {
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("author").m2o("users")
-		}).build()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('author').m2o('users');
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce("alias")
+	aliasFn.mockReturnValueOnce('alias');
 
-	applyFilter(db, schema, queryBuilder, {
-		"$FOLLOW(article, author)": {
-			id: {
-				_eq: 1
-			}
-		}
-	}, 'users', {}, [], []);
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			'$FOLLOW(article, author)': {
+				id: {
+					_eq: 1,
+				},
+			},
+		},
+		'users',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(rawQuery.sql).toEqual(`select * left join "article" as "alias" on "users"."id" = "alias"."author" where "alias"."id" = ?`);
+	expect(rawQuery.sql).toEqual(
+		`select * left join "article" as "alias" on "users"."id" = "alias"."author" where "alias"."id" = ?`,
+	);
 	expect(rawQuery.bindings).toEqual([1]);
 });
 
 test(`filtering on count(links)`, async () => {
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("links").o2m("links", 'article_id')
-		}).build()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('links').o2m('links', 'article_id');
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce("alias")
+	aliasFn.mockReturnValueOnce('alias');
 
-	applyFilter(db, schema, queryBuilder, {
-		"count(links)": {
-			_lt: 5
-		}
-	}, 'article', {}, [], []);
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			'count(links)': {
+				_lt: 5,
+			},
+		},
+		'article',
+		{},
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(rawQuery.sql).toEqual(`select * where (select count(*) from "links" as "alias" where "alias"."article_id" = "article"."id") < ?`);
+	expect(rawQuery.sql).toEqual(
+		`select * where (select count(*) from "links" as "alias" where "alias"."article_id" = "article"."id") < ?`,
+	);
 	expect(rawQuery.bindings).toEqual([5]);
 });
 
 test(`filtering on links with existing alias map`, async () => {
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("links").o2m("links", 'article_id')
-		}).build()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('links').o2m('links', 'article_id');
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias')
-	const aliasMap = {}
+	aliasFn.mockReturnValueOnce('alias');
+	const aliasMap = {};
 
-	applyFilter(db, schema, queryBuilder, {
-		"links": {
-			id: {
-				_lt: 5
-			}
-		}
-	}, 'article', aliasMap, [], []);
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			links: {
+				id: {
+					_lt: 5,
+				},
+			},
+		},
+		'article',
+		aliasMap,
+		[],
+		[],
+	);
 
-	applyFilter(db, schema, queryBuilder, {
-		"links": {
-			id: {
-				_gt: 1
-			}
-		}
-	}, 'article', aliasMap, [], []);
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			links: {
+				id: {
+					_gt: 1,
+				},
+			},
+		},
+		'article',
+		aliasMap,
+		[],
+		[],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 
-	expect(aliasMap).toEqual({ links: { alias: "alias", collection: "links" } })
-	expect(rawQuery.sql).toEqual(`select * left join "links" as "alias" on "article"."id" = "alias"."article_id" where "alias"."id" < ? and "alias"."id" > ?`);
+	expect(aliasMap).toEqual({ links: { alias: 'alias', collection: 'links' } });
+	expect(rawQuery.sql).toEqual(
+		`select * left join "links" as "alias" on "article"."id" = "alias"."article_id" where "alias"."id" < ? and "alias"."id" > ?`,
+	);
 	expect(rawQuery.bindings).toEqual([5, 1]);
 });
 
@@ -460,26 +618,36 @@ test(`filter with partial field permissions`, async () => {
 		action: 'read',
 		collection: 'article',
 		fields: ['id', 'title'],
-	}
+	};
 
 	const schema = new SchemaBuilder()
-		.collection("article", (c) => {
-			c.field("id").id()
-			c.field("title").string()
-			c.field("text").text()
-			c.field("links").o2m("links", 'article_id')
-		}).build()
+		.collection('article', (c) => {
+			c.field('id').id();
+			c.field('title').string();
+			c.field('text').text();
+			c.field('links').o2m('links', 'article_id');
+		})
+		.build();
 
 	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
 	const queryBuilder = db.queryBuilder();
-	aliasFn.mockReturnValueOnce('alias')
-	const aliasMap = {}
+	aliasFn.mockReturnValueOnce('alias');
+	const aliasMap = {};
 
-	applyFilter(db, schema, queryBuilder, {
-		title: {
-			_eq: 1
-		}
-	}, 'article', aliasMap, [], [permission]);
+	applyFilter(
+		db,
+		schema,
+		queryBuilder,
+		{
+			title: {
+				_eq: 1,
+			},
+		},
+		'article',
+		aliasMap,
+		[],
+		[permission],
+	);
 
 	const rawQuery = queryBuilder.toSQL();
 

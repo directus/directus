@@ -53,11 +53,12 @@ describe('getRelationInfo', () => {
 	test('Returns the correct existing relation for the given collection/field', () => {
 		const schema = new SchemaBuilder()
 			.collection('collection', (c) => {
-				c.field("id").id()
-				c.field("o2m").o2m("related_o2m_collection", "related_o2m_field")
-				c.field("m2o").m2o("related_m2o_collection", "related_m2o_field")
-				c.field("a2o").a2o(["related_a2o_collection1", "related_a2o_collection2"])
-			}).build()
+				c.field('id').id();
+				c.field('o2m').o2m('related_o2m_collection', 'related_o2m_field');
+				c.field('m2o').m2o('related_m2o_collection', 'related_m2o_field');
+				c.field('a2o').a2o(['related_a2o_collection1', 'related_a2o_collection2']);
+			})
+			.build();
 
 		const o2mResult = getRelationInfo(schema.relations, 'collection', 'o2m');
 
@@ -91,7 +92,7 @@ describe('getRelationInfo', () => {
 			  },
 			  "relationType": "o2m",
 			}
-		`)
+		`);
 
 		const m2oResult = getRelationInfo(schema.relations, 'collection', 'm2o');
 
@@ -125,7 +126,7 @@ describe('getRelationInfo', () => {
 			  },
 			  "relationType": "m2o",
 			}
-		`)
+		`);
 
 		const a2oResult = getRelationInfo(schema.relations, 'collection', 'a2o');
 
@@ -154,7 +155,7 @@ describe('getRelationInfo', () => {
 			  },
 			  "relationType": "a2o",
 			}
-		`)
+		`);
 
 		const noResult = getRelationInfo(schema.relations, 'does not exist', 'wrong field');
 
