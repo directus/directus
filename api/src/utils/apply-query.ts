@@ -542,10 +542,56 @@ export function applyFilter(
 					continue;
 				}
 
+				// Handle _and with multiple conditions on same relation
+				if (key === '_and') {
+					// Group conditions by relation field
+					const relationConditions = {} as Record<string, Record<string, any>[]>;
+
+					for (const subFilter of value) {
+						const entries = Object.entries(subFilter);
+
+						if (entries.length === 1) {
+							const [field, condition] = entries[0] as [string, Record<string, any>];
+
+							// Track relation conditions
+							if (isPlainObject(condition) && !field.startsWith('_')) {
+								relationConditions[field] = relationConditions[field] || [];
+								relationConditions[field].push(condition);
+							}
+						}
+					}
+
+					let remainingFilters = [...value];
+
+					// Process relations with multiple conditions
+					for (const [field, conditions] of Object.entries(relationConditions)) {
+						if (conditions.length > 1) {
+							// Filter out these conditions
+							const newRemainingFilters = remainingFilters.filter((f) => !conditions.includes(f[field]));
+
+							// Create combined condition using _some
+							const combinedFilter = { [field]: { _some: { _and: conditions } } };
+							newRemainingFilters.push(combinedFilter);
+
+							// Replace remaining filters
+							remainingFilters = newRemainingFilters;
+						}
+					}
+
+					// Apply all filters
+					dbQuery[logical].where((subQuery) => {
+						remainingFilters.forEach((subFilter) => {
+							addWhereClauses(knex, subQuery, subFilter, collection, 'and');
+						});
+					});
+
+					continue;
+				}
+
 				/** @NOTE this callback function isn't called until Knex runs the query */
 				dbQuery[logical].where((subQuery) => {
 					value.forEach((subFilter: Record<string, any>) => {
-						addWhereClauses(knex, subQuery, subFilter, collection, key === '_and' ? 'and' : 'or');
+						addWhereClauses(knex, subQuery, subFilter, collection, 'or');
 					});
 				});
 
