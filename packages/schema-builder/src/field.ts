@@ -32,6 +32,16 @@ type FinishedFieldOverview = FieldOverview & { _kind: 'finished' };
 
 export type FieldOveriewBuilderOptions = Partial<Omit<FieldOverview, ''>>;
 
+type M2AOptions = {
+	o2m_relation: RelationBuilder,
+	a2o_relation: RelationBuilder
+}
+
+type M2MOptions = {
+	o2m_relation: RelationBuilder,
+	m2o_relation: RelationBuilder
+}
+
 export class FieldBuilder {
 	_schema: SchemaBuilder | undefined;
 	_collection: CollectionBuilder | undefined;
@@ -273,7 +283,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	m2a(...related_collections: string[]) {
+	m2a(related_collections: string[], relation_callback?: (options: M2AOptions) => M2AOptions | void) {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -288,7 +298,7 @@ export class FieldBuilder {
 
 		const junction_name = `${this._collection.get_name()}_builder`;
 
-		const o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
 			.options({
 				meta: {
@@ -296,11 +306,20 @@ export class FieldBuilder {
 				},
 			});
 
-		const a2o_relation = new RelationBuilder(junction_name, 'item').a2o(related_collections).options({
+		let a2o_relation = new RelationBuilder(junction_name, 'item').a2o(related_collections).options({
 			meta: {
 				junction_field: `${this._collection.get_name()}_id`,
 			},
 		});
+
+		if (relation_callback) {
+			const new_relations = relation_callback({ o2m_relation, a2o_relation })
+
+			if (new_relations) {
+				o2m_relation = new_relations.o2m_relation
+				a2o_relation = new_relations.a2o_relation
+			}
+		}
 
 		this._schema._relations.push(o2m_relation);
 		this._schema._relations.push(a2o_relation);
@@ -308,7 +327,7 @@ export class FieldBuilder {
 		return this;
 	}
 
-	m2m(related_collection: string) {
+	m2m(related_collection: string, relation_callback?: (options: M2MOptions) => M2MOptions | void) {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -323,7 +342,7 @@ export class FieldBuilder {
 
 		const junction_name = `${this._collection.get_name()}_${related_collection}_junction`;
 
-		const o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
 			.o2m(junction_name, `${this._collection.get_name()}_id`)
 			.options({
 				meta: {
@@ -331,7 +350,7 @@ export class FieldBuilder {
 				},
 			});
 
-		const m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`)
+		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`)
 			.m2o(related_collection)
 			.options({
 				meta: {
@@ -339,13 +358,22 @@ export class FieldBuilder {
 				},
 			});
 
+		if (relation_callback) {
+			const new_relations = relation_callback({ o2m_relation, m2o_relation })
+
+			if (new_relations) {
+				o2m_relation = new_relations.o2m_relation
+				m2o_relation = new_relations.m2o_relation
+			}
+		}
+
 		this._schema._relations.push(o2m_relation);
 		this._schema._relations.push(m2o_relation);
 
 		return this;
 	}
 
-	o2m(related_collection: string, related_field: string) {
+	o2m(related_collection: string, related_field: string, relation_callback?: (relation: RelationBuilder) => RelationBuilder | void) {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -358,17 +386,25 @@ export class FieldBuilder {
 			_kind: 'finished',
 		};
 
-		const relation = new RelationBuilder(this._collection.get_name(), this.get_name()).o2m(
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).o2m(
 			related_collection,
 			related_field,
 		);
+
+		if (relation_callback) {
+			const new_relation = relation_callback(relation)
+
+			if (new_relation) {
+				relation = new_relation
+			}
+		}
 
 		this._schema._relations.push(relation);
 
 		return this;
 	}
 
-	m2o(related_collection: string, related_field?: string) {
+	m2o(related_collection: string, related_field?: string, relation_callback?: (relation: RelationBuilder) => RelationBuilder | void) {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -381,17 +417,25 @@ export class FieldBuilder {
 			_kind: 'finished',
 		};
 
-		const relation = new RelationBuilder(this._collection.get_name(), this.get_name()).m2o(
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).m2o(
 			related_collection,
 			related_field,
 		);
+
+		if (relation_callback) {
+			const new_relation = relation_callback(relation)
+
+			if (new_relation) {
+				relation = new_relation
+			}
+		}
 
 		this._schema._relations.push(relation);
 
 		return this;
 	}
 
-	a2o(related_collections: string[]) {
+	a2o(related_collections: string[], relation_callback?: (relation: RelationBuilder) => RelationBuilder | void) {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -404,9 +448,17 @@ export class FieldBuilder {
 			_kind: 'finished',
 		};
 
-		const relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(
 			related_collections
 		);
+
+		if (relation_callback) {
+			const new_relation = relation_callback(relation)
+
+			if (new_relation) {
+				relation = new_relation
+			}
+		}
 
 		this._schema._relations.push(relation);
 

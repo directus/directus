@@ -7,6 +7,7 @@ import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { isFieldNullable } from './lib/is-field-nullable.js';
 import { processPayload } from './process-payload.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../../lib/fetch-permissions.js');
 vi.mock('../../lib/fetch-policies.js');
@@ -32,11 +33,11 @@ afterEach(() => {
 test('Skips permission checks when admin', async () => {
 	const payload = {};
 
-	const schema = {
-		collections: {
-			'collection-a': {},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('id').id()
+		})
+		.build()
 
 	const acc = { admin: true } as unknown as Accountability;
 
@@ -58,7 +59,7 @@ test('Skips permission checks when admin', async () => {
 });
 
 test('Throws forbidden error when permissions length is 0', async () => {
-	const schema = {} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder().build()
 	const acc = { admin: false } as unknown as Accountability;
 
 	vi.mocked(fetchPermissions).mockResolvedValue([]);
@@ -71,7 +72,7 @@ test('Throws forbidden error when permissions length is 0', async () => {
 });
 
 test('Throws forbidden error if used fields contain field that has no permission', async () => {
-	const schema = {} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder().build()
 	const acc = { admin: false } as unknown as Accountability;
 
 	vi.mocked(fetchPermissions).mockResolvedValue([{ fields: ['field-a'] } as Permission]);
@@ -93,21 +94,17 @@ test('Throws forbidden error if used fields contain field that has no permission
 });
 
 describe('Validates against field validation rules', () => {
-	const schema = {
-		collections: {
-			'collection-a': {
-				fields: {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id().options({
+				validation: {
 					'field-a': {
-						validation: {
-							'field-a': {
-								_eq: 1,
-							},
-						},
-					},
-				},
-			},
-		},
-	} as unknown as SchemaOverview;
+						_eq: 1
+					}
+				}
+			})
+		})
+		.build()
 
 	const users = [
 		{ user: 'admin', admin: true },
@@ -142,19 +139,11 @@ describe('Validates against field validation rules', () => {
 });
 
 describe('Injects and validates rules for non-nullable fields', () => {
-	const schema = {
-		collections: {
-			'collection-a': {
-				fields: {
-					'field-a': {
-						field: 'field-a',
-						defaultValue: null,
-						validation: null,
-					},
-				},
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').integer().primary()
+		})
+		.build()
 
 	const users = [
 		{ user: 'admin', admin: true },
@@ -192,7 +181,11 @@ describe('Injects and validates rules for non-nullable fields', () => {
 });
 
 test('Validates against permission validation rules', async () => {
-	const schema = { collections: { 'collection-a': { fields: {} } } } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').integer().primary()
+		})
+		.build()
 
 	const acc = { admin: false } as unknown as Accountability;
 
@@ -222,21 +215,17 @@ test('Validates against permission validation rules', async () => {
 });
 
 test('Validates against permission and field validation rules', async () => {
-	const schema = {
-		collections: {
-			'collection-a': {
-				fields: {
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id().options({
+				validation: {
 					'field-a': {
-						validation: {
-							'field-a': {
-								_eq: 1,
-							},
-						},
-					},
-				},
-			},
-		},
-	} as unknown as SchemaOverview;
+						_eq: 1
+					}
+				}
+			})
+		})
+		.build()
 
 	const acc = { admin: false } as unknown as Accountability;
 
@@ -267,7 +256,11 @@ test('Validates against permission and field validation rules', async () => {
 });
 
 test('Merges and applies defaults from presets', async () => {
-	const schema = { collections: { 'collection-a': { fields: {} } } } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id()
+		})
+		.build()
 
 	const acc = { admin: false } as unknown as Accountability;
 
@@ -298,7 +291,12 @@ test('Merges and applies defaults from presets', async () => {
 });
 
 test('Checks validation rules against payload with defaults', async () => {
-	const schema = { collections: { 'collection-a': { fields: {} } } } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id()
+		})
+		.build()
+
 	const acc = { admin: false } as unknown as Accountability;
 
 	vi.mocked(fetchPermissions).mockResolvedValue([

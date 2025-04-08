@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { FieldNode, FunctionFieldNode, NestedCollectionNode } from '../../../../types/ast.js';
 import type { FieldMap } from '../types.js';
 import { extractFieldsFromChildren } from './extract-fields-from-children.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 function createFieldMap({ read, other }: Partial<FieldMap> = {}): FieldMap {
 	return { read: new Map(read), other: new Map(other) };
@@ -61,7 +62,7 @@ describe('a2o', () => {
 			'test-collection',
 			children as NestedCollectionNode[],
 			fieldMap,
-			{ relations: [] } as unknown as SchemaOverview,
+			new SchemaBuilder().build(),
 			[],
 		);
 
@@ -217,7 +218,7 @@ describe('m2o', () => {
 			'test-collection',
 			children as NestedCollectionNode[],
 			fieldMap,
-			{ relations: [] } as unknown as SchemaOverview,
+			new SchemaBuilder().build(),
 			[],
 		);
 
@@ -319,7 +320,7 @@ describe('o2m', () => {
 			'test-collection',
 			children as NestedCollectionNode[],
 			fieldMap,
-			{ relations: [] } as unknown as SchemaOverview,
+			new SchemaBuilder().build(),
 			[],
 		);
 
@@ -382,7 +383,7 @@ describe('functionField', () => {
 			'test-collection',
 			children,
 			fieldMap,
-			{ relations: [] } as unknown as SchemaOverview,
+			new SchemaBuilder().build(),
 			[],
 		);
 

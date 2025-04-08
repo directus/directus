@@ -6,6 +6,7 @@ import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { processAst } from './process-ast.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../../lib/fetch-policies.js');
 vi.mock('../../lib/fetch-permissions.js');
@@ -26,8 +27,13 @@ beforeEach(() => {
 });
 
 test('Returns AST unmodified if accountability is null', async () => {
+	const schema = new SchemaBuilder()
+		.collection('test-collection', (c) => {
+			c.field('id').id()
+		})
+		.build()
+
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
-	const schema = { collections: { 'test-collection': {} } as unknown as SchemaOverview } as unknown as SchemaOverview;
 	const accountability = null;
 
 	const output = await processAst({ action: 'read', accountability, ast }, { schema } as Context);
@@ -36,8 +42,13 @@ test('Returns AST unmodified if accountability is null', async () => {
 });
 
 test('Returns AST unmodified and unverified is current user is admin', async () => {
+	const schema = new SchemaBuilder()
+		.collection('test-collection', (c) => {
+			c.field('id').id()
+		})
+		.build()
+
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
-	const schema = { collections: { 'test-collection': {} } as unknown as SchemaOverview } as unknown as SchemaOverview;
 	const accountability = { user: null, roles: [], admin: true } as unknown as Accountability;
 
 	const output = await processAst({ accountability, action: 'read', ast }, { schema } as Context);
@@ -47,7 +58,7 @@ test('Returns AST unmodified and unverified is current user is admin', async () 
 
 test('Validates all paths existence in AST if accountability is null', async () => {
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
-	const schema = { collections: {} } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder().build()
 	const accountability = null;
 
 	await expect(async () =>
@@ -57,7 +68,7 @@ test('Validates all paths existence in AST if accountability is null', async () 
 
 test('Validates all paths existence in AST if current user is admin', async () => {
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
-	const schema = { collections: {} } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder().build()
 	const accountability = { admin: true } as unknown as Accountability;
 
 	await expect(async () =>
@@ -66,8 +77,13 @@ test('Validates all paths existence in AST if current user is admin', async () =
 });
 
 test('Validates all paths in AST and throws if no permissions match', async () => {
+	const schema = new SchemaBuilder()
+		.collection('test-collection', (c) => {
+			c.field('id').id()
+		})
+		.build()
+
 	const ast = { type: 'root', name: 'test-collection', children: [] } as unknown as AST;
-	const schema = { collections: { 'test-collection': {} } as unknown as SchemaOverview } as unknown as SchemaOverview;
 	const accountability = { user: null, roles: [] } as unknown as Accountability;
 
 	vi.mocked(fetchPolicies).mockResolvedValue(['test-policy-1']);
@@ -102,15 +118,11 @@ test('Injects permission cases for the provided AST', async () => {
 		],
 	} as unknown as AST;
 
-	const schema = {
-		collections: {
-			'test-collection': {
-				fields: {
-					'test-field-a': {},
-				},
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('test-collection', (c) => {
+			c.field('test-field-a').id()
+		})
+		.build()
 
 	const accountability = { user: null, roles: [] } as unknown as Accountability;
 

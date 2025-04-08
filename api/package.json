@@ -183,6 +183,7 @@
 	},
 	"devDependencies": {
 		"@directus/random": "workspace:*",
+		"@directus/schema-builder": "workspace:*",
 		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "7.3.0",
