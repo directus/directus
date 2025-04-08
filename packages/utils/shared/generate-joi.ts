@@ -369,7 +369,7 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 
 				schema[key] = getStringSchema()
 					.min(0)
-					.regex(new RegExp(wrapped ? (compareValue as any).slice(1, -1) : compareValue), {});
+					.regex(new RegExp(wrapped ? (compareValue as any).slice(1, -1) : compareValue));
 			}
 		}
 	}
