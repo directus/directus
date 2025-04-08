@@ -461,6 +461,7 @@ webpage
 whitelabeling
 whitespace
 wireframe
+XLS
 XSS
 yaml
 YAML
