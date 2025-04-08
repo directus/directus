@@ -41,15 +41,14 @@ test(`filter type for year(created) field`, async () => {
 	expect(special).toEqual(undefined)
 })
 
-test(`filter type for year(created) field`, async () => {
+test(`filter type unapplicable function count(created)`, async () => {
 	const schema = new SchemaBuilder()
 		.collection('articles', (c) => {
 			c.field('id').id()
 			c.field('created').dateTime()
 		}).build()
 
-	const { type, special } = getFilterType(schema.collections["articles"]!.fields, 'year(created)', 'articles')
-
-	expect(type).toEqual('integer')
-	expect(special).toEqual(undefined)
+	expect(() => {
+		getFilterType(schema.collections["articles"]!.fields, 'count(created)', 'articles')
+	}).toThrowError("Invalid query. Invalid filter key \"count(created)\" on \"articles\".")
 })
