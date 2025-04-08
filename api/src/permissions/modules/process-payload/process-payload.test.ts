@@ -47,12 +47,13 @@ test('Skips permission checks when admin', async () => {
 				action: 'read',
 				accountability: acc,
 				payload,
+				nested: [],
 			},
 			{ schema } as Context,
 		),
 	).resolves.toEqual(payload);
 
-	expect(fetchPolicies).toHaveBeenCalledTimes(1);
+	expect(fetchPolicies).toHaveBeenCalledTimes(0);
 	expect(fetchPermissions).toHaveBeenCalledTimes(0);
 });
 
@@ -63,7 +64,7 @@ test('Throws forbidden error when permissions length is 0', async () => {
 	vi.mocked(fetchPermissions).mockResolvedValue([]);
 
 	await expect(
-		processPayload({ accountability: acc, action: 'read', collection: 'collection-a', payload: {} }, {
+		processPayload({ accountability: acc, action: 'read', collection: 'collection-a', payload: {}, nested: [] }, {
 			schema,
 		} as Context),
 	).rejects.toBeInstanceOf(ForbiddenError);
@@ -84,6 +85,7 @@ test('Throws forbidden error if used fields contain field that has no permission
 				payload: {
 					'field-b': 'x',
 				},
+				nested: [],
 			},
 			{ schema } as Context,
 		),
@@ -128,6 +130,7 @@ describe('Validates against field validation rules', () => {
 					payload: {
 						'field-a': 2,
 					},
+					nested: [],
 				},
 				{ schema } as Context,
 			);
@@ -176,6 +179,7 @@ describe('Injects and validates rules for non-nullable fields', () => {
 						action,
 						collection: 'collection-a',
 						payload: action === 'create' ? {} : { 'field-a': null },
+						nested: [],
 					},
 					{ schema } as Context,
 				);
@@ -205,6 +209,7 @@ test('Validates against permission validation rules', async () => {
 				payload: {
 					'field-a': 2,
 				},
+				nested: [],
 			},
 			{ schema } as Context,
 		);
@@ -248,6 +253,7 @@ test('Validates against permission and field validation rules', async () => {
 				payload: {
 					'field-a': 3,
 				},
+				nested: [],
 			},
 			{ schema } as Context,
 		);
@@ -279,6 +285,7 @@ test('Merges and applies defaults from presets', async () => {
 			payload: {
 				'field-a': 2,
 			},
+			nested: [],
 		},
 		{ schema } as Context,
 	);
@@ -305,6 +312,7 @@ test('Checks validation rules against payload with defaults', async () => {
 			action: 'read',
 			collection: 'collection-a',
 			payload: {},
+			nested: [],
 		},
 		{ schema } as Context,
 	);

@@ -1,8 +1,9 @@
 import type { Filter, Permission, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
-import { applyFilter, generateAlias } from '../../../utils/apply-query.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { DatabaseHelper } from '../types.js';
+import { generateAlias } from '../../run-ast/lib/apply-query/index.js';
+import { applyFilter } from '../../run-ast/lib/apply-query/filter.js';
 
 export type FnHelperOptions = {
 	type: string | undefined;
