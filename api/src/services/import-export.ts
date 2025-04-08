@@ -290,7 +290,7 @@ export class ImportService {
 							raw: true,
 							cellDates: true,
 							cellNF: true,
-							cellText: true
+							cellText: true,
 						});
 
 						if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
@@ -314,12 +314,12 @@ export class ImportService {
 							dateNF: 'yyyy-mm-dd',
 							blankrows: true,
 							defval: null,
-							header: 1
+							header: 1,
 						});
 
 						const headers = Object.values(data[0] || {}) as string[];
 
-						const processedData = data.slice(1).map(row => {
+						const processedData = data.slice(1).map((row) => {
 							const item: Record<string, unknown> = {};
 
 							headers.forEach((header, index) => {
@@ -337,7 +337,7 @@ export class ImportService {
 							for (const nestedActionEvent of nestedActionEvents) {
 								emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 							}
-							
+
 							resolve();
 						});
 					} catch (error) {

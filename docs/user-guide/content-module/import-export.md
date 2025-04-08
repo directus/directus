@@ -49,7 +49,8 @@ The Items will now be in the Collection. The file itself will not be stored in t
 
 ::: tip Supported File Formats
 
-You can import data from CSV, JSON, XML, YAML, and XLS files. When importing from XLS files, the first sheet will be used by default.
+You can import data from CSV, JSON, XML, YAML, and XLS files. When importing from XLS files, the first sheet will be
+used by default.
 
 :::
 
@@ -85,7 +86,8 @@ Fields are exported, how they are exported, and where they are exported. To expo
 
 ::: tip Opening the file in Excel?
 
-Export your file to CSV or XLS to seamlessly open in Excel. XLS format provides better compatibility with Excel's features and formatting.
+Export your file to CSV or XLS to seamlessly open in Excel. XLS format provides better compatibility with Excel's
+features and formatting.
 
 :::
 
