@@ -47,6 +47,12 @@ To import Items from a file, follow the steps below.
 
 The Items will now be in the Collection. The file itself will not be stored in the Directus Project.
 
+::: tip Supported File Formats
+
+You can import data from CSV, JSON, XML, YAML, and XLS files. When importing from XLS files, the first sheet will be used by default.
+
+:::
+
 ::: tip Importing Relational Files
 
 It is possible to import relational Field values as well. For this task, the User performing the import will need access
@@ -73,13 +79,13 @@ Fields are exported, how they are exported, and where they are exported. To expo
    Note: the User Directory and File Library are each composed of one Collection.
 2. Click **"Import / Export"** in the Sidebar.
 3. Click **"Export Items"** and the [Export Items Menu](#export-items-menu) will appear.
-4. Choose the desired format: CSV, JSON, XML, or YAML.
+4. Choose the desired format: CSV, JSON, XML, YAML, or XLS.
 5. **Optional:** Configure any other export details as desired.
 6. Click <span mi btn>download</span> to download the file.
 
 ::: tip Opening the file in Excel?
 
-Export your file to CSV to seamlessly open in excel.
+Export your file to CSV or XLS to seamlessly open in Excel. XLS format provides better compatibility with Excel's features and formatting.
 
 :::
 
@@ -108,7 +114,7 @@ permissions for the related Collection and a firm understanding of the relationa
 This menu provides granular control over exactly which Items and Fields are exported, how they are exported, and where
 they are exported.
 
-- **Format** — Choose to export Items as CSV, JSON, XML, or YAML.
+- **Format** — Choose to export Items as CSV, JSON, XML, YAML, or XLS.
 - **Limit** — Set the maximum number of Items to be exported.
 - **Export Location** — Download the export file directly to your machine or to the File Library.
 - **Folder** — Choose the Folder to download to _(if export location is the Folder Library)_.
