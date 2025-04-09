@@ -150,7 +150,7 @@ const translationProps = computed(() => ({
 	isLocalItem,
 	updateValue,
 	remove,
-	defaultLanguage: defaultLanguage.value || undefined,
+	defaultLanguage: defaultLanguage.value || null,
 }));
 
 function useLanguages() {
