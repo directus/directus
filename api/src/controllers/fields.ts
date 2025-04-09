@@ -130,9 +130,9 @@ router.patch(
 		if (Array.isArray(req.body)) {
 			for (const fieldData of req.body) {
 				if (isSystemField(req.params['collection']!, fieldData['field']!)) {
-					const { error } = systemFieldUpdateSchema.validate(fieldData);
+					const { error } = systemFieldUpdateSchema.validate(fieldData, { abortEarly: false });
 
-					if (error) throw new InvalidPayloadError({ reason: error.message });
+					if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
 				}
 			}
 		} else {
