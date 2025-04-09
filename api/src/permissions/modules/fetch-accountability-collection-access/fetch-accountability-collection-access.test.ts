@@ -1,10 +1,10 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/types';
-import { vi, test, beforeEach, expect } from 'vitest';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Permission } from '@directus/types';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { fetchAccountabilityCollectionAccess } from './fetch-accountability-collection-access.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../../lib/fetch-policies.js');
 vi.mock('../../lib/fetch-permissions.js');
@@ -18,12 +18,12 @@ beforeEach(() => {
 test('Returns all permissions for all collections if admin', async () => {
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
-			c.field('id').id()
+			c.field('id').id();
 		})
 		.collection('collection-b', (c) => {
-			c.field('id').id()
+			c.field('id').id();
 		})
-		.build()
+		.build();
 
 	const result = await fetchAccountabilityCollectionAccess(
 		{ admin: true } as unknown as Accountability,

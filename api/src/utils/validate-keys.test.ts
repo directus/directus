@@ -5,12 +5,12 @@ import { SchemaBuilder } from '@directus/schema-builder';
 
 const schema = new SchemaBuilder()
 	.collection('pk_integer', (c) => {
-		c.field('id').integer().primary()
+		c.field('id').integer().primary();
 	})
 	.collection('pk_uuid', (c) => {
-		c.field('id').uuid().primary()
+		c.field('id').uuid().primary();
 	})
-	.build()
+	.build();
 
 describe('validate keys', () => {
 	describe('of integer type', () => {

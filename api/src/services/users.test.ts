@@ -1,6 +1,7 @@
 import { InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { randomUUID } from '@directus/random';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability } from '@directus/types';
 import knex from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -8,7 +9,6 @@ import { validateRemainingAdminUsers } from '../permissions/modules/validate-rem
 import type { MutationOptions } from '../types/items.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService, MailService, UsersService } from './index.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -38,10 +38,10 @@ const testRoleId = '4ccdb196-14b3-4ed1-b9da-c1978be07ca2';
 const schema = new SchemaBuilder()
 	.collection('directus_users', (c) => {
 		c.field('id').uuid().primary().options({
-			nullable: false
-		})
+			nullable: false,
+		});
 	})
-	.build()
+	.build();
 
 describe('Integration Tests', () => {
 	const db = vi.mocked(knex.default({ client: MockClient }));

@@ -1,7 +1,6 @@
-import { describe, expect, test } from 'vitest';
-import { mergeVersionsRecursive, mergeVersionsRaw } from './merge-version-data.js';
-import type { SchemaOverview } from '@directus/types';
 import { SchemaBuilder } from '@directus/schema-builder';
+import { describe, expect, test } from 'vitest';
+import { mergeVersionsRaw, mergeVersionsRecursive } from './merge-version-data.js';
 
 describe('content versioning mergeVersionsRaw', () => {
 	test('No versions available', () => {
@@ -41,38 +40,38 @@ describe('content versioning mergeVersionsRaw', () => {
 describe('content versioning mergeVersionsRecursive', () => {
 	const schema = new SchemaBuilder()
 		.collection('collection_a', (c) => {
-			c.field('id').id()
+			c.field('id').id();
 
 			c.field('status').string().options({
-				defaultValue: 'draft'
-			})
+				defaultValue: 'draft',
+			});
 
-			c.field('m2o').m2o('collection_b', 'o2m')
-			c.field('m2o_c').m2o('collection_c')
-			c.field('m2m').m2m('collection_c')
-			c.field('m2a').m2a(['collection_b', 'collection_c'])
+			c.field('m2o').m2o('collection_b', 'o2m');
+			c.field('m2o_c').m2o('collection_c');
+			c.field('m2m').m2m('collection_c');
+			c.field('m2a').m2a(['collection_b', 'collection_c']);
 		})
 		.collection('collection_b', (c) => {
-			c.field('id').id()
+			c.field('id').id();
 
 			c.field('status').string().options({
-				defaultValue: 'draft'
-			})
+				defaultValue: 'draft',
+			});
 		})
 		.collection('collection_c', (c) => {
-			c.field('id').id()
+			c.field('id').id();
 
 			c.field('status').string().options({
-				defaultValue: 'draft'
-			})
+				defaultValue: 'draft',
+			});
 
-			c.field('translations').translations()
+			c.field('translations').translations();
 		})
 		.collection('collection_c_translations', (c) => {
-			c.field('id').id()
-			c.field('text').string()
+			c.field('id').id();
+			c.field('text').string();
 		})
-		.build()
+		.build();
 
 	test('No versions available', () => {
 		const result = mergeVersionsRecursive({ status: 'draft' }, [], 'collection_a', schema);

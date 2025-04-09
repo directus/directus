@@ -45,10 +45,10 @@ describe('Integration Tests', () => {
 		const schema = new SchemaBuilder()
 			.collection('directus_webhooks', (c) => {
 				c.field('id').integer().primary().options({
-					nullable: false
-				})
+					nullable: false,
+				});
 			})
-			.build()
+			.build();
 
 		beforeEach(() => {
 			service = new WebhooksService({

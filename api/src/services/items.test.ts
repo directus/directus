@@ -1,10 +1,9 @@
-import type { SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
 import { UserIntegrityCheckFlag, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './index.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -15,9 +14,9 @@ vi.mock('../utils/validate-user-count-integrity.js');
 
 const schema = new SchemaBuilder()
 	.collection('test', (c) => {
-		c.field('id').id()
+		c.field('id').id();
 	})
-	.build()
+	.build();
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;

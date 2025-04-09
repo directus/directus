@@ -7,9 +7,10 @@ import { SchemaBuilder } from '@directus/schema-builder';
 describe('m2o', () => {
 	const schema = new SchemaBuilder()
 		.collection('collection_a', (c) => {
-			c.field('primary').id()
-			c.field('node').m2o('collection_b')
-		}).build()
+			c.field('primary').id();
+			c.field('node').m2o('collection_b');
+		})
+		.build();
 
 	const nestedNode: NestedCollectionNode = {
 		type: 'm2o',
@@ -21,7 +22,7 @@ describe('m2o', () => {
 		parentKey: '',
 		relatedKey: '',
 		whenCase: [],
-		cases: []
+		cases: [],
 	};
 
 	test('should return null node when no access to node primary key', () => {
@@ -129,9 +130,10 @@ describe('m2o', () => {
 describe('o2m', () => {
 	const schema = new SchemaBuilder()
 		.collection('collection_a', (c) => {
-			c.field('id').id()
-			c.field('nodes').o2m('collection_b', 'parent_id')
-		}).build()
+			c.field('id').id();
+			c.field('nodes').o2m('collection_b', 'parent_id');
+		})
+		.build();
 
 	const nestedNode: NestedCollectionNode = {
 		type: 'o2m',
@@ -143,7 +145,7 @@ describe('o2m', () => {
 		parentKey: '',
 		relatedKey: '',
 		whenCase: [],
-		cases: []
+		cases: [],
 	};
 
 	test('should return empty nodes array when parent primary key is null', () => {

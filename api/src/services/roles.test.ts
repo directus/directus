@@ -1,12 +1,11 @@
 import { randomUUID } from '@directus/random';
-import type { SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { MutationOptions } from '../types/items.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { AccessService, ItemsService, PresetsService, RolesService, UsersService } from './index.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../../src/database/index', () => ({
 	default: vi.fn(),
@@ -15,9 +14,9 @@ vi.mock('../../src/database/index', () => ({
 
 const schema = new SchemaBuilder()
 	.collection('test', (c) => {
-		c.field('id').uuid().primary()
+		c.field('id').uuid().primary();
 	})
-	.build()
+	.build();
 
 describe('Integration Tests', () => {
 	const db = vi.mocked(knex.default({ client: MockClient }));

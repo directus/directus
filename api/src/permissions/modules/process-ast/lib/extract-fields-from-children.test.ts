@@ -379,13 +379,7 @@ describe('functionField', () => {
 			},
 		] as FunctionFieldNode[];
 
-		extractFieldsFromChildren(
-			'test-collection',
-			children,
-			fieldMap,
-			new SchemaBuilder().build(),
-			[],
-		);
+		extractFieldsFromChildren('test-collection', children, fieldMap, new SchemaBuilder().build(), []);
 
 		expect(fieldMap).toEqual(
 			createFieldMap({

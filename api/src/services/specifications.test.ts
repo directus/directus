@@ -1,11 +1,10 @@
+import { SchemaBuilder } from '@directus/schema-builder';
 import type { Knex } from 'knex';
 import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SpecificationService } from './index.js';
-import type { CollectionsOverview } from '@directus/types';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 class Client_PG extends MockClient { }
 
@@ -26,20 +25,20 @@ describe('Integration Tests', () => {
 	const schema = new SchemaBuilder()
 		.collection('test_table', (c) => {
 			c.field('id').integer().primary().options({
-				nullable: false
-			})
+				nullable: false,
+			});
 
-			c.field('blob').json()
+			c.field('blob').json();
 		})
-		.build()
+		.build();
 
 	const schema2 = new SchemaBuilder()
 		.collection('test_table', (c) => {
 			c.field('id').integer().primary().options({
-				nullable: false
-			})
+				nullable: false,
+			});
 		})
-		.build()
+		.build();
 
 	describe('Services / Specifications', () => {
 		describe('oas', () => {

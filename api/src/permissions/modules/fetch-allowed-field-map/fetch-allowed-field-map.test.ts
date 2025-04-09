@@ -28,16 +28,16 @@ test('Returns field map of the whole schema if admin is true', async () => {
 
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
-			c.field('id').id()
-			c.field('field-a').string()
-			c.field('field-b').integer()
+			c.field('id').id();
+			c.field('field-a').string();
+			c.field('field-b').integer();
 		})
 		.collection('collection-b', (c) => {
-			c.field('id').id()
-			c.field('field-a').string()
-			c.field('field-c').integer()
+			c.field('id').id();
+			c.field('field-a').string();
+			c.field('field-c').integer();
 		})
-		.build()
+		.build();
 
 	const map = await fetchAllowedFieldMap({ accountability, action }, { schema } as Context);
 

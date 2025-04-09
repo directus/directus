@@ -125,12 +125,12 @@ describe('Integration Tests', () => {
 
 			const schema = new SchemaBuilder()
 				.collection('test', (c) => {
-					c.field('id').id()
-					c.field('date_field').date()
-					c.field('datetime_field').dateTime()
-					c.field('timestamp_field').timestamp()
+					c.field('id').id();
+					c.field('date_field').date();
+					c.field('datetime_field').dateTime();
+					c.field('timestamp_field').timestamp();
 				})
-				.build()
+				.build();
 
 			const fieldEntries = Object.entries(schema.collections['test']!.fields);
 
@@ -263,19 +263,21 @@ describe('Integration Tests', () => {
 
 			const schema = new SchemaBuilder()
 				.collection('test', (c) => {
-					c.field('id').id()
-					c.field('string').string()
+					c.field('id').id();
+					c.field('string').string();
 
-					c.field('hidden').hash().options({
-						special: ['hash', 'conceal']
-					})
+					c.field('hidden')
+						.hash()
+						.options({
+							special: ['hash', 'conceal'],
+						});
 				})
-				.build()
+				.build();
 
 			beforeEach(() => {
 				service = new PayloadService('test', {
 					knex: db,
-					schema
+					schema,
 				});
 			});
 

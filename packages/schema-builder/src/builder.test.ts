@@ -862,15 +862,14 @@ test('Create a2o relation', () => {
 		    },
 		  ],
 		}
-	`)
-})
-
+	`);
+});
 
 test('Create translations relation', () => {
 	const schema = new SchemaBuilder()
 		.collection('blog', (c) => {
 			c.field('id').id();
-			c.field('translations').translations()
+			c.field('translations').translations();
 		})
 		.build();
 
@@ -1077,16 +1076,17 @@ test('Create translations relation', () => {
 		    },
 		  ],
 		}
-	`)
-})
+	`);
+});
 
 test('overwrite field', () => {
-	const schema = new SchemaBuilder().collection('blog', (c) => {
-		c.field('id').id();
-		c.field('name').string();
-		c.field('name').overwrite().integer();
-	})
-		.build()
+	const schema = new SchemaBuilder()
+		.collection('blog', (c) => {
+			c.field('id').id();
+			c.field('name').string();
+			c.field('name').overwrite().integer();
+		})
+		.build();
 
 	expect(schema).toMatchInlineSnapshot(`
 		{
@@ -1132,11 +1132,11 @@ test('overwrite field', () => {
 		  },
 		  "relations": [],
 		}
-	`)
+	`);
 });
 
 test('create empty collection', () => {
-	const schema = new SchemaBuilder().collection('blog', (_) => { });
+	const schema = new SchemaBuilder().collection('blog', (_) => {});
 
 	expect(() => {
 		schema.build();
@@ -1144,14 +1144,13 @@ test('create empty collection', () => {
 });
 
 test('create duplicate collection', () => {
-	const schema = new SchemaBuilder()
-		.collection('blog', (c) => {
-			c.field('id').id();
-		})
+	const schema = new SchemaBuilder().collection('blog', (c) => {
+		c.field('id').id();
+	});
 
-	const dup_coll = new CollectionBuilder('blog')
-	dup_coll.field('id').id()
-	schema._collections.push(dup_coll)
+	const dup_coll = new CollectionBuilder('blog');
+	dup_coll.field('id').id();
+	schema._collections.push(dup_coll);
 
 	expect(() => {
 		schema.build();
@@ -1182,11 +1181,11 @@ test('create duplicate field with collision', () => {
 		c.field('id').id();
 		c.field('name').string();
 
-		c._fields.push(new FieldBuilder('name').string())
+		c._fields.push(new FieldBuilder('name').string());
 	});
 
 	expect(() => {
-		schema.build()
+		schema.build();
 	}).toThrowError('Field name already exists');
 });
 

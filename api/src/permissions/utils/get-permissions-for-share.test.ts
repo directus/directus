@@ -386,16 +386,16 @@ const basePermissions = [
 
 const schema = new SchemaBuilder()
 	.collection('articles', (c) => {
-		c.field('id').integer().primary()
-		c.field('title').string()
-		c.field('authors').o2m('authors', 'article')
+		c.field('id').integer().primary();
+		c.field('title').string();
+		c.field('authors').o2m('authors', 'article');
 	})
 	.collection('authors', (c) => {
-		c.field('id').integer().primary()
-		c.field('name').string()
+		c.field('id').integer().primary();
+		c.field('name').string();
 	})
 	.collection('super_secret_table', (c) => {
-		c.field('id').integer().primary()
-		c.field('secret').string()
+		c.field('id').integer().primary();
+		c.field('secret').string();
 	})
-	.build()
+	.build();

@@ -90,7 +90,7 @@ const FAKE_SCHEMA: SchemaOverview = {
 	relations: [],
 };
 
-class Client_SQLite3 extends MockClient { }
+class Client_SQLite3 extends MockClient {}
 
 describe('boolean filter operators', () => {
 	const operators = [

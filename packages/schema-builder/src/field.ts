@@ -33,14 +33,14 @@ type FinishedFieldOverview = FieldOverview & { _kind: 'finished' };
 export type FieldOveriewBuilderOptions = Partial<Omit<FieldOverview, ''>>;
 
 type M2AOptions = {
-	o2m_relation: RelationBuilder,
-	a2o_relation: RelationBuilder
-}
+	o2m_relation: RelationBuilder;
+	a2o_relation: RelationBuilder;
+};
 
 type M2MOptions = {
-	o2m_relation: RelationBuilder,
-	m2o_relation: RelationBuilder
-}
+	o2m_relation: RelationBuilder;
+	m2o_relation: RelationBuilder;
+};
 
 export class FieldBuilder {
 	_schema: SchemaBuilder | undefined;
@@ -85,7 +85,7 @@ export class FieldBuilder {
 			_kind: 'initial',
 		};
 
-		return this
+		return this;
 	}
 
 	/** Marks the field as the primary field of the collection */
@@ -326,11 +326,11 @@ export class FieldBuilder {
 		});
 
 		if (relation_callback) {
-			const new_relations = relation_callback({ o2m_relation, a2o_relation })
+			const new_relations = relation_callback({ o2m_relation, a2o_relation });
 
 			if (new_relations) {
-				o2m_relation = new_relations.o2m_relation
-				a2o_relation = new_relations.a2o_relation
+				o2m_relation = new_relations.o2m_relation;
+				a2o_relation = new_relations.a2o_relation;
 			}
 		}
 
@@ -363,20 +363,18 @@ export class FieldBuilder {
 				},
 			});
 
-		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`)
-			.m2o(related_collection)
-			.options({
-				meta: {
-					junction_field: `${this._collection.get_name()}_id`,
-				},
-			});
+		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`).m2o(related_collection).options({
+			meta: {
+				junction_field: `${this._collection.get_name()}_id`,
+			},
+		});
 
 		if (relation_callback) {
-			const new_relations = relation_callback({ o2m_relation, m2o_relation })
+			const new_relations = relation_callback({ o2m_relation, m2o_relation });
 
 			if (new_relations) {
-				o2m_relation = new_relations.o2m_relation
-				m2o_relation = new_relations.m2o_relation
+				o2m_relation = new_relations.o2m_relation;
+				m2o_relation = new_relations.m2o_relation;
 			}
 		}
 
@@ -386,7 +384,10 @@ export class FieldBuilder {
 		return this;
 	}
 
-	translations(language_collection: string = 'languages', relation_callback?: (options: M2MOptions) => M2MOptions | void) {
+	translations(
+		language_collection: string = 'languages',
+		relation_callback?: (options: M2MOptions) => M2MOptions | void,
+	) {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -400,10 +401,10 @@ export class FieldBuilder {
 		};
 
 		this._schema.collection(language_collection, (c) => {
-			c.field('code').string().primary()
-			c.field('name').string()
-			c.field('direction').string().options({ defaultValue: 'ltr' })
-		})
+			c.field('code').string().primary();
+			c.field('name').string();
+			c.field('direction').string().options({ defaultValue: 'ltr' });
+		});
 
 		const junction_name = `${this._collection.get_name()}_translations`;
 
@@ -424,11 +425,11 @@ export class FieldBuilder {
 			});
 
 		if (relation_callback) {
-			const new_relations = relation_callback({ o2m_relation, m2o_relation })
+			const new_relations = relation_callback({ o2m_relation, m2o_relation });
 
 			if (new_relations) {
-				o2m_relation = new_relations.o2m_relation
-				m2o_relation = new_relations.m2o_relation
+				o2m_relation = new_relations.o2m_relation;
+				m2o_relation = new_relations.m2o_relation;
 			}
 		}
 
@@ -438,7 +439,11 @@ export class FieldBuilder {
 		return this;
 	}
 
-	o2m(related_collection: string, related_field: string, relation_callback?: (relation: RelationBuilder) => RelationBuilder | void) {
+	o2m(
+		related_collection: string,
+		related_field: string,
+		relation_callback?: (relation: RelationBuilder) => RelationBuilder | void,
+	) {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -457,10 +462,10 @@ export class FieldBuilder {
 		);
 
 		if (relation_callback) {
-			const new_relation = relation_callback(relation)
+			const new_relation = relation_callback(relation);
 
 			if (new_relation) {
-				relation = new_relation
+				relation = new_relation;
 			}
 		}
 
@@ -469,7 +474,11 @@ export class FieldBuilder {
 		return this;
 	}
 
-	m2o(related_collection: string, related_field?: string, relation_callback?: (relation: RelationBuilder) => RelationBuilder | void) {
+	m2o(
+		related_collection: string,
+		related_field?: string,
+		relation_callback?: (relation: RelationBuilder) => RelationBuilder | void,
+	) {
 		assert(this._data._kind === 'initial', 'Field type was already set');
 		assert(this._schema && this._collection, 'Field needs to be part of a schema');
 
@@ -488,10 +497,10 @@ export class FieldBuilder {
 		);
 
 		if (relation_callback) {
-			const new_relation = relation_callback(relation)
+			const new_relation = relation_callback(relation);
 
 			if (new_relation) {
-				relation = new_relation
+				relation = new_relation;
 			}
 		}
 
@@ -513,15 +522,13 @@ export class FieldBuilder {
 			_kind: 'finished',
 		};
 
-		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(
-			related_collections
-		);
+		let relation = new RelationBuilder(this._collection.get_name(), this.get_name()).a2o(related_collections);
 
 		if (relation_callback) {
-			const new_relation = relation_callback(relation)
+			const new_relation = relation_callback(relation);
 
 			if (new_relation) {
-				relation = new_relation
+				relation = new_relation;
 			}
 		}
 

@@ -6,24 +6,24 @@ describe('Sanitize graphql schema', () => {
 	test('Filters out invalid names', () => {
 		const schema = new SchemaBuilder()
 			.collection('normal_collection', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('123table', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('__underscore', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('a-dash', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('Schrödinger', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
-			.build()
+			.build();
 
 		const result = sanitizeGraphqlSchema(schema);
 
@@ -38,24 +38,24 @@ describe('Sanitize graphql schema', () => {
 	test('Filters out reserved names', () => {
 		const schema = new SchemaBuilder()
 			.collection('Subscription', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('subscription', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('Mutation', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('mutation', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('String', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('string', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
-			.build()
+			.build();
 
 		const result = sanitizeGraphqlSchema(schema);
 
@@ -70,21 +70,21 @@ describe('Sanitize graphql schema', () => {
 	test('Keeps valid names', () => {
 		const schema = new SchemaBuilder()
 			.collection('normal', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('Normal', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('NORMAL', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('t3st_numb3rs', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('_underscore', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
-			.build()
+			.build();
 
 		const result = sanitizeGraphqlSchema(schema);
 
@@ -98,15 +98,15 @@ describe('Sanitize graphql schema', () => {
 	test('Filters out invalid relations', () => {
 		const schema = new SchemaBuilder()
 			.collection('normal_collection', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('junction_table', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
 			.collection('__invalid_collection', (c) => {
-				c.field('id').id()
+				c.field('id').id();
 			})
-			.build()
+			.build();
 
 		schema.relations = [
 			{
@@ -141,7 +141,7 @@ describe('Sanitize graphql schema', () => {
 				},
 				schema: null,
 			},
-		]
+		];
 
 		const result = sanitizeGraphqlSchema(schema);
 

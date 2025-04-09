@@ -1,10 +1,10 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
 import { fetchAllowedFields } from './fetch-allowed-fields.js';
-import { fetchPermissions } from '../../lib/fetch-permissions.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../../lib/fetch-policies.js');
 vi.mock('../../lib/fetch-permissions.js');
@@ -34,11 +34,11 @@ test('Returns unique array of all fields that are associated with the permission
 
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
-			c.field('field-a').id()
-			c.field('field-b').string()
-			c.field('field-c').integer()
+			c.field('field-a').id();
+			c.field('field-b').string();
+			c.field('field-c').integer();
 		})
-		.build()
+		.build();
 
 	vi.mocked(fetchPolicies).mockResolvedValue(policies);
 	vi.mocked(fetchPermissions).mockResolvedValue(permissions);
@@ -63,9 +63,9 @@ test('Removes fields that are not in the schema', async () => {
 
 	const schema = new SchemaBuilder()
 		.collection('collection-a', (c) => {
-			c.field('field-a').id()
+			c.field('field-a').id();
 		})
-		.build()
+		.build();
 
 	vi.mocked(fetchPolicies).mockResolvedValue(policies);
 	vi.mocked(fetchPermissions).mockResolvedValue(permissions);
