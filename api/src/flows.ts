@@ -388,6 +388,15 @@ class FlowManager {
 			}
 		}
 
+		if (
+			flow.trigger === 'manual' &&
+			flow.options['async'] !== true &&
+			flow.options['error_on_reject'] === true &&
+			lastOperationStatus === 'reject'
+		) {
+			throw keyedData[LAST_KEY];
+		}
+
 		if (flow.trigger === 'event' && flow.options['type'] === 'filter' && lastOperationStatus === 'reject') {
 			throw keyedData[LAST_KEY];
 		}

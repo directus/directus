@@ -963,8 +963,7 @@ run_flow_on_current: Run Flow on Current Item
 run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
 run_flow_on_selected: Select One or More Items First | Run Flow on 1 Selected Item | Run Flow on {n} Selected Items
 run_flow: Run Flow
-run_flow_success: Flow "{flow}" ran successfully
-trigger_flow_success: Flow "{flow}" triggered successfully. It will run in the background
+trigger_flow_success: Flow "{flow}" triggered successfully
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
@@ -2420,6 +2419,7 @@ triggers:
   manual:
     name: Manual
     description: Triggers on manual run within selected collection(s)
+    error_on_reject: Error on Reject
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
