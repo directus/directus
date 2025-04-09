@@ -232,24 +232,24 @@ class OASSpecsService implements SpecificationSubService {
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
 										: {
-											content: {
-												'application/json': {
-													schema: {
-														oneOf: [
-															{
-																type: 'array',
-																items: {
+												content: {
+													'application/json': {
+														schema: {
+															oneOf: [
+																{
+																	type: 'array',
+																	items: {
+																		$ref: `#/components/schemas/${tag.name}`,
+																	},
+																},
+																{
 																	$ref: `#/components/schemas/${tag.name}`,
 																},
-															},
-															{
-																$ref: `#/components/schemas/${tag.name}`,
-															},
-														],
+															],
+														},
 													},
 												},
-											},
-										},
+										  },
 									responses: {
 										'200': {
 											description: 'Successful request',
@@ -257,23 +257,23 @@ class OASSpecsService implements SpecificationSubService {
 												method === 'delete'
 													? undefined
 													: {
-														'application/json': {
-															schema: {
-																properties: {
-																	data: schema.collections[collection]?.singleton
-																		? {
-																			$ref: `#/components/schemas/${tag.name}`,
-																		}
-																		: {
-																			type: 'array',
-																			items: {
-																				$ref: `#/components/schemas/${tag.name}`,
-																			},
-																		},
+															'application/json': {
+																schema: {
+																	properties: {
+																		data: schema.collections[collection]?.singleton
+																			? {
+																					$ref: `#/components/schemas/${tag.name}`,
+																			  }
+																			: {
+																					type: 'array',
+																					items: {
+																						$ref: `#/components/schemas/${tag.name}`,
+																					},
+																			  },
+																	},
 																},
 															},
-														},
-													},
+													  },
 										},
 									},
 								},
@@ -295,30 +295,30 @@ class OASSpecsService implements SpecificationSubService {
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
 										: {
-											content: {
-												'application/json': {
-													schema: {
-														$ref: `#/components/schemas/${tag.name}`,
+												content: {
+													'application/json': {
+														schema: {
+															$ref: `#/components/schemas/${tag.name}`,
+														},
 													},
 												},
-											},
-										},
+										  },
 									responses: {
 										'200': {
 											content:
 												method === 'delete'
 													? undefined
 													: {
-														'application/json': {
-															schema: {
-																properties: {
-																	data: {
-																		$ref: `#/components/schemas/${tag.name}`,
+															'application/json': {
+																schema: {
+																	properties: {
+																		data: {
+																			$ref: `#/components/schemas/${tag.name}`,
+																		},
 																	},
 																},
 															},
-														},
-													},
+													  },
 										},
 									},
 								},
@@ -457,7 +457,7 @@ class OASSpecsService implements SpecificationSubService {
 			propertyObject.description = field.note;
 		}
 
-		const relation = getRelation(schema.relations, collection, field.field)
+		const relation = getRelation(schema.relations, collection, field.field);
 
 		if (!relation) {
 			propertyObject = {

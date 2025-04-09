@@ -53,6 +53,7 @@ for (const number of ['1234', '-128', '12.34']) {
 		expect(rawQuery.sql).toEqual(
 			`select * where ((LOWER("test"."text") LIKE ?) or ("test"."float" = ?) or ("test"."integer" = ?))`,
 		);
+
 		expect(rawQuery.bindings).toEqual([`%${number.toLowerCase()}%`, Number(number), Number(number)]);
 	});
 }
@@ -136,6 +137,7 @@ test(`Add all fields for * field rule`, async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`,
 	);
+
 	expect(rawQuery.bindings).toEqual(['%1%', '%1%', 1, 1]);
 });
 
@@ -159,6 +161,7 @@ test(`Add all fields when * is present in field rule with permission rule presen
 	expect(rawQuery.sql).toEqual(
 		`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`,
 	);
+
 	expect(rawQuery.bindings).toEqual(['%1%', '%1%', 1, 1]);
 });
 
@@ -173,5 +176,6 @@ test(`All field(s) are searched for admin`, async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`,
 	);
+
 	expect(rawQuery.bindings).toEqual(['%1%', '%1%', 1, 1]);
 });

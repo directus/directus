@@ -1,6 +1,6 @@
 import type { Relation, RelationMeta } from '@directus/types';
 import { getRelationType } from './get-relation-type.js';
-import { getRelation } from '@directus/utils'
+import { getRelation } from '@directus/utils';
 
 type RelationInfo = {
 	relation: Relation | null;
@@ -52,7 +52,7 @@ export function getRelationInfo(relations: Relation[], collection: string, field
 		}
 	}
 
-	const relation = getRelation(relations, collection, field) ?? null
+	const relation = getRelation(relations, collection, field) ?? null;
 	const relationType = relation ? getRelationType({ relation, collection, field }) : null;
 
 	return { relation, relationType };

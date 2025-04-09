@@ -184,7 +184,7 @@ test('relations on wrong collection', () => {
 
 	const result = getRelations(schema.relations, 'wrong', 'tags');
 
-	expect(result).toEqual([])
+	expect(result).toEqual([]);
 });
 
 test('relations on wrong field', () => {
@@ -197,9 +197,8 @@ test('relations on wrong field', () => {
 
 	const result = getRelations(schema.relations, 'article', 'wrong');
 
-	expect(result).toEqual([])
+	expect(result).toEqual([]);
 });
-
 
 test('relation on wrong collection', () => {
 	const schema = new SchemaBuilder()

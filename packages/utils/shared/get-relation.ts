@@ -11,7 +11,6 @@ export function getRelations(relations: Relation[], collection: string, field: s
 	return relation;
 }
 
-
 export function getRelation(relations: Relation[], collection: string, field: string) {
 	const relation = relations.find((relation) => {
 		return (

@@ -40,13 +40,16 @@ export function getLocalTypeForField(collection: string, field: string): LocalTy
 			return 'm2a';
 		}
 
-		const relationForCurrent = getRelation(relations, collection, field)
+		const relationForCurrent = getRelation(relations, collection, field);
 
 		if (relationForCurrent?.collection === collection && relationForCurrent?.field === field) {
 			return 'm2o';
 		}
 
-		if (relations[0]!.related_collection === 'directus_files' || relations[1]!.related_collection === 'directus_files') {
+		if (
+			relations[0]!.related_collection === 'directus_files' ||
+			relations[1]!.related_collection === 'directus_files'
+		) {
 			return 'files';
 		} else {
 			return 'm2m';

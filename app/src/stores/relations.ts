@@ -56,7 +56,7 @@ export const useRelationsStore = defineStore({
 
 			if (!fieldInfo) return [];
 
-			const relations: Relation[] = getRelations(this.getRelationsForCollection(collection), collection, field)
+			const relations: Relation[] = getRelations(this.getRelationsForCollection(collection), collection, field);
 
 			if (relations.length > 0) {
 				const firstRelation = relations[0] as Relation;
@@ -90,7 +90,7 @@ export const useRelationsStore = defineStore({
 
 			if (!fieldInfo) return null;
 
-			const relations = this.getRelationsForCollection(collection)
+			const relations = this.getRelationsForCollection(collection);
 			return relations.find((relation) => relation.collection === collection && relation.field === field) ?? null;
 		},
 		/**

@@ -69,16 +69,18 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 
 			const relationalFields = allowedFields.includes('*')
 				? context.schema.relations
-					.filter(
-						(relation) =>
-							relation.collection === options.parentCollection ||
-							relation.related_collection === options.parentCollection,
-					)
-					.map((relation) => {
-						const isMany = relation.collection === options.parentCollection;
-						return isMany ? relation.field : relation.meta?.one_field;
-					})
-				: allowedFields.filter((fieldKey) => !!getRelation(context.schema.relations, options.parentCollection, fieldKey));
+						.filter(
+							(relation) =>
+								relation.collection === options.parentCollection ||
+								relation.related_collection === options.parentCollection,
+						)
+						.map((relation) => {
+							const isMany = relation.collection === options.parentCollection;
+							return isMany ? relation.field : relation.meta?.one_field;
+						})
+				: allowedFields.filter(
+						(fieldKey) => !!getRelation(context.schema.relations, options.parentCollection, fieldKey),
+				  );
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
