@@ -71,77 +71,77 @@ export function injectSystemResolvers(
 		ServerInfo.addFields({
 			rateLimit: env['RATE_LIMITER_ENABLED']
 				? {
-					type: new GraphQLObjectType({
-						name: 'server_info_rate_limit',
-						fields: {
-							points: { type: GraphQLInt },
-							duration: { type: GraphQLInt },
-						},
-					}),
-				}
+						type: new GraphQLObjectType({
+							name: 'server_info_rate_limit',
+							fields: {
+								points: { type: GraphQLInt },
+								duration: { type: GraphQLInt },
+							},
+						}),
+				  }
 				: GraphQLBoolean,
 			rateLimitGlobal: env['RATE_LIMITER_GLOBAL_ENABLED']
 				? {
-					type: new GraphQLObjectType({
-						name: 'server_info_rate_limit_global',
-						fields: {
-							points: { type: GraphQLInt },
-							duration: { type: GraphQLInt },
-						},
-					}),
-				}
+						type: new GraphQLObjectType({
+							name: 'server_info_rate_limit_global',
+							fields: {
+								points: { type: GraphQLInt },
+								duration: { type: GraphQLInt },
+							},
+						}),
+				  }
 				: GraphQLBoolean,
 			websocket: toBoolean(env['WEBSOCKETS_ENABLED'])
 				? {
-					type: new GraphQLObjectType({
-						name: 'server_info_websocket',
-						fields: {
-							rest: {
-								type: toBoolean(env['WEBSOCKETS_REST_ENABLED'])
-									? new GraphQLObjectType({
-										name: 'server_info_websocket_rest',
-										fields: {
-											authentication: {
-												type: new GraphQLEnumType({
-													name: 'server_info_websocket_rest_authentication',
-													values: {
-														public: { value: 'public' },
-														handshake: { value: 'handshake' },
-														strict: { value: 'strict' },
+						type: new GraphQLObjectType({
+							name: 'server_info_websocket',
+							fields: {
+								rest: {
+									type: toBoolean(env['WEBSOCKETS_REST_ENABLED'])
+										? new GraphQLObjectType({
+												name: 'server_info_websocket_rest',
+												fields: {
+													authentication: {
+														type: new GraphQLEnumType({
+															name: 'server_info_websocket_rest_authentication',
+															values: {
+																public: { value: 'public' },
+																handshake: { value: 'handshake' },
+																strict: { value: 'strict' },
+															},
+														}),
 													},
-												}),
-											},
-											path: { type: GraphQLString },
-										},
-									})
-									: GraphQLBoolean,
-							},
-							graphql: {
-								type: toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
-									? new GraphQLObjectType({
-										name: 'server_info_websocket_graphql',
-										fields: {
-											authentication: {
-												type: new GraphQLEnumType({
-													name: 'server_info_websocket_graphql_authentication',
-													values: {
-														public: { value: 'public' },
-														handshake: { value: 'handshake' },
-														strict: { value: 'strict' },
+													path: { type: GraphQLString },
+												},
+										  })
+										: GraphQLBoolean,
+								},
+								graphql: {
+									type: toBoolean(env['WEBSOCKETS_GRAPHQL_ENABLED'])
+										? new GraphQLObjectType({
+												name: 'server_info_websocket_graphql',
+												fields: {
+													authentication: {
+														type: new GraphQLEnumType({
+															name: 'server_info_websocket_graphql_authentication',
+															values: {
+																public: { value: 'public' },
+																handshake: { value: 'handshake' },
+																strict: { value: 'strict' },
+															},
+														}),
 													},
-												}),
-											},
-											path: { type: GraphQLString },
-										},
-									})
-									: GraphQLBoolean,
+													path: { type: GraphQLString },
+												},
+										  })
+										: GraphQLBoolean,
+								},
+								heartbeat: {
+									type: toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) ? GraphQLInt : GraphQLBoolean,
+								},
 							},
-							heartbeat: {
-								type: toBoolean(env['WEBSOCKETS_HEARTBEAT_ENABLED']) ? GraphQLInt : GraphQLBoolean,
-							},
-						},
-					}),
-				}
+						}),
+				  }
 				: GraphQLBoolean,
 			queryLimit: {
 				type: new GraphQLObjectType({
