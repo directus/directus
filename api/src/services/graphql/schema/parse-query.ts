@@ -11,15 +11,15 @@ import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/replace-m2a.js'
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
  * Directus' `fields` query for use in the resolver. Also applies variables where appropriate.
  */
-export function getQuery(
+export async function getQuery(
 	rawQuery: Query,
+	schema: SchemaOverview,
 	selections: readonly SelectionNode[],
 	variableValues: GraphQLResolveInfo['variableValues'],
 	accountability?: Accountability | null,
 	collection?: string,
-	schema?: SchemaOverview,
-): Query {
-	const query: Query = sanitizeQuery(rawQuery, accountability);
+): Promise<Query> {
+	const query: Query = await sanitizeQuery(rawQuery, schema, accountability);
 
 	const parseAliases = (selections: readonly SelectionNode[]) => {
 		const aliases: Record<string, string> = {};
@@ -117,7 +117,7 @@ export function getQuery(
 						merge(
 							{},
 							get(query.deep, currentAlias ?? current),
-							mapKeys(sanitizeQuery(args, accountability), (_value, key) => `_${key}`),
+							mapKeys(sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
 						),
 					);
 				}
@@ -130,9 +130,7 @@ export function getQuery(
 	query.alias = parseAliases(selections);
 	query.fields = parseFields(selections);
 
-	if (query.filter) {
-		query.filter = replaceFuncs(query.filter);
-	}
+	if (query.filter) query.filter = replaceFuncs(query.filter);
 
 	query.deep = replaceFuncs(query.deep as any) as any;
 

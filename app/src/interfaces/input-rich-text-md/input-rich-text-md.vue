@@ -398,10 +398,11 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 		<v-dialog
 			:model-value="imageDialogOpen"
+			keep-behind
 			@esc="imageDialogOpen = false"
 			@update:model-value="imageDialogOpen = false"
 		>
-			<v-card class="allow-drawer">
+			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />

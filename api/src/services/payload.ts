@@ -52,6 +52,7 @@ export class PayloadService {
 	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
+	nested: string[];
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -59,6 +60,7 @@ export class PayloadService {
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
+		this.nested = options.nested ?? [];
 
 		return this;
 	}
@@ -197,8 +199,8 @@ export class PayloadService {
 			}
 		}
 
-		this.processGeometries(processedPayload, action);
-		this.processDates(processedPayload, action);
+		this.processGeometries(fieldEntries, processedPayload, action);
+		this.processDates(fieldEntries, processedPayload, action, aliasMap);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -267,14 +269,17 @@ export class PayloadService {
 	 * escaped. It's therefore placed as a Knex.Raw object in the payload. Thus the need
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
-	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
+	processGeometries<T extends Partial<Record<string, any>>[]>(
+		fieldEntries: [string, FieldOverview][],
+		payloads: T,
+		action: Action,
+	): T {
 		const process =
 			action == 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
 				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? parseJSON(value) : value);
 
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
-		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
+		const geometryColumns = fieldEntries.filter(([_, field]) => field.type.startsWith('geometry'));
 
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
@@ -291,14 +296,30 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
+	processDates(
+		fieldEntries: [string, FieldOverview][],
+		payloads: Partial<Record<string, any>>[],
+		action: Action,
+		aliasMap: Record<string, string> = {},
+	): Partial<Record<string, any>>[] {
+		for (const alias in aliasMap) {
+			const aliasedField = aliasMap[alias];
+			const field = this.schema.collections[this.collection]!.fields[aliasedField!];
 
-		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
-			['dateTime', 'date', 'timestamp'].includes(field.type),
-		);
+			if (field) {
+				fieldEntries.push([
+					alias,
+					{
+						...field,
+						field: alias,
+					},
+				]);
+			}
+		}
 
-		const timeColumns = fieldsInCollection.filter(([_name, field]) => {
+		const dateColumns = fieldEntries.filter(([_name, field]) => ['dateTime', 'date', 'timestamp'].includes(field.type));
+
+		const timeColumns = fieldEntries.filter(([_name, field]) => {
 			return field.type === 'time';
 		});
 
@@ -449,6 +470,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.field],
 			});
 
 			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
@@ -539,6 +561,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.field],
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
@@ -631,6 +654,7 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
+				nested: [...this.nested, relation.meta!.one_field!],
 			});
 
 			const recordsToUpsert: Partial<Item>[] = [];

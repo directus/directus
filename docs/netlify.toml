@@ -1139,7 +1139,6 @@ force = true
 [[redirects]]
 from  = "/blog/hooks-monitoring-error-tracking-sentry.html"
 to    = "https://directus.io/docs/tutorials"
-force = true
 
 [[redirects]]
 from  = "/blog/using-directus-as-a-baby-health-tracker.html"

@@ -75,7 +75,7 @@ extension_layouts: Mises en page
 extension_modules: Modules
 extension_panels: Panneaux
 extension_themes: Thèmes
-extension_hooks: Hooks
+extension_hooks: Crochets
 extension_endpoints: Points d'accès
 extension_operations: Opérations
 extension_bundles: Lots
@@ -518,6 +518,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: MMM d
 minutes: Minutes
 hours: Heures
@@ -941,6 +942,7 @@ run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce 
 run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur l'élément sélectionné | Exécuter le flux sur les {n} éléments sélectionnés
 run_flow: Lancer le flux
 run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
+trigger_flow_success: Flux "{flow}" déclenché avec succès. Il s'exécutera en arrière-plan
 field_name_placeholder: Saisir un nom de champ...
 field_key_placeholder: Saisir un identifiant de champ...
 trigger: Déclencheur
@@ -1226,6 +1228,7 @@ directus_collection:
   directus_access: Polices attachées
   directus_activity: Journaux de traçabilité de tous les événements
   directus_collections: Configuration de la collection supplémentaire et métadonnées
+  directus_comments: Commentez pour items
   directus_dashboards: Tableaux de bord dans le module Insights
   directus_fields: Configuration supplémentaire des champs et métadonnées
   directus_files: Métadonnées pour tous les fichiers gérés
@@ -2296,6 +2299,7 @@ panels:
     value_field: Type de champ
     fill_type: Remplissage
     curve_type: Format de courbe
+    missing_data: Informations manquantes
   label:
     name: Étiquette
     description: Afficher le texte de base
