@@ -914,7 +914,6 @@ run_flow_on_current: 현재 항목에서 플로우 실행
 run_flow_on_current_edited_confirm: 이 항목은 이 플로우에 의해 업데이트될 수 있습니다. 실행하시겠습니까?
 run_flow_on_selected: 먼저 하나 이상의 항목 선택 | 선택한 항목 1개에서 플로우 실행 | {n} 선택한 항목에서 플로우 실행
 run_flow: 플로우 실행
-run_flow_success: '"{flow}" 플로우이 성공적으로 실행되었습니다.'
 field_name_placeholder: 필드 이름 입력...
 field_key_placeholder: 필드 키 입력...
 trigger: 방아쇠
