@@ -57,6 +57,7 @@ export class FieldBuilder {
 		this._collection = collection;
 	}
 
+	/** Shorthand for creating an integer field and marking it as the primary field */
 	id() {
 		this._data = {
 			field: this._data.field,
@@ -77,6 +78,15 @@ export class FieldBuilder {
 		return this;
 	}
 
+	/** Resets the field to it's initial state of only the name */
+	override() {
+		this._data = {
+			field: this._data.field,
+			_kind: 'initial',
+		};
+	}
+
+	/** Marks the field as the primary field of the collection */
 	primary() {
 		assert(this._collection, 'Can only set to primary on a collection');
 
@@ -93,6 +103,7 @@ export class FieldBuilder {
 		return this;
 	}
 
+	/** Marks the field as the sort_field of the collection */
 	sort() {
 		assert(this._collection, 'Can only set to sort on a collection');
 		assert(this._collection._data.sortField === null, 'Can only set a sort field once');
@@ -352,6 +363,58 @@ export class FieldBuilder {
 
 		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`)
 			.m2o(related_collection)
+			.options({
+				meta: {
+					junction_field: `${this._collection.get_name()}_id`,
+				},
+			});
+
+		if (relation_callback) {
+			const new_relations = relation_callback({ o2m_relation, m2o_relation })
+
+			if (new_relations) {
+				o2m_relation = new_relations.o2m_relation
+				m2o_relation = new_relations.m2o_relation
+			}
+		}
+
+		this._schema._relations.push(o2m_relation);
+		this._schema._relations.push(m2o_relation);
+
+		return this;
+	}
+
+	translations(language_collection: string = 'languages', relation_callback?: (options: M2MOptions) => M2MOptions | void) {
+		assert(this._data._kind === 'initial', 'Field type was already set');
+		assert(this._schema && this._collection, 'Field needs to be part of a schema');
+
+		this._data = {
+			field: this._data.field,
+			...FIELD_DEFAULTS,
+			type: 'alias',
+			dbType: null,
+			special: ['translations'],
+			_kind: 'finished',
+		};
+
+		this._schema.collection(language_collection, (c) => {
+			c.field('code').string().primary()
+			c.field('name').string()
+			c.field('direction').string().options({ defaultValue: 'ltr' })
+		})
+
+		const junction_name = `${this._collection.get_name()}_translations`;
+
+		let o2m_relation = new RelationBuilder(this._collection.get_name(), this.get_name())
+			.o2m(junction_name, `${this._collection.get_name()}_id`)
+			.options({
+				meta: {
+					junction_field: `${language_collection}_code`,
+				},
+			});
+
+		let m2o_relation = new RelationBuilder(junction_name, `${language_collection}_code`)
+			.m2o(language_collection)
 			.options({
 				meta: {
 					junction_field: `${this._collection.get_name()}_id`,

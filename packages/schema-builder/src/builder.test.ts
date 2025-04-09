@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 import { SchemaBuilder } from './builder.js';
+import { CollectionBuilder } from './collection.js';
 
 test('Create primitive schema', () => {
 	const schema = new SchemaBuilder()
@@ -943,6 +944,222 @@ test('Create a2o relation', () => {
 	`)
 })
 
+
+test('Create translations relation', () => {
+	const schema = new SchemaBuilder()
+		.collection('blog', (c) => {
+			c.field('id').id();
+			c.field('translations').translations()
+		})
+		.build();
+
+	expect(schema).toMatchInlineSnapshot(`
+		{
+		  "collections": {
+		    "blog": {
+		      "accountability": "all",
+		      "collection": "blog",
+		      "fields": {
+		        "translations": {
+		          "alias": false,
+		          "dbType": null,
+		          "defaultValue": null,
+		          "field": "translations",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [
+		            "translations",
+		          ],
+		          "type": "alias",
+		          "validation": null,
+		        },
+		        "id": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": "AUTO_INCREMENT",
+		          "field": "id",
+		          "generated": false,
+		          "note": null,
+		          "nullable": false,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		      },
+		      "note": null,
+		      "primary": "id",
+		      "singleton": false,
+		      "sortField": null,
+		    },
+		    "blog_translations": {
+		      "accountability": "all",
+		      "collection": "blog_translations",
+		      "fields": {
+		        "blog_id": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": null,
+		          "field": "blog_id",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		        "id": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": "AUTO_INCREMENT",
+		          "field": "id",
+		          "generated": false,
+		          "note": null,
+		          "nullable": false,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		        "languages_code": {
+		          "alias": false,
+		          "dbType": "integer",
+		          "defaultValue": null,
+		          "field": "languages_code",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "integer",
+		          "validation": null,
+		        },
+		      },
+		      "note": null,
+		      "primary": "id",
+		      "singleton": false,
+		      "sortField": null,
+		    },
+		    "languages": {
+		      "accountability": "all",
+		      "collection": "languages",
+		      "fields": {
+		        "code": {
+		          "alias": false,
+		          "dbType": "character varying",
+		          "defaultValue": null,
+		          "field": "code",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "string",
+		          "validation": null,
+		        },
+		        "direction": {
+		          "alias": false,
+		          "dbType": "character varying",
+		          "defaultValue": "ltr",
+		          "field": "direction",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "string",
+		          "validation": null,
+		        },
+		        "name": {
+		          "alias": false,
+		          "dbType": "character varying",
+		          "defaultValue": null,
+		          "field": "name",
+		          "generated": false,
+		          "note": null,
+		          "nullable": true,
+		          "precision": null,
+		          "scale": null,
+		          "special": [],
+		          "type": "string",
+		          "validation": null,
+		        },
+		      },
+		      "note": null,
+		      "primary": "code",
+		      "singleton": false,
+		      "sortField": null,
+		    },
+		  },
+		  "relations": [
+		    {
+		      "collection": "blog_translations",
+		      "field": "blog_id",
+		      "meta": {
+		        "id": 0,
+		        "junction_field": "languages_code",
+		        "many_collection": "blog_translations",
+		        "many_field": "blog_id",
+		        "one_allowed_collections": null,
+		        "one_collection": "blog",
+		        "one_collection_field": null,
+		        "one_deselect_action": "nullify",
+		        "one_field": "blocks",
+		        "sort_field": null,
+		      },
+		      "related_collection": "blog",
+		      "schema": {
+		        "column": "blocks",
+		        "constraint_name": "blog_blocks_foreign",
+		        "foreign_key_schema": "public",
+		        "foreign_key_table": "blog_translations",
+		        "on_delete": "SET NULL",
+		        "on_update": "NO ACTION",
+		        "table": "blog",
+		      },
+		    },
+		    {
+		      "collection": "blog_translations",
+		      "field": "languages_code",
+		      "meta": {
+		        "id": 0,
+		        "junction_field": "blog_id",
+		        "many_collection": "blog_translations",
+		        "many_field": "languages_code",
+		        "one_allowed_collections": null,
+		        "one_collection": "languages",
+		        "one_collection_field": null,
+		        "one_deselect_action": "nullify",
+		        "one_field": null,
+		        "sort_field": null,
+		      },
+		      "related_collection": "languages",
+		      "schema": {
+		        "column": "languages_code",
+		        "constraint_name": "blog_translations_languages_code_foreign",
+		        "foreign_key_schema": "public",
+		        "foreign_key_table": "languages",
+		        "on_delete": "SET NULL",
+		        "on_update": "NO ACTION",
+		        "table": "blog_translations",
+		      },
+		    },
+		  ],
+		}
+	`)
+
+})
+
 test('create empty collection', () => {
 	const schema = new SchemaBuilder().collection('blog', (_) => { });
 
@@ -956,9 +1173,8 @@ test('create duplicate collection', () => {
 		.collection('blog', (c) => {
 			c.field('id').id();
 		})
-		.collection('blog', (c) => {
-			c.field('id').id();
-		});
+
+	schema._collections.push(new CollectionBuilder('blog'))
 
 	expect(() => {
 		schema.build();
