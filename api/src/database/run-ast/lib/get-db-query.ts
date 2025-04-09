@@ -4,8 +4,7 @@ import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import type { Context } from '../../../permissions/types.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
-import type { ColumnSortRecord } from '../../../utils/apply-query.js';
-import applyQuery, { applyLimit, applySort, generateAlias } from '../../../utils/apply-query.js';
+import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { getColumn } from '../../../utils/get-column.js';
@@ -15,6 +14,8 @@ import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
+import applyQuery, { generateAlias } from './apply-query/index.js';
+import { applyLimit } from './apply-query/pagination.js';
 
 export type DBQueryOptions = {
 	table: string;
@@ -223,7 +224,7 @@ export function getDBQuery(
 		   So instead of having an inner query which might look like this:
 
 		   SELECT DISTINCT ...,
-		     CASE WHEN <condition> THEN <actual-column> END AS <alias>
+			 CASE WHEN <condition> THEN <actual-column> END AS <alias>
 
 		   a group-by query is generated.
 
@@ -235,14 +236,14 @@ export function getDBQuery(
 		   the actual column:
 
 		   SELECT ...,
-		     COUNT (CASE WHEN <condition> THEN 1 END) AS <random-prefix>_<alias>
-		     ...
-		     GROUP BY <primary-key>
+			 COUNT (CASE WHEN <condition> THEN 1 END) AS <random-prefix>_<alias>
+			 ...
+			 GROUP BY <primary-key>
 
-		    Then, in the wrapper query there is no need to evaluate the condition again, but instead rely on the flag:
+			Then, in the wrapper query there is no need to evaluate the condition again, but instead rely on the flag:
 
-		    SELECT ...,
-		      CASE WHEN `inner`.<random-prefix>_<alias> > 0 THEN <actual-column> END AS <alias>
+			SELECT ...,
+			  CASE WHEN `inner`.<random-prefix>_<alias> > 0 THEN <actual-column> END AS <alias>
 		 */
 
 		const innerPreprocess = getInnerQueryColumnPreProcessor(
