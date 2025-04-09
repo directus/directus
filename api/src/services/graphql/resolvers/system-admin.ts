@@ -127,7 +127,7 @@ export function resolveSystemAdmin(
 					field: args['field'],
 				});
 
-				return await service.readOne(args['collection'], args['data'].field);
+				return await service.readOne(args['collection'], args['field']);
 			},
 		},
 		delete_fields_item: {
