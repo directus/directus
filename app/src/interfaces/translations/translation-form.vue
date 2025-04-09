@@ -19,6 +19,7 @@ const {
 	remove,
 	loading,
 	updateValue,
+	defaultLanguage,
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
@@ -33,9 +34,19 @@ const {
 	remove: (...items: DisplayItem[]) => void;
 	updateValue: (item: DisplayItem | undefined, lang: string | undefined) => void;
 	secondary?: boolean;
+	defaultLanguage?: string | null;
 }>();
 
 const lang = defineModel<string>('lang');
+
+watch(
+	() => defaultLanguage,
+	(newDefaultLanguage, oldDefaultLanguage) => {
+		if (newDefaultLanguage && !lang.value) {
+			lang.value = newDefaultLanguage;
+		}
+	},
+);
 
 const { t } = useI18n();
 

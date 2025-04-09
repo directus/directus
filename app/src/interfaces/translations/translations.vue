@@ -41,6 +41,13 @@ const props = withDefaults(
 	},
 );
 
+watch(
+	() => props.defaultLanguage,
+	(newDefaultLanguage, oldDefaultLanguage) => {
+		console.log('Default language ref changed', newDefaultLanguage, oldDefaultLanguage);
+	},
+);
+
 const emit = defineEmits(['input']);
 
 const value = computed({
@@ -150,6 +157,7 @@ const translationProps = computed(() => ({
 	isLocalItem,
 	updateValue,
 	remove,
+	defaultLanguage: defaultLanguage.value || undefined,
 }));
 
 function useLanguages() {
