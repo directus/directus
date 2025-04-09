@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { mergeVersionsRecursive, mergeVersionsRaw } from './merge-version-data.js';
 import type { SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 describe('content versioning mergeVersionsRaw', () => {
 	test('No versions available', () => {
@@ -38,6 +39,34 @@ describe('content versioning mergeVersionsRaw', () => {
 });
 
 describe('content versioning mergeVersionsRecursive', () => {
+	const schema = new SchemaBuilder()
+		.collection('collection_a', (c) => {
+			c.field('id').id()
+
+			c.field('status').string().options({
+				defaultValue: 'draft'
+			})
+
+			c.field('m2o').m2o('collection_b', 'o2m')
+			c.field('m2o_c').m2o('collection_c')
+			c.field('m2m').m2m('collection_c')
+			c.field('m2a').m2a(['collection_b', 'collection_c'])
+		})
+		.collection('collection_b', (c) => {
+			c.field('id').id()
+
+			c.field('status').string().options({
+				defaultValue: 'draft'
+			})
+		})
+		.collection('collection_c', (c) => {
+			c.field('id').id()
+
+			c.field('status').string().options({
+				defaultValue: 'draft'
+			})
+		})
+
 	const testSchema: SchemaOverview = {
 		collections: {
 			collection_a: {
