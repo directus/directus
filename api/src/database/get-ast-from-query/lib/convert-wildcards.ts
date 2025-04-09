@@ -2,7 +2,7 @@ import type { Accountability, Query, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import { getRelation } from '../utils/get-relation.js';
+import { getRelation } from '@directus/utils';
 
 export interface ConvertWildcardsOptions {
 	parentCollection: string;
@@ -69,16 +69,16 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 
 			const relationalFields = allowedFields.includes('*')
 				? context.schema.relations
-						.filter(
-							(relation) =>
-								relation.collection === options.parentCollection ||
-								relation.related_collection === options.parentCollection,
-						)
-						.map((relation) => {
-							const isMany = relation.collection === options.parentCollection;
-							return isMany ? relation.field : relation.meta?.one_field;
-						})
-				: allowedFields.filter((fieldKey) => !!getRelation(context.schema, options.parentCollection, fieldKey));
+					.filter(
+						(relation) =>
+							relation.collection === options.parentCollection ||
+							relation.related_collection === options.parentCollection,
+					)
+					.map((relation) => {
+						const isMany = relation.collection === options.parentCollection;
+						return isMany ? relation.field : relation.meta?.one_field;
+					})
+				: allowedFields.filter((fieldKey) => !!getRelation(context.schema.relations, options.parentCollection, fieldKey));
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 

@@ -23,6 +23,7 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
+import { getRelation } from '@directus/utils';
 
 const env = useEnv();
 
@@ -231,24 +232,24 @@ class OASSpecsService implements SpecificationSubService {
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
 										: {
-												content: {
-													'application/json': {
-														schema: {
-															oneOf: [
-																{
-																	type: 'array',
-																	items: {
-																		$ref: `#/components/schemas/${tag.name}`,
-																	},
-																},
-																{
+											content: {
+												'application/json': {
+													schema: {
+														oneOf: [
+															{
+																type: 'array',
+																items: {
 																	$ref: `#/components/schemas/${tag.name}`,
 																},
-															],
-														},
+															},
+															{
+																$ref: `#/components/schemas/${tag.name}`,
+															},
+														],
 													},
 												},
-										  },
+											},
+										},
 									responses: {
 										'200': {
 											description: 'Successful request',
@@ -256,23 +257,23 @@ class OASSpecsService implements SpecificationSubService {
 												method === 'delete'
 													? undefined
 													: {
-															'application/json': {
-																schema: {
-																	properties: {
-																		data: schema.collections[collection]?.singleton
-																			? {
-																					$ref: `#/components/schemas/${tag.name}`,
-																			  }
-																			: {
-																					type: 'array',
-																					items: {
-																						$ref: `#/components/schemas/${tag.name}`,
-																					},
-																			  },
-																	},
+														'application/json': {
+															schema: {
+																properties: {
+																	data: schema.collections[collection]?.singleton
+																		? {
+																			$ref: `#/components/schemas/${tag.name}`,
+																		}
+																		: {
+																			type: 'array',
+																			items: {
+																				$ref: `#/components/schemas/${tag.name}`,
+																			},
+																		},
 																},
 															},
-													  },
+														},
+													},
 										},
 									},
 								},
@@ -294,30 +295,30 @@ class OASSpecsService implements SpecificationSubService {
 									requestBody: ['get', 'delete'].includes(method)
 										? undefined
 										: {
-												content: {
-													'application/json': {
-														schema: {
-															$ref: `#/components/schemas/${tag.name}`,
-														},
+											content: {
+												'application/json': {
+													schema: {
+														$ref: `#/components/schemas/${tag.name}`,
 													},
 												},
-										  },
+											},
+										},
 									responses: {
 										'200': {
 											content:
 												method === 'delete'
 													? undefined
 													: {
-															'application/json': {
-																schema: {
-																	properties: {
-																		data: {
-																			$ref: `#/components/schemas/${tag.name}`,
-																		},
+														'application/json': {
+															schema: {
+																properties: {
+																	data: {
+																		$ref: `#/components/schemas/${tag.name}`,
 																	},
 																},
 															},
-													  },
+														},
+													},
 										},
 									},
 								},
@@ -456,11 +457,7 @@ class OASSpecsService implements SpecificationSubService {
 			propertyObject.description = field.note;
 		}
 
-		const relation = schema.relations.find(
-			(relation) =>
-				(relation.collection === collection && relation.field === field.field) ||
-				(relation.related_collection === collection && relation.meta?.one_field === field.field),
-		);
+		const relation = getRelation(schema.relations, collection, field.field)
 
 		if (!relation) {
 			propertyObject = {
