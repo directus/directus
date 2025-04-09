@@ -205,6 +205,10 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.hr',
 							},
 							{
+								value: 'inlineCode',
+								text: '$t:wysiwyg_options.codeblock',
+							},
+							{
 								value: 'code',
 								text: '$t:wysiwyg_options.source_code',
 							},
