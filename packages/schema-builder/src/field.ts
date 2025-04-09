@@ -79,11 +79,13 @@ export class FieldBuilder {
 	}
 
 	/** Resets the field to it's initial state of only the name */
-	override() {
+	overwrite() {
 		this._data = {
 			field: this._data.field,
 			_kind: 'initial',
 		};
+
+		return this
 	}
 
 	/** Marks the field as the primary field of the collection */
