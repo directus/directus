@@ -518,6 +518,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: ''
 date-fns_date_short_no_year: MMM d
 minutes: Minuta
 hours: Orë
@@ -938,7 +939,6 @@ run_flow_on_current: Zbato Rrjedhën në Artikullin Aktual
 run_flow_on_current_edited_confirm: Ky artikull mund të përditësohet nga kjo rrjedhë, a je i sigurtë që dëshiron të ekzekutosh atë?
 run_flow_on_selected: Zgjidh Një ose më Shumë Artikuj Së Pari | Zbato Rrjedhën në 1 Artikull të Zgjedhur | Zbato Rrjedhën në {n} Artikuj të Zgjedhur
 run_flow: Zbato Rrjedhën
-run_flow_success: Rrjedha "{flow}" u ekzekutua me sukses
 field_name_placeholder: Shkruaj emrin e fushës...
 field_key_placeholder: Shkruaj çelësin e fushës...
 trigger: Shkaktues
@@ -2427,6 +2427,7 @@ operations:
     template: Template
     data: Të Dhënat
     bcc_placeholder: ...
+    reply_to:
   notification:
     name: Dërgo Njoftim
     description: Një njoftim në aplikacion për një ose më shumë përdorues
