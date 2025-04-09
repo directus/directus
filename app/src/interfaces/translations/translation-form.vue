@@ -42,7 +42,9 @@ const lang = defineModel<string>('lang');
 watch(
 	() => defaultLanguage,
 	(newDefaultLanguage, oldDefaultLanguage) => {
-		if (newDefaultLanguage && !lang.value) {
+		if (!newDefaultLanguage) return;
+
+		if (newDefaultLanguage !== oldDefaultLanguage && newDefaultLanguage !== lang.value) {
 			lang.value = newDefaultLanguage;
 		}
 	},

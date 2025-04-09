@@ -41,13 +41,6 @@ const props = withDefaults(
 	},
 );
 
-watch(
-	() => props.defaultLanguage,
-	(newDefaultLanguage, oldDefaultLanguage) => {
-		console.log('Default language ref changed', newDefaultLanguage, oldDefaultLanguage);
-	},
-);
-
 const emit = defineEmits(['input']);
 
 const value = computed({

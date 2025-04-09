@@ -7,9 +7,11 @@ const props = withDefaults(
 		items?: Record<string, any>[];
 		secondary?: boolean;
 		danger?: boolean;
+		defaultLanguage?: string | null;
 	}>(),
 	{
 		items: () => [],
+		defaultLanguage: null,
 	},
 );
 
