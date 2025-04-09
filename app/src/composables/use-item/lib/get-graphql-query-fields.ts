@@ -104,6 +104,6 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Que
 			currentPath = fragment;
 		}
 
-		return { sourceField, relatedCollection, currentPath };
+		return { relatedCollection, currentPath };
 	}
 }
