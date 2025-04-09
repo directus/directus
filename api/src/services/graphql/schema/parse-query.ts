@@ -35,7 +35,7 @@ export async function getQuery(
 		return aliases;
 	};
 
-	const parseFields = (selections: readonly SelectionNode[], parent?: string): string[] => {
+	const parseFields = async (selections: readonly SelectionNode[], parent?: string): Promise<string[]> => {
 		const fields: string[] = [];
 
 		for (let selection of selections) {
@@ -97,7 +97,7 @@ export async function getQuery(
 						children.push(`${subSelection.name!.value}(${rootField})`);
 					}
 				} else {
-					children = parseFields(selection.selectionSet.selections, currentAlias ?? current);
+					children = await parseFields(selection.selectionSet.selections, currentAlias ?? current);
 				}
 
 				fields.push(...children);
@@ -117,7 +117,7 @@ export async function getQuery(
 						merge(
 							{},
 							get(query.deep, currentAlias ?? current),
-							mapKeys(sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
+							mapKeys(await sanitizeQuery(args, schema, accountability), (_value, key) => `_${key}`),
 						),
 					);
 				}
@@ -128,7 +128,7 @@ export async function getQuery(
 	};
 
 	query.alias = parseAliases(selections);
-	query.fields = parseFields(selections);
+	query.fields = await parseFields(selections);
 
 	if (query.filter) query.filter = replaceFuncs(query.filter);
 
