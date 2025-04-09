@@ -5,8 +5,9 @@ import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SpecificationService } from './index.js';
 import type { CollectionsOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
 
-class Client_PG extends MockClient {}
+class Client_PG extends MockClient { }
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
@@ -22,6 +23,24 @@ describe('Integration Tests', () => {
 		vi.clearAllMocks();
 	});
 
+	const schema = new SchemaBuilder()
+		.collection('test_table', (c) => {
+			c.field('id').integer().primary().options({
+				nullable: false
+			})
+
+			c.field('blob').json()
+		})
+		.build()
+
+	const schema2 = new SchemaBuilder()
+		.collection('test_table', (c) => {
+			c.field('id').integer().primary().options({
+				nullable: false
+			})
+		})
+		.build()
+
 	describe('Services / Specifications', () => {
 		describe('oas', () => {
 			describe('generate', () => {
@@ -29,49 +48,7 @@ describe('Integration Tests', () => {
 					it('returns untyped schema for json fields', async () => {
 						const service = new SpecificationService({
 							knex: db,
-							schema: {
-								collections: {
-									test_table: {
-										collection: 'test_table',
-										primary: 'id',
-										singleton: false,
-										sortField: null,
-										accountability: 'all',
-										note: null,
-										fields: {
-											id: {
-												field: 'id',
-												type: 'integer',
-												nullable: false,
-												generated: false,
-												defaultValue: null,
-												dbType: 'integer',
-												precision: null,
-												scale: null,
-												special: [],
-												note: null,
-												validation: null,
-												alias: false,
-											},
-											blob: {
-												field: 'blob',
-												type: 'json',
-												dbType: 'json',
-												defaultValue: null,
-												nullable: true,
-												generated: false,
-												precision: null,
-												scale: null,
-												special: [],
-												note: null,
-												alias: false,
-												validation: null,
-											},
-										},
-									},
-								} as CollectionsOverview,
-								relations: [],
-							},
+							schema,
 							accountability: { role: 'admin', admin: true },
 						});
 
@@ -282,35 +259,7 @@ describe('Integration Tests', () => {
 					it('requestBody for CreateItems POST path should not have type in schema', async () => {
 						const service = new SpecificationService({
 							knex: db,
-							schema: {
-								collections: {
-									test_table: {
-										collection: 'test_table',
-										primary: 'id',
-										singleton: false,
-										sortField: null,
-										accountability: 'all',
-										note: null,
-										fields: {
-											id: {
-												field: 'id',
-												type: 'integer',
-												nullable: false,
-												generated: false,
-												defaultValue: null,
-												dbType: 'integer',
-												precision: null,
-												scale: null,
-												special: [],
-												note: null,
-												validation: null,
-												alias: false,
-											},
-										},
-									},
-								} as CollectionsOverview,
-								relations: [],
-							},
+							schema: schema2,
 							accountability: { role: 'admin', admin: true },
 						});
 
