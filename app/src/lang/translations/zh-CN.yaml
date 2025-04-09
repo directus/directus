@@ -940,8 +940,6 @@ run_flow_on_current: 在当前项目上运行流程
 run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
 run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上运行 | 在 {n} 个选定项目 上运行
 run_flow: 运行流程
-run_flow_success: 流程 "{flow}" 运行成功
-trigger_flow_success: 流程“{flow}”已成功触发，它将在后台运行
 field_name_placeholder: 输入字段名称...
 field_key_placeholder: 请输入字段键...
 trigger: 触发器
