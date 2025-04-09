@@ -942,7 +942,6 @@ run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: Seleccionar uno o más artículos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} artículos seleccionados
 run_flow: Ejecutar Flujo
-run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 field_name_placeholder: Ingrese el nombre del campo...
 field_key_placeholder: Ingrese un campo clave...
 trigger: Disparador
