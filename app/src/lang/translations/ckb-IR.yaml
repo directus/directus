@@ -769,7 +769,6 @@ flows: لێشاوەکان
 flow: لێشاو
 select_a_flow: لێشاوێک دیاری بکە
 run_flow_on_current_edited_confirm: لەوانەیە ئەم مادەیە بەهۆی ئەم لێشاوەوە نوێ بکرێتەوە، ئایا دڵنیای کە دەتەوێت جێبەجێی بکەیت؟
-run_flow_success: لێشاوی {flow} بەسەرکەوتوویی بەڕێوەچوو
 trigger: وروژاندن
 trigger_options: بژاردەکانی وروژان
 view_trigger: بینینی وروژان
