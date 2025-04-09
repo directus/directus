@@ -386,6 +386,16 @@ export function getTriggers() {
 					meta: {
 						width: 'half' as Width,
 						interface: 'toggle',
+						conditions: [
+							{
+								rule: {
+									async: {
+										_eq: true,
+									},
+								},
+								hidden: true,
+							},
+						],
 					},
 					schema: {
 						default_value: false,
