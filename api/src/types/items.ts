@@ -5,6 +5,10 @@ import type { UserIntegrityCheckFlag } from '../utils/validate-user-count-integr
 
 export type MutationOptions = {
 	/**
+	 * Flag to disabling tracking activity and/or revisions. Useful for non user initiated changes.
+	 */
+	skipTracking?: 'all' | 'activity' | undefined;
+	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
 	 */
 	onRevisionCreate?: ((pk: PrimaryKey) => void) | undefined;

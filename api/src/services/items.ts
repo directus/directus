@@ -318,7 +318,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
+			if (
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null &&
+				opts.skipTracking !== 'all'
+			) {
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
@@ -335,7 +339,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				});
 
 				// If revisions are tracked, create revisions record
-				if (this.schema.collections[this.collection]!.accountability === 'all') {
+				if (this.schema.collections[this.collection]!.accountability === 'all' && opts.skipTracking !== 'activity') {
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
@@ -830,7 +834,11 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
+			if (
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null &&
+				opts.skipTracking !== 'all'
+			) {
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
@@ -849,7 +857,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					{ bypassLimits: true },
 				);
 
-				if (this.schema.collections[this.collection]!.accountability === 'all') {
+				if (this.schema.collections[this.collection]!.accountability === 'all' && opts.skipTracking !== 'activity') {
 					const itemsService = new ItemsService(this.collection, {
 						knex: trx,
 						schema: this.schema,
