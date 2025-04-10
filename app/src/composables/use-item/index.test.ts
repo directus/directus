@@ -6,7 +6,7 @@ import { setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { computed, ref } from 'vue';
 
-import { useItem } from './use-item';
+import { useItem } from '.';
 
 vi.mock('@/utils/notify', () => ({
 	notify: vi.fn(),
@@ -37,67 +37,63 @@ afterEach(() => {
 });
 
 describe('Save As Copy', () => {
-	const apiGetSpy = vi.spyOn(api, 'get');
 	const apiPostSpy = vi.spyOn(api, 'post');
 
-	const mockResponse = {
+	const item = { id: 1 };
+
+	const mockRestResponse = {
 		data: {
-			data: { id: 1 },
+			data: item,
+		},
+	};
+
+	const mockGraphqlResponse = {
+		data: {
+			data: { item },
 		},
 	};
 
 	const mockCollection = {
 		collection: 'test',
-		name: 'test',
-		meta: {
-			archive_field: null,
-			singleton: false,
-		},
-		schema: {},
 	} as AppCollection;
 
+	test('should use graphql to fetch existing item', async () => {
+		apiPostSpy.mockResolvedValue(mockGraphqlResponse);
+		apiPostSpy.mockResolvedValue(mockRestResponse);
+
+		const mockPrimaryKeyFieldName = 'id';
+
+		const mockPrimaryKeyField = {
+			field: mockPrimaryKeyFieldName,
+		} as Field;
+
+		const mockFields = [mockPrimaryKeyField] as Field[];
+
+		vi.mocked(useCollection).mockReturnValue({
+			info: computed(() => mockCollection),
+			primaryKeyField: computed(() => mockPrimaryKeyField),
+			fields: computed(() => mockFields),
+		} as any);
+
+		const { saveAsCopy } = useItem(ref('test'), ref(1));
+
+		await saveAsCopy();
+
+		expect(apiPostSpy).toHaveBeenCalledWith('/graphql', { query: 'query { item: test_by_id (id: 1) }' });
+	});
+
 	test('should keep manual primary key', async () => {
-		apiGetSpy.mockResolvedValue(mockResponse);
-		apiPostSpy.mockResolvedValue(mockResponse);
+		apiPostSpy.mockResolvedValueOnce(mockGraphqlResponse);
+		apiPostSpy.mockResolvedValueOnce(mockRestResponse);
 
 		const mockPrimaryKeyFieldName = 'id';
 
 		const mockPrimaryKeyField = {
 			collection: 'test',
 			field: mockPrimaryKeyFieldName,
-			type: 'string',
-			schema: {
-				is_primary_key: true,
-				is_generated: false,
-			},
-			meta: {
-				collection: 'test',
-				field: mockPrimaryKeyFieldName,
-				special: null,
-				options: null,
-				display_options: null,
-				note: null,
-				validation_message: null,
-			},
 		} as Field;
 
-		const mockFields = [
-			mockPrimaryKeyField,
-			{
-				collection: 'test',
-				field: 'name',
-				type: 'string',
-				schema: {},
-				meta: {
-					collection: 'test',
-					field: 'name',
-					options: null,
-					display_options: null,
-					note: null,
-					validation_message: null,
-				},
-			},
-		] as Field[];
+		const mockFields = [mockPrimaryKeyField] as Field[];
 
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),
@@ -113,47 +109,19 @@ describe('Save As Copy', () => {
 	});
 
 	test('should omit auto incremented primary key', async () => {
-		apiGetSpy.mockResolvedValue(mockResponse);
-		apiPostSpy.mockResolvedValue(mockResponse);
+		apiPostSpy.mockResolvedValueOnce(mockGraphqlResponse);
+		apiPostSpy.mockResolvedValueOnce(mockRestResponse);
 
 		const mockPrimaryKeyFieldName = 'id';
 
 		const mockPrimaryKeyField = {
-			collection: 'test',
 			field: mockPrimaryKeyFieldName,
-			type: 'integer',
 			schema: {
 				has_auto_increment: true,
-				is_primary_key: true,
-				is_generated: false,
-			},
-			meta: {
-				collection: 'test',
-				field: mockPrimaryKeyFieldName,
-				options: null,
-				display_options: null,
-				note: null,
-				validation_message: null,
 			},
 		} as Field;
 
-		const mockFields = [
-			mockPrimaryKeyField,
-			{
-				collection: 'test',
-				field: 'name',
-				type: 'string',
-				schema: {},
-				meta: {
-					collection: 'test',
-					field: 'name',
-					options: null,
-					display_options: null,
-					note: null,
-					validation_message: null,
-				},
-			},
-		] as Field[];
+		const mockFields = [mockPrimaryKeyField] as Field[];
 
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),
@@ -169,48 +137,19 @@ describe('Save As Copy', () => {
 	});
 
 	test('should omit special uuid primary key', async () => {
-		apiGetSpy.mockResolvedValue(mockResponse);
-		apiPostSpy.mockResolvedValue(mockResponse);
+		apiPostSpy.mockResolvedValueOnce(mockGraphqlResponse);
+		apiPostSpy.mockResolvedValueOnce(mockRestResponse);
 
 		const mockPrimaryKeyFieldName = 'id';
 
 		const mockPrimaryKeyField = {
-			collection: 'test',
 			field: mockPrimaryKeyFieldName,
-			type: 'uuid',
-			schema: {
-				is_primary_key: true,
-				has_auto_increment: false,
-				is_generated: false,
-			},
 			meta: {
-				collection: 'test',
-				field: mockPrimaryKeyFieldName,
-				options: null,
-				display_options: null,
-				note: null,
 				special: ['uuid'],
-				validation_message: null,
 			},
 		} as Field;
 
-		const mockFields = [
-			mockPrimaryKeyField,
-			{
-				collection: 'test',
-				field: 'name',
-				type: 'string',
-				schema: {},
-				meta: {
-					collection: 'test',
-					field: 'name',
-					options: null,
-					display_options: null,
-					note: null,
-					validation_message: null,
-				},
-			},
-		] as Field[];
+		const mockFields = [mockPrimaryKeyField] as Field[];
 
 		vi.mocked(useCollection).mockReturnValue({
 			info: computed(() => mockCollection),

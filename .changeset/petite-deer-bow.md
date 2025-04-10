@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Refactored apply query for easier testing
+Refactored `applyQuery` to improve code organization and maintainability

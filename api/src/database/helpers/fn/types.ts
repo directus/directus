@@ -9,12 +9,12 @@ export type FnHelperOptions = {
 	type: string | undefined;
 	originalCollectionName: string | undefined;
 	relationalCountOptions:
-		| {
-				query: Query;
-				cases: Filter[];
-				permissions: Permission[];
-		  }
-		| undefined;
+	| {
+		query: Query;
+		cases: Filter[];
+		permissions: Permission[];
+	}
+	| undefined;
 };
 
 export abstract class FnHelper extends DatabaseHelper {
