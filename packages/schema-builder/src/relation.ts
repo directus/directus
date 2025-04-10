@@ -161,7 +161,7 @@ export class RelationBuilder {
 
 		// Generate collection field and related a2o collections, for those that don't exist
 		if (this._data._type === 'a2o') {
-			const collection_field = this._data.meta?.one_collection_field
+			const collection_field = this._data.meta?.one_collection_field;
 
 			if (collection_field && collection_field in collection.fields === false) {
 				const field = new FieldBuilder(collection_field).string();
