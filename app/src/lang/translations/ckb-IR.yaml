@@ -70,8 +70,39 @@ extension_endpoint: ئێندپۆینت
 extension_operation: کردار
 extension_bundle: کۆمەڵە
 extension_interfaces: ڕووکار
+extension_displays: پیشاندانەکان
+extension_layouts: نەخشەسازییەکان
 extension_modules: یەکەکان
+extension_panels: پانێڵەکان
+extension_themes: ڕووکارەکان
+extension_hooks: قولاپەکان
+extension_endpoints: ئێندپۆینتەکان
+extension_operations: کردارەکان
+extension_bundles: گورزەکان
+extension_missing: وون
+extension_reload_required: پێویستە لاپەڕە دووبارە باربکرێتەوە
+extension_reload_required_copy: دووبارە بارکردنی لاپەڕە پێویستە بۆ بینینی گۆڕانکارییەکان دوای چالاککردن یان ناچالاککردنی زیادکراوەکانی ئەپ.
+extension_reload_now: دووبارە بارکردنەوە
+published_relative: بڵاوکراوەتەوە {relativeTime}
+compatible_with_your_project: لەگەڵ پرۆژەکەتدا دەگونجێت
+compatible_with_your_project_copy: نووسەر ئاماژەی بە گونجانی ئەم زیادکراوە کردووە کە {hostVersion} بێت، کە لەگەڵ وەشانی پڕۆژەکەتدا دەگونجێت ({currentVersion})
+last_updated_relative: دوایین نوێکردنەوە {relativeTime}
+n_files: '{n} فایل'
+verified: پشتڕاستکراوەتەوە
+homepage: پەڕەی سەرەکی
+repository: ڕیپۆستۆری
+reload_page: بارکردنەوەی لاپەڕە
+reload_required: پێویستە دووبارە باربکرێتەوە
+report_an_issue: ڕاپۆرتکردنی کێشەیەک
+website: ماڵپەڕ
+github: گیت هاب
+beta: بێتا
+n_downloads: '{n} داگرتن'
+downloads: داگرتنەکان
+compatibility_not_guaranteed: گەرەنتی گونجان نییە
+compatibility_not_guaranteed_copy: نووسەر ئاماژەی بە گونجانی ئەم زیادکراوە کردووە کە {hostVersion} بێت، کە لەگەڵ وەشانی پڕۆژەکەتدا ناگونجێت ({currentVersion})
 enable: کاراکردن
+disable: ناکاراکردن
 custom: تایبەتمەند
 hook: قولاپ
 fill_width: پڕکردنی پانی
@@ -79,6 +110,7 @@ field_name_translations: وەرگێڕانەکانی ناوی خانە
 enter_password_to_enable_tfa: تێپەڕەوشەت بنوسە بۆ کاراکردنی سەلمێنەری دوو-هۆکار
 add_field: زیادکردنی خانە
 role_name: ناوی پلە
+policy_name: ناوی سیاسەت
 branch: لق
 leaf: گەڵا
 indeterminate: دیاری نەکراو
@@ -96,10 +128,15 @@ requires_value: پێویستی بە بەهایە
 create_preset: دروستکردنی پێشسێت
 create_panel: دروستکردنی پانێڵ
 create_role: دروستکردنی پلە
+create_policy: دروستکردنی سیاسەت
 create_user: دروستکردنی بەکارهێنەر
 message: پەیام
 delete_panel: سڕینەوەی پانێڵ
 create_webhook: دروستکردنی وێبهووک
+create_custom_translation: دروستکردنی وەرگێڕانی تایبەت
+edit_custom_translation: دەستکاری وەرگێڕانی تایبەت
+no_custom_translations: هیچ وەرگێڕانێکی تایبەتمەند نییە
+no_custom_translations_copy: هێشتا هیچ وەرگێڕانێکی تایبەت بەخۆت نییە.
 invite_users: بانگهێشتکردنی بەکارهێنەرەکان
 invite: بانگهێشت
 email_already_invited: ئیمەیڵی "{email}" پێشتر بانگهێشتکراوە
@@ -115,6 +152,19 @@ rename_folder: ناولێنانەوەی بوخچە
 delete_folder: سڕینەوەی بوخچە
 prefix: پێشگر
 suffix: پاشگر
+keep: پاراستن
+version: وەشان
+version_key: کلیلی وەشان
+version_name: ناوی وەشان
+main_version: سەرەکی
+switch_version: گۆڕینی وەشان
+switch_version_copy: ئایا دڵنیایت لە گۆڕینی بۆ وەشانی "{version}"؟ گۆڕانکارییە هەڵنەگیراوەکان لە دەست دەچن.
+create_version: دروستکردنی وەشان
+rename_version: ناوی وەشان بگۆڕە
+compare_version: بەراوردکردنی وەشان
+save_version: پاشەکەوتکردنی وەشان
+promote_version: پەرەپێدانی وەشان
+promote_version_disabled: هیچ گۆڕانکارییەک نییە
 promote_version_preview: بینین
 reset_bookmark: ڕێکخستنەوەی نیشانکەر
 update_bookmark: نوێکردنەوەی نیشانکەر
@@ -312,6 +362,7 @@ updated_on: نوێکراوە لە
 updated_by: نوێکراوەتەوە لەلایەن
 primary_key: کلیلی سەرەکی
 foreign_key: کلیلی دەرەکی
+field_key: کلیلی خانە
 finish_setup: تەواوکردنی دامەزراندن
 dismiss: پشتگوێخستن
 toggle_raw_editor: ڕەوشگۆڕینی دەستکاریکەری خام
@@ -332,6 +383,7 @@ clear_items: سڕینەوەی مادەکان
 reset_to_default: بنەڕەتی کردنەوە
 undo_changes: پاشەکشەکردنی گۆڕانکارییەکان
 notifications: ئاگادارکردنەوەکان
+archive_all: ئەرشیفکردنی هەموو
 show_all_activity: نیشاندانی هەموو کردارەکان
 page_not_found: پەڕە نەدۆزرایەوە
 page_not_found_body: ئەو پەڕەیەی کە بۆی دەگەڕێیت پێناچێت بونی هەبێت.
@@ -344,12 +396,14 @@ revision_delta_created: دروستکرا
 revision_delta_created_externally: لە دەرەوە دروست کرا
 revision_delta_updated: 'یەک خانە نوێکرایەوە | {count} خانە نوێکرانەوە'
 revision_delta_deleted: سڕایەوە
+revision_delta_version_saved: 'خەزنکردنی وەشان (1 خانە نوێکراوەتەوە) | پاراستنی وەشان ({count} خانە نوێکراوەتەوە)'
 revision_delta_reverted: گەڕێندرایەوە
 revision_delta_update_message: ئەم خانەیە نوێ کراوەتەوە بەڵام بەهاکەی بە هۆکاری ئەمنی دەشاردرێتەوە.
 revision_delta_other: پێداچونەوە
 revision_delta_by: '{date} بەپێی {user}'
 presentation_text_values_cannot_be_reimported: 'دەقی پێشکەشکردن بەکاردەهێنێت، بەهاکان ناتوانرێت دووبارە هاوردە بکرێتەوە.'
 download_page_as_csv: 'داگرتنی پەڕە وەک CSV'
+download_page_as_csv_unsupported: ئەم شێوازە پشتگیری لە دابەزاندنی لاپەڕەی ئێستا ناکات.
 private_user: بەکارهێنەری تایبەت
 creation_preview: پێشبینی دروستکردن
 revision_preview: پێشبینی پێداچونەوە
@@ -408,12 +462,18 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: MMM d
 minutes: خولەک
 hours: کاتژمێر
 month: مانگ
 year: ساڵ
 select_all: دیاریکردنی هەموو
+permissionsLevel:
+  all: دەستگەیشتنی تەواوی {action}
+  partial: دەستگەیشتنی بەشێکی {action}
+  custom: دەستگەیشتنی بەشێکی {action}
+  none: دەستنگەیشتنی {action}
 months:
   january: کانونی دووەم
   february: شوبات
@@ -428,7 +488,11 @@ months:
   november: تشرینی دووەم
   december: کانونی یەکەم
 drag_mode: دۆخی ڕاکێشان
+move_tool: ئامرازی جوڵاندن
+crop_tool: ئامرازی بڕین
+focal_point_tool: ئامرازی خاڵی فۆکەس
 cancel_crop: هەڵوەشاندنەوەی بڕین
+cancel_selection: هەڵوەشاندنەوەی دیاریکراو
 original: ڕەسەن
 url: بەستەر
 import_label: هاوردن
@@ -436,10 +500,12 @@ file_details: وردەکاری پەڕگە
 dimensions: دوریەکان
 size: قەبارە
 created: دروستکرا
+uploaded: بارکراوە
 modified: گۆڕدراو
 owner: خاوەن
 edited_by: دەستکاریکراوە لەلایەن
 folder: بوخچە
+folders: فۆڵدەرەکان
 zoom: نزیکخستنەوە
 download: داگرتن
 open: کردنەوە
@@ -453,8 +519,10 @@ import_from_url: هاوردنی پەڕگە لە ڕێگای بەستەرەوە
 replace_from_device: جێگرتنەوەی پەڕگە لە ئامێرەوە
 replace_from_library: جێگرتنەوەی پەڕگە لە پێشانگاوە
 replace_from_url: جێگرتنەوەی پەڕگە لە ڕێگای بەستەرەوە
+no_image_selected: هیچ وێنەیەک دیاری نەکراوە
 no_file_selected: هیچ پەڕگەیەک دیاری نەکراوە
 download_file: داگرتنی پەڕگە
+open_file_in_tab: کردنەوەی پەڕگە لە پەنجەرەی نوێدا
 start_export: دەستپێکردنی هەناردەکردن
 not_available_for_local_downloads: بەردەست نییە بۆ داگرتنە نێوخۆیەکان
 exporting_all_items_in_collection: هەناردەکردنی سەرجەم {total} مادەکان لە کۆمەڵەی {collection}.
@@ -1156,6 +1224,7 @@ fields:
     description: وەسف
     users: بەکارهێنەران لە پلەی
   directus_policies:
+    name: ناوی سیاسەت
     description: وەسف
   directus_webhooks:
     name: ناو
