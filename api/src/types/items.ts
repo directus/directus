@@ -7,7 +7,7 @@ export type MutationOptions = {
 	/**
 	 * Flag to disabling tracking activity and/or revisions. Useful for non user initiated changes.
 	 */
-	skipTracking?: 'all' | 'activity' | undefined;
+	skipTracking?: 'all' | 'revisions' | undefined;
 	/**
 	 * Callback function that's fired whenever a revision is made in the mutation
 	 */

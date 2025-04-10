@@ -339,7 +339,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				});
 
 				// If revisions are tracked, create revisions record
-				if (this.schema.collections[this.collection]!.accountability === 'all' && opts.skipTracking !== 'activity') {
+				if (this.schema.collections[this.collection]!.accountability === 'all' && opts.skipTracking !== 'revisions') {
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
@@ -857,7 +857,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					{ bypassLimits: true },
 				);
 
-				if (this.schema.collections[this.collection]!.accountability === 'all' && opts.skipTracking !== 'activity') {
+				if (this.schema.collections[this.collection]!.accountability === 'all' && opts.skipTracking !== 'revisions') {
 					const itemsService = new ItemsService(this.collection, {
 						knex: trx,
 						schema: this.schema,
