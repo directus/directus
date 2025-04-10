@@ -526,6 +526,11 @@ open_file_in_tab: کردنەوەی پەڕگە لە پەنجەرەی نوێدا
 start_export: دەستپێکردنی هەناردەکردن
 not_available_for_local_downloads: بەردەست نییە بۆ داگرتنە نێوخۆیەکان
 exporting_all_items_in_collection: هەناردەکردنی سەرجەم {total} مادەکان لە کۆمەڵەی {collection}.
+exporting_limited_items_in_collection: '{count} ئایتم لە کۆی {total} ئایتم لە {collection} هەناردە دەکرێن.'
+exporting_no_items_to_export: هیچ شتێک نییە بۆ هەناردەکردن. ڕێکخستنی هەناردەکردن و/یان زیادکردنی شتەکان بۆ کۆمەڵەکە.
+exporting_download_hint: کاتێک فایلی {format} ەکە دروست بوو، دادەبەزێنرێت بۆ ئامێرەکەت.
+exporting_library_hint: کاتێک فایلی {format} ەکە دروست بوو، لە کتێبخانەی فایل هەڵدەگیرێت.
+exporting_library_hint_forced: ئەم هەناردەکردنە پێویستە بە کۆمەڵ پرۆسە بکرێت. پاش تەواوبوون، فایلی {format} لە کتێبخانەی فایل هەڵدەگیرێت.
 collection_key: کلیلی کۆمەڵە
 name: ناو
 primary_key_field: خانەی کلیلە وشە
@@ -541,6 +546,8 @@ generated_uuid: دروستکەری UUID
 manual_string: دەقی دەستی دانراو
 save_and_create_new: پاشەکەوتکردن و دروستکردنی نوێ
 save_and_stay: پاشەکەوتکردن و مانەوە
+save_and_quit: پاشەکەوتکردن و وازهێنان
+save_and_return_to_main: پاشەکەوت بکە و بگەڕێوە بۆ سەرەکی
 save_as_copy: پاشەکەوتکردن وەک لەبەرگرتنەوە
 add_existing: زیادکردنی بەردەست
 creating_items: دروستکردنی مادەکان
@@ -550,8 +557,15 @@ enable_select_button: کاراکردنی دوگمەی دیاریکردن
 allow_duplicates: ڕێگەدان بە دووبارەبوونەوە
 comments: لێدوانەکان
 no_comments: هێشتا هیچ لێدوانێک نییە
+expand: فراوانکردن
+expand_all: فروانکردنی هەموو
+expand_none: فراوان نەکردن
+collapse: بچووکردنەوە
+collapse_all: بچووکردنەوەی هەموو
 select_item: مادە دیاری بکە
 no_items: هیچ مادەیەک نییە
+search_items: گەڕانی مادەکان...
+search_extensions: گەڕانی زیادکراوەکان...
 disabled: ناکاراکراو
 information: زانیاری
 report_bug: ڕاپۆرتکردنی هەڵە
@@ -564,12 +578,17 @@ display_not_found: 'پیشاندەری "{display}" نەدۆزرایەوە.'
 reset_display: بنەڕەتیکردنەوەی پیشاندەر
 list-m2a: بنیاتنەر (زۆر بۆ هەرشتێک M2A)
 item_count: 'هیچ مادەیەک نییە | یەک مادە | {count} مادە'
+filtered_item_count: 'هیچ شتێکی فلتەرکراو نییە | یەک بابەتی فلتەرکراو | {count} بابەتی فلتەرکراو'
 no_items_copy: هێشتا هیچ مادەیەک نییە لەم کۆمەڵەیەدا.
 file_count: 'هیچ پەڕگەیەک نییە | یەک پەڕگە | {count} پەڕگە'
 no_files_copy: هیچ پەڕگەیەک نییە لێرە.
 user_count: 'هیچ بەکارهێنەرێک نییە | یەک بەکارهێنەر | {count} بەکارهێنەر'
 no_users_copy: هێشتا هیچ بەکارهێنەرێک نییە لەم پلەیەدا.
 webhooks_count: 'هیچ وێبهووکێک نییە | یەک وێبهووک | {count} وێبهووک'
+webhooks_deprecation_notice: |
+  وێبهۆکەکان بەکارنەهێنراون و بەکارهێنانی زیاتر هان نادرێت.
+
+  تکایە لە جیاتی ئەوە **Flows** بەکاربهێنە لەگەڵ [وێبهوک / داواکاری کارپێکردنی URL](https://docs.directus.io/app/flows/operations.html#webhook-request-url).
 no_webhooks_copy: هێشتا هیچ وێبهوکێک ڕێکنەخراوە. بە دروستکردنی دانەیەک لە خوارەوە دەستپێ بکە.
 no_notifications: هیچ ئاگادارکردنەوەیەک نییە
 no_notifications_copy: هەمووتان گیراون!
@@ -582,6 +601,7 @@ create_collection: دروستکردنی کۆمەڵە
 no_collections_copy_admin: هیچ کۆمەڵەیەکت نییە هێشتا. کرتە لەو دوگمەیەی خوارەوە بکە بۆ دەستپێکردن.
 no_collections_copy: هیچ کۆمەڵەیەکت نییە هێشتا. تکایە پەیوەندی بکە بە بەڕێوبەری سیستەم.
 relationship_not_setup: پەیوەندی بە شێوەیەکی دروست ڕێکنەخراوە
+no_singleton_relations: پەیوەندیەکان لەگەڵ سینگڵتۆنەکان پشتگیری نەکراون
 display_template_not_setup: بژاردەی نیشاندانی قاڵب هەڵەڕێکخراوە
 collection_field_not_setup: بژاردەی خانەی کۆمەڵە هەڵەڕێکخراوە
 select_a_collection: کۆمەڵەیەک هەڵبژێرە
@@ -593,6 +613,7 @@ copy_to: لەبەرگرتنەوە بۆ...
 no_other_dashboards_copy: هیچ داشبۆردێکی ترت نییە هێشتا.
 inactive: ناچالاک
 users: بەکارهێنەرەکان
+roles: پلەکان
 activity: چالاکی
 activity_item: چالاکی مادە
 action: کردەوە
