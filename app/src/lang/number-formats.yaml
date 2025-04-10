@@ -482,7 +482,7 @@ kmr-TR:
 ckb-IR:
   currency:
     style: 'currency'
-    currency: 'IRR'
+    currency: 'IQD'
     notation: standard
   decimal:
     style: 'decimal'
