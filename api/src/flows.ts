@@ -421,7 +421,7 @@ class FlowManager {
 
 		const handler = this.operations.get(operation.type)!;
 
-		let options = null;
+		let options = operation.options;
 
 		try {
 			options = applyOptionsData(operation.options, keyedData);
