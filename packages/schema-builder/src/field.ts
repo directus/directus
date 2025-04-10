@@ -30,7 +30,7 @@ type InitialFieldOverview = {
 
 type FinishedFieldOverview = FieldOverview & { _kind: 'finished' };
 
-export type FieldOveriewBuilderOptions = Partial<Omit<FieldOverview, ''>>;
+export type FieldOveriewBuilderOptions = Partial<Omit<FieldOverview, 'field' | 'type' | 'dbType'>>;
 
 export class FieldBuilder {
 	_schema: SchemaBuilder | undefined;
