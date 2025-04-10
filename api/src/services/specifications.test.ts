@@ -6,7 +6,7 @@ import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SpecificationService } from './index.js';
 
-class Client_PG extends MockClient { }
+class Client_PG extends MockClient {}
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
