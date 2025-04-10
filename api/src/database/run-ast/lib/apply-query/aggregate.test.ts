@@ -42,6 +42,7 @@ test('aggregate counting id and title', async () => {
 	expect(rawQuery.sql).toEqual(
 		`select count("articles"."id") as "count->id", count("articles"."title") as "count->title"`,
 	);
+
 	expect(rawQuery.bindings).toEqual([]);
 });
 

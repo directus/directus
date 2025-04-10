@@ -189,6 +189,7 @@ test(`filtering m2o relation`, async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * left join "users" as "alias" on "article"."author" = "alias"."id" where "alias"."name" = ?`,
 	);
+
 	expect(rawQuery.bindings).toEqual(['username']);
 });
 
@@ -230,6 +231,7 @@ test(`filtering o2m relation`, async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * left join "links_list" as "alias" on "article"."id" = "alias"."article_id" where "alias"."name" = ?`,
 	);
+
 	expect(rawQuery.bindings).toEqual([2]);
 });
 
@@ -265,6 +267,7 @@ for (const quantifier of ['_some', '_none']) {
 				quantifier === '_none' ? ' not' : ''
 			} in (select "links_list"."article_id" as "article_id" from "links_list" where "links_list"."article_id" is not null and "links_list"."name" = ?)`,
 		);
+
 		expect(rawQuery.bindings).toEqual([2]);
 	});
 }
@@ -309,6 +312,7 @@ test(`filtering a2o relation`, async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * left join "image" as "alias123" on "article"."collection" = ? and "article"."header" = CAST("alias123"."id" AS CHAR(255)) left join "video" as "alias456" on "article"."collection" = ? and "article"."header" = CAST("alias456"."id" AS CHAR(255)) where "alias123"."id" = ? and "alias456"."id" = ?`,
 	);
+
 	expect(rawQuery.bindings).toEqual(['image', 'video', 1, 2]);
 });
 
@@ -518,6 +522,7 @@ test(`filtering $FOLLOW against reverse o2m`, async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * left join "article" as "alias" on "users"."id" = "alias"."author" where "alias"."id" = ?`,
 	);
+
 	expect(rawQuery.bindings).toEqual([1]);
 });
 
@@ -553,6 +558,7 @@ test(`filtering on count(links)`, async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * where (select count(*) from "links" as "alias" where "alias"."article_id" = "article"."id") < ?`,
 	);
+
 	expect(rawQuery.bindings).toEqual([5]);
 });
 
@@ -606,9 +612,11 @@ test(`filtering on links with existing alias map`, async () => {
 	const rawQuery = queryBuilder.toSQL();
 
 	expect(aliasMap).toEqual({ links: { alias: 'alias', collection: 'links' } });
+
 	expect(rawQuery.sql).toEqual(
 		`select * left join "links" as "alias" on "article"."id" = "alias"."article_id" where "alias"."id" < ? and "alias"."id" > ?`,
 	);
+
 	expect(rawQuery.bindings).toEqual([5, 1]);
 });
 

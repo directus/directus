@@ -57,6 +57,7 @@ test('column for count function', async () => {
 	expect(rawQuery.sql).toEqual(
 		`(select count(*) from "links" as "alias" where "alias"."article_id" = "articles"."id") AS "links_count"`,
 	);
+
 	expect(rawQuery.bindings).toEqual([]);
 });
 
@@ -75,6 +76,7 @@ test('column for date function', async () => {
 	expect(rawQuery.sql).toEqual(
 		`CAST(strftime('%d', "articles"."created" / 1000, 'unixepoch', 'localtime') AS INTEGER) AS "created_day"`,
 	);
+
 	expect(rawQuery.bindings).toEqual([]);
 });
 

@@ -160,6 +160,7 @@ test('sorting of count(links)', async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * order by (select count(*) from "link_list" as "alias" where "alias"."article_id" = "articles"."id") asc`,
 	);
+
 	expect(rawQuery.bindings).toEqual([]);
 });
 
@@ -191,5 +192,6 @@ test('sorting of count(links) with aggregation', async () => {
 	expect(rawQuery.sql).toEqual(
 		`select * left join "link_list" as "alias" on "articles"."id" = "alias"."article_id" order by "alias"."id" asc`,
 	);
+
 	expect(rawQuery.bindings).toEqual([]);
 });
