@@ -117,9 +117,9 @@ export function resolveSystemAdmin(
 				});
 
 				if (isSystemField(args['collection'], args['field'])) {
-					const { error } = systemFieldUpdateSchema.validate(args['data'], { abortEarly: false });
+					const { error } = systemFieldUpdateSchema.validate(args['data']);
 
-					if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
+					if (error) throw new InvalidPayloadError({ reason: error.message });
 				}
 
 				await service.updateField(args['collection'], {
