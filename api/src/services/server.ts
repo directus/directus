@@ -414,8 +414,12 @@ export class ServerService {
 					const fileStream = await disk.read(`health-${checkID}`);
 
 					fileStream.on('data', async () => {
-						fileStream.destroy();
-						await disk.delete(`health-${checkID}`);
+						try {
+							fileStream.destroy();
+							await disk.delete(`health-${checkID}`);
+						} catch (error) {
+							logger.error(error);
+						}
 					});
 				} catch (err: any) {
 					checks[`storage:${location}:responseTime`]![0]!.status = 'error';

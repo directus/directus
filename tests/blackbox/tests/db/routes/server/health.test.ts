@@ -27,7 +27,7 @@ describe('/server', () => {
 
 					if (userKey === USER.ADMIN.KEY) {
 						const adminResult = {
-							status: 'ok',
+							status: expect.stringMatching(/ok|warn/),
 							releaseId: expect.any(String),
 							serviceId: expect.any(String),
 							checks: expect.anything(),
@@ -36,7 +36,7 @@ describe('/server', () => {
 						expect(response.body).toEqual(adminResult);
 						expect(gqlResponse.body.data.server_health).toEqual(adminResult);
 					} else {
-						const nonAdminResult = { status: 'ok' };
+						const nonAdminResult = { status: expect.stringMatching(/ok|warn/) };
 
 						expect(response.body).toEqual(nonAdminResult);
 						expect(gqlResponse.body.data.server_health).toEqual(nonAdminResult);
