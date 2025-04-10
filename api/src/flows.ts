@@ -424,7 +424,7 @@ class FlowManager {
 		let options = operation.options;
 
 		try {
-			options = applyOptionsData(operation.options, keyedData);
+			options = applyOptionsData(options, keyedData);
 
 			let result = await handler(options, {
 				services,
