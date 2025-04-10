@@ -1136,7 +1136,7 @@ test('overwrite field', () => {
 });
 
 test('create empty collection', () => {
-	const schema = new SchemaBuilder().collection('blog', (_) => {});
+	const schema = new SchemaBuilder().collection('blog', (_) => { });
 
 	expect(() => {
 		schema.build();

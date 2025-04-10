@@ -367,7 +367,9 @@ export function generateJoi(filter: FieldFilter | null, options?: JoiOptions): A
 				const wrapped =
 					typeof compareValue === 'string' ? compareValue.startsWith('/') && compareValue.endsWith('/') : false;
 
-				schema[key] = getStringSchema().regex(new RegExp(wrapped ? (compareValue as any).slice(1, -1) : compareValue));
+				schema[key] = getStringSchema()
+					.min(0)
+					.regex(new RegExp(wrapped ? (compareValue as any).slice(1, -1) : compareValue));
 			}
 		}
 	}

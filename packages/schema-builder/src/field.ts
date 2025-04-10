@@ -30,8 +30,6 @@ type InitialFieldOverview = {
 
 type FinishedFieldOverview = FieldOverview & { _kind: 'finished' };
 
-export type FieldOveriewBuilderOptions = Partial<Omit<FieldOverview, ''>>;
-
 type M2AOptions = {
 	o2m_relation: RelationBuilder;
 	a2o_relation: RelationBuilder;
@@ -41,6 +39,7 @@ type M2MOptions = {
 	o2m_relation: RelationBuilder;
 	m2o_relation: RelationBuilder;
 };
+export type FieldOveriewBuilderOptions = Partial<Omit<FieldOverview, 'field' | 'type' | 'dbType'>>;
 
 export class FieldBuilder {
 	_schema: SchemaBuilder | undefined;

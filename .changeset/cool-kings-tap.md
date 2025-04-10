@@ -1,5 +1,4 @@
 ---
-'@directus/schema-builder': minor
 '@directus/types': patch
 ---
 

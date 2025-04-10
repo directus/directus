@@ -809,7 +809,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _regex: '/.*field$/' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().regex(new RegExp(`.*field$`)),
+			field: Joi.string().min(0).regex(new RegExp(`.*field$`)),
 		})
 			.unknown()
 			.describe();
@@ -821,7 +821,7 @@ describe(`generateJoi`, () => {
 		const mockFieldFilter = { field: { _regex: '.*field$' } } as FieldFilter;
 
 		const mockSchema = Joi.object({
-			field: Joi.string().regex(new RegExp(`.*field$`)),
+			field: Joi.string().min(0).regex(new RegExp(`.*field$`)),
 		})
 			.unknown()
 			.describe();
