@@ -14,7 +14,7 @@ import type { Knex } from 'knex';
 import { getCases } from '../../../../permissions/modules/process-ast/lib/get-cases.js';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../utils/get-column-path.js';
-import { getColumn } from '../../../../utils/get-column.js';
+import { getColumn } from '../../utils/get-column.js';
 import { getRelationInfo } from '../../../../utils/get-relation-info.js';
 import { parseFilterKey } from '../../../../utils/parse-filter-key.js';
 import { getHelpers } from '../../../helpers/index.js';
@@ -80,7 +80,6 @@ export function applyFilter(
 					collection,
 					knex,
 					schema,
-					relations,
 					rootQuery,
 					aliasMap,
 				});
@@ -143,9 +142,8 @@ export function applyFilter(
 				if (!relation) continue;
 
 				if (relationType === 'o2m' || relationType === 'o2a') {
-					let pkField: Knex.Raw<any> | string = `${collection}.${
-						schema.collections[relation!.related_collection!]!.primary
-					}`;
+					let pkField: Knex.Raw<any> | string = `${collection}.${schema.collections[relation!.related_collection!]!.primary
+						}`;
 
 					if (relationType === 'o2a') {
 						pkField = knex.raw(getHelpers(knex).schema.castA2oPrimaryKey(), [pkField]);
@@ -186,9 +184,8 @@ export function applyFilter(
 
 				if (filterPath.includes('_none') || filterPath.includes('_some')) {
 					throw new InvalidQueryError({
-						reason: `"${
-							filterPath.includes('_none') ? '_none' : '_some'
-						}" can only be used with top level relational alias field`,
+						reason: `"${filterPath.includes('_none') ? '_none' : '_some'
+							}" can only be used with top level relational alias field`,
 					});
 				}
 
