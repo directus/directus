@@ -8,7 +8,7 @@ on:
 env:
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
   DOCKERHUB_IMAGE: docker.io/${{ github.repository }}
-  DOCKERHUB_SIGNATURE_IMAGE: docker.io/${{ github.repository }}-signatures
+  COSIGN_REPOSITORY: docker.io/${{ github.repository }}-signatures
 
 jobs:
   check-version:
