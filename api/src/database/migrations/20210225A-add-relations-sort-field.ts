@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
 	const helpers = getHelpers(knex);
 
 	await knex.schema.alterTable('directus_relations', (table) => {
-		table.string('sort_field', helpers.schema.getColumnMaxLength());
+		table.string('sort_field', helpers.schema.getColumnNameMaxLength());
 	});
 
 	const fieldsWithSort = await knex

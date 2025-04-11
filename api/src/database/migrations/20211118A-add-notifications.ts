@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('sender').notNullable().references('id').inTable('directus_users');
 		table.string('subject').notNullable();
 		table.text('message');
-		table.string('collection', helpers.schema.getTableMaxLength());
+		table.string('collection', helpers.schema.getTableNameMaxLength());
 		table.string('item');
 	});
 

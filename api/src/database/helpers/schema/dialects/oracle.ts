@@ -128,11 +128,11 @@ export class SchemaHelperOracle extends SchemaHelper {
 		}
 	}
 
-	override getColumnMaxLength(): number {
+	override getColumnNameMaxLength(): number {
 		return 128;
 	}
 
-	override getTableMaxLength(): number {
+	override getTableNameMaxLength(): number {
 		return 128;
 	}
 }

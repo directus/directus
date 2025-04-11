@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.string('name');
 
 		table
-			.string('collection', helpers.schema.getTableMaxLength())
+			.string('collection', helpers.schema.getTableNameMaxLength())
 			.references('collection')
 			.inTable('directus_collections')
 			.onDelete('CASCADE');

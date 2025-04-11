@@ -57,9 +57,9 @@ export default async function runSeed(database: Knex): Promise<void> {
 					let length = columnInfo.length;
 
 					if (length === 'MAX_TABLE_NAME_LENGTH') {
-						length = helpers.schema.getTableMaxLength();
+						length = helpers.schema.getTableNameMaxLength();
 					} else if (length === 'MAX_COLUMN_NAME_LENGTH') {
-						length = helpers.schema.getColumnMaxLength();
+						length = helpers.schema.getColumnNameMaxLength();
 					}
 
 					column = tableBuilder.string(columnName, Number(length));

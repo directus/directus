@@ -26,7 +26,7 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.alterTable('directus_fields', (table) => {
-		table.string('group', helpers.schema.getColumnMaxLength());
+		table.string('group', helpers.schema.getColumnNameMaxLength());
 	});
 
 	for (const { id, group } of groupsInUse) {

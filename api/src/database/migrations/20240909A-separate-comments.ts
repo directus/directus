@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
 	await knex.schema.createTable('directus_comments', (table) => {
 		table.uuid('id').primary().notNullable();
 
-		table.string('collection', helpers.schema.getTableMaxLength()).notNullable();
+		table.string('collection', helpers.schema.getTableNameMaxLength()).notNullable();
 
 		table.string('item').notNullable();
 		table.text('comment').notNullable();

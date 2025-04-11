@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 	await knex('directus_relations').update({ one_deselect_action: 'nullify' });
 
 	await helper.changeToType('directus_relations', 'sort_field', 'string', {
-		length: helper.getColumnMaxLength(),
+		length: helper.getColumnNameMaxLength(),
 	});
 
 	await helper.changeToType('directus_relations', 'one_deselect_action', 'string', {
@@ -30,7 +30,7 @@ export async function down(knex: Knex): Promise<void> {
 
 	await knex.schema.alterTable('directus_relations', (table) => {
 		table.dropColumn('one_deselect_action');
-		table.string('many_primary', helper.getColumnMaxLength());
-		table.string('one_primary', helper.getColumnMaxLength());
+		table.string('many_primary', helper.getColumnNameMaxLength());
+		table.string('one_primary', helper.getColumnNameMaxLength());
 	});
 }
