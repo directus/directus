@@ -140,7 +140,6 @@ jobs:
         if: env.DOCKERHUB_IMAGE
         env:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
-          COSIGN_REPOSITORY: ${{ env.DOCKERHUB_SIGNATURE_IMAGE }}
         run: cosign sign --yes --recursive ${DOCKERHUB_IMAGE}@${DIGEST}
 
       # Temp fix:
