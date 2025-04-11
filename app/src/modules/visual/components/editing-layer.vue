@@ -7,10 +7,11 @@ import { PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import api from '@/api';
 import { useNotificationsStore } from '@/stores/notifications';
-import OverlayItem from '@/views/private/components/overlay-item.vue';
 import { getItemRoute, getCollectionRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
+import OverlayItem from '@/views/private/components/overlay-item.vue';
+import { sameOrigin } from '../utils/same-origin';
 import type { EditConfig, ReceiveData, SendAction, SavedData } from '../types';
 
 const { url, frameEl, showEditableElements } = defineProps<{
@@ -65,14 +66,6 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	function sendSaved(data: SavedData) {
 		send('saved', data);
-	}
-
-	function sameOrigin(origin: string, url: string) {
-		try {
-			return origin === new URL(url).origin;
-		} catch {
-			return false;
-		}
 	}
 }
 

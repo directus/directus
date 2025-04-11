@@ -1,7 +1,9 @@
 import { stringifyQuery } from 'vue-router';
+import { defineModule } from '@directus/extensions';
+import { useSettingsStore } from '@/stores/settings';
 import VisualEditor from './routes/visual-editor.vue';
 import { useSettingsStore } from '@/stores/settings';
-import { defineModule } from '@directus/extensions';
+import { sameOrigin } from './utils/same-origin';
 
 export default defineModule({
 	id: 'visual',
@@ -55,12 +57,4 @@ export default defineModule({
 function getSettingsUrls() {
 	const { settings } = useSettingsStore();
 	return settings?.visual_editor_urls?.map((item) => item.url).filter(Boolean) || [];
-}
-
-function sameOrigin(url1: string, url2: string) {
-	try {
-		return new URL(url1).origin === new URL(url2).origin;
-	} catch {
-		return false;
-	}
 }
