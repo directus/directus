@@ -12,13 +12,15 @@ import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
 import OverlayItem from '@/views/private/components/overlay-item.vue';
 import { sameOrigin } from '../utils/same-origin';
-import type { EditConfig, ReceiveData, SendAction, SavedData } from '../types';
+import type { EditConfig, ReceiveData, NavigationData, SendAction, SavedData } from '../types';
 
-const { url, frameEl, showEditableElements } = defineProps<{
-	url: string;
+const { frameSrc, frameEl, showEditableElements } = defineProps<{
+	frameSrc: string;
 	frameEl?: HTMLIFrameElement;
 	showEditableElements?: boolean;
 }>();
+
+const emit = defineEmits(['navigation']);
 
 const { t } = useI18n();
 
@@ -31,7 +33,7 @@ const { sendSaved } = useWebsiteFrame({ onClickEdit });
 
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
 	useEventListener('message', (event) => {
-		if (!sameOrigin(event.origin, url)) return;
+		if (!sameOrigin(event.origin, frameSrc)) return;
 
 		const { action = null, data = null }: ReceiveData = event.data;
 
@@ -39,6 +41,8 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 			sendConfirm();
 			if (showEditableElements) sendShowEditableElements(true);
 		}
+
+		if (action === 'navigation') receiveNavigation(data);
 
 		if (action === 'edit') onClickEdit(data);
 	});
@@ -52,8 +56,15 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	return { sendSaved };
 
+	function receiveNavigation(data: unknown) {
+		const { url, title } = data as NavigationData;
+		if (url === undefined || title === undefined) return;
+
+		emit('navigation', { url, title });
+	}
+
 	function send(action: SendAction, data: unknown) {
-		frameEl?.contentWindow?.postMessage({ action, data }, url);
+		frameEl?.contentWindow?.postMessage({ action, data }, frameSrc);
 	}
 
 	function sendConfirm() {

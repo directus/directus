@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useElementSize } from '@directus/composables';
-import { CSSProperties, computed, onMounted, ref, watch } from 'vue';
+import { CSSProperties, computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useElementSize } from '@directus/composables';
 
 declare global {
 	interface Window {
@@ -11,13 +11,15 @@ declare global {
 
 const {
 	url,
-	singleUrlSubdued = true,
 	invalidUrl = false,
-	dynamicUrl = '',
+	dynamicUrl,
+	dynamicDisplay,
+	singleUrlSubdued = true,
 } = defineProps<{
 	url: string | string[];
-	dynamicUrl?: string;
 	invalidUrl?: boolean;
+	dynamicUrl?: string;
+	dynamicDisplay?: string;
 	singleUrlSubdued: boolean;
 	headerExpanded?: boolean;
 	hideRefreshButton?: boolean;
@@ -28,39 +30,12 @@ const {
 
 const emit = defineEmits<{
 	'new-window': [];
+	selectUrl: [newUrl: string, oldUrl: string];
 }>();
 
 const { t } = useI18n();
 
-const { urls, activeUrl, multipleUrls, dynamicUrlIncluded } = useUrls();
-
-function useUrls() {
-	const activeUrl = ref<string>();
-	const urlArray = computed(() => (Array.isArray(url) ? url : [url]));
-	const multipleUrls = computed(() => urls.value.length > 1);
-	const dynamicUrlIncluded = computed(() => dynamicUrl && urlArray.value.includes(dynamicUrl));
-
-	const urls = computed(() => {
-		if (dynamicUrl && !dynamicUrlIncluded.value) return [dynamicUrl, ...urlArray.value];
-		return urlArray.value;
-	});
-
-	watch(
-		() => url,
-		() => {
-			if (invalidUrl) activeUrl.value = t('select');
-			else activeUrl.value = urls.value[0];
-		},
-		{ immediate: true },
-	);
-
-	return {
-		urls,
-		activeUrl,
-		multipleUrls,
-		dynamicUrlIncluded,
-	};
-}
+const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, selectUrl } = useUrls();
 
 const width = ref<number>();
 const height = ref<number>();
@@ -122,7 +97,7 @@ function toggleFullscreen() {
 const frameEl = ref<HTMLIFrameElement>();
 
 function refresh(url: string | null) {
-	if (!frameEl.value) return;
+	if (!frameEl.value || isRefreshing.value) return;
 
 	isRefreshing.value = true;
 
@@ -152,6 +127,51 @@ onMounted(() => {
 		height.value = resizeHandle.value.offsetHeight;
 	}).observe(resizeHandle.value);
 });
+
+function useUrls() {
+	const initialDynamicUrl = dynamicUrl;
+	const selectedUrl = ref<string>();
+	const urlArray = computed(() => (Array.isArray(url) ? url : [url]));
+	const multipleUrls = computed(() => urls.value.length > 1);
+	const dynamicUrlIncluded = computed(() => dynamicUrl && urlArray.value.includes(dynamicUrl));
+
+	const urls = computed(() => {
+		if (dynamicUrl && !dynamicUrlIncluded.value) return [dynamicUrl, ...urlArray.value];
+		return urlArray.value;
+	});
+
+	const frameSrc = computed({
+		get: () => selectedUrl.value ?? initialDynamicUrl ?? urls.value[0],
+		set(value) {
+			selectedUrl.value = value;
+		},
+	});
+
+	const urlDisplay = computed(() => {
+		if (invalidUrl) return t('select');
+		return dynamicDisplay ?? frameSrc.value;
+	});
+
+	return {
+		urls,
+		frameSrc,
+		urlDisplay,
+		multipleUrls,
+		dynamicUrlIncluded,
+		selectUrl,
+	};
+
+	function selectUrl(newUrl: string) {
+		emit('selectUrl', newUrl, String(frameSrc.value));
+
+		if (frameSrc.value === newUrl) {
+			refresh(null);
+			return;
+		}
+
+		frameSrc.value = newUrl;
+	}
+}
 </script>
 
 <template>
@@ -179,7 +199,7 @@ onMounted(() => {
 					icon
 					rounded
 					secondary
-					:disabled="isRefreshing || !activeUrl || invalidUrl"
+					:disabled="isRefreshing || !frameSrc || invalidUrl"
 					@click="refresh(null)"
 				>
 					<v-progress-circular v-if="isRefreshing" indeterminate x-small />
@@ -189,7 +209,7 @@ onMounted(() => {
 				<div v-if="centered" class="spacer" />
 
 				<v-menu
-					v-if="activeUrl"
+					v-if="urls.length"
 					class="url"
 					:class="{ disabled: singleUrlSubdued, clickable: multipleUrls }"
 					:disabled="!multipleUrls"
@@ -198,18 +218,18 @@ onMounted(() => {
 				>
 					<template #activator="{ toggle }">
 						<div class="activator" @click="toggle">
-							<v-text-overflow :text="activeUrl" placement="bottom" />
+							<v-text-overflow :text="urlDisplay" placement="bottom" />
 							<v-icon v-if="multipleUrls" name="expand_more" />
 						</div>
 					</template>
 
-					<v-list>
+					<v-list v-if="multipleUrls">
 						<v-list-item
 							v-for="(urlItem, index) in urls"
 							:key="index"
-							:active="urlItem === activeUrl"
+							:active="urlItem === dynamicUrl"
 							clickable
-							@click="activeUrl = urlItem"
+							@click="selectUrl(urlItem)"
 						>
 							<v-list-item-content :class="{ dynamic: !dynamicUrlIncluded && urlItem === dynamicUrl }">
 								{{ urlItem }}
@@ -221,7 +241,7 @@ onMounted(() => {
 
 			<div class="spacer" />
 
-			<div v-if="activeUrl && !invalidUrl" class="dimensions" :class="{ disabled: fullscreen }">
+			<div v-if="frameSrc && !invalidUrl" class="dimensions" :class="{ disabled: fullscreen }">
 				<input
 					:value="displayWidth"
 					class="width"
@@ -255,14 +275,14 @@ onMounted(() => {
 				icon
 				rounded
 				:secondary="fullscreen"
-				:disabled="!activeUrl || invalidUrl"
+				:disabled="!frameSrc || invalidUrl"
 				@click="toggleFullscreen"
 			>
 				<v-icon small name="devices" />
 			</v-button>
 		</div>
 
-		<v-info v-if="!activeUrl" :title="t('no_url')" icon="edit_square" center>
+		<v-info v-if="!frameSrc" :title="t('no_url')" icon="edit_square" center>
 			{{ t('no_url_copy') }}
 		</v-info>
 
@@ -283,8 +303,8 @@ onMounted(() => {
 						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
 					}"
 				>
-					<iframe id="frame" ref="frameEl" :src="activeUrl" @load="onIframeLoad" />
-					<slot name="overlay" :frame-el :active-url />
+					<iframe id="frame" ref="frameEl" :src="frameSrc" @load="onIframeLoad" />
+					<slot name="overlay" :frame-el :frame-src />
 				</div>
 			</div>
 		</div>

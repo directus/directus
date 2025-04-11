@@ -2,7 +2,7 @@ import { stringifyQuery } from 'vue-router';
 import { defineModule } from '@directus/extensions';
 import { useSettingsStore } from '@/stores/settings';
 import VisualEditor from './routes/visual-editor.vue';
-import { useSettingsStore } from '@/stores/settings';
+import { getUrlRoute } from './utils/get-url-route';
 import { sameOrigin } from './utils/same-origin';
 
 export default defineModule({
@@ -17,7 +17,7 @@ export default defineModule({
 				const urls = getSettingsUrls();
 				const firstUrl = urls[0];
 				if (!firstUrl) return { name: 'visual-editor-no-url' };
-				return { name: 'visual-editor-url', params: { url: firstUrl } };
+				return getUrlRoute(firstUrl);
 			},
 		},
 		{
@@ -27,13 +27,20 @@ export default defineModule({
 			props(route) {
 				const urls = getSettingsUrls();
 				const queryString = stringifyQuery(route.query);
-				return { urls, dynamicUrl: `${route.params.url}${queryString ? `?${queryString}` : ''}${route.hash}` };
+
+				return {
+					urls,
+					dynamicUrl: normalizeUrl(`${route.params.url}${queryString ? `?${queryString}` : ''}${route.hash}`),
+				};
 			},
 			beforeEnter(to) {
 				const urls = getSettingsUrls();
 				if (!urls.length) return { name: 'visual-editor-no-url' };
 
-				const validUrl = urls.some((url) => sameOrigin(url, to.params.url as string));
+				// if path is `/admin/visual/` with trailing slash
+				if (!to.params.url) return getUrlRoute(urls[0]!);
+
+				const validUrl = urls.some((url) => sameOrigin(url, String(to.params.url)));
 				if (!validUrl) return { name: 'visual-editor-invalid-url' };
 			},
 		},
@@ -56,5 +63,14 @@ export default defineModule({
 
 function getSettingsUrls() {
 	const { settings } = useSettingsStore();
-	return settings?.visual_editor_urls?.map((item) => item.url).filter(Boolean) || [];
+	const settingsUrls = settings?.visual_editor_urls?.map((item) => item.url).filter(Boolean) || [];
+	return settingsUrls.map(normalizeUrl).filter(Boolean);
+}
+
+function normalizeUrl(url: string) {
+	try {
+		return new URL(url).href.replace(/\/$/, '');
+	} catch {
+		return '';
+	}
 }
