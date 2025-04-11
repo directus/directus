@@ -1,5 +1,5 @@
 import { randomUUID } from '@directus/random';
-import type { SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
 import knex from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -12,35 +12,11 @@ vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
 }));
 
-const testSchema = {
-	collections: {
-		directus_roles: {
-			collection: 'directus_roles',
-			primary: 'id',
-			singleton: false,
-			sortField: null,
-			note: null,
-			accountability: null,
-			fields: {
-				id: {
-					field: 'id',
-					defaultValue: null,
-					nullable: false,
-					generated: true,
-					type: 'uuid',
-					dbType: 'uuid',
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-			},
-		},
-	},
-	relations: [],
-} as SchemaOverview;
+const schema = new SchemaBuilder()
+	.collection('test', (c) => {
+		c.field('id').uuid().primary();
+	})
+	.build();
 
 describe('Integration Tests', () => {
 	const db = vi.mocked(knex.default({ client: MockClient }));
@@ -49,7 +25,7 @@ describe('Integration Tests', () => {
 	describe('Services / Roles', () => {
 		const service = new RolesService({
 			knex: db,
-			schema: testSchema,
+			schema,
 		});
 
 		afterEach(() => {

@@ -1,6 +1,6 @@
+import { SchemaBuilder } from '@directus/schema-builder';
 import { describe, expect, test } from 'vitest';
-import { mergeVersionsRecursive, mergeVersionsRaw } from './merge-version-data.js';
-import type { SchemaOverview } from '@directus/types';
+import { mergeVersionsRaw, mergeVersionsRecursive } from './merge-version-data.js';
 
 describe('content versioning mergeVersionsRaw', () => {
 	test('No versions available', () => {
@@ -38,656 +38,43 @@ describe('content versioning mergeVersionsRaw', () => {
 });
 
 describe('content versioning mergeVersionsRecursive', () => {
-	const testSchema: SchemaOverview = {
-		collections: {
-			collection_a: {
-				collection: 'collection_a',
-				primary: 'id',
-				singleton: false,
-				note: null,
-				sortField: null,
-				accountability: 'all',
-				fields: {
-					id: {
-						field: 'id',
-						defaultValue: 'AUTO_INCREMENT',
-						nullable: false,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					status: {
-						field: 'status',
-						defaultValue: 'draft',
-						nullable: false,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					m2o: {
-						field: 'm2o',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: ['m2o'],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					m2o_c: {
-						field: 'm2o_c',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: ['m2o'],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					m2m: {
-						field: 'm2m',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'alias',
-						dbType: null,
-						precision: null,
-						scale: null,
-						special: ['m2m'],
-						note: null,
-						alias: true,
-						validation: null,
-					},
-					m2a: {
-						field: 'm2a',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'alias',
-						dbType: null,
-						precision: null,
-						scale: null,
-						special: ['m2a'],
-						note: null,
-						alias: true,
-						validation: null,
-					},
-				},
-			},
-			collection_b: {
-				collection: 'collection_b',
-				primary: 'id',
-				singleton: false,
-				note: null,
-				sortField: null,
-				accountability: 'all',
-				fields: {
-					id: {
-						field: 'id',
-						defaultValue: 'AUTO_INCREMENT',
-						nullable: false,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					status: {
-						field: 'status',
-						defaultValue: 'draft',
-						nullable: false,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					o2m: {
-						field: 'o2m',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'alias',
-						dbType: null,
-						precision: null,
-						scale: null,
-						special: ['o2m'],
-						note: null,
-						alias: true,
-						validation: null,
-					},
-				},
-			},
-			collection_c: {
-				collection: 'collection_c',
-				primary: 'id',
-				singleton: false,
-				note: null,
-				sortField: null,
-				accountability: 'all',
-				fields: {
-					id: {
-						field: 'id',
-						defaultValue: 'AUTO_INCREMENT',
-						nullable: false,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					status: {
-						field: 'status',
-						defaultValue: 'draft',
-						nullable: false,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					translations: {
-						field: 'translations',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'alias',
-						dbType: null,
-						precision: null,
-						scale: null,
-						special: ['translations'],
-						note: null,
-						alias: true,
-						validation: null,
-					},
-				},
-			},
-			collection_a_collection_c: {
-				collection: 'collection_a_collection_c',
-				primary: 'id',
-				singleton: false,
-				note: null,
-				sortField: null,
-				accountability: 'all',
-				fields: {
-					id: {
-						field: 'id',
-						defaultValue: 'AUTO_INCREMENT',
-						nullable: false,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					collection_a_id: {
-						field: 'collection_a_id',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					collection_c_id: {
-						field: 'collection_c_id',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-				},
-			},
-			collection_a_m2a: {
-				collection: 'collection_a_m2a',
-				primary: 'id',
-				singleton: false,
-				note: null,
-				sortField: null,
-				accountability: 'all',
-				fields: {
-					id: {
-						field: 'id',
-						defaultValue: 'AUTO_INCREMENT',
-						nullable: false,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					collection_a_id: {
-						field: 'collection_a_id',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					item: {
-						field: 'item',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					collection: {
-						field: 'collection',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-				},
-			},
-			languages: {
-				collection: 'languages',
-				primary: 'code',
-				singleton: false,
-				note: null,
-				sortField: null,
-				accountability: 'all',
-				fields: {
-					code: {
-						field: 'code',
-						defaultValue: null,
-						nullable: false,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					name: {
-						field: 'name',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					direction: {
-						field: 'direction',
-						defaultValue: 'ltr',
-						nullable: true,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-				},
-			},
-			collection_c_translations: {
-				collection: 'collection_c_translations',
-				primary: 'id',
-				singleton: false,
-				note: null,
-				sortField: null,
-				accountability: 'all',
-				fields: {
-					id: {
-						field: 'id',
-						defaultValue: 'AUTO_INCREMENT',
-						nullable: false,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					collection_c_id: {
-						field: 'collection_c_id',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'integer',
-						dbType: 'integer',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					languages_id: {
-						field: 'languages_id',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-					text: {
-						field: 'text',
-						defaultValue: null,
-						nullable: true,
-						generated: false,
-						type: 'string',
-						dbType: 'character varying',
-						precision: null,
-						scale: null,
-						special: [],
-						note: null,
-						alias: false,
-						validation: null,
-					},
-				},
-			},
-		},
-		relations: [
-			{
-				collection: 'collection_a',
-				field: 'm2o',
-				related_collection: 'collection_b',
-				schema: {
-					constraint_name: 'collection_a_m2o_foreign',
-					table: 'collection_a',
-					column: 'm2o',
-					foreign_key_schema: 'public',
-					foreign_key_table: 'collection_b',
-					foreign_key_column: 'id',
-					on_update: 'NO ACTION',
-					on_delete: 'SET NULL',
-				},
-				meta: {
-					id: 4,
-					many_collection: 'collection_a',
-					many_field: 'm2o',
-					one_collection: 'collection_b',
-					one_field: 'o2m',
-					one_collection_field: null,
-					one_allowed_collections: null,
-					junction_field: null,
-					sort_field: null,
-					one_deselect_action: 'nullify',
-				},
-			},
-			{
-				collection: 'collection_a_collection_c',
-				field: 'collection_a_id',
-				related_collection: 'collection_a',
-				schema: {
-					constraint_name: 'collection_a_collection_c_collection_a_id_foreign',
-					table: 'collection_a_collection_c',
-					column: 'collection_a_id',
-					foreign_key_schema: 'public',
-					foreign_key_table: 'collection_a',
-					foreign_key_column: 'id',
-					on_update: 'NO ACTION',
-					on_delete: 'SET NULL',
-				},
-				meta: {
-					id: 6,
-					many_collection: 'collection_a_collection_c',
-					many_field: 'collection_a_id',
-					one_collection: 'collection_a',
-					one_field: 'm2m',
-					one_collection_field: null,
-					one_allowed_collections: null,
-					junction_field: 'collection_c_id',
-					sort_field: null,
-					one_deselect_action: 'nullify',
-				},
-			},
-			{
-				collection: 'collection_a_collection_c',
-				field: 'collection_c_id',
-				related_collection: 'collection_c',
-				schema: {
-					constraint_name: 'collection_a_collection_c_collection_c_id_foreign',
-					table: 'collection_a_collection_c',
-					column: 'collection_c_id',
-					foreign_key_schema: 'public',
-					foreign_key_table: 'collection_c',
-					foreign_key_column: 'id',
-					on_update: 'NO ACTION',
-					on_delete: 'SET NULL',
-				},
-				meta: {
-					id: 5,
-					many_collection: 'collection_a_collection_c',
-					many_field: 'collection_c_id',
-					one_collection: 'collection_c',
-					one_field: null,
-					one_collection_field: null,
-					one_allowed_collections: null,
-					junction_field: 'collection_a_id',
-					sort_field: null,
-					one_deselect_action: 'nullify',
-				},
-			},
-			{
-				collection: 'collection_a_m2a',
-				field: 'collection_a_id',
-				related_collection: 'collection_a',
-				schema: {
-					constraint_name: 'collection_a_m2a_collection_a_id_foreign',
-					table: 'collection_a_m2a',
-					column: 'collection_a_id',
-					foreign_key_schema: 'public',
-					foreign_key_table: 'collection_a',
-					foreign_key_column: 'id',
-					on_update: 'NO ACTION',
-					on_delete: 'SET NULL',
-				},
-				meta: {
-					id: 8,
-					many_collection: 'collection_a_m2a',
-					many_field: 'collection_a_id',
-					one_collection: 'collection_a',
-					one_field: 'm2a',
-					one_collection_field: null,
-					one_allowed_collections: null,
-					junction_field: 'item',
-					sort_field: null,
-					one_deselect_action: 'nullify',
-				},
-			},
-			{
-				collection: 'collection_c_translations',
-				field: 'collection_c_id',
-				related_collection: 'collection_c',
-				schema: {
-					constraint_name: 'collection_c_translations_collection_c_id_foreign',
-					table: 'collection_c_translations',
-					column: 'collection_c_id',
-					foreign_key_schema: 'public',
-					foreign_key_table: 'collection_c',
-					foreign_key_column: 'id',
-					on_update: 'NO ACTION',
-					on_delete: 'SET NULL',
-				},
-				meta: {
-					id: 10,
-					many_collection: 'collection_c_translations',
-					many_field: 'collection_c_id',
-					one_collection: 'collection_c',
-					one_field: 'translations',
-					one_collection_field: null,
-					one_allowed_collections: null,
-					junction_field: 'languages_id',
-					sort_field: null,
-					one_deselect_action: 'nullify',
-				},
-			},
-			{
-				collection: 'collection_c_translations',
-				field: 'languages_id',
-				related_collection: 'languages',
-				schema: {
-					constraint_name: 'collection_c_translations_languages_id_foreign',
-					table: 'collection_c_translations',
-					column: 'languages_id',
-					foreign_key_schema: 'public',
-					foreign_key_table: 'languages',
-					foreign_key_column: 'code',
-					on_update: 'NO ACTION',
-					on_delete: 'SET NULL',
-				},
-				meta: {
-					id: 9,
-					many_collection: 'collection_c_translations',
-					many_field: 'languages_id',
-					one_collection: 'languages',
-					one_field: null,
-					one_collection_field: null,
-					one_allowed_collections: null,
-					junction_field: 'collection_c_id',
-					sort_field: null,
-					one_deselect_action: 'nullify',
-				},
-			},
-			{
-				collection: 'collection_a_m2a',
-				field: 'item',
-				related_collection: null,
-				schema: null,
-				meta: {
-					id: 7,
-					many_collection: 'collection_a_m2a',
-					many_field: 'item',
-					one_collection: null,
-					one_field: null,
-					one_collection_field: 'collection',
-					one_allowed_collections: ['collection_b', 'collection_c'],
-					junction_field: 'collection_a_id',
-					sort_field: null,
-					one_deselect_action: 'nullify',
-				},
-			},
-			{
-				collection: 'collection_a',
-				field: 'm2o_c',
-				related_collection: 'collection_c',
-				schema: {
-					constraint_name: 'collection_a_m2o_c_foreign',
-					table: 'collection_a',
-					column: 'm2o_c',
-					foreign_key_schema: 'public',
-					foreign_key_table: 'collection_c',
-					foreign_key_column: 'id',
-					on_update: 'NO ACTION',
-					on_delete: 'SET NULL',
-				},
-				meta: {
-					id: 11,
-					many_collection: 'collection_a',
-					many_field: 'm2o_c',
-					one_collection: 'collection_c',
-					one_field: null,
-					one_collection_field: null,
-					one_allowed_collections: null,
-					junction_field: null,
-					sort_field: null,
-					one_deselect_action: 'nullify',
-				},
-			},
-		],
-	};
+	const schema = new SchemaBuilder()
+		.collection('collection_a', (c) => {
+			c.field('id').id();
+
+			c.field('status').string().options({
+				defaultValue: 'draft',
+			});
+
+			c.field('m2o').m2o('collection_b', 'o2m');
+			c.field('m2o_c').m2o('collection_c');
+			c.field('m2m').m2m('collection_c');
+			c.field('m2a').m2a(['collection_b', 'collection_c']);
+		})
+		.collection('collection_b', (c) => {
+			c.field('id').id();
+
+			c.field('status').string().options({
+				defaultValue: 'draft',
+			});
+		})
+		.collection('collection_c', (c) => {
+			c.field('id').id();
+
+			c.field('status').string().options({
+				defaultValue: 'draft',
+			});
+
+			c.field('translations').translations();
+		})
+		.collection('collection_c_translations', (c) => {
+			c.field('id').id();
+			c.field('text').string();
+		})
+		.build();
 
 	test('No versions available', () => {
-		const result = mergeVersionsRecursive({ status: 'draft' }, [], 'collection_a', testSchema);
+		const result = mergeVersionsRecursive({ status: 'draft' }, [], 'collection_a', schema);
 
 		expect(result).toMatchObject({ status: 'draft' });
 	});
@@ -698,7 +85,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 				{ id: 1, status: 'draft', m2o: null },
 				[{ status: 'published' }, { m2o: 1 }],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({ id: 1, status: 'published', m2o: 1 });
@@ -709,7 +96,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 				{ id: 1, status: 'draft', m2o: { id: 1, status: 'draft' } },
 				[{ status: 'published', m2o: null }],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({ id: 1, status: 'published', m2o: null });
@@ -720,7 +107,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 				{ id: 1, status: 'draft', m2o: { id: 1, test: 'data', status: 'draft' } },
 				[{ status: 'published' }, { m2o: { id: 1, status: 'published' } }],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({ id: 1, status: 'published', m2o: { id: 1, test: 'data', status: 'published' } });
@@ -750,7 +137,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_b',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -787,7 +174,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_b',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -841,7 +228,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -902,7 +289,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -977,7 +364,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -1073,7 +460,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -1162,7 +549,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -1269,7 +656,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -1379,7 +766,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({
@@ -1482,7 +869,7 @@ describe('content versioning mergeVersionsRecursive', () => {
 					},
 				],
 				'collection_a',
-				testSchema,
+				schema,
 			);
 
 			expect(result).toMatchObject({

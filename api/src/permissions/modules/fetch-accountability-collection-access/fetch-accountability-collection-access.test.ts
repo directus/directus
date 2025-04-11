@@ -1,5 +1,6 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/types';
-import { vi, test, beforeEach, expect } from 'vitest';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Permission } from '@directus/types';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
 import type { Context } from '../../types.js';
@@ -15,12 +16,14 @@ beforeEach(() => {
 });
 
 test('Returns all permissions for all collections if admin', async () => {
-	const schema = {
-		collections: {
-			'collection-a': {},
-			'collection-b': {},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('id').id();
+		})
+		.collection('collection-b', (c) => {
+			c.field('id').id();
+		})
+		.build();
 
 	const result = await fetchAccountabilityCollectionAccess(
 		{ admin: true } as unknown as Accountability,

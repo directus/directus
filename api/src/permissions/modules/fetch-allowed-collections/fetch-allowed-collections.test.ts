@@ -1,4 +1,5 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { PermissionsService } from '../../../services/permissions.js';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
@@ -26,12 +27,14 @@ test('Returns all schema keys if user is admin', async () => {
 		admin: true,
 	} as Accountability;
 
-	const schema = {
-		collections: {
-			'collection-a': {},
-			'collection-b': {},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('id').id();
+		})
+		.collection('collection-b', (c) => {
+			c.field('id').id();
+		})
+		.build();
 
 	const collections = await fetchAllowedCollections({ action, accountability }, { schema } as Context);
 
@@ -54,12 +57,14 @@ test('Returns unique collection names for all permissions in given action', asyn
 		admin: false,
 	} as Accountability;
 
-	const schema = {
-		collections: {
-			'collection-a': {},
-			'collection-b': {},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('id').id();
+		})
+		.collection('collection-b', (c) => {
+			c.field('id').id();
+		})
+		.build();
 
 	const collections = await fetchAllowedCollections({ action, accountability }, { schema } as Context);
 

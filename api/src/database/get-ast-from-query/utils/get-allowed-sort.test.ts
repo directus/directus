@@ -1,6 +1,7 @@
-import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Query } from '@directus/types';
 import type { Knex } from 'knex';
-import { test, expect, vi, beforeEach } from 'vitest';
+import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { getAllowedSort } from './get-allowed-sort.js';
 
@@ -13,13 +14,11 @@ beforeEach(() => {
 });
 
 test('Returns the primary key if no other field takes precedence', async () => {
-	const schema = {
-		collections: {
-			collection: {
-				primary: 'primary',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+		})
+		.build();
 
 	const result = await getAllowedSort({ collection: 'collection', accountability: null }, { schema, knex: {} as Knex });
 
@@ -27,14 +26,12 @@ test('Returns the primary key if no other field takes precedence', async () => {
 });
 
 test("Returns the collection sort field if it's defined", async () => {
-	const schema = {
-		collections: {
-			collection: {
-				primary: 'primary',
-				sortField: 'sort',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('sort').string().sort();
+		})
+		.build();
 
 	const result = await getAllowedSort({ collection: 'collection', accountability: null }, { schema, knex: {} as Knex });
 
@@ -42,23 +39,23 @@ test("Returns the collection sort field if it's defined", async () => {
 });
 
 test("Returns the relation sort field if it's defined", async () => {
-	const schema = {
-		collections: {
-			collection: {
-				primary: 'primary',
-				sortField: 'collection-sort',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('collection-sort').string().sort();
 
-	const relation = {
-		meta: {
-			sort_field: 'relation-sort',
-		},
-	} as Relation;
+			c.field('relation-field').m2o('related-collection', undefined, (relation) => {
+				relation.options({
+					meta: {
+						sort_field: 'relation-sort',
+					},
+				});
+			});
+		})
+		.build();
 
 	const result = await getAllowedSort(
-		{ collection: 'collection', accountability: null, relation },
+		{ collection: 'collection', accountability: null, relation: schema.relations[0]! },
 		{ schema, knex: {} as Knex },
 	);
 
@@ -66,27 +63,27 @@ test("Returns the relation sort field if it's defined", async () => {
 });
 
 test('Returns the group by field if it is defined in the query', async () => {
-	const schema = {
-		collections: {
-			collection: {
-				primary: 'primary',
-				sortField: 'collection-sort',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('collection-sort').string().sort();
 
-	const relation = {
-		meta: {
-			sort_field: 'relation-sort',
-		},
-	} as Relation;
+			c.field('relation-field').m2o('related-collection', undefined, (relation) => {
+				relation.options({
+					meta: {
+						sort_field: 'relation-sort',
+					},
+				});
+			});
+		})
+		.build();
 
 	const query = {
 		group: ['group-by'],
 	} as Query;
 
 	const result = await getAllowedSort(
-		{ collection: 'collection', accountability: null, relation, query },
+		{ collection: 'collection', accountability: null, relation: schema.relations[0]!, query },
 		{ schema, knex: {} as Knex },
 	);
 
@@ -94,14 +91,12 @@ test('Returns the group by field if it is defined in the query', async () => {
 });
 
 test('Returns null if the user has no access to the sort field', async () => {
-	const schema = {
-		collections: {
-			collection: {
-				primary: 'primary',
-				sortField: 'sort',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('collection-sort').string().sort();
+		})
+		.build();
 
 	const accountability = { admin: false } as Accountability;
 
@@ -113,14 +108,12 @@ test('Returns null if the user has no access to the sort field', async () => {
 });
 
 test('Return the sort field if the user has access to it', async () => {
-	const schema = {
-		collections: {
-			collection: {
-				primary: 'primary',
-				sortField: 'sort',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('collection-sort').string().sort();
+		})
+		.build();
 
 	const accountability = { admin: false } as Accountability;
 
@@ -132,14 +125,12 @@ test('Return the sort field if the user has access to it', async () => {
 });
 
 test('Return the sort field if the user has access to all fields', async () => {
-	const schema = {
-		collections: {
-			collection: {
-				primary: 'primary',
-				sortField: 'sort',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('sort').string().sort();
+		})
+		.build();
 
 	const accountability = { admin: false } as Accountability;
 
@@ -151,14 +142,12 @@ test('Return the sort field if the user has access to all fields', async () => {
 });
 
 test('Returns the first allowed field if the user has no access to the sort field', async () => {
-	const schema = {
-		collections: {
-			collection: {
-				primary: 'primary',
-				sortField: 'sort',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection', (c) => {
+			c.field('primary').id();
+			c.field('sort').string().sort();
+		})
+		.build();
 
 	const accountability = { admin: false } as Accountability;
 

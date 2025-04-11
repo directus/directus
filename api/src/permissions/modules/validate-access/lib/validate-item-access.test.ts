@@ -1,4 +1,5 @@
-import type { Accountability, SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPermittedAstRootFields } from '../../../../database/run-ast/modules/fetch-permitted-ast-root-fields.js';
 import type { Context } from '../../../types.js';
@@ -14,7 +15,7 @@ beforeEach(() => {
 });
 
 test('Throws error when primary key does not exist in given collection', async () => {
-	const schema = { collections: {} } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder().build();
 	const acc = {} as unknown as Accountability;
 
 	await expect(
@@ -25,7 +26,12 @@ test('Throws error when primary key does not exist in given collection', async (
 });
 
 test('Queries the database', async () => {
-	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([]);
@@ -78,7 +84,12 @@ test('Queries the database', async () => {
 });
 
 test('Returns false if no items are returned', async () => {
-	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([]);
@@ -91,7 +102,12 @@ test('Returns false if no items are returned', async () => {
 });
 
 test('Returns true if the number of returned items matches the number of requested primary keys', async () => {
-	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{}, {}]);
@@ -104,7 +120,12 @@ test('Returns true if the number of returned items matches the number of request
 });
 
 test('Returns true if the number of returned items matches the number of requested primary keys and the user has access to the fields', async () => {
-	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ field_a: 1 }, { field_a: 1 }]);
@@ -120,7 +141,12 @@ test('Returns true if the number of returned items matches the number of request
 });
 
 test('Returns false if the number of returned items matches the number of requested primary keys and the user does not have access to the fields', async () => {
-	const schema = { collections: { 'collection-a': { primary: 'field-a' } } } as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+		})
+		.build();
+
 	const acc = {} as unknown as Accountability;
 
 	vi.mocked(fetchPermittedAstRootFields).mockResolvedValue([{ field_a: null }, { field_a: 1 }]);

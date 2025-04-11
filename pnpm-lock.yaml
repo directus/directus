@@ -412,6 +412,9 @@ importers:
       '@directus/random':
         specifier: workspace:*
         version: link:../packages/random
+      '@directus/schema-builder':
+        specifier: workspace:*
+        version: link:../packages/schema-builder
       '@directus/tsconfig':
         specifier: 3.0.0
         version: 3.0.0

@@ -1,4 +1,4 @@
-import type { SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
@@ -12,35 +12,11 @@ vi.mock('../../src/database/index', () => ({
 
 vi.mock('../utils/validate-user-count-integrity.js');
 
-const testSchema = {
-	collections: {
-		test: {
-			collection: 'test',
-			primary: 'id',
-			singleton: false,
-			sortField: null,
-			note: null,
-			accountability: null,
-			fields: {
-				id: {
-					field: 'id',
-					defaultValue: null,
-					nullable: false,
-					generated: true,
-					type: 'integer',
-					dbType: 'integer',
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-			},
-		},
-	},
-	relations: [],
-} as SchemaOverview;
+const schema = new SchemaBuilder()
+	.collection('test', (c) => {
+		c.field('id').id();
+	})
+	.build();
 
 describe('Integration Tests', () => {
 	let db: MockedFunction<Knex>;
@@ -65,7 +41,7 @@ describe('Integration Tests', () => {
 		beforeEach(() => {
 			service = new ItemsService('test', {
 				knex: db,
-				schema: testSchema,
+				schema,
 			});
 		});
 
