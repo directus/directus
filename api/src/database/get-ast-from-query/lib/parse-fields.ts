@@ -9,7 +9,7 @@ import { getRelationType } from '../../../utils/get-relation-type.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
-import { getRelation } from '../utils/get-relation.js';
+import { getRelation } from '@directus/utils';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
@@ -161,7 +161,7 @@ export async function parseFields(
 		}
 
 		const relatedCollection = getRelatedCollection(context.schema, options.parentCollection, fieldName);
-		const relation = getRelation(context.schema, options.parentCollection, fieldName);
+		const relation = getRelation(context.schema.relations, options.parentCollection, fieldName);
 
 		if (!relation) continue;
 

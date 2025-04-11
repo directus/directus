@@ -2008,6 +2008,9 @@ importers:
         specifier: 8.0.3
         version: 8.0.3
     devDependencies:
+      '@directus/schema-builder':
+        specifier: workspace:*
+        version: link:../schema-builder
       '@directus/tsconfig':
         specifier: 3.0.0
         version: 3.0.0
