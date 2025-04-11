@@ -43,4 +43,5 @@ export type Aggregate = {
 	sumDistinct?: string[];
 	min?: string[];
 	max?: string[];
+	countAll?: string[];
 };

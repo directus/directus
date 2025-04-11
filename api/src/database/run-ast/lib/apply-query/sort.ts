@@ -1,8 +1,8 @@
-import type { Query, Relation, SchemaOverview } from '@directus/types';
+import type { Aggregate, Relation, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
 import { getColumnPath } from '../../../../utils/get-column-path.js';
-import { getColumn } from '../../../../utils/get-column.js';
+import { getColumn } from '../../utils/get-column.js';
 import { getRelationInfo } from '../../../../utils/get-relation-info.js';
 import { addJoin } from './add-join.js';
 
@@ -12,18 +12,17 @@ export function applySort(
 	knex: Knex,
 	schema: SchemaOverview,
 	rootQuery: Knex.QueryBuilder,
-	query: Query,
+	sort: string[],
+	aggregate: Aggregate | null | undefined,
 	collection: string,
 	aliasMap: AliasMap,
 	returnRecords = false,
 ) {
-	const rootSort = query.sort!;
-	const aggregate = query?.aggregate;
 	const relations: Relation[] = schema.relations;
 	let hasJoins = false;
 	let hasMultiRelationalSort = false;
 
-	const sortRecords = rootSort.map((sortField) => {
+	const sortRecords = sort.map((sortField) => {
 		const column: string[] = sortField.split('.');
 		let order: 'asc' | 'desc' = 'asc';
 
@@ -84,7 +83,6 @@ export function applySort(
 			aliasMap,
 			rootQuery,
 			schema,
-			relations,
 			knex,
 		});
 

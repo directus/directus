@@ -4,11 +4,11 @@ import { customAlphabet } from 'nanoid/non-secure';
 import { getHelpers } from '../../../helpers/index.js';
 import { applyCaseWhen } from '../../utils/apply-case-when.js';
 import type { AliasMap } from '../../../../utils/get-column-path.js';
-import { getColumn } from '../../../../utils/get-column.js';
+import { getColumn } from '../../utils/get-column.js';
 import { applyLimit, applyOffset } from './pagination.js';
 import { joinFilterWithCases } from './join-filter-with-cases.js';
 import { applySort } from './sort.js';
-import { applyFilter } from './filter.js';
+import { applyFilter } from './filter/index.js';
 import { applySearch } from './search.js';
 import { applyAggregate } from './aggregate.js';
 
@@ -50,7 +50,7 @@ export default function applyQuery(
 	}
 
 	if (query.sort && !options?.isInnerQuery && !options?.hasMultiRelationalSort) {
-		const sortResult = applySort(knex, schema, dbQuery, query, collection, aliasMap);
+		const sortResult = applySort(knex, schema, dbQuery, query.sort, query.aggregate, collection, aliasMap);
 
 		if (!hasJoins) {
 			hasJoins = sortResult.hasJoins;
