@@ -941,8 +941,6 @@ run_flow_on_current: Flow beim aktuellen Element ausführen
 run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
 run_flow: Flow ausführen
-run_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
-trigger_flow_success: Der Flow "{flow}" wurde erfolgreich ausgelöst. Er wird im Hintergrund ausgeführt
 field_name_placeholder: Feldnamen eingeben ...
 field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger

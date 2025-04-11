@@ -937,7 +937,6 @@ run_flow_on_current: Uruchom Przepływ na Bieżącym Przedmiocie
 run_flow_on_current_edited_confirm: Ten przedmiot może być aktualizowany przez ten przepływ, czy na pewno chcesz go wykonać?
 run_flow_on_selected: Najpierw wybierz jeden lub więcej elementów | Uruchom przepływ na 1 wybranym elemencie | Uruchom przepływ na {n} wybranych elementach
 run_flow: Uruchom Przepływ
-run_flow_success: Przepływ "{flow}" wykonano pomyślnie
 field_name_placeholder: Wprowadź nazwę pola...
 field_key_placeholder: Wprowadź klucz pola...
 trigger: Wyzwalacz

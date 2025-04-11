@@ -942,7 +942,6 @@ run_flow_on_current: Ejecutar Flujo en el Elemento actual
 run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: Seleccione uno o más elementos primero | Ejecutar Flujo en 1 Elemento seleccionado | Ejecutar Flujo en {n} Elementos seleccionados
 run_flow: Ejecutar Flujo
-run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 field_name_placeholder: Ingrese el nombre del campo...
 field_key_placeholder: Ingrese la clave del campo...
 trigger: Disparador
@@ -979,6 +978,11 @@ operation_key: Identificador para referencia...
 operation_key_unique_error: Las claves de operación deben ser únicas en un flujo
 operation_handle_resolve: 'Resolver: Haga clic para añadir o arrastrar para reenrutar'
 operation_handle_reject: 'Rechazar: Haga clic para añadir o arrastrar para reenrutar'
+visual_editor: Editor Visual
+toggle_navigation: Alternar navegación
+toggle_editable_elements: Alternar elementos editables
+no_url: No se proporcionó una URL
+no_url_copy: Por favor, agregue una URL en la configuración.
 insights: Informes
 dashboard: Tablero
 panel: Tablero
@@ -1396,6 +1400,7 @@ fields:
     public_registration_email_filter_note: Sólo pueden registrarse direcciones de correo electrónico que coincidan con este filtro.
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
+    visual_editor_urls: URLs del Editor Visual
   directus_shares:
     name: Nombre
     role: Rol
@@ -2284,6 +2289,8 @@ show_legend: Mostrar leyenda
 right: Derecha
 left: Izquierda
 donut: Donut
+continuous: Continuo
+gap: Brecha
 panels:
   metric:
     name: Métrico
@@ -2299,6 +2306,7 @@ panels:
     value_field: Tipo de campo
     fill_type: Tipo de relleno
     curve_type: Tipo de curva
+    missing_data: Datos faltantes
   label:
     name: Etiqueta
     description: Mostrar algo de texto
@@ -2427,9 +2435,16 @@ operations:
     name: Enviar Email
     description: Envía un email a una o más personas
     to: A
+    to_placeholder: Agregue direcciones de correo electrónico y presione Enter...
     body: Cuerpo
     template: Plantilla
     data: Datos
+    cc: CC
+    cc_placeholder: Agregue direcciones de correo electrónico en CC y presione Enter...
+    bcc: CCO
+    bcc_placeholder: Agregue direcciones de correo electrónico con copia oculta (BCC) y presione Enter...
+    reply_to: Responder a
+    reply_to_placeholder: Add reply-to email addresses and press enter...
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios

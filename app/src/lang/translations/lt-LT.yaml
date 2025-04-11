@@ -941,8 +941,6 @@ run_flow_on_current: Įvykdyti Flow šiam įrašui
 run_flow_on_current_edited_confirm: Šis Flow gali atnaujinti įrašą. Ar tikrai norite jį įvykdyti?
 run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti Flow vienam įrašui | Vykdyti flow {n} įrašams
 run_flow: Vykdyti Flow
-run_flow_success: Flow "{flow}" įvykdytas sėkmingai
-trigger_flow_success: Flow "{flow}" pradėtas sėkmingai. Jis bus vykdomas fone
 field_name_placeholder: Įveskite lauko pavadinimą...
 field_key_placeholder: Įveskite lauko identifikatorių...
 trigger: Trigeris

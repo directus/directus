@@ -938,7 +938,6 @@ run_flow_on_current: Spustiť tok na aktuálnej položke
 run_flow_on_current_edited_confirm: Táto položka sa môže vykonaním tohoto toku zmeniť, naozaj to chcete vykonať?
 run_flow_on_selected: Najprv zvoľte jednu alebo viac položiek | Spustiť tok na 1 zvolenej položke | Spustiť tok na {n} zvolených položkách
 run_flow: Spustiť tok
-run_flow_success: Tok "{flow}" prebehol úspešne
 field_name_placeholder: Zadajte názov poľa...
 field_key_placeholder: Zadajte kľúč poľa...
 trigger: Spúšťač

@@ -739,7 +739,6 @@ read: Ler
 update: Atualizar
 delete: Eliminar
 select_fields: Selecione os campos
-run_flow_success: O fluxo "{flow}" foi executado
 flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada

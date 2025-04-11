@@ -797,7 +797,6 @@ flows: Flöden
 flow: Flöde
 select_a_flow: Välj ett flöde
 run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
-run_flow_success: Flödet "{flow}" kördes framgångsrikt
 trigger: Utlösare
 create_trigger: Skapa utlösare
 trigger_setup: Konfiguration av utlösare

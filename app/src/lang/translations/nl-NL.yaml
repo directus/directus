@@ -806,7 +806,6 @@ select_a_flow: Selecteer een Flow
 run_flow_confirm: Ben je zeker dat u deze flow wilt uitvoeren?
 run_flow_on_current_collection: Voer flow uit op Huidige Collectie
 run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
-run_flow_success: Flow "{flow}" is succesvol uitgevoerd
 trigger: Trigger
 trigger_options: Trigger opties
 view_trigger: Trigger weergeven

@@ -759,7 +759,6 @@ flows: Flows
 flow: Flow
 select_a_flow: Select a Flow
 run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
-run_flow_success: Flow "{flow}" ran successfully
 trigger: Trigger
 trigger_options: Trigger Options
 view_trigger: View Trigger
