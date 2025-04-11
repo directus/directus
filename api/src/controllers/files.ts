@@ -94,7 +94,7 @@ export const multipartHandler: RequestHandler = (req, res, next) => {
 			}
 		}
 
-		payload.filename_download = filename;
+		payload.filename_download ||= filename;
 
 		const payloadWithRequiredFields = {
 			...payload,
