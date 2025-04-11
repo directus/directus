@@ -389,7 +389,7 @@ async function exportDataFiles() {
 									id="import-file"
 									ref="fileInput"
 									type="file"
-									accept="text/csv, application/json"
+									accept="text/csv, application/json, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 									hidden
 									@change="onChange"
 								/>
@@ -468,6 +468,10 @@ async function exportDataFiles() {
 							{
 								text: t('json'),
 								value: 'json',
+							},
+							{
+								text: t('xls'),
+								value: 'xls',
 							},
 							{
 								text: t('xml'),
