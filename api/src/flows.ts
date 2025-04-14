@@ -23,6 +23,8 @@ import { JobQueue } from './utils/job-queue.js';
 import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
+import { fetchPermissions } from './permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from './permissions/lib/fetch-policies.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -121,7 +123,7 @@ class FlowManager {
 	public async runWebhookFlow(
 		id: string,
 		data: unknown,
-		context: Record<string, unknown>,
+		context: { schema: SchemaOverview; accountability: Accountability },
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		const logger = useLogger();
 
@@ -264,6 +266,35 @@ class FlowManager {
 					if (!enabledCollections.includes(targetCollection)) {
 						logger.warn(`Specified collection must be one of: ${enabledCollections.join(', ')}.`);
 						throw new ForbiddenError();
+					}
+
+					const accountability = context?.accountability as Accountability | null;
+
+					if (!accountability) {
+						logger.warn(`Manual flows are only triggerable when authenticated`);
+						throw new ForbiddenError();
+					}
+
+					if (accountability.admin === false) {
+						const database = (context['database'] as Knex) ?? getDatabase();
+						const schema = (context['schema'] as SchemaOverview) ?? (await getSchema({ database }));
+
+						const policies = await fetchPolicies(accountability, { schema, knex: database });
+
+						const permissions = await fetchPermissions(
+							{
+								policies,
+								accountability,
+								action: 'read',
+								collections: [targetCollection],
+							},
+							{ schema, knex: database },
+						);
+
+						if (permissions.length === 0) {
+							logger.warn(`Triggering ${targetCollection} is not allowed`);
+							throw new ForbiddenError();
+						}
 					}
 
 					if (flow.options['async']) {
