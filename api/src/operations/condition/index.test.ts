@@ -69,7 +69,7 @@ describe('Operations / Condition', () => {
 
 		const data = {};
 
-		expect.assertions(2); // ensure catch block is reached
+		expect.assertions(3); // ensure catch block is reached
 
 		try {
 			config.handler({ filter }, { data } as any);
