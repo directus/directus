@@ -27,6 +27,8 @@ interface Props {
 	showArrow?: boolean;
 	/** Fixed arrow placement */
 	arrowPlacement?: 'start';
+	/** Space between the arrow and the edge of the menu */
+	arrowPadding?: number;
 	/** Menu does not appear */
 	disabled?: boolean;
 	/** Activate the menu on a trigger */
@@ -50,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	closeOnClick: true,
 	closeOnContentClick: true,
+	arrowPadding: 6,
 	trigger: null,
 	delay: 0,
 	offsetY: 8,
@@ -293,7 +296,6 @@ function usePopper(
 
 	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
 		const padding = 8;
-		const arrowPadding = 6;
 
 		const modifiers: Modifier<string, any>[] = [
 			popperOffsets,
@@ -316,7 +318,7 @@ function usePopper(
 				...arrow,
 				enabled: options.value.arrow === true,
 				options: {
-					padding: arrowPadding,
+					padding: props.arrowPadding,
 				},
 			},
 			{
@@ -363,11 +365,11 @@ function usePopper(
 							switch (state.placement) {
 								case 'top-start':
 								case 'bottom-start':
-									x = arrowPadding;
+									x = props.arrowPadding;
 									break;
 								case 'left-start':
 								case 'right-start':
-									y = arrowPadding;
+									y = props.arrowPadding;
 									break;
 							}
 

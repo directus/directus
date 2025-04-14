@@ -31,6 +31,8 @@ const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : nu
 
 const { sendSaved } = useWebsiteFrame({ onClickEdit });
 
+const { popoverWidth } = usePopoverWidth();
+
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
 	useEventListener('message', (event) => {
 		if (!sameOrigin(event.origin, frameSrc)) return;
@@ -211,6 +213,20 @@ function useItemWithEdits() {
 		editOverlayActive.value = true;
 	}
 }
+
+function usePopoverWidth() {
+	/**
+	 * Hardcode this value, since its parts probably won't change. However, keep it in sync with the `width` of `.popover-item-content` in app/src/views/private/components/overlay-item.vue
+	 *
+	 * Parts:
+	 * const formColumnWidth = 300; // app/src/styles/_variables.scss
+	 * const popoverColumnGap = 16;
+	 * const popoverPadding = 16 * 2;
+	 * const popoverWidth = 2 * formColumnWidth + popoverColumnGap + popoverPadding;
+	 */
+
+	return { popoverWidth: 648 };
+}
 </script>
 
 <template>
@@ -223,6 +239,7 @@ function useItemWithEdits() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
+			:popover-props="position.width > popoverWidth ? { arrowPlacement: 'start' } : {}"
 			@input="(value: any) => (edits = value)"
 		>
 			<template #popover-activator>
