@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CSSProperties, computed, onMounted, ref } from 'vue';
+import { CSSProperties, computed, onMounted, ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useElementSize } from '@directus/composables';
 
@@ -20,7 +20,7 @@ const {
 	invalidUrl?: boolean;
 	dynamicUrl?: string;
 	dynamicDisplay?: string;
-	singleUrlSubdued: boolean;
+	singleUrlSubdued?: boolean;
 	headerExpanded?: boolean;
 	hideRefreshButton?: boolean;
 	hidePopupButton?: boolean;
@@ -35,6 +35,8 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
+useResizeObserver();
+
 const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, selectUrl } = useUrls();
 
 const width = ref<number>();
@@ -44,8 +46,9 @@ const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
 
-const resizeHandle = ref<HTMLDivElement>();
 const livePreviewEl = ref<HTMLElement>();
+const resizeHandle = ref<HTMLDivElement>();
+const frameEl = ref<HTMLIFrameElement>();
 
 const livePreviewSize = useElementSize(livePreviewEl);
 
@@ -94,8 +97,6 @@ function toggleFullscreen() {
 	}
 }
 
-const frameEl = ref<HTMLIFrameElement>();
-
 function refresh(url: string | null) {
 	if (!frameEl.value || isRefreshing.value) return;
 
@@ -112,21 +113,37 @@ function onIframeLoad() {
 
 window.refreshLivePreview = refresh;
 
-onMounted(() => {
-	if (!resizeHandle.value) return;
+function useResizeObserver() {
+	let observerInitialized = false;
 
-	new ResizeObserver(() => {
-		if (!resizeHandle.value) return;
+	onMounted(setResizeObserver);
+	watch(() => invalidUrl, changeUrlAfterInvalid);
 
-		displayWidth.value = resizeHandle.value.offsetWidth;
-		displayHeight.value = resizeHandle.value.offsetHeight;
+	async function changeUrlAfterInvalid(newInvalidUrl: boolean, oldInvalidUrl: boolean) {
+		if (!newInvalidUrl && oldInvalidUrl) {
+			await nextTick();
+			setResizeObserver();
+		}
+	}
 
-		if (width.value === undefined && height.value === undefined) return;
+	function setResizeObserver() {
+		if (observerInitialized || !resizeHandle.value) return;
 
-		width.value = resizeHandle.value.offsetWidth;
-		height.value = resizeHandle.value.offsetHeight;
-	}).observe(resizeHandle.value);
-});
+		new ResizeObserver(() => {
+			if (!resizeHandle.value) return;
+
+			displayWidth.value = resizeHandle.value.offsetWidth;
+			displayHeight.value = resizeHandle.value.offsetHeight;
+
+			if (width.value === undefined && height.value === undefined) return;
+
+			width.value = resizeHandle.value.offsetWidth;
+			height.value = resizeHandle.value.offsetHeight;
+		}).observe(resizeHandle.value);
+
+		observerInitialized = true;
+	}
+}
 
 function useUrls() {
 	const initialDynamicUrl = dynamicUrl;
