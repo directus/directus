@@ -41,7 +41,7 @@ jobs:
 
   db:
     name: ${{ matrix.vendor }}
-    runs-on: ${{ matrix.vendor == 'mssql' && 'ubuntu-20.04' || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -61,19 +61,25 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
 
-      - name: Start mssql
+      - name: Start database
+        if: matrix.vendor != 'sqlite3'
+        run: docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} -d --quiet-pull --wait
+
+      - name: MSSQL Set Compatibility Level
         if: matrix.vendor == 'mssql'
         run: |
-          curl https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
-          sudo add-apt-repository "$(wget -qO- https://packages.microsoft.com/config/ubuntu/20.04/mssql-server-2019.list)"
-          sudo apt-get update
-          sudo apt-get install -y mssql-server
-          sudo /opt/mssql/bin/mssql-conf set network.tcpport 6105
-          sudo MSSQL_PID='express' MSSQL_SA_PASSWORD='Test@123' /opt/mssql/bin/mssql-conf -n setup accept-eula
-
-      - name: Start database
-        if: matrix.vendor != 'sqlite3' && matrix.vendor != 'mssql'
-        run: docker compose -f tests/blackbox/docker-compose.yml up ${{ matrix.vendor }} -d --quiet-pull --wait
+          for i in {1..30}
+          do
+            docker exec blackbox-mssql-1 \
+              /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'Test@123' -C \
+              -Q "SELECT 1" && break
+            sleep 2
+          done
+          docker exec blackbox-mssql-1 \
+            /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'Test@123' -C \
+            -Q "ALTER DATABASE model SET COMPATIBILITY_LEVEL = 150" \
+            -l 30
+          echo "MSSQL compatibility level set successfully"
 
       - name: Start services
         run:
