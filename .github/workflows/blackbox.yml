@@ -68,7 +68,8 @@ jobs:
       - name: MSSQL Set Compatibility Level
         if: matrix.vendor == 'mssql'
         run: |
-          for i in {1..30}; do
+          for i in {1..30}
+          do
             docker exec blackbox-mssql-1 \
               /opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P 'Test@123' -C \
               -Q "SELECT 1" && break
