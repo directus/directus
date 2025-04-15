@@ -18,5 +18,5 @@ runs. You now get instant visual feedback on what succeeded and what didn’t �
 📁 Files touched:
 app/src/modules/settings/routes/flows/components/logs-sidebar-detail.vue
 
-🚀 A small step for the UI, a big leap for DX!
+🚀 A small step for the UI, a big leap for DX and UX!
 
