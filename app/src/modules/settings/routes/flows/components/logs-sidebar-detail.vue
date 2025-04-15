@@ -8,7 +8,9 @@ import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
-import { RevisionWithTime } from '@/types/revisions';
+import { RevisionsByDate, RevisionWithTime } from '@/types/revisions';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import VDetail from '@/components/v-detail.vue';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -72,26 +74,6 @@ const triggerData = computed(() => {
 	};
 });
 
-const filteredRevisionsByDate = computed(() => {
-	if (!showFailedOnly.value) return revisionsByDate.value;
-
-	if (!revisionsByDate.value) return revisionsByDate.value;
-
-	return revisionsByDate.value
-		.map((group) => {
-			const failedRevisions = group.revisions.filter((revision) => {
-				const steps = revision?.data?.steps;
-				return steps?.length && steps[steps.length - 1].status === 'reject';
-			});
-
-			return {
-				...group,
-				revisions: failedRevisions,
-			};
-		})
-		.filter((group) => group.revisions.length > 0);
-});
-
 const steps = computed(() => {
 	if (!unref(previewing)?.data?.steps) return [];
 	const { steps } = unref(previewing).data;
@@ -129,14 +111,16 @@ function onToggle(open: boolean) {
 	if (open && revisionsByDate.value === null) getRevisions();
 }
 
-function getFlowLastStepStatus(revision: RevisionWithTime) {
-	const steps = revision?.data?.steps;
-	const lastStepStatus = steps[steps.length - 1].status;
+function isLogVisible(revision: RevisionWithTime) {
+	if (showFailedOnly.value && revision.status === 'resolve') {
+		return false;
+	}
 
-	if (lastStepStatus === 'reject') return 'var(--theme--secondary)';
-	if (lastStepStatus === 'resolve') return 'var(--theme--primary)';
+	return true;
+}
 
-	return 'var(--theme--primary)'; //keeping fallback primary
+function countFailedLogs(group: RevisionsByDate) {
+	return group?.revisions?.filter((revision: RevisionWithTime) => revision.status === 'reject').length;
 }
 </script>
 
@@ -148,28 +132,32 @@ function getFlowLastStepStatus(revision: RevisionWithTime) {
 		@toggle="onToggle"
 	>
 		<div v-show="revisionsCount > 0" class="logs-filter-container">
-			<VCheckbox v-model="showFailedOnly">Show Failed Only</VCheckbox>
+			<VCheckbox v-model="showFailedOnly">{{ t('show_failed_only') }}</VCheckbox>
 		</div>
 		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
 
-		<div v-else-if="filteredRevisionsByDate?.length === 0" class="empty">
-			{{ t('no_failed_logs') }}
-		</div>
-
 		<v-detail
-			v-for="group in filteredRevisionsByDate"
+			v-for="group in revisionsByDate"
 			v-else
 			:key="group.dateFormatted"
 			:label="group.dateFormatted"
 			class="revisions-date-group"
 			start-open
 		>
+			<div v-show="showFailedOnly && countFailedLogs(group) === 0" class="empty">
+				{{ t('no_failed_logs') }}
+			</div>
 			<div class="scroll-container">
 				<div v-for="revision in group.revisions" :key="revision.id" class="log">
-					<button @click="previewing = revision">
-						<v-icon name="fiber_manual_record" filled :color="getFlowLastStepStatus(revision)" small />
+					<button v-show="isLogVisible(revision)" @click="previewing = revision">
+						<v-icon
+							name="fiber_manual_record"
+							filled
+							:color="revision.status === 'resolve' ? 'var(--theme--primary)' : 'var(--theme--secondary)'"
+							small
+						/>
 						<v-icon name="play_arrow" color="var(--theme--primary)" small />
 						{{ revision.timeRelative }}
 					</button>
