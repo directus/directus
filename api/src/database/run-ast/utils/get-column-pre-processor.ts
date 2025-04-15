@@ -1,7 +1,7 @@
 import type { Filter, Permission, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { FieldNode, FunctionFieldNode, M2ONode } from '../../../types/ast.js';
-import { joinFilterWithCases } from '../../../utils/apply-query.js';
+import { joinFilterWithCases } from '../lib/apply-query/join-filter-with-cases.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
 import { getColumn } from '../../../utils/get-column.js';
 import { parseFilterKey } from '../../../utils/parse-filter-key.js';

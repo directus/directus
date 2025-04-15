@@ -56,4 +56,27 @@ describe('Operations / Condition', () => {
 			expect(err[0]!.message).toBe(`Validation failed for field "status". Value is required.`);
 		}
 	});
+
+	test('proper parsing of filter', () => {
+		const filter = {
+			status: {
+				_eq: true,
+			},
+			other: {
+				_eq: 'Other',
+			},
+		};
+
+		const data = {};
+
+		expect.assertions(3); // ensure catch block is reached
+
+		try {
+			config.handler({ filter }, { data } as any);
+		} catch (err: any) {
+			expect(err).toHaveLength(2);
+			expect(err[0]!.message).toBe(`Validation failed for field "status". Value is required.`);
+			expect(err[1]!.message).toBe(`Validation failed for field "other". Value is required.`);
+		}
+	});
 });
