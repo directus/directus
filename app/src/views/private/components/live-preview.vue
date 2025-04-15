@@ -291,7 +291,8 @@ function useUrls() {
 				x-small
 				icon
 				rounded
-				:secondary="fullscreen"
+				secondary
+				:active="!fullscreen"
 				:disabled="!frameSrc || invalidUrl"
 				@click="toggleFullscreen"
 			>
@@ -337,7 +338,11 @@ function useUrls() {
 <style scoped lang="scss">
 .live-preview {
 	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #ffffff);
-	--preview--color-disabled: var(--theme--foreground-subdued);
+	--preview--color-disabled: color-mix(
+		in srgb,
+		var(--theme--navigation--modules--background),
+		var(--preview--color) 50%
+	);
 	--preview--header--background-color: var(--theme--navigation--modules--background);
 	--preview--header--border-width: var(--theme--navigation--modules--border-width);
 	--preview--header--border-color: var(--theme--navigation--modules--border-color);
@@ -371,11 +376,27 @@ function useUrls() {
 			height var(--medium) var(--transition);
 
 		:deep(.v-button.secondary) {
-			--v-button-color-hover: var(--theme--foreground-accent);
+			--v-button-color: var(--theme--navigation--modules--button--foreground-active);
+			--v-button-color-hover: var(--v-button-color);
+			--v-button-color-active: var(--foreground-inverted);
+			--v-button-background-color: var(--theme--navigation--modules--button--background-active);
+			--v-button-background-color-hover: color-mix(
+				in srgb,
+				var(--theme--navigation--modules--background),
+				var(--v-button-background-color) 87.5%
+			);
+			--v-button-background-color-active: var(--theme--primary);
 
-			button:focus:not(:hover) {
-				color: var(--v-button-color);
-				background-color: var(--v-button-background-color);
+			.button {
+				&.active {
+					box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
+				}
+
+				&:focus:not(:hover) {
+					color: var(--v-button-color);
+					background-color: var(--v-button-background-color);
+					border-color: var(--v-button-background-color);
+				}
 			}
 		}
 

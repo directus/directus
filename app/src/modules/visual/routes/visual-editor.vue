@@ -89,7 +89,8 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 					x-small
 					rounded
 					icon
-					:secondary="!showEditableElements"
+					:active="showEditableElements"
+					secondary
 					@click="showEditableElements = !showEditableElements"
 				>
 					<v-icon small name="edit" outline />
