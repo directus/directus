@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { useRevisions } from '@/composables/use-revisions';
+import { useExtensions } from '@/extensions';
 import { useGroupable } from '@directus/composables';
 import { Action } from '@directus/constants';
 import type { FlowRaw } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import LogsDrawer from './logs-drawer.vue';
+import { getTriggers } from '../triggers';
+import { RevisionWithTime } from '@/types/revisions';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -23,6 +25,13 @@ const { active: open } = useGroupable({
 	group: 'sidebar-detail',
 });
 
+const { triggers } = getTriggers();
+const { operations } = useExtensions();
+
+const usedTrigger = computed(() => {
+	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
+});
+
 const page = ref<number>(1);
 
 const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loading, loadingCount, pagesCount, refresh } =
@@ -32,6 +41,7 @@ const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loadin
 		ref(null),
 		{
 			action: Action.RUN,
+			full: true,
 		},
 	);
 
@@ -48,9 +58,85 @@ onMounted(() => {
 });
 
 const previewing = ref();
+const showFailedOnly = ref(false);
+
+const triggerData = computed(() => {
+	if (!unref(previewing)?.data) return { trigger: null, accountability: null, options: null };
+
+	const { data } = unref(previewing).data;
+
+	return {
+		trigger: data.$trigger,
+		accountability: data.$accountability,
+		options: props.flow.options,
+	};
+});
+
+const filteredRevisionsByDate = computed(() => {
+	if (!showFailedOnly.value) return revisionsByDate.value;
+
+	if (!revisionsByDate.value) return revisionsByDate.value;
+
+	return revisionsByDate.value
+		.map((group) => {
+			const failedRevisions = group.revisions.filter((revision) => {
+				const steps = revision?.data?.steps;
+				return steps?.length && steps[steps.length - 1].status === 'reject';
+			});
+
+			return {
+				...group,
+				revisions: failedRevisions,
+			};
+		})
+		.filter((group) => group.revisions.length > 0);
+});
+
+const steps = computed(() => {
+	if (!unref(previewing)?.data?.steps) return [];
+	const { steps } = unref(previewing).data;
+
+	return steps.map(
+		({
+			operation,
+			status,
+			key,
+			options,
+		}: {
+			operation: string;
+			status: 'reject' | 'resolve' | 'unknown';
+			key: string;
+			options: Record<string, any>;
+		}) => {
+			const operationConfiguration = props.flow.operations.find((operationConfig) => operationConfig.id === operation);
+
+			const operationType = operations.value.find((operation) => operation.id === operationConfiguration?.type);
+
+			return {
+				id: operation,
+				name: operationConfiguration?.name ?? key,
+				data: unref(previewing).data?.data?.[key] ?? null,
+				options: options ?? null,
+				operationType: operationType?.name ?? operationConfiguration?.type ?? '--',
+				key,
+				status,
+			};
+		},
+	);
+});
 
 function onToggle(open: boolean) {
 	if (open && revisionsByDate.value === null) getRevisions();
+}
+
+function getFlowLastStepStatus(revision: RevisionWithTime) {
+	const steps = revision?.data?.steps;
+	const lastStepStatus = steps[steps.length - 1].status;
+
+	if (lastStepStatus === 'reject') return 'var(--theme--secondary)';
+	if (lastStepStatus === 'resolve') return 'var(--theme--primary)';
+
+	return 'var(--theme--primary)'; //keeping fallback primary
 }
 </script>
 
@@ -61,12 +147,19 @@ function onToggle(open: boolean) {
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 		@toggle="onToggle"
 	>
+		<div v-show="revisionsCount > 0" class="logs-filter-container">
+			<VCheckbox v-model="showFailedOnly">Show Failed Only</VCheckbox>
+		</div>
 		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
 
+		<div v-else-if="filteredRevisionsByDate?.length === 0" class="empty">
+			{{ t('no_failed_logs') }}
+		</div>
+
 		<v-detail
-			v-for="group in revisionsByDate"
+			v-for="group in filteredRevisionsByDate"
 			v-else
 			:key="group.dateFormatted"
 			:label="group.dateFormatted"
@@ -76,6 +169,7 @@ function onToggle(open: boolean) {
 			<div class="scroll-container">
 				<div v-for="revision in group.revisions" :key="revision.id" class="log">
 					<button @click="previewing = revision">
+						<v-icon name="fiber_manual_record" filled :color="getFlowLastStepStatus(revision)" small />
 						<v-icon name="play_arrow" color="var(--theme--primary)" small />
 						{{ revision.timeRelative }}
 					</button>
@@ -86,7 +180,61 @@ function onToggle(open: boolean) {
 		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 	</sidebar-detail>
 
-	<LogsDrawer :revision-id="previewing?.id" :flow="props.flow" @close="previewing = null" />
+	<v-drawer
+		:model-value="!!previewing"
+		:title="previewing ? previewing.timestampFormatted : t('logs')"
+		icon="fact_check"
+		@cancel="previewing = null"
+		@esc="previewing = null"
+	>
+		<div class="content">
+			<div class="steps">
+				<div class="step">
+					<div class="header">
+						<span class="dot" />
+						<span class="type-label">
+							{{ t('trigger') }}
+							<span class="subdued">&nbsp;{{ usedTrigger?.name }}</span>
+						</span>
+					</div>
+
+					<div class="inset">
+						<v-detail v-if="triggerData.options" :label="t('options')">
+							<pre class="json selectable">{{ triggerData.options }}</pre>
+						</v-detail>
+
+						<v-detail v-if="triggerData.trigger" :label="t('payload')">
+							<pre class="json selectable">{{ triggerData.trigger }}</pre>
+						</v-detail>
+
+						<v-detail v-if="triggerData.accountability" :label="t('accountability')">
+							<pre class="json selectable">{{ triggerData.accountability }}</pre>
+						</v-detail>
+					</div>
+				</div>
+
+				<div v-for="step of steps" :key="step.id" class="step">
+					<div class="header">
+						<span class="dot" :class="step.status" />
+						<span v-tooltip="step.key" class="type-label">
+							{{ step.name }}
+							<span class="subdued">&nbsp;{{ step.operationType }}</span>
+						</span>
+					</div>
+
+					<div class="inset">
+						<v-detail v-if="step.options" :label="t('options')">
+							<pre class="json selectable">{{ step.options }}</pre>
+						</v-detail>
+
+						<v-detail v-if="step.data !== null" :label="t('payload')">
+							<pre class="json selectable">{{ step.data }}</pre>
+						</v-detail>
+					</div>
+				</div>
+			</div>
+		</div>
+	</v-drawer>
 </template>
 
 <style lang="scss" scoped>
@@ -144,6 +292,81 @@ function onToggle(open: boolean) {
 	}
 }
 
+.json {
+	background-color: var(--theme--background-subdued);
+	font-family: var(--theme--fonts--monospace--font-family);
+	border-radius: var(--theme--border-radius);
+	padding: 20px;
+	margin-top: 20px;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+.steps {
+	position: relative;
+
+	.step {
+		position: relative;
+
+		&::after {
+			content: '';
+			position: absolute;
+			width: var(--theme--border-width);
+			left: -11px;
+			top: 0;
+			background-color: var(--theme--border-color-subdued);
+			height: 100%;
+		}
+
+		&:first-child::after {
+			top: 8px;
+			height: calc(100% - 8px);
+		}
+
+		&:last-child::after {
+			height: 12px;
+		}
+
+		.inset {
+			padding-top: 12px;
+			padding-bottom: 32px;
+
+			.v-detail + .v-detail {
+				margin-top: 12px;
+			}
+		}
+
+		.subdued {
+			color: var(--theme--foreground-subdued);
+		}
+	}
+
+	.mono {
+		font-family: var(--theme--fonts--monospace--font-family);
+		color: var(--theme--foreground-subdued);
+	}
+
+	.dot {
+		position: absolute;
+		top: 6px;
+		left: -16px;
+		z-index: 2;
+		width: 12px;
+		height: 12px;
+		background-color: var(--theme--primary);
+		border: var(--theme--border-width) solid var(--theme--background);
+		border-radius: 8px;
+
+		&.resolve {
+			background-color: var(--theme--primary);
+		}
+
+		&.reject {
+			background-color: var(--theme--secondary);
+		}
+	}
+}
+
 .empty {
 	margin-left: 2px;
 	color: var(--theme--foreground-subdued);
@@ -153,5 +376,12 @@ function onToggle(open: boolean) {
 .v-pagination {
 	justify-content: center;
 	margin-top: 24px;
+}
+
+.logs-filter-container {
+	display: flex;
+	justify-content: end;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 </style>
