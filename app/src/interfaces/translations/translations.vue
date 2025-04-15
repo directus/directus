@@ -157,7 +157,15 @@ function useLanguages() {
 	const languages = ref<Record<string, any>[]>([]);
 	const loading = ref(false);
 	const error = ref<any>(null);
-	const fieldsStore = useFieldsStore();
+
+	const languageFields = computed(() => {
+		if (!relationInfo.value) return new Set<string>();
+
+		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
+
+		const fields = new Set<string>([pkField, props.languageDirectionField ?? 'direction']);
+		return fields;
+	});
 
 	watch(relationInfo, fetchLanguages, { immediate: true });
 
@@ -199,28 +207,16 @@ function useLanguages() {
 	async function fetchLanguages() {
 		if (!relationInfo.value) return;
 
-		const fields = new Set<string>();
 		const collection = relationInfo.value.relatedCollection.collection;
-
-		if (props.languageField !== null && fieldsStore.getField(collection, props.languageField)) {
-			fields.add(props.languageField);
-		}
-
-		if (props.languageDirectionField !== null && fieldsStore.getField(collection, props.languageDirectionField)) {
-			fields.add(props.languageDirectionField);
-		}
-
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 		const sortField = relationInfo.value.relatedCollection.meta?.sort_field;
-
-		fields.add(pkField);
 
 		loading.value = true;
 
 		try {
 			languages.value = await fetchAll<Record<string, any>[]>(getEndpoint(collection), {
 				params: {
-					fields: Array.from(fields),
+					fields: Array.from(languageFields.value),
 					sort: sortField ?? props.languageField ?? pkField,
 				},
 			});
@@ -306,6 +302,7 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
+		<h1>Translations</h1>
 		<translation-form v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
 			<template #split-view="{ active, toggle }">
 				<v-icon
