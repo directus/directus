@@ -162,12 +162,39 @@ function useLanguages() {
 		if (!relationInfo.value) return new Set<string>();
 
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
-
 		const fields = new Set<string>([pkField, props.languageDirectionField ?? 'direction']);
 		return fields;
 	});
 
-	watch(relationInfo, fetchLanguages, { immediate: true });
+	watch([relationInfo, () => props.languageDirectionField], fetchLanguages, { immediate: true });
+
+	const selectInitialLanguages = computed(() => {
+		if (!languages.value.length) return { first: undefined, second: undefined };
+
+		const pkField = relationInfo.value?.relatedPrimaryKeyField.field;
+		if (!pkField) return { first: undefined, second: undefined };
+
+		const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
+		const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
+
+		const firstLang = languages.value.find((lang) => lang[pkField] === userLocale) || languages.value[0];
+		let secondLang = languages.value.find((lang) => lang[pkField] === defaultLocale) || languages.value[0];
+
+		if (!secondLang || secondLang[pkField] === firstLang?.[pkField]) {
+			secondLang = languages.value.find((lang) => lang[pkField] !== firstLang?.[pkField]) || languages.value[1];
+		}
+
+		return {
+			first: firstLang?.[pkField],
+			second: secondLang?.[pkField],
+		};
+	});
+
+	watch(languages, () => {
+		const { first, second } = selectInitialLanguages.value;
+		if (!firstLang.value) firstLang.value = first;
+		if (!secondLang.value) secondLang.value = second;
+	});
 
 	const languageOptions = computed(() => {
 		const langField = relationInfo.value?.junctionField.field;
@@ -220,23 +247,6 @@ function useLanguages() {
 					sort: sortField ?? props.languageField ?? pkField,
 				},
 			});
-
-			if (!firstLang.value) {
-				const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
-				const lang = languages.value.find((lang) => lang[pkField] === userLocale) || languages.value[0];
-				firstLang.value = lang?.[pkField];
-			}
-
-			if (!secondLang.value) {
-				const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
-				let lang = languages.value.find((lang) => lang[pkField] === defaultLocale) || languages.value[0];
-
-				if (!lang || lang[pkField] === firstLang.value) {
-					lang = languages.value.find((lang) => lang[pkField] !== firstLang.value) || languages.value[1];
-				}
-
-				secondLang.value = lang?.[pkField];
-			}
 		} catch (error) {
 			unexpectedError(error);
 		} finally {
@@ -302,7 +312,6 @@ function useNestedValidation() {
 
 <template>
 	<div class="translations" :class="{ split: splitViewEnabled }">
-		<h1>Translations</h1>
 		<translation-form v-model:lang="firstLang" v-bind="translationProps" :class="splitViewEnabled ? 'half' : 'full'">
 			<template #split-view="{ active, toggle }">
 				<v-icon
