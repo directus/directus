@@ -164,12 +164,14 @@ export class PayloadService {
 		aliasMap: Record<string, string>,
 		aggregate: Aggregate,
 	): Promise<Partial<Item>[]>;
+
 	processValues(
 		action: Action,
 		payload: Partial<Item>,
 		aliasMap: Record<string, string>,
 		aggregate: Aggregate,
 	): Promise<Partial<Item>>;
+
 	async processValues(
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[],
@@ -250,7 +252,7 @@ export class PayloadService {
 
 		this.processDates(fieldEntries, payload, 'read', aggregateMapped);
 
-		const aggregateKeys = Object.keys(payload[0]!).filter((key) => key.includes('->'));
+		const aggregateKeys = Object.keys(aggregateMapped);
 
 		if (aggregateKeys.length) {
 			for (const item of payload) {
