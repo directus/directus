@@ -214,7 +214,7 @@ export class PayloadService {
 		}
 
 		this.processGeometries(fieldEntries, processedPayload, action);
-		this.processDates(fieldEntries, processedPayload, action, aliasMap);
+		this.processDates(fieldEntries, processedPayload, action, aliasMap, aggregate);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -240,17 +240,11 @@ export class PayloadService {
 	}
 
 	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
-		const fieldEntries = Object.entries(this.schema.collections[this.collection]!.fields);
-
 		// Include aggegation e.g. "count->id" in alias map
-		const aggregateMapped = Object.fromEntries(
-			Object.entries(aggregate).reduce<string[][]>((acc, [key, values]) => {
-				acc.push(...values.map((value) => [`${key}->${value}`, value]));
-				return acc;
-			}, []),
-		);
-
-		this.processDates(fieldEntries, payload, 'read', aggregateMapped);
+		const aggregateMapped = Object.entries(aggregate).reduce<string[]>((acc, [key, values]) => {
+			acc.push(...values.map((value) => `${key}->${value}`));
+			return acc;
+		}, [])
 
 		const aggregateKeys = Object.keys(aggregateMapped);
 
@@ -327,8 +321,17 @@ export class PayloadService {
 		payloads: Partial<Record<string, any>>[],
 		action: Action,
 		aliasMap: Record<string, string> = {},
+		aggregate: Aggregate = {},
 	): Partial<Record<string, any>>[] {
-		for (const alias in aliasMap) {
+		// Include aggegation e.g. "count->id" in alias map
+		const aggregateMapped = Object.fromEntries(
+			Object.entries(aggregate).reduce<string[][]>((acc, [key, values]) => {
+				acc.push(...values.map((value) => [`${key}->${value}`, value]));
+				return acc;
+			}, []),
+		);
+
+		for (const alias in {...aliasMap, ...aggregateMapped}) {
 			const aliasedField = aliasMap[alias];
 			const field = this.schema.collections[this.collection]!.fields[aliasedField!];
 
@@ -342,6 +345,7 @@ export class PayloadService {
 				]);
 			}
 		}
+
 
 		const dateColumns = fieldEntries.filter(([_name, field]) => ['dateTime', 'date', 'timestamp'].includes(field.type));
 
