@@ -480,6 +480,8 @@ function useActions() {
 				class="modal-item-content"
 			/>
 
+			<div class="shadow-cover" />
+
 			<v-card-actions>
 				<slot name="actions" />
 				<v-button secondary @click="cancel">{{ t('cancel') }}</v-button>
@@ -548,6 +550,44 @@ function useActions() {
 .modal-card {
 	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)) !important;
 	max-width: 90vw !important;
+
+	@media (min-height: 375px) {
+		--button-height: var(--v-button-height, 44px);
+		--button-gap: 12px;
+		--shadow-height: 7px;
+		--shadow-cover-height: 10px;
+
+		.v-card-actions {
+			z-index: 100;
+			position: sticky;
+			bottom: calc(var(--button-gap) - var(--v-card-padding));
+			padding-top: var(--button-gap);
+			background: var(--v-card-background-color);
+			box-shadow: 0 0 var(--shadow-height) 0 rgba(0, 0, 0, 0.2);
+
+			.dark & {
+				box-shadow: 0 0 var(--shadow-height) 0 black;
+			}
+		}
+
+		.shadow-cover {
+			z-index: 101;
+			position: sticky;
+			bottom: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
+			height: calc(var(--v-card-padding) - var(--button-gap));
+			width: 100%;
+
+			&:after {
+				content: '';
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: var(--shadow-cover-height);
+				background: var(--v-card-background-color);
+			}
+		}
+	}
 }
 
 .modal-title-icon {
