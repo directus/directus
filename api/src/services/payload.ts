@@ -244,7 +244,7 @@ export class PayloadService {
 		const aggregateMapped = Object.entries(aggregate).reduce<string[]>((acc, [key, values]) => {
 			acc.push(...values.map((value) => `${key}->${value}`));
 			return acc;
-		}, [])
+		}, []);
 
 		const aggregateKeys = Object.keys(aggregateMapped);
 
@@ -331,7 +331,7 @@ export class PayloadService {
 			}, []),
 		);
 
-		for (const alias in {...aliasMap, ...aggregateMapped}) {
+		for (const alias in { ...aliasMap, ...aggregateMapped }) {
 			const aliasedField = aliasMap[alias];
 			const field = this.schema.collections[this.collection]!.fields[aliasedField!];
 
@@ -345,7 +345,6 @@ export class PayloadService {
 				]);
 			}
 		}
-
 
 		const dateColumns = fieldEntries.filter(([_name, field]) => ['dateTime', 'date', 'timestamp'].includes(field.type));
 
