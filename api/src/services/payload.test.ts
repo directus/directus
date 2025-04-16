@@ -7,6 +7,7 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import { PayloadService } from './index.js';
 import { SchemaBuilder } from '@directus/schema-builder';
+import type { Item } from '@directus/types';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -253,6 +254,90 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
+			});
+		});
+
+		describe('processAggregates', () => {
+			let service: PayloadService;
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('users').integer();
+					c.field('stars').integer();
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test('empty payload should not change with aggregates', () => {
+				const payload: Partial<Item>[] = [];
+
+				service.processAggregates(payload, { sum: ['count'] });
+
+				expect(payload).toMatchObject(payload);
+			});
+
+			test('payload should not change with no aggregates', () => {
+				const payload = [
+					{
+						users: 1,
+					},
+				];
+
+				service.processAggregates(payload);
+
+				expect(payload).toMatchObject(payload);
+			});
+
+			test('payload should have expanded aggregate fields', () => {
+				const payload = [
+					{
+						'sum->users': 3,
+						'max->stars': 1,
+					},
+				];
+
+				service.processAggregates(payload, {
+					sum: ['users'],
+					max: ['stars'],
+				});
+
+				expect(payload).toMatchObject([
+					{
+						sum: { users: 3 },
+						max: {
+							stars: 1,
+						},
+					},
+				]);
+			});
+
+			test('payload should have not remove non aggregate fields', () => {
+				const payload = [
+					{
+						users: 1,
+						'sum->stars': 1,
+					},
+				];
+
+				service.processAggregates(payload, {
+					sum: ['stars'],
+				});
+
+				expect(payload).toMatchObject([
+					{
+						users: 1,
+						sum: {
+							stars: 1,
+						},
+					},
+				]);
 			});
 		});
 
