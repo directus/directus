@@ -2405,6 +2405,7 @@ triggers:
     filter: 'Filter (Blocking)'
   webhook:
     name: Webhook
+    error_on_reject: Error on Reject
     description: Triggers on an incoming HTTP request
     method: Method
     async: Asynchronous
@@ -2419,7 +2420,6 @@ triggers:
   manual:
     name: Manual
     description: Triggers on manual run within selected collection(s)
-    error_on_reject: Error on Reject
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
