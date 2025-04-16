@@ -237,6 +237,45 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 				});
 			});
 
+			describe('Creates a new collection with auto created primary key for empty fields array', () => {
+				TEST_USERS.forEach((userKey) => {
+					describe(USER[userKey].NAME, () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const db = databases.get(vendor)!;
+							currentVendor = vendor;
+							const fields: any = [];
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post('/collections')
+								.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: {}, fields })
+								.set('Authorization', `Bearer ${USER[userKey].TOKEN}`);
+
+							// Assert
+							if (userKey === USER.ADMIN.KEY) {
+								expect(response.statusCode).toBe(200);
+
+								expect(response.body.data).toEqual({
+									collection: TEST_COLLECTION_NAME,
+									meta: expect.objectContaining({
+										collection: TEST_COLLECTION_NAME,
+									}),
+									schema: expect.objectContaining({
+										name: TEST_COLLECTION_NAME,
+									}),
+								});
+
+								expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, 'id')).toBe(true);
+							} else {
+								expect(response.statusCode).toBe(403);
+							}
+						});
+					});
+				});
+			});
+
 			describe('Creates a new collection with auto created primary key when no primary key is in the fields array', () => {
 				TEST_USERS.forEach((userKey) => {
 					describe(USER[userKey].NAME, () => {
