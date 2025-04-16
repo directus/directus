@@ -371,7 +371,7 @@ export function getTriggers() {
 
 				return labels;
 			},
-			options: [
+			options: ({ async }) => [
 				{
 					field: 'collections',
 					name: t('collections'),
@@ -399,16 +399,7 @@ export function getTriggers() {
 					meta: {
 						width: 'half' as Width,
 						interface: 'toggle',
-						conditions: [
-							{
-								rule: {
-									async: {
-										_eq: true,
-									},
-								},
-								hidden: true,
-							},
-						],
+						hidden: async,
 					},
 					schema: {
 						default_value: false,
