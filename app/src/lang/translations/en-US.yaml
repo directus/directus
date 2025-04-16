@@ -2406,7 +2406,6 @@ triggers:
   webhook:
     name: Webhook
     description: Triggers on an incoming HTTP request
-    error_on_reject: Error on Reject
     method: Method
     async: Asynchronous
   operation:
