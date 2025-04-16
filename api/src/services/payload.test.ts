@@ -258,9 +258,9 @@ describe('Integration Tests', () => {
 				test('with aggregate and typical values', () => {
 					const payload = [
 						{
-							'max->date_alias': '2022-01-10',
-							'max->datetime_alias': '2021-09-31 12:34:56',
-							'max->timestamp_alias': '1980-12-08 00:11:22.333',
+							'max->date_field': '2022-01-10',
+							'max->datetime_field': '2021-09-31 12:34:56',
+							'max->timestamp_field': '1980-12-08 00:11:22.333',
 						},
 					];
 
@@ -274,9 +274,9 @@ describe('Integration Tests', () => {
 
 					expect(payload).toMatchObject([
 						{
-							'max->date_alias': '2022-01-10',
-							'max->datetime_alias': '2021-10-01T12:34:56',
-							'max->timestamp_alias': new Date('1980-12-08 00:11:22.333').toISOString(),
+							'max->date_field': '2022-01-10',
+							'max->datetime_field': '2021-10-01T12:34:56',
+							'max->timestamp_field': new Date('1980-12-08 00:11:22.333').toISOString(),
 						},
 					]);
 				});
@@ -284,9 +284,9 @@ describe('Integration Tests', () => {
 				test('with aggregate and object values', () => {
 					const payload = [
 						{
-							'max->date_alias': new Date(1666777777000),
-							'max->datetime_alias': new Date(1666666666000),
-							'max->timestamp_alias': new Date(1666555444333),
+							'max->date_field': new Date(1666777777000),
+							'max->datetime_field': new Date(1666666666000),
+							'max->timestamp_field': new Date(1666555444333),
 						},
 					];
 
@@ -300,9 +300,9 @@ describe('Integration Tests', () => {
 
 					expect(result).toMatchObject([
 						{
-							'max->date_alias': toLocalISOString(new Date(1666777777000)).slice(0, 10),
-							'max->datetime_alias': toLocalISOString(new Date(1666666666000)),
-							'max->timestamp_alias': new Date(1666555444333).toISOString(),
+							'max->date_field': toLocalISOString(new Date(1666777777000)).slice(0, 10),
+							'max->datetime_field': toLocalISOString(new Date(1666666666000)),
+							'max->timestamp_field': new Date(1666555444333).toISOString(),
 						},
 					]);
 				});
@@ -310,12 +310,12 @@ describe('Integration Tests', () => {
 				test('with aggregate & alias containing typical values', () => {
 					const payload = [
 						{
-							'max->date_alias': '2022-01-10',
-							'max->datetime_alias': '2021-09-31 12:34:56',
-							'max->timestamp_alias': '1980-12-08 00:11:22.333',
+							'max->date_field': '2022-01-10',
+							'max->datetime_field': '2021-09-31 12:34:56',
+							'max->timestamp_field': '1980-12-08 00:11:22.333',
 							'date-alias': '2022-01-10',
-							'datetime-alias': '2021-10-01T12:34:56',
-							'timestamp-alias': new Date('1980-12-08 00:11:22.333').toISOString(),
+							'datetime-alias': '2021-09-31 12:34:56',
+							'timestamp-alias': '1980-12-08 00:11:22.333',
 						},
 					];
 
@@ -329,9 +329,9 @@ describe('Integration Tests', () => {
 
 					expect(payload).toMatchObject([
 						{
-							'max->date_alias': '2022-01-10',
-							'max->datetime_alias': '2021-10-01T12:34:56',
-							'max->timestamp_alias': new Date('1980-12-08 00:11:22.333').toISOString(),
+							'max->date_field': '2022-01-10',
+							'max->datetime_field': '2021-10-01T12:34:56',
+							'max->timestamp_field': new Date('1980-12-08 00:11:22.333').toISOString(),
 							'date-alias': '2022-01-10',
 							'datetime-alias': '2021-10-01T12:34:56',
 							'timestamp-alias': new Date('1980-12-08 00:11:22.333').toISOString(),
@@ -342,9 +342,9 @@ describe('Integration Tests', () => {
 				test('with aggregate & alias containing object values', () => {
 					const payload = [
 						{
-							'max->date_alias': new Date(1666777777000),
-							'max->datetime_alias': new Date(1666666666000),
-							'max->timestamp_alias': new Date(1666555444333),
+							'max->date_field': new Date(1666777777000),
+							'max->datetime_field': new Date(1666666666000),
+							'max->timestamp_field': new Date(1666555444333),
 							'date-alias': new Date(1666777777000),
 							'datetime-alias': new Date(1666666666000),
 							'timestamp-alias': new Date(1666555444333),
@@ -361,11 +361,12 @@ describe('Integration Tests', () => {
 
 					expect(result).toMatchObject([
 						{
-							'max->date_alias': toLocalISOString(new Date(1666777777000)).slice(0, 10),
-							'max->datetime_alias': toLocalISOString(new Date(1666666666000)),
-							'max->timestamp_alias': new Date(1666555444333).toISOString(),
+							'max->date_field': toLocalISOString(new Date(1666777777000)).slice(0, 10),
+							'max->datetime_field': toLocalISOString(new Date(1666666666000)),
+							'max->timestamp_field': new Date(1666555444333).toISOString(),
 							'date-alias': toLocalISOString(new Date(1666777777000)).slice(0, 10),
 							'datetime-alias': toLocalISOString(new Date(1666666666000)),
+							'timestamp-alias': new Date(1666555444333).toISOString(),
 						},
 					]);
 				});
@@ -498,6 +499,7 @@ describe('Integration Tests', () => {
 						other_hidden: 'secret',
 					},
 					{ other_string: 'string', other_hidden: 'hidden' },
+					{},
 				);
 
 				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
