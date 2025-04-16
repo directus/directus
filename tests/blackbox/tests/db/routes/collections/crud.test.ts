@@ -395,6 +395,7 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 								expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
 								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, fieldName)).toBe(true);
 								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, pkName)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, 'id')).toBe(false);
 							} else {
 								expect(response.statusCode).toBe(403);
 							}
