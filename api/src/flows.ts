@@ -389,7 +389,7 @@ class FlowManager {
 		}
 
 		if (
-			flow.trigger === 'manual' &&
+			(flow.trigger === 'manual' || flow.trigger === 'webhook') &&
 			flow.options['async'] !== true &&
 			flow.options['error_on_reject'] === true &&
 			lastOperationStatus === 'reject'
