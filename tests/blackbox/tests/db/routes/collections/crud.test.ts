@@ -199,7 +199,7 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 				});
 			});
 
-			describe('Creates a new collection without any field', () => {
+			describe('Creates a new collection with auto created primary key when no fields is present in schema', () => {
 				TEST_USERS.forEach((userKey) => {
 					describe(USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
@@ -237,7 +237,7 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 				});
 			});
 
-			describe('Creates a new collection auto creates primary key', () => {
+			describe('Creates a new collection with auto created primary key when no primary key is in the fields array', () => {
 				TEST_USERS.forEach((userKey) => {
 					describe(USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
@@ -285,7 +285,7 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 				});
 			});
 
-			describe('Creates a new collection with fields including primary key', () => {
+			describe('Creates a new collection with specified primary key in fields array', () => {
 				TEST_USERS.forEach((userKey) => {
 					describe(USER[userKey].NAME, () => {
 						it.each(vendors)('%s', async (vendor) => {
