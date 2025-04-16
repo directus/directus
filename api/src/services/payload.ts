@@ -241,12 +241,10 @@ export class PayloadService {
 
 	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
 		// Include aggegation e.g. "count->id" in alias map
-		const aggregateMapped = Object.entries(aggregate).reduce<string[]>((acc, [key, values]) => {
+		const aggregateKeys = Object.entries(aggregate).reduce<string[]>((acc, [key, values]) => {
 			acc.push(...values.map((value) => `${key}->${value}`));
 			return acc;
 		}, []);
-
-		const aggregateKeys = Object.keys(aggregateMapped);
 
 		if (aggregateKeys.length) {
 			for (const item of payload) {
