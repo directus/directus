@@ -402,7 +402,7 @@ class FlowManager {
 		}
 
 		if (flow.trigger === 'webhook' && lastOperationStatus === 'reject') {
-			throw keyedData[LAST_KEY]
+			throw keyedData[LAST_KEY];
 		}
 
 		if (flow.options['return'] === '$all') {
