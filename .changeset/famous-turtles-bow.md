@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed primary key field was not auto injected when not present in fields array
+Ensured primary key field is auto-injected when absent from the fields array
