@@ -74,10 +74,11 @@ services:
       - 6104:3306
 
   mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=Test@123
+      - MSSQL_SA_PASSWORD=Test@123
+      - MSSQL_PID=Express
     ports:
       - 6105:1433
 

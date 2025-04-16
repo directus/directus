@@ -199,6 +199,211 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 				});
 			});
 
+			describe('Creates a new collection with auto created primary key when no fields is present in schema', () => {
+				TEST_USERS.forEach((userKey) => {
+					describe(USER[userKey].NAME, () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const db = databases.get(vendor)!;
+							currentVendor = vendor;
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post('/collections')
+								.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: {} })
+								.set('Authorization', `Bearer ${USER[userKey].TOKEN}`);
+
+							// Assert
+							if (userKey === USER.ADMIN.KEY) {
+								expect(response.statusCode).toBe(200);
+
+								expect(response.body.data).toEqual({
+									collection: TEST_COLLECTION_NAME,
+									meta: expect.objectContaining({
+										collection: TEST_COLLECTION_NAME,
+									}),
+									schema: expect.objectContaining({
+										name: TEST_COLLECTION_NAME,
+									}),
+								});
+
+								expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, 'id')).toBe(true);
+							} else {
+								expect(response.statusCode).toBe(403);
+							}
+						});
+					});
+				});
+			});
+
+			describe('Creates a new collection with auto created primary key for empty fields array', () => {
+				TEST_USERS.forEach((userKey) => {
+					describe(USER[userKey].NAME, () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const db = databases.get(vendor)!;
+							currentVendor = vendor;
+							const fields: any = [];
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post('/collections')
+								.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: {}, fields })
+								.set('Authorization', `Bearer ${USER[userKey].TOKEN}`);
+
+							// Assert
+							if (userKey === USER.ADMIN.KEY) {
+								expect(response.statusCode).toBe(200);
+
+								expect(response.body.data).toEqual({
+									collection: TEST_COLLECTION_NAME,
+									meta: expect.objectContaining({
+										collection: TEST_COLLECTION_NAME,
+									}),
+									schema: expect.objectContaining({
+										name: TEST_COLLECTION_NAME,
+									}),
+								});
+
+								expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, 'id')).toBe(true);
+							} else {
+								expect(response.statusCode).toBe(403);
+							}
+						});
+					});
+				});
+			});
+
+			describe('Creates a new collection with auto created primary key when no primary key is in the fields array', () => {
+				TEST_USERS.forEach((userKey) => {
+					describe(USER[userKey].NAME, () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const db = databases.get(vendor)!;
+							currentVendor = vendor;
+							const fieldName = `name_${pkType}`;
+
+							const fields = [
+								{
+									field: fieldName,
+									type: 'string',
+									meta: { interface: 'input', special: null },
+								},
+							];
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post('/collections')
+								.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: {}, fields })
+								.set('Authorization', `Bearer ${USER[userKey].TOKEN}`);
+
+							// Assert
+							if (userKey === USER.ADMIN.KEY) {
+								expect(response.statusCode).toBe(200);
+
+								expect(response.body.data).toEqual({
+									collection: TEST_COLLECTION_NAME,
+									meta: expect.objectContaining({
+										collection: TEST_COLLECTION_NAME,
+									}),
+									schema: expect.objectContaining({
+										name: TEST_COLLECTION_NAME,
+									}),
+								});
+
+								expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, fieldName)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, 'id')).toBe(true);
+							} else {
+								expect(response.statusCode).toBe(403);
+							}
+						});
+					});
+				});
+			});
+
+			describe('Creates a new collection with specified primary key in fields array', () => {
+				TEST_USERS.forEach((userKey) => {
+					describe(USER[userKey].NAME, () => {
+						it.each(vendors)('%s', async (vendor) => {
+							// Setup
+							const db = databases.get(vendor)!;
+							currentVendor = vendor;
+							const pkName = `id_${pkType}`;
+							const fieldName = `name_${pkType}`;
+
+							const fields: any = [
+								{
+									field: fieldName,
+									type: 'string',
+									meta: { interface: 'input', special: null },
+								},
+							];
+
+							switch (pkType) {
+								case 'uuid':
+									fields.push({
+										field: pkName,
+										type: 'uuid',
+										meta: { hidden: true, readonly: true, interface: 'input', special: ['uuid'] },
+										schema: { is_primary_key: true, length: 36, has_auto_increment: false },
+									});
+
+									break;
+								case 'string':
+									fields.push({
+										field: pkName,
+										type: 'string',
+										meta: { hidden: false, readonly: false, interface: 'input' },
+										schema: { is_primary_key: true, length: 255, has_auto_increment: false },
+									});
+
+									break;
+								case 'integer':
+									fields.push({
+										field: pkName,
+										type: 'integer',
+										meta: { hidden: true, interface: 'input', readonly: true },
+										schema: { is_primary_key: true, has_auto_increment: true },
+									});
+
+									break;
+							}
+
+							// Action
+							const response = await request(getUrl(vendor))
+								.post('/collections')
+								.send({ collection: TEST_COLLECTION_NAME, meta: {}, schema: {}, fields })
+								.set('Authorization', `Bearer ${USER[userKey].TOKEN}`);
+
+							// Assert
+							if (userKey === USER.ADMIN.KEY) {
+								expect(response.statusCode).toBe(200);
+
+								expect(response.body.data).toEqual({
+									collection: TEST_COLLECTION_NAME,
+									meta: expect.objectContaining({
+										collection: TEST_COLLECTION_NAME,
+									}),
+									schema: expect.objectContaining({
+										name: TEST_COLLECTION_NAME,
+									}),
+								});
+
+								expect(await db.schema.hasTable(TEST_COLLECTION_NAME)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, fieldName)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, pkName)).toBe(true);
+								expect(await db.schema.hasColumn(TEST_COLLECTION_NAME, 'id')).toBe(false);
+							} else {
+								expect(response.statusCode).toBe(403);
+							}
+						});
+					});
+				});
+			});
+
 			describe('Creates a new folder', () => {
 				TEST_USERS.forEach((userKey) => {
 					describe(USER[userKey].NAME, () => {
@@ -425,7 +630,7 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 
 				// Assert
 				expect(response.statusCode).toBe(200);
-				expect(response.body.data.length).toBe(10);
+				expect(response.body.data.length).toBe(14);
 
 				for (const log of response.body.data) {
 					expect(log.value).toBe('1');

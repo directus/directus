@@ -26,6 +26,12 @@ export class CollectionBuilder {
 	}
 
 	field(name: string): FieldBuilder {
+		const existingField = this._fields.find((fieldBuilder) => fieldBuilder.get_name() === name);
+
+		if (existingField) {
+			return existingField;
+		}
+
 		const field = new FieldBuilder(name, this._schemaBuilder, this);
 		this._fields.push(field);
 		return field;
