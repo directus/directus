@@ -2372,7 +2372,6 @@ triggers:
   manual:
     name: Destî
     description: Li ser xebitandina destî di koleksiyonên hilbijartî de tetîk dibe
-    error_on_reject: Çewtî li ser Redkirinê
     collection_and_item: Rûpelên Koleksiyon & Hêmanê
     collection_only: Tenê Rûpela Koleksiyonê
     item_only: Tenê Rûpela Hêmanê
