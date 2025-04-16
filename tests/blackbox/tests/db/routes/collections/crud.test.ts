@@ -630,7 +630,7 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 
 				// Assert
 				expect(response.statusCode).toBe(200);
-				expect(response.body.data.length).toBe(13);
+				expect(response.body.data.length).toBe(14);
 
 				for (const log of response.body.data) {
 					expect(log.value).toBe('1');
