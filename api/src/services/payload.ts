@@ -158,13 +158,23 @@ export class PayloadService {
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
 	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
-	processValues(action: Action, payloads: Partial<Item>[], aliasMap: Record<string, string>, aggregate: Aggregate): Promise<Partial<Item>[]>;
-	processValues(action: Action, payload: Partial<Item>, aliasMap: Record<string, string>, aggregate: Aggregate): Promise<Partial<Item>>;
+	processValues(
+		action: Action,
+		payloads: Partial<Item>[],
+		aliasMap: Record<string, string>,
+		aggregate: Aggregate,
+	): Promise<Partial<Item>[]>;
+	processValues(
+		action: Action,
+		payload: Partial<Item>,
+		aliasMap: Record<string, string>,
+		aggregate: Aggregate,
+	): Promise<Partial<Item>>;
 	async processValues(
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[],
 		aliasMap: Record<string, string> = {},
-		aggregate: Aggregate = {}
+		aggregate: Aggregate = {},
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = toArray(payload);
 
