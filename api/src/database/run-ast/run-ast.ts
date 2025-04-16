@@ -90,17 +90,7 @@ export async function runAst(
 		// Run the items through the special transforms
 		const payloadService = new PayloadService(collection, { knex, schema });
 
-		// Include aggegation e.g. "count->id" in alias map
-		const aggregateMapped = Object.fromEntries(
-			Object.entries(query.aggregate ?? {}).reduce<string[][]>((acc, [key, values]) => {
-				acc.push(...values.map((value) => [`${key}->${value}`, value]));
-				return acc;
-			}, []),
-		);
-
-		const aliasWithAggregate = { ...query.alias, ...aggregateMapped };
-
-		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems, aliasWithAggregate);
+		let items: null | Item | Item[] = await payloadService.processValues('read', rawItems, query.alias ?? {}, query.aggregate ?? {});
 
 		if (!items || (Array.isArray(items) && items.length === 0)) return items;
 
