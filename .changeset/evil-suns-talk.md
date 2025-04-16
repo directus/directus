@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Added option to error in webhook flows
+Added an `Error on Reject` option to webhook flows
