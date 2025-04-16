@@ -228,28 +228,6 @@ export function getTriggers() {
 					},
 				},
 				{
-					field: 'error_on_reject',
-					name: t('triggers.webhook.error_on_reject'),
-					type: 'boolean',
-					meta: {
-						width: 'half' as Width,
-						interface: 'toggle',
-						conditions: [
-							{
-								rule: {
-									async: {
-										_eq: true,
-									},
-								},
-								hidden: true,
-							},
-						],
-					},
-					schema: {
-						default_value: false,
-					},
-				},
-				{
 					field: 'async',
 					name: t('triggers.webhook.async'),
 					type: 'boolean',
@@ -257,6 +235,19 @@ export function getTriggers() {
 						width: 'half',
 						interface: 'toggle',
 						required: true,
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+				{
+					field: 'error_on_reject',
+					name: t('triggers.webhook.error_on_reject'),
+					type: 'boolean',
+					meta: {
+						width: 'half' as Width,
+						interface: 'toggle',
+						hidden: async,
 					},
 					schema: {
 						default_value: false,
