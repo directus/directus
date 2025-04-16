@@ -254,6 +254,121 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
+
+				test('with aggregate and typical values', () => {
+					const payload = [
+						{
+							'max->date_alias': '2022-01-10',
+							'max->datetime_alias': '2021-09-31 12:34:56',
+							'max->timestamp_alias': '1980-12-08 00:11:22.333',
+						},
+					];
+
+					service.processDates(
+						fieldEntries,
+						payload,
+						'read',
+						{},
+						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
+					);
+
+					expect(payload).toMatchObject([
+						{
+							'max->date_alias': '2022-01-10',
+							'max->datetime_alias': '2021-10-01T12:34:56',
+							'max->timestamp_alias': new Date('1980-12-08 00:11:22.333').toISOString(),
+						},
+					]);
+				});
+
+				test('with aggregate and object values', () => {
+					const payload = [
+						{
+							'max->date_alias': new Date(1666777777000),
+							'max->datetime_alias': new Date(1666666666000),
+							'max->timestamp_alias': new Date(1666555444333),
+						},
+					];
+
+					const result = service.processDates(
+						fieldEntries,
+						payload,
+						'read',
+						{},
+						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
+					);
+
+					expect(result).toMatchObject([
+						{
+							'max->date_alias': toLocalISOString(new Date(1666777777000)).slice(0, 10),
+							'max->datetime_alias': toLocalISOString(new Date(1666666666000)),
+							'max->timestamp_alias': new Date(1666555444333).toISOString(),
+						},
+					]);
+				});
+
+				test('with aggregate & alias containing typical values', () => {
+					const payload = [
+						{
+							'max->date_alias': '2022-01-10',
+							'max->datetime_alias': '2021-09-31 12:34:56',
+							'max->timestamp_alias': '1980-12-08 00:11:22.333',
+							'date-alias': '2022-01-10',
+							'datetime-alias': '2021-10-01T12:34:56',
+							'timestamp-alias': new Date('1980-12-08 00:11:22.333').toISOString(),
+						},
+					];
+
+					service.processDates(
+						fieldEntries,
+						payload,
+						'read',
+						{ 'date-alias': 'date_field', 'datetime-alias': 'datetime_field', 'timestamp-alias': 'timestamp_field' },
+						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
+					);
+
+					expect(payload).toMatchObject([
+						{
+							'max->date_alias': '2022-01-10',
+							'max->datetime_alias': '2021-10-01T12:34:56',
+							'max->timestamp_alias': new Date('1980-12-08 00:11:22.333').toISOString(),
+							'date-alias': '2022-01-10',
+							'datetime-alias': '2021-10-01T12:34:56',
+							'timestamp-alias': new Date('1980-12-08 00:11:22.333').toISOString(),
+						},
+					]);
+				});
+
+				test('with aggregate & alias containing object values', () => {
+					const payload = [
+						{
+							'max->date_alias': new Date(1666777777000),
+							'max->datetime_alias': new Date(1666666666000),
+							'max->timestamp_alias': new Date(1666555444333),
+							'date-alias': new Date(1666777777000),
+							'datetime-alias': new Date(1666666666000),
+							'timestamp-alias': new Date(1666555444333),
+						},
+					];
+
+					const result = service.processDates(
+						fieldEntries,
+						payload,
+						'read',
+						{ 'date-alias': 'date_field', 'datetime-alias': 'datetime_field', 'timestamp-alias': 'timestamp_field' },
+						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
+					);
+
+					expect(result).toMatchObject([
+						{
+							'max->date_alias': toLocalISOString(new Date(1666777777000)).slice(0, 10),
+							'max->datetime_alias': toLocalISOString(new Date(1666666666000)),
+							'max->timestamp_alias': new Date(1666555444333).toISOString(),
+							'date-alias': toLocalISOString(new Date(1666777777000)).slice(0, 10),
+							'datetime-alias': toLocalISOString(new Date(1666666666000)),
+						},
+					]);
+				});
 			});
 		});
 
