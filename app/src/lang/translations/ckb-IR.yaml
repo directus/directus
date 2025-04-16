@@ -2372,7 +2372,6 @@ triggers:
   manual:
     name: دەستی
     description: وروژان لەسەر جێبەجێکردنی دەستی لەناو کۆمەڵە دیاریکراوەکان
-    error_on_reject: هەڵە لەکاتی ڕەتکردنەوە
     collection_and_item: پەڕەکانی کۆمەڵە و مادە
     collection_only: تەنها پەڕەی کۆمەڵە
     item_only: تەنها پەڕەی مادە
