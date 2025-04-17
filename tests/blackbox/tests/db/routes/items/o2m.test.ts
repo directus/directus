@@ -1,5 +1,5 @@
 import config, { getUrl } from '@common/config';
-import { CreateItem, ReadItem } from '@common/functions';
+import { CreateItem, ReadItem, UpdateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql, requestGraphQL } from '@common/transport';
 import type { PrimaryKeyType } from '@common/types';
@@ -1626,18 +1626,33 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
-		describe('Relational trigger ON DESELECT ACTION is applied irrespective of QUERY_LIMIT_MAX', () => {
+		describe('Relational trigger ON DESELECT ACTION are applied irrespective of QUERY_LIMIT_MAX', () => {
 			it.each(vendors)('%s', async (vendor) => {
+				const states = Array.from({ length: 150 }, (_, i) => ({
+					...createState(pkType),
+					name: 'test_on_deselected_action_' + i,
+				}));
+
 				// Setup
 				const createdItem = await CreateItem(vendor, {
 					collection: localCollectionCountries,
 					item: {
 						...createCountry(pkType),
 						name: 'test_on_deselected_action',
-						states: Array.from({ length: 150 }, (_, i) => ({
-							...createState(pkType),
-							name: 'test_on_deselected_action_' + i,
-						})),
+						states: states.slice(0, 75),
+					},
+				});
+
+				// workaround to bypass BATCH_MUTATION_MAX limit
+				await UpdateItem(vendor, {
+					collection: localCollectionCountries,
+					id: createdItem.id,
+					item: {
+						states: {
+							create: states.slice(75),
+							update: [],
+							delete: [],
+						},
 					},
 				});
 
@@ -1648,7 +1663,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						states: [
 							{
 								...createState(pkType),
-								name: 'test_on_deselected_action_',
+								name: 'test_on_deselected_action_150',
 							},
 						],
 					})
