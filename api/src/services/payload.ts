@@ -329,16 +329,18 @@ export class PayloadService {
 			}, []),
 		);
 
-		for (const alias in { ...aliasMap, ...aggregateMapped }) {
-			const aliasedField = aliasMap[alias];
-			const field = this.schema.collections[this.collection]!.fields[aliasedField!];
+		const aliasFields = { ...aliasMap, ...aggregateMapped };
+
+		for (const aliasField in aliasFields) {
+			const schemaField = aliasFields[aliasField];
+			const field = this.schema.collections[this.collection]!.fields[schemaField!];
 
 			if (field) {
 				fieldEntries.push([
-					alias,
+					aliasField,
 					{
 						...field,
-						field: alias,
+						field: aliasField,
 					},
 				]);
 			}
