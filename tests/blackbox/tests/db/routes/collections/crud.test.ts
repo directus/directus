@@ -366,7 +366,7 @@ describe.each(PRIMARY_KEY_TYPES)('/collections', (pkType) => {
 										field: pkName,
 										type: 'integer',
 										meta: { hidden: true, interface: 'input', readonly: true },
-										schema: { is_primary_key: true, has_auto_increment: true },
+										schema: { is_primary_key: false, has_auto_increment: true },
 									});
 
 									break;

@@ -116,7 +116,9 @@ export class CollectionsService {
 
 					if (!payload.fields || payload.fields.length === 0) {
 						payload.fields = [injectedPrimaryKeyField];
-					} else if (!payload.fields.some((f) => f.schema?.is_primary_key === true)) {
+					} else if (
+						!payload.fields.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)
+					) {
 						payload.fields = [injectedPrimaryKeyField, ...payload.fields];
 					}
 
