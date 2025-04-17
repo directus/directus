@@ -240,12 +240,23 @@ export class PayloadService {
 	}
 
 	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
-		// Include aggegation e.g. "count->id" in alias map
+		/**
+		 * Build access path with -> delimiter
+		 *
+		 * input: { min: [ 'date', 'datetime', 'timestamp' ] }
+		 * output: [ 'min->date', 'min->datetime', 'min->timestamp' ]
+		 */
 		const aggregateKeys = Object.entries(aggregate).reduce<string[]>((acc, [key, values]) => {
 			acc.push(...values.map((value) => `${key}->${value}`));
 			return acc;
 		}, []);
 
+		/**
+		 * Expand -> delimited keys in the payload to the equivalent expanded object
+		 *
+		 * before: { "min->date": "2025-04-09", "min->datetime": "2025-04-08T12:00:00", "min->timestamp": "2025-04-17T23:18:00.000Z" }
+		 * after: { "min": { "date": "2025-04-09", "datetime": "2025-04-08T12:00:00", "timestamp": "2025-04-17T23:18:00.000Z" } }
+		 */
 		if (aggregateKeys.length) {
 			for (const item of payload) {
 				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
