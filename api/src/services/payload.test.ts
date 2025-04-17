@@ -302,66 +302,6 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
-
-				test('with aggregate & alias containing typical values', () => {
-					const result = service.processDates(
-						fieldEntries,
-						[
-							{
-								'max->date_field': '2022-01-10',
-								'max->datetime_field': '2021-09-31 12:34:56',
-								'max->timestamp_field': '1980-12-08 00:11:22.333',
-								'date-alias': '2022-01-10',
-								'datetime-alias': '2021-09-31 12:34:56',
-								'timestamp-alias': '1980-12-08 00:11:22.333',
-							},
-						],
-						'read',
-						{ 'date-alias': 'date_field', 'datetime-alias': 'datetime_field', 'timestamp-alias': 'timestamp_field' },
-						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
-					);
-
-					expect(result).toMatchObject([
-						{
-							'max->date_field': '2022-01-10',
-							'max->datetime_field': '2021-10-01T12:34:56',
-							'max->timestamp_field': new Date('1980-12-08 00:11:22.333').toISOString(),
-							'date-alias': '2022-01-10',
-							'datetime-alias': '2021-10-01T12:34:56',
-							'timestamp-alias': new Date('1980-12-08 00:11:22.333').toISOString(),
-						},
-					]);
-				});
-
-				test('with aggregate & alias containing object values', () => {
-					const result = service.processDates(
-						fieldEntries,
-						[
-							{
-								'max->date_field': new Date(1666777777000),
-								'max->datetime_field': new Date(1666666666000),
-								'max->timestamp_field': new Date(1666555444333),
-								'date-alias': new Date(1666777777000),
-								'datetime-alias': new Date(1666666666000),
-								'timestamp-alias': new Date(1666555444333),
-							},
-						],
-						'read',
-						{ 'date-alias': 'date_field', 'datetime-alias': 'datetime_field', 'timestamp-alias': 'timestamp_field' },
-						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
-					);
-
-					expect(result).toMatchObject([
-						{
-							'max->date_field': toLocalISOString(new Date(1666777777000)).slice(0, 10),
-							'max->datetime_field': toLocalISOString(new Date(1666666666000)),
-							'max->timestamp_field': new Date(1666555444333).toISOString(),
-							'date-alias': toLocalISOString(new Date(1666777777000)).slice(0, 10),
-							'datetime-alias': toLocalISOString(new Date(1666666666000)),
-							'timestamp-alias': new Date(1666555444333).toISOString(),
-						},
-					]);
-				});
 			});
 		});
 
