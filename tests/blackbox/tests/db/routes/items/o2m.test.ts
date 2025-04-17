@@ -1626,6 +1626,55 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
+		describe('Relational trigger ON DESELECT ACTION is applied irrespective of QUERY_LIMIT_MAX', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				// Setup
+				const createdItem = await CreateItem(vendor, {
+					collection: localCollectionCountries,
+					item: {
+						...createCountry(pkType),
+						name: 'test_on_deselected_action',
+						states: Array.from({ length: 150 }, (_, i) => ({
+							...createState(pkType),
+							name: 'test_on_deselected_action_' + i,
+						})),
+					},
+				});
+
+				// Action
+				await request(getUrl(vendor))
+					.patch(`/items/${localCollectionCountries}/${createdItem.id}`)
+					.send({
+						states: [
+							{
+								...createState(pkType),
+								name: 'test_on_deselected_action_',
+							},
+						],
+					})
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				const response = await request(getUrl(vendor))
+					.get(`/items/${localCollectionStates}`)
+					.query({
+						filter: JSON.stringify({
+							_and: [
+								{
+									name: { _starts_with: 'test_on_deselected_action' },
+								},
+								{
+									country_id: { _nnull: true },
+								},
+							],
+						}),
+					})
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				expect(response.statusCode).toEqual(200);
+				expect(response.body.data.length).toEqual(1);
+			});
+		});
+
 		describe('Aggregation Tests', () => {
 			describe('retrieves relational count correctly', () => {
 				it.each(vendors)('%s', async (vendor) => {
