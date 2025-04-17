@@ -7,17 +7,20 @@ import { PrimaryKey } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import api from '@/api';
 import { useNotificationsStore } from '@/stores/notifications';
-import OverlayItem from '@/views/private/components/overlay-item.vue';
 import { getItemRoute, getCollectionRoute } from '@/utils/get-route';
 import { notify } from '@/utils/notify';
 import { unexpectedError } from '@/utils/unexpected-error';
-import type { EditConfig, ReceiveData, SendAction, SavedData } from '../types';
+import OverlayItem from '@/views/private/components/overlay-item.vue';
+import { sameOrigin } from '../utils/same-origin';
+import type { EditConfig, ReceiveData, NavigationData, SendAction, SavedData } from '../types';
 
-const { url, frameEl, showEditableElements } = defineProps<{
-	url: string;
+const { frameSrc, frameEl, showEditableElements } = defineProps<{
+	frameSrc: string;
 	frameEl?: HTMLIFrameElement;
 	showEditableElements?: boolean;
 }>();
+
+const emit = defineEmits(['navigation']);
 
 const { t } = useI18n();
 
@@ -28,9 +31,11 @@ const tooltipPlacement = computed(() => (mode.value === 'drawer' ? 'bottom' : nu
 
 const { sendSaved } = useWebsiteFrame({ onClickEdit });
 
+const { popoverWidth } = usePopoverWidth();
+
 function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void }) {
 	useEventListener('message', (event) => {
-		if (!sameOrigin(event.origin, url)) return;
+		if (!sameOrigin(event.origin, frameSrc)) return;
 
 		const { action = null, data = null }: ReceiveData = event.data;
 
@@ -38,6 +43,8 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 			sendConfirm();
 			if (showEditableElements) sendShowEditableElements(true);
 		}
+
+		if (action === 'navigation') receiveNavigation(data);
 
 		if (action === 'edit') onClickEdit(data);
 	});
@@ -51,8 +58,15 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	return { sendSaved };
 
+	function receiveNavigation(data: unknown) {
+		const { url, title } = data as NavigationData;
+		if (url === undefined || title === undefined) return;
+
+		emit('navigation', { url, title });
+	}
+
 	function send(action: SendAction, data: unknown) {
-		frameEl?.contentWindow?.postMessage({ action, data }, url);
+		frameEl?.contentWindow?.postMessage({ action, data }, frameSrc);
 	}
 
 	function sendConfirm() {
@@ -65,14 +79,6 @@ function useWebsiteFrame({ onClickEdit }: { onClickEdit: (data: unknown) => void
 
 	function sendSaved(data: SavedData) {
 		send('saved', data);
-	}
-
-	function sameOrigin(origin: string, url: string) {
-		try {
-			return origin === new URL(url).origin;
-		} catch {
-			return false;
-		}
 	}
 }
 
@@ -223,6 +229,20 @@ function useItemWithEdits() {
 		editingLayerEl.value.removeAttribute('tabindex');
 	}
 }
+
+function usePopoverWidth() {
+	/**
+	 * Hardcode this value, since its parts probably won't change. However, keep it in sync with the `width` of `.popover-item-content` in app/src/views/private/components/overlay-item.vue
+	 *
+	 * Parts:
+	 * const formColumnWidth = 300; // app/src/styles/_variables.scss
+	 * const popoverColumnGap = 16;
+	 * const popoverPadding = 16 * 2;
+	 * const popoverWidth = 2 * formColumnWidth + popoverColumnGap + popoverPadding;
+	 */
+
+	return { popoverWidth: 648 };
+}
 </script>
 
 <template>
@@ -240,6 +260,7 @@ function useItemWithEdits() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
+			:popover-props="position.width > popoverWidth ? { arrowPlacement: 'start' } : {}"
 			shortcuts
 			@input="(value: any) => (edits = value)"
 		>

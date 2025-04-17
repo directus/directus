@@ -16,7 +16,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
-import { Ref, computed, ref, toRefs, watch } from 'vue';
+import { computed, ref, toRefs, watch, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
@@ -38,6 +38,7 @@ export interface OverlayItemProps {
 	circularField?: string | null;
 	junctionFieldLocation?: string;
 	selectedFields?: string[] | null;
+	popoverProps?: Record<string, any>;
 	shortcuts?: boolean;
 }
 
@@ -525,11 +526,14 @@ function useActions() {
 
 	<v-menu
 		v-else-if="overlay === 'popover'"
+		v-bind="popoverProps"
 		v-model="overlayActive"
 		:close-on-click="false"
 		:close-on-content-click="false"
-		placement="top"
+		placement="top-start"
+		:offset-x="-16"
 		show-arrow
+		:arrow-padding="16"
 		seamless
 		keep-behind
 	>

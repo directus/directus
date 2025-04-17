@@ -1005,6 +1005,8 @@ toggle_navigation: Toggle Navigation
 toggle_editable_elements: Toggle Editable Elements
 no_url: No URL provided
 no_url_copy: Please add a URL in the settings.
+invalid_url: Invalid URL
+invalid_url_copy: The specified URL does not match any URL specified in the settings.
 insights: Insights
 dashboard: Dashboard
 panel: Panel
