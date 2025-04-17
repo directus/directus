@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from 'vue';
+import { ref, computed, watch, nextTick, useTemplateRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useEventListener } from '@vueuse/core';
 import { useCollection } from '@directus/composables';
@@ -91,6 +91,8 @@ function useItemWithEdits() {
 	const itemRoute = computed(getContentRoute);
 	const notificationsStore = useNotificationsStore();
 	const { info: collectionInfo } = useCollection(collection);
+
+	const editingLayerEl = useTemplateRef<HTMLElement>('editing-layer');
 
 	watch(edits, (newEdits) => {
 		const hasEdits = Object.keys(newEdits)?.length;
@@ -204,13 +206,32 @@ function useItemWithEdits() {
 		const success = setEditConfigData(data);
 		if (!success) return;
 		await nextTick();
+
+		// `setFocusTemporarily()` makes sure that after clicking an edit button inside the iframe, the :focus moves to the Studio module, so the shortcuts work as expected.
+		setFocusTemporarily();
+
 		editOverlayActive.value = true;
+	}
+
+	async function setFocusTemporarily() {
+		if (!editingLayerEl.value) return;
+
+		editingLayerEl.value.setAttribute('tabindex', '0');
+		editingLayerEl.value.focus();
+
+		await nextTick();
+		editingLayerEl.value.removeAttribute('tabindex');
 	}
 }
 </script>
 
 <template>
-	<div class="editing-layer" :class="{ editing: editOverlayActive }" @click="editOverlayActive = false">
+	<div
+		ref="editing-layer"
+		class="editing-layer"
+		:class="{ editing: editOverlayActive }"
+		@click="editOverlayActive = false"
+	>
 		<overlay-item
 			v-if="collection"
 			v-model:active="editOverlayActive"
@@ -219,6 +240,7 @@ function useItemWithEdits() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
+			shortcuts
 			@input="(value: any) => (edits = value)"
 		>
 			<template #popover-activator>

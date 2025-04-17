@@ -2,11 +2,13 @@
 import api from '@/api';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { usePermissions } from '@/composables/use-permissions';
+import { useShortcut } from '@/composables/use-shortcut';
 import { useTemplateData } from '@/composables/use-template-data';
 import { useNestedValidation } from '@/composables/use-nested-validation';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
+import { translateShortcut } from '@/utils/translate-shortcut';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { validateItem } from '@/utils/validate-item';
 import { useCollection } from '@directus/composables';
@@ -36,6 +38,7 @@ export interface OverlayItemProps {
 	circularField?: string | null;
 	junctionFieldLocation?: string;
 	selectedFields?: string[] | null;
+	shortcuts?: boolean;
 }
 
 export interface OverlayItemEmits {
@@ -66,7 +69,7 @@ const { internalActive } = useActiveState();
 const { junctionFieldInfo, relatedCollection, relatedCollectionInfo, relatedPrimaryKeyField } = useRelation();
 
 const { internalEdits, loading, initialValues, refresh } = useItem();
-const { save, cancel, overlayActive } = useActions();
+const { save, cancel, overlayActive, getTooltip } = useActions();
 
 const { collection, primaryKey, relatedPrimaryKey } = toRefs(props);
 
@@ -382,7 +385,37 @@ function useActions() {
 		},
 	});
 
-	return { save, cancel, overlayActive };
+	useShortcut('meta+s', (_event, cancelNext) => {
+		if (!props.shortcuts || !internalActive.value) return;
+
+		save();
+		cancelNext();
+	});
+
+	useShortcut('escape', (_event, cancelNext) => {
+		// Note that drawer and modal have an existing shortcut for canceling with the Escape key.
+		if (props.overlay !== 'popover' || !props.shortcuts || !internalActive.value) return;
+
+		cancel();
+		cancelNext();
+	});
+
+	return { save, cancel, overlayActive, getTooltip };
+
+	function getTooltip(shortcutType: 'save' | 'cancel', label: string | null = null) {
+		let shortcut = null;
+
+		if (props.shortcuts) {
+			if (shortcutType === 'save') shortcut = translateShortcut(['meta', 's']);
+			else shortcut = translateShortcut(['esc']);
+		}
+
+		if (label && shortcut) return `${label} (${shortcut})`;
+		if (label) return label;
+		if (shortcut) return shortcut;
+
+		return null;
+	}
 
 	function save() {
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
@@ -455,7 +488,7 @@ function useActions() {
 		<template #actions>
 			<slot name="actions" />
 
-			<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="!isSavable" @click="save">
+			<v-button v-tooltip.bottom="getTooltip('save', t('save'))" icon rounded :disabled="!isSavable" @click="save">
 				<v-icon name="check" />
 			</v-button>
 		</template>
@@ -484,8 +517,8 @@ function useActions() {
 
 			<v-card-actions>
 				<slot name="actions" />
-				<v-button secondary @click="cancel">{{ t('cancel') }}</v-button>
-				<v-button :disabled="!isSavable" @click="save">{{ t('save') }}</v-button>
+				<v-button v-tooltip="getTooltip('cancel')" secondary @click="cancel">{{ t('cancel') }}</v-button>
+				<v-button v-tooltip="getTooltip('save')" :disabled="!isSavable" @click="save">{{ t('save') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -508,11 +541,11 @@ function useActions() {
 			<div class="popover-actions-inner">
 				<slot name="actions" />
 
-				<v-button v-tooltip="t('cancel')" x-small rounded icon secondary @click="cancel">
+				<v-button v-tooltip="getTooltip('cancel', t('cancel'))" x-small rounded icon secondary @click="cancel">
 					<v-icon small name="close" outline />
 				</v-button>
 
-				<v-button v-tooltip="t('save')" x-small rounded icon :disabled="!isSavable" @click="save">
+				<v-button v-tooltip="getTooltip('save', t('save'))" x-small rounded icon :disabled="!isSavable" @click="save">
 					<v-icon small name="check" outline />
 				</v-button>
 			</div>
