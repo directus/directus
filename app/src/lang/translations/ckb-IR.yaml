@@ -2358,6 +2358,7 @@ triggers:
     filter: 'پاڵاوتن (بلۆککراو)'
   webhook:
     name: وێبهووک
+    error_on_reject: هەڵە لەکاتی ڕەتکردنەوە
     description: وروژان لەسەر داواکاری HTTPی هاتوو
     method: ڕێگە
     async: ناهاوکات
