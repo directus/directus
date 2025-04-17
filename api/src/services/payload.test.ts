@@ -256,23 +256,21 @@ describe('Integration Tests', () => {
 				});
 
 				test('with aggregate and typical values', () => {
-					const payload = [
-						{
-							'max->date_field': '2022-01-10',
-							'max->datetime_field': '2021-09-31 12:34:56',
-							'max->timestamp_field': '1980-12-08 00:11:22.333',
-						},
-					];
-
-					service.processDates(
+					const result = service.processDates(
 						fieldEntries,
-						payload,
+						[
+							{
+								'max->date_field': '2022-01-10',
+								'max->datetime_field': '2021-09-31 12:34:56',
+								'max->timestamp_field': '1980-12-08 00:11:22.333',
+							},
+						],
 						'read',
 						{},
 						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
 					);
 
-					expect(payload).toMatchObject([
+					expect(result).toMatchObject([
 						{
 							'max->date_field': '2022-01-10',
 							'max->datetime_field': '2021-10-01T12:34:56',
@@ -282,17 +280,15 @@ describe('Integration Tests', () => {
 				});
 
 				test('with aggregate and object values', () => {
-					const payload = [
-						{
-							'max->date_field': new Date(1666777777000),
-							'max->datetime_field': new Date(1666666666000),
-							'max->timestamp_field': new Date(1666555444333),
-						},
-					];
-
 					const result = service.processDates(
 						fieldEntries,
-						payload,
+						[
+							{
+								'max->date_field': new Date(1666777777000),
+								'max->datetime_field': new Date(1666666666000),
+								'max->timestamp_field': new Date(1666555444333),
+							},
+						],
 						'read',
 						{},
 						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
@@ -308,26 +304,24 @@ describe('Integration Tests', () => {
 				});
 
 				test('with aggregate & alias containing typical values', () => {
-					const payload = [
-						{
-							'max->date_field': '2022-01-10',
-							'max->datetime_field': '2021-09-31 12:34:56',
-							'max->timestamp_field': '1980-12-08 00:11:22.333',
-							'date-alias': '2022-01-10',
-							'datetime-alias': '2021-09-31 12:34:56',
-							'timestamp-alias': '1980-12-08 00:11:22.333',
-						},
-					];
-
-					service.processDates(
+					const result = service.processDates(
 						fieldEntries,
-						payload,
+						[
+							{
+								'max->date_field': '2022-01-10',
+								'max->datetime_field': '2021-09-31 12:34:56',
+								'max->timestamp_field': '1980-12-08 00:11:22.333',
+								'date-alias': '2022-01-10',
+								'datetime-alias': '2021-09-31 12:34:56',
+								'timestamp-alias': '1980-12-08 00:11:22.333',
+							},
+						],
 						'read',
 						{ 'date-alias': 'date_field', 'datetime-alias': 'datetime_field', 'timestamp-alias': 'timestamp_field' },
 						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
 					);
 
-					expect(payload).toMatchObject([
+					expect(result).toMatchObject([
 						{
 							'max->date_field': '2022-01-10',
 							'max->datetime_field': '2021-10-01T12:34:56',
@@ -340,20 +334,18 @@ describe('Integration Tests', () => {
 				});
 
 				test('with aggregate & alias containing object values', () => {
-					const payload = [
-						{
-							'max->date_field': new Date(1666777777000),
-							'max->datetime_field': new Date(1666666666000),
-							'max->timestamp_field': new Date(1666555444333),
-							'date-alias': new Date(1666777777000),
-							'datetime-alias': new Date(1666666666000),
-							'timestamp-alias': new Date(1666555444333),
-						},
-					];
-
 					const result = service.processDates(
 						fieldEntries,
-						payload,
+						[
+							{
+								'max->date_field': new Date(1666777777000),
+								'max->datetime_field': new Date(1666666666000),
+								'max->timestamp_field': new Date(1666555444333),
+								'date-alias': new Date(1666777777000),
+								'datetime-alias': new Date(1666666666000),
+								'timestamp-alias': new Date(1666555444333),
+							},
+						],
 						'read',
 						{ 'date-alias': 'date_field', 'datetime-alias': 'datetime_field', 'timestamp-alias': 'timestamp_field' },
 						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
