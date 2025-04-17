@@ -1,4 +1,5 @@
 ---
+'@directus/themes': minor
 '@directus/app': minor
 ---
 
