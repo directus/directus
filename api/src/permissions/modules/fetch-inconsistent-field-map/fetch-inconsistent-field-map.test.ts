@@ -1,4 +1,5 @@
-import type { Accountability, Permission, SchemaOverview } from '@directus/types';
+import { SchemaBuilder } from '@directus/schema-builder';
+import type { Accountability, Permission } from '@directus/types';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { fetchPermissions } from '../../lib/fetch-permissions.js';
 import { fetchPolicies } from '../../lib/fetch-policies.js';
@@ -24,22 +25,16 @@ test('Returns field map of the whole schema if admin is true', async () => {
 
 	const action = 'read';
 
-	const schema = {
-		collections: {
-			'collection-a': {
-				fields: {
-					'field-a': {},
-					'field-b': {},
-				},
-			},
-			'collection-b': {
-				fields: {
-					'field-a': {},
-					'field-c': {},
-				},
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection-a', (c) => {
+			c.field('field-a').id();
+			c.field('field-b').string();
+		})
+		.collection('collection-b', (c) => {
+			c.field('field-a').id();
+			c.field('field-c').string();
+		})
+		.build();
 
 	const map = await fetchInconsistentFieldMap({ accountability, action }, { schema } as Context);
 
