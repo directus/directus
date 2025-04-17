@@ -2358,6 +2358,7 @@ triggers:
     filter: 'Parzûn (Astengdar)'
   webhook:
     name: Webhook
+    error_on_reject: Çewtî li ser Redkirinê
     description: Li ser daxwaza HTTP ya hatî tetîk dibe
     method: Rêbaz
     async: Nehevdem
