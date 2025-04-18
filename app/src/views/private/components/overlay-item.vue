@@ -40,6 +40,7 @@ export interface OverlayItemProps {
 	selectedFields?: string[] | null;
 	popoverProps?: Record<string, any>;
 	shortcuts?: boolean;
+	preventCancelWithEdits?: boolean;
 }
 
 export interface OverlayItemEmits {
@@ -88,6 +89,8 @@ function discardAndLeave() {
 	confirmLeave.value = false;
 	router.push(leaveTo.value);
 }
+
+const { confirmCancel, discardAndCancel, confirmCancellation } = useCancelGuard();
 
 const title = computed(() => {
 	const collection = relatedCollectionInfo?.value || collectionInfo.value!;
@@ -458,10 +461,37 @@ function useActions() {
 	}
 
 	function cancel() {
-		validationErrors.value = [];
-		internalActive.value = false;
-		internalEdits.value = {};
+		if (confirmCancellation.value) {
+			confirmCancel.value = true;
+			return;
+		}
+
+		discardAndCancel();
 	}
+}
+
+function useCancelGuard() {
+	const confirmCancel = ref(false);
+	const confirmCancellation = computed(() => props.preventCancelWithEdits && hasEdits.value);
+
+	return {
+		confirmCancel,
+		discardAndCancel,
+		confirmCancellation,
+	};
+
+	function discardAndCancel() {
+		validationErrors.value = [];
+		internalEdits.value = {};
+		internalActive.value = false;
+		confirmCancel.value = false;
+	}
+}
+
+function popoverClickOutsideMiddleware(e: Event) {
+	const dialogs = document.getElementById('dialog-outlet');
+	if (!dialogs) return true;
+	return !dialogs.contains(e.target as Node);
 }
 </script>
 
@@ -541,25 +571,34 @@ function useActions() {
 			<slot name="popover-activator" v-bind="activatorProps" />
 		</template>
 
-		<div class="popover-actions">
-			<div class="popover-actions-inner">
-				<slot name="actions" />
+		<div
+			v-click-outside="{
+				handler: cancel,
+				middleware: popoverClickOutsideMiddleware,
+				disabled: !preventCancelWithEdits,
+				events: ['click'],
+			}"
+		>
+			<div class="popover-actions">
+				<div class="popover-actions-inner">
+					<slot name="actions" />
 
-				<v-button v-tooltip="getTooltip('cancel', t('cancel'))" x-small rounded icon secondary @click="cancel">
-					<v-icon small name="close" outline />
-				</v-button>
+					<v-button v-tooltip="getTooltip('cancel', t('cancel'))" x-small rounded icon secondary @click="cancel">
+						<v-icon small name="close" outline />
+					</v-button>
 
-				<v-button v-tooltip="getTooltip('save', t('save'))" x-small rounded icon :disabled="!isSavable" @click="save">
-					<v-icon small name="check" outline />
-				</v-button>
+					<v-button v-tooltip="getTooltip('save', t('save'))" x-small rounded icon :disabled="!isSavable" @click="save">
+						<v-icon small name="check" outline />
+					</v-button>
+				</div>
 			</div>
-		</div>
 
-		<overlay-item-content
-			v-model:internal-edits="internalEdits"
-			v-bind="overlayItemContentProps"
-			class="popover-item-content"
-		/>
+			<overlay-item-content
+				v-model:internal-edits="internalEdits"
+				v-bind="overlayItemContentProps"
+				class="popover-item-content"
+			/>
+		</div>
 	</v-menu>
 
 	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -571,6 +610,19 @@ function useActions() {
 					{{ t('discard_changes') }}
 				</v-button>
 				<v-button @click="confirmLeave = false">{{ t('keep_editing') }}</v-button>
+			</v-card-actions>
+		</v-card>
+	</v-dialog>
+
+	<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+		<v-card>
+			<v-card-title>{{ t('discard_all_changes') }}</v-card-title>
+			<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
+			<v-card-actions>
+				<v-button secondary @click="discardAndCancel">
+					{{ t('discard_changes') }}
+				</v-button>
+				<v-button @click="confirmCancel = false">{{ t('keep_editing') }}</v-button>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
