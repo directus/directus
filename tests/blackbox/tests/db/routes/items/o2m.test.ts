@@ -1676,7 +1676,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				expect(response.statusCode).toEqual(200);
-				expect(response.body.data.length).toEqual(1);
+				expect(response.body.data.length).toEqual(actionStates.length);
 			});
 		});
 
@@ -2026,6 +2026,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
 								.send(country)
+								.query({ deep: JSON.stringify({ states: { _limit: -1 } }) })
 								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const wsMessagesCountries = await ws.getMessages(1, { uid: localCollectionCountries });
@@ -2043,6 +2044,9 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										},
 										id: true,
 										states: {
+											__args: {
+												limit: -1,
+											},
 											id: true,
 										},
 									},
