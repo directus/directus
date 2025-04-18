@@ -1,5 +1,5 @@
 import config, { getUrl } from '@common/config';
-import { CreateItem, ReadItem, UpdateItem } from '@common/functions';
+import { CreateItem, ReadItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql, requestGraphQL } from '@common/transport';
 import type { PrimaryKeyType } from '@common/types';
@@ -1628,7 +1628,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 
 		describe('Relational trigger ON DESELECT ACTION are applied irrespective of QUERY_LIMIT_MAX', () => {
 			it.each(vendors)('%s', async (vendor) => {
-				const states = Array.from({ length: 150 }, (_, i) => ({
+				const queryLimit = Number(config.envs[vendor]['QUERY_LIMIT_DEFAULT']);
+				const maxBatchMutation = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
+
+				const setupStates = Array.from({ length: queryLimit }, (_, i) => ({
 					...createState(pkType),
 					name: 'test_on_deselected_action_' + i,
 				}));
@@ -1639,33 +1642,20 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					item: {
 						...createCountry(pkType),
 						name: 'test_on_deselected_action',
-						states: states.slice(0, 75),
-					},
-				});
-
-				// workaround to bypass BATCH_MUTATION_MAX limit
-				await UpdateItem(vendor, {
-					collection: localCollectionCountries,
-					id: createdItem.id,
-					item: {
-						states: {
-							create: states.slice(75),
-							update: [],
-							delete: [],
-						},
+						states: setupStates,
 					},
 				});
 
 				// Action
+				const actionStates = Array.from({ length: maxBatchMutation - queryLimit - 1 }, (_, i) => ({
+					...createState(pkType),
+					name: 'test_on_deselected_action_' + i,
+				}));
+
 				await request(getUrl(vendor))
 					.patch(`/items/${localCollectionCountries}/${createdItem.id}`)
 					.send({
-						states: [
-							{
-								...createState(pkType),
-								name: 'test_on_deselected_action_150',
-							},
-						],
+						states: actionStates,
 					})
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -2036,7 +2026,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
 								.send(country)
-								.query({ deep: JSON.stringify({ states: { _limit: -1 } }) })
 								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const wsMessagesCountries = await ws.getMessages(1, { uid: localCollectionCountries });
@@ -2054,9 +2043,6 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										},
 										id: true,
 										states: {
-											__args: {
-												limit: -1,
-											},
 											id: true,
 										},
 									},
