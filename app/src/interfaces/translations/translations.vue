@@ -150,15 +150,51 @@ const translationProps = computed(() => ({
 	isLocalItem,
 	updateValue,
 	remove,
+	defaultLanguage: defaultLanguage.value || null,
 }));
 
 function useLanguages() {
 	const languages = ref<Record<string, any>[]>([]);
 	const loading = ref(false);
 	const error = ref<any>(null);
-	const fieldsStore = useFieldsStore();
 
-	watch(relationInfo, fetchLanguages, { immediate: true });
+	const languageFields = computed(() => {
+		if (!relationInfo.value) return new Set<string>();
+
+		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
+		const fields = new Set<string>([pkField, props.languageDirectionField ?? 'direction']);
+		return fields;
+	});
+
+	watch([relationInfo, () => props.languageDirectionField], fetchLanguages, { immediate: true });
+
+	const selectInitialLanguages = computed(() => {
+		if (!languages.value.length) return { first: undefined, second: undefined };
+
+		const pkField = relationInfo.value?.relatedPrimaryKeyField.field;
+		if (!pkField) return { first: undefined, second: undefined };
+
+		const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
+		const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
+
+		const firstLang = languages.value.find((lang) => lang[pkField] === userLocale) || languages.value[0];
+		let secondLang = languages.value.find((lang) => lang[pkField] === defaultLocale) || languages.value[0];
+
+		if (!secondLang || secondLang[pkField] === firstLang?.[pkField]) {
+			secondLang = languages.value.find((lang) => lang[pkField] !== firstLang?.[pkField]) || languages.value[1];
+		}
+
+		return {
+			first: firstLang?.[pkField],
+			second: secondLang?.[pkField],
+		};
+	});
+
+	watch(languages, () => {
+		const { first, second } = selectInitialLanguages.value;
+		if (!firstLang.value) firstLang.value = first;
+		if (!secondLang.value) secondLang.value = second;
+	});
 
 	const languageOptions = computed(() => {
 		const langField = relationInfo.value?.junctionField.field;
@@ -198,48 +234,19 @@ function useLanguages() {
 	async function fetchLanguages() {
 		if (!relationInfo.value) return;
 
-		const fields = new Set<string>();
 		const collection = relationInfo.value.relatedCollection.collection;
-
-		if (props.languageField !== null && fieldsStore.getField(collection, props.languageField)) {
-			fields.add(props.languageField);
-		}
-
-		if (props.languageDirectionField !== null && fieldsStore.getField(collection, props.languageDirectionField)) {
-			fields.add(props.languageDirectionField);
-		}
-
 		const pkField = relationInfo.value.relatedPrimaryKeyField.field;
 		const sortField = relationInfo.value.relatedCollection.meta?.sort_field;
-
-		fields.add(pkField);
 
 		loading.value = true;
 
 		try {
 			languages.value = await fetchAll<Record<string, any>[]>(getEndpoint(collection), {
 				params: {
-					fields: Array.from(fields),
+					fields: Array.from(languageFields.value),
 					sort: sortField ?? props.languageField ?? pkField,
 				},
 			});
-
-			if (!firstLang.value) {
-				const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
-				const lang = languages.value.find((lang) => lang[pkField] === userLocale) || languages.value[0];
-				firstLang.value = lang?.[pkField];
-			}
-
-			if (!secondLang.value) {
-				const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
-				let lang = languages.value.find((lang) => lang[pkField] === defaultLocale) || languages.value[0];
-
-				if (!lang || lang[pkField] === firstLang.value) {
-					lang = languages.value.find((lang) => lang[pkField] !== firstLang.value) || languages.value[1];
-				}
-
-				secondLang.value = lang?.[pkField];
-			}
 		} catch (error) {
 			unexpectedError(error);
 		} finally {

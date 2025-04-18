@@ -19,6 +19,7 @@ const {
 	remove,
 	loading,
 	updateValue,
+	defaultLanguage,
 } = defineProps<{
 	languageOptions: Record<string, any>[];
 	disabled?: boolean;
@@ -33,13 +34,34 @@ const {
 	remove: (...items: DisplayItem[]) => void;
 	updateValue: (item: DisplayItem | undefined, lang: string | undefined) => void;
 	secondary?: boolean;
+	defaultLanguage?: string | null;
 }>();
 
 const lang = defineModel<string>('lang');
 
+watch(
+	() => defaultLanguage,
+	(newDefaultLanguage, oldDefaultLanguage) => {
+		if (!newDefaultLanguage) return;
+
+		if (newDefaultLanguage !== oldDefaultLanguage && newDefaultLanguage !== lang.value) {
+			lang.value = newDefaultLanguage;
+		}
+	},
+);
+
 const { t } = useI18n();
 
-const selectedLanguage = computed(() => languageOptions.find((optLang) => lang.value === optLang.value));
+const selectedLanguageData = computed(() => {
+	const langCode = lang.value ?? defaultLanguage;
+	return (
+		languageOptions.find((option) => option.value === langCode) ?? {
+			value: langCode,
+			text: langCode,
+			direction: null,
+		}
+	);
+});
 
 const item = computed(() => {
 	const item = getItemWithLang(displayItems, lang.value);
@@ -180,8 +202,8 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 		</language-select>
 
 		<v-form
-			v-if="selectedLanguage"
-			:key="selectedLanguage.value"
+			v-if="selectedLanguageData"
+			:key="selectedLanguageData.value"
 			:primary-key="
 				relationInfo?.junctionPrimaryKeyField.field ? itemInitial?.[relationInfo?.junctionPrimaryKeyField.field] : null
 			"
@@ -191,8 +213,8 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 			:fields="fields"
 			:model-value="item"
 			:initial-values="itemInitial"
-			:badge="selectedLanguage.text"
-			:direction="selectedLanguage.direction"
+			:badge="selectedLanguageData.text"
+			:direction="selectedLanguageData.direction"
 			:autofocus="autofocus"
 			inline
 			@update:model-value="updateValue($event, lang)"
