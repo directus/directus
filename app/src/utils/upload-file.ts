@@ -2,7 +2,7 @@ import api from '@/api';
 import { emitter, Events } from '@/events';
 import { i18n } from '@/lang';
 import { useServerStore } from '@/stores/server';
-import { getRootPath } from '@/utils/get-root-path';
+import { getPublicURL } from '@/utils/get-root-path';
 import { notify } from '@/utils/notify';
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
 import type { File } from '@directus/types';
@@ -39,7 +39,7 @@ export async function uploadFile(
 
 		return new Promise((resolve, reject) => {
 			const upload = new Upload(file, {
-				endpoint: getRootPath() + `files/tus`,
+				endpoint: getPublicURL() + `files/tus`,
 				chunkSize: server.info.uploads?.chunkSize ?? DEFAULT_CHUNK_SIZE,
 				metadata: fileInfo as Record<string, string>,
 				// Allow user to re-upload of the same file
