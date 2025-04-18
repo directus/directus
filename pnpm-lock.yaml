@@ -80,6 +80,9 @@ importers:
       '@directus/schema':
         specifier: workspace:*
         version: link:../packages/schema
+      '@directus/schema-builder':
+        specifier: workspace:*
+        version: link:../packages/schema-builder
       '@directus/specs':
         specifier: workspace:*
         version: link:../packages/specs
