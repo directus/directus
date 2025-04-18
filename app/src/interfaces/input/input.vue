@@ -62,6 +62,7 @@ const inputType = computed(() => {
 });
 
 const isInteger = computed(() => ['bigInteger', 'integer'].includes(props.type!));
+const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 </script>
 
 <template>
@@ -82,6 +83,7 @@ const isInteger = computed(() => ['bigInteger', 'integer'].includes(props.type!)
 		:step="step"
 		:dir="direction"
 		:integer="isInteger"
+		:float="isFloat"
 		:autocomplete="masked ? 'new-password' : 'off'"
 		@update:model-value="$emit('input', $event)"
 	>
