@@ -9,11 +9,20 @@ export type Snapshot = {
 	vendor?: DatabaseClient;
 	collections: Collection[];
 	fields: SnapshotField[];
+	systemFields: SnapshotSystemField[];
 	relations: SnapshotRelation[];
 };
 
 export type SnapshotField = Field & { meta: Omit<FieldMeta, 'id'> };
 export type SnapshotRelation = Relation & { meta: Omit<RelationMeta, 'id'> };
+
+export type SnapshotSystemField = {
+    collection: string;
+    field: string;
+	schema: {
+		is_indexed: boolean;
+	};
+}
 
 export type SnapshotWithHash = Snapshot & { hash: string };
 
@@ -26,6 +35,10 @@ export type SnapshotDiff = {
 		collection: string;
 		field: string;
 		diff: Diff<SnapshotField | undefined>[];
+	}[];
+	systemFields: {
+		collection: string;
+		field: string;
 	}[];
 	relations: {
 		collection: string;

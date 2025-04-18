@@ -1,6 +1,7 @@
 import type { SchemaOverview } from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
+import { systemIndexRows } from '@directus/system-data';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService } from '../services/collections.js';
@@ -8,7 +9,8 @@ import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
 import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
 import { getSchema } from './get-schema.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
+
 
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
@@ -25,33 +27,33 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		relationsService.readAll(),
 	]);
 
-	const collectionsFiltered = collectionsRaw.filter((item: any) => excludeSystem(item));
-	const fieldsFiltered = fieldsRaw.filter((item: any) => excludeSystem(item));
-	const relationsFiltered = relationsRaw.filter((item: any) => excludeSystem(item));
+	const collectionsFiltered = collectionsRaw.filter((item) => excludeSystem(item));
+	const fieldsFiltered = fieldsRaw.filter((item) => excludeSystem(item));
+	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item));
+	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item));
 
-	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']);
-
-	const fieldsSorted = sortBy(mapValues(fieldsFiltered, sortDeep), ['collection', 'meta.id']).map(
-		omitID,
-	) as SnapshotField[];
-
-	const relationsSorted = sortBy(mapValues(relationsFiltered, sortDeep), ['collection', 'meta.id']).map(
-		omitID,
-	) as SnapshotRelation[];
+	const collectionsSorted: Collection[] = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']);
+	const fieldsSorted: SnapshotField[] = sortBy(mapValues(fieldsFiltered, sortDeep), ['collection', 'meta.id']).map(omitID);
+	const relationsSorted: SnapshotRelation[] = sortBy(mapValues(relationsFiltered, sortDeep), ['collection', 'meta.id']).map(omitID);
 
 	return {
 		version: 1,
 		directus: version,
 		vendor,
-		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as Collection[],
-		fields: fieldsSorted.map((field) => sanitizeField(field)) as SnapshotField[],
-		relations: relationsSorted.map((relation) => sanitizeRelation(relation)) as SnapshotRelation[],
+		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)),
+		fields: fieldsSorted.map((field) => sanitizeField(field)),
+		systemFields: systemFieldsFiltered.map((field) => sanitizeSystemField(field)),
+		relations: relationsSorted.map((relation) => sanitizeRelation(relation)),
 	};
 }
 
-function excludeSystem(item: { meta?: { system?: boolean } }) {
+function excludeSystem(item: { meta: { system?: boolean | null } | null }) {
 	if (item?.meta?.system === true) return false;
 	return true;
+}
+
+function systemFieldWithIndex(item: { meta: { system?: boolean | null } | null; schema: { is_indexed: boolean } | null }) {
+	return item.meta?.system === true && item.schema?.is_indexed;
 }
 
 function omitID(item: Record<string, any>) {
@@ -67,7 +69,7 @@ function sortDeep(raw: any): any {
 	}
 
 	if (isArray(raw)) {
-		return raw.map((raw) => sortDeep(raw));
+		return (raw as any[]).map((raw) => sortDeep(raw));
 	}
 
 	return raw;

@@ -1,7 +1,7 @@
 import type { Column } from '@directus/schema';
 import type { Field, Relation } from '@directus/types';
 import { pick } from 'lodash-es';
-import type { Collection } from '../types/index.js';
+import type { Collection, SnapshotSystemField } from '../types/index.js';
 
 /**
  * Pick certain database vendor specific collection properties that should be compared when performing diff
@@ -96,4 +96,18 @@ export function sanitizeRelation(relation: Relation | undefined) {
 		'schema.on_update',
 		'schema.on_delete',
 	]);
+}
+
+/**
+ * Pick certain specific system field properties that should be compared when performing diff
+ *
+ * @param field field to sanitize
+ * @returns sanitized system field
+ */
+export function sanitizeSystemField(field: Field): SnapshotSystemField {
+	return pick(field, [
+		'collection',
+		'field',
+		'schema.is_indexed'
+	])
 }
