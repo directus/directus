@@ -2054,6 +2054,9 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										},
 										id: true,
 										states: {
+											__args: {
+												limit: -1,
+											},
 											id: true,
 										},
 									},
