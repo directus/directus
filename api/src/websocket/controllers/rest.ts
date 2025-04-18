@@ -14,14 +14,16 @@ const logger = useLogger();
 
 export class WebSocketController extends SocketController {
 	constructor(httpServer: httpServer) {
-		super(httpServer, 'WEBSOCKETS_REST');
+		super(httpServer, { configPrefix: 'WEBSOCKETS_REST' });
 		registerWebSocketEvents();
 
 		this.server.on('connection', (ws: WebSocket, auth: AuthenticationState) => {
 			this.bindEvents(this.createClient(ws, auth));
 		});
 
-		logger.info(`WebSocket Server started at ${getAddress(httpServer)}${this.endpoint}`);
+		for (const endpoint of this.endpoints) {
+			logger.info(`WebSocket Server started at ${getAddress(httpServer)}${endpoint}`);
+		}
 	}
 
 	private bindEvents(client: WebSocketClient) {
