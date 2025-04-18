@@ -1556,6 +1556,8 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								expect(response.statusCode).toBe(200);
 								expect(response.body.data.length).toBe(count);
 
+								console.dir(gqlResponse.body, { depth: null });
+
 								expect(gqlResponse.statusCode).toBe(200);
 								expect(gqlResponse.body.data[mutationKey].length).toEqual(count);
 							},
