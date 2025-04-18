@@ -210,7 +210,7 @@ function useItemWithEdits() {
 </script>
 
 <template>
-	<div class="editing-layer" :class="{ editing: editOverlayActive }" @click="editOverlayActive = false">
+	<div class="editing-layer" :class="{ editing: editOverlayActive }">
 		<overlay-item
 			v-if="collection"
 			v-model:active="editOverlayActive"
@@ -219,6 +219,7 @@ function useItemWithEdits() {
 			:primary-key
 			:selected-fields="fields"
 			:edits="edits"
+			prevent-cancel-with-edits
 			@input="(value: any) => (edits = value)"
 		>
 			<template #popover-activator>
