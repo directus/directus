@@ -3,7 +3,7 @@ table: directus_collections
 columns:
   collection:
     type: string
-    length: 64
+    length: 'MAX_TABLE_NAME_LENGTH'
     primary: true
     nullable: false
   icon:
@@ -39,4 +39,4 @@ columns:
     length: 255
   sort_field:
     type: string
-    length: 64
+    length: 'MAX_COLUMN_NAME_LENGTH'

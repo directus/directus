@@ -1,13 +1,16 @@
 import type { Knex } from 'knex';
+import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
+	const helpers = getHelpers(knex);
+
 	await knex.schema.createTable('directus_versions', (table) => {
 		table.uuid('id').primary().notNullable();
 		table.string('key', 64).notNullable();
 		table.string('name');
 
 		table
-			.string('collection', 64)
+			.string('collection', helpers.schema.getTableNameMaxLength())
 			.notNullable()
 			.references('collection')
 			.inTable('directus_collections')
