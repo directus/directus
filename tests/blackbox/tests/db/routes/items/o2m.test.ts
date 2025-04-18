@@ -1626,6 +1626,66 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
+		describe('Relational trigger ON DESELECT ACTION are applied irrespective of QUERY_LIMIT_MAX', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				// TODO: Fix ORA-12899: value too large for column on directus_revisions. Limit of 4000
+				if (vendor === 'oracle') {
+					expect(true).toBe(true);
+					return;
+				}
+
+				const queryLimit = Number(config.envs[vendor]['QUERY_LIMIT_DEFAULT']);
+				const maxBatchMutation = Number(config.envs[vendor]['MAX_BATCH_MUTATION']);
+
+				const setupStates = Array.from({ length: queryLimit }, (_, i) => ({
+					...createState(pkType),
+					name: 'test_on_deselected_action_' + i,
+				}));
+
+				// Setup
+				const createdItem = await CreateItem(vendor, {
+					collection: localCollectionCountries,
+					item: {
+						...createCountry(pkType),
+						name: 'test_on_deselected_action',
+						states: setupStates,
+					},
+				});
+
+				// Action
+				const actionStates = Array.from({ length: maxBatchMutation - queryLimit - 1 }, (_, i) => ({
+					...createState(pkType),
+					name: 'test_on_deselected_action_' + i,
+				}));
+
+				await request(getUrl(vendor))
+					.patch(`/items/${localCollectionCountries}/${createdItem.id}`)
+					.send({
+						states: actionStates,
+					})
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				const response = await request(getUrl(vendor))
+					.get(`/items/${localCollectionStates}`)
+					.query({
+						filter: JSON.stringify({
+							_and: [
+								{
+									name: { _starts_with: 'test_on_deselected_action' },
+								},
+								{
+									country_id: { _nnull: true },
+								},
+							],
+						}),
+					})
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				expect(response.statusCode).toEqual(200);
+				expect(response.body.data.length).toEqual(actionStates.length);
+			});
+		});
+
 		describe('Aggregation Tests', () => {
 			describe('retrieves relational count correctly', () => {
 				it.each(vendors)('%s', async (vendor) => {
@@ -1972,6 +2032,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
 								.send(country)
+								.query({ deep: JSON.stringify({ states: { _limit: -1 } }) })
 								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const wsMessagesCountries = await ws.getMessages(1, { uid: localCollectionCountries });
@@ -1989,6 +2050,9 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										},
 										id: true,
 										states: {
+											__args: {
+												limit: -1,
+											},
 											id: true,
 										},
 									},
