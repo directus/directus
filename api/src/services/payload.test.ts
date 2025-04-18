@@ -7,6 +7,7 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import { PayloadService } from './index.js';
 import { SchemaBuilder } from '@directus/schema-builder';
+import type { Item } from '@directus/types';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -253,6 +254,138 @@ describe('Integration Tests', () => {
 						},
 					]);
 				});
+
+				test('with aggregate and typical values', () => {
+					const result = service.processDates(
+						fieldEntries,
+						[
+							{
+								'max->date_field': '2022-01-10',
+								'max->datetime_field': '2021-09-31 12:34:56',
+								'max->timestamp_field': '1980-12-08 00:11:22.333',
+							},
+						],
+						'read',
+						{},
+						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
+					);
+
+					expect(result).toMatchObject([
+						{
+							'max->date_field': '2022-01-10',
+							'max->datetime_field': '2021-10-01T12:34:56',
+							'max->timestamp_field': new Date('1980-12-08 00:11:22.333').toISOString(),
+						},
+					]);
+				});
+
+				test('with aggregate and object values', () => {
+					const result = service.processDates(
+						fieldEntries,
+						[
+							{
+								'max->date_field': new Date(1666777777000),
+								'max->datetime_field': new Date(1666666666000),
+								'max->timestamp_field': new Date(1666555444333),
+							},
+						],
+						'read',
+						{},
+						{ max: ['date_field', 'datetime_field', 'timestamp_field'] },
+					);
+
+					expect(result).toMatchObject([
+						{
+							'max->date_field': toLocalISOString(new Date(1666777777000)).slice(0, 10),
+							'max->datetime_field': toLocalISOString(new Date(1666666666000)),
+							'max->timestamp_field': new Date(1666555444333).toISOString(),
+						},
+					]);
+				});
+			});
+		});
+
+		describe('processAggregates', () => {
+			let service: PayloadService;
+
+			const schema = new SchemaBuilder()
+				.collection('test', (c) => {
+					c.field('id').id();
+					c.field('users').integer();
+					c.field('stars').integer();
+				})
+				.build();
+
+			beforeEach(() => {
+				service = new PayloadService('test', {
+					knex: db,
+					schema,
+				});
+			});
+
+			test('empty payload should not change with aggregates', () => {
+				const payload: Partial<Item>[] = [];
+
+				service.processAggregates(payload, { sum: ['count'] });
+
+				expect(payload).toMatchObject(payload);
+			});
+
+			test('payload should not change with no aggregates', () => {
+				const payload = [
+					{
+						users: 1,
+					},
+				];
+
+				service.processAggregates(payload);
+
+				expect(payload).toMatchObject(payload);
+			});
+
+			test('payload should have expanded aggregate fields', () => {
+				const payload = [
+					{
+						'sum->users': 3,
+						'max->stars': 1,
+					},
+				];
+
+				service.processAggregates(payload, {
+					sum: ['users'],
+					max: ['stars'],
+				});
+
+				expect(payload).toMatchObject([
+					{
+						sum: { users: 3 },
+						max: {
+							stars: 1,
+						},
+					},
+				]);
+			});
+
+			test('payload should have not remove non aggregate fields', () => {
+				const payload = [
+					{
+						users: 1,
+						'sum->stars': 1,
+					},
+				];
+
+				service.processAggregates(payload, {
+					sum: ['stars'],
+				});
+
+				expect(payload).toMatchObject([
+					{
+						users: 1,
+						sum: {
+							stars: 1,
+						},
+					},
+				]);
 			});
 		});
 
@@ -298,6 +431,7 @@ describe('Integration Tests', () => {
 						other_hidden: 'secret',
 					},
 					{ other_string: 'string', other_hidden: 'hidden' },
+					{},
 				);
 
 				expect(result).toMatchObject({ other_string: 'not-redacted', other_hidden: REDACT_STR });
