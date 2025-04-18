@@ -2036,6 +2036,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
 								.send(country)
+								.query({ deep: JSON.stringify({ states: { _limit: -1 } }) })
 								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const wsMessagesCountries = await ws.getMessages(1, { uid: localCollectionCountries });
