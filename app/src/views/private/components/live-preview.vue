@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useElementSize } from '@directus/composables';
-import { CSSProperties, computed, onMounted, ref, watch } from 'vue';
+import { CSSProperties, computed, onMounted, ref, watch, nextTick } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useElementSize } from '@directus/composables';
 
 declare global {
 	interface Window {
@@ -9,33 +9,35 @@ declare global {
 	}
 }
 
-const { url } = defineProps<{
+const {
+	url,
+	invalidUrl = false,
+	dynamicUrl,
+	dynamicDisplay,
+	singleUrlSubdued = true,
+} = defineProps<{
 	url: string | string[];
+	invalidUrl?: boolean;
+	dynamicUrl?: string;
+	dynamicDisplay?: string;
+	singleUrlSubdued?: boolean;
 	headerExpanded?: boolean;
+	hideRefreshButton?: boolean;
 	hidePopupButton?: boolean;
 	inPopup?: boolean;
+	centered?: boolean;
 }>();
 
 const emit = defineEmits<{
 	'new-window': [];
+	selectUrl: [newUrl: string, oldUrl: string];
 }>();
 
 const { t } = useI18n();
 
-const multipleUrls = computed(() => Array.isArray(url) && url.length > 1);
-const activeUrl = ref<string>();
+useResizeObserver();
 
-watch(
-	() => url,
-	() => {
-		if (Array.isArray(url)) {
-			activeUrl.value = url[0];
-		} else {
-			activeUrl.value = url;
-		}
-	},
-	{ immediate: true },
-);
+const { urls, frameSrc, urlDisplay, multipleUrls, dynamicUrlIncluded, selectUrl } = useUrls();
 
 const width = ref<number>();
 const height = ref<number>();
@@ -44,8 +46,9 @@ const displayWidth = ref<number>();
 const displayHeight = ref<number>();
 const isRefreshing = ref(false);
 
-const resizeHandle = ref<HTMLDivElement>();
 const livePreviewEl = ref<HTMLElement>();
+const resizeHandle = ref<HTMLDivElement>();
+const frameEl = ref<HTMLIFrameElement>();
 
 const livePreviewSize = useElementSize(livePreviewEl);
 
@@ -94,10 +97,8 @@ function toggleFullscreen() {
 	}
 }
 
-const frameEl = ref<HTMLIFrameElement>();
-
 function refresh(url: string | null) {
-	if (!frameEl.value) return;
+	if (!frameEl.value || isRefreshing.value) return;
 
 	isRefreshing.value = true;
 
@@ -112,21 +113,82 @@ function onIframeLoad() {
 
 window.refreshLivePreview = refresh;
 
-onMounted(() => {
-	if (!resizeHandle.value) return;
+function useResizeObserver() {
+	let observerInitialized = false;
 
-	new ResizeObserver(() => {
-		if (!resizeHandle.value) return;
+	onMounted(setResizeObserver);
+	watch(() => invalidUrl, changeUrlAfterInvalid);
 
-		displayWidth.value = resizeHandle.value.offsetWidth;
-		displayHeight.value = resizeHandle.value.offsetHeight;
+	async function changeUrlAfterInvalid(newInvalidUrl: boolean, oldInvalidUrl: boolean) {
+		if (!newInvalidUrl && oldInvalidUrl) {
+			await nextTick();
+			setResizeObserver();
+		}
+	}
 
-		if (width.value === undefined && height.value === undefined) return;
+	function setResizeObserver() {
+		if (observerInitialized || !resizeHandle.value) return;
 
-		width.value = resizeHandle.value.offsetWidth;
-		height.value = resizeHandle.value.offsetHeight;
-	}).observe(resizeHandle.value);
-});
+		new ResizeObserver(() => {
+			if (!resizeHandle.value) return;
+
+			displayWidth.value = resizeHandle.value.offsetWidth;
+			displayHeight.value = resizeHandle.value.offsetHeight;
+
+			if (width.value === undefined && height.value === undefined) return;
+
+			width.value = resizeHandle.value.offsetWidth;
+			height.value = resizeHandle.value.offsetHeight;
+		}).observe(resizeHandle.value);
+
+		observerInitialized = true;
+	}
+}
+
+function useUrls() {
+	const initialDynamicUrl = dynamicUrl;
+	const selectedUrl = ref<string>();
+	const urlArray = computed(() => (Array.isArray(url) ? url : [url]));
+	const multipleUrls = computed(() => urls.value.length > 1);
+	const dynamicUrlIncluded = computed(() => dynamicUrl && urlArray.value.includes(dynamicUrl));
+
+	const urls = computed(() => {
+		if (dynamicUrl && !dynamicUrlIncluded.value) return [dynamicUrl, ...urlArray.value];
+		return urlArray.value;
+	});
+
+	const frameSrc = computed({
+		get: () => selectedUrl.value ?? initialDynamicUrl ?? urls.value[0],
+		set(value) {
+			selectedUrl.value = value;
+		},
+	});
+
+	const urlDisplay = computed(() => {
+		if (invalidUrl) return t('select');
+		return dynamicDisplay ?? frameSrc.value;
+	});
+
+	return {
+		urls,
+		frameSrc,
+		urlDisplay,
+		multipleUrls,
+		dynamicUrlIncluded,
+		selectUrl,
+	};
+
+	function selectUrl(newUrl: string) {
+		emit('selectUrl', newUrl, String(frameSrc.value));
+
+		if (frameSrc.value === newUrl) {
+			refresh(null);
+			return;
+		}
+
+		frameSrc.value = newUrl;
+	}
+}
 </script>
 
 <template>
@@ -146,43 +208,49 @@ onMounted(() => {
 				>
 					<v-icon small :name="inPopup ? 'exit_to_app' : 'open_in_new'" outline />
 				</v-button>
+
 				<v-button
+					v-if="!hideRefreshButton"
 					v-tooltip.bottom.end="t('live_preview.refresh')"
 					x-small
 					icon
 					rounded
 					secondary
-					:disabled="isRefreshing || !activeUrl"
+					:disabled="isRefreshing || !frameSrc || invalidUrl"
 					@click="refresh(null)"
 				>
 					<v-progress-circular v-if="isRefreshing" indeterminate x-small />
 					<v-icon v-else small name="refresh" />
 				</v-button>
 
+				<div v-if="centered" class="spacer" />
+
 				<v-menu
-					v-if="activeUrl"
+					v-if="urls.length"
 					class="url"
-					:class="{ multiple: multipleUrls }"
+					:class="{ disabled: singleUrlSubdued, clickable: multipleUrls }"
 					:disabled="!multipleUrls"
 					show-arrow
-					placement="bottom-start"
+					:placement="centered ? 'bottom' : 'bottom-start'"
 				>
 					<template #activator="{ toggle }">
 						<div class="activator" @click="toggle">
-							<v-text-overflow :text="activeUrl" placement="bottom" />
+							<v-text-overflow :text="urlDisplay" placement="bottom" />
 							<v-icon v-if="multipleUrls" name="expand_more" />
 						</div>
 					</template>
 
-					<v-list>
+					<v-list v-if="multipleUrls">
 						<v-list-item
-							v-for="(urlItem, index) in url"
+							v-for="(urlItem, index) in urls"
 							:key="index"
-							:active="urlItem === activeUrl"
+							:active="urlItem === dynamicUrl"
 							clickable
-							@click="activeUrl = urlItem"
+							@click="selectUrl(urlItem)"
 						>
-							<v-list-item-content>{{ urlItem }}</v-list-item-content>
+							<v-list-item-content :class="{ dynamic: !dynamicUrlIncluded && urlItem === dynamicUrl }">
+								{{ urlItem }}
+							</v-list-item-content>
 						</v-list-item>
 					</v-list>
 				</v-menu>
@@ -190,7 +258,7 @@ onMounted(() => {
 
 			<div class="spacer" />
 
-			<div v-if="activeUrl" class="dimensions" :class="{ disabled: fullscreen }">
+			<div v-if="frameSrc && !invalidUrl" class="dimensions" :class="{ disabled: fullscreen }">
 				<input
 					:value="displayWidth"
 					class="width"
@@ -223,16 +291,21 @@ onMounted(() => {
 				x-small
 				icon
 				rounded
-				:secondary="fullscreen"
-				:disabled="!activeUrl"
+				secondary
+				:active="!fullscreen"
+				:disabled="!frameSrc || invalidUrl"
 				@click="toggleFullscreen"
 			>
 				<v-icon small name="devices" />
 			</v-button>
 		</div>
 
-		<v-info v-if="!activeUrl" :title="t('no_url')" icon="edit_square" center>
+		<v-info v-if="!frameSrc" :title="t('no_url')" icon="edit_square" center>
 			{{ t('no_url_copy') }}
+		</v-info>
+
+		<v-info v-else-if="invalidUrl" :title="t('invalid_url')" type="danger" icon="edit_square" center>
+			{{ t('invalid_url_copy') }}
 		</v-info>
 
 		<div v-else class="container">
@@ -248,8 +321,8 @@ onMounted(() => {
 						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
 					}"
 				>
-					<iframe id="frame" ref="frameEl" :src="activeUrl" @load="onIframeLoad" />
-					<slot name="overlay" :frame-el :active-url />
+					<iframe id="frame" ref="frameEl" :src="frameSrc" @load="onIframeLoad" />
+					<slot name="overlay" :frame-el :frame-src />
 				</div>
 			</div>
 		</div>
@@ -265,7 +338,11 @@ onMounted(() => {
 <style scoped lang="scss">
 .live-preview {
 	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #ffffff);
-	--preview--color-disabled: var(--theme--foreground-subdued);
+	--preview--color-disabled: color-mix(
+		in srgb,
+		var(--theme--navigation--modules--background),
+		var(--preview--color) 50%
+	);
 	--preview--header--background-color: var(--theme--navigation--modules--background);
 	--preview--header--border-width: var(--theme--navigation--modules--border-width);
 	--preview--header--border-color: var(--theme--navigation--modules--border-color);
@@ -299,11 +376,27 @@ onMounted(() => {
 			height var(--medium) var(--transition);
 
 		:deep(.v-button.secondary) {
-			--v-button-color-hover: var(--theme--foreground-accent);
+			--v-button-color: var(--theme--navigation--modules--button--foreground-active);
+			--v-button-color-hover: var(--v-button-color);
+			--v-button-color-active: var(--foreground-inverted);
+			--v-button-background-color: var(--theme--navigation--modules--button--background-active);
+			--v-button-background-color-hover: color-mix(
+				in srgb,
+				var(--theme--navigation--modules--background),
+				var(--v-button-background-color) 87.5%
+			);
+			--v-button-background-color-active: var(--theme--primary);
 
-			button:focus:not(:hover) {
-				color: var(--v-button-color);
-				background-color: var(--v-button-background-color);
+			.button {
+				&.active {
+					box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
+				}
+
+				&:focus:not(:hover) {
+					color: var(--v-button-color);
+					background-color: var(--v-button-background-color);
+					border-color: var(--v-button-background-color);
+				}
 			}
 		}
 
@@ -312,14 +405,17 @@ onMounted(() => {
 		}
 
 		.url {
-			color: var(--preview--color-disabled);
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+			color: var(--preview--color);
 
-			&.multiple {
+			&.disabled {
+				color: var(--preview--color-disabled);
+			}
+
+			&.clickable {
 				cursor: pointer;
-				color: var(--preview--color);
 			}
 
 			.activator {
@@ -395,5 +491,9 @@ onMounted(() => {
 	&.fullscreen .iframe-view {
 		padding: 0;
 	}
+}
+
+.dynamic {
+	font-style: italic;
 }
 </style>
