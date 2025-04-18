@@ -6,7 +6,10 @@ import type { FlowRaw } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import LogsDrawer from './logs-drawer.vue';
+import { RevisionsByDate, RevisionWithTime } from '@/types/revisions';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
+import VDetail from '@/components/v-detail.vue';
+import LogsDrawer from '@/modules/settings/routes/flows/components/logs-drawer.vue';
 
 const props = defineProps<{
 	flow: FlowRaw;
@@ -24,6 +27,8 @@ const { active: open } = useGroupable({
 });
 
 const page = ref<number>(1);
+const selectedRevision = ref();
+const showFailedOnly = ref(false);
 
 const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loading, loadingCount, pagesCount, refresh } =
 	useRevisions(
@@ -32,6 +37,7 @@ const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loadin
 		ref(null),
 		{
 			action: Action.RUN,
+			full: true,
 		},
 	);
 
@@ -47,10 +53,20 @@ onMounted(() => {
 	if (open.value) getRevisions();
 });
 
-const previewing = ref();
-
 function onToggle(open: boolean) {
 	if (open && revisionsByDate.value === null) getRevisions();
+}
+
+function isLogVisible(revision: RevisionWithTime) {
+	if (showFailedOnly.value && revision.status === 'resolve') {
+		return false;
+	}
+
+	return true;
+}
+
+function countFailedLogs(group: RevisionsByDate) {
+	return group?.revisions?.filter((revision: RevisionWithTime) => revision.status === 'reject').length;
 }
 </script>
 
@@ -61,6 +77,9 @@ function onToggle(open: boolean) {
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 		@toggle="onToggle"
 	>
+		<div v-show="revisionsCount > 0" class="logs-filter-container">
+			<VCheckbox v-model="showFailedOnly">{{ t('show_failed_only') }}</VCheckbox>
+		</div>
 		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
@@ -73,9 +92,18 @@ function onToggle(open: boolean) {
 			class="revisions-date-group"
 			start-open
 		>
+			<div v-show="showFailedOnly && countFailedLogs(group) === 0" class="empty">
+				{{ t('no_failed_logs') }}
+			</div>
 			<div class="scroll-container">
 				<div v-for="revision in group.revisions" :key="revision.id" class="log">
-					<button @click="previewing = revision">
+					<button v-show="isLogVisible(revision)" @click="selectedRevision = revision">
+						<v-icon
+							name="fiber_manual_record"
+							filled
+							:color="revision.status === 'resolve' ? 'var(--theme--primary)' : 'var(--theme--secondary)'"
+							small
+						/>
 						<v-icon name="play_arrow" color="var(--theme--primary)" small />
 						{{ revision.timeRelative }}
 					</button>
@@ -86,16 +114,12 @@ function onToggle(open: boolean) {
 		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 	</sidebar-detail>
 
-	<LogsDrawer :revision-id="previewing?.id" :flow="props.flow" @close="previewing = null" />
+	<logs-drawer :close-drawer="() => (selectedRevision = null)" :flow="flow" :revision="selectedRevision"></logs-drawer>
 </template>
 
 <style lang="scss" scoped>
 .v-progress-linear {
 	margin: 24px 0;
-}
-
-.content {
-	padding: var(--content-padding);
 }
 
 .log {
@@ -153,5 +177,12 @@ function onToggle(open: boolean) {
 .v-pagination {
 	justify-content: center;
 	margin-top: 24px;
+}
+
+.logs-filter-container {
+	display: flex;
+	justify-content: end;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 </style>
