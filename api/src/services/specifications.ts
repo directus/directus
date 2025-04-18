@@ -23,6 +23,7 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
+import { getRelation } from '@directus/utils';
 
 const env = useEnv();
 
@@ -456,11 +457,7 @@ class OASSpecsService implements SpecificationSubService {
 			propertyObject.description = field.note;
 		}
 
-		const relation = schema.relations.find(
-			(relation) =>
-				(relation.collection === collection && relation.field === field.field) ||
-				(relation.related_collection === collection && relation.meta?.one_field === field.field),
-		);
+		const relation = getRelation(schema.relations, collection, field.field);
 
 		if (!relation) {
 			propertyObject = {
