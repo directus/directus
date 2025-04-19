@@ -941,8 +941,6 @@ run_flow_on_current: Pokreni Tok na Trenutnoj Stavci
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
 run_flow_on_selected: Prvo Odaberite Jednu ili Više Stavki | Pokreni Tok na 1 Odabranoj Stavci | Pokreni Tok na {n} Odabranih Stavki
 run_flow: Pokreni Tok
-run_flow_success: Tok "{flow}" je uspješno izvršen
-trigger_flow_success: Tok "{flow}" je uspješno pokrenut. Izvršit će se u pozadini
 field_name_placeholder: Unesite naziv polja...
 field_key_placeholder: Unesite ključ polja...
 trigger: Okidač

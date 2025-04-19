@@ -1,1 +1,2532 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Derbarê
+identifier: Nasname
+avatar: Avatar
+application: Serlêdan
+default_provider: Pêşkêşkarê Standard
+method: Rêbaz
+published: Weşandî
+draft: Reşnivîs
+archived: Arşîvkirî
+marketplace: Marketplace
+extensions: Pêvek
+modules: Modul
+module_bar: Darika Modulê
+logs: Têketin
+unknown: Nenas
+reset_width: Firehiyê Vegerîne
+tile_size: Mezinahiya Parçeyê
+edit_field: Qadê Biguherîne
+conditions: Merc
+location: Cih
+collection_names_are_case_sensitive: Navên koleksiyonan ji bo tîpên mezin û biçûk hestiyar in
+condition_rules: Rêzikên Mercan
+input: Têketin
+maps: Nexşe
+switch_user: Bikarhêner Biguherîne
+item_creation: Afirandina Hêmanê
+item_revision: Sererastkirina Hêmanê
+enter_a_name: Navekî Binivîse...
+duplicate_field: Qada Dubare
+half_width: Nîv Firehî
+full_width: Firehiya Tije
+group: Kom
+popular: Populer
+recent: Paşiyê
+export_items: Hêmanan Derxe
+and: Û
+or: An
+init: Destpêkirin
+dataset_too_large_currently_showing_n_items: Danedan zêde mezin e. Niha tenê {n} hêman tên nîşandan.
+modifier: Guherker
+extension_interface: Navrû
+extension_display: Nîşandan
+extension_layout: Plan
+extension_module: Modul
+extension_panel: Panel
+extension_theme: Tema
+extension_hook: Hook
+extension_endpoint: Endpoint
+extension_operation: Operasyon
+extension_bundle: Pakêt
+extension_interfaces: Navrû
+extension_displays: Nîşandan
+extension_layouts: Plan
+extension_modules: Modul
+extension_panels: Panel
+extension_themes: Tema
+extension_hooks: Hook
+extension_endpoints: Endpoint
+extension_operations: Operasyon
+extension_bundles: Pakêt
+extension_missing: Winda
+extension_reload_required: Barkirina Rûpelê Pêwîst e
+extension_reload_required_copy: Barkirina rûpelê pêwîst e ji bo dîtina guhertinan piştî çalakirin an neçalakirina pêvekên sepanê.
+extension_reload_now: Niha bar bike
+published_relative: '{relativeTime} hatiye weşandin'
+compatible_with_your_project: Bi Projeyê re Hevaheng e
+compatible_with_your_project_copy: Nivîskar nîşan daye ku ev pêvek bi {hostVersion} re hevaheng e, ku bi guhertoya projeyê ya niha ({currentVersion}) re lihev e
+last_updated_relative: '{relativeTime} hatiye nûkirin'
+n_files: '{n} Dosya'
+verified: Erêkirî
+homepage: Malpera Sereke
+repository: Depo
+reload_page: Rûpelê Bar Bike
+reload_required: Barkirina Rûpelê Pêwîst e
+report_an_issue: Pirsgirêkekê Rapor Bike
+website: Malper
+github: GitHub
+beta: Beta
+n_downloads: '{n} Daxistin'
+downloads: Daxistin
+compatibility_not_guaranteed: Hevahengi ne garantîkirî ye
+compatibility_not_guaranteed_copy: Nivîskar nîşan daye ku ev pêvek bi {hostVersion} re hevaheng e, ku bi guhertoya projeyê ya niha ({currentVersion}) re lihev nake
+enable: Çalak Bike
+disable: Neçalak Bike
+custom: Taybet
+hook: Hook
+fill_width: Firehî Dagire
+field_name_translations: Wergerandina Navê Qadê
+enter_password_to_enable_tfa: Ji bo çalakirina Rastpêkirina Du-Faktor, şîfreya xwe binivîse
+add_field: Qad Zêde Bike
+role_name: Navê Rolê
+policy_name: Navê Polîtîkayê
+branch: Liq
+leaf: Pelê
+indeterminate: Nediyarkirî
+edit_collection: Koleksiyonê Biguherîne
+exclusive: Taybet
+children: Zarok
+db_only_click_to_configure: 'Tenê Database: Ji bo Mîhengkirinê Bitikîne'
+show_active_items: Hêmanên Çalak Nîşan Bide
+show_archived_items: Hêmanên Arşîvkirî Nîşan Bide
+show_all_items: Hemû Hêmanan Nîşan Bide
+edited: Nirx Hat Guhertin
+required: Pêwîst
+required_for_app_access: Ji bo Gihîştina Sepanê Pêwîst e
+requires_value: Nirx pêwîst e
+create_preset: Preset Biafirîne
+create_panel: Panel Biafirîne
+create_role: Rol Biafirîne
+create_policy: Polîtîka Biafirîne
+create_user: Bikarhêner Biafirîne
+message: Peyam
+delete_panel: Panelê Jê Bibe
+create_webhook: Webhook Biafirîne
+create_custom_translation: Wergerîna Taybet Biafirîne
+edit_custom_translation: Wergerîna Taybet Biguherîne
+no_custom_translations: Wergerînên Taybet Tunene
+no_custom_translations_copy: Hîn tu wergerînên taybet tune ne.
+invite_users: Bikarhêneran Vexwîne
+invite: Vexwendin
+email_already_invited: E-peyama "{email}" jixwe hatiye vexwendin
+subject: Mijar
+inbox: Qutiya Hatî
+emails: E-peyam
+connection_excellent: Girêdana Baş
+connection_good: Girêdana Baş
+connection_fair: Girêdana Navîn
+connection_poor: Girêdana Xirab
+primary: Sereke
+rename_folder: Peldankê Binav Bike
+delete_folder: Peldankê Jê Bibe
+prefix: Pêşgir
+suffix: Paşgir
+keep: Hêlan
+version: Guherto
+version_key: Mifteya Guhertoye
+version_name: Navê Guhertoye
+main_version: Guhertoya Sereke
+switch_version: Guhertoye Biguherîne
+switch_version_copy: Tu bi rastî dixwazî derbazî guhertoya "{version}" bibî? Guherînên tomarnekirî wê winda bibin.
+create_version: Guherto Biafirîne
+rename_version: Navê Guhertoye Biguherîne
+compare_version: Guhertoyê Berhev Bike
+save_version: Guhertoye Tomar Bike
+promote_version: Guhertoye Bilind Bike
+promote_version_disabled: Ti Guhertin Nîne
+promote_version_drawer_title: '{version} bilind bike bo Sereke'
+promote_version_changes: Guhertin
+promote_version_preview: Pêşdîtin
+outdated_notice: >-
+  Hêmana sereke ji dema ku ev guherto hatiye afirandin ve hatiye nûkirin. Ji kerema xwe hemû nirxên qadê yên jêrîn binirxînin, û tesdîq bikin ka kîjan guherto divê were bikaranîn gava ku ev guherto tê bilindkirin bo hêmana sereke.
+promote_notice: >-
+  Ji kerema xwe hemû nirxên qadê yên jêrîn binirxînin, û tesdîq bikin ka kîjan guherto divê were bikaranîn gava ku ev guherto tê bilindkirin bo hêmana sereke.
+delete_version: Guhertoye Jê Bibe
+delete_version_copy: >-
+  Tu bi rastî dixwazî guhertoya "{version}" jê bibî? Ev çalakî nayê vegerandin.
+delete_on_promote_copy: >-
+  Tu dixwazî piştî bilindkirinê, guhertoya "{version}" jê bibî an bihêlî?
+reset_bookmark: Nîşankê Vegerîne
+update_bookmark: Nîşankê Nûbike
+delete_bookmark: Nîşankê Jê Bibe
+delete_bookmark_copy: >-
+  Tu bi rastî dixwazî nîşanka "{bookmark}" jê bibî? Ev çalakî nayê vegerandin.
+delete_personal_bookmark: Nîşanka Kesane Jê Bibe
+delete_role_bookmark: Nîşanka Rolê Jê Bibe
+delete_global_bookmark: Nîşanka Giştî Jê Bibe
+logoutReason:
+  SIGN_OUT: Derkete
+  SESSION_EXPIRED: Danişîn bi dawî bû
+public_label: Giştî
+public_description: Kontrol dike ka kîjan daneyên API bêyî rastpêkirin hene.
+public_role_info: >-
+  Rola giştî kontrol dike ka kîjan daneyên API ji bo bikarhênerên nerastpêkirî an bêrol hene. Daxwazên bi rola giştî nikarin gihîştina sepan an rêveberiyê hebin. Heke gihîştina sepan an rêveberiyê ji polîtîkayekê re were dayîn ku ji rola giştî re hatiye dayîn, ew dê were paşguhkirin.
+admin_description: Rola rêveberiyê ya destpêkê bi gihîştina bêsînor a Sepan/API.
+admin_policy_description: Polîtîkaya rêveberiyê ya destpêkê bi gihîştina bêsînor a Sepan/API.
+no_description: Danasîn tine...
+reached_maximum_number_of_extensions: Te gihîşte hejmara herî zêde ya pêvekan ji bo vê projeyê ({n}). Ji bo bêtir agahiyê, têkilî bi rêveberê pergala xwe re bikin.
+not_allowed: Ne Destûrdar
+archive: Arşîv
+archive_confirm: Tu bi rastî dixwazî vê hêmanê arşîv bikî?
+archive_confirm_count: >-
+  Hêman Nehatine Hilbijartin | Tu bi rastî dixwazî vê hêmanê arşîv bikî? | Tu bi rastî dixwazî van {count} hêmanan arşîv bikî?
+reset_system_permissions_to: 'Destûrên Pergalê Vegerîne:'
+reset_system_permissions_copy: Ev çalakî wê destûrên taybet ên ku te dibe ku li koleksiyonên pergalê birêkûpêk kiribe, diguherîne. Tu bi rastî dixwazî?
+the_following_are_minimum_permissions: Dema ku "Gihîştina Sepanê" çalak e, destûrên herî kêm ên jêrîn bixweber tên sepandin. Tu dikarî destûrên zêdetir bidî, lê tu nikarî destûran ji vê astê kêmtir bikî.
+app_access_minimum: Gihîştina Herî Kêm a Sepanê
+recommended_defaults: Destpêkên Pêşniyarkirî
+unarchive: Arşîvê Rake
+unarchive_confirm: Tu bi rastî dixwazî arşîva vê hêmanê rakî?
+nested_files_folders_will_be_moved: Pel û peldankên hundurîn dê yek ast bilindtir werin veguhastin.
+validation_errors_notice: 'Qadên jêrîn nirxên nederbasdar hene:'
+validationError:
+  eq: Divê nirx bibe {valid}
+  neq: Nirx nikare bibe {invalid}
+  in: Divê nirx yek ji {valid} be
+  nin: Nirx nikare yek ji {invalid} be
+  contains: Divê nirx {substring} hebin
+  ncontains: Nirx nikare {substring} hebe
+  gt: Divê nirx ji {valid} mezintir be
+  gte: Divê nirx ji {valid} mezintir an wekhev be
+  lt: Divê nirx ji {valid} kêmtir be
+  lte: Divê nirx ji {valid} kêmtir an wekhev be
+  empty: Divê nirx vala be
+  nempty: Nirx nikare vala be
+  null: Divê nirx null be
+  nnull: Nirx nikare null be
+  required: Nirx pêwîst e
+  unique: Divê nirx yekta be
+  email: Divê nirx navnîşanek e-peyamê ya derbasdar be
+  regex: Nirx ne di formata rast de ye
+  starts_with: Divê nirx bi {substring} dest pê bike
+  istarts_with: Divê nirx bi {substring} dest pê bike
+  nstarts_with: Nirx nikare bi {substring} dest pê bike
+  nistarts_with: Nirx nikare bi {substring} dest pê bike
+  ends_with: Divê nirx bi {substring} bi dawî bibe
+  iends_with: Divê nirx bi {substring} bi dawî bibe
+  nends_with: Nirx nikare bi {substring} bi dawî bibe
+  niends_with: Nirx nikare bi {substring} bi dawî bibe
+all_access: Gihîştina Hemûyan
+no_access: Gihîştin Tune
+use_custom: Taybet Bikar Bîne
+nullable: Nullbar
+allow_null_value: Nirxa NULL destûr bide
+allow_multiple: Pirjimarî Destûr Bide
+allow_multiple_to_be_open: Destûr Bide Pirjimarî Vebe
+enter_value_to_replace_nulls: Ji kerema xwe nirxek nû binivîse da ku her NULLên di vê qadê de biguherîne.
+field_standard: Standard
+field_presentation: Pêşkêşkirin & Nasnav
+field_file: Pelek Tenê
+field_files: Pelên Pirjimar
+field_m2o: Têkiliya M2O
+field_m2a: Têkiliya M2A
+field_o2m: Têkiliya O2M
+field_m2m: Têkiliya M2M
+field_translations: Wergerandin
+field_group: Koma Qadê
+item_permissions: Destûrên Hêmanê
+field_permissions: Destûrên Qadê
+field_validation: Rastkirina Qadê
+field_presets: Pêşmîhengkirinên Qadê
+permissions_for_role: 'Hêmanên ku Rola {role} dikare {action}.'
+permissions_for_policy: 'Hêmanên ku Polîtîkaya {policy} dikare {action}.'
+fields_for_role: 'Qadên ku Rola {role} dikare {action}.'
+fields_for_policy: 'Qadên ku Polîtîkaya {policy} dikare {action}.'
+validation_for_role: 'Rêzikên {action} qadê ku Rola {role} divê bişopîne.'
+validation_for_policy: 'Rêzikên {action} qadê ku Polîtîkaya {policy} divê bişopîne.'
+presets_for_role: 'Nirxên destpêkê yên qadê ji bo Rola {role}.'
+presets_for_policy: 'Nirxên destpêkê yên qadê ji bo Polîtîkaya {policy}.'
+presets_field_warning: 'Pêşmîhengkirinên têkildarî ji bo qada "{field}" divê bi rastawa "hûrgulî" werin mîheng kirin.'
+presentation_and_aliases: Pêşkêşkirin & Nasnav
+revision_post_create: Ev e ka ev hêman dema ku hate afirandin çawa xuya bû.
+revision_post_update: Ev e ka ev hêman piştî nûkirinê çawa xuya bû.
+changes_made: Li jêr guherînên taybet ên di vê sererastkirinê de hatine kirin hene.
+no_relational_data: Bînin bîra xwe ku daneyên têkildar li vir ne tê de ne.
+junction_field_location: Cihê Qadên Junksiyonê
+top: Jor
+bottom: Jêr
+hide_field: Qadê Veşêre
+hide_field_on_detail: Qadê Di Hûrgiliyê de Veşêre
+show_field_on_detail: Qadê Di Hûrgiliyê de Nîşan Bide
+delete_field: Qadê Jê Bibe
+fields_and_layout: Qad & Mîhengkirin
+field_create_success: 'Qad hate afirandin: "{field}"'
+field_update_success: 'Qad hate nûkirin: "{field}"'
+duplicate_where_to: Tu dixwazî vê qadê kopî bikî ji bo ku?
+language: Ziman
+language_placeholder: Zimanek hilbijêre...
+aggregate_function: Fonksiyona Kombûnê
+aggregate_precision: Rastiya Kombûnê
+group_aggregation: Kombûna Komê
+group_precision: Rastiya Komê
+global: Gerdûnî
+admins_have_all_permissions: Rêveber hemû destûr hene
+camera: Kamera
+show_zero: Sifir Nîşan Bide
+create_in_advanced_field_creation_mode: Qadê di Moda Afirandina Pêşketî de Çêke
+continue_in_advanced_field_creation_mode: Di Moda Afirandina Pêşketî de Berdewam Bike
+validation: Rastkirin
+sum: Kom
+sum_distinct: Koma Cudahî
+avg: Navîn
+avg_distinct: Navîna Cudahî
+count: Jimartin
+count_distinct: Jimartina Cudahî
+min: Kêmtirîn
+max: Zêdetirîn
+exposure: Pêketî
+shutter: Perdêkirina
+iso: ISO
+focal_length: Dirêjahiya Fokusê
+schema_setup_key: Navê stûna databeysa vê qadê û kilîla API
+create_field: Qadê Çêke
+creating_new_field: 'Qada Nû ({collection})'
+field_in_collection: '{field} ({collection})'
+reset_page_preferences: Tercîhên Rûpelê Vegerîne
+hidden_field: Qada Veşartî
+hidden_on_detail: Di Hûrgiliyê de Veşartî
+disabled_editing_value: Guhertina nirxê neçalak bike
+key: Kilîl
+alias: Nasnav
+bigInteger: Hejmara Mezin
+boolean: Boolean
+date: Dîrok
+date_range: Navbera Dîrokê
+translation_key_placeholder: Kilîlek binivîse...
+datetime: DîrokDem
+dateTime: DîrokDem
+precision: Rastî
+decimal: Dehdek
+float: Float
+integer: Integer
+json: JSON
+xml: XML
+yaml: YAML
+string: Rêzek
+text: Nivîs
+time: Dem
+timestamp: Timestamp
+uuid: UUID
+hash: Hash
+geometry:
+  All: Geometrî (Hemû)
+  Point: Nuqte
+  LineString: Rêzexêz
+  Polygon: Pirgoşe
+  MultiPoint: PirNuqte
+  MultiLineString: PirRêzexêz
+  MultiPolygon: PirPirgoşe
+theme_auto: Otomatîk (Li gorî Pergalê)
+theme_light: Moda Ronî
+theme_dark: Moda Tarî
+theme_directus_default: Standarda Directus
+theme_directus_minimal: Directus Minimal
+theme_directus_colormatch: Directus Color Match
+not_available_for_type: Ne Berdest e ji bo vê Cureyê
+create_translations: Wergerînan Biafirîne
+auto_refresh: Nûbûna Otomatîk
+refresh_interval: Navbera Nûbûnê
+no_refresh: Nûbûn neke
+refresh_interval_seconds: Nûbûna Yekser | Her Çirk | Her {seconds} Çirk
+refresh_interval_minutes: Her Xulek | Her {minutes} Xulek
+auto_generate: Otomatîk-Biafirîne
+this_will_auto_setup_fields_relations: Ev wê bixweber hemû qad û têkiliyên pêwîst amade bike.
+click_here: Li vir bitikîne
+to_manually_setup_translations: ji bo bi destî mîhengkirina wergerînan.
+manage: Birêve Bibe
+click_to_manage_translated_fields: >-
+  Hîn tu qadên wergerandî nînin. Ji bo afirandina wan li vir bitikînin. | Yek qada wergerandî heye. Ji bo birêvebirina wê li vir bitikînin. | {count} qadên wergerandî hene. Ji bo birêvebirina wan li vir bitikînin.
+fields_group: Koma Qadan
+no_collections_found: Tu koleksiyon nehatin dîtin.
+new_data_alert: 'Yên jêrîn dê di Modela Daneyê ya te de werin afirandin:'
+search_collection: Koleksiyonê Bigere...
+search_role: Rolê Bigere...
+search_policy: Polîtîkayê Bigere...
+search_field: Qadê Bigere...
+new_field: 'Qada Nû'
+new_collection: 'Koleksiyona Nû'
+add_m2o_to_collection: 'M2O li "{collection}" zêde bike'
+add_o2m_to_collection: 'O2M li "{collection}" zêde bike'
+add_m2m_to_collection: 'M2M li "{collection}" zêde bike'
+choose_a_type: Cureyekê Hilbijêre...
+determined_by_relationship: Ji aliyê Têkiliyê ve hate Diyarkirin
+add_note: Notek alîkar ji bo bikarhêneran zêde bike...
+add_link: Girêdanê Zêde Bike
+custom_link: Girêdana Taybet
+default_value: Nirxa Destpêkê
+standard_field: Qada Standard
+single_file: Pelek Tenê
+multiple_files: Pelên Pirjimar
+m2o_relationship: Têkiliya Gelek-ji-bo-Yek
+o2m_relationship: Têkiliya Yek-ji-bo-Gelek
+m2m_relationship: Têkiliya Gelek-ji-bo-Gelek
+m2a_relationship: Têkiliya Gelek-ji-bo-Her
+invalid_item: Hêmana Nederbasdar
+require_confirmation: Piştrastkirinê Bixwaze
+dialog: Dialog
+modal: Modal
+confirmation_dialog: Dialoga Piştrastkirinê
+confirmation_description: Danasîna Piştrastkirinê
+confirmation_input_fields: Qadên Têketina Piştrastkirinê
+next: Pêş
+field_name: Navê Qadê
+translations: Wergerîn
+no_translations: Wergerîn Tunene
+left_to_right: Çep-bo-Rast
+right_to_left: Rast-bo-Çep
+note: Not
+enter_a_value: Nirxekê binivîse...
+enter_a_placeholder: Cihgirtiyekê binivîse...
+length: Dirêjahî
+soft_length: Sînora Nerm
+precision_scale: Rastî & Pîvan
+readonly: Tenê-Xwendin
+unique: Yekta
+index: Pêrist
+updated_on: Li ser hate Nûkirin
+updated_by: Ji aliyê ve hate Nûkirin
+primary_key: Kilîla Sereke
+foreign_key: Kilîla Biyanî
+field_key: Kilîla Qadê
+finish_setup: Sazkirinê Biqedîne
+dismiss: Derxe
+toggle_raw_editor: Edîtorê Raw Biguherîne
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
+raw_value: Nirxa xav
+copy_raw_value: Nirxa Xav Kopî Bike
+copy_raw_value_success: Hat kopîkirin
+copy_raw_value_fail: Kopîkirin Biserneket
+paste_raw_value: Nirxa Xav Pêveçike
+paste_raw_value_success: Hat Pêvekirin
+paste_raw_value_fail: Pêvekirin Biserneket
+view_raw_value: Nirxa Xav Bibîne
+edit_raw_value: Nirxa Xav Biguherîne
+enter_raw_value: Nirxa xav binivîse...
+clear_value: Nirxê Paqij Bike
+clear_changes: Guherînan Paqij Bike
+clear_items: Hêmanan Paqij Bike
+reset_to_default: Vegerîne li Destpêkê
+undo_changes: Guherînan Vegerîne
+notifications: Agahdarî
+archive_all: Hemûyan Arşîv Bike
+show_all_activity: Hemû Çalakiyan Nîşan Bide
+page_not_found: Rûpel Nehat Dîtin
+page_not_found_body: Rûpela ku tu lê digerî xuya dike ku tune ye.
+confirm_revert: Vegerandinê Piştrast Bike
+confirm_revert_body: Ev wê hêmanê vegerîne rewşa hilbijartî.
+display: Nîşandan
+settings_update_success: Mîhengkarî hate nûkirin
+title: Sernav
+revision_delta_created: Hate afirandin
+revision_delta_created_externally: Ji Derve Hate Afirandin
+revision_delta_updated: '1 Qad Hate Nûkirin | {count} Qad Hatin Nûkirin'
+revision_delta_deleted: Hate jêbirin
+revision_delta_version_saved: 'Tomarkirina Guhertoyê (1 Qad Hate Nûkirin) | Tomarkirina Guhertoyê ({count} Qad Hatin Nûkirin)'
+revision_delta_reverted: Hate Vegerandin
+revision_delta_update_message: Ev qad hate nûkirin lê nirxa wê ji ber sedemên ewlehiyê tê veşartin.
+revision_delta_other: Sererastkirin
+revision_delta_by: '{date} ji aliyê {user}'
+presentation_text_values_cannot_be_reimported: 'Nivîsa pêşkêşkirinê bi kar tîne, nirx nikarin ji nû ve werin împortkirin.'
+download_page_as_csv: 'Rûpelê wek CSV Daxîne'
+download_page_as_csv_unsupported: Ev mîhengkirin piştgiriyê nade daxistina rûpela heyî.
+private_user: Bikarhênerê Taybet
+creation_preview: Pêşdîtina Afirandinê
+revision_preview: Pêşdîtina Serastkirinê
+updates_made: Nûkirin Pêk Hatin
+leave_comment: Şîroveyekê bihêle...
+post_comment_success: Şîrove hate şandin
+post_comment_updated: Şîrove hate nûkirin
+item_create_success: Hêman Hate Afirandin | Hêman Hatin Afirandin
+item_update_success: Hêman Hate Nûkirin | Hêman Hatin Nûkirin
+item_delete_success: Hêman Hate Jêbirin | Hêman Hatin Jêbirin
+this_collection: Ev Koleksiyon
+related_collection: Koleksiyona Têkildar
+related_collections: Koleksiyonên Têkildar
+translations_collection: Koleksiyona Wergerandinê
+languages_collection: Koleksiyona Zimanan
+import_data_input_placeholder: CSV an JSON...
+import_data_button: Împortkirinê Destpê Bike
+import_data_indeterminate: Daneyê Tê Împortkirin...
+import_data_success: Dane bi serkeftî ji {filename} hate împortkirin
+import_data_error: Şêwaza daneyê ya vê pelê bi koleksiyonê re lihev nake.
+label_import: Împort Bike
+label_export: Eksport Bike
+import_export: Împort / Eksport
+format: Format
+last_page: Rûpela Dawî
+last_access: Gihîştina Dawî
+fill_template: Bi Nirxa Şablonê Dagire
+a_unique_table_name: Navek xişteya yekta...
+a_unique_column_name: Navek stûna yekta...
+enable_custom_values: Nirxên taybet çalak bike
+submit: Bişîne
+move_to_folder: Veguhêze Peldankê
+move: Veguheze
+system: Pergal
+add_field_related: Qadê li Koleksiyona Têkildar Zêde Bike
+interface_label: Navrû
+display_label: Nîşandan
+today: Îro
+yesterday: Duh
+delete_comment: Şîroveyê Jê Bibe
+delete_share: Parvekirin Jê Bibe
+functions:
+  year: Sal
+  month: Meh
+  week: Hefte
+  day: Roj
+  weekday: Roja Hefteyê
+  hour: Saet
+  minute: Deqîqe
+  second: Saniye
+  count: Hejmar
+date-fns_date: PPP
+date-fns_time: 'h:mm:ss a'
+date-fns_time_no_seconds: 'h:mm a'
+date-fns_time_24hour: 'HH:mm:ss'
+date-fns_time_no_seconds_24hour: 'HH:mm'
+date-fns_date_short: 'MMM d, u'
+date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
+date-fns_date_short_no_year: MMM d
+minutes: Deqîqe
+hours: Saet
+month: Meh
+year: Sal
+select_all: Hemûyan Hilbijêre
+permissionsLevel:
+  all: Gihîştina Tije ya {action}
+  partial: Gihîştina Nîvî ya {action}
+  custom: Gihîştina Nîvî ya {action}
+  none: Gihîştina {action} Tune
+months:
+  january: Rêbendan
+  february: Reşemî
+  march: Adar
+  april: Nîsan
+  may: Gulan
+  june: Pûşper
+  july: Tîrmeh
+  august: Gelawêj
+  september: Rezber
+  october: Kewçêr
+  november: Mijdar
+  december: Berfanbar
+drag_mode: Moda Kaşkirinê
+move_tool: Amûra Guhestinê
+crop_tool: Amûra Birînê
+focal_point_tool: Amûra Xala Fokusê
+cancel_crop: Birînê Betal Bike
+cancel_selection: Hilbijartinê Betal Bike
+original: Orîjînal
+url: URL
+import_label: Împort Bike
+file_details: Hûrgiliyên Pelê
+dimensions: Mezinahî
+size: Mezinahî
+created: Afirandî
+uploaded: Barkiri
+modified: Guherti
+owner: Xwedî
+edited_by: Guherti ji aliyê
+folder: Peldank
+folders: Peldank
+zoom: Mezinkirin
+download: Daxistin
+open: Veke
+open_in_new_window: Di Pencereyeke Nû de Veke
+open_folder: Peldanka "{folder}" veke
+foreground_color: Rengê Pêş
+background_color: Rengê Paş
+upload_from_device: Pelê ji Cîhazê Barke
+choose_from_library: Pelê ji Pirtûkxaneyê Hilbijêre
+import_from_url: Pelê ji URL Împort Bike
+replace_from_device: Pelê ji Cîhazê Biguhêre
+replace_from_library: Pelê ji Pirtûkxaneyê Biguhêre
+replace_from_url: Pelê ji URL Biguhêre
+no_image_selected: Ti Wêne Nehatiye Hilbijartin
+no_file_selected: Ti Pel Nehatiye Hilbijartin
+download_file: Pelê Daxîne
+open_file_in_tab: Pelê di Hilpekîneke Nû de Veke
+start_export: Eksportê Destpê Bike
+not_available_for_local_downloads: Ne berdest e ji bo daxistinên heremî
+exporting_all_items_in_collection: Hemû hêman ({total}) di {collection} de tên eksportkirin.
+exporting_limited_items_in_collection: '{count} ji {total} hêmanên di {collection} de dê werin eksportkirin.'
+exporting_no_items_to_export: Ti hêmanên ku werin eksportkirin tune ne. Veavakirina eksportkirinê û/an hêmanan li koleksiyonê zêde bike.
+exporting_download_hint: Dema ku pela {format} hat afirandin, ew ê were daxistin bo cîhaza te.
+exporting_library_hint: Dema ku pela {format} hat afirandin, ew ê were tomarkirin li Pirtûkxaneya Pelan.
+exporting_library_hint_forced: Divê ev eksport di komên bi kom de were pêvajokirin. Dema qediya, pela {format} dê were tomarkirin li Pirtûkxaneya Pelan.
+collection_key: Kilîla Koleksiyonê
+name: Nav
+primary_key_field: Qada Kilîla Sereke
+type: Cure
+creating_new_collection: Afirandina Koleksiyona Nû
+created_by: Afirandî ji aliyê
+created_on: Afirandî di
+creating_collection_info: Navê koleksiyonê û qada wê ya "kilîl" a yekta mîheng bike...
+creating_collection_system: Her yek ji van qadên nebicî çalak bike û ji nû ve binav bike.
+auto_increment_integer: Integera xwe-zêdekirî
+auto_increment_big_integer: Integera mezin a xwe-zêdekirî
+generated_uuid: UUID ya Afirandî
+manual_string: Rêzeka bi destî
+save_and_create_new: Tomar Bike û Nû Biafirîne
+save_and_stay: Tomar Bike û Bimîne
+save_and_quit: Tomar Bike û Derkeve
+save_and_return_to_main: Tomar Bike û Vegere Serekê
+save_as_copy: Wek Kopiyê Tomar Bike
+add_existing: Yê Heyî Zêde Bike
+creating_items: Afirandina Hêmanan
+enable_create_button: Bişkoka Afirandinê Çalak Bike
+selecting_items: Hilbijartina Hêmanan
+enable_select_button: Bişkoka Hilbijartinê Çalak Bike
+allow_duplicates: Dubarekirinan Destûr Bide
+comments: Şîrove
+no_comments: Hîna Tu Şîrove Tune
+expand: Berfirehkirin
+expand_all: Hemûyan Berfireh Bike
+expand_none: Ti yekê Berfireh Neke
+collapse: Hilweşîne
+collapse_all: Hemûyan Hilweşîne
+select_item: Hêmanê Hilbijêre
+no_items: Ti hêman tune ne
+search_items: Hêmanan Bigere...
+search_extensions: Pêvekan Bigere...
+disabled: Neçalak
+information: Agahdarî
+report_bug: Çewtiyê Rapor Bike
+request_feature: Taybetmendiyê Bixwaze
+request_body: Naveroka Daxwazê
+interface_not_found: 'Navrûya "{interface}" nehat dîtin.'
+operation_not_found: 'Operasyona "{operation}" nehat dîtin.'
+reset_interface: Navrûyê Vegerîne
+display_not_found: 'Nîşandana "{display}" nehat dîtin.'
+reset_display: Nîşandanê Vegerîne
+list-m2a: Avaker (M2A)
+item_count: 'Ti Hêman Tune Ne | Yek Hêman | {count} Hêman'
+filtered_item_count: 'Ti Hêmanên Fîltrekirî Tune | Yek Hêmana Fîltrekirî | {count} Hêmanên Fîltrekirî'
+no_items_copy: Hîna ti hêman di vê koleksiyonê de tune ne.
+file_count: 'Ti Pel Tune | Yek Pel | {count} Pel'
+no_files_copy: Li vir ti pel tune ne.
+user_count: 'Ti Bikarhêner Tune | Yek Bikarhêner | {count} Bikarhêner'
+no_users_copy: Hîna ti bikarhêner di vê rolê de tune ne.
+webhooks_count: 'Ti Webhook Tune | Yek Webhook | {count} Webhook'
+webhooks_deprecation_notice: |
+  Webhook kevn bûne û zêdetir bikaranîn tê neşîretkirin.
+
+  Ji kerema xwe **Herikînan** bi [operasyona Webhook / URL ya Daxwazê](https://docs.directus.io/app/flows/operations.html#webhook-request-url) bikar bîne.
+no_webhooks_copy: Hîna ti webhook nehatine mîhengkirin. Bi afirandina yekê dest pê bike.
+no_notifications: Ti Agahdarî Tune
+no_notifications_copy: Te hemû nirxand!
+activity_log: Têketina Çalakiyê
+all_items: Hemû Hêman
+any: Her
+csv: CSV
+no_collections: Ti Koleksiyon Tune
+create_collection: Koleksiyonê Biafirîne
+no_collections_copy_admin: Te hîn ti koleksiyon tune ne. Li bişkoka jêrîn bitikîne da ku dest pê bikî.
+no_collections_copy: Te hîn ti koleksiyon tune ne. Ji kerema xwe bi rêveberê pergala xwe re têkilî dayne.
+relationship_not_setup: Têkilî bi rastî nehatiye mîhengkirin
+no_singleton_relations: Têkiliyên li Yektayan nayê piştgirîkirin
+display_template_not_setup: Vebijêrka şablona nîşanê şaş hatiye mîhengkirin
+collection_field_not_setup: Vebijêrka qada koleksiyonê şaş hatiye mîhengkirin
+select_a_collection: Koleksiyonekê Hilbijêre
+select_a_field: Qadekê Hilbijêre
+active: Çalak
+move_to: Veguhêze li...
+copy: Kopî Bike
+copy_to: Kopî Bike li...
+no_other_dashboards_copy: Te hîn ti daşbordên din tune ne.
+inactive: Neçalak
+users: Bikarhêner
+roles: Rol
+activity: Çalakî
+activity_item: Hêmana Çalakiyê
+action: Çalakî
+ip_address: Navnîşana IP
+user_agent: User Agent
+origin: Çavkanî
+webhooks: Webhook
+decimals: Dehek
+value_decimals: Dehdekên Nirxê
+min_value: Nirxa Kêmtirîn
+max_value: Nirxa Zêdetirîn
+automatic: Otomatîk
+field_width: Firehiya Qadê
+add_filter: Parzûnê Zêde Bike
+upper_limit: Sînora jorîn...
+lower_limit: Sînora jêrîn...
+user_directory: Peldanka Bikarhêneran
+documentation: Belge
+sidebar: Darika Kêlekê
+duration: Mawe
+charset: Tîpên Nivîsê
+second: saniye
+file_moved: Pel Hat Veguhastin
+collection_created: Koleksiyon Hate Afirandin
+modified_on: Guherti di
+card_size: Mezinahiya Kartê
+sort_field: Qada Rêzkirinê
+add_sort_field: Qada Rêzkirinê Zêde Bike
+sort: Rêz Bike
+status: Rewş
+remove: Rake
+toggle_manual_sorting: Rêzkirina Destî Biguherîne
+bookmark_doesnt_exist: Nîşank Tune
+bookmark_doesnt_exist_copy: Nîşanka ku tu dixwazî vekî nehat dîtin.
+bookmark_doesnt_exist_cta: Vegere koleksiyonê
+select_an_item: Hêmanekê hilbijêre...
+edit: Biguherîne
+edit_item: Hêmanê Biguherîne
+enabled: Çalakkirî
+partially_enabled: Kêm-Çalakkirî
+enable_all: Hemûyan Çalak Bike
+disable_all: Hemûyan Neçalak Bike
+enabled_dev_tooltip: Pêvekên sepanê di moda pêşvebiran de hertim çalak in
+disable_tfa: 2FA Neçalak Bike
+admin_disable_tfa_text: Tu bi rastî dixwazî 2FA ji bo vî bikarhênerî neçalak bikî?
+tfa_setup: 2FA Mîheng Bike
+tfa_scan_code: Ji bo qedandina mîhengkirina 2FA, kodê bi sepana rastpêkirina te bixwîne
+enter_otp_to_disable_tfa: Ji bo neçalakirina 2FA, OTP-ê binivîse
+create_account: Hesab Biafirîne
+account_created_successfully: Hesab bi Serkeftî Hate Afirandin
+auto_fill: Otomatîk-Tijî Bike
+corresponding_field: Qada Hevber
+errors:
+  COLLECTION_NOT_FOUND: "Koleksiyon tune ye"
+  CONTAINS_NULL_VALUES: Qad nirxên null dihewîne
+  CONTENT_TOO_LARGE: Hêman/pela şandî zêde mezin e
+  FIELD_NOT_FOUND: Qad nehat dîtin
+  FORBIDDEN: Qedexe ye
+  GRAPHQL_VALIDATION: Rastkirina GraphQL
+  ILLEGAL_ASSET_TRANSFORMATION: Çavkaniya wêneyê ji bo pêşdîtinê zêde mezin e
+  INTERNAL_SERVER_ERROR: Çewtiya Nayê Hêvîkirin
+  INVALID_CONFIG: Mîhengkariya nederbasdar
+  INVALID_CREDENTIALS: Navê bikarhêner an şîfreya şaş
+  INVALID_FOREIGN_KEY: Kilîla biyanî ya nederbasdar
+  INVALID_IP: Navnîşana IP nayê destûrdan
+  INVALID_OTP: Şîfreya yek-carî ya şaş
+  INVALID_PAYLOAD: Payloada nederbasdar
+  INVALID_PROVIDER: Bikarhêner aîdî pêşkêşkarekî cuda ye
+  INVALID_QUERY: Pirs nederbasdar
+  INVALID_TOKEN: Tokena nederbasdar
+  INVALID_USER: Rastpêkirina bikarhêner biserneket
+  ITEM_LIMIT_REACHED: Sînora hêmanê hat gihîştin
+  ITEM_NOT_FOUND: Hêman nehat dîtin
+  LIMIT_EXCEEDED: 'Sînor hat derbaskirin'
+  METHOD_NOT_ALLOWED: Rêbaz nayê destûrdan
+  NOT_NULL_VIOLATION: Nirx nikare null be
+  RANGE_NOT_SATISFIABLE: Navber nederbasdar
+  RECORD_NOT_UNIQUE: Nirxa dubare hate tespîtkirin
+  REQUESTS_EXCEEDED: Sînora daxwazan hat gihîştin
+  ROUTE_NOT_FOUND: Nehat dîtin
+  SERVICE_UNAVAILABLE: Xizmet ne Berdest e
+  TOKEN_EXPIRED: Token bi dawî bû
+  UNEXPECTED_RESPONSE: Bersiva nayê hêvîkirin
+  UNKNOWN: Çewtiya Nayê Hêvîkirin
+  UNPROCESSABLE_CONTENT: Naveroka Nexebitanbar
+  UNSUPPORTED_MEDIA_TYPE: Cureya medyayê ya nepiştgirî
+  USER_SUSPENDED: Bikarhêner Hate Rawestandin
+  VALUE_OUT_OF_RANGE: Nirx ji navberê derketiye
+  VALUE_TOO_LONG: Nirx zêde dirêj e
+security: Ewlehî
+value_hashed: Nirx bi Ewlehî Hatiye Heshkirin
+bookmark_name: Navê nîşankê...
+create_bookmark: Nîşankê Çêke
+edit_bookmark: Nîşankê Biguherîne
+edit_personal_bookmark: Nîşanka Kesane Biguherîne
+edit_role_bookmark: Nîşanka Rolê Biguherîne
+edit_global_bookmark: Nîşanka Gerdûnî Biguherîne
+cannot_edit_role_bookmarks: Nikare Nîşankên Rolê Biguherîne
+cannot_edit_global_bookmarks: Nikare Nîşankên Gerdûnî Biguherîne
+bookmarks: Nîşank
+presets: Pêşmîhengkirî
+unexpected_error: Çewtiya Nayê Hêvîkirin
+unexpected_error_copy: Çewtiyeke nayê hêvîkirin derket. Ji kerema xwe cardin hewl bide.
+copy_details: Hûrgiliyan Kopî Bike
+no_app_access: Ti Gihîştina Sepanê Tune
+no_app_access_copy: Ev bikarhêner nabe ku sepana rêvebirinê bi kar bîne.
+password_reset_sent: Heke hesabek te hebe, me ji te re girêdanek ewle şand da ku tu şîfreya xwe vegerînî
+password_reset_successful: Şîfre bi serkeftî hat vegerandin
+back: Paş
+filter: Parzûn
+edit_image: Wêneyê Biguherîne
+editing_image: Wêne Tê Guhertin
+square: Çargoşe
+free: Serbest
+flip_horizontal: Li Aso Bervaje Bike
+flip_vertical: Li Stûnî Bervaje Bike
+aspect_ratio: Rêjeya Rûyê
+rotate: Bizivirîne
+all_users: Hemû Bikarhêner
+delete_collection: Koleksiyonê Jê Bibe
+update_collection_success: Koleksiyon Hat Nûkirin
+delete_collection_success: Koleksiyon Hat Jêbirin
+make_collection_visible: Koleksiyonê Xuya Bike
+make_collection_hidden: Koleksiyonê Veşêre
+make_folder_visible: Peldankê Xuya Bike
+make_folder_hidden: Peldankê Veşêre
+goto_collection_content: Naveroka Bibîne
+count_of_total_items: '{count} ji {total} Hêmanan'
+start_end_of_count_items: '{start}-{end} ji {count} Hêmanan'
+start_end_of_count_filtered_items: '{start}-{end} ji {count} Hêmanên Fîltrekirî'
+delete_collection_are_you_sure: >-
+  Tu bi rastî dixwazî koleksiyona "{collection}" jê bibî? Ev wê koleksiyonê û hemû hêmanên di nav wê de jê bibe. Ev çalakî daîmî ye.
+delete_folder_are_you_sure: Tu bi rastî dixwazî peldanka "{folder}" jê bibî? Peldank û koleksiyonên hundirîn dê werin veguhastin ji bo asta herî jorê.
+delete_collection_peer_dependencies: Qadên jêrîn dê jî werin jêbirin, ji ber ku ew bi koleksiyona heyî ve girêdayî ne.
+collections_shown: Koleksiyonên Xuyakirî
+visible_collections: Koleksiyonên Xuya
+hidden_collections: Koleksiyonên Veşartî
+show_hidden_collections: Koleksiyonên Veşartî Nîşan Bide
+hide_hidden_collections: Koleksiyonên Veşartî Veşêre
+show_header: Sernavê Nîşan Bide
+unmanaged_collections: Koleksiyonên Nemîhengkirî
+system_collections: Koleksiyonên Pergalê
+placeholder: Cihgir
+icon_left: Îkona li Çepê
+icon_right: Îkona li Rastê
+count_other_revisions: '{count} Serastkirinên Din'
+font: Font
+sans_serif: Sans Serif
+serif: Serif
+monospace: Monospace
+divider: Dabeşker
+color: Reng
+circle: Xelek
+empty_item: Hêmana Vala
+log_in_with: 'Têkeve bi {provider}'
+conditional_styles: Şêwazên Mercdar
+advanced_settings: Mîhengkirinên Pêşketî
+advanced_filter: Parzûna Pêşketî
+delete_advanced_filter: Parzûnê Jê Bibe
+change_advanced_filter_operator: Operatorê Biguherîne
+advanced: Pêşketî
+operators:
+  eq: Wekhev e
+  neq: Ne wekhev e
+  lt: Kêmtir e ji
+  gt: Mezintir e ji
+  lte: Kêmtir an wekhev e bi
+  gte: Mezintir an wekhev e bi
+  in: Yek e ji
+  nin: Ne yek e ji
+  null: Null e
+  nnull: Ne null e
+  contains: Dihewîne
+  ncontains: Nahewîne
+  icontains: Dihewîne (bêhesas)
+  starts_with: Dest pê dike bi
+  nstarts_with: Dest pê nake bi
+  istarts_with: Dest pê dike bi (bêhesas)
+  nistarts_with: Dest pê nake bi (bêhesas)
+  ends_with: Bi dawî dibe bi
+  nends_with: Bi dawî nabe bi
+  iends_with: Bi dawî dibe bi (bêhesas)
+  niends_with: Bi dawî nabe bi (bêhesas)
+  between: Di navbera
+  nbetween: Ne di navbera
+  empty: Vala ye
+  nempty: Ne vala ye
+  all: Van kilîlan dihewîne
+  has: Hin ji van kilîlan dihewîne
+  intersects: Diqelişe
+  nintersects: Naqelişe
+  intersects_bbox: Qutiya sînordar diqelişe
+  nintersects_bbox: Qutiya sînordar naqelişe
+  regex: Bi RegExp re lihev dike
+custom_validation_message: Peyama Rastkirina Taybet
+loading: Tê barkirin...
+extension_readme_missing: Ev pêvek pelê README tune ye.
+drop_to_upload: Ji bo Barkirinê Berde
+item: Hêman
+items: Hêman
+upload_file: Pelê Barke
+upload_file_indeterminate: Pel Tê Barkirin...
+upload_file_success: Pel Hat Barkirin
+upload_files_indeterminate: 'Pel tên barkirin {done}/{total}'
+upload_files_success: '{count} Pel Hatin Barkirin'
+upload_pending: Barkirina li Bendê
+drag_file_here: Pelê Bikaşe û Berde li Vir
+click_to_browse: Ji bo Gerînê Bitikîne
+interface_options: Vebijêrkên Navrûyê
+display_options: Vebijêrkên Nîşandanê
+layout_options: Vebijêrkên Mîhengkirinê
+rows: Rêz
+columns: Stûn
+collection_setup: Mîhengkirina Koleksiyonê
+optional_system_fields: Qadên Nebicî
+value_unique: Nirx divê yekta be
+value_index: Qad hatiye pêristkirin
+all_activity: Hemû Çalakî
+create_item: Hêman Biafirîne
+display_template: Şablona Nîşandanê
+language_display_template: Şablona Nîşandana Zimanê
+translations_display_template: Şablona Nîşandana Wergerînan
+n_items_selected: 'Ti Hêman Nehatine Hilbijartin | Yek Hêman Hatiye Hilbijartin | {n} Hêman Hatine Hilbijartin'
+per_page: Li Her Rûpelê
+all_files: Hemû Pel
+my_files: Pelên Min
+recent_files: Pelên Dawî
+create_folder: Peldankê Biafirîne
+edit_folder: Peldankê Biguherîne
+folder_name: Navê Peldankê...
+folder_key: Kilîla Peldankê...
+add_file: Pelê Zêde Bike
+replace_file: Pelê Biguhêre
+no_results: Ti Encam Tune
+no_results_copy: Parzûnên lêgerînê sererast bike an jî paqij bike da ku encaman bibînî.
+no_visible_fields: Forma Vala
+no_visible_fields_copy: Ev form qadên xuya tune ne.
+clear_filters: Parzûnan Paqij Bike
+saves_automatically: Bixwe Tomar Dike
+role: Rol
+edit_role: Rolê Biguherîne
+rule: Rêzik
+user: Bikarhêner
+no_presets: Ti Pêşmîhengkirî Tune
+no_presets_copy: Ti pêşmîhengkirî an nîşank hîn nehatine tomarkirin.
+no_presets_cta: Pêşmîhengkiriyê Zêde Bike
+presets_only: Tenê Pêşmîhengkirî
+create: Biafirîne
+on_create: Li ser Afirandinê
+on_update: Li ser Nûkirinê
+read: Bixwîne
+update: Nûbike
+delete: Jê Bibe
+select_fields: Qadan Hilbijêre
+format_text: Nivîsê Format Bike
+format_value: Nirxê Format Bike
+abbreviate_value: Nirxê Kurt Bike
+operator: Operator
+bold: Qalind
+toggle: Veguhêze
+icon_on: Îkon Vekirî
+icon_off: Îkon Girtî
+label: Nîşane
+flows: Herikîn
+flow: Herikîn
+select_a_flow: Herikînekê Hilbijêre
+run_flow_confirm: Tu bi rastî dixwazî vê herikînê bixebitînî?
+run_flow_on_current_collection: Herikînê li ser Koleksiyona Heyî Bixebitîne
+run_flow_on_current: Herikînê li ser Hêmana Heyî Bixebitîne
+run_flow_on_current_edited_confirm: Dibe ku ev hêman ji aliyê vê herikînê ve were nûkirin, tu bi rastî dixwazî vê bixebitînî?
+run_flow_on_selected: Pêşî Yek an Zêdetir Hêmanan Hilbijêre | Herikînê li ser 1 Hêmana Hilbijartî Bixebitîne | Herikînê li ser {n} Hêmanên Hilbijartî Bixebitîne
+run_flow: Herikînê Bixebitîne
+trigger_flow_success: Herikîna "{flow}" bi serkeftî hate kirin
+field_name_placeholder: Navê qadê binivîse...
+field_key_placeholder: Kilîla qadê binivîse...
+trigger: Tetîk
+trigger_options: Vebijêrkên Tetîkê
+view_trigger: Tetîkê Bibîne
+create_trigger: Tetîkê Biafirîne
+trigger_setup: Mîhengkirina Tetîkê
+change_trigger: Tetîkê Biguherîne
+flow_delete_confirm: Tu bi rastî dixwazî Herikîna "{flow}" jê bibî? Ev çalakî nayê vegerandin.
+set_flow_active: Herikînê Çalak Bike
+set_flow_inactive: Herikînê Neçalak Bike
+edit_flow: Herikînê Biguherîne
+delete_flow: Herikînê Jê Bibe
+no_other_flows_copy: Te hîn ti herikînên din tune ne.
+no_flows: Ti Herikîn Tune
+no_flows_copy: Te hîn ti herikîn tune ne.
+create_flow: Herikînê Biafirîne
+creating_new_flow: Afirandina Herikîna Nû
+updating_flow: Nûkirina Herikînê
+flow_setup: Mîhengkirina Herikînê
+flow_name: Nav
+flow_tracking: Şopandina Çalakî & Têketinan
+flow_tracking_all: Çalakî & Têketinan Bişopîne
+flow_tracking_activity: Tenê Çalakiyê Bişopîne
+flow_tracking_null: Tiştek Neşopîne
+start_flow: Herikînê Destpê Bike
+stop_flow: Herikînê Rawestîne
+create_operation: Operasyonê Biafirîne
+edit_operation: Operasyonê Biguherîne
+code: Kod
+operation_options: Vebijêrkên Operasyonê
+operation_name: Navê operasyonê...
+operation_key: Nasname ji bo referansê...
+operation_key_unique_error: Kilîlên operasyonê divê di Herikînekê de yekta bin
+operation_handle_resolve: 'Çareser: Ji bo Zêdekirinê Bitikîne an ji bo Rêguheztinê Bikaşe'
+operation_handle_reject: 'Redkirin: Ji bo Zêdekirinê Bitikîne an ji bo Rêguheztinê Bikaşe'
+visual_editor: Edîtora Dîtbarî
+toggle_navigation: Navîgasyonê Veke/Bigire
+toggle_editable_elements: Elementên Guhêrbar Veke/Bigire
+no_url: Ti URL nehatiye dayîn
+no_url_copy: Ji kerema xwe di mîhengkariyan de URLek zêde bike.
+insights: Têgihiştin
+dashboard: Daşbord
+panel: Panel
+panel_options: Vebijêrkên Panelê
+panel_header: Sernavê Panelê
+panel_name_placeholder: Navê vê panelê binivîse...
+panel_note_placeholder: Hûrgiliyên nebicî yên derheqê vê panelê de...
+panel_delete_confirm: Tu bi rastî dixwazî vê panelê jê bibî? Ev çalakî nayê vegerandin.
+list_panel_allow_edit: Guhertina Nav-rêzê Destûr Bide
+dashboard_delete_confirm: Tu bi rastî dixwazî vê daşbordê jê bibî? Ev çalakî nayê vegerandin.
+edit_dashboard: Daşbordê Biguherîne
+delete_dashboard: Daşbordê Jê Bibe
+visible: Xuya
+prefix_placeholder: Nivîs beriya nirxê...
+suffix_placeholder: Nivîs piştî nirxê...
+decimals_placeholder: Hejmara cihên dehdekî...
+no_dashboards: Ti Daşbord Tune
+no_dashboards_copy: Te hîn ti daşbord tune ne.
+create_dashboard: Daşbordê Biafirîne
+dashboard_name: Navê Daşbordê
+no_data: Ti Dane Tune
+no_data_in_flow: Ti dane di vê Herikînê de nehatiye hilberandin an jî gihîştin
+accountability: Berpirsiyarî
+payload: Barbar
+details: Hûrgilî
+resume_streaming_logs: Herikandina Têketinan Berdewam Bike
+pause_streaming_logs: Herikandina Têketinan Rawestîne
+logs_session_resumed: Danişîna têketinan hate berdewamkirin...
+logs_session_paused: Danişîna têketinan hate rawestandin...
+logs_stream_disconnected: Herikîna têketinan hate qutkirin...
+log_detail_filter_paths: 'Rêyan Fîltre Bike (mînak: req.method, res.statusCode)'
+logs_beginning: Ev destpêka danişîna têketinên te ye...
+logs_waiting: 'Li benda têketinên bêtir...'
+logs_unread_count: '{count} nexwendî'
+clear_logs: Têketinan Paqij Bike
+search_logs: Têketinan Bigere...
+all_instances: Hemû Nimûne
+instance_count: 'Ti Nimûne Tune | Yek Nimûne | {count} Nimûne'
+all_log_levels: Hemû Astên Têketinê
+log_level_count: 'Ti Asta Têketinê Tune | Yek Asta Têketinê | {count} Astên Têketinê'
+soft_wrap_lines: Rêzikan bi Nermî Bipêçe
+full_screen: Ekrana Tije
+full_text_search: Lêgerîna Nivîsa Tije
+edit_panels: Panelan Biguherîne
+center_align: Li Navê Rast Bike
+left_align: Li Çepê Rast Bike
+right_align: Li Rastê Rast Bike
+fit_to_screen: Li Ekranê Biguncîne
+image_url: URLa Wêneyê
+alt_text: Nivîsa Alternatîf
+media: Medya
+quality: Kalîte
+width: Firehî
+height: Bilindahî
+transformation_preset_key: Kilîla Pêşmîhengkirina Transformasyonê
+source: Çavkanî
+url_placeholder: URLek binivîse...
+display_text: Nivîsa Nîşandanê
+display_text_placeholder: Nivîsa nîşandanê binivîse...
+interface_group_text_and_numbers: Nivîs & Hejmar
+interface_group_selection: Hilbijartin
+interface_group_relational: Têkildar
+interface_group_presentation: Pêşkêşkirin
+interface_group_groups: Kom
+interface_group_other: Din
+tooltip: Amojekirin
+tooltip_placeholder: Amojekirinan binivîse...
+unlimited: Bêsînor
+open_link_in: Girêdanê veke di
+new_tab: Taba Nû
+save_image: Wêneyê Tomar Bike
+save_media: Medyayê Tomar Bike
+wysiwyg_options:
+  aligncenter: Li Navê Rast Bike
+  alignjustify: Rastkirina Hev
+  alignleft: Li Çepê Rast Bike
+  alignnone: Rastkirina Ti Yekê
+  alignright: Li Rastê Rast Bike
+  forecolor: Rengê Pêş
+  backcolor: Rengê Paş
+  bold: Qalind
+  italic: Îtalîk
+  underline: Binxêz
+  strikethrough: Navxêz
+  subscript: Binrêz
+  superscript: Serrêz
+  codeblock: Kod
+  blockquote: Blokjêgirtin
+  bullist: Lîsteya Xalî
+  numlist: Lîsteya Hejmarkirî
+  hr: Xêza Asoyî
+  link: Girêdanê Zêde Bike/Biguherîne
+  unlink: Girêdanê Rake
+  media: Medyayê Zêde Bike/Biguherîne
+  image: Wêneyê Zêde Bike/Biguherîne
+  copy: Kopî Bike
+  cut: Jê Bike
+  paste: Pêveke
+  heading: Sernav
+  h1: Sernav 1
+  h2: Sernav 2
+  h3: Sernav 3
+  h4: Sernav 4
+  h5: Sernav 5
+  h6: Sernav 6
+  fontselect: Font Hilbijêre
+  fontsizeselect: Mezinahiya Fontê Hilbijêre
+  indent: Binivişîne
+  outdent: Derîne
+  undo: Vegerîne
+  redo: Dîsa Bike
+  remove: Rake
+  removeformat: Formatê Rake
+  selectall: Hemûyan Hilbijêre
+  table: Tablo
+  visualaid: Elementên nexuya bibîne
+  source_code: Çavkaniyê Biguherîne
+  fullscreen: Ekrana Tije
+  directionality: Alîgirî
+  lazy_loading: Wêneyê Tembel-Bar Bike
+  lazy_loading_label: Tembel-Barkirinê Çalak Bike
+dropdown: Dropdown
+choices: Bijare
+choices_option_configured_incorrectly: Bijare şaş hatine mîhengkirin
+deselect: Hilbijartinê Rake
+deselect_all: Hilbijartina Hemûyan Rake
+theme: Tema
+select_a_theme: Temayek Hilbijêre
+default_sync_with_project: Standard (Bi Projeyê re Hevsaz Bike)
+appearance_auto: Otomatîk (Bi Pergalê re Hevsaz Bike)
+appearance_light: Ronî
+appearance_dark: Tarî
+other: Din...
+adding_user: Lêzêdekirina Bikarhêner
+unknown_user: Bikarhênerê Nenas
+creating_in: 'Afirandina Hêmanê di {collection}'
+editing_in: 'Guhertina Hêmanê di {collection}'
+viewing_in: 'Dîtina Hêmanê di {collection}'
+creating_unit: 'Afirandina {unit}'
+editing_unit: 'Guhertina {unit}'
+editing_in_batch: 'Guhertina Komî ya {count} Hêmanan'
+no_options_available: Ti vebijêrk tune ne
+settings_data_model: Modela Daneyê
+settings_roles: Rolên Bikarhêner
+settings_permissions: Polîtîkayên Gihîştinê
+settings_project: Mîhengkarî
+settings_appearance: Xuyang
+settings_webhooks: Webhook
+settings_flows: Herikîn
+settings_system_logs: Têketinên Pergalê
+settings_presets: Nîşank
+settings_translations: Wergerîn
+one_or_more_options_are_missing: Yek an zêdetir vebijêrk winda ne
+configure_field_key_to_continue: Ji bo berdewamkirinê kilîla qadê mîheng bike
+scope: Qad
+actions: Çalakî
+select: Hilbijêre...
+layout: Mîhengkirin
+tree_view: Dîtina Darê
+changes_are_permanent: Guhertin daîmî ne
+preset_name_placeholder: Dema ku vala ye, wek standard tê xizmetkirin...
+preset_search_placeholder: Lêgerîna pirsê...
+editing_preset: Guhertina Pêşmîhengkiriyê
+layout_preview: Pêşdîtina Mîhengkirinê
+layout_setup: Mîhengkirina Mîhengkirinê
+data: Dane
+theme-overrides: Serdabiriyên Temayê
+unsaved_changes: Guherînên Netomarkirî
+unsaved_changes_copy: Tu bi rastî dixwazî ji vê rûpelê derkevî?
+discard_changes: Guherînan Paşguh Bike
+discard_all_changes: Hemû Guherînan Paşguh Bike
+discard_changes_copy: Tu bi rastî dixwazî hemû guherînên ku hatine kirin paşguh bikî?
+show_x_axis: Eksena X Nîşan Bide
+show_y_axis: Eksena Y Nîşan Bide
+keep_editing: Berdewam Bikin
+page_help_collections_overview: '**Dîmena Koleksiyonan** — Lîsteya hemû koleksiyonên ku tu gihîştina wan heyî.'
+page_help_collections_collection: >-
+  **Hêmanan Bigere** — Lîsteya hemû hêmanên {collection} ên ku tu gihîştina wan heyî. Mîhengkirin, parzûn, û rêzkirinê biguhêre da ku dîtina xwe li gorî hewcedariyên xwe bikî, û heta jî nîşankan ji bo van mîhengkirinên cuda ji bo gihîştina lezgîn tomar bikî.
+page_help_collections_item: >-
+  **Hûrgiliyên Hêmanê** — Formek ji bo dîtin û birêvebirina vê hêmanê. Ev darika kêlekê her weha dîrokek temam a serastkirinê, û şîroveyên navxweyî dihewîne.
+page_help_activity_collection: >-
+  **Çalakiyê Bigere** — Lîsteyek berfireh a hemû çalakiyên pergal û naveroka bikarhênerên te.
+page_help_docs_global: >-
+  **Dîmena Belgeyê** — Belgeyên taybet ji bo guherto û şêmaya vê projeyê.
+page_help_files_collection: >-
+  **Pirtûkxaneya Pelan** — Lîsteya hemû tiştên pelê ku li vê projeyê hatine barkirin. Mîhengkirin, parzûn, û rêzkirinê biguhêre da ku dîtina xwe li gorî hewcedariyên xwe bikî, û heta jî nîşankan ji bo van mîhengkirinên cuda ji bo gihîştina lezgîn tomar bikî.
+page_help_files_item: >-
+  **Hûrgiliyên Pelê** — Formek ji bo birêvebirina metadataya pelê, guhertina tiştê orîjînal, û nûkirina mîhengkariyên gihîştinê.
+page_help_settings_project: "**Mîhengkarî** — Vebijêrkên veavakirina gerdûnî ya projeyê."
+page_help_settings_appearance: "**Xuyang** — Vebijêrkên xuyang û temaya projeyê."
+page_help_settings_extensions: '**Pêvek** — Pêvekên ku li projeyê hatine sazkirin.'
+page_help_settings_datamodel_collections: >-
+  **Modela Daneyê: Koleksiyon** — Lîsteya hemû koleksiyonên berdest. Ev koleksiyonên xuya, veşartî, û pergalê, di gel tabloyên databeysa nemîhengkirî ku dikarin werin zêdekirin dihewîne.
+page_help_settings_datamodel_fields: >-
+  **Modela Daneyê: Koleksiyon** — Formek ji bo birêvebirina vê koleksiyon û qadên wê.
+page_help_settings_system_logs: '**Têketinên Pergalê** — Gihîştina herikîna zindî ya têketinên pergalê.'
+page_help_settings_policies_collection: '**Polîtîkayan Bigere** — Lîsteya hemû polîtîkayên di projeyê de.'
+page_help_settings_policies_item: "**Hûrgiliyên Polîtîkayê** — Destûr û mîhengkariyên din ên polîtîkayekê birêve bibe."
+page_help_settings_roles_collection: '**Rolan Bigere** — Lîsteya hemû rolên bikarhêner di projeyê de.'
+page_help_settings_roles_item: "**Hûrgiliyên Rolê** — Destûr û mîhengkariyên din ên rolekê birêve bibe."
+page_help_settings_presets_collection: >-
+  **Pêşmîhengkiriyan Bigere** — Lîsteya hemû pêşmîhengkiriyên di projeyê de, di nav de: nîşankên bikarhêner, rol, û gerdûnî, di gel dîtinên standard.
+page_help_settings_presets_item: >-
+  **Hûrgiliyên Pêşmîhengkiriyê** — Formek ji bo birêvebirina nîşank û pêşmîhengkiriyên standard ên koleksiyonê.
+page_help_settings_webhooks_collection: '**Webhookan Bigere** — Lîsteya hemû webhookên di projeyê de.'
+page_help_settings_webhooks_item: '**Hûrgiliyên Webhookê** — Formek ji bo afirandin û birêvebirina webhookên projeyê.'
+page_help_settings_flows_collection: '**Herikînan Bigere** — Lîsteya hemû Herikînên di projeyê de.'
+page_help_settings_flows_item: '**Hûrgiliyên Herikînê** — Qada xebatê ji bo birêvebirina yek an zêdetir operasyonan.'
+page_help_settings_translations_collection: '**Wergerînanên Taybet Bigere** — Lîsteya hemû wergerînên taybet di projeyê de.'
+page_help_settings_translations_item: '**Hûrgiliyên Wergerînên Taybet** — Formek ji bo dîtin û birêvebirina vê hêmanê.'
+page_help_users_collection: '**Peldanka Bikarhêneran** — Lîsteya hemû bikarhênerên pergalê di vê projeyê de.'
+page_help_users_item: >-
+  **Hûrgiliyên Bikarhêner** — Agahdariya hesabê xwe birêve bibe, an jî hûrgiliyên bikarhênerên din bibîne.
+page_help_insights_overview: '**Têgihiştin** — Lîsteya daşbordan ku tu gihîştina wan heyî.'
+page_help_insights_dashboard: '**Daşbord** — Qada xebatê ji bo birêvebirina yek an zêdetir panelan'
+page_help_marketplace_account: '**Hesab** — Weşanger an gerînendeyê pêvekeke weşandî.'
+page_help_marketplace_registry: '**Qeyd** — Pêvekên berdest di Marketplaceya Directus de.'
+page_help_marketplace_extension: '**Pêvek** — Pêveka di Marketplaceya Directus de.'
+activity_feed: Xwarina Çalakiyê
+add_new: Nû Zêde Bike
+create_new: Nû Biafirîne
+all: Hemû
+none: Ti Yek
+no_layout_collection_selected_yet: Hîn ti mîhengkirin/koleksiyon nehatiye hilbijartin
+batch_delete_confirm: >-
+  Ti hêman nehatine hilbijartin | Tu bi rastî dixwazî vê hêmanê jê bibî? Ev çalakî nayê vegerandin. | Tu bi rastî dixwazî van {count} hêmanan jê bibî? Ev çalakî nayê vegerandin.
+cancel: Betal Bike
+no_upscale: Wêneyan mezin neke
+no_extensions: Ti Pêvek Tune
+no_extensions_copy: Hîn ti pêvek nehatine sazkirin.
+install_extension: Pêvekê Saz Bike
+uninstall_locked: Nikare pêvekên ku ji rêya Marketplaceyê ve nehatine sazkirin, nesazkirin bike
+uninstall: Nesaz Bike
+installed: Sazkirî
+reinstall: Dîsa Saz Bike
+open_in_marketplace: Di Marketplaceyê de Veke
+source_registry: Marketplace
+source_local: Heremî
+source_module: Modula Node
+collection: Koleksiyon
+collections: Koleksiyon
+content: Naverok
+singleton: Yekta
+singleton_label: Wekî tiştê yekta bi kar bîne
+system_fields_locked: Qadên pergalê hatine quflekirin û nayên guhertin
+directus_collection:
+  directus_access: Pêvekirinên polîtîkayê
+  directus_activity: Têketinên berpirsiyariyê ji bo hemû bûyeran
+  directus_collections: Veavakirin û metadaneyên zêde yên koleksiyonê
+  directus_comments: Şîroveyên ji bo hêmanan
+  directus_dashboards: Daşbordên di Modula Têgihiştinan de
+  directus_fields: Veavakirin û metadaneyên zêde yên qadê
+  directus_files: Metadaneya ji bo hemû tiştên pelê yên birêvebirî
+  directus_flows: Herikînên otomatîkkirinê
+  directus_folders: Peldankên virtual ji bo pelan peyda dike
+  directus_migrations: Tu kîjan guhertoya databeysa bi kar tînî
+  directus_notifications: Agahdariyên şandî ji bikarhêneran re
+  directus_operations: Operasyonên ku di Herikînan de dixebitin
+  directus_panels: Panelên takekesî di daşbordên Têgihiştinan de
+  directus_permissions: Destûrên gihîştinê ji her polîtîkayekê re
+  directus_policies: Polîtîkayên kontrola gihîştinê
+  directus_presets: Pêşmîhengkirin ji bo standardên koleksiyonê û nîşankan
+  directus_relations: Veavakirin û metadaneyên têkiliyê
+  directus_revisions: Wênegirtinên daneya ji bo hemû çalakiyan
+  directus_roles: Komên destûra ji bo bikarhênerên pergalê
+  directus_sessions: Agahdariya danişîna bikarhêner
+  directus_settings: Vebijêrkên veavakirina projeyê
+  directus_shares: Hêmanên ku ji derve hatine parvekirin dişopîne
+  directus_users: Bikarhênerên pergalê ji bo platformê
+  directus_webhooks: Veavakirin ji bo daxwazên HTTP yên li ser bûyerê
+  directus_translations: Wergerînên taybet
+  directus_versions: Guhertoyên Naveroka hêmanan
+  directus_extensions: Veavakirina pêvekan
+fields:
+  directus_activity:
+    item: Kilîla Sereke ya Hêmanê
+    action: Çalakî
+    collection: Koleksiyon
+    timestamp: Çalakî Li Ser
+    user: Çalakî Ji Aliyê
+    comment: Şîrove
+    user_agent: User Agent
+    origin: Çavkanî
+    ip: Navnîşana IP
+    revisions: Serastkirin
+  directus_collections:
+    collection: Koleksiyon
+    icon: Îkon
+    note: Not
+    color: Reng
+    display_template: Şablona Nîşanê
+    hidden: Veşartî
+    singleton: Yekta
+    translations: Wergerînên Navlêkirina Koleksiyonê
+    archive_app_filter: Parzûna Arşîva Sepanê
+    archive_value: Nirxa Arşîvê
+    unarchive_value: Nirxa Naarşîvê
+    sort_field: Qada Rêzkirinê
+    accountability: Şopandina Çalakî & Serastkirinê
+    versioning: Guhertoparêzî
+    archive_field: Qada Arşîvê
+    item_duplication_fields: Qadên Dubarkirina Hêmanê
+  directus_files:
+    $thumbnail: Wêneguhêzk
+    title: Sernav
+    description: Danasîn
+    tags: Nasname
+    location: Cih
+    storage: Hilanîn
+    filename_disk: Navê Pelê (li Diskê)
+    filename_download: Navê Pelê (li Daxistinê)
+    metadata: Metadane
+    type: Cureya Mime
+    filesize: Mezinahiya Pelê
+    modified_by: Ji aliyê Hatiye Guhertin
+    modified_on: Li ser Hatiye Guhertin
+    created_on: Afirandî li ser
+    created_by: Afirandî ji aliyê
+    embed: Nefiskirin
+    uploaded_by: Barkirî ji aliyê
+    folder: Peldank
+    width: Firehî
+    uploaded_on: Barkirî li ser
+    height: Bilindahî
+    charset: Tîpên Nivîsê
+    duration: Mawe
+    focal_point_x: Koordînata-X
+    focal_point_y: Koordînata-Y
+  directus_users:
+    first_name: Navê Pêşîn
+    last_name: Navê Paşîn
+    email: E-peyam
+    password: Şîfre
+    avatar: Avatar
+    location: Cih
+    title: Sernav
+    description: Danasîn
+    tags: Nasname
+    user_preferences: Tercîhên Bikarhêner
+    language: Ziman
+    tfa_secret: Rastpêkirina Du-Faktor
+    admin_options: Vebijêrkên Rêveber
+    status: Rewş
+    status_draft: Reşnivîs
+    status_invited: Vexwendî
+    status_unverified: Nerast
+    status_active: Çalak
+    status_suspended: Rawestandî
+    status_archived: Arşîvkirî
+    role: Rol
+    token: Token
+    provider: Pêşkêşkar
+    external_identifier: Nasnameya Derve
+    last_page: Rûpela Dawî
+    last_access: Gihîştina Dawî
+    email_notifications: Agahdariyên E-peyamê
+    appearance: Xuyang
+    theme_light: Temaya Ronî
+    theme_dark: Temaya Tarî
+    theme_light_overrides: Taybetkarina Temaya Ronî
+    theme_dark_overrides: Taybetkarina Temaya Tarî
+  directus_settings:
+    jpg: JPEG
+    png: PNG
+    webP: WebP
+    tiff: Tiff
+    avif: AVIF
+    reporting: Raportiraport
+    mapping: Nexşekirin
+    basemaps: Nexşeyên Bingehîn
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Şêwaza Mapbox
+    mapbox_key: Tokena Gihîştina Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    attribution: Atribut
+    attribution_placeholder: '© OpenStreetMap contributors'
+    transforms_note: Navê metoda Sharp û argumentên wê. Ji bo bêtir agahiyê binêre https://sharp.pixelplumbing.com/api-constructor.
+    additional_transforms: Transformasyonên Zêde
+    project_name: Navê Projeyê
+    project_descriptor: Danasîna Projeyê
+    project_url: URL ya Projeyê
+    project_color: Rengê Projeyê
+    project_logo: Logoya Projeyê
+    default_language: Zimanê Standard
+    branding: Markalandin
+    public_foreground: Pêşa Giştî
+    public_background: Paşa Giştî
+    public_note: Nota Giştî
+    theming: Standardên Temayê
+    default_appearance: Xuyanga Destpêkê
+    default_theme_light: Temaya Ronî ya Destpêkê
+    default_theme_dark: Temaya Tarî ya Destpêkê
+    auth_password_policy: Polîtikaya Şîfreya Rastpêkirinê
+    auth_login_attempts: Hewlên Têketina Rastpêkirinê
+    files_and_thumbnails: Pel & Hilanîn
+    storage_default_folder: Peldanka Standard
+    storage_asset_presets: Pêşmîhengkirinên Transformasyonê
+    storage_asset_transform: Transformasyonên Destûrdar
+    overrides: Serdabiriyên Sepanê
+    custom_css: CSS ya Taybet
+    module_bar: Darika Modulê
+    transformations_all: Hemû transformasyonan destûr bide
+    transformations_none: Transformasyonan neçalak bike
+    transformations_presets: Transformasyonan bi pêşmîhengkiriyên jêrîn sînordar bike
+    image_editor: Edîtora Wêneyê
+    custom_aspect_ratios: Rêjeyên Rûyê yên Taybet
+    theme_light_overrides: Taybetkarina Temaya Ronî
+    theme_dark_overrides: Taybetkarina Temaya Tarî
+    public_registration: Qeydkirina Bikarhêner
+    public_registration_note: Destûr dide bikarhêneran ku bi rêya [rêya qeydkirinê](/admin/register) qeyd bibin.
+    public_registration_role: Rola Bikarhêner
+    public_registration_role_note: Ev rol ji bikarhênerên ku bi vê rêbazê qeyd dibin re tê dayîn. Bandorê li bikarhênerên ku jixwe qeyd bûne nake.
+    public_registration_email_filter: Parzûna Navnîşana E-peyamê
+    public_registration_email_filter_note: Tenê navnîşanên e-peyamê yên ku bi vê parzûnê re lihev dikin dikarin qeyd bibin.
+    public_registration_verify_email: E-peyamê Rast Bike
+    public_registration_verify_email_note: E-peyamek ji bikarhênerê ku qeyd dibe re dişîne û jê dixwaze ku beriya têketinê li girêdana rastpêkirinê bitikîne.
+    visual_editor_urls: URL yên Edîtora Dîtbarî
+  directus_shares:
+    name: Nav
+    role: Rol
+    password: Şîfre
+    date_start: Dîroka Destpêkê
+    date_end: Dîroka Dawiyê
+    max_uses: Bikaranînên Herî Zêde
+    times_used: Çend Caran Bikar Hatiye
+  directus_fields:
+    collection: Navê Koleksiyonê
+    icon: Îkona Koleksiyonê
+    note: Not
+    hidden: Veşartî
+    singleton: Yekta
+    translation: Wergerînên Navê Qadê
+    display_template: Şablon
+  directus_roles:
+    name: Navê Rolê
+    icon: Îkona Rolê
+    description: Danasîn
+    users: Bikarhênerên di Rolê de
+    parent: Rola Dê
+    children: Rolên Zarok
+  directus_policies:
+    name: Navê Polîtîkayê
+    description: Danasîn
+    app_access: Gihîştina Sepanê
+    admin_access: Gihîştina Rêveber
+    ip_access: Gihîştina IP
+    enforce_tfa: 2FA Mecbûr Bike
+  directus_webhooks:
+    name: Nav
+    method: Rêbaz
+    status: Rewş
+    data: Dane
+    header: Sernav
+    value: Nirx
+    headers: Sernavên Daxwazê
+    data_label: Daneyên Bûyerê Bişîne
+    triggers: Tetîk
+    actions: Çalakî
+    collections: Koleksiyon
+field_options:
+  directus_settings:
+    project_name_placeholder: Projeya min...
+    project_color_note: Paşa Têketin & Logoyê
+    project_logo_note: SVG/PNG ya Spî 40×40
+    project_favicon_note: 32×32 ICO
+    public_note_placeholder: Peyamek kurt a giştî ku piştgiriya formatkirina markdownê dike...
+    security_divider_title: Ewlehî
+    auth_password_policy:
+      none_text: Ti Yek - Nayê Şîretkirin
+      weak_text: Qels - Herî Kêm 8 Tîp
+      strong_text: Xurt - Mezin / Biçûk / Hejmar / Taybet
+    storage_asset_presets:
+      fit_label: Guncandin
+      upscaling: Mezinkirin
+      fit:
+        contain_text: Hilan (rêjeya rûyê biparêze)
+        cover_text: Dapoşe (mezinahiya rast mecbûr dike)
+        fit_text: Li hundur biguncîne
+        outside_text: Li derve biguncîne
+    additional_transforms: Transformasyonên Zêde
+    transforms_note: Navê metoda Sharp û argumentên wê. Ji bo bêtir agahiyê binêre https://sharp.pixelplumbing.com/api-constructor.
+    mapbox_key: Tokena Gihîştina Mapbox
+    mapbox_placeholder: pk.eyJ1Ijo.....
+    basemaps: Nexşeyên Bingehîn
+    basemaps_name_placeholder: Navê nexşeya bingehîn binivîse...
+    basemaps_raster: Raster
+    basemaps_tile: Raster TileJSON
+    basemaps_style: Şêwaza Mapbox
+    files_divider_title: Pel & Wêneguhêzk
+    overrides_divider_title: Serdabiriyên Sepanê
+  directus_activity:
+    login: Têketin
+    create: Afirandin
+    update: Nûkirin
+    delete: Jêbirin
+  directus_collections:
+    track_activity_revisions: Çalakî & Serastikirina Bişopîne
+    only_track_activity: Tenê Çalakiyê Bişopîne
+    do_not_track_anything: Tiştek Neşopîne
+    collection_setup: Mîhengkirina Koleksiyonê
+    note_placeholder: Danasînek ji bo vê koleksiyonê...
+    hidden_label: Di Sepanê de veşêre
+    singleton: Wek tiştê tenê bi kar bîne
+    language: Ziman
+    translation: Wergerîn
+    translation_placeholder: Wergerînek binivîse...
+    collection_name: Navê Koleksiyonê
+    singular_unit: Yekejimarî
+    plural_unit: Pirjimarî
+    archive_divider: Arşîv
+    archive_field_placeholder: Qadekê hilbijêre...
+    archive_app_filter: Parzûna Arşîva Sepanê Çalak Bike
+    archive_value: Nirx dema arşîvkirinê...
+    unarchive_value: Nirx dema naarşîvkirinê...
+    sort_divider: Rêzkirin
+    sort_field: Qadekê hilbijêre...
+    accountability_divider: Berpirsiyarî
+    duplication_divider: Dubarekirin
+    preview_divider: Pêşdîtin
+    content_versioning_divider: Guhertoparêziya Naveroka
+    enable_versioning: Guhertoparêziyê Çalak Bike
+  directus_files:
+    title: Sernavek yekta...
+    description: Danasînek nebicî...
+    location: Cihek nebicî...
+    storage_divider: Navlêkirina Pelê
+    focal_point_divider: Xala Fokusê
+    filename_disk: Nav li hilanîna diskê...
+    filename_download: Nav dema daxistinê...
+  directus_policies:
+    name: Navek yekta ji bo vê polîtîkayê...
+    description: Danasînek ji bo vê polîtîkayê...
+    ip_access: Navnîşanên IP yên destûrdar, navberên IP û CIDR blok zêde bike. Ji bo destûrdana hemûyan vala bihêle...
+    enforce_tfa: Rastpêkirina Du-Faktor Mecbûr Bike
+    assigned_to: Dayînî
+  directus_roles:
+    name: Navê yekta ji bo vê rolê...
+    description: Danasînek ji bo vê rolê...
+    fields:
+      icon_name: Îkon
+      name_name: Nav
+      name_placeholder: Sernavekê binivîse...
+      link_name: Girêdan
+      link_placeholder: URL ya rêjeyî an reha...
+    parent_note: Rola dê ya nebicî ku ev rol destûran ji wê werdigire
+    children_note: Rolên zarok ên hiyerarşîk ku destûrên vê rolê werdigirin
+    collections_name: Koleksiyon
+    collections_addLabel: Koleksiyonê Zêde Bike...
+  directus_users:
+    preferences_divider: Tercîhên Bikarhêner
+    dropdown_auto: Otomatîk (Li gorî Pergalê)
+    dropdown_light: Moda Ronî
+    dropdown_dark: Moda Tarî
+    admin_divider: Vebijêrkên Rêveber
+    status_dropdown_draft: Reşnivîs
+    status_dropdown_invited: Vexwendî
+    status_dropdown_active: Çalak
+    status_dropdown_suspended: Rawestandî
+    status_dropdown_archived: Arşîvkirî
+    token: Tokena gihîştina ewle binivîse...
+  directus_webhooks:
+    status_options_active: Çalak
+    status_options_inactive: Neçalak
+    data_label: Daneyên Bûyerê Bişîne
+    triggers_divider: Tetîk
+    actions_create: Afirandin
+    actions_update: Nûkirin
+    actions_delete: Jêbirin
+    actions_login: Têketin
+    headers:
+      header: Sernav
+      value: Nirx
+      add: Sernavê Zêde Bike
+no_fields_in_collection: 'Hîn ti qad di "{collection}" de tune ne'
+no_value: Ti nirx tune
+do_nothing: Tiştek Neke
+generate_and_save_uuid: UUID Biafirîne û Tomar Bike
+save_current_user_id: ID ya Bikarhênerê Heyî Tomar Bike
+save_current_user_role: Rola Bikarhênerê Heyî Tomar Bike
+save_current_datetime: Dîrok/Dema Niha Tomar Bike
+always_open: Hertim Vekirî
+start_open: Vekirî Destpê Bike
+start_collapsed: Hilweşandî Destpê Bike
+block: Blok
+inline: Navxêz
+comment: Şîrove
+live_preview:
+  enable: Pêşdîtinê Çalak Bike
+  disable: Pêşdîtinê Neçalak Bike
+  change_size: Mezinahiya Nîşandanê Biguherîne
+  refresh: Pêşdîtinê Nûbike
+  new_window: Di Pencereyeke Nû de Veke
+  close_window: Di Dîtina Parvekirî de Veke
+  toggle_3d: 3D Veke/Bigire
+shares: Parvekirî
+unlimited_usage: Bikaranîna bêsînor
+uses_left: Ti bikaranînên mayî tune ne | Yek bikaranîna mayî | {n} bikaranînên mayî
+no_shares: Ti parvekirî tune ne ji bo nîşandanê
+new_share: Parvekirina Nû
+expired: Derbasbûyî
+upcoming: Tê
+share: Parve Bike
+share_item: Hêmanê Parve Bike
+shared_with_you: Hêmanek bi te re hatiye parve kirin
+shared_enter_passcode: Ji bo berdewamiyê, koda te binivîse...
+shared_leave_blank_for_passwordless_access: Ji bo gihîştina bêşîfre vala bihêle
+shared_leave_blank_for_unlimited: Ji bo bêsînor vala bihêle
+shared_times_remaining: Ev girêdan tenê dikare {n} caran were bi kar anîn
+shared_last_remaining: Ev girêdan tenê dikare carekê were bi kar anîn
+shared_uses_left: Ji bo zêdekirina ewlehiyê, ev rûpela parvekirî bi hejmareke sînordar a dîtinan hatiye mîhengkirin. Niha {n} dîtinên mayî hene, piştî vê, rûpel êdî nayê gihîştin.
+share_access_page: Rûpela Parvekirî Bigihîje
+share_access_not_found: Ev rûpela parvekirî an tune ye an jî jixwe ji hejmara herî zêde ya bikaranînên destûrdar derbas kiriye.
+share_access_not_found_desc: Ji kerema xwe têkilî bi bikarhênerek destûrdar ê vê projeyê re bike da ku gihîştinê daxwaz bikî.
+share_access_not_found_title: Rûpela Parvekirî ya Nenas
+share_copy_link: Girêdanê Kopî Bike
+share_copy_link_success: Girêdan Hat Kopîkirin
+share_copy_link_error: Nikare Girêdanê Kopî Bike
+share_send_link: Girêdanê Bişîne
+relational_triggers: Tetîkên Têkildar
+referential_action_field_label_m2o: Li ser Jêbirina {collection}...
+referential_action_field_label_o2m: Li ser Nehilbijartina {collection}...
+referential_action_no_action: Jêbirinê nehêle
+referential_action_cascade: Hêmana {collection} jê bibe (cascade)
+referential_action_set_null: Qada {field} null bike
+referential_action_set_default: Qada {field} vegerîne nirxa wê ya standard
+choose_action: Çalakiyê Hilbijêre
+continue_label: Berdewam Bike
+continue_as: >-
+  {name} niha hate rastpêkirin. Heke tu vê hesabê nas dikî, berdewam bitikîne.
+editing_role: 'Rola {role}'
+editing_policy: 'Polîtîkaya {policy}'
+no_permissions: Ti Destûr Tune
+permission_add_collection: Koleksiyonê Zêde Bike
+creating_webhook: Webhookê Tê Afirandin
+default_label: Standard
+delete_label: Jê Bibe
+delete_are_you_sure: >-
+  Ev çalakî daîmî ye û nayê vegerandin. Tu bi rastî dixwazî berdewam bikî?
+delete_field_are_you_sure: >-
+  Tu bi rastî dixwazî qada "{field}" jê bibî? Ev çalakî nayê vegerandin.
+description: Danasîn
+done: Qediya
+duplicate: Dubare Bike
+limit: Sînor
+email: E-peyam
+embed: Nefiskirin
+fallback_icon: Îkona Vegerînê
+field: Qad | Qad
+file: Pel
+file_library: Pirtûkxaneya Pelan
+forgot_password: Şîfre Hate Jibîrkirin
+hidden: Veşartî
+hidden_in_group: Di {group} de veşartî
+icon: Îkon
+info: Agahî
+normal: Asayî
+success: Serkeftî
+warning: Hişyarî
+danger: Talûke
+colors:
+  purple: Mor
+  blue: Şîn
+  green: Kesk
+  yellow: Zer
+  orange: Pirteqalî
+  red: Sor
+  black: Reş
+  gray: Gewr
+  white: Spî
+junction_collection: Koleksiyona Junksiyonê
+latency: Derengî
+login: Têkeve
+my_activity: Çalakiya Min
+not_authenticated: Nerastpêkirî
+authenticated: Rastpêkirî
+options: Vebijêrk
+otp: Şîfreya Yek-Carî
+password: Şîfre
+confirm_password: Şîfreyê Piştrast Bike
+permissions: Destûr
+relationship: Têkîlî
+reset: Vegerîne
+reset_password: Şîfreyê Vegerîne
+revisions: Serastkirin
+no_revisions: Hîna Ti Serastkirin Tunene
+no_logs: Hîna Ti Têketin Tunene
+revert: Vegerîne
+save: Tomar Bike
+schema: Şêma
+search: Lêgerîn
+select_existing: Yê Heyî Hilbijêre
+select_field_type: Cureyê qadê hilbijêre
+select_interface: Navrûyek hilbijêre
+select_display: Nîşandanek hilbijêre
+settings: Mîhengkarî
+register: Qeyd Bibe
+registration_successful_headline: Serkeftî!
+registration_successful_note: Tu dikarî niha berê xwe bidî rûpela têketinê.
+registration_successful_check_email_note: |
+  Ji kerema xwe bibe bîra te ku berî ku tu karibî têkevî, divê tu navnîşana xwe ya e-peyamê rast bikî bi tikandina li ser girêdana rastpêkirinê ya ku ji te re hatî şandin.
+dont_have_an_account: Hesabek te tune ye?
+already_have_an_account: Jixwe hesabek te heye?
+sign_up_now: Niha qeyd bibe
+sign_in: Têkeve
+sign_out: Derkeve
+sign_out_confirm: Tu bi rastî dixwazî derkevî?
+something_went_wrong: Tiştek çewt çû.
+sort_direction: Hêla Rêzkirinê
+export_location: Cihê Eksportê
+export_started: Eksport Destpê Kir
+export_started_copy: Eksporta te destpê kiriye. Dema ku amade be ji bo daxistinê, tu yê were agahdar kirin.
+sort_asc: Rêzkirina Hilkişiyayî
+sort_desc: Rêzkirina Daketî
+disable_sort: Rêzkirinê Neçalak Bike
+template: Şablon
+require_value_to_be_set: Hewceyî bi nirxêke heye li ser afirandinê
+translation: Wergerîn
+translation_placeholder: Wergerînek binivîse...
+value: Nirx
+view_project: Projeyê Bibîne
+report_error: Çewtiyê Rapor Bike
+start: Destpê Bike
+table: Tablo
+list: Lîste
+search_filter: Lêgerîn & Parzûn
+enable_search_filter: Lêgerîn & parzûnê çalak bike
+item_link: Girêdana hêmanê
+show_link_to_item: Girêdanek ber bi hêmanê ve nîşan bide
+navigate_to_item: Bigere ber bi Hêmanê ve
+undo_removed_item: Hêmana Rakiri Vegerîne
+remove_item: Hêmanê Rake
+delete_item: Hêmanê Jê Bibe
+pause: Rawestîne
+resume: Berdewam Bike
+interfaces:
+  list-m2a:
+    prefix_note: Bi xwerustî navê koleksiyona hêmana têkildar bi kar tîne.
+    sorting_disabled: Rêzkirin neçalak e ji ber ku zêdetir hêman hene ku nikarin di rûpelekê de bin.
+  filter:
+    name: Parzûn
+    description: Objeyek parzûnê mîheng bike.
+    add_filter: Parzûnê Zêde Bike
+    add_group: Koma û / an
+    add_value: Nirxê Zêde Bike
+    logic_type_and: Û
+    logic_type_or: AN
+    all: Hemû
+    any: Her
+    and: û
+    of_the_following: ji yên jêrîn
+    no_rules: Ti rêzikên mîhengkirî nînin
+    change_value: Bitikîne ji bo guherandina nirxê
+    placeholder: Rêzikan bikişînin vir
+    add_key_placeholder: Kilîlek zêde bike û enter bitikîne...
+  fields:
+    name: Qad
+  group-accordion:
+    name: Akordion
+    description: Qad an komên wekî beşên akordionê nîşan bide
+    start: Destpê Bike
+    all_closed: Hemû Girtî
+    first_opened: Ya Ewil Vekirî
+    all_opened: Hemû Vekirî
+    accordion_mode: Moda Akordionê
+    max_one_section_open: Herî Zêde 1 Beş Vekirî
+  presentation-links:
+    presentation-links: Girêdanên Bişkokê
+    links: Girêdan
+    description: Bişkokên girêdanê yên veavakirî ji bo destpêkirina URLên dînamîk
+    style: Şêwaz
+    primary: Sereke
+    link: Girêdan
+    button: Bişkok
+    error: Nikare çalakiyê bimeşîne
+  select-multiple-checkbox:
+    checkboxes: Qutiyên Kontrolê
+    description: Bi rêya qutiyên kontrolê di navbera çendîn vebijêrkan de hilbijêre
+    allow_other: Yên Din Destûr Bide
+    show_more: '{count} bêtir nîşan bide'
+    items_shown: Hêmanên Xuyakirî
+  select-multiple-checkbox-tree:
+    name: Qutiyên Kontrolê (Dar)
+    description: Bi rêya qutiyên kontrolê yên berhev di navbera çendîn vebijêrkan de hilbijêre
+    value_combining: Kombûna Nirxê
+    value_combining_note: Kontrol dike ka kîjan nirx tê hilanîn dema ku hilbijartinên berhev tên kirin.
+    show_all: Hemûyan Nîşan Bide
+    show_selected: Hilbijartî Nîşan Bide
+  input-code:
+    code: Kod
+    description: Kod binivîse an parve bike
+    line_number: Hejmara Rêzikê
+    line_wrapping: Pêçana Rêzikê
+    placeholder: Kodê li vir binivîse...
+  system-collection:
+    collection: Koleksiyon
+    description: Di navbera koleksiyonên heyî de hilbijêre
+    include_system_collections: Koleksiyonên Pergalê Tevlî Bike
+  system-collections:
+    collections: Koleksiyon
+    description: Di navbera koleksiyonên heyî de hilbijêre
+    include_system_collections: Koleksiyonên Pergalê Tevlî Bike
+  select-color:
+    color: Reng
+    description: Nirxek rengê binivîse an hilbijêre
+    placeholder: Rengekê hilbijêre...
+    preset_colors: Rengên Pêşmîhengkirî
+    opacity: Hêlîn
+    preset_colors_add_label: Rengê nû zêde bike...
+    name_placeholder: Navê rengê binivîse...
+  datetime:
+    datetime: DîrokDem
+    description: Dîrok û deman binivîse
+    include_seconds: Saniyan Tevlî Bike
+    set_to_now: Dayne li Niha
+    use_24: Formata 24-Saetî Bikar Bîne
+    placeholder: Dîrokdemek hilbijêre...
+  system-fields:
+    select_a_collection: Koleksiyonekê Hilbijêre
+    no_fields: Ti qad tunin
+  system-display-template:
+    display-template: Şablona Nîşandanê
+    description: Nivîsa girtî û nirxên qada dînamîk tevlihev bike
+    collection_field: Qada koleksiyonê
+    collection_field_not_setup: Vebijêrka qada koleksiyonê şaş mîhengkirî ye
+    select_a_collection: Koleksiyonekê Hilbijêre
+  presentation-divider:
+    divider: Dabeşker
+    description: Qadan bi şanenavan dabeş bike
+    title_placeholder: Sernavek binivîse, an vala bihêle da ku tenê xêzek nîşan bide...
+    inline_title: Sernava Navxêz
+    inline_title_label: Sernavê di hundirê xêzê de nîşan bide
+    margin_top: Kenar li Jor
+    margin_top_label: Kenarê jorîn zêde bike
+  select-dropdown:
+    description: Nirxekê ji dropdownê hilbijêre
+    choices_placeholder: Bijarek nû zêde bike
+    allow_other: Yên Din Destûr Bide
+    allow_other_label: Nirxên Din Destûr Bide
+    allow_none: Vala Destûr Bide
+    allow_none_label: Hilbijartina Vala Destûr Bide
+    choices_name_placeholder: Navek binivîse...
+    choices_value_placeholder: Nirxek binivîse...
+    preview_threshold: Sînora Pêşdîtinê
+  select-multiple-dropdown:
+    select-multiple-dropdown: Dropdown (Pirjimar)
+    description: Pirjimar nirxan ji dropdownê hilbijêre
+  file:
+    file: Pel
+    description: Pelek hilbijêre an barke
+  files:
+    files: Pel
+    description: Çend pelan hilbijêre an barke
+  input-hash:
+    hash: Hash
+    description: Nirxek binivîse ku bê hashkirin
+    masked: Nixumandî
+    masked_label: Nirxên rastîn veşêre
+  select-icon:
+    icon: Îkon
+    description: Îkonek ji dropdownê hilbijêre
+    search_for_icon: Îkon lê bigere...
+  file-image:
+    image: Wêne
+    description: Wênek hilbijêre an barke
+    crop: Birrîn Ji Bo Guncînê
+    crop_label: Wêne li gorî pêwîstiyê bibirrîne
+    letterbox: Qutiya Nameyê
+    letterbox_label: Kenarê li pêşdîtina wêneyê zêde bike
+  system-interface:
+    interface: Navrû
+    description: Navrûyek heyî hilbijêre
+    placeholder: Navrûyek hilbijêre...
+  system-interface-options:
+    interface-options: Vebijêrkên Navrûyê
+    description: Modalek ji bo hilbijartina vebijêrkên navrûyê
+  system-display:
+    display: Nîşandan
+    description: Nîşandanek heyî hilbijêre
+    placeholder: Nîşandanek hilbijêre...
+  system-display-options:
+    display-options: Vebijêrkên Nîşandanê
+    description: Modalek ji bo hilbijartina vebijêrkên nîşandanê
+  list-m2m:
+    many-to-many: Gelek-bi-Gelek
+    description: Çend hêmanên junksiyonê yên têkildar hilbijêre
+    columns_configure_notice: Tu dikarî stûnan piştî afirandina vê qadê mîheng bikî.
+    display_template_configure_notice: Tu dikarî şablona nîşandanê piştî afirandina vê qadê mîheng bikî.
+  select-dropdown-m2o:
+    many-to-one: Gelek-bi-Yek
+    description: Hêmanek têkildar a tenê hilbijêre
+    display_template: Şablona Nîşandanê
+  collection-item-dropdown:
+    collection-item-dropdown: Dropdowna Hêmana Koleksiyonê
+    description: Hêmanek ji koleksiyonê di formata JSON de hilbijêre
+  input-rich-text-md:
+    markdown: Markdown
+    description: Markdownê binivîse û pêşdîtinê bibîne
+    edit: Biguherîne
+    preview: Pêşdîtin
+    editorFont: Fonta Edîtorê
+    previewFont: Fonta Pêşdîtinê
+    default_view: Dîtina Standard
+    default_view_editor: Edîtor
+    default_view_preview: Pêşdîtin
+    customSyntax: Blokên Taybet
+    customSyntax_label: Cureyên hevoksaziya taybet zêde bike
+    customSyntax_add: Hevoksaziya taybet zêde bike
+    box: Blok / Navxêz
+    imageToken: Tokena Gihîştina Girtî
+    imageToken_label: Tokena gihîştina girtî li URLa tiştê tê zêdekirin
+  map:
+    map: Nexşe
+    description: Cihek li ser nexşeyê hilbijêre
+    zoom: Mezinkirin
+    geometry_type: Cureya Geometriyê
+    geometry_format: Formata Geometriyê
+    default_view: Dîtina Standard
+    invalid_options: Vebijêrkên nederbasdar
+    invalid_format: Formata nederbasdar ({format})
+    unexpected_geometry: '{expected} hatibû hêvîkirin, {got} hat dîtin.'
+    fit_bounds: Dîtinê li daneyan bicih bike
+    native: Xwecihî
+    geojson: GeoJSON
+    lnglat: Hêlana Aso, Hêlana Stûnî
+    wkt: WKT
+    wkb: WKB
+    click_to_select: Bitikîne ji bo hilbijartina {geometry}
+  presentation-notice:
+    notice: Agahî
+    description: Agahiyek kurt nîşan bide
+    text: Naveroka agahiyê li vir binivîse...
+    no_text: Ti nivîs nehatiye mîhengkirin...
+  list-o2m:
+    one-to-many: Yek-bi-Gelek
+    description: Çend hêmanên têkildar hilbijêre
+    no_collection: Koleksiyon nehat dîtin
+  system-folder:
+    folder: Peldanka Bingehîn
+    description: Peldankekê hilbijêre
+    field_hint: Peldanka standard ji bo pelên barkirî bêyî ku peldank were diyarkirin. Bandorê li pelên heyî nake.
+    root_name: Bingeha Pirtûkxaneya Pelan
+    system_default: Standarda Pergalê
+  select-radio:
+    radio-buttons: Bişkokên Radyoyê
+    description: Yek ji çend bijaran hilbijêre
+  list:
+    repeater: Dubareker
+    description: Çend têketinên heman şêweyî biafirîne
+    edit_fields: Qadan Biguherîne
+    add_label: 'Nîşaneya "Nû Biafirîne"'
+    sort: Rêz bike
+    sort_placeholder: Manual
+    field_note_placeholder: Nota qadê binivîse...
+    incompatible_data: Daneyên heyî bi navrûya dubarekê re ne lihev in û dema ku hêman li dubarekê tên zêdekirin dê werin guhertin
+    interface_group: Vebijêrkên Navrûyê
+    display_group: Vebijêrkên Nîşandanê
+  slider:
+    slider: Lîstik
+    description: Hejmarek bi lîstikê hilbijêre
+    always_show_value: Hertim nirxê nîşan bide
+  tags:
+    tags: Nasname
+    description: Nasnameyan hilbijêre an zêde bike
+    whitespace: Valahî
+    hyphen: Bi nîşana bendê re biguherîne
+    underscore: Bi nîşana binqet re biguherîne
+    remove: Valahiyê rake
+    capitalization: Mezinnivîsîn
+    uppercase: Veguhêze Mezin
+    lowercase: Veguhêze Biçûk
+    auto_formatter: Otofermatkera Sernavê Bi Kar Bîne
+    alphabetize: Alfabetîzekirin
+    alphabetize_label: Rêzkirina Alfabetîk Mecbûr Bike
+    add_tags: Nasnamek zêde bike û enter bitikîne...
+  input:
+    input: Têketin
+    description: Bi destî nirxek binivîse
+    trim: Kurtbir
+    trim_label: Destpêk û dawiyê kurtbir bike
+    mask: Nixumandî
+    mask_label: Nirxa rastî veşêre
+    clear: Nirxa Paqijkirî
+    clear_label: Wek rêzeka vala tomar bike
+    minimum_value: Nirxa Kêmtirîn
+    maximum_value: Nirxa Zêdetirîn
+    step_interval: Navbera Gavê
+    slug: Slugify
+    slug_label: Nirxa hatî nivîsandin ji bo URLê ewle bike
+  input-multiline:
+    textarea: Qada Nivîsê
+    description: Nivîsa xwerû ya pirxêz binivîse
+  input-translated-string:
+    input-translated-string: Rêzekên Wergerandî
+    description: Wergerîna taybet hilbijêre an zêde bike
+    search_placeholder: Lêgerîn...
+    new_custom_translation: Wergerîna Taybet a Nû
+  boolean:
+    toggle: Biguherîne
+    description: Di navbera vekirî û girtî de biguherîne
+    color_on: Rengê Vekirî
+    color_off: Rengê Girtî
+    label_placeholder: Nîşanekê binivîse...
+    label_default: Çalakkirî
+  translations:
+    display_template: Şablona Nîşandanê
+    no_collection: Ti Koleksiyon Tune
+    toggle_split_view: Dîtina Parvekirî Biguherîne
+    enable: Çalak Bike
+    default_split_view_state: Rewşa Standard a Dîtina Parvekirî
+    user_language: Zimanê Heyî yê Bikarhêner Bi Kar Bîne
+    default_language: Zimanê Standard
+    language_field: Qada Nîşanderê Ziman
+    language_direction_field: Qada Hêla Zimanê
+  list-o2m-tree-view:
+    description: Dîtina darê ji bo hêmanên yek-bi-gelek ên rekûrsîv
+    recursive_only: Navrûya dîtina darê tenê ji bo têkiliyên rekûrsîv dixebite.
+  user:
+    user: Bikarhêner
+    description: Bikarhênerek directus a heyî hilbijêre
+    select_mode: Moda Hilbijartinê
+    modes:
+      auto: Otomatîk
+      dropdown: Dropdown
+      modal: Modal
+  input-rich-text-html:
+    wysiwyg: WYSIWYG
+    description: Edîtorek nivîsa dewlemend a ku naveroka HTML dinivîse
+    toolbar: Darika Amûran
+    custom_formats: Formatên Taybet
+    custom_formats_note: Lîsteya Formatên Naveroka TinyMCE. Ji bo bêtir agahdariyê, belgeya TinyMCE ya derbarê [Formata Naveroka](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) binêre.
+    options_override: Serdabiriya Vebijêrkan
+    options_override_note: Mifteyen Formatkarina Bikarhêner a TinyMCE û nirxên wan. Ji bo bêtir agahdariyê, belgeya TinyMCE ya derbarê [Vebijêrkên Formatkarina Bikarhêner](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) binêre.
+    folder_note: Peldank ji bo pelên barkirî. Bandorê li pelên heyî nake.
+    imageToken: Tokena Gihîştina Girtî
+    imageToken_label: Tokena gihîştina girtî li URLa tiştê tê zêdekirin
+  input-block-editor:
+    input-block-editor: Edîtora Blokê
+    description: Edîtorek bi şêwaza blokê ji bo çîrokên medyaya dewlemend, daneyên paqij di JSONê de bi karanîna Editor.js derdixe
+    tools: Darika Amûran
+    tools_options:
+      header: Sernav
+      nestedlist: Lîste
+      embed: Nefiş
+      paragraph: Paragrafa
+      code: Kod
+      image: Wêne
+      attaches: Girêdan
+      table: Tablo
+      quote: Girtinek
+      underline: Binxêz
+      inlinecode: Koda Navxêz
+      delimiter: Cihkêr
+      checklist: Lîsteya Kontrolê
+      toggle: Bloka Vekir-Girtinê
+      alignment: Rêzkirin
+      raw: HTML ya Xav
+  input-autocomplete-api:
+    input-autocomplete-api: Têketina Xwetemambûnê (API)
+    description: Lêgerîna pêşnûçekirinê ji bo nirxên API ya derve.
+    results_path: Rêya Encaman
+    value_path: Rêya Nirxê
+    text_path: Rêya Nivîsê
+    trigger: Tetîk
+    rate: Rêje
+  group-raw:
+    name: Koma Xav
+    description: Qadan wekî ku hene bikişîne
+  group-detail:
+    name: Koma Hûrgiliyê
+    description: Qadan wekî beşek hilweşanbar bikişîne
+    show_header: Sernavê Komê Nîşan Bide
+    header_icon: Îkona Sernavê
+    header_color: Rengê Sernavê
+    start_open: Vekirî Destpê Bike
+    start_closed: Girtî Destpê Bike
+  system-token:
+    system-token: Token
+    description: Tokena gihîştina girtî birêve bibe
+    placeholder: Bitikîne li "Tokena Biafirîne" ji bo afirandina tokena nû ya gihîştina girtî
+    value_securely_saved: Nirx bi Ewlehî Tê Tomarkirin
+    generate: Tokena Biafirîne
+    regenerate: Tokena Dîsa Biafirîne
+    generate_success_copy: Piştrast be ku tu tokena jorîn kopî dikî û rezerv dikî. Ji ber sedemên ewlehiyê, piştî tomarkirinê û dûrketina ji vê rûpelê, tu nikarî tokenê cardin bibînî.
+    remove_token: Tokenê Rake
+  system-raw-editor:
+    system-raw-editor: Edîtora Xav
+    description: Destûr dide nivîsandina nirxên xav an şablonsaziya bi mustacheê
+  input-password:
+    input-password: Têketina Şîfreyê
+    description: Têketina şîfreyê bi bişkoka vejartina nirx
+displays:
+  translations:
+    translations: Wergerîn
+    description: Pêşdîtina wergerînan
+    enable: Çalak Bike
+    user_language: Zimanê Heyî yê Bikarhêner Bi Kar Bîne
+    default_language: Zimanê Standard
+    language_field: Qada Nîşanderê Ziman
+  boolean:
+    boolean: Boolean
+    description: Rewşên vekirî û girtî nîşan bide
+    label_on: Nîşaneya Vekirî
+    label_on_placeholder: Nîşaneya vekirî binivîse...
+    label_off: Nîşaneya Girtî
+    label_off_placeholder: Nîşaneya girtî binivîse...
+    icon_on: Îkona Vekirî
+    icon_off: Îkona Girtî
+    color_on: Rengê Vekirî
+    color_off: Rengê Girtî
+  collection:
+    collection: Koleksiyon
+    description: Koleksiyonekê nîşan bide
+    icon_label: Îkona koleksiyonê nîşan bide
+  color:
+    color: Reng
+    description: Noqtek rengkirî nîşan bide
+    default_color: Rengê Standard
+  datetime:
+    datetime: DîrokDem
+    description: Nirxên têkildarî dem nîşan bide
+    format: Format
+    format_note: >-
+      Formata taybet __[Xişteya Hêmayên Qada Dîrokê](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)__ qebûl dike
+    long: Dirêj
+    short: Kurt
+    relative: Têkildar
+    relative_label: 'Dema têkildar nîşan bide, mînak: 5 xulek berê'
+    suffix: Paşgir
+    suffix_label: Nîşanderê têkildar nîşan bide
+    suffix_note: Peyvan wek 'di' û 'berê' bi kar tîne
+    strict: Hişk
+    strict_label: Yekîneyên hişk bi kar bîne
+    strict_note: Peyvan wek 'nêzî', 'zêdetir', 'kêmtir' rake
+    round: Gilover
+    round_note: Fonksiyonek giloverbûnê hilbijêre
+    down: Jêr
+    nearest: Nêzîktirîn
+    up: Jor
+  file:
+    file: Pel
+    description: Pelan nîşan bide
+  filesize:
+    filesize: Mezinahiya Pelê
+    description: Mezinahiya pelekê nîşan bide
+  formatted-value:
+    formatted-value: Nirxa Formatkirî
+    description: Guhertoyeke formatkirî ya nivîsê nîşan bide
+    format: Format
+    format_label: Format bike otomatîk
+    font: Font
+    font_sans_serif: Sans serif
+    font_serif: Serif
+    font_monospace: Monospace
+    bold: Qalind
+    bold_label: Şêwaza qalind bi kar bîne
+    italic: Îtalîk
+    italic_label: Şêwaza îtalîk bi kar bîne
+    prefix: Pêşgir
+    prefix_label: Nivîsê li pêş lê zêde bike
+    suffix: Paşgir
+    suffix_label: Nivîsa Lêzêdekirî
+    color: Reng
+    background: Paş
+    icon: Îkon
+    border: Sînor
+    border_label: Sînor nîşan bide
+    mask: Nixumandî
+    mask_label: Nirxa rastî veşêre
+    text: Nivîs
+    text_placeholder: Serdabiriya nirxa nebicî...
+  formatted-json-value:
+    formatted-json-value: Nirxa JSONê ya formatkirî
+    description: Guhertoyeke formatkirî ya objeyê nîşan bide
+  hash:
+    hash: Hash
+    description: Guhertoyeke nihênîkirî ya nirxê nîşan bide
+  icon:
+    icon: Îkon
+    description: Îkonekê nîşan bide
+    filled: Tijîkirî
+    filled_label: Varyanta tijîkirî bi kar bîne
+  image:
+    image: Wêne
+    description: Pêşdîtineke biçûk a wêneyî nîşan bide
+    circle: Xelek
+    circle_label: Wek xelekê nîşan bide
+  labels:
+    labels: Nîşane
+    description: Nîşanek tenê an lîsteyek nîşanan nîşan bide
+    default_foreground: Pêşa Standard
+    default_background: Paşa Standard
+    format_label: Her nîşanê format bike
+    show_as_dot: Wek Noqtê Nîşan Bide
+    choices_value_placeholder: Nirxek binivîse...
+    choices_text_placeholder: Nivîsek binivîse...
+  mime-type:
+    mime-type: Cureya MIME
+    description: Cureya MIMEê ya pelekê nîşan bide
+    extension_only: Tenê Pêvek
+    extension_only_label: Tenê pêveka pelê nîşan bide
+  rating:
+    rating: Nirxandin
+    description: Hejmarek wek stêrk li gorî nirxa herî zêde bibîne
+    simple: Hêsan
+    simple_label: Stêrkan di formatek hêsan de nîşan bide
+  raw:
+    raw: Nirxa Xav
+  related-values:
+    related-values: Nirxên Têkildar
+    description: Nirxên têkildar nîşan bide
+    display_template_configure_notice: Tu dikarî şablona nîşandanê piştî afirandina vê qadê mîheng bikî.
+  user:
+    user: Bikarhêner
+    description: Bikarhênerek directus nîşan bide
+    avatar: Avatar
+    name: Nav
+    both: Herdu
+    circle_label: Bikarhêner di xelekê de nîşan bide
+layouts:
+  cards:
+    cards: Kart
+    image_source: Çavkaniya Wêneyê
+    image_fit: Guncandina Wêneyê
+    crop: Birîn
+    contain: Hilan
+    title: Sernav
+    subtitle: Binsernav
+  tabular:
+    tabular: Tablo
+    spacing: Navber
+    comfortable: Rehet
+    compact: Tenik
+    cozy: Hêsan
+  calendar:
+    calendar: Salname
+    start_date_field: Qada Dîroka Destpêkê
+    end_date_field: Qada Dîroka Dawiyê
+    optional: Nebicî
+    first_day: Roja Ewil a Hefteyê
+  map:
+    map: Nexşe
+    basemap: Nexşeya Bingehîn
+    layers: Qat
+    cluster_options: Vebijêrkên komkirinê
+    cluster: Daneyên Nêzî hev Kom Bike
+    cluster_radius: Tîreya komê
+    cluster_minpoints: Mezinahiya kêmtirîn a komê
+    cluster_maxzoom: Mezinkirina herî zêde ya komkirinê
+    field: Qada Erdnîgariyê
+    invalid_geometry: Geometriya nederbasdar
+    find_location: Cih bibîne...
+    default_template: Bi Karanîna Standarda Koleksiyonê...
+    no_compatible_fields: Ti qadên lihev tune ne
+  kanban:
+    name: Kanban
+    group_field: Kom Bike Li Gorî
+    group_field_placeholder: Qada ku li gorî kom bike...
+    group_title: Sernava Komê
+    group_title_placeholder: Qad ji bo sernavên komê...
+    title: Sernava Kartê
+    title_placeholder: Qada sernava nebicî...
+    text: Nivîsa Kartê
+    text_placeholder: Qada nivîsê ya nebicî...
+    date: Dîroka Kartê
+    date_placeholder: Qada dîrokê ya nebicî...
+    tags: Nasnavên Kartê
+    tags_placeholder: Qada nasnavên nebicî...
+    user: Bikarhênerê Kartê
+    user_placeholder: Qada bikarhêner a nebicî...
+    image: Wêneyê Kartê
+    image_placeholder: Qada wêneyê ya nebicî...
+    image_fit: Guncandina Wêneyê Kartê
+    crop: Birîn
+    advanced: Pêşketî
+    edit_group: Komê Biguherîne
+    delete_group: Komê Jê Bibe
+    add_group: Komê Zêde Bike
+    add_group_placeholder: Sernavek nû yê komê binivîse...
+    show_ungrouped: Nekomkirî Nîşan Bide
+    show: Nîşan Bide
+    no_group: Ti Kom Tune
+horizontal: Aso
+vertical: Stûnî
+axis: Eksen
+x_axis: Eksena-X
+y_axis: Eksena-Y
+y_axis_function: Fonksiyona Eksena-Y
+show_x_only: Tenê Eksena-X Nîşan Bide
+show_y_only: Tenê Eksena-Y Nîşan Bide
+show_data_label: Nîşana Daneyê Nîşan Bide
+both: Herdu
+show_axis_labels: Nîşanên Eksenê Nîşan Bide
+function: Fonksiyon
+half_circle: Nîv Xelek
+full_circle: Xeleka Tije
+stroke_width: Firehiya Xêzê
+rounded_stroke: Xêza Gilover
+thin: Tenik
+medium: Navîn
+broad: Fireh
+show_labels: Nîşanan Nîşan Bide
+show_legend: Şirove Nîşan Bide
+right: Rast
+left: Çep
+donut: Donut
+continuous: Berdewamî
+gap: Navber
+panels:
+  metric:
+    name: Pîvan
+    description: Nirxek tenê li gorî pirsiyarekê nîşan bide
+    field: Qad
+  metric_list:
+    name: Lîsteya Pîvanê
+    description: Pîvanên kombûnê yên koleksiyonekê lîste bike û bibîne
+  time_series:
+    name: Rêzeya Demê
+    description: Xêzek çartê li ser nirxên li ser demê çêbike
+    date_field: Qada Dîrokê
+    value_field: Qada Nirxê
+    fill_type: Cureya Tijîkirinê
+    curve_type: Cureya Xêzê
+    missing_data: Daneya Winda
+  label:
+    name: Nîşane
+    description: Hinek nivîs nîşan bide
+  list:
+    name: Lîste
+    description: Qadên koleksiyonekê parzûn bike û lîste bike
+  barchart:
+    name: Çarta Stûnî
+    description: Çartên stûnî an darikî ji bo berhevkirina komên nirxan
+    horizontal: Aso
+    select_collection: Divê tu koleksiyonekê hilbijêrî.
+  linechart:
+    name: Çarta Xêzî
+    description: Çarta xêzî ji bo berhevkirina guherina qadekê
+    disabled_grouping: Neçalak e dema ku komkirin hatibe hilbijartin.
+    disabled_no_grouping: Neçalak e dema ku komkirin nehatibe hilbijartin.
+    show_marker: Nîşandera Amojekirinan Nîşan Bide
+    curve_type: Cureya Xêzê
+    smooth: Nerm
+    straight: Rast
+    step_line: Xêza Gavbiçav
+    show_legend: Şirove Nîşan Bide
+  meter:
+    name: Pîvan
+    description: Pîvan ji bo şopandina nirxan
+  piechart:
+    name: Çarta Pazî an Geroverek
+    description: Çarta bazinî ku rêjeyên koman li ser stûnekê nîşan dide
+  variable:
+    name: Guheroka Gerdûnî
+    description: Nirxek gerdûnî danê da ku di Parzûnên Panelên din de were bikaranîn
+    variable_key: Kilîla Guherokê
+  relational-variable:
+    name: Guheroka Têkildarî ya Gerdûnî
+    description: Nirxek têkildariya gerdûnî danê da ku di Parzûnên Panelên din de were bikaranîn
+    variable_key: Kilîla Guherokê
+    multiple: Pirjimar
+    multiple-label: Çend hêmanan hilbijêre
+triggers:
+  common:
+    response_body: Naveroka Bersivê
+    response_body_all: Hemû Dane
+    response_body_last: Daneya Operasyona Dawî
+  event:
+    name: Çengala Bûyerê
+    description: Li ser bûyerên platform an daneyê tetîk dibe
+    action: 'Çalakî (Ne-Astengdar)'
+    filter: 'Parzûn (Astengdar)'
+  webhook:
+    name: Webhook
+    error_on_reject: Çewtî li ser Redkirinê
+    description: Li ser daxwaza HTTP ya hatî tetîk dibe
+    method: Rêbaz
+    async: Nehevdem
+  operation:
+    name: Herikîneke Din
+    description: Ji aliyê Herikîneke din ve tê tetîkkirin, ji bo zincîrekirinê
+    preview: Ji aliyê operasyonek di herikîneke cuda de ve tê tetîkkirin
+  schedule:
+    name: Plan (CRON)
+    description: Di demên rêkûpêk de tetîk dibe
+    cron: Navber
+  manual:
+    name: Destî
+    description: Li ser xebitandina destî di koleksiyonên hilbijartî de tetîk dibe
+    collection_and_item: Rûpelên Koleksiyon & Hêmanê
+    collection_only: Tenê Rûpela Koleksiyonê
+    item_only: Tenê Rûpela Hêmanê
+    collection_page: Rûpela Koleksiyonê
+    require_selection: Hilbijartin Pêwîst e
+a_flow_uuid: Herikînekê hilbijêre ji bo tetîkkirinê...
+any_string_or_json: Her rêzek an JSON...
+item_payload_placeholder: Ev e JSONa ku tê bikaranîn ji bo nûkirina nirxên qadê yên hêmanê...
+operation_variables_note: Tu dikarî bigihî daneya herikînê bi guherokên wekî **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** û **{'{'}{'{'}$accountability{'}'}{'}'}**, an jî referansê bidî operasyonên berê bi **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operations:
+  condition:
+    name: Merc
+    description: Herikînekê rêbike li gorî lojîka If / Else
+  exec:
+    name: Koda Bixebitîne
+    description: Koda kêfî bixebitîne ji bo guherandina payloadê
+    modules: 'Ev **modulên Node** dikarin werin bikaranîn:'
+  item-create:
+    name: Daneyê Biafirîne
+    description: Hêmanan di databeyê de biafirîne
+    payload: Payload
+    emit_events: Bûyeran Derxe
+  item-delete:
+    name: Daneyê Jê Bibe
+    description: Hêmanan di databeyê de jê bibe
+    emit_events: Bûyeran Derxe
+    key: ID
+    query: Pirsiyarî
+  item-read:
+    name: Daneyê Bixwîne
+    description: Hêmanan ji databeyê bixwîne
+    key: ID
+    query: Pirsiyarî
+    emit_events: Bûyeran Derxe
+  item-update:
+    name: Daneyê Nûbike
+    description: Hêmanan di databeyê de nûbike
+    emit_events: Bûyeran Derxe
+    key: ID
+    payload: Payload
+    query: Pirsiyarî
+  json-web-token:
+    name: Tokena Web ya JSON (JWT)
+    description: Tokenên Web ên JSON îmze bike û rast bike
+    operation: Operasyon
+    secret: Nihênî
+    secret_placeholder: Nihêniyek binivîse...
+    payload: Payload
+    token: Token
+    token_placeholder: eyJhbGciOi......
+    options: Vebijêrk
+    options_placeholder: 'Ji bo vebijêrkên berdest binêre https://www.npmjs.com/package/jsonwebtoken#usage'
+    sign: Tokenê Îmze Bike
+    verify: Tokenê Rast Bike
+    decode: Tokenê Vekodîne
+  log:
+    name: Li Konsolê Têkeve
+    description: Tiştekê bişîne konsolê
+    message: Peyam
+    message_placeholder: Peyamek binivîse ji bo nîşandana di konsolê de...
+  mail:
+    name: E-peyamê Bişîne
+    description: E-peyamekê bişîne yek an zêdetir kesan
+    to: Ji bo
+    to_placeholder: Navnîşanên e-peyamê zêde bike û enter lê xe...
+    body: Laş
+    template: Şablon
+    data: Dane
+    cc: CC
+    cc_placeholder: Navnîşanên e-peyamê yên CC zêde bike û enter lê xe...
+    bcc: BCC
+    bcc_placeholder: Navnîşanên e-peyamê yên BCC zêde bike û enter lê xe...
+    reply_to: Bersiv Ji Bo
+    reply_to_placeholder: Navnîşanên e-peyamê yên bersiv-ji-bo zêde bike û enter lê xe...
+  notification:
+    name: Agahdarî Bişîne
+    description: Agahdariyeke di-sepanê-de bişîne yek an zêdetir bikarhêneran
+    recipient: Bikarhêner
+    recipient_placeholder: UUIDek binivîse...
+    recipient_note: UUIDa bikarhêner zêde bike û enter lê xe...
+    item_note: Kilîla Hêmanê an URLa Rêjeyî
+    message: Peyam
+    subject: Mijar
+  request:
+    name: Webhook / URL Daxwaz Bike
+    description: 'Daxwazek bişîne URLekê'
+    url: URL
+    url_placeholder: https://example.com/example
+    method: Rêbaz
+    data: Dane
+    headers: Sernav
+    header: Sernav
+    header_placeholder: Rastpêkirin...
+    value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Razên
+    description: Li hejmara diyarkirî ya mîlîsaniyan bisekine
+    milliseconds: Mîlîsaniye
+  transform:
+    name: Payloadê Veguhêze
+    description: JSONa Herikînê biguherîne
+  trigger:
+    name: Herikînê Tetîk Bike
+    description: Vê daneyê bişîne herikîneke din
+    flows: Herikîn
+    flow: Herikîn
+    data: Dane
+    iteration_mode: Moda Dubareyê
+    iteration_mode_note: Mod ji bo dubare kirina li ser rêzekan.
+    serial: Rêzeyî
+    parallel: Hevdem
+    batch: Kom bi kom
+    batch_size: Mezinahiya Komê
+    cache: Kaş
+unit: Yekîne
+standard: Standard
+scientific: Zanistî
+engineering: Endezyarî
+compact: Tenik
+currency: Dirav
+notation: Notatîn
+style: Şêwaz
+fonts:
+  thin: Tenik
+  extra_light: Ronî-Zêde
+  light: Ronî
+  normal: Asayî
+  medium: Navîn
+  semi_bold: Nîv-Qalind
+  bold: Qalind
+  extra_bold: Qalind-Zêde
+  black: Reş
+  italic: Îtalîk
+  oblique: Xwar
+  small: Biçûk
+  large: Mezin
+  auto: Otomatîk
+text_wrap: Pêçana Nivîsê
+center: Nav
+justify: Rastbûn
+text_align: Rêzkirina Nivîsê
+font_weight: Giraniya Fontê
+font_style: Şêwaza Fontê
+font_size: Mezinahiya Fontê
+minimum_fraction_digits: Kêmtirîn Dehdek
+maximum_fraction_digits: Zêdetirîn Dehdek
+show_percentage: Rêjeyê Nîşan Bide
+aggregation: Kombûn
+series_grouping: Komkirina Rêzeyan
+date_precision: Rastiya Dîrokê
+export_dashboard: Daşbordê Derxe
+duplicate_dashboard: Daşbordê Dubare Bike
+search_dashboard: Daşbordê Bigere...
+search_flow: Herikînê Bigere...
+percent: Rêje
+show_password: Şîfreyê nîşan bide
+hide_password: Şîfreyê veşêre

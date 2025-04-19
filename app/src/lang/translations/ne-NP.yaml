@@ -722,7 +722,6 @@ flows: फ्लोहरु
 flow: फ्लो
 select_a_flow: फ्लो चयन गर्नुहोस्
 run_flow_on_current_edited_confirm: यो वस्तु यस फ्लो द्वारा अद्यावधिक हुन सक्छ, के तपाइँ यसलाई कार्यान्वयन गर्न निश्चित हुनुहुन्छ?
-run_flow_success: फ्लो "{flow}" सफलतापूर्वक दौडियो
 field_name_placeholder: फिल्डको नाम प्रविष्ट गर्नुहोस्...
 trigger: ट्रिगर
 trigger_options: ट्रिगर विकल्पहरू

@@ -808,7 +808,6 @@ icon_off: Ikon fra
 label: Etiket
 select_a_flow: Vælg et Flow
 run_flow_on_current_edited_confirm: Dette element kan blive opdateret af dette flow, er du sikker på, at du vil udføre det?
-run_flow_success: Flow "{flow}" kørte med succes
 trigger: Udløser
 trigger_options: Udløserindstillinger
 view_trigger: Vis udløser

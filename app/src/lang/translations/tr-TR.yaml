@@ -928,7 +928,6 @@ run_flow_on_current_collection: Anlık Koleksiyonda Ak
 run_flow_on_current: Anlık Eşyada Ak
 run_flow_on_current_edited_confirm: Bu öğe bu akış tarafından güncellenebilir, yürütmek istediğinizden emin misiniz?
 run_flow: Akışı Çalıştır
-run_flow_success: Akış "{flow}" çalıştırma başarılı
 field_name_placeholder: Alan adını girin...
 field_key_placeholder: Alan anahtarını girin...
 trigger: Tetikleme

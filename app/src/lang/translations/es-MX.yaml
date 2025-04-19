@@ -518,6 +518,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: MMM d
 minutes: Minutos
 hours: Horas
@@ -602,6 +603,7 @@ manual_string: Cadena de Texto introducida Manualmente
 save_and_create_new: Guardar y Crear Nuevo
 save_and_stay: Guardar y Permanecer
 save_and_quit: Guardar y salir
+save_and_return_to_main: Guardar y volver al principio
 save_as_copy: Guardar como Copia
 add_existing: Añadir existente
 creating_items: Creando elementos
@@ -940,7 +942,6 @@ run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento puede ser actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: Seleccione uno o más elementos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} elementos seleccionados
 run_flow: Ejecutar flujo
-run_flow_success: Flujo "{flow}" se ha ejecutado correctamente
 field_name_placeholder: Ingresa el nombre del campo...
 field_key_placeholder: Ingresa la clave de campo...
 trigger: Disparador
@@ -977,6 +978,10 @@ operation_key: Identificador para referencia...
 operation_key_unique_error: Las claves de operación deben ser únicas en un flujo
 operation_handle_resolve: 'Resolver: Haga clic para añadir o arrastrar para reenrutar'
 operation_handle_reject: 'Rechazar: Haga clic para añadir o arrastrar para reenrutar'
+visual_editor: Editor visual
+toggle_navigation: Alternar navegación
+toggle_editable_elements: Alternar elementos editables
+no_url_copy: Por favor añada una URL en la configuración.
 insights: Informes
 dashboard: Tablero
 panel: Panel
@@ -1394,6 +1399,7 @@ fields:
     public_registration_email_filter_note: Sólo pueden registrarse direcciones de correo electrónico que coincidan con este filtro.
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
+    visual_editor_urls: URLs del editor visual
   directus_shares:
     name: Nombre
     role: Rol
@@ -2282,6 +2288,8 @@ show_legend: Mostrar leyenda
 right: Derecha
 left: Izquierda
 donut: Dona
+continuous: Continuo
+gap: Brecha
 panels:
   metric:
     name: Métrico
@@ -2297,6 +2305,7 @@ panels:
     value_field: Tipo de campo
     fill_type: Tipo de relleno
     curve_type: Tipo de curva
+    missing_data: Datos faltantes
   label:
     name: Etiqueta
     description: Mostrar algo de texto
@@ -2428,6 +2437,9 @@ operations:
     body: Cuerpo
     template: Plantilla
     data: Datos
+    cc: CC
+    bcc: CCO
+    reply_to: Responder a
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
