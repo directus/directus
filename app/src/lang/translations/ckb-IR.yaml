@@ -984,6 +984,7 @@ toggle_navigation: گۆڕینی ڕەوشی هاتوچۆ
 toggle_editable_elements: گۆڕینی ڕەوشی توخمە دەستکاریکراوەکان
 no_url: هیچ بەستەرێک نەدراوە
 no_url_copy: تکایە بەستەرێک زیاد بکە لە ڕێکخستنەکاندا
+invalid_url: URL نادروست
 insights: تێڕوانینەکان
 dashboard: داشبۆرد
 panel: پانێڵ
