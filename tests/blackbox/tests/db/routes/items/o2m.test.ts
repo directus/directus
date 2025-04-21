@@ -1635,11 +1635,10 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				}
 
 				const queryLimit = Number(config.envs[vendor]['QUERY_LIMIT_DEFAULT']);
-				const relationalOverageBuffer = 2;
 
 				const setupStates = Array.from({ length: queryLimit }, (_, i) => ({
 					...createState(pkType),
-					name: 'test_on_deselected_action_' + i,
+					name: 'test_on_deselected_action_create_' + i,
 				}));
 
 				// Setup
@@ -1652,17 +1651,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					},
 				});
 
-				const setupUpdateStates = Array.from({ length: relationalOverageBuffer }, (_, i) => ({
-					...createState(pkType),
-					name: 'test_on_deselected_action_' + i,
-				}));
-
 				await UpdateItem(vendor, {
 					id: createdItem.id,
 					collection: localCollectionCountries,
 					item: {
 						states: {
-							create: setupUpdateStates,
+							create: [
+								{
+									...createState(pkType),
+									name: 'test_on_deselected_action_update_1',
+								},
+							],
 							update: [],
 							delete: [],
 						},
@@ -1670,15 +1669,15 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 				});
 
 				// Action
-				const actionStates = Array.from({ length: relationalOverageBuffer - 1 }, (_, i) => ({
-					...createState(pkType),
-					name: 'test_on_deselected_action_' + i,
-				}));
-
 				await request(getUrl(vendor))
 					.patch(`/items/${localCollectionCountries}/${createdItem.id}`)
 					.send({
-						states: actionStates,
+						states: [
+							{
+								...createState(pkType),
+								name: 'test_on_deselected_action_patch',
+							},
+						],
 					})
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
@@ -1699,7 +1698,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 				expect(response.statusCode).toEqual(200);
-				expect(response.body.data.length).toEqual(actionStates.length);
+				expect(response.body.data.length).toEqual(1);
 			});
 		});
 
