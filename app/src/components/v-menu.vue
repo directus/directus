@@ -68,7 +68,7 @@ const maxHeight = computed(() => {
 
 	if (props.fullHeight) return null;
 
-	return '45vh';
+	return '30vh';
 });
 
 const virtualReference = ref({
