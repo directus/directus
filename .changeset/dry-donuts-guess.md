@@ -4,4 +4,4 @@
 '@directus/app': patch
 ---
 
-Unified `getRelation`/`getRelations` across packages
+Unified `getRelation`/`getRelations` usage across packages
