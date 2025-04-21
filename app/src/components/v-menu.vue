@@ -27,6 +27,8 @@ interface Props {
 	showArrow?: boolean;
 	/** Fixed arrow placement */
 	arrowPlacement?: 'start';
+	/** Space between the arrow and the edge of the menu */
+	arrowPadding?: number;
 	/** Menu does not appear */
 	disabled?: boolean;
 	/** Activate the menu on a trigger */
@@ -50,6 +52,7 @@ const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	closeOnClick: true,
 	closeOnContentClick: true,
+	arrowPadding: 6,
 	trigger: null,
 	delay: 0,
 	offsetY: 8,
@@ -293,7 +296,6 @@ function usePopper(
 
 	function getModifiers(callback: (value?: unknown) => void = () => undefined) {
 		const padding = 8;
-		const arrowPadding = 6;
 
 		const modifiers: Modifier<string, any>[] = [
 			popperOffsets,
@@ -316,7 +318,7 @@ function usePopper(
 				...arrow,
 				enabled: options.value.arrow === true,
 				options: {
-					padding: arrowPadding,
+					padding: props.arrowPadding,
 				},
 			},
 			{
@@ -363,11 +365,11 @@ function usePopper(
 							switch (state.placement) {
 								case 'top-start':
 								case 'bottom-start':
-									x = arrowPadding;
+									x = props.arrowPadding;
 									break;
 								case 'left-start':
 								case 'right-start':
-									y = arrowPadding;
+									y = props.arrowPadding;
 									break;
 							}
 
@@ -430,7 +432,9 @@ function usePopper(
 					:data-placement="popperPlacement"
 					:style="styles"
 				>
-					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow />
+					<div class="arrow" :class="{ active: showArrow && isActive }" :style="arrowStyles" data-popper-arrow>
+						<div class="arrow-triangle" />
+					</div>
 					<div
 						class="v-menu-content"
 						:class="{ seamless }"
@@ -481,59 +485,92 @@ function usePopper(
 }
 
 .arrow,
-.arrow::after {
+.arrow-triangle,
+.arrow-triangle::before,
+.arrow-triangle::after {
 	position: absolute;
-	z-index: 1;
 	width: 10px;
 	height: 10px;
-	overflow: hidden;
-	border-radius: 2px;
 }
 
 .arrow {
-	&::after {
-		background: var(--theme--popover--menu--background);
-		transform: rotate(45deg) scale(0);
-		transition: transform var(--fast) var(--transition-out);
-		transition-delay: 0;
-		content: '';
+	z-index: 1;
+
+	.arrow-triangle {
+		overflow-x: visible;
+		overflow-y: clip;
+
+		[data-placement^='left'] &,
+		[data-placement^='right'] & {
+			overflow-x: clip;
+			overflow-y: visible;
+		}
+
+		&::before,
+		&::after {
+			content: '';
+			background: var(--theme--popover--menu--background);
+			transform: rotate(45deg) scale(0);
+			transition: transform var(--fast) var(--transition-out);
+		}
+
+		&::after {
+			/* To apply a shadow with less opacity to the triangle, we need to duplicate it (:before & :after) */
+			box-shadow: var(--theme--popover--menu--box-shadow);
+			opacity: 0.75;
+		}
 	}
 
-	&.active::after {
-		transform: rotate(45deg) scale(1);
-		transition: transform var(--medium) var(--transition-in);
+	&.active .arrow-triangle {
+		&::before,
+		&::after {
+			transform: rotate(45deg) scale(1);
+			transition: transform var(--medium) var(--transition-in);
+		}
 	}
 }
 
 [data-placement^='top'] .arrow {
-	bottom: -6px;
+	bottom: -10px;
 
-	&::after {
-		bottom: 3px;
+	.arrow-triangle {
+		&::before,
+		&::after {
+			bottom: 7px;
+		}
 	}
 }
 
 [data-placement^='bottom'] .arrow {
-	top: -6px;
+	top: -10px;
 
-	&::after {
-		top: 3px;
+	.arrow-triangle {
+		&::before,
+		&::after {
+			top: 7px;
+		}
 	}
 }
 
 [data-placement^='right'] .arrow {
-	left: -6px;
+	left: -10px;
 
-	&::after {
-		left: 4px;
+	.arrow-triangle {
+		&::before,
+		&::after {
+			left: 7px;
+		}
 	}
 }
 
 [data-placement^='left'] .arrow {
-	right: -6px;
+	right: -10px;
 
-	&::after {
-		right: 4px;
+	.arrow-triangle {
+		&::before,
+		&::after {
+			right: 7px;
+		}
 	}
 }
 
