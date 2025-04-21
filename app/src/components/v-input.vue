@@ -136,14 +136,17 @@ function onInput(event: InputEvent) {
 	const regexValidInteger = /^-?\d*$/;
 
 	if (props.integer && !regexValidInteger.test(target.value)) {
-		target.value = target.value.replace(/(?!^)-|[^0-9-]/g, '');
+		const invalidCharsRegex = /(?!^)-|[^0-9-]/g;
+		target.value = target.value.replace(invalidCharsRegex, '');
 		return;
 	}
 
 	const regexValidFloat = /^-?(\d*((,|\.)\d+)?)$/;
 
 	if (props.float && !regexValidFloat.test(target.value)) {
-		target.value = target.value.replace(/(?!^)-|[^0-9-.,]/g, '');
+		const invalidCharsRegex = /(?!^)-|[^0-9-.,]/g;
+		const duplicatePointRegex = /(.*[.,].*)[.,]/g;
+		target.value = target.value.replace(invalidCharsRegex, '').replace(duplicatePointRegex, '$1');
 		event.preventDefault();
 		return;
 	}
