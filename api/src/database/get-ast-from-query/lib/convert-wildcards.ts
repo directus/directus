@@ -1,8 +1,8 @@
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
-import { getRelation } from '@directus/utils';
 
 export interface ConvertWildcardsOptions {
 	parentCollection: string;

@@ -1,6 +1,6 @@
 import api from '@/api';
 import { useFieldsStore } from '@/stores/fields';
-import { Relation, DeepPartial } from '@directus/types';
+import { DeepPartial, Relation } from '@directus/types';
 import { getRelations, getRelationType } from '@directus/utils';
 import { isEqual } from 'lodash';
 import { defineStore } from 'pinia';

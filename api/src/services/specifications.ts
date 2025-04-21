@@ -3,6 +3,7 @@ import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
 import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } from '@directus/types';
+import { getRelation } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
@@ -23,7 +24,6 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
-import { getRelation } from '@directus/utils';
 
 const env = useEnv();
 

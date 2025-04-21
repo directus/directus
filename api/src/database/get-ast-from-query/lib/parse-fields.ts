@@ -1,5 +1,6 @@
 import { REGEX_BETWEEN_PARENS } from '@directus/constants';
 import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { isEmpty } from 'lodash-es';
 import { fetchPermissions } from '../../../permissions/lib/fetch-permissions.js';
@@ -9,7 +10,6 @@ import { getRelationType } from '../../../utils/get-relation-type.js';
 import { getAllowedSort } from '../utils/get-allowed-sort.js';
 import { getDeepQuery } from '../utils/get-deep-query.js';
 import { getRelatedCollection } from '../utils/get-related-collection.js';
-import { getRelation } from '@directus/utils';
 import { convertWildcards } from './convert-wildcards.js';
 
 interface CollectionScope {
