@@ -3,7 +3,7 @@ import { getRelationType } from './get-relation-type.js';
 
 type RelationInfo = {
 	relation: Relation | null;
-	relationType: string | null;
+	relationType: 'o2m' | 'm2o' | 'a2o' | 'o2a' | null;
 };
 
 function checkImplicitRelation(field: string) {

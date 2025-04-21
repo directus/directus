@@ -1,93 +1,19 @@
-import type { Permission, SchemaOverview } from '@directus/types';
-import { Knex } from 'knex';
+import type { Permission } from '@directus/types';
+import knex from 'knex';
 import { expect, test, vi } from 'vitest';
 import { applySearch } from './search.js';
+import { SchemaBuilder } from '@directus/schema-builder';
+import { Client_SQLite3 } from './mock.js';
 
-const FAKE_SCHEMA: SchemaOverview = {
-	collections: {
-		test: {
-			collection: 'test',
-			primary: 'id',
-			singleton: false,
-			sortField: null,
-			note: null,
-			accountability: null,
-			fields: {
-				text: {
-					field: 'text',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'text',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				string: {
-					field: 'string',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'string',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				float: {
-					field: 'float',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'float',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				integer: {
-					field: 'integer',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'integer',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-				id: {
-					field: 'id',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'uuid',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					validation: null,
-					alias: false,
-				},
-			},
-		},
-	},
-	relations: [],
-};
+const schema = new SchemaBuilder()
+	.collection('test', (c) => {
+		c.field('id').uuid().primary();
+		c.field('text').text();
+		c.field('string').string();
+		c.field('float').float();
+		c.field('integer').integer();
+	})
+	.build();
 
 const permissions = [
 	{
@@ -100,126 +26,63 @@ const permissions = [
 	},
 ] as unknown as Permission[];
 
-function mockDatabase(dbClient: string = 'Client_SQLite3') {
-	const whereQueries = {
-		whereRaw: vi.fn(() => self),
-		where: vi.fn(() => self),
-	};
+for (const number of ['0x56071c902718e681e274DB0AaC9B4Ed2d027924d', '0b11111', '0.42e3', 'Infinity', '42.000']) {
+	test(`Prevent ${number} from being cast to number`, async () => {
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
 
-	const self: Record<string, any> = {
-		client: {
-			constructor: {
-				name: dbClient,
-			},
-		},
-		andWhere: vi.fn(() => self),
-		orWhere: vi.fn(() => self),
-		orWhereRaw: vi.fn(() => self),
-		and: whereQueries,
-		or: whereQueries,
-	};
+		applySearch(db as any, schema, queryBuilder, number, 'test', {}, permissions);
 
-	return self;
+		const rawQuery = queryBuilder.toSQL();
+
+		expect(rawQuery.sql).toEqual(`select * where ((LOWER("test"."text") LIKE ?))`);
+		expect(rawQuery.bindings).toEqual([`%${number.toLowerCase()}%`]);
+	});
 }
 
-test.each(['0x56071c902718e681e274DB0AaC9B4Ed2d027924d', '0b11111', '0.42e3', 'Infinity', '42.000'])(
-	'Prevent %s from being cast to number',
-	async (number) => {
-		const db = mockDatabase();
-		const queryBuilder = db as any;
+for (const number of ['1234', '-128', '12.34']) {
+	test(`Casting number ${number}`, async () => {
+		const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+		const queryBuilder = db.queryBuilder();
 
-		db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
+		applySearch(db as any, schema, queryBuilder, number, 'test', {}, permissions);
 
-		queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-			callback(queryBuilder);
-			return queryBuilder;
-		});
+		const rawQuery = queryBuilder.toSQL();
 
-		applySearch(db as any, FAKE_SCHEMA, queryBuilder, number, 'test', {}, permissions);
+		expect(rawQuery.sql).toEqual(
+			`select * where ((LOWER("test"."text") LIKE ?) or ("test"."float" = ?) or ("test"."integer" = ?))`,
+		);
 
-		expect(db['andWhere']).toBeCalledTimes(1);
-		expect(queryBuilder['orWhere']).toBeCalledTimes(1);
-		expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-		expect(queryBuilder['and']['whereRaw']).toBeCalledTimes(1);
-
-		expect(queryBuilder['and']['whereRaw']).toBeCalledWith('LOWER(??) LIKE ?', [
-			'test.text',
-			`%${number.toLowerCase()}%`,
-		]);
-	},
-);
-
-test.each(['1234', '-128', '12.34'])('Casting number %s', async (number) => {
-	const db = mockDatabase();
-	const queryBuilder = db as any;
-
-	db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
+		expect(rawQuery.bindings).toEqual([`%${number.toLowerCase()}%`, Number(number), Number(number)]);
 	});
+}
 
-	queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
+test(`Query is falsy if no other clause is added`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
 
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, number, 'test', {}, permissions);
+	const schema = new SchemaBuilder()
+		.collection('test', (c) => {
+			c.field('id').uuid().primary();
+			c.field('string').string();
+			c.field('float').float();
+			c.field('integer').integer();
+		})
+		.build();
 
-	expect(db['andWhere']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhere']).toBeCalledTimes(3);
-	expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-	expect(queryBuilder['and']['whereRaw']).toBeCalledTimes(1);
+	applySearch(db as any, schema, queryBuilder, 'searchstring', 'test', {}, permissions);
 
-	expect(queryBuilder['and']['whereRaw']).toBeCalledWith('LOWER(??) LIKE ?', [
-		'test.text',
-		`%${number.toLowerCase()}%`,
-	]);
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select * where (1 = 0)`);
+	expect(rawQuery.bindings).toEqual([]);
 });
 
-test('Query is falsy if no other clause is added', async () => {
-	const db = mockDatabase();
-	const queryBuilder = db as any;
+test(`Exclude non uuid searchable field(s) when searchQuery has valid uuid value`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
 
-	const schemaWithStringFieldRemoved = JSON.parse(JSON.stringify(FAKE_SCHEMA));
-
-	delete schemaWithStringFieldRemoved.collections.test.fields.text;
-
-	db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	applySearch(db as any, schemaWithStringFieldRemoved, queryBuilder, 'searchstring', 'test', {}, permissions);
-
-	expect(db['andWhere']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhere']).toBeCalledTimes(0);
-	expect(queryBuilder['orWhereRaw']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhereRaw']).toBeCalledWith('1 = 0');
-});
-
-test('Exclude non uuid searchable field(s) when searchQuery has valid uuid value', () => {
-	const db = mockDatabase();
-	const queryBuilder = db as any;
-
-	db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, '4b9adc65-4ad8-4242-9144-fbfc58400d74', 'test', {}, [
+	applySearch(db as any, schema, queryBuilder, '4b9adc65-4ad8-4242-9144-fbfc58400d74', 'test', {}, [
 		{
 			collection: 'test',
 			action: 'read',
@@ -228,29 +91,17 @@ test('Exclude non uuid searchable field(s) when searchQuery has valid uuid value
 		} as unknown as Permission,
 	]);
 
-	expect(db['andWhere']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhere']).toBeCalledTimes(2);
-	expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-	expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(1);
-	expect(queryBuilder['or']['where']).toBeCalledTimes(1);
-	expect(queryBuilder['or']['where']).toBeCalledWith({ 'test.id': '4b9adc65-4ad8-4242-9144-fbfc58400d74' });
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select * where (("test"."id" = ?) or (LOWER("test"."text") LIKE ?))`);
+	expect(rawQuery.bindings).toEqual(['4b9adc65-4ad8-4242-9144-fbfc58400d74', '%4b9adc65-4ad8-4242-9144-fbfc58400d74%']);
 });
 
-test('Remove forbidden field(s) from search', () => {
-	const db = mockDatabase();
-	const queryBuilder = db as any;
+test(`Remove forbidden field(s) from search`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
 
-	db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, 'directus', 'test', {}, [
+	applySearch(db as any, schema, queryBuilder, 'directus', 'test', {}, [
 		{
 			collection: 'test',
 			action: 'read',
@@ -261,28 +112,17 @@ test('Remove forbidden field(s) from search', () => {
 		} as unknown as Permission,
 	]);
 
-	expect(db['andWhere']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhere']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-	expect(queryBuilder['and']['whereRaw']).toBeCalledTimes(1);
-	expect(queryBuilder['and']['whereRaw']).toBeCalledWith('LOWER(??) LIKE ?', ['test.string', `%directus%`]);
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(`select * where ((LOWER("test"."string") LIKE ?))`);
+	expect(rawQuery.bindings).toEqual(['%directus%']);
 });
 
-test('Add all fields for * field rule', () => {
-	const db = mockDatabase();
-	const queryBuilder = db as any;
+test(`Add all fields for * field rule`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
 
-	db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
+	applySearch(db as any, schema, queryBuilder, '1', 'test', {}, [
 		{
 			collection: 'test',
 			action: 'read',
@@ -291,28 +131,20 @@ test('Add all fields for * field rule', () => {
 		} as unknown as Permission,
 	]);
 
-	expect(db['andWhere']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhere']).toBeCalledTimes(0);
-	expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-	expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
-	expect(queryBuilder['or']['where']).toBeCalledTimes(2);
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(
+		`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`,
+	);
+
+	expect(rawQuery.bindings).toEqual(['%1%', '%1%', 1, 1]);
 });
 
-test('Add all fields when * is present in field rule with permission rule present', () => {
-	const db = mockDatabase();
-	const queryBuilder = db as any;
+test(`Add all fields when * is present in field rule with permission rule present`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
 
-	db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
-
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, [
+	applySearch(db as any, schema, queryBuilder, '1', 'test', {}, [
 		{
 			collection: 'test',
 			action: 'read',
@@ -323,32 +155,26 @@ test('Add all fields when * is present in field rule with permission rule presen
 		} as unknown as Permission,
 	]);
 
-	expect(db['andWhere']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhere']).toBeCalledTimes(0);
-	expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-	expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
-	expect(queryBuilder['or']['where']).toBeCalledTimes(2);
+	const rawQuery = queryBuilder.toSQL();
+
+	expect(rawQuery.sql).toEqual(
+		`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`,
+	);
+
+	expect(rawQuery.bindings).toEqual(['%1%', '%1%', 1, 1]);
 });
 
-test('All field(s) are searched for admin', () => {
-	const db = mockDatabase();
-	const queryBuilder = db as any;
+test(`All field(s) are searched for admin`, async () => {
+	const db = vi.mocked(knex.default({ client: Client_SQLite3 }));
+	const queryBuilder = db.queryBuilder();
 
-	db['andWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
+	applySearch(db as any, schema, queryBuilder, '1', 'test', {}, []);
 
-	queryBuilder['orWhere'].mockImplementation((callback: (queryBuilder: Knex.QueryBuilder) => void) => {
-		callback(queryBuilder);
-		return queryBuilder;
-	});
+	const rawQuery = queryBuilder.toSQL();
 
-	applySearch(db as any, FAKE_SCHEMA, queryBuilder, '1', 'test', {}, []);
+	expect(rawQuery.sql).toEqual(
+		`select * where (LOWER("test"."text") LIKE ? or LOWER("test"."string") LIKE ? or "test"."float" = ? or "test"."integer" = ?)`,
+	);
 
-	expect(db['andWhere']).toBeCalledTimes(1);
-	expect(queryBuilder['orWhere']).toBeCalledTimes(0);
-	expect(queryBuilder['orWhereRaw']).toBeCalledTimes(0);
-	expect(queryBuilder['and']['whereRaw']).toBeCalledTimes(2);
-	expect(queryBuilder['or']['whereRaw']).toBeCalledTimes(2);
+	expect(rawQuery.bindings).toEqual(['%1%', '%1%', 1, 1]);
 });
