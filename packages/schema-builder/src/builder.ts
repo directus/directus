@@ -10,6 +10,14 @@ export class SchemaBuilder {
 	_relation_counter = 0;
 
 	collection(name: string, callback: (collection: CollectionBuilder) => void) {
+		const existing_index = this._collections.findIndex((collectionBuilder) => collectionBuilder.get_name() === name);
+
+		if (existing_index !== -1) {
+			callback(this._collections[existing_index]!);
+			this._last_collection_configured = false;
+			return this;
+		}
+
 		const collection = new CollectionBuilder(name, this);
 		callback(collection);
 		this._collections.push(collection);
