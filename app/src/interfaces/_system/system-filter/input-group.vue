@@ -4,7 +4,7 @@ import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
 import { FieldFilter } from '@directus/types';
 import { clone, get } from 'lodash';
-import { computed, toRef } from 'vue';
+import { computed, nextTick, ref, toRef } from 'vue';
 import { useI18n } from 'vue-i18n';
 import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
@@ -97,9 +97,7 @@ const value = computed<unknown | unknown[]>({
 		let value;
 
 		if (['_in', '_nin'].includes(comparator.value)) {
-			value = (newVal as string[])
-				.flatMap((val) => (typeof val === 'string' ? val.split(',').map((v) => v.trim()) : ''))
-				.filter((val) => val !== null && val !== '');
+			value = (newVal as string[]).filter((val) => val !== null && val !== '').map((val) => val.trim());
 		} else {
 			value = newVal;
 		}
@@ -109,11 +107,36 @@ const value = computed<unknown | unknown[]>({
 });
 
 const choices = computed(() => fieldInfo.value?.meta?.options?.choices ?? []);
+const inputRefs = ref<any[]>([]);
 
 function setValueAt(index: number, newVal: any) {
 	const newArray = Array.isArray(value.value) ? clone(value.value) : new Array(index + 1);
 	newArray[index] = newVal;
 	value.value = newArray;
+}
+
+function focusInputAtIndex(index: number) {
+	nextTick(() => {
+		if (inputRefs.value.length > index && inputRefs.value[index]) {
+			inputRefs.value[index].focus();
+		}
+	});
+}
+
+function handleCommaKeyPressed(index: number) {
+	if (Array.isArray(value.value) && value.value.length > index + 1) {
+		focusInputAtIndex(index + 1);
+	}
+}
+
+function handleCommaValuePasted(newValue: string) {
+	const newValueArray = [
+		...(value.value as string[]),
+		...newValue.split(',').filter((val) => val !== null && val !== ''),
+	];
+
+	value.value = newValueArray;
+	focusInputAtIndex(newValueArray.length - 1);
 }
 </script>
 
@@ -158,12 +181,15 @@ function setValueAt(index: number, newVal: any) {
 		<div v-for="(val, index) in value" :key="index" class="value">
 			<input-component
 				:is="interfaceType"
+				:ref="(el) => (inputRefs[index] = el)"
 				:type="fieldInfo?.type ?? 'unknown'"
 				:value="val"
 				:focus="false"
 				:choices="choices"
 				comma-allowed
 				@input="setValueAt(index, $event)"
+				@comma-key-pressed="handleCommaKeyPressed(index)"
+				@comma-value-pasted="handleCommaValuePasted($event)"
 			/>
 		</div>
 	</div>
