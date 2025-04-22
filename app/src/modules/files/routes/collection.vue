@@ -503,8 +503,8 @@ function useFileUpload() {
 
 						<template #append>
 							<v-button
-								:disabled="createAllowed === false"
 								v-tooltip.bottom="createAllowed ? t('add_file') : t('not_allowed')"
+								:disabled="createAllowed === false"
 								:to="folder ? { path: `/files/folders/${folder}/+` } : { path: '/files/+' }"
 							>
 								{{ t('add_file') }}
