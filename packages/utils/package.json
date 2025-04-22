@@ -43,6 +43,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",
+		"@directus/schema-builder": "workspace:*",
 		"@directus/types": "workspace:*",
 		"@types/fs-extra": "11.0.4",
 		"@types/js-yaml": "4.0.9",

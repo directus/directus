@@ -16,6 +16,7 @@ export * from './get-functions-for-type.js';
 export * from './get-output-type-for-function.js';
 export * from './get-redacted-string.js';
 export * from './get-relation-type.js';
+export * from './get-relation.js';
 export * from './get-simple-hash.js';
 export * from './get-with-arrays.js';
 export * from './inject-function-results.js';
