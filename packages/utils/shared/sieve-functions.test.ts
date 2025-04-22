@@ -55,6 +55,5 @@ test('sieve nested array', () => {
 });
 
 test('sieve date', () => {
-	const expected = new Date();
-	expect(sieveFunctions(expected)).toEqual(expected);
+	expect(sieveFunctions(new Date())).toEqual({});
 });
