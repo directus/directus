@@ -1,6 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type {
 	Accountability,
+	Aggregate,
 	Alterations,
 	FieldOverview,
 	Item,
@@ -157,12 +158,25 @@ export class PayloadService {
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
 	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
-	processValues(action: Action, payloads: Partial<Item>[], aliasMap: Record<string, string>): Promise<Partial<Item>[]>;
-	processValues(action: Action, payload: Partial<Item>, aliasMap: Record<string, string>): Promise<Partial<Item>>;
+	processValues(
+		action: Action,
+		payloads: Partial<Item>[],
+		aliasMap: Record<string, string>,
+		aggregate: Aggregate,
+	): Promise<Partial<Item>[]>;
+
+	processValues(
+		action: Action,
+		payload: Partial<Item>,
+		aliasMap: Record<string, string>,
+		aggregate: Aggregate,
+	): Promise<Partial<Item>>;
+
 	async processValues(
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[],
 		aliasMap: Record<string, string> = {},
+		aggregate: Aggregate = {},
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = toArray(payload);
 
@@ -200,7 +214,7 @@ export class PayloadService {
 		}
 
 		this.processGeometries(fieldEntries, processedPayload, action);
-		this.processDates(fieldEntries, processedPayload, action, aliasMap);
+		this.processDates(fieldEntries, processedPayload, action, aliasMap, aggregate);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -215,7 +229,7 @@ export class PayloadService {
 		}
 
 		if (action === 'read') {
-			this.processAggregates(processedPayload);
+			this.processAggregates(processedPayload, aggregate);
 		}
 
 		if (Array.isArray(payload)) {
@@ -225,9 +239,24 @@ export class PayloadService {
 		return processedPayload[0]!;
 	}
 
-	processAggregates(payload: Partial<Item>[]) {
-		const aggregateKeys = Object.keys(payload[0]!).filter((key) => key.includes('->'));
+	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
+		/**
+		 * Build access path with -> delimiter
+		 *
+		 * input: { min: [ 'date', 'datetime', 'timestamp' ] }
+		 * output: [ 'min->date', 'min->datetime', 'min->timestamp' ]
+		 */
+		const aggregateKeys = Object.entries(aggregate).reduce<string[]>((acc, [key, values]) => {
+			acc.push(...values.map((value) => `${key}->${value}`));
+			return acc;
+		}, []);
 
+		/**
+		 * Expand -> delimited keys in the payload to the equivalent expanded object
+		 *
+		 * before: { "min->date": "2025-04-09", "min->datetime": "2025-04-08T12:00:00", "min->timestamp": "2025-04-17T23:18:00.000Z" }
+		 * after: { "min": { "date": "2025-04-09", "datetime": "2025-04-08T12:00:00", "timestamp": "2025-04-17T23:18:00.000Z" } }
+		 */
 		if (aggregateKeys.length) {
 			for (const item of payload) {
 				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
@@ -301,17 +330,28 @@ export class PayloadService {
 		payloads: Partial<Record<string, any>>[],
 		action: Action,
 		aliasMap: Record<string, string> = {},
+		aggregate: Aggregate = {},
 	): Partial<Record<string, any>>[] {
-		for (const alias in aliasMap) {
-			const aliasedField = aliasMap[alias];
-			const field = this.schema.collections[this.collection]!.fields[aliasedField!];
+		// Include aggegation e.g. "count->id" in alias map
+		const aggregateMapped = Object.fromEntries(
+			Object.entries(aggregate).reduce<string[][]>((acc, [key, values]) => {
+				acc.push(...values.map((value) => [`${key}->${value}`, value]));
+				return acc;
+			}, []),
+		);
+
+		const aliasFields = { ...aliasMap, ...aggregateMapped };
+
+		for (const aliasField in aliasFields) {
+			const schemaField = aliasFields[aliasField];
+			const field = this.schema.collections[this.collection]!.fields[schemaField!];
 
 			if (field) {
 				fieldEntries.push([
-					alias,
+					aliasField,
 					{
 						...field,
-						field: alias,
+						field: aliasField,
 					},
 				]);
 			}
