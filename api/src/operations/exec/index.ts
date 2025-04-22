@@ -47,9 +47,7 @@ export default defineOperationApi<Options>({
 		// Run the operation once to define the module.exports function
 		await context.eval(code, { timeout: scriptTimeoutMs });
 
-		data = sieveFunctions(data) as any;
-
-		const inputData = new ivm.ExternalCopy({ data });
+		const inputData = new ivm.ExternalCopy({ data: sieveFunctions(data) });
 
 		const resultRef = await context.evalClosure(`return module.exports($0.data)`, [inputData.copyInto()], {
 			result: { reference: true, promise: true },
