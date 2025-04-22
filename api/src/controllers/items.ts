@@ -74,12 +74,16 @@ const readHandler = asyncHandler(async (req, res, next) => {
 
 	let result;
 
-	if (req.singleton) {
-		result = await service.readSingleton(req.sanitizedQuery);
-	} else if (req.body.keys) {
-		result = await service.readMany(req.body.keys, req.sanitizedQuery);
-	} else {
-		result = await service.readByQuery(req.sanitizedQuery);
+	try {
+		if (req.singleton) {
+			result = await service.readSingleton(req.sanitizedQuery);
+		} else if (req.body.keys) {
+			result = await service.readMany(req.body.keys, req.sanitizedQuery);
+		} else {
+			result = await service.readByQuery(req.sanitizedQuery);
+		}
+	} catch (e) {
+		result = new Error('Test');
 	}
 
 	const meta = await metaService.getMetaForQuery(req.collection, req.sanitizedQuery);

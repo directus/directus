@@ -1,5 +1,6 @@
 import { defineOperationApi } from '@directus/extensions';
 import { createRequire } from 'node:module';
+import { sieveFunctions } from '@directus/utils';
 
 const require = createRequire(import.meta.url);
 const ivm = require('isolated-vm');
@@ -45,6 +46,8 @@ export default defineOperationApi<Options>({
 
 		// Run the operation once to define the module.exports function
 		await context.eval(code, { timeout: scriptTimeoutMs });
+
+		data = sieveFunctions(data) as any;
 
 		const inputData = new ivm.ExternalCopy({ data });
 
