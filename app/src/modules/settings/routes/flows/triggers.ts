@@ -241,6 +241,19 @@ export function getTriggers() {
 					},
 				},
 				{
+					field: 'error_on_reject',
+					name: t('triggers.webhook.error_on_reject'),
+					type: 'boolean',
+					meta: {
+						width: 'half' as Width,
+						interface: 'toggle',
+						hidden: async,
+					},
+					schema: {
+						default_value: false,
+					},
+				},
+				{
 					field: 'return',
 					name: t('triggers.common.response_body'),
 					type: 'string',
@@ -358,7 +371,7 @@ export function getTriggers() {
 
 				return labels;
 			},
-			options: [
+			options: ({ async }) => [
 				{
 					field: 'collections',
 					name: t('collections'),
@@ -381,21 +394,12 @@ export function getTriggers() {
 				},
 				{
 					field: 'error_on_reject',
-					name: t('triggers.manual.error_on_reject'),
+					name: t('triggers.webhook.error_on_reject'),
 					type: 'boolean',
 					meta: {
 						width: 'half' as Width,
 						interface: 'toggle',
-						conditions: [
-							{
-								rule: {
-									async: {
-										_eq: true,
-									},
-								},
-								hidden: true,
-							},
-						],
+						hidden: async,
 					},
 					schema: {
 						default_value: false,

@@ -1005,6 +1005,8 @@ toggle_navigation: Toggle Navigation
 toggle_editable_elements: Toggle Editable Elements
 no_url: No URL provided
 no_url_copy: Please add a URL in the settings.
+invalid_url: Invalid URL
+invalid_url_copy: The specified URL does not match any URL specified in the settings.
 insights: Insights
 dashboard: Dashboard
 panel: Panel
@@ -2405,6 +2407,7 @@ triggers:
     filter: 'Filter (Blocking)'
   webhook:
     name: Webhook
+    error_on_reject: Error on Reject
     description: Triggers on an incoming HTTP request
     method: Method
     async: Asynchronous
@@ -2419,7 +2422,6 @@ triggers:
   manual:
     name: Manual
     description: Triggers on manual run within selected collection(s)
-    error_on_reject: Error on Reject
     collection_and_item: Collection & Item Pages
     collection_only: Collection Page Only
     item_only: Item Page Only
