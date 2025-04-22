@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Fixed passing functions into run-script
+Fixed error when functions are passed to the `run-script` operation
