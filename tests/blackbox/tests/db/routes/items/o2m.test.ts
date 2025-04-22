@@ -1659,7 +1659,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							create: [
 								{
 									...createState(pkType),
-									name: 'test_on_deselected_action_update_1',
+									name: 'test_on_deselected_action_update_over_limit',
 								},
 							],
 							update: [],
