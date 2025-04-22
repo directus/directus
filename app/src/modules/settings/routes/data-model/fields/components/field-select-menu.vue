@@ -25,7 +25,7 @@ const duplicable = computed(() => localType.value === 'standard' && isPrimaryKey
 </script>
 
 <template>
-	<v-menu show-arrow placement="bottom-end">
+	<v-menu show-arrow placement="bottom-end" full-height>
 		<template #activator="{ toggle }">
 			<v-icon clickable name="more_vert" @click="toggle" />
 		</template>
