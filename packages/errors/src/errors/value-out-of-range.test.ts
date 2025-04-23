@@ -44,9 +44,10 @@ test('Constructs the message using without field/collection', () => {
 });
 
 test('Constructs the message using without value', () => {
-	delete sample.value;
+	sample.value = null;
 
 	const result = messageConstructor(sample);
+
 	expect(result).toBe(
 		`Numeric value for field "${sample.field}" in collection "${sample.collection}" is out of range.`,
 	);

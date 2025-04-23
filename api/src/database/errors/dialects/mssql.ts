@@ -88,7 +88,7 @@ export async function extractError(error: MSSQLError, data: Partial<Item>): Prom
 		return new RecordNotUniqueError({
 			collection,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -115,7 +115,7 @@ export async function extractError(error: MSSQLError, data: Partial<Item>): Prom
 		return new ValueOutOfRangeError({
 			collection,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -134,7 +134,7 @@ export async function extractError(error: MSSQLError, data: Partial<Item>): Prom
 		return new ValueTooLongError({
 			collection,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -182,7 +182,7 @@ export async function extractError(error: MSSQLError, data: Partial<Item>): Prom
 		return new InvalidForeignKeyError({
 			collection,
 			field,
-			key: field ? data[field] : null
+			key: field ? data[field] : null,
 		});
 	}
 }

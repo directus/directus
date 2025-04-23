@@ -33,7 +33,6 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 			return error;
 	}
 
-
 	function uniqueViolation(error: PostgresError) {
 		const { table, detail } = error;
 
@@ -48,7 +47,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		return new RecordNotUniqueError({
 			collection,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -64,7 +63,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		return new ValueOutOfRangeError({
 			collection,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -85,7 +84,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		return new ValueTooLongError({
 			collection,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -117,7 +116,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		return new InvalidForeignKeyError({
 			collection,
 			field,
-			key: field ? data[field] : null
+			key: field ? data[field] : null,
 		});
 	}
 }

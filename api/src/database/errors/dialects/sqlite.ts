@@ -25,7 +25,7 @@ export function extractError(error: SQLiteError, data: Partial<Item>): SQLiteErr
 		return new RecordNotUniqueError({
 			collection: table,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 

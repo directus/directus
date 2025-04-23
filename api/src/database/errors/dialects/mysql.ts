@@ -39,7 +39,6 @@ export function extractError(error: MySQLError, data: Partial<Item>): MySQLError
 
 	return error;
 
-
 	function uniqueViolation() {
 		const betweenQuotes = /'([^']+)'/g;
 		const matches = error.sqlMessage.match(betweenQuotes);
@@ -100,7 +99,7 @@ export function extractError(error: MySQLError, data: Partial<Item>): MySQLError
 		return new ValueOutOfRangeError({
 			collection,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -119,7 +118,7 @@ export function extractError(error: MySQLError, data: Partial<Item>): MySQLError
 		return new ValueTooLongError({
 			collection,
 			field,
-			value: field ? data[field] : null
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -156,7 +155,7 @@ export function extractError(error: MySQLError, data: Partial<Item>): MySQLError
 		return new InvalidForeignKeyError({
 			collection,
 			field,
-			key: field ? data[field] : null
+			key: field ? data[field] : null,
 		});
 	}
 

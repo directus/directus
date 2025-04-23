@@ -15,6 +15,7 @@ beforeEach(() => {
 
 test('Constructs the message using the provided field name and collection', () => {
 	const result = messageConstructor(sample);
+
 	expect(result).toBe(
 		`Invalid foreign key "${sample.key}" for field "${sample.field}" in collection "${sample.collection}".`,
 	);
@@ -43,7 +44,7 @@ test('Constructs the message using without field/collection', () => {
 });
 
 test('Constructs the message without the key', () => {
-	delete sample.key;
+	sample.key = null;
 
 	const result = messageConstructor(sample);
 	expect(result).toBe(`Invalid foreign key for field "${sample.field}" in collection "${sample.collection}".`);
