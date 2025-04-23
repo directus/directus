@@ -2,17 +2,19 @@ import type { Field, FieldMeta, Relation, RelationMeta } from '@directus/types';
 import type { Diff } from 'deep-diff';
 import type { Collection } from './collection.js';
 import type { DatabaseClient } from './database.js';
+import type { Table } from '@directus/schema';
 
 export type Snapshot = {
 	version: number;
 	directus: string;
 	vendor?: DatabaseClient;
-	collections: Collection[];
+	collections: SnapshotCollection[];
 	fields: SnapshotField[];
 	systemFields: SnapshotSystemField[];
 	relations: SnapshotRelation[];
 };
 
+export type SnapshotCollection = Collection & { schema: Pick<Table, 'name'> };
 export type SnapshotField = Field & { meta: Omit<FieldMeta, 'id'> };
 export type SnapshotRelation = Relation & { meta: Omit<RelationMeta, 'id'> };
 
@@ -39,6 +41,7 @@ export type SnapshotDiff = {
 	systemFields: {
 		collection: string;
 		field: string;
+		diff: Diff<SnapshotSystemField | undefined>[];
 	}[];
 	relations: {
 		collection: string;

@@ -1,7 +1,7 @@
 import deepDiff from 'deep-diff';
 import type { Snapshot, SnapshotDiff } from '../types/index.js';
 import { DiffKind } from '../types/index.js';
-import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
+import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
 export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDiff {
 	const diffedSnapshot: SnapshotDiff = {
@@ -11,9 +11,11 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					(afterCollection) => afterCollection.collection === currentCollection.collection,
 				);
 
+				const afterCollectionSanitized = afterCollection ? sanitizeCollection(afterCollection) : undefined;
+
 				return {
 					collection: currentCollection.collection,
-					diff: deepDiff.diff(sanitizeCollection(currentCollection), sanitizeCollection(afterCollection)),
+					diff: deepDiff.diff(sanitizeCollection(currentCollection), afterCollectionSanitized),
 				};
 			}),
 			...after.collections
@@ -49,17 +51,19 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						field: currentField.field,
 						diff: deepDiff.diff(
 							sanitizeField(currentField, isAutoIncrementPrimaryKey),
-							sanitizeField(undefined, isAutoIncrementPrimaryKey),
+							undefined,
 						),
 					};
 				}
+
+				const afterFieldSanitized = afterField ? sanitizeField(afterField, isAutoIncrementPrimaryKey) : undefined;
 
 				return {
 					collection: currentField.collection,
 					field: currentField.field,
 					diff: deepDiff.diff(
 						sanitizeField(currentField, isAutoIncrementPrimaryKey),
-						sanitizeField(afterField, isAutoIncrementPrimaryKey),
+						afterFieldSanitized,
 					),
 				};
 			}),
@@ -87,7 +91,40 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					diff: deepDiff.diff(undefined, sanitizeField(afterField)),
 				})),
 		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['fields'],
+		systemFields: [
+			...current.systemFields
+				.map((currentSystemField) => {
+					const afterSystemField = after.systemFields.find(
+						(afterSystemField) => afterSystemField.collection === currentSystemField.collection && afterSystemField.field === currentSystemField.field,
+					);
+	
+					const afterFieldSanitized = afterSystemField ? sanitizeSystemField(afterSystemField) : undefined;
+	
+					return {
+						collection: currentSystemField.collection,
+						field: currentSystemField.field,
+						diff: deepDiff.diff(
+							sanitizeSystemField(currentSystemField),
+							afterFieldSanitized,
+						),
+					};
+				}),
+			...after.systemFields
+				.filter((afterSystemField) => {
+					const currentSystemField = current.fields.find(
+						(currentSystemField) =>
+							currentSystemField.collection === afterSystemField.collection && afterSystemField.field === currentSystemField.field,
+					);
 
+					return !!currentSystemField === false;
+
+				})
+				.map((afterSystemField) => ({
+					collection: afterSystemField.collection,
+					field: afterSystemField.field,
+					diff: deepDiff.diff(undefined, sanitizeSystemField(afterSystemField)),
+				})),
+		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['systemFields'],
 		relations: [
 			...current.relations.map((currentRelation) => {
 				const afterRelation = after.relations.find(
@@ -95,11 +132,13 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 						afterRelation.collection === currentRelation.collection && afterRelation.field === currentRelation.field,
 				);
 
+				const afterRelationSanitized = afterRelation ? sanitizeRelation(afterRelation) : undefined;
+
 				return {
 					collection: currentRelation.collection,
 					field: currentRelation.field,
 					related_collection: currentRelation.related_collection,
-					diff: deepDiff.diff(sanitizeRelation(currentRelation), sanitizeRelation(afterRelation)),
+					diff: deepDiff.diff(sanitizeRelation(currentRelation), afterRelationSanitized),
 				};
 			}),
 			...after.relations
