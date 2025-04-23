@@ -63,6 +63,16 @@ export default defineInterface({
 					options: {
 						placeholder: '$t:primary_key',
 					},
+					conditions: [
+						{
+							rule: {
+								userLanguage: {
+									_eq: true,
+								},
+							},
+							readonly: true,
+						},
+					],
 				},
 			},
 			{
