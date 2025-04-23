@@ -56,12 +56,21 @@ const { t, locale } = useI18n();
 
 const fieldsStore = useFieldsStore();
 
-const { width } = useWindowSize();
-
 const { languageOptions, firstLang, secondLang, loading: languagesLoading } = useLanguages();
-const splitView = ref(props.defaultOpenSplitView);
-const firstLang = ref<string>();
-const secondLang = ref<string>();
+
+const { splitView, splitViewAvailable, splitViewEnabled } = useSplitView();
+
+function useSplitView() {
+	const selectedSplitView = ref<boolean>();
+
+	const splitView = computed({
+		get() {
+			return selectedSplitView.value ?? props.defaultOpenSplitView;
+		},
+		set(value) {
+			selectedSplitView.value = value;
+		},
+	});
 
 watch(splitView, (splitViewEnabled) => {
 	if (splitViewEnabled && secondLang.value === firstLang.value) {
@@ -71,8 +80,16 @@ watch(splitView, (splitViewEnabled) => {
 	}
 });
 
+	const { width } = useWindowSize();
 const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
 const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
+
+	return {
+		splitView,
+		splitViewAvailable,
+		splitViewEnabled,
+	};
+}
 
 const fields = computed(() => {
 	if (!relationInfo.value) return [];
