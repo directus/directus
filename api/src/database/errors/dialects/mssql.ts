@@ -111,9 +111,13 @@ function numericValueOutOfRange(error: MSSQLError) {
 
 	const field = null;
 
+	const parts = error.message.split(' ');
+	const value = parts[parts.length - 1]!.slice(0, -1);
+
 	return new ValueOutOfRangeError({
 		collection,
 		field,
+		value,
 	});
 }
 

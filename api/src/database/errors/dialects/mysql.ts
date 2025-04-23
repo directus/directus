@@ -148,10 +148,12 @@ function foreignKeyViolation(error: MySQLError) {
 
 	const collection = tickMatches[1]!.slice(1, -1)!;
 	const field = tickMatches[3]!.slice(1, -1)!;
+	const key = parenMatches[1]!.slice(1, -1)!;
 
 	return new InvalidForeignKeyError({
 		collection,
 		field,
+		key,
 	});
 }
 

@@ -58,10 +58,12 @@ function numericValueOutOfRange(error: PostgresError) {
 
 	const collection = matches[0].slice(1, -1);
 	const field = null;
+	const value = matches[2]!.slice(1, -1);
 
 	return new ValueOutOfRangeError({
 		collection,
 		field,
+		value,
 	});
 }
 
@@ -109,9 +111,11 @@ function foreignKeyViolation(error: PostgresError) {
 
 	const collection = table;
 	const field = matches[0].slice(1, -1);
+	const key = matches[1]!.slice(1, -1);
 
 	return new InvalidForeignKeyError({
 		collection,
 		field,
+		key,
 	});
 }
