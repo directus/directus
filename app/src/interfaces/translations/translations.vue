@@ -50,7 +50,7 @@ const value = computed({
 	},
 });
 
-const { collection, field, primaryKey, defaultLanguage, userLanguage } = toRefs(props);
+const { collection, field, primaryKey } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 const { t, locale } = useI18n();
 
@@ -231,11 +231,11 @@ function useLanguages() {
 	const defaultLang = computed(() => {
 		const pkField = relationInfo.value?.relatedPrimaryKeyField.field ?? '';
 
-		const userLocale = userLanguage.value ? locale.value : defaultLanguage.value;
+		const userLocale = props.userLanguage ? locale.value : props.defaultLanguage;
 		const firstDefault = getDefaultLang(userLocale);
 		const firstLang = firstDefault?.[pkField] as string;
 
-		const defaultLocale = userLanguage.value ? defaultLanguage.value : null;
+		const defaultLocale = props.userLanguage ? props.defaultLanguage : null;
 		let secondDefault = getDefaultLang(defaultLocale);
 
 		if (!secondDefault || secondDefault[pkField] === firstLang) {
