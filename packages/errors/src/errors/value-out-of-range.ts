@@ -3,7 +3,7 @@ import { createError, ErrorCode } from '../index.js';
 export interface ValueOutOfRangeErrorExtensions {
 	collection: string | null;
 	field: string | null;
-	value?: string;
+	value: string | null;
 }
 
 export const messageConstructor = ({ collection, field, value }: ValueOutOfRangeErrorExtensions) => {

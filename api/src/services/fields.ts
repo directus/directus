@@ -210,16 +210,16 @@ export class FieldsService {
 			const permissions = await fetchPermissions(
 				collection
 					? {
-							action: 'read',
-							policies,
-							collections: [collection],
-							accountability: this.accountability,
-					  }
+						action: 'read',
+						policies,
+						collections: [collection],
+						accountability: this.accountability,
+					}
 					: {
-							action: 'read',
-							policies,
-							accountability: this.accountability,
-					  },
+						action: 'read',
+						policies,
+						accountability: this.accountability,
+					},
 				{ knex: this.knex, schema: this.schema },
 			);
 
@@ -321,9 +321,9 @@ export class FieldsService {
 
 		const columnWithCastDefaultValue = column
 			? {
-					...column,
-					default_value: getDefaultValue(column, fieldInfo),
-			  }
+				...column,
+				default_value: getDefaultValue(column, fieldInfo),
+			}
 			: null;
 
 		const data = {
@@ -381,17 +381,17 @@ export class FieldsService {
 				const hookAdjustedField =
 					opts?.emitEvents !== false
 						? await emitter.emitFilter(
-								`fields.create`,
-								field,
-								{
-									collection: collection,
-								},
-								{
-									database: trx,
-									schema: this.schema,
-									accountability: this.accountability,
-								},
-						  )
+							`fields.create`,
+							field,
+							{
+								collection: collection,
+							},
+							{
+								database: trx,
+								schema: this.schema,
+								accountability: this.accountability,
+							},
+						)
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
@@ -485,18 +485,18 @@ export class FieldsService {
 			const hookAdjustedField =
 				opts?.emitEvents !== false
 					? await emitter.emitFilter(
-							`fields.update`,
-							field,
-							{
-								keys: [field.field],
-								collection: collection,
-							},
-							{
-								database: this.knex,
-								schema: this.schema,
-								accountability: this.accountability,
-							},
-					  )
+						`fields.update`,
+						field,
+						{
+							keys: [field.field],
+							collection: collection,
+						},
+						{
+							database: this.knex,
+							schema: this.schema,
+							accountability: this.accountability,
+						},
+					)
 					: field;
 
 			const record = field.meta
@@ -534,7 +534,7 @@ export class FieldsService {
 							});
 						});
 					} catch (err: any) {
-						throw await translateDatabaseError(err);
+						throw await translateDatabaseError(err, field);
 					}
 				}
 			}

@@ -7,6 +7,7 @@ import {
 	ValueTooLongError,
 } from '@directus/errors';
 import type { PostgresError } from './types.js';
+import type { Item } from '@directus/types';
 
 enum PostgresErrorCodes {
 	FOREIGN_KEY_VIOLATION = '23503',
@@ -16,7 +17,7 @@ enum PostgresErrorCodes {
 	VALUE_LIMIT_VIOLATION = '22001',
 }
 
-export function extractError(error: PostgresError): PostgresError | Error {
+export function extractError(error: PostgresError, data: Partial<Item>): PostgresError | Error {
 	switch (error.code) {
 		case PostgresErrorCodes.UNIQUE_VIOLATION:
 			return uniqueViolation(error);
@@ -31,91 +32,92 @@ export function extractError(error: PostgresError): PostgresError | Error {
 		default:
 			return error;
 	}
-}
 
-function uniqueViolation(error: PostgresError) {
-	const { table, detail } = error;
 
-	const betweenParens = /\(([^)]+)\)/g;
-	const matches = detail.match(betweenParens);
+	function uniqueViolation(error: PostgresError) {
+		const { table, detail } = error;
 
-	if (!matches) return error;
+		const betweenParens = /\(([^)]+)\)/g;
+		const matches = detail.match(betweenParens);
 
-	const collection = table;
-	const field = matches[0].slice(1, -1);
+		if (!matches) return error;
 
-	return new RecordNotUniqueError({
-		collection,
-		field,
-	});
-}
+		const collection = table;
+		const field = matches[0].slice(1, -1);
 
-function numericValueOutOfRange(error: PostgresError) {
-	const regex = /"(.*?)"/g;
-	const matches = error.message.match(regex);
-
-	if (!matches) return error;
-
-	const collection = matches[0].slice(1, -1);
-	const field = null;
-	const value = matches[2]!.slice(1, -1);
-
-	return new ValueOutOfRangeError({
-		collection,
-		field,
-		value,
-	});
-}
-
-function valueLimitViolation(error: PostgresError) {
-	/**
-	 * NOTE:
-	 * Postgres doesn't return the offending column
-	 */
-
-	const regex = /"(.*?)"/g;
-	const matches = error.message.match(regex);
-
-	if (!matches) return error;
-
-	const collection = matches[0].slice(1, -1);
-	const field = null;
-
-	return new ValueTooLongError({
-		collection,
-		field,
-	});
-}
-
-function notNullViolation(error: PostgresError) {
-	const { table, column } = error;
-	if (!column) return error;
-
-	if (error.message.endsWith('contains null values')) {
-		return new ContainsNullValuesError({ collection: table, field: column });
+		return new RecordNotUniqueError({
+			collection,
+			field,
+			value: field ? data[field] : null
+		});
 	}
 
-	return new NotNullViolationError({
-		collection: table,
-		field: column,
-	});
-}
+	function numericValueOutOfRange(error: PostgresError) {
+		const regex = /"(.*?)"/g;
+		const matches = error.message.match(regex);
 
-function foreignKeyViolation(error: PostgresError) {
-	const { table, detail } = error;
+		if (!matches) return error;
 
-	const betweenParens = /\(([^)]+)\)/g;
-	const matches = detail.match(betweenParens);
+		const collection = matches[0].slice(1, -1);
+		const field = null;
 
-	if (!matches) return error;
+		return new ValueOutOfRangeError({
+			collection,
+			field,
+			value: field ? data[field] : null
+		});
+	}
 
-	const collection = table;
-	const field = matches[0].slice(1, -1);
-	const key = matches[1]!.slice(1, -1);
+	function valueLimitViolation(error: PostgresError) {
+		/**
+		 * NOTE:
+		 * Postgres doesn't return the offending column
+		 */
 
-	return new InvalidForeignKeyError({
-		collection,
-		field,
-		key,
-	});
+		const regex = /"(.*?)"/g;
+		const matches = error.message.match(regex);
+
+		if (!matches) return error;
+
+		const collection = matches[0].slice(1, -1);
+		const field = null;
+
+		return new ValueTooLongError({
+			collection,
+			field,
+			value: field ? data[field] : null
+		});
+	}
+
+	function notNullViolation(error: PostgresError) {
+		const { table, column } = error;
+		if (!column) return error;
+
+		if (error.message.endsWith('contains null values')) {
+			return new ContainsNullValuesError({ collection: table, field: column });
+		}
+
+		return new NotNullViolationError({
+			collection: table,
+			field: column,
+		});
+	}
+
+	function foreignKeyViolation(error: PostgresError) {
+		const { table, detail } = error;
+
+		const betweenParens = /\(([^)]+)\)/g;
+		const matches = detail.match(betweenParens);
+
+		if (!matches) return error;
+
+		const collection = table;
+		const field = matches[0].slice(1, -1);
+
+		return new InvalidForeignKeyError({
+			collection,
+			field,
+			key: field ? data[field] : null
+		});
+	}
 }

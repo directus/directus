@@ -3,7 +3,7 @@ import { createError, ErrorCode } from '../index.js';
 export interface InvalidForeignKeyErrorExtensions {
 	collection: string | null;
 	field: string | null;
-	key?: string;
+	key: string | null;
 }
 
 export const messageConstructor = ({ collection, field, key }: InvalidForeignKeyErrorExtensions) => {
