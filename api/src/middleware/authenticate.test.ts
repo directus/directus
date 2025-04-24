@@ -52,8 +52,8 @@ afterEach(() => {
 test('Short-circuits when authenticate filter is used', async () => {
 	const req = {
 		socket: { remoteAddress: '127.0.0.1' },
-		cookies: {},
 		headers: {},
+		cookies: {},
 		get: vi.fn(reqGetImplementation),
 	} as unknown as Request;
 
@@ -73,8 +73,8 @@ test('Short-circuits when authenticate filter is used', async () => {
 test('Uses default public accountability when no token is given', async () => {
 	const req = {
 		socket: { remoteAddress: '127.0.0.1' },
-		cookies: {},
 		headers: {},
+		cookies: {},
 		get: vi.fn(reqGetImplementation),
 	} as unknown as Request;
 
@@ -118,8 +118,8 @@ test('Sets accountability to payload contents if valid token is passed', async (
 
 	const req = {
 		socket: { remoteAddress: '127.0.0.1' },
-		cookies: {},
 		headers: {},
+		cookies: {},
 		get: vi.fn(reqGetImplementation),
 		token,
 	} as unknown as Request;
@@ -189,8 +189,8 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 
 	const req = {
 		socket: { remoteAddress: '127.0.0.1' },
-		cookies: {},
 		headers: {},
+		cookies: {},
 		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
@@ -205,8 +205,8 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 test('Sets accountability to user information when static token is used', async () => {
 	const req = {
 		socket: { remoteAddress: '127.0.0.1' },
-		cookies: {},
 		headers: {},
+		cookies: {},
 		get: vi.fn(reqGetImplementation),
 		token: 'static-token',
 	} as unknown as Request;
