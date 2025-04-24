@@ -370,6 +370,7 @@ class FlowManager {
 					item: flow.id,
 					data: {
 						steps: steps.map((step) => redactObject(step, { values: this.envs }, getRedactedString)),
+						options: flow.options,
 						data: redactObject(
 							keyedData,
 							{

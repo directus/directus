@@ -27,12 +27,12 @@ const { revision, loading } = useRevision(revisionId);
 const triggerData = computed(() => {
 	if (!unref(revision)?.data) return { trigger: null, accountability: null, options: null };
 
-	const { data } = unref(revision)?.data as any;
+	const { data, options } = unref(revision)?.data as any;
 
 	return {
 		trigger: data.$trigger,
 		accountability: data.$accountability,
-		options: props.flow.options,
+		options: options ?? props.flow.options,
 	};
 });
 
