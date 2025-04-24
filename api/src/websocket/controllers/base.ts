@@ -15,12 +15,12 @@ import { useLogger } from '../../logger/index.js';
 import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
 import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebSocketClient } from '../types.js';
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
-import { getIPFromWSReq } from '../utils/get-ip-from-ws-req.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
 
@@ -131,7 +131,7 @@ export default abstract class SocketController {
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
 		const accountabilityOverrides: Partial<Accountability> = {
-			ip: getIPFromWSReq(request) ?? null,
+			ip: getIPFromReq(request) ?? null,
 		};
 
 		const userAgent = request.headers['user-agent']?.substring(0, 1024);
