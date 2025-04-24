@@ -20,20 +20,20 @@ enum PostgresErrorCodes {
 export function extractError(error: PostgresError, data: Partial<Item>): PostgresError | Error {
 	switch (error.code) {
 		case PostgresErrorCodes.UNIQUE_VIOLATION:
-			return uniqueViolation(error);
+			return uniqueViolation();
 		case PostgresErrorCodes.NUMERIC_VALUE_OUT_OF_RANGE:
-			return numericValueOutOfRange(error);
+			return numericValueOutOfRange();
 		case PostgresErrorCodes.VALUE_LIMIT_VIOLATION:
-			return valueLimitViolation(error);
+			return valueLimitViolation();
 		case PostgresErrorCodes.NOT_NULL_VIOLATION:
-			return notNullViolation(error);
+			return notNullViolation();
 		case PostgresErrorCodes.FOREIGN_KEY_VIOLATION:
-			return foreignKeyViolation(error);
+			return foreignKeyViolation();
 		default:
 			return error;
 	}
 
-	function uniqueViolation(error: PostgresError) {
+	function uniqueViolation() {
 		const { table, detail } = error;
 
 		const betweenParens = /\(([^)]+)\)/g;
@@ -51,7 +51,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		});
 	}
 
-	function numericValueOutOfRange(error: PostgresError) {
+	function numericValueOutOfRange() {
 		const regex = /"(.*?)"/g;
 		const matches = error.message.match(regex);
 
@@ -67,7 +67,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		});
 	}
 
-	function valueLimitViolation(error: PostgresError) {
+	function valueLimitViolation() {
 		/**
 		 * NOTE:
 		 * Postgres doesn't return the offending column
@@ -88,7 +88,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		});
 	}
 
-	function notNullViolation(error: PostgresError) {
+	function notNullViolation() {
 		const { table, column } = error;
 		if (!column) return error;
 
@@ -102,7 +102,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		});
 	}
 
-	function foreignKeyViolation(error: PostgresError) {
+	function foreignKeyViolation() {
 		const { table, detail } = error;
 
 		const betweenParens = /\(([^)]+)\)/g;
