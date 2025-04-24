@@ -1,5 +1,5 @@
 import deepDiff from 'deep-diff';
-import type { Snapshot, SnapshotDiff } from '../types/index.js';
+import type { Snapshot, SnapshotDiff, SnapshotSystemField } from '../types/index.js';
 import { DiffKind } from '../types/index.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
@@ -97,15 +97,15 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					const afterSystemField = after.systemFields.find(
 						(afterSystemField) => afterSystemField.collection === currentSystemField.collection && afterSystemField.field === currentSystemField.field,
 					);
-	
-					const afterFieldSanitized = afterSystemField ? sanitizeSystemField(afterSystemField) : undefined;
+
+					const afterSystemFieldSanitized = afterSystemField ? sanitizeSystemField(afterSystemField) : invertIndexed(currentSystemField);
 	
 					return {
 						collection: currentSystemField.collection,
 						field: currentSystemField.field,
 						diff: deepDiff.diff(
 							sanitizeSystemField(currentSystemField),
-							afterFieldSanitized,
+							afterSystemFieldSanitized,
 						),
 					};
 				}),
@@ -176,4 +176,13 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 	);
 
 	return diffedSnapshot;
+}
+
+function invertIndexed(field: SnapshotSystemField): SnapshotSystemField {
+	return {
+		...field,
+		schema: {
+			is_indexed: !field.schema.is_indexed
+		}
+	};
 }
