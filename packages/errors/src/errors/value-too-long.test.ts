@@ -15,7 +15,9 @@ beforeEach(() => {
 
 test('Constructs the message using the provided field name and collection', () => {
 	const result = messageConstructor(sample);
-	expect(result).toBe(`Value "${sample.value}" for field "${sample.field}" in collection "${sample.collection}" is too long.`);
+	expect(result).toBe(
+		`Value "${sample.value}" for field "${sample.field}" in collection "${sample.collection}" is too long.`,
+	);
 });
 
 test('Constructs the message using the provided field name only', () => {
@@ -41,6 +43,8 @@ test('Constructs the message using without field/collection', () => {
 });
 
 test('Constructs the message using without value', () => {
+	sample.value = null;
+
 	const result = messageConstructor(sample);
 	expect(result).toBe(`Value for field "${sample.field}" in collection "${sample.collection}" is too long.`);
 });

@@ -15,7 +15,9 @@ beforeEach(() => {
 
 test('Constructs the message using the provided field name and collection', () => {
 	const result = messageConstructor(sample);
-	expect(result).toBe(`Value "${sample.value}" for field "${sample.field}" in collection "${sample.collection}" has to be unique.`);
+	expect(result).toBe(
+		`Value "${sample.value}" for field "${sample.field}" in collection "${sample.collection}" has to be unique.`,
+	);
 });
 
 test('Constructs the message using the provided field name only', () => {
