@@ -2,6 +2,7 @@ import { useEnv } from '@directus/env';
 import type { Transporter } from 'nodemailer';
 import type { EmailOptionsOverrides } from './services/mail/index.js';
 import nodemailer from 'nodemailer';
+import crypto from 'node:crypto';
 import { useLogger } from './logger/index.js';
 import { getConfigFromEnv } from './utils/get-config-from-env.js';
 
@@ -10,9 +11,33 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
 let transporter: Transporter;
+let overrideHash: string | undefined;
 
 export default function getMailer(overrides?: EmailOptionsOverrides): Transporter {
-	if (transporter) return transporter;
+	// if there is an existing transporter, try to reuse it, minding the overrides
+	if (overrides && overrides.smtp) {
+		const input = Object.fromEntries(Object.entries(overrides.smtp).sort(([keyA], [keyB]) => keyA.localeCompare(keyB))); // sort to ensure consistent hashing
+		const hash = crypto.createHash('md5').update(JSON.stringify(input)).digest('hex');
+
+		if (transporter) {
+			if (overrideHash && overrideHash === hash) {
+				return transporter;
+			}
+
+			transporter.close();
+			transporter = undefined as unknown as Transporter;
+		}
+
+		overrideHash = hash;
+	} else if (transporter) {
+		if (overrideHash) {
+			transporter.close();
+			transporter = undefined as unknown as Transporter;
+		}
+
+		overrideHash = undefined;
+		return transporter;
+	}
 
 	const env = useEnv();
 	const logger = useLogger();
