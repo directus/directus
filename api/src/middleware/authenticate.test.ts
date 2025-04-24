@@ -51,7 +51,6 @@ afterEach(() => {
 
 test('Short-circuits when authenticate filter is used', async () => {
 	const req = {
-		ip: '127.0.0.1',
 		socket: { remoteAddress: '127.0.0.1' },
 		cookies: {},
 		headers: {},
@@ -73,7 +72,6 @@ test('Short-circuits when authenticate filter is used', async () => {
 
 test('Uses default public accountability when no token is given', async () => {
 	const req = {
-		ip: '127.0.0.1',
 		socket: { remoteAddress: '127.0.0.1' },
 		cookies: {},
 		headers: {},
@@ -119,7 +117,6 @@ test('Sets accountability to payload contents if valid token is passed', async (
 	);
 
 	const req = {
-		ip: '127.0.0.1',
 		socket: { remoteAddress: '127.0.0.1' },
 		cookies: {},
 		headers: {},
@@ -191,7 +188,6 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 	} as unknown as Knex);
 
 	const req = {
-		ip: '127.0.0.1',
 		socket: { remoteAddress: '127.0.0.1' },
 		cookies: {},
 		headers: {},
@@ -208,7 +204,6 @@ test('Throws InvalidCredentialsError when static token is used, but user does no
 
 test('Sets accountability to user information when static token is used', async () => {
 	const req = {
-		ip: '127.0.0.1',
 		socket: { remoteAddress: '127.0.0.1' },
 		cookies: {},
 		headers: {},
@@ -272,7 +267,6 @@ test('Sets accountability to user information when static token is used', async 
 
 test('Invalid session token responds with error and clears the cookie', async () => {
 	const req = {
-		ip: '127.0.0.1',
 		socket: { remoteAddress: '127.0.0.1' },
 		headers: {},
 		cookies: {
@@ -303,7 +297,6 @@ test('Invalid session token responds with error and clears the cookie', async ()
 
 test('Invalid query token responds with error but does not clear the session cookie', async () => {
 	const req = {
-		ip: '127.0.0.1',
 		socket: { remoteAddress: '127.0.0.1' },
 		headers: {},
 		cookies: {
