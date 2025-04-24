@@ -4,7 +4,7 @@ import { isIP } from 'net';
 import proxyAddr from 'proxy-addr';
 import { useLogger } from '../../logger/index.js';
 
-export function getIPFromReq(req: IncomingMessage): string | null {
+export function getIPFromWSReq(req: IncomingMessage): string | null {
 	const env = useEnv();
 	const logger = useLogger();
 
