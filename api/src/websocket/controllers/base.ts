@@ -130,7 +130,7 @@ export default abstract class SocketController {
 		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
 
-		const accountabilityOverrides: Partial<Accountability> = {
+		const accountabilityOverrides: UpgradeContext['accountabilityOverrides'] = {
 			ip: getIPFromReq(request) ?? null,
 		};
 
@@ -204,7 +204,7 @@ export default abstract class SocketController {
 			return;
 		}
 
-		accountability.ip = accountabilityOverrides.ip ?? null;
+		accountability.ip = accountabilityOverrides.ip;
 		accountability.userAgent = accountabilityOverrides.userAgent;
 		accountability.origin = accountabilityOverrides.origin;
 
@@ -226,7 +226,7 @@ export default abstract class SocketController {
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
 
 				if (state.accountability) {
-					state.accountability.ip = accountabilityOverrides.ip ?? null;
+					state.accountability.ip = accountabilityOverrides.ip;
 					state.accountability.userAgent = accountabilityOverrides.userAgent;
 					state.accountability.origin = accountabilityOverrides.origin;
 				}
