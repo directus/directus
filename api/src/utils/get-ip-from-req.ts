@@ -5,8 +5,6 @@ import { isIP } from 'net';
 import proxyAddr from 'proxy-addr';
 import { useLogger } from '../logger/index.js';
 
-export function getIPFromReq(req: IncomingMessage): string | null;
-export function getIPFromReq(req: Request): string | null;
 export function getIPFromReq(req: Request | IncomingMessage): string | null {
 	const env = useEnv();
 	const logger = useLogger();
