@@ -6,15 +6,15 @@ export function filterReplaceM2A(filter_arg: Filter, collection: string, schema:
 	const filter: any = filter_arg;
 
 	for (const key in filter) {
-		const [field, any_collection] = key.split('__')
+		const [field, any_collection] = key.split('__');
 
-		if (!field) continue
+		if (!field) continue;
 
-		const relation = getRelation(schema.relations, collection, field)
+		const relation = getRelation(schema.relations, collection, field);
 
-		if (!relation) continue
+		if (!relation) continue;
 
-		const type = getRelationType({ relation, collection, field })
+		const type = getRelationType({ relation, collection, field });
 
 		if (type === 'o2m') {
 			filter[key] = filterReplaceM2A(filter[key], relation.collection, schema);
@@ -42,15 +42,15 @@ export function filterReplaceM2ADeep(
 
 	for (const key in deep) {
 		if (key.startsWith('_') === false) {
-			const [field, any_collection] = key.split('__')
+			const [field, any_collection] = key.split('__');
 
-			if (!field) continue
+			if (!field) continue;
 
-			const relation = getRelation(schema.relations, collection, field)
+			const relation = getRelation(schema.relations, collection, field);
 
-			if (!relation) continue
+			if (!relation) continue;
 
-			const type = getRelationType({ relation, collection, field })
+			const type = getRelationType({ relation, collection, field });
 
 			if (type === 'o2m') {
 				deep[key] = filterReplaceM2ADeep(deep[key], relation.collection, schema);

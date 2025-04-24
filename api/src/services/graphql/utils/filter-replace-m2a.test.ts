@@ -4,26 +4,23 @@ import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
 
 const schema = new SchemaBuilder()
 	.collection('article', (c) => {
-		c.field('id').id()
-		c.field('author').m2o('user')
+		c.field('id').id();
+		c.field('author').m2o('user');
 
 		c.field('blocks').m2a(['text', 'image'], () => ({
-			o2m_relation: new RelationBuilder('article', 'blocks')
-				.o2m('article_builder', 'article_id')
-				.options({
-					meta: {
-						junction_field: `anyitem`,
-					},
-				}),
+			o2m_relation: new RelationBuilder('article', 'blocks').o2m('article_builder', 'article_id').options({
+				meta: {
+					junction_field: `anyitem`,
+				},
+			}),
 			a2o_relation: new RelationBuilder('article_builder', 'anyitem').a2o(['text', 'image']).options({
 				meta: {
 					junction_field: `article_id`,
 				},
-			})
-		}))
+			}),
+		}));
 	})
-	.build()
-
+	.build();
 
 test('empty filter', () => {
 	const result = filterReplaceM2A({}, 'article', { collections: {}, relations: [] });
