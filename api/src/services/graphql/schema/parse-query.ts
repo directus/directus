@@ -134,7 +134,7 @@ export async function getQuery(
 
 	query.deep = replaceFuncs(query.deep as any) as any;
 
-	if (collection && schema) {
+	if (collection) {
 		if (query.filter) {
 			query.filter = filterReplaceM2A(query.filter, collection, schema);
 		}

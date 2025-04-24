@@ -17,7 +17,7 @@ export function filterReplaceM2A(filter_arg: Filter, collection: string, schema:
 		const type = getRelationType({ relation, collection, field })
 
 		if (type === 'o2m') {
-			filter[key] = filterReplaceM2A(filter[key], relation.collection!, schema);
+			filter[key] = filterReplaceM2A(filter[key], relation.collection, schema);
 		} else if (type === 'm2o') {
 			filter[key] = filterReplaceM2A(filter[key], relation.related_collection!, schema);
 		} else if (type === 'a2o' && any_collection && relation.meta?.one_allowed_collections?.includes(any_collection)) {
@@ -38,8 +38,6 @@ export function filterReplaceM2ADeep(
 	collection: string,
 	schema: SchemaOverview,
 ) {
-	if (!deep_arg) return deep_arg;
-
 	const deep: any = deep_arg;
 
 	for (const key in deep) {
@@ -55,7 +53,7 @@ export function filterReplaceM2ADeep(
 			const type = getRelationType({ relation, collection, field })
 
 			if (type === 'o2m') {
-				deep[key] = filterReplaceM2ADeep(deep[key], relation.collection!, schema);
+				deep[key] = filterReplaceM2ADeep(deep[key], relation.collection, schema);
 			} else if (type === 'm2o') {
 				deep[key] = filterReplaceM2ADeep(deep[key], relation.related_collection!, schema);
 			} else if (type === 'a2o' && any_collection && relation.meta?.one_allowed_collections?.includes(any_collection)) {
