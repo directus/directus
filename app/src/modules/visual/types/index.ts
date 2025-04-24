@@ -17,10 +17,12 @@ export type SavedData = {
 	payload: Record<string, any>;
 };
 
-export type ReceiveAction = 'connect' | 'edit';
+export type ReceiveAction = 'connect' | 'edit' | 'navigation';
 
 export type SendAction = 'confirm' | 'showEditableElements' | 'saved';
 
 /** Not shared with the package */
 
 export type ReceiveData = { action: ReceiveAction | null; data: unknown };
+
+export type NavigationData = { url: string; title: string };

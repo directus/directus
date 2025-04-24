@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
+import { translateShortcut } from '@/utils/translate-shortcut';
 import HeaderBar from '@/views/private/components/header-bar.vue';
 import { computed, provide, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
@@ -63,7 +64,7 @@ const internalActive = computed({
 		<article class="v-drawer">
 			<v-button
 				v-if="cancelable"
-				v-tooltip.bottom="t('cancel')"
+				v-tooltip.bottom="`${t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel"
 				icon
 				rounded
