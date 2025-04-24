@@ -29,15 +29,24 @@ const applyJoiSchema = Joi.object({
 				}),
 			)
 			.required(),
-		fields: Joi.array()
-			.items(
-				Joi.object({
-					collection: Joi.string().required(),
-					field: Joi.string().required(),
-					diff: Joi.array().items(deepDiffSchema).required(),
-				}),
-			)
-			.required(),
+			fields: Joi.array()
+				.items(
+					Joi.object({
+						collection: Joi.string().required(),
+						field: Joi.string().required(),
+						diff: Joi.array().items(deepDiffSchema).required(),
+					}),
+				)
+				.required(),
+				systemFields: Joi.array()
+					.items(
+						Joi.object({
+							collection: Joi.string().required(),
+							field: Joi.string().required(),
+							diff: Joi.array().items(deepDiffSchema).required(),
+						}),
+					)
+					.required(),
 		relations: Joi.array()
 			.items(
 				Joi.object({
