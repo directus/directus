@@ -1,35 +1,29 @@
 import { expect, test } from 'vitest';
-import { filterReplaceM2A, filterReplaceM2ADeep } from './replace-m2a.js';
-import type { Relation, SchemaOverview } from '@directus/types';
+import { filterReplaceM2A, filterReplaceM2ADeep } from './filter-replace-m2a.js';
+import { RelationBuilder, SchemaBuilder } from '@directus/schema-builder';
 
-const schema = {
-	relations: [
-		{
-			collection: 'article',
-			field: 'author',
-			related_collection: 'user',
-		},
-		{
-			collection: 'article_blocks',
-			field: 'anyitem',
-			meta: {
-				one_allowed_collections: ['text', 'image'],
-				one_collection_field: 'collection',
-				junction_field: 'article_id',
-			},
-		} as Relation,
-		{
-			collection: 'article_blocks',
-			field: 'article_id',
-			related_collection: 'article',
-			meta: {
-				one_collection: 'article',
-				one_field: 'blocks',
-				junction_field: 'article_id',
-			},
-		},
-	],
-} as SchemaOverview;
+const schema = new SchemaBuilder()
+	.collection('article', (c) => {
+		c.field('id').id()
+		c.field('author').m2o('user')
+
+		c.field('blocks').m2a(['text', 'image'], () => ({
+			o2m_relation: new RelationBuilder('article', 'blocks')
+				.o2m('article_builder', 'article_id')
+				.options({
+					meta: {
+						junction_field: `anyitem`,
+					},
+				}),
+			a2o_relation: new RelationBuilder('article_builder', 'anyitem').a2o(['text', 'image']).options({
+				meta: {
+					junction_field: `article_id`,
+				},
+			})
+		}))
+	})
+	.build()
+
 
 test('empty filter', () => {
 	const result = filterReplaceM2A({}, 'article', { collections: {}, relations: [] });

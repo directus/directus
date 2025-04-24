@@ -5,7 +5,7 @@ import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
 import { parseArgs } from './parse-args.js';
-import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/replace-m2a.js';
+import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
 
 /**
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
