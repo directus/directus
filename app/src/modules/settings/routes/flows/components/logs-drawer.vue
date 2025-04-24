@@ -27,12 +27,11 @@ const { revision, loading } = useRevision(revisionId);
 const triggerData = computed(() => {
 	if (!unref(revision)?.data) return { trigger: null, accountability: null, options: null };
 
-	const { data, options } = unref(revision)?.data as any;
+	const { data } = unref(revision)?.data as any;
 
 	return {
 		trigger: data.$trigger,
 		accountability: data.$accountability,
-		options: options ?? props.flow.options,
 	};
 });
 
@@ -92,10 +91,6 @@ const steps = computed(() => {
 					</div>
 
 					<div class="inset">
-						<v-detail v-if="triggerData.options" :label="t('options')">
-							<pre class="json selectable">{{ triggerData.options }}</pre>
-						</v-detail>
-
 						<v-detail v-if="triggerData.trigger" :label="t('payload')">
 							<pre class="json selectable">{{ triggerData.trigger }}</pre>
 						</v-detail>
