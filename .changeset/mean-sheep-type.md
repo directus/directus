@@ -3,4 +3,4 @@
 '@directus/app': patch
 ---
 
-Fixed flows to store trigger options
+Removed displaying trigger options in flow logs.
