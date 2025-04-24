@@ -9,9 +9,9 @@ export type Accountability = {
 	user: string | null;
 	admin: boolean;
 	app: boolean;
-	share?: string;
+	share?: string | undefined;
 	ip: string | null;
-	userAgent?: string;
-	origin?: string;
-	session?: string;
+	userAgent?: string | undefined;
+	origin?: string | undefined;
+	session?: string | undefined;
 };

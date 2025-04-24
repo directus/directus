@@ -33,6 +33,7 @@ export type UpgradeContext = {
 	request: IncomingMessage;
 	socket: internal.Duplex;
 	head: Buffer;
+	accountabilityOverrides: Partial<Accountability>;
 };
 
 export type GraphQLSocket = {
