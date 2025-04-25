@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed string length too short to store db column/table names
+Set system field lengths based on database max limits for columns and tables (new installs only)
