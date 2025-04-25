@@ -10,7 +10,6 @@ import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../t
 import { getSchema } from './get-schema.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
-
 export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOverview }): Promise<Snapshot> {
 	const database = options?.database ?? getDatabase();
 	const vendor = getDatabaseClient(database);
@@ -32,8 +31,12 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item));
 
 	const collectionsSorted: Collection[] = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']);
-	const fieldsSorted = sortBy(mapValues(fieldsFiltered, sortDeep), ['collection', 'meta.id']).map(omitID) as SnapshotField[];
-	const relationsSorted = sortBy(mapValues(relationsFiltered, sortDeep), ['collection', 'meta.id']).map(omitID) as SnapshotRelation[];
+	const fieldsSorted = sortBy(mapValues(fieldsFiltered, sortDeep), ['collection', 'meta.id']).map(
+		omitID,
+	) as SnapshotField[];
+	const relationsSorted = sortBy(mapValues(relationsFiltered, sortDeep), ['collection', 'meta.id']).map(
+		omitID,
+	) as SnapshotRelation[];
 
 	return {
 		version: 1,
@@ -51,7 +54,10 @@ function excludeSystem(item: { meta: { system?: boolean | null } | null }) {
 	return true;
 }
 
-function systemFieldWithIndex(item: { meta: { system?: boolean | null } | null; schema: { is_indexed: boolean } | null }) {
+function systemFieldWithIndex(item: {
+	meta: { system?: boolean | null } | null;
+	schema: { is_indexed: boolean } | null;
+}) {
 	return item.meta?.system === true && item.schema?.is_indexed;
 }
 

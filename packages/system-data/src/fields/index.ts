@@ -41,7 +41,7 @@ export function isSystemField(collection: string, field: string): boolean {
 }
 
 export function hasSystemIndex(collection: string, field: string): boolean {
-	return !!systemIndexRows.find(row => row.collection === collection && row.field === field);
+	return !!systemIndexRows.find((row) => row.collection === collection && row.field === field);
 }
 
 processFields(accessFields);
@@ -73,7 +73,11 @@ processFields(versionFields);
 processFields(webhookFields);
 
 function processFields(systemFields: Record<string, any>) {
-	const { table: collection, fields, indexed } = systemFields as { table: string; fields: FieldMeta[]; indexed: Pick<FieldIndex, 'field'>[] | undefined };
+	const {
+		table: collection,
+		fields,
+		indexed,
+	} = systemFields as { table: string; fields: FieldMeta[]; indexed: Pick<FieldIndex, 'field'>[] | undefined };
 
 	fields.forEach((field, index) => {
 		systemFieldRows.push({
@@ -94,5 +98,3 @@ function processFields(systemFields: Record<string, any>) {
 		});
 	}
 }
-
-

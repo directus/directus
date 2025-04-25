@@ -22,7 +22,7 @@ test('should fail on invalid diff schema', () => {
 test('should fail on invalid hash', () => {
 	const diff = {
 		hash: 'abc',
-		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], systemFields:[], relations: [] },
+		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], systemFields: [], relations: [] },
 	} as SnapshotDiffWithHash;
 
 	const snapshot = { hash: 'xyz' } as SnapshotWithHash;

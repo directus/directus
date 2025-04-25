@@ -272,14 +272,16 @@ export async function applyDiff(
 			}
 		}
 
-
 		for (const { collection, field, diff } of snapshotDiff.systemFields) {
 			if (diff?.[0]?.kind === DiffKind.EDIT) {
 				try {
-					const newValues = diff.reduce((acc, currentDiff) => {
-						deepDiff.applyChange(acc, undefined, currentDiff);
-						return acc;
-					}, { collection, field } as SnapshotSystemField);
+					const newValues = diff.reduce(
+						(acc, currentDiff) => {
+							deepDiff.applyChange(acc, undefined, currentDiff);
+							return acc;
+						},
+						{ collection, field } as SnapshotSystemField,
+					);
 
 					await fieldsService.updateField(collection, newValues as unknown as RawField, mutationOptions);
 				} catch (err) {
@@ -346,7 +348,6 @@ export async function applyDiff(
 				}
 			}
 		}
-
 
 		//// APPLY system indexes
 	});
