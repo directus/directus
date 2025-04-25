@@ -239,6 +239,7 @@ test('should not throw error for diffs with varying types of lhs/rhs', () => {
 					],
 				},
 			],
+			systemFields: [],
 			relations: [
 				{
 					collection: 'a',
@@ -268,6 +269,7 @@ test('should not throw error for relation diff with null related_collection (app
 		diff: {
 			collections: [],
 			fields: [],
+			systemFields: [],
 			relations: [
 				{
 					collection: 'pages_blocks',
