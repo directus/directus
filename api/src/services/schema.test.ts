@@ -35,6 +35,7 @@ const testSnapshot = {
 	vendor: 'postgres',
 	collections: [],
 	fields: [],
+	systemFields: [],
 	relations: [],
 } satisfies Snapshot;
 
@@ -97,6 +98,7 @@ describe('Services / Schema', () => {
 			diff: {
 				collections: [testCollectionDiff],
 				fields: [],
+				systemFields: [],
 				relations: [],
 			},
 		} satisfies SnapshotDiffWithHash;
@@ -146,6 +148,7 @@ describe('Services / Schema', () => {
 				},
 			],
 			fields: [],
+			systemFields: [],
 			relations: [],
 		} satisfies Snapshot;
 
@@ -163,6 +166,7 @@ describe('Services / Schema', () => {
 			expect(service.diff(snapshotToApply, { currentSnapshot: testSnapshot, force: true })).resolves.toEqual({
 				collections: [testCollectionDiff],
 				fields: [],
+				systemFields: [],
 				relations: [],
 			});
 		});

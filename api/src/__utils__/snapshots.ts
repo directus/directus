@@ -72,6 +72,7 @@ export const snapshotBeforeCreateCollection: Snapshot = {
 			type: 'uuid',
 		} as SnapshotField,
 	],
+	systemFields: [],
 	relations: [],
 };
 
@@ -277,6 +278,7 @@ export const snapshotCreateCollection: Snapshot = {
 			type: 'uuid',
 		} as SnapshotField,
 	],
+	systemFields: [],
 	relations: [],
 };
 
@@ -417,6 +419,7 @@ export const snapshotCreateCollectionNotNested: Snapshot = {
 			type: 'uuid',
 		} as SnapshotField,
 	],
+	systemFields: [],
 	relations: [],
 };
 
@@ -851,6 +854,7 @@ export const snapshotBeforeDeleteCollection: Snapshot = {
 			type: 'string',
 		},
 	] as unknown as SnapshotField[],
+	systemFields: [],
 	relations: [
 		{
 			collection: 'articles_translations',

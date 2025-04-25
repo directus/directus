@@ -2,10 +2,12 @@ import { describe, expect, test } from 'vitest';
 import type { Collection } from '../types/collection.js';
 import type {
 	Snapshot,
+	SnapshotCollection,
 	SnapshotDiff,
 	SnapshotDiffWithHash,
 	SnapshotField,
 	SnapshotRelation,
+	SnapshotSystemField,
 	SnapshotWithHash,
 } from '../types/snapshot.js';
 import { validateApplyDiff } from './validate-diff.js';
@@ -20,7 +22,7 @@ test('should fail on invalid diff schema', () => {
 test('should fail on invalid hash', () => {
 	const diff = {
 		hash: 'abc',
-		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], relations: [] },
+		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], systemFields:[], relations: [] },
 	} as SnapshotDiffWithHash;
 
 	const snapshot = { hash: 'xyz' } as SnapshotWithHash;
@@ -36,6 +38,7 @@ describe('should throw accurate error', () => {
 			hash: 'abc',
 			diff: {
 				fields: [],
+				systemFields: [],
 				collections: [],
 				relations: [],
 				...partialDiff,
@@ -46,8 +49,9 @@ describe('should throw accurate error', () => {
 	const baseSnapshot = (partialSnapshot?: Partial<Snapshot>) => {
 		return {
 			hash: 'xyz',
-			collections: [] as Collection[],
+			collections: [] as SnapshotCollection[],
 			fields: [] as SnapshotField[],
+			systemFields: [] as SnapshotSystemField[],
 			relations: [] as SnapshotRelation[],
 			...partialSnapshot,
 		} as SnapshotWithHash;
@@ -55,10 +59,10 @@ describe('should throw accurate error', () => {
 
 	test('creating collection which already exists', () => {
 		const diff = baseDiff({
-			collections: [{ collection: 'test', diff: [{ kind: 'N', rhs: {} as Collection }] }],
+			collections: [{ collection: 'test', diff: [{ kind: 'N', rhs: {} as SnapshotCollection }] }],
 		});
 
-		const snapshot = baseSnapshot({ collections: [{ collection: 'test' } as Collection] });
+		const snapshot = baseSnapshot({ collections: [{ collection: 'test' } as SnapshotCollection] });
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
 			'Provided diff is trying to create collection "test" but it already exists',
@@ -303,7 +307,7 @@ test('should not throw error for relation diff with null related_collection (app
 test('should detect empty diff', () => {
 	const diff = {
 		hash: 'abc',
-		diff: { collections: [], fields: [], relations: [] },
+		diff: { collections: [], fields: [], systemFields: [], relations: [] },
 	};
 
 	const snapshot = {} as SnapshotWithHash;
@@ -314,7 +318,7 @@ test('should detect empty diff', () => {
 test('should pass on valid diff', () => {
 	const diff = {
 		hash: 'abc',
-		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], relations: [] },
+		diff: { collections: [{ collection: 'test', diff: [] }], fields: [], systemFields: [], relations: [] },
 	};
 
 	const snapshot = { hash: 'abc' } as SnapshotWithHash;

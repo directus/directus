@@ -25,6 +25,7 @@ function filterSnapshotDiff(snapshot: SnapshotDiff, filters: string[]): Snapshot
 	const filteredDiff: SnapshotDiff = {
 		collections: snapshot.collections.filter((item) => shouldKeep(item)),
 		fields: snapshot.fields.filter((item) => shouldKeep(item)),
+		systemFields: snapshot.systemFields.filter((item) => shouldKeep(item)),
 		relations: snapshot.relations.filter((item) => shouldKeep(item)),
 	};
 
@@ -70,6 +71,7 @@ export async function apply(
 		if (
 			snapshotDiff.collections.length === 0 &&
 			snapshotDiff.fields.length === 0 &&
+			snapshotDiff.systemFields.length === 0 &&
 			snapshotDiff.relations.length === 0
 		) {
 			logger.info('No changes to apply.');
