@@ -1,7 +1,6 @@
 import type { SchemaOverview } from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
-import { systemIndexRows } from '@directus/system-data';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
 import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService } from '../services/collections.js';

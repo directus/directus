@@ -122,7 +122,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 				.map((afterSystemField) => ({
 					collection: afterSystemField.collection,
 					field: afterSystemField.field,
-					diff: deepDiff.diff(undefined, sanitizeSystemField(afterSystemField)),
+					diff: deepDiff.diff(invertIndexed(afterSystemField), sanitizeSystemField(afterSystemField)),
 				})),
 		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['systemFields'],
 		relations: [

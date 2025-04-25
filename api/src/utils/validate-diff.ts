@@ -73,6 +73,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 	if (
 		applyDiff.diff.collections.length === 0 &&
 		applyDiff.diff.fields.length === 0 &&
+		applyDiff.diff.systemFields.length === 0 &&
 		applyDiff.diff.relations.length === 0
 	) {
 		return false;
@@ -132,6 +133,8 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			}
 		}
 	}
+
+	// TODO ADD SYSTEM FIELD VALIDATION
 
 	for (const diffRelation of applyDiff.diff.relations) {
 		let relation = `${diffRelation.collection}.${diffRelation.field}`;
