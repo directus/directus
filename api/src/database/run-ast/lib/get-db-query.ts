@@ -4,17 +4,18 @@ import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import type { Context } from '../../../permissions/types.js';
 import type { FieldNode, FunctionFieldNode, O2MNode } from '../../../types/ast.js';
-import type { ColumnSortRecord } from '../../../utils/apply-query.js';
-import applyQuery, { applyLimit, applySort, generateAlias } from '../../../utils/apply-query.js';
+import { applySort, type ColumnSortRecord } from './apply-query/sort.js';
 import { getCollectionFromAlias } from '../../../utils/get-collection-from-alias.js';
 import type { AliasMap } from '../../../utils/get-column-path.js';
-import { getColumn } from '../../../utils/get-column.js';
+import { getColumn } from '../utils/get-column.js';
 import { getHelpers } from '../../helpers/index.js';
 import { applyCaseWhen } from '../utils/apply-case-when.js';
 import { getColumnPreprocessor } from '../utils/get-column-pre-processor.js';
 import { getNodeAlias } from '../utils/get-field-alias.js';
 import { getInnerQueryColumnPreProcessor } from '../utils/get-inner-query-column-pre-processor.js';
 import { withPreprocessBindings } from '../utils/with-preprocess-bindings.js';
+import applyQuery, { generateAlias } from './apply-query/index.js';
+import { applyLimit } from './apply-query/pagination.js';
 
 export type DBQueryOptions = {
 	table: string;
@@ -87,13 +88,13 @@ export function getDBQuery(
 	}
 
 	const primaryKey = schema.collections[table]!.primary;
-	let dbQuery = knex.from(table);
+	const dbQuery = knex.from(table);
 	let sortRecords: ColumnSortRecord[] | undefined;
 	const innerQuerySortRecords: { alias: string; order: 'asc' | 'desc'; column: Knex.Raw }[] = [];
 	let hasMultiRelationalSort: boolean | undefined;
 
 	if (queryCopy.sort) {
-		const sortResult = applySort(knex, schema, dbQuery, queryCopy, table, aliasMap, true);
+		const sortResult = applySort(knex, schema, dbQuery, queryCopy.sort, queryCopy.aggregate, table, aliasMap, true);
 
 		if (sortResult) {
 			sortRecords = sortResult.sortRecords;
@@ -175,13 +176,9 @@ export function getDBQuery(
 			});
 
 			if (hasMultiRelationalSort) {
-				dbQuery = helpers.schema.applyMultiRelationalSort(
-					knex,
-					dbQuery,
-					table,
-					primaryKey,
-					orderByString,
-					orderByFields,
+				dbQuery.rowNumber(
+					knex.ref('directus_row_number').toQuery(),
+					knex.raw(`partition by ?? order by ${orderByString}`, [`${table}.${primaryKey}`, ...orderByFields]),
 				);
 
 				// Start order by with directus_row_number. The directus_row_number is derived from a window function that
@@ -227,7 +224,7 @@ export function getDBQuery(
 		   So instead of having an inner query which might look like this:
 
 		   SELECT DISTINCT ...,
-		     CASE WHEN <condition> THEN <actual-column> END AS <alias>
+			 CASE WHEN <condition> THEN <actual-column> END AS <alias>
 
 		   a group-by query is generated.
 
@@ -239,14 +236,14 @@ export function getDBQuery(
 		   the actual column:
 
 		   SELECT ...,
-		     COUNT (CASE WHEN <condition> THEN 1 END) AS <random-prefix>_<alias>
-		     ...
-		     GROUP BY <primary-key>
+			 COUNT (CASE WHEN <condition> THEN 1 END) AS <random-prefix>_<alias>
+			 ...
+			 GROUP BY <primary-key>
 
-		    Then, in the wrapper query there is no need to evaluate the condition again, but instead rely on the flag:
+			Then, in the wrapper query there is no need to evaluate the condition again, but instead rely on the flag:
 
-		    SELECT ...,
-		      CASE WHEN `inner`.<random-prefix>_<alias> > 0 THEN <actual-column> END AS <alias>
+			SELECT ...,
+			  CASE WHEN `inner`.<random-prefix>_<alias> > 0 THEN <actual-column> END AS <alias>
 		 */
 
 		const innerPreprocess = getInnerQueryColumnPreProcessor(

@@ -40,15 +40,13 @@ const items = computed(() => {
 	}
 
 	return props.choices.map((choice) => {
-		if (choice.icon) {
-			return choice;
+		const choiceCopy = { ...choice };
+
+		if (!choiceCopy.icon && !choiceCopy.color) {
+			choiceCopy.icon = props.icon ?? null;
 		}
 
-		if (!choice.icon && !choice.color) {
-			choice.icon = props.icon ?? null;
-		}
-
-		return choice;
+		return choiceCopy;
 	});
 });
 
