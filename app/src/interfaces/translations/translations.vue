@@ -72,17 +72,17 @@ function useSplitView() {
 		},
 	});
 
-watch(splitView, (splitViewEnabled) => {
-	if (splitViewEnabled && secondLang.value === firstLang.value) {
-		const lang = languageOptions.value;
-		const alternativeLang = lang.find((l) => l.value !== firstLang.value);
-		secondLang.value = alternativeLang?.value ?? lang[0]?.value;
-	}
-});
+	watch(splitView, (splitViewEnabled) => {
+		if (splitViewEnabled && secondLang.value === firstLang.value) {
+			const lang = languageOptions.value;
+			const alternativeLang = lang.find((l) => l.value !== firstLang.value);
+			secondLang.value = alternativeLang?.value ?? lang[0]?.value;
+		}
+	});
 
 	const { width } = useWindowSize();
-const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
-const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
+	const splitViewAvailable = computed(() => width.value > 960 && languageOptions.value.length > 1);
+	const splitViewEnabled = computed(() => splitViewAvailable.value && splitView.value);
 
 	return {
 		splitView,
@@ -285,7 +285,7 @@ function useLanguages() {
 			languages.value = await fetchAll<Record<string, any>[]>(
 				getEndpoint(relationInfo.value.relatedCollection.collection),
 				{
-				params: {
+					params: {
 						fields: fieldsToFetch.value,
 						sort:
 							relationInfo.value.relatedCollection.meta?.sort_field ??
