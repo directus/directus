@@ -273,7 +273,7 @@ export default defineTheme({
 			menu: {
 				background: '#161b22',
 				borderRadius: 'var(--theme--border-radius)',
-				boxShadow: '0px 0px 6px 0px rgb(0, 0, 0, 0.2)',
+				boxShadow: '0px 0px 6px 0px black',
 			},
 		},
 

@@ -1,6 +1,7 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type {
 	Accountability,
+	Aggregate,
 	Alterations,
 	FieldOverview,
 	Item,
@@ -157,12 +158,25 @@ export class PayloadService {
 
 	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
 	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
-	processValues(action: Action, payloads: Partial<Item>[], aliasMap: Record<string, string>): Promise<Partial<Item>[]>;
-	processValues(action: Action, payload: Partial<Item>, aliasMap: Record<string, string>): Promise<Partial<Item>>;
+	processValues(
+		action: Action,
+		payloads: Partial<Item>[],
+		aliasMap: Record<string, string>,
+		aggregate: Aggregate,
+	): Promise<Partial<Item>[]>;
+
+	processValues(
+		action: Action,
+		payload: Partial<Item>,
+		aliasMap: Record<string, string>,
+		aggregate: Aggregate,
+	): Promise<Partial<Item>>;
+
 	async processValues(
 		action: Action,
 		payload: Partial<Item> | Partial<Item>[],
 		aliasMap: Record<string, string> = {},
+		aggregate: Aggregate = {},
 	): Promise<Partial<Item> | Partial<Item>[]> {
 		const processedPayload = toArray(payload);
 
@@ -199,8 +213,8 @@ export class PayloadService {
 			}
 		}
 
-		this.processGeometries(processedPayload, action);
-		this.processDates(processedPayload, action);
+		this.processGeometries(fieldEntries, processedPayload, action);
+		this.processDates(fieldEntries, processedPayload, action, aliasMap, aggregate);
 
 		if (['create', 'update'].includes(action)) {
 			processedPayload.forEach((record) => {
@@ -215,7 +229,7 @@ export class PayloadService {
 		}
 
 		if (action === 'read') {
-			this.processAggregates(processedPayload);
+			this.processAggregates(processedPayload, aggregate);
 		}
 
 		if (Array.isArray(payload)) {
@@ -225,9 +239,24 @@ export class PayloadService {
 		return processedPayload[0]!;
 	}
 
-	processAggregates(payload: Partial<Item>[]) {
-		const aggregateKeys = Object.keys(payload[0]!).filter((key) => key.includes('->'));
+	processAggregates(payload: Partial<Item>[], aggregate: Aggregate = {}) {
+		/**
+		 * Build access path with -> delimiter
+		 *
+		 * input: { min: [ 'date', 'datetime', 'timestamp' ] }
+		 * output: [ 'min->date', 'min->datetime', 'min->timestamp' ]
+		 */
+		const aggregateKeys = Object.entries(aggregate).reduce<string[]>((acc, [key, values]) => {
+			acc.push(...values.map((value) => `${key}->${value}`));
+			return acc;
+		}, []);
 
+		/**
+		 * Expand -> delimited keys in the payload to the equivalent expanded object
+		 *
+		 * before: { "min->date": "2025-04-09", "min->datetime": "2025-04-08T12:00:00", "min->timestamp": "2025-04-17T23:18:00.000Z" }
+		 * after: { "min": { "date": "2025-04-09", "datetime": "2025-04-08T12:00:00", "timestamp": "2025-04-17T23:18:00.000Z" } }
+		 */
 		if (aggregateKeys.length) {
 			for (const item of payload) {
 				Object.assign(item, unflatten(pick(item, aggregateKeys), { delimiter: '->' }));
@@ -269,14 +298,17 @@ export class PayloadService {
 	 * escaped. It's therefore placed as a Knex.Raw object in the payload. Thus the need
 	 * to check if the value is a raw instance before stringifying it in the next step.
 	 */
-	processGeometries<T extends Partial<Record<string, any>>[]>(payloads: T, action: Action): T {
+	processGeometries<T extends Partial<Record<string, any>>[]>(
+		fieldEntries: [string, FieldOverview][],
+		payloads: T,
+		action: Action,
+	): T {
 		const process =
 			action == 'read'
 				? (value: any) => (typeof value === 'string' ? wktToGeoJSON(value) : value)
 				: (value: any) => this.helpers.st.fromGeoJSON(typeof value == 'string' ? parseJSON(value) : value);
 
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
-		const geometryColumns = fieldsInCollection.filter(([_, field]) => field.type.startsWith('geometry'));
+		const geometryColumns = fieldEntries.filter(([_, field]) => field.type.startsWith('geometry'));
 
 		for (const [name] of geometryColumns) {
 			for (const payload of payloads) {
@@ -293,14 +325,41 @@ export class PayloadService {
 	 * Knex returns `datetime` and `date` columns as Date.. This is wrong for date / datetime, as those
 	 * shouldn't return with time / timezone info respectively
 	 */
-	processDates(payloads: Partial<Record<string, any>>[], action: Action): Partial<Record<string, any>>[] {
-		const fieldsInCollection = Object.entries(this.schema.collections[this.collection]!.fields);
-
-		const dateColumns = fieldsInCollection.filter(([_name, field]) =>
-			['dateTime', 'date', 'timestamp'].includes(field.type),
+	processDates(
+		fieldEntries: [string, FieldOverview][],
+		payloads: Partial<Record<string, any>>[],
+		action: Action,
+		aliasMap: Record<string, string> = {},
+		aggregate: Aggregate = {},
+	): Partial<Record<string, any>>[] {
+		// Include aggegation e.g. "count->id" in alias map
+		const aggregateMapped = Object.fromEntries(
+			Object.entries(aggregate).reduce<string[][]>((acc, [key, values]) => {
+				acc.push(...values.map((value) => [`${key}->${value}`, value]));
+				return acc;
+			}, []),
 		);
 
-		const timeColumns = fieldsInCollection.filter(([_name, field]) => {
+		const aliasFields = { ...aliasMap, ...aggregateMapped };
+
+		for (const aliasField in aliasFields) {
+			const schemaField = aliasFields[aliasField];
+			const field = this.schema.collections[this.collection]!.fields[schemaField!];
+
+			if (field) {
+				fieldEntries.push([
+					aliasField,
+					{
+						...field,
+						field: aliasField,
+					},
+				]);
+			}
+		}
+
+		const dateColumns = fieldEntries.filter(([_name, field]) => ['dateTime', 'date', 'timestamp'].includes(field.type));
+
+		const timeColumns = fieldEntries.filter(([_name, field]) => {
 			return field.type === 'time';
 		});
 
@@ -723,6 +782,7 @@ export class PayloadService {
 							},
 						],
 					},
+					limit: -1,
 				};
 
 				// Nullify all related items that aren't included in the current payload
@@ -840,6 +900,7 @@ export class PayloadService {
 								},
 							],
 						},
+						limit: -1,
 					};
 
 					if (relation.meta.one_deselect_action === 'delete') {

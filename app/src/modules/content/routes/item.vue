@@ -11,6 +11,7 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import LivePreview from '@/views/private/components/live-preview.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
@@ -20,7 +21,6 @@ import { useHead } from '@unhead/vue';
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
@@ -60,6 +60,7 @@ const {
 	deleteVersion,
 	saveVersionLoading,
 	saveVersion,
+	validationErrors: versionValidationErrors,
 } = useVersions(collection, isSingleton, primaryKey);
 
 const {
@@ -79,8 +80,13 @@ const {
 	isArchived,
 	saveAsCopy,
 	refresh,
-	validationErrors,
+	validationErrors: itemValidationErrors,
 } = useItem(collection, primaryKey, query);
+
+const validationErrors = computed(() => {
+	if (currentVersion.value === null) return itemValidationErrors.value;
+	return versionValidationErrors.value;
+});
 
 const {
 	collectionPermissions: { createAllowed, revisionsAllowed },
@@ -350,23 +356,18 @@ async function saveVersionAction(action: 'main' | 'stay' | 'quit') {
 	if (isSavable.value === false) return;
 
 	try {
-		await saveVersion(edits);
+		await saveVersion(edits, ref(item.value ?? {}));
 		edits.value = {};
 
-		switch (action) {
-			case 'main':
-				currentVersion.value = null;
-				break;
-			case 'stay':
-				revisionsDrawerDetailRef.value?.refresh?.();
-				refresh();
-				break;
-			case 'quit':
-				if (!props.singleton) router.push(`/content/${props.collection}`);
-				break;
+		if (action === 'main') {
+			currentVersion.value = null;
+		} else if (action === 'stay') {
+			revisionsDrawerDetailRef.value?.refresh?.();
+		} else if (action === 'quit') {
+			if (!props.singleton) router.push(`/content/${props.collection}`);
 		}
 	} catch {
-		// Save version shows unexpected error dialog
+		// Save shows unexpected error dialog
 	}
 }
 
@@ -721,6 +722,7 @@ const shouldShowVersioning = computed(
 			:fields="fields"
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
+			:version="currentVersion"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
@@ -737,7 +739,7 @@ const shouldShowVersioning = computed(
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+			<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 		</template>
 
 		<template #sidebar>

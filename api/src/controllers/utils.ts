@@ -160,7 +160,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const sanitizedQuery = sanitizeQuery(req.body.query, req.accountability ?? null);
+		const sanitizedQuery = await sanitizeQuery(req.body.query, req.schema, req.accountability ?? null);
 
 		// We're not awaiting this, as it's supposed to run async in the background
 		service.exportToFile(req.params['collection']!, sanitizedQuery, req.body.format, {

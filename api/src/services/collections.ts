@@ -62,7 +62,11 @@ export class CollectionsService {
 			throw new ForbiddenError();
 		}
 
-		if (!payload.collection) throw new InvalidPayloadError({ reason: `"collection" is required` });
+		if (!('collection' in payload)) throw new InvalidPayloadError({ reason: `"collection" is required` });
+
+		if (typeof payload.collection !== 'string' || payload.collection === '') {
+			throw new InvalidPayloadError({ reason: `"collection" must be a non-empty string` });
+		}
 
 		if (payload.collection.startsWith('directus_')) {
 			throw new InvalidPayloadError({ reason: `Collections can't start with "directus_"` });
@@ -86,25 +90,36 @@ export class CollectionsService {
 			// transactions.
 			await transaction(this.knex, async (trx) => {
 				if (payload.schema) {
-					// Directus heavily relies on the primary key of a collection, so we have to make sure that
-					// every collection that is created has a primary key. If no primary key field is created
-					// while making the collection, we default to an auto incremented id named `id`
-					if (!payload.fields) {
-						payload.fields = [
-							{
-								field: 'id',
-								type: 'integer',
-								meta: {
-									hidden: true,
-									interface: 'numeric',
-									readonly: true,
-								},
-								schema: {
-									is_primary_key: true,
-									has_auto_increment: true,
-								},
-							},
-						];
+					if ('fields' in payload && !Array.isArray(payload.fields)) {
+						throw new InvalidPayloadError({ reason: `"fields" must be an array` });
+					}
+
+					/**
+					 * Directus heavily relies on the primary key of a collection, so we have to make sure that
+					 * every collection that is created has a primary key. If no primary key field is created
+					 * while making the collection, we default to an auto incremented id named `id`
+					 */
+
+					const injectedPrimaryKeyField: RawField = {
+						field: 'id',
+						type: 'integer',
+						meta: {
+							hidden: true,
+							interface: 'numeric',
+							readonly: true,
+						},
+						schema: {
+							is_primary_key: true,
+							has_auto_increment: true,
+						},
+					};
+
+					if (!payload.fields || payload.fields.length === 0) {
+						payload.fields = [injectedPrimaryKeyField];
+					} else if (
+						!payload.fields.some((f) => f.schema?.is_primary_key === true || f.schema?.has_auto_increment === true)
+					) {
+						payload.fields = [injectedPrimaryKeyField, ...payload.fields];
 					}
 
 					// Ensure that every field meta has the field/collection fields filled correctly
