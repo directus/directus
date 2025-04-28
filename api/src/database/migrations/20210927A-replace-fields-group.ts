@@ -1,7 +1,10 @@
 import type { Knex } from 'knex';
 import { uniq } from 'lodash-es';
+import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
+	const helpers = getHelpers(knex);
+
 	const groupsInUse = await knex.select('id', 'group').from('directus_fields').whereNotNull('group');
 
 	const groupIDs: number[] = uniq(groupsInUse.map(({ group }) => group));
@@ -23,7 +26,7 @@ export async function up(knex: Knex): Promise<void> {
 	});
 
 	await knex.schema.alterTable('directus_fields', (table) => {
-		table.string('group', 64);
+		table.string('group', helpers.schema.getColumnNameMaxLength());
 	});
 
 	for (const { id, group } of groupsInUse) {

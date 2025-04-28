@@ -1,7 +1,6 @@
 import { Knex } from 'knex';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promisify } from 'util';
 import { allVendors, type Vendor } from './get-dbs-to-test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -77,7 +76,7 @@ const directusConfig = {
 	SECRET: 'directus-test',
 	TELEMETRY: 'false',
 	CACHE_SCHEMA: 'true',
-	CACHE_SCHEMA_MAX_ITERATIONS: 100,
+	CACHE_SCHEMA_MAX_ITERATIONS: '100',
 	CACHE_ENABLED: 'false',
 	RATE_LIMITER_ENABLED: 'false',
 	PRESSURE_LIMITER_ENABLED: 'false',
@@ -89,6 +88,7 @@ const directusConfig = {
 	EXTENSIONS_PATH: './extensions',
 	ASSETS_TRANSFORM_MAX_CONCURRENT: '2',
 	MAX_BATCH_MUTATION: '100', // Must be in multiples of 10 for tests
+	QUERY_LIMIT_DEFAULT: '90', // Must be less than MAX_BATCH_MUTATION by at least 3
 	ACCESS_TOKEN_TTL: '25d', // should be larger than 24.86 days to test Expires value larger than 32-bit signed integer
 	WEBSOCKETS_ENABLED: 'true',
 	...directusAuthConfig,
@@ -184,10 +184,9 @@ const config: Config = {
 				port: 6107,
 			},
 			pool: {
-				afterCreate: async (conn: any, callback: any) => {
-					const run = promisify(conn.query.bind(conn));
-					await run('SET serial_normalization = "sql_sequence"');
-					await run('SET default_int_size = 4');
+				afterCreate: (conn: any, callback: any) => {
+					conn.query('SET serial_normalization = "sql_sequence"');
+					conn.query('SET default_int_size = 4');
 					callback(null, conn);
 				},
 			},
@@ -200,9 +199,8 @@ const config: Config = {
 			},
 			useNullAsDefault: true,
 			pool: {
-				afterCreate: async (conn: any, callback: any) => {
-					const run = promisify(conn.run.bind(conn));
-					await run('PRAGMA foreign_keys = ON');
+				afterCreate: (conn: any, callback: any) => {
+					conn.run('PRAGMA foreign_keys = ON');
 					callback(null, conn);
 				},
 			},
