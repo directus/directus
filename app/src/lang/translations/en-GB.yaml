@@ -1362,6 +1362,7 @@ reset_password: Reset Password
 revisions: Revisions
 no_revisions: No Revisions Yet
 no_logs: No Logs Yet
+show_failed_only : Show Failed Only
 revert: Revert
 save: Save
 schema: Schema

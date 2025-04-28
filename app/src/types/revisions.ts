@@ -27,6 +27,7 @@ export type RevisionPartial = {
 export type RevisionWithTime = RevisionPartial & {
 	timestampFormatted: string;
 	timeRelative: string;
+	status: 'resolve' | 'reject';
 };
 
 export type RevisionsByDate = {
