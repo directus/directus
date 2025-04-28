@@ -1,28 +1,29 @@
-import type { Item, SchemaOverview } from '@directus/types';
+import type { Item } from '@directus/types';
 import { describe, expect, test } from 'vitest';
 import type { NestedCollectionNode } from '../../../types/ast.js';
 import { mergeWithParentItems } from './merge-with-parent-items.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 describe('m2o', () => {
-	const schema = {
-		collections: {
-			collection_a: {
-				primary: 'primary',
-			},
-			collection_b: {
-				primary: 'id',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection_a', (c) => {
+			c.field('primary').id();
+			c.field('node').m2o('collection_b');
+		})
+		.build();
 
-	const nestedNode = {
+	const nestedNode: NestedCollectionNode = {
 		type: 'm2o',
+		name: 'm2o',
+		children: [],
+		query: {},
 		fieldKey: 'node',
-		relation: {
-			field: 'node',
-			related_collection: 'collection_b',
-		},
-	} as NestedCollectionNode;
+		relation: schema.relations[0]!,
+		parentKey: '',
+		relatedKey: '',
+		whenCase: [],
+		cases: [],
+	};
 
 	test('should return null node when no access to node primary key', () => {
 		const nestedItem: Item[] = [
@@ -127,23 +128,25 @@ describe('m2o', () => {
 });
 
 describe('o2m', () => {
-	const schema = {
-		collections: {
-			collection_a: {
-				primary: 'id',
-			},
-		},
-	} as unknown as SchemaOverview;
+	const schema = new SchemaBuilder()
+		.collection('collection_a', (c) => {
+			c.field('id').id();
+			c.field('nodes').o2m('collection_b', 'parent_id');
+		})
+		.build();
 
-	const nestedNode = {
+	const nestedNode: NestedCollectionNode = {
 		type: 'o2m',
-		fieldKey: 'nodes',
-		relation: {
-			field: 'parent_id',
-			related_collection: 'collection_a',
-		},
+		name: 'o2m',
+		children: [],
 		query: {},
-	} as NestedCollectionNode;
+		fieldKey: 'nodes',
+		relation: schema.relations[0]!,
+		parentKey: '',
+		relatedKey: '',
+		whenCase: [],
+		cases: [],
+	};
 
 	test('should return empty nodes array when parent primary key is null', () => {
 		const nestedItem: Item[] = [

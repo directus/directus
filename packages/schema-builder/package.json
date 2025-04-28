@@ -1,0 +1,50 @@
+{
+	"name": "@directus/schema-builder",
+	"version": "1.0.0",
+	"description": "Directus SchemaBuilder for mocking/constructing a database schema based on code.",
+	"keywords": [
+		"sql",
+		"knex",
+		"schema",
+		"mysql",
+		"postgresql",
+		"cockroachdb",
+		"sqlite3",
+		"javascript"
+	],
+	"homepage": "https://directus.io",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/directus/directus.git",
+		"directory": "packages/schema-builder"
+	},
+	"funding": "https://github.com/directus/directus?sponsor=1",
+	"license": "BUSL-1.1",
+	"author": "Nils Twelker <nils@directus.io>",
+	"type": "module",
+	"private": true,
+	"exports": {
+		".": "./dist/index.js",
+		"./package.json": "./package.json"
+	},
+	"main": "dist/index.js",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup src/index.ts --format=esm --dts",
+		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"test": "vitest --watch=false"
+	},
+	"dependencies": {
+		"@directus/types": "workspace:*",
+		"lodash-es": "4.17.21"
+	},
+	"devDependencies": {
+		"@directus/tsconfig": "3.0.0",
+		"@types/lodash-es": "4.17.12",
+		"tsup": "8.4.0",
+		"typescript": "5.8.2",
+		"vitest": "2.1.9"
+	}
+}

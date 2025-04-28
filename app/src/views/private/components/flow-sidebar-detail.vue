@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
+import { useNotificationsStore } from '@/stores/notifications';
 import { notify } from '@/utils/notify';
+import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/composables';
+import formatTitle from '@directus/format-title';
 import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { translate } from '@/utils/translate-object-values';
-import formatTitle from '@directus/format-title';
-import { useNotificationsStore } from '@/stores/notifications';
 
 const props = withDefaults(
 	defineProps<{
@@ -169,15 +169,9 @@ const runManualFlow = async (flowId: string) => {
 
 		emit('refresh');
 
-		if (selectedFlow.options?.async) {
-			notify({
-				title: t('trigger_flow_success', { flow: selectedFlow.name }),
-			});
-		} else {
-			notify({
-				title: t('run_flow_success', { flow: selectedFlow.name }),
-			});
-		}
+		notify({
+			title: t('trigger_flow_success', { flow: selectedFlow.name }),
+		});
 
 		await notificationStore.refreshUnreadCount();
 
@@ -208,8 +202,8 @@ const runManualFlow = async (flowId: string) => {
 			</div>
 		</div>
 
-		<v-dialog :model-value="displayUnsavedChangesDialog" @esc="resetConfirm">
-			<v-card class="allow-drawer">
+		<v-dialog :model-value="displayUnsavedChangesDialog" keep-behind @esc="resetConfirm">
+			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
 
@@ -224,8 +218,8 @@ const runManualFlow = async (flowId: string) => {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
-			<v-card class="allow-drawer">
+		<v-dialog :model-value="displayCustomConfirmDialog" keep-behind @esc="resetConfirm">
+			<v-card>
 				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
 				<v-card-text class="confirm-form">
 					<v-form
