@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
+import { useCollectionsStore } from '@/stores/collections';
 import { useFieldsStore } from '@/stores/fields';
 import { useRelationsStore } from '@/stores/relations';
+import { useFakeVersionField } from '@/composables/use-fake-version-field';
 import { Field } from '@directus/types';
 import { debounce, isNil } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import VFieldListItem from './v-field-list-item.vue';
+
+const collectionsStore = useCollectionsStore();
 
 const props = withDefaults(
 	defineProps<{
@@ -15,6 +19,7 @@ const props = withDefaults(
 		disabledFields?: string[];
 		includeFunctions?: boolean;
 		includeRelations?: boolean;
+		injectVersionField?: boolean;
 		relationalFieldSelectable?: boolean;
 		allowSelectAll?: boolean;
 		rawFieldNames?: boolean;
@@ -24,6 +29,7 @@ const props = withDefaults(
 		disabledFields: () => [],
 		includeFunctions: false,
 		includeRelations: true,
+		injectVersionField: false,
 		relationalFieldSelectable: true,
 		allowSelectAll: false,
 		rawFieldNames: false,
@@ -54,13 +60,21 @@ const showSearch = computed(() => {
 	return false;
 });
 
-const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, undefined, filter);
+const { t } = useI18n();
+
+const collectionInfo = computed(() => collectionsStore.getCollection(collection.value));
+const versioningEnabled = computed(() => Boolean(collectionInfo.value?.meta?.versioning && props.injectVersionField));
+const { fakeVersionField } = useFakeVersionField(collection, versioningEnabled);
+
+const injectFields = computed(() => {
+	return fakeVersionField.value ? { fields: [fakeVersionField.value] } : null;
+});
+
+const { treeList: treeListOriginal, loadFieldRelations, refresh } = useFieldTree(collection, injectFields, filter);
 
 const debouncedRefresh = debounce(() => refresh(), 250);
 
 watch(search, () => debouncedRefresh());
-
-const { t } = useI18n();
 
 const selectAllDisabled = computed(() => unref(treeList).every((field) => field.disabled === true));
 

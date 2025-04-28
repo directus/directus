@@ -1,21 +1,15 @@
 import { useEnv } from '@directus/env';
-import { parseFilter, parseJSON } from '@directus/utils';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { fetchDynamicVariableData } from '../permissions/utils/fetch-dynamic-variable-data.js';
 import { sanitizeQuery } from './sanitize-query.js';
 
 // This is required because logger uses global env which is imported before the tests run. Can be
 // reduce to just mock the file when logger is also using useLogger everywhere @TODO
 vi.mock('@directus/env', () => ({ useEnv: vi.fn().mockReturnValue({}) }));
 
-vi.mock('@directus/utils', async () => {
-	const actual = await vi.importActual<typeof import('@directus/utils')>('@directus/utils');
-
-	return {
-		...actual,
-		parseJSON: vi.fn().mockImplementation(actual.parseJSON),
-		parseFilter: vi.fn().mockImplementation((value) => value),
-	};
-});
+vi.mock('../database/index.js');
+vi.mock('../permissions/lib/fetch-policies.js');
+vi.mock('../permissions/utils/fetch-dynamic-variable-data.js');
 
 beforeEach(() => {
 	vi.mocked(useEnv).mockReturnValue({});
@@ -26,274 +20,280 @@ afterEach(() => {
 });
 
 describe('limit', () => {
-	test.each([-1, 0, 100])('should accept number %i', (limit) => {
-		const sanitizedQuery = sanitizeQuery({ limit });
+	test.each([-1, 0, 100])('should accept number %i', async (limit) => {
+		const sanitizedQuery = await sanitizeQuery({ limit }, null as any);
 
 		expect(sanitizedQuery.limit).toBe(limit);
 	});
 
-	test('should accept string 1', () => {
+	test('should accept string 1', async () => {
 		const limit = '1';
 
-		const sanitizedQuery = sanitizeQuery({ limit });
+		const sanitizedQuery = await sanitizeQuery({ limit }, null as any);
 
 		expect(sanitizedQuery.limit).toBe(1);
 	});
 });
 
 describe('max limit', () => {
-	test('should replace -1', () => {
+	test('should replace -1', async () => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
 
-		const sanitizedQuery = sanitizeQuery({ limit: -1 });
+		const sanitizedQuery = await sanitizeQuery({ limit: -1 }, null as any);
 
 		expect(sanitizedQuery.limit).toBe(100);
 	});
 
-	test.each([1, 25, 150])('should accept number %i', (limit) => {
+	test.each([1, 25, 150])('should accept number %i', async (limit) => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100 });
 
-		const sanitizedQuery = sanitizeQuery({ limit });
+		const sanitizedQuery = await sanitizeQuery({ limit }, null as any);
 
 		expect(sanitizedQuery.limit).toBe(limit);
 	});
 
-	test('should apply max if no limit passed in request', () => {
+	test('should apply max if no limit passed in request', async () => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
 
-		const sanitizedQuery = sanitizeQuery({});
+		const sanitizedQuery = await sanitizeQuery({}, null as any);
 
 		expect(sanitizedQuery.limit).toBe(100);
 	});
 
-	test('should apply lower value if no limit passed in request', () => {
+	test('should apply lower value if no limit passed in request', async () => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: 100, QUERY_LIMIT_DEFAULT: 25 });
 
-		const sanitizedQuery = sanitizeQuery({});
+		const sanitizedQuery = await sanitizeQuery({}, null as any);
 
 		expect(sanitizedQuery.limit).toBe(25);
 	});
 
-	test('should apply limit from request if no max defined', () => {
-		const sanitizedQuery = sanitizeQuery({ limit: 150 });
+	test('should apply limit from request if no max defined', async () => {
+		const sanitizedQuery = await sanitizeQuery({ limit: 150 }, null as any);
 
 		expect(sanitizedQuery.limit).toBe(150);
 	});
 
-	test('should apply limit from request if max is unlimited', () => {
+	test('should apply limit from request if max is unlimited', async () => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_MAX: -1 });
 
-		const sanitizedQuery = sanitizeQuery({ limit: 150 });
+		const sanitizedQuery = await sanitizeQuery({ limit: 150 }, null as any);
 
 		expect(sanitizedQuery.limit).toBe(150);
 	});
 });
 
 describe('fields', () => {
-	test('should accept valid value', () => {
+	test('should accept valid value', async () => {
 		const fields = ['field_a', 'field_b'];
 
-		const sanitizedQuery = sanitizeQuery({ fields });
+		const sanitizedQuery = await sanitizeQuery({ fields }, null as any);
 
 		expect(sanitizedQuery.fields).toEqual(['field_a', 'field_b']);
 	});
 
-	test('should split as csv when it is a string', () => {
+	test('should split as csv when it is a string', async () => {
 		const fields = 'field_a,field_b';
 
-		const sanitizedQuery = sanitizeQuery({ fields });
+		const sanitizedQuery = await sanitizeQuery({ fields }, null as any);
 
 		expect(sanitizedQuery.fields).toEqual(['field_a', 'field_b']);
 	});
 
-	test('should split as nested csv when it is an array', () => {
+	test('should split as nested csv when it is an array', async () => {
 		const fields = ['field_a,field_b', 'field_c'];
 
-		const sanitizedQuery = sanitizeQuery({ fields });
+		const sanitizedQuery = await sanitizeQuery({ fields }, null as any);
 
 		expect(sanitizedQuery.fields).toEqual(['field_a', 'field_b', 'field_c']);
 	});
 
-	test('should trim', () => {
+	test('should trim', async () => {
 		const fields = ['   field_a   '];
 
-		const sanitizedQuery = sanitizeQuery({ fields });
+		const sanitizedQuery = await sanitizeQuery({ fields }, null as any);
 
 		expect(sanitizedQuery.fields).toEqual(['field_a']);
 	});
 });
 
 describe('group', () => {
-	test('should accept valid value', () => {
+	test('should accept valid value', async () => {
 		const groupBy = ['group_a', 'group_b'];
 
-		const sanitizedQuery = sanitizeQuery({ groupBy });
+		const sanitizedQuery = await sanitizeQuery({ groupBy }, null as any);
 
 		expect(sanitizedQuery.group).toEqual(['group_a', 'group_b']);
 	});
 
-	test('should split as csv when it is a string', () => {
+	test('should split as csv when it is a string', async () => {
 		const groupBy = 'group_a,group_b';
 
-		const sanitizedQuery = sanitizeQuery({ groupBy });
+		const sanitizedQuery = await sanitizeQuery({ groupBy }, null as any);
 
 		expect(sanitizedQuery.group).toEqual(['group_a', 'group_b']);
 	});
 
-	test('should split as nested csv when it is an array', () => {
+	test('should split as nested csv when it is an array', async () => {
 		const groupBy = ['group_a,group_b', 'group_c'];
 
-		const sanitizedQuery = sanitizeQuery({ groupBy });
+		const sanitizedQuery = await sanitizeQuery({ groupBy }, null as any);
 
 		expect(sanitizedQuery.group).toEqual(['group_a', 'group_b', 'group_c']);
 	});
 
-	test('should trim', () => {
+	test('should trim', async () => {
 		const groupBy = ['   group_a   '];
 
-		const sanitizedQuery = sanitizeQuery({ groupBy });
+		const sanitizedQuery = await sanitizeQuery({ groupBy }, null as any);
 
 		expect(sanitizedQuery.group).toEqual(['group_a']);
 	});
 });
 
 describe('aggregate', () => {
-	test('should accept valid value', () => {
+	test('should accept valid value', async () => {
 		const aggregate = { count: '*' };
 
-		const sanitizedQuery = sanitizeQuery({ aggregate });
+		const sanitizedQuery = await sanitizeQuery({ aggregate }, null as any);
 
 		expect(sanitizedQuery.aggregate).toEqual({ count: ['*'] });
 	});
 
-	test('should parse as json when it is a string', () => {
+	test('should parse as json when it is a string', async () => {
 		const aggregate = '{ "count": "*" }';
 
-		const sanitizedQuery = sanitizeQuery({ aggregate });
+		const sanitizedQuery = await sanitizeQuery({ aggregate }, null as any);
 
 		expect(sanitizedQuery.aggregate).toEqual({ count: ['*'] });
 	});
 });
 
 describe('sort', () => {
-	test('should accept valid value', () => {
+	test('should accept valid value', async () => {
 		const sort = ['field_a', 'field_b'];
 
-		const sanitizedQuery = sanitizeQuery({ sort });
+		const sanitizedQuery = await sanitizeQuery({ sort }, null as any);
 
 		expect(sanitizedQuery.sort).toEqual(['field_a', 'field_b']);
 	});
 
-	test('should split as csv when it is a string', () => {
+	test('should split as csv when it is a string', async () => {
 		const sort = 'field_a,field_b';
 
-		const sanitizedQuery = sanitizeQuery({ sort });
+		const sanitizedQuery = await sanitizeQuery({ sort }, null as any);
 
 		expect(sanitizedQuery.sort).toEqual(['field_a', 'field_b']);
 	});
 
-	test('should trim csv array results', () => {
+	test('should trim csv array results', async () => {
 		const sort = 'field_a, field_b';
 
-		const sanitizedQuery = sanitizeQuery({ sort });
+		const sanitizedQuery = await sanitizeQuery({ sort }, null as any);
 
 		expect(sanitizedQuery.sort).toEqual(['field_a', 'field_b']);
 	});
 });
 
 describe('filter', () => {
-	test('should accept valid filter', () => {
+	test('should accept valid filter', async () => {
 		const filter = { field_a: { _eq: 'test' } };
 
-		const sanitizedQuery = sanitizeQuery({ filter });
+		const sanitizedQuery = await sanitizeQuery({ filter }, null as any);
 
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
 	});
 
-	test('should throw error on invalid filter', () => {
+	test('should throw error on invalid filter', async () => {
 		const filter = { field_a: null };
 
-		vi.mocked(parseFilter).mockImplementationOnce(() => {
-			throw new Error();
-		});
-
-		expect(() => sanitizeQuery({ filter })).toThrowError('Invalid query. Invalid filter object.');
+		await expect(async () => await sanitizeQuery({ filter }, null as any)).rejects.toThrowError(
+			'Invalid query. Invalid filter object.',
+		);
 	});
 
-	test('should parse as json when it is a string', () => {
+	test('should parse as json when it is a string', async () => {
 		const filter = '{ "field_a": { "_eq": "test" } }';
 
-		const sanitizedQuery = sanitizeQuery({ filter });
+		const sanitizedQuery = await sanitizeQuery({ filter }, null as any);
 
 		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
 	});
 
-	test('should throw error on invalid json', () => {
+	test('should throw error on invalid json', async () => {
 		const filter = '{ "field_a": }';
 
-		vi.mocked(parseJSON).mockImplementationOnce(() => {
-			throw new Error();
-		});
+		await expect(async () => await sanitizeQuery({ filter }, null as any)).rejects.toThrowError(
+			'Invalid query. Invalid JSON for filter object.',
+		);
+	});
 
-		expect(() => sanitizeQuery({ filter })).toThrowError('Invalid query. Invalid JSON for filter object.');
+	test('should process dynamic variables', async () => {
+		const filter = { field_a: { _eq: '$CURRENT_USER.something' } };
+
+		vi.mocked(fetchDynamicVariableData).mockResolvedValue({ $CURRENT_USER: { something: 'test' } });
+
+		const sanitizedQuery = await sanitizeQuery({ filter }, null as any, {} as any);
+
+		expect(sanitizedQuery.filter).toEqual({ field_a: { _eq: 'test' } });
 	});
 });
 
 describe('offset', () => {
-	test('should accept number 1', () => {
+	test('should accept number 1', async () => {
 		const offset = 1;
 
-		const sanitizedQuery = sanitizeQuery({ offset });
+		const sanitizedQuery = await sanitizeQuery({ offset }, null as any);
 
 		expect(sanitizedQuery.offset).toBe(1);
 	});
 
-	test('should accept string 1', () => {
+	test('should accept string 1', async () => {
 		const offset = '1';
 
-		const sanitizedQuery = sanitizeQuery({ offset });
+		const sanitizedQuery = await sanitizeQuery({ offset }, null as any);
 
 		expect(sanitizedQuery.offset).toBe(1);
 	});
 
-	test('should accept zero #18370', () => {
+	test('should accept zero #18370', async () => {
 		const offset = 0;
 
-		const sanitizedQuery = sanitizeQuery({ offset });
+		const sanitizedQuery = await sanitizeQuery({ offset }, null as any);
 
 		expect(sanitizedQuery.offset).toBe(0);
 	});
 
-	test('should accept string zero #18370', () => {
+	test('should accept string zero #18370', async () => {
 		const offset = '0';
 
-		const sanitizedQuery = sanitizeQuery({ offset });
+		const sanitizedQuery = await sanitizeQuery({ offset }, null as any);
 
 		expect(sanitizedQuery.offset).toBe(0);
 	});
 });
 
 describe('page', () => {
-	test('should accept number 1', () => {
+	test('should accept number 1', async () => {
 		const page = 1;
 
-		const sanitizedQuery = sanitizeQuery({ page });
+		const sanitizedQuery = await sanitizeQuery({ page }, null as any);
 
 		expect(sanitizedQuery.page).toBe(1);
 	});
 
-	test('should accept string 1', () => {
+	test('should accept string 1', async () => {
 		const page = '1';
 
-		const sanitizedQuery = sanitizeQuery({ page });
+		const sanitizedQuery = await sanitizeQuery({ page }, null as any);
 
 		expect(sanitizedQuery.page).toBe(1);
 	});
 
-	test('should ignore zero', () => {
+	test('should ignore zero', async () => {
 		const page = 0;
 
-		const sanitizedQuery = sanitizeQuery({ page });
+		const sanitizedQuery = await sanitizeQuery({ page }, null as any);
 
 		expect(sanitizedQuery.page).toBeUndefined();
 	});
@@ -305,90 +305,90 @@ describe('meta', () => {
 		{ input: 'total_count', expected: ['total_count'] },
 		{ input: 'total_count,filter_count', expected: ['total_count', 'filter_count'] },
 		{ input: ['total_count', 'filter_count'], expected: ['total_count', 'filter_count'] },
-	])('should accept $input', ({ input, expected }) => {
-		const sanitizedQuery = sanitizeQuery({ meta: input }) as any;
+	])('should accept $input', async ({ input, expected }) => {
+		const sanitizedQuery = (await sanitizeQuery({ meta: input }, null as any)) as any;
 
 		expect(sanitizedQuery.meta).toEqual(expected);
 	});
 });
 
 describe('search', () => {
-	test('should accept valid value', () => {
+	test('should accept valid value', async () => {
 		const search = 'test';
 
-		const sanitizedQuery = sanitizeQuery({ search });
+		const sanitizedQuery = await sanitizeQuery({ search }, null as any);
 
 		expect(sanitizedQuery.search).toBe('test');
 	});
 
-	test('should ignore non-string', () => {
+	test('should ignore non-string', async () => {
 		const search = ['test'];
 
-		const sanitizedQuery = sanitizeQuery({ search });
+		const sanitizedQuery = await sanitizeQuery({ search }, null as any);
 
 		expect(sanitizedQuery.search).toBeUndefined();
 	});
 });
 
 describe('export', () => {
-	test('should accept valid value', () => {
+	test('should accept valid value', async () => {
 		const format = 'json';
 
-		const sanitizedQuery = sanitizeQuery({ export: format });
+		const sanitizedQuery = await sanitizeQuery({ export: format }, null as any);
 
 		expect(sanitizedQuery.export).toBe('json');
 	});
 });
 
 describe('deep', () => {
-	test('should accept valid value', () => {
+	test('should accept valid value', async () => {
 		const deep = { deep: { relational_field: { _sort: ['name'] } } };
 
-		const sanitizedQuery = sanitizeQuery({ deep });
+		const sanitizedQuery = await sanitizeQuery({ deep }, null as any);
 
 		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field: { _sort: ['name'] } } });
 	});
 
-	test('should parse as json when it is a string', () => {
+	test('should parse as json when it is a string', async () => {
 		const deep = { deep: { relational_field: { _sort: ['name'] } } };
 
-		const sanitizedQuery = sanitizeQuery({ deep });
+		const sanitizedQuery = await sanitizeQuery({ deep }, null as any);
 
 		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field: { _sort: ['name'] } } });
 	});
 
-	test('should ignore non-underscore-prefixed queries', () => {
+	test('should ignore non-underscore-prefixed queries', async () => {
 		const deep = { deep: { relational_field_a: { _sort: ['name'] }, relational_field_b: { sort: ['name'] } } };
 
-		const sanitizedQuery = sanitizeQuery({ deep });
+		const sanitizedQuery = await sanitizeQuery({ deep }, null as any);
 
 		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field_a: { _sort: ['name'] } } });
 	});
 
-	test('should work in combination with query limit', () => {
+	test('should work in combination with query limit', async () => {
 		vi.mocked(useEnv).mockReturnValue({ QUERY_LIMIT_DEFAULT: 100, QUERY_LIMIT_MAX: 1000 });
 
 		const deep = { deep: { relational_field_a: { _sort: ['name'] } } };
 
-		const sanitizedQuery = sanitizeQuery({ deep });
+		const sanitizedQuery = await sanitizeQuery({ deep }, null as any);
 
 		expect(sanitizedQuery.deep).toEqual({ deep: { relational_field_a: { _limit: 100, _sort: ['name'] } } });
 	});
 });
 
 describe('alias', () => {
-	test('should accept valid value', () => {
+	test('should accept valid value', async () => {
 		const alias = { field_a: 'testField' };
 
-		const sanitizedQuery = sanitizeQuery({ alias });
+		const sanitizedQuery = await sanitizeQuery({ alias }, null as any);
 
 		expect(sanitizedQuery.alias).toEqual({ field_a: 'testField' });
 	});
 
-	test('should parse as json when it is a string', () => {
+	test('should parse as json when it is a string', async () => {
 		const alias = '{ "field_a": "testField" }';
 
-		const sanitizedQuery = sanitizeQuery({ alias });
+		const sanitizedQuery = await sanitizeQuery({ alias }, null as any);
 
 		expect(sanitizedQuery.alias).toEqual({ field_a: 'testField' });
 	});
