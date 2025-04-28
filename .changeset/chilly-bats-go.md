@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Ensure the configured display format is applied into the kanban layout
+Ensured the configured display format is applied to the kanban layout
