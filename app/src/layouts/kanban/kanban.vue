@@ -224,7 +224,11 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 										<div class="bottom">
 											<display-datetime
 												v-if="element.date"
-												:format="fieldDisplay.dateField?.options?.format ?? 'short'"
+												v-bind="
+													fieldDisplay.dateField?.display === 'datetime'
+														? fieldDisplay.dateField.options
+														: { format: 'short' }
+												"
 												:value="element.date"
 												:type="element.dateType"
 											/>
