@@ -15,8 +15,8 @@ export const login =
 	<Schema>(email: string, password: string, options: LoginOptions = {}): RestCommand<AuthenticationData, Schema> =>
 	() => {
 		const path = getAuthEndpoint(options.provider);
-		const data: Record<string, string> = { email, password };
-		if ('otp' in options) data['otp'] = options.otp;
-		data['mode'] = options.mode ?? 'cookie';
-		return { path, method: 'POST', body: JSON.stringify(data) };
+		const authData: Record<string, string> = { [options.emailKey ?? 'email']: email, password };
+		if ('otp' in options) authData['otp'] = options.otp;
+		authData['mode'] = options.mode ?? 'cookie';
+		return { path, method: 'POST', body: JSON.stringify(authData) };
 	};

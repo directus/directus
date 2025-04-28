@@ -1,6 +1,8 @@
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
 export type LoginOptions = {
+	/** Use a custom email key in the auth data payload. Defaults to email */
+	emailKey?: string;
 	/** The user's one-time-password (if MFA is enabled). */
 	otp?: string;
 	/** Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`, `cookie` or `session`. Defaults to `cookie`. */
