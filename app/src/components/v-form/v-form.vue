@@ -6,7 +6,7 @@ import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fiel
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
 import { ContentVersion, Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEqual, isNil, omit } from 'lodash';
+import { assign, cloneDeep, isEqual, isEmpty, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
@@ -293,6 +293,16 @@ function unsetValue(field: TFormField | undefined) {
 
 function useBatch() {
 	const batchActiveFields = ref<string[]>([]);
+
+	watch(
+		() => props.modelValue,
+		(newModelValue) => {
+			if (!props.batchMode || isEmpty(newModelValue) || !isEmpty(batchActiveFields.value)) return;
+
+			batchActiveFields.value = Object.keys(newModelValue);
+		},
+		{ immediate: true },
+	);
 
 	return { batchActiveFields, toggleBatchField };
 
