@@ -348,8 +348,6 @@ export async function applyDiff(
 				}
 			}
 		}
-
-		//// APPLY system indexes
 	});
 
 	if (runPostColumnChange) {
