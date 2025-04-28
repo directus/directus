@@ -70,18 +70,15 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 
 			const relationalFields = allowedFields.includes('*')
 				? context.schema.relations
-					.filter(
-						(relation) =>
-							relation.collection === options.collection ||
-							relation.related_collection === options.collection,
-					)
-					.map((relation) => {
-						const isMany = relation.collection === options.collection;
-						return isMany ? relation.field : relation.meta?.one_field;
-					})
-				: allowedFields.filter(
-					(fieldKey) => !!getRelation(context.schema.relations, options.collection, fieldKey),
-				);
+						.filter(
+							(relation) =>
+								relation.collection === options.collection || relation.related_collection === options.collection,
+						)
+						.map((relation) => {
+							const isMany = relation.collection === options.collection;
+							return isMany ? relation.field : relation.meta?.one_field;
+						})
+				: allowedFields.filter((fieldKey) => !!getRelation(context.schema.relations, options.collection, fieldKey));
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
