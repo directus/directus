@@ -1,9 +1,9 @@
+import { SchemaBuilder } from '@directus/schema-builder';
 import type { Permission } from '@directus/types';
 import knex from 'knex';
 import { expect, test, vi } from 'vitest';
-import { applySearch } from './search.js';
-import { SchemaBuilder } from '@directus/schema-builder';
 import { Client_SQLite3 } from './mock.js';
+import { applySearch } from './search.js';
 
 const schema = new SchemaBuilder()
 	.collection('test', (c) => {

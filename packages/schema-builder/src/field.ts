@@ -1,5 +1,7 @@
 import type { FieldOverview, SchemaOverview } from '@directus/types';
+import { ok as assert } from 'node:assert/strict';
 import { SchemaBuilder } from './builder.js';
+import { CollectionBuilder } from './collection.js';
 import {
 	BIG_INTEGER_FIELD,
 	BOOLEAN_FIELD,
@@ -19,8 +21,6 @@ import {
 	TIMESTAMP_FIELD,
 	UUID_FIELD,
 } from './defaults.js';
-import { CollectionBuilder } from './collection.js';
-import { ok as assert } from 'node:assert/strict';
 import { RelationBuilder } from './relation.js';
 
 type InitialFieldOverview = {
