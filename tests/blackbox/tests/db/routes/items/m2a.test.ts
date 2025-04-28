@@ -505,6 +505,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						expect(response2.statusCode).toEqual(200);
 						expect(response.body.data).toEqual(response2.body.data);
 
+						console.dir(gqlResponse.body, { depth: null });
 						expect(gqlResponse.statusCode).toBe(200);
 						expect(gqlResponse.body.data[localCollectionShapes].length).toBe(1);
 
