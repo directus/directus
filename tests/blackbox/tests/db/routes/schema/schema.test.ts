@@ -9,6 +9,7 @@ import { randomUUID } from 'node:crypto';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { version as currentDirectusVersion } from '../../../../../../api/package.json';
+import type { Snapshot } from '../../../../../../api/src/types/snapshot.js';
 import {
 	collectionAll,
 	collectionM2A,
@@ -147,7 +148,7 @@ describe('Schema Snapshots', () => {
 		describe('denies non-admin users', () => {
 			it.each(vendors)('%s', async (vendor) => {
 				// Action
-				const currentVendor = vendor.replace(/[0-9]/g, '');
+				const currentVendor = vendor.replace(/[0-9]/g, '') as Exclude<Snapshot['vendor'], undefined>;
 
 				const response = await request(getUrl(vendor))
 					.post('/schema/diff')
@@ -157,8 +158,9 @@ describe('Schema Snapshots', () => {
 						vendor: currentVendor,
 						collections: [],
 						fields: [],
+						systemFields: [],
 						relations: [],
-					})
+					} satisfies Snapshot)
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${USER.APP_ACCESS.TOKEN}`);
 
@@ -170,8 +172,9 @@ describe('Schema Snapshots', () => {
 						vendor: currentVendor,
 						collections: [],
 						fields: [],
+						systemFields: [],
 						relations: [],
-					})
+					} satisfies Snapshot)
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${USER.API_ONLY.TOKEN}`);
 
@@ -183,8 +186,9 @@ describe('Schema Snapshots', () => {
 						vendor: currentVendor,
 						collections: [],
 						fields: [],
+						systemFields: [],
 						relations: [],
-					})
+					} satisfies Snapshot)
 					.set('Content-type', 'application/json')
 					.set('Authorization', `Bearer ${USER.NO_ROLE.TOKEN}`);
 
