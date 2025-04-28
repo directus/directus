@@ -70,39 +70,38 @@ const countFailedLogs = (group: RevisionsByDate) =>
 		:badge="!loadingCount && revisionsCount > 0 ? abbreviateNumber(revisionsCount) : null"
 		@toggle="onToggle"
 	>
-		<div v-show="revisionsCount > 0" class="logs-filter-container">
-			<VCheckbox v-model="showFailedOnly">{{ t('show_failed_only') }}</VCheckbox>
-		</div>
 		<v-progress-linear v-if="!revisionsByDate && loading" indeterminate />
 
 		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
 
-		<v-detail
-			v-for="group in revisionsByDate"
-			v-else
-			:key="group.dateFormatted"
-			:label="group.dateFormatted"
-			class="revisions-date-group"
-			start-open
-		>
-			<div v-show="showFailedOnly && countFailedLogs(group) === 0" class="empty">
-				{{ t('no_failed_logs') }}
-			</div>
-			<div class="scroll-container">
-				<div v-for="revision in group.revisions" :key="revision.id" class="log">
-					<button v-show="isLogVisible(revision)" @click="selectedRevision = revision">
-						<v-icon
-							name="fiber_manual_record"
-							filled
-							:color="revision.status === 'resolve' ? 'var(--theme--primary)' : 'var(--theme--secondary)'"
-							small
-						/>
-						<v-icon name="play_arrow" color="var(--theme--primary)" small />
-						{{ revision.timeRelative }}
-					</button>
+		<template v-else>
+			<button class="toggle-failed" :class="{ active: showFailedOnly }" @click="showFailedOnly = !showFailedOnly">
+				<v-icon v-if="!showFailedOnly" name="circle" small />
+				<v-icon v-else name="cancel" small />
+				{{ t('show_failed_only') }}
+			</button>
+
+			<v-detail
+				v-for="group in revisionsByDate"
+				:key="group.dateFormatted"
+				:label="group.dateFormatted"
+				class="revisions-date-group"
+				start-open
+			>
+				<div v-show="showFailedOnly && countFailedLogs(group) === 0" class="empty">
+					{{ t('no_failed_logs') }}
 				</div>
-			</div>
-		</v-detail>
+				<div class="scroll-container">
+					<div v-for="revision in group.revisions" :key="revision.id" class="log">
+						<button v-show="isLogVisible(revision)" @click="selectedRevision = revision">
+							<v-icon v-if="revision.status === 'resolve'" name="check_circle" color="var(--theme--primary)" small />
+							<v-icon v-else name="cancel" color="var(--theme--secondary)" small />
+							{{ revision.timeRelative }}
+						</button>
+					</div>
+				</div>
+			</v-detail>
+		</template>
 
 		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 	</sidebar-detail>
@@ -113,6 +112,21 @@ const countFailedLogs = (group: RevisionsByDate) =>
 <style lang="scss" scoped>
 .v-progress-linear {
 	margin: 24px 0;
+}
+
+.v-icon {
+	vertical-align: text-top;
+}
+
+.toggle-failed {
+	color: var(--theme--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+	margin-bottom: 32px;
+
+	&.active,
+	&:hover {
+		color: var(--theme--foreground);
+	}
 }
 
 .log {
@@ -170,12 +184,5 @@ const countFailedLogs = (group: RevisionsByDate) =>
 .v-pagination {
 	justify-content: center;
 	margin-top: 24px;
-}
-
-.logs-filter-container {
-	display: flex;
-	justify-content: end;
-	padding-top: 5px;
-	padding-bottom: 5px;
 }
 </style>
