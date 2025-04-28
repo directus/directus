@@ -52,7 +52,7 @@ function setIcon(icon: string | null) {
 
 <template>
 	<v-menu attached :disabled="disabled">
-		<template #activator="{ active, activate }">
+		<template #activator="{ active, activate, deactivate, toggle }">
 			<v-input
 				v-model="searchQuery"
 				:disabled="disabled"
@@ -67,7 +67,16 @@ function setIcon(icon: string | null) {
 
 				<template #append>
 					<div class="item-actions">
-						<v-remove v-if="value !== null" deselect @action="setIcon(null)" />
+						<v-remove
+							v-if="value !== null"
+							deselect
+							@action="
+								() => {
+									setIcon(null);
+									deactivate();
+								}
+							"
+						/>
 
 						<v-icon
 							v-else
@@ -75,7 +84,7 @@ function setIcon(icon: string | null) {
 							name="expand_more"
 							class="open-indicator"
 							:class="{ open: active }"
-							@click="activate"
+							@click="toggle"
 						/>
 					</div>
 				</template>
