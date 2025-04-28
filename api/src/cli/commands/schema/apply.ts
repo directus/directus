@@ -140,6 +140,30 @@ export async function apply(
 				sections.push(lines.join('\n'));
 			}
 
+			if (snapshotDiff.systemFields.length > 0) {
+				const lines = [chalk.underline.bold('System Fields:')];
+
+				for (const { collection, field, diff } of snapshotDiff.systemFields) {
+					if (diff[0]?.kind === DiffKind.EDIT) {
+						lines.push(`  - ${chalk.magenta('Update')} ${collection}.${field}`);
+
+						for (const change of diff) {
+							const path = formatPath(change.path!);
+
+							if (change.kind === DiffKind.EDIT) {
+								lines.push(`    - Set ${path} to ${change.rhs}`);
+							} else if (change.kind === DiffKind.DELETE) {
+								lines.push(`    - Remove ${path}`);
+							} else if (change.kind === DiffKind.NEW) {
+								lines.push(`    - Add ${path} and set it to ${change.rhs}`);
+							}
+						}
+					}
+				}
+
+				sections.push(lines.join('\n'));
+			}
+
 			if (snapshotDiff.relations.length > 0) {
 				const lines = [chalk.underline.bold('Relations:')];
 
