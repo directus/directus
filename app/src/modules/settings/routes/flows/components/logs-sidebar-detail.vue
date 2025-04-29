@@ -85,7 +85,7 @@ function onToggle(open: boolean) {
 
 		<template v-else>
 			<button
-				v-if="hasFailedLogs"
+				v-if="hasFailedLogs || showFailedOnly"
 				class="toggle-failed"
 				:class="{ active: showFailedOnly }"
 				@click="showFailedOnly = !showFailedOnly"
