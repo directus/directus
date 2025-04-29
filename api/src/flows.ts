@@ -252,6 +252,7 @@ class FlowManager {
 			} else if (flow.trigger === 'manual') {
 				const handler = async (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
+					const requireSelection = flow.options?.['requireSelection'] ?? true;
 					const targetCollection = (data as Record<string, any>)?.['body'].collection;
 					const targetKeys = (data as Record<string, any>)?.['body'].keys;
 
@@ -267,6 +268,16 @@ class FlowManager {
 
 					if (!enabledCollections.includes(targetCollection)) {
 						logger.warn(`Specified collection must be one of: ${enabledCollections.join(', ')}.`);
+						throw new ForbiddenError();
+					}
+
+					if (!targetKeys || !Array.isArray(targetKeys)) {
+						logger.warn(`Manual trigger requires "keys" to be specified in the payload`);
+						throw new ForbiddenError();
+					}
+
+					if (requireSelection && targetKeys.length === 0) {
+						logger.warn(`Manual trigger requires at least one key to be specified in the payload`);
 						throw new ForbiddenError();
 					}
 
@@ -299,12 +310,6 @@ class FlowManager {
 						}
 
 						const service = getService(targetCollection, { schema, accountability, knex: database })
-
-						if (!targetKeys || !Array.isArray(targetKeys)) {
-							logger.warn(`Manual trigger requires "keys" to be specified in the payload`);
-							throw new ForbiddenError();
-						}
-
 						const primaryField = schema.collections[targetCollection]!.primary
 
 						let keys = await service.readMany(targetKeys, { fields: [primaryField] }, {
