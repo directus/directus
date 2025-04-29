@@ -120,6 +120,10 @@ function onToggle(open: boolean) {
 	margin: 24px 0;
 }
 
+.v-detail + .v-detail {
+	margin-top: 12px;
+}
+
 .v-icon {
 	vertical-align: text-top;
 }
