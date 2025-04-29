@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema-builder",
-	"version": "1.0.0",
+	"version": "0.0.0",
 	"description": "Directus SchemaBuilder for mocking/constructing a database schema based on code.",
 	"keywords": [
 		"sql",
