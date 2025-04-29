@@ -22,7 +22,6 @@
 	"license": "BUSL-1.1",
 	"author": "Nils Twelker <nils@directus.io>",
 	"type": "module",
-	"private": true,
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"
