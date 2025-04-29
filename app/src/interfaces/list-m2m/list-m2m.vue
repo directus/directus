@@ -529,7 +529,6 @@ function getLinkForItem(item: DisplayItem) {
 				:items="displayItems"
 				:item-key="relationInfo.junctionPrimaryKeyField.field"
 				:row-height="tableRowHeight"
-				:disabled="disabled"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
 				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
