@@ -25,6 +25,7 @@ import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 import { fetchPermissions } from './permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from './permissions/lib/fetch-policies.js';
+import { getService } from './utils/get-service.js';
 
 let flowManager: FlowManager | undefined;
 
@@ -123,7 +124,7 @@ class FlowManager {
 	public async runWebhookFlow(
 		id: string,
 		data: unknown,
-		context: { schema: SchemaOverview; accountability: Accountability },
+		context: { schema: SchemaOverview; accountability: Accountability | undefined },
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		const logger = useLogger();
 
@@ -252,6 +253,7 @@ class FlowManager {
 				const handler = async (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
 					const targetCollection = (data as Record<string, any>)?.['body'].collection;
+					const targetKeys = (data as Record<string, any>)?.['body'].keys;
 
 					if (!targetCollection) {
 						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
@@ -268,7 +270,7 @@ class FlowManager {
 						throw new ForbiddenError();
 					}
 
-					const accountability = context?.accountability as Accountability | null;
+					const accountability = context?.['accountability'] as Accountability | undefined;
 
 					if (!accountability) {
 						logger.warn(`Manual flows are only triggerable when authenticated`);
@@ -293,6 +295,26 @@ class FlowManager {
 
 						if (permissions.length === 0) {
 							logger.warn(`Triggering ${targetCollection} is not allowed`);
+							throw new ForbiddenError();
+						}
+
+						const service = getService(targetCollection, { schema, accountability, knex: database })
+
+						if (!targetKeys || !Array.isArray(targetKeys)) {
+							logger.warn(`Manual trigger requires "keys" to be specified in the payload`);
+							throw new ForbiddenError();
+						}
+
+						const primaryField = schema.collections[targetCollection]!.primary
+
+						let keys = await service.readMany(targetKeys, { fields: [primaryField] }, {
+							emitEvents: false,
+						})
+
+						keys = keys.map(key => key[primaryField])
+
+						if (!targetKeys.every((key) => keys.includes(key))) {
+							logger.warn(`Triggering keys ${targetKeys} is not allowed`);
 							throw new ForbiddenError();
 						}
 					}
