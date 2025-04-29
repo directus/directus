@@ -618,7 +618,6 @@ function getLinkForItem(item: DisplayItem) {
 									v-tooltip="t('navigate_to_item')"
 									:to="getLinkForItem(element)!"
 									class="item-link"
-									:disabled="element.$type === 'created'"
 									@click.stop
 								>
 									<v-icon name="launch" />
