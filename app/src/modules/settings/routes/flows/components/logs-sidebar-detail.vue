@@ -45,8 +45,14 @@ watch([page, showFailedOnly], async ([newPage, showFailed]) => {
 	if (showFailed) filterRevisions();
 });
 
+const hasFailedLogs = computed(() => {
+	return (
+		revisionsByDate.value?.some((group) => group.revisions.some((revision) => revision.status === 'reject')) ?? false
+	);
+});
+
 function filterRevisions() {
-	if (!revisionsByDate.value) return;
+	if (!revisionsByDate.value || !hasFailedLogs.value) return;
 
 	revisionsByDate.value = revisionsByDate.value
 		.map((group) => ({
@@ -78,7 +84,12 @@ function onToggle(open: boolean) {
 		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
 
 		<template v-else>
-			<button class="toggle-failed" :class="{ active: showFailedOnly }" @click="showFailedOnly = !showFailedOnly">
+			<button
+				v-if="hasFailedLogs"
+				class="toggle-failed"
+				:class="{ active: showFailedOnly }"
+				@click="showFailedOnly = !showFailedOnly"
+			>
 				<v-icon v-if="!showFailedOnly" name="circle" small />
 				<v-icon v-else name="cancel" small />
 				{{ t('show_failed_only') }}
