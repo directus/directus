@@ -40,27 +40,21 @@ const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loadin
 		},
 	);
 
-watch(
-	() => page.value,
-	(newPage) => {
-		refresh(newPage);
-	},
-);
+watch([page, showFailedOnly], async ([newPage, showFailed]) => {
+	await refresh(newPage);
+	if (showFailed) filterRevisions();
+});
 
-watch(showFailedOnly, (showFailed) => {
+function filterRevisions() {
 	if (!revisionsByDate.value) return;
 
-	if (showFailed) {
-		revisionsByDate.value = revisionsByDate.value
-			.map((group) => ({
-				...group,
-				revisions: group.revisions.filter((r) => r.status === 'reject'),
-			}))
-			.filter((group) => group.revisions.length > 0);
-	} else {
-		refresh(page.value);
-	}
-});
+	revisionsByDate.value = revisionsByDate.value
+		.map((group) => ({
+			...group,
+			revisions: group.revisions.filter((r) => r.status === 'reject'),
+		}))
+		.filter((group) => group.revisions.length > 0);
+}
 
 onMounted(() => {
 	getRevisionsCount();
