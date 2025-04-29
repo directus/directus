@@ -46,7 +46,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-version
     permissions:
+      actions: write
+      attestations: write
+      checks: write
+      contents: write
+      deployments: write
+      discussions: write
       id-token: write
+      issues: write
+      metadata: read
+      models: read
+      packages: write
+      pages: write
+      pull-requests: write
+      security-events: write
+      statuses: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -71,7 +85,21 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-version
     permissions:
+      actions: write
+      attestations: write
+      checks: write
+      contents: write
+      deployments: write
+      discussions: write
       id-token: write
+      issues: write
+      metadata: read
+      models: read
+      packages: write
+      pages: write
+      pull-requests: write
+      security-events: write
+      statuses: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
