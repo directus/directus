@@ -19,24 +19,25 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 		onAction: function () {
 			const selectionContent = editor.value.selection.getContent({ format: 'text' });
 			const selectedText = selectionContent.split('\n');
+
 			if (selectedText.length === 1) {
 				// Single line of text selected
 				editor.value.execCommand('mceToggleFormat', false, 'code');
-				console.log('Single line selected');
 			} else {
 				// Multiple lines of text selected
 				editor.value.execCommand('mceToggleFormat', false, 'pre');
-				console.log('Multiple lines selected');
 			}
 		},
 		onSetup: function (api: { setActive: (arg0: any) => void }) {
 			api.setActive(editor.value.formatter.match('code'));
 			api.setActive(editor.value.formatter.match('pre'));
-			var unbind = editor.value.formatter.formatChanged('code', api.setActive).unbind;
+			const unbind = editor.value.formatter.formatChanged('code', api.setActive).unbind;
+
 			return function () {
 				if (unbind) unbind();
 			};
 		},
 	};
+
 	return { inlineCodeButton };
 }
