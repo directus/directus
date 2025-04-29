@@ -712,7 +712,6 @@ flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
-run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
 trigger_options: Opcije okidača
 view_trigger: Prikaži okidač

@@ -818,7 +818,6 @@ run_flow_on_current: اجرای جریان در مجموعه فعلی
 run_flow_on_current_edited_confirm: این مورد ممکن است توسط این جریان به‌روزرسانی شود، آیا از اجرای آن اطمینان دارید؟
 run_flow_on_selected: ابتدا یک یا چند مورد را انتخاب کنید | اجرای جریان روی 1 مورد انتخاب شده | اجرای {n} مورد روی جریان
 run_flow: اجرای جریان
-run_flow_success: جریان"{flow}" با موفقیت اجرا شد
 field_name_placeholder: ورود نام فیلد...
 field_key_placeholder: ورود کلید فیلد...
 trigger: راه‌انداز
