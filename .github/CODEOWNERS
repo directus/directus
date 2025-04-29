@@ -29,7 +29,7 @@
 /packages/system-data @directus/server
 /packages/validation @directus/server
 
-/sdk/ @directus/dx
+/sdk/ @directus/server
 /packages/create-directus-extension @directus/dx
 /packages/create-directus-project @directus/dx
 /packages/extensions-sdk @directus/dx

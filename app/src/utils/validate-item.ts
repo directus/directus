@@ -1,6 +1,6 @@
 import { useRelationsStore } from '@/stores/relations';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
-import { Field, LogicalFilterAND } from '@directus/types';
+import { ContentVersion, Field, LogicalFilterAND } from '@directus/types';
 import { validatePayload } from '@directus/utils';
 import { cloneDeep, flatten, isEmpty, isNil } from 'lodash';
 import { applyConditions } from './apply-conditions';
@@ -10,11 +10,18 @@ export function validateItem(
 	fields: Field[],
 	isNew: boolean,
 	includeCustomValidations = false,
+	currentVersion: ContentVersion | null = null,
 ) {
 	const relationsStore = useRelationsStore();
 	const validationRules: LogicalFilterAND = { _and: [] };
 	const updatedItem = cloneDeep(item);
-	const fieldsWithConditions = fields.map((field) => applyConditions(item, field));
+
+	const fieldsWithConditions = fields.map((field) => {
+		const conditionedField = applyConditions(item, field, currentVersion);
+
+		return conditionedField;
+	});
+
 	const requiredFields = fieldsWithConditions.filter((field) => field.meta?.required === true);
 
 	requiredFields.forEach((field) => {
@@ -29,13 +36,13 @@ export function validateItem(
 
 	if (includeCustomValidations) fields.forEach(applyValidationRules);
 
-	return flatten(
-		validatePayload(validationRules, updatedItem).map((error) =>
-			error.details.map(
-				(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)).extensions,
-			),
+	const errors = validatePayload(validationRules, updatedItem).map((error) =>
+		error.details.map(
+			(details) => new FailedValidationError(joiValidationErrorItemToErrorExtensions(details)).extensions,
 		),
-	).map((error) => {
+	);
+
+	return flatten(errors).map((error) => {
 		const errorField = fields.find((field) => field.field === error.field);
 		return { ...error, hidden: errorField?.meta?.hidden, group: errorField?.meta?.group };
 	});

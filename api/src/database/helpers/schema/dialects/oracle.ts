@@ -127,4 +127,12 @@ export class SchemaHelperOracle extends SchemaHelper {
 			groupByFields.push(...sortRecords.map(({ column }) => column));
 		}
 	}
+
+	override getColumnNameMaxLength(): number {
+		return 128;
+	}
+
+	override getTableNameMaxLength(): number {
+		return 128;
+	}
 }

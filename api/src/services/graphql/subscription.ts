@@ -20,7 +20,7 @@ export function bindPubSub() {
 
 export function createSubscriptionGenerator(gql: GraphQLService, event: string) {
 	return async function* (_x: unknown, _y: unknown, _z: unknown, request: GraphQLResolveInfo) {
-		const fields = parseFields(gql, request);
+		const fields = await parseFields(gql, request);
 		const args = parseArguments(request);
 
 		for await (const payload of messages.subscribe(event)) {
@@ -98,7 +98,7 @@ function createPubSub<P extends { [key: string]: unknown }>(emitter: EventEmitte
 	};
 }
 
-function parseFields(gql: GraphQLService, request: GraphQLResolveInfo) {
+async function parseFields(gql: GraphQLService, request: GraphQLResolveInfo) {
 	const selections = request.fieldNodes[0]?.selectionSet?.selections ?? [];
 
 	const dataSelections = selections.reduce((result: readonly SelectionNode[], selection: SelectionNode) => {
@@ -113,7 +113,7 @@ function parseFields(gql: GraphQLService, request: GraphQLResolveInfo) {
 		return result;
 	}, []);
 
-	const { fields } = getQuery({}, dataSelections, request.variableValues, gql.accountability);
+	const { fields } = await getQuery({}, dataSelections, request.variableValues, gql.schema, gql.accountability);
 	return fields ?? [];
 }
 

@@ -61,7 +61,7 @@ onMounted(async () => {
 			lineWiseCopyCut: false,
 			theme: 'default',
 			scrollbarStyle: isMultiLine.value ? 'native' : 'null',
-			extraKeys: { Ctrl: 'autocomplete' },
+			extraKeys: { Ctrl: 'autocomplete', Tab: false, 'Shift-Tab': false },
 			cursorBlinkRate: props.disabled ? -1 : 530,
 			placeholder: props.placeholder !== undefined ? props.placeholder : t('raw_editor_placeholder'),
 			readOnly: readOnly.value,

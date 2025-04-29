@@ -5,8 +5,8 @@ import { extractFieldFromFunction } from '@/utils/extract-field-from-function';
 import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { pushGroupOptionsDown } from '@/utils/push-group-options-down';
 import { useElementSize } from '@directus/composables';
-import { Field, ValidationError } from '@directus/types';
-import { assign, cloneDeep, isEqual, isNil, omit } from 'lodash';
+import { ContentVersion, Field, ValidationError } from '@directus/types';
+import { assign, cloneDeep, isEqual, isEmpty, isNil, omit } from 'lodash';
 import { computed, onBeforeUpdate, provide, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { MenuOptions } from './form-field-menu.vue';
@@ -43,6 +43,7 @@ const props = withDefaults(
 		direction?: string;
 		showDivider?: boolean;
 		inline?: boolean;
+		version?: ContentVersion | null;
 	}>(),
 	{
 		collection: undefined,
@@ -56,6 +57,7 @@ const props = withDefaults(
 		showValidationErrors: true,
 		showNoVisibleFields: true,
 		direction: undefined,
+		version: null,
 	},
 );
 
@@ -154,7 +156,9 @@ function useForm() {
 	const fieldsWithConditions = computed(() => {
 		const valuesWithDefaults = Object.assign({}, defaultValues.value, values.value);
 
-		let fields = formFields.value.map((field) => applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field)));
+		let fields = formFields.value.map((field) =>
+			applyConditions(valuesWithDefaults, setPrimaryKeyReadonly(field), props.version),
+		);
 
 		fields = pushGroupOptionsDown(fields);
 		updateSystemDivider(fields);
@@ -289,6 +293,16 @@ function unsetValue(field: TFormField | undefined) {
 
 function useBatch() {
 	const batchActiveFields = ref<string[]>([]);
+
+	watch(
+		() => props.modelValue,
+		(newModelValue) => {
+			if (!props.batchMode || isEmpty(newModelValue) || !isEmpty(batchActiveFields.value)) return;
+
+			batchActiveFields.value = Object.keys(newModelValue);
+		},
+		{ immediate: true },
+	);
 
 	return { batchActiveFields, toggleBatchField };
 

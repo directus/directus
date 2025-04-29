@@ -1,61 +1,16 @@
-import type { SchemaOverview } from '@directus/types';
 import { randomUUID } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
 import { validateKeys } from './validate-keys.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
-const schema: SchemaOverview = {
-	collections: {
-		pk_integer: {
-			collection: 'pk_integer',
-			primary: 'id',
-			singleton: false,
-			note: 'Sample schema with integer primary key',
-			sortField: null,
-			accountability: null,
-			fields: {
-				id: {
-					field: 'id',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'integer',
-					dbType: 'integer',
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					alias: false,
-					validation: null,
-				},
-			},
-		},
-		pk_uuid: {
-			collection: 'pk_uuid',
-			primary: 'id',
-			singleton: false,
-			note: 'Sample schema with uuid primary key',
-			sortField: null,
-			accountability: null,
-			fields: {
-				id: {
-					field: 'id',
-					defaultValue: null,
-					nullable: false,
-					generated: false,
-					type: 'uuid',
-					dbType: 'uuid',
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					alias: false,
-					validation: null,
-				},
-			},
-		},
-	},
-	relations: [],
-};
+const schema = new SchemaBuilder()
+	.collection('pk_integer', (c) => {
+		c.field('id').integer().primary();
+	})
+	.collection('pk_uuid', (c) => {
+		c.field('id').uuid().primary();
+	})
+	.build();
 
 describe('validate keys', () => {
 	describe('of integer type', () => {

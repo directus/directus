@@ -43,7 +43,7 @@ importers:
     dependencies:
       '@authenio/samlify-node-xmllint':
         specifier: 2.0.0
-        version: 2.0.0(samlify@2.8.10)
+        version: 2.0.0(samlify@2.9.1)
       '@aws-sdk/client-ses':
         specifier: 3.758.0
         version: 3.758.0
@@ -80,6 +80,9 @@ importers:
       '@directus/schema':
         specifier: workspace:*
         version: link:../packages/schema
+      '@directus/schema-builder':
+        specifier: workspace:*
+        version: link:../packages/schema-builder
       '@directus/specs':
         specifier: workspace:*
         version: link:../packages/specs
@@ -141,8 +144,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       axios:
-        specifier: 1.8.1
-        version: 1.8.1
+        specifier: 1.8.4
+        version: 1.8.4
       busboy:
         specifier: 1.6.0
         version: 1.6.0
@@ -354,8 +357,8 @@ importers:
         specifier: 4.34.9
         version: 4.34.9
       samlify:
-        specifier: 2.8.10
-        version: 2.8.10
+        specifier: 2.9.1
+        version: 2.9.1
       sanitize-html:
         specifier: 2.14.0
         version: 2.14.0
@@ -752,8 +755,8 @@ importers:
         specifier: 4.5.0
         version: 4.5.0
       axios:
-        specifier: 1.8.1
-        version: 1.8.1
+        specifier: 1.8.4
+        version: 1.8.4
       base-64:
         specifier: 1.0.0
         version: 1.0.0
@@ -961,10 +964,10 @@ importers:
         version: 5.8.2
       vitepress:
         specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.1)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2)
+        version: 1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.4)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2)
       vitepress-plugin-tabs:
         specifier: 0.3.0
-        version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.1)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2))(vue@3.5.13(typescript@5.8.2))
+        version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.4)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2))(vue@3.5.13(typescript@5.8.2))
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.8.2)
@@ -1023,8 +1026,8 @@ importers:
         specifier: workspace:*
         version: link:../utils
       axios:
-        specifier: 1.8.1
-        version: 1.8.1
+        specifier: 1.8.4
+        version: 1.8.4
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
@@ -1343,8 +1346,8 @@ importers:
         specifier: 3.29.5
         version: 3.29.5
       rollup-plugin-esbuild:
-        specifier: 5.0.0
-        version: 5.0.0(esbuild@0.25.0)(rollup@3.29.5)
+        specifier: 6.2.1
+        version: 6.2.1(esbuild@0.25.0)(rollup@3.29.5)
       rollup-plugin-styles:
         specifier: 4.0.0
         version: 4.0.0(rollup@3.29.5)
@@ -1533,6 +1536,31 @@ importers:
       typescript:
         specifier: 5.8.2
         version: 5.8.2
+
+  packages/schema-builder:
+    dependencies:
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
+      lodash-es:
+        specifier: 4.17.21
+        version: 4.17.21
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 3.0.0
+        version: 3.0.0
+      '@types/lodash-es':
+        specifier: 4.17.12
+        version: 4.17.12
+      tsup:
+        specifier: 8.4.0
+        version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.4.49)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+      vitest:
+        specifier: 2.1.9
+        version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/specs:
     dependencies:
@@ -1907,11 +1935,11 @@ importers:
   packages/update-check:
     dependencies:
       axios:
-        specifier: 1.8.1
-        version: 1.8.1
+        specifier: 1.8.4
+        version: 1.8.4
       axios-cache-interceptor:
         specifier: 1.6.2
-        version: 1.6.2(axios@1.8.1)
+        version: 1.6.2(axios@1.8.4)
       boxen:
         specifier: 8.0.1
         version: 8.0.1
@@ -1980,6 +2008,9 @@ importers:
         specifier: 8.0.3
         version: 8.0.3
     devDependencies:
+      '@directus/schema-builder':
+        specifier: workspace:*
+        version: link:../schema-builder
       '@directus/tsconfig':
         specifier: 3.0.0
         version: 3.0.0
@@ -2105,8 +2136,8 @@ importers:
         specifier: 8.0.0
         version: 8.0.0
       axios:
-        specifier: 1.8.1
-        version: 1.8.1
+        specifier: 1.8.4
+        version: 1.8.4
       get-port:
         specifier: 7.1.0
         version: 7.1.0
@@ -4978,9 +5009,6 @@ packages:
   '@types/lodash-es@4.17.12':
     resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
 
-  '@types/lodash@4.17.14':
-    resolution: {integrity: sha512-jsxagdikDiDBeIRaPYtArcT8my4tN1og7MtMRquFT3XNA6axxyHDRUemqDz/taRDdOUn0GnGHRCuff4q48sW9A==}
-
   '@types/lodash@4.17.16':
     resolution: {integrity: sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==}
 
@@ -5716,8 +5744,8 @@ packages:
     peerDependencies:
       axios: ^1
 
-  axios@1.8.1:
-    resolution: {integrity: sha512-NN+fvwH/kV01dYUQ3PTOZns4LWtWhOFCAhQ/pHb88WQ1hNe5V/dvFwc4VJcDL11LT9xSX0QtsR8sWUuyOuOq7g==}
+  axios@1.8.4:
+    resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
 
   backoff@2.5.0:
     resolution: {integrity: sha512-wC5ihrnUXmR2douXmXLCe5O3zg3GKIyvRi/hi58a/XyRxVI+3/yM0PYueQOZXPXQ9pxBislYkw+sF9b7C/RuMA==}
@@ -7473,6 +7501,9 @@ packages:
   get-stream@9.0.1:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
     engines: {node: '>=18'}
+
+  get-tsconfig@4.10.0:
+    resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
 
   get-tsconfig@4.8.1:
     resolution: {integrity: sha512-k9PN+cFBmaLWtVz29SkUoqU5O0slLuHJXt/2P+tMVFT+phsSGXGkp9t3rQIqdz0e+06EHNGs3oM6ZX1s2zHxRg==}
@@ -10342,12 +10373,12 @@ packages:
     resolution: {integrity: sha512-l0OE8wL34P4nJH/H2ffoaniAokM2qSmrtXHmlpvYr5AVVX8msAyW0l8NVJFDxlSK4u3Uh/f41cQheDVdnYijwQ==}
     hasBin: true
 
-  rollup-plugin-esbuild@5.0.0:
-    resolution: {integrity: sha512-1cRIOHAPh8WQgdQQyyvFdeOdxuiyk+zB5zJ5+YOwrZP4cJ0MT3Fs48pQxrZeyZHcn+klFherytILVfE4aYrneg==}
-    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
+  rollup-plugin-esbuild@6.2.1:
+    resolution: {integrity: sha512-jTNOMGoMRhs0JuueJrJqbW8tOwxumaWYq+V5i+PD+8ecSCVkuX27tGW7BXqDgoULQ55rO7IdNxPcnsWtshz3AA==}
+    engines: {node: '>=14.18.0'}
     peerDependencies:
-      esbuild: '>=0.10.1'
-      rollup: ^1.20.0 || ^2.0.0 || ^3.0.0
+      esbuild: '>=0.18.0'
+      rollup: ^1.20.0 || ^2.0.0 || ^3.0.0 || ^4.0.0
 
   rollup-plugin-node-externals@8.0.0:
     resolution: {integrity: sha512-2HIOpWsWn5DqBoYl6iCAmB4kd5GoGbF68PR4xKR1YBPvywiqjtYvDEjHFodyqRL51iAMDITP074Zxs0OKs6F+g==}
@@ -10412,8 +10443,8 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
-  samlify@2.8.10:
-    resolution: {integrity: sha512-g2M1Qq2uL7GHtmBRaTVYcJD0Vb+XOyvXHsPARHCoqQ54Vp7m5h3NMUGzvLEIFGujxaamyM3BhEi9fdVAkJMvHw==}
+  samlify@2.9.1:
+    resolution: {integrity: sha512-VFite2x9RLrz4zJ0rfhJU2CSPbV/V2o6I0EdRfoa8AJVsM/dQlVF9ibbR2TJ3nKSHqf2tpCy/AZZ2O/+tynnbQ==}
 
   sanitize-html@2.14.0:
     resolution: {integrity: sha512-CafX+IUPxZshXqqRaG9ZClSlfPVjSxI0td7n07hk8QO2oO+9JDnlcL8iM8TWeOXOIBFgIOx6zioTzM53AOMn3g==}
@@ -11555,6 +11586,10 @@ packages:
     resolution: {integrity: sha512-Fhrj4mOAnQYy/bfcDbTNcTSJuBDo+Ayl/cud1sfh3RoNYQtOn0zBBUD081L1xm1SkGniB+3kcp/PN4PbQxzWxw==}
     engines: {node: '>=18.12.0'}
 
+  unplugin-utils@0.2.4:
+    resolution: {integrity: sha512-8U/MtpkPkkk3Atewj1+RcKIjb5WBimZ/WSLhhR3w6SsIj8XJuKTacSP8g+2JhfSGw0Cb125Y+2zA/IzJZDVbhA==}
+    engines: {node: '>=18.12.0'}
+
   unplugin@2.1.2:
     resolution: {integrity: sha512-Q3LU0e4zxKfRko1wMV2HmP8lB9KWislY7hxXpxd+lGx0PRInE4vhMBVEZwpdVYHvtqzhSrzuIfErsob6bQfCzw==}
     engines: {node: '>=18.12.0'}
@@ -11762,37 +11797,6 @@ packages:
       lightningcss:
         optional: true
       sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-
-  vite@5.4.11:
-    resolution: {integrity: sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || >=20.0.0
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      sass-embedded: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
         optional: true
       stylus:
         optional: true
@@ -12123,9 +12127,12 @@ packages:
       utf-8-validate:
         optional: true
 
-  xml-crypto@3.2.0:
-    resolution: {integrity: sha512-qVurBUOQrmvlgmZqIVBqmb06TD2a/PpEUfFPgD7BuBfjmoH4zgkqaWSIJrnymlCvM2GGt9x+XtJFA+ttoAufqg==}
+  xml-crypto@3.2.1:
+    resolution: {integrity: sha512-0GUNbPtQt+PLMsC5HoZRONX+K6NBJEqpXe/lsvrFj0EqfpGPpVfJKGE7a5jCg8s2+Wkrf/2U1G41kIH+zC9eyQ==}
     engines: {node: '>=4.0.0'}
+
+  xml-escape@1.1.0:
+    resolution: {integrity: sha512-B/T4sDK8Z6aUh/qNr7mjKAwwncIljFuUP+DO/D5hloYFj+90O88z8Wf7oSucZTHxBAsC1/CTP4rtx/x1Uf72Mg==}
 
   xml-name-validator@4.0.0:
     resolution: {integrity: sha512-ICP2e+jsHvAj2E2lIHxa5tjXRlKDJo4IdvPvCXbXQGdzSfmSpNVyIKMvoZHjDY9DP0zV17iI85o90vRFXNccRw==}
@@ -12373,10 +12380,10 @@ snapshots:
 
   '@assemblyscript/loader@0.19.23': {}
 
-  '@authenio/samlify-node-xmllint@2.0.0(samlify@2.8.10)':
+  '@authenio/samlify-node-xmllint@2.0.0(samlify@2.9.1)':
     dependencies:
       node-xmllint: 1.0.0
-      samlify: 2.8.10
+      samlify: 2.9.1
 
   '@authenio/xml-encryption@2.0.2':
     dependencies:
@@ -15775,9 +15782,7 @@ snapshots:
 
   '@types/lodash-es@4.17.12':
     dependencies:
-      '@types/lodash': 4.17.14
-
-  '@types/lodash@4.17.14': {}
+      '@types/lodash': 4.17.16
 
   '@types/lodash@4.17.16': {}
 
@@ -16107,13 +16112,13 @@ snapshots:
       chai: 5.1.2
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.9(vite@5.4.11(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))':
+  '@vitest/mocker@2.1.9(vite@5.4.14(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))':
     dependencies:
       '@vitest/spy': 2.1.9
       estree-walker: 3.0.3
       magic-string: 0.30.17
     optionalDependencies:
-      vite: 5.4.11(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
+      vite: 5.4.14(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   '@vitest/pretty-format@2.1.9':
     dependencies:
@@ -16342,13 +16347,13 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@vueuse/integrations@10.11.1(axios@1.8.1)(change-case@4.1.2)(focus-trap@7.6.2)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.13(typescript@5.8.2))':
+  '@vueuse/integrations@10.11.1(axios@1.8.4)(change-case@4.1.2)(focus-trap@7.6.2)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.13(typescript@5.8.2))':
     dependencies:
       '@vueuse/core': 10.11.1(vue@3.5.13(typescript@5.8.2))
       '@vueuse/shared': 10.11.1(vue@3.5.13(typescript@5.8.2))
       vue-demi: 0.14.10(vue@3.5.13(typescript@5.8.2))
     optionalDependencies:
-      axios: 1.8.1
+      axios: 1.8.4
       change-case: 4.1.2
       focus-trap: 7.6.2
       qrcode: 1.5.4
@@ -16691,14 +16696,14 @@ snapshots:
   aws-ssl-profiles@1.1.2:
     optional: true
 
-  axios-cache-interceptor@1.6.2(axios@1.8.1):
+  axios-cache-interceptor@1.6.2(axios@1.8.4):
     dependencies:
-      axios: 1.8.1
+      axios: 1.8.4
       cache-parser: 1.2.5
       fast-defer: 1.1.8
       object-code: 1.3.3
 
-  axios@1.8.1:
+  axios@1.8.4:
     dependencies:
       follow-redirects: 1.15.9(debug@4.3.7)
       form-data: 4.0.2
@@ -18466,6 +18471,10 @@ snapshots:
       '@sec-ant/readable-stream': 0.4.1
       is-stream: 4.0.1
 
+  get-tsconfig@4.10.0:
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+
   get-tsconfig@4.8.1:
     dependencies:
       resolve-pkg-maps: 1.0.0
@@ -19645,7 +19654,7 @@ snapshots:
 
   mailgun.js@8.2.2:
     dependencies:
-      axios: 1.8.1
+      axios: 1.8.4
       base-64: 1.0.0
       url-join: 4.0.1
     transitivePeerDependencies:
@@ -21877,15 +21886,14 @@ snapshots:
     dependencies:
       glob: 10.4.5
 
-  rollup-plugin-esbuild@5.0.0(esbuild@0.25.0)(rollup@3.29.5):
+  rollup-plugin-esbuild@6.2.1(esbuild@0.25.0)(rollup@3.29.5):
     dependencies:
-      '@rollup/pluginutils': 5.1.4(rollup@3.29.5)
       debug: 4.4.0(supports-color@5.5.0)
       es-module-lexer: 1.6.0
       esbuild: 0.25.0
-      joycon: 3.1.1
-      jsonc-parser: 3.3.1
+      get-tsconfig: 4.10.0
       rollup: 3.29.5
+      unplugin-utils: 0.2.4
     transitivePeerDependencies:
       - supports-color
 
@@ -21978,7 +21986,7 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
-  samlify@2.8.10:
+  samlify@2.9.1:
     dependencies:
       '@authenio/xml-encryption': 2.0.2
       '@xmldom/xmldom': 0.8.10
@@ -21988,7 +21996,8 @@ snapshots:
       pako: 1.0.11
       uuid: 8.3.2
       xml: 1.0.1
-      xml-crypto: 3.2.0
+      xml-crypto: 3.2.1
+      xml-escape: 1.1.0
       xpath: 0.0.32
 
   sanitize-html@2.14.0:
@@ -23268,6 +23277,11 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
+  unplugin-utils@0.2.4:
+    dependencies:
+      pathe: 2.0.3
+      picomatch: 4.0.2
+
   unplugin@2.1.2:
     dependencies:
       acorn: 8.14.0
@@ -23569,18 +23583,6 @@ snapshots:
       sass: 1.83.4
       terser: 5.37.0
 
-  vite@5.4.11(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0):
-    dependencies:
-      esbuild: 0.21.5
-      postcss: 8.4.49
-      rollup: 4.34.9
-    optionalDependencies:
-      '@types/node': 22.13.8
-      fsevents: 2.3.3
-      sass: 1.83.4
-      sass-embedded: 1.85.1
-      terser: 5.37.0
-
   vite@5.4.14(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0):
     dependencies:
       esbuild: 0.21.5
@@ -23593,19 +23595,19 @@ snapshots:
       sass-embedded: 1.85.1
       terser: 5.37.0
 
-  vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.1)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2))(vue@3.5.13(typescript@5.8.2)):
+  vitepress-plugin-tabs@0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.4)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2))(vue@3.5.13(typescript@5.8.2)):
     dependencies:
-      vitepress: 1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.1)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2)
+      vitepress: 1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.4)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2)
       vue: 3.5.13(typescript@5.8.2)
 
-  vitepress@1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.1)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2):
+  vitepress@1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.4)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2):
     dependencies:
       '@docsearch/css': 3.8.2
       '@docsearch/js': 3.8.2(@algolia/client-search@5.19.0)(search-insights@2.17.3)
       '@vitejs/plugin-vue': 4.6.2(vite@4.5.9(@types/node@22.13.8)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       '@vue/devtools-api': 6.6.4
       '@vueuse/core': 10.11.1(vue@3.5.13(typescript@5.8.2))
-      '@vueuse/integrations': 10.11.1(axios@1.8.1)(change-case@4.1.2)(focus-trap@7.6.2)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.13(typescript@5.8.2))
+      '@vueuse/integrations': 10.11.1(axios@1.8.4)(change-case@4.1.2)(focus-trap@7.6.2)(qrcode@1.5.4)(sortablejs@1.14.0)(vue@3.5.13(typescript@5.8.2))
       body-scroll-lock: 4.0.0-beta.0
       focus-trap: 7.6.2
       mark.js: 8.11.1
@@ -23679,7 +23681,7 @@ snapshots:
   vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(vite@5.4.11(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
+      '@vitest/mocker': 2.1.9(vite@5.4.14(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9
@@ -23695,7 +23697,7 @@ snapshots:
       tinyexec: 0.3.2
       tinypool: 1.0.2
       tinyrainbow: 1.2.0
-      vite: 5.4.11(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
+      vite: 5.4.14(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vite-node: 2.1.9(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
@@ -23923,10 +23925,12 @@ snapshots:
 
   ws@8.18.1: {}
 
-  xml-crypto@3.2.0:
+  xml-crypto@3.2.1:
     dependencies:
       '@xmldom/xmldom': 0.8.10
       xpath: 0.0.32
+
+  xml-escape@1.1.0: {}
 
   xml-name-validator@4.0.0: {}
 

@@ -1,7 +1,8 @@
 import { beforeAll, describe, expect, test, vi } from 'vitest';
 import { getPermissionsForShare } from './get-permissions-for-share.js';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { Accountability } from '@directus/types';
 import type { Context } from '../types.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../modules/fetch-global-access/fetch-global-access.js', () => ({
 	fetchGlobalAccess: vi.fn().mockImplementation((accountability: Accountability) => {
@@ -383,177 +384,18 @@ const basePermissions = [
 	},
 ];
 
-const schema: SchemaOverview = {
-	collections: {
-		articles: {
-			collection: 'articles',
-			accountability: 'all',
-			note: '',
-			primary: 'id',
-			singleton: false,
-			sortField: null,
-			fields: {
-				id: {
-					field: 'id',
-					type: 'integer',
-					dbType: 'integer',
-					nullable: false,
-					generated: true,
-					precision: null,
-					scale: null,
-					special: [],
-					note: '',
-					alias: false,
-					validation: null,
-					defaultValue: 'AUTO_INCREMENT',
-				},
-				title: {
-					field: 'title',
-					type: 'string',
-					dbType: 'varchar',
-					nullable: false,
-					generated: false,
-					precision: null,
-					scale: null,
-					special: [],
-					note: '',
-					alias: false,
-					validation: null,
-					defaultValue: null,
-				},
-				authors: {
-					field: 'authors',
-					defaultValue: null,
-					nullable: true,
-					generated: false,
-					type: 'alias',
-					dbType: null,
-					precision: null,
-					scale: null,
-					special: ['o2m'],
-					note: null,
-					alias: true,
-					validation: null,
-				},
-			},
-		},
-		authors: {
-			collection: 'authors',
-			accountability: 'all',
-			note: '',
-			primary: 'id',
-			singleton: false,
-			sortField: null,
-			fields: {
-				id: {
-					field: 'id',
-					type: 'integer',
-					dbType: 'integer',
-					nullable: false,
-					generated: true,
-					precision: null,
-					scale: null,
-					special: [],
-					note: '',
-					alias: false,
-					validation: null,
-					defaultValue: 'AUTO_INCREMENT',
-				},
-				name: {
-					field: 'name',
-					type: 'string',
-					dbType: 'varchar',
-					nullable: false,
-					generated: false,
-					precision: null,
-					scale: null,
-					special: [],
-					note: '',
-					alias: false,
-					validation: null,
-					defaultValue: null,
-				},
-				article: {
-					field: 'article',
-					defaultValue: null,
-					nullable: true,
-					generated: false,
-					type: 'integer',
-					dbType: 'integer',
-					precision: null,
-					scale: null,
-					special: [],
-					note: null,
-					alias: false,
-					validation: null,
-				},
-			},
-		},
-		super_secret_table: {
-			collection: 'super_secret_table',
-			accountability: 'all',
-			note: '',
-			primary: 'id',
-			singleton: false,
-			sortField: null,
-			fields: {
-				id: {
-					field: 'id',
-					type: 'integer',
-					dbType: 'integer',
-					nullable: false,
-					generated: true,
-					precision: null,
-					scale: null,
-					special: [],
-					note: '',
-					alias: false,
-					validation: null,
-					defaultValue: 'AUTO_INCREMENT',
-				},
-				secret: {
-					field: 'secret',
-					type: 'string',
-					dbType: 'varchar',
-					nullable: false,
-					generated: false,
-					precision: null,
-					scale: null,
-					special: [],
-					note: '',
-					alias: false,
-					validation: null,
-					defaultValue: null,
-				},
-			},
-		},
-	},
-	relations: [
-		{
-			collection: 'authors',
-			field: 'article',
-			related_collection: 'articles',
-			schema: {
-				table: 'authors',
-				column: 'article',
-				foreign_key_table: 'articles',
-				foreign_key_column: 'id',
-				on_update: 'NO ACTION',
-				on_delete: 'SET NULL',
-				constraint_name: null,
-			},
-			meta: {
-				id: 1,
-				many_collection: 'authors',
-				many_field: 'article',
-				one_collection: 'articles',
-				one_field: 'authors',
-				one_collection_field: null,
-				one_allowed_collections: null,
-				junction_field: null,
-				sort_field: null,
-				one_deselect_action: 'nullify',
-			},
-		},
-	],
-};
+const schema = new SchemaBuilder()
+	.collection('articles', (c) => {
+		c.field('id').integer().primary();
+		c.field('title').string();
+		c.field('authors').o2m('authors', 'article');
+	})
+	.collection('authors', (c) => {
+		c.field('id').integer().primary();
+		c.field('name').string();
+	})
+	.collection('super_secret_table', (c) => {
+		c.field('id').integer().primary();
+		c.field('secret').string();
+	})
+	.build();
