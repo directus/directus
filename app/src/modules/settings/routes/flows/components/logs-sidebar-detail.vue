@@ -6,7 +6,6 @@ import type { FlowRaw } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { RevisionsByDate, RevisionWithTime } from '@/types/revisions';
 import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import VDetail from '@/components/v-detail.vue';
 import LogsDrawer from './logs-drawer.vue';
@@ -48,6 +47,21 @@ watch(
 	},
 );
 
+watch(showFailedOnly, (showFailed) => {
+	if (!revisionsByDate.value) return;
+
+	if (showFailed) {
+		revisionsByDate.value = revisionsByDate.value
+			.map((group) => ({
+				...group,
+				revisions: group.revisions.filter((r) => r.status === 'reject'),
+			}))
+			.filter((group) => group.revisions.length > 0);
+	} else {
+		refresh(page.value);
+	}
+});
+
 onMounted(() => {
 	getRevisionsCount();
 	if (open.value) getRevisions();
@@ -56,11 +70,6 @@ onMounted(() => {
 function onToggle(open: boolean) {
 	if (open && revisionsByDate.value === null) getRevisions();
 }
-
-const isLogVisible = (revision: RevisionWithTime) => !(showFailedOnly.value && revision.status === 'resolve');
-
-const countFailedLogs = (group: RevisionsByDate) =>
-	group?.revisions?.filter((revision: RevisionWithTime) => revision.status === 'reject').length;
 </script>
 
 <template>
@@ -88,12 +97,9 @@ const countFailedLogs = (group: RevisionsByDate) =>
 				class="revisions-date-group"
 				start-open
 			>
-				<div v-show="showFailedOnly && countFailedLogs(group) === 0" class="empty">
-					{{ t('no_failed_logs') }}
-				</div>
 				<div class="scroll-container">
 					<div v-for="revision in group.revisions" :key="revision.id" class="log">
-						<button v-show="isLogVisible(revision)" @click="selectedRevision = revision">
+						<button @click="selectedRevision = revision">
 							<v-icon v-if="revision.status === 'resolve'" name="check_circle" color="var(--theme--primary)" small />
 							<v-icon v-else name="cancel" color="var(--theme--secondary)" small />
 							{{ revision.timeRelative }}
@@ -106,7 +112,7 @@ const countFailedLogs = (group: RevisionsByDate) =>
 		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 	</sidebar-detail>
 
-	<logs-drawer :close-drawer="() => (selectedRevision = null)" :flow="flow" :revision="selectedRevision"></logs-drawer>
+	<logs-drawer :flow="flow" :revision="selectedRevision" @close="selectedRevision = null"></logs-drawer>
 </template>
 
 <style lang="scss" scoped>

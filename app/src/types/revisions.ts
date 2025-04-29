@@ -1,7 +1,7 @@
 export type Revision = {
 	data: Record<string, any> | null;
 	delta: Record<string, any> | null;
-} & RevisionPartial;
+} & RevisionWithTime;
 
 export type RevisionPartial = {
 	id: number;

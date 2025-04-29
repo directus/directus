@@ -166,7 +166,7 @@ export function useRevisions(
 				const revisions: RevisionWithTime[] = [];
 
 				for (const revision of value) {
-					const steps = revision?.data?.steps;
+					const steps = (revision as Revision)?.data?.steps;
 					const lastStepStatus = steps[steps.length - 1]?.status;
 
 					revisions.push({

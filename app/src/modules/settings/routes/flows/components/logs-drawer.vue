@@ -5,14 +5,14 @@ import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 import { FlowRaw } from '@directus/types';
 import VDetail from '@/components/v-detail.vue';
+import { Revision } from '@/types/revisions';
 
 const props = defineProps<{
 	flow: FlowRaw;
-	revision: any;
-	closeDrawer: () => void;
+	revision: Revision;
 }>();
 
-const { flow, revision, closeDrawer } = toRefs(props);
+const { flow, revision } = toRefs(props);
 
 const { t } = useI18n();
 
@@ -31,7 +31,7 @@ const triggerData = computed(() => {
 	return {
 		trigger: data.$trigger,
 		accountability: data.$accountability,
-		options: props.flow.options,
+		options: flow.value.options,
 	};
 });
 
@@ -75,8 +75,8 @@ const steps = computed(() => {
 		:model-value="!!revision"
 		:title="revision ? revision.timestampFormatted : t('logs')"
 		icon="fact_check"
-		@cancel="closeDrawer()"
-		@esc="closeDrawer()"
+		@cancel="emit('close')"
+		@esc="emit('close')"
 	>
 		<div class="content">
 			<div class="steps">

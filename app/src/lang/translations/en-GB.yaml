@@ -1363,7 +1363,6 @@ revisions: Revisions
 no_revisions: No Revisions Yet
 no_logs: No Logs Yet
 show_failed_only: Show Failed Only
-no_failed_logs: No Failed Logs
 revert: Revert
 save: Save
 schema: Schema
