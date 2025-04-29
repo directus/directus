@@ -54,7 +54,6 @@ jobs:
       discussions: write
       id-token: write
       issues: write
-      metadata: read
       models: read
       packages: write
       pages: write
@@ -93,7 +92,6 @@ jobs:
       discussions: write
       id-token: write
       issues: write
-      metadata: read
       models: read
       packages: write
       pages: write
