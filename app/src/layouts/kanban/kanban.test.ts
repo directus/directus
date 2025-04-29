@@ -129,7 +129,7 @@ describe('Kanban layout', () => {
 					group: null,
 					hidden: false,
 					interface: 'datetime',
-					display: 'datetime',
+					display: null,
 					display_options: null,
 					options: {},
 					readonly: false,
