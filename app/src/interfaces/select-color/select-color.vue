@@ -173,7 +173,7 @@ function useColor() {
 			return roundColorValues(props.opacity ? [0, 0, 0, 1] : [0, 0, 0]);
 		},
 		set(newRGB) {
-			setColor(Color.rgb(newRGB).alpha(newRGB.length === 4 ? newRGB[3] : 1));
+			setColor(Color.rgb(newRGB).alpha(newRGB.length === 4 ? newRGB[3]! : 1));
 		},
 	});
 
@@ -186,7 +186,7 @@ function useColor() {
 			return roundColorValues(props.opacity ? [0, 0, 0, 1] : [0, 0, 0]);
 		},
 		set(newHSL) {
-			setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3] : 1));
+			setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3]! : 1));
 		},
 	});
 
@@ -277,7 +277,7 @@ function useColor() {
 	function roundColorValues(arr: number[]): number[] {
 		if (arr.length === 4) {
 			// Do not round the opacity
-			return [...arr.slice(0, -1).map((x) => Math.round(x)), arr[3]];
+			return [...arr.slice(0, -1).map((x) => Math.round(x)), arr[3]!];
 		}
 
 		return arr.map((x) => Math.round(x));
