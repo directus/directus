@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import VDetail from '@/components/v-detail.vue';
 import { useRevisions } from '@/composables/use-revisions';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { useGroupable } from '@directus/composables';
 import { Action } from '@directus/constants';
 import type { FlowRaw } from '@directus/types';
 import { abbreviateNumber } from '@directus/utils';
 import { computed, onMounted, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
-import VDetail from '@/components/v-detail.vue';
 import LogsDrawer from './logs-drawer.vue';
 
 const props = defineProps<{
@@ -40,27 +40,9 @@ const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loadin
 		},
 	);
 
-watch(
-	() => page.value,
-	async (newPage) => {
-		await refresh(newPage);
-		if (showFailedOnly.value && hasFailedLogs.value) filterRevisions();
-		else showFailedOnly.value = false;
-	},
-);
-
-watch(
-	() => showFailedOnly.value,
-	async (showFailed) => {
-		if (showFailed) filterRevisions();
-		else refresh(page.value);
-	},
-);
-
-const hasFailedLogs = computed(() => {
-	return (
-		revisionsByDate.value?.some((group) => group.revisions.some((revision) => revision.status === 'reject')) ?? false
-	);
+watch([() => page.value, () => showFailedOnly.value], async () => {
+	await refresh(page.value);
+	if (showFailedOnly.value) filterRevisions();
 });
 
 function filterRevisions() {
@@ -101,6 +83,8 @@ function onToggle(open: boolean) {
 				<v-icon v-else name="cancel" small />
 				{{ t('show_failed_only') }}
 			</button>
+
+			<div v-if="!revisionsByDate?.length" class="empty">{{ t('no_logs_on_page') }}</div>
 
 			<v-detail
 				v-for="group in revisionsByDate"
@@ -143,7 +127,7 @@ function onToggle(open: boolean) {
 .toggle-failed {
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
-	margin-bottom: 32px;
+	margin-bottom: 24px;
 
 	&.active,
 	&:hover {
@@ -205,6 +189,6 @@ function onToggle(open: boolean) {
 
 .v-pagination {
 	justify-content: center;
-	margin-top: 24px;
+	margin-top: 32px;
 }
 </style>
