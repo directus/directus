@@ -17,7 +17,12 @@ export function filterReplaceM2A(filter_arg: Filter, collection: string, schema:
 			filter[key] = filterReplaceM2A(filter[key], relation.collection, schema);
 		} else if (type === 'm2o' && relation) {
 			filter[key] = filterReplaceM2A(filter[key], relation.related_collection!, schema);
-		} else if (type === 'a2o' && relation && any_collection && relation.meta?.one_allowed_collections?.includes(any_collection)) {
+		} else if (
+			type === 'a2o' &&
+			relation &&
+			any_collection &&
+			relation.meta?.one_allowed_collections?.includes(any_collection)
+		) {
 			filter[`${field}:${any_collection}`] = filterReplaceM2A(filter[key], any_collection, schema);
 			delete filter[key];
 		} else if (Array.isArray(filter[key])) {
