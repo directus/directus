@@ -260,7 +260,6 @@ field_permissions: 字段权限
 field_validation: 字段验证
 field_presets: 字段预设
 permissions_for_role: '{role} 角色能够 {action}。'
-permissions_for_policy: '{policy} 角色能够 {action}。'
 fields_for_role: '{role} 角色能够 {action} 字段。'
 fields_for_policy: '{policy} 策略可以 {action} 的字段。'
 validation_for_role: '{role} 角色必须遵守字段的 {action} 规则。'
@@ -602,6 +601,7 @@ manual_string: 手动输入字符串
 save_and_create_new: 保存并创建新的
 save_and_stay: 保存并继续
 save_and_quit: 保存并退出
+save_and_return_to_main: 保存并返回到主页面
 save_as_copy: 另存为
 add_existing: 添加现有
 creating_items: 创建条目
@@ -884,7 +884,7 @@ columns: 列
 collection_setup: 模型设置
 optional_system_fields: 可选字段
 value_unique: 值必须唯一
-value_index: 字段已建立索引
+value_index: 字段已索引
 all_activity: 所有活动的
 create_item: 创建条目
 display_template: 显示模板
@@ -940,8 +940,6 @@ run_flow_on_current: 在当前项目上运行流程
 run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
 run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上运行 | 在 {n} 个选定项目 上运行
 run_flow: 运行流程
-run_flow_success: 流程 "{flow}" 运行成功
-trigger_flow_success: 流程“{flow}”已成功触发，它将在后台运行
 field_name_placeholder: 输入字段名称...
 field_key_placeholder: 请输入字段键...
 trigger: 触发器
@@ -978,6 +976,11 @@ operation_key: 用于引用的标识...
 operation_key_unique_error: 操作的键值(keys)在同一流程中必须是唯一的
 operation_handle_resolve: '成功：点击添加或拖动布局'
 operation_handle_reject: '失败：点击添加或拖动布局'
+visual_editor: 可视化编辑器
+toggle_navigation: 切换导航
+toggle_editable_elements: 切换可编辑元素
+no_url: 未提供 URL
+no_url_copy: 请在设置中添加一个URL。
 insights: 洞察分析
 dashboard: 控制面板
 panel: 面板
@@ -1395,6 +1398,7 @@ fields:
     public_registration_email_filter_note: 只有符合此过滤规则的电子邮件地址才能注册。
     public_registration_verify_email: 验证电子邮件
     public_registration_verify_email_note: 向注册用户发送一封电子邮件，请他们在登录前点击验证链接。
+    visual_editor_urls: 可视化编辑器网址
   directus_shares:
     name: 名称
     role: 角色
