@@ -11,10 +11,7 @@ export function filterReplaceM2A(filter_arg: Filter, collection: string, schema:
 		if (!field) continue;
 
 		const relation = getRelation(schema.relations, collection, field);
-
-		if (!relation) continue;
-
-		const type = getRelationType({ relation, collection, field });
+		const type = relation ? getRelationType({ relation, collection, field }) : null;
 
 		if (type === 'o2m') {
 			filter[key] = filterReplaceM2A(filter[key], relation.collection, schema);

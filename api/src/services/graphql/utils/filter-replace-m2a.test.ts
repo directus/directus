@@ -126,6 +126,38 @@ test('filter with a fake a2o relation', () => {
 	});
 });
 
+test('filter with a a2o relation inside _and', () => {
+	const result = filterReplaceM2A(
+		{
+			_and: [
+				{
+					blocks: {
+						anyitem__text: {
+							id: { _eq: 1 },
+							content: { _eq: 'Hello World' },
+						},
+					},
+				},
+			],
+		},
+		'article',
+		schema,
+	);
+
+	expect(result).toEqual({
+		_and: [
+			{
+				blocks: {
+					'anyitem:text': {
+						id: { _eq: 1 },
+						content: { _eq: 'Hello World' },
+					},
+				},
+			},
+		],
+	});
+});
+
 test('filter with a a2o relation and wrong target collection', () => {
 	const result = filterReplaceM2A(
 		{
