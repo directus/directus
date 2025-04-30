@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "26.0.1",
+	"version": "27.0.2",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -78,6 +78,7 @@
 		"@directus/memory": "workspace:*",
 		"@directus/pressure": "workspace:*",
 		"@directus/schema": "workspace:*",
+		"@directus/schema-builder": "workspace:*",
 		"@directus/specs": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/storage-driver-azure": "workspace:*",
@@ -98,7 +99,7 @@
 		"argon2": "0.41.1",
 		"async": "3.2.6",
 		"async-mutex": "0.5.0",
-		"axios": "1.8.1",
+		"axios": "1.8.4",
 		"busboy": "1.6.0",
 		"bytes": "3.1.2",
 		"camelcase": "8.0.0",
@@ -169,7 +170,7 @@
 		"qs": "6.14.0",
 		"rate-limiter-flexible": "5.0.5",
 		"rollup": "4.34.9",
-		"samlify": "2.8.10",
+		"samlify": "2.9.1",
 		"sanitize-html": "2.14.0",
 		"sharp": "0.33.5",
 		"snappy": "7.2.2",
@@ -183,6 +184,7 @@
 	},
 	"devDependencies": {
 		"@directus/random": "workspace:*",
+		"@directus/schema-builder": "workspace:*",
 		"@directus/tsconfig": "3.0.0",
 		"@directus/types": "workspace:*",
 		"@ngneat/falso": "7.3.0",

@@ -963,8 +963,7 @@ run_flow_on_current: Run Flow on Current Item
 run_flow_on_current_edited_confirm: This item may be updated by this flow, are you sure you want to execute it?
 run_flow_on_selected: Select One or More Items First | Run Flow on 1 Selected Item | Run Flow on {n} Selected Items
 run_flow: Run Flow
-run_flow_success: Flow "{flow}" ran successfully
-trigger_flow_success: Flow "{flow}" triggered successfully. It will run in the background
+trigger_flow_success: Flow "{flow}" triggered successfully
 field_name_placeholder: Enter field name...
 field_key_placeholder: Enter field key...
 trigger: Trigger
@@ -1006,6 +1005,8 @@ toggle_navigation: Toggle Navigation
 toggle_editable_elements: Toggle Editable Elements
 no_url: No URL provided
 no_url_copy: Please add a URL in the settings.
+invalid_url: Invalid URL
+invalid_url_copy: The specified URL does not match any URL specified in the settings.
 insights: Insights
 dashboard: Dashboard
 panel: Panel
@@ -2406,6 +2407,7 @@ triggers:
     filter: 'Filter (Blocking)'
   webhook:
     name: Webhook
+    error_on_reject: Error on Reject
     description: Triggers on an incoming HTTP request
     method: Method
     async: Asynchronous

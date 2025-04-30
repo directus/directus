@@ -741,7 +741,6 @@ run_flow_on_current: Folyamat futtatása a jelenlegi elemen
 run_flow_on_current_edited_confirm: Lehetséges, hogy a tétel frissítve lesz a futtatás miatt, biztosan folytatja?
 run_flow_on_selected: Futtatás a kiválasztott elemeken
 run_flow: Folyamat futtatása
-run_flow_success: Folyamat "{flow}" sikeresen futtatva
 trigger: Eseményindító
 trigger_options: Trigger opciók
 view_trigger: Trigger megtekintése

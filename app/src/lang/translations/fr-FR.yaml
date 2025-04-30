@@ -941,8 +941,6 @@ run_flow_on_current: Exécuter le flux sur l'élément actuel
 run_flow_on_current_edited_confirm: Cet élément peut être mis à jour par ce flux, êtes-vous sûr de vouloir l'exécuter ?
 run_flow_on_selected: Sélectionner un ou plusieurs éléments | Exécuter le flux sur l'élément sélectionné | Exécuter le flux sur les {n} éléments sélectionnés
 run_flow: Exécuter le flux
-run_flow_success: Le Flux "{flow}" s'est exécuté avec succès
-trigger_flow_success: Flux "{flow}" déclenché avec succès. Il s'exécutera en arrière-plan
 field_name_placeholder: Saisir un nom de champ...
 field_key_placeholder: Saisir un identifiant de champ...
 trigger: Déclencheur

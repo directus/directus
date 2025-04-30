@@ -32,7 +32,6 @@ const triggerData = computed(() => {
 	return {
 		trigger: data.$trigger,
 		accountability: data.$accountability,
-		options: props.flow.options,
 	};
 });
 
@@ -92,10 +91,6 @@ const steps = computed(() => {
 					</div>
 
 					<div class="inset">
-						<v-detail v-if="triggerData.options" :label="t('options')">
-							<pre class="json selectable">{{ triggerData.options }}</pre>
-						</v-detail>
-
 						<v-detail v-if="triggerData.trigger" :label="t('payload')">
 							<pre class="json selectable">{{ triggerData.trigger }}</pre>
 						</v-detail>
