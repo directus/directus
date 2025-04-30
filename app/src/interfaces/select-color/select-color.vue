@@ -141,12 +141,14 @@ function useColor() {
 
 	const getHexa = (): string | null => {
 		if (color.value !== null) {
+			if (!props.opacity || color.value.rgb().array().length !== 4) return color.value.hex();
+
 			let alpha = Math.round(255 * color.value.alpha())
 				.toString(16)
 				.toUpperCase();
 
 			alpha = alpha.padStart(2, '0');
-			return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
+			return `${color.value.hex()}${alpha}`;
 		}
 
 		return null;
@@ -228,7 +230,7 @@ function useColor() {
 				return;
 			}
 
-				emit('input', newInput);
+			emit('input', newInput);
 
 			if (isCssVarUtil(newInput)) {
 				try {
