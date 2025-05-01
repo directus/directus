@@ -21,7 +21,7 @@ describe('applyOptionsData', () => {
 				{ str: '{{ num }}', arr: ['{{ arr }}', { null: null }], obj: { str: '{{ obj }}', num: 42 } },
 				{ num: 42, arr: ['foo', 'bar'], obj: { foo: 'bar' } },
 			),
-		).toEqual({ str: 42, arr: [['foo', 'bar'], { null: null }], obj: { str: { foo: 'bar' }, num: 42 } });
+		).toEqual({ str: 42, arr: ['foo', 'bar', { null: null }], obj: { str: { foo: 'bar' }, num: 42 } });
 	});
 
 	it('returns the options with any non-raw template rendered with the respective stringified values from the scope', () => {

@@ -47,7 +47,7 @@ function renderMustache<T extends JsonValue>(item: T, scope: Scope, skipUndefine
 
 		return renderFn(item, resolveFn(skipUndefined) as ResolveFn, scope, { explicit: true }) as Mustache<T>;
 	} else if (Array.isArray(item)) {
-		return item.map((element) => renderMustache(element, scope, skipUndefined)) as Mustache<T>;
+		return item.flatMap((element) => renderMustache(element, scope, skipUndefined)) as Mustache<T>;
 	} else if (typeof item === 'object' && item !== null) {
 		return Object.fromEntries(
 			Object.entries(item).map(([key, value]) => [key, renderMustache(value, scope, skipUndefined)]),
