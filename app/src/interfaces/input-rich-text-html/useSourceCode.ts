@@ -20,7 +20,7 @@ export default function useSourceCode(editor: Ref<any>): UsableSourceCode {
 	const code = ref<string>();
 
 	const sourceCodeButton = {
-		icon: 'curly-brackets',
+		icon: 'edit-code',
 		tooltip: i18n.global.t('wysiwyg_options.source_code'),
 		onAction: () => {
 			codeDrawerOpen.value = true;
