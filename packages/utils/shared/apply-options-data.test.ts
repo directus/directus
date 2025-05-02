@@ -29,6 +29,8 @@ describe('applyOptionsData', () => {
 			applyOptionsData(
 				{ arr_in: { _in: ['{{ arr }}', 'baz'] }, arr_nin: { _nin: ['baz', '{{ arr }}'] } },
 				{ arr: ['foo', 'bar'] },
+				[],
+				['_in', '_nin'],
 			),
 		).toEqual({
 			arr_in: { _in: ['foo', 'bar', 'baz'] },
