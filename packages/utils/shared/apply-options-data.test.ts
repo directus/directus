@@ -18,10 +18,20 @@ describe('applyOptionsData', () => {
 	it('returns the options with any raw template replaced by the value in scope', () => {
 		expect(
 			applyOptionsData(
-				{ str: '{{ num }}', arr: ['{{ arr }}', { null: null }], obj: { str: '{{ obj }}', num: 42 } },
-				{ num: 42, arr: ['foo', 'bar'], obj: { foo: 'bar' } },
+				{
+					str: '{{ num }}',
+					arr: ['{{ arr_el_1 }}', '{{ arr_el_2 }}', { null: null }],
+					obj: { str: '{{ obj }}', num: 42 },
+				},
+				{ num: 42, arr_el_1: 'foo', arr_el_2: 'bar', obj: { foo: 'bar' } },
 			),
 		).toEqual({ str: 42, arr: ['foo', 'bar', { null: null }], obj: { str: { foo: 'bar' }, num: 42 } });
+	});
+
+	it('returns the options with arrays flattened when templates are used', () => {
+		expect(applyOptionsData({ arr: ['{{ arr }}', 'baz'] }, { arr: ['foo', 'bar'] })).toEqual({
+			arr: ['foo', 'bar', 'baz'],
+		});
 	});
 
 	it('returns the options with any non-raw template rendered with the respective stringified values from the scope', () => {
