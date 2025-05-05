@@ -22,7 +22,6 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 		<div v-if="!isGenerated" class="field half-left">
 			<div class="label type-label">{{ t('readonly') }}</div>
 			<v-checkbox v-model="readonly" :label="t('disabled_editing_value')" block />
-			<small class="type-note">{{ t('readonly_field_note') }}</small>
 		</div>
 
 		<div v-if="!isGenerated" class="field half-right">
@@ -119,12 +118,5 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 
 .v-notice:not(.no-margin) {
 	margin-bottom: 36px;
-}
-
-.type-note {
-	position: relative;
-	display: block;
-	max-width: 520px;
-	margin-top: 4px;
 }
 </style>

@@ -331,8 +331,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
-disabled_editing_value: Disable editing value
-readonly_field_note: Unable to create/update in the entire app
+disabled_editing_value: Disable the field in the app
 required_readonly_field_warning: A required read-only field cannot be saved if empty.
 key: Key
 alias: Alias
