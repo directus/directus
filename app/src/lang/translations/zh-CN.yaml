@@ -315,7 +315,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 重置页面首选项
 hidden_field: 隐藏字段
 hidden_on_detail: 在详情中隐藏
-disabled_editing_value: 禁用编辑
 key: 关键字
 alias: 别名
 bigInteger: Big Integer
