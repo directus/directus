@@ -21,7 +21,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 	<div class="form">
 		<div v-if="!isGenerated" class="field half-left">
 			<div class="label type-label">{{ t('readonly') }}</div>
-			<v-checkbox v-model="readonly" :label="t('disabled_editing_value')" block />
+			<v-checkbox v-model="readonly" :label="t('readonly_field_label')" block />
 		</div>
 
 		<div v-if="!isGenerated" class="field half-right">

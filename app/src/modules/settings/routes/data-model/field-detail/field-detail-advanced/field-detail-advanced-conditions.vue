@@ -58,7 +58,7 @@ const repeaterFields = computed<DeepPartial<Field>[]>(() => [
 		meta: {
 			interface: 'boolean',
 			options: {
-				label: t('disabled_editing_value'),
+				label: t('readonly_field_label'),
 			},
 			width: 'half',
 		},
