@@ -47,11 +47,59 @@ beforeEach(() => {
 			},
 			{
 				collection,
+				field: 'group',
+				name: 'group',
+				type: 'alias',
+				schema: null,
+				meta: {
+					id: 1,
+					collection,
+					field: 'group',
+					special: ['alias', 'no-data', 'group'],
+					interface: 'raw-group',
+					options: null,
+					display: null,
+					display_options: null,
+					readonly: false,
+					hidden: true,
+					sort: null,
+					width: 'full',
+					translations: null,
+					note: null,
+					conditions: null,
+					required: false,
+					group: null,
+					validation: null,
+					validation_message: null,
+				},
+			},
+			{
+				collection,
 				field: 'start_date',
 				name: 'start_date',
 				type: 'timestamp',
 				schema: null,
-				meta: null,
+				meta: {
+					group: 'group',
+					id: 1,
+					collection,
+					field: 'start_date',
+					special: null,
+					interface: 'datetime',
+					options: null,
+					display: null,
+					display_options: null,
+					readonly: false,
+					hidden: false,
+					sort: null,
+					width: 'full',
+					translations: null,
+					note: null,
+					conditions: null,
+					required: false,
+					validation: null,
+					validation_message: null,
+				},
 			},
 			{
 				collection,
@@ -202,7 +250,8 @@ describe('non-admin users', () => {
 				expect(fields.value.length).toEqual(sample.fields.length);
 
 				for (const field of fields.value) {
-					expect(field.meta?.readonly).toBe(true);
+					const isGroup = field.meta?.special?.includes('group');
+					expect(field.meta?.readonly).toBe(isGroup ? false : true);
 				}
 			});
 
@@ -238,7 +287,8 @@ describe('non-admin users', () => {
 				expect(fields.value.length).toEqual(sample.fields.length);
 
 				for (const field of fields.value) {
-					const readonly = allowedFields.includes(field.field) ? undefined : true;
+					const isGroup = field.meta?.special?.includes('group');
+					const readonly = allowedFields.includes(field.field) || isGroup ? field.meta?.readonly : true;
 
 					expect(field.meta?.readonly).toBe(readonly);
 				}
