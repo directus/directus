@@ -87,6 +87,14 @@ export class FilesService extends ItemsService<File> {
 			payload.filename_disk = primaryKey + (fileExtension || '');
 		}
 
+		const folderName = payload.folder
+			? await this.knex.select('name').from('directus_folders').where({ id: payload.folder }).first()
+			: null;
+
+		if (folderName) {
+			payload.filename_disk = folderName.name + '/' + payload.filename_disk;
+		}
+
 		// Temp filename is used for replacements
 		const tempFilenameDisk = 'temp_' + payload.filename_disk;
 
