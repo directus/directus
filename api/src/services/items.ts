@@ -5,7 +5,9 @@ import { isSystemCollection } from '@directus/system-data';
 import type {
 	Accountability,
 	Item as AnyItem,
+	CustomContext,
 	EventContext,
+	NestedPath,
 	PermissionsAction,
 	PrimaryKey,
 	Query,
@@ -53,8 +55,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 	eventScope: string;
 	schema: SchemaOverview;
 	cache: Keyv<any> | null;
-	nested: string[];
-	customContext: Record<string, any>;
+	nested: NestedPath;
+	customContext: CustomContext;
 
 	constructor(collection: Collection, options: AbstractServiceOptions) {
 		this.collection = collection;

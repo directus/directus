@@ -1,5 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability, Filter, Item, PermissionsAction } from '@directus/types';
+import type { Accountability, Filter, Item, NestedPath, PermissionsAction } from '@directus/types';
 import { parseFilter, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import { assign, difference, uniq } from 'lodash-es';
@@ -16,7 +16,7 @@ export interface ProcessPayloadOptions {
 	action: PermissionsAction;
 	collection: string;
 	payload: Item;
-	nested: string[];
+	nested: NestedPath;
 }
 
 /**
