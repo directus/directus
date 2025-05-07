@@ -45,6 +45,8 @@ withDefaults(defineProps<Props>(), {
 */
 
 .v-breadcrumb {
+	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+
 	display: flex;
 	align-items: center;
 

@@ -39,6 +39,8 @@ const { sidebarOpen } = toRefs(appStore);
 
 <style lang="scss" scoped>
 .sidebar-button {
+	--focus-ring-offset: var(--focus-ring-offset-inset);
+
 	position: relative;
 	flex-shrink: 0;
 	width: 100%;
