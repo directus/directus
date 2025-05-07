@@ -28,6 +28,8 @@ export class Emitter {
 			database: getDatabase(),
 			accountability: null,
 			schema: null,
+			nested: [],
+			customContext: {}
 		};
 	}
 
