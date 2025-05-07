@@ -205,9 +205,11 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		let role = this.config['defaultRoleId'];
 		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
 		let groups: string[] = [];
-		
+
 		if (userInfo[groupClaimName]) {
-			groups = Array.isArray(userInfo[groupClaimName])  ? userInfo[groupClaimName]  : [userInfo[groupClaimName]].filter(Boolean);
+			groups = Array.isArray(userInfo[groupClaimName])
+				? userInfo[groupClaimName]
+				: [userInfo[groupClaimName]].filter(Boolean);
 		}
 
 		if (groups.length > 0) {
