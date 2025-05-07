@@ -19,7 +19,7 @@ export class RevisionsService extends ItemsService {
 			accountability: this.accountability,
 			knex: this.knex,
 			schema: this.schema,
-			customContext: this.customContext
+			customContext: this.customContext,
 		});
 
 		await service.updateOne(revision['item'], revision['data']);

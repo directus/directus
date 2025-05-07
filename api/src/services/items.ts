@@ -45,7 +45,8 @@ export type MutationTracker = {
 };
 
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
-	implements AbstractService {
+	implements AbstractService
+{
 	collection: Collection;
 	knex: Knex;
 	accountability: Accountability | null;
@@ -63,7 +64,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		this.schema = options.schema;
 		this.cache = getCache().cache;
 		this.nested = options.nested ?? [];
-		this.customContext = options.customContext ?? {}
+		this.customContext = options.customContext ?? {};
 
 		return this;
 	}
@@ -101,8 +102,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			accountability: this.accountability,
 			nested: this.nested,
 			customContext: this.customContext,
-			...overrides
-		}
+			...overrides,
+		};
 	}
 
 	createMutationTracker(initialCount = 0): MutationTracker {
@@ -175,31 +176,31 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			const payloadAfterHooks =
 				opts.emitEvents !== false
 					? await emitter.emitFilter(
-						this.eventScope === 'items'
-							? ['items.create', `${this.collection}.items.create`]
-							: `${this.eventScope}.create`,
-						payload,
-						{
-							collection: this.collection,
-						},
-						this.getEventContext({ database: trx })
-					)
+							this.eventScope === 'items'
+								? ['items.create', `${this.collection}.items.create`]
+								: `${this.eventScope}.create`,
+							payload,
+							{
+								collection: this.collection,
+							},
+							this.getEventContext({ database: trx }),
+					  )
 					: payload;
 
 			const payloadWithPresets = this.accountability
 				? await processPayload(
-					{
-						accountability: this.accountability,
-						action: 'create',
-						collection: this.collection,
-						payload: payloadAfterHooks,
-						nested: this.nested,
-					},
-					{
-						knex: trx,
-						schema: this.schema,
-					},
-				)
+						{
+							accountability: this.accountability,
+							action: 'create',
+							collection: this.collection,
+							payload: payloadAfterHooks,
+							nested: this.nested,
+						},
+						{
+							knex: trx,
+							schema: this.schema,
+						},
+				  )
 				: payloadAfterHooks;
 
 			if (opts.preMutationError) {
@@ -215,7 +216,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				knex: trx,
 				schema: this.schema,
 				nested: this.nested,
-				customContext: this.customContext
+				customContext: this.customContext,
 			});
 
 			const {
@@ -333,7 +334,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					customContext: this.customContext
+					customContext: this.customContext,
 				});
 
 				const activity = await activityService.createOne({
@@ -351,7 +352,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
-						customContext: this.customContext
+						customContext: this.customContext,
 					});
 
 					const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks);
@@ -494,15 +495,15 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const updatedQuery =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-					this.eventScope === 'items'
-						? ['items.query', `${this.collection}.items.query`]
-						: `${this.eventScope}.query`,
-					query,
-					{
-						collection: this.collection,
-					},
-					this.getEventContext(),
-				)
+						this.eventScope === 'items'
+							? ['items.query', `${this.collection}.items.query`]
+							: `${this.eventScope}.query`,
+						query,
+						{
+							collection: this.collection,
+						},
+						this.getEventContext(),
+				  )
 				: query;
 
 		let ast = await getAstFromQuery(
@@ -536,14 +537,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const filteredRecords =
 			opts?.emitEvents !== false
 				? await emitter.emitFilter(
-					this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
-					records,
-					{
-						query: updatedQuery,
-						collection: this.collection,
-					},
-					this.getEventContext(),
-				)
+						this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
+						records,
+						{
+							query: updatedQuery,
+							collection: this.collection,
+						},
+						this.getEventContext(),
+				  )
 				: records;
 
 		if (opts?.emitEvents !== false) {
@@ -707,16 +708,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const payloadAfterHooks =
 			opts.emitEvents !== false
 				? await emitter.emitFilter(
-					this.eventScope === 'items'
-						? ['items.update', `${this.collection}.items.update`]
-						: `${this.eventScope}.update`,
-					payload,
-					{
-						keys,
-						collection: this.collection,
-					},
-					this.getEventContext(),
-				)
+						this.eventScope === 'items'
+							? ['items.update', `${this.collection}.items.update`]
+							: `${this.eventScope}.update`,
+						payload,
+						{
+							keys,
+							collection: this.collection,
+						},
+						this.getEventContext(),
+				  )
 				: payload;
 
 		// Sort keys to ensure that the order is maintained
@@ -740,18 +741,18 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		const payloadWithPresets = this.accountability
 			? await processPayload(
-				{
-					accountability: this.accountability,
-					action: 'update',
-					collection: this.collection,
-					payload: payloadAfterHooks,
-					nested: this.nested,
-				},
-				{
-					knex: this.knex,
-					schema: this.schema,
-				},
-			)
+					{
+						accountability: this.accountability,
+						action: 'update',
+						collection: this.collection,
+						payload: payloadAfterHooks,
+						nested: this.nested,
+					},
+					{
+						knex: this.knex,
+						schema: this.schema,
+					},
+			  )
 			: payloadAfterHooks;
 
 		if (opts.preMutationError) {
@@ -764,7 +765,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				knex: trx,
 				schema: this.schema,
 				nested: this.nested,
-				customContext: this.customContext
+				customContext: this.customContext,
 			});
 
 			const {
@@ -828,7 +829,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					customContext: this.customContext
+					customContext: this.customContext,
 				});
 
 				const activity = await activityService.createMany(
@@ -855,7 +856,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const revisionsService = new RevisionsService({
 						knex: trx,
 						schema: this.schema,
-						customContext: this.customContext
+						customContext: this.customContext,
 					});
 
 					const revisions = (
@@ -1055,7 +1056,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				{
 					collection: this.collection,
 				},
-				this.getEventContext()
+				this.getEventContext(),
 			);
 		}
 
@@ -1074,7 +1075,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
-					customContext: this.customContext
+					customContext: this.customContext,
 				});
 
 				await activityService.createMany(

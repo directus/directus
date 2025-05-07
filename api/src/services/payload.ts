@@ -56,7 +56,7 @@ export class PayloadService {
 	collection: string;
 	schema: SchemaOverview;
 	nested: NestedPath;
-	customContext: CustomContext
+	customContext: CustomContext;
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -65,7 +65,7 @@ export class PayloadService {
 		this.collection = collection;
 		this.schema = options.schema;
 		this.nested = options.nested ?? [];
-		this.customContext = options.customContext ?? {}
+		this.customContext = options.customContext ?? {};
 
 		return this;
 	}
@@ -515,7 +515,7 @@ export class PayloadService {
 				knex: this.knex,
 				schema: this.schema,
 				nested: [...this.nested, relation.field],
-				customContext: this.customContext
+				customContext: this.customContext,
 			});
 
 			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
@@ -607,7 +607,7 @@ export class PayloadService {
 				knex: this.knex,
 				schema: this.schema,
 				nested: [...this.nested, relation.field],
-				customContext: this.customContext
+				customContext: this.customContext,
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
@@ -701,7 +701,7 @@ export class PayloadService {
 				knex: this.knex,
 				schema: this.schema,
 				nested: [...this.nested, relation.meta!.one_field!],
-				customContext: this.customContext
+				customContext: this.customContext,
 			});
 
 			const recordsToUpsert: Partial<Item>[] = [];

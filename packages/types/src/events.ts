@@ -8,8 +8,8 @@ export type EventContext = {
 	database: Knex;
 	schema: SchemaOverview | null;
 	accountability: Accountability | null;
-	nested?: NestedPath
-	customContext?: CustomContext
+	nested?: NestedPath;
+	customContext?: CustomContext;
 };
 
 export type FilterHandler<T = unknown> = (

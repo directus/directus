@@ -2,11 +2,11 @@ export type Item = Record<string, any>;
 
 /** Contains the path of relation fields in case this is a nested execution.
  * @example ['tags', 'tag_id']
-*/
-export type NestedPath = string[]
+ */
+export type NestedPath = string[];
 
 /** Allows hooks and other extensions to persist data in a run. */
-export type CustomContext = Record<string, any>
+export type CustomContext = Record<string, any>;
 
 export type PrimaryKey = string | number;
 

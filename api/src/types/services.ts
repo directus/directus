@@ -1,4 +1,12 @@
-import type { Accountability, CustomContext, Item, NestedPath, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	CustomContext,
+	Item,
+	NestedPath,
+	PrimaryKey,
+	Query,
+	SchemaOverview,
+} from '@directus/types';
 import type { Knex } from 'knex';
 
 export type AbstractServiceOptions = {
@@ -13,7 +21,7 @@ export interface AbstractService {
 	knex: Knex;
 	accountability: Accountability | null | undefined;
 	nested: NestedPath;
-	customContext: CustomContext
+	customContext: CustomContext;
 
 	createOne(data: Partial<Item>): Promise<PrimaryKey>;
 	createMany(data: Partial<Item>[]): Promise<PrimaryKey[]>;

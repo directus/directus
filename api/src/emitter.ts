@@ -29,7 +29,7 @@ export class Emitter {
 			accountability: null,
 			schema: null,
 			nested: [],
-			customContext: {}
+			customContext: {},
 		};
 	}
 
