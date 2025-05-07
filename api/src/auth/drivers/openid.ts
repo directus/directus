@@ -206,7 +206,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
 		let groups: string[] = [];
 		
-		if (groups.length > 0) {
+		if (userInfo[groupClaimName]) {
 			groups = Array.isArray(userInfo[groupClaimName])  ? userInfo[groupClaimName]  : [userInfo[groupClaimName]].filter(Boolean);
 		}
 
