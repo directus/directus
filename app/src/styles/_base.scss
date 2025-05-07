@@ -28,20 +28,25 @@ body {
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
+}
 
-	&:not(.user-is-tabbing) * {
+* {
+	outline: none;
+
+	&::-moz-focus-inner,
+	&::-moz-focus-outer {
+		border: none;
 		outline: none;
+	}
 
-		&::-moz-focus-inner,
-		&::-moz-focus-outer {
-			border: none;
-			outline: none;
-		}
+	&:focus,
+	&:focus-within {
+		outline: none;
+	}
 
-		&:focus,
-		&:focus-within {
-			outline: none;
-		}
+	&:not(input):not(textarea):focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--theme--primary));
+		outline-offset: var(--focus-ring-offset);
 	}
 }
 
