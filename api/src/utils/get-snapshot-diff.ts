@@ -113,11 +113,23 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 
 					return !!currentSystemField === false;
 				})
-				.map((afterSystemField) => ({
-					collection: afterSystemField.collection,
-					field: afterSystemField.field,
-					diff: deepDiff.diff(invertIndexed(afterSystemField), sanitizeSystemField(afterSystemField)),
-				})),
+				.map((afterSystemField) => {
+					const currentSystemField = current.systemFields.find(
+						(currentSystemField) =>
+							currentSystemField.collection === afterSystemField.collection &&
+							currentSystemField.field === afterSystemField.field,
+					);
+
+					const currentSystemFieldSanitized = currentSystemField
+						? sanitizeSystemField(currentSystemField)
+						: invertIndexed(afterSystemField);
+	
+					return {
+						collection: afterSystemField.collection,
+						field: afterSystemField.field,
+						diff: deepDiff.diff(currentSystemFieldSanitized, sanitizeSystemField(afterSystemField)),
+					};
+				}),
 		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['systemFields'],
 		relations: [
 			...current.relations.map((currentRelation) => {
