@@ -15,5 +15,6 @@
 	--form-column-max-width: 380px;
 	--focus-ring-width: 2px;
 	--focus-ring-offset: 2px;
+	--focus-ring-offset-inset: calc(-1 * (var(--focus-ring-width) + var(--focus-ring-offset)));
 	--focus-ring-color: var(--theme--primary);
 }
