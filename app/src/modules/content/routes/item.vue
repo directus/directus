@@ -806,7 +806,9 @@ const shouldShowVersioning = computed(
 	width: 260px;
 }
 
-:deep(.version-more-options.v-icon) {
+.version-more-options.v-icon {
+	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+
 	color: var(--theme--foreground-subdued);
 
 	&:hover {

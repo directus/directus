@@ -235,7 +235,7 @@ function remove(id: string) {
 					</div>
 					<div class="spacer" />
 					<v-icon v-if="element.locked === true" name="lock" />
-					<v-icon v-else-if="element.type === 'link'" name="clear" @click.stop="remove(element.id)" />
+					<v-icon v-else-if="element.type === 'link'" name="clear" clickable @click.stop="remove(element.id)" />
 					<v-icon
 						v-else
 						:name="element.enabled ? 'check_box' : 'check_box_outline_blank'"

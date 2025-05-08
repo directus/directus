@@ -314,7 +314,7 @@ function setContent() {
 	display: none;
 }
 
-:deep(button) {
+:deep(button:not(.v-icon)) {
 	margin: -1px 4px 0;
 	padding: 2px 4px 0;
 	color: var(--theme--primary);
@@ -325,7 +325,7 @@ function setContent() {
 	user-select: none;
 }
 
-:deep(button:not(:disabled):hover) {
+:deep(button:not(.v-icon):not(:disabled):hover) {
 	color: var(--white);
 	background-color: var(--theme--danger);
 }

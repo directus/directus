@@ -79,6 +79,7 @@ function toggle(item: Record<string, any>) {
 					<v-icon
 						v-if="modelValue === item[itemValue] && disabled === false"
 						name="cancel"
+						clickable
 						@click.stop="toggle(item)"
 					/>
 					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />

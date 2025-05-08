@@ -194,7 +194,7 @@ function onFlowDrawerCompletion(id: string) {
 			<template #item-append="{ item }">
 				<v-menu placement="left-start" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon name="more_vert" class="ctx-toggle" @click="toggle" />
+						<v-icon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
 					</template>
 
 					<v-list>

@@ -167,7 +167,6 @@ const newTranslationDefaults = computed(() => {
 							class="translate-icon"
 							:class="{ active }"
 							clickable
-							:tabindex="-1"
 							:disabled="disabled"
 							@click="toggle"
 						/>
@@ -230,7 +229,7 @@ const newTranslationDefaults = computed(() => {
 
 <style lang="scss" scoped>
 .translation-input {
-	:deep(button) {
+	:deep(button:not(.v-icon)) {
 		margin-right: auto;
 		padding: 2px 8px 0;
 		color: var(--theme--primary);
@@ -243,7 +242,7 @@ const newTranslationDefaults = computed(() => {
 		overflow-x: hidden;
 	}
 
-	:deep(button:not(:disabled):hover) {
+	:deep(button:not(.v-icon):not(:disabled):hover) {
 		color: var(--white);
 		background-color: var(--theme--danger);
 	}

@@ -231,6 +231,7 @@ function getLinkForItem() {
 							v-tooltip="t('create_item')"
 							class="add"
 							name="add"
+							clickable
 							@click="editModalActive = true"
 						/>
 

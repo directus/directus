@@ -62,7 +62,7 @@ function setIcon(icon: string | null) {
 				@focus="activate"
 			>
 				<template v-if="value" #prepend>
-					<v-icon clickable :name="value" :class="{ active: value }" @click="activate" />
+					<v-icon clickable :name="value" :class="{ active: value }" @click="toggle" />
 				</template>
 
 				<template #append>

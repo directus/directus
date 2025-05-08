@@ -297,7 +297,7 @@ async function batchDelete() {
 			<template #item-append="{ item }">
 				<v-menu placement="left-start" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
-						<v-icon name="more_vert" class="ctx-toggle" @click="toggle" />
+						<v-icon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
 					</template>
 					<template #default="{ toggle }">
 						<v-list>
