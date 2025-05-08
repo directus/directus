@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, useTemplateRef, watch, nextTick } from 'vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 
 interface Props {
 	modelValue?: boolean;
@@ -42,6 +43,8 @@ const internalActive = computed({
 
 const leave = useDialogRouteLeave();
 
+useOverlayFocusTrap();
+
 function emitToggle() {
 	if (props.persistent === false) {
 		emit('update:modelValue', !props.modelValue);
@@ -57,6 +60,18 @@ function nudge() {
 		className.value = null;
 	}, 200);
 }
+
+function useOverlayFocusTrap() {
+	const overlayEl = useTemplateRef<HTMLDivElement>('overlayEl');
+	const { activate, deactivate } = useFocusTrap(overlayEl);
+
+	watch(internalActive, async (newActive) => {
+		await nextTick();
+
+		if (newActive) activate();
+		else deactivate();
+	});
+}
 </script>
 
 <template>
@@ -68,6 +83,7 @@ function nudge() {
 				<component
 					:is="placement === 'right' ? 'div' : 'span'"
 					v-if="internalActive"
+					ref="overlayEl"
 					class="container"
 					:class="[className, placement, keepBehind ? 'keep-behind' : null]"
 				>

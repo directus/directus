@@ -99,6 +99,7 @@
 		"@vitejs/plugin-vue": "5.2.1",
 		"@vue/test-utils": "2.4.6",
 		"@vueuse/core": "12.7.0",
+		"@vueuse/integrations": "12.7.0",
 		"@vueuse/router": "12.7.0",
 		"apexcharts": "4.5.0",
 		"axios": "1.8.4",

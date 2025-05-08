@@ -143,6 +143,8 @@ const internalActive = computed({
 	background-color: var(--theme--background);
 
 	.cancel {
+		--focus-ring-color: var(--theme--primary-subdued);
+
 		display: none;
 		position: absolute;
 		top: 32px;
