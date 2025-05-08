@@ -95,6 +95,8 @@ const cssHeight = computed(() => {
 		}
 
 		&.select {
+			--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+
 			display: flex;
 			align-items: center;
 		}

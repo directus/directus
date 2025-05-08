@@ -282,6 +282,10 @@ function toggleManualSort() {
 		background-color: var(--v-table-background-color, var(--theme--background));
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
+		&.select {
+			--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+		}
+
 		&.select,
 		&.manual {
 			display: flex;
