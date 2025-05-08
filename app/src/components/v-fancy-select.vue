@@ -58,8 +58,10 @@ function toggle(item: Record<string, any>) {
 		<transition-group tag="div" name="option">
 			<template v-for="(item, index) in visibleItems" :key="index">
 				<v-divider v-if="item.divider === true" />
-				<div
+				<button
 					v-else
+					type="button"
+					:disabled="disabled"
 					class="v-fancy-select-option"
 					:class="{ active: item[itemValue] === modelValue, disabled }"
 					:style="{
@@ -83,7 +85,7 @@ function toggle(item: Record<string, any>) {
 						@click.stop="toggle(item)"
 					/>
 					<v-icon v-else-if="item.iconRight" class="icon-right" :name="item.iconRight" />
-				</div>
+				</button>
 			</template>
 		</transition-group>
 	</div>
@@ -106,7 +108,7 @@ function toggle(item: Record<string, any>) {
 	border: var(--theme--border-width) solid var(--theme--background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
-	cursor: pointer;
+	text-align: left;
 	transition-timing-function: var(--transition);
 	transition-duration: var(--fast);
 	transition-property: background-color, border-color;
