@@ -851,6 +851,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					const itemsService = new ItemsService(this.collection, {
 						knex: trx,
 						schema: this.schema,
+						customContext: this.customContext,
 					});
 
 					const snapshots = await itemsService.readMany(keys);
