@@ -140,10 +140,6 @@ const customIcon = computed(() => {
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
-	.v-icon:focus-visible {
-		border-radius: var(--theme--border-radius);
-	}
-
 	input {
 		display: block;
 		flex-grow: 1;

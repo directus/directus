@@ -47,6 +47,7 @@ body {
 	&:not(input):not(textarea):not([contenteditable]):focus-visible {
 		outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--theme--primary));
 		outline-offset: var(--focus-ring-offset);
+		border-radius: var(--theme--border-radius);
 	}
 }
 
