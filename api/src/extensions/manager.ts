@@ -329,6 +329,12 @@ export class ExtensionManager {
 				const addedExtensions = added.map((extension) => extension.name);
 				const removedExtensions = removed.map((extension) => extension.name);
 
+				emitter.emitAction('extensions.reload', {
+					extensions:this.extensions,
+					added: addedExtensions,
+					removed: removedExtensions,
+				});
+
 				if (addedExtensions.length > 0) {
 					logger.info(`Added extensions: ${addedExtensions.join(', ')}`);
 				}
