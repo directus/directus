@@ -250,6 +250,10 @@ function emitValue() {
 	.icon-search,
 	.icon-filter {
 		--v-icon-color-hover: var(--theme--primary);
+
+		&:focus-visible {
+			border-radius: 50%;
+		}
 	}
 
 	.icon-search {
