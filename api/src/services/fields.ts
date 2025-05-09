@@ -239,12 +239,23 @@ export class FieldsService {
 				throw new ForbiddenError();
 			}
 
-			return result.filter((field) => {
-				if (field.collection in allowedFieldsInCollection === false) return false;
-				const allowedFields = allowedFieldsInCollection[field.collection]!;
-				if (allowedFields.has('*')) return true;
-				return allowedFields.has(field.field);
-			});
+			return result
+				.filter((field) => {
+					if (field.collection in allowedFieldsInCollection === false) return false;
+					const allowedFields = allowedFieldsInCollection[field.collection]!;
+					if (allowedFields.has('*')) return true;
+					return allowedFields.has(field.field);
+				})
+				.map((field) => {
+					if (field.meta?.special?.includes('cast-timestamp')) {
+						field.type = 'timestamp';
+					} else if (field.meta?.special?.includes('cast-datetime')) {
+						field.type = 'dateTime';
+					}
+
+					field.type = this.helpers.schema.processFieldType(field);
+					return field;
+				});
 		}
 
 		// Update specific database type overrides
