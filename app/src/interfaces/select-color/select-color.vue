@@ -274,7 +274,7 @@ function useColor() {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false">
+	<v-menu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
 		<template #activator="{ activate }">
 			<v-input
 				v-model="input"

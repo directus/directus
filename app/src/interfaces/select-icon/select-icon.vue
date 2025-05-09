@@ -51,7 +51,7 @@ function setIcon(icon: string | null) {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled">
+	<v-menu attached :disabled="disabled" no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<v-input
 				v-model="searchQuery"

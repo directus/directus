@@ -47,6 +47,8 @@ interface Props {
 	seamless?: boolean;
 	/** Lets other overlays (drawer, dialog) open on top */
 	keepBehind?: boolean;
+	/** Do not focus activator when deactivating focus trap */
+	noFocusReturn?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -139,7 +141,7 @@ function useActiveState() {
 	const menuEl = useTemplateRef<HTMLDivElement>('menuEl');
 
 	const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
-		returnFocusOnDeactivate: false,
+		returnFocusOnDeactivate: !props.noFocusReturn,
 		allowOutsideClick: true,
 		clickOutsideDeactivates: props.closeOnClick,
 	});
