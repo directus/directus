@@ -330,7 +330,7 @@ export class ExtensionManager {
 				const removedExtensions = removed.map((extension) => extension.name);
 
 				emitter.emitAction('extensions.reload', {
-					extensions:this.extensions,
+					extensions: this.extensions,
 					added: addedExtensions,
 					removed: removedExtensions,
 				});
