@@ -101,7 +101,7 @@ function activate() {
 function toggleFilter() {
 	filterActive.value = !filterActive.value;
 	active.value = true;
-	input.value?.focus();
+	if (!filterActive.value) input.value?.focus();
 }
 
 function clear() {
@@ -161,6 +161,12 @@ function emitValue() {
 				@input="emitValue"
 				@paste="emitValue"
 				@keydown.esc="disable"
+				@focusin="activate"
+				@focusout="
+					() => {
+						if (!filterActive) disable();
+					}
+				"
 			/>
 			<div class="spacer" />
 			<v-icon
