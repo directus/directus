@@ -273,6 +273,12 @@ export class ExtensionManager {
 		}
 
 		this.isLoaded = true;
+
+		emitter.emitAction('extensions.loaded', {
+			extensions: this.extensions,
+		});
+
+		logger.info('Extensions loaded');
 	}
 
 	/**
@@ -286,6 +292,14 @@ export class ExtensionManager {
 		this.appExtensionsBundle = null;
 
 		this.isLoaded = false;
+
+		emitter.emitAction('extensions.unloaded', {
+			extensions: this.extensions,
+		});
+
+		const logger = useLogger();
+
+		logger.info('Extensions unloaded');
 	}
 
 	/**
