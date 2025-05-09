@@ -43,12 +43,23 @@ body {
 	&:focus-within {
 		outline: none;
 	}
+}
 
-	&:not(input):not(textarea):not([contenteditable]):focus-visible {
-		outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--theme--primary));
-		outline-offset: var(--focus-ring-offset);
-		border-radius: var(--theme--border-radius);
-	}
+// Default focus ring
+*:not(div):not(input):not(textarea):not([contenteditable]):focus-visible {
+	outline: var(--focus-ring-width) solid var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset);
+	border-radius: var(--focus-ring-radius);
+}
+
+// Applies mainly to scrollable divs
+div:not([contenteditable]):focus-visible {
+	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+	--focus-ring-radius: 0;
+
+	outline: var(--focus-ring-width) dotted var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset);
+	border-radius: var(--focus-ring-radius);
 }
 
 html,
