@@ -274,7 +274,7 @@ export class ExtensionManager {
 
 		this.isLoaded = true;
 
-		emitter.emitAction('extensions.loaded', {
+		emitter.emitAction('extensions.load', {
 			extensions: this.extensions,
 		});
 
@@ -293,7 +293,7 @@ export class ExtensionManager {
 
 		this.isLoaded = false;
 
-		emitter.emitAction('extensions.unloaded', {
+		emitter.emitAction('extensions.unload', {
 			extensions: this.extensions,
 		});
 
