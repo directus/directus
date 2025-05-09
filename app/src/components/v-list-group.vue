@@ -84,6 +84,7 @@ function onClick(event: MouseEvent) {
 			:disabled="disabled"
 			:dense="dense"
 			:clickable="Boolean(clickable || to || !open)"
+			:activator="$slots.default && arrowPlacement"
 			@click="onClick"
 		>
 			<v-list-item-icon
