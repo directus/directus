@@ -285,6 +285,8 @@ function useDisplayValue() {
 					:disabled="disabled"
 					:active="active"
 					@click="toggle"
+					@keydown.enter="toggle"
+					@keydown.space="toggle"
 				>
 					<template v-if="$slots.prepend || displayValue.icon || displayValue.color" #prepend>
 						<slot v-if="$slots.prepend" name="prepend" />
