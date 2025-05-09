@@ -454,12 +454,18 @@ function useColor() {
 	--v-button-background-color-hover: var(--v-button-background-color);
 	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);
 	--v-button-width: calc(var(--theme--form--field--input--height) - 20px);
+
+	--swatch-radius: calc(var(--theme--border-radius) + 2px);
+
+	--focus-ring-offset: var(--focus-ring-offset-inset);
+	--focus-ring-radius: var(--swatch-radius);
+
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
 	width: calc(var(--theme--form--field--input--height) - 20px);
 	height: calc(var(--theme--form--field--input--height) - 20px);
-	border-radius: calc(var(--theme--border-radius) + 2px);
+	border-radius: var(--swatch-radius);
 	overflow: hidden;
 	cursor: pointer;
 }
