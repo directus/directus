@@ -426,6 +426,10 @@ function getWidth(input: unknown, fallback: number): number {
 				height: calc(100% - var(--project-header-height));
 				overflow-x: hidden;
 				overflow-y: auto;
+
+				* {
+					--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+				}
 			}
 		}
 

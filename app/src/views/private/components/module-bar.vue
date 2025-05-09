@@ -70,6 +70,10 @@ const modules = computed(() => {
 
 <style lang="scss" scoped>
 .module-bar {
+	--focus-ring-color: var(--theme--navigation--modules--button--foreground);
+	--focus-ring-offset: var(--focus-ring-offset-inset);
+	--focus-ring-radius: 0;
+
 	display: flex;
 	flex-direction: column;
 	width: 60px;
@@ -93,8 +97,6 @@ const modules = computed(() => {
 		--v-button-background-color: var(--theme--navigation--modules--button--background);
 		--v-button-background-color-hover: var(--theme--navigation--modules--button--background-hover);
 		--v-button-background-color-active: var(--theme--navigation--modules--button--background-active);
-		--focus-ring-offset: var(--focus-ring-offset-inset);
-		--focus-ring-color: var(--v-button-color);
 
 		:deep(.active) {
 			--focus-ring-color: var(--v-button-color-active);
@@ -103,12 +105,6 @@ const modules = computed(() => {
 }
 
 .module-bar-logo {
-	--focus-ring-offset: var(--focus-ring-offset-inset);
 	--focus-ring-color: var(--foreground-inverted);
-}
-
-.module-bar-avatar {
-	--focus-ring-offset: var(--focus-ring-offset-inset);
-	--focus-ring-color: var(--theme--navigation--modules--button--foreground);
 }
 </style>
