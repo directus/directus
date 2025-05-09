@@ -256,15 +256,18 @@ function useDisplayValue() {
 		:full-height="menuFullHeight"
 	>
 		<template #activator="{ toggle, active }">
-			<div
+			<button
 				v-if="inline"
+				type="button"
+				:disabled="disabled"
+				:aria-pressed="active"
 				class="inline-display"
 				:class="{ placeholder: !displayValue.text, label, active, disabled }"
 				@click="toggle"
 			>
 				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
-			</div>
+			</button>
 			<slot
 				v-else
 				name="preview"
