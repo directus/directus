@@ -239,6 +239,9 @@ export default ({ embed }, { env }) => {
 | `response`                     | `request`, `response`, `ip`, `duration`, `finished` |
 | `auth.login`                   | `payload`, `status`, `user`, `provider`             |
 | `files.upload`                 | `payload`, `key`, `collection`                      |
+| `extensions.loaded`            | `payload`                                           |
+| `extensions.unloaded`          | `payload`                                           |
+| `extensions.reload`            | `payload`, `added` , `removed`                      |
 | `(<collection>.)items.read`    | `payload`, `query`, `collection`                    |
 | `(<collection>.)items.create`  | `payload`, `key`, `collection`                      |
 | `(<collection>.)items.update`  | `payload`, `keys`, `collection`                     |
