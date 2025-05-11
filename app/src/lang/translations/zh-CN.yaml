@@ -1842,7 +1842,7 @@ interfaces:
   input-hash:
     hash: Hash
     description: 输入一个hash值
-    masked: Masked
+    masked: 隐藏
     masked_label: 隐藏真实值
   select-icon:
     icon: 图标
@@ -1964,9 +1964,9 @@ interfaces:
   input:
     input: Input
     description: 手动输入一个值
-    trim: Trim
+    trim: 裁剪
     trim_label: 修剪开始和结束
-    mask: Masked
+    mask: 隐藏
     mask_label: 隐藏真实值
     clear: 已清除的值
     clear_label: 保存为空字符串
@@ -2153,7 +2153,7 @@ displays:
     icon: 图标
     border: 边框
     border_label: 显示边框
-    mask: Masked
+    mask: 隐藏
     mask_label: 隐藏真实值
     text: 文本
     text_placeholder: 可选值覆盖...
