@@ -281,7 +281,7 @@ function useMovetoFolder() {
 						<v-button secondary @click="moveToDialogActive = false">
 							{{ t('cancel') }}
 						</v-button>
-						<v-button :loading="moving" @click="moveToFolder">
+						<v-button :loading="moving" :disabled="!updateAllowed" @click="moveToFolder">
 							{{ t('move') }}
 						</v-button>
 					</v-card-actions>
@@ -299,8 +299,8 @@ function useMovetoFolder() {
 			</v-button>
 
 			<v-button
-				v-if="item?.type?.includes('image')"
-				v-tooltip.bottom="t('edit')"
+				v-if="item?.type?.includes('image') && updateAllowed"
+				v-tooltip.bottom="updateAllowed ? t('edit') : t('not_allowed')"
 				rounded
 				icon
 				secondary
