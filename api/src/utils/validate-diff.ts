@@ -137,12 +137,14 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 	for (const diffSystemField of applyDiff.diff.systemFields) {
 		const systemField = `${diffSystemField.collection}.${diffSystemField.field}`;
 
-		if (diffSystemField.diff[0]?.kind !== DiffKind.EDIT) {
+		if (!diffSystemField.diff[0]) continue;
+
+		if (diffSystemField.diff[0].kind !== DiffKind.EDIT) {
 			let action = 'update array'; // DiffKind.ARRAY
 
-			if (diffSystemField.diff[0]?.kind === DiffKind.NEW) {
+			if (diffSystemField.diff[0].kind === DiffKind.NEW) {
 				action = 'create';
-			} else if (diffSystemField.diff[0]?.kind === DiffKind.DELETE) {
+			} else if (diffSystemField.diff[0].kind === DiffKind.DELETE) {
 				action = 'delete';
 			}
 
@@ -151,7 +153,7 @@ export function validateApplyDiff(applyDiff: SnapshotDiffWithHash, currentSnapsh
 			});
 		}
 
-		const pathString = diffSystemField.diff[0]?.path?.join('.') ?? '';
+		const pathString = diffSystemField.diff[0].path?.join('.') ?? '';
 
 		if (pathString.length === 0 || pathString !== 'schema.is_indexed') {
 			throw new InvalidPayloadError({
