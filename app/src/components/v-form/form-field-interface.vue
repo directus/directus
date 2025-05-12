@@ -4,6 +4,7 @@ import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-ty
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
+import { useCollectionPermissions } from '@/composables/use-permissions';
 
 const props = defineProps<{
 	field: FormField;
@@ -39,6 +40,14 @@ const componentName = computed(() => {
 const value = computed(() =>
 	props.modelValue === undefined ? props.field.schema?.default_value ?? null : props.modelValue,
 );
+
+const relatedCollectionPersmissions = computed(() => {
+	if (props.field?.schema?.foreign_key_table) {
+		return useCollectionPermissions(props.field.schema.foreign_key_table);
+	}
+
+	return null;
+});
 </script>
 
 <template>
@@ -50,7 +59,14 @@ const value = computed(() =>
 	>
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
 
-		<v-error-boundary v-if="interfaceExists && !rawEditorActive" :name="componentName">
+		<v-error-boundary
+			v-if="
+				interfaceExists &&
+				!rawEditorActive &&
+				(!relatedCollectionPersmissions || relatedCollectionPersmissions.readAllowed)
+			"
+			:name="componentName"
+		>
 			<component
 				:is="componentName"
 				v-bind="(field.meta && field.meta.options) || {}"
@@ -76,6 +92,10 @@ const value = computed(() =>
 				<v-notice type="warning">{{ t('unexpected_error') }}</v-notice>
 			</template>
 		</v-error-boundary>
+
+		<v-notice v-else-if="relatedCollectionPersmissions && !relatedCollectionPersmissions.readAllowed" type="warning">
+			{{ t('permission_denied_for_related_field') }}
+		</v-notice>
 
 		<interface-system-raw-editor
 			v-else-if="rawEditorEnabled && rawEditorActive"
