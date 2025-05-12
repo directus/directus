@@ -63,7 +63,10 @@ function nudge() {
 
 function useOverlayFocusTrap() {
 	const overlayEl = useTemplateRef<HTMLDivElement>('overlayEl');
-	const { activate, deactivate } = useFocusTrap(overlayEl);
+
+	const { activate, deactivate } = useFocusTrap(overlayEl, {
+		escapeDeactivates: false,
+	});
 
 	watch(internalActive, async (newActive) => {
 		await nextTick();

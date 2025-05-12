@@ -141,6 +141,7 @@ function useActiveState() {
 	const menuEl = useTemplateRef<HTMLDivElement>('menuEl');
 
 	const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
+		escapeDeactivates: false,
 		returnFocusOnDeactivate: !props.noFocusReturn,
 		allowOutsideClick: true,
 		clickOutsideDeactivates: props.closeOnClick,
