@@ -24,6 +24,7 @@ const { sidebarOpen } = toRefs(appStore);
 <template>
 	<component
 		:is="to ? 'router-link' : 'button'"
+		:aria-expanded="to ? undefined : active"
 		class="sidebar-button"
 		:class="{ active }"
 		@click="$emit('click', $event)"
