@@ -37,7 +37,14 @@ const cssHeight = computed(() => {
 </script>
 
 <template>
-	<tr class="table-row" :class="{ subdued: subdued, clickable: hasClickListener }" @click="$emit('click', $event)">
+	<tr
+		class="table-row"
+		:class="{ subdued: subdued, clickable: hasClickListener }"
+		:tabindex="hasClickListener ? 0 : undefined"
+		@click="$emit('click', $event)"
+		@keydown.enter="$emit('click', $event)"
+		@keydown.space="$emit('click', $event)"
+	>
 		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
@@ -78,6 +85,8 @@ const cssHeight = computed(() => {
 
 <style lang="scss" scoped>
 .table-row {
+	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+
 	height: v-bind('cssHeight.tableRow');
 
 	.cell {
