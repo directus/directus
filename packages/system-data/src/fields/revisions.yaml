@@ -28,7 +28,3 @@ fields:
 
   - field: version
     width: half
-
-# TEMPORARY INDEX DEFINITION
-indexed:
-  - field: parent
