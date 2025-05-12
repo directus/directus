@@ -256,6 +256,7 @@ function closeDrawer() {
 			persistent
 			@update:model-value="checkDiscard()"
 			@cancel="checkDiscard()"
+			@apply="isSaveDisabled ? undefined : saveItem(active!)"
 		>
 			<template #title>
 				<h1 class="type-title">
@@ -282,7 +283,7 @@ function closeDrawer() {
 			</div>
 		</v-drawer>
 
-		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false">
+		<v-dialog v-model="confirmDiscard" @esc="confirmDiscard = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>

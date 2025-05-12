@@ -388,7 +388,11 @@ onMounted(() => {
 				{{ softLength - count }}
 			</span>
 		</template>
-		<v-dialog v-model="linkDrawerOpen">
+		<v-dialog
+			v-model="linkDrawerOpen"
+			@esc="closeLinkDrawer"
+			@apply="linkSelection.url === null && !linkNode ? undefined : saveLink()"
+		>
 			<v-card>
 				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
@@ -418,7 +422,13 @@ onMounted(() => {
 			</v-card>
 		</v-dialog>
 
-		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
+		<v-drawer
+			v-model="codeDrawerOpen"
+			:title="t('wysiwyg_options.source_code')"
+			icon="code"
+			@cancel="closeCodeDrawer"
+			@apply="saveCode"
+		>
 			<div class="content">
 				<interface-input-code
 					:value="code"
@@ -435,7 +445,13 @@ onMounted(() => {
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
+		<v-drawer
+			v-model="imageDrawerOpen"
+			:title="t('wysiwyg_options.image')"
+			icon="image"
+			@cancel="closeImageDrawer"
+			@apply="saveImage"
+		>
 			<div class="content">
 				<template v-if="imageSelection">
 					<img class="image-preview" :src="imageSelection.previewUrl" />
@@ -482,7 +498,13 @@ onMounted(() => {
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" icon="slideshow" @cancel="closeMediaDrawer">
+		<v-drawer
+			v-model="mediaDrawerOpen"
+			:title="t('wysiwyg_options.media')"
+			icon="slideshow"
+			@cancel="closeMediaDrawer"
+			@apply="saveMedia"
+		>
 			<template #sidebar>
 				<v-tabs v-model="openMediaTab" vertical>
 					<v-tab value="video">{{ t('media') }}</v-tab>

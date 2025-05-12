@@ -226,11 +226,16 @@ function useDeleteFolder() {
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
+		<v-dialog
+			v-model="renameActive"
+			persistent
+			@esc="renameActive = false"
+			@apply="renameValue === null ? undefined : renameSave()"
+		>
 			<v-card>
 				<v-card-title>{{ t('rename_folder') }}</v-card-title>
 				<v-card-text>
-					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
+					<v-input v-model="renameValue" autofocus />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>

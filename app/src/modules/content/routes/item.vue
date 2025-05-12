@@ -584,6 +584,7 @@ const shouldShowVersioning = computed(
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
 				@esc="confirmDelete = false"
+				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -619,6 +620,7 @@ const shouldShowVersioning = computed(
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
 				@esc="confirmArchive = false"
+				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -725,7 +727,7 @@ const shouldShowVersioning = computed(
 			:version="currentVersion"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>

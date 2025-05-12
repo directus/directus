@@ -147,7 +147,15 @@ async function save() {
 		:model-value="active"
 		:sidebar-label="t(currentTab[0] as string)"
 		@cancel="$emit('cancel')"
-		@esc="$emit('cancel')"
+		@apply="
+			currentTab[0] === 'trigger_setup' && values.trigger
+				? save()
+				: !values.name || values.name.length === 0
+				  ? undefined
+				  : isNew
+				    ? (currentTab = ['trigger_setup'])
+				    : save()
+		"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>

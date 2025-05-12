@@ -441,8 +441,8 @@ async function exportDataFiles() {
 			:title="t('export_items')"
 			icon="import_export"
 			persistent
-			@esc="exportDialogActive = false"
 			@cancel="exportDialogActive = false"
+			@apply="startExport"
 		>
 			<template #actions>
 				<v-button

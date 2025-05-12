@@ -205,6 +205,7 @@ function clearFilters() {
 		:title="t('notifications')"
 		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
+		@apply="selection.length === 0 ? undefined : toggleArchive()"
 	>
 		<template #actions:prepend>
 			<transition name="fade">
@@ -216,6 +217,7 @@ function clearFilters() {
 
 		<template #actions>
 			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
+
 			<v-dialog v-model="confirmDelete" :disabled="selection.length === 0" @esc="confirmDelete = false">
 				<template #activator="{ on }">
 					<v-button
@@ -244,6 +246,7 @@ function clearFilters() {
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
+
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon

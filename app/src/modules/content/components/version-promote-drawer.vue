@@ -178,7 +178,7 @@ function useTab() {
 		persistent
 		:model-value="active"
 		@cancel="$emit('cancel')"
-		@esc="$emit('cancel')"
+		@apply="selectedFields.length === 0 ? undefined : onPromoteClick()"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>
@@ -232,7 +232,11 @@ function useTab() {
 			</div>
 		</div>
 
-		<v-dialog v-model="confirmDeleteOnPromoteDialogActive" @esc="confirmDeleteOnPromoteDialogActive = false">
+		<v-dialog
+			v-model="confirmDeleteOnPromoteDialogActive"
+			@esc="confirmDeleteOnPromoteDialogActive = false"
+			@apply="promote(true)"
+		>
 			<v-card>
 				<v-card-title>
 					{{ t('delete_on_promote_copy', { version: currentVersionDisplayName }) }}

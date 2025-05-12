@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
 	smallHeader: false,
 });
 
-const emit = defineEmits(['cancel', 'update:modelValue']);
+const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
 
 const { t } = useI18n();
 
@@ -56,7 +56,13 @@ const internalActive = computed({
 </script>
 
 <template>
-	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="cancelable && $emit('cancel')">
+	<v-dialog
+		v-model="internalActive"
+		:persistent="persistent"
+		placement="right"
+		@esc="cancelable && $emit('cancel')"
+		@apply="$emit('apply')"
+	>
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>

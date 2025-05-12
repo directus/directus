@@ -157,7 +157,12 @@ function useDeleteBookmark() {
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="editActive" persistent @esc="editCancel">
+		<v-dialog
+			v-model="editActive"
+			persistent
+			@esc="editCancel"
+			@apply="editValue.name === null ? undefined : editSave()"
+		>
 			<v-card>
 				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
 				<v-card-text>
@@ -167,7 +172,6 @@ function useDeleteBookmark() {
 							class="full"
 							autofocus
 							@input="editValue.name = $event"
-							@keyup.enter="editSave"
 						/>
 						<interface-select-icon width="half" :value="editValue.icon" @input="editValue.icon = $event" />
 						<interface-select-color width="half" :value="editValue.color" @input="editValue.color = $event" />
@@ -182,7 +186,7 @@ function useDeleteBookmark() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
+		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
 			<v-card>
 				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>

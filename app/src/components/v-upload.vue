@@ -366,6 +366,7 @@ defineExpose({ abort });
 					:model-value="activeDialog === 'url'"
 					:persistent="urlLoading"
 					@esc="activeDialog = null"
+					@apply="isValidURL !== false ? importFromURL() : undefined"
 					@update:model-value="activeDialog = null"
 				>
 					<v-card>

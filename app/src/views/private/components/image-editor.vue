@@ -447,6 +447,7 @@ function setAspectRatio() {
 		:title="t('editing_image')"
 		persistent
 		@cancel="internalActive = false"
+		@apply="!hasEdits ? undefined : save()"
 	>
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />

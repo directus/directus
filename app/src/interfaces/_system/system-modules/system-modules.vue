@@ -254,6 +254,7 @@ function remove(id: string) {
 			icon="link"
 			@update:model-value="editing = null"
 			@cancel="editing = null"
+			@apply="isSaveDisabled ? undefined : save()"
 		>
 			<template #actions>
 				<v-button v-tooltip.bottom="t('save')" icon rounded :disabled="isSaveDisabled" @click="save">

@@ -18,11 +18,18 @@ const props = withDefaults(defineProps<Props>(), {
 	placement: 'center',
 });
 
-const emit = defineEmits(['esc', 'update:modelValue']);
+const emit = defineEmits(['esc', 'apply', 'update:modelValue']);
 
 useShortcut('escape', (_event, cancelNext) => {
 	if (internalActive.value) {
 		emit('esc');
+		cancelNext();
+	}
+});
+
+useShortcut('meta+enter', (_event, cancelNext) => {
+	if (internalActive.value) {
+		emit('apply');
 		cancelNext();
 	}
 });

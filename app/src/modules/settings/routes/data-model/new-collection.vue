@@ -378,6 +378,13 @@ function getSystemRelations() {
 		persistent
 		:sidebar-label="currentTab[0] && t(currentTab[0])"
 		@cancel="router.push('/settings/data-model')"
+		@apply="
+			currentTab[0] === 'optional_system_fields'
+				? save()
+				: !collectionName || collectionName.length === 0
+				  ? undefined
+				  : (currentTab = ['optional_system_fields'])
+		"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>

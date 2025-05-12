@@ -43,6 +43,7 @@ function cancel() {
 		keep-behind
 		@update:model-value="$emit('update:modelValue', $event)"
 		@esc="cancel"
+		@apply="bookmarkValue.name === null ? undefined : $emit('save', bookmarkValue)"
 	>
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
@@ -60,7 +61,6 @@ function cancel() {
 						trim
 						:placeholder="t('bookmark_name')"
 						@input="bookmarkValue.name = $event"
-						@keyup.enter="$emit('save', bookmarkValue)"
 					/>
 					<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
 					<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />

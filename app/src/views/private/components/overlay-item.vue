@@ -390,7 +390,7 @@ function useActions() {
 	});
 
 	useShortcut('meta+s', (_event, cancelNext) => {
-		if (!props.shortcuts || !internalActive.value) return;
+		if (!props.shortcuts || !internalActive.value || !isSavable.value) return;
 
 		save();
 		cancelNext();
@@ -503,6 +503,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		:icon="collectionInfo?.meta?.icon ?? undefined"
 		persistent
 		@cancel="cancel"
+		@apply="!isSavable ? undefined : save()"
 	>
 		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
 			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
@@ -531,7 +532,14 @@ function popoverClickOutsideMiddleware(e: Event) {
 		/>
 	</v-drawer>
 
-	<v-dialog v-else-if="overlay === 'modal'" v-model="overlayActive" persistent keep-behind @esc="cancel">
+	<v-dialog
+		v-else-if="overlay === 'modal'"
+		v-model="overlayActive"
+		persistent
+		keep-behind
+		@esc="cancel"
+		@apply="!isSavable ? undefined : save()"
+	>
 		<v-card class="modal-card">
 			<v-card-title>
 				<v-icon :name="collectionInfo?.meta?.icon ?? undefined" class="modal-title-icon" />
@@ -601,7 +609,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</div>
 	</v-menu>
 
-	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 		<v-card>
 			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 			<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -614,7 +622,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</v-card>
 	</v-dialog>
 
-	<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+	<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
 		<v-card>
 			<v-card-title>{{ t('discard_all_changes') }}</v-card-title>
 			<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>

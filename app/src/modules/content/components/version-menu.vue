@@ -306,7 +306,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			@promote="onPromoteComplete($event)"
 		/>
 
-		<v-dialog v-model="switchDialogActive" @esc="switchDialogActive = false">
+		<v-dialog v-model="switchDialogActive" @esc="switchDialogActive = false" @apply="switchVersion">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>
@@ -325,7 +325,12 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog">
+		<v-dialog
+			:model-value="createDialogActive"
+			persistent
+			@esc="closeCreateDialog"
+			@apply="newVersionKey === null ? undefined : createVersion()"
+		>
 			<v-card>
 				<v-card-title>{{ t('create_version') }}</v-card-title>
 
@@ -339,7 +344,6 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								autofocus
 								trim
 								:max-length="255"
-								@keyup.enter="createVersion"
 							/>
 						</div>
 
@@ -351,7 +355,6 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								slug
 								trim
 								:max-length="64"
-								@keyup.enter="createVersion"
 							/>
 						</div>
 					</div>
@@ -366,7 +369,16 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="renameDialogActive" persistent @esc="closeRenameDialog">
+		<v-dialog
+			:model-value="renameDialogActive"
+			persistent
+			@esc="closeRenameDialog"
+			@apply="
+				(newVersionKey === null || newVersionKey === currentVersion?.key) && newVersionName === currentVersion?.name
+					? undefined
+					: renameVersion()
+			"
+		>
 			<v-card>
 				<v-card-title>{{ t('rename_version') }}</v-card-title>
 
@@ -380,7 +392,6 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								:placeholder="t('version_name')"
 								trim
 								:max-length="255"
-								@keyup.enter="renameVersion"
 							/>
 						</div>
 						<div class="field">
@@ -391,7 +402,6 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 								slug
 								trim
 								:max-length="64"
-								@keyup.enter="renameVersion"
 							/>
 						</div>
 					</div>
@@ -413,7 +423,12 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-if="currentVersion !== null" v-model="deleteDialogActive" @esc="deleteDialogActive = false">
+		<v-dialog
+			v-if="currentVersion !== null"
+			v-model="deleteDialogActive"
+			@esc="deleteDialogActive = false"
+			@apply="onDeleteVersion"
+		>
 			<v-card>
 				<v-card-title>{{ t('delete_version_copy', { version: currentVersion!.name }) }}</v-card-title>
 				<v-card-actions>

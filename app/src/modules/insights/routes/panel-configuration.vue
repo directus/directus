@@ -131,6 +131,7 @@ const stageChanges = () => {
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
 		@cancel="router.push(`/insights/${dashboardKey}`)"
+		@apply="!panel.type ? undefined : stageChanges()"
 	>
 		<template #actions>
 			<v-button v-tooltip.bottom="t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
