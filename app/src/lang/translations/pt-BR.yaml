@@ -28,7 +28,7 @@ method: Método
 published: Publicado
 draft: Rascunho
 archived: Arquivado
-marketplace: Mercado
+marketplace: Marketplace
 extensions: Extensões
 modules: Módulos
 module_bar: Barra de Módulos
@@ -632,7 +632,7 @@ display_not_found: 'Exibição "{display}" não foi encontrada.'
 reset_display: Redefinir Exibição
 list-m2a: Construtor (M2A)
 item_count: 'Sem Itens | Um Item | {count} Itens'
-filtered_item_count: 'Nenhum “item” filtrado | Um “item” filtrado | itens filtrados'
+filtered_item_count: 'Nenhum item filtrado | Um item filtrado | {count} itens filtrados'
 no_items_copy: Ainda não há itens nesta coleção.
 file_count: 'Nenhum arquivo | Um arquivo | {count} arquivos'
 no_files_copy: Ainda não há arquivos aqui.
@@ -797,7 +797,7 @@ make_folder_hidden: Tornar Pasta Oculta
 goto_collection_content: Ver conteúdo
 count_of_total_items: '{count} de {total} Itens'
 start_end_of_count_items: '{start}-{end} de {count} itens'
-start_end_of_count_filtered_items: 'Inicio e fim de contagem de itens filtrados'
+start_end_of_count_filtered_items: '{start}-{end} de {count} itens filtrados'
 delete_collection_are_you_sure: >-
   Você tem certeza que quer deletar a coleção "{collection}"? Isso apagará a coleção e todos os itens dela. Esta ação é permanente.
 delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível mais elevado.
@@ -940,8 +940,6 @@ run_flow_on_current: Executar fluxo no Item atual
 run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
 run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow: Executar Fluxo
-run_flow_success: Fluxo "{flow}" executado com sucesso
-trigger_flow_success: O fluxo “{flow}” foi acionado com sucesso. Ele será executado em segundo plano
 field_name_placeholder: Inserir nome do campo...
 field_key_placeholder: Inserir a chave do campo...
 trigger: Acionar
