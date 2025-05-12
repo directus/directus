@@ -223,14 +223,34 @@ export class ExtensionManager {
 	 * Installs an external extension from registry
 	 */
 	public async install(versionId: string): Promise<void> {
+		const logger = useLogger();
+
 		await this.installationManager.install(versionId);
 		await this.reload({ forceSync: true });
+
+		emitter.emitAction('extensions.installed', {
+			extensions: this.extensions,
+			versionId
+		});
+
+		logger.info(`Installed extension: ${versionId}`);
+
 		await this.broadcastReloadNotification();
 	}
 
 	public async uninstall(folder: string) {
+		const logger = useLogger();
+
 		await this.installationManager.uninstall(folder);
 		await this.reload({ forceSync: true });
+
+		emitter.emitAction('extensions.uninstalled', {
+			extensions: this.extensions,
+			folder,
+		});
+
+		logger.info(`Uninstalled extension: ${folder}`);
+
 		await this.broadcastReloadNotification();
 	}
 
