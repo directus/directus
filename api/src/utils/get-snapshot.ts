@@ -1,4 +1,4 @@
-import type { SchemaOverview } from '@directus/types';
+import type { Field, Relation, SchemaOverview } from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
@@ -6,7 +6,7 @@ import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
-import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
+import type { Snapshot } from '../types/index.js';
 import { getSchema } from './get-schema.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation, sanitizeSystemField } from './sanitize-schema.js';
 
@@ -30,26 +30,30 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	const relationsFiltered = relationsRaw.filter((item) => excludeSystem(item));
 	const systemFieldsFiltered = fieldsRaw.filter((item) => systemFieldWithIndex(item));
 
-	const collectionsSorted: Collection[] = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']);
+	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']).map((collection) =>
+		sanitizeCollection(collection),
+	);
 
-	const fieldsSorted = sortBy(mapValues(fieldsFiltered, sortDeep), ['collection', 'meta.id']).map(
-		omitID,
-	) as SnapshotField[];
+	const fieldsSorted = sortBy(mapValues(fieldsFiltered, sortDeep), ['collection', 'meta.id']).map((field) =>
+		sanitizeField(omitID(field) as Field),
+	);
 
-	const systemFieldsSorted = sortBy(systemFieldsFiltered, ['collection', 'field']);
+	const systemFieldsSorted = sortBy(systemFieldsFiltered, ['collection', 'field']).map((field) =>
+		sanitizeSystemField(field),
+	);
 
-	const relationsSorted = sortBy(mapValues(relationsFiltered, sortDeep), ['collection', 'meta.id']).map(
-		omitID,
-	) as SnapshotRelation[];
+	const relationsSorted = sortBy(mapValues(relationsFiltered, sortDeep), ['collection', 'meta.id']).map((relation) =>
+		sanitizeRelation(omitID(relation) as Relation),
+	);
 
 	return {
 		version: 1,
 		directus: version,
 		vendor,
-		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)),
-		fields: fieldsSorted.map((field) => sanitizeField(field)),
-		systemFields: systemFieldsSorted.map((field) => sanitizeSystemField(field)),
-		relations: relationsSorted.map((relation) => sanitizeRelation(relation)),
+		collections: collectionsSorted,
+		fields: fieldsSorted,
+		systemFields: systemFieldsSorted,
+		relations: relationsSorted,
 	};
 }
 
