@@ -726,7 +726,6 @@ flows: 流程
 flow: 流程
 select_a_flow: 選擇流程
 run_flow_on_current_edited_confirm: 有些項目可能會被這個工作流程更新，是否確定要執行？
-run_flow_success: 流程 {flow} 執行完畢
 trigger: 觸發條件
 trigger_options: 觸發條件選項
 view_trigger: 檢視觸發條件

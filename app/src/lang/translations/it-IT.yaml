@@ -942,8 +942,7 @@ run_flow_on_current: Esegui il flusso sull'elemento corrente
 run_flow_on_current_edited_confirm: Questo elemento potrebbe essere aggiornato dal flusso, sei sicuro di volerlo eseguire?
 run_flow_on_selected: Seleziona prima uno o più elementi | Esegui il flusso sull'elemento selezionato | Esegui il flusso sui {n} elementi selezionati
 run_flow: Esegui il flusso
-run_flow_success: Flusso "{flow}" eseguito con successo
-trigger_flow_success: Flusso "{flow}" attivato con successo. Sarà eseguito in background
+trigger_flow_success: Flusso "{flow}" eseguito con successo
 field_name_placeholder: Inserisci il nome del campo...
 field_key_placeholder: Inserisci la chiave del campo...
 trigger: Trigger
@@ -980,6 +979,13 @@ operation_key: Identificatore per riferimento...
 operation_key_unique_error: Le chiavi dell'operazione devono essere uniche in un flusso
 operation_handle_resolve: 'Risolvi: fare clic per aggiungere o trascinare per reindirizzare'
 operation_handle_reject: 'Rifiuta: fare clic per aggiungere o trascinare per reindirizzare'
+visual_editor: Editor visuale
+toggle_navigation: Attiva/disattiva Navigazione
+toggle_editable_elements: Attiva/Disattiva elementi modificabili
+no_url: Nessun URL specificato
+no_url_copy: Aggiungere un URL nelle impostazioni.
+invalid_url: URL non valido
+invalid_url_copy: L'URL specificato non corrisponde a nessun URL specificato nelle impostazioni.
 insights: Approfondimenti
 dashboard: Bacheca
 panel: Pannello
@@ -1397,6 +1403,7 @@ fields:
     public_registration_email_filter_note: Solo gli indirizzi email che corrispondono a questo filtro possono registrarsi.
     public_registration_verify_email: Verifica email
     public_registration_verify_email_note: Invia un'email all'utente che effettua la registrazione chiedendogli di cliccare su un link di verifica prima di accedere.
+    visual_editor_urls: URL per l'editor visuale
   directus_shares:
     name: Nome
     role: Ruolo
@@ -2353,6 +2360,7 @@ triggers:
     filter: 'Filtro (bloccante)'
   webhook:
     name: Webhook
+    error_on_reject: Errore nel rifiuto
     description: Si attiva alla ricezione di una chiamata HTTP
     method: Metodo
     async: Asincrono

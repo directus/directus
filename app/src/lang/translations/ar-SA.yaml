@@ -261,6 +261,7 @@ field_validation: مجال المصادقة
 field_presets: الإعداد المسبق للحقل
 permissions_for_role: 'عناصر الدور {role} يمكن أن {action}.'
 fields_for_role: 'عناصر الدور {role} يمكن أن {action}.'
+fields_for_policy: '.'
 validation_for_role: 'الحقل {action} قواعد الدور {role} يجب أن يطيع.'
 presets_for_role: 'قيمة الحقل الافتراضية لدور {role}.'
 presets_field_warning: 'يجب تكوين قوالب الإعدادات للعلاقات للحقل "{field}" بالشكل "التفصيلي".'
@@ -924,7 +925,6 @@ run_flow_on_current: تشغيل التدفق على العنصر الحالي
 run_flow_on_current_edited_confirm: قد يتم تحديث هذا العنصر بواسطة هذا التدفق، هل أنت متيقِّن من أنك تريد تنفيذه؟
 run_flow_on_selected: حدد عنصر واحد أو أكثر أولاً | تشغيل العملية على عنصر واحد محدد | تشغيل العملية على {n} عناصر محددة
 run_flow: تشغيل التدفق
-run_flow_success: تدفق "{flow}" تم بنجاح
 field_name_placeholder: أدخل اسم الحقل...
 field_key_placeholder: أدخل مفتاح الحقل...
 trigger: المحفز
