@@ -123,13 +123,14 @@ function useDeleteBookmark() {
 		</v-list-item-content>
 
 		<v-menu placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
+			<template #activator="{ toggle, active }">
 				<v-icon
 					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
 					:name="hasPermission ? 'more_vert' : 'lock'"
 					:clickable="hasPermission"
 					small
 					class="ctx-toggle"
+					:class="{ active }"
 					@click.prevent="hasPermission ? toggle() : null"
 				/>
 			</template>
@@ -215,11 +216,12 @@ function useDeleteBookmark() {
 		transition: opacity var(--fast) var(--transition);
 	}
 
-	&:hover {
-		.ctx-toggle {
-			opacity: 1;
-			user-select: auto;
-		}
+	.ctx-toggle.active,
+	.ctx-toggle:focus-visible,
+	&:focus-visible .ctx-toggle,
+	&:hover .ctx-toggle {
+		opacity: 1;
+		user-select: auto;
 	}
 }
 
