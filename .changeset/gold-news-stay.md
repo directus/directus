@@ -2,4 +2,4 @@
 '@directus/app': minor
 ---
 
-Now flow buttons will have the same color selected when creating the flow instead of having the default primary
+Enhanced the appearance of the flow trigger buttons in the sidebar by applying their custom colors
