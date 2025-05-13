@@ -170,6 +170,8 @@ function toggleInput(): void {
 	}
 
 	&.block {
+		--focus-ring-offset: var(--focus-ring-offset-invert);
+
 		position: relative;
 		width: 100%;
 		height: var(--theme--form--field--input--height);
