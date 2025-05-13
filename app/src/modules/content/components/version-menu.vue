@@ -487,12 +487,19 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 .version-button {
 	--v-icon-size: 1rem;
+
 	color: var(--theme--foreground-subdued);
 	display: flex;
 	align-items: center;
+	pointer-events: all;
+
 	&:hover {
 		color: var(--theme--foreground);
 	}
-	pointer-events: all;
+
+	&:focus-visible {
+		outline-offset: 0;
+		margin-right: var(--focus-ring-width);
+	}
 }
 </style>
