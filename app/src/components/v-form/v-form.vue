@@ -259,7 +259,9 @@ function apply(updates: { [field: string]: any }) {
 		: Object.keys(updates).filter((key) => {
 				const field = fieldsMap.value[key];
 				if (!field) return false;
-				return field.schema?.is_primary_key || !isDisabled(field);
+				return (
+					(updates.$type === 'created' && field.meta?.readonly) || field.schema?.is_primary_key || !isDisabled(field)
+				);
 		  });
 
 	if (!isNil(props.group)) {
