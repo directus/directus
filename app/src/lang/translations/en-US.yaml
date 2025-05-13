@@ -333,7 +333,7 @@ hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
 readonly_field_label: Disable the field in the app
 required_readonly_field_warning:
-  Enabling readonly and required on a field will make an item unsaveable if the value is empty.
+  Enabling readonly and required on a field will make an item unsavable if the value is empty.
 key: Key
 alias: Alias
 bigInteger: Big Integer
