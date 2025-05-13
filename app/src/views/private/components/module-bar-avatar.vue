@@ -146,7 +146,7 @@ const userFullName = userStore.fullName ?? undefined;
 				opacity: 1;
 				/* This adds a second focus ring to the image so we can see the focus better */
 				outline: var(--focus-ring-width) solid var(--theme--navigation--modules--background);
-				outline-offset: calc(-1 * var(--focus-ring-width));
+				outline-offset: var(--focus-ring-offset-invert);
 			}
 		}
 	}

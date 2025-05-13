@@ -809,7 +809,7 @@ const shouldShowVersioning = computed(
 }
 
 .version-more-options.v-icon {
-	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+	--focus-ring-offset: var(--focus-ring-offset-invert);
 
 	color: var(--theme--foreground-subdued);
 

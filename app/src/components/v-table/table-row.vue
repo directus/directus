@@ -85,7 +85,7 @@ const cssHeight = computed(() => {
 
 <style lang="scss" scoped>
 .table-row {
-	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+	--focus-ring-offset: var(--focus-ring-offset-invert);
 
 	height: v-bind('cssHeight.tableRow');
 
@@ -104,8 +104,6 @@ const cssHeight = computed(() => {
 		}
 
 		&.select {
-			--focus-ring-offset: calc(-1 * var(--focus-ring-width));
-
 			display: flex;
 			align-items: center;
 		}

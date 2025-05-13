@@ -288,7 +288,7 @@ function toggleManualSort() {
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&.select {
-			--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+			--focus-ring-offset: var(--focus-ring-offset-invert);
 		}
 
 		&.select,

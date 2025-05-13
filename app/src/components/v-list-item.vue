@@ -171,7 +171,7 @@ function onClick(event: PointerEvent) {
 */
 
 .v-list-item {
-	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+	--focus-ring-offset: var(--focus-ring-offset-invert);
 
 	$this: &;
 
