@@ -73,7 +73,7 @@ const props = withDefaults(defineProps<Props>(), {
 	align: 'center',
 	/** Must be explicitly undefined */
 	active: undefined,
-	color:undefined,
+	color: undefined,
 });
 
 const emit = defineEmits(['click']);
@@ -149,7 +149,7 @@ async function onClick(event: MouseEvent) {
 </script>
 
 <template>
-	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded } ">
+	<div class="v-button" :class="{ secondary, warning, danger, 'full-width': fullWidth, rounded }">
 		<slot name="prepend-outer" />
 		<component
 			:is="component"

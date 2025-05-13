@@ -198,7 +198,7 @@ const runManualFlow = async (flowId: string) => {
 					@click="onFlowClick(manualFlow.id)"
 				>
 					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
-					{{ manualFlow.name }} 
+					{{ manualFlow.name }}
 				</v-button>
 			</div>
 		</div>
