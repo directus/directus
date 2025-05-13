@@ -46,13 +46,14 @@ body {
 }
 
 // Default focus ring
-*:not(div):not(input):not(textarea):not([contenteditable]):focus-visible {
+*:not(main):not(div):not(input):not(textarea):not([contenteditable]):focus-visible {
 	outline: var(--focus-ring-width) solid var(--focus-ring-color);
 	outline-offset: var(--focus-ring-offset);
 	border-radius: var(--focus-ring-radius);
 }
 
-// Applies mainly to scrollable divs
+// Applies mainly to scrollable elements
+main:not([contenteditable]):focus-visible,
 div:not([contenteditable]):focus-visible {
 	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
 	--focus-ring-radius: 0;
