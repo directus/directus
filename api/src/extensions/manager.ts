@@ -230,7 +230,7 @@ export class ExtensionManager {
 
 		emitter.emitAction('extensions.installed', {
 			extensions: this.extensions,
-			versionId
+			versionId,
 		});
 
 		logger.info(`Installed extension: ${versionId}`);
