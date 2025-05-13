@@ -1708,6 +1708,8 @@ reset_password: Reset Password
 revisions: Revisions
 no_revisions: No Revisions Yet
 no_logs: No Logs Yet
+show_failed_only: Show Failed Only
+no_logs_on_page: No logs on this page
 revert: Revert
 save: Save
 schema: Schema
