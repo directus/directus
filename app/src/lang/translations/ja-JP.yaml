@@ -240,7 +240,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 設定のリセット
 hidden_field: 項目を非表示
 hidden_on_detail: 詳細に表示しない
-disabled_editing_value: 項目の編集を無効にする
 key: キー
 alias: エイリアス
 bigInteger: 整数
