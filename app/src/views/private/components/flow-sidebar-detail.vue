@@ -189,7 +189,11 @@ const runManualFlow = async (flowId: string) => {
 		<div class="fields">
 			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
 				<v-button
-					:color="manualFlow.color"
+					:style="{
+						'--v-button-background-color': manualFlow.color,
+						'--v-button-background-color-hover': manualFlow.color,
+						'--v-button-background-color-active': manualFlow.color,
+					}"
 					v-tooltip="getFlowTooltip(manualFlow)"
 					small
 					full-width

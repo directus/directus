@@ -9,8 +9,6 @@ interface Props {
 	autofocus?: boolean;
 	/** Styling of the button */
 	kind?: 'normal' | 'info' | 'success' | 'warning' | 'danger';
-	/** Sets the background color to it's flow's color */
-	color?: string;
 	/** Stretches the button to it's maximal width */
 	fullWidth?: boolean;
 	/** Enable rounded corners */
@@ -73,7 +71,6 @@ const props = withDefaults(defineProps<Props>(), {
 	align: 'center',
 	/** Must be explicitly undefined */
 	active: undefined,
-	color: undefined,
 });
 
 const emit = defineEmits(['click']);
@@ -130,16 +127,6 @@ const isActiveRoute = computed(() => {
 	return false;
 });
 
-const customStyle = computed(() => {
-	if (!props.color) return {};
-
-	return {
-		'--v-button-background-color': props.color,
-		'--v-button-background-color-hover': props.color,
-		'--v-button-background-color-active': props.color,
-	};
-});
-
 async function onClick(event: MouseEvent) {
 	if (props.loading === true) return;
 	// Toggles the active state in the parent groupable element. Allows buttons to work ootb in button-groups
@@ -156,7 +143,6 @@ async function onClick(event: MouseEvent) {
 			v-focus="autofocus"
 			v-tooltip.bottom="tooltip"
 			:download="download"
-			:style="customStyle"
 			class="button"
 			:class="[
 				sizeClass,
