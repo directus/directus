@@ -474,6 +474,11 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	--v-list-item-background-color-active: var(--theme--primary);
 	--v-list-item-color-active-hover: var(--white);
 	--v-list-item-background-color-active-hover: var(--theme--primary-accent);
+
+	&.active {
+		--focus-ring-color: var(--v-list-item-color-active);
+		--focus-ring-offset: var(--focus-ring-offset-inset);
+	}
 }
 
 .version-delete {
