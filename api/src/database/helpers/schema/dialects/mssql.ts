@@ -78,4 +78,18 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 	override getTableNameMaxLength(): number {
 		return 128;
 	}
+
+	override createIndexConcurrent(collection: string, field: string): Knex.SchemaBuilder {
+		const constraintName = this.generateIndexName("index", collection, field);
+
+		if (!this.knex.isTransaction) {
+			// https://learn.microsoft.com/en-us/sql/t-sql/statements/create-index-transact-sql?view=sql-server-ver16#online---on--off-
+			return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`);
+		}
+
+		// fall back to blocking index creation
+		return this.knex.schema.alterTable(collection, async (table) => {
+			// TODO: re-use existing index logic
+		});
+	}
 }

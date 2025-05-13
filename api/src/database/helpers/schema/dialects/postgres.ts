@@ -52,4 +52,18 @@ export class SchemaHelperPostgres extends SchemaHelper {
 			groupByFields.push(...sortRecords.map(({ alias }) => alias));
 		}
 	}
+
+	override createIndexConcurrent(collection: string, field: string): Knex.SchemaBuilder {
+		const constraintName = this.generateIndexName("index", collection, field);
+
+		if (!this.knex.isTransaction) {
+			// https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
+			return this.knex.schema.raw(`CREATE INDEX CONCURRENTLY "${constraintName}" ON "${collection}" ("${field}")`);
+		}
+
+		// fall back to blocking index creation
+		return this.knex.schema.alterTable(collection, async (table) => {
+			// TODO: re-use existing index logic
+		});
+	}
 }

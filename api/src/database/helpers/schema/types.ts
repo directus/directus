@@ -180,4 +180,11 @@ export abstract class SchemaHelper extends DatabaseHelper {
 	getTableNameMaxLength() {
 		return 64;
 	}
+
+	createIndexConcurrent(collection: string, field: string): Knex.SchemaBuilder {
+		// Re-use existing blocking create index logic
+		return this.knex.schema.alterTable(collection, async (table) => {
+			// TODO: re-use existing index logic
+		});
+	}
 }
