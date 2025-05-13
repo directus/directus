@@ -242,7 +242,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Pagina-voorkeuren resetten
 hidden_field: Verborgen veld
 hidden_on_detail: Verborgen op het detail scherm
-disabled_editing_value: Bewerken van waarde uitschakelen
 key: Key
 alias: Alias
 bigInteger: Big Integer
