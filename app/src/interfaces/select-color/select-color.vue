@@ -261,7 +261,7 @@ function useColor() {
 			const newColor = Color(input.value);
 			setColor(newColor);
 		} catch {
-			// The input is not a valid color, but we still want to let the user edit/type in the input so we emit the input
+			// The input is not a valid color, but we still want to let the user edit/type in the input so we emit null to prevent using an invalid value
 			unsetColor();
 		}
 	}
