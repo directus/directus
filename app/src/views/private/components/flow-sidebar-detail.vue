@@ -192,11 +192,7 @@ const runManualFlow = async (flowId: string) => {
 					v-tooltip="getFlowTooltip(manualFlow)"
 					small
 					full-width
-					:style="{
-						'--v-button-background-color': manualFlow.color,
-						'--v-button-background-color-hover': manualFlow.color,
-						'--v-button-background-color-active': manualFlow.color,
-					}"
+					:style="{ '--v-button-background-color': manualFlow.color }"
 					:loading="runningFlows.includes(manualFlow.id)"
 					:disabled="isFlowDisabled(manualFlow)"
 					@click="onFlowClick(manualFlow.id)"
