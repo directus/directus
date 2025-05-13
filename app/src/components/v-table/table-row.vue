@@ -42,14 +42,28 @@ const cssHeight = computed(() => {
 		:class="{ subdued: subdued, clickable: hasClickListener }"
 		:tabindex="hasClickListener ? 0 : undefined"
 		@click="$emit('click', $event)"
-		@keydown.enter="$emit('click', $event)"
-		@keydown.space="$emit('click', $event)"
+		@keydown="
+			(e) => {
+				if (e.metaKey) return;
+				if (e.key === 'Enter' || e.key === ' ') $emit('click', e);
+			}
+		"
 	>
 		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
-		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
+		<td
+			v-if="showSelect !== 'none'"
+			class="select cell"
+			@click.stop
+			@keydown="
+				(e) => {
+					if (e.metaKey) return;
+					if (e.key === 'Enter' || e.key === ' ') e.stopImmediatePropagation();
+				}
+			"
+		>
 			<v-checkbox
 				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
 				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
