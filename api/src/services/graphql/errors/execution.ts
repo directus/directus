@@ -1,8 +1,8 @@
 import { createError } from '@directus/errors';
-import type { GraphQLError } from 'graphql';
+import type { GraphQLError, GraphQLFormattedError } from 'graphql';
 
 interface GraphQLExecutionErrorExtensions {
-	errors: GraphQLError[];
+	errors: (GraphQLError | GraphQLFormattedError)[];
 }
 
 export const GraphQLExecutionError = createError<GraphQLExecutionErrorExtensions>(
