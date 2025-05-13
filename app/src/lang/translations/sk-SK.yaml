@@ -316,7 +316,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Resetovať predvoľby stránky
 hidden_field: Skryté pole
 hidden_on_detail: Skryté v podrobnostiach
-disabled_editing_value: Vypnúť zmeny hodnoty
 key: Kľúč
 alias: Alias
 bigInteger: Veľký Integer
