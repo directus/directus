@@ -189,6 +189,7 @@ const runManualFlow = async (flowId: string) => {
 		<div class="fields">
 			<div v-for="manualFlow in manualFlows" :key="manualFlow.id" class="field full">
 				<v-button
+					:color="manualFlow.color"
 					v-tooltip="getFlowTooltip(manualFlow)"
 					small
 					full-width
@@ -197,7 +198,7 @@ const runManualFlow = async (flowId: string) => {
 					@click="onFlowClick(manualFlow.id)"
 				>
 					<v-icon :name="manualFlow.icon ?? 'bolt'" small left />
-					{{ manualFlow.name }}
+					{{ manualFlow.name }} 
 				</v-button>
 			</div>
 		</div>
