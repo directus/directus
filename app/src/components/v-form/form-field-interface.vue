@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { computed } from 'vue';
+import { computed, ref, onMounted, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
 import { useCollectionPermissions } from '@/composables/use-permissions';
+import { UsableCollectionPermissions } from '@/composables/use-permissions/collection/use-collection-permissions';
 
 const props = defineProps<{
 	field: FormField;
@@ -41,12 +42,17 @@ const value = computed(() =>
 	props.modelValue === undefined ? props.field.schema?.default_value ?? null : props.modelValue,
 );
 
-const relatedCollectionPersmissions = computed(() => {
+const loadingPermissions = ref(true);
+
+const relatedCollectionPersmissions: Ref<UsableCollectionPermissions | null> = ref(null);
+
+onMounted(async () => {
 	if (props.field?.schema?.foreign_key_table) {
-		return useCollectionPermissions(props.field.schema.foreign_key_table);
+		const perms = await useCollectionPermissions(props.field.schema.foreign_key_table);
+		relatedCollectionPersmissions.value = perms;
 	}
 
-	return null;
+	loadingPermissions.value = false;
 });
 </script>
 
@@ -93,10 +99,12 @@ const relatedCollectionPersmissions = computed(() => {
 			</template>
 		</v-error-boundary>
 
-		<v-notice v-else-if="relatedCollectionPersmissions && !relatedCollectionPersmissions.readAllowed" type="warning">
+		<v-notice
+			v-else-if="!loadingPermissions && relatedCollectionPersmissions && !relatedCollectionPersmissions.readAllowed"
+			type="warning"
+		>
 			{{ t('permission_denied_for_related_field') }}
 		</v-notice>
-
 		<interface-system-raw-editor
 			v-else-if="rawEditorEnabled && rawEditorActive"
 			:value="value"
