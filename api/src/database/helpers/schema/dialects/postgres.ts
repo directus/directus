@@ -56,12 +56,7 @@ export class SchemaHelperPostgres extends SchemaHelper {
 	override async createIndexConcurrent(collection: string, field: string): Promise<Knex.SchemaBuilder> {
 		const constraintName = this.generateIndexName('index', collection, field);
 
-		if (!this.knex.isTransaction) {
-			// https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
-			return this.knex.schema.raw(`CREATE INDEX CONCURRENTLY "${constraintName}" ON "${collection}" ("${field}")`);
-		}
-
-		// fall back to blocking index creation
-		return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`);
+		// https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
+		return this.knex.schema.raw(`CREATE INDEX CONCURRENTLY "${constraintName}" ON "${collection}" ("${field}")`);
 	}
 }
