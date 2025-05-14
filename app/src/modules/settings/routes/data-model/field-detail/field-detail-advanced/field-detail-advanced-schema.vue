@@ -336,7 +336,7 @@ function useOnUpdate() {
 					:placeholder="t('a_unique_column_name')"
 				/>
 
-				<small class="note">{{ t('schema_setup_key') }}</small>
+				<small class="type-note">{{ t('schema_setup_key') }}</small>
 			</div>
 
 			<div class="field half">
@@ -465,12 +465,11 @@ function useOnUpdate() {
 	@include mixins.form-grid;
 }
 
-.note {
+.type-note {
+	position: relative;
 	display: block;
 	max-width: 520px;
 	margin-top: 4px;
-	color: var(--theme--foreground-subdued);
-	font-style: italic;
 }
 
 .monospace {

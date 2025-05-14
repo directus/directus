@@ -271,7 +271,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Återställ sidans inställningar
 hidden_field: Dolt fält
 hidden_on_detail: Dolt på detaljnivå
-disabled_editing_value: Inaktivera redigering av värde
 key: Nyckel
 alias: Alias
 bigInteger: Big Integer
@@ -797,7 +796,6 @@ flows: Flöden
 flow: Flöde
 select_a_flow: Välj ett flöde
 run_flow_on_current_edited_confirm: Detta objekt kan uppdateras av detta flöde, är du säker på att du vill köra det?
-run_flow_success: Flödet "{flow}" kördes framgångsrikt
 trigger: Utlösare
 create_trigger: Skapa utlösare
 trigger_setup: Konfiguration av utlösare
