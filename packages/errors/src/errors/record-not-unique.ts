@@ -3,11 +3,16 @@ import { createError, ErrorCode } from '../index.js';
 export interface RecordNotUniqueErrorExtensions {
 	collection: string | null;
 	field: string | null;
+	value: string | null;
 	primaryKey?: boolean;
 }
 
-export const messageConstructor = ({ collection, field }: RecordNotUniqueErrorExtensions) => {
+export const messageConstructor = ({ collection, field, value }: RecordNotUniqueErrorExtensions) => {
 	let message = 'Value ';
+
+	if (value) {
+		message += `"${value}" `;
+	}
 
 	if (field) {
 		message += `for field "${field}" `;
