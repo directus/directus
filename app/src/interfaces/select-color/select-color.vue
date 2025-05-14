@@ -102,7 +102,7 @@ const getPresetContrast = (hex: string) => {
 	return color.contrast(Color(cssVar('--theme--popover--menu--background'))) < 1.1;
 };
 
-const { hsl, rgb, hex, alpha, color, input } = useColor();
+const { hsl, rgb, hex, alpha, color, input, onChanged } = useColor();
 
 const showSwatch = computed(() => {
 	if (color.value) return true;
@@ -141,12 +141,14 @@ function useColor() {
 
 	const getHexa = (): string | null => {
 		if (color.value !== null) {
+			if (!props.opacity || color.value.rgb().array().length !== 4) return color.value.hex();
+
 			let alpha = Math.round(255 * color.value.alpha())
 				.toString(16)
 				.toUpperCase();
 
 			alpha = alpha.padStart(2, '0');
-			return color.value.rgb().array().length === 4 ? `${color.value.hex()}${alpha}` : color.value.hex();
+			return `${color.value.hex()}${alpha}`;
 		}
 
 		return null;
@@ -173,7 +175,7 @@ function useColor() {
 			return roundColorValues(props.opacity ? [0, 0, 0, 1] : [0, 0, 0]);
 		},
 		set(newRGB) {
-			setColor(Color.rgb(newRGB).alpha(newRGB.length === 4 ? newRGB[3] : 1));
+			setColor(Color.rgb(newRGB).alpha(newRGB.length === 4 ? newRGB[3]! : 1));
 		},
 	});
 
@@ -186,7 +188,7 @@ function useColor() {
 			return roundColorValues(props.opacity ? [0, 0, 0, 1] : [0, 0, 0]);
 		},
 		set(newHSL) {
-			setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3] : 1));
+			setColor(Color.hsl(newHSL).alpha(newHSL.length === 4 ? newHSL[3]! : 1));
 		},
 	});
 
@@ -225,9 +227,12 @@ function useColor() {
 		set(newInput) {
 			if (newInput === null || newInput === '') {
 				unsetColor();
-			} else if (isCssVarUtil(newInput)) {
-				emit('input', newInput);
+				return;
+			}
 
+			emit('input', newInput);
+
+			if (isCssVarUtil(newInput)) {
 				try {
 					color.value = Color(cssVar(newInput.substring(4, newInput.length - 1)));
 				} catch {
@@ -237,20 +242,29 @@ function useColor() {
 					// The color editor (rgb/hsl) will show the color as black (0,0,0) in this case.
 					color.value = null;
 				}
-			} else {
-				try {
-					// If the input is a valid color, we set the color and emit the input as a hex value which is consistent with the dropdown selector and HTML color picker
-					const newColor = Color(newInput);
-					setColor(newColor);
-				} catch {
-					// The input is not a valid color, but we still want to let the user edit/type in the input so we emit the input
-					emit('input', newInput);
-				}
 			}
 		},
 	});
 
-	return { rgb, hsl, hex, alpha, color, input };
+	return { rgb, hsl, hex, alpha, color, input, onChanged };
+
+	function onChanged() {
+		if (!input.value) {
+			unsetColor();
+			return;
+		}
+
+		if (isCssVarUtil(input.value)) return;
+
+		try {
+			// If the input is a valid color, we set the color and emit the input as a hex value which is consistent with the dropdown selector and HTML color picker
+			const newColor = Color(input.value);
+			setColor(newColor);
+		} catch {
+			// The input is not a valid color, but we still want to let the user edit/type in the input so we emit null to prevent using an invalid value
+			unsetColor();
+		}
+	}
 
 	function setColor(newColor: ColorInstance | null) {
 		color.value = newColor;
@@ -265,7 +279,7 @@ function useColor() {
 	function roundColorValues(arr: number[]): number[] {
 		if (arr.length === 4) {
 			// Do not round the opacity
-			return [...arr.slice(0, -1).map((x) => Math.round(x)), arr[3]];
+			return [...arr.slice(0, -1).map((x) => Math.round(x)), arr[3]!];
 		}
 
 		return arr.map((x) => Math.round(x));
@@ -284,6 +298,7 @@ function useColor() {
 				class="color-input"
 				:maxlength="opacity ? 9 : 7"
 				@focus="activate"
+				@change="onChanged"
 			>
 				<template #prepend>
 					<v-input
