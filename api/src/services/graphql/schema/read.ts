@@ -812,16 +812,16 @@ export async function getReadableTypes(
 				});
 			}
 		} else if (relation.meta?.one_allowed_collections) {
-			ReadableCollectionQuantifierFilterTypes[relation.collection]?.removeField('item');
-			ReadableCollectionFilterTypes[relation.collection]?.removeField('item');
+			ReadableCollectionQuantifierFilterTypes[relation.collection]?.removeField(relation.field);
+			ReadableCollectionFilterTypes[relation.collection]?.removeField(relation.field);
 
 			for (const collection of relation.meta.one_allowed_collections) {
 				ReadableCollectionQuantifierFilterTypes[relation.collection]?.addFields({
-					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
+					[`${relation.field}__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 				});
 
 				ReadableCollectionFilterTypes[relation.collection]?.addFields({
-					[`item__${collection}`]: ReadableCollectionFilterTypes[collection]!,
+					[`${relation.field}__${collection}`]: ReadableCollectionFilterTypes[collection]!,
 				});
 			}
 		}

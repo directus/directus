@@ -16,7 +16,7 @@ export async function resolveMutation(
 	if (gql.scope === 'system') collection = `directus_${collection}`;
 
 	const selections = replaceFragmentsInSelections(info.fieldNodes[0]?.selectionSet?.selections, info.fragments);
-	const query = await getQuery(args, selections || [], info.variableValues, gql.schema, gql.accountability);
+	const query = await getQuery(args, gql.schema, selections || [], info.variableValues, gql.accountability, collection);
 
 	const singleton =
 		collection.endsWith('_batch') === false &&
