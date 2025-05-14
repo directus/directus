@@ -41,4 +41,9 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	METRICS_SERVICES: 'array',
 
 	DB_SSL__CA_FILE: 'string',
+
+	ADMIN_PASSWORD: 'string',
+	ADMIN_TOKEN: 'string',
+	KEY: 'string',
+	SECRET: 'string',
 } as const;
