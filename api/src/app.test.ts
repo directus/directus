@@ -72,6 +72,7 @@ beforeEach(() => {
 		STORAGE_LOCATIONS: ['local'],
 		ROBOTS_TXT: 'User-agent: *\nDisallow: /',
 		ROOT_REDIRECT: './admin',
+		IP_TRUST_PROXY: true,
 	});
 });
 
