@@ -289,7 +289,7 @@ function useColor() {
 
 <template>
 	<v-menu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
-		<template #activator="{ activate }">
+		<template #activator="{ activate, toggle }">
 			<v-input
 				v-model="input"
 				:disabled="disabled"
@@ -297,8 +297,19 @@ function useColor() {
 				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
 				:maxlength="opacity ? 9 : 7"
-				@focus="activate"
 				@change="onChanged"
+				@click="
+					(e: InputEvent) => {
+						if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
+					}
+				"
+				@keydown="
+					(e: KeyboardEvent) => {
+						const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
+
+						if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
+					}
+				"
 			>
 				<template #prepend>
 					<v-input
@@ -329,7 +340,7 @@ function useColor() {
 					<div class="item-actions">
 						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
 
-						<v-icon v-else name="palette" />
+						<v-icon v-else name="palette" clickable @click="toggle" />
 					</div>
 				</template>
 			</v-input>
