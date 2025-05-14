@@ -39,8 +39,8 @@ export async function parseFields(
 	fields = await convertWildcards(
 		{
 			fields,
-			parentCollection: options.parentCollection,
-			query: options.query,
+			collection: options.parentCollection,
+			alias: options.query.alias,
 			accountability: options.accountability,
 		},
 		context,
