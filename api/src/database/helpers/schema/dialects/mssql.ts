@@ -79,15 +79,27 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		return 128;
 	}
 
-	override createIndexConcurrent(collection: string, field: string): Knex.SchemaBuilder {
-		const constraintName = this.generateIndexName("index", collection, field);
+	override async createIndexConcurrent(collection: string, field: string): Promise<Knex.SchemaBuilder> {
+		const constraintName = this.generateIndexName('index', collection, field);
 
-		if (!this.knex.isTransaction) {
+		/*
+		Online index operations are not available in every edition of Microsoft SQL Server.
+		For a list of features that are supported by the editions of SQL Server, see Editions and supported features of SQL Server 2022.
+
+		https://learn.microsoft.com/en-us/sql/sql-server/editions-and-components-of-sql-server-2022?view=sql-server-ver16#rdbms-high-availability
+		 */
+		const edition = await this.knex
+			.raw<{ edition?: string }[]>(`SELECT SERVERPROPERTY('edition') AS edition`)
+			.then((data) => data?.[0]?.['edition']);
+
+		if (typeof edition === 'string' && edition.startsWith('Enterprise')) {
 			// https://learn.microsoft.com/en-us/sql/t-sql/statements/create-index-transact-sql?view=sql-server-ver16#online---on--off-
-			return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`);
+			return this.knex.schema.raw(
+				`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}") WITH (ONLINE = ON)`,
+			);
 		}
 
-		// fall back to blocking index creation
+		// Fall back to blocking index creation for non-enterprise editions
 		return this.knex.schema.alterTable(collection, async (table) => {
 			// TODO: re-use existing index logic
 		});
