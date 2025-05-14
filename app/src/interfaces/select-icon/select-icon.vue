@@ -59,7 +59,18 @@ function setIcon(icon: string | null) {
 				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
 				:class="{ 'has-value': value }"
 				:nullable="false"
-				@focus="activate"
+				@click="
+					(e: InputEvent) => {
+						if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
+					}
+				"
+				@keydown="
+					(e: KeyboardEvent) => {
+						const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
+
+						if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
+					}
+				"
 			>
 				<template v-if="value" #prepend>
 					<v-icon clickable :name="value" :class="{ active: value }" @click="toggle" />
