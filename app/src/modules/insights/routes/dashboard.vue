@@ -108,7 +108,10 @@ const tiles = computed<AppTile[]>(() => {
 				draggable: true,
 				borderRadius: [!topLeftIntersects, !topRightIntersects, !bottomRightIntersects, !bottomLeftIntersects],
 				data: {
-					options: applyOptionsData(panel.options ?? {}, unref(variables), panelType?.skipUndefinedKeys),
+					options: applyOptionsData(panel.options ?? {}, unref(variables), panelType?.skipUndefinedKeys, [
+						'_in',
+						'_nin',
+					]),
 					type: panel.type,
 				},
 			};

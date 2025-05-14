@@ -24,6 +24,20 @@ describe('applyOptionsData', () => {
 		).toEqual({ str: 42, arr: [['foo', 'bar'], { null: null }], obj: { str: { foo: 'bar' }, num: 42 } });
 	});
 
+	it('returns the options with arrays flattened when templates are used with filters _in or _nin', () => {
+		expect(
+			applyOptionsData(
+				{ arr_in: { _in: ['{{ arr }}', 'baz'] }, arr_nin: { _nin: ['baz', '{{ arr }}'] } },
+				{ arr: ['foo', 'bar'] },
+				[],
+				['_in', '_nin'],
+			),
+		).toEqual({
+			arr_in: { _in: ['foo', 'bar', 'baz'] },
+			arr_nin: { _nin: ['baz', 'foo', 'bar'] },
+		});
+	});
+
 	it('returns the options with any non-raw template rendered with the respective stringified values from the scope', () => {
 		expect(
 			applyOptionsData(

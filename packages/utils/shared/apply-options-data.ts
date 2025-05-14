@@ -15,9 +15,13 @@ export function applyOptionsData(
 	options: Record<string, any>,
 	data: Record<string, any>,
 	skipUndefinedKeys: string[] = [],
+	flatArrayKeys: string[] = [],
 ): Record<string, any> {
 	return Object.fromEntries(
-		Object.entries(options).map(([key, value]) => [key, renderMustache(value, data, skipUndefinedKeys.includes(key))]),
+		Object.entries(options).map(([key, value]) => [
+			key,
+			renderMustache(value, data, skipUndefinedKeys.includes(key), flatArrayKeys),
+		]),
 	);
 }
 
@@ -33,7 +37,13 @@ function resolveFn(skipUndefined: boolean): (path: string, scope: Scope) => any 
 	};
 }
 
-function renderMustache<T extends JsonValue>(item: T, scope: Scope, skipUndefined: boolean): Mustache<T> {
+function renderMustache<T extends JsonValue>(
+	item: T,
+	scope: Scope,
+	skipUndefined: boolean,
+	flatArrayKeys: string[],
+	flattenArray = false,
+): Mustache<T> {
 	if (typeof item === 'string') {
 		const raw = item.match(/^\{\{\s*([^}\s]+)\s*\}\}$/);
 
@@ -47,10 +57,21 @@ function renderMustache<T extends JsonValue>(item: T, scope: Scope, skipUndefine
 
 		return renderFn(item, resolveFn(skipUndefined) as ResolveFn, scope, { explicit: true }) as Mustache<T>;
 	} else if (Array.isArray(item)) {
-		return item.map((element) => renderMustache(element, scope, skipUndefined)) as Mustache<T>;
+		const processArrayElement = (element: JsonValue) =>
+			renderMustache(element, scope, skipUndefined, flatArrayKeys, flattenArray);
+
+		if (flattenArray) {
+			return item.flatMap(processArrayElement) as Mustache<T>;
+		}
+
+		return item.map(processArrayElement) as Mustache<T>;
 	} else if (typeof item === 'object' && item !== null) {
 		return Object.fromEntries(
-			Object.entries(item).map(([key, value]) => [key, renderMustache(value, scope, skipUndefined)]),
+			Object.entries(item).map(([key, value]) => {
+				const keyRequiresFlatArray = flatArrayKeys.includes(key);
+
+				return [key, renderMustache(value, scope, skipUndefined, flatArrayKeys, keyRequiresFlatArray)];
+			}),
 		) as Mustache<T>;
 	} else {
 		return item as Mustache<T>;
