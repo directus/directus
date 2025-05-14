@@ -19,6 +19,10 @@ export type SortRecord = {
 	column: Knex.Raw;
 };
 
+export type CreateIndexOptions = {
+	tryNonBlocking?: boolean;
+};
+
 export abstract class SchemaHelper extends DatabaseHelper {
 	isOneOfClients(clients: DatabaseClient[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
@@ -181,10 +185,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return 64;
 	}
 
-	async createIndexConcurrent(collection: string, field: string): Promise<Knex.SchemaBuilder> {
-		// Re-use existing blocking create index logic
-		return this.knex.schema.alterTable(collection, async (table) => {
-			// TODO: re-use existing index logic
-		});
+	async createIndex(_collection: string, _field: string, _options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+		throw new Error('not implemented');
 	}
 }

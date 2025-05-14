@@ -1,7 +1,7 @@
 import { useEnv } from '@directus/env';
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type SortRecord } from '../types.js';
+import { SchemaHelper, type CreateIndexOptions, type SortRecord } from '../types.js';
 
 const env = useEnv();
 
@@ -71,16 +71,22 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		}
 	}
 
-	override async createIndexConcurrent(collection: string, field: string): Promise<Knex.SchemaBuilder> {
+	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
 		const constraintName = this.generateIndexName('index', collection, field);
+		const basicIndexQuery = `CREATE INDEX \`${constraintName}\` ON \`${collection}\` (\`${field}\`)`;
 
-		/*
-		Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
-		so we're just going to send it and fall back to blocking index creation on error
-		
-		https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
-		 */
-		return this.knex.schema.raw(`CREATE INDEX \`${constraintName}\` ON \`${collection}\` (\`${field}\`) ALGORITHM=INPLACE LOCK=NONE`)
-			.catch(() => this.knex.schema.raw(`CREATE INDEX \`${constraintName}\` ON \`${collection}\` (\`${field}\`)`));
+		if (options.tryNonBlocking) {
+			/*
+			Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
+			so we're just going to send it and fall back to blocking index creation on error
+			
+			https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
+			*/
+			return this.knex.schema
+				.raw(`${basicIndexQuery} ALGORITHM=INPLACE LOCK=NONE`)
+				.catch(() => this.knex.schema.raw(basicIndexQuery));
+		}
+
+		return this.knex.schema.raw(basicIndexQuery);
 	}
 }

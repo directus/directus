@@ -1,5 +1,6 @@
+import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper } from '../types.js';
+import { SchemaHelper, type CreateIndexOptions } from '../types.js';
 
 export class SchemaHelperSQLite extends SchemaHelper {
 	override generateIndexName(
@@ -38,5 +39,12 @@ export class SchemaHelperSQLite extends SchemaHelper {
 
 	override addInnerSortFieldsToGroupBy() {
 		// SQLite does not need any special handling for inner query sort columns
+	}
+
+	override async createIndex(collection: string, field: string, _options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+		const constraintName = this.generateIndexName('index', collection, field);
+
+		// https://sqlite.org/lang_createindex.html
+		return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`);
 	}
 }

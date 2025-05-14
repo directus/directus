@@ -1,6 +1,6 @@
 import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type SortRecord, type Sql } from '../types.js';
+import { SchemaHelper, type CreateIndexOptions, type SortRecord, type Sql } from '../types.js';
 import { prepQueryParams } from '../utils/prep-query-params.js';
 
 export class SchemaHelperMSSQL extends SchemaHelper {
@@ -79,8 +79,9 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		return 128;
 	}
 
-	override async createIndexConcurrent(collection: string, field: string): Promise<Knex.SchemaBuilder> {
+	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
 		const constraintName = this.generateIndexName('index', collection, field);
+		const basicIndexQuery = `CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`;
 
 		/*
 		Online index operations are not available in every edition of Microsoft SQL Server.
@@ -92,14 +93,12 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 			.raw<{ edition?: string }[]>(`SELECT SERVERPROPERTY('edition') AS edition`)
 			.then((data) => data?.[0]?.['edition']);
 
-		if (typeof edition === 'string' && edition.startsWith('Enterprise')) {
+		if (options.tryNonBlocking && typeof edition === 'string' && edition.startsWith('Enterprise')) {
 			// https://learn.microsoft.com/en-us/sql/t-sql/statements/create-index-transact-sql?view=sql-server-ver16#online---on--off-
-			return this.knex.schema.raw(
-				`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}") WITH (ONLINE = ON)`,
-			);
+			return this.knex.schema.raw(`${basicIndexQuery} WITH (ONLINE = ON)`);
 		}
 
 		// Fall back to blocking index creation for non-enterprise editions
-		return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`);
+		return this.knex.schema.raw(basicIndexQuery);
 	}
 }

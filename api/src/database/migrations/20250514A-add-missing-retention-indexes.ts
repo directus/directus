@@ -20,7 +20,7 @@ export async function up(knex: Knex): Promise<void> {
         const existingColumn = await service.columnInfo(collection, field);
 
         if (!existingColumn.is_indexed && !ignore.includes(client)) {
-            await helpers.schema.createIndexConcurrent(collection, field);
+            await helpers.schema.createIndex(collection, field, { tryNonBlocking: true });
         }
     }
 }
