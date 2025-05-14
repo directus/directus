@@ -208,7 +208,6 @@ creating_new_field: 'Novo polje ({collection})'
 reset_page_preferences: Resetuj postavke stranice
 hidden_field: Skriveno polje
 hidden_on_detail: Skriveno na detaljima
-disabled_editing_value: Onemogući uređivanje vrijednosti
 key: Ključ
 alias: Pseudonim
 bigInteger: Veliki cijeli broj
@@ -712,7 +711,6 @@ flows: Tokovi
 flow: Tok
 select_a_flow: Odaberite tok
 run_flow_on_current_edited_confirm: Ova se stavka može ažurirati ovim tokom, jeste li sigurni da je želite izvršiti?
-run_flow_success: Tok "{flow}" je uspješno izvršen
 trigger: Okidač
 trigger_options: Opcije okidača
 view_trigger: Prikaži okidač

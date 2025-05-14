@@ -529,7 +529,6 @@ function getLinkForItem(item: DisplayItem) {
 				:items="displayItems"
 				:item-key="relationInfo.junctionPrimaryKeyField.field"
 				:row-height="tableRowHeight"
-				:disabled="disabled"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
 				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
@@ -619,7 +618,6 @@ function getLinkForItem(item: DisplayItem) {
 									v-tooltip="t('navigate_to_item')"
 									:to="getLinkForItem(element)!"
 									class="item-link"
-									:disabled="element.$type === 'created'"
 									@click.stop
 								>
 									<v-icon name="launch" />
