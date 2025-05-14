@@ -36,7 +36,7 @@ function unsetValue(e: any) {
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-list-item block clickable :disabled @click="toggle">
+			<v-list-item block clickable :disabled :active @click="toggle">
 				<template v-if="isValidValue">
 					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
@@ -69,6 +69,24 @@ function unsetValue(e: any) {
 </template>
 
 <style lang="scss" scoped>
+.v-list-item {
+	--v-list-item-color-active: var(--v-list-item-color);
+	--v-list-item-background-color-active: var(
+		--v-list-item-background-color,
+		var(--v-list-background-color, var(--theme--form--field--input--background))
+	);
+
+	&.active,
+	&:focus-within,
+	&:focus-visible {
+		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
+		--v-list-item-border-color-hover: var(--v-list-item-border-color);
+
+		offset: 0;
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	}
+}
+
 .v-icon {
 	&.today-icon {
 		&:hover,
