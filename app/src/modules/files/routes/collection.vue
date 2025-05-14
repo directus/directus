@@ -397,7 +397,15 @@ function useFileUpload() {
 
 				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
+						<v-button
+							v-tooltip.bottom="batchEditAllowed ? t('move_to_folder') : t('not_allowed')"
+							rounded
+							icon
+							class="folder"
+							secondary
+							:disabled="!batchEditAllowed"
+							@click="on"
+						>
 							<v-icon name="folder_move" />
 						</v-button>
 					</template>
@@ -413,7 +421,7 @@ function useFileUpload() {
 							<v-button secondary @click="moveToDialogActive = false">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button :loading="moving" @click="moveToFolder">
+							<v-button :loading="moving" :disabled="!batchEditAllowed" @click="moveToFolder">
 								{{ t('move') }}
 							</v-button>
 						</v-card-actions>
