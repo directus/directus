@@ -473,6 +473,16 @@ function handleKeyDown(event: any) {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
 
+	&:focus-within {
+		border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	}
+
+	:deep(button) {
+		--focus-ring-offset: var(--focus-ring-offset-invert);
+		--focus-ring-radius: 0;
+	}
+
 	.map {
 		position: relative;
 		width: 100%;
