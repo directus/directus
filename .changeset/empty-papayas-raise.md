@@ -3,4 +3,4 @@
 "tests-blackbox": patch
 ---
 
-Added deletion of `dist` folder to the `build` command
+Added deletion of the `dist` folder to the `build` command
