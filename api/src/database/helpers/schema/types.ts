@@ -181,7 +181,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return 64;
 	}
 
-	createIndexConcurrent(collection: string, field: string): Knex.SchemaBuilder {
+	async createIndexConcurrent(collection: string, field: string): Promise<Knex.SchemaBuilder> {
 		// Re-use existing blocking create index logic
 		return this.knex.schema.alterTable(collection, async (table) => {
 			// TODO: re-use existing index logic

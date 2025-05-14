@@ -100,8 +100,6 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		}
 
 		// Fall back to blocking index creation for non-enterprise editions
-		return this.knex.schema.alterTable(collection, async (table) => {
-			// TODO: re-use existing index logic
-		});
+		return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`);
 	}
 }
