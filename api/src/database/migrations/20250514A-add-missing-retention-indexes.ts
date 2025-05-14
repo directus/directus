@@ -3,37 +3,38 @@ import { getHelpers } from '../helpers/index.js';
 import { transaction } from '../../utils/transaction.js';
 import { FieldsService } from '../../services/fields.js';
 import { getSchema } from '../../utils/get-schema.js';
+import { getDatabaseClient } from '../index.js';
 
 const RETENTION_INDEXES = [
-    { collection: 'directus_activity', field: 'timestamp' },
-    { collection: 'directus_revisions', field: 'parent' },
+    { collection: 'directus_activity', field: 'timestamp', ignore: [] },
+    { collection: 'directus_revisions', field: 'parent', ignore: ['mysql'] },
 ];
 
-// TODO: mysql should have an exception as it already has an index on `directus_revisions.parent`
-
 export async function up(knex: Knex): Promise<void> {
+    const client = getDatabaseClient(knex);
     const helpers = getHelpers(knex);
     const schema = await getSchema();
     const service = new FieldsService({ knex, schema });
 
-    for (const { collection, field } of RETENTION_INDEXES) {
+    for (const { collection, field, ignore } of RETENTION_INDEXES) {
         const existingColumn = await service.columnInfo(collection, field);
 
-        if (!existingColumn.is_indexed) {
+        if (!existingColumn.is_indexed && !ignore.includes(client)) {
             await helpers.schema.createIndexConcurrent(collection, field);
         }
     }
 }
 
 export async function down(knex: Knex): Promise<void> {
+    const client = getDatabaseClient(knex);
     const helpers = getHelpers(knex);
     const schema = await getSchema();
     const service = new FieldsService({ knex, schema });
     
-    for (const { collection, field } of RETENTION_INDEXES) {
+    for (const { collection, field, ignore } of RETENTION_INDEXES) {
         const existingColumn = await service.columnInfo(collection, field);
 
-        if (existingColumn.is_indexed) {
+        if (existingColumn.is_indexed && !ignore.includes(client)) {
             await transaction(knex, async (trx) => {
                 await trx.schema.alterTable(collection, async (table) => {
                     table.dropIndex([field], helpers.schema.generateIndexName('index', collection, field));

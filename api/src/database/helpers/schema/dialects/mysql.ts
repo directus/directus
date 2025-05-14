@@ -74,14 +74,13 @@ export class SchemaHelperMySQL extends SchemaHelper {
 	override async createIndexConcurrent(collection: string, field: string): Promise<Knex.SchemaBuilder> {
 		const constraintName = this.generateIndexName('index', collection, field);
 
-		if (!this.knex.isTransaction) {
-			// https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
-			return this.knex.schema.raw(
-				`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}") ALGORITHM=INPLACE, LOCK=NONE`,
-			);
-		}
-
-		// fall back to blocking index creation
-		return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`);
+		/*
+		Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
+		so we're just going to send it and fall back to blocking index creation on error
+		
+		https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
+		 */
+		return this.knex.schema.raw(`CREATE INDEX \`${constraintName}\` ON \`${collection}\` (\`${field}\`) ALGORITHM=INPLACE LOCK=NONE`)
+			.catch(() => this.knex.schema.raw(`CREATE INDEX \`${constraintName}\` ON \`${collection}\` (\`${field}\`)`));
 	}
 }
