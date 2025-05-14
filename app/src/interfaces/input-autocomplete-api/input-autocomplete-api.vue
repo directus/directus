@@ -75,7 +75,7 @@ const fetchResults =
 
 function onInput(value: string) {
 	emitValue(value);
-	fetchResults(value);
+	return fetchResults(value);
 }
 
 function emitValue(value: string) {
@@ -89,23 +89,29 @@ function emitValue(value: string) {
 	</v-notice>
 	<div v-else>
 		<v-menu attached :disabled="disabled">
-			<template #activator="{ activate }">
+			<template #activator="{ activate, deactivate }">
 				<v-input
 					:placeholder="placeholder"
 					:disabled="disabled"
 					:class="font"
 					:model-value="value"
 					:dir="direction"
-					@update:model-value="onInput"
-					@focus="activate"
+					@update:model-value="
+						async (value: string) => {
+							await onInput(value);
+
+							if (value && results.length) activate();
+							else deactivate();
+						}
+					"
 				>
 					<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 					<template v-if="iconRight" #append><v-icon :name="iconRight" /></template>
 				</v-input>
 			</template>
 
-			<v-list v-if="results.length > 0">
-				<v-list-item v-for="result of results" :key="result.value" @click="() => emitValue(result.value)">
+			<v-list v-if="results.length">
+				<v-list-item v-for="result of results" :key="result.value" clickable @click="() => emitValue(result.value)">
 					<v-list-item-content>{{ textPath ? result.text : result.value }}</v-list-item-content>
 				</v-list-item>
 			</v-list>
