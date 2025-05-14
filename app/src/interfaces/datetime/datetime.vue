@@ -36,34 +36,31 @@ function unsetValue(e: any) {
 <template>
 	<v-menu ref="dateTimeMenu" :close-on-content-click="false" attached :disabled="disabled" full-height seamless>
 		<template #activator="{ toggle, active }">
-			<v-input
-				:active="active"
-				clickable
-				readonly
-				:disabled="disabled"
-				:placeholder="!isValidValue ? value : undefined"
-				@click="toggle"
-			>
-				<template v-if="isValidValue" #prepend>
+			<v-list-item block clickable :disabled @click="toggle">
+				<template v-if="isValidValue">
 					<use-datetime v-slot="{ datetime }" v-bind="$props as UseDatetimeProps">
 						{{ datetime }}
 					</use-datetime>
 				</template>
-				<template v-if="!disabled" #append>
+
+				<div class="spacer" />
+
+				<template v-if="!disabled">
 					<v-icon
 						:name="value ? 'clear' : 'today'"
 						:class="{ active, 'clear-icon': value, 'today-icon': !value }"
-						v-on="{ click: value ? unsetValue : null }"
+						clickable
+						@click="value ? unsetValue($event) : undefined"
 					/>
 				</template>
-			</v-input>
+			</v-list-item>
 		</template>
 
 		<v-date-picker
-			:type="type"
-			:disabled="disabled"
-			:include-seconds="includeSeconds"
-			:use-24="use24"
+			:type
+			:disabled
+			:include-seconds
+			:use-24
 			:model-value="value"
 			@update:model-value="$emit('input', $event)"
 			@close="dateTimeMenu?.deactivate"

@@ -74,7 +74,6 @@ const defaultOptions = {
 		const setToNowButton: HTMLElement = document.createElement('button');
 		setToNowButton.innerHTML = t('interfaces.datetime.set_to_now');
 		setToNowButton.classList.add('set-to-now-button');
-		setToNowButton.tabIndex = -1;
 		setToNowButton.addEventListener('click', setToNow);
 		instance.calendarContainer.appendChild(setToNowButton);
 
