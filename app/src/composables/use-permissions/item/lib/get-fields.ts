@@ -33,7 +33,9 @@ export function getFields(collection: Collection, isNew: IsNew, fetchedItemPermi
 
 		if (!permission?.fields?.includes('*')) {
 			for (const field of fields) {
-				if (!permission?.fields?.includes(field.field)) {
+				const isGroup = field.meta?.special?.includes('group');
+
+				if (!permission?.fields?.includes(field.field) && !isGroup) {
 					field.meta = {
 						...(field.meta || {}),
 						readonly: true,
