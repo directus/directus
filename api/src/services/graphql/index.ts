@@ -73,7 +73,9 @@ export class GraphQLService {
 		if (result['data']) formattedResult.data = result['data'];
 
 		if (result['errors']) {
-			formattedResult.errors = result['errors'].map((error) => processError(this.accountability, error));
+			throw new GraphQLExecutionError({
+				errors: result['errors'].map((error) => processError(this.accountability, error)),
+			});
 		}
 
 		if (result['extensions']) formattedResult.extensions = result['extensions'];
