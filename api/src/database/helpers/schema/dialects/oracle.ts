@@ -136,17 +136,10 @@ export class SchemaHelperOracle extends SchemaHelper {
 		return 128;
 	}
 
-	override createIndexConcurrent(collection: string, field: string): Knex.SchemaBuilder {
-		const constraintName = this.generateIndexName("index", collection, field);
+	override async createIndexConcurrent(collection: string, field: string): Promise<Knex.SchemaBuilder> {
+		const constraintName = this.generateIndexName('index', collection, field);
 
-		if (!this.knex.isTransaction) {
-			// https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/CREATE-INDEX.html#GUID-1F89BBC0-825F-4215-AF71-7588E31D8BFE__GUID-041E5429-065B-43D5-AC7F-66810140842C
-			return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}") ONLINE`);
-		}
-
-		// fall back to blocking index creation
-		return this.knex.schema.alterTable(collection, async (table) => {
-			// TODO: re-use existing index logic
-		});
+		// https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/CREATE-INDEX.html#GUID-1F89BBC0-825F-4215-AF71-7588E31D8BFE__GUID-041E5429-065B-43D5-AC7F-66810140842C
+		return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}") ONLINE`);
 	}
 }
