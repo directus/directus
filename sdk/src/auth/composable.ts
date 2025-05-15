@@ -124,7 +124,7 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 			async login(email: string, password: string, options: LoginOptions = {}) {
 				await resetStorage();
 
-				const authData: Record<string, string> = { email, password };
+				const authData: Record<string, string> = { [options.emailKey ?? 'email']: email, password };
 				if ('otp' in options) authData['otp'] = options.otp;
 				authData['mode'] = options.mode ?? mode;
 
