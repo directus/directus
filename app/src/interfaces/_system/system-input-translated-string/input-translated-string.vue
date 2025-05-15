@@ -276,6 +276,8 @@ const newTranslationDefaults = computed(() => {
 		opacity: 0;
 	}
 
+	.info :deep(.icon:focus-visible),
+	&:focus-visible .info :deep(.icon),
 	&:hover .info :deep(.icon) {
 		opacity: 1;
 	}
@@ -292,12 +294,15 @@ const newTranslationDefaults = computed(() => {
 		--v-list-item-background-color-active: var(--theme--primary);
 		--v-list-item-color-hover: var(--foreground-inverted);
 		--v-list-item-background-color-hover: var(--theme--primary);
+		--focus-ring-color: var(--v-list-item-color-active);
+		--focus-ring-offset: var(--focus-ring-offset-inset);
 
 		background-color: var(--theme--primary);
 		color: var(--foreground-inverted);
 
 		.v-list-item-icon {
 			--v-icon-color: var(--foreground-inverted);
+			--focus-ring-offset: var(--focus-ring-offset-invert);
 		}
 
 		.info :deep(.icon) {

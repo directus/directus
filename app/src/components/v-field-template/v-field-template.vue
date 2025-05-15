@@ -248,15 +248,15 @@ function setContent() {
 
 				if (!field) return '';
 
-				return `<button contenteditable="false" data-field="${fieldKey}" ${props.disabled ? 'disabled' : ''}>${
-					field.name
-				}</button>`;
+				return `<button type="button" contenteditable="false" data-field="${fieldKey}" ${
+					props.disabled ? 'disabled' : ''
+				}>${field.name}</button>`;
 			})
 			.join('');
 
 		contentEl.value.innerHTML = dompurify.sanitize(newInnerHTML, {
 			ALLOWED_TAGS: ['span', 'button'],
-			ALLOWED_ATTR: ['contenteditable', 'data-field', 'disabled', 'class'],
+			ALLOWED_ATTR: ['type', 'contenteditable', 'data-field', 'disabled', 'class'],
 		});
 	}
 }
@@ -308,26 +308,26 @@ function setContent() {
 		min-height: 1em;
 		white-space: pre;
 	}
-}
 
-:deep(br) {
-	display: none;
-}
+	:deep(br) {
+		display: none;
+	}
 
-:deep(button:not(.v-icon)) {
-	margin: -1px 4px 0;
-	padding: 2px 4px 0;
-	color: var(--theme--primary);
-	background-color: var(--theme--primary-background);
-	border-radius: var(--theme--border-radius);
-	transition: var(--fast) var(--transition);
-	transition-property: background-color, color;
-	user-select: none;
-}
+	:deep(button:not(.v-icon)) {
+		margin: -1px 4px 0;
+		padding: 2px 4px 0;
+		color: var(--theme--primary);
+		background-color: var(--theme--primary-background);
+		border-radius: var(--theme--border-radius);
+		transition: var(--fast) var(--transition);
+		transition-property: background-color, color;
+		user-select: none;
+	}
 
-:deep(button:not(.v-icon):not(:disabled):hover) {
-	color: var(--white);
-	background-color: var(--theme--danger);
+	:deep(button:not(.v-icon):not(:disabled):hover) {
+		color: var(--white);
+		background-color: var(--theme--danger);
+	}
 }
 
 .placeholder {
