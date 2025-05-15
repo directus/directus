@@ -313,7 +313,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: إعادة ضبط الإعدادات المفضّلة للتطبيقات
 hidden_field: حقل مخفي
 hidden_on_detail: مخفي في التفاصيل
-disabled_editing_value: تعطيل قيمة التحرير
 key: مفتاح
 alias: اسم مستعار
 bigInteger: عدد صحيح كبير

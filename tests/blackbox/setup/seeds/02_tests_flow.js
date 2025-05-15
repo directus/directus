@@ -13,6 +13,8 @@ export async function seed(knex) {
 		},
 	]);
 
+	await knex('directus_policies').where('id', '9cd8b17c-474b-4abb-b366-09dcdb45e177').del();
+
 	await knex('directus_policies').insert([
 		{
 			id: '9cd8b17c-474b-4abb-b366-09dcdb45e177',
@@ -21,6 +23,8 @@ export async function seed(knex) {
 			app_access: true,
 		},
 	]);
+
+	await knex('directus_access').where('id', '27029bb1-8b2e-43c2-b966-eb049f84ea68').del();
 
 	await knex('directus_access').insert([
 		{

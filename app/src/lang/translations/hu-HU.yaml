@@ -202,7 +202,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Oldalbeállítások visszaállítása
 hidden_field: Rejtett mező
 hidden_on_detail: Elrejtés a részleteknél
-disabled_editing_value: Érték szerkeszthetőségének kikapcsolása
 key: Kulcs
 alias: Álnév
 bigInteger: Nagy egész számok

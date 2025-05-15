@@ -271,7 +271,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Återställ sidans inställningar
 hidden_field: Dolt fält
 hidden_on_detail: Dolt på detaljnivå
-disabled_editing_value: Inaktivera redigering av värde
 key: Nyckel
 alias: Alias
 bigInteger: Big Integer
