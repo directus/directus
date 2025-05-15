@@ -852,7 +852,6 @@ export class FieldsService {
 		existing: Column | null = null,
 	): Promise<void> {
 		let column: Knex.ColumnBuilder;
-		let columnHasChanged = existing === null;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
 		if (field.type === 'alias' || field.type === 'unknown') return;
@@ -893,12 +892,7 @@ export class FieldsService {
 		 * The column nullability must be set on every alter or it will be dropped
 		 * This is due to column.alter() not being incremental per https://knexjs.org/guide/schema-builder.html#alter
 		 */
-		if (existing && field.schema?.is_nullable !== existing.is_nullable) {
-			columnHasChanged = true;
-		}
-
 		this.helpers.schema.setNullable(column, field, existing);
-		
 
 		/**
 		 * The default value must be set on every alter or it will be dropped
@@ -907,10 +901,6 @@ export class FieldsService {
 
 		const defaultValue =
 			field.schema?.default_value !== undefined ? field.schema?.default_value : existing?.default_value;
-		
-		if (existing && field.schema?.default_value !== existing.default_value) {
-			columnHasChanged = true;
-		}
 
 		if (defaultValue !== undefined) {
 			const newDefaultValueIsString = typeof defaultValue === 'string';
@@ -938,7 +928,6 @@ export class FieldsService {
 
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
-			columnHasChanged = true;
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
@@ -962,7 +951,7 @@ export class FieldsService {
 			}
 		}
 
-		if (existing && columnHasChanged) {
+		if (existing) {
 			column.alter();
 		}
 
