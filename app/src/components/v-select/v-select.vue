@@ -385,7 +385,7 @@ function useDisplayValue() {
 							:model-value="modelValue || []"
 							:value="otherVal.value"
 							custom-value
-							focus-custom-input
+							:focus-custom-input="otherVal.focus"
 							@update:model-value="$emit('update:modelValue', $event)"
 							@update:value="setOtherValue(otherVal.key, $event)"
 							@blur:custom-input="
@@ -398,7 +398,7 @@ function useDisplayValue() {
 					</v-list-item-icon>
 				</v-list-item>
 
-				<v-list-item clickable @click.stop="addOtherValue()">
+				<v-list-item clickable @click.stop="addOtherValue('', true)">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
 					<v-list-item-content>{{ t('other') }}</v-list-item-content>
 				</v-list-item>

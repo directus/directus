@@ -95,7 +95,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				:key="otherValue.key"
 				block
 				custom-value
-				focus-custom-input
+				:focus-custom-input="otherValue.focus"
 				:value="otherValue.value"
 				:disabled="disabled"
 				:icon-on="iconOn"
@@ -112,7 +112,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				</template>
 			</v-checkbox>
 
-			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue()">
+			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue('', true)">
 				<v-icon name="add" />
 				{{ t('other') }}
 			</button>
