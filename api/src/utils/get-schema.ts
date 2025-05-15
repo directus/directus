@@ -39,7 +39,7 @@ export async function getSchema(
 		const database = options?.database || getDatabase();
 		const schemaInspector = createInspector(database);
 
-		return await getDatabaseSchema(database, schemaInspector);
+		return await getDatabaseSchema(database, schemaInspector, { bypassCache: true });
 	}
 
 	const cached = getMemorySchemaCache();
@@ -113,7 +113,13 @@ export async function getSchema(
 	}
 }
 
-async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspector): Promise<SchemaOverview> {
+async function getDatabaseSchema(
+	database: Knex,
+	schemaInspector: SchemaInspector,
+	options: {
+		bypassCache?: boolean;
+	} = {},
+): Promise<SchemaOverview> {
 	const env = useEnv();
 
 	const result: SchemaOverview = {
@@ -224,6 +230,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	}
 
 	const relationsService = new RelationsService({ knex: database, schema: result });
+	relationsService.bypassCache = options.bypassCache ?? false;
 	result.relations = await relationsService.readAll();
 
 	return result;
