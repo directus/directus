@@ -47,7 +47,8 @@ export const systemFieldUpdateSchema = Joi.object({
 	collection: Joi.string(),
 	field: Joi.string(),
 	schema: Joi.object({
-		is_indexed: Joi.bool(),
+		is_indexed: Joi.bool().optional(),
+		is_unique: Joi.bool().optional(),
 	}),
 });
 
