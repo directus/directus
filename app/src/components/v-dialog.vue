@@ -75,12 +75,16 @@ function useOverlayFocusTrap() {
 		escapeDeactivates: false,
 	});
 
-	watch(internalActive, async (newActive) => {
-		await nextTick();
+	watch(
+		internalActive,
+		async (newActive) => {
+			await nextTick();
 
-		if (newActive) activate();
-		else deactivate();
-	});
+			if (newActive) activate();
+			else deactivate();
+		},
+		{ immediate: true },
+	);
 }
 </script>
 
