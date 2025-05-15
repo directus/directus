@@ -192,6 +192,7 @@ const runManualFlow = async (flowId: string) => {
 					v-tooltip="getFlowTooltip(manualFlow)"
 					small
 					full-width
+					:style="{ '--v-button-background-color': manualFlow.color }"
 					:loading="runningFlows.includes(manualFlow.id)"
 					:disabled="isFlowDisabled(manualFlow)"
 					@click="onFlowClick(manualFlow.id)"
@@ -247,21 +248,29 @@ const runManualFlow = async (flowId: string) => {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
+@use '@/styles/colors';
 
 .fields {
+	--theme--form--row-gap: 16px;
+
 	@include mixins.form-grid;
-}
 
-.fields {
-	--theme--form--row-gap: 24px;
+	.v-button {
+		--v-button-background-color-disabled: var(--theme--background-accent);
+		--v-button-background-color-hover: color-mix(
+			in srgb,
+			var(--v-button-background-color),
+			#{colors.$light-theme-shade} 25%
+		);
 
-	.type-label {
-		font-size: 1rem;
+		.dark & {
+			--v-button-background-color-hover: color-mix(
+				in srgb,
+				var(--v-button-background-color),
+				#{colors.$dark-theme-shade} 25%
+			);
+		}
 	}
-}
-
-:deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .v-icon {

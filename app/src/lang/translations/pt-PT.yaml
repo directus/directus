@@ -275,7 +275,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restaurar as preferências da página
 hidden_field: Campo oculto
 hidden_on_detail: Ocultar dentro de Detalhe
-disabled_editing_value: Desativar editar valor
 key: Chave
 alias: Nome alternativo
 bigInteger: Grande inteiro

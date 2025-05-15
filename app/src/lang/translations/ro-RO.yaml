@@ -290,7 +290,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Resetează preferințele paginii
 hidden_field: Câmp ascuns
 hidden_on_detail: Ascuns în detalii
-disabled_editing_value: Dezactivează valoarea de editare
 key: Cheie
 alias: Alias
 bigInteger: Întreg mare
