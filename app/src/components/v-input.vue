@@ -85,7 +85,7 @@ const props = withDefaults(defineProps<Props>(), {
 	small: false,
 });
 
-const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
+const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus', 'keydown:space', 'keydown:enter']);
 
 const attrs = useAttrs();
 
@@ -305,6 +305,8 @@ function stepDown() {
 					:disabled="disabled"
 					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
 					v-on="listeners"
+					@keydown.space="$emit('keydown:space', $event)"
+					@keydown.enter="$emit('keydown:enter', $event)"
 				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
