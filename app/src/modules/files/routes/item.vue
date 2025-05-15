@@ -234,7 +234,7 @@ function useMovetoFolder() {
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleting ? undefined : deleteAndQuit()">
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
@@ -263,7 +263,12 @@ function useMovetoFolder() {
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
+			<v-dialog
+				v-if="isNew === false"
+				v-model="moveToDialogActive"
+				@esc="moveToDialogActive = false"
+				@apply="moving ? undefined : moveToFolder()"
+			>
 				<template #activator="{ on }">
 					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon :disabled="item === null" secondary @click="on">
 						<v-icon name="folder_move" />
@@ -352,7 +357,7 @@ function useMovetoFolder() {
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave" @esc="discardAndLeave">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>

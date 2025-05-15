@@ -395,7 +395,12 @@ function useFileUpload() {
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
-				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
+				<v-dialog
+					v-if="selection.length > 0"
+					v-model="moveToDialogActive"
+					@esc="moveToDialogActive = false"
+					@apply="moving ? undefined : moveToFolder()"
+				>
 					<template #activator="{ on }">
 						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
 							<v-icon name="folder_move" />
@@ -420,7 +425,12 @@ function useFileUpload() {
 					</v-card>
 				</v-dialog>
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+				<v-dialog
+					v-if="selection.length > 0"
+					v-model="confirmDelete"
+					@esc="confirmDelete = false"
+					@apply="deleting ? undefined : batchDelete()"
+				>
 					<template #activator="{ on }">
 						<v-button
 							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"

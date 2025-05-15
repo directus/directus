@@ -69,7 +69,13 @@ async function save() {
 </script>
 
 <template>
-	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
+	<v-dialog
+		:model-value="modelValue"
+		persistent
+		@update:model-value="$emit('update:modelValue', $event)"
+		@esc="cancel"
+		@apply="!values.name || saving ? undefined : save()"
+	>
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>

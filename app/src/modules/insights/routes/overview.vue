@@ -225,7 +225,12 @@ async function batchDelete() {
 				<v-icon name="download" outline />
 			</v-button>
 
-			<v-dialog v-if="selection.length > 0" v-model="confirmBatchDelete" @esc="confirmBatchDelete = false">
+			<v-dialog
+				v-if="selection.length > 0"
+				v-model="confirmBatchDelete"
+				@esc="confirmBatchDelete = false"
+				@apply="batchDeleting ? undefined : batchDelete()"
+			>
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
@@ -381,7 +386,11 @@ async function batchDelete() {
 			</template>
 		</v-info>
 
-		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
+		<v-dialog
+			:model-value="!!confirmDelete"
+			@esc="confirmDelete = null"
+			@apply="deletingDashboard ? undefined : deleteDashboard()"
+		>
 			<v-card>
 				<v-card-title>{{ t('dashboard_delete_confirm') }}</v-card-title>
 
