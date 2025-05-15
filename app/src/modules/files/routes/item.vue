@@ -265,7 +265,14 @@ function useMovetoFolder() {
 
 			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon :disabled="item === null" secondary @click="on">
+					<v-button
+						v-tooltip.bottom="item === null || !updateAllowed ? t('not_allowed') : t('move_to_folder')"
+						rounded
+						icon
+						secondary
+						:disabled="item === null || !updateAllowed"
+						@click="on"
+					>
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
@@ -299,8 +306,8 @@ function useMovetoFolder() {
 			</v-button>
 
 			<v-button
-				v-if="item?.type?.includes('image')"
-				v-tooltip.bottom="t('edit')"
+				v-if="item?.type?.includes('image') && updateAllowed"
+				v-tooltip.bottom="updateAllowed ? t('edit') : t('not_allowed')"
 				rounded
 				icon
 				secondary
