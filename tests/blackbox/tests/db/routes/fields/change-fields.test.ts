@@ -349,7 +349,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 					});
 				});
 
-				describe('can update system field', () => {
+				describe('can update system field index', () => {
 					it.each(vendors)('%s', async (vendor) => {
 						// Setup
 						const systemUsersCollection = 'directus_users';
@@ -380,6 +380,44 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 								type: 'string',
 								schema: expect.objectContaining({
 									is_indexed: updatedValue,
+								}),
+								collection: systemUsersCollection,
+							}),
+						);
+					});
+				});
+
+				describe('can update system field unique index', () => {
+					it.each(vendors)('%s', async (vendor) => {
+						// Setup
+						const systemUsersCollection = 'directus_users';
+						const fieldName = 'first_name';
+						const updatedValue = true;
+
+						// Action
+						const response = await request(getUrl(vendor))
+							.patch(`/fields/${systemUsersCollection}/${fieldName}`)
+							.send({
+								collection: systemUsersCollection,
+								field: fieldName,
+								schema: { is_unique: updatedValue },
+							})
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+						const response2 = await request(getUrl(vendor))
+							.get(`/fields/${systemUsersCollection}/${fieldName}`)
+							.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+						// Assert
+						expect(response.statusCode).toEqual(200);
+						expect(response2.statusCode).toEqual(200);
+
+						expect(response2.body.data).toEqual(
+							expect.objectContaining({
+								field: fieldName,
+								type: 'string',
+								schema: expect.objectContaining({
+									is_unique: updatedValue,
 								}),
 								collection: systemUsersCollection,
 							}),
