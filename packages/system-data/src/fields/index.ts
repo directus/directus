@@ -29,15 +29,14 @@ import versionFields from './versions.yaml';
 import webhookFields from './webhooks.yaml';
 
 import type { FieldIndex, FieldMeta } from '../types.js';
-import { isSystemCollection } from '../collections/index.js';
 
 export const systemFieldRows: FieldMeta[] = [];
 export const systemIndexRows: FieldIndex[] = [];
 
 export function isSystemField(collection: string, field: string): boolean {
-	if (!isSystemCollection(collection)) return false;
+	if (!collection.startsWith('directus_')) return false;
 
-	return !!systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field);
+	return Boolean(systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field));
 }
 
 export function hasSystemIndex(collection: string, field: string): boolean {

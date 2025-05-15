@@ -117,7 +117,7 @@ export function resolveSystemAdmin(
 				});
 
 				if (isSystemField(args['collection'], args['field'])) {
-					const { error } = systemFieldUpdateSchema.validate(args['data']);
+					const { error } = systemFieldUpdateSchema.safeParse(args['data']);
 
 					if (error) throw new InvalidPayloadError({ reason: error.message });
 				}
