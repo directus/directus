@@ -61,6 +61,10 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 				parsedItem[name] = value;
 			}
 
+      if (typeof parsedItem[name] === 'string') {
+        parsedItem[name] = parsedItem[name].replace(/\r?\n|\r/g, ' ');
+      }
+
 			parsedItem[name] = typeof parsedItem[name] === 'string' && parsedItem[name]?.includes(',') ? `"${parsedItem[name]}"` : parsedItem[name];
 		}
 
