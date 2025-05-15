@@ -73,7 +73,9 @@ export class SchemaHelperMySQL extends SchemaHelper {
 
 	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
 		const constraintName = this.generateIndexName('index', collection, field);
-		const basicIndexQuery = `CREATE INDEX \`${constraintName}\` ON \`${collection}\` (\`${field}\`)`;
+		
+		const uniqueQuery = Boolean(options.unique) === true ? 'UNIQUE ' : '';
+		const basicIndexQuery = `CREATE ${uniqueQuery}INDEX \`${constraintName}\` ON \`${collection}\` (\`${field}\`)`;
 
 		if (options.tryNonBlocking) {
 			/*

@@ -21,6 +21,7 @@ export type SortRecord = {
 
 export type CreateIndexOptions = {
 	tryNonBlocking?: boolean;
+	unique?: boolean;
 };
 
 export abstract class SchemaHelper extends DatabaseHelper {

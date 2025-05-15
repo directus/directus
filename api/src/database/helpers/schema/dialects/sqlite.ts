@@ -41,10 +41,12 @@ export class SchemaHelperSQLite extends SchemaHelper {
 		// SQLite does not need any special handling for inner query sort columns
 	}
 
-	override async createIndex(collection: string, field: string, _options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
 		const constraintName = this.generateIndexName('index', collection, field);
 
 		// https://sqlite.org/lang_createindex.html
-		return this.knex.schema.raw(`CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`);
+		const uniqueQuery = Boolean(options.unique) === true ? 'UNIQUE ' : '';
+
+		return this.knex.schema.raw(`CREATE ${uniqueQuery}INDEX "${constraintName}" ON "${collection}" ("${field}")`);
 	}
 }

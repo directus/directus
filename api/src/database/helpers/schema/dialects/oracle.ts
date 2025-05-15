@@ -138,7 +138,9 @@ export class SchemaHelperOracle extends SchemaHelper {
 
 	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
 		const constraintName = this.generateIndexName('index', collection, field);
-		const basicIndexQuery = `CREATE INDEX "${constraintName}" ON "${collection}" ("${field}")`;
+		const uniqueQuery = Boolean(options.unique) === true ? 'UNIQUE ' : '';
+		
+		const basicIndexQuery = `CREATE ${uniqueQuery}INDEX "${constraintName}" ON "${collection}" ("${field}")`;
 
 		if (options.tryNonBlocking) {
 			// https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/CREATE-INDEX.html#GUID-1F89BBC0-825F-4215-AF71-7588E31D8BFE__GUID-041E5429-065B-43D5-AC7F-66810140842C
