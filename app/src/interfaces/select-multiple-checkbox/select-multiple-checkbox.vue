@@ -101,9 +101,16 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				:icon-on="iconOn"
 				:icon-off="iconOff"
 				:model-value="value || []"
-				@update:value="setOtherValue(otherValue.key, $event)"
 				@update:model-value="$emit('input', $event)"
-			/>
+				@update:value="setOtherValue(otherValue.key, $event)"
+				@blur:custom-input="
+					(otherValue.value === null || otherValue.value?.length === 0) && setOtherValue(otherValue.key, null)
+				"
+			>
+				<template #append>
+					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
+				</template>
+			</v-checkbox>
 
 			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue()">
 				<v-icon name="add" />

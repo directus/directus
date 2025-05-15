@@ -303,7 +303,11 @@ function useDisplayValue() {
 
 		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
 			<template v-if="showDeselect">
-				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
+				<v-list-item
+					clickable
+					:disabled="modelValue === null || (Array.isArray(modelValue) && !modelValue.length)"
+					@click="$emit('update:modelValue', null)"
+				>
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
 					</v-list-item-icon>
@@ -359,7 +363,7 @@ function useDisplayValue() {
 				<v-list-item-content>
 					<input
 						v-model="otherValue"
-						class="other-input"
+						class="other-input-btn"
 						:placeholder="t('other')"
 						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 					/>
@@ -375,31 +379,26 @@ function useDisplayValue() {
 							otherVal.value,
 						)
 					"
-					@click.stop
 				>
-					<v-list-item-icon>
+					<v-list-item-content>
 						<v-checkbox
 							:model-value="modelValue || []"
 							:value="otherVal.value"
-							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
-						/>
-					</v-list-item-icon>
-					<v-list-item-content>
-						<input
-							v-focus
-							class="other-input"
-							:value="otherVal.value"
-							:placeholder="t('other')"
-							@input="setOtherValue(otherVal.key, ($event.target as any)?.value)"
-							@blur="otherVal.value.length === 0 && setOtherValue(otherVal.key, null)"
+							custom-value
+							focus-custom-input
+							@update:model-value="$emit('update:modelValue', $event)"
+							@update:value="setOtherValue(otherVal.key, $event)"
+							@blur:custom-input="
+								(otherVal.value === null || otherVal.value?.length === 0) && setOtherValue(otherVal.key, null)
+							"
 						/>
 					</v-list-item-content>
 					<v-list-item-icon>
-						<v-icon name="close" clickable @click="setOtherValue(otherVal.key, null)" />
+						<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherVal.key, null)" />
 					</v-list-item-icon>
 				</v-list-item>
 
-				<v-list-item @click.stop="addOtherValue()">
+				<v-list-item clickable @click.stop="addOtherValue()">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
 					<v-list-item-content>{{ t('other') }}</v-list-item-content>
 				</v-list-item>
@@ -441,7 +440,7 @@ function useDisplayValue() {
 	cursor: pointer;
 }
 
-.other-input {
+.other-input-btn {
 	margin: 0;
 	padding: 0;
 	line-height: 1.2;

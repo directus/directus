@@ -43,7 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
 	checked: null,
 });
 
-const emit = defineEmits(['update:indeterminate', 'update:modelValue', 'update:value']);
+const emit = defineEmits(['update:indeterminate', 'update:modelValue', 'update:value', 'blur:custom-input']);
 
 const internalValue = useSync(props, 'value', emit);
 
@@ -126,7 +126,15 @@ function toggleInput(): void {
 		/>
 		<span class="label type-text">
 			<slot v-if="!customValue">{{ label }}</slot>
-			<input v-else ref="custom-input" v-model="internalValue" type="text" class="custom-input" @click.stop />
+			<input
+				v-else
+				ref="custom-input"
+				v-model="internalValue"
+				type="text"
+				class="custom-input"
+				@click.stop
+				@blur="$emit('blur:custom-input')"
+			/>
 		</span>
 		<div v-if="$slots.append" class="append"><slot name="append" /></div>
 	</component>
@@ -151,6 +159,7 @@ function toggleInput(): void {
 	position: relative;
 	display: flex;
 	align-items: center;
+	gap: 8px;
 	font-size: 0;
 	text-align: left;
 	background-color: transparent;
@@ -160,7 +169,6 @@ function toggleInput(): void {
 
 	.label:not(:empty) {
 		flex-grow: 1;
-		margin-left: 8px;
 		transition: color var(--fast) var(--transition);
 		@include mixins.no-wrap;
 
