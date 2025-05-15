@@ -19,6 +19,11 @@ export type SortRecord = {
 	column: Knex.Raw;
 };
 
+export type CreateIndexOptions = {
+	tryNonBlocking?: boolean;
+	unique?: boolean;
+};
+
 export abstract class SchemaHelper extends DatabaseHelper {
 	isOneOfClients(clients: DatabaseClient[]): boolean {
 		return clients.includes(getDatabaseClient(this.knex));
@@ -179,5 +184,9 @@ export abstract class SchemaHelper extends DatabaseHelper {
 
 	getTableNameMaxLength() {
 		return 64;
+	}
+
+	async createIndex(_collection: string, _field: string, _options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+		throw new Error('not implemented');
 	}
 }

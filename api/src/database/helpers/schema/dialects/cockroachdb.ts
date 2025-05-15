@@ -1,6 +1,6 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import { type Knex } from 'knex';
-import type { Options, SortRecord } from '../types.js';
+import type { CreateIndexOptions, Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
 import { useEnv } from '@directus/env';
 
@@ -60,5 +60,16 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 
 			groupByFields.push(...sortRecords.map(({ alias }) => alias));
 		}
+	}
+
+	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+		
+		// https://www.cockroachlabs.com/docs/stable/create-index
+		const uniqueQuery = isUnique === true ? 'UNIQUE ' : '';
+		const concurrentQuery = Boolean(options.tryNonBlocking) === true ? 'CONCURRENTLY ' : '';
+
+		return this.knex.schema.raw(`CREATE ${uniqueQuery}INDEX ${concurrentQuery}"${constraintName}" ON "${collection}" ("${field}")`);
 	}
 }

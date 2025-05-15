@@ -412,10 +412,10 @@ export class FieldsService {
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
-						this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await this.addColumnToTable(table, collection, hookAdjustedField as Field);
 					} else {
-						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await trx.schema.alterTable(collection, async (table) => {
+							await this.addColumnToTable(table, collection, hookAdjustedField as Field);
 						});
 					}
 				}
@@ -546,7 +546,7 @@ export class FieldsService {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
-								this.addColumnToTable(table, collection, field, existingColumn);
+								await this.addColumnToTable(table, collection, field, existingColumn);
 							});
 						});
 					} catch (err: any) {
@@ -850,12 +850,12 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(
+	public async addColumnToTable(
 		table: Knex.CreateTableBuilder,
 		collection: string,
 		field: RawField | Field,
 		existing: Column | null = null,
-	): void {
+	): Promise<void> {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -929,13 +929,15 @@ export class FieldsService {
 			}
 		}
 
+		const createIndexes: { unique: boolean; }[] = [];
+
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
 				if (!existing || existing.is_unique === false) {
-					column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
+					createIndexes.push({ unique: true });
 				}
 			} else if (field.schema?.is_unique === false) {
 				if (existing?.is_unique === true) {
@@ -945,7 +947,7 @@ export class FieldsService {
 
 			if (field.schema?.is_indexed === true) {
 				if (!existing || existing.is_indexed === false) {
-					column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
+					createIndexes.push({ unique: false });
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
@@ -956,6 +958,15 @@ export class FieldsService {
 
 		if (existing) {
 			column.alter();
+		}
+
+		if (createIndexes.length > 0) {
+			for (const { unique } of createIndexes) {
+				await this.helpers.schema.createIndex(collection, field.field, {
+					tryNonBlocking: true,
+					unique,
+				})
+			}
 		}
 	}
 }
