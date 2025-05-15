@@ -63,10 +63,11 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 	}
 
 	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
-		const constraintName = this.generateIndexName('index', collection, field);
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
 		
 		// https://www.cockroachlabs.com/docs/stable/create-index
-		const uniqueQuery = Boolean(options.unique) === true ? 'UNIQUE ' : '';
+		const uniqueQuery = isUnique === true ? 'UNIQUE ' : '';
 		const concurrentQuery = Boolean(options.tryNonBlocking) === true ? 'CONCURRENTLY ' : '';
 
 		return this.knex.schema.raw(`CREATE ${uniqueQuery}INDEX ${concurrentQuery}"${constraintName}" ON "${collection}" ("${field}")`);

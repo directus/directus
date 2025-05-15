@@ -42,10 +42,11 @@ export class SchemaHelperSQLite extends SchemaHelper {
 	}
 
 	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
-		const constraintName = this.generateIndexName('index', collection, field);
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
 
 		// https://sqlite.org/lang_createindex.html
-		const uniqueQuery = Boolean(options.unique) === true ? 'UNIQUE ' : '';
+		const uniqueQuery = isUnique === true ? 'UNIQUE ' : '';
 
 		return this.knex.schema.raw(`CREATE ${uniqueQuery}INDEX "${constraintName}" ON "${collection}" ("${field}")`);
 	}
