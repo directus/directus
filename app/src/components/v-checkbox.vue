@@ -159,7 +159,6 @@ function toggleInput(): void {
 	position: relative;
 	display: flex;
 	align-items: center;
-	gap: 8px;
 	font-size: 0;
 	text-align: left;
 	background-color: transparent;
@@ -169,6 +168,7 @@ function toggleInput(): void {
 
 	.label:not(:empty) {
 		flex-grow: 1;
+		margin-left: 8px;
 		transition: color var(--fast) var(--transition);
 		@include mixins.no-wrap;
 
@@ -269,6 +269,10 @@ function toggleInput(): void {
 	.append {
 		display: contents;
 		font-size: 1rem;
+	}
+
+	.append {
+		margin-left: 8px;
 	}
 }
 </style>
