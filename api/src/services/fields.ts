@@ -407,10 +407,10 @@ export class FieldsService {
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
-						this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await this.addColumnToTable(table, collection, hookAdjustedField as Field);
 					} else {
-						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await trx.schema.alterTable(collection, async (table) => {
+							await this.addColumnToTable(table, collection, hookAdjustedField as Field);
 						});
 					}
 				}
@@ -541,7 +541,7 @@ export class FieldsService {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
-								this.addColumnToTable(table, collection, field, existingColumn);
+								await this.addColumnToTable(table, collection, field, existingColumn);
 							});
 						});
 					} catch (err: any) {
@@ -845,12 +845,12 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(
+	public async addColumnToTable(
 		table: Knex.CreateTableBuilder,
 		collection: string,
 		field: RawField | Field,
 		existing: Column | null = null,
-	): void {
+	): Promise<void> {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -940,7 +940,7 @@ export class FieldsService {
 
 			if (field.schema?.is_indexed === true) {
 				if (!existing || existing.is_indexed === false) {
-					column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
+					await this.helpers.schema.createIndex(collection, field.field, { tryNonBlocking: true });
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
