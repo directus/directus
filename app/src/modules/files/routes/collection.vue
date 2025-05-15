@@ -421,7 +421,7 @@ function useFileUpload() {
 							<v-button secondary @click="moveToDialogActive = false">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button :loading="moving" :disabled="!batchEditAllowed" @click="moveToFolder">
+							<v-button :loading="moving" @click="moveToFolder">
 								{{ t('move') }}
 							</v-button>
 						</v-card-actions>
