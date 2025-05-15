@@ -575,6 +575,7 @@ export function applyFilter(
 			const { operator: filterOperator, value: filterValue } = operation;
 			const fieldInfo = schema.collections[collection]?.fields[key]
 
+
 			if (
 				filterPath.length > 1 ||
 				(!(key.includes('(') && key.includes(')')) && fieldInfo?.type === 'alias')
@@ -1166,7 +1167,7 @@ function isNumericField(field: FieldOverview): field is FieldOverview & { type: 
 }
 
 function addJsonQuery(query: Knex.QueryBuilder, collection: string, key: string, filterPath: string[], filterOperator: string, filterValue: any, alias: string) {
-	const cast = filterOperator === '_between' || filterOperator === '_nbetween' ? 'float' : 'text'
+	const cast = Number.isFinite(parseFloat(filterValue)) ? 'float' : 'text'
 
 	const hasOperatorInsideIndex = filterPath.findIndex((path) => path.match(/^\[_/))
 

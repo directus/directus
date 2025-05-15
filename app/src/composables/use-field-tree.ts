@@ -95,6 +95,7 @@ export function useFieldTree(
 
 				node.children = field.meta.options.fields.map((field) => ({
 					...makeNode(field, node),
+          name: '',
 					path: node.path + '.' + field.field,
 					key: node.key + '.' + field.field,
 				}));

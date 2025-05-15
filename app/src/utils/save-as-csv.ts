@@ -60,6 +60,8 @@ export async function saveAsCSV(collection: string, fields: string[], items: Ite
 			} else {
 				parsedItem[name] = value;
 			}
+
+			parsedItem[name] = typeof parsedItem[name] === 'string' && parsedItem[name]?.includes(',') ? `"${parsedItem[name]}"` : parsedItem[name];
 		}
 
 		parsedItems.push(parsedItem);

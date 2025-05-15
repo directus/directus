@@ -504,6 +504,7 @@ Your export of ${collection} is ready. <a href="${href}">Click here to view.</a>
 
 			let string = new CSVParser(transformOptions).parse(input);
 
+			
 			if (options?.includeHeader === false) {
 				string = '\n' + string;
 			}
