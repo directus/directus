@@ -257,7 +257,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Đặt Lại Tùy Chọn cho Trang
 hidden_field: Trường Ẩn
 hidden_on_detail: Không hiển thị trong trang chi tiết
-disabled_editing_value: Cấm sửa đổi dữ liệu
 key: Khóa
 alias: Bí danh
 boolean: Boolean

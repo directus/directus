@@ -307,7 +307,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 앱 환경설정 초기화
 hidden_field: 숨김 필드
 hidden_on_detail: 실행 시 숨김
-disabled_editing_value: 편집 값 비활성화
 key: 키
 alias: 별칭
 bigInteger: 큰 정수형
