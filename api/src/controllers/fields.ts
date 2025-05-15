@@ -133,9 +133,9 @@ router.patch(
 
 		for (const fieldData of req.body) {
 			if (isSystemField(req.params['collection']!, fieldData['field']!)) {
-				const { error } = systemFieldUpdateSchema.validate(fieldData, { abortEarly: false });
+				const { error } = systemFieldUpdateSchema.safeParse(fieldData);
 
-				if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
+				if (error) throw error.issues.map((details) => new InvalidPayloadError({ reason: details.message }));
 			}
 		}
 
@@ -186,9 +186,9 @@ router.patch(
 		});
 
 		if (isSystemField(req.params['collection']!, req.params['field']!)) {
-			const { error } = systemFieldUpdateSchema.validate(req.body, { abortEarly: false });
+			const { error } = systemFieldUpdateSchema.safeParse(req.body);
 
-			if (error) throw error.details.map((details) => new InvalidPayloadError({ reason: details.message }));
+			if (error) throw error.issues.map((details) => new InvalidPayloadError({ reason: details.message }));
 		} else {
 			const { error } = updateSchema.validate(req.body);
 
