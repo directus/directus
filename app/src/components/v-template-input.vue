@@ -292,7 +292,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		class="v-template-input"
 		:class="{ multiline }"
 		contenteditable="true"
-		tabindex="1"
+		tabindex="0"
 		:placeholder="placeholder"
 		@input="processText"
 	/>

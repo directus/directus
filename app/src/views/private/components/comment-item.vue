@@ -226,10 +226,12 @@ function useEdits() {
 	background-color: var(--theme--primary);
 }
 
+.comment-item :deep(.comment-header .header-right .more:focus-visible + .time),
 .comment-item:hover :deep(.comment-header .header-right .time) {
 	opacity: 0;
 }
 
+.comment-item :deep(.comment-header .header-right .more:focus-visible),
 .comment-item:hover :deep(.comment-header .header-right .more) {
 	opacity: 1;
 }
