@@ -35,7 +35,7 @@ export const systemFieldRows: FieldMeta[] = [];
 export function isSystemField(collection: string, field: string): boolean {
 	if (!collection.startsWith('directus_')) return false;
 
-	return !!systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field);
+	return Boolean(systemFieldRows.find((fieldMeta) => fieldMeta.collection === collection && fieldMeta.field === field));
 }
 
 processFields(accessFields);
