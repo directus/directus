@@ -4,6 +4,7 @@ import { translateShortcut } from '@/utils/translate-shortcut';
 import HeaderBar from '@/views/private/components/header-bar.vue';
 import { computed, provide, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
 
 export interface Props {
@@ -17,6 +18,7 @@ export interface Props {
 	cancelable?: boolean;
 	headerShadow?: boolean;
 	smallHeader?: boolean;
+	applyShortcut?: ApplyShortcut;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -60,8 +62,9 @@ const internalActive = computed({
 		v-model="internalActive"
 		:persistent="persistent"
 		placement="right"
-		@esc="cancelable && $emit('cancel')"
+		:apply-shortcut
 		@apply="$emit('apply')"
+		@esc="cancelable && $emit('cancel')"
 	>
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import { type ApplyShortcut } from '@/components/v-dialog.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -39,7 +40,7 @@ export interface OverlayItemProps {
 	junctionFieldLocation?: string;
 	selectedFields?: string[] | null;
 	popoverProps?: Record<string, any>;
-	shortcuts?: boolean;
+	applyShortcut?: ApplyShortcut;
 	preventCancelWithEdits?: boolean;
 }
 
@@ -55,6 +56,7 @@ const props = withDefaults(defineProps<OverlayItemProps>(), {
 	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
+	applyShortcut: 'meta+enter',
 });
 
 const emit = defineEmits<OverlayItemEmits>();
@@ -389,16 +391,17 @@ function useActions() {
 		},
 	});
 
-	useShortcut('meta+s', (_event, cancelNext) => {
-		if (!props.shortcuts || !internalActive.value || !isSavable.value) return;
+	useShortcut(props.applyShortcut, (_event, cancelNext) => {
+		// Note that drawer and modal have existing shortcuts.
+		if (props.overlay !== 'popover' || !internalActive.value || !isSavable.value) return;
 
 		save();
 		cancelNext();
 	});
 
 	useShortcut('escape', (_event, cancelNext) => {
-		// Note that drawer and modal have an existing shortcut for canceling with the Escape key.
-		if (props.overlay !== 'popover' || !props.shortcuts || !internalActive.value) return;
+		// Note that drawer and modal have existing shortcuts.
+		if (props.overlay !== 'popover' || !internalActive.value) return;
 
 		cancel();
 		cancelNext();
@@ -409,10 +412,8 @@ function useActions() {
 	function getTooltip(shortcutType: 'save' | 'cancel', label: string | null = null) {
 		let shortcut = null;
 
-		if (props.shortcuts) {
-			if (shortcutType === 'save') shortcut = translateShortcut(['meta', 's']);
-			else shortcut = translateShortcut(['esc']);
-		}
+		if (shortcutType === 'save') shortcut = translateShortcut(props.applyShortcut.split('+'));
+		else shortcut = translateShortcut(['esc']);
 
 		if (label && shortcut) return `${label} (${shortcut})`;
 		if (label) return label;
@@ -502,8 +503,9 @@ function popoverClickOutsideMiddleware(e: Event) {
 		:title="title"
 		:icon="collectionInfo?.meta?.icon ?? undefined"
 		persistent
-		@cancel="cancel"
+		:apply-shortcut
 		@apply="!isSavable ? undefined : save()"
+		@cancel="cancel"
 	>
 		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
 			<v-skeleton-loader v-if="loading || templateDataLoading" class="title-loader" type="text" />
@@ -537,8 +539,9 @@ function popoverClickOutsideMiddleware(e: Event) {
 		v-model="overlayActive"
 		persistent
 		keep-behind
-		@esc="cancel"
+		:apply-shortcut
 		@apply="!isSavable ? undefined : save()"
+		@esc="cancel"
 	>
 		<v-card class="modal-card">
 			<v-card-title>

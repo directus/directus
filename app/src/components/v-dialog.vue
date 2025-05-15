@@ -4,18 +4,22 @@ import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 
+export type ApplyShortcut = 'meta+enter' | 'meta+s';
+
 interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	placement?: 'right' | 'center';
 	/** Lets other overlays (drawer) open on top */
 	keepBehind?: boolean;
+	applyShortcut?: ApplyShortcut;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	persistent: false,
 	placement: 'center',
+	applyShortcut: 'meta+enter',
 });
 
 const emit = defineEmits(['esc', 'apply', 'update:modelValue']);
@@ -27,11 +31,16 @@ useShortcut('escape', (_event, cancelNext) => {
 	}
 });
 
-useShortcut('meta+enter', (_event, cancelNext) => {
+useShortcut(props.applyShortcut, (_event, cancelNext) => {
 	if (internalActive.value) {
 		emit('apply');
 		cancelNext();
 	}
+});
+
+useShortcut('meta+s', (_event, cancelNext) => {
+	if (props.applyShortcut === 'meta+s') return;
+	if (internalActive.value) cancelNext();
 });
 
 const localActive = ref(false);
