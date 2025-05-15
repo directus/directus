@@ -289,7 +289,11 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				</template>
 			</v-input>
 
-			<v-dialog v-model="duplicateActive" @esc="duplicateActive = false">
+			<v-dialog
+				v-model="duplicateActive"
+				@esc="duplicateActive = false"
+				@apply="duplicateName === null || duplicating ? undefined : saveDuplicate()"
+			>
 				<v-card class="duplicate">
 					<v-card-title>{{ t('duplicate_where_to') }}</v-card-title>
 					<v-card-text>
@@ -316,7 +320,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-model="deleteActive" @esc="deleteActive = false">
+			<v-dialog v-model="deleteActive" @esc="deleteActive = false" @apply="deleting ? undefined : deleteField()">
 				<v-card>
 					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>

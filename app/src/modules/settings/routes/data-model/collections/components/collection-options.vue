@@ -153,7 +153,7 @@ async function update(updates: DeepPartial<Collection>) {
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="deleteActive" @esc="deleteActive = false">
+		<v-dialog v-model="deleteActive" @esc="deleteActive = false" @apply="deleting ? undefined : deleteCollection()">
 			<v-card>
 				<v-card-title>
 					{{
