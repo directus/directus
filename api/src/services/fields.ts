@@ -38,23 +38,23 @@ import { ItemsService } from './items.js';
 import { PayloadService } from './payload.js';
 import { RelationsService } from './relations.js';
 import { isSystemField } from '@directus/system-data';
-import { z } from "zod";
+import { z } from 'zod';
 
 const systemFieldRows = getSystemFieldRowsWithAuthProviders();
 const env = useEnv();
 
 export const systemFieldUpdateSchema = z
-  .object({
-    collection: z.string().optional(),
-    field: z.string().optional(),
-    schema: z
-      .object({
-        is_indexed: z.boolean().optional(),
-        is_unique: z.boolean().optional(),
-      })
-      .strict(),
-  })
-  .strict();
+	.object({
+		collection: z.string().optional(),
+		field: z.string().optional(),
+		schema: z
+			.object({
+				is_indexed: z.boolean().optional(),
+				is_unique: z.boolean().optional(),
+			})
+			.strict(),
+	})
+	.strict();
 
 export class FieldsService {
 	knex: Knex;
