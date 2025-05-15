@@ -49,7 +49,6 @@ creating_new_field: 'Novo polje „kolekcija“'
 reset_page_preferences: Ресетуј подешавања апликације
 hidden_field: Сакривена поља
 hidden_on_detail: Sakriven u detaljima
-disabled_editing_value: Onemogući uređivanje vrednosti
 key: Ključ
 alias: Nadimak
 bigInteger: Veliki ceo broj

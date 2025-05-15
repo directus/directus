@@ -200,7 +200,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Nollaa sivun asetukset
 hidden_field: Piilotettu kenttä
 hidden_on_detail: Piilotettu yksityiskohdista
-disabled_editing_value: Poista arvon muokkaus käytöstä
 key: Avain
 alias: Alias
 bigInteger: Suuri kokonaisluku
