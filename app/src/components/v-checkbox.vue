@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, useTemplateRef } from 'vue';
 import { useSync } from '@directus/composables';
 
 interface Props {
@@ -23,6 +23,8 @@ interface Props {
 	block?: boolean;
 	/** If a custom value can be entered next to it */
 	customValue?: boolean;
+	/** Will focus the custom value input on mounted */
+	focusCustomInput?: boolean;
 	/** TODO: What the? */
 	checked?: boolean | null;
 }
@@ -64,6 +66,14 @@ const icon = computed<string>(() => {
 	return isChecked.value ? props.iconOn : props.iconOff;
 });
 
+const customInput = useTemplateRef<HTMLInputElement>('custom-input');
+
+onMounted(() => {
+	if (props.focusCustomInput && props.customValue) {
+		customInput.value?.focus();
+	}
+});
+
 function toggleInput(): void {
 	if (props.disabled) return;
 
@@ -96,15 +106,27 @@ function toggleInput(): void {
 		type="button"
 		role="checkbox"
 		:aria-pressed="isChecked ? 'true' : 'false'"
-		:disabled="disabled"
+		:disabled
 		:class="{ checked: isChecked, indeterminate, block }"
 		@click.stop="toggleInput"
 	>
 		<div v-if="$slots.prepend" class="prepend"><slot name="prepend" /></div>
-		<v-icon class="checkbox" :name="icon" :disabled="disabled" />
+		<v-icon
+			class="checkbox"
+			:name="icon"
+			:disabled
+			:clickable="customValue"
+			@click="
+				(e: Event) => {
+					if (!customValue) return;
+					e.stopPropagation();
+					toggleInput();
+				}
+			"
+		/>
 		<span class="label type-text">
 			<slot v-if="!customValue">{{ label }}</slot>
-			<input v-else v-model="internalValue" class="custom-input" @click.stop="" />
+			<input v-else ref="custom-input" v-model="internalValue" type="text" class="custom-input" @click.stop />
 		</span>
 		<div v-if="$slots.append" class="append"><slot name="append" /></div>
 	</component>

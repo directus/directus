@@ -95,6 +95,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				:key="otherValue.key"
 				block
 				custom-value
+				focus-custom-input
 				:value="otherValue.value"
 				:disabled="disabled"
 				:icon-on="iconOn"
@@ -104,16 +105,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				@update:model-value="$emit('input', $event)"
 			/>
 
-			<button
-				v-if="allowOther"
-				:disabled="disabled"
-				class="add-new custom"
-				align="left"
-				outlined
-				dashed
-				secondary
-				@click="addOtherValue()"
-			>
+			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue()">
 				<v-icon name="add" />
 				{{ t('other') }}
 			</button>
@@ -171,6 +163,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 
 .add-new {
 	--v-button-min-width: none;
+	--focus-ring-offset: var(--focus-ring-offset-invert);
 }
 
 .custom {
