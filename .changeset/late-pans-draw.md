@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Fixed cohersion of values only in rest
+Fixed coercion of values only in rest
