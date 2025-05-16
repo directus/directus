@@ -32,6 +32,7 @@ export class RelationsService {
 	systemCache: Keyv<any>;
 	schemaCache: Keyv<any>;
 	helpers: Helpers;
+	bypassCache: boolean;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -51,10 +52,11 @@ export class RelationsService {
 		this.systemCache = cache.systemCache;
 		this.schemaCache = cache.localSchemaCache;
 		this.helpers = getHelpers(this.knex);
+		this.bypassCache = false;
 	}
 
 	async foreignKeys(collection?: string) {
-		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
+		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']) && !this.bypassCache;
 
 		let foreignKeys: ForeignKey[] | null = null;
 
