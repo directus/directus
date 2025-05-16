@@ -489,7 +489,7 @@ describe('#parseFilter', () => {
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockFilter);
 	});
 
-	it('does proper type casting', () => {
+	it('should not do any type casting', () => {
 		const mockFilter = {
 			_and: [
 				{
@@ -514,17 +514,17 @@ describe('#parseFilter', () => {
 			_and: [
 				{
 					status: {
-						_eq: true,
+						_eq: 'true',
 					},
 				},
 				{
 					field: {
-						_eq: false,
+						_eq: 'false',
 					},
 				},
 				{
 					field2: {
-						_eq: null,
+						_eq: 'null',
 					},
 				},
 			],
