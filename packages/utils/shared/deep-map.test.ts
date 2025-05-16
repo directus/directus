@@ -1,10 +1,16 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, test } from 'vitest';
 import { deepMap } from './deep-map.js';
 
 describe('deepMap', () => {
 	const mockIterator = (val: any, _key: string | number) => {
 		return `Test ${val}`;
 	};
+
+	test('keep complex objects', () => {
+		const now = new Date();
+		const mockObject = { key: now };
+		expect(deepMap(mockObject, (val) => val)).toStrictEqual({ key: now });
+	});
 
 	it('returns an object mapped where values are the return of the iterator', () => {
 		const mockObject = { _and: [{ field: { _eq: 'field' } }] };
