@@ -7,14 +7,16 @@ import { RelationM2A } from './use-relation-m2a';
 import { RelationM2M } from './use-relation-m2m';
 import { RelationM2O } from './use-relation-m2o';
 import { RelationO2M } from './use-relation-o2m';
+import { normalizePermissions } from '@/components/v-form/utils/normalize-permissions';
 
 export function useRelationPermissionsM2O(info: Ref<RelationM2O | undefined>) {
 	const relatedPermissions = useCollectionPermissions(computed(() => info.value?.relatedCollection.collection ?? null));
 
-	return {
+	return normalizePermissions({
 		createAllowed: relatedPermissions.createAllowed,
 		updateAllowed: relatedPermissions.updateAllowed,
-	};
+		readAllowed: relatedPermissions.readAllowed,
+	});
 }
 
 export function useRelationPermissionsO2M(info: Ref<RelationO2M | undefined>) {
@@ -28,11 +30,12 @@ export function useRelationPermissionsO2M(info: Ref<RelationO2M | undefined>) {
 		return relatedPermissions.updateAllowed.value;
 	});
 
-	return {
+	return normalizePermissions({
 		createAllowed: relatedPermissions.createAllowed,
 		updateAllowed: relatedPermissions.updateAllowed,
 		deleteAllowed,
-	};
+		readAllowed: relatedPermissions.readAllowed,
+	});
 }
 
 export function useRelationPermissionsM2M(info: Ref<RelationM2M | undefined>) {
@@ -61,10 +64,12 @@ export function useRelationPermissionsM2M(info: Ref<RelationM2M | undefined>) {
 	});
 
 	return {
-		createAllowed,
+		...normalizePermissions({
+			createAllowed,
+			updateAllowed,
+			deleteAllowed,
+		}),
 		selectAllowed,
-		updateAllowed,
-		deleteAllowed,
 	};
 }
 
@@ -83,45 +88,60 @@ export function useRelationPermissionsM2A(info: Ref<RelationM2A | undefined>) {
 		computed(() => info.value?.junctionCollection.collection ?? null),
 	);
 
-	const createAllowed = computed(() => {
-		return Object.fromEntries(
-			Object.entries(relatedPermissions.value).map(([key, value]) => [
-				key,
-				value.createAllowed.value && junctionPermissions.createAllowed.value,
-			]),
-		);
-	});
+	const createAllowed = computed(() =>
+		Object.values(relatedPermissions.value).every(
+			(value) => value.createAllowed.value && junctionPermissions.createAllowed.value,
+		),
+	);
 
 	const selectAllowed = computed(() => junctionPermissions.createAllowed.value);
 
-	const updateAllowed = computed(() => {
-		return Object.fromEntries(
-			Object.entries(relatedPermissions.value).map(([key, value]) => [
-				key,
-				value.updateAllowed.value && junctionPermissions.updateAllowed.value,
-			]),
-		);
-	});
+	const updateAllowed = computed(() =>
+		Object.values(relatedPermissions.value).every(
+			(value) => value.updateAllowed.value && junctionPermissions.updateAllowed.value,
+		),
+	);
 
 	const deleteAllowed = computed(() => {
 		if (info.value?.junction.meta?.one_deselect_action === 'delete') {
-			return Object.fromEntries(
-				Object.entries(relatedPermissions.value).map(([key]) => [key, junctionPermissions.deleteAllowed.value]),
-			);
+			return Object.values(relatedPermissions.value).every(() => junctionPermissions.deleteAllowed.value);
 		}
 
-		return Object.fromEntries(
-			Object.entries(relatedPermissions.value).map(([key, value]) => [
-				key,
-				value.updateAllowed.value && junctionPermissions.updateAllowed.value,
-			]),
+		return Object.values(relatedPermissions.value).every(
+			(value) => value.updateAllowed.value && junctionPermissions.updateAllowed.value,
 		);
 	});
 
 	return {
-		createAllowed,
+		...normalizePermissions({
+			createAllowed,
+			deleteAllowed,
+			updateAllowed,
+		}),
 		selectAllowed,
-		deleteAllowed,
-		updateAllowed,
 	};
+}
+
+export function useRelationPermissionsTree(info: Ref<any>) {
+	const relatedPermissions = useCollectionPermissions(computed(() => info.value?.collection ?? null));
+
+	return normalizePermissions({
+		createAllowed: relatedPermissions.createAllowed,
+		updateAllowed: relatedPermissions.updateAllowed,
+		deleteAllowed: relatedPermissions.deleteAllowed,
+	});
+}
+
+export function useRelationPermissionsFiles() {
+	return normalizePermissions(useCollectionPermissions('directus_files'));
+}
+
+export function useRelationPermissionsTranslations(info: Ref<any>) {
+	const relatedPermissions = useCollectionPermissions(computed(() => info.value?.collection ?? null));
+
+	return normalizePermissions({
+		createAllowed: relatedPermissions.createAllowed,
+		updateAllowed: relatedPermissions.updateAllowed,
+		deleteAllowed: relatedPermissions.deleteAllowed,
+	});
 }

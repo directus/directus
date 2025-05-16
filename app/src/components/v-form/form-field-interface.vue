@@ -4,8 +4,8 @@ import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-ty
 import { computed, ref, onMounted, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
-import { useCollectionPermissions } from '@/composables/use-permissions';
 import { UsableCollectionPermissions } from '@/composables/use-permissions/collection/use-collection-permissions';
+import { getRelationalPermissions } from './utils/get-relational-permissions';
 
 const props = defineProps<{
 	field: FormField;
@@ -47,10 +47,8 @@ const loadingPermissions = ref(true);
 const relatedCollectionPersmissions: Ref<UsableCollectionPermissions | null> = ref(null);
 
 onMounted(async () => {
-	if (props.field?.schema?.foreign_key_table) {
-		const perms = await useCollectionPermissions(props.field.schema.foreign_key_table);
+		const perms = await getRelationalPermissions(props.field);
 		relatedCollectionPersmissions.value = perms;
-	}
 
 	loadingPermissions.value = false;
 });
