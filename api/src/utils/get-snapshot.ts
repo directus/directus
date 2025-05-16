@@ -18,7 +18,7 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	const collectionsService = new CollectionsService({ knex: database, schema });
 	const fieldsService = new FieldsService({ knex: database, schema });
 	const relationsService = new RelationsService({ knex: database, schema });
-	relationsService.bypassCache = true
+	relationsService.bypassCache = true;
 
 	const [collectionsRaw, fieldsRaw, relationsRaw] = await Promise.all([
 		collectionsService.readByQuery(),
