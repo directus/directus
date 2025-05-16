@@ -148,6 +148,33 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 				await setCredentials(data);
 				return data;
 			},
+			async loginLdap(identifier: string, password: string, options: LoginOptions = {}) {
+				await resetStorage();
+
+				const authData: Record<string, string> = { identifier, password };
+				if ('otp' in options) authData['otp'] = options.otp;
+				authData['mode'] = options.mode ?? mode;
+
+				const path = getAuthEndpoint('ldap');
+				const requestUrl = getRequestUrl(client.url, path);
+
+				const fetchOptions: RequestInit = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(authData),
+				};
+
+				if ('credentials' in authConfig) {
+					fetchOptions.credentials = authConfig.credentials;
+				}
+
+				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+
+				await setCredentials(data);
+				return data;
+			},
 			async logout() {
 				const authData = await storage.get();
 

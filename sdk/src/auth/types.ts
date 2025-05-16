@@ -30,6 +30,7 @@ export interface AuthenticationConfig {
 
 export interface AuthenticationClient<_Schema> {
 	login(email: string, password: string, options?: LoginOptions): Promise<AuthenticationData>;
+	loginLdap(identifier: string, password: string, options?: LoginOptions): Promise<AuthenticationData>;
 	refresh(): Promise<AuthenticationData>;
 	logout(): Promise<void>;
 
