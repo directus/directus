@@ -22,14 +22,25 @@ export function parseFilter(
 	filter: Filter | null,
 	accountability: BasicAccountability | null,
 	context: ParseFilterContext = {},
+	skipCoercion = false
 ): Filter | null {
 	let parsedFilter = parseFilterRecursive(filter, accountability, context);
 
-	if (parsedFilter) {
-		parsedFilter = shiftLogicalOperatorsUp(parsedFilter);
+	if (!parsedFilter) {
+		return parsedFilter;
 	}
 
-	return parsedFilter;
+	if (skipCoercion === false) {
+		parsedFilter = deepMap(parsedFilter, (value) => {
+			if (value === 'true') return true;
+			if (value === 'false') return false;
+			if (value === 'null' || value === 'NULL') return null;
+
+			return value
+		});
+	}
+
+	return shiftLogicalOperatorsUp(parsedFilter)
 }
 
 const logicalFilterOperators = ['_and', '_or'];
@@ -93,7 +104,13 @@ export function parsePreset(
 	context: ParseFilterContext,
 ) {
 	if (!preset) return preset;
-	return deepMap(preset, (value) => parseDynamicVariable(value, accountability, context));
+	return deepMap(preset, (value) => {
+		if (value === 'true') return true;
+		if (value === 'false') return false;
+		if (value === 'null' || value === 'NULL') return null;
+
+		return parseDynamicVariable(value, accountability, context)
+	});
 }
 
 function parseFilterEntry(
@@ -125,6 +142,10 @@ function parseFilterEntry(
 }
 
 function parseDynamicVariable(value: any, accountability: BasicAccountability | null, context: ParseFilterContext) {
+	if (typeof value !== 'string') {
+		return value
+	}
+
 	if (value.startsWith('$NOW')) {
 		if (value.includes('(') && value.includes(')')) {
 			const adjustment = value.match(REGEX_BETWEEN_PARENS)?.[1];
