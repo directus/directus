@@ -6,6 +6,7 @@
 import type { RequestHandler } from 'express';
 import { sanitizeQuery } from '../utils/sanitize-query.js';
 import { validateQuery } from '../utils/validate-query.js';
+import { mapValuesDeep } from '../utils/map-values-deep.js';
 
 const sanitizeQueryMiddleware: RequestHandler = async (req, _res, next) => {
 	req.sanitizedQuery = {};
@@ -26,6 +27,16 @@ const sanitizeQueryMiddleware: RequestHandler = async (req, _res, next) => {
 			req.schema,
 			req.accountability || null,
 		);
+
+		req.sanitizedQuery = mapValuesDeep(req.sanitizedQuery, (key, value) => {
+			if (key.startsWith('filter.') || (key.startsWith('deep.') && key.includes('._filter.'))) {
+				if (value === 'true') return true;
+				if (value === 'false') return false;
+				if (value === 'null' || value === 'NULL') return null;
+			}
+
+			return value;
+		});
 
 		Object.freeze(req.sanitizedQuery);
 
