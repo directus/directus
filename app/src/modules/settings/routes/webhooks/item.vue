@@ -51,7 +51,7 @@ async function deleteAndQuit() {
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleting ? undefined : deleteAndQuit()">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
 						<v-icon name="delete" />

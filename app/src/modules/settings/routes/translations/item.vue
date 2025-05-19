@@ -251,7 +251,12 @@ async function revert(values: Record<string, any>) {
 		</template>
 
 		<template #actions>
-			<v-dialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog
+				v-if="!isNew"
+				v-model="confirmDelete"
+				@esc="confirmDelete = false"
+				@apply="deleting ? undefined : deleteAndQuit()"
+			>
 				<template #activator="{ on }">
 					<v-button
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"
@@ -311,7 +316,7 @@ async function revert(values: Record<string, any>) {
 			:validation-errors="validationErrors"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>

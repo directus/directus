@@ -23,7 +23,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 		:model-value="isOpen"
 		persistent
 		@esc="router.push('/settings/policies')"
-		@apply="name === null ? undefined : save()"
+		@apply="name === null || saving ? undefined : save()"
 	>
 		<v-card>
 			<v-card-title>

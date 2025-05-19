@@ -218,7 +218,12 @@ function clearFilters() {
 		<template #actions>
 			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
 
-			<v-dialog v-model="confirmDelete" :disabled="selection.length === 0" @esc="confirmDelete = false">
+			<v-dialog
+				v-model="confirmDelete"
+				:disabled="selection.length === 0"
+				@esc="confirmDelete = false"
+				@apply="deleteSelected"
+			>
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="t('delete_label')"

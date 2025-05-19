@@ -123,7 +123,7 @@ function discardAndStay() {
 			</v-button>
 		</template>
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleting ? undefined : deleteAndQuit()">
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="t('delete_label')"
@@ -200,7 +200,7 @@ function discardAndStay() {
 			<revisions-drawer-detail ref="revisionsDrawerDetailRef" collection="directus_roles" :primary-key="primaryKey" />
 		</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>

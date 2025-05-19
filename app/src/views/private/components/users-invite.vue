@@ -88,6 +88,7 @@ async function loadRoles() {
 		:model-value="modelValue"
 		@update:model-value="$emit('update:modelValue', $event)"
 		@esc="$emit('update:modelValue', false)"
+		@apply="emails.length === 0 || loading ? undefined : inviteUsers()"
 	>
 		<v-card>
 			<v-card-title>{{ t('invite_users') }}</v-card-title>

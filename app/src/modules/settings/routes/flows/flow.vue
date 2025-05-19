@@ -707,7 +707,7 @@ function discardAndLeave() {
 			@done="triggerDetailOpen = false"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -718,7 +718,7 @@ function discardAndLeave() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
@@ -729,7 +729,7 @@ function discardAndLeave() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false">
+		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false" @apply="deleting ? undefined : deleteFlow()">
 			<v-card>
 				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
 
@@ -740,7 +740,12 @@ function discardAndLeave() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="!!copyPanelId" @update:model-value="copyPanelId = undefined" @esc="copyPanelId = undefined">
+		<v-dialog
+			:model-value="!!copyPanelId"
+			@update:model-value="copyPanelId = undefined"
+			@esc="copyPanelId = undefined"
+			@apply="copyPanelLoading || copyPanelChoices.length === 0 ? undefined : copyPanel()"
+		>
 			<v-card>
 				<v-card-title>{{ t('copy_to') }}</v-card-title>
 

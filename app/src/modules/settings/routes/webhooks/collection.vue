@@ -92,7 +92,12 @@ function clearFilters() {
 			<template #actions>
 				<search-input v-model="search" collection="directus_webhooks" />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+				<v-dialog
+					v-if="selection.length > 0"
+					v-model="confirmDelete"
+					@esc="confirmDelete = false"
+					@apply="deleting ? undefined : batchDelete()"
+				>
 					<template #activator="{ on }">
 						<v-button rounded icon class="action-delete" secondary @click="on">
 							<v-icon name="delete" />

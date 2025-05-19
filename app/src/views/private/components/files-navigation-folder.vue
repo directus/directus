@@ -230,7 +230,7 @@ function useDeleteFolder() {
 			v-model="renameActive"
 			persistent
 			@esc="renameActive = false"
-			@apply="renameValue === null ? undefined : renameSave()"
+			@apply="renameValue === null || renameSaving ? undefined : renameSave()"
 		>
 			<v-card>
 				<v-card-title>{{ t('rename_folder') }}</v-card-title>
@@ -246,7 +246,7 @@ function useDeleteFolder() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="moveActive" persistent @esc="moveActive = false">
+		<v-dialog v-model="moveActive" persistent @esc="moveActive = false" @apply="moveSaving ? undefined : moveSave()">
 			<v-card>
 				<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 				<v-card-text>
@@ -259,7 +259,12 @@ function useDeleteFolder() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
+		<v-dialog
+			v-model="deleteActive"
+			persistent
+			@esc="deleteActive = false"
+			@apply="deleteSaving ? undefined : deleteSave()"
+		>
 			<v-card>
 				<v-card-title>{{ t('delete_folder') }}</v-card-title>
 				<v-card-text>

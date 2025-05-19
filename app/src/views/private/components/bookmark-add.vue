@@ -43,7 +43,7 @@ function cancel() {
 		keep-behind
 		@update:model-value="$emit('update:modelValue', $event)"
 		@esc="cancel"
-		@apply="bookmarkValue.name === null ? undefined : $emit('save', bookmarkValue)"
+		@apply="bookmarkValue.name === null || saving ? undefined : $emit('save', bookmarkValue)"
 	>
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />

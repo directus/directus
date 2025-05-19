@@ -231,7 +231,11 @@ function onFlowDrawerCompletion(id: string) {
 			</template>
 		</v-table>
 
-		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
+		<v-dialog
+			:model-value="!!confirmDelete"
+			@esc="confirmDelete = null"
+			@apply="deletingFlow ? undefined : deleteFlow()"
+		>
 			<v-card>
 				<v-card-title>{{ t('flow_delete_confirm', { flow: confirmDelete!.name }) }}</v-card-title>
 

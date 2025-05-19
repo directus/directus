@@ -21,7 +21,7 @@ const { saving, save } = useSave({ name });
 		:model-value="isOpen"
 		persistent
 		@esc="router.push('/settings/roles')"
-		@apply="name === null ? undefined : save()"
+		@apply="name === null || saving ? undefined : save()"
 	>
 		<v-card>
 			<v-card-title>

@@ -135,7 +135,12 @@ function clearFilters() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="filter" collection="directus_translations" />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+				<v-dialog
+					v-if="selection.length > 0"
+					v-model="confirmDelete"
+					@esc="confirmDelete = false"
+					@apply="deleting ? undefined : batchDelete()"
+				>
 					<template #activator="{ on }">
 						<v-button v-tooltip.bottom="t('delete_label')" rounded icon class="action-delete" secondary @click="on">
 							<v-icon name="delete" outline />
