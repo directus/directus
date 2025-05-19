@@ -61,26 +61,20 @@ function onInput() {
 
 function onClick(event: MouseEvent) {
 	const target = event.target as HTMLElement;
-
 	if (target.tagName.toLowerCase() !== 'button') return;
-
-	const field = target.dataset.field;
-	emit('update:modelValue', props.modelValue?.replace(`{{${field}}}`, ''));
-
-	const before = target.previousElementSibling;
-	const after = target.nextElementSibling;
-
-	if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
-
-	target.remove();
-	joinElements(before, after);
-	window.getSelection()?.removeAllRanges();
-	onInput();
+	removeField(target);
 }
 
 function onKeyDown(event: KeyboardEvent) {
-	if (event.key === 'Enter') {
+	const target = event.currentTarget as HTMLElement;
+	const isButton = target?.tagName.toLowerCase() !== 'button';
+
+	if (!isButton && event.key === 'Enter') {
 		event.preventDefault();
+	}
+
+	if (isButton && ['Enter', ' '].includes(event.key)) {
+		removeField(target);
 	}
 
 	if (event.key === '{' || event.key === '}') {
@@ -159,6 +153,23 @@ function addField(field: FieldTree) {
 	}
 
 	onInput();
+}
+
+function removeField(target: HTMLElement) {
+	const field = target.dataset.field;
+	emit('update:modelValue', props.modelValue?.replace(`{{${field}}}`, ''));
+
+	const before = target.previousElementSibling;
+	const after = target.nextElementSibling;
+
+	if (!before || !after || !(before instanceof HTMLElement) || !(after instanceof HTMLElement)) return;
+
+	target.remove();
+	joinElements(before, after);
+	window.getSelection()?.removeAllRanges();
+	onInput();
+
+	contentEl.value?.focus();
 }
 
 function findTree(tree: FieldTree[] | undefined, fieldSections: string[]): FieldTree | undefined {
