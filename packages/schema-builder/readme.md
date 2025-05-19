@@ -1,6 +1,6 @@
 # @directus/schema-builder
 
-Directus SchemaBuilder for mocking/constructing a database schema based on code.
+Directus SchemaBuilder for mocking/constructing a database schema based on code, intended for internal use only.
 
 ## Usage
 
