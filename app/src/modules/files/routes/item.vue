@@ -307,7 +307,7 @@ function useMovetoFolder() {
 
 			<v-button
 				v-if="item?.type?.includes('image') && updateAllowed"
-				v-tooltip.bottom="updateAllowed ? t('edit') : t('not_allowed')"
+				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
 				secondary
