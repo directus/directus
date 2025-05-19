@@ -22,7 +22,7 @@ export function parseFilter(
 	filter: Filter | null,
 	accountability: BasicAccountability | null,
 	context: ParseFilterContext = {},
-	skipCoercion = false
+	skipCoercion = false,
 ): Filter | null {
 	let parsedFilter = parseFilterRecursive(filter, accountability, context);
 
@@ -36,11 +36,11 @@ export function parseFilter(
 			if (value === 'false') return false;
 			if (value === 'null' || value === 'NULL') return null;
 
-			return value
+			return value;
 		});
 	}
 
-	return shiftLogicalOperatorsUp(parsedFilter)
+	return shiftLogicalOperatorsUp(parsedFilter);
 }
 
 const logicalFilterOperators = ['_and', '_or'];
@@ -109,7 +109,7 @@ export function parsePreset(
 		if (value === 'false') return false;
 		if (value === 'null' || value === 'NULL') return null;
 
-		return parseDynamicVariable(value, accountability, context)
+		return parseDynamicVariable(value, accountability, context);
 	});
 }
 
@@ -143,7 +143,7 @@ function parseFilterEntry(
 
 function parseDynamicVariable(value: any, accountability: BasicAccountability | null, context: ParseFilterContext) {
 	if (typeof value !== 'string') {
-		return value
+		return value;
 	}
 
 	if (value.startsWith('$NOW')) {
