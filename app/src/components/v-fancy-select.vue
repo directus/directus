@@ -56,7 +56,7 @@ function toggle(item: Record<string, any>) {
 <template>
 	<div class="v-fancy-select">
 		<transition-group tag="div" name="option">
-			<template v-for="(item, index) in visibleItems" :key="index">
+			<template v-for="(item, index) in visibleItems" :key="item[props.itemValue]">
 				<v-divider v-if="item.divider === true" />
 				<button
 					v-else
