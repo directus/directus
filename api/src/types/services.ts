@@ -13,15 +13,18 @@ export type AbstractServiceOptions = {
 	knex?: Knex | undefined;
 	accountability?: Accountability | null | undefined;
 	schema: SchemaOverview;
-	nested?: NestedPath;
-	customContext?: CustomContext;
-};
+} & Partial<RequestContext>;
+
+/** Context to group information related to a request in services */
+export type RequestContext = {
+	nested: NestedPath,
+	customContext: CustomContext
+}
 
 export interface AbstractService {
 	knex: Knex;
 	accountability: Accountability | null | undefined;
-	nested: NestedPath;
-	customContext: CustomContext;
+	requestContext: RequestContext;
 
 	createOne(data: Partial<Item>): Promise<PrimaryKey>;
 	createMany(data: Partial<Item>[]): Promise<PrimaryKey[]>;

@@ -5,7 +5,7 @@ export type Item = Record<string, any>;
  */
 export type NestedPath = string[];
 
-/** Allows hooks and other extensions to persist data in a run. */
+/** Allows hooks and other extensions to persist data throughout a request. */
 export type CustomContext = Record<string, any>;
 
 export type PrimaryKey = string | number;
