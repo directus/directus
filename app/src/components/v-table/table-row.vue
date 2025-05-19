@@ -45,7 +45,7 @@ const cssHeight = computed(() => {
 		@keydown="
 			(e) => {
 				if (e.metaKey) return;
-				if (e.key === 'Enter' || e.key === ' ') $emit('click', e);
+				if ((e.target as HTMLElement)?.tagName === 'TR' && ['Enter', ' '].includes(e.key)) $emit('click', e);
 			}
 		"
 	>
@@ -53,17 +53,7 @@ const cssHeight = computed(() => {
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />
 		</td>
 
-		<td
-			v-if="showSelect !== 'none'"
-			class="select cell"
-			@click.stop
-			@keydown="
-				(e) => {
-					if (e.metaKey) return;
-					if (e.key === 'Enter' || e.key === ' ') e.stopImmediatePropagation();
-				}
-			"
-		>
+		<td v-if="showSelect !== 'none'" class="select cell" @click.stop>
 			<v-checkbox
 				:icon-on="showSelect === 'one' ? 'radio_button_checked' : undefined"
 				:icon-off="showSelect === 'one' ? 'radio_button_unchecked' : undefined"
