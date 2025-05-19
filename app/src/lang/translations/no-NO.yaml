@@ -269,7 +269,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Tilbakestill sideinnstillinger
 hidden_field: Skjult felt
 hidden_on_detail: Skjult ved detaljer
-disabled_editing_value: Deaktiver redigering av felt
 key: Nøkkel
 alias: Alias
 bigInteger: Stort heltall

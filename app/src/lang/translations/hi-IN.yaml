@@ -196,7 +196,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: पेज सेटिंग्स रिसेट करे
 hidden_field: हिडन फील्ड
 hidden_on_detail: विवरण पर हिडन
-disabled_editing_value: डेटा संपादित करने से रोकें
 key: Key
 alias: Alias
 bigInteger: Big Integer
