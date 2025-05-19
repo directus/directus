@@ -17,9 +17,9 @@ export type AbstractServiceOptions = {
 
 /** Context to group information related to a request in services */
 export type RequestContext = {
-	nested: NestedPath,
-	customContext: CustomContext
-}
+	nested: NestedPath;
+	customContext: CustomContext;
+};
 
 export interface AbstractService {
 	knex: Knex;
