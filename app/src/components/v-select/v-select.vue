@@ -363,7 +363,7 @@ function useDisplayValue() {
 				<v-list-item-content>
 					<input
 						v-model="otherValue"
-						class="other-input-btn"
+						class="other-input"
 						:placeholder="t('other')"
 						@focus="otherValue ? $emit('update:modelValue', otherValue) : null"
 					/>
@@ -440,7 +440,7 @@ function useDisplayValue() {
 	cursor: pointer;
 }
 
-.other-input-btn {
+.other-input {
 	margin: 0;
 	padding: 0;
 	line-height: 1.2;
