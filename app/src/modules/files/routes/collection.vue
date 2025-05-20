@@ -402,7 +402,15 @@ function useFileUpload() {
 					@apply="moving ? undefined : moveToFolder()"
 				>
 					<template #activator="{ on }">
-						<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon class="folder" secondary @click="on">
+						<v-button
+							v-tooltip.bottom="batchEditAllowed ? t('move_to_folder') : t('not_allowed')"
+							rounded
+							icon
+							class="folder"
+							secondary
+							:disabled="!batchEditAllowed"
+							@click="on"
+						>
 							<v-icon name="folder_move" />
 						</v-button>
 					</template>
