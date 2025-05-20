@@ -11,6 +11,18 @@
 	tab-size: 2;
 	-webkit-user-select: none;
 	user-select: none;
+	outline: none;
+
+	&::-moz-focus-inner,
+	&::-moz-focus-outer {
+		border: none;
+		outline: none;
+	}
+
+	&:focus,
+	&:focus-within {
+		outline: none;
+	}
 }
 
 html {
@@ -29,21 +41,6 @@ body {
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
-}
-
-* {
-	outline: none;
-
-	&::-moz-focus-inner,
-	&::-moz-focus-outer {
-		border: none;
-		outline: none;
-	}
-
-	&:focus,
-	&:focus-within {
-		outline: none;
-	}
 }
 
 // Default focus ring
