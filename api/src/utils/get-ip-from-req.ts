@@ -33,7 +33,7 @@ export function getIPFromReq(req: IncomingMessage | Request): string | null {
 		// All req.headers are auto lower-cased
 		let customIPHeaderValue = req.headers[customIPHeaderName] as unknown;
 
-		// https://github.com/expressjs/express/blob/9f4dbe3a1332cd883069ba9b73a9eed99234cfc7/lib/request.js#L63
+		// // Done to have feature parity with https://github.com/expressjs/express/blob/9f4dbe3a1332cd883069ba9b73a9eed99234cfc7/lib/request.js#L63
 		if (customIPHeaderName === 'referer' || customIPHeaderName === 'referrer') {
 			customIPHeaderValue = req.headers['referrer'] || req.headers['referer'];
 		}
