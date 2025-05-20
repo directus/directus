@@ -8,35 +8,30 @@ const { section } = defineProps<{
 
 const { t } = useI18n();
 
-const itemsMap = {
-	nav: {
+const allItems = [
+	{
+		id: 'nav',
 		href: '#navigation',
 		text: t('skip_link_nav'),
 	},
-	moduleNav: {
+	{
+		id: 'moduleNav',
 		href: '#module-navigation',
 		text: t('skip_link_module_nav'),
 	},
-	main: {
+	{
+		id: 'main',
 		href: '#main-content',
 		text: t('skip_link_main'),
 	},
-	sidebar: {
+	{
+		id: 'sidebar',
 		href: '#sidebar',
 		text: t('skip_link_sidebar'),
 	},
 };
 
-const items = computed(() =>
-	Object.entries(itemsMap)
-		.filter(([key]) => key !== section)
-		.map(([_key, value]) => {
-			return {
-				href: value.href,
-				text: value.text,
-			};
-		}),
-);
+const items = computed(() => allItems.filter(([key]) => key !== section));
 </script>
 
 <template>
