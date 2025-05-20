@@ -9,12 +9,10 @@ import { useLogger } from '../logger/index.js';
 function getTrustValue(trust: boolean | number | proxyAddr.Address | proxyAddr.Address[]) {
 	if (typeof trust === 'boolean') {
 		// Support plain true/false
-		const r = trust;
-		return (_addr: string, _i: number) => r;
+		return (_addr: string, _i: number) => trust as boolean;
 	} else if (typeof trust === 'number') {
 		// Support trusting hop count
-		const r = trust;
-		return (_addr: string, i: number) => i < r;
+		return (_addr: string, i: number) => i < (trust as number);
 	} else if (typeof trust === 'string') {
 		// Support comma-separated values
 		trust = trust.split(',').map((v) => v.trim());
