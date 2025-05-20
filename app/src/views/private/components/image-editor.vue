@@ -193,6 +193,8 @@ function useImage() {
 	}
 
 	async function save() {
+		if (!hasEdits.value || saving.value) return;
+
 		saving.value = true;
 
 		// Only save focal point if we're also actively selecting it
@@ -447,7 +449,7 @@ function setAspectRatio() {
 		:title="t('editing_image')"
 		persistent
 		@cancel="internalActive = false"
-		@apply="!hasEdits ? undefined : save()"
+		@apply="save"
 	>
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />

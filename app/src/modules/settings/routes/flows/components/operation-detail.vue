@@ -117,6 +117,8 @@ const operationOptions = computed(() => {
 });
 
 function saveOperation() {
+	if (saveDisabled.value) return;
+
 	saving.value = true;
 
 	const defaultValues = operationOptions.value
@@ -141,7 +143,7 @@ function saveOperation() {
 		icon="offline_bolt"
 		persistent
 		@cancel="$emit('cancel')"
-		@apply="saveDisabled ? undefined : saveOperation()"
+		@apply="saveOperation"
 	>
 		<template #actions>
 			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="saveDisabled" @click="saveOperation">

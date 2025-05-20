@@ -337,6 +337,8 @@ function exportDataLocal() {
 }
 
 async function exportDataFiles() {
+	if (exporting.value) return;
+
 	exporting.value = true;
 
 	try {

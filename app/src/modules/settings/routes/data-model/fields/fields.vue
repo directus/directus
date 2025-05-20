@@ -43,6 +43,8 @@ const confirmDelete = ref(false);
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	await remove();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 	edits.value = {};
@@ -80,7 +82,7 @@ function discardAndLeave() {
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleting ? undefined : deleteAndQuit()">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
 						v-if="isSystemCollection(collection) === false"

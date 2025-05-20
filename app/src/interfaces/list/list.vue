@@ -113,6 +113,8 @@ function openItem(index: number) {
 }
 
 function saveItem(index: number) {
+	if (isSaveDisabled.value) return;
+
 	isNewItem.value = false;
 
 	updateValues(index, edits.value);
@@ -256,7 +258,7 @@ function closeDrawer() {
 			persistent
 			@update:model-value="checkDiscard()"
 			@cancel="checkDiscard()"
-			@apply="isSaveDisabled ? undefined : saveItem(active!)"
+			@apply="saveItem(active!)"
 		>
 			<template #title>
 				<h1 class="type-title">

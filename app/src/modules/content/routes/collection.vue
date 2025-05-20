@@ -183,6 +183,8 @@ function useBatch() {
 	return { batchEditActive, confirmDelete, deleting, batchDelete, confirmArchive, archiving, archiveItems, error };
 
 	async function batchDelete() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		const batchPrimaryKeys = selection.value;
@@ -203,7 +205,7 @@ function useBatch() {
 	}
 
 	async function archiveItems() {
-		if (!currentCollection.value?.meta?.archive_field) return;
+		if (archiving.value || !currentCollection.value?.meta?.archive_field) return;
 
 		archiving.value = true;
 

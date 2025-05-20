@@ -393,7 +393,7 @@ function useActions() {
 
 	useShortcut(props.applyShortcut, (_event, cancelNext) => {
 		// Note that drawer and modal have existing shortcuts.
-		if (props.overlay !== 'popover' || !internalActive.value || !isSavable.value) return;
+		if (props.overlay !== 'popover' || !internalActive.value) return;
 
 		save();
 		cancelNext();
@@ -423,6 +423,8 @@ function useActions() {
 	}
 
 	function save() {
+		if (!isSavable.value) return;
+
 		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
 		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
 		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
@@ -504,7 +506,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		:icon="collectionInfo?.meta?.icon ?? undefined"
 		persistent
 		:apply-shortcut
-		@apply="!isSavable ? undefined : save()"
+		@apply="save"
 		@cancel="cancel"
 	>
 		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
@@ -540,7 +542,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		persistent
 		keep-behind
 		:apply-shortcut
-		@apply="!isSavable ? undefined : save()"
+		@apply="save"
 		@esc="cancel"
 	>
 		<v-card class="modal-card">

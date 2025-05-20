@@ -17,12 +17,7 @@ const { saving, save } = useSave({ name });
 </script>
 
 <template>
-	<v-dialog
-		:model-value="isOpen"
-		persistent
-		@esc="router.push('/settings/roles')"
-		@apply="name === null || saving ? undefined : save()"
-	>
+	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')" @apply="save">
 		<v-card>
 			<v-card-title>
 				{{ t('create_role') }}

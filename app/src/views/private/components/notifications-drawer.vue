@@ -157,6 +157,8 @@ function toggleNotification(id: string) {
 }
 
 async function toggleArchive() {
+	if (selection.value.length === 0) return;
+
 	await api.patch('/notifications', {
 		keys: selection.value,
 		data: {
@@ -205,7 +207,7 @@ function clearFilters() {
 		:title="t('notifications')"
 		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
-		@apply="selection.length === 0 ? undefined : toggleArchive()"
+		@apply="toggleArchive"
 	>
 		<template #actions:prepend>
 			<transition name="fade">

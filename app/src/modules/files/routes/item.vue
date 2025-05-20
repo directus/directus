@@ -154,6 +154,8 @@ async function saveAsCopyAndNavigate() {
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		edits.value = {};
@@ -188,6 +190,8 @@ function useMovetoFolder() {
 	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
 
 	async function moveToFolder() {
+		if (moving.value) return;
+
 		moving.value = true;
 
 		try {
@@ -234,7 +238,7 @@ function useMovetoFolder() {
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleting ? undefined : deleteAndQuit()">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
@@ -267,7 +271,7 @@ function useMovetoFolder() {
 				v-if="isNew === false"
 				v-model="moveToDialogActive"
 				@esc="moveToDialogActive = false"
-				@apply="moving ? undefined : moveToFolder()"
+				@apply="moveToFolder"
 			>
 				<template #activator="{ on }">
 					<v-button

@@ -179,6 +179,8 @@ async function saveAsCopyAndNavigate() {
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		await refreshCurrentLanguage();
@@ -251,12 +253,7 @@ async function revert(values: Record<string, any>) {
 		</template>
 
 		<template #actions>
-			<v-dialog
-				v-if="!isNew"
-				v-model="confirmDelete"
-				@esc="confirmDelete = false"
-				@apply="deleting ? undefined : deleteAndQuit()"
-			>
+			<v-dialog v-if="!isNew" v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
 						v-if="collectionInfo!.meta && collectionInfo!.meta.singleton === false"

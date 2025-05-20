@@ -149,6 +149,8 @@ function useDelete() {
 	return { deleting, confirmDelete, deleteAndQuit };
 
 	async function deleteAndQuit() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		try {
@@ -489,7 +491,7 @@ function discardAndLeave() {
 			</template>
 
 			<template #actions>
-				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleting ? undefined : deleteAndQuit()">
+				<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 					<template #activator="{ on }">
 						<v-button
 							v-tooltip.bottom="t('delete_label')"

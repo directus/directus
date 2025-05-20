@@ -253,6 +253,8 @@ function useURLImport() {
 	return { url, loading, isValidURL, importFromURL };
 
 	async function importFromURL() {
+		if (!isValidURL.value || loading.value) return;
+
 		loading.value = true;
 
 		const data = {
@@ -366,7 +368,7 @@ defineExpose({ abort });
 					:model-value="activeDialog === 'url'"
 					:persistent="urlLoading"
 					@esc="activeDialog = null"
-					@apply="isValidURL !== false ? importFromURL() : undefined"
+					@apply="importFromURL"
 					@update:model-value="activeDialog = null"
 				>
 					<v-card>
@@ -378,7 +380,7 @@ defineExpose({ abort });
 							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+							<v-button :loading="urlLoading" :disabled="!isValidURL" @click="importFromURL">
 								{{ t('import_label') }}
 							</v-button>
 						</v-card-actions>

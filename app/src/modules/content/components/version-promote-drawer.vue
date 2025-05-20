@@ -124,6 +124,8 @@ function usePromoteDialog() {
 	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
 
 	function onPromoteClick() {
+		if (selectedFields.value.length === 0) return;
+
 		if (deleteVersionsAllowed.value) {
 			confirmDeleteOnPromoteDialogActive.value = true;
 		} else {
@@ -132,6 +134,8 @@ function usePromoteDialog() {
 	}
 
 	async function promote(deleteOnPromote: boolean) {
+		if (promoting.value) return;
+
 		promoting.value = true;
 
 		try {
@@ -178,7 +182,7 @@ function useTab() {
 		persistent
 		:model-value="active"
 		@cancel="$emit('cancel')"
-		@apply="selectedFields.length === 0 ? undefined : onPromoteClick()"
+		@apply="onPromoteClick"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>

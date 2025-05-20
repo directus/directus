@@ -4,7 +4,7 @@ import { useCollectionPermissions } from '@/composables/use-permissions';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { ContentVersion } from '@directus/types';
 import { isNil } from 'lodash';
-import { ref, toRefs, unref, watch } from 'vue';
+import { ref, toRefs, unref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import slugify from '@sindresorhus/slugify';
 import VersionPromoteDrawer from './version-promote-drawer.vue';
@@ -41,10 +41,18 @@ const {
 
 const { switchDialogActive, switchTarget, switchVersion } = useSwitchDialog();
 
-const { createDialogActive, newVersionKey, newVersionName, closeCreateDialog, creating, createVersion } =
-	useCreateDialog();
+const {
+	createDialogActive,
+	newVersionKey,
+	newVersionName,
+	closeCreateDialog,
+	creating,
+	isCreateDisabled,
+	createVersion,
+} = useCreateDialog();
 
-const { renameDialogActive, openRenameDialog, closeRenameDialog, updating, renameVersion } = useRenameDialog();
+const { renameDialogActive, openRenameDialog, closeRenameDialog, updating, renameVersion, isRenameDisabled } =
+	useRenameDialog();
 
 const { deleting, deleteVersion } = useDelete();
 
@@ -77,6 +85,7 @@ function useCreateDialog() {
 	const creating = ref(false);
 	const newVersionKey = ref<string | null>(null);
 	const newVersionName = ref<string | null>(null);
+	const isCreateDisabled = computed(() => newVersionKey.value === null);
 
 	watch(
 		newVersionName,
@@ -101,11 +110,14 @@ function useCreateDialog() {
 		newVersionName,
 		createDialogActive,
 		creating,
+		isCreateDisabled,
 		createVersion,
 		closeCreateDialog,
 	};
 
 	async function createVersion() {
+		if (isCreateDisabled.value || creating.value) return;
+
 		if (!unref(primaryKey) || unref(primaryKey) === '+') return;
 
 		creating.value = true;
@@ -141,16 +153,26 @@ function useRenameDialog() {
 	const renameDialogActive = ref(false);
 	const updating = ref(false);
 
+	const isRenameDisabled = computed(
+		() =>
+			((newVersionKey.value === null || newVersionKey.value === currentVersion.value?.key) &&
+				newVersionName.value === currentVersion.value?.name) ||
+			!unref(primaryKey) ||
+			unref(primaryKey) === '+' ||
+			!newVersionKey.value,
+	);
+
 	return {
 		renameDialogActive,
 		updating,
+		isRenameDisabled,
 		renameVersion,
 		openRenameDialog,
 		closeRenameDialog,
 	};
 
 	async function renameVersion() {
-		if (!unref(primaryKey) || unref(primaryKey) === '+' || !newVersionKey.value) return;
+		if (isRenameDisabled.value || updating.value) return;
 
 		updating.value = true;
 
@@ -220,6 +242,8 @@ function useDeleteDialog() {
 	};
 
 	async function onDeleteVersion() {
+		if (deleting.value) return;
+
 		await deleteVersion();
 		deleteDialogActive.value = false;
 	}
@@ -325,12 +349,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog
-			:model-value="createDialogActive"
-			persistent
-			@esc="closeCreateDialog"
-			@apply="newVersionKey === null ? undefined : createVersion()"
-		>
+		<v-dialog :model-value="createDialogActive" persistent @esc="closeCreateDialog" @apply="createVersion">
 			<v-card>
 				<v-card-title>{{ t('create_version') }}</v-card-title>
 
@@ -362,23 +381,14 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 				<v-card-actions>
 					<v-button secondary @click="closeCreateDialog">{{ t('cancel') }}</v-button>
-					<v-button :disabled="newVersionKey === null" :loading="creating" @click="createVersion">
+					<v-button :disabled="isCreateDisabled" :loading="creating" @click="createVersion">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
-		<v-dialog
-			:model-value="renameDialogActive"
-			persistent
-			@esc="closeRenameDialog"
-			@apply="
-				(newVersionKey === null || newVersionKey === currentVersion?.key) && newVersionName === currentVersion?.name
-					? undefined
-					: renameVersion()
-			"
-		>
+		<v-dialog :model-value="renameDialogActive" persistent @esc="closeRenameDialog" @apply="renameVersion">
 			<v-card>
 				<v-card-title>{{ t('rename_version') }}</v-card-title>
 
@@ -409,14 +419,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 				<v-card-actions>
 					<v-button secondary @click="closeRenameDialog">{{ t('cancel') }}</v-button>
-					<v-button
-						:disabled="
-							(newVersionKey === null || newVersionKey === currentVersion?.key) &&
-							newVersionName === currentVersion?.name
-						"
-						:loading="updating"
-						@click="renameVersion"
-					>
+					<v-button :disabled="isRenameDisabled" :loading="updating" @click="renameVersion">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>

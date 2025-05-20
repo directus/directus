@@ -144,6 +144,8 @@ const copyPanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.i
 const copyPanelID = ref<string | null>();
 
 const copyPanel = () => {
+	if (!copyPanelChoices.value.length) return;
+
 	insightsStore.stagePanelDuplicate(unref(copyPanelID)!, { dashboard: unref(copyPanelTo) });
 	copyPanelID.value = null;
 };
@@ -349,7 +351,7 @@ const refreshInterval = computed({
 			:model-value="!!copyPanelID"
 			@update:model-value="copyPanelID = null"
 			@esc="copyPanelID = null"
-			@apply="!copyPanelChoices.length ? undefined : copyPanel()"
+			@apply="copyPanel"
 		>
 			<v-card>
 				<v-card-title>{{ t('copy_to') }}</v-card-title>

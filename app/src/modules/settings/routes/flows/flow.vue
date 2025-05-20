@@ -74,7 +74,7 @@ const confirmDelete = ref(false);
 const deleting = ref(false);
 
 async function deleteFlow() {
-	if (!flow.value?.id) return;
+	if (!flow.value?.id || deleting.value) return;
 
 	deleting.value = true;
 
@@ -460,6 +460,8 @@ const copyPanelLoading = ref(false);
 const copyPanelChoices = computed(() => flowsStore.flows.filter((flow) => flow.id !== props.primaryKey));
 
 async function copyPanel() {
+	if (copyPanelLoading.value || copyPanelChoices.value.length === 0) return;
+
 	copyPanelLoading.value = true;
 
 	const currentPanel = panels.value.find((panel) => panel.id === copyPanelId.value);
@@ -729,7 +731,7 @@ function discardAndLeave() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false" @apply="deleting ? undefined : deleteFlow()">
+		<v-dialog :model-value="confirmDelete" @esc="confirmDelete = false" @apply="deleteFlow">
 			<v-card>
 				<v-card-title>{{ t('flow_delete_confirm', { flow: flow?.name }) }}</v-card-title>
 
@@ -744,7 +746,7 @@ function discardAndLeave() {
 			:model-value="!!copyPanelId"
 			@update:model-value="copyPanelId = undefined"
 			@esc="copyPanelId = undefined"
-			@apply="copyPanelLoading || copyPanelChoices.length === 0 ? undefined : copyPanel()"
+			@apply="copyPanel"
 		>
 			<v-card>
 				<v-card-title>{{ t('copy_to') }}</v-card-title>

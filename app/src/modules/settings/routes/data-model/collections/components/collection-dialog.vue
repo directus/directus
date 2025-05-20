@@ -46,6 +46,8 @@ function cancel() {
 }
 
 async function save() {
+	if (!values.collection || saving.value) return;
+
 	saving.value = true;
 
 	try {
@@ -73,7 +75,7 @@ async function save() {
 		keep-behind
 		@update:model-value="$emit('update:modelValue', $event)"
 		@esc="cancel"
-		@apply="!values.collection || saving ? undefined : save()"
+		@apply="save"
 	>
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />

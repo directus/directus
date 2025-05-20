@@ -123,7 +123,7 @@ const {
 	mediaButton,
 } = useMedia(editorRef, imageToken!);
 
-const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
+const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, isLinkSaveable } = useLink(editorRef);
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
@@ -388,11 +388,7 @@ onMounted(() => {
 				{{ softLength - count }}
 			</span>
 		</template>
-		<v-dialog
-			v-model="linkDrawerOpen"
-			@esc="closeLinkDrawer"
-			@apply="linkSelection.url === null && !linkNode ? undefined : saveLink()"
-		>
+		<v-dialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
 			<v-card>
 				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
@@ -417,7 +413,7 @@ onMounted(() => {
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
+					<v-button :disabled="!isLinkSaveable" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>

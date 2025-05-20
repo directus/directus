@@ -22,6 +22,8 @@ const newFolderName = ref(null);
 const { fetchFolders } = useFolders();
 
 async function addFolder() {
+	if (newFolderName.value === null || saving.value) return;
+
 	saving.value = true;
 
 	try {
@@ -45,11 +47,7 @@ async function addFolder() {
 </script>
 
 <template>
-	<v-dialog
-		v-model="dialogActive"
-		@esc="dialogActive = false"
-		@apply="newFolderName === null ? undefined : addFolder()"
-	>
+	<v-dialog v-model="dialogActive" @esc="dialogActive = false" @apply="addFolder">
 		<template #activator="{ on }">
 			<v-button
 				v-tooltip.bottom="disabled ? t('not_allowed') : t('create_folder')"

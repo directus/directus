@@ -19,12 +19,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 </script>
 
 <template>
-	<v-dialog
-		:model-value="isOpen"
-		persistent
-		@esc="router.push('/settings/policies')"
-		@apply="name === null || saving ? undefined : save()"
-	>
+	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/policies')" @apply="save">
 		<v-card>
 			<v-card-title>
 				{{ t('create_policy') }}

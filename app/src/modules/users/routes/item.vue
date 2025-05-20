@@ -202,6 +202,8 @@ async function saveAsCopyAndNavigate() {
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		edits.value = {};
@@ -242,6 +244,8 @@ function discardAndStay() {
 }
 
 async function toggleArchive() {
+	if (archiving.value) return;
+
 	await archive();
 
 	if (isArchived.value === true) {
@@ -276,7 +280,7 @@ function revert(values: Record<string, any>) {
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
 				@esc="confirmDelete = false"
-				@apply="deleting ? undefined : deleteAndQuit()"
+				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -311,7 +315,7 @@ function revert(values: Record<string, any>) {
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
 				@esc="confirmArchive = false"
-				@apply="archiving ? undefined : toggleArchive()"
+				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
 					<v-button

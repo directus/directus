@@ -429,6 +429,8 @@ async function saveAndQuit() {
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		edits.value = {};
@@ -441,6 +443,8 @@ async function deleteAndQuit() {
 }
 
 async function toggleArchive() {
+	if (archiving.value) return;
+
 	try {
 		await archive();
 

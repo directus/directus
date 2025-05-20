@@ -33,7 +33,7 @@ const scope = computed(() => {
 	return 'global';
 });
 
-const { editActive, editValue, editSave, editSaving, editCancel } = useEditBookmark();
+const { editActive, editValue, editSave, editSaving, editCancel, isEditDisabled } = useEditBookmark();
 const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
 
 const name = computed(() => translate(props.bookmark.bookmark));
@@ -49,9 +49,13 @@ function useEditBookmark() {
 
 	const editSaving = ref(false);
 
-	return { editActive, editValue, editSave, editSaving, editCancel };
+	const isEditDisabled = computed(() => editValue.name === null);
+
+	return { editActive, editValue, editSave, editSaving, editCancel, isEditDisabled };
 
 	async function editSave() {
+		if (isEditDisabled.value || editSaving.value) return;
+
 		editSaving.value = true;
 
 		try {
@@ -85,6 +89,8 @@ function useDeleteBookmark() {
 	return { deleteActive, deleteSave, deleteSaving };
 
 	async function deleteSave() {
+		if (deleteSaving.value) return;
+
 		deleteSaving.value = true;
 
 		try {
@@ -158,12 +164,7 @@ function useDeleteBookmark() {
 			</v-list>
 		</v-menu>
 
-		<v-dialog
-			v-model="editActive"
-			persistent
-			@esc="editCancel"
-			@apply="editValue.name === null ? undefined : editSave()"
-		>
+		<v-dialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
 			<v-card>
 				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
 				<v-card-text>
@@ -180,7 +181,7 @@ function useDeleteBookmark() {
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="editCancel">{{ t('cancel') }}</v-button>
-					<v-button :disabled="editValue.name === null" :loading="editSaving" @click="editSave">
+					<v-button :disabled="isEditDisabled" :loading="editSaving" @click="editSave">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
