@@ -10,28 +10,28 @@ const { t } = useI18n();
 
 const allItems = [
 	{
-		id: 'nav',
+		key: 'nav',
 		href: '#navigation',
 		text: t('skip_link_nav'),
 	},
 	{
-		id: 'moduleNav',
+		key: 'moduleNav',
 		href: '#module-navigation',
 		text: t('skip_link_module_nav'),
 	},
 	{
-		id: 'main',
+		key: 'main',
 		href: '#main-content',
 		text: t('skip_link_main'),
 	},
 	{
-		id: 'sidebar',
+		key: 'sidebar',
 		href: '#sidebar',
 		text: t('skip_link_sidebar'),
 	},
-};
+];
 
-const items = computed(() => allItems.filter(([key]) => key !== section));
+const items = computed(() => allItems.filter((item) => item.key !== section));
 </script>
 
 <template>
