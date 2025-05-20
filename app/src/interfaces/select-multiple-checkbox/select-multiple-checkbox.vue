@@ -95,7 +95,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				:key="otherValue.key"
 				block
 				custom-value
-				:focus-custom-input="otherValue.focus"
+				:autofocus-custom-input="otherValue.focus"
 				:value="otherValue.value"
 				:disabled="disabled"
 				:icon-on="iconOn"

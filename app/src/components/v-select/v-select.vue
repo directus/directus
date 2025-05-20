@@ -385,7 +385,7 @@ function useDisplayValue() {
 							:model-value="modelValue || []"
 							:value="otherVal.value"
 							custom-value
-							:focus-custom-input="otherVal.focus"
+							:autofocus-custom-input="otherVal.focus"
 							@update:model-value="$emit('update:modelValue', $event)"
 							@update:value="setOtherValue(otherVal.key, $event)"
 							@blur:custom-input="

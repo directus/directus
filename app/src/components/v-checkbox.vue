@@ -24,7 +24,7 @@ interface Props {
 	/** If a custom value can be entered next to it */
 	customValue?: boolean;
 	/** Will focus the custom value input on mounted */
-	focusCustomInput?: boolean;
+	autofocusCustomInput?: boolean;
 	/** TODO: What the? */
 	checked?: boolean | null;
 }
@@ -69,7 +69,7 @@ const icon = computed<string>(() => {
 const customInput = useTemplateRef<HTMLInputElement>('custom-input');
 
 onMounted(() => {
-	if (props.focusCustomInput && props.customValue) {
+	if (props.autofocusCustomInput && props.customValue) {
 		customInput.value?.focus();
 	}
 });
