@@ -223,9 +223,7 @@ export default abstract class SocketController {
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
 
 				if (state.accountability) {
-					state.accountability.ip = accountabilityOverrides.ip;
-					state.accountability.userAgent = accountabilityOverrides.userAgent;
-					state.accountability.origin = accountabilityOverrides.origin;
+					Object.assign(accountability, accountabilityOverrides);
 				}
 
 				this.checkUserRequirements(state.accountability);
