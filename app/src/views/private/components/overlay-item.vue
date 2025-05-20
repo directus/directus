@@ -16,7 +16,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
-import { computed, ref, toRefs, watch, type Ref } from 'vue';
+import { computed, ref, toRefs, watch, unref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
@@ -421,19 +421,36 @@ function useActions() {
 		return null;
 	}
 
+	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
+		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value);
+	}
+
 	function save() {
-		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
-		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
-		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
-		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
+		const errors = validateForm({
+			defaultValues: unref(getDefaultValuesFromFields(fieldsWithoutCircular.value)),
+			existingValues: initialValues?.value,
+			editsToValidate: internalEdits.value,
+			fieldsToValidate: fieldsWithoutCircular.value,
+		});
 
-		const errors = validateItem(
-			merge({}, defaultValues.value, existingValues, editsToValidate),
-			fieldsToValidate,
-			isNew.value,
-		);
+		let junctionValues = null;
 
-		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
+		if (props.junctionField) {
+			junctionValues = {
+				defaultValues: unref(getDefaultValuesFromFields(relatedCollectionFields.value)),
+				existingValues: initialValues?.value?.[props.junctionField],
+				editsToValidate: internalEdits.value[props.junctionField],
+				fieldsToValidate: relatedCollectionFields.value,
+			};
+
+			const junctionErrors = validateForm(junctionValues);
+
+			errors.push(...junctionErrors);
+		}
+
+		if (nestedValidationErrors.value?.length) {
+			errors.push(...nestedValidationErrors.value);
+		}
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -442,8 +459,8 @@ function useActions() {
 			validationErrors.value = [];
 		}
 
-		if (props.junctionField && Object.values(defaultValues.value).some((value) => value !== null)) {
-			internalEdits.value[props.junctionField] = internalEdits.value[props.junctionField] ?? {};
+		if (props.junctionField && Object.values(junctionValues?.defaultValues ?? {}).some((value) => value !== null)) {
+			internalEdits.value[props.junctionField] = junctionValues?.editsToValidate ?? {};
 		}
 
 		if (props.junctionField && props.relatedPrimaryKey !== '+' && relatedPrimaryKeyField.value) {
