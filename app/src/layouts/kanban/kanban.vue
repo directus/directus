@@ -101,6 +101,7 @@ const fieldDisplay = computed(() => {
 	return {
 		titleField: getRenderDisplayOptions('titleField'),
 		textField: getRenderDisplayOptions('textField'),
+		dateField: getRenderDisplayOptions('dateField'),
 	};
 
 	function getRenderDisplayOptions(fieldName: keyof LayoutOptions) {
@@ -223,7 +224,11 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 										<div class="bottom">
 											<display-datetime
 												v-if="element.date"
-												format="short"
+												v-bind="
+													fieldDisplay.dateField?.display === 'datetime'
+														? fieldDisplay.dateField.options
+														: { format: 'short' }
+												"
 												:value="element.date"
 												:type="element.dateType"
 											/>
