@@ -71,7 +71,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 
 		top: 4px;
 		left: 4px;
-		z-index: 999999999999999999;
+		z-index: 999999;
 
 		&.right {
 			right: 4px;
