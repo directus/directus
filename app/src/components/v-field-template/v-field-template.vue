@@ -128,6 +128,7 @@ function addField(field: FieldTree) {
 	const button = document.createElement('button');
 	button.dataset.field = field.key;
 	button.setAttribute('contenteditable', 'false');
+	button.classList.add('selected-field');
 	button.innerText = String(field.name);
 
 	if (window.getSelection()?.rangeCount == 0) {
@@ -324,7 +325,7 @@ function setContent() {
 		display: none;
 	}
 
-	:deep(button:not(.v-icon)) {
+	:deep(.selected-field) {
 		margin: -1px 4px 0;
 		padding: 2px 4px 0;
 		color: var(--theme--primary);
@@ -335,7 +336,7 @@ function setContent() {
 		user-select: none;
 	}
 
-	:deep(button:not(.v-icon):not(:disabled):hover) {
+	:deep(.selected-field:not(:disabled):hover) {
 		color: var(--white);
 		background-color: var(--theme--danger);
 	}

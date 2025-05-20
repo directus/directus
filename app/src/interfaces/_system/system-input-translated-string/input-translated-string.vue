@@ -159,7 +159,9 @@ const newTranslationDefaults = computed(() => {
 					@keydown.enter="checkKeyValidity"
 				>
 					<template v-if="hasValidKey" #input>
-						<button :disabled="disabled" @click.stop="setValue(null)">{{ value && getKeyWithoutPrefix(value) }}</button>
+						<button class="selected-translation" :disabled="disabled" @click.stop="setValue(null)">
+							{{ value && getKeyWithoutPrefix(value) }}
+						</button>
 					</template>
 					<template #append>
 						<v-icon
@@ -229,7 +231,7 @@ const newTranslationDefaults = computed(() => {
 
 <style lang="scss" scoped>
 .translation-input {
-	:deep(button:not(.v-icon)) {
+	.selected-translation {
 		margin-right: auto;
 		padding: 2px 8px 0;
 		color: var(--theme--primary);
@@ -242,7 +244,7 @@ const newTranslationDefaults = computed(() => {
 		overflow-x: hidden;
 	}
 
-	:deep(button:not(.v-icon):not(:disabled):hover) {
+	.selected-translation:not(:disabled):hover {
 		color: var(--white);
 		background-color: var(--theme--danger);
 	}
