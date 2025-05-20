@@ -162,11 +162,7 @@ function emitValue() {
 				@paste="emitValue"
 				@keydown.esc="disable"
 				@focusin="activate"
-				@focusout="
-					() => {
-						if (!filterActive) disable();
-					}
-				"
+				@focusout="filterActive ? undefined : disable()"
 			/>
 			<div class="spacer" />
 			<v-icon

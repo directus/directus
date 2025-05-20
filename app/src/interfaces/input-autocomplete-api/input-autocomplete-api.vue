@@ -81,6 +81,13 @@ function onInput(value: string) {
 function emitValue(value: string) {
 	emit('input', value);
 }
+
+async function onValueChange(value: string, activate: () => void, deactivate: () => void) {
+	await onInput(value);
+
+	if (value && results.value.length) activate();
+	else deactivate();
+}
 </script>
 
 <template>
@@ -96,14 +103,7 @@ function emitValue(value: string) {
 					:class="font"
 					:model-value="value"
 					:dir="direction"
-					@update:model-value="
-						async (value: string) => {
-							await onInput(value);
-
-							if (value && results.length) activate();
-							else deactivate();
-						}
-					"
+					@update:model-value="(value: string) => onValueChange(value, activate, deactivate)"
 				>
 					<template v-if="iconLeft" #prepend><v-icon :name="iconLeft" /></template>
 					<template v-if="iconRight" #append><v-icon :name="iconRight" /></template>

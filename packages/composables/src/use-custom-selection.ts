@@ -42,7 +42,7 @@ export function useCustomSelection(
 	return { otherValue, usesOtherValue };
 }
 
-type OtherValue = {
+export type OtherValue = {
 	key: string;
 	value: string;
 	focus?: boolean;

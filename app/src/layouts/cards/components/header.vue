@@ -60,21 +60,17 @@ function toggleDescending() {
 		sortSync.value = ['-' + sortSync.value];
 	}
 }
+
+function onClickSelect() {
+	if (selectionSync.value.length) selectionSync.value = [];
+	else if (props.showSelect === 'multiple') emit('select-all');
+}
 </script>
 
 <template>
 	<div class="cards-header">
 		<div class="start">
-			<button
-				type="button"
-				:class="{ 'no-selection': !selectionSync.length }"
-				@click="
-					() => {
-						if (selectionSync.length) selectionSync = [];
-						else if (showSelect === 'multiple') $emit('select-all');
-					}
-				"
-			>
+			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
 				<template v-if="selectionSync.length">
 					<v-icon name="cancel" outline />
 					<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>

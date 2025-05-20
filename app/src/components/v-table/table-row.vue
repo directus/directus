@@ -26,7 +26,7 @@ const props = withDefaults(
 	},
 );
 
-defineEmits(['click', 'item-selected']);
+const emit = defineEmits(['click', 'item-selected']);
 
 const cssHeight = computed(() => {
 	return {
@@ -34,6 +34,11 @@ const cssHeight = computed(() => {
 		renderTemplateImage: props.height - 16 + 'px',
 	};
 });
+
+function onKeydown(e: KeyboardEvent) {
+	if (e.metaKey) return;
+	if ((e.target as HTMLElement)?.tagName === 'TR' && ['Enter', ' '].includes(e.key)) emit('click', e);
+}
 </script>
 
 <template>
@@ -42,12 +47,7 @@ const cssHeight = computed(() => {
 		:class="{ subdued: subdued, clickable: hasClickListener }"
 		:tabindex="hasClickListener ? 0 : undefined"
 		@click="$emit('click', $event)"
-		@keydown="
-			(e) => {
-				if (e.metaKey) return;
-				if ((e.target as HTMLElement)?.tagName === 'TR' && ['Enter', ' '].includes(e.key)) $emit('click', e);
-			}
-		"
+		@keydown="onKeydown"
 	>
 		<td v-if="showManualSort" class="manual cell" @click.stop>
 			<v-icon name="drag_handle" class="drag-handle" :class="{ 'sorted-manually': sortedManually }" />

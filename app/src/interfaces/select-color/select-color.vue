@@ -136,6 +136,16 @@ function activateColorPicker() {
 	htmlColorInput.value?.$el.getElementsByTagName('input')[0]?.click();
 }
 
+function onClickInput(e: InputEvent, toggle: () => void) {
+	if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
+}
+
+function onKeydownInput(e: KeyboardEvent, activate: () => void) {
+	const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
+
+	if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
+}
+
 function useColor() {
 	const color = ref<ColorInstance | null>(null);
 
@@ -298,18 +308,8 @@ function useColor() {
 				class="color-input"
 				:maxlength="opacity ? 9 : 7"
 				@change="onChanged"
-				@click="
-					(e: InputEvent) => {
-						if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
-					}
-				"
-				@keydown="
-					(e: KeyboardEvent) => {
-						const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
-
-						if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
-					}
-				"
+				@click="onClickInput($event, toggle)"
+				@keydown="onKeydownInput($event, activate)"
 			>
 				<template #prepend>
 					<v-input

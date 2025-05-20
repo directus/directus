@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
-import { useCustomSelectionMultiple } from '@directus/composables';
+import { useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -56,6 +56,10 @@ const gridClass = computed(() => getMinimalGridClass(items.value, props.width));
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, items, (value) =>
 	emit('input', value),
 );
+
+function onBlurCustomInput(otherVal: OtherValue) {
+	return (otherVal.value === null || otherVal.value?.length === 0) && setOtherValue(otherVal.key, null);
+}
 </script>
 
 <template>
@@ -103,9 +107,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				:model-value="value || []"
 				@update:model-value="$emit('input', $event)"
 				@update:value="setOtherValue(otherValue.key, $event)"
-				@blur:custom-input="
-					(otherValue.value === null || otherValue.value?.length === 0) && setOtherValue(otherValue.key, null)
-				"
+				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
 				<template #append>
 					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />

@@ -48,6 +48,16 @@ function setIcon(icon: string | null) {
 
 	emit('input', icon);
 }
+
+function onClickInput(e: InputEvent, toggle: () => void) {
+	if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
+}
+
+function onKeydownInput(e: KeyboardEvent, activate: () => void) {
+	const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
+
+	if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
+}
 </script>
 
 <template>
@@ -59,18 +69,8 @@ function setIcon(icon: string | null) {
 				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
 				:class="{ 'has-value': value }"
 				:nullable="false"
-				@click="
-					(e: InputEvent) => {
-						if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
-					}
-				"
-				@keydown="
-					(e: KeyboardEvent) => {
-						const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
-
-						if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
-					}
-				"
+				@click="onClickInput($event, toggle)"
+				@keydown="onKeydownInput($event, activate)"
 			>
 				<template v-if="value" #prepend>
 					<v-icon clickable :name="value" :class="{ active: value }" @click="toggle" />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
+import { useCustomSelection, useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { Placement } from '@popperjs/core';
 import { debounce, get, isArray } from 'lodash';
 import { computed, Ref, ref, toRefs, watch } from 'vue';
@@ -106,6 +106,10 @@ watch(
 		internalSearch.value = val;
 	}, 250),
 );
+
+function onBlurCustomInput(otherVal: OtherValue) {
+	return (otherVal.value === null || otherVal.value?.length === 0) && setOtherValue(otherVal.key, null);
+}
 
 function useItems() {
 	const internalSearch = ref<string | null>(null);
@@ -388,9 +392,7 @@ function useDisplayValue() {
 							:autofocus-custom-input="otherVal.focus"
 							@update:model-value="$emit('update:modelValue', $event)"
 							@update:value="setOtherValue(otherVal.key, $event)"
-							@blur:custom-input="
-								(otherVal.value === null || otherVal.value?.length === 0) && setOtherValue(otherVal.key, null)
-							"
+							@blur:custom-input="onBlurCustomInput(otherVal)"
 						/>
 					</v-list-item-content>
 					<v-list-item-icon>
