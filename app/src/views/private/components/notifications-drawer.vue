@@ -423,10 +423,12 @@ function clearFilters() {
 		.message {
 			width: 100%;
 			margin-top: 8px;
+			-webkit-user-select: text;
 			user-select: text;
 			cursor: auto;
 
 			:deep(*) {
+				-webkit-user-select: text;
 				user-select: text;
 			}
 
