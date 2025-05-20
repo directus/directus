@@ -204,10 +204,7 @@ export default abstract class SocketController {
 			return;
 		}
 
-		accountability.ip = accountabilityOverrides.ip;
-		accountability.userAgent = accountabilityOverrides.userAgent;
-		accountability.origin = accountabilityOverrides.origin;
-
+		Object.assign(accountability, accountabilityOverrides);
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
