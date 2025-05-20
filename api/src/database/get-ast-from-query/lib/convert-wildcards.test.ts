@@ -47,6 +47,17 @@ test('converting * without any permissions', async () => {
 	expect(result).toEqual([]);
 });
 
+test('converting * without any permissions and alias is null', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
+
+	const result = await convertWildcards(
+		{ collection: 'articles', fields: ['*'], alias: null, accountability },
+		{ knex: db, schema },
+	);
+
+	expect(result).toEqual([]);
+});
+
 test('converting * with * permissions', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
 
