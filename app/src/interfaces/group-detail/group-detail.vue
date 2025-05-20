@@ -27,6 +27,7 @@ const props = withDefaults(
 		batchActiveFields: () => [],
 		validationErrors: () => [],
 		start: 'open',
+		headerColor: 'var(--theme--foreground-accent)',
 	},
 );
 
@@ -91,14 +92,7 @@ watch(validationMessages, (newVal, oldVal) => {
 	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
 		<template #activator="{ toggle, active }">
 			<button class="toggle-btn" type="button" @click="toggle">
-				<v-divider
-					:style="{
-						'--v-divider-label-color': headerColor,
-					}"
-					:class="{ active, edited }"
-					:inline-title="false"
-					large
-				>
+				<v-divider :class="{ active, edited }" :inline-title="false" large>
 					<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
 					<template v-if="field.name">
 						<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
@@ -148,6 +142,10 @@ watch(validationMessages, (newVal, oldVal) => {
 	&:focus-visible :deep(hr) {
 		opacity: 0;
 	}
+}
+
+.v-divider {
+	--v-divider-label-color: v-bind(headerColor);
 }
 
 .v-divider .expand-icon {
