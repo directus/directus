@@ -205,6 +205,7 @@ export default abstract class SocketController {
 		}
 
 		Object.assign(accountability, accountabilityOverrides);
+
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
@@ -223,7 +224,7 @@ export default abstract class SocketController {
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
 
 				if (state.accountability) {
-					Object.assign(accountability, accountabilityOverrides);
+					Object.assign(state.accountability, accountabilityOverrides);
 				}
 
 				this.checkUserRequirements(state.accountability);
@@ -345,9 +346,11 @@ export default abstract class SocketController {
 			 * They are only sent in the original connection request
 			 */
 			if (accountability && client.accountability) {
-				accountability.ip = client.accountability.ip;
-				accountability.userAgent = client.accountability.userAgent;
-				accountability.origin = client.accountability.origin;
+				Object.assign(accountability, {
+					ip: client.accountability.ip,
+					userAgent: client.accountability.userAgent,
+					origin: client.accountability.origin,
+				});
 			}
 
 			client.accountability = accountability;
