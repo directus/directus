@@ -116,8 +116,6 @@ function parseFilterEntry(
 		return { [key]: parseFilterValue(typeof value === 'string' ? parseJSON(value) : value, accountability, context) };
 	} else if (String(key).startsWith('_') && !bypassOperators.includes(key)) {
 		return { [key]: parseFilterValue(value, accountability, context) };
-	} else if (String(key).startsWith('item__') && isObjectLike(value)) {
-		return { [`item:${String(key).split('item__')[1]}`]: parseFilter(value, accountability, context) } as Filter;
 	} else {
 		return { [key]: parseFilterRecursive(value, accountability, context) } as Filter;
 	}

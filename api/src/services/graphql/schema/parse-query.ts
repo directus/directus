@@ -5,6 +5,7 @@ import { sanitizeQuery } from '../../../utils/sanitize-query.js';
 import { validateQuery } from '../../../utils/validate-query.js';
 import { replaceFuncs } from '../utils/replace-funcs.js';
 import { parseArgs } from './parse-args.js';
+import { filterReplaceM2A, filterReplaceM2ADeep } from '../utils/filter-replace-m2a.js';
 
 /**
  * Get a Directus Query object from the parsed arguments (rawQuery) and GraphQL AST selectionSet. Converts SelectionSet into
@@ -12,10 +13,11 @@ import { parseArgs } from './parse-args.js';
  */
 export async function getQuery(
 	rawQuery: Query,
+	schema: SchemaOverview,
 	selections: readonly SelectionNode[],
 	variableValues: GraphQLResolveInfo['variableValues'],
-	schema: SchemaOverview,
 	accountability?: Accountability | null,
+	collection?: string,
 ): Promise<Query> {
 	const query: Query = await sanitizeQuery(rawQuery, schema, accountability);
 
@@ -127,8 +129,18 @@ export async function getQuery(
 
 	query.alias = parseAliases(selections);
 	query.fields = await parseFields(selections);
+
 	if (query.filter) query.filter = replaceFuncs(query.filter);
+
 	query.deep = replaceFuncs(query.deep as any) as any;
+
+	if (collection) {
+		if (query.filter) {
+			query.filter = filterReplaceM2A(query.filter, collection, schema);
+		}
+
+		query.deep = filterReplaceM2ADeep(query.deep, collection, schema);
+	}
 
 	validateQuery(query);
 
