@@ -18,7 +18,7 @@ import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detai
 import { useCollection } from '@directus/composables';
 import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
-import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
+import { computed, onBeforeUnmount, ref, toRefs, unref, watch, provide } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
@@ -35,6 +35,8 @@ const props = withDefaults(defineProps<Props>(), {
 	primaryKey: null,
 	singleton: false,
 });
+
+provide('saveAndStay', saveAndStay);
 
 const { t, te } = useI18n();
 
@@ -730,7 +732,6 @@ const shouldShowVersioning = computed(
 			:primary-key="internalPrimaryKey"
 			:validation-errors="validationErrors"
 			:version="currentVersion"
-			@save-and-stay="saveAndStay"
 		/>
 
 		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">

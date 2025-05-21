@@ -63,7 +63,7 @@ const props = withDefaults(
 
 const { t } = useI18n();
 
-const emit = defineEmits(['update:modelValue', 'saveAndStay']);
+const emit = defineEmits(['update:modelValue']);
 
 const values = computed(() => {
 	return Object.assign({}, cloneDeep(props.initialValues), cloneDeep(props.modelValue));
@@ -379,7 +379,6 @@ function useRawEditor() {
 					:direction="direction"
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
-					@save-and-stay="$emit('saveAndStay')"
 				/>
 
 				<form-field
@@ -416,7 +415,6 @@ function useRawEditor() {
 					@unset="unsetValue(fieldsMap[fieldName]!)"
 					@toggle-batch="toggleBatchField(fieldsMap[fieldName]!)"
 					@toggle-raw="toggleRawField(fieldsMap[fieldName]!)"
-					@save-and-stay="$emit('saveAndStay')"
 				/>
 			</template>
 		</template>
