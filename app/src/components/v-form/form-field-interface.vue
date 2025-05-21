@@ -19,7 +19,7 @@ const props = defineProps<{
 	direction?: string;
 }>();
 
-defineEmits(['update:modelValue', 'setFieldValue']);
+defineEmits(['update:modelValue', 'setFieldValue', 'saveAndStay']);
 
 const { t } = useI18n();
 
@@ -70,6 +70,7 @@ const value = computed(() =>
 				:direction="direction"
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
+				@save-and-stay="$emit('saveAndStay')"
 			/>
 
 			<template #fallback>

@@ -40,7 +40,7 @@ const props = withDefaults(
 	},
 );
 
-const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue']);
+const emit = defineEmits(['toggle-batch', 'toggle-raw', 'unset', 'update:modelValue', 'setFieldValue', 'saveAndStay']);
 
 const { t } = useI18n();
 
@@ -201,6 +201,7 @@ function useComputedValues() {
 			:direction="direction"
 			@update:model-value="emitValue($event)"
 			@set-field-value="$emit('setFieldValue', $event)"
+			@save-and-stay="$emit('saveAndStay')"
 		/>
 
 		<form-field-raw-editor
