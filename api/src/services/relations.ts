@@ -32,7 +32,6 @@ export class RelationsService {
 	systemCache: Keyv<any>;
 	schemaCache: Keyv<any>;
 	helpers: Helpers;
-	bypassCache: boolean;
 
 	constructor(options: AbstractServiceOptions) {
 		this.knex = options.knex || getDatabase();
@@ -52,11 +51,10 @@ export class RelationsService {
 		this.systemCache = cache.systemCache;
 		this.schemaCache = cache.localSchemaCache;
 		this.helpers = getHelpers(this.knex);
-		this.bypassCache = false;
 	}
 
 	async foreignKeys(collection?: string) {
-		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']) && !this.bypassCache;
+		const schemaCacheIsEnabled = Boolean(env['CACHE_SCHEMA']);
 
 		let foreignKeys: ForeignKey[] | null = null;
 
@@ -79,7 +77,7 @@ export class RelationsService {
 		return foreignKeys;
 	}
 
-	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
+	async readAll(collection?: string, opts?: QueryOptions, bypassCache?: boolean): Promise<Relation[]> {
 		if (this.accountability) {
 			await validateAccess(
 				{
@@ -114,7 +112,7 @@ export class RelationsService {
 			return metaRow.many_collection === collection;
 		});
 
-		const schemaRows = await this.foreignKeys(collection);
+		const schemaRows = bypassCache ? await this.schemaInspector.foreignKeys() : await this.foreignKeys(collection);
 		const results = this.stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}
