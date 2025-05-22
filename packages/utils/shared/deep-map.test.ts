@@ -17,7 +17,7 @@ describe('deepMap', () => {
 		expect(deepMap(mockObject, mockIterator)).toStrictEqual({ _and: [{ field: { _eq: 'Test field' } }] });
 	});
 
-	test('returns object param when passed neither an object or an array.', () => {
+	test('object param when passed neither an object or an array.', () => {
 		const mockObject = 'test string';
 
 		expect(deepMap(mockObject, mockIterator)).toBe(mockObject);
