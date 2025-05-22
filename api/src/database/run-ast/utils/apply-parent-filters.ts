@@ -29,6 +29,7 @@ export function applyParentFilters(
 					name: nestedNode.relation.field,
 					fieldKey: nestedNode.relation.field,
 					whenCase: [],
+					alias: false,
 				});
 			}
 
@@ -38,6 +39,7 @@ export function applyParentFilters(
 					name: nestedNode.relation.meta.sort_field,
 					fieldKey: nestedNode.relation.meta.sort_field,
 					whenCase: [],
+					alias: false,
 				});
 			}
 
