@@ -112,7 +112,12 @@ export class RelationsService {
 			return metaRow.many_collection === collection;
 		});
 
-		const schemaRows = bypassCache ? await this.schemaInspector.foreignKeys() : await this.foreignKeys(collection);
+		let schemaRows = bypassCache ? await this.schemaInspector.foreignKeys() : await this.foreignKeys(collection);
+
+		if (collection && bypassCache) {
+			schemaRows = schemaRows.filter((row) => row.table === collection);
+		}
+
 		const results = this.stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}
@@ -354,8 +359,7 @@ export class RelationsService {
 						const builder = table
 							.foreign(field, constraintName || undefined)
 							.references(
-								`${existingRelation.related_collection!}.${
-									this.schema.collections[existingRelation.related_collection!]!.primary
+								`${existingRelation.related_collection!}.${this.schema.collections[existingRelation.related_collection!]!.primary
 								}`,
 							);
 
