@@ -359,7 +359,8 @@ export class RelationsService {
 						const builder = table
 							.foreign(field, constraintName || undefined)
 							.references(
-								`${existingRelation.related_collection!}.${this.schema.collections[existingRelation.related_collection!]!.primary
+								`${existingRelation.related_collection!}.${
+									this.schema.collections[existingRelation.related_collection!]!.primary
 								}`,
 							);
 
