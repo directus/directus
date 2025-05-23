@@ -224,7 +224,7 @@ async function getDatabaseSchema(database: Knex, schemaInspector: SchemaInspecto
 	}
 
 	const relationsService = new RelationsService({ knex: database, schema: result });
-	result.relations = await relationsService.readAll();
+	result.relations = await relationsService.readAll(undefined, undefined, true);
 
 	return result;
 }
