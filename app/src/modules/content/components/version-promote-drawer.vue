@@ -124,6 +124,8 @@ function usePromoteDialog() {
 	return { confirmDeleteOnPromoteDialogActive, onPromoteClick, promoting, promote };
 
 	function onPromoteClick() {
+		if (selectedFields.value.length === 0) return;
+
 		if (deleteVersionsAllowed.value) {
 			confirmDeleteOnPromoteDialogActive.value = true;
 		} else {
@@ -132,6 +134,8 @@ function usePromoteDialog() {
 	}
 
 	async function promote(deleteOnPromote: boolean) {
+		if (promoting.value) return;
+
 		promoting.value = true;
 
 		try {
@@ -178,7 +182,7 @@ function useTab() {
 		persistent
 		:model-value="active"
 		@cancel="$emit('cancel')"
-		@esc="$emit('cancel')"
+		@apply="onPromoteClick"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>
@@ -232,7 +236,11 @@ function useTab() {
 			</div>
 		</div>
 
-		<v-dialog v-model="confirmDeleteOnPromoteDialogActive" @esc="confirmDeleteOnPromoteDialogActive = false">
+		<v-dialog
+			v-model="confirmDeleteOnPromoteDialogActive"
+			@esc="confirmDeleteOnPromoteDialogActive = false"
+			@apply="promote(true)"
+		>
 			<v-card>
 				<v-card-title>
 					{{ t('delete_on_promote_copy', { version: currentVersionDisplayName }) }}

@@ -153,7 +153,7 @@ function exportDasboard(ids: string[]) {
 }
 
 async function deleteDashboard() {
-	if (!confirmDelete.value) return;
+	if (deletingDashboard.value || !confirmDelete.value) return;
 
 	deletingDashboard.value = true;
 
@@ -172,6 +172,8 @@ const confirmBatchDelete = ref(false);
 const batchDeleting = ref(false);
 
 async function batchDelete() {
+	if (batchDeleting.value) return;
+
 	batchDeleting.value = true;
 
 	const batchPrimaryKeys = selection.value;
@@ -225,7 +227,12 @@ async function batchDelete() {
 				<v-icon name="download" outline />
 			</v-button>
 
-			<v-dialog v-if="selection.length > 0" v-model="confirmBatchDelete" @esc="confirmBatchDelete = false">
+			<v-dialog
+				v-if="selection.length > 0"
+				v-model="confirmBatchDelete"
+				@esc="confirmBatchDelete = false"
+				@apply="batchDelete"
+			>
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
@@ -297,7 +304,7 @@ async function batchDelete() {
 			<template #item-append="{ item }">
 				<v-menu placement="left-start" show-arrow :close-on-content-click="false">
 					<template #activator="{ toggle }">
-						<v-icon name="more_vert" class="ctx-toggle" @click="toggle" />
+						<v-icon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
 					</template>
 					<template #default="{ toggle }">
 						<v-list>
@@ -381,7 +388,7 @@ async function batchDelete() {
 			</template>
 		</v-info>
 
-		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
+		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteDashboard">
 			<v-card>
 				<v-card-title>{{ t('dashboard_delete_confirm') }}</v-card-title>
 

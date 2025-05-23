@@ -202,6 +202,8 @@ async function saveAsCopyAndNavigate() {
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		edits.value = {};
@@ -242,6 +244,8 @@ function discardAndStay() {
 }
 
 async function toggleArchive() {
+	if (archiving.value) return;
+
 	await archive();
 
 	if (isArchived.value === true) {
@@ -272,7 +276,12 @@ function revert(values: Record<string, any>) {
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" :disabled="deleteAllowed === false" @esc="confirmDelete = false">
+			<v-dialog
+				v-model="confirmDelete"
+				:disabled="deleteAllowed === false"
+				@esc="confirmDelete = false"
+				@apply="deleteAndQuit"
+			>
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
@@ -306,6 +315,7 @@ function revert(values: Record<string, any>) {
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
 				@esc="confirmArchive = false"
+				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -410,7 +420,7 @@ function revert(values: Record<string, any>) {
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>

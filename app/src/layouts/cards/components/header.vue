@@ -60,18 +60,25 @@ function toggleDescending() {
 		sortSync.value = ['-' + sortSync.value];
 	}
 }
+
+function onClickSelect() {
+	if (selectionSync.value.length) selectionSync.value = [];
+	else if (props.showSelect === 'multiple') emit('select-all');
+}
 </script>
 
 <template>
 	<div class="cards-header">
 		<div class="start">
-			<div v-if="selectionSync.length > 0" class="selected" @click="selectionSync = []">
-				<v-icon name="cancel" outline />
-				<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
-			</div>
-			<button v-else class="select-all" @click="showSelect === 'multiple' ? $emit('select-all') : undefined">
-				<v-icon name="check_circle" outline />
-				<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
+			<button type="button" :class="{ 'no-selection': !selectionSync.length }" @click="onClickSelect">
+				<template v-if="selectionSync.length">
+					<v-icon name="cancel" outline />
+					<span class="label">{{ t('n_items_selected', selectionSync.length) }}</span>
+				</template>
+				<template v-else>
+					<v-icon name="check_circle" outline />
+					<span class="label">{{ t(showSelect === 'multiple' ? 'select_all' : 'select_an_item') }}</span>
+				</template>
 			</button>
 		</div>
 		<div class="end">
@@ -85,9 +92,9 @@ function toggleDescending() {
 
 			<v-menu show-arrow placement="bottom">
 				<template #activator="{ toggle }">
-					<div v-tooltip.top="t('sort_field')" class="sort-selector" @click="toggle">
+					<button v-tooltip.top="t('sort_field')" type="button" class="sort-selector" @click="toggle">
 						{{ sortField && sortField.name }}
-					</div>
+					</button>
 				</template>
 
 				<v-list>
@@ -140,17 +147,13 @@ function toggleDescending() {
 		transform: translateY(1px);
 	}
 
-	.select-all {
+	.no-selection {
 		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
 			color: var(--theme--foreground);
 		}
-	}
-
-	.selected {
-		cursor: pointer;
 	}
 }
 
@@ -174,7 +177,6 @@ function toggleDescending() {
 
 		&:hover {
 			color: var(--theme--foreground);
-			cursor: pointer;
 		}
 	}
 
@@ -187,7 +189,6 @@ function toggleDescending() {
 
 		&:hover {
 			color: var(--theme--foreground);
-			cursor: pointer;
 		}
 	}
 }

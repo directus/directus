@@ -136,6 +136,16 @@ function activateColorPicker() {
 	htmlColorInput.value?.$el.getElementsByTagName('input')[0]?.click();
 }
 
+function onClickInput(e: InputEvent, toggle: () => void) {
+	if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
+}
+
+function onKeydownInput(e: KeyboardEvent, activate: () => void) {
+	const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
+
+	if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
+}
+
 function useColor() {
 	const color = ref<ColorInstance | null>(null);
 
@@ -288,8 +298,8 @@ function useColor() {
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled" :close-on-content-click="false">
-		<template #activator="{ activate }">
+	<v-menu attached :disabled="disabled" :close-on-content-click="false" no-focus-return>
+		<template #activator="{ activate, toggle }">
 			<v-input
 				v-model="input"
 				:disabled="disabled"
@@ -297,8 +307,9 @@ function useColor() {
 				:pattern="opacity ? /#([a-f\d]{2}){4}/i : /#([a-f\d]{2}){3}/i"
 				class="color-input"
 				:maxlength="opacity ? 9 : 7"
-				@focus="activate"
 				@change="onChanged"
+				@click="onClickInput($event, toggle)"
+				@keydown="onKeydownInput($event, activate)"
 			>
 				<template #prepend>
 					<v-input
@@ -329,7 +340,7 @@ function useColor() {
 					<div class="item-actions">
 						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
 
-						<v-icon v-else name="palette" />
+						<v-icon v-else name="palette" clickable @click="toggle" />
 					</div>
 				</template>
 			</v-input>
@@ -469,12 +480,18 @@ function useColor() {
 	--v-button-background-color-hover: var(--v-button-background-color);
 	--v-button-height: calc(var(--theme--form--field--input--height) - 20px);
 	--v-button-width: calc(var(--theme--form--field--input--height) - 20px);
+
+	--swatch-radius: calc(var(--theme--border-radius) + 2px);
+
+	--focus-ring-offset: var(--focus-ring-offset-inset);
+	--focus-ring-radius: var(--swatch-radius);
+
 	position: relative;
 	box-sizing: border-box;
 	margin-left: -8px;
 	width: calc(var(--theme--form--field--input--height) - 20px);
 	height: calc(var(--theme--form--field--input--height) - 20px);
-	border-radius: calc(var(--theme--border-radius) + 2px);
+	border-radius: var(--swatch-radius);
 	overflow: hidden;
 	cursor: pointer;
 }

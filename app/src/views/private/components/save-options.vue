@@ -46,16 +46,18 @@ const { t } = useI18n();
 </template>
 
 <style scoped>
-:deep(.v-icon) {
+.v-icon {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
+
 	color: var(--theme--foreground-subdued) !important;
-}
 
-:deep(.v-icon:hover:not(.disabled)) {
-	color: var(--theme--foreground) !important;
-}
+	&:hover:not(.disabled) {
+		color: var(--theme--foreground) !important;
+	}
 
-:deep(.v-icon.disabled) {
-	cursor: not-allowed;
+	&.disabled {
+		cursor: not-allowed;
+	}
 }
 
 .v-list-item {

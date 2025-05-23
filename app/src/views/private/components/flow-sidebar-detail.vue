@@ -126,7 +126,7 @@ const isFlowDisabled = (manualFlow: FlowRaw) => {
 	return !primaryKey.value && selection.value.length === 0;
 };
 
-const onFlowClick = async (flowId: string) => {
+const onFlowClick = (flowId: string) => {
 	const flow = unref(manualFlows).find((flow) => flow.id === flowId);
 
 	if (!flow) return;
@@ -138,7 +138,9 @@ const onFlowClick = async (flowId: string) => {
 	}
 };
 
-const confirmUnsavedChanges = async (flowId: string) => {
+const confirmUnsavedChanges = (flowId: string) => {
+	if (isConfirmButtonDisabled.value) return;
+
 	confirmedUnsavedChanges.value = true;
 
 	if (!confirmDetails.value) {
@@ -147,6 +149,8 @@ const confirmUnsavedChanges = async (flowId: string) => {
 };
 
 const runManualFlow = async (flowId: string) => {
+	if (isConfirmButtonDisabled.value) return;
+
 	confirmRunFlow.value = null;
 
 	const selectedFlow = manualFlows.value.find((flow) => flow.id === flowId);
@@ -203,7 +207,12 @@ const runManualFlow = async (flowId: string) => {
 			</div>
 		</div>
 
-		<v-dialog :model-value="displayUnsavedChangesDialog" keep-behind @esc="resetConfirm">
+		<v-dialog
+			:model-value="displayUnsavedChangesDialog"
+			keep-behind
+			@esc="resetConfirm"
+			@apply="confirmUnsavedChanges(confirmRunFlow!)"
+		>
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
@@ -219,7 +228,12 @@ const runManualFlow = async (flowId: string) => {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="displayCustomConfirmDialog" keep-behind @esc="resetConfirm">
+		<v-dialog
+			:model-value="displayCustomConfirmDialog"
+			keep-behind
+			@esc="resetConfirm"
+			@apply="runManualFlow(confirmRunFlow!)"
+		>
 			<v-card>
 				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
 				<v-card-text class="confirm-form">

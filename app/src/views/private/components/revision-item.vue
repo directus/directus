@@ -49,7 +49,7 @@ const user = computed(() => {
 </script>
 
 <template>
-	<div class="revision-item" :class="{ last }" @click="$emit('click')">
+	<button type="button" class="revision-item" :class="{ last }" @click="$emit('click')">
 		<div class="header">
 			<span class="dot" :class="revision.activity.action" />
 			{{ headerMessage }}
@@ -67,14 +67,17 @@ const user = computed(() => {
 
 			<span v-else>{{ t('private_user') }}</span>
 		</div>
-	</div>
+	</button>
 </template>
 
 <style lang="scss" scoped>
 .revision-item {
 	position: relative;
+	display: block;
+	width: 100%;
 	margin-bottom: 12px;
 	margin-left: 16px;
+	text-align: left;
 
 	.header {
 		position: relative;

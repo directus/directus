@@ -125,6 +125,7 @@ function useActions() {
 		:title="t('editing_in_batch', { count: primaryKeys.length })"
 		persistent
 		@cancel="cancel"
+		@apply="save"
 	>
 		<template #actions>
 			<v-button v-tooltip.bottom="t('save')" icon rounded :loading="saving" @click="save">

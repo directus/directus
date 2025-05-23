@@ -429,6 +429,8 @@ async function saveAndQuit() {
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		edits.value = {};
@@ -441,6 +443,8 @@ async function deleteAndQuit() {
 }
 
 async function toggleArchive() {
+	if (archiving.value) return;
+
 	try {
 		await archive();
 
@@ -584,6 +588,7 @@ const shouldShowVersioning = computed(
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
 				@esc="confirmDelete = false"
+				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -619,6 +624,7 @@ const shouldShowVersioning = computed(
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
 				@esc="confirmArchive = false"
+				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -725,7 +731,7 @@ const shouldShowVersioning = computed(
 			:version="currentVersion"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -806,7 +812,9 @@ const shouldShowVersioning = computed(
 	width: 260px;
 }
 
-:deep(.version-more-options.v-icon) {
+.version-more-options.v-icon {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
+
 	color: var(--theme--foreground-subdued);
 
 	&:hover {

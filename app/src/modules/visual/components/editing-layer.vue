@@ -256,7 +256,7 @@ function usePopoverWidth() {
 			:selected-fields="fields"
 			:edits="edits"
 			:popover-props="position.width > popoverWidth ? { arrowPlacement: 'start' } : {}"
-			shortcuts
+			apply-shortcut="meta+s"
 			prevent-cancel-with-edits
 			@input="(value: any) => (edits = value)"
 		>

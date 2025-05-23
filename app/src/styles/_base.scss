@@ -9,7 +9,20 @@
 	font-family: inherit;
 	line-height: inherit;
 	tab-size: 2;
+	-webkit-user-select: none;
 	user-select: none;
+	outline: none;
+
+	&::-moz-focus-inner,
+	&::-moz-focus-outer {
+		border: none;
+		outline: none;
+	}
+
+	&:focus,
+	&:focus-within {
+		outline: none;
+	}
 }
 
 html {
@@ -28,21 +41,24 @@ body {
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
+}
 
-	&:not(.user-is-tabbing) * {
-		outline: none;
+// Default focus ring
+*:not(main):not(div):not(input):not(textarea):not([contenteditable='true']):focus-visible {
+	outline: var(--focus-ring-width) solid var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset);
+	border-radius: var(--focus-ring-radius);
+}
 
-		&::-moz-focus-inner,
-		&::-moz-focus-outer {
-			border: none;
-			outline: none;
-		}
+// Applies mainly to scrollable elements
+main:not([contenteditable='true']):focus-visible,
+div:not([contenteditable='true']):focus-visible {
+	--focus-ring-offset: calc(-1 * var(--focus-ring-width));
+	--focus-ring-radius: 0;
 
-		&:focus,
-		&:focus-within {
-			outline: none;
-		}
-	}
+	outline: var(--focus-ring-width) dotted var(--focus-ring-color);
+	outline-offset: var(--focus-ring-offset);
+	border-radius: var(--focus-ring-radius);
 }
 
 html,
@@ -56,9 +72,11 @@ input,
 textarea,
 [contenteditable],
 .selectable {
+	-webkit-user-select: text;
 	user-select: text;
 
 	* {
+		-webkit-user-select: text;
 		user-select: text;
 	}
 }

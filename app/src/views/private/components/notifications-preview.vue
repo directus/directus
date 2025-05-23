@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import SidebarButton from './sidebar-button.vue';
 import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
+import { useId } from 'vue';
 
 defineProps<{
 	sidebarOpen?: boolean;
@@ -22,6 +23,16 @@ const { lastFour } = storeToRefs(notificationsStore);
 
 <template>
 	<div class="notifications-preview">
+		<sidebar-button
+			v-tooltip.left="!sidebarOpen && t('activity_log')"
+			:active="modelValue"
+			class="toggle"
+			icon="pending_actions"
+			@click="$emit('update:modelValue', !modelValue)"
+		>
+			{{ t('activity_log') }}
+		</sidebar-button>
+
 		<transition-expand tag="div">
 			<div v-if="modelValue" class="inline">
 				<div class="padding-box">
@@ -34,16 +45,6 @@ const { lastFour } = storeToRefs(notificationsStore);
 				</div>
 			</div>
 		</transition-expand>
-
-		<sidebar-button
-			v-tooltip.left="!sidebarOpen && t('activity_log')"
-			:active="modelValue"
-			class="toggle"
-			icon="pending_actions"
-			@click="$emit('update:modelValue', !modelValue)"
-		>
-			{{ t('activity_log') }}
-		</sidebar-button>
 	</div>
 </template>
 

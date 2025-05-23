@@ -193,6 +193,8 @@ function useImage() {
 	}
 
 	async function save() {
+		if (!hasEdits.value || saving.value) return;
+
 		saving.value = true;
 
 		// Only save focal point if we're also actively selecting it
@@ -447,6 +449,7 @@ function setAspectRatio() {
 		:title="t('editing_image')"
 		persistent
 		@cancel="internalActive = false"
+		@apply="save"
 	>
 		<template #activator="activatorBinding">
 			<slot name="activator" v-bind="activatorBinding" />
@@ -477,18 +480,21 @@ function setAspectRatio() {
 						v-tooltip.top.inverted="t('move_tool')"
 						name="pan_tool"
 						:class="{ active: localDragMode === 'move' }"
+						clickable
 						@click="dragMode = 'move'"
 					/>
 					<v-icon
 						v-tooltip.top.inverted="t('crop_tool')"
 						name="crop"
 						:class="{ active: localDragMode === 'crop' }"
+						clickable
 						@click="dragMode = 'crop'"
 					/>
 					<v-icon
 						v-tooltip.top.inverted="t('focal_point_tool')"
 						name="location_searching"
 						:class="{ active: localDragMode === 'focal_point' }"
+						clickable
 						@click="dragMode = 'focal_point'"
 					/>
 				</div>
@@ -567,7 +573,7 @@ function setAspectRatio() {
 					{{ dimensionsString }}
 				</div>
 
-				<button v-show="cropping" class="toolbar-button cancel" @click="cropping = false">
+				<button v-show="cropping" class="toolbar-button cancel" type="button" @click="cropping = false">
 					{{ localDragMode === 'focal_point' ? t('cancel_selection') : t('cancel_crop') }}
 				</button>
 			</div>

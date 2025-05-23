@@ -195,9 +195,8 @@ function toggleManualSort() {
 					class="manual cell"
 					:class="{ 'sorted-manually': sort.by === manualSortKey }"
 					scope="col"
-					@click="toggleManualSort"
 				>
-					<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small />
+					<v-icon v-tooltip="t('toggle_manual_sorting')" name="sort" small clickable @click="toggleManualSort" />
 				</th>
 
 				<th v-if="showSelect !== 'none'" class="select cell" scope="col">
@@ -214,42 +213,48 @@ function toggleManualSort() {
 				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ width: header.width + 'px' }">
 					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
-							<div class="content reorder-handle" @click="toggle">
-								<span class="name">
-									<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
-									<slot :name="`header.${header.value}`" :header="header">
-										{{ header.text }}
-									</slot>
-								</span>
+							<div class="content reorder-handle">
+								<button class="header-btn" type="button" @click="toggle">
+									<span class="name">
+										<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
+										<slot :name="`header.${header.value}`" :header="header">
+											{{ header.text }}
+										</slot>
+									</span>
 
-								<v-icon
-									v-if="hasHeaderContextMenuSlot"
-									:name="sort.by === header.value ? 'sort' : 'arrow_drop_down'"
-									class="action-icon"
-									small
-								/>
+									<v-icon :name="sort.by === header.value ? 'sort' : 'arrow_drop_down'" class="action-icon" small />
+								</button>
 							</div>
 						</template>
 
 						<slot name="header-context-menu" v-bind="{ header }" />
 					</v-menu>
 
-					<div v-else class="content reorder-handle" @click="changeSort(header)">
-						<span class="name">
-							<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
-							<slot :name="`header.${header.value}`" :header="header">
-								{{ header.text }}
-							</slot>
-						</span>
+					<div v-else class="content reorder-handle">
+						<button
+							class="header-btn"
+							type="button"
+							:disabled="!header.sortable"
+							:aria-label="header.sortable ? t(getTooltipForSortIcon(header)) : undefined"
+							@click="changeSort(header)"
+						>
+							<span class="name">
+								<span v-if="header.description" v-tooltip="header.description" class="description-dot"></span>
+								<slot :name="`header.${header.value}`" :header="header">
+									{{ header.text }}
+								</slot>
+							</span>
 
-						<v-icon
-							v-if="header.sortable"
-							v-tooltip.top="t(getTooltipForSortIcon(header))"
-							name="sort"
-							class="action-icon"
-							small
-						/>
+							<v-icon
+								v-if="header.sortable"
+								v-tooltip.top="t(getTooltipForSortIcon(header))"
+								name="sort"
+								class="action-icon"
+								small
+							/>
+						</button>
 					</div>
+
 					<span
 						v-if="showResize"
 						class="resize-handle"
@@ -282,6 +287,10 @@ function toggleManualSort() {
 		background-color: var(--v-table-background-color, var(--theme--background));
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
+		&.select {
+			--focus-ring-offset: var(--focus-ring-offset-invert);
+		}
+
 		&.select,
 		&.manual {
 			display: flex;
@@ -295,17 +304,34 @@ function toggleManualSort() {
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
 
-			> span {
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
+			.header-btn {
+				width: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: start;
+
+				.name,
+				.action-button {
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+
+				&:focus-visible .action-icon {
+					opacity: 1;
+				}
 			}
 		}
 
 		&.small {
 			padding: 0;
+
 			.content {
 				justify-content: center;
+
+				.header-btn {
+					width: auto;
+				}
 
 				.name {
 					display: none;
@@ -323,7 +349,6 @@ function toggleManualSort() {
 	}
 
 	.actionable {
-		cursor: pointer;
 		position: relative;
 
 		.action-icon {
@@ -370,7 +395,6 @@ function toggleManualSort() {
 
 	.manual {
 		color: var(--theme--foreground-subdued);
-		cursor: pointer;
 
 		.v-icon {
 			position: relative;

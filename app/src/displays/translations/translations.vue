@@ -96,7 +96,15 @@ const translations = computed(() => {
 		/>
 		<v-menu class="menu" show-arrow :disabled="value.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
-				<v-icon small class="icon" :class="{ active }" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
+				<v-icon
+					small
+					class="icon"
+					:class="{ active }"
+					name="info"
+					clickable
+					@click.stop="toggle"
+					@focusout="deactivate"
+				></v-icon>
 			</template>
 
 			<v-list class="links">
@@ -132,11 +140,14 @@ const translations = computed(() => {
 	align-items: center;
 
 	.icon {
+		--focus-ring-offset: 0;
+
 		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}
 
+	.icon:focus-visible,
 	&:hover .icon,
 	.icon.active {
 		opacity: 1;

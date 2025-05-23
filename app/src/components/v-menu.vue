@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useShortcut } from '@/composables/use-shortcut';
 import { Instance, Modifier, Placement, detectOverflow } from '@popperjs/core';
 import arrow from '@popperjs/core/lib/modifiers/arrow';
 import computeStyles from '@popperjs/core/lib/modifiers/computeStyles';
@@ -8,9 +9,10 @@ import offset from '@popperjs/core/lib/modifiers/offset';
 import popperOffsets from '@popperjs/core/lib/modifiers/popperOffsets';
 import preventOverflow from '@popperjs/core/lib/modifiers/preventOverflow';
 import { createPopper } from '@popperjs/core/lib/popper-lite';
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
 import { debounce } from 'lodash';
 import { nanoid } from 'nanoid/non-secure';
-import { Ref, computed, nextTick, onUnmounted, ref, watch } from 'vue';
+import { onUnmounted, ref, computed, watch, useTemplateRef, nextTick, type Ref } from 'vue';
 
 interface Props {
 	/** Where to position the popper */
@@ -45,6 +47,8 @@ interface Props {
 	seamless?: boolean;
 	/** Lets other overlays (drawer, dialog) open on top */
 	keepBehind?: boolean;
+	/** Do not focus activator when deactivating focus trap */
+	noFocusReturn?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -110,6 +114,13 @@ const {
 
 const { isActive, activate, deactivate, toggle } = useActiveState();
 
+useShortcut('escape', (_event, cancelNext) => {
+	if (isActive.value) {
+		deactivate();
+		cancelNext();
+	}
+});
+
 defineExpose({ activator, id, activate, deactivate });
 
 watch(isActive, (newActive) => {
@@ -127,6 +138,15 @@ const { onClick, onPointerEnter, onPointerLeave } = useEvents();
 function useActiveState() {
 	const localIsActive = ref(false);
 
+	const menuEl = useTemplateRef<HTMLDivElement>('menuEl');
+
+	const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
+		escapeDeactivates: false,
+		returnFocusOnDeactivate: !props.noFocusReturn,
+		allowOutsideClick: true,
+		clickOutsideDeactivates: props.closeOnClick,
+	});
+
 	const isActive = computed<boolean>({
 		get() {
 			if (props.modelValue !== undefined) {
@@ -136,8 +156,15 @@ function useActiveState() {
 			return localIsActive.value;
 		},
 		async set(newActive) {
+			if (!newActive) deactivateFocusTrap();
+
 			localIsActive.value = newActive;
 			emit('update:modelValue', newActive);
+
+			if (newActive) {
+				await nextTick();
+				activateFocusTrap();
+			}
 		},
 	});
 
@@ -436,6 +463,7 @@ function usePopper(
 						<div class="arrow-triangle" />
 					</div>
 					<div
+						ref="menuEl"
 						class="v-menu-content"
 						:class="{ seamless }"
 						v-on="{

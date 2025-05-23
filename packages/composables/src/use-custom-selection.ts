@@ -42,14 +42,15 @@ export function useCustomSelection(
 	return { otherValue, usesOtherValue };
 }
 
-type OtherValue = {
+export type OtherValue = {
 	key: string;
 	value: string;
+	focus?: boolean;
 };
 
 type UsableCustomSelectionMultiple = {
 	otherValues: Ref<OtherValue[]>;
-	addOtherValue: (value?: string) => void;
+	addOtherValue: (value?: string, focus?: boolean) => void;
 	setOtherValue: (key: string, newValue: string | null) => void;
 };
 
@@ -87,12 +88,13 @@ export function useCustomSelectionMultiple(
 
 	return { otherValues, addOtherValue, setOtherValue };
 
-	function addOtherValue(value = '') {
+	function addOtherValue(value = '', focus = false) {
 		otherValues.value = [
 			...otherValues.value,
 			{
 				key: nanoid(),
 				value: value,
+				focus,
 			},
 		];
 	}

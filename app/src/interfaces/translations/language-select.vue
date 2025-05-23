@@ -24,16 +24,21 @@ const displayValue = computed(() => {
 <template>
 	<v-menu attached class="language-select" :class="{ secondary, danger }">
 		<template #activator="{ toggle, active }">
-			<button class="toggle" @click="toggle">
+			<button class="toggle" type="button" @click="toggle">
 				<slot name="prepend" />
 				<span class="display-value">{{ displayValue }}</span>
-				<span class="controls"><slot name="controls" :active="active" :toggle="toggle" /></span>
+				<span class="controls"><slot name="controls" :active :toggle /></span>
 				<v-icon class="expand" name="expand_more" :class="{ active }" />
 			</button>
 		</template>
 
 		<v-list v-if="items">
-			<v-list-item v-for="(item, index) in items" :key="index" @click="$emit('update:modelValue', item.value)">
+			<v-list-item
+				v-for="(item, index) in items"
+				:key="index"
+				clickable
+				@click="$emit('update:modelValue', item.value)"
+			>
 				<div class="start">
 					<div class="dot" :class="{ show: item.edited }"></div>
 					{{ item.text }}

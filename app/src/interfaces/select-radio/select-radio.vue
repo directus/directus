@@ -84,8 +84,20 @@ const customIcon = computed(() => {
 				disabled,
 			}"
 		>
-			<v-icon :disabled="disabled" :name="customIcon" clickable @click="$emit('input', otherValue)" />
-			<input v-model="otherValue" :placeholder="t('other')" :disabled="disabled" @focus="$emit('input', otherValue)" />
+			<v-icon
+				:name="customIcon"
+				class="radio-icon"
+				:disabled="disabled"
+				clickable
+				@click="otherValue ? $emit('input', otherValue) : ($refs.customInput as HTMLInputElement).focus()"
+			/>
+			<input
+				ref="customInput"
+				v-model="otherValue"
+				:placeholder="t('other')"
+				:disabled="disabled"
+				@change="$emit('input', otherValue)"
+			/>
 		</div>
 	</div>
 </template>
@@ -145,6 +157,8 @@ const customIcon = computed(() => {
 	}
 
 	&.has-value {
+		--v-icon-color-hover: var(--v-icon-color);
+
 		background-color: var(--theme--form--field--input--background-subdued);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
 	}

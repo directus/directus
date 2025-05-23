@@ -84,6 +84,7 @@ function onClick(event: MouseEvent) {
 			:disabled="disabled"
 			:dense="dense"
 			:clickable="Boolean(clickable || to || !open)"
+			:activator="!clickable && $slots.default && arrowPlacement"
 			@click="onClick"
 		>
 			<v-list-item-icon
@@ -91,7 +92,7 @@ function onClick(event: MouseEvent) {
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
-				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
+				<v-icon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 
 			<slot name="activator" :active="groupActive" />
@@ -101,7 +102,7 @@ function onClick(event: MouseEvent) {
 				class="activator-icon"
 				:class="{ active: groupActive }"
 			>
-				<v-icon name="chevron_right" :disabled="disabled" @click.stop.prevent="toggle" />
+				<v-icon name="chevron_right" :disabled="disabled" clickable @click.stop.prevent="toggle" />
 			</v-list-item-icon>
 		</v-list-item>
 
@@ -120,6 +121,8 @@ function onClick(event: MouseEvent) {
 	}
 
 	.activator-icon {
+		--focus-ring-offset: 0;
+
 		margin-right: 0 !important;
 		color: var(--theme--foreground-subdued);
 		transform: rotate(0deg);

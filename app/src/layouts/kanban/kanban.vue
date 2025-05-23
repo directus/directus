@@ -254,7 +254,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					</template>
 				</draggable>
 
-				<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()">
+				<v-dialog :model-value="editDialogOpen !== null" @esc="cancelChanges()" @apply="saveChanges">
 					<v-card>
 						<v-card-title>
 							{{ editDialogOpen === '+' ? t('layouts.kanban.add_group') : t('layouts.kanban.edit_group') }}

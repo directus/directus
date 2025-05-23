@@ -368,6 +368,18 @@ function getSystemRelations() {
 
 	return relations;
 }
+
+function onApply() {
+	if (currentTab.value[0] === 'optional_system_fields') {
+		if (saving.value) return;
+		save();
+		return;
+	}
+
+	if (!collectionName.value?.length) return;
+
+	currentTab.value = ['optional_system_fields'];
+}
 </script>
 
 <template>
@@ -378,6 +390,7 @@ function getSystemRelations() {
 		persistent
 		:sidebar-label="currentTab[0] && t(currentTab[0])"
 		@cancel="router.push('/settings/data-model')"
+		@apply="onApply"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>

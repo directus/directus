@@ -101,7 +101,7 @@ function handleClick() {
 		:class="{ loading, readonly, selected: item && modelValue.includes(item[itemKey]), 'select-mode': selectMode }"
 		@click="handleClick"
 	>
-		<v-icon class="selector" :name="selectionIcon" @click.stop="toggleSelection" />
+		<v-icon class="selector" :name="selectionIcon" clickable @click.stop="toggleSelection" />
 		<div class="header">
 			<div class="selection-fade"></div>
 			<v-skeleton-loader v-if="loading" />
@@ -232,6 +232,7 @@ function handleClick() {
 	.selector {
 		--v-icon-color: var(--white);
 		--v-icon-color-hover: var(--white);
+		--focus-ring-offset: 0;
 
 		position: absolute;
 		top: 0px;
@@ -243,8 +244,13 @@ function handleClick() {
 			opacity var(--fast) var(--transition),
 			color var(--fast) var(--transition);
 
+		&:focus-visible,
 		&:hover {
 			opacity: 1 !important;
+		}
+
+		&:focus-visible {
+			border-radius: 50%;
 		}
 	}
 

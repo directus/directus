@@ -325,6 +325,8 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-calendar .set-to-now-button {
+	--focus-ring-offset: var(--focus-ring-offset-inset);
+
 	width: 100%;
 	padding: 8px 0;
 	color: var(--theme--primary);

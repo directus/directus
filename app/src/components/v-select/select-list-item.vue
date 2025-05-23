@@ -5,7 +5,7 @@ import { Option } from './types';
 const props = withDefaults(
 	defineProps<{
 		item: Option;
-		itemLabelFontFamily: string;
+		itemLabelFontFamily?: string;
 		modelValue?: string | number | (string | number)[] | null;
 		multiple?: boolean;
 		allowOther?: boolean;
@@ -41,9 +41,9 @@ const isActive = computed(() => {
 		v-show="!item.hidden"
 		:active="isActive"
 		:disabled="item.disabled"
-		clickable
 		:value="item.value"
-		@click="multiple ? null : $emit('update:modelValue', item.value)"
+		:clickable="!multiple"
+		@click="multiple ? undefined : $emit('update:modelValue', item.value)"
 	>
 		<v-list-item-icon v-if="multiple === false && allowOther === false && (item.icon || item.color)">
 			<v-icon v-if="item.icon" :name="item.icon" :color="item.color" />

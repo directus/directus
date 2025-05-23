@@ -17,7 +17,7 @@ const { saving, save } = useSave({ name });
 </script>
 
 <template>
-	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')">
+	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/roles')" @apply="save">
 		<v-card>
 			<v-card-title>
 				{{ t('create_role') }}
@@ -25,13 +25,7 @@ const { saving, save } = useSave({ name });
 			<v-card-text>
 				<div class="form-grid">
 					<div class="field full">
-						<v-input
-							v-model="name"
-							autofocus
-							:placeholder="t('role_name') + '...'"
-							:max-length="100"
-							@keyup.enter="save"
-						/>
+						<v-input v-model="name" autofocus :placeholder="t('role_name') + '...'" :max-length="100" />
 					</div>
 				</div>
 			</v-card-text>
