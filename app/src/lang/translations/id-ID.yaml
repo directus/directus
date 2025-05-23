@@ -216,7 +216,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Preferensi Halaman
 hidden_field: Kolom Tersembunyi
 hidden_on_detail: Disembunyikan dalam Rincian
-disabled_editing_value: Nonaktifkan mengubah nilai
 key: Kunci
 alias: Alias
 bigInteger: Big Integer

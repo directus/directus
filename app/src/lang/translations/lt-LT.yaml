@@ -316,7 +316,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Atstatyti puslapio nustatymus
 hidden_field: Paslėptas laukas
 hidden_on_detail: Paslėptas detalių puslapyje
-disabled_editing_value: Išjungti reikšmės redagavimą
 key: Raktas
 alias: Sinonimas
 bigInteger: Didelis sveikasis skaičius

@@ -258,7 +258,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: بازنشانی تنظیمات صفحه
 hidden_field: فیلد مخفی
 hidden_on_detail: مخفی کردن فیلد در بخش جزییات آیتم
-disabled_editing_value: غیرفعال کردنِ ویرایش مقدار
 key: کلید
 alias: نام مستعار
 bigInteger: عدد صحیح بزرگ
