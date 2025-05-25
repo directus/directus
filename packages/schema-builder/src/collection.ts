@@ -1,8 +1,10 @@
-import type { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
+import type { CollectionOverview, FieldOverview } from '@directus/types';
 import { ok as assert } from 'node:assert/strict';
 import { SchemaBuilder } from './builder.js';
 import { COLLECTION_DEFAULTS } from './defaults.js';
 import { FieldBuilder } from './field.js';
+import { COLLECTION_META_DEFAULTS } from './meta-defaults.js';
+import type { RawCollection } from './sai.js';
 
 type InitialCollectionOverview = Omit<CollectionOverview, 'primary' | 'fields'>;
 type FinalCollectionOverview = Omit<CollectionOverview, 'fields'>;
@@ -26,7 +28,7 @@ export class CollectionBuilder {
 	}
 
 	field(name: string): FieldBuilder {
-		const existingField = this._fields.find((fieldBuilder) => fieldBuilder.get_name() === name);
+		const existingField = this._getField(name);
 
 		if (existingField) {
 			return existingField;
@@ -41,13 +43,23 @@ export class CollectionBuilder {
 		return this._data.collection;
 	}
 
-	build(schema: SchemaOverview): CollectionOverview {
+	_getField(name: string): FieldBuilder | undefined {
+		return this._fields.find((fieldBuilder) => fieldBuilder.get_name() === name)
+	}
+
+	_getPrimary(): FieldBuilder | undefined {
+		assert('primary' in this._data, `The collection ${this.get_name()} needs a primary key`);
+
+		return this._getField(this._data.primary)
+	}
+
+	build(): CollectionOverview {
 		assert('primary' in this._data, `The collection ${this.get_name()} needs a primary key`);
 
 		const fields: Record<string, FieldOverview> = {};
 
 		for (const fieldBuilder of this._fields) {
-			const field = fieldBuilder.build(schema);
+			const field = fieldBuilder.build();
 			assert(field.field in fields === false, `Field ${field.field} already exists`);
 
 			fields[field.field] = field;
@@ -59,5 +71,29 @@ export class CollectionBuilder {
 		};
 
 		return collection;
+	}
+
+	sai() {
+		const collection: RawCollection = {
+			collection: this._data.collection,
+			fields: [],
+			meta: {
+				collection: this._data.collection,
+				...COLLECTION_META_DEFAULTS,
+			},
+			schema: {
+				name: this._data.collection,
+			}
+		}
+
+		for (const fieldBuilder of this._fields) {
+			const field = fieldBuilder.sai();
+
+			collection.fields!.push(field)
+		}
+
+
+
+		return collection
 	}
 }

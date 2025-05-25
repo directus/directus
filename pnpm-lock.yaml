@@ -1548,12 +1548,21 @@ importers:
 
   packages/schema-builder:
     dependencies:
+      '@directus/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@directus/system-data':
+        specifier: workspace:*
+        version: link:../system-data
       '@directus/types':
         specifier: workspace:*
         version: link:../types
       lodash-es:
         specifier: 4.17.21
         version: 4.17.21
+      tsx:
+        specifier: 4.19.3
+        version: 4.19.3
     devDependencies:
       '@directus/tsconfig':
         specifier: 3.0.0
@@ -7517,9 +7526,6 @@ packages:
 
   get-tsconfig@4.10.0:
     resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
-
-  get-tsconfig@4.8.1:
-    resolution: {integrity: sha512-k9PN+cFBmaLWtVz29SkUoqU5O0slLuHJXt/2P+tMVFT+phsSGXGkp9t3rQIqdz0e+06EHNGs3oM6ZX1s2zHxRg==}
 
   get-uri@6.0.4:
     resolution: {integrity: sha512-E1b1lFFLvLgak2whF2xDBcOy6NLVGZBqqjJjsIhvopKfWWEi64pLVTWWehV8KlLerZkfNTA95sTe2OdJKm1OzQ==}
@@ -18512,10 +18518,6 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  get-tsconfig@4.8.1:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
-
   get-uri@6.0.4:
     dependencies:
       basic-ftp: 5.0.5
@@ -23074,7 +23076,7 @@ snapshots:
   tsx@4.19.3:
     dependencies:
       esbuild: 0.25.0
-      get-tsconfig: 4.8.1
+      get-tsconfig: 4.10.0
     optionalDependencies:
       fsevents: 2.3.3
 

@@ -33,11 +33,15 @@
 	"scripts": {
 		"build": "tsup src/index.ts --format=esm --dts",
 		"dev": "tsup src/index.ts --format=esm --dts --watch",
+		"apply": "tsx ./playground/test.ts",
 		"test": "vitest --watch=false"
 	},
 	"dependencies": {
+		"@directus/schema": "workspace:*",
+		"@directus/system-data": "workspace:*",
 		"@directus/types": "workspace:*",
-		"lodash-es": "4.17.21"
+		"lodash-es": "4.17.21",
+		"tsx": "4.19.3"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",

@@ -1,7 +1,8 @@
-import type { SchemaOverview } from '@directus/types';
+import type { Relation, SchemaOverview } from '@directus/types';
 import { ok as assert } from 'node:assert/strict';
 import { CollectionBuilder, type CollectionOveriewBuilderOptions } from './collection.js';
 import { RelationBuilder } from './relation.js';
+import { SAI, type RawCollection } from './sai.js';
 
 export class SchemaBuilder {
 	_collections: CollectionBuilder[] = [];
@@ -10,10 +11,10 @@ export class SchemaBuilder {
 	_relation_counter = 0;
 
 	collection(name: string, callback: (collection: CollectionBuilder) => void) {
-		const existing_index = this._collections.findIndex((collectionBuilder) => collectionBuilder.get_name() === name);
+		const existing_collection = this._getCollection(name)
 
-		if (existing_index !== -1) {
-			callback(this._collections[existing_index]!);
+		if (existing_collection) {
+			callback(existing_collection);
 			this._last_collection_configured = false;
 			return this;
 		}
@@ -41,14 +42,22 @@ export class SchemaBuilder {
 		return this._relation_counter++;
 	}
 
+	_getCollection(name: string): CollectionBuilder | undefined {
+		return this._collections.find((collectionBuilder) => collectionBuilder.get_name() === name);
+	}
+
 	build(): SchemaOverview {
 		const schema: SchemaOverview = {
 			collections: {},
 			relations: [],
 		};
 
+		for (const relationBuilder of this._relations) {
+			relationBuilder.fillGaps()
+		}
+
 		for (const collectionBuilder of this._collections) {
-			const collection = collectionBuilder.build(schema);
+			const collection = collectionBuilder.build();
 
 			assert(
 				collection.collection in schema.collections === false,
@@ -59,10 +68,28 @@ export class SchemaBuilder {
 		}
 
 		for (const relationBuilder of this._relations) {
-			const relation = relationBuilder.build(schema);
-			schema.relations.push(relation);
+			schema.relations.push(relationBuilder.build());
 		}
 
 		return schema;
+	}
+
+	sai(): SAI {
+		const collections: RawCollection[] = []
+		const relations: Relation[] = []
+
+		for (const relationBuilder of this._relations) {
+			relationBuilder.fillGaps()
+		}
+
+		for (const collectionBuilder of this._collections) {
+			collections.push(collectionBuilder.sai())
+		}
+
+		for (const relationBuilder of this._relations) {
+			relations.push(relationBuilder.sai());
+		}
+
+		return new SAI(collections, relations)
 	}
 }
