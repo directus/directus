@@ -1,4 +1,4 @@
-import type { DeepPartial, Relation, SchemaOverview } from '@directus/types';
+import type { DeepPartial, Relation } from '@directus/types';
 import { RELATION_DEFAULTS } from './defaults.js';
 import { ok as assert } from 'node:assert/strict';
 import type { SchemaBuilder } from './builder.js';
@@ -17,6 +17,7 @@ export type RelationOveriewBuilderOptions = DeepPartial<{
 export class RelationBuilder {
 	_schemaBuilder: SchemaBuilder | undefined;
 	_data: InitialRelationOverview | FinalRelationOverview;
+	_hidden: 'one' | 'many' | 'both' | undefined;
 
 	constructor(collection: string, field: string, schema?: SchemaBuilder) {
 		this._data = {
@@ -129,7 +130,6 @@ export class RelationBuilder {
 		if (this._data._type === 'm2o' || this._data._type === 'o2m') {
 			if (this._data.related_collection && this._schemaBuilder._getCollection(this._data.related_collection) === undefined) {
 				const collection = new CollectionBuilder(this._data.related_collection);
-
 				collection.field('id').id();
 
 				this._schemaBuilder._collections.push(collection)
@@ -158,6 +158,8 @@ export class RelationBuilder {
 
 			const field = new FieldBuilder(this._data.field, this._schemaBuilder, collection)[key_type]();
 
+			field.meta({ hidden: true })
+
 			collection._fields.push(field)
 		}
 
@@ -167,6 +169,8 @@ export class RelationBuilder {
 
 			if (collection_field && collection._getField(collection_field) === undefined) {
 				const field = new FieldBuilder(collection_field, this._schemaBuilder, collection).string();
+
+				field.meta({ hidden: true })
 
 				collection._fields.push(field)
 			}

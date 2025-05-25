@@ -29,7 +29,7 @@ type InitialFieldOverview = {
 	_kind: 'initial';
 };
 
-type FinishedFieldOverview = FieldOverview & { meta: Partial<Omit<FieldMeta, 'id'>> } & { _kind: 'finished' };
+type FinishedFieldOverview = FieldOverview & { _kind: 'finished' };
 
 type M2AOptions = {
 	o2m_relation: RelationBuilder;
@@ -46,6 +46,7 @@ export class FieldBuilder {
 	_schema: SchemaBuilder | undefined;
 	_collection: CollectionBuilder | undefined;
 	_data: InitialFieldOverview | FinishedFieldOverview;
+	_meta: Partial<Omit<FieldMeta, 'id'>>
 
 	constructor(name: string, schema?: SchemaBuilder, collection?: CollectionBuilder) {
 		this._data = {
@@ -53,6 +54,7 @@ export class FieldBuilder {
 			_kind: 'initial',
 		};
 
+		this._meta = {}
 		this._schema = schema;
 		this._collection = collection;
 	}
@@ -62,12 +64,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...ID_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				hidden: true,
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			hidden: true,
+		}
 
 		if (this._collection) this.primary();
 
@@ -80,6 +83,12 @@ export class FieldBuilder {
 		Object.assign(this._data, options);
 
 		return this;
+	}
+
+	meta(options: Partial<Omit<FieldMeta, 'id'>>) {
+		Object.assign(this._meta, options)
+
+		return this
 	}
 
 	/** Resets the field to it's initial state of only the name */
@@ -132,12 +141,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...BOOLEAN_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'boolean',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'boolean',
+		}
 
 		return this;
 	}
@@ -148,12 +158,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...BIG_INTEGER_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -164,12 +175,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...DATE_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'datetime',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'datetime',
+		}
 
 		return this;
 	}
@@ -180,12 +192,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...DATE_TIME_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'datetime',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'datetime',
+		}
 
 		return this;
 	}
@@ -196,12 +209,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...DECIMAL_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -212,12 +226,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...FLOAT_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -228,12 +243,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...INTEGER_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -244,12 +260,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...JSON_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input-block-editor',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -260,12 +277,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...STRING_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -276,12 +294,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...TEXT_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -292,12 +311,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...TIME_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'datetime',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'datetime',
+		}
 
 		return this;
 	}
@@ -308,12 +328,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...TIMESTAMP_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'datetime',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'datetime',
+		}
 
 		return this;
 	}
@@ -324,12 +345,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...UUID_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -340,12 +362,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...HASH_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'input',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'input',
+		}
 
 		return this;
 	}
@@ -356,12 +379,13 @@ export class FieldBuilder {
 		this._data = {
 			field: this._data.field,
 			...CSV_FIELD,
-			meta: {
-				...FIELD_META_DEFAULTS,
-				interface: 'tags',
-			},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			...FIELD_META_DEFAULTS,
+			interface: 'tags',
+		}
 
 		return this;
 	}
@@ -376,9 +400,12 @@ export class FieldBuilder {
 			type: 'alias',
 			dbType: null,
 			special: ['m2a'],
-			meta: {},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			interface: 'list-m2a'
+		}
 
 		const junction_name = `${this._collection.get_name()}_builder`;
 
@@ -421,9 +448,12 @@ export class FieldBuilder {
 			type: 'alias',
 			dbType: null,
 			special: ['m2m'],
-			meta: {},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			interface: 'list-m2m'
+		}
 
 		const junction_name = `${this._collection.get_name()}_${related_collection}_junction`;
 
@@ -434,6 +464,7 @@ export class FieldBuilder {
 					junction_field: `${related_collection}_id`,
 				},
 			});
+
 
 		let m2o_relation = new RelationBuilder(junction_name, `${related_collection}_id`, this._schema).m2o(related_collection).options({
 			meta: {
@@ -469,9 +500,12 @@ export class FieldBuilder {
 			type: 'alias',
 			dbType: null,
 			special: ['translations'],
-			meta: {},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			interface: 'translations'
+		}
 
 		this._schema.collection(language_collection, (c) => {
 			c.field('code').string().primary();
@@ -526,9 +560,12 @@ export class FieldBuilder {
 			type: 'alias',
 			dbType: null,
 			special: ['o2m'],
-			meta: {},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			interface: 'list-o2m'
+		}
 
 		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).o2m(
 			related_collection,
@@ -562,9 +599,12 @@ export class FieldBuilder {
 			type: 'integer',
 			dbType: 'integer',
 			special: ['m2o'],
-			meta: {},
 			_kind: 'finished',
 		};
+
+		this._meta = {
+			interface: 'select-dropdown-m2o'
+		}
 
 		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).m2o(
 			related_collection,
@@ -594,9 +634,10 @@ export class FieldBuilder {
 			type: 'integer',
 			dbType: 'integer',
 			special: [],
-			meta: {},
 			_kind: 'finished',
 		};
+
+		this._meta = {}
 
 		let relation = new RelationBuilder(this._collection.get_name(), this.get_name(), this._schema).a2o(related_collections);
 
@@ -637,7 +678,7 @@ export class FieldBuilder {
 				collection: this._collection.get_name(),
 				field: this.get_name(),
 				special: this._data.special,
-				...this._data.meta
+				...this._meta
 			},
 			schema: {
 				is_nullable: this._data.nullable,

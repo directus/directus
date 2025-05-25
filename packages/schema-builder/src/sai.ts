@@ -18,8 +18,10 @@ export class SAI {
 		this._relations = relations
 	}
 
-	async applyTo() {
-		const diffRequest = await fetch('http://localhost:8055/schema/diff', {
+	async applyTo(url: string) {
+		console.log('Fetching database schema')
+
+		const diffRequest = await fetch(`${url}/schema/diff`, {
 			method: 'POST',
 			headers: {
 				"Authorization": "Bearer admin",
@@ -36,9 +38,11 @@ export class SAI {
 		})
 
 		if (diffRequest.status !== 204) {
+			console.log('Clearing database')
+
 			const diff = await diffRequest.json() as { data: Record<string, any> }
 
-			await fetch('http://localhost:8055/schema/apply', {
+			await fetch(`${url}/schema/apply`, {
 				method: 'POST',
 				headers: {
 					"Authorization": "Bearer admin",
@@ -48,8 +52,10 @@ export class SAI {
 			})
 		}
 
+		console.log('Applying collections')
+
 		for (const collection of this._collections) {
-			const collectionRequest = await fetch('http://localhost:8055/collections', {
+			const collectionRequest = await fetch(`${url}/collections`, {
 				method: 'POST',
 				headers: {
 					"Authorization": "Bearer admin",
@@ -61,8 +67,10 @@ export class SAI {
 			// console.log(await collectionRequest.json())
 		}
 
+		console.log('Applying relations')
+
 		for (const relation of this._relations) {
-			const relationRequest = await fetch('http://localhost:8055/relations', {
+			const relationRequest = await fetch(`${url}/relations`, {
 				method: 'POST',
 				headers: {
 					"Authorization": "Bearer admin",
