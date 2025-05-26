@@ -28,9 +28,13 @@ const props = withDefaults(
 		width: string;
 		crop?: boolean;
 		letterbox?: boolean;
+		enableCreate?: boolean;
+		enableSelect?: boolean;
 	}>(),
 	{
 		crop: true,
+		enableCreate: true,
+		enableSelect: true
 	},
 );
 
@@ -102,6 +106,10 @@ const meta = computed(() => {
 const editImageDetails = ref(false);
 const editImageEditor = ref(false);
 
+const _disabled = computed(() => {
+	return props.disabled || (props.enableCreate === false && props.enableSelect === false)
+})
+
 async function imageErrorHandler() {
 	isImage.value = false;
 	if (!src.value) return;
@@ -158,7 +166,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
+		<v-notice v-else-if="_disabled && !image" class="disabled-placeholder" center icon="hide_image">
 			{{ t('no_image_selected') }}
 		</v-notice>
 
@@ -171,16 +179,9 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</span>
 			</div>
 
-			<v-image
-				v-else-if="image.type?.startsWith('image') && isImage"
-				:src="src"
-				:class="{ 'is-letterbox': letterbox }"
-				:width="image.width"
-				:height="image.height"
-				alt=""
-				role="presentation"
-				@error="imageErrorHandler"
-			/>
+			<v-image v-else-if="image.type?.startsWith('image') && isImage" :src="src"
+				:class="{ 'is-letterbox': letterbox }" :width="image.width" :height="image.height" alt=""
+				role="presentation" @error="imageErrorHandler" />
 
 			<div v-else class="fallback">
 				<v-icon-file :ext="ext" />
@@ -193,22 +194,18 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					<v-icon name="zoom_in" />
 				</v-button>
 
-				<v-button
-					v-tooltip="t('download')"
-					icon
-					rounded
-					:href="getAssetUrl(image.id, true)"
-					:download="image.filename_download"
-				>
+				<v-button v-tooltip="t('download')" icon rounded :href="getAssetUrl(image.id, true)"
+					:download="image.filename_download">
 					<v-icon name="download" />
 				</v-button>
 
-				<template v-if="!disabled">
+				<template v-if="!_disabled">
 					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="edit" />
 					</v-button>
 
-					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded @click="editImageEditor = true">
+					<v-button v-if="updateAllowed" v-tooltip="t('edit_image')" icon rounded
+						@click="editImageEditor = true">
 						<v-icon name="tune" />
 					</v-button>
 
@@ -221,35 +218,22 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				<div class="meta">{{ meta }}</div>
 			</div>
 
-			<drawer-item
-				v-if="image"
-				v-model:active="editImageDetails"
-				:disabled="disabled"
-				collection="directus_files"
-				:primary-key="image.id"
-				:edits="edits"
-				@input="update"
-			>
+			<drawer-item v-if="image" v-model:active="editImageDetails" :disabled="_disabled"
+				collection="directus_files" :primary-key="image.id" :edits="edits" @input="update">
 				<template #actions>
-					<v-button secondary rounded icon :download="image.filename_download" :href="getAssetUrl(image.id, true)">
+					<v-button secondary rounded icon :download="image.filename_download"
+						:href="getAssetUrl(image.id, true)">
 						<v-icon name="download" />
 					</v-button>
 				</template>
 			</drawer-item>
 
-			<image-editor v-if="!disabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<image-editor v-if="!_disabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
 			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>
-		<v-upload
-			v-else
-			from-library
-			from-url
-			:from-user="createAllowed"
-			:folder="folder"
-			:filter="customFilter"
-			@input="onUpload"
-		/>
+		<v-upload v-else from-url :from-user="createAllowed && enableCreate" :from-library="enableSelect"
+			:folder="folder" :filter="customFilter" @input="onUpload" />
 	</div>
 </template>
 
@@ -382,6 +366,7 @@ img {
 }
 
 .image {
+
 	&.full,
 	&.fill {
 		.image-preview {
