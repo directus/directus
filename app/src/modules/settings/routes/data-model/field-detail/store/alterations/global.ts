@@ -77,3 +77,10 @@ export function resetRelations(updates: StateUpdates) {
 	updates.relations.m2o = undefined;
 	updates.relations.o2m = undefined;
 }
+
+export function resetInterfaceAndDisplay(updates: StateUpdates) {
+	set(updates, 'field.meta.interface', undefined);
+	set(updates, 'field.meta.options', undefined);
+	set(updates, 'field.meta.display', undefined);
+	set(updates, 'field.meta.display_options', undefined);
+}

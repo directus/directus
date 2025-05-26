@@ -5,11 +5,15 @@ import { useRelationPermissionsM2O } from '@/composables/use-relation-permission
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { computed, ref, toRefs } from 'vue';
+import { Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type FileInfo = {
@@ -23,6 +27,7 @@ const props = defineProps<{
 	disabled?: boolean;
 	loading?: boolean;
 	folder?: string;
+	filter?: Filter;
 	collection: string;
 	field: string;
 }>();
@@ -87,6 +92,20 @@ const edits = computed(() => {
 	if (!props.value || typeof props.value !== 'object') return {};
 
 	return props.value;
+});
+
+const values = inject('values', ref<Record<string, any>>({}));
+
+const customFilter = computed(() => {
+	return parseFilter(
+		deepMap(props.filter, (val: any) => {
+			if (val && typeof val === 'string') {
+				return render(val, values.value);
+			}
+
+			return val;
+		}),
+	);
 });
 
 function setSelection(selection: (string | number)[] | null) {
@@ -265,6 +284,7 @@ function useURLImport() {
 			v-if="activeDialog === 'choose'"
 			:folder="folder"
 			:active="activeDialog === 'choose'"
+			:filter="customFilter"
 			@update:active="activeDialog = null"
 			@input="setSelection"
 		/>

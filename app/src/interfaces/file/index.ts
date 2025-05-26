@@ -12,18 +12,33 @@ export default defineInterface({
 	localTypes: ['file'],
 	group: 'relational',
 	relational: true,
-	options: [
-		{
-			field: 'folder',
-			name: '$t:interfaces.system-folder.folder',
-			type: 'uuid',
-			meta: {
-				width: 'full',
-				interface: 'system-folder',
-				note: '$t:interfaces.system-folder.field_hint',
+	options: ({ relations }) => {
+		const collection = relations.m2o?.related_collection;
+
+		return [
+			{
+				field: 'folder',
+				name: '$t:interfaces.system-folder.folder',
+				type: 'uuid',
+				meta: {
+					width: 'full',
+					interface: 'system-folder',
+					note: '$t:interfaces.system-folder.field_hint',
+				},
 			},
-		},
-	],
+			{
+				field: 'filter',
+				name: '$t:filter',
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: collection,
+					},
+				},
+			},
+		];
+	},
 	recommendedDisplays: ['file'],
 	preview: PreviewSVG,
 });

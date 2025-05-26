@@ -5,12 +5,15 @@ import { useRelationPermissionsM2O } from '@/composables/use-relation-permission
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import type { File } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import type { File, Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -19,6 +22,7 @@ const props = withDefaults(
 		disabled?: boolean;
 		loading?: boolean;
 		folder?: string;
+		filter?: Filter;
 		collection: string;
 		field: string;
 		width: string;
@@ -112,6 +116,20 @@ async function imageErrorHandler() {
 		}
 	}
 }
+
+const values = inject('values', ref<Record<string, any>>({}));
+
+const customFilter = computed(() => {
+	return parseFilter(
+		deepMap(props.filter, (val: any) => {
+			if (val && typeof val === 'string') {
+				return render(val, values.value);
+			}
+
+			return val;
+		}),
+	);
+});
 
 function onUpload(image: any) {
 	if (image?.id) update(image.id);
@@ -223,7 +241,15 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 
 			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>
-		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
+		<v-upload
+			v-else
+			from-library
+			from-url
+			:from-user="createAllowed"
+			:folder="folder"
+			:filter="customFilter"
+			@input="onUpload"
+		/>
 	</div>
 </template>
 
