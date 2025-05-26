@@ -423,6 +423,7 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 	router.get(
 		'/callback',
 		asyncHandler(async (req, res, next) => {
+			const env = useEnv();
 			const logger = useLogger();
 
 			let tokenData;
@@ -435,7 +436,8 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				};
 			} catch (e: any) {
 				logger.warn(e, `[OpenID] Couldn't verify OpenID cookie`);
-				throw new InvalidCredentialsError();
+				const url = new Url(env['PUBLIC_URL'] as string).addPath('admin', 'login');
+				return res.redirect(`${url.toString()}?reason=${ErrorCode.InvalidCredentials}`);
 			}
 
 			const { verifier, redirect, prompt } = tokenData;
