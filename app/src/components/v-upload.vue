@@ -298,8 +298,15 @@ defineExpose({ abort });
 </script>
 
 <template>
-	<div data-dropzone class="v-upload" :class="{ dragging: dragging && fromUser, uploading }"
-		@dragenter.prevent="onDragEnter" @dragover.prevent @dragleave.prevent="onDragLeave" @drop.stop.prevent="onDrop">
+	<div
+		data-dropzone
+		class="v-upload"
+		:class="{ dragging: dragging && fromUser, uploading }"
+		@dragenter.prevent="onDragEnter"
+		@dragover.prevent
+		@dragleave.prevent="onDragLeave"
+		@drop.stop.prevent="onDrop"
+	>
 		<template v-if="dragging && fromUser">
 			<v-icon class="upload-icon" x-large name="file_upload" />
 			<p class="type-label">{{ t('drop_to_upload') }}</p>
@@ -319,17 +326,28 @@ defineExpose({ abort });
 
 		<template v-else>
 			<div class="actions">
-				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary
-					@click="openFileBrowser">
+				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
 					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
 					<v-icon name="file_upload" />
 				</v-button>
-				<v-button v-if="fromLibrary" v-tooltip="t('choose_from_library')" icon rounded secondary
-					@click="activeDialog = 'choose'">
+				<v-button
+					v-if="fromLibrary"
+					v-tooltip="t('choose_from_library')"
+					icon
+					rounded
+					secondary
+					@click="activeDialog = 'choose'"
+				>
 					<v-icon name="folder_open" />
 				</v-button>
-				<v-button v-if="fromUrl && fromUser" v-tooltip="t('import_from_url')" icon rounded secondary
-					@click="activeDialog = 'url'">
+				<v-button
+					v-if="fromUrl && fromUser"
+					v-tooltip="t('import_from_url')"
+					icon
+					rounded
+					secondary
+					@click="activeDialog = 'url'"
+				>
 					<v-icon name="link" />
 				</v-button>
 			</div>
@@ -337,16 +355,25 @@ defineExpose({ abort });
 			<p class="type-label">{{ t(fromUser ? 'drag_file_here' : 'choose_from_library') }}</p>
 
 			<template v-if="fromUrl !== false || fromLibrary !== false">
-				<drawer-files :active="activeDialog === 'choose'" :multiple="multiple" :folder="folder" :filter="filter"
-					@update:active="activeDialog = null" @input="setSelection" />
+				<drawer-files
+					:active="activeDialog === 'choose'"
+					:multiple="multiple"
+					:folder="folder"
+					:filter="filter"
+					@update:active="activeDialog = null"
+					@input="setSelection"
+				/>
 
-				<v-dialog :model-value="activeDialog === 'url'" :persistent="urlLoading" @esc="activeDialog = null"
-					@update:model-value="activeDialog = null">
+				<v-dialog
+					:model-value="activeDialog === 'url'"
+					:persistent="urlLoading"
+					@esc="activeDialog = null"
+					@update:model-value="activeDialog = null"
+				>
 					<v-card>
 						<v-card-title>{{ t('import_from_url') }}</v-card-title>
 						<v-card-text>
-							<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false"
-								:disabled="urlLoading" />
+							<v-input v-model="url" autofocus :placeholder="t('url')" :nullable="false" :disabled="urlLoading" />
 						</v-card-text>
 						<v-card-actions>
 							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
