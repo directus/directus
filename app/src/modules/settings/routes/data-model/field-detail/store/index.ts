@@ -179,7 +179,7 @@ export const useFieldDetailStore = defineStore({
 
 					if (currentType !== targetType) {
 						updates.localType = targetType;
-						alterations.global.resetInterfaceAndDisplay(updates);
+						alterations.global.switchInterfaceAndDisplay(updates);
 					}
 				}
 
