@@ -5,11 +5,15 @@ import { useRelationPermissionsM2O } from '@/composables/use-relation-permission
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { addQueryToPath } from '@/utils/add-query-to-path';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { unexpectedError } from '@/utils/unexpected-error';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { computed, ref, toRefs } from 'vue';
+import { Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 type FileInfo = {
@@ -18,14 +22,23 @@ type FileInfo = {
 	type: string;
 };
 
-const props = defineProps<{
-	value: string | Record<string, any> | null;
-	disabled?: boolean;
-	loading?: boolean;
-	folder?: string;
-	collection: string;
-	field: string;
-}>();
+const props = withDefaults(
+	defineProps<{
+		value: string | Record<string, any> | null;
+		disabled?: boolean;
+		loading?: boolean;
+		folder?: string;
+		filter?: Filter;
+		collection: string;
+		field: string;
+		enableCreate?: boolean;
+		enableSelect?: boolean;
+	}>(),
+	{
+		enableCreate: true,
+		enableSelect: true,
+	},
+);
 
 const emit = defineEmits<{
 	input: [value: string | Record<string, any> | null];
@@ -89,6 +102,24 @@ const edits = computed(() => {
 	return props.value;
 });
 
+const values = inject('values', ref<Record<string, unknown>>({}));
+
+const customFilter = computed(() => {
+	return parseFilter(
+		deepMap(props.filter, (val: unknown) => {
+			if (val && typeof val === 'string') {
+				return render(val, values.value);
+			}
+
+			return val;
+		}),
+	);
+});
+
+const internalDisabled = computed(() => {
+	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
+});
+
 function setSelection(selection: (string | number)[] | null) {
 	if (selection![0]) {
 		update(selection![0]);
@@ -145,7 +176,7 @@ function useURLImport() {
 
 <template>
 	<div class="file">
-		<v-menu attached :disabled="loading">
+		<v-menu attached :disabled="loading || internalDisabled">
 			<template #activator="{ toggle, active }">
 				<div>
 					<v-skeleton-loader v-if="loading" type="input" />
@@ -154,7 +185,7 @@ function useURLImport() {
 						clickable
 						readonly
 						:active="active"
-						:disabled="disabled"
+						:disabled="internalDisabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
 						@click="toggle"
@@ -185,7 +216,13 @@ function useURLImport() {
 								<template v-if="file">
 									<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click.stop="editDrawerActive = true" />
 
-									<v-remove v-if="!disabled" :item-info="relationInfo" :item-edits="edits" deselect @action="remove" />
+									<v-remove
+										v-if="!internalDisabled"
+										:item-info="relationInfo"
+										:item-edits="edits"
+										deselect
+										@action="remove"
+									/>
 								</template>
 
 								<v-icon v-else name="attach_file" />
@@ -202,24 +239,24 @@ function useURLImport() {
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
 
-					<v-divider v-if="!disabled" />
+					<v-divider v-if="!internalDisabled" />
 				</template>
-				<template v-if="!disabled">
-					<v-list-item v-if="createAllowed" clickable @click="activeDialog = 'upload'">
+				<template v-if="!internalDisabled">
+					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'upload'">
 						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
 						<v-list-item-content>
 							{{ t(file ? 'replace_from_device' : 'upload_from_device') }}
 						</v-list-item-content>
 					</v-list-item>
 
-					<v-list-item clickable @click="activeDialog = 'choose'">
+					<v-list-item v-if="enableSelect" clickable @click="activeDialog = 'choose'">
 						<v-list-item-icon><v-icon name="folder_open" /></v-list-item-icon>
 						<v-list-item-content>
 							{{ t(file ? 'replace_from_library' : 'choose_from_library') }}
 						</v-list-item-content>
 					</v-list-item>
 
-					<v-list-item v-if="createAllowed" clickable @click="activeDialog = 'url'">
+					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'url'">
 						<v-list-item-icon><v-icon name="link" /></v-list-item-icon>
 						<v-list-item-content>
 							{{ t(file ? 'replace_from_url' : 'import_from_url') }}
@@ -235,7 +272,7 @@ function useURLImport() {
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
-			:disabled="disabled"
+			:disabled="internalDisabled"
 			@input="update"
 		>
 			<template #actions>
@@ -265,6 +302,7 @@ function useURLImport() {
 			v-if="activeDialog === 'choose'"
 			:folder="folder"
 			:active="activeDialog === 'choose'"
+			:filter="customFilter"
 			@update:active="activeDialog = null"
 			@input="setSelection"
 		/>

@@ -13,6 +13,8 @@ export default defineInterface({
 	localTypes: ['files'],
 	group: 'relational',
 	options: ({ relations }) => {
+		const collection = relations.m2o?.related_collection;
+
 		return [
 			{
 				field: 'folder',
@@ -31,6 +33,17 @@ export default defineInterface({
 					interface: 'system-display-template',
 					options: {
 						collectionName: relations.o2m?.collection,
+					},
+				},
+			},
+			{
+				field: 'filter',
+				name: '$t:filter',
+				type: 'json',
+				meta: {
+					interface: 'system-filter',
+					options: {
+						collectionName: collection,
 					},
 				},
 			},
