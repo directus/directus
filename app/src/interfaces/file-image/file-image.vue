@@ -106,7 +106,7 @@ const meta = computed(() => {
 const editImageDetails = ref(false);
 const editImageEditor = ref(false);
 
-const _disabled = computed(() => {
+const internalDisabled = computed(() => {
 	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
 });
 
@@ -125,11 +125,11 @@ async function imageErrorHandler() {
 	}
 }
 
-const values = inject('values', ref<Record<string, any>>({}));
+const values = inject('values', ref<Record<string, unknown>>({}));
 
 const customFilter = computed(() => {
 	return parseFilter(
-		deepMap(props.filter, (val: any) => {
+		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
 			}
@@ -166,7 +166,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="_disabled && !image" class="disabled-placeholder" center icon="hide_image">
+		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
 			{{ t('no_image_selected') }}
 		</v-notice>
 
@@ -211,7 +211,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					<v-icon name="download" />
 				</v-button>
 
-				<template v-if="!_disabled">
+				<template v-if="!internalDisabled">
 					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="edit" />
 					</v-button>
@@ -232,7 +232,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<drawer-item
 				v-if="image"
 				v-model:active="editImageDetails"
-				:disabled="_disabled"
+				:disabled="internalDisabled"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -245,7 +245,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</template>
 			</drawer-item>
 
-			<image-editor v-if="!_disabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<image-editor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
 			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>

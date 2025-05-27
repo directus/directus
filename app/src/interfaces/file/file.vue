@@ -102,11 +102,11 @@ const edits = computed(() => {
 	return props.value;
 });
 
-const values = inject('values', ref<Record<string, any>>({}));
+const values = inject('values', ref<Record<string, unknown>>({}));
 
 const customFilter = computed(() => {
 	return parseFilter(
-		deepMap(props.filter, (val: any) => {
+		deepMap(props.filter, (val: unknown) => {
 			if (val && typeof val === 'string') {
 				return render(val, values.value);
 			}
@@ -116,7 +116,7 @@ const customFilter = computed(() => {
 	);
 });
 
-const _disabled = computed(() => {
+const internalDisabled = computed(() => {
 	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
 });
 
@@ -176,7 +176,7 @@ function useURLImport() {
 
 <template>
 	<div class="file">
-		<v-menu attached :disabled="loading || _disabled">
+		<v-menu attached :disabled="loading || internalDisabled">
 			<template #activator="{ toggle, active }">
 				<div>
 					<v-skeleton-loader v-if="loading" type="input" />
@@ -185,7 +185,7 @@ function useURLImport() {
 						clickable
 						readonly
 						:active="active"
-						:disabled="_disabled"
+						:disabled="internalDisabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
 						@click="toggle"
@@ -216,7 +216,13 @@ function useURLImport() {
 								<template v-if="file">
 									<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click.stop="editDrawerActive = true" />
 
-									<v-remove v-if="!_disabled" :item-info="relationInfo" :item-edits="edits" deselect @action="remove" />
+									<v-remove
+										v-if="!internalDisabled"
+										:item-info="relationInfo"
+										:item-edits="edits"
+										deselect
+										@action="remove"
+									/>
 								</template>
 
 								<v-icon v-else name="attach_file" />
@@ -233,9 +239,9 @@ function useURLImport() {
 						<v-list-item-content>{{ t('download_file') }}</v-list-item-content>
 					</v-list-item>
 
-					<v-divider v-if="!_disabled" />
+					<v-divider v-if="!internalDisabled" />
 				</template>
-				<template v-if="!_disabled">
+				<template v-if="!internalDisabled">
 					<v-list-item v-if="createAllowed && enableCreate" clickable @click="activeDialog = 'upload'">
 						<v-list-item-icon><v-icon name="phonelink" /></v-list-item-icon>
 						<v-list-item-content>
@@ -266,7 +272,7 @@ function useURLImport() {
 			collection="directus_files"
 			:primary-key="file.id"
 			:edits="edits"
-			:disabled="_disabled"
+			:disabled="internalDisabled"
 			@input="update"
 		>
 			<template #actions>

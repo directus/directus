@@ -243,7 +243,7 @@ function getDownloadName(junctionRow: Record<string, any>) {
 	return junctionRow[junctionField]?.filename_download;
 }
 
-const values = inject('values', ref<Record<string, any>>({}));
+const values = inject('values', ref<Record<string, unknown>>({}));
 
 const customFilter = computed(() => {
 	if (!relationInfo.value) return;
@@ -277,7 +277,7 @@ const customFilter = computed(() => {
 	if (props.filter) {
 		filter._and.push(
 			parseFilter(
-				deepMap(props.filter, (val: any) => {
+				deepMap(props.filter, (val: unknown) => {
 					if (val && typeof val === 'string') {
 						return render(val, values.value);
 					}
