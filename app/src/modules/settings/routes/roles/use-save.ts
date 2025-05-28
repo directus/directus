@@ -16,6 +16,8 @@ export function useSave({ name }: UseSaveOptions) {
 	return { saving, save };
 
 	async function save() {
+		if (name.value === null || saving.value) return;
+
 		saving.value = true;
 
 		try {

@@ -44,6 +44,8 @@ function useDelete() {
 	return { confirmDelete, deleting, remove };
 
 	async function remove() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		try {
@@ -99,7 +101,7 @@ function useDelete() {
 			</v-menu>
 		</div>
 
-		<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+		<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="remove">
 			<v-card>
 				<v-card-title>{{ t('delete_comment') }}</v-card-title>
 				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>

@@ -20,6 +20,7 @@ import NotificationsGroup from './components/notifications-group.vue';
 import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
+import SkipMenu from './components/skip-menu.vue';
 
 const SIZES = {
 	moduleBarWidth: 60,
@@ -263,6 +264,8 @@ function getWidth(input: unknown, fallback: number): number {
 	</v-info>
 
 	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
+		<skip-menu section="nav" />
+
 		<aside
 			id="navigation"
 			role="navigation"
@@ -279,14 +282,19 @@ function getWidth(input: unknown, fallback: number): number {
 				@transition-end="onNavTransitionEnd"
 			>
 				<div class="module-nav alt-colors">
+					<skip-menu section="moduleNav" />
+
 					<project-info />
 
-					<div class="module-nav-content">
+					<div id="module-navigation" class="module-nav-content">
 						<slot name="navigation" />
 					</div>
 				</div>
 			</v-resizeable>
 		</aside>
+
+		<skip-menu section="main" />
+
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				ref="headerBarEl"
@@ -321,6 +329,9 @@ function getWidth(input: unknown, fallback: number): number {
 				</div>
 			</div>
 		</div>
+
+		<skip-menu section="sidebar" />
+
 		<aside
 			id="sidebar"
 			ref="sidebarEl"

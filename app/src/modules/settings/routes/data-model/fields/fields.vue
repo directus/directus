@@ -43,6 +43,8 @@ const confirmDelete = ref(false);
 const { confirmLeave, leaveTo } = useEditsGuard(hasEdits);
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	await remove();
 	await Promise.all([collectionsStore.hydrate(), fieldsStore.hydrate()]);
 	edits.value = {};
@@ -80,7 +82,7 @@ function discardAndLeave() {
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
 						v-if="isSystemCollection(collection) === false"
@@ -153,7 +155,7 @@ function discardAndLeave() {
 			</sidebar-detail>
 		</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>

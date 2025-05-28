@@ -88,6 +88,9 @@ function useDeleteField() {
 	};
 
 	async function deleteField() {
+		if (deleting.value) return;
+
+		deleting.value = true;
 		await fieldsStore.deleteField(props.field.collection, props.field.field);
 		deleting.value = false;
 		deleteActive.value = false;
@@ -110,6 +113,8 @@ function useDuplicate() {
 	};
 
 	async function saveDuplicate() {
+		if (duplicateName.value === null || duplicating.value) return;
+
 		const newField: Record<string, any> = {
 			...cloneDeep(props.field),
 			field: duplicateName.value,
@@ -289,7 +294,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				</template>
 			</v-input>
 
-			<v-dialog v-model="duplicateActive" @esc="duplicateActive = false">
+			<v-dialog v-model="duplicateActive" @esc="duplicateActive = false" @apply="saveDuplicate">
 				<v-card class="duplicate">
 					<v-card-title>{{ t('duplicate_where_to') }}</v-card-title>
 					<v-card-text>
@@ -316,7 +321,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-model="deleteActive" @esc="deleteActive = false">
+			<v-dialog v-model="deleteActive" @esc="deleteActive = false" @apply="deleteField">
 				<v-card>
 					<v-card-title>{{ t('delete_field_are_you_sure', { field: field.field }) }}</v-card-title>
 					<v-card-actions>

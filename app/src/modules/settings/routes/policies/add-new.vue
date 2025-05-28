@@ -19,7 +19,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 </script>
 
 <template>
-	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/policies')">
+	<v-dialog :model-value="isOpen" persistent @esc="router.push('/settings/policies')" @apply="save">
 		<v-card>
 			<v-card-title>
 				{{ t('create_policy') }}
@@ -27,13 +27,7 @@ const { saving, save } = useSave({ name, appAccess, adminAccess });
 			<v-card-text>
 				<div class="form-grid">
 					<div class="field full">
-						<v-input
-							v-model="name"
-							autofocus
-							:placeholder="t('policy_name') + '...'"
-							:max-length="100"
-							@keyup.enter="save"
-						/>
+						<v-input v-model="name" autofocus :placeholder="t('policy_name') + '...'" :max-length="100" />
 					</div>
 
 					<div class="field half">

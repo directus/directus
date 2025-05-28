@@ -291,7 +291,6 @@ async function onClick(event: MouseEvent) {
 	transition-property: background-color border;
 }
 
-.button:focus,
 .button:hover {
 	color: var(--v-button-color-hover, var(--foreground-inverted));
 	background-color: var(--v-button-background-color-hover, var(--theme--primary-accent));
@@ -308,10 +307,6 @@ async function onClick(event: MouseEvent) {
 
 .align-right {
 	justify-content: flex-end;
-}
-
-.button:focus {
-	outline: 0;
 }
 
 .button:disabled {
@@ -332,7 +327,6 @@ async function onClick(event: MouseEvent) {
 	background-color: transparent;
 }
 
-.outlined:not(.active):not(:disabled):focus,
 .outlined:not(.active):not(:disabled):hover {
 	color: var(--v-button-background-color-hover, var(--theme--primary-accent));
 	background-color: transparent;

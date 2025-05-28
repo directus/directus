@@ -183,6 +183,8 @@ function useBatch() {
 	return { batchEditActive, confirmDelete, deleting, batchDelete, confirmArchive, archiving, archiveItems, error };
 
 	async function batchDelete() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		const batchPrimaryKeys = selection.value;
@@ -203,7 +205,7 @@ function useBatch() {
 	}
 
 	async function archiveItems() {
-		if (!currentCollection.value?.meta?.archive_field) return;
+		if (archiving.value || !currentCollection.value?.meta?.archive_field) return;
 
 		archiving.value = true;
 
@@ -371,7 +373,7 @@ function clearFilters() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="filter" :collection="collection" />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<v-button
 							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
@@ -409,6 +411,7 @@ function clearFilters() {
 					"
 					v-model="confirmArchive"
 					@esc="confirmArchive = false"
+					@apply="archiveItems"
 				>
 					<template #activator="{ on }">
 						<v-button
@@ -552,7 +555,7 @@ function clearFilters() {
 				/>
 			</template>
 
-			<v-dialog :model-value="deleteError !== null">
+			<v-dialog :model-value="deleteError !== null" @esc="deleteError = null">
 				<v-card>
 					<v-card-title>{{ t('something_went_wrong') }}</v-card-title>
 					<v-card-text>

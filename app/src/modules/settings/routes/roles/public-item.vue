@@ -235,7 +235,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 			<role-info-sidebar-detail :role="null" />
 		</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>

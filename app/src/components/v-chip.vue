@@ -69,8 +69,12 @@ function onCloseClick(event: MouseEvent) {
 </script>
 
 <template>
-	<span
+	<component
+		:is="clickable ? 'button' : 'span'"
 		v-if="internalActive"
+		:type="clickable ? 'button' : undefined"
+		:disabled="clickable ? disabled : undefined"
+		:aria-pressed="internalActive ? 'true' : 'false'"
 		class="v-chip"
 		:class="[sizeClass, { outlined, label, disabled, close, clickable }]"
 		@click="onClick"
@@ -81,7 +85,7 @@ function onCloseClick(event: MouseEvent) {
 				<v-icon class="close" :name="closeIcon" x-small />
 			</span>
 		</span>
-	</span>
+	</component>
 </template>
 
 <style lang="scss" scoped>
@@ -120,7 +124,6 @@ function onCloseClick(event: MouseEvent) {
 		color: var(--v-chip-color-hover, var(--white));
 		background-color: var(--v-chip-background-color-hover, var(--theme--primary-accent));
 		border-color: var(--v-chip-border-color-hover, var(--v-chip-background-color-hover), var(--theme--primary-accent));
-		cursor: pointer;
 	}
 
 	&.outlined {

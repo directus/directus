@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCustomSelection, useCustomSelectionMultiple } from '@directus/composables';
+import { useCustomSelection, useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { Placement } from '@popperjs/core';
 import { debounce, get, isArray } from 'lodash';
 import { computed, Ref, ref, toRefs, watch } from 'vue';
@@ -106,6 +106,10 @@ watch(
 		internalSearch.value = val;
 	}, 250),
 );
+
+function onBlurCustomInput(otherVal: OtherValue) {
+	return (otherVal.value === null || otherVal.value?.length === 0) && setOtherValue(otherVal.key, null);
+}
 
 function useItems() {
 	const internalSearch = ref<string | null>(null);
@@ -256,15 +260,18 @@ function useDisplayValue() {
 		:full-height="menuFullHeight"
 	>
 		<template #activator="{ toggle, active }">
-			<div
+			<button
 				v-if="inline"
+				type="button"
+				:disabled="disabled"
+				:aria-pressed="active"
 				class="inline-display"
 				:class="{ placeholder: !displayValue.text, label, active, disabled }"
 				@click="toggle"
 			>
 				<slot name="preview">{{ displayValue.text || placeholder }}</slot>
 				<v-icon name="expand_more" :class="{ active }" />
-			</div>
+			</button>
 			<slot
 				v-else
 				name="preview"
@@ -282,6 +289,8 @@ function useDisplayValue() {
 					:disabled="disabled"
 					:active="active"
 					@click="toggle"
+					@keydown:enter="toggle"
+					@keydown:space="toggle"
 				>
 					<template v-if="$slots.prepend || displayValue.icon || displayValue.color" #prepend>
 						<slot v-if="$slots.prepend" name="prepend" />
@@ -298,7 +307,11 @@ function useDisplayValue() {
 
 		<v-list class="list" :mandatory="mandatory" @toggle="$emit('group-toggle', $event)">
 			<template v-if="showDeselect">
-				<v-list-item clickable :disabled="modelValue === null" @click="$emit('update:modelValue', null)">
+				<v-list-item
+					clickable
+					:disabled="modelValue === null || (Array.isArray(modelValue) && !modelValue.length)"
+					@click="$emit('update:modelValue', null)"
+				>
 					<v-list-item-icon v-if="multiple === true">
 						<v-icon name="close" />
 					</v-list-item-icon>
@@ -370,31 +383,24 @@ function useDisplayValue() {
 							otherVal.value,
 						)
 					"
-					@click.stop
 				>
-					<v-list-item-icon>
+					<v-list-item-content>
 						<v-checkbox
 							:model-value="modelValue || []"
 							:value="otherVal.value"
-							@update:model-value="$emit('update:modelValue', $event.length > 0 ? $event : null)"
-						/>
-					</v-list-item-icon>
-					<v-list-item-content>
-						<input
-							v-focus
-							class="other-input"
-							:value="otherVal.value"
-							:placeholder="t('other')"
-							@input="setOtherValue(otherVal.key, ($event.target as any)?.value)"
-							@blur="otherVal.value.length === 0 && setOtherValue(otherVal.key, null)"
+							custom-value
+							:autofocus-custom-input="otherVal.focus"
+							@update:model-value="$emit('update:modelValue', $event)"
+							@update:value="setOtherValue(otherVal.key, $event)"
+							@blur:custom-input="onBlurCustomInput(otherVal)"
 						/>
 					</v-list-item-content>
 					<v-list-item-icon>
-						<v-icon name="close" clickable @click="setOtherValue(otherVal.key, null)" />
+						<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherVal.key, null)" />
 					</v-list-item-icon>
 				</v-list-item>
 
-				<v-list-item @click.stop="addOtherValue()">
+				<v-list-item clickable @click.stop="addOtherValue('', true)">
 					<v-list-item-icon><v-icon name="add" /></v-list-item-icon>
 					<v-list-item-content>{{ t('other') }}</v-list-item-content>
 				</v-list-item>

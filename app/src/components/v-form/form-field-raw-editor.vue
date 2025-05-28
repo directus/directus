@@ -66,7 +66,7 @@ const setRawValue = () => {
 </script>
 
 <template>
-	<v-dialog :model-value="showModal" persistent @esc="$emit('cancel')">
+	<v-dialog :model-value="showModal" persistent @esc="$emit('cancel')" @apply="setRawValue">
 		<v-card>
 			<v-card-title>{{ disabled ? t('view_raw_value') : t('edit_raw_value') }}</v-card-title>
 			<v-card-text>

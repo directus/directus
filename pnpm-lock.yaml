@@ -757,6 +757,9 @@ importers:
       '@vueuse/core':
         specifier: 12.7.0
         version: 12.7.0(typescript@5.8.2)
+      '@vueuse/integrations':
+        specifier: 12.7.0
+        version: 12.7.0(axios@1.8.4)(focus-trap@7.6.2)(qrcode@1.5.4)(sortablejs@1.14.0)(typescript@5.8.2)
       '@vueuse/router':
         specifier: 12.7.0
         version: 12.7.0(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
@@ -5416,6 +5419,47 @@ packages:
       qrcode: ^1.5
       sortablejs: ^1
       universal-cookie: ^6
+    peerDependenciesMeta:
+      async-validator:
+        optional: true
+      axios:
+        optional: true
+      change-case:
+        optional: true
+      drauu:
+        optional: true
+      focus-trap:
+        optional: true
+      fuse.js:
+        optional: true
+      idb-keyval:
+        optional: true
+      jwt-decode:
+        optional: true
+      nprogress:
+        optional: true
+      qrcode:
+        optional: true
+      sortablejs:
+        optional: true
+      universal-cookie:
+        optional: true
+
+  '@vueuse/integrations@12.7.0':
+    resolution: {integrity: sha512-IEq7K4bCl7mn3uKJaWtNXnd1CAPaHLUMuyj5K1/k/pVcItt0VONZW8xiGxdIovJcQjkzOHjImhX5t6gija+0/g==}
+    peerDependencies:
+      async-validator: ^4
+      axios: ^1
+      change-case: ^5
+      drauu: ^0.4
+      focus-trap: ^7
+      fuse.js: ^7
+      idb-keyval: ^6
+      jwt-decode: ^4
+      nprogress: ^0.2
+      qrcode: ^1.5
+      sortablejs: ^1
+      universal-cookie: ^7
     peerDependenciesMeta:
       async-validator:
         optional: true
@@ -16406,6 +16450,19 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+
+  '@vueuse/integrations@12.7.0(axios@1.8.4)(focus-trap@7.6.2)(qrcode@1.5.4)(sortablejs@1.14.0)(typescript@5.8.2)':
+    dependencies:
+      '@vueuse/core': 12.7.0(typescript@5.8.2)
+      '@vueuse/shared': 12.7.0(typescript@5.8.2)
+      vue: 3.5.13(typescript@5.8.2)
+    optionalDependencies:
+      axios: 1.8.4
+      focus-trap: 7.6.2
+      qrcode: 1.5.4
+      sortablejs: 1.14.0
+    transitivePeerDependencies:
+      - typescript
 
   '@vueuse/metadata@10.11.1': {}
 
