@@ -97,13 +97,10 @@ const {
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
-const isDiscarding = ref(false);
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
 
-const shouldGuardEdits = computed(() => !isDiscarding.value && hasEdits.value);
-
-const { confirmLeave, leaveTo } = useEditsGuard(shouldGuardEdits, { compareQuery: ['version'] });
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 
 const title = computed(() => {
 	if (te(`collection_names_singular.${props.collection}`)) {
@@ -460,14 +457,11 @@ async function toggleArchive() {
 	}
 }
 
-async function discardAndLeave() {
+function discardAndLeave() {
 	if (!leaveTo.value) return;
-	isDiscarding.value = true;
 	edits.value = {};
 	confirmLeave.value = false;
-
-	await router.push(leaveTo.value);
-	isDiscarding.value = false;
+	router.push(leaveTo.value);
 }
 
 function discardAndStay() {
