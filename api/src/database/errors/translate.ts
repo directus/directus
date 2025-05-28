@@ -6,6 +6,7 @@ import { extractError as oracle } from './dialects/oracle.js';
 import { extractError as postgres } from './dialects/postgres.js';
 import { extractError as sqlite } from './dialects/sqlite.js';
 import type { SQLError } from './dialects/types.js';
+import type { Item } from '@directus/types';
 
 /**
  * Translates an error thrown by any of the databases into a pre-defined Exception. Currently
@@ -16,26 +17,26 @@ import type { SQLError } from './dialects/types.js';
  * - Value Out of Range
  * - Value Too Long
  */
-export async function translateDatabaseError(error: SQLError): Promise<any> {
+export async function translateDatabaseError(error: SQLError, data: Partial<Item>): Promise<any> {
 	const client = getDatabaseClient();
 	let defaultError: any;
 
 	switch (client) {
 		case 'mysql':
-			defaultError = mysql(error);
+			defaultError = mysql(error, data);
 			break;
 		case 'cockroachdb':
 		case 'postgres':
-			defaultError = postgres(error);
+			defaultError = postgres(error, data);
 			break;
 		case 'sqlite':
-			defaultError = sqlite(error);
+			defaultError = sqlite(error, data);
 			break;
 		case 'oracle':
 			defaultError = oracle(error);
 			break;
 		case 'mssql':
-			defaultError = await mssql(error);
+			defaultError = await mssql(error, data);
 			break;
 	}
 
