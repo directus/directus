@@ -1,6 +1,6 @@
 {
 	"name": "@directus/schema-builder",
-	"version": "0.0.0",
+	"version": "0.0.1",
 	"description": "Directus SchemaBuilder for mocking/constructing a database schema based on code.",
 	"keywords": [
 		"sql",
@@ -22,7 +22,6 @@
 	"license": "BUSL-1.1",
 	"author": "Nils Twelker <nils@directus.io>",
 	"type": "module",
-	"private": true,
 	"exports": {
 		".": "./dist/index.js",
 		"./package.json": "./package.json"

@@ -11,7 +11,7 @@ export default defineOperationApi<Options>({
 	id: 'condition',
 
 	handler: ({ filter }, { data, accountability }) => {
-		const parsedFilter = parseFilter(filter, accountability);
+		const parsedFilter = parseFilter(filter, accountability, undefined, true);
 
 		if (!parsedFilter) {
 			return null;

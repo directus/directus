@@ -165,6 +165,24 @@ export const useFieldDetailStore = defineStore({
 					alterations[localType].applyChanges(updates, state, { hasChanged, getCurrent });
 				}
 
+				if (hasChanged('relations.m2o.related_collection')) {
+					const currentType = getCurrent('localType');
+					let targetType = currentType;
+
+					if (get(updates, 'relations.m2o.related_collection') === 'directus_files') {
+						if (currentType === 'm2o') targetType = 'file';
+						if (currentType === 'm2m') targetType = 'files';
+					} else {
+						if (currentType === 'file') targetType = 'm2o';
+						if (currentType === 'files') targetType = 'm2m';
+					}
+
+					if (currentType !== targetType) {
+						updates.localType = targetType;
+						alterations.global.switchInterfaceAndDisplay(updates);
+					}
+				}
+
 				const { field: fieldUpdates, items: itemUpdates, ...restUpdates } = updates;
 
 				// Handle `field` updates, shallow merge and mirror to `fieldUpdates`
