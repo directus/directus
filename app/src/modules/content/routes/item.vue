@@ -95,10 +95,9 @@ const {
 
 const { templateData } = useTemplateData(collectionInfo, primaryKey);
 
+const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 const confirmDelete = ref(false);
 const confirmArchive = ref(false);
-
-const { confirmLeave, leaveTo } = useEditsGuard(hasEdits, { compareQuery: ['version'] });
 
 const title = computed(() => {
 	if (te(`collection_names_singular.${props.collection}`)) {
