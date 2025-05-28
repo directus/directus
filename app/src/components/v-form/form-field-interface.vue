@@ -68,6 +68,7 @@ const value = computed(() =>
 				:primary-key="primaryKey"
 				:length="field.schema && field.schema.max_length"
 				:direction="direction"
+				:raw-editor-enabled="rawEditorEnabled"
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
 			/>
