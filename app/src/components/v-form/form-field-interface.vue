@@ -4,7 +4,6 @@ import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-ty
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
-import { inject } from 'vue';
 
 const props = defineProps<{
 	field: FormField;
@@ -20,9 +19,7 @@ const props = defineProps<{
 	direction?: string;
 }>();
 
-defineEmits(['update:modelValue', 'setFieldValue', 'saveAndStay']);
-
-const saveAndStay = inject('saveAndStay');
+defineEmits(['update:modelValue', 'setFieldValue']);
 
 const { t } = useI18n();
 
@@ -74,7 +71,6 @@ const value = computed(() =>
 				:raw-editor-enabled="rawEditorEnabled"
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
-				@save-and-stay="saveAndStay"
 			/>
 
 			<template #fallback>
