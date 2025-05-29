@@ -29,6 +29,7 @@ export function useFieldTree(
 	inject?: Ref<{ fields: Field[]; relations?: Relation[] } | null>,
 	filter: (field: Field, parent?: FieldNode) => boolean = () => true,
 	includeRelations = true,
+	includeAliasFields = false,
 ): FieldTreeContext {
 	const fieldsStore = useFieldsStore();
 	const relationsStore = useRelationsStore();
@@ -62,6 +63,7 @@ export function useFieldTree(
 			.concat(injectedFields || [])
 			.filter(
 				(field) =>
+					includeAliasFields ||
 					field.meta?.special?.includes('group') ||
 					(!field.meta?.special?.includes('alias') && !field.meta?.special?.includes('no-data')),
 			)
