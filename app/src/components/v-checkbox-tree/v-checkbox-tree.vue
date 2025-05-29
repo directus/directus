@@ -23,6 +23,8 @@ const props = withDefaults(
 		disabled?: boolean;
 		/** Show only the selected choices */
 		showSelectionOnly?: boolean;
+		/** Opens all groups included in the array. `[]` collapses all groups. Ignored if not an array. */
+		openGroups?: string[] | null;
 	}>(),
 	{
 		choices: () => [],
@@ -76,6 +78,7 @@ const searchOpenSelection = computed(() =>
 
 const openSelection = computed({
 	get() {
+		if (Array.isArray(props.openGroups)) return props.openGroups;
 		return Array.from(new Set([...manualOpenSelection.value, ...searchOpenSelection.value]));
 	},
 	set(newValue) {
@@ -154,7 +157,7 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
-			:disabled="disabled"
+			:disabled="disabled || choice.disabled"
 			:show-selection-only="showSelectionOnly"
 		/>
 	</v-list>
