@@ -27,6 +27,7 @@ const permissionSync = useSync(props, 'permission', emit);
 const collection = computed(() => props.permission.collection);
 const isReadAction = computed(() => props.permission.action === 'read');
 const { treeList } = useFieldTree(collection, ref(null), () => true, false, isReadAction.value);
+const { isExpandable, openGroups, expandAll, collapseAll } = useExpandCollapseAll();
 
 const treeFields = computed<TreeChoice[]>(() => {
 	const appMinimal = new Set(props.appMinimal ?? []);
@@ -86,6 +87,43 @@ const selectedValues = computed({
 		}
 	},
 });
+
+function useExpandCollapseAll() {
+	const openGroups = ref<string[] | null>();
+
+	const allGroupFields = computed(() => {
+		const groupFields: string[] = [];
+		addGroupFields(treeList.value);
+
+		return groupFields;
+
+		function addGroupFields(nodes: FieldNode[]) {
+			nodes
+				.filter((field) => field.group)
+				.forEach((field) => {
+					groupFields.push(field.field);
+					if (field.children) addGroupFields(field.children);
+				});
+		}
+	});
+
+	const isExpandable = computed(() => allGroupFields.value.length);
+
+	return {
+		isExpandable,
+		openGroups,
+		expandAll,
+		collapseAll,
+	};
+
+	function expandAll() {
+		openGroups.value = allGroupFields.value;
+	}
+
+	function collapseAll() {
+		openGroups.value = [];
+	}
+}
 </script>
 
 <template>
@@ -99,14 +137,25 @@ const selectedValues = computed({
 			}}
 		</v-notice>
 
-		<label class="type-label">{{ t('field', 0) }}</label>
+		<div class="label-wrapper">
+			<label class="type-label">{{ t('field', 0) }}</label>
+
+			<div v-if="isExpandable" class="expand-collapse-action">
+				{{ t('expand') }}
+				<button type="button" @click="expandAll">{{ t('all') }}</button>
+				/
+				<button type="button" @click="collapseAll">{{ t('none') }}</button>
+			</div>
+		</div>
 
 		<v-checkbox-tree
 			class="permissions-field-tree"
 			:model-value="selectedValues"
 			:choices="treeFields"
 			value-combining="indeterminate"
+			:open-groups="openGroups"
 			@update:model-value="selectedValues = $event"
+			@group-toggle="openGroups = null"
 		/>
 
 		<app-minimal :value="appMinimal" />
@@ -114,12 +163,32 @@ const selectedValues = computed({
 </template>
 
 <style lang="scss" scoped>
+.v-notice {
+	margin-bottom: 36px;
+}
+
+.label-wrapper {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+}
+
 .type-label {
 	margin-bottom: 8px;
 }
 
-.v-notice {
-	margin-bottom: 36px;
+.expand-collapse-action {
+	color: var(--theme--foreground-subdued);
+
+	button {
+		color: var(--theme--foreground-subdued);
+		transition: color var(--fast) var(--transition);
+	}
+
+	button:hover {
+		color: var(--theme--foreground);
+		transition: none;
+	}
 }
 
 .permissions-field-tree {
