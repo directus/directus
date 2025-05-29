@@ -154,7 +154,7 @@ function findSelectedChoices(choices: Record<string, any>[], checked: (string | 
 			:hidden="visibleChildrenValues.includes(choice[itemValue]) === false"
 			:value="choice[itemValue]"
 			:children="choice[itemChildren]"
-			:disabled="disabled"
+			:disabled="disabled || choice.disabled"
 			:show-selection-only="showSelectionOnly"
 		/>
 	</v-list>
