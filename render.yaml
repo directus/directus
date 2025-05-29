@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: directus
+    env: node
+    buildCommand: npm install && npx directus bootstrap
+    startCommand: npx directus start --port $PORT
+    envVars:
+      - key: ADMIN_EMAIL
+        value: admin@champs.com
+      - key: ADMIN_PASSWORD
+        value: password123
+      - key: KEY
+        value: supersecretkey
+      - key: DB_CLIENT
+        value: sqlite
+      - key: DB_FILENAME
+        value: ./data.db
+      - key: DB_HOST
+        value: localhost
+      - key: DB_PORT
+        value: 5432
+      - key: DB_DATABASE
+        value: directus
+      - key: DB_USER
+        value: admin
+      - key: DB_PASSWORD
+        value: password
