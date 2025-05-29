@@ -1,10 +1,17 @@
 <script setup lang="ts">
-import { useFieldsStore } from '@/stores/fields';
+import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useSync } from '@directus/composables';
-import type { Field, Permission, Policy } from '@directus/types';
-import { computed } from 'vue';
+import type { Permission, Policy } from '@directus/types';
+import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AppMinimal from './app-minimal.vue';
+
+type TreeChoice = {
+	text: string;
+	value: string;
+	disabled: boolean;
+	children?: TreeChoice[];
+};
 
 const props = defineProps<{
 	permission: Permission;
@@ -16,38 +23,43 @@ const emit = defineEmits(['update:permission']);
 
 const { t } = useI18n();
 
-const fieldsStore = useFieldsStore();
-
 const permissionSync = useSync(props, 'permission', emit);
+const collection = computed(() => props.permission.collection);
+const isReadAction = computed(() => props.permission.action === 'read');
+const { treeList } = useFieldTree(collection, ref(null), () => true, false, isReadAction.value);
 
-const fieldsInCollection = computed(() => {
-	const fields = fieldsStore.getFieldsForCollectionSorted(props.permission.collection);
-
+const treeFields = computed<TreeChoice[]>(() => {
 	const appMinimal = new Set(props.appMinimal ?? []);
 
-	return fields.map((field: Field) => {
+	return treeList.value.map(fieldNodeToTreeChoice);
+
+	function fieldNodeToTreeChoice(field: FieldNode): TreeChoice {
 		return {
-			text: field.field,
+			text: field.name,
 			disabled: appMinimal.has('*') || appMinimal.has(field.field),
 			value: field.field,
+			children: field.children?.map(fieldNodeToTreeChoice) ?? undefined,
 		};
-	});
+	}
 });
 
-const fields = computed({
+const selectedValues = computed({
 	get() {
 		const fields = new Set([...(props.appMinimal ?? []), ...(permissionSync.value.fields ?? [])]);
 
 		if (fields.has('*')) {
 			fields.delete('*');
-
-			// Show all available fields as selected
-			for (const field of fieldsInCollection.value) {
-				fields.add(field.value);
-			}
+			selectAllFieldValues(treeFields.value);
 		}
 
 		return Array.from(fields);
+
+		function selectAllFieldValues(fieldsArr: TreeChoice[]) {
+			for (const field of fieldsArr) {
+				fields.add(field.value);
+				if (field.children) selectAllFieldValues(field.children);
+			}
+		}
 	},
 	set(newFields: string[] | null) {
 		const fields: string[] = [];
@@ -87,12 +99,14 @@ const fields = computed({
 			}}
 		</v-notice>
 
-		<p class="type-label">{{ t('field', 0) }}</p>
-		<interface-select-multiple-checkbox
-			:value="fields"
-			type="json"
-			:choices="fieldsInCollection"
-			@input="fields = $event"
+		<label class="type-label">{{ t('field', 0) }}</label>
+
+		<v-checkbox-tree
+			class="permissions-field-tree"
+			:model-value="selectedValues"
+			:choices="treeFields"
+			value-combining="indeterminate"
+			@update:model-value="selectedValues = $event"
 		/>
 
 		<app-minimal :value="appMinimal" />
@@ -108,7 +122,11 @@ const fields = computed({
 	margin-bottom: 36px;
 }
 
-.checkboxes :deep(.v-checkbox .type-text) {
-	font-family: var(--theme--fonts--monospace--font-family);
+.permissions-field-tree {
+	--v-list-padding: 20px 4px;
+
+	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-radius: var(--theme--border-radius);
+	background-color: var(--theme--form--field--input--background);
 }
 </style>
