@@ -1651,8 +1651,8 @@ importers:
         specifier: 8.1.0
         version: 8.1.0
       undici:
-        specifier: 7.4.0
-        version: 7.4.0
+        specifier: 7.5.0
+        version: 7.5.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 3.0.0
@@ -1802,8 +1802,8 @@ importers:
         specifier: 4.3.1
         version: 4.3.1
       undici:
-        specifier: 7.4.0
-        version: 7.4.0
+        specifier: 7.5.0
+        version: 7.5.0
     devDependencies:
       '@directus/tsconfig':
         specifier: 3.0.0
@@ -11512,8 +11512,8 @@ packages:
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
-  undici@7.4.0:
-    resolution: {integrity: sha512-PUQM3/es3noM24oUn10u3kNNap0AbxESOmnssmW+dOi9yGwlUSi5nTNYl3bNbTkWOF8YZDkx2tCmj9OtQ3iGGw==}
+  undici@7.5.0:
+    resolution: {integrity: sha512-NFQG741e8mJ0fLQk90xKxFdaSM7z4+IQpAgsFI36bCDY9Z2+aXXZjVy2uUksMouWfMI9+w5ejOq5zYYTBCQJDQ==}
     engines: {node: '>=20.18.1'}
 
   unhead@1.11.20:
@@ -23199,7 +23199,7 @@ snapshots:
 
   undici-types@6.20.0: {}
 
-  undici@7.4.0: {}
+  undici@7.5.0: {}
 
   unhead@1.11.20:
     dependencies:
