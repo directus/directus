@@ -123,7 +123,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					const currentSystemFieldSanitized = currentSystemField
 						? sanitizeSystemField(currentSystemField)
 						: invertIndexed(afterSystemField);
-	
+
 					return {
 						collection: afterSystemField.collection,
 						field: afterSystemField.field,
@@ -185,10 +185,11 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 }
 
 function invertIndexed(field: SnapshotSystemField): SnapshotSystemField {
-	return {
-		...field,
-		schema: {
-			is_indexed: !field.schema.is_indexed,
-		},
-	};
+	const newSchema: SnapshotSystemField['schema'] = { ...field.schema };
+
+	if ('is_indexed' in field.schema) {
+		newSchema.is_indexed = !field.schema.is_indexed;
+	}
+
+	return { ...field, schema: newSchema };
 }
