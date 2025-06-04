@@ -40,7 +40,7 @@ export function isSystemField(collection: string, field: string): boolean {
 }
 
 export function hasSystemIndex(collection: string, field: string): boolean {
-	return !!systemIndexRows.find((row) => row.collection === collection && row.field === field);
+	return Boolean(systemIndexRows.find((row) => row.collection === collection && row.field === field));
 }
 
 processFields(accessFields);

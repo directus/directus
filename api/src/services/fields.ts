@@ -50,7 +50,6 @@ export const systemFieldUpdateSchema = z
 		schema: z
 			.object({
 				is_indexed: z.boolean().optional(),
-				is_unique: z.boolean().optional(),
 			})
 			.strict(),
 	})
