@@ -2587,3 +2587,13 @@ search_flow: Search Flow...
 percent: Percent
 show_password: Show password
 hide_password: Hide password
+bsl_banner:
+  welcome_to_directus: Welcome to Directus!
+  license_agreement: By clicking accept, you agree to the
+  directus_bsl: Directus BSL 1.1
+  and: and
+  privacy_policy: Privacy Policy
+  directus_free_use: Directus is free to use for organizations with less than $5 million in annual revenue and/or funding.
+  license_required: Usage by any entity above this threshold requires a paid license.
+  accept_license: Accept License Terms
+  get_license: Get a License

@@ -20,6 +20,7 @@ import NotificationsGroup from './components/notifications-group.vue';
 import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
+import LicenseBanner from './components/license-banner.vue';
 
 const SIZES = {
 	moduleBarWidth: 60,
@@ -251,6 +252,8 @@ function openSidebar(event: MouseEvent) {
 function getWidth(input: unknown, fallback: number): number {
 	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
+
+const showDialog = ref<boolean>(true);
 </script>
 
 <template>
@@ -263,6 +266,7 @@ function getWidth(input: unknown, fallback: number): number {
 	</v-info>
 
 	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
+		<LicenseBanner v-model="showDialog" />
 		<aside
 			id="navigation"
 			role="navigation"
