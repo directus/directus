@@ -3,6 +3,7 @@ import type { Knex } from 'knex';
 import { randomUUID } from 'node:crypto';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { getHelpers } from '../helpers/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -74,12 +75,7 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').alter().notNullable();
 	});
 
-	await knex.transaction(async (trx) => {
-		await trx.schema.alterTable('directus_extensions', (table) => {
-			table.dropPrimary();
-			table.primary(['id']);
-		});
-	});
+	getHelpers(knex).schema.changePrimaryKey('directus_extensions', 'id');
 
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.dropColumn('name');
