@@ -46,6 +46,7 @@ interface Props {
 	includeRelations?: boolean;
 	relationalFieldSelectable?: boolean;
 	rawFieldNames?: boolean;
+	variableInputEnabled: boolean | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -330,7 +331,12 @@ function isExistingField(node: Record<string, any>): boolean {
 							:items="getCompareOptions((filterInfo[index] as FilterInfoField).field)"
 							@update:model-value="updateComparator(index, $event)"
 						/>
-						<input-group :field="element" :collection="collection" @update:field="replaceNode(index, $event)" />
+						<input-group
+							:field="element"
+							:collection="collection"
+							:variable-input-enabled="variableInputEnabled"
+							@update:field="replaceNode(index, $event)"
+						/>
 						<span class="delete">
 							<v-icon
 								v-tooltip="t('delete_label')"
@@ -378,6 +384,7 @@ function isExistingField(node: Record<string, any>): boolean {
 						:depth="depth + 1"
 						:inline="inline"
 						:raw-field-names="rawFieldNames"
+						:variable-input-enabled="variableInputEnabled"
 						@change="$emit('change')"
 						@remove-node="$emit('remove-node', [`${index}.${filterInfo[index].name}`, ...$event])"
 						@update:filter="replaceNode(index, { [filterInfo[index].name]: $event })"

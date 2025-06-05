@@ -50,7 +50,7 @@ function onFolderChange(target: FolderTarget) {
 		v-bind="$attrs"
 		:collection="collection"
 		:drawer-props="drawerProps"
-		:filter="mergeFilters(filter, folderFilter)"
+		:filter="mergeFilters(filter ?? null, folderFilter ?? null)"
 	>
 		<template #sidebar>
 			<files-navigation
