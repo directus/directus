@@ -440,6 +440,7 @@ field_key: Field Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 toggle_raw_editor: Toggle Raw Editor
+toggle_variable_input: Toggle Variable Input
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Raw value
 copy_raw_value: Copy Raw Value

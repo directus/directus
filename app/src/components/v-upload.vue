@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import type { File } from '@directus/types';
+import type { File, Filter } from '@directus/types';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -26,6 +26,7 @@ interface Props {
 	fromUrl?: boolean;
 	fromLibrary?: boolean;
 	folder?: string;
+	filter?: Filter;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -358,6 +359,7 @@ defineExpose({ abort });
 					:active="activeDialog === 'choose'"
 					:multiple="multiple"
 					:folder="folder"
+					:filter="filter"
 					@update:active="activeDialog = null"
 					@input="setSelection"
 				/>
