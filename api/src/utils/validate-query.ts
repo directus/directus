@@ -16,9 +16,9 @@ const querySchema = Joi.object({
 	limit:
 		'QUERY_LIMIT_MAX' in env && env['QUERY_LIMIT_MAX'] !== -1
 			? Joi.number()
-					.integer()
-					.min(-1)
-					.max(env['QUERY_LIMIT_MAX'] as number) // min should be 0
+				.integer()
+				.min(-1)
+				.max(env['QUERY_LIMIT_MAX'] as number) // min should be 0
 			: Joi.number().integer().min(-1),
 	offset: Joi.number().integer().min(0),
 	page: Joi.number().integer().min(0),
@@ -30,6 +30,7 @@ const querySchema = Joi.object({
 	aggregate: Joi.object(),
 	deep: Joi.object(),
 	alias: Joi.object(),
+	backlink: Joi.boolean()
 }).id('query');
 
 export function validateQuery(query: Query): Query {

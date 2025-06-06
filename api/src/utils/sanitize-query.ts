@@ -99,6 +99,10 @@ export async function sanitizeQuery(
 		query.alias = sanitizeAlias(rawQuery['alias']);
 	}
 
+	if (rawQuery['backlink']) {
+		query.backlink = sanitizeBacklink(rawQuery['backlink'])
+	}
+
 	return query;
 }
 
@@ -221,6 +225,10 @@ function sanitizeMeta(rawMeta: any) {
 	}
 
 	return [rawMeta];
+}
+
+function sanitizeBacklink(rawBacklink: unknown) {
+	return !(rawBacklink === "false")
 }
 
 async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {
