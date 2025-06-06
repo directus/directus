@@ -21,6 +21,7 @@ import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 import LicenseBanner from './components/license-banner.vue';
+import { useSettingsStore } from '@/stores/settings';
 
 const SIZES = {
 	moduleBarWidth: 60,
@@ -215,6 +216,7 @@ const mainResizeOptions = computed<ResizeableOptions>(() => {
 const navOpen = ref(false);
 const userStore = useUserStore();
 const appStore = useAppStore();
+const settingsStore = useSettingsStore();
 
 const appAccess = computed(() => {
 	if (!userStore.currentUser) return true;
@@ -253,7 +255,12 @@ function getWidth(input: unknown, fallback: number): number {
 	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
 
-const showDialog = ref<boolean>(true);
+const showDialog = computed(
+	() =>
+		userStore.isAdmin &&
+		!settingsStore.settings?.license_banner_disabled &&
+		!settingsStore.settings?.license_banner_seen,
+);
 </script>
 
 <template>

@@ -676,3 +676,19 @@ fields:
             required: true
             options:
               placeholder: $t:value
+
+  - field: license_banner_seen
+    interface: boolean
+    width: half
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean
+
+  - field: license_banner_disabled
+    interface: boolean
+    width: half
+    options:
+      label: $t:enabled
+    special:
+      - cast-boolean

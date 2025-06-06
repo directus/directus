@@ -62,4 +62,6 @@ export type Settings = {
 	default_theme_dark: string | null;
 	theme_light_overrides: Record<string, unknown> | null;
 	theme_dark_overrides: Record<string, unknown> | null;
+	license_banner_seen: boolean;
+	license_banner_disabled: boolean;
 };

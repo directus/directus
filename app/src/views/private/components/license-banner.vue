@@ -1,27 +1,19 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { computed } from 'vue';
+import { useSettingsStore } from '@/stores/settings';
 
 const { t } = useI18n();
 
-interface Props {
-	modelValue?: boolean;
+const settingsStore = useSettingsStore();
+
+async function acceptTerms() {
+	await settingsStore.updateSettings({ license_banner_seen: true });
+	settingsStore.hydrate();
 }
-
-const props = withDefaults(defineProps<Props>(), {
-	modelValue: undefined,
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const showDialog = computed({
-	get: () => props.modelValue,
-	set: (value: boolean) => emit('update:modelValue', value),
-});
 </script>
 
 <template>
-	<v-dialog v-model="showDialog">
+	<v-dialog>
 		<v-card>
 			<div class="inner">
 				<div class="left">
@@ -42,10 +34,10 @@ const showDialog = computed({
 					</div>
 
 					<v-card-actions>
-						<v-button @click="showDialog = false">
+						<v-button @click="acceptTerms">
 							{{ t('bsl_banner.accept_license') }}
 						</v-button>
-						<v-button secondary @click="showDialog = false">
+						<v-button secondary href="https://directus.io/bsl">
 							{{ t('bsl_banner.get_license') }}
 							<v-icon name="arrow_outward" small />
 						</v-button>
