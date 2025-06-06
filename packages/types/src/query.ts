@@ -15,7 +15,7 @@ export type Query = {
 	aggregate?: Aggregate | null;
 	deep?: NestedDeepQuery | null;
 	alias?: Record<string, string> | null;
-	backlink?: boolean
+	backlink?: boolean;
 };
 
 export type DeepQuery = {

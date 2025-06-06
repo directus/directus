@@ -48,17 +48,17 @@ test('parse fields with id and title', async () => {
 
 	expect(result).toEqual([
 		{
-			fieldKey: "id",
-			name: "id",
-			type: "field",
-			whenCase: []
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
 		},
 		{
-			fieldKey: "title",
-			name: "title",
-			type: "field",
-			whenCase: []
-		}
+			fieldKey: 'title',
+			name: 'title',
+			type: 'field',
+			whenCase: [],
+		},
 	]);
 });
 
@@ -77,7 +77,6 @@ const schemaRelational = new SchemaBuilder()
 	})
 	.build();
 
-
 test('parse fields with m2o relation', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
 
@@ -88,31 +87,31 @@ test('parse fields with m2o relation', async () => {
 
 	expect(result).toEqual([
 		{
-			"fieldKey": "id",
-			"name": "id",
-			"type": "field",
-			"whenCase": [],
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
 		},
 		{
-			"cases": [],
-			"children": [
+			cases: [],
+			children: [
 				{
-					"fieldKey": "name",
-					"name": "name",
-					"type": "field",
-					"whenCase": [],
+					fieldKey: 'name',
+					name: 'name',
+					type: 'field',
+					whenCase: [],
 				},
 			],
-			"fieldKey": "author",
-			"name": "users",
-			"parentKey": "id",
-			"query": {},
-			"relatedKey": "id",
-			"relation": getRelation(schemaRelational.relations, 'articles', 'author'),
-			"type": "m2o",
-			"whenCase": [],
+			fieldKey: 'author',
+			name: 'users',
+			parentKey: 'id',
+			query: {},
+			relatedKey: 'id',
+			relation: getRelation(schemaRelational.relations, 'articles', 'author'),
+			type: 'm2o',
+			whenCase: [],
 		},
-	])
+	]);
 });
 
 test('parse fields with o2m relation', async () => {
@@ -125,37 +124,34 @@ test('parse fields with o2m relation', async () => {
 
 	expect(result).toEqual([
 		{
-			"fieldKey": "id",
-			"name": "id",
-			"type": "field",
-			"whenCase": [],
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
 		},
 		{
-			"cases": [],
-			"children": [
+			cases: [],
+			children: [
 				{
-					"fieldKey": "id",
-					"name": "id",
-					"type": "field",
-					"whenCase": [],
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
 				},
 			],
-			"fieldKey": "links",
-			"name": "links",
-			"parentKey": "id",
-			"query": {
-				"sort": [
-					"id",
-				],
+			fieldKey: 'links',
+			name: 'links',
+			parentKey: 'id',
+			query: {
+				sort: ['id'],
 			},
-			"relatedKey": "id",
-			"relation": getRelation(schemaRelational.relations, 'articles', 'links'),
-			"type": "o2m",
-			"whenCase": [],
+			relatedKey: 'id',
+			relation: getRelation(schemaRelational.relations, 'articles', 'links'),
+			type: 'o2m',
+			whenCase: [],
 		},
 	]);
 });
-
 
 test('parse fields with m2m relation', async () => {
 	fetchAllowedFieldsMock.mockResolvedValueOnce([]);
@@ -167,48 +163,46 @@ test('parse fields with m2m relation', async () => {
 
 	expect(result).toEqual([
 		{
-			"fieldKey": "id",
-			"name": "id",
-			"type": "field",
-			"whenCase": [],
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
 		},
 		{
-			"cases": [],
-			"children": [
+			cases: [],
+			children: [
 				{
-					"cases": [],
-					"children": [
+					cases: [],
+					children: [
 						{
-							"fieldKey": "id",
-							"name": "id",
-							"type": "field",
-							"whenCase": [],
+							fieldKey: 'id',
+							name: 'id',
+							type: 'field',
+							whenCase: [],
 						},
 					],
-					"fieldKey": "tags_id",
-					"name": "tags",
-					"parentKey": "id",
-					"query": {},
-					"relatedKey": "id",
-					"relation": getRelation(schemaRelational.relations, 'articles_tags_junction', 'tags_id'),
-					"type": "m2o",
-					"whenCase": [],
+					fieldKey: 'tags_id',
+					name: 'tags',
+					parentKey: 'id',
+					query: {},
+					relatedKey: 'id',
+					relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'tags_id'),
+					type: 'm2o',
+					whenCase: [],
 				},
 			],
-			"fieldKey": "tags",
-			"name": "articles_tags_junction",
-			"parentKey": "id",
-			"query": {
-				"sort": [
-					"id",
-				],
+			fieldKey: 'tags',
+			name: 'articles_tags_junction',
+			parentKey: 'id',
+			query: {
+				sort: ['id'],
 			},
-			"relatedKey": "id",
-			"relation": getRelation(schemaRelational.relations, 'articles', 'tags'),
-			"type": "o2m",
-			"whenCase": [],
+			relatedKey: 'id',
+			relation: getRelation(schemaRelational.relations, 'articles', 'tags'),
+			type: 'o2m',
+			whenCase: [],
 		},
-	])
+	]);
 });
 
 test('parse fields with *.*.*', async () => {
@@ -219,256 +213,242 @@ test('parse fields with *.*.*', async () => {
 		{ knex: db, schema: schemaRelational },
 	);
 
-	expect(result).toEqual(
-		[
-			{
-				"fieldKey": "id",
-				"name": "id",
-				"type": "field",
-				"whenCase": [],
-			},
-			{
-				"fieldKey": "title",
-				"name": "title",
-				"type": "field",
-				"whenCase": [],
-			},
-			{
-				"fieldKey": "date",
-				"name": "date",
-				"type": "field",
-				"whenCase": [],
-			},
-			{
-				"cases": [],
-				"children": [
-					{
-						"fieldKey": "id",
-						"name": "id",
-						"type": "field",
-						"whenCase": [],
-					},
-					{
-						"fieldKey": "name",
-						"name": "name",
-						"type": "field",
-						"whenCase": [],
-					},
-				],
-				"fieldKey": "author",
-				"name": "users",
-				"parentKey": "id",
-				"query": {},
-				"relatedKey": "id",
-				"relation": getRelation(schemaRelational.relations, 'articles', 'author'),
-				"type": "m2o",
-				"whenCase": [],
-			},
-			{
-				"cases": [],
-				"children": [
-					{
-						"fieldKey": "id",
-						"name": "id",
-						"type": "field",
-						"whenCase": [],
-					},
-					{
-						"cases": [],
-						"children": [
-							{
-								"fieldKey": "id",
-								"name": "id",
-								"type": "field",
-								"whenCase": [],
-							},
-							{
-								"fieldKey": "title",
-								"name": "title",
-								"type": "field",
-								"whenCase": [],
-							},
-							{
-								"fieldKey": "date",
-								"name": "date",
-								"type": "field",
-								"whenCase": [],
-							},
-							{
-								"fieldKey": "author",
-								"name": "author",
-								"type": "field",
-								"whenCase": [],
-							},
-							{
-								"cases": [],
-								"children": [],
-								"fieldKey": "links",
-								"name": "links",
-								"parentKey": "id",
-								"query": {
-									"sort": [
-										"id",
-									],
-								},
-								"relatedKey": "id",
-								"relation": getRelation(schemaRelational.relations, 'links', 'article_id'),
-								"type": "o2m",
-								"whenCase": [],
-							},
-							{
-								"cases": [],
-								"children": [],
-								"fieldKey": "tags",
-								"name": "articles_tags_junction",
-								"parentKey": "id",
-								"query": {
-									"sort": [
-										"id",
-									],
-								},
-								"relatedKey": "id",
-								"relation": getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
-								"type": "o2m",
-								"whenCase": [],
-							},
-						],
-						"fieldKey": "article_id",
-						"name": "articles",
-						"parentKey": "id",
-						"query": {},
-						"relatedKey": "id",
-						"relation": getRelation(schemaRelational.relations, 'links', 'article_id'),
-						"type": "m2o",
-						"whenCase": [],
-					},
-				],
-				"fieldKey": "links",
-				"name": "links",
-				"parentKey": "id",
-				"query": {
-					"sort": [
-						"id",
-					],
+	expect(result).toEqual([
+		{
+			fieldKey: 'id',
+			name: 'id',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			fieldKey: 'title',
+			name: 'title',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			fieldKey: 'date',
+			name: 'date',
+			type: 'field',
+			whenCase: [],
+		},
+		{
+			cases: [],
+			children: [
+				{
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
 				},
-				"relatedKey": "id",
-				"relation": getRelation(schemaRelational.relations, 'links', 'article_id'),
-				"type": "o2m",
-				"whenCase": [],
-			},
-			{
-				"cases": [],
-				"children": [
-					{
-						"fieldKey": "id",
-						"name": "id",
-						"type": "field",
-						"whenCase": [],
-					},
-					{
-						"cases": [],
-						"children": [
-							{
-								"fieldKey": "id",
-								"name": "id",
-								"type": "field",
-								"whenCase": [],
-							},
-							{
-								"fieldKey": "title",
-								"name": "title",
-								"type": "field",
-								"whenCase": [],
-							},
-							{
-								"fieldKey": "date",
-								"name": "date",
-								"type": "field",
-								"whenCase": [],
-							},
-							{
-								"fieldKey": "author",
-								"name": "author",
-								"type": "field",
-								"whenCase": [],
-							},
-							{
-								"cases": [],
-								"children": [],
-								"fieldKey": "links",
-								"name": "links",
-								"parentKey": "id",
-								"query": {
-									"sort": [
-										"id",
-									],
-								},
-								"relatedKey": "id",
-								"relation": getRelation(schemaRelational.relations, 'links', 'article_id'),
-								"type": "o2m",
-								"whenCase": [],
-							},
-							{
-								"cases": [],
-								"children": [],
-								"fieldKey": "tags",
-								"name": "articles_tags_junction",
-								"parentKey": "id",
-								"query": {
-									"sort": [
-										"id",
-									],
-								},
-								"relatedKey": "id",
-								"relation": getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
-								"type": "o2m",
-								"whenCase": [],
-							},
-						],
-						"fieldKey": "articles_id",
-						"name": "articles",
-						"parentKey": "id",
-						"query": {},
-						"relatedKey": "id",
-						"relation": getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
-						"type": "m2o",
-						"whenCase": [],
-					},
-					{
-						"cases": [],
-						"children": [
-							{
-								"fieldKey": "id",
-								"name": "id",
-								"type": "field",
-								"whenCase": [],
-							},
-						],
-						"fieldKey": "tags_id",
-						"name": "tags",
-						"parentKey": "id",
-						"query": {},
-						"relatedKey": "id",
-						"relation": getRelation(schemaRelational.relations, 'articles_tags_junction', 'tags_id'),
-						"type": "m2o",
-						"whenCase": [],
-					},
-				],
-				"fieldKey": "tags",
-				"name": "articles_tags_junction",
-				"parentKey": "id",
-				"query": {
-					"sort": [
-						"id",
-					],
+				{
+					fieldKey: 'name',
+					name: 'name',
+					type: 'field',
+					whenCase: [],
 				},
-				"relatedKey": "id",
-				"relation": getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
-				"type": "o2m",
-				"whenCase": [],
+			],
+			fieldKey: 'author',
+			name: 'users',
+			parentKey: 'id',
+			query: {},
+			relatedKey: 'id',
+			relation: getRelation(schemaRelational.relations, 'articles', 'author'),
+			type: 'm2o',
+			whenCase: [],
+		},
+		{
+			cases: [],
+			children: [
+				{
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
+				},
+				{
+					cases: [],
+					children: [
+						{
+							fieldKey: 'id',
+							name: 'id',
+							type: 'field',
+							whenCase: [],
+						},
+						{
+							fieldKey: 'title',
+							name: 'title',
+							type: 'field',
+							whenCase: [],
+						},
+						{
+							fieldKey: 'date',
+							name: 'date',
+							type: 'field',
+							whenCase: [],
+						},
+						{
+							fieldKey: 'author',
+							name: 'author',
+							type: 'field',
+							whenCase: [],
+						},
+						{
+							cases: [],
+							children: [],
+							fieldKey: 'links',
+							name: 'links',
+							parentKey: 'id',
+							query: {
+								sort: ['id'],
+							},
+							relatedKey: 'id',
+							relation: getRelation(schemaRelational.relations, 'links', 'article_id'),
+							type: 'o2m',
+							whenCase: [],
+						},
+						{
+							cases: [],
+							children: [],
+							fieldKey: 'tags',
+							name: 'articles_tags_junction',
+							parentKey: 'id',
+							query: {
+								sort: ['id'],
+							},
+							relatedKey: 'id',
+							relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
+							type: 'o2m',
+							whenCase: [],
+						},
+					],
+					fieldKey: 'article_id',
+					name: 'articles',
+					parentKey: 'id',
+					query: {},
+					relatedKey: 'id',
+					relation: getRelation(schemaRelational.relations, 'links', 'article_id'),
+					type: 'm2o',
+					whenCase: [],
+				},
+			],
+			fieldKey: 'links',
+			name: 'links',
+			parentKey: 'id',
+			query: {
+				sort: ['id'],
 			},
-		]
-	)
+			relatedKey: 'id',
+			relation: getRelation(schemaRelational.relations, 'links', 'article_id'),
+			type: 'o2m',
+			whenCase: [],
+		},
+		{
+			cases: [],
+			children: [
+				{
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
+				},
+				{
+					cases: [],
+					children: [
+						{
+							fieldKey: 'id',
+							name: 'id',
+							type: 'field',
+							whenCase: [],
+						},
+						{
+							fieldKey: 'title',
+							name: 'title',
+							type: 'field',
+							whenCase: [],
+						},
+						{
+							fieldKey: 'date',
+							name: 'date',
+							type: 'field',
+							whenCase: [],
+						},
+						{
+							fieldKey: 'author',
+							name: 'author',
+							type: 'field',
+							whenCase: [],
+						},
+						{
+							cases: [],
+							children: [],
+							fieldKey: 'links',
+							name: 'links',
+							parentKey: 'id',
+							query: {
+								sort: ['id'],
+							},
+							relatedKey: 'id',
+							relation: getRelation(schemaRelational.relations, 'links', 'article_id'),
+							type: 'o2m',
+							whenCase: [],
+						},
+						{
+							cases: [],
+							children: [],
+							fieldKey: 'tags',
+							name: 'articles_tags_junction',
+							parentKey: 'id',
+							query: {
+								sort: ['id'],
+							},
+							relatedKey: 'id',
+							relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
+							type: 'o2m',
+							whenCase: [],
+						},
+					],
+					fieldKey: 'articles_id',
+					name: 'articles',
+					parentKey: 'id',
+					query: {},
+					relatedKey: 'id',
+					relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
+					type: 'm2o',
+					whenCase: [],
+				},
+				{
+					cases: [],
+					children: [
+						{
+							fieldKey: 'id',
+							name: 'id',
+							type: 'field',
+							whenCase: [],
+						},
+					],
+					fieldKey: 'tags_id',
+					name: 'tags',
+					parentKey: 'id',
+					query: {},
+					relatedKey: 'id',
+					relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'tags_id'),
+					type: 'm2o',
+					whenCase: [],
+				},
+			],
+			fieldKey: 'tags',
+			name: 'articles_tags_junction',
+			parentKey: 'id',
+			query: {
+				sort: ['id'],
+			},
+			relatedKey: 'id',
+			relation: getRelation(schemaRelational.relations, 'articles_tags_junction', 'articles_id'),
+			type: 'o2m',
+			whenCase: [],
+		},
+	]);
 });
 
 test('parse fields with links.*.* and backlinks disabled', async () => {
@@ -479,38 +459,33 @@ test('parse fields with links.*.* and backlinks disabled', async () => {
 		{ knex: db, schema: schemaRelational },
 	);
 
-	expect(result).toEqual(
-		[
-			{
-				"cases": [],
-				"children": [
-					{
-						"fieldKey": "id",
-						"name": "id",
-						"type": "field",
-						"whenCase": [],
-					},
-					{
-						"fieldKey": "article_id",
-						"name": "article_id",
-						"type": "field",
-						"whenCase": [],
-					},
-				],
-				"fieldKey": "links",
-				"name": "links",
-				"parentKey": "id",
-				"query": {
-					"sort": [
-						"id",
-					],
+	expect(result).toEqual([
+		{
+			cases: [],
+			children: [
+				{
+					fieldKey: 'id',
+					name: 'id',
+					type: 'field',
+					whenCase: [],
 				},
-				"relatedKey": "id",
-				"relation": getRelation(schemaRelational.relations, 'links', 'article_id'),
-				"type": "o2m",
-				"whenCase": [],
+				{
+					fieldKey: 'article_id',
+					name: 'article_id',
+					type: 'field',
+					whenCase: [],
+				},
+			],
+			fieldKey: 'links',
+			name: 'links',
+			parentKey: 'id',
+			query: {
+				sort: ['id'],
 			},
-		]
-	)
-
+			relatedKey: 'id',
+			relation: getRelation(schemaRelational.relations, 'links', 'article_id'),
+			type: 'o2m',
+			whenCase: [],
+		},
+	]);
 });

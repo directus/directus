@@ -10,13 +10,13 @@ export interface ConvertWildcardsOptions {
 	fields: string[];
 	alias: Query['alias'];
 	accountability: Accountability | null;
-	backlink: boolean | undefined
+	backlink: boolean | undefined;
 }
 
 export interface ConvertWildCardsContext {
 	schema: SchemaOverview;
 	knex: Knex;
-	parentRelation?: Relation
+	parentRelation?: Relation;
 }
 
 export async function convertWildcards(options: ConvertWildcardsOptions, context: ConvertWildCardsContext) {
@@ -70,22 +70,27 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 		if (fieldKey.includes('.') && fieldKey.split('.')[0] === '*') {
 			const parts = fieldKey.split('.');
 
-			let relationalFields: string[] = []
+			let relationalFields: string[] = [];
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
 			if (allowedFields.includes('*')) {
 				relationalFields = context.schema.relations.reduce<string[]>((acc, relation) => {
-					if (relation.collection === options.collection) acc.push(relation.field)
-					if (relation.related_collection === options.collection) acc.push(relation.meta!.one_field!)
+					if (relation.collection === options.collection) acc.push(relation.field);
+					if (relation.related_collection === options.collection) acc.push(relation.meta!.one_field!);
 
-					return acc
-				}, [])
+					return acc;
+				}, []);
 			} else {
-				relationalFields = allowedFields.filter((fieldKey) => getRelation(context.schema.relations, options.collection, fieldKey) !== undefined)
+				relationalFields = allowedFields.filter(
+					(fieldKey) => getRelation(context.schema.relations, options.collection, fieldKey) !== undefined,
+				);
 			}
 
 			if (options.backlink === false) {
-				relationalFields = relationalFields.filter(relationField => getRelation(context.schema.relations, options.collection, relationField) !== context.parentRelation)
+				relationalFields = relationalFields.filter(
+					(relationField) =>
+						getRelation(context.schema.relations, options.collection, relationField) !== context.parentRelation,
+				);
 			}
 
 			const aliasFields = Object.keys(options.alias ?? {}).map((fieldKey) => {

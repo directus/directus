@@ -27,7 +27,7 @@ export interface ParseFieldsOptions {
 export interface ParseFieldsContext {
 	schema: SchemaOverview;
 	knex: Knex;
-	parentRelation?: Relation
+	parentRelation?: Relation;
 }
 
 export async function parseFields(
@@ -43,7 +43,7 @@ export async function parseFields(
 			collection: options.parentCollection,
 			alias: options.query.alias,
 			accountability: options.accountability,
-			backlink: options.query.backlink
+			backlink: options.query.backlink,
 		},
 		context,
 	);

@@ -115,7 +115,13 @@ test('converting invalid field with id, title permissions', async () => {
 
 test('converting * with admin permissions', async () => {
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['*'], alias: {}, accountability: { admin: true } as Accountability, backlink: true },
+		{
+			collection: 'articles',
+			fields: ['*'],
+			alias: {},
+			accountability: { admin: true } as Accountability,
+			backlink: true,
+		},
 		{ knex: db, schema },
 	);
 
@@ -124,7 +130,13 @@ test('converting * with admin permissions', async () => {
 
 test('converting title with admin permissions', async () => {
 	const result = await convertWildcards(
-		{ collection: 'articles', fields: ['title'], alias: {}, accountability: { admin: true } as Accountability, backlink: true },
+		{
+			collection: 'articles',
+			fields: ['title'],
+			alias: {},
+			accountability: { admin: true } as Accountability,
+			backlink: true,
+		},
 		{ knex: db, schema },
 	);
 

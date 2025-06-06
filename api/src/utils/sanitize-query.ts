@@ -100,7 +100,7 @@ export async function sanitizeQuery(
 	}
 
 	if (rawQuery['backlink']) {
-		query.backlink = sanitizeBacklink(rawQuery['backlink'])
+		query.backlink = sanitizeBacklink(rawQuery['backlink']);
 	}
 
 	return query;
@@ -228,7 +228,7 @@ function sanitizeMeta(rawMeta: any) {
 }
 
 function sanitizeBacklink(rawBacklink: unknown) {
-	return !(rawBacklink === "false")
+	return !(rawBacklink === 'false');
 }
 
 async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {

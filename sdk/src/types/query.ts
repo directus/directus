@@ -45,8 +45,8 @@ export type ExtractRelation<Schema, Item extends object, Key> = Key extends keyo
  */
 export type MergeRelationalFields<FieldList> = Exclude<UnpackList<FieldList>, string> extends infer RelatedFields
 	? {
-		[Key in RelatedFields extends any ? keyof RelatedFields : never]-?: Exclude<RelatedFields[Key], undefined>;
-	}
+			[Key in RelatedFields extends any ? keyof RelatedFields : never]-?: Exclude<RelatedFields[Key], undefined>;
+	  }
 	: never;
 
 /**
@@ -62,8 +62,8 @@ export type MergeFields<FieldList> = HasNestedFields<FieldList> extends never
  */
 export type QuerySort<_Schema, Item> = UnpackList<Item> extends infer FlatItem
 	? {
-		[Field in keyof FlatItem]: Field | `-${Field & string}`;
-	}[keyof FlatItem]
+			[Field in keyof FlatItem]: Field | `-${Field & string}`;
+	  }[keyof FlatItem]
 	: never;
 
 export type MergeObjects<A, B> = object extends A ? (object extends B ? A & B : A) : object extends B ? B : never;
