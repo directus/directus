@@ -71,7 +71,6 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 			const parts = fieldKey.split('.');
 
 			let relationalFields: string[] = [];
-			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
 			if (allowedFields.includes('*')) {
 				relationalFields = context.schema.relations.reduce<string[]>((acc, relation) => {
@@ -92,6 +91,8 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 						getRelation(context.schema.relations, options.collection, relationField) !== context.parentRelation,
 				);
 			}
+
+			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
 			const aliasFields = Object.keys(options.alias ?? {}).map((fieldKey) => {
 				const name = options.alias![fieldKey];

@@ -6,6 +6,7 @@ import { convertWildcards } from './convert-wildcards.js';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import type { Accountability } from '@directus/types';
 import knex from 'knex';
+import { getRelation } from '@directus/utils';
 
 vi.mock('../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js');
 
@@ -232,4 +233,37 @@ test('converting year(alias) as date with * permissions', async () => {
 	);
 
 	expect(result).toEqual(['author.*', 'tags.*', 'id', 'title', 'date', 'year(alias)']);
+});
+
+test('converting *.* and alias with id, title and author permissions', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['id', 'title', 'author']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles', fields: ['*.*'], alias: { alias: 'title' }, accountability, backlink: true },
+		{ knex: db, schema: schemaRelational },
+	);
+
+	expect(result).toEqual(['author.*', 'id', 'title', 'alias']);
+});
+
+test('backlink set to true', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles_tags_junction', fields: ['*.*'], alias: {}, accountability, backlink: true },
+		{ knex: db, schema: schemaRelational, parentRelation: getRelation(schemaRelational.relations, 'articles', 'tags')! },
+	);
+
+	expect(result).toEqual(['articles_id.*', 'tags_id.*', 'id']);
+});
+
+test('backlink set to false', async () => {
+	fetchAllowedFieldsMock.mockResolvedValueOnce(['*']);
+
+	const result = await convertWildcards(
+		{ collection: 'articles_tags_junction', fields: ['*.*'], alias: {}, accountability, backlink: false },
+		{ knex: db, schema: schemaRelational, parentRelation: getRelation(schemaRelational.relations, 'articles', 'tags')! },
+	);
+
+	expect(result).toEqual(['tags_id.*', 'id', 'articles_id']);
 });
