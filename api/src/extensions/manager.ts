@@ -561,6 +561,7 @@ export class ExtensionManager {
 		});
 
 		const context = await isolate.createContext();
+		context.global.setSync('process', { env: { NODE_ENV: process.env['NODE_ENV'] } }, { copy: true });
 
 		const module = await isolate.compileModule(extensionCode, { filename: `file://${entrypointPath}` });
 
