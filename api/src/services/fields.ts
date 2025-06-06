@@ -356,12 +356,13 @@ export class FieldsService {
 		collection: string,
 		field: Partial<Field> & { field: string; type: Type | null },
 		table?: Knex.CreateTableBuilder, // allows collection creation to
-		opts?: MutationOptions,
+		opts?: MutationOptions & { tryNonBlockingIndexing?: boolean },
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
 
+		const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -411,10 +412,10 @@ export class FieldsService {
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
 					if (table) {
-						this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await this.addColumnToTable(table, collection, hookAdjustedField as Field, null, tryNonBlocking);
 					} else {
-						await trx.schema.alterTable(collection, (table) => {
-							this.addColumnToTable(table, collection, hookAdjustedField as Field);
+						await trx.schema.alterTable(collection, async (table) => {
+							await this.addColumnToTable(table, collection, hookAdjustedField as Field, null, tryNonBlocking);
 						});
 					}
 				}
@@ -482,11 +483,16 @@ export class FieldsService {
 		}
 	}
 
-	async updateField(collection: string, field: RawField, opts?: MutationOptions): Promise<string> {
+	async updateField(
+		collection: string,
+		field: RawField,
+		opts?: MutationOptions & { tryNonBlockingIndexing?: boolean },
+	): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
 
+		const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -545,7 +551,7 @@ export class FieldsService {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
-								this.addColumnToTable(table, collection, field, existingColumn);
+								await this.addColumnToTable(table, collection, field, existingColumn, tryNonBlocking);
 							});
 						});
 					} catch (err: any) {
@@ -623,7 +629,11 @@ export class FieldsService {
 		}
 	}
 
-	async updateFields(collection: string, fields: RawField[], opts?: MutationOptions): Promise<string[]> {
+	async updateFields(
+		collection: string,
+		fields: RawField[],
+		opts?: MutationOptions & { tryNonBlockingIndexing?: boolean },
+	): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -635,6 +645,7 @@ export class FieldsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						tryNonBlockingIndexing: Boolean(opts?.tryNonBlockingIndexing),
 					}),
 				);
 			}
@@ -849,12 +860,13 @@ export class FieldsService {
 		}
 	}
 
-	public addColumnToTable(
+	public async addColumnToTable(
 		table: Knex.CreateTableBuilder,
 		collection: string,
 		field: RawField | Field,
 		existing: Column | null = null,
-	): void {
+		tryNonBlocking = false, // do we want to default to concurrent creation?
+	): Promise<void> {
 		let column: Knex.ColumnBuilder;
 
 		// Don't attempt to add a DB column for alias / corrupt fields
@@ -928,13 +940,15 @@ export class FieldsService {
 			}
 		}
 
+		const createIndexes: { unique: boolean }[] = [];
+
 		if (field.schema?.is_primary_key) {
 			column.primary().notNullable();
 		} else if (!existing?.is_primary_key) {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
 				if (!existing || existing.is_unique === false) {
-					column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
+					createIndexes.push({ unique: true });
 				}
 			} else if (field.schema?.is_unique === false) {
 				if (existing?.is_unique === true) {
@@ -944,7 +958,7 @@ export class FieldsService {
 
 			if (field.schema?.is_indexed === true) {
 				if (!existing || existing.is_indexed === false) {
-					column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
+					createIndexes.push({ unique: false });
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
@@ -955,6 +969,15 @@ export class FieldsService {
 
 		if (existing) {
 			column.alter();
+		}
+
+		if (createIndexes.length > 0) {
+			for (const { unique } of createIndexes) {
+				await this.helpers.schema.createIndex(collection, field.field, {
+					tryNonBlocking,
+					unique,
+				});
+			}
 		}
 	}
 }
