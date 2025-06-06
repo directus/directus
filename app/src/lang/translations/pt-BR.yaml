@@ -110,7 +110,7 @@ field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
 role_name: Nome do Cargo
-policy_name: Nome da política
+policy_name: Nome da política 
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
