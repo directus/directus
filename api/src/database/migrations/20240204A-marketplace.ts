@@ -75,7 +75,9 @@ export async function up(knex: Knex): Promise<void> {
 		table.uuid('id').alter().notNullable();
 	});
 
-	getHelpers(knex).schema.changePrimaryKey('directus_extensions', 'id');
+	await knex.transaction(async (trx) => {
+		await getHelpers(trx).schema.changePrimaryKey('directus_extensions', 'id');
+	});
 
 	await knex.schema.alterTable('directus_extensions', (table) => {
 		table.dropColumn('name');
