@@ -90,7 +90,7 @@ function navigateToFlow({ item: flow }: { item: FlowRaw }) {
 }
 
 async function deleteFlow() {
-	if (!confirmDelete.value) return;
+	if (!confirmDelete.value || deletingFlow.value) return;
 
 	deletingFlow.value = true;
 
@@ -194,7 +194,7 @@ function onFlowDrawerCompletion(id: string) {
 			<template #item-append="{ item }">
 				<v-menu placement="left-start" show-arrow>
 					<template #activator="{ toggle }">
-						<v-icon name="more_vert" class="ctx-toggle" @click="toggle" />
+						<v-icon name="more_vert" class="ctx-toggle" clickable @click="toggle" />
 					</template>
 
 					<v-list>
@@ -231,7 +231,7 @@ function onFlowDrawerCompletion(id: string) {
 			</template>
 		</v-table>
 
-		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null">
+		<v-dialog :model-value="!!confirmDelete" @esc="confirmDelete = null" @apply="deleteFlow">
 			<v-card>
 				<v-card-title>{{ t('flow_delete_confirm', { flow: confirmDelete!.name }) }}</v-card-title>
 

@@ -176,21 +176,24 @@ function useURLImport() {
 
 <template>
 	<div class="file">
-		<v-menu attached :disabled="loading || internalDisabled">
+		<v-menu attached :disabled="loading || internalDisabled" keep-behind>
 			<template #activator="{ toggle, active }">
 				<div>
 					<v-skeleton-loader v-if="loading" type="input" />
-					<v-input
+
+					<v-list-item
 						v-else
+						class="activator"
 						clickable
 						readonly
-						:active="active"
+						block
+						:active
 						:disabled="internalDisabled"
 						:placeholder="t('no_file_selected')"
 						:model-value="file && file.title"
 						@click="toggle"
 					>
-						<template #prepend>
+						<v-list-item-icon>
 							<div
 								class="preview"
 								:class="{
@@ -209,26 +212,29 @@ function useURLImport() {
 								</span>
 								<v-icon v-else name="folder_open" />
 							</div>
-						</template>
+						</v-list-item-icon>
 
-						<template #append>
-							<div class="item-actions">
-								<template v-if="file">
-									<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click.stop="editDrawerActive = true" />
+						<v-list-item-content>
+							<v-text-overflow v-if="file?.title" :text="file.title" />
+							<v-text-overflow v-else class="placeholder" :text="$t('no_file_selected')" />
+						</v-list-item-content>
 
-									<v-remove
-										v-if="!internalDisabled"
-										:item-info="relationInfo"
-										:item-edits="edits"
-										deselect
-										@action="remove"
-									/>
-								</template>
+						<div class="item-actions">
+							<template v-if="file">
+								<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click.stop="editDrawerActive = true" />
 
-								<v-icon v-else name="attach_file" />
-							</div>
-						</template>
-					</v-input>
+								<v-remove
+									v-if="!internalDisabled"
+									:item-info="relationInfo"
+									:item-edits="edits"
+									deselect
+									@action="remove"
+								/>
+							</template>
+
+							<v-icon v-else name="attach_file" />
+						</div>
+					</v-list-item>
 				</div>
 			</template>
 
@@ -334,8 +340,28 @@ function useURLImport() {
 <style lang="scss" scoped>
 @use '@/styles/mixins';
 
+.v-list-item.activator {
+	--v-list-item-color-active: var(--v-list-item-color);
+	--v-list-item-background-color-active: var(
+		--v-list-item-background-color,
+		var(--v-list-background-color, var(--theme--form--field--input--background))
+	);
+
+	&.active,
+	&:focus-within,
+	&:focus-visible {
+		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
+		--v-list-item-border-color-hover: var(--v-list-item-border-color);
+
+		offset: 0;
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
+	}
+}
+
 .item-actions {
 	@include mixins.list-interface-item-actions;
+
+	padding-left: 8px;
 }
 
 .preview {
@@ -369,6 +395,10 @@ function useURLImport() {
 			filter: drop-shadow(0px 0px 8px rgb(0 0 0 / 0.25));
 		}
 	}
+}
+
+.placeholder {
+	color: var(--v-input-placeholder-color, var(--theme--foreground-subdued));
 }
 
 .extension {
