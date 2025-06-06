@@ -251,7 +251,11 @@ test('backlink set to true', async () => {
 
 	const result = await convertWildcards(
 		{ collection: 'articles_tags_junction', fields: ['*.*'], alias: {}, accountability, backlink: true },
-		{ knex: db, schema: schemaRelational, parentRelation: getRelation(schemaRelational.relations, 'articles', 'tags')! },
+		{
+			knex: db,
+			schema: schemaRelational,
+			parentRelation: getRelation(schemaRelational.relations, 'articles', 'tags')!,
+		},
 	);
 
 	expect(result).toEqual(['articles_id.*', 'tags_id.*', 'id']);
@@ -262,7 +266,11 @@ test('backlink set to false', async () => {
 
 	const result = await convertWildcards(
 		{ collection: 'articles_tags_junction', fields: ['*.*'], alias: {}, accountability, backlink: false },
-		{ knex: db, schema: schemaRelational, parentRelation: getRelation(schemaRelational.relations, 'articles', 'tags')! },
+		{
+			knex: db,
+			schema: schemaRelational,
+			parentRelation: getRelation(schemaRelational.relations, 'articles', 'tags')!,
+		},
 	);
 
 	expect(result).toEqual(['tags_id.*', 'id', 'articles_id']);
