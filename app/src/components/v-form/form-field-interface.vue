@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { useExtension } from '@/composables/use-extension';
 import { getDefaultInterfaceForType } from '@/utils/get-default-interface-for-type';
-import { computed } from 'vue';
+import { computed, ref, onMounted, Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import type { FormField } from './types';
+import { UsableCollectionPermissions } from '@/composables/use-permissions/collection/use-collection-permissions';
+import { getRelationalPermissions } from './utils/get-relational-permissions';
 
 const props = defineProps<{
 	field: FormField;
@@ -39,6 +41,17 @@ const componentName = computed(() => {
 const value = computed(() =>
 	props.modelValue === undefined ? props.field.schema?.default_value ?? null : props.modelValue,
 );
+
+const loadingPermissions = ref(true);
+
+const relatedCollectionPersmissions: Ref<UsableCollectionPermissions | null> = ref(null);
+
+onMounted(async () => {
+		const perms = await getRelationalPermissions(props.field);
+		relatedCollectionPersmissions.value = perms;
+
+	loadingPermissions.value = false;
+});
 </script>
 
 <template>
@@ -50,7 +63,14 @@ const value = computed(() =>
 	>
 		<v-skeleton-loader v-if="loading && field.hideLoader !== true" />
 
-		<v-error-boundary v-if="interfaceExists && !rawEditorActive" :name="componentName">
+		<v-error-boundary
+			v-if="
+				interfaceExists &&
+				!rawEditorActive &&
+				(!relatedCollectionPersmissions || relatedCollectionPersmissions.readAllowed)
+			"
+			:name="componentName"
+		>
 			<component
 				:is="componentName"
 				v-bind="(field.meta && field.meta.options) || {}"
@@ -78,6 +98,12 @@ const value = computed(() =>
 			</template>
 		</v-error-boundary>
 
+		<v-notice
+			v-else-if="!loadingPermissions && relatedCollectionPersmissions && !relatedCollectionPersmissions.readAllowed"
+			type="warning"
+		>
+			{{ t('permission_denied_for_related_field') }}
+		</v-notice>
 		<interface-system-raw-editor
 			v-else-if="rawEditorEnabled && rawEditorActive"
 			:value="value"
