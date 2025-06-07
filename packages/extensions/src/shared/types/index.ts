@@ -1,3 +1,5 @@
+import type { Field } from '@directus/types';
+
 export type * from './api-extension-context.js';
 export type * from './api.js';
 export type * from './app-extension-config.js';
@@ -12,3 +14,5 @@ export type * from './operations.js';
 export type * from './options.js';
 export type * from './panels.js';
 export type * from './settings.js';
+
+export type AppField = Field & { schema: { default_value: any } };
