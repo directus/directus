@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import type {
 	CompletedPart,
 	CopyObjectCommandInput,
@@ -89,7 +90,12 @@ export class DriverS3 implements TusDriver {
 		const maxSockets = this.config.maxSockets ?? 500;
 		const keepAlive = this.config.keepAlive ?? true;
 
+		const env = useEnv();
+		const checksumCalculation = ('STORAGE_S3_CHECKSUM_CALCULATION' in env && env['STORAGE_S3_CHECKSUM_CALCULATION'] === 'WHEN_REQUIRED') ? 'WHEN_REQUIRED' : 'WHEN_SUPPORTED';
+
 		const s3ClientConfig: S3ClientConfig = {
+			requestChecksumCalculation: checksumCalculation,
+			responseChecksumValidation: checksumCalculation,
 			requestHandler: new NodeHttpHandler({
 				connectionTimeout,
 				socketTimeout,
