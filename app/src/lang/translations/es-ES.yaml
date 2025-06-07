@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-about: About
+about: Sobre
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -28,7 +28,7 @@ method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
-marketplace: Marketplace
+marketplace: Mercado
 extensions: Extensiones
 modules: Módulos
 module_bar: Barra de módulos
@@ -1215,7 +1215,7 @@ uninstall: Desinstalar
 installed: Instalada
 reinstall: Reinstalar
 open_in_marketplace: Abrir en el Marketplace
-source_registry: Marketplace
+source_registry: Mercado
 source_local: Local
 source_module: Módulo de Nodo
 collection: Colección
