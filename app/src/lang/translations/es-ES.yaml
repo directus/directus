@@ -427,6 +427,7 @@ field_key: Campo clave
 finish_setup: Finalizar Configuración
 dismiss: Cerrar
 toggle_raw_editor: Alternar editor sin formato
+toggle_variable_input: Alternar entrada de variables
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor Plano
 copy_raw_value: Copiar valor exacto
@@ -947,7 +948,7 @@ run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: Seleccionar uno o más artículos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} artículos seleccionados
 run_flow: Ejecutar Flujo
-trigger_flow_success: Flujo "{flow}" se ha activado correctamente
+trigger_flow_success: El flujo "{flow}" se ha activado correctamente
 field_name_placeholder: Ingrese el nombre del campo...
 field_key_placeholder: Ingrese un campo clave...
 trigger: Disparador
