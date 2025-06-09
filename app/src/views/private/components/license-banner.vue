@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
+import BannerSVG from '../../../assets/directus-bsl-banner.svg?raw';
 
 const { t } = useI18n();
 
@@ -16,7 +17,8 @@ async function acceptTerms() {
 	<v-dialog>
 		<v-card>
 			<div class="inner">
-				<img src="../../../assets/directus-bsl-banner.svg" alt="Directus" class="directus-logo" />
+				<!-- eslint-disable-next-line vue/no-v-html -->
+				<div class="banner-svg" v-html="BannerSVG"></div>
 
 				<div class="left">
 					<div class="message-copy">
@@ -115,8 +117,12 @@ async function acceptTerms() {
 	width: 100%;
 }
 
-img {
-	justify-self: center;
+.banner-svg {
+	display: flex;
+	justify-content: center;
+}
+
+.banner-svg > * {
 	width: 200px;
 }
 
@@ -127,7 +133,7 @@ img {
 		width: initial;
 	}
 
-	img {
+	.banner-svg > * {
 		width: 300px;
 	}
 }
