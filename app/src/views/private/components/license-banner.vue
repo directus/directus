@@ -16,6 +16,8 @@ async function acceptTerms() {
 	<v-dialog>
 		<v-card>
 			<div class="inner">
+				<img src="../../../assets/directus-bsl-banner.svg" alt="Directus" class="directus-logo" />
+
 				<div class="left">
 					<div class="message-copy">
 						<v-card-title>{{ t('bsl_banner.welcome_to_directus') }}</v-card-title>
@@ -37,14 +39,12 @@ async function acceptTerms() {
 						<v-button @click="acceptTerms">
 							{{ t('bsl_banner.accept_license') }}
 						</v-button>
-						<v-button secondary href="https://directus.io/bsl">
+						<v-button secondary href="https://directus.io/license-request">
 							{{ t('bsl_banner.get_license') }}
 							<v-icon name="arrow_outward" small />
 						</v-button>
 					</v-card-actions>
 				</div>
-
-				<img src="../../../assets/directus-bsl-banner.svg" alt="Directus" class="directus-logo" />
 			</div>
 		</v-card>
 	</v-dialog>
@@ -53,7 +53,8 @@ async function acceptTerms() {
 <style scoped>
 .v-card {
 	max-width: unset;
-	padding: 56px;
+	padding: 28px;
+	width: 80vw;
 }
 
 .v-card a {
@@ -64,11 +65,25 @@ async function acceptTerms() {
 
 .v-card .inner {
 	display: grid;
-	grid-template-columns: auto auto;
 	align-items: center;
-	width: 750px;
-	height: 448px;
-	gap: 30px;
+	gap: 15px;
+}
+
+@media (min-width: 900px) {
+	.v-card {
+		padding: 56px;
+		width: initial;
+	}
+
+	.v-card .inner {
+		grid-template-columns: auto auto;
+		width: 750px;
+		gap: 30px;
+	}
+
+	.left {
+		order: -1;
+	}
 }
 
 .v-card-title {
@@ -95,10 +110,25 @@ async function acceptTerms() {
 	display: flex;
 	flex-direction: row;
 	padding-left: 0;
+	padding-right: 0;
+	gap: 12px;
+	width: 100%;
 }
 
 img {
 	justify-self: center;
-	width: 300px;
+	width: 200px;
+}
+
+@media (min-width: 600px) {
+	.v-card .left .v-card-actions {
+		gap: unset;
+		padding-right: initial;
+		width: initial;
+	}
+
+	img {
+		width: 300px;
+	}
 }
 </style>
