@@ -258,8 +258,8 @@ function getWidth(input: unknown, fallback: number): number {
 const showDialog = computed(
 	() =>
 		userStore.isAdmin &&
-		!settingsStore.settings?.license_banner_disabled &&
-		!settingsStore.settings?.license_banner_seen,
+		settingsStore.settings?.license_banner_disabled === false &&
+		settingsStore.settings?.license_banner_seen === false,
 );
 </script>
 
