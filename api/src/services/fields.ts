@@ -362,7 +362,6 @@ export class FieldsService {
 			throw new ForbiddenError();
 		}
 
-		const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -411,11 +410,13 @@ export class FieldsService {
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
+					const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
+
 					if (table) {
-						await this.addColumnToTable(table, collection, hookAdjustedField as Field, null, tryNonBlocking);
+						await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, tryNonBlocking);
 					} else {
 						await trx.schema.alterTable(collection, async (table) => {
-							await this.addColumnToTable(table, collection, hookAdjustedField as Field, null, tryNonBlocking);
+							await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, tryNonBlocking);
 						});
 					}
 				}
@@ -492,7 +493,6 @@ export class FieldsService {
 			throw new ForbiddenError();
 		}
 
-		const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
 		const runPostColumnChange = await this.helpers.schema.preColumnChange();
 		const nestedActionEvents: ActionEventParams[] = [];
 
@@ -547,6 +547,8 @@ export class FieldsService {
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
+					const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
+
 					try {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
@@ -638,6 +640,7 @@ export class FieldsService {
 
 		try {
 			const fieldNames = [];
+			const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
 
 			for (const field of fields) {
 				fieldNames.push(
@@ -645,7 +648,7 @@ export class FieldsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						tryNonBlockingIndexing: Boolean(opts?.tryNonBlockingIndexing),
+						tryNonBlockingIndexing: tryNonBlocking,
 					}),
 				);
 			}
