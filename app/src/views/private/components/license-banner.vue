@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useSettingsStore } from '@/stores/settings';
+import { useServerStore } from '@/stores/server';
+import { storeToRefs } from 'pinia';
 import BannerSVG from '../../../assets/directus-bsl-banner.svg?raw';
 
 const { t } = useI18n();
@@ -11,6 +13,8 @@ async function acceptTerms() {
 	await settingsStore.updateSettings({ license_banner_seen: true });
 	settingsStore.hydrate();
 }
+
+const { info } = storeToRefs(useServerStore());
 </script>
 
 <template>
@@ -25,11 +29,17 @@ async function acceptTerms() {
 						<v-card-title>{{ t('bsl_banner.welcome_to_directus') }}</v-card-title>
 						<p>
 							{{ t('bsl_banner.license_agreement') }}
-							<a href="https://directus.io/bsl">
+							<a
+								:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=bsl_1.1_link`"
+								target="_blank"
+							>
 								{{ t('bsl_banner.directus_bsl') }}
 							</a>
 							{{ t('bsl_banner.and') }}
-							<a href="https://directus.io/privacy">
+							<a
+								:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=privacy_link`"
+								target="_blank"
+							>
 								{{ t('bsl_banner.privacy_policy') }}
 							</a>
 						</p>
@@ -41,7 +51,10 @@ async function acceptTerms() {
 						<v-button @click="acceptTerms">
 							{{ t('bsl_banner.accept_license') }}
 						</v-button>
-						<v-button secondary href="https://directus.io/license-request">
+						<v-button
+							secondary
+							:href="`https://directus.io/license-request?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=get_a_license_button`"
+						>
 							{{ t('bsl_banner.get_license') }}
 							<v-icon name="arrow_outward" small />
 						</v-button>
