@@ -186,7 +186,12 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		return 64;
 	}
 
-	async createIndex(_collection: string, _field: string, _options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
-		throw new Error('not implemented');
+	async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+		// fall back to concurrent index creation
+		const isUnique = Boolean(options.unique);
+		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
+		const uniqueQuery = isUnique === true ? 'UNIQUE ' : '';
+
+		return this.knex.raw(`CREATE ${uniqueQuery}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }
