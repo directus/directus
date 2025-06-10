@@ -190,8 +190,7 @@ export abstract class SchemaHelper extends DatabaseHelper {
 		// fall back to concurrent index creation
 		const isUnique = Boolean(options.unique);
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
-		const uniqueQuery = isUnique === true ? 'UNIQUE ' : '';
 
-		return this.knex.raw(`CREATE ${uniqueQuery}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }

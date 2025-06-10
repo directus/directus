@@ -79,12 +79,13 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 		return 128;
 	}
 
-	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+	override async createIndex(
+		collection: string,
+		field: string,
+		options: CreateIndexOptions = {},
+	): Promise<Knex.SchemaBuilder> {
 		const isUnique = Boolean(options.unique);
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
-		const uniqueQuery = isUnique === true ? 'UNIQUE ' : '';
-
-		const basicIndexQuery = `CREATE ${uniqueQuery}INDEX "${constraintName}" ON "${collection}" ("${field}")`;
 
 		/*
 		Online index operations are not available in every edition of Microsoft SQL Server.
@@ -98,10 +99,14 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 
 		if (options.tryNonBlocking && typeof edition === 'string' && edition.startsWith('Enterprise')) {
 			// https://learn.microsoft.com/en-us/sql/t-sql/statements/create-index-transact-sql?view=sql-server-ver16#online---on--off-
-			return this.knex.schema.raw(`${basicIndexQuery} WITH (ONLINE = ON)`);
+			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??) WITH (ONLINE = ON)`, [
+				constraintName,
+				collection,
+				field,
+			]);
 		}
 
 		// Fall back to blocking index creation for non-enterprise editions
-		return this.knex.schema.raw(basicIndexQuery);
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }

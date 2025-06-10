@@ -53,14 +53,23 @@ export class SchemaHelperPostgres extends SchemaHelper {
 		}
 	}
 
-	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+	override async createIndex(
+		collection: string,
+		field: string,
+		options: CreateIndexOptions = {},
+	): Promise<Knex.SchemaBuilder> {
 		const isUnique = Boolean(options.unique);
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
-		const uniqueQuery = isUnique === true ? 'UNIQUE ' : '';
-		
-		// https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
-		const concurrentQuery = Boolean(options.tryNonBlocking) === true ? 'CONCURRENTLY ' : '';
 
-		return this.knex.schema.raw(`CREATE ${uniqueQuery}INDEX ${concurrentQuery}"${constraintName}" ON "${collection}" ("${field}")`);
+		// https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
+		if (options.tryNonBlocking) {
+			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX CONCURRENTLY ?? ON ?? (??)`, [
+				constraintName,
+				collection,
+				field,
+			]);
+		}
+
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }

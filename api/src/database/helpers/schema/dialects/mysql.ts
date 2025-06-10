@@ -71,12 +71,13 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		}
 	}
 
-	override async createIndex(collection: string, field: string, options: CreateIndexOptions = {}): Promise<Knex.SchemaBuilder> {
+	override async createIndex(
+		collection: string,
+		field: string,
+		options: CreateIndexOptions = {},
+	): Promise<Knex.SchemaBuilder> {
 		const isUnique = Boolean(options.unique);
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
-		
-		const uniqueQuery = isUnique === true ? 'UNIQUE ' : '';
-		const basicIndexQuery = `CREATE ${uniqueQuery}INDEX \`${constraintName}\` ON \`${collection}\` (\`${field}\`)`;
 
 		if (options.tryNonBlocking) {
 			/*
@@ -85,11 +86,17 @@ export class SchemaHelperMySQL extends SchemaHelper {
 			
 			https://dev.mysql.com/doc/refman/8.4/en/create-index.html#:~:text=engine%20is%20changed.-,Table%20Copying%20and%20Locking%20Options,-ALGORITHM%20and%20LOCK
 			*/
-			return this.knex.schema
-				.raw(`${basicIndexQuery} ALGORITHM=INPLACE LOCK=NONE`)
-				.catch(() => this.knex.schema.raw(basicIndexQuery));
+			return this.knex
+				.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??) ALGORITHM=INPLACE LOCK=NONE`, [
+					constraintName,
+					collection,
+					field,
+				])
+				.catch(() =>
+					this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]),
+				);
 		}
 
-		return this.knex.schema.raw(basicIndexQuery);
+		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 	}
 }
