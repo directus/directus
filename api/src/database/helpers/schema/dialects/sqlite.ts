@@ -1,6 +1,5 @@
-import type { Knex } from 'knex';
 import { getDefaultIndexName } from '../../../../utils/get-default-index-name.js';
-import { SchemaHelper, type CreateIndexOptions } from '../types.js';
+import { SchemaHelper } from '../types.js';
 
 export class SchemaHelperSQLite extends SchemaHelper {
 	override generateIndexName(
