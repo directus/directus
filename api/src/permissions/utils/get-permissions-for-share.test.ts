@@ -145,7 +145,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
@@ -176,7 +176,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
@@ -207,7 +207,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
@@ -295,7 +295,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
@@ -326,7 +326,7 @@ describe('getPermissionsForShare', () => {
 			{
 				action: 'read',
 				collection: 'articles',
-				fields: null,
+				fields: [],
 				permissions: {
 					id: {
 						_eq: 'item-id',
