@@ -46,4 +46,7 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	ADMIN_TOKEN: 'string',
 	KEY: 'string',
 	SECRET: 'string',
+
+	EMAIL_SMTP_PASSWORD: 'string',
+	REDIS_PASSWORD: 'string',
 } as const;
