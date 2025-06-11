@@ -35,6 +35,7 @@ export function resolveSystemAdmin(
 				}).addFields({
 					fields: [toInputObjectType(Field, { postfix: '_input' }).NonNull],
 				}).NonNull,
+				concurrentIndexCreation: { type: GraphQLBoolean, defaultValue: false },
 			},
 			resolve: async (_, args) => {
 				const collectionsService = new CollectionsService({
@@ -42,7 +43,10 @@ export function resolveSystemAdmin(
 					schema: gql.schema,
 				});
 
-				const collectionKey = await collectionsService.createOne(args['data']);
+				const collectionKey = await collectionsService.createOne(args['data'], {
+					tryNonBlockingIndexing: Boolean(args['concurrentIndexCreation']),
+				});
+
 				return await collectionsService.readOne(collectionKey);
 			},
 		},
@@ -92,6 +96,7 @@ export function resolveSystemAdmin(
 			args: {
 				collection: new GraphQLNonNull(GraphQLString),
 				data: toInputObjectType(Field, { postfix: '_input' }).NonNull,
+				concurrentIndexCreation: { type: GraphQLBoolean, defaultValue: false },
 			},
 			resolve: async (_, args) => {
 				const service = new FieldsService({
@@ -99,7 +104,10 @@ export function resolveSystemAdmin(
 					schema: gql.schema,
 				});
 
-				await service.createField(args['collection'], args['data']);
+				await service.createField(args['collection'], args['data'], undefined, {
+					tryNonBlockingIndexing: Boolean(args['concurrentIndexCreation']),
+				});
+
 				return await service.readOne(args['collection'], args['data'].field);
 			},
 		},
@@ -109,6 +117,7 @@ export function resolveSystemAdmin(
 				collection: new GraphQLNonNull(GraphQLString),
 				field: new GraphQLNonNull(GraphQLString),
 				data: toInputObjectType(Field, { postfix: '_input' }).NonNull,
+				concurrentIndexCreation: { type: GraphQLBoolean, defaultValue: false },
 			},
 			resolve: async (_, args) => {
 				const service = new FieldsService({
@@ -125,6 +134,8 @@ export function resolveSystemAdmin(
 				await service.updateField(args['collection'], {
 					...args['data'],
 					field: args['field'],
+				}, {
+					tryNonBlockingIndexing: Boolean(args['concurrentIndexCreation']),
 				});
 
 				return await service.readOne(args['collection'], args['field']);
