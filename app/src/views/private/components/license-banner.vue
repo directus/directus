@@ -68,7 +68,7 @@ const { info } = storeToRefs(useServerStore());
 <style scoped>
 .v-card {
 	max-width: unset;
-	padding: 28px;
+	padding: 30px;
 	width: 80vw;
 }
 
@@ -81,7 +81,6 @@ const { info } = storeToRefs(useServerStore());
 .v-card .inner {
 	display: grid;
 	align-items: center;
-	gap: 15px;
 }
 
 @media (min-width: 900px) {
@@ -91,9 +90,8 @@ const { info } = storeToRefs(useServerStore());
 	}
 
 	.v-card .inner {
-		grid-template-columns: auto auto;
-		width: 750px;
-		gap: 30px;
+		grid-template-columns: 50% 50%;
+		width: 706px;
 	}
 
 	.left {
@@ -102,30 +100,32 @@ const { info } = storeToRefs(useServerStore());
 }
 
 .v-card-title {
-	padding-left: 0;
+	padding: 0;
 	align-items: flex-start;
-	font-size: 40px;
-	color: var(--theme--primary);
+	font-size: 28px;
 	line-height: 44px;
+	font-weight: 700;
 }
 
 .v-card .left {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
+	gap: 28px;
 }
 
 .v-card .left .message-copy {
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
+	max-width: 510px;
+	text-wrap: balance;
 }
 
 .v-card .left .v-card-actions {
 	display: flex;
 	flex-direction: row;
-	padding-left: 0;
-	padding-right: 0;
+	padding: 0;
 	gap: 12px;
 	width: 100%;
 }
@@ -147,7 +147,20 @@ const { info } = storeToRefs(useServerStore());
 	}
 
 	.banner-svg > * {
-		width: 300px;
+		width: 257px;
+	}
+
+	.v-card .inner {
+		gap: 30px;
+	}
+
+	.v-card {
+		padding: 60px;
+		width: fit-content;
+	}
+
+	.v-card-title {
+		font-size: 32px;
 	}
 }
 </style>
