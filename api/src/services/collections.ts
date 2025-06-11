@@ -16,7 +16,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, ActionEventParams, Collection, MutationOptions } from '../types/index.js';
+import type { AbstractServiceOptions, ActionEventParams, Collection, MutationOptions, MutationOptionsWithIndex } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
@@ -57,7 +57,7 @@ export class CollectionsService {
 	/**
 	 * Create a single new collection
 	 */
-	async createOne(payload: RawCollection, opts?: MutationOptions): Promise<string> {
+	async createOne(payload: RawCollection, opts?: MutationOptionsWithIndex): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -147,7 +147,7 @@ export class CollectionsService {
 					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field);
+								fieldsService.addColumnToTable(table, payload.collection, field, undefined, opts?.tryNonBlockingIndexing);
 							}
 						}
 					});
@@ -236,7 +236,7 @@ export class CollectionsService {
 	/**
 	 * Create multiple new collections
 	 */
-	async createMany(payloads: RawCollection[], opts?: MutationOptions): Promise<string[]> {
+	async createMany(payloads: RawCollection[], opts?: MutationOptionsWithIndex): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
 		try {
@@ -254,6 +254,7 @@ export class CollectionsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
+						tryNonBlockingIndexing: Boolean(opts?.tryNonBlockingIndexing),
 					});
 
 					collectionNames.push(name);

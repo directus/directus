@@ -60,6 +60,10 @@ export type MutationOptions = {
 	onRequireUserIntegrityCheck?: ((flags: UserIntegrityCheckFlag) => void) | undefined;
 };
 
+export type MutationOptionsWithIndex = MutationOptions & {
+	tryNonBlockingIndexing?: boolean;
+};
+
 export type ActionEventParams = {
 	event: string | string[];
 	meta: Record<string, any>;

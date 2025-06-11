@@ -23,7 +23,7 @@ import emitter from '../emitter.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions, MutationOptionsWithIndex } from '../types/index.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 import getLocalType from '../utils/get-local-type.js';
@@ -356,7 +356,7 @@ export class FieldsService {
 		collection: string,
 		field: Partial<Field> & { field: string; type: Type | null },
 		table?: Knex.CreateTableBuilder, // allows collection creation to
-		opts?: MutationOptions & { tryNonBlockingIndexing?: boolean },
+		opts?: MutationOptionsWithIndex,
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -487,7 +487,7 @@ export class FieldsService {
 	async updateField(
 		collection: string,
 		field: RawField,
-		opts?: MutationOptions & { tryNonBlockingIndexing?: boolean },
+		opts?: MutationOptionsWithIndex,
 	): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
@@ -634,7 +634,7 @@ export class FieldsService {
 	async updateFields(
 		collection: string,
 		fields: RawField[],
-		opts?: MutationOptions & { tryNonBlockingIndexing?: boolean },
+		opts?: MutationOptionsWithIndex,
 	): Promise<string[]> {
 		const nestedActionEvents: ActionEventParams[] = [];
 
