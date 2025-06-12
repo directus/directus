@@ -1,5 +1,5 @@
 ---
-'@directus/sdk': patch
+'@directus/sdk': major
 ---
 
-Added custom email key support to sdk login methods
+Replaced email and password parameters with a payload that supports both regular and LDAP login. Improved parameter consistency between refresh and logout commands. Allowed overriding mode in refresh and logout commands to be inline with login.
