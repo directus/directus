@@ -49,6 +49,7 @@ export class UsersService extends ItemsService {
 			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
+				value: '[' + String(duplicates) + ']',
 			});
 		}
 
@@ -67,6 +68,7 @@ export class UsersService extends ItemsService {
 			throw new RecordNotUniqueError({
 				collection: 'directus_users',
 				field: 'email',
+				value: '[' + String(emails) + ']',
 			});
 		}
 	}
@@ -255,6 +257,7 @@ export class UsersService extends ItemsService {
 					throw new RecordNotUniqueError({
 						collection: 'directus_users',
 						field: 'email',
+						value: data['email'],
 					});
 				}
 
