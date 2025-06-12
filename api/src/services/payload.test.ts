@@ -165,6 +165,28 @@ describe('Integration Tests', () => {
 					]);
 				});
 
+				test('with unpadded values', () => {
+					const result = service.processDates(
+						fieldEntries,
+						[
+							{
+								date_field: new Date(1, 1, 3).setFullYear(1),
+								datetime_field: new Date(1, 1, 3, 4, 5, 6).setFullYear(1),
+								timestamp_field: new Date(1, 1, 3, 4, 5, 6, 7).setFullYear(1),
+							},
+						],
+						'read',
+					);
+
+					expect(result).toMatchObject([
+						{
+							date_field: '0001-02-03',
+							datetime_field: '0001-02-03T04:05:06',
+							timestamp_field: new Date(new Date(1, 1, 3, 4, 5, 6, 7).setFullYear(1)).toISOString(),
+						},
+					]);
+				});
+
 				test('with typical values', () => {
 					const result = service.processDates(
 						fieldEntries,

@@ -157,6 +157,8 @@ function toggleNotification(id: string) {
 }
 
 async function toggleArchive() {
+	if (selection.value.length === 0) return;
+
 	await api.patch('/notifications', {
 		keys: selection.value,
 		data: {
@@ -205,6 +207,7 @@ function clearFilters() {
 		:title="t('notifications')"
 		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
+		@apply="toggleArchive"
 	>
 		<template #actions:prepend>
 			<transition name="fade">
@@ -216,7 +219,13 @@ function clearFilters() {
 
 		<template #actions>
 			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
-			<v-dialog v-model="confirmDelete" :disabled="selection.length === 0" @esc="confirmDelete = false">
+
+			<v-dialog
+				v-model="confirmDelete"
+				:disabled="selection.length === 0"
+				@esc="confirmDelete = false"
+				@apply="deleteSelected"
+			>
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="t('delete_label')"
@@ -244,6 +253,7 @@ function clearFilters() {
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
+
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon
@@ -415,10 +425,12 @@ function clearFilters() {
 		.message {
 			width: 100%;
 			margin-top: 8px;
+			-webkit-user-select: text;
 			user-select: text;
 			cursor: auto;
 
 			:deep(*) {
+				-webkit-user-select: text;
 				user-select: text;
 			}
 

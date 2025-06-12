@@ -21,13 +21,17 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 	<div class="form">
 		<div v-if="!isGenerated" class="field half-left">
 			<div class="label type-label">{{ t('readonly') }}</div>
-			<v-checkbox v-model="readonly" :label="t('disabled_editing_value')" block />
+			<v-checkbox v-model="readonly" :label="t('readonly_field_label')" block />
 		</div>
 
 		<div v-if="!isGenerated" class="field half-right">
 			<div class="label type-label">{{ t('required') }}</div>
 			<v-checkbox v-model="required" :label="t('require_value_to_be_set')" block />
 		</div>
+
+		<v-notice v-if="readonly && required" type="warning" class="full no-margin">
+			{{ t('required_readonly_field_warning') }}
+		</v-notice>
 
 		<div class="field half-left">
 			<div class="label type-label">{{ t('hidden') }}</div>
@@ -112,7 +116,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 	--v-icon-color: var(--theme--primary);
 }
 
-.v-notice {
+.v-notice:not(.no-margin) {
 	margin-bottom: 36px;
 }
 </style>

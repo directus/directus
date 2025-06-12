@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
+import { type ApplyShortcut } from '@/components/v-dialog.vue';
 import { useEditsGuard } from '@/composables/use-edits-guard';
 import { usePermissions } from '@/composables/use-permissions';
 import { useShortcut } from '@/composables/use-shortcut';
@@ -16,7 +17,7 @@ import { isSystemCollection } from '@directus/system-data';
 import { Field, PrimaryKey, Relation } from '@directus/types';
 import { getEndpoint } from '@directus/utils';
 import { isEmpty, merge, set } from 'lodash';
-import { computed, ref, toRefs, watch, type Ref } from 'vue';
+import { computed, ref, toRefs, watch, unref, type Ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import OverlayItemContent from './overlay-item-content.vue';
@@ -39,7 +40,7 @@ export interface OverlayItemProps {
 	junctionFieldLocation?: string;
 	selectedFields?: string[] | null;
 	popoverProps?: Record<string, any>;
-	shortcuts?: boolean;
+	applyShortcut?: ApplyShortcut;
 	preventCancelWithEdits?: boolean;
 }
 
@@ -55,6 +56,7 @@ const props = withDefaults(defineProps<OverlayItemProps>(), {
 	disabled: false,
 	relatedPrimaryKey: '+',
 	circularField: null,
+	applyShortcut: 'meta+enter',
 });
 
 const emit = defineEmits<OverlayItemEmits>();
@@ -389,16 +391,17 @@ function useActions() {
 		},
 	});
 
-	useShortcut('meta+s', (_event, cancelNext) => {
-		if (!props.shortcuts || !internalActive.value) return;
+	useShortcut(props.applyShortcut, (_event, cancelNext) => {
+		// Note that drawer and modal have existing shortcuts.
+		if (props.overlay !== 'popover' || !internalActive.value) return;
 
 		save();
 		cancelNext();
 	});
 
 	useShortcut('escape', (_event, cancelNext) => {
-		// Note that drawer and modal have an existing shortcut for canceling with the Escape key.
-		if (props.overlay !== 'popover' || !props.shortcuts || !internalActive.value) return;
+		// Note that drawer and modal have existing shortcuts.
+		if (props.overlay !== 'popover' || !internalActive.value) return;
 
 		cancel();
 		cancelNext();
@@ -409,10 +412,8 @@ function useActions() {
 	function getTooltip(shortcutType: 'save' | 'cancel', label: string | null = null) {
 		let shortcut = null;
 
-		if (props.shortcuts) {
-			if (shortcutType === 'save') shortcut = translateShortcut(['meta', 's']);
-			else shortcut = translateShortcut(['esc']);
-		}
+		if (shortcutType === 'save') shortcut = translateShortcut(props.applyShortcut.split('+'));
+		else shortcut = translateShortcut(['esc']);
 
 		if (label && shortcut) return `${label} (${shortcut})`;
 		if (label) return label;
@@ -421,19 +422,38 @@ function useActions() {
 		return null;
 	}
 
+	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
+		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value);
+	}
+
 	function save() {
-		const editsToValidate = props.junctionField ? internalEdits.value[props.junctionField] : internalEdits.value;
-		const fieldsToValidate = props.junctionField ? relatedCollectionFields.value : fieldsWithoutCircular.value;
-		const defaultValues = getDefaultValuesFromFields(fieldsToValidate);
-		const existingValues = props.junctionField ? initialValues?.value?.[props.junctionField] : initialValues?.value;
+		if (!isSavable.value) return;
 
-		const errors = validateItem(
-			merge({}, defaultValues.value, existingValues, editsToValidate),
-			fieldsToValidate,
-			isNew.value,
-		);
+		const errors = validateForm({
+			defaultValues: unref(getDefaultValuesFromFields(fieldsWithoutCircular.value)),
+			existingValues: initialValues?.value,
+			editsToValidate: internalEdits.value,
+			fieldsToValidate: fieldsWithoutCircular.value,
+		});
 
-		if (nestedValidationErrors.value?.length) errors.push(...nestedValidationErrors.value);
+		let junctionValues = null;
+
+		if (props.junctionField) {
+			junctionValues = {
+				defaultValues: unref(getDefaultValuesFromFields(relatedCollectionFields.value)),
+				existingValues: initialValues?.value?.[props.junctionField],
+				editsToValidate: internalEdits.value[props.junctionField],
+				fieldsToValidate: relatedCollectionFields.value,
+			};
+
+			const junctionErrors = validateForm(junctionValues);
+
+			errors.push(...junctionErrors);
+		}
+
+		if (nestedValidationErrors.value?.length) {
+			errors.push(...nestedValidationErrors.value);
+		}
 
 		if (errors.length > 0) {
 			validationErrors.value = errors;
@@ -442,15 +462,15 @@ function useActions() {
 			validationErrors.value = [];
 		}
 
-		if (props.junctionField && Object.values(defaultValues.value).some((value) => value !== null)) {
-			internalEdits.value[props.junctionField] = internalEdits.value[props.junctionField] ?? {};
+		if (props.junctionField && Object.values(junctionValues?.defaultValues ?? {}).some((value) => value !== null)) {
+			internalEdits.value[props.junctionField] = junctionValues?.editsToValidate ?? {};
 		}
 
 		if (props.junctionField && props.relatedPrimaryKey !== '+' && relatedPrimaryKeyField.value) {
 			set(internalEdits.value, [props.junctionField, relatedPrimaryKeyField.value.field], props.relatedPrimaryKey);
 		}
 
-		if (props.primaryKey && props.primaryKey !== '+' && primaryKeyField.value) {
+		if (!isEmpty(internalEdits.value) && props.primaryKey && props.primaryKey !== '+' && primaryKeyField.value) {
 			internalEdits.value[primaryKeyField.value.field] = props.primaryKey;
 		}
 
@@ -502,6 +522,8 @@ function popoverClickOutsideMiddleware(e: Event) {
 		:title="title"
 		:icon="collectionInfo?.meta?.icon ?? undefined"
 		persistent
+		:apply-shortcut
+		@apply="save"
 		@cancel="cancel"
 	>
 		<template v-if="template !== null && templateData && primaryKey !== '+'" #title>
@@ -531,7 +553,15 @@ function popoverClickOutsideMiddleware(e: Event) {
 		/>
 	</v-drawer>
 
-	<v-dialog v-else-if="overlay === 'modal'" v-model="overlayActive" persistent keep-behind @esc="cancel">
+	<v-dialog
+		v-else-if="overlay === 'modal'"
+		v-model="overlayActive"
+		persistent
+		keep-behind
+		:apply-shortcut
+		@apply="save"
+		@esc="cancel"
+	>
 		<v-card class="modal-card">
 			<v-card-title>
 				<v-icon :name="collectionInfo?.meta?.icon ?? undefined" class="modal-title-icon" />
@@ -601,7 +631,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</div>
 	</v-menu>
 
-	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+	<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 		<v-card>
 			<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 			<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -614,7 +644,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		</v-card>
 	</v-dialog>
 
-	<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+	<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="discardAndCancel">
 		<v-card>
 			<v-card-title>{{ t('discard_all_changes') }}</v-card-title>
 			<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
