@@ -11,7 +11,7 @@ import { fieldToFilter, getComparator, getField } from './utils';
 import { useCollection } from '@directus/composables';
 
 // Workaround because you cannot cast directly to union types inside
-// the template block without running into esling/prettier issues
+// the template block without running into eslint/prettier issues
 type ScalarValue = string | boolean | number | null;
 
 const props = defineProps<{
