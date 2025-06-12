@@ -55,7 +55,7 @@
 		"rollup-plugin-esbuild": "6.2.1",
 		"rollup-plugin-styles": "4.0.0",
 		"semver": "7.7.1",
-		"vite": "4.5.9",
+		"vite": "4.5.14",
 		"vue": "3.5.13"
 	},
 	"devDependencies": {
