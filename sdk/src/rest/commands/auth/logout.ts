@@ -15,7 +15,7 @@ export const logout =
 			mode: options.mode ?? 'cookie',
 		};
 
-		if (options.refresh_token) {
+		if (logoutData.mode === 'json' && options.refresh_token) {
 			logoutData['refresh_token'] = options.refresh_token;
 		}
 

@@ -15,7 +15,7 @@ export const refresh =
 			mode: options.mode ?? 'cookie',
 		};
 
-		if (options.refresh_token) {
+		if (refreshData.mode === 'json' && options.refresh_token) {
 			refreshData['refresh_token'] = options.refresh_token;
 		}
 
