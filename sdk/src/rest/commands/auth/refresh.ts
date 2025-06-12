@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @returns The new access and refresh tokens for the session.
  */
 export const refresh =
-	<Schema>(options: RefreshOptions): RestCommand<AuthenticationData, Schema> =>
+	<Schema>(options: RefreshOptions = {}): RestCommand<AuthenticationData, Schema> =>
 	() => {
 		const refreshData: RefreshOptions = {
 			mode: options.mode ?? 'cookie',

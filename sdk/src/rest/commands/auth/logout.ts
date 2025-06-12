@@ -9,7 +9,7 @@ import type { RestCommand } from '../../types.js';
  * @returns Empty body.
  */
 export const logout =
-	<Schema>(options: LogoutOptions): RestCommand<void, Schema> =>
+	<Schema>(options: LogoutOptions = {}): RestCommand<void, Schema> =>
 	() => {
 		const logoutData: LogoutOptions = {
 			mode: options.mode ?? 'cookie',
