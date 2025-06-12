@@ -1,8 +1,8 @@
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
+export type LoginPayload = { email: string; password: string } | { identifier: string; password: string };
+
 export type LoginOptions = {
-	/** Use a custom email key in the auth data payload. Defaults to email */
-	emailKey?: string;
 	/** The user's one-time-password (if MFA is enabled). */
 	otp?: string;
 	/** Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie. One of `json`, `cookie` or `session`. Defaults to `cookie`. */
@@ -31,7 +31,7 @@ export interface AuthenticationConfig {
 }
 
 export interface AuthenticationClient<_Schema> {
-	login(email: string, password: string, options?: LoginOptions): Promise<AuthenticationData>;
+	login(payload: LoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
 	refresh(): Promise<AuthenticationData>;
 	logout(): Promise<void>;
 

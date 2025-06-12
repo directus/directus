@@ -1,4 +1,4 @@
-import type { AuthenticationData, LoginOptions } from '../../../index.js';
+import type { AuthenticationData, LoginOptions, LoginPayload } from '../../../index.js';
 import type { RestCommand } from '../../types.js';
 import { getAuthEndpoint } from '../../utils/get-auth-endpoint.js';
 
@@ -12,10 +12,10 @@ import { getAuthEndpoint } from '../../utils/get-auth-endpoint.js';
  * @returns Authentication data.
  */
 export const login =
-	<Schema>(email: string, password: string, options: LoginOptions = {}): RestCommand<AuthenticationData, Schema> =>
+	<Schema>(payload: LoginPayload, options: LoginOptions = {}): RestCommand<AuthenticationData, Schema> =>
 	() => {
 		const path = getAuthEndpoint(options.provider);
-		const authData: Record<string, string> = { [options.emailKey ?? 'email']: email, password };
+		const authData: Record<string, string> = payload;
 		if ('otp' in options) authData['otp'] = options.otp;
 		authData['mode'] = options.mode ?? 'cookie';
 		return { path, method: 'POST', body: JSON.stringify(authData) };

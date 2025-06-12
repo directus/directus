@@ -8,6 +8,7 @@ import type {
 	AuthenticationData,
 	AuthenticationMode,
 	LoginOptions,
+	LoginPayload,
 } from './types.js';
 import { memoryStorage } from './utils/memory-storage.js';
 
@@ -121,10 +122,10 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 
 		return {
 			refresh,
-			async login(email: string, password: string, options: LoginOptions = {}) {
+			async login(payload: LoginPayload, options: LoginOptions = {}) {
 				await resetStorage();
 
-				const authData: Record<string, string> = { [options.emailKey ?? 'email']: email, password };
+				const authData: Record<string, string> = payload;
 				if ('otp' in options) authData['otp'] = options.otp;
 				authData['mode'] = options.mode ?? mode;
 
