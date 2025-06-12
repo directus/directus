@@ -252,7 +252,7 @@ function useVariableInput() {
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
-				:value="(value as string | null)"
+				:value="(value as string | boolean | number | null)"
 				@input="value = $event"
 			/>
 		</template>
@@ -278,7 +278,7 @@ function useVariableInput() {
 				is="interface-input"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
-				:value="(value as string | null)"
+				:value="(value as string | boolean | number | null)"
 				@input="value = $event"
 			/>
 		</template>
