@@ -228,7 +228,7 @@ function sanitizeMeta(rawMeta: any) {
 }
 
 function sanitizeBacklink(rawBacklink: unknown) {
-	return !(rawBacklink === 'false');
+	return rawBacklink !== false && rawBacklink !== 'false';
 }
 
 async function sanitizeDeep(deep: Record<string, any>, schema: SchemaOverview, accountability?: Accountability | null) {
