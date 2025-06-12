@@ -10,6 +10,10 @@ import InputComponent from './input-component.vue';
 import { fieldToFilter, getComparator, getField } from './utils';
 import { useCollection } from '@directus/composables';
 
+// Workaround because you cannot cast directly to union types inside
+// the template block without running into esling/prettier issues
+type ScalarValue = string | boolean | number | null;
+
 const props = defineProps<{
 	field: FieldFilter;
 	collection: string;
@@ -252,7 +256,7 @@ function useVariableInput() {
 				:is="interfaceType"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
-				:value="value as string | boolean | number | null"
+				:value="value as ScalarValue"
 				@input="value = $event"
 			/>
 		</template>
@@ -278,7 +282,7 @@ function useVariableInput() {
 				is="interface-input"
 				:choices="choices"
 				:type="fieldInfo?.type ?? 'unknown'"
-				:value="value as string | boolean | number | null"
+				:value="value as ScalarValue"
 				@input="value = $event"
 			/>
 		</template>
