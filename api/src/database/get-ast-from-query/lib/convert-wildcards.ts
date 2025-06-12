@@ -74,8 +74,13 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 
 			if (allowedFields.includes('*')) {
 				relationalFields = context.schema.relations.reduce<string[]>((acc, relation) => {
-					if (relation.collection === options.collection) acc.push(relation.field);
-					if (relation.related_collection === options.collection) acc.push(relation.meta!.one_field!);
+					if (relation.collection === options.collection && !acc.includes(relation.field)) {
+						acc.push(relation.field);
+					}
+
+					if (relation.related_collection === options.collection && !acc.includes(relation.meta!.one_field!)) {
+						acc.push(relation.meta!.one_field!);
+					}
 
 					return acc;
 				}, []);
