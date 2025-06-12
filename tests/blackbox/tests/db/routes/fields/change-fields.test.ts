@@ -396,7 +396,7 @@ describe.each(PRIMARY_KEY_TYPES)('/fields', (pkType) => {
 
 						// Action
 						const response = await request(getUrl(vendor))
-							.patch(`/fields/${systemUsersCollection}/${fieldName}?concurrent`)
+							.patch(`/fields/${systemUsersCollection}/${fieldName}?concurrentIndexCreation`)
 							.send({
 								collection: systemUsersCollection,
 								field: fieldName,
