@@ -11,6 +11,16 @@ export type LoginOptions = {
 	provider?: string;
 };
 
+export type LogoutOptions = {
+	refresh_token?: string;
+	mode?: AuthenticationMode;
+};
+
+export type RefreshOptions = {
+	refresh_token?: string;
+	mode?: AuthenticationMode;
+};
+
 export interface AuthenticationData {
 	access_token: string | null;
 	refresh_token: string | null;
@@ -32,8 +42,8 @@ export interface AuthenticationConfig {
 
 export interface AuthenticationClient<_Schema> {
 	login(payload: LoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
-	refresh(): Promise<AuthenticationData>;
-	logout(): Promise<void>;
+	refresh(options?: RefreshOptions): Promise<AuthenticationData>;
+	logout(options?: LogoutOptions): Promise<void>;
 
 	stopRefreshing(): void;
 
