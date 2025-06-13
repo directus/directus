@@ -53,7 +53,7 @@ jobs:
           - maria
           - mssql
           - oracle
-          # - cockroachdb
+          - cockroachdb
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

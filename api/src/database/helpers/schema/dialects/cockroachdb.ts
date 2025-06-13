@@ -3,6 +3,8 @@ import { type Knex } from 'knex';
 import type { Options, SortRecord } from '../types.js';
 import { SchemaHelper } from '../types.js';
 import { useEnv } from '@directus/env';
+import { getSchemaInspector } from '../../../index.js';
+import assert from 'node:assert';
 
 const env = useEnv();
 
@@ -60,5 +62,15 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 
 			groupByFields.push(...sortRecords.map(({ alias }) => alias));
 		}
+	}
+
+	override async changePrimaryKey(table: string, column: string): Promise<void> {
+		const oldPrimary = await getSchemaInspector(this.knex).primary(table);
+		assert(oldPrimary, 'CockroachDB must have a primary key');
+		await this.knex.raw(`ALTER TABLE ?? ALTER PRIMARY KEY USING COLUMNS (??)`, [table, column]);
+
+		this.knex.schema.alterTable(table, (table) => {
+			table.dropUnique([oldPrimary]);
+		});
 	}
 }
