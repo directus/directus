@@ -121,6 +121,7 @@ fields:
   - field: modified_on
     interface: datetime
     special:
+      - date-created
       - date-updated
     width: half
     display: datetime
