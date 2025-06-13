@@ -27,6 +27,8 @@ const { info } = storeToRefs(useServerStore());
 				<div class="left">
 					<div class="message-copy">
 						<v-card-title>{{ t('bsl_banner.welcome_to_directus') }}</v-card-title>
+						<p>{{ t('bsl_banner.directus_free_use', { nbsp: '&nbsp;' }) }}</p>
+						<p>{{ t('bsl_banner.organization_threshold') }}</p>
 						<p>
 							{{ t('bsl_banner.license_agreement') }}
 							<a
@@ -43,8 +45,6 @@ const { info } = storeToRefs(useServerStore());
 								{{ t('bsl_banner.privacy_policy') }}
 							</a>
 						</p>
-						<p>{{ t('bsl_banner.directus_free_use') }}</p>
-						<p>{{ t('bsl_banner.license_required') }}</p>
 					</div>
 
 					<v-card-actions>
@@ -112,14 +112,14 @@ const { info } = storeToRefs(useServerStore());
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 28px;
+	text-wrap: pretty;
 }
 
 .v-card .left .message-copy {
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
-	max-width: 510px;
-	text-wrap: balance;
+	max-width: 435px;
 }
 
 .v-card .left .v-card-actions {
