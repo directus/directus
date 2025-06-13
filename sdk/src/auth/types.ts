@@ -1,6 +1,8 @@
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
-export type LoginPayload = { email: string; password: string } | { identifier: string; password: string };
+export type LocalLoginPayload = { email: string; password: string };
+export type LDAPLoginPayload = { identifier: string; password: string };
+export type LoginPayload = LocalLoginPayload | LDAPLoginPayload;
 
 export type LoginOptions = {
 	/** The user's one-time-password (if MFA is enabled). */
@@ -41,7 +43,8 @@ export interface AuthenticationConfig {
 }
 
 export interface AuthenticationClient<_Schema> {
-	login(payload: LoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
+	login(payload: LocalLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
+	login(payload: LDAPLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
 	refresh(options?: RefreshOptions): Promise<AuthenticationData>;
 	logout(options?: LogoutOptions): Promise<void>;
 

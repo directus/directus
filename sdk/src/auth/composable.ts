@@ -7,6 +7,8 @@ import type {
 	AuthenticationConfig,
 	AuthenticationData,
 	AuthenticationMode,
+	LDAPLoginPayload,
+	LocalLoginPayload,
 	LoginOptions,
 	LoginPayload,
 	LogoutOptions,
@@ -122,35 +124,39 @@ export const authentication = (mode: AuthenticationMode = 'cookie', config: Part
 			return refreshPromise;
 		};
 
+		function login(payload: LocalLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
+		function login(payload: LDAPLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
+		async function login(payload: LoginPayload, options: LoginOptions = {}) {
+			await resetStorage();
+
+			const authData: Record<string, string> = payload;
+			if ('otp' in options) authData['otp'] = options.otp;
+			authData['mode'] = options.mode ?? mode;
+
+			const path = getAuthEndpoint(options.provider);
+			const requestUrl = getRequestUrl(client.url, path);
+
+			const fetchOptions: RequestInit = {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(authData),
+			};
+
+			if ('credentials' in authConfig) {
+				fetchOptions.credentials = authConfig.credentials;
+			}
+
+			const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
+
+			await setCredentials(data);
+			return data;
+		}
+
 		return {
 			refresh,
-			async login(payload: LoginPayload, options: LoginOptions = {}) {
-				await resetStorage();
-
-				const authData: Record<string, string> = payload;
-				if ('otp' in options) authData['otp'] = options.otp;
-				authData['mode'] = options.mode ?? mode;
-
-				const path = getAuthEndpoint(options.provider);
-				const requestUrl = getRequestUrl(client.url, path);
-
-				const fetchOptions: RequestInit = {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify(authData),
-				};
-
-				if ('credentials' in authConfig) {
-					fetchOptions.credentials = authConfig.credentials;
-				}
-
-				const data = await request<AuthenticationData>(requestUrl.toString(), fetchOptions, client.globals.fetch);
-
-				await setCredentials(data);
-				return data;
-			},
+			login,
 			async logout(options: Omit<LogoutOptions, 'refresh_token'> = {}) {
 				const authData = await storage.get();
 
