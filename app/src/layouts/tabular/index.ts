@@ -209,15 +209,24 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 
 			watch(
 				() => layoutOptions.value,
-				() => {
-					localWidths.value = {};
+				(newOptions, oldOptions) => {
+					if (newOptions?.widths !== oldOptions?.widths) {
+						// Merge existing localWidths with layout options widths
+						localWidths.value = {
+							...localWidths.value,
+							...(newOptions?.widths || {}),
+						};
+					}
 				},
 			);
 
 			const saveWidthsToLayoutOptions = debounce(() => {
-				layoutOptions.value = Object.assign({}, layoutOptions.value, {
-					widths: localWidths.value,
-				});
+				// Only update if there are changes
+				if (Object.keys(localWidths.value).length > 0) {
+					layoutOptions.value = Object.assign({}, layoutOptions.value, {
+						widths: localWidths.value,
+					});
+				}
 			}, 350);
 
 			const activeFields = computed<(Field & { key: string })[]>({
