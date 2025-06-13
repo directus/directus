@@ -88,4 +88,9 @@ export interface TelemetryReport {
 	 * Total size of the files in bytes
 	 */
 	files_size_total: number;
+
+	/**
+	 * Unique project identifier
+	 */
+	project_id?: string | null;
 }
