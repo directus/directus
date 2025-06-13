@@ -13,18 +13,6 @@ these to a minimum, but rest assured we only make them with good reason.
 
 Starting with Directus 10.0, here is a list of potential breaking changes with remedial action you may need to take.
 
-## Version 11.x.x
-
-#### SDK login function now uses a payload parameter for email and password
-
-The SDK's `login` functions now takes a `payload` object that accepts `email`/`password` or `identifier`/`password`
-property combos to support both `local` and `LDAP` provider login.
-
-#### SDK refresh and logout functions now use an options parameter for mode and refresh_token values
-
-The SDK's `refresh` and `logout` functions now take an `options` object that accepts the optional `mode` and
-`refresh_token` values
-
 ## Version 11.4.0
 
 ### Node.js 22
