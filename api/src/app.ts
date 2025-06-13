@@ -171,6 +171,12 @@ export default async function createApp(): Promise<express.Application> {
 		),
 	);
 
+	if (env['CROSS_ORIGIN_OPENER_POLICY_ENABLED']) {
+		app.use(helmet.crossOriginOpenerPolicy({
+			policy: (env['CROSS_ORIGIN_OPENER_POLICY'] ?? "same-origin") as "same-origin" | "same-origin-allow-popups" | "unsafe-none",
+		}));
+	}
+
 	if (env['HSTS_ENABLED']) {
 		app.use(helmet.hsts(getConfigFromEnv('HSTS_', { omitPrefix: 'HSTS_ENABLED' })));
 	}

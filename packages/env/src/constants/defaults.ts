@@ -175,4 +175,7 @@ export const DEFAULTS = {
 	METRICS_SCHEDULE: '*/1 * * * *',
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
+
+	CROSS_ORIGIN_OPENER_POLICY_ENABLED: true,
+	CROSS_ORIGIN_OPENER_POLICY: 'same-origin',
 } as const;
