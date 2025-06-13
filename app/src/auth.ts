@@ -51,7 +51,7 @@ export async function login({ credentials, provider, share }: LoginParams): Prom
 		const loginOptions: LoginOptions = { otp, ...(provider !== DEFAULT_AUTH_PROVIDER && { provider }) };
 
 		if (email) {
-			response = await sdk.login(email, password, loginOptions);
+			response = await sdk.login({ email, password }, loginOptions);
 		} else if (identifier) {
 			const login =
 				<Schema extends object>(): RestCommand<AuthenticationData, Schema> =>
