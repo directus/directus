@@ -214,7 +214,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 						// Merge existing localWidths with layout options widths
 						localWidths.value = {
 							...localWidths.value,
-							...(newOptions?.widths || {})
+							...(newOptions?.widths || {}),
 						};
 					}
 				},
