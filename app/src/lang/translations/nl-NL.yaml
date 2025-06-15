@@ -10,21 +10,21 @@ archived: Gearchiveerd
 modules: Modules
 module_bar: Modulebalk
 logs: Logboeken
-reset_width: Reset breedte
+reset_width: Breedte herstellen
 tile_size: Tegelgrootte
-edit_field: Veld Bewerken
+edit_field: Veld bewerken
 conditions: Voorwaarden
 location: Locatie
 collection_names_are_case_sensitive: Collectienamen zijn hoofdlettergevoelig
-condition_rules: Voorwaarde Regels
+condition_rules: Voorwaarden
 input: Invoer
 maps: Kaarten
-switch_user: Verander gebruiker
-item_creation: Item Aanmaken
-item_revision: Item Revisie
+switch_user: Wissel gebruiker
+item_creation: Item aanmaken
+item_revision: Itemrevisie
 enter_a_name: Voer een naam in...
-duplicate_field: Dupliceer Veld
-half_width: Halve Breedte
+duplicate_field: Dupliceer veld
+half_width: Halve breedte
 full_width: Volledige breedte
 group: Groep
 export_items: Exporteer items
@@ -35,61 +35,61 @@ dataset_too_large_currently_showing_n_items: Gegevensset is te groot. Alleen de 
 modifier: Aanpasser
 extension_interface: Interface
 extension_display: Toon
-extension_layout: Lay-out
+extension_layout: Layout
 extension_panel: Paneel
 extension_hook: Hook
 extension_modules: Modules
 enable: Inschakelen
 custom: Aangepast
 hook: Hook
-fill_width: Vul Breedte
-field_name_translations: Veld-naam Vertalingen
+fill_width: Vul breedte
+field_name_translations: Veldnaamvertalingen
 enter_password_to_enable_tfa: Voer je wachtwoord in om tweefactorauthenticatie in te schakelen
 add_field: Veld toevoegen
-role_name: Rol Naam
+role_name: Rolnaam
 branch: Aftakking
 leaf: Blad
 indeterminate: Onbepaald
 edit_collection: Collectie bewerken
 exclusive: Exclusief
 children: Onderliggende
-db_only_click_to_configure: 'Alleen database: Klik om te configureren'
+db_only_click_to_configure: 'Alleen database: klik om te configureren'
 show_active_items: Toon actieve items
-show_archived_items: Toon Gearchiveerde Items
+show_archived_items: Toon gearchiveerde Items
 show_all_items: Toon alle items
 edited: Waarde bewerkt
 required: Vereist
 required_for_app_access: Vereist voor toegang tot de app
 requires_value: Vereist waarde
-create_preset: Voorkeur Aanmaken
+create_preset: Voorkeur aanmaken
 create_panel: Paneel maken
 create_role: Maak rol
-create_user: Gebruiker Aanmaken
+create_user: Gebruiker aanmaken
 message: Bericht
 delete_panel: Paneel verwijderen
-create_webhook: Webhook Aanmaken
+create_webhook: Webhook aanmaken
 create_custom_translation: Aangepaste vertaling aanmaken
 edit_custom_translation: Aangepaste vertaling bewerken
 no_custom_translations: Geen aangepaste vertalingen
 no_custom_translations_copy: Er zijn nog geen aangepaste vertalingen.
-invite_users: Gebruikers Uitnodigen
+invite_users: Gebruikers uitnodigen
 invite: Nodig uit
 email_already_invited: E-mailadres "{email}" is al uitgenodigd
 subject: Onderwerp
 inbox: Inbox
 emails: E-mails
-connection_excellent: Uitstekende Verbinding
-connection_good: Goede Verbinding
-connection_fair: Matige Verbinding
-connection_poor: Slechte Verbinding
+connection_excellent: Uitstekende verbinding
+connection_good: Goede verbinding
+connection_fair: Matige verbinding
+connection_poor: Slechte verbinding
 primary: Primair
 rename_folder: Mapnaam wijzigen
-delete_folder: Verwijder Map
+delete_folder: Verwijder map
 prefix: Voorvoegsel
 suffix: Achtervoegsel
 keep: Behouden
 version: Versie
-version_key: Versie sleutel
+version_key: Versiesleutel
 version_name: Versienaam
 main_version: Hoofd
 switch_version: Versie wisselen
@@ -179,16 +179,16 @@ field_standard: Standaard
 field_presentation: Presentatie & Aliasen
 field_file: Enkel bestand
 field_files: Meerdere bestanden
-field_m2o: M2O Relatie
-field_m2a: M2A Relatie
-field_o2m: O2M Relatie
-field_m2m: M2M Relatie
+field_m2o: M2O-relatie
+field_m2a: M2A-relatie
+field_o2m: O2M-relatie
+field_m2m: M2M-relatie
 field_translations: Vertalingen
 field_group: Veld-Groep
-item_permissions: Item Permissies
-field_permissions: Veld Permissies
-field_validation: Veld Validatie
-field_presets: Veld Voorkeuren
+item_permissions: Itempermissies
+field_permissions: Veldpermissies
+field_validation: Veldvalidatie
+field_presets: Veldvoorkeuren
 permissions_for_role: 'Items die de rol "{role}" kan {action}.'
 fields_for_role: 'Velden die de rol "{role}" kan {action}.'
 validation_for_role: 'Veld {action} regels die de rol "{role}" moet gehoorzamen.'
@@ -203,19 +203,19 @@ junction_field_location: Verbindingsvelden Locatie
 top: Bovenaan
 bottom: Onderaan
 hide_field: Veld verbergen
-hide_field_on_detail: Veld Verbergen
-show_field_on_detail: Veld Tonen
-delete_field: Veld Verwijderen
+hide_field_on_detail: Veld verbergen
+show_field_on_detail: Veld tonen
+delete_field: Veld verwijderen
 fields_and_layout: Velden & Layout
 field_create_success: 'Veld aangemaakt: "{field}"'
 field_update_success: 'Veld bijgewerkt: "{field}"'
 duplicate_where_to: Waar wil je dit veld naar dupliceren?
 language: Taal
 language_placeholder: Kies een taal...
-aggregate_function: Geaggregeerde Functie
-aggregate_precision: Geaggregeerde Functie
-group_aggregation: Groep Aggregatie
-group_precision: Groep Precisie
+aggregate_function: Geaggregeerde functie
+aggregate_precision: Geaggregeerde functie
+group_aggregation: Groepaggregatie
+group_precision: Groepprecisie
 global: Wereldwijd
 admins_have_all_permissions: Admins hebben alle permissies
 camera: Camera
@@ -334,19 +334,19 @@ dismiss: Negeren
 toggle_raw_editor: Schakel Onbewerkte Bewerker
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Ruwe waarde
-copy_raw_value: Kopieer Onbewerkte Waarde
+copy_raw_value: Kopieer ruwe waarde
 copy_raw_value_success: Gekopieerd
 copy_raw_value_fail: Kopiëren mislukt
-paste_raw_value: Plak Onbewerkte Waarde
+paste_raw_value: Plak ruwe waarde
 paste_raw_value_success: Geplakt
 paste_raw_value_fail: Plakken mislukt
-view_raw_value: Bekijk Onbewerkte Waarde
-edit_raw_value: Bewerk Ruwe Waarde
+view_raw_value: Bekijk ruwe waarde
+edit_raw_value: Bewerk ruwe waarde
 enter_raw_value: Ruwe waarde invoeren...
 clear_value: Waarde wissen
-clear_changes: Verwijder Veranderingen
-clear_items: Verwijder Items
-reset_to_default: Herstel naar Standaard
+clear_changes: Verwijder veranderingen
+clear_items: Verwijder items
+reset_to_default: Herstel naar standaard
 undo_changes: Ongedaan maken
 notifications: Notificaties
 archive_all: Alles archiveren
@@ -433,6 +433,11 @@ hours: Uren
 month: Maand
 year: Jaar
 select_all: Alles selecteren
+permissionsLevel:
+  all: Volledige {action}-toegang
+  partial: Gedeeltelijke {action}-toegang
+  custom: Gedeeltelijke {action}-toegang
+  none: Geen {action}-toegang
 months:
   january: Januari
   february: Februari
@@ -682,7 +687,7 @@ show_hidden_collections: Verborgen collecties tonen
 hide_hidden_collections: Verborgen collecties verbergen
 show_header: Toon kop
 unmanaged_collections: Niet geconfigureerde Collecties
-system_collections: Systeem Collecties
+system_collections: Systeemcollecties
 placeholder: Tijdelijke plaatshouder
 icon_left: Icoon links
 icon_right: Icoon rechts
@@ -960,6 +965,10 @@ settings_webhooks: Webhooks
 settings_flows: Flows
 settings_presets: Bladwijzers
 settings_translations: Vertalingen
+settings_system_logs: Systeemlogs
+settings_roles: Gebruikersrollen
+settings_permissions: Toegangsbeleid
+settings_appearance: Uiterlijk
 one_or_more_options_are_missing: Eén of meer opties ontbreken
 scope: Bereik
 actions: Acties
@@ -1150,16 +1159,16 @@ fields:
     role: Rol
     password: Wachtwoord
   directus_fields:
-    collection: Collectie naam
-    icon: Collectie Icoon
+    collection: Collectienaam
+    icon: Collectiepictogram
     note: Notitie
     hidden: Verborgen
     singleton: Singleton
-    translation: Veld-naam Vertalingen
+    translation: Veldnaamvertalingen
     display_template: Sjabloon
   directus_roles:
-    name: Rol Naam
-    icon: Rol Icoon
+    name: Rolnaam
+    icon: Rolpictogram
     description: Beschrijving
     users: Gebruikers in rol
   directus_policies:
@@ -1775,3 +1784,5 @@ fonts:
   black: Zwart
   italic: Cursief
   auto: Automatisch
+marketplace: Marktplaats
+extensions: Extensies
