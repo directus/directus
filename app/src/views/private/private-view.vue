@@ -22,6 +22,8 @@ import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
 import LicenseBanner from './components/license-banner.vue';
 import { useSettingsStore } from '@/stores/settings';
+import SkipMenu from './components/skip-menu.vue';
+
 
 const SIZES = {
 	moduleBarWidth: 60,
@@ -269,6 +271,8 @@ const showDialog = computed(() => userStore.isAdmin && settingsStore.settings?.a
 
 	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
 		<LicenseBanner v-model="showDialog" />
+		<skip-menu section="nav" />
+
 		<aside
 			id="navigation"
 			role="navigation"
@@ -285,14 +289,19 @@ const showDialog = computed(() => userStore.isAdmin && settingsStore.settings?.a
 				@transition-end="onNavTransitionEnd"
 			>
 				<div class="module-nav alt-colors">
+					<skip-menu section="moduleNav" />
+
 					<project-info />
 
-					<div class="module-nav-content">
+					<div id="module-navigation" class="module-nav-content">
 						<slot name="navigation" />
 					</div>
 				</div>
 			</v-resizeable>
 		</aside>
+
+		<skip-menu section="main" />
+
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				ref="headerBarEl"
@@ -327,6 +336,9 @@ const showDialog = computed(() => userStore.isAdmin && settingsStore.settings?.a
 				</div>
 			</div>
 		</div>
+
+		<skip-menu section="sidebar" />
+
 		<aside
 			id="sidebar"
 			ref="sidebarEl"
