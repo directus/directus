@@ -524,8 +524,12 @@ textarea {
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	.v-button + .v-button {
-		margin-left: 2px;
+	.v-button {
+		--focus-ring-offset: var(--focus-ring-offset-invert);
+
+		+ .v-button {
+			margin-left: 2px;
+		}
 	}
 
 	.spacer {
