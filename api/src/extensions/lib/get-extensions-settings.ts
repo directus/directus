@@ -72,13 +72,12 @@ export const getExtensionsSettings = async ({
 		extension: Extension,
 		source: 'local' | 'registry' | 'module',
 	) => {
-		const marketplace = await list({ search: extension.name }).then((r) => r.data.pop());
+		const marketplace = await list({ search: extension.name })
+		const id = marketplace.data[0]?.id || randomUUID()
 
 		if (extension.type === 'bundle') {
-			const bundleId = marketplace?.id || randomUUID();
-
 			newSettings.push({
-				id: bundleId,
+				id,
 				enabled: true,
 				source: source,
 				bundle: null,
@@ -90,13 +89,13 @@ export const getExtensionsSettings = async ({
 					id: randomUUID(),
 					enabled: true,
 					source: source,
-					bundle: bundleId,
+					bundle: id,
 					folder: entry.name,
 				});
 			}
 		} else {
 			newSettings.push({
-				id: marketplace?.id || randomUUID(),
+				id,
 				enabled: true,
 				source: source,
 				bundle: null,
