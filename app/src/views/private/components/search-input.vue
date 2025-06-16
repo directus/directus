@@ -101,7 +101,7 @@ function activate() {
 function toggleFilter() {
 	filterActive.value = !filterActive.value;
 	active.value = true;
-	input.value?.focus();
+	if (!filterActive.value) input.value?.focus();
 }
 
 function clear() {
@@ -161,6 +161,8 @@ function emitValue() {
 				@input="emitValue"
 				@paste="emitValue"
 				@keydown.esc="disable"
+				@focusin="activate"
+				@focusout="filterActive ? undefined : disable()"
 			/>
 			<div class="spacer" />
 			<v-icon
@@ -250,6 +252,10 @@ function emitValue() {
 	.icon-search,
 	.icon-filter {
 		--v-icon-color-hover: var(--theme--primary);
+
+		&:focus-visible {
+			border-radius: 50%;
+		}
 	}
 
 	.icon-search {

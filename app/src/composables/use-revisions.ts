@@ -166,6 +166,9 @@ export function useRevisions(
 				const revisions: RevisionWithTime[] = [];
 
 				for (const revision of value) {
+					const steps = (revision as Revision)?.data?.steps;
+					const lastStepStatus = steps?.[steps.length - 1]?.status;
+
 					revisions.push({
 						...revision,
 						timestampFormatted: `${localizedFormat(
@@ -178,6 +181,7 @@ export function useRevisions(
 						)} (${localizedFormatDistance(parseISO(revision.activity?.timestamp), new Date(), {
 							addSuffix: true,
 						})})`,
+						status: lastStepStatus,
 					});
 				}
 

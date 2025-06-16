@@ -175,7 +175,7 @@ defineExpose({
 		/>
 		<v-menu ref="dateTimeMenu" :close-on-content-click="false" show-arrow placement="bottom-start" seamless full-height>
 			<template #activator="{ toggle }">
-				<v-icon class="preview" name="event" small @click="toggle" />
+				<v-icon class="preview" name="event" small clickable @click="toggle" />
 			</template>
 			<div class="date-input">
 				<v-date-picker

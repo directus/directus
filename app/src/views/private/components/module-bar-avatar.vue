@@ -54,11 +54,11 @@ const userFullName = userStore.fullName ?? undefined;
 			</v-button>
 		</v-badge>
 
-		<v-hover v-slot="{ hover }">
+		<div class="space-bar">
 			<v-dialog v-model="signOutActive" @esc="signOutActive = false">
 				<template #activator="{ on }">
 					<transition name="sign-out">
-						<v-button v-if="hover" v-tooltip.right="t('sign_out')" tile icon x-large class="sign-out" @click="on">
+						<v-button v-tooltip.right="t('sign_out')" tile icon x-large class="sign-out" @click="on">
 							<v-icon name="logout" />
 						</v-button>
 					</transition>
@@ -75,7 +75,7 @@ const userFullName = userStore.fullName ?? undefined;
 				</v-card>
 			</v-dialog>
 
-			<router-link :to="userProfileLink">
+			<router-link :to="userProfileLink" class="avatar-btn">
 				<v-avatar v-tooltip.right="userFullName" tile large :class="{ 'no-avatar': !avatarURL }">
 					<img
 						v-if="avatarURL && !avatarError"
@@ -87,7 +87,7 @@ const userFullName = userStore.fullName ?? undefined;
 					<v-icon v-else name="account_circle" />
 				</v-avatar>
 			</router-link>
-		</v-hover>
+		</div>
 	</div>
 </template>
 
@@ -137,6 +137,20 @@ const userFullName = userStore.fullName ?? undefined;
 		}
 	}
 
+	.avatar-btn:focus-visible {
+		.v-avatar {
+			outline: var(--focus-ring-width) solid var(--focus-ring-color);
+			outline-offset: var(--focus-ring-offset);
+
+			.avatar-image {
+				opacity: 1;
+				/* This adds a second focus ring to the image so we can see the focus better */
+				outline: var(--focus-ring-width) solid var(--theme--navigation--modules--background);
+				outline-offset: var(--focus-ring-offset-invert);
+			}
+		}
+	}
+
 	.notifications-badge {
 		--v-badge-offset-x: 16px;
 		--v-badge-offset-y: 16px;
@@ -160,19 +174,17 @@ const userFullName = userStore.fullName ?? undefined;
 		left: 0;
 		z-index: 2;
 		transition: transform var(--fast) var(--transition);
+		opacity: 0;
+		transform: translateY(100%);
 	}
 
-	.sign-out-enter-active,
-	.sign-out-leave-active {
-		transform: translateY(0%);
-	}
-
-	.sign-out-enter-from,
-	.sign-out-leave-to {
-		transform: translateY(-100%);
-
-		@media (min-width: 960px) {
-			transform: translateY(100%);
+	.space-bar {
+		&:focus-within,
+		&:hover {
+			.sign-out {
+				opacity: 1;
+				transform: translateY(0%);
+			}
 		}
 	}
 }

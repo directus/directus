@@ -11,6 +11,7 @@ const props = defineProps<{
 	interface?: string;
 	collection?: string;
 	disabled?: boolean;
+	isConditionOptions?: boolean;
 	context?: () => ExtensionOptionsContext;
 }>();
 
@@ -101,6 +102,7 @@ const optionsFields = computed(() => {
 			:fields="optionsFields"
 			:disabled="disabled"
 			primary-key="+"
+			:batch-mode="isConditionOptions"
 		/>
 
 		<component
