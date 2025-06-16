@@ -114,7 +114,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 					return !!currentSystemField === false;
 				})
 				.map((afterSystemField) => {
-					const currentSystemField = current.systemFields.find(
+					const currentSystemField = (current.systemFields ?? []).find(
 						(currentSystemField) =>
 							currentSystemField.collection === afterSystemField.collection &&
 							currentSystemField.field === afterSystemField.field,
