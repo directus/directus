@@ -24,7 +24,6 @@ import LicenseBanner from './components/license-banner.vue';
 import { useSettingsStore } from '@/stores/settings';
 import SkipMenu from './components/skip-menu.vue';
 
-
 const SIZES = {
 	moduleBarWidth: 60,
 	minModuleNavWidth: 220,
