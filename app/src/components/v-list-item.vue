@@ -34,6 +34,8 @@ interface Props {
 	nav?: boolean;
 	/** Only matches to a group when both scopes are the same */
 	scope?: string;
+	/** Only matches when used as an activator for a group */
+	activator?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -63,6 +65,7 @@ const { route: linkRoute, isActive, isExactActive } = useLink(props);
 const component = computed(() => {
 	if (props.to) return 'router-link';
 	if (props.href) return 'a';
+	if (!props.activator && props.clickable) return 'button';
 	return 'li';
 });
 
@@ -78,6 +81,13 @@ const additionalProps = computed(() => {
 			href: props.href,
 			target: '_blank',
 			rel: 'noopener noreferrer',
+		};
+	}
+
+	if (component.value === 'button') {
+		return {
+			type: 'button',
+			disabled: props.disabled,
 		};
 	}
 
@@ -161,6 +171,8 @@ function onClick(event: PointerEvent) {
 */
 
 .v-list-item {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
+
 	$this: &;
 
 	position: relative;
@@ -169,6 +181,7 @@ function onClick(event: PointerEvent) {
 	flex-grow: 1;
 	flex-shrink: 1;
 	align-items: center;
+	width: 100%;
 	min-width: none;
 	max-width: none;
 	min-height: var(--v-list-item-min-height, 32px);
@@ -177,6 +190,7 @@ function onClick(event: PointerEvent) {
 	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
 	overflow: hidden;
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
+	text-align: left;
 	text-decoration: none;
 	border-radius: var(--v-list-item-border-radius, var(--theme--border-radius));
 	background-color: var(--v-list-item-background-color, var(--v-list-background-color, transparent));
@@ -199,6 +213,7 @@ function onClick(event: PointerEvent) {
 		cursor: pointer;
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
+		-webkit-user-select: none;
 		user-select: none;
 
 		&:not(.disabled):not(.dense):not(.block):hover {

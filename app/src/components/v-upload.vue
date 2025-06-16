@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import api from '@/api';
-import type { File } from '@directus/types';
+import type { File, Filter } from '@directus/types';
 import { emitter, Events } from '@/events';
 import { useFilesStore } from '@/stores/files.js';
 import { unexpectedError } from '@/utils/unexpected-error';
@@ -26,6 +26,7 @@ interface Props {
 	fromUrl?: boolean;
 	fromLibrary?: boolean;
 	folder?: string;
+	filter?: Filter;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -253,6 +254,8 @@ function useURLImport() {
 	return { url, loading, isValidURL, importFromURL };
 
 	async function importFromURL() {
+		if (!isValidURL.value || loading.value) return;
+
 		loading.value = true;
 
 		const data = {
@@ -326,7 +329,7 @@ defineExpose({ abort });
 		<template v-else>
 			<div class="actions">
 				<v-button v-if="fromUser" v-tooltip="t('click_to_browse')" icon rounded secondary @click="openFileBrowser">
-					<input ref="input" class="browse" type="file" :multiple="multiple" @input="onBrowseSelect" />
+					<input ref="input" class="browse" type="file" tabindex="-1" :multiple="multiple" @input="onBrowseSelect" />
 					<v-icon name="file_upload" />
 				</v-button>
 				<v-button
@@ -358,6 +361,7 @@ defineExpose({ abort });
 					:active="activeDialog === 'choose'"
 					:multiple="multiple"
 					:folder="folder"
+					:filter="filter"
 					@update:active="activeDialog = null"
 					@input="setSelection"
 				/>
@@ -366,6 +370,7 @@ defineExpose({ abort });
 					:model-value="activeDialog === 'url'"
 					:persistent="urlLoading"
 					@esc="activeDialog = null"
+					@apply="importFromURL"
 					@update:model-value="activeDialog = null"
 				>
 					<v-card>
@@ -377,7 +382,7 @@ defineExpose({ abort });
 							<v-button :disabled="urlLoading" secondary @click="activeDialog = null">
 								{{ t('cancel') }}
 							</v-button>
-							<v-button :loading="urlLoading" :disabled="isValidURL === false" @click="importFromURL">
+							<v-button :loading="urlLoading" :disabled="!isValidURL" @click="importFromURL">
 								{{ t('import_label') }}
 							</v-button>
 						</v-card-actions>

@@ -31,6 +31,10 @@ draft: Draft
 archived: Archived
 marketplace: Marketplace
 extensions: Extensions
+skip_link_nav: Skip to Navigation
+skip_link_module_nav: Skip to Module Navigation
+skip_link_main: Skip to Main Content
+skip_link_sidebar: Skip to Sidebar
 modules: Modules
 module_bar: Module Bar
 logs: Logs
@@ -440,6 +444,7 @@ field_key: Field Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 toggle_raw_editor: Toggle Raw Editor
+toggle_variable_input: Toggle Variable Input
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Raw value
 copy_raw_value: Copy Raw Value

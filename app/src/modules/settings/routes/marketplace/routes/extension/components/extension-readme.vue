@@ -18,6 +18,7 @@ const { t } = useI18n();
 
 .readme {
 	:deep(*) {
+		-webkit-user-select: text;
 		user-select: text;
 	}
 

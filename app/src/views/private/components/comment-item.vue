@@ -144,6 +144,7 @@ function useEdits() {
 	line-height: 1;
 	background: var(--theme--primary-background);
 	border-radius: var(--theme--border-radius);
+	-webkit-user-select: text;
 	user-select: text;
 	pointer-events: none;
 }
@@ -226,10 +227,12 @@ function useEdits() {
 	background-color: var(--theme--primary);
 }
 
+.comment-item :deep(.comment-header .header-right .more:focus-visible + .time),
 .comment-item:hover :deep(.comment-header .header-right .time) {
 	opacity: 0;
 }
 
+.comment-item :deep(.comment-header .header-right .more:focus-visible),
 .comment-item:hover :deep(.comment-header .header-right .more) {
 	opacity: 1;
 }

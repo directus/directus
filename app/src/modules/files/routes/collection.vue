@@ -102,6 +102,8 @@ function useBatch() {
 	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
 
 	async function batchDelete() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		const batchPrimaryKeys = selection.value;
@@ -173,6 +175,8 @@ function useMovetoFolder() {
 	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
 
 	async function moveToFolder() {
+		if (moving.value) return;
+
 		moving.value = true;
 
 		try {
@@ -395,7 +399,12 @@ function useFileUpload() {
 
 				<add-folder :parent="folder" :disabled="createFolderAllowed !== true" />
 
-				<v-dialog v-if="selection.length > 0" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
+				<v-dialog
+					v-if="selection.length > 0"
+					v-model="moveToDialogActive"
+					@esc="moveToDialogActive = false"
+					@apply="moveToFolder"
+				>
 					<template #activator="{ on }">
 						<v-button
 							v-tooltip.bottom="batchEditAllowed ? t('move_to_folder') : t('not_allowed')"
@@ -428,7 +437,7 @@ function useFileUpload() {
 					</v-card>
 				</v-dialog>
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<v-button
 							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"
