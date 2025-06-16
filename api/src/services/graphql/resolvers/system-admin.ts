@@ -12,6 +12,7 @@ import { getRelationType } from './get-relation-type.js';
 import { getCollectionType } from './get-collection-type.js';
 import { isSystemField } from '@directus/system-data';
 import { InvalidPayloadError } from '@directus/errors';
+import { fromZodError } from 'zod-validation-error';
 
 export function resolveSystemAdmin(
 	gql: GraphQLService,
@@ -117,9 +118,11 @@ export function resolveSystemAdmin(
 				});
 
 				if (isSystemField(args['collection'], args['field'])) {
-					const { error } = systemFieldUpdateSchema.safeParse(args['data']);
+					const validationResult = systemFieldUpdateSchema.safeParse(args['data']);
 
-					if (error) throw new InvalidPayloadError({ reason: error.message });
+					if (!validationResult.success) {
+						throw new InvalidPayloadError({ reason: fromZodError(validationResult.error).message });
+					}
 				}
 
 				await service.updateField(args['collection'], {
