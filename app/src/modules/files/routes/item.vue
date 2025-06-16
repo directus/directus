@@ -222,6 +222,13 @@ function useMovetoFolder() {
 		}
 	}
 }
+
+function revert(values: Record<string, any>) {
+	edits.value = {
+		...edits.value,
+		...values,
+	};
+}
 </script>
 
 <template>
@@ -388,6 +395,7 @@ function useMovetoFolder() {
 				ref="revisionsDrawerDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
+				@revert="revert"
 			/>
 			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>
