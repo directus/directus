@@ -27,21 +27,21 @@ const { info } = storeToRefs(useServerStore());
 				<div class="left">
 					<div class="message-copy">
 						<v-card-title>{{ t('bsl_banner.welcome_to_directus') }}</v-card-title>
-						<p>{{ t('bsl_banner.directus_free_use', { nbsp: '&nbsp;' }) }}</p>
+						<p>{{ t('bsl_banner.directus_free_use') }}</p>
 						<p>{{ t('bsl_banner.organization_threshold') }}</p>
 						<i18n-t keypath="bsl_banner.license_agreement" tag="p">
 							<template #directusBsl>
 								<a
 									:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=bsl_1.1_link`"
 								>
-									{{ t('bsl_banner.directus_bsl', { nbsp: '&nbsp;' }) }}
+									{{ t('bsl_banner.directus_bsl') }}
 								</a>
 							</template>
 							<template #privacyPolicy>
 								<a
 									:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=privacy_link`"
 								>
-									{{ t('bsl_banner.privacy_policy', { nbsp: '&nbsp;' }) }}
+									{{ t('bsl_banner.privacy_policy') }}
 								</a>
 							</template>
 						</i18n-t>
