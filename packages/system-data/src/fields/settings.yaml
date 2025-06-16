@@ -677,18 +677,10 @@ fields:
             options:
               placeholder: $t:value
 
-  - field: license_banner_seen
+  - field: accepted_terms
     interface: boolean
     width: half
     options:
-      label: $t:enabled
-    special:
-      - cast-boolean
-
-  - field: license_banner_disabled
-    interface: boolean
-    width: half
-    options:
-      label: $t:enabled
+      label: $t:accepted
     special:
       - cast-boolean

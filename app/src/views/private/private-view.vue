@@ -255,12 +255,7 @@ function getWidth(input: unknown, fallback: number): number {
 	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
 
-const showDialog = computed(
-	() =>
-		userStore.isAdmin &&
-		settingsStore.settings?.license_banner_disabled === false &&
-		settingsStore.settings?.license_banner_seen === false,
-);
+const showDialog = computed(() => userStore.isAdmin && settingsStore.settings?.accepted_terms === false);
 </script>
 
 <template>

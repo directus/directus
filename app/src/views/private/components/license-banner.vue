@@ -10,7 +10,7 @@ const { t } = useI18n();
 const settingsStore = useSettingsStore();
 
 async function acceptTerms() {
-	await settingsStore.updateSettings({ license_banner_seen: true });
+	await settingsStore.updateSettings({ accepted_terms: true });
 	settingsStore.hydrate();
 }
 

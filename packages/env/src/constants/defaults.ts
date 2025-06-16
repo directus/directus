@@ -176,5 +176,5 @@ export const DEFAULTS = {
 
 	FILES_MIME_TYPE_ALLOW_LIST: '*/*',
 
-	LICENSE_BANNER_DISABLED: false,
+	ACCEPT_TERMS: false,
 } as const;
