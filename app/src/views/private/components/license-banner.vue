@@ -29,27 +29,27 @@ const { info } = storeToRefs(useServerStore());
 						<v-card-title>{{ t('bsl_banner.welcome_to_directus') }}</v-card-title>
 						<p>{{ t('bsl_banner.directus_free_use', { nbsp: '&nbsp;' }) }}</p>
 						<p>{{ t('bsl_banner.organization_threshold') }}</p>
-						<p>
-							{{ t('bsl_banner.license_agreement') }}
-							<a
-								:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=bsl_1.1_link`"
-								target="_blank"
-							>
-								{{ t('bsl_banner.directus_bsl') }}
-							</a>
-							{{ t('bsl_banner.and') }}
-							<a
-								:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=privacy_link`"
-								target="_blank"
-							>
-								{{ t('bsl_banner.privacy_policy') }}
-							</a>
-						</p>
+						<i18n-t keypath="bsl_banner.license_agreement" tag="p">
+							<template #directusBsl>
+								<a
+									:href="`https://directus.io/bsl?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=bsl_1.1_link`"
+								>
+									{{ t('bsl_banner.directus_bsl', { nbsp: '&nbsp;' }) }}
+								</a>
+							</template>
+							<template #privacyPolicy>
+								<a
+									:href="`https://directus.io/privacy?utm_source=self_hosted&utm_medium=product&utm_campaign=2025_06_license_banner&utm_term=${info.version}&utm_content=privacy_link`"
+								>
+									{{ t('bsl_banner.privacy_policy', { nbsp: '&nbsp;' }) }}
+								</a>
+							</template>
+						</i18n-t>
 					</div>
 
 					<v-card-actions>
 						<v-button @click="acceptTerms">
-							{{ t('bsl_banner.accept_license') }}
+							{{ t('bsl_banner.accept_terms') }}
 						</v-button>
 						<v-button
 							secondary

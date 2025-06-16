@@ -2589,11 +2589,10 @@ show_password: Show password
 hide_password: Hide password
 bsl_banner:
   welcome_to_directus: Welcome to Directus!
-  directus_free_use: Directus is free to use for entities under $5{nbsp}million in annual revenue or funding.
-  organization_threshold: Organizations above this threshold require a paid license.
-  license_agreement: By clicking "Accept Terms", you agree to the
-  directus_bsl: Directus BSL 1.1
-  and: and
-  privacy_policy: Privacy Policy
-  accept_license: Accept Terms
+  directus_free_use: Directus is free to use for entities under $5{nbsp}million in annual revenue, funding, or operating budget.
+  organization_threshold: Entities above this threshold require a paid license.
+  license_agreement: By clicking "Accept", you agree to the {directusBsl} and {privacyPolicy}.
+  directus_bsl: Directus{nbsp}BSL{nbsp}1.1
+  privacy_policy: Privacy{nbsp}Policy
+  accept_terms: Accept
   get_license: Get a License
