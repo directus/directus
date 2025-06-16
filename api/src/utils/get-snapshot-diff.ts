@@ -87,7 +87,7 @@ export function getSnapshotDiff(current: Snapshot, after: Snapshot): SnapshotDif
 		].filter((obj) => Array.isArray(obj.diff)) as SnapshotDiff['fields'],
 		systemFields: [
 			...(current.systemFields ?? []).map((currentSystemField) => {
-				const afterSystemField = after.systemFields.find(
+				const afterSystemField = (after.systemFields ?? []).find(
 					(afterSystemField) =>
 						afterSystemField.collection === currentSystemField.collection &&
 						afterSystemField.field === currentSystemField.field,
