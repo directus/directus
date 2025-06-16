@@ -38,7 +38,7 @@ const { t } = useI18n();
 
 <template>
 	<div class="field-label type-label" :class="{ disabled, edited: edited && !batchMode && !hasError && !loading }">
-		<span class="field-name" @click="toggle">
+		<button type="button" class="field-name" @click="toggle">
 			<v-checkbox
 				v-if="batchMode"
 				:model-value="batchActive"
@@ -64,10 +64,11 @@ const { t } = useI18n();
 				name="data_object"
 				:filled="!rawEditorActive"
 				small
+				clickable
 				@click.stop="$emit('toggle-raw', !rawEditorActive)"
 			/>
 			<v-icon v-if="!disabled" class="ctx-arrow" :class="{ active }" name="arrow_drop_down" />
-		</span>
+		</button>
 	</div>
 </template>
 
@@ -76,7 +77,6 @@ const { t } = useI18n();
 	position: relative;
 	display: flex;
 	margin-bottom: 8px;
-	cursor: pointer;
 	color: var(--theme--form--field--label--foreground);
 
 	.v-text-overflow {
@@ -84,7 +84,7 @@ const { t } = useI18n();
 		white-space: normal;
 	}
 
-	&.readonly {
+	&.readonly button {
 		cursor: not-allowed;
 	}
 
@@ -120,6 +120,7 @@ const { t } = useI18n();
 		}
 	}
 
+	&:focus-within,
 	&:hover {
 		.ctx-arrow {
 			opacity: 1;
