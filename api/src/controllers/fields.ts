@@ -101,7 +101,8 @@ router.post(
 		const field: Partial<Field> & { field: string; type: Type | null } = req.body;
 
 		await service.createField(req.params['collection']!, field, undefined, {
-			tryNonBlockingIndexing: Boolean(req.query['concurrentIndexCreation']),
+			tryNonBlockingIndexing:
+				'concurrentIndexCreation' in req.query && req.query['concurrentIndexCreation'] !== 'false',
 		});
 
 		try {
@@ -142,7 +143,8 @@ router.patch(
 		}
 
 		await service.updateFields(req.params['collection']!, req.body, {
-			tryNonBlockingIndexing: Boolean('concurrentIndexCreation' in req.query),
+			tryNonBlockingIndexing:
+				'concurrentIndexCreation' in req.query && req.query['concurrentIndexCreation'] !== 'false',
 		});
 
 		try {
@@ -204,7 +206,8 @@ router.patch(
 		if (!fieldData.field) fieldData.field = req.params['field']!;
 
 		await service.updateField(req.params['collection']!, fieldData, {
-			tryNonBlockingIndexing: Boolean('concurrentIndexCreation' in req.query),
+			tryNonBlockingIndexing:
+				'concurrentIndexCreation' in req.query && req.query['concurrentIndexCreation'] !== 'false',
 		});
 
 		try {

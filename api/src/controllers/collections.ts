@@ -17,7 +17,8 @@ router.post(
 			schema: req.schema,
 		});
 
-		const tryNonBlockingIndexing = Boolean('concurrentIndexCreation' in req.query);
+		const tryNonBlockingIndexing =
+			'concurrentIndexCreation' in req.query && req.query['concurrentIndexCreation'] !== 'false';
 
 		if (Array.isArray(req.body)) {
 			const collectionKey = await collectionsService.createMany(req.body, {
@@ -30,7 +31,7 @@ router.post(
 			const collectionKey = await collectionsService.createOne(req.body, {
 				tryNonBlockingIndexing,
 			});
-			
+
 			const record = await collectionsService.readOne(collectionKey);
 			res.locals['payload'] = { data: record || null };
 		}
