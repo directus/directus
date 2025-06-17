@@ -951,11 +951,11 @@ export class FieldsService {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
 				if (!existing || existing.is_unique === false) {
-					// if (tryNonBlocking) {
+					if (tryNonBlocking) {
 						createIndexes.push({ unique: true });
-					// } else {
-					// 	column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
-					// }
+					} else {
+						column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
+					}
 				}
 			} else if (field.schema?.is_unique === false) {
 				if (existing?.is_unique === true) {
@@ -965,11 +965,11 @@ export class FieldsService {
 
 			if (field.schema?.is_indexed === true) {
 				if (!existing || existing.is_indexed === false) {
-					// if (tryNonBlocking) {
+					if (tryNonBlocking) {
 						createIndexes.push({ unique: false });
-					// } else {
-						// column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
-					// }
+					} else {
+						column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
+					}
 				}
 			} else if (field.schema?.is_indexed === false) {
 				if (existing?.is_indexed === true) {
