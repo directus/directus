@@ -60,7 +60,7 @@ export type MutationOptions = {
 	onRequireUserIntegrityCheck?: ((flags: UserIntegrityCheckFlag) => void) | undefined;
 };
 
-export type MutationOptionsWithIndex = MutationOptions & {
+export type FieldMutationOptions = MutationOptions & {
 	tryNonBlockingIndexing?: boolean;
 };
 
