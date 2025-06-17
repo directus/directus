@@ -4,14 +4,13 @@ import { usePresetsStore } from '@/stores/presets';
 import { useUserStore } from '@/stores/user';
 import { Collection } from '@/types/collections';
 import { getCollectionRoute } from '@/utils/get-route';
+import { useGroupable } from '@directus/composables';
 import { Preset } from '@directus/types';
-import { orderBy } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 import NavigationBookmark from './navigation-bookmark.vue';
 import NavigationItemContent from './navigation-item-content.vue';
-import { useRoute } from 'vue-router';
-import { useGroupable } from '@directus/composables';
 
 const props = defineProps<{
 	collection: Collection;

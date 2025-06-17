@@ -5,14 +5,14 @@ columns:
     increments: true
   collection:
     type: string
-    length: 64
+    length: 'MAX_TABLE_NAME_LENGTH'
     nullable: false
     references:
       table: directus_collections
       column: collection
   field:
     type: string
-    length: 64
+    length: 'MAX_COLUMN_NAME_LENGTH'
     nullable: false
   special:
     type: string

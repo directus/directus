@@ -32,6 +32,7 @@ interface Props {
 	injectVersionField?: boolean;
 	relationalFieldSelectable?: boolean;
 	rawFieldNames?: boolean;
+	rawEditorEnabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -186,6 +187,7 @@ function addKeyAsNode() {
 				:include-relations="includeRelations"
 				:relational-field-selectable="relationalFieldSelectable"
 				:raw-field-names="rawFieldNames"
+				:variable-input-enabled="rawEditorEnabled"
 				@remove-node="removeNode($event)"
 				@change="emitValue"
 			/>

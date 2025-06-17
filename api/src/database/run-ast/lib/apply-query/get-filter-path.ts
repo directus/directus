@@ -1,4 +1,4 @@
-import { isPlainObject } from 'lodash-es';
+import { isObject } from '@directus/utils';
 
 export function getFilterPath(key: string, value: Record<string, any>) {
 	const path = [key];
@@ -8,8 +8,10 @@ export function getFilterPath(key: string, value: Record<string, any>) {
 		return path;
 	}
 
-	if (isPlainObject(value)) {
-		path.push(...getFilterPath(childKey, Object.values(value)[0]));
+	const nestedValue = Object.values(value)[0];
+
+	if (isObject(value)) {
+		path.push(...getFilterPath(childKey, nestedValue));
 	}
 
 	return path;

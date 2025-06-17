@@ -183,7 +183,6 @@ create_field: Krei kampon
 creating_new_field: 'Nova kampo ({collection})'
 field_in_collection: '{field} ({collection})'
 hidden_field: Kaŝita kampo
-disabled_editing_value: Malŝalti redaktadon de la valoro
 key: Ŝlosilo
 alias: Kromnomo
 boolean: Bulea valoro
