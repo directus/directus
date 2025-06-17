@@ -22,6 +22,7 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
+import hash from 'object-hash';
 
 const env = useEnv();
 
@@ -89,13 +90,18 @@ class OASSpecsService implements SpecificationSubService {
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
+		const hashedVersion = hash({ 
+			now: (new Date()).toISOString(),
+			user: this.accountability?.user
+		});
+
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',
 			info: {
 				title: 'Dynamic API Specification',
 				description:
 					'This is a dynamically generated API specification for all endpoints existing on the current project.',
-				version: (new Date()).toISOString(),
+				version: hashedVersion,
 			},
 			servers: [
 				{
