@@ -1,5 +1,5 @@
 import config, { getUrl } from '@common/config';
-import { CreateItem, ReadItem } from '@common/functions';
+import { CreateItem, ReadItem, UpdateItem } from '@common/functions';
 import vendors from '@common/get-dbs-to-test';
 import { createWebSocketConn, createWebSocketGql, requestGraphQL } from '@common/transport';
 import type { PrimaryKeyType } from '@common/types';
@@ -1626,6 +1626,82 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			});
 		});
 
+		describe('Relational trigger ON DESELECT ACTION are applied irrespective of QUERY_LIMIT_MAX', () => {
+			it.each(vendors)('%s', async (vendor) => {
+				// TODO: Fix ORA-12899: value too large for column on directus_revisions. Limit of 4000
+				if (vendor === 'oracle') {
+					expect(true).toBe(true);
+					return;
+				}
+
+				const queryLimit = Number(config.envs[vendor]['QUERY_LIMIT_DEFAULT']);
+
+				const setupStates = Array.from({ length: queryLimit }, (_, i) => ({
+					...createState(pkType),
+					name: 'test_on_deselected_action_create_' + i,
+				}));
+
+				// Setup
+				const createdItem = await CreateItem(vendor, {
+					collection: localCollectionCountries,
+					item: {
+						...createCountry(pkType),
+						name: 'test_on_deselected_action',
+						states: setupStates,
+					},
+				});
+
+				await UpdateItem(vendor, {
+					id: createdItem.id,
+					collection: localCollectionCountries,
+					item: {
+						states: {
+							create: [
+								{
+									...createState(pkType),
+									name: 'test_on_deselected_action_update_over_limit',
+								},
+							],
+							update: [],
+							delete: [],
+						},
+					},
+				});
+
+				// Action
+				await request(getUrl(vendor))
+					.patch(`/items/${localCollectionCountries}/${createdItem.id}`)
+					.send({
+						states: [
+							{
+								...createState(pkType),
+								name: 'test_on_deselected_action_patch',
+							},
+						],
+					})
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				const response = await request(getUrl(vendor))
+					.get(`/items/${localCollectionStates}`)
+					.query({
+						filter: JSON.stringify({
+							_and: [
+								{
+									name: { _starts_with: 'test_on_deselected_action' },
+								},
+								{
+									country_id: { _nnull: true },
+								},
+							],
+						}),
+					})
+					.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+				expect(response.statusCode).toEqual(200);
+				expect(response.body.data.length).toEqual(1);
+			});
+		});
+
 		describe('Aggregation Tests', () => {
 			describe('retrieves relational count correctly', () => {
 				it.each(vendors)('%s', async (vendor) => {
@@ -1972,6 +2048,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 							const response = await request(getUrl(vendor))
 								.post(`/items/${localCollectionCountries}`)
 								.send(country)
+								.query({ deep: JSON.stringify({ states: { _limit: -1 } }) })
 								.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
 
 							const wsMessagesCountries = await ws.getMessages(1, { uid: localCollectionCountries });
@@ -1989,6 +2066,9 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 										},
 										id: true,
 										states: {
+											__args: {
+												limit: -1,
+											},
 											id: true,
 										},
 									},

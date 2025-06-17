@@ -12,8 +12,10 @@ import WebSocket, { WebSocketServer, type Server } from 'ws';
 import { fromZodError } from 'zod-validation-error';
 import emitter from '../../emitter.js';
 import { useLogger } from '../../logger/index.js';
+import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 import { createRateLimiter } from '../../rate-limiter.js';
 import { getAccountabilityForToken } from '../../utils/get-accountability-for-token.js';
+import { getIPFromReq } from '../../utils/get-ip-from-req.js';
 import { authenticateConnection, authenticationSuccess } from '../authenticate.js';
 import { WebSocketError, handleWebSocketError } from '../errors.js';
 import { AuthMode, WebSocketAuthMessage, WebSocketMessage } from '../messages.js';
@@ -21,7 +23,6 @@ import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebS
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
-import { createDefaultAccountability } from '../../permissions/utils/create-default-accountability.js';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -127,8 +128,18 @@ export default abstract class SocketController {
 
 		const env = useEnv();
 		const cookies = request.headers.cookie ? cookie.parse(request.headers.cookie) : {};
-		const context: UpgradeContext = { request, socket, head };
 		const sessionCookieName = env['SESSION_COOKIE_NAME'] as string;
+
+		const accountabilityOverrides: UpgradeContext['accountabilityOverrides'] = {
+			ip: getIPFromReq(request) ?? null,
+		};
+
+		const userAgent = request.headers['user-agent']?.substring(0, 1024);
+		if (userAgent) accountabilityOverrides.userAgent = userAgent;
+
+		const origin = request.headers['origin'];
+		if (origin) accountabilityOverrides.origin = origin;
+		const context: UpgradeContext = { request, socket, head, accountabilityOverrides };
 
 		if (this.authentication.mode === 'strict' || query['access_token'] || cookies[sessionCookieName]) {
 			let token: string | null = null;
@@ -150,12 +161,20 @@ export default abstract class SocketController {
 
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
-			const state = { accountability: createDefaultAccountability(), expires_at: null } as AuthenticationState;
+
+			const state = {
+				accountability: createDefaultAccountability(accountabilityOverrides),
+				expires_at: null,
+			} as AuthenticationState;
+
 			this.server.emit('connection', ws, state);
 		});
 	}
 
-	protected async handleTokenUpgrade({ request, socket, head }: UpgradeContext, token: string | null) {
+	protected async handleTokenUpgrade(
+		{ request, socket, head, accountabilityOverrides }: UpgradeContext,
+		token: string | null,
+	) {
 		let accountability: Accountability | null = null;
 		let expires_at: number | null = null;
 
@@ -185,6 +204,8 @@ export default abstract class SocketController {
 			return;
 		}
 
+		Object.assign(accountability, accountabilityOverrides);
+
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 			const state = { accountability, expires_at } as AuthenticationState;
@@ -192,7 +213,7 @@ export default abstract class SocketController {
 		});
 	}
 
-	protected async handleHandshakeUpgrade({ request, socket, head }: UpgradeContext) {
+	protected async handleHandshakeUpgrade({ request, socket, head, accountabilityOverrides }: UpgradeContext) {
 		this.server.handleUpgrade(request, socket, head, async (ws) => {
 			this.catchInvalidMessages(ws);
 
@@ -201,6 +222,10 @@ export default abstract class SocketController {
 				if (getMessageType(payload) !== 'auth') throw new Error();
 
 				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
+
+				if (state.accountability) {
+					Object.assign(state.accountability, accountabilityOverrides);
+				}
 
 				this.checkUserRequirements(state.accountability);
 
@@ -315,6 +340,18 @@ export default abstract class SocketController {
 		try {
 			const { accountability, expires_at, refresh_token } = await authenticateConnection(message);
 			this.checkUserRequirements(accountability);
+
+			/**
+			 * Re-use the existing ip, userAgent and origin accountability properties.
+			 * They are only sent in the original connection request
+			 */
+			if (accountability && client.accountability) {
+				Object.assign(accountability, {
+					ip: client.accountability.ip,
+					userAgent: client.accountability.userAgent,
+					origin: client.accountability.origin,
+				});
+			}
 
 			client.accountability = accountability;
 			client.expires_at = expires_at;

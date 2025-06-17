@@ -97,6 +97,8 @@ function useBatch() {
 	return { batchEditActive, confirmDelete, deleting, batchDelete, error };
 
 	async function batchDelete() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		const batchPrimaryKeys = selection.value;
@@ -190,7 +192,7 @@ function clearFilters() {
 			<template #actions>
 				<search-input v-model="search" v-model:filter="filter" collection="directus_users" />
 
-				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false">
+				<v-dialog v-if="selection.length > 0" v-model="confirmDelete" @esc="confirmDelete = false" @apply="batchDelete">
 					<template #activator="{ on }">
 						<v-button
 							v-tooltip.bottom="batchDeleteAllowed ? t('delete_label') : t('not_allowed')"

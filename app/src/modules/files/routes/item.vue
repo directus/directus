@@ -154,6 +154,8 @@ async function saveAsCopyAndNavigate() {
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		edits.value = {};
@@ -188,6 +190,8 @@ function useMovetoFolder() {
 	return { moveToDialogActive, moving, moveToFolder, selectedFolder };
 
 	async function moveToFolder() {
+		if (moving.value) return;
+
 		moving.value = true;
 
 		try {
@@ -218,6 +222,13 @@ function useMovetoFolder() {
 		}
 	}
 }
+
+function revert(values: Record<string, any>) {
+	edits.value = {
+		...edits.value,
+		...values,
+	};
+}
 </script>
 
 <template>
@@ -234,7 +245,7 @@ function useMovetoFolder() {
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="deleteAllowed ? t('delete_label') : t('not_allowed')"
@@ -263,9 +274,21 @@ function useMovetoFolder() {
 				</v-card>
 			</v-dialog>
 
-			<v-dialog v-if="isNew === false" v-model="moveToDialogActive" @esc="moveToDialogActive = false">
+			<v-dialog
+				v-if="isNew === false"
+				v-model="moveToDialogActive"
+				@esc="moveToDialogActive = false"
+				@apply="moveToFolder"
+			>
 				<template #activator="{ on }">
-					<v-button v-tooltip.bottom="t('move_to_folder')" rounded icon :disabled="item === null" secondary @click="on">
+					<v-button
+						v-tooltip.bottom="item === null || !updateAllowed ? t('not_allowed') : t('move_to_folder')"
+						rounded
+						icon
+						secondary
+						:disabled="item === null || !updateAllowed"
+						@click="on"
+					>
 						<v-icon name="folder_move" />
 					</v-button>
 				</template>
@@ -299,7 +322,7 @@ function useMovetoFolder() {
 			</v-button>
 
 			<v-button
-				v-if="item?.type?.includes('image')"
+				v-if="item?.type?.includes('image') && updateAllowed"
 				v-tooltip.bottom="t('edit')"
 				rounded
 				icon
@@ -352,7 +375,7 @@ function useMovetoFolder() {
 			/>
 		</div>
 
-		<v-dialog v-model="confirmLeave" @esc="discardAndLeave">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -372,6 +395,7 @@ function useMovetoFolder() {
 				ref="revisionsDrawerDetailRef"
 				collection="directus_files"
 				:primary-key="primaryKey"
+				@revert="revert"
 			/>
 			<comments-sidebar-detail v-if="isNew === false" collection="directus_files" :primary-key="primaryKey" />
 		</template>

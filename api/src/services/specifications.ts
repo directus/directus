@@ -3,6 +3,7 @@ import formatTitle from '@directus/format-title';
 import { spec } from '@directus/specs';
 import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } from '@directus/types';
+import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
 import type {
@@ -461,11 +462,7 @@ class OASSpecsService implements SpecificationSubService {
 			propertyObject.description = field.note;
 		}
 
-		const relation = schema.relations.find(
-			(relation) =>
-				(relation.collection === collection && relation.field === field.field) ||
-				(relation.related_collection === collection && relation.meta?.one_field === field.field),
-		);
+		const relation = getRelation(schema.relations, collection, field.field);
 
 		if (!relation) {
 			propertyObject = {

@@ -529,7 +529,6 @@ function getLinkForItem(item: DisplayItem) {
 				:items="displayItems"
 				:item-key="relationInfo.junctionPrimaryKeyField.field"
 				:row-height="tableRowHeight"
-				:disabled="disabled"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
 				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
@@ -555,6 +554,7 @@ function getLinkForItem(item: DisplayItem) {
 							class="item-link"
 							:class="{ disabled: item.$type === 'created' }"
 							@click.stop
+							@keydown.stop
 						>
 							<v-icon name="launch" />
 						</router-link>
@@ -567,6 +567,7 @@ function getLinkForItem(item: DisplayItem) {
 							:item-is-local="isLocalItem(item)"
 							:item-edits="getItemEdits(item)"
 							@action="deleteItem(item)"
+							@keydown.stop
 						/>
 					</div>
 				</template>
@@ -619,7 +620,6 @@ function getLinkForItem(item: DisplayItem) {
 									v-tooltip="t('navigate_to_item')"
 									:to="getLinkForItem(element)!"
 									class="item-link"
-									:disabled="element.$type === 'created'"
 									@click.stop
 								>
 									<v-icon name="launch" />
@@ -752,6 +752,9 @@ function getLinkForItem(item: DisplayItem) {
 
 .actions {
 	@include mixins.list-interface-actions($pagination: true);
+
+	position: relative;
+	z-index: 1;
 
 	&.top {
 		margin-top: 0px;

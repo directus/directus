@@ -200,4 +200,31 @@ describe('validatePayload', () => {
 			expect(validatePayload(mockFilter, { value: {} }, options)).toHaveLength(1);
 		});
 	});
+
+	describe('validates operator: _regex', () => {
+		const mockFilter = {
+			_and: [
+				{
+					value: {
+						_regex: '^$|foo',
+					},
+				},
+			],
+		};
+
+		const options = { requireAll: true };
+
+		test('string value', () => {
+			expect(validatePayload(mockFilter, { value: 'foo' }, options)).toHaveLength(0);
+
+			expect(validatePayload(mockFilter, { value: 'bar' }, options)).toHaveLength(1);
+		});
+
+		test('other values', () => {
+			expect(validatePayload(mockFilter, { value: '' }, options)).toHaveLength(0);
+
+			expect(validatePayload(mockFilter, { value: undefined }, options)).toHaveLength(1);
+			expect(validatePayload(mockFilter, { value: null }, options)).toHaveLength(1);
+		});
+	});
 });

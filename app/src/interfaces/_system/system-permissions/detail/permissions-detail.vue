@@ -197,6 +197,7 @@ function save() {
 		persistent
 		:sidebar-label="currentTabInfo && currentTabInfo.text"
 		@cancel="close"
+		@apply="save"
 	>
 		<template v-if="!loading" #sidebar>
 			<tabs v-model:current-tab="currentTab" :tabs="tabsValue" />

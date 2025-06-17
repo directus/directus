@@ -39,6 +39,8 @@ function useRenameFolder() {
 	return { renameActive, renameValue, renameSave, renameSaving };
 
 	async function renameSave() {
+		if (renameValue.value === null || renameSaving.value) return;
+
 		renameSaving.value = true;
 
 		try {
@@ -63,6 +65,8 @@ function useMoveFolder() {
 	return { moveActive, moveValue, moveSave, moveSaving };
 
 	async function moveSave() {
+		if (moveSaving.value) return;
+
 		moveSaving.value = true;
 
 		try {
@@ -86,6 +90,8 @@ function useDeleteFolder() {
 	return { deleteActive, deleteSave, deleteSaving };
 
 	async function deleteSave() {
+		if (deleteSaving.value) return;
+
 		deleteSaving.value = true;
 
 		try {
@@ -226,11 +232,11 @@ function useDeleteFolder() {
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="renameActive" persistent @esc="renameActive = false">
+		<v-dialog v-model="renameActive" persistent @esc="renameActive = false" @apply="renameSave">
 			<v-card>
 				<v-card-title>{{ t('rename_folder') }}</v-card-title>
 				<v-card-text>
-					<v-input v-model="renameValue" autofocus @keyup.enter="renameSave" />
+					<v-input v-model="renameValue" autofocus />
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="renameActive = false">{{ t('cancel') }}</v-button>
@@ -241,7 +247,7 @@ function useDeleteFolder() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="moveActive" persistent @esc="moveActive = false">
+		<v-dialog v-model="moveActive" persistent @esc="moveActive = false" @apply="moveSave">
 			<v-card>
 				<v-card-title>{{ t('move_to_folder') }}</v-card-title>
 				<v-card-text>
@@ -254,7 +260,7 @@ function useDeleteFolder() {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
+		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
 			<v-card>
 				<v-card-title>{{ t('delete_folder') }}</v-card-title>
 				<v-card-text>

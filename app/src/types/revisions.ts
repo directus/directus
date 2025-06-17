@@ -1,7 +1,7 @@
 export type Revision = {
 	data: Record<string, any> | null;
 	delta: Record<string, any> | null;
-} & RevisionPartial;
+} & RevisionWithTime;
 
 export type RevisionPartial = {
 	id: number;
@@ -27,6 +27,7 @@ export type RevisionPartial = {
 export type RevisionWithTime = RevisionPartial & {
 	timestampFormatted: string;
 	timeRelative: string;
+	status: 'resolve' | 'reject';
 };
 
 export type RevisionsByDate = {
