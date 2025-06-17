@@ -46,6 +46,8 @@ function useDelete() {
 	return { deleting, deleteActive, deleteCollection };
 
 	async function deleteCollection() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		try {
@@ -153,7 +155,7 @@ async function update(updates: DeepPartial<Collection>) {
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="deleteActive" @esc="deleteActive = false">
+		<v-dialog v-model="deleteActive" @esc="deleteActive = false" @apply="deleteCollection">
 			<v-card>
 				<v-card-title>
 					{{

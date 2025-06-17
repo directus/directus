@@ -208,7 +208,6 @@ creating_new_field: 'Novo polje ({collection})'
 reset_page_preferences: Resetuj postavke stranice
 hidden_field: Skriveno polje
 hidden_on_detail: Skriveno na detaljima
-disabled_editing_value: Onemogući uređivanje vrijednosti
 key: Ključ
 alias: Pseudonim
 bigInteger: Veliki cijeli broj

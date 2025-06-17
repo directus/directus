@@ -1,5 +1,5 @@
 import { i18n } from '@/lang';
-import { Ref, ref } from 'vue';
+import { Ref, ref, computed, ComputedRef } from 'vue';
 
 type LinkSelection = {
 	url: string | null;
@@ -22,6 +22,7 @@ type UsableLink = {
 	closeLinkDrawer: () => void;
 	saveLink: () => void;
 	linkButton: LinkButton;
+	isLinkSaveable: ComputedRef<boolean>;
 };
 
 export default function useLink(editor: Ref<any>): UsableLink {
@@ -103,7 +104,9 @@ export default function useLink(editor: Ref<any>): UsableLink {
 		},
 	};
 
-	return { linkDrawerOpen, linkSelection, linkNode, closeLinkDrawer, saveLink, linkButton };
+	const isLinkSaveable = computed(() => linkSelection.value.url !== null || !!linkNode.value);
+
+	return { linkDrawerOpen, linkSelection, linkNode, closeLinkDrawer, saveLink, linkButton, isLinkSaveable };
 
 	function setLinkSelection(overrideLinkSelection: Partial<LinkSelection> = {}) {
 		linkSelection.value = Object.assign({}, defaultLinkSelection, overrideLinkSelection);
@@ -115,6 +118,8 @@ export default function useLink(editor: Ref<any>): UsableLink {
 	}
 
 	function saveLink() {
+		if (!isLinkSaveable.value) return;
+
 		editor.value.fire('focus');
 
 		const link = linkSelection.value;
