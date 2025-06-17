@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useDialogRoute } from '@/composables/use-dialog-route';
+import { useExtension } from '@/composables/use-extension';
+import { useExtensions } from '@/extensions';
 import ExtensionOptions from '@/modules/settings/routes/data-model/field-detail/shared/extension-options.vue';
+import { getDefaultValuesFromFields } from '@/utils/get-default-values-from-fields';
 import { translate } from '@/utils/translate-object-values';
-import { FlowRaw } from '@directus/types';
+import { Field, FlowRaw } from '@directus/types';
 import slugify from '@sindresorhus/slugify';
+import { customAlphabet } from 'nanoid/non-secure';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useExtensions } from '@/extensions';
-import { useExtension } from '@/composables/use-extension';
-import { customAlphabet } from 'nanoid/non-secure';
 
 const generateSuffix = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 5);
 
@@ -116,14 +117,20 @@ const operationOptions = computed(() => {
 });
 
 function saveOperation() {
+	if (saveDisabled.value) return;
+
 	saving.value = true;
+
+	const defaultValues = operationOptions.value
+		? getDefaultValuesFromFields(operationOptions.value as Field[]).value
+		: null;
 
 	emit('save', {
 		flow: props.primaryKey,
 		name: operationName.value || generatedName.value,
 		key: operationKey.value || generatedKey.value,
 		type: operationType.value,
-		options: options.value,
+		options: { ...defaultValues, ...options.value },
 	});
 }
 </script>
@@ -136,6 +143,7 @@ function saveOperation() {
 		icon="offline_bolt"
 		persistent
 		@cancel="$emit('cancel')"
+		@apply="saveOperation"
 	>
 		<template #actions>
 			<v-button v-tooltip.bottom="t('done')" icon rounded :disabled="saveDisabled" @click="saveOperation">
@@ -211,6 +219,7 @@ function saveOperation() {
 .v-divider {
 	margin: 52px 0;
 }
+
 .type-label {
 	margin-bottom: 8px;
 }

@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import api from '@/api';
 import { useFlowsStore } from '@/stores/flows';
+import { useNotificationsStore } from '@/stores/notifications';
 import { notify } from '@/utils/notify';
+import { translate } from '@/utils/translate-object-values';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { useCollection } from '@directus/composables';
+import formatTitle from '@directus/format-title';
 import { FlowRaw } from '@directus/types';
 import { computed, ref, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { translate } from '@/utils/translate-object-values';
-import formatTitle from '@directus/format-title';
-import { useNotificationsStore } from '@/stores/notifications';
 
 const props = withDefaults(
 	defineProps<{
@@ -126,7 +126,7 @@ const isFlowDisabled = (manualFlow: FlowRaw) => {
 	return !primaryKey.value && selection.value.length === 0;
 };
 
-const onFlowClick = async (flowId: string) => {
+const onFlowClick = (flowId: string) => {
 	const flow = unref(manualFlows).find((flow) => flow.id === flowId);
 
 	if (!flow) return;
@@ -138,7 +138,9 @@ const onFlowClick = async (flowId: string) => {
 	}
 };
 
-const confirmUnsavedChanges = async (flowId: string) => {
+const confirmUnsavedChanges = (flowId: string) => {
+	if (isConfirmButtonDisabled.value) return;
+
 	confirmedUnsavedChanges.value = true;
 
 	if (!confirmDetails.value) {
@@ -147,6 +149,8 @@ const confirmUnsavedChanges = async (flowId: string) => {
 };
 
 const runManualFlow = async (flowId: string) => {
+	if (isConfirmButtonDisabled.value) return;
+
 	confirmRunFlow.value = null;
 
 	const selectedFlow = manualFlows.value.find((flow) => flow.id === flowId);
@@ -169,15 +173,9 @@ const runManualFlow = async (flowId: string) => {
 
 		emit('refresh');
 
-		if (selectedFlow.options?.async) {
-			notify({
-				title: t('trigger_flow_success', { flow: selectedFlow.name }),
-			});
-		} else {
-			notify({
-				title: t('run_flow_success', { flow: selectedFlow.name }),
-			});
-		}
+		notify({
+			title: t('trigger_flow_success', { flow: selectedFlow.name }),
+		});
 
 		await notificationStore.refreshUnreadCount();
 
@@ -198,6 +196,7 @@ const runManualFlow = async (flowId: string) => {
 					v-tooltip="getFlowTooltip(manualFlow)"
 					small
 					full-width
+					:style="{ '--v-button-background-color': manualFlow.color }"
 					:loading="runningFlows.includes(manualFlow.id)"
 					:disabled="isFlowDisabled(manualFlow)"
 					@click="onFlowClick(manualFlow.id)"
@@ -208,8 +207,13 @@ const runManualFlow = async (flowId: string) => {
 			</div>
 		</div>
 
-		<v-dialog :model-value="displayUnsavedChangesDialog" @esc="resetConfirm">
-			<v-card class="allow-drawer">
+		<v-dialog
+			:model-value="displayUnsavedChangesDialog"
+			keep-behind
+			@esc="resetConfirm"
+			@apply="confirmUnsavedChanges(confirmRunFlow!)"
+		>
+			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('run_flow_on_current_edited_confirm') }}</v-card-text>
 
@@ -224,8 +228,13 @@ const runManualFlow = async (flowId: string) => {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="displayCustomConfirmDialog" @esc="resetConfirm">
-			<v-card class="allow-drawer">
+		<v-dialog
+			:model-value="displayCustomConfirmDialog"
+			keep-behind
+			@esc="resetConfirm"
+			@apply="runManualFlow(confirmRunFlow!)"
+		>
+			<v-card>
 				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
 				<v-card-text class="confirm-form">
 					<v-form
@@ -253,21 +262,29 @@ const runManualFlow = async (flowId: string) => {
 
 <style lang="scss" scoped>
 @use '@/styles/mixins';
+@use '@/styles/colors';
 
 .fields {
+	--theme--form--row-gap: 16px;
+
 	@include mixins.form-grid;
-}
 
-.fields {
-	--theme--form--row-gap: 24px;
+	.v-button {
+		--v-button-background-color-disabled: var(--theme--background-accent);
+		--v-button-background-color-hover: color-mix(
+			in srgb,
+			var(--v-button-background-color),
+			#{colors.$light-theme-shade} 25%
+		);
 
-	.type-label {
-		font-size: 1rem;
+		.dark & {
+			--v-button-background-color-hover: color-mix(
+				in srgb,
+				var(--v-button-background-color),
+				#{colors.$dark-theme-shade} 25%
+			);
+		}
 	}
-}
-
-:deep(.v-button) .button:disabled {
-	--v-button-background-color-disabled: var(--theme--background-accent);
 }
 
 .v-icon {

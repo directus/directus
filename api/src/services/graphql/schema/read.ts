@@ -31,7 +31,7 @@ import { getTypes } from './get-types.js';
 /**
  * Create readable types and attach resolvers for each. Also prepares full filter argument structures
  */
-export function getReadableTypes(
+export async function getReadableTypes(
 	gql: GraphQLService,
 	schemaComposer: SchemaComposer,
 	schema: Schema,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { APP_NUMERIC_STRING_TYPES } from '@/constants';
 import formatTitle from '@directus/format-title';
 import dompurify from 'dompurify';
 import { decode } from 'html-entities';
@@ -45,7 +46,7 @@ const matchedConditions = computed(() =>
 			const left = String(props.value);
 			const right = String(value);
 			return matchString(left, right, operator);
-		} else if (['float', 'decimal'].includes(props.type)) {
+		} else if (props.type === 'float') {
 			const left = parseFloat(String(props.value));
 			const right = parseFloat(String(value));
 			return matchNumber(left, right, operator);
@@ -111,9 +112,9 @@ const displayValue = computed(() => {
 	value = decode(value);
 
 	if (props.format) {
-		if (['string', 'text'].includes(props.type)) {
+		if (['string', 'text', ...APP_NUMERIC_STRING_TYPES].includes(props.type)) {
 			value = formatTitle(value);
-		} else if (['float', 'decimal'].includes(props.type)) {
+		} else if (props.type === 'float') {
 			value = n(parseFloat(value));
 		} else {
 			value = n(parseInt(value));

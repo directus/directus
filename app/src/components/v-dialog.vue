@@ -1,27 +1,46 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, useTemplateRef, watch, nextTick } from 'vue';
 import { useShortcut } from '@/composables/use-shortcut';
 import { useDialogRouteLeave } from '@/composables/use-dialog-route';
+import { useFocusTrap } from '@vueuse/integrations/useFocusTrap';
+
+export type ApplyShortcut = 'meta+enter' | 'meta+s';
 
 interface Props {
 	modelValue?: boolean;
 	persistent?: boolean;
 	placement?: 'right' | 'center';
+	/** Lets other overlays (drawer) open on top */
+	keepBehind?: boolean;
+	applyShortcut?: ApplyShortcut;
 }
 
 const props = withDefaults(defineProps<Props>(), {
 	modelValue: undefined,
 	persistent: false,
 	placement: 'center',
+	applyShortcut: 'meta+enter',
 });
 
-const emit = defineEmits(['esc', 'update:modelValue']);
+const emit = defineEmits(['esc', 'apply', 'update:modelValue']);
 
 useShortcut('escape', (_event, cancelNext) => {
 	if (internalActive.value) {
 		emit('esc');
 		cancelNext();
 	}
+});
+
+useShortcut(props.applyShortcut, (_event, cancelNext) => {
+	if (internalActive.value) {
+		emit('apply');
+		cancelNext();
+	}
+});
+
+useShortcut('meta+s', (_event, cancelNext) => {
+	if (props.applyShortcut === 'meta+s') return;
+	if (internalActive.value) cancelNext();
 });
 
 const localActive = ref(false);
@@ -40,6 +59,8 @@ const internalActive = computed({
 
 const leave = useDialogRouteLeave();
 
+useOverlayFocusTrap();
+
 function emitToggle() {
 	if (props.persistent === false) {
 		emit('update:modelValue', !props.modelValue);
@@ -55,6 +76,25 @@ function nudge() {
 		className.value = null;
 	}, 200);
 }
+
+function useOverlayFocusTrap() {
+	const overlayEl = useTemplateRef<HTMLDivElement>('overlayEl');
+
+	const { activate, deactivate } = useFocusTrap(overlayEl, {
+		escapeDeactivates: false,
+	});
+
+	watch(
+		internalActive,
+		async (newActive) => {
+			await nextTick();
+
+			if (newActive) activate();
+			else deactivate();
+		},
+		{ immediate: true },
+	);
+}
 </script>
 
 <template>
@@ -66,8 +106,9 @@ function nudge() {
 				<component
 					:is="placement === 'right' ? 'div' : 'span'"
 					v-if="internalActive"
+					ref="overlayEl"
 					class="container"
-					:class="[className, placement]"
+					:class="[className, placement, keepBehind ? 'keep-behind' : null]"
 				>
 					<v-overlay active absolute @click="emitToggle" />
 					<slot />
@@ -92,6 +133,10 @@ function nudge() {
 	display: flex;
 	width: 100%;
 	height: 100%;
+
+	&.keep-behind {
+		z-index: 490;
+	}
 }
 
 .container > :slotted(*) {
@@ -103,10 +148,10 @@ function nudge() {
 	align-items: center;
 	justify-content: center;
 	z-index: 600;
-}
 
-.container.center:has(.allow-drawer) {
-	z-index: 500;
+	&.keep-behind {
+		z-index: 490;
+	}
 }
 
 .container.center.nudge > :slotted(*:not(:first-child)) {

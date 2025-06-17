@@ -8,6 +8,7 @@ import type { MetricObjectWithValues, MetricValue } from 'prom-client';
 import { AggregatorRegistry, Counter, Histogram, register } from 'prom-client';
 import { getCache } from '../../cache.js';
 import { hasDatabaseConnection } from '../../database/index.js';
+import { useLogger } from '../../logger/index.js';
 import { redisConfigAvailable, useRedis } from '../../redis/index.js';
 import { getStorage } from '../../storage/index.js';
 import type { MetricService } from '../types/metric.js';
@@ -20,6 +21,7 @@ const sendDataToProcessId = promisify(pm2.sendDataToProcessId.bind(pm2));
 
 export function createMetrics() {
 	const env = useEnv();
+	const logger = useLogger();
 
 	const services: MetricService[] = (env['METRICS_SERVICES'] as MetricService[] | undefined) ?? [];
 	const aggregates = new Map();
@@ -70,8 +72,8 @@ export function createMetrics() {
 				}
 
 				await Promise.allSettled(syncs);
-			} catch {
-				// ignore
+			} catch (error) {
+				logger.error(error);
 			}
 		}
 	}
@@ -278,13 +280,14 @@ export function createMetrics() {
 				await disk.write(`metric-${checkId}`, Readable.from(['check']));
 				const fileStream = await disk.read(`metric-${checkId}`);
 
-				await new Promise((resolve) =>
-					fileStream.on('data', async () => {
+				fileStream.on('data', async () => {
+					try {
 						fileStream.destroy();
 						await disk.delete(`metric-${checkId}`);
-						return resolve(null);
-					}),
-				);
+					} catch (error) {
+						logger.error(error);
+					}
+				});
 			} catch {
 				metric.inc();
 			}

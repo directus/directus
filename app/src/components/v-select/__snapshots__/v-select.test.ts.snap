@@ -11,47 +11,47 @@ exports[`should hide items not matching search value > object items 1`] = `
         <div data-v-cdcb6889="" id="v-input-stub" autofocus="" small="" placeholder="search" modelvalue="Item 1"></div>
       </div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item1">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item1">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 1</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item2" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item2" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 2</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item3" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item3" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 3</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item4" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item4" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 4</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item5" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item5" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 5</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item6" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item6" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 6</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item7" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item7" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 7</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item8" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item8" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 8</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item9" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item9" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 9</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item10">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item10">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 10</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item11">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item11">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 11</span></div>
     </div>
@@ -72,47 +72,47 @@ exports[`should hide items not matching search value > string items 1`] = `
         <div data-v-cdcb6889="" id="v-input-stub" autofocus="" small="" placeholder="search" modelvalue="Item 1"></div>
       </div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 1">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 1">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 1</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 2" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 2" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 2</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 3" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 3" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 3</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 4" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 4" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 4</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 5" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 5" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 5</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 6" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 6" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 6</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 7" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 7" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 7</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 8" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 8" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 8</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 9" style="display: none;">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 9" style="display: none;">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 9</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 10">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 10">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 10</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 11">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 11">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 11</span></div>
     </div>
@@ -129,15 +129,15 @@ exports[`should render with object items 1`] = `
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item1">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item1">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 1</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item2">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item2">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 2</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="item3">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="item3">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 3</span></div>
     </div>
@@ -154,15 +154,15 @@ exports[`should render with string items 1`] = `
     <!--v-if-->
     <!--v-if-->
     <!--v-if-->
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 1">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 1">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 1</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 2">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 2">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 2</span></div>
     </div>
-    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="" value="Item 3">
+    <div data-v-e8b3360c="" data-v-cdcb6889="" data-v-ff20e609-s="" id="v-list-item-stub" active="false" clickable="true" value="Item 3">
       <!--v-if-->
       <div data-v-e8b3360c="" id="v-list-item-content-stub"><span data-v-e8b3360c="" class="item-text">Item 3</span></div>
     </div>

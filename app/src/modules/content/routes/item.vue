@@ -11,6 +11,7 @@ import { renderStringTemplate } from '@/utils/render-string-template';
 import { translateShortcut } from '@/utils/translate-shortcut';
 import CommentsSidebarDetail from '@/views/private/components/comments-sidebar-detail.vue';
 import FlowSidebarDetail from '@/views/private/components/flow-sidebar-detail.vue';
+import LivePreview from '@/views/private/components/live-preview.vue';
 import RevisionsDrawerDetail from '@/views/private/components/revisions-drawer-detail.vue';
 import SaveOptions from '@/views/private/components/save-options.vue';
 import SharesSidebarDetail from '@/views/private/components/shares-sidebar-detail.vue';
@@ -20,7 +21,6 @@ import { useHead } from '@unhead/vue';
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import LivePreview from '../components/live-preview.vue';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
@@ -429,6 +429,8 @@ async function saveAndQuit() {
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		edits.value = {};
@@ -441,6 +443,8 @@ async function deleteAndQuit() {
 }
 
 async function toggleArchive() {
+	if (archiving.value) return;
+
 	try {
 		await archive();
 
@@ -584,6 +588,7 @@ const shouldShowVersioning = computed(
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
 				@esc="confirmDelete = false"
+				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -619,6 +624,7 @@ const shouldShowVersioning = computed(
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
 				@esc="confirmArchive = false"
+				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -725,7 +731,7 @@ const shouldShowVersioning = computed(
 			:version="currentVersion"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -739,7 +745,7 @@ const shouldShowVersioning = computed(
 		</v-dialog>
 
 		<template #splitView>
-			<LivePreview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
+			<live-preview v-if="previewUrl" :url="previewUrl" @new-window="livePreviewMode = 'popup'" />
 		</template>
 
 		<template #sidebar>
@@ -806,7 +812,9 @@ const shouldShowVersioning = computed(
 	width: 260px;
 }
 
-:deep(.version-more-options.v-icon) {
+.version-more-options.v-icon {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
+
 	color: var(--theme--foreground-subdued);
 
 	&:hover {

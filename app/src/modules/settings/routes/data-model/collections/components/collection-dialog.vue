@@ -46,6 +46,8 @@ function cancel() {
 }
 
 async function save() {
+	if (!values.collection || saving.value) return;
+
 	saving.value = true;
 
 	try {
@@ -67,12 +69,19 @@ async function save() {
 </script>
 
 <template>
-	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
+	<v-dialog
+		:model-value="modelValue"
+		persistent
+		keep-behind
+		@update:model-value="$emit('update:modelValue', $event)"
+		@esc="cancel"
+		@apply="save"
+	>
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
 
-		<v-card class="allow-drawer">
+		<v-card>
 			<v-card-title v-if="!collection">{{ t('create_folder') }}</v-card-title>
 			<v-card-title v-else>{{ t('edit_folder') }}</v-card-title>
 

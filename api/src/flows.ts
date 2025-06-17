@@ -4,7 +4,7 @@ import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
-import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
+import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { pick } from 'lodash-es';
 import { get } from 'micromustache';
@@ -20,7 +20,6 @@ import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
 import { JobQueue } from './utils/job-queue.js';
-import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -388,6 +387,15 @@ class FlowManager {
 			}
 		}
 
+		if (
+			(flow.trigger === 'manual' || flow.trigger === 'webhook') &&
+			flow.options['async'] !== true &&
+			flow.options['error_on_reject'] === true &&
+			lastOperationStatus === 'reject'
+		) {
+			throw keyedData[LAST_KEY];
+		}
+
 		if (flow.trigger === 'event' && flow.options['type'] === 'filter' && lastOperationStatus === 'reject') {
 			throw keyedData[LAST_KEY];
 		}
@@ -443,9 +451,11 @@ class FlowManager {
 			);
 		}
 
-		const options = applyOptionsData(operation.options, optionData);
+		let options = operation.options;
 
 		try {
+			options = applyOptionsData(options, optionData);
+
 			let result = await handler(options, {
 				services,
 				env: useEnv(),
@@ -463,7 +473,7 @@ class FlowManager {
 			// JSON structures don't allow for undefined values, so we need to replace them with null
 			// Otherwise the applyOptionsData function will not work correctly on the next operation
 			if (typeof result === 'object' && result !== null) {
-				result = mapValuesDeep(result, (_, value) => (value === undefined ? null : value));
+				result = deepMap(result, (value) => (value === undefined ? null : value));
 			}
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };

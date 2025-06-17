@@ -398,10 +398,11 @@ function edit(type: Alteration, options?: Record<string, any>) {
 
 		<v-dialog
 			:model-value="imageDialogOpen"
+			keep-behind
 			@esc="imageDialogOpen = false"
 			@update:model-value="imageDialogOpen = false"
 		>
-			<v-card class="allow-drawer">
+			<v-card>
 				<v-card-title>{{ t('upload_from_device') }}</v-card-title>
 				<v-card-text>
 					<v-upload from-url from-library :folder="folder" @input="onImageUpload" />
@@ -523,8 +524,12 @@ textarea {
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
-	.v-button + .v-button {
-		margin-left: 2px;
+	.v-button {
+		--focus-ring-offset: var(--focus-ring-offset-invert);
+
+		+ .v-button {
+			margin-left: 2px;
+		}
 	}
 
 	.spacer {
