@@ -142,7 +142,7 @@ router.patch(
 		}
 
 		await service.updateFields(req.params['collection']!, req.body, {
-			tryNonBlockingIndexing: Boolean(req.query['concurrentIndexCreation']),
+			tryNonBlockingIndexing: Boolean('concurrentIndexCreation' in req.query),
 		});
 
 		try {
@@ -204,7 +204,7 @@ router.patch(
 		if (!fieldData.field) fieldData.field = req.params['field']!;
 
 		await service.updateField(req.params['collection']!, fieldData, {
-			tryNonBlockingIndexing: Boolean(req.query['concurrentIndexCreation']),
+			tryNonBlockingIndexing: Boolean('concurrentIndexCreation' in req.query),
 		});
 
 		try {

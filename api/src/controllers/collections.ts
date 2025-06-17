@@ -17,7 +17,7 @@ router.post(
 			schema: req.schema,
 		});
 
-		const tryNonBlockingIndexing = Boolean(req.query['concurrentIndexCreation']);
+		const tryNonBlockingIndexing = Boolean('concurrentIndexCreation' in req.query);
 
 		if (Array.isArray(req.body)) {
 			const collectionKey = await collectionsService.createMany(req.body, {
