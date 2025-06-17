@@ -76,7 +76,6 @@ const steps = computed(() => {
 		:title="revision ? revision.timestampFormatted : t('logs')"
 		icon="fact_check"
 		@cancel="emit('close')"
-		@esc="emit('close')"
 	>
 		<div class="content">
 			<div class="steps">
