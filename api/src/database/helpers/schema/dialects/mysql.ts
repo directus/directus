@@ -79,6 +79,8 @@ export class SchemaHelperMySQL extends SchemaHelper {
 		const isUnique = Boolean(options.unique);
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
 
+		const blockingQuery = this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
+
 		if (options.tryNonBlocking) {
 			/*
 			Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
@@ -92,11 +94,9 @@ export class SchemaHelperMySQL extends SchemaHelper {
 					collection,
 					field,
 				])
-				.catch(() =>
-					this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]),
-				);
+				.catch(() => blockingQuery);
 		}
 
-		return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
+		return blockingQuery;
 	}
 }
