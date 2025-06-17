@@ -260,6 +260,7 @@ field_permissions: 字段权限
 field_validation: 字段验证
 field_presets: 字段预设
 permissions_for_role: '{role} 角色能够 {action}。'
+permissions_for_policy: '{policy} 策略可以 {action} 的项目。'
 fields_for_role: '{role} 角色能够 {action} 字段。'
 fields_for_policy: '{policy} 策略可以 {action} 的字段。'
 validation_for_role: '{role} 角色必须遵守字段的 {action} 规则。'
@@ -299,9 +300,9 @@ validation: 验证
 sum: 求和
 sum_distinct: Sum Distinct
 avg: 平均值
-avg_distinct: Average Distinct
-count: Count
-count_distinct: Count Distinct
+avg_distinct: 唯一均值
+count: 总计
+count_distinct: 唯一计数
 min: 最小值
 max: 最大值
 exposure: 过期
@@ -315,7 +316,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 重置页面首选项
 hidden_field: 隐藏字段
 hidden_on_detail: 在详情中隐藏
-disabled_editing_value: 禁用编辑
 key: 关键字
 alias: 别名
 bigInteger: Big Integer
@@ -328,14 +328,14 @@ dateTime: DateTime
 precision: 精度
 decimal: Decimal
 float: Float
-integer: 整数数字
+integer: Integer
 json: JSON
 xml: XML
 yaml: YAML
-string: 字符串
+string: String
 text: 文本
 time: 时间
-timestamp: 时间戳
+timestamp: Timestamp
 uuid: UUID
 hash: Hash
 geometry:
@@ -509,7 +509,7 @@ functions:
   hour: 时
   minute: 分
   second: 秒
-  count: Count
+  count: 总计
 date-fns_date: PPP
 date-fns_time: 'h:mm:ss a'
 date-fns_time_no_seconds: 'h:mm a'
@@ -517,6 +517,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: MMM d
 minutes: 分
 hours: 时
@@ -940,6 +941,7 @@ run_flow_on_current: 在当前项目上运行流程
 run_flow_on_current_edited_confirm: 此流程可能会更新此项，您确定要执行它吗？
 run_flow_on_selected: 先选择一个或多个项目 | 在 1 个选定项目 上运行 | 在 {n} 个选定项目 上运行
 run_flow: 运行流程
+trigger_flow_success: 流程 "{flow}" 已成功触发
 field_name_placeholder: 输入字段名称...
 field_key_placeholder: 请输入字段键...
 trigger: 触发器
@@ -981,6 +983,8 @@ toggle_navigation: 切换导航
 toggle_editable_elements: 切换可编辑元素
 no_url: 未提供 URL
 no_url_copy: 请在设置中添加一个URL。
+invalid_url: 无效的URL
+invalid_url_copy: 指定的 URL 与设置中指定的任何 URL 都不匹配。
 insights: 洞察分析
 dashboard: 控制面板
 panel: 面板
@@ -1614,7 +1618,7 @@ continue_as: >-
 editing_role: '{role} 角色'
 editing_policy: '{policy} 策略'
 no_permissions: 没有权限
-permission_add_collection: 添加收藏
+permission_add_collection: 添加模型
 creating_webhook: 正在创建 Webhook
 default_label: 默认值
 delete_label: 删除
@@ -1837,7 +1841,7 @@ interfaces:
   input-hash:
     hash: Hash
     description: 输入一个hash值
-    masked: Masked
+    masked: 隐藏
     masked_label: 隐藏真实值
   select-icon:
     icon: 图标
@@ -1959,9 +1963,9 @@ interfaces:
   input:
     input: Input
     description: 手动输入一个值
-    trim: Trim
+    trim: 裁剪
     trim_label: 修剪开始和结束
-    mask: Masked
+    mask: 隐藏
     mask_label: 隐藏真实值
     clear: 已清除的值
     clear_label: 保存为空字符串
@@ -2148,7 +2152,7 @@ displays:
     icon: 图标
     border: 边框
     border_label: 显示边框
-    mask: Masked
+    mask: 隐藏
     mask_label: 隐藏真实值
     text: 文本
     text_placeholder: 可选值覆盖...
@@ -2355,6 +2359,7 @@ triggers:
     filter: '过滤器(阻塞)'
   webhook:
     name: 互联网钩子
+    error_on_reject: 拒绝时出错
     description: 由传入的 HTTP 请求触发
     method: 方法
     async: 异步的

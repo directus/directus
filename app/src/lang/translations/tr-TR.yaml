@@ -313,7 +313,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Sayfa Tercihlerini Sıfırla
 hidden_field: Gizli Alan
 hidden_on_detail: Detayda Gizli
-disabled_editing_value: Değeri düzenlemeyi devre dışı bırakın
 key: Key
 alias: Takma Ad
 bigInteger: Büyük Tamsayı

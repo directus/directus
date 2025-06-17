@@ -316,7 +316,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Réinitialiser les préférences de la page
 hidden_field: Champ masqué
 hidden_on_detail: Masqué dans les détails
-disabled_editing_value: Valeur non modifiable
+readonly_field_label: Désactiver le champ dans l'application
 key: Clé
 alias: Alias
 bigInteger: Grand entier
@@ -603,6 +603,7 @@ manual_string: Chaîne de caractère saisie manuellement
 save_and_create_new: Enregistrer et en créer un nouveau
 save_and_stay: Enregistrer et rester
 save_and_quit: Enregistrer et quitter
+save_and_return_to_main: Enregistrer et revenir au menu principal
 save_as_copy: Enregistrer une copie
 add_existing: Sélectionner
 creating_items: Création d'éléments
@@ -977,6 +978,12 @@ operation_key: Identifiant pour référence...
 operation_key_unique_error: Les clés d'Opération doivent être uniques dans un Flux
 operation_handle_resolve: 'Résoudre : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
 operation_handle_reject: 'Refuser : Cliquez pour Ajouter ou faites Glisser pour Réacheminer'
+visual_editor: Éditeur visuel
+toggle_navigation: Activer/désactiver la navigation
+toggle_editable_elements: Activer/désactiver les éléments modifiables
+no_url: Aucune URL fournie
+no_url_copy: Veuillez ajouter une URL dans les paramètres.
+invalid_url: URL invalide
 insights: Tableaux de bord
 dashboard: Tableau de bord
 panel: Panneau
@@ -1663,6 +1670,8 @@ reset_password: Réinitialiser le mot de passe
 revisions: Historique
 no_revisions: Aucune révision pour l'instant
 no_logs: Pas Encore de Logs
+show_failed_only: Afficher seulement les échecs
+no_logs_on_page: Aucun journal sur cette page
 revert: Restaurer
 save: Enregistrer
 schema: Schéma
@@ -2426,9 +2435,13 @@ operations:
     name: Envoyer un e-mail
     description: Envoyer un email à une ou plusieurs personnes
     to: À
+    to_placeholder: Ajoutez des adresses e-mail et appuyez sur entrée...
     body: Corps du mail
     template: Modèle
     data: Données
+    cc: CC
+    cc_placeholder: Ajoutez des adresses e-mail en CC et appuyez sur entrée...
+    reply_to: Répondre à
   notification:
     name: Envoyer une notification
     description: Envoyer une notification dans l'application à un ou plusieurs utilisateurs

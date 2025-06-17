@@ -1,6 +1,6 @@
 {
 	"name": "@directus/api",
-	"version": "27.0.2",
+	"version": "27.1.0",
 	"description": "Directus is a real-time API and App dashboard for managing SQL database content",
 	"keywords": [
 		"directus",
@@ -58,7 +58,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc --project tsconfig.prod.json && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
+		"build": "rimraf ./dist && tsc --project tsconfig.prod.json && copyfiles \"src/**/*.{yaml,liquid}\" -u 1 dist",
 		"cli": "NODE_ENV=development SERVE_APP=false tsx src/cli/run.ts",
 		"dev": "NODE_ENV=development SERVE_APP=true tsx watch --ignore extensions --clear-screen=false src/start.ts",
 		"test": "vitest run",
@@ -167,10 +167,11 @@
 		"pino-pretty": "13.0.0",
 		"pm2": "5.4.3",
 		"prom-client": "15.1.3",
+		"proxy-addr": "2.0.7",
 		"qs": "6.14.0",
 		"rate-limiter-flexible": "5.0.5",
 		"rollup": "4.34.9",
-		"samlify": "2.9.1",
+		"samlify": "2.10.0",
 		"sanitize-html": "2.14.0",
 		"sharp": "0.33.5",
 		"snappy": "7.2.2",
@@ -214,6 +215,7 @@
 		"@types/nodemailer": "6.4.17",
 		"@types/object-hash": "3.0.6",
 		"@types/papaparse": "5.3.15",
+		"@types/proxy-addr": "2.0.3",
 		"@types/qs": "6.9.18",
 		"@types/sanitize-html": "2.13.0",
 		"@types/stream-json": "1.7.8",

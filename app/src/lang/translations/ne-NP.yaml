@@ -197,7 +197,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: पृष्ठ प्राथमिकताहरू रिसेट गर्नुहोस्
 hidden_field: लुकेको फिल्ड
 hidden_on_detail: विवरणमा लुकेको छ
-disabled_editing_value: मान सम्पादन असक्षम गर्नुहोस्
 key: कुञ्जी
 alias: उपनाम
 bigInteger: ठूलो पूर्ण संख्या

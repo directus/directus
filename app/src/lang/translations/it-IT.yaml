@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-about: Informazioni
+about: About
 identifier: Identificatore
 avatar: Avatar
 application: Applicazione
@@ -316,7 +316,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reimposta Preferenze Di Pagina
 hidden_field: Campo Nascosto
 hidden_on_detail: Nascosto nei dettagli
-disabled_editing_value: Disabilita valore di modifica
+readonly_field_label: Disabilita il campo nell'app
+required_readonly_field_warning: Abilitare sia 'sola lettura' che 'richiesto' su un campo impedisce di salvare un elemento se il valore è vuoto.
 key: Chiave
 alias: Alias
 bigInteger: Big Integer
@@ -1673,6 +1674,8 @@ reset_password: Resetta la password
 revisions: Revisioni
 no_revisions: Non ci sono ancora revisioni
 no_logs: Non c'è ancora nessun registro
+show_failed_only: Mostra solo non riusciti
+no_logs_on_page: Nessun log su questa pagina
 revert: Ripristina
 save: Salva
 schema: Schema
