@@ -17,9 +17,11 @@ export async function up(knex: Knex): Promise<void> {
     const service = new FieldsService({ knex, schema });
 
     for (const { collection, field, ignore } of RETENTION_INDEXES) {
+        if (ignore.includes(client)) continue;
+
         const existingColumn = await service.columnInfo(collection, field);
 
-        if (!existingColumn.is_indexed && !ignore.includes(client)) {
+        if (!existingColumn.is_indexed) {
             await helpers.schema.createIndex(collection, field, { tryNonBlocking: true });
         }
     }
@@ -32,9 +34,11 @@ export async function down(knex: Knex): Promise<void> {
     const service = new FieldsService({ knex, schema });
     
     for (const { collection, field, ignore } of RETENTION_INDEXES) {
+        if (ignore.includes(client)) continue;
+
         const existingColumn = await service.columnInfo(collection, field);
 
-        if (existingColumn.is_indexed && !ignore.includes(client)) {
+        if (existingColumn.is_indexed) {
             await transaction(knex, async (trx) => {
                 await trx.schema.alterTable(collection, async (table) => {
                     table.dropIndex([field], helpers.schema.generateIndexName('index', collection, field));
