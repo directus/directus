@@ -1,10 +1,11 @@
-import type { Knex } from 'knex';
 import { useEnv } from '@directus/env';
+import { toBoolean } from '@directus/utils';
+import type { Knex } from 'knex';
 
 export async function up(knex: Knex): Promise<void> {
 	const env = useEnv();
 
-	const acceptedTerms: boolean = env['ACCEPT_TERMS'] as boolean;
+	const acceptedTerms: boolean = toBoolean(env['ACCEPT_TERMS']);
 
 	await knex.schema.alterTable('directus_settings', (table) => {
 		table.boolean('accepted_terms').defaultTo(acceptedTerms);
