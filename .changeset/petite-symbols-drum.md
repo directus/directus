@@ -1,6 +1,7 @@
 ---
+'@directus/schema-builder': patch
 '@directus/utils': patch
 '@directus/api': patch
 ---
 
-Fixed translating filters on GQL only when applicable
+Fixed translating m2a filters on GQL only when applicable
