@@ -223,6 +223,9 @@ item_permissions: Quyền truy cập Bảng ghi
 field_permissions: Quyền truy cập Trường
 field_validation: Xác Thực Trường
 field_presets: Các Mẫu Trường Tạo Sẵn
+permissions_for_policy: 'Các mục mà người dùng với Chính sách {policy} có thể {action}'
+fields_for_role: 'Các trường dữ liệu mà Vai trò {role} có thể {action}.'
+fields_for_policy: 'Các trường dữ liệu mà Chính sách {policy} có thể {action}.'
 changes_made: Các thay đổi trong phiên bản này hiển thị bên dưới.
 top: Trên cùng
 bottom: Dưới cùng
@@ -257,7 +260,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Đặt Lại Tùy Chọn cho Trang
 hidden_field: Trường Ẩn
 hidden_on_detail: Không hiển thị trong trang chi tiết
-disabled_editing_value: Cấm sửa đổi dữ liệu
 key: Khóa
 alias: Bí danh
 boolean: Boolean

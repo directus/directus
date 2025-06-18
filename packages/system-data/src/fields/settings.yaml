@@ -676,3 +676,11 @@ fields:
             required: true
             options:
               placeholder: $t:value
+
+  - field: accepted_terms
+    interface: boolean
+    width: half
+    options:
+      label: $t:accepted
+    special:
+      - cast-boolean

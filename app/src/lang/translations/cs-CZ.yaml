@@ -316,7 +316,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Obnovit předvolby stránky
 hidden_field: Skryté pole
 hidden_on_detail: Skryté v detailu
-disabled_editing_value: Zakázat úpravy hodnoty
 key: Klíč
 alias: Alias
 bigInteger: Velké celé číslo
@@ -940,7 +939,6 @@ run_flow_on_current: Spustit tok nad aktuální položkou
 run_flow_on_current_edited_confirm: Tato položka může být tímto tokem aktualizována, jste si jisti, že tok chcete spustit?
 run_flow_on_selected: Nejprve vyberte jednu nebo více položek | Spustit tok na 1 vybrané položce | Spustit tok na {n} vybraných položkách
 run_flow: Spustit tok
-run_flow_success: Tok "{flow}" proběhl úspěšně
 field_name_placeholder: Zadejte název pole...
 field_key_placeholder: Zadejte klíč pole...
 trigger: Spouštěč

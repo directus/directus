@@ -50,10 +50,12 @@ function toggle() {
 <template>
 	<div class="v-detail" :class="{ disabled }">
 		<slot name="activator" v-bind="{ active: internalActive, enable, disable, toggle }">
-			<v-divider @click="internalActive = !internalActive">
-				<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
-				<slot name="title">{{ label }}</slot>
-			</v-divider>
+			<button type="button" class="activator" :disabled @click="internalActive = !internalActive">
+				<v-divider>
+					<v-icon v-if="!disabled" :name="internalActive ? 'expand_more' : 'chevron_right'" small />
+					<slot name="title">{{ label }}</slot>
+				</v-divider>
+			</button>
 		</slot>
 		<transition-expand>
 			<div v-if="internalActive" class="content">
@@ -64,8 +66,10 @@ function toggle() {
 </template>
 
 <style lang="scss" scoped>
-.v-divider {
-	cursor: pointer;
+.activator {
+	display: block;
+	width: 100%;
+	text-align: left;
 }
 
 .v-detail:not(.disabled) .v-divider {
@@ -73,8 +77,6 @@ function toggle() {
 
 	&:hover {
 		--v-divider-label-color: var(--theme--foreground-accent);
-
-		cursor: pointer;
 	}
 }
 

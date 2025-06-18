@@ -5,6 +5,7 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import { useBus } from '../bus/index.js';
 import { WebhooksService } from './index.js';
+import { SchemaBuilder } from '@directus/schema-builder';
 
 vi.mock('../../src/database/index', () => {
 	return { __esModule: true, default: vi.fn(), getDatabaseClient: vi.fn().mockReturnValue('postgres') };
@@ -41,38 +42,18 @@ describe('Integration Tests', () => {
 			405,
 		))();
 
+		const schema = new SchemaBuilder()
+			.collection('directus_webhooks', (c) => {
+				c.field('id').integer().primary().options({
+					nullable: false,
+				});
+			})
+			.build();
+
 		beforeEach(() => {
 			service = new WebhooksService({
 				knex: db,
-				schema: {
-					collections: {
-						directus_webhooks: {
-							collection: 'directus_webhooks',
-							primary: 'id',
-							singleton: false,
-							sortField: null,
-							note: null,
-							accountability: null,
-							fields: {
-								id: {
-									field: 'id',
-									defaultValue: null,
-									nullable: false,
-									generated: true,
-									type: 'integer',
-									dbType: 'integer',
-									precision: null,
-									scale: null,
-									special: [],
-									note: null,
-									validation: null,
-									alias: false,
-								},
-							},
-						},
-					},
-					relations: [],
-				},
+				schema,
 			});
 
 			messengerPublishSpy = vi.spyOn(useBus(), 'publish');

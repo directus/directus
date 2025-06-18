@@ -76,6 +76,11 @@ withDefaults(defineProps<Props>(), {
 					--v-icon-color: var(--v-breadcrumb-color-hover, var(--theme--foreground));
 				}
 			}
+
+			&:focus-visible {
+				outline-offset: var(--focus-ring-offset-inset);
+				padding-inline: calc(var(--focus-ring-width) + var(--focus-ring-offset));
+			}
 		}
 
 		&.disabled {
