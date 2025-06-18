@@ -20,7 +20,7 @@ export type SortRecord = {
 };
 
 export type CreateIndexOptions = {
-	tryNonBlocking?: boolean;
+	attemptConcurrentIndex?: boolean;
 	unique?: boolean;
 };
 

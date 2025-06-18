@@ -97,7 +97,7 @@ export class SchemaHelperMSSQL extends SchemaHelper {
 			.raw<{ edition?: string }[]>(`SELECT SERVERPROPERTY('edition') AS edition`)
 			.then((data) => data?.[0]?.['edition']);
 
-		if (options.tryNonBlocking && typeof edition === 'string' && edition.startsWith('Enterprise')) {
+		if (options.attemptConcurrentIndex && typeof edition === 'string' && edition.startsWith('Enterprise')) {
 			// https://learn.microsoft.com/en-us/sql/t-sql/statements/create-index-transact-sql?view=sql-server-ver16#online---on--off-
 			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??) WITH (ONLINE = ON)`, [
 				constraintName,

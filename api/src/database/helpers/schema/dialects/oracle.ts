@@ -144,7 +144,7 @@ export class SchemaHelperOracle extends SchemaHelper {
 		const isUnique = Boolean(options.unique);
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
 
-		if (options.tryNonBlocking) {
+		if (options.attemptConcurrentIndex) {
 			// https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/CREATE-INDEX.html#GUID-1F89BBC0-825F-4215-AF71-7588E31D8BFE__GUID-041E5429-065B-43D5-AC7F-66810140842C
 			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??) ONLINE`, [
 				constraintName,

@@ -67,7 +67,7 @@ export class SchemaHelperCockroachDb extends SchemaHelper {
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
 
 		// https://www.cockroachlabs.com/docs/stable/create-index
-		if (options.tryNonBlocking) {
+		if (options.attemptConcurrentIndex) {
 			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX CONCURRENTLY ?? ON ?? (??)`, [
 				constraintName,
 				collection,

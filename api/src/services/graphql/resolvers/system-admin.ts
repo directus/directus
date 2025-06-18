@@ -45,7 +45,7 @@ export function resolveSystemAdmin(
 				});
 
 				const collectionKey = await collectionsService.createOne(args['data'], {
-					tryNonBlockingIndexing: Boolean(args['concurrentIndexCreation']),
+					attemptConcurrentIndex: Boolean(args['concurrentIndexCreation']),
 				});
 
 				return await collectionsService.readOne(collectionKey);
@@ -106,7 +106,7 @@ export function resolveSystemAdmin(
 				});
 
 				await service.createField(args['collection'], args['data'], undefined, {
-					tryNonBlockingIndexing: Boolean(args['concurrentIndexCreation']),
+					attemptConcurrentIndex: Boolean(args['concurrentIndexCreation']),
 				});
 
 				return await service.readOne(args['collection'], args['data'].field);
@@ -138,7 +138,7 @@ export function resolveSystemAdmin(
 					...args['data'],
 					field: args['field'],
 				}, {
-					tryNonBlockingIndexing: Boolean(args['concurrentIndexCreation']),
+					attemptConcurrentIndex: Boolean(args['concurrentIndexCreation']),
 				});
 
 				return await service.readOne(args['collection'], args['field']);

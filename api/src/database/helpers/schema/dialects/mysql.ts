@@ -81,7 +81,7 @@ export class SchemaHelperMySQL extends SchemaHelper {
 
 		const blockingQuery = this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX ?? ON ?? (??)`, [constraintName, collection, field]);
 
-		if (options.tryNonBlocking) {
+		if (options.attemptConcurrentIndex) {
 			/*
 			Seems it is not possible to determine whether "ALGORITHM=INPLACE LOCK=NONE" will be supported
 			so we're just going to send it and fall back to blocking index creation on error

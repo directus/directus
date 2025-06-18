@@ -62,7 +62,7 @@ export class SchemaHelperPostgres extends SchemaHelper {
 		const constraintName = this.generateIndexName(isUnique ? 'unique' : 'index', collection, field);
 
 		// https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
-		if (options.tryNonBlocking) {
+		if (options.attemptConcurrentIndex) {
 			return this.knex.raw(`CREATE ${isUnique ? 'UNIQUE ' : ''}INDEX CONCURRENTLY ?? ON ?? (??)`, [
 				constraintName,
 				collection,

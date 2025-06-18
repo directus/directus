@@ -17,19 +17,19 @@ router.post(
 			schema: req.schema,
 		});
 
-		const tryNonBlockingIndexing =
+		const attemptConcurrentIndex =
 			'concurrentIndexCreation' in req.query && req.query['concurrentIndexCreation'] !== 'false';
 
 		if (Array.isArray(req.body)) {
 			const collectionKey = await collectionsService.createMany(req.body, {
-				tryNonBlockingIndexing,
+				attemptConcurrentIndex,
 			});
 
 			const records = await collectionsService.readMany(collectionKey);
 			res.locals['payload'] = { data: records || null };
 		} else {
 			const collectionKey = await collectionsService.createOne(req.body, {
-				tryNonBlockingIndexing,
+				attemptConcurrentIndex,
 			});
 
 			const record = await collectionsService.readOne(collectionKey);

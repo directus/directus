@@ -147,7 +147,7 @@ export class CollectionsService {
 					await trx.schema.createTable(payload.collection, (table) => {
 						for (const field of payload.fields!) {
 							if (field.type && ALIAS_TYPES.includes(field.type) === false) {
-								fieldsService.addColumnToTable(table, payload.collection, field, undefined, opts?.tryNonBlockingIndexing);
+								fieldsService.addColumnToTable(table, payload.collection, field, undefined, opts?.attemptConcurrentIndex);
 							}
 						}
 					});
@@ -254,7 +254,7 @@ export class CollectionsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						tryNonBlockingIndexing: Boolean(opts?.tryNonBlockingIndexing),
+						attemptConcurrentIndex: Boolean(opts?.attemptConcurrentIndex),
 					});
 
 					collectionNames.push(name);

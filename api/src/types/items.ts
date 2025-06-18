@@ -61,7 +61,7 @@ export type MutationOptions = {
 };
 
 export type FieldMutationOptions = MutationOptions & {
-	tryNonBlockingIndexing?: boolean;
+	attemptConcurrentIndex?: boolean;
 };
 
 export type ActionEventParams = {

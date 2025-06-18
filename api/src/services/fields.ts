@@ -410,13 +410,13 @@ export class FieldsService {
 						: field;
 
 				if (hookAdjustedField.type && ALIAS_TYPES.includes(hookAdjustedField.type) === false) {
-					const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
+					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 					if (table) {
-						await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, tryNonBlocking);
+						await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, attemptConcurrentIndex);
 					} else {
 						await trx.schema.alterTable(collection, async (table) => {
-							await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, tryNonBlocking);
+							await this.addColumnToTable(table, collection, hookAdjustedField as Field, undefined, attemptConcurrentIndex);
 						});
 					}
 				}
@@ -547,13 +547,13 @@ export class FieldsService {
 					opts?.bypassLimits && opts.autoPurgeSystemCache === false ? sanitizeColumn(existingColumn) : existingColumn;
 
 				if (!isEqual(columnToCompare, hookAdjustedField.schema)) {
-					const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
+					const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 					try {
 						await transaction(this.knex, async (trx) => {
 							await trx.schema.alterTable(collection, async (table) => {
 								if (!hookAdjustedField.schema) return;
-								await this.addColumnToTable(table, collection, field, existingColumn, tryNonBlocking);
+								await this.addColumnToTable(table, collection, field, existingColumn, attemptConcurrentIndex);
 							});
 						});
 					} catch (err: any) {
@@ -640,7 +640,7 @@ export class FieldsService {
 
 		try {
 			const fieldNames = [];
-			const tryNonBlocking = Boolean(opts?.tryNonBlockingIndexing);
+			const attemptConcurrentIndex = Boolean(opts?.attemptConcurrentIndex);
 
 			for (const field of fields) {
 				fieldNames.push(
@@ -648,7 +648,7 @@ export class FieldsService {
 						autoPurgeCache: false,
 						autoPurgeSystemCache: false,
 						bypassEmitAction: (params) => nestedActionEvents.push(params),
-						tryNonBlockingIndexing: tryNonBlocking,
+						attemptConcurrentIndex,
 					}),
 				);
 			}
@@ -868,7 +868,7 @@ export class FieldsService {
 		collection: string,
 		field: RawField | Field,
 		existing: Column | null = null,
-		tryNonBlocking = false, // do we want to default to concurrent creation?
+		attemptConcurrentIndex = false, // do we want to default to concurrent creation?
 	): Promise<void> {
 		let column: Knex.ColumnBuilder;
 
@@ -951,7 +951,7 @@ export class FieldsService {
 			// primary key will already have unique/index constraints
 			if (field.schema?.is_unique === true) {
 				if (!existing || existing.is_unique === false) {
-					if (tryNonBlocking) {
+					if (attemptConcurrentIndex) {
 						createIndexes.push({ unique: true });
 					} else {
 						column.unique({ indexName: this.helpers.schema.generateIndexName('unique', collection, field.field) });
@@ -965,7 +965,7 @@ export class FieldsService {
 
 			if (field.schema?.is_indexed === true) {
 				if (!existing || existing.is_indexed === false) {
-					if (tryNonBlocking) {
+					if (attemptConcurrentIndex) {
 						createIndexes.push({ unique: false });
 					} else {
 						column.index(this.helpers.schema.generateIndexName('index', collection, field.field));
@@ -985,7 +985,7 @@ export class FieldsService {
 		if (createIndexes.length > 0) {
 			for (const { unique } of createIndexes) {
 				await this.helpers.schema.createIndex(collection, field.field, {
-					tryNonBlocking,
+					attemptConcurrentIndex,
 					unique,
 				});
 			}
