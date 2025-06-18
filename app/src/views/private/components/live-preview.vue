@@ -234,10 +234,15 @@ function useUrls() {
 					:placement="centered ? 'bottom' : 'bottom-start'"
 				>
 					<template #activator="{ toggle }">
-						<div class="activator" @click="toggle">
+						<component
+							:is="multipleUrls ? 'button' : 'div'"
+							:type="multipleUrls ? 'button' : undefined"
+							class="activator"
+							@click="toggle"
+						>
 							<v-text-overflow :text="urlDisplay" placement="bottom" />
 							<v-icon v-if="multipleUrls" name="expand_more" />
-						</div>
+						</component>
 					</template>
 
 					<v-list v-if="multipleUrls">
@@ -361,6 +366,8 @@ function useUrls() {
 	}
 
 	.header {
+		--focus-ring-color: var(--theme--navigation--modules--button--background-active);
+
 		width: 100%;
 		color: var(--preview--color);
 		background-color: var(--preview--header--background-color);
