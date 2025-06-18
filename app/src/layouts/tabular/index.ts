@@ -250,11 +250,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							description = fieldNames.join(' -> ');
 						}
 
+						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 200;
+
 						return {
 							text: field.name,
 							value: field.key,
 							description,
-							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
+							width,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
 							field: {
 								display: field.meta?.display || getDefaultDisplayForType(field.type),
