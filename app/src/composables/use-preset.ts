@@ -25,6 +25,42 @@ type UsablePreset = {
 	localPreset: Ref<Partial<Preset>>;
 };
 
+function ensureTabularWidths(preset: Partial<Preset>, defaultWidth = 200): void {
+	if (preset.layout !== 'tabular' || !preset.layout_query?.tabular?.fields) {
+		return;
+	}
+
+	const fields = preset.layout_query.tabular.fields;
+
+	if (!Array.isArray(fields)) {
+		return;
+	}
+
+	const widths = preset.layout_options?.tabular?.widths || {};
+
+	// Check if any field is missing a width
+	const needsUpdate = fields.some((field) => !(field in widths));
+
+	if (!needsUpdate) {
+		return;
+	}
+
+	// Add missing widths
+	fields.forEach((field: string) => {
+		if (!(field in widths)) {
+			widths[field] = defaultWidth;
+		}
+	});
+
+	preset.layout_options = {
+		...preset.layout_options,
+		tabular: {
+			...preset.layout_options?.tabular,
+			widths,
+		},
+	};
+}
+
 export function usePreset(
 	collection: Ref<string>,
 	bookmark = ref<number | null>(null),
@@ -178,6 +214,15 @@ export function usePreset(
 	function clearLocalSave() {
 		const defaultPreset = presetsStore.getBookmark(Number(bookmark.value));
 		if (defaultPreset) localPreset.value = { ...defaultPreset };
+
+		if (defaultPreset) {
+			// Deep clone to avoid reference issues
+			localPreset.value = cloneDeep(defaultPreset);
+
+			// Ensure tabular widths are properly set
+			ensureTabularWidths(localPreset.value);
+		}
+
 		bookmarkSaved.value = true;
 	}
 
@@ -203,6 +248,9 @@ export function usePreset(
 		} else if (bookmarkExists.value) {
 			assign(preset, presetsStore.getBookmark(Number(bookmark.value)));
 		}
+
+		// Ensure widths are set for tabular layout
+		ensureTabularWidths(preset);
 
 		localPreset.value = preset;
 	}
