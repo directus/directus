@@ -154,6 +154,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			selection.value = items.value.map((item) => item[pk.field]);
 		}
 
+		function calculateDefaultWidth(fieldName: string, minWidth = 100, maxWidth = 400): number {
+			const avgCharWidth = 12;
+			const padding = 24;
+			const baseWidth = fieldName.length * avgCharWidth + padding;
+			return Math.max(minWidth, Math.min(maxWidth, baseWidth));
+		}
+
 		function useItemOptions() {
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
@@ -250,7 +257,10 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							description = fieldNames.join(' -> ');
 						}
 
-						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 200;
+						const width =
+							localWidths.value[field.key] ||
+							layoutOptions.value?.widths?.[field.key] ||
+							calculateDefaultWidth(field.key);
 
 						return {
 							text: field.name,
