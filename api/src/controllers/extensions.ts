@@ -298,9 +298,9 @@ router.get(
 		let source: ReadStream | null;
 
 		if (chunk === 'index.js') {
-			source = await extensionManager.getAppExtensionChunk()
+			source = await extensionManager.getAppExtensionChunk();
 		} else {
-			source = await extensionManager.getAppExtensionChunk(chunk)
+			source = await extensionManager.getAppExtensionChunk(chunk);
 		}
 
 		if (source === null) {
@@ -315,7 +315,7 @@ router.get(
 		);
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
-		source.pipe(res)
+		source.pipe(res);
 	}),
 );
 

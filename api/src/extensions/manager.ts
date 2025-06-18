@@ -100,7 +100,7 @@ export class ExtensionManager {
 	 * Individual filename chunks from the rollup bundle. Used to improve the performance by allowing
 	 * extensions to split up their bundle into multiple smaller chunks
 	 */
-	private appExtensionChunks: string[] = []
+	private appExtensionChunks: string[] = [];
 
 	/**
 	 * Callbacks to be able to unregister extensions
@@ -386,20 +386,22 @@ export class ExtensionManager {
 	 * Providing no name will return the entry bundle.
 	 */
 	public async getAppExtensionChunk(name?: string): Promise<ReadStream | null> {
-		let file = this.appExtensionChunks[0]
+		let file: string | undefined;
 
-		if (name && this.appExtensionChunks.includes(name)) {
-			file = name
+		if (!name) {
+			file = this.appExtensionChunks[0];
+		} else if (this.appExtensionChunks.includes(name)) {
+			file = name;
 		}
 
-		if (!file) return null
+		if (!file) return null;
 
 		const tempDir = join(env['TEMP_PATH'] as string, 'app-extensions');
 		const tmpStorage = new DriverLocal({ root: tempDir });
 
-		if (await tmpStorage.exists(file) === false) return null
+		if ((await tmpStorage.exists(file)) === false) return null;
 
-		return await tmpStorage.read(file)
+		return await tmpStorage.read(file);
 	}
 
 	/**
@@ -482,9 +484,9 @@ export class ExtensionManager {
 				.flatMap((extension) =>
 					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 						? [
-							path.resolve(extension.path, extension.entrypoint.app),
-							path.resolve(extension.path, extension.entrypoint.api),
-						]
+								path.resolve(extension.path, extension.entrypoint.app),
+								path.resolve(extension.path, extension.entrypoint.api),
+						  ]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
@@ -521,13 +523,18 @@ export class ExtensionManager {
 
 			const tempDir = join(env['TEMP_PATH'] as string, 'app-extensions');
 
-			const { output } = await bundle.write({ format: 'es', compact: true, dir: tempDir, manualChunks: { 'lodash-es': ['lodash-es'] } });
+			const { output } = await bundle.write({
+				format: 'es',
+				compact: true,
+				dir: tempDir,
+				manualChunks: { 'lodash-es': ['lodash-es'] },
+			});
 
 			this.appExtensionChunks = output.reduce<string[]>((acc, chunk) => {
-				if (chunk.type === 'chunk') acc.push(chunk.fileName)
+				if (chunk.type === 'chunk') acc.push(chunk.fileName);
 
-				return acc
-			}, [])
+				return acc;
+			}, []);
 
 			await bundle.close();
 		} catch (error) {
