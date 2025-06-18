@@ -30,7 +30,7 @@ import ivm from 'isolated-vm';
 import { clone, debounce, isPlainObject } from 'lodash-es';
 import { readFile, readdir } from 'node:fs/promises';
 import os from 'node:os';
-import { dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rollup } from 'rollup';
@@ -57,6 +57,8 @@ import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
 import type { BundleConfig, ExtensionManagerOptions } from './types.js';
+import DriverLocal from '@directus/storage-driver-local';
+import type { ReadStream } from 'node:fs';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
@@ -95,16 +97,10 @@ export class ExtensionManager {
 	private extensionsSettings: ExtensionSettings[] = [];
 
 	/**
-	 * App extensions rolled up into a single bundle. Any chunks from the bundle will be available
-	 * under appExtensionChunks
-	 */
-	private appExtensionsBundle: string | null = null;
-
-	/**
 	 * Individual filename chunks from the rollup bundle. Used to improve the performance by allowing
 	 * extensions to split up their bundle into multiple smaller chunks
 	 */
-	private appExtensionChunks: Map<string, string> = new Map();
+	private appExtensionChunks: string[] = []
 
 	/**
 	 * Callbacks to be able to unregister extensions
@@ -289,7 +285,7 @@ export class ExtensionManager {
 		await Promise.all([this.registerInternalOperations(), this.registerApiExtensions()]);
 
 		if (env['SERVE_APP']) {
-			this.appExtensionsBundle = await this.generateExtensionBundle();
+			await this.generateExtensionBundle();
 		}
 
 		this.isLoaded = true;
@@ -308,8 +304,6 @@ export class ExtensionManager {
 		await this.unregisterApiExtensions();
 
 		this.localEmitter.offAll();
-
-		this.appExtensionsBundle = null;
 
 		this.isLoaded = false;
 
@@ -388,17 +382,24 @@ export class ExtensionManager {
 	}
 
 	/**
-	 * Return the previously generated app extensions bundle
+	 * Return the previously generated app extension bundle chunk by name.
+	 * Providing no name will return the entry bundle.
 	 */
-	public getAppExtensionsBundle(): string | null {
-		return this.appExtensionsBundle;
-	}
+	public async getAppExtensionChunk(name?: string): Promise<ReadStream | null> {
+		let file = this.appExtensionChunks[0]
 
-	/**
-	 * Return the previously generated app extension bundle chunk by name
-	 */
-	public getAppExtensionChunk(name: string): string | null {
-		return this.appExtensionChunks.get(name) ?? null;
+		if (name && this.appExtensionChunks.includes(name)) {
+			file = name
+		}
+
+		if (!file) return null
+
+		const tempDir = join(env['TEMP_PATH'] as string, 'app-extensions');
+		const tmpStorage = new DriverLocal({ root: tempDir });
+
+		if (await tmpStorage.exists(file) === false) return null
+
+		return await tmpStorage.read(file)
 	}
 
 	/**
@@ -481,9 +482,9 @@ export class ExtensionManager {
 				.flatMap((extension) =>
 					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 						? [
-								path.resolve(extension.path, extension.entrypoint.app),
-								path.resolve(extension.path, extension.entrypoint.api),
-						  ]
+							path.resolve(extension.path, extension.entrypoint.app),
+							path.resolve(extension.path, extension.entrypoint.api),
+						]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
@@ -495,7 +496,7 @@ export class ExtensionManager {
 	 * Uses rollup to bundle the app extensions together into a single file the app can download and
 	 * run.
 	 */
-	private async generateExtensionBundle(): Promise<string | null> {
+	private async generateExtensionBundle(): Promise<void> {
 		const logger = useLogger();
 
 		const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
@@ -518,23 +519,21 @@ export class ExtensionManager {
 				plugins: [virtual({ entry: entrypoint }), alias({ entries: internalImports }), nodeResolve({ browser: true })],
 			});
 
-			const { output } = await bundle.generate({ format: 'es', compact: true });
+			const tempDir = join(env['TEMP_PATH'] as string, 'app-extensions');
 
-			for (const out of output) {
-				if (out.type === 'chunk') {
-					this.appExtensionChunks.set(out.fileName, out.code);
-				}
-			}
+			const { output } = await bundle.write({ format: 'es', compact: true, dir: tempDir, manualChunks: { 'lodash-es': ['lodash-es'] } });
+
+			this.appExtensionChunks = output.reduce<string[]>((acc, chunk) => {
+				if (chunk.type === 'chunk') acc.push(chunk.fileName)
+
+				return acc
+			}, [])
 
 			await bundle.close();
-
-			return output[0].code;
 		} catch (error) {
 			logger.warn(`Couldn't bundle App extensions`);
 			logger.warn(error);
 		}
-
-		return null;
 	}
 
 	private async registerSandboxedApiExtension(extension: ApiExtension | HybridExtension) {
