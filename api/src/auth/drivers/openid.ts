@@ -434,7 +434,16 @@ export function createOpenIDAuthRouter(providerName: string): Router {
 				sameSite: 'lax',
 			});
 
-			return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt));
+			try {
+				return res.redirect(await provider.generateAuthUrl(codeVerifier, prompt));
+			} catch {
+				return res.redirect(
+					new Url(env['PUBLIC_URL'] as string)
+						.addPath('admin', 'login')
+						.setQuery('reason', ErrorCode.ServiceUnavailable)
+						.toString(),
+				);
+			}
 		}),
 		respond,
 	);
