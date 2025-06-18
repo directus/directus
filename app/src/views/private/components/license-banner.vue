@@ -90,7 +90,7 @@ const { info } = storeToRefs(useServerStore());
 	}
 
 	.v-card .inner {
-		grid-template-columns: 50% 50%;
+		grid-template-columns: 60% 40%;
 		width: 706px;
 	}
 
