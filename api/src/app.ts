@@ -170,10 +170,10 @@ export default async function createApp(): Promise<express.Application> {
 			),
 		),
 	);
-
+	
 	if (env['CROSS_ORIGIN_OPENER_POLICY_ENABLED']) {
 		app.use(helmet.crossOriginOpenerPolicy({
-			policy: (env['CROSS_ORIGIN_OPENER_POLICY'] ?? "same-origin") as "same-origin" | "same-origin-allow-popups" | "unsafe-none",
+			policy: (env['CROSS_ORIGIN_OPENER_POLICY'] ?? "same-origin-allow-popups") as "same-origin" | "same-origin-allow-popups" | "unsafe-none",
 		}));
 	}
 
