@@ -677,6 +677,9 @@ fields:
             options:
               placeholder: $t:value
 
+  - field: project_id
+    hidden: true
+
   - field: accepted_terms
     interface: boolean
     width: half

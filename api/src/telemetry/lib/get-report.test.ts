@@ -10,6 +10,7 @@ import { getFilesizeSum, type FilesizeSum } from '../utils/get-filesize-sum.js';
 import { getItemCount } from '../utils/get-item-count.js';
 import { getUserItemCount, type UserItemCount } from '../utils/get-user-item-count.js';
 import { getReport } from './get-report.js';
+import { getProjectId } from '../utils/get-project-id.js';
 
 vi.mock('../../database/index.js');
 
@@ -36,6 +37,7 @@ vi.mock('../utils/get-field-count.js');
 vi.mock('../utils/get-extension-count.js');
 vi.mock('../../utils/fetch-user-count/fetch-user-count.js');
 vi.mock('../utils/get-filesize-sum.js');
+vi.mock('../utils/get-project-id.js');
 
 let mockEnv: Record<string, unknown>;
 let mockDb: Knex;
@@ -44,6 +46,7 @@ let mockUserItemCounts: UserItemCount;
 let mockFieldCounts: FieldCount;
 let mockExtensionCounts: ExtensionCount;
 let mockFilesizeSums: FilesizeSum;
+let mockProjectId: string | null;
 
 beforeEach(() => {
 	mockEnv = {
@@ -62,6 +65,8 @@ beforeEach(() => {
 
 	mockFilesizeSums = { total: 10 };
 
+	mockProjectId = 'test-project-id';
+
 	vi.mocked(useEnv).mockReturnValue(mockEnv);
 	vi.mocked(getDatabase).mockReturnValue(mockDb);
 
@@ -71,6 +76,7 @@ beforeEach(() => {
 	vi.mocked(getFieldCount).mockResolvedValue(mockFieldCounts);
 	vi.mocked(getExtensionCount).mockResolvedValue(mockExtensionCounts);
 	vi.mocked(getFilesizeSum).mockResolvedValue(mockFilesizeSums);
+	vi.mocked(getProjectId).mockResolvedValue(mockProjectId);
 });
 
 afterEach(() => {
@@ -85,6 +91,7 @@ test('Returns environment information', async () => {
 	expect(report.url).toBe(mockEnv['PUBLIC_URL']);
 	expect(report.database).toBe('test-db');
 	expect(report.version).toBe(version);
+	expect(report.project_id).toBe(mockProjectId);
 });
 
 test('Runs and returns basic counts', async () => {
