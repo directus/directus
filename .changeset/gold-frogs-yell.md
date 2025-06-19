@@ -2,7 +2,7 @@
 '@directus/sdk': major
 ---
 
-Added support for LDAP login and enhanced parameter consistency for refresh and logout commands
+Added support for LDAP login and enhanced parameter consistency for refresh/logout commands. Allowed overriding the mode in refresh and logout commands to be inline with login
 
 ::: notice
 The `login` method now accepts a payload object instead of separate email and password parameters. 
