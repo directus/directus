@@ -1,7 +1,7 @@
 ---
-"@directus/api": patch
-"@directus/sdk": patch
-"@directus/types": patch
+"@directus/api": minor
+"@directus/sdk": minor
+"@directus/types": minor
 ---
 
-Added backlink query parameter to not include back-relations when expanding `*.*` in the fields query parameter.
+Added `backlink` query parameter to exclude back-relations when expanding `*.*` in the fields query parameter
