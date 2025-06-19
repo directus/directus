@@ -72,8 +72,14 @@ export const getExtensionsSettings = async ({
 		extension: Extension,
 		source: 'local' | 'registry' | 'module',
 	) => {
-		const marketplace = await list({ search: extension.name });
-		const id = marketplace.data[0]?.id || randomUUID();
+		let marketplaceId
+
+		if (!extension.local) {
+			const marketplace = await list({ search: extension.name });
+			marketplaceId = marketplace.data[0]?.id
+		}
+
+		const id = marketplaceId ?? randomUUID();
 
 		if (extension.type === 'bundle') {
 			newSettings.push({
