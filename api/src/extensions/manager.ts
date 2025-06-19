@@ -33,7 +33,7 @@ import os from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { rollup } from 'rollup';
+import { rolldown as rollup } from 'rolldown';
 import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
@@ -285,9 +285,7 @@ export class ExtensionManager {
 		await Promise.all([this.registerInternalOperations(), this.registerApiExtensions()]);
 
 		if (env['SERVE_APP']) {
-			console.time()
 			await this.generateExtensionBundle();
-			console.timeEnd()
 		}
 
 		this.isLoaded = true;
@@ -486,9 +484,9 @@ export class ExtensionManager {
 				.flatMap((extension) =>
 					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 						? [
-							path.resolve(extension.path, extension.entrypoint.app),
-							path.resolve(extension.path, extension.entrypoint.api),
-						]
+								path.resolve(extension.path, extension.entrypoint.app),
+								path.resolve(extension.path, extension.entrypoint.api),
+						  ]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
