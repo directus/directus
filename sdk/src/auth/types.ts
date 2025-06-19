@@ -1,5 +1,9 @@
 export type AuthenticationMode = 'json' | 'cookie' | 'session';
 
+export type LocalLoginPayload = { email: string; password: string };
+export type LDAPLoginPayload = { identifier: string; password: string };
+export type LoginPayload = LocalLoginPayload | LDAPLoginPayload;
+
 export type LoginOptions = {
 	/** The user's one-time-password (if MFA is enabled). */
 	otp?: string;
@@ -7,6 +11,16 @@ export type LoginOptions = {
 	mode?: AuthenticationMode;
 	/** Use a specific authentication provider (does not work for SSO that relies on browser redirects). */
 	provider?: string;
+};
+
+export type LogoutOptions = {
+	refresh_token?: string;
+	mode?: AuthenticationMode;
+};
+
+export type RefreshOptions = {
+	refresh_token?: string;
+	mode?: AuthenticationMode;
 };
 
 export interface AuthenticationData {
@@ -29,9 +43,10 @@ export interface AuthenticationConfig {
 }
 
 export interface AuthenticationClient<_Schema> {
-	login(email: string, password: string, options?: LoginOptions): Promise<AuthenticationData>;
-	refresh(): Promise<AuthenticationData>;
-	logout(): Promise<void>;
+	login(payload: LocalLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
+	login(payload: LDAPLoginPayload, options?: LoginOptions): Promise<AuthenticationData>;
+	refresh(options?: RefreshOptions): Promise<AuthenticationData>;
+	logout(options?: LogoutOptions): Promise<void>;
 
 	stopRefreshing(): void;
 
