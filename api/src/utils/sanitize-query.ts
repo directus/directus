@@ -99,7 +99,7 @@ export async function sanitizeQuery(
 		query.alias = sanitizeAlias(rawQuery['alias']);
 	}
 
-	if (rawQuery['backlink']) {
+	if ('backlink' in rawQuery) {
 		query.backlink = sanitizeBacklink(rawQuery['backlink']);
 	}
 
