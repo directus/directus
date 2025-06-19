@@ -285,7 +285,9 @@ export class ExtensionManager {
 		await Promise.all([this.registerInternalOperations(), this.registerApiExtensions()]);
 
 		if (env['SERVE_APP']) {
+			console.time()
 			await this.generateExtensionBundle();
+			console.timeEnd()
 		}
 
 		this.isLoaded = true;
@@ -484,9 +486,9 @@ export class ExtensionManager {
 				.flatMap((extension) =>
 					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 						? [
-								path.resolve(extension.path, extension.entrypoint.app),
-								path.resolve(extension.path, extension.entrypoint.api),
-						  ]
+							path.resolve(extension.path, extension.entrypoint.app),
+							path.resolve(extension.path, extension.entrypoint.api),
+						]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
@@ -525,9 +527,7 @@ export class ExtensionManager {
 
 			const { output } = await bundle.write({
 				format: 'es',
-				compact: true,
 				dir: tempDir,
-				manualChunks: { 'lodash-es': ['lodash-es'] },
 			});
 
 			this.appExtensionChunks = output.reduce<string[]>((acc, chunk) => {
