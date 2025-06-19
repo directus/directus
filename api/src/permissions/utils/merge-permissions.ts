@@ -1,5 +1,6 @@
 import type { LogicalFilterAND, LogicalFilterOR, Permission } from '@directus/types';
-import { flatten, intersection, isEqual, merge, omit, uniq } from 'lodash-es';
+import { flatten, isEqual, merge, omit } from 'lodash-es';
+import { mergeFields } from './merge-fields.js';
 
 // Adapted from https://github.com/directus/directus/blob/141b8adbf4dd8e06530a7929f34e3fc68a522053/api/src/utils/merge-permissions.ts#L4
 /**
@@ -106,17 +107,7 @@ export function mergePermission(
 		}
 	}
 
-	if (newPerm.fields) {
-		if (Array.isArray(currentPerm.fields) && strategy === 'or') {
-			fields = uniq([...currentPerm.fields, ...newPerm.fields]);
-		} else if (Array.isArray(currentPerm.fields) && strategy === 'and') {
-			fields = intersection(currentPerm.fields, newPerm.fields);
-		} else {
-			fields = newPerm.fields;
-		}
-
-		if (fields.includes('*')) fields = ['*'];
-	}
+	fields = mergeFields(currentPerm.fields, newPerm.fields, strategy);
 
 	if (newPerm.presets) {
 		presets = merge({}, presets, newPerm.presets);
