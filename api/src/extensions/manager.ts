@@ -33,7 +33,7 @@ import os from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import { rolldown as rollup } from 'rolldown';
+import { rolldown } from 'rolldown';
 import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
@@ -514,7 +514,7 @@ export class ExtensionManager {
 		);
 
 		try {
-			const bundle = await rollup({
+			const bundle = await rolldown({
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
