@@ -182,7 +182,7 @@ export async function extractError(error: MSSQLError, data: Partial<Item>): Prom
 		return new InvalidForeignKeyError({
 			collection,
 			field,
-			key: field ? data[field] : null,
+			value: field ? data[field] : null,
 		});
 	}
 }

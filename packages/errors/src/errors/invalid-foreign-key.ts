@@ -3,14 +3,14 @@ import { createError, ErrorCode } from '../index.js';
 export interface InvalidForeignKeyErrorExtensions {
 	collection: string | null;
 	field: string | null;
-	key: string | null;
+	value: string | null;
 }
 
-export const messageConstructor = ({ collection, field, key }: InvalidForeignKeyErrorExtensions) => {
+export const messageConstructor = ({ collection, field, value }: InvalidForeignKeyErrorExtensions) => {
 	let message = 'Invalid foreign key';
 
-	if (key) {
-		message += ` "${key}"`;
+	if (value) {
+		message += ` "${value}"`;
 	}
 
 	if (field) {

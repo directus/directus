@@ -155,7 +155,7 @@ export function extractError(error: MySQLError, data: Partial<Item>): MySQLError
 		return new InvalidForeignKeyError({
 			collection,
 			field,
-			key: field ? data[field] : null,
+			value: field ? data[field] : null,
 		});
 	}
 

@@ -116,7 +116,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		return new InvalidForeignKeyError({
 			collection,
 			field,
-			key: field ? data[field] : null,
+			value: field ? data[field] : null,
 		});
 	}
 }

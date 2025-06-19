@@ -35,7 +35,7 @@ export function extractError(error: SQLiteError, data: Partial<Item>): SQLiteErr
 		 * SQLite doesn't return any useful information in it's foreign key constraint failed error, so
 		 * we can't extract the table/column/value accurately
 		 */
-		return new InvalidForeignKeyError({ collection: null, field: null, key: null });
+		return new InvalidForeignKeyError({ collection: null, field: null, value: null });
 	}
 
 	return error;
