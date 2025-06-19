@@ -133,7 +133,7 @@ function useConfirmation() {
 
 	<v-icon v-else v-tooltip="tooltip" v-bind="$attrs" :name="icon" :disabled clickable @click.stop="onClick" />
 
-	<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+	<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="onConfirmDelete">
 		<v-card>
 			<v-card-title>{{ t('batch_delete_confirm', 1) }}</v-card-title>
 

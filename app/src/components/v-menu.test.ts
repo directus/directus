@@ -54,16 +54,21 @@ test('should not have click event listener when trigger is not "click"', async (
 });
 
 test('should have click event listener when trigger is "click"', async () => {
+	const button = { template: '<button type="button">Content</button>' };
+
 	const wrapper = mount(VMenu, {
 		...mountOptions,
 		props: {
 			trigger: 'click',
 		},
+		slots: {
+			default: button,
+		},
 	});
 
 	await wrapper.find('.v-menu').trigger('click');
 
-	expect(wrapper.findComponent(Content).exists()).toBe(true);
+	expect(wrapper.findComponent(button).exists()).toBe(true);
 });
 
 test('should not have click event listener when closeOnContentClick prop is false', async () => {

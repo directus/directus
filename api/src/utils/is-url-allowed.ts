@@ -18,7 +18,7 @@ export default function isUrlAllowed(url: string, allowList: string | string[]):
 				const { origin, pathname } = new URL(allowedURL);
 				return origin + pathname;
 			} catch {
-				logger.warn(`Invalid URL used "${url}"`);
+				logger.warn(`Invalid URL used "${allowedURL}"`);
 			}
 
 			return null;

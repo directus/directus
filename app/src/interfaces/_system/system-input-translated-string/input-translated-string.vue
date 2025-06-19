@@ -159,7 +159,9 @@ const newTranslationDefaults = computed(() => {
 					@keydown.enter="checkKeyValidity"
 				>
 					<template v-if="hasValidKey" #input>
-						<button :disabled="disabled" @click.stop="setValue(null)">{{ value && getKeyWithoutPrefix(value) }}</button>
+						<button class="selected-translation" :disabled="disabled" @click.stop="setValue(null)">
+							{{ value && getKeyWithoutPrefix(value) }}
+						</button>
 					</template>
 					<template #append>
 						<v-icon
@@ -167,7 +169,6 @@ const newTranslationDefaults = computed(() => {
 							class="translate-icon"
 							:class="{ active }"
 							clickable
-							:tabindex="-1"
 							:disabled="disabled"
 							@click="toggle"
 						/>
@@ -230,7 +231,7 @@ const newTranslationDefaults = computed(() => {
 
 <style lang="scss" scoped>
 .translation-input {
-	:deep(button) {
+	.selected-translation {
 		margin-right: auto;
 		padding: 2px 8px 0;
 		color: var(--theme--primary);
@@ -238,12 +239,13 @@ const newTranslationDefaults = computed(() => {
 		border-radius: var(--theme--border-radius);
 		transition: var(--fast) var(--transition);
 		transition-property: background-color, color;
+		-webkit-user-select: none;
 		user-select: none;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow-x: hidden;
 	}
 
-	:deep(button:not(:disabled):hover) {
+	.selected-translation:not(:disabled):hover {
 		color: var(--white);
 		background-color: var(--theme--danger);
 	}
@@ -277,6 +279,8 @@ const newTranslationDefaults = computed(() => {
 		opacity: 0;
 	}
 
+	.info :deep(.icon:focus-visible),
+	&:focus-visible .info :deep(.icon),
 	&:hover .info :deep(.icon) {
 		opacity: 1;
 	}
@@ -293,12 +297,15 @@ const newTranslationDefaults = computed(() => {
 		--v-list-item-background-color-active: var(--theme--primary);
 		--v-list-item-color-hover: var(--foreground-inverted);
 		--v-list-item-background-color-hover: var(--theme--primary);
+		--focus-ring-color: var(--v-list-item-color-active);
+		--focus-ring-offset: var(--focus-ring-offset-inset);
 
 		background-color: var(--theme--primary);
 		color: var(--foreground-inverted);
 
 		.v-list-item-icon {
 			--v-icon-color: var(--foreground-inverted);
+			--focus-ring-offset: var(--focus-ring-offset-invert);
 		}
 
 		.info :deep(.icon) {
