@@ -362,9 +362,6 @@ importers:
       rolldown:
         specifier: 1.0.0-beta.18
         version: 1.0.0-beta.18
-      rollup:
-        specifier: 4.34.9
-        version: 4.34.9
       samlify:
         specifier: 2.10.0
         version: 2.10.0
