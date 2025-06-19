@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getMinimalGridClass } from '@/utils/get-minimal-grid-class';
-import { useCustomSelectionMultiple } from '@directus/composables';
+import { useCustomSelectionMultiple, type OtherValue } from '@directus/composables';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -56,6 +56,10 @@ const gridClass = computed(() => getMinimalGridClass(items.value, props.width));
 const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple(value, items, (value) =>
 	emit('input', value),
 );
+
+function onBlurCustomInput(otherVal: OtherValue) {
+	return (otherVal.value === null || otherVal.value?.length === 0) && setOtherValue(otherVal.key, null);
+}
 </script>
 
 <template>
@@ -95,25 +99,22 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 				:key="otherValue.key"
 				block
 				custom-value
+				:autofocus-custom-input="otherValue.focus"
 				:value="otherValue.value"
 				:disabled="disabled"
 				:icon-on="iconOn"
 				:icon-off="iconOff"
 				:model-value="value || []"
-				@update:value="setOtherValue(otherValue.key, $event)"
 				@update:model-value="$emit('input', $event)"
-			/>
-
-			<button
-				v-if="allowOther"
-				:disabled="disabled"
-				class="add-new custom"
-				align="left"
-				outlined
-				dashed
-				secondary
-				@click="addOtherValue()"
+				@update:value="setOtherValue(otherValue.key, $event)"
+				@blur:custom-input="onBlurCustomInput(otherValue)"
 			>
+				<template #append>
+					<v-icon v-tooltip="$t('remove_item')" name="delete" clickable @click="setOtherValue(otherValue.key, null)" />
+				</template>
+			</v-checkbox>
+
+			<button v-if="allowOther" type="button" :disabled class="add-new custom" @click="addOtherValue('', true)">
 				<v-icon name="add" />
 				{{ t('other') }}
 			</button>
@@ -171,6 +172,7 @@ const { otherValues, addOtherValue, setOtherValue } = useCustomSelectionMultiple
 
 .add-new {
 	--v-button-min-width: none;
+	--focus-ring-offset: var(--focus-ring-offset-invert);
 }
 
 .custom {

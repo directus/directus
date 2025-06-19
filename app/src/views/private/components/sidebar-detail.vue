@@ -30,6 +30,9 @@ function onClick() {
 
 <template>
 	<div class="sidebar-detail" :class="{ open: sidebarOpen }">
+		<button v-if="close" v-show="sidebarOpen" class="close" @click="sidebarOpen = false">
+			<v-icon name="close" />
+		</button>
 		<button v-tooltip.left="!sidebarOpen && title" class="toggle" :class="{ open: active }" @click="onClick">
 			<div class="icon">
 				<v-badge :dot="badge === true" bordered :value="badge" :disabled="!badge">
@@ -43,9 +46,6 @@ function onClick() {
 				<v-icon class="expand-icon" :name="active ? 'expand_less' : 'expand_more'" />
 			</div>
 		</button>
-		<div v-if="close" v-show="sidebarOpen" class="close" @click="sidebarOpen = false">
-			<v-icon name="close" />
-		</div>
 		<transition-expand class="scroll-container">
 			<div v-show="active">
 				<div class="content">
@@ -72,6 +72,8 @@ function onClick() {
 	}
 
 	.toggle {
+		--focus-ring-offset: var(--focus-ring-offset-inset);
+
 		position: relative;
 		display: flex;
 		flex-shrink: 0;
@@ -113,6 +115,8 @@ function onClick() {
 	}
 
 	.close {
+		--focus-ring-offset: var(--focus-ring-offset-inset);
+
 		position: absolute;
 		top: 0;
 		right: 0;
@@ -123,7 +127,6 @@ function onClick() {
 		width: 60px;
 		height: 60px;
 		color: var(--theme--foreground);
-		cursor: pointer;
 		transition:
 			opacity var(--fast) var(--transition),
 			color var(--fast) var(--transition);

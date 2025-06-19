@@ -174,7 +174,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: รีเซ็ตการตั้งค่าเพจ
 hidden_field: ซ่อนฟิลด์
 hidden_on_detail: ซ่อนเมื่อแสดงรายละเอียด
-disabled_editing_value: ปิดไม่ให้แก้ไขค่า
 key: คีย์
 alias: นามแฝง
 bigInteger: Big Integer

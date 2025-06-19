@@ -200,7 +200,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Nollaa sivun asetukset
 hidden_field: Piilotettu kenttä
 hidden_on_detail: Piilotettu yksityiskohdista
-disabled_editing_value: Poista arvon muokkaus käytöstä
 key: Avain
 alias: Alias
 bigInteger: Suuri kokonaisluku
@@ -730,7 +729,6 @@ flows: Toiminnot
 flow: Vuo
 select_a_flow: Valitse Vuo
 run_flow_on_current_edited_confirm: Tämä kohde voidaan päivittää tällä Vuolla, oletko varma, että haluat suorittaa Vuon?
-run_flow_success: Vuon "{flow}" suoritus onnistui
 trigger: Laukaisija
 trigger_options: Liipaisun asetukset
 view_trigger: Näytä liipaisin
