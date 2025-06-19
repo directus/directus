@@ -3,4 +3,4 @@
 '@directus/api': patch
 ---
 
-Added key/value infomation to db errors
+Added key/value information to db errors
