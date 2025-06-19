@@ -58,7 +58,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		if (!matches) return error;
 
 		const collection = matches[0].slice(1, -1);
-		const field = null;
+		const field = matches[1]?.slice(1, -1) ?? null;
 
 		return new ValueOutOfRangeError({
 			collection,
@@ -79,7 +79,7 @@ export function extractError(error: PostgresError, data: Partial<Item>): Postgre
 		if (!matches) return error;
 
 		const collection = matches[0].slice(1, -1);
-		const field = null;
+		const field = matches[1]?.slice(1, -1) ?? null;
 
 		return new ValueTooLongError({
 			collection,
