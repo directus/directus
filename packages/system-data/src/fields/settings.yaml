@@ -679,7 +679,7 @@ fields:
 
   - field: project_id
     hidden: true
-    
+
   - field: accepted_terms
     interface: boolean
     width: half
