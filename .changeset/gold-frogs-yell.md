@@ -2,4 +2,11 @@
 '@directus/sdk': major
 ---
 
-Replaced email and password parameters with a payload that supports both regular and LDAP login. Improved parameter consistency between refresh and logout commands. Allowed overriding mode in refresh and logout commands to be inline with login. Brought logout and refresh command data payload conditions inline with composable equivalent.
+Added support for LDAP login and enhanced parameter consistency for refresh and logout commands
+
+::: notice
+The `login` method now accepts a payload object instead of separate email and password parameters. 
+This enables support for both standard and LDAP authentication, but requires updates to code that previously called `sdk.login(email, password)`. 
+The new usage is `sdk.login({ email, password })` or `sdk.login({ identifier, password })` for LDAP.
+:::
+
