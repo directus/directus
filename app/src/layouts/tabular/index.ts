@@ -154,18 +154,6 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 			selection.value = items.value.map((item) => item[pk.field]);
 		}
 
-		function calculateDefaultWidth(
-			fieldName: string,
-			options: { minWidth?: number; maxWidth?: number; defaultWidth?: number } = {},
-		): number {
-			const { minWidth = 100, maxWidth = 400, defaultWidth = 200 } = options;
-			if (!fieldName) return defaultWidth;
-			const avgCharWidth = 12;
-			const padding = 24;
-			const baseWidth = fieldName.length * avgCharWidth + padding;
-			return Math.max(minWidth, Math.min(maxWidth, baseWidth));
-		}
-
 		function useItemOptions() {
 			const page = syncRefProperty(layoutQuery, 'page', 1);
 			const limit = syncRefProperty(layoutQuery, 'limit', 25);
@@ -262,10 +250,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							description = fieldNames.join(' -> ');
 						}
 
-						const width =
-							localWidths.value[field.key] ||
-							layoutOptions.value?.widths?.[field.key] ||
-							calculateDefaultWidth(field.name);
+						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 160;
 
 						return {
 							text: field.name,
@@ -290,9 +275,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					const widths = {} as { [field: string]: number };
 
 					val.forEach((header) => {
-						if (header.width) {
-							widths[header.value] = header.width;
-						}
+						widths[header.value] = header.width ?? 160;
 					});
 
 					localWidths.value = widths;
