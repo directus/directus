@@ -534,7 +534,7 @@ export class FieldsService {
 							});
 						});
 					} catch (err: any) {
-						throw await translateDatabaseError(err);
+						throw await translateDatabaseError(err, field);
 					}
 				}
 			}

@@ -102,6 +102,9 @@ const { triggers } = getTriggers();
 
 const currentTrigger = computed(() => triggers.find((trigger) => trigger.id === values.trigger));
 
+const isFlowSetupDisabled = computed(() => !values.name || values.name.length === 0);
+const isFlowTriggerDisabled = computed(() => !values.trigger);
+
 const currentTriggerOptionFields = computed(() => {
 	if (!currentTrigger.value) return [];
 
@@ -137,6 +140,30 @@ async function save() {
 		saving.value = false;
 	}
 }
+
+function onApplyFlowSetup() {
+	if (isFlowSetupDisabled.value || saving.value) return;
+
+	if (!isNew.value) {
+		save();
+		return;
+	}
+
+	currentTab.value = ['trigger_setup'];
+}
+
+function onApply() {
+	if (saving.value) return;
+
+	if (currentTab.value[0] === 'trigger_setup' && !isFlowTriggerDisabled.value) {
+		save();
+		return;
+	}
+
+	if (currentTab.value[0] !== 'flow_setup') return;
+
+	onApplyFlowSetup();
+}
 </script>
 
 <template>
@@ -147,7 +174,7 @@ async function save() {
 		:model-value="active"
 		:sidebar-label="t(currentTab[0] as string)"
 		@cancel="$emit('cancel')"
-		@esc="$emit('cancel')"
+		@apply="onApply"
 	>
 		<template #sidebar>
 			<v-tabs v-model="currentTab" vertical>
@@ -236,18 +263,18 @@ async function save() {
 			<v-button
 				v-if="currentTab[0] === 'flow_setup'"
 				v-tooltip.bottom="isNew ? t('next') : t('save')"
-				:disabled="!values.name || values.name.length === 0"
+				:disabled="isFlowSetupDisabled"
 				:loading="saving"
 				icon
 				rounded
-				@click="isNew ? (currentTab = ['trigger_setup']) : save()"
+				@click="onApplyFlowSetup"
 			>
 				<v-icon :name="isNew ? 'arrow_forward' : 'check'" />
 			</v-button>
 			<v-button
 				v-if="currentTab[0] === 'trigger_setup'"
 				v-tooltip.bottom="isNew ? t('finish_setup') : t('save')"
-				:disabled="!values.trigger"
+				:disabled="isFlowTriggerDisabled"
 				:loading="saving"
 				icon
 				rounded

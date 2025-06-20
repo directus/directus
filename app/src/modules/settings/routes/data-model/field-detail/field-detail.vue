@@ -91,7 +91,7 @@ async function save() {
 </script>
 
 <template>
-	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @update:model-value="cancel">
+	<v-drawer :model-value="isOpen" :title="title" persistent @cancel="cancel" @apply="save" @update:model-value="cancel">
 		<field-detail-simple
 			v-if="!showAdvanced"
 			:collection="collectionInfo"

@@ -5,12 +5,15 @@ import { useRelationPermissionsM2O } from '@/composables/use-relation-permission
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import type { File } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import type { File, Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -19,14 +22,19 @@ const props = withDefaults(
 		disabled?: boolean;
 		loading?: boolean;
 		folder?: string;
+		filter?: Filter;
 		collection: string;
 		field: string;
 		width: string;
 		crop?: boolean;
 		letterbox?: boolean;
+		enableCreate?: boolean;
+		enableSelect?: boolean;
 	}>(),
 	{
 		crop: true,
+		enableCreate: true,
+		enableSelect: true,
 	},
 );
 
@@ -98,6 +106,10 @@ const meta = computed(() => {
 const editImageDetails = ref(false);
 const editImageEditor = ref(false);
 
+const internalDisabled = computed(() => {
+	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
+});
+
 async function imageErrorHandler() {
 	isImage.value = false;
 	if (!src.value) return;
@@ -112,6 +124,20 @@ async function imageErrorHandler() {
 		}
 	}
 }
+
+const values = inject('values', ref<Record<string, unknown>>({}));
+
+const customFilter = computed(() => {
+	return parseFilter(
+		deepMap(props.filter, (val: unknown) => {
+			if (val && typeof val === 'string') {
+				return render(val, values.value);
+			}
+
+			return val;
+		}),
+	);
+});
 
 function onUpload(image: any) {
 	if (image?.id) update(image.id);
@@ -140,7 +166,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
+		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
 			{{ t('no_image_selected') }}
 		</v-notice>
 
@@ -185,7 +211,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					<v-icon name="download" />
 				</v-button>
 
-				<template v-if="!disabled">
+				<template v-if="!internalDisabled">
 					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="edit" />
 					</v-button>
@@ -206,7 +232,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<drawer-item
 				v-if="image"
 				v-model:active="editImageDetails"
-				:disabled="disabled"
+				:disabled="internalDisabled"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -219,11 +245,19 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</template>
 			</drawer-item>
 
-			<image-editor v-if="!disabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<image-editor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
 			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>
-		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
+		<v-upload
+			v-else
+			from-url
+			:from-user="createAllowed && enableCreate"
+			:from-library="enableSelect"
+			:folder="folder"
+			:filter="customFilter"
+			@input="onUpload"
+		/>
 	</div>
 </template>
 
