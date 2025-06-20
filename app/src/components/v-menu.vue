@@ -142,6 +142,7 @@ function useActiveState() {
 
 	const { activate: activateFocusTrap, deactivate: deactivateFocusTrap } = useFocusTrap([menuEl, activator], {
 		escapeDeactivates: false,
+		initialFocus: false,
 		returnFocusOnDeactivate: !props.noFocusReturn,
 		allowOutsideClick: true,
 		clickOutsideDeactivates: props.closeOnClick,

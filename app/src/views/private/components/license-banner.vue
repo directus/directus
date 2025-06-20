@@ -76,6 +76,11 @@ const { info } = storeToRefs(useServerStore());
 	color: var(--theme--primary);
 	text-decoration: underline;
 	font-weight: 600;
+	transition: color var(--fast) var(--transition);
+
+	&:hover {
+		color: var(--theme--foreground);
+	}
 }
 
 .v-card .inner {

@@ -82,6 +82,7 @@ function useOverlayFocusTrap() {
 
 	const { activate, deactivate } = useFocusTrap(overlayEl, {
 		escapeDeactivates: false,
+		initialFocus: false,
 	});
 
 	watch(
