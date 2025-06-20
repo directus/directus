@@ -12,6 +12,7 @@ interface Props {
 	placement?: 'right' | 'center';
 	/** Lets other overlays (drawer) open on top */
 	keepBehind?: boolean;
+	noInitialFocus?: boolean;
 	applyShortcut?: ApplyShortcut;
 }
 
@@ -82,6 +83,7 @@ function useOverlayFocusTrap() {
 
 	const { activate, deactivate } = useFocusTrap(overlayEl, {
 		escapeDeactivates: false,
+		initialFocus: props.noInitialFocus ? false : undefined,
 	});
 
 	watch(

@@ -18,7 +18,7 @@ const { info } = storeToRefs(useServerStore());
 </script>
 
 <template>
-	<v-dialog>
+	<v-dialog no-initial-focus>
 		<v-card>
 			<div class="inner">
 				<!-- eslint-disable-next-line vue/no-v-html -->
