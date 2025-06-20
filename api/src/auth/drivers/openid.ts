@@ -242,7 +242,7 @@ export class OpenIDAuthDriver extends LocalAuthDriver {
 					break;
 				}
 			}
-		} else {
+		} else if (Object.keys(this.roleMap).length > 0) {
 			logger.debug(`[OpenID] Configured group claim with name "${groupClaimName}" does not exist or is empty.`);
 		}
 

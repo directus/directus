@@ -187,7 +187,7 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 					break;
 				}
 			}
-		} else {
+		} else if (Object.keys(this.roleMap).length > 0) {
 			logger.debug(`[OAuth2] Configured group claim with name "${groupClaimName}" does not exist or is empty.`);
 		}
 
