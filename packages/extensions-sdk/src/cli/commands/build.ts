@@ -548,12 +548,14 @@ function getRollupOptions({
 			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
-			replace({
-				values: {
-					'process.env.NODE_ENV': JSON.stringify('production'),
-				},
-				preventAssignment: true,
-			}),
+			mode === 'browser'
+				? replace({
+						values: {
+							'process.env.NODE_ENV': JSON.stringify('production'),
+						},
+						preventAssignment: true,
+				  })
+				: null,
 			minify ? terser() : null,
 		],
 		onwarn(warning, warn) {
