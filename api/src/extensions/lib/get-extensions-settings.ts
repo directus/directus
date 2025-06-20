@@ -74,7 +74,7 @@ export const getExtensionsSettings = async ({
 	) => {
 		let marketplaceId;
 
-		if (!extension.local) {
+		if (source === 'registry') {
 			const marketplace = await list({ search: extension.name });
 			marketplaceId = marketplace.data[0]?.id;
 		}
