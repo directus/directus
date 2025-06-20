@@ -20,6 +20,9 @@ import NotificationsGroup from './components/notifications-group.vue';
 import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
+import LicenseBanner from './components/license-banner.vue';
+import { useSettingsStore } from '@/stores/settings';
+import SkipMenu from './components/skip-menu.vue';
 
 const SIZES = {
 	moduleBarWidth: 60,
@@ -214,6 +217,7 @@ const mainResizeOptions = computed<ResizeableOptions>(() => {
 const navOpen = ref(false);
 const userStore = useUserStore();
 const appStore = useAppStore();
+const settingsStore = useSettingsStore();
 
 const appAccess = computed(() => {
 	if (!userStore.currentUser) return true;
@@ -251,6 +255,8 @@ function openSidebar(event: MouseEvent) {
 function getWidth(input: unknown, fallback: number): number {
 	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
+
+const showDialog = computed(() => userStore.isAdmin && settingsStore.settings?.accepted_terms === false);
 </script>
 
 <template>
@@ -263,6 +269,9 @@ function getWidth(input: unknown, fallback: number): number {
 	</v-info>
 
 	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
+		<LicenseBanner v-model="showDialog" />
+		<skip-menu section="nav" />
+
 		<aside
 			id="navigation"
 			role="navigation"
@@ -279,14 +288,19 @@ function getWidth(input: unknown, fallback: number): number {
 				@transition-end="onNavTransitionEnd"
 			>
 				<div class="module-nav alt-colors">
+					<skip-menu section="moduleNav" />
+
 					<project-info />
 
-					<div class="module-nav-content">
+					<div id="module-navigation" class="module-nav-content">
 						<slot name="navigation" />
 					</div>
 				</div>
 			</v-resizeable>
 		</aside>
+
+		<skip-menu section="main" />
+
 		<div id="main-content" ref="contentEl" class="content">
 			<header-bar
 				ref="headerBarEl"
@@ -321,6 +335,9 @@ function getWidth(input: unknown, fallback: number): number {
 				</div>
 			</div>
 		</div>
+
+		<skip-menu section="sidebar" />
+
 		<aside
 			id="sidebar"
 			ref="sidebarEl"

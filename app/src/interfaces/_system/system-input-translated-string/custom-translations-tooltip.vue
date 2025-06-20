@@ -54,7 +54,7 @@ const clicked = (toggleTooltip: () => void) => {
 					class="icon"
 					:class="{ active }"
 					name="info"
-					tabindex="-1"
+					clickable
 					@click.stop="clicked(toggle)"
 					@blur="deactivate"
 				></v-icon>

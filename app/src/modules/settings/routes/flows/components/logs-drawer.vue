@@ -4,14 +4,15 @@ import { computed, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 import { FlowRaw } from '@directus/types';
-import { useRevision } from '@/composables/use-revision';
+import VDetail from '@/components/v-detail.vue';
+import { Revision } from '@/types/revisions';
 
 const props = defineProps<{
-	revisionId?: number;
 	flow: FlowRaw;
+	revision: Revision;
 }>();
 
-const { revisionId, flow } = toRefs(props);
+const { flow, revision } = toRefs(props);
 
 const { t } = useI18n();
 
@@ -22,8 +23,6 @@ const usedTrigger = computed(() => {
 	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
 });
 
-const { revision, loading } = useRevision(revisionId);
-
 const triggerData = computed(() => {
 	if (!unref(revision)?.data) return { trigger: null, accountability: null, options: null };
 
@@ -32,6 +31,7 @@ const triggerData = computed(() => {
 	return {
 		trigger: data.$trigger,
 		accountability: data.$accountability,
+		options: flow.value.options,
 	};
 });
 
@@ -72,15 +72,13 @@ const steps = computed(() => {
 
 <template>
 	<v-drawer
-		:model-value="!!revisionId"
+		:model-value="!!revision"
 		:title="revision ? revision.timestampFormatted : t('logs')"
 		icon="fact_check"
 		@cancel="emit('close')"
-		@esc="emit('close')"
 	>
 		<div class="content">
-			<v-progress-linear v-if="!revision && loading" indeterminate />
-			<div v-else class="steps">
+			<div class="steps">
 				<div class="step">
 					<div class="header">
 						<span class="dot" />
@@ -91,6 +89,10 @@ const steps = computed(() => {
 					</div>
 
 					<div class="inset">
+						<v-detail v-if="triggerData.options" :label="t('options')">
+							<pre class="json selectable">{{ triggerData.options }}</pre>
+						</v-detail>
+
 						<v-detail v-if="triggerData.trigger" :label="t('payload')">
 							<pre class="json selectable">{{ triggerData.trigger }}</pre>
 						</v-detail>
@@ -126,58 +128,8 @@ const steps = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.v-progress-linear {
-	margin: 24px 0;
-}
-
 .content {
 	padding: var(--content-padding);
-}
-
-.log {
-	position: relative;
-	display: block;
-
-	button {
-		position: relative;
-		z-index: 2;
-		display: block;
-		width: 100%;
-		text-align: left;
-	}
-
-	&::before {
-		position: absolute;
-		top: -4px;
-		left: -4px;
-		z-index: 1;
-		width: calc(100% + 8px);
-		height: calc(100% + 8px);
-		background-color: var(--theme--background-accent);
-		border-radius: var(--theme--border-radius);
-		opacity: 0;
-		transition: opacity var(--fast) var(--transition);
-		content: '';
-		pointer-events: none;
-	}
-
-	&:hover {
-		cursor: pointer;
-
-		.header {
-			.dot {
-				border-color: var(--theme--background-accent);
-			}
-		}
-
-		&::before {
-			opacity: 1;
-		}
-	}
-
-	& + & {
-		margin-top: 8px;
-	}
 }
 
 .json {
@@ -253,16 +205,5 @@ const steps = computed(() => {
 			background-color: var(--theme--secondary);
 		}
 	}
-}
-
-.empty {
-	margin-left: 2px;
-	color: var(--theme--foreground-subdued);
-	font-style: italic;
-}
-
-.v-pagination {
-	justify-content: center;
-	margin-top: 24px;
 }
 </style>

@@ -9,6 +9,7 @@ import {
 
 import getDatabase from '../../index.js';
 import type { MSSQLError } from './types.js';
+import type { Item } from '@directus/types';
 
 enum MSSQLErrorCodes {
 	FOREIGN_KEY_VIOLATION = 547,
@@ -18,166 +19,170 @@ enum MSSQLErrorCodes {
 	VALUE_LIMIT_VIOLATION = 2628,
 }
 
-export async function extractError(error: MSSQLError): Promise<MSSQLError | Error> {
+export async function extractError(error: MSSQLError, data: Partial<Item>): Promise<MSSQLError | Error> {
 	switch (error.number) {
 		case MSSQLErrorCodes.UNIQUE_VIOLATION:
 		case 2627:
-			return await uniqueViolation(error);
+			return await uniqueViolation();
 		case MSSQLErrorCodes.NUMERIC_VALUE_OUT_OF_RANGE:
-			return numericValueOutOfRange(error);
+			return numericValueOutOfRange();
 		case MSSQLErrorCodes.VALUE_LIMIT_VIOLATION:
-			return valueLimitViolation(error);
+			return valueLimitViolation();
 		case MSSQLErrorCodes.NOT_NULL_VIOLATION:
-			return notNullViolation(error);
+			return notNullViolation();
 		case MSSQLErrorCodes.FOREIGN_KEY_VIOLATION:
-			return foreignKeyViolation(error);
+			return foreignKeyViolation();
 	}
 
 	return error;
-}
 
-async function uniqueViolation(error: MSSQLError) {
-	/**
-	 * NOTE:
-	 * SQL Server doesn't return the name of the offending column when a unique constraint is thrown:
-	 *
-	 * insert into [articles] ([unique]) values (@p0)
-	 * - Violation of UNIQUE KEY constraint 'UQ__articles__5A062640242004EB'.
-	 * Cannot insert duplicate key in object 'dbo.articles'. The duplicate key value is (rijk).
-	 *
-	 * While it's not ideal, the best next thing we can do is extract the column name from
-	 * information_schema when this happens
-	 */
+	async function uniqueViolation() {
+		/**
+		 * NOTE:
+		 * SQL Server doesn't return the name of the offending column when a unique constraint is thrown:
+		 *
+		 * insert into [articles] ([unique]) values (@p0)
+		 * - Violation of UNIQUE KEY constraint 'UQ__articles__5A062640242004EB'.
+		 * Cannot insert duplicate key in object 'dbo.articles'. The duplicate key value is (rijk).
+		 *
+		 * While it's not ideal, the best next thing we can do is extract the column name from
+		 * information_schema when this happens
+		 */
 
-	const betweenQuotes = /'([^']+)'/g;
-	const betweenParens = /\(([^)]+)\)/g;
+		const betweenQuotes = /'([^']+)'/g;
+		const betweenParens = /\(([^)]+)\)/g;
 
-	const quoteMatches = error.message.match(betweenQuotes);
-	const parenMatches = error.message.match(betweenParens);
+		const quoteMatches = error.message.match(betweenQuotes);
+		const parenMatches = error.message.match(betweenParens);
 
-	if (!quoteMatches || !parenMatches) return error;
+		if (!quoteMatches || !parenMatches) return error;
 
-	const keyName = quoteMatches[1]!.slice(1, -1);
+		const keyName = quoteMatches[1]!.slice(1, -1);
 
-	let collection = quoteMatches[0]!.slice(1, -1);
-	let field: string | null = null;
+		let collection = quoteMatches[0]!.slice(1, -1);
+		let field: string | null = null;
 
-	if (keyName) {
-		const database = getDatabase();
+		if (keyName) {
+			const database = getDatabase();
 
-		const constraintUsage = await database
-			.select('sys.columns.name as field', database.raw('OBJECT_NAME(??) as collection', ['sys.columns.object_id']))
-			.from('sys.indexes')
-			.innerJoin('sys.index_columns', (join) => {
-				join
-					.on('sys.indexes.object_id', '=', 'sys.index_columns.object_id')
-					.andOn('sys.indexes.index_id', '=', 'sys.index_columns.index_id');
-			})
-			.innerJoin('sys.columns', (join) => {
-				join
-					.on('sys.index_columns.object_id', '=', 'sys.columns.object_id')
-					.andOn('sys.index_columns.column_id', '=', 'sys.columns.column_id');
-			})
-			.where('sys.indexes.name', '=', keyName)
-			.first();
+			const constraintUsage = await database
+				.select('sys.columns.name as field', database.raw('OBJECT_NAME(??) as collection', ['sys.columns.object_id']))
+				.from('sys.indexes')
+				.innerJoin('sys.index_columns', (join) => {
+					join
+						.on('sys.indexes.object_id', '=', 'sys.index_columns.object_id')
+						.andOn('sys.indexes.index_id', '=', 'sys.index_columns.index_id');
+				})
+				.innerJoin('sys.columns', (join) => {
+					join
+						.on('sys.index_columns.object_id', '=', 'sys.columns.object_id')
+						.andOn('sys.index_columns.column_id', '=', 'sys.columns.column_id');
+				})
+				.where('sys.indexes.name', '=', keyName)
+				.first();
 
-		collection = constraintUsage?.collection;
-		field = constraintUsage?.field;
+			collection = constraintUsage?.collection;
+			field = constraintUsage?.field;
+		}
+
+		return new RecordNotUniqueError({
+			collection,
+			field,
+			value: field ? data[field] : null,
+		});
 	}
 
-	return new RecordNotUniqueError({
-		collection,
-		field,
-	});
-}
+	function numericValueOutOfRange() {
+		const betweenBrackets = /\[([^\]]+)\]/g;
 
-function numericValueOutOfRange(error: MSSQLError) {
-	const betweenBrackets = /\[([^\]]+)\]/g;
+		const bracketMatches = error.message.match(betweenBrackets);
 
-	const bracketMatches = error.message.match(betweenBrackets);
+		if (!bracketMatches) return error;
 
-	if (!bracketMatches) return error;
+		const collection = bracketMatches[0].slice(1, -1);
 
-	const collection = bracketMatches[0].slice(1, -1);
+		/**
+		 * NOTE
+		 * MS SQL Doesn't return the offending column name in the error, nor any other identifying information
+		 * we can use to extract the column name :(
+		 *
+		 * insert into [test1] ([small]) values (@p0)
+		 * - Arithmetic overflow error for data type tinyint, value = 50000.
+		 */
 
-	/**
-	 * NOTE
-	 * MS SQL Doesn't return the offending column name in the error, nor any other identifying information
-	 * we can use to extract the column name :(
-	 *
-	 * insert into [test1] ([small]) values (@p0)
-	 * - Arithmetic overflow error for data type tinyint, value = 50000.
-	 */
+		const field = null;
 
-	const field = null;
-
-	return new ValueOutOfRangeError({
-		collection,
-		field,
-	});
-}
-
-function valueLimitViolation(error: MSSQLError) {
-	const betweenBrackets = /\[([^\]]+)\]/g;
-	const betweenQuotes = /'([^']+)'/g;
-
-	const bracketMatches = error.message.match(betweenBrackets);
-	const quoteMatches = error.message.match(betweenQuotes);
-
-	if (!bracketMatches || !quoteMatches) return error;
-
-	const collection = bracketMatches[0].slice(1, -1);
-	const field = quoteMatches[1]!.slice(1, -1);
-
-	return new ValueTooLongError({
-		collection,
-		field,
-	});
-}
-
-function notNullViolation(error: MSSQLError) {
-	const betweenBrackets = /\[([^\]]+)\]/g;
-	const betweenQuotes = /'([^']+)'/g;
-
-	const bracketMatches = error.message.match(betweenBrackets);
-	const quoteMatches = error.message.match(betweenQuotes);
-
-	if (!bracketMatches || !quoteMatches) return error;
-
-	const collection = bracketMatches[0].slice(1, -1);
-	const field = quoteMatches[0].slice(1, -1);
-
-	if (error.message.includes('Cannot insert the value NULL into column')) {
-		return new ContainsNullValuesError({ collection, field });
+		return new ValueOutOfRangeError({
+			collection,
+			field,
+			value: field ? data[field] : null,
+		});
 	}
 
-	return new NotNullViolationError({
-		collection,
-		field,
-	});
-}
+	function valueLimitViolation() {
+		const betweenBrackets = /\[([^\]]+)\]/g;
+		const betweenQuotes = /'([^']+)'/g;
 
-function foreignKeyViolation(error: MSSQLError) {
-	const betweenUnderscores = /__(.+)__/g;
-	const betweenParens = /\(([^)]+)\)/g;
+		const bracketMatches = error.message.match(betweenBrackets);
+		const quoteMatches = error.message.match(betweenQuotes);
 
-	// NOTE:
-	// Seeing that MS SQL doesn't return the offending column name, we have to extract it from the
-	// foreign key constraint name as generated by the database. This'll probably fail if you have
-	// custom names for whatever reason.
+		if (!bracketMatches || !quoteMatches) return error;
 
-	const underscoreMatches = error.message.match(betweenUnderscores);
-	const parenMatches = error.message.match(betweenParens);
+		const collection = bracketMatches[0].slice(1, -1);
+		const field = quoteMatches[1]!.slice(1, -1);
 
-	if (!underscoreMatches || !parenMatches) return error;
+		return new ValueTooLongError({
+			collection,
+			field,
+			value: field ? data[field] : null,
+		});
+	}
 
-	const underscoreParts = underscoreMatches[0].split('__');
+	function notNullViolation() {
+		const betweenBrackets = /\[([^\]]+)\]/g;
+		const betweenQuotes = /'([^']+)'/g;
 
-	const collection = underscoreParts[1]!;
-	const field = underscoreParts[2]!;
+		const bracketMatches = error.message.match(betweenBrackets);
+		const quoteMatches = error.message.match(betweenQuotes);
 
-	return new InvalidForeignKeyError({
-		collection,
-		field,
-	});
+		if (!bracketMatches || !quoteMatches) return error;
+
+		const collection = bracketMatches[0].slice(1, -1);
+		const field = quoteMatches[0].slice(1, -1);
+
+		if (error.message.includes('Cannot insert the value NULL into column')) {
+			return new ContainsNullValuesError({ collection, field });
+		}
+
+		return new NotNullViolationError({
+			collection,
+			field,
+		});
+	}
+
+	function foreignKeyViolation() {
+		const betweenUnderscores = /__(.+)__/g;
+		const betweenParens = /\(([^)]+)\)/g;
+
+		// NOTE:
+		// Seeing that MS SQL doesn't return the offending column name, we have to extract it from the
+		// foreign key constraint name as generated by the database. This'll probably fail if you have
+		// custom names for whatever reason.
+
+		const underscoreMatches = error.message.match(betweenUnderscores);
+		const parenMatches = error.message.match(betweenParens);
+
+		if (!underscoreMatches || !parenMatches) return error;
+
+		const underscoreParts = underscoreMatches[0].split('__');
+
+		const collection = underscoreParts[1]!;
+		const field = underscoreParts[2]!;
+
+		return new InvalidForeignKeyError({
+			collection,
+			field,
+			value: field ? data[field] : null,
+		});
+	}
 }

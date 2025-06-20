@@ -5,25 +5,27 @@ import {
 	RecordNotUniqueError,
 } from '@directus/errors';
 import type { SQLiteError } from './types.js';
+import type { Item } from '@directus/types';
 
 // NOTE:
 // - Sqlite doesn't have varchar with length support, so no ValueTooLongError
 // - Sqlite doesn't have a max range for numbers, so no ValueOutOfRangeError
 
-export function extractError(error: SQLiteError): SQLiteError | Error {
+export function extractError(error: SQLiteError, data: Partial<Item>): SQLiteError | Error {
 	if (error.message.includes('SQLITE_CONSTRAINT: NOT NULL')) {
 		return notNullConstraint(error);
 	}
 
 	if (error.message.includes('SQLITE_CONSTRAINT: UNIQUE')) {
 		const errorParts = error.message.split(' ');
-		const [table, column] = errorParts[errorParts.length - 1]!.split('.');
+		const [table, field] = errorParts[errorParts.length - 1]!.split('.');
 
-		if (!table || !column) return error;
+		if (!table || !field) return error;
 
 		return new RecordNotUniqueError({
 			collection: table,
-			field: column,
+			field,
+			value: field ? data[field] : null,
 		});
 	}
 
@@ -33,7 +35,7 @@ export function extractError(error: SQLiteError): SQLiteError | Error {
 		 * SQLite doesn't return any useful information in it's foreign key constraint failed error, so
 		 * we can't extract the table/column/value accurately
 		 */
-		return new InvalidForeignKeyError({ collection: null, field: null });
+		return new InvalidForeignKeyError({ collection: null, field: null, value: null });
 	}
 
 	return error;

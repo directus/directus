@@ -1,25 +1,45 @@
-import { describe, expect, it } from 'vitest';
+import { expect, test } from 'vitest';
 import { deepMap } from './deep-map.js';
 
-describe('deepMap', () => {
-	const mockIterator = (val: any, _key: string | number) => {
-		return `Test ${val}`;
-	};
+for (const value of [123, 'abc', null, undefined, true, false, new Date()]) {
+	test(`primitive value ${value}`, () => {
+		const result = deepMap(value, () => 'unreachable');
 
-	it('returns an object mapped where values are the return of the iterator', () => {
-		const mockObject = { _and: [{ field: { _eq: 'field' } }] };
-		expect(deepMap(mockObject, mockIterator)).toStrictEqual({ _and: [{ field: { _eq: 'Test field' } }] });
+		expect(result).toEqual(value);
 	});
+}
 
-	it('returns object param when passed neither an object or an array.', () => {
-		const mockObject = 'test string';
+test('keep deep complex objects', () => {
+	const now = new Date();
+	const result = deepMap({ key: now }, (val) => val);
+	expect(result).toEqual({ key: now });
+});
 
-		expect(deepMap(mockObject, mockIterator)).toBe(mockObject);
-	});
+test('array mapping to string', () => {
+	const result = deepMap([123, 'abc', true, [123, 'abc', true]], (val) => String(val));
+	expect(result).toEqual(['123', 'abc', 'true', ['123', 'abc', 'true']]);
+});
 
-	it('returns an array of the iterators vals', () => {
-		const mockObject = ['test', 'test2'];
+test('object mapping to string', () => {
+	const result = deepMap({ a: 'abc', b: 123, c: true, d: { 1: 'abc', 2: 123, 3: true } }, (val) => String(val));
+	expect(result).toEqual({ a: 'abc', b: '123', c: 'true', d: { 1: 'abc', 2: '123', 3: 'true' } });
+});
 
-		expect(deepMap(mockObject, mockIterator)).toStrictEqual(['Test test', 'Test test2']);
-	});
+test('turning key into value', () => {
+	const result = deepMap({ a: 1, b: [undefined, true, 'whatever'], c: { d: 'deep' } }, (_, key) => key);
+	expect(result).toEqual({ a: 'a', b: [0, 1, 2], c: { d: 'd' } });
+});
+
+test("don't mutate original object", () => {
+	const instance = { a: 123 };
+	const result = deepMap(instance, (value) => value + 1);
+	expect(result === instance).toBeFalsy();
+	expect(result).toEqual({ a: 124 });
+});
+
+test("don't mutate original array", () => {
+	const instance = [123];
+	const result = deepMap(instance, (value) => value + 1);
+	expect(result === instance).toBeFalsy();
+	expect(result).toEqual([124]);
 });
