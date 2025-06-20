@@ -1,6 +1,7 @@
-import type { Accountability, DeepPartial, Field, FlowRaw } from '@directus/types';
+import type { Accountability, DeepPartial, FlowRaw } from '@directus/types';
 import type { ComponentOptions } from 'vue';
 import type { ApiExtensionContext } from './api-extension-context.js';
+import type { AppField } from './index.js';
 
 export type OperationContext = ApiExtensionContext & {
 	data: Record<string, unknown>;
@@ -26,8 +27,8 @@ export interface OperationAppConfig {
 		| ComponentOptions
 		| null;
 	options:
-		| DeepPartial<Field>[]
-		| ((options: Record<string, any>) => DeepPartial<Field>[])
+		| DeepPartial<AppField>[]
+		| ((options: Record<string, any>) => DeepPartial<AppField>[])
 		| Exclude<ComponentOptions, any>
 		| null;
 }
