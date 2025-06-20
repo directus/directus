@@ -20,7 +20,7 @@ import type { PrimaryKey } from '@directus/types';
 import { useHead } from '@unhead/vue';
 import { computed, onBeforeUnmount, ref, toRefs, unref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import ContentNavigation from '../components/navigation.vue';
 import VersionMenu from '../components/version-menu.vue';
 import ContentNotFound from './not-found.vue';
@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t, te } = useI18n();
 
 const router = useRouter();
+const { collectionRoute } = useCollectionRoute();
 
 const form = ref<HTMLElement>();
 
@@ -338,14 +339,14 @@ function navigateBack() {
 		return;
 	}
 
-	router.push(getCollectionRoute(props.collection));
+	router.push(collectionRoute.value);
 }
 
 function useBreadcrumb() {
 	const breadcrumb = computed(() => [
 		{
 			name: collectionInfo.value?.name,
-			to: getCollectionRoute(props.collection),
+			to: collectionRoute.value,
 		},
 	]);
 
@@ -422,17 +423,19 @@ async function saveAndQuit() {
 
 	try {
 		await save();
-		if (props.singleton === false) router.push(getCollectionRoute(props.collection));
+		if (props.singleton === false) router.push(collectionRoute.value);
 	} catch {
 		// Save shows unexpected error dialog
 	}
 }
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	try {
 		await remove();
 		edits.value = {};
-		router.replace(getCollectionRoute(props.collection));
+		router.replace(collectionRoute.value);
 	} catch {
 		// `remove` will show the unexpected error dialog
 	} finally {
@@ -441,11 +444,13 @@ async function deleteAndQuit() {
 }
 
 async function toggleArchive() {
+	if (archiving.value) return;
+
 	try {
 		await archive();
 
 		if (isArchived.value === true) {
-			router.push(getCollectionRoute(props.collection));
+			router.push(collectionRoute.value);
 		} else {
 			confirmArchive.value = false;
 		}
@@ -481,6 +486,18 @@ const shouldShowVersioning = computed(
 		readVersionsAllowed.value &&
 		!versionsLoading.value,
 );
+
+function useCollectionRoute() {
+	const route = useRoute();
+
+	const collectionRoute = computed(() => {
+		const collectionPath = getCollectionRoute(props.collection);
+		if (route.query.bookmark) return `${collectionPath}?bookmark=${route.query.bookmark}`;
+		return collectionPath;
+	});
+
+	return { collectionRoute };
+}
 </script>
 
 <template>
@@ -508,7 +525,7 @@ const shouldShowVersioning = computed(
 				<render-template
 					:collection="collectionInfo.collection"
 					:item="templateData"
-					:template="collectionInfo.meta.display_template"
+					:template="collectionInfo.meta!.display_template"
 				/>
 			</h1>
 		</template>
@@ -584,6 +601,7 @@ const shouldShowVersioning = computed(
 				v-model="confirmDelete"
 				:disabled="deleteAllowed === false"
 				@esc="confirmDelete = false"
+				@apply="deleteAndQuit"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -619,6 +637,7 @@ const shouldShowVersioning = computed(
 				v-model="confirmArchive"
 				:disabled="archiveAllowed === false"
 				@esc="confirmArchive = false"
+				@apply="toggleArchive"
 			>
 				<template #activator="{ on }">
 					<v-button
@@ -725,7 +744,7 @@ const shouldShowVersioning = computed(
 			:version="currentVersion"
 		/>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -806,7 +825,9 @@ const shouldShowVersioning = computed(
 	width: 260px;
 }
 
-:deep(.version-more-options.v-icon) {
+.version-more-options.v-icon {
+	--focus-ring-offset: var(--focus-ring-offset-invert);
+
 	color: var(--theme--foreground-subdued);
 
 	&:hover {

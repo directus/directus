@@ -31,6 +31,10 @@ draft: Draft
 archived: Archived
 marketplace: Marketplace
 extensions: Extensions
+skip_link_nav: Skip to Navigation
+skip_link_module_nav: Skip to Module Navigation
+skip_link_main: Skip to Main Content
+skip_link_sidebar: Skip to Sidebar
 modules: Modules
 module_bar: Module Bar
 logs: Logs
@@ -746,6 +750,7 @@ errors:
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
   CONTAINS_NULL_VALUES: Field contains null values
   CONTENT_TOO_LARGE: Submitted item/file is too large
+  FAILED_VALIDATION: Validation failed
   FIELD_NOT_FOUND: Field not found
   FORBIDDEN: Forbidden
   GRAPHQL_VALIDATION: GraphQL Validation
@@ -2587,3 +2592,14 @@ search_flow: Search Flow...
 percent: Percent
 show_password: Show password
 hide_password: Hide password
+bsl_banner:
+  welcome_to_directus: Welcome to Directus!
+  directus_free_use:
+    Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
+  organization_threshold: Entities above this threshold require a paid license.
+  license_agreement: By clicking "Accept", you agree to the {directusBsl} and {privacyPolicy}.
+  directus_bsl: Directus BSL 1.1
+  privacy_policy: Privacy Policy
+  accept_terms: Accept
+  get_license: Get a License
+accepted: Accepted
