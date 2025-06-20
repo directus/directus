@@ -20,7 +20,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import type { AbstractServiceOptions, ActionEventParams, MutationOptions, RequestContext } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 
@@ -53,7 +53,7 @@ export class PayloadService {
 	helpers: Helpers;
 	collection: string;
 	schema: SchemaOverview;
-	nested: string[];
+	requestContext: RequestContext = { customContext: {}, nested: [] };
 
 	constructor(collection: string, options: AbstractServiceOptions) {
 		this.accountability = options.accountability || null;
@@ -61,7 +61,8 @@ export class PayloadService {
 		this.helpers = getHelpers(this.knex);
 		this.collection = collection;
 		this.schema = options.schema;
-		this.nested = options.nested ?? [];
+		this.requestContext.nested = options.nested ?? [];
+		this.requestContext.customContext = options.customContext ?? {};
 
 		return this;
 	}
@@ -510,7 +511,8 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [...this.nested, relation.field],
+				nested: [...this.requestContext.nested, relation.field],
+				customContext: this.requestContext.customContext,
 			});
 
 			const relatedPrimaryKeyField = this.schema.collections[relatedCollection]!.primary;
@@ -601,7 +603,8 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [...this.nested, relation.field],
+				nested: [...this.requestContext.nested, relation.field],
+				customContext: this.requestContext.customContext,
 			});
 
 			const relatedRecord: Partial<Item> = payload[relation.field];
@@ -694,7 +697,8 @@ export class PayloadService {
 				accountability: this.accountability,
 				knex: this.knex,
 				schema: this.schema,
-				nested: [...this.nested, relation.meta!.one_field!],
+				nested: [...this.requestContext.nested, relation.meta!.one_field!],
+				customContext: this.requestContext.customContext,
 			});
 
 			const recordsToUpsert: Partial<Item>[] = [];
