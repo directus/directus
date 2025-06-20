@@ -76,7 +76,7 @@ export const getExtensionsSettings = async ({
 
 		if (source === 'registry') {
 			const marketplace = await list({ search: extension.name });
-			marketplaceId = marketplace.data[0]?.id;
+			marketplaceId = marketplace.data.find((ext) => ext.name === extension.name)?.id;
 		}
 
 		const id = marketplaceId ?? randomUUID();
