@@ -351,7 +351,7 @@ function clearFilters() {
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon class="toggle" name="bookmark" clickable @click="on" />
+							<v-icon v-tooltip.bottom="t('create_bookmark')" class="toggle" name="bookmark" clickable @click="on" />
 						</template>
 					</bookmark-add>
 
