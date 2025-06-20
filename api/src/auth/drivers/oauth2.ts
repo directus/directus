@@ -177,9 +177,13 @@ export class OAuth2AuthDriver extends LocalAuthDriver {
 
 		let role = this.config['defaultRoleId'];
 		const groupClaimName: string = this.config['groupClaimName'] ?? 'groups';
-		const groups = userInfo[groupClaimName];
+		let groups: string[] = [];
 
-		if (Array.isArray(groups)) {
+		if (userInfo[groupClaimName]) {
+			groups = toArray(userInfo[groupClaimName])
+		}
+
+		if (groups.length > 0) {
 			for (const key in this.roleMap) {
 				if (groups.includes(key)) {
 					// Overwrite default role if user is member of a group specified in roleMap
