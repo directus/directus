@@ -199,6 +199,7 @@ export default defineLayout<LayoutOptions>({
 						await api.patch(`${endpoint}/${info.event.id}`, itemChanges);
 					} catch (error) {
 						unexpectedError(error);
+						info.revert();
 					}
 				},
 			};
