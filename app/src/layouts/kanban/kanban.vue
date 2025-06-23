@@ -414,7 +414,6 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 				.image {
 					width: 100%;
-					margin-top: 10px;
 					border-radius: var(--theme--border-radius);
 					margin-top: 4px;
 					max-height: 300px;

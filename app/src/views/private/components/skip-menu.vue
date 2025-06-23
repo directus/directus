@@ -57,7 +57,6 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 	&:focus-within {
 		width: auto;
 		height: auto;
-		padding: 0;
 		margin: 0;
 		overflow: visible;
 		clip: auto;
