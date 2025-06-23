@@ -87,25 +87,33 @@ export function useFolders(rootFolder?: Ref<string | undefined>, local?: Ref<boo
 }
 
 export function nestFolders(rawFolders: FolderRaw[]): FolderRaw[] {
-	return rawFolders.map((rawFolder) => nestChildren(rawFolder, rawFolders)).filter((folder) => folder.parent === null);
-}
+	// Map to track all parent folders and their children
+	const childrenMap = new Map<string, FolderRaw[]>();
 
-export function nestChildren(rawFolder: FolderRaw, rawFolders: FolderRaw[]): FolderRaw & Folder {
-	const folder: FolderRaw & Folder = { ...rawFolder };
-
-	const children = rawFolders.reduce<FolderRaw[]>((acc, childFolder) => {
-		if (childFolder.parent === rawFolder.id && childFolder.id !== rawFolder.id) {
-			acc.push(nestChildren(childFolder, rawFolders));
+	// Map each parent folder to its children
+	for (const folder of rawFolders) {
+		if (folder.parent) {
+			const children = childrenMap.get(folder.parent) || [];
+			children.push(folder);
+			childrenMap.set(folder.parent, children);
 		}
-
-		return acc;
-	}, []);
-
-	if (children.length > 0) {
-		folder.children = children;
 	}
 
-	return folder;
+	// Recursively build out folder tree structure
+	const buildTree = (folder: FolderRaw): FolderRaw & Folder => {
+		const children = childrenMap.get(folder.id) || [];
+
+		if (children.length > 0) {
+			return {
+				...folder,
+				children: children.map(buildTree),
+			};
+		}
+
+		return { ...folder };
+	};
+
+	return rawFolders.filter((folder) => folder.parent === null).map(buildTree);
 }
 
 function findFolder(folders: Folder[] | null, id: string | undefined): Folder[] | null {

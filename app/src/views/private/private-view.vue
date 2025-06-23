@@ -20,6 +20,8 @@ import NotificationsGroup from './components/notifications-group.vue';
 import NotificationsPreview from './components/notifications-preview.vue';
 import ProjectInfo from './components/project-info.vue';
 import SidebarDetailGroup from './components/sidebar-detail-group.vue';
+import LicenseBanner from './components/license-banner.vue';
+import { useSettingsStore } from '@/stores/settings';
 import SkipMenu from './components/skip-menu.vue';
 
 const SIZES = {
@@ -215,6 +217,7 @@ const mainResizeOptions = computed<ResizeableOptions>(() => {
 const navOpen = ref(false);
 const userStore = useUserStore();
 const appStore = useAppStore();
+const settingsStore = useSettingsStore();
 
 const appAccess = computed(() => {
 	if (!userStore.currentUser) return true;
@@ -252,6 +255,8 @@ function openSidebar(event: MouseEvent) {
 function getWidth(input: unknown, fallback: number): number {
 	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
+
+const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.settings?.accepted_terms === false);
 </script>
 
 <template>
@@ -358,6 +363,8 @@ function getWidth(input: unknown, fallback: number): number {
 		<notifications-drawer />
 		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
 		<notification-dialogs />
+
+		<license-banner v-model="showLicenseBanner" />
 	</div>
 </template>
 
