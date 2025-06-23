@@ -10,11 +10,11 @@ on:
       - packages/**
       - package.json
       - pnpm-lock.yaml
-      - .github/workflows/blackbox.yml
+      - .github/workflows/blackbox-lts.yml
   workflow_call:
 
 concurrency:
-  group: blackbox-${{ github.ref }}
+  group: blackbox-lts-${{ github.ref }}
   cancel-in-progress: true
 
 env:
