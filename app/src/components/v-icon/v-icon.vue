@@ -72,18 +72,19 @@ function emitClick(event: MouseEvent) {
 </script>
 
 <template>
-	<span
+	<component
+		:is="clickable ? 'button' : 'span'"
+		:type="clickable ? 'button' : undefined"
 		class="v-icon"
 		:class="[sizeClass, { 'has-click': !disabled && clickable, left, right }]"
-		:role="clickable ? 'button' : undefined"
-		:tabindex="clickable ? 0 : undefined"
+		:disabled="clickable ? disabled : undefined"
 		:style="{ '--v-icon-color': color }"
 		@click="emitClick"
 	>
 		<component :is="customIconName" v-if="customIconName" />
 		<SocialIcon v-else-if="socialIconName" :name="socialIconName" />
 		<i v-else :class="{ filled }" :data-icon="name"></i>
-	</span>
+	</component>
 </template>
 
 <style lang="scss" scoped>
@@ -154,7 +155,6 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.has-click {
-		cursor: pointer;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {

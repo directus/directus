@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { i18n } from '@/lang';
+import { translateShortcut } from '@/utils/translate-shortcut';
 import HeaderBar from '@/views/private/components/header-bar.vue';
 import { computed, provide, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { type ApplyShortcut } from './v-dialog.vue';
 import VResizeable from './v-resizeable.vue';
 
 export interface Props {
@@ -16,6 +18,7 @@ export interface Props {
 	cancelable?: boolean;
 	headerShadow?: boolean;
 	smallHeader?: boolean;
+	applyShortcut?: ApplyShortcut;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -29,7 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
 	smallHeader: false,
 });
 
-const emit = defineEmits(['cancel', 'update:modelValue']);
+const emit = defineEmits(['cancel', 'apply', 'update:modelValue']);
 
 const { t } = useI18n();
 
@@ -55,7 +58,14 @@ const internalActive = computed({
 </script>
 
 <template>
-	<v-dialog v-model="internalActive" :persistent="persistent" placement="right" @esc="cancelable && $emit('cancel')">
+	<v-dialog
+		v-model="internalActive"
+		:persistent="persistent"
+		placement="right"
+		:apply-shortcut
+		@apply="$emit('apply')"
+		@esc="cancelable && $emit('cancel')"
+	>
 		<template #activator="{ on }">
 			<slot name="activator" v-bind="{ on }" />
 		</template>
@@ -63,7 +73,7 @@ const internalActive = computed({
 		<article class="v-drawer">
 			<v-button
 				v-if="cancelable"
-				v-tooltip.bottom="t('cancel')"
+				v-tooltip.bottom="`${t('cancel')} (${translateShortcut(['esc'])})`"
 				class="cancel"
 				icon
 				rounded
@@ -142,6 +152,8 @@ const internalActive = computed({
 	background-color: var(--theme--background);
 
 	.cancel {
+		--focus-ring-color: var(--theme--primary-subdued);
+
 		display: none;
 		position: absolute;
 		top: 32px;
@@ -228,6 +240,7 @@ const internalActive = computed({
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
+			scroll-padding-top: 100px;
 
 			@media (min-width: 600px) {
 				--content-padding: 32px;

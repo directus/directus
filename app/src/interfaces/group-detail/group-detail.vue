@@ -27,6 +27,7 @@ const props = withDefaults(
 		batchActiveFields: () => [],
 		validationErrors: () => [],
 		start: 'open',
+		headerColor: 'var(--theme--foreground-accent)',
 	},
 );
 
@@ -90,29 +91,23 @@ watch(validationMessages, (newVal, oldVal) => {
 <template>
 	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
 		<template #activator="{ toggle, active }">
-			<v-divider
-				:style="{
-					'--v-divider-label-color': headerColor,
-				}"
-				:class="{ active, edited }"
-				:inline-title="false"
-				large
-				@click="toggle"
-			>
-				<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
-				<template v-if="field.name">
-					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-					<span class="title">{{ field.name }}</span>
-				</template>
-				<v-icon
-					v-if="!active && validationMessages!.length > 0"
-					v-tooltip="validationMessages!.join('\n')"
-					class="warning"
-					name="error"
-					small
-				/>
-				<v-icon class="expand-icon" name="expand_more" />
-			</v-divider>
+			<button class="toggle-btn" type="button" @click="toggle">
+				<v-divider :class="{ active, edited }" :inline-title="false" large>
+					<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
+					<template v-if="field.name">
+						<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+						<span class="title">{{ field.name }}</span>
+					</template>
+					<v-icon
+						v-if="!active && validationMessages!.length > 0"
+						v-tooltip="validationMessages!.join('\n')"
+						class="warning"
+						name="error"
+						small
+					/>
+					<v-icon class="expand-icon" name="expand_more" />
+				</v-divider>
+			</button>
 		</template>
 
 		<v-form
@@ -139,8 +134,18 @@ watch(validationMessages, (newVal, oldVal) => {
 	padding-top: calc(var(--theme--form--row-gap) / 2);
 }
 
+.toggle-btn {
+	display: block;
+	width: 100%;
+	text-align: left;
+
+	&:focus-visible :deep(hr) {
+		opacity: 0;
+	}
+}
+
 .v-divider {
-	cursor: pointer;
+	--v-divider-label-color: v-bind(headerColor);
 }
 
 .v-divider .expand-icon {

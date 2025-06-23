@@ -1,9 +1,10 @@
 import type { Relation, RelationMeta } from '@directus/types';
+import { getRelation } from '@directus/utils';
 import { getRelationType } from './get-relation-type.js';
 
 type RelationInfo = {
 	relation: Relation | null;
-	relationType: string | null;
+	relationType: 'o2m' | 'm2o' | 'a2o' | 'o2a' | null;
 };
 
 function checkImplicitRelation(field: string) {
@@ -51,14 +52,7 @@ export function getRelationInfo(relations: Relation[], collection: string, field
 		}
 	}
 
-	const relation =
-		relations.find((relation) => {
-			return (
-				(relation.collection === collection && relation.field === field) ||
-				(relation.related_collection === collection && relation.meta?.one_field === field)
-			);
-		}) ?? null;
-
+	const relation = getRelation(relations, collection, field) ?? null;
 	const relationType = relation ? getRelationType({ relation, collection, field }) : null;
 
 	return { relation, relationType };

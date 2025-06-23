@@ -1,11 +1,14 @@
 import { Action } from '@directus/constants';
 import type { Knex } from 'knex';
+import { getHelpers } from '../helpers/index.js';
 
 export async function up(knex: Knex): Promise<void> {
+	const helpers = getHelpers(knex);
+
 	await knex.schema.createTable('directus_comments', (table) => {
 		table.uuid('id').primary().notNullable();
 
-		table.string('collection', 64).notNullable();
+		table.string('collection', helpers.schema.getTableNameMaxLength()).notNullable();
 
 		table.string('item').notNullable();
 		table.text('comment').notNullable();

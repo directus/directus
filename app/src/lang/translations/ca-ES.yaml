@@ -239,7 +239,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restableix la pàgina de preferències
 hidden_field: Camp ocult
 hidden_on_detail: Amagat al detall
-disabled_editing_value: Deshabilita l'edició del valor
 key: Clau
 alias: Àlies
 bigInteger: Big Integer

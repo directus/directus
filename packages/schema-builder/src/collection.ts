@@ -1,8 +1,8 @@
 import type { CollectionOverview, FieldOverview, SchemaOverview } from '@directus/types';
-import { SchemaBuilder } from './builder.js';
-import { FieldBuilder } from './field.js';
 import { ok as assert } from 'node:assert/strict';
+import { SchemaBuilder } from './builder.js';
 import { COLLECTION_DEFAULTS } from './defaults.js';
+import { FieldBuilder } from './field.js';
 
 type InitialCollectionOverview = Omit<CollectionOverview, 'primary' | 'fields'>;
 type FinalCollectionOverview = Omit<CollectionOverview, 'fields'>;
@@ -26,6 +26,12 @@ export class CollectionBuilder {
 	}
 
 	field(name: string): FieldBuilder {
+		const existingField = this._fields.find((fieldBuilder) => fieldBuilder.get_name() === name);
+
+		if (existingField) {
+			return existingField;
+		}
+
 		const field = new FieldBuilder(name, this._schemaBuilder, this);
 		this._fields.push(field);
 		return field;

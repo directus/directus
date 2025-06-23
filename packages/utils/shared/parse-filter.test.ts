@@ -534,6 +534,51 @@ describe('#parseFilter', () => {
 		expect(parseFilter(mockFilter, mockAccountability)).toStrictEqual(mockResult);
 	});
 
+	it('properly skips type casting', () => {
+		const mockFilter = {
+			_and: [
+				{
+					status: {
+						_eq: 'true',
+					},
+				},
+				{
+					field: {
+						_eq: 'false',
+					},
+				},
+				{
+					field2: {
+						_eq: 'null',
+					},
+				},
+			],
+		} as Filter;
+
+		const mockResult = {
+			_and: [
+				{
+					status: {
+						_eq: 'true',
+					},
+				},
+				{
+					field: {
+						_eq: 'false',
+					},
+				},
+				{
+					field2: {
+						_eq: 'null',
+					},
+				},
+			],
+		};
+
+		const mockAccountability = { role: 'admin' };
+		expect(parseFilter(mockFilter, mockAccountability, undefined, true)).toStrictEqual(mockResult);
+	});
+
 	it('replaces the user from accountability to $CURRENT_USER', () => {
 		const mockFilter = {
 			_and: [
