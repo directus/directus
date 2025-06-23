@@ -1,3 +1,5 @@
+/* stylelint-disable no-descending-specificity */
+
 .codex-editor {
 	--bg-color: var(--theme--background-normal) !important;
 	--front-color: var(--theme--form--field--input--foreground) !important;
@@ -74,10 +76,6 @@
 	background: var(--theme--danger-background);
 }
 
-.codex-editor .ce-popover-item.ce-popover-item--confirmation .ce-popover-item__icon {
-	color: var(--theme--danger);
-}
-
 .codex-editor .ce-popover-item.ce-popover-item--focused {
 	background: var(--theme--background-normal);
 }
@@ -102,6 +100,10 @@
 
 .codex-editor .ce-popover-item--active .ce-popover-item__icon {
 	color: var(--theme--primary);
+}
+
+.codex-editor .ce-popover-item.ce-popover-item--confirmation .ce-popover-item__icon {
+	color: var(--theme--danger);
 }
 
 .codex-editor .ce-popover-item__icon i {
@@ -138,8 +140,8 @@
 	box-shadow: none;
 }
 
-.ct:before,
-.ct:after {
+.ct::before,
+.ct::after {
 	background-color: var(--background-inverted);
 }
 
@@ -279,9 +281,6 @@
 
 .codex-editor .image-tool--loading .image-tool__image {
 	background: var(--theme--background-normal);
-}
-
-.codex-editor .image-tool--loading .image-tool__image {
 	border-color: var(--theme--form--field--input--border-color);
 }
 
@@ -321,13 +320,6 @@
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
 	top: 4px;
 	left: 3px;
-}
-
-/* Lists */
-
-.codex-editor .ce-block ul,
-.codex-editor .ce-block ol {
-	font-size: inherit !important;
 }
 
 /* Attaches */
@@ -415,6 +407,10 @@
 	border: 1px solid var(--theme--foreground-subdued);
 }
 
+.codex-editor .tc-popover__item--confirm .tc-popover__item-icon {
+	color: var(--theme--danger);
+}
+
 .codex-editor .tc-popover__item:hover .tc-popover__item-icon {
 	border: 1px solid var(--theme--foreground-subdued);
 }
@@ -423,10 +419,6 @@
 .codex-editor .tc-popover__item--confirm:hover {
 	color: var(--theme--form--field--input--foreground);
 	background: var(--theme--danger-background);
-}
-
-.codex-editor .tc-popover__item--confirm .tc-popover__item-icon {
-	color: var(--theme--danger);
 }
 
 .codex-editor .tc-cell--selected,
@@ -501,6 +493,7 @@
 .codex-editor .ce-block {
 	margin-top: 1.5em;
 	margin-bottom: 1.5em;
+
 	/* Editor.js expect this to default to light */
 	font-weight: 400;
 	font-family: inherit;
@@ -549,6 +542,8 @@
 .codex-editor .ce-block.ce-block--focused .ce-block__content span[style='background-color: rgb(168, 214, 255);'] {
 	background-color: var(--theme--background-accent) !important;
 }
+
+/* Lists */
 
 .codex-editor .ce-block ul,
 .codex-editor .ce-block ol {

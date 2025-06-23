@@ -35,6 +35,7 @@
 	margin-top: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
+	/* stylelint-disable-next-line */
 	font-family: 'Material Symbols';
 	content: 'format_bold';
 	font-feature-settings: 'liga';
@@ -49,6 +50,7 @@
 	margin-top: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
+	/* stylelint-disable-next-line */
 	font-family: 'Material Symbols';
 	content: 'format_italic';
 	font-feature-settings: 'liga';
@@ -63,6 +65,7 @@
 	margin-top: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
+	/* stylelint-disable-next-line */
 	font-family: 'Material Symbols';
 	content: 'format_underlined';
 	font-feature-settings: 'liga';
@@ -77,6 +80,7 @@
 	margin-top: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
+	/* stylelint-disable-next-line */
 	font-family: 'Material Symbols';
 	content: 'insert_link';
 	font-feature-settings: 'liga';
@@ -144,7 +148,6 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-swatches__picker-btn:hover,
 .tox .tox-swatches__picker-btn:active,
 .tox .tox-split-button:hover {
-	-webkit-box-shadow: unset;
 	box-shadow: unset;
 }
 
@@ -172,7 +175,6 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-swatch:hover,
 .tox .tox-swatch:focus {
-	-webkit-transform: scale(1.2);
 	transform: scale(1.2);
 }
 
@@ -217,7 +219,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-dialog__body-content {
-	padding: 24px 24px;
+	padding: 24px;
 }
 
 .tox .tox-dialog__footer {
@@ -311,7 +313,6 @@ body.dark .tox .tox-toolbar__overflow {
 	border-color: var(--theme--primary);
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
-	-webkit-transition: var(--fast) var(--transition);
 	transition: var(--fast) var(--transition);
 	transition-property: border-color, background-color, color;
 }
