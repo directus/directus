@@ -171,7 +171,7 @@ services:
   redis:
     image: redis:6-alpine
     ports:
-      - 6108:6379
+      - 7000:6379
 
   minio:
     # should stay compatible via S3 driver

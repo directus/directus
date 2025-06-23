@@ -1,4 +1,5 @@
 import config, { getUrl, paths, type Env } from '@common/config';
+import { CreatePolicy } from '@common/functions';
 import vendors, { type Vendor } from '@common/get-dbs-to-test';
 import { USER } from '@common/variables';
 import { awaitDirectusConnection } from '@utils/await-connection';
@@ -8,7 +9,6 @@ import { cloneDeep } from 'lodash-es';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { collection, type Collection } from './cache-purge.seed';
-import { CreatePolicy } from '@common/functions';
 
 describe('Permissions Cache Purging Tests', () => {
 	const cacheStatusHeader = 'x-cache-status';
@@ -159,7 +159,7 @@ describe('Permissions Cache Purging Tests', () => {
 
 		const envRedis = cloneDeep(envMem);
 		envRedis[vendor]['REDIS_HOST'] = 'localhost';
-		envRedis[vendor]['REDIS_PORT'] = '6108';
+		envRedis[vendor]['REDIS_PORT'] = '7000';
 		envRedis[vendor]['CACHE_STORE'] = 'redis';
 		envRedis[vendor]['CACHE_NAMESPACE'] = `${cacheNamespacePrefix}_redis`;
 
