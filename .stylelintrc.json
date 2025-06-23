@@ -1,0 +1,9 @@
+{
+	"extends": ["stylelint-config-standard"],
+	"rules": {
+		"custom-property-pattern": null,
+		"media-feature-range-notation": null,
+		"selector-class-pattern": null
+	},
+	"ignoreFiles": ["docs/**"]
+}
