@@ -1,6 +1,8 @@
 {
 	"extends": ["stylelint-config-standard"],
 
+	"plugins": ["stylelint-use-logical"],
+
 	"overrides": [
 		{
 			"files": ["**/*.scss"],
@@ -50,6 +52,8 @@
 		"value-keyword-case": [
 			"lower",
 			{ "ignoreProperties": ["text-rendering"], "ignoreFunctions": ["v-bind"], "ignoreKeywords": ["currentColor"] }
-		]
+		],
+
+		"csstools/use-logical": ["always", { "severity": "warning" }]
 	}
 }

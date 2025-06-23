@@ -50,6 +50,9 @@ importers:
       stylelint-config-standard-vue:
         specifier: 1.0.0
         version: 1.0.0(postcss-html@1.8.0)(stylelint@16.21.0(typescript@5.8.2))
+      stylelint-use-logical:
+        specifier: 2.1.2
+        version: 2.1.2(stylelint@16.21.0(typescript@5.8.2))
       typescript:
         specifier: 5.8.2
         version: 5.8.2
@@ -11326,6 +11329,12 @@ packages:
     engines: {node: '>=18.12.0'}
     peerDependencies:
       stylelint: ^16.0.2
+
+  stylelint-use-logical@2.1.2:
+    resolution: {integrity: sha512-4ffvPNk/swH4KS3izExWuzQOuzLmi0gb0uOhvxWJ20vDA5W5xKCjcHHtLoAj1kKvTIX6eGIN5xGtaVin9PD0wg==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      stylelint: '>= 11 < 17'
 
   stylelint@16.21.0:
     resolution: {integrity: sha512-ki3PpJGG7xhm3WtINoWGnlvqAmbqSexoRMbEMJzlwewSIOqPRKPlq452c22xAdEJISVi80r+I7KL9GPUiwFgbg==}
@@ -23185,6 +23194,10 @@ snapshots:
       postcss-resolve-nested-selector: 0.1.6
       postcss-selector-parser: 7.1.0
       postcss-value-parser: 4.2.0
+      stylelint: 16.21.0(typescript@5.8.2)
+
+  stylelint-use-logical@2.1.2(stylelint@16.21.0(typescript@5.8.2)):
+    dependencies:
       stylelint: 16.21.0(typescript@5.8.2)
 
   stylelint@16.21.0(typescript@5.8.2):
