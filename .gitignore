@@ -26,6 +26,7 @@ debug
 .devcontainer/
 .vscode/*
 !.vscode/extensions.json
+!.vscode/settings.json
 .idea/
 *.code-workspace
 .history/
