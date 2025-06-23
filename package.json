@@ -7,7 +7,7 @@
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
-		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --quiet",
+		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
 		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
 	},
