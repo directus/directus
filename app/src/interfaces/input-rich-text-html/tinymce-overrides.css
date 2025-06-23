@@ -35,7 +35,6 @@
 	margin-top: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
-	/* stylelint-disable-next-line */
 	font-family: 'Material Symbols';
 	content: 'format_bold';
 	font-feature-settings: 'liga';
@@ -50,7 +49,6 @@
 	margin-top: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
-	/* stylelint-disable-next-line */
 	font-family: 'Material Symbols';
 	content: 'format_italic';
 	font-feature-settings: 'liga';
@@ -65,7 +63,6 @@
 	margin-top: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
-	/* stylelint-disable-next-line */
 	font-family: 'Material Symbols';
 	content: 'format_underlined';
 	font-feature-settings: 'liga';
@@ -80,7 +77,6 @@
 	margin-top: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
-	/* stylelint-disable-next-line */
 	font-family: 'Material Symbols';
 	content: 'insert_link';
 	font-feature-settings: 'liga';
