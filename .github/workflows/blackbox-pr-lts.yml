@@ -7,7 +7,7 @@ on:
       - labeled
 
 jobs:
-  blackbox-tests:
-    name: Blackbox Tests
+  blackbox-lts-tests:
+    name: Blackbox LTS Tests
     if: contains(github.event.pull_request.labels.*.name, 'Run Blackbox (LTS)')
     uses: ./.github/workflows/blackbox-lts.yml
