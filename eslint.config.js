@@ -3,6 +3,7 @@
 import eslintJs from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintPluginVue from 'eslint-plugin-vue';
+import pluginVueA11y from 'eslint-plugin-vuejs-accessibility';
 import globals from 'globals';
 import process from 'node:process';
 import typescriptEslint from 'typescript-eslint';
@@ -126,6 +127,13 @@ export default typescriptEslint.config(
 			'vue/no-unused-vars': ['error', { ignorePattern: '^_' }],
 		},
 	},
+
+	// Accessibility rules for Vue files
+	...pluginVueA11y.configs['flat/recommended'].map((config) => ({
+		...config,
+		// Set all rules to "warn"
+		rules: Object.fromEntries(Object.entries(config.rules || {}).map(([rule]) => [rule, 'warn'])),
+	})),
 
 	// Test files
 	{
