@@ -250,11 +250,13 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 							description = fieldNames.join(' -> ');
 						}
 
+						const width = localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || 160;
+
 						return {
 							text: field.name,
 							value: field.key,
 							description,
-							width: localWidths.value[field.key] || layoutOptions.value?.widths?.[field.key] || null,
+							width,
 							align: layoutOptions.value?.align?.[field.key] || 'left',
 							field: {
 								display: field.meta?.display || getDefaultDisplayForType(field.type),
@@ -273,9 +275,7 @@ export default defineLayout<LayoutOptions, LayoutQuery>({
 					const widths = {} as { [field: string]: number };
 
 					val.forEach((header) => {
-						if (header.width) {
-							widths[header.value] = header.width;
-						}
+						widths[header.value] = header.width ?? 160;
 					});
 
 					localWidths.value = widths;

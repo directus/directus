@@ -33,7 +33,7 @@ const scope = computed(() => {
 	return 'global';
 });
 
-const { editActive, editValue, editSave, editSaving, editCancel } = useEditBookmark();
+const { editActive, editValue, editSave, editSaving, editCancel, isEditDisabled } = useEditBookmark();
 const { deleteActive, deleteSave, deleteSaving } = useDeleteBookmark();
 
 const name = computed(() => translate(props.bookmark.bookmark));
@@ -49,9 +49,13 @@ function useEditBookmark() {
 
 	const editSaving = ref(false);
 
-	return { editActive, editValue, editSave, editSaving, editCancel };
+	const isEditDisabled = computed(() => editValue.name === null);
+
+	return { editActive, editValue, editSave, editSaving, editCancel, isEditDisabled };
 
 	async function editSave() {
+		if (isEditDisabled.value || editSaving.value) return;
+
 		editSaving.value = true;
 
 		try {
@@ -85,6 +89,8 @@ function useDeleteBookmark() {
 	return { deleteActive, deleteSave, deleteSaving };
 
 	async function deleteSave() {
+		if (deleteSaving.value) return;
+
 		deleteSaving.value = true;
 
 		try {
@@ -123,13 +129,14 @@ function useDeleteBookmark() {
 		</v-list-item-content>
 
 		<v-menu placement="bottom-start" show-arrow>
-			<template #activator="{ toggle }">
+			<template #activator="{ toggle, active }">
 				<v-icon
 					v-tooltip.bottom="!hasPermission && t(`cannot_edit_${scope}_bookmarks`)"
 					:name="hasPermission ? 'more_vert' : 'lock'"
 					:clickable="hasPermission"
 					small
 					class="ctx-toggle"
+					:class="{ active }"
 					@click.prevent="hasPermission ? toggle() : null"
 				/>
 			</template>
@@ -157,7 +164,7 @@ function useDeleteBookmark() {
 			</v-list>
 		</v-menu>
 
-		<v-dialog v-model="editActive" persistent @esc="editCancel">
+		<v-dialog v-model="editActive" persistent @esc="editCancel" @apply="editSave">
 			<v-card>
 				<v-card-title>{{ t('edit_personal_bookmark') }}</v-card-title>
 				<v-card-text>
@@ -167,7 +174,6 @@ function useDeleteBookmark() {
 							class="full"
 							autofocus
 							@input="editValue.name = $event"
-							@keyup.enter="editSave"
 						/>
 						<interface-select-icon width="half" :value="editValue.icon" @input="editValue.icon = $event" />
 						<interface-select-color width="half" :value="editValue.color" @input="editValue.color = $event" />
@@ -175,14 +181,14 @@ function useDeleteBookmark() {
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="editCancel">{{ t('cancel') }}</v-button>
-					<v-button :disabled="editValue.name === null" :loading="editSaving" @click="editSave">
+					<v-button :disabled="isEditDisabled" :loading="editSaving" @click="editSave">
 						{{ t('save') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false">
+		<v-dialog v-model="deleteActive" persistent @esc="deleteActive = false" @apply="deleteSave">
 			<v-card>
 				<v-card-title>{{ t('delete_bookmark_copy', { bookmark: bookmark.bookmark }) }}</v-card-title>
 				<v-card-actions>
@@ -207,15 +213,18 @@ function useDeleteBookmark() {
 		--v-icon-color: var(--theme--foreground-subdued);
 
 		opacity: 0;
+		-webkit-user-select: none;
 		user-select: none;
 		transition: opacity var(--fast) var(--transition);
 	}
 
-	&:hover {
-		.ctx-toggle {
-			opacity: 1;
-			user-select: auto;
-		}
+	.ctx-toggle.active,
+	.ctx-toggle:focus-visible,
+	&:focus-visible .ctx-toggle,
+	&:hover .ctx-toggle {
+		opacity: 1;
+		-webkit-user-select: auto;
+		user-select: auto;
 	}
 }
 

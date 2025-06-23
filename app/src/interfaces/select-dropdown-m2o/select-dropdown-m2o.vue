@@ -184,61 +184,56 @@ function getLinkForItem() {
 
 	<div v-else class="many-to-one">
 		<v-skeleton-loader v-if="loading" type="input" />
-		<v-input
-			v-else
-			clickable
-			:placeholder="t(enableSelect ? 'select_an_item' : 'create_item')"
-			:disabled="disabled"
-			@click="onPreviewClick"
-		>
-			<template v-if="displayItem" #input>
-				<div class="preview">
-					<render-template
-						:collection="relationInfo.relatedCollection.collection"
-						:item="displayItem"
-						:template="displayTemplate"
+
+		<v-list-item v-else block clickable :disabled @click="onPreviewClick">
+			<div v-if="displayItem" class="preview">
+				<render-template
+					:collection="relationInfo.relatedCollection.collection"
+					:item="displayItem"
+					:template="displayTemplate"
+				/>
+			</div>
+			<div v-else class="placeholder">{{ t(enableSelect ? 'select_an_item' : 'create_item') }}</div>
+
+			<div class="spacer" />
+
+			<div class="item-actions">
+				<template v-if="displayItem">
+					<router-link
+						v-if="enableLink"
+						v-tooltip="t('navigate_to_item')"
+						:to="getLinkForItem()"
+						class="item-link"
+						@click.stop
+					>
+						<v-icon name="launch" />
+					</router-link>
+
+					<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
+
+					<v-remove
+						v-if="!disabled"
+						deselect
+						:item-info="relationInfo"
+						:item-edits="edits"
+						@action="$emit('input', null)"
 					/>
-				</div>
-			</template>
+				</template>
 
-			<template #append>
-				<div class="item-actions">
-					<template v-if="displayItem">
-						<router-link
-							v-if="enableLink"
-							v-tooltip="t('navigate_to_item')"
-							:to="getLinkForItem()"
-							class="item-link"
-							@click.stop
-						>
-							<v-icon name="launch" />
-						</router-link>
+				<template v-else>
+					<v-icon
+						v-if="!disabled && createAllowed && enableCreate"
+						v-tooltip="t('create_item')"
+						class="add"
+						name="add"
+						clickable
+						@click="editModalActive = true"
+					/>
 
-						<v-icon v-if="!disabled" v-tooltip="t('edit_item')" name="edit" clickable @click="editModalActive = true" />
-
-						<v-remove
-							v-if="!disabled"
-							deselect
-							:item-info="relationInfo"
-							:item-edits="edits"
-							@action="$emit('input', null)"
-						/>
-					</template>
-
-					<template v-else>
-						<v-icon
-							v-if="createAllowed && enableCreate"
-							v-tooltip="t('create_item')"
-							class="add"
-							name="add"
-							@click="editModalActive = true"
-						/>
-
-						<v-icon v-if="enableSelect" class="expand" name="expand_more" />
-					</template>
-				</div>
-			</template>
-		</v-input>
+					<v-icon v-if="enableSelect" class="expand" name="expand_more" />
+				</template>
+			</div>
+		</v-list-item>
 
 		<drawer-item
 			v-model:active="editModalActive"
@@ -274,16 +269,26 @@ function getLinkForItem() {
 
 .many-to-one {
 	position: relative;
+}
 
-	:deep(.v-input .append) {
-		display: flex;
-		gap: 4px;
+.v-list-item {
+	&:focus-within,
+	&:focus-visible {
+		--v-list-item-border-color: var(--v-input-border-color-focus, var(--theme--form--field--input--border-color-focus));
+		--v-list-item-border-color-hover: var(--v-list-item-border-color);
+
+		offset: 0;
+		box-shadow: var(--theme--form--field--input--box-shadow-focus);
 	}
 }
 
 .v-skeleton-loader {
 	top: 0;
 	left: 0;
+}
+
+.placeholder {
+	color: var(--v-input-placeholder-color, var(--theme--foreground-subdued));
 }
 
 .preview {

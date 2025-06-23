@@ -511,13 +511,15 @@ function isExistingField(node: Record<string, any>): boolean {
 		transition: opacity var(--fast) var(--transition);
 	}
 
+	&:focus-within,
 	&:hover {
-		border-color: var(--theme--form--field--input--border-color);
-
-		.delete,
-		&:hover {
+		.delete {
 			opacity: 1;
 		}
+	}
+
+	&:hover {
+		border-color: var(--theme--form--field--input--border-color);
 	}
 
 	.drag-handle {

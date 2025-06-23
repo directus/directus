@@ -48,10 +48,20 @@ function setIcon(icon: string | null) {
 
 	emit('input', icon);
 }
+
+function onClickInput(e: InputEvent, toggle: () => void) {
+	if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
+}
+
+function onKeydownInput(e: KeyboardEvent, activate: () => void) {
+	const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
+
+	if (!e.repeat && !systemKeys && (e.target as HTMLInputElement).tagName === 'INPUT') activate();
+}
 </script>
 
 <template>
-	<v-menu attached :disabled="disabled">
+	<v-menu attached :disabled="disabled" no-focus-return>
 		<template #activator="{ active, activate, deactivate, toggle }">
 			<v-input
 				v-model="searchQuery"
@@ -59,10 +69,11 @@ function setIcon(icon: string | null) {
 				:placeholder="value ? formatTitle(value) : t('interfaces.select-icon.search_for_icon')"
 				:class="{ 'has-value': value }"
 				:nullable="false"
-				@focus="activate"
+				@click="onClickInput($event, toggle)"
+				@keydown="onKeydownInput($event, activate)"
 			>
 				<template v-if="value" #prepend>
-					<v-icon clickable :name="value" :class="{ active: value }" @click="activate" />
+					<v-icon clickable :name="value" :class="{ active: value }" @click="toggle" />
 				</template>
 
 				<template #append>

@@ -103,6 +103,8 @@ function togglePanel(id: string) {
 }
 
 const stageChanges = () => {
+	if (!panel.value.type) return;
+
 	if (props.panelKey === '+') {
 		const createPanel = clone(unref(panel));
 
@@ -131,6 +133,7 @@ const stageChanges = () => {
 		:icon="panel?.icon || 'insert_chart'"
 		persistent
 		@cancel="router.push(`/insights/${dashboardKey}`)"
+		@apply="stageChanges"
 	>
 		<template #actions>
 			<v-button v-tooltip.bottom="t('done')" :disabled="!panel.type" icon rounded @click="stageChanges">
