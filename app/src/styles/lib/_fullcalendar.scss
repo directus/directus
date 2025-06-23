@@ -65,7 +65,7 @@
 	}
 
 	.fc-daygrid-block-event {
-		padding: 0px 3px;
+		padding: 0 3px;
 		line-height: 1.5;
 
 		.fc-event-time,
@@ -150,7 +150,7 @@
 		&.fc-daygrid-event .fc-event-main-frame,
 		// view: month && start_date: datetime (single day)
 		&.fc-daygrid-dot-event {
-			&:before {
+			&::before {
 				@content;
 			}
 		}
@@ -180,7 +180,7 @@
 
 		&.fc-daygrid-dot-event:has(.fc-event-time),
 		.fc-list-event-title {
-			&:before {
+			&::before {
 				color: var(--theme--primary);
 			}
 		}

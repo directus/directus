@@ -1,7 +1,7 @@
 // Main palette
-$purple: #6644ff;
-$pink: #ff99dd;
-$blue: #3399ff;
+$purple: #64f;
+$pink: #f9d;
+$blue: #39f;
 $green: #2ecda7;
 $yellow: #fbc54f;
 $orange: #ffa439;
@@ -26,7 +26,7 @@ $color-mapping: (
 	'secondary': $pink,
 	'success': $green,
 	'warning': $orange,
-	'danger': $red,
+	'danger': $red
 );
 
 // Suffix -> Percentage mapping (Percentage of main color)
@@ -44,5 +44,5 @@ $step-mapping: (
 	'125': -75,
 	'150': -50,
 	'175': -25,
-	'190': -10,
+	'190': -10
 );

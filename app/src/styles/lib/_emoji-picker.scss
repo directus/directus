@@ -29,7 +29,6 @@
 			border-radius: var(--theme--border-radius);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 			background-color: var(--theme--background);
-
 			height: 100%;
 
 			&:hover {
@@ -47,7 +46,7 @@
 	}
 
 	.emoji-picker__content {
-		padding: 8px 0 0 0;
+		padding: 8px 0 0;
 		height: unset;
 
 		.emoji-picker__category-buttons {

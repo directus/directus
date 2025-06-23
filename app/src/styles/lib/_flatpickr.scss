@@ -64,7 +64,6 @@
 	align-items: center;
 	width: auto;
 	padding: 0;
-	font-weight: inherit;
 	font-size: 16px;
 	font-weight: 600;
 }
@@ -107,10 +106,6 @@
 
 .flatpickr-current-month .numInputWrapper:hover {
 	background: var(--theme--background-accent);
-}
-
-.flatpickr-current-month .numInputWrapper {
-	border-radius: var(--theme--border-radius);
 }
 
 .flatpickr-current-month .numInputWrapper span.arrowUp {

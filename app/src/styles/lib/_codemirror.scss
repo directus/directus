@@ -1,3 +1,5 @@
+/* stylelint-disable rule-empty-line-before, no-duplicate-selectors */
+
 /* BASICS */
 
 .CodeMirror {
@@ -98,43 +100,22 @@
 }
 .cm-fat-cursor-mark {
 	background-color: rgba(93, 194, 136, 0.5);
-	-webkit-animation: blink 1.06s steps(1) infinite;
-	-moz-animation: blink 1.06s steps(1) infinite;
 	animation: blink 1.06s steps(1) infinite;
 }
 .cm-animate-fat-cursor {
 	width: auto;
 	background-color: var(--success-75);
 	border: 0;
-	-webkit-animation: blink 1.06s steps(1) infinite;
-	-moz-animation: blink 1.06s steps(1) infinite;
 	animation: blink 1.06s steps(1) infinite;
 }
-@-moz-keyframes blink {
-	0% {
-	}
-	50% {
-		background-color: transparent;
-	}
-	100% {
-	}
-}
-@-webkit-keyframes blink {
-	0% {
-	}
-	50% {
-		background-color: transparent;
-	}
-	100% {
-	}
-}
+
 @keyframes blink {
-	0% {
+	/* stylelint-disable-next-line */
+	0%,
+	100% {
 	}
 	50% {
 		background-color: transparent;
-	}
-	100% {
 	}
 }
 
@@ -201,11 +182,6 @@
 .cm-s-default .cm-def {
 	color: var(--theme--primary);
 }
-// .cm-s-default .cm-variable,
-// .cm-s-default .cm-punctuation,
-// .cm-s-default .cm-property,
-// .cm-s-default .cm-operator {
-// }
 .cm-s-default .cm-variable-2 {
 	color: var(--theme--primary);
 }
@@ -331,6 +307,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror {
 	position: relative;
 	overflow: hidden;
+
 	// background: white; // Edited! Was overriding themes
 }
 
@@ -368,14 +345,12 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-vscrollbar {
 	top: 0;
 	right: 0;
-	overflow-x: hidden;
-	overflow-y: scroll;
+	overflow: hidden scroll;
 }
 .CodeMirror-hscrollbar {
 	bottom: 0;
 	left: 0;
-	overflow-x: scroll;
-	overflow-y: hidden;
+	overflow: scroll hidden;
 }
 .CodeMirror-scrollbar-filler {
 	right: 0;
@@ -420,9 +395,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter-wrapper ::selection {
 	background-color: transparent;
 }
-.CodeMirror-gutter-wrapper ::-moz-selection {
-	background-color: transparent;
-}
 
 .CodeMirror-lines {
 	min-height: 1px; /* prevents collapsing before first draw */
@@ -444,11 +416,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	border-width: 0;
 
 	/* Reset some styles that the rest of the page might have set */
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0;
 	border-radius: 0;
 	-webkit-tap-highlight-color: transparent;
-	-webkit-font-variant-ligatures: contextual;
 	font-variant-ligatures: contextual;
 }
 .CodeMirror-wrap pre.CodeMirror-line,
@@ -489,7 +458,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter,
 .CodeMirror-gutters,
 .CodeMirror-linenumber {
-	-moz-box-sizing: content-box;
 	box-sizing: content-box;
 }
 
@@ -534,11 +502,6 @@ div.CodeMirror-dragcursors {
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-	background: var(--theme--background-accent);
-}
-.CodeMirror-line::-moz-selection,
-.CodeMirror-line > span::-moz-selection,
-.CodeMirror-line > span > span::-moz-selection {
 	background: var(--theme--background-accent);
 }
 
