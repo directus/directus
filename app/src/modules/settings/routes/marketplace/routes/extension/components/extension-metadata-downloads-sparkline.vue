@@ -108,7 +108,7 @@ onUnmounted(() => {
 	&::after {
 		content: '';
 		position: absolute;
-		bottom: 0;
+		inset-block-end: 0;
 		left: 0;
 		width: 100%;
 		background-color: var(--theme--primary-background);

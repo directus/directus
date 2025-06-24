@@ -27,7 +27,7 @@
     position: absolute;
     inset-block-start: 0;
     inset-inline-end: 0;
-    bottom: 0;
+    inset-block-end: 0;
     left: 0;
 }
 
@@ -157,7 +157,7 @@
 }
 
 .cropper-line.line-s {
-    bottom: -3px;
+    inset-block-end: -3px;
     left: 0;
     height: 5px;
     cursor: ns-resize;
@@ -193,7 +193,7 @@
 }
 
 .cropper-point.point-s {
-    bottom: -5px;
+    inset-block-end: -5px;
     left: 50%;
     margin-inline-start: -5px;
     cursor: s-resize;
@@ -212,21 +212,21 @@
 }
 
 .cropper-point.point-sw {
-    bottom: -5px;
+    inset-block-end: -5px;
     left: -5px;
     cursor: nesw-resize;
 }
 
 .cropper-point.point-se {
     inset-inline-end: -5px;
-    bottom: -5px;
+    inset-block-end: -5px;
     cursor: nwse-resize;
 }
 
 .cropper-point.point-se::before {
     position: absolute;
     inset-inline-end: -50%;
-    bottom: -50%;
+    inset-block-end: -50%;
     display: block;
     width: 200%;
     height: 200%;

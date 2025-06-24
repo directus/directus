@@ -138,7 +138,7 @@
     position: absolute;
     inset-block-start: -50px;
     inset-inline-end: 0;
-    bottom: 0;
+    inset-block-end: 0;
     left: 0;
     overflow: hidden;
 }
@@ -146,7 +146,7 @@
 .CodeMirror-ruler {
     position: absolute;
     inset-block-start: 0;
-    bottom: 0;
+    inset-block-end: 0;
     border-inline-start: 1px solid var(--theme--form--field--input--border-color);
 }
 
@@ -397,18 +397,18 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-hscrollbar {
-    bottom: 0;
+    inset-block-end: 0;
     left: 0;
     overflow: scroll hidden;
 }
 
 .CodeMirror-scrollbar-filler {
     inset-inline-end: 0;
-    bottom: 0;
+    inset-block-end: 0;
 }
 
 .CodeMirror-gutter-filler {
-    bottom: 0;
+    inset-block-end: 0;
     left: 0;
 }
 
@@ -438,7 +438,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter-background {
     position: absolute;
     inset-block-start: 0;
-    bottom: 0;
+    inset-block-end: 0;
     z-index: 4;
 }
 
@@ -489,7 +489,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     position: absolute;
     inset-block-start: 0;
     inset-inline-end: 0;
-    bottom: 0;
+    inset-block-end: 0;
     left: 0;
     z-index: 0;
 }

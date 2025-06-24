@@ -205,12 +205,12 @@ const relatedPrimaryKey = computed(
 		pointer-events: none;
 
 		&:first-of-type {
-			bottom: 161px;
+			inset-block-end: 161px;
 			left: 32.5%;
 		}
 
 		&:last-of-type {
-			bottom: 89px;
+			inset-block-end: 89px;
 			left: 67.4%;
 		}
 	}

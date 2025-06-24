@@ -316,7 +316,7 @@ function isInterpolation(value: any) {
 .small {
 	position: absolute;
 	inset-inline-end: 0;
-	bottom: -20px;
+	inset-block-end: -20px;
 	font-style: italic;
 	text-align: end;
 }

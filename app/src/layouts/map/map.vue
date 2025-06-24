@@ -208,7 +208,7 @@ limitWritable.value = selectedSize;
 .footer {
 	position: absolute;
 	inset-inline-end: 0;
-	bottom: 0;
+	inset-block-end: 0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;

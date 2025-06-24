@@ -233,7 +233,7 @@ onUnmounted(() => {
 				content: '';
 				width: 100%;
 				height: 24px;
-				bottom: 100%;
+				inset-block-end: 100%;
 				left: 0;
 				background-color: var(--theme--header--background);
 				position: absolute;

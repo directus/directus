@@ -330,7 +330,7 @@ function emitValue() {
 		&::after {
 			position: absolute;
 			inset-inline-end: var(--theme--border-width);
-			bottom: calc(-1 * var(--theme--border-width));
+			inset-block-end: calc(-1 * var(--theme--border-width));
 			left: var(--theme--border-width);
 			width: auto;
 			height: var(--theme--border-width);

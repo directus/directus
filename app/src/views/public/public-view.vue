@@ -221,7 +221,7 @@ const logoURL = computed<string | null>(() => {
 			}
 
 			> div:nth-child(1) {
-				bottom: -25%;
+				inset-block-end: -25%;
 				left: -25%;
 				height: 50%;
 				width: 50%;
@@ -237,7 +237,7 @@ const logoURL = computed<string | null>(() => {
 			}
 
 			> div:nth-child(2) {
-				bottom: -25%;
+				inset-block-end: -25%;
 				left: 15%;
 				height: 40%;
 				width: 60%;
@@ -257,7 +257,7 @@ const logoURL = computed<string | null>(() => {
 			}
 
 			> div:nth-child(3) {
-				bottom: -20%;
+				inset-block-end: -20%;
 				left: 75%;
 				height: 20%;
 				width: 40%;
@@ -356,7 +356,7 @@ const logoURL = computed<string | null>(() => {
 		.note-container {
 			position: absolute;
 			inset-inline-end: 0;
-			bottom: 34px;
+			inset-block-end: 34px;
 			left: 0;
 			display: flex;
 			align-items: flex-end;

@@ -339,7 +339,7 @@ function pointerLeave() {
 			pointer-events: none;
 			content: '';
 			inset-block-start: 0;
-			bottom: 0;
+			inset-block-end: 0;
 			left: 0;
 			inset-inline-end: 0;
 			border-radius: 4px;

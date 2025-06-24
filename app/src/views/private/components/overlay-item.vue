@@ -679,7 +679,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 		.v-card-actions {
 			z-index: 100;
 			position: sticky;
-			bottom: calc(var(--button-gap) - var(--v-card-padding));
+			inset-block-end: calc(var(--button-gap) - var(--v-card-padding));
 			padding-block-start: var(--button-gap);
 			background: var(--v-card-background-color);
 			box-shadow: 0 0 var(--shadow-height) 0 rgb(0 0 0 / 0.2);
@@ -692,14 +692,14 @@ function popoverClickOutsideMiddleware(e: Event) {
 		.shadow-cover {
 			z-index: 101;
 			position: sticky;
-			bottom: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
+			inset-block-end: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
 			height: calc(var(--v-card-padding) - var(--button-gap));
 			width: 100%;
 
 			&::after {
 				content: '';
 				position: absolute;
-				bottom: 0;
+				inset-block-end: 0;
 				left: 0;
 				width: 100%;
 				height: var(--shadow-cover-height);

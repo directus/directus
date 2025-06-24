@@ -512,7 +512,7 @@ function handleKeyDown(event: any) {
 	.basemap-select {
 		position: absolute;
 		inset-inline-end: 10px;
-		bottom: 10px;
+		inset-block-end: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

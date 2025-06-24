@@ -305,7 +305,7 @@ img {
 
 	.shadow {
 		position: absolute;
-		bottom: 0;
+		inset-block-end: 0;
 		left: 0;
 		z-index: 2;
 		width: 100%;
@@ -349,7 +349,7 @@ img {
 
 	.info {
 		position: absolute;
-		bottom: 0;
+		inset-block-end: 0;
 		left: 0;
 		z-index: 3;
 		width: 100%;

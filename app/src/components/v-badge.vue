@@ -85,7 +85,7 @@ withDefaults(
 
 		&.bottom {
 			inset-block-start: unset;
-			bottom: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
+			inset-block-end: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
 		}
 
 		&.bordered {

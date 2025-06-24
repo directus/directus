@@ -53,14 +53,14 @@ const queue = toRefs(notificationsStore).queue;
 	&.sidebar-open {
 		inset-block-start: auto;
 		inset-inline-end: 12px;
-		bottom: 76px;
+		inset-block-end: 76px;
 		left: auto;
 	}
 
 	@media (min-width: 960px) {
 		inset-block-start: auto;
 		inset-inline-end: 12px;
-		bottom: 76px;
+		inset-block-end: 76px;
 		left: auto;
 	}
 }

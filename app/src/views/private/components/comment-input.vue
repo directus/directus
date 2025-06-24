@@ -387,7 +387,7 @@ function pressedEnter() {
 .new-comment :deep(.expand-on-focus .append::after) {
 	position: absolute;
 	inset-inline-end: 0;
-	bottom: 36px;
+	inset-block-end: 36px;
 	left: 0;
 	height: 8px;
 	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
@@ -396,7 +396,7 @@ function pressedEnter() {
 
 .new-comment .add-mention {
 	position: absolute;
-	bottom: 8px;
+	inset-block-end: 8px;
 	left: 8px;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
@@ -405,7 +405,7 @@ function pressedEnter() {
 
 .new-comment .add-emoji {
 	position: absolute;
-	bottom: 8px;
+	inset-block-end: 8px;
 	left: 36px;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;

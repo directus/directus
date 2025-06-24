@@ -173,7 +173,7 @@ const onDeleteOptions = computed(() =>
 		--v-icon-color: var(--theme--primary);
 
 		position: absolute;
-		bottom: 17px;
+		inset-block-end: 17px;
 		left: 50%;
 		transform: translateX(-50%);
 	}

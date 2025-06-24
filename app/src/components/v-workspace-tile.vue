@@ -379,7 +379,7 @@ function useDragDrop() {
 
 .resize-details {
 	position: absolute;
-	bottom: 0;
+	inset-block-end: 0;
 	inset-inline-end: 0;
 	z-index: 2;
 	padding: 2px 11.5px 11.5px 2px;
@@ -495,7 +495,7 @@ function useDragDrop() {
 }
 
 .resize-handlers .bottom {
-	bottom: -3px;
+	inset-block-end: -3px;
 	width: 100%;
 	height: 10px;
 	cursor: ns-resize;
@@ -527,14 +527,14 @@ function useDragDrop() {
 
 .resize-handlers .bottom-right {
 	inset-inline-end: -3px;
-	bottom: -3px;
+	inset-block-end: -3px;
 	width: 14px;
 	height: 14px;
 	cursor: nwse-resize;
 }
 
 .resize-handlers .bottom-left {
-	bottom: -3px;
+	inset-block-end: -3px;
 	left: -3px;
 	width: 14px;
 	height: 14px;

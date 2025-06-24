@@ -64,7 +64,7 @@
 
     &.top::after {
         inset-block-start: unset;
-        bottom: -5px;
+        inset-block-end: -5px;
         left: calc(50% - 6px);
         border-block-start: 6px solid var(--tooltip-background-color);
         border-inline-end: 6px solid transparent;
@@ -93,7 +93,7 @@
 
     &.left.start::after {
         inset-block-start: unset;
-        bottom: $arrow-alignment;
+        inset-block-end: $arrow-alignment;
     }
 
     &.left.end::after {
@@ -111,7 +111,7 @@
 
     &.right.start::after {
         inset-block-start: unset;
-        bottom: $arrow-alignment;
+        inset-block-end: $arrow-alignment;
     }
 
     &.right.end::after {

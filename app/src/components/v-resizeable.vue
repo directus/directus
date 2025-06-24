@@ -195,7 +195,7 @@ function onPointerUp() {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-end: 0;
-		bottom: 0;
+		inset-block-end: 0;
 		width: 4px;
 		z-index: 10;
 		background-color: var(--theme--primary);
@@ -227,7 +227,7 @@ function onPointerUp() {
 				position: absolute;
 				inset-block-start: 0;
 				inset-inline-end: 1px;
-				bottom: 0;
+				inset-block-end: 0;
 				left: 1px;
 				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);

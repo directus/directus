@@ -307,7 +307,7 @@ function selectLog(index: number) {
 .unread-logs {
 	position: relative;
 	width: 100%;
-	bottom: 60px;
+	inset-block-end: 60px;
 	text-align: center;
 }
 

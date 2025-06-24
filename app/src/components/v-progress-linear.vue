@@ -102,7 +102,7 @@ const color = computed(() => {
 	}
 
 	&.bottom {
-		bottom: 0;
+		inset-block-end: 0;
 	}
 
 	&.fixed {
