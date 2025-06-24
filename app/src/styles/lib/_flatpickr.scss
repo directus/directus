@@ -22,7 +22,7 @@
 }
 
 .flatpickr-calendar .flatpickr-calendar.arrowTop::after {
-    border-bottom-color: var(--theme--background-normal);
+    border-block-end-color: var(--theme--background-normal);
 }
 
 .flatpickr-calendar.arrowBottom::after {

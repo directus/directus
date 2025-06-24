@@ -402,11 +402,11 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-pop.tox-pop--top::after {
-	border-bottom-color: var(--theme--form--field--input--background-subdued);
+	border-block-end-color: var(--theme--form--field--input--background-subdued);
 }
 
 .tox .tox-pop.tox-pop--top::before {
-	border-bottom-color: var(--theme--form--field--input--border-color);
+	border-block-end-color: var(--theme--form--field--input--border-color);
 }
 
 .tox .tox-dialog-wrap__backdrop .tox-rgba-preview {
