@@ -118,12 +118,12 @@ const { t } = useI18n();
 
 	.action {
 		height: 48px;
-		padding-left: 12px;
+		padding-inline-start: 12px;
 		text-align: center;
 	}
 
 	.action + .action {
-		padding-left: 4px;
+		padding-inline-start: 4px;
 	}
 
 	.null {

@@ -129,7 +129,7 @@ blockquote {
 	line-height: 24px;
 	font-weight: 500;
 	border-left: 2px solid ${cssVar('--theme--form--field--input--border-color')};
-	padding-left: 1em;
+	padding-inline-start: 1em;
 	margin-left: 0px;
 }
 video,

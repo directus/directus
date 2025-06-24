@@ -361,7 +361,7 @@ function useURLImport() {
 .item-actions {
 	@include mixins.list-interface-item-actions;
 
-	padding-left: 8px;
+	padding-inline-start: 8px;
 }
 
 .preview {

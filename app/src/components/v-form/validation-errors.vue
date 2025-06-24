@@ -99,7 +99,7 @@ const validationErrorsWithNames = computed<
 <style lang="scss" scoped>
 .validation-errors-list {
 	margin-block-start: 4px;
-	padding-left: 28px;
+	padding-inline-start: 28px;
 
 	.field {
 		cursor: pointer;

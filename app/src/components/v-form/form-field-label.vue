@@ -164,7 +164,7 @@ const { t } = useI18n();
 
 		.field-name {
 			margin-left: -16px;
-			padding-left: 16px;
+			padding-inline-start: 16px;
 		}
 	}
 

@@ -92,7 +92,7 @@ const active = ref(false);
 	justify-content: flex-end;
 	height: 100%;
 	padding: inherit;
-	padding-left: 8px;
+	padding-inline-start: 8px;
 	background-color: var(--theme--background);
 }
 

@@ -462,7 +462,7 @@ function stepDown() {
 		height: 100%;
 		padding: var(--theme--form--field--input--padding);
 		padding-inline-end: 0;
-		padding-left: 0;
+		padding-inline-start: 0;
 		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: none;

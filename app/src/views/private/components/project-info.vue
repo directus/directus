@@ -26,7 +26,7 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	align-items: center;
 	width: 100%;
 	height: calc(60px + var(--theme--navigation--project--border-width));
-	padding-left: 20px;
+	padding-inline-start: 20px;
 	color: var(--theme--navigation--project--foreground);
 	text-align: left;
 	background: var(--theme--navigation--project--background);

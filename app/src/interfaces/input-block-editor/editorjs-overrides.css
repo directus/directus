@@ -262,7 +262,7 @@
 /* Quote block */
 
 .codex-editor .cdx-block.cdx-quote {
-	padding-left: 22px;
+	padding-inline-start: 22px;
 }
 
 .codex-editor .ce-block blockquote {

@@ -756,7 +756,7 @@ function useGroupedPermissions() {
 
 	.system-divider {
 		--v-divider-label-color: var(--theme--foreground-subdued);
-		padding-left: 12px;
+		padding-inline-start: 12px;
 	}
 }
 

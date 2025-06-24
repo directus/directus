@@ -456,7 +456,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					}
 
 					.avatars {
-						padding-left: var(--user-spacing);
+						padding-inline-start: var(--user-spacing);
 						display: flex;
 						flex-direction: row-reverse;
 						.avatar {

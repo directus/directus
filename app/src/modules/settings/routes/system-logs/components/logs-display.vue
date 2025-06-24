@@ -257,7 +257,7 @@ function selectLog(index: number) {
 
 .notice {
 	margin: 6px;
-	padding-left: 6px;
+	padding-inline-start: 6px;
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--foreground-subdued);
 }

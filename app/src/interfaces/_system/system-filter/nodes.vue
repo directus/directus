@@ -505,7 +505,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		position: absolute;
 		top: 50%;
 		left: 100%;
-		padding-left: 4px;
+		padding-inline-start: 4px;
 		transform: translateY(-50%);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);

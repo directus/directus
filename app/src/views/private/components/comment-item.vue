@@ -117,7 +117,7 @@ function useEdits() {
 
 .comment-item .content :deep(blockquote) {
 	margin: 8px 0;
-	padding-left: 6px;
+	padding-inline-start: 6px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 	border-left: 2px solid var(--theme--form--field--input--border-color);

@@ -90,7 +90,7 @@ const hasHiddenCollections = computed(
 
 <style lang="scss" scoped>
 .group-name {
-	padding-left: 8px;
+	padding-inline-start: 8px;
 	font-weight: 600;
 }
 

@@ -518,7 +518,7 @@ function useColor() {
 }
 
 .presets .preset:first-child {
-	padding-left: 0;
+	padding-inline-start: 0;
 }
 
 .presets .preset:last-child {

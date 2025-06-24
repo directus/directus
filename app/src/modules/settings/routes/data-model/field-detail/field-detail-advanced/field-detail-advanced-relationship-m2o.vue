@@ -200,7 +200,7 @@ const onDeleteOptions = computed(() =>
 
 	ul {
 		padding-block-start: 4px;
-		padding-left: 24px;
+		padding-inline-start: 24px;
 	}
 
 	.field-name {

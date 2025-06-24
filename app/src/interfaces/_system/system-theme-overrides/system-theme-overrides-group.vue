@@ -76,7 +76,7 @@ const hasValue = computed(() => {
 .theme-overrides-group {
 	&:not(.root) {
 		.group-contents {
-			padding-left: 2ch;
+			padding-inline-start: 2ch;
 			border-left: 1px solid var(--theme--border-color-subdued);
 		}
 	}

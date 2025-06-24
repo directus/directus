@@ -148,6 +148,6 @@ const fields = computed(() => {
 
 :deep(ul) {
 	margin-left: 24px;
-	padding-left: 0;
+	padding-inline-start: 0;
 }
 </style>
