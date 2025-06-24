@@ -39,7 +39,7 @@
 
 .codex-editor .cdx-loader::before {
 	border: 3px solid var(--theme--background-accent);
-	border-left-color: var(--theme--primary);
+	border-inline-start-color: var(--theme--primary);
 }
 
 .codex-editor .cdx-search-field {
