@@ -112,12 +112,13 @@
 }
 
 @keyframes blink {
-	0% {
+	0%,
+	100% {
+		// uses the default value of the block the animation is applied to
 	}
+
 	50% {
 		background-color: transparent;
-	}
-	100% {
 	}
 }
 
