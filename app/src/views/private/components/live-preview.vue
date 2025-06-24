@@ -70,8 +70,8 @@ const iframeViewStyle = computed(() => {
 		}
 
 		const paddingHeight = (livePreviewSize.height.value - 44 - height.value * zoom.value) / 2;
-		const paddingTop = Math.max(paddingHeight, 48);
-		style.paddingTop = `${paddingTop}px`;
+		const paddingBlockStart = Math.max(paddingHeight, 48);
+		style.paddingBlockStart = `${paddingBlockStart}px`;
 
 		if (paddingHeight < 48) {
 			const iframeViewHeight = 48 + height.value * zoom.value + 48;
