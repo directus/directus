@@ -17,7 +17,7 @@
 	"ignoreFiles": ["docs/**"],
 
 	"rules": {
-		"alpha-value-notation": null,
+		"alpha-value-notation": "number",
 		"at-rule-empty-line-before": [
 			"always",
 			{ "ignore": ["after-comment", "first-nested", "inside-block", "blockless-after-same-name-blockless"] }
