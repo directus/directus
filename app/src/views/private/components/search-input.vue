@@ -212,7 +212,7 @@ function emitValue() {
 	transition:
 		width var(--slow) var(--transition),
 		border-end-start-radius var(--fast) var(--transition),
-		border-bottom-right-radius var(--fast) var(--transition);
+		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
 		width: 69px;
@@ -321,11 +321,11 @@ function emitValue() {
 	&.filter-border {
 		padding-block-end: var(--theme--border-width);
 		border-bottom: none;
-		border-bottom-right-radius: 0;
+		border-end-end-radius: 0;
 		border-end-start-radius: 0;
 		transition:
 			border-end-start-radius 0s,
-			border-bottom-right-radius 0s;
+			border-end-end-radius 0s;
 
 		&::after {
 			position: absolute;
@@ -351,7 +351,7 @@ function emitValue() {
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-start-end-radius: 0;
-	border-bottom-right-radius: 22px;
+	border-end-end-radius: 22px;
 	border-end-start-radius: 22px;
 
 	&.active {
