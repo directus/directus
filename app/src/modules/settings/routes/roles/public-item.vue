@@ -260,7 +260,7 @@ function isAlterations<T extends Item>(value: any): value is Alterations<T> {
 
 .content {
 	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-block-end);
 	display: flex;
 	flex-direction: column;
 	gap: var(--theme--form--row-gap);

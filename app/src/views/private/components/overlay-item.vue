@@ -722,7 +722,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	--content-padding: var(--theme--form--column-gap);
 	--content-padding-block-end: var(--theme--form--row-gap);
 
-	padding-block-start: var(--content-padding-bottom);
+	padding-block-start: var(--content-padding-block-end);
 	position: relative;
 	z-index: 0;
 	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));

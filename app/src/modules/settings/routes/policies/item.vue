@@ -212,7 +212,7 @@ function discardAndStay() {
 
 .content {
 	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-block-end);
 	display: flex;
 	flex-direction: column;
 	row-gap: var(--theme--form--row-gap);

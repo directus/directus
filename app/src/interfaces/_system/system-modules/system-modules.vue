@@ -294,7 +294,7 @@ function remove(id: string) {
 
 .drawer-content {
 	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-block-end);
 }
 
 .list {
