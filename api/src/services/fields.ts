@@ -857,8 +857,8 @@ export class FieldsService {
 
 			column = table[type](
 				field.field,
-				field.schema?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
-				field.schema?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
+				field.schema?.numeric_precision ?? existing?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
+				field.schema?.numeric_scale ?? existing?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
 			);
 		} else if (field.type === 'csv') {
 			column = table.text(field.field);
