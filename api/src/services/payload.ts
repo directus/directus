@@ -1,5 +1,6 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type {
+	AbstractServiceOptions,
 	Accountability,
 	Aggregate,
 	Alterations,
@@ -20,7 +21,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import type { ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
 import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 

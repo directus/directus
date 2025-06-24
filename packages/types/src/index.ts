@@ -16,6 +16,7 @@ export * from './presets.js';
 export * from './query.js';
 export * from './relations.js';
 export * from './schema.js';
+export * from './services.js';
 export * from './settings.js';
 export * from './shares.js';
 export * from './users.js';

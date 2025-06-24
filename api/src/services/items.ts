@@ -3,6 +3,8 @@ import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, InvalidPayloadError, isDirectusError } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
 import type {
+	AbstractService,
+	AbstractServiceOptions,
 	Accountability,
 	Item as AnyItem,
 	PermissionsAction,
@@ -23,7 +25,7 @@ import emitter from '../emitter.js';
 import { processAst } from '../permissions/modules/process-ast/process-ast.js';
 import { processPayload } from '../permissions/modules/process-payload/process-payload.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractService, AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import type { ActionEventParams, MutationOptions } from '../types/index.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';

@@ -3,7 +3,14 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { ForeignKey, SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemRelationRows } from '@directus/system-data';
-import type { Accountability, Query, Relation, RelationMeta, SchemaOverview } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	Query,
+	Relation,
+	RelationMeta,
+	SchemaOverview,
+} from '@directus/types';
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
@@ -15,7 +22,7 @@ import emitter from '../emitter.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
+import type { ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
