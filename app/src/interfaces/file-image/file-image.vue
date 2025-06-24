@@ -262,15 +262,6 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 </template>
 
 <style lang="scss" scoped>
-.image-preview {
-	position: relative;
-	width: 100%;
-	height: var(--input-height-tall);
-	overflow: hidden;
-	background-color: var(--theme--background-normal);
-	border-radius: var(--theme--border-radius);
-}
-
 img {
 	z-index: 1;
 	width: 100%;
@@ -305,6 +296,13 @@ img {
 }
 
 .image-preview {
+	position: relative;
+	width: 100%;
+	height: var(--input-height-tall);
+	overflow: hidden;
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
+
 	.shadow {
 		position: absolute;
 		bottom: 0;
