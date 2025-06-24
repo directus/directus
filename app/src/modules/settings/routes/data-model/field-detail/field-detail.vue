@@ -142,7 +142,7 @@ async function save() {
 
 	@media (min-width: 600px) {
 		width: 300px;
-		margin-top: 0px;
+		margin-top: 0;
 	}
 }
 </style>

@@ -116,7 +116,7 @@ const changes = computed(() => {
 }
 
 .change-line {
-	margin-bottom: 0px;
+	margin-bottom: 0;
 }
 
 .v-notice {

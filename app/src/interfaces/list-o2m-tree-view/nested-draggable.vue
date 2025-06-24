@@ -280,7 +280,7 @@ function stageEdits(item: Record<string, any>) {
 		padding: 0;
 
 		.v-skeleton-loader {
-			margin: 12px 0px 12px auto;
+			margin: 12px 0 12px auto;
 			width: calc(100% - 24px);
 		}
 

@@ -392,7 +392,7 @@ function useURLImport() {
 
 		img {
 			object-fit: contain;
-			filter: drop-shadow(0px 0px 8px rgb(0 0 0 / 0.25));
+			filter: drop-shadow(0 0 8px rgb(0 0 0 / 0.25));
 		}
 	}
 }

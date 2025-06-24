@@ -509,7 +509,7 @@ function useColor() {
 	--v-button-height: 20px;
 	--v-button-width: 20px;
 
-	margin: 0px 4px;
+	margin: 0 4px;
 
 	&.low-contrast {
 		--v-button-height: 18px;
@@ -519,11 +519,11 @@ function useColor() {
 }
 
 .presets .preset:first-child {
-	padding-left: 0px;
+	padding-left: 0;
 }
 
 .presets .preset:last-child {
-	padding-right: 0px;
+	padding-right: 0;
 }
 
 .color-input {
@@ -536,7 +536,7 @@ function useColor() {
 
 .color-data-inputs {
 	display: grid;
-	grid-gap: 0px;
+	grid-gap: 0;
 	width: 100%;
 	padding: 12px 10px;
 }

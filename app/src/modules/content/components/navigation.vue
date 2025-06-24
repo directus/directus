@@ -115,7 +115,7 @@ const hasHiddenCollections = computed(
 
 	.v-detail {
 		:deep(.v-divider) {
-			margin: 0px;
+			margin: 0;
 		}
 
 		&:not(:first-child) :deep(.v-divider) {

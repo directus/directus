@@ -439,7 +439,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	:deep(.inline-display) {
-		padding-right: 0px;
+		padding-right: 0;
 
 		.v-icon {
 			display: none;
@@ -472,7 +472,7 @@ function isExistingField(node: Record<string, any>): boolean {
 
 		&::before {
 			position: absolute;
-			top: 0px;
+			top: 0;
 			left: -4px;
 			z-index: -1;
 			width: calc(100% + 8px);

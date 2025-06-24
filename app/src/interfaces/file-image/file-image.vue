@@ -380,7 +380,7 @@ img {
 	}
 
 	.actions ::v-deep(.v-button) {
-		transform: translateY(0px);
+		transform: translateY(0);
 		opacity: 1;
 	}
 

@@ -265,14 +265,14 @@ function addKeyAsNode() {
 
 	.v-list {
 		min-width: auto;
-		margin: 0px 0px 10px;
+		margin: 0 0 10px;
 		padding: 20px 20px 12px;
 		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 		background: var(--theme--form--field--input--background);
 
 		& > :deep(.group) {
-			margin-left: 0px;
-			padding-left: 0px;
+			margin-left: 0;
+			padding-left: 0;
 			border-left: none;
 		}
 	}

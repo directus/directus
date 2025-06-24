@@ -172,7 +172,7 @@ function emitValue() {
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: flex-start;
-	padding: 4px 0px 0px;
+	padding: 4px 0 0;
 
 	span.tag-container {
 		display: contents;

@@ -209,7 +209,7 @@ function getColor(input?: number) {
 }
 
 .metric-list-item:last-child {
-	border-bottom: 0px;
+	border-bottom: 0;
 }
 
 .metric-bar {

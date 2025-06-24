@@ -37,7 +37,7 @@ withDefaults(defineProps<Props>(), {
 */
 
 .v-divider {
-	flex-basis: 0px;
+	flex-basis: 0;
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-wrap: wrap;
@@ -99,8 +99,8 @@ withDefaults(defineProps<Props>(), {
 		height: 100%;
 
 		hr {
-			width: 0px;
-			max-width: 0px;
+			width: 0;
+			max-width: 0;
 			border-width: 0 var(--theme--border-width) 0 0;
 		}
 

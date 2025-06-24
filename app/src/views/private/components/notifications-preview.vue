@@ -85,7 +85,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 	bottom: 100%;
 	width: 100%;
 	background-color: var(--theme--background-normal);
-	box-shadow: 0px -4px 12px rgb(38 50 56 / 0.1);
+	box-shadow: 0 -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {
 		position: relative;

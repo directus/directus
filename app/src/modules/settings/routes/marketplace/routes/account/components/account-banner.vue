@@ -52,7 +52,7 @@ const hasMeta = computed(() => {
 		width: 100%;
 		height: 100%;
 		border-radius: 50%;
-		box-shadow: inset 0px 0px 0px 2px #ffffff33;
+		box-shadow: inset 0 0 0 2px #ffffff33;
 	}
 
 	img {

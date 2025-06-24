@@ -114,7 +114,7 @@ const done = async () => {
 	}
 
 	&.tail::after {
-		transform: rotate(45deg) translate(0px, 0px);
+		transform: rotate(45deg) translate(0, 0);
 	}
 
 	&.dense {

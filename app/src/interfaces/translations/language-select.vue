@@ -109,7 +109,7 @@ const displayValue = computed(() => {
 .v-input .input {
 	color: var(--theme--primary);
 	background-color: var(--theme--primary-background);
-	border: 0px;
+	border: 0;
 }
 
 .v-icon {

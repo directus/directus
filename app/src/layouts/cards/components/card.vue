@@ -150,7 +150,7 @@ function handleClick() {
 		background-color: var(--theme--background-normal);
 		border-color: var(--theme--primary-subdued);
 		border-style: solid;
-		border-width: 0px;
+		border-width: 0;
 		border-radius: var(--theme--border-radius);
 		transition: border-width var(--fast) var(--transition);
 
@@ -235,8 +235,8 @@ function handleClick() {
 		--focus-ring-offset: 0;
 
 		position: absolute;
-		top: 0px;
-		left: 0px;
+		top: 0;
+		left: 0;
 		z-index: 3;
 		margin: 4px;
 		opacity: 0;
@@ -323,7 +323,7 @@ function handleClick() {
 }
 
 .subtitle {
-	margin-top: 0px;
+	margin-top: 0;
 	color: var(--theme--foreground-subdued);
 }
 </style>

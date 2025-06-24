@@ -330,7 +330,7 @@ function setUpChart() {
 
 <style scoped>
 .bar-chart {
-	padding: 0px;
+	padding: 0;
 	height: 100%;
 	width: 100%;
 }

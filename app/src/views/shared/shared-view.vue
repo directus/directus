@@ -132,7 +132,7 @@ header {
 	padding: 32px;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
-	box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+	box-shadow: 0 4px 12px rgba(38, 50, 56, 0.1);
 }
 
 .inline {
@@ -147,7 +147,7 @@ header {
 		padding: 32px;
 		background-color: var(--theme--background);
 		border-radius: var(--theme--border-radius);
-		box-shadow: 0px 4px 12px rgba(38, 50, 56, 0.1);
+		box-shadow: 0 4px 12px rgba(38, 50, 56, 0.1);
 
 		@media (min-width: 618px) {
 			width: 618px;

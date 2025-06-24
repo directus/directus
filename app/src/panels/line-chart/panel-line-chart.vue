@@ -328,7 +328,7 @@ function setUpChart() {
 
 <style scoped>
 .line-chart {
-	padding: 0px;
+	padding: 0;
 	height: 100%;
 	width: 100%;
 }
@@ -349,7 +349,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 0px;
+	padding: 0 0 0 0;
 	font-weight: 600 !important;
 	font-size: 10px !important;
 }
@@ -362,7 +362,7 @@ function setUpChart() {
 .apexcharts-tooltip-series-group.apexcharts-active,
 .apexcharts-tooltip-series-group:last-child {
 	padding: 0 4px !important;
-	padding-bottom: 0px !important;
+	padding-bottom: 0 !important;
 }
 
 .apexcharts-tooltip-text {

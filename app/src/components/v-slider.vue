@@ -226,7 +226,7 @@ function onInput(event: Event) {
 		.thumb-label {
 			z-index: 1;
 			position: absolute;
-			top: 0px;
+			top: 0;
 			left: calc(var(--_v-slider-percentage) * 1%);
 			width: auto;
 			padding: 2px 6px;

@@ -339,7 +339,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				.badge {
 					display: inline-flex;
 					justify-content: center;
-					padding: 0px 6px;
+					padding: 0 6px;
 					height: 20px;
 					min-width: 20px;
 					margin-top: 2px;

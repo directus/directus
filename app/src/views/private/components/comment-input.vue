@@ -341,7 +341,7 @@ function pressedEnter() {
 <style scoped lang="scss">
 .input-container {
 	position: relative;
-	padding: 0px;
+	padding: 0;
 }
 
 .v-template-input {
@@ -352,7 +352,7 @@ function pressedEnter() {
 
 .collapsed .v-template-input {
 	height: 48px;
-	padding-bottom: 0px;
+	padding-bottom: 0;
 }
 
 .new-comment {

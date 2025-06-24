@@ -377,7 +377,7 @@ function useUrls() {
 		align-items: center;
 		z-index: 10;
 		gap: 8px;
-		padding: 0px 8px;
+		padding: 0 8px;
 		transition:
 			padding var(--medium) var(--transition),
 			height var(--medium) var(--transition);
@@ -396,7 +396,7 @@ function useUrls() {
 
 			.button {
 				&.active {
-					box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.15);
+					box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.15);
 				}
 
 				&:focus:not(:hover) {
@@ -491,7 +491,7 @@ function useUrls() {
 
 		.resize-handle {
 			overflow: hidden;
-			box-shadow: 0px 4px 12px -4px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.2);
 		}
 	}
 

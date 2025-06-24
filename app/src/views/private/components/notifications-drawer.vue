@@ -381,7 +381,7 @@ function clearFilters() {
 }
 
 .content {
-	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
+	padding: 0 var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
 
 .notifications {

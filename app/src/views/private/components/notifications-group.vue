@@ -70,7 +70,7 @@ const queue = toRefs(notificationsStore).queue;
 }
 
 .slide-fade-enter-active {
-	transform: translateX(0px) scaleY(1) scaleX(1);
+	transform: translateX(0) scaleY(1) scaleX(1);
 	opacity: 1;
 }
 
