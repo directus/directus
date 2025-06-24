@@ -266,7 +266,7 @@ export function realtime(config: WebSocketConfig = {}) {
 							const access_token = await self.getToken();
 
 							if (!access_token) {
-								throw Error(
+								return reject(
 									'No token for authenticating the websocket. Make sure to provide one or call the login() function beforehand.',
 								);
 							}
