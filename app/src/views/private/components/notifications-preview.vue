@@ -70,7 +70,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 
 .transition {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .sidebar-button {
@@ -84,13 +84,13 @@ const { lastFour } = storeToRefs(notificationsStore);
 	position: absolute;
 	inset-inline-end: 0;
 	inset-block-end: 100%;
-	width: 100%;
+	inline-size: 100%;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {
 		position: relative;
-		width: 100%;
+		inline-size: 100%;
 		padding: 12px;
 	}
 }

@@ -274,7 +274,7 @@ async function onClick(event: MouseEvent) {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: var(--v-button-width, auto);
+	inline-size: var(--v-button-width, auto);
 	min-inline-size: var(--v-button-min-width, 140px);
 	height: var(--v-button-height, 44px);
 	padding: var(--v-button-padding, 0 19px);
@@ -377,7 +377,7 @@ async function onClick(event: MouseEvent) {
 }
 
 .icon {
-	width: var(--v-button-height, 44px);
+	inline-size: var(--v-button-height, 44px);
 	min-inline-size: 0;
 	padding: 0;
 }

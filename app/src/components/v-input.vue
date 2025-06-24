@@ -360,7 +360,7 @@ function stepDown() {
 
 	display: flex;
 	align-items: center;
-	width: max-content;
+	inline-size: max-content;
 	height: var(--theme--form--field--input--height);
 
 	.prepend-outer {
@@ -458,7 +458,7 @@ function stepDown() {
 
 	input {
 		flex-grow: 1;
-		width: 20px; /* allows flex to grow/shrink to allow for slots */
+		inline-size: 20px; /* allows flex to grow/shrink to allow for slots */
 		height: 100%;
 		padding: var(--theme--form--field--input--padding);
 		padding-inline-end: 0;
@@ -498,10 +498,10 @@ function stepDown() {
 	}
 
 	&.full-width {
-		width: 100%;
+		inline-size: 100%;
 
 		.input {
-			width: 100%;
+			inline-size: 100%;
 		}
 	}
 

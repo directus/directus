@@ -698,7 +698,7 @@ function useGroupedPermissions() {
 	overflow: auto;
 
 	table {
-		width: 100%;
+		inline-size: 100%;
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		border-radius: var(--theme--border-radius);
 		border-spacing: 0;
@@ -721,7 +721,7 @@ function useGroupedPermissions() {
 		& button {
 			display: flex;
 			align-items: center;
-			width: 100%;
+			inline-size: 100%;
 			height: 44px;
 			padding: 0 4px;
 			color: var(--theme--foreground-subdued);

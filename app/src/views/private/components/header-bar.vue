@@ -91,7 +91,7 @@ onUnmounted(() => {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: 100%;
+	inline-size: 100%;
 	height: calc(var(--header-bar-height) + var(--theme--header--border-width));
 	margin: 0;
 	padding: 0 10px;
@@ -121,7 +121,7 @@ onUnmounted(() => {
 		display: flex;
 		align-items: center;
 		gap: 16px;
-		width: 100%;
+		inline-size: 100%;
 		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
 		margin-inline-start: 16px;
@@ -167,7 +167,7 @@ onUnmounted(() => {
 			.type-title {
 				color: var(--theme--header--title--foreground);
 				flex-grow: 1;
-				width: 100%;
+				inline-size: 100%;
 				overflow: hidden;
 				white-space: nowrap;
 				text-overflow: ellipsis;
@@ -231,7 +231,7 @@ onUnmounted(() => {
 			the appropriate color */
 			&::before {
 				content: '';
-				width: 100%;
+				inline-size: 100%;
 				height: 24px;
 				inset-block-end: 100%;
 				inset-inline-start: 0;

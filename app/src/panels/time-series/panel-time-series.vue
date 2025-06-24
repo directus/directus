@@ -390,7 +390,7 @@ function setupChart() {
 
 <style scoped>
 .time-series {
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 }
 </style>

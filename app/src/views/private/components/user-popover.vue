@@ -103,7 +103,7 @@ function navigateToUser() {
 
 <style lang="scss" scoped>
 .hover-trigger {
-	width: max-content;
+	inline-size: max-content;
 }
 
 .user-box {
@@ -167,13 +167,13 @@ function navigateToUser() {
 	margin: 8px 4px;
 
 	.avatar {
-		width: 80px;
+		inline-size: 80px;
 		height: 80px;
 		margin-inline-end: 16px;
 	}
 
 	div {
-		width: 140px;
+		inline-size: 140px;
 
 		.v-skeleton-loader:not(:last-child) {
 			margin-block-end: 12px;

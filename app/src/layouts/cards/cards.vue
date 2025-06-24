@@ -175,11 +175,11 @@ watch(innerWidth, (value) => {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		width: 240px;
+		inline-size: 240px;
 		color: var(--theme--foreground-subdued);
 
 		span {
-			width: auto;
+			inline-size: auto;
 			margin-inline-end: 4px;
 		}
 

@@ -3,7 +3,7 @@
 /* BASICS */
 
 .CodeMirror {
-    width: 100%;
+    inline-size: 100%;
     height: auto;
     color: var(--theme--foreground);
     font-weight: inherit;
@@ -83,7 +83,7 @@
 /* CURSOR */
 
 .CodeMirror-cursor {
-    width: 0;
+    inline-size: 0;
     border-inline-end: none;
     border-inline-start: 1px solid var(--theme--foreground);
 }
@@ -94,7 +94,7 @@
 }
 
 .cm-fat-cursor .CodeMirror-cursor {
-    width: auto;
+    inline-size: auto;
     background: var(--success-75);
     border: 0 !important;
 }
@@ -109,7 +109,7 @@
 }
 
 .cm-animate-fat-cursor {
-    width: auto;
+    inline-size: auto;
     background-color: var(--success-75);
     border: 0;
     animation: blink 1.06s steps(1) infinite;
@@ -295,7 +295,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-lint-markers {
-    width: 16px;
+    inline-size: 16px;
 }
 
 .CodeMirror-lint-tooltip {
@@ -328,7 +328,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     cursor: pointer;
     inset-inline-start: 4px;
     height: 16px;
-    width: 16px;
+    inline-size: 16px;
 }
 
 .CodeMirror-lint-marker-warning {
@@ -521,7 +521,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-measure {
     position: absolute;
-    width: 100%;
+    inline-size: 100%;
     height: 0;
     overflow: hidden;
     visibility: hidden;

@@ -330,7 +330,7 @@ function setUpChart() {
 .line-chart {
 	padding: 0;
 	height: 100%;
-	width: 100%;
+	inline-size: 100%;
 }
 </style>
 
@@ -372,7 +372,7 @@ function setUpChart() {
 
 .apexcharts-tooltip-marker {
 	height: 8px !important;
-	width: 8px !important;
+	inline-size: 8px !important;
 	padding: 4px !important;
 }
 

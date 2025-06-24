@@ -45,7 +45,7 @@
         position: absolute;
         inset-block-start: -5px;
         inset-inline-start: calc(50% - 6px);
-        width: 0;
+        inline-size: 0;
         height: 0;
         border-inline-end: 6px solid transparent;
         border-block-end: 6px solid var(--tooltip-background-color);

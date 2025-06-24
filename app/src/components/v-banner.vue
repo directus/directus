@@ -160,7 +160,7 @@ defineProps<{
 <style scoped>
 .v-banner {
 	container-type: inline-size;
-	width: 100%;
+	inline-size: 100%;
 	padding: var(--theme--banner--padding);
 	border-radius: var(--theme--banner--border-radius);
 	background-color: var(--theme--banner--background);
@@ -172,7 +172,7 @@ defineProps<{
 
 	.avatar {
 		flex-shrink: 0;
-		width: 120px;
+		inline-size: 120px;
 		height: 120px;
 		position: relative;
 		overflow: hidden;

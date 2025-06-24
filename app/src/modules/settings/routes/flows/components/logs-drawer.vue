@@ -151,7 +151,7 @@ const steps = computed(() => {
 		&::after {
 			content: '';
 			position: absolute;
-			width: var(--theme--border-width);
+			inline-size: var(--theme--border-width);
 			inset-inline-start: -11px;
 			inset-block-start: 0;
 			background-color: var(--theme--border-color-subdued);
@@ -191,7 +191,7 @@ const steps = computed(() => {
 		inset-block-start: 6px;
 		inset-inline-start: -16px;
 		z-index: 2;
-		width: 12px;
+		inline-size: 12px;
 		height: 12px;
 		background-color: var(--theme--primary);
 		border: var(--theme--border-width) solid var(--theme--background);

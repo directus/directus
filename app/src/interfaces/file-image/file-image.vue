@@ -264,7 +264,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 <style lang="scss" scoped>
 img {
 	z-index: 1;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	max-block-size: inherit;
 	object-fit: contain;
@@ -297,7 +297,7 @@ img {
 
 .image-preview {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	height: var(--input-height-tall);
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
@@ -308,7 +308,7 @@ img {
 		inset-block-end: 0;
 		inset-inline-start: 0;
 		z-index: 2;
-		width: 100%;
+		inline-size: 100%;
 		height: 40px;
 		overflow: hidden;
 		line-height: 1;
@@ -330,7 +330,7 @@ img {
 		z-index: 3;
 		display: flex;
 		justify-content: center;
-		width: 100%;
+		inline-size: 100%;
 		gap: 12px;
 
 		::v-deep(.v-button) {
@@ -352,7 +352,7 @@ img {
 		inset-block-end: 0;
 		inset-inline-start: 0;
 		z-index: 3;
-		width: 100%;
+		inline-size: 100%;
 		padding: 8px 12px;
 		line-height: 1.2;
 	}

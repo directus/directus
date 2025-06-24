@@ -47,7 +47,7 @@ const value = computed({
 .variable {
 	display: grid;
 	align-content: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	padding: 12px;
 

@@ -61,7 +61,7 @@ const { t } = useI18n();
 .permissions-row {
 	.collection {
 		white-space: nowrap;
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	.collection > div {
@@ -71,7 +71,7 @@ const { t } = useI18n();
 
 	.name {
 		flex: 1;
-		width: 1px;
+		inline-size: 1px;
 		padding: 0 12px;
 		font-family: var(--theme--fonts--monospace--font-family);
 		overflow: hidden;

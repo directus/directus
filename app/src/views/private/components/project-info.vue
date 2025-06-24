@@ -24,7 +24,7 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	height: calc(60px + var(--theme--navigation--project--border-width));
 	padding-inline-start: 20px;
 	color: var(--theme--navigation--project--foreground);
@@ -35,7 +35,7 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 
 	.name-container {
 		flex-grow: 1;
-		width: 100px;
+		inline-size: 100px;
 		margin-inline-start: 12px;
 		line-height: 1.3;
 		margin-inline-end: 8px;

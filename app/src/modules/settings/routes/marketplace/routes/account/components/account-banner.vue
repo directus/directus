@@ -41,7 +41,7 @@ const hasMeta = computed(() => {
 <style scoped lang="scss">
 .avatar {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 
 	&::after {
@@ -49,14 +49,14 @@ const hasMeta = computed(() => {
 		position: absolute;
 		inset-inline-start: 0;
 		inset-block-start: 0;
-		width: 100%;
+		inline-size: 100%;
 		height: 100%;
 		border-radius: 50%;
 		box-shadow: inset 0 0 0 2px #fff3;
 	}
 
 	img {
-		width: 100%;
+		inline-size: 100%;
 		height: 100%;
 		object-fit: cover;
 		object-position: center center;

@@ -251,7 +251,7 @@ function selectLog(index: number) {
 
 <style lang="scss" scoped>
 .wrapper {
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 }
 
@@ -306,7 +306,7 @@ function selectLog(index: number) {
 
 .unread-logs {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	inset-block-end: 60px;
 	text-align: center;
 }

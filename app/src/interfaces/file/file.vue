@@ -370,7 +370,7 @@ function useURLImport() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 40px;
+	inline-size: 40px;
 	height: 40px;
 	margin-inline-start: -8px;
 	overflow: hidden;
@@ -378,7 +378,7 @@ function useURLImport() {
 	border-radius: var(--theme--border-radius);
 
 	img {
-		width: 100%;
+		inline-size: 100%;
 		height: 100%;
 		object-fit: cover;
 	}

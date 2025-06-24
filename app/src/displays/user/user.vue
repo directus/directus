@@ -57,7 +57,7 @@ const src = computed(() => {
 
 	img {
 		display: inline-block;
-		width: auto;
+		inline-size: auto;
 		height: 100%;
 		vertical-align: -67%;
 		border-radius: 4px;

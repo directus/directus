@@ -56,7 +56,7 @@ const wholeThing = computed(() => {
 <style lang="scss" scoped>
 .change-line {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	padding: 8px 12px 8px 40px;
 	border-radius: var(--theme--border-radius);
 

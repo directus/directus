@@ -392,7 +392,7 @@ function pointerLeave() {
 	}
 
 	.button-hint {
-		width: 32px;
+		inline-size: 32px;
 		height: 32px;
 		padding: 4px;
 	}
@@ -407,7 +407,7 @@ function pointerLeave() {
 	}
 
 	.button {
-		width: 20px;
+		inline-size: 20px;
 		height: 20px;
 		display: flex;
 		justify-content: center;
@@ -495,7 +495,7 @@ function pointerLeave() {
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 
 	--v-icon-color: var(--theme--danger);

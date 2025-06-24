@@ -37,7 +37,7 @@ const src = computed(() => {
 <style lang="scss" scoped>
 img {
 	display: inline-block;
-	width: auto;
+	inline-size: auto;
 	height: 100%;
 	vertical-align: -30%;
 	border-radius: var(--theme--border-radius);

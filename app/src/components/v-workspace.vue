@@ -162,7 +162,7 @@ const workspaceBoxSize = computed(() => {
 	inset-block-start: -4px;
 	inset-inline-start: -4px;
 	display: block;
-	width: calc(100% + 8px);
+	inline-size: calc(100% + 8px);
 	height: calc(100% + 8px);
 	background-image: radial-gradient(var(--theme--form--field--input--border-color) 10%, transparent 10%);
 	background-position: -6px -6px;

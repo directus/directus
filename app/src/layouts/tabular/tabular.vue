@@ -300,7 +300,7 @@ function removeField(fieldKey: string) {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
+	inline-size: 100%;
 	padding: 32px var(--content-padding);
 
 	.pagination {
@@ -311,11 +311,11 @@ function removeField(fieldKey: string) {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		width: 240px;
+		inline-size: 240px;
 		color: var(--theme--foreground-subdued);
 
 		span {
-			width: auto;
+			inline-size: auto;
 			margin-inline-end: 4px;
 		}
 

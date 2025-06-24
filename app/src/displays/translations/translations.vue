@@ -131,7 +131,7 @@ const translations = computed(() => {
 
 <style lang="scss" scoped>
 .v-list {
-	width: 300px;
+	inline-size: 300px;
 }
 
 .display-translations {
@@ -172,7 +172,7 @@ const translations = computed(() => {
 
 	.v-progress-linear {
 		flex: 1;
-		width: unset;
+		inline-size: unset;
 		max-inline-size: 100px;
 		border-radius: 4px;
 	}

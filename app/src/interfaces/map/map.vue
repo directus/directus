@@ -485,7 +485,7 @@ function handleKeyDown(event: any) {
 
 	.map {
 		position: relative;
-		width: 100%;
+		inline-size: 100%;
 		height: 500px;
 
 		&.error,
@@ -494,7 +494,7 @@ function handleKeyDown(event: any) {
 		}
 
 		.maplibregl-map {
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 		}
 
@@ -524,7 +524,7 @@ function handleKeyDown(event: any) {
 		border-radius: var(--theme--border-radius);
 
 		span {
-			width: auto;
+			inline-size: auto;
 			margin-inline-end: 4px;
 		}
 

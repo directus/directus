@@ -779,12 +779,12 @@ function getLinkForItem(item: DisplayItem) {
 		flex-wrap: wrap;
 
 		.search {
-			width: 100%;
+			inline-size: 100%;
 			order: -1;
 
 			:deep(.search-input),
 			:deep(.search-badge) {
-				width: 100% !important;
+				inline-size: 100% !important;
 			}
 		}
 	}
@@ -794,13 +794,13 @@ function getLinkForItem(item: DisplayItem) {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	width: 120px;
+	inline-size: 120px;
 	padding: 10px 0;
 	margin-inline-end: 2px;
 	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
-		width: auto;
+		inline-size: auto;
 		margin-inline-end: 8px;
 	}
 

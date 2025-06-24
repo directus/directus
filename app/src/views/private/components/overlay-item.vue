@@ -667,7 +667,9 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-card {
-	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)) !important;
+	inline-size: calc(
+		2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)
+	) !important;
 	max-inline-size: 90vw !important;
 
 	@media (min-height: 375px) {
@@ -694,14 +696,14 @@ function popoverClickOutsideMiddleware(e: Event) {
 			position: sticky;
 			inset-block-end: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
 			height: calc(var(--v-card-padding) - var(--button-gap));
-			width: 100%;
+			inline-size: 100%;
 
 			&::after {
 				content: '';
 				position: absolute;
 				inset-block-end: 0;
 				inset-inline-start: 0;
-				width: 100%;
+				inline-size: 100%;
 				height: var(--shadow-cover-height);
 				background: var(--v-card-background-color);
 			}
@@ -725,7 +727,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	padding-block-start: var(--content-padding-block-end);
 	position: relative;
 	z-index: 0;
-	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
+	inline-size: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
 	max-inline-size: 90vw;
 
 	:deep(.v-form:first-child .first-visible-field .field-label),

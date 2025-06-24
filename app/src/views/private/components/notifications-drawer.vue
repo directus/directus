@@ -409,7 +409,7 @@ function clearFilters() {
 		}
 
 		.header {
-			width: 100%;
+			inline-size: 100%;
 			display: flex;
 			align-items: center;
 			gap: 8px;
@@ -423,7 +423,7 @@ function clearFilters() {
 		}
 
 		.message {
-			width: 100%;
+			inline-size: 100%;
 			margin-block-start: 8px;
 			-webkit-user-select: text;
 			user-select: text;

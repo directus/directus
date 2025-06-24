@@ -89,7 +89,7 @@ const clicked = (toggleTooltip: () => void) => {
 
 <style lang="scss" scoped>
 .v-list {
-	width: 300px;
+	inline-size: 300px;
 }
 
 .custom-translations-display {
@@ -142,7 +142,7 @@ const clicked = (toggleTooltip: () => void) => {
 
 	.v-progress-linear {
 		flex: 1;
-		width: unset;
+		inline-size: unset;
 		max-inline-size: 100px;
 		border-radius: 4px;
 	}

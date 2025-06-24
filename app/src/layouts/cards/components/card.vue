@@ -145,7 +145,7 @@ function handleClick() {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 100%;
+		inline-size: 100%;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border-color: var(--theme--primary-subdued);
@@ -164,14 +164,14 @@ function handleClick() {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: 0;
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 			object-fit: contain;
 		}
 
 		.svg {
 			position: absolute;
-			width: 75%;
+			inline-size: 75%;
 			height: 75%;
 			object-fit: contain;
 		}
@@ -189,7 +189,7 @@ function handleClick() {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: 0;
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 		}
 
@@ -198,7 +198,7 @@ function handleClick() {
 			inset-block-start: 0;
 			inset-inline-start: 0;
 			z-index: 1;
-			width: 100%;
+			inline-size: 100%;
 			height: 48px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -207,7 +207,7 @@ function handleClick() {
 				position: absolute;
 				inset-block-start: 0;
 				inset-inline-start: 0;
-				width: 100%;
+				inline-size: 100%;
 				height: 100%;
 				background-image: linear-gradient(-180deg, rgb(38 50 56 / 0.1) 10%, rgb(38 50 56 / 0));
 				content: '';
@@ -220,7 +220,7 @@ function handleClick() {
 		inset-block-start: 7px;
 		inset-inline-start: 7px;
 		z-index: 2;
-		width: 18px;
+		inline-size: 18px;
 		height: 18px;
 		background-color: var(--theme--background);
 		border-radius: 24px;
@@ -309,7 +309,7 @@ function handleClick() {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 26px;
 	margin-block-start: 2px;
 	overflow: hidden;

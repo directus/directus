@@ -143,7 +143,7 @@ function onToggle(open: boolean) {
 		position: relative;
 		z-index: 2;
 		display: block;
-		width: 100%;
+		inline-size: 100%;
 		text-align: start;
 	}
 
@@ -152,7 +152,7 @@ function onToggle(open: boolean) {
 		inset-block-start: -4px;
 		inset-inline-start: -4px;
 		z-index: 1;
-		width: calc(100% + 8px);
+		inline-size: calc(100% + 8px);
 		height: calc(100% + 8px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);

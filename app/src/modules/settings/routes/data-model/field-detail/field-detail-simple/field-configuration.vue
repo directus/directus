@@ -199,7 +199,7 @@ const options = computed({
 }
 
 .toggle-advanced {
-	width: 100%;
+	inline-size: 100%;
 	margin-block-start: 20px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;

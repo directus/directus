@@ -111,7 +111,7 @@ function onSelection(data: (number | string)[] | null) {
 	&.centered {
 		display: grid;
 		align-content: center;
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	> * {

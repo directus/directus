@@ -61,7 +61,7 @@ withDefaults(defineProps<Props>(), {
 
 .input,
 .input-tall {
-	width: 100%;
+	inline-size: 100%;
 	height: var(--theme--form--field--input--height);
 	border: var(--theme--border-width) solid
 		var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
@@ -75,7 +75,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .block-list-item {
-	width: 100%;
+	inline-size: 100%;
 	height: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
@@ -87,7 +87,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .block-list-item-dense {
-	width: 100%;
+	inline-size: 100%;
 	height: 44px;
 	border-radius: var(--theme--border-radius);
 
@@ -109,12 +109,12 @@ withDefaults(defineProps<Props>(), {
 .list-item-icon {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 46px;
 
 	.icon {
 		flex-shrink: 0;
-		width: 24px;
+		inline-size: 24px;
 		height: 24px;
 		margin-inline-end: 12px;
 		border-radius: 50%;

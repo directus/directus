@@ -74,7 +74,7 @@ const circleStyle = computed(() => ({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: var(--v-progress-circular-size, 28px);
+	inline-size: var(--v-progress-circular-size, 28px);
 	height: var(--v-progress-circular-size, 28px);
 
 	&.x-small {
@@ -103,7 +103,7 @@ const circleStyle = computed(() => ({
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-start: 0;
-		width: var(--v-progress-circular-size, 28px);
+		inline-size: var(--v-progress-circular-size, 28px);
 		height: var(--v-progress-circular-size, 28px);
 
 		&-path {

@@ -58,7 +58,7 @@ const iconName = computed(() => {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: auto;
+	inline-size: auto;
 	min-block-size: var(--theme--form--field--input--height);
 	padding: 12px 16px;
 	color: var(--v-notice-color, var(--theme--foreground));
@@ -74,7 +74,7 @@ const iconName = computed(() => {
 	position: absolute;
 	inset-block-start: 0;
 	inset-inline-start: 0;
-	width: 4px;
+	inline-size: 4px;
 	height: 100%;
 	background-color: var(--v-notice-border-color, var(--theme--primary));
 }

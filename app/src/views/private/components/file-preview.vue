@@ -73,12 +73,12 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 
 	img,
 	video {
-		width: auto;
+		inline-size: auto;
 		height: auto;
 	}
 
 	audio {
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	img,

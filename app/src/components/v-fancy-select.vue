@@ -101,7 +101,7 @@ function toggle(item: Record<string, any>) {
 	z-index: 1;
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	margin-block-end: 8px;
 	padding: 12px;
 	background-color: var(--theme--background-normal);
@@ -125,7 +125,7 @@ function toggle(item: Record<string, any>) {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
+		inline-size: 44px;
 		height: 44px;
 		margin-inline-end: 12px;
 		background-color: var(--theme--background);

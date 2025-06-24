@@ -180,7 +180,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	height: var(--theme--form--field--input--height);
 	padding: 10px;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
@@ -189,7 +189,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 	input {
 		display: block;
 		flex-grow: 1;
-		width: 20px; /* this will auto grow with flex above */
+		inline-size: 20px; /* this will auto grow with flex above */
 		margin: 0;
 		margin-inline-start: 8px;
 		padding: 0;
@@ -214,7 +214,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: 0;
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 			background-color: var(--v-radio-color, var(--theme--primary));
 			opacity: 0.1;

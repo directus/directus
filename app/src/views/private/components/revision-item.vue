@@ -74,7 +74,7 @@ const user = computed(() => {
 .revision-item {
 	position: relative;
 	display: block;
-	width: 100%;
+	inline-size: 100%;
 	margin-block-end: 12px;
 	margin-inline-start: 16px;
 	text-align: start;
@@ -89,7 +89,7 @@ const user = computed(() => {
 			inset-block-start: 6px;
 			inset-inline-start: -18px;
 			z-index: 2;
-			width: 12px;
+			inline-size: 12px;
 			height: 12px;
 			background-color: var(--theme--warning);
 			border: var(--theme--border-width) solid var(--theme--background-normal);
@@ -118,7 +118,7 @@ const user = computed(() => {
 		inset-block-start: 12px;
 		inset-inline-start: -13px;
 		z-index: 1;
-		width: 2px;
+		inline-size: 2px;
 		height: calc(100% + 12px);
 		background-color: var(--theme--background-accent);
 		content: '';
@@ -129,7 +129,7 @@ const user = computed(() => {
 		inset-block-start: -4px;
 		inset-inline-start: -24px;
 		z-index: 1;
-		width: calc(100% + 32px);
+		inline-size: calc(100% + 32px);
 		height: calc(100% + 10px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);

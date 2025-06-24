@@ -68,7 +68,7 @@ function toggle() {
 <style lang="scss" scoped>
 .activator {
 	display: block;
-	width: 100%;
+	inline-size: 100%;
 	text-align: start;
 }
 

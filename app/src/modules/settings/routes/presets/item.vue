@@ -621,7 +621,7 @@ function discardAndLeave() {
 	--layout-offset-top: 0;
 
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	margin-block-start: 32px;
 
 	:deep(#map-container) {

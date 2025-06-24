@@ -130,7 +130,7 @@ function onClickSelect() {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	width: 100%;
+	inline-size: 100%;
 	height: 52px;
 	margin-block-end: 36px;
 	padding: 0 8px;

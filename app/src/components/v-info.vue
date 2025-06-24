@@ -42,7 +42,7 @@ withDefaults(defineProps<Props>(), {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100px;
+	inline-size: 100px;
 	height: 100px;
 	margin-block-end: 16px;
 	border-radius: 50%;

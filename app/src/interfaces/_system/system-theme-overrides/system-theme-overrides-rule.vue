@@ -77,7 +77,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 
 		&::before {
 			content: '';
-			width: 4px;
+			inline-size: 4px;
 			height: 4px;
 			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 4px;
@@ -99,7 +99,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 		border: none;
 		border-block-end: 1px solid var(--theme--form--field--input--border-color);
 		min-inline-size: 5ch;
-		width: v-bind(valueLength);
+		inline-size: v-bind(valueLength);
 		max-inline-size: 100%;
 		background: transparent;
 
@@ -109,7 +109,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 	}
 
 	.swatch {
-		width: 1.2ch;
+		inline-size: 1.2ch;
 		height: 1.2ch;
 		background-color: v-bind(swatchValue);
 		border: 1px solid var(--theme--form--field--input--foreground);

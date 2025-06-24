@@ -179,7 +179,7 @@ function onClick(event: PointerEvent) {
 	display: flex;
 	flex: 1 1 100%;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	min-inline-size: 0;
 	max-inline-size: none;
 	min-block-size: var(--v-list-item-min-height, 32px);
@@ -199,7 +199,7 @@ function onClick(event: PointerEvent) {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: 0;
-			width: calc(100% - 4px);
+			inline-size: calc(100% - 4px);
 			height: calc(100% - 4px);
 			border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 			content: '';

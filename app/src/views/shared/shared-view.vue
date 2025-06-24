@@ -63,7 +63,7 @@ const logoURL = computed<string | null>(() => {
 
 <style scoped lang="scss">
 .shared {
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	padding-block-end: 64px;
 	overflow: auto;
@@ -89,7 +89,7 @@ header {
 .title-box {
 	display: flex;
 	align-items: center;
-	width: max-content;
+	inline-size: max-content;
 	max-inline-size: 100%;
 	height: 60px;
 	margin-block-start: 2px;
@@ -105,7 +105,7 @@ header {
 		}
 
 		.subtitle {
-			width: 100%;
+			inline-size: 100%;
 			color: var(--theme--foreground-subdued);
 		}
 	}
@@ -115,13 +115,13 @@ header {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 60px;
+	inline-size: 60px;
 	height: 60px;
 	background-color: var(--project-color);
 	border-radius: var(--theme--border-radius);
 
 	img {
-		width: 40px;
+		inline-size: 40px;
 		height: 40px;
 		object-fit: contain;
 		object-position: center center;
@@ -142,7 +142,7 @@ header {
 
 	.inline-container {
 		display: block;
-		width: 100%;
+		inline-size: 100%;
 		max-inline-size: 856px;
 		padding: 32px;
 		background-color: var(--theme--background);
@@ -150,7 +150,7 @@ header {
 		box-shadow: 0 4px 12px rgb(38 50 56 / 0.1);
 
 		@media (min-width: 618px) {
-			width: 618px;
+			inline-size: 618px;
 		}
 	}
 

@@ -47,7 +47,7 @@ const addBorder = computed(() => {
 		background-color: v-bind(color);
 		display: inline-block;
 		flex-shrink: 0;
-		width: 10px;
+		inline-size: 10px;
 		height: 10px;
 		border-radius: 5px;
 

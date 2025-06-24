@@ -103,7 +103,7 @@ function emitValue(): void {
 
 	&.block {
 		position: relative;
-		width: 100%;
+		inline-size: 100%;
 		height: var(--theme--form--field--input--height);
 		padding: calc(14px - 2 * var(--theme--border-width));
 		border: var(--theme--border-width) solid var(--theme--form--field--input--background-subdued);
@@ -113,7 +113,7 @@ function emitValue(): void {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: 0;
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 			background-color: var(--theme--form--field--input--background-subdued);
 			border-radius: var(--theme--border-radius);

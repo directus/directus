@@ -450,7 +450,7 @@ table :deep(.sortable-ghost .cell) {
 	position: absolute;
 	inset-block-start: -2px;
 	inset-inline-start: 0;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .loading .loading-indicator th {

@@ -167,7 +167,7 @@ function onClickIcon(e: MouseEvent): void {
 		@include mixins.no-wrap;
 
 		input {
-			width: 100%;
+			inline-size: 100%;
 			background-color: transparent;
 			border: none;
 			border-block-end: 2px solid var(--theme--form--field--input--border-color);
@@ -197,7 +197,7 @@ function onClickIcon(e: MouseEvent): void {
 		--focus-ring-offset: var(--focus-ring-offset-invert);
 
 		position: relative;
-		width: 100%;
+		inline-size: 100%;
 		height: var(--theme--form--field--input--height);
 		padding: 10px; // 14 - 4 (border)
 		background-color: var(--theme--form--field--input--background);
@@ -214,7 +214,7 @@ function onClickIcon(e: MouseEvent): void {
 			inset-block-start: 0;
 			inset-inline-start: 0;
 			z-index: 0;
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 			border-radius: var(--theme--border-radius);
 			content: '';

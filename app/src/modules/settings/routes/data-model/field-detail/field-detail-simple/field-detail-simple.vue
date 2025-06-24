@@ -222,7 +222,7 @@ function toggleInterface(id: string) {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 160px;
+	inline-size: 160px;
 	height: 100px;
 	margin-block-end: 8px;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
@@ -232,7 +232,7 @@ function toggleInterface(id: string) {
 }
 
 .preview img {
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	object-fit: cover;
 }
@@ -242,7 +242,7 @@ function toggleInterface(id: string) {
 }
 
 .preview :deep(svg) {
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 }
 

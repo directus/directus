@@ -354,7 +354,7 @@ function useUrls() {
 	--preview--header--height: 44px;
 
 	container-type: inline-size;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 
 	&.header-expanded {
@@ -368,7 +368,7 @@ function useUrls() {
 	.header {
 		--focus-ring-color: var(--theme--navigation--modules--button--background-active);
 
-		width: 100%;
+		inline-size: 100%;
 		color: var(--preview--color);
 		background-color: var(--preview--header--background-color);
 		border-block-end: var(--preview--header--border-width) solid var(--preview--header--border-color);
@@ -451,7 +451,7 @@ function useUrls() {
 
 		input {
 			border: none;
-			width: 50px;
+			inline-size: 50px;
 			background-color: transparent;
 
 			&:first-child {
@@ -471,20 +471,20 @@ function useUrls() {
 	}
 
 	.container {
-		width: 100%;
+		inline-size: 100%;
 		height: calc(100% - var(--preview--header--height));
 		overflow: auto;
 	}
 
 	.iframe-view {
-		width: 100%;
+		inline-size: 100%;
 		height: 100%;
 		overflow: auto;
 		display: grid;
 		padding: 48px;
 
 		#frame {
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 			border: 0;
 		}

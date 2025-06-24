@@ -21,7 +21,7 @@ const show = ref(true);
 .box {
 	background-color: var(--theme--background-normal);
 	height: 200px;
-	width: 400px;
+	inline-size: 400px;
 	display: flex;
 	justify-content: center;
 	align-items: center;

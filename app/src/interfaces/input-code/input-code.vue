@@ -309,7 +309,7 @@ function isInterpolation(value: any) {
 <style lang="scss" scoped>
 .input-code {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	font-size: 14px;
 }
 

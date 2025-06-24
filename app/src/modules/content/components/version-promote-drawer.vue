@@ -285,7 +285,7 @@ function useTab() {
 .compare {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	padding: 8px;
 	gap: 8px;
 	color: var(--theme--foreground-subdued);

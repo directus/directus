@@ -182,7 +182,7 @@ const parts = computed(() =>
 
 	.vertical-aligner {
 		display: inline-block;
-		width: 0;
+		inline-size: 0;
 		height: 100%;
 		vertical-align: middle;
 	}

@@ -209,7 +209,7 @@ async function setNestedSort(updates?: Field[]) {
 
 .add-field-advanced {
 	display: block;
-	width: max-content;
+	inline-size: max-content;
 	margin: 0 auto;
 	margin-block-start: 8px;
 	color: var(--theme--foreground-subdued);

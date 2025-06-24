@@ -305,7 +305,7 @@ function toggleManualSort() {
 			font-weight: 600;
 
 			.header-btn {
-				width: 100%;
+				inline-size: 100%;
 				display: flex;
 				align-items: center;
 				justify-content: start;
@@ -330,7 +330,7 @@ function toggleManualSort() {
 				justify-content: center;
 
 				.header-btn {
-					width: auto;
+					inline-size: auto;
 				}
 
 				.name {
@@ -410,7 +410,7 @@ function toggleManualSort() {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-end: 0;
-		width: 5px;
+		inline-size: 5px;
 		height: 100%;
 		cursor: ew-resize;
 		transition: opacity var(--fast) var(--transition);
@@ -420,7 +420,7 @@ function toggleManualSort() {
 			inset-block-start: 20%;
 			inset-inline-start: 3px;
 			display: block;
-			width: var(--theme--border-width);
+			inline-size: var(--theme--border-width);
 			height: 60%;
 			background-color: var(--theme--border-color-subdued);
 			content: '';
@@ -440,7 +440,7 @@ function toggleManualSort() {
 :deep(.header-order-ghost) {
 	&::after,
 	&::before {
-		width: 2px;
+		inline-size: 2px;
 		content: '';
 		display: block;
 		position: absolute;
@@ -461,7 +461,7 @@ function toggleManualSort() {
 }
 
 .description-dot {
-	width: 8px;
+	inline-size: 8px;
 	height: 8px;
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;

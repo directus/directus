@@ -83,7 +83,7 @@ const color = computed(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	inline-size: 100%;
 	height: var(--v-progress-linear-height, 4px);
 	overflow: hidden;
 	background-color: var(--v-progress-linear-background-color, var(--theme--form--field--input--border-color));
@@ -111,7 +111,7 @@ const color = computed(() => {
 
 	&.indeterminate .inner {
 		position: relative;
-		width: 100% !important;
+		inline-size: 100% !important;
 		transform-origin: left;
 		animation: indeterminate 2s infinite;
 		will-change: transform;

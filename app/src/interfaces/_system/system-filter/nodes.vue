@@ -400,7 +400,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: fit-content;
+	inline-size: fit-content;
 	margin-inline-end: 18px;
 	margin-block-end: 8px;
 	padding: 2px 6px;
@@ -475,7 +475,7 @@ function isExistingField(node: Record<string, any>): boolean {
 			inset-block-start: 0;
 			inset-inline-start: -4px;
 			z-index: -1;
-			width: calc(100% + 8px);
+			inline-size: calc(100% + 8px);
 			height: 100%;
 			background-color: var(--theme--background-normal);
 			border-radius: 6px;
@@ -530,7 +530,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	&.inline {
-		width: auto;
+		inline-size: auto;
 		margin-inline-end: 0;
 		padding-inline-end: 12px;
 

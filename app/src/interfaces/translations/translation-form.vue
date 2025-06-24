@@ -207,7 +207,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 	--size: 24px;
 
 	display: inline-block;
-	width: var(--size);
+	inline-size: var(--size);
 	height: var(--size);
 }
 

@@ -93,7 +93,7 @@ function trimIfEnabled() {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	width: max-content;
+	inline-size: max-content;
 	height: var(--input-height-tall);
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -132,7 +132,7 @@ function trimIfEnabled() {
 	}
 
 	&.full-width {
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	&:hover:not(.disabled) {
@@ -150,7 +150,7 @@ function trimIfEnabled() {
 		position: relative;
 		display: block;
 		flex-grow: 1;
-		width: 100%;
+		inline-size: 100%;
 		height: var(--theme--form--field--input--height);
 		padding: var(--theme--form--field--input--padding);
 		color: var(--theme--foreground);

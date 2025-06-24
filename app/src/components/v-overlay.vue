@@ -45,7 +45,7 @@ function onClick(event: MouseEvent) {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	pointer-events: none;
 
@@ -61,7 +61,7 @@ function onClick(event: MouseEvent) {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-start: 0;
-		width: 100%;
+		inline-size: 100%;
 		height: 100%;
 		background-color: var(--overlay-color);
 		opacity: 0;

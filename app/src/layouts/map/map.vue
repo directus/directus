@@ -147,7 +147,7 @@ limitWritable.value = selectedSize;
 
 .layout-map {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 	height: calc(100% - 60px);
 }
 
@@ -191,7 +191,7 @@ limitWritable.value = selectedSize;
 	border: var(--theme--border-width) solid var(--theme--background);
 
 	span {
-		width: auto;
+		inline-size: auto;
 		margin-inline-end: 4px;
 	}
 

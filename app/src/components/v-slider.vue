@@ -119,7 +119,7 @@ function onInput(event: Event) {
 		}
 
 		input {
-			width: 100%;
+			inline-size: 100%;
 			height: 4px;
 			padding: 8px 0;
 			background-color: var(--theme--background);
@@ -147,7 +147,7 @@ function onInput(event: Event) {
 			&::-webkit-slider-thumb {
 				position: relative;
 				z-index: 3;
-				width: 8px;
+				inline-size: 8px;
 				height: 8px;
 				margin-block-start: -2px;
 				background: var(--theme--background);
@@ -162,7 +162,7 @@ function onInput(event: Event) {
 			&::-moz-range-thumb {
 				position: relative;
 				z-index: 3;
-				width: 8px;
+				inline-size: 8px;
 				height: 8px;
 				margin-block-start: -2px;
 				background: var(--v-slider-thumb-color, var(--theme--primary));
@@ -181,7 +181,7 @@ function onInput(event: Event) {
 			inset-inline-end: 0;
 			inset-inline-start: 0;
 			z-index: 2;
-			width: 100%;
+			inline-size: 100%;
 			height: 4px;
 			background-color: var(--v-slider-fill-color, var(--theme--primary));
 			border-radius: 4px;
@@ -198,7 +198,7 @@ function onInput(event: Event) {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			width: 100%;
+			inline-size: 100%;
 			height: 4px;
 			padding: 0 7px;
 			opacity: 0;
@@ -207,7 +207,7 @@ function onInput(event: Event) {
 
 			.tick {
 				display: inline-block;
-				width: 4px;
+				inline-size: 4px;
 				height: 4px;
 				background-color: var(--v-slider-color, var(--theme--form--field--input--border-color));
 				border-radius: 50%;
@@ -218,7 +218,7 @@ function onInput(event: Event) {
 			position: absolute;
 			inset-block-start: 100%;
 			inset-inline-start: 7px;
-			width: calc(100% - 14px);
+			inline-size: calc(100% - 14px);
 			overflow: visible;
 			pointer-events: none;
 		}
@@ -228,7 +228,7 @@ function onInput(event: Event) {
 			position: absolute;
 			inset-block-start: 0;
 			inset-inline-start: calc(var(--_v-slider-percentage) * 1%);
-			width: auto;
+			inline-size: auto;
 			padding: 2px 6px;
 			color: var(--foreground-inverted);
 			font-weight: 600;
@@ -249,7 +249,7 @@ function onInput(event: Event) {
 				height: 4px;
 
 				&::-webkit-slider-thumb {
-					width: 12px;
+					inline-size: 12px;
 					height: 12px;
 					margin-block-start: -4px;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
@@ -257,7 +257,7 @@ function onInput(event: Event) {
 				}
 
 				&::-moz-range-thumb {
-					width: 12px;
+					inline-size: 12px;
 					height: 12px;
 					margin-block-start: -4px;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));

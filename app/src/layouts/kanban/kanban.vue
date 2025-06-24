@@ -304,7 +304,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 		.group {
 			display: flex;
 			flex-direction: column;
-			width: 320px;
+			inline-size: 320px;
 			padding: 8px 0;
 			background-color: var(--theme--background-normal);
 			border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -328,7 +328,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					display: flex;
 
 					.title-content {
-						width: auto;
+						inline-size: auto;
 						overflow: hidden;
 						white-space: nowrap;
 						text-overflow: ellipsis;
@@ -413,7 +413,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				}
 
 				.image {
-					width: 100%;
+					inline-size: 100%;
 					border-radius: var(--theme--border-radius);
 					margin-block-start: 4px;
 					max-block-size: 300px;
@@ -440,7 +440,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				}
 
 				.bottom {
-					width: 100%;
+					inline-size: 100%;
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
@@ -464,7 +464,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							border-radius: 24px;
 							border: 4px solid var(--theme--background);
 							height: 32px;
-							width: 32px;
+							inline-size: 32px;
 							margin-block-end: -4px;
 							margin-block-start: -4px;
 						}

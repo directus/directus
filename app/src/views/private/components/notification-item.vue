@@ -66,7 +66,7 @@ const done = async () => {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: 100%;
+	inline-size: 100%;
 	min-block-size: 44px;
 	margin-block-start: 4px;
 	padding: 12px;
@@ -79,7 +79,7 @@ const done = async () => {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
+		inline-size: 44px;
 		height: 44px;
 		margin-inline-end: 12px;
 		background-color: rgb(255 255 255 / 0.25);
@@ -104,7 +104,7 @@ const done = async () => {
 		inset-block-end: -5px;
 		z-index: -1;
 		display: block;
-		width: 20px;
+		inline-size: 20px;
 		height: 20px;
 		border-radius: 2px;
 		transform: rotate(45deg) translate(-5px, -5px);
@@ -118,12 +118,12 @@ const done = async () => {
 	}
 
 	&.dense {
-		width: max-content;
+		inline-size: max-content;
 		max-inline-size: 100%;
 		min-block-size: 44px;
 
 		.icon {
-			width: auto;
+			inline-size: auto;
 			height: auto;
 			margin-inline-end: 8px;
 			background-color: transparent;

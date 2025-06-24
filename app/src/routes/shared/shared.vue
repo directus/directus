@@ -209,7 +209,7 @@ h2 {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 }
 
@@ -221,7 +221,7 @@ h2 {
 	position: absolute;
 	inset-block-start: -12px;
 	inset-inline-start: -12px;
-	width: calc(100% + 24px);
+	inline-size: calc(100% + 24px);
 	height: calc(100% + 24px);
 	background-color: var(--danger-alt);
 	border-radius: var(--theme--border-radius);

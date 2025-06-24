@@ -129,7 +129,7 @@ useSystem();
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	backdrop-filter: blur(10px);
 }

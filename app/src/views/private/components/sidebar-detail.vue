@@ -78,7 +78,7 @@ function onClick() {
 		display: flex;
 		flex-shrink: 0;
 		justify-content: space-between;
-		width: 100%;
+		inline-size: 100%;
 		height: calc(60px + var(--theme--sidebar--section--toggle--border-width));
 		color: var(--theme--sidebar--section--toggle--foreground);
 		background-color: var(--theme--sidebar--section--toggle--background);
@@ -91,7 +91,7 @@ function onClick() {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			width: 60px;
+			inline-size: 60px;
 			height: 100%;
 		}
 
@@ -124,7 +124,7 @@ function onClick() {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 60px;
+		inline-size: 60px;
 		height: 60px;
 		color: var(--theme--foreground);
 		transition:

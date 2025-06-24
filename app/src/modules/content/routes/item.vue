@@ -822,7 +822,7 @@ function useCollectionRoute() {
 }
 
 .title-loader {
-	width: 260px;
+	inline-size: 260px;
 }
 
 .version-more-options.v-icon {

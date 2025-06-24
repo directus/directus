@@ -332,7 +332,7 @@ function setUpChart() {
 .bar-chart {
 	padding: 0;
 	height: 100%;
-	width: 100%;
+	inline-size: 100%;
 }
 </style>
 

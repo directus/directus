@@ -481,7 +481,7 @@ function revert(values: Record<string, any>) {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		width: 84px;
+		inline-size: 84px;
 		height: 84px;
 		margin-inline-end: 16px;
 		overflow: hidden;
@@ -490,18 +490,18 @@ function revert(values: Record<string, any>) {
 		border-radius: 100%;
 
 		.v-skeleton-loader {
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 		}
 
 		img {
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 			object-fit: cover;
 		}
 
 		@media (min-width: 600px) {
-			width: 144px;
+			inline-size: 144px;
 			height: 144px;
 			margin-inline-end: 22px;
 		}
@@ -512,7 +512,7 @@ function revert(values: Record<string, any>) {
 		overflow: hidden;
 
 		.v-skeleton-loader {
-			width: 175px;
+			inline-size: 175px;
 		}
 
 		.v-skeleton-loader:not(:last-child) {

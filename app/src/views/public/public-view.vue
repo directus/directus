@@ -103,7 +103,7 @@ const logoURL = computed<string | null>(() => {
 <style lang="scss" scoped>
 .public-view {
 	display: flex;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 
 	:slotted(.v-icon) {
@@ -135,7 +135,7 @@ const logoURL = computed<string | null>(() => {
 		flex-shrink: 0;
 		flex-direction: column;
 		justify-content: space-between;
-		width: 100%;
+		inline-size: 100%;
 		max-inline-size: 500px;
 		height: 100%;
 		padding: 20px;
@@ -156,7 +156,7 @@ const logoURL = computed<string | null>(() => {
 		}
 
 		.content {
-			width: 340px;
+			inline-size: 340px;
 			max-inline-size: 100%;
 		}
 
@@ -164,7 +164,7 @@ const logoURL = computed<string | null>(() => {
 			max-inline-size: 872px;
 
 			.content {
-				width: 712px;
+				inline-size: 712px;
 			}
 		}
 
@@ -185,7 +185,7 @@ const logoURL = computed<string | null>(() => {
 		background-size: cover;
 
 		video {
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 			object-fit: cover;
 			position: absolute;
@@ -197,7 +197,7 @@ const logoURL = computed<string | null>(() => {
 		.fallback {
 			position: absolute;
 			background-color: var(--theme--public--art--background);
-			width: 100%;
+			inline-size: 100%;
 			height: 100%;
 			inset-inline-start: 0;
 			inset-block-start: 0;
@@ -211,7 +211,7 @@ const logoURL = computed<string | null>(() => {
 					position: absolute;
 					inset-block-start: 0;
 					inset-inline-start: 0;
-					width: 100%;
+					inline-size: 100%;
 					height: 100%;
 					border-radius: 50%;
 					animation-iteration-count: infinite;
@@ -224,7 +224,7 @@ const logoURL = computed<string | null>(() => {
 				inset-block-end: -25%;
 				inset-inline-start: -25%;
 				height: 50%;
-				width: 50%;
+				inline-size: 50%;
 				filter: blur(100px);
 				z-index: 3;
 
@@ -240,7 +240,7 @@ const logoURL = computed<string | null>(() => {
 				inset-block-end: -25%;
 				inset-inline-start: 15%;
 				height: 40%;
-				width: 60%;
+				inline-size: 60%;
 				filter: blur(150px);
 				z-index: 2;
 
@@ -260,7 +260,7 @@ const logoURL = computed<string | null>(() => {
 				inset-block-end: -20%;
 				inset-inline-start: 75%;
 				height: 20%;
-				width: 40%;
+				inline-size: 40%;
 				filter: blur(50px);
 				z-index: 1;
 
@@ -349,7 +349,7 @@ const logoURL = computed<string | null>(() => {
 		}
 
 		.foreground {
-			width: 80%;
+			inline-size: 80%;
 			max-inline-size: 400px;
 		}
 
@@ -390,7 +390,7 @@ const logoURL = computed<string | null>(() => {
 	.title-box {
 		display: flex;
 		align-items: center;
-		width: max-content;
+		inline-size: max-content;
 		max-inline-size: 100%;
 		height: 64px;
 
@@ -416,13 +416,13 @@ const logoURL = computed<string | null>(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 56px;
+		inline-size: 56px;
 		height: 56px;
 		background-color: var(--project-color);
 		border-radius: calc(var(--theme--border-radius) - 2px);
 
 		img {
-			width: 40px;
+			inline-size: 40px;
 			height: 40px;
 			object-fit: contain;
 			object-position: center center;

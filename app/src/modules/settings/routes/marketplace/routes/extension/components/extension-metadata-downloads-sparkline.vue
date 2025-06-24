@@ -110,7 +110,7 @@ onUnmounted(() => {
 		position: absolute;
 		inset-block-end: 0;
 		inset-inline-start: 0;
-		width: 100%;
+		inline-size: 100%;
 		background-color: var(--theme--primary-background);
 		height: 4px;
 		z-index: -1;
@@ -118,6 +118,6 @@ onUnmounted(() => {
 }
 
 .chart {
-	width: 100%;
+	inline-size: 100%;
 }
 </style>

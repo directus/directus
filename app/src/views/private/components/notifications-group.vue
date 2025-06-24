@@ -42,7 +42,7 @@ const queue = toRefs(notificationsStore).queue;
 	inset-inline-end: 8px;
 	inset-inline-start: 8px;
 	z-index: 50;
-	width: 256px;
+	inline-size: 256px;
 	direction: rtl;
 
 	> *,

@@ -132,7 +132,7 @@ function useOverlayFocusTrap() {
 	inset-inline-start: 0;
 	z-index: 500;
 	display: flex;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 
 	&.keep-behind {
@@ -184,11 +184,11 @@ function useOverlayFocusTrap() {
 }
 
 .container :slotted(.v-card) .v-card-actions .v-button {
-	width: 100%;
+	inline-size: 100%;
 }
 
 .container :slotted(.v-card) .v-card-actions .v-button .button {
-	width: 100%;
+	inline-size: 100%;
 }
 
 .container :slotted(.v-card) .v-card-actions > .v-button + .v-button {
@@ -216,11 +216,11 @@ function useOverlayFocusTrap() {
 	}
 
 	.container :slotted(.v-card) .v-card-actions .v-button {
-		width: auto;
+		inline-size: auto;
 	}
 
 	.container :slotted(.v-card) .v-card-actions .v-button .button {
-		width: auto;
+		inline-size: auto;
 	}
 
 	.container :slotted(.v-card) .v-card-actions > .v-button + .v-button {

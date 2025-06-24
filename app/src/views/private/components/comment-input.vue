@@ -358,7 +358,7 @@ function pressedEnter() {
 .new-comment {
 	display: block;
 	flex-grow: 1;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	height: var(--theme--form--field--input--height);
 	min-block-size: 100px;

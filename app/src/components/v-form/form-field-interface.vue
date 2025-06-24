@@ -100,7 +100,7 @@ const value = computed(() =>
 		inset-block-start: 0;
 		inset-inline-start: 0;
 		z-index: 2;
-		width: 100%;
+		inline-size: 100%;
 		height: 100%;
 	}
 

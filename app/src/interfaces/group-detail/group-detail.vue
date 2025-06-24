@@ -136,7 +136,7 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .toggle-btn {
 	display: block;
-	width: 100%;
+	inline-size: 100%;
 	text-align: start;
 
 	&:focus-visible :deep(hr) {
@@ -167,7 +167,7 @@ watch(validationMessages, (newVal, oldVal) => {
 	inset-block-start: 7px;
 	inset-inline-start: -7px;
 	display: block;
-	width: 4px;
+	inline-size: 4px;
 	height: 4px;
 	background-color: var(--theme--form--field--input--foreground-subdued);
 	border-radius: 4px;

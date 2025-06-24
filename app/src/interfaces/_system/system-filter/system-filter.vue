@@ -325,7 +325,7 @@ function addKeyAsNode() {
 		.add-filter {
 			display: flex;
 			align-items: center;
-			width: 100%;
+			inline-size: 100%;
 			height: 30px;
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);

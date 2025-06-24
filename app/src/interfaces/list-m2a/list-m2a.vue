@@ -545,7 +545,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			color: var(--theme--foreground-subdued);
 
 			span {
-				width: auto;
+				inline-size: auto;
 				margin-inline-end: 4px;
 			}
 

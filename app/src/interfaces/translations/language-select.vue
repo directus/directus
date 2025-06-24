@@ -63,7 +63,7 @@ const displayValue = computed(() => {
 
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	height: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
 	color: var(--theme--primary);
@@ -145,12 +145,12 @@ const displayValue = computed(() => {
 		}
 
 		.dot {
-			width: 8px;
+			inline-size: 8px;
 			height: 100%;
 
 			&.show::before {
 				display: block;
-				width: 4px;
+				inline-size: 4px;
 				height: 4px;
 				background-color: var(--theme--form--field--input--foreground-subdued);
 				border-radius: 2px;

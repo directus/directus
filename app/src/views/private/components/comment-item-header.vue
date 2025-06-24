@@ -192,7 +192,7 @@ function useDelete() {
 
 .dot {
 	display: inline-block;
-	width: 6px;
+	inline-size: 6px;
 	height: 6px;
 	margin-inline-end: 4px;
 	vertical-align: middle;

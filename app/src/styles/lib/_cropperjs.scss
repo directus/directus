@@ -10,7 +10,7 @@
 
 .cropper-container img {
     display: block;
-    width: 100%;
+    inline-size: 100%;
     min-inline-size: 0 !important;
     max-inline-size: none !important;
     height: 100%;
@@ -48,7 +48,7 @@
 
 .cropper-view-box {
     display: block;
-    width: 100%;
+    inline-size: 100%;
     height: 100%;
     overflow: hidden;
     outline: 1px solid var(--theme--primary);
@@ -67,7 +67,7 @@
 .cropper-dashed.dashed-h {
     inset-block-start: calc(100% / 3);
     inset-inline-start: 0;
-    width: 100%;
+    inline-size: 100%;
     height: calc(100% / 3);
     border-block-start-width: 1px;
     border-block-end-width: 1px;
@@ -76,7 +76,7 @@
 .cropper-dashed.dashed-v {
     inset-block-start: 0;
     inset-inline-start: calc(100% / 3);
-    width: calc(100% / 3);
+    inline-size: calc(100% / 3);
     height: 100%;
     border-inline-end-width: 1px;
     border-inline-start-width: 1px;
@@ -87,7 +87,7 @@
     inset-block-start: 50%;
     inset-inline-start: 50%;
     display: block;
-    width: 0;
+    inline-size: 0;
     height: 0;
     opacity: 0.75;
 }
@@ -103,14 +103,14 @@
 .cropper-center::before {
     inset-block-start: 0;
     inset-inline-start: -3px;
-    width: 7px;
+    inline-size: 7px;
     height: 1px;
 }
 
 .cropper-center::after {
     inset-block-start: -3px;
     inset-inline-start: 0;
-    width: 1px;
+    inline-size: 1px;
     height: 7px;
 }
 
@@ -119,7 +119,7 @@
 .cropper-point {
     position: absolute;
     display: block;
-    width: 100%;
+    inline-size: 100%;
     height: 100%;
     opacity: 0.1;
 }
@@ -138,7 +138,7 @@
 .cropper-line.line-e {
     inset-block-start: 0;
     inset-inline-end: -3px;
-    width: 5px;
+    inline-size: 5px;
     cursor: ew-resize;
 }
 
@@ -152,7 +152,7 @@
 .cropper-line.line-w {
     inset-block-start: 0;
     inset-inline-start: -3px;
-    width: 5px;
+    inline-size: 5px;
     cursor: ew-resize;
 }
 
@@ -164,7 +164,7 @@
 }
 
 .cropper-point {
-    width: 10px;
+    inline-size: 10px;
     height: 10px;
     background: #fff;
     border-radius: 50%;
@@ -228,7 +228,7 @@
     inset-inline-end: -50%;
     inset-block-end: -50%;
     display: block;
-    width: 200%;
+    inline-size: 200%;
     height: 200%;
     background-color: var(--theme--primary);
     opacity: 0;
@@ -246,7 +246,7 @@
 .cropper-hide {
     position: absolute;
     display: block;
-    width: 0;
+    inline-size: 0;
     height: 0;
 }
 

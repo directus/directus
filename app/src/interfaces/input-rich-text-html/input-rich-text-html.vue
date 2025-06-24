@@ -589,7 +589,7 @@ onMounted(() => {
 
 .image-preview,
 .media-preview {
-	width: 100%;
+	inline-size: 100%;
 	height: var(--input-height-tall);
 	margin-block-end: 24px;
 	object-fit: cover;

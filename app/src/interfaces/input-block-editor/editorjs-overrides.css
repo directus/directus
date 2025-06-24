@@ -336,13 +336,13 @@
 	align-items: center;
 	justify-content: center;
 	height: 36px;
-	width: 36px;
+	inline-size: 36px;
 	margin-inline-end: 12px;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
 	height: 100%;
-	width: 100%;
+	inline-size: 100%;
 	margin-inline-end: 0;
 	background-color: var(--overlay-color);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

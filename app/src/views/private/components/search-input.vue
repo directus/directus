@@ -202,7 +202,7 @@ function emitValue() {
 .search-input {
 	display: flex;
 	align-items: center;
-	width: 42px;
+	inline-size: 42px;
 	min-block-size: 42px;
 	max-inline-size: 100%;
 	box-sizing: content-box;
@@ -215,11 +215,11 @@ function emitValue() {
 		border-end-end-radius var(--fast) var(--transition);
 
 	&.show-filter {
-		width: 69px;
+		inline-size: 69px;
 	}
 
 	input {
-		width: 0;
+		inline-size: 0;
 		height: 100%;
 		margin: 0;
 		padding: 0;
@@ -238,7 +238,7 @@ function emitValue() {
 	}
 
 	.spacer {
-		width: 8px;
+		inline-size: 8px;
 	}
 
 	.icon-clear {
@@ -272,7 +272,7 @@ function emitValue() {
 	}
 
 	&.has-content {
-		width: 200px;
+		inline-size: 200px;
 
 		.icon-clear {
 			margin-inline-end: 8px;
@@ -290,7 +290,7 @@ function emitValue() {
 	}
 
 	&.active {
-		width: 300px;
+		inline-size: 300px;
 		border-color: var(--theme--form--field--input--border-color-focus);
 
 		input {
@@ -299,22 +299,22 @@ function emitValue() {
 	}
 
 	&.filter-active {
-		width: 200px;
+		inline-size: 200px;
 
 		.icon-filter {
 			--v-icon-color: var(--theme--primary);
 		}
 
 		@media (min-width: 600px) {
-			width: 250px;
+			inline-size: 250px;
 		}
 
 		@media (min-width: 960px) {
-			width: 300px;
+			inline-size: 300px;
 		}
 
 		@media (min-width: 1260px) {
-			width: 420px; /* blaze it */
+			inline-size: 420px; /* blaze it */
 		}
 	}
 
@@ -332,7 +332,7 @@ function emitValue() {
 			inset-inline-end: var(--theme--border-width);
 			inset-block-end: calc(-1 * var(--theme--border-width));
 			inset-inline-start: var(--theme--border-width);
-			width: auto;
+			inline-size: auto;
 			height: var(--theme--border-width);
 			background-color: var(--theme--border-color-subdued);
 			content: '';
@@ -345,7 +345,7 @@ function emitValue() {
 	position: absolute;
 	inset-block-start: 100%;
 	inset-inline-end: 0;
-	width: auto;
+	inline-size: auto;
 	min-inline-size: 100%;
 	padding: 0;
 	background-color: var(--theme--background-subdued);

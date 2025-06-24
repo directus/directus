@@ -221,13 +221,13 @@ const color = computed(() => {
 .metric-text {
 	min-inline-size: min-content;
 	min-block-size: min-content;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .metric {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	font-weight: 800;
 	white-space: nowrap;

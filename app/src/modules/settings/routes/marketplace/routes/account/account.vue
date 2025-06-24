@@ -121,7 +121,7 @@ const navigateBack = () => {
 	padding-block-end: var(--content-padding-block-end);
 	padding-block-start: 0;
 	max-inline-size: 1200px;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .container {

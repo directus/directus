@@ -119,13 +119,13 @@ onBeforeUnmount(() => {
 .label-text {
 	min-inline-size: min-content;
 	min-block-size: min-content;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .label {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	color: var(--color-text);
 	font-weight: 500;

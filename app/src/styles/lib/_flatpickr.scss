@@ -1,11 +1,11 @@
 @use 'flatpickr/dist/flatpickr';
 
 .flatpickr-wrapper {
-    width: 100%;
+    inline-size: 100%;
 }
 
 .flatpickr-calendar {
-    width: auto;
+    inline-size: auto;
     overflow: hidden;
     font-family: var(--v-input-font-family);
     background: var(--theme--form--field--input--background);
@@ -48,7 +48,7 @@
 
 .flatpickr-months .flatpickr-prev-month svg,
 .flatpickr-months .flatpickr-next-month svg {
-    width: auto;
+    inline-size: auto;
     height: auto;
     fill: var(--theme--foreground-accent);
 }
@@ -62,7 +62,7 @@
     inset-inline-start: auto;
     display: flex;
     align-items: center;
-    width: auto;
+    inline-size: auto;
     padding: 0;
     font-size: 16px;
     font-weight: 600;
@@ -128,13 +128,13 @@
 
 .flatpickr-days {
     display: block;
-    width: 100%;
+    inline-size: 100%;
 }
 
 .flatpickr-days .dayContainer {
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
-    width: auto;
+    inline-size: auto;
     min-inline-size: auto;
     max-inline-size: none;
     gap: 4px;
@@ -148,7 +148,7 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-day {
-    width: 100%;
+    inline-size: 100%;
     max-inline-size: none;
     color: var(--theme--foreground-accent);
     line-height: 36px;
@@ -255,14 +255,14 @@ span.flatpickr-weekday {
 
 .flatpickr-time > * {
     flex-grow: 0 !important;
-    width: max-content !important;
+    inline-size: max-content !important;
     min-inline-size: 50px;
 }
 
 .flatpickr-time .numInputWrapper span {
     display: flex;
     justify-content: center;
-    width: 24px;
+    inline-size: 24px;
 }
 
 .flatpickr-time .numInputWrapper span.arrowUp {
@@ -322,7 +322,7 @@ span.flatpickr-weekday {
 .flatpickr-calendar .set-to-now-button {
     --focus-ring-offset: var(--focus-ring-offset-inset);
 
-    width: 100%;
+    inline-size: 100%;
     padding: 8px 0;
     color: var(--theme--primary);
     border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);

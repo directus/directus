@@ -196,7 +196,7 @@ function onPointerUp() {
 		inset-block-start: 0;
 		inset-inline-end: 0;
 		inset-block-end: 0;
-		width: 4px;
+		inline-size: 4px;
 		z-index: 10;
 		background-color: var(--theme--primary);
 		cursor: ew-resize;

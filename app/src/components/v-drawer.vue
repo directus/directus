@@ -146,7 +146,7 @@ const internalActive = computed({
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	width: 100%;
+	inline-size: 100%;
 	max-inline-size: 856px;
 	height: 100%;
 	background-color: var(--theme--background);
@@ -197,7 +197,7 @@ const internalActive = computed({
 				position: relative;
 				display: block;
 				flex-shrink: 0;
-				width: 220px;
+				inline-size: 220px;
 				height: 100%;
 				background: var(--theme--navigation--background);
 				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
@@ -247,12 +247,12 @@ const internalActive = computed({
 		}
 
 		.main.small-search-input:deep(.search-input.filter-active) {
-			width: 300px !important;
+			inline-size: 300px !important;
 		}
 	}
 
 	@media (min-width: 960px) {
-		width: calc(100% - 64px);
+		inline-size: calc(100% - 64px);
 	}
 }
 

@@ -647,7 +647,7 @@ async function exportDataFiles() {
 }
 
 .v-checkbox {
-	width: 100%;
+	inline-size: 100%;
 	margin-block-start: 8px;
 	overflow: hidden;
 	white-space: nowrap;
@@ -688,7 +688,7 @@ async function exportDataFiles() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 40px;
+	inline-size: 40px;
 	height: 40px;
 	margin-inline-start: -8px;
 	overflow: hidden;
@@ -712,7 +712,7 @@ async function exportDataFiles() {
 	inset-block-start: 0;
 	inset-inline-start: 0;
 	display: block;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 	cursor: pointer;
 	opacity: 0;
@@ -739,7 +739,7 @@ async function exportDataFiles() {
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	display: block;
-	width: 100%;
+	inline-size: 100%;
 	margin-block-start: 8px;
 	transition: color var(--fast) var(--transition);
 

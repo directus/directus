@@ -610,14 +610,14 @@ function setAspectRatio() {
 }
 
 .editor-container {
-	width: 100%;
+	inline-size: 100%;
 	height: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
 	.editor {
 		flex-grow: 1;
-		width: 100%;
+		inline-size: 100%;
 		height: calc(100% - 60px);
 	}
 
@@ -631,14 +631,14 @@ function setAspectRatio() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 100%;
 }
 
 .toolbar {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	height: 60px;
 	padding: 0 24px;
 	color: var(--white);

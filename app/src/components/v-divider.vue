@@ -63,7 +63,7 @@ withDefaults(defineProps<Props>(), {
 	}
 
 	.type-text {
-		width: 100%;
+		inline-size: 100%;
 		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 		font-weight: 600;
 		transition: color var(--fast) var(--transition);
@@ -97,7 +97,7 @@ withDefaults(defineProps<Props>(), {
 		height: 100%;
 
 		hr {
-			width: 0;
+			inline-size: 0;
 			max-inline-size: 0;
 			border-width: 0 var(--theme--border-width) 0 0;
 		}

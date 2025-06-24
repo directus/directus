@@ -452,7 +452,7 @@ function useDisplayValue() {
 }
 
 .inline-display {
-	width: max-content;
+	inline-size: max-content;
 	padding-inline-end: 18px;
 
 	&:not(.disabled) {

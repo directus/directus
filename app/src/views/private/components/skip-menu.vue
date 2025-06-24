@@ -45,7 +45,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 <style lang="scss" scoped>
 .skip-menu {
 	position: absolute;
-	width: 1px;
+	inline-size: 1px;
 	height: 1px;
 	padding: 0;
 	margin: -1px;
@@ -55,7 +55,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 	border-width: 0;
 
 	&:focus-within {
-		width: auto;
+		inline-size: auto;
 		height: auto;
 		margin: 0;
 		overflow: visible;

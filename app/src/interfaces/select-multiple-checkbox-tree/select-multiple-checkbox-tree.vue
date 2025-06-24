@@ -112,7 +112,7 @@ const searchDebounced = ref('');
 	inset-block-end: 0;
 	z-index: 2;
 	float: right;
-	width: max-content;
+	inline-size: max-content;
 	padding: 4px 8px;
 	text-align: end;
 	background-color: var(--theme--background);
