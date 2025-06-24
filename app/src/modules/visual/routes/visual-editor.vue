@@ -111,13 +111,13 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 .module {
 	position: relative;
 	display: flex;
-	height: 100%;
+	block-size: 100%;
 	inline-size: 100%;
 	overflow: hidden;
 }
 
 .live-preview {
-	height: 100%;
+	block-size: 100%;
 	inline-size: 100%;
 	min-inline-size: 0;
 }

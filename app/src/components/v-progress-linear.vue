@@ -84,7 +84,7 @@ const color = computed(() => {
 	align-items: center;
 	justify-content: center;
 	inline-size: 100%;
-	height: var(--v-progress-linear-height, 4px);
+	block-size: var(--v-progress-linear-height, 4px);
 	overflow: hidden;
 	background-color: var(--v-progress-linear-background-color, var(--theme--form--field--input--border-color));
 
@@ -92,7 +92,7 @@ const color = computed(() => {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-start: 0;
-		height: 100%;
+		block-size: 100%;
 		background-color: var(--v-progress-linear-color, var(--theme--foreground));
 		transition: width 200ms ease-in-out;
 	}

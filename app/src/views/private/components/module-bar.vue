@@ -77,7 +77,7 @@ const modules = computed(() => {
 	display: flex;
 	flex-direction: column;
 	inline-size: 60px;
-	height: 100%;
+	block-size: 100%;
 	background-color: var(--theme--navigation--modules--background);
 	border-inline-end: var(--theme--navigation--modules--border-width) solid
 		var(--theme--navigation--modules--border-color);

@@ -265,7 +265,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 img {
 	z-index: 1;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	max-block-size: inherit;
 	object-fit: contain;
 }
@@ -279,7 +279,7 @@ img {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 100%;
+	block-size: 100%;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--theme--background-normal);
 	padding: 32px;
@@ -298,7 +298,7 @@ img {
 .image-preview {
 	position: relative;
 	inline-size: 100%;
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -309,7 +309,7 @@ img {
 		inset-inline-start: 0;
 		z-index: 2;
 		inline-size: 100%;
-		height: 40px;
+		block-size: 40px;
 		overflow: hidden;
 		line-height: 1;
 		white-space: nowrap;
@@ -362,7 +362,7 @@ img {
 	}
 
 	.meta {
-		height: 17px;
+		block-size: 17px;
 		max-block-size: 0;
 		overflow: hidden;
 		color: rgb(255 255 255 / 0.75);
@@ -373,7 +373,7 @@ img {
 .image-preview:focus-within,
 .image-preview:hover {
 	.shadow {
-		height: 100%;
+		block-size: 100%;
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
@@ -391,7 +391,7 @@ img {
 	&.full,
 	&.fill {
 		.image-preview {
-			height: auto;
+			block-size: auto;
 			max-block-size: 400px;
 		}
 	}
@@ -406,7 +406,7 @@ img {
 }
 
 .disabled-placeholder {
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 }
 
 .fallback {
@@ -414,7 +414,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 	border-radius: var(--theme--border-radius);
 }
 </style>

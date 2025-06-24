@@ -131,7 +131,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(hr) {
-	height: 2px;
+	block-size: 2px;
 	margin: 12px 0;
 	border: 0;
 	border-block-start: 2px solid var(--theme--form--field--input--border-color);
@@ -189,7 +189,7 @@ function useEdits() {
 	inset-block-end: 4px;
 	inset-inline-start: 0;
 	z-index: 1;
-	height: 40px;
+	block-size: 40px;
 	background: linear-gradient(
 		180deg,
 		rgb(var(--background-page-rgb), 0) 0%,
@@ -205,7 +205,7 @@ function useEdits() {
 	inset-block-end: 8px;
 	inset-inline-start: 0;
 	z-index: 2;
-	height: 24px;
+	block-size: 24px;
 	text-align: center;
 	cursor: pointer;
 }

@@ -198,7 +198,7 @@ function onClickIcon(e: MouseEvent): void {
 
 		position: relative;
 		inline-size: 100%;
-		height: var(--theme--form--field--input--height);
+		block-size: var(--theme--form--field--input--height);
 		padding: 10px; // 14 - 4 (border)
 		background-color: var(--theme--form--field--input--background);
 		border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -215,7 +215,7 @@ function onClickIcon(e: MouseEvent): void {
 			inset-inline-start: 0;
 			z-index: 0;
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 			border-radius: var(--theme--border-radius);
 			content: '';
 		}

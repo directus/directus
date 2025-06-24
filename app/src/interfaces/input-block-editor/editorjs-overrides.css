@@ -335,13 +335,13 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height: 36px;
+	block-size: 36px;
 	inline-size: 36px;
 	margin-inline-end: 12px;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
-	height: 100%;
+	block-size: 100%;
 	inline-size: 100%;
 	margin-inline-end: 0;
 	background-color: var(--overlay-color);
@@ -576,7 +576,7 @@
 .codex-editor .ce-block iframe,
 .codex-editor .ce-block img {
 	max-inline-size: 100%;
-	height: auto;
+	block-size: auto;
 	border-radius: 4px;
 }
 

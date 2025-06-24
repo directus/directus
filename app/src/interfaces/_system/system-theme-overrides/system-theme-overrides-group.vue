@@ -96,7 +96,7 @@ const hasValue = computed(() => {
 		&::before {
 			content: '';
 			inline-size: 4px;
-			height: 4px;
+			block-size: 4px;
 			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 4px;
 			position: absolute;

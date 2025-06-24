@@ -101,7 +101,7 @@ const value = computed(() =>
 		inset-inline-start: 0;
 		z-index: 2;
 		inline-size: 100%;
-		height: 100%;
+		block-size: 100%;
 	}
 
 	&.subdued {

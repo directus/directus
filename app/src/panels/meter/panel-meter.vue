@@ -164,7 +164,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 <style scoped>
 .panel-meter {
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	position: relative;
 	padding: 12px;
 	display: grid;

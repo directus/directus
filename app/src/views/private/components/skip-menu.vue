@@ -46,7 +46,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 .skip-menu {
 	position: absolute;
 	inline-size: 1px;
-	height: 1px;
+	block-size: 1px;
 	padding: 0;
 	margin: -1px;
 	overflow: hidden;
@@ -56,7 +56,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 
 	&:focus-within {
 		inline-size: auto;
-		height: auto;
+		block-size: auto;
 		margin: 0;
 		overflow: visible;
 		clip: auto;

@@ -358,6 +358,6 @@ function hoverCluster(event: MapLayerMouseEvent) {
 #map-container {
 	position: relative;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 }
 </style>

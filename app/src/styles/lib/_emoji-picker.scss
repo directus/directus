@@ -16,7 +16,7 @@
     }
 
     .emoji-picker__search-container {
-        height: 40px;
+        block-size: 40px;
         margin: 8px;
 
         .emoji-picker__search-icon {
@@ -30,7 +30,7 @@
             border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
             background-color: var(--theme--background);
 
-            height: 100%;
+            block-size: 100%;
 
             &:hover {
                 border-color: var(--theme--form--field--input--border-color-hover);
@@ -48,7 +48,7 @@
 
     .emoji-picker__content {
         padding: 8px 0 0;
-        height: unset;
+        block-size: unset;
 
         .emoji-picker__category-buttons {
             padding: 0 8px;

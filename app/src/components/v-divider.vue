@@ -94,7 +94,7 @@ withDefaults(defineProps<Props>(), {
 		display: inline-flex;
 		flex-direction: column;
 		align-self: stretch;
-		height: 100%;
+		block-size: 100%;
 
 		hr {
 			inline-size: 0;

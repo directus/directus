@@ -89,7 +89,7 @@ const { t } = useI18n();
 	}
 
 	.v-checkbox {
-		height: 18px; // Don't push down label with normal icon height (24px)
+		block-size: 18px; // Don't push down label with normal icon height (24px)
 		margin-inline-end: 4px;
 	}
 
@@ -131,7 +131,7 @@ const { t } = useI18n();
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		height: 24px;
+		block-size: 24px;
 		inline-size: 24px;
 		margin-block-start: -2px;
 		margin-inline-start: 5px;
@@ -156,7 +156,7 @@ const { t } = useI18n();
 			inset-inline-start: -7px;
 			display: block;
 			inline-size: 4px;
-			height: 4px;
+			block-size: 4px;
 			background-color: var(--theme--foreground-subdued);
 			border-radius: 4px;
 			content: '';

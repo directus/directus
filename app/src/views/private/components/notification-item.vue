@@ -80,7 +80,7 @@ const done = async () => {
 		align-items: center;
 		justify-content: center;
 		inline-size: 44px;
-		height: 44px;
+		block-size: 44px;
 		margin-inline-end: 12px;
 		background-color: rgb(255 255 255 / 0.25);
 		border-radius: 50%;
@@ -105,7 +105,7 @@ const done = async () => {
 		z-index: -1;
 		display: block;
 		inline-size: 20px;
-		height: 20px;
+		block-size: 20px;
 		border-radius: 2px;
 		transform: rotate(45deg) translate(-5px, -5px);
 		transition: transform var(--slow) var(--transition);
@@ -124,7 +124,7 @@ const done = async () => {
 
 		.icon {
 			inline-size: auto;
-			height: auto;
+			block-size: auto;
 			margin-inline-end: 8px;
 			background-color: transparent;
 		}

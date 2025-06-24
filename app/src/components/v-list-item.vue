@@ -200,7 +200,7 @@ function onClick(event: PointerEvent) {
 			inset-block-start: 0;
 			inset-inline-start: 0;
 			inline-size: calc(100% - 4px);
-			height: calc(100% - 4px);
+			block-size: calc(100% - 4px);
 			border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 			content: '';
 			pointer-events: none;
@@ -281,7 +281,7 @@ function onClick(event: PointerEvent) {
 		);
 		position: relative;
 		display: flex;
-		height: var(--theme--form--field--input--height);
+		block-size: var(--theme--form--field--input--height);
 		margin: 0;
 		background-color: var(
 			--v-list-item-background-color,
@@ -331,7 +331,7 @@ function onClick(event: PointerEvent) {
 		}
 
 		&.grow {
-			height: auto;
+			block-size: auto;
 			min-block-size: var(--theme--form--field--input--height);
 		}
 

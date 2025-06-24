@@ -74,7 +74,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 	img,
 	video {
 		inline-size: auto;
-		height: auto;
+		block-size: auto;
 	}
 
 	audio {
@@ -119,7 +119,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: var(--input-height-tall);
+		block-size: var(--input-height-tall);
 		border-radius: var(--theme--border-radius);
 	}
 

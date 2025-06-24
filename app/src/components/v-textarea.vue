@@ -94,7 +94,7 @@ function trimIfEnabled() {
 	display: flex;
 	flex-direction: column;
 	inline-size: max-content;
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -108,7 +108,7 @@ function trimIfEnabled() {
 	}
 
 	&.expand-on-focus {
-		height: var(--theme--form--field--input--height);
+		block-size: var(--theme--form--field--input--height);
 		transition: height var(--medium) var(--transition);
 
 		.append,
@@ -121,7 +121,7 @@ function trimIfEnabled() {
 		&:focus,
 		&:focus-within,
 		&.has-content {
-			height: var(--v-textarea-max-height);
+			block-size: var(--v-textarea-max-height);
 
 			.append,
 			.prepend {
@@ -151,7 +151,7 @@ function trimIfEnabled() {
 		display: block;
 		flex-grow: 1;
 		inline-size: 100%;
-		height: var(--theme--form--field--input--height);
+		block-size: var(--theme--form--field--input--height);
 		padding: var(--theme--form--field--input--padding);
 		color: var(--theme--foreground);
 		font-family: var(--v-textarea-font-family, var(--theme--fonts--sans--font-family));

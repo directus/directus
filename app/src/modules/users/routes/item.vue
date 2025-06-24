@@ -468,7 +468,7 @@ function revert(values: Record<string, any>) {
 	display: flex;
 	align-items: center;
 	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
-	height: 112px;
+	block-size: 112px;
 	margin-block-end: var(--theme--form--row-gap);
 	padding: 20px;
 	background-color: var(--theme--background-normal);
@@ -482,7 +482,7 @@ function revert(values: Record<string, any>) {
 		align-items: center;
 		justify-content: center;
 		inline-size: 84px;
-		height: 84px;
+		block-size: 84px;
 		margin-inline-end: 16px;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
@@ -491,18 +491,18 @@ function revert(values: Record<string, any>) {
 
 		.v-skeleton-loader {
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 		}
 
 		img {
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 			object-fit: cover;
 		}
 
 		@media (min-width: 600px) {
 			inline-size: 144px;
-			height: 144px;
+			block-size: 144px;
 			margin-inline-end: 22px;
 		}
 	}
@@ -551,7 +551,7 @@ function revert(values: Record<string, any>) {
 	}
 
 	@media (min-width: 600px) {
-		height: 188px;
+		block-size: 188px;
 
 		.user-box-content .location {
 			display: block;

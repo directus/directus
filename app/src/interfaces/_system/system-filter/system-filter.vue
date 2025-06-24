@@ -290,7 +290,7 @@ function addKeyAsNode() {
 		.v-list {
 			display: flex;
 			align-items: center;
-			height: var(--theme--form--field--input--height);
+			block-size: var(--theme--form--field--input--height);
 			padding-block-start: 0;
 			padding-block-end: 0;
 		}
@@ -326,7 +326,7 @@ function addKeyAsNode() {
 			display: flex;
 			align-items: center;
 			inline-size: 100%;
-			height: 30px;
+			block-size: 30px;
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);
 			background-color: var(--theme--form--field--input--background);

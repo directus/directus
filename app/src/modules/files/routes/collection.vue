@@ -585,13 +585,13 @@ function useFileUpload() {
 	&.top,
 	&.bottom {
 		inline-size: 100%;
-		height: 4px;
+		block-size: 4px;
 	}
 
 	&.left,
 	&.right {
 		inline-size: 4px;
-		height: 100%;
+		block-size: 100%;
 	}
 
 	&.top {

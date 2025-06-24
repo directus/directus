@@ -12,7 +12,7 @@
 
     button {
         inline-size: 36px;
-        height: 36px;
+        block-size: 36px;
         background: var(--theme--form--field--input--background) !important;
         border: none !important;
         transition: background-color var(--fast) var(--transition);
@@ -55,17 +55,17 @@
 .mapboxgl-user-location-dot,
 .maplibregl-user-location-dot {
     inline-size: 12px;
-    height: 12px;
+    block-size: 12px;
     pointer-events: none;
 
     &::before {
         inline-size: 12px;
-        height: 12px;
+        block-size: 12px;
     }
 
     &::after {
         inline-size: 16px;
-        height: 16px;
+        block-size: 16px;
     }
 }
 
@@ -186,7 +186,7 @@
     inset-inline-start: 0;
     z-index: 1000;
     inline-size: 0;
-    height: 0;
+    block-size: 0;
     background: rgb(56 135 190 / 0.1);
     border: 1px solid rgb(56 135 190);
     pointer-events: none;

@@ -69,7 +69,7 @@ function stopSpinnerIfQueueIsEmpty() {
 	align-items: center;
 	justify-content: center;
 	inline-size: 60px;
-	height: 60px;
+	block-size: 60px;
 	padding: 12px;
 	background-color: var(--project-color);
 
@@ -84,7 +84,7 @@ function stopSpinnerIfQueueIsEmpty() {
 	.custom-logo {
 		display: block;
 		inline-size: 40px;
-		height: 40px;
+		block-size: 40px;
 		object-fit: contain;
 	}
 
@@ -93,7 +93,7 @@ function stopSpinnerIfQueueIsEmpty() {
 		inset-block-start: 18px;
 		inset-inline-start: 10px;
 		inline-size: 40px;
-		height: 32px;
+		block-size: 32px;
 		margin: 0 auto;
 		background-image: url('../../../assets/sprite.svg');
 		background-position: 0% 0%;

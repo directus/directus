@@ -143,7 +143,7 @@ watch(
 <style lang="scss" scoped>
 .system-raw-editor {
 	position: relative;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	min-block-size: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
@@ -167,7 +167,7 @@ watch(
 	}
 
 	&.multi-line {
-		height: auto;
+		block-size: auto;
 
 		:deep(.CodeMirror),
 		:deep(.CodeMirror-scroll) {

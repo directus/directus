@@ -92,7 +92,7 @@ const errorFormatted = computed(() => {
 
 	display: flex;
 	inline-size: 100%;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	background-color: var(--theme--background-normal);
 	border: $sso-link-border-width var(--theme--background-normal) solid;
 	border-radius: var(--theme--border-radius);

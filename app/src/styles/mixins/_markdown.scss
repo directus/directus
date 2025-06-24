@@ -126,12 +126,12 @@
     iframe,
     img {
         max-inline-size: 100%;
-        height: auto;
+        block-size: auto;
         border-radius: var(--theme--border-radius);
     }
 
     hr {
-        height: 1px;
+        block-size: 1px;
         margin-block-start: 2em;
         margin-block-end: 2em;
         background-color: var(--theme--form--field--input--border-color);

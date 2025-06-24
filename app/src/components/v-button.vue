@@ -276,7 +276,7 @@ async function onClick(event: MouseEvent) {
 	align-items: center;
 	inline-size: var(--v-button-width, auto);
 	min-inline-size: var(--v-button-min-width, 140px);
-	height: var(--v-button-height, 44px);
+	block-size: var(--v-button-height, 44px);
 	padding: var(--v-button-padding, 0 19px);
 	color: var(--v-button-color, var(--foreground-inverted));
 	font-weight: var(--v-button-font-weight, 600);

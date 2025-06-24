@@ -46,7 +46,7 @@ function onClick(event: MouseEvent) {
 	align-items: center;
 	justify-content: center;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	pointer-events: none;
 
 	&.has-click {
@@ -62,7 +62,7 @@ function onClick(event: MouseEvent) {
 		inset-block-start: 0;
 		inset-inline-start: 0;
 		inline-size: 100%;
-		height: 100%;
+		block-size: 100%;
 		background-color: var(--overlay-color);
 		opacity: 0;
 		transition: opacity var(--slow) var(--transition);

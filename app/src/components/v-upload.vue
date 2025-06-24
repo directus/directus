@@ -437,7 +437,7 @@ defineExpose({ abort });
 	inset-inline-start: 0;
 	display: block;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	cursor: pointer;
 	opacity: 0;
 	appearance: none;

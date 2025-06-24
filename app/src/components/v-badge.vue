@@ -70,7 +70,7 @@ withDefaults(
 		justify-content: center;
 		inline-size: max-content;
 		min-inline-size: var(--v-badge-size, 16px);
-		height: var(--v-badge-size, 16px);
+		block-size: var(--v-badge-size, 16px);
 		padding: 0 5px;
 		color: var(--v-badge-color, var(--white));
 		font-weight: 800;
@@ -98,7 +98,7 @@ withDefaults(
 		&.dot {
 			inline-size: var(--v-badge-size, 16px);
 			min-inline-size: 0;
-			height: var(--v-badge-size, 16px);
+			block-size: var(--v-badge-size, 16px);
 			border: 0;
 
 			* {

@@ -49,7 +49,7 @@
 .flatpickr-months .flatpickr-prev-month svg,
 .flatpickr-months .flatpickr-next-month svg {
     inline-size: auto;
-    height: auto;
+    block-size: auto;
     fill: var(--theme--foreground-accent);
 }
 
@@ -73,7 +73,7 @@
     appearance: none;
     text-align: end;
     font-size: 16px;
-    height: 20px;
+    block-size: 20px;
     font-weight: 600;
     color: var(--theme--primary);
 }
@@ -100,7 +100,7 @@
 
 .flatpickr-current-month .numInputWrapper input {
     font-size: 16px;
-    height: 20px;
+    block-size: 20px;
     vertical-align: 4px;
 }
 
@@ -285,7 +285,7 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-calendar.hasTime .flatpickr-time {
-    height: 43px;
+    block-size: 43px;
     margin-block-start: 8px;
     border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }

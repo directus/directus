@@ -136,7 +136,7 @@ video,
 img {
 	max-inline-size: 100%;
 	border-radius: ${cssVar('--theme--border-radius')};
-	height: auto;
+	block-size: auto;
 }
 iframe {
 	max-inline-size: 100%;
@@ -144,7 +144,7 @@ iframe {
 }
 hr {
 	background-color: ${cssVar('--theme--form--field--input--border-color')};
-	height: 1px;
+	block-size: 1px;
 	border: none;
 	margin-block-start: 2em;
 	margin-block-end: 2em;

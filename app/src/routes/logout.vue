@@ -19,6 +19,6 @@ onMounted(() => {
 	align-items: center;
 	justify-content: center;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 }
 </style>

@@ -391,13 +391,13 @@ function clearFilters() {
 		margin-block-end: 8px;
 
 		&.dense {
-			height: 44px;
+			block-size: 44px;
 		}
 	}
 
 	.v-list-item {
 		&.block {
-			height: unset;
+			block-size: unset;
 			min-block-size: var(--theme--form--field--input--height);
 			flex-flow: wrap;
 			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
@@ -445,7 +445,7 @@ function clearFilters() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 24px;
+	block-size: 24px;
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {

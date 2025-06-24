@@ -43,7 +43,7 @@ withDefaults(defineProps<Props>(), {
 	align-items: center;
 	justify-content: center;
 	inline-size: 100px;
-	height: 100px;
+	block-size: 100px;
 	margin-block-end: 16px;
 	border-radius: 50%;
 }

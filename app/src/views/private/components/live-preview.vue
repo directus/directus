@@ -355,7 +355,7 @@ function useUrls() {
 
 	container-type: inline-size;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 
 	&.header-expanded {
 		--preview--header--height: 60px;
@@ -372,7 +372,7 @@ function useUrls() {
 		color: var(--preview--color);
 		background-color: var(--preview--header--background-color);
 		border-block-end: var(--preview--header--border-width) solid var(--preview--header--border-color);
-		height: var(--preview--header--height);
+		block-size: var(--preview--header--height);
 		display: flex;
 		align-items: center;
 		z-index: 10;
@@ -472,20 +472,20 @@ function useUrls() {
 
 	.container {
 		inline-size: 100%;
-		height: calc(100% - var(--preview--header--height));
+		block-size: calc(100% - var(--preview--header--height));
 		overflow: auto;
 	}
 
 	.iframe-view {
 		inline-size: 100%;
-		height: 100%;
+		block-size: 100%;
 		overflow: auto;
 		display: grid;
 		padding: 48px;
 
 		#frame {
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 			border: 0;
 		}
 

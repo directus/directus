@@ -46,7 +46,7 @@
         inset-block-start: -5px;
         inset-inline-start: calc(50% - 6px);
         inline-size: 0;
-        height: 0;
+        block-size: 0;
         border-inline-end: 6px solid transparent;
         border-block-end: 6px solid var(--tooltip-background-color);
         border-inline-start: 6px solid transparent;

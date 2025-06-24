@@ -117,7 +117,7 @@ const { t } = useI18n();
 	}
 
 	.action {
-		height: 48px;
+		block-size: 48px;
 		padding-inline-start: 12px;
 		text-align: center;
 	}

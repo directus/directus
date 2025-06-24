@@ -279,7 +279,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	--limit-notice-margin-block-end: 24px;
 	--header-bar-margin: 24px;
 
-	height: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
+	block-size: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
 	padding: var(--content-padding);
 	padding-block-start: 0;
 
@@ -294,7 +294,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 .kanban {
 	display: flex;
-	height: 100%;
+	block-size: 100%;
 
 	--user-spacing: 16px;
 
@@ -341,7 +341,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					display: inline-flex;
 					justify-content: center;
 					padding: 0 6px;
-					height: 20px;
+					block-size: 20px;
 					min-inline-size: 20px;
 					margin-block-start: 2px;
 					text-align: center;
@@ -400,7 +400,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				.title,
 				.text {
 					line-height: 24px;
-					height: 24px;
+					block-size: 24px;
 
 					& * {
 						line-height: inherit;
@@ -431,7 +431,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						font-weight: 600;
 						margin-block-start: 4px;
 						margin-inline-end: 4px;
-						height: 20px;
+						block-size: 20px;
 						padding: 0 6px;
 					}
 					:deep(.v-chip + .v-chip) {
@@ -463,7 +463,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							margin-inline-start: calc(var(--user-spacing) * -1);
 							border-radius: 24px;
 							border: 4px solid var(--theme--background);
-							height: 32px;
+							block-size: 32px;
 							inline-size: 32px;
 							margin-block-end: -4px;
 							margin-block-start: -4px;

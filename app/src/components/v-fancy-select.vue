@@ -126,7 +126,7 @@ function toggle(item: Record<string, any>) {
 		align-items: center;
 		justify-content: center;
 		inline-size: 44px;
-		height: 44px;
+		block-size: 44px;
 		margin-inline-end: 12px;
 		background-color: var(--theme--background);
 		border-radius: 50%;

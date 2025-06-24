@@ -421,7 +421,7 @@ const refreshInterval = computed({
 
 .panel-container {
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	opacity: 1;
 	transition: opacity var(--fast) var(--transition);
 
@@ -448,7 +448,7 @@ const refreshInterval = computed({
 	justify-content: center;
 	flex-direction: column;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 
 	--v-icon-color: var(--theme--danger);
 
@@ -463,10 +463,10 @@ const refreshInterval = computed({
 	align-items: center;
 	justify-content: center;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 
 	&.header-offset {
-		height: calc(100% - 24px);
+		block-size: calc(100% - 24px);
 	}
 }
 </style>

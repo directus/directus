@@ -174,7 +174,7 @@ const parts = computed(() =>
 @use '@/styles/mixins';
 
 .render-template {
-	height: 100%;
+	block-size: 100%;
 	position: relative;
 	max-inline-size: 100%;
 	padding-inline-end: 8px;
@@ -183,7 +183,7 @@ const parts = computed(() =>
 	.vertical-aligner {
 		display: inline-block;
 		inline-size: 0;
-		height: 100%;
+		block-size: 100%;
 		vertical-align: middle;
 	}
 

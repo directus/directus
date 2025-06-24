@@ -42,7 +42,7 @@ const hasMeta = computed(() => {
 .avatar {
 	position: relative;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 
 	&::after {
 		content: '';
@@ -50,14 +50,14 @@ const hasMeta = computed(() => {
 		inset-inline-start: 0;
 		inset-block-start: 0;
 		inline-size: 100%;
-		height: 100%;
+		block-size: 100%;
 		border-radius: 50%;
 		box-shadow: inset 0 0 0 2px #fff3;
 	}
 
 	img {
 		inline-size: 100%;
-		height: 100%;
+		block-size: 100%;
 		object-fit: cover;
 		object-position: center center;
 	}

@@ -197,13 +197,13 @@ function getColor(input?: number) {
 	--v-list-item-border-radius: 0;
 	--v-list-item-padding: 6px;
 	--v-list-item-margin: 0;
-	height: 100%;
+	block-size: 100%;
 	padding: 6px;
 	overflow: hidden auto;
 }
 
 .metric-list-item {
-	height: 36px;
+	block-size: 36px;
 	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 

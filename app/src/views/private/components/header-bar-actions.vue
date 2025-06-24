@@ -90,7 +90,7 @@ const active = ref(false);
 	inset-inline-end: 0;
 	align-items: center;
 	justify-content: flex-end;
-	height: 100%;
+	block-size: 100%;
 	padding: inherit;
 	padding-inline-start: 8px;
 	background-color: var(--theme--background);

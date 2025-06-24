@@ -92,7 +92,7 @@ onUnmounted(() => {
 	align-items: center;
 	justify-content: flex-start;
 	inline-size: 100%;
-	height: calc(var(--header-bar-height) + var(--theme--header--border-width));
+	block-size: calc(var(--header-bar-height) + var(--theme--header--border-width));
 	margin: 0;
 	padding: 0 10px;
 	background-color: var(--theme--header--background);
@@ -123,7 +123,7 @@ onUnmounted(() => {
 		gap: 16px;
 		inline-size: 100%;
 		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
-		height: 100%;
+		block-size: 100%;
 		margin-inline-start: 16px;
 		overflow: hidden;
 
@@ -178,7 +178,7 @@ onUnmounted(() => {
 			:deep(.type-title) {
 				.render-template {
 					img {
-						height: 24px;
+						block-size: 24px;
 					}
 				}
 			}
@@ -187,7 +187,7 @@ onUnmounted(() => {
 
 	&.small {
 		inset-block-start: 0;
-		height: 60px;
+		block-size: 60px;
 	}
 
 	&.small .title-container .headline {
@@ -232,7 +232,7 @@ onUnmounted(() => {
 			&::before {
 				content: '';
 				inline-size: 100%;
-				height: 24px;
+				block-size: 24px;
 				inset-block-end: 100%;
 				inset-inline-start: 0;
 				background-color: var(--theme--header--background);

@@ -120,7 +120,7 @@ function getLinkForItem(item: any) {
 		inset-inline-start: calc(-1 * var(--toggle-px));
 		z-index: 1;
 		inline-size: calc(100% + var(--toggle-px) * 2);
-		height: calc(100% + var(--toggle-py) * 2);
+		block-size: calc(100% + var(--toggle-py) * 2);
 		background-color: var(--theme--background-normal);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -157,7 +157,7 @@ function getLinkForItem(item: any) {
 
 .links {
 	.v-list-item-content {
-		height: var(--v-list-item-min-height, 32px);
+		block-size: var(--v-list-item-min-height, 32px);
 	}
 }
 </style>

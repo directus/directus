@@ -28,7 +28,7 @@ defineProps<{
 
 .avatar {
 	inline-size: 20px;
-	height: 20px;
+	block-size: 20px;
 	border-radius: 10px;
 	object-fit: cover;
 	object-position: center center;

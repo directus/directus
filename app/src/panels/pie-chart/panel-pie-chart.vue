@@ -275,7 +275,7 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 
 <style scoped>
 .pie-chart {
-	height: 100%;
+	block-size: 100%;
 	inline-size: 100%;
 }
 </style>

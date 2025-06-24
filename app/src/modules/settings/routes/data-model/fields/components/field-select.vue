@@ -404,7 +404,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		inset-inline-start: -2px;
 		z-index: 1;
 		inline-size: 4px;
-		height: 100%;
+		block-size: 100%;
 		background-color: var(--theme--primary);
 		border-radius: 2px;
 		content: '';
@@ -416,7 +416,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		inset-inline-start: 0;
 		z-index: 1;
 		inline-size: 100%;
-		height: 100%;
+		block-size: 100%;
 		background-color: var(--theme--primary);
 		opacity: 0.1;
 		content: '';

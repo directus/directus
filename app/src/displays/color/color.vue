@@ -48,7 +48,7 @@ const addBorder = computed(() => {
 		display: inline-block;
 		flex-shrink: 0;
 		inline-size: 10px;
-		height: 10px;
+		block-size: 10px;
 		border-radius: 5px;
 
 		&.with-border {

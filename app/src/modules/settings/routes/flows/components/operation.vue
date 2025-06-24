@@ -316,7 +316,7 @@ function pointerLeave() {
 
 	.block {
 		padding: 0 12px;
-		height: 100%;
+		block-size: 100%;
 		overflow-y: auto;
 
 		.name {
@@ -393,7 +393,7 @@ function pointerLeave() {
 
 	.button-hint {
 		inline-size: 32px;
-		height: 32px;
+		block-size: 32px;
 		padding: 4px;
 	}
 
@@ -408,7 +408,7 @@ function pointerLeave() {
 
 	.button {
 		inline-size: 20px;
-		height: 20px;
+		block-size: 20px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -496,7 +496,7 @@ function pointerLeave() {
 	justify-content: center;
 	flex-direction: column;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 
 	--v-icon-color: var(--theme--danger);
 

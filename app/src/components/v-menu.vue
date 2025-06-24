@@ -519,7 +519,7 @@ function usePopper(
 .arrow-triangle::after {
 	position: absolute;
 	inline-size: 10px;
-	height: 10px;
+	block-size: 10px;
 }
 
 .arrow {

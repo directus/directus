@@ -44,7 +44,7 @@ withDefaults(defineProps<Props>(), {
 		inset-inline-end: 0;
 		inset-inline-start: 0;
 		z-index: 1;
-		height: 100%;
+		block-size: 100%;
 		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);
 		transform: translateX(-100%);
 		opacity: 0.5;
@@ -62,7 +62,7 @@ withDefaults(defineProps<Props>(), {
 .input,
 .input-tall {
 	inline-size: 100%;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	border: var(--theme--border-width) solid
 		var(--v-skeleton-loader-background-color, var(--theme--form--field--input--background-subdued));
 	border-radius: var(--theme--border-radius);
@@ -71,12 +71,12 @@ withDefaults(defineProps<Props>(), {
 }
 
 .input-tall {
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 }
 
 .block-list-item {
 	inline-size: 100%;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	@include loader;
@@ -88,7 +88,7 @@ withDefaults(defineProps<Props>(), {
 
 .block-list-item-dense {
 	inline-size: 100%;
-	height: 44px;
+	block-size: 44px;
 	border-radius: var(--theme--border-radius);
 
 	@include loader;
@@ -100,7 +100,7 @@ withDefaults(defineProps<Props>(), {
 
 .text {
 	flex-grow: 1;
-	height: 12px;
+	block-size: 12px;
 	border-radius: 6px;
 
 	@include loader;
@@ -110,12 +110,12 @@ withDefaults(defineProps<Props>(), {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	height: 46px;
+	block-size: 46px;
 
 	.icon {
 		flex-shrink: 0;
 		inline-size: 24px;
-		height: 24px;
+		block-size: 24px;
 		margin-inline-end: 12px;
 		border-radius: 50%;
 
@@ -124,7 +124,7 @@ withDefaults(defineProps<Props>(), {
 
 	.text {
 		flex-grow: 1;
-		height: 12px;
+		block-size: 12px;
 		border-radius: 6px;
 
 		@include loader;

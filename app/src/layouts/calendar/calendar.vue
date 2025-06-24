@@ -59,7 +59,7 @@ const atLimit = computed(() => {
 
 <style lang="scss" scoped>
 .calendar-layout {
-	height: calc(100% - calc(var(--header-bar-height) + 2 * 24px));
+	block-size: calc(100% - calc(var(--header-bar-height) + 2 * 24px));
 	padding: var(--content-padding);
 	padding-block-start: 0;
 }

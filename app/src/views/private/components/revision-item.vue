@@ -90,7 +90,7 @@ const user = computed(() => {
 			inset-inline-start: -18px;
 			z-index: 2;
 			inline-size: 12px;
-			height: 12px;
+			block-size: 12px;
 			background-color: var(--theme--warning);
 			border: var(--theme--border-width) solid var(--theme--background-normal);
 			border-radius: 8px;
@@ -119,7 +119,7 @@ const user = computed(() => {
 		inset-inline-start: -13px;
 		z-index: 1;
 		inline-size: 2px;
-		height: calc(100% + 12px);
+		block-size: calc(100% + 12px);
 		background-color: var(--theme--background-accent);
 		content: '';
 	}
@@ -130,7 +130,7 @@ const user = computed(() => {
 		inset-inline-start: -24px;
 		z-index: 1;
 		inline-size: calc(100% + 32px);
-		height: calc(100% + 10px);
+		block-size: calc(100% + 10px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;

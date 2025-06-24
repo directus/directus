@@ -308,7 +308,7 @@ function setContent() {
 .content {
 	display: block;
 	flex-grow: 1;
-	height: 100%;
+	block-size: 100%;
 	padding: var(--theme--form--field--input--padding) 0;
 	overflow: hidden;
 	font-size: 14px;

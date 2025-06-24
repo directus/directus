@@ -351,7 +351,7 @@ function pressedEnter() {
 }
 
 .collapsed .v-template-input {
-	height: 48px;
+	block-size: 48px;
 	padding-block-end: 0;
 }
 
@@ -359,8 +359,8 @@ function pressedEnter() {
 	display: block;
 	flex-grow: 1;
 	inline-size: 100%;
-	height: 100%;
-	height: var(--theme--form--field--input--height);
+	block-size: 100%;
+	block-size: var(--theme--form--field--input--height);
 	min-block-size: 100px;
 	padding: 5px;
 	overflow: scroll;
@@ -389,7 +389,7 @@ function pressedEnter() {
 	inset-inline-end: 0;
 	inset-block-end: 36px;
 	inset-inline-start: 0;
-	height: 8px;
+	block-size: 8px;
 	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
 }

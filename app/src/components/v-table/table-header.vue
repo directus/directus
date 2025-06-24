@@ -280,7 +280,7 @@ function toggleManualSort() {
 .table-header {
 	.cell {
 		position: relative;
-		height: 50px; /* +2px for bottom border */
+		block-size: 50px; /* +2px for bottom border */
 		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;
@@ -300,7 +300,7 @@ function toggleManualSort() {
 		.content {
 			display: flex;
 			align-items: center;
-			height: 100%;
+			block-size: 100%;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
 
@@ -411,7 +411,7 @@ function toggleManualSort() {
 		inset-block-start: 0;
 		inset-inline-end: 0;
 		inline-size: 5px;
-		height: 100%;
+		block-size: 100%;
 		cursor: ew-resize;
 		transition: opacity var(--fast) var(--transition);
 
@@ -421,7 +421,7 @@ function toggleManualSort() {
 			inset-inline-start: 3px;
 			display: block;
 			inline-size: var(--theme--border-width);
-			height: 60%;
+			block-size: 60%;
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			transition: background-color var(--fast) var(--transition);
@@ -446,7 +446,7 @@ function toggleManualSort() {
 		position: absolute;
 		inset-inline-end: 0;
 		inset-block-start: 20%;
-		height: 60%;
+		block-size: 60%;
 		background-color: var(--theme--primary);
 	}
 
@@ -462,7 +462,7 @@ function toggleManualSort() {
 
 .description-dot {
 	inline-size: 8px;
-	height: 8px;
+	block-size: 8px;
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;

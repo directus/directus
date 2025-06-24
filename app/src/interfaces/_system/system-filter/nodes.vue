@@ -476,7 +476,7 @@ function isExistingField(node: Record<string, any>): boolean {
 			inset-inline-start: -4px;
 			z-index: -1;
 			inline-size: calc(100% + 8px);
-			height: 100%;
+			block-size: 100%;
 			background-color: var(--theme--background-normal);
 			border-radius: 6px;
 			opacity: 0;

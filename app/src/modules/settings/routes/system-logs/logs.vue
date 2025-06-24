@@ -536,7 +536,7 @@ onUnmounted(() => {
 
 .logs-container {
 	inline-size: 100%;
-	height: calc(100% - 110px);
+	block-size: calc(100% - 110px);
 	min-block-size: 600px;
 	padding: var(--content-padding);
 	padding-block-start: 0;
@@ -553,7 +553,7 @@ onUnmounted(() => {
 .split-view {
 	display: flex;
 	flex-direction: column;
-	height: calc(100% - 50px);
+	block-size: calc(100% - 50px);
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
@@ -565,7 +565,7 @@ onUnmounted(() => {
 
 .split-view > div {
 	box-sizing: border-box;
-	height: 50%;
+	block-size: 50%;
 }
 
 .logs-display {
@@ -604,7 +604,7 @@ onUnmounted(() => {
 }
 
 .raw-log {
-	height: 100%;
+	block-size: 100%;
 	min-block-size: 100px;
 	margin: 4px;
 	position: relative;
@@ -617,12 +617,12 @@ onUnmounted(() => {
 }
 
 .raw-log :deep(.CodeMirror) {
-	height: 100%;
+	block-size: 100%;
 	max-block-size: 100%;
 }
 
 .raw-log :deep(.CodeMirror-scroll) {
-	height: 100%;
+	block-size: 100%;
 	max-block-size: 100%;
 }
 
@@ -653,7 +653,7 @@ onUnmounted(() => {
 	}
 
 	.split-view > div {
-		height: 100%;
+		block-size: 100%;
 	}
 
 	.logs-display {

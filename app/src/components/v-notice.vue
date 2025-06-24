@@ -75,7 +75,7 @@ const iconName = computed(() => {
 	inset-block-start: 0;
 	inset-inline-start: 0;
 	inline-size: 4px;
-	height: 100%;
+	block-size: 100%;
 	background-color: var(--v-notice-border-color, var(--theme--primary));
 }
 

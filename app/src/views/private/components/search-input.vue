@@ -220,7 +220,7 @@ function emitValue() {
 
 	input {
 		inline-size: 0;
-		height: 100%;
+		block-size: 100%;
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
@@ -333,7 +333,7 @@ function emitValue() {
 			inset-block-end: calc(-1 * var(--theme--border-width));
 			inset-inline-start: var(--theme--border-width);
 			inline-size: auto;
-			height: var(--theme--border-width);
+			block-size: var(--theme--border-width);
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			pointer-events: none;

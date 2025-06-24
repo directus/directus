@@ -103,7 +103,7 @@ function emitClick(event: MouseEvent) {
 	display: inline-block;
 	inline-size: var(--v-icon-size, 24px);
 	min-inline-size: var(--v-icon-size, 24px);
-	height: var(--v-icon-size, 24px);
+	block-size: var(--v-icon-size, 24px);
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;
 	vertical-align: middle;
@@ -150,7 +150,7 @@ function emitClick(event: MouseEvent) {
 
 		&.svg-inline--fa {
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 		}
 	}
 

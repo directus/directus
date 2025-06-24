@@ -104,7 +104,7 @@ const logoURL = computed<string | null>(() => {
 .public-view {
 	display: flex;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 
 	:slotted(.v-icon) {
 		--v-icon-color: var(--theme--foreground-subdued);
@@ -137,7 +137,7 @@ const logoURL = computed<string | null>(() => {
 		justify-content: space-between;
 		inline-size: 100%;
 		max-inline-size: 500px;
-		height: 100%;
+		block-size: 100%;
 		padding: 20px;
 		overflow: hidden auto;
 		background: var(--theme--public--background);
@@ -180,13 +180,13 @@ const logoURL = computed<string | null>(() => {
 		flex-grow: 1;
 		align-items: center;
 		justify-content: center;
-		height: 100%;
+		block-size: 100%;
 		background-position: center center;
 		background-size: cover;
 
 		video {
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 			object-fit: cover;
 			position: absolute;
 			z-index: -1;
@@ -198,7 +198,7 @@ const logoURL = computed<string | null>(() => {
 			position: absolute;
 			background-color: var(--theme--public--art--background);
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 			inset-inline-start: 0;
 			inset-block-start: 0;
 			z-index: -1;
@@ -212,7 +212,7 @@ const logoURL = computed<string | null>(() => {
 					inset-block-start: 0;
 					inset-inline-start: 0;
 					inline-size: 100%;
-					height: 100%;
+					block-size: 100%;
 					border-radius: 50%;
 					animation-iteration-count: infinite;
 					animation-timing-function: ease-in-out;
@@ -223,7 +223,7 @@ const logoURL = computed<string | null>(() => {
 			> div:nth-child(1) {
 				inset-block-end: -25%;
 				inset-inline-start: -25%;
-				height: 50%;
+				block-size: 50%;
 				inline-size: 50%;
 				filter: blur(100px);
 				z-index: 3;
@@ -239,7 +239,7 @@ const logoURL = computed<string | null>(() => {
 			> div:nth-child(2) {
 				inset-block-end: -25%;
 				inset-inline-start: 15%;
-				height: 40%;
+				block-size: 40%;
 				inline-size: 60%;
 				filter: blur(150px);
 				z-index: 2;
@@ -259,7 +259,7 @@ const logoURL = computed<string | null>(() => {
 			> div:nth-child(3) {
 				inset-block-end: -20%;
 				inset-inline-start: 75%;
-				height: 20%;
+				block-size: 20%;
 				inline-size: 40%;
 				filter: blur(50px);
 				z-index: 1;
@@ -361,7 +361,7 @@ const logoURL = computed<string | null>(() => {
 			display: flex;
 			align-items: flex-end;
 			justify-content: center;
-			height: 10px;
+			block-size: 10px;
 
 			.note {
 				max-inline-size: 340px;
@@ -392,7 +392,7 @@ const logoURL = computed<string | null>(() => {
 		align-items: center;
 		inline-size: max-content;
 		max-inline-size: 100%;
-		height: 64px;
+		block-size: 64px;
 
 		.title {
 			margin-block-start: 2px;
@@ -417,13 +417,13 @@ const logoURL = computed<string | null>(() => {
 		align-items: center;
 		justify-content: center;
 		inline-size: 56px;
-		height: 56px;
+		block-size: 56px;
 		background-color: var(--project-color);
 		border-radius: calc(var(--theme--border-radius) - 2px);
 
 		img {
 			inline-size: 40px;
-			height: 40px;
+			block-size: 40px;
 			object-fit: contain;
 			object-position: center center;
 		}

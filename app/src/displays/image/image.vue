@@ -38,7 +38,7 @@ const src = computed(() => {
 img {
 	display: inline-block;
 	inline-size: auto;
-	height: 100%;
+	block-size: 100%;
 	vertical-align: -30%;
 	border-radius: var(--theme--border-radius);
 

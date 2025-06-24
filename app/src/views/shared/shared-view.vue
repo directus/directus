@@ -64,7 +64,7 @@ const logoURL = computed<string | null>(() => {
 <style scoped lang="scss">
 .shared {
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	padding-block-end: 64px;
 	overflow: auto;
 	background-color: var(--theme--background-subdued);
@@ -91,7 +91,7 @@ header {
 	align-items: center;
 	inline-size: max-content;
 	max-inline-size: 100%;
-	height: 60px;
+	block-size: 60px;
 	margin-block-start: 2px;
 
 	.title {
@@ -116,13 +116,13 @@ header {
 	align-items: center;
 	justify-content: center;
 	inline-size: 60px;
-	height: 60px;
+	block-size: 60px;
 	background-color: var(--project-color);
 	border-radius: var(--theme--border-radius);
 
 	img {
 		inline-size: 40px;
-		height: 40px;
+		block-size: 40px;
 		object-fit: contain;
 		object-position: center center;
 	}

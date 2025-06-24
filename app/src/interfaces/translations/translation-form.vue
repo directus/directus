@@ -208,7 +208,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 	display: inline-block;
 	inline-size: var(--size);
-	height: var(--size);
+	block-size: var(--size);
 }
 
 .v-icon.disabled {

@@ -173,7 +173,7 @@ defineProps<{
 	.avatar {
 		flex-shrink: 0;
 		inline-size: 120px;
-		height: 120px;
+		block-size: 120px;
 		position: relative;
 		overflow: hidden;
 		align-items: center;

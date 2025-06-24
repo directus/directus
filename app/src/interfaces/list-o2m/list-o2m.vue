@@ -712,12 +712,12 @@ function getLinkForItem(item: DisplayItem) {
 		align-self: stretch;
 
 		:deep(.search-input) {
-			height: 100%;
+			block-size: 100%;
 			box-sizing: border-box;
 		}
 
 		:deep(.search-badge) {
-			height: 100%;
+			block-size: 100%;
 		}
 	}
 

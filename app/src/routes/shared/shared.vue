@@ -210,7 +210,7 @@ h2 {
 	align-items: center;
 	justify-content: center;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 }
 
 .password {
@@ -222,7 +222,7 @@ h2 {
 	inset-block-start: -12px;
 	inset-inline-start: -12px;
 	inline-size: calc(100% + 24px);
-	height: calc(100% + 24px);
+	block-size: calc(100% + 24px);
 	background-color: var(--danger-alt);
 	border-radius: var(--theme--border-radius);
 	transition: var(--medium) var(--transition);

@@ -376,7 +376,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 
 	display: flex;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	overflow: hidden;
 	background-color: var(--theme--background);
 
@@ -402,7 +402,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		inset-inline-start: 0;
 		z-index: 50;
 		display: flex;
-		height: 100%;
+		block-size: 100%;
 		font-size: 0;
 		transform: translateX(-100%);
 		transition: transform var(--slow) var(--transition);
@@ -421,7 +421,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			position: relative;
 			display: inline-block;
 			inline-size: 220px;
-			height: 100%;
+			block-size: 100%;
 			font-size: 1rem;
 			background: var(--theme--navigation--background);
 
@@ -439,7 +439,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 				--project-header-height: 60px;
 
-				height: calc(100% - var(--project-header-height));
+				block-size: calc(100% - var(--project-header-height));
 				overflow: hidden auto;
 			}
 		}
@@ -457,7 +457,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		position: relative;
 		flex-grow: 1;
 		inline-size: 100%;
-		height: 100%;
+		block-size: 100%;
 		overflow: auto;
 		scroll-padding-block-start: 100px;
 
@@ -491,7 +491,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 	&.splitView {
 		#main-content .content-wrapper {
 			display: flex;
-			height: calc(100% - var(--layout-offset-top));
+			block-size: calc(100% - var(--layout-offset-top));
 
 			main {
 				display: block;
@@ -503,7 +503,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			#split-content {
 				flex-grow: 1;
 				overflow: auto;
-				height: 100%;
+				block-size: 100%;
 
 				&.is-dragging {
 					pointer-events: none;
@@ -541,7 +541,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		inset-inline-end: 0;
 		z-index: 30;
 		inline-size: 280px;
-		height: 100%;
+		block-size: 100%;
 		overflow: hidden;
 		background-color: var(--theme--sidebar--background);
 		transform: translateX(100%);
@@ -567,7 +567,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 			display: flex;
 			flex-direction: column;
 			inline-size: 280px;
-			height: 100%;
+			block-size: 100%;
 		}
 
 		@media (min-width: 960px) {

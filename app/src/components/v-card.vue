@@ -34,7 +34,7 @@ withDefaults(defineProps<Props>(), {
 
 	min-inline-size: var(--v-card-min-width, none);
 	max-inline-size: 400px;
-	height: auto;
+	block-size: auto;
 	max-block-size: 90vh;
 	overflow: auto;
 

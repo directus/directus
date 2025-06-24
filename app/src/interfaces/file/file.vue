@@ -371,7 +371,7 @@ function useURLImport() {
 	align-items: center;
 	justify-content: center;
 	inline-size: 40px;
-	height: 40px;
+	block-size: 40px;
 	margin-inline-start: -8px;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
@@ -379,7 +379,7 @@ function useURLImport() {
 
 	img {
 		inline-size: 100%;
-		height: 100%;
+		block-size: 100%;
 		object-fit: cover;
 	}
 

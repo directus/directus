@@ -153,7 +153,7 @@ function onToggle(open: boolean) {
 		inset-inline-start: -4px;
 		z-index: 1;
 		inline-size: calc(100% + 8px);
-		height: calc(100% + 8px);
+		block-size: calc(100% + 8px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;

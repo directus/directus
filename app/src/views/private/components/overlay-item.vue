@@ -695,7 +695,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			z-index: 101;
 			position: sticky;
 			inset-block-end: calc(var(--button-gap) + var(--button-height) + var(--button-gap) - var(--shadow-cover-height));
-			height: calc(var(--v-card-padding) - var(--button-gap));
+			block-size: calc(var(--v-card-padding) - var(--button-gap));
 			inline-size: 100%;
 
 			&::after {
@@ -704,7 +704,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 				inset-block-end: 0;
 				inset-inline-start: 0;
 				inline-size: 100%;
-				height: var(--shadow-cover-height);
+				block-size: var(--shadow-cover-height);
 				background: var(--v-card-background-color);
 			}
 		}

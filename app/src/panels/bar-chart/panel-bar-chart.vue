@@ -331,7 +331,7 @@ function setUpChart() {
 <style scoped>
 .bar-chart {
 	padding: 0;
-	height: 100%;
+	block-size: 100%;
 	inline-size: 100%;
 }
 </style>

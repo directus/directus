@@ -135,7 +135,7 @@ const customIcon = computed(() => {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	padding: 10px;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -175,7 +175,7 @@ const customIcon = computed(() => {
 			inset-block-start: 0;
 			inset-inline-start: 0;
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 			background-color: var(--v-radio-color, var(--theme--primary));
 			opacity: 0.1;
 			content: '';

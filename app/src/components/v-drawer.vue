@@ -148,7 +148,7 @@ const internalActive = computed({
 	flex-direction: column;
 	inline-size: 100%;
 	max-inline-size: 856px;
-	height: 100%;
+	block-size: 100%;
 	background-color: var(--theme--background);
 
 	.cancel {
@@ -198,7 +198,7 @@ const internalActive = computed({
 				display: block;
 				flex-shrink: 0;
 				inline-size: 220px;
-				height: 100%;
+				block-size: 100%;
 				background: var(--theme--navigation--background);
 				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 			}
@@ -216,7 +216,7 @@ const internalActive = computed({
 				--v-divider-color: var(--theme--navigation--list--divider--border-color);
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 
-				height: 100%;
+				block-size: 100%;
 				overflow: hidden auto;
 			}
 		}

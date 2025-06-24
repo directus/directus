@@ -797,7 +797,7 @@ function discardAndLeave() {
 	--gap-size: 40px;
 
 	&.center {
-		height: calc(100% - 48px - var(--header-bar-height));
+		block-size: calc(100% - 48px - var(--header-bar-height));
 		display: grid;
 		place-items: center;
 	}

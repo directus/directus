@@ -201,7 +201,7 @@ function useUpload() {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
 	padding-block-start: 0;
 	padding-block-end: 0;
@@ -229,7 +229,7 @@ function useUpload() {
 	align-items: center;
 	justify-content: center;
 	inline-size: 40px;
-	height: 40px;
+	block-size: 40px;
 	margin-inline-start: -8px;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
@@ -253,7 +253,7 @@ function useUpload() {
 	inset-inline-start: 0;
 	display: block;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	cursor: pointer;
 	opacity: 0;
 	appearance: none;

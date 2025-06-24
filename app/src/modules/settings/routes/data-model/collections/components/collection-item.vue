@@ -125,7 +125,7 @@ function onGroupSortChange(collections: Collection[]) {
 	display: flex;
 	flex-grow: 1;
 	align-items: center;
-	height: 100%;
+	block-size: 100%;
 	overflow: hidden;
 	font-family: var(--theme--fonts--monospace--font-family);
 	pointer-events: none;

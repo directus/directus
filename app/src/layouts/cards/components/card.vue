@@ -165,14 +165,14 @@ function handleClick() {
 			inset-block-start: 0;
 			inset-inline-start: 0;
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 			object-fit: contain;
 		}
 
 		.svg {
 			position: absolute;
 			inline-size: 75%;
-			height: 75%;
+			block-size: 75%;
 			object-fit: contain;
 		}
 
@@ -190,7 +190,7 @@ function handleClick() {
 			inset-block-start: 0;
 			inset-inline-start: 0;
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 		}
 
 		.selection-fade {
@@ -199,7 +199,7 @@ function handleClick() {
 			inset-inline-start: 0;
 			z-index: 1;
 			inline-size: 100%;
-			height: 48px;
+			block-size: 48px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
@@ -208,7 +208,7 @@ function handleClick() {
 				inset-block-start: 0;
 				inset-inline-start: 0;
 				inline-size: 100%;
-				height: 100%;
+				block-size: 100%;
 				background-image: linear-gradient(-180deg, rgb(38 50 56 / 0.1) 10%, rgb(38 50 56 / 0));
 				content: '';
 			}
@@ -221,7 +221,7 @@ function handleClick() {
 		inset-inline-start: 7px;
 		z-index: 2;
 		inline-size: 18px;
-		height: 18px;
+		block-size: 18px;
 		background-color: var(--theme--background);
 		border-radius: 24px;
 		opacity: 0;
@@ -310,7 +310,7 @@ function handleClick() {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	height: 26px;
+	block-size: 26px;
 	margin-block-start: 2px;
 	overflow: hidden;
 	line-height: 1.3em;
@@ -318,7 +318,7 @@ function handleClick() {
 	text-overflow: ellipsis;
 
 	:deep(.render-template) {
-		height: 100%;
+		block-size: 100%;
 	}
 }
 

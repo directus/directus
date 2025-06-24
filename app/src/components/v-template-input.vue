@@ -301,7 +301,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 <style scoped lang="scss">
 .v-template-input {
 	position: relative;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
 	padding-block-end: 32px;
 	overflow: hidden;
@@ -320,7 +320,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	}
 
 	&.multiline {
-		height: var(--input-height-tall);
+		block-size: var(--input-height-tall);
 		overflow-y: auto;
 		white-space: pre-wrap;
 	}

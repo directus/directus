@@ -99,7 +99,7 @@ onUnmounted(() => {
 
 <style scoped>
 .chart-container {
-	height: 48px;
+	block-size: 48px;
 	border-radius: var(--theme--border-radius);
 	display: flex;
 	overflow: hidden;
@@ -112,7 +112,7 @@ onUnmounted(() => {
 		inset-inline-start: 0;
 		inline-size: 100%;
 		background-color: var(--theme--primary-background);
-		height: 4px;
+		block-size: 4px;
 		z-index: -1;
 	}
 }

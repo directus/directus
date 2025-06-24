@@ -262,6 +262,6 @@ function useComputedValues() {
 }
 
 .label-spacer {
-	height: 28px;
+	block-size: 28px;
 }
 </style>

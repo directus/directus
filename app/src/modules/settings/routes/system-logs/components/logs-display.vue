@@ -252,7 +252,7 @@ function selectLog(index: number) {
 <style lang="scss" scoped>
 .wrapper {
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 }
 
 .notice {
@@ -264,7 +264,7 @@ function selectLog(index: number) {
 
 .logs-display {
 	min-block-size: 200px;
-	height: 100%;
+	block-size: 100%;
 	scroll-snap-type: y proximity;
 	align-content: end;
 }

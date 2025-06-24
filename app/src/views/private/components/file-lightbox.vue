@@ -32,7 +32,7 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 <style scoped>
 .file-preview {
 	inline-size: 85%;
-	height: 85%;
+	block-size: 85%;
 	max-inline-size: initial;
 }
 

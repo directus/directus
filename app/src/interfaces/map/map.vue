@@ -486,7 +486,7 @@ function handleKeyDown(event: any) {
 	.map {
 		position: relative;
 		inline-size: 100%;
-		height: 500px;
+		block-size: 500px;
 
 		&.error,
 		&.loading {
@@ -495,7 +495,7 @@ function handleKeyDown(event: any) {
 
 		.maplibregl-map {
 			inline-size: 100%;
-			height: 100%;
+			block-size: 100%;
 		}
 
 		&:not(.has-selection) :deep(.mapbox-gl-draw_trash) {
@@ -516,7 +516,7 @@ function handleKeyDown(event: any) {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		height: 36px;
+		block-size: 36px;
 		padding: 10px;
 		color: var(--theme--form--field--input--foreground-subdued);
 		background-color: var(--theme--background);

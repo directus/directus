@@ -611,14 +611,14 @@ function setAspectRatio() {
 
 .editor-container {
 	inline-size: 100%;
-	height: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
+	block-size: calc(100% - (65px + 24px + 24px)); /* header height + 2x margin */
 	overflow: hidden;
 	background-color: var(--theme--background-subdued);
 
 	.editor {
 		flex-grow: 1;
 		inline-size: 100%;
-		height: calc(100% - 60px);
+		block-size: calc(100% - 60px);
 	}
 
 	img {
@@ -632,14 +632,14 @@ function setAspectRatio() {
 	align-items: center;
 	justify-content: center;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 }
 
 .toolbar {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	height: 60px;
+	block-size: 60px;
 	padding: 0 24px;
 	color: var(--white);
 	background-color: #263238;

@@ -370,7 +370,7 @@ function updateSort(newSort: Sort) {
 
 .v-table {
 	position: relative;
-	height: auto;
+	block-size: auto;
 	overflow-y: auto;
 }
 
@@ -438,7 +438,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .loading .loading-indicator {
-	height: auto;
+	block-size: auto;
 	padding: 0;
 	border: none;
 }

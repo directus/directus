@@ -337,7 +337,7 @@ function useVariableInput() {
 
 	&.v-icon {
 		inline-size: 24px !important;
-		height: 24px !important;
+		block-size: 24px !important;
 		border-radius: 50%;
 		display: flex;
 		justify-content: center;

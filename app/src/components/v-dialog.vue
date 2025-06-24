@@ -133,7 +133,7 @@ function useOverlayFocusTrap() {
 	z-index: 500;
 	display: flex;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 
 	&.keep-behind {
 		z-index: 490;

@@ -489,7 +489,7 @@ function useColor() {
 	box-sizing: border-box;
 	margin-inline-start: -8px;
 	inline-size: calc(var(--theme--form--field--input--height) - 20px);
-	height: calc(var(--theme--form--field--input--height) - 20px);
+	block-size: calc(var(--theme--form--field--input--height) - 20px);
 	border-radius: var(--swatch-radius);
 	overflow: hidden;
 	cursor: pointer;
@@ -528,7 +528,7 @@ function useColor() {
 .color-input {
 	.v-input.html-color-select {
 		inline-size: 0;
-		height: 0;
+		block-size: 0;
 		visibility: hidden;
 	}
 }
@@ -594,7 +594,7 @@ function useColor() {
 	grid-gap: 12px;
 	align-items: baseline;
 	inline-size: 100%;
-	height: 45px;
+	block-size: 45px;
 	padding: 12px 14px;
 }
 

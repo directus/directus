@@ -57,7 +57,7 @@ function update(newSelection: readonly (string | number)[]) {
 	flex: 1 0 0;
 	align-items: center;
 	justify-content: center;
-	height: 38px;
+	block-size: 38px;
 	padding: 8px 20px;
 	cursor: pointer;
 }

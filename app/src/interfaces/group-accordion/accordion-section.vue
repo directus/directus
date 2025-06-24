@@ -181,7 +181,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 		inset-inline-start: -7px;
 		display: block;
 		inline-size: 4px;
-		height: 4px;
+		block-size: 4px;
 		background-color: var(--theme--form--field--input--foreground-subdued);
 		border-radius: 4px;
 		content: '';

@@ -294,7 +294,7 @@ const stageChanges = () => {
 	align-items: center;
 	justify-content: center;
 	inline-size: 160px;
-	height: 100px;
+	block-size: 100px;
 	margin-block-end: 8px;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
@@ -304,7 +304,7 @@ const stageChanges = () => {
 
 .preview img {
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	object-fit: cover;
 }
 
@@ -314,7 +314,7 @@ const stageChanges = () => {
 
 .preview :deep(svg) {
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 }
 
 .preview :deep(svg) .glow {

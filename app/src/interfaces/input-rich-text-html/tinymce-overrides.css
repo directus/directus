@@ -3,7 +3,7 @@
 }
 
 .tox .tox-tbtn {
-	height: 36px;
+	block-size: 36px;
 	margin: 0;
 	color: var(--theme--form--field--input--foreground);
 }
@@ -296,7 +296,7 @@ body.dark .tox .tox-toolbar__overflow {
 	align-items: center;
 	justify-content: center;
 	min-inline-size: 136px;
-	height: 44px;
+	block-size: 44px;
 	padding: 0 20px 1px;
 	color: var(--white);
 	font-weight: 500;
@@ -332,7 +332,7 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-button--naked {
 	min-inline-size: auto;
-	height: auto;
+	block-size: auto;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: transparent;
 	border-color: transparent;

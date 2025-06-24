@@ -126,7 +126,7 @@ onBeforeUnmount(() => {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	color: var(--color-text);
 	font-weight: 500;
 	line-height: 1.2;

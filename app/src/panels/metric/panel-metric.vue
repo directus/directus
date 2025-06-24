@@ -228,7 +228,7 @@ const color = computed(() => {
 	display: flex;
 	align-items: center;
 	inline-size: 100%;
-	height: 100%;
+	block-size: 100%;
 	font-weight: 800;
 	white-space: nowrap;
 	line-height: 1.2;

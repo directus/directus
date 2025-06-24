@@ -155,16 +155,16 @@ const steps = computed(() => {
 			inset-inline-start: -11px;
 			inset-block-start: 0;
 			background-color: var(--theme--border-color-subdued);
-			height: 100%;
+			block-size: 100%;
 		}
 
 		&:first-child::after {
 			inset-block-start: 8px;
-			height: calc(100% - 8px);
+			block-size: calc(100% - 8px);
 		}
 
 		&:last-child::after {
-			height: 12px;
+			block-size: 12px;
 		}
 
 		.inset {
@@ -192,7 +192,7 @@ const steps = computed(() => {
 		inset-inline-start: -16px;
 		z-index: 2;
 		inline-size: 12px;
-		height: 12px;
+		block-size: 12px;
 		background-color: var(--theme--primary);
 		border: var(--theme--border-width) solid var(--theme--background);
 		border-radius: 8px;
