@@ -308,14 +308,18 @@ class FlowManager {
 							throw new ForbiddenError();
 						}
 
-						const service = getService(targetCollection, { schema, accountability, knex: database })
-						const primaryField = schema.collections[targetCollection]!.primary
+						const service = getService(targetCollection, { schema, accountability, knex: database });
+						const primaryField = schema.collections[targetCollection]!.primary;
 
-						let keys = await service.readMany(targetKeys, { fields: [primaryField] }, {
-							emitEvents: false,
-						})
+						let keys = await service.readMany(
+							targetKeys,
+							{ fields: [primaryField] },
+							{
+								emitEvents: false,
+							},
+						);
 
-						keys = keys.map(key => key[primaryField])
+						keys = keys.map((key) => key[primaryField]);
 
 						if (targetKeys.some((key) => !keys.includes(key))) {
 							logger.warn(`Triggering keys ${targetKeys} is not allowed`);
