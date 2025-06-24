@@ -85,7 +85,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 	video,
 	audio {
 		max-inline-size: 100%;
-		max-height: v-bind(maxHeight);
+		max-block-size: v-bind(maxHeight);
 		object-fit: contain;
 		border-radius: var(--theme--border-radius);
 	}

@@ -183,7 +183,7 @@ function onClick(event: PointerEvent) {
 	min-inline-size: 0;
 	max-inline-size: none;
 	min-block-size: var(--v-list-item-min-height, 32px);
-	max-height: none;
+	max-block-size: none;
 	margin: var(--v-list-item-margin, 2px 0);
 	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
 	overflow: hidden;

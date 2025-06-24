@@ -436,7 +436,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
-	max-height: min(1000px, 80vh);
+	max-block-size: min(1000px, 80vh);
 }
 
 .interface-input-rich-text-md.disabled {

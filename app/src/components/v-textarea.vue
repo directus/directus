@@ -12,7 +12,7 @@ interface Props {
 	modelValue?: string;
 	/** If the input is empty, return `null` instead of `''` */
 	nullable?: boolean;
-	/** Renders the textarea at regular input size, and expands to max-height on focus */
+	/** Renders the textarea at regular input size, and expands to max-block-size on focus */
 	expandOnFocus?: boolean;
 	/** Text to show when no input is entered */
 	placeholder?: string;

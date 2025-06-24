@@ -93,7 +93,7 @@ function useEdits() {
 
 .comment-item .content {
 	display: inline-block;
-	max-height: 300px;
+	max-block-size: 300px;
 	overflow-y: auto;
 	min-inline-size: 100%;
 	max-inline-size: 100%;

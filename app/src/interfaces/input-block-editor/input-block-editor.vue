@@ -259,7 +259,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	width: auto;
 	max-inline-size: 100%;
 	height: auto;
-	max-height: 40vh;
+	max-block-size: 40vh;
 	margin: 0 auto;
 	object-fit: contain;
 }

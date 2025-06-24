@@ -602,7 +602,7 @@ function usePopper(
 }
 
 .v-menu-content {
-	max-height: v-bind(maxHeight);
+	max-block-size: v-bind(maxHeight);
 	padding: 0 4px;
 	overflow: hidden auto;
 	background-color: var(--theme--popover--menu--background);

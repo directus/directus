@@ -59,7 +59,7 @@ async function copyError() {
 
 <style lang="scss" scoped>
 .v-error {
-	max-height: 50vh;
+	max-block-size: 50vh;
 	padding: 6px 12px;
 	overflow: auto;
 	color: var(--theme--danger);

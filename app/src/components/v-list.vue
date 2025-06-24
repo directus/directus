@@ -80,7 +80,7 @@ useGroupableParent(
 	min-inline-size: var(--v-list-min-width, 220px);
 	max-inline-size: var(--v-list-max-width, none);
 	min-block-size: var(--v-list-min-height, none);
-	max-height: var(--v-list-max-height, none);
+	max-block-size: var(--v-list-max-height, none);
 	padding: var(--v-list-padding, 4px 0);
 	overflow: auto;
 	color: var(--v-list-color, var(--theme--foreground-accent));

@@ -163,7 +163,7 @@ watch(
 
 	:deep(.CodeMirror),
 	:deep(.CodeMirror-scroll) {
-		max-height: var(--theme--form--field--input--height);
+		max-block-size: var(--theme--form--field--input--height);
 	}
 
 	&.multi-line {
@@ -171,7 +171,7 @@ watch(
 
 		:deep(.CodeMirror),
 		:deep(.CodeMirror-scroll) {
-			max-height: 480px;
+			max-block-size: 480px;
 		}
 
 		:deep(.CodeMirror-scroll) {

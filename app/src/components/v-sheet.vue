@@ -26,7 +26,7 @@
 	max-inline-size: var(--v-sheet-max-width, none);
 	height: var(--v-sheet-height, auto);
 	min-block-size: var(--v-sheet-min-height, var(--theme--form--field--input--height));
-	max-height: var(--v-sheet-max-height, none);
+	max-block-size: var(--v-sheet-max-height, none);
 	padding: var(--v-sheet-padding, 8px);
 	overflow: auto;
 	background-color: var(--v-sheet-background-color, var(--theme--form--field--input--background-subdued));

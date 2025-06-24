@@ -266,7 +266,7 @@ img {
 	z-index: 1;
 	width: 100%;
 	height: 100%;
-	max-height: inherit;
+	max-block-size: inherit;
 	object-fit: contain;
 }
 
@@ -363,10 +363,10 @@ img {
 
 	.meta {
 		height: 17px;
-		max-height: 0;
+		max-block-size: 0;
 		overflow: hidden;
 		color: rgb(255 255 255 / 0.75);
-		transition: max-height var(--fast) var(--transition);
+		transition: max-block-size var(--fast) var(--transition);
 	}
 }
 
@@ -383,7 +383,7 @@ img {
 	}
 
 	.meta {
-		max-height: 17px;
+		max-block-size: 17px;
 	}
 }
 
@@ -392,7 +392,7 @@ img {
 	&.fill {
 		.image-preview {
 			height: auto;
-			max-height: 400px;
+			max-block-size: 400px;
 		}
 	}
 

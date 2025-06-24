@@ -416,7 +416,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					width: 100%;
 					border-radius: var(--theme--border-radius);
 					margin-block-start: 4px;
-					max-height: 300px;
+					max-block-size: 300px;
 				}
 
 				.display-labels {

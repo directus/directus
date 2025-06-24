@@ -497,7 +497,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 				display: block;
 				flex-grow: 0;
 				overflow: auto;
-				max-height: 100%;
+				max-block-size: 100%;
 			}
 
 			#split-content {

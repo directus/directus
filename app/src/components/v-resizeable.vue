@@ -183,7 +183,7 @@ function onPointerUp() {
 <style lang="scss" scoped>
 .resize-wrapper {
 	position: relative;
-	max-height: 100%;
+	max-block-size: 100%;
 
 	&.transition {
 		:slotted(:first-child) {

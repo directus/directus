@@ -18,10 +18,10 @@
 
     .fc-more-popover {
         max-inline-size: var(--form-column-width);
-        max-height: 330px;
+        max-block-size: 330px;
 
         .fc-popover-body {
-            max-height: 270px;
+            max-block-size: 270px;
             overflow: auto;
         }
     }

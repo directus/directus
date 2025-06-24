@@ -250,7 +250,7 @@ span.flatpickr-weekday {
 .flatpickr-time {
     display: flex;
     justify-content: center;
-    max-height: none;
+    max-block-size: none;
 }
 
 .flatpickr-time > * {

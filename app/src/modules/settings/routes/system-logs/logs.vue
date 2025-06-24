@@ -618,12 +618,12 @@ onUnmounted(() => {
 
 .raw-log :deep(.CodeMirror) {
 	height: 100%;
-	max-height: 100%;
+	max-block-size: 100%;
 }
 
 .raw-log :deep(.CodeMirror-scroll) {
 	height: 100%;
-	max-height: 100%;
+	max-block-size: 100%;
 }
 
 .fade-enter-active,

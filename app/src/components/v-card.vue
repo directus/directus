@@ -35,7 +35,7 @@ withDefaults(defineProps<Props>(), {
 	min-inline-size: var(--v-card-min-width, none);
 	max-inline-size: 400px;
 	height: auto;
-	max-height: 90vh;
+	max-block-size: 90vh;
 	overflow: auto;
 
 	/* Page Content Spacing */
