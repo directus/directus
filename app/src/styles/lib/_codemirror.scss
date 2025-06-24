@@ -110,24 +110,7 @@
 	-moz-animation: blink 1.06s steps(1) infinite;
 	animation: blink 1.06s steps(1) infinite;
 }
-@-moz-keyframes blink {
-	0% {
-	}
-	50% {
-		background-color: transparent;
-	}
-	100% {
-	}
-}
-@-webkit-keyframes blink {
-	0% {
-	}
-	50% {
-		background-color: transparent;
-	}
-	100% {
-	}
-}
+
 @keyframes blink {
 	0% {
 	}
