@@ -121,6 +121,7 @@ onBeforeUnmount(() => {
 	min-height: min-content;
 	width: 100%;
 }
+
 .label {
 	display: flex;
 	align-items: center;

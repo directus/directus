@@ -223,6 +223,7 @@ const color = computed(() => {
 	min-height: min-content;
 	width: 100%;
 }
+
 .metric {
 	display: flex;
 	align-items: center;

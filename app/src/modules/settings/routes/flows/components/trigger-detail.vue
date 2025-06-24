@@ -96,6 +96,7 @@ const currentTriggerOptionFields = computed(() => {
 .v-divider {
 	margin: 52px 0;
 }
+
 .type-label {
 	margin-bottom: 8px;
 }

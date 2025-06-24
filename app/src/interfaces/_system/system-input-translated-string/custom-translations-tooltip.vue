@@ -91,6 +91,7 @@ const clicked = (toggleTooltip: () => void) => {
 .v-list {
 	width: 300px;
 }
+
 .custom-translations-display {
 	display: flex;
 	align-items: center;
@@ -115,6 +116,7 @@ const clicked = (toggleTooltip: () => void) => {
 .translation-item-text {
 	padding-top: 2px;
 }
+
 .translation-display-text,
 .translation-item-text {
 	overflow: hidden;

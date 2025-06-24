@@ -202,6 +202,7 @@ function getColor(input?: number) {
 	overflow-y: auto;
 	overflow-x: hidden;
 }
+
 .metric-list-item {
 	height: 36px;
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);

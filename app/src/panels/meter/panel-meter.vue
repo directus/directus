@@ -193,6 +193,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 	position: relative;
 	top: v-bind(halfSizeOutputOffset);
 }
+
 .panel-meter svg circle:last-child {
 	transform-origin: center center;
 	transform: rotate(-90deg);

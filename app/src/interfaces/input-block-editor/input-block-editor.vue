@@ -201,6 +201,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 	background-color: #0d6efd;
 	border-color: #0d6efd;
 }
+
 .btn--gray {
 	color: #fff !important;
 	background-color: #7c7c7c;

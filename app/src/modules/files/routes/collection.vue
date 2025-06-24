@@ -576,6 +576,7 @@ function useFileUpload() {
 .header-icon {
 	--v-button-color-disabled: var(--theme--foreground);
 }
+
 .drop-border {
 	position: fixed;
 	z-index: 500;

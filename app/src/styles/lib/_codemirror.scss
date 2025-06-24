@@ -43,6 +43,7 @@
 .CodeMirror-lines {
 	padding: 4px 0; /* Vertical padding around content */
 }
+
 .CodeMirror pre.CodeMirror-line,
 .CodeMirror pre.CodeMirror-line-like {
 	padding: 0 4px; /* Horizontal padding of content */
@@ -72,6 +73,7 @@
 .CodeMirror-guttermarker {
 	color: var(--theme--foreground-accent);
 }
+
 .CodeMirror-guttermarker-subtle {
 	color: var(--theme--foreground-subdued);
 }
@@ -88,18 +90,22 @@
 .CodeMirror div.CodeMirror-secondarycursor {
 	border-left: 1px solid var(--theme--foreground-subdued);
 }
+
 .cm-fat-cursor .CodeMirror-cursor {
 	width: auto;
 	background: var(--success-75);
 	border: 0 !important;
 }
+
 .cm-fat-cursor div.CodeMirror-cursors {
 	z-index: 1;
 }
+
 .cm-fat-cursor-mark {
 	background-color: rgba(93, 194, 136, 0.5);
 	animation: blink 1.06s steps(1) infinite;
 }
+
 .cm-animate-fat-cursor {
 	width: auto;
 	background-color: var(--success-75);
@@ -134,6 +140,7 @@
 	left: 0;
 	overflow: hidden;
 }
+
 .CodeMirror-ruler {
 	position: absolute;
 	top: 0;
@@ -146,25 +153,32 @@
 .cm-s-default .cm-header {
 	color: var(--theme--primary);
 }
+
 .cm-s-default .cm-quote {
 	color: var(--theme--success);
 }
+
 .cm-negative {
 	color: var(--theme--danger);
 }
+
 .cm-positive {
 	color: var(--theme--success);
 }
+
 .cm-header,
 .cm-strong {
 	font-weight: bold;
 }
+
 .cm-em {
 	font-style: italic;
 }
+
 .cm-link {
 	text-decoration: underline;
 }
+
 .cm-strikethrough {
 	text-decoration: line-through;
 }
@@ -172,12 +186,15 @@
 .cm-s-default .cm-keyword {
 	color: var(--purple);
 }
+
 .cm-s-default .cm-atom {
 	color: var(--theme--primary);
 }
+
 .cm-s-default .cm-number {
 	color: var(--theme--success);
 }
+
 .cm-s-default .cm-def {
 	color: var(--theme--primary);
 }
@@ -189,40 +206,52 @@
 .cm-s-default .cm-variable-2 {
 	color: var(--theme--primary);
 }
+
 .cm-s-default .cm-variable-3,
 .cm-s-default .cm-type {
 	color: var(--theme--success);
 }
+
 .cm-s-default .cm-comment {
 	color: var(--theme--warning);
 }
+
 .cm-s-default .cm-string {
 	color: var(--theme--danger);
 }
+
 .cm-s-default .cm-string-2 {
 	color: var(--theme--warning);
 }
+
 .cm-s-default .cm-meta {
 	color: var(--theme--foreground);
 }
+
 .cm-s-default .cm-qualifier {
 	color: var(--theme--foreground);
 }
+
 .cm-s-default .cm-builtin {
 	color: var(--theme--primary);
 }
+
 .cm-s-default .cm-bracket {
 	color: var(--theme--foreground-subdued);
 }
+
 .cm-s-default .cm-tag {
 	color: var(--theme--success);
 }
+
 .cm-s-default .cm-attribute {
 	color: var(--theme--primary);
 }
+
 .cm-s-default .cm-hr {
 	color: var(--theme--form--field--input--border-color);
 }
+
 .cm-s-default .cm-link {
 	color: var(--theme--primary);
 }
@@ -230,6 +259,7 @@
 .cm-s-default .cm-error {
 	color: var(--theme--danger);
 }
+
 .cm-invalidchar {
 	color: var(--theme--danger);
 }
@@ -243,12 +273,15 @@
 div.CodeMirror span.CodeMirror-matchingbracket {
 	color: var(--theme--success);
 }
+
 div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	color: var(--theme--danger);
 }
+
 .CodeMirror-matchingtag {
 	background: rgba(255, 150, 0, 0.3);
 }
+
 .CodeMirror-activeline-background {
 	background: #e8f2ff;
 }
@@ -257,9 +290,11 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter-elt {
 	left: 4px;
 }
+
 .CodeMirror-lint-markers {
 	width: 16px;
 }
+
 .CodeMirror-lint-tooltip {
 	position: absolute;
 	z-index: 850;
@@ -274,6 +309,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	opacity: 0;
 	transition: opacity var(--fast) var(--transition);
 }
+
 .CodeMirror-lint-mark-warning {
 	border-bottom: 2px dashed var(--theme--warning);
 }
@@ -281,6 +317,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-lint-mark-error {
 	border-bottom: 2px dashed var(--theme--danger);
 }
+
 .CodeMirror-lint-marker {
 	position: relative;
 	display: inline-block;
@@ -290,11 +327,13 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	height: 16px;
 	width: 16px;
 }
+
 .CodeMirror-lint-marker-warning {
 	background-color: var(--theme--warning);
 	-webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 	mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
+
 .CodeMirror-lint-marker-error {
 	background-color: var(--theme--danger);
 	-webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3C/svg%3E");
@@ -329,6 +368,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	overflow: scroll !important; /* Things will break if this is overridden */
 	outline: none; /* Prevent dragging from highlighting the element */
 }
+
 .CodeMirror-sizer {
 	position: relative;
 	border-right: 50px solid transparent;
@@ -345,22 +385,26 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	z-index: 4;
 	display: none;
 }
+
 .CodeMirror-vscrollbar {
 	top: 0;
 	right: 0;
 	overflow-x: hidden;
 	overflow-y: scroll;
 }
+
 .CodeMirror-hscrollbar {
 	bottom: 0;
 	left: 0;
 	overflow-x: scroll;
 	overflow-y: hidden;
 }
+
 .CodeMirror-scrollbar-filler {
 	right: 0;
 	bottom: 0;
 }
+
 .CodeMirror-gutter-filler {
 	bottom: 0;
 	left: 0;
@@ -373,6 +417,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	z-index: 3;
 	min-height: 100%;
 }
+
 .CodeMirror-gutter {
 	display: inline-block;
 	height: 100%;
@@ -380,23 +425,27 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	white-space: normal;
 	vertical-align: top;
 }
+
 .CodeMirror-gutter-wrapper {
 	position: absolute;
 	z-index: 4;
 	background: none !important;
 	border: none !important;
 }
+
 .CodeMirror-gutter-background {
 	position: absolute;
 	top: 0;
 	bottom: 0;
 	z-index: 4;
 }
+
 .CodeMirror-gutter-elt {
 	position: absolute;
 	z-index: 4;
 	cursor: default;
 }
+
 .CodeMirror-gutter-wrapper ::selection {
 	background-color: transparent;
 }
@@ -405,6 +454,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	min-height: 1px; /* prevents collapsing before first draw */
 	cursor: text;
 }
+
 .CodeMirror pre.CodeMirror-line,
 .CodeMirror pre.CodeMirror-line-like {
 	position: relative;
@@ -425,6 +475,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	-webkit-tap-highlight-color: transparent;
 	font-variant-ligatures: contextual;
 }
+
 .CodeMirror-wrap pre.CodeMirror-line,
 .CodeMirror-wrap pre.CodeMirror-line-like {
 	white-space: pre-wrap;
@@ -478,6 +529,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	position: absolute;
 	pointer-events: none;
 }
+
 .CodeMirror-measure pre {
 	position: static;
 }
@@ -487,6 +539,7 @@ div.CodeMirror-cursors {
 	z-index: 3;
 	visibility: hidden;
 }
+
 div.CodeMirror-dragcursors {
 	visibility: visible;
 }
@@ -498,12 +551,15 @@ div.CodeMirror-dragcursors {
 .CodeMirror-selected {
 	background: var(--theme--background-accent);
 }
+
 .CodeMirror-focused .CodeMirror-selected {
 	background: var(--theme--background-accent);
 }
+
 .CodeMirror-crosshair {
 	cursor: crosshair;
 }
+
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
