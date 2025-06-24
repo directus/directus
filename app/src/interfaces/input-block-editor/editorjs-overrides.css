@@ -138,8 +138,8 @@
 	box-shadow: none;
 }
 
-.ct:before,
-.ct:after {
+.ct::before,
+.ct::after {
 	background-color: var(--background-inverted);
 }
 
