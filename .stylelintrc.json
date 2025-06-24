@@ -1,0 +1,49 @@
+{
+	"extends": ["stylelint-config-standard"],
+
+	"plugins": ["stylelint-use-logical"],
+
+	"overrides": [
+		{
+			"files": ["**/*.scss"],
+			"extends": ["stylelint-config-standard-scss"]
+		},
+		{
+			"files": ["**/*.vue"],
+			"extends": ["stylelint-config-standard-scss", "stylelint-config-standard-vue/scss"],
+			"rules": {
+				"scss/double-slash-comment-empty-line-before": null,
+				"scss/double-slash-comment-whitespace-inside": null
+			}
+		}
+	],
+
+	"ignoreFiles": ["docs/**"],
+
+	"rules": {
+		"alpha-value-notation": null,
+		"at-rule-empty-line-before": null,
+		"color-function-alias-notation": null,
+		"color-function-notation": null,
+		"comment-empty-line-before": null,
+		"custom-property-empty-line-before": null,
+		"custom-property-pattern": null,
+		"declaration-block-no-redundant-longhand-properties": [true, { "ignoreShorthands": ["inset"] }],
+		"declaration-empty-line-before": null,
+		"font-family-name-quotes": "always-unless-keyword",
+		"font-family-no-missing-generic-family-keyword": [true, { "ignoreFontFamilies": ["Material Symbols"] }],
+		"media-feature-range-notation": null,
+		"no-descending-specificity": null,
+		"property-no-vendor-prefix": [true, { "ignoreProperties": ["user-select", "appearance", "mask-image"] }],
+		"rule-empty-line-before": ["always", { "ignore": ["first-nested"] }],
+		"selector-class-pattern": null,
+		"selector-not-notation": null,
+		"selector-pseudo-element-no-unknown": [true, { "ignorePseudoElements": ["v-deep", "v-global", "v-slotted"] }],
+		"value-keyword-case": [
+			"lower",
+			{ "ignoreProperties": ["text-rendering"], "ignoreFunctions": ["v-bind"], "ignoreKeywords": ["currentColor"] }
+		],
+
+		"csstools/use-logical": "always"
+	}
+}
