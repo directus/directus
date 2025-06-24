@@ -144,7 +144,6 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-swatches__picker-btn:hover,
 .tox .tox-swatches__picker-btn:active,
 .tox .tox-split-button:hover {
-	-webkit-box-shadow: unset;
 	box-shadow: unset;
 }
 
@@ -172,7 +171,6 @@ body.dark .tox .tox-toolbar__overflow {
 
 .tox .tox-swatch:hover,
 .tox .tox-swatch:focus {
-	-webkit-transform: scale(1.2);
 	transform: scale(1.2);
 }
 
@@ -311,7 +309,6 @@ body.dark .tox .tox-toolbar__overflow {
 	border-color: var(--theme--primary);
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
-	-webkit-transition: var(--fast) var(--transition);
 	transition: var(--fast) var(--transition);
 	transition-property: border-color, background-color, color;
 }

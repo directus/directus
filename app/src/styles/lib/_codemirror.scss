@@ -98,16 +98,12 @@
 }
 .cm-fat-cursor-mark {
 	background-color: rgba(93, 194, 136, 0.5);
-	-webkit-animation: blink 1.06s steps(1) infinite;
-	-moz-animation: blink 1.06s steps(1) infinite;
 	animation: blink 1.06s steps(1) infinite;
 }
 .cm-animate-fat-cursor {
 	width: auto;
 	background-color: var(--success-75);
 	border: 0;
-	-webkit-animation: blink 1.06s steps(1) infinite;
-	-moz-animation: blink 1.06s steps(1) infinite;
 	animation: blink 1.06s steps(1) infinite;
 }
 
@@ -425,11 +421,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 	border-width: 0;
 
 	/* Reset some styles that the rest of the page might have set */
-	-moz-border-radius: 0;
-	-webkit-border-radius: 0;
 	border-radius: 0;
 	-webkit-tap-highlight-color: transparent;
-	-webkit-font-variant-ligatures: contextual;
 	font-variant-ligatures: contextual;
 }
 .CodeMirror-wrap pre.CodeMirror-line,
@@ -470,7 +463,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter,
 .CodeMirror-gutters,
 .CodeMirror-linenumber {
-	-moz-box-sizing: content-box;
 	box-sizing: content-box;
 }
 
