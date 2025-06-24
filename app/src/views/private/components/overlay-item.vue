@@ -696,7 +696,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			height: calc(var(--v-card-padding) - var(--button-gap));
 			width: 100%;
 
-			&:after {
+			&::after {
 				content: '';
 				position: absolute;
 				bottom: 0;
