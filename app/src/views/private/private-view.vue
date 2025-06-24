@@ -449,6 +449,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		@media (min-width: 960px) {
 			position: relative;
 			transform: none;
+
 			// this prevents the layout from moving up when an element is automatically scrolled into the view
 			overflow-y: clip;
 		}

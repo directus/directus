@@ -200,6 +200,7 @@
 .cm-s-default .cm-def {
 	color: var(--theme--primary);
 }
+
 // .cm-s-default .cm-variable,
 // .cm-s-default .cm-punctuation,
 // .cm-s-default .cm-property,
@@ -352,6 +353,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror {
 	position: relative;
 	overflow: hidden;
+
 	// background: white; // Edited! Was overriding themes
 }
 

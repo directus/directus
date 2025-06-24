@@ -12,7 +12,6 @@
 			"files": ["**/*.vue"],
 			"extends": ["stylelint-config-standard-scss", "stylelint-config-standard-vue/scss"],
 			"rules": {
-				"scss/double-slash-comment-empty-line-before": null,
 				"scss/double-slash-comment-whitespace-inside": null
 			}
 		}
