@@ -180,8 +180,7 @@ function useOverlayFocusTrap() {
 }
 
 .container :slotted(.v-card) .v-card-actions {
-	flex-direction: column-reverse;
-	flex-wrap: wrap;
+	flex-flow: column-reverse wrap;
 }
 
 .container :slotted(.v-card) .v-card-actions .v-button {

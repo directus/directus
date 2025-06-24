@@ -199,8 +199,7 @@ function getColor(input?: number) {
 	--v-list-item-margin: 0;
 	height: 100%;
 	padding: 6px;
-	overflow-y: auto;
-	overflow-x: hidden;
+	overflow: hidden auto;
 }
 
 .metric-list-item {

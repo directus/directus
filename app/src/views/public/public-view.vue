@@ -141,8 +141,7 @@ const logoURL = computed<string | null>(() => {
 		max-width: 500px;
 		height: 100%;
 		padding: 20px;
-		overflow-x: hidden;
-		overflow-y: auto;
+		overflow: hidden auto;
 		background: var(--theme--public--background);
 		color: var(--theme--public--foreground);
 

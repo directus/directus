@@ -177,9 +177,7 @@ function onClick(event: PointerEvent) {
 
 	position: relative;
 	display: flex;
-	flex-basis: 100%;
-	flex-grow: 1;
-	flex-shrink: 1;
+	flex: 1 1 100%;
 	align-items: center;
 	width: 100%;
 	min-width: 0;

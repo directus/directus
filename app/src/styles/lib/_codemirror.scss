@@ -389,15 +389,13 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-vscrollbar {
 	top: 0;
 	right: 0;
-	overflow-x: hidden;
-	overflow-y: scroll;
+	overflow: hidden scroll;
 }
 
 .CodeMirror-hscrollbar {
 	bottom: 0;
 	left: 0;
-	overflow-x: scroll;
-	overflow-y: hidden;
+	overflow: scroll hidden;
 }
 
 .CodeMirror-scrollbar-filler {

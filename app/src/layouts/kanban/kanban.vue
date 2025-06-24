@@ -366,8 +366,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 			.items {
 				flex: 1;
-				overflow-x: hidden;
-				overflow-y: auto;
+				overflow: hidden auto;
 
 				.item {
 					display: block;

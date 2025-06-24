@@ -286,9 +286,7 @@ const newTranslationDefaults = computed(() => {
 	}
 
 	:deep(mark) {
-		flex-basis: auto;
-		flex-grow: 0;
-		flex-shrink: 1;
+		flex: 0 1 auto;
 		color: var(--theme--primary);
 	}
 

@@ -160,8 +160,7 @@ function onClick() {
 	}
 
 	.scroll-container {
-		overflow-x: hidden;
-		overflow-y: auto;
+		overflow: hidden auto;
 	}
 
 	.content {

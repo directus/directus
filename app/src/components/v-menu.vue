@@ -526,13 +526,11 @@ function usePopper(
 	z-index: 1;
 
 	.arrow-triangle {
-		overflow-x: visible;
-		overflow-y: clip;
+		overflow: visible clip;
 
 		[data-placement^='left'] &,
 		[data-placement^='right'] & {
-			overflow-x: clip;
-			overflow-y: visible;
+			overflow: clip visible;
 		}
 
 		&::before,
@@ -606,8 +604,7 @@ function usePopper(
 .v-menu-content {
 	max-height: v-bind(maxHeight);
 	padding: 0 4px;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: hidden auto;
 	background-color: var(--theme--popover--menu--background);
 	border: none;
 	border-radius: var(--theme--popover--menu--border-radius);

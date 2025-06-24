@@ -37,9 +37,7 @@ withDefaults(defineProps<Props>(), {
 */
 
 .v-divider {
-	flex-basis: 0;
-	flex-grow: 1;
-	flex-shrink: 1;
+	flex: 1 1 0;
 	flex-wrap: wrap;
 	align-items: center;
 	overflow: visible;

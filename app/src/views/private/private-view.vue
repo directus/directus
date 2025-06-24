@@ -442,8 +442,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 				--project-header-height: 60px;
 
 				height: calc(100% - var(--project-header-height));
-				overflow-x: hidden;
-				overflow-y: auto;
+				overflow: hidden auto;
 			}
 		}
 

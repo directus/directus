@@ -218,8 +218,7 @@ const internalActive = computed({
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 
 				height: 100%;
-				overflow-x: hidden;
-				overflow-y: auto;
+				overflow: hidden auto;
 			}
 		}
 
