@@ -246,13 +246,13 @@ function saveOperation() {
 .required {
 	--v-icon-color: var(--theme--primary);
 
-	margin-top: -12px;
+	margin-block-start: -12px;
 	margin-left: -4px;
 }
 
 .error {
 	display: block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--danger);
 	font-style: italic;
 }

@@ -44,37 +44,37 @@ h1, h2, h3, h4, h5, h6 {
 	margin-bottom: 0;
 }
 h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
-	margin-top: 0.5em;
+	margin-block-start: 0.5em;
 }
 h1 {
 	font-size: 36px;
 	line-height: 46px;
-	margin-top: 1em;
+	margin-block-start: 1em;
 }
 h2 {
 	font-size: 24px;
 	line-height: 34px;
-	margin-top: 1.25em;
+	margin-block-start: 1.25em;
 }
 h3 {
 	font-size: 19px;
 	line-height: 29px;
-	margin-top: 1.25em;
+	margin-block-start: 1.25em;
 }
 h4 {
 	font-size: 16px;
 	line-height: 26px;
-	margin-top: 1.5em;
+	margin-block-start: 1.5em;
 }
 h5 {
 	font-size: 14px;
 	line-height: 24px;
-	margin-top: 2em;
+	margin-block-start: 2em;
 }
 h6 {
 	font-size: 12px;
 	line-height: 22px;
-	margin-top: 2em;
+	margin-block-start: 2em;
 }
 p {
 	font-family: ${userFontFamily}, serif;
@@ -146,7 +146,7 @@ hr {
 	background-color: ${cssVar('--theme--form--field--input--border-color')};
 	height: 1px;
 	border: none;
-	margin-top: 2em;
+	margin-block-start: 2em;
 	margin-bottom: 2em;
 }
 table {
@@ -167,7 +167,7 @@ figure {
 figure figcaption {
 	color: #999;
 	display: block;
-	margin-top: 0.25rem;
+	margin-block-start: 0.25rem;
 	text-align: center;
 }`;
 }

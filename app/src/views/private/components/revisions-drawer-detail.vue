@@ -116,16 +116,16 @@ defineExpose({
 .v-divider {
 	--v-divider-color: var(--theme--background-accent);
 
-	margin-top: 24px;
+	margin-block-start: 24px;
 	margin-bottom: 8px;
 
 	&:first-of-type {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 }
 
 .empty {
-	margin-top: 16px;
+	margin-block-start: 16px;
 	margin-bottom: 16px;
 	margin-left: 2px;
 	color: var(--theme--foreground-subdued);
@@ -146,6 +146,6 @@ defineExpose({
 
 .v-pagination {
 	justify-content: center;
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 </style>

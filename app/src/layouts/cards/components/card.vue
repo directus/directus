@@ -311,7 +311,7 @@ function handleClick() {
 	align-items: center;
 	width: 100%;
 	height: 26px;
-	margin-top: 2px;
+	margin-block-start: 2px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
@@ -323,7 +323,7 @@ function handleClick() {
 }
 
 .subtitle {
-	margin-top: 0;
+	margin-block-start: 0;
 	color: var(--theme--foreground-subdued);
 }
 </style>

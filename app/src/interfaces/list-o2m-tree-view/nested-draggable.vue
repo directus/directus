@@ -308,7 +308,7 @@ function stageEdits(item: Record<string, any>) {
 			padding: 0;
 
 			> .v-list-item:first-child {
-				margin-top: 8px;
+				margin-block-start: 8px;
 			}
 		}
 	}
@@ -320,7 +320,7 @@ function stageEdits(item: Record<string, any>) {
 		--v-list-item-margin: 0;
 
 		+ .v-list-item {
-			margin-top: 8px;
+			margin-block-start: 8px;
 		}
 	}
 

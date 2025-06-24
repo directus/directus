@@ -220,7 +220,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-background);
 
-	margin-top: 32px;
+	margin-block-start: 32px;
 
 	&.unselected {
 		opacity: 0.5;
@@ -234,7 +234,7 @@ function onToggleDelete(item: DisplayItem, itemInitial?: DisplayItem) {
 
 .v-divider {
 	--v-divider-color: var(--theme--primary-subdued);
-	margin-top: var(--theme--form--row-gap);
+	margin-block-start: var(--theme--form--row-gap);
 }
 
 .secondary {

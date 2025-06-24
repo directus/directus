@@ -137,7 +137,7 @@ const steps = computed(() => {
 	font-family: var(--theme--fonts--monospace--font-family);
 	border-radius: var(--theme--border-radius);
 	padding: 20px;
-	margin-top: 20px;
+	margin-block-start: 20px;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
 }
@@ -172,7 +172,7 @@ const steps = computed(() => {
 			padding-bottom: 32px;
 
 			.v-detail + .v-detail {
-				margin-top: 12px;
+				margin-block-start: 12px;
 			}
 		}
 

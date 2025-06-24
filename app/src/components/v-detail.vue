@@ -85,6 +85,6 @@ function toggle() {
 }
 
 .content {
-	margin-top: 12px;
+	margin-block-start: 12px;
 }
 </style>

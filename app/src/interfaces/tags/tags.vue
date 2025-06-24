@@ -180,7 +180,7 @@ function emitValue() {
 
 	.custom-tags-delimiter,
 	.tag {
-		margin-top: 8px;
+		margin-block-start: 8px;
 		margin-right: 8px;
 	}
 

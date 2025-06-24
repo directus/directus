@@ -622,7 +622,7 @@ function discardAndLeave() {
 
 	position: relative;
 	width: 100%;
-	margin-top: 32px;
+	margin-block-start: 32px;
 
 	:deep(#map-container) {
 		min-height: 360px;

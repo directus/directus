@@ -418,7 +418,7 @@ function pressedEnter() {
 }
 
 .buttons {
-	margin-top: 4px;
+	margin-block-start: 4px;
 	display: flex;
 	gap: 4px;
 

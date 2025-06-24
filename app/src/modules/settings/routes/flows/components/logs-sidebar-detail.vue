@@ -117,7 +117,7 @@ function onToggle(open: boolean) {
 }
 
 .v-detail + .v-detail {
-	margin-top: 12px;
+	margin-block-start: 12px;
 }
 
 .v-icon {
@@ -177,7 +177,7 @@ function onToggle(open: boolean) {
 	}
 
 	& + & {
-		margin-top: 8px;
+		margin-block-start: 8px;
 	}
 }
 
@@ -189,6 +189,6 @@ function onToggle(open: boolean) {
 
 .v-pagination {
 	justify-content: center;
-	margin-top: 32px;
+	margin-block-start: 32px;
 }
 </style>

@@ -394,7 +394,7 @@ function stepDown() {
 		}
 
 		.step-down {
-			margin-top: -8px;
+			margin-block-start: -8px;
 		}
 
 		.step-up,

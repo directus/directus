@@ -103,7 +103,7 @@ function useEdits() {
 
 .comment-item .content :deep(> *:first-child),
 .comment-item .content :deep(p > *:first-child) {
-	margin-top: 0;
+	margin-block-start: 0;
 }
 
 .comment-item .content :deep(> *:last-child),
@@ -177,7 +177,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(:is(h1, h2, h3, h4, h5, h6)) {
-	margin-top: 12px;
+	margin-block-start: 12px;
 	font-weight: 600;
 	font-size: 16px;
 	color: var(--theme--foreground-accent);

@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
 		flex-grow: 1;
 		order: 1;
 		max-width: 100%;
-		margin-top: 8px;
+		margin-block-start: 8px;
 		border: solid;
 		border-color: var(--v-divider-color, var(--theme--form--field--input--border-color));
 		border-width: var(--v-divider-thickness, var(--theme--border-width)) 0 0 0;

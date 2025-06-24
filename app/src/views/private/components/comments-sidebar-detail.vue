@@ -263,7 +263,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 	position: sticky;
 	top: 0;
 	z-index: 2;
-	margin-top: 12px;
+	margin-block-start: 12px;
 	margin-bottom: 2px;
 	padding-top: 4px;
 	padding-bottom: 4px;
@@ -274,7 +274,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 }
 
 .empty {
-	margin-top: 16px;
+	margin-block-start: 16px;
 	margin-bottom: 8px;
 	margin-left: 2px;
 	color: var(--theme--foreground-subdued);

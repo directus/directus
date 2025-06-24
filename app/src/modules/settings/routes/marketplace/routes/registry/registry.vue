@@ -172,7 +172,7 @@ watchEffect(async () => {
 }
 
 .extension-group + .extension-group {
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 
 .beta {

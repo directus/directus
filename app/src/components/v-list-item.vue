@@ -327,7 +327,7 @@ function onClick(event: PointerEvent) {
 		}
 
 		& + & {
-			margin-top: var(--v-list-item-margin, 8px);
+			margin-block-start: var(--v-list-item-margin, 8px);
 		}
 
 		&.grow {
@@ -340,7 +340,7 @@ function onClick(event: PointerEvent) {
 			padding: calc(var(--theme--form--field--input--padding) / 4) calc(var(--theme--form--field--input--padding) / 2);
 
 			& + & {
-				margin-top: var(--v-list-item-margin, 4px);
+				margin-block-start: var(--v-list-item-margin, 4px);
 			}
 		}
 	}
@@ -355,7 +355,7 @@ function onClick(event: PointerEvent) {
 				padding: 0 8px;
 
 				&:first-child {
-					margin-top: 0;
+					margin-block-start: 0;
 				}
 
 				&:last-child {
@@ -363,7 +363,7 @@ function onClick(event: PointerEvent) {
 				}
 
 				&:only-child {
-					margin-top: 0;
+					margin-block-start: 0;
 					margin-bottom: 0;
 				}
 			}

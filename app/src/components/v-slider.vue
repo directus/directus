@@ -149,7 +149,7 @@ function onInput(event: Event) {
 				z-index: 3;
 				width: 8px;
 				height: 8px;
-				margin-top: -2px;
+				margin-block-start: -2px;
 				background: var(--theme--background);
 				border: none;
 				border-radius: 50%;
@@ -164,7 +164,7 @@ function onInput(event: Event) {
 				z-index: 3;
 				width: 8px;
 				height: 8px;
-				margin-top: -2px;
+				margin-block-start: -2px;
 				background: var(--v-slider-thumb-color, var(--theme--primary));
 				border: none;
 				border-radius: 50%;
@@ -251,7 +251,7 @@ function onInput(event: Event) {
 				&::-webkit-slider-thumb {
 					width: 12px;
 					height: 12px;
-					margin-top: -4px;
+					margin-block-start: -4px;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}
@@ -259,7 +259,7 @@ function onInput(event: Event) {
 				&::-moz-range-thumb {
 					width: 12px;
 					height: 12px;
-					margin-top: -4px;
+					margin-block-start: -4px;
 					box-shadow: 0 0 0 4px var(--v-slider-thumb-color, var(--theme--primary));
 					cursor: ew-resize;
 				}

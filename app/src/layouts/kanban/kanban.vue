@@ -343,7 +343,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					padding: 0 6px;
 					height: 20px;
 					min-width: 20px;
-					margin-top: 2px;
+					margin-block-start: 2px;
 					text-align: center;
 					font-size: 12px;
 					line-height: 20px;
@@ -415,21 +415,21 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				.image {
 					width: 100%;
 					border-radius: var(--theme--border-radius);
-					margin-top: 4px;
+					margin-block-start: 4px;
 					max-height: 300px;
 				}
 
 				.display-labels {
 					display: flex;
 					flex-wrap: wrap;
-					margin-top: 6px;
+					margin-block-start: 6px;
 
 					:deep(.v-chip) {
 						border: none;
 						background-color: var(--theme--background-normal);
 						font-size: 12px;
 						font-weight: 600;
-						margin-top: 4px;
+						margin-block-start: 4px;
 						margin-right: 4px;
 						height: 20px;
 						padding: 0 6px;
@@ -444,7 +444,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					margin-top: 8px;
+					margin-block-start: 8px;
 					margin-bottom: 2px;
 
 					.datetime {
@@ -466,7 +466,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							height: 32px;
 							width: 32px;
 							margin-bottom: -4px;
-							margin-top: -4px;
+							margin-block-start: -4px;
 						}
 
 						.avatar-overflow {

@@ -699,7 +699,7 @@ function getLinkForItem(item: DisplayItem) {
 	z-index: 1;
 
 	&.top {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 
 	.spacer {

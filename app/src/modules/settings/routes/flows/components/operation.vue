@@ -501,7 +501,7 @@ function pointerLeave() {
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-top: 8px;
+		margin-block-start: 8px;
 		max-width: 100%;
 	}
 }

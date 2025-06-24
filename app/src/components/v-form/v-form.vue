@@ -441,7 +441,7 @@ function useRawEditor() {
 	@include mixins.form-grid;
 
 	.first-visible-field :deep(.presentation-divider) {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 
 	&.inline > .no-fields-info {

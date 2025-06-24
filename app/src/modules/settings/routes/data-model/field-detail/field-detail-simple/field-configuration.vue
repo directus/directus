@@ -187,7 +187,7 @@ const options = computed({
 }
 
 .save {
-	margin-top: 40px;
+	margin-block-start: 40px;
 }
 
 .v-divider {
@@ -200,7 +200,7 @@ const options = computed({
 
 .toggle-advanced {
 	width: 100%;
-	margin-top: 20px;
+	margin-block-start: 20px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	transition: color var(--fast) var(--transition);

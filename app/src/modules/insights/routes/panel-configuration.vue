@@ -258,7 +258,7 @@ const stageChanges = () => {
 }
 
 .group + .group {
-	margin-top: 80px;
+	margin-block-start: 80px;
 }
 
 .panel-grid {

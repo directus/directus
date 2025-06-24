@@ -424,7 +424,7 @@ function clearFilters() {
 
 		.message {
 			width: 100%;
-			margin-top: 8px;
+			margin-block-start: 8px;
 			-webkit-user-select: text;
 			user-select: text;
 			cursor: auto;

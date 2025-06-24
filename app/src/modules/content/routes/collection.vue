@@ -581,7 +581,7 @@ function clearFilters() {
 }
 
 .reset-preset {
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 
 .bookmark-controls {

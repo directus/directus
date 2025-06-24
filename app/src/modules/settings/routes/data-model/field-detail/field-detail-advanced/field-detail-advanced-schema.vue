@@ -469,7 +469,7 @@ function useOnUpdate() {
 	position: relative;
 	display: block;
 	max-width: 520px;
-	margin-top: 4px;
+	margin-block-start: 4px;
 }
 
 .monospace {

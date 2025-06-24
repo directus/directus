@@ -68,7 +68,7 @@ const done = async () => {
 	justify-content: flex-start;
 	width: 100%;
 	min-height: 44px;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	padding: 12px;
 	color: var(--white);
 	border-radius: var(--theme--border-radius);

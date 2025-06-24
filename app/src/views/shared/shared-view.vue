@@ -92,7 +92,7 @@ header {
 	width: max-content;
 	max-width: 100%;
 	height: 60px;
-	margin-top: 2px;
+	margin-block-start: 2px;
 
 	.title {
 		margin-left: 16px;

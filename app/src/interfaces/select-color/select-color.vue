@@ -569,7 +569,7 @@ function useColor() {
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
-	margin-top: calc(-2 * var(--theme--border-width));
+	margin-block-start: calc(-2 * var(--theme--border-width));
 	margin-left: initial;
 }
 

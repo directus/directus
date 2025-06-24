@@ -642,13 +642,13 @@ async function exportDataFiles() {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
 
-	margin-top: 24px;
+	margin-block-start: 24px;
 	padding: var(--content-padding);
 }
 
 .v-checkbox {
 	width: 100%;
-	margin-top: 8px;
+	margin-block-start: 8px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -740,7 +740,7 @@ async function exportDataFiles() {
 	text-align: center;
 	display: block;
 	width: 100%;
-	margin-top: 8px;
+	margin-block-start: 8px;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

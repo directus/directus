@@ -395,7 +395,7 @@ const logoURL = computed<string | null>(() => {
 		height: 64px;
 
 		.title {
-			margin-top: 2px;
+			margin-block-start: 2px;
 			margin-left: 16px;
 			overflow: hidden;
 

@@ -424,7 +424,7 @@ function useDragDrop() {
 .footer {
 	padding: 0 12px;
 	border-top: 2px solid var(--theme--border-color-subdued);
-	margin-top: auto;
+	margin-block-start: auto;
 	padding-top: 8px;
 }
 

@@ -110,7 +110,7 @@ const { t } = useI18n();
 	}
 
 	.ctx-arrow {
-		margin-top: -3px;
+		margin-block-start: -3px;
 		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
@@ -133,7 +133,7 @@ const { t } = useI18n();
 		justify-content: center;
 		height: 24px;
 		width: 24px;
-		margin-top: -2px;
+		margin-block-start: -2px;
 		margin-left: 5px;
 		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);

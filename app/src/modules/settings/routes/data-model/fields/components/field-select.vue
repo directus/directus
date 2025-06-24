@@ -453,7 +453,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 
 	& + & {
-		margin-top: 8px;
+		margin-block-start: 8px;
 	}
 
 	&.nested {

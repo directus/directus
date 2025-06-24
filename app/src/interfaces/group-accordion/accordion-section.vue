@@ -166,7 +166,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-top: -12px;
+		margin-block-start: -12px;
 		margin-left: 2px;
 	}
 

@@ -124,7 +124,7 @@ const maintainers = computed(() => {
 }
 
 .sparkline {
-	margin-top: 6px;
+	margin-block-start: 6px;
 	margin-bottom: 14px;
 }
 </style>

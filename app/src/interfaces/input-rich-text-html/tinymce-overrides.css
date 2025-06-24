@@ -32,7 +32,7 @@
 
 .tox-tbtn[aria-label='Bold'] .tox-icon::after {
 	display: inline-block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
@@ -46,7 +46,7 @@
 
 .tox-tbtn[aria-label='Italic'] .tox-icon::after {
 	display: inline-block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
@@ -60,7 +60,7 @@
 
 .tox-tbtn[aria-label='Underline'] .tox-icon::after {
 	display: inline-block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';
@@ -74,7 +74,7 @@
 
 .tox-tbtn[aria-label='Add/Edit Link'] .tox-icon::after {
 	display: inline-block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-size: 24px;
 	font-family: 'Material Symbols';

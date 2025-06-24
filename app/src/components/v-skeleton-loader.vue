@@ -82,7 +82,7 @@ withDefaults(defineProps<Props>(), {
 	@include loader;
 
 	& + & {
-		margin-top: 8px;
+		margin-block-start: 8px;
 	}
 }
 
@@ -94,7 +94,7 @@ withDefaults(defineProps<Props>(), {
 	@include loader;
 
 	& + & {
-		margin-top: 4px;
+		margin-block-start: 4px;
 	}
 }
 

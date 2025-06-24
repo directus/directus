@@ -187,7 +187,7 @@ function toggleInterface(id: string) {
 }
 
 .group + .group {
-	margin-top: 80px;
+	margin-block-start: 80px;
 }
 
 .grid {

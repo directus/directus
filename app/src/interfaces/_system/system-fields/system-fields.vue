@@ -135,7 +135,7 @@ const removeField = (field: string) => {
 	color: var(--theme--primary);
 	font-weight: 600;
 	margin-left: 10px;
-	margin-top: 6px;
+	margin-block-start: 6px;
 
 	.v-icon {
 		position: absolute;
