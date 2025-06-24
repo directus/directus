@@ -87,7 +87,7 @@ const active = ref(false);
 .actions.active {
 	position: absolute;
 	inset-block-start: 0;
-	right: 0;
+	inset-inline-end: 0;
 	align-items: center;
 	justify-content: flex-end;
 	height: 100%;

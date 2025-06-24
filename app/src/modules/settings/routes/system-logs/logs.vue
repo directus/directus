@@ -599,7 +599,7 @@ onUnmounted(() => {
 	float: right;
 	position: absolute;
 	inset-block-start: 10px;
-	right: 10px;
+	inset-inline-end: 10px;
 	z-index: 2;
 }
 

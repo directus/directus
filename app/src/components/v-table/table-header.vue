@@ -409,7 +409,7 @@ function toggleManualSort() {
 	.resize-handle {
 		position: absolute;
 		inset-block-start: 0;
-		right: 0;
+		inset-inline-end: 0;
 		width: 5px;
 		height: 100%;
 		cursor: ew-resize;
@@ -444,14 +444,14 @@ function toggleManualSort() {
 		content: '';
 		display: block;
 		position: absolute;
-		right: 0;
+		inset-inline-end: 0;
 		inset-block-start: 20%;
 		height: 60%;
 		background-color: var(--theme--primary);
 	}
 
 	&::before {
-		right: auto;
+		inset-inline-end: auto;
 		left: 0;
 	}
 }

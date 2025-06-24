@@ -315,7 +315,7 @@ function isInterpolation(value: any) {
 
 .small {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	bottom: -20px;
 	font-style: italic;
 	text-align: end;
@@ -324,7 +324,7 @@ function isInterpolation(value: any) {
 .v-button {
 	position: absolute;
 	inset-block-start: 10px;
-	right: 10px;
+	inset-inline-end: 10px;
 	z-index: 4;
 	color: var(--theme--primary);
 	cursor: pointer;

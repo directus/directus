@@ -137,7 +137,7 @@
 .CodeMirror-rulers {
     position: absolute;
     inset-block-start: -50px;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
     left: 0;
     overflow: hidden;
@@ -392,7 +392,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-vscrollbar {
     inset-block-start: 0;
-    right: 0;
+    inset-inline-end: 0;
     overflow: hidden scroll;
 }
 
@@ -403,7 +403,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-scrollbar-filler {
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
 }
 
@@ -488,7 +488,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-linebackground {
     position: absolute;
     inset-block-start: 0;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
     left: 0;
     z-index: 0;

@@ -601,7 +601,7 @@ function useFileUpload() {
 
 	&.right {
 		inset-block-start: 0;
-		right: 0;
+		inset-inline-end: 0;
 	}
 
 	&.bottom {

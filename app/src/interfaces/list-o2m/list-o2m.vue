@@ -662,7 +662,7 @@ function getLinkForItem(item: DisplayItem) {
 		tr.table-row {
 			.append {
 				position: sticky;
-				right: 0;
+				inset-inline-end: 0;
 				background: var(--theme--background);
 				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}

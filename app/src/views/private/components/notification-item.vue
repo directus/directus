@@ -100,7 +100,7 @@ const done = async () => {
 
 	&::after {
 		position: absolute;
-		right: 12px;
+		inset-inline-end: 12px;
 		bottom: -5px;
 		z-index: -1;
 		display: block;

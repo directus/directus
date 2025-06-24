@@ -26,7 +26,7 @@
 .cropper-modal {
     position: absolute;
     inset-block-start: 0;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
     left: 0;
 }
@@ -137,7 +137,7 @@
 
 .cropper-line.line-e {
     inset-block-start: 0;
-    right: -3px;
+    inset-inline-end: -3px;
     width: 5px;
     cursor: ew-resize;
 }
@@ -173,7 +173,7 @@
 
 .cropper-point.point-e {
     inset-block-start: 50%;
-    right: -5px;
+    inset-inline-end: -5px;
     margin-block-start: -5px;
     cursor: ew-resize;
 }
@@ -201,7 +201,7 @@
 
 .cropper-point.point-ne {
     inset-block-start: -5px;
-    right: -5px;
+    inset-inline-end: -5px;
     cursor: nesw-resize;
 }
 
@@ -218,14 +218,14 @@
 }
 
 .cropper-point.point-se {
-    right: -5px;
+    inset-inline-end: -5px;
     bottom: -5px;
     cursor: nwse-resize;
 }
 
 .cropper-point.point-se::before {
     position: absolute;
-    right: -50%;
+    inset-inline-end: -50%;
     bottom: -50%;
     display: block;
     width: 200%;

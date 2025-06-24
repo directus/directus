@@ -119,7 +119,7 @@ function onClick() {
 
 		position: absolute;
 		inset-block-start: 0;
-		right: 0;
+		inset-inline-end: 0;
 		z-index: 50;
 		display: flex;
 		align-items: center;

@@ -591,12 +591,12 @@ function usePopper(
 }
 
 [data-placement^='left'] .arrow {
-	right: -10px;
+	inset-inline-end: -10px;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			right: 7px;
+			inset-inline-end: 7px;
 		}
 	}
 }

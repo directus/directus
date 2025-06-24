@@ -753,7 +753,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	justify-content: right;
 	gap: 8px;
 	inset-block-start: 12px;
-	right: 16px;
+	inset-inline-end: 16px;
 }
 
 // Puts the action buttons closer to the field

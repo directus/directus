@@ -44,6 +44,6 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 
 	position: absolute;
 	inset-block-start: 32px;
-	right: 32px;
+	inset-inline-end: 32px;
 }
 </style>

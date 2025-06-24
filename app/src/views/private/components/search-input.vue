@@ -329,7 +329,7 @@ function emitValue() {
 
 		&::after {
 			position: absolute;
-			right: var(--theme--border-width);
+			inset-inline-end: var(--theme--border-width);
 			bottom: calc(-1 * var(--theme--border-width));
 			left: var(--theme--border-width);
 			width: auto;
@@ -344,7 +344,7 @@ function emitValue() {
 .filter {
 	position: absolute;
 	inset-block-start: 100%;
-	right: 0;
+	inset-inline-end: 0;
 	width: auto;
 	min-inline-size: 100%;
 	padding: 0;

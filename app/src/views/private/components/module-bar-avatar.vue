@@ -113,7 +113,7 @@ const userFullName = userStore.fullName ?? undefined;
 			&::after {
 				position: absolute;
 				inset-block-start: -1px;
-				right: 8px;
+				inset-inline-end: 8px;
 				left: 8px;
 				height: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);

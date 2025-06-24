@@ -54,7 +54,7 @@
     }
 
     &.start::after {
-        right: $arrow-alignment;
+        inset-inline-end: $arrow-alignment;
         left: unset;
     }
 
@@ -73,7 +73,7 @@
     }
 
     &.top.start::after {
-        right: $arrow-alignment;
+        inset-inline-end: $arrow-alignment;
         left: unset;
     }
 
@@ -83,7 +83,7 @@
 
     &.left::after {
         inset-block-start: calc(50% - 6px);
-        right: -5px;
+        inset-inline-end: -5px;
         left: unset;
         border-block-start: 6px solid transparent;
         border-inline-end: unset;

@@ -181,7 +181,7 @@ function onCloseClick(event: MouseEvent) {
 
 		.close-outline {
 			position: relative;
-			right: -4px;
+			inset-inline-end: -4px;
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;

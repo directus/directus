@@ -165,7 +165,7 @@ function useDelete() {
 		.time {
 			position: absolute;
 			inset-block-start: 0;
-			right: 0;
+			inset-inline-end: 0;
 			display: flex;
 			align-items: center;
 			font-size: 12px;

@@ -108,7 +108,7 @@ const searchDebounced = ref('');
 
 .footer {
 	position: sticky;
-	right: 0;
+	inset-inline-end: 0;
 	bottom: 0;
 	z-index: 2;
 	float: right;

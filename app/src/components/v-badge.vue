@@ -63,7 +63,7 @@ withDefaults(
 	.badge {
 		position: absolute;
 		inset-block-start: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-y, 0px));
-		right: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
+		inset-inline-end: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
 		z-index: 1;
 		display: inline-flex;
 		align-items: center;
@@ -79,7 +79,7 @@ withDefaults(
 		border-radius: calc(var(--v-badge-size, 16px) / 2);
 
 		&.left {
-			right: unset;
+			inset-inline-end: unset;
 			left: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
 		}
 

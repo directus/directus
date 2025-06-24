@@ -380,7 +380,7 @@ function useDragDrop() {
 .resize-details {
 	position: absolute;
 	bottom: 0;
-	right: 0;
+	inset-inline-end: 0;
 	z-index: 2;
 	padding: 2px 11.5px 11.5px 2px;
 	color: var(--theme--foreground-subdued);
@@ -462,7 +462,7 @@ function useDragDrop() {
 .edit-actions {
 	position: absolute;
 	inset-block-start: 0;
-	right: 0;
+	inset-inline-end: 0;
 	z-index: 2;
 	display: flex;
 	gap: 4px;
@@ -488,7 +488,7 @@ function useDragDrop() {
 
 .resize-handlers .right {
 	inset-block-start: 0;
-	right: -3px;
+	inset-inline-end: -3px;
 	width: 10px;
 	height: 100%;
 	cursor: ew-resize;
@@ -519,14 +519,14 @@ function useDragDrop() {
 
 .resize-handlers .top-right {
 	inset-block-start: -3px;
-	right: -3px;
+	inset-inline-end: -3px;
 	width: 14px;
 	height: 14px;
 	cursor: nesw-resize;
 }
 
 .resize-handlers .bottom-right {
-	right: -3px;
+	inset-inline-end: -3px;
 	bottom: -3px;
 	width: 14px;
 	height: 14px;

@@ -82,7 +82,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 
 .inline {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	bottom: 100%;
 	width: 100%;
 	background-color: var(--theme--background-normal);

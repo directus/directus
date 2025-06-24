@@ -185,7 +185,7 @@ function useEdits() {
 
 .comment-item.expand .content::after {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	bottom: 4px;
 	left: 0;
 	z-index: 1;
@@ -201,7 +201,7 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	bottom: 8px;
 	left: 0;
 	z-index: 2;
@@ -243,7 +243,7 @@ function useEdits() {
 
 .buttons {
 	position: absolute;
-	right: 8px;
+	inset-inline-end: 8px;
 	bottom: 8px;
 }
 

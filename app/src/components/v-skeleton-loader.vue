@@ -41,7 +41,7 @@ withDefaults(defineProps<Props>(), {
 	&::after {
 		position: absolute;
 		inset-block-start: 0;
-		right: 0;
+		inset-inline-end: 0;
 		left: 0;
 		z-index: 1;
 		height: 100%;

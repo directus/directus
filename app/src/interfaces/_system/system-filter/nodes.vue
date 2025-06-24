@@ -535,7 +535,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		padding-inline-end: 12px;
 
 		.delete {
-			right: 8px;
+			inset-inline-end: 8px;
 			left: unset;
 			background-color: var(--theme--background);
 		}

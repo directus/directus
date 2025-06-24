@@ -386,7 +386,7 @@ function pressedEnter() {
 
 .new-comment :deep(.expand-on-focus .append::after) {
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0;
 	bottom: 36px;
 	left: 0;
 	height: 8px;

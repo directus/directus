@@ -80,7 +80,7 @@ const { t } = useI18n();
 
 	.shortcuts {
 		position: absolute;
-		right: 0;
+		inset-inline-end: 0;
 		background: var(--theme--background);
 		font-family: var(--theme--fonts--monospace--font-family);
 		color: var(--theme--foreground-subdued);

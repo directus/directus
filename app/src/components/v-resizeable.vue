@@ -194,7 +194,7 @@ function onPointerUp() {
 	.grab-bar {
 		position: absolute;
 		inset-block-start: 0;
-		right: 0;
+		inset-inline-end: 0;
 		bottom: 0;
 		width: 4px;
 		z-index: 10;
@@ -226,7 +226,7 @@ function onPointerUp() {
 				content: '';
 				position: absolute;
 				inset-block-start: 0;
-				right: 1px;
+				inset-inline-end: 1px;
 				bottom: 0;
 				left: 1px;
 				background-color: var(--theme--border-color);
