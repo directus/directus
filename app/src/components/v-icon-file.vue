@@ -49,7 +49,7 @@ defineProps<Props>();
 			left: calc(100% - 12px - 3ch);
 			text-align: left;
 			transform: none;
-			padding-right: 8px;
+			padding-inline-end: 8px;
 		}
 	}
 }

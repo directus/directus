@@ -87,7 +87,7 @@ const { t } = useI18n();
 		font-size: 12px;
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
-		padding-right: 12px;
+		padding-inline-end: 12px;
 		box-shadow:
 			-12px 0 10px 2px var(--theme--background),
 			-12px 0 12px 2px var(--theme--background);

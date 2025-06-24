@@ -462,7 +462,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 	@media (min-width: 600px) {
 		&::before {
 			content: '•';
-			padding-right: 0.25rem;
+			padding-inline-end: 0.25rem;
 			color: var(--theme--foreground-subdued);
 		}
 	}

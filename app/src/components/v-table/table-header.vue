@@ -384,7 +384,7 @@ function toggleManualSort() {
 
 	.select,
 	.manual {
-		padding-right: 0;
+		padding-inline-end: 0;
 	}
 
 	.fixed {

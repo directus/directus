@@ -696,7 +696,7 @@ function setAspectRatio() {
 }
 
 .cancel {
-	padding-right: 16px;
+	padding-inline-end: 16px;
 	padding-left: 16px;
 }
 </style>

@@ -404,7 +404,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	margin-inline-end: 18px;
 	margin-block-end: 8px;
 	padding: 2px 6px;
-	padding-right: 8px;
+	padding-inline-end: 8px;
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: 100px;
@@ -439,7 +439,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	}
 
 	:deep(.inline-display) {
-		padding-right: 0;
+		padding-inline-end: 0;
 
 		.v-icon {
 			display: none;
@@ -532,7 +532,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	&.inline {
 		width: auto;
 		margin-inline-end: 0;
-		padding-right: 12px;
+		padding-inline-end: 12px;
 
 		.delete {
 			right: 8px;
@@ -544,12 +544,12 @@ function isExistingField(node: Record<string, any>): boolean {
 
 .node {
 	&.logic {
-		padding-right: 4px;
+		padding-inline-end: 4px;
 		white-space: nowrap;
 	}
 
 	&.field {
-		padding-right: 4px;
+		padding-inline-end: 4px;
 	}
 }
 

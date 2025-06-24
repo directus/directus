@@ -461,7 +461,7 @@ function stepDown() {
 		width: 20px; /* allows flex to grow/shrink to allow for slots */
 		height: 100%;
 		padding: var(--theme--form--field--input--padding);
-		padding-right: 0;
+		padding-inline-end: 0;
 		padding-left: 0;
 		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;

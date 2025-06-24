@@ -147,7 +147,7 @@ const { info } = storeToRefs(useServerStore());
 @media (min-width: 600px) {
 	.v-card .left .v-card-actions {
 		gap: unset;
-		padding-right: initial;
+		padding-inline-end: initial;
 		width: initial;
 	}
 

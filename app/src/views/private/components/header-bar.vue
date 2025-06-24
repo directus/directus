@@ -133,10 +133,10 @@ onUnmounted(() => {
 
 		&.full {
 			margin-inline-end: 12px;
-			padding-right: 0;
+			padding-inline-end: 0;
 			@media (min-width: 600px) {
 				margin-inline-end: 20px;
-				padding-right: 20px;
+				padding-inline-end: 20px;
 			}
 		}
 

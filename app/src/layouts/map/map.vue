@@ -175,7 +175,7 @@ limitWritable.value = selectedSize;
 }
 
 .render-template {
-	padding-right: 0;
+	padding-inline-end: 0;
 }
 
 .mapboxgl-ctrl-dropdown {
