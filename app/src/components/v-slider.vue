@@ -106,7 +106,7 @@ function onInput(event: Event) {
 
 	.slider {
 		position: relative;
-		top: -3px;
+		inset-block-start: -3px;
 		flex-grow: 1;
 
 		&.disabled {
@@ -177,7 +177,7 @@ function onInput(event: Event) {
 
 		.fill {
 			position: absolute;
-			top: 50%;
+			inset-block-start: 50%;
 			right: 0;
 			left: 0;
 			z-index: 2;
@@ -192,7 +192,7 @@ function onInput(event: Event) {
 
 		.ticks {
 			position: absolute;
-			top: 14px;
+			inset-block-start: 14px;
 			left: 0;
 			z-index: 2;
 			display: flex;
@@ -216,7 +216,7 @@ function onInput(event: Event) {
 
 		.thumb-label-wrapper {
 			position: absolute;
-			top: 100%;
+			inset-block-start: 100%;
 			left: 7px;
 			width: calc(100% - 14px);
 			overflow: visible;
@@ -226,7 +226,7 @@ function onInput(event: Event) {
 		.thumb-label {
 			z-index: 1;
 			position: absolute;
-			top: 0;
+			inset-block-start: 0;
 			left: calc(var(--_v-slider-percentage) * 1%);
 			width: auto;
 			padding: 2px 6px;

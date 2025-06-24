@@ -461,7 +461,7 @@ function useDragDrop() {
 
 .edit-actions {
 	position: absolute;
-	top: 0;
+	inset-block-start: 0;
 	right: 0;
 	z-index: 2;
 	display: flex;
@@ -480,14 +480,14 @@ function useDragDrop() {
 }
 
 .resize-handlers .top {
-	top: -3px;
+	inset-block-start: -3px;
 	width: 100%;
 	height: 10px;
 	cursor: ns-resize;
 }
 
 .resize-handlers .right {
-	top: 0;
+	inset-block-start: 0;
 	right: -3px;
 	width: 10px;
 	height: 100%;
@@ -502,7 +502,7 @@ function useDragDrop() {
 }
 
 .resize-handlers .left {
-	top: 0;
+	inset-block-start: 0;
 	left: -3px;
 	width: 10px;
 	height: 100%;
@@ -510,7 +510,7 @@ function useDragDrop() {
 }
 
 .resize-handlers .top-left {
-	top: -3px;
+	inset-block-start: -3px;
 	left: -3px;
 	width: 14px;
 	height: 14px;
@@ -518,7 +518,7 @@ function useDragDrop() {
 }
 
 .resize-handlers .top-right {
-	top: -3px;
+	inset-block-start: -3px;
 	right: -3px;
 	width: 14px;
 	height: 14px;

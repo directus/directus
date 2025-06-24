@@ -323,7 +323,7 @@ function isInterpolation(value: any) {
 
 .v-button {
 	position: absolute;
-	top: 10px;
+	inset-block-start: 10px;
 	right: 10px;
 	z-index: 4;
 	color: var(--theme--primary);

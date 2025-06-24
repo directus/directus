@@ -68,7 +68,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		padding: 8px;
 		font-size: 14px;
 
-		top: 4px;
+		inset-block-start: 4px;
 		left: 4px;
 		z-index: 999999;
 

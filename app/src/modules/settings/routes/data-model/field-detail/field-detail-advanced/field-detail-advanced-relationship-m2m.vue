@@ -298,12 +298,12 @@ const unsortableJunctionFields = computed(() => {
 		pointer-events: none;
 
 		&:first-of-type {
-			top: 117px;
+			inset-block-start: 117px;
 			left: 32.5%;
 		}
 
 		&:last-of-type {
-			top: 190px;
+			inset-block-start: 190px;
 			left: 67.4%;
 		}
 	}

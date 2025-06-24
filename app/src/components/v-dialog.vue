@@ -128,7 +128,7 @@ function useOverlayFocusTrap() {
 
 .container {
 	position: fixed;
-	top: 0;
+	inset-block-start: 0;
 	left: 0;
 	z-index: 500;
 	display: flex;

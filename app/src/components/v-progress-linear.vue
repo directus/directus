@@ -90,7 +90,7 @@ const color = computed(() => {
 
 	.inner {
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		left: 0;
 		height: 100%;
 		background-color: var(--v-progress-linear-color, var(--theme--foreground));
@@ -123,7 +123,7 @@ const color = computed(() => {
 	}
 
 	&.top {
-		top: 0;
+		inset-block-start: 0;
 	}
 
 	&.colorful {

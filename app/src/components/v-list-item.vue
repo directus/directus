@@ -197,7 +197,7 @@ function onClick(event: PointerEvent) {
 		&::after {
 			/* Borders normally render outside the element, this is a way of showing it as inner */
 			position: absolute;
-			top: 0;
+			inset-block-start: 0;
 			left: 0;
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);

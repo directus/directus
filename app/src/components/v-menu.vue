@@ -569,12 +569,12 @@ function usePopper(
 }
 
 [data-placement^='bottom'] .arrow {
-	top: -10px;
+	inset-block-start: -10px;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			top: 7px;
+			inset-block-start: 7px;
 		}
 	}
 }

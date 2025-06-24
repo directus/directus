@@ -118,7 +118,7 @@ function onClick() {
 		--focus-ring-offset: var(--focus-ring-offset-inset);
 
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		right: 0;
 		z-index: 50;
 		display: flex;
@@ -151,7 +151,7 @@ function onClick() {
 
 	.title {
 		position: absolute;
-		top: 50%;
+		inset-block-start: 50%;
 		left: 52px;
 		overflow: hidden;
 		white-space: nowrap;

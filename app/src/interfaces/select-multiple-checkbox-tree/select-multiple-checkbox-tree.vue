@@ -96,7 +96,7 @@ const searchDebounced = ref('');
 
 .search {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
 	padding: 10px;
 	padding-block-end: 0;

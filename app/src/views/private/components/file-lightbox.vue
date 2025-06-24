@@ -43,7 +43,7 @@ const internalModelValue = useSync(props, 'modelValue', emit);
 	--v-button-color-hover: var(--theme--foreground);
 
 	position: absolute;
-	top: 32px;
+	inset-block-start: 32px;
 	right: 32px;
 }
 </style>

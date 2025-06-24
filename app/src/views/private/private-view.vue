@@ -398,7 +398,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 
 	#navigation {
 		position: fixed;
-		top: 0;
+		inset-block-start: 0;
 		left: 0;
 		z-index: 50;
 		display: flex;
@@ -537,7 +537,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		--theme--form--field--label--font-family: var(--theme--sidebar--section--form--field--label--font-family);
 
 		position: fixed;
-		top: 0;
+		inset-block-start: 0;
 		right: 0;
 		z-index: 30;
 		width: 280px;

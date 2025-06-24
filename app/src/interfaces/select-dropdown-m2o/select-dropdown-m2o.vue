@@ -283,7 +283,7 @@ function getLinkForItem() {
 }
 
 .v-skeleton-loader {
-	top: 0;
+	inset-block-start: 0;
 	left: 0;
 }
 

@@ -389,7 +389,7 @@ function toggleManualSort() {
 
 	.fixed {
 		position: sticky;
-		top: var(--v-table-sticky-offset-top, 0);
+		inset-block-start: var(--v-table-sticky-offset-top, 0);
 		z-index: 3;
 	}
 
@@ -408,7 +408,7 @@ function toggleManualSort() {
 
 	.resize-handle {
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		right: 0;
 		width: 5px;
 		height: 100%;
@@ -417,7 +417,7 @@ function toggleManualSort() {
 
 		&::after {
 			position: relative;
-			top: 20%;
+			inset-block-start: 20%;
 			left: 3px;
 			display: block;
 			width: var(--theme--border-width);
@@ -445,7 +445,7 @@ function toggleManualSort() {
 		display: block;
 		position: absolute;
 		right: 0;
-		top: 20%;
+		inset-block-start: 20%;
 		height: 60%;
 		background-color: var(--theme--primary);
 	}

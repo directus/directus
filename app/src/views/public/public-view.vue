@@ -190,7 +190,7 @@ const logoURL = computed<string | null>(() => {
 			object-fit: cover;
 			position: absolute;
 			z-index: -1;
-			top: 0;
+			inset-block-start: 0;
 			left: 0;
 		}
 
@@ -200,7 +200,7 @@ const logoURL = computed<string | null>(() => {
 			width: 100%;
 			height: 100%;
 			left: 0;
-			top: 0;
+			inset-block-start: 0;
 			z-index: -1;
 			overflow: hidden;
 
@@ -209,7 +209,7 @@ const logoURL = computed<string | null>(() => {
 
 				> div {
 					position: absolute;
-					top: 0;
+					inset-block-start: 0;
 					left: 0;
 					width: 100%;
 					height: 100%;

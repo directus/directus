@@ -62,7 +62,7 @@ const wholeThing = computed(() => {
 
 	.v-icon {
 		position: absolute;
-		top: 8px;
+		inset-block-start: 8px;
 		left: 8px;
 	}
 

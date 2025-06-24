@@ -261,7 +261,7 @@ async function loadUserPreviews(comments: Comment[], regex: RegExp) {
 
 .v-divider {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
 	margin-block-start: 12px;
 	margin-block-end: 2px;

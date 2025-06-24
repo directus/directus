@@ -742,7 +742,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 .popover-actions {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	left: 0;
 	z-index: 1;
 }
@@ -752,7 +752,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	display: flex;
 	justify-content: right;
 	gap: 8px;
-	top: 12px;
+	inset-block-start: 12px;
 	right: 16px;
 }
 

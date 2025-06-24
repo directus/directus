@@ -82,7 +82,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 4px;
 			position: absolute;
-			top: 11px;
+			inset-block-start: 11px;
 			left: -10px;
 			display: block;
 		}

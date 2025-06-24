@@ -193,7 +193,7 @@ function onPointerUp() {
 
 	.grab-bar {
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		right: 0;
 		bottom: 0;
 		width: 4px;
@@ -225,7 +225,7 @@ function onPointerUp() {
 			&::before {
 				content: '';
 				position: absolute;
-				top: 0;
+				inset-block-start: 0;
 				right: 1px;
 				bottom: 0;
 				left: 1px;

@@ -309,7 +309,7 @@ function usePopoverWidth() {
 	.popover-rect {
 		pointer-events: none;
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		left: 0;
 	}
 }

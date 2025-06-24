@@ -127,13 +127,13 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 }
 
 .notifications-group {
-	top: auto;
+	inset-block-start: auto;
 	right: 12px;
 	bottom: 12px;
 	left: auto;
 
 	@media (min-width: 960px) {
-		top: auto;
+		inset-block-start: auto;
 		right: 12px;
 		bottom: 12px;
 		left: auto;

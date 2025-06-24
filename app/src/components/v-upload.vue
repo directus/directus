@@ -433,7 +433,7 @@ defineExpose({ abort });
 
 .browse {
 	position: absolute;
-	top: 0;
+	inset-block-start: 0;
 	left: 0;
 	display: block;
 	width: 100%;

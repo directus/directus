@@ -431,7 +431,7 @@ function useUrls() {
 				min-inline-size: 0;
 
 				.v-icon {
-					top: 1px;
+					inset-block-start: 1px;
 				}
 			}
 		}

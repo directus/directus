@@ -21,7 +21,7 @@
 
         .emoji-picker__search-icon {
             color: var(--theme--foreground-subdued);
-            top: calc(50% - 2px);
+            inset-block-start: calc(50% - 2px);
             transform: translate(0, -50%);
         }
 

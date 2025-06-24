@@ -136,7 +136,7 @@
 
 .CodeMirror-rulers {
     position: absolute;
-    top: -50px;
+    inset-block-start: -50px;
     right: 0;
     bottom: 0;
     left: 0;
@@ -145,7 +145,7 @@
 
 .CodeMirror-ruler {
     position: absolute;
-    top: 0;
+    inset-block-start: 0;
     bottom: 0;
     border-inline-start: 1px solid var(--theme--form--field--input--border-color);
 }
@@ -391,7 +391,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-vscrollbar {
-    top: 0;
+    inset-block-start: 0;
     right: 0;
     overflow: hidden scroll;
 }
@@ -414,7 +414,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-gutters {
     position: absolute;
-    top: 0;
+    inset-block-start: 0;
     left: 0;
     z-index: 3;
     min-block-size: 100%;
@@ -437,7 +437,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-gutter-background {
     position: absolute;
-    top: 0;
+    inset-block-start: 0;
     bottom: 0;
     z-index: 4;
 }
@@ -487,7 +487,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-linebackground {
     position: absolute;
-    top: 0;
+    inset-block-start: 0;
     right: 0;
     bottom: 0;
     left: 0;

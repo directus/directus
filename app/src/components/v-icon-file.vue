@@ -35,7 +35,7 @@ defineProps<Props>();
 		text-transform: uppercase;
 		left: 50%;
 		transform: translateX(-50%);
-		top: 55%;
+		inset-block-start: 55%;
 		font-size: 12px;
 		font-weight: 800;
 		line-height: 1;

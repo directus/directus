@@ -433,11 +433,11 @@ const refreshInterval = computed({
 .panel-loading {
 	position: absolute;
 	left: 50%;
-	top: 50%;
+	inset-block-start: 50%;
 	transform: translate(-50%, -50%);
 
 	&.header-offset {
-		top: calc(50% - 12px);
+		inset-block-start: calc(50% - 12px);
 	}
 }
 

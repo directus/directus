@@ -86,7 +86,7 @@ const user = computed(() => {
 
 		.dot {
 			position: absolute;
-			top: 6px;
+			inset-block-start: 6px;
 			left: -18px;
 			z-index: 2;
 			width: 12px;
@@ -115,7 +115,7 @@ const user = computed(() => {
 
 	&:not(.last)::after {
 		position: absolute;
-		top: 12px;
+		inset-block-start: 12px;
 		left: -13px;
 		z-index: 1;
 		width: 2px;
@@ -126,7 +126,7 @@ const user = computed(() => {
 
 	&::before {
 		position: absolute;
-		top: -4px;
+		inset-block-start: -4px;
 		left: -24px;
 		z-index: 1;
 		width: calc(100% + 32px);

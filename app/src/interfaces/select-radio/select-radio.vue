@@ -172,7 +172,7 @@ const customIcon = computed(() => {
 
 		&::before {
 			position: absolute;
-			top: 0;
+			inset-block-start: 0;
 			left: 0;
 			width: 100%;
 			height: 100%;

@@ -39,7 +39,7 @@ function onClick(event: MouseEvent) {
 
 .v-overlay {
 	position: fixed;
-	top: 0;
+	inset-block-start: 0;
 	left: 0;
 	z-index: var(--v-overlay-z-index, 600);
 	display: flex;
@@ -59,7 +59,7 @@ function onClick(event: MouseEvent) {
 
 	.overlay {
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		left: 0;
 		width: 100%;
 		height: 100%;

@@ -136,7 +136,7 @@ const hasHiddenCollections = computed(
 	--input-height: 40px;
 
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
 	padding: 12px;
 	padding-block-end: 0;

@@ -325,7 +325,7 @@ img {
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;
-		top: calc(50% - 32px);
+		inset-block-start: calc(50% - 32px);
 		left: 0;
 		z-index: 3;
 		display: flex;

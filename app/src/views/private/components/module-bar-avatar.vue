@@ -112,7 +112,7 @@ const userFullName = userStore.fullName ?? undefined;
 		&.no-avatar {
 			&::after {
 				position: absolute;
-				top: -1px;
+				inset-block-start: -1px;
 				right: 8px;
 				left: 8px;
 				height: var(--theme--border-width);
@@ -171,7 +171,7 @@ const userFullName = userStore.fullName ?? undefined;
 		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		left: 0;
 		z-index: 2;
 		transition: transform var(--fast) var(--transition);

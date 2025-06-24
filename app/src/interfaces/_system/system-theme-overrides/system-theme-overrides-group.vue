@@ -100,7 +100,7 @@ const hasValue = computed(() => {
 			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 4px;
 			position: absolute;
-			top: 11px;
+			inset-block-start: 11px;
 			left: -1px;
 			display: block;
 		}

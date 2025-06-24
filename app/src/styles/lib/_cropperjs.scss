@@ -25,7 +25,7 @@
 .cropper-crop-box,
 .cropper-modal {
     position: absolute;
-    top: 0;
+    inset-block-start: 0;
     right: 0;
     bottom: 0;
     left: 0;
@@ -65,7 +65,7 @@
 }
 
 .cropper-dashed.dashed-h {
-    top: calc(100% / 3);
+    inset-block-start: calc(100% / 3);
     left: 0;
     width: 100%;
     height: calc(100% / 3);
@@ -74,7 +74,7 @@
 }
 
 .cropper-dashed.dashed-v {
-    top: 0;
+    inset-block-start: 0;
     left: calc(100% / 3);
     width: calc(100% / 3);
     height: 100%;
@@ -84,7 +84,7 @@
 
 .cropper-center {
     position: absolute;
-    top: 50%;
+    inset-block-start: 50%;
     left: 50%;
     display: block;
     width: 0;
@@ -101,14 +101,14 @@
 }
 
 .cropper-center::before {
-    top: 0;
+    inset-block-start: 0;
     left: -3px;
     width: 7px;
     height: 1px;
 }
 
 .cropper-center::after {
-    top: -3px;
+    inset-block-start: -3px;
     left: 0;
     width: 1px;
     height: 7px;
@@ -125,7 +125,7 @@
 }
 
 .cropper-face {
-    top: 0;
+    inset-block-start: 0;
     left: 0;
     background-color: var(--foreground-inverted);
 }
@@ -136,21 +136,21 @@
 }
 
 .cropper-line.line-e {
-    top: 0;
+    inset-block-start: 0;
     right: -3px;
     width: 5px;
     cursor: ew-resize;
 }
 
 .cropper-line.line-n {
-    top: -3px;
+    inset-block-start: -3px;
     left: 0;
     height: 5px;
     cursor: ns-resize;
 }
 
 .cropper-line.line-w {
-    top: 0;
+    inset-block-start: 0;
     left: -3px;
     width: 5px;
     cursor: ew-resize;
@@ -172,21 +172,21 @@
 }
 
 .cropper-point.point-e {
-    top: 50%;
+    inset-block-start: 50%;
     right: -5px;
     margin-block-start: -5px;
     cursor: ew-resize;
 }
 
 .cropper-point.point-n {
-    top: -5px;
+    inset-block-start: -5px;
     left: 50%;
     margin-inline-start: -5px;
     cursor: ns-resize;
 }
 
 .cropper-point.point-w {
-    top: 50%;
+    inset-block-start: 50%;
     left: -5px;
     margin-block-start: -5px;
     cursor: ew-resize;
@@ -200,13 +200,13 @@
 }
 
 .cropper-point.point-ne {
-    top: -5px;
+    inset-block-start: -5px;
     right: -5px;
     cursor: nesw-resize;
 }
 
 .cropper-point.point-nw {
-    top: -5px;
+    inset-block-start: -5px;
     left: -5px;
     cursor: nwse-resize;
 }

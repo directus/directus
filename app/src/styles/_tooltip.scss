@@ -6,7 +6,7 @@
     --tooltip-background-color: var(--background-inverted);
 
     position: absolute;
-    top: 0;
+    inset-block-start: 0;
     left: 0;
     z-index: 850;
     display: none;
@@ -43,7 +43,7 @@
 
     &::after {
         position: absolute;
-        top: -5px;
+        inset-block-start: -5px;
         left: calc(50% - 6px);
         width: 0;
         height: 0;
@@ -63,7 +63,7 @@
     }
 
     &.top::after {
-        top: unset;
+        inset-block-start: unset;
         bottom: -5px;
         left: calc(50% - 6px);
         border-block-start: 6px solid var(--tooltip-background-color);
@@ -82,7 +82,7 @@
     }
 
     &.left::after {
-        top: calc(50% - 6px);
+        inset-block-start: calc(50% - 6px);
         right: -5px;
         left: unset;
         border-block-start: 6px solid transparent;
@@ -92,16 +92,16 @@
     }
 
     &.left.start::after {
-        top: unset;
+        inset-block-start: unset;
         bottom: $arrow-alignment;
     }
 
     &.left.end::after {
-        top: $arrow-alignment;
+        inset-block-start: $arrow-alignment;
     }
 
     &.right::after {
-        top: calc(50% - 6px);
+        inset-block-start: calc(50% - 6px);
         left: -5px;
         border-block-start: 6px solid transparent;
         border-inline-end: 6px solid var(--tooltip-background-color);
@@ -110,11 +110,11 @@
     }
 
     &.right.start::after {
-        top: unset;
+        inset-block-start: unset;
         bottom: $arrow-alignment;
     }
 
     &.right.end::after {
-        top: $arrow-alignment;
+        inset-block-start: $arrow-alignment;
     }
 }

@@ -598,7 +598,7 @@ onUnmounted(() => {
 .copy-button {
 	float: right;
 	position: absolute;
-	top: 10px;
+	inset-block-start: 10px;
 	right: 10px;
 	z-index: 2;
 }

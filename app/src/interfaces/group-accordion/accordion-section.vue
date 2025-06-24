@@ -177,7 +177,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 
 	.edit-dot {
 		position: absolute;
-		top: 14px;
+		inset-block-start: 14px;
 		left: -7px;
 		display: block;
 		width: 4px;

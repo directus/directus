@@ -844,11 +844,11 @@ function useCollectionRoute() {
 
 		.headline {
 			opacity: 1;
-			top: 3px;
+			inset-block-start: 3px;
 		}
 
 		.title {
-			top: 4px;
+			inset-block-start: 4px;
 		}
 
 		@media (min-width: 600px) {

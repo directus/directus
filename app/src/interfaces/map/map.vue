@@ -535,14 +535,14 @@ function handleKeyDown(event: any) {
 
 	.mapboxgl-search-location-dot {
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		left: 0;
 	}
 }
 
 .center {
 	position: absolute;
-	top: 50%;
+	inset-block-start: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }

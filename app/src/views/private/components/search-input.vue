@@ -343,7 +343,7 @@ function emitValue() {
 
 .filter {
 	position: absolute;
-	top: 100%;
+	inset-block-start: 100%;
 	right: 0;
 	width: auto;
 	min-inline-size: 100%;

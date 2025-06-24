@@ -354,7 +354,7 @@ async function copy(id: string) {
 
 .v-divider {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
 	margin-block-start: 8px;
 	margin-block-end: 8px;

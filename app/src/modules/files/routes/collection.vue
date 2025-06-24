@@ -595,12 +595,12 @@ function useFileUpload() {
 	}
 
 	&.top {
-		top: 0;
+		inset-block-start: 0;
 		left: 0;
 	}
 
 	&.right {
-		top: 0;
+		inset-block-start: 0;
 		right: 0;
 	}
 
@@ -610,7 +610,7 @@ function useFileUpload() {
 	}
 
 	&.left {
-		top: 0;
+		inset-block-start: 0;
 		left: 0;
 	}
 }

@@ -345,7 +345,7 @@ function setContent() {
 
 .placeholder {
 	position: absolute;
-	top: 50%;
+	inset-block-start: 50%;
 	left: 14px;
 	color: var(--theme--foreground-subdued);
 	transform: translateY(-50%);

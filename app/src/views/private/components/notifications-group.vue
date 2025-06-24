@@ -38,7 +38,7 @@ const queue = toRefs(notificationsStore).queue;
 <style lang="scss" scoped>
 .notifications-group {
 	position: fixed;
-	top: 0;
+	inset-block-start: 0;
 	right: 8px;
 	left: 8px;
 	z-index: 50;
@@ -51,14 +51,14 @@ const queue = toRefs(notificationsStore).queue;
 	}
 
 	&.sidebar-open {
-		top: auto;
+		inset-block-start: auto;
 		right: 12px;
 		bottom: 76px;
 		left: auto;
 	}
 
 	@media (min-width: 960px) {
-		top: auto;
+		inset-block-start: auto;
 		right: 12px;
 		bottom: 76px;
 		left: auto;

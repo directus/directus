@@ -85,7 +85,7 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .header-bar {
 	position: sticky;
-	top: -1px;
+	inset-block-start: -1px;
 	left: 0;
 	z-index: 5;
 	display: flex;
@@ -144,7 +144,7 @@ onUnmounted(() => {
 			--v-breadcrumb-color: var(--theme--header--headline--foreground);
 
 			position: absolute;
-			top: 2px;
+			inset-block-start: 2px;
 			left: 0;
 			font-weight: 600;
 			font-size: 12px;
@@ -154,7 +154,7 @@ onUnmounted(() => {
 			font-family: var(--theme--header--headline--font-family);
 
 			@media (min-width: 600px) {
-				top: -2px;
+				inset-block-start: -2px;
 			}
 		}
 
@@ -186,7 +186,7 @@ onUnmounted(() => {
 	}
 
 	&.small {
-		top: 0;
+		inset-block-start: 0;
 		height: 60px;
 	}
 

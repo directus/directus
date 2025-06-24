@@ -448,7 +448,7 @@ table :deep(.sortable-ghost .cell) {
 	--v-progress-linear-color: var(--theme--form--field--input--border-color-hover);
 
 	position: absolute;
-	top: -2px;
+	inset-block-start: -2px;
 	left: 0;
 	width: 100%;
 }
@@ -459,7 +459,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator.sticky th {
 	position: sticky;
-	top: 48px;
+	inset-block-start: 48px;
 	z-index: 2;
 }
 

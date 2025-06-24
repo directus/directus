@@ -472,7 +472,7 @@ function isExistingField(node: Record<string, any>): boolean {
 
 		&::before {
 			position: absolute;
-			top: 0;
+			inset-block-start: 0;
 			left: -4px;
 			z-index: -1;
 			width: calc(100% + 8px);
@@ -503,7 +503,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		--v-icon-color-hover: var(--theme--danger);
 
 		position: absolute;
-		top: 50%;
+		inset-block-start: 50%;
 		left: 100%;
 		padding-inline-start: 4px;
 		transform: translateY(-50%);

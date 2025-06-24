@@ -164,7 +164,7 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	top: 7px;
+	inset-block-start: 7px;
 	left: -7px;
 	display: block;
 	width: 4px;

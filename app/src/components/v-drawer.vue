@@ -156,7 +156,7 @@ const internalActive = computed({
 
 		display: none;
 		position: absolute;
-		top: 32px;
+		inset-block-start: 32px;
 		left: -76px;
 
 		@media (min-width: 960px) {

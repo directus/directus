@@ -59,7 +59,7 @@ const { sidebarOpen } = toRefs(appStore);
 
 	.title {
 		position: absolute;
-		top: 50%;
+		inset-block-start: 50%;
 		left: 52px;
 		overflow: hidden;
 		white-space: nowrap;

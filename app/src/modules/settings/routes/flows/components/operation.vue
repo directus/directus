@@ -338,7 +338,7 @@ function pointerLeave() {
 			position: absolute;
 			pointer-events: none;
 			content: '';
-			top: 0;
+			inset-block-start: 0;
 			bottom: 0;
 			left: 0;
 			right: 0;
@@ -420,7 +420,7 @@ function pointerLeave() {
 
 	.add-resolve,
 	.resolve-hint {
-		top: var(--resolve-top);
+		inset-block-start: var(--resolve-top);
 		left: var(--resolve-left);
 
 		.button-hint {
@@ -430,7 +430,7 @@ function pointerLeave() {
 
 	.add-reject,
 	.reject-hint {
-		top: var(--reject-top);
+		inset-block-start: var(--reject-top);
 		left: var(--reject-left);
 
 		--v-icon-color: var(--theme--secondary);
@@ -441,7 +441,7 @@ function pointerLeave() {
 	}
 
 	.attachment {
-		top: var(--attachment-y);
+		inset-block-start: var(--attachment-y);
 		left: var(--attachment-x);
 	}
 

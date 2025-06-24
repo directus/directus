@@ -269,7 +269,7 @@ const arrows = computed(() => {
 
 	.arrows {
 		position: absolute;
-		top: 0;
+		inset-block-start: 0;
 		z-index: 1;
 		left: var(--content-padding);
 		pointer-events: none;

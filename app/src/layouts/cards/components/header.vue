@@ -125,7 +125,7 @@ function onClickSelect() {
 <style lang="scss" scoped>
 .cards-header {
 	position: sticky;
-	top: var(--layout-offset-top);
+	inset-block-start: var(--layout-offset-top);
 	z-index: 4;
 	display: flex;
 	align-items: center;

@@ -72,7 +72,7 @@ const iconName = computed(() => {
 	content: '';
 	display: block;
 	position: absolute;
-	top: 0;
+	inset-block-start: 0;
 	left: 0;
 	width: 4px;
 	height: 100%;

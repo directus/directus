@@ -190,7 +190,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 
 .panel-meter.size-half output {
 	position: relative;
-	top: v-bind(halfSizeOutputOffset);
+	inset-block-start: v-bind(halfSizeOutputOffset);
 }
 
 .panel-meter svg circle:last-child {
