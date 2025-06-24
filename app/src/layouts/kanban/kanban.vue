@@ -347,7 +347,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					font-size: 12px;
 					line-height: 20px;
 					background-color: var(--theme--background-accent);
-					border-radius: 12px; //var(--theme--border-radius);
+					border-radius: 12px; // var(--theme--border-radius);
 				}
 
 				.actions {
