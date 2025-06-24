@@ -292,7 +292,7 @@ const arrows = computed(() => {
 			&.fade-enter-active,
 			&.fade-leave-active {
 				transition: var(--fast) var(--transition);
-				transition-property: opacity transform;
+				transition-property: opacity, transform;
 			}
 
 			&.fade-enter-from,

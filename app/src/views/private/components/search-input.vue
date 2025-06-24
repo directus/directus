@@ -324,8 +324,8 @@ function emitValue() {
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 		transition:
-			border-bottom-left-radius 0,
-			border-bottom-right-radius 0;
+			border-bottom-left-radius 0s,
+			border-bottom-right-radius 0s;
 
 		&::after {
 			position: absolute;

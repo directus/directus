@@ -339,7 +339,7 @@ img {
 			transform: translateY(10px);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
-			transition-property: opacity transform;
+			transition-property: opacity, transform;
 
 			@for $i from 0 through 4 {
 				&:nth-of-type(#{$i + 1}) {

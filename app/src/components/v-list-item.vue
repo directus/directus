@@ -182,10 +182,10 @@ function onClick(event: PointerEvent) {
 	flex-shrink: 1;
 	align-items: center;
 	width: 100%;
-	min-width: none;
+	min-width: 0;
 	max-width: none;
 	min-height: var(--v-list-item-min-height, 32px);
-	max-height: auto;
+	max-height: none;
 	margin: var(--v-list-item-margin, 2px 0);
 	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
 	overflow: hidden;

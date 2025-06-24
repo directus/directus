@@ -288,7 +288,7 @@ async function onClick(event: MouseEvent) {
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
-	transition-property: background-color border;
+	transition-property: background-color, border;
 }
 
 .button:hover {
