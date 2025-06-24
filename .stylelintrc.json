@@ -22,7 +22,13 @@
 			"always",
 			{ "ignore": ["after-comment", "first-nested", "inside-block", "blockless-after-same-name-blockless"] }
 		],
-		"comment-empty-line-before": null,
+		"comment-empty-line-before": [
+			"always",
+			{
+				"except": ["first-nested"],
+				"ignore": ["after-comment", "stylelint-commands"]
+			}
+		],
 		"custom-property-empty-line-before": null,
 		"custom-property-pattern": null,
 		"declaration-block-no-redundant-longhand-properties": [true, { "ignoreShorthands": ["inset"] }],

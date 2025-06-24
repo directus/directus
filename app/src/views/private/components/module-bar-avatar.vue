@@ -144,6 +144,7 @@ const userFullName = userStore.fullName ?? undefined;
 
 			.avatar-image {
 				opacity: 1;
+
 				/* This adds a second focus ring to the image so we can see the focus better */
 				outline: var(--focus-ring-width) solid var(--theme--navigation--modules--background);
 				outline-offset: var(--focus-ring-offset-invert);

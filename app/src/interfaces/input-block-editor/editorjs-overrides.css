@@ -501,6 +501,7 @@
 .codex-editor .ce-block {
 	margin-top: 1.5em;
 	margin-bottom: 1.5em;
+
 	/* Editor.js expect this to default to light */
 	font-weight: 400;
 	font-family: inherit;
