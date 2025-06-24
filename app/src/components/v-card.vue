@@ -46,7 +46,7 @@ withDefaults(defineProps<Props>(), {
 
 	& > :first-child {
 		border-start-start-radius: var(--theme--border-radius);
-		border-top-right-radius: var(--theme--border-radius);
+		border-start-end-radius: var(--theme--border-radius);
 	}
 
 	&.disabled {

@@ -390,7 +390,7 @@ function useDragDrop() {
 	font-style: normal;
 	line-height: 1;
 	text-align: right;
-	border-top-right-radius: var(--theme--border-radius);
+	border-start-end-radius: var(--theme--border-radius);
 	border-bottom-right-radius: var(--theme--border-radius);
 	border-start-start-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
@@ -468,7 +468,7 @@ function useDragDrop() {
 	gap: 4px;
 	align-items: center;
 	padding: 7px;
-	border-top-right-radius: var(--theme--border-radius);
+	border-start-end-radius: var(--theme--border-radius);
 	border-bottom-right-radius: var(--theme--border-radius);
 	border-bottom-left-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
@@ -546,7 +546,7 @@ function useDragDrop() {
 }
 
 .br-tr {
-	border-top-right-radius: var(--theme--border-radius);
+	border-start-end-radius: var(--theme--border-radius);
 }
 
 .br-br {

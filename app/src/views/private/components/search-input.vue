@@ -350,7 +350,7 @@ function emitValue() {
 	padding: 0;
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-top-right-radius: 0;
+	border-start-end-radius: 0;
 	border-bottom-right-radius: 22px;
 	border-bottom-left-radius: 22px;
 

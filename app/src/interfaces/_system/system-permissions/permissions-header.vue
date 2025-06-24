@@ -21,7 +21,7 @@ const { t } = useI18n();
 		font-weight: 600;
 		background-color: var(--theme--form--field--input--background);
 		border-start-start-radius: var(--theme--border-radius);
-		border-top-right-radius: var(--theme--border-radius);
+		border-start-end-radius: var(--theme--border-radius);
 		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
