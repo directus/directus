@@ -295,7 +295,7 @@ body.dark .tox .tox-toolbar__overflow {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 136px;
+	min-inline-size: 136px;
 	height: 44px;
 	padding: 0 20px 1px;
 	color: var(--white);
@@ -331,7 +331,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-button--naked {
-	min-width: auto;
+	min-inline-size: auto;
 	height: auto;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: transparent;

@@ -245,7 +245,7 @@ function emitValue() {
 		--v-icon-color: var(--theme--foreground-subdued);
 		--v-icon-color-hover: var(--theme--danger);
 
-		min-width: auto;
+		min-inline-size: auto;
 		overflow: hidden;
 	}
 
@@ -346,7 +346,7 @@ function emitValue() {
 	top: 100%;
 	right: 0;
 	width: auto;
-	min-width: 100%;
+	min-inline-size: 100%;
 	padding: 0;
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

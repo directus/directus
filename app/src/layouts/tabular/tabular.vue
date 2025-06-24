@@ -285,7 +285,7 @@ function removeField(fieldKey: string) {
 	display: contents;
 
 	& > :deep(table) {
-		min-width: calc(100% - var(--content-padding)) !important;
+		min-inline-size: calc(100% - var(--content-padding)) !important;
 		margin-left: var(--content-padding);
 
 		tr {

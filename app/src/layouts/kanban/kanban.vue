@@ -342,7 +342,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					justify-content: center;
 					padding: 0 6px;
 					height: 20px;
-					min-width: 20px;
+					min-inline-size: 20px;
 					margin-block-start: 2px;
 					text-align: center;
 					font-size: 12px;

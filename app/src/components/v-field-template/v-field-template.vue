@@ -316,7 +316,7 @@ function setContent() {
 	white-space: nowrap;
 
 	:deep(span) {
-		min-width: 1px;
+		min-inline-size: 1px;
 		min-height: 1em;
 		white-space: pre;
 	}

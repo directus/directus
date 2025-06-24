@@ -818,7 +818,7 @@ function discardAndLeave() {
 	grid-template-rows: repeat(auto-fit, var(--row-size));
 	grid-template-columns: repeat(auto-fit, var(--column-size));
 	gap: var(--gap-size);
-	min-width: calc(var(--column-size) * 2);
+	min-inline-size: calc(var(--column-size) * 2);
 	min-height: calc(var(--row-size) * 2);
 }
 </style>

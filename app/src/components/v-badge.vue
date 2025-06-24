@@ -69,7 +69,7 @@ withDefaults(
 		align-items: center;
 		justify-content: center;
 		width: max-content;
-		min-width: var(--v-badge-size, 16px);
+		min-inline-size: var(--v-badge-size, 16px);
 		height: var(--v-badge-size, 16px);
 		padding: 0 5px;
 		color: var(--v-badge-color, var(--white));
@@ -97,7 +97,7 @@ withDefaults(
 
 		&.dot {
 			width: var(--v-badge-size, 16px);
-			min-width: 0;
+			min-inline-size: 0;
 			height: var(--v-badge-size, 16px);
 			border: 0;
 

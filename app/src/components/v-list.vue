@@ -77,7 +77,7 @@ useGroupableParent(
 .v-list {
 	position: static;
 	display: block;
-	min-width: var(--v-list-min-width, 220px);
+	min-inline-size: var(--v-list-min-width, 220px);
 	max-width: var(--v-list-max-width, none);
 	min-height: var(--v-list-min-height, none);
 	max-height: var(--v-list-max-height, none);

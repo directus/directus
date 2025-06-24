@@ -264,7 +264,7 @@ function addKeyAsNode() {
 	}
 
 	.v-list {
-		min-width: auto;
+		min-inline-size: auto;
 		margin: 0 0 10px;
 		padding: 20px 20px 12px;
 		border: var(--theme--border-width) solid var(--theme--border-color-subdued);

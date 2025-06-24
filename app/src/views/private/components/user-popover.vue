@@ -108,7 +108,7 @@ function navigateToUser() {
 
 .user-box {
 	display: flex;
-	min-width: 300px;
+	min-inline-size: 300px;
 	padding: 8px 4px;
 	cursor: pointer;
 

@@ -119,7 +119,7 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 .live-preview {
 	height: 100%;
 	width: 100%;
-	min-width: 0;
+	min-inline-size: 0;
 }
 
 .spacer {

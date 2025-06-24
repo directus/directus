@@ -135,7 +135,7 @@
     display: grid;
     grid-template-columns: repeat(7, minmax(0, 1fr));
     width: auto;
-    min-width: auto;
+    min-inline-size: auto;
     max-width: none;
     gap: 4px;
     padding: 4px;
@@ -256,7 +256,7 @@ span.flatpickr-weekday {
 .flatpickr-time > * {
     flex-grow: 0 !important;
     width: max-content !important;
-    min-width: 50px;
+    min-inline-size: 50px;
 }
 
 .flatpickr-time .numInputWrapper span {
@@ -295,7 +295,7 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-time .flatpickr-time-separator {
-    min-width: 0 !important;
+    min-inline-size: 0 !important;
 }
 
 .flatpickr-time .flatpickr-time-separator,

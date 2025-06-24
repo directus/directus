@@ -375,7 +375,7 @@ function updateSort(newSort: Sort) {
 }
 
 table {
-	min-width: 100%;
+	min-inline-size: 100%;
 	border-collapse: collapse;
 	border-spacing: 0;
 }

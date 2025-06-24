@@ -428,7 +428,7 @@ function useUrls() {
 			.activator {
 				display: flex;
 				align-items: center;
-				min-width: 0;
+				min-inline-size: 0;
 
 				.v-icon {
 					top: 1px;

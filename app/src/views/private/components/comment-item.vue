@@ -95,7 +95,7 @@ function useEdits() {
 	display: inline-block;
 	max-height: 300px;
 	overflow-y: auto;
-	min-width: 100%;
+	min-inline-size: 100%;
 	max-width: 100%;
 	margin-block-end: -6px;
 	line-height: 1.4;

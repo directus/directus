@@ -229,7 +229,7 @@ defineExpose({
 	&.timestamp,
 	&.time,
 	&.dateTime {
-		min-width: 250px;
+		min-inline-size: 250px;
 	}
 
 	&.geometry,
@@ -256,10 +256,10 @@ input {
 
 .dialog {
 	position: relative;
-	min-width: 800px;
+	min-inline-size: 800px;
 }
 
 .date-input {
-	min-width: 400px;
+	min-inline-size: 400px;
 }
 </style>

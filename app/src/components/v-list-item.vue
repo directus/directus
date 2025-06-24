@@ -180,7 +180,7 @@ function onClick(event: PointerEvent) {
 	flex: 1 1 100%;
 	align-items: center;
 	width: 100%;
-	min-width: 0;
+	min-inline-size: 0;
 	max-width: none;
 	min-height: var(--v-list-item-min-height, 32px);
 	max-height: none;

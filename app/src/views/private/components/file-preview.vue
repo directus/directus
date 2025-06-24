@@ -110,7 +110,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 
 		video {
 			min-height: 80px;
-			min-width: 80px;
+			min-inline-size: 80px;
 		}
 	}
 

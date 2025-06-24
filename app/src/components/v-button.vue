@@ -15,7 +15,7 @@ interface Props {
 	rounded?: boolean;
 	/** No background */
 	outlined?: boolean;
-	/** Remove padding / min-width. Meant to be used with just an icon as content */
+	/** Remove padding / min-inline-size. Meant to be used with just an icon as content */
 	icon?: boolean;
 	/** Element type to be used */
 	type?: string;
@@ -267,7 +267,7 @@ async function onClick(event: MouseEvent) {
 
 .v-button.full-width {
 	display: flex;
-	min-width: 100%;
+	min-inline-size: 100%;
 }
 
 .button {
@@ -275,7 +275,7 @@ async function onClick(event: MouseEvent) {
 	display: flex;
 	align-items: center;
 	width: var(--v-button-width, auto);
-	min-width: var(--v-button-min-width, 140px);
+	min-inline-size: var(--v-button-min-width, 140px);
 	height: var(--v-button-height, 44px);
 	padding: var(--v-button-padding, 0 19px);
 	color: var(--v-button-color, var(--foreground-inverted));
@@ -378,12 +378,12 @@ async function onClick(event: MouseEvent) {
 
 .icon {
 	width: var(--v-button-height, 44px);
-	min-width: 0;
+	min-inline-size: 0;
 	padding: 0;
 }
 
 .button.full-width {
-	min-width: 100%;
+	min-inline-size: 100%;
 }
 
 .content,

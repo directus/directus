@@ -65,7 +65,7 @@
 }
 
 .CodeMirror-linenumber {
-    min-width: 20px;
+    min-inline-size: 20px;
     padding: 0 3px 0 5px;
     color: var(--theme--foreground-subdued);
     white-space: nowrap;

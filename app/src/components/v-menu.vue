@@ -500,7 +500,7 @@ function usePopper(
 	position: fixed;
 	left: -999px;
 	z-index: 600;
-	min-width: 100px;
+	min-inline-size: 100px;
 	transform: translateY(2px);
 	pointer-events: none;
 

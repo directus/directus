@@ -102,7 +102,7 @@ function emitClick(event: MouseEvent) {
 	position: relative;
 	display: inline-block;
 	width: var(--v-icon-size, 24px);
-	min-width: var(--v-icon-size, 24px);
+	min-inline-size: var(--v-icon-size, 24px);
 	height: var(--v-icon-size, 24px);
 	color: var(--v-icon-color, currentColor);
 	font-size: 0;

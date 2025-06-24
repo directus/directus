@@ -140,7 +140,7 @@ const navigateBack = () => {
 
 	.readme {
 		grid-area: readme;
-		min-width: 0;
+		min-inline-size: 0;
 	}
 
 	.metadata {
