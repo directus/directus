@@ -125,7 +125,7 @@
     video,
     iframe,
     img {
-        max-width: 100%;
+        max-inline-size: 100%;
         height: auto;
         border-radius: var(--theme--border-radius);
     }

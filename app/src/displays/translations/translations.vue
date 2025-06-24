@@ -136,7 +136,7 @@ const translations = computed(() => {
 
 .display-translations {
 	display: inline-flex;
-	max-width: 100%;
+	max-inline-size: 100%;
 	align-items: center;
 
 	.icon {
@@ -173,7 +173,7 @@ const translations = computed(() => {
 	.v-progress-linear {
 		flex: 1;
 		width: unset;
-		max-width: 100px;
+		max-inline-size: 100px;
 		border-radius: 4px;
 	}
 }

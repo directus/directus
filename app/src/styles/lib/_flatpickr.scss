@@ -136,7 +136,7 @@
     grid-template-columns: repeat(7, minmax(0, 1fr));
     width: auto;
     min-inline-size: auto;
-    max-width: none;
+    max-inline-size: none;
     gap: 4px;
     padding: 4px;
     margin-block-start: 4px;
@@ -149,7 +149,7 @@ span.flatpickr-weekday {
 
 .flatpickr-day {
     width: 100%;
-    max-width: none;
+    max-inline-size: none;
     color: var(--theme--foreground-accent);
     line-height: 36px;
     font-weight: 500;

@@ -17,7 +17,7 @@
     --fc-list-event-hover-bg-color: var(--theme--form--field--input--background-subdued);
 
     .fc-more-popover {
-        max-width: var(--form-column-width);
+        max-inline-size: var(--form-column-width);
         max-height: 330px;
 
         .fc-popover-body {

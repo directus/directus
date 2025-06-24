@@ -668,7 +668,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 .modal-card {
 	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--v-card-padding)) !important;
-	max-width: 90vw !important;
+	max-inline-size: 90vw !important;
 
 	@media (min-height: 375px) {
 		--button-height: var(--v-button-height, 44px);
@@ -726,13 +726,13 @@ function popoverClickOutsideMiddleware(e: Event) {
 	position: relative;
 	z-index: 0;
 	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));
-	max-width: 90vw;
+	max-inline-size: 90vw;
 
 	:deep(.v-form:first-child .first-visible-field .field-label),
 	:deep(.v-form:first-child .first-visible-field.half + .half-right .field-label) {
 		--popover-action-width: 100px; // 3 * 28 (button) + 2 * 8 (gap)
 
-		max-width: calc(100% - var(--popover-action-width));
+		max-inline-size: calc(100% - var(--popover-action-width));
 	}
 
 	&.empty {

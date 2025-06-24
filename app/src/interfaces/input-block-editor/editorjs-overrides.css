@@ -451,7 +451,7 @@
 
 .ce-toolbar__content,
 .ce-block__content {
-	max-width: unset;
+	max-inline-size: unset;
 	margin-inline-end: 34px;
 	margin-left: 34px;
 }
@@ -575,7 +575,7 @@
 .codex-editor .ce-block video,
 .codex-editor .ce-block iframe,
 .codex-editor .ce-block img {
-	max-width: 100%;
+	max-inline-size: 100%;
 	height: auto;
 	border-radius: 4px;
 }

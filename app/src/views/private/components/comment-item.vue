@@ -96,7 +96,7 @@ function useEdits() {
 	max-height: 300px;
 	overflow-y: auto;
 	min-inline-size: 100%;
-	max-width: 100%;
+	max-inline-size: 100%;
 	margin-block-end: -6px;
 	line-height: 1.4;
 }
@@ -124,7 +124,7 @@ function useEdits() {
 }
 
 .comment-item .content :deep(img) {
-	max-width: 100%;
+	max-inline-size: 100%;
 	margin: 8px 0;
 	border-radius: var(--theme--border-radius);
 	display: block;
@@ -157,7 +157,7 @@ function useEdits() {
 	margin: 2px 0;
 	font-family: var(--theme--fonts--monospace--font-family);
 	white-space: nowrap;
-	max-width: 100%;
+	max-inline-size: 100%;
 	overflow-x: auto;
 }
 

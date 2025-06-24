@@ -289,7 +289,7 @@ img {
 	}
 
 	.message {
-		max-width: 300px;
+		max-inline-size: 300px;
 		padding: 0 16px;
 		text-align: center;
 	}

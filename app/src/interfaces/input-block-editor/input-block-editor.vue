@@ -257,7 +257,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 .uploader-preview-image img {
 	display: block;
 	width: auto;
-	max-width: 100%;
+	max-inline-size: 100%;
 	height: auto;
 	max-height: 40vh;
 	margin: 0 auto;

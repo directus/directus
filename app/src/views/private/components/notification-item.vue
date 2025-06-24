@@ -119,7 +119,7 @@ const done = async () => {
 
 	&.dense {
 		width: max-content;
-		max-width: 100%;
+		max-inline-size: 100%;
 		min-height: 44px;
 
 		.icon {

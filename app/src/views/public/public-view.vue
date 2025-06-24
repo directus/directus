@@ -136,7 +136,7 @@ const logoURL = computed<string | null>(() => {
 		flex-direction: column;
 		justify-content: space-between;
 		width: 100%;
-		max-width: 500px;
+		max-inline-size: 500px;
 		height: 100%;
 		padding: 20px;
 		overflow: hidden auto;
@@ -147,7 +147,7 @@ const logoURL = computed<string | null>(() => {
 		font-size: 15px;
 		line-height: 24px;
 		box-shadow: 0 0 40px 0 rgb(38 50 56 / 0.1);
-		transition: max-width var(--medium) var(--transition);
+		transition: max-inline-size var(--medium) var(--transition);
 
 		:slotted(.type-title) {
 			font-size: 42px;
@@ -157,11 +157,11 @@ const logoURL = computed<string | null>(() => {
 
 		.content {
 			width: 340px;
-			max-width: 100%;
+			max-inline-size: 100%;
 		}
 
 		&.wide {
-			max-width: 872px;
+			max-inline-size: 872px;
 
 			.content {
 				width: 712px;
@@ -350,7 +350,7 @@ const logoURL = computed<string | null>(() => {
 
 		.foreground {
 			width: 80%;
-			max-width: 400px;
+			max-inline-size: 400px;
 		}
 
 		.note-container {
@@ -364,7 +364,7 @@ const logoURL = computed<string | null>(() => {
 			height: 10px;
 
 			.note {
-				max-width: 340px;
+				max-inline-size: 340px;
 				margin: 0 auto;
 				padding: 8px 12px;
 				color: var(--white);
@@ -391,7 +391,7 @@ const logoURL = computed<string | null>(() => {
 		display: flex;
 		align-items: center;
 		width: max-content;
-		max-width: 100%;
+		max-inline-size: 100%;
 		height: 64px;
 
 		.title {

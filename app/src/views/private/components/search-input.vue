@@ -204,7 +204,7 @@ function emitValue() {
 	align-items: center;
 	width: 42px;
 	min-height: 42px;
-	max-width: 100%;
+	max-inline-size: 100%;
 	box-sizing: content-box;
 	overflow: hidden;
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

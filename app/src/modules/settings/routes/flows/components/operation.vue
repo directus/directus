@@ -502,7 +502,7 @@ function pointerLeave() {
 
 	.v-error {
 		margin-block-start: 8px;
-		max-width: 100%;
+		max-inline-size: 100%;
 	}
 }
 

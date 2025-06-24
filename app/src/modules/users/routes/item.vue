@@ -467,7 +467,7 @@ function revert(values: Record<string, any>) {
 
 	display: flex;
 	align-items: center;
-	max-width: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
+	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	height: 112px;
 	margin-block-end: var(--theme--form--row-gap);
 	padding: 20px;

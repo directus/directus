@@ -134,12 +134,12 @@ blockquote {
 }
 video,
 img {
-	max-width: 100%;
+	max-inline-size: 100%;
 	border-radius: ${cssVar('--theme--border-radius')};
 	height: auto;
 }
 iframe {
-	max-width: 100%;
+	max-inline-size: 100%;
 	border-radius: ${cssVar('--theme--border-radius')};
 }
 hr {

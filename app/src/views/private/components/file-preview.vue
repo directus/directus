@@ -69,7 +69,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 <style lang="scss" scoped>
 .file-preview {
 	position: relative;
-	max-width: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
+	max-inline-size: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
 
 	img,
 	video {
@@ -84,7 +84,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 	img,
 	video,
 	audio {
-		max-width: 100%;
+		max-inline-size: 100%;
 		max-height: v-bind(maxHeight);
 		object-fit: contain;
 		border-radius: var(--theme--border-radius);

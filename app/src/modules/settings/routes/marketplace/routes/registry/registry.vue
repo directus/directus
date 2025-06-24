@@ -168,7 +168,7 @@ watchEffect(async () => {
 .page-container {
 	padding: var(--content-padding);
 	padding-block-start: 0;
-	max-width: 1200px;
+	max-inline-size: 1200px;
 }
 
 .extension-group + .extension-group {

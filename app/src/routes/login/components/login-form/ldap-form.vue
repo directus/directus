@@ -124,6 +124,6 @@ async function onSubmit() {
 }
 
 .sign-in {
-	max-width: 50%;
+	max-inline-size: 50%;
 }
 </style>

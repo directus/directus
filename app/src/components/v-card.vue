@@ -33,7 +33,7 @@ withDefaults(defineProps<Props>(), {
 	--theme--form--row-gap: 52px;
 
 	min-inline-size: var(--v-card-min-width, none);
-	max-width: 400px;
+	max-inline-size: 400px;
 	height: auto;
 	max-height: 90vh;
 	overflow: auto;

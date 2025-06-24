@@ -468,7 +468,7 @@ function useOnUpdate() {
 .type-note {
 	position: relative;
 	display: block;
-	max-width: 520px;
+	max-inline-size: 520px;
 	margin-block-start: 4px;
 }
 

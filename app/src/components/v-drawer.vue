@@ -147,7 +147,7 @@ const internalActive = computed({
 	display: flex;
 	flex-direction: column;
 	width: 100%;
-	max-width: 856px;
+	max-inline-size: 856px;
 	height: 100%;
 	background-color: var(--theme--background);
 

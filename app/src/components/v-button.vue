@@ -388,7 +388,7 @@ async function onClick(event: MouseEvent) {
 
 .content,
 .spinner {
-	max-width: 100%;
+	max-inline-size: 100%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;

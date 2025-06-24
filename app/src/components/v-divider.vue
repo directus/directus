@@ -45,7 +45,7 @@ withDefaults(defineProps<Props>(), {
 	hr {
 		flex-grow: 1;
 		order: 1;
-		max-width: 100%;
+		max-inline-size: 100%;
 		margin-block-start: 8px;
 		border: solid;
 		border-color: var(--v-divider-color, var(--theme--form--field--input--border-color));
@@ -98,7 +98,7 @@ withDefaults(defineProps<Props>(), {
 
 		hr {
 			width: 0;
-			max-width: 0;
+			max-inline-size: 0;
 			border-width: 0 var(--theme--border-width) 0 0;
 		}
 

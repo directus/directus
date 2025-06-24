@@ -159,7 +159,7 @@ const displayValue = computed(() => {
 		}
 
 		.v-progress-linear {
-			max-width: 100px;
+			max-inline-size: 100px;
 		}
 	}
 }

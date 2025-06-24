@@ -181,7 +181,7 @@ function onClick(event: PointerEvent) {
 	align-items: center;
 	width: 100%;
 	min-inline-size: 0;
-	max-width: none;
+	max-inline-size: none;
 	min-height: var(--v-list-item-min-height, 32px);
 	max-height: none;
 	margin: var(--v-list-item-margin, 2px 0);

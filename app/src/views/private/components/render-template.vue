@@ -176,7 +176,7 @@ const parts = computed(() =>
 .render-template {
 	height: 100%;
 	position: relative;
-	max-width: 100%;
+	max-inline-size: 100%;
 	padding-inline-end: 8px;
 	@include mixins.no-wrap;
 

@@ -82,7 +82,7 @@ header {
 }
 
 .container {
-	max-width: 856px;
+	max-inline-size: 856px;
 	margin: 0 auto;
 }
 
@@ -90,7 +90,7 @@ header {
 	display: flex;
 	align-items: center;
 	width: max-content;
-	max-width: 100%;
+	max-inline-size: 100%;
 	height: 60px;
 	margin-block-start: 2px;
 
@@ -143,7 +143,7 @@ header {
 	.inline-container {
 		display: block;
 		width: 100%;
-		max-width: 856px;
+		max-inline-size: 856px;
 		padding: 32px;
 		background-color: var(--theme--background);
 		border-radius: var(--theme--border-radius);

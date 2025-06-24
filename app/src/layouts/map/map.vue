@@ -161,7 +161,7 @@ limitWritable.value = selectedSize;
 .popup {
 	position: fixed;
 	z-index: 1;
-	max-width: 80%;
+	max-inline-size: 80%;
 	padding: 6px 10px;
 	color: var(--theme--foreground-accent);
 	font-weight: 500;

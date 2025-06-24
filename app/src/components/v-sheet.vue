@@ -23,7 +23,7 @@
 .v-sheet {
 	width: var(--v-sheet-width, auto);
 	min-inline-size: var(--v-sheet-min-width, none);
-	max-width: var(--v-sheet-max-width, none);
+	max-inline-size: var(--v-sheet-max-width, none);
 	height: var(--v-sheet-height, auto);
 	min-height: var(--v-sheet-min-height, var(--theme--form--field--input--height));
 	max-height: var(--v-sheet-max-height, none);

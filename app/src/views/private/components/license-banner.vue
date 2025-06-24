@@ -67,7 +67,7 @@ const { info } = storeToRefs(useServerStore());
 
 <style scoped>
 .v-card {
-	max-width: unset;
+	max-inline-size: unset;
 	padding: 30px;
 	width: 80vw;
 }
@@ -124,7 +124,7 @@ const { info } = storeToRefs(useServerStore());
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
-	max-width: 435px;
+	max-inline-size: 435px;
 }
 
 .v-card .left .v-card-actions {

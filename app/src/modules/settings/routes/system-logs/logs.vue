@@ -662,7 +662,7 @@ onUnmounted(() => {
 
 	.log-detail {
 		flex: 1;
-		max-width: 50%;
+		max-inline-size: 50%;
 		border-top: none;
 		border-left: var(--theme--border-width) solid
 			var(--v-input-border-color, var(--theme--form--field--input--border-color));

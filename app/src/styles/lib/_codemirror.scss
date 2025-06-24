@@ -301,7 +301,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-lint-tooltip {
     position: absolute;
     z-index: 850;
-    max-width: 600px;
+    max-inline-size: 600px;
     padding: 4px 8px;
     color: var(--foreground-inverted);
     background-color: var(--background-inverted);

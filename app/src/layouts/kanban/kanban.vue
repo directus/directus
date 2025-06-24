@@ -324,7 +324,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 				font-weight: 700;
 
 				.title {
-					max-width: calc(100% - 60px);
+					max-inline-size: calc(100% - 60px);
 					display: flex;
 
 					.title-content {

@@ -73,7 +73,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .content {
-	max-width: 300px;
+	max-inline-size: 300px;
 	color: var(--theme--foreground-subdued);
 	line-height: 22px;
 

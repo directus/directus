@@ -122,13 +122,13 @@ onUnmounted(() => {
 		align-items: center;
 		gap: 16px;
 		width: 100%;
-		max-width: calc(100% - 12px - 44px - 120px - 12px - 8px);
+		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
 		margin-left: 16px;
 		overflow: hidden;
 
 		@media (min-width: 600px) {
-			max-width: 70%;
+			max-inline-size: 70%;
 		}
 
 		&.full {
