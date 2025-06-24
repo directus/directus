@@ -392,7 +392,7 @@ function useDragDrop() {
 	text-align: right;
 	border-top-right-radius: var(--theme--border-radius);
 	border-bottom-right-radius: var(--theme--border-radius);
-	border-top-left-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
 	opacity: 0;
 	transition:
@@ -542,7 +542,7 @@ function useDragDrop() {
 }
 
 .br-tl {
-	border-top-left-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 }
 
 .br-tr {

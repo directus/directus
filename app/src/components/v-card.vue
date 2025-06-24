@@ -45,7 +45,7 @@ withDefaults(defineProps<Props>(), {
 	border-radius: var(--theme--border-radius);
 
 	& > :first-child {
-		border-top-left-radius: var(--theme--border-radius);
+		border-start-start-radius: var(--theme--border-radius);
 		border-top-right-radius: var(--theme--border-radius);
 	}
 

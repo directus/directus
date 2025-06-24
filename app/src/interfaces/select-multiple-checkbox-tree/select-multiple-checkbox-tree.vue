@@ -116,7 +116,7 @@ const searchDebounced = ref('');
 	padding: 4px 8px;
 	text-align: right;
 	background-color: var(--theme--background);
-	border-top-left-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 }
 
 .footer > button {
