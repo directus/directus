@@ -291,8 +291,7 @@ function addKeyAsNode() {
 			display: flex;
 			align-items: center;
 			block-size: var(--theme--form--field--input--height);
-			padding-block-start: 0;
-			padding-block-end: 0;
+			padding-block: 0;
 		}
 
 		.no-rules {
@@ -344,12 +343,10 @@ function addKeyAsNode() {
 				}
 			}
 			.add {
-				margin-inline-start: 6px;
-				margin-inline-end: 4px;
+				margin-inline: 6px 4px;
 			}
 			.expand_more {
-				margin-inline-start: auto;
-				margin-inline-end: 6px;
+				margin-inline: auto 6px;
 				transition: transform var(--medium) var(--transition-out);
 			}
 		}

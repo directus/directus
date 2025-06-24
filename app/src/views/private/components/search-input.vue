@@ -329,9 +329,8 @@ function emitValue() {
 
 		&::after {
 			position: absolute;
-			inset-inline-end: var(--theme--border-width);
+			inset-inline: var(--theme--border-width) var(--theme--border-width);
 			inset-block-end: calc(-1 * var(--theme--border-width));
-			inset-inline-start: var(--theme--border-width);
 			inline-size: auto;
 			block-size: var(--theme--border-width);
 			background-color: var(--theme--border-color-subdued);

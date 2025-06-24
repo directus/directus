@@ -193,9 +193,8 @@ function onPointerUp() {
 
 	.grab-bar {
 		position: absolute;
-		inset-block-start: 0;
+		inset-block: 0;
 		inset-inline-end: 0;
-		inset-block-end: 0;
 		inline-size: 4px;
 		z-index: 10;
 		background-color: var(--theme--primary);
@@ -225,10 +224,8 @@ function onPointerUp() {
 			&::before {
 				content: '';
 				position: absolute;
-				inset-block-start: 0;
-				inset-inline-end: 1px;
-				inset-block-end: 0;
-				inset-inline-start: 1px;
+				inset-block: 0;
+				inset-inline: 1px;
 				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);
 			}

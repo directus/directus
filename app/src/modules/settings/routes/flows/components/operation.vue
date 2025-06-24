@@ -338,10 +338,8 @@ function pointerLeave() {
 			position: absolute;
 			pointer-events: none;
 			content: '';
-			inset-block-start: 0;
-			inset-block-end: 0;
-			inset-inline-start: 0;
-			inset-inline-end: 0;
+			inset-block: 0;
+			inset-inline: 0;
 			border-radius: 4px;
 			z-index: -1;
 			opacity: 0.2;

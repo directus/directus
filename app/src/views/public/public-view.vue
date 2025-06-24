@@ -355,9 +355,8 @@ const logoURL = computed<string | null>(() => {
 
 		.note-container {
 			position: absolute;
-			inset-inline-end: 0;
+			inset-inline: 0;
 			inset-block-end: 34px;
-			inset-inline-start: 0;
 			display: flex;
 			align-items: flex-end;
 			justify-content: center;

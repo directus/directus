@@ -356,17 +356,14 @@ async function copy(id: string) {
 	position: sticky;
 	inset-block-start: 0;
 	z-index: 2;
-	margin-block-start: 8px;
-	margin-block-end: 8px;
-	padding-block-start: 8px;
-	padding-block-end: 8px;
+	margin-block: 8px;
+	padding-block: 8px;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 }
 
 .empty {
-	margin-block-start: 16px;
-	margin-block-end: 16px;
+	margin-block: 16px;
 	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;

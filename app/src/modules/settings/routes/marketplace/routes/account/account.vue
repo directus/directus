@@ -118,8 +118,7 @@ const navigateBack = () => {
 <style scoped lang="scss">
 .account-content {
 	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-block-end);
-	padding-block-start: 0;
+	padding-block: 0 var(--content-padding-block-end);
 	max-inline-size: 1200px;
 	inline-size: 100%;
 }

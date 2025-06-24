@@ -136,17 +136,14 @@
 
 .CodeMirror-rulers {
     position: absolute;
-    inset-block-start: -50px;
-    inset-inline-end: 0;
-    inset-block-end: 0;
-    inset-inline-start: 0;
+    inset-block: -50px 0;
+    inset-inline: 0;
     overflow: hidden;
 }
 
 .CodeMirror-ruler {
     position: absolute;
-    inset-block-start: 0;
-    inset-block-end: 0;
+    inset-block: 0;
     border-inline-start: 1px solid var(--theme--form--field--input--border-color);
 }
 
@@ -437,8 +434,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-gutter-background {
     position: absolute;
-    inset-block-start: 0;
-    inset-block-end: 0;
+    inset-block: 0;
     z-index: 4;
 }
 
@@ -487,10 +483,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-linebackground {
     position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    inset-block-end: 0;
-    inset-inline-start: 0;
+    inset-block: 0;
+    inset-inline: 0;
     z-index: 0;
 }
 

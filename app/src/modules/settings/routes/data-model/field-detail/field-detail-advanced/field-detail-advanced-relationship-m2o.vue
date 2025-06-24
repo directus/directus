@@ -215,8 +215,7 @@ const onDeleteOptions = computed(() =>
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-block-start: 48px;
-		margin-block-end: 0;
+		margin-block: 48px 0;
 	}
 }
 </style>

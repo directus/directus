@@ -178,8 +178,7 @@ function onInput(event: Event) {
 		.fill {
 			position: absolute;
 			inset-block-start: 50%;
-			inset-inline-end: 0;
-			inset-inline-start: 0;
+			inset-inline: 0;
 			z-index: 2;
 			inline-size: 100%;
 			block-size: 4px;

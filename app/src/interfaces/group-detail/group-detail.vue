@@ -149,7 +149,7 @@ watch(validationMessages, (newVal, oldVal) => {
 }
 
 .v-divider .expand-icon {
-	float: right;
+	float: inline-end;
 	transform: rotate(90deg) !important;
 	transition: transform var(--fast) var(--transition);
 }

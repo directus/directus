@@ -451,8 +451,7 @@ function toggleManualSort() {
 	}
 
 	&::before {
-		inset-inline-end: auto;
-		inset-inline-start: 0;
+		inset-inline: 0 auto;
 	}
 }
 

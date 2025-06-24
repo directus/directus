@@ -228,8 +228,7 @@ const unsortableJunctionFields = computed(() => {
 	--v-input-font-family: var(--theme--fonts--monospace--font-family);
 
 	.v-divider {
-		margin-block-start: 48px;
-		margin-block-end: 24px;
+		margin-block: 48px 24px;
 	}
 }
 
@@ -240,8 +239,7 @@ const unsortableJunctionFields = computed(() => {
 	@include mixins.form-grid;
 
 	.v-divider {
-		margin-block-start: 48px;
-		margin-block-end: 0;
+		margin-block: 48px 0;
 	}
 }
 </style>

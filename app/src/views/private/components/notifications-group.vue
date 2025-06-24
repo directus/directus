@@ -39,8 +39,7 @@ const queue = toRefs(notificationsStore).queue;
 .notifications-group {
 	position: fixed;
 	inset-block-start: 0;
-	inset-inline-end: 8px;
-	inset-inline-start: 8px;
+	inset-inline: 8px;
 	z-index: 50;
 	inline-size: 256px;
 	direction: rtl;
@@ -51,17 +50,13 @@ const queue = toRefs(notificationsStore).queue;
 	}
 
 	&.sidebar-open {
-		inset-block-start: auto;
-		inset-inline-end: 12px;
-		inset-block-end: 76px;
-		inset-inline-start: auto;
+		inset-block: auto 76px;
+		inset-inline: auto 12px;
 	}
 
 	@media (min-width: 960px) {
-		inset-block-start: auto;
-		inset-inline-end: 12px;
-		inset-block-end: 76px;
-		inset-inline-start: auto;
+		inset-block: auto 76px;
+		inset-inline: auto 12px;
 	}
 }
 

@@ -37,8 +37,7 @@ withDefaults(defineProps<Props>(), {
 		.v-list,
 		.v-list-item {
 			#{$this} {
-				margin-block-start: 4px;
-				margin-block-end: 4px;
+				margin-block: 4px;
 
 				&:not(:only-child) {
 					&:first-child {

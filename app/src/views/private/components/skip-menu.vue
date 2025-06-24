@@ -73,8 +73,7 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		z-index: 999999;
 
 		&.right {
-			inset-inline-end: 4px;
-			inset-inline-start: auto;
+			inset-inline: auto 4px;
 		}
 
 		&.center {

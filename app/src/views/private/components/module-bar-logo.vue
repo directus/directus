@@ -75,9 +75,8 @@ function stopSpinnerIfQueueIsEmpty() {
 
 	.v-progress-linear {
 		position: absolute;
-		inset-inline-end: 10px;
+		inset-inline: 10px;
 		inset-block-end: 5px;
-		inset-inline-start: 10px;
 		inline-size: 40px;
 	}
 

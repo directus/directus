@@ -27,7 +27,6 @@ defineProps<{
 <style scoped>
 .content {
 	padding: var(--content-padding);
-	padding-block-start: 0;
-	padding-block-end: var(--content-padding-block-end);
+	padding-block: 0 var(--content-padding-block-end);
 }
 </style>

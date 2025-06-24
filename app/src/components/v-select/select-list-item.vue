@@ -81,7 +81,6 @@ const isActive = computed(() => {
 }
 
 .color-dot {
-	margin-inline-start: 6px;
-	margin-inline-end: 6px;
+	margin-inline: 6px;
 }
 </style>

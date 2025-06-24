@@ -185,9 +185,8 @@ function useEdits() {
 
 .comment-item.expand .content::after {
 	position: absolute;
-	inset-inline-end: 0;
+	inset-inline: 0;
 	inset-block-end: 4px;
-	inset-inline-start: 0;
 	z-index: 1;
 	block-size: 40px;
 	background: linear-gradient(
@@ -201,9 +200,8 @@ function useEdits() {
 
 .comment-item.expand .content .expand-text {
 	position: absolute;
-	inset-inline-end: 0;
+	inset-inline: 0;
 	inset-block-end: 8px;
-	inset-inline-start: 0;
 	z-index: 2;
 	block-size: 24px;
 	text-align: center;

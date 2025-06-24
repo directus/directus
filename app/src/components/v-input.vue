@@ -374,8 +374,7 @@ function stepDown() {
 		align-items: center;
 		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
-		padding-block-start: 0;
-		padding-block-end: 0;
+		padding-block: 0;
 		color: var(--v-input-color, var(--theme--form--field--input--foreground));
 		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: var(--v-input-background-color, var(--theme--form--field--input--background));
@@ -461,8 +460,7 @@ function stepDown() {
 		inline-size: 20px; /* allows flex to grow/shrink to allow for slots */
 		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
-		padding-inline-end: 0;
-		padding-inline-start: 0;
+		padding-inline: 0;
 		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: none;

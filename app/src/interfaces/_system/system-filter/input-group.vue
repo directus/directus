@@ -372,8 +372,7 @@ function useVariableInput() {
 	align-items: center;
 
 	.v-icon {
-		margin-inline-end: 8px;
-		margin-inline-start: 12px;
+		margin-inline: 12px 8px;
 		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 

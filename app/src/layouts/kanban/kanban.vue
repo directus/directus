@@ -444,8 +444,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-					margin-block-start: 8px;
-					margin-block-end: 2px;
+					margin-block: 8px 2px;
 
 					.datetime {
 						display: inline-block;
@@ -465,8 +464,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							border: 4px solid var(--theme--background);
 							block-size: 32px;
 							inline-size: 32px;
-							margin-block-end: -4px;
-							margin-block-start: -4px;
+							margin-block: -4px;
 						}
 
 						.avatar-overflow {

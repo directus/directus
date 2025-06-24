@@ -41,8 +41,7 @@ withDefaults(defineProps<Props>(), {
 	&::after {
 		position: absolute;
 		inset-block-start: 0;
-		inset-inline-end: 0;
-		inset-inline-start: 0;
+		inset-inline: 0;
 		z-index: 1;
 		block-size: 100%;
 		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);

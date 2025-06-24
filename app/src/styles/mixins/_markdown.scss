@@ -8,8 +8,7 @@
     }
 
     h1 {
-        margin-block-start: 1em;
-        margin-block-end: 0;
+        margin-block: 1em 0;
         color: var(--theme--foreground-accent);
         font-weight: 700;
         font-size: 36px;
@@ -17,8 +16,7 @@
     }
 
     h2 {
-        margin-block-start: 1.25em;
-        margin-block-end: 0;
+        margin-block: 1.25em 0;
         color: var(--theme--foreground-accent);
         font-weight: 700;
         font-size: 24px;
@@ -26,8 +24,7 @@
     }
 
     h3 {
-        margin-block-start: 1.25em;
-        margin-block-end: 0;
+        margin-block: 1.25em 0;
         color: var(--theme--foreground-accent);
         font-weight: 700;
         font-size: 19px;
@@ -35,8 +32,7 @@
     }
 
     h4 {
-        margin-block-start: 1.5em;
-        margin-block-end: 0;
+        margin-block: 1.5em 0;
         color: var(--theme--foreground-accent);
         font-weight: 700;
         font-size: 16px;
@@ -44,8 +40,7 @@
     }
 
     h5 {
-        margin-block-start: 2em;
-        margin-block-end: 0;
+        margin-block: 2em 0;
         color: var(--theme--foreground-accent);
         font-weight: 700;
         font-size: 14px;
@@ -53,8 +48,7 @@
     }
 
     h6 {
-        margin-block-start: 2em;
-        margin-block-end: 0;
+        margin-block: 2em 0;
         color: var(--theme--foreground-accent);
         font-weight: 700;
         font-size: 12px;
@@ -132,8 +126,7 @@
 
     hr {
         block-size: 1px;
-        margin-block-start: 2em;
-        margin-block-end: 2em;
+        margin-block: 2em;
         background-color: var(--theme--form--field--input--border-color);
         border: none;
     }

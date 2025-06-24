@@ -244,8 +244,7 @@ function sanitizeValue(value: any): EditorJS.OutputData | null {
 
 .uploader-drawer-content {
 	padding: var(--content-padding);
-	padding-block-start: 0;
-	padding-block-end: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 
 .uploader-preview-image {

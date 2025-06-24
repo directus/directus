@@ -360,8 +360,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-series-group:last-child {
-	padding-block-start: 0;
-	padding-block-end: 0;
+	padding-block: 0;
 }
 
 .apexcharts-tooltip-text {

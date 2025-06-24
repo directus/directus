@@ -386,9 +386,8 @@ function pressedEnter() {
 
 .new-comment :deep(.expand-on-focus .append::after) {
 	position: absolute;
-	inset-inline-end: 0;
+	inset-inline: 0;
 	inset-block-end: 36px;
-	inset-inline-start: 0;
 	block-size: 8px;
 	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
