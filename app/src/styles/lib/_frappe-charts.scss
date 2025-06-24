@@ -68,7 +68,7 @@
 	color: var(--theme--form--field--input--border-color);
 	font-size: 12px;
 	text-align: center;
-	background: rgba(0, 0, 0, 0.8);
+	background: rgb(0 0 0 / 0.8);
 	border-radius: 3px;
 
 	ul {
@@ -125,7 +125,7 @@
 		height: 5px;
 		margin: 0 0 0 -5px;
 		border: 5px solid transparent;
-		border-top-color: rgba(0, 0, 0, 0.8);
+		border-top-color: rgb(0 0 0 / 0.8);
 		content: ' ';
 	}
 }

@@ -396,7 +396,7 @@ function useUrls() {
 
 			.button {
 				&.active {
-					box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.15);
+					box-shadow: 0 0 8px 0 rgb(0 0 0 / 0.15);
 				}
 
 				&:focus:not(:hover) {
@@ -491,7 +491,7 @@ function useUrls() {
 
 		.resize-handle {
 			overflow: hidden;
-			box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.2);
+			box-shadow: 0 4px 12px -4px rgb(0 0 0 / 0.2);
 		}
 	}
 

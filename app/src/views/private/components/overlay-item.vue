@@ -682,7 +682,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			bottom: calc(var(--button-gap) - var(--v-card-padding));
 			padding-top: var(--button-gap);
 			background: var(--v-card-background-color);
-			box-shadow: 0 0 var(--shadow-height) 0 rgba(0, 0, 0, 0.2);
+			box-shadow: 0 0 var(--shadow-height) 0 rgb(0 0 0 / 0.2);
 
 			.dark & {
 				box-shadow: 0 0 var(--shadow-height) 0 black;

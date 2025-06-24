@@ -104,7 +104,7 @@
 }
 
 .cm-fat-cursor-mark {
-	background-color: rgba(93, 194, 136, 0.5);
+	background-color: rgb(93 194 136 / 0.5);
 	animation: blink 1.06s steps(1) infinite;
 }
 
@@ -282,7 +282,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-matchingtag {
-	background: rgba(255, 150, 0, 0.3);
+	background: rgb(255 150 0 / 0.3);
 }
 
 .CodeMirror-activeline-background {
@@ -570,7 +570,7 @@ div.CodeMirror-dragcursors {
 
 .cm-searching {
 	background-color: #ffa;
-	background-color: rgba(255, 255, 0, 0.4);
+	background-color: rgb(255 255 0 / 0.4);
 }
 
 /* Used to force a border model for a node */

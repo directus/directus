@@ -22,8 +22,6 @@
 			"always",
 			{ "ignore": ["after-comment", "first-nested", "inside-block", "blockless-after-same-name-blockless"] }
 		],
-		"color-function-alias-notation": null,
-		"color-function-notation": null,
 		"comment-empty-line-before": null,
 		"custom-property-empty-line-before": null,
 		"custom-property-pattern": null,
