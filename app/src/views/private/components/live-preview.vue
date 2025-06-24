@@ -342,7 +342,7 @@ function useUrls() {
 
 <style scoped lang="scss">
 .live-preview {
-	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #ffffff);
+	--preview--color: var(--theme--navigation--modules--button--foreground-hover, #fff);
 	--preview--color-disabled: color-mix(
 		in srgb,
 		var(--theme--navigation--modules--background),

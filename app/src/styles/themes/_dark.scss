@@ -4,7 +4,7 @@
 
 // Dark Mode
 @mixin dark {
-	$purple: #8866ff;
+	$purple: #86f;
 	$color-mapping: map.merge(
 		colors.$color-mapping,
 		(
