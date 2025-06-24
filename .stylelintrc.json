@@ -34,7 +34,6 @@
 			{ "except": ["after-comment", "after-custom-property", "first-nested"] }
 		],
 		"custom-property-pattern": null,
-		"declaration-block-no-redundant-longhand-properties": [true, { "ignoreShorthands": ["inset"] }],
 		"declaration-empty-line-before": null,
 		"font-family-name-quotes": "always-unless-keyword",
 		"font-family-no-missing-generic-family-keyword": [true, { "ignoreFontFamilies": ["Material Symbols"] }],
