@@ -131,7 +131,7 @@ const { t } = useI18n();
 	}
 
 	:is(.permissions-overview-toggle, .null) + :is(.permissions-overview-toggle, .null) {
-		margin-left: 20px;
+		margin-inline-start: 20px;
 	}
 
 	& + .permissions-row td {

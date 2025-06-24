@@ -32,11 +32,11 @@ defineProps<{
 	border-radius: 10px;
 	object-fit: cover;
 	object-position: center center;
-	margin-left: 2px;
+	margin-inline-start: 2px;
 	margin-inline-end: 9px;
 }
 
 .verified {
-	margin-left: 4px;
+	margin-inline-start: 4px;
 }
 </style>

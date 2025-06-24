@@ -109,7 +109,7 @@ const logoURL = computed<string | null>(() => {
 	:slotted(.v-icon) {
 		--v-icon-color: var(--theme--foreground-subdued);
 
-		margin-left: 4px;
+		margin-inline-start: 4px;
 	}
 
 	.container {
@@ -396,7 +396,7 @@ const logoURL = computed<string | null>(() => {
 
 		.title {
 			margin-block-start: 2px;
-			margin-left: 16px;
+			margin-inline-start: 16px;
 			overflow: hidden;
 
 			h1 {

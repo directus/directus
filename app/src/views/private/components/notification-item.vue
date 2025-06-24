@@ -184,7 +184,7 @@ const done = async () => {
 }
 
 .close {
-	margin-left: 12px;
+	margin-inline-start: 12px;
 }
 
 .v-progress-circular {

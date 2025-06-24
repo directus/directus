@@ -178,7 +178,7 @@ watchEffect(async () => {
 .beta {
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
-	margin-left: 10px;
+	margin-inline-start: 10px;
 }
 
 .filter {

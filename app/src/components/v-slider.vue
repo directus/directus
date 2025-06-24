@@ -279,7 +279,7 @@ function onInput(event: Event) {
 	}
 
 	.append {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 }
 </style>

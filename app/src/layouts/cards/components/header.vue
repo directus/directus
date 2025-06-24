@@ -143,7 +143,7 @@ function onClickSelect() {
 .start {
 	.label {
 		display: inline-block;
-		margin-left: 4px;
+		margin-inline-start: 4px;
 		transform: translateY(1px);
 	}
 

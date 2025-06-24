@@ -145,7 +145,7 @@ const customIcon = computed(() => {
 		flex-grow: 1;
 		width: 20px; /* this will auto grow with flex above */
 		margin: 0;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 		padding: 0;
 		background-color: transparent;
 		border: none;

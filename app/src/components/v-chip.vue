@@ -187,7 +187,7 @@ function onCloseClick(event: MouseEvent) {
 			justify-content: center;
 			width: 14px;
 			height: 14px;
-			margin-left: 4px;
+			margin-inline-start: 4px;
 			background-color: var(--v-chip-close-color, var(--theme--danger));
 			border-radius: 10px;
 

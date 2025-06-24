@@ -352,7 +352,7 @@ function toggleManualSort() {
 		position: relative;
 
 		.action-icon {
-			margin-left: 4px;
+			margin-inline-start: 4px;
 			color: var(--theme--foreground-subdued);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);

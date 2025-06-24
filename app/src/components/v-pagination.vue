@@ -165,7 +165,7 @@ function toPage(page: number) {
 }
 
 .v-button:first-child {
-	margin-left: 0;
+	margin-inline-start: 0;
 }
 
 .v-button:last-child {

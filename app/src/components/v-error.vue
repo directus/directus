@@ -68,7 +68,7 @@ async function copyError() {
 	border-radius: var(--theme--border-radius);
 
 	.copy-error {
-		margin-left: 12px;
+		margin-inline-start: 12px;
 	}
 }
 </style>

@@ -181,7 +181,7 @@
 .cropper-point.point-n {
     top: -5px;
     left: 50%;
-    margin-left: -5px;
+    margin-inline-start: -5px;
     cursor: ns-resize;
 }
 
@@ -195,7 +195,7 @@
 .cropper-point.point-s {
     bottom: -5px;
     left: 50%;
-    margin-left: -5px;
+    margin-inline-start: -5px;
     cursor: s-resize;
 }
 

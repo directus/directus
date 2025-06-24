@@ -111,7 +111,7 @@ const validationErrorsWithNames = computed<
 
 	.validation-error .v-icon {
 		vertical-align: text-top;
-		margin-left: 0 !important;
+		margin-inline-start: 0 !important;
 	}
 
 	li:not(:last-child) {

@@ -82,11 +82,11 @@ const displayValue = computed(() => {
 
 	.display-value {
 		flex-grow: 1;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 
 	.controls > * + * {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 
 	.secondary & {
@@ -113,7 +113,7 @@ const displayValue = computed(() => {
 }
 
 .v-icon {
-	margin-left: 6px;
+	margin-inline-start: 6px;
 }
 
 .v-list {

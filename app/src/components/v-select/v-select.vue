@@ -483,7 +483,7 @@ function useDisplayValue() {
 }
 
 .color-dot {
-	margin-left: 7px;
+	margin-inline-start: 7px;
 	margin-inline-end: 7px;
 }
 </style>

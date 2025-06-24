@@ -258,7 +258,7 @@ function addKeyAsNode() {
 	}
 
 	:deep(.group) {
-		margin-left: 18px;
+		margin-inline-start: 18px;
 		padding-inline-start: 10px;
 		border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
@@ -271,7 +271,7 @@ function addKeyAsNode() {
 		background: var(--theme--form--field--input--background);
 
 		& > :deep(.group) {
-			margin-left: 0;
+			margin-inline-start: 0;
 			padding-inline-start: 0;
 			border-inline-start: none;
 		}
@@ -344,11 +344,11 @@ function addKeyAsNode() {
 				}
 			}
 			.add {
-				margin-left: 6px;
+				margin-inline-start: 6px;
 				margin-inline-end: 4px;
 			}
 			.expand_more {
-				margin-left: auto;
+				margin-inline-start: auto;
 				margin-inline-end: 6px;
 				transition: transform var(--medium) var(--transition-out);
 			}
@@ -364,7 +364,7 @@ function addKeyAsNode() {
 	}
 
 	button + button {
-		margin-left: 24px;
+		margin-inline-start: 24px;
 	}
 }
 

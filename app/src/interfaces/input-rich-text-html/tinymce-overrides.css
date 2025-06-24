@@ -161,7 +161,7 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-tbtn + .tox .tox-tbtn {
-	margin-left: 2px;
+	margin-inline-start: 2px;
 }
 
 .tox .tox-swatches__picker-btn:hover {

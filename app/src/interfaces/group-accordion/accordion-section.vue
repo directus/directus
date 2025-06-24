@@ -167,12 +167,12 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 		--v-icon-color: var(--theme--primary);
 
 		margin-block-start: -12px;
-		margin-left: 2px;
+		margin-inline-start: 2px;
 	}
 
 	.v-chip {
 		margin: 0;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 
 	.edit-dot {
@@ -199,7 +199,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 }
 
 .warning {
-	margin-left: 8px;
+	margin-inline-start: 8px;
 	color: var(--theme--danger);
 }
 

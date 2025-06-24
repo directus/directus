@@ -276,7 +276,7 @@ function stageEdits(item: Record<string, any>) {
 	min-block-size: 12px;
 
 	&.root {
-		margin-left: 0;
+		margin-inline-start: 0;
 		padding: 0;
 
 		.v-skeleton-loader {

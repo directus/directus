@@ -247,7 +247,7 @@ function saveOperation() {
 	--v-icon-color: var(--theme--primary);
 
 	margin-block-start: -12px;
-	margin-left: -4px;
+	margin-inline-start: -4px;
 }
 
 .error {

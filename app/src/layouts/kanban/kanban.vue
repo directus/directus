@@ -355,7 +355,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					color: var(--theme--foreground-subdued);
 
 					.v-icon {
-						margin-left: 4px;
+						margin-inline-start: 4px;
 						transition: color var(--transition) var(--fast);
 					}
 
@@ -435,7 +435,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						padding: 0 6px;
 					}
 					:deep(.v-chip + .v-chip) {
-						margin-left: 0;
+						margin-inline-start: 0;
 					}
 				}
 
@@ -460,7 +460,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						display: flex;
 						flex-direction: row-reverse;
 						.avatar {
-							margin-left: calc(var(--user-spacing) * -1);
+							margin-inline-start: calc(var(--user-spacing) * -1);
 							border-radius: 24px;
 							border: 4px solid var(--theme--background);
 							height: 32px;
@@ -472,7 +472,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 						.avatar-overflow {
 							align-self: center;
 							color: var(--theme--foreground-subdued);
-							margin-left: 2px;
+							margin-inline-start: 2px;
 						}
 					}
 				}

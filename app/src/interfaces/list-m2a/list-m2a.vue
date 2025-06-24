@@ -534,7 +534,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	}
 
 	.pagination {
-		margin-left: auto;
+		margin-inline-start: auto;
 		display: flex;
 		gap: 8px 16px;
 

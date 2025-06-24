@@ -130,7 +130,7 @@ blockquote {
 	font-weight: 500;
 	border-inline-start: 2px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding-inline-start: 1em;
-	margin-left: 0px;
+	margin-inline-start: 0px;
 }
 video,
 img {

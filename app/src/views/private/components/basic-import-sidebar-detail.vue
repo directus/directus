@@ -230,7 +230,7 @@ function useUpload() {
 	justify-content: center;
 	width: 40px;
 	height: 40px;
-	margin-left: -8px;
+	margin-inline-start: -8px;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);

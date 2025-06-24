@@ -55,7 +55,7 @@
 
     @if $pagination {
         .v-pagination {
-            margin-left: auto;
+            margin-inline-start: auto;
 
             ::v-deep(.v-button) {
                 display: inline-flex;

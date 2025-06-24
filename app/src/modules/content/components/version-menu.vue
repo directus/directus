@@ -490,7 +490,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 }
 
 .version-name {
-	margin-left: 0.15em;
+	margin-inline-start: 0.15em;
 }
 
 .version-button {

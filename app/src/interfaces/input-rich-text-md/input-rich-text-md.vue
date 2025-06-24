@@ -528,7 +528,7 @@ textarea {
 		--focus-ring-offset: var(--focus-ring-offset-invert);
 
 		+ .v-button {
-			margin-left: 2px;
+			margin-inline-start: 2px;
 		}
 	}
 

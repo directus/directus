@@ -638,7 +638,7 @@ onUnmounted(() => {
 
 .actions {
 	padding: 0 9px;
-	margin-left: auto;
+	margin-inline-start: auto;
 }
 
 @media (min-width: 960px) {

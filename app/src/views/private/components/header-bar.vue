@@ -124,7 +124,7 @@ onUnmounted(() => {
 		width: 100%;
 		max-inline-size: calc(100% - 12px - 44px - 120px - 12px - 8px);
 		height: 100%;
-		margin-left: 16px;
+		margin-inline-start: 16px;
 		overflow: hidden;
 
 		@media (min-width: 600px) {
@@ -213,7 +213,7 @@ onUnmounted(() => {
 
 	.sidebar-toggle {
 		flex-shrink: 0;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 
 		@media (min-width: 960px) {
 			display: none;

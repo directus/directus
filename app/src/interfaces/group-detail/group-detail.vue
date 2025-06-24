@@ -179,7 +179,7 @@ watch(validationMessages, (newVal, oldVal) => {
 }
 
 .warning {
-	margin-left: 8px;
+	margin-inline-start: 8px;
 	color: var(--theme--danger);
 }
 </style>

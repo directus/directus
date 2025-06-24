@@ -453,7 +453,7 @@
 .ce-block__content {
 	max-inline-size: unset;
 	margin-inline-end: 34px;
-	margin-left: 34px;
+	margin-inline-start: 34px;
 }
 
 .codex-editor .ce-align-left {

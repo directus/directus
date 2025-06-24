@@ -182,7 +182,7 @@ function onToggle(open: boolean) {
 }
 
 .empty {
-	margin-left: 2px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

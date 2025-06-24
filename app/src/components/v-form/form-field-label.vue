@@ -96,13 +96,13 @@ const { t } = useI18n();
 	.v-chip {
 		margin: 0;
 		flex-shrink: 0;
-		margin-left: 3px;
+		margin-inline-start: 3px;
 	}
 
 	.required {
 		--v-icon-color: var(--theme--primary);
 
-		margin-left: 3px;
+		margin-inline-start: 3px;
 
 		&.has-badge {
 			margin-inline-end: 6px;
@@ -134,7 +134,7 @@ const { t } = useI18n();
 		height: 24px;
 		width: 24px;
 		margin-block-start: -2px;
-		margin-left: 5px;
+		margin-inline-start: 5px;
 		color: var(--theme--foreground-subdued);
 		transition: color var(--fast) var(--transition);
 
@@ -163,7 +163,7 @@ const { t } = useI18n();
 		}
 
 		.field-name {
-			margin-left: -16px;
+			margin-inline-start: -16px;
 			padding-inline-start: 16px;
 		}
 	}

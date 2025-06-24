@@ -76,7 +76,7 @@ const user = computed(() => {
 	display: block;
 	width: 100%;
 	margin-block-end: 12px;
-	margin-left: 16px;
+	margin-inline-start: 16px;
 	text-align: start;
 
 	.header {

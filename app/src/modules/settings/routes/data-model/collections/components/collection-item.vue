@@ -114,7 +114,7 @@ function onGroupSortChange(collections: Collection[]) {
 <style scoped lang="scss">
 .drag-container {
 	margin-block-start: 8px;
-	margin-left: 20px;
+	margin-inline-start: 20px;
 }
 
 .collection-item {
@@ -140,7 +140,7 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .collection-note {
-	margin-left: 16px;
+	margin-inline-start: 16px;
 	overflow: hidden;
 	color: var(--theme--foreground-subdued);
 	white-space: nowrap;

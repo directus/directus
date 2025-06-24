@@ -678,7 +678,7 @@ function setAspectRatio() {
 
 .drag-mode {
 	margin-inline-end: 16px;
-	margin-left: -8px;
+	margin-inline-start: -8px;
 	display: flex;
 	flex-direction: row;
 	justify-content: center;

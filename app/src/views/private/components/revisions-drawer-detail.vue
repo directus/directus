@@ -127,13 +127,13 @@ defineExpose({
 .empty {
 	margin-block-start: 16px;
 	margin-block-end: 16px;
-	margin-left: 2px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .external {
-	margin-left: 20px;
+	margin-inline-start: 20px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

@@ -487,7 +487,7 @@ function useColor() {
 
 	position: relative;
 	box-sizing: border-box;
-	margin-left: -8px;
+	margin-inline-start: -8px;
 	width: calc(var(--theme--form--field--input--height) - 20px);
 	height: calc(var(--theme--form--field--input--height) - 20px);
 	border-radius: var(--swatch-radius);
@@ -557,7 +557,7 @@ function useColor() {
 }
 
 .color-data-inputs .color-data-input:not(:first-child) :deep(.input) {
-	margin-left: calc(-1 * var(--theme--border-width));
+	margin-inline-start: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs .color-data-input:first-child {
@@ -570,11 +570,11 @@ function useColor() {
 
 .color-data-inputs.stacked .color-data-input:not(:first-child) :deep(.input) {
 	margin-block-start: calc(-2 * var(--theme--border-width));
-	margin-left: initial;
+	margin-inline-start: initial;
 }
 
 .color-data-inputs.stacked .color-data-input:not(:first-child):not(:nth-child(2)) :deep(.input) {
-	margin-left: calc(-1 * var(--theme--border-width));
+	margin-inline-start: calc(-1 * var(--theme--border-width));
 }
 
 .color-data-inputs.stacked .color-data-input:first-child {

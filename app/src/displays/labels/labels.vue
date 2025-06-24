@@ -111,7 +111,7 @@ const items = computed(() => {
 }
 
 .v-chip + .v-chip {
-	margin-left: 4px;
+	margin-inline-start: 4px;
 }
 
 .v-icon {

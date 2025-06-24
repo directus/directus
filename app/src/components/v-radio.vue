@@ -80,7 +80,7 @@ function emitValue(): void {
 	appearance: none;
 
 	.label:not(:empty) {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 
 		@include mixins.no-wrap;
 	}

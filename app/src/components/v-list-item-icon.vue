@@ -36,7 +36,7 @@ withDefaults(defineProps<Props>(), {
 		}
 
 		&:last-child {
-			margin-left: 12px;
+			margin-inline-start: 12px;
 		}
 	}
 
@@ -55,7 +55,7 @@ withDefaults(defineProps<Props>(), {
 					}
 
 					&:last-child {
-						margin-left: 8px;
+						margin-inline-start: 8px;
 					}
 				}
 			}

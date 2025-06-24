@@ -515,7 +515,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .icons {
 	* + *:not(:last-child) {
-		margin-left: 8px;
+		margin-inline-start: 8px;
 	}
 }
 

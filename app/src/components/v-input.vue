@@ -452,7 +452,7 @@ function stepDown() {
 
 		.append {
 			flex-shrink: 0;
-			margin-left: 8px;
+			margin-inline-start: 8px;
 		}
 	}
 
@@ -528,7 +528,7 @@ function stepDown() {
 		}
 
 		.append-outer {
-			margin-left: 8px;
+			margin-inline-start: 8px;
 		}
 	}
 }

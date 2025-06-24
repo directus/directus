@@ -110,7 +110,7 @@
     }
 
     blockquote {
-        margin-left: 0;
+        margin-inline-start: 0;
         padding-inline-start: 1em;
         font-weight: 500;
         font-size: 15px;
@@ -119,7 +119,7 @@
     }
 
     blockquote blockquote {
-        margin-left: 10px;
+        margin-inline-start: 10px;
     }
 
     video,
