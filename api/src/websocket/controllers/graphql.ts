@@ -65,9 +65,12 @@ export class GraphQLSubscriptionController extends SocketController {
 
 								if (this.authentication.mode === 'handshake') {
 									if (typeof params.access_token === 'string') {
-										const { accountability, expires_at } = await authenticateConnection({
-											access_token: params.access_token,
-										});
+										const { accountability, expires_at } = await authenticateConnection(
+											{
+												access_token: params.access_token,
+											},
+											client.accountability?.ip ?? null,
+										);
 
 										client.accountability = accountability;
 										client.expires_at = expires_at;

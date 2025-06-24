@@ -6,6 +6,7 @@ import { getAccountabilityForToken } from '../utils/get-accountability-for-token
 import { authenticateConnection, authenticationSuccess } from './authenticate.js';
 import type { WebSocketAuthMessage } from './messages.js';
 import { getExpiresAtForToken } from './utils/get-expires-at-for-token.js';
+import emitter from '../emitter.js';
 
 vi.mock('../utils/get-accountability-for-token', () => ({
 	getAccountabilityForToken: vi.fn().mockReturnValue({
@@ -37,11 +38,14 @@ describe('authenticateConnection', () => {
 		const TIMESTAMP = 123456789;
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
 
-		const result = await authenticateConnection({
-			type: 'auth',
-			email: 'email',
-			password: 'password',
-		} as WebSocketAuthMessage);
+		const result = await authenticateConnection(
+			{
+				type: 'auth',
+				email: 'email',
+				password: 'password',
+			} as WebSocketAuthMessage,
+			'127.0.0.1',
+		);
 
 		expect(result).toStrictEqual({
 			accountability: { role: null },
@@ -54,10 +58,13 @@ describe('authenticateConnection', () => {
 		const TIMESTAMP = 987654;
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
 
-		const result = await authenticateConnection({
-			type: 'auth',
-			refresh_token: 'refresh_token',
-		} as WebSocketAuthMessage);
+		const result = await authenticateConnection(
+			{
+				type: 'auth',
+				refresh_token: 'refresh_token',
+			} as WebSocketAuthMessage,
+			'127.0.0.1',
+		);
 
 		expect(result).toStrictEqual({
 			accountability: { role: null },
@@ -70,10 +77,13 @@ describe('authenticateConnection', () => {
 		const TIMESTAMP = 456987;
 		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
 
-		const result = await authenticateConnection({
-			type: 'auth',
-			access_token: 'access_token',
-		} as WebSocketAuthMessage);
+		const result = await authenticateConnection(
+			{
+				type: 'auth',
+				access_token: 'access_token',
+			} as WebSocketAuthMessage,
+			'127.0.0.1',
+		);
 
 		expect(result).toStrictEqual({
 			accountability: { role: null },
@@ -82,25 +92,52 @@ describe('authenticateConnection', () => {
 		});
 	});
 
+	test('Short-circuits when authenticate filter is used', async () => {
+		const TIMESTAMP = 456987;
+		(getExpiresAtForToken as Mock).mockReturnValue(TIMESTAMP);
+
+		const customAccountability = { admin: true };
+
+		vi.spyOn(emitter, 'emitFilter').mockResolvedValue(customAccountability);
+
+		const { accountability } = await authenticateConnection(
+			{
+				type: 'auth',
+				access_token: 'access_token',
+			} as WebSocketAuthMessage,
+			'127.0.0.1',
+		);
+
+		expect(accountability).toEqual(customAccountability);
+	});
+
 	test('Failure token expired', async () => {
 		(getAccountabilityForToken as Mock).mockImplementation(() => {
 			throw new InvalidCredentialsError();
 		});
 
+		vi.spyOn(emitter, 'emitFilter').mockResolvedValue(null);
+
 		expect(() =>
-			authenticateConnection({
-				type: 'auth',
-				access_token: 'expired',
-			} as WebSocketAuthMessage),
+			authenticateConnection(
+				{
+					type: 'auth',
+					access_token: 'expired',
+				} as WebSocketAuthMessage,
+				'127.0.0.1',
+			),
 		).rejects.toThrow('Authentication failed.');
 	});
 
 	test('Failure authentication failed', async () => {
 		expect(() =>
-			authenticateConnection({
-				type: 'auth',
-				access_token: '',
-			} as WebSocketAuthMessage),
+			authenticateConnection(
+				{
+					type: 'auth',
+					access_token: '',
+				} as WebSocketAuthMessage,
+				'127.0.0.1',
+			),
 		).rejects.toThrow('Authentication failed.');
 	});
 });
