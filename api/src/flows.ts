@@ -123,7 +123,7 @@ class FlowManager {
 	public async runWebhookFlow(
 		id: string,
 		data: unknown,
-		context: { schema: SchemaOverview; accountability: Accountability | undefined },
+		context: { schema: SchemaOverview; accountability: Accountability | undefined } & Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		const logger = useLogger();
 
@@ -317,7 +317,7 @@ class FlowManager {
 
 						keys = keys.map(key => key[primaryField])
 
-						if (!targetKeys.every((key) => keys.includes(key))) {
+						if (targetKeys.some((key) => !keys.includes(key))) {
 							logger.warn(`Triggering keys ${targetKeys} is not allowed`);
 							throw new ForbiddenError();
 						}
