@@ -318,7 +318,7 @@ function isInterpolation(value: any) {
 	right: 0;
 	bottom: -20px;
 	font-style: italic;
-	text-align: right;
+	text-align: end;
 }
 
 .v-button {

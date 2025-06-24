@@ -170,7 +170,7 @@ function useDelete() {
 			align-items: center;
 			font-size: 12px;
 			white-space: nowrap;
-			text-align: right;
+			text-align: end;
 			text-transform: lowercase;
 			opacity: 1;
 			transition: opacity var(--slow) var(--transition);

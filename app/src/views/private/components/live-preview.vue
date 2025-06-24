@@ -455,7 +455,7 @@ function useUrls() {
 			background-color: transparent;
 
 			&:first-child {
-				text-align: right;
+				text-align: end;
 			}
 		}
 

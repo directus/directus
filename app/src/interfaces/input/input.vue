@@ -124,7 +124,7 @@ const isFloat = computed(() => ['float', 'decimal'].includes(props.type!));
 	width: 24px;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
-	text-align: right;
+	text-align: end;
 	vertical-align: middle;
 	font-feature-settings: 'tnum';
 }

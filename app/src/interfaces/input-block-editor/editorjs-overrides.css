@@ -465,7 +465,7 @@
 }
 
 .codex-editor .ce-align-right {
-	text-align: right;
+	text-align: end;
 }
 
 .codex-editor .ce-align-buttons .cdx-settings-button svg {

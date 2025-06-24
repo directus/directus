@@ -416,7 +416,7 @@ table :deep(th.align-center) {
 
 table :deep(td.align-right),
 table :deep(th.align-right) {
-	text-align: right;
+	text-align: end;
 	justify-content: end;
 }
 

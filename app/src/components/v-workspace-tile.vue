@@ -389,7 +389,7 @@ function useDragDrop() {
 	font-family: var(--theme--fonts--monospace--font-family);
 	font-style: normal;
 	line-height: 1;
-	text-align: right;
+	text-align: end;
 	border-start-end-radius: var(--theme--border-radius);
 	border-end-end-radius: var(--theme--border-radius);
 	border-start-start-radius: var(--theme--border-radius);

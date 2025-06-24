@@ -175,7 +175,7 @@ const formattedTime = computed(() => {
 		align-items: center;
 		font-size: 12px;
 		white-space: nowrap;
-		text-align: right;
+		text-align: end;
 		opacity: 1;
 		transition: opacity var(--slow) var(--transition);
 		pointer-events: none;
