@@ -61,8 +61,8 @@ const iframeViewStyle = computed(() => {
 
 	if (zoom.value > 1 && width.value && height.value) {
 		const paddingWidth = (livePreviewSize.width.value - width.value * zoom.value) / 2;
-		const paddingLeft = Math.max((livePreviewSize.width.value - width.value * zoom.value) / 2, 48);
-		style.paddingLeft = `${paddingLeft}px`;
+		const paddingInlineStart = Math.max((livePreviewSize.width.value - width.value * zoom.value) / 2, 48);
+		style.paddingInlineStart = `${paddingInlineStart}px`;
 
 		if (paddingWidth < 48) {
 			const iframeViewWidth = 48 + width.value * zoom.value + 48;

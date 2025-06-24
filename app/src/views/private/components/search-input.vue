@@ -52,7 +52,7 @@ watch(
 		const maxWidth =
 			searchElement.getBoundingClientRect().right -
 			(headerElement.getBoundingClientRect().left +
-				Number(window.getComputedStyle(headerElement).paddingLeft.replace('px', '')));
+				Number(window.getComputedStyle(headerElement).paddingInlineStart.replace('px', '')));
 
 		filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
 	},
