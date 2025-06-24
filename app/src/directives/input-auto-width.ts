@@ -55,7 +55,7 @@ function copyStyles(el: AutoWidthElement) {
 		letterSpacing: styles.letterSpacing,
 		textTransform: styles.textTransform,
 		paddingInlineEnd: `calc(${styles.paddingInlineEnd} + ${styles.borderInlineEndWidth})`,
-		paddingInlineStart: `calc(${styles.paddingInlineStart} + ${styles.borderLeftWidth})`,
+		paddingInlineStart: `calc(${styles.paddingInlineStart} + ${styles.borderInlineStartWidth})`,
 	});
 }
 
