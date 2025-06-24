@@ -279,9 +279,6 @@
 
 .codex-editor .image-tool--loading .image-tool__image {
 	background: var(--theme--background-normal);
-}
-
-.codex-editor .image-tool--loading .image-tool__image {
 	border-color: var(--theme--form--field--input--border-color);
 }
 
@@ -321,13 +318,6 @@
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
 	top: 4px;
 	left: 3px;
-}
-
-/* Lists */
-
-.codex-editor .ce-block ul,
-.codex-editor .ce-block ol {
-	font-size: inherit !important;
 }
 
 /* Attaches */
@@ -551,10 +541,12 @@
 	background-color: var(--theme--background-accent) !important;
 }
 
+/* Lists */
+
 .codex-editor .ce-block ul,
 .codex-editor .ce-block ol {
 	margin: 24px 0;
-	font-size: 18px;
+	font-size: inherit;
 	line-height: 34px;
 }
 
