@@ -238,7 +238,7 @@ const internalActive = computed({
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
-			scroll-padding-top: 100px;
+			scroll-padding-block-start: 100px;
 
 			@media (min-width: 600px) {
 				--content-padding: 32px;
