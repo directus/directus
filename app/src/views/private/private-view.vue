@@ -472,11 +472,11 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 
 		/* Offset for partially visible sidebar */
 		@media (min-width: 960px) {
-			margin-right: 60px;
+			margin-inline-end: 60px;
 		}
 
 		@media (min-width: 1260px) {
-			margin-right: 0;
+			margin-inline-end: 0;
 		}
 
 		&.hide-overflow-x {

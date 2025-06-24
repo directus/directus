@@ -57,7 +57,7 @@ withDefaults(defineProps<Props>(), {
 		color: var(--v-divider-label-color, var(--theme--foreground-accent));
 
 		:slotted(.v-icon) {
-			margin-right: 4px;
+			margin-inline-end: 4px;
 			transform: translateY(-1px);
 		}
 	}
@@ -80,7 +80,7 @@ withDefaults(defineProps<Props>(), {
 
 		span.wrapper {
 			order: 0;
-			margin-right: 8px;
+			margin-inline-end: 8px;
 			font-weight: 600;
 			font-size: 14px;
 		}

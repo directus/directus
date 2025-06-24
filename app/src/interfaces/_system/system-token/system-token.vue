@@ -136,11 +136,11 @@ function deselect() {
 }
 
 .clipboard-icon {
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 
 .regenerate-icon {
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 
 .clear-icon {

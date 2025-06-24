@@ -364,7 +364,7 @@ function stepDown() {
 	height: var(--theme--form--field--input--height);
 
 	.prepend-outer {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	.input {
@@ -386,7 +386,7 @@ function stepDown() {
 		box-shadow: var(--theme--form--field--input--box-shadow);
 
 		.prepend {
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 
 		.step-up {

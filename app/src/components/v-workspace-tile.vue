@@ -431,7 +431,7 @@ function useDragDrop() {
 .icon {
 	--v-icon-color: var(--theme--foreground-subdued);
 
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 
 .name {

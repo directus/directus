@@ -337,13 +337,13 @@
 	justify-content: center;
 	height: 36px;
 	width: 36px;
-	margin-right: 12px;
+	margin-inline-end: 12px;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-background {
 	height: 100%;
 	width: 100%;
-	margin-right: 0;
+	margin-inline-end: 0;
 	background-color: var(--overlay-color);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -452,7 +452,7 @@
 .ce-toolbar__content,
 .ce-block__content {
 	max-width: unset;
-	margin-right: 34px;
+	margin-inline-end: 34px;
 	margin-left: 34px;
 }
 

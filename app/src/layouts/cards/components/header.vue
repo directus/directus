@@ -163,7 +163,7 @@ function onClickSelect() {
 	color: var(--theme--foreground-subdued);
 
 	.size-selector {
-		margin-right: 16px;
+		margin-inline-end: 16px;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {
@@ -172,7 +172,7 @@ function onClickSelect() {
 	}
 
 	.sort-selector {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 		transition: color var(--fast) var(--transition);
 
 		&:hover {

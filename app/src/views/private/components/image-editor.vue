@@ -646,7 +646,7 @@ function setAspectRatio() {
 
 	.v-icon {
 		display: inline-block;
-		margin-right: 16px;
+		margin-inline-end: 16px;
 	}
 }
 
@@ -655,7 +655,7 @@ function setAspectRatio() {
 }
 
 .dimensions {
-	margin-right: 12px;
+	margin-inline-end: 12px;
 	color: var(--theme--foreground-subdued);
 	font-feature-settings: 'tnum';
 }
@@ -677,7 +677,7 @@ function setAspectRatio() {
 }
 
 .drag-mode {
-	margin-right: 16px;
+	margin-inline-end: 16px;
 	margin-left: -8px;
 	display: flex;
 	flex-direction: row;
@@ -686,7 +686,7 @@ function setAspectRatio() {
 	gap: 8px;
 
 	.v-icon {
-		margin-right: 0;
+		margin-inline-end: 0;
 		opacity: 0.5;
 
 		&.active {

@@ -109,7 +109,7 @@ const clicked = (toggleTooltip: () => void) => {
 }
 
 .translation-display-text {
-	margin-right: 4px;
+	margin-inline-end: 4px;
 	padding: 2px 0;
 }
 
@@ -137,7 +137,7 @@ const clicked = (toggleTooltip: () => void) => {
 	}
 
 	.v-icon {
-		margin-right: 4px;
+		margin-inline-end: 4px;
 	}
 
 	.v-progress-linear {

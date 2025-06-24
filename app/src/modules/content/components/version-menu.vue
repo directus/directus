@@ -507,7 +507,7 @@ async function onPromoteComplete(deleteOnPromote: boolean) {
 
 	&:focus-visible {
 		outline-offset: 0;
-		margin-right: var(--focus-ring-width);
+		margin-inline-end: var(--focus-ring-width);
 	}
 }
 </style>

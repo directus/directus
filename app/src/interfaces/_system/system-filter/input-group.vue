@@ -329,7 +329,7 @@ function useVariableInput() {
 	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 
-	margin-right: 4px;
+	margin-inline-end: 4px;
 
 	.comparator + & {
 		margin-left: -4px;
@@ -372,7 +372,7 @@ function useVariableInput() {
 	align-items: center;
 
 	.v-icon {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 		margin-left: 12px;
 		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
@@ -387,7 +387,7 @@ function useVariableInput() {
 	display: flex;
 
 	.value:not(:last-child)::after {
-		margin-right: 6px;
+		margin-inline-end: 6px;
 		content: ',';
 	}
 }

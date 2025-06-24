@@ -84,7 +84,7 @@ const iconName = computed(() => {
 }
 
 .v-icon.left {
-	margin-right: 16px;
+	margin-inline-end: 16px;
 }
 
 .success {

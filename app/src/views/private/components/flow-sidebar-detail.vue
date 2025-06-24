@@ -288,7 +288,7 @@ const runManualFlow = async (flowId: string) => {
 }
 
 .v-icon {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .confirm-form {

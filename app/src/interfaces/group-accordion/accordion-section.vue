@@ -189,7 +189,7 @@ function getFieldsForGroup(group: null | string, passed: string[] = []): Field[]
 }
 
 .icon {
-	margin-right: 12px;
+	margin-inline-end: 12px;
 	transform: rotate(-90deg);
 	transition: transform var(--fast) var(--transition);
 

@@ -232,7 +232,7 @@ const newTranslationDefaults = computed(() => {
 <style lang="scss" scoped>
 .translation-input {
 	.selected-translation {
-		margin-right: auto;
+		margin-inline-end: auto;
 		padding: 2px 8px 0;
 		color: var(--theme--primary);
 		background-color: var(--theme--primary-background);

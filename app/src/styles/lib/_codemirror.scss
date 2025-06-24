@@ -3,202 +3,202 @@
 /* BASICS */
 
 .CodeMirror {
-	width: 100%;
-	height: auto;
-	color: var(--theme--foreground);
-	font-weight: inherit;
-	font-family: var(--theme--fonts--monospace--font-family);
-	line-height: 24px;
-	direction: ltr;
-	background-color: var(--theme--form--field--input--background);
-	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-radius: var(--theme--border-radius);
-	transition: all var(--fast) var(--transition);
-	box-shadow: var(--theme--form--field--input--box-shadow);
+    width: 100%;
+    height: auto;
+    color: var(--theme--foreground);
+    font-weight: inherit;
+    font-family: var(--theme--fonts--monospace--font-family);
+    line-height: 24px;
+    direction: ltr;
+    background-color: var(--theme--form--field--input--background);
+    border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+    border-radius: var(--theme--border-radius);
+    transition: all var(--fast) var(--transition);
+    box-shadow: var(--theme--form--field--input--box-shadow);
 }
 
 .disabled .CodeMirror {
-	color: var(--theme--foreground-subdued);
-	background-color: var(--theme--form--field--input--background-subdued);
+    color: var(--theme--foreground-subdued);
+    background-color: var(--theme--form--field--input--background-subdued);
 }
 
 .CodeMirror .CodeMirror-placeholder {
-	color: var(--theme--foreground-subdued) !important;
+    color: var(--theme--foreground-subdued) !important;
 }
 
 .CodeMirror:hover {
-	border-color: var(--theme--form--field--input--border-color-hover);
-	box-shadow: var(--theme--form--field--input--box-shadow-hover);
+    border-color: var(--theme--form--field--input--border-color-hover);
+    box-shadow: var(--theme--form--field--input--box-shadow-hover);
 }
 
 .disabled .CodeMirror:hover {
-	border-color: var(--theme--form--field--input--border-color);
+    border-color: var(--theme--form--field--input--border-color);
 }
 
 .CodeMirror.CodeMirror-focused {
-	border-color: var(--theme--form--field--input--border-color-focus);
-	box-shadow: var(--theme--form--field--input--box-shadow-focus);
+    border-color: var(--theme--form--field--input--border-color-focus);
+    box-shadow: var(--theme--form--field--input--box-shadow-focus);
 }
 
 /* PADDING */
 
 .CodeMirror-lines {
-	padding: 4px 0; /* Vertical padding around content */
+    padding: 4px 0; /* Vertical padding around content */
 }
 
 .CodeMirror pre.CodeMirror-line,
 .CodeMirror pre.CodeMirror-line-like {
-	padding: 0 4px; /* Horizontal padding of content */
+    padding: 0 4px; /* Horizontal padding of content */
 }
 
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
-	background-color: var(--theme--background); /* The little square between H and V scrollbars */
+    background-color: var(--theme--background); /* The little square between H and V scrollbars */
 }
 
 /* GUTTER */
 
 .CodeMirror-gutters {
-	white-space: nowrap;
-	background-color: var(--theme--form--field--input--background-subdued);
-	border-right: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+    white-space: nowrap;
+    background-color: var(--theme--form--field--input--background-subdued);
+    border-right: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .CodeMirror-linenumber {
-	min-width: 20px;
-	padding: 0 3px 0 5px;
-	color: var(--theme--foreground-subdued);
-	white-space: nowrap;
-	text-align: right;
+    min-width: 20px;
+    padding: 0 3px 0 5px;
+    color: var(--theme--foreground-subdued);
+    white-space: nowrap;
+    text-align: right;
 }
 
 .CodeMirror-guttermarker {
-	color: var(--theme--foreground-accent);
+    color: var(--theme--foreground-accent);
 }
 
 .CodeMirror-guttermarker-subtle {
-	color: var(--theme--foreground-subdued);
+    color: var(--theme--foreground-subdued);
 }
 
 /* CURSOR */
 
 .CodeMirror-cursor {
-	width: 0;
-	border-right: none;
-	border-left: 1px solid var(--theme--foreground);
+    width: 0;
+    border-right: none;
+    border-left: 1px solid var(--theme--foreground);
 }
 
 /* Shown when moving in bi-directional text */
 .CodeMirror div.CodeMirror-secondarycursor {
-	border-left: 1px solid var(--theme--foreground-subdued);
+    border-left: 1px solid var(--theme--foreground-subdued);
 }
 
 .cm-fat-cursor .CodeMirror-cursor {
-	width: auto;
-	background: var(--success-75);
-	border: 0 !important;
+    width: auto;
+    background: var(--success-75);
+    border: 0 !important;
 }
 
 .cm-fat-cursor div.CodeMirror-cursors {
-	z-index: 1;
+    z-index: 1;
 }
 
 .cm-fat-cursor-mark {
-	background-color: rgb(93 194 136 / 0.5);
-	animation: blink 1.06s steps(1) infinite;
+    background-color: rgb(93 194 136 / 0.5);
+    animation: blink 1.06s steps(1) infinite;
 }
 
 .cm-animate-fat-cursor {
-	width: auto;
-	background-color: var(--success-75);
-	border: 0;
-	animation: blink 1.06s steps(1) infinite;
+    width: auto;
+    background-color: var(--success-75);
+    border: 0;
+    animation: blink 1.06s steps(1) infinite;
 }
 
 @keyframes blink {
-	0%,
-	100% {
-		// uses the default value of the block the animation is applied to
-	}
+    0%,
+    100% {
+        // uses the default value of the block the animation is applied to
+    }
 
-	50% {
-		background-color: transparent;
-	}
+    50% {
+        background-color: transparent;
+    }
 }
 
 /* Can style cursor different in overwrite (non-insert) mode */
 // .CodeMirror-overwrite .CodeMirror-cursor { }
 
 .cm-tab {
-	display: inline-block;
-	text-decoration: inherit;
+    display: inline-block;
+    text-decoration: inherit;
 }
 
 .CodeMirror-rulers {
-	position: absolute;
-	top: -50px;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	overflow: hidden;
+    position: absolute;
+    top: -50px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
 }
 
 .CodeMirror-ruler {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	border-left: 1px solid var(--theme--form--field--input--border-color);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid var(--theme--form--field--input--border-color);
 }
 
 /* DEFAULT THEME */
 
 .cm-s-default .cm-header {
-	color: var(--theme--primary);
+    color: var(--theme--primary);
 }
 
 .cm-s-default .cm-quote {
-	color: var(--theme--success);
+    color: var(--theme--success);
 }
 
 .cm-negative {
-	color: var(--theme--danger);
+    color: var(--theme--danger);
 }
 
 .cm-positive {
-	color: var(--theme--success);
+    color: var(--theme--success);
 }
 
 .cm-header,
 .cm-strong {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .cm-em {
-	font-style: italic;
+    font-style: italic;
 }
 
 .cm-link {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 .cm-strikethrough {
-	text-decoration: line-through;
+    text-decoration: line-through;
 }
 
 .cm-s-default .cm-keyword {
-	color: var(--purple);
+    color: var(--purple);
 }
 
 .cm-s-default .cm-atom {
-	color: var(--theme--primary);
+    color: var(--theme--primary);
 }
 
 .cm-s-default .cm-number {
-	color: var(--theme--success);
+    color: var(--theme--success);
 }
 
 .cm-s-default .cm-def {
-	color: var(--theme--primary);
+    color: var(--theme--primary);
 }
 
 // .cm-s-default .cm-variable,
@@ -207,140 +207,140 @@
 // .cm-s-default .cm-operator {
 // }
 .cm-s-default .cm-variable-2 {
-	color: var(--theme--primary);
+    color: var(--theme--primary);
 }
 
 .cm-s-default .cm-variable-3,
 .cm-s-default .cm-type {
-	color: var(--theme--success);
+    color: var(--theme--success);
 }
 
 .cm-s-default .cm-comment {
-	color: var(--theme--warning);
+    color: var(--theme--warning);
 }
 
 .cm-s-default .cm-string {
-	color: var(--theme--danger);
+    color: var(--theme--danger);
 }
 
 .cm-s-default .cm-string-2 {
-	color: var(--theme--warning);
+    color: var(--theme--warning);
 }
 
 .cm-s-default .cm-meta {
-	color: var(--theme--foreground);
+    color: var(--theme--foreground);
 }
 
 .cm-s-default .cm-qualifier {
-	color: var(--theme--foreground);
+    color: var(--theme--foreground);
 }
 
 .cm-s-default .cm-builtin {
-	color: var(--theme--primary);
+    color: var(--theme--primary);
 }
 
 .cm-s-default .cm-bracket {
-	color: var(--theme--foreground-subdued);
+    color: var(--theme--foreground-subdued);
 }
 
 .cm-s-default .cm-tag {
-	color: var(--theme--success);
+    color: var(--theme--success);
 }
 
 .cm-s-default .cm-attribute {
-	color: var(--theme--primary);
+    color: var(--theme--primary);
 }
 
 .cm-s-default .cm-hr {
-	color: var(--theme--form--field--input--border-color);
+    color: var(--theme--form--field--input--border-color);
 }
 
 .cm-s-default .cm-link {
-	color: var(--theme--primary);
+    color: var(--theme--primary);
 }
 
 .cm-s-default .cm-error {
-	color: var(--theme--danger);
+    color: var(--theme--danger);
 }
 
 .cm-invalidchar {
-	color: var(--theme--danger);
+    color: var(--theme--danger);
 }
 
 .CodeMirror-composing {
-	border-bottom: 2px solid;
+    border-bottom: 2px solid;
 }
 
 /* Default styles for common addons */
 
 div.CodeMirror span.CodeMirror-matchingbracket {
-	color: var(--theme--success);
+    color: var(--theme--success);
 }
 
 div.CodeMirror span.CodeMirror-nonmatchingbracket {
-	color: var(--theme--danger);
+    color: var(--theme--danger);
 }
 
 .CodeMirror-matchingtag {
-	background: rgb(255 150 0 / 0.3);
+    background: rgb(255 150 0 / 0.3);
 }
 
 .CodeMirror-activeline-background {
-	background: #e8f2ff;
+    background: #e8f2ff;
 }
 
 /* Default styles for linting */
 .CodeMirror-gutter-elt {
-	left: 4px;
+    left: 4px;
 }
 
 .CodeMirror-lint-markers {
-	width: 16px;
+    width: 16px;
 }
 
 .CodeMirror-lint-tooltip {
-	position: absolute;
-	z-index: 850;
-	max-width: 600px;
-	padding: 4px 8px;
-	color: var(--foreground-inverted);
-	background-color: var(--background-inverted);
-	border-radius: var(--theme--border-radius);
-	font-family: var(--theme--fonts--monospace--font-family);
-	white-space: pre-wrap;
-	overflow: hidden;
-	opacity: 0;
-	transition: opacity var(--fast) var(--transition);
+    position: absolute;
+    z-index: 850;
+    max-width: 600px;
+    padding: 4px 8px;
+    color: var(--foreground-inverted);
+    background-color: var(--background-inverted);
+    border-radius: var(--theme--border-radius);
+    font-family: var(--theme--fonts--monospace--font-family);
+    white-space: pre-wrap;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity var(--fast) var(--transition);
 }
 
 .CodeMirror-lint-mark-warning {
-	border-bottom: 2px dashed var(--theme--warning);
+    border-bottom: 2px dashed var(--theme--warning);
 }
 
 .CodeMirror-lint-mark-error {
-	border-bottom: 2px dashed var(--theme--danger);
+    border-bottom: 2px dashed var(--theme--danger);
 }
 
 .CodeMirror-lint-marker {
-	position: relative;
-	display: inline-block;
-	vertical-align: middle;
-	cursor: pointer;
-	left: 4px;
-	height: 16px;
-	width: 16px;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    left: 4px;
+    height: 16px;
+    width: 16px;
 }
 
 .CodeMirror-lint-marker-warning {
-	background-color: var(--theme--warning);
-	-webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-	mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-color: var(--theme--warning);
+    -webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Cpath d='M12,5.99L19.53,19H4.47L12,5.99 M12,2L1,21h22L12,2L12,2z'/%3E%3Cpolygon points='13,16 11,16 11,18 13,18'/%3E%3Cpolygon points='13,10 11,10 11,15 13,15'/%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }
 
 .CodeMirror-lint-marker-error {
-	background-color: var(--theme--danger);
-	-webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3C/svg%3E");
-	mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3C/svg%3E");
+    background-color: var(--theme--danger);
+    -webkit-mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%0A%3Csvg xmlns='http://www.w3.org/2000/svg' height='16px' viewBox='0 0 24 24' width='16px' fill='%23000000'%3E%3Cpath d='M0 0h24v24H0V0z' fill='none'/%3E%3Cpath d='M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z'/%3E%3C/svg%3E");
 }
 
 /* STOP */
@@ -351,31 +351,31 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
    the editor. You probably shouldn't touch them. */
 
 .CodeMirror {
-	position: relative;
-	overflow: hidden;
+    position: relative;
+    overflow: hidden;
 
-	// background: white; // Edited! Was overriding themes
+    // background: white; // Edited! Was overriding themes
 }
 
 .CodeMirror-scroll {
-	position: relative;
-	height: 100%;
-	min-height: var(--input-height-tall);
-	max-height: 1000px; // matches wysiwyg
-	margin-right: -50px;
+    position: relative;
+    height: 100%;
+    min-height: var(--input-height-tall);
+    max-height: 1000px; // matches wysiwyg
+    margin-inline-end: -50px;
 
-	/* 50px is the magic margin used to hide the element's real scrollbars */
+    /* 50px is the magic margin used to hide the element's real scrollbars */
 
-	/* See overflow: hidden in .CodeMirror */
-	margin-bottom: -50px;
-	padding-bottom: 50px;
-	overflow: scroll !important; /* Things will break if this is overridden */
-	outline: none; /* Prevent dragging from highlighting the element */
+    /* See overflow: hidden in .CodeMirror */
+    margin-bottom: -50px;
+    padding-bottom: 50px;
+    overflow: scroll !important; /* Things will break if this is overridden */
+    outline: none; /* Prevent dragging from highlighting the element */
 }
 
 .CodeMirror-sizer {
-	position: relative;
-	border-right: 50px solid transparent;
+    position: relative;
+    border-right: 50px solid transparent;
 }
 
 /* The fake, visible scrollbars. Used to force redraw during scrolling
@@ -385,129 +385,129 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-hscrollbar,
 .CodeMirror-scrollbar-filler,
 .CodeMirror-gutter-filler {
-	position: absolute;
-	z-index: 4;
-	display: none;
+    position: absolute;
+    z-index: 4;
+    display: none;
 }
 
 .CodeMirror-vscrollbar {
-	top: 0;
-	right: 0;
-	overflow: hidden scroll;
+    top: 0;
+    right: 0;
+    overflow: hidden scroll;
 }
 
 .CodeMirror-hscrollbar {
-	bottom: 0;
-	left: 0;
-	overflow: scroll hidden;
+    bottom: 0;
+    left: 0;
+    overflow: scroll hidden;
 }
 
 .CodeMirror-scrollbar-filler {
-	right: 0;
-	bottom: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .CodeMirror-gutter-filler {
-	bottom: 0;
-	left: 0;
+    bottom: 0;
+    left: 0;
 }
 
 .CodeMirror-gutters {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 3;
-	min-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    min-height: 100%;
 }
 
 .CodeMirror-gutter {
-	display: inline-block;
-	height: 100%;
-	margin-bottom: -50px;
-	white-space: normal;
-	vertical-align: top;
+    display: inline-block;
+    height: 100%;
+    margin-bottom: -50px;
+    white-space: normal;
+    vertical-align: top;
 }
 
 .CodeMirror-gutter-wrapper {
-	position: absolute;
-	z-index: 4;
-	background: none !important;
-	border: none !important;
+    position: absolute;
+    z-index: 4;
+    background: none !important;
+    border: none !important;
 }
 
 .CodeMirror-gutter-background {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	z-index: 4;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 4;
 }
 
 .CodeMirror-gutter-elt {
-	position: absolute;
-	z-index: 4;
-	cursor: default;
+    position: absolute;
+    z-index: 4;
+    cursor: default;
 }
 
 .CodeMirror-gutter-wrapper ::selection {
-	background-color: transparent;
+    background-color: transparent;
 }
 
 .CodeMirror-lines {
-	min-height: 1px; /* prevents collapsing before first draw */
-	cursor: text;
+    min-height: 1px; /* prevents collapsing before first draw */
+    cursor: text;
 }
 
 .CodeMirror pre.CodeMirror-line,
 .CodeMirror pre.CodeMirror-line-like {
-	position: relative;
-	z-index: 2;
-	margin: 0;
-	overflow: visible;
-	color: inherit;
-	font-size: inherit;
-	font-family: inherit;
-	line-height: inherit;
-	white-space: pre;
-	word-wrap: normal;
-	background: transparent;
-	border-width: 0;
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    overflow: visible;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+    white-space: pre;
+    word-wrap: normal;
+    background: transparent;
+    border-width: 0;
 
-	/* Reset some styles that the rest of the page might have set */
-	border-radius: 0;
-	-webkit-tap-highlight-color: transparent;
-	font-variant-ligatures: contextual;
+    /* Reset some styles that the rest of the page might have set */
+    border-radius: 0;
+    -webkit-tap-highlight-color: transparent;
+    font-variant-ligatures: contextual;
 }
 
 .CodeMirror-wrap pre.CodeMirror-line,
 .CodeMirror-wrap pre.CodeMirror-line-like {
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	word-break: normal;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: normal;
 }
 
 .CodeMirror-linebackground {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	z-index: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
 }
 
 .CodeMirror-linewidget {
-	position: relative;
-	z-index: 2;
-	padding: 0.1px; /* Force widget margins to stay inside of the container */
+    position: relative;
+    z-index: 2;
+    padding: 0.1px; /* Force widget margins to stay inside of the container */
 }
 
 // .CodeMirror-widget {}
 
 .CodeMirror-rtl pre {
-	direction: rtl;
+    direction: rtl;
 }
 
 .CodeMirror-code {
-	outline: none;
+    outline: none;
 }
 
 /* Force content-box sizing for the elements where we expect it */
@@ -516,81 +516,81 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter,
 .CodeMirror-gutters,
 .CodeMirror-linenumber {
-	box-sizing: content-box;
+    box-sizing: content-box;
 }
 
 .CodeMirror-measure {
-	position: absolute;
-	width: 100%;
-	height: 0;
-	overflow: hidden;
-	visibility: hidden;
+    position: absolute;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
 }
 
 .CodeMirror-cursor {
-	position: absolute;
-	pointer-events: none;
+    position: absolute;
+    pointer-events: none;
 }
 
 .CodeMirror-measure pre {
-	position: static;
+    position: static;
 }
 
 div.CodeMirror-cursors {
-	position: relative;
-	z-index: 3;
-	visibility: hidden;
+    position: relative;
+    z-index: 3;
+    visibility: hidden;
 }
 
 div.CodeMirror-dragcursors {
-	visibility: visible;
+    visibility: visible;
 }
 
 .CodeMirror-focused div.CodeMirror-cursors {
-	visibility: visible;
+    visibility: visible;
 }
 
 .CodeMirror-selected {
-	background: var(--theme--background-accent);
+    background: var(--theme--background-accent);
 }
 
 .CodeMirror-focused .CodeMirror-selected {
-	background: var(--theme--background-accent);
+    background: var(--theme--background-accent);
 }
 
 .CodeMirror-crosshair {
-	cursor: crosshair;
+    cursor: crosshair;
 }
 
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-	background: var(--theme--background-accent);
+    background: var(--theme--background-accent);
 }
 
 .cm-searching {
-	background-color: #ffa;
-	background-color: rgb(255 255 0 / 0.4);
+    background-color: #ffa;
+    background-color: rgb(255 255 0 / 0.4);
 }
 
 /* Used to force a border model for a node */
 .cm-force-border {
-	padding-right: 0.1px;
+    padding-right: 0.1px;
 }
 
 @media print {
-	/* Hide the cursor when printing */
-	.CodeMirror div.CodeMirror-cursors {
-		visibility: hidden;
-	}
+    /* Hide the cursor when printing */
+    .CodeMirror div.CodeMirror-cursors {
+        visibility: hidden;
+    }
 }
 
 /* See issue #2901 */
 .cm-tab-wrap-hack::after {
-	content: '';
+    content: '';
 }
 
 /* Help users use markselection to safely style text background */
 span.CodeMirror-selectedtext {
-	background: none;
+    background: none;
 }

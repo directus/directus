@@ -90,7 +90,7 @@ const { t } = useI18n();
 
 	.v-checkbox {
 		height: 18px; // Don't push down label with normal icon height (24px)
-		margin-right: 4px;
+		margin-inline-end: 4px;
 	}
 
 	.v-chip {
@@ -105,7 +105,7 @@ const { t } = useI18n();
 		margin-left: 3px;
 
 		&.has-badge {
-			margin-right: 6px;
+			margin-inline-end: 6px;
 		}
 	}
 

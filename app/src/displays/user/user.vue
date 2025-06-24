@@ -69,7 +69,7 @@ const src = computed(() => {
 
 	&.both {
 		img {
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 	}
 }

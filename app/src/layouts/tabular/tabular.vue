@@ -289,7 +289,7 @@ function removeField(fieldKey: string) {
 		margin-left: var(--content-padding);
 
 		tr {
-			margin-right: var(--content-padding);
+			margin-inline-end: var(--content-padding);
 		}
 	}
 }
@@ -316,7 +316,7 @@ function removeField(fieldKey: string) {
 
 		span {
 			width: auto;
-			margin-right: 4px;
+			margin-inline-end: 4px;
 		}
 
 		.v-select {

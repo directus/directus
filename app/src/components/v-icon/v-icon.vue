@@ -185,10 +185,10 @@ function emitClick(event: MouseEvent) {
 	}
 
 	&.left {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 
 		&.small {
-			margin-right: 4px;
+			margin-inline-end: 4px;
 		}
 	}
 

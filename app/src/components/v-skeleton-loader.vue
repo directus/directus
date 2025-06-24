@@ -116,7 +116,7 @@ withDefaults(defineProps<Props>(), {
 		flex-shrink: 0;
 		width: 24px;
 		height: 24px;
-		margin-right: 12px;
+		margin-inline-end: 12px;
 		border-radius: 50%;
 
 		@include loader;

@@ -175,7 +175,7 @@ watch(validationMessages, (newVal, oldVal) => {
 }
 
 .header-icon {
-	margin-right: 12px !important;
+	margin-inline-end: 12px !important;
 }
 
 .warning {

@@ -77,7 +77,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 	background-color: var(--theme--primary);
 
 	--v-icon-color: var(--foreground-inverted);
-	margin-right: 20px;
+	margin-inline-end: 20px;
 }
 
 .name {

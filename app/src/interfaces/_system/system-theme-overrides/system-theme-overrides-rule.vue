@@ -89,13 +89,13 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 	}
 
 	p {
-		margin-right: 1ch;
+		margin-inline-end: 1ch;
 
 		color: var(--theme--form--field--input--foreground);
 	}
 
 	.value {
-		margin-right: 1ch;
+		margin-inline-end: 1ch;
 		border: none;
 		border-bottom: 1px solid var(--theme--form--field--input--border-color);
 		min-width: 5ch;

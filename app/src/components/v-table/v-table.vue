@@ -426,7 +426,7 @@ table :deep(.loading-indicator) {
 }
 
 table :deep(.loading-indicator > th) {
-	margin-right: var(--content-padding);
+	margin-inline-end: var(--content-padding);
 }
 
 table :deep(.sortable-ghost .cell) {

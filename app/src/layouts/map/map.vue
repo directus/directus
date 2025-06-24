@@ -192,7 +192,7 @@ limitWritable.value = selectedSize;
 
 	span {
 		width: auto;
-		margin-right: 4px;
+		margin-inline-end: 4px;
 	}
 
 	.v-select {
@@ -221,7 +221,7 @@ limitWritable.value = selectedSize;
 		--v-button-height: 28px;
 
 		display: inline-block;
-		margin-right: 10px;
+		margin-inline-end: 10px;
 
 		button {
 			box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);

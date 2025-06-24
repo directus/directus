@@ -423,10 +423,10 @@ defineExpose({ abort });
 	margin-bottom: 18px;
 
 	.v-button {
-		margin-right: 12px;
+		margin-inline-end: 12px;
 
 		&:last-child {
-			margin-right: 0;
+			margin-inline-end: 0;
 		}
 	}
 }

@@ -37,7 +37,7 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 		width: 100px;
 		margin-left: 12px;
 		line-height: 1.3;
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	.name {

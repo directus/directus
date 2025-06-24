@@ -154,7 +154,7 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .collection-icon {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .drag-handle {

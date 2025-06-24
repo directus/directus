@@ -437,7 +437,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 		.drag-handle {
 			--v-icon-color: var(--theme--primary);
 
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 
 		.name {
@@ -486,7 +486,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 			text-overflow: ellipsis;
 
 			.name {
-				margin-right: 8px;
+				margin-inline-end: 8px;
 				font-family: var(--theme--fonts--monospace--font-family);
 			}
 

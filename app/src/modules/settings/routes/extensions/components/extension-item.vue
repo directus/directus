@@ -153,7 +153,7 @@ function isAppExtension(type?: ExtensionType) {
 	}
 
 	.version {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	&.disabled {
@@ -164,7 +164,7 @@ function isAppExtension(type?: ExtensionType) {
 }
 
 .spinner {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .state {

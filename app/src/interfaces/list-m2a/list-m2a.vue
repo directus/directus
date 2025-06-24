@@ -514,7 +514,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	.collection {
 		color: var(--theme--primary);
 		white-space: nowrap;
-		margin-right: 1ch;
+		margin-inline-end: 1ch;
 	}
 
 	&.deleted .collection {
@@ -546,7 +546,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 
 			span {
 				width: auto;
-				margin-right: 4px;
+				margin-inline-end: 4px;
 			}
 
 			.v-select {

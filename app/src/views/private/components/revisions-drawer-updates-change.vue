@@ -95,7 +95,7 @@ const wholeThing = computed(() => {
 
 .changed {
 	position: relative;
-	margin-right: 0.2em;
+	margin-inline-end: 0.2em;
 	padding: 2px;
 	border-radius: var(--theme--border-radius);
 }

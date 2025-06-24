@@ -710,7 +710,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 }
 
 .modal-title-icon {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 
 .modal-item-content {

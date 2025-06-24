@@ -81,7 +81,7 @@ const done = async () => {
 		justify-content: center;
 		width: 44px;
 		height: 44px;
-		margin-right: 12px;
+		margin-inline-end: 12px;
 		background-color: rgb(255 255 255 / 0.25);
 		border-radius: 50%;
 	}
@@ -125,7 +125,7 @@ const done = async () => {
 		.icon {
 			width: auto;
 			height: auto;
-			margin-right: 8px;
+			margin-inline-end: 8px;
 			background-color: transparent;
 		}
 

@@ -123,7 +123,7 @@ function onClick(event: MouseEvent) {
 	.activator-icon {
 		--focus-ring-offset: 0;
 
-		margin-right: 0 !important;
+		margin-inline-end: 0 !important;
 		color: var(--theme--foreground-subdued);
 		transform: rotate(0deg);
 		transition: transform var(--medium) var(--transition);

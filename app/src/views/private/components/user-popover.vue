@@ -113,11 +113,11 @@ function navigateToUser() {
 	cursor: pointer;
 
 	.v-avatar {
-		margin-right: 16px;
+		margin-inline-end: 16px;
 	}
 
 	.status {
-		margin-right: 4px;
+		margin-inline-end: 4px;
 
 		&.active {
 			--v-chip-color: var(--theme--success);
@@ -169,7 +169,7 @@ function navigateToUser() {
 	.avatar {
 		width: 80px;
 		height: 80px;
-		margin-right: 16px;
+		margin-inline-end: 16px;
 	}
 
 	div {

@@ -483,7 +483,7 @@ function revert(values: Record<string, any>) {
 		justify-content: center;
 		width: 84px;
 		height: 84px;
-		margin-right: 16px;
+		margin-inline-end: 16px;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
@@ -503,7 +503,7 @@ function revert(values: Record<string, any>) {
 		@media (min-width: 600px) {
 			width: 144px;
 			height: 144px;
-			margin-right: 22px;
+			margin-inline-end: 22px;
 		}
 	}
 

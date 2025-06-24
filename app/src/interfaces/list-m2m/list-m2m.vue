@@ -796,12 +796,12 @@ function getLinkForItem(item: DisplayItem) {
 	justify-content: flex-end;
 	width: 120px;
 	padding: 10px 0;
-	margin-right: 2px;
+	margin-inline-end: 2px;
 	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
 		width: auto;
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	.v-select {

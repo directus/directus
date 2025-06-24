@@ -169,7 +169,7 @@ function toPage(page: number) {
 }
 
 .v-button:last-child {
-	margin-right: 0;
+	margin-inline-end: 0;
 }
 
 .v-button.active {

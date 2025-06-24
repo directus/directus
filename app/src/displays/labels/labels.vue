@@ -121,6 +121,6 @@ const items = computed(() => {
 
 .inline-dot {
 	padding: 0 4px;
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 </style>

@@ -345,11 +345,11 @@ function addKeyAsNode() {
 			}
 			.add {
 				margin-left: 6px;
-				margin-right: 4px;
+				margin-inline-end: 4px;
 			}
 			.expand_more {
 				margin-left: auto;
-				margin-right: 6px;
+				margin-inline-end: 6px;
 				transition: transform var(--medium) var(--transition-out);
 			}
 		}
