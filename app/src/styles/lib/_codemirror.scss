@@ -420,9 +420,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter-wrapper ::selection {
 	background-color: transparent;
 }
-.CodeMirror-gutter-wrapper ::-moz-selection {
-	background-color: transparent;
-}
 
 .CodeMirror-lines {
 	min-height: 1px; /* prevents collapsing before first draw */
@@ -534,11 +531,6 @@ div.CodeMirror-dragcursors {
 .CodeMirror-line::selection,
 .CodeMirror-line > span::selection,
 .CodeMirror-line > span > span::selection {
-	background: var(--theme--background-accent);
-}
-.CodeMirror-line::-moz-selection,
-.CodeMirror-line > span::-moz-selection,
-.CodeMirror-line > span > span::-moz-selection {
 	background: var(--theme--background-accent);
 }
 
