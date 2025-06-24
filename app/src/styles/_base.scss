@@ -107,7 +107,7 @@ fieldset {
     border: 0;
 
     &.centered {
-        border-top: 1px solid var(--blue-grey-200);
+        border-block-start: 1px solid var(--blue-grey-200);
 
         legend {
             padding: 10px 20px;

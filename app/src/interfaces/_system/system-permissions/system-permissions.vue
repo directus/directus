@@ -715,7 +715,7 @@ function useGroupedPermissions() {
 
 	.system-toggle {
 		&:not(:first-child) td {
-			border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+			border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 		}
 
 		& button {
@@ -742,7 +742,7 @@ function useGroupedPermissions() {
 		color: var(--theme--foreground-subdued);
 		text-align: center;
 		padding: 12px;
-		border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+		border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 		button {
 			color: var(--theme--primary) !important;

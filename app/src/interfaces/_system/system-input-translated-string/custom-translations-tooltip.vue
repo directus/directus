@@ -156,7 +156,7 @@ const clicked = (toggleTooltip: () => void) => {
 .v-list-item:not(:first-child) {
 	.header {
 		padding-block-start: 8px;
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

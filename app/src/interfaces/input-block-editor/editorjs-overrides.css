@@ -226,7 +226,7 @@
 
 .codex-editor .ce-inline-tool-input {
 	background: var(--theme--background-normal);
-	border-top-color: var(--theme--form--field--input--border-color);
+	border-block-start-color: var(--theme--form--field--input--border-color);
 }
 
 /* Buttons */

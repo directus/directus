@@ -357,7 +357,7 @@ const stageChanges = () => {
 
 	grid-column: 1 / span var(--columns);
 	background-color: var(--theme--background-subdued);
-	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	@media (min-width: 400px) {

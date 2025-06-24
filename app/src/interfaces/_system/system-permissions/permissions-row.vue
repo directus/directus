@@ -135,7 +135,7 @@ const { t } = useI18n();
 	}
 
 	& + .permissions-row td {
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.remove {

@@ -134,7 +134,7 @@ function useEdits() {
 	height: 2px;
 	margin: 12px 0;
 	border: 0;
-	border-top: 2px solid var(--theme--form--field--input--border-color);
+	border-block-start: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(mark) {

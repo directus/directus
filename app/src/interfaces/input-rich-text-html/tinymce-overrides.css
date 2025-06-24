@@ -222,7 +222,7 @@ body.dark .tox .tox-toolbar__overflow {
 	padding: 0 24px 24px;
 	color: var(--theme--form--field--input--foreground);
 	background-color: var(--theme--background);
-	border-top: none;
+	border-block-start: none;
 }
 
 .tox .tox-textfield,

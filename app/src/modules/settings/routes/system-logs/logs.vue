@@ -580,7 +580,7 @@ onUnmounted(() => {
 	padding: 6px;
 	min-block-size: 300px;
 	background-color: var(--theme--background-subdued);
-	border-top: var(--theme--border-width) solid
+	border-block-start: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	box-shadow: var(--sidebar-shadow);
 	z-index: 1;
@@ -663,7 +663,7 @@ onUnmounted(() => {
 	.log-detail {
 		flex: 1;
 		max-inline-size: 50%;
-		border-top: none;
+		border-block-start: none;
 		border-left: var(--theme--border-width) solid
 			var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	}
