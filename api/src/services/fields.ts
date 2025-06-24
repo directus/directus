@@ -851,7 +851,7 @@ export class FieldsService {
 				column = table.increments(field.field);
 			}
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.schema?.max_length ?? undefined);
+			column = table.string(field.field, field.schema?.max_length ?? existing?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
 
