@@ -99,6 +99,6 @@ async function saveEdits(item: Record<string, any>) {
 }
 
 .v-list-item:last-child {
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 </style>

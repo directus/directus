@@ -183,7 +183,7 @@ function toggleInterface(id: string) {
 	margin-block-end: 40px;
 	padding-block-end: 2px;
 	font-weight: 700;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .group + .group {

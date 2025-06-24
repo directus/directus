@@ -78,7 +78,7 @@ header {
 	margin-block-end: 32px;
 	padding: 10px;
 	background-color: var(--theme--background);
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .container {
@@ -156,7 +156,7 @@ header {
 
 	header {
 		padding: 0;
-		border-bottom: 0;
+		border-block-end: 0;
 	}
 
 	.container {

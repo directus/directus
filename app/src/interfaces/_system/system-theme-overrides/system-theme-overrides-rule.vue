@@ -97,7 +97,7 @@ const valueLength = computed(() => String(props.value ?? props.defaultValue).len
 	.value {
 		margin-inline-end: 1ch;
 		border: none;
-		border-bottom: 1px solid var(--theme--form--field--input--border-color);
+		border-block-end: 1px solid var(--theme--form--field--input--border-color);
 		min-inline-size: 5ch;
 		width: v-bind(valueLength);
 		max-inline-size: 100%;

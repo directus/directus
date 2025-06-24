@@ -101,7 +101,7 @@ function onKeydown(e: KeyboardEvent) {
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color, transparent);
-		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&:last-child {
 			padding: 0 12px;

@@ -285,7 +285,7 @@ function toggleManualSort() {
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--v-table-background-color, var(--theme--background));
-		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&.select {
 			--focus-ring-offset: var(--focus-ring-offset-invert);

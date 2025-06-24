@@ -30,7 +30,8 @@ const descriptor = computed(() => serverStore.info?.project?.project_descriptor)
 	color: var(--theme--navigation--project--foreground);
 	text-align: start;
 	background: var(--theme--navigation--project--background);
-	border-bottom: var(--theme--navigation--project--border-width) solid var(--theme--navigation--project--border-color);
+	border-block-end: var(--theme--navigation--project--border-width) solid
+		var(--theme--navigation--project--border-color);
 
 	.name-container {
 		flex-grow: 1;

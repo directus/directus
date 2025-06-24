@@ -154,7 +154,7 @@ function navigateToUser() {
 	cursor: help;
 
 	&:hover {
-		border-bottom: 2px dotted var(--theme--foreground-subdued);
+		border-block-end: 2px dotted var(--theme--foreground-subdued);
 	}
 }
 

@@ -268,7 +268,7 @@
 }
 
 .CodeMirror-composing {
-    border-bottom: 2px solid;
+    border-block-end: 2px solid;
 }
 
 /* Default styles for common addons */
@@ -314,11 +314,11 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror-lint-mark-warning {
-    border-bottom: 2px dashed var(--theme--warning);
+    border-block-end: 2px dashed var(--theme--warning);
 }
 
 .CodeMirror-lint-mark-error {
-    border-bottom: 2px dashed var(--theme--danger);
+    border-block-end: 2px dashed var(--theme--danger);
 }
 
 .CodeMirror-lint-marker {

@@ -481,7 +481,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline table :deep(.table-row:last-of-type .cell) {
-	border-bottom: none;
+	border-block-end: none;
 }
 
 .disabled {

@@ -22,7 +22,7 @@ const { t } = useI18n();
 		background-color: var(--theme--form--field--input--background);
 		border-start-start-radius: var(--theme--border-radius);
 		border-start-end-radius: var(--theme--border-radius);
-		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

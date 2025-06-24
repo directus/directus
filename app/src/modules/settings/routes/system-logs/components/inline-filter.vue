@@ -95,7 +95,7 @@ const sortOptions = computed(() => {
 	appearance: none;
 	border: none;
 	border-radius: 0;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color);
 	width: 180px;
 	background: transparent;
 

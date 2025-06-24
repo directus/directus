@@ -130,7 +130,7 @@
             font-size: inherit !important;
             background-color: var(--theme--background);
             border-block-start: 2px solid var(--theme--border-color-subdued);
-            border-bottom: 2px solid var(--theme--border-color-subdued);
+            border-block-end: 2px solid var(--theme--border-color-subdued);
             box-shadow: 0 0 0 2px var(--theme--background);
         }
     }

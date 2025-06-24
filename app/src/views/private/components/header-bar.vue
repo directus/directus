@@ -100,7 +100,7 @@ onUnmounted(() => {
 	transition:
 		box-shadow var(--medium) var(--transition),
 		margin var(--fast) var(--transition);
-	border-bottom: var(--theme--header--border-width) solid var(--theme--header--border-color);
+	border-block-end: var(--theme--header--border-width) solid var(--theme--header--border-color);
 
 	.nav-toggle {
 		@media (min-width: 960px) {

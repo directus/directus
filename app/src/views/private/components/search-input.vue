@@ -320,7 +320,7 @@ function emitValue() {
 
 	&.filter-border {
 		padding-block-end: var(--theme--border-width);
-		border-bottom: none;
+		border-block-end: none;
 		border-end-end-radius: 0;
 		border-end-start-radius: 0;
 		transition:

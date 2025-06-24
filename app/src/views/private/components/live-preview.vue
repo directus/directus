@@ -371,7 +371,7 @@ function useUrls() {
 		width: 100%;
 		color: var(--preview--color);
 		background-color: var(--preview--header--background-color);
-		border-bottom: var(--preview--header--border-width) solid var(--preview--header--border-color);
+		border-block-end: var(--preview--header--border-width) solid var(--preview--header--border-color);
 		height: var(--preview--header--height);
 		display: flex;
 		align-items: center;

@@ -655,7 +655,7 @@ function getLinkForItem(item: DisplayItem) {
 
 		.no-last-border {
 			tr.table-row:last-child td {
-				border-bottom: none;
+				border-block-end: none;
 			}
 		}
 

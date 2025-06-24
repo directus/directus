@@ -204,11 +204,11 @@ function getColor(input?: number) {
 
 .metric-list-item {
 	height: 36px;
-	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .metric-list-item:last-child {
-	border-bottom: 0;
+	border-block-end: 0;
 }
 
 .metric-bar {
