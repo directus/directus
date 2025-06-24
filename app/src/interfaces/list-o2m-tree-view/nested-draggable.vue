@@ -300,7 +300,6 @@ function stageEdits(item: Record<string, any>) {
 	.preview {
 		padding: 12px;
 		cursor: grab;
-		border-style: solid;
 		background-color: var(--theme--background);
 		border: var(--theme--border-width) solid var(--theme--border-color);
 		border-radius: var(--theme--border-radius);
