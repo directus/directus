@@ -349,7 +349,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 0;
+	padding: 0;
 	font-weight: 600 !important;
 	font-size: 10px !important;
 }

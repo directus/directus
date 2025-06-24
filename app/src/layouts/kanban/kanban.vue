@@ -319,7 +319,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 			.header {
 				display: flex;
 				justify-content: space-between;
-				margin: 0 16px 8px 16px;
+				margin: 0 16px 8px;
 				font-weight: 700;
 
 				.title {
@@ -371,7 +371,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 				.item {
 					display: block;
-					margin: 2px 16px 6px 16px;
+					margin: 2px 16px 6px;
 					padding: 12px 16px;
 					background-color: var(--theme--background);
 					border-radius: var(--theme--border-radius);
@@ -482,7 +482,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 	.add-group {
 		cursor: pointer;
-		padding: 8px 8px;
+		padding: 8px;
 		border: var(--theme--border-width) dashed var(--theme--border-color-subdued);
 		border-radius: var(--theme--border-radius);
 		transition: border-color var(--transition) var(--fast);

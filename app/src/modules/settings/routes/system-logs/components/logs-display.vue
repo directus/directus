@@ -290,7 +290,7 @@ function selectLog(index: number) {
 }
 
 .log-entry > span {
-	padding: 0 6px 0 6px;
+	padding: 0 6px;
 }
 
 .message {
