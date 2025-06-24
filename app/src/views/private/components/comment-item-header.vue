@@ -124,7 +124,7 @@ function useDelete() {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 
 	.v-avatar {
 		--v-avatar-color: var(--theme--background-accent);

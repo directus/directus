@@ -490,7 +490,7 @@
 
 .codex-editor .ce-block {
 	margin-block-start: 1.5em;
-	margin-bottom: 1.5em;
+	margin-block-end: 1.5em;
 
 	/* Editor.js expect this to default to light */
 	font-weight: 400;
@@ -582,7 +582,7 @@
 
 .codex-editor .ce-block hr {
 	margin-block-start: 52px;
-	margin-bottom: 56px;
+	margin-block-end: 56px;
 	text-align: center;
 	border: 0;
 }

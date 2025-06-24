@@ -64,7 +64,7 @@ const { lastFour } = storeToRefs(notificationsStore);
 	}
 
 	&.has-items {
-		margin-bottom: 12px;
+		margin-block-end: 12px;
 	}
 }
 

@@ -41,7 +41,7 @@ h1, h2, h3, h4, h5, h6 {
 	font-family: ${userFontFamily}, serif;
 	color: ${cssVar('--theme--form--field--input--foreground-accent')};
 	font-weight: 700;
-	margin-bottom: 0;
+	margin-block-end: 0;
 }
 h1 + p, h2 + p, h3 + p, h4 + p, h5 + p, h6 + p {
 	margin-block-start: 0.5em;
@@ -147,7 +147,7 @@ hr {
 	height: 1px;
 	border: none;
 	margin-block-start: 2em;
-	margin-bottom: 2em;
+	margin-block-end: 2em;
 }
 table {
 	border-collapse: collapse;

@@ -673,12 +673,12 @@ async function exportDataFiles() {
 	.type-text {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 		color: var(--white);
 	}
 
 	.v-progress-linear {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 	}
 }
 

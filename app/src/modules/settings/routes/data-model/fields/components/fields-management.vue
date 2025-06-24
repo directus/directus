@@ -173,7 +173,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .fields-management {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 
 .field-grid {
@@ -221,7 +221,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .visible {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 
 .list-move {

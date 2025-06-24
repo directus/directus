@@ -75,7 +75,7 @@ const user = computed(() => {
 	position: relative;
 	display: block;
 	width: 100%;
-	margin-bottom: 12px;
+	margin-block-end: 12px;
 	margin-left: 16px;
 	text-align: left;
 

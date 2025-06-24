@@ -315,7 +315,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .db-only {
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 }
 
 .expand-collapse-button {

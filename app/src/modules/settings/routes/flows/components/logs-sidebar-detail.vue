@@ -127,7 +127,7 @@ function onToggle(open: boolean) {
 .toggle-failed {
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 
 	&.active,
 	&:hover {

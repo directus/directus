@@ -591,7 +591,7 @@ onMounted(() => {
 .media-preview {
 	width: 100%;
 	height: var(--input-height-tall);
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 }

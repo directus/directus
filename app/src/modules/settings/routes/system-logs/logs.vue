@@ -643,7 +643,7 @@ onUnmounted(() => {
 
 @media (min-width: 960px) {
 	.logs-container {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 }
 

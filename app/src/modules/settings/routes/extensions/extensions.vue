@@ -92,7 +92,7 @@ const extensionsByType = computed(() => {
 }
 
 .group-divider {
-	margin-bottom: 12px;
+	margin-block-end: 12px;
 }
 
 .extension-group + .extension-group {

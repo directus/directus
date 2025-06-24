@@ -357,7 +357,7 @@ async function copy(id: string) {
 	top: 0;
 	z-index: 2;
 	margin-block-start: 8px;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 	padding-top: 8px;
 	padding-bottom: 8px;
 	background-color: var(--theme--background-normal);
@@ -366,7 +366,7 @@ async function copy(id: string) {
 
 .empty {
 	margin-block-start: 16px;
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 	margin-left: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;

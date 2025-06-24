@@ -36,7 +36,7 @@
 }
 
 .v-list-item-content > :slotted(*:not(:last-child)) {
-	margin-bottom: 2px;
+	margin-block-end: 2px;
 }
 
 .v-list:not(.nav) .v-list-item-content,

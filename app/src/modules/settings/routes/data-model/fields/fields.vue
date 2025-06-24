@@ -172,7 +172,7 @@ function discardAndLeave() {
 
 <style lang="scss" scoped>
 .title {
-	margin-bottom: 12px;
+	margin-block-end: 12px;
 
 	.instant-save {
 		margin-left: 4px;
@@ -188,7 +188,7 @@ function discardAndLeave() {
 
 .fields {
 	max-width: 800px;
-	margin-bottom: 48px;
+	margin-block-end: 48px;
 }
 
 .header-icon {

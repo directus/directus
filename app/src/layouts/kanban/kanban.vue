@@ -276,7 +276,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 <style lang="scss" scoped>
 .kanban-layout {
 	--limit-notice-height: 0px;
-	--limit-notice-margin-bottom: 24px;
+	--limit-notice-margin-block-end: 24px;
 	--header-bar-margin: 24px;
 
 	height: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
@@ -284,11 +284,11 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 	padding-top: 0;
 
 	&:has(> .limit) {
-		--limit-notice-height: calc(60px + var(--limit-notice-margin-bottom));
+		--limit-notice-height: calc(60px + var(--limit-notice-margin-block-end));
 	}
 
 	.limit {
-		margin-bottom: var(--limit-notice-margin-bottom);
+		margin-block-end: var(--limit-notice-margin-block-end);
 	}
 }
 
@@ -394,7 +394,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					color: var(--theme--primary);
 					transition: color var(--transition) var(--fast);
 					font-weight: 700;
-					margin-bottom: 4px;
+					margin-block-end: 4px;
 				}
 
 				.title,
@@ -445,7 +445,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					justify-content: space-between;
 					align-items: center;
 					margin-block-start: 8px;
-					margin-bottom: 2px;
+					margin-block-end: 2px;
 
 					.datetime {
 						display: inline-block;
@@ -465,7 +465,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 							border: 4px solid var(--theme--background);
 							height: 32px;
 							width: 32px;
-							margin-bottom: -4px;
+							margin-block-end: -4px;
 							margin-block-start: -4px;
 						}
 

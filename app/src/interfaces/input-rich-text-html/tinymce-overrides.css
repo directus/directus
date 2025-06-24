@@ -121,7 +121,7 @@
 }
 
 .tox .tox-pop__dialog .tox-toolbar {
-	margin-bottom: -2px;
+	margin-block-end: -2px;
 }
 
 body.dark .tox .tox-toolbar,
@@ -345,12 +345,12 @@ body.dark .tox .tox-toolbar__overflow {
 }
 
 .tox .tox-form__group {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 
 .tox .tox-label,
 .tox .tox-toolbar-label {
-	margin-bottom: 4px;
+	margin-block-end: 4px;
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;
 	font-size: 16px;
@@ -359,7 +359,7 @@ body.dark .tox .tox-toolbar__overflow {
 .tox .tox-dialog__body-nav-item {
 	box-sizing: border-box;
 	width: 100%;
-	margin-bottom: 4px;
+	margin-block-end: 4px;
 	padding: 12px 16px;
 	color: var(--theme--form--field--input--foreground);
 	font-weight: 500;

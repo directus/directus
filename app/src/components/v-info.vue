@@ -44,7 +44,7 @@ withDefaults(defineProps<Props>(), {
 	justify-content: center;
 	width: 100px;
 	height: 100px;
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 	border-radius: 50%;
 }
 
@@ -69,7 +69,7 @@ withDefaults(defineProps<Props>(), {
 }
 
 .title {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .content {
@@ -78,7 +78,7 @@ withDefaults(defineProps<Props>(), {
 	line-height: 22px;
 
 	&:not(:last-child) {
-		margin-bottom: 24px;
+		margin-block-end: 24px;
 	}
 }
 

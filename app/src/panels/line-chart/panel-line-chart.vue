@@ -341,7 +341,7 @@ function setUpChart() {
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
-	margin-bottom: 0;
+	margin-block-end: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;

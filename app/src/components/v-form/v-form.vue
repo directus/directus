@@ -450,7 +450,7 @@ function useRawEditor() {
 }
 
 .v-divider {
-	margin-bottom: 50px;
+	margin-block-end: 50px;
 	grid-column: 1 / 3;
 }
 </style>

@@ -117,7 +117,7 @@ defineExpose({
 	--v-divider-color: var(--theme--background-accent);
 
 	margin-block-start: 24px;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 
 	&:first-of-type {
 		margin-block-start: 0;
@@ -126,7 +126,7 @@ defineExpose({
 
 .empty {
 	margin-block-start: 16px;
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 	margin-left: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;

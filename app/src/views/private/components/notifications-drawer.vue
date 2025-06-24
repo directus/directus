@@ -385,10 +385,10 @@ function clearFilters() {
 }
 
 .notifications {
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 
 	.v-skeleton-loader {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 
 		&.dense {
 			height: 44px;

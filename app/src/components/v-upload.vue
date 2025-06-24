@@ -420,7 +420,7 @@ defineExpose({ abort });
 .actions {
 	display: flex;
 	justify-content: center;
-	margin-bottom: 18px;
+	margin-block-end: 18px;
 
 	.v-button {
 		margin-inline-end: 12px;
@@ -454,7 +454,7 @@ defineExpose({ abort });
 
 	.upload-icon {
 		margin: 0 auto;
-		margin-bottom: 12px;
+		margin-block-end: 12px;
 	}
 }
 

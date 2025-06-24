@@ -132,7 +132,7 @@ function onClickSelect() {
 	justify-content: space-between;
 	width: 100%;
 	height: 52px;
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 	padding: 0 8px;
 	background-color: var(--theme--background);
 	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);

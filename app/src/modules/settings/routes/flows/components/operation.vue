@@ -324,7 +324,7 @@ function pointerLeave() {
 			font-size: 20px;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
-			margin-bottom: 8px;
+			margin-block-end: 8px;
 		}
 	}
 

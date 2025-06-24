@@ -114,10 +114,10 @@ function onClick(event: MouseEvent) {
 
 <style lang="scss" scoped>
 .v-list-group {
-	margin-bottom: 4px;
+	margin-block-end: 4px;
 
 	&:last-child {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 
 	.activator-icon {

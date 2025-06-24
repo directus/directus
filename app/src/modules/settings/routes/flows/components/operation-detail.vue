@@ -221,12 +221,12 @@ function saveOperation() {
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .type-title,
 .select {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 
 .not-found {
@@ -240,7 +240,7 @@ function saveOperation() {
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .required {

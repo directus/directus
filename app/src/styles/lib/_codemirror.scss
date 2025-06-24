@@ -367,7 +367,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     /* 50px is the magic margin used to hide the element's real scrollbars */
 
     /* See overflow: hidden in .CodeMirror */
-    margin-bottom: -50px;
+    margin-block-end: -50px;
     padding-bottom: 50px;
     overflow: scroll !important; /* Things will break if this is overridden */
     outline: none; /* Prevent dragging from highlighting the element */
@@ -423,7 +423,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror-gutter {
     display: inline-block;
     height: 100%;
-    margin-bottom: -50px;
+    margin-block-end: -50px;
     white-space: normal;
     vertical-align: top;
 }

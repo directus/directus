@@ -498,7 +498,7 @@ function useColor() {
 .presets {
 	display: flex;
 	width: 100%;
-	margin-bottom: 14px;
+	margin-block-end: 14px;
 	padding: 8px;
 	overflow-x: auto;
 }

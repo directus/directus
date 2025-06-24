@@ -115,7 +115,7 @@ const validationErrorsWithNames = computed<
 	}
 
 	li:not(:last-child) {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 	}
 }
 </style>

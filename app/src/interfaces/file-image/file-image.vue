@@ -285,7 +285,7 @@ img {
 	padding: 32px;
 
 	.v-icon {
-		margin-bottom: 6px;
+		margin-block-end: 6px;
 	}
 
 	.message {

@@ -180,7 +180,7 @@ function toggleInterface(id: string) {
 }
 
 .group h2 {
-	margin-bottom: 40px;
+	margin-block-end: 40px;
 	padding-bottom: 2px;
 	font-weight: 700;
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
@@ -224,7 +224,7 @@ function toggleInterface(id: string) {
 	justify-content: center;
 	width: 160px;
 	height: 100px;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 	border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	border-radius: var(--theme--border-radius);
 	transition: var(--fast) var(--transition);

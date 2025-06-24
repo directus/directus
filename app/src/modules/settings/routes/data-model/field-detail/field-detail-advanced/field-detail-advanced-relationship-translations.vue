@@ -217,7 +217,7 @@ const relatedPrimaryKey = computed(
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 
 	@include mixins.no-wrap;
 }
@@ -231,7 +231,7 @@ const relatedPrimaryKey = computed(
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .relational-triggers {
@@ -242,7 +242,7 @@ const relatedPrimaryKey = computed(
 
 	.v-divider {
 		margin-block-start: 48px;
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 }
 </style>

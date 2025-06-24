@@ -516,7 +516,7 @@ function onApply() {
 @use '@/styles/mixins';
 
 .type-title {
-	margin-bottom: 48px;
+	margin-block-end: 48px;
 }
 
 .grid {
@@ -554,7 +554,7 @@ function onApply() {
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .type-note {

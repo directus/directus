@@ -276,7 +276,7 @@ function removeField(fieldKey: string) {
 .layout-tabular {
 	display: contents;
 	margin: var(--content-padding);
-	margin-bottom: var(--content-padding-bottom);
+	margin-block-end: var(--content-padding-bottom);
 }
 
 .v-table {

@@ -151,7 +151,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 
 .v-detail {
 	margin-block-start: 0;
-	margin-bottom: 0;
+	margin-block-end: 0;
 
 	&.grid-1 {
 		grid-column: span 1;

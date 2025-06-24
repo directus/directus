@@ -375,13 +375,13 @@ function pressedEnter() {
 	position: relative;
 	overflow: scroll;
 	border-color: var(--theme--form--field--input--border-color-focus);
-	transition: margin-bottom var(--fast) var(--transition);
+	transition: margin-block-end var(--fast) var(--transition);
 }
 
 .new-comment :deep(.expand-on-focus:focus textarea),
 .new-comment :deep(.expand-on-focus:focus-within textarea),
 .new-comment :deep(.expand-on-focus.has-content textarea) {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .new-comment :deep(.expand-on-focus .append::after) {

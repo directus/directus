@@ -402,7 +402,7 @@ function isExistingField(node: Record<string, any>): boolean {
 	align-items: center;
 	width: fit-content;
 	margin-inline-end: 18px;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 	padding: 2px 6px;
 	padding-right: 8px;
 	background-color: var(--theme--form--field--input--background);

@@ -76,7 +76,7 @@ const { t } = useI18n();
 .field-label {
 	position: relative;
 	display: flex;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 	color: var(--theme--form--field--label--foreground);
 
 	.v-text-overflow {

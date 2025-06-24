@@ -195,12 +195,12 @@ useHead({ title });
 
 <style lang="scss" scoped>
 h2 {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 
 .v-input,
 .v-notice {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 
 .hydrating {

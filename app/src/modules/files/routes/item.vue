@@ -418,6 +418,6 @@ function revert(values: Record<string, any>) {
 }
 
 .preview {
-	margin-bottom: var(--theme--form--row-gap);
+	margin-block-end: var(--theme--form--row-gap);
 }
 </style>

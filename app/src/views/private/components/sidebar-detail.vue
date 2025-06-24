@@ -67,7 +67,7 @@ function onClick() {
 	display: contents;
 
 	:deep(.type-label) {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 		font-size: 1rem;
 	}
 
@@ -169,7 +169,7 @@ function onClick() {
 			var(--theme--sidebar--section--toggle--border-color);
 
 		:deep(.page-description) {
-			margin-bottom: 8px;
+			margin-block-end: 8px;
 			color: var(--theme--sidebar--foreground);
 		}
 

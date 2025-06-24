@@ -488,6 +488,6 @@ function useOnUpdate() {
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 </style>

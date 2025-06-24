@@ -131,7 +131,7 @@ function handleClick() {
 <style lang="scss" scoped>
 .loading {
 	.header {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 	}
 }
 

@@ -178,7 +178,7 @@ const options = computed({
 }
 
 .schema {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 	@include mixins.form-grid;
 }
 

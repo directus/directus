@@ -176,7 +176,7 @@ function navigateToUser() {
 		width: 140px;
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-bottom: 12px;
+			margin-block-end: 12px;
 		}
 	}
 }

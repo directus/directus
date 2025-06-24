@@ -390,7 +390,7 @@ function stepDown() {
 		}
 
 		.step-up {
-			margin-bottom: -8px;
+			margin-block-end: -8px;
 		}
 
 		.step-down {

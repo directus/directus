@@ -506,7 +506,7 @@ textarea {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:last-of-type) {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 
 .interface-input-rich-text-md.preview :deep(.CodeMirror) {

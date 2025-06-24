@@ -43,12 +43,12 @@ const { isCopySupported, copyToClipboard } = useClipboard();
 	> div {
 		flex-wrap: wrap;
 		align-items: center;
-		margin-bottom: 6px;
+		margin-block-end: 6px;
 	}
 
 	dt {
 		flex-basis: 100%;
-		margin-bottom: -2px;
+		margin-block-end: -2px;
 	}
 
 	dd {

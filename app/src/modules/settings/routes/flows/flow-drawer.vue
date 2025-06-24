@@ -304,6 +304,6 @@ function onApply() {
 }
 
 .select {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 </style>

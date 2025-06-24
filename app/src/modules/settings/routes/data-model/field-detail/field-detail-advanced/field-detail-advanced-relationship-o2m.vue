@@ -183,7 +183,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .v-divider {
@@ -208,7 +208,7 @@ const unsortableJunctionFields = computed(() => {
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .generated-data {
@@ -229,7 +229,7 @@ const unsortableJunctionFields = computed(() => {
 
 	.v-divider {
 		margin-block-start: 48px;
-		margin-bottom: 24px;
+		margin-block-end: 24px;
 	}
 }
 
@@ -241,7 +241,7 @@ const unsortableJunctionFields = computed(() => {
 
 	.v-divider {
 		margin-block-start: 48px;
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 }
 </style>

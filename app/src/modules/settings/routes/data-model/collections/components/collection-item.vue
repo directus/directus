@@ -118,7 +118,7 @@ function onGroupSortChange(collections: Collection[]) {
 }
 
 .collection-item {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .collection-item-detail {

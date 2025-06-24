@@ -469,7 +469,7 @@ function revert(values: Record<string, any>) {
 	align-items: center;
 	max-width: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
 	height: 112px;
-	margin-bottom: var(--theme--form--row-gap);
+	margin-block-end: var(--theme--form--row-gap);
 	padding: 20px;
 	background-color: var(--theme--background-normal);
 	border-radius: calc(var(--theme--border-radius) + 4px);
@@ -516,7 +516,7 @@ function revert(values: Record<string, any>) {
 		}
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-bottom: 16px;
+			margin-block-end: 16px;
 		}
 
 		.v-chip {

@@ -359,12 +359,12 @@ function onClick(event: PointerEvent) {
 				}
 
 				&:last-child {
-					margin-bottom: 0;
+					margin-block-end: 0;
 				}
 
 				&:only-child {
 					margin-block-start: 0;
-					margin-bottom: 0;
+					margin-block-end: 0;
 				}
 			}
 		}

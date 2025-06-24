@@ -95,7 +95,7 @@ const formattedTime = computed(() => {
 
 <style lang="scss" scoped>
 .item {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 	padding: 8px;
 	background-color: var(--theme--background);
 	border-radius: var(--theme--border-radius);
@@ -109,7 +109,7 @@ const formattedTime = computed(() => {
 .item-header {
 	display: flex;
 	justify-content: space-between;
-	margin-bottom: 0;
+	margin-block-end: 0;
 }
 
 .v-list-item.danger {

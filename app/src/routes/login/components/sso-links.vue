@@ -84,7 +84,7 @@ const errorFormatted = computed(() => {
 }
 
 .v-notice {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 
 .sso-link {
