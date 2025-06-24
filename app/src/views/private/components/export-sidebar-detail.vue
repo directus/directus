@@ -384,7 +384,7 @@ async function exportDataFiles() {
 					<template v-else>
 						<p class="type-label">{{ t('label_import') }}</p>
 
-						<v-list-item block clickable @click="openFileBrowser">
+						<v-list-item v-tooltip="file && file.name" block clickable @click="openFileBrowser">
 							<v-list-item-icon>
 								<div class="preview" :class="{ 'has-file': file }">
 									<span v-if="fileExtension" class="extension">{{ fileExtension }}</span>
@@ -401,7 +401,6 @@ async function exportDataFiles() {
 									hidden
 									@change="onChange"
 								/>
-								<label v-tooltip="file && file.name" for="import-file" class="import-file-label"></label>
 
 								<span class="import-file-text" :class="{ 'no-file': !file }">
 									{{ file ? file.name : t('import_data_input_placeholder') }}
@@ -705,18 +704,6 @@ async function exportDataFiles() {
 	font-weight: 600;
 	font-size: 11px;
 	text-transform: uppercase;
-}
-
-.import-file-label {
-	position: absolute;
-	top: 0;
-	left: 0;
-	display: block;
-	width: 100%;
-	height: 100%;
-	cursor: pointer;
-	opacity: 0;
-	appearance: none;
 }
 
 .import-file-text {
