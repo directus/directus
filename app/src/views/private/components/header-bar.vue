@@ -228,7 +228,7 @@ onUnmounted(() => {
 
 			/* Somewhat hacky way to make sure we fill
 			the empty space caused by the margin with
-			the appropriate color*/
+			the appropriate color */
 			&::before {
 				content: '';
 				width: 100%;
