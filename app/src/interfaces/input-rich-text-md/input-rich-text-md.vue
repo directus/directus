@@ -424,7 +424,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
-	min-height: 300px;
+	min-block-size: 300px;
 	overflow: hidden;
 	font-family: var(--theme--fonts--sans--font-family);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -519,7 +519,7 @@ textarea {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	min-height: 40px;
+	min-block-size: 40px;
 	padding: 0 4px;
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

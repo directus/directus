@@ -67,7 +67,7 @@ const done = async () => {
 	align-items: center;
 	justify-content: flex-start;
 	width: 100%;
-	min-height: 44px;
+	min-block-size: 44px;
 	margin-block-start: 4px;
 	padding: 12px;
 	color: var(--white);
@@ -120,7 +120,7 @@ const done = async () => {
 	&.dense {
 		width: max-content;
 		max-inline-size: 100%;
-		min-height: 44px;
+		min-block-size: 44px;
 
 		.icon {
 			width: auto;

@@ -203,7 +203,7 @@ function emitValue() {
 	display: flex;
 	align-items: center;
 	width: 42px;
-	min-height: 42px;
+	min-block-size: 42px;
 	max-inline-size: 100%;
 	box-sizing: content-box;
 	overflow: hidden;

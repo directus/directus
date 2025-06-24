@@ -399,7 +399,7 @@ defineExpose({ abort });
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	min-height: var(--input-height-tall);
+	min-block-size: var(--input-height-tall);
 	padding: 32px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;

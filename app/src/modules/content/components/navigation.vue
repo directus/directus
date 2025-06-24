@@ -105,7 +105,7 @@ const hasHiddenCollections = computed(
 .content-navigation-wrapper {
 	display: flex;
 	flex-direction: column;
-	min-height: 100%;
+	min-block-size: 100%;
 }
 
 .content-navigation {

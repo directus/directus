@@ -361,7 +361,7 @@ function pressedEnter() {
 	width: 100%;
 	height: 100%;
 	height: var(--theme--form--field--input--height);
-	min-height: 100px;
+	min-block-size: 100px;
 	padding: 5px;
 	overflow: scroll;
 	white-space: pre;

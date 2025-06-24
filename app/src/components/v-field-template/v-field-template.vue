@@ -317,7 +317,7 @@ function setContent() {
 
 	:deep(span) {
 		min-inline-size: 1px;
-		min-height: 1em;
+		min-block-size: 1em;
 		white-space: pre;
 	}
 

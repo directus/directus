@@ -537,7 +537,7 @@ onUnmounted(() => {
 .logs-container {
 	width: 100%;
 	height: calc(100% - 110px);
-	min-height: 600px;
+	min-block-size: 600px;
 	padding: var(--content-padding);
 	padding-block-start: 0;
 }
@@ -570,7 +570,7 @@ onUnmounted(() => {
 
 .logs-display {
 	flex: 2;
-	min-height: 200px;
+	min-block-size: 200px;
 }
 
 .log-detail {
@@ -578,7 +578,7 @@ onUnmounted(() => {
 	display: flex;
 	flex-direction: column;
 	padding: 6px;
-	min-height: 300px;
+	min-block-size: 300px;
 	background-color: var(--theme--background-subdued);
 	border-top: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
@@ -605,7 +605,7 @@ onUnmounted(() => {
 
 .raw-log {
 	height: 100%;
-	min-height: 100px;
+	min-block-size: 100px;
 	margin: 4px;
 	position: relative;
 	overflow: auto;

@@ -211,7 +211,7 @@ function toggleInterface(id: string) {
 }
 
 .interface {
-	min-height: 100px;
+	min-block-size: 100px;
 	overflow: hidden;
 	text-align: start;
 }

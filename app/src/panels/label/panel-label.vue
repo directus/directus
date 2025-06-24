@@ -118,7 +118,7 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .label-text {
 	min-inline-size: min-content;
-	min-height: min-content;
+	min-block-size: min-content;
 	width: 100%;
 }
 

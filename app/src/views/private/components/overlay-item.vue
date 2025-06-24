@@ -736,7 +736,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	}
 
 	&.empty {
-		min-height: 232px;
+		min-block-size: 232px;
 	}
 }
 

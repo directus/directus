@@ -109,7 +109,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		justify-content: center;
 
 		video {
-			min-height: 80px;
+			min-block-size: 80px;
 			min-inline-size: 80px;
 		}
 	}

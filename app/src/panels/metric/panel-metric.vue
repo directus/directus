@@ -220,7 +220,7 @@ const color = computed(() => {
 <style lang="scss" scoped>
 .metric-text {
 	min-inline-size: min-content;
-	min-height: min-content;
+	min-block-size: min-content;
 	width: 100%;
 }
 

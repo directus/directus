@@ -144,7 +144,7 @@ watch(
 .system-raw-editor {
 	position: relative;
 	height: var(--theme--form--field--input--height);
-	min-height: var(--theme--form--field--input--height);
+	min-block-size: var(--theme--form--field--input--height);
 	border-radius: var(--theme--border-radius);
 
 	:deep(.CodeMirror) {

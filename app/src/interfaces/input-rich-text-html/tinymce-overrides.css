@@ -92,7 +92,7 @@
 }
 
 .tox-tinymce {
-	min-height: 300px;
+	min-block-size: 300px;
 	color: var(--theme--form--field--input--foreground);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -114,7 +114,7 @@
 .tox .tox-toolbar,
 .tox .tox-toolbar__primary,
 .tox .tox-toolbar__overflow {
-	min-height: 40px;
+	min-block-size: 40px;
 	padding: 2px 0;
 	background: var(--theme--form--field--input--background-subdued);
 	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);

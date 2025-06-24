@@ -273,7 +273,7 @@ function stageEdits(item: Record<string, any>) {
 @use '@/styles/mixins';
 
 .drag-area {
-	min-height: 12px;
+	min-block-size: 12px;
 
 	&.root {
 		margin-left: 0;
@@ -285,7 +285,7 @@ function stageEdits(item: Record<string, any>) {
 		}
 
 		&:empty {
-			min-height: 0;
+			min-block-size: 0;
 		}
 	}
 

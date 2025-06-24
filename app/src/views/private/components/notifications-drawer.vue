@@ -398,12 +398,12 @@ function clearFilters() {
 	.v-list-item {
 		&.block {
 			height: unset;
-			min-height: var(--theme--form--field--input--height);
+			min-block-size: var(--theme--form--field--input--height);
 			flex-flow: wrap;
 			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
 
 			&.dense {
-				min-height: 44px;
+				min-block-size: 44px;
 				padding: 10px 8px;
 			}
 		}
