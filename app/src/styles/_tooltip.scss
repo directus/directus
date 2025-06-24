@@ -49,7 +49,7 @@
         height: 0;
         border-inline-end: 6px solid transparent;
         border-block-end: 6px solid var(--tooltip-background-color);
-        border-left: 6px solid transparent;
+        border-inline-start: 6px solid transparent;
         content: '';
     }
 
@@ -69,7 +69,7 @@
         border-block-start: 6px solid var(--tooltip-background-color);
         border-inline-end: 6px solid transparent;
         border-block-end: unset;
-        border-left: 6px solid transparent;
+        border-inline-start: 6px solid transparent;
     }
 
     &.top.start::after {
@@ -88,7 +88,7 @@
         border-block-start: 6px solid transparent;
         border-inline-end: unset;
         border-block-end: 6px solid transparent;
-        border-left: 6px solid var(--tooltip-background-color);
+        border-inline-start: 6px solid var(--tooltip-background-color);
     }
 
     &.left.start::after {
@@ -106,7 +106,7 @@
         border-block-start: 6px solid transparent;
         border-inline-end: 6px solid var(--tooltip-background-color);
         border-block-end: 6px solid transparent;
-        border-left: unset;
+        border-inline-start: unset;
     }
 
     &.right.start::after {

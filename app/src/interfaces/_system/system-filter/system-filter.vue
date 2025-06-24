@@ -260,7 +260,7 @@ function addKeyAsNode() {
 	:deep(.group) {
 		margin-left: 18px;
 		padding-inline-start: 10px;
-		border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.v-list {
@@ -273,7 +273,7 @@ function addKeyAsNode() {
 		& > :deep(.group) {
 			margin-left: 0;
 			padding-inline-start: 0;
-			border-left: none;
+			border-inline-start: none;
 		}
 	}
 

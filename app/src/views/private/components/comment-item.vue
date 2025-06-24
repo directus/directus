@@ -120,7 +120,7 @@ function useEdits() {
 	padding-inline-start: 6px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
-	border-left: 2px solid var(--theme--form--field--input--border-color);
+	border-inline-start: 2px solid var(--theme--form--field--input--border-color);
 }
 
 .comment-item .content :deep(img) {

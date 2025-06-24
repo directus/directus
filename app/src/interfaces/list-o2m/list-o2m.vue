@@ -664,7 +664,7 @@ function getLinkForItem(item: DisplayItem) {
 				position: sticky;
 				right: 0;
 				background: var(--theme--background);
-				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
+				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}

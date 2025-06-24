@@ -722,7 +722,7 @@ function getLinkForItem(item: DisplayItem) {
 			.append {
 				position: sticky;
 				right: 0;
-				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
+				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}

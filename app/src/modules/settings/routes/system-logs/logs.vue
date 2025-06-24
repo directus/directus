@@ -664,7 +664,7 @@ onUnmounted(() => {
 		flex: 1;
 		max-inline-size: 50%;
 		border-block-start: none;
-		border-left: var(--theme--border-width) solid
+		border-inline-start: var(--theme--border-width) solid
 			var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	}
 }

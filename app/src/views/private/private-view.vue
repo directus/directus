@@ -547,7 +547,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		transform: translateX(100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--sidebar--font-family);
-		border-left: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
+		border-inline-start: var(--theme--sidebar--border-width) solid var(--theme--sidebar--border-color);
 
 		/* Explicitly render the border outside of the width of the bar itself */
 		box-sizing: content-box;

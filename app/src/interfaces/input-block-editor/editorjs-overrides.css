@@ -266,7 +266,7 @@
 }
 
 .codex-editor .ce-block blockquote {
-	border-left: 2px dashed var(--theme--form--field--input--border-color);
+	border-inline-start: 2px dashed var(--theme--form--field--input--border-color);
 }
 
 /* Image Tool */

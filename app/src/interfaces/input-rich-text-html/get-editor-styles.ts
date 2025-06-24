@@ -128,7 +128,7 @@ blockquote {
 	font-size: 15px;
 	line-height: 24px;
 	font-weight: 500;
-	border-left: 2px solid ${cssVar('--theme--form--field--input--border-color')};
+	border-inline-start: 2px solid ${cssVar('--theme--form--field--input--border-color')};
 	padding-inline-start: 1em;
 	margin-left: 0px;
 }
