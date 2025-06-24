@@ -65,7 +65,7 @@ const logoURL = computed<string | null>(() => {
 .shared {
 	width: 100%;
 	height: 100%;
-	padding-bottom: 64px;
+	padding-block-end: 64px;
 	overflow: auto;
 	background-color: var(--theme--background-subdued);
 }

@@ -303,7 +303,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 	position: relative;
 	height: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-bottom: 32px;
+	padding-block-end: 32px;
 	overflow: hidden;
 	color: var(--theme--foreground);
 	font-family: var(--theme--fonts--sans--font-family);

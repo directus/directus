@@ -150,7 +150,7 @@ const clicked = (toggleTooltip: () => void) => {
 
 .v-list-item-content {
 	padding-block-start: 4px;
-	padding-bottom: 2px;
+	padding-block-end: 2px;
 }
 
 .v-list-item:not(:first-child) {

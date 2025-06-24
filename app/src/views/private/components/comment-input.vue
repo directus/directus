@@ -352,7 +352,7 @@ function pressedEnter() {
 
 .collapsed .v-template-input {
 	height: 48px;
-	padding-bottom: 0;
+	padding-block-end: 0;
 }
 
 .new-comment {

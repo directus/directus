@@ -175,7 +175,7 @@ watch(
 		}
 
 		:deep(.CodeMirror-scroll) {
-			padding-bottom: 0;
+			padding-block-end: 0;
 		}
 	}
 }

@@ -421,6 +421,6 @@ function setupChart() {
 }
 
 .apexcharts-tooltip-series-group:last-child {
-	padding-bottom: 0;
+	padding-block-end: 0;
 }
 </style>

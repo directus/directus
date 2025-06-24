@@ -362,7 +362,7 @@ function setUpChart() {
 .apexcharts-tooltip-series-group.apexcharts-active,
 .apexcharts-tooltip-series-group:last-child {
 	padding: 0 4px !important;
-	padding-bottom: 0 !important;
+	padding-block-end: 0 !important;
 }
 
 .apexcharts-tooltip-text {

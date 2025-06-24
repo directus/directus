@@ -368,7 +368,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
     /* See overflow: hidden in .CodeMirror */
     margin-block-end: -50px;
-    padding-bottom: 50px;
+    padding-block-end: 50px;
     overflow: scroll !important; /* Things will break if this is overridden */
     outline: none; /* Prevent dragging from highlighting the element */
 }

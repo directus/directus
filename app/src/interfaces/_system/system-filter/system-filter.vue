@@ -292,7 +292,7 @@ function addKeyAsNode() {
 			align-items: center;
 			height: var(--theme--form--field--input--height);
 			padding-block-start: 0;
-			padding-bottom: 0;
+			padding-block-end: 0;
 		}
 
 		.no-rules {

@@ -547,7 +547,7 @@ onUnmounted(() => {
 }
 
 .v-form {
-	padding-bottom: var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 
 .split-view {

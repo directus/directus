@@ -99,7 +99,7 @@ const searchDebounced = ref('');
 	top: 0;
 	z-index: 2;
 	padding: 10px;
-	padding-bottom: 0;
+	padding-block-end: 0;
 }
 
 .search .v-input {

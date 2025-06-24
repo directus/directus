@@ -617,7 +617,7 @@ function discardAndLeave() {
 
 .layout {
 	--content-padding: 0px;
-	--content-padding-bottom: 0px;
+	--content-padding-block-end: 0px;
 	--layout-offset-top: 0;
 
 	position: relative;

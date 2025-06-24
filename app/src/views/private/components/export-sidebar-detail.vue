@@ -664,7 +664,7 @@ async function exportDataFiles() {
 	height: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
 	padding-block-start: 0;
-	padding-bottom: 0;
+	padding-block-end: 0;
 	color: var(--white);
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);

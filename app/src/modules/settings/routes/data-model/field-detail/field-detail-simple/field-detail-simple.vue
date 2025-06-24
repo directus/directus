@@ -176,12 +176,12 @@ function toggleInterface(id: string) {
 .content {
 	padding: var(--content-padding);
 	padding-block-start: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .group h2 {
 	margin-block-end: 40px;
-	padding-bottom: 2px;
+	padding-block-end: 2px;
 	font-weight: 700;
 	border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }

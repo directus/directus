@@ -599,6 +599,6 @@ onMounted(() => {
 .content {
 	padding: var(--content-padding);
 	padding-block-start: 0;
-	padding-bottom: var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 </style>

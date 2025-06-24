@@ -156,7 +156,7 @@ function handleClick() {
 
 		&::after {
 			display: block;
-			padding-bottom: 100%;
+			padding-block-end: 100%;
 			content: '';
 		}
 

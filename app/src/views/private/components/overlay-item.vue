@@ -715,12 +715,12 @@ function popoverClickOutsideMiddleware(e: Event) {
 
 .modal-item-content {
 	padding: var(--v-card-padding);
-	padding-bottom: var(--theme--form--column-gap);
+	padding-block-end: var(--theme--form--column-gap);
 }
 
 .popover-item-content {
 	--content-padding: var(--theme--form--column-gap);
-	--content-padding-bottom: var(--theme--form--row-gap);
+	--content-padding-block-end: var(--theme--form--row-gap);
 
 	padding-block-start: var(--content-padding-bottom);
 	position: relative;

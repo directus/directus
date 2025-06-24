@@ -233,7 +233,7 @@ const internalActive = computed({
 
 		.main {
 			--content-padding: 16px;
-			--content-padding-bottom: 32px;
+			--content-padding-block-end: 32px;
 
 			position: relative;
 			flex-grow: 1;
@@ -242,7 +242,7 @@ const internalActive = computed({
 
 			@media (min-width: 600px) {
 				--content-padding: 32px;
-				--content-padding-bottom: 132px;
+				--content-padding-block-end: 132px;
 			}
 		}
 

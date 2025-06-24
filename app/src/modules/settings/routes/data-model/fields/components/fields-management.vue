@@ -180,7 +180,7 @@ async function setNestedSort(updates?: Field[]) {
 	position: relative;
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-	padding-bottom: 24px;
+	padding-block-end: 24px;
 }
 
 .field-select {

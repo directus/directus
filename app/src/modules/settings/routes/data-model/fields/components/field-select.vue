@@ -390,7 +390,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	min-height: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
 	padding-block-start: 40px;
-	padding-bottom: 16px;
+	padding-block-end: 16px;
 	border-radius: var(--theme--border-radius);
 
 	> * {

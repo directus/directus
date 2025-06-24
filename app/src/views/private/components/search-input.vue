@@ -319,7 +319,7 @@ function emitValue() {
 	}
 
 	&.filter-border {
-		padding-bottom: var(--theme--border-width);
+		padding-block-end: var(--theme--border-width);
 		border-bottom: none;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;

@@ -813,11 +813,11 @@ function useCollectionRoute() {
 
 .v-form {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 
 	@media (min-width: 600px) {
 		padding: var(--content-padding);
-		padding-bottom: var(--content-padding-bottom);
+		padding-block-end: var(--content-padding-bottom);
 	}
 }
 

@@ -320,7 +320,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 
 .expand-collapse-button {
 	padding-block-start: 4px;
-	padding-bottom: 8px;
+	padding-block-end: 8px;
 	text-align: right;
 	color: var(--theme--foreground-subdued);
 

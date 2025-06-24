@@ -126,7 +126,7 @@ async function deleteAndQuit() {
 
 .v-form {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .header-icon {

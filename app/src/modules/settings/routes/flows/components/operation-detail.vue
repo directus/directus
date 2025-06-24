@@ -209,7 +209,7 @@ function saveOperation() {
 .content {
 	padding: var(--content-padding);
 	padding-block-start: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 
 	.grid {
 		@include mixins.form-grid;
