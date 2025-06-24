@@ -61,7 +61,7 @@ const atLimit = computed(() => {
 .calendar-layout {
 	height: calc(100% - calc(var(--header-bar-height) + 2 * 24px));
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .v-notice {

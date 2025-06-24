@@ -245,7 +245,7 @@ function navigateToRole({ item }: { item: Role }) {
 
 .roles {
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 	padding-bottom: var(--content-padding-bottom);
 }
 

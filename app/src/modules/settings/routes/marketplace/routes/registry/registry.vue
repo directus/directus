@@ -167,7 +167,7 @@ watchEffect(async () => {
 
 .page-container {
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 	max-width: 1200px;
 }
 
@@ -186,7 +186,7 @@ watchEffect(async () => {
 }
 
 .results {
-	padding-top: 0 !important; // 🤫
+	padding-block-start: 0 !important; // 🤫
 	opacity: 1;
 	transition: opacity var(--fast) var(--transition);
 

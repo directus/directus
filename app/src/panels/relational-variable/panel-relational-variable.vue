@@ -105,7 +105,7 @@ function onSelection(data: (number | string)[] | null) {
 	height: 100%;
 
 	&.show-header {
-		padding-top: 6px;
+		padding-block-start: 6px;
 	}
 
 	&.centered {

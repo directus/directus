@@ -85,7 +85,7 @@ const currentTriggerOptionFields = computed(() => {
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 	padding-bottom: var(--content-padding-bottom);
 
 	.grid {

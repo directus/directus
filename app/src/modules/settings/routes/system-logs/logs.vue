@@ -539,7 +539,7 @@ onUnmounted(() => {
 	height: calc(100% - 110px);
 	min-height: 600px;
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .filter {

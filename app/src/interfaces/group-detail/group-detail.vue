@@ -131,7 +131,7 @@ watch(validationMessages, (newVal, oldVal) => {
 
 <style scoped>
 .v-form {
-	padding-top: calc(var(--theme--form--row-gap) / 2);
+	padding-block-start: calc(var(--theme--form--row-gap) / 2);
 }
 
 .toggle-btn {

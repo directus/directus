@@ -114,7 +114,7 @@ const clicked = (toggleTooltip: () => void) => {
 }
 
 .translation-item-text {
-	padding-top: 2px;
+	padding-block-start: 2px;
 }
 
 .translation-display-text,
@@ -149,13 +149,13 @@ const clicked = (toggleTooltip: () => void) => {
 }
 
 .v-list-item-content {
-	padding-top: 4px;
+	padding-block-start: 4px;
 	padding-bottom: 2px;
 }
 
 .v-list-item:not(:first-child) {
 	.header {
-		padding-top: 8px;
+		padding-block-start: 8px;
 		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }

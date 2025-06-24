@@ -6,6 +6,6 @@
 .v-card-subtitle {
 	margin-block-start: -16px;
 	padding: 16px;
-	padding-top: 0;
+	padding-block-start: 0;
 }
 </style>

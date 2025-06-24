@@ -199,7 +199,7 @@ const onDeleteOptions = computed(() =>
 	margin-block-start: 36px;
 
 	ul {
-		padding-top: 4px;
+		padding-block-start: 4px;
 		padding-left: 24px;
 	}
 

@@ -281,7 +281,7 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 
 	height: calc(100% - calc(var(--header-bar-height) + 2 * var(--header-bar-margin) + var(--limit-notice-height)));
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 
 	&:has(> .limit) {
 		--limit-notice-height: calc(60px + var(--limit-notice-margin-block-end));

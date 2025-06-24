@@ -168,7 +168,7 @@ const steps = computed(() => {
 		}
 
 		.inset {
-			padding-top: 12px;
+			padding-block-start: 12px;
 			padding-bottom: 32px;
 
 			.v-detail + .v-detail {

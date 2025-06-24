@@ -269,7 +269,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 <style scoped lang="scss">
 .padding-box {
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .v-info {
@@ -319,7 +319,7 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .expand-collapse-button {
-	padding-top: 4px;
+	padding-block-start: 4px;
 	padding-bottom: 8px;
 	text-align: right;
 	color: var(--theme--foreground-subdued);
@@ -336,6 +336,6 @@ async function onSort(updates: Collection[], removeGroup = false) {
 }
 
 .v-list.draggable-list {
-	padding-top: 0;
+	padding-block-start: 0;
 }
 </style>

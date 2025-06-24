@@ -680,7 +680,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 			z-index: 100;
 			position: sticky;
 			bottom: calc(var(--button-gap) - var(--v-card-padding));
-			padding-top: var(--button-gap);
+			padding-block-start: var(--button-gap);
 			background: var(--v-card-background-color);
 			box-shadow: 0 0 var(--shadow-height) 0 rgb(0 0 0 / 0.2);
 
@@ -722,7 +722,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 	--content-padding: var(--theme--form--column-gap);
 	--content-padding-bottom: var(--theme--form--row-gap);
 
-	padding-top: var(--content-padding-bottom);
+	padding-block-start: var(--content-padding-bottom);
 	position: relative;
 	z-index: 0;
 	width: calc(2 * var(--form-column-width) + var(--theme--form--column-gap) + 2 * var(--content-padding));

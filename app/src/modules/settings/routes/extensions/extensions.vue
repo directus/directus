@@ -87,7 +87,7 @@ const extensionsByType = computed(() => {
 
 .page-container {
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 	max-width: 1200px;
 }
 

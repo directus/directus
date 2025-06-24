@@ -178,7 +178,7 @@ const halfSizeOutputOffset = computed(() => unref(radius) / 4 + props.strokeWidt
 }
 
 .panel-meter.has-header {
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .panel-meter output {

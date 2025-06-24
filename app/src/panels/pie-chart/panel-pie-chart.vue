@@ -310,7 +310,7 @@ function checkMatchingConditionalFill(value: string | number, format: Conditiona
 }
 
 .apexcharts-tooltip-series-group:last-child {
-	padding-top: 0;
+	padding-block-start: 0;
 	padding-bottom: 0;
 }
 

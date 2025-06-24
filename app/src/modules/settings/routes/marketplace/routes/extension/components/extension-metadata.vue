@@ -90,7 +90,7 @@ const maintainers = computed(() => {
 }
 
 .metadata .list:first-child {
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .grid {
