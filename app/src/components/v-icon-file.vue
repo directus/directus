@@ -47,7 +47,7 @@ defineProps<Props>();
 		.label {
 			background-color: var(--v-icon-file-background-color, var(--theme--background-normal));
 			left: calc(100% - 12px - 3ch);
-			text-align: left;
+			text-align: start;
 			transform: none;
 			padding-inline-end: 8px;
 		}

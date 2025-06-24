@@ -108,7 +108,7 @@ function toggle(item: Record<string, any>) {
 	border: var(--theme--border-width) solid var(--theme--background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
-	text-align: left;
+	text-align: start;
 	transition-timing-function: var(--transition);
 	transition-duration: var(--fast);
 	transition-property: background-color, border-color;

@@ -188,7 +188,7 @@ function onClick(event: PointerEvent) {
 	padding: var(--v-list-item-padding, 0 8px 0 calc(8px + var(--v-list-item-indent, 0px)));
 	overflow: hidden;
 	color: var(--v-list-item-color, var(--v-list-color, var(--theme--foreground)));
-	text-align: left;
+	text-align: start;
 	text-decoration: none;
 	border-radius: var(--v-list-item-border-radius, var(--theme--border-radius));
 	background-color: var(--v-list-item-background-color, var(--v-list-background-color, transparent));

@@ -137,7 +137,7 @@ watch(validationMessages, (newVal, oldVal) => {
 .toggle-btn {
 	display: block;
 	width: 100%;
-	text-align: left;
+	text-align: start;
 
 	&:focus-visible :deep(hr) {
 		opacity: 0;

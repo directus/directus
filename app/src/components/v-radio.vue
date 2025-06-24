@@ -73,7 +73,7 @@ function emitValue(): void {
 	display: flex;
 	align-items: center;
 	font-size: 0;
-	text-align: left;
+	text-align: start;
 	background-color: transparent;
 	border: none;
 	border-radius: 0;

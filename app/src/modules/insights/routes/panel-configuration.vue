@@ -284,7 +284,7 @@ const stageChanges = () => {
 .interface {
 	min-height: 100px;
 	overflow: hidden;
-	text-align: left;
+	text-align: start;
 }
 
 .preview {

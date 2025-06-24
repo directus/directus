@@ -86,7 +86,7 @@ const hasValue = computed(() => {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground);
 	width: calc(100% + 16px);
-	text-align: left;
+	text-align: start;
 	padding-inline: 8px;
 	margin-inline-start: -8px;
 

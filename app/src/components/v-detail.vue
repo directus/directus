@@ -69,7 +69,7 @@ function toggle() {
 .activator {
 	display: block;
 	width: 100%;
-	text-align: left;
+	text-align: start;
 }
 
 .v-detail:not(.disabled) .v-divider {

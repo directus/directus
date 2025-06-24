@@ -404,7 +404,7 @@ table :deep(tr) {
 
 table :deep(td.align-left),
 table :deep(th.align-left) {
-	text-align: left;
+	text-align: start;
 	justify-content: start;
 }
 

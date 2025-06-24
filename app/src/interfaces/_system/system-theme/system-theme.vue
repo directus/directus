@@ -91,7 +91,7 @@ const valueWithDefault = computed(() => {
 	transition-duration: var(--fast);
 	transition-property: background-color, border-color, box-shadow;
 	transition-timing-function: var(--ease-out);
-	text-align: left;
+	text-align: start;
 
 	--v-icon-color: var(--theme--primary);
 

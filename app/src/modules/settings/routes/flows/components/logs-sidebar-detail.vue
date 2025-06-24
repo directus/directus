@@ -144,7 +144,7 @@ function onToggle(open: boolean) {
 		z-index: 2;
 		display: block;
 		width: 100%;
-		text-align: left;
+		text-align: start;
 	}
 
 	&::before {
