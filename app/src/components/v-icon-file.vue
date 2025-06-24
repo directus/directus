@@ -33,7 +33,7 @@ defineProps<Props>();
 	.label {
 		position: absolute;
 		text-transform: uppercase;
-		left: 50%;
+		inset-inline-start: 50%;
 		transform: translateX(-50%);
 		inset-block-start: 55%;
 		font-size: 12px;
@@ -46,7 +46,7 @@ defineProps<Props>();
 	&.right {
 		.label {
 			background-color: var(--v-icon-file-background-color, var(--theme--background-normal));
-			left: calc(100% - 12px - 3ch);
+			inset-inline-start: calc(100% - 12px - 3ch);
 			text-align: start;
 			transform: none;
 			padding-inline-end: 8px;

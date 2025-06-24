@@ -399,7 +399,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 	#navigation {
 		position: fixed;
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 50;
 		display: flex;
 		height: 100%;

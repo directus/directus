@@ -117,7 +117,7 @@ function getLinkForItem(item: any) {
 	&::before {
 		position: absolute;
 		inset-block-start: calc(-1 * var(--toggle-py));
-		left: calc(-1 * var(--toggle-px));
+		inset-inline-start: calc(-1 * var(--toggle-px));
 		z-index: 1;
 		width: calc(100% + var(--toggle-px) * 2);
 		height: calc(100% + var(--toggle-py) * 2);

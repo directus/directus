@@ -152,7 +152,7 @@ const steps = computed(() => {
 			content: '';
 			position: absolute;
 			width: var(--theme--border-width);
-			left: -11px;
+			inset-inline-start: -11px;
 			inset-block-start: 0;
 			background-color: var(--theme--border-color-subdued);
 			height: 100%;
@@ -189,7 +189,7 @@ const steps = computed(() => {
 	.dot {
 		position: absolute;
 		inset-block-start: 6px;
-		left: -16px;
+		inset-inline-start: -16px;
 		z-index: 2;
 		width: 12px;
 		height: 12px;

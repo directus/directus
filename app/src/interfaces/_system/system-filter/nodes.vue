@@ -473,7 +473,7 @@ function isExistingField(node: Record<string, any>): boolean {
 		&::before {
 			position: absolute;
 			inset-block-start: 0;
-			left: -4px;
+			inset-inline-start: -4px;
 			z-index: -1;
 			width: calc(100% + 8px);
 			height: 100%;
@@ -504,7 +504,7 @@ function isExistingField(node: Record<string, any>): boolean {
 
 		position: absolute;
 		inset-block-start: 50%;
-		left: 100%;
+		inset-inline-start: 100%;
 		padding-inline-start: 4px;
 		transform: translateY(-50%);
 		opacity: 0;
@@ -536,7 +536,7 @@ function isExistingField(node: Record<string, any>): boolean {
 
 		.delete {
 			inset-inline-end: 8px;
-			left: unset;
+			inset-inline-start: unset;
 			background-color: var(--theme--background);
 		}
 	}

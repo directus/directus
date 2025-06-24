@@ -79,7 +79,7 @@ const ratingPercentage = computed(() => ({
 		.inactive {
 			position: absolute;
 			inset-block-start: 0;
-			left: 0;
+			inset-inline-start: 0;
 			z-index: 1;
 			display: inline-flex;
 			color: var(--theme--background-normal);

@@ -130,13 +130,13 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 	inset-block-start: auto;
 	inset-inline-end: 12px;
 	inset-block-end: 12px;
-	left: auto;
+	inset-inline-start: auto;
 
 	@media (min-width: 960px) {
 		inset-block-start: auto;
 		inset-inline-end: 12px;
 		inset-block-end: 12px;
-		left: auto;
+		inset-inline-start: auto;
 	}
 }
 </style>

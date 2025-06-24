@@ -503,7 +503,7 @@ function useDragDrop() {
 
 .resize-handlers .left {
 	inset-block-start: 0;
-	left: -3px;
+	inset-inline-start: -3px;
 	width: 10px;
 	height: 100%;
 	cursor: ew-resize;
@@ -511,7 +511,7 @@ function useDragDrop() {
 
 .resize-handlers .top-left {
 	inset-block-start: -3px;
-	left: -3px;
+	inset-inline-start: -3px;
 	width: 14px;
 	height: 14px;
 	cursor: nwse-resize;
@@ -535,7 +535,7 @@ function useDragDrop() {
 
 .resize-handlers .bottom-left {
 	inset-block-end: -3px;
-	left: -3px;
+	inset-inline-start: -3px;
 	width: 14px;
 	height: 14px;
 	cursor: nesw-resize;

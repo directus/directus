@@ -271,7 +271,7 @@ const arrows = computed(() => {
 		position: absolute;
 		inset-block-start: 0;
 		z-index: 1;
-		left: var(--content-padding);
+		inset-inline-start: var(--content-padding);
 		pointer-events: none;
 
 		path {

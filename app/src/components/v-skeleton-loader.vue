@@ -42,7 +42,7 @@ withDefaults(defineProps<Props>(), {
 		position: absolute;
 		inset-block-start: 0;
 		inset-inline-end: 0;
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 1;
 		height: 100%;
 		background: linear-gradient(90deg, transparent, var(--theme--background), transparent);

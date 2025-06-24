@@ -306,7 +306,7 @@ img {
 	.shadow {
 		position: absolute;
 		inset-block-end: 0;
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 2;
 		width: 100%;
 		height: 40px;
@@ -326,7 +326,7 @@ img {
 
 		position: absolute;
 		inset-block-start: calc(50% - 32px);
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 3;
 		display: flex;
 		justify-content: center;
@@ -350,7 +350,7 @@ img {
 	.info {
 		position: absolute;
 		inset-block-end: 0;
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 3;
 		width: 100%;
 		padding: 8px 12px;

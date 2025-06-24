@@ -69,16 +69,16 @@ const items = computed(() => allItems.filter((item) => item.key !== section));
 		font-size: 14px;
 
 		inset-block-start: 4px;
-		left: 4px;
+		inset-inline-start: 4px;
 		z-index: 999999;
 
 		&.right {
 			inset-inline-end: 4px;
-			left: auto;
+			inset-inline-start: auto;
 		}
 
 		&.center {
-			left: 50%;
+			inset-inline-start: 50%;
 			transform: translate(-50%, 0);
 		}
 	}

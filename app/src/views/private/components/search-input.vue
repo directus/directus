@@ -331,7 +331,7 @@ function emitValue() {
 			position: absolute;
 			inset-inline-end: var(--theme--border-width);
 			inset-block-end: calc(-1 * var(--theme--border-width));
-			left: var(--theme--border-width);
+			inset-inline-start: var(--theme--border-width);
 			width: auto;
 			height: var(--theme--border-width);
 			background-color: var(--theme--border-color-subdued);

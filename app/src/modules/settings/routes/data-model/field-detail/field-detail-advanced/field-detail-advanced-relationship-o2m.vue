@@ -169,7 +169,7 @@ const unsortableJunctionFields = computed(() => {
 
 		position: absolute;
 		inset-block-end: 17px;
-		left: 50%;
+		inset-inline-start: 50%;
 		transform: translateX(-50%);
 	}
 }
@@ -202,7 +202,7 @@ const unsortableJunctionFields = computed(() => {
 
 		position: absolute;
 		inset-block-end: 17px;
-		left: 50%;
+		inset-inline-start: 50%;
 		transform: translateX(-50%);
 	}
 }

@@ -40,7 +40,7 @@ const queue = toRefs(notificationsStore).queue;
 	position: fixed;
 	inset-block-start: 0;
 	inset-inline-end: 8px;
-	left: 8px;
+	inset-inline-start: 8px;
 	z-index: 50;
 	width: 256px;
 	direction: rtl;
@@ -54,14 +54,14 @@ const queue = toRefs(notificationsStore).queue;
 		inset-block-start: auto;
 		inset-inline-end: 12px;
 		inset-block-end: 76px;
-		left: auto;
+		inset-inline-start: auto;
 	}
 
 	@media (min-width: 960px) {
 		inset-block-start: auto;
 		inset-inline-end: 12px;
 		inset-block-end: 76px;
-		left: auto;
+		inset-inline-start: auto;
 	}
 }
 

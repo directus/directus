@@ -7,7 +7,7 @@
 
     position: absolute;
     inset-block-start: 0;
-    left: 0;
+    inset-inline-start: 0;
     z-index: 850;
     display: none;
     max-inline-size: 260px;
@@ -44,7 +44,7 @@
     &::after {
         position: absolute;
         inset-block-start: -5px;
-        left: calc(50% - 6px);
+        inset-inline-start: calc(50% - 6px);
         width: 0;
         height: 0;
         border-inline-end: 6px solid transparent;
@@ -55,17 +55,17 @@
 
     &.start::after {
         inset-inline-end: $arrow-alignment;
-        left: unset;
+        inset-inline-start: unset;
     }
 
     &.end::after {
-        left: $arrow-alignment;
+        inset-inline-start: $arrow-alignment;
     }
 
     &.top::after {
         inset-block-start: unset;
         inset-block-end: -5px;
-        left: calc(50% - 6px);
+        inset-inline-start: calc(50% - 6px);
         border-block-start: 6px solid var(--tooltip-background-color);
         border-inline-end: 6px solid transparent;
         border-block-end: unset;
@@ -74,17 +74,17 @@
 
     &.top.start::after {
         inset-inline-end: $arrow-alignment;
-        left: unset;
+        inset-inline-start: unset;
     }
 
     &.top.end::after {
-        left: $arrow-alignment;
+        inset-inline-start: $arrow-alignment;
     }
 
     &.left::after {
         inset-block-start: calc(50% - 6px);
         inset-inline-end: -5px;
-        left: unset;
+        inset-inline-start: unset;
         border-block-start: 6px solid transparent;
         border-inline-end: unset;
         border-block-end: 6px solid transparent;
@@ -102,7 +102,7 @@
 
     &.right::after {
         inset-block-start: calc(50% - 6px);
-        left: -5px;
+        inset-inline-start: -5px;
         border-block-start: 6px solid transparent;
         border-inline-end: 6px solid var(--tooltip-background-color);
         border-block-end: 6px solid transparent;

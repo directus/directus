@@ -150,7 +150,7 @@ function onToggle(open: boolean) {
 	&::before {
 		position: absolute;
 		inset-block-start: -4px;
-		left: -4px;
+		inset-inline-start: -4px;
 		z-index: 1;
 		width: calc(100% + 8px);
 		height: calc(100% + 8px);

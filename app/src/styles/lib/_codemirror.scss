@@ -139,7 +139,7 @@
     inset-block-start: -50px;
     inset-inline-end: 0;
     inset-block-end: 0;
-    left: 0;
+    inset-inline-start: 0;
     overflow: hidden;
 }
 
@@ -291,7 +291,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 /* Default styles for linting */
 .CodeMirror-gutter-elt {
-    left: 4px;
+    inset-inline-start: 4px;
 }
 
 .CodeMirror-lint-markers {
@@ -326,7 +326,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     display: inline-block;
     vertical-align: middle;
     cursor: pointer;
-    left: 4px;
+    inset-inline-start: 4px;
     height: 16px;
     width: 16px;
 }
@@ -398,7 +398,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-hscrollbar {
     inset-block-end: 0;
-    left: 0;
+    inset-inline-start: 0;
     overflow: scroll hidden;
 }
 
@@ -409,13 +409,13 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-gutter-filler {
     inset-block-end: 0;
-    left: 0;
+    inset-inline-start: 0;
 }
 
 .CodeMirror-gutters {
     position: absolute;
     inset-block-start: 0;
-    left: 0;
+    inset-inline-start: 0;
     z-index: 3;
     min-block-size: 100%;
 }
@@ -490,7 +490,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     inset-block-start: 0;
     inset-inline-end: 0;
     inset-block-end: 0;
-    left: 0;
+    inset-inline-start: 0;
     z-index: 0;
 }
 

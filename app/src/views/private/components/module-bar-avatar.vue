@@ -114,7 +114,7 @@ const userFullName = userStore.fullName ?? undefined;
 				position: absolute;
 				inset-block-start: -1px;
 				inset-inline-end: 8px;
-				left: 8px;
+				inset-inline-start: 8px;
 				height: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
@@ -172,7 +172,7 @@ const userFullName = userStore.fullName ?? undefined;
 
 		position: absolute;
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 2;
 		transition: transform var(--fast) var(--transition);
 		opacity: 0;

@@ -73,7 +73,7 @@ const iconName = computed(() => {
 	display: block;
 	position: absolute;
 	inset-block-start: 0;
-	left: 0;
+	inset-inline-start: 0;
 	width: 4px;
 	height: 100%;
 	background-color: var(--v-notice-border-color, var(--theme--primary));

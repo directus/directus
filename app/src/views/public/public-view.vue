@@ -191,7 +191,7 @@ const logoURL = computed<string | null>(() => {
 			position: absolute;
 			z-index: -1;
 			inset-block-start: 0;
-			left: 0;
+			inset-inline-start: 0;
 		}
 
 		.fallback {
@@ -199,7 +199,7 @@ const logoURL = computed<string | null>(() => {
 			background-color: var(--theme--public--art--background);
 			width: 100%;
 			height: 100%;
-			left: 0;
+			inset-inline-start: 0;
 			inset-block-start: 0;
 			z-index: -1;
 			overflow: hidden;
@@ -210,7 +210,7 @@ const logoURL = computed<string | null>(() => {
 				> div {
 					position: absolute;
 					inset-block-start: 0;
-					left: 0;
+					inset-inline-start: 0;
 					width: 100%;
 					height: 100%;
 					border-radius: 50%;
@@ -222,7 +222,7 @@ const logoURL = computed<string | null>(() => {
 
 			> div:nth-child(1) {
 				inset-block-end: -25%;
-				left: -25%;
+				inset-inline-start: -25%;
 				height: 50%;
 				width: 50%;
 				filter: blur(100px);
@@ -238,7 +238,7 @@ const logoURL = computed<string | null>(() => {
 
 			> div:nth-child(2) {
 				inset-block-end: -25%;
-				left: 15%;
+				inset-inline-start: 15%;
 				height: 40%;
 				width: 60%;
 				filter: blur(150px);
@@ -258,7 +258,7 @@ const logoURL = computed<string | null>(() => {
 
 			> div:nth-child(3) {
 				inset-block-end: -20%;
-				left: 75%;
+				inset-inline-start: 75%;
 				height: 20%;
 				width: 40%;
 				filter: blur(50px);
@@ -357,7 +357,7 @@ const logoURL = computed<string | null>(() => {
 			position: absolute;
 			inset-inline-end: 0;
 			inset-block-end: 34px;
-			left: 0;
+			inset-inline-start: 0;
 			display: flex;
 			align-items: flex-end;
 			justify-content: center;

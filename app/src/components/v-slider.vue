@@ -179,7 +179,7 @@ function onInput(event: Event) {
 			position: absolute;
 			inset-block-start: 50%;
 			inset-inline-end: 0;
-			left: 0;
+			inset-inline-start: 0;
 			z-index: 2;
 			width: 100%;
 			height: 4px;
@@ -193,7 +193,7 @@ function onInput(event: Event) {
 		.ticks {
 			position: absolute;
 			inset-block-start: 14px;
-			left: 0;
+			inset-inline-start: 0;
 			z-index: 2;
 			display: flex;
 			align-items: center;
@@ -217,7 +217,7 @@ function onInput(event: Event) {
 		.thumb-label-wrapper {
 			position: absolute;
 			inset-block-start: 100%;
-			left: 7px;
+			inset-inline-start: 7px;
 			width: calc(100% - 14px);
 			overflow: visible;
 			pointer-events: none;
@@ -227,7 +227,7 @@ function onInput(event: Event) {
 			z-index: 1;
 			position: absolute;
 			inset-block-start: 0;
-			left: calc(var(--_v-slider-percentage) * 1%);
+			inset-inline-start: calc(var(--_v-slider-percentage) * 1%);
 			width: auto;
 			padding: 2px 6px;
 			color: var(--foreground-inverted);

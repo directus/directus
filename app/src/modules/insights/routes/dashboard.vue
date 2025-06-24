@@ -432,7 +432,7 @@ const refreshInterval = computed({
 
 .panel-loading {
 	position: absolute;
-	left: 50%;
+	inset-inline-start: 50%;
 	inset-block-start: 50%;
 	transform: translate(-50%, -50%);
 

@@ -398,7 +398,7 @@ function toggleManualSort() {
 
 		.v-icon {
 			position: relative;
-			left: 2px;
+			inset-inline-start: 2px;
 		}
 
 		&.sorted-manually {
@@ -418,7 +418,7 @@ function toggleManualSort() {
 		&::after {
 			position: relative;
 			inset-block-start: 20%;
-			left: 3px;
+			inset-inline-start: 3px;
 			display: block;
 			width: var(--theme--border-width);
 			height: 60%;
@@ -452,7 +452,7 @@ function toggleManualSort() {
 
 	&::before {
 		inset-inline-end: auto;
-		left: 0;
+		inset-inline-start: 0;
 	}
 }
 

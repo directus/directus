@@ -139,7 +139,7 @@ const workspaceBoxSize = computed(() => {
 
 .workspace {
 	position: absolute;
-	left: var(--content-padding);
+	inset-inline-start: var(--content-padding);
 	display: grid;
 	grid-template-rows: repeat(auto-fill, 20px);
 	grid-template-columns: repeat(auto-fill, 20px);
@@ -160,7 +160,7 @@ const workspaceBoxSize = computed(() => {
 .workspace::before {
 	position: absolute;
 	inset-block-start: -4px;
-	left: -4px;
+	inset-inline-start: -4px;
 	display: block;
 	width: calc(100% + 8px);
 	height: calc(100% + 8px);

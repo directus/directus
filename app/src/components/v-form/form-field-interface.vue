@@ -98,7 +98,7 @@ const value = computed(() =>
 	.v-skeleton-loader {
 		position: absolute;
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 2;
 		width: 100%;
 		height: 100%;

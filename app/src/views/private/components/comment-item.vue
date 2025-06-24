@@ -187,7 +187,7 @@ function useEdits() {
 	position: absolute;
 	inset-inline-end: 0;
 	inset-block-end: 4px;
-	left: 0;
+	inset-inline-start: 0;
 	z-index: 1;
 	height: 40px;
 	background: linear-gradient(
@@ -203,7 +203,7 @@ function useEdits() {
 	position: absolute;
 	inset-inline-end: 0;
 	inset-block-end: 8px;
-	left: 0;
+	inset-inline-start: 0;
 	z-index: 2;
 	height: 24px;
 	text-align: center;

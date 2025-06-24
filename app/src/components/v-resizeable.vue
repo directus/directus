@@ -228,7 +228,7 @@ function onPointerUp() {
 				inset-block-start: 0;
 				inset-inline-end: 1px;
 				inset-block-end: 0;
-				left: 1px;
+				inset-inline-start: 1px;
 				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);
 			}

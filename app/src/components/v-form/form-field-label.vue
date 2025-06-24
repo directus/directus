@@ -153,7 +153,7 @@ const { t } = useI18n();
 		.edit-dot {
 			position: absolute;
 			inset-block-start: 7px;
-			left: -7px;
+			inset-inline-start: -7px;
 			display: block;
 			width: 4px;
 			height: 4px;

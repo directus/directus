@@ -220,7 +220,7 @@ h2 {
 .password.invalid::before {
 	position: absolute;
 	inset-block-start: -12px;
-	left: -12px;
+	inset-inline-start: -12px;
 	width: calc(100% + 24px);
 	height: calc(100% + 24px);
 	background-color: var(--danger-alt);

@@ -401,7 +401,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	&::before {
 		position: absolute;
 		inset-block-start: 0;
-		left: -2px;
+		inset-inline-start: -2px;
 		z-index: 1;
 		width: 4px;
 		height: 100%;
@@ -413,7 +413,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	&::after {
 		position: absolute;
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 1;
 		width: 100%;
 		height: 100%;
@@ -425,7 +425,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 	.header {
 		position: absolute;
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 		display: flex;
 		align-items: center;
 		width: 100%;
@@ -529,7 +529,7 @@ const tFieldType = (type: string) => t(type === 'geometry' ? 'geometry.All' : ty
 
 .required {
 	position: relative;
-	left: -8px;
+	inset-inline-start: -8px;
 	color: var(--theme--primary);
 }
 

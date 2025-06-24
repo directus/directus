@@ -700,7 +700,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 				content: '';
 				position: absolute;
 				inset-block-end: 0;
-				left: 0;
+				inset-inline-start: 0;
 				width: 100%;
 				height: var(--shadow-cover-height);
 				background: var(--v-card-background-color);
@@ -743,7 +743,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 .popover-actions {
 	position: sticky;
 	inset-block-start: 0;
-	left: 0;
+	inset-inline-start: 0;
 	z-index: 1;
 }
 

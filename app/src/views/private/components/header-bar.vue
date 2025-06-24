@@ -86,7 +86,7 @@ onUnmounted(() => {
 .header-bar {
 	position: sticky;
 	inset-block-start: -1px;
-	left: 0;
+	inset-inline-start: 0;
 	z-index: 5;
 	display: flex;
 	align-items: center;
@@ -145,7 +145,7 @@ onUnmounted(() => {
 
 			position: absolute;
 			inset-block-start: 2px;
-			left: 0;
+			inset-inline-start: 0;
 			font-weight: 600;
 			font-size: 12px;
 			white-space: nowrap;
@@ -234,7 +234,7 @@ onUnmounted(() => {
 				width: 100%;
 				height: 24px;
 				inset-block-end: 100%;
-				left: 0;
+				inset-inline-start: 0;
 				background-color: var(--theme--header--background);
 				position: absolute;
 			}

@@ -157,7 +157,7 @@ const internalActive = computed({
 		display: none;
 		position: absolute;
 		inset-block-start: 32px;
-		left: -76px;
+		inset-inline-start: -76px;
 
 		@media (min-width: 960px) {
 			display: inline-flex;

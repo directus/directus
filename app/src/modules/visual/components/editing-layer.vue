@@ -310,7 +310,7 @@ function usePopoverWidth() {
 		pointer-events: none;
 		position: absolute;
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 	}
 }
 </style>

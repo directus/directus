@@ -109,7 +109,7 @@ onUnmounted(() => {
 		content: '';
 		position: absolute;
 		inset-block-end: 0;
-		left: 0;
+		inset-inline-start: 0;
 		width: 100%;
 		background-color: var(--theme--primary-background);
 		height: 4px;

@@ -388,7 +388,7 @@ function pressedEnter() {
 	position: absolute;
 	inset-inline-end: 0;
 	inset-block-end: 36px;
-	left: 0;
+	inset-inline-start: 0;
 	height: 8px;
 	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
@@ -397,7 +397,7 @@ function pressedEnter() {
 .new-comment .add-mention {
 	position: absolute;
 	inset-block-end: 8px;
-	left: 8px;
+	inset-inline-start: 8px;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
@@ -406,7 +406,7 @@ function pressedEnter() {
 .new-comment .add-emoji {
 	position: absolute;
 	inset-block-end: 8px;
-	left: 36px;
+	inset-inline-start: 36px;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);

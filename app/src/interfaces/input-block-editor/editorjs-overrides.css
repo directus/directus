@@ -317,7 +317,7 @@
 
 .codex-editor .cdx-checklist__item--checked .cdx-checklist__item-checkbox::after {
 	inset-block-start: 4px;
-	left: 3px;
+	inset-inline-start: 3px;
 }
 
 /* Attaches */
@@ -351,7 +351,7 @@
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__file-icon-label {
 	inset-block-start: unset;
-	left: unset;
+	inset-inline-start: unset;
 }
 
 .codex-editor .cdx-attaches--with-file .cdx-attaches__download-button {

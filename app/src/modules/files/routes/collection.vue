@@ -596,7 +596,7 @@ function useFileUpload() {
 
 	&.top {
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 	}
 
 	&.right {
@@ -606,12 +606,12 @@ function useFileUpload() {
 
 	&.bottom {
 		inset-block-end: 0;
-		left: 0;
+		inset-inline-start: 0;
 	}
 
 	&.left {
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 	}
 }
 

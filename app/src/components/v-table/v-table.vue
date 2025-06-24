@@ -449,7 +449,7 @@ table :deep(.sortable-ghost .cell) {
 
 	position: absolute;
 	inset-block-start: -2px;
-	left: 0;
+	inset-inline-start: 0;
 	width: 100%;
 }
 

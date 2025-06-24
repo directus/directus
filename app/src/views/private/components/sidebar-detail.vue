@@ -152,7 +152,7 @@ function onClick() {
 	.title {
 		position: absolute;
 		inset-block-start: 50%;
-		left: 52px;
+		inset-inline-start: 52px;
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);

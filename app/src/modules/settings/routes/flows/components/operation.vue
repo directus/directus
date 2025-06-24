@@ -340,7 +340,7 @@ function pointerLeave() {
 			content: '';
 			inset-block-start: 0;
 			inset-block-end: 0;
-			left: 0;
+			inset-inline-start: 0;
 			inset-inline-end: 0;
 			border-radius: 4px;
 			z-index: -1;
@@ -421,7 +421,7 @@ function pointerLeave() {
 	.add-resolve,
 	.resolve-hint {
 		inset-block-start: var(--resolve-top);
-		left: var(--resolve-left);
+		inset-inline-start: var(--resolve-left);
 
 		.button-hint {
 			--v-icon-color: var(--theme--primary);
@@ -431,7 +431,7 @@ function pointerLeave() {
 	.add-reject,
 	.reject-hint {
 		inset-block-start: var(--reject-top);
-		left: var(--reject-left);
+		inset-inline-start: var(--reject-left);
 
 		--v-icon-color: var(--theme--secondary);
 
@@ -442,7 +442,7 @@ function pointerLeave() {
 
 	.attachment {
 		inset-block-start: var(--attachment-y);
-		left: var(--attachment-x);
+		inset-inline-start: var(--attachment-x);
 	}
 
 	&.reject {

@@ -163,7 +163,7 @@ function handleClick() {
 		.image {
 			position: absolute;
 			inset-block-start: 0;
-			left: 0;
+			inset-inline-start: 0;
 			width: 100%;
 			height: 100%;
 			object-fit: contain;
@@ -188,7 +188,7 @@ function handleClick() {
 		.v-skeleton-loader {
 			position: absolute;
 			inset-block-start: 0;
-			left: 0;
+			inset-inline-start: 0;
 			width: 100%;
 			height: 100%;
 		}
@@ -196,7 +196,7 @@ function handleClick() {
 		.selection-fade {
 			position: absolute;
 			inset-block-start: 0;
-			left: 0;
+			inset-inline-start: 0;
 			z-index: 1;
 			width: 100%;
 			height: 48px;
@@ -206,7 +206,7 @@ function handleClick() {
 			&::before {
 				position: absolute;
 				inset-block-start: 0;
-				left: 0;
+				inset-inline-start: 0;
 				width: 100%;
 				height: 100%;
 				background-image: linear-gradient(-180deg, rgb(38 50 56 / 0.1) 10%, rgb(38 50 56 / 0));
@@ -218,7 +218,7 @@ function handleClick() {
 	&::before {
 		position: absolute;
 		inset-block-start: 7px;
-		left: 7px;
+		inset-inline-start: 7px;
 		z-index: 2;
 		width: 18px;
 		height: 18px;
@@ -236,7 +236,7 @@ function handleClick() {
 
 		position: absolute;
 		inset-block-start: 0;
-		left: 0;
+		inset-inline-start: 0;
 		z-index: 3;
 		margin: 4px;
 		opacity: 0;

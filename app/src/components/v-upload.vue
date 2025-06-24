@@ -434,7 +434,7 @@ defineExpose({ abort });
 .browse {
 	position: absolute;
 	inset-block-start: 0;
-	left: 0;
+	inset-inline-start: 0;
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -471,7 +471,7 @@ defineExpose({ abort });
 	.v-progress-linear {
 		position: absolute;
 		inset-block-end: 30px;
-		left: 32px;
+		inset-inline-start: 32px;
 		width: calc(100% - 64px);
 	}
 }

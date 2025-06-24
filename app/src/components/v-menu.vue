@@ -498,7 +498,7 @@ function usePopper(
 
 .v-menu-popper {
 	position: fixed;
-	left: -999px;
+	inset-inline-start: -999px;
 	z-index: 600;
 	min-inline-size: 100px;
 	transform: translateY(2px);
@@ -580,12 +580,12 @@ function usePopper(
 }
 
 [data-placement^='right'] .arrow {
-	left: -10px;
+	inset-inline-start: -10px;
 
 	.arrow-triangle {
 		&::before,
 		&::after {
-			left: 7px;
+			inset-inline-start: 7px;
 		}
 	}
 }

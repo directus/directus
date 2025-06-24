@@ -129,7 +129,7 @@ function useOverlayFocusTrap() {
 .container {
 	position: fixed;
 	inset-block-start: 0;
-	left: 0;
+	inset-inline-start: 0;
 	z-index: 500;
 	display: flex;
 	width: 100%;

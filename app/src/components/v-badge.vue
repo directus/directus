@@ -80,7 +80,7 @@ withDefaults(
 
 		&.left {
 			inset-inline-end: unset;
-			left: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
+			inset-inline-start: calc(var(--v-badge-size, 16px) / -2 + var(--v-badge-offset-x, 0px));
 		}
 
 		&.bottom {

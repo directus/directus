@@ -198,7 +198,7 @@ function onClick(event: PointerEvent) {
 			/* Borders normally render outside the element, this is a way of showing it as inner */
 			position: absolute;
 			inset-block-start: 0;
-			left: 0;
+			inset-inline-start: 0;
 			width: calc(100% - 4px);
 			height: calc(100% - 4px);
 			border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);

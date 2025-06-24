@@ -284,7 +284,7 @@ function getLinkForItem() {
 
 .v-skeleton-loader {
 	inset-block-start: 0;
-	left: 0;
+	inset-inline-start: 0;
 }
 
 .placeholder {
