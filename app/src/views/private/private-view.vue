@@ -435,10 +435,8 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 				--v-list-item-background-color: var(--theme--navigation--list--background);
 				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
 				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
-
 				--v-divider-color: var(--theme--navigation--list--divider--border-color);
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
-
 				--project-header-height: 60px;
 
 				height: calc(100% - var(--project-header-height));
@@ -517,7 +515,6 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 	#sidebar {
 		--theme--form--column-gap: var(--theme--sidebar--section--form--column-gap);
 		--theme--form--row-gap: var(--theme--sidebar--section--form--row-gap);
-
 		--theme--form--field--input--background-subdued: var(--theme--sidebar--section--form--field--input--background);
 		--theme--form--field--input--background: var(--theme--sidebar--section--form--field--input--background);
 		--theme--form--field--input--border-color-focus: var(
@@ -536,7 +533,6 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		--theme--form--field--input--foreground: var(--theme--sidebar--section--form--field--input--foreground);
 		--theme--form--field--input--height: var(--theme--sidebar--section--form--field--input--height);
 		--theme--form--field--input--padding: var(--theme--sidebar--section--form--field--input--padding);
-
 		--theme--form--field--label--foreground: var(--theme--sidebar--section--form--field--label--foreground);
 		--theme--form--field--label--font-family: var(--theme--sidebar--section--form--field--label--font-family);
 

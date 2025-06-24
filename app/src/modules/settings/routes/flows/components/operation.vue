@@ -475,6 +475,7 @@ function pointerLeave() {
 
 		.button {
 			border-color: var(--theme--foreground-subdued);
+
 			--v-icon-color: var(--theme--foreground-subdued);
 
 			.dot {

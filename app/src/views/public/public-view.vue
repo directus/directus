@@ -115,7 +115,6 @@ const logoURL = computed<string | null>(() => {
 	.container {
 		--theme--form--column-gap: var(--theme--public--form--column-gap);
 		--theme--form--row-gap: var(--theme--public--form--row-gap);
-
 		--theme--form--field--input--background-subdued: var(--theme--public--form--field--input--background);
 		--theme--form--field--input--background: var(--theme--public--form--field--input--background);
 		--theme--form--field--input--border-color-focus: var(--theme--public--form--field--input--border-color-focus);
@@ -128,7 +127,6 @@ const logoURL = computed<string | null>(() => {
 		--theme--form--field--input--foreground: var(--theme--public--form--field--input--foreground);
 		--theme--form--field--input--height: var(--theme--public--form--field--input--height);
 		--theme--form--field--input--padding: var(--theme--public--form--field--input--padding);
-
 		--theme--form--field--label--font-family: var(--theme--public--form--field--label--font-family);
 		--theme--form--field--label--foreground: var(--theme--public--form--field--label--foreground);
 

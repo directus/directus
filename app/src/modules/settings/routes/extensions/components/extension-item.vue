@@ -158,6 +158,7 @@ function isAppExtension(type?: ExtensionType) {
 
 	&.disabled {
 		color: var(--theme--foreground-subdued);
+
 		--v-chip-color: var(--theme--foreground-subdued);
 	}
 }

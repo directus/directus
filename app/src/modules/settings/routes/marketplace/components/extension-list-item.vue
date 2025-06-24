@@ -75,6 +75,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 	align-items: center;
 	justify-content: center;
 	background-color: var(--theme--primary);
+
 	--v-icon-color: var(--foreground-inverted);
 	margin-right: 20px;
 }
@@ -103,6 +104,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 .chip {
 	margin-inline-start: 4px;
 	vertical-align: 2px;
+
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
 }

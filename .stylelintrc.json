@@ -29,7 +29,10 @@
 				"ignore": ["after-comment", "stylelint-commands"]
 			}
 		],
-		"custom-property-empty-line-before": null,
+		"custom-property-empty-line-before": [
+			"always",
+			{ "except": ["after-comment", "after-custom-property", "first-nested"] }
+		],
 		"custom-property-pattern": null,
 		"declaration-block-no-redundant-longhand-properties": [true, { "ignoreShorthands": ["inset"] }],
 		"declaration-empty-line-before": null,

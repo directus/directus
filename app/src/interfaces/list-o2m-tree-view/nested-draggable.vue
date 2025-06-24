@@ -315,6 +315,7 @@ function stageEdits(item: Record<string, any>) {
 
 	&.v-list-item {
 		display: block;
+
 		--v-list-item-padding: 0;
 		--v-list-item-margin: 0;
 
