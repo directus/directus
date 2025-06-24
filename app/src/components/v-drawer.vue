@@ -200,7 +200,7 @@ const internalActive = computed({
 				width: 220px;
 				height: 100%;
 				background: var(--theme--navigation--background);
-				border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 			}
 
 			.sidebar-content {

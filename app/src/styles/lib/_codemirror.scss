@@ -61,7 +61,7 @@
 .CodeMirror-gutters {
     white-space: nowrap;
     background-color: var(--theme--form--field--input--background-subdued);
-    border-right: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+    border-inline-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 }
 
 .CodeMirror-linenumber {
@@ -84,7 +84,7 @@
 
 .CodeMirror-cursor {
     width: 0;
-    border-right: none;
+    border-inline-end: none;
     border-left: 1px solid var(--theme--foreground);
 }
 
@@ -375,7 +375,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-sizer {
     position: relative;
-    border-right: 50px solid transparent;
+    border-inline-end: 50px solid transparent;
 }
 
 /* The fake, visible scrollbars. Used to force redraw during scrolling

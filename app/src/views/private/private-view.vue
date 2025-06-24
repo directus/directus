@@ -407,7 +407,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 		transform: translateX(-100%);
 		transition: transform var(--slow) var(--transition);
 		font-family: var(--theme--navigation--list--font-family);
-		border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+		border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 
 		&.is-open {
 			transform: translateX(0);
