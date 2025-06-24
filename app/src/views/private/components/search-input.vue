@@ -211,7 +211,7 @@ function emitValue() {
 	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
 	transition:
 		width var(--slow) var(--transition),
-		border-bottom-left-radius var(--fast) var(--transition),
+		border-end-start-radius var(--fast) var(--transition),
 		border-bottom-right-radius var(--fast) var(--transition);
 
 	&.show-filter {
@@ -322,9 +322,9 @@ function emitValue() {
 		padding-block-end: var(--theme--border-width);
 		border-bottom: none;
 		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
+		border-end-start-radius: 0;
 		transition:
-			border-bottom-left-radius 0s,
+			border-end-start-radius 0s,
 			border-bottom-right-radius 0s;
 
 		&::after {
@@ -352,7 +352,7 @@ function emitValue() {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-start-end-radius: 0;
 	border-bottom-right-radius: 22px;
-	border-bottom-left-radius: 22px;
+	border-end-start-radius: 22px;
 
 	&.active {
 		border-color: var(--theme--form--field--input--border-color-focus);

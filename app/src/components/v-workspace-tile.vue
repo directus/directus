@@ -470,7 +470,7 @@ function useDragDrop() {
 	padding: 7px;
 	border-start-end-radius: var(--theme--border-radius);
 	border-bottom-right-radius: var(--theme--border-radius);
-	border-bottom-left-radius: var(--theme--border-radius);
+	border-end-start-radius: var(--theme--border-radius);
 	background-color: var(--theme--background);
 }
 
@@ -554,6 +554,6 @@ function useDragDrop() {
 }
 
 .br-bl {
-	border-bottom-left-radius: var(--theme--border-radius);
+	border-end-start-radius: var(--theme--border-radius);
 }
 </style>
