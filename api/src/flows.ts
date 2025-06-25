@@ -12,6 +12,8 @@ import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useLogger } from './logger/index.js';
+import { fetchPermissions } from './permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from './permissions/lib/fetch-policies.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
 import * as services from './services/index.js';
@@ -19,12 +21,10 @@ import { RevisionsService } from './services/revisions.js';
 import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
+import { getService } from './utils/get-service.js';
 import { JobQueue } from './utils/job-queue.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
-import { fetchPermissions } from './permissions/lib/fetch-permissions.js';
-import { fetchPolicies } from './permissions/lib/fetch-policies.js';
-import { getService } from './utils/get-service.js';
 
 let flowManager: FlowManager | undefined;
 
