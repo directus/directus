@@ -54,7 +54,7 @@ watch(
 			(headerElement.getBoundingClientRect().left +
 				Number(window.getComputedStyle(headerElement).paddingInlineStart.replace('px', '')));
 
-		filterElement.value.style.maxWidth = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
+		filterElement.value.style.maxInlineSize = maxWidth > minWidth ? `${String(maxWidth)}px` : '0px';
 	},
 	{ immediate: true },
 );
