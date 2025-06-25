@@ -81,7 +81,7 @@ limitWritable.value = selectedSize;
 			<div
 				v-if="itemPopup!.item"
 				class="popup"
-				:style="{ top: itemPopup!.position!.y + 'px', left: itemPopup!.position!.x + 'px' }"
+				:style="{ insetBlockStart: itemPopup!.position!.y + 'px', left: itemPopup!.position!.x + 'px' }"
 			>
 				<render-template :template="template" :item="itemPopup!.item" :collection="collection" />
 			</div>

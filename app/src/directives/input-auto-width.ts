@@ -42,7 +42,7 @@ function copyStyles(el: AutoWidthElement) {
 
 	Object.assign(el.shadow.style, {
 		position: 'absolute',
-		top: '0',
+		insetBlockStart: '0',
 		left: '0',
 		visibility: 'hidden',
 		height: '0',
