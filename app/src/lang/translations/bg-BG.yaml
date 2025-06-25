@@ -306,7 +306,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Нулиране на предпочитанията за страницата
 hidden_field: Скрито поле
 hidden_on_detail: Скриване в детайлния изглед
-disabled_editing_value: Без възможност за редакция
 key: Ключово име
 alias: Псевдоним
 bigInteger: Голям целочислен

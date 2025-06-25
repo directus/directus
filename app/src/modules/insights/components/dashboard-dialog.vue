@@ -5,7 +5,7 @@ import { useInsightsStore } from '@/stores/insights';
 import { Dashboard } from '@/types/insights';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { isEqual } from 'lodash';
-import { reactive, ref, watch } from 'vue';
+import { reactive, ref, watch, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps<{
@@ -28,6 +28,8 @@ const values = reactive({
 	note: props.dashboard?.note ?? null,
 });
 
+const isSaveDisabled = computed(() => !values.name);
+
 watch(
 	() => props.modelValue,
 	(newValue, oldValue) => {
@@ -47,6 +49,8 @@ function cancel() {
 }
 
 async function save() {
+	if (isSaveDisabled.value || saving.value) return;
+
 	saving.value = true;
 
 	try {
@@ -69,7 +73,13 @@ async function save() {
 </script>
 
 <template>
-	<v-dialog :model-value="modelValue" persistent @update:model-value="$emit('update:modelValue', $event)" @esc="cancel">
+	<v-dialog
+		:model-value="modelValue"
+		persistent
+		@update:model-value="$emit('update:modelValue', $event)"
+		@esc="cancel"
+		@apply="save"
+	>
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
 		</template>
@@ -91,7 +101,7 @@ async function save() {
 				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :disabled="!values.name" :loading="saving" @click="save">
+				<v-button :disabled="isSaveDisabled" :loading="saving" @click="save">
 					{{ t('save') }}
 				</v-button>
 			</v-card-actions>

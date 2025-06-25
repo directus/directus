@@ -77,7 +77,7 @@ export class RelationsService {
 		return foreignKeys;
 	}
 
-	async readAll(collection?: string, opts?: QueryOptions): Promise<Relation[]> {
+	async readAll(collection?: string, opts?: QueryOptions, bypassCache?: boolean): Promise<Relation[]> {
 		if (this.accountability) {
 			await validateAccess(
 				{
@@ -112,7 +112,12 @@ export class RelationsService {
 			return metaRow.many_collection === collection;
 		});
 
-		const schemaRows = await this.foreignKeys(collection);
+		let schemaRows = bypassCache ? await this.schemaInspector.foreignKeys() : await this.foreignKeys(collection);
+
+		if (collection && bypassCache) {
+			schemaRows = schemaRows.filter((row) => row.table === collection);
+		}
+
 		const results = this.stitchRelations(metaRows, schemaRows);
 		return await this.filterForbidden(results);
 	}

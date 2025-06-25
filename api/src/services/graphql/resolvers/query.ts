@@ -31,7 +31,7 @@ export async function resolveQuery(gql: GraphQLService, info: GraphQLResolveInfo
 		query = await getAggregateQuery(args, selections, gql.schema, gql.accountability);
 		collection = collection.slice(0, -11);
 	} else {
-		query = await getQuery(args, selections, info.variableValues, gql.schema, gql.accountability);
+		query = await getQuery(args, gql.schema, selections, info.variableValues, gql.accountability, collection);
 
 		if (collection.endsWith('_by_id') && collection in gql.schema.collections === false) {
 			collection = collection.slice(0, -6);

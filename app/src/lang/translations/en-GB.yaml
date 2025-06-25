@@ -224,7 +224,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
-disabled_editing_value: Disable editing value
+readonly_field_label: Disable the field in the app
+required_readonly_field_warning: Enabling both readonly and required on a field prevents saving an item if the value is empty.
 key: Key
 alias: Alias
 bigInteger: Big Integer
@@ -1361,6 +1362,8 @@ reset_password: Reset Password
 revisions: Revisions
 no_revisions: No Revisions Yet
 no_logs: No Logs Yet
+show_failed_only: Show Failed Only
+no_logs_on_page: No logs on this page
 revert: Revert
 save: Save
 schema: Schema

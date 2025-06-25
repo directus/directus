@@ -202,7 +202,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 重設頁面偏好設定
 hidden_field: 隱藏欄位
 hidden_on_detail: 從詳細內容隱藏
-disabled_editing_value: 禁止編輯內容
 key: 鍵值
 alias: 別名
 bigInteger: 長整數

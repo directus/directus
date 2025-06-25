@@ -31,6 +31,10 @@ draft: Draft
 archived: Archived
 marketplace: Marketplace
 extensions: Extensions
+skip_link_nav: Skip to Navigation
+skip_link_module_nav: Skip to Module Navigation
+skip_link_main: Skip to Main Content
+skip_link_sidebar: Skip to Sidebar
 modules: Modules
 module_bar: Module Bar
 logs: Logs
@@ -331,7 +335,9 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
-disabled_editing_value: Disable editing value
+readonly_field_label: Disable the field in the app
+required_readonly_field_warning:
+  Enabling both readonly and required on a field prevents saving an item if the value is empty.
 key: Key
 alias: Alias
 bigInteger: Big Integer
@@ -438,6 +444,7 @@ field_key: Field Key
 finish_setup: Finish Setup
 dismiss: Dismiss
 toggle_raw_editor: Toggle Raw Editor
+toggle_variable_input: Toggle Variable Input
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Raw value
 copy_raw_value: Copy Raw Value
@@ -743,6 +750,7 @@ errors:
   COLLECTION_NOT_FOUND: "Collection doesn't exist"
   CONTAINS_NULL_VALUES: Field contains null values
   CONTENT_TOO_LARGE: Submitted item/file is too large
+  FAILED_VALIDATION: Validation failed
   FIELD_NOT_FOUND: Field not found
   FORBIDDEN: Forbidden
   GRAPHQL_VALIDATION: GraphQL Validation
@@ -1708,6 +1716,8 @@ reset_password: Reset Password
 revisions: Revisions
 no_revisions: No Revisions Yet
 no_logs: No Logs Yet
+show_failed_only: Show Failed Only
+no_logs_on_page: No logs on this page
 revert: Revert
 save: Save
 schema: Schema
@@ -2582,3 +2592,14 @@ search_flow: Search Flow...
 percent: Percent
 show_password: Show password
 hide_password: Hide password
+bsl_banner:
+  welcome_to_directus: Welcome to Directus!
+  directus_free_use:
+    Directus is free to use for entities under $5 million in annual revenue, funding, or operating budget.
+  organization_threshold: Entities above this threshold require a paid license.
+  license_agreement: By clicking "Accept", you agree to the {directusBsl} and {privacyPolicy}.
+  directus_bsl: Directus BSL 1.1
+  privacy_policy: Privacy Policy
+  accept_terms: Accept
+  get_license: Get a License
+accepted: Accepted

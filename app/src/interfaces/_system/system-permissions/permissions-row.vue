@@ -29,12 +29,12 @@ const { t } = useI18n();
 	<tr class="permissions-row" :data-collection="collection.collection">
 		<td class="collection">
 			<div>
-				<span v-tooltip.left="collection.name" class="name">{{ collection.collection }}</span>
-				<span class="shortcuts">
-					<span class="all" @click="emit('setFullAccessAll')">{{ t('all') }}</span>
+				<div v-tooltip.left="collection.name" class="name">{{ collection.collection }}</div>
+				<div class="shortcuts">
+					<button type="button" class="all" @click="emit('setFullAccessAll')">{{ t('all') }}</button>
 					<span class="divider">/</span>
-					<span class="none" @click="emit('setNoAccessAll')">{{ t('none') }}</span>
-				</span>
+					<button type="button" class="none" @click="emit('setNoAccessAll')">{{ t('none') }}</button>
+				</div>
 			</div>
 		</td>
 
@@ -92,27 +92,27 @@ const { t } = useI18n();
 			-12px 0 10px 2px var(--theme--background),
 			-12px 0 12px 2px var(--theme--background);
 
-		span {
-			cursor: pointer;
-
+		.all {
+			&:focus-visible,
 			&:hover {
-				&.all {
-					color: var(--theme--success);
-				}
+				color: var(--theme--success);
+			}
+		}
 
-				&.none {
-					color: var(--theme--danger);
-				}
+		.none {
+			&:focus-visible,
+			&:hover {
+				color: var(--theme--danger);
 			}
 		}
 
 		.divider {
 			margin: 0 6px;
-			cursor: default;
 		}
 	}
 
-	&:hover .shortcuts {
+	&:hover .shortcuts,
+	.shortcuts:focus-within {
 		opacity: 1;
 	}
 
