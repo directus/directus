@@ -6,6 +6,7 @@ import type { ErrorRequestHandler } from 'express';
 import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
+import { omit } from 'lodash-es';
 
 type ApiError = {
 	message: string;
@@ -28,8 +29,10 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 
 	for (const error of receivedErrors) {
 		// In dev mode, if available, expose stack trace under error's extensions data
-		if (getNodeEnv() === 'development' && error instanceof Error && error.stack) {
-			((error as DeepPartial<ApiError>).extensions ??= {})['stack'] = error.stack;
+		const devMode = Boolean(getNodeEnv() === 'development' && error instanceof Error && error.stack)
+
+		if (devMode) {
+			((error as DeepPartial<ApiError>).extensions ??= {})['stack'] = (error as Error).stack;
 		}
 
 		if (isDirectusError(error)) {
@@ -47,7 +50,7 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 			errors.push({
 				message: error.message,
 				extensions: {
-					...(error.extensions ?? {}),
+					...(omit(error.extensions ?? {}, devMode ? '' : 'stack')),
 					// Expose error code under error's extensions data
 					code: error.code,
 				},
