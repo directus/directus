@@ -1,6 +1,5 @@
-import type { AbstractServiceOptions, Item, OperationRaw, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, Item, OperationRaw, PrimaryKey, MutationOptions } from '@directus/types';
 import { getFlowManager } from '../flows.js';
-import type { MutationOptions } from '../types/index.js';
 import { ItemsService } from './items.js';
 
 export class OperationsService extends ItemsService<OperationRaw> {

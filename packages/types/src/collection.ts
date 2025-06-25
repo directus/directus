@@ -1,4 +1,5 @@
 import type { Table } from '@directus/schema';
+import type { RawField, Field } from './fields.js';
 
 type Translations = {
 	language: string;
@@ -33,6 +34,7 @@ export type CollectionMeta = {
 
 export interface Collection {
 	collection: string;
+	fields?: Field[];
 	meta: CollectionMeta | null;
 	schema: Table | null;
 }
@@ -45,3 +47,32 @@ export interface AppCollection extends Collection {
 }
 
 export type CollectionType = 'alias' | 'table' | 'unknown';
+
+export type BaseCollectionMeta = Pick<
+	CollectionMeta,
+	| 'collection'
+	| 'note'
+	| 'hidden'
+	| 'singleton'
+	| 'icon'
+	| 'translations'
+	| 'versioning'
+	| 'item_duplication_fields'
+	| 'accountability'
+	| 'group'
+	| 'system'
+>;
+
+export type RawCollection = {
+	collection: string;
+	fields?: RawField[];
+	schema?: Partial<Table> | null;
+	meta?: Partial<BaseCollectionMeta> | null;
+};
+
+export type RawSchemaCollection = {
+	collection: string;
+	fields?: Field[];
+	meta: BaseCollectionMeta | null;
+	schema: Table | null;
+};

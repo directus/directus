@@ -2,7 +2,8 @@ import { SchemaBuilder } from '@directus/schema-builder';
 import knex, { type Knex } from 'knex';
 import { MockClient, Tracker, createTracker } from 'knex-mock-client';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi, type MockedFunction } from 'vitest';
-import { UserIntegrityCheckFlag, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import { ItemsService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({

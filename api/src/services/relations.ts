@@ -5,11 +5,14 @@ import { createInspector } from '@directus/schema';
 import { systemRelationRows } from '@directus/system-data';
 import type {
 	AbstractServiceOptions,
+	ActionEventParams,
 	Accountability,
 	Query,
+	QueryOptions,
 	Relation,
 	RelationMeta,
 	SchemaOverview,
+	MutationOptions,
 } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type Keyv from 'keyv';
@@ -22,11 +25,10 @@ import emitter from '../emitter.js';
 import { fetchAllowedFieldMap } from '../permissions/modules/fetch-allowed-field-map/fetch-allowed-field-map.js';
 import { fetchAllowedFields } from '../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { ActionEventParams, MutationOptions } from '../types/index.js';
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
-import { ItemsService, type QueryOptions } from './items.js';
+import { ItemsService } from './items.js';
 
 const env = useEnv();
 

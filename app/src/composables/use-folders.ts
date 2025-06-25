@@ -1,19 +1,7 @@
 import { fetchAll } from '@/utils/fetch-all';
+import type { FolderRaw, Folder } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { Ref, computed, ref, watch } from 'vue';
-
-export type FolderRaw = {
-	id: string;
-	name: string;
-	parent: string | null;
-};
-
-export type Folder = {
-	id: string;
-	name: string;
-	parent: string | null;
-	children?: Folder[];
-};
 
 type UsableFolders = {
 	loading: Ref<boolean>;

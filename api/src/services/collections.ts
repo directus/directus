@@ -1,9 +1,19 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
-import type { SchemaInspector, Table } from '@directus/schema';
+import type { SchemaInspector } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-data';
-import type { AbstractServiceOptions, Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
+import type {
+	ActionEventParams,
+	AbstractServiceOptions,
+	Accountability,
+	FieldMeta,
+	RawField,
+	SchemaOverview,
+	RawCollection,
+	RawSchemaCollection,
+	MutationOptions,
+} from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
@@ -16,7 +26,6 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { ActionEventParams, Collection, MutationOptions } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
@@ -25,13 +34,6 @@ import { buildCollectionAndFieldRelations } from './fields/build-collection-and-
 import { getCollectionMetaUpdates } from './fields/get-collection-meta-updates.js';
 import { getCollectionRelationList } from './fields/get-collection-relation-list.js';
 import { ItemsService } from './items.js';
-
-export type RawCollection = {
-	collection: string;
-	fields?: RawField[];
-	schema?: Partial<Table> | null;
-	meta?: Partial<BaseCollectionMeta> | null;
-};
 
 export class CollectionsService {
 	knex: Knex;
@@ -286,7 +288,7 @@ export class CollectionsService {
 	/**
 	 * Read all collections. Currently doesn't support any query.
 	 */
-	async readByQuery(): Promise<Collection[]> {
+	async readByQuery(): Promise<RawSchemaCollection[]> {
 		const env = useEnv();
 
 		const collectionsItemsService = new ItemsService('directus_collections', {
@@ -340,10 +342,10 @@ export class CollectionsService {
 			});
 		}
 
-		const collections: Collection[] = [];
+		const collections: RawSchemaCollection[] = [];
 
 		for (const collectionMeta of meta) {
-			const collection: Collection = {
+			const collection: RawSchemaCollection = {
 				collection: collectionMeta.collection,
 				meta: collectionMeta,
 				schema: tablesInDatabase.find((table) => table.name === collectionMeta.collection) ?? null,
@@ -376,7 +378,7 @@ export class CollectionsService {
 	/**
 	 * Get a single collection by name
 	 */
-	async readOne(collectionKey: string): Promise<Collection> {
+	async readOne(collectionKey: string): Promise<RawSchemaCollection> {
 		const result = await this.readMany([collectionKey]);
 
 		if (result.length === 0) throw new ForbiddenError();
@@ -387,7 +389,7 @@ export class CollectionsService {
 	/**
 	 * Read many collections by name
 	 */
-	async readMany(collectionKeys: string[]): Promise<Collection[]> {
+	async readMany(collectionKeys: string[]): Promise<RawSchemaCollection[]> {
 		if (this.accountability) {
 			await Promise.all(
 				collectionKeys.map((collection) =>
@@ -414,7 +416,7 @@ export class CollectionsService {
 	/**
 	 * Update a single collection by name
 	 */
-	async updateOne(collectionKey: string, data: Partial<Collection>, opts?: MutationOptions): Promise<string> {
+	async updateOne(collectionKey: string, data: Partial<RawSchemaCollection>, opts?: MutationOptions): Promise<string> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -428,7 +430,7 @@ export class CollectionsService {
 				schema: this.schema,
 			});
 
-			const payload = data as Partial<Collection>;
+			const payload = data as Partial<RawSchemaCollection>;
 
 			if (!payload.meta) {
 				return collectionKey;
@@ -481,7 +483,7 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections in a single transaction
 	 */
-	async updateBatch(data: Partial<Collection>[], opts?: MutationOptions): Promise<string[]> {
+	async updateBatch(data: Partial<RawSchemaCollection>[], opts?: MutationOptions): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}
@@ -542,7 +544,11 @@ export class CollectionsService {
 	/**
 	 * Update multiple collections by name
 	 */
-	async updateMany(collectionKeys: string[], data: Partial<Collection>, opts?: MutationOptions): Promise<string[]> {
+	async updateMany(
+		collectionKeys: string[],
+		data: Partial<RawSchemaCollection>,
+		opts?: MutationOptions,
+	): Promise<string[]> {
 		if (this.accountability && this.accountability.admin !== true) {
 			throw new ForbiddenError();
 		}

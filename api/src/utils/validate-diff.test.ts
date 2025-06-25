@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import type { Collection } from '../types/collection.js';
+import type { RawSchemaCollection } from '@directus/types';
 import type {
 	Snapshot,
 	SnapshotDiff,
@@ -46,7 +46,7 @@ describe('should throw accurate error', () => {
 	const baseSnapshot = (partialSnapshot?: Partial<Snapshot>) => {
 		return {
 			hash: 'xyz',
-			collections: [] as Collection[],
+			collections: [] as RawSchemaCollection[],
 			fields: [] as SnapshotField[],
 			relations: [] as SnapshotRelation[],
 			...partialSnapshot,
@@ -55,10 +55,10 @@ describe('should throw accurate error', () => {
 
 	test('creating collection which already exists', () => {
 		const diff = baseDiff({
-			collections: [{ collection: 'test', diff: [{ kind: 'N', rhs: {} as Collection }] }],
+			collections: [{ collection: 'test', diff: [{ kind: 'N', rhs: {} as RawSchemaCollection }] }],
 		});
 
-		const snapshot = baseSnapshot({ collections: [{ collection: 'test' } as Collection] });
+		const snapshot = baseSnapshot({ collections: [{ collection: 'test' } as RawSchemaCollection] });
 
 		expect(() => validateApplyDiff(diff, snapshot)).toThrowError(
 			'Provided diff is trying to create collection "test" but it already exists',
@@ -67,7 +67,7 @@ describe('should throw accurate error', () => {
 
 	test('deleting collection which does not exist', () => {
 		const diff = baseDiff({
-			collections: [{ collection: 'test', diff: [{ kind: 'D', lhs: {} as Collection }] }],
+			collections: [{ collection: 'test', diff: [{ kind: 'D', lhs: {} as RawSchemaCollection }] }],
 		});
 
 		expect(() => validateApplyDiff(diff, baseSnapshot())).toThrowError(

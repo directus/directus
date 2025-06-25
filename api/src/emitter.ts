@@ -1,4 +1,4 @@
-import type { ActionHandler, EventContext, FilterHandler, InitHandler } from '@directus/types';
+import type { ActionHandler, EventContext, FilterHandler, InitHandler, EventMeta } from '@directus/types';
 import ee2 from 'eventemitter2';
 import getDatabase from './database/index.js';
 import { useLogger } from './logger/index.js';
@@ -34,7 +34,7 @@ export class Emitter {
 	public async emitFilter<T>(
 		event: string | string[],
 		payload: T,
-		meta: Record<string, any>,
+		meta: EventMeta,
 		context: EventContext | null = null,
 	): Promise<T> {
 		const events = Array.isArray(event) ? event : [event];
@@ -59,7 +59,7 @@ export class Emitter {
 		return updatedPayload;
 	}
 
-	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext | null = null): void {
+	public emitAction(event: string | string[], meta: EventMeta, context: EventContext | null = null): void {
 		const logger = useLogger();
 		const events = Array.isArray(event) ? event : [event];
 
@@ -71,7 +71,7 @@ export class Emitter {
 		}
 	}
 
-	public async emitInit(event: string, meta: Record<string, any>): Promise<void> {
+	public async emitInit(event: string, meta: EventMeta): Promise<void> {
 		const logger = useLogger();
 
 		try {

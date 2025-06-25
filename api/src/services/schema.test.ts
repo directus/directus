@@ -4,8 +4,7 @@ import knex from 'knex';
 import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { ForbiddenError } from '@directus/errors';
-import type { Accountability } from '@directus/types';
-import type { Collection } from '../types/collection.js';
+import type { Accountability, RawSchemaCollection } from '@directus/types';
 import type { Snapshot, SnapshotDiffWithHash } from '../types/snapshot.js';
 import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
@@ -62,7 +61,7 @@ const testCollectionDiff = {
 				schema: { name: 'test' },
 			},
 		},
-	] satisfies Diff<Collection>[],
+	] satisfies Diff<RawSchemaCollection>[],
 };
 
 beforeAll(() => {

@@ -1,8 +1,7 @@
 import type { KNEX_TYPES } from '@directus/constants';
 import type { Column } from '@directus/schema';
-import type { Field, RawField, Relation, Type } from '@directus/types';
+import type { Field, RawField, Relation, Type, DatabaseClient } from '@directus/types';
 import type { Knex } from 'knex';
-import type { DatabaseClient } from '../../../types/index.js';
 import { getDefaultIndexName } from '../../../utils/get-default-index-name.js';
 import { getDatabaseClient } from '../../index.js';
 import { DatabaseHelper } from '../types.js';

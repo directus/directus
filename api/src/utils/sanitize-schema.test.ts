@@ -1,6 +1,5 @@
-import type { Field, Relation } from '@directus/types';
+import type { Field, Relation, RawSchemaCollection } from '@directus/types';
 import { expect, test, describe } from 'vitest';
-import type { Collection } from '../types/index.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
 
 describe('sanitizeCollection', () => {
@@ -95,7 +94,7 @@ describe('sanitizeCollection', () => {
 			},
 			schema: { name: 'test', catalog: 'test-db' },
 		},
-	] satisfies Collection[])('should only contain name property in collection schema', (testCollection) => {
+	] satisfies RawSchemaCollection[])('should only contain name property in collection schema', (testCollection) => {
 		const result = sanitizeCollection(testCollection);
 
 		expect(result).toEqual({

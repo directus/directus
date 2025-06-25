@@ -36,7 +36,9 @@
 		"vue": "3.5.13"
 	},
 	"peerDependencies": {
+		"@directus/extensions": "workspace:*",
 		"knex": "3",
+		"sharp": "0.33.5",
 		"vue": "^3.4"
 	},
 	"peerDependenciesMeta": {

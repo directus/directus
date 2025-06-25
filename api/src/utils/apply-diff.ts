@@ -1,4 +1,11 @@
-import type { Field, Relation, SchemaOverview } from '@directus/types';
+import type {
+	ActionEventParams,
+	Field,
+	Relation,
+	SchemaOverview,
+	MutationOptions,
+	RawSchemaCollection,
+} from '@directus/types';
 import type { Diff, DiffDeleted, DiffNew } from 'deep-diff';
 import deepDiff from 'deep-diff';
 import type { Knex } from 'knex';
@@ -11,21 +18,14 @@ import { useLogger } from '../logger/index.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
-import type {
-	ActionEventParams,
-	Collection,
-	MutationOptions,
-	Snapshot,
-	SnapshotDiff,
-	SnapshotField,
-} from '../types/index.js';
+import type { Snapshot, SnapshotDiff, SnapshotField } from '../types/index.js';
 import { DiffKind } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
 import { getSchema } from './get-schema.js';
 
 type CollectionDelta = {
 	collection: string;
-	diff: Diff<Collection | undefined>[];
+	diff: Diff<RawSchemaCollection | undefined>[];
 };
 
 const logger = useLogger();
@@ -54,7 +54,7 @@ export async function applyDiff(
 
 		const getNestedCollectionsToCreate = (currentLevelCollection: string) =>
 			snapshotDiff.collections.filter(
-				({ diff }) => (diff[0] as DiffNew<Collection>).rhs?.meta?.group === currentLevelCollection,
+				({ diff }) => (diff[0] as DiffNew<RawSchemaCollection>).rhs?.meta?.group === currentLevelCollection,
 			) as CollectionDelta[];
 
 		const createCollections = async (collections: CollectionDelta[]) => {
@@ -140,13 +140,18 @@ export async function applyDiff(
 		};
 
 		// Finds all collections that need to be created
-		const filterCollectionsForCreation = ({ diff }: { collection: string; diff: Diff<Collection | undefined>[] }) => {
+		const filterCollectionsForCreation = ({
+			diff,
+		}: {
+			collection: string;
+			diff: Diff<RawSchemaCollection | undefined>[];
+		}) => {
 			// Check new collections only
 			const isNewCollection = diff[0]?.kind === DiffKind.NEW;
 			if (!isNewCollection) return false;
 
 			// Create now if no group
-			const groupName = (diff[0] as DiffNew<Collection>).rhs.meta?.group;
+			const groupName = (diff[0] as DiffNew<RawSchemaCollection>).rhs.meta?.group;
 			if (!groupName) return true;
 
 			// Check if parent collection already exists in schema
@@ -177,7 +182,7 @@ export async function applyDiff(
 
 		const collectionsToDelete = snapshotDiff.collections.filter(({ diff }) => {
 			if (diff.length === 0 || diff[0] === undefined) return false;
-			const collectionDiff = diff[0] as DiffDeleted<Collection>;
+			const collectionDiff = diff[0] as DiffDeleted<RawSchemaCollection>;
 			return collectionDiff.kind === DiffKind.DELETE;
 		});
 

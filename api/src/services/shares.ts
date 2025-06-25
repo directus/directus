@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidCredentialsError } from '@directus/errors';
-import type { AbstractServiceOptions, Item, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, Item, PrimaryKey, LoginResult, MutationOptions } from '@directus/types';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
 import type { StringValue } from 'ms';
@@ -8,7 +8,7 @@ import { nanoid } from 'nanoid';
 import { useLogger } from '../logger/index.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { DirectusTokenPayload, LoginResult, MutationOptions, ShareData } from '../types/index.js';
+import type { DirectusTokenPayload, ShareData } from '../types/index.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
 import { getSecret } from '../utils/get-secret.js';
 import { md } from '../utils/md.js';
@@ -140,7 +140,7 @@ export class SharesService extends ItemsService {
 	 * Send a link to the given share ID to the given email(s). Note: you can only send a link to a share
 	 * if you have read access to that particular share
 	 */
-	async invite(payload: { emails: string[]; share: PrimaryKey }) {
+	async invite(payload: { emails: string[]; share: PrimaryKey }): Promise<void> {
 		if (!this.accountability?.user) throw new ForbiddenError();
 
 		const share = await this.readOne(payload.share, { fields: ['collection'] });

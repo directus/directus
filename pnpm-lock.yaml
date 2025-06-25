@@ -1927,12 +1927,18 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
+      '@directus/extensions':
+        specifier: workspace:*
+        version: link:../extensions
       '@directus/schema':
         specifier: workspace:*
         version: link:../schema
       '@types/geojson':
         specifier: 7946.0.16
         version: 7946.0.16
+      sharp:
+        specifier: 0.33.5
+        version: 0.33.5
     devDependencies:
       '@directus/tsconfig':
         specifier: 3.0.0
@@ -22303,7 +22309,7 @@ snapshots:
     dependencies:
       color: 4.2.3
       detect-libc: 2.0.3
-      semver: 7.6.3
+      semver: 7.7.1
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.33.5
       '@img/sharp-darwin-x64': 0.33.5

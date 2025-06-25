@@ -1,7 +1,6 @@
 import type { Column } from '@directus/schema';
-import type { Field, Relation } from '@directus/types';
+import type { Field, Relation, RawSchemaCollection } from '@directus/types';
 import { pick } from 'lodash-es';
-import type { Collection } from '../types/index.js';
 
 /**
  * Pick certain database vendor specific collection properties that should be compared when performing diff
@@ -10,7 +9,7 @@ import type { Collection } from '../types/index.js';
  * @returns sanitized collection
  */
 
-export function sanitizeCollection(collection: Collection | undefined) {
+export function sanitizeCollection(collection: RawSchemaCollection | undefined) {
 	if (!collection) return collection;
 
 	return pick(collection, ['collection', 'fields', 'meta', 'schema.name']);

@@ -1,4 +1,4 @@
-import type { SchemaOverview } from '@directus/types';
+import type { SchemaOverview, RawSchemaCollection } from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
@@ -6,7 +6,7 @@ import getDatabase, { getDatabaseClient } from '../database/index.js';
 import { CollectionsService } from '../services/collections.js';
 import { FieldsService } from '../services/fields.js';
 import { RelationsService } from '../services/relations.js';
-import type { Collection, Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
+import type { Snapshot, SnapshotField, SnapshotRelation } from '../types/index.js';
 import { getSchema } from './get-schema.js';
 import { sanitizeCollection, sanitizeField, sanitizeRelation } from './sanitize-schema.js';
 
@@ -43,7 +43,7 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		version: 1,
 		directus: version,
 		vendor,
-		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as Collection[],
+		collections: collectionsSorted.map((collection) => sanitizeCollection(collection)) as RawSchemaCollection[],
 		fields: fieldsSorted.map((field) => sanitizeField(field)) as SnapshotField[],
 		relations: relationsSorted.map((relation) => sanitizeRelation(relation)) as SnapshotRelation[],
 	};
