@@ -752,7 +752,7 @@ function popoverClickOutsideMiddleware(e: Event) {
 .popover-actions-inner {
 	position: relative;
 	display: flex;
-	justify-content: right;
+	justify-content: end;
 	gap: 8px;
 	inset-block-start: 12px;
 	inset-inline-end: 16px;
