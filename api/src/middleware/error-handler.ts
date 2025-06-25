@@ -29,7 +29,7 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 
 	for (const error of receivedErrors) {
 		// In dev mode, if available, expose stack trace under error's extensions data
-		const devMode = Boolean(getNodeEnv() === 'development' && error instanceof Error && error.stack)
+		const devMode = Boolean(getNodeEnv() === 'development' && error instanceof Error && error.stack);
 
 		if (devMode) {
 			((error as DeepPartial<ApiError>).extensions ??= {})['stack'] = (error as Error).stack;
@@ -50,7 +50,7 @@ export const errorHandler = asyncErrorHandler(async (err, req, res) => {
 			errors.push({
 				message: error.message,
 				extensions: {
-					...(omit(error.extensions ?? {}, devMode ? '' : 'stack')),
+					...omit(error.extensions ?? {}, devMode ? '' : 'stack'),
 					// Expose error code under error's extensions data
 					code: error.code,
 				},
