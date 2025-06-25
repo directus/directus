@@ -371,7 +371,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 <style lang="scss" scoped>
 .private-view {
 	--content-padding: 12px;
-	--content-padding-block-end: 60px;
+	--content-padding-bottom: 60px;
 	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 
 	display: flex;
@@ -590,7 +590,7 @@ const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.sett
 
 	@media (min-width: 600px) {
 		--content-padding: 32px;
-		--content-padding-block-end: 132px;
+		--content-padding-bottom: 132px;
 	}
 
 	&.full-screen {

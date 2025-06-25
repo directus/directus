@@ -366,11 +366,11 @@ async function revert(values: Record<string, any>) {
 
 .v-form {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-block-end: var(--content-padding-block-end);
+	padding-block-end: var(--content-padding-bottom);
 
 	@media (min-width: 600px) {
 		padding: var(--content-padding);
-		padding-block-end: var(--content-padding-block-end);
+		padding-block-end: var(--content-padding-bottom);
 	}
 }
 

@@ -138,7 +138,7 @@ function useValidationScrollToField() {
 
 .overlay-item-content {
 	padding: var(--content-padding);
-	padding-block-end: var(--content-padding-block-end);
+	padding-block-end: var(--content-padding-bottom);
 
 	.preview {
 		margin-block-end: var(--theme--form--row-gap);

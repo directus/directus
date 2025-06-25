@@ -274,7 +274,7 @@ function useTab() {
 
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-block-end);
+	padding-block: 0 var(--content-padding-bottom);
 
 	.grid {
 		@include mixins.form-grid;

@@ -182,7 +182,7 @@ function discardAndLeave() {
 
 .collections-item {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-block-end);
+	padding-block: 0 var(--content-padding-bottom);
 }
 
 .fields {

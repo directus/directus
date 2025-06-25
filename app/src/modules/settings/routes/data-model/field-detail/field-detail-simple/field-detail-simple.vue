@@ -175,7 +175,7 @@ function toggleInterface(id: string) {
 <style scoped lang="scss">
 .content {
 	padding: var(--content-padding);
-	padding-block: 0 var(--content-padding-block-end);
+	padding-block: 0 var(--content-padding-bottom);
 }
 
 .group h2 {
