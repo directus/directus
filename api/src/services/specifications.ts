@@ -11,9 +11,9 @@ import type {
 	Type,
 } from '@directus/types';
 import { getRelation } from '@directus/utils';
-import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
+import hash from 'object-hash';
 import type {
 	OpenAPIObject,
 	ParameterObject,
@@ -97,13 +97,18 @@ class OASSpecsService implements SpecificationSubService {
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
+		const hashedVersion = hash({
+			now: new Date().toISOString(),
+			user: this.accountability?.user,
+		});
+
 		const spec: OpenAPIObject = {
 			openapi: '3.0.1',
 			info: {
 				title: 'Dynamic API Specification',
 				description:
 					'This is a dynamically generated API specification for all endpoints existing on the current project.',
-				version: version,
+				version: hashedVersion,
 			},
 			servers: [
 				{
