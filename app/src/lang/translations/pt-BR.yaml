@@ -110,7 +110,7 @@ field_name_translations: Traduções do Nome do Campo
 enter_password_to_enable_tfa: Digite sua senha para ativar a Autenticação em Duas Etapas
 add_field: Adicionar Campo
 role_name: Nome do Cargo
-policy_name: Nome da política
+policy_name: Nome da política 
 branch: Branch
 leaf: Folha
 indeterminate: Indeterminado
@@ -889,7 +889,7 @@ create_item: Criar item
 display_template: Modelo de exibição
 language_display_template: Modelo de Exibição do Idioma
 translations_display_template: Modelos de Exibição da Aplicação
-n_items_selected: 'Nenhum “item” selecionado | Um “item” selecionado | Itens selecionados'
+n_items_selected: 'Nenhum Item Selecionado | Um Item Selecionado | {n} Itens Selecionados'
 per_page: Por página
 all_files: Todos os arquivos
 my_files: Meus arquivos
@@ -1605,7 +1605,7 @@ continue_label: Continuar
 continue_as: >-
   {name} está autenticado. Se você reconhece esta conta, clique em continuar.
 editing_role: 'Cargo {role}'
-editing_policy: 'Política'
+editing_policy: 'Política {policy}'
 no_permissions: Sem permissão
 permission_add_collection: Adicionar coleção
 creating_webhook: Criando Webhook
