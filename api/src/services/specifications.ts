@@ -91,9 +91,9 @@ class OASSpecsService implements SpecificationSubService {
 		const isDefaultPublicUrl = env['PUBLIC_URL'] === '/';
 		const url = isDefaultPublicUrl && host ? host : (env['PUBLIC_URL'] as string);
 
-		const hashedVersion = hash({ 
-			now: (new Date()).toISOString(),
-			user: this.accountability?.user
+		const hashedVersion = hash({
+			now: new Date().toISOString(),
+			user: this.accountability?.user,
 		});
 
 		const spec: OpenAPIObject = {
