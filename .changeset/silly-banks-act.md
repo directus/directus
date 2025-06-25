@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Fixed duplicate and save for files
+Fixed the “Save as Copy” action for files
