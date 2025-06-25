@@ -6,6 +6,7 @@ import type { Accountability, FieldOverview, Permission, SchemaOverview, Type } 
 import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep, mergeWith } from 'lodash-es';
+import hash from 'object-hash';
 import type {
 	OpenAPIObject,
 	ParameterObject,
@@ -23,7 +24,6 @@ import type { AbstractServiceOptions } from '../types/index.js';
 import { getRelationType } from '../utils/get-relation-type.js';
 import { reduceSchema } from '../utils/reduce-schema.js';
 import { GraphQLService } from './graphql/index.js';
-import hash from 'object-hash';
 
 const env = useEnv();
 

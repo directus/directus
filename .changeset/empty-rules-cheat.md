@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Updated the openAPI spec `info.version`
+Updated `info.version` in the OpenAPI specs
