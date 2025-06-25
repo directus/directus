@@ -2,4 +2,4 @@
 '@directus/api': major
 ---
 
-Fixed manual flows only being triggered with appropiate permissions
+Fixed manual flows to only trigger with appropriate permissions
