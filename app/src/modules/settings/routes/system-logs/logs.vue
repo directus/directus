@@ -314,7 +314,7 @@ function updateCopyButtonPosition() {
 
 	if (!copyButtonEl || !codeMirrorScrollBarEl) return;
 
-	copyButtonEl.style.right = `${Number(codeMirrorScrollBarEl.style.right.replace('px', '')) + 10}px`;
+	copyButtonEl.style.insetInlineEnd = `${Number(codeMirrorScrollBarEl.style.insetInlineEnd.replace('px', '')) + 10}px`;
 }
 
 function processRawLog() {
