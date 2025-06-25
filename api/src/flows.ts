@@ -507,7 +507,6 @@ class FlowManager {
 						['**', 'payload', 'external_identifier'],
 						['**', 'payload', 'auth_data'],
 					],
-					values: this.envs,
 				},
 				getRedactedString,
 			);
