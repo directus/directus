@@ -429,10 +429,32 @@ class FlowManager {
 
 		const handler = this.operations.get(operation.type)!;
 
+		let optionData = keyedData;
+
+		if (operation.type === 'log') {
+			optionData = redactObject(
+				keyedData,
+				{
+					keys: [
+						['**', 'headers', 'authorization'],
+						['**', 'headers', 'cookie'],
+						['**', 'query', 'access_token'],
+						['**', 'payload', 'password'],
+						['**', 'payload', 'token'],
+						['**', 'payload', 'tfa_secret'],
+						['**', 'payload', 'external_identifier'],
+						['**', 'payload', 'auth_data'],
+					],
+					values: this.envs,
+				},
+				getRedactedString,
+			);
+		}
+
 		let options = operation.options;
 
 		try {
-			options = applyOptionsData(options, keyedData);
+			options = applyOptionsData(options, optionData);
 
 			let result = await handler(options, {
 				services,
