@@ -10,6 +10,7 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	ExportFormat,
 	File,
 	Query,
 	SchemaOverview,
@@ -45,8 +46,6 @@ import { set } from 'lodash-es';
 
 const env = useEnv();
 const logger = useLogger();
-
-type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
 export class ImportService {
 	knex: Knex;
