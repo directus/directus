@@ -1,14 +1,14 @@
 import type { Field, FieldMeta } from './fields.js';
 import type { Relation, RelationMeta } from './relations.js';
 import type { Diff } from 'deep-diff';
-import type { Collection } from './collection.js';
+import type { RawSchemaCollection } from './collection.js';
 import type { DatabaseClient } from './database.js';
 
 export type Snapshot = {
 	version: number;
 	directus: string;
 	vendor?: DatabaseClient;
-	collections: Collection[];
+	collections: RawSchemaCollection[];
 	fields: SnapshotField[];
 	relations: SnapshotRelation[];
 };
@@ -21,7 +21,7 @@ export type SnapshotWithHash = Snapshot & { hash: string };
 export type SnapshotDiff = {
 	collections: {
 		collection: string;
-		diff: Diff<Collection | undefined>[];
+		diff: Diff<RawSchemaCollection | undefined>[];
 	}[];
 	fields: {
 		collection: string;
