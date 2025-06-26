@@ -9,4 +9,3 @@ export * from './meta.js';
 export * from './migration.js';
 export * from './revision.js';
 export * from './snapshot.js';
-export * from './webhooks.js';
