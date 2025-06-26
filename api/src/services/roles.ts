@@ -1,10 +1,10 @@
 import { InvalidPayloadError } from '@directus/errors';
 import type { Item, PrimaryKey } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import { clearSystemCache } from '../cache.js';
 import { fetchRolesTree } from '../permissions/lib/fetch-roles-tree.js';
 import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
 import { transaction } from '../utils/transaction.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { AccessService } from './access.js';
 import { PresetsService } from './presets.js';
