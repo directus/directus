@@ -1,4 +1,5 @@
 import { ForbiddenError } from '@directus/errors';
+import type { AbstractServiceOptions } from '@directus/types';
 import {
 	AccessService,
 	ActivityService,
@@ -23,7 +24,6 @@ import {
 	VersionsService,
 	WebhooksService,
 } from '../services/index.js';
-import type { AbstractServiceOptions } from '../types/services.js';
 
 /**
  * Select the correct service for the given collection. This allows the individual services to run

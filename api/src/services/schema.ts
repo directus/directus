@@ -1,14 +1,8 @@
-import type { Accountability } from '@directus/types';
+import type { AbstractServiceOptions, Accountability } from '@directus/types';
 import type { Knex } from 'knex';
 import getDatabase from '../database/index.js';
 import { ForbiddenError } from '@directus/errors';
-import type {
-	AbstractServiceOptions,
-	Snapshot,
-	SnapshotDiff,
-	SnapshotDiffWithHash,
-	SnapshotWithHash,
-} from '../types/index.js';
+import type { Snapshot, SnapshotDiff, SnapshotDiffWithHash, SnapshotWithHash } from '../types/index.js';
 import { applyDiff } from '../utils/apply-diff.js';
 import { getSnapshotDiff } from '../utils/get-snapshot-diff.js';
 import { getSnapshot } from '../utils/get-snapshot.js';
