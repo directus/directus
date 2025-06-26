@@ -28,6 +28,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
 		"@types/node": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",

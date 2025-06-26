@@ -1235,6 +1235,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/ms':
         specifier: 2.1.0
         version: 2.1.0
@@ -1655,6 +1658,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/node':
         specifier: 'catalog:'
         version: 22.13.8
