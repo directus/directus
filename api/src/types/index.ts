@@ -1,7 +1,6 @@
 export * from './ast.js';
 export * from './auth.js';
 export * from './collection.js';
-export * from './database.js';
 export * from './events.js';
 export * from './graphql.js';
 export * from './meta.js';
