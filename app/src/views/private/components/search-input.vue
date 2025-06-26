@@ -210,7 +210,7 @@ function emitValue() {
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: calc((42px + var(--theme--border-width) * 2) / 2);
 	transition:
-		width var(--slow) var(--transition),
+		inline-size var(--slow) var(--transition),
 		border-end-start-radius var(--fast) var(--transition),
 		border-end-end-radius var(--fast) var(--transition);
 

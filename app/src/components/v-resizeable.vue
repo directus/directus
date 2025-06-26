@@ -187,7 +187,7 @@ function onPointerUp() {
 
 	&.transition {
 		:slotted(:first-child) {
-			transition: width var(--slow) var(--transition);
+			transition: inline-size var(--slow) var(--transition);
 		}
 	}
 

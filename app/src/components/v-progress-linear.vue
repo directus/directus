@@ -94,7 +94,7 @@ const color = computed(() => {
 		inset-inline-start: 0;
 		block-size: 100%;
 		background-color: var(--v-progress-linear-color, var(--theme--foreground));
-		transition: width 200ms ease-in-out;
+		transition: inline-size 200ms ease-in-out;
 	}
 
 	&.absolute {
