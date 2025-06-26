@@ -380,7 +380,7 @@ function useUrls() {
 		padding: 0 8px;
 		transition:
 			padding var(--medium) var(--transition),
-			height var(--medium) var(--transition);
+			block-size var(--medium) var(--transition);
 
 		:deep(.v-button.secondary) {
 			--v-button-color: var(--theme--navigation--modules--button--foreground-active);
