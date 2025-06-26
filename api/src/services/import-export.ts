@@ -10,6 +10,7 @@ import type {
 	AbstractServiceOptions,
 	Accountability,
 	ActionEventParams,
+	ExportFormat,
 	File,
 	Query,
 	SchemaOverview,
@@ -44,8 +45,6 @@ import { parseFields } from '../database/get-ast-from-query/lib/parse-fields.js'
 
 const env = useEnv();
 const logger = useLogger();
-
-type ExportFormat = 'csv' | 'json' | 'xml' | 'yaml';
 
 export class ImportService {
 	knex: Knex;

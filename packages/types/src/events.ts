@@ -16,10 +16,12 @@ export type EventContext = {
 // 	collection: string | null;
 // };
 
-export type EventMeta = Record<string, any>;
-
-export type FilterHandler<T = unknown> = (payload: T, meta: EventMeta, context: EventContext) => T | Promise<T>;
-export type ActionHandler = (meta: EventMeta, context: EventContext) => void;
-export type InitHandler = (meta: EventMeta) => void;
+export type FilterHandler<T = unknown> = (
+	payload: T,
+	meta: Record<string, any>,
+	context: EventContext,
+) => T | Promise<T>;
+export type ActionHandler = (meta: Record<string, any>, context: EventContext) => void;
+export type InitHandler = (meta: Record<string, any>) => void;
 export type ScheduleHandler = PromiseCallback;
 export type EmbedHandler = () => string;
