@@ -13,6 +13,7 @@ import type {
 	Accountability,
 	Field,
 	FieldMeta,
+	MutationOptions,
 	RawField,
 	SchemaOverview,
 	Type,
@@ -31,7 +32,7 @@ import emitter from '../emitter.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { ActionEventParams, MutationOptions } from '../types/index.js';
+import type { ActionEventParams } from '../types/index.js';
 import getDefaultValue from '../utils/get-default-value.js';
 import { getSystemFieldRowsWithAuthProviders } from '../utils/get-field-system-rows.js';
 import getLocalType from '../utils/get-local-type.js';
