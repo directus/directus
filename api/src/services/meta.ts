@@ -6,6 +6,7 @@ import applyQuery from '../database/run-ast/lib/apply-query/index.js';
 import { fetchPermissions } from '../permissions/lib/fetch-permissions.js';
 import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { getCases } from '../permissions/modules/process-ast/lib/get-cases.js';
+import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import type { AbstractServiceOptions } from '../types/index.js';
 
 export class MetaService {
@@ -46,12 +47,20 @@ export class MetaService {
 		let permissions: Permission[] = [];
 
 		if (this.accountability && this.accountability.admin !== true) {
-			const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
+			const context = { knex: this.knex, schema: this.schema };
 
-			permissions = await fetchPermissions(
-				{ action: 'read', accountability: this.accountability, policies },
-				{ schema: this.schema, knex: this.knex },
+			await validateAccess(
+				{
+					accountability: this.accountability,
+					action: 'read',
+					collection,
+				},
+				context,
 			);
+
+			const policies = await fetchPolicies(this.accountability, context);
+
+			permissions = await fetchPermissions({ action: 'read', accountability: this.accountability, policies }, context);
 		}
 
 		const { cases } = getCases(collection, permissions, []);
