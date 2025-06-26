@@ -45,7 +45,7 @@ export class MetaService {
 	async filterCount(collection: string, query: Query): Promise<number> {
 		let permissions: Permission[] = [];
 
-		if (this.accountability && !this.accountability.admin) {
+		if (this.accountability && this.accountability.admin !== true) {
 			const policies = await fetchPolicies(this.accountability, { schema: this.schema, knex: this.knex });
 
 			permissions = await fetchPermissions(
