@@ -9,6 +9,7 @@ import type {
 	Query,
 	SchemaOverview,
 } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
 import { unflatten } from 'flat';
@@ -22,7 +23,6 @@ import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
 import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 
 type Action = 'create' | 'read' | 'update';
 

@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { ForbiddenError, InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import type { Item, PrimaryKey, RegisterUserInput, User } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import { getSimpleHash, toArray, validatePayload } from '@directus/utils';
 import { FailedValidationError, joiValidationErrorItemToErrorExtensions } from '@directus/validation';
 import Joi from 'joi';
@@ -19,7 +20,6 @@ import isUrlAllowed from '../utils/is-url-allowed.js';
 import { verifyJWT } from '../utils/jwt.js';
 import { stall } from '../utils/stall.js';
 import { Url } from '../utils/url.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService } from './items.js';
 import { MailService } from './mail/index.js';
 import { SettingsService } from './settings.js';

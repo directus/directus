@@ -1,7 +1,7 @@
 import type { DirectusError } from '@directus/errors';
 import type { EventContext, PrimaryKey } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import type { MutationTracker } from '../services/items.js';
-import type { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 
 export type MutationOptions = {
 	/**

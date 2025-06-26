@@ -2,12 +2,12 @@ import { InvalidPayloadError, RecordNotUniqueError } from '@directus/errors';
 import { randomUUID } from '@directus/random';
 import { SchemaBuilder } from '@directus/schema-builder';
 import type { Accountability } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import knex from 'knex';
 import { MockClient, createTracker } from 'knex-mock-client';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { validateRemainingAdminUsers } from '../permissions/modules/validate-remaining-admin/validate-remaining-admin-users.js';
 import type { MutationOptions } from '../types/items.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
 import { ItemsService, MailService, UsersService } from './index.js';
 
 vi.mock('../../src/database/index', () => ({
