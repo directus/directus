@@ -265,7 +265,7 @@ function usePopoverWidth() {
 					class="popover-rect"
 					:style="{
 						inlineSize: `${position.width}px`,
-						height: `${position.height}px`,
+						blockSize: `${position.height}px`,
 						transform: `translate(${position.left}px,${position.top}px)`,
 					}"
 				></div>

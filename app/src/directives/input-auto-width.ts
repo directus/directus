@@ -45,7 +45,7 @@ function copyStyles(el: AutoWidthElement) {
 		insetBlockStart: '0',
 		insetInlineStart: '0',
 		visibility: 'hidden',
-		height: '0',
+		blockSize: '0',
 		overflow: 'hidden',
 		whiteSpace: 'pre',
 		fontSize: styles.fontSize,

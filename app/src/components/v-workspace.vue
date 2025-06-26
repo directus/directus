@@ -96,14 +96,14 @@ const workspaceBoxSize = computed(() => {
 	<div
 		class="v-workspace"
 		:class="{ editing: editMode }"
-		:style="{ inlineSize: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
+		:style="{ inlineSize: workspaceBoxSize.width + 'px', blockSize: workspaceBoxSize.height + 'px' }"
 	>
 		<div
 			class="workspace"
 			:style="{
 				transform: `scale(${zoomScale})`,
 				inlineSize: workspaceSize.width + 'px',
-				height: workspaceSize.height + 'px',
+				blockSize: workspaceSize.height + 'px',
 			}"
 		>
 			<template v-if="!$slots.tile">

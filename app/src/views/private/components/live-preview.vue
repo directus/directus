@@ -75,7 +75,7 @@ const iframeViewStyle = computed(() => {
 
 		if (paddingHeight < 48) {
 			const iframeViewHeight = 48 + height.value * zoom.value + 48;
-			style.height = `${iframeViewHeight}px`;
+			style.blockSize = `${iframeViewHeight}px`;
 		}
 	}
 
@@ -320,7 +320,7 @@ function useUrls() {
 					class="resize-handle"
 					:style="{
 						inlineSize: width ? `${width}px` : '100%',
-						height: height ? `${height}px` : '100%',
+						blockSize: height ? `${height}px` : '100%',
 						resize: fullscreen ? 'none' : 'both',
 						transform: `scale(${zoom})`,
 						transformOrigin: zoom >= 1 ? 'top left' : 'center center',
