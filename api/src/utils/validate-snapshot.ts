@@ -4,7 +4,7 @@ import { ALIAS_TYPES } from '../constants.js';
 import { getDatabaseClient } from '../database/index.js';
 import { InvalidPayloadError } from '@directus/errors';
 import type { Snapshot } from '@directus/types';
-import { DatabaseClients } from '../types/index.js';
+import { DatabaseClients } from '@directus/types';
 import { version } from 'directus/version';
 
 const snapshotJoiSchema = Joi.object({
