@@ -6,6 +6,7 @@ import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-
 import type {
 	AbstractServiceOptions,
 	Accountability,
+	ActionEventParams,
 	FieldMeta,
 	MutationOptions,
 	RawField,
@@ -23,7 +24,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { ActionEventParams, Collection } from '../types/index.js';
+import type { Collection } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
