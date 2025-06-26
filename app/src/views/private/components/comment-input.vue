@@ -346,7 +346,7 @@ function pressedEnter() {
 
 .v-template-input {
 	transition:
-		height var(--fast) var(--transition),
+		block-size var(--fast) var(--transition),
 		padding var(--fast) var(--transition);
 }
 

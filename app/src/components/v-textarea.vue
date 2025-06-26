@@ -109,7 +109,7 @@ function trimIfEnabled() {
 
 	&.expand-on-focus {
 		block-size: var(--theme--form--field--input--height);
-		transition: height var(--medium) var(--transition);
+		transition: block-size var(--medium) var(--transition);
 
 		.append,
 		.prepend {

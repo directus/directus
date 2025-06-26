@@ -315,7 +315,7 @@ img {
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
-		transition: height var(--fast) var(--transition);
+		transition: block-size var(--fast) var(--transition);
 	}
 
 	.actions {
