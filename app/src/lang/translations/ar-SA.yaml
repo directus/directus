@@ -1270,6 +1270,7 @@ fields:
     status: حالة
     status_draft: مسوّدة
     status_invited: مَدعُوّ
+    status_unverified: غير مؤكد
     status_active: مفعل
     status_suspended: معلّق
     status_archived: مؤرشف
