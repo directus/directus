@@ -1,7 +1,7 @@
-import type { Item, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, Item, PrimaryKey } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { clearSystemCache } from '../cache.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import type { MutationOptions } from '../types/index.js';
 import { ItemsService } from './items.js';
 
 export class AccessService extends ItemsService {
