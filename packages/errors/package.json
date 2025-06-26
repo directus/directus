@@ -33,6 +33,7 @@
 	"devDependencies": {
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
 		"@types/ms": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",
