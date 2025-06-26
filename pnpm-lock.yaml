@@ -2007,10 +2007,19 @@ importers:
       '@types/geojson':
         specifier: 7946.0.16
         version: 7946.0.16
+      deep-diff:
+        specifier: 1.0.2
+        version: 1.0.2
+      sharp:
+        specifier: 0.33.5
+        version: 0.33.5
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@types/deep-diff':
+        specifier: 1.0.2
+        version: 1.0.2
       knex:
         specifier: 3.1.0
         version: 3.1.0(mysql2@3.12.0)(pg@8.13.3)(sqlite3@5.1.7)(tedious@18.6.1)
@@ -5688,6 +5697,9 @@ packages:
 
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
+
+  '@types/deep-diff@1.0.2':
+    resolution: {integrity: sha512-WD2O611C7Oz7RSwKbSls8LaznKfWfXh39CHY9Amd8FhQz+NJRe20nUHhYpOopVq9M2oqDZd4L6AzqJIXQycxiA==}
 
   '@types/deep-diff@1.0.5':
     resolution: {integrity: sha512-PQyNSy1YMZU1hgZA5tTYfHPpUAo9Dorn1PZho2/budQLfqLu3JIP37JAavnwYpR1S2yFZTXa3hxaE4ifGW5jaA==}
@@ -17512,6 +17524,8 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
 
+  '@types/deep-diff@1.0.2': {}
+
   '@types/deep-diff@1.0.5': {}
 
   '@types/deep-eql@4.0.2': {}
@@ -24433,7 +24447,7 @@ snapshots:
     dependencies:
       color: 4.2.3
       detect-libc: 2.0.3
-      semver: 7.6.3
+      semver: 7.7.1
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.33.5
       '@img/sharp-darwin-x64': 0.33.5
