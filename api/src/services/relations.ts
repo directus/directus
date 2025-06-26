@@ -9,6 +9,7 @@ import type {
 	ActionEventParams,
 	MutationOptions,
 	Query,
+	QueryOptions,
 	Relation,
 	RelationMeta,
 	SchemaOverview,
@@ -27,7 +28,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import { getDefaultIndexName } from '../utils/get-default-index-name.js';
 import { getSchema } from '../utils/get-schema.js';
 import { transaction } from '../utils/transaction.js';
-import { ItemsService, type QueryOptions } from './items.js';
+import { ItemsService } from './items.js';
 
 const env = useEnv();
 

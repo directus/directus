@@ -7,6 +7,7 @@ import type {
 	Permission,
 	PrimaryKey,
 	Query,
+	QueryOptions,
 } from '@directus/types';
 import { uniq } from 'lodash-es';
 import { clearSystemCache } from '../cache.js';
@@ -15,7 +16,6 @@ import { fetchPolicies } from '../permissions/lib/fetch-policies.js';
 import { withAppMinimalPermissions } from '../permissions/lib/with-app-minimal-permissions.js';
 import type { ValidateAccessOptions } from '../permissions/modules/validate-access/validate-access.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { QueryOptions } from './items.js';
 import { ItemsService } from './items.js';
 
 export class PermissionsService extends ItemsService {
