@@ -6,6 +6,7 @@ import type {
 	Alterations,
 	FieldOverview,
 	Item,
+	MutationOptions,
 	PrimaryKey,
 	Query,
 	SchemaOverview,
@@ -22,7 +23,7 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import type { ActionEventParams, MutationOptions } from '../types/index.js';
+import type { ActionEventParams } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
 
 type Action = 'create' | 'read' | 'update';

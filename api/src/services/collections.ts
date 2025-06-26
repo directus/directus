@@ -3,7 +3,14 @@ import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type { SchemaInspector, Table } from '@directus/schema';
 import { createInspector } from '@directus/schema';
 import { systemCollectionRows, type BaseCollectionMeta } from '@directus/system-data';
-import type { AbstractServiceOptions, Accountability, FieldMeta, RawField, SchemaOverview } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	Accountability,
+	FieldMeta,
+	MutationOptions,
+	RawField,
+	SchemaOverview,
+} from '@directus/types';
 import { addFieldFlag } from '@directus/utils';
 import type Keyv from 'keyv';
 import type { Knex } from 'knex';
@@ -16,7 +23,7 @@ import getDatabase, { getSchemaInspector } from '../database/index.js';
 import emitter from '../emitter.js';
 import { fetchAllowedCollections } from '../permissions/modules/fetch-allowed-collections/fetch-allowed-collections.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type { ActionEventParams, Collection, MutationOptions } from '../types/index.js';
+import type { ActionEventParams, Collection } from '../types/index.js';
 import { getSchema } from '../utils/get-schema.js';
 import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';

@@ -1,9 +1,9 @@
 import { ErrorCode, createError, type DirectusError } from '@directus/errors';
 import type { Bus } from '@directus/memory';
-import type { AbstractServiceOptions, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, MutationOptions, PrimaryKey } from '@directus/types';
 import { useBus } from '../bus/index.js';
 import { useLogger } from '../logger/index.js';
-import type { MutationOptions, Webhook } from '../types/index.js';
+import type { Webhook } from '../types/index.js';
 import { ItemsService } from './items.js';
 
 const logger = useLogger();
