@@ -1,4 +1,3 @@
-export * from './assets.js';
 export * from './ast.js';
 export * from './auth.js';
 export * from './collection.js';
