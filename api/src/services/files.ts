@@ -8,6 +8,7 @@ import type {
 	MutationOptions,
 	PrimaryKey,
 	Query,
+	QueryOptions
 } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
@@ -26,7 +27,7 @@ import { validateAccess } from '../permissions/modules/validate-access/validate-
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
-import { ItemsService, type QueryOptions } from './items.js';
+import { ItemsService } from './items.js';
 
 const env = useEnv();
 const logger = useLogger();

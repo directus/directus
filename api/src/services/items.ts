@@ -9,9 +9,9 @@ import type {
 	ActionEventParams,
 	Item as AnyItem,
 	MutationOptions,
-	PermissionsAction,
 	PrimaryKey,
 	Query,
+	QueryOptions,
 	SchemaOverview,
 } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
@@ -35,12 +35,6 @@ import { validateUserCountIntegrity } from '../utils/validate-user-count-integri
 import { PayloadService } from './payload.js';
 
 const env = useEnv();
-
-export type QueryOptions = {
-	stripNonRequested?: boolean;
-	permissionsAction?: PermissionsAction;
-	emitEvents?: boolean;
-};
 
 export type MutationTracker = {
 	trackMutations: (count: number) => void;
