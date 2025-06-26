@@ -3,7 +3,7 @@ import type { Knex } from 'knex';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
-import type { Driver } from '../../types/index.js';
+import type { Driver } from '@directus/types';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
