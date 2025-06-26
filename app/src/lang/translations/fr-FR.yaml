@@ -760,7 +760,7 @@ errors:
   VALUE_OUT_OF_RANGE: La valeur est en dehors des limites
   VALUE_TOO_LONG: La valeur est trop longue
 security: Sécurité
-value_hashed: Valeur cryptée sécurisée
+value_hashed: Valeur chiffrée sécurisée
 bookmark_name: Nom du favori...
 create_bookmark: Ajouter comme favori
 edit_bookmark: Modifier le favori
