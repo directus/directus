@@ -1,10 +1,10 @@
 import { InvalidPayloadError } from '@directus/errors';
-import type { Policy, PrimaryKey } from '@directus/types';
+import type { AbstractServiceOptions, Policy, PrimaryKey } from '@directus/types';
 import { UserIntegrityCheckFlag } from '@directus/types';
 import { getMatch } from 'ip-matching';
 import { clearSystemCache } from '../cache.js';
 import { clearCache as clearPermissionsCache } from '../permissions/cache.js';
-import type { AbstractServiceOptions, MutationOptions } from '../types/index.js';
+import type { MutationOptions } from '../types/index.js';
 import { ItemsService } from './items.js';
 
 export class PoliciesService extends ItemsService<Policy> {

@@ -1,12 +1,5 @@
-import type { Accountability, Item, PrimaryKey, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Item, PrimaryKey, Query } from '@directus/types';
 import type { Knex } from 'knex';
-
-export type AbstractServiceOptions = {
-	knex?: Knex | undefined;
-	accountability?: Accountability | null | undefined;
-	schema: SchemaOverview;
-	nested?: string[];
-};
 
 export interface AbstractService {
 	knex: Knex;

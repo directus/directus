@@ -6,7 +6,7 @@ import {
 	UnsupportedMediaTypeError,
 } from '@directus/errors';
 import { isSystemCollection } from '@directus/system-data';
-import type { Accountability, File, Query, SchemaOverview } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, File, Query, SchemaOverview } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { createTmpFile } from '@directus/utils/node';
 import { queue } from 'async';
@@ -24,13 +24,7 @@ import getDatabase from '../database/index.js';
 import emitter from '../emitter.js';
 import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
-import type {
-	AbstractServiceOptions,
-	ActionEventParams,
-	FunctionFieldNode,
-	FieldNode,
-	NestedCollectionNode,
-} from '../types/index.js';
+import type { ActionEventParams, FunctionFieldNode, FieldNode, NestedCollectionNode } from '../types/index.js';
 import { getDateFormatted } from '../utils/get-date-formatted.js';
 import { getService } from '../utils/get-service.js';
 import { transaction } from '../utils/transaction.js';
