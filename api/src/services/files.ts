@@ -1,7 +1,14 @@
 import { useEnv } from '@directus/env';
 import { ContentTooLargeError, InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
 import formatTitle from '@directus/format-title';
-import type { AbstractServiceOptions, BusboyFileStream, File, PrimaryKey, Query } from '@directus/types';
+import type {
+	AbstractServiceOptions,
+	BusboyFileStream,
+	File,
+	MutationOptions,
+	PrimaryKey,
+	Query,
+} from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
 import encodeURL from 'encodeurl';
@@ -18,7 +25,6 @@ import { useLogger } from '../logger/index.js';
 import { validateAccess } from '../permissions/modules/validate-access/validate-access.js';
 import { getAxios } from '../request/index.js';
 import { getStorage } from '../storage/index.js';
-import type { MutationOptions } from '../types/index.js';
 import { extractMetadata } from './files/lib/extract-metadata.js';
 import { ItemsService, type QueryOptions } from './items.js';
 
