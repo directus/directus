@@ -6,7 +6,6 @@ import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
 import type { RawSchemaCollection, RawCollection } from './collection.js';
-// import type { ActionHandler } from './events.js';
 import type { Field, Type, RawField } from './fields.js';
 import type { BusboyFileStream, File } from './files.js';
 import type { FlowRaw } from './flows.js';
@@ -20,13 +19,11 @@ import type { PayloadAction, PayloadServiceProcessRelationResult } from './paylo
 import type { Aggregate, Query } from './query.js';
 import type { FieldOverview } from './schema.js';
 import type { Range, Stat } from './storage.js';
-// import type { DeepPartial } from './misc.js';
 import type { OperationRaw } from './flows.js';
 import type { Relation } from './relations.js';
 import type { RegisterUserInput } from './users.js';
 import type { Snapshot, SnapshotDiffWithHash, SnapshotDiff, SnapshotWithHash } from './snapshot.js';
 import type { Webhook } from './webhooks.js';
-// import type { WebSocketEvent } from './websockets.js';
 
 export type AbstractServiceOptions = {
 	knex?: Knex | undefined;
@@ -129,19 +126,6 @@ interface CollectionsService {
 	 */
 	deleteMany(collectionKeys: string[], opts?: MutationOptions): Promise<string[]>;
 }
-
-/**
- * The ExtensionsService
- */
-// interface ExtensionsService {
-// 	install(extensionId: string, versionId: string): Promise<void>;
-// 	uninstall(id: string): Promise<void>;
-// 	reinstall(id: string): Promise<void>;
-// 	readAll(): Promise<ApiOutput[]>;
-// 	readOne(id: string): Promise<ApiOutput>;
-// 	updateOne(id: string, data: DeepPartial<ApiOutput>): Promise<ApiOutput>;
-// 	deleteOne(id: string): Promise<void>;
-// }
 
 /**
  * The ExportService
@@ -359,20 +343,6 @@ interface SharesService {
 }
 
 /**
- * The SpecificationService
- * Pass in `OpenAPIObject` or `GraphQLSchema` as type `T` to generate OpenAPI or GraphQL specifications respectively.
- */
-
-// interface SpecificationService<T> {
-// 	oas: {
-// 		generate(host?: string): Promise<T>;
-// 	};
-// 	graphql: {
-// 		generate(scope: 'items' | 'system'): Promise<string | T | null>;
-// 	};
-// }
-
-/**
  * The TFAService
  */
 interface TFAService {
@@ -412,17 +382,6 @@ interface VersionsService {
 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
 	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
 }
-
-/**
- * The WebSocketService
- * Pass in `WM` for the WebSocket message type and `WC` for the WebSocket client type.
- */
-// interface WebSocketService<WM, WC> {
-// 	on(event: WebSocketEvent, callback: ActionHandler): void;
-// 	off(event: WebSocketEvent, callback: ActionHandler): void;
-// 	broadcast(message: string | WM, filter?: { user?: string; role?: string }): void;
-// 	clients(): Set<WC>;
-// }
 
 export interface AbstractService<T extends Item = Item> {
 	knex: Knex;
@@ -553,7 +512,7 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The ExtensionsService
 	 */
-	// ExtensionsService: new (options: AbstractServiceOptions) => ExtensionsService;
+	ExtensionsService: new (options: AbstractServiceOptions) => any;
 	/**
 	 * The FieldsService
 	 */
@@ -573,7 +532,7 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The GraphQLService
 	 */
-	// GraphQLService: new (options: AbstractServiceOptions) => any;
+	GraphQLService: new (options: AbstractServiceOptions) => any;
 	/**
 	 * The ImportService
 	 */
@@ -649,7 +608,7 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The SpecificationService
 	 */
-	// SpecificationService: new <ST>(options: AbstractServiceOptions) => AbstractSpecificationService<ST>;
+	SpecificationService: new (options: AbstractServiceOptions) => any;
 	/**
 	 * The TFAService
 	 */
@@ -677,5 +636,5 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The WebSocketService
 	 */
-	// WebSocketService: new <WM, WC>() => AbstractWebSocketService<WM, WC>;
+	WebSocketService: new () => any;
 }

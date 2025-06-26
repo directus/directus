@@ -9,13 +9,6 @@ export type EventContext = {
 	accountability: Accountability | null;
 };
 
-// @see https://directus.io/docs/guides/extensions/api-extensions/hooks#filter-events to build out better types
-// export type EventMeta = {
-// 	payload: Item | null;
-// 	event: string;
-// 	collection: string | null;
-// };
-
 export type FilterHandler<T = unknown> = (
 	payload: T,
 	meta: Record<string, any>,
