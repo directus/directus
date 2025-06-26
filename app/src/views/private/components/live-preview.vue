@@ -66,7 +66,7 @@ const iframeViewStyle = computed(() => {
 
 		if (paddingWidth < 48) {
 			const iframeViewWidth = 48 + width.value * zoom.value + 48;
-			style.width = `${iframeViewWidth}px`;
+			style.inlineSize = `${iframeViewWidth}px`;
 		}
 
 		const paddingHeight = (livePreviewSize.height.value - 44 - height.value * zoom.value) / 2;
@@ -319,7 +319,7 @@ function useUrls() {
 					ref="resizeHandle"
 					class="resize-handle"
 					:style="{
-						width: width ? `${width}px` : '100%',
+						inlineSize: width ? `${width}px` : '100%',
 						height: height ? `${height}px` : '100%',
 						resize: fullscreen ? 'none' : 'both',
 						transform: `scale(${zoom})`,

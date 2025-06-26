@@ -210,7 +210,7 @@ function toggleManualSort() {
 			</template>
 
 			<template #item="{ element: header }">
-				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ width: header.width + 'px' }">
+				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ inlineSize: header.width + 'px' }">
 					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
 							<div class="content reorder-handle">

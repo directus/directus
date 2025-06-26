@@ -96,13 +96,13 @@ const workspaceBoxSize = computed(() => {
 	<div
 		class="v-workspace"
 		:class="{ editing: editMode }"
-		:style="{ width: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
+		:style="{ inlineSize: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
 	>
 		<div
 			class="workspace"
 			:style="{
 				transform: `scale(${zoomScale})`,
-				width: workspaceSize.width + 'px',
+				inlineSize: workspaceSize.width + 'px',
 				height: workspaceSize.height + 'px',
 			}"
 		>

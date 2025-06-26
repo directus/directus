@@ -76,7 +76,7 @@ watch(
 
 		const finalWidth = width > maxWidth ? maxWidth : width;
 
-		target.style.width = `${finalWidth}px`;
+		target.style.inlineSize = `${finalWidth}px`;
 	},
 	{ immediate: true },
 );

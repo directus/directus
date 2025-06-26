@@ -159,7 +159,7 @@ function getColor(input?: number) {
 						v-if="row[aggregateFunction]?.[aggregateField]"
 						class="metric-bar"
 						:style="{
-							width: widthOfRow(row),
+							inlineSize: widthOfRow(row),
 							'background-color': `${getColor(row[aggregateFunction]?.[aggregateField])}50`,
 						}"
 					>

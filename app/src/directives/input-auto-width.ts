@@ -34,7 +34,7 @@ function updateWidth(el: AutoWidthElement) {
 	const value = el.value || el.placeholder;
 	el.shadow.textContent = value;
 
-	el.style.width = `${el.shadow.scrollWidth}px`;
+	el.style.inlineSize = `${el.shadow.scrollWidth}px`;
 }
 
 function copyStyles(el: AutoWidthElement) {

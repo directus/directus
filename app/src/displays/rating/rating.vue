@@ -26,7 +26,7 @@ const starCount = computed(() => {
 });
 
 const ratingPercentage = computed(() => ({
-	width: (Number(props.value) / starCount.value) * 100 + '%',
+	inlineSize: (Number(props.value) / starCount.value) * 100 + '%',
 }));
 </script>
 

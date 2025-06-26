@@ -7,7 +7,7 @@ interface HTMLExpandElement extends HTMLElement {
 		visibility: string;
 		overflow: string;
 		height?: string | null;
-		width?: string | null;
+		inlineSize?: string | null;
 	};
 }
 
@@ -27,7 +27,7 @@ export default function (
 		...args: any[]
 	) => void,
 ): Record<string, any> {
-	const sizeProperty = xAxis ? 'width' : ('height' as 'width' | 'height');
+	const sizeProperty = xAxis ? 'inlineSize' : ('height' as 'inlineSize' | 'height');
 	const offsetProperty = `offset${capitalize(sizeProperty)}` as 'offsetHeight' | 'offsetWidth';
 
 	return {

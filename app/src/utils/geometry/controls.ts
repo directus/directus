@@ -195,7 +195,7 @@ export class BoxSelectControl {
 
 	updateBoxStyle(style: { width: string; height: string; transform: string }): void {
 		this.boxElement.style.transform = style.transform;
-		this.boxElement.style.width = style.width;
+		this.boxElement.style.inlineSize = style.width;
 		this.boxElement.style.height = style.height;
 	}
 }

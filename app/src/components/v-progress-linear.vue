@@ -60,7 +60,7 @@ const color = computed(() => {
 		<div
 			class="inner"
 			:style="{
-				width: value + '%',
+				inlineSize: value + '%',
 			}"
 		/>
 		<slot :value="value" />
