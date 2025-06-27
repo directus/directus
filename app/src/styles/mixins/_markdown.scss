@@ -1,158 +1,158 @@
 @mixin markdown {
-    :first-child {
-        margin-block-start: 0;
-    }
+	:first-child {
+		margin-block-start: 0;
+	}
 
-    :last-child {
-        margin-block-end: 0;
-    }
+	:last-child {
+		margin-block-end: 0;
+	}
 
-    h1 {
-        margin-block: 1em 0;
-        color: var(--theme--foreground-accent);
-        font-weight: 700;
-        font-size: 36px;
-        line-height: 46px;
-    }
+	h1 {
+		margin-block: 1em 0;
+		color: var(--theme--foreground-accent);
+		font-weight: 700;
+		font-size: 36px;
+		line-height: 46px;
+	}
 
-    h2 {
-        margin-block: 1.25em 0;
-        color: var(--theme--foreground-accent);
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 34px;
-    }
+	h2 {
+		margin-block: 1.25em 0;
+		color: var(--theme--foreground-accent);
+		font-weight: 700;
+		font-size: 24px;
+		line-height: 34px;
+	}
 
-    h3 {
-        margin-block: 1.25em 0;
-        color: var(--theme--foreground-accent);
-        font-weight: 700;
-        font-size: 19px;
-        line-height: 29px;
-    }
+	h3 {
+		margin-block: 1.25em 0;
+		color: var(--theme--foreground-accent);
+		font-weight: 700;
+		font-size: 19px;
+		line-height: 29px;
+	}
 
-    h4 {
-        margin-block: 1.5em 0;
-        color: var(--theme--foreground-accent);
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 26px;
-    }
+	h4 {
+		margin-block: 1.5em 0;
+		color: var(--theme--foreground-accent);
+		font-weight: 700;
+		font-size: 16px;
+		line-height: 26px;
+	}
 
-    h5 {
-        margin-block: 2em 0;
-        color: var(--theme--foreground-accent);
-        font-weight: 700;
-        font-size: 14px;
-        line-height: 24px;
-    }
+	h5 {
+		margin-block: 2em 0;
+		color: var(--theme--foreground-accent);
+		font-weight: 700;
+		font-size: 14px;
+		line-height: 24px;
+	}
 
-    h6 {
-        margin-block: 2em 0;
-        color: var(--theme--foreground-accent);
-        font-weight: 700;
-        font-size: 12px;
-        line-height: 22px;
-    }
+	h6 {
+		margin-block: 2em 0;
+		color: var(--theme--foreground-accent);
+		font-weight: 700;
+		font-size: 12px;
+		line-height: 22px;
+	}
 
-    a {
-        color: var(--theme--primary-accent);
-        text-decoration: none;
-    }
+	a {
+		color: var(--theme--primary-accent);
+		text-decoration: none;
+	}
 
-    p,
-    ul,
-    ol {
-        margin: 1.6em 0; // 24px (line-height) / 15px (font-size) = 1.6
-        font-weight: 500;
-        font-size: 15px;
-        line-height: 24px;
-    }
+	p,
+	ul,
+	ol {
+		margin: 1.6em 0; // 24px (line-height) / 15px (font-size) = 1.6
+		font-weight: 500;
+		font-size: 15px;
+		line-height: 24px;
+	}
 
-    ul ul,
-    ol ol,
-    ul ol,
-    ol ul {
-        margin: 0;
-    }
+	ul ul,
+	ol ol,
+	ul ol,
+	ol ul {
+		margin: 0;
+	}
 
-    b,
-    strong {
-        font-weight: 700;
-    }
+	b,
+	strong {
+		font-weight: 700;
+	}
 
-    code {
-        padding: 2px 4px;
-        font-weight: 500;
-        font-size: 15px;
-        font-family: var(--theme--fonts--monospace--font-family), monospace;
-        line-height: 24px;
-        overflow-wrap: break-word;
-        background-color: var(--theme--background-normal);
-        border-radius: var(--theme--border-radius);
-    }
+	code {
+		padding: 2px 4px;
+		font-weight: 500;
+		font-size: 15px;
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		line-height: 24px;
+		overflow-wrap: break-word;
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+	}
 
-    pre {
-        padding: 1em;
-        overflow: auto;
-        font-weight: 500;
-        font-size: 15px;
-        font-family: var(--theme--fonts--monospace--font-family), monospace;
-        line-height: 24px;
-        background-color: var(--theme--background-normal);
-        border-radius: var(--theme--border-radius);
-    }
+	pre {
+		padding: 1em;
+		overflow: auto;
+		font-weight: 500;
+		font-size: 15px;
+		font-family: var(--theme--fonts--monospace--font-family), monospace;
+		line-height: 24px;
+		background-color: var(--theme--background-normal);
+		border-radius: var(--theme--border-radius);
+	}
 
-    blockquote {
-        margin-inline-start: 0;
-        padding-inline-start: 1em;
-        font-weight: 500;
-        font-size: 15px;
-        line-height: 24px;
-        border-inline-start: 2px solid var(--theme--form--field--input--border-color);
-    }
+	blockquote {
+		margin-inline-start: 0;
+		padding-inline-start: 1em;
+		font-weight: 500;
+		font-size: 15px;
+		line-height: 24px;
+		border-inline-start: 2px solid var(--theme--form--field--input--border-color);
+	}
 
-    blockquote blockquote {
-        margin-inline-start: 10px;
-    }
+	blockquote blockquote {
+		margin-inline-start: 10px;
+	}
 
-    video,
-    iframe,
-    img {
-        max-inline-size: 100%;
-        block-size: auto;
-        border-radius: var(--theme--border-radius);
-    }
+	video,
+	iframe,
+	img {
+		max-inline-size: 100%;
+		block-size: auto;
+		border-radius: var(--theme--border-radius);
+	}
 
-    hr {
-        block-size: 1px;
-        margin-block: 2em;
-        background-color: var(--theme--form--field--input--border-color);
-        border: none;
-    }
+	hr {
+		block-size: 1px;
+		margin-block: 2em;
+		background-color: var(--theme--form--field--input--border-color);
+		border: none;
+	}
 
-    table {
-        font-weight: 500;
-        font-size: 15px;
-        line-height: 24px;
-        border-collapse: collapse;
-    }
+	table {
+		font-weight: 500;
+		font-size: 15px;
+		line-height: 24px;
+		border-collapse: collapse;
+	}
 
-    table th,
-    table td {
-        padding: 0.4rem;
-        border: 1px solid var(--theme--form--field--input--border-color);
-    }
+	table th,
+	table td {
+		padding: 0.4rem;
+		border: 1px solid var(--theme--form--field--input--border-color);
+	}
 
-    figure {
-        display: table;
-        margin: 1rem auto;
-    }
+	figure {
+		display: table;
+		margin: 1rem auto;
+	}
 
-    figure figcaption {
-        display: block;
-        margin-block-start: 0.25rem;
-        color: #999;
-        text-align: center;
-    }
+	figure figcaption {
+		display: block;
+		margin-block-start: 0.25rem;
+		color: #999;
+		text-align: center;
+	}
 }
