@@ -34,11 +34,6 @@ export type AbstractServiceOptions = {
 
 type Service<T extends Item = Item> = new (options: AbstractServiceOptions) => AbstractService<T>;
 
-type ItemsService<T extends Item = Item, Collection extends string = string> = new (
-	collection: Collection,
-	options: AbstractServiceOptions,
-) => AbstractService<T>;
-
 /**
  * The AssetsService
  */
@@ -532,7 +527,7 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The GraphQLService
 	 */
-	GraphQLService: new (options: AbstractServiceOptions) => any;
+	// GraphQLService: new (options: AbstractServiceOptions) => any;
 	/**
 	 * The ImportService
 	 */
@@ -540,11 +535,14 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The ItemsService
 	 */
-	ItemsService: ItemsService<T, Collection>;
+	ItemsService: new <T extends Item = Item, Collection extends string = string>(
+		collection: Collection,
+		options: AbstractServiceOptions,
+	) => AbstractService<T>;
 	/**
 	 * The MailService
 	 */
-	MailService: new (options: AbstractServiceOptions) => any;
+	// MailService: new (options: AbstractServiceOptions) => any;
 	/**
 	 * The MetaService
 	 */
@@ -608,7 +606,7 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The SpecificationService
 	 */
-	SpecificationService: new (options: AbstractServiceOptions) => any;
+	// SpecificationService: new (options: AbstractServiceOptions) => any;
 	/**
 	 * The TFAService
 	 */
@@ -636,5 +634,5 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The WebSocketService
 	 */
-	WebSocketService: new () => any;
+	// WebSocketService: new () => any;
 }
