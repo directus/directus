@@ -8,6 +8,7 @@ import type {
 	Accountability,
 	ActionEventParams,
 	Item as AnyItem,
+	MutationTracker,
 	MutationOptions,
 	PrimaryKey,
 	Query,
@@ -36,13 +37,8 @@ import { PayloadService } from './payload.js';
 
 const env = useEnv();
 
-export type MutationTracker = {
-	trackMutations: (count: number) => void;
-	getCount: () => number;
-};
-
 export class ItemsService<Item extends AnyItem = AnyItem, Collection extends string = string>
-	implements AbstractService
+	implements AbstractService<Item>
 {
 	collection: Collection;
 	knex: Knex;
