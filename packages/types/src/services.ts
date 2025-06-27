@@ -32,8 +32,6 @@ export type AbstractServiceOptions = {
 	nested?: string[];
 };
 
-type Service<T extends Item = Item> = new (options: AbstractServiceOptions) => AbstractService<T>;
-
 /**
  * The AssetsService
  */
@@ -280,9 +278,9 @@ interface PermissionsService {
 /**
  * The RelationsService
  */
-interface RelationsService {
+interface RelationsService<T = Relation> {
 	foreignKeys(collection?: string): Promise<ForeignKey[]>;
-	readAll(collection?: string, opts?: QueryOptions, bypassCache?: boolean): Promise<Relation[]>;
+	readAll(collection?: string, opts?: QueryOptions, bypassCache?: boolean): Promise<T[]>;
 	/**
 	 * Create a new relationship / foreign key constraint
 	 */
@@ -471,15 +469,15 @@ export interface AbstractService<T extends Item = Item> {
 	upsertSingleton(data: Partial<T>, opts?: MutationOptions): Promise<PrimaryKey>;
 }
 
-export interface ExtensionsServices<T extends Item = Item, Collection extends string = string> {
+export interface ExtensionsServices {
 	/**
 	 * The AccessService
 	 */
-	AccessService: Service<T>;
+	AccessService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The ActivityService
 	 */
-	ActivityService: Service<T>;
+	ActivityService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The AssetsService
 	 */
@@ -495,11 +493,11 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The CommentsService
 	 */
-	CommentsService: Service<T>;
+	CommentsService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The DashboardsService
 	 */
-	DashboardsService: Service<T>;
+	DashboardsService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The ExportService
 	 */
@@ -507,7 +505,7 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The ExtensionsService
 	 */
-	ExtensionsService: new (options: AbstractServiceOptions) => any;
+	// ExtensionsService: new (options: AbstractServiceOptions) => any;
 	/**
 	 * The FieldsService
 	 */
@@ -519,11 +517,11 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The FlowsService
 	 */
-	FlowsService: Service<FlowRaw>;
+	FlowsService: new (options: AbstractServiceOptions) => AbstractService<FlowRaw>;
 	/**
 	 * The FoldersService
 	 */
-	FoldersService: Service<T>;
+	FoldersService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The GraphQLService
 	 */
@@ -550,43 +548,43 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The NotificationsService
 	 */
-	NotificationsService: new (options: AbstractServiceOptions) => AbstractService<T> & NotificationsService;
+	NotificationsService: new (options: AbstractServiceOptions) => AbstractService & NotificationsService;
 	/**
 	 * The OperationsService
 	 */
-	OperationsService: Service<OperationRaw>;
+	OperationsService: new (options: AbstractServiceOptions) => AbstractService<OperationRaw>;
 	/**
 	 * The PanelsService
 	 */
-	PanelsService: Service<T>;
+	PanelsService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The PayloadService
 	 */
-	PayloadService: new (collection: Collection, options: AbstractServiceOptions) => PayloadService;
+	PayloadService: new (collection: string, options: AbstractServiceOptions) => PayloadService;
 	/**
 	 * The PermissionsService
 	 */
-	PermissionsService: new (options: AbstractServiceOptions) => AbstractService<T> & PermissionsService;
+	PermissionsService: new (options: AbstractServiceOptions) => AbstractService & PermissionsService;
 	/**
 	 * The PoliciesService
 	 */
-	PoliciesService: Service<Policy>;
+	PoliciesService: new (options: AbstractServiceOptions) => AbstractService<Policy>;
 	/**
 	 * The PresetsService
 	 */
-	PresetsService: Service<T>;
+	PresetsService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The RelationsService
 	 */
-	RelationsService: new (options: AbstractServiceOptions) => RelationsService;
+	RelationsService: new (options: AbstractServiceOptions) => RelationsService<Relation>;
 	/**
 	 * The RevisionsService
 	 */
-	RevisionsService: new (options: AbstractServiceOptions) => AbstractService<T> & RevisionsService;
+	RevisionsService: new (options: AbstractServiceOptions) => AbstractService & RevisionsService;
 	/**
 	 * The RolesService
 	 */
-	RolesService: Service<T>;
+	RolesService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The SchemaService
 	 */
@@ -598,11 +596,11 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The SettingsService
 	 */
-	SettingsService: Service<T>;
+	SettingsService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The SharesService
 	 */
-	SharesService: new (options: AbstractServiceOptions) => AbstractService<T> & SharesService;
+	SharesService: new (options: AbstractServiceOptions) => AbstractService & SharesService;
 	/**
 	 * The SpecificationService
 	 */
@@ -614,11 +612,11 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The TranslationsService
 	 */
-	TranslationsService: Service<T>;
+	TranslationsService: new (options: AbstractServiceOptions) => AbstractService;
 	/**
 	 * The UsersService
 	 */
-	UsersService: new (options: AbstractServiceOptions) => AbstractService<T> & UsersService;
+	UsersService: new (options: AbstractServiceOptions) => AbstractService & UsersService;
 	/**
 	 * The UtilsService
 	 */
@@ -626,11 +624,11 @@ export interface ExtensionsServices<T extends Item = Item, Collection extends st
 	/**
 	 * The VersionsService
 	 */
-	VersionsService: new (options: AbstractServiceOptions) => AbstractService<T> & VersionsService;
+	VersionsService: new (options: AbstractServiceOptions) => AbstractService & VersionsService;
 	/**
 	 * The WebhooksService
 	 */
-	WebhooksService: Service<Webhook>;
+	WebhooksService: new (options: AbstractServiceOptions) => AbstractService<Webhook>;
 	/**
 	 * The WebSocketService
 	 */
