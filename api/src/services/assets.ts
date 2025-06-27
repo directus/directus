@@ -6,11 +6,12 @@ import {
 	RangeNotSatisfiableError,
 	ServiceUnavailableError,
 } from '@directus/errors';
-import type { Range, Stat } from '@directus/storage';
 import type {
 	AbstractServiceOptions,
 	Accountability,
 	File,
+	Range,
+	Stat,
 	SchemaOverview,
 	Transformation,
 	TransformationSet,
