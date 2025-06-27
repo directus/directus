@@ -2,7 +2,7 @@
 import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useSync } from '@directus/composables';
 import type { Permission, Policy } from '@directus/types';
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AppMinimal from './app-minimal.vue';
 
@@ -65,12 +65,7 @@ const selectedValues = computed({
 	set(newFields: string[] | null) {
 		const fields: string[] = [];
 
-		const appMinimal = new Set(props.appMinimal ?? []);
-		const previousFields = new Set(permissionSync.value.fields ?? []);
-
 		for (const field of newFields ?? []) {
-			// Ignore fields coming from app minimal permissions only
-			if (appMinimal.has(field) && !previousFields.has(field)) continue;
 			fields.push(field);
 		}
 
