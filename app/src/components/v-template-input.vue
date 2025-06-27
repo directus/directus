@@ -292,7 +292,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		class="v-template-input"
 		:class="{ multiline }"
 		contenteditable="true"
-		tabindex="1"
+		tabindex="0"
 		:placeholder="placeholder"
 		@input="processText"
 	/>
@@ -343,6 +343,7 @@ function parseHTML(innerText?: string, isDirectInput = false) {
 		vertical-align: -2px;
 		background: var(--theme--primary-background);
 		border-radius: var(--theme--border-radius);
+		-webkit-user-select: text;
 		user-select: text;
 
 		&::before {

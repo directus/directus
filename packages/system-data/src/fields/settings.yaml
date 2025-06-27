@@ -676,3 +676,14 @@ fields:
             required: true
             options:
               placeholder: $t:value
+
+  - field: project_id
+    hidden: true
+
+  - field: accepted_terms
+    interface: boolean
+    width: half
+    options:
+      label: $t:accepted
+    special:
+      - cast-boolean

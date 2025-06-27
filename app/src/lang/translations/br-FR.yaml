@@ -129,7 +129,6 @@ creating_new_field: 'Maezienn nevez ({collection})'
 reset_page_preferences: Adderaouiñ dibaboù ar bajenn
 hidden_field: Maezienn kuzhet
 hidden_on_detail: Kuzhet er munudoù
-disabled_editing_value: Diaktivañ kemm an talvoud
 key: Alc'hwez
 bigInteger: Anterin bras
 boolean: Boulean

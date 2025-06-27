@@ -43,9 +43,9 @@ export function usePreset(
 	});
 
 	const localPreset = ref<Partial<Preset>>({});
+	const bookmarkSaved = ref(true);
 	initLocalPreset();
 
-	const bookmarkSaved = ref(true);
 	const bookmarkIsMine = computed(() => localPreset.value.user === (userStore.currentUser as User).id);
 
 	/**
@@ -205,6 +205,7 @@ export function usePreset(
 		}
 
 		localPreset.value = preset;
+		bookmarkSaved.value = true;
 	}
 
 	/**

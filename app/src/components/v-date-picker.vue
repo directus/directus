@@ -72,9 +72,9 @@ const defaultOptions = {
 	},
 	onReady(_selectedDates: Date[], _dateStr: string, instance: Flatpickr.Instance) {
 		const setToNowButton: HTMLElement = document.createElement('button');
+		setToNowButton.setAttribute('type', 'button');
 		setToNowButton.innerHTML = t('interfaces.datetime.set_to_now');
 		setToNowButton.classList.add('set-to-now-button');
-		setToNowButton.tabIndex = -1;
 		setToNowButton.addEventListener('click', setToNow);
 		instance.calendarContainer.appendChild(setToNowButton);
 

@@ -4,7 +4,7 @@ import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import { isSystemCollection } from '@directus/system-data';
 import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
-import { applyOptionsData, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
+import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { pick } from 'lodash-es';
 import { get } from 'micromustache';
@@ -12,6 +12,8 @@ import { useBus } from './bus/index.js';
 import getDatabase from './database/index.js';
 import emitter from './emitter.js';
 import { useLogger } from './logger/index.js';
+import { fetchPermissions } from './permissions/lib/fetch-permissions.js';
+import { fetchPolicies } from './permissions/lib/fetch-policies.js';
 import { ActivityService } from './services/activity.js';
 import { FlowsService } from './services/flows.js';
 import * as services from './services/index.js';
@@ -19,8 +21,8 @@ import { RevisionsService } from './services/revisions.js';
 import type { EventHandler } from './types/index.js';
 import { constructFlowTree } from './utils/construct-flow-tree.js';
 import { getSchema } from './utils/get-schema.js';
+import { getService } from './utils/get-service.js';
 import { JobQueue } from './utils/job-queue.js';
-import { mapValuesDeep } from './utils/map-values-deep.js';
 import { redactObject } from './utils/redact-object.js';
 import { scheduleSynchronizedJob, validateCron } from './utils/schedule.js';
 
@@ -121,7 +123,7 @@ class FlowManager {
 	public async runWebhookFlow(
 		id: string,
 		data: unknown,
-		context: Record<string, unknown>,
+		context: { schema: SchemaOverview; accountability: Accountability | undefined } & Record<string, unknown>,
 	): Promise<{ result: unknown; cacheEnabled?: boolean }> {
 		const logger = useLogger();
 
@@ -249,7 +251,9 @@ class FlowManager {
 			} else if (flow.trigger === 'manual') {
 				const handler = async (data: unknown, context: Record<string, unknown>) => {
 					const enabledCollections = flow.options?.['collections'] ?? [];
+					const requireSelection = flow.options?.['requireSelection'] ?? true;
 					const targetCollection = (data as Record<string, any>)?.['body'].collection;
+					const targetKeys = (data as Record<string, any>)?.['body'].keys;
 
 					if (!targetCollection) {
 						logger.warn(`Manual trigger requires "collection" to be specified in the payload`);
@@ -264,6 +268,63 @@ class FlowManager {
 					if (!enabledCollections.includes(targetCollection)) {
 						logger.warn(`Specified collection must be one of: ${enabledCollections.join(', ')}.`);
 						throw new ForbiddenError();
+					}
+
+					if (!targetKeys || !Array.isArray(targetKeys)) {
+						logger.warn(`Manual trigger requires "keys" to be specified in the payload`);
+						throw new ForbiddenError();
+					}
+
+					if (requireSelection && targetKeys.length === 0) {
+						logger.warn(`Manual trigger requires at least one key to be specified in the payload`);
+						throw new ForbiddenError();
+					}
+
+					const accountability = context?.['accountability'] as Accountability | undefined;
+
+					if (!accountability) {
+						logger.warn(`Manual flows are only triggerable when authenticated`);
+						throw new ForbiddenError();
+					}
+
+					if (accountability.admin === false) {
+						const database = (context['database'] as Knex) ?? getDatabase();
+						const schema = (context['schema'] as SchemaOverview) ?? (await getSchema({ database }));
+
+						const policies = await fetchPolicies(accountability, { schema, knex: database });
+
+						const permissions = await fetchPermissions(
+							{
+								policies,
+								accountability,
+								action: 'read',
+								collections: [targetCollection],
+							},
+							{ schema, knex: database },
+						);
+
+						if (permissions.length === 0) {
+							logger.warn(`Triggering ${targetCollection} is not allowed`);
+							throw new ForbiddenError();
+						}
+
+						const service = getService(targetCollection, { schema, accountability, knex: database });
+						const primaryField = schema.collections[targetCollection]!.primary;
+
+						let keys = await service.readMany(
+							targetKeys,
+							{ fields: [primaryField] },
+							{
+								emitEvents: false,
+							},
+						);
+
+						keys = keys.map((key) => key[primaryField]);
+
+						if (targetKeys.some((key) => !keys.includes(key))) {
+							logger.warn(`Triggering keys ${targetKeys} is not allowed`);
+							throw new ForbiddenError();
+						}
 					}
 
 					if (flow.options['async']) {
@@ -430,10 +491,31 @@ class FlowManager {
 
 		const handler = this.operations.get(operation.type)!;
 
+		let optionData = keyedData;
+
+		if (operation.type === 'log') {
+			optionData = redactObject(
+				keyedData,
+				{
+					keys: [
+						['**', 'headers', 'authorization'],
+						['**', 'headers', 'cookie'],
+						['**', 'query', 'access_token'],
+						['**', 'payload', 'password'],
+						['**', 'payload', 'token'],
+						['**', 'payload', 'tfa_secret'],
+						['**', 'payload', 'external_identifier'],
+						['**', 'payload', 'auth_data'],
+					],
+				},
+				getRedactedString,
+			);
+		}
+
 		let options = operation.options;
 
 		try {
-			options = applyOptionsData(options, keyedData);
+			options = applyOptionsData(options, optionData);
 
 			let result = await handler(options, {
 				services,
@@ -452,7 +534,7 @@ class FlowManager {
 			// JSON structures don't allow for undefined values, so we need to replace them with null
 			// Otherwise the applyOptionsData function will not work correctly on the next operation
 			if (typeof result === 'object' && result !== null) {
-				result = mapValuesDeep(result, (_, value) => (value === undefined ? null : value));
+				result = deepMap(result, (value) => (value === undefined ? null : value));
 			}
 
 			return { successor: operation.resolve, status: 'resolve', data: result ?? null, options };
