@@ -176,8 +176,8 @@ function useURLImport() {
 
 <template>
 	<div class="file">
-		<v-menu attached :disabled="loading || internalDisabled" keep-behind>
-			<template #activator="{ toggle, active }">
+		<v-menu attached :disabled="loading || internalDisabled">
+			<template #activator="{ toggle, active, deactivate }">
 				<div>
 					<v-skeleton-loader v-if="loading" type="input" />
 
@@ -221,7 +221,15 @@ function useURLImport() {
 
 						<div class="item-actions">
 							<template v-if="file">
-								<v-icon v-tooltip="t('edit_item')" name="edit" clickable @click.stop="editDrawerActive = true" />
+								<v-icon
+									v-tooltip="t('edit_item')"
+									name="edit"
+									clickable
+									@click.stop="
+										deactivate();
+										editDrawerActive = true;
+									"
+								/>
 
 								<v-remove
 									v-if="!internalDisabled"
