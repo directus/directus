@@ -1,6 +1,7 @@
 import { useEnv } from '@directus/env';
 import { InvalidQueryError, RangeNotSatisfiableError } from '@directus/errors';
-import type { Range } from '@directus/storage';
+import type { Range, TransformationFormat, TransformationParams } from '@directus/types';
+import { TransformationMethods } from '@directus/types';
 import { parseJSON } from '@directus/utils';
 import contentDisposition from 'content-disposition';
 import { Router } from 'express';
@@ -11,8 +12,6 @@ import { useLogger } from '../logger/index.js';
 import useCollection from '../middleware/use-collection.js';
 import { AssetsService } from '../services/assets.js';
 import { PayloadService } from '../services/payload.js';
-import type { TransformationFormat, TransformationParams } from '../types/assets.js';
-import { TransformationMethods } from '../types/assets.js';
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getConfigFromEnv } from '../utils/get-config-from-env.js';

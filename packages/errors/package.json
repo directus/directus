@@ -32,6 +32,7 @@
 	"devDependencies": {
 		"@directus/random": "workspace:*",
 		"@directus/tsconfig": "3.0.0",
+		"@directus/types": "workspace:*",
 		"@types/ms": "2.1.0",
 		"@vitest/coverage-v8": "2.1.9",
 		"tsup": "8.4.0",

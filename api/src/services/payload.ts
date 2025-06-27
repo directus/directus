@@ -1,14 +1,20 @@
 import { ForbiddenError, InvalidPayloadError } from '@directus/errors';
 import type {
+	AbstractServiceOptions,
 	Accountability,
+	ActionEventParams,
 	Aggregate,
 	Alterations,
 	FieldOverview,
 	Item,
+	MutationOptions,
+	PayloadAction,
+	PayloadServiceProcessRelationResult,
 	PrimaryKey,
 	Query,
 	SchemaOverview,
 } from '@directus/types';
+import { UserIntegrityCheckFlag } from '@directus/types';
 import { parseJSON, toArray } from '@directus/utils';
 import { format, isValid, parseISO } from 'date-fns';
 import { unflatten } from 'flat';
@@ -20,27 +26,17 @@ import { parse as wktToGeoJSON } from 'wellknown';
 import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import getDatabase from '../database/index.js';
-import type { AbstractServiceOptions, ActionEventParams, MutationOptions } from '../types/index.js';
 import { generateHash } from '../utils/generate-hash.js';
-import { UserIntegrityCheckFlag } from '../utils/validate-user-count-integrity.js';
-
-type Action = 'create' | 'read' | 'update';
 
 type Transformers = {
 	[type: string]: (context: {
-		action: Action;
+		action: PayloadAction;
 		value: any;
 		payload: Partial<Item>;
 		accountability: Accountability | null;
 		specials: string[];
 		helpers: Helpers;
 	}) => Promise<any>;
-};
-
-type PayloadServiceProcessRelationResult = {
-	revisions: PrimaryKey[];
-	nestedActionEvents: ActionEventParams[];
-	userIntegrityCheckFlags: UserIntegrityCheckFlag;
 };
 
 /**
@@ -156,24 +152,24 @@ export class PayloadService {
 		},
 	};
 
-	processValues(action: Action, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
-	processValues(action: Action, payload: Partial<Item>): Promise<Partial<Item>>;
+	processValues(action: PayloadAction, payloads: Partial<Item>[]): Promise<Partial<Item>[]>;
+	processValues(action: PayloadAction, payload: Partial<Item>): Promise<Partial<Item>>;
 	processValues(
-		action: Action,
+		action: PayloadAction,
 		payloads: Partial<Item>[],
 		aliasMap: Record<string, string>,
 		aggregate: Aggregate,
 	): Promise<Partial<Item>[]>;
 
 	processValues(
-		action: Action,
+		action: PayloadAction,
 		payload: Partial<Item>,
 		aliasMap: Record<string, string>,
 		aggregate: Aggregate,
 	): Promise<Partial<Item>>;
 
 	async processValues(
-		action: Action,
+		action: PayloadAction,
 		payload: Partial<Item> | Partial<Item>[],
 		aliasMap: Record<string, string> = {},
 		aggregate: Aggregate = {},
@@ -268,7 +264,7 @@ export class PayloadService {
 	async processField(
 		field: SchemaOverview['collections'][string]['fields'][string],
 		payload: Partial<Item>,
-		action: Action,
+		action: PayloadAction,
 		accountability: Accountability | null,
 	): Promise<any> {
 		if (!field.special) return payload[field.field];
@@ -301,7 +297,7 @@ export class PayloadService {
 	processGeometries<T extends Partial<Record<string, any>>[]>(
 		fieldEntries: [string, FieldOverview][],
 		payloads: T,
-		action: Action,
+		action: PayloadAction,
 	): T {
 		const process =
 			action == 'read'
@@ -328,7 +324,7 @@ export class PayloadService {
 	processDates(
 		fieldEntries: [string, FieldOverview][],
 		payloads: Partial<Record<string, any>>[],
-		action: Action,
+		action: PayloadAction,
 		aliasMap: Record<string, string> = {},
 		aggregate: Aggregate = {},
 	): Partial<Record<string, any>>[] {
