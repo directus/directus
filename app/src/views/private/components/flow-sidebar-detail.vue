@@ -148,8 +148,8 @@ const confirmUnsavedChanges = (flowId: string) => {
 	}
 };
 
-const runManualFlow = async (flowId: string) => {
-	if (isConfirmButtonDisabled.value) return;
+const runManualFlow = async (flowId: string, isActionDisabled = false) => {
+	if (isActionDisabled) return;
 
 	confirmRunFlow.value = null;
 
@@ -232,7 +232,7 @@ const runManualFlow = async (flowId: string) => {
 			:model-value="displayCustomConfirmDialog"
 			keep-behind
 			@esc="resetConfirm"
-			@apply="runManualFlow(confirmRunFlow!)"
+			@apply="runManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
 		>
 			<v-card>
 				<v-card-title>{{ confirmDetails!.description ?? t('run_flow_confirm') }}</v-card-title>
@@ -251,7 +251,10 @@ const runManualFlow = async (flowId: string) => {
 					<v-button secondary @click="resetConfirm">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button :disabled="isConfirmButtonDisabled" @click="runManualFlow(confirmRunFlow!)">
+					<v-button
+						:disabled="isConfirmButtonDisabled"
+						@click="runManualFlow(confirmRunFlow!, isConfirmButtonDisabled)"
+					>
 						{{ confirmButtonCTA }}
 					</v-button>
 				</v-card-actions>

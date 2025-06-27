@@ -30,6 +30,10 @@ draft: Entwurf
 archived: Archiviert
 marketplace: Marketplace
 extensions: Erweiterungen
+skip_link_nav: Zur Navigation springen
+skip_link_module_nav: Zur Modulnavigation springen
+skip_link_main: Zum Hauptinhalt springen
+skip_link_sidebar: Zur Seitenleiste springen
 modules: Module
 module_bar: Modulleiste
 logs: Logs
@@ -316,6 +320,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Seiteneinstellungen zurücksetzen
 hidden_field: Verstecktes Feld
 hidden_on_detail: In Detailansicht ausblenden
+readonly_field_label: Das Feld in der App deaktivieren
 key: Schlüssel
 alias: Alias
 bigInteger: Big Integer
@@ -421,6 +426,7 @@ field_key: Feldschlüssel
 finish_setup: Einrichtung abschließen
 dismiss: Verwerfen
 toggle_raw_editor: Raw-Editor umschalten
+toggle_variable_input: Variable Eingabe umschalten
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Rohwert
 copy_raw_value: Unverarbeiteten Wert kopieren
@@ -602,6 +608,7 @@ manual_string: Manuell eingegebene Zeichenkette
 save_and_create_new: Speichern und neues Element anlegen
 save_and_stay: Speichern und auf der Seite bleiben
 save_and_quit: Speichern und schließen
+save_and_return_to_main: Speichern und zurück
 save_as_copy: Als Kopie speichern
 add_existing: Vorhandene hinzufügen
 creating_items: Elemente erstellen
@@ -940,6 +947,7 @@ run_flow_on_current: Flow beim aktuellen Element ausführen
 run_flow_on_current_edited_confirm: Dieses Element kann durch diesen Flow aktualisiert werden, bist du dir sicher, dass du es ausführen möchtest?
 run_flow_on_selected: Zuerst eine oder mehrere Elemente auswählen | Flow für 1 ausgewähltes Element ausführen | Flow für {n} ausgewählte Elemente ausführen
 run_flow: Flow ausführen
+trigger_flow_success: Flow "{flow}" wurde erfolgreich ausgeführt
 field_name_placeholder: Feldnamen eingeben ...
 field_key_placeholder: Feldschlüssel eingeben...
 trigger: Trigger
@@ -976,6 +984,8 @@ operation_key: Bezeichner für Referenz...
 operation_key_unique_error: Operationsschlüssel müssen in einem Flow eindeutig sein
 operation_handle_resolve: 'Lösen: Zum Hinzufügen klicken oder für Reroute ziehen'
 operation_handle_reject: 'Ablehnen: Zum Hinzufügen klicken oder für Reroute ziehen'
+visual_editor: Visueller Editor
+toggle_navigation: Navigation umschalten
 insights: Einblicke
 dashboard: Dashboard
 panel: Panel
