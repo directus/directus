@@ -4,7 +4,6 @@ import { useI18n } from 'vue-i18n';
 import SidebarButton from './sidebar-button.vue';
 import NotificationItem from './notification-item.vue';
 import { useNotificationsStore } from '@/stores/notifications';
-import { useId } from 'vue';
 
 defineProps<{
 	sidebarOpen?: boolean;
