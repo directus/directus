@@ -167,27 +167,26 @@ watchEffect(async () => {
 
 .page-container {
 	padding: var(--content-padding);
-	padding-top: 0;
-	max-width: 1200px;
+	padding-block-start: 0;
+	max-inline-size: 1200px;
 }
 
 .extension-group + .extension-group {
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 
 .beta {
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
-	margin-left: 10px;
+	margin-inline-start: 10px;
 }
 
 .filter {
-	margin-block-start: 24px;
-	margin-block-end: 20px;
+	margin-block: 24px 20px;
 }
 
 .results {
-	padding-top: 0 !important; // 🤫
+	padding-block-start: 0 !important; // 🤫
 	opacity: 1;
 	transition: opacity var(--fast) var(--transition);
 

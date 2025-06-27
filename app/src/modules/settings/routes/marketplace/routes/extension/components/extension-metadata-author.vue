@@ -27,16 +27,15 @@ defineProps<{
 }
 
 .avatar {
-	width: 20px;
-	height: 20px;
+	inline-size: 20px;
+	block-size: 20px;
 	border-radius: 10px;
 	object-fit: cover;
 	object-position: center center;
-	margin-left: 2px;
-	margin-right: 9px;
+	margin-inline: 2px 9px;
 }
 
 .verified {
-	margin-left: 4px;
+	margin-inline-start: 4px;
 }
 </style>

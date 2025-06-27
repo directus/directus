@@ -10,7 +10,7 @@ defineProps<{
 <template>
 	<v-divider
 		class="presentation-divider"
-		:class="{ 'add-margin-top': icon || title }"
+		:class="{ 'add-margin-block-start': icon || title }"
 		:style="{
 			'--v-divider-label-color': color,
 			'--v-divider-color': 'var(--theme--border-color-subdued)',
@@ -24,7 +24,7 @@ defineProps<{
 </template>
 
 <style lang="scss" scoped>
-.add-margin-top {
-	margin-top: 40px;
+.add-margin-block-start {
+	margin-block-start: 40px;
 }
 </style>

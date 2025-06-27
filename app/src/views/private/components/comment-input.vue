@@ -341,27 +341,27 @@ function pressedEnter() {
 <style scoped lang="scss">
 .input-container {
 	position: relative;
-	padding: 0px;
+	padding: 0;
 }
 
 .v-template-input {
 	transition:
-		height var(--fast) var(--transition),
+		block-size var(--fast) var(--transition),
 		padding var(--fast) var(--transition);
 }
 
 .collapsed .v-template-input {
-	height: 48px;
-	padding-bottom: 0px;
+	block-size: 48px;
+	padding-block-end: 0;
 }
 
 .new-comment {
 	display: block;
 	flex-grow: 1;
-	width: 100%;
-	height: 100%;
-	height: var(--theme--form--field--input--height);
-	min-height: 100px;
+	inline-size: 100%;
+	block-size: 100%;
+	block-size: var(--theme--form--field--input--height);
+	min-block-size: 100px;
 	padding: 5px;
 	overflow: scroll;
 	white-space: pre;
@@ -375,29 +375,28 @@ function pressedEnter() {
 	position: relative;
 	overflow: scroll;
 	border-color: var(--theme--form--field--input--border-color-focus);
-	transition: margin-bottom var(--fast) var(--transition);
+	transition: margin-block-end var(--fast) var(--transition);
 }
 
 .new-comment :deep(.expand-on-focus:focus textarea),
 .new-comment :deep(.expand-on-focus:focus-within textarea),
 .new-comment :deep(.expand-on-focus.has-content textarea) {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .new-comment :deep(.expand-on-focus .append::after) {
 	position: absolute;
-	right: 0;
-	bottom: 36px;
-	left: 0;
-	height: 8px;
+	inset-inline: 0;
+	inset-block-end: 36px;
+	block-size: 8px;
 	background: linear-gradient(180deg, rgb(var(--background-page-rgb), 0) 0%, rgb(var(--background-page-rgb), 1) 100%);
 	content: '';
 }
 
 .new-comment .add-mention {
 	position: absolute;
-	bottom: 8px;
-	left: 8px;
+	inset-block-end: 8px;
+	inset-inline-start: 8px;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
@@ -405,8 +404,8 @@ function pressedEnter() {
 
 .new-comment .add-emoji {
 	position: absolute;
-	bottom: 8px;
-	left: 36px;
+	inset-block-end: 8px;
+	inset-inline-start: 36px;
 	color: var(--theme--foreground-subdued);
 	cursor: pointer;
 	transition: color var(--fast) var(--transition);
@@ -418,7 +417,7 @@ function pressedEnter() {
 }
 
 .buttons {
-	margin-top: 4px;
+	margin-block-start: 4px;
 	display: flex;
 	gap: 4px;
 

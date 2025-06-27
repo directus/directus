@@ -200,7 +200,7 @@ const localVars = computed(() => {
 <style scoped lang="scss">
 .theme-preview {
 	svg {
-		width: 100%;
+		inline-size: 100%;
 		border: 1px solid var(--theme--border-color-subdued);
 		border-radius: 4px;
 	}

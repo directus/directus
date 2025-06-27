@@ -264,8 +264,8 @@ function usePopoverWidth() {
 				<div
 					class="popover-rect"
 					:style="{
-						width: `${position.width}px`,
-						height: `${position.height}px`,
+						inlineSize: `${position.width}px`,
+						blockSize: `${position.height}px`,
 						transform: `translate(${position.left}px,${position.top}px)`,
 					}"
 				></div>
@@ -309,8 +309,8 @@ function usePopoverWidth() {
 	.popover-rect {
 		pointer-events: none;
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 	}
 }
 </style>

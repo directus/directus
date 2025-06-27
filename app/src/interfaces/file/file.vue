@@ -369,7 +369,7 @@ function useURLImport() {
 .item-actions {
 	@include mixins.list-interface-item-actions;
 
-	padding-left: 8px;
+	padding-inline-start: 8px;
 }
 
 .preview {
@@ -378,16 +378,16 @@ function useURLImport() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 40px;
-	height: 40px;
-	margin-left: -8px;
+	inline-size: 40px;
+	block-size: 40px;
+	margin-inline-start: -8px;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
 
 	img {
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 		object-fit: cover;
 	}
 
@@ -400,7 +400,7 @@ function useURLImport() {
 
 		img {
 			object-fit: contain;
-			filter: drop-shadow(0px 0px 8px rgb(0 0 0 / 0.25));
+			filter: drop-shadow(0 0 8px rgb(0 0 0 / 0.25));
 		}
 	}
 }

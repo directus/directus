@@ -66,7 +66,7 @@ function deleteItem(elem: Record<string, any>) {
 @use '@/styles/mixins';
 
 .one-to-many {
-	height: 100%;
+	block-size: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;

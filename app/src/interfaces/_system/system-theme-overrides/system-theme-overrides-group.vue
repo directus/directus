@@ -76,8 +76,8 @@ const hasValue = computed(() => {
 .theme-overrides-group {
 	&:not(.root) {
 		.group-contents {
-			padding-left: 2ch;
-			border-left: 1px solid var(--theme--border-color-subdued);
+			padding-inline-start: 2ch;
+			border-inline-start: 1px solid var(--theme--border-color-subdued);
 		}
 	}
 }
@@ -85,8 +85,8 @@ const hasValue = computed(() => {
 .group-toggle {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground);
-	width: calc(100% + 16px);
-	text-align: left;
+	inline-size: calc(100% + 16px);
+	text-align: start;
 	padding-inline: 8px;
 	margin-inline-start: -8px;
 
@@ -95,13 +95,13 @@ const hasValue = computed(() => {
 
 		&::before {
 			content: '';
-			width: 4px;
-			height: 4px;
+			inline-size: 4px;
+			block-size: 4px;
 			background-color: var(--theme--form--field--input--foreground-subdued);
 			border-radius: 4px;
 			position: absolute;
-			top: 11px;
-			left: -1px;
+			inset-block-start: 11px;
+			inset-inline-start: -1px;
 			display: block;
 		}
 	}

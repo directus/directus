@@ -424,7 +424,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 	--v-button-background-color-hover: var(--theme--form--field--input--border-color);
 	--v-button-color-hover: var(--theme--form--field--input--foreground);
 
-	min-height: 300px;
+	min-block-size: 300px;
 	overflow: hidden;
 	font-family: var(--theme--fonts--sans--font-family);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -436,7 +436,7 @@ function edit(type: Alteration, options?: Record<string, any>) {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror-scroll) {
-	max-height: min(1000px, 80vh);
+	max-block-size: min(1000px, 80vh);
 }
 
 .interface-input-rich-text-md.disabled {
@@ -469,11 +469,11 @@ textarea {
 
 .remaining {
 	position: absolute;
-	right: 10px;
-	bottom: 5px;
+	inset-inline-end: 10px;
+	inset-block-end: 5px;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
-	text-align: right;
+	text-align: end;
 	vertical-align: middle;
 	font-feature-settings: 'tnum';
 }
@@ -502,11 +502,11 @@ textarea {
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:first-of-type) {
-	margin-top: 20px;
+	margin-block-start: 20px;
 }
 
 .interface-input-rich-text-md :deep(.CodeMirror .CodeMirror-lines:last-of-type) {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 
 .interface-input-rich-text-md.preview :deep(.CodeMirror) {
@@ -519,16 +519,16 @@ textarea {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	min-height: 40px;
+	min-block-size: 40px;
 	padding: 0 4px;
 	background-color: var(--theme--form--field--input--background-subdued);
-	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	.v-button {
 		--focus-ring-offset: var(--focus-ring-offset-invert);
 
 		+ .v-button {
-			margin-left: 2px;
+			margin-inline-start: 2px;
 		}
 	}
 
@@ -554,7 +554,7 @@ textarea {
 	@include mixins.form-grid;
 
 	.v-input {
-		min-width: 100px;
+		min-inline-size: 100px;
 	}
 }
 </style>

@@ -111,15 +111,15 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 .module {
 	position: relative;
 	display: flex;
-	height: 100%;
-	width: 100%;
+	block-size: 100%;
+	inline-size: 100%;
 	overflow: hidden;
 }
 
 .live-preview {
-	height: 100%;
-	width: 100%;
-	min-width: 0;
+	block-size: 100%;
+	inline-size: 100%;
+	min-inline-size: 0;
 }
 
 .spacer {
@@ -127,16 +127,12 @@ function onSelectUrl(newUrl: string, oldUrl: string) {
 }
 
 .notifications-group {
-	top: auto;
-	right: 12px;
-	bottom: 12px;
-	left: auto;
+	inset-block: auto 12px;
+	inset-inline: auto 12px;
 
 	@media (min-width: 960px) {
-		top: auto;
-		right: 12px;
-		bottom: 12px;
-		left: auto;
+		inset-block: auto 12px;
+		inset-inline: auto 12px;
 	}
 }
 </style>

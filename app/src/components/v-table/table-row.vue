@@ -91,7 +91,7 @@ function onKeydown(e: KeyboardEvent) {
 .table-row {
 	--focus-ring-offset: var(--focus-ring-offset-invert);
 
-	height: v-bind('cssHeight.tableRow');
+	block-size: v-bind('cssHeight.tableRow');
 
 	.cell {
 		display: flex;
@@ -101,7 +101,7 @@ function onKeydown(e: KeyboardEvent) {
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background-color: var(--v-table-background-color, transparent);
-		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&:last-child {
 			padding: 0 12px;
@@ -141,10 +141,10 @@ function onKeydown(e: KeyboardEvent) {
 	}
 
 	:deep(.render-template) {
-		height: v-bind('cssHeight.tableRow');
+		block-size: v-bind('cssHeight.tableRow');
 
 		img {
-			height: v-bind('cssHeight.renderTemplateImage');
+			block-size: v-bind('cssHeight.renderTemplateImage');
 		}
 	}
 }

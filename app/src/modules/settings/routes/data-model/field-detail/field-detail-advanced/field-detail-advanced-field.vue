@@ -98,7 +98,7 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 @use '@/styles/mixins';
 
 .type-title {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 
 .form {
@@ -117,6 +117,6 @@ const isGenerated = computed(() => field.value.schema?.is_generated);
 }
 
 .v-notice:not(.no-margin) {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 </style>

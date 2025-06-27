@@ -146,9 +146,9 @@ const internalActive = computed({
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	width: 100%;
-	max-width: 856px;
-	height: 100%;
+	inline-size: 100%;
+	max-inline-size: 856px;
+	block-size: 100%;
 	background-color: var(--theme--background);
 
 	.cancel {
@@ -156,8 +156,8 @@ const internalActive = computed({
 
 		display: none;
 		position: absolute;
-		top: 32px;
-		left: -76px;
+		inset-block-start: 32px;
+		inset-inline-start: -76px;
 
 		@media (min-width: 960px) {
 			display: inline-flex;
@@ -197,10 +197,10 @@ const internalActive = computed({
 				position: relative;
 				display: block;
 				flex-shrink: 0;
-				width: 220px;
-				height: 100%;
+				inline-size: 220px;
+				block-size: 100%;
 				background: var(--theme--navigation--background);
-				border-right: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
+				border-inline-end: var(--theme--navigation--border-width) solid var(--theme--navigation--border-color);
 			}
 
 			.sidebar-content {
@@ -213,13 +213,11 @@ const internalActive = computed({
 				--v-list-item-background-color: var(--theme--navigation--list--background);
 				--v-list-item-background-color-hover: var(--theme--navigation--list--background-hover);
 				--v-list-item-background-color-active: var(--theme--navigation--list--background-active);
-
 				--v-divider-color: var(--theme--navigation--list--divider--border-color);
 				--v-divider-thickness: var(--theme--navigation--list--divider--border-width);
 
-				height: 100%;
-				overflow-x: hidden;
-				overflow-y: auto;
+				block-size: 100%;
+				overflow: hidden auto;
 			}
 		}
 
@@ -240,7 +238,7 @@ const internalActive = computed({
 			position: relative;
 			flex-grow: 1;
 			overflow: auto;
-			scroll-padding-top: 100px;
+			scroll-padding-block-start: 100px;
 
 			@media (min-width: 600px) {
 				--content-padding: 32px;
@@ -249,12 +247,12 @@ const internalActive = computed({
 		}
 
 		.main.small-search-input:deep(.search-input.filter-active) {
-			width: 300px !important;
+			inline-size: 300px !important;
 		}
 	}
 
 	@media (min-width: 960px) {
-		width: calc(100% - 64px);
+		inline-size: calc(100% - 64px);
 	}
 }
 

@@ -229,12 +229,12 @@ defineExpose({
 	&.timestamp,
 	&.time,
 	&.dateTime {
-		min-width: 250px;
+		min-inline-size: 250px;
 	}
 
 	&.geometry,
 	&.json {
-		width: 500px;
+		inline-size: 500px;
 	}
 }
 
@@ -244,7 +244,7 @@ input {
 	line-height: 1em;
 	background-color: var(--theme--form--field--input--background);
 	border: none;
-	max-width: 40ch;
+	max-inline-size: 40ch;
 	box-shadow: 0 4px 0 -2px v-bind(inputBorderColor);
 
 	&::placeholder {
@@ -256,10 +256,10 @@ input {
 
 .dialog {
 	position: relative;
-	min-width: 800px;
+	min-inline-size: 800px;
 }
 
 .date-input {
-	min-width: 400px;
+	min-inline-size: 400px;
 }
 </style>

@@ -76,7 +76,7 @@ watch(
 
 		const finalWidth = width > maxWidth ? maxWidth : width;
 
-		target.style.width = `${finalWidth}px`;
+		target.style.inlineSize = `${finalWidth}px`;
 	},
 	{ immediate: true },
 );
@@ -183,27 +183,26 @@ function onPointerUp() {
 <style lang="scss" scoped>
 .resize-wrapper {
 	position: relative;
-	max-height: 100%;
+	max-block-size: 100%;
 
 	&.transition {
 		:slotted(:first-child) {
-			transition: width var(--slow) var(--transition);
+			transition: inline-size var(--slow) var(--transition);
 		}
 	}
 
 	.grab-bar {
 		position: absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		width: 4px;
+		inset-block: 0;
+		inset-inline-end: 0;
+		inline-size: 4px;
 		z-index: 10;
 		background-color: var(--theme--primary);
 		cursor: ew-resize;
 		opacity: 0;
 		transform: translate(50%, 0);
 		transition: opacity var(--fast) var(--transition);
-		transition-delay: 0;
+		transition-delay: 0s;
 		-webkit-user-select: none;
 		user-select: none;
 		touch-action: none;
@@ -225,10 +224,8 @@ function onPointerUp() {
 			&::before {
 				content: '';
 				position: absolute;
-				top: 0;
-				right: 1px;
-				bottom: 0;
-				left: 1px;
+				inset-block: 0;
+				inset-inline: 1px;
 				background-color: var(--theme--border-color);
 				transition: background-color var(--fast) var(--transition);
 			}

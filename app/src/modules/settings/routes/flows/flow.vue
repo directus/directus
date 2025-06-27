@@ -788,7 +788,7 @@ function discardAndLeave() {
 }
 
 .status-dot {
-	margin-left: 6px;
+	margin-inline-start: 6px;
 }
 
 .container {
@@ -797,7 +797,7 @@ function discardAndLeave() {
 	--gap-size: 40px;
 
 	&.center {
-		height: calc(100% - 48px - var(--header-bar-height));
+		block-size: calc(100% - 48px - var(--header-bar-height));
 		display: grid;
 		place-items: center;
 	}
@@ -818,7 +818,7 @@ function discardAndLeave() {
 	grid-template-rows: repeat(auto-fit, var(--row-size));
 	grid-template-columns: repeat(auto-fit, var(--column-size));
 	gap: var(--gap-size);
-	min-width: calc(var(--column-size) * 2);
-	min-height: calc(var(--row-size) * 2);
+	min-inline-size: calc(var(--column-size) * 2);
+	min-block-size: calc(var(--row-size) * 2);
 }
 </style>

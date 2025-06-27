@@ -173,14 +173,14 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .fields-management {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 
 .field-grid {
 	position: relative;
 	display: grid;
 	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-	padding-bottom: 24px;
+	padding-block-end: 24px;
 }
 
 .field-select {
@@ -204,14 +204,14 @@ async function setNestedSort(updates?: Field[]) {
 	--v-button-background-color: var(--theme--primary);
 	--v-button-background-color-hover: var(--theme--primary-accent);
 
-	margin-top: -12px;
+	margin-block-start: -12px;
 }
 
 .add-field-advanced {
 	display: block;
-	width: max-content;
+	inline-size: max-content;
 	margin: 0 auto;
-	margin-top: 8px;
+	margin-block-start: 8px;
 	color: var(--theme--foreground-subdued);
 	transition: color var(--fast) var(--transition);
 
@@ -221,7 +221,7 @@ async function setNestedSort(updates?: Field[]) {
 }
 
 .visible {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 
 .list-move {

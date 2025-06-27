@@ -258,22 +258,22 @@ function addKeyAsNode() {
 	}
 
 	:deep(.group) {
-		margin-left: 18px;
-		padding-left: 10px;
-		border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		margin-inline-start: 18px;
+		padding-inline-start: 10px;
+		border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 
 	.v-list {
-		min-width: auto;
-		margin: 0px 0px 10px;
+		min-inline-size: auto;
+		margin: 0 0 10px;
 		padding: 20px 20px 12px;
 		border: var(--theme--border-width) solid var(--theme--border-color-subdued);
 		background: var(--theme--form--field--input--background);
 
 		& > :deep(.group) {
-			margin-left: 0px;
-			padding-left: 0px;
-			border-left: none;
+			margin-inline-start: 0;
+			padding-inline-start: 0;
+			border-inline-start: none;
 		}
 	}
 
@@ -290,9 +290,8 @@ function addKeyAsNode() {
 		.v-list {
 			display: flex;
 			align-items: center;
-			height: var(--theme--form--field--input--height);
-			padding-top: 0;
-			padding-bottom: 0;
+			block-size: var(--theme--form--field--input--height);
+			padding-block: 0;
 		}
 
 		.no-rules {
@@ -325,8 +324,8 @@ function addKeyAsNode() {
 		.add-filter {
 			display: flex;
 			align-items: center;
-			width: 100%;
-			height: 30px;
+			inline-size: 100%;
+			block-size: 30px;
 			padding: 0;
 			color: var(--theme--form--field--input--foreground-subdued);
 			background-color: var(--theme--form--field--input--background);
@@ -344,12 +343,10 @@ function addKeyAsNode() {
 				}
 			}
 			.add {
-				margin-left: 6px;
-				margin-right: 4px;
+				margin-inline: 6px 4px;
 			}
 			.expand_more {
-				margin-left: auto;
-				margin-right: 6px;
+				margin-inline: auto 6px;
 				transition: transform var(--medium) var(--transition-out);
 			}
 		}
@@ -364,7 +361,7 @@ function addKeyAsNode() {
 	}
 
 	button + button {
-		margin-left: 24px;
+		margin-inline-start: 24px;
 	}
 }
 

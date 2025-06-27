@@ -208,8 +208,7 @@ function saveOperation() {
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block: 0 var(--content-padding-bottom);
 
 	.grid {
 		@include mixins.form-grid;
@@ -221,12 +220,12 @@ function saveOperation() {
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .type-title,
 .select {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 
 .not-found {
@@ -240,19 +239,19 @@ function saveOperation() {
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .required {
 	--v-icon-color: var(--theme--primary);
 
-	margin-top: -12px;
-	margin-left: -4px;
+	margin-block-start: -12px;
+	margin-inline-start: -4px;
 }
 
 .error {
 	display: block;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--danger);
 	font-style: italic;
 }

@@ -452,8 +452,8 @@ function useDisplayValue() {
 }
 
 .inline-display {
-	width: max-content;
-	padding-right: 18px;
+	inline-size: max-content;
+	padding-inline-end: 18px;
 
 	&:not(.disabled) {
 		cursor: pointer;
@@ -462,7 +462,7 @@ function useDisplayValue() {
 
 .inline-display.label {
 	padding: 4px 8px;
-	padding-right: 26px;
+	padding-inline-end: 26px;
 	color: var(--theme--foreground-subdued);
 	background-color: var(--theme--form--field--input--background-subdued);
 	border-radius: var(--theme--border-radius);
@@ -483,7 +483,6 @@ function useDisplayValue() {
 }
 
 .color-dot {
-	margin-left: 7px;
-	margin-right: 7px;
+	margin-inline: 7px;
 }
 </style>

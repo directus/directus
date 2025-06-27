@@ -193,6 +193,7 @@ function useActions() {
 <style lang="scss" scoped>
 .layout {
 	display: contents;
+
 	--layout-offset-top: calc(var(--header-bar-height) - 1px);
 }
 </style>

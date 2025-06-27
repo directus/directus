@@ -54,12 +54,10 @@ function update(newSelection: readonly (string | number)[]) {
 
 .v-tabs.horizontal :slotted(.v-tab) {
 	display: flex;
-	flex-basis: 0px;
-	flex-grow: 1;
-	flex-shrink: 0;
+	flex: 1 0 0;
 	align-items: center;
 	justify-content: center;
-	height: 38px;
+	block-size: 38px;
 	padding: 8px 20px;
 	cursor: pointer;
 }

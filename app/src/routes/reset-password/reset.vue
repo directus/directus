@@ -76,6 +76,6 @@ useHead({
 <style lang="scss" scoped>
 .v-input,
 .v-notice {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 </style>

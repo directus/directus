@@ -87,7 +87,7 @@ const searchDebounced = ref('');
 
 <style scoped>
 .select-multiple-checkbox-tree {
-	max-height: var(--input-height-max);
+	max-block-size: var(--input-height-max);
 	overflow: auto;
 	background-color: var(--theme--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
@@ -96,10 +96,10 @@ const searchDebounced = ref('');
 
 .search {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
 	padding: 10px;
-	padding-bottom: 0;
+	padding-block-end: 0;
 }
 
 .search .v-input {
@@ -108,15 +108,15 @@ const searchDebounced = ref('');
 
 .footer {
 	position: sticky;
-	right: 0;
-	bottom: 0;
+	inset-inline-end: 0;
+	inset-block-end: 0;
 	z-index: 2;
-	float: right;
-	width: max-content;
+	float: inline-end;
+	inline-size: max-content;
 	padding: 4px 8px;
-	text-align: right;
+	text-align: end;
 	background-color: var(--theme--background);
-	border-top-left-radius: var(--theme--border-radius);
+	border-start-start-radius: var(--theme--border-radius);
 }
 
 .footer > button {

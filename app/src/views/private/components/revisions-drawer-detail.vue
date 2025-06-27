@@ -116,24 +116,22 @@ defineExpose({
 .v-divider {
 	--v-divider-color: var(--theme--background-accent);
 
-	margin-top: 24px;
-	margin-bottom: 8px;
+	margin-block: 24px 8px;
 
 	&:first-of-type {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 }
 
 .empty {
-	margin-top: 16px;
-	margin-bottom: 16px;
-	margin-left: 2px;
+	margin-block: 16px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .external {
-	margin-left: 20px;
+	margin-inline-start: 20px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
@@ -146,6 +144,6 @@ defineExpose({
 
 .v-pagination {
 	justify-content: center;
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 </style>

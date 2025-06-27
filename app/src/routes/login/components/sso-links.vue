@@ -84,15 +84,15 @@ const errorFormatted = computed(() => {
 }
 
 .v-notice {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 
 .sso-link {
 	$sso-link-border-width: 2px;
 
 	display: flex;
-	width: 100%;
-	height: var(--theme--form--field--input--height);
+	inline-size: 100%;
+	block-size: var(--theme--form--field--input--height);
 	background-color: var(--theme--background-normal);
 	border: $sso-link-border-width var(--theme--background-normal) solid;
 	border-radius: var(--theme--border-radius);
@@ -104,7 +104,7 @@ const errorFormatted = computed(() => {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: var(--theme--form--field--input--height);
+		inline-size: var(--theme--form--field--input--height);
 		margin: -$sso-link-border-width;
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
@@ -123,7 +123,7 @@ const errorFormatted = computed(() => {
 	}
 
 	& + & {
-		margin-top: 12px;
+		margin-block-start: 12px;
 	}
 }
 </style>

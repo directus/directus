@@ -314,7 +314,7 @@ function updateCopyButtonPosition() {
 
 	if (!copyButtonEl || !codeMirrorScrollBarEl) return;
 
-	copyButtonEl.style.right = `${Number(codeMirrorScrollBarEl.style.right.replace('px', '')) + 10}px`;
+	copyButtonEl.style.insetInlineEnd = `${Number(codeMirrorScrollBarEl.style.insetInlineEnd.replace('px', '')) + 10}px`;
 }
 
 function processRawLog() {
@@ -535,26 +535,25 @@ onUnmounted(() => {
 }
 
 .logs-container {
-	width: 100%;
-	height: calc(100% - 110px);
-	min-height: 600px;
+	inline-size: 100%;
+	block-size: calc(100% - 110px);
+	min-block-size: 600px;
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .filter {
-	margin-block-start: 24px;
-	margin-block-end: 20px;
+	margin-block: 24px 20px;
 }
 
 .v-form {
-	padding-bottom: var(--content-padding);
+	padding-block-end: var(--content-padding);
 }
 
 .split-view {
 	display: flex;
 	flex-direction: column;
-	height: calc(100% - 50px);
+	block-size: calc(100% - 50px);
 	background-color: var(--theme--background-subdued);
 	border: var(--theme--border-width) solid var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	border-radius: var(--v-input-border-radius, var(--theme--border-radius));
@@ -566,12 +565,12 @@ onUnmounted(() => {
 
 .split-view > div {
 	box-sizing: border-box;
-	height: 50%;
+	block-size: 50%;
 }
 
 .logs-display {
 	flex: 2;
-	min-height: 200px;
+	min-block-size: 200px;
 }
 
 .log-detail {
@@ -579,9 +578,9 @@ onUnmounted(() => {
 	display: flex;
 	flex-direction: column;
 	padding: 6px;
-	min-height: 300px;
+	min-block-size: 300px;
 	background-color: var(--theme--background-subdued);
-	border-top: var(--theme--border-width) solid
+	border-block-start: var(--theme--border-width) solid
 		var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	box-shadow: var(--sidebar-shadow);
 	z-index: 1;
@@ -593,20 +592,20 @@ onUnmounted(() => {
 }
 
 .close-button {
-	margin-right: 10px;
+	margin-inline-end: 10px;
 }
 
 .copy-button {
-	float: right;
+	float: inline-end;
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	inset-block-start: 10px;
+	inset-inline-end: 10px;
 	z-index: 2;
 }
 
 .raw-log {
-	height: 100%;
-	min-height: 100px;
+	block-size: 100%;
+	min-block-size: 100px;
 	margin: 4px;
 	position: relative;
 	overflow: auto;
@@ -618,13 +617,13 @@ onUnmounted(() => {
 }
 
 .raw-log :deep(.CodeMirror) {
-	height: 100%;
-	max-height: 100%;
+	block-size: 100%;
+	max-block-size: 100%;
 }
 
 .raw-log :deep(.CodeMirror-scroll) {
-	height: 100%;
-	max-height: 100%;
+	block-size: 100%;
+	max-block-size: 100%;
 }
 
 .fade-enter-active,
@@ -639,12 +638,12 @@ onUnmounted(() => {
 
 .actions {
 	padding: 0 9px;
-	margin-left: auto;
+	margin-inline-start: auto;
 }
 
 @media (min-width: 960px) {
 	.logs-container {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 }
 
@@ -654,7 +653,7 @@ onUnmounted(() => {
 	}
 
 	.split-view > div {
-		height: 100%;
+		block-size: 100%;
 	}
 
 	.logs-display {
@@ -663,9 +662,9 @@ onUnmounted(() => {
 
 	.log-detail {
 		flex: 1;
-		max-width: 50%;
-		border-top: none;
-		border-left: var(--theme--border-width) solid
+		max-inline-size: 50%;
+		border-block-start: none;
+		border-inline-start: var(--theme--border-width) solid
 			var(--v-input-border-color, var(--theme--form--field--input--border-color));
 	}
 }

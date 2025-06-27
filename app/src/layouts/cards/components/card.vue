@@ -131,7 +131,7 @@ function handleClick() {
 <style lang="scss" scoped>
 .loading {
 	.header {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 	}
 }
 
@@ -145,34 +145,34 @@ function handleClick() {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 100%;
+		inline-size: 100%;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border-color: var(--theme--primary-subdued);
 		border-style: solid;
-		border-width: 0px;
+		border-width: 0;
 		border-radius: var(--theme--border-radius);
 		transition: border-width var(--fast) var(--transition);
 
 		&::after {
 			display: block;
-			padding-bottom: 100%;
+			padding-block-end: 100%;
 			content: '';
 		}
 
 		.image {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: 100%;
 			object-fit: contain;
 		}
 
 		.svg {
 			position: absolute;
-			width: 75%;
-			height: 75%;
+			inline-size: 75%;
+			block-size: 75%;
 			object-fit: contain;
 		}
 
@@ -187,28 +187,28 @@ function handleClick() {
 
 		.v-skeleton-loader {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: 100%;
 		}
 
 		.selection-fade {
 			position: absolute;
-			top: 0;
-			left: 0;
+			inset-block-start: 0;
+			inset-inline-start: 0;
 			z-index: 1;
-			width: 100%;
-			height: 48px;
+			inline-size: 100%;
+			block-size: 48px;
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
 
 			&::before {
 				position: absolute;
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
+				inset-block-start: 0;
+				inset-inline-start: 0;
+				inline-size: 100%;
+				block-size: 100%;
 				background-image: linear-gradient(-180deg, rgb(38 50 56 / 0.1) 10%, rgb(38 50 56 / 0));
 				content: '';
 			}
@@ -217,11 +217,11 @@ function handleClick() {
 
 	&::before {
 		position: absolute;
-		top: 7px;
-		left: 7px;
+		inset-block-start: 7px;
+		inset-inline-start: 7px;
 		z-index: 2;
-		width: 18px;
-		height: 18px;
+		inline-size: 18px;
+		block-size: 18px;
 		background-color: var(--theme--background);
 		border-radius: 24px;
 		opacity: 0;
@@ -235,8 +235,8 @@ function handleClick() {
 		--focus-ring-offset: 0;
 
 		position: absolute;
-		top: 0px;
-		left: 0px;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		z-index: 3;
 		margin: 4px;
 		opacity: 0;
@@ -309,21 +309,21 @@ function handleClick() {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: 26px;
-	margin-top: 2px;
+	inline-size: 100%;
+	block-size: 26px;
+	margin-block-start: 2px;
 	overflow: hidden;
 	line-height: 1.3em;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 
 	:deep(.render-template) {
-		height: 100%;
+		block-size: 100%;
 	}
 }
 
 .subtitle {
-	margin-top: 0px;
+	margin-block-start: 0;
 	color: var(--theme--foreground-subdued);
 }
 </style>

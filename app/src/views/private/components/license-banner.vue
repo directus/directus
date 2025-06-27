@@ -67,9 +67,9 @@ const { info } = storeToRefs(useServerStore());
 
 <style scoped>
 .v-card {
-	max-width: unset;
+	max-inline-size: unset;
 	padding: 30px;
-	width: 80vw;
+	inline-size: 80vw;
 }
 
 .v-card a {
@@ -91,12 +91,12 @@ const { info } = storeToRefs(useServerStore());
 @media (min-width: 900px) {
 	.v-card {
 		padding: 56px;
-		width: initial;
+		inline-size: initial;
 	}
 
 	.v-card .inner {
 		grid-template-columns: 60% 40%;
-		width: 706px;
+		inline-size: 706px;
 	}
 
 	.left {
@@ -124,7 +124,7 @@ const { info } = storeToRefs(useServerStore());
 	display: flex;
 	flex-direction: column;
 	gap: 1rem;
-	max-width: 435px;
+	max-inline-size: 435px;
 }
 
 .v-card .left .v-card-actions {
@@ -132,7 +132,7 @@ const { info } = storeToRefs(useServerStore());
 	flex-direction: row;
 	padding: 0;
 	gap: 12px;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .banner-svg {
@@ -141,18 +141,18 @@ const { info } = storeToRefs(useServerStore());
 }
 
 .banner-svg > * {
-	width: 200px;
+	inline-size: 200px;
 }
 
 @media (min-width: 600px) {
 	.v-card .left .v-card-actions {
 		gap: unset;
-		padding-right: initial;
-		width: initial;
+		padding-inline-end: initial;
+		inline-size: initial;
 	}
 
 	.banner-svg > * {
-		width: 257px;
+		inline-size: 257px;
 	}
 
 	.v-card .inner {
@@ -161,7 +161,7 @@ const { info } = storeToRefs(useServerStore());
 
 	.v-card {
 		padding: 60px;
-		width: fit-content;
+		inline-size: fit-content;
 	}
 
 	.v-card-title {

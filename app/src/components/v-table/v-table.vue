@@ -370,12 +370,12 @@ function updateSort(newSort: Sort) {
 
 .v-table {
 	position: relative;
-	height: auto;
+	block-size: auto;
 	overflow-y: auto;
 }
 
 table {
-	min-width: 100%;
+	min-inline-size: 100%;
 	border-collapse: collapse;
 	border-spacing: 0;
 }
@@ -404,7 +404,7 @@ table :deep(tr) {
 
 table :deep(td.align-left),
 table :deep(th.align-left) {
-	text-align: left;
+	text-align: start;
 	justify-content: start;
 }
 
@@ -416,7 +416,7 @@ table :deep(th.align-center) {
 
 table :deep(td.align-right),
 table :deep(th.align-right) {
-	text-align: right;
+	text-align: end;
 	justify-content: end;
 }
 
@@ -426,7 +426,7 @@ table :deep(.loading-indicator) {
 }
 
 table :deep(.loading-indicator > th) {
-	margin-right: var(--content-padding);
+	margin-inline-end: var(--content-padding);
 }
 
 table :deep(.sortable-ghost .cell) {
@@ -438,7 +438,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .loading .loading-indicator {
-	height: auto;
+	block-size: auto;
 	padding: 0;
 	border: none;
 }
@@ -448,9 +448,9 @@ table :deep(.sortable-ghost .cell) {
 	--v-progress-linear-color: var(--theme--form--field--input--border-color-hover);
 
 	position: absolute;
-	top: -2px;
-	left: 0;
-	width: 100%;
+	inset-block-start: -2px;
+	inset-inline-start: 0;
+	inline-size: 100%;
 }
 
 .loading .loading-indicator th {
@@ -459,7 +459,7 @@ table :deep(.sortable-ghost .cell) {
 
 .loading .loading-indicator.sticky th {
 	position: sticky;
-	top: 48px;
+	inset-block-start: 48px;
 	z-index: 2;
 }
 
@@ -481,7 +481,7 @@ table :deep(.sortable-ghost .cell) {
 }
 
 .inline table :deep(.table-row:last-of-type .cell) {
-	border-bottom: none;
+	border-block-end: none;
 }
 
 .disabled {

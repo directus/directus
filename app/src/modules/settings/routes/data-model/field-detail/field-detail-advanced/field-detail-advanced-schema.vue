@@ -468,8 +468,8 @@ function useOnUpdate() {
 .type-note {
 	position: relative;
 	display: block;
-	max-width: 520px;
-	margin-top: 4px;
+	max-inline-size: 520px;
+	margin-block-start: 4px;
 }
 
 .monospace {
@@ -488,6 +488,6 @@ function useOnUpdate() {
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 </style>

@@ -516,7 +516,7 @@ function onApply() {
 @use '@/styles/mixins';
 
 .type-title {
-	margin-bottom: 48px;
+	margin-block-end: 48px;
 }
 
 .grid {
@@ -549,18 +549,17 @@ function onApply() {
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .type-note {
 	position: relative;
 	display: block;
-	max-width: 520px;
-	margin-top: 4px;
+	max-inline-size: 520px;
+	margin-block-start: 4px;
 }
 </style>
