@@ -8,7 +8,7 @@ import type {
 	MutationOptions,
 	PrimaryKey,
 	Query,
-	QueryOptions
+	QueryOptions,
 } from '@directus/types';
 import { toArray } from '@directus/utils';
 import type { AxiosResponse } from 'axios';
