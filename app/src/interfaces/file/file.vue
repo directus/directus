@@ -176,7 +176,7 @@ function useURLImport() {
 
 <template>
 	<div class="file">
-		<v-menu attached :disabled="loading || internalDisabled" keep-behind>
+		<v-menu attached :disabled="loading || internalDisabled">
 			<template #activator="{ toggle, active }">
 				<div>
 					<v-skeleton-loader v-if="loading" type="input" />
