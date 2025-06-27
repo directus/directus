@@ -2,7 +2,6 @@ import { SchemaBuilder } from '@directus/schema-builder';
 
 import { expect, test, vi } from 'vitest';
 import { Client_SQLite3 } from '../../run-ast/lib/apply-query/mock.js';
-import { convertWildcards } from './convert-wildcards.js';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
 import type { Accountability } from '@directus/types';
 import knex from 'knex';
