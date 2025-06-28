@@ -30,6 +30,7 @@ draft: 草稿
 archived: 已存档
 marketplace: 扩展集市
 extensions: 扩展
+skip_link_nav: 跳转至导航
 modules: 模块
 module_bar: 模块栏
 logs: 日志
@@ -316,6 +317,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 重置页面首选项
 hidden_field: 隐藏字段
 hidden_on_detail: 在详情中隐藏
+required_readonly_field_warning: 启用只读和必填字段可以防止保存一个值为空的项目。
 key: 关键字
 alias: 别名
 bigInteger: Big Integer
@@ -725,6 +727,7 @@ errors:
   COLLECTION_NOT_FOUND: "模型不存在"
   CONTAINS_NULL_VALUES: 字段包含空值
   CONTENT_TOO_LARGE: 提交的项目/文件太大了
+  FAILED_VALIDATION: 验证失败
   FIELD_NOT_FOUND: 字段未找到
   FORBIDDEN: 禁止
   GRAPHQL_VALIDATION: GraphQL 验证
@@ -2531,3 +2534,8 @@ search_flow: 搜索流程...
 percent: 百分比
 show_password: 显示密码
 hide_password: 隐藏密码
+bsl_banner:
+  welcome_to_directus: 欢迎使用 Directus！
+  directus_free_use: Directus对年收入、资金或经营预算低于500万美元的实体免费开放。
+  organization_threshold: 超过这一限额的实体需要付费许可证。
+  directus_bsl: Directus BSL 1.1
