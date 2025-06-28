@@ -26,7 +26,7 @@ describe('WebSocket General Tests', () => {
 			databases.set(vendor, knex(config.knexConfig[vendor]!));
 
 			const env1 = cloneDeep(config.envs);
-			env1[vendor]['REDIS'] = `redis://localhost:6108/4`;
+			env1[vendor]['REDIS'] = `redis://localhost:7000/4`;
 
 			const env2 = cloneDeep(env1);
 

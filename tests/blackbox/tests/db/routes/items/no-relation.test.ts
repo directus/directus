@@ -101,9 +101,16 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 								expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
 								break;
 							case 'postgres':
-							case 'postgres10':
+							case 'postgres-lts-16':
+							case 'postgres-lts-15':
+							case 'postgres-lts-14':
+							case 'postgres-lts-13':
 							case 'mssql':
+							case 'mssql-lts-2019':
 							case 'cockroachdb':
+							case 'cockroachdb-lts-24.1':
+							case 'cockroachdb-lts-23.2':
+							case 'cockroachdb-lts-23.1':
 								if (pkType === 'string') {
 									expect(gqlResponse.body.data[localCollectionArtists].length).toEqual(0);
 								} else {

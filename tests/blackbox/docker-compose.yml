@@ -32,37 +32,62 @@ version: '3.8'
 
 services:
   postgres:
-    image: postgis/postgis:13-3.4-alpine
+    image: postgis/postgis:17-3.5-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
     ports:
       - 6100:5432
 
-  postgres10:
-    image: postgis/postgis:10-3.2-alpine
+  postgres-lts-16:
+    image: postgis/postgis:16-3.5-alpine
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: directus
     ports:
       - 6101:5432
 
+  postgres-lts-15:
+    image: postgis/postgis:15-3.5-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 6102:5432
+
+  postgres-lts-14:
+    image: postgis/postgis:14-3.5-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 6103:5432
+
+  postgres-lts-13:
+    image: postgis/postgis:13-3.5-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: directus
+    ports:
+      - 6104:5432
+
   mysql:
-    image: mysql:8
+    image: mysql:8.4
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
-      - 6102:3306
+      - 6105:3306
 
-  mysql5:
-    image: mysql:5
+  mysql-lts-8:
+    image: mysql:8.0
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
-      - 6103:3306
+      - 6106:3306
 
   maria:
     image: mariadb:11.4
@@ -71,7 +96,25 @@ services:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: directus
     ports:
-      - 6104:3306
+      - 6107:3306
+
+  maria-lts-10.11:
+    image: mariadb:10.11
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 6108:3306
+
+  maria-lts-10.6:
+    image: mariadb:10.6
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: directus
+    ports:
+      - 6109:3306
 
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -80,28 +123,55 @@ services:
       - MSSQL_SA_PASSWORD=Test@123
       - MSSQL_PID=Express
     ports:
-      - 6105:1433
+      - 6110:1433
+
+  mssql-lts-2019:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Test@123
+      - MSSQL_PID=Express
+    ports:
+      - 6111:1433
 
   oracle:
-    image: quillbuilduser/oracle-18-xe-micro-sq
-    ports:
-      - 6106:1521
+    image: container-registry.oracle.com/database/free:latest-lite
     environment:
       - OPATCH_JRE_MEMORY_OPTIONS=-Xms128m -Xmx256m -XX:PermSize=16m -XX:MaxPermSize=32m -Xss1m
       - ORACLE_ALLOW_REMOTE=true
     shm_size: '1gb' # more like smh-size ammirite 🥁
+    ports:
+      - 6112:1521
 
   cockroachdb:
     # change in the YY.R component denotes a major release
-    image: cockroachdb/cockroach:latest-v21.1
+    image: cockroachdb/cockroach:latest-v24.3
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
-      - 6107:26257
+      - 6113:26257
+
+  cockroachdb-lts-24.1:
+    image: cockroachdb/cockroach:latest-v24.1
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 6114:26257
+
+  cockroachdb-lts-23.2:
+    image: cockroachdb/cockroach:latest-v23.2
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 6115:26257
+
+  cockroachdb-lts-23.1:
+    image: cockroachdb/cockroach:latest-v23.1
+    command: start-single-node --cluster-name=example-single-node --insecure
+    ports:
+      - 6116:26257
 
   redis:
     image: redis:6-alpine
     ports:
-      - 6108:6379
+      - 7000:6379
 
   minio:
     # should stay compatible via S3 driver
