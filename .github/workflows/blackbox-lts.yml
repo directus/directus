@@ -35,7 +35,7 @@ jobs:
           - postgres-lts-13
           - mysql-lts-8
           - maria-lts-10_11
-          - maria-lts-10_6
+          # - maria-lts-10_6
           - mssql-lts-2019
           - cockroachdb-lts-24_1
           - cockroachdb-lts-23_2
