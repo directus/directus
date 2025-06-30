@@ -316,7 +316,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Redefinir Preferências da Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
-disabled_editing_value: Desativar edição do valor
 key: Chave
 alias: Pseudônimo
 bigInteger: Big Integer
@@ -890,7 +889,7 @@ create_item: Criar item
 display_template: Modelo de exibição
 language_display_template: Modelo de Exibição do Idioma
 translations_display_template: Modelos de Exibição da Aplicação
-n_items_selected: 'Nenhum “item” selecionado | Um “item” selecionado | Itens selecionados'
+n_items_selected: 'Nenhum Item Selecionado | Um Item Selecionado | {n} Itens Selecionados'
 per_page: Por página
 all_files: Todos os arquivos
 my_files: Meus arquivos
@@ -1606,7 +1605,7 @@ continue_label: Continuar
 continue_as: >-
   {name} está autenticado. Se você reconhece esta conta, clique em continuar.
 editing_role: 'Cargo {role}'
-editing_policy: 'Política'
+editing_policy: 'Política {policy}'
 no_permissions: Sem permissão
 permission_add_collection: Adicionar coleção
 creating_webhook: Criando Webhook

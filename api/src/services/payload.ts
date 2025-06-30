@@ -388,7 +388,7 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'dateTime') {
-						const year = String(value.getFullYear());
+						const year = String(value.getFullYear()).padStart(4, '0');
 						const month = String(value.getMonth() + 1).padStart(2, '0');
 						const day = String(value.getDate()).padStart(2, '0');
 						const hours = String(value.getHours()).padStart(2, '0');
@@ -400,7 +400,7 @@ export class PayloadService {
 					}
 
 					if (dateColumn.type === 'date') {
-						const year = String(value.getFullYear());
+						const year = String(value.getFullYear()).padStart(4, '0');
 						const month = String(value.getMonth() + 1).padStart(2, '0');
 						const day = String(value.getDate()).padStart(2, '0');
 

@@ -147,6 +147,7 @@ function useComputedValues() {
 
 <template>
 	<div
+		:data-primary-key="primaryKey"
 		:data-collection="field.collection"
 		:data-field="field.field"
 		class="field"

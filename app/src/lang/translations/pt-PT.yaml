@@ -30,6 +30,10 @@ draft: Rascunho
 archived: Arquivado
 marketplace: Mercado
 extensions: Extensões
+skip_link_nav: "Pular para navegação\n"
+skip_link_module_nav: Pular para o Módulo de Navegação
+skip_link_main: Avançar para o conteúdo principal
+skip_link_sidebar: Pular para a barra lateral
 modules: Módulos
 module_bar: Barra de Módulo
 logs: Registo de Eventos
@@ -193,6 +197,7 @@ public_description: Controla quais dados da API estão disponíveis sem autentic
 public_role_info: >-
   O papel público controla quais dados de API estão disponíveis para utilizadores não autenticados ou sem uma função. Pedidos com o papel público não podem ter acesso à aplicação ou ao administrador. Se for concedido acesso à aplicação ou ao administrador numa política atribuída ao papel público, esse acesso será ignorado.
 admin_description: Função administrativa inicial com acesso irrestrito à Aplicação/API.
+admin_policy_description: Função administrativa inicial com acesso irrestrito à Aplicação/API.
 no_description: Sem descrição...
 reached_maximum_number_of_extensions: Atingiu o número máximo de extensões para este projeto ({n}). Contacte o administrador de sistema para mais informação.
 not_allowed: Não permitido
@@ -202,6 +207,7 @@ archive_confirm_count: >-
   Nenhum documento selecionado | Tem a certeza que pretende arquivar este documento? | Tem a certeza que pretende arquivar {count} documentos?
 reset_system_permissions_to: 'Restaurar permissões do sistema para:'
 reset_system_permissions_copy: Esta ação irá sobrescrever quaisquer permissões personalizadas que tenha aplicado às coleções do sistema. Tem certeza que pretende continuar?
+the_following_are_minimum_permissions: As seguintes permissões são aplicadas automaticamente quando o "Acesso à Aplicativos" está ativado. Você pode conceder permissões adicionais se necessário, mas você não pode reduzir as permissões abaixo deste nível.
 app_access_minimum: Permissões mínimas para Acesso à App
 recommended_defaults: Predefinições recomendadas
 unarchive: Desarquivar
@@ -225,12 +231,23 @@ validationError:
   nnull: O valor não pode ser nulo
   required: O valor é obrigatório
   unique: O valor tem de ser único
+  email: Valor tem de ser um endereço de e-mail válido
   regex: O valor não tem o formato correto
+  starts_with: O valor tem que conter {substring}
+  istarts_with: O valor tem que conter {substring}
+  nstarts_with: O valor não pode conter {substring}
+  nistarts_with: O valor não pode conter {substring}
+  ends_with: O valor tem que terminar com {substring}
+  iends_with: O valor tem que terminar com {substring}
+  nends_with: O valor não pode terminar com {substring}
+  niends_with: O valor não pode terminar com {substring}
 all_access: Acesso Global
 no_access: Sem Acesso
 use_custom: Usar personalizado
 nullable: Nulo
 allow_null_value: Permitir valor NULL
+allow_multiple: Permitir Vários
+allow_multiple_to_be_open: Permitir que vários sejam Abertos
 enter_value_to_replace_nulls: Por favor, insira um novo valor para substituir qualquer NULLs atualmente dentro deste campo.
 field_standard: Predefinido
 field_presentation: Apresentação & Pseudônimos
@@ -247,10 +264,22 @@ field_permissions: Permisões do campo
 field_validation: Validação do Campo
 field_presets: Predefinições para o campo
 permissions_for_role: 'Documentos que o estatuto {role} pode {action}.'
+permissions_for_policy: 'Documentos que o {policy} político pode {action}.'
 fields_for_role: 'Campos que o estatuto {role} pode {action}.'
+fields_for_policy: 'Campos que o político {policy} pode {action}.'
 validation_for_role: 'As regras {action} do campo que a função {role} deve obedecer.'
+validation_for_policy: 'As regras {action} do campo que a função {policy} deve obedecer.'
 presets_for_role: 'Valor do Campo definido por padrão para a função {role}.'
+presets_for_policy: 'Valor do Campo definido por padrão para a função {policy}.'
+presets_field_warning: 'Predefinições relacionais para o campo "{field}" devem ser configuradas com a sintaxe "detalhada".'
 presentation_and_aliases: Apresentação & Pseudônimos
+revision_post_create: Aqui está como este documento ficou após a atualização.
+revision_post_update: Aqui está como este documento ficou após a atualização.
+changes_made: Abaixo estão as mudanças específicas feitas nesta revisão.
+no_relational_data: Tenha em mente que os dados relacionados não estão incluídos aqui.
+junction_field_location: Localização dos campos de junção
+top: Topo
+bottom: Inferior
 hide_field: Ocultar campo
 hide_field_on_detail: Ocultar campo dentro de Detalhe
 show_field_on_detail: Mostrar campo dentro de Detalhe
@@ -261,9 +290,25 @@ field_update_success: 'Campo atualizado: "{field}"'
 duplicate_where_to: Para onde gostaria de duplicar este campo?
 language: Idioma
 language_placeholder: Seleciona um idioma...
+aggregate_function: Função agregada
+aggregate_precision: Precisão agregada
+group_aggregation: Agregação do Grupo
+group_precision: Precisão do Grupo
 global: Global
 admins_have_all_permissions: Administradores têm todas as permissões
 camera: Câmara
+show_zero: Não mostrar
+create_in_advanced_field_creation_mode: Criar Campo no Modo Avançado
+continue_in_advanced_field_creation_mode: Continuar no Modo Avançado de Criação de Campo
+validation: Validação
+sum: Soma
+sum_distinct: Soma distinta
+avg: Média
+avg_distinct: Média distinta
+count: Contagem
+count_distinct: Contagem distinta
+min: Mínimo
+max: Máximo
 exposure: Exposição
 shutter: Obturador
 iso: ISO
@@ -275,12 +320,14 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restaurar as preferências da página
 hidden_field: Campo oculto
 hidden_on_detail: Ocultar dentro de Detalhe
-disabled_editing_value: Desativar editar valor
+readonly_field_label: Desativar o campo no aplicativo
+required_readonly_field_warning: Habilitar somente leitura obrigatória num campo impede de salvar um campo se o valor estiver vazio.
 key: Chave
 alias: Nome alternativo
 bigInteger: Grande inteiro
 boolean: Boleano
 date: Data
+date_range: Intervalo de data
 translation_key_placeholder: Introduza uma chave...
 datetime: Data e Hora
 dateTime: Data e Hora
@@ -310,6 +357,7 @@ theme_light: Modo Claro
 theme_dark: Modo Escuro
 theme_directus_default: Directus padrão
 theme_directus_minimal: Directus Mínimo
+theme_directus_colormatch: Correspondência de cor
 not_available_for_type: Não disponível para este tipo
 create_translations: Criar traduções
 auto_refresh: Atualização Automática
@@ -321,12 +369,16 @@ auto_generate: Geração Automatica
 this_will_auto_setup_fields_relations: Isto irá automaticamente configurar todos os campos e relações obrigatórias.
 click_here: Clique aqui
 to_manually_setup_translations: para configurar manualmente as traduções.
+manage: Gerir
 click_to_manage_translated_fields: >-
   Não há campos traduzidos ainda. Clique aqui para os criar. Há um campo traduzido. Clique aqui para gerenciar. Há {count} campos traduzidos. Clique aqui para os gerir.
 fields_group: Grupo de Campos
 no_collections_found: Nenhuma coleção encontrada.
 new_data_alert: 'O seguinte será criado dentro do seu modelo de dados:'
 search_collection: Procurar...
+search_role: Funções da pesquisa
+search_policy: Política de Pesquisa...
+search_field: Buscar campo...
 new_field: 'Novo Campo'
 new_collection: 'Nova coleção'
 add_m2o_to_collection: 'Adicionar M2O a "{collection}"'
@@ -346,36 +398,54 @@ o2m_relationship: Relacionamento Um para Muitos
 m2m_relationship: Relacionamento Muitos para Muitos
 m2a_relationship: Relacionamento Muitos para qualquer
 invalid_item: Item inválido
+require_confirmation: Solicitar confirmação
+dialog: Diálogo
+modal: Janela Modal
+confirmation_dialog: Diálogo de confirmação
+confirmation_description: Descrição da confirmação
+confirmation_input_fields: Campo de confirmação
 next: Seguinte
 field_name: Nome do campo
 translations: Traduções
 no_translations: Sem traduções
 left_to_right: Da Esquerda para a Direita
+right_to_left: Da direita para a esquerda
 note: Nota
 enter_a_value: Insira um valor...
 enter_a_placeholder: Insira um placeholder...
 length: Comprimento
+soft_length: Limite Suave
 precision_scale: Precisão e Escala
 readonly: Apenas de Leitura
 unique: Único
+index: Índice
 updated_on: Atualizado em
 updated_by: Actualizado por
 primary_key: Chave primária
 foreign_key: Chave estrangeira
+field_key: Chave do campo
 finish_setup: Concluir a Configuração
 dismiss: Dispensar
+toggle_raw_editor: Alternar Editor Raw
+toggle_variable_input: Alternar Entrada de Variável
+raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor bruto
+copy_raw_value: Editar Valor Bruto
 copy_raw_value_success: Copiado
 copy_raw_value_fail: Falha ao copiar
+paste_raw_value: Editar Valor Bruto
 paste_raw_value_success: Colado
 paste_raw_value_fail: Falha ao colar
+view_raw_value: Editar Valor Bruto
 edit_raw_value: Editar Valor Bruto
 enter_raw_value: Insira valor bruto...
 clear_value: Limpar valor
 clear_changes: Limpar alterações
+clear_items: Limpar Item
 reset_to_default: Restaurar para padrão
 undo_changes: Anular alterações
 notifications: Notificações
+archive_all: Arquivar Tudo
 show_all_activity: Mostrar todas as atividades
 page_not_found: Página Não Encontrada
 page_not_found_body: A página que esta à procura não existe.
@@ -388,16 +458,21 @@ revision_delta_created: Criado
 revision_delta_created_externally: Criado externamente
 revision_delta_updated: '1 campo foi atualizado | {count} campos foram atualizados'
 revision_delta_deleted: Removido
+revision_delta_version_saved: 'Salvar Versão (Atualizado 1 Campo) Version Save (Atualizado em {count} Campos)'
 revision_delta_reverted: Revertido
 revision_delta_update_message: Este campo foi atualizado, mas o seu valor foi oculto por razões de segurança.
 revision_delta_other: Revisão
 revision_delta_by: '{date} por {user}'
+presentation_text_values_cannot_be_reimported: 'Usa texto de apresentação, valores não podem ser importados novamente.'
 download_page_as_csv: 'Transferir Página como CSV'
+download_page_as_csv_unsupported: Esse layout não suporta o download da página atual.
 private_user: Utilizador privado
+creation_preview: Pré-visualização da criação
 revision_preview: Pré-visualização da revisão
 updates_made: Atualizações feitas
 leave_comment: Deixe um comentário...
 post_comment_success: Comentário publicado
+post_comment_updated: Comentário editado
 item_create_success: Documento criado | Documentos criados
 item_update_success: Documento atualizado | Documentos atualizados
 item_delete_success: Documento removido | Documentos removidos
@@ -431,6 +506,7 @@ display_label: Visualização
 today: Hoje
 yesterday: Ontem
 delete_comment: Remover comentário
+delete_share: Apagar Ações
 functions:
   year: Ano
   month: Mês
@@ -448,12 +524,18 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'dd MMM u'
 date-fns_time_short: 'HH:mm'
+date-fns_time_short_seconds: 'h:mm:ssa'
 date-fns_date_short_no_year: dd MMM
 minutes: Minutos
 hours: Horas
 month: Mês
 year: Ano
 select_all: Selecionar Tudo
+permissionsLevel:
+  all: Acesso {action} completo
+  partial: Acesso parcial de {action}
+  custom: Acesso parcial de {action}
+  none: Sem Acesso {action}
 months:
   january: Janeiro
   february: Fevereiro
@@ -468,7 +550,11 @@ months:
   november: Novembro
   december: Dezembro
 drag_mode: Modo de Arrasto
+move_tool: Ferramenta mover
+crop_tool: Ferramenta de corte
+focal_point_tool: Ferramenta de Ponto Focal
 cancel_crop: Cancelar Recorte
+cancel_selection: Cancelar Seleção
 original: Original
 url: URL
 import_label: Importar
@@ -476,10 +562,12 @@ file_details: Detalhes do ficheiro
 dimensions: Dimensões
 size: Tamanho
 created: Criado
+uploaded: Carregado
 modified: Modificado
 owner: Proprietário
 edited_by: Editado por
 folder: Pasta
+folders: Pastas
 zoom: Zoom
 download: Transferir
 open: Abrir
@@ -493,10 +581,18 @@ import_from_url: Importar ficheiro a partir do URL
 replace_from_device: Substituir Ficheiro do Dispositivo
 replace_from_library: Substituir Ficheiro da Biblioteca
 replace_from_url: Substituir Ficheiro de URL
+no_image_selected: Nenhuma Imagem Selecionada
 no_file_selected: Nenhum ficheiro selecionado
 download_file: Descarregar Ficheiro
+open_file_in_tab: Abrir Arquivo em Nova Aba
 start_export: Iniciar exportação
+not_available_for_local_downloads: Não disponível para baixar locais
 exporting_all_items_in_collection: A exportar todos os {total} itens dentro de {collection}.
+exporting_limited_items_in_collection: '{count} fora{total} itens em {collection} serão exportados.'
+exporting_no_items_to_export: Nenhum ‘item’ para exportar. Ajuste a configuração de exportação e/ou adicione itens à coleção.
+exporting_download_hint: Após criação do arquivo {format} , ele deverá ser baixado para o seu dispositivo.
+exporting_library_hint: Após criar o arquivo {format} , ele será salvo em Biblioteca de Arquivos.
+exporting_library_hint_forced: Esta exportação deve ser processada em lotes. Uma vez concluído, o arquivo {format} será salvo na biblioteca de arquivos.
 collection_key: Chave da coleção
 name: Nome
 primary_key_field: Campo de chave primária
@@ -512,14 +608,18 @@ manual_string: String inserida manualmente
 save_and_create_new: Guardar e criar novo
 save_and_stay: Guardar e permanecer
 save_and_quit: Guardar e Fechar
+save_and_return_to_main: Salvar e Retornar à Principal
 save_as_copy: Guardar como cópia
 add_existing: Adicionar existente
 creating_items: Criando Itens
 enable_create_button: Ativar o botão Criar
 selecting_items: Selecionar itens
 enable_select_button: Ativar o botão Selecionar
+allow_duplicates: Permitir duplicados
 comments: Comentários
 no_comments: Ainda não há comentários
+expand: Expandir
+expand_all: Expandir Tudo
 select_item: Selecionar item
 no_items: Não existem documentos
 disabled: Desativado
@@ -635,20 +735,41 @@ bookmarks: Favoritos
 unexpected_error: Erro Inesperado
 password_reset_sent: Se a conta existir, um email terá sido enviado para fazer a reposição da palavra passe.
 back: Voltar
+editing_image: Editando Imagem
+square: Quadrado
+free: Grátis
+flip_horizontal: Virar horizontalmente
+flip_vertical: Virar verticalmente
+aspect_ratio: Proporção
+rotate: Girar
 all_users: Todos os utilizadores
 delete_collection: Remover coleção
 update_collection_success: Coleção atualizada
 delete_collection_success: Coleção removida
 make_collection_visible: Tornar Coleção Visível
+make_collection_hidden: Tornar Coleção Oculta
+make_folder_visible: Tornar a pasta visível
+make_folder_hidden: Tornar arquivo oculto
+goto_collection_content: Ver conteúdo
+count_of_total_items: '{count} de {total} Itens'
+start_end_of_count_items: 'Itens'
+start_end_of_count_filtered_items: '{start}-{end} de {count} Itens Filtrados'
+delete_collection_are_you_sure: >-
+  Tem certeza que deseja excluir a coleção "{collection}"? Isso irá apagar a coleção e todos os itens dela. Esta ação é permanente.
+delete_folder_are_you_sure: Tem certeza que deseja excluir a pasta "{folder}"? Pastas e coleções aninhadas serão movidas para o nível superior mais elevado.
+delete_collection_peer_dependencies: Os seguintes campos também serão excluídos, uma vez que estão relacionados com a coleção atual.
 collections_shown: Coleções visíveis
 visible_collections: Coleções visíveis
 hidden_collections: Coleções ocultas
 show_hidden_collections: Mostrar coleções ocultas
 hide_hidden_collections: Esconder coleções ocultas
+show_header: Exibir Cabeçalho
 unmanaged_collections: Coleções não configuradas
 system_collections: Coleções do sistema
+placeholder: Espaço reservado
 icon_left: Ícone à esquerda
 icon_right: Ícone à Direita
+count_other_revisions: '{count} Outras revisões'
 font: Fonte
 sans_serif: Sans Serif
 serif: Serif
@@ -658,6 +779,7 @@ color: Cor
 circle: Círculo
 empty_item: Item vazio
 log_in_with: 'Iniciar sessão com {provider}'
+conditional_styles: Estilos Condicionais
 advanced_settings: Definições avançadas
 advanced_filter: Filtro avançado
 delete_advanced_filter: Eliminar filtro
@@ -679,15 +801,25 @@ operators:
   icontains: Contém (sem "case sensitive")
   starts_with: Começa por
   nstarts_with: Não começa com
+  istarts_with: Começa com (insensível)
+  nistarts_with: Não começa com (insensível)
   ends_with: Termina com
   nends_with: Não termina com
+  iends_with: Termina com (insensível)
+  niends_with: Não termina com (insensível)
   between: Está entre
   nbetween: Não está entre
   empty: Está vazio
   nempty: Não está vazio
   all: Contém estas chaves
   has: Contém algumas destas chaves
+  intersects: Interseção
+  nintersects: Não se intercepta
+  nintersects_bbox: Não cruza a caixa delimitadora
+  regex: Jogos RegExp
+custom_validation_message: Mensagem personalizada de validação
 loading: A carregar...
+extension_readme_missing: Esta extensão não tem um arquivo README.
 drop_to_upload: Solta para carregar
 item: Item
 items: Items
@@ -700,16 +832,20 @@ upload_pending: Envio pendente
 drag_file_here: Arraste e solte um ficheiro aqui
 click_to_browse: Clique para navegar
 interface_options: Opções de Interface
+display_options: Opções de Exibição
 layout_options: Opções de layout
 rows: Linhas
 columns: Colunas
 collection_setup: Configuração da coleção
+optional_system_fields: Campos opcionais
 value_unique: O valor tem de ser único
+value_index: Campo indexado
 all_activity: Toda a atividade
 create_item: Criar item
 display_template: Templates de Exibição
 language_display_template: Modelo de Exibição do Idioma
 translations_display_template: Modelo de exibição de traduções
+n_items_selected: 'Nenhum item selecionado | Um item Selecionado | {n} Itens Selecionados'
 per_page: Por página
 all_files: Todos os ficheiros
 my_files: Meus ficheiros
@@ -722,6 +858,8 @@ add_file: Adicionar ficheiro
 replace_file: Substituir ficheiro
 no_results: Nenhum resultado
 no_results_copy: Ajustar ou limpar filtros de pesquisa para ver resultados.
+no_visible_fields: Formulário vazio
+no_visible_fields_copy: Este formulário não tem campos visíveis.
 clear_filters: Limpar filtros
 saves_automatically: Guardar automaticamente
 role: Perfil
@@ -739,6 +877,18 @@ read: Ler
 update: Atualizar
 delete: Eliminar
 select_fields: Selecione os campos
+format_text: Formatar Texto
+format_value: Valor do formato
+abbreviate_value: Abreviar Valor
+operator: Operador
+bold: Negrito
+toggle: Alternador
+icon_on: Ícone Ligado
+icon_off: Ícone desligado
+label: Rótulo
+flows: Fluxos
+flow: Fluxo
+select_a_flow: Selecione um fluxo
 flow_name: Nome
 flow_tracking_activity: Apenas rastrear Atividade
 flow_tracking_null: Não rastrear nada
@@ -749,6 +899,7 @@ save_image: Guardar imagem
 wysiwyg_options:
   forecolor: Cor principal
   backcolor: Cor de Fundo
+  bold: Negrito
   h3: Título 3
   h4: Título 4
   h5: Título 5
@@ -781,6 +932,7 @@ no_options_available: Nenhuma opção disponível
 settings_data_model: Modelo de dados
 settings_project: Configurações
 settings_webhooks: Webhooks
+settings_flows: Fluxos
 settings_presets: Favoritos
 settings_translations: Traduções
 one_or_more_options_are_missing: Uma ou mais opções estão em falta
@@ -989,6 +1141,8 @@ interfaces:
     interface: Interface
   system-display:
     display: Visualização
+  system-display-options:
+    display-options: Opções de Exibição
   select-dropdown-m2o:
     display_template: Templates de Exibição
   input-rich-text-md:
@@ -997,11 +1151,13 @@ interfaces:
     zoom: Zoom
   list:
     sort: Ordenar
+    display_group: Opções de Exibição
   tags:
     tags: Etiquetas
   input-translated-string:
     search_placeholder: Procurar...
   boolean:
+    toggle: Alternador
     label_default: Activo
   translations:
     display_template: Templates de Exibição
@@ -1020,6 +1176,8 @@ displays:
     default_language: Idioma Padrão
   boolean:
     boolean: Boleano
+    icon_on: Ícone Ligado
+    icon_off: Ícone desligado
   collection:
     collection: Coleção
   color:
@@ -1032,6 +1190,7 @@ displays:
     font: Fonte
     font_serif: Serif
     font_monospace: Monospace
+    bold: Negrito
     prefix: Prefixo
     suffix: Sufixo
     color: Cor
@@ -1058,6 +1217,9 @@ layouts:
   kanban:
     advanced: Avançado
 both: Ambos
+panels:
+  label:
+    name: Rótulo
 operations:
   json-web-token:
     token: Token
@@ -1076,4 +1238,9 @@ operations:
     url_placeholder: https://exemplo.com/exemplo
   sleep:
     milliseconds: Milisegundos
+  trigger:
+    flows: Fluxos
+    flow: Fluxo
 standard: Predefinido
+fonts:
+  bold: Negrito

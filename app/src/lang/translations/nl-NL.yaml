@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: Over
 identifier: ID
 avatar: Profielafbeelding
 application: Applicatie
@@ -7,9 +28,16 @@ method: Methode
 published: Gepubliceerd
 draft: Concept
 archived: Gearchiveerd
+marketplace: Marktplaats
+extensions: Extensies
+skip_link_nav: Ga naar navigatie
+skip_link_module_nav: Ga naar modulenavigatie
+skip_link_main: Ga naar hoofdinhoud
+skip_link_sidebar: Ga naar zijbalk
 modules: Modules
 module_bar: Modulebalk
 logs: Logboeken
+unknown: Onbekend
 reset_width: Reset breedte
 tile_size: Tegelgrootte
 edit_field: Veld Bewerken
@@ -27,6 +55,8 @@ duplicate_field: Dupliceer Veld
 half_width: Halve Breedte
 full_width: Volledige breedte
 group: Groep
+popular: Populair
+recent: Recent
 export_items: Exporteer items
 and: En
 or: Of
@@ -35,10 +65,25 @@ dataset_too_large_currently_showing_n_items: Gegevensset is te groot. Alleen de 
 modifier: Aanpasser
 extension_interface: Interface
 extension_display: Toon
-extension_layout: Lay-out
+extension_layout: Layout
+extension_module: Module
 extension_panel: Paneel
+extension_theme: Thema
 extension_hook: Hook
+extension_endpoint: Endpoint
+extension_interfaces: Interfaces
 extension_modules: Modules
+extension_reload_now: Nu herladen
+published_relative: Gepubliceerd {relativeTime}
+last_updated_relative: Laatst bijgewerkt {relativeTime}
+homepage: Startpagina
+reload_page: Pagina herladen
+report_an_issue: Meld een probleem
+website: Website
+github: GitHub
+beta: Beta
+n_downloads: '{n} downloads'
+downloads: Downloads
 enable: Inschakelen
 custom: Aangepast
 hook: Hook
@@ -126,6 +171,7 @@ logoutReason:
 public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 admin_description: Initiële administratieve rol met onbeperkte App/API toegang.
+no_description: Geen beschrijving...
 not_allowed: Niet toegestaan
 archive: Archiveren
 archive_confirm: Weet je zeker dat je dit item wilt archiveren?
@@ -242,7 +288,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Pagina-voorkeuren resetten
 hidden_field: Verborgen veld
 hidden_on_detail: Verborgen op het detail scherm
-disabled_editing_value: Bewerken van waarde uitschakelen
 key: Key
 alias: Alias
 bigInteger: Big Integer
@@ -265,6 +310,9 @@ time: Tijd
 timestamp: Timestamp
 uuid: UUID
 hash: Hash
+geometry:
+  Point: Punt
+  Polygon: Veelhoek
 theme_auto: Automatisch (gebaseerd op systeem)
 theme_light: Lichtmodus
 theme_dark: Donkere Modus
@@ -434,6 +482,11 @@ hours: Uren
 month: Maand
 year: Jaar
 select_all: Alles selecteren
+permissionsLevel:
+  all: Volledige {action}-toegang
+  partial: Gedeeltelijke {action}-toegang
+  custom: Gedeeltelijke {action}-toegang
+  none: Geen {action}-toegang
 months:
   january: Januari
   february: Februari
@@ -592,7 +645,10 @@ bookmark_doesnt_exist_copy: De bladwijzer die je probeert te openen kon niet wor
 bookmark_doesnt_exist_cta: Terug naar de collectie
 select_an_item: Selecteer een item...
 edit: Wijzig
+edit_item: Bewerk item
 enabled: Ingeschakeld
+enable_all: Alles inschakelen
+disable_all: Alles uitschakelen
 disable_tfa: 2FA uitzetten
 admin_disable_tfa_text: Weet je zeker dat je 2FA voor deze gebruiker wilt uitschakelen?
 tfa_setup: 2FA instellen
@@ -754,6 +810,7 @@ layout_options: Lay-out opties
 rows: Rijen
 columns: Kolommen
 collection_setup: Collectie setup
+optional_system_fields: Optionele velden
 value_unique: Waarde moet uniek zijn
 all_activity: Alle activiteiten
 create_item: Item aanmaken
@@ -806,6 +863,8 @@ select_a_flow: Selecteer een Flow
 run_flow_confirm: Ben je zeker dat u deze flow wilt uitvoeren?
 run_flow_on_current_collection: Voer flow uit op Huidige Collectie
 run_flow_on_current_edited_confirm: Dit item kan aangepast worden door deze Flow, weet je zeker dat je het wilt uitvoeren?
+field_name_placeholder: Voer veldnaam in...
+field_key_placeholder: Voer veldsleutel in...
 trigger: Trigger
 trigger_options: Trigger opties
 view_trigger: Trigger weergeven
@@ -839,6 +898,10 @@ operation_name: Operatienaam...
 operation_key_unique_error: Operatie-sleutels moeten uniek zijn in een Flow
 operation_handle_resolve: 'Los op: Klik om toe te voegen, of sleep om te omleiden'
 operation_handle_reject: 'Weiger: Klik om toe te voegen, of sleep om te omleiden'
+visual_editor: Visuele editor
+no_url: Geen URL opgegeven
+no_url_copy: Gelieve een URL toe te voegen in de instellingen.
+invalid_url: Ongeldige URL
 insights: Inzichten
 dashboard: Dashboard
 panel: Paneel
@@ -847,6 +910,7 @@ panel_header: Paneelrubriek
 panel_name_placeholder: Benoem dit paneel...
 panel_note_placeholder: Optionele details over dit paneel...
 panel_delete_confirm: Weet je zeker dat je dit paneel wilt verwijderen? Dit kan niet ongedaan worden gemaakt.
+list_panel_allow_edit: Inline bewerken toestaan
 dashboard_delete_confirm: Weet je zeker dat je dit dashboard wilt verwijderen? Dit kan niet ongedaan worden gemaakt.
 edit_dashboard: Bewerk dashboard
 delete_dashboard: Verwijder dashboard
@@ -863,6 +927,9 @@ no_data_in_flow: Er zijn geen gegevens binnen deze Flow geproduceerd of benaderd
 accountability: Verantwoording
 payload: Payload
 details: Details
+resume_streaming_logs: Hervat streamende logs
+pause_streaming_logs: Pauzeer streamende logs
+logs_session_resumed: Logsessie hervat...
 full_screen: Volledig scherm
 full_text_search: Full text-zoeken
 edit_panels: Bewerk panelen
@@ -940,11 +1007,19 @@ wysiwyg_options:
   source_code: Broncode bewerken
   fullscreen: Volledig scherm
   directionality: Richting
+  lazy_loading: Afbeelding reactief laden
+  lazy_loading_label: Reactief laden inschakelen
 dropdown: Keuzemenu
 choices: Keuzes
 choices_option_configured_incorrectly: Keuzes onjuist geconfigureerd
 deselect: Deselecteer
 deselect_all: Alles deselecteren
+theme: Thema
+select_a_theme: Selecteer een thema
+default_sync_with_project: Standaard (met project synchroniseren)
+appearance_auto: Automatisch (synchroniseer met project)
+appearance_light: Licht
+appearance_dark: Donker
 other: Anders...
 adding_user: Gebruiker toevoegen
 unknown_user: Onbekende gebruiker
@@ -956,9 +1031,13 @@ editing_unit: '{unit} aan het bewerken'
 editing_in_batch: '{count} items aan het wijzigen'
 no_options_available: Geen opties beschikbaar
 settings_data_model: Datamodel
+settings_roles: Gebruikersrollen
+settings_permissions: Toegangsbeleid
 settings_project: Instellingen
+settings_appearance: Uiterlijk
 settings_webhooks: Webhooks
 settings_flows: Flows
+settings_system_logs: Systeemlogs
 settings_presets: Bladwijzers
 settings_translations: Vertalingen
 one_or_more_options_are_missing: Eén of meer opties ontbreken
@@ -995,10 +1074,13 @@ page_help_files_collection: >-
   **Bestandsbibliotheek** - Toont alle bestanden die naar dit project zijn geüpload. Pas layout, filters en sortering aan om je weergave aan te passen en sla bladwijzers van deze verschillende configuraties op voor snelle toegang.
 page_help_files_item: >-
   **Bestandsdetail** - Een formulier voor het beheren van metagegevens van bestanden, het bewerken van het originele bestand en het bijwerken van toegangsinstellingen.
+page_help_settings_project: "**Instellingen** - De algemene configuratieopties van je project."
+page_help_settings_appearance: "**Uiterlijk** — Het uiterlijk en de thema-opties van je project."
 page_help_settings_datamodel_collections: >-
   **Gegevensmodel: Collecties** — Laat alle beschikbare collecties zien. Dit omvat zichtbare, verborgen en systeemcollecties, evenals niet beheerde databasetabellen die kunnen worden toegevoegd.
 page_help_settings_datamodel_fields: >-
   **Gegevensmodel: Verzameling** - Een formulier voor het beheren van deze collectie en haar velden.
+page_help_settings_system_logs: '**Systeemlogs** ­— Toegang tot een livestream van systeemlogs.'
 page_help_settings_roles_item: "**Rol Detail** - Beheer de rechten van de rol en andere instellingen."
 page_help_settings_presets_collection: >-
   **Browse Voorkeuren** — Bewaart alle voorkeuren in dit project, inclusief: gebruikers, rol, en globale voorkeuren en standaard views.
@@ -1023,6 +1105,12 @@ batch_delete_confirm: >-
   Geen items geselecteerd | Weet je zeker dat je dit item wilt verwijderen? Dit kan niet ongedaan gemaakt worden. | Weet je zeker dat je {count} items wilt verwijderen? Dit kan niet ongedaan gemaakt worden.
 cancel: Annuleer
 no_upscale: Afbeeldingen niet opschalen
+no_extensions: Geen extensies
+install_extension: Installeer extensies
+uninstall: Verwijderen
+installed: Geïnstalleerd
+reinstall: Herinstalleer
+source_registry: Marktplaats
 collection: Collectie
 collections: Collecties
 content: Inhoud
@@ -1046,6 +1134,7 @@ directus_collection:
   directus_sessions: Gebruikerssessie-informatie
   directus_settings: Project configuratie opties
   directus_users: Systeemgebruikers voor het platform
+  directus_translations: Aangepaste vertalingen
 fields:
   directus_activity:
     item: Item Primary Key
@@ -1097,6 +1186,8 @@ fields:
     height: Hoogte
     charset: Karakterset
     duration: Duur
+    focal_point_x: X-coördinaat
+    focal_point_y: Y-coördinaat
   directus_users:
     first_name: Voornaam
     last_name: Achternaam
@@ -1114,6 +1205,7 @@ fields:
     status: Status
     status_draft: Concept
     status_invited: Uitgenodigd
+    status_unverified: Niet geverifieerd
     status_active: Actief
     status_suspended: Gestopt
     status_archived: Gearchiveerd
@@ -1123,6 +1215,11 @@ fields:
     last_page: Laatste pagina
     last_access: Laatste toegang
     email_notifications: Email Notificaties
+    appearance: Uiterlijk
+    theme_light: Licht thema
+    theme_dark: Donker thema
+    theme_light_overrides: Aanpassingen licht thema
+    theme_dark_overrides: Aanpassingen donker thema
   directus_settings:
     jpg: JPEG
     png: PNG
@@ -1146,10 +1243,22 @@ fields:
     storage_default_folder: Standaard map
     custom_css: Aangepaste CSS
     module_bar: Modulebalk
+    image_editor: Afbeeldingsbewerker
+    custom_aspect_ratios: Aangepaste beeldverhoudingen
+    theme_light_overrides: Aanpassingen licht thema
+    theme_dark_overrides: Aanpassingen donker thema
+    public_registration: Gebruikersregistratie
+    public_registration_note: Sta gebruikers toe om zich te registreren via de [registratieroute](/admin/register).
+    public_registration_role: Gebruikersrol
+    public_registration_role_note: Deze rol wordt toegewezen aan gebruikers die zich registreren met behulp van deze methode. Heeft geen invloed op reeds geregistreerde gebruikers.
+    public_registration_email_filter: E-mailadresfilter
+    public_registration_verify_email: Bevestig e-mailadres
   directus_shares:
     name: Naam
     role: Rol
     password: Wachtwoord
+    date_start: Startdatum
+    date_end: Einddatum
   directus_fields:
     collection: Collectie naam
     icon: Collectie Icoon
@@ -1164,7 +1273,11 @@ fields:
     description: Beschrijving
     users: Gebruikers in rol
   directus_policies:
+    name: Beleidsnaam
     description: Beschrijving
+    app_access: Apptoegang
+    admin_access: Admintoegang
+    enforce_tfa: Verplicht 2FA
   directus_webhooks:
     name: Naam
     method: Methode

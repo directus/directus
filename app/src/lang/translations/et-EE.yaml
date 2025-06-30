@@ -265,7 +265,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Lähtesta Lehe Seadistused
 hidden_field: Peidetud Väli
 hidden_on_detail: Üksikasjavaates Peidetud
-disabled_editing_value: Keela välja muutmine
 key: Võti
 alias: Alias
 bigInteger: Big Integer
