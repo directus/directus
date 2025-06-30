@@ -19,7 +19,7 @@
 #'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
 #'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
 #'Proxy', 'Intl'
-about: About
+about: Acerca de
 identifier: Identificador
 avatar: Avatar
 application: Aplicación
@@ -28,8 +28,12 @@ method: Método
 published: Publicado
 draft: Borrador
 archived: Archivado
-marketplace: Marketplace
+marketplace: Mercado
 extensions: Extensiones
+skip_link_nav: Ir a Navegación
+skip_link_module_nav: Ir a Navegación de Módulos
+skip_link_main: Ir a Contenido principal
+skip_link_sidebar: Ir a Barra lateral
 modules: Módulos
 module_bar: Barra de módulos
 logs: Registros
@@ -316,6 +320,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Restablecer Preferencias de Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto en el Detalle
+readonly_field_label: Desactivar el campo en la aplicación
+required_readonly_field_warning: Habilitar sólo lectura y requerido en un campo previene guardar un elemento si el valor está vacío.
 key: Llave
 alias: Alias
 bigInteger: Número Entero (Grande)
@@ -421,6 +427,7 @@ field_key: Campo clave
 finish_setup: Finalizar Configuración
 dismiss: Cerrar
 toggle_raw_editor: Alternar editor sin formato
+toggle_variable_input: Alternar entrada de variables
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor Plano
 copy_raw_value: Copiar valor exacto
@@ -941,6 +948,7 @@ run_flow_on_current: Ejecutar flujo en el elemento actual
 run_flow_on_current_edited_confirm: Este elemento podría haber sido actualizado por este flujo, ¿estás seguro que quieres ejecutarlo?
 run_flow_on_selected: Seleccionar uno o más artículos primero | Ejecutar flujo en 1 elemento seleccionado | Ejecutar flujo en {n} artículos seleccionados
 run_flow: Ejecutar Flujo
+trigger_flow_success: El flujo "{flow}" se ha activado correctamente
 field_name_placeholder: Ingrese el nombre del campo...
 field_key_placeholder: Ingrese un campo clave...
 trigger: Disparador
@@ -977,8 +985,13 @@ operation_key: Identificador para referencia...
 operation_key_unique_error: Las claves de operación deben ser únicas en un flujo
 operation_handle_resolve: 'Resolver: Haga clic para añadir o arrastrar para reenrutar'
 operation_handle_reject: 'Rechazar: Haga clic para añadir o arrastrar para reenrutar'
+visual_editor: Editor visual
 toggle_navigation: Alternar navegación
 toggle_editable_elements: Alternar elementos editables
+no_url: Ninguna URL introducida
+no_url_copy: Por favor, añada una URL en la configuración.
+invalid_url: URL no válida
+invalid_url_copy: La URL especificada no coincide con ninguna URL especificada en la configuración.
 insights: Informes
 dashboard: Panel de control
 panel: Panel
@@ -1215,7 +1228,7 @@ uninstall: Desinstalar
 installed: Instalada
 reinstall: Reinstalar
 open_in_marketplace: Abrir en el Marketplace
-source_registry: Marketplace
+source_registry: Mercado
 source_local: Local
 source_module: Módulo de Nodo
 collection: Colección
@@ -1396,6 +1409,7 @@ fields:
     public_registration_email_filter_note: Sólo pueden registrarse direcciones de correo electrónico que coincidan con este filtro.
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envía un correo electrónico al usuario registrado pidiéndole que haga clic en un enlace de verificación antes de poder iniciar sesión.
+    visual_editor_urls: URLs del editor visual
   directus_shares:
     name: Nombre
     role: Rol
@@ -1665,6 +1679,8 @@ reset_password: Restablecer Contraseña
 revisions: Revisiones
 no_revisions: Aún no hay revisiones
 no_logs: Todavía no hay registros
+show_failed_only: Mostrar solo fallidos
+no_logs_on_page: No hay registros en esta página
 revert: Revertir
 save: Guardar
 schema: Esquema
@@ -2352,6 +2368,7 @@ triggers:
     filter: 'Filtro (Bloqueando)'
   webhook:
     name: Webhook
+    error_on_reject: Error en el rechazo
     description: Activadores en una solicitud HTTP entrante
     method: Método
     async: Asincrónico
@@ -2430,12 +2447,16 @@ operations:
     name: Enviar Email
     description: Envía un email a una o más personas
     to: A
+    to_placeholder: Añada las direcciones de correo electrónico y presione Enter...
     body: Cuerpo
     template: Plantilla
     data: Datos
     cc: CC
+    cc_placeholder: Añada las direcciones CC de correo electrónico y presione Enter...
     bcc: CCO
+    bcc_placeholder: Añada las direcciones BCC de correo electrónico y presione Enter...
     reply_to: Responder a
+    reply_to_placeholder: Añada las direcciones de respuesta de correo electrónico y presione Enter...
   notification:
     name: Enviar notificación
     description: Enviar una notificación dentro de la aplicación a uno o más usuarios
