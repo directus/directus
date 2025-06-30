@@ -519,6 +519,11 @@ hours: ساعات
 month: شهر
 year: سنة
 select_all: تحديد الكل
+permissionsLevel:
+  all: يمكن ال{action} بشكل كامل
+  partial: يمكن ال{action} بشكل جزئي
+  custom: يمكن ال{action} بشكل مخصص
+  none: لا يمكن ال{action}
 months:
   january: يناير
   february: فبراير
