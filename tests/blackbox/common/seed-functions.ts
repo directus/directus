@@ -1,6 +1,6 @@
-import { v5 as uuid } from 'uuid';
-import seedrandom from 'seedrandom';
 import type { PrimaryKeyType } from '@common/types';
+import seedrandom from 'seedrandom';
+import { v5 as uuid } from 'uuid';
 
 const SEED_UUID_NAMESPACE = 'e81a0012-568b-415c-96fa-66508f594067';
 const FIVE_YEARS_IN_MILLISECONDS = 5 * 365 * 24 * 60 * 60 * 1000;
@@ -381,7 +381,7 @@ function generateTimestamp(options: OptionsSeedGenerateTimestamp) {
 	values.forEach((value, index) => (values[index] = value.slice(0, 20) + '000Z'));
 
 	if (options.isDefaultValue && options.vendor) {
-		if (['mysql', 'mysql-lts-8', 'maria', 'maria-lts-10.11', 'maria-lts-10.6'].includes(options.vendor)) {
+		if (['mysql', 'mysql-lts-8', 'maria', 'maria-lts-10_11', 'maria-lts-10_6'].includes(options.vendor)) {
 			values.forEach(
 				(value, index) => (values[index] = new Date(value).toISOString().replace(/([^T]+)T([^.]+).*/g, '$1 $2')),
 			);

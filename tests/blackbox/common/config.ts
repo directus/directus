@@ -185,7 +185,7 @@ const config: Config = {
 			},
 			...knexConfig,
 		},
-		'maria-lts-10.11': {
+		'maria-lts-10_11': {
 			client: 'mysql2',
 			connection: {
 				database: 'directus',
@@ -196,7 +196,7 @@ const config: Config = {
 			},
 			...knexConfig,
 		},
-		'maria-lts-10.6': {
+		'maria-lts-10_6': {
 			client: 'mysql2',
 			connection: {
 				database: 'directus',
@@ -259,7 +259,7 @@ const config: Config = {
 			},
 			...knexConfig,
 		},
-		'cockroachdb-lts-24.1': {
+		'cockroachdb-lts-24_1': {
 			client: 'cockroachdb',
 			connection: {
 				database: 'defaultdb',
@@ -277,7 +277,7 @@ const config: Config = {
 			},
 			...knexConfig,
 		},
-		'cockroachdb-lts-23.2': {
+		'cockroachdb-lts-23_2': {
 			client: 'cockroachdb',
 			connection: {
 				database: 'defaultdb',
@@ -295,7 +295,7 @@ const config: Config = {
 			},
 			...knexConfig,
 		},
-		'cockroachdb-lts-23.1': {
+		'cockroachdb-lts-23_1': {
 			client: 'cockroachdb',
 			connection: {
 				database: 'defaultdb',
@@ -337,15 +337,15 @@ const config: Config = {
 		mysql: 'MySQL',
 		'mysql-lts-8': 'MySQL 8',
 		maria: 'MariaDB',
-		'maria-lts-10.11': 'MariaDB 10.11',
-		'maria-lts-10.6': 'MariaDB 10.6',
+		'maria-lts-10_11': 'MariaDB 10.11',
+		'maria-lts-10_6': 'MariaDB 10.6',
 		mssql: 'MS SQL Server',
 		'mssql-lts-2019': 'MS SQL Server 2019',
 		oracle: 'OracleDB',
 		cockroachdb: 'CockroachDB',
-		'cockroachdb-lts-24.1': 'CockroachDB 24.1',
-		'cockroachdb-lts-23.2': 'CockroachDB 23.2',
-		'cockroachdb-lts-23.1': 'CockroachDB 23.1',
+		'cockroachdb-lts-24_1': 'CockroachDB 24.1',
+		'cockroachdb-lts-23_2': 'CockroachDB 23.2',
+		'cockroachdb-lts-23_1': 'CockroachDB 23.1',
 		sqlite3: 'SQLite 3',
 	},
 	envs: {
@@ -429,7 +429,7 @@ const config: Config = {
 			DB_DATABASE: 'directus',
 			PORT: '59159',
 		},
-		'maria-lts-10.11': {
+		'maria-lts-10_11': {
 			...directusConfig,
 			DB_CLIENT: 'mysql',
 			DB_HOST: `127.0.0.1`,
@@ -439,7 +439,7 @@ const config: Config = {
 			DB_DATABASE: 'directus',
 			PORT: '59160',
 		},
-		'maria-lts-10.6': {
+		'maria-lts-10_6': {
 			...directusConfig,
 			DB_CLIENT: 'mysql',
 			DB_HOST: `127.0.0.1`,
@@ -487,7 +487,7 @@ const config: Config = {
 			DB_DATABASE: 'defaultdb',
 			PORT: '59165',
 		},
-		'cockroachdb-lts-24.1': {
+		'cockroachdb-lts-24_1': {
 			...directusConfig,
 			DB_CLIENT: 'cockroachdb',
 			DB_HOST: `127.0.0.1`,
@@ -497,7 +497,7 @@ const config: Config = {
 			DB_DATABASE: 'defaultdb',
 			PORT: '59166',
 		},
-		'cockroachdb-lts-23.2': {
+		'cockroachdb-lts-23_2': {
 			...directusConfig,
 			DB_CLIENT: 'cockroachdb',
 			DB_HOST: `127.0.0.1`,
@@ -507,7 +507,7 @@ const config: Config = {
 			DB_DATABASE: 'defaultdb',
 			PORT: '59167',
 		},
-		'cockroachdb-lts-23.1': {
+		'cockroachdb-lts-23_1': {
 			...directusConfig,
 			DB_CLIENT: 'cockroachdb',
 			DB_HOST: `127.0.0.1`,

@@ -98,7 +98,7 @@ services:
     ports:
       - 6107:3306
 
-  maria-lts-10.11:
+  maria-lts-10_11:
     image: mariadb:10.11
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
@@ -107,7 +107,7 @@ services:
     ports:
       - 6108:3306
 
-  maria-lts-10.6:
+  maria-lts-10_6:
     image: mariadb:10.6
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
@@ -150,19 +150,19 @@ services:
     ports:
       - 6113:26257
 
-  cockroachdb-lts-24.1:
+  cockroachdb-lts-24_1:
     image: cockroachdb/cockroach:latest-v24.1
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
       - 6114:26257
 
-  cockroachdb-lts-23.2:
+  cockroachdb-lts-23_2:
     image: cockroachdb/cockroach:latest-v23.2
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
       - 6115:26257
 
-  cockroachdb-lts-23.1:
+  cockroachdb-lts-23_1:
     image: cockroachdb/cockroach:latest-v23.1
     command: start-single-node --cluster-name=example-single-node --insecure
     ports:
