@@ -23,23 +23,21 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 			const selectionContent = editor.value.selection.getContent({ format: 'text' });
 			const selectedText = selectionContent.split('\n');
 
-			editor.value.execCommand(
-				'mceToggleFormat',
-				false,
-				selectedText.length === 1 ? 'code' : 'pre'
-			);
+			editor.value.execCommand('mceToggleFormat', false, selectedText.length === 1 ? 'code' : 'pre');
 		},
 
 		onSetup: (api) => {
 			const updateActiveState = () => {
 				const isInlineCode = editor.value.formatter.match('code');
 				const isCodeBlock = editor.value.formatter.match('pre');
+
 				api.setActive(isInlineCode || isCodeBlock);
 			};
 
 			updateActiveState();
 
-			const formatChangedUnbind = editor.value.formatter.formatChanged('code', updateActiveState).unbind;
+			const codeFormatChangedUnbind = editor.value.formatter.formatChanged('code', updateActiveState).unbind;
+			const preFormatUnbind = editor.value.formatter.formatChanged('pre', updateActiveState).unbind;
 			let activeNodeBeforeEnter: Node | null = null;
 
 			keydownHandler = (event: KeyboardEvent) => {
@@ -52,7 +50,6 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 					if (handleTripleEnterInPre(editorInstance, currentNode)) {
 						event.preventDefault();
 						activeNodeBeforeEnter = null;
-						return false;
 					}
 
 					const nodeToCheck = activeNodeBeforeEnter || currentNode;
@@ -60,13 +57,11 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 					if (handleEmptyInlineCode(editorInstance, nodeToCheck)) {
 						event.preventDefault();
 						activeNodeBeforeEnter = null;
-						return false;
 					}
 
 					if (handleEnterInInlineCode(editorInstance, activeNodeBeforeEnter)) {
 						event.preventDefault();
 						activeNodeBeforeEnter = null;
-						return false;
 					}
 				} else {
 					activeNodeBeforeEnter = editor.value.selection.getNode();
@@ -76,7 +71,8 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 			editor.value.on('keydown', keydownHandler);
 
 			return () => {
-				if (formatChangedUnbind) formatChangedUnbind();
+				if (codeFormatChangedUnbind) codeFormatChangedUnbind();
+				if (preFormatUnbind) preFormatUnbind();
 				if (keydownHandler) editor.value.off('keydown', keydownHandler);
 			};
 		},
@@ -175,7 +171,7 @@ function insertParagraphAfter(editorInstance: any, referenceNode: Node) {
 	editorInstance.nodeChanged();
 }
 
-function handleEmptyInlineCode(editorInstance: any, nodeToCheck: Node): boolean {
+function handleEmptyInlineCode(editorInstance: any, nodeToCheck: Element): boolean {
 	const inlineCodeNode = findInlineCodeNode(editorInstance, nodeToCheck);
 
 	if (inlineCodeNode && (inlineCodeNode.textContent || '').trim() === '') {
@@ -186,7 +182,7 @@ function handleEmptyInlineCode(editorInstance: any, nodeToCheck: Node): boolean 
 	return false;
 }
 
-function findInlineCodeNode(editorInstance: any, node: Node): Node | null {
+function findInlineCodeNode(editorInstance: any, node: Element): Node | null {
 	if (editorInstance.dom.is(node, 'code')) return node;
 
 	if (node.querySelector) {
