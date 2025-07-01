@@ -270,7 +270,7 @@ class FlowManager {
 						throw new ForbiddenError();
 					}
 
-					if (!targetKeys || !Array.isArray(targetKeys)) {
+					if (requireSelection && (!targetKeys || !Array.isArray(targetKeys))) {
 						logger.warn(`Manual trigger requires "keys" to be specified in the payload`);
 						throw new ForbiddenError();
 					}
