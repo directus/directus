@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed `requireSelection` check for manual triggers
+Fixed `requireSelection` check for manual trigger flows
