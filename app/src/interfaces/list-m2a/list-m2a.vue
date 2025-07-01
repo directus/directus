@@ -132,7 +132,7 @@ function sortItems(items: DisplayItem[]) {
 	const sortedItems = items.map((item, index) => {
 		const junctionId = item?.[info.junctionPrimaryKeyField.field];
 		const collection = item?.[info.collectionField.field];
-		const pkField = info.relationPrimaryKeyFields[collection].field;
+		const pkField = info.relationPrimaryKeyFields[collection]!.field;
 		const relatedId = item?.[info.junctionField.field]?.[pkField];
 
 		const changes: Record<string, any> = {
@@ -188,7 +188,7 @@ function editItem(item: DisplayItem) {
 	if (!relationInfo.value) return;
 
 	const relationPkField =
-		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]].field;
+		relationInfo.value.relationPrimaryKeyFields[item[relationInfo.value.collectionField.field]]!.field;
 
 	const junctionField = relationInfo.value.junctionField.field;
 	const junctionPkField = relationInfo.value.junctionPrimaryKeyField.field;
@@ -298,7 +298,7 @@ const customFilter = computed(() => {
 
 	const selectedPrimaryKeys = selected.value.reduce(
 		(acc, item) => {
-			const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.field]].field;
+			const relatedPKField = info.relationPrimaryKeyFields[item[info.collectionField.field]]!.field;
 			if (item[info.collectionField.field] === selectingFrom.value) acc.push(item[junctionField][relatedPKField]);
 			return acc;
 		},
@@ -307,7 +307,7 @@ const customFilter = computed(() => {
 
 	if (selectedPrimaryKeys.length > 0) {
 		filter._and.push({
-			[info.relationPrimaryKeyFields[selectingFrom.value].field]: {
+			[info.relationPrimaryKeyFields[selectingFrom.value]!.field]: {
 				_nin: selectedPrimaryKeys,
 			},
 		});
