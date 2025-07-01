@@ -23,10 +23,25 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 			const selectionContent = editor.value.selection.getContent({ format: 'text' });
 			const selectedText = selectionContent.split('\n');
 
+			// Get the raw HTML content of the selection
+			const htmlContent = editor.value.selection.getContent();
+
+			// Preserve existing line breaks as best we can
+			const cleanContent = handleExistingHTML(htmlContent);
+
 			// Remove all existing formatting before applying code formatting
 			editor.value.execCommand('removeformat');
 
-			editor.value.execCommand('mceToggleFormat', false, selectedText.length === 1 ? 'code' : 'pre');
+			// Apply code formatting based on content
+			if (selectedText.length === 1) {
+				// Single line - use inline code
+				editor.value.selection.setContent(cleanContent);
+				editor.value.execCommand('mceToggleFormat', false, 'code');
+			} else {
+				// Multiple lines - wrap in pre tag
+				const preContent = `<pre>${cleanContent}</pre>`;
+				editor.value.selection.setContent(preContent);
+			}
 		},
 
 		onSetup: (api) => {
@@ -214,4 +229,61 @@ function removeEmptyInlineCode(editorInstance: any, inlineCodeNode: Node) {
 	}
 
 	editorInstance.nodeChanged();
+}
+
+function handleExistingHTML(html: string): string {
+	// Create a temporary div to parse the HTML
+	const tempDiv = document.createElement('div');
+	tempDiv.innerHTML = html;
+
+	// Function to recursively process nodes
+	function processNode(node: Node): string {
+		if (node.nodeType === Node.TEXT_NODE) {
+			return node.textContent || '';
+		}
+
+		if (node.nodeType === Node.ELEMENT_NODE) {
+			const element = node as Element;
+			const tagName = element.tagName.toLowerCase();
+
+			// Preserve <br> tags
+			if (tagName === 'br') {
+				return '<br>';
+			}
+
+			// For block-level elements, process children and add <br> at the end
+			const blockElements = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+
+			if (blockElements.includes(tagName)) {
+				let result = '';
+
+				for (const child of element.childNodes) {
+					result += processNode(child);
+				}
+
+				// Add <br> at the end of block elements to preserve line breaks
+				return result + '<br>';
+			}
+
+			// For all other elements, process their children
+			let result = '';
+
+			for (const child of element.childNodes) {
+				result += processNode(child);
+			}
+
+			return result;
+		}
+
+		return '';
+	}
+
+	// Process all child nodes
+	let result = '';
+
+	for (const child of tempDiv.childNodes) {
+		result += processNode(child);
+	}
+
+	return result;
 }
