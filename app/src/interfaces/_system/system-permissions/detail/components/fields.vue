@@ -30,14 +30,12 @@ const { treeList } = useFieldTree(collection, ref(null), () => true, false, isRe
 const { isExpandable, openGroups, expandAll, collapseAll } = useExpandCollapseAll();
 
 const treeFields = computed<TreeChoice[]>(() => {
-	const appMinimal = new Set(props.appMinimal ?? []);
-
 	return treeList.value.map(fieldNodeToTreeChoice);
 
 	function fieldNodeToTreeChoice(field: FieldNode): TreeChoice {
 		return {
 			text: field.name,
-			disabled: appMinimal.has('*') || appMinimal.has(field.field),
+			disabled: false,
 			value: field.field,
 			children: field.children?.map(fieldNodeToTreeChoice) ?? undefined,
 		};
@@ -46,7 +44,7 @@ const treeFields = computed<TreeChoice[]>(() => {
 
 const selectedValues = computed({
 	get() {
-		const fields = new Set([...(props.appMinimal ?? []), ...(permissionSync.value.fields ?? [])]);
+		const fields = new Set([...(permissionSync.value.fields ?? [])]);
 
 		if (fields.has('*')) {
 			fields.delete('*');
