@@ -1,7 +1,6 @@
-import type { File } from '@directus/types';
+import type { File, Transformation, TransformationFormat, TransformationSet } from '@directus/types';
 import { clamp } from 'lodash-es';
 import type { Region } from 'sharp';
-import type { Transformation, TransformationFormat, TransformationSet } from '../types/index.js';
 
 export function resolvePreset({ transformationParams, acceptFormat }: TransformationSet, file: File): Transformation[] {
 	const transforms = transformationParams.transforms ? [...transformationParams.transforms] : [];
