@@ -1,25 +1,28 @@
-import type { Accountability, Query, SchemaOverview } from '@directus/types';
+import type { Accountability, Query, Relation, SchemaOverview } from '@directus/types';
 import { getRelation } from '@directus/utils';
 import type { Knex } from 'knex';
 import { cloneDeep } from 'lodash-es';
 import { fetchAllowedFields } from '../../../permissions/modules/fetch-allowed-fields/fetch-allowed-fields.js';
+import { parseFilterKey } from '../../../utils/parse-filter-key.js';
 
 export interface ConvertWildcardsOptions {
-	parentCollection: string;
+	collection: string;
 	fields: string[];
-	query: Query;
+	alias: Query['alias'];
 	accountability: Accountability | null;
+	backlink: boolean | undefined;
 }
 
 export interface ConvertWildCardsContext {
 	schema: SchemaOverview;
 	knex: Knex;
+	parentRelation?: Relation;
 }
 
 export async function convertWildcards(options: ConvertWildcardsOptions, context: ConvertWildCardsContext) {
 	const fields = cloneDeep(options.fields);
 
-	const fieldsInCollection = Object.entries(context.schema.collections[options.parentCollection]!.fields).map(
+	const fieldsInCollection = Object.entries(context.schema.collections[options.collection]!.fields).map(
 		([name]) => name,
 	);
 
@@ -28,7 +31,7 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 	if (options.accountability && options.accountability.admin === false) {
 		allowedFields = await fetchAllowedFields(
 			{
-				collection: options.parentCollection,
+				collection: options.collection,
 				action: 'read',
 				accountability: options.accountability,
 			},
@@ -47,7 +50,7 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 		if (fieldKey.includes('*') === false) continue;
 
 		if (fieldKey === '*') {
-			const aliases = Object.keys(options.query.alias ?? {});
+			const aliases = Object.keys(options.alias ?? {});
 
 			// Set to all fields in collection
 			if (allowedFields.includes('*')) {
@@ -55,8 +58,8 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 			} else {
 				// Set to all allowed fields
 				const allowedAliases = aliases.filter((fieldKey) => {
-					const name = options.query.alias![fieldKey]!;
-					return allowedFields!.includes(name);
+					const { fieldName } = parseFilterKey(options.alias![fieldKey]!);
+					return allowedFields!.includes(fieldName);
 				});
 
 				fields.splice(index, 1, ...allowedFields, ...allowedAliases);
@@ -67,27 +70,39 @@ export async function convertWildcards(options: ConvertWildcardsOptions, context
 		if (fieldKey.includes('.') && fieldKey.split('.')[0] === '*') {
 			const parts = fieldKey.split('.');
 
-			const relationalFields = allowedFields.includes('*')
-				? context.schema.relations
-						.filter(
-							(relation) =>
-								relation.collection === options.parentCollection ||
-								relation.related_collection === options.parentCollection,
-						)
-						.map((relation) => {
-							const isMany = relation.collection === options.parentCollection;
-							return isMany ? relation.field : relation.meta?.one_field;
-						})
-				: allowedFields.filter(
-						(fieldKey) => !!getRelation(context.schema.relations, options.parentCollection, fieldKey),
-				  );
+			let relationalFields: string[] = [];
+
+			if (allowedFields.includes('*')) {
+				relationalFields = context.schema.relations.reduce<string[]>((acc, relation) => {
+					if (relation.collection === options.collection && !acc.includes(relation.field)) {
+						acc.push(relation.field);
+					}
+
+					if (relation.related_collection === options.collection && !acc.includes(relation.meta!.one_field!)) {
+						acc.push(relation.meta!.one_field!);
+					}
+
+					return acc;
+				}, []);
+			} else {
+				relationalFields = allowedFields.filter(
+					(fieldKey) => getRelation(context.schema.relations, options.collection, fieldKey) !== undefined,
+				);
+			}
+
+			if (options.backlink === false) {
+				relationalFields = relationalFields.filter(
+					(relationField) =>
+						getRelation(context.schema.relations, options.collection, relationField) !== context.parentRelation,
+				);
+			}
 
 			const nonRelationalFields = allowedFields.filter((fieldKey) => relationalFields.includes(fieldKey) === false);
 
-			const aliasFields = Object.keys(options.query.alias ?? {}).map((fieldKey) => {
-				const name = options.query.alias![fieldKey];
+			const aliasFields = Object.keys(options.alias ?? {}).map((fieldKey) => {
+				const name = options.alias![fieldKey];
 
-				if (relationalFields.includes(name)) {
+				if (relationalFields.includes(name!)) {
 					return `${fieldKey}.${parts.slice(1).join('.')}`;
 				}
 

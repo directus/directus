@@ -181,7 +181,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Reset Page Preferences
 hidden_field: Hidden Field
 hidden_on_detail: Hidden on Detail
-disabled_editing_value: Disable editing value
 key: Key
 alias: Alias
 bigInteger: Big Integer

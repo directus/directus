@@ -264,7 +264,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					primaryKey = primaryKey ?? returnedKey;
 				}
 			} catch (err: any) {
-				const dbError = await translateDatabaseError(err);
+				const dbError = await translateDatabaseError(err, data);
 
 				if (isDirectusError(dbError, ErrorCode.RecordNotUnique) && dbError.extensions.primaryKey) {
 					// This is a MySQL specific thing we need to handle here, since MySQL does not return the field name
@@ -794,7 +794,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				try {
 					await trx(this.collection).update(payloadWithTypeCasting).whereIn(primaryKeyField, keys);
 				} catch (err: any) {
-					throw await translateDatabaseError(err);
+					throw await translateDatabaseError(err, data);
 				}
 			}
 

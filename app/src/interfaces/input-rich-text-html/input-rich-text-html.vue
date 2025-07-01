@@ -124,7 +124,7 @@ const {
 	mediaButton,
 } = useMedia(editorRef, imageToken!);
 
-const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, linkNode } = useLink(editorRef);
+const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, isLinkSaveable } = useLink(editorRef);
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
@@ -398,7 +398,7 @@ onMounted(() => {
 				{{ softLength - count }}
 			</span>
 		</template>
-		<v-dialog v-model="linkDrawerOpen">
+		<v-dialog v-model="linkDrawerOpen" @esc="closeLinkDrawer" @apply="saveLink">
 			<v-card>
 				<v-card-title>{{ t('wysiwyg_options.link') }}</v-card-title>
 				<v-card-text>
@@ -423,12 +423,18 @@ onMounted(() => {
 				</v-card-text>
 				<v-card-actions>
 					<v-button secondary @click="closeLinkDrawer">{{ t('cancel') }}</v-button>
-					<v-button :disabled="linkSelection.url === null && !linkNode" @click="saveLink">{{ t('save') }}</v-button>
+					<v-button :disabled="!isLinkSaveable" @click="saveLink">{{ t('save') }}</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
-		<v-drawer v-model="codeDrawerOpen" :title="t('wysiwyg_options.source_code')" icon="code" @cancel="closeCodeDrawer">
+		<v-drawer
+			v-model="codeDrawerOpen"
+			:title="t('wysiwyg_options.source_code')"
+			icon="code"
+			@cancel="closeCodeDrawer"
+			@apply="saveCode"
+		>
 			<div class="content">
 				<interface-input-code
 					:value="code"
@@ -445,7 +451,13 @@ onMounted(() => {
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="imageDrawerOpen" :title="t('wysiwyg_options.image')" icon="image" @cancel="closeImageDrawer">
+		<v-drawer
+			v-model="imageDrawerOpen"
+			:title="t('wysiwyg_options.image')"
+			icon="image"
+			@cancel="closeImageDrawer"
+			@apply="saveImage"
+		>
 			<div class="content">
 				<template v-if="imageSelection">
 					<img class="image-preview" :src="imageSelection.previewUrl" />
@@ -492,7 +504,13 @@ onMounted(() => {
 			</template>
 		</v-drawer>
 
-		<v-drawer v-model="mediaDrawerOpen" :title="t('wysiwyg_options.media')" icon="slideshow" @cancel="closeMediaDrawer">
+		<v-drawer
+			v-model="mediaDrawerOpen"
+			:title="t('wysiwyg_options.media')"
+			icon="slideshow"
+			@cancel="closeMediaDrawer"
+			@apply="saveMedia"
+		>
 			<template #sidebar>
 				<v-tabs v-model="openMediaTab" vertical>
 					<v-tab value="video">{{ t('media') }}</v-tab>

@@ -534,7 +534,7 @@ export class FieldsService {
 							});
 						});
 					} catch (err: any) {
-						throw await translateDatabaseError(err);
+						throw await translateDatabaseError(err, field);
 					}
 				}
 			}
@@ -851,14 +851,14 @@ export class FieldsService {
 				column = table.increments(field.field);
 			}
 		} else if (field.type === 'string') {
-			column = table.string(field.field, field.schema?.max_length ?? undefined);
+			column = table.string(field.field, field.schema?.max_length ?? existing?.max_length ?? undefined);
 		} else if (['float', 'decimal'].includes(field.type)) {
 			const type = field.type as 'float' | 'decimal';
 
 			column = table[type](
 				field.field,
-				field.schema?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
-				field.schema?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
+				field.schema?.numeric_precision ?? existing?.numeric_precision ?? DEFAULT_NUMERIC_PRECISION,
+				field.schema?.numeric_scale ?? existing?.numeric_scale ?? DEFAULT_NUMERIC_SCALE,
 			);
 		} else if (field.type === 'csv') {
 			column = table.text(field.field);
