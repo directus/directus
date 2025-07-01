@@ -23,6 +23,9 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 			const selectionContent = editor.value.selection.getContent({ format: 'text' });
 			const selectedText = selectionContent.split('\n');
 
+			// Remove all existing formatting before applying code formatting
+			editor.value.execCommand('removeformat');
+
 			editor.value.execCommand('mceToggleFormat', false, selectedText.length === 1 ? 'code' : 'pre');
 		},
 
