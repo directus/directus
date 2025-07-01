@@ -2,7 +2,7 @@
 import { useFieldTree, type FieldNode } from '@/composables/use-field-tree';
 import { useSync } from '@directus/composables';
 import type { Permission, Policy } from '@directus/types';
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import AppMinimal from './app-minimal.vue';
 
@@ -30,14 +30,12 @@ const { treeList } = useFieldTree(collection, ref(null), () => true, false, isRe
 const { isExpandable, openGroups, expandAll, collapseAll } = useExpandCollapseAll();
 
 const treeFields = computed<TreeChoice[]>(() => {
-	const appMinimal = new Set(props.appMinimal ?? []);
-
 	return treeList.value.map(fieldNodeToTreeChoice);
 
 	function fieldNodeToTreeChoice(field: FieldNode): TreeChoice {
 		return {
 			text: field.name,
-			disabled: appMinimal.has('*') || appMinimal.has(field.field),
+			disabled: false,
 			value: field.field,
 			children: field.children?.map(fieldNodeToTreeChoice) ?? undefined,
 		};
@@ -46,7 +44,7 @@ const treeFields = computed<TreeChoice[]>(() => {
 
 const selectedValues = computed({
 	get() {
-		const fields = new Set([...(props.appMinimal ?? []), ...(permissionSync.value.fields ?? [])]);
+		const fields = new Set([...(permissionSync.value.fields ?? [])]);
 
 		if (fields.has('*')) {
 			fields.delete('*');
@@ -65,12 +63,7 @@ const selectedValues = computed({
 	set(newFields: string[] | null) {
 		const fields: string[] = [];
 
-		const appMinimal = new Set(props.appMinimal ?? []);
-		const previousFields = new Set(permissionSync.value.fields ?? []);
-
 		for (const field of newFields ?? []) {
-			// Ignore fields coming from app minimal permissions only
-			if (appMinimal.has(field) && !previousFields.has(field)) continue;
 			fields.push(field);
 		}
 
