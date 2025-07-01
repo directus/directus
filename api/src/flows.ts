@@ -3,7 +3,15 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import { isSystemCollection } from '@directus/system-data';
-import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	ActionHandler,
+	FilterHandler,
+	Flow,
+	Operation,
+	PrimaryKey,
+	SchemaOverview,
+} from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { pick } from 'lodash-es';
@@ -312,7 +320,7 @@ class FlowManager {
 							const service = getService(targetCollection, { schema, accountability, knex: database });
 							const primaryField = schema.collections[targetCollection]!.primary;
 
-							let keys = await service.readMany(
+							const keys = await service.readMany(
 								targetKeys,
 								{ fields: [primaryField] },
 								{
@@ -320,9 +328,9 @@ class FlowManager {
 								},
 							);
 
-							keys = keys.map((key) => key[primaryField]);
+							const allowedKeys: PrimaryKey[] = keys.map((key) => key[primaryField]);
 
-							if (targetKeys.some((key) => !keys.includes(key))) {
+							if (targetKeys.some((key: PrimaryKey) => !allowedKeys.includes(key))) {
 								logger.warn(`Triggering keys ${targetKeys} is not allowed`);
 								throw new ForbiddenError();
 							}
