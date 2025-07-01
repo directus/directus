@@ -138,16 +138,11 @@ export function useRelationMultiple(
 	const displayItems = computed(() => {
 		if (!relation.value) return [];
 
-		const targetPKField =
-			relation.value.type === 'o2m'
-				? relation.value.relatedPrimaryKeyField.field
-				: relation.value.junctionPrimaryKeyField.field;
-
 		const items: DisplayItem[] = fetchedItems.value.map((item: Record<string, any>) => {
 			let edits;
 
 			for (const [index, value] of _value.value.update.entries()) {
-				if (typeof value === 'object' && value[targetPKField] === item[targetPKField]) {
+				if (typeof value === 'object' && value[targetPKField.value] === item[targetPKField.value]) {
 					edits = { index, value };
 					break;
 				}
@@ -173,7 +168,7 @@ export function useRelationMultiple(
 				updatedItem.$edits = edits.index;
 			}
 
-			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField]);
+			const deleteIndex = _value.value.delete.findIndex((id) => id === item[targetPKField.value]);
 
 			if (deleteIndex !== -1) {
 				merge(updatedItem, { $type: 'deleted', $index: deleteIndex });
@@ -186,7 +181,7 @@ export function useRelationMultiple(
 			const fetchedItem = fetchedSelectItems.value.find((item) => {
 				switch (relation.value?.type) {
 					case 'o2m':
-						return edit[targetPKField] === item[targetPKField];
+						return edit[targetPKField.value] === item[targetPKField.value];
 					case 'm2m':
 						return (
 							edit[relation.value.junctionField.field][relation.value.relatedPrimaryKeyField.field] ===
@@ -282,21 +277,16 @@ export function useRelationMultiple(
 		function remove(...items: DisplayItem[]) {
 			if (!relation.value) return;
 
-			const pkField =
-				relation.value.type === 'o2m'
-					? relation.value.relatedPrimaryKeyField.field
-					: relation.value.junctionPrimaryKeyField.field;
-
 			for (const item of items) {
 				if (item.$type === undefined || item.$index === undefined) {
-					target.value.delete.push(item[pkField]);
+					target.value.delete.push(item[targetPKField.value]);
 				} else if (item.$type === 'created') {
 					target.value.create.splice(item.$index, 1);
 				} else if (item.$type === 'updated') {
 					if (isItemSelected(item)) {
 						target.value.update.splice(item.$index, 1);
 					} else {
-						target.value.delete.push(item[pkField]);
+						target.value.delete.push(item[targetPKField.value]);
 					}
 				} else if (item.$type === 'deleted') {
 					target.value.delete.splice(item.$index, 1);
@@ -448,21 +438,17 @@ export function useRelationMultiple(
 		}
 
 		let targetCollection: string;
-		let targetPKField: string;
 		const reverseJunctionField = relation.value.reverseJunctionField.field;
 
 		switch (relation.value.type) {
 			case 'm2a':
 				targetCollection = relation.value.junctionCollection.collection;
-				targetPKField = relation.value.junctionPrimaryKeyField.field;
 				break;
 			case 'm2m':
 				targetCollection = relation.value.junctionCollection.collection;
-				targetPKField = relation.value.junctionPrimaryKeyField.field;
 				break;
 			case 'o2m':
 				targetCollection = relation.value.relatedCollection.collection;
-				targetPKField = relation.value.relatedPrimaryKeyField.field;
 				break;
 		}
 
@@ -476,13 +462,13 @@ export function useRelationMultiple(
 			params: {
 				search: previewQuery.value.search,
 				aggregate: {
-					count: targetPKField,
+					count: targetPKField.value,
 				},
 				filter,
 			},
 		});
 
-		existingItemCount.value = Number(response.data.data[0].count[targetPKField]);
+		existingItemCount.value = Number(response.data.data[0].count[targetPKField.value]);
 	}
 
 	function useSelected() {
@@ -565,13 +551,12 @@ export function useRelationMultiple(
 			if (relation.sortField) fields.add(relation.sortField);
 
 			const targetCollection = relation.relatedCollection.collection;
-			const targetPKField = relation.relatedPrimaryKeyField.field;
 
 			fetchedSelectItems.value = await fetchAll(getEndpoint(targetCollection), {
 				params: {
 					fields: Array.from(fields),
 					filter: {
-						[targetPKField]: {
+						[targetPKField.value]: {
 							_in: selectedOnPage.value.map(getRelatedIDs),
 						},
 					},
