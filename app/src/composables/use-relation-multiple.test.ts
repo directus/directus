@@ -108,7 +108,7 @@ const TestComponent = defineComponent({
 		});
 
 		// eslint-disable-next-line vue/no-dupe-keys
-		return { value: valueRef, ...useRelationMultiple(valueRef, query, relation, id) };
+		return { value: valueRef, ...useRelationMultiple(valueRef, query, relation, id, ref(null)) };
 	},
 	render: () => h('div'),
 });
@@ -436,7 +436,7 @@ const TestComponentM2A = defineComponent({
 		});
 
 		// eslint-disable-next-line vue/no-dupe-keys
-		return { value: valueRef, ...useRelationMultiple(valueRef, query, relation, id) };
+		return { value: valueRef, ...useRelationMultiple(valueRef, query, relation, id, ref(null)) };
 	},
 	render: () => h('div'),
 });

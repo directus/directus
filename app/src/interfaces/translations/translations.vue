@@ -7,6 +7,7 @@ import { useInjectNestedValidation } from '@/composables/use-nested-validation';
 import vTooltip from '@/directives/tooltip';
 import { useFieldsStore } from '@/stores/fields';
 import { fetchAll } from '@/utils/fetch-all';
+import type { ContentVersion } from '@directus/types';
 import { unexpectedError } from '@/utils/unexpected-error';
 import { getEndpoint } from '@directus/utils';
 import { isNil } from 'lodash';
@@ -28,6 +29,7 @@ const props = withDefaults(
 		value: (number | string | Record<string, any>)[] | Record<string, any> | null;
 		autofocus?: boolean;
 		disabled?: boolean;
+		version: ContentVersion | null;
 	}>(),
 	{
 		languageField: null,
@@ -50,7 +52,7 @@ const value = computed({
 	},
 });
 
-const { collection, field, primaryKey } = toRefs(props);
+const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 const { t, locale } = useI18n();
 
@@ -107,7 +109,7 @@ const {
 	loading: itemsLoading,
 	fetchedItems,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey);
+} = useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 useNestedValidation();
 

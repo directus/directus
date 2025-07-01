@@ -9,7 +9,7 @@ import { RelationO2M } from '@/composables/use-relation-o2m';
 import { hideDragImage } from '@/utils/hide-drag-image';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
+import type { ContentVersion, Filter } from '@directus/types';
 import { moveInArray } from '@directus/utils';
 import { cloneDeep } from 'lodash';
 import { computed, ref, toRefs } from 'vue';
@@ -41,11 +41,12 @@ type ChangeEvent =
 const props = withDefaults(
 	defineProps<{
 		modelValue?: ChangesItem;
-		template: string;
-		disabled?: boolean;
 		collection: string;
 		field: string;
 		primaryKey: string | number;
+		disabled?: boolean;
+		version: ContentVersion | null;
+		template: string;
 		filter?: Filter | null;
 		fields: string[];
 		relationInfo: RelationO2M;
@@ -76,7 +77,7 @@ const value = computed<ChangesItem | any[]>({
 	},
 });
 
-const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter } = toRefs(props);
+const { collection, field, primaryKey, relationInfo, root, fields, template, customFilter, version } = toRefs(props);
 
 const drag = ref(false);
 const open = ref<Record<string, boolean>>({});
@@ -91,7 +92,7 @@ const query = computed<RelationQueryMultiple>(() => ({
 }));
 
 const { displayItems, loading, create, update, remove, select, cleanItem, isLocalItem, getItemEdits } =
-	useRelationMultiple(value, query, relationInfo, primaryKey);
+	useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 const selectDrawer = ref(false);
 

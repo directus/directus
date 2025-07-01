@@ -7,7 +7,7 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { parseFilter } from '@/utils/parse-filter';
 import DrawerFiles from '@/views/private/components/drawer-files.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
+import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { render } from 'micromustache';
@@ -21,8 +21,9 @@ const props = withDefaults(
 		primaryKey: string | number;
 		collection: string;
 		field: string;
-		template?: string | null;
 		disabled?: boolean;
+		version: ContentVersion | null;
+		template?: string | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		folder?: string;
@@ -43,7 +44,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-const { collection, field, primaryKey, limit } = toRefs(props);
+const { collection, field, primaryKey, limit, version } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 
 const value = computed({
@@ -108,7 +109,7 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey);
+} = useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 const { createAllowed, updateAllowed, selectAllowed, deleteAllowed } = useRelationPermissionsM2M(relationInfo);
 
