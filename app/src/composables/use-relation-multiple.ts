@@ -4,7 +4,7 @@ import { RelationM2M } from '@/composables/use-relation-m2m';
 import { RelationO2M } from '@/composables/use-relation-o2m';
 import { fetchAll } from '@/utils/fetch-all';
 import { unexpectedError } from '@/utils/unexpected-error';
-import { Filter, Item } from '@directus/types';
+import { ContentVersion, Filter, Item } from '@directus/types';
 import { getEndpoint, toArray } from '@directus/utils';
 import { clamp, cloneDeep, get, isEqual, merge } from 'lodash';
 import { Ref, computed, ref, watch } from 'vue';
@@ -32,16 +32,29 @@ export type ChangesItem = {
 };
 
 export function useRelationMultiple(
-	value: Ref<Record<string, any> | any[] | undefined>,
+	value: Ref<Record<string, any> | any[] | undefined | null>,
 	previewQuery: Ref<RelationQueryMultiple>,
 	relation: Ref<RelationM2A | RelationM2M | RelationO2M | undefined>,
 	itemId: Ref<string | number | null>,
+	version: Ref<ContentVersion | null>,
 ) {
 	const loading = ref(false);
 	const fetchedItems = ref<Record<string, any>[]>([]);
 	const existingItemCount = ref(0);
 
 	const { cleanItem, getPage, isLocalItem, getItemEdits, isEmpty } = useUtil();
+
+	const targetPKField = computed(() => {
+		if (!relation.value) return 'id';
+
+		return relation.value.type === 'o2m'
+			? relation.value.relatedPrimaryKeyField.field
+			: relation.value.junctionPrimaryKeyField.field;
+	});
+
+	const fetchedItemsPKs = computed(() => {
+		return fetchedItems.value.map((item) => item[targetPKField.value]);
+	});
 
 	const _value = computed<ChangesItem>({
 		get() {
@@ -57,6 +70,13 @@ export function useRelationMultiple(
 		},
 		set(newValue) {
 			if (newValue.create.length === 0 && newValue.update.length === 0 && newValue.delete.length === 0) {
+				const isVersion = version.value !== null;
+
+				if (isVersion) {
+					value.value = fetchedItemsPKs.value;
+					return;
+				}
+
 				value.value = undefined;
 				return;
 			}

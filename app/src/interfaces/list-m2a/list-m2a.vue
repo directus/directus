@@ -9,7 +9,7 @@ import { hideDragImage } from '@/utils/hide-drag-image';
 import { renderStringTemplate } from '@/utils/render-string-template';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
-import { Filter } from '@directus/types';
+import type { ContentVersion, Filter } from '@directus/types';
 import { getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, set } from 'lodash';
 import { computed, ref, toRefs, unref, watch } from 'vue';
@@ -23,6 +23,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		disabled?: boolean;
+		version: ContentVersion | null;
 		enableCreate?: boolean;
 		enableSelect?: boolean;
 		limit?: number;
@@ -41,7 +42,7 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 const { t, te } = useI18n();
-const { collection, field, primaryKey, limit } = toRefs(props);
+const { collection, field, primaryKey, limit, version } = toRefs(props);
 const { relationInfo } = useRelationM2A(collection, field);
 
 const value = computed({
@@ -121,7 +122,7 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey);
+} = useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 function sortItems(items: DisplayItem[]) {
 	const info = relationInfo.value;
