@@ -316,7 +316,7 @@ class FlowManager {
 							throw new ForbiddenError();
 						}
 
-						if (requireSelection) {
+						if (targetKeys && Array.isArray(targetKeys)) {
 							const service = getService(targetCollection, { schema, accountability, knex: database });
 							const primaryField = schema.collections[targetCollection]!.primary;
 
