@@ -2,10 +2,24 @@ import type { Request } from 'express';
 import { describe, expect, test, vi } from 'vitest';
 import { getCacheControlHeader } from './get-cache-headers.js';
 import { useEnv } from '@directus/env';
+import type { Accountability } from '@directus/types';
 
 vi.mock('@directus/env');
 
-const scenarios = [
+type Scenario = {
+	name: string;
+	input: {
+		env: Record<string, any>;
+		headers: Record<string, string>;
+		accountability: Accountability | null;
+		ttl?: number;
+		globalCacheSettings: boolean;
+		personalized: boolean;
+	};
+	output: string;
+};
+
+const scenarios: Scenario[] = [
 	// Test the cache-control header
 	{
 		name: 'when cache-Control header includes no-store',
@@ -133,7 +147,7 @@ const scenarios = [
 			headers: {},
 			accountability: {
 				role: '7efc7413-7ffe-4e6f-a0ac-687bbf9f8076',
-			},
+			} as Accountability,
 			ttl: 5678910,
 			globalCacheSettings: false,
 			personalized: true,
@@ -145,7 +159,7 @@ const scenarios = [
 		input: {
 			env: {},
 			headers: {},
-			accountability: {},
+			accountability: {} as Accountability,
 			ttl: 5678910,
 			globalCacheSettings: false,
 			personalized: true,

@@ -5,6 +5,8 @@ import { createTracker, MockClient, Tracker } from 'knex-mock-client';
 import type { MockedFunction } from 'vitest';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { SpecificationService } from './index.js';
+import type { Accountability } from '@directus/types';
+import type { RequestBodyObject } from 'openapi3-ts/oas30';
 
 class Client_PG extends MockClient {}
 
@@ -48,7 +50,7 @@ describe('Integration Tests', () => {
 						const service = new SpecificationService({
 							knex: db,
 							schema,
-							accountability: { role: 'admin', admin: true },
+							accountability: { role: 'admin', admin: true } as Accountability,
 						});
 
 						const spec = await service.oas.generate();
@@ -259,12 +261,13 @@ describe('Integration Tests', () => {
 						const service = new SpecificationService({
 							knex: db,
 							schema: schema2,
-							accountability: { role: 'admin', admin: true },
+							accountability: { role: 'admin', admin: true } as Accountability,
 						});
 
 						const spec = await service.oas.generate();
+						const requestBody = spec.paths['/items/test_table']?.post?.requestBody as RequestBodyObject;
 
-						const targetSchema = spec.paths['/items/test_table']?.post?.requestBody?.content['application/json'].schema;
+						const targetSchema = requestBody?.content?.['application/json']?.schema;
 
 						expect(targetSchema).toHaveProperty('oneOf');
 						expect(targetSchema).not.toHaveProperty('type');

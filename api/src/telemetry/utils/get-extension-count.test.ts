@@ -7,7 +7,7 @@ import { getExtensionCount, type ExtensionCount } from './get-extension-count.js
 vi.mock('../../utils/get-schema.js');
 vi.mock('../../services/extensions.js');
 
-let mockDb: Knex;
+const mockDb: Knex = {} as Knex;
 
 function generateParentBundleExtension(enabled: boolean) {
 	return {

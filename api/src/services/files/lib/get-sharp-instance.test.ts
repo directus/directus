@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { getSharpInstance } from './get-sharp-instance';
+import { getSharpInstance } from './get-sharp-instance.js';
 
 import { beforeAll, expect, test, vi } from 'vitest';
 

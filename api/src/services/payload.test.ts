@@ -7,7 +7,7 @@ import type { Helpers } from '../database/helpers/index.js';
 import { getHelpers } from '../database/helpers/index.js';
 import { PayloadService } from './index.js';
 import { SchemaBuilder } from '@directus/schema-builder';
-import type { Item } from '@directus/types';
+import type { Item, Accountability } from '@directus/types';
 
 vi.mock('../../src/database/index', () => ({
 	getDatabaseClient: vi.fn().mockReturnValue('postgres'),
@@ -18,6 +18,7 @@ describe('Integration Tests', () => {
 	let tracker: Tracker;
 
 	beforeAll(async () => {
+		vi.stubEnv('TZ', 'UTC');
 		db = vi.mocked(knex.default({ client: MockClient }));
 		tracker = createTracker(db);
 	});
@@ -46,7 +47,7 @@ describe('Integration Tests', () => {
 						value: 123,
 						action: 'read',
 						payload: {},
-						accountability: { role: null },
+						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
 					});
@@ -59,7 +60,7 @@ describe('Integration Tests', () => {
 						value: '',
 						action: 'read',
 						payload: {},
-						accountability: { role: null },
+						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
 					});
@@ -72,7 +73,7 @@ describe('Integration Tests', () => {
 						value: ['test', 'directus'],
 						action: 'read',
 						payload: {},
-						accountability: { role: null },
+						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
 					});
@@ -85,7 +86,7 @@ describe('Integration Tests', () => {
 						value: 'test,directus',
 						action: 'read',
 						payload: {},
-						accountability: { role: null },
+						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
 					});
@@ -98,7 +99,7 @@ describe('Integration Tests', () => {
 						value: ['test', 'directus'],
 						action: 'create',
 						payload: {},
-						accountability: { role: null },
+						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
 					});
@@ -111,7 +112,7 @@ describe('Integration Tests', () => {
 						value: 'test,directus',
 						action: 'create',
 						payload: {},
-						accountability: { role: null },
+						accountability: { role: null } as Accountability,
 						specials: [],
 						helpers,
 					});
