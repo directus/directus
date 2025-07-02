@@ -221,7 +221,7 @@ export default abstract class SocketController {
 				const payload = await waitForAnyMessage(ws, this.authentication.timeout);
 				if (getMessageType(payload) !== 'auth') throw new Error();
 
-				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload));
+				const state = await authenticateConnection(WebSocketAuthMessage.parse(payload), getIPFromReq(request));
 
 				if (state.accountability) {
 					Object.assign(state.accountability, accountabilityOverrides);
@@ -338,7 +338,11 @@ export default abstract class SocketController {
 
 	protected async handleAuthRequest(client: WebSocketClient, message: WebSocketAuthMessage) {
 		try {
-			const { accountability, expires_at, refresh_token } = await authenticateConnection(message);
+			const { accountability, expires_at, refresh_token } = await authenticateConnection(
+				message,
+				client.accountability?.ip ?? null,
+			);
+
 			this.checkUserRequirements(accountability);
 
 			/**
