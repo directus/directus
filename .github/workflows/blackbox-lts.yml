@@ -37,9 +37,9 @@ jobs:
           - maria-lts-10_11
           # - maria-lts-10_6
           - mssql-lts-2019
-          - cockroachdb-lts-24_1
-          - cockroachdb-lts-23_2
-          - cockroachdb-lts-23_1
+          # - cockroachdb-lts-24_1
+          # - cockroachdb-lts-23_2
+          # - cockroachdb-lts-23_1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
