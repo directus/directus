@@ -404,7 +404,7 @@ function useNestedValidation() {
 		--v-chip-color: var(--theme--primary);
 		--v-chip-background-color: var(--theme--primary-background);
 
-		margin-top: 32px;
+		margin-block-start: 32px;
 	}
 
 	.primary {
@@ -428,7 +428,7 @@ function useNestedValidation() {
 	.primary,
 	.secondary {
 		.v-divider {
-			margin-top: var(--theme--form--row-gap);
+			margin-block-start: var(--theme--form--row-gap);
 		}
 	}
 }

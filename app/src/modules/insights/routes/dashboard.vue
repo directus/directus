@@ -420,8 +420,8 @@ const refreshInterval = computed({
 }
 
 .panel-container {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	opacity: 1;
 	transition: opacity var(--fast) var(--transition);
 
@@ -432,12 +432,12 @@ const refreshInterval = computed({
 
 .panel-loading {
 	position: absolute;
-	left: 50%;
-	top: 50%;
+	inset-inline-start: 50%;
+	inset-block-start: 50%;
 	transform: translate(-50%, -50%);
 
 	&.header-offset {
-		top: calc(50% - 12px);
+		inset-block-start: calc(50% - 12px);
 	}
 }
 
@@ -447,14 +447,14 @@ const refreshInterval = computed({
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-top: 8px;
-		max-width: 100%;
+		margin-block-start: 8px;
+		max-inline-size: 100%;
 	}
 }
 
@@ -462,11 +462,11 @@ const refreshInterval = computed({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	&.header-offset {
-		height: calc(100% - 24px);
+		block-size: calc(100% - 24px);
 	}
 }
 </style>

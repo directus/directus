@@ -148,7 +148,7 @@ watch(innerWidth, (value) => {
 <style lang="scss" scoped>
 .layout-cards {
 	padding: var(--content-padding);
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .grid {
@@ -165,7 +165,7 @@ watch(innerWidth, (value) => {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding-top: 40px;
+	padding-block-start: 40px;
 
 	.pagination {
 		display: inline-block;
@@ -175,12 +175,12 @@ watch(innerWidth, (value) => {
 		display: flex;
 		align-items: center;
 		justify-content: flex-end;
-		width: 240px;
+		inline-size: 240px;
 		color: var(--theme--foreground-subdued);
 
 		span {
-			width: auto;
-			margin-right: 4px;
+			inline-size: auto;
+			margin-inline-end: 4px;
 		}
 
 		.v-select {

@@ -74,10 +74,10 @@ const user = computed(() => {
 .revision-item {
 	position: relative;
 	display: block;
-	width: 100%;
-	margin-bottom: 12px;
-	margin-left: 16px;
-	text-align: left;
+	inline-size: 100%;
+	margin-block-end: 12px;
+	margin-inline-start: 16px;
+	text-align: start;
 
 	.header {
 		position: relative;
@@ -86,11 +86,11 @@ const user = computed(() => {
 
 		.dot {
 			position: absolute;
-			top: 6px;
-			left: -18px;
+			inset-block-start: 6px;
+			inset-inline-start: -18px;
 			z-index: 2;
-			width: 12px;
-			height: 12px;
+			inline-size: 12px;
+			block-size: 12px;
 			background-color: var(--theme--warning);
 			border: var(--theme--border-width) solid var(--theme--background-normal);
 			border-radius: 8px;
@@ -115,22 +115,22 @@ const user = computed(() => {
 
 	&:not(.last)::after {
 		position: absolute;
-		top: 12px;
-		left: -13px;
+		inset-block-start: 12px;
+		inset-inline-start: -13px;
 		z-index: 1;
-		width: 2px;
-		height: calc(100% + 12px);
+		inline-size: 2px;
+		block-size: calc(100% + 12px);
 		background-color: var(--theme--background-accent);
 		content: '';
 	}
 
 	&::before {
 		position: absolute;
-		top: -4px;
-		left: -24px;
+		inset-block-start: -4px;
+		inset-inline-start: -24px;
 		z-index: 1;
-		width: calc(100% + 32px);
-		height: calc(100% + 10px);
+		inline-size: calc(100% + 32px);
+		block-size: calc(100% + 10px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -154,7 +154,7 @@ const user = computed(() => {
 	}
 
 	& + & {
-		margin-top: 12px;
+		margin-block-start: 12px;
 	}
 }
 

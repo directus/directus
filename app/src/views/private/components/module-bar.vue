@@ -76,18 +76,18 @@ const modules = computed(() => {
 
 	display: flex;
 	flex-direction: column;
-	width: 60px;
-	height: 100%;
+	inline-size: 60px;
+	block-size: 100%;
 	background-color: var(--theme--navigation--modules--background);
-	border-right: var(--theme--navigation--modules--border-width) solid var(--theme--navigation--modules--border-color);
+	border-inline-end: var(--theme--navigation--modules--border-width) solid
+		var(--theme--navigation--modules--border-color);
 
 	/* Explicitly render the border outside of the width of the bar itself */
 	box-sizing: content-box;
 
 	.modules {
 		flex-grow: 1;
-		overflow-x: hidden;
-		overflow-y: auto;
+		overflow: hidden auto;
 	}
 
 	.v-button {

@@ -131,13 +131,13 @@ watch(validationMessages, (newVal, oldVal) => {
 
 <style scoped>
 .v-form {
-	padding-top: calc(var(--theme--form--row-gap) / 2);
+	padding-block-start: calc(var(--theme--form--row-gap) / 2);
 }
 
 .toggle-btn {
 	display: block;
-	width: 100%;
-	text-align: left;
+	inline-size: 100%;
+	text-align: start;
 
 	&:focus-visible :deep(hr) {
 		opacity: 0;
@@ -149,7 +149,7 @@ watch(validationMessages, (newVal, oldVal) => {
 }
 
 .v-divider .expand-icon {
-	float: right;
+	float: inline-end;
 	transform: rotate(90deg) !important;
 	transition: transform var(--fast) var(--transition);
 }
@@ -164,22 +164,22 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	top: 7px;
-	left: -7px;
+	inset-block-start: 7px;
+	inset-inline-start: -7px;
 	display: block;
-	width: 4px;
-	height: 4px;
+	inline-size: 4px;
+	block-size: 4px;
 	background-color: var(--theme--form--field--input--foreground-subdued);
 	border-radius: 4px;
 	content: '';
 }
 
 .header-icon {
-	margin-right: 12px !important;
+	margin-inline-end: 12px !important;
 }
 
 .warning {
-	margin-left: 8px;
+	margin-inline-start: 8px;
 	color: var(--theme--danger);
 }
 </style>

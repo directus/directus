@@ -274,8 +274,7 @@ function useTab() {
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding-bottom);
+	padding-block: 0 var(--content-padding-bottom);
 
 	.grid {
 		@include mixins.form-grid;
@@ -285,7 +284,7 @@ function useTab() {
 .compare {
 	display: flex;
 	align-items: center;
-	width: 100%;
+	inline-size: 100%;
 	padding: 8px;
 	gap: 8px;
 	color: var(--theme--foreground-subdued);

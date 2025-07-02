@@ -621,11 +621,11 @@ function discardAndLeave() {
 	--layout-offset-top: 0;
 
 	position: relative;
-	width: 100%;
-	margin-top: 32px;
+	inline-size: 100%;
+	margin-block-start: 32px;
 
 	:deep(#map-container) {
-		min-height: 360px;
+		min-block-size: 360px;
 	}
 }
 

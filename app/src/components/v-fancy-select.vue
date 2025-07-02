@@ -101,14 +101,14 @@ function toggle(item: Record<string, any>) {
 	z-index: 1;
 	display: flex;
 	align-items: center;
-	width: 100%;
-	margin-bottom: 8px;
+	inline-size: 100%;
+	margin-block-end: 8px;
 	padding: 12px;
 	background-color: var(--theme--background-normal);
 	border: var(--theme--border-width) solid var(--theme--background-normal);
 	border-radius: 6px;
 	backface-visibility: hidden;
-	text-align: left;
+	text-align: start;
 	transition-timing-function: var(--transition);
 	transition-duration: var(--fast);
 	transition-property: background-color, border-color;
@@ -125,9 +125,9 @@ function toggle(item: Record<string, any>) {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
-		height: 44px;
-		margin-right: 12px;
+		inline-size: 44px;
+		block-size: 44px;
+		margin-inline-end: 12px;
 		background-color: var(--theme--background);
 		border-radius: 50%;
 	}

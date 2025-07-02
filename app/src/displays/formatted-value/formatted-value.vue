@@ -193,7 +193,7 @@ function matchNumber(left: number, right: number, operator: string) {
 
 	&.has-background,
 	&.has-border {
-		height: 28px;
+		block-size: 28px;
 		padding: 0 10px;
 		font-size: 14px;
 		line-height: 28px;

@@ -52,13 +52,13 @@ const src = computed(() => {
 .user {
 	display: inline-flex;
 	align-items: center;
-	height: 100%;
+	block-size: 100%;
 	vertical-align: middle;
 
 	img {
 		display: inline-block;
-		width: auto;
-		height: 100%;
+		inline-size: auto;
+		block-size: 100%;
 		vertical-align: -67%;
 		border-radius: 4px;
 
@@ -69,7 +69,7 @@ const src = computed(() => {
 
 	&.both {
 		img {
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 	}
 }

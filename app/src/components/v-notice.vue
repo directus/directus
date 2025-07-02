@@ -58,8 +58,8 @@ const iconName = computed(() => {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: auto;
-	min-height: var(--theme--form--field--input--height);
+	inline-size: auto;
+	min-block-size: var(--theme--form--field--input--height);
 	padding: 12px 16px;
 	color: var(--v-notice-color, var(--theme--foreground));
 	line-height: 22px;
@@ -72,10 +72,10 @@ const iconName = computed(() => {
 	content: '';
 	display: block;
 	position: absolute;
-	top: 0;
-	left: 0;
-	width: 4px;
-	height: 100%;
+	inset-block-start: 0;
+	inset-inline-start: 0;
+	inline-size: 4px;
+	block-size: 100%;
 	background-color: var(--v-notice-border-color, var(--theme--primary));
 }
 
@@ -84,7 +84,7 @@ const iconName = computed(() => {
 }
 
 .v-icon.left {
-	margin-right: 16px;
+	margin-inline-end: 16px;
 }
 
 .success {

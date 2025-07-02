@@ -90,6 +90,6 @@ const items = computed(() => {
 }
 
 .v-checkbox {
-	margin-top: 8px;
+	margin-block-start: 8px;
 }
 </style>

@@ -112,10 +112,9 @@ const userFullName = userStore.fullName ?? undefined;
 		&.no-avatar {
 			&::after {
 				position: absolute;
-				top: -1px;
-				right: 8px;
-				left: 8px;
-				height: var(--theme--border-width);
+				inset-block-start: -1px;
+				inset-inline: 8px;
+				block-size: var(--theme--border-width);
 				background-color: var(--theme--navigation--modules--button--foreground);
 				opacity: 0.25;
 				content: '';
@@ -144,6 +143,7 @@ const userFullName = userStore.fullName ?? undefined;
 
 			.avatar-image {
 				opacity: 1;
+
 				/* This adds a second focus ring to the image so we can see the focus better */
 				outline: var(--focus-ring-width) solid var(--theme--navigation--modules--background);
 				outline-offset: var(--focus-ring-offset-invert);
@@ -170,8 +170,8 @@ const userFullName = userStore.fullName ?? undefined;
 		--v-button-background-color-hover: var(--theme--navigation--modules--background);
 
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		z-index: 2;
 		transition: transform var(--fast) var(--transition);
 		opacity: 0;

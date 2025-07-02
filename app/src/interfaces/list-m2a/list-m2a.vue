@@ -506,7 +506,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	@include mixins.list-interface($deleteable: true);
 
 	.v-notice + & {
-		margin-top: 12px;
+		margin-block-start: 12px;
 	}
 }
 
@@ -514,7 +514,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	.collection {
 		color: var(--theme--primary);
 		white-space: nowrap;
-		margin-right: 1ch;
+		margin-inline-end: 1ch;
 	}
 
 	&.deleted .collection {
@@ -534,7 +534,7 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 	}
 
 	.pagination {
-		margin-left: auto;
+		margin-inline-start: auto;
 		display: flex;
 		gap: 8px 16px;
 
@@ -545,8 +545,8 @@ const allowDrag = computed(() => canDrag.value && totalItemCount.value <= limitW
 			color: var(--theme--foreground-subdued);
 
 			span {
-				width: auto;
-				margin-right: 4px;
+				inline-size: auto;
+				margin-inline-end: 4px;
 			}
 
 			.v-select {

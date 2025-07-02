@@ -68,8 +68,8 @@ function toggle() {
 <style lang="scss" scoped>
 .activator {
 	display: block;
-	width: 100%;
-	text-align: left;
+	inline-size: 100%;
+	text-align: start;
 }
 
 .v-detail:not(.disabled) .v-divider {
@@ -81,10 +81,10 @@ function toggle() {
 }
 
 .v-icon {
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 
 .content {
-	margin-top: 12px;
+	margin-block-start: 12px;
 }
 </style>

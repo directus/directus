@@ -51,6 +51,6 @@ function close() {
 	color: var(--theme--primary);
 	cursor: pointer;
 	font-weight: 600;
-	margin-top: 12px;
+	margin-block-start: 12px;
 }
 </style>

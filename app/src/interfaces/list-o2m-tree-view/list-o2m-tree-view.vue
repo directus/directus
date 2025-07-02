@@ -147,7 +147,7 @@ const fields = computed(() => {
 }
 
 :deep(ul) {
-	margin-left: 24px;
-	padding-left: 0;
+	margin-inline-start: 24px;
+	padding-inline-start: 0;
 }
 </style>

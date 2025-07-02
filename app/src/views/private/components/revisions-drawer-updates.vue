@@ -108,18 +108,18 @@ const changes = computed(() => {
 
 <style lang="scss" scoped>
 .change {
-	margin-bottom: 24px;
+	margin-block-end: 24px;
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .change-line {
-	margin-bottom: 0px;
+	margin-block-end: 0;
 }
 
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 </style>

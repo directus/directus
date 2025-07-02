@@ -12,7 +12,7 @@ interface Props {
 	modelValue?: string;
 	/** If the input is empty, return `null` instead of `''` */
 	nullable?: boolean;
-	/** Renders the textarea at regular input size, and expands to max-height on focus */
+	/** Renders the textarea at regular input size, and expands to max-block-size on focus */
 	expandOnFocus?: boolean;
 	/** Text to show when no input is entered */
 	placeholder?: string;
@@ -93,8 +93,8 @@ function trimIfEnabled() {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	width: max-content;
-	height: var(--input-height-tall);
+	inline-size: max-content;
+	block-size: var(--input-height-tall);
 	background-color: var(--theme--form--field--input--background);
 	border: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -108,8 +108,8 @@ function trimIfEnabled() {
 	}
 
 	&.expand-on-focus {
-		height: var(--theme--form--field--input--height);
-		transition: height var(--medium) var(--transition);
+		block-size: var(--theme--form--field--input--height);
+		transition: block-size var(--medium) var(--transition);
 
 		.append,
 		.prepend {
@@ -121,7 +121,7 @@ function trimIfEnabled() {
 		&:focus,
 		&:focus-within,
 		&.has-content {
-			height: var(--v-textarea-max-height);
+			block-size: var(--v-textarea-max-height);
 
 			.append,
 			.prepend {
@@ -132,7 +132,7 @@ function trimIfEnabled() {
 	}
 
 	&.full-width {
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	&:hover:not(.disabled) {
@@ -150,8 +150,8 @@ function trimIfEnabled() {
 		position: relative;
 		display: block;
 		flex-grow: 1;
-		width: 100%;
-		height: var(--theme--form--field--input--height);
+		inline-size: 100%;
+		block-size: var(--theme--form--field--input--height);
 		padding: var(--theme--form--field--input--padding);
 		color: var(--theme--foreground);
 		font-family: var(--v-textarea-font-family, var(--theme--fonts--sans--font-family));

@@ -60,7 +60,7 @@ const color = computed(() => {
 		<div
 			class="inner"
 			:style="{
-				width: value + '%',
+				inlineSize: value + '%',
 			}"
 		/>
 		<slot :value="value" />
@@ -83,18 +83,18 @@ const color = computed(() => {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: var(--v-progress-linear-height, 4px);
+	inline-size: 100%;
+	block-size: var(--v-progress-linear-height, 4px);
 	overflow: hidden;
 	background-color: var(--v-progress-linear-background-color, var(--theme--form--field--input--border-color));
 
 	.inner {
 		position: absolute;
-		top: 0;
-		left: 0;
-		height: 100%;
+		inset-block-start: 0;
+		inset-inline-start: 0;
+		block-size: 100%;
 		background-color: var(--v-progress-linear-color, var(--theme--foreground));
-		transition: width 200ms ease-in-out;
+		transition: inline-size 200ms ease-in-out;
 	}
 
 	&.absolute {
@@ -102,7 +102,7 @@ const color = computed(() => {
 	}
 
 	&.bottom {
-		bottom: 0;
+		inset-block-end: 0;
 	}
 
 	&.fixed {
@@ -111,7 +111,7 @@ const color = computed(() => {
 
 	&.indeterminate .inner {
 		position: relative;
-		width: 100% !important;
+		inline-size: 100% !important;
 		transform-origin: left;
 		animation: indeterminate 2s infinite;
 		will-change: transform;
@@ -123,7 +123,7 @@ const color = computed(() => {
 	}
 
 	&.top {
-		top: 0;
+		inset-block-start: 0;
 	}
 
 	&.colorful {

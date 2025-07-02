@@ -66,9 +66,9 @@ const done = async () => {
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	width: 100%;
-	min-height: 44px;
-	margin-top: 4px;
+	inline-size: 100%;
+	min-block-size: 44px;
+	margin-block-start: 4px;
 	padding: 12px;
 	color: var(--white);
 	border-radius: var(--theme--border-radius);
@@ -79,9 +79,9 @@ const done = async () => {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		width: 44px;
-		height: 44px;
-		margin-right: 12px;
+		inline-size: 44px;
+		block-size: 44px;
+		margin-inline-end: 12px;
 		background-color: rgb(255 255 255 / 0.25);
 		border-radius: 50%;
 	}
@@ -100,12 +100,12 @@ const done = async () => {
 
 	&::after {
 		position: absolute;
-		right: 12px;
-		bottom: -5px;
+		inset-inline-end: 12px;
+		inset-block-end: -5px;
 		z-index: -1;
 		display: block;
-		width: 20px;
-		height: 20px;
+		inline-size: 20px;
+		block-size: 20px;
 		border-radius: 2px;
 		transform: rotate(45deg) translate(-5px, -5px);
 		transition: transform var(--slow) var(--transition);
@@ -114,18 +114,18 @@ const done = async () => {
 	}
 
 	&.tail::after {
-		transform: rotate(45deg) translate(0px, 0px);
+		transform: rotate(45deg) translate(0, 0);
 	}
 
 	&.dense {
-		width: max-content;
-		max-width: 100%;
-		min-height: 44px;
+		inline-size: max-content;
+		max-inline-size: 100%;
+		min-block-size: 44px;
 
 		.icon {
-			width: auto;
-			height: auto;
-			margin-right: 8px;
+			inline-size: auto;
+			block-size: auto;
+			margin-inline-end: 8px;
 			background-color: transparent;
 		}
 
@@ -184,7 +184,7 @@ const done = async () => {
 }
 
 .close {
-	margin-left: 12px;
+	margin-inline-start: 12px;
 }
 
 .v-progress-circular {

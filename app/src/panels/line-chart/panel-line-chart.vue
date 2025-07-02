@@ -328,9 +328,9 @@ function setUpChart() {
 
 <style scoped>
 .line-chart {
-	padding: 0px;
-	height: 100%;
-	width: 100%;
+	padding: 0;
+	block-size: 100%;
+	inline-size: 100%;
 }
 </style>
 
@@ -341,7 +341,7 @@ function setUpChart() {
 
 .apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
 	border-color: var(--theme--form--field--input--border-color) !important;
-	margin-bottom: 0;
+	margin-block-end: 0;
 	padding: 0 4px;
 	font-weight: 600 !important;
 	font-size: 10px !important;
@@ -349,7 +349,7 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-y-group {
-	padding: 0 0 0 0px;
+	padding: 0;
 	font-weight: 600 !important;
 	font-size: 10px !important;
 }
@@ -362,7 +362,7 @@ function setUpChart() {
 .apexcharts-tooltip-series-group.apexcharts-active,
 .apexcharts-tooltip-series-group:last-child {
 	padding: 0 4px !important;
-	padding-bottom: 0px !important;
+	padding-block-end: 0 !important;
 }
 
 .apexcharts-tooltip-text {
@@ -371,8 +371,8 @@ function setUpChart() {
 }
 
 .apexcharts-tooltip-marker {
-	height: 8px !important;
-	width: 8px !important;
+	block-size: 8px !important;
+	inline-size: 8px !important;
 	padding: 4px !important;
 }
 

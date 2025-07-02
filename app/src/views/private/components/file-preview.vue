@@ -69,23 +69,23 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 <style lang="scss" scoped>
 .file-preview {
 	position: relative;
-	max-width: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
+	max-inline-size: calc((var(--form-column-max-width) * 2) + var(--theme--form--column-gap));
 
 	img,
 	video {
-		width: auto;
-		height: auto;
+		inline-size: auto;
+		block-size: auto;
 	}
 
 	audio {
-		width: 100%;
+		inline-size: 100%;
 	}
 
 	img,
 	video,
 	audio {
-		max-width: 100%;
-		max-height: v-bind(maxHeight);
+		max-inline-size: 100%;
+		max-block-size: v-bind(maxHeight);
 		object-fit: contain;
 		border-radius: var(--theme--border-radius);
 	}
@@ -109,8 +109,8 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		justify-content: center;
 
 		video {
-			min-height: 80px;
-			min-width: 80px;
+			min-block-size: 80px;
+			min-inline-size: 80px;
 		}
 	}
 
@@ -119,7 +119,7 @@ const isSmall = computed(() => file.value.height && file.value.height < 528);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: var(--input-height-tall);
+		block-size: var(--input-height-tall);
 		border-radius: var(--theme--border-radius);
 	}
 

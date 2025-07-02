@@ -299,11 +299,10 @@ function onApply() {
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 
 .select {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 </style>

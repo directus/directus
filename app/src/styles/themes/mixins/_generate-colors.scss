@@ -9,16 +9,20 @@
 		@each $suffix, $step in colors.$step-mapping {
 			// Default suffix to nothing
 			$resolved-suffix: '';
+
 			// Default mixing color
 			$mixing-color: $mix-color-low;
+
 			// Set suffix if not equal to none
 			@if $suffix != 'none' {
 				$resolved-suffix: '-#{$suffix}';
 			}
+
 			// If our step is negative, change to dark mixing color
 			@if $step < 0 {
 				$mixing-color: $mix-color-high;
 			}
+
 			// This is the CSS variable that will be output
 			--#{$identifier}#{$resolved-suffix}: #{color.mix($mixing-color, $color, 100% - math.abs($step))};
 		}

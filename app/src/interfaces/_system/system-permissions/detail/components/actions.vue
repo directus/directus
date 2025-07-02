@@ -28,6 +28,6 @@ const { t } = useI18n();
 }
 
 .v-button:not(:last-child) {
-	margin-right: 8px;
+	margin-inline-end: 8px;
 }
 </style>

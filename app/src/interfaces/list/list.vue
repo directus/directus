@@ -317,6 +317,6 @@ function closeDrawer() {
 
 .drawer-item-content {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 </style>

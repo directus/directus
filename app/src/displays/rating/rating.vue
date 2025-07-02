@@ -26,7 +26,7 @@ const starCount = computed(() => {
 });
 
 const ratingPercentage = computed(() => ({
-	width: (Number(props.value) / starCount.value) * 100 + '%',
+	inlineSize: (Number(props.value) / starCount.value) * 100 + '%',
 }));
 </script>
 
@@ -57,29 +57,29 @@ const ratingPercentage = computed(() => ({
 		border-radius: var(--theme--border-radius);
 
 		.v-icon {
-			margin-right: 4px;
+			margin-inline-end: 4px;
 		}
 	}
 
 	&.detailed {
 		position: relative;
-		width: min-content;
+		inline-size: min-content;
 		display: inline-flex;
-		height: var(--v-icon-size, 24px);
+		block-size: var(--v-icon-size, 24px);
 
 		.active {
 			position: relative;
 			z-index: 2;
 			display: inline-flex;
-			width: 0%;
+			inline-size: 0%;
 			overflow: hidden;
 			color: #ffc107;
 		}
 
 		.inactive {
 			position: absolute;
-			top: 0;
-			left: 0;
+			inset-block-start: 0;
+			inset-inline-start: 0;
 			z-index: 1;
 			display: inline-flex;
 			color: var(--theme--background-normal);

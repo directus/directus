@@ -130,7 +130,7 @@ const options = computed({
 <style lang="scss" scoped>
 .type-title,
 .select {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 
 .not-found {
@@ -145,6 +145,6 @@ const options = computed({
 
 .v-notice,
 .v-skeleton-loader {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 </style>

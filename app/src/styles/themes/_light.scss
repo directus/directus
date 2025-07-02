@@ -8,13 +8,11 @@
 	--foreground-inverted: #fff;
 	--background-normal-alt: #e4eaf1;
 	--background-highlight: #f7f9fd;
-	--background-input: #ffffff;
+	--background-input: #fff;
 	--background-page-rgb: 255, 255, 255;
 	--background-inverted: #263238;
 	--background-mark: var(--theme--primary-subdued);
-
-	--overlay-color: rgba(38, 50, 56, 0.8);
-
+	--overlay-color: rgb(38 50 56 / 0.8);
 	--navigation-shadow: 4px 0 7px -4px rgb(0 0 0 / 0.2);
 	--sidebar-shadow: -4px 0 7px -4px rgb(0 0 0 / 0.2);
 

@@ -1,15 +1,14 @@
 @mixin markdown {
 	:first-child {
-		margin-top: 0;
+		margin-block-start: 0;
 	}
 
 	:last-child {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 
 	h1 {
-		margin-top: 1em;
-		margin-bottom: 0;
+		margin-block: 1em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 36px;
@@ -17,8 +16,7 @@
 	}
 
 	h2 {
-		margin-top: 1.25em;
-		margin-bottom: 0;
+		margin-block: 1.25em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 24px;
@@ -26,8 +24,7 @@
 	}
 
 	h3 {
-		margin-top: 1.25em;
-		margin-bottom: 0;
+		margin-block: 1.25em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 19px;
@@ -35,8 +32,7 @@
 	}
 
 	h4 {
-		margin-top: 1.5em;
-		margin-bottom: 0;
+		margin-block: 1.5em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 16px;
@@ -44,8 +40,7 @@
 	}
 
 	h5 {
-		margin-top: 2em;
-		margin-bottom: 0;
+		margin-block: 2em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 14px;
@@ -53,8 +48,7 @@
 	}
 
 	h6 {
-		margin-top: 2em;
-		margin-bottom: 0;
+		margin-block: 2em 0;
 		color: var(--theme--foreground-accent);
 		font-weight: 700;
 		font-size: 12px;
@@ -110,30 +104,29 @@
 	}
 
 	blockquote {
-		margin-left: 0px;
-		padding-left: 1em;
+		margin-inline-start: 0;
+		padding-inline-start: 1em;
 		font-weight: 500;
 		font-size: 15px;
 		line-height: 24px;
-		border-left: 2px solid var(--theme--form--field--input--border-color);
+		border-inline-start: 2px solid var(--theme--form--field--input--border-color);
 	}
 
 	blockquote blockquote {
-		margin-left: 10px;
+		margin-inline-start: 10px;
 	}
 
 	video,
 	iframe,
 	img {
-		max-width: 100%;
-		height: auto;
+		max-inline-size: 100%;
+		block-size: auto;
 		border-radius: var(--theme--border-radius);
 	}
 
 	hr {
-		height: 1px;
-		margin-top: 2em;
-		margin-bottom: 2em;
+		block-size: 1px;
+		margin-block: 2em;
 		background-color: var(--theme--form--field--input--border-color);
 		border: none;
 	}
@@ -158,7 +151,7 @@
 
 	figure figcaption {
 		display: block;
-		margin-top: 0.25rem;
+		margin-block-start: 0.25rem;
 		color: #999;
 		text-align: center;
 	}

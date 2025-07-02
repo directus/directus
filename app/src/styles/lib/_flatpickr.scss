@@ -1,11 +1,11 @@
 @use 'flatpickr/dist/flatpickr';
 
 .flatpickr-wrapper {
-	width: 100%;
+	inline-size: 100%;
 }
 
 .flatpickr-calendar {
-	width: auto;
+	inline-size: auto;
 	overflow: hidden;
 	font-family: var(--v-input-font-family);
 	background: var(--theme--form--field--input--background);
@@ -14,7 +14,7 @@
 }
 
 .flatpickr-calendar.inline {
-	top: 0;
+	inset-block-start: 0;
 }
 
 .flatpickr-calendar.animate.open {
@@ -22,11 +22,11 @@
 }
 
 .flatpickr-calendar .flatpickr-calendar.arrowTop::after {
-	border-bottom-color: var(--theme--background-normal);
+	border-block-end-color: var(--theme--background-normal);
 }
 
 .flatpickr-calendar.arrowBottom::after {
-	border-top-color: var(--theme--background-normal);
+	border-block-start-color: var(--theme--background-normal);
 }
 
 .flatpickr-months .flatpickr-month {
@@ -48,8 +48,8 @@
 
 .flatpickr-months .flatpickr-prev-month svg,
 .flatpickr-months .flatpickr-next-month svg {
-	width: auto;
-	height: auto;
+	inline-size: auto;
+	block-size: auto;
 	fill: var(--theme--foreground-accent);
 }
 
@@ -59,12 +59,11 @@
 }
 
 .flatpickr-current-month {
-	left: auto;
+	inset-inline-start: auto;
 	display: flex;
 	align-items: center;
-	width: auto;
+	inline-size: auto;
 	padding: 0;
-	font-weight: inherit;
 	font-size: 16px;
 	font-weight: 600;
 }
@@ -72,9 +71,9 @@
 .flatpickr-current-month .flatpickr-monthDropdown-months {
 	border-radius: var(--theme--border-radius);
 	appearance: none;
-	text-align: right;
+	text-align: end;
 	font-size: 16px;
-	height: 20px;
+	block-size: 20px;
 	font-weight: 600;
 	color: var(--theme--primary);
 }
@@ -101,16 +100,12 @@
 
 .flatpickr-current-month .numInputWrapper input {
 	font-size: 16px;
-	height: 20px;
+	block-size: 20px;
 	vertical-align: 4px;
 }
 
 .flatpickr-current-month .numInputWrapper:hover {
 	background: var(--theme--background-accent);
-}
-
-.flatpickr-current-month .numInputWrapper {
-	border-radius: var(--theme--border-radius);
 }
 
 .flatpickr-current-month .numInputWrapper span.arrowUp {
@@ -133,18 +128,18 @@
 
 .flatpickr-days {
 	display: block;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .flatpickr-days .dayContainer {
 	display: grid;
 	grid-template-columns: repeat(7, minmax(0, 1fr));
-	width: auto;
-	min-width: auto;
-	max-width: none;
+	inline-size: auto;
+	min-inline-size: auto;
+	max-inline-size: none;
 	gap: 4px;
 	padding: 4px;
-	margin-top: 4px;
+	margin-block-start: 4px;
 }
 
 span.flatpickr-weekday {
@@ -153,8 +148,8 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-day {
-	width: 100%;
-	max-width: none;
+	inline-size: 100%;
+	max-inline-size: none;
 	color: var(--theme--foreground-accent);
 	line-height: 36px;
 	font-weight: 500;
@@ -255,19 +250,19 @@ span.flatpickr-weekday {
 .flatpickr-time {
 	display: flex;
 	justify-content: center;
-	max-height: none;
+	max-block-size: none;
 }
 
 .flatpickr-time > * {
 	flex-grow: 0 !important;
-	width: max-content !important;
-	min-width: 50px;
+	inline-size: max-content !important;
+	min-inline-size: 50px;
 }
 
 .flatpickr-time .numInputWrapper span {
 	display: flex;
 	justify-content: center;
-	width: 24px;
+	inline-size: 24px;
 }
 
 .flatpickr-time .numInputWrapper span.arrowUp {
@@ -290,17 +285,17 @@ span.flatpickr-weekday {
 }
 
 .flatpickr-calendar.hasTime .flatpickr-time {
-	height: 43px;
-	margin-top: 8px;
-	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	block-size: 43px;
+	margin-block-start: 8px;
+	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 }
 
 .flatpickr-calendar.noCalendar .flatpickr-time {
-	border-top: 0;
+	border-block-start: 0;
 }
 
 .flatpickr-time .flatpickr-time-separator {
-	min-width: 0 !important;
+	min-inline-size: 0 !important;
 }
 
 .flatpickr-time .flatpickr-time-separator,
@@ -327,10 +322,10 @@ span.flatpickr-weekday {
 .flatpickr-calendar .set-to-now-button {
 	--focus-ring-offset: var(--focus-ring-offset-inset);
 
-	width: 100%;
+	inline-size: 100%;
 	padding: 8px 0;
 	color: var(--theme--primary);
-	border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+	border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	transition: background-color var(--fast) var(--transition);
 }
 

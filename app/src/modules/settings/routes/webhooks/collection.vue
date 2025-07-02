@@ -156,7 +156,7 @@ function clearFilters() {
 <style lang="scss" scoped>
 .deprecation-notice-wrapper {
 	padding: 0 var(--content-padding) var(--content-padding) var(--content-padding);
-	width: fit-content;
+	inline-size: fit-content;
 	:deep(a) {
 		text-decoration: underline;
 	}

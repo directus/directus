@@ -195,12 +195,12 @@ useHead({ title });
 
 <style lang="scss" scoped>
 h2 {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 }
 
 .v-input,
 .v-notice {
-	margin-bottom: 32px;
+	margin-block-end: 32px;
 }
 
 .hydrating {
@@ -209,8 +209,8 @@ h2 {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 
 .password {
@@ -219,10 +219,10 @@ h2 {
 
 .password.invalid::before {
 	position: absolute;
-	top: -12px;
-	left: -12px;
-	width: calc(100% + 24px);
-	height: calc(100% + 24px);
+	inset-block-start: -12px;
+	inset-inline-start: -12px;
+	inline-size: calc(100% + 24px);
+	block-size: calc(100% + 24px);
 	background-color: var(--danger-alt);
 	border-radius: var(--theme--border-radius);
 	transition: var(--medium) var(--transition);

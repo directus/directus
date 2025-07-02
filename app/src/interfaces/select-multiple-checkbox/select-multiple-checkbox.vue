@@ -150,8 +150,7 @@ function onBlurCustomInput(otherVal: OtherValue) {
 }
 
 .v-detail {
-	margin-top: 0;
-	margin-bottom: 0;
+	margin-block: 0;
 
 	&.grid-1 {
 		grid-column: span 1;
@@ -180,8 +179,8 @@ function onBlurCustomInput(otherVal: OtherValue) {
 
 	display: flex;
 	align-items: center;
-	width: 100%;
-	height: var(--theme--form--field--input--height);
+	inline-size: 100%;
+	block-size: var(--theme--form--field--input--height);
 	padding: 10px;
 	border: var(--theme--border-width) dashed var(--theme--form--field--input--border-color);
 	border-radius: var(--theme--border-radius);
@@ -189,9 +188,9 @@ function onBlurCustomInput(otherVal: OtherValue) {
 	input {
 		display: block;
 		flex-grow: 1;
-		width: 20px; /* this will auto grow with flex above */
+		inline-size: 20px; /* this will auto grow with flex above */
 		margin: 0;
-		margin-left: 8px;
+		margin-inline-start: 8px;
 		padding: 0;
 		background-color: transparent;
 		border: none;
@@ -212,10 +211,10 @@ function onBlurCustomInput(otherVal: OtherValue) {
 
 		&::before {
 			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
+			inset-block-start: 0;
+			inset-inline-start: 0;
+			inline-size: 100%;
+			block-size: 100%;
 			background-color: var(--v-radio-color, var(--theme--primary));
 			opacity: 0.1;
 			content: '';
