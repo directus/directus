@@ -81,11 +81,6 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 						event.preventDefault();
 						activeNodeBeforeEnter = null;
 					}
-				} else if (event.key === 'Backspace') {
-					// Handle backspace to convert multi-line code blocks to inline when they become single-line
-					setTimeout(() => {
-						handlePreToInlineCodeConversion(editorInstance);
-					}, 0);
 				} else {
 					activeNodeBeforeEnter = editor.value.selection.getNode();
 				}
@@ -291,28 +286,4 @@ function handleExistingHTML(html: string): string {
 	}
 
 	return result;
-}
-
-function handlePreToInlineCodeConversion(editorInstance: any) {
-	const body = editorInstance.getBody();
-	const preElements = body.querySelectorAll('pre');
-
-	preElements.forEach((preElement: Element) => {
-		const textContent = preElement.textContent || '';
-		const lines = textContent.split('\n').filter((line) => line.trim() !== '');
-
-		// If the pre element contains only one line of actual content, convert to inline code
-		if (lines.length === 1) {
-			const content = lines[0];
-			const codeElement = editorInstance.dom.create('code', {}, content);
-
-			// Replace the pre element with the code element
-			editorInstance.dom.replace(codeElement, preElement);
-
-			// Set cursor position to the end of the code element
-			editorInstance.selection.setCursorLocation(codeElement, 1);
-
-			editorInstance.nodeChanged();
-		}
-	});
 }
