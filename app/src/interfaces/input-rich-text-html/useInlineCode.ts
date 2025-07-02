@@ -23,24 +23,16 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 			const selectionContent = editor.value.selection.getContent({ format: 'text' });
 			const selectedText = selectionContent.split('\n');
 
-			// Get the raw HTML content of the selection
-			const htmlContent = editor.value.selection.getContent();
-
-			// Preserve existing line breaks as best we can
-			const cleanContent = handleExistingHTML(htmlContent);
-
 			// Remove all existing formatting before applying code formatting
 			editor.value.execCommand('removeformat');
 
 			// Apply code formatting based on content
 			if (selectedText.length === 1) {
 				// Single line - use inline code
-				const codeContent = `<code>${cleanContent}</code>`;
-				editor.value.selection.setContent(codeContent);
+				editor.value.execCommand('mceToggleFormat', false, 'code');
 			} else {
 				// Multiple lines - wrap in pre tag
-				const preContent = `<pre>${cleanContent}</pre>`;
-				editor.value.selection.setContent(preContent);
+				editor.value.execCommand('mceToggleFormat', false, 'pre');
 			}
 		},
 
@@ -64,7 +56,6 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 				if (event.key === 'Enter') {
 					const currentNode = editorInstance.selection.getNode();
 
-					// Handle each case separately
 					if (handleTripleEnterInPre(editorInstance, currentNode)) {
 						event.preventDefault();
 						activeNodeBeforeEnter = null;
@@ -80,6 +71,42 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 					if (handleEnterInInlineCode(editorInstance, activeNodeBeforeEnter)) {
 						event.preventDefault();
 						activeNodeBeforeEnter = null;
+					}
+				} else if (event.key === 'Backspace') {
+					const editorInstance = editor.value;
+					const currentNode = editorInstance.selection.getNode();
+					const preCodeNode = editorInstance.dom.getParent(currentNode, 'pre');
+					const codeNode = editorInstance.dom.getParent(currentNode, 'code');
+
+					// Handle pre tag conversion to code tag
+					if (preCodeNode) {
+						const convertToInlineStyle = shouldConvertToInlineStyle(preCodeNode);
+
+						if (convertToInlineStyle) {
+							const preContent = preCodeNode.textContent || '';
+							const trimmedContent = preContent.trim();
+
+							// Create the code element
+							const codeElement = editorInstance.dom.create('code', {}, editorInstance.dom.encode(trimmedContent));
+
+							// Replace the pre block with the code element
+							editorInstance.dom.replace(codeElement, preCodeNode);
+
+							// Set cursor inside the code element
+							editorInstance.selection.setCursorLocation(codeElement, 0);
+
+							editorInstance.nodeChanged();
+
+							activeNodeBeforeEnter = codeElement;
+
+							// Prevent the default backspace behavior
+							event.preventDefault();
+							return;
+						}
+					}
+
+					if (codeNode && (codeNode.textContent || '').trim() === '') {
+						editorInstance.dom.remove(codeNode);
 					}
 				} else {
 					activeNodeBeforeEnter = editor.value.selection.getNode();
@@ -97,6 +124,44 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 	};
 
 	return { inlineCodeButton };
+}
+
+function shouldConvertToInlineStyle(preNode: Node): boolean {
+	const childNodes = Array.from(preNode.childNodes);
+	let hasText = false;
+	let foundBr = false;
+
+	for (let i = 0; i < childNodes.length; i++) {
+		const child = childNodes[i];
+
+		if (child && child.nodeType === Node.TEXT_NODE) {
+			// Skip empty text nodes
+			if (child.textContent && child.textContent.trim() !== '') {
+				hasText = true;
+
+				// If we already found a BR, no more text is allowed
+				if (foundBr) {
+					return false;
+				}
+			}
+		} else if (child && child.nodeType === Node.ELEMENT_NODE) {
+			// Allow a single br tag, so long as it's after the text
+			if (child.nodeName === 'BR') {
+				if (hasText && !foundBr) {
+					// First BR after text is okay
+					foundBr = true;
+				} else {
+					// Either BR before text, or second BR - not allowed
+					return false;
+				}
+			} else {
+				// Any other element is not allowed
+				return false;
+			}
+		}
+	}
+
+	return hasText; // Must have at least some text content
 }
 
 function handleEnterInInlineCode(editorInstance: any, activeNodeBeforeEnter: Node | null): boolean {
@@ -229,61 +294,4 @@ function removeEmptyInlineCode(editorInstance: any, inlineCodeNode: Node) {
 	}
 
 	editorInstance.nodeChanged();
-}
-
-function handleExistingHTML(html: string): string {
-	// Create a temporary div to parse the HTML
-	const tempDiv = document.createElement('div');
-	tempDiv.innerHTML = html;
-
-	// Function to recursively process nodes
-	function processNode(node: Node): string {
-		if (node.nodeType === Node.TEXT_NODE) {
-			return node.textContent || '';
-		}
-
-		if (node.nodeType === Node.ELEMENT_NODE) {
-			const element = node as Element;
-			const tagName = element.tagName.toLowerCase();
-
-			// Preserve <br> tags
-			if (tagName === 'br') {
-				return '<br>';
-			}
-
-			// For block-level elements, process children and add <br> at the end
-			const blockElements = ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-
-			if (blockElements.includes(tagName)) {
-				let result = '';
-
-				for (const child of element.childNodes) {
-					result += processNode(child);
-				}
-
-				// Add <br> at the end of block elements to preserve line breaks
-				return result + '<br>';
-			}
-
-			// For all other elements, process their children
-			let result = '';
-
-			for (const child of element.childNodes) {
-				result += processNode(child);
-			}
-
-			return result;
-		}
-
-		return '';
-	}
-
-	// Process all child nodes
-	let result = '';
-
-	for (const child of tempDiv.childNodes) {
-		result += processNode(child);
-	}
-
-	return result;
 }
