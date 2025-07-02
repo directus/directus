@@ -1,5 +1,6 @@
 import { defineInterface } from '@directus/extensions';
 import { defineAsyncComponent } from 'vue';
+import toolbarDefault from './toolbar-default';
 import PreviewSVG from './preview.svg?raw';
 
 const InterfaceWYSIWYG = defineAsyncComponent(() => import('./input-rich-text-html.vue'));
@@ -20,24 +21,7 @@ export default defineInterface({
 				name: '$t:interfaces.input-rich-text-html.toolbar',
 				type: 'json',
 				schema: {
-					default_value: [
-						'bold',
-						'italic',
-						'underline',
-						'h1',
-						'h2',
-						'h3',
-						'numlist',
-						'bullist',
-						'removeformat',
-						'blockquote',
-						'customLink',
-						'customImage',
-						'customMedia',
-						'hr',
-						'code',
-						'fullscreen',
-					],
+					default_value: toolbarDefault,
 				},
 				meta: {
 					width: 'half',

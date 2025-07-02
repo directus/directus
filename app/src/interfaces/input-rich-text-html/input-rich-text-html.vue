@@ -8,6 +8,7 @@ import { cloneDeep, isEqual } from 'lodash';
 import { ComponentPublicInstance, computed, onMounted, ref, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import getEditorStyles from './get-editor-styles';
+import toolbarDefault from './toolbar-default';
 import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
@@ -58,23 +59,7 @@ const props = withDefaults(
 		direction?: string;
 	}>(),
 	{
-		toolbar: () => [
-			'bold',
-			'italic',
-			'underline',
-			'h1',
-			'h2',
-			'h3',
-			'numlist',
-			'bullist',
-			'removeformat',
-			'blockquote',
-			'customLink',
-			'customImage',
-			'customMedia',
-			'code',
-			'fullscreen',
-		],
+		toolbar: () => toolbarDefault,
 		font: 'sans-serif',
 		customFormats: () => [],
 	},
