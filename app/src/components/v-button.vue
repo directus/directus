@@ -270,6 +270,12 @@ async function onClick(event: MouseEvent) {
 	min-width: 100%;
 }
 
+body.dark .button {
+	--v-button-color: var(--theme--foreground);
+	--v-button-color-hover: var(--theme--foreground);
+	--v-button-color-active: var(--theme--foreground);
+}
+
 .button {
 	position: relative;
 	display: flex;
