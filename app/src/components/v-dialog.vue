@@ -151,7 +151,7 @@ function useOverlayFocusTrap() {
 	z-index: 600;
 
 	&.keep-behind {
-		z-index: 490;
+		z-index: 500;
 	}
 }
 
