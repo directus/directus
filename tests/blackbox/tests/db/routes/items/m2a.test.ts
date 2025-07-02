@@ -2020,7 +2020,17 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 			if (pkType !== 'integer') ctx.skip();
 
 			describe('updates the auto increment value correctly', () => {
-				it.each(without(vendors, 'cockroachdb', 'mssql', 'oracle'))('%s', async (vendor) => {
+				it.each(
+					without(
+						vendors,
+						'cockroachdb',
+						'cockroachdb-lts-24_1',
+						'cockroachdb-lts-23_2',
+						'cockroachdb-lts-23_1',
+						'mssql',
+						'oracle',
+					),
+				)('%s', async (vendor) => {
 					// Setup
 					const name = 'test-auto-increment-m2a';
 					const largeIdShape = 112222;
