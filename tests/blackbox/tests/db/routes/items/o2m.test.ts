@@ -2716,6 +2716,7 @@ describe.each(PRIMARY_KEY_TYPES)('/items', (pkType) => {
 						'cockroachdb-lts-23_2',
 						'cockroachdb-lts-23_1',
 						'mssql',
+						'mssql-lts-2019',
 						'oracle',
 					),
 				)('%s', async (vendor) => {
