@@ -2542,10 +2542,11 @@ percent: Porcentaje
 show_password: Mostrar contraseña
 hide_password: Ocultar contraseña
 bsl_banner:
-  welcome_to_directus: '¡Te damos la bienvenida a Directus!'
+  welcome_to_directus: '¡Le damos la bienvenida a Directus!'
   directus_free_use: El uso de Directus es gratuito para entidades con ingresos, financiación o presupuesto operativo anuales inferiores a 5 millones de dólares.
   organization_threshold: Las entidades por encima de este umbral requieren una licencia de pago.
-  license_agreement: Al hacer clic en "Aceptar", aceptas los {directusBsl} y {privacyPolicy}.
+  license_agreement: Al hacer clic en "Aceptar", acepta los {directusBsl} y {privacyPolicy}.
+  directus_bsl: BSL de Directus 1.1
   privacy_policy: Política de privacidad
   accept_terms: Aceptar
   get_license: Obtener una licencia
