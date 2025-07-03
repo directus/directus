@@ -1121,6 +1121,7 @@ wysiwyg_options:
   h5: Heading 5
   h6: Heading 6
   pre: Preformat
+  inline_code: InlineCode
   fontselect: Select Font
   fontsizeselect: Select Font Size
   indent: Indent

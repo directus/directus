@@ -180,13 +180,13 @@ export default defineInterface({
 								value: 'blockquote',
 								text: '$t:wysiwyg_options.blockquote',
 							},
-							/*{
-								value: 'inlineCode',
-								text: '$t:wysiwyg_options.codeblock',
-							},*/
 							{
 								value: 'customPre',
 								text: '$t:wysiwyg_options.pre',
+							},
+							{
+								value: 'customInlineCode',
+								text: '$t:wysiwyg_options.inline_code',
 							},
 							{
 								value: 'customLink',
