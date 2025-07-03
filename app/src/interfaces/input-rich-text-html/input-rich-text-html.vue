@@ -12,7 +12,7 @@ import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
-import useInlineCode from './useInlineCode';
+import usePre from './usePre';
 import tinymce from 'tinymce/tinymce';
 
 import 'tinymce/skins/ui/oxide/skin.css';
@@ -128,7 +128,7 @@ const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, is
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
-const { inlineCodeButton } = useInlineCode(editorRef);
+const { preButton } = usePre(editorRef);
 
 const internalValue = computed({
 	get() {
@@ -183,7 +183,8 @@ const editorOptions = computed(() => {
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage'),
+				.replace(/^image$/g, 'customImage')
+				.replace(/^pre$/g, 'customPre'),
 		)
 		.join(' ');
 
@@ -272,15 +273,21 @@ function setup(editor: any) {
 
 	const linkShortcut = 'meta+k';
 
-	editor.ui.registry.addToggleButton('inlineCode', inlineCodeButton);
+	//editor.ui.registry.addToggleButton('inlineCode', inlineCodeButton);
+	editor.ui.registry.addToggleButton('customPre', preButton);
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
 	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
 	editor.ui.registry.addButton('customCode', sourceCodeButton);
 
 	editor.ui.registry.addIcon(
-		'edit-code',
-		'<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="m384-336 56-57-87-87 87-87-56-57-144 144 144 144Zm192 0 144-144-144-144-56 57 87 87-87 87 56 57ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"/></svg>',
+		'curly-brackets',
+		'<svg height="24px" viewBox="0 -960 960 960" width="24px"><path d="M560-160v-80h120q17 0 28.5-11.5T720-280v-80q0-38 22-69t58-44v-14q-36-13-58-44t-22-69v-80q0-17-11.5-28.5T680-720H560v-80h120q50 0 85 35t35 85v80q0 17 11.5 28.5T840-560h40v160h-40q-17 0-28.5 11.5T800-360v80q0 50-35 85t-85 35H560Zm-280 0q-50 0-85-35t-35-85v-80q0-17-11.5-28.5T120-400H80v-160h40q17 0 28.5-11.5T160-600v-80q0-50 35-85t85-35h120v80H280q-17 0-28.5 11.5T240-680v80q0 38-22 69t-58 44v14q36 13 58 44t22 69v80q0 17 11.5 28.5T280-240h120v80H280Z"/></svg>',
+	);
+
+	editor.ui.registry.addIcon(
+		'customPre',
+		'<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 100 24" width="100px"><text x="50" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="currentColor">Pre</text></svg>',
 	);
 
 	editor.on('init', function () {

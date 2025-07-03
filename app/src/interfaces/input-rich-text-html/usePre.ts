@@ -1,23 +1,23 @@
 import { i18n } from '@/lang';
 import { Ref } from 'vue';
 
-type InlineCodeButton = {
+type PreButton = {
 	icon: string;
 	tooltip: string;
 	onAction: () => void;
 	onSetup: (api: { setActive: (isActive: boolean) => void }) => () => void;
 };
 
-type UsableInlineCode = {
-	inlineCodeButton: InlineCodeButton;
+type UsablePre = {
+	preButton: PreButton;
 };
 
-export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
+export default function usePre(editor: Ref<any>): UsablePre {
 	let keydownHandler: ((event: KeyboardEvent) => void) | null = null;
 
-	const inlineCodeButton: InlineCodeButton = {
-		tooltip: i18n.global.t('wysiwyg_options.codeblock'),
-		icon: 'sourcecode',
+	const preButton: PreButton = {
+		tooltip: 'Pre',
+		icon: 'customPre',
 
 		onAction: () => {
 			const selectionContent = editor.value.selection.getContent({ format: 'text' });
@@ -38,10 +38,10 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 
 		onSetup: (api) => {
 			const updateActiveState = () => {
-				const isInlineCode = editor.value.formatter.match('code');
+				const isPre = editor.value.formatter.match('code');
 				const isCodeBlock = editor.value.formatter.match('pre');
 
-				api.setActive(isInlineCode || isCodeBlock);
+				api.setActive(isPre || isCodeBlock);
 			};
 
 			updateActiveState();
@@ -63,12 +63,12 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 
 					const nodeToCheck = activeNodeBeforeEnter || currentNode;
 
-					if (handleEmptyInlineCode(editorInstance, nodeToCheck)) {
+					if (handleEmptyPre(editorInstance, nodeToCheck)) {
 						event.preventDefault();
 						activeNodeBeforeEnter = null;
 					}
 
-					if (handleEnterInInlineCode(editorInstance, activeNodeBeforeEnter)) {
+					if (handleEnterInPre(editorInstance, activeNodeBeforeEnter)) {
 						event.preventDefault();
 						activeNodeBeforeEnter = null;
 					}
@@ -123,7 +123,7 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 		},
 	};
 
-	return { inlineCodeButton };
+	return { preButton };
 }
 
 function shouldConvertToInlineStyle(preNode: Node): boolean {
@@ -164,19 +164,19 @@ function shouldConvertToInlineStyle(preNode: Node): boolean {
 	return hasText; // Must have at least some text content
 }
 
-function handleEnterInInlineCode(editorInstance: any, activeNodeBeforeEnter: Node | null): boolean {
+function handleEnterInPre(editorInstance: any, activeNodeBeforeEnter: Node | null): boolean {
 	const codeNode = editorInstance.dom.getParent(activeNodeBeforeEnter, 'code');
 	const codeNodeParent = editorInstance.dom.getParent(codeNode, 'p');
 
 	if (codeNode) {
-		handleInlineCodeEnter(editorInstance, codeNode, codeNodeParent);
+		handlePreEnter(editorInstance, codeNode, codeNodeParent);
 		return true;
 	}
 
 	return false;
 }
 
-function handleInlineCodeEnter(editorInstance: any, codeNode: Node, codeNodeParent: Node | null) {
+function handlePreEnter(editorInstance: any, codeNode: Node, codeNodeParent: Node | null) {
 	const content = codeNode.textContent || '';
 	const blockParent = editorInstance.dom.getParent(codeNode, editorInstance.dom.isBlock);
 
@@ -254,18 +254,18 @@ function insertParagraphAfter(editorInstance: any, referenceNode: Node) {
 	editorInstance.nodeChanged();
 }
 
-function handleEmptyInlineCode(editorInstance: any, nodeToCheck: Element): boolean {
-	const inlineCodeNode = findInlineCodeNode(editorInstance, nodeToCheck);
+function handleEmptyPre(editorInstance: any, nodeToCheck: Element): boolean {
+	const preNode = findPreNode(editorInstance, nodeToCheck);
 
-	if (inlineCodeNode && (inlineCodeNode.textContent || '').trim() === '') {
-		removeEmptyInlineCode(editorInstance, inlineCodeNode);
+	if (preNode && (preNode.textContent || '').trim() === '') {
+		removeEmptyPre(editorInstance, preNode);
 		return true;
 	}
 
 	return false;
 }
 
-function findInlineCodeNode(editorInstance: any, node: Element): Node | null {
+function findPreNode(editorInstance: any, node: Element): Node | null {
 	if (editorInstance.dom.is(node, 'code')) return node;
 
 	if (node.querySelector) {
@@ -276,8 +276,8 @@ function findInlineCodeNode(editorInstance: any, node: Element): Node | null {
 	return editorInstance.dom.getParent(node, 'code');
 }
 
-function removeEmptyInlineCode(editorInstance: any, inlineCodeNode: Node) {
-	editorInstance.dom.remove(inlineCodeNode);
+function removeEmptyPre(editorInstance: any, preNode: Node) {
+	editorInstance.dom.remove(preNode);
 
 	// Insert two empty paragraphs to break out of inline code
 	editorInstance.execCommand('mceInsertContent', false, '<p>&nbsp;</p>');
