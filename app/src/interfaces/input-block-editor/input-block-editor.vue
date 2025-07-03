@@ -3,11 +3,12 @@ import api from '@/api';
 import { useCollectionsStore } from '@/stores/collections';
 import { unexpectedError } from '@/utils/unexpected-error';
 import EditorJS from '@editorjs/editorjs';
-import { cloneDeep, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import { onMounted, onUnmounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useBus } from './bus';
+import { sanitizeValue } from './sanitize';
 import getTools from './tools';
 import { useFileHandler } from './use-file-handler';
 
@@ -152,16 +153,6 @@ async function emitValue(context: EditorJS.API | EditorJS) {
 	} catch (error) {
 		unexpectedError(error);
 	}
-}
-
-function sanitizeValue(value: any): EditorJS.OutputData | null {
-	if (!value || typeof value !== 'object' || !value.blocks || value.blocks.length < 1) return null;
-
-	return cloneDeep({
-		time: value?.time || Date.now(),
-		version: value?.version || '0.0.0',
-		blocks: value.blocks,
-	});
 }
 </script>
 
