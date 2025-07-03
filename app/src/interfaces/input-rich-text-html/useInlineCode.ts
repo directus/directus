@@ -25,9 +25,6 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 		icon: 'code-sample',
 
 		onAction: () => {
-			// Remove all existing formatting before applying code formatting
-			editor.value.execCommand('removeformat');
-
 			editor.value.execCommand('mceToggleFormat', false, 'code');
 		},
 
