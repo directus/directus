@@ -50,9 +50,6 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 					event.preventDefault();
 
 					editor.value.execCommand('removeformat');
-					insertParagraphAfter(editor.value, currentNode);
-				} else if (event.key === 'Backspace') {
-					// TODO: Handle backspace in inline code
 				}
 			};
 
@@ -66,11 +63,4 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 	};
 
 	return { inlineCodeButton };
-}
-
-function insertParagraphAfter(editorInstance: any, referenceNode: Node) {
-	const newParagraph = editorInstance.dom.create('p', {}, '<br>');
-	editorInstance.dom.insertAfter(newParagraph, referenceNode);
-	editorInstance.selection.setCursorLocation(newParagraph, 0);
-	editorInstance.nodeChanged();
 }
