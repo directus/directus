@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-Ensured app access rules are applied consistently regardless of selection context
+Ensured app access permission rules are applied consistently, regardless of the selection context
