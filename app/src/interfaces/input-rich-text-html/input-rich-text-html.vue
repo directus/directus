@@ -12,6 +12,8 @@ import useImage from './useImage';
 import useLink from './useLink';
 import useMedia from './useMedia';
 import useSourceCode from './useSourceCode';
+import usePre from './usePre';
+import useInlineCode from './useInlineCode';
 import tinymce from 'tinymce/tinymce';
 
 import 'tinymce/skins/ui/oxide/skin.css';
@@ -65,6 +67,7 @@ const props = withDefaults(
 			'h1',
 			'h2',
 			'h3',
+			'customPre',
 			'numlist',
 			'bullist',
 			'removeformat',
@@ -72,6 +75,7 @@ const props = withDefaults(
 			'customLink',
 			'customImage',
 			'customMedia',
+			'customInlineCode',
 			'code',
 			'fullscreen',
 		],
@@ -127,6 +131,9 @@ const { linkButton, linkDrawerOpen, closeLinkDrawer, saveLink, linkSelection, is
 
 const { codeDrawerOpen, code, closeCodeDrawer, saveCode, sourceCodeButton } = useSourceCode(editorRef);
 
+const { preButton } = usePre(editorRef);
+const { inlineCodeButton } = useInlineCode(editorRef);
+
 const internalValue = computed({
 	get() {
 		return props.value || '';
@@ -180,7 +187,9 @@ const editorOptions = computed(() => {
 				.replace(/^link$/g, 'customLink')
 				.replace(/^media$/g, 'customMedia')
 				.replace(/^code$/g, 'customCode')
-				.replace(/^image$/g, 'customImage'),
+				.replace(/^image$/g, 'customImage')
+				.replace(/^pre$/g, 'customPre')
+				.replace(/^inlinecode$/g, 'customInlineCode'),
 		)
 		.join(' ');
 
@@ -268,10 +277,19 @@ function setup(editor: any) {
 
 	const linkShortcut = 'meta+k';
 
+	//editor.ui.registry.addToggleButton('inlineCode', inlineCodeButton);
+	editor.ui.registry.addToggleButton('customPre', preButton);
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
 	editor.ui.registry.addToggleButton('customLink', { ...linkButton, shortcut: linkShortcut });
+
+	editor.ui.registry.addToggleButton('customInlineCode', inlineCodeButton);
 	editor.ui.registry.addButton('customCode', sourceCodeButton);
+
+	editor.ui.registry.addIcon(
+		'customPre',
+		'<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 100 24" width="100px"><text x="50" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="currentColor">Pre</text></svg>',
+	);
 
 	editor.on('init', function () {
 		editor.shortcuts.remove(linkShortcut);
