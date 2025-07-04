@@ -23,7 +23,9 @@ export function sanitizeValue(value: any): EditorJS.OutputData | null {
 export function sanitizeBlockData(data: unknown): unknown {
 	if (Array.isArray(data)) {
 		return data.map((item: unknown) => sanitizeBlockData(item));
-	} else if (isObject(data)) {
+	}
+
+	if (isObject(data)) {
 		const cleaned: Record<string, unknown> = {};
 
 		for (const key in data) {
@@ -35,7 +37,9 @@ export function sanitizeBlockData(data: unknown): unknown {
 		}
 
 		return cleaned;
-	} else if (isString(data)) {
+	}
+
+	if (isString(data)) {
 		return dompurify.sanitize(data);
 	}
 
