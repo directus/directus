@@ -732,6 +732,7 @@ errors:
   COLLECTION_NOT_FOUND: "Коллекция не существует"
   CONTAINS_NULL_VALUES: Поле содержит значения NULL
   CONTENT_TOO_LARGE: Отправленный файл слишком большой
+  FAILED_VALIDATION: Проверка не удалась
   FIELD_NOT_FOUND: Поле не найдено
   FORBIDDEN: Запрещено
   GRAPHQL_VALIDATION: Проверка GraphQL
