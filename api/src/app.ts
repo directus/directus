@@ -80,7 +80,7 @@ export default async function createApp(): Promise<express.Application> {
 	const logger = useLogger();
 	const helmet = await import('helmet');
 
-	injectErrorsDependencies(emitter, env);
+	injectErrorsDependencies(emitter);
 
 	await validateDatabaseConnection();
 

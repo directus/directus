@@ -1,7 +1,7 @@
+import { useEnv } from '@directus/env';
 import { createError, ErrorCode } from '../index.js';
 import {
 	useEmitter,
-	useEnv,
 } from '../injected-dependencies.js'
 // import type { Request } from 'express';
 
