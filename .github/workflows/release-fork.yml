@@ -1,0 +1,44 @@
+name: Release Fork
+
+on:
+  push:
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Create new branch if it doesn't exist
+        id: create_branch
+        run: |
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          DIST_BRANCH="${CURRENT_BRANCH}-dist"
+          git push origin --delete ${DIST_BRANCH} || true
+          git checkout -b ${DIST_BRANCH}
+        shell: bash
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          registry: https://registry.npmjs.org
+
+      - name: Add and commit dist folder
+        run: |
+          # remove dist/ from gitignore
+          mv .gitignore .gitignore.bak
+          grep -v 'dist/' .gitignore.bak > .gitignore 
+          # cat .gitignore
+
+          git add '**/dist/**'
+
+          git commit -m "Add dist folders content"
+          git push -f origin HEAD
+        shell: bash

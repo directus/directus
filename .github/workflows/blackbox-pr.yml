@@ -1,10 +1,11 @@
 name: Check
 
 on:
-  pull_request:
-    # types:
-    #   - synchronize
-    #   - labeled
+  push:
+  # pull_request:
+  #   types:
+  #     - synchronize
+  #     - labeled
 
 jobs:
   blackbox-tests:
