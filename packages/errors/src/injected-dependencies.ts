@@ -1,3 +1,4 @@
+import { type Env } from '@directus/env';
 
 type Emitter = {
   emitAction: (event: string | string[], meta: Record<string, any>, context: any) => void
@@ -6,17 +7,22 @@ type Emitter = {
 
 // TODO makeand Emitter exportable like Env
 export const injectedDependencies: {
-  emitter: Emitter | undefined
-} = {
-  emitter: undefined,
-}
+  emitter?: Emitter | undefined,
+  env?: Env | undefined,
+} = {}
 
 export function injectErrorsDependencies(
   emitter: Emitter,
+  env: Env, // Must be injected as @directus/errors is built for Node and Vite
 ) {
   injectedDependencies.emitter = emitter;
+  injectedDependencies.env = env;
 }
 
 export function useEmitter() {
   return injectedDependencies.emitter
+}
+
+export function useEnv() {
+  return injectedDependencies.env
 }
