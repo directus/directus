@@ -80,7 +80,7 @@ export function getService(collection: string, opts: AbstractServiceOptions): It
 					reason: 'Forbidden access to directus_* collections',
 					values: {
 						collection,
-					}
+					},
 				});
 			}
 

@@ -64,7 +64,7 @@ export class CollectionsService {
 				values: {
 					accountability: this.accountability,
 					collection: payload.collection,
-				}
+				},
 			});
 		}
 
@@ -391,9 +391,9 @@ export class CollectionsService {
 				values: {
 					accountability: this.accountability,
 					collection: collectionKey,
-				}
+				},
 			});
-    }
+		}
 
 		return result[0]!;
 	}
@@ -435,7 +435,7 @@ export class CollectionsService {
 				values: {
 					accountability: this.accountability,
 					collection: collectionKey,
-				}
+				},
 			});
 		}
 
@@ -508,7 +508,7 @@ export class CollectionsService {
 				values: {
 					accountability: this.accountability,
 					collections: data,
-				}
+				},
 			});
 		}
 
@@ -580,7 +580,7 @@ export class CollectionsService {
 							...data,
 						};
 					}),
-				}
+				},
 			});
 		}
 

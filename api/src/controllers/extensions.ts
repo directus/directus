@@ -51,7 +51,7 @@ router.get(
 				reason: `'${req.accountability?.user}' does not have permission to access registry`,
 				values: {
 					accountability: req.accountability,
-				}
+				},
 			});
 		}
 
@@ -87,7 +87,7 @@ router.get(
 
 			if (type) {
 				if (isIn(type, EXTENSION_TYPES) === false) {
-					throw new ForbiddenError();  // InvalidPayload ? 404 ?
+					throw new ForbiddenError(); // InvalidPayload ? 404 ?
 				}
 
 				query.type = type;
@@ -166,7 +166,7 @@ router.post(
 				reason: `'${req.accountability?.user}' does not have permission to access registry/install`,
 				values: {
 					accountability: req.accountability,
-				}
+				},
 			});
 		}
 
@@ -195,7 +195,7 @@ router.post(
 				reason: `'${req.accountability?.user}' does not have permission to access registry/reinstall`,
 				values: {
 					accountability: req.accountability,
-				}
+				},
 			});
 		}
 
@@ -224,7 +224,7 @@ router.delete(
 				reason: `'${req.accountability?.user}' does not have permission to access registry/uninstall`,
 				values: {
 					accountability: req.accountability,
-				}
+				},
 			});
 		}
 
@@ -253,7 +253,7 @@ router.patch(
 				reason: `'${req.accountability?.user}' cannot update extension`,
 				values: {
 					accountability: req.accountability,
-				}
+				},
 			});
 		}
 
@@ -296,7 +296,7 @@ router.delete(
 				reason: `'${req.accountability?.user}' can't delete extension`,
 				values: {
 					accountability: req.accountability,
-				}
+				},
 			});
 		}
 

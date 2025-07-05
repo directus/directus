@@ -91,7 +91,7 @@ router.get(
 					reason: `Can't access /me/globals without being logged in`,
 					values: {
 						accountability: req.accountability,
-					}
+					},
 				});
 			}
 

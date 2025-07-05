@@ -65,9 +65,9 @@ export class ImportService {
 					collection,
 					mimetype,
 					accountability: this.accountability,
-				}
+				},
 			});
-    }
+		}
 
 		if (this.accountability) {
 			await validateAccess(

@@ -31,7 +31,7 @@ router.get(
 				reason: `Invalid authorization header`,
 				values: {
 					header: req.headers.authorization,
-				}
+				},
 			});
 		}
 
@@ -43,7 +43,7 @@ router.get(
 			reason: `Invalid metrics authorization token`,
 			values: {
 				header: req.headers.authorization,
-			}
+			},
 		});
 	}),
 	asyncHandler(async (_req, res) => {

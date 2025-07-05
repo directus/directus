@@ -23,7 +23,7 @@ router.post(
 				values: {
 					collection: req.params['collection'],
 					req,
-				}
+				},
 			});
 		}
 
@@ -74,7 +74,7 @@ const readHandler = asyncHandler(async (req, res, next) => {
 			values: {
 				collection: req.params['collection'],
 				req,
-			}
+			},
 		});
 	}
 
@@ -121,7 +121,7 @@ router.get(
 				values: {
 					collection: req.params['collection'],
 					req,
-				}
+				},
 			});
 		}
 
@@ -153,7 +153,7 @@ router.patch(
 				values: {
 					collection: req.params['collection'],
 					req,
-				}
+				},
 			});
 		}
 
@@ -207,7 +207,7 @@ router.patch(
 				values: {
 					collection: req.params['collection'],
 					req,
-				}
+				},
 			});
 		}
 
@@ -249,7 +249,7 @@ router.delete(
 				values: {
 					collection: req.params['collection'],
 					req,
-				}
+				},
 			});
 		}
 
@@ -282,7 +282,7 @@ router.delete(
 				values: {
 					collection: req.params['collection'],
 					req,
-				}
+				},
 			});
 		}
 

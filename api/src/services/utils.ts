@@ -57,7 +57,7 @@ export class UtilsService {
 						accountability: this.accountability,
 						collection,
 						field: sortField,
-					}
+					},
 				});
 			}
 		}
@@ -170,7 +170,7 @@ export class UtilsService {
 				reason: `'${this.accountability?.user}' does not have permission to clear the cache as not being an admin`,
 				values: {
 					accountability: this.accountability,
-				}
+				},
 			});
 		}
 

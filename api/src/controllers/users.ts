@@ -424,7 +424,7 @@ router.post(
 				values: {
 					accountability: req.accountability,
 					user: req.params['pk'],
-				}
+				},
 			});
 		}
 

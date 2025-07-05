@@ -25,7 +25,7 @@ export function validateKeys(
 				values: {
 					collection,
 					key: keys,
-				}
+				},
 			});
 		} else if (primaryKeyFieldType === 'integer' && !Number.isInteger(Number(keys))) {
 			// Should this be a forbidden error? InvalidPayload?
@@ -34,7 +34,7 @@ export function validateKeys(
 				values: {
 					collection,
 					key: keys,
-				}
+				},
 			});
 		}
 	}

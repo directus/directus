@@ -241,7 +241,7 @@ export class FieldsService {
 					values: {
 						accountability: this.accountability,
 						collection,
-					}
+					},
 				});
 			}
 
@@ -306,7 +306,7 @@ export class FieldsService {
 						accountability: this.accountability,
 						collection,
 						field,
-					}
+					},
 				});
 			}
 		}
@@ -336,7 +336,7 @@ export class FieldsService {
 					accountability: this.accountability,
 					collection,
 					field,
-				}
+				},
 			});
 		}
 
@@ -373,7 +373,7 @@ export class FieldsService {
 					accountability: this.accountability,
 					collection,
 					field,
-				}
+				},
 			});
 		}
 
@@ -505,7 +505,7 @@ export class FieldsService {
 					accountability: this.accountability,
 					collection,
 					field,
-				}
+				},
 			});
 		}
 
@@ -689,7 +689,7 @@ export class FieldsService {
 					accountability: this.accountability,
 					collection,
 					field,
-				}
+				},
 			});
 		}
 

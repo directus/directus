@@ -96,7 +96,7 @@ router.get(
 				reason: `Can't access /me without being logged in`,
 				values: {
 					accountability: req.accountability,
-				}
+				},
 			});
 		}
 

@@ -148,7 +148,7 @@ export class RelationsService {
 						accountability: this.accountability,
 						collection,
 						field,
-					}
+					},
 				});
 			}
 		}
@@ -177,13 +177,14 @@ export class RelationsService {
 		const results = await this.filterForbidden(stitched);
 
 		if (results.length === 0) {
-			throw new ForbiddenError({ // 404 / InvalidPayload?
+			throw new ForbiddenError({
+				// 404 / InvalidPayload?
 				reason: `No result found for relation ${collection}.${field} during items.readOne()`,
 				values: {
 					accountability: this.accountability,
 					collection,
 					field,
-				}
+				},
 			});
 		}
 
@@ -199,7 +200,7 @@ export class RelationsService {
 				reason: `'${this.accountability.user}' is not allowed to create a relation`,
 				values: {
 					accountability: this.accountability,
-				}
+				},
 			});
 		}
 
@@ -335,7 +336,7 @@ export class RelationsService {
 					collection,
 					field,
 					relation,
-				}
+				},
 			});
 		}
 
@@ -462,7 +463,7 @@ export class RelationsService {
 					accountability: this.accountability,
 					collection,
 					field,
-				}
+				},
 			});
 		}
 
