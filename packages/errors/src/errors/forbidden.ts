@@ -1,3 +1,4 @@
+import { useEnv } from '@directus/env';
 import { createError, ErrorCode } from '../index.js';
 import {
   useEmitter,
@@ -58,6 +59,8 @@ interface ForbiddenErrorExtensions {
 export const messageConstructor = (ext: ForbiddenErrorExtensions | void) => {
 	const defaultReason =  `You don't have permission to access this.`;
 
+  const env = useEnv();
+  console.info('env', env); // eslint-disable-line no-console
 
   const emitter = useEmitter();
 
