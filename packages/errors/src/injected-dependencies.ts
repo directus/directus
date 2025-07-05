@@ -1,4 +1,5 @@
-import { type Env } from '@directus/env';
+// import { type Env } from '@directus/env'; // Produces a Vite error due to the use of node:fs
+type Env = Record<string, unknown>;
 
 type Emitter = {
   emitAction: (event: string | string[], meta: Record<string, any>, context: any) => void
