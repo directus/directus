@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import { InvalidPayloadError, ServiceUnavailableError } from '@directus/errors';
+import { InvalidPayloadError, ServiceUnavailableError, injectErrorsDependencies } from '@directus/errors';
 import { handlePressure } from '@directus/pressure';
 import cookieParser from 'cookie-parser';
 import type { Request, RequestHandler, Response } from 'express';
@@ -79,6 +79,8 @@ export default async function createApp(): Promise<express.Application> {
 	const env = useEnv();
 	const logger = useLogger();
 	const helmet = await import('helmet');
+
+	injectErrorsDependencies(emitter);
 
 	await validateDatabaseConnection();
 

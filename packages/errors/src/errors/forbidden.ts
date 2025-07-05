@@ -1,4 +1,7 @@
 import { createError, ErrorCode } from '../index.js';
+import {
+  useEmitter,
+} from '../injected-dependencies.js'
 // import type { Request } from 'express';
 
 import type {
@@ -53,9 +56,27 @@ interface ForbiddenErrorExtensions {
 }
 
 export const messageConstructor = (ext: ForbiddenErrorExtensions | void) => {
+	const defaultReason =  `You don't have permission to access this.`;
+
+
+  const emitter = useEmitter();
+
+  emitter?.emitAction(
+    'permission.error',
+    {
+      defaultReason,
+      values: ext && ext.values,
+    },
+    {
+      database: null,
+      schema: null,
+      accountability: ext && ext.values && ('accountability' in ext.values ? ext.values.accountability : null),
+    },
+  );
+
 	if (ext?.reason) return ext.reason;
 
-	return `You don't have permission to access this.`;
+	return defaultReason;
 };
 
 export const ForbiddenError = createError(ErrorCode.Forbidden, messageConstructor, 403);
