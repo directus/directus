@@ -1,8 +1,5 @@
 import { createError, ErrorCode } from '../index.js';
-import {
-	useEmitter,
-	useEnv,
-} from '../injected-dependencies.js'
+import { useEmitter, useEnv } from '../injected-dependencies.js';
 // import type { Request } from 'express';
 
 import type {
@@ -19,45 +16,54 @@ import type { Collection } from '../../../../api/src/types/collection.js';
 
 interface ForbiddenErrorExtensions {
 	reason: string;
-	values?:{ // Controllers
-		collection?: string | undefined,
-		req?: any,
-		// req?: Request,
-	}
-	| { // Permissions
-		accountability: Accountability | null | undefined,
-		collection: string,
-		field?: string | RawField | (Partial<Field> & { field: string; type: Type | null }),
-		relation?: Partial<Relation>,
-	}
-	| { // Permissions many / batch
-		accountability: Accountability | null | undefined,
-		collections: Partial<Collection>[],
-	}
-	| { // validate keys
-		collection: string,
-		key: PrimaryKey,
-	}
-	| { // imports
-		collection: string,
-		mimetype: any,
-	}
-	| { // 404
-		accountability?: Accountability | null | undefined,
-		collection?: string,
-		key?: PrimaryKey,
-	}
-	| { // Metrics controller
-		header: string,
-	}
-	| { // TFA controller
-		accountability: Accountability | null | undefined,
-		user: PrimaryKey,
-	}
+	values?:
+		| {
+				// Controllers
+				collection?: string | undefined;
+				req?: any;
+				// req?: Request,
+		  }
+		| {
+				// Permissions
+				accountability: Accountability | null | undefined;
+				collection: string;
+				field?: string | RawField | (Partial<Field> & { field: string; type: Type | null });
+				relation?: Partial<Relation>;
+		  }
+		| {
+				// Permissions many / batch
+				accountability: Accountability | null | undefined;
+				collections: Partial<Collection>[];
+		  }
+		| {
+				// validate keys
+				collection: string;
+				key: PrimaryKey;
+		  }
+		| {
+				// imports
+				collection: string;
+				mimetype: any;
+		  }
+		| {
+				// 404
+				accountability?: Accountability | null | undefined;
+				collection?: string;
+				key?: PrimaryKey;
+		  }
+		| {
+				// Metrics controller
+				header: string;
+		  }
+		| {
+				// TFA controller
+				accountability: Accountability | null | undefined;
+				user: PrimaryKey;
+		  };
 }
 
 export const messageConstructor = (ext: ForbiddenErrorExtensions | void) => {
-	const defaultReason =  `You don't have permission to access this.`;
+	const defaultReason = `You don't have permission to access this.`;
 
 	const env = useEnv();
 	console.info('env', env); // eslint-disable-line no-console
