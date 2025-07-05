@@ -525,7 +525,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 		// TODO when would this happen?
 		if (records === null) {
-			throw new ForbiddenError();
+			throw new ForbiddenError(); // 404 / InvalidPayload ?
 		}
 
 		const filteredRecords =
@@ -579,7 +579,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const results = await this.readByQuery(queryWithKey, opts);
 
 		if (results.length === 0) {
-			throw new ForbiddenError();
+			throw new ForbiddenError({ // 404 / InvalidPayload?
+				reason: `No result found for key ${key} in ${this.collection} during items.readOne()`,
+				values: {
+					accountability: this.accountability, // should accountability be considered here? 403 or 404?
+					key,
+				}
+			});
 		}
 
 		return results[0]!;

@@ -142,7 +142,14 @@ export class RelationsService {
 			);
 
 			if (allowedFields.includes('*') === false && allowedFields.includes(field) === false) {
-				throw new ForbiddenError();
+				throw new ForbiddenError({
+					reason: `'${this.accountability.user}' has no permission to read the field '${field}' of '${collection}'`,
+					values: {
+						accountability: this.accountability,
+						collection,
+						field,
+					}
+				});
 			}
 		}
 
@@ -170,7 +177,14 @@ export class RelationsService {
 		const results = await this.filterForbidden(stitched);
 
 		if (results.length === 0) {
-			throw new ForbiddenError();
+			throw new ForbiddenError({ // 404 / InvalidPayload?
+				reason: `No result found for relation ${collection}.${field} during items.readOne()`,
+				values: {
+					accountability: this.accountability,
+					collection,
+					field,
+				}
+			});
 		}
 
 		return results[0]!;
@@ -181,7 +195,12 @@ export class RelationsService {
 	 */
 	async createOne(relation: Partial<Relation>, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
+			throw new ForbiddenError({
+				reason: `'${this.accountability.user}' is not allowed to create a relation`,
+				values: {
+					accountability: this.accountability,
+				}
+			});
 		}
 
 		if (!relation.collection) {
@@ -309,7 +328,15 @@ export class RelationsService {
 		opts?: MutationOptions,
 	): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
+			throw new ForbiddenError({
+				reason: `'${this.accountability.user}' is not allowed to update a relation`,
+				values: {
+					accountability: this.accountability,
+					collection,
+					field,
+					relation,
+				}
+			});
 		}
 
 		const collectionSchema = this.schema.collections[collection];
@@ -429,7 +456,14 @@ export class RelationsService {
 	 */
 	async deleteOne(collection: string, field: string, opts?: MutationOptions): Promise<void> {
 		if (this.accountability && this.accountability.admin !== true) {
-			throw new ForbiddenError();
+			throw new ForbiddenError({
+				reason: `'${this.accountability.user}' is not allowed to delete a relation`,
+				values: {
+					accountability: this.accountability,
+					collection,
+					field,
+				}
+			});
 		}
 
 		if (collection in this.schema.collections === false) {

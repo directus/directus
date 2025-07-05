@@ -17,7 +17,15 @@ router.post(
 	'/:collection',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.params['collection']!)) {
+			throw new ForbiddenError({
+				reason: 'Forbidden access to directus_* collections',
+				values: {
+					collection: req.params['collection'],
+					req,
+				}
+			});
+		}
 
 		if (req.singleton) {
 			throw new RouteNotFoundError({ path: req.path });
@@ -60,7 +68,15 @@ router.post(
 );
 
 const readHandler = asyncHandler(async (req, res, next) => {
-	if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+	if (isSystemCollection(req.params['collection']!)) {
+		throw new ForbiddenError({
+			reason: 'Forbidden access to directus_* collections',
+			values: {
+				collection: req.params['collection'],
+				req,
+			}
+		});
+	}
 
 	const service = new ItemsService(req.collection, {
 		accountability: req.accountability,
@@ -99,7 +115,15 @@ router.get(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.params['collection']!)) {
+			throw new ForbiddenError({
+				reason: 'Forbidden access to directus_* collections',
+				values: {
+					collection: req.params['collection'],
+					req,
+				}
+			});
+		}
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
@@ -123,7 +147,15 @@ router.patch(
 	collectionExists,
 	validateBatch('update'),
 	asyncHandler(async (req, res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.params['collection']!)) {
+			throw new ForbiddenError({
+				reason: 'Forbidden access to directus_* collections',
+				values: {
+					collection: req.params['collection'],
+					req,
+				}
+			});
+		}
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
@@ -169,7 +201,15 @@ router.patch(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.params['collection']!)) {
+			throw new ForbiddenError({
+				reason: 'Forbidden access to directus_* collections',
+				values: {
+					collection: req.params['collection'],
+					req,
+				}
+			});
+		}
 
 		if (req.singleton) {
 			throw new RouteNotFoundError({ path: req.path });
@@ -203,7 +243,15 @@ router.delete(
 	collectionExists,
 	validateBatch('delete'),
 	asyncHandler(async (req, _res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.params['collection']!)) {
+			throw new ForbiddenError({
+				reason: 'Forbidden access to directus_* collections',
+				values: {
+					collection: req.params['collection'],
+					req,
+				}
+			});
+		}
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,
@@ -228,7 +276,15 @@ router.delete(
 	'/:collection/:pk',
 	collectionExists,
 	asyncHandler(async (req, _res, next) => {
-		if (isSystemCollection(req.params['collection']!)) throw new ForbiddenError();
+		if (isSystemCollection(req.params['collection']!)) {
+			throw new ForbiddenError({
+				reason: 'Forbidden access to directus_* collections',
+				values: {
+					collection: req.params['collection'],
+					req,
+				}
+			});
+		}
 
 		const service = new ItemsService(req.collection, {
 			accountability: req.accountability,

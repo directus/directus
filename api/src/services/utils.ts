@@ -51,7 +51,14 @@ export class UtilsService {
 			);
 
 			if (allowedFields[0] !== '*' && allowedFields.includes(sortField) === false) {
-				throw new ForbiddenError();
+				throw new ForbiddenError({
+					reason: `'${this.accountability.user}' does not have permission to read the sort field '${collection}.${sortField}'`,
+					values: {
+						accountability: this.accountability,
+						collection,
+						field: sortField,
+					}
+				});
 			}
 		}
 
@@ -159,7 +166,12 @@ export class UtilsService {
 
 	async clearCache({ system }: { system: boolean }): Promise<void> {
 		if (this.accountability?.admin !== true) {
-			throw new ForbiddenError();
+			throw new ForbiddenError({
+				reason: `'${this.accountability?.user}' does not have permission to clear the cache as not being an admin`,
+				values: {
+					accountability: this.accountability,
+				}
+			});
 		}
 
 		const { cache } = getCache();
