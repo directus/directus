@@ -2,8 +2,8 @@ name: Blackbox Tests
 
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     paths:
       - api/**
       - tests/blackbox/**
