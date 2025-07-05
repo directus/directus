@@ -76,7 +76,14 @@ router.search('/', validateBatch('read'), readHandler, respond);
 router.get(
 	'/me',
 	asyncHandler(async (req, res, next) => {
-		if (!req.accountability?.user && !req.accountability?.role) throw new ForbiddenError();
+		if (!req.accountability?.user && !req.accountability?.role) {
+			throw new ForbiddenError({
+				reason: `Can't access /me without being logged in`,
+				values: {
+					accountability: req.accountability,
+				}
+			});
+		}
 
 		const service = new RolesService({
 			accountability: req.accountability,

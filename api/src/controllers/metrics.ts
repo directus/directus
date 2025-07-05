@@ -19,20 +19,32 @@ router.get(
 		const metricTokens = env['METRICS_TOKENS'] as string[] | undefined;
 
 		if (!req.headers || !req.headers.authorization || !metricTokens) {
-			throw new ForbiddenError();
+			throw new ForbiddenError({
+				reason: `Missing authorization header or missing METRICS_TOKENS env variable`,
+			});
 		}
 
 		const parts = req.headers.authorization.split(' ');
 
 		if (parts.length !== 2 || parts[0]!.toLowerCase() !== 'metrics') {
-			throw new ForbiddenError();
+			throw new ForbiddenError({
+				reason: `Invalid authorization header`,
+				values: {
+					header: req.headers.authorization,
+				}
+			});
 		}
 
 		if (metricTokens.find((mt) => mt.toString() === parts[1]) !== undefined) {
 			return next();
 		}
 
-		throw new ForbiddenError();
+		throw new ForbiddenError({
+			reason: `Invalid metrics authorization token`,
+			values: {
+				header: req.headers.authorization,
+			}
+		});
 	}),
 	asyncHandler(async (_req, res) => {
 		res.set('Content-Type', 'text/plain');

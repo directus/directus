@@ -1178,6 +1178,9 @@ importers:
         specifier: 2.1.3
         version: 2.1.3
     devDependencies:
+      '@directus/env':
+        specifier: workspace:*
+        version: link:../env
       '@directus/random':
         specifier: workspace:*
         version: link:../random

@@ -77,7 +77,7 @@ export class AssetsService {
 		 * with a wrong type. In case of directus_files where id is a uuid, we'll have to verify the
 		 * validity of the uuid ahead of time.
 		 */
-		if (!isValidUuid(id)) throw new ForbiddenError();
+		if (!isValidUuid(id)) throw new ForbiddenError(); // InvalidPayload ?
 
 		if (systemPublicKeys.includes(id) === false && this.accountability) {
 			await validateAccess(
@@ -95,7 +95,7 @@ export class AssetsService {
 
 		const exists = await storage.location(file.storage).exists(file.filename_disk);
 
-		if (!exists) throw new ForbiddenError();
+		if (!exists) throw new ForbiddenError(); // 404 ?
 
 		if (range) {
 			const missingRangeLimits = range.start === undefined && range.end === undefined;
