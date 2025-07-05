@@ -25,13 +25,13 @@ interface ForbiddenErrorExtensions {
 		// req?: Request,
 	}
 	| { // Permissions
-		accountability: Accountability | null,
+		accountability: Accountability | null | undefined,
 		collection: string,
 		field?: string | RawField | (Partial<Field> & { field: string; type: Type | null }),
 		relation?: Partial<Relation>,
 	}
 	| { // Permissions many / batch
-		accountability: Accountability | null,
+		accountability: Accountability | null | undefined,
 		collections: Partial<Collection>[],
 	}
 	| { // validate keys
@@ -43,7 +43,7 @@ interface ForbiddenErrorExtensions {
 		mimetype: any,
 	}
 	| { // 404
-		accountability?: Accountability | null,
+		accountability?: Accountability | null | undefined,
 		collection?: string,
 		key?: PrimaryKey,
 	}
@@ -51,7 +51,7 @@ interface ForbiddenErrorExtensions {
 		header: string,
 	}
 	| { // TFA controller
-		accountability: Accountability | null,
+		accountability: Accountability | null | undefined,
 		user: PrimaryKey,
 	}
 }
