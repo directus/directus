@@ -28,7 +28,7 @@ export type MutationOptions = {
 	 * To bypass the emitting of action events if emitEvents is enabled
 	 * Can be used to queue up the nested events from item service's create, update and delete
 	 */
-	bypassEmitAction?: ((params: ActionEventParams) => void) | undefined;
+	bypassEmitAction?: ((params: ActionEventParams) => void) | ((params: ActionEventParams) => Promise<void>) | undefined;
 
 	/**
 	 * To bypass limits so that functions would work as intended

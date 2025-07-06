@@ -390,16 +390,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			};
 
 			if (opts.bypassEmitAction) {
-				opts.bypassEmitAction(actionEvent);
+				await opts.bypassEmitAction(actionEvent);
 			} else {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+				await emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 
 			for (const nestedActionEvent of nestedActionEvents) {
 				if (opts.bypassEmitAction) {
-					opts.bypassEmitAction(nestedActionEvent);
+					await opts.bypassEmitAction(nestedActionEvent);
 				} else {
-					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+					await emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 				}
 			}
 		}
@@ -464,9 +464,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		if (opts.emitEvents !== false) {
 			for (const nestedActionEvent of nestedActionEvents) {
 				if (opts.bypassEmitAction) {
-					opts.bypassEmitAction(nestedActionEvent);
+					await opts.bypassEmitAction(nestedActionEvent);
 				} else {
-					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+					await emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 				}
 			}
 		}
@@ -546,7 +546,7 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				: records;
 
 		if (opts?.emitEvents !== false) {
-			emitter.emitAction(
+			await emitter.emitAction(
 				this.eventScope === 'items' ? ['items.read', `${this.collection}.items.read`] : `${this.eventScope}.read`,
 				{
 					payload: filteredRecords,
@@ -928,16 +928,16 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			};
 
 			if (opts.bypassEmitAction) {
-				opts.bypassEmitAction(actionEvent);
+				await opts.bypassEmitAction(actionEvent);
 			} else {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+				await emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 
 			for (const nestedActionEvent of nestedActionEvents) {
 				if (opts.bypassEmitAction) {
-					opts.bypassEmitAction(nestedActionEvent);
+					await opts.bypassEmitAction(nestedActionEvent);
 				} else {
-					emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
+					await emitter.emitAction(nestedActionEvent.event, nestedActionEvent.meta, nestedActionEvent.context);
 				}
 			}
 		}
@@ -1133,9 +1133,9 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			};
 
 			if (opts.bypassEmitAction) {
-				opts.bypassEmitAction(actionEvent);
+				await opts.bypassEmitAction(actionEvent);
 			} else {
-				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
+				await emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context);
 			}
 		}
 
