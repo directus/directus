@@ -18,7 +18,7 @@ import { isIn, isTypeIn } from '@directus/utils';
 import commonjsDefault from '@rollup/plugin-commonjs';
 import jsonDefault from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import replaceDefault from '@rollup/plugin-replace';
+// import replaceDefault from '@rollup/plugin-replace';
 import terserDefault from '@rollup/plugin-terser';
 import virtualDefault from '@rollup/plugin-virtual';
 import vue from '@vitejs/plugin-vue';
@@ -42,7 +42,7 @@ import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
 const commonjs = commonjsDefault as unknown as typeof commonjsDefault.default;
 const json = jsonDefault as unknown as typeof jsonDefault.default;
-const replace = replaceDefault as unknown as typeof replaceDefault.default;
+// const replace = replaceDefault as unknown as typeof replaceDefault.default;
 const terser = terserDefault as unknown as typeof terserDefault.default;
 
 type BuildOptions = {
@@ -548,12 +548,12 @@ function getRollupOptions({
 			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
 			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
 			json(),
-			replace({
-				values: {
-					'process.env.NODE_ENV': JSON.stringify('production'),
-				},
-				preventAssignment: true,
-			}),
+			// replace({
+			// 	values: {
+			// 		'process.env.NODE_ENV': JSON.stringify('production'),
+			// 	},
+			// 	preventAssignment: true,
+			// }),
 			minify ? terser() : null,
 		],
 		onwarn(warning, warn) {
