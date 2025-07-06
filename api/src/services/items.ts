@@ -176,6 +176,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 					  )
 					: payload;
 
+			if (
+				payloadAfterHooks === null ||
+				typeof payloadAfterHooks === 'string' ||
+				typeof payloadAfterHooks === 'number'
+			) {
+				return payloadAfterHooks;
+			}
+
 			const payloadWithPresets = this.accountability
 				? await processPayload(
 						{
