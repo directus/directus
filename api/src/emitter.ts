@@ -59,15 +59,21 @@ export class Emitter {
 		return updatedPayload;
 	}
 
-	public emitAction(event: string | string[], meta: Record<string, any>, context: EventContext | null = null): void {
+	public async emitAction(
+		event: string | string[],
+		meta: Record<string, any>,
+		context: EventContext | null = null,
+	): Promise<void> {
 		const logger = useLogger();
 		const events = Array.isArray(event) ? event : [event];
 
 		for (const event of events) {
-			this.actionEmitter.emitAsync(event, { event, ...meta }, context ?? this.getDefaultContext()).catch((err) => {
-				logger.warn(`An error was thrown while executing action "${event}"`);
-				logger.warn(err);
-			});
+			await this.actionEmitter
+				.emitAsync(event, { event, ...meta }, context ?? this.getDefaultContext())
+				.catch((err) => {
+					logger.warn(`An error was thrown while executing action "${event}"`);
+					logger.warn(err);
+				});
 		}
 	}
 
