@@ -47,6 +47,7 @@
 		"fs-extra": "11.3.0",
 		"inquirer": "12.4.2",
 		"ora": "6.3.1",
+		"rolldown": "1.0.0-beta.24",
 		"rollup-plugin-styler": "2.0.0",
 		"semver": "7.7.1",
 		"vite": "4.5.14",
@@ -58,7 +59,6 @@
 		"@types/inquirer": "9.0.7",
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "2.1.9",
-		"rolldown": "1.0.0-beta.24",
 		"typescript": "5.8.2",
 		"vitest": "2.1.9"
 	},
