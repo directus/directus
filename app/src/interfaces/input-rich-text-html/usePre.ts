@@ -81,7 +81,7 @@ function handleTripleEnterInPre(editorInstance: any, currentNode: Node): boolean
 		: editorInstance.dom.getParent(currentNode, 'pre');
 
 	if (preNode && hasTrailingBrs(preNode, 4)) {
-		removeLastBr(preNode);
+		removeTrailingBrs(preNode, 3);
 		insertParagraphAfter(editorInstance, preNode);
 		return true;
 	}
@@ -109,11 +109,18 @@ function hasTrailingBrs(node: Node, count: number): boolean {
 	return trailingBrCount >= count;
 }
 
-function removeLastBr(node: Node) {
-	const lastChild = node.lastChild;
+function removeTrailingBrs(node: Node, maxRemove: number) {
+	let removedCount = 0;
 
-	if (lastChild && lastChild.nodeName === 'BR') {
-		node.removeChild(lastChild);
+	while (removedCount < maxRemove) {
+		const lastChild = node.lastChild;
+
+		if (lastChild && lastChild.nodeName === 'BR') {
+			node.removeChild(lastChild);
+			removedCount++;
+		} else {
+			break;
+		}
 	}
 }
 
