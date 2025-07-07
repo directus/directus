@@ -20,7 +20,6 @@ export const API_SHARED_DEPS = [
   // 'tar',
   // 'prom-client',
   // // exps
-  // 'oracledb',
   // 'get-port',
   // 'proxy-addr',
   // 'p-queue',
@@ -39,6 +38,7 @@ export const API_SHARED_DEPS = [
   'pg',
   'pg-query-stream',
   'mysql2',
+  'oracledb',
 
   'node-xmllint', // eval warning
 
