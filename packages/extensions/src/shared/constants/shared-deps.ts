@@ -17,21 +17,20 @@ export const API_SHARED_DEPS = [
   'isolated-vm',
   'pm2',
   // Slowing imports of @directus/api in extension
-  // 'tar',
-  // 'prom-client',
-  // // exps
-  // 'oracledb',
-  // 'get-port',
-  // 'proxy-addr',
-  // 'p-queue',
-  // 'p-limit',
-  // 'mnemonist',
-  // 'ip-matching',
-  // 'glob-to-regexp',
-  // 'cookie',
-  // 'async-mutex',
-  // '@tus/server',
-  // '@tus/utils',
+  'tar',
+  'prom-client',
+  // exps
+  'get-port',
+  'proxy-addr',
+  'p-queue',
+  'p-limit',
+  'mnemonist',
+  'ip-matching',
+  'glob-to-regexp',
+  'cookie',
+  'async-mutex',
+  '@tus/server',
+  '@tus/utils',
   'rollup',
 
   // db clients
@@ -39,6 +38,7 @@ export const API_SHARED_DEPS = [
   'pg',
   'pg-query-stream',
   'mysql2',
+  'oracledb',
 
   'node-xmllint', // eval warning
 
