@@ -486,6 +486,387 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		return primaryKeys;
 	}
 
+
+	async createManyAtOnce<T extends AnyItem>(
+		this: ItemsService,
+		data: Partial<T>[],
+		opts: MutationOptions = {}
+	): Promise<PrimaryKey[]> {
+		if (! opts.mutationTracker) {
+			opts.mutationTracker = this.createMutationTracker()
+		}
+
+		if (! opts.bypassLimits) {
+			opts.mutationTracker.trackMutations(1)
+		}
+
+		const { ActivityService } = await import('./activity.js');
+		const { RevisionsService } = await import('./revisions.js');
+
+		const primaryKeyField = this.schema.collections[this.collection]!.primary
+		const fields = Object.keys(this.schema.collections[this.collection]!.fields)
+
+		const aliases = Object.values(this.schema.collections[this.collection]!.fields)
+		.filter((field) => field.alias === true)
+		.map((field) => field.field)
+
+		// By wrapping the logic in a transaction, we make sure we automatically roll back all the
+		// changes in the DB if any of the parts contained within throws an error. This also means
+		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
+		// update tree
+		type ItemValues = {
+			primaryKey: PrimaryKey,
+
+			actionHookPayload: any, // TODO better typing from processPayload()
+			payloadAfterHooks: Partial<typeof data[number]>,
+			payloadWithPresets: Partial<typeof data[number]>,
+			payloadWithoutAliases: Pick<Partial<AnyItem>, string>,
+
+			revisionsM2O: Awaited<ReturnType<PayloadService[`processM2O`]>>[`revisions`],
+			revisionsA2O: Awaited<ReturnType<PayloadService[`processA2O`]>>[`revisions`],
+			revisionsO2M?: Awaited<ReturnType<PayloadService[`processO2M`]>>[`revisions`],
+
+			nestedActionEventsM2O: Awaited<ReturnType<PayloadService[`processM2O`]>>[`nestedActionEvents`],
+			nestedActionEventsA2O: Awaited<ReturnType<PayloadService[`processA2O`]>>[`nestedActionEvents`],
+			nestedActionEventsO2M?: Awaited<ReturnType<PayloadService[`processO2M`]>>[`nestedActionEvents`],
+
+			userIntegrityCheckFlagsM2O: Awaited<ReturnType<PayloadService[`processM2O`]>>[`userIntegrityCheckFlags`],
+			userIntegrityCheckFlagsA2O: Awaited<ReturnType<PayloadService[`processM2O`]>>[`userIntegrityCheckFlags`],
+		}
+
+		// If a PK of type number was provided, although the PK is set the auto_increment,
+		// depending on the database, the sequence might need to be reset to protect future PK collisions.
+		let autoIncrementSequenceNeedsToBeReset = false;
+
+		const itemsValues: ItemValues[] = await this.knex.transaction(async (trx) => {
+			// We're creating new services instances so they can use the transaction as their Knex interface
+			const payloadService = new PayloadService(this.collection, {
+				accountability: this.accountability,
+				knex: trx,
+				schema: this.schema,
+			})
+
+			const itemsAnalyzingValues: ItemValues[] = []
+
+			for (const payloadToClone of data) {
+				const payload = cloneDeep(payloadToClone)
+
+				// Run all hooks that are attached to this event so the end user has the chance to augment the
+				// item that is about to be saved
+				const payloadAfterHooks =
+					opts.emitEvents !== false
+						? await emitter.emitFilter(
+							this.eventScope === `items`
+								? [`items.create`, `${this.collection}.items.create`]
+								: `${this.eventScope}.create`,
+							payload,
+							{
+								collection: this.collection,
+							},
+							{
+								database: trx,
+								schema: this.schema,
+								accountability: this.accountability,
+							}
+						)
+						: payload
+
+				if ( payloadAfterHooks === null // skip creation
+					|| typeof payloadAfterHooks === 'string' // replace new creation by an existing item having a uuid as its primary key
+					|| typeof payloadAfterHooks === 'number' // replace new creation by an existing item having a number as its primary key
+				) {
+					return payloadAfterHooks
+				}
+
+				const payloadWithPresets = this.accountability
+					? await processPayload(
+							{
+								accountability: this.accountability,
+								action: 'create',
+								collection: this.collection,
+								payload: payloadAfterHooks,
+								nested: this.nested,
+							},
+							{
+								knex: trx,
+								schema: this.schema,
+							},
+						)
+					: payloadAfterHooks;
+
+
+				if (opts.preMutationError) {
+					throw opts.preMutationError
+				}
+
+				// Ensure the action hook payload has the post filter hook + preset changes
+				const actionHookPayload = payloadWithPresets;
+
+				// We're creating new services instances so they can use the transaction as their Knex interface
+				const payloadService = new PayloadService(this.collection, {
+					accountability: this.accountability,
+					knex: trx,
+					schema: this.schema,
+					nested: this.nested,
+				});
+
+				const {
+					payload: payloadWithM2O,
+					revisions: revisionsM2O,
+					nestedActionEvents: nestedActionEventsM2O,
+					userIntegrityCheckFlags: userIntegrityCheckFlagsM2O,
+				} = await payloadService.processM2O(payloadWithPresets, opts);
+
+				const {
+					payload: payloadWithA2O,
+					revisions: revisionsA2O,
+					nestedActionEvents: nestedActionEventsA2O,
+					userIntegrityCheckFlags: userIntegrityCheckFlagsA2O,
+				} = await payloadService.processA2O(payloadWithM2O, opts);
+
+				const payloadWithoutAliases = pick(payloadWithA2O, without(fields, ...aliases))
+				const payloadWithTypeCasting = await payloadService.processValues(`create`, payloadWithoutAliases)
+
+				// In case of manual string / UUID primary keys, the PK already exists in the object we're saving.
+				const primaryKey = payloadWithTypeCasting[primaryKeyField]
+
+				if (primaryKey) {
+					validateKeys(this.schema, this.collection, primaryKeyField, primaryKey);
+				}
+
+
+				const pkField = this.schema.collections[this.collection]!.fields[primaryKeyField];
+
+				if (
+					primaryKey &&
+					pkField &&
+					!opts.bypassAutoIncrementSequenceReset &&
+					['integer', 'bigInteger'].includes(pkField.type) &&
+					pkField.defaultValue === 'AUTO_INCREMENT'
+				) {
+					autoIncrementSequenceNeedsToBeReset = true;
+				}
+
+				// batchInsertInput.push(payloadWithoutAliases)
+				itemsAnalyzingValues.push({
+					primaryKey,
+
+					actionHookPayload,
+					payloadAfterHooks,
+					payloadWithPresets,
+					payloadWithoutAliases,
+
+					revisionsM2O,
+					revisionsA2O,
+
+					nestedActionEventsM2O,
+					nestedActionEventsA2O,
+
+					userIntegrityCheckFlagsM2O,
+					userIntegrityCheckFlagsA2O,
+				})
+			}
+
+			try {
+				const results = await trx
+				.batchInsert(
+					this.collection,
+					itemsAnalyzingValues.map((v) => v.payloadWithoutAliases)
+				)
+				.returning(primaryKeyField)
+
+				results.forEach((result, index) => {
+					if (! itemsAnalyzingValues[index]) {
+						throw new Error(`No batchInsert itemInput found for index ${index}`)
+					}
+
+					const returnedKey = typeof result === `object` ? result[primaryKeyField] : result
+
+					if (this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === `uuid`) {
+						itemsAnalyzingValues[index].primaryKey
+						= getHelpers(trx).schema.formatUUID(
+								(itemsAnalyzingValues[index].primaryKey ?? returnedKey) as string
+							)
+					}
+					else {
+						itemsAnalyzingValues[index].primaryKey
+						= itemsAnalyzingValues[index].primaryKey ?? returnedKey
+					}
+				})
+			}
+			catch (err: any) {
+				throw await translateDatabaseError(err, itemsValues)
+			}
+
+			// TODO
+			// Most database support returning, those who don't tend to return the PK anyways
+			// (MySQL/SQLite). In case the primary key isn't know yet, we'll do a best-attempt at
+			// fetching it based on the last inserted row
+			// if (! primaryKey) {
+			//   // Fetching it with max should be safe, as we're in the context of the current transaction
+			//   const result = await trx.max(primaryKeyField, { as: `id` }).from(this.collection)
+			//   .first()
+			//   primaryKey = result.id
+			//   // Set the primary key on the input item, in order for the "after" event hook to be able
+			//   // to read from it
+			//   payload[primaryKeyField] = primaryKey
+			// }
+
+			for (const itemsAnalyzingValue of itemsAnalyzingValues) {
+				const {
+					primaryKey,
+					payloadAfterHooks,
+					payloadWithPresets,
+					revisionsM2O,
+					revisionsA2O,
+					userIntegrityCheckFlagsM2O,
+					userIntegrityCheckFlagsA2O,
+				} = itemsAnalyzingValue
+
+				const {
+					revisions: revisionsO2M,
+					nestedActionEvents: nestedActionEventsO2M,
+					userIntegrityCheckFlags: userIntegrityCheckFlagsO2M,
+				} = await payloadService.processO2M(
+					payloadWithPresets,
+					primaryKey,
+					opts
+				)
+
+				const userIntegrityCheckFlags =
+					(opts.userIntegrityCheckFlags ?? UserIntegrityCheckFlag.None) |
+					userIntegrityCheckFlagsM2O |
+					userIntegrityCheckFlagsA2O |
+					userIntegrityCheckFlagsO2M;
+
+				if (userIntegrityCheckFlags) {
+					if (opts.onRequireUserIntegrityCheck) {
+						opts.onRequireUserIntegrityCheck(userIntegrityCheckFlags);
+					} else {
+						await validateUserCountIntegrity({ flags: userIntegrityCheckFlags, knex: trx });
+					}
+				}
+
+				itemsAnalyzingValue.nestedActionEventsO2M = nestedActionEventsO2M
+
+				// If this is an authenticated action, and accountability tracking is enabled, save activity row
+				if (this.accountability
+					&& this.schema.collections[this.collection]!.accountability !== null
+				) {
+					const activityService = new ActivityService({
+						knex: trx,
+						schema: this.schema,
+					})
+
+					const activity = await activityService.createOne({
+						action: Action.CREATE,
+						user: this.accountability!.user,
+						collection: this.collection,
+						ip: this.accountability!.ip,
+						user_agent: this.accountability!.userAgent,
+						origin: this.accountability!.origin,
+						item: primaryKey,
+					})
+
+					// If revisions are tracked, create revisions record
+					if (this.schema.collections[this.collection]!.accountability === `all`) {
+						const revisionsService = new RevisionsService({
+							knex: trx,
+							schema: this.schema,
+						})
+
+						const revisionDelta = await payloadService.prepareDelta(payloadAfterHooks)
+
+						const revision = await revisionsService.createOne({
+							activity,
+							collection: this.collection,
+							item: primaryKey,
+							data: revisionDelta,
+							delta: revisionDelta,
+						})
+
+						// Make sure to set the parent field of the child-revision rows
+						const childrenRevisions = [...revisionsM2O, ...revisionsA2O, ...revisionsO2M]
+
+						if (childrenRevisions.length > 0) {
+							await revisionsService.updateMany(childrenRevisions, { parent: revision })
+						}
+
+						if (opts.onRevisionCreate) {
+							opts.onRevisionCreate(revision)
+						}
+					}
+				}
+			}
+
+			if (autoIncrementSequenceNeedsToBeReset) {
+				await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
+			}
+
+			return itemsAnalyzingValues
+		})
+
+
+		itemsValues.forEach(({
+			primaryKey,
+			actionHookPayload,
+			nestedActionEventsM2O,
+			nestedActionEventsA2O,
+			nestedActionEventsO2M,
+		}) => {
+			if (opts.emitEvents !== false) {
+				const actionEvent = {
+					event:
+						this.eventScope === `items`
+							? [`items.create`, `${this.collection}.items.create`]
+							: `${this.eventScope}.create`,
+					meta: {
+						actionHookPayload,
+						key: primaryKey,
+						collection: this.collection,
+					},
+					context: {
+						database: getDatabase(),
+						schema: this.schema,
+						accountability: this.accountability,
+					},
+				}
+
+				if (opts.bypassEmitAction) {
+					opts.bypassEmitAction(actionEvent)
+				}
+				else {
+					emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context)
+				}
+
+				const nestedActionEvents = [
+					...nestedActionEventsO2M || [],
+					...nestedActionEventsA2O,
+					...nestedActionEventsM2O,
+				]
+
+				for (const nestedActionEvent of nestedActionEvents) {
+					if (opts.bypassEmitAction) {
+						opts.bypassEmitAction(nestedActionEvent)
+					}
+					else {
+						emitter.emitAction(
+							nestedActionEvent.event,
+							nestedActionEvent.meta,
+							nestedActionEvent.context
+						)
+					}
+				}
+			}
+		})
+
+		if (shouldClearCache(this.cache, opts, this.collection)) {
+			await this.cache.clear()
+		}
+
+		return itemsValues.map(({ primaryKey }) => primaryKey)
+	}
+
 	/**
 	 * Get items by query.
 	 */
