@@ -15,9 +15,6 @@ import {
 	HYBRID_EXTENSION_TYPES,
 } from '@directus/extensions';
 import { isIn, isTypeIn } from '@directus/utils';
-import commonjsDefault from '@rollup/plugin-commonjs';
-import jsonDefault from '@rollup/plugin-json';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
 // import replaceDefault from '@rollup/plugin-replace';
 import terserDefault from '@rollup/plugin-terser';
 import virtualDefault from '@rollup/plugin-virtual';
@@ -26,23 +23,25 @@ import chalk from 'chalk';
 import fse from 'fs-extra';
 import ora from 'ora';
 import path from 'path';
-import type { RollupError, RollupOptions, OutputOptions as RollupOutputOptions } from 'rollup';
-import { rollup, watch as rollupWatch } from 'rollup';
-import esbuild from 'rollup-plugin-esbuild';
 import styles from 'rollup-plugin-styler';
-import type { Config, Format, RollupConfig, RollupMode } from '../types.js';
+import type { Config, Format, RolldownConfig } from '../types.js';
 import { getFileExt } from '../utils/file.js';
 import { clear, log } from '../utils/logger.js';
 import tryParseJson from '../utils/try-parse-json.js';
 import generateBundleEntrypoint from './helpers/generate-bundle-entrypoint.js';
 import loadConfig from './helpers/load-config.js';
 import { validateSplitEntrypointOption } from './helpers/validate-cli-options.js';
+import {
+	defineConfig,
+	rolldown,
+	watch as rolldownWatch,
+	type InputOptions,
+	type OutputOptions,
+	type RollupError,
+} from 'rolldown';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
-const commonjs = commonjsDefault as unknown as typeof commonjsDefault.default;
-const json = jsonDefault as unknown as typeof jsonDefault.default;
-// const replace = replaceDefault as unknown as typeof replaceDefault.default;
 const terser = terserDefault as unknown as typeof terserDefault.default;
 
 type BuildOptions = {
@@ -276,13 +275,13 @@ async function buildAppOrApiExtension({
 
 	const mode = isIn(type, APP_EXTENSION_TYPES) ? 'browser' : 'node';
 
-	const rollupOptions = getRollupOptions({ mode, input, sourcemap, minify, config });
-	const rollupOutputOptions = getRollupOutputOptions({ mode, output, format, sourcemap });
+	const inputOptions = getRollupOptions({ mode, input, minify, config });
+	const outputOptions = getRollupOutputOptions({ mode, output, format, sourcemap });
 
 	if (watch) {
-		await watchExtension({ rollupOptions, rollupOutputOptions });
+		await watchExtension({ inputOptions, outputOptions });
 	} else {
-		await buildExtension({ rollupOptions, rollupOutputOptions });
+		await buildExtension({ inputOptions, outputOptions });
 	}
 }
 
@@ -330,7 +329,6 @@ async function buildHybridExtension({
 	const rollupOptionsApp = getRollupOptions({
 		mode: 'browser',
 		input: inputApp,
-		sourcemap,
 		minify,
 		config,
 	});
@@ -338,17 +336,16 @@ async function buildHybridExtension({
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: inputApi,
-		sourcemap,
 		minify,
 		config,
 	});
 
-	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
-	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
+	const outputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
+	const outputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
 
 	const rollupOptionsAll = [
-		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
-		{ rollupOptions: rollupOptionsApi, rollupOutputOptions: rollupOutputOptionsApi },
+		{ inputOptions: rollupOptionsApp, outputOptions: outputOptionsApp },
+		{ inputOptions: rollupOptionsApi, outputOptions: outputOptionsApi },
 	];
 
 	if (watch) {
@@ -404,7 +401,6 @@ async function buildBundleExtension({
 	const rollupOptionsApp = getRollupOptions({
 		mode: 'browser',
 		input: { entry: entrypointApp },
-		sourcemap,
 		minify,
 		config,
 	});
@@ -412,17 +408,16 @@ async function buildBundleExtension({
 	const rollupOptionsApi = getRollupOptions({
 		mode: 'node',
 		input: { entry: entrypointApi },
-		sourcemap,
 		minify,
 		config,
 	});
 
-	const rollupOutputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
-	const rollupOutputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
+	const outputOptionsApp = getRollupOutputOptions({ mode: 'browser', output: outputApp, format, sourcemap });
+	const outputOptionsApi = getRollupOutputOptions({ mode: 'node', output: outputApi, format, sourcemap });
 
 	const rollupOptionsAll = [
-		{ rollupOptions: rollupOptionsApp, rollupOutputOptions: rollupOutputOptionsApp },
-		{ rollupOptions: rollupOptionsApi, rollupOutputOptions: rollupOutputOptionsApi },
+		{ inputOptions: rollupOptionsApp, outputOptions: outputOptionsApp },
+		{ inputOptions: rollupOptionsApi, outputOptions: outputOptionsApi },
 	];
 
 	if (watch) {
@@ -432,7 +427,7 @@ async function buildBundleExtension({
 	}
 }
 
-async function buildExtension(config: RollupConfig | RollupConfig[]) {
+async function buildExtension(config: RolldownConfig | RolldownConfig[]) {
 	const configs = Array.isArray(config) ? config : [config];
 
 	const spinner = ora(chalk.bold('Building Directus extension...')).start();
@@ -440,9 +435,9 @@ async function buildExtension(config: RollupConfig | RollupConfig[]) {
 	const result = await Promise.all(
 		configs.map(async (c) => {
 			try {
-				const bundle = await rollup(c.rollupOptions);
+				const bundle = await rolldown(c.inputOptions);
 
-				await bundle.write(c.rollupOutputOptions);
+				await bundle.write(c.outputOptions);
 				await bundle.close();
 			} catch (error) {
 				return formatRollupError(error as RollupError);
@@ -465,7 +460,7 @@ async function buildExtension(config: RollupConfig | RollupConfig[]) {
 	}
 }
 
-async function watchExtension(config: RollupConfig | RollupConfig[]) {
+async function watchExtension(config: RolldownConfig | RolldownConfig[]) {
 	const configs = Array.isArray(config) ? config : [config];
 	const userConfig = await loadConfig();
 
@@ -474,9 +469,9 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 	let buildCount = 0;
 
 	for (const c of configs) {
-		const watcher = rollupWatch({
-			...c.rollupOptions,
-			output: c.rollupOutputOptions,
+		const watcher = rolldownWatch({
+			...c.inputOptions,
+			output: c.outputOptions,
 		});
 
 		watcher.on('event', async (event) => {
@@ -524,44 +519,38 @@ async function watchExtension(config: RollupConfig | RollupConfig[]) {
 function getRollupOptions({
 	mode,
 	input,
-	sourcemap,
 	minify,
 	config,
 }: {
-	mode: RollupMode;
+	mode: InputOptions['platform'];
 	input: string | Record<string, string>;
-	sourcemap: boolean;
 	minify: boolean;
 	config: Config;
-}): RollupOptions {
+}): InputOptions {
 	const plugins = config.plugins ?? [];
-
-	return {
+	return defineConfig({
 		input: typeof input !== 'string' ? 'entry' : input,
 		external: mode === 'browser' ? APP_SHARED_DEPS : API_SHARED_DEPS,
+		platform: mode!, // TODO why is undefined possible (and triggering an error) only during extensions-sdk's build?
 		plugins: [
 			typeof input !== 'string' ? virtual(input) : null,
 			mode === 'browser' ? vue({ isProduction: true }) : null,
-			esbuild({ include: /\.tsx?$/, sourceMap: sourcemap }),
 			mode === 'browser' ? styles() : null,
 			...plugins,
-			nodeResolve({ browser: mode === 'browser', preferBuiltins: mode === 'node' }),
-			commonjs({ esmExternals: mode === 'browser', sourceMap: sourcemap }),
-			json(),
 			// replace({
 			// 	values: {
 			// 		'process.env.NODE_ENV': JSON.stringify('production'),
 			// 	},
 			// 	preventAssignment: true,
 			// }),
-			minify ? terser() : null,
+			minify ? terser() : null, // rolldown builtin minifier is in still alpha https://rolldown.rs/guide/features#minification
 		],
 		onwarn(warning, warn) {
 			if (warning.code === 'CIRCULAR_DEPENDENCY' && warning.ids?.every((id) => /\bnode_modules\b/.test(id))) return;
 
 			warn(warning);
 		},
-	};
+	});
 }
 
 function getRollupOutputOptions({
@@ -570,11 +559,11 @@ function getRollupOutputOptions({
 	format,
 	sourcemap,
 }: {
-	mode: RollupMode;
+	mode: InputOptions['platform'];
 	output: string;
 	format: Format;
 	sourcemap: boolean;
-}): RollupOutputOptions {
+}): OutputOptions {
 	const fileExtension = getFileExt(output);
 	let outputFormat = format;
 
