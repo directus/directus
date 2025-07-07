@@ -576,7 +576,44 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		const results = await this.readByQuery(queryWithKey, opts);
+		let results: Item[]
+
+		if (query.version) {
+			const {VersionsService} = await import('./versions.js');
+
+			const trx = await this.knex.transaction()
+
+			const versionsService = new VersionsService({
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx
+			})
+
+			const versionData = await versionsService.getVersionSaves(
+				query.version,
+				this.collection,
+				key as string,
+			);
+
+			const itemsService = new ItemsService<Item>(this.collection, {
+				schema: this.schema,
+				accountability: this.accountability,
+				knex: trx
+			})
+
+			for(const data of versionData!) {
+				itemsService.updateOne(key, data as any, {emitEvents: false})
+			}
+
+			results = await itemsService.readByQuery(queryWithKey, opts)
+
+			setTimeout(async ()=> {
+				await trx.rollback()
+			}, 1000)
+
+		} else {
+			results = await this.readByQuery(queryWithKey, opts);
+		}
 
 		if (results.length === 0) {
 			throw new ForbiddenError();
