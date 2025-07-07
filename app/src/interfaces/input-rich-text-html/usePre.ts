@@ -2,7 +2,7 @@ import { i18n } from '@/lang';
 import { Ref } from 'vue';
 
 type PreButton = {
-	icon: string;
+	text: string;
 	tooltip: string;
 	onAction: () => void;
 	onSetup: (api: { setActive: (isActive: boolean) => void }) => () => void;
@@ -20,8 +20,8 @@ export default function usePre(editor: Ref<any>): UsablePre {
 	let keydownHandler: ((event: KeyboardEvent) => void) | null = null;
 
 	const preButton: PreButton = {
-		tooltip: 'Pre',
-		icon: 'customPre',
+		tooltip: i18n.global.t('wysiwyg_options.pre'),
+		text: 'Pre',
 
 		onAction: () => {
 			// Remove all existing formatting before applying code formatting

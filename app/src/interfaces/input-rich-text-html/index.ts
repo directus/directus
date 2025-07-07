@@ -185,6 +185,10 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.blockquote',
 							},
 							{
+								value: 'customInlineCode',
+								text: '$t:wysiwyg_options.codeblock',
+							},
+							{
 								value: 'customLink',
 								text: '$t:wysiwyg_options.link',
 							},
@@ -207,10 +211,6 @@ export default defineInterface({
 							{
 								value: 'hr',
 								text: '$t:wysiwyg_options.hr',
-							},
-							{
-								value: 'customInlineCode',
-								text: '$t:wysiwyg_options.inline_code',
 							},
 							{
 								value: 'fullscreen',
