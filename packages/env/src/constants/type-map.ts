@@ -47,5 +47,5 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	KEY: 'string',
 	SECRET: 'string',
 
-	EXTENSIONS_ROLLDOWN: 'boolean'
+	EXTENSIONS_ROLLDOWN: 'boolean',
 } as const;

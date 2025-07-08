@@ -485,9 +485,9 @@ export class ExtensionManager {
 				.flatMap((extension) =>
 					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 						? [
-							path.resolve(extension.path, extension.entrypoint.app),
-							path.resolve(extension.path, extension.entrypoint.api),
-						]
+								path.resolve(extension.path, extension.entrypoint.app),
+								path.resolve(extension.path, extension.entrypoint.api),
+						  ]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
@@ -501,7 +501,7 @@ export class ExtensionManager {
 	 */
 	private async generateExtensionBundle(): Promise<void> {
 		const logger = useLogger();
-		const env = useEnv()
+		const env = useEnv();
 
 		const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
 
@@ -517,7 +517,7 @@ export class ExtensionManager {
 
 		try {
 			/** Opt In for now. Should be @deprecated later to always use rolldown! */
-			const rollDirection = env['EXTENSIONS_ROLLDOWN'] ?? false ? rolldown : rollup
+			const rollDirection = env['EXTENSIONS_ROLLDOWN'] ?? false ? rolldown : rollup;
 
 			const bundle = await rollDirection({
 				input: 'entry',
