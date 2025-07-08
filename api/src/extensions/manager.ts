@@ -516,6 +516,7 @@ export class ExtensionManager {
 		);
 
 		try {
+			/** Opt In for now. Should be @deprecated later to always use rolldown! */
 			const rollDirection = env['EXTENSIONS_ROLLDOWN'] ?? false ? rolldown : rollup
 
 			const bundle = await rollDirection({
