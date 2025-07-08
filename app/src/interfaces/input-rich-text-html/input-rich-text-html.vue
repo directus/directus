@@ -275,7 +275,6 @@ function setup(editor: any) {
 
 	const linkShortcut = 'meta+k';
 
-	//editor.ui.registry.addToggleButton('inlineCode', inlineCodeButton);
 	editor.ui.registry.addToggleButton('customPre', preButton);
 	editor.ui.registry.addToggleButton('customImage', imageButton);
 	editor.ui.registry.addToggleButton('customMedia', mediaButton);
@@ -283,11 +282,6 @@ function setup(editor: any) {
 
 	editor.ui.registry.addToggleButton('customInlineCode', inlineCodeButton);
 	editor.ui.registry.addButton('customCode', sourceCodeButton);
-
-	editor.ui.registry.addIcon(
-		'customPre',
-		'<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 100 24" width="100px"><text x="50" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="currentColor">Pre</text></svg>',
-	);
 
 	editor.on('init', function () {
 		editor.shortcuts.remove(linkShortcut);
