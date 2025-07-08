@@ -19,7 +19,7 @@ import LayoutSidebarDetail from '@/views/private/components/layout-sidebar-detai
 import SearchInput from '@/views/private/components/search-input.vue';
 import { useLayout } from '@directus/composables';
 import { mergeFilters } from '@directus/utils';
-import { computed, nextTick, ref, watch } from 'vue';
+import { computed, nextTick, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from 'vue-router';
 import AddFolder from '../components/add-folder.vue';
@@ -70,18 +70,14 @@ onBeforeRouteUpdate(() => {
 	selection.value = [];
 });
 
-const { isAnyUploadActive, onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
+const { onDragEnter, onDragLeave, onDrop, onDragOver, showDropEffect, dragging } = useFileUpload();
 
 useEventListener(window, 'dragenter', onDragEnter);
 useEventListener(window, 'dragover', onDragOver);
 useEventListener(window, 'dragleave', onDragLeave);
 useEventListener(window, 'drop', onDrop);
 
-watch(isAnyUploadActive, (isUploading, wasUploading) => {
-	if (wasUploading && !isUploading) {
-		refresh();
-	}
-});
+emitter.on(Events.upload, refresh);
 
 const {
 	updateAllowed: batchEditAllowed,
@@ -354,7 +350,6 @@ function useFileUpload() {
 		}
 
 		notificationsStore.remove(fileUploadNotificationID);
-		emitter.emit(Events.upload);
 	}
 }
 </script>
