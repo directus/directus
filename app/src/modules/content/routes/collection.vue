@@ -3,6 +3,7 @@ import api from '@/api';
 import { useExtension } from '@/composables/use-extension';
 import { useCollectionPermissions } from '@/composables/use-permissions';
 import { usePreset } from '@/composables/use-preset';
+import { usePermissionsStore } from '@/stores/permissions';
 import { getCollectionRoute, getItemRoute } from '@/utils/get-route';
 import { unexpectedError } from '@/utils/unexpected-error';
 import ArchiveSidebarDetail from '@/views/private/components/archive-sidebar-detail.vue';
@@ -99,22 +100,24 @@ const {
 	createAllowed,
 } = useCollectionPermissions(collection);
 
-const hasArchive = computed(
-	() =>
-		currentCollection.value &&
-		currentCollection.value.meta?.archive_field &&
-		currentCollection.value.meta?.archive_app_filter,
-);
+const permissionsStore = usePermissionsStore();
+
+const hasArchive = computed(() => {
+	const archiveField = currentCollection.value?.meta?.archive_field;
+	if (!archiveField || !currentCollection.value?.meta?.archive_app_filter) return false;
+
+	const permissions = permissionsStore.getPermission(collection.value, 'read');
+	if (permissions?.access === 'none') return false;
+
+	const hasArchiveFieldPermission = permissions?.fields?.[0] === '*' || permissions?.fields?.includes(archiveField);
+	return hasArchiveFieldPermission;
+});
 
 const archiveFilter = computed<Filter | null>(() => {
-	if (!currentCollection.value?.meta) return null;
-	if (!currentCollection.value?.meta?.archive_app_filter) return null;
+	if (!hasArchive.value) return null;
 
-	const field = currentCollection.value.meta.archive_field;
-
-	if (!field) return null;
-
-	let archiveValue: any = currentCollection.value.meta.archive_value;
+	const field = currentCollection.value!.meta!.archive_field!;
+	let archiveValue: any = currentCollection.value!.meta!.archive_value;
 	if (archiveValue === 'true') archiveValue = true;
 	if (archiveValue === 'false') archiveValue = false;
 
@@ -351,7 +354,7 @@ function clearFilters() {
 						@save="createBookmark"
 					>
 						<template #activator="{ on }">
-							<v-icon class="toggle" name="bookmark" clickable @click="on" />
+							<v-icon v-tooltip.bottom="t('create_bookmark')" class="toggle" name="bookmark" clickable @click="on" />
 						</template>
 					</bookmark-add>
 

@@ -1,6 +1,6 @@
 {
 	"name": "@directus/app",
-	"version": "13.10.0",
+	"version": "13.11.2",
 	"description": "App dashboard for Directus",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -142,11 +142,11 @@
 		"tinymce": "6.8.5",
 		"tus-js-client": "4.3.1",
 		"typescript": "5.8.2",
-		"vite": "5.4.14",
+		"vite": "5.4.19",
 		"vite-plugin-vue-devtools": "7.7.2",
 		"vitest": "2.1.9",
 		"vue": "3.5.13",
-		"vue-i18n": "11.1.1",
+		"vue-i18n": "11.1.2",
 		"vue-router": "4.5.0",
 		"vue-tsc": "2.2.8",
 		"vue-virtual-scroller": "2.0.0-beta.8",

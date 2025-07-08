@@ -1,6 +1,6 @@
 {
 	"name": "@directus/storage-driver-cloudinary",
-	"version": "12.0.5",
+	"version": "12.0.6",
 	"description": "Cloudinary file storage abstraction for `@directus/storage`",
 	"homepage": "https://directus.io",
 	"repository": {
@@ -29,7 +29,7 @@
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"p-queue": "8.1.0",
-		"undici": "7.4.0"
+		"undici": "7.5.0"
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "3.0.0",

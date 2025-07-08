@@ -256,7 +256,7 @@ function getWidth(input: unknown, fallback: number): number {
 	return input && !Number.isNaN(input) ? Number(input) : fallback;
 }
 
-const showDialog = computed(() => userStore.isAdmin && settingsStore.settings?.accepted_terms === false);
+const showLicenseBanner = computed(() => userStore.isAdmin && settingsStore.settings?.accepted_terms === false);
 </script>
 
 <template>
@@ -269,7 +269,6 @@ const showDialog = computed(() => userStore.isAdmin && settingsStore.settings?.a
 	</v-info>
 
 	<div v-else class="private-view" :class="{ appearance, 'full-screen': fullScreen, splitView }">
-		<LicenseBanner v-model="showDialog" />
 		<skip-menu section="nav" />
 
 		<aside
@@ -364,6 +363,8 @@ const showDialog = computed(() => userStore.isAdmin && settingsStore.settings?.a
 		<notifications-drawer />
 		<notifications-group v-if="notificationsPreviewActive === false" :sidebar-open="sidebarOpen" />
 		<notification-dialogs />
+
+		<license-banner v-model="showLicenseBanner" />
 	</div>
 </template>
 
