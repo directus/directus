@@ -1,19 +1,19 @@
 {
-	"name": "video",
+	"name": "view-post",
 	"description": "Please enter a description for your extension",
 	"icon": "extension",
 	"version": "1.0.0",
 	"keywords": [
 		"directus",
 		"directus-extension",
-		"directus-extension-interface"
+		"directus-extension-module"
 	],
 	"type": "module",
 	"files": [
 		"dist"
 	],
 	"directus:extension": {
-		"type": "interface",
+		"type": "module",
 		"path": "dist/index.js",
 		"source": "src/index.ts",
 		"host": "^10.10.0"
