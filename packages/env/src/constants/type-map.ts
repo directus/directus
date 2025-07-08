@@ -46,4 +46,6 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	ADMIN_TOKEN: 'string',
 	KEY: 'string',
 	SECRET: 'string',
+
+	EXTENSIONS_ROLLDOWN: 'boolean'
 } as const;

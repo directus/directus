@@ -34,6 +34,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { rolldown } from 'rolldown';
+import { rollup } from 'rollup';
 import { useBus } from '../bus/index.js';
 import getDatabase from '../database/index.js';
 import emitter, { Emitter } from '../emitter.js';
@@ -484,9 +485,9 @@ export class ExtensionManager {
 				.flatMap((extension) =>
 					isTypeIn(extension, HYBRID_EXTENSION_TYPES) || extension.type === 'bundle'
 						? [
-								path.resolve(extension.path, extension.entrypoint.app),
-								path.resolve(extension.path, extension.entrypoint.api),
-						  ]
+							path.resolve(extension.path, extension.entrypoint.app),
+							path.resolve(extension.path, extension.entrypoint.api),
+						]
 						: path.resolve(extension.path, extension.entrypoint),
 				);
 
@@ -500,6 +501,7 @@ export class ExtensionManager {
 	 */
 	private async generateExtensionBundle(): Promise<void> {
 		const logger = useLogger();
+		const env = useEnv()
 
 		const sharedDepsMapping = await getSharedDepsMapping(APP_SHARED_DEPS);
 
@@ -514,7 +516,9 @@ export class ExtensionManager {
 		);
 
 		try {
-			const bundle = await rolldown({
+			const rollDirection = env['EXTENSIONS_ROLLDOWN'] ?? false ? rolldown : rollup
+
+			const bundle = await rollDirection({
 				input: 'entry',
 				external: Object.values(sharedDepsMapping),
 				makeAbsoluteExternalsRelative: false,
