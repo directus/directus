@@ -1,4 +1,5 @@
 import { Ref } from 'vue';
+import { i18n } from '@/lang';
 
 type InlineCodeButton = {
 	icon: string;
@@ -20,7 +21,7 @@ export default function useInlineCode(editor: Ref<any>): UsableInlineCode {
 	let keydownHandler: ((event: KeyboardEvent) => void) | null = null;
 
 	const inlineCodeButton: InlineCodeButton = {
-		tooltip: 'InlineCode',
+		tooltip: i18n.global.t('wysiwyg_options.codeblock'),
 		icon: 'code-sample',
 
 		onAction: () => {
