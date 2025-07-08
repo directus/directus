@@ -135,9 +135,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(1);
 		}
 
-		const { ActivityService } = await import('./activity.js');
-		const { RevisionsService } = await import('./revisions.js');
-
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		const fields = Object.keys(this.schema.collections[this.collection]!.fields);
 
@@ -318,7 +315,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
+			if (
+				opts.bypassAccountability !== true &&
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null
+			) {
+				const { ActivityService } = await import('./activity.js');
+				const { RevisionsService } = await import('./revisions.js');
+
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
@@ -576,41 +580,38 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		let results: Item[]
+		let results: Item[];
 
 		if (query.version) {
-			const {VersionsService} = await import('./versions.js');
+			const { VersionsService } = await import('./versions.js');
 
-			const trx = await this.knex.transaction()
+			const trx = await this.knex.transaction();
 
 			const versionsService = new VersionsService({
 				schema: this.schema,
 				accountability: this.accountability,
-				knex: trx
-			})
+				knex: trx,
+			});
 
-			const versionData = await versionsService.getVersionSaves(
-				query.version,
-				this.collection,
-				key as string,
-			);
+			const versionData = await versionsService.getVersionSaves(query.version, this.collection, key as string);
 
 			const itemsService = new ItemsService<Item>(this.collection, {
 				schema: this.schema,
 				accountability: this.accountability,
-				knex: trx
-			})
+				knex: trx,
+			});
 
-			for(const data of versionData!) {
-				itemsService.updateOne(key, data as any, {emitEvents: false})
+			for (const data of versionData ?? []) {
+				await itemsService.updateOne(key, data as any, {
+					emitEvents: false,
+					autoPurgeCache: false,
+					bypassAccountability: true,
+				});
 			}
 
-			results = await itemsService.readByQuery(queryWithKey, opts)
+			results = await itemsService.readByQuery(queryWithKey, opts);
 
-			setTimeout(async ()=> {
-				await trx.rollback()
-			}, 1000)
-
+			await trx.rollback();
 		} else {
 			results = await this.readByQuery(queryWithKey, opts);
 		}
@@ -726,9 +727,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		if (!opts.bypassLimits) {
 			opts.mutationTracker.trackMutations(keys.length);
 		}
-
-		const { ActivityService } = await import('./activity.js');
-		const { RevisionsService } = await import('./revisions.js');
 
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
@@ -867,7 +865,14 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			}
 
 			// If this is an authenticated action, and accountability tracking is enabled, save activity row
-			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
+			if (
+				opts.bypassAccountability !== true &&
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null
+			) {
+				const { ActivityService } = await import('./activity.js');
+				const { RevisionsService } = await import('./revisions.js');
+
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
@@ -1069,8 +1074,6 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			opts.mutationTracker.trackMutations(keys.length);
 		}
 
-		const { ActivityService } = await import('./activity.js');
-
 		const primaryKeyField = this.schema.collections[this.collection]!.primary;
 		validateKeys(this.schema, this.collection, primaryKeyField, keys);
 
@@ -1119,7 +1122,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				}
 			}
 
-			if (this.accountability && this.schema.collections[this.collection]!.accountability !== null) {
+			if (
+				opts.bypassAccountability !== true &&
+				this.accountability &&
+				this.schema.collections[this.collection]!.accountability !== null
+			) {
+				const { ActivityService } = await import('./activity.js');
+
 				const activityService = new ActivityService({
 					knex: trx,
 					schema: this.schema,
