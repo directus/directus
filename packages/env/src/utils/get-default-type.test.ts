@@ -2,9 +2,7 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { getDefaultType } from './get-default-type.js';
 
 vi.mock('../constants/type-map.js', () => ({
-	TYPE_MAP: {
-		'test-key': 'string',
-	},
+	TYPE_MAP_REGEX: [[new RegExp('test-key'), 'string']]
 }));
 
 afterEach(() => {
