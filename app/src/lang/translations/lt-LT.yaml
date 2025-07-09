@@ -316,7 +316,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Atstatyti puslapio nustatymus
 hidden_field: Paslėptas laukas
 hidden_on_detail: Paslėptas detalių puslapyje
-disabled_editing_value: Išjungti reikšmės redagavimą
 key: Raktas
 alias: Sinonimas
 bigInteger: Didelis sveikasis skaičius
@@ -723,7 +722,7 @@ auto_fill: Automatinis užpildymas
 corresponding_field: Atitinkamas laukas
 errors:
   COLLECTION_NOT_FOUND: "Kolekcija neegzistuoja"
-  CONTAINS_NULL_VALUES: Laukas turi "null" reikšmių
+  CONTAINS_NULL_VALUES: Laukas turi tuščių reikšmių
   CONTENT_TOO_LARGE: Saugomas įrašas / dokumentas yra per didelis
   FIELD_NOT_FOUND: Laukas nerastas
   FORBIDDEN: Draudžiama
@@ -932,15 +931,16 @@ toggle: Perjungti
 icon_on: Įjungumo ikona
 icon_off: Išjungimo ikona
 label: Žyma
-flows: Flows
-flow: Flow
-select_a_flow: Pasirinkite Flow
-run_flow_confirm: Ar tikrai norite įvykdyti šį Flow?
-run_flow_on_current_collection: Įvykdyti Flow šiai kolekcijai
-run_flow_on_current: Įvykdyti Flow šiam įrašui
-run_flow_on_current_edited_confirm: Šis Flow gali atnaujinti įrašą. Ar tikrai norite jį įvykdyti?
-run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti Flow vienam įrašui | Vykdyti flow {n} įrašams
-run_flow: Vykdyti Flow
+flows: Procesai
+flow: Procesas
+select_a_flow: Pasirinkite procesą
+run_flow_confirm: Ar tikrai norite vykdyti šį procesą?
+run_flow_on_current_collection: Vykdyti procesą šiai kolekcijai
+run_flow_on_current: Vykdyti procesą šiam įrašui
+run_flow_on_current_edited_confirm: Procesas atnaujins šį įrašą. Neišsaugoti pakeitimai bus prarasti. Ar tikrai norite jį įvykdyti?
+run_flow_on_selected: Pasirinkite vieną ar daugiau įrašų | Vykdyti procesą pasirinktam įrašui | Vykdyti procesą {n} įrašams
+run_flow: Vykdyti procesą
+trigger_flow_success: Procesas „{flow}“ sėkmingai paleistas
 field_name_placeholder: Įveskite lauko pavadinimą...
 field_key_placeholder: Įveskite lauko identifikatorių...
 trigger: Trigeris
@@ -949,32 +949,32 @@ view_trigger: Peržiūrėti trigerį
 create_trigger: Sukurti trigerį
 trigger_setup: Trigerio sukūrimas
 change_trigger: Pakeisti trigerį
-flow_delete_confirm: Ar tikrai norite pašalinti Flow "{flow}"? Šio veiksmo atšaukti negalima.
-set_flow_active: Aktyvuoti Flow
-set_flow_inactive: Deaktyvuoti Flow
-edit_flow: Redaguoti Flow
-delete_flow: Pašalinti Flow
-no_other_flows_copy: Jūs neturite kitų Flows.
-no_flows: Nėra Flows
-no_flows_copy: Nėra sukurtų Flows.
-create_flow: Sukurti Flow
-creating_new_flow: Flow sukūrimas
-updating_flow: Flow atnaujinimas
-flow_setup: Flow sukūrimas
+flow_delete_confirm: Ar tikrai norite ištrinti procesą „{flow}“? Šis veiksmas negali būti atšauktas.
+set_flow_active: Nustatyti procesą kaip aktyvų
+set_flow_inactive: Nustatyti procesą kaip neaktyvų
+edit_flow: Redaguoti procesą
+delete_flow: Pašalinti procesą
+no_other_flows_copy: Jūs dar neturite kitų procesų.
+no_flows: Nėra procesų
+no_flows_copy: Jūs dar neturite procesų.
+create_flow: Sukurti procesą
+creating_new_flow: Kuriamas naujas procesas
+updating_flow: Atnaujinamas procesas
+flow_setup: Proceso nustatymai
 flow_name: Pavadinimas
 flow_tracking: Įvykių žurnalas
 flow_tracking_all: Saugoti visus įvykius ir rezultatus
-flow_tracking_activity: Saugoti įvykius
+flow_tracking_activity: Saugoti tik įvykius
 flow_tracking_null: Nesaugoti jokių įvykių
-start_flow: Pradėti Flow
-stop_flow: Sustabdyti Flow
+start_flow: Paleisti procesą
+stop_flow: Sustabdyti procesą
 create_operation: Sukurti operaciją
 edit_operation: Redaguoti operaciją
 code: Kodas
 operation_options: Operacijos nustatymai
 operation_name: Operacijos pavadinimas...
 operation_key: Identifikatorius...
-operation_key_unique_error: Operacijos pavadinimai turi būti unikalūs esamam Flow
+operation_key_unique_error: Operacijų pavadinimai turi būti unikalūs esamam procesui
 operation_handle_resolve: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 operation_handle_reject: 'Spustelėkite, kad pridėtumėte, arba vilkite, kad pakeistumėte maršrutą'
 insights: Įžvalgos
@@ -998,7 +998,7 @@ no_dashboards_copy: Nėra sukurta jokių prietaisų skydelių.
 create_dashboard: Sukurti prietaisų skydelį
 dashboard_name: Prietaisų skydelio pavadinimas
 no_data: Nėra duomenų
-no_data_in_flow: Šis flow nepateikė ir negavo jokių duomenų
+no_data_in_flow: Šis procesas nesukūrė ir negavo jokių duomenų
 accountability: Atsakomybė
 payload: Payload
 details: Išsamesnė informacija
@@ -1125,7 +1125,7 @@ settings_permissions: Prieigos polisai
 settings_project: Nustatymai
 settings_appearance: Atvaizdavimas
 settings_webhooks: '„Webhook“''ai'
-settings_flows: Flows
+settings_flows: Procesai
 settings_system_logs: Sistemos žurnalas
 settings_presets: Žymės
 settings_translations: Vertimai
@@ -1183,8 +1183,8 @@ page_help_settings_presets_item: >-
   **Ruošinio duomenys** — forma žymų ir numatytųjų kolekcijos ruošinių valdymui.
 page_help_settings_webhooks_collection: '**Peržiūrėti Webhook''us** - Rodomi visi projekto Webhook''ai.'
 page_help_settings_webhooks_item: '**Webhook informacija** — projekto webhooks nustatymai.'
-page_help_settings_flows_collection: '**Peržiūrėti flows** - rodomi visi projekto flows.'
-page_help_settings_flows_item: '**Flow informacija** — projekto flow operacijų nustatymai.'
+page_help_settings_flows_collection: '**Peržiūrėti procesus** - rodomi visi projekto procesai.'
+page_help_settings_flows_item: '**Proceso informacija** — projekto procesų operacijų nustatymai.'
 page_help_settings_translations_collection: '**Bendriniai projekto vertimai** — bendrinių projekto vertimų sąrašas.'
 page_help_settings_translations_item: '**Bendrinių projekto vertimų informacija** — bendrinių projekto vertimų nustatymai.'
 page_help_users_collection: '**Vartotojų aplankas** — rodomi visi šio projekto vartotojai.'
@@ -1230,11 +1230,11 @@ directus_collection:
   directus_dashboards: Prietaisų skydeliai įžvalgų modulyje
   directus_fields: Papildomi lauko nustatymai ir metaduomenys
   directus_files: Visų tvarkomų failų metaduomenys
-  directus_flows: Automation flows
+  directus_flows: Automatizuoti procesai
   directus_folders: Pateikia virtualius katalogus failams
   directus_migrations: Naudojama duomenų bazės versija
   directus_notifications: Pranešimai išsiųsti naudotojams
-  directus_operations: Operacijos kurios yra vykdomos flows
+  directus_operations: Operacijos, kurios vykdomos procesuose
   directus_panels: Individualūs skydeliai įžvalgų modulyje
   directus_permissions: Polisų prieigos teisės
   directus_policies: Prieigos teisės
@@ -2354,9 +2354,9 @@ triggers:
     method: Method
     async: Asynchronous
   operation:
-    name: Another Flow
-    description: Triggered by another Flow, for chaining
-    preview: Triggered by an operation in a different Flow
+    name: Kitas procesas
+    description: Aktyvuojamas kitu procesu, grandininiam vykdymui
+    preview: Aktyvuojamas operacijos kitame procese
   schedule:
     name: Schedule (CRON)
     description: Triggers at regular points in time
@@ -2369,14 +2369,14 @@ triggers:
     item_only: Item Page Only
     collection_page: Collection Page
     require_selection: Requires Selection
-a_flow_uuid: Select a Flow to trigger...
+a_flow_uuid: Pasirinkite procesą, kurį aktyvuoti…
 any_string_or_json: Any string or JSON...
 item_payload_placeholder: This is the JSON used to update the item's field values...
-operation_variables_note: You can access flow data with variables such as **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** and **{'{'}{'{'}$accountability{'}'}{'}'}**, or reference previous operations using **{'{'}{'{'}operation_key{'}'}{'}'}**.'
+operation_variables_note: Galite pasiekti proceso duomenis naudodami kintamuosius kaip  **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}**, **{'{'}{'{'}$accountability{'}'}{'}'}**, arba nurodyti ankstesnes operacijas su **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Condition
-    description: Route a flow based on If / Else logic
+    description: Nukreipti procesą pagal if / else logiką
   exec:
     name: Run Script
     description: Execute arbitrary code to modify the payload
@@ -2464,12 +2464,12 @@ operations:
     milliseconds: Milliseconds
   transform:
     name: Transform Payload
-    description: Alter the Flow's JSON payload
+    description: Keisti proceso JSON turinį
   trigger:
-    name: Trigger Flow
-    description: Pass this data to another flow
-    flows: Flows
-    flow: Flow
+    name: Paleisti procesą
+    description: Perduoti šiuos duomenis kitam procesui
+    flows: Procesai
+    flow: Procesas
     data: Data
     iteration_mode: Iteration Mode
     iteration_mode_note: Mode for iterating over arrays.
@@ -2517,7 +2517,7 @@ date_precision: Datos tikslumas
 export_dashboard: Eksportuoti skydelį
 duplicate_dashboard: Dublikuoti skydelį
 search_dashboard: Ieškoti skydelio...
-search_flow: Ieškoti flow...
+search_flow: Ieškoti proceso...
 percent: Procentai
 show_password: Rodyti slaptažodį
 hide_password: Nerodyti slaptažodžio

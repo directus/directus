@@ -2,7 +2,7 @@
 import { reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-defineProps<{
+const props = defineProps<{
 	modelValue?: boolean;
 	saving?: boolean;
 }>();
@@ -28,6 +28,12 @@ function setColor(color: any) {
 	bookmarkValue.color = color;
 }
 
+function save() {
+	if (bookmarkValue.name === null || props.saving) return;
+
+	emit('save', bookmarkValue);
+}
+
 function cancel() {
 	bookmarkValue.name = null;
 	bookmarkValue.icon = 'bookmark';
@@ -43,6 +49,7 @@ function cancel() {
 		keep-behind
 		@update:model-value="$emit('update:modelValue', $event)"
 		@esc="cancel"
+		@apply="save"
 	>
 		<template #activator="slotBinding">
 			<slot name="activator" v-bind="slotBinding" />
@@ -60,7 +67,6 @@ function cancel() {
 						trim
 						:placeholder="t('bookmark_name')"
 						@input="bookmarkValue.name = $event"
-						@keyup.enter="$emit('save', bookmarkValue)"
 					/>
 					<interface-select-icon width="half" :value="bookmarkValue.icon" @input="setIcon" />
 					<interface-select-color width="half" :value="bookmarkValue.color" @input="setColor" />
@@ -71,7 +77,7 @@ function cancel() {
 				<v-button secondary @click="cancel">
 					{{ t('cancel') }}
 				</v-button>
-				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="$emit('save', bookmarkValue)">
+				<v-button :disabled="bookmarkValue.name === null" :loading="saving" @click="save">
 					{{ t('save') }}
 				</v-button>
 			</v-card-actions>

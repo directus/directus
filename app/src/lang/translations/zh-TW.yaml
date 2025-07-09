@@ -1,4 +1,25 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: 關於
 identifier: 識別
 avatar: 頭像
 application: 應用程式
@@ -7,14 +28,22 @@ method: 方法
 published: 已發佈
 draft: 草稿
 archived: 已封存
+marketplace: 市集
+extensions: 擴充功能
+skip_link_nav: 跳至導覽
+skip_link_module_nav: 跳至模組導覽
+skip_link_main: 跳至主要內容
+skip_link_sidebar: 跳至側邊欄
 modules: 模組
 module_bar: 模組列
 logs: 日誌
+unknown: 未知
 reset_width: 重設寬度
 tile_size: 圖磚尺寸
 edit_field: 編輯欄位
 conditions: 條件
 location: 位置
+collection_names_are_case_sensitive: 集合名稱區分大小寫
 condition_rules: 條件規則
 input: 輸入
 maps: 地圖
@@ -26,6 +55,8 @@ duplicate_field: 複製欄位
 half_width: 半寬
 full_width: 滿寬
 group: 組
+popular: 熱門
+recent: 最近
 export_items: 匯出物件
 and: 和
 or: 或
@@ -35,10 +66,47 @@ modifier: 修改器
 extension_interface: 介面
 extension_display: 顯示
 extension_layout: 版面配置
+extension_module: 模組
 extension_panel: 面板
+extension_theme: 主題
 extension_hook: 掛鉤
+extension_endpoint: 端點
+extension_operation: 操作
+extension_bundle: 捆綁
+extension_interfaces: 介面
+extension_displays: 顯示
+extension_layouts: 佈局
 extension_modules: 模組
+extension_panels: 面板
+extension_themes: 主題
+extension_hooks: 掛鈎
+extension_endpoints: 端點
+extension_operations: 操作
+extension_bundles: 捆綁包
+extension_missing: 遺失
+extension_reload_required: 頁面需要重新加載
+extension_reload_required_copy: 啟用或停用應用程式擴充套件後，需要重新載入頁面才能看到變更。
+extension_reload_now: 立即重新加載
+published_relative: 發佈時間 {relativeTime}
+compatible_with_your_project: 與您的專案相容
+compatible_with_your_project_copy: 作者指出此擴充套件的相容性為 {hostVersion}，與您專案的版本 ({currentVersion}) 相符
+last_updated_relative: 最後更新 {relativeTime}
+n_files: '{n} 檔案'
+verified: 已驗證
+homepage: 主頁
+repository: 儲存庫
+reload_page: 重整頁面
+reload_required: 需要重新加載
+report_an_issue: 回饋問題
+website: 網站
+github: GitHub
+beta: Beta
+n_downloads: '{n} 下載'
+downloads: 下載
+compatibility_not_guaranteed: 不保證相容性
+compatibility_not_guaranteed_copy: 作者指出此擴充套件的相容性為 {hostVersion}，與您專案的版本 ({currentVersion}) 並不相容
 enable: 啟用
+disable: 停用
 custom: 自訂
 hook: 掛鉤
 fill_width: 填滿寬度
@@ -46,6 +114,7 @@ field_name_translations: 欄位名稱翻譯
 enter_password_to_enable_tfa: 輸入您的密碼以啟用雙因素認證
 add_field: 增加欄位
 role_name: 角色名稱
+policy_name: 策略名稱
 branch: 分支
 leaf: 枝葉
 indeterminate: 不確定
@@ -63,10 +132,15 @@ requires_value: 需要值
 create_preset: 創建預置
 create_panel: 建立面板
 create_role: 新建角色
+create_policy: 創建新策略
 create_user: 建立用户
 message: 訊息
 delete_panel: 刪除面板
 create_webhook: 建立 Webhook
+create_custom_translation: 創建新自訂翻譯
+edit_custom_translation: 編輯自訂翻譯
+no_custom_translations: 沒有自訂翻譯
+no_custom_translations_copy: 目前還沒有自訂翻譯。
 invite_users: 邀請用戶
 invite: 邀请
 email_already_invited: 此電郵 "{email}" 已被邀請
@@ -82,7 +156,23 @@ rename_folder: 重新命名資料夾
 delete_folder: 刪除資料夾
 prefix: 前綴
 suffix: 後綴
+keep: 保留
+version: 版本
+version_key: 版本鍵值
+version_name: 版本名稱
+main_version: 主要
+switch_version: 切換版本
+switch_version_copy: 您確定要切換到 「{version}」 版本嗎？未保存的變更將會遺失。
+create_version: 創建新版本
+rename_version: 重新命名版本
+compare_version: 比較版本
+save_version: 儲存版本
+promote_version: 發布版本
+promote_version_disabled: 沒有更改
+promote_version_drawer_title: 將 {version} 升級為主要版本
+promote_version_changes: 變更
 promote_version_preview: 預覽
+delete_version: 刪除版本
 reset_bookmark: 重設書籤
 update_bookmark: 更新書籤
 delete_bookmark: 刪除書籤
@@ -202,13 +292,13 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: 重設頁面偏好設定
 hidden_field: 隱藏欄位
 hidden_on_detail: 從詳細內容隱藏
-disabled_editing_value: 禁止編輯內容
 key: 鍵值
 alias: 別名
 bigInteger: 長整數
 boolean: 布林值
 date: 日期
 date_range: 日期範圍
+translation_key_placeholder: 輸入鍵值...
 datetime: 日期時間
 dateTime: 日期時間
 precision: 精確度
@@ -217,12 +307,26 @@ float: 浮點
 integer: 整數
 json: JSON
 xml: XML
+yaml: YAML
 string: 字串
 text: 文字
 time: 時間
 timestamp: 時間
 uuid: UUID
 hash: 哈希
+geometry:
+  All: 地圖標記 (全部)
+  Point: 點
+  LineString: 線段
+  Polygon: 多邊形
+  MultiPoint: 多個點
+  MultiLineString: 多條線段
+  MultiPolygon: 多個多邊形
+theme_auto: 自動 (根據系統設定)
+theme_light: 淺色模式
+theme_dark: 深色模式
+theme_directus_default: Directus預設
+theme_directus_minimal: Directus最小
 not_available_for_type: 此類別無法使用
 create_translations: 創建翻譯
 auto_refresh: 自動重新整理
@@ -234,12 +338,16 @@ auto_generate: 自動產生
 this_will_auto_setup_fields_relations: 這會自動設定所有相關的必要欄位和關係。
 click_here: 點擊此處
 to_manually_setup_translations: 手動設定翻譯。
+manage: 管理
 click_to_manage_translated_fields: >-
   目前還沒有已經設定翻譯的欄位。按下此處以進行建立。|目前已經有一個翻譯欄位，點選此處進行管理。|目前有 {count} 個翻譯欄位，點選此處進行管理。
 fields_group: 欄位群組
 no_collections_found: 目前尚無資料集。
 new_data_alert: '以下資料將會在您的資料模型中建立:'
 search_collection: 搜尋資料集...
+search_role: 搜尋角色…
+search_policy: 搜尋策略…
+search_field: 搜尋欄位…
 new_field: '新增欄位'
 new_collection: '新增資料集'
 add_m2o_to_collection: '新增多對一關係到 "{collection}"'
@@ -259,6 +367,7 @@ o2m_relationship: 一對多關聯
 m2m_relationship: 多對多關聯
 m2a_relationship: 多對Any關係
 invalid_item: 無效項目
+dialog: 訊息框
 modal: 對話框
 next: 下一個
 field_name: 欄位名稱
@@ -937,6 +1046,7 @@ batch_delete_confirm: >-
   沒有選取任何項目 | 是否確定要刪除此項目? 此動作無法還原。 | 是否確定要刪除這{count} 個項目? 此動作無法還原。
 cancel: 取消
 no_upscale: 不放大圖片
+source_registry: 市集
 collection: 集合
 collections: 資料集
 content: 內容管理
@@ -1103,6 +1213,7 @@ fields:
     description: 描述說明
     users: 角色中的使用者
   directus_policies:
+    name: 策略名稱
     description: 描述說明
   directus_webhooks:
     name: 名稱

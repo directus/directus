@@ -223,14 +223,34 @@ export class ExtensionManager {
 	 * Installs an external extension from registry
 	 */
 	public async install(versionId: string): Promise<void> {
+		const logger = useLogger();
+
 		await this.installationManager.install(versionId);
 		await this.reload({ forceSync: true });
+
+		emitter.emitAction('extensions.installed', {
+			extensions: this.extensions,
+			versionId,
+		});
+
+		logger.info(`Installed extension: ${versionId}`);
+
 		await this.broadcastReloadNotification();
 	}
 
 	public async uninstall(folder: string) {
+		const logger = useLogger();
+
 		await this.installationManager.uninstall(folder);
 		await this.reload({ forceSync: true });
+
+		emitter.emitAction('extensions.uninstalled', {
+			extensions: this.extensions,
+			folder,
+		});
+
+		logger.info(`Uninstalled extension: ${folder}`);
+
 		await this.broadcastReloadNotification();
 	}
 
@@ -273,6 +293,12 @@ export class ExtensionManager {
 		}
 
 		this.isLoaded = true;
+
+		emitter.emitAction('extensions.load', {
+			extensions: this.extensions,
+		});
+
+		logger.info('Extensions loaded');
 	}
 
 	/**
@@ -286,6 +312,14 @@ export class ExtensionManager {
 		this.appExtensionsBundle = null;
 
 		this.isLoaded = false;
+
+		emitter.emitAction('extensions.unload', {
+			extensions: this.extensions,
+		});
+
+		const logger = useLogger();
+
+		logger.info('Extensions unloaded');
 	}
 
 	/**
@@ -328,6 +362,12 @@ export class ExtensionManager {
 
 				const addedExtensions = added.map((extension) => extension.name);
 				const removedExtensions = removed.map((extension) => extension.name);
+
+				emitter.emitAction('extensions.reload', {
+					extensions: this.extensions,
+					added: addedExtensions,
+					removed: removedExtensions,
+				});
 
 				if (addedExtensions.length > 0) {
 					logger.info(`Added extensions: ${addedExtensions.join(', ')}`);

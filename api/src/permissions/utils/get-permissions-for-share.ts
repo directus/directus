@@ -95,6 +95,8 @@ export async function getPermissionsForShare(
 		reducedSchema = reduceSchema(reducedSchema, userFieldMap);
 	}
 
+	if (!isAdmin) defaults.fields = permissions.find((perm) => perm.collection === collection)?.fields ?? [];
+
 	const parentPrimaryKeyField = context.schema.collections[collection]!.primary;
 
 	const relationalPermissions = traverse(reducedSchema, parentPrimaryKeyField, item, collection);
