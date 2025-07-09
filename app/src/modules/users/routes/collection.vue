@@ -19,10 +19,6 @@ import useNavigation from '../composables/use-navigation';
 import { logout } from '@/auth';
 import { useUserStore } from '@/stores/user';
 
-type Item = {
-	[field: string]: any;
-};
-
 const props = defineProps<{ role?: string }>();
 
 const { role } = toRefs(props);
