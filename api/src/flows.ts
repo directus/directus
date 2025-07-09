@@ -328,9 +328,9 @@ class FlowManager {
 								},
 							);
 
-							const allowedKeys: PrimaryKey[] = keys.map((key) => key[primaryField]);
+							const allowedKeys: PrimaryKey[] = keys.map((key) => String(key[primaryField]));
 
-							if (targetKeys.some((key: PrimaryKey) => !allowedKeys.includes(key))) {
+							if (targetKeys.some((key: PrimaryKey) => !allowedKeys.includes(String(key)))) {
 								logger.warn(`Triggering keys ${targetKeys} is not allowed`);
 								throw new ForbiddenError();
 							}
