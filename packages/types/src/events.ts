@@ -9,7 +9,7 @@ export type EventContext = {
 	accountability: Accountability | null;
 };
 
-export type FilterHandler<TIn = unknown, TOut = TIn> = (
+export type FilterHandler<TIn = unknown, TOut extends TIn = TIn> = (
 	payload: TIn,
 	meta: Record<string, any>,
 	context: EventContext,
