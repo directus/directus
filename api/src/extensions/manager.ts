@@ -9,15 +9,10 @@ import type {
 	HybridExtension,
 	OperationApiConfig,
 } from '@directus/extensions';
-import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES } from '@directus/extensions';
+import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES, type RegisterFunctions } from '@directus/extensions';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
-	ActionHandler,
-	EmbedHandler,
-	FilterHandler,
-	InitHandler,
 	PromiseCallback,
-	ScheduleHandler,
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
 import { pathToRelativeUrl, processId } from '@directus/utils/node';
@@ -812,29 +807,29 @@ export class ExtensionManager {
 
 		const unregisterFunctions: PromiseCallback[] = [];
 
-		const hookRegistrationContext = {
-			filter: <T = unknown>(event: string, handler: FilterHandler<T>) => {
+		const hookRegistrationContext: RegisterFunctions = {
+			filter: (event, handler) => {
 				emitter.onFilter(event, handler);
 
 				unregisterFunctions.push(() => {
 					emitter.offFilter(event, handler);
 				});
 			},
-			action: (event: string, handler: ActionHandler) => {
+			action: (event, handler) => {
 				emitter.onAction(event, handler);
 
 				unregisterFunctions.push(() => {
 					emitter.offAction(event, handler);
 				});
 			},
-			init: (event: string, handler: InitHandler) => {
+			init: (event, handler) => {
 				emitter.onInit(event, handler);
 
 				unregisterFunctions.push(() => {
 					emitter.offInit(name, handler);
 				});
 			},
-			schedule: (cron: string, handler: ScheduleHandler) => {
+			schedule: (cron, handler) => {
 				if (validateCron(cron)) {
 					const job = scheduleSynchronizedJob(`${name}:${scheduleIndex}`, cron, async () => {
 						if (this.options.schedule) {
@@ -855,7 +850,7 @@ export class ExtensionManager {
 					this.handleExtensionError({ reason: `Couldn't register cron hook. Provided cron is invalid: ${cron}` });
 				}
 			},
-			embed: (position: 'head' | 'body', code: string | EmbedHandler) => {
+			embed: (position, code) => {
 				const content = typeof code === 'function' ? code() : code;
 
 				if (content.trim().length !== 0) {
