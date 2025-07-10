@@ -31,7 +31,7 @@ export class Emitter {
 		};
 	}
 
-	public async emitFilter<TIn = unknown, TOut extends TIn = TIn>(
+	public async emitFilter<TIn = unknown, TOut = TIn>(
 		event: string | string[],
 		payload: TIn,
 		meta: Record<string, any>,
@@ -44,11 +44,11 @@ export class Emitter {
 			listeners: this.filterEmitter.listeners(event) as FilterHandler<TIn, TOut>[],
 		}));
 
-		let updatedPayload = payload;
+		let updatedPayload: TIn | TOut = payload;
 
 		for (const { event, listeners } of eventListeners) {
 			for (const listener of listeners) {
-				const result = await listener(updatedPayload, { event, ...meta }, context ?? this.getDefaultContext());
+				const result = await listener(payload, { event, ...meta }, context ?? this.getDefaultContext());
 
 				if (result !== undefined) {
 					updatedPayload = result;
