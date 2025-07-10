@@ -11,7 +11,7 @@ import {
 	snapshotCreateCollectionNotNested,
 } from '../__utils__/snapshots.js';
 import { CollectionsService, FieldsService } from '../services/index.js';
-import type { Snapshot, SnapshotField } from '../types/index.js';
+import type { Snapshot, SnapshotField } from '@directus/types';
 import { applySnapshot } from './apply-snapshot.js';
 import * as getSchema from './get-schema.js';
 
