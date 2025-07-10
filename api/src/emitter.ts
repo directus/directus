@@ -31,17 +31,17 @@ export class Emitter {
 		};
 	}
 
-	public async emitFilter<T>(
+	public async emitFilter<TIn = unknown, TOut extends TIn = TIn>(
 		event: string | string[],
-		payload: T,
+		payload: TIn,
 		meta: Record<string, any>,
 		context: EventContext | null = null,
-	): Promise<T> {
+	): Promise<TOut | TIn> {
 		const events = Array.isArray(event) ? event : [event];
 
 		const eventListeners = events.map((event) => ({
 			event,
-			listeners: this.filterEmitter.listeners(event) as FilterHandler<T>[],
+			listeners: this.filterEmitter.listeners(event) as FilterHandler<TIn, TOut>[],
 		}));
 
 		let updatedPayload = payload;
