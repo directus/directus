@@ -9,11 +9,11 @@ export type EventContext = {
 	accountability: Accountability | null;
 };
 
-export type FilterHandler<T = unknown> = (
-	payload: T,
+export type FilterHandler<TIn = unknown, TOut = TIn> = (
+	payload: TIn,
 	meta: Record<string, any>,
 	context: EventContext,
-) => T | Promise<T>;
+) => TOut | Promise<TOut>;
 export type ActionHandler = (meta: Record<string, any>, context: EventContext) => void;
 export type InitHandler = (meta: Record<string, any>) => void;
 export type ScheduleHandler = PromiseCallback;
