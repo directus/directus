@@ -223,6 +223,7 @@ const editorOptions = computed(() => {
 		paste_data_images: false,
 		setup,
 		language: i18n.global.locale.value,
+		ui_mode: 'split',
 		...(props.tinymceOverrides && cloneDeep(props.tinymceOverrides)),
 	};
 });
