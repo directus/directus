@@ -241,6 +241,8 @@ function useSelection() {
 function useURLImport() {
 	const url = ref('');
 	const loading = ref(false);
+	const filesStore = useFilesStore();
+	const newUpload = filesStore.upload();
 
 	const isValidURL = computed(() => {
 		try {
@@ -257,6 +259,7 @@ function useURLImport() {
 		if (!isValidURL.value || loading.value) return;
 
 		loading.value = true;
+		newUpload.start(1);
 
 		const data = {
 			...props.preset,
@@ -269,6 +272,9 @@ function useURLImport() {
 				url: url.value,
 				data,
 			});
+
+			newUpload.progress.value = 100;
+			newUpload.done.value = 1;
 
 			emitter.emit(Events.upload);
 
@@ -284,6 +290,7 @@ function useURLImport() {
 			unexpectedError(error);
 		} finally {
 			loading.value = false;
+			newUpload.finish();
 		}
 	}
 }
