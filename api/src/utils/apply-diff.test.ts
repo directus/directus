@@ -1,6 +1,6 @@
 import type { Diff } from 'deep-diff';
 import { describe, expect, it } from 'vitest';
-import type { SnapshotField } from '../types/snapshot.js';
+import type { SnapshotField } from '@directus/types';
 
 import { isNestedMetaUpdate } from './apply-diff.js';
 
