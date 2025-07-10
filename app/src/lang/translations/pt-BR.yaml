@@ -1715,7 +1715,6 @@ translation_placeholder: Insira uma tradução...
 value: Valor
 view_project: Visualizar projeto
 report_error: Relatar erro
-start: Início
 table: Tabela
 list: Lista
 search_filter: Busca & Filtro
@@ -2298,6 +2297,7 @@ show_labels: Mostrar Rótulos
 show_legend: Mostrar Legenda
 right: Direita
 left: Esquerda
+start: Início
 donut: Rosca
 continuous: Contínuo
 gap: Vão
