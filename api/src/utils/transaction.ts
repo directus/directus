@@ -11,9 +11,12 @@ import type { DatabaseClient } from '../types/index.js';
  * Can be used to ensure the handler is run within a transaction,
  * while preventing nested transactions.
  */
-export const transaction = async <T = unknown>(knex: Knex, handler: (knex: Knex) => Promise<T>): Promise<T> => {
+export const transaction = async <T = unknown>(
+	knex: Knex,
+	handler: (knex: Knex.Transaction) => Promise<T>,
+): Promise<T> => {
 	if (knex.isTransaction) {
-		return handler(knex);
+		return handler(knex as Knex.Transaction);
 	} else {
 		try {
 			return await knex.transaction((trx) => handler(trx));

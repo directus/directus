@@ -28,6 +28,7 @@ import { shouldClearCache } from '../utils/should-clear-cache.js';
 import { transaction } from '../utils/transaction.js';
 import { validateKeys } from '../utils/validate-keys.js';
 import { UserIntegrityCheckFlag, validateUserCountIntegrity } from '../utils/validate-user-count-integrity.js';
+import { handleVersion } from '../utils/versioning/handle-version.js';
 import { PayloadService } from './payload.js';
 
 const env = useEnv();
@@ -372,6 +373,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 				await getHelpers(trx).sequence.resetAutoIncrementSequence(this.collection, primaryKeyField);
 			}
 
+			if (opts.onItemCreate) {
+				opts.onItemCreate(this.collection, primaryKey);
+			}
+
 			return primaryKey;
 		});
 
@@ -580,38 +585,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		const filterWithKey = assign({}, query.filter, { [primaryKeyField]: { _eq: key } });
 		const queryWithKey = assign({}, query, { filter: filterWithKey });
 
-		let results: Item[];
+		let results: Item[] = [];
 
 		if (query.version) {
-			const { VersionsService } = await import('./versions.js');
-
-			const trx = await this.knex.transaction();
-
-			const versionsService = new VersionsService({
-				schema: this.schema,
-				accountability: this.accountability,
-				knex: trx,
-			});
-
-			const versionData = await versionsService.getVersionSaves(query.version, this.collection, key as string);
-
-			const itemsService = new ItemsService<Item>(this.collection, {
-				schema: this.schema,
-				accountability: this.accountability,
-				knex: trx,
-			});
-
-			for (const data of versionData ?? []) {
-				await itemsService.updateOne(key, data as any, {
-					emitEvents: false,
-					autoPurgeCache: false,
-					bypassAccountability: true,
-				});
-			}
-
-			results = await itemsService.readByQuery(queryWithKey, opts);
-
-			await trx.rollback();
+			results = (await handleVersion(this, key, queryWithKey, opts)) as Item[];
 		} else {
 			results = await this.readByQuery(queryWithKey, opts);
 		}

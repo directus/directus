@@ -1,0 +1,77 @@
+import type { CollectionOverview, FieldOverview, Relation, SchemaOverview } from '@directus/types';
+import { isPlainObject } from 'lodash-es';
+import assert from 'node:assert';
+import { getRelationInfo, type RelationInfo } from './get-relation-info.js';
+
+/**
+ * Bottom to Top depth first mapping of values
+ */
+export function deepMapResponse(
+	object: Record<string, any>,
+	callback: (
+		entry: [key: string | number, value: unknown],
+		context: {
+			collection: CollectionOverview;
+			field: FieldOverview;
+			relation: Relation | null;
+			relationType: RelationInfo['relationType'] | null;
+		},
+	) => [key: string | number, value: unknown],
+	context: {
+		schema: SchemaOverview;
+		collection: string;
+		relationInfo?: RelationInfo;
+	},
+): any {
+	const collection = context.schema.collections[context.collection];
+
+	assert(
+		isPlainObject(object) && typeof object === 'object' && object !== null,
+		`DeepMapResponse only works on objects, received ${JSON.stringify(object)}`,
+	);
+
+	return Object.fromEntries(
+		Object.entries(object).map(([key, value]) => {
+			const field = collection?.fields[key];
+
+			if (!field) return [key, value];
+
+			const relationInfo = getRelationInfo(context.schema.relations, collection.collection, field.field);
+
+			if (relationInfo.relation && typeof value === 'object' && value !== null && isPlainObject(object)) {
+				switch (relationInfo.relationType) {
+					case 'm2o':
+						value = deepMapResponse(value, callback, {
+							schema: context.schema,
+							collection: relationInfo.relation.related_collection!,
+							relationInfo,
+						});
+
+						break;
+					case 'o2m':
+						value = (value as any[]).map((childValue) => {
+							if (isPlainObject(childValue) && typeof childValue === 'object' && childValue !== null)
+								return deepMapResponse(childValue, callback, {
+									schema: context.schema,
+									collection: relationInfo!.relation!.collection,
+									relationInfo,
+								});
+							else return childValue;
+						});
+
+						break;
+					case 'a2o':
+						value = deepMapResponse(value, callback, {
+							schema: context.schema,
+							collection: object[relationInfo.relation.meta!.one_collection_field!],
+							relationInfo,
+						});
+
+						break;
+				}
+			}
+
+			return callback([key, value], { collection, field, ...relationInfo });
+		}),
+	);
+}
