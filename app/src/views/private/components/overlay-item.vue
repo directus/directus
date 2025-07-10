@@ -232,6 +232,7 @@ const overlayItemContentProps = computed(() => {
 		junctionFieldLocation: props.junctionFieldLocation,
 		relatedCollectionFields: relatedCollectionFields.value,
 		relatedPrimaryKey: props.relatedPrimaryKey,
+		relatedPrimaryKeyField: relatedPrimaryKeyField.value?.field ?? null,
 		refresh,
 	};
 });
