@@ -6,7 +6,7 @@ export type HookExtensionContext = ApiExtensionContext & {
 };
 
 export type RegisterFunctions = {
-	filter: <T = unknown>(event: string, handler: FilterHandler<T>) => void;
+	filter: <TIn = unknown, TOut = TIn>(event: string, handler: FilterHandler<TIn, TOut>) => void;
 	action: (event: string, handler: ActionHandler) => void;
 	init: (event: string, handler: InitHandler) => void;
 	schedule: (cron: string, handler: ScheduleHandler) => void;
