@@ -1,6 +1,7 @@
 import api from '@/api';
 import { useLayoutClickHandler } from '@/composables/use-layout-click-handler';
 import { useServerStore } from '@/stores/server';
+import { adjustFieldsForDisplays } from '@/utils/adjust-fields-for-displays';
 import { formatItemsCountRelative } from '@/utils/format-items-count';
 import { getFullcalendarLocale } from '@/utils/get-fullcalendar-locale';
 import { renderDisplayStringTemplate } from '@/utils/render-string-template';
@@ -108,7 +109,8 @@ export default defineLayout<LayoutOptions>({
 			if (template.value) fields.push(...getFieldsFromTemplate(template.value));
 			if (startDateField.value) fields.push(startDateField.value);
 			if (endDateField.value) fields.push(endDateField.value);
-			return fields;
+
+			return [...fields, ...adjustFieldsForDisplays(fields, collection.value!)];
 		});
 
 		const limit = computed(() => (info.queryLimit?.max && info.queryLimit.max !== -1 ? info.queryLimit.max : 1000));
