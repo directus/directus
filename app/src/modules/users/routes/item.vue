@@ -19,6 +19,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
+import { logout } from '@/auth';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -205,6 +206,15 @@ async function deleteAndQuit() {
 	if (deleting.value) return;
 
 	try {
+		const currentUserId = userStore.currentUser && 'id' in userStore.currentUser ? userStore.currentUser.id : null;
+
+		// If the deleted user is the current user, we want to log them out
+		if (currentUserId && currentUserId === item.value?.id) {
+			await remove();
+			await logout();
+			return;
+		}
+
 		await remove();
 		edits.value = {};
 		router.replace(`/users`);
