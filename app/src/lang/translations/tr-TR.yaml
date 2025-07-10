@@ -1641,7 +1641,6 @@ translation_placeholder: Bir çeviri girin...
 value: Değer
 view_project: Projeyi görüntüle
 report_error: Hata Bildir
-start: Başla
 table: Tablo
 list: Liste
 search_filter: Ara ve Filtrele
@@ -2208,6 +2207,7 @@ show_labels: Etiketleri Göster
 show_legend: Göstergeyi Göster
 right: Sağ
 left: Sol
+start: Başla
 donut: Halka
 panels:
   metric:
