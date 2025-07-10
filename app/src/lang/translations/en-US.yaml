@@ -576,6 +576,9 @@ original: Original
 url: URL
 import_label: Import
 file_details: File Details
+copy_id: Copy ID
+copy_id_success: ID Copied
+copy_id_fail: ID Not Copied
 dimensions: Dimensions
 size: Size
 created: Created
