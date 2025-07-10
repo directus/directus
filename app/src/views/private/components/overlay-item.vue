@@ -423,7 +423,7 @@ function useActions() {
 	}
 
 	function validateForm({ defaultValues, existingValues, editsToValidate, fieldsToValidate }: Record<string, any>) {
-		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value);
+		return validateItem(merge({}, defaultValues, existingValues, editsToValidate), fieldsToValidate, isNew.value, true);
 	}
 
 	function save() {
