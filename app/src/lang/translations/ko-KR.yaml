@@ -1623,7 +1623,6 @@ translation_placeholder: 번역을 입력하세요...
 value: 값
 view_project: 프로젝트 보기
 report_error: 오류 신고
-start: 시작
 table: 테이블
 list: 목록
 search_filter: 검색 및 필터링
@@ -2200,6 +2199,7 @@ show_labels: 레이블 표시
 show_legend: 범례 표시
 right: 오른쪽
 left: 왼쪽
+start: 시작
 donut: 도넛
 panels:
   metric:
