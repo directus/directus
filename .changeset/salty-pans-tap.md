@@ -2,4 +2,4 @@
 '@directus/app': patch
 ---
 
-WYSIWYG - tinymce init in split mode for compatibility
+Fixed a bug that prevented popups from working in the WYSIWYG interface when opened in a drawer
