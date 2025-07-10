@@ -93,6 +93,10 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.h6',
 							},
 							{
+								value: 'customPre',
+								text: '$t:wysiwyg_options.pre',
+							},
+							{
 								value: 'alignleft',
 								text: '$t:wysiwyg_options.alignleft',
 							},
@@ -165,6 +169,10 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.blockquote',
 							},
 							{
+								value: 'customInlineCode',
+								text: '$t:wysiwyg_options.codeblock',
+							},
+							{
 								value: 'customLink',
 								text: '$t:wysiwyg_options.link',
 							},
@@ -189,10 +197,6 @@ export default defineInterface({
 								text: '$t:wysiwyg_options.hr',
 							},
 							{
-								value: 'code',
-								text: '$t:wysiwyg_options.source_code',
-							},
-							{
 								value: 'fullscreen',
 								text: '$t:wysiwyg_options.fullscreen',
 							},
@@ -203,6 +207,10 @@ export default defineInterface({
 							{
 								value: 'ltr rtl',
 								text: '$t:wysiwyg_options.directionality',
+							},
+							{
+								value: 'code',
+								text: '$t:wysiwyg_options.source_code',
 							},
 						],
 					},
