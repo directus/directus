@@ -1717,7 +1717,6 @@ translation_placeholder: Ingresa una traducción...
 value: Valor
 view_project: Ver proyecto
 report_error: Reportar Error
-start: Iniciar
 table: Tabla
 list: Lista
 search_filter: Buscar & Filtrar
@@ -2300,6 +2299,7 @@ show_labels: Mostrar etiquetas
 show_legend: Mostrar leyenda
 right: Derecha
 left: Izquierda
+start: Iniciar
 donut: Dona
 continuous: Continuo
 gap: Brecha
