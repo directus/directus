@@ -333,8 +333,8 @@ button {
 	align-items: flex-start;
 
 	:deep(.button) {
-		height: auto;
-		width: auto;
+		block-size: auto;
+		inline-size: auto;
 	}
 }
 </style>
