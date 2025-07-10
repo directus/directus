@@ -31,7 +31,7 @@ test('Returns highest result if user is passed', async () => {
 	vi.mocked(fetchGlobalAccessForRoles).mockResolvedValue(mockRolesAccess);
 	vi.mocked(fetchGlobalAccessForUser).mockResolvedValue(mockUserAccess);
 
-	const res = await fetchGlobalAccess({ user: 'user', roles: [] }, knex);
+	const res = await fetchGlobalAccess({ user: 'user', roles: [], ip: '' }, knex);
 
 	expect(res).toEqual({ app: true, admin: true });
 });
@@ -42,7 +42,7 @@ test('Combines result of role and user', async () => {
 	vi.mocked(fetchGlobalAccessForRoles).mockResolvedValue(mockRolesAccess);
 	vi.mocked(fetchGlobalAccessForUser).mockResolvedValue(mockUserAccess);
 
-	const res = await fetchGlobalAccess({ user: 'user', roles: [] }, knex);
+	const res = await fetchGlobalAccess({ user: 'user', roles: [], ip: '' }, knex);
 
 	expect(res).toEqual({ app: true, admin: true });
 });
