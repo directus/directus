@@ -199,7 +199,7 @@ export class FieldsService {
 
 		const knownCollections = Object.keys(this.schema.collections);
 
-		const result = [...columnsWithSystem, ...aliasFieldsAsField].filter((field) =>
+		let result = [...columnsWithSystem, ...aliasFieldsAsField].filter((field) =>
 			knownCollections.includes(field.collection),
 		);
 
@@ -239,7 +239,7 @@ export class FieldsService {
 				throw new ForbiddenError();
 			}
 
-			return result.filter((field) => {
+			result = result.filter((field) => {
 				if (field.collection in allowedFieldsInCollection === false) return false;
 				const allowedFields = allowedFieldsInCollection[field.collection]!;
 				if (allowedFields.has('*')) return true;
@@ -249,12 +249,6 @@ export class FieldsService {
 
 		// Update specific database type overrides
 		for (const field of result) {
-			if (field.meta?.special?.includes('cast-timestamp')) {
-				field.type = 'timestamp';
-			} else if (field.meta?.special?.includes('cast-datetime')) {
-				field.type = 'dateTime';
-			}
-
 			field.type = this.helpers.schema.processFieldType(field);
 		}
 
