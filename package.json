@@ -7,6 +7,7 @@
 		"build": "pnpm --recursive --filter '!docs' run build",
 		"format": "prettier --cache --check .",
 		"lint": "eslint --cache .",
+		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
 		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
 	},
@@ -18,8 +19,14 @@
 		"eslint-config-prettier": "9.1.0",
 		"eslint-plugin-vue": "9.32.0",
 		"globals": "15.15.0",
+		"postcss-html": "1.8.0",
 		"prettier": "3.1.0",
 		"rimraf": "6.0.1",
+		"stylelint": "16.21.0",
+		"stylelint-config-standard": "38.0.0",
+		"stylelint-config-standard-scss": "15.0.1",
+		"stylelint-config-standard-vue": "1.0.0",
+		"stylelint-use-logical": "2.1.2",
 		"typescript": "5.8.2",
 		"typescript-eslint": "8.25.0"
 	},

@@ -15,7 +15,7 @@ interface Props {
 	rounded?: boolean;
 	/** No background */
 	outlined?: boolean;
-	/** Remove padding / min-width. Meant to be used with just an icon as content */
+	/** Remove padding / min-inline-size. Meant to be used with just an icon as content */
 	icon?: boolean;
 	/** Element type to be used */
 	type?: string;
@@ -267,7 +267,7 @@ async function onClick(event: MouseEvent) {
 
 .v-button.full-width {
 	display: flex;
-	min-width: 100%;
+	min-inline-size: 100%;
 }
 
 body.dark .button {
@@ -280,9 +280,9 @@ body.dark .button {
 	position: relative;
 	display: flex;
 	align-items: center;
-	width: var(--v-button-width, auto);
-	min-width: var(--v-button-min-width, 140px);
-	height: var(--v-button-height, 44px);
+	inline-size: var(--v-button-width, auto);
+	min-inline-size: var(--v-button-min-width, 140px);
+	block-size: var(--v-button-height, 44px);
 	padding: var(--v-button-padding, 0 19px);
 	color: var(--v-button-color, var(--foreground-inverted));
 	font-weight: var(--v-button-font-weight, 600);
@@ -294,7 +294,7 @@ body.dark .button {
 	border-radius: var(--theme--border-radius);
 	cursor: pointer;
 	transition: var(--fast) var(--transition);
-	transition-property: background-color border;
+	transition-property: background-color, border;
 }
 
 .button:hover {
@@ -383,18 +383,18 @@ body.dark .button {
 }
 
 .icon {
-	width: var(--v-button-height, 44px);
-	min-width: 0;
+	inline-size: var(--v-button-height, 44px);
+	min-inline-size: 0;
 	padding: 0;
 }
 
 .button.full-width {
-	min-width: 100%;
+	min-inline-size: 100%;
 }
 
 .content,
 .spinner {
-	max-width: 100%;
+	max-inline-size: 100%;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -413,8 +413,8 @@ body.dark .button {
 
 .spinner {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
 	transform: translate(-50%, -50%);
 }
 

@@ -813,16 +813,16 @@ function useCollectionRoute() {
 
 .v-form {
 	padding: calc(var(--content-padding) * 3) var(--content-padding) var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 
 	@media (min-width: 600px) {
 		padding: var(--content-padding);
-		padding-bottom: var(--content-padding-bottom);
+		padding-block-end: var(--content-padding-bottom);
 	}
 }
 
 .title-loader {
-	width: 260px;
+	inline-size: 260px;
 }
 
 .version-more-options.v-icon {
@@ -844,11 +844,11 @@ function useCollectionRoute() {
 
 		.headline {
 			opacity: 1;
-			top: 3px;
+			inset-block-start: 3px;
 		}
 
 		.title {
-			top: 4px;
+			inset-block-start: 4px;
 		}
 
 		@media (min-width: 600px) {

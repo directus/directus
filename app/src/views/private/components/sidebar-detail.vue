@@ -67,7 +67,7 @@ function onClick() {
 	display: contents;
 
 	:deep(.type-label) {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 		font-size: 1rem;
 	}
 
@@ -78,11 +78,11 @@ function onClick() {
 		display: flex;
 		flex-shrink: 0;
 		justify-content: space-between;
-		width: 100%;
-		height: calc(60px + var(--theme--sidebar--section--toggle--border-width));
+		inline-size: 100%;
+		block-size: calc(60px + var(--theme--sidebar--section--toggle--border-width));
 		color: var(--theme--sidebar--section--toggle--foreground);
 		background-color: var(--theme--sidebar--section--toggle--background);
-		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+		border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
 			var(--theme--sidebar--section--toggle--border-color);
 
 		.icon {
@@ -91,8 +91,8 @@ function onClick() {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			width: 60px;
-			height: 100%;
+			inline-size: 60px;
+			block-size: 100%;
 		}
 
 		&:hover {
@@ -118,14 +118,14 @@ function onClick() {
 		--focus-ring-offset: var(--focus-ring-offset-inset);
 
 		position: absolute;
-		top: 0;
-		right: 0;
+		inset-block-start: 0;
+		inset-inline-end: 0;
 		z-index: 50;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 60px;
-		height: 60px;
+		inline-size: 60px;
+		block-size: 60px;
 		color: var(--theme--foreground);
 		transition:
 			opacity var(--fast) var(--transition),
@@ -151,8 +151,8 @@ function onClick() {
 
 	.title {
 		position: absolute;
-		top: 50%;
-		left: 52px;
+		inset-block-start: 50%;
+		inset-inline-start: 52px;
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);
@@ -160,17 +160,16 @@ function onClick() {
 	}
 
 	.scroll-container {
-		overflow-x: hidden;
-		overflow-y: auto;
+		overflow: hidden auto;
 	}
 
 	.content {
 		padding: 16px;
-		border-bottom: var(--theme--sidebar--section--toggle--border-width) solid
+		border-block-end: var(--theme--sidebar--section--toggle--border-width) solid
 			var(--theme--sidebar--section--toggle--border-color);
 
 		:deep(.page-description) {
-			margin-bottom: 8px;
+			margin-block-end: 8px;
 			color: var(--theme--sidebar--foreground);
 		}
 

@@ -210,7 +210,7 @@ function toggleManualSort() {
 			</template>
 
 			<template #item="{ element: header }">
-				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ width: header.width + 'px' }">
+				<th :class="getClassesForHeader(header)" class="cell" scope="col" :style="{ inlineSize: header.width + 'px' }">
 					<v-menu v-if="hasHeaderContextMenuSlot" show-arrow placement="bottom-start">
 						<template #activator="{ toggle }">
 							<div class="content reorder-handle">
@@ -280,12 +280,12 @@ function toggleManualSort() {
 .table-header {
 	.cell {
 		position: relative;
-		height: 50px; /* +2px for bottom border */
+		block-size: 50px; /* +2px for bottom border */
 		padding: 0 12px;
 		font-weight: 500;
 		font-size: 14px;
 		background-color: var(--v-table-background-color, var(--theme--background));
-		border-bottom: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		border-block-end: var(--theme--border-width) solid var(--theme--border-color-subdued);
 
 		&.select {
 			--focus-ring-offset: var(--focus-ring-offset-invert);
@@ -300,12 +300,12 @@ function toggleManualSort() {
 		.content {
 			display: flex;
 			align-items: center;
-			height: 100%;
+			block-size: 100%;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
 
 			.header-btn {
-				width: 100%;
+				inline-size: 100%;
 				display: flex;
 				align-items: center;
 				justify-content: start;
@@ -330,7 +330,7 @@ function toggleManualSort() {
 				justify-content: center;
 
 				.header-btn {
-					width: auto;
+					inline-size: auto;
 				}
 
 				.name {
@@ -352,7 +352,7 @@ function toggleManualSort() {
 		position: relative;
 
 		.action-icon {
-			margin-left: 4px;
+			margin-inline-start: 4px;
 			color: var(--theme--foreground-subdued);
 			opacity: 0;
 			transition: opacity var(--fast) var(--transition);
@@ -384,12 +384,12 @@ function toggleManualSort() {
 
 	.select,
 	.manual {
-		padding-right: 0;
+		padding-inline-end: 0;
 	}
 
 	.fixed {
 		position: sticky;
-		top: var(--v-table-sticky-offset-top, 0);
+		inset-block-start: var(--v-table-sticky-offset-top, 0);
 		z-index: 3;
 	}
 
@@ -398,7 +398,7 @@ function toggleManualSort() {
 
 		.v-icon {
 			position: relative;
-			left: 2px;
+			inset-inline-start: 2px;
 		}
 
 		&.sorted-manually {
@@ -408,20 +408,20 @@ function toggleManualSort() {
 
 	.resize-handle {
 		position: absolute;
-		top: 0;
-		right: 0;
-		width: 5px;
-		height: 100%;
+		inset-block-start: 0;
+		inset-inline-end: 0;
+		inline-size: 5px;
+		block-size: 100%;
 		cursor: ew-resize;
 		transition: opacity var(--fast) var(--transition);
 
 		&::after {
 			position: relative;
-			top: 20%;
-			left: 3px;
+			inset-block-start: 20%;
+			inset-inline-start: 3px;
 			display: block;
-			width: var(--theme--border-width);
-			height: 60%;
+			inline-size: var(--theme--border-width);
+			block-size: 60%;
 			background-color: var(--theme--border-color-subdued);
 			content: '';
 			transition: background-color var(--fast) var(--transition);
@@ -440,19 +440,18 @@ function toggleManualSort() {
 :deep(.header-order-ghost) {
 	&::after,
 	&::before {
-		width: 2px;
+		inline-size: 2px;
 		content: '';
 		display: block;
 		position: absolute;
-		right: 0;
-		top: 20%;
-		height: 60%;
+		inset-inline-end: 0;
+		inset-block-start: 20%;
+		block-size: 60%;
 		background-color: var(--theme--primary);
 	}
 
 	&::before {
-		right: auto;
-		left: 0;
+		inset-inline: 0 auto;
 	}
 }
 
@@ -461,14 +460,14 @@ function toggleManualSort() {
 }
 
 .description-dot {
-	width: 8px;
-	height: 8px;
+	inline-size: 8px;
+	block-size: 8px;
 	background-color: var(--theme--foreground-subdued);
 	display: inline-block;
 	border-radius: 50%;
 	border: var(--theme--background) 6px solid;
 	box-sizing: content-box;
-	margin-right: 8px;
+	margin-inline-end: 8px;
 	vertical-align: middle;
 }
 </style>

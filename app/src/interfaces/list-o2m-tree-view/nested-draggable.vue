@@ -274,19 +274,19 @@ function stageEdits(item: Record<string, any>) {
 @use '@/styles/mixins';
 
 .drag-area {
-	min-height: 12px;
+	min-block-size: 12px;
 
 	&.root {
-		margin-left: 0;
+		margin-inline-start: 0;
 		padding: 0;
 
 		.v-skeleton-loader {
-			margin: 12px 0px 12px auto;
-			width: calc(100% - 24px);
+			margin: 12px 0 12px auto;
+			inline-size: calc(100% - 24px);
 		}
 
 		&:empty {
-			min-height: 0;
+			min-block-size: 0;
 		}
 	}
 
@@ -301,7 +301,6 @@ function stageEdits(item: Record<string, any>) {
 	.preview {
 		padding: 12px;
 		cursor: grab;
-		border-style: solid;
 		background-color: var(--theme--background);
 		border: var(--theme--border-width) solid var(--theme--border-color);
 		border-radius: var(--theme--border-radius);
@@ -310,18 +309,19 @@ function stageEdits(item: Record<string, any>) {
 			padding: 0;
 
 			> .v-list-item:first-child {
-				margin-top: 8px;
+				margin-block-start: 8px;
 			}
 		}
 	}
 
 	&.v-list-item {
 		display: block;
+
 		--v-list-item-padding: 0;
 		--v-list-item-margin: 0;
 
 		+ .v-list-item {
-			margin-top: 8px;
+			margin-block-start: 8px;
 		}
 	}
 

@@ -162,14 +162,14 @@ function useValidationScrollToField() {
 
 .overlay-item-content {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 
 	.preview {
-		margin-bottom: var(--theme--form--row-gap);
+		margin-block-end: var(--theme--form--row-gap);
 	}
 
 	.validation-errors {
-		margin-bottom: var(--theme--form--row-gap);
+		margin-block-end: var(--theme--form--row-gap);
 	}
 
 	.overlay-item-order {

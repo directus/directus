@@ -715,15 +715,15 @@ function getLinkForItem(item: DisplayItem) {
 
 		.no-last-border {
 			tr.table-row:last-child td {
-				border-bottom: none;
+				border-block-end: none;
 			}
 		}
 
 		tr.table-row {
 			.append {
 				position: sticky;
-				right: 0;
-				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
+				inset-inline-end: 0;
+				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}
@@ -758,7 +758,7 @@ function getLinkForItem(item: DisplayItem) {
 	z-index: 1;
 
 	&.top {
-		margin-top: 0px;
+		margin-block-start: 0;
 	}
 
 	.spacer {
@@ -780,12 +780,12 @@ function getLinkForItem(item: DisplayItem) {
 		flex-wrap: wrap;
 
 		.search {
-			width: 100%;
+			inline-size: 100%;
 			order: -1;
 
 			:deep(.search-input),
 			:deep(.search-badge) {
-				width: 100% !important;
+				inline-size: 100% !important;
 			}
 		}
 	}
@@ -795,14 +795,14 @@ function getLinkForItem(item: DisplayItem) {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	width: 120px;
+	inline-size: 120px;
 	padding: 10px 0;
-	margin-right: 2px;
+	margin-inline-end: 2px;
 	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
-		width: auto;
-		margin-right: 8px;
+		inline-size: auto;
+		margin-inline-end: 8px;
 	}
 
 	.v-select {

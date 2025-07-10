@@ -91,7 +91,7 @@ h1 {
 }
 
 .registration-wrapper {
-	margin-top: 3rem;
+	margin-block-start: 3rem;
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: center;
@@ -109,14 +109,14 @@ h1 {
 	display: flex;
 	align-items: end;
 	justify-content: space-between;
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 
 	.type-title {
-		margin-bottom: 0;
+		margin-block-end: 0;
 	}
 
 	.provider-select {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 	}
 }
 </style>

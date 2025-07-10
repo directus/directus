@@ -566,11 +566,11 @@ onMounted(() => {
 
 .remaining {
 	position: absolute;
-	right: 10px;
-	bottom: 5px;
+	inset-inline-end: 10px;
+	inset-block-end: 5px;
 	color: var(--theme--form--field--input--foreground-subdued);
 	font-weight: 600;
-	text-align: right;
+	text-align: end;
 	vertical-align: middle;
 	font-feature-settings: 'tnum';
 }
@@ -585,16 +585,15 @@ onMounted(() => {
 
 .image-preview,
 .media-preview {
-	width: 100%;
-	height: var(--input-height-tall);
-	margin-bottom: 24px;
+	inline-size: 100%;
+	block-size: var(--input-height-tall);
+	margin-block-end: 24px;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 }
 
 .content {
 	padding: var(--content-padding);
-	padding-top: 0;
-	padding-bottom: var(--content-padding);
+	padding-block: 0 var(--content-padding);
 }
 </style>

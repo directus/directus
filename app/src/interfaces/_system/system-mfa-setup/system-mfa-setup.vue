@@ -201,6 +201,6 @@ function cancelAndClose() {
 }
 
 .v-error {
-	margin-top: 24px;
+	margin-block-start: 24px;
 }
 </style>

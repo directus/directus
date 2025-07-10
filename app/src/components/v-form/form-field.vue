@@ -241,8 +241,8 @@ function useComputedValues() {
 .type-note {
 	position: relative;
 	display: block;
-	max-width: 520px;
-	margin-top: 4px;
+	max-inline-size: 520px;
+	margin-block-start: 4px;
 
 	:deep(a) {
 		color: var(--theme--primary);
@@ -265,12 +265,12 @@ function useComputedValues() {
 .validation-error {
 	display: flex;
 	align-items: center;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--danger);
 	font-style: italic;
 }
 
 .label-spacer {
-	height: 28px;
+	block-size: 28px;
 }
 </style>

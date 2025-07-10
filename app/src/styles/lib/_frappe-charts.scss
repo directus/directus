@@ -68,22 +68,22 @@
 	color: var(--theme--form--field--input--border-color);
 	font-size: 12px;
 	text-align: center;
-	background: rgba(0, 0, 0, 0.8);
+	background: rgb(0 0 0 / 0.8);
 	border-radius: 3px;
 
 	ul {
 		display: flex;
-		padding-left: 0;
+		padding-inline-start: 0;
 	}
 
 	ol {
 		display: flex;
-		padding-left: 0;
+		padding-inline-start: 0;
 	}
 
 	&.comparison {
 		padding: 0;
-		text-align: left;
+		text-align: start;
 		pointer-events: none;
 
 		.title {
@@ -110,7 +110,7 @@
 	ul.data-point-list {
 		li {
 			flex: 1;
-			min-width: 90px;
+			min-inline-size: 90px;
 			font-weight: 600;
 		}
 	}
@@ -122,10 +122,10 @@
 
 	.svg-pointer {
 		position: absolute;
-		height: 5px;
+		block-size: 5px;
 		margin: 0 0 0 -5px;
 		border: 5px solid transparent;
-		border-top-color: rgba(0, 0, 0, 0.8);
+		border-block-start-color: rgb(0 0 0 / 0.8);
 		content: ' ';
 	}
 }

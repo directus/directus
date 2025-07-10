@@ -104,8 +104,8 @@ function showCustomValidationMessage(validationError: ValidationErrorWithDetails
 
 <style lang="scss" scoped>
 .validation-errors-list {
-	margin-top: 4px;
-	padding-left: 28px;
+	margin-block-start: 4px;
+	padding-inline-start: 28px;
 
 	.field {
 		cursor: pointer;
@@ -117,11 +117,11 @@ function showCustomValidationMessage(validationError: ValidationErrorWithDetails
 
 	.validation-error .v-icon {
 		vertical-align: text-top;
-		margin-left: 0 !important;
+		margin-inline-start: 0 !important;
 	}
 
 	li:not(:last-child) {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 	}
 }
 </style>

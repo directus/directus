@@ -1757,7 +1757,6 @@ translation_placeholder: Enter a translation...
 value: Value
 view_project: View Project
 report_error: Report Error
-start: Start
 table: Table
 list: List
 search_filter: Search & Filter
@@ -2351,6 +2350,8 @@ show_labels: Show Labels
 show_legend: Show Legend
 right: Right
 left: Left
+start: Start
+end: End
 donut: Donut
 continuous: Continuous
 gap: Gap
