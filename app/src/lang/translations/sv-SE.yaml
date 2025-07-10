@@ -1339,7 +1339,6 @@ translation_placeholder: Ange en översättning...
 value: Värde
 view_project: Visa projekt
 report_error: Rapportera fel
-start: Starta
 table: Tabell
 list: Lista
 search_filter: Sök & filtrera
@@ -1751,6 +1750,7 @@ layouts:
     crop: Beskär
     advanced: Avancerat
 both: Båda
+start: Starta
 panels:
   metric:
     name: Metrisk
