@@ -389,6 +389,7 @@ function useRawEditor() {
 					:badge="badge"
 					:raw-editor-enabled="rawEditorEnabled"
 					:direction="direction"
+					:version
 					v-bind="fieldsMap[fieldName]!.meta?.options || {}"
 					@apply="apply"
 				/>
