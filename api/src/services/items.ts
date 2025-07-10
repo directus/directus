@@ -514,7 +514,8 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		// changes in the DB if any of the parts contained within throws an error. This also means
 		// that any errors thrown in any nested relational changes will bubble up and cancel the whole
 		// update tree
-		type ItemValues = {
+		type ItemValues = PrimaryKey
+		| {
 			primaryKey: PrimaryKey,
 
 			actionHookPayload: any, // TODO better typing from processPayload()
@@ -571,11 +572,17 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 						)
 						: payload
 
-				if ( payloadAfterHooks === null // skip creation
+				if ( payloadAfterHooks === null) { // skip creation
+					continue
+				}
+
+				if ( false // eslint-disable-line
 					|| typeof payloadAfterHooks === 'string' // replace new creation by an existing item having a uuid as its primary key
 					|| typeof payloadAfterHooks === 'number' // replace new creation by an existing item having a number as its primary key
 				) {
-					return payloadAfterHooks
+					itemsAnalyzingValues.push(payloadAfterHooks)
+
+					continue
 				}
 
 				const payloadWithPresets = this.accountability
@@ -669,28 +676,38 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 
 			try {
 				const results = await trx
-				.batchInsert(
+				.batchInsert<Exclude<ItemValues, number | string>['payloadWithoutAliases']>(
 					this.collection,
-					itemsAnalyzingValues.map((v) => v.payloadWithoutAliases)
+					(itemsAnalyzingValues
+					.filter((v) => {
+						return typeof v !== 'number'
+						|| typeof v !== 'string'
+					}) as Exclude<ItemValues, number | string>[])
+					.map((v) => {
+						return v.payloadWithoutAliases
+					})
 				)
 				.returning(primaryKeyField)
 
 				results.forEach((result, index) => {
-					if (! itemsAnalyzingValues[index]) {
-						throw new Error(`No batchInsert itemInput found for index ${index}`)
+					const preparedValues = itemsAnalyzingValues[index]
+
+					if (! preparedValues
+						|| typeof preparedValues === 'string'
+						|| typeof preparedValues === 'number'
+					) {
+						throw new Error(`No batchInsert itemInput found for index ${index}`) // Should never happend
 					}
 
 					const returnedKey = typeof result === `object` ? result[primaryKeyField] : result
 
 					if (this.schema.collections[this.collection]!.fields[primaryKeyField]!.type === `uuid`) {
-						itemsAnalyzingValues[index].primaryKey
-						= getHelpers(trx).schema.formatUUID(
-								(itemsAnalyzingValues[index].primaryKey ?? returnedKey) as string
-							)
+						preparedValues.primaryKey = getHelpers(trx).schema.formatUUID(
+							(preparedValues.primaryKey ?? returnedKey) as string
+						)
 					}
 					else {
-						itemsAnalyzingValues[index].primaryKey
-						= itemsAnalyzingValues[index].primaryKey ?? returnedKey
+						preparedValues.primaryKey = preparedValues.primaryKey ?? returnedKey
 					}
 				})
 			}
@@ -713,6 +730,10 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			// }
 
 			for (const itemsAnalyzingValue of itemsAnalyzingValues) {
+				if (typeof itemsAnalyzingValue === 'number' || typeof itemsAnalyzingValue === 'string') {
+					continue
+				}
+
 				const {
 					primaryKey,
 					payloadAfterHooks,
@@ -807,55 +828,62 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 		})
 
 
-		itemsValues.forEach(({
-			primaryKey,
-			actionHookPayload,
-			nestedActionEventsM2O,
-			nestedActionEventsA2O,
-			nestedActionEventsO2M,
-		}) => {
-			if (opts.emitEvents !== false) {
-				const actionEvent = {
-					event:
-						this.eventScope === `items`
-							? [`items.create`, `${this.collection}.items.create`]
-							: `${this.eventScope}.create`,
-					meta: {
-						actionHookPayload,
-						key: primaryKey,
-						collection: this.collection,
-					},
-					context: {
-						database: getDatabase(),
-						schema: this.schema,
-						accountability: this.accountability,
-					},
-				}
+		itemsValues.forEach((itemValues) => {
+			if (opts.emitEvents === false
+				|| typeof itemValues === 'string'
+				|| typeof itemValues === 'number'
+			) {
+				return
+			}
 
+			const {
+				primaryKey,
+				actionHookPayload,
+				nestedActionEventsM2O,
+				nestedActionEventsA2O,
+				nestedActionEventsO2M,
+			} = itemValues
+
+			const actionEvent = {
+				event:
+					this.eventScope === `items`
+						? [`items.create`, `${this.collection}.items.create`]
+						: `${this.eventScope}.create`,
+				meta: {
+					actionHookPayload,
+					key: primaryKey,
+					collection: this.collection,
+				},
+				context: {
+					database: getDatabase(),
+					schema: this.schema,
+					accountability: this.accountability,
+				},
+			}
+
+			if (opts.bypassEmitAction) {
+				opts.bypassEmitAction(actionEvent)
+			}
+			else {
+				emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context)
+			}
+
+			const nestedActionEvents = [
+				...nestedActionEventsO2M || [],
+				...nestedActionEventsA2O,
+				...nestedActionEventsM2O,
+			]
+
+			for (const nestedActionEvent of nestedActionEvents) {
 				if (opts.bypassEmitAction) {
-					opts.bypassEmitAction(actionEvent)
+					opts.bypassEmitAction(nestedActionEvent)
 				}
 				else {
-					emitter.emitAction(actionEvent.event, actionEvent.meta, actionEvent.context)
-				}
-
-				const nestedActionEvents = [
-					...nestedActionEventsO2M || [],
-					...nestedActionEventsA2O,
-					...nestedActionEventsM2O,
-				]
-
-				for (const nestedActionEvent of nestedActionEvents) {
-					if (opts.bypassEmitAction) {
-						opts.bypassEmitAction(nestedActionEvent)
-					}
-					else {
-						emitter.emitAction(
-							nestedActionEvent.event,
-							nestedActionEvent.meta,
-							nestedActionEvent.context
-						)
-					}
+					emitter.emitAction(
+						nestedActionEvent.event,
+						nestedActionEvent.meta,
+						nestedActionEvent.context
+					)
 				}
 			}
 		})
@@ -864,7 +892,13 @@ export class ItemsService<Item extends AnyItem = AnyItem, Collection extends str
 			await this.cache.clear()
 		}
 
-		return itemsValues.map(({ primaryKey }) => primaryKey)
+		return itemsValues.map((itemValues) => {
+			if (typeof itemValues === 'string' || typeof itemValues === 'number') {
+				return itemValues
+			}
+
+			return itemValues.primaryKey
+		})
 	}
 
 	/**
