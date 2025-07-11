@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { Accountability, SchemaOverview } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, SchemaOverview } from '@directus/types';
 import { toArray, toBoolean } from '@directus/utils';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
@@ -15,7 +15,6 @@ import { rateLimiterGlobal } from '../middleware/rate-limiter-global.js';
 import { rateLimiter } from '../middleware/rate-limiter-ip.js';
 import { SERVER_ONLINE } from '../server.js';
 import { getStorage } from '../storage/index.js';
-import type { AbstractServiceOptions } from '../types/index.js';
 import { getAllowedLogLevels } from '../utils/get-allowed-log-levels.js';
 import { SettingsService } from './settings.js';
 
