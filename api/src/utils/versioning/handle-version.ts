@@ -1,5 +1,5 @@
 import { transaction } from '../transaction.js';
-import { ItemsService, type QueryOptions } from '../../services/index.js';
+import type { ItemsService as ItemsServiceType, QueryOptions } from '../../services/index.js';
 import type { Item, PrimaryKey, Query } from '@directus/types';
 import { deepMapResponse } from '../deep-map-response.js';
 import { intersection } from 'lodash-es';
@@ -7,8 +7,9 @@ import { GENERATE_SPECIAL } from '../../constants.js';
 import { ForbiddenError } from '@directus/errors';
 import { mergeVersionsRaw } from './merge-version-data.js';
 
-export async function handleVersion(self: ItemsService, key: PrimaryKey, queryWithKey: Query, opts?: QueryOptions) {
+export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, queryWithKey: Query, opts?: QueryOptions) {
 	const { VersionsService } = await import('../../services/versions.js');
+	const { ItemsService } = await import('../../services/items.js');
 
 	if (queryWithKey.versionRaw) {
 		const originalData = await self.readByQuery(queryWithKey, opts);
