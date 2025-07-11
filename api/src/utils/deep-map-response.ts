@@ -2,9 +2,11 @@ import type { CollectionOverview, FieldOverview, Relation, SchemaOverview } from
 import { isPlainObject } from 'lodash-es';
 import assert from 'node:assert';
 import { getRelationInfo, type RelationInfo } from './get-relation-info.js';
+import { createError, ErrorCode } from '@directus/errors';
 
 /**
- * Bottom to Top depth first mapping of values
+ * Allows to deep map the response from the ItemsService with collection, field and relation context for each entry.
+ * Bottom to Top depth first mapping of values.
  */
 export function deepMapResponse(
 	object: Record<string, any>,
@@ -64,15 +66,31 @@ export function deepMapResponse(
 						});
 
 						break;
-					case 'a2o':
+
+					case 'a2o': {
+						const related_collection = object[relationInfo.relation.meta!.one_collection_field!];
+
+						const M2AWithoutCollectionError = createError(
+							ErrorCode.InvalidQuery,
+							`When selecting '${collection.collection}.${field.field}', the field '${collection.collection}.${
+								relationInfo.relation.meta!.one_collection_field
+							}' has to be selected when using versioning and m2a relations`,
+							400,
+						);
+
+						if (!related_collection) {
+							throw new M2AWithoutCollectionError();
+						}
+
 						value = deepMapResponse(value, callback, {
 							schema: context.schema,
-							collection: object[relationInfo.relation.meta!.one_collection_field!],
+							collection: related_collection,
 							relationInfo,
 						});
 
 						leaf = false;
 						break;
+					}
 				}
 			}
 
