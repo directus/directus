@@ -22,6 +22,7 @@ import { ExtensionReadError, ExtensionsService } from '../services/extensions.js
 import asyncHandler from '../utils/async-handler.js';
 import { getCacheControlHeader } from '../utils/get-cache-headers.js';
 import { getMilliseconds } from '../utils/get-milliseconds.js';
+import type { ReadStream } from 'node:fs';
 
 const router = express.Router();
 const env = useEnv();
@@ -294,12 +295,12 @@ router.get(
 		const chunk = req.params['chunk'] as string;
 		const extensionManager = getExtensionManager();
 
-		let source: string | null;
+		let source: ReadStream | null;
 
 		if (chunk === 'index.js') {
-			source = extensionManager.getAppExtensionsBundle();
+			source = await extensionManager.getAppExtensionChunk();
 		} else {
-			source = extensionManager.getAppExtensionChunk(chunk);
+			source = await extensionManager.getAppExtensionChunk(chunk);
 		}
 
 		if (source === null) {
@@ -314,7 +315,7 @@ router.get(
 		);
 
 		res.setHeader('Vary', 'Origin, Cache-Control');
-		res.end(source);
+		source.pipe(res);
 	}),
 );
 
