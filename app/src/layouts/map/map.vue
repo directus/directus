@@ -81,7 +81,7 @@ limitWritable.value = selectedSize;
 			<div
 				v-if="itemPopup!.item"
 				class="popup"
-				:style="{ top: itemPopup!.position!.y + 'px', left: itemPopup!.position!.x + 'px' }"
+				:style="{ insetBlockStart: itemPopup!.position!.y + 'px', insetInlineStart: itemPopup!.position!.x + 'px' }"
 			>
 				<render-template :template="template" :item="itemPopup!.item" :collection="collection" />
 			</div>
@@ -147,21 +147,21 @@ limitWritable.value = selectedSize;
 
 .layout-map {
 	position: relative;
-	width: 100%;
-	height: calc(100% - 60px);
+	inline-size: 100%;
+	block-size: calc(100% - 60px);
 }
 
 .center {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
 	transform: translate(-50%, -50%);
 }
 
 .popup {
 	position: fixed;
 	z-index: 1;
-	max-width: 80%;
+	max-inline-size: 80%;
 	padding: 6px 10px;
 	color: var(--theme--foreground-accent);
 	font-weight: 500;
@@ -175,14 +175,14 @@ limitWritable.value = selectedSize;
 }
 
 .render-template {
-	padding-right: 0;
+	padding-inline-end: 0;
 }
 
 .mapboxgl-ctrl-dropdown {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	height: 36px;
+	block-size: 36px;
 	padding: 10px;
 	color: var(--theme--foreground-subdued);
 	background: var(--theme--popover--menu--background);
@@ -191,8 +191,8 @@ limitWritable.value = selectedSize;
 	border: var(--theme--border-width) solid var(--theme--background);
 
 	span {
-		width: auto;
-		margin-right: 4px;
+		inline-size: auto;
+		margin-inline-end: 4px;
 	}
 
 	.v-select {
@@ -207,8 +207,8 @@ limitWritable.value = selectedSize;
 
 .footer {
 	position: absolute;
-	right: 0;
-	bottom: 0;
+	inset-inline-end: 0;
+	inset-block-end: 0;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -221,10 +221,10 @@ limitWritable.value = selectedSize;
 		--v-button-height: 28px;
 
 		display: inline-block;
-		margin-right: 10px;
+		margin-inline-end: 10px;
 
 		button {
-			box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.1);
+			box-shadow: 0 0 3px 1px rgb(0 0 0 / 0.1);
 		}
 	}
 }

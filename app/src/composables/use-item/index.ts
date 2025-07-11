@@ -17,7 +17,7 @@ import { Alterations, Field, Item, PrimaryKey, Query, Relation } from '@directus
 import { getEndpoint, isObject } from '@directus/utils';
 import { AxiosResponse } from 'axios';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-import { mergeWith } from 'lodash';
+import { mergeWith, cloneDeep } from 'lodash';
 import { ComputedRef, MaybeRef, Ref, computed, isRef, ref, unref, watch } from 'vue';
 import { UsablePermissions, usePermissions } from '../use-permissions';
 import { getGraphqlQueryFields } from './lib/get-graphql-query-fields';
@@ -217,7 +217,7 @@ export function useItem<T extends Item>(
 
 		const newItem: Item = {
 			...(itemData || {}),
-			...edits.value,
+			...cloneDeep(edits.value),
 		};
 
 		clearPrimaryKey(primaryKeyField.value, newItem);

@@ -65,13 +65,13 @@ describe('Integration Tests', () => {
 
 		describe('createOne', () => {
 			it('should error because of deprecation', async () => {
-				return expect(service.createOne({})).rejects.toEqual(errorDeprecation);
+				return expect(service.createOne()).rejects.toEqual(errorDeprecation);
 			});
 		});
 
 		describe('createMany', () => {
 			it('should error because of deprecation', async () => {
-				return expect(service.createMany([{}])).rejects.toEqual(errorDeprecation);
+				return expect(service.createMany()).rejects.toEqual(errorDeprecation);
 			});
 		});
 
@@ -83,7 +83,7 @@ describe('Integration Tests', () => {
 
 		describe('updateMany', () => {
 			it('should error because of deprecation', async () => {
-				return expect(service.updateMany([1], {})).rejects.toEqual(errorDeprecation);
+				return expect(service.updateMany()).rejects.toEqual(errorDeprecation);
 			});
 		});
 

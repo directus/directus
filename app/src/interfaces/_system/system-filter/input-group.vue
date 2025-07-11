@@ -329,15 +329,15 @@ function useVariableInput() {
 	--v-icon-color: var(--theme--foreground-subdued);
 	--v-icon-color-hover: var(--theme--foreground);
 
-	margin-right: 4px;
+	margin-inline-end: 4px;
 
 	.comparator + & {
-		margin-left: -4px;
+		margin-inline-start: -4px;
 	}
 
 	&.v-icon {
-		width: 24px !important;
-		height: 24px !important;
+		inline-size: 24px !important;
+		block-size: 24px !important;
 		border-radius: 50%;
 		display: flex;
 		justify-content: center;
@@ -360,10 +360,10 @@ function useVariableInput() {
 .variable-input-braces {
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--form--field--input--foreground-subdued);
-	margin-left: 2px;
+	margin-inline-start: 2px;
 
 	.variable-input + & {
-		margin-left: 0;
+		margin-inline-start: 0;
 	}
 }
 
@@ -372,8 +372,7 @@ function useVariableInput() {
 	align-items: center;
 
 	.v-icon {
-		margin-right: 8px;
-		margin-left: 12px;
+		margin-inline: 12px 8px;
 		color: var(--theme--form--field--input--foreground-subdued);
 		cursor: pointer;
 
@@ -387,7 +386,7 @@ function useVariableInput() {
 	display: flex;
 
 	.value:not(:last-child)::after {
-		margin-right: 6px;
+		margin-inline-end: 6px;
 		content: ',';
 	}
 }

@@ -2,6 +2,6 @@
 
 exports[`Mount component 1`] = `
 "<div data-v-f02f7ebf="" class="v-progress-linear danger">
-  <div data-v-f02f7ebf="" class="inner" style="width: 0%;"></div>Slot Content
+  <div data-v-f02f7ebf="" class="inner" style="inline-size: 0%;"></div>Slot Content
 </div>"
 `;

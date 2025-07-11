@@ -68,15 +68,16 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 }
 
 .icon {
-	width: 48px;
-	height: 48px;
+	inline-size: 48px;
+	block-size: 48px;
 	border-radius: 24px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background-color: var(--theme--primary);
+
 	--v-icon-color: var(--foreground-inverted);
-	margin-right: 20px;
+	margin-inline-end: 20px;
 }
 
 .name {
@@ -103,6 +104,7 @@ const chip = computed(() => t(`extension_${props.extension.type}`));
 .chip {
 	margin-inline-start: 4px;
 	vertical-align: 2px;
+
 	--v-chip-color: var(--theme--primary);
 	--v-chip-background-color: var(--theme--primary-subdued);
 }
