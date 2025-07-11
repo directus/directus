@@ -2,13 +2,19 @@ import { afterEach, expect, test, vi } from 'vitest';
 import { getDefaultType } from './get-default-type.js';
 
 vi.mock('../constants/type-map.js', () => ({
-	TYPE_MAP: {
-		'test-key': 'string',
-	},
+	TYPE_MAP_REGEX: [
+		[new RegExp('test-key'), 'string'],
+		[new RegExp('STORAGE_.+_SECRET'), 'number'],
+	],
 }));
 
 afterEach(() => {
 	vi.clearAllMocks();
+});
+
+test('Returns type for wildcards', () => {
+	expect(getDefaultType('STORAGE_HELLO_SECRET')).toBe('number');
+	expect(getDefaultType('STORAGE_WOW_SECRET')).toBe('number');
 });
 
 test('Returns type from map if exists', () => {
