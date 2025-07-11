@@ -172,7 +172,6 @@ const stageChanges = () => {
 								type="panel"
 								:extension="panel.type"
 								raw-editor-enabled
-								style="grid-template-columns: unset"
 								@update:model-value="edits.options = $event"
 							/>
 							<v-divider :inline-title="false" large>
