@@ -111,8 +111,6 @@ router.get(
 			data: result || null,
 		};
 
-		console.log(res.locals['payload']);
-
 		return next();
 	}),
 	respond,

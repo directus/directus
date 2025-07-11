@@ -14,6 +14,7 @@ export function deepMapResponse(
 			collection: CollectionOverview;
 			field: FieldOverview;
 			relation: Relation | null;
+			leaf: boolean;
 			relationType: RelationInfo['relationType'] | null;
 		},
 	) => [key: string | number, value: unknown],
@@ -37,6 +38,7 @@ export function deepMapResponse(
 			if (!field) return [key, value];
 
 			const relationInfo = getRelationInfo(context.schema.relations, collection.collection, field.field);
+			let leaf = true;
 
 			if (relationInfo.relation && typeof value === 'object' && value !== null && isPlainObject(object)) {
 				switch (relationInfo.relationType) {
@@ -47,16 +49,18 @@ export function deepMapResponse(
 							relationInfo,
 						});
 
+						leaf = false;
 						break;
 					case 'o2m':
 						value = (value as any[]).map((childValue) => {
-							if (isPlainObject(childValue) && typeof childValue === 'object' && childValue !== null)
+							if (isPlainObject(childValue) && typeof childValue === 'object' && childValue !== null) {
+								leaf = false;
 								return deepMapResponse(childValue, callback, {
 									schema: context.schema,
 									collection: relationInfo!.relation!.collection,
 									relationInfo,
 								});
-							else return childValue;
+							} else return childValue;
 						});
 
 						break;
@@ -67,11 +71,12 @@ export function deepMapResponse(
 							relationInfo,
 						});
 
+						leaf = false;
 						break;
 				}
 			}
 
-			return callback([key, value], { collection, field, ...relationInfo });
+			return callback([key, value], { collection, field, ...relationInfo, leaf });
 		}),
 	);
 }

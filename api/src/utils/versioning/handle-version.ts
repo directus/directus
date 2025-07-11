@@ -27,7 +27,7 @@ export async function handleVersion(self: ItemsService, key: PrimaryKey, queryWi
 
 		if (!versionData || versionData.length === 0) return [];
 
-		return [mergeVersionsRaw(originalData, versionData)];
+		return [mergeVersionsRaw(originalData[0]!, versionData)];
 	}
 
 	let results: Item[] = [];
@@ -47,8 +47,7 @@ export async function handleVersion(self: ItemsService, key: PrimaryKey, queryWi
 			knex: trx,
 		});
 
-		let counter = 0;
-		const createdIDs: Record<string, [PrimaryKey, number][]> = {};
+		const createdIDs: Record<string, PrimaryKey[]> = {};
 
 		for (const data of versionData ?? []) {
 			await itemsService.updateOne(key, data as any, {
@@ -59,7 +58,7 @@ export async function handleVersion(self: ItemsService, key: PrimaryKey, queryWi
 				onItemCreate: (collection, pk) => {
 					if (collection in createdIDs === false) createdIDs[collection] = [];
 
-					createdIDs[collection]!.push([pk, counter++]);
+					createdIDs[collection]!.push(pk);
 				},
 			});
 		}
@@ -70,16 +69,9 @@ export async function handleVersion(self: ItemsService, key: PrimaryKey, queryWi
 			return deepMapResponse(
 				result,
 				([key, value], context) => {
-					if (context.field.field === context.collection.primary) {
-						const ids = createdIDs[context.collection.collection];
-						const match = ids?.find((id) => id[0] === value);
-
-						if (match) {
-							return [key, null];
-						}
-					} else if (context.relationType === 'm2o' || context.relationType === 'a2o') {
+					if (context.relationType === 'm2o' || context.relationType === 'a2o') {
 						const ids = createdIDs[context.relation!.related_collection!];
-						const match = ids?.find((id) => id[0] === value);
+						const match = ids?.find((id) => String(id) === String(value));
 
 						if (match) {
 							return [key, null];
@@ -89,7 +81,7 @@ export async function handleVersion(self: ItemsService, key: PrimaryKey, queryWi
 						return [
 							key,
 							value.map((val) => {
-								const match = ids?.find((id) => id[0] === val);
+								const match = ids?.find((id) => String(id) === String(value));
 
 								if (match) {
 									return null;
@@ -100,7 +92,18 @@ export async function handleVersion(self: ItemsService, key: PrimaryKey, queryWi
 						];
 					}
 
-					if (context.field.defaultValue || intersection(GENERATE_SPECIAL, context.field.special).length > 0) {
+					if (context.field.field === context.collection.primary) {
+						const ids = createdIDs[context.collection.collection];
+						const match = ids?.find((id) => String(id) === String(value));
+
+						if (match) {
+							return [key, null];
+						}
+					} else if (
+						context.leaf &&
+						(context.field.defaultValue || intersection(GENERATE_SPECIAL, context.field.special).length > 0)
+					) {
+						// Should we only do this for newly created items as the others do have actual values in the DB already?
 						return [key, null];
 					}
 
