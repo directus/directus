@@ -75,6 +75,15 @@ const validationPrefix = computed(() => {
 	return null;
 });
 
+const showCustomValidationMessage = computed(() => {
+	if (!props.validationError) return false;
+
+	const customValidationMessage = !!props.field.meta?.validation_message;
+	const hasCustomValidation = !!props.field.meta?.validation;
+
+	return customValidationMessage && (!hasCustomValidation || props.validationError.code === 'FAILED_VALIDATION');
+});
+
 function emitValue(value: any) {
 	if (
 		(isEqual(value, props.initialValue) || (props.initialValue === undefined && isEqual(value, defaultValue.value))) &&
@@ -215,7 +224,7 @@ function useComputedValues() {
 		<small v-if="field.meta && field.meta.note" v-md="{ value: field.meta.note, target: '_blank' }" class="type-note" />
 
 		<small v-if="validationError" class="validation-error selectable">
-			<template v-if="field.meta?.validation_message">
+			<template v-if="showCustomValidationMessage">
 				{{ field.meta?.validation_message }}
 				<v-icon v-tooltip="validationMessage" small right name="help" />
 			</template>
@@ -232,8 +241,8 @@ function useComputedValues() {
 .type-note {
 	position: relative;
 	display: block;
-	max-width: 520px;
-	margin-top: 4px;
+	max-inline-size: 520px;
+	margin-block-start: 4px;
 
 	:deep(a) {
 		color: var(--theme--primary);
@@ -256,12 +265,12 @@ function useComputedValues() {
 .validation-error {
 	display: flex;
 	align-items: center;
-	margin-top: 4px;
+	margin-block-start: 4px;
 	color: var(--theme--danger);
 	font-style: italic;
 }
 
 .label-spacer {
-	height: 28px;
+	block-size: 28px;
 }
 </style>

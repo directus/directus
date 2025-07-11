@@ -155,8 +155,8 @@ const options = computed({
 
 	grid-column: 1 / span var(--columns);
 	background-color: var(--theme--background-subdued);
-	border-top: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
-	border-bottom: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-start: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
+	border-block-end: var(--theme--border-width) solid var(--theme--form--field--input--border-color);
 
 	@media (min-width: 400px) {
 		--columns: 2;
@@ -178,7 +178,7 @@ const options = computed({
 }
 
 .schema {
-	margin-bottom: 20px;
+	margin-block-end: 20px;
 	@include mixins.form-grid;
 }
 
@@ -187,7 +187,7 @@ const options = computed({
 }
 
 .save {
-	margin-top: 40px;
+	margin-block-start: 40px;
 }
 
 .v-divider {
@@ -199,8 +199,8 @@ const options = computed({
 }
 
 .toggle-advanced {
-	width: 100%;
-	margin-top: 20px;
+	inline-size: 100%;
+	margin-block-start: 20px;
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	transition: color var(--fast) var(--transition);

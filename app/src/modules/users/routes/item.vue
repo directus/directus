@@ -19,6 +19,7 @@ import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import UsersNavigation from '../components/navigation.vue';
 import UserInfoSidebarDetail from '../components/user-info-sidebar-detail.vue';
+import { logout } from '@/auth';
 
 const props = defineProps<{
 	primaryKey: string;
@@ -205,6 +206,15 @@ async function deleteAndQuit() {
 	if (deleting.value) return;
 
 	try {
+		const currentUserId = userStore.currentUser && 'id' in userStore.currentUser ? userStore.currentUser.id : null;
+
+		// If the deleted user is the current user, we want to log them out
+		if (currentUserId && currentUserId === item.value?.id) {
+			await remove();
+			await logout();
+			return;
+		}
+
 		await remove();
 		edits.value = {};
 		router.replace(`/users`);
@@ -459,7 +469,7 @@ function revert(values: Record<string, any>) {
 
 .user-item {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .user-box {
@@ -467,9 +477,9 @@ function revert(values: Record<string, any>) {
 
 	display: flex;
 	align-items: center;
-	max-width: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
-	height: 112px;
-	margin-bottom: var(--theme--form--row-gap);
+	max-inline-size: calc(var(--form-column-max-width) * 2 + var(--theme--form--column-gap));
+	block-size: 112px;
+	margin-block-end: var(--theme--form--row-gap);
 	padding: 20px;
 	background-color: var(--theme--background-normal);
 	border-radius: calc(var(--theme--border-radius) + 4px);
@@ -481,29 +491,29 @@ function revert(values: Record<string, any>) {
 		flex-shrink: 0;
 		align-items: center;
 		justify-content: center;
-		width: 84px;
-		height: 84px;
-		margin-right: 16px;
+		inline-size: 84px;
+		block-size: 84px;
+		margin-inline-end: 16px;
 		overflow: hidden;
 		background-color: var(--theme--background-normal);
 		border: solid 6px var(--white);
 		border-radius: 100%;
 
 		.v-skeleton-loader {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 		}
 
 		img {
-			width: 100%;
-			height: 100%;
+			inline-size: 100%;
+			block-size: 100%;
 			object-fit: cover;
 		}
 
 		@media (min-width: 600px) {
-			width: 144px;
-			height: 144px;
-			margin-right: 22px;
+			inline-size: 144px;
+			block-size: 144px;
+			margin-inline-end: 22px;
 		}
 	}
 
@@ -512,11 +522,11 @@ function revert(values: Record<string, any>) {
 		overflow: hidden;
 
 		.v-skeleton-loader {
-			width: 175px;
+			inline-size: 175px;
 		}
 
 		.v-skeleton-loader:not(:last-child) {
-			margin-bottom: 16px;
+			margin-block-end: 16px;
 		}
 
 		.v-chip {
@@ -525,7 +535,7 @@ function revert(values: Record<string, any>) {
 			--v-chip-color-hover: var(--theme--foreground-subdued);
 			--v-chip-background-color-hover: var(--theme--background-subdued);
 
-			margin-top: 4px;
+			margin-block-start: 4px;
 
 			&.active {
 				--v-chip-color: var(--theme--primary);
@@ -551,7 +561,7 @@ function revert(values: Record<string, any>) {
 	}
 
 	@media (min-width: 600px) {
-		height: 188px;
+		block-size: 188px;
 
 		.user-box-content .location {
 			display: block;

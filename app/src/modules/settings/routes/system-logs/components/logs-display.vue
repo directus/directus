@@ -251,20 +251,20 @@ function selectLog(index: number) {
 
 <style lang="scss" scoped>
 .wrapper {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 }
 
 .notice {
 	margin: 6px;
-	padding-left: 6px;
+	padding-inline-start: 6px;
 	font-family: var(--theme--fonts--monospace--font-family);
 	color: var(--theme--foreground-subdued);
 }
 
 .logs-display {
-	min-height: 200px;
-	height: 100%;
+	min-block-size: 200px;
+	block-size: 100%;
 	scroll-snap-type: y proximity;
 	align-content: end;
 }
@@ -290,7 +290,7 @@ function selectLog(index: number) {
 }
 
 .log-entry > span {
-	padding: 0 6px 0 6px;
+	padding: 0 6px;
 }
 
 .message {
@@ -306,8 +306,8 @@ function selectLog(index: number) {
 
 .unread-logs {
 	position: relative;
-	width: 100%;
-	bottom: 60px;
+	inline-size: 100%;
+	inset-block-end: 60px;
 	text-align: center;
 }
 
@@ -320,7 +320,7 @@ function selectLog(index: number) {
 	box-shadow: var(--sidebar-shadow);
 
 	.v-icon {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	.label {

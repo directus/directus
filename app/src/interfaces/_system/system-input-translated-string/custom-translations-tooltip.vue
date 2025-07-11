@@ -89,8 +89,9 @@ const clicked = (toggleTooltip: () => void) => {
 
 <style lang="scss" scoped>
 .v-list {
-	width: 300px;
+	inline-size: 300px;
 }
+
 .custom-translations-display {
 	display: flex;
 	align-items: center;
@@ -108,13 +109,14 @@ const clicked = (toggleTooltip: () => void) => {
 }
 
 .translation-display-text {
-	margin-right: 4px;
+	margin-inline-end: 4px;
 	padding: 2px 0;
 }
 
 .translation-item-text {
-	padding-top: 2px;
+	padding-block-start: 2px;
 }
+
 .translation-display-text,
 .translation-item-text {
 	overflow: hidden;
@@ -135,26 +137,25 @@ const clicked = (toggleTooltip: () => void) => {
 	}
 
 	.v-icon {
-		margin-right: 4px;
+		margin-inline-end: 4px;
 	}
 
 	.v-progress-linear {
 		flex: 1;
-		width: unset;
-		max-width: 100px;
+		inline-size: unset;
+		max-inline-size: 100px;
 		border-radius: 4px;
 	}
 }
 
 .v-list-item-content {
-	padding-top: 4px;
-	padding-bottom: 2px;
+	padding-block: 4px 2px;
 }
 
 .v-list-item:not(:first-child) {
 	.header {
-		padding-top: 8px;
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		padding-block-start: 8px;
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

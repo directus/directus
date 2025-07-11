@@ -53,7 +53,7 @@ const imageThumbnail = computed(() => {
 
 <style lang="scss" scoped>
 img {
-	height: 100%;
+	block-size: 100%;
 	object-fit: cover;
 	border-radius: var(--theme--border-radius);
 	aspect-ratio: 1;
@@ -66,7 +66,7 @@ img {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	height: 100%;
+	block-size: 100%;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);

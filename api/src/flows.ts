@@ -3,7 +3,15 @@ import { useEnv } from '@directus/env';
 import { ForbiddenError } from '@directus/errors';
 import type { OperationHandler } from '@directus/extensions';
 import { isSystemCollection } from '@directus/system-data';
-import type { Accountability, ActionHandler, FilterHandler, Flow, Operation, SchemaOverview } from '@directus/types';
+import type {
+	Accountability,
+	ActionHandler,
+	FilterHandler,
+	Flow,
+	Operation,
+	PrimaryKey,
+	SchemaOverview,
+} from '@directus/types';
 import { applyOptionsData, deepMap, getRedactedString, isValidJSON, parseJSON, toArray } from '@directus/utils';
 import type { Knex } from 'knex';
 import { pick } from 'lodash-es';
@@ -270,7 +278,7 @@ class FlowManager {
 						throw new ForbiddenError();
 					}
 
-					if (!targetKeys || !Array.isArray(targetKeys)) {
+					if (requireSelection && (!targetKeys || !Array.isArray(targetKeys))) {
 						logger.warn(`Manual trigger requires "keys" to be specified in the payload`);
 						throw new ForbiddenError();
 					}
@@ -308,22 +316,24 @@ class FlowManager {
 							throw new ForbiddenError();
 						}
 
-						const service = getService(targetCollection, { schema, accountability, knex: database });
-						const primaryField = schema.collections[targetCollection]!.primary;
+						if (Array.isArray(targetKeys) && targetKeys.length > 0) {
+							const service = getService(targetCollection, { schema, accountability, knex: database });
+							const primaryField = schema.collections[targetCollection]!.primary;
 
-						let keys = await service.readMany(
-							targetKeys,
-							{ fields: [primaryField] },
-							{
-								emitEvents: false,
-							},
-						);
+							const keys = await service.readMany(
+								targetKeys,
+								{ fields: [primaryField] },
+								{
+									emitEvents: false,
+								},
+							);
 
-						keys = keys.map((key) => key[primaryField]);
+							const allowedKeys: PrimaryKey[] = keys.map((key) => String(key[primaryField]));
 
-						if (targetKeys.some((key) => !keys.includes(key))) {
-							logger.warn(`Triggering keys ${targetKeys} is not allowed`);
-							throw new ForbiddenError();
+							if (targetKeys.some((key: PrimaryKey) => !allowedKeys.includes(String(key)))) {
+								logger.warn(`Triggering keys ${targetKeys} is not allowed`);
+								throw new ForbiddenError();
+							}
 						}
 					}
 

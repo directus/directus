@@ -96,14 +96,14 @@ const workspaceBoxSize = computed(() => {
 	<div
 		class="v-workspace"
 		:class="{ editing: editMode }"
-		:style="{ width: workspaceBoxSize.width + 'px', height: workspaceBoxSize.height + 'px' }"
+		:style="{ inlineSize: workspaceBoxSize.width + 'px', blockSize: workspaceBoxSize.height + 'px' }"
 	>
 		<div
 			class="workspace"
 			:style="{
 				transform: `scale(${zoomScale})`,
-				width: workspaceSize.width + 'px',
-				height: workspaceSize.height + 'px',
+				inlineSize: workspaceSize.width + 'px',
+				blockSize: workspaceSize.height + 'px',
 			}"
 		>
 			<template v-if="!$slots.tile">
@@ -139,12 +139,12 @@ const workspaceBoxSize = computed(() => {
 
 .workspace {
 	position: absolute;
-	left: var(--content-padding);
+	inset-inline-start: var(--content-padding);
 	display: grid;
 	grid-template-rows: repeat(auto-fill, 20px);
 	grid-template-columns: repeat(auto-fill, 20px);
-	min-width: calc(100%);
-	min-height: calc(100% - 120px);
+	min-inline-size: calc(100%);
+	min-block-size: calc(100% - 120px);
 	transform: scale(1);
 	transform-origin: top left;
 
@@ -159,11 +159,11 @@ const workspaceBoxSize = computed(() => {
 
 .workspace::before {
 	position: absolute;
-	top: -4px;
-	left: -4px;
+	inset-block-start: -4px;
+	inset-inline-start: -4px;
 	display: block;
-	width: calc(100% + 8px);
-	height: calc(100% + 8px);
+	inline-size: calc(100% + 8px);
+	block-size: calc(100% + 8px);
 	background-image: radial-gradient(var(--theme--form--field--input--border-color) 10%, transparent 10%);
 	background-position: -6px -6px;
 	background-size: 20px 20px;
