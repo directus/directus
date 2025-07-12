@@ -517,6 +517,7 @@ date-fns_time_24hour: 'HH:mm:ss'
 date-fns_time_no_seconds_24hour: 'HH:mm'
 date-fns_date_short: 'MMM d, u'
 date-fns_time_short: 'h:mma'
+date-fns_time_short_seconds: ''
 date-fns_date_short_no_year: MMM d
 minutes: Minuta
 hours: Orë
@@ -1694,7 +1695,6 @@ translation_placeholder: Shkruani një përkthim...
 value: Vlerë
 view_project: Shiko Projektin
 report_error: Raporto Gabimin
-start: Fillim
 table: Tabela
 list: Listë
 search_filter: Kërko & Filro
@@ -2277,6 +2277,7 @@ show_labels: Shfaq etiketat
 show_legend: Shfaq legjendën
 right: Djathtas
 left: Majtas
+start: Fillim
 donut: Petull
 panels:
   metric:
@@ -2425,6 +2426,7 @@ operations:
     template: Template
     data: Të Dhënat
     bcc_placeholder: ...
+    reply_to:
   notification:
     name: Dërgo Njoftim
     description: Një njoftim në aplikacion për një ose më shumë përdorues

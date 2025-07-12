@@ -1307,7 +1307,6 @@ translation_placeholder: Unesite prijevod...
 value: Vrijednost
 view_project: Pogledaj projekat
 report_error: Prijavi grešku
-start: Započni
 table: Tablica
 list: Lista
 search_filter: Pretraživanje i filtri
@@ -1783,6 +1782,7 @@ layouts:
     advanced: Napredno
 horizontal: Horizontalno
 both: Oboje
+start: Započni
 panels:
   metric:
     name: Metrički

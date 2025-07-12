@@ -1710,7 +1710,6 @@ translation_placeholder: 输入翻译...
 value: 值
 view_project: 查看项目
 report_error: 报告错误
-start: 开始
 table: 表
 list: 列表
 search_filter: 搜索与过滤器
@@ -2293,6 +2292,7 @@ show_labels: 显示标签
 show_legend: 显示图例
 right: 右
 left: 左
+start: 开始
 donut: 圆环图
 continuous: 继续
 gap: 间隙

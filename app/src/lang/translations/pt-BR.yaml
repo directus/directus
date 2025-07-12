@@ -30,6 +30,10 @@ draft: Rascunho
 archived: Arquivado
 marketplace: Marketplace
 extensions: Extensões
+skip_link_nav: Pular para Navegação
+skip_link_module_nav: Pular para Navegação de Módulos
+skip_link_main: Pular para Conteúdo Principal
+skip_link_sidebar: Pular para a Aba Lateral
 modules: Módulos
 module_bar: Barra de Módulos
 logs: Registros
@@ -316,6 +320,8 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Redefinir Preferências da Página
 hidden_field: Campo Oculto
 hidden_on_detail: Oculto em Detalhe
+readonly_field_label: Desabilitar Campo no Aplicativo
+required_readonly_field_warning: Ao habilitar "somente leitura" e "obrigatório" em um campo impede que o “item” seja salvo se o valor estiver vazio.
 key: Chave
 alias: Pseudônimo
 bigInteger: Big Integer
@@ -421,6 +427,7 @@ field_key: Chave do campo
 finish_setup: Concluir a instalação
 dismiss: Dispensar
 toggle_raw_editor: Alternar Editor Raw
+toggle_variable_input: Alternar Entrada de Variável
 raw_editor_placeholder: "{'{'}{'{'}$trigger.payload.example{'}'}{'}'}"
 raw_value: Valor bruto
 copy_raw_value: Copiar Valor Bruto
@@ -723,6 +730,7 @@ errors:
   COLLECTION_NOT_FOUND: "A coleção não existe"
   CONTAINS_NULL_VALUES: O campo contém valores nulos
   CONTENT_TOO_LARGE: Item/arquivo enviado é muito grande
+  FAILED_VALIDATION: Validação Falhou
   FIELD_NOT_FOUND: Campo não encontrado
   FORBIDDEN: Não permitido
   GRAPHQL_VALIDATION: Validação do GraphQL
@@ -939,6 +947,7 @@ run_flow_on_current: Executar fluxo no Item atual
 run_flow_on_current_edited_confirm: Este item pode ser alterado por este fluxo, você tem certeza que deseja continuar?
 run_flow_on_selected: Selecione Um ou Mais Itens Primeiro | Execute o fluxo em 1 Item Selecionado | Execute o fluxo em {n} Itens Selecionados
 run_flow: Executar Fluxo
+trigger_flow_success: Fluxo "{flow}" ativado com sucesso
 field_name_placeholder: Inserir nome do campo...
 field_key_placeholder: Inserir a chave do campo...
 trigger: Acionar
@@ -975,6 +984,13 @@ operation_key: Identificador de referência...
 operation_key_unique_error: Chaves de operação devem ser únicas em um fluxo
 operation_handle_resolve: 'Resolver: Clique para Adicionar ou Arraste para Redirecionar'
 operation_handle_reject: 'Rejeitar: Clique para adicionar ou Arraste para Redirecionar'
+visual_editor: Editor Visual
+toggle_navigation: Alternar Navegação
+toggle_editable_elements: Alternar Elementos Editáveis
+no_url: Nenhum URL foi fornecido
+no_url_copy: Por favor, adicione um URL nas configurações.
+invalid_url: URL Inválido
+invalid_url_copy: O URL específico não combina com nenhum URL das configurações.
 insights: Estatísticas
 dashboard: Painel
 panel: Painel
@@ -1392,6 +1408,7 @@ fields:
     public_registration_email_filter_note: Apenas endereços de e-mail que passarem por esse filtro podem se registrar.
     public_registration_verify_email: Verificar E-mail
     public_registration_verify_email_note: Envia um e-mail para o usuário que se registrou pedindo que clique em um link de verificação antes de fazer o login.
+    visual_editor_urls: URL dos Editores Visuais
   directus_shares:
     name: Nome
     role: Função
@@ -1661,6 +1678,8 @@ reset_password: Recuperar senha
 revisions: Revisões
 no_revisions: Ainda não há revisões
 no_logs: Ainda não há registros
+show_failed_only: Mostrar Apenas os que Falharam
+no_logs_on_page: Nenhum Registro nessa página
 revert: Reverter
 save: Salvar
 schema: Esquema
@@ -1696,7 +1715,6 @@ translation_placeholder: Insira uma tradução...
 value: Valor
 view_project: Visualizar projeto
 report_error: Relatar erro
-start: Início
 table: Tabela
 list: Lista
 search_filter: Busca & Filtro
@@ -2279,7 +2297,10 @@ show_labels: Mostrar Rótulos
 show_legend: Mostrar Legenda
 right: Direita
 left: Esquerda
+start: Início
 donut: Rosca
+continuous: Contínuo
+gap: Vão
 panels:
   metric:
     name: Métrico
@@ -2295,6 +2316,7 @@ panels:
     value_field: Campo de Valor
     fill_type: Tipo de Preenchimento
     curve_type: Tipo de Curva
+    missing_data: Dados foram perdidos
   label:
     name: Rótulo
     description: Exibir algum texto
@@ -2345,6 +2367,7 @@ triggers:
     filter: 'Filtro (bloqueante)'
   webhook:
     name: Webhook
+    error_on_reject: Erro na Rejeição
     description: Acionado ao receber uma requisição HTTP
     method: Método
     async: Assíncrono
@@ -2423,6 +2446,7 @@ operations:
     name: Enviar E-mail
     description: Enviar um e-mail para uma ou mais pessoas
     to: Para
+    to_placeholder: Adicione endereços de e-mail e pressione enter...
     body: Corpo
     template: Template
     data: Dados
@@ -2509,3 +2533,12 @@ search_flow: Procurar Fluxo...
 percent: Porcentagem
 show_password: Mostrar senha
 hide_password: Ocultar Senha
+bsl_banner:
+  welcome_to_directus: Boas-vindas ao Directus!
+  organization_threshold: Entidades acima dessa limiar necessitam de uma licença paga.
+  license_agreement: Ao clicar em "Aceito", você concorda com {directusBsl} e {privacyPolicy}.
+  directus_bsl: Directus BSL 1.1
+  privacy_policy: Políticas de Privacidade
+  accept_terms: Aceitar
+  get_license: Obtenha a sua licença
+accepted: Aceitado

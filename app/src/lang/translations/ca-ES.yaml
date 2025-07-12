@@ -1307,7 +1307,6 @@ translation_placeholder: Introdueix una traducció...
 value: Valor
 view_project: Veure el projecte
 report_error: Notifica un error
-start: Comença
 table: Taula
 list: Llista
 search_filter: Cerca i Filtre
@@ -1738,6 +1737,7 @@ layouts:
     crop: Retalla
     advanced: Avançat
 both: Ambdós
+start: Comença
 panels:
   label:
     name: Etiqueta
