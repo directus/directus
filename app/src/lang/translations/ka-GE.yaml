@@ -25,13 +25,90 @@ export_items: ელემენტების ექსპორტი
 and: და
 or: ან
 init: ინიცირება
+modifier: მოდიფიკატორი
 extension_interface: ინტერფეისი
 extension_module: მოდული
 extension_panel: პანელი
 extension_theme: თემა
 extension_hook: ჰუკი
+extension_endpoint: ენდპოინტი
+extension_operation: ოპერაცია
+extension_bundle: ნაკრები
+extension_interfaces: ინტერფეისი
 extension_modules: მოდულები
+extension_panels: პანელები
+extension_themes: თემები
+extension_hooks: ჰუკები
+extension_endpoints: ენდპოინტები
+extension_operations: ოპერაციები
+extension_bundles: ნაკრებები
+extension_missing: გამოტოვებული
+extension_reload_required: საჭიროა გვერდის ხელმეორედ ჩატვირთვა
+extension_reload_now: ხელმეორედ ჩატვირთვა
+published_relative: გამოქვეყნებულია {relativeTime}
+compatible_with_your_project: თავსებადია თქვენს პროექტთან
+last_updated_relative: ბოლოს განახლებულია {relativeTime}
+n_files: '{n} ფაილი'
+verified: დადასტურებულია
+homepage: მთავარი გვერდი
+repository: საცავი
+reload_page: გვერდის ხელმეორედ ჩატვირთვა
+website: ვებგვერდი
+github: გითჰაბი
+beta: ბეტა
+required: აუცილებელი
+required_for_app_access: აუცილებელია აპლიკაციაზე წვდომისთვის
+create_panel: პანელის შექმნა
 create_role: შექმენით როლი
+create_user: მომხმარებლის შექმნა
+message: შეტყობინება
+delete_panel: პანელის წაშლა
+create_webhook: ვებჰუკის შექმნა
+invite_users: მოიწვიე მომხმარებელი
+invite: მოწვევა
+subject: საგანი
+inbox: შემოსული
+emails: ელ. ფოსტები
+connection_excellent: იდეალური კავშირი
+connection_good: კარგი კავშირი
+connection_poor: ცუდი კავშირი
+rename_folder: საქაღალდის გადარქმევა
+delete_folder: საქაღალდის წაშლა
+prefix: პრეფიქსი
+suffix: სუფიქსი
+keep: შენარჩუნება
+version: ვერსია
+version_key: ვერსიის გასაღები
+version_name: ვერსიის სახელი
+main_version: მთავარი
+switch_version: ვერსიის ცვლილება
+create_version: ვერსიის შექმნა
+rename_version: ვერსიის სახელის გადარქმევა
+compare_version: შეადარე ვერსიები
+save_version: ვერსიის შენახვა
+promote_version_disabled: ცვლილებების გარეშე
+promote_version_changes: ცვლილებები
+promote_version_preview: გადახედვა
+delete_version: ვერსიის წაშლა
+validationError:
+  contains: მნიშვნელობა უნდა შეიცავდეს {substring} - ს
+  ncontains: მნიშვნელობა არ უნდა შეიცავდეს {substring} - ს
+  gt: მნიშვნელობა უნა აღემატებოდეს {valid} - ს
+  gte: მნიშვნელობა ტოლი უნდა იყოს ან აღემატებოდეს {valid} - ს
+  lt: მნიშვნელობა ნაკლები უნდა იყოს {valid} - ზე
+  lte: მნიშვნელობა ტოლი უნდა იყოს ან ნაკლები {valid} - ზე
+  empty: მნიშვნელობა უნდა იყოს ცარიელი
+  nempty: მნიშვნელობა უნდა იყოს ცარიელი
+  null: მნიშვნელობა უნდა იყოს ნალი
+  nnull: მნიშვნელობა არ შეიძლება იყოს ნალი
+  required: მნიშვნელობა აუცილებელია
+  unique: მნიშვნელობა უნდა იყოს უნიკალური
+  email: მნიშვნელობა უნდა იყოს ვალიდური ელ. ფოსტის მისამართი
+  regex: მნიშვნელობა არასწორი ფორმატისაა
+  starts_with: მნიშვნელობა უნდა იწყებოდეს {substring} - ით
+  istarts_with: მნიშვნელობა უნდა იწყებოდეს {substring} - ით
+  nstarts_with: მნიშვნელობა არუნდა იწყებოდეს {substring} - ით
+  nistarts_with: მნიშვნელობა არუნდა იწყებოდეს {substring} - ით
 create_field: შექმენით ველი
 auto_generate: ავტო-გენერირება
 title: სათაური
@@ -44,7 +121,10 @@ ip_address: IP მისამართი
 user_agent: მომხმარებლის აგენტი
 duration: ხანგრძლივობა
 status: სტატუსი
+errors:
+  NOT_NULL_VIOLATION: მნიშვნელობა არ შეიძლება იყოს ნალი
 back: უკან დაბრუნება
+value_unique: მნიშვნელობა უნდა იყოს უნიკალური
 role: როლი
 create: შექმნა
 width: სიგანე
@@ -116,6 +196,11 @@ interfaces:
 displays:
   collection:
     collection: კოლექცია
+  datetime:
+    suffix: სუფიქსი
+  formatted-value:
+    prefix: პრეფიქსი
+    suffix: სუფიქსი
   user:
     avatar: პროფილის ფოტო
     both: ორივე
@@ -126,4 +211,10 @@ layouts:
     comfortable: კომფორტული
     compact: კომპაქტური
 both: ორივე
+operations:
+  log:
+    message: შეტყობინება
+  notification:
+    message: შეტყობინება
+    subject: საგანი
 compact: კომპაქტური
