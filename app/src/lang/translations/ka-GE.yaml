@@ -1,6 +1,36 @@
 ---
+identifier: იდენტიფიკატორი
 avatar: პროფილის ფოტო
+application: აპლიკაცია
+method: მეთოდი
+published: გამოქვეყნებული
+archived: არქივი
+marketplace: მარკეტი
+modules: მოდულები
+logs: ლოგები
+unknown: უცნობი
+edit_field: ველის ცვლილება
+conditions: პირობები
 location: მდებარეობა
+maps: რუკა
+switch_user: მომხმარებლის ცვლილება
+item_creation: ელემენტის შექმნა
+item_revision: ელემენტზე გადახედვა
+enter_a_name: შეიყვანე სახელი...
+duplicate_field: დუბლირებული ველი
+group: ჯგუფი
+popular: პოპულარული
+recent: უახლესი
+export_items: ელემენტების ექსპორტი
+and: და
+or: ან
+init: ინიცირება
+extension_interface: ინტერფეისი
+extension_module: მოდული
+extension_panel: პანელი
+extension_theme: თემა
+extension_hook: ჰუკი
+extension_modules: მოდულები
 create_role: შექმენით როლი
 create_field: შექმენით ველი
 auto_generate: ავტო-გენერირება
@@ -21,6 +51,7 @@ width: სიგანე
 height: სიმაღლე
 all: ყველა
 cancel: გაუქმება
+source_registry: მარკეტი
 collection: კოლექცია
 fields:
   directus_activity:
