@@ -125,4 +125,21 @@ describe('useFonts', () => {
 		const robotoEntry = fonts.find(f => f.startsWith('Roboto:wght@'));
 		expect(robotoEntry).toBe('Roboto:wght@100;400;900');
 	});
+
+	it('should convert multiple spaces in font names to pluses in googleFonts', () => {
+		const theme = {
+			rules: {
+				fonts: {
+					display: {
+						fontFamily: '"Very Fancy Font"',
+						fontWeight: '500',
+					},
+				},
+			},
+		};
+
+		const { googleFonts } = useFonts(theme as any);
+		const fonts = googleFonts.value;
+		expect(fonts).toContain('Very+Fancy+Font:wght@500');
+	});
 });
