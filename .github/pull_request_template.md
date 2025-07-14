@@ -28,13 +28,6 @@ What's changed:
 - Lorem ipsum dolor sit amet
 - Consectetur adipiscing elit
 
-<details>
-<summary>Detailed scenario</summary>
-
-1. Lorem ipsum dolor sit amet
-2. Consectetur adipiscing elit
-</details>
-
 ## Review Notes / Questions
 
 - I would like to lorem ipsum
