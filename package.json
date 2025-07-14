@@ -30,9 +30,9 @@
 		"typescript": "5.8.2",
 		"typescript-eslint": "8.25.0"
 	},
-	"packageManager": "pnpm@9.15.6",
+	"packageManager": "pnpm@10.13.1",
 	"engines": {
 		"node": "22",
-		"pnpm": "9"
+		"pnpm": "10"
 	}
 }
