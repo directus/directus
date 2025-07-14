@@ -92,7 +92,10 @@ export const useFonts = (theme: MaybeRef<Theme>) => {
 			const localFonts = ['Inter', 'Merriweather', 'Fira Mono'];
 
 			if (localFonts.includes(family) === false) {
-				const weightsParam = Array.from(weights).sort((a, b) => Number(a) - Number(b)).join(';');
+				const weightsParam = Array.from(weights)
+					.sort((a, b) => Number(a) - Number(b))
+					.join(';');
+
 				families.push(`${family.replaceAll(' ', '+')}:wght@${weightsParam}`);
 			}
 		}

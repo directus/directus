@@ -122,7 +122,7 @@ describe('useFonts', () => {
 
 		const { googleFonts } = useFonts(theme as any);
 		const fonts = googleFonts.value;
-		const robotoEntry = fonts.find(f => f.startsWith('Roboto:wght@'));
+		const robotoEntry = fonts.find((f) => f.startsWith('Roboto:wght@'));
 		expect(robotoEntry).toBe('Roboto:wght@100;400;900');
 	});
 
