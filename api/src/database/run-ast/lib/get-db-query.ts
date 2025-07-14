@@ -147,6 +147,7 @@ export function getDBQuery(
 		if (needsInnerQuery) {
 			let orderByString = '';
 			const orderByFields: Knex.Raw[] = [];
+			const isSQLite = knex.client.config.client === 'sqlite3';
 
 			sortRecords.map((sortRecord) => {
 				if (orderByString.length !== 0) {
@@ -162,12 +163,22 @@ export function getDBQuery(
 					const originalCollectionName = getCollectionFromAlias(alias!, aliasMap);
 					dbQuery.select(getColumn(knex, alias!, field!, sortAlias, schema, { originalCollectionName }));
 
-					orderByString += `?? ${sortRecord.order}`;
+					// Apply SQLite collation to the orderByString
+					if (isSQLite) {
+						orderByString += `?? COLLATE NOCASE ${sortRecord.order}`;
+					} else {
+						orderByString += `?? ${sortRecord.order}`;
+					}
 					orderByColumn = getColumn(knex, alias!, field!, false, schema, { originalCollectionName });
 				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
 
-					orderByString += `?? ${sortRecord.order}`;
+					// Apply SQLite collation to the orderByString
+					if (isSQLite) {
+						orderByString += `?? COLLATE NOCASE ${sortRecord.order}`;
+					} else {
+						orderByString += `?? ${sortRecord.order}`;
+					}
 					orderByColumn = getColumn(knex, table, sortRecord.column, false, schema);
 				}
 
@@ -193,19 +204,43 @@ export function getDBQuery(
 
 			dbQuery.orderByRaw(orderByString, orderByFields);
 		} else {
-			sortRecords.map((sortRecord) => {
-				if (sortRecord.column.includes('.')) {
-					const [alias, field] = sortRecord.column.split('.');
+			// Handle SQLite case-insensitive sorting for simple queries
+			const isSQLite = knex.client.config.client === 'sqlite3';
 
-					sortRecord.column = getColumn(knex, alias!, field!, false, schema, {
-						originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
-					}) as any;
-				} else {
-					sortRecord.column = getColumn(knex, table, sortRecord.column, false, schema) as any;
-				}
-			});
+			if (isSQLite) {
+				// For SQLite, apply COLLATE NOCASE to text fields
+				sortRecords.forEach((sortRecord) => {
+					let columnRef: any;
 
-			dbQuery.orderBy(sortRecords);
+					if (sortRecord.column.includes('.')) {
+						const [alias, field] = sortRecord.column.split('.');
+						columnRef = getColumn(knex, alias!, field!, false, schema, {
+							originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
+						});
+					} else {
+						columnRef = getColumn(knex, table, sortRecord.column, false, schema);
+					}
+
+					// Apply COLLATE NOCASE for all fields (we can refine this later to only text fields)
+					const columnSql = columnRef.toString();
+					dbQuery.orderByRaw(`${columnSql} COLLATE NOCASE ${sortRecord.order.toUpperCase()}`);
+				});
+			} else {
+				// Original logic for non-SQLite databases
+				sortRecords.map((sortRecord) => {
+					if (sortRecord.column.includes('.')) {
+						const [alias, field] = sortRecord.column.split('.');
+
+						sortRecord.column = getColumn(knex, alias!, field!, false, schema, {
+							originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
+						}) as any;
+					} else {
+						sortRecord.column = getColumn(knex, table, sortRecord.column, false, schema) as any;
+					}
+				});
+
+				dbQuery.orderBy(sortRecords);
+			}
 		}
 	}
 
