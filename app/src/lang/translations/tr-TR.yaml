@@ -30,6 +30,10 @@ draft: Taslak
 archived: Arşivlendi
 marketplace: Pazaryeri
 extensions: Eklentiler
+skip_link_nav: Gezinmeye geç
+skip_link_module_nav: Modül gezinmezine geç
+skip_link_main: Ana içeriğe geç
+skip_link_sidebar: Kenar çubuğuna geç
 modules: Modüller
 module_bar: Kenar Çubuğu
 logs: Kayıtlar
