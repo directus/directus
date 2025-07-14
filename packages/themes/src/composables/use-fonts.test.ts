@@ -99,4 +99,30 @@ describe('useFonts', () => {
 		// Should not include var() fonts in googleFonts
 		expect(fonts.length).toBe(0);
 	});
+
+	it('should sort weights of the same font from lowest to highest', () => {
+		const theme = {
+			rules: {
+				fonts: {
+					display: {
+						fontFamily: '"Roboto"',
+						fontWeight: '900',
+					},
+					sans: {
+						fontFamily: '"Roboto"',
+						fontWeight: '100',
+					},
+					serif: {
+						fontFamily: '"Roboto"',
+						fontWeight: '400',
+					},
+				},
+			},
+		};
+
+		const { googleFonts } = useFonts(theme as any);
+		const fonts = googleFonts.value;
+		const robotoEntry = fonts.find(f => f.startsWith('Roboto:wght@'));
+		expect(robotoEntry).toBe('Roboto:wght@100;400;900');
+	});
 });
