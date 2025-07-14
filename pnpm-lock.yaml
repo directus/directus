@@ -4,69 +4,987 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@authenio/samlify-node-xmllint':
+      specifier: 2.0.0
+      version: 2.0.0
+    '@aws-sdk/client-s3':
+      specifier: 3.758.0
+      version: 3.758.0
+    '@aws-sdk/client-ses':
+      specifier: 3.758.0
+      version: 3.758.0
+    '@aws-sdk/lib-storage':
+      specifier: 3.758.0
+      version: 3.758.0
+    '@azure/storage-blob':
+      specifier: 12.26.0
+      version: 12.26.0
+    '@changesets/cli':
+      specifier: 2.28.1
+      version: 2.28.1
+    '@changesets/get-github-info':
+      specifier: 0.6.0
+      version: 0.6.0
+    '@changesets/types':
+      specifier: 6.1.0
+      version: 6.1.0
+    '@directus/tsconfig':
+      specifier: 3.0.0
+      version: 3.0.0
+    '@editorjs/attaches':
+      specifier: 1.3.0
+      version: 1.3.0
+    '@editorjs/checklist':
+      specifier: 1.6.0
+      version: 1.6.0
+    '@editorjs/code':
+      specifier: 2.9.0
+      version: 2.9.0
+    '@editorjs/delimiter':
+      specifier: 1.4.2
+      version: 1.4.2
+    '@editorjs/editorjs':
+      specifier: 2.29.1
+      version: 2.29.1
+    '@editorjs/embed':
+      specifier: 2.7.4
+      version: 2.7.4
+    '@editorjs/header':
+      specifier: 2.8.1
+      version: 2.8.1
+    '@editorjs/image':
+      specifier: 2.9.3
+      version: 2.9.3
+    '@editorjs/inline-code':
+      specifier: 1.5.1
+      version: 1.5.1
+    '@editorjs/nested-list':
+      specifier: 1.4.3
+      version: 1.4.3
+    '@editorjs/paragraph':
+      specifier: 2.11.5
+      version: 2.11.5
+    '@editorjs/quote':
+      specifier: 2.7.2
+      version: 2.7.2
+    '@editorjs/raw':
+      specifier: 2.5.0
+      version: 2.5.0
+    '@editorjs/table':
+      specifier: 2.3.0
+      version: 2.3.0
+    '@editorjs/underline':
+      specifier: 1.1.0
+      version: 1.1.0
+    '@eslint/js':
+      specifier: 9.21.0
+      version: 9.21.0
+    '@fortawesome/fontawesome-svg-core':
+      specifier: 6.7.2
+      version: 6.7.2
+    '@fortawesome/free-brands-svg-icons':
+      specifier: 6.7.2
+      version: 6.7.2
+    '@fullcalendar/core':
+      specifier: 6.1.15
+      version: 6.1.15
+    '@fullcalendar/daygrid':
+      specifier: 6.1.15
+      version: 6.1.15
+    '@fullcalendar/interaction':
+      specifier: 6.1.15
+      version: 6.1.15
+    '@fullcalendar/list':
+      specifier: 6.1.15
+      version: 6.1.15
+    '@fullcalendar/timegrid':
+      specifier: 6.1.15
+      version: 6.1.15
+    '@godaddy/terminus':
+      specifier: 4.12.1
+      version: 4.12.1
+    '@google-cloud/storage':
+      specifier: 7.15.2
+      version: 7.15.2
+    '@histoire/plugin-vue':
+      specifier: 0.17.17
+      version: 0.17.17
+    '@joeattardi/emoji-button':
+      specifier: 4.6.4
+      version: 4.6.4
+    '@json2csv/plainjs':
+      specifier: 7.0.6
+      version: 7.0.6
+    '@keyv/redis':
+      specifier: 3.0.1
+      version: 3.0.1
+    '@mapbox/mapbox-gl-draw':
+      specifier: 1.5.0
+      version: 1.5.0
+    '@mapbox/mapbox-gl-draw-static-mode':
+      specifier: 1.0.1
+      version: 1.0.1
+    '@mapbox/mapbox-gl-geocoder':
+      specifier: 5.0.3
+      version: 5.0.3
+    '@ngneat/falso':
+      specifier: 7.3.0
+      version: 7.3.0
+    '@npm/types':
+      specifier: 2.0.0
+      version: 2.0.0
+    '@pinia/testing':
+      specifier: 1.0.0
+      version: 1.0.0
+    '@pnpm/find-workspace-dir':
+      specifier: 900.0.1
+      version: 900.0.1
+    '@pnpm/workspace.find-packages':
+      specifier: 900.0.5
+      version: 900.0.5
+    '@pnpm/workspace.pkgs-graph':
+      specifier: 900.0.3
+      version: 900.0.3
+    '@popperjs/core':
+      specifier: 2.11.8
+      version: 2.11.8
+    '@rollup/plugin-alias':
+      specifier: 5.1.1
+      version: 5.1.1
+    '@rollup/plugin-commonjs':
+      specifier: 25.0.8
+      version: 25.0.8
+    '@rollup/plugin-json':
+      specifier: 6.1.0
+      version: 6.1.0
+    '@rollup/plugin-node-resolve':
+      specifier: 15.3.1
+      version: 15.3.1
+    '@rollup/plugin-replace':
+      specifier: 5.0.7
+      version: 5.0.7
+    '@rollup/plugin-terser':
+      specifier: 0.4.4
+      version: 0.4.4
+    '@rollup/plugin-virtual':
+      specifier: 3.0.2
+      version: 3.0.2
+    '@rollup/plugin-yaml':
+      specifier: 4.1.2
+      version: 4.1.2
+    '@shopify/semaphore':
+      specifier: 3.1.0
+      version: 3.1.0
+    '@sinclair/typebox':
+      specifier: 0.34.28
+      version: 0.34.28
+    '@sindresorhus/slugify':
+      specifier: 2.2.1
+      version: 2.2.1
+    '@smithy/node-http-handler':
+      specifier: 4.0.3
+      version: 4.0.3
+    '@supabase/storage-js':
+      specifier: 2.7.1
+      version: 2.7.1
+    '@tinymce/tinymce-vue':
+      specifier: 6.1.0
+      version: 6.1.0
+    '@turf/meta':
+      specifier: 7.2.0
+      version: 7.2.0
+    '@tus/server':
+      specifier: 1.10.2
+      version: 1.10.2
+    '@tus/utils':
+      specifier: 0.5.1
+      version: 0.5.1
+    '@types/async':
+      specifier: 3.2.24
+      version: 3.2.24
+    '@types/base-64':
+      specifier: 1.0.2
+      version: 1.0.2
+    '@types/busboy':
+      specifier: 1.5.4
+      version: 1.5.4
+    '@types/bytes':
+      specifier: 3.1.5
+      version: 3.1.5
+    '@types/chroma-js':
+      specifier: 3.1.1
+      version: 3.1.1
+    '@types/codemirror':
+      specifier: 5.60.15
+      version: 5.60.15
+    '@types/content-disposition':
+      specifier: 0.5.8
+      version: 0.5.8
+    '@types/cookie-parser':
+      specifier: 1.4.8
+      version: 1.4.8
+    '@types/cors':
+      specifier: 2.8.17
+      version: 2.8.17
+    '@types/deep-diff':
+      specifier: 1.0.5
+      version: 1.0.5
+    '@types/destroy':
+      specifier: 1.0.3
+      version: 1.0.3
+    '@types/diacritics':
+      specifier: 1.3.3
+      version: 1.3.3
+    '@types/diff':
+      specifier: 7.0.1
+      version: 7.0.1
+    '@types/encodeurl':
+      specifier: 1.0.2
+      version: 1.0.2
+    '@types/express':
+      specifier: 4.17.21
+      version: 4.17.21
+    '@types/express-serve-static-core':
+      specifier: 4.19.6
+      version: 4.19.6
+    '@types/file-saver':
+      specifier: 2.0.7
+      version: 2.0.7
+    '@types/fs-extra':
+      specifier: 11.0.4
+      version: 11.0.4
+    '@types/geojson':
+      specifier: 7946.0.16
+      version: 7946.0.16
+    '@types/glob-to-regexp':
+      specifier: 0.4.4
+      version: 0.4.4
+    '@types/inquirer':
+      specifier: 9.0.7
+      version: 9.0.7
+    '@types/js-yaml':
+      specifier: 4.0.9
+      version: 4.0.9
+    '@types/json2csv':
+      specifier: 5.0.7
+      version: 5.0.7
+    '@types/jsonwebtoken':
+      specifier: 9.0.9
+      version: 9.0.9
+    '@types/ldapjs':
+      specifier: 2.2.5
+      version: 2.2.5
+    '@types/lodash':
+      specifier: 4.17.16
+      version: 4.17.16
+    '@types/lodash-es':
+      specifier: 4.17.12
+      version: 4.17.12
+    '@types/mapbox__mapbox-gl-draw':
+      specifier: 1.4.8
+      version: 1.4.8
+    '@types/mapbox__mapbox-gl-geocoder':
+      specifier: 5.0.0
+      version: 5.0.0
+    '@types/mime-types':
+      specifier: 2.1.4
+      version: 2.1.4
+    '@types/ms':
+      specifier: 2.1.0
+      version: 2.1.0
+    '@types/node':
+      specifier: 22.13.8
+      version: 22.13.8
+    '@types/node-schedule':
+      specifier: 2.1.7
+      version: 2.1.7
+    '@types/nodemailer':
+      specifier: 6.4.17
+      version: 6.4.17
+    '@types/object-hash':
+      specifier: 3.0.6
+      version: 3.0.6
+    '@types/papaparse':
+      specifier: 5.3.15
+      version: 5.3.15
+    '@types/proxy-addr':
+      specifier: 2.0.3
+      version: 2.0.3
+    '@types/qrcode':
+      specifier: 1.5.5
+      version: 1.5.5
+    '@types/qs':
+      specifier: 6.9.18
+      version: 6.9.18
+    '@types/sanitize-html':
+      specifier: 2.13.0
+      version: 2.13.0
+    '@types/seedrandom':
+      specifier: 3.0.8
+      version: 3.0.8
+    '@types/semver':
+      specifier: 7.5.8
+      version: 7.5.8
+    '@types/stream-json':
+      specifier: 1.7.8
+      version: 1.7.8
+    '@types/supertest':
+      specifier: 6.0.2
+      version: 6.0.2
+    '@types/tmp':
+      specifier: 0.2.6
+      version: 0.2.6
+    '@types/wellknown':
+      specifier: 0.5.8
+      version: 0.5.8
+    '@types/ws':
+      specifier: 8.5.14
+      version: 8.5.14
+    '@unhead/addons':
+      specifier: 1.11.20
+      version: 1.11.20
+    '@unhead/vue':
+      specifier: 1.11.20
+      version: 1.11.20
+    '@vitest/coverage-v8':
+      specifier: 2.1.9
+      version: 2.1.9
+    '@vue/test-utils':
+      specifier: 2.4.6
+      version: 2.4.6
+    '@vueuse/core':
+      specifier: 12.7.0
+      version: 12.7.0
+    '@vueuse/integrations':
+      specifier: 12.7.0
+      version: 12.7.0
+    '@vueuse/router':
+      specifier: 12.7.0
+      version: 12.7.0
+    apexcharts:
+      specifier: 4.5.0
+      version: 4.5.0
+    argon2:
+      specifier: 0.41.1
+      version: 0.41.1
+    async:
+      specifier: 3.2.6
+      version: 3.2.6
+    async-mutex:
+      specifier: 0.5.0
+      version: 0.5.0
+    autocannon:
+      specifier: 8.0.0
+      version: 8.0.0
+    axios:
+      specifier: 1.8.4
+      version: 1.8.4
+    axios-cache-interceptor:
+      specifier: 1.6.2
+      version: 1.6.2
+    base-64:
+      specifier: 1.0.0
+      version: 1.0.0
+    boxen:
+      specifier: 8.0.1
+      version: 8.0.1
+    busboy:
+      specifier: 1.6.0
+      version: 1.6.0
+    bytes:
+      specifier: 3.1.2
+      version: 3.1.2
+    camelcase:
+      specifier: 8.0.0
+      version: 8.0.0
+    caret-pos:
+      specifier: 2.0.0
+      version: 2.0.0
+    chalk:
+      specifier: 5.4.1
+      version: 5.4.1
+    chokidar:
+      specifier: 3.6.0
+      version: 3.6.0
+    chroma-js:
+      specifier: 3.1.2
+      version: 3.1.2
+    codemirror:
+      specifier: 5.65.18
+      version: 5.65.18
+    color:
+      specifier: 5.0.0
+      version: 5.0.0
+    content-disposition:
+      specifier: 0.5.4
+      version: 0.5.4
+    cookie:
+      specifier: 1.0.2
+      version: 1.0.2
+    cookie-parser:
+      specifier: 1.4.7
+      version: 1.4.7
+    copyfiles:
+      specifier: 2.4.1
+      version: 2.4.1
+    cors:
+      specifier: 2.8.5
+      version: 2.8.5
+    cron-parser:
+      specifier: 4.9.0
+      version: 4.9.0
+    cropperjs:
+      specifier: 1.6.2
+      version: 1.6.2
+    date-fns:
+      specifier: 4.1.0
+      version: 4.1.0
+    decamelize:
+      specifier: 6.0.0
+      version: 6.0.0
+    deep-diff:
+      specifier: 1.0.2
+      version: 1.0.2
+    destroy:
+      specifier: 1.2.0
+      version: 1.2.0
+    diacritics:
+      specifier: 1.3.0
+      version: 1.3.0
+    diff:
+      specifier: 7.0.0
+      version: 7.0.0
+    dompurify:
+      specifier: 3.2.4
+      version: 3.2.4
+    dotenv:
+      specifier: 16.4.7
+      version: 16.4.7
+    editorjs-toggle-block:
+      specifier: 0.3.16
+      version: 0.3.16
+    encodeurl:
+      specifier: 2.0.0
+      version: 2.0.0
+    esbuild:
+      specifier: 0.25.0
+      version: 0.25.0
+    esbuild-plugin-replace:
+      specifier: 1.4.0
+      version: 1.4.0
+    esbuild-yaml:
+      specifier: 2.0.0
+      version: 2.0.0
+    escape-string-regexp:
+      specifier: 5.0.0
+      version: 5.0.0
+    eslint:
+      specifier: 9.21.0
+      version: 9.21.0
+    eslint-config-prettier:
+      specifier: 9.1.0
+      version: 9.1.0
+    eslint-plugin-vue:
+      specifier: 9.32.0
+      version: 9.32.0
+    eventemitter2:
+      specifier: 6.4.9
+      version: 6.4.9
+    exif-reader:
+      specifier: 2.0.2
+      version: 2.0.2
+    express:
+      specifier: 4.21.2
+      version: 4.21.2
+    file-saver:
+      specifier: 2.0.5
+      version: 2.0.5
+    find-cache-dir:
+      specifier: 5.0.0
+      version: 5.0.0
+    flat:
+      specifier: 6.0.1
+      version: 6.0.1
+    flatpickr:
+      specifier: 4.6.13
+      version: 4.6.13
+    form-data:
+      specifier: 4.0.2
+      version: 4.0.2
+    fs-extra:
+      specifier: 11.3.0
+      version: 11.3.0
+    geojson:
+      specifier: 0.5.0
+      version: 0.5.0
+    get-port:
+      specifier: 7.1.0
+      version: 7.1.0
+    glob-to-regexp:
+      specifier: 0.4.1
+      version: 0.4.1
+    globals:
+      specifier: 15.15.0
+      version: 15.15.0
+    globby:
+      specifier: 14.1.0
+      version: 14.1.0
+    graphql:
+      specifier: 16.10.0
+      version: 16.10.0
+    graphql-compose:
+      specifier: 9.1.0
+      version: 9.1.0
+    graphql-ws:
+      specifier: 5.16.2
+      version: 5.16.2
+    happy-dom:
+      specifier: 17.1.8
+      version: 17.1.8
+    helmet:
+      specifier: 8.0.0
+      version: 8.0.0
+    histoire:
+      specifier: 0.17.17
+      version: 0.17.17
+    html-entities:
+      specifier: 2.5.2
+      version: 2.5.2
+    icc:
+      specifier: 3.0.0
+      version: 3.0.0
+    inquirer:
+      specifier: 12.4.2
+      version: 12.4.2
+    ioredis:
+      specifier: 5.5.0
+      version: 5.5.0
+    ip-matching:
+      specifier: 2.1.2
+      version: 2.1.2
+    isolated-vm:
+      specifier: 5.0.3
+      version: 5.0.3
+    joi:
+      specifier: 17.13.3
+      version: 17.13.3
+    js-yaml:
+      specifier: 4.1.0
+      version: 4.1.0
+    js2xmlparser:
+      specifier: 5.0.0
+      version: 5.0.0
+    json-to-graphql-query:
+      specifier: 2.3.0
+      version: 2.3.0
+    json2csv:
+      specifier: 5.0.7
+      version: 5.0.7
+    jsonlint-mod:
+      specifier: 1.7.6
+      version: 1.7.6
+    jsonwebtoken:
+      specifier: 9.0.2
+      version: 9.0.2
+    keyv:
+      specifier: 5.3.0
+      version: 5.3.0
+    knex:
+      specifier: 3.1.0
+      version: 3.1.0
+    knex-mock-client:
+      specifier: 3.0.2
+      version: 3.0.2
+    ky:
+      specifier: 1.7.5
+      version: 1.7.5
+    ldapjs:
+      specifier: 2.3.3
+      version: 2.3.3
+    liquidjs:
+      specifier: 10.21.0
+      version: 10.21.0
+    listr2:
+      specifier: 8.2.5
+      version: 8.2.5
+    lodash:
+      specifier: 4.17.21
+      version: 4.17.21
+    lodash-es:
+      specifier: 4.17.21
+      version: 4.17.21
+    log-symbols:
+      specifier: 7.0.0
+      version: 7.0.0
+    lru-cache:
+      specifier: 11.0.2
+      version: 11.0.2
+    mapbox-gl:
+      specifier: 1.13.3
+      version: 1.13.3
+    maplibre-gl:
+      specifier: 1.15.3
+      version: 1.15.3
+    markdown-it-for-inline:
+      specifier: 2.0.1
+      version: 2.0.1
+    marked:
+      specifier: 15.0.7
+      version: 15.0.7
+    micromustache:
+      specifier: 8.0.3
+      version: 8.0.3
+    mime:
+      specifier: 4.0.6
+      version: 4.0.6
+    mime-types:
+      specifier: 2.1.35
+      version: 2.1.35
+    minimatch:
+      specifier: 10.0.1
+      version: 10.0.1
+    mitt:
+      specifier: 3.0.1
+      version: 3.0.1
+    mnemonist:
+      specifier: 0.40.3
+      version: 0.40.3
+    ms:
+      specifier: 2.1.3
+      version: 2.1.3
+    mysql2:
+      specifier: 3.12.0
+      version: 3.12.0
+    nanoid:
+      specifier: 5.1.2
+      version: 5.1.2
+    node-fetch:
+      specifier: 3.3.2
+      version: 3.3.2
+    node-machine-id:
+      specifier: 1.1.12
+      version: 1.1.12
+    node-schedule:
+      specifier: 2.1.1
+      version: 2.1.1
+    nodemailer:
+      specifier: 6.10.0
+      version: 6.10.0
+    nodemailer-mailgun-transport:
+      specifier: 2.1.5
+      version: 2.1.5
+    npm-watch:
+      specifier: 0.13.0
+      version: 0.13.0
+    object-hash:
+      specifier: 3.0.0
+      version: 3.0.0
+    ofetch:
+      specifier: 1.4.1
+      version: 1.4.1
+    openapi3-ts:
+      specifier: 4.4.0
+      version: 4.4.0
+    openid-client:
+      specifier: 5.7.1
+      version: 5.7.1
+    oracledb:
+      specifier: 6.8.0
+      version: 6.8.0
+    otplib:
+      specifier: 12.0.1
+      version: 12.0.1
+    p-limit:
+      specifier: 6.2.0
+      version: 6.2.0
+    p-queue:
+      specifier: 8.1.0
+      version: 8.1.0
+    papaparse:
+      specifier: 5.5.2
+      version: 5.5.2
+    pg:
+      specifier: 8.13.3
+      version: 8.13.3
+    pinia:
+      specifier: 2.3.1
+      version: 2.3.1
+    pino:
+      specifier: 9.6.0
+      version: 9.6.0
+    pino-http:
+      specifier: 10.4.0
+      version: 10.4.0
+    pino-http-print:
+      specifier: 3.1.0
+      version: 3.1.0
+    pino-pretty:
+      specifier: 13.0.0
+      version: 13.0.0
+    pm2:
+      specifier: 5.4.3
+      version: 5.4.3
+    postcss-html:
+      specifier: 1.8.0
+      version: 1.8.0
+    prettier:
+      specifier: 3.1.0
+      version: 3.1.0
+    pretty-ms:
+      specifier: 9.2.0
+      version: 9.2.0
+    prom-client:
+      specifier: 15.1.3
+      version: 15.1.3
+    proxy-addr:
+      specifier: 2.0.7
+      version: 2.0.7
+    qrcode:
+      specifier: 1.5.4
+      version: 1.5.4
+    qs:
+      specifier: 6.14.0
+      version: 6.14.0
+    rate-limiter-flexible:
+      specifier: 5.0.5
+      version: 5.0.5
+    rimraf:
+      specifier: 6.0.1
+      version: 6.0.1
+    rollup:
+      specifier: 4.34.9
+      version: 4.34.9
+    rollup-plugin-esbuild:
+      specifier: 6.2.1
+      version: 6.2.1
+    rollup-plugin-node-externals:
+      specifier: 8.0.0
+      version: 8.0.0
+    rollup-plugin-styler:
+      specifier: 2.0.0
+      version: 2.0.0
+    samlify:
+      specifier: 2.10.0
+      version: 2.10.0
+    sanitize-html:
+      specifier: 2.14.0
+      version: 2.14.0
+    sass-embedded:
+      specifier: 1.85.1
+      version: 1.85.1
+    seedrandom:
+      specifier: 3.0.5
+      version: 3.0.5
+    semver:
+      specifier: 7.7.1
+      version: 7.7.1
+    sharp:
+      specifier: 0.33.5
+      version: 0.33.5
+    snappy:
+      specifier: 7.2.2
+      version: 7.2.2
+    spellchecker-cli:
+      specifier: 7.0.0
+      version: 7.0.0
+    sqlite3:
+      specifier: 5.1.7
+      version: 5.1.7
+    stream-json:
+      specifier: 1.9.1
+      version: 1.9.1
+    string-width:
+      specifier: 7.2.0
+      version: 7.2.0
+    strip-ansi:
+      specifier: 7.1.0
+      version: 7.1.0
+    stylelint:
+      specifier: 16.21.0
+      version: 16.21.0
+    stylelint-config-standard:
+      specifier: 38.0.0
+      version: 38.0.0
+    stylelint-config-standard-scss:
+      specifier: 15.0.1
+      version: 15.0.1
+    stylelint-config-standard-vue:
+      specifier: 1.0.0
+      version: 1.0.0
+    stylelint-use-logical:
+      specifier: 2.1.2
+      version: 2.1.2
+    supertest:
+      specifier: 7.0.0
+      version: 7.0.0
+    swagger-cli:
+      specifier: 4.0.4
+      version: 4.0.4
+    swagger-ui-watcher:
+      specifier: 2.1.14
+      version: 2.1.14
+    tar:
+      specifier: 7.4.3
+      version: 7.4.3
+    tedious:
+      specifier: 18.6.1
+      version: 18.6.1
+    tinymce:
+      specifier: 6.8.5
+      version: 6.8.5
+    tmp:
+      specifier: 0.2.3
+      version: 0.2.3
+    tsup:
+      specifier: 8.4.0
+      version: 8.4.0
+    tsx:
+      specifier: 4.19.3
+      version: 4.19.3
+    tus-js-client:
+      specifier: 4.3.1
+      version: 4.3.1
+    typedoc:
+      specifier: 0.27.9
+      version: 0.27.9
+    typedoc-plugin-frontmatter:
+      specifier: 1.2.1
+      version: 1.2.1
+    typedoc-plugin-markdown:
+      specifier: 4.4.2
+      version: 4.4.2
+    typedoc-plugin-zod:
+      specifier: 1.3.1
+      version: 1.3.1
+    typedoc-vitepress-theme:
+      specifier: 1.1.2
+      version: 1.1.2
+    typescript:
+      specifier: 5.8.2
+      version: 5.8.2
+    typescript-eslint:
+      specifier: 8.25.0
+      version: 8.25.0
+    undici:
+      specifier: 7.5.0
+      version: 7.5.0
+    update-check:
+      specifier: 1.5.4
+      version: 1.5.4
+    uuid:
+      specifier: 11.1.0
+      version: 11.1.0
+    vite-plugin-dts:
+      specifier: 4.5.1
+      version: 4.5.1
+    vite-plugin-vue-devtools:
+      specifier: 7.7.2
+      version: 7.7.2
+    vite-tsconfig-paths:
+      specifier: 5.1.4
+      version: 5.1.4
+    vitepress:
+      specifier: 1.0.0-rc.4
+      version: 1.0.0-rc.4
+    vitepress-plugin-tabs:
+      specifier: 0.3.0
+      version: 0.3.0
+    vue:
+      specifier: 3.5.13
+      version: 3.5.13
+    vue-i18n:
+      specifier: 11.1.2
+      version: 11.1.2
+    vue-router:
+      specifier: 4.5.0
+      version: 4.5.0
+    vue-tsc:
+      specifier: 2.2.8
+      version: 2.2.8
+    vue-virtual-scroller:
+      specifier: 2.0.0-beta.8
+      version: 2.0.0-beta.8
+    vuedraggable:
+      specifier: 4.1.0
+      version: 4.1.0
+    wellknown:
+      specifier: 0.5.0
+      version: 0.5.0
+    ws:
+      specifier: 8.18.1
+      version: 8.18.1
+    zod:
+      specifier: 3.24.2
+      version: 3.24.2
+    zod-validation-error:
+      specifier: 3.4.0
+      version: 3.4.0
+
 importers:
 
   .:
     devDependencies:
       '@changesets/cli':
-        specifier: 2.28.1
+        specifier: 'catalog:'
         version: 2.28.1
       '@directus/release-notes-generator':
         specifier: workspace:*
         version: link:packages/release-notes-generator
       '@eslint/js':
-        specifier: 9.21.0
+        specifier: 'catalog:'
         version: 9.21.0
       eslint:
-        specifier: 9.21.0
+        specifier: 'catalog:'
         version: 9.21.0(jiti@1.21.7)
       eslint-config-prettier:
-        specifier: 9.1.0
+        specifier: 'catalog:'
         version: 9.1.0(eslint@9.21.0(jiti@1.21.7))
       eslint-plugin-vue:
-        specifier: 9.32.0
+        specifier: 'catalog:'
         version: 9.32.0(eslint@9.21.0(jiti@1.21.7))
       globals:
-        specifier: 15.15.0
+        specifier: 'catalog:'
         version: 15.15.0
       postcss-html:
-        specifier: 1.8.0
+        specifier: 'catalog:'
         version: 1.8.0
       prettier:
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0
       rimraf:
-        specifier: 6.0.1
+        specifier: 'catalog:'
         version: 6.0.1
       stylelint:
-        specifier: 16.21.0
+        specifier: 'catalog:'
         version: 16.21.0(typescript@5.8.2)
       stylelint-config-standard:
-        specifier: 38.0.0
+        specifier: 'catalog:'
         version: 38.0.0(stylelint@16.21.0(typescript@5.8.2))
       stylelint-config-standard-scss:
-        specifier: 15.0.1
+        specifier: 'catalog:'
         version: 15.0.1(postcss@8.5.6)(stylelint@16.21.0(typescript@5.8.2))
       stylelint-config-standard-vue:
-        specifier: 1.0.0
+        specifier: 'catalog:'
         version: 1.0.0(postcss-html@1.8.0)(stylelint@16.21.0(typescript@5.8.2))
       stylelint-use-logical:
-        specifier: 2.1.2
+        specifier: 'catalog:'
         version: 2.1.2(stylelint@16.21.0(typescript@5.8.2))
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       typescript-eslint:
-        specifier: 8.25.0
+        specifier: 'catalog:'
         version: 8.25.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
 
   api:
     dependencies:
       '@authenio/samlify-node-xmllint':
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0(samlify@2.10.0)
       '@aws-sdk/client-ses':
-        specifier: 3.758.0
+        specifier: 'catalog:'
         version: 3.758.0
       '@directus/app':
         specifier: workspace:*
@@ -138,436 +1056,436 @@ importers:
         specifier: workspace:*
         version: link:../packages/validation
       '@godaddy/terminus':
-        specifier: 4.12.1
+        specifier: 'catalog:'
         version: 4.12.1
       '@rollup/plugin-alias':
-        specifier: 5.1.1
+        specifier: 'catalog:'
         version: 5.1.1(rollup@4.34.9)
       '@rollup/plugin-node-resolve':
-        specifier: 15.3.1
+        specifier: 'catalog:'
         version: 15.3.1(rollup@4.34.9)
       '@rollup/plugin-virtual':
-        specifier: 3.0.2
+        specifier: 'catalog:'
         version: 3.0.2(rollup@4.34.9)
       '@tus/server':
-        specifier: 1.10.2
+        specifier: 'catalog:'
         version: 1.10.2
       '@tus/utils':
-        specifier: 0.5.1
+        specifier: 'catalog:'
         version: 0.5.1
       argon2:
-        specifier: 0.41.1
+        specifier: 'catalog:'
         version: 0.41.1
       async:
-        specifier: 3.2.6
+        specifier: 'catalog:'
         version: 3.2.6
       async-mutex:
-        specifier: 0.5.0
+        specifier: 'catalog:'
         version: 0.5.0
       axios:
-        specifier: 1.8.4
+        specifier: 'catalog:'
         version: 1.8.4
       busboy:
-        specifier: 1.6.0
+        specifier: 'catalog:'
         version: 1.6.0
       bytes:
-        specifier: 3.1.2
+        specifier: 'catalog:'
         version: 3.1.2
       camelcase:
-        specifier: 8.0.0
+        specifier: 'catalog:'
         version: 8.0.0
       chalk:
-        specifier: 5.4.1
+        specifier: 'catalog:'
         version: 5.4.1
       chokidar:
-        specifier: 3.6.0
+        specifier: 'catalog:'
         version: 3.6.0
       commander:
         specifier: 12.1.0
         version: 12.1.0
       content-disposition:
-        specifier: 0.5.4
+        specifier: 'catalog:'
         version: 0.5.4
       cookie:
-        specifier: 1.0.2
+        specifier: 'catalog:'
         version: 1.0.2
       cookie-parser:
-        specifier: 1.4.7
+        specifier: 'catalog:'
         version: 1.4.7
       cors:
-        specifier: 2.8.5
+        specifier: 'catalog:'
         version: 2.8.5
       cron-parser:
-        specifier: 4.9.0
+        specifier: 'catalog:'
         version: 4.9.0
       date-fns:
-        specifier: 4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       deep-diff:
-        specifier: 1.0.2
+        specifier: 'catalog:'
         version: 1.0.2
       destroy:
-        specifier: 1.2.0
+        specifier: 'catalog:'
         version: 1.2.0
       directus:
         specifier: workspace:*
         version: link:../directus
       dotenv:
-        specifier: 16.4.7
+        specifier: 'catalog:'
         version: 16.4.7
       encodeurl:
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0
       eventemitter2:
-        specifier: 6.4.9
+        specifier: 'catalog:'
         version: 6.4.9
       execa:
         specifier: 8.0.1
         version: 8.0.1
       exif-reader:
-        specifier: 2.0.2
+        specifier: 'catalog:'
         version: 2.0.2
       express:
-        specifier: 4.21.2
+        specifier: 'catalog:'
         version: 4.21.2
       flat:
-        specifier: 6.0.1
+        specifier: 'catalog:'
         version: 6.0.1
       fs-extra:
-        specifier: 11.3.0
+        specifier: 'catalog:'
         version: 11.3.0
       glob-to-regexp:
-        specifier: 0.4.1
+        specifier: 'catalog:'
         version: 0.4.1
       graphql:
-        specifier: 16.10.0
+        specifier: 'catalog:'
         version: 16.10.0
       graphql-compose:
-        specifier: 9.1.0
+        specifier: 'catalog:'
         version: 9.1.0(graphql@16.10.0)
       graphql-ws:
-        specifier: 5.16.2
+        specifier: 'catalog:'
         version: 5.16.2(graphql@16.10.0)
       helmet:
-        specifier: 8.0.0
+        specifier: 'catalog:'
         version: 8.0.0
       icc:
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       inquirer:
-        specifier: 12.4.2
+        specifier: 'catalog:'
         version: 12.4.2(@types/node@22.13.8)
       ioredis:
-        specifier: 5.5.0
+        specifier: 'catalog:'
         version: 5.5.0
       ip-matching:
-        specifier: 2.1.2
+        specifier: 'catalog:'
         version: 2.1.2
       isolated-vm:
-        specifier: 5.0.3
+        specifier: 'catalog:'
         version: 5.0.3
       joi:
-        specifier: 17.13.3
+        specifier: 'catalog:'
         version: 17.13.3
       js-yaml:
-        specifier: 4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       js2xmlparser:
-        specifier: 5.0.0
+        specifier: 'catalog:'
         version: 5.0.0
       json2csv:
-        specifier: 5.0.7
+        specifier: 'catalog:'
         version: 5.0.7
       jsonwebtoken:
-        specifier: 9.0.2
+        specifier: 'catalog:'
         version: 9.0.2
       keyv:
-        specifier: 5.3.0
+        specifier: 'catalog:'
         version: 5.3.0
       knex:
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0(mysql2@3.12.0)(pg@8.13.3)(sqlite3@5.1.7)(tedious@18.6.1)
       ldapjs:
-        specifier: 2.3.3
+        specifier: 'catalog:'
         version: 2.3.3
       liquidjs:
-        specifier: 10.21.0
+        specifier: 'catalog:'
         version: 10.21.0
       lodash-es:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       marked:
-        specifier: 15.0.7
+        specifier: 'catalog:'
         version: 15.0.7
       micromustache:
-        specifier: 8.0.3
+        specifier: 'catalog:'
         version: 8.0.3
       mime-types:
-        specifier: 2.1.35
+        specifier: 'catalog:'
         version: 2.1.35
       minimatch:
-        specifier: 10.0.1
+        specifier: 'catalog:'
         version: 10.0.1
       mnemonist:
-        specifier: 0.40.3
+        specifier: 'catalog:'
         version: 0.40.3
       ms:
-        specifier: 2.1.3
+        specifier: 'catalog:'
         version: 2.1.3
       nanoid:
-        specifier: 5.1.2
+        specifier: 'catalog:'
         version: 5.1.2
       node-machine-id:
-        specifier: 1.1.12
+        specifier: 'catalog:'
         version: 1.1.12
       node-schedule:
-        specifier: 2.1.1
+        specifier: 'catalog:'
         version: 2.1.1
       nodemailer:
-        specifier: 6.10.0
+        specifier: 'catalog:'
         version: 6.10.0
       object-hash:
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       openapi3-ts:
-        specifier: 4.4.0
+        specifier: 'catalog:'
         version: 4.4.0
       openid-client:
-        specifier: 5.7.1
+        specifier: 'catalog:'
         version: 5.7.1
       ora:
         specifier: 8.2.0
         version: 8.2.0
       otplib:
-        specifier: 12.0.1
+        specifier: 'catalog:'
         version: 12.0.1
       p-limit:
-        specifier: 6.2.0
+        specifier: 'catalog:'
         version: 6.2.0
       p-queue:
-        specifier: 8.1.0
+        specifier: 'catalog:'
         version: 8.1.0
       papaparse:
-        specifier: 5.5.2
+        specifier: 'catalog:'
         version: 5.5.2
       pino:
-        specifier: 9.6.0
+        specifier: 'catalog:'
         version: 9.6.0
       pino-http:
-        specifier: 10.4.0
+        specifier: 'catalog:'
         version: 10.4.0
       pino-http-print:
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0
       pino-pretty:
-        specifier: 13.0.0
+        specifier: 'catalog:'
         version: 13.0.0
       pm2:
-        specifier: 5.4.3
+        specifier: 'catalog:'
         version: 5.4.3
       prom-client:
-        specifier: 15.1.3
+        specifier: 'catalog:'
         version: 15.1.3
       proxy-addr:
-        specifier: 2.0.7
+        specifier: 'catalog:'
         version: 2.0.7
       qs:
-        specifier: 6.14.0
+        specifier: 'catalog:'
         version: 6.14.0
       rate-limiter-flexible:
-        specifier: 5.0.5
+        specifier: 'catalog:'
         version: 5.0.5
       rollup:
-        specifier: 4.34.9
+        specifier: 'catalog:'
         version: 4.34.9
       samlify:
-        specifier: 2.10.0
+        specifier: 'catalog:'
         version: 2.10.0
       sanitize-html:
-        specifier: 2.14.0
+        specifier: 'catalog:'
         version: 2.14.0
       sharp:
-        specifier: 0.33.5
+        specifier: 'catalog:'
         version: 0.33.5
       snappy:
-        specifier: 7.2.2
+        specifier: 'catalog:'
         version: 7.2.2
       stream-json:
-        specifier: 1.9.1
+        specifier: 'catalog:'
         version: 1.9.1
       tar:
-        specifier: 7.4.3
+        specifier: 'catalog:'
         version: 7.4.3
       tsx:
-        specifier: 4.19.3
+        specifier: 'catalog:'
         version: 4.19.3
       uuid:
-        specifier: 11.1.0
+        specifier: 'catalog:'
         version: 11.1.0
       wellknown:
-        specifier: 0.5.0
+        specifier: 'catalog:'
         version: 0.5.0
       ws:
-        specifier: 8.18.1
+        specifier: 'catalog:'
         version: 8.18.1
       zod:
-        specifier: 3.24.2
+        specifier: 'catalog:'
         version: 3.24.2
       zod-validation-error:
-        specifier: 3.4.0
+        specifier: 'catalog:'
         version: 3.4.0(zod@3.24.2)
-    optionalDependencies:
-      '@keyv/redis':
-        specifier: 3.0.1
-        version: 3.0.1
-      mysql2:
-        specifier: 3.12.0
-        version: 3.12.0
-      nodemailer-mailgun-transport:
-        specifier: 2.1.5
-        version: 2.1.5(lodash@4.17.21)(underscore@1.13.7)
-      oracledb:
-        specifier: 6.8.0
-        version: 6.8.0
-      pg:
-        specifier: 8.13.3
-        version: 8.13.3
-      sqlite3:
-        specifier: 5.1.7
-        version: 5.1.7
-      tedious:
-        specifier: 18.6.1
-        version: 18.6.1
     devDependencies:
       '@directus/random':
         specifier: workspace:*
         version: link:../packages/random
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../packages/types
       '@ngneat/falso':
-        specifier: 7.3.0
+        specifier: 'catalog:'
         version: 7.3.0
       '@types/async':
-        specifier: 3.2.24
+        specifier: 'catalog:'
         version: 3.2.24
       '@types/busboy':
-        specifier: 1.5.4
+        specifier: 'catalog:'
         version: 1.5.4
       '@types/bytes':
-        specifier: 3.1.5
+        specifier: 'catalog:'
         version: 3.1.5
       '@types/content-disposition':
-        specifier: 0.5.8
+        specifier: 'catalog:'
         version: 0.5.8
       '@types/cookie-parser':
-        specifier: 1.4.8
+        specifier: 'catalog:'
         version: 1.4.8(@types/express@4.17.21)
       '@types/cors':
-        specifier: 2.8.17
+        specifier: 'catalog:'
         version: 2.8.17
       '@types/deep-diff':
-        specifier: 1.0.5
+        specifier: 'catalog:'
         version: 1.0.5
       '@types/destroy':
-        specifier: 1.0.3
+        specifier: 'catalog:'
         version: 1.0.3
       '@types/encodeurl':
-        specifier: 1.0.2
+        specifier: 'catalog:'
         version: 1.0.2
       '@types/express':
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       '@types/express-serve-static-core':
-        specifier: 4.19.6
+        specifier: 'catalog:'
         version: 4.19.6
       '@types/fs-extra':
-        specifier: 11.0.4
+        specifier: 'catalog:'
         version: 11.0.4
       '@types/glob-to-regexp':
-        specifier: 0.4.4
+        specifier: 'catalog:'
         version: 0.4.4
       '@types/inquirer':
-        specifier: 9.0.7
+        specifier: 'catalog:'
         version: 9.0.7
       '@types/js-yaml':
-        specifier: 4.0.9
+        specifier: 'catalog:'
         version: 4.0.9
       '@types/json2csv':
-        specifier: 5.0.7
+        specifier: 'catalog:'
         version: 5.0.7
       '@types/jsonwebtoken':
-        specifier: 9.0.9
+        specifier: 'catalog:'
         version: 9.0.9
       '@types/ldapjs':
-        specifier: 2.2.5
+        specifier: 'catalog:'
         version: 2.2.5
       '@types/lodash-es':
-        specifier: 4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       '@types/mime-types':
-        specifier: 2.1.4
+        specifier: 'catalog:'
         version: 2.1.4
       '@types/ms':
-        specifier: 2.1.0
+        specifier: 'catalog:'
         version: 2.1.0
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@types/node-schedule':
-        specifier: 2.1.7
+        specifier: 'catalog:'
         version: 2.1.7
       '@types/nodemailer':
-        specifier: 6.4.17
+        specifier: 'catalog:'
         version: 6.4.17
       '@types/object-hash':
-        specifier: 3.0.6
+        specifier: 'catalog:'
         version: 3.0.6
       '@types/papaparse':
-        specifier: 5.3.15
+        specifier: 'catalog:'
         version: 5.3.15
       '@types/proxy-addr':
-        specifier: 2.0.3
+        specifier: 'catalog:'
         version: 2.0.3
       '@types/qs':
-        specifier: 6.9.18
+        specifier: 'catalog:'
         version: 6.9.18
       '@types/sanitize-html':
-        specifier: 2.13.0
+        specifier: 'catalog:'
         version: 2.13.0
       '@types/stream-json':
-        specifier: 1.7.8
+        specifier: 'catalog:'
         version: 1.7.8
       '@types/wellknown':
-        specifier: 0.5.8
+        specifier: 'catalog:'
         version: 0.5.8
       '@types/ws':
-        specifier: 8.5.14
+        specifier: 'catalog:'
         version: 8.5.14
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       copyfiles:
-        specifier: 2.4.1
+        specifier: 'catalog:'
         version: 2.4.1
       form-data:
-        specifier: 4.0.2
+        specifier: 'catalog:'
         version: 4.0.2
       get-port:
-        specifier: 7.1.0
+        specifier: 'catalog:'
         version: 7.1.0
       knex-mock-client:
-        specifier: 3.0.2
+        specifier: 'catalog:'
         version: 3.0.2(knex@3.1.0(mysql2@3.12.0)(pg@8.13.3)(sqlite3@5.1.7)(tedious@18.6.1))
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
+    optionalDependencies:
+      '@keyv/redis':
+        specifier: 'catalog:'
+        version: 3.0.1
+      mysql2:
+        specifier: 'catalog:'
+        version: 3.12.0
+      nodemailer-mailgun-transport:
+        specifier: 'catalog:'
+        version: 2.1.5(lodash@4.17.21)(underscore@1.13.7)
+      oracledb:
+        specifier: 'catalog:'
+        version: 6.8.0
+      pg:
+        specifier: 'catalog:'
+        version: 8.13.3
+      sqlite3:
+        specifier: 'catalog:'
+        version: 5.1.7
+      tedious:
+        specifier: 'catalog:'
+        version: 18.6.1
 
   app:
     devDependencies:
@@ -608,7 +1526,7 @@ importers:
         specifier: workspace:*
         version: link:../packages/themes
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@directus/types':
         specifier: workspace:*
@@ -620,322 +1538,322 @@ importers:
         specifier: workspace:*
         version: link:../packages/validation
       '@editorjs/attaches':
-        specifier: 1.3.0
+        specifier: 'catalog:'
         version: 1.3.0
       '@editorjs/checklist':
-        specifier: 1.6.0
+        specifier: 'catalog:'
         version: 1.6.0
       '@editorjs/code':
-        specifier: 2.9.0
+        specifier: 'catalog:'
         version: 2.9.0
       '@editorjs/delimiter':
-        specifier: 1.4.2
+        specifier: 'catalog:'
         version: 1.4.2
       '@editorjs/editorjs':
-        specifier: 2.29.1
+        specifier: 'catalog:'
         version: 2.29.1
       '@editorjs/embed':
-        specifier: 2.7.4
+        specifier: 'catalog:'
         version: 2.7.4
       '@editorjs/header':
-        specifier: 2.8.1
+        specifier: 'catalog:'
         version: 2.8.1
       '@editorjs/image':
-        specifier: 2.9.3
+        specifier: 'catalog:'
         version: 2.9.3
       '@editorjs/inline-code':
-        specifier: 1.5.1
+        specifier: 'catalog:'
         version: 1.5.1
       '@editorjs/nested-list':
-        specifier: 1.4.3
+        specifier: 'catalog:'
         version: 1.4.3
       '@editorjs/paragraph':
-        specifier: 2.11.5
+        specifier: 'catalog:'
         version: 2.11.5
       '@editorjs/quote':
-        specifier: 2.7.2
+        specifier: 'catalog:'
         version: 2.7.2
       '@editorjs/raw':
-        specifier: 2.5.0
+        specifier: 'catalog:'
         version: 2.5.0
       '@editorjs/table':
-        specifier: 2.3.0
+        specifier: 'catalog:'
         version: 2.3.0
       '@editorjs/underline':
-        specifier: 1.1.0
+        specifier: 'catalog:'
         version: 1.1.0
       '@fortawesome/fontawesome-svg-core':
-        specifier: 6.7.2
+        specifier: 'catalog:'
         version: 6.7.2
       '@fortawesome/free-brands-svg-icons':
-        specifier: 6.7.2
+        specifier: 'catalog:'
         version: 6.7.2
       '@fullcalendar/core':
-        specifier: 6.1.15
+        specifier: 'catalog:'
         version: 6.1.15
       '@fullcalendar/daygrid':
-        specifier: 6.1.15
+        specifier: 'catalog:'
         version: 6.1.15(@fullcalendar/core@6.1.15)
       '@fullcalendar/interaction':
-        specifier: 6.1.15
+        specifier: 'catalog:'
         version: 6.1.15(@fullcalendar/core@6.1.15)
       '@fullcalendar/list':
-        specifier: 6.1.15
+        specifier: 'catalog:'
         version: 6.1.15(@fullcalendar/core@6.1.15)
       '@fullcalendar/timegrid':
-        specifier: 6.1.15
+        specifier: 'catalog:'
         version: 6.1.15(@fullcalendar/core@6.1.15)
       '@histoire/plugin-vue':
-        specifier: 0.17.17
+        specifier: 'catalog:'
         version: 0.17.17(histoire@0.17.17(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)))(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       '@joeattardi/emoji-button':
-        specifier: 4.6.4
+        specifier: 'catalog:'
         version: 4.6.4
       '@json2csv/plainjs':
-        specifier: 7.0.6
+        specifier: 'catalog:'
         version: 7.0.6
       '@mapbox/mapbox-gl-draw':
-        specifier: 1.5.0
+        specifier: 'catalog:'
         version: 1.5.0
       '@mapbox/mapbox-gl-draw-static-mode':
-        specifier: 1.0.1
+        specifier: 'catalog:'
         version: 1.0.1
       '@mapbox/mapbox-gl-geocoder':
-        specifier: 5.0.3
+        specifier: 'catalog:'
         version: 5.0.3
       '@ngneat/falso':
-        specifier: 7.3.0
+        specifier: 'catalog:'
         version: 7.3.0
       '@pinia/testing':
-        specifier: 1.0.0
+        specifier: 'catalog:'
         version: 1.0.0(pinia@2.3.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2)))
       '@popperjs/core':
-        specifier: 2.11.8
+        specifier: 'catalog:'
         version: 2.11.8
       '@rollup/plugin-yaml':
-        specifier: 4.1.2
+        specifier: 'catalog:'
         version: 4.1.2(rollup@4.34.9)
       '@sindresorhus/slugify':
-        specifier: 2.2.1
+        specifier: 'catalog:'
         version: 2.2.1
       '@tinymce/tinymce-vue':
-        specifier: 6.1.0
+        specifier: 'catalog:'
         version: 6.1.0(tinymce@6.8.5)(vue@3.5.13(typescript@5.8.2))
       '@turf/meta':
-        specifier: 7.2.0
+        specifier: 'catalog:'
         version: 7.2.0
       '@types/base-64':
-        specifier: 1.0.2
+        specifier: 'catalog:'
         version: 1.0.2
       '@types/chroma-js':
-        specifier: 3.1.1
+        specifier: 'catalog:'
         version: 3.1.1
       '@types/codemirror':
-        specifier: 5.60.15
+        specifier: 'catalog:'
         version: 5.60.15
       '@types/diacritics':
-        specifier: 1.3.3
+        specifier: 'catalog:'
         version: 1.3.3
       '@types/diff':
-        specifier: 7.0.1
+        specifier: 'catalog:'
         version: 7.0.1
       '@types/file-saver':
-        specifier: 2.0.7
+        specifier: 'catalog:'
         version: 2.0.7
       '@types/geojson':
-        specifier: 7946.0.16
+        specifier: 'catalog:'
         version: 7946.0.16
       '@types/lodash':
-        specifier: 4.17.16
+        specifier: 'catalog:'
         version: 4.17.16
       '@types/mapbox__mapbox-gl-draw':
-        specifier: 1.4.8
+        specifier: 'catalog:'
         version: 1.4.8
       '@types/mapbox__mapbox-gl-geocoder':
-        specifier: 5.0.0
+        specifier: 'catalog:'
         version: 5.0.0
       '@types/qrcode':
-        specifier: 1.5.5
+        specifier: 'catalog:'
         version: 1.5.5
       '@types/semver':
-        specifier: 7.5.8
+        specifier: 'catalog:'
         version: 7.5.8
       '@types/wellknown':
-        specifier: 0.5.8
+        specifier: 'catalog:'
         version: 0.5.8
       '@unhead/addons':
-        specifier: 1.11.20
+        specifier: 'catalog:'
         version: 1.11.20(rollup@4.34.9)
       '@unhead/vue':
-        specifier: 1.11.20
+        specifier: 'catalog:'
         version: 1.11.20(vue@3.5.13(typescript@5.8.2))
       '@vitejs/plugin-vue':
         specifier: 5.2.1
         version: 5.2.1(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       '@vue/test-utils':
-        specifier: 2.4.6
+        specifier: 'catalog:'
         version: 2.4.6
       '@vueuse/core':
-        specifier: 12.7.0
+        specifier: 'catalog:'
         version: 12.7.0(typescript@5.8.2)
       '@vueuse/integrations':
-        specifier: 12.7.0
+        specifier: 'catalog:'
         version: 12.7.0(axios@1.8.4)(focus-trap@7.6.2)(qrcode@1.5.4)(sortablejs@1.14.0)(typescript@5.8.2)
       '@vueuse/router':
-        specifier: 12.7.0
+        specifier: 'catalog:'
         version: 12.7.0(typescript@5.8.2)(vue-router@4.5.0(vue@3.5.13(typescript@5.8.2)))
       apexcharts:
-        specifier: 4.5.0
+        specifier: 'catalog:'
         version: 4.5.0
       axios:
-        specifier: 1.8.4
+        specifier: 'catalog:'
         version: 1.8.4
       base-64:
-        specifier: 1.0.0
+        specifier: 'catalog:'
         version: 1.0.0
       caret-pos:
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0
       chroma-js:
-        specifier: 3.1.2
+        specifier: 'catalog:'
         version: 3.1.2
       codemirror:
-        specifier: 5.65.18
+        specifier: 'catalog:'
         version: 5.65.18
       color:
-        specifier: 5.0.0
+        specifier: 'catalog:'
         version: 5.0.0
       cropperjs:
-        specifier: 1.6.2
+        specifier: 'catalog:'
         version: 1.6.2
       date-fns:
-        specifier: 4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       diacritics:
-        specifier: 1.3.0
+        specifier: 'catalog:'
         version: 1.3.0
       diff:
-        specifier: 7.0.0
+        specifier: 'catalog:'
         version: 7.0.0
       dompurify:
-        specifier: 3.2.4
+        specifier: 'catalog:'
         version: 3.2.4
       editorjs-toggle-block:
-        specifier: 0.3.16
+        specifier: 'catalog:'
         version: 0.3.16
       escape-string-regexp:
-        specifier: 5.0.0
+        specifier: 'catalog:'
         version: 5.0.0
       file-saver:
-        specifier: 2.0.5
+        specifier: 'catalog:'
         version: 2.0.5
       flatpickr:
-        specifier: 4.6.13
+        specifier: 'catalog:'
         version: 4.6.13
       geojson:
-        specifier: 0.5.0
+        specifier: 'catalog:'
         version: 0.5.0
       happy-dom:
-        specifier: 17.1.8
+        specifier: 'catalog:'
         version: 17.1.8
       histoire:
-        specifier: 0.17.17
+        specifier: 'catalog:'
         version: 0.17.17(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       html-entities:
-        specifier: 2.5.2
+        specifier: 'catalog:'
         version: 2.5.2
       json-to-graphql-query:
-        specifier: 2.3.0
+        specifier: 'catalog:'
         version: 2.3.0
       jsonlint-mod:
-        specifier: 1.7.6
+        specifier: 'catalog:'
         version: 1.7.6
       lodash:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       mapbox-gl:
-        specifier: 1.13.3
+        specifier: 'catalog:'
         version: 1.13.3
       maplibre-gl:
-        specifier: 1.15.3
+        specifier: 'catalog:'
         version: 1.15.3(mapbox-gl@1.13.3)
       marked:
-        specifier: 15.0.7
+        specifier: 'catalog:'
         version: 15.0.7
       micromustache:
-        specifier: 8.0.3
+        specifier: 'catalog:'
         version: 8.0.3
       mime:
-        specifier: 4.0.6
+        specifier: 'catalog:'
         version: 4.0.6
       mitt:
-        specifier: 3.0.1
+        specifier: 'catalog:'
         version: 3.0.1
       nanoid:
-        specifier: 5.1.2
+        specifier: 'catalog:'
         version: 5.1.2
       ofetch:
-        specifier: 1.4.1
+        specifier: 'catalog:'
         version: 1.4.1
       p-queue:
-        specifier: 8.1.0
+        specifier: 'catalog:'
         version: 8.1.0
       pinia:
-        specifier: 2.3.1
+        specifier: 'catalog:'
         version: 2.3.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))
       pretty-ms:
-        specifier: 9.2.0
+        specifier: 'catalog:'
         version: 9.2.0
       qrcode:
-        specifier: 1.5.4
+        specifier: 'catalog:'
         version: 1.5.4
       sass-embedded:
-        specifier: 1.85.1
+        specifier: 'catalog:'
         version: 1.85.1
       semver:
-        specifier: 7.7.1
+        specifier: 'catalog:'
         version: 7.7.1
       string-width:
-        specifier: 7.2.0
+        specifier: 'catalog:'
         version: 7.2.0
       tinymce:
-        specifier: 6.8.5
+        specifier: 'catalog:'
         version: 6.8.5
       tus-js-client:
-        specifier: 4.3.1
+        specifier: 'catalog:'
         version: 4.3.1
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vite:
         specifier: 5.4.19
         version: 5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vite-plugin-vue-devtools:
-        specifier: 7.7.2
+        specifier: 'catalog:'
         version: 7.7.2(rollup@4.34.9)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
       vue-i18n:
-        specifier: 11.1.2
+        specifier: 'catalog:'
         version: 11.1.2(vue@3.5.13(typescript@5.8.2))
       vue-router:
-        specifier: 4.5.0
+        specifier: 'catalog:'
         version: 4.5.0(vue@3.5.13(typescript@5.8.2))
       vue-tsc:
-        specifier: 2.2.8
+        specifier: 'catalog:'
         version: 2.2.8(typescript@5.8.2)
       vue-virtual-scroller:
-        specifier: 2.0.0-beta.8
+        specifier: 'catalog:'
         version: 2.0.0-beta.8(vue@3.5.13(typescript@5.8.2))
       vuedraggable:
-        specifier: 4.1.0
+        specifier: 'catalog:'
         version: 4.1.0(vue@3.5.13(typescript@5.8.2))
       wellknown:
-        specifier: 0.5.0
+        specifier: 'catalog:'
         version: 0.5.0
 
   directus:
@@ -950,7 +1868,7 @@ importers:
   docs:
     dependencies:
       node-fetch:
-        specifier: 3.3.2
+        specifier: 'catalog:'
         version: 3.3.2
     devDependencies:
       '@directus/format-title':
@@ -960,94 +1878,94 @@ importers:
         specifier: workspace:*
         version: link:../sdk
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@pnpm/find-workspace-dir':
-        specifier: 900.0.1
+        specifier: 'catalog:'
         version: 900.0.1
       '@pnpm/workspace.find-packages':
-        specifier: 900.0.5
+        specifier: 'catalog:'
         version: 900.0.5(@pnpm/logger@5.2.0)
       markdown-it-for-inline:
-        specifier: 2.0.1
+        specifier: 'catalog:'
         version: 2.0.1
       marked:
-        specifier: 15.0.7
+        specifier: 'catalog:'
         version: 15.0.7
       spellchecker-cli:
-        specifier: 7.0.0
+        specifier: 'catalog:'
         version: 7.0.0
       typedoc:
-        specifier: 0.27.9
+        specifier: 'catalog:'
         version: 0.27.9(typescript@5.8.2)
       typedoc-plugin-frontmatter:
-        specifier: 1.2.1
+        specifier: 'catalog:'
         version: 1.2.1(typedoc-plugin-markdown@4.4.2(typedoc@0.27.9(typescript@5.8.2)))
       typedoc-plugin-markdown:
-        specifier: 4.4.2
+        specifier: 'catalog:'
         version: 4.4.2(typedoc@0.27.9(typescript@5.8.2))
       typedoc-plugin-zod:
-        specifier: 1.3.1
+        specifier: 'catalog:'
         version: 1.3.1(typedoc@0.27.9(typescript@5.8.2))
       typedoc-vitepress-theme:
-        specifier: 1.1.2
+        specifier: 'catalog:'
         version: 1.1.2(typedoc-plugin-markdown@4.4.2(typedoc@0.27.9(typescript@5.8.2)))
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitepress:
-        specifier: 1.0.0-rc.4
+        specifier: 'catalog:'
         version: 1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.4)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2)
       vitepress-plugin-tabs:
-        specifier: 0.3.0
+        specifier: 'catalog:'
         version: 0.3.0(vitepress@1.0.0-rc.4(@algolia/client-search@5.19.0)(@types/node@22.13.8)(axios@1.8.4)(change-case@4.1.2)(qrcode@1.5.4)(sass@1.83.4)(search-insights@2.17.3)(sortablejs@1.14.0)(terser@5.37.0)(typescript@5.8.2))(vue@3.5.13(typescript@5.8.2))
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
 
   packages/components:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@histoire/plugin-vue':
-        specifier: 0.17.17
+        specifier: 'catalog:'
         version: 0.17.17(histoire@0.17.17(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)))(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       '@vitejs/plugin-vue':
         specifier: 5.2.1
         version: 5.2.1(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       histoire:
-        specifier: 0.17.17
+        specifier: 'catalog:'
         version: 0.17.17(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       pinia:
-        specifier: 2.3.1
+        specifier: 'catalog:'
         version: 2.3.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))
       rollup-plugin-node-externals:
-        specifier: 8.0.0
+        specifier: 'catalog:'
         version: 8.0.0(rollup@4.34.9)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vite:
         specifier: 5.4.19
         version: 5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vite-plugin-dts:
-        specifier: 4.5.1
+        specifier: 'catalog:'
         version: 4.5.1(@types/node@22.13.8)(rollup@4.34.9)(typescript@5.8.2)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
       vue-i18n:
-        specifier: 11.1.2
+        specifier: 'catalog:'
         version: 11.1.2(vue@3.5.13(typescript@5.8.2))
       vue-router:
-        specifier: 4.5.0
+        specifier: 'catalog:'
         version: 4.5.0(vue@3.5.13(typescript@5.8.2))
 
   packages/composables:
@@ -1059,13 +1977,13 @@ importers:
         specifier: workspace:*
         version: link:../utils
       axios:
-        specifier: 1.8.4
+        specifier: 'catalog:'
         version: 1.8.4
       lodash-es:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       nanoid:
-        specifier: 5.1.2
+        specifier: 'catalog:'
         version: 5.1.2
     devDependencies:
       '@directus/extensions':
@@ -1075,43 +1993,43 @@ importers:
         specifier: workspace:*
         version: link:../../sdk
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
       '@types/lodash-es':
-        specifier: 4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       '@vue/test-utils':
-        specifier: 2.4.6
+        specifier: 'catalog:'
         version: 2.4.6
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
 
   packages/constants:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
 
   packages/create-directus-extension:
@@ -1123,13 +2041,13 @@ importers:
         specifier: workspace:*
         version: link:../extensions-sdk
       inquirer:
-        specifier: 12.4.2
+        specifier: 'catalog:'
         version: 12.4.2(@types/node@22.13.8)
 
   packages/create-directus-project:
     dependencies:
       chalk:
-        specifier: 5.4.1
+        specifier: 'catalog:'
         version: 5.4.1
       commander:
         specifier: 12.1.0
@@ -1138,16 +2056,16 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       fs-extra:
-        specifier: 11.3.0
+        specifier: 'catalog:'
         version: 11.3.0
       log-symbols:
-        specifier: 7.0.0
+        specifier: 'catalog:'
         version: 7.0.0
       ora:
         specifier: 8.2.0
         version: 8.2.0
       update-check:
-        specifier: 1.5.4
+        specifier: 'catalog:'
         version: 1.5.4
 
   packages/env:
@@ -1159,29 +2077,29 @@ importers:
         specifier: workspace:*
         version: link:../utils
       dotenv:
-        specifier: 16.4.7
+        specifier: 'catalog:'
         version: 16.4.7
       lodash-es:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/lodash-es':
-        specifier: 4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1193,26 +2111,26 @@ importers:
         specifier: workspace:*
         version: link:../storage
       ms:
-        specifier: 2.1.3
+        specifier: 'catalog:'
         version: 2.1.3
     devDependencies:
       '@directus/random':
         specifier: workspace:*
         version: link:../random
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/ms':
-        specifier: 2.1.0
+        specifier: 'catalog:'
         version: 2.1.0
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1233,53 +2151,53 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@types/express':
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       fs-extra:
-        specifier: 11.3.0
+        specifier: 'catalog:'
         version: 11.3.0
       lodash-es:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       zod:
-        specifier: 3.24.2
+        specifier: 'catalog:'
         version: 3.24.2
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/fs-extra':
-        specifier: 11.0.4
+        specifier: 'catalog:'
         version: 11.0.4
       '@types/lodash-es':
-        specifier: 4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       knex:
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0(mysql2@3.12.0)(pg@8.13.3)(sqlite3@5.1.7)(tedious@18.6.1)
       pino:
-        specifier: 9.6.0
+        specifier: 'catalog:'
         version: 9.6.0
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
       vue-router:
-        specifier: 4.5.0
+        specifier: 'catalog:'
         version: 4.5.0(vue@3.5.13(typescript@5.8.2))
 
   packages/extensions-registry:
@@ -1291,23 +2209,23 @@ importers:
         specifier: workspace:*
         version: link:../extensions
       ky:
-        specifier: 1.7.5
+        specifier: 'catalog:'
         version: 1.7.5
       zod:
-        specifier: 3.24.2
+        specifier: 'catalog:'
         version: 3.24.2
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1334,83 +2252,83 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@rollup/plugin-commonjs':
-        specifier: 25.0.8
+        specifier: 'catalog:'
         version: 25.0.8(rollup@4.34.9)
       '@rollup/plugin-json':
-        specifier: 6.1.0
+        specifier: 'catalog:'
         version: 6.1.0(rollup@4.34.9)
       '@rollup/plugin-node-resolve':
-        specifier: 15.3.1
+        specifier: 'catalog:'
         version: 15.3.1(rollup@4.34.9)
       '@rollup/plugin-replace':
-        specifier: 5.0.7
+        specifier: 'catalog:'
         version: 5.0.7(rollup@4.34.9)
       '@rollup/plugin-terser':
-        specifier: 0.4.4
+        specifier: 'catalog:'
         version: 0.4.4(rollup@4.34.9)
       '@rollup/plugin-virtual':
-        specifier: 3.0.2
+        specifier: 'catalog:'
         version: 3.0.2(rollup@4.34.9)
       '@vitejs/plugin-vue':
         specifier: 5.2.3
         version: 5.2.3(vite@4.5.14(@types/node@22.13.8)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       chalk:
-        specifier: 5.4.1
+        specifier: 'catalog:'
         version: 5.4.1
       commander:
         specifier: 10.0.1
         version: 10.0.1
       esbuild:
-        specifier: 0.25.0
+        specifier: 'catalog:'
         version: 0.25.0
       execa:
         specifier: 7.2.0
         version: 7.2.0
       fs-extra:
-        specifier: 11.3.0
+        specifier: 'catalog:'
         version: 11.3.0
       inquirer:
-        specifier: 12.4.2
+        specifier: 'catalog:'
         version: 12.4.2(@types/node@22.13.8)
       ora:
         specifier: 6.3.1
         version: 6.3.1
       rollup:
-        specifier: 4.34.9
+        specifier: 'catalog:'
         version: 4.34.9
       rollup-plugin-esbuild:
-        specifier: 6.2.1
+        specifier: 'catalog:'
         version: 6.2.1(esbuild@0.25.0)(rollup@4.34.9)
       rollup-plugin-styler:
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0(rollup@4.34.9)(typescript@5.8.2)
       semver:
-        specifier: 7.7.1
+        specifier: 'catalog:'
         version: 7.7.1
       vite:
         specifier: 4.5.14
         version: 4.5.14(@types/node@22.13.8)(sass@1.83.4)(terser@5.37.0)
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/fs-extra':
-        specifier: 11.0.4
+        specifier: 'catalog:'
         version: 11.0.4
       '@types/inquirer':
-        specifier: 9.0.7
+        specifier: 'catalog:'
         version: 9.0.7
       '@types/semver':
-        specifier: 7.5.8
+        specifier: 'catalog:'
         version: 7.5.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1419,13 +2337,13 @@ importers:
   packages/format-title:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1440,29 +2358,29 @@ importers:
         specifier: workspace:*
         version: link:../utils
       ioredis:
-        specifier: 5.5.0
+        specifier: 'catalog:'
         version: 5.5.0
       lru-cache:
-        specifier: 11.0.2
+        specifier: 'catalog:'
         version: 11.0.2
       rate-limiter-flexible:
-        specifier: 5.0.5
+        specifier: 'catalog:'
         version: 5.0.5
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1478,19 +2396,19 @@ importers:
         specifier: workspace:*
         version: link:../random
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/express':
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1499,19 +2417,19 @@ importers:
   packages/random:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1520,35 +2438,35 @@ importers:
   packages/release-notes-generator:
     dependencies:
       '@changesets/get-github-info':
-        specifier: 0.6.0
+        specifier: 'catalog:'
         version: 0.6.0(encoding@0.1.13)
       '@pnpm/workspace.find-packages':
-        specifier: 900.0.5
+        specifier: 'catalog:'
         version: 900.0.5(@pnpm/logger@5.2.0)
       '@pnpm/workspace.pkgs-graph':
-        specifier: 900.0.3
+        specifier: 'catalog:'
         version: 900.0.3(@pnpm/logger@5.2.0)
       semver:
-        specifier: 7.7.1
+        specifier: 'catalog:'
         version: 7.7.1
     devDependencies:
       '@changesets/types':
-        specifier: 6.1.0
+        specifier: 'catalog:'
         version: 6.1.0
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@types/semver':
-        specifier: 7.5.8
+        specifier: 'catalog:'
         version: 7.5.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1557,17 +2475,17 @@ importers:
   packages/schema:
     dependencies:
       knex:
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0(mysql2@3.12.0)(pg@8.13.3)(sqlite3@5.1.7)(tedious@18.6.1)
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
 
   packages/schema-builder:
@@ -1576,20 +2494,20 @@ importers:
         specifier: workspace:*
         version: link:../types
       lodash-es:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/lodash-es':
-        specifier: 4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1598,35 +2516,35 @@ importers:
   packages/specs:
     dependencies:
       openapi3-ts:
-        specifier: 4.4.0
+        specifier: 'catalog:'
         version: 4.4.0
     devDependencies:
       npm-watch:
-        specifier: 0.13.0
+        specifier: 'catalog:'
         version: 0.13.0
       swagger-cli:
-        specifier: 4.0.4
+        specifier: 'catalog:'
         version: 4.0.4(openapi-types@12.1.3)
       swagger-ui-watcher:
-        specifier: 2.1.14
+        specifier: 'catalog:'
         version: 2.1.14
 
   packages/storage:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1635,7 +2553,7 @@ importers:
   packages/storage-driver-azure:
     dependencies:
       '@azure/storage-blob':
-        specifier: 12.26.0
+        specifier: 'catalog:'
         version: 12.26.0
       '@directus/storage':
         specifier: workspace:*
@@ -1645,19 +2563,19 @@ importers:
         version: link:../utils
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@ngneat/falso':
-        specifier: 7.3.0
+        specifier: 'catalog:'
         version: 7.3.0
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1672,26 +2590,26 @@ importers:
         specifier: workspace:*
         version: link:../utils
       p-queue:
-        specifier: 8.1.0
+        specifier: 'catalog:'
         version: 8.1.0
       undici:
-        specifier: 7.5.0
+        specifier: 'catalog:'
         version: 7.5.0
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@ngneat/falso':
-        specifier: 7.3.0
+        specifier: 'catalog:'
         version: 7.3.0
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1709,23 +2627,23 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@google-cloud/storage':
-        specifier: 7.15.2
+        specifier: 'catalog:'
         version: 7.15.2(encoding@0.1.13)
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@ngneat/falso':
-        specifier: 7.3.0
+        specifier: 'catalog:'
         version: 7.3.0
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1738,22 +2656,22 @@ importers:
         version: link:../storage
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@ngneat/falso':
-        specifier: 7.3.0
+        specifier: 'catalog:'
         version: 7.3.0
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1762,10 +2680,10 @@ importers:
   packages/storage-driver-s3:
     dependencies:
       '@aws-sdk/client-s3':
-        specifier: 3.758.0
+        specifier: 'catalog:'
         version: 3.758.0
       '@aws-sdk/lib-storage':
-        specifier: 3.758.0
+        specifier: 'catalog:'
         version: 3.758.0(@aws-sdk/client-s3@3.758.0)
       '@directus/storage':
         specifier: workspace:*
@@ -1774,35 +2692,35 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@shopify/semaphore':
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0
       '@smithy/node-http-handler':
-        specifier: 4.0.3
+        specifier: 'catalog:'
         version: 4.0.3
       '@tus/utils':
-        specifier: 0.5.1
+        specifier: 'catalog:'
         version: 0.5.1
       ms:
-        specifier: 2.1.3
+        specifier: 'catalog:'
         version: 2.1.3
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@ngneat/falso':
-        specifier: 7.3.0
+        specifier: 'catalog:'
         version: 7.3.0
       '@types/ms':
-        specifier: 2.1.0
+        specifier: 'catalog:'
         version: 2.1.0
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1820,29 +2738,29 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@supabase/storage-js':
-        specifier: 2.7.1
+        specifier: 'catalog:'
         version: 2.7.1
       tus-js-client:
-        specifier: 4.3.1
+        specifier: 'catalog:'
         version: 4.3.1
       undici:
-        specifier: 7.5.0
+        specifier: 'catalog:'
         version: 7.5.0
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@ngneat/falso':
-        specifier: 7.3.0
+        specifier: 'catalog:'
         version: 7.3.0
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -1851,41 +2769,41 @@ importers:
   packages/stores:
     dependencies:
       '@vueuse/core':
-        specifier: 12.7.0
+        specifier: 'catalog:'
         version: 12.7.0(typescript@5.8.2)
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       pinia:
-        specifier: 2.3.1
+        specifier: 'catalog:'
         version: 2.3.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
 
   packages/system-data:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       esbuild:
-        specifier: 0.25.0
+        specifier: 'catalog:'
         version: 0.25.0
       esbuild-yaml:
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0(esbuild@0.25.0)
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
 
   packages/themes:
@@ -1894,50 +2812,50 @@ importers:
         specifier: workspace:*
         version: link:../utils
       '@sinclair/typebox':
-        specifier: 0.34.28
+        specifier: 'catalog:'
         version: 0.34.28
       decamelize:
-        specifier: 6.0.0
+        specifier: 'catalog:'
         version: 6.0.0
       flat:
-        specifier: 6.0.1
+        specifier: 'catalog:'
         version: 6.0.1
       lodash-es:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
       '@types/lodash-es':
-        specifier: 4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       '@unhead/vue':
-        specifier: 1.11.20
+        specifier: 'catalog:'
         version: 1.11.20(vue@3.5.13(typescript@5.8.2))
       '@vitejs/plugin-vue':
         specifier: 5.2.1
         version: 5.2.1(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       pinia:
-        specifier: 2.3.1
+        specifier: 'catalog:'
         version: 2.3.1(typescript@5.8.2)(vue@3.5.13(typescript@5.8.2))
       rollup-plugin-node-externals:
-        specifier: 8.0.0
+        specifier: 'catalog:'
         version: 8.0.0(rollup@4.34.9)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vite:
         specifier: 5.4.19
         version: 5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vite-plugin-dts:
-        specifier: 4.5.1
+        specifier: 'catalog:'
         version: 4.5.1(@types/node@22.13.8)(rollup@4.34.9)(typescript@5.8.2)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
 
   packages/types:
@@ -1949,66 +2867,66 @@ importers:
         specifier: workspace:*
         version: link:../schema
       '@types/geojson':
-        specifier: 7946.0.16
+        specifier: 'catalog:'
         version: 7946.0.16
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       knex:
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0(mysql2@3.12.0)(pg@8.13.3)(sqlite3@5.1.7)(tedious@18.6.1)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
 
   packages/update-check:
     dependencies:
       axios:
-        specifier: 1.8.4
+        specifier: 'catalog:'
         version: 1.8.4
       axios-cache-interceptor:
-        specifier: 1.6.2
+        specifier: 'catalog:'
         version: 1.6.2(axios@1.8.4)
       boxen:
-        specifier: 8.0.1
+        specifier: 'catalog:'
         version: 8.0.1
       chalk:
-        specifier: 5.4.1
+        specifier: 'catalog:'
         version: 5.4.1
       find-cache-dir:
-        specifier: 5.0.0
+        specifier: 'catalog:'
         version: 5.0.0
       semver:
-        specifier: 7.7.1
+        specifier: 'catalog:'
         version: 7.7.1
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@npm/types':
-        specifier: 2.0.0
+        specifier: 'catalog:'
         version: 2.0.0
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@types/semver':
-        specifier: 7.5.8
+        specifier: 'catalog:'
         version: 7.5.8
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       strip-ansi:
-        specifier: 7.1.0
+        specifier: 'catalog:'
         version: 7.1.0
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -2023,65 +2941,65 @@ importers:
         specifier: workspace:*
         version: link:../system-data
       date-fns:
-        specifier: 4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       fs-extra:
-        specifier: 11.3.0
+        specifier: 'catalog:'
         version: 11.3.0
       joi:
-        specifier: 17.13.3
+        specifier: 'catalog:'
         version: 17.13.3
       js-yaml:
-        specifier: 4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       lodash-es:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       micromustache:
-        specifier: 8.0.3
+        specifier: 'catalog:'
         version: 8.0.3
     devDependencies:
       '@directus/schema-builder':
         specifier: workspace:*
         version: link:../schema-builder
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
       '@types/fs-extra':
-        specifier: 11.0.4
+        specifier: 'catalog:'
         version: 11.0.4
       '@types/js-yaml':
-        specifier: 4.0.9
+        specifier: 'catalog:'
         version: 4.0.9
       '@types/lodash-es':
-        specifier: 4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       '@types/node':
-        specifier: 22.13.8
+        specifier: 'catalog:'
         version: 22.13.8
       '@types/tmp':
-        specifier: 0.2.6
+        specifier: 'catalog:'
         version: 0.2.6
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tmp:
-        specifier: 0.2.3
+        specifier: 'catalog:'
         version: 0.2.3
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
-        specifier: 3.5.13
+        specifier: 'catalog:'
         version: 3.5.13(typescript@5.8.2)
 
   packages/validation:
@@ -2093,23 +3011,23 @@ importers:
         specifier: workspace:*
         version: link:../utils
       joi:
-        specifier: 17.13.3
+        specifier: 'catalog:'
         version: 17.13.3
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@directus/types':
         specifier: workspace:*
         version: link:../types
       '@vitest/coverage-v8':
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(vitest@2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -2121,16 +3039,16 @@ importers:
         specifier: workspace:*
         version: link:../packages/system-data
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       esbuild-plugin-replace:
-        specifier: 1.4.0
+        specifier: 'catalog:'
         version: 1.4.0
       tsup:
-        specifier: 8.4.0
+        specifier: 'catalog:'
         version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.8))(jiti@1.21.7)(postcss@8.5.6)(tsx@4.19.3)(typescript@5.8.2)(yaml@2.7.0)
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       vitest:
         specifier: 2.1.9
@@ -2139,7 +3057,7 @@ importers:
   tests/blackbox:
     devDependencies:
       '@directus/tsconfig':
-        specifier: 3.0.0
+        specifier: 'catalog:'
         version: 3.0.0
       '@directus/types':
         specifier: workspace:*
@@ -2148,73 +3066,73 @@ importers:
         specifier: workspace:*
         version: link:../../packages/utils
       '@types/js-yaml':
-        specifier: 4.0.9
+        specifier: 'catalog:'
         version: 4.0.9
       '@types/lodash-es':
-        specifier: 4.17.12
+        specifier: 'catalog:'
         version: 4.17.12
       '@types/seedrandom':
-        specifier: 3.0.8
+        specifier: 'catalog:'
         version: 3.0.8
       '@types/supertest':
-        specifier: 6.0.2
+        specifier: 'catalog:'
         version: 6.0.2
       '@types/ws':
-        specifier: 8.5.14
+        specifier: 'catalog:'
         version: 8.5.14
       argon2:
-        specifier: 0.41.1
+        specifier: 'catalog:'
         version: 0.41.1
       autocannon:
-        specifier: 8.0.0
+        specifier: 'catalog:'
         version: 8.0.0
       axios:
-        specifier: 1.8.4
+        specifier: 'catalog:'
         version: 1.8.4
       get-port:
-        specifier: 7.1.0
+        specifier: 'catalog:'
         version: 7.1.0
       globby:
-        specifier: 14.1.0
+        specifier: 'catalog:'
         version: 14.1.0
       graphql-ws:
-        specifier: 5.16.2
+        specifier: 'catalog:'
         version: 5.16.2(graphql@16.10.0)
       js-yaml:
-        specifier: 4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       json-to-graphql-query:
-        specifier: 2.3.0
+        specifier: 'catalog:'
         version: 2.3.0
       knex:
-        specifier: 3.1.0
+        specifier: 'catalog:'
         version: 3.1.0(mysql2@3.12.0)(pg@8.13.3)(sqlite3@5.1.7)(tedious@18.6.1)
       listr2:
-        specifier: 8.2.5
+        specifier: 'catalog:'
         version: 8.2.5
       lodash-es:
-        specifier: 4.17.21
+        specifier: 'catalog:'
         version: 4.17.21
       seedrandom:
-        specifier: 3.0.5
+        specifier: 'catalog:'
         version: 3.0.5
       supertest:
-        specifier: 7.0.0
+        specifier: 'catalog:'
         version: 7.0.0
       typescript:
-        specifier: 5.8.2
+        specifier: 'catalog:'
         version: 5.8.2
       uuid:
-        specifier: 11.1.0
+        specifier: 'catalog:'
         version: 11.1.0
       vite-tsconfig-paths:
-        specifier: 5.1.4
+        specifier: 'catalog:'
         version: 5.1.4(typescript@5.8.2)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       vitest:
         specifier: 1.6.1
         version: 1.6.1(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       ws:
-        specifier: 8.18.1
+        specifier: 'catalog:'
         version: 8.18.1
 
 packages:
@@ -5957,11 +6875,6 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  browserslist@4.24.4:
-    resolution: {integrity: sha512-KDi1Ny1gSePi1vm0q4oxSF8b4DR44GF4BbmS2YdhPLOEqd8pDviZOGH/GsmRwoWJ2+5Lr085X7naowMwKHDG1A==}
-    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
-
   browserslist@4.25.0:
     resolution: {integrity: sha512-PJ8gYKeS5e/whHBh8xrwYK+dAvEj7JXtz6uTucnMRB8OiGTsKccFekoRrjajPBHV8oOY+2tI4uxeceSimKwMFA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -6072,9 +6985,6 @@ packages:
 
   caniuse-api@3.0.0:
     resolution: {integrity: sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw==}
-
-  caniuse-lite@1.0.30001692:
-    resolution: {integrity: sha512-A95VKan0kdtrsnMubMKxEKUKImOPSuCpYgxSQBo036P5YYgVIcOYJEgt/txJWqObiRQeISNCfef9nvlQ0vbV7A==}
 
   caniuse-lite@1.0.30001723:
     resolution: {integrity: sha512-1R/elMjtehrFejxwmexeXAtae5UO9iSyFn6G/I806CYC/BLyyBk1EPhrKBkWhy6wM6Xnm47dSJQec+tLJ39WHw==}
@@ -7028,9 +7938,6 @@ packages:
   electron-to-chromium@1.5.170:
     resolution: {integrity: sha512-GP+M7aeluQo9uAyiTCxgIj/j+PrWhMlY7LFVj8prlsPljd0Fdg9AprlfUi+OCSFWy9Y5/2D/Jrj9HS8Z4rpKWA==}
 
-  electron-to-chromium@1.5.79:
-    resolution: {integrity: sha512-nYOxJNxQ9Om4EC88BE4pPoNI8xwSFf8pU/BAeOl4Hh/b/i6V4biTAzwV7pXi3ARKeoYO5JZKMIXTryXSVer5RA==}
-
   emoji-regex@10.4.0:
     resolution: {integrity: sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==}
 
@@ -7465,9 +8372,6 @@ packages:
   flatpickr@4.6.13:
     resolution: {integrity: sha512-97PMG/aywoYpB4IvbvUJi0RQi8vearvU0oov1WW3k0WZPBMrTQVqekSX5CjSG/M4Q3i6A/0FKXC7RyAoAUUSPw==}
 
-  flatted@3.3.2:
-    resolution: {integrity: sha512-AiwGJM8YcNOaobumgtng+6NHuOqC3A7MixFeDafM3X9cIUM+xUXoS5Vfgf+OihAYe20fxqNM9yPBXJzRtZ/4eA==}
-
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
 
@@ -7657,9 +8561,6 @@ packages:
 
   get-tsconfig@4.10.0:
     resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
-
-  get-tsconfig@4.8.1:
-    resolution: {integrity: sha512-k9PN+cFBmaLWtVz29SkUoqU5O0slLuHJXt/2P+tMVFT+phsSGXGkp9t3rQIqdz0e+06EHNGs3oM6ZX1s2zHxRg==}
 
   get-uri@6.0.4:
     resolution: {integrity: sha512-E1b1lFFLvLgak2whF2xDBcOy6NLVGZBqqjJjsIhvopKfWWEi64pLVTWWehV8KlLerZkfNTA95sTe2OdJKm1OzQ==}
@@ -8038,10 +8939,6 @@ packages:
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
-    engines: {node: '>= 4'}
-
-  ignore@7.0.3:
-    resolution: {integrity: sha512-bAH5jbK/F3T3Jls4I0SO1hmPR0dKU0a7+SY6n1yzRtG54FLO8d6w/nxLFX2Nb7dBu6cCWXPaAME6cYqFUMmuCA==}
     engines: {node: '>= 4'}
 
   ignore@7.0.5:
@@ -9157,9 +10054,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  mlly@1.7.3:
-    resolution: {integrity: sha512-xUsx5n/mN0uQf4V548PKQ+YShA4/IW0KI1dZhrNrPCLG+xizETbHTkOa1f8/xut9JRPp8kQuMnz0oqwkTiLo/A==}
-
   mlly@1.7.4:
     resolution: {integrity: sha512-qmdSIPC4bDJXgZTCR7XosJiNKySV7O215tsPtDN9iEO/7q/76b/ijtgRu/+epFXSJhijtTCCGp3DWS549P3xKw==}
 
@@ -9220,11 +10114,6 @@ packages:
 
   nanoid@3.3.11:
     resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-
-  nanoid@3.3.8:
-    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -9875,9 +10764,6 @@ packages:
   pkg-dir@7.0.0:
     resolution: {integrity: sha512-Ie9z/WINcxxLp27BKOCHGde4ITq9UklYKDzVo1nhk5sqGEXU3FpkwP5GM2voTGJkGd9B3Otl+Q4uwSOeSUtOBA==}
     engines: {node: '>=14.16'}
-
-  pkg-types@1.3.0:
-    resolution: {integrity: sha512-kS7yWjVFCkIw9hqdJBoMxDdzEngmkr5FXeWZZfQ6GoYacjVnsW6l2CcYW/0ThD0vF4LPJgVYnrg4d0uuhwYQbg==}
 
   pkg-types@1.3.1:
     resolution: {integrity: sha512-/Jm5M4RvtBFVkKWRu2BLUTNP8/M2a+UwuAX+ae4770q1qVGtfjG+WTCupoZixokjmHiry8uI+dlY8KXYV5HVVQ==}
@@ -10856,11 +11742,6 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  semver@7.6.3:
-    resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
-    engines: {node: '>=10'}
-    hasBin: true
-
   semver@7.7.1:
     resolution: {integrity: sha512-hlq8tAfn0m/61p4BVRcPzIGr6LKiMwo4VM6dGi6pt4qcRkmNzTcWq6eCEjEh+qXjkMDvPlOFFSGwQjoEa6gyMA==}
     engines: {node: '>=10'}
@@ -11355,11 +12236,12 @@ packages:
   superagent@7.1.6:
     resolution: {integrity: sha512-gZkVCQR1gy/oUXr+kxJMLDjla434KmSOKbx5iGD30Ql+AkJQ/YlPKECJy2nhqOsHLjGHzoDTXNSjhnvWhzKk7g==}
     engines: {node: '>=6.4.0 <13 || >=14'}
-    deprecated: Please upgrade to v9.0.0+ as we have fixed a public vulnerability with formidable dependency. Note that v9.0.0+ requires Node.js v14.18.0+. See https://github.com/ladjs/superagent/pull/1800 for insight. This project is supported and maintained by the team at Forward Email @ https://forwardemail.net
+    deprecated: Please upgrade to superagent v10.2.2+, see release notes at https://github.com/forwardemail/superagent/releases/tag/v10.2.2 - maintenance is supported by Forward Email @ https://forwardemail.net
 
   superagent@9.0.2:
     resolution: {integrity: sha512-xuW7dzkUpcJq7QnhOsnNUgtYp3xRwpt2F7abdRYIpCsAt0hhUqia0EdxyXZQQpNmGtsCzYHryaKSV3q3GJnq7w==}
     engines: {node: '>=14.18.0'}
+    deprecated: Please upgrade to superagent v10.2.2+, see release notes at https://github.com/forwardemail/superagent/releases/tag/v10.2.2 - maintenance is supported by Forward Email @ https://forwardemail.net
 
   supercluster@7.1.5:
     resolution: {integrity: sha512-EulshI3pGUM66o6ZdH3ReiFcvHpM3vAigyK+vcxdjpJyEbIIrtbmBdY23mGgnI24uXiGFvrGq9Gkum/8U7vJWg==}
@@ -11915,12 +12797,6 @@ packages:
   untildify@4.0.0:
     resolution: {integrity: sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==}
     engines: {node: '>=8'}
-
-  update-browserslist-db@1.1.2:
-    resolution: {integrity: sha512-PPypAm5qvlD7XMZC3BujecnaOxwhrtoFR+Dqkk5Aa/6DssiH0ibKoketaj9w8LP7Bont1rYeoV5plxD7RTEPRg==}
-    hasBin: true
-    peerDependencies:
-      browserslist: '>= 4.21.0'
 
   update-browserslist-db@1.1.3:
     resolution: {integrity: sha512-UxhIZQ+QInVdunkDAaiazvvT/+fXL5Osr0JZlJulepYu6Jd7qJtDZjlur0emRlT71EN3ScPoE7gvsuIKKNavKw==}
@@ -13443,7 +14319,7 @@ snapshots:
       '@babel/traverse': 7.26.4
       '@babel/types': 7.26.3
       convert-source-map: 2.0.0
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -13466,7 +14342,7 @@ snapshots:
     dependencies:
       '@babel/compat-data': 7.26.3
       '@babel/helper-validator-option': 7.25.9
-      browserslist: 4.24.4
+      browserslist: 4.25.0
       lru-cache: 5.1.1
       semver: 6.3.1
 
@@ -13605,7 +14481,7 @@ snapshots:
       '@babel/parser': 7.26.3
       '@babel/template': 7.25.9
       '@babel/types': 7.26.3
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -14158,7 +15034,7 @@ snapshots:
   '@eslint/config-array@0.19.2':
     dependencies:
       '@eslint/object-schema': 2.1.6
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       minimatch: 3.1.2
     transitivePeerDependencies:
       - supports-color
@@ -14170,7 +15046,7 @@ snapshots:
   '@eslint/eslintrc@3.3.0':
     dependencies:
       ajv: 6.12.6
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       espree: 10.3.0
       globals: 14.0.0
       ignore: 5.3.2
@@ -14699,7 +15575,7 @@ snapshots:
       '@mapbox/mapbox-sdk': 0.16.1
       events: 3.3.0
       lodash.debounce: 4.0.8
-      nanoid: 3.3.8
+      nanoid: 3.3.11
       subtag: 0.5.0
       suggestions: 1.7.1
       xtend: 4.0.2
@@ -14996,7 +15872,7 @@ snapshots:
 
   '@pm2/pm2-version-check@1.0.4':
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -15971,7 +16847,7 @@ snapshots:
   '@tus/server@1.10.2':
     dependencies:
       '@tus/utils': 0.5.1
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       lodash.throttle: 4.1.1
     optionalDependencies:
       '@redis/client': 1.6.0
@@ -16324,7 +17200,7 @@ snapshots:
       '@typescript-eslint/types': 8.25.0
       '@typescript-eslint/typescript-estree': 8.25.0(typescript@5.8.2)
       '@typescript-eslint/visitor-keys': 8.25.0
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       eslint: 9.21.0(jiti@1.21.7)
       typescript: 5.8.2
     transitivePeerDependencies:
@@ -16339,7 +17215,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 8.25.0(typescript@5.8.2)
       '@typescript-eslint/utils': 8.25.0(eslint@9.21.0(jiti@1.21.7))(typescript@5.8.2)
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       eslint: 9.21.0(jiti@1.21.7)
       ts-api-utils: 2.0.1(typescript@5.8.2)
       typescript: 5.8.2
@@ -16352,7 +17228,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.25.0
       '@typescript-eslint/visitor-keys': 8.25.0
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       fast-glob: 3.3.3
       is-glob: 4.0.3
       minimatch: 9.0.5
@@ -16387,7 +17263,7 @@ snapshots:
       '@unhead/shared': 1.11.20
       estree-walker: 3.0.3
       magic-string: 0.30.17
-      mlly: 1.7.3
+      mlly: 1.7.4
       ufo: 1.5.4
       unplugin: 2.1.2
       unplugin-ast: 0.13.1(rollup@4.34.9)
@@ -16436,7 +17312,7 @@ snapshots:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
       istanbul-lib-source-maps: 5.0.6
@@ -16583,7 +17459,7 @@ snapshots:
       '@vue/shared': 3.5.13
       estree-walker: 2.0.2
       magic-string: 0.30.17
-      postcss: 8.4.49
+      postcss: 8.5.6
       source-map-js: 1.2.1
 
   '@vue/compiler-ssr@3.5.13':
@@ -16802,7 +17678,7 @@ snapshots:
 
   agent-base@6.0.2:
     dependencies:
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -17206,13 +18082,6 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  browserslist@4.24.4:
-    dependencies:
-      caniuse-lite: 1.0.30001692
-      electron-to-chromium: 1.5.79
-      node-releases: 2.0.19
-      update-browserslist-db: 1.1.2(browserslist@4.24.4)
-
   browserslist@4.25.0:
     dependencies:
       caniuse-lite: 1.0.30001723
@@ -17345,11 +18214,9 @@ snapshots:
   caniuse-api@3.0.0:
     dependencies:
       browserslist: 4.25.0
-      caniuse-lite: 1.0.30001692
+      caniuse-lite: 1.0.30001723
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
-
-  caniuse-lite@1.0.30001692: {}
 
   caniuse-lite@1.0.30001723: {}
 
@@ -17750,9 +18617,9 @@ snapshots:
 
   crypto-random-string@2.0.0: {}
 
-  css-declaration-sorter@7.2.0(postcss@8.4.49):
+  css-declaration-sorter@7.2.0(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
 
   css-functions-list@3.2.3: {}
 
@@ -17785,49 +18652,49 @@ snapshots:
 
   cssesc@3.0.0: {}
 
-  cssnano-preset-default@7.0.7(postcss@8.4.49):
+  cssnano-preset-default@7.0.7(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.0
-      css-declaration-sorter: 7.2.0(postcss@8.4.49)
-      cssnano-utils: 5.0.1(postcss@8.4.49)
-      postcss: 8.4.49
-      postcss-calc: 10.1.1(postcss@8.4.49)
-      postcss-colormin: 7.0.3(postcss@8.4.49)
-      postcss-convert-values: 7.0.5(postcss@8.4.49)
-      postcss-discard-comments: 7.0.4(postcss@8.4.49)
-      postcss-discard-duplicates: 7.0.2(postcss@8.4.49)
-      postcss-discard-empty: 7.0.1(postcss@8.4.49)
-      postcss-discard-overridden: 7.0.1(postcss@8.4.49)
-      postcss-merge-longhand: 7.0.5(postcss@8.4.49)
-      postcss-merge-rules: 7.0.5(postcss@8.4.49)
-      postcss-minify-font-values: 7.0.1(postcss@8.4.49)
-      postcss-minify-gradients: 7.0.1(postcss@8.4.49)
-      postcss-minify-params: 7.0.3(postcss@8.4.49)
-      postcss-minify-selectors: 7.0.5(postcss@8.4.49)
-      postcss-normalize-charset: 7.0.1(postcss@8.4.49)
-      postcss-normalize-display-values: 7.0.1(postcss@8.4.49)
-      postcss-normalize-positions: 7.0.1(postcss@8.4.49)
-      postcss-normalize-repeat-style: 7.0.1(postcss@8.4.49)
-      postcss-normalize-string: 7.0.1(postcss@8.4.49)
-      postcss-normalize-timing-functions: 7.0.1(postcss@8.4.49)
-      postcss-normalize-unicode: 7.0.3(postcss@8.4.49)
-      postcss-normalize-url: 7.0.1(postcss@8.4.49)
-      postcss-normalize-whitespace: 7.0.1(postcss@8.4.49)
-      postcss-ordered-values: 7.0.2(postcss@8.4.49)
-      postcss-reduce-initial: 7.0.3(postcss@8.4.49)
-      postcss-reduce-transforms: 7.0.1(postcss@8.4.49)
-      postcss-svgo: 7.0.2(postcss@8.4.49)
-      postcss-unique-selectors: 7.0.4(postcss@8.4.49)
+      css-declaration-sorter: 7.2.0(postcss@8.5.6)
+      cssnano-utils: 5.0.1(postcss@8.5.6)
+      postcss: 8.5.6
+      postcss-calc: 10.1.1(postcss@8.5.6)
+      postcss-colormin: 7.0.3(postcss@8.5.6)
+      postcss-convert-values: 7.0.5(postcss@8.5.6)
+      postcss-discard-comments: 7.0.4(postcss@8.5.6)
+      postcss-discard-duplicates: 7.0.2(postcss@8.5.6)
+      postcss-discard-empty: 7.0.1(postcss@8.5.6)
+      postcss-discard-overridden: 7.0.1(postcss@8.5.6)
+      postcss-merge-longhand: 7.0.5(postcss@8.5.6)
+      postcss-merge-rules: 7.0.5(postcss@8.5.6)
+      postcss-minify-font-values: 7.0.1(postcss@8.5.6)
+      postcss-minify-gradients: 7.0.1(postcss@8.5.6)
+      postcss-minify-params: 7.0.3(postcss@8.5.6)
+      postcss-minify-selectors: 7.0.5(postcss@8.5.6)
+      postcss-normalize-charset: 7.0.1(postcss@8.5.6)
+      postcss-normalize-display-values: 7.0.1(postcss@8.5.6)
+      postcss-normalize-positions: 7.0.1(postcss@8.5.6)
+      postcss-normalize-repeat-style: 7.0.1(postcss@8.5.6)
+      postcss-normalize-string: 7.0.1(postcss@8.5.6)
+      postcss-normalize-timing-functions: 7.0.1(postcss@8.5.6)
+      postcss-normalize-unicode: 7.0.3(postcss@8.5.6)
+      postcss-normalize-url: 7.0.1(postcss@8.5.6)
+      postcss-normalize-whitespace: 7.0.1(postcss@8.5.6)
+      postcss-ordered-values: 7.0.2(postcss@8.5.6)
+      postcss-reduce-initial: 7.0.3(postcss@8.5.6)
+      postcss-reduce-transforms: 7.0.1(postcss@8.5.6)
+      postcss-svgo: 7.0.2(postcss@8.5.6)
+      postcss-unique-selectors: 7.0.4(postcss@8.5.6)
 
-  cssnano-utils@5.0.1(postcss@8.4.49):
+  cssnano-utils@5.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
 
-  cssnano@7.0.7(postcss@8.4.49):
+  cssnano@7.0.7(postcss@8.5.6):
     dependencies:
-      cssnano-preset-default: 7.0.7(postcss@8.4.49)
+      cssnano-preset-default: 7.0.7(postcss@8.5.6)
       lilconfig: 3.1.3
-      postcss: 8.4.49
+      postcss: 8.5.6
 
   csso@5.0.5:
     dependencies:
@@ -17891,15 +18758,15 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  debug@4.4.0(supports-color@5.5.0):
+  debug@4.4.0:
+    dependencies:
+      ms: 2.1.3
+
+  debug@4.4.1(supports-color@5.5.0):
     dependencies:
       ms: 2.1.3
     optionalDependencies:
       supports-color: 5.5.0
-
-  debug@4.4.1:
-    dependencies:
-      ms: 2.1.3
 
   decamelize-keys@1.1.1:
     dependencies:
@@ -18087,8 +18954,6 @@ snapshots:
   ee-first@1.1.1: {}
 
   electron-to-chromium@1.5.170: {}
-
-  electron-to-chromium@1.5.79: {}
 
   emoji-regex@10.4.0: {}
 
@@ -18332,7 +19197,7 @@ snapshots:
       ajv: 6.12.6
       chalk: 4.1.2
       cross-spawn: 7.0.6
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       escape-string-regexp: 4.0.0
       eslint-scope: 8.2.0
       eslint-visitor-keys: 4.2.0
@@ -18651,7 +19516,7 @@ snapshots:
 
   flat-cache@4.0.1:
     dependencies:
-      flatted: 3.3.2
+      flatted: 3.3.3
       keyv: 4.5.4
 
   flat-cache@6.1.10:
@@ -18663,8 +19528,6 @@ snapshots:
   flat@6.0.1: {}
 
   flatpickr@4.6.13: {}
-
-  flatted@3.3.2: {}
 
   flatted@3.3.3: {}
 
@@ -18878,15 +19741,11 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  get-tsconfig@4.8.1:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
-
   get-uri@6.0.4:
     dependencies:
       basic-ftp: 5.0.5
       data-uri-to-buffer: 6.0.2
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -18988,7 +19847,7 @@ snapshots:
     dependencies:
       '@sindresorhus/merge-streams': 2.3.0
       fast-glob: 3.3.3
-      ignore: 7.0.3
+      ignore: 7.0.5
       path-type: 6.0.0
       slash: 5.1.0
       unicorn-magic: 0.3.0
@@ -19303,7 +20162,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 1.1.2
       agent-base: 6.0.2
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
     optional: true
@@ -19312,14 +20171,14 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19331,14 +20190,14 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
   https-proxy-agent@7.0.6:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -19373,17 +20232,15 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
-  icss-utils@5.1.0(postcss@8.4.49):
+  icss-utils@5.1.0(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
 
   ieee754@1.2.1: {}
 
   ignore-by-default@1.0.1: {}
 
   ignore@5.3.2: {}
-
-  ignore@7.0.3: {}
 
   ignore@7.0.5: {}
 
@@ -19436,7 +20293,7 @@ snapshots:
     dependencies:
       '@ioredis/commands': 1.2.0
       cluster-key-slot: 1.1.2
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       denque: 2.1.0
       lodash.defaults: 4.2.0
       lodash.isarguments: 3.1.0
@@ -19566,7 +20423,7 @@ snapshots:
   istanbul-lib-source-maps@5.0.6:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
@@ -19765,7 +20622,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.6.3
+      semver: 7.7.1
 
   junit-report-builder@3.2.1:
     dependencies:
@@ -19916,8 +20773,8 @@ snapshots:
 
   local-pkg@0.5.1:
     dependencies:
-      mlly: 1.7.3
-      pkg-types: 1.3.0
+      mlly: 1.7.4
+      pkg-types: 1.3.1
 
   local-pkg@1.1.0:
     dependencies:
@@ -20485,7 +21342,7 @@ snapshots:
   micromark@3.2.0:
     dependencies:
       '@types/debug': 4.1.12
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       decode-named-character-reference: 1.0.2
       micromark-core-commonmark: 1.1.0
       micromark-factory-space: 1.1.0
@@ -20637,13 +21494,6 @@ snapshots:
 
   mkdirp@3.0.1: {}
 
-  mlly@1.7.3:
-    dependencies:
-      acorn: 8.14.0
-      pathe: 1.1.2
-      pkg-types: 1.3.0
-      ufo: 1.5.4
-
   mlly@1.7.4:
     dependencies:
       acorn: 8.14.0
@@ -20704,8 +21554,6 @@ snapshots:
     optional: true
 
   nanoid@3.3.11: {}
-
-  nanoid@3.3.8: {}
 
   nanoid@5.1.2: {}
 
@@ -20915,7 +21763,7 @@ snapshots:
   nodemon@3.1.9:
     dependencies:
       chokidar: 3.6.0
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       ignore-by-default: 1.0.1
       minimatch: 3.1.2
       pstree.remy: 1.1.8
@@ -21195,7 +22043,7 @@ snapshots:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.3
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       get-uri: 6.0.4
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
@@ -21508,12 +22356,6 @@ snapshots:
     dependencies:
       find-up: 6.3.0
 
-  pkg-types@1.3.0:
-    dependencies:
-      confbox: 0.1.8
-      mlly: 1.7.3
-      pathe: 1.1.2
-
   pkg-types@1.3.1:
     dependencies:
       confbox: 0.1.8
@@ -21522,7 +22364,7 @@ snapshots:
 
   pm2-axon-rpc@0.7.1:
     dependencies:
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -21530,7 +22372,7 @@ snapshots:
     dependencies:
       amp: 0.3.1
       amp-message: 0.1.2
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       escape-string-regexp: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -21547,7 +22389,7 @@ snapshots:
   pm2-sysmonit@1.2.8:
     dependencies:
       async: 3.2.6
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       pidusage: 2.0.21
       systeminformation: 5.25.11
       tx2: 1.0.5
@@ -21569,7 +22411,7 @@ snapshots:
       commander: 2.15.1
       croner: 4.1.97
       dayjs: 1.11.13
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       enquirer: 2.3.6
       eventemitter2: 5.0.1
       fclone: 1.0.11
@@ -21582,7 +22424,7 @@ snapshots:
       pm2-deploy: 1.0.2
       pm2-multimeter: 0.1.2
       promptly: 2.2.0
-      semver: 7.6.3
+      semver: 7.7.1
       source-map-support: 0.5.21
       sprintf-js: 1.1.2
       vizion: 2.2.1
@@ -21595,42 +22437,42 @@ snapshots:
 
   pngjs@5.0.0: {}
 
-  postcss-calc@10.1.1(postcss@8.4.49):
+  postcss-calc@10.1.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-selector-parser: 7.1.0
       postcss-value-parser: 4.2.0
 
-  postcss-colormin@7.0.3(postcss@8.4.49):
+  postcss-colormin@7.0.3(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.0
       caniuse-api: 3.0.0
       colord: 2.9.3
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-convert-values@7.0.5(postcss@8.4.49):
+  postcss-convert-values@7.0.5(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.0
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-discard-comments@7.0.4(postcss@8.4.49):
+  postcss-discard-comments@7.0.4(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
-  postcss-discard-duplicates@7.0.2(postcss@8.4.49):
+  postcss-discard-duplicates@7.0.2(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
 
-  postcss-discard-empty@7.0.1(postcss@8.4.49):
+  postcss-discard-empty@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
 
-  postcss-discard-overridden@7.0.1(postcss@8.4.49):
+  postcss-discard-overridden@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
 
   postcss-html@1.8.0:
     dependencies:
@@ -21650,126 +22492,126 @@ snapshots:
 
   postcss-media-query-parser@0.2.3: {}
 
-  postcss-merge-longhand@7.0.5(postcss@8.4.49):
+  postcss-merge-longhand@7.0.5(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
-      stylehacks: 7.0.5(postcss@8.4.49)
+      stylehacks: 7.0.5(postcss@8.5.6)
 
-  postcss-merge-rules@7.0.5(postcss@8.4.49):
+  postcss-merge-rules@7.0.5(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.0
       caniuse-api: 3.0.0
-      cssnano-utils: 5.0.1(postcss@8.4.49)
-      postcss: 8.4.49
+      cssnano-utils: 5.0.1(postcss@8.5.6)
+      postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
-  postcss-minify-font-values@7.0.1(postcss@8.4.49):
+  postcss-minify-font-values@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-minify-gradients@7.0.1(postcss@8.4.49):
+  postcss-minify-gradients@7.0.1(postcss@8.5.6):
     dependencies:
       colord: 2.9.3
-      cssnano-utils: 5.0.1(postcss@8.4.49)
-      postcss: 8.4.49
+      cssnano-utils: 5.0.1(postcss@8.5.6)
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-minify-params@7.0.3(postcss@8.4.49):
+  postcss-minify-params@7.0.3(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.0
-      cssnano-utils: 5.0.1(postcss@8.4.49)
-      postcss: 8.4.49
+      cssnano-utils: 5.0.1(postcss@8.5.6)
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-minify-selectors@7.0.5(postcss@8.4.49):
+  postcss-minify-selectors@7.0.5(postcss@8.5.6):
     dependencies:
       cssesc: 3.0.0
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
-  postcss-modules-extract-imports@3.1.0(postcss@8.4.49):
+  postcss-modules-extract-imports@3.1.0(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
 
-  postcss-modules-local-by-default@4.2.0(postcss@8.4.49):
+  postcss-modules-local-by-default@4.2.0(postcss@8.5.6):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.49)
-      postcss: 8.4.49
+      icss-utils: 5.1.0(postcss@8.5.6)
+      postcss: 8.5.6
       postcss-selector-parser: 7.1.0
       postcss-value-parser: 4.2.0
 
-  postcss-modules-scope@3.2.1(postcss@8.4.49):
+  postcss-modules-scope@3.2.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
-  postcss-modules-values@4.0.0(postcss@8.4.49):
+  postcss-modules-values@4.0.0(postcss@8.5.6):
     dependencies:
-      icss-utils: 5.1.0(postcss@8.4.49)
-      postcss: 8.4.49
+      icss-utils: 5.1.0(postcss@8.5.6)
+      postcss: 8.5.6
 
-  postcss-normalize-charset@7.0.1(postcss@8.4.49):
+  postcss-normalize-charset@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
 
-  postcss-normalize-display-values@7.0.1(postcss@8.4.49):
+  postcss-normalize-display-values@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-positions@7.0.1(postcss@8.4.49):
+  postcss-normalize-positions@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-repeat-style@7.0.1(postcss@8.4.49):
+  postcss-normalize-repeat-style@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-string@7.0.1(postcss@8.4.49):
+  postcss-normalize-string@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-timing-functions@7.0.1(postcss@8.4.49):
+  postcss-normalize-timing-functions@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-unicode@7.0.3(postcss@8.4.49):
+  postcss-normalize-unicode@7.0.3(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.0
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-url@7.0.1(postcss@8.4.49):
+  postcss-normalize-url@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-normalize-whitespace@7.0.1(postcss@8.4.49):
+  postcss-normalize-whitespace@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-ordered-values@7.0.2(postcss@8.4.49):
+  postcss-ordered-values@7.0.2(postcss@8.5.6):
     dependencies:
-      cssnano-utils: 5.0.1(postcss@8.4.49)
-      postcss: 8.4.49
+      cssnano-utils: 5.0.1(postcss@8.5.6)
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
-  postcss-reduce-initial@7.0.3(postcss@8.4.49):
+  postcss-reduce-initial@7.0.3(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.0
       caniuse-api: 3.0.0
-      postcss: 8.4.49
+      postcss: 8.5.6
 
-  postcss-reduce-transforms@7.0.1(postcss@8.4.49):
+  postcss-reduce-transforms@7.0.1(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
 
   postcss-resolve-nested-selector@0.1.6: {}
@@ -21796,22 +22638,22 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
-  postcss-svgo@7.0.2(postcss@8.4.49):
+  postcss-svgo@7.0.2(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-value-parser: 4.2.0
       svgo: 3.3.2
 
-  postcss-unique-selectors@7.0.4(postcss@8.4.49):
+  postcss-unique-selectors@7.0.4(postcss@8.5.6):
     dependencies:
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
   postcss-value-parser@4.2.0: {}
 
   postcss@8.4.49:
     dependencies:
-      nanoid: 3.3.8
+      nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -21930,7 +22772,7 @@ snapshots:
   proxy-agent@6.3.1:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       lru-cache: 7.18.3
@@ -22212,7 +23054,7 @@ snapshots:
 
   require-in-the-middle@5.2.0:
     dependencies:
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       module-details-from-path: 1.0.3
       resolve: 1.22.10
     transitivePeerDependencies:
@@ -22370,7 +23212,7 @@ snapshots:
 
   rollup-plugin-esbuild@6.2.1(esbuild@0.25.0)(rollup@4.34.9):
     dependencies:
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       es-module-lexer: 1.6.0
       esbuild: 0.25.0
       get-tsconfig: 4.10.0
@@ -22387,16 +23229,16 @@ snapshots:
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
       cosmiconfig: 8.3.6(typescript@5.8.2)
-      cssnano: 7.0.7(postcss@8.4.49)
+      cssnano: 7.0.7(postcss@8.5.6)
       fs-extra: 11.3.0
-      icss-utils: 5.1.0(postcss@8.4.49)
+      icss-utils: 5.1.0(postcss@8.5.6)
       mime-types: 2.1.35
       p-queue: 8.1.0
-      postcss: 8.4.49
-      postcss-modules-extract-imports: 3.1.0(postcss@8.4.49)
-      postcss-modules-local-by-default: 4.2.0(postcss@8.4.49)
-      postcss-modules-scope: 3.2.1(postcss@8.4.49)
-      postcss-modules-values: 4.0.0(postcss@8.4.49)
+      postcss: 8.5.6
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.6)
+      postcss-modules-local-by-default: 4.2.0(postcss@8.5.6)
+      postcss-modules-scope: 3.2.1(postcss@8.5.6)
+      postcss-modules-values: 4.0.0(postcss@8.5.6)
       postcss-value-parser: 4.2.0
       query-string: 9.2.1
       resolve: 1.22.10
@@ -22491,7 +23333,7 @@ snapshots:
       htmlparser2: 8.0.2
       is-plain-object: 5.0.0
       parse-srcset: 1.0.2
-      postcss: 8.4.49
+      postcss: 8.5.6
 
   sass-embedded-android-arm64@1.85.1:
     optional: true
@@ -22619,8 +23461,6 @@ snapshots:
     dependencies:
       lru-cache: 6.0.0
 
-  semver@7.6.3: {}
-
   semver@7.7.1: {}
 
   send@0.19.0:
@@ -22671,7 +23511,7 @@ snapshots:
     dependencies:
       color: 4.2.3
       detect-libc: 2.0.3
-      semver: 7.6.3
+      semver: 7.7.1
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.33.5
       '@img/sharp-darwin-x64': 0.33.5
@@ -22860,7 +23700,7 @@ snapshots:
   socks-proxy-agent@6.2.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -22869,7 +23709,7 @@ snapshots:
   socks-proxy-agent@8.0.5:
     dependencies:
       agent-base: 7.1.3
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
@@ -23131,10 +23971,10 @@ snapshots:
 
   style-mod@4.1.2: {}
 
-  stylehacks@7.0.5(postcss@8.4.49):
+  stylehacks@7.0.5(postcss@8.5.6):
     dependencies:
       browserslist: 4.25.0
-      postcss: 8.4.49
+      postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
   stylelint-config-html@1.1.0(postcss-html@1.8.0)(stylelint@16.21.0(typescript@5.8.2)):
@@ -23212,7 +24052,7 @@ snapshots:
       cosmiconfig: 9.0.0(typescript@5.8.2)
       css-functions-list: 3.2.3
       css-tree: 3.1.0
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       fast-glob: 3.3.3
       fastest-levenshtein: 1.0.16
       file-entry-cache: 10.1.1
@@ -23265,7 +24105,7 @@ snapshots:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       fast-safe-stringify: 2.1.1
       form-data: 4.0.2
       formidable: 2.1.2
@@ -23281,7 +24121,7 @@ snapshots:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.4.1
+      debug: 4.4.1(supports-color@5.5.0)
       fast-safe-stringify: 2.1.1
       form-data: 4.0.2
       formidable: 3.5.2
@@ -23595,7 +24435,7 @@ snapshots:
       cac: 6.7.14
       chokidar: 4.0.3
       consola: 3.4.0
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       esbuild: 0.25.0
       joycon: 3.1.1
       picocolors: 1.1.1
@@ -23620,7 +24460,7 @@ snapshots:
   tsx@4.19.3:
     dependencies:
       esbuild: 0.25.0
-      get-tsconfig: 4.8.1
+      get-tsconfig: 4.10.0
     optionalDependencies:
       fsevents: 2.3.3
 
@@ -23895,12 +24735,6 @@ snapshots:
 
   untildify@4.0.0: {}
 
-  update-browserslist-db@1.1.2(browserslist@4.24.4):
-    dependencies:
-      browserslist: 4.24.4
-      escalade: 3.2.0
-      picocolors: 1.1.1
-
   update-browserslist-db@1.1.3(browserslist@4.25.0):
     dependencies:
       browserslist: 4.25.0
@@ -24055,8 +24889,8 @@ snapshots:
   vite-node@0.34.7(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.0(supports-color@5.5.0)
-      mlly: 1.7.3
+      debug: 4.4.1(supports-color@5.5.0)
+      mlly: 1.7.4
       pathe: 1.1.2
       picocolors: 1.1.1
       vite: 5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
@@ -24074,7 +24908,7 @@ snapshots:
   vite-node@1.6.1(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.1.1
       vite: 5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
@@ -24092,7 +24926,7 @@ snapshots:
   vite-node@2.1.9(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.0
       es-module-lexer: 1.6.0
       pathe: 1.1.2
       vite: 5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
@@ -24114,7 +24948,7 @@ snapshots:
       '@volar/typescript': 2.4.11
       '@vue/language-core': 2.2.4(typescript@5.8.2)
       compare-versions: 6.1.1
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       kolorist: 1.8.0
       local-pkg: 1.1.0
       magic-string: 0.30.17
@@ -24130,7 +24964,7 @@ snapshots:
     dependencies:
       '@antfu/utils': 0.7.10
       '@rollup/pluginutils': 5.1.4(rollup@4.34.9)
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       error-stack-parser-es: 0.1.5
       fs-extra: 11.3.0
       open: 10.1.0
@@ -24175,7 +25009,7 @@ snapshots:
 
   vite-tsconfig-paths@5.1.4(typescript@5.8.2)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)):
     dependencies:
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.1.4(typescript@5.8.2)
     optionalDependencies:
@@ -24275,7 +25109,7 @@ snapshots:
       '@vitest/utils': 1.6.1
       acorn-walk: 8.3.4
       chai: 4.5.0
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.0
       execa: 8.0.1
       local-pkg: 0.5.1
       magic-string: 0.30.17
@@ -24312,7 +25146,7 @@ snapshots:
       '@vitest/spy': 2.1.9
       '@vitest/utils': 2.1.9
       chai: 5.1.2
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.0
       expect-type: 1.1.0
       magic-string: 0.30.17
       pathe: 1.1.2
@@ -24366,7 +25200,7 @@ snapshots:
 
   vue-eslint-parser@9.4.3(eslint@9.21.0(jiti@1.21.7)):
     dependencies:
-      debug: 4.4.0(supports-color@5.5.0)
+      debug: 4.4.1(supports-color@5.5.0)
       eslint: 9.21.0(jiti@1.21.7)
       eslint-scope: 7.2.2
       eslint-visitor-keys: 3.4.3

@@ -29,16 +29,16 @@
 		"@directus/constants": "workspace:*",
 		"@directus/storage": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"@supabase/storage-js": "2.7.1",
-		"tus-js-client": "4.3.1",
-		"undici": "7.5.0"
+		"@supabase/storage-js": "catalog:",
+		"tus-js-client": "catalog:",
+		"undici": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"@ngneat/falso": "7.3.0",
-		"@vitest/coverage-v8": "2.1.9",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
+		"@directus/tsconfig": "catalog:",
+		"@ngneat/falso": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
 		"vitest": "2.1.9"
 	}
 }

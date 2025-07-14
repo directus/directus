@@ -26,16 +26,16 @@
 		"dist"
 	],
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"@directus/types": "workspace:*",
-		"@vitest/coverage-v8": "2.1.9",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
+		"@vitest/coverage-v8": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
 		"vitest": "2.1.9"
 	},
 	"dependencies": {
 		"@directus/errors": "workspace:*",
 		"@directus/utils": "workspace:*",
-		"joi": "17.13.3"
+		"joi": "catalog:"
 	}
 }

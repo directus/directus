@@ -27,22 +27,22 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"axios": "1.8.4",
-		"axios-cache-interceptor": "1.6.2",
-		"boxen": "8.0.1",
-		"chalk": "5.4.1",
-		"find-cache-dir": "5.0.0",
-		"semver": "7.7.1"
+		"axios": "catalog:",
+		"axios-cache-interceptor": "catalog:",
+		"boxen": "catalog:",
+		"chalk": "catalog:",
+		"find-cache-dir": "catalog:",
+		"semver": "catalog:"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"@npm/types": "2.0.0",
-		"@types/node": "22.13.8",
-		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "2.1.9",
-		"strip-ansi": "7.1.0",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
+		"@directus/tsconfig": "catalog:",
+		"@npm/types": "catalog:",
+		"@types/node": "catalog:",
+		"@types/semver": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"strip-ansi": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
 		"vitest": "2.1.9"
 	}
 }
