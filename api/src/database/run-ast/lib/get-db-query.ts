@@ -169,6 +169,7 @@ export function getDBQuery(
 					} else {
 						orderByString += `?? ${sortRecord.order}`;
 					}
+
 					orderByColumn = getColumn(knex, alias!, field!, false, schema, { originalCollectionName });
 				} else {
 					dbQuery.select(getColumn(knex, table, sortRecord.column, sortAlias, schema));
@@ -179,6 +180,7 @@ export function getDBQuery(
 					} else {
 						orderByString += `?? ${sortRecord.order}`;
 					}
+
 					orderByColumn = getColumn(knex, table, sortRecord.column, false, schema);
 				}
 
@@ -214,6 +216,7 @@ export function getDBQuery(
 
 					if (sortRecord.column.includes('.')) {
 						const [alias, field] = sortRecord.column.split('.');
+
 						columnRef = getColumn(knex, alias!, field!, false, schema, {
 							originalCollectionName: getCollectionFromAlias(alias!, aliasMap),
 						});
