@@ -1,4 +1,4 @@
-import type { DirectusError } from '@directus/errors';
+import type { DirectusExtensionsError } from '@directus/types';
 import { isDirectusError } from '@directus/errors';
 import type { WebSocket } from 'ws';
 import { ZodError } from 'zod';
@@ -39,7 +39,7 @@ export class WebSocketError extends Error {
 		return JSON.stringify(this.toJSON());
 	}
 
-	static fromError(error: DirectusError<unknown>, type = 'unknown') {
+	static fromError(error: DirectusExtensionsError<unknown>, type = 'unknown') {
 		return new WebSocketError(type, error.code, error.message);
 	}
 
