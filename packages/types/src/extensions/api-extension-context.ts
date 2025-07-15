@@ -1,6 +1,7 @@
-import type { ExtensionsServices, SchemaOverview } from '@directus/types';
 import type { Knex } from 'knex';
 import type { Logger } from 'pino';
+import type { ExtensionsServices } from '../services.js';
+import type { SchemaOverview } from '../schema.js';
 
 export type ApiExtensionContext = {
 	services: ExtensionsServices;

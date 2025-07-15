@@ -1,14 +1,14 @@
-import type { DeepPartial, LocalType, Type } from '@directus/types';
 import type { Component, ComponentOptions } from 'vue';
 import type { ExtensionOptionsContext } from './options.js';
 import type { AppField } from './index.js';
+import type { LocalType, Type } from '../fields.js';
+import type { DeepPartial } from '../misc.js';
 
 export interface InterfaceConfig {
 	id: string;
 	name: string;
 	icon: string;
 	description?: string;
-
 	component: Component;
 	options:
 		| DeepPartial<AppField>[]
