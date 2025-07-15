@@ -109,6 +109,7 @@ requires_value: Vereist waarde
 create_preset: Voorkeur Aanmaken
 create_panel: Paneel maken
 create_role: Maak rol
+create_policy: Policy Aanmaken
 create_user: Gebruiker Aanmaken
 message: Bericht
 delete_panel: Paneel verwijderen
