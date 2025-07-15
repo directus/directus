@@ -29,7 +29,6 @@
 	},
 	"dependencies": {
 		"@directus/utils": "workspace:*",
-		"@sinclair/typebox": "0.34.28",
 		"decamelize": "6.0.0",
 		"flat": "6.0.1",
 		"lodash-es": "catalog:"
