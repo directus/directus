@@ -641,13 +641,13 @@ async function exportDataFiles() {
 	--folder-picker-background-color: var(--theme--background-subdued);
 	--folder-picker-color: var(--theme--background-normal);
 
-	margin-top: 24px;
+	margin-block-start: 24px;
 	padding: var(--content-padding);
 }
 
 .v-checkbox {
-	width: 100%;
-	margin-top: 8px;
+	inline-size: 100%;
+	margin-block-start: 8px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -660,10 +660,9 @@ async function exportDataFiles() {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	height: var(--theme--form--field--input--height);
+	block-size: var(--theme--form--field--input--height);
 	padding: var(--theme--form--field--input--padding);
-	padding-top: 0;
-	padding-bottom: 0;
+	padding-block: 0;
 	color: var(--white);
 	background-color: var(--theme--primary);
 	border: var(--theme--border-width) solid var(--theme--primary);
@@ -672,12 +671,12 @@ async function exportDataFiles() {
 	.type-text {
 		display: flex;
 		justify-content: space-between;
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 		color: var(--white);
 	}
 
 	.v-progress-linear {
-		margin-bottom: 4px;
+		margin-block-end: 4px;
 	}
 }
 
@@ -687,9 +686,9 @@ async function exportDataFiles() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 40px;
-	height: 40px;
-	margin-left: -8px;
+	inline-size: 40px;
+	block-size: 40px;
+	margin-inline-start: -8px;
 	overflow: hidden;
 	background-color: var(--theme--background-normal);
 	border-radius: var(--theme--border-radius);
@@ -726,8 +725,8 @@ async function exportDataFiles() {
 	color: var(--theme--foreground-subdued);
 	text-align: center;
 	display: block;
-	width: 100%;
-	margin-top: 8px;
+	inline-size: 100%;
+	margin-block-start: 8px;
 	transition: color var(--fast) var(--transition);
 
 	&:hover {

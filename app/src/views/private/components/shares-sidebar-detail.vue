@@ -354,20 +354,17 @@ async function copy(id: string) {
 
 .v-divider {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
-	margin-top: 8px;
-	margin-bottom: 8px;
-	padding-top: 8px;
-	padding-bottom: 8px;
+	margin-block: 8px;
+	padding-block: 8px;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 }
 
 .empty {
-	margin-top: 16px;
-	margin-bottom: 16px;
-	margin-left: 2px;
+	margin-block: 16px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

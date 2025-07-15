@@ -57,7 +57,11 @@ describe('WebSocketService', () => {
 	});
 
 	test('broadcast with role filter', () => {
-		const clients = [mockClient({ user: 'test', role: 'test' }), mockClient({ user: 'test2', role: 'test2' })];
+		const clients = [
+			mockClient({ user: 'test', role: 'test' } as Accountability),
+			mockClient({ user: 'test2', role: 'test2' } as Accountability),
+		];
+
 		const message = 'test 123';
 
 		vi.mocked(getWebSocketController).mockReturnValue({ clients: new Set(clients) } as unknown as WebSocketController);
@@ -70,7 +74,11 @@ describe('WebSocketService', () => {
 	});
 
 	test('broadcast with user filter', () => {
-		const clients = [mockClient({ user: 'test', role: 'test' }), mockClient({ user: 'test2', role: 'test2' })];
+		const clients = [
+			mockClient({ user: 'test', role: 'test' } as Accountability),
+			mockClient({ user: 'test2', role: 'test2' } as Accountability),
+		];
+
 		const message = 'test 123';
 
 		vi.mocked(getWebSocketController).mockReturnValue({ clients: new Set(clients) } as unknown as WebSocketController);

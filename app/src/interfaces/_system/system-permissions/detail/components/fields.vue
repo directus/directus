@@ -157,7 +157,7 @@ function useExpandCollapseAll() {
 
 <style lang="scss" scoped>
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 
 .label-wrapper {
@@ -167,7 +167,7 @@ function useExpandCollapseAll() {
 }
 
 .type-label {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .expand-collapse-action {

@@ -316,7 +316,7 @@ function pointerLeave() {
 
 	.block {
 		padding: 0 12px;
-		height: 100%;
+		block-size: 100%;
 		overflow-y: auto;
 
 		.name {
@@ -324,7 +324,7 @@ function pointerLeave() {
 			font-size: 20px;
 			color: var(--theme--foreground-accent);
 			font-weight: 600;
-			margin-bottom: 8px;
+			margin-block-end: 8px;
 		}
 	}
 
@@ -338,10 +338,8 @@ function pointerLeave() {
 			position: absolute;
 			pointer-events: none;
 			content: '';
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
+			inset-block: 0;
+			inset-inline: 0;
 			border-radius: 4px;
 			z-index: -1;
 			opacity: 0.2;
@@ -392,8 +390,8 @@ function pointerLeave() {
 	}
 
 	.button-hint {
-		width: 32px;
-		height: 32px;
+		inline-size: 32px;
+		block-size: 32px;
 		padding: 4px;
 	}
 
@@ -407,8 +405,8 @@ function pointerLeave() {
 	}
 
 	.button {
-		width: 20px;
-		height: 20px;
+		inline-size: 20px;
+		block-size: 20px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -420,8 +418,8 @@ function pointerLeave() {
 
 	.add-resolve,
 	.resolve-hint {
-		top: var(--resolve-top);
-		left: var(--resolve-left);
+		inset-block-start: var(--resolve-top);
+		inset-inline-start: var(--resolve-left);
 
 		.button-hint {
 			--v-icon-color: var(--theme--primary);
@@ -430,8 +428,8 @@ function pointerLeave() {
 
 	.add-reject,
 	.reject-hint {
-		top: var(--reject-top);
-		left: var(--reject-left);
+		inset-block-start: var(--reject-top);
+		inset-inline-start: var(--reject-left);
 
 		--v-icon-color: var(--theme--secondary);
 
@@ -441,8 +439,8 @@ function pointerLeave() {
 	}
 
 	.attachment {
-		top: var(--attachment-y);
-		left: var(--attachment-x);
+		inset-block-start: var(--attachment-y);
+		inset-inline-start: var(--attachment-x);
 	}
 
 	&.reject {
@@ -475,6 +473,7 @@ function pointerLeave() {
 
 		.button {
 			border-color: var(--theme--foreground-subdued);
+
 			--v-icon-color: var(--theme--foreground-subdued);
 
 			.dot {
@@ -494,14 +493,14 @@ function pointerLeave() {
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-top: 8px;
-		max-width: 100%;
+		margin-block-start: 8px;
+		max-inline-size: 100%;
 	}
 }
 

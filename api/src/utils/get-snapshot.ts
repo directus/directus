@@ -1,4 +1,4 @@
-import type { SchemaOverview } from '@directus/types';
+import type { Field, Relation, SchemaOverview } from '@directus/types';
 import { version } from 'directus/version';
 import type { Knex } from 'knex';
 import { fromPairs, isArray, isPlainObject, mapValues, omit, sortBy, toPairs } from 'lodash-es';
@@ -25,9 +25,9 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 		relationsService.readAll(),
 	]);
 
-	const collectionsFiltered = collectionsRaw.filter((item: any) => excludeSystem(item));
-	const fieldsFiltered = fieldsRaw.filter((item: any) => excludeSystem(item));
-	const relationsFiltered = relationsRaw.filter((item: any) => excludeSystem(item));
+	const collectionsFiltered = collectionsRaw.filter((item: any) => excludeSystem(item) && excludeUntracked(item));
+	const fieldsFiltered = fieldsRaw.filter((item: any) => excludeSystem(item) && excludeUntracked(item));
+	const relationsFiltered = relationsRaw.filter((item: any) => excludeSystem(item) && excludeUntracked(item));
 
 	const collectionsSorted = sortBy(mapValues(collectionsFiltered, sortDeep), ['collection']);
 
@@ -49,8 +49,13 @@ export async function getSnapshot(options?: { database?: Knex; schema?: SchemaOv
 	};
 }
 
-function excludeSystem(item: { meta?: { system?: boolean } }) {
+function excludeSystem(item: Collection | Field | Relation) {
 	if (item?.meta?.system === true) return false;
+	return true;
+}
+
+function excludeUntracked(item: Collection | Field | Relation) {
+	if (item?.meta === null) return false;
 	return true;
 }
 
