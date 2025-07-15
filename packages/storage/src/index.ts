@@ -62,5 +62,3 @@ export type DriverConfig = {
 	driver: string;
 	options: Record<string, unknown>;
 };
-
-export type { Stat, ReadOptions, ChunkedUploadContext };
