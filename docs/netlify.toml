@@ -14,7 +14,18 @@
 
 # generated redirects from '_redirects' file
 # (delete to the end of the file and append this output)
-# grep '^[^#]' _redirects | awk '{print "\n[[redirects]]\nfrom  = \""$1"\"\nto    = \""$2"\"\nforce = true"}'
+# grep '^[^#]' _redirects | awk '
+# {
+#   if ($1 ~ /\.html$/) {
+#     # with .html
+#     printf "\n[[redirects]]\nfrom  = \"%s\"\nto    = \"%s\"\nforce = true\n", $1, $2;
+#     # with .html stripped
+#     sub(/\.html$/, "", $1);
+#     printf "\n[[redirects]]\nfrom  = \"%s\"\nto    = \"%s\"\nforce = true\n", $1, $2;
+#   } else {
+#     printf "\n[[redirects]]\nfrom  = \"%s\"\nto    = \"%s\"\nforce = true\n", $1, $2;
+#   }
+# }'
 
 [[redirects]]
 from  = "/app/data-model.html"
