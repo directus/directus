@@ -1137,10 +1137,6 @@ to    = "https://directus.io/docs/tutorials/extensions/display-external-weather-
 force = true
 
 [[redirects]]
-from  = "/blog/hooks-monitoring-error-tracking-sentry.html"
-to    = "https://directus.io/docs/tutorials"
-
-[[redirects]]
 from  = "/blog/using-directus-as-a-baby-health-tracker.html"
 to    = "https://directus.io/docs/tutorials/projects/use-directus-as-a-baby-health-tracker-with-owlet-and-ops-genie"
 force = true
