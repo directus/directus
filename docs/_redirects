@@ -243,7 +243,8 @@
 /blog/ai-santa-roast-app-with-directus-nuxt.html                                                    https://directus.io/docs/tutorials/projects/how-i-built-an-ai-open-source-santa-roast-app-with-directus-and-nuxt#naughty-or-nice-scoring-algorithm
 /blog/getting-started-directus-hugo.html                                                            https://directus.io/docs/tutorials/getting-started
 /blog/external-weather-api-data-custom-panel-extension.html                                         https://directus.io/docs/tutorials/extensions/display-external-weather-api-data-in-custom-panels
-/blog/hooks-monitoring-error-tracking-sentry.html                                                   https://directus.io/docs/tutorials
+# Temporarily remove 301 on sentry article https://github.com/directus/directus/pull/24828
+# /blog/hooks-monitoring-error-tracking-sentry.html                                                   https://directus.io/docs/tutorials
 /blog/using-directus-as-a-baby-health-tracker.html                                                  https://directus.io/docs/tutorials/projects/use-directus-as-a-baby-health-tracker-with-owlet-and-ops-genie
 /blog/preview-and-content-versioning-with-nextjs.html                                               https://directus.io/docs/tutorials/workflows/combine-live-preview-and-content-versioning-with-next-js
 /blog/the-changelog-3.html                                                                          https://directus.io/docs/releases/changelog
