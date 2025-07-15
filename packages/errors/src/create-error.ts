@@ -1,12 +1,8 @@
-export interface DirectusError<Extensions = void> extends Error {
-	extensions: Extensions;
-	code: string;
-	status: number;
-}
+import type { DirectusExtensionsError } from '@directus/types';
 
 export interface DirectusErrorConstructor<Extensions = void> {
-	new (extensions: Extensions, options?: ErrorOptions): DirectusError<Extensions>;
-	readonly prototype: DirectusError<Extensions>;
+	new (extensions: Extensions, options?: ErrorOptions): DirectusExtensionsError<Extensions>;
+	readonly prototype: DirectusExtensionsError<Extensions>;
 }
 
 export const createError = <Extensions = void>(
@@ -14,7 +10,7 @@ export const createError = <Extensions = void>(
 	message: string | ((extensions: Extensions) => string),
 	status = 500,
 ): DirectusErrorConstructor<Extensions> => {
-	return class extends Error implements DirectusError<Extensions> {
+	return class extends Error implements DirectusExtensionsError<Extensions> {
 		override name = 'DirectusError';
 		extensions: Extensions;
 		code = code.toUpperCase();

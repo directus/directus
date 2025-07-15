@@ -4,6 +4,7 @@ export * from './authentication.js';
 export * from './collection.js';
 export * from './comments.js';
 export * from './database.js';
+export * from './error.js';
 export * from './events.js';
 export * from './fields.js';
 export * from './files.js';
