@@ -13,8 +13,6 @@ component_management:
     statuses:
       - type: project
         target: auto
-        branches:
-          - "!main"
 
 individual_components:
   - component_id: api
@@ -97,4 +95,4 @@ individual_components:
       - packages/validation/**
 
 comment:
-  layout: "header, diff, components"
+  layout: 'header, diff, components'
