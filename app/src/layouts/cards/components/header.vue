@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useSync } from '@directus/composables';
-import type { ShowSelect } from '@directus/extensions';
-import type { Field } from '@directus/types';
+import type { Field, ShowSelect } from '@directus/types';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
