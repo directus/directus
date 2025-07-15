@@ -63,7 +63,7 @@ export default function getMailer(overrides?: EmailOptionsOverrides): Transporte
 	} else if (transportName === 'smtp') {
 		let auth: boolean | { user?: string; pass?: string } = false;
 
-		if (env['EMAIL_SMTP_USER'] || env['EMAIL_SMTP_PASSWORD'] || (overrides && overrides.smtp && overrides.smtp.user && overrides.smtp.pass)) {
+		if (env['EMAIL_SMTP_USER'] || env['EMAIL_SMTP_PASSWORD'] || (overrides && overrides.smtp && (overrides.smtp.user || overrides.smtp.pass))) {
 			auth = {
 				user: overrides?.smtp?.user || env['EMAIL_SMTP_USER'] as string,
 				pass: overrides?.smtp?.pass || env['EMAIL_SMTP_PASSWORD'] as string,
