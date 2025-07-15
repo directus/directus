@@ -1,9 +1,8 @@
-import type { DeepPartial } from '@directus/types';
+import type { DeepPartial, Theme } from '@directus/types';
 import { merge } from 'lodash-es';
 import { storeToRefs } from 'pinia';
 import type { MaybeRef } from 'vue';
 import { computed, unref } from 'vue';
-import type { Theme } from '../schemas/theme.js';
 import { useThemeStore } from '../stores/theme.js';
 import themeDefaultDark from '../themes/dark/default.js';
 import themeDefaultLight from '../themes/light/default.js';
