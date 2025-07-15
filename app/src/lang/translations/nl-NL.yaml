@@ -1510,17 +1510,41 @@ field_options:
     plural_unit: Meervoudige eenheid
     archive_divider: Archiveren
     archive_field_placeholder: Kies een veld...
+    archive_app_filter: App Rrchief filter inschakelen
+    archive_value: Waarde ingesteld bij archiveren...
+    unarchive_value: Waarde ingesteld bij dearchiveren...
     sort_divider: Sorteren
     sort_field: Kies een veld...
     accountability_divider: Verantwoording
+    duplication_divider: Duplicatie
+    preview_divider: Voorvertoning
+    content_versioning_divider: Contentversie
+    enable_versioning: Versiebeheer inschakelen
   directus_files:
     title: Een unieke titel...
+    description: Een optionele beschrijving...
+    location: Een optionele locatie...
+    storage_divider: Bestand Naamgeving
+    focal_point_divider: Focus Punt
+    filename_disk: Naam op schijfopslag...
+    filename_download: Naam bij downloaden...
+  directus_policies:
+    name: Een unieke naam voor deze policy...
+    description: Een beschrijving van deze policy...
+    ip_access: Toegestane IP-adressen, IP-bereiken en CIDR-blokken toevoegen. Laat leeg om alles toe te staan...
+    enforce_tfa: Tweestapsverificatie afdwingen
+    assigned_to: Toegewezen aan
   directus_roles:
+    name: De unieke naam voor deze rol...
+    description: Een beschrijving van deze rol...
     fields:
       icon_name: Icoon
       name_name: Naam
+      name_placeholder: Voer een titel in...
       link_name: Link
       link_placeholder: Relatieve of absolute URL...
+    parent_note: Optionele bovenliggende rol waar deze rol de machtigingen van erft
+    children_note: Geneste onderliggende rollen die de permissies van deze rol erft
     collections_name: Collecties
     collections_addLabel: Collectie toevoegen...
   directus_users:
@@ -1534,6 +1558,7 @@ field_options:
     status_dropdown_active: Actief
     status_dropdown_suspended: Geschorst
     status_dropdown_archived: Gearchiveerd
+    token: Voer een veilig toegangstoken in...
   directus_webhooks:
     status_options_active: Actief
     status_options_inactive: Inactief
@@ -1561,27 +1586,52 @@ block: Blok
 inline: Doorlopend
 comment: Reactie
 live_preview:
+  enable: Voorvertoning Inschakelen
+  disable: Voorvertoning uitschakelen
+  change_size: Wijzig weergavedimensies
+  refresh: Vernieuw Voorvertoning
   new_window: Openen in nieuw venster
+  close_window: Open in Split-weergave
+  toggle_3d: 3D aan/uit
+shares: Delen
 unlimited_usage: Onbeperkt gebruik
+uses_left: Geen gebruik over | Één gebruik over | {n} gebruik over
+no_shares: Geen delingen om weer te geven
 new_share: Delen
 expired: Verlopen
+upcoming: Aankomend
 share: Delen
+share_item: Gedeeld item
+shared_with_you: Een item is met jou gedeeld
+shared_enter_passcode: Voer je toegangscode in om door te gaan...
+shared_leave_blank_for_passwordless_access: Laat leeg voor toegang zonder wachtwoord
 shared_leave_blank_for_unlimited: Laat leeg voor geen limiet
 shared_times_remaining: Deze link kan slechts {n} keer worden gebruikt
 shared_last_remaining: Deze link kan slechts één keer worden gebruikt
 shared_uses_left: Voor extra veiligheid is deze gedeelde pagina geconfigureerd met een beperkt aantal weergaven. Er zijn momenteel {n} weergaven resterend, waarna de pagina niet langer toegankelijk zal zijn.
+share_access_page: Gedeelde pagina openen
 share_access_not_found: Deze gedeelde pagina bestaat niet of heeft het maximum aantal toegestane weergaven al overschreden.
 share_access_not_found_desc: Neem contact op met een geautoriseerde gebruiker van dit project om toegang te vragen.
+share_access_not_found_title: Onbekende gedeelde pagina
 share_copy_link: Link kopiëren
 share_copy_link_success: Link gekopieerd
+share_copy_link_error: Kan link niet kopiëren
 share_send_link: Link versturen
 relational_triggers: Relationele triggers
 referential_action_field_label_m2o: Wanneer {collection} wordt verwijderd...
 referential_action_field_label_o2m: Wanneer {collection} wordt gedeselecteerd...
 referential_action_no_action: Voorkom de verwijdering
 referential_action_cascade: Verwijder het {collection} item (cascade)
+referential_action_set_null: Maak het {field} veld leeg
+referential_action_set_default: Zet {field} op standaardwaarde
+choose_action: Kies actie
 continue_label: Doorgaan
+continue_as: >-
+  {name} is momenteel ingelogd. Als u dit account herkent, klik op doorgaan.
 editing_role: '{role} Rol'
+editing_policy: '{policy} Policy'
+no_permissions: Geen Rechten
+permission_add_collection: Collectie toevoegen
 creating_webhook: Webhook Aanmaken
 default_label: Standaard
 delete_label: Verwijderen
@@ -1627,11 +1677,16 @@ authenticated: Ingelogd
 options: Opties
 otp: Eenmalig wachtwoord
 password: Wachtwoord
+confirm_password: Wachtwoord bevestigen
 permissions: Permissies
 relationship: Relatie
 reset: Reset
 reset_password: Reset wachtwoord
 revisions: Revisies
+no_revisions: Nog Geen Revisies
+no_logs: Nog Geen Logs
+show_failed_only: Toon Alleen Mislukt
+no_logs_on_page: Geen logs op deze pagina
 revert: Terugzetten
 save: Sla op
 schema: Schema
@@ -1639,15 +1694,29 @@ search: Zoek
 select_existing: Selecteer bestaande
 select_field_type: Selecteer een veldtype
 select_interface: Kies een interface
+select_display: Selecteer een weergave
 settings: Instellingen
+register: Registreren
+registration_successful_headline: Gelukt!
+registration_successful_note: U kunt nu doorgaan naar de inlogpagina.
+registration_successful_check_email_note: |
+  Let op: voordat u kunt inloggen, moet u uw e-mailadres verifiëren door op de verificatielink te klikken die naar u is verstuurd.
+dont_have_an_account: Nog geen account?
+already_have_an_account: Al een account?
+sign_up_now: Nu registreren
 sign_in: Log in
 sign_out: Log out
 sign_out_confirm: Weet je zeker dat je uit wilt loggen?
 something_went_wrong: Iets ging mis.
 sort_direction: Sorteerrichting
+export_location: Exportlocatie
+export_started: Export Gestart
+export_started_copy: Uw export is gestart. U krijgt bericht wanneer deze klaar is om te downloaden.
 sort_asc: Sorteer Oplopend
 sort_desc: Sorteer Aflopend
+disable_sort: Sorteren Uitschakelen
 template: Sjabloon
+require_value_to_be_set: Verplichte waarde bij aanmaken
 translation: Vertaling
 translation_placeholder: Voer een vertaling in...
 value: Waarde
@@ -1655,9 +1724,23 @@ view_project: Bekijk project
 report_error: Rapporteer fout
 table: Tabel
 list: Lijst
+search_filter: Zoeken & Filteren
+enable_search_filter: Zoeken & filteren inschakelen
+item_link: Item link
+show_link_to_item: Toon een link naar het item
+navigate_to_item: Navigeer naar item
+undo_removed_item: Verwijderen Item ongedaan maken
+remove_item: Verwijder Item
+delete_item: Verwijder Item
+pause: Pauze
+resume: Hervatten
 interfaces:
+  list-m2a:
+    prefix_note: Gebruikt standaard de collectienaam van het gerelateerde item.
+    sorting_disabled: Sorteren is uitgeschakeld omdat er meer items zijn dan op één pagina passen.
   filter:
     name: Filter
+    description: ' Filter object configureren.'
     add_filter: Filter toevoegen
     add_group: En/of-groep
     add_value: Waarde toevoegen
@@ -1666,25 +1749,50 @@ interfaces:
     all: Alle
     any: Eender
     and: en
+    of_the_following: van het volgende
+    no_rules: Geen regels geconfigureerd
+    change_value: Klik om waarde te wijzigen
+    placeholder: Sleep regels hierheen
+    add_key_placeholder: Voeg een sleutel toe en druk op enter...
   fields:
     name: Velden
   group-accordion:
     name: Accordeon
+    description: Toon velden of groepen als accordeon secties
     start: Starten
     all_closed: Alles gesloten
     first_opened: Eerst geopend
     all_opened: Alle geopende
     accordion_mode: Accordeonmodus
+    max_one_section_open: Max 1 sectie open
   presentation-links:
     presentation-links: Knoplinks
     links: Links
+    description: Configureerbare link knoppen voor het openen van dynamische URLs
     style: Stijl
     primary: Primair
     link: Links
     button: Knoppen
+    error: Kan actie niet uitvoeren
+  select-multiple-checkbox:
+    checkboxes: Selectievakjes
+    description: Kies uit meerdere opties via selectievakjes
+    allow_other: Overige toestaan
+    show_more: 'Toon {count} meer'
+    items_shown: Items getoond
+  select-multiple-checkbox-tree:
+    name: Selectievakjes (Boom)
+    description: Kies uit meerdere opties via geneste selectievakjes
+    value_combining: Waarde combineren
+    value_combining_note: Bepaalt welke waarde wordt opgeslagen bij geneste selecties.
+    show_all: Toon alles
+    show_selected: Toon geselecteerde
   input-code:
     code: Code
+    description: Schrijf of deel code snippets
     line_number: Regelnummer
+    line_wrapping: Regelafbreking
+    placeholder: Voer code hier in...
   system-collection:
     collection: Collectie
     description: Selecteer tussen bestaande collecties
@@ -1695,7 +1803,10 @@ interfaces:
     include_system_collections: Toon systeem collecties
   select-color:
     color: Kleur
+    description: Voer een kleurwaarde in of selecteer deze
     placeholder: Kies een kleur...
+    preset_colors: Voorgedefinieerde kleuren
+    opacity: Transparantie
     preset_colors_add_label: Nieuwe kleur toevoegen...
     name_placeholder: Voer kleurnaam in...
   datetime:
@@ -1704,20 +1815,34 @@ interfaces:
     include_seconds: Seconden opnemen
     set_to_now: Op Nu instellen
     use_24: 24-uurs formaat gebruiken
+    placeholder: Kies een datum/tijd...
   system-fields:
     select_a_collection: Selecteer een collectie
     no_fields: Geen velden
   system-display-template:
     display-template: Weergavesjabloon
+    description: Combineer statische tekst en dynamische veldwaarden
     collection_field: Collectieveld
     collection_field_not_setup: De collectie-veld optie is onjuist geconfigureerd
     select_a_collection: Selecteer een collectie
   presentation-divider:
     divider: Scheidingslijn
+    description: Label en verdeel velden in secties
+    title_placeholder: Voer een titel in, of laat leeg voor alleen een lijn...
+    inline_title: Inline titel
+    inline_title_label: Toon titel binnen lijn
+    margin_top: Marge Top
+    margin_top_label: Verhoog Top Marge
   select-dropdown:
+    description: Selecteer een waarde uit een dropdown
     choices_placeholder: Een nieuwe keuze toevoegen
+    allow_other: Overige toestaan
+    allow_other_label: Andere waarden toestaan
+    allow_none: Geen toestaan
+    allow_none_label: Geen selectie toestaan
     choices_name_placeholder: Voer een naam in...
     choices_value_placeholder: Voer een waarde in...
+    preview_threshold: Voorvertoning Drempel
   select-multiple-dropdown:
     select-multiple-dropdown: Dropdown (meerdere)
     description: Selecteer meerdere waarden in een dropdown
@@ -1739,6 +1864,10 @@ interfaces:
   file-image:
     image: Afbeelding
     description: Selecteer of upload een afbeelding
+    crop: Bijsnijden (Vul passend)
+    crop_label: Snijd afbeelding bij waar nodig
+    letterbox: Letterbox
+    letterbox_label: Voeg vulling toe aan afbeelding voorvertoning
   system-interface:
     interface: Interface
     description: Selecteer een bestaande interface
@@ -1748,21 +1877,49 @@ interfaces:
     description: Een modal voor het selecteren van een interface
   system-display:
     display: Toon
+    description: Selecteer een bestaande weergave
+    placeholder: Selecteer een weergave...
   system-display-options:
     display-options: Weergave Opties
+    description: Een modal voor het selecteren van weergave-opties
   list-m2m:
+    many-to-many: Veel op Veel
     description: Selecteer meerdere gerelateerde items
+    columns_configure_notice: Je kunt de kolommen configureren na het aanmaken van dit veld.
+    display_template_configure_notice: Je kunt het weergavesjabloon configureren na het aanmaken van dit veld.
   select-dropdown-m2o:
+    many-to-one: Veel op één
     description: Selecteer één gerelateerd item
     display_template: Weergavesjabloon
+  collection-item-dropdown:
+    collection-item-dropdown: Collectie item dropdown
+    description: Selecteer een item uit een collectie in JSON formaat
   input-rich-text-md:
     markdown: Markdown
+    description: Voer markdown in en bekijk voorvertoning
     edit: Wijzig
+    preview: Voorvertoning
+    editorFont: Editor lettertype
+    previewFont: Voorvertoning lettertype
+    default_view: Standaard weergave
+    default_view_editor: Editor
+    default_view_preview: Voorvertoning
     customSyntax: Aangepaste blokken
+    customSyntax_label: Voeg aangepaste syntaxtypes toe
+    customSyntax_add: Aangepaste syntax toevoegen
     box: Blok / Inline
+    imageToken: Statisch toegangstoken
+    imageToken_label: Statisch toegangstoken wordt toegevoegd aan de assets URL
   map:
     map: Kaart
+    description: Selecteer een locatie op een kaart
     zoom: Zoom
+    geometry_type: Geometrie type
+    geometry_format: Geometrie formaat
+    default_view: Standaard weergave
+    invalid_options: Ongeldige opties
+    invalid_format: Ongeldig formaat ({format})
+    unexpected_geometry: Verwachtte {expected}, kreeg {got}.
     geojson: GeoJSON
     lnglat: Lengtegraad, breedtegraad
     wkt: WKT
@@ -1834,6 +1991,7 @@ interfaces:
     custom_formats: Aangepaste vorm
     options_override: Overschrijf opties
     imageToken: Statische toegangstoken
+    imageToken_label: Statisch toegangstoken wordt toegevoegd aan de assets URL
   input-block-editor:
     tools: Werkbalk
     tools_options:
@@ -1946,6 +2104,7 @@ displays:
   related-values:
     related-values: Gerelateerde waarden
     description: Relatieve waarden weergeven
+    display_template_configure_notice: Je kunt het weergavesjabloon configureren na het aanmaken van dit veld.
   user:
     user: Gebruiker
     description: Toon een directus gebruiker
