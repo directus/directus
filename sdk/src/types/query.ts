@@ -16,6 +16,7 @@ export interface Query<Schema, Item> {
 	offset?: number | undefined;
 	page?: number | undefined;
 	deep?: IfAny<Schema, Record<string, any>, QueryDeep<Schema, Item>> | undefined;
+	backlink?: boolean | undefined;
 	readonly alias?: IfAny<Schema, Record<string, string>, QueryAlias<Schema, Item>> | undefined;
 }
 

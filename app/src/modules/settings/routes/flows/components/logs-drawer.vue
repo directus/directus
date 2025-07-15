@@ -4,14 +4,15 @@ import { computed, toRefs, unref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { getTriggers } from '../triggers';
 import { FlowRaw } from '@directus/types';
-import { useRevision } from '@/composables/use-revision';
+import VDetail from '@/components/v-detail.vue';
+import { Revision } from '@/types/revisions';
 
 const props = defineProps<{
-	revisionId?: number;
 	flow: FlowRaw;
+	revision: Revision;
 }>();
 
-const { revisionId, flow } = toRefs(props);
+const { flow, revision } = toRefs(props);
 
 const { t } = useI18n();
 
@@ -22,8 +23,6 @@ const usedTrigger = computed(() => {
 	return triggers.find((trigger) => trigger.id === unref(flow).trigger);
 });
 
-const { revision, loading } = useRevision(revisionId);
-
 const triggerData = computed(() => {
 	if (!unref(revision)?.data) return { trigger: null, accountability: null, options: null };
 
@@ -32,7 +31,7 @@ const triggerData = computed(() => {
 	return {
 		trigger: data.$trigger,
 		accountability: data.$accountability,
-		options: props.flow.options,
+		options: flow.value.options,
 	};
 });
 
@@ -73,15 +72,13 @@ const steps = computed(() => {
 
 <template>
 	<v-drawer
-		:model-value="!!revisionId"
+		:model-value="!!revision"
 		:title="revision ? revision.timestampFormatted : t('logs')"
 		icon="fact_check"
 		@cancel="emit('close')"
-		@esc="emit('close')"
 	>
 		<div class="content">
-			<v-progress-linear v-if="!revision && loading" indeterminate />
-			<div v-else class="steps">
+			<div class="steps">
 				<div class="step">
 					<div class="header">
 						<span class="dot" />
@@ -131,58 +128,8 @@ const steps = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.v-progress-linear {
-	margin: 24px 0;
-}
-
 .content {
 	padding: var(--content-padding);
-}
-
-.log {
-	position: relative;
-	display: block;
-
-	button {
-		position: relative;
-		z-index: 2;
-		display: block;
-		width: 100%;
-		text-align: left;
-	}
-
-	&::before {
-		position: absolute;
-		top: -4px;
-		left: -4px;
-		z-index: 1;
-		width: calc(100% + 8px);
-		height: calc(100% + 8px);
-		background-color: var(--theme--background-accent);
-		border-radius: var(--theme--border-radius);
-		opacity: 0;
-		transition: opacity var(--fast) var(--transition);
-		content: '';
-		pointer-events: none;
-	}
-
-	&:hover {
-		cursor: pointer;
-
-		.header {
-			.dot {
-				border-color: var(--theme--background-accent);
-			}
-		}
-
-		&::before {
-			opacity: 1;
-		}
-	}
-
-	& + & {
-		margin-top: 8px;
-	}
 }
 
 .json {
@@ -190,7 +137,7 @@ const steps = computed(() => {
 	font-family: var(--theme--fonts--monospace--font-family);
 	border-radius: var(--theme--border-radius);
 	padding: 20px;
-	margin-top: 20px;
+	margin-block-start: 20px;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
 }
@@ -204,28 +151,27 @@ const steps = computed(() => {
 		&::after {
 			content: '';
 			position: absolute;
-			width: var(--theme--border-width);
-			left: -11px;
-			top: 0;
+			inline-size: var(--theme--border-width);
+			inset-inline-start: -11px;
+			inset-block-start: 0;
 			background-color: var(--theme--border-color-subdued);
-			height: 100%;
+			block-size: 100%;
 		}
 
 		&:first-child::after {
-			top: 8px;
-			height: calc(100% - 8px);
+			inset-block-start: 8px;
+			block-size: calc(100% - 8px);
 		}
 
 		&:last-child::after {
-			height: 12px;
+			block-size: 12px;
 		}
 
 		.inset {
-			padding-top: 12px;
-			padding-bottom: 32px;
+			padding-block: 12px 32px;
 
 			.v-detail + .v-detail {
-				margin-top: 12px;
+				margin-block-start: 12px;
 			}
 		}
 
@@ -241,11 +187,11 @@ const steps = computed(() => {
 
 	.dot {
 		position: absolute;
-		top: 6px;
-		left: -16px;
+		inset-block-start: 6px;
+		inset-inline-start: -16px;
 		z-index: 2;
-		width: 12px;
-		height: 12px;
+		inline-size: 12px;
+		block-size: 12px;
 		background-color: var(--theme--primary);
 		border: var(--theme--border-width) solid var(--theme--background);
 		border-radius: 8px;
@@ -258,16 +204,5 @@ const steps = computed(() => {
 			background-color: var(--theme--secondary);
 		}
 	}
-}
-
-.empty {
-	margin-left: 2px;
-	color: var(--theme--foreground-subdued);
-	font-style: italic;
-}
-
-.v-pagination {
-	justify-content: center;
-	margin-top: 24px;
 }
 </style>

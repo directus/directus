@@ -246,12 +246,7 @@ function usePopoverWidth() {
 </script>
 
 <template>
-	<div
-		ref="editing-layer"
-		class="editing-layer"
-		:class="{ editing: editOverlayActive }"
-		@click="editOverlayActive = false"
-	>
+	<div ref="editing-layer" class="editing-layer" :class="{ editing: editOverlayActive }">
 		<overlay-item
 			v-if="collection"
 			v-model:active="editOverlayActive"
@@ -261,15 +256,16 @@ function usePopoverWidth() {
 			:selected-fields="fields"
 			:edits="edits"
 			:popover-props="position.width > popoverWidth ? { arrowPlacement: 'start' } : {}"
-			shortcuts
+			apply-shortcut="meta+s"
+			prevent-cancel-with-edits
 			@input="(value: any) => (edits = value)"
 		>
 			<template #popover-activator>
 				<div
 					class="popover-rect"
 					:style="{
-						width: `${position.width}px`,
-						height: `${position.height}px`,
+						inlineSize: `${position.width}px`,
+						blockSize: `${position.height}px`,
 						transform: `translate(${position.left}px,${position.top}px)`,
 					}"
 				></div>
@@ -313,8 +309,8 @@ function usePopoverWidth() {
 	.popover-rect {
 		pointer-events: none;
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 	}
 }
 </style>

@@ -42,9 +42,9 @@ withDefaults(defineProps<Props>(), {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100px;
-	height: 100px;
-	margin-bottom: 16px;
+	inline-size: 100px;
+	block-size: 100px;
+	margin-block-end: 16px;
 	border-radius: 50%;
 }
 
@@ -69,23 +69,23 @@ withDefaults(defineProps<Props>(), {
 }
 
 .title {
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 }
 
 .content {
-	max-width: 300px;
+	max-inline-size: 300px;
 	color: var(--theme--foreground-subdued);
 	line-height: 22px;
 
 	&:not(:last-child) {
-		margin-bottom: 24px;
+		margin-block-end: 24px;
 	}
 }
 
 .center {
 	position: absolute;
-	top: 50%;
-	left: 50%;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
 	transform: translate(-50%, -50%);
 }
 </style>

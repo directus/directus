@@ -157,6 +157,8 @@ function toggleNotification(id: string) {
 }
 
 async function toggleArchive() {
+	if (selection.value.length === 0) return;
+
 	await api.patch('/notifications', {
 		keys: selection.value,
 		data: {
@@ -205,6 +207,7 @@ function clearFilters() {
 		:title="t('notifications')"
 		:sidebar-label="t('folders')"
 		@cancel="notificationsDrawerOpen = false"
+		@apply="toggleArchive"
 	>
 		<template #actions:prepend>
 			<transition name="fade">
@@ -216,7 +219,13 @@ function clearFilters() {
 
 		<template #actions>
 			<search-input v-model="search" v-model:filter="filter" collection="directus_notifications" />
-			<v-dialog v-model="confirmDelete" :disabled="selection.length === 0" @esc="confirmDelete = false">
+
+			<v-dialog
+				v-model="confirmDelete"
+				:disabled="selection.length === 0"
+				@esc="confirmDelete = false"
+				@apply="deleteSelected"
+			>
 				<template #activator="{ on }">
 					<v-button
 						v-tooltip.bottom="t('delete_label')"
@@ -244,6 +253,7 @@ function clearFilters() {
 					</v-card-actions>
 				</v-card>
 			</v-dialog>
+
 			<v-button
 				v-tooltip.bottom="tab[0] === 'inbox' ? t('archive') : t('unarchive')"
 				icon
@@ -371,35 +381,35 @@ function clearFilters() {
 }
 
 .content {
-	padding: 0px var(--content-padding) var(--content-padding-bottom) var(--content-padding);
+	padding: 0 var(--content-padding) var(--content-padding-bottom) var(--content-padding);
 }
 
 .notifications {
-	margin-bottom: 16px;
+	margin-block-end: 16px;
 
 	.v-skeleton-loader {
-		margin-bottom: 8px;
+		margin-block-end: 8px;
 
 		&.dense {
-			height: 44px;
+			block-size: 44px;
 		}
 	}
 
 	.v-list-item {
 		&.block {
-			height: unset;
-			min-height: var(--theme--form--field--input--height);
+			block-size: unset;
+			min-block-size: var(--theme--form--field--input--height);
 			flex-flow: wrap;
 			padding: 16px var(--theme--form--field--input--padding) 16px var(--theme--form--field--input--padding);
 
 			&.dense {
-				min-height: 44px;
+				min-block-size: 44px;
 				padding: 10px 8px;
 			}
 		}
 
 		.header {
-			width: 100%;
+			inline-size: 100%;
 			display: flex;
 			align-items: center;
 			gap: 8px;
@@ -413,12 +423,14 @@ function clearFilters() {
 		}
 
 		.message {
-			width: 100%;
-			margin-top: 8px;
+			inline-size: 100%;
+			margin-block-start: 8px;
+			-webkit-user-select: text;
 			user-select: text;
 			cursor: auto;
 
 			:deep(*) {
+				-webkit-user-select: text;
 				user-select: text;
 			}
 
@@ -433,7 +445,7 @@ function clearFilters() {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 24px;
+	block-size: 24px;
 	margin: 0 calc(var(--theme--form--field--input--padding) + var(--theme--border-width));
 
 	&.dense {

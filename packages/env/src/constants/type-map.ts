@@ -41,4 +41,19 @@ export const TYPE_MAP: Record<string, EnvType> = {
 	METRICS_SERVICES: 'array',
 
 	DB_SSL__CA_FILE: 'string',
+
+	ADMIN_PASSWORD: 'string',
+	ADMIN_TOKEN: 'string',
+	KEY: 'string',
+	SECRET: 'string',
+
+	EMAIL_SMTP_PASSWORD: 'string',
+	REDIS_PASSWORD: 'string',
+	'AUTH_.+_BIND_PASSWORD': 'string',
+	'STORAGE_.+_SECRET': 'string',
 } as const;
+
+export const TYPE_MAP_REGEX: [RegExp, EnvType][] = Object.entries(TYPE_MAP).map(([name, value]) => [
+	new RegExp(`^${name}$`),
+	value,
+]);

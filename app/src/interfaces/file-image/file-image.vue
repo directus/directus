@@ -5,12 +5,15 @@ import { useRelationPermissionsM2O } from '@/composables/use-relation-permission
 import { RelationQuerySingle, useRelationSingle } from '@/composables/use-relation-single';
 import { formatFilesize } from '@/utils/format-filesize';
 import { getAssetUrl } from '@/utils/get-asset-url';
+import { parseFilter } from '@/utils/parse-filter';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import FileLightbox from '@/views/private/components/file-lightbox.vue';
 import ImageEditor from '@/views/private/components/image-editor.vue';
-import type { File } from '@directus/types';
-import { computed, ref, toRefs } from 'vue';
+import type { File, Filter } from '@directus/types';
+import { deepMap } from '@directus/utils';
+import { render } from 'micromustache';
+import { computed, inject, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(
@@ -19,14 +22,19 @@ const props = withDefaults(
 		disabled?: boolean;
 		loading?: boolean;
 		folder?: string;
+		filter?: Filter;
 		collection: string;
 		field: string;
 		width: string;
 		crop?: boolean;
 		letterbox?: boolean;
+		enableCreate?: boolean;
+		enableSelect?: boolean;
 	}>(),
 	{
 		crop: true,
+		enableCreate: true,
+		enableSelect: true,
 	},
 );
 
@@ -98,6 +106,10 @@ const meta = computed(() => {
 const editImageDetails = ref(false);
 const editImageEditor = ref(false);
 
+const internalDisabled = computed(() => {
+	return props.disabled || (props.enableCreate === false && props.enableSelect === false);
+});
+
 async function imageErrorHandler() {
 	isImage.value = false;
 	if (!src.value) return;
@@ -112,6 +124,20 @@ async function imageErrorHandler() {
 		}
 	}
 }
+
+const values = inject('values', ref<Record<string, unknown>>({}));
+
+const customFilter = computed(() => {
+	return parseFilter(
+		deepMap(props.filter, (val: unknown) => {
+			if (val && typeof val === 'string') {
+				return render(val, values.value);
+			}
+
+			return val;
+		}),
+	);
+});
 
 function onUpload(image: any) {
 	if (image?.id) update(image.id);
@@ -140,7 +166,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 	<div class="image" :class="[width, { crop }]">
 		<v-skeleton-loader v-if="loading" type="input-tall" />
 
-		<v-notice v-else-if="disabled && !image" class="disabled-placeholder" center icon="hide_image">
+		<v-notice v-else-if="internalDisabled && !image" class="disabled-placeholder" center icon="hide_image">
 			{{ t('no_image_selected') }}
 		</v-notice>
 
@@ -185,7 +211,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 					<v-icon name="download" />
 				</v-button>
 
-				<template v-if="!disabled">
+				<template v-if="!internalDisabled">
 					<v-button v-tooltip="t('edit_item')" icon rounded @click="editImageDetails = true">
 						<v-icon name="edit" />
 					</v-button>
@@ -206,7 +232,7 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 			<drawer-item
 				v-if="image"
 				v-model:active="editImageDetails"
-				:disabled="disabled"
+				:disabled="internalDisabled"
 				collection="directus_files"
 				:primary-key="image.id"
 				:edits="edits"
@@ -219,29 +245,28 @@ const { createAllowed, updateAllowed } = useRelationPermissionsM2O(relationInfo)
 				</template>
 			</drawer-item>
 
-			<image-editor v-if="!disabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
+			<image-editor v-if="!internalDisabled" :id="image.id" v-model="editImageEditor" @refresh="refresh" />
 
 			<file-lightbox v-model="lightboxActive" :file="image" />
 		</div>
-		<v-upload v-else from-library from-url :from-user="createAllowed" :folder="folder" @input="onUpload" />
+		<v-upload
+			v-else
+			from-url
+			:from-user="createAllowed && enableCreate"
+			:from-library="enableSelect"
+			:folder="folder"
+			:filter="customFilter"
+			@input="onUpload"
+		/>
 	</div>
 </template>
 
 <style lang="scss" scoped>
-.image-preview {
-	position: relative;
-	width: 100%;
-	height: var(--input-height-tall);
-	overflow: hidden;
-	background-color: var(--theme--background-normal);
-	border-radius: var(--theme--border-radius);
-}
-
 img {
 	z-index: 1;
-	width: 100%;
-	height: 100%;
-	max-height: inherit;
+	inline-size: 100%;
+	block-size: 100%;
+	max-block-size: inherit;
 	object-fit: contain;
 }
 
@@ -254,36 +279,43 @@ img {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 100%;
+	block-size: 100%;
 	color: var(--theme--form--field--input--foreground-subdued);
 	background-color: var(--theme--background-normal);
 	padding: 32px;
 
 	.v-icon {
-		margin-bottom: 6px;
+		margin-block-end: 6px;
 	}
 
 	.message {
-		max-width: 300px;
+		max-inline-size: 300px;
 		padding: 0 16px;
 		text-align: center;
 	}
 }
 
 .image-preview {
+	position: relative;
+	inline-size: 100%;
+	block-size: var(--input-height-tall);
+	overflow: hidden;
+	background-color: var(--theme--background-normal);
+	border-radius: var(--theme--border-radius);
+
 	.shadow {
 		position: absolute;
-		bottom: 0;
-		left: 0;
+		inset-block-end: 0;
+		inset-inline-start: 0;
 		z-index: 2;
-		width: 100%;
-		height: 40px;
+		inline-size: 100%;
+		block-size: 40px;
 		overflow: hidden;
 		line-height: 1;
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.25) 100%);
-		transition: height var(--fast) var(--transition);
+		transition: block-size var(--fast) var(--transition);
 	}
 
 	.actions {
@@ -293,19 +325,19 @@ img {
 		--v-button-background-color-hover: var(--white);
 
 		position: absolute;
-		top: calc(50% - 32px);
-		left: 0;
+		inset-block-start: calc(50% - 32px);
+		inset-inline-start: 0;
 		z-index: 3;
 		display: flex;
 		justify-content: center;
-		width: 100%;
+		inline-size: 100%;
 		gap: 12px;
 
 		::v-deep(.v-button) {
 			transform: translateY(10px);
 			opacity: 0;
 			transition: var(--medium) var(--transition);
-			transition-property: opacity transform;
+			transition-property: opacity, transform;
 
 			@for $i from 0 through 4 {
 				&:nth-of-type(#{$i + 1}) {
@@ -317,10 +349,10 @@ img {
 
 	.info {
 		position: absolute;
-		bottom: 0;
-		left: 0;
+		inset-block-end: 0;
+		inset-inline-start: 0;
 		z-index: 3;
-		width: 100%;
+		inline-size: 100%;
 		padding: 8px 12px;
 		line-height: 1.2;
 	}
@@ -330,28 +362,28 @@ img {
 	}
 
 	.meta {
-		height: 17px;
-		max-height: 0;
+		block-size: 17px;
+		max-block-size: 0;
 		overflow: hidden;
 		color: rgb(255 255 255 / 0.75);
-		transition: max-height var(--fast) var(--transition);
+		transition: max-block-size var(--fast) var(--transition);
 	}
 }
 
 .image-preview:focus-within,
 .image-preview:hover {
 	.shadow {
-		height: 100%;
+		block-size: 100%;
 		background: linear-gradient(180deg, rgb(38 50 56 / 0) 0%, rgb(38 50 56 / 0.5) 100%);
 	}
 
 	.actions ::v-deep(.v-button) {
-		transform: translateY(0px);
+		transform: translateY(0);
 		opacity: 1;
 	}
 
 	.meta {
-		max-height: 17px;
+		max-block-size: 17px;
 	}
 }
 
@@ -359,8 +391,8 @@ img {
 	&.full,
 	&.fill {
 		.image-preview {
-			height: auto;
-			max-height: 400px;
+			block-size: auto;
+			max-block-size: 400px;
 		}
 	}
 
@@ -374,7 +406,7 @@ img {
 }
 
 .disabled-placeholder {
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 }
 
 .fallback {
@@ -382,7 +414,7 @@ img {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: var(--input-height-tall);
+	block-size: var(--input-height-tall);
 	border-radius: var(--theme--border-radius);
 }
 </style>

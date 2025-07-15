@@ -57,6 +57,8 @@ interface Props {
 	small?: boolean;
 	/** If the input should be an integer */
 	integer?: boolean;
+	/** If the input should be a float */
+	float?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -83,14 +85,17 @@ const props = withDefaults(defineProps<Props>(), {
 	small: false,
 });
 
-const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus']);
+const emit = defineEmits(['click', 'keydown', 'update:modelValue', 'focus', 'keydown:space', 'keydown:enter']);
 
 const attrs = useAttrs();
 
 const input = ref<HTMLInputElement | null>(null);
 
 const listeners = computed(() => ({
-	input: emitValue,
+	input: (e: InputEvent) => {
+		onInput(e);
+		emitValue(e);
+	},
 	keydown: processValue,
 	blur: (e: Event) => {
 		trimIfEnabled();
@@ -119,15 +124,48 @@ const isStepDownAllowed = computed(() => {
 	return props.disabled === false && (props.min === undefined || parseInt(String(props.modelValue), 10) > props.min);
 });
 
+function onInput(event: InputEvent) {
+	const target = event.target as HTMLInputElement;
+
+	// If we enter an invalid number into an input of type number, the event.target.value will be empty, which makes it hard to sanitize here, so we'll replace it with the last (valid) modelValue.
+	if (target.validity.badInput) {
+		target.value = String(props.modelValue);
+		return;
+	}
+
+	const regexValidInteger = /^-?\d*$/;
+
+	if (props.integer && !regexValidInteger.test(target.value)) {
+		const invalidCharsRegex = /(?!^)-|[^0-9-]/g;
+		target.value = target.value.replace(invalidCharsRegex, '');
+		return;
+	}
+
+	const regexValidFloat = /^-?(\d*((,|\.)\d+)?)$/;
+
+	if (props.float && !regexValidFloat.test(target.value)) {
+		const invalidCharsRegex = /(?!^)-|[^0-9-.,]/g;
+		const duplicatePointRegex = /(.*[.,].*)[.,]/g;
+		target.value = target.value.replace(invalidCharsRegex, '').replace(duplicatePointRegex, '$1');
+		event.preventDefault();
+		return;
+	}
+}
+
 function processValue(event: KeyboardEvent) {
 	// `event.key` can be `undefined` with Chrome's autofill feature
 	const key = keyMap[event.key] ?? event.key?.toLowerCase();
+	const shortcutKey = event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
 
 	if (!key) return;
 
 	const value = (event.target as HTMLInputElement).value;
 
-	if (props.integer === true && ['.', ','].includes(key)) {
+	const addsChar = !shortcutKey && key.length === 1;
+	const isInvalidInteger = props.integer && !/[\d-]/.test(key);
+	const isInvalidFloat = props.float && !/[\d-.,]/.test(key);
+
+	if (addsChar && (isInvalidInteger || isInvalidFloat)) {
 		event.preventDefault();
 		return;
 	}
@@ -267,6 +305,8 @@ function stepDown() {
 					:disabled="disabled"
 					:value="modelValue === undefined || modelValue === null ? '' : String(modelValue)"
 					v-on="listeners"
+					@keydown.space="$emit('keydown:space', $event)"
+					@keydown.enter="$emit('keydown:enter', $event)"
 				/>
 			</slot>
 			<span v-if="suffix" class="suffix">{{ suffix }}</span>
@@ -320,11 +360,11 @@ function stepDown() {
 
 	display: flex;
 	align-items: center;
-	width: max-content;
-	height: var(--theme--form--field--input--height);
+	inline-size: max-content;
+	block-size: var(--theme--form--field--input--height);
 
 	.prepend-outer {
-		margin-right: 8px;
+		margin-inline-end: 8px;
 	}
 
 	.input {
@@ -332,10 +372,9 @@ function stepDown() {
 		display: flex;
 		flex-grow: 1;
 		align-items: center;
-		height: 100%;
+		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
-		padding-top: 0px;
-		padding-bottom: 0px;
+		padding-block: 0;
 		color: var(--v-input-color, var(--theme--form--field--input--foreground));
 		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: var(--v-input-background-color, var(--theme--form--field--input--background));
@@ -346,15 +385,15 @@ function stepDown() {
 		box-shadow: var(--theme--form--field--input--box-shadow);
 
 		.prepend {
-			margin-right: 8px;
+			margin-inline-end: 8px;
 		}
 
 		.step-up {
-			margin-bottom: -8px;
+			margin-block-end: -8px;
 		}
 
 		.step-down {
-			margin-top: -8px;
+			margin-block-start: -8px;
 		}
 
 		.step-up,
@@ -412,17 +451,16 @@ function stepDown() {
 
 		.append {
 			flex-shrink: 0;
-			margin-left: 8px;
+			margin-inline-start: 8px;
 		}
 	}
 
 	input {
 		flex-grow: 1;
-		width: 20px; /* allows flex to grow/shrink to allow for slots */
-		height: 100%;
+		inline-size: 20px; /* allows flex to grow/shrink to allow for slots */
+		block-size: 100%;
 		padding: var(--theme--form--field--input--padding);
-		padding-right: 0px;
-		padding-left: 0px;
+		padding-inline: 0;
 		font-family: var(--v-input-font-family, var(--theme--fonts--sans--font-family));
 		background-color: transparent;
 		border: none;
@@ -450,7 +488,7 @@ function stepDown() {
 	}
 
 	&.small {
-		height: 38px;
+		block-size: 38px;
 
 		.input {
 			padding: 8px 12px;
@@ -458,10 +496,10 @@ function stepDown() {
 	}
 
 	&.full-width {
-		width: 100%;
+		inline-size: 100%;
 
 		.input {
-			width: 100%;
+			inline-size: 100%;
 		}
 	}
 
@@ -474,6 +512,12 @@ function stepDown() {
 
 		input {
 			pointer-events: none;
+			-webkit-user-select: none;
+			user-select: none;
+
+			&::selection {
+				background-color: transparent;
+			}
 
 			.prefix,
 			.suffix {
@@ -482,7 +526,7 @@ function stepDown() {
 		}
 
 		.append-outer {
-			margin-left: 8px;
+			margin-inline-start: 8px;
 		}
 	}
 }

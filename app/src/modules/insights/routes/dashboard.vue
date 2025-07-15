@@ -144,6 +144,8 @@ const copyPanelTo = ref(insightsStore.dashboards.find((dashboard) => dashboard.i
 const copyPanelID = ref<string | null>();
 
 const copyPanel = () => {
+	if (!copyPanelChoices.value.length) return;
+
 	insightsStore.stagePanelDuplicate(unref(copyPanelID)!, { dashboard: unref(copyPanelTo) });
 	copyPanelID.value = null;
 };
@@ -345,12 +347,17 @@ const refreshInterval = computed({
 
 		<router-view name="detail" :dashboard-key="primaryKey" :panel-key="panelKey" />
 
-		<v-dialog :model-value="!!copyPanelID" @update:model-value="copyPanelID = null" @esc="copyPanelID = null">
+		<v-dialog
+			:model-value="!!copyPanelID"
+			@update:model-value="copyPanelID = null"
+			@esc="copyPanelID = null"
+			@apply="copyPanel"
+		>
 			<v-card>
 				<v-card-title>{{ t('copy_to') }}</v-card-title>
 
 				<v-card-text>
-					<v-notice v-if="copyPanelChoices.length === 0">
+					<v-notice v-if="!copyPanelChoices.length">
 						{{ t('no_other_dashboards_copy') }}
 					</v-notice>
 					<v-select v-else v-model="copyPanelTo" :items="copyPanelChoices" item-text="name" item-value="id" />
@@ -360,14 +367,14 @@ const refreshInterval = computed({
 					<v-button secondary @click="copyPanelID = null">
 						{{ t('cancel') }}
 					</v-button>
-					<v-button @click="copyPanel">
+					<v-button :disabled="!copyPanelChoices.length" @click="copyPanel">
 						{{ t('copy') }}
 					</v-button>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false">
+		<v-dialog v-model="confirmCancel" @esc="confirmCancel = false" @apply="cancelChanges(true)">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('discard_changes_copy') }}</v-card-text>
@@ -380,7 +387,7 @@ const refreshInterval = computed({
 			</v-card>
 		</v-dialog>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -413,8 +420,8 @@ const refreshInterval = computed({
 }
 
 .panel-container {
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 	opacity: 1;
 	transition: opacity var(--fast) var(--transition);
 
@@ -425,12 +432,12 @@ const refreshInterval = computed({
 
 .panel-loading {
 	position: absolute;
-	left: 50%;
-	top: 50%;
+	inset-inline-start: 50%;
+	inset-block-start: 50%;
 	transform: translate(-50%, -50%);
 
 	&.header-offset {
-		top: calc(50% - 12px);
+		inset-block-start: calc(50% - 12px);
 	}
 }
 
@@ -440,14 +447,14 @@ const refreshInterval = computed({
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	--v-icon-color: var(--theme--danger);
 
 	.v-error {
-		margin-top: 8px;
-		max-width: 100%;
+		margin-block-start: 8px;
+		max-inline-size: 100%;
 	}
 }
 
@@ -455,11 +462,11 @@ const refreshInterval = computed({
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
+	inline-size: 100%;
+	block-size: 100%;
 
 	&.header-offset {
-		height: calc(100% - 24px);
+		block-size: calc(100% - 24px);
 	}
 }
 </style>

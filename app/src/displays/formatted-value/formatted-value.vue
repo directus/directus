@@ -42,7 +42,7 @@ const { t, n } = useI18n();
 
 const matchedConditions = computed(() =>
 	(props.conditionalFormatting || []).filter(({ operator, value }) => {
-		if (['string', 'text', ...APP_NUMERIC_STRING_TYPES].includes(props.type)) {
+		if (['string', 'text'].includes(props.type)) {
 			const left = String(props.value);
 			const right = String(value);
 			return matchString(left, right, operator);
@@ -193,7 +193,7 @@ function matchNumber(left: number, right: number, operator: string) {
 
 	&.has-background,
 	&.has-border {
-		height: 28px;
+		block-size: 28px;
 		padding: 0 10px;
 		font-size: 14px;
 		line-height: 28px;

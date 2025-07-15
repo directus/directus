@@ -111,7 +111,7 @@ const items = computed(() => {
 }
 
 .v-chip + .v-chip {
-	margin-left: 4px;
+	margin-inline-start: 4px;
 }
 
 .v-icon {
@@ -121,6 +121,6 @@ const items = computed(() => {
 
 .inline-dot {
 	padding: 0 4px;
-	margin-right: 4px;
+	margin-inline-end: 4px;
 }
 </style>

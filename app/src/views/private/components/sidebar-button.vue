@@ -24,6 +24,7 @@ const { sidebarOpen } = toRefs(appStore);
 <template>
 	<component
 		:is="to ? 'router-link' : 'button'"
+		:aria-expanded="to ? undefined : active"
 		class="sidebar-button"
 		:class="{ active }"
 		@click="$emit('click', $event)"
@@ -39,10 +40,12 @@ const { sidebarOpen } = toRefs(appStore);
 
 <style lang="scss" scoped>
 .sidebar-button {
+	--focus-ring-offset: var(--focus-ring-offset-inset);
+
 	position: relative;
 	flex-shrink: 0;
-	width: 100%;
-	height: 60px;
+	inline-size: 100%;
+	block-size: 60px;
 	color: var(--theme--foreground-accent);
 	background-color: var(--theme--background-accent);
 
@@ -50,14 +53,14 @@ const { sidebarOpen } = toRefs(appStore);
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 60px;
-		height: 100%;
+		inline-size: 60px;
+		block-size: 100%;
 	}
 
 	.title {
 		position: absolute;
-		top: 50%;
-		left: 52px;
+		inset-block-start: 50%;
+		inset-inline-start: 52px;
 		overflow: hidden;
 		white-space: nowrap;
 		transform: translateY(-50%);

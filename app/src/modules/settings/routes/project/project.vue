@@ -83,7 +83,7 @@ function discardAndLeave() {
 			<project-info-sidebar-detail />
 		</template>
 
-		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false">
+		<v-dialog v-model="confirmLeave" @esc="confirmLeave = false" @apply="discardAndLeave">
 			<v-card>
 				<v-card-title>{{ t('unsaved_changes') }}</v-card-title>
 				<v-card-text>{{ t('unsaved_changes_copy') }}</v-card-text>
@@ -101,7 +101,7 @@ function discardAndLeave() {
 <style lang="scss" scoped>
 .settings {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .header-icon {

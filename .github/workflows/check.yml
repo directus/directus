@@ -33,6 +33,25 @@ jobs:
       - name: Run Linter
         run: pnpm exec eslint ${{ steps.changed-files.outputs.all_changed_files }}
 
+  stylelint:
+    name: Stylelint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
+      - name: Run Stylelinter
+        run: pnpm exec stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore
+
   format:
     name: Format
     runs-on: ubuntu-latest

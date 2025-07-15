@@ -22,6 +22,16 @@ const { lastFour } = storeToRefs(notificationsStore);
 
 <template>
 	<div class="notifications-preview">
+		<sidebar-button
+			v-tooltip.left="!sidebarOpen && t('activity_log')"
+			:active="modelValue"
+			class="toggle"
+			icon="pending_actions"
+			@click="$emit('update:modelValue', !modelValue)"
+		>
+			{{ t('activity_log') }}
+		</sidebar-button>
+
 		<transition-expand tag="div">
 			<div v-if="modelValue" class="inline">
 				<div class="padding-box">
@@ -34,16 +44,6 @@ const { lastFour } = storeToRefs(notificationsStore);
 				</div>
 			</div>
 		</transition-expand>
-
-		<sidebar-button
-			v-tooltip.left="!sidebarOpen && t('activity_log')"
-			:active="modelValue"
-			class="toggle"
-			icon="pending_actions"
-			@click="$emit('update:modelValue', !modelValue)"
-		>
-			{{ t('activity_log') }}
-		</sidebar-button>
 	</div>
 </template>
 
@@ -63,32 +63,33 @@ const { lastFour } = storeToRefs(notificationsStore);
 	}
 
 	&.has-items {
-		margin-bottom: 12px;
+		margin-block-end: 12px;
 	}
 }
 
 .transition {
 	position: relative;
-	width: 100%;
+	inline-size: 100%;
 }
 
 .sidebar-button {
 	color: var(--theme--sidebar--section--toggle--foreground);
 	background-color: var(--theme--sidebar--section--toggle--background);
+
 	--v-icon-color: var(--theme--sidebar--section--toggle--icon--foreground);
 }
 
 .inline {
 	position: absolute;
-	right: 0;
-	bottom: 100%;
-	width: 100%;
+	inset-inline-end: 0;
+	inset-block-end: 100%;
+	inline-size: 100%;
 	background-color: var(--theme--background-normal);
-	box-shadow: 0px -4px 12px rgb(38 50 56 / 0.1);
+	box-shadow: 0 -4px 12px rgb(38 50 56 / 0.1);
 
 	.padding-box {
 		position: relative;
-		width: 100%;
+		inline-size: 100%;
 		padding: 12px;
 	}
 }

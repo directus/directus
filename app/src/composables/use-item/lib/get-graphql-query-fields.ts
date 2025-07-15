@@ -13,7 +13,7 @@ export function getGraphqlQueryFields(fields: string[], collection: string): Que
 			? fields
 			: fieldsStore
 					.getFieldsForCollection(collection)
-					.filter((field) => !field.meta?.special?.includes('no-data'))
+					.filter((field) => !field.meta?.special?.includes('no-data') && field.field.startsWith('$') === false)
 					.map((field) => field.field);
 
 	const queryFields: QueryFields = {};

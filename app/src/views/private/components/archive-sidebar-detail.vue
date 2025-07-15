@@ -75,7 +75,7 @@ watch(selectedItem, () => {
 	}
 
 	.v-radio + .v-radio {
-		margin-top: 8px;
+		margin-block-start: 8px;
 	}
 }
 </style>

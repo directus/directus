@@ -68,6 +68,7 @@ const value = computed(() =>
 				:primary-key="primaryKey"
 				:length="field.schema && field.schema.max_length"
 				:direction="direction"
+				:raw-editor-enabled="rawEditorEnabled"
 				@input="$emit('update:modelValue', $event)"
 				@set-field-value="$emit('setFieldValue', $event)"
 			/>
@@ -96,11 +97,11 @@ const value = computed(() =>
 
 	.v-skeleton-loader {
 		position: absolute;
-		top: 0;
-		left: 0;
+		inset-block-start: 0;
+		inset-inline-start: 0;
 		z-index: 2;
-		width: 100%;
-		height: 100%;
+		inline-size: 100%;
+		block-size: 100%;
 	}
 
 	&.subdued {

@@ -18,7 +18,7 @@
 		"@types/ws": "8.5.14",
 		"argon2": "0.41.1",
 		"autocannon": "8.0.0",
-		"axios": "1.8.1",
+		"axios": "1.8.4",
 		"get-port": "7.1.0",
 		"globby": "14.1.0",
 		"graphql-ws": "5.16.2",

@@ -205,7 +205,6 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Ponastavi preference strani
 hidden_field: Skrito polje
 hidden_on_detail: Skrito na podrobnostih
-disabled_editing_value: Onemogoči spreminjanje vrednosti
 key: Ključ
 alias: Alias
 bigInteger: Big Integer

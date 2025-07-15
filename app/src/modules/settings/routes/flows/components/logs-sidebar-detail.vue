@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import VDetail from '@/components/v-detail.vue';
 import { useRevisions } from '@/composables/use-revisions';
+import SidebarDetail from '@/views/private/components/sidebar-detail.vue';
 import { useGroupable } from '@directus/composables';
 import { Action } from '@directus/constants';
 import type { FlowRaw } from '@directus/types';
@@ -24,6 +26,8 @@ const { active: open } = useGroupable({
 });
 
 const page = ref<number>(1);
+const selectedRevision = ref();
+const showFailedOnly = ref(false);
 
 const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loading, loadingCount, pagesCount, refresh } =
 	useRevisions(
@@ -32,22 +36,30 @@ const { revisionsByDate, getRevisions, revisionsCount, getRevisionsCount, loadin
 		ref(null),
 		{
 			action: Action.RUN,
+			full: true,
 		},
 	);
 
-watch(
-	() => page.value,
-	(newPage) => {
-		refresh(newPage);
-	},
-);
+watch([() => page.value, () => showFailedOnly.value], async () => {
+	await refresh(page.value);
+	if (showFailedOnly.value) filterRevisions();
+});
+
+function filterRevisions() {
+	if (!revisionsByDate.value) return;
+
+	revisionsByDate.value = revisionsByDate.value
+		.map((group) => ({
+			...group,
+			revisions: group.revisions.filter((r) => r.status === 'reject'),
+		}))
+		.filter((group) => group.revisions.length > 0);
+}
 
 onMounted(() => {
 	getRevisionsCount();
 	if (open.value) getRevisions();
 });
-
-const previewing = ref();
 
 function onToggle(open: boolean) {
 	if (open && revisionsByDate.value === null) getRevisions();
@@ -65,28 +77,38 @@ function onToggle(open: boolean) {
 
 		<div v-else-if="revisionsCount === 0" class="empty">{{ t('no_logs') }}</div>
 
-		<v-detail
-			v-for="group in revisionsByDate"
-			v-else
-			:key="group.dateFormatted"
-			:label="group.dateFormatted"
-			class="revisions-date-group"
-			start-open
-		>
-			<div class="scroll-container">
-				<div v-for="revision in group.revisions" :key="revision.id" class="log">
-					<button @click="previewing = revision">
-						<v-icon name="play_arrow" color="var(--theme--primary)" small />
-						{{ revision.timeRelative }}
-					</button>
+		<template v-else>
+			<button class="toggle-failed" :class="{ active: showFailedOnly }" @click="showFailedOnly = !showFailedOnly">
+				<v-icon v-if="!showFailedOnly" name="circle" small />
+				<v-icon v-else name="cancel" small />
+				{{ t('show_failed_only') }}
+			</button>
+
+			<div v-if="!revisionsByDate?.length" class="empty">{{ t('no_logs_on_page') }}</div>
+
+			<v-detail
+				v-for="group in revisionsByDate"
+				:key="group.dateFormatted"
+				:label="group.dateFormatted"
+				class="revisions-date-group"
+				start-open
+			>
+				<div class="scroll-container">
+					<div v-for="revision in group.revisions" :key="revision.id" class="log">
+						<button @click="selectedRevision = revision">
+							<v-icon v-if="revision.status === 'resolve'" name="check_circle" color="var(--theme--primary)" small />
+							<v-icon v-else name="cancel" color="var(--theme--secondary)" small />
+							{{ revision.timeRelative }}
+						</button>
+					</div>
 				</div>
-			</div>
-		</v-detail>
+			</v-detail>
+		</template>
 
 		<v-pagination v-if="pagesCount > 1" v-model="page" :length="pagesCount" :total-visible="3" />
 	</sidebar-detail>
 
-	<LogsDrawer :revision-id="previewing?.id" :flow="props.flow" @close="previewing = null" />
+	<logs-drawer :flow="flow" :revision="selectedRevision" @close="selectedRevision = null"></logs-drawer>
 </template>
 
 <style lang="scss" scoped>
@@ -94,8 +116,23 @@ function onToggle(open: boolean) {
 	margin: 24px 0;
 }
 
-.content {
-	padding: var(--content-padding);
+.v-detail + .v-detail {
+	margin-block-start: 12px;
+}
+
+.v-icon {
+	vertical-align: text-top;
+}
+
+.toggle-failed {
+	color: var(--theme--foreground-subdued);
+	transition: color var(--fast) var(--transition);
+	margin-block-end: 24px;
+
+	&.active,
+	&:hover {
+		color: var(--theme--foreground);
+	}
 }
 
 .log {
@@ -106,17 +143,17 @@ function onToggle(open: boolean) {
 		position: relative;
 		z-index: 2;
 		display: block;
-		width: 100%;
-		text-align: left;
+		inline-size: 100%;
+		text-align: start;
 	}
 
 	&::before {
 		position: absolute;
-		top: -4px;
-		left: -4px;
+		inset-block-start: -4px;
+		inset-inline-start: -4px;
 		z-index: 1;
-		width: calc(100% + 8px);
-		height: calc(100% + 8px);
+		inline-size: calc(100% + 8px);
+		block-size: calc(100% + 8px);
 		background-color: var(--theme--background-accent);
 		border-radius: var(--theme--border-radius);
 		opacity: 0;
@@ -140,18 +177,18 @@ function onToggle(open: boolean) {
 	}
 
 	& + & {
-		margin-top: 8px;
+		margin-block-start: 8px;
 	}
 }
 
 .empty {
-	margin-left: 2px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }
 
 .v-pagination {
 	justify-content: center;
-	margin-top: 24px;
+	margin-block-start: 32px;
 }
 </style>

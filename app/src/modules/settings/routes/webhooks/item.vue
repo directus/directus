@@ -32,6 +32,8 @@ const title = computed(() => {
 });
 
 async function deleteAndQuit() {
+	if (deleting.value) return;
+
 	await remove();
 	edits.value = {};
 	router.replace(`/settings/webhooks`);
@@ -51,7 +53,7 @@ async function deleteAndQuit() {
 		</template>
 
 		<template #actions>
-			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+			<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="deleteAndQuit">
 				<template #activator="{ on }">
 					<v-button rounded icon class="action-delete" :disabled="item === null" @click="on">
 						<v-icon name="delete" />
@@ -109,7 +111,7 @@ async function deleteAndQuit() {
 <style lang="scss" scoped>
 .deprecation-notice-wrapper {
 	padding: 0 var(--content-padding);
-	width: fit-content;
+	inline-size: fit-content;
 	:deep(a) {
 		text-decoration: underline;
 	}
@@ -124,7 +126,7 @@ async function deleteAndQuit() {
 
 .v-form {
 	padding: var(--content-padding);
-	padding-bottom: var(--content-padding-bottom);
+	padding-block-end: var(--content-padding-bottom);
 }
 
 .header-icon {

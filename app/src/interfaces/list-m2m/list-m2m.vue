@@ -14,7 +14,7 @@ import DrawerBatch from '@/views/private/components/drawer-batch.vue';
 import DrawerCollection from '@/views/private/components/drawer-collection.vue';
 import DrawerItem from '@/views/private/components/drawer-item.vue';
 import SearchInput from '@/views/private/components/search-input.vue';
-import { Filter } from '@directus/types';
+import type { ContentVersion, Filter } from '@directus/types';
 import { deepMap, getFieldsFromTemplate } from '@directus/utils';
 import { clamp, get, isEmpty, isNil, merge, set } from 'lodash';
 import { render } from 'micromustache';
@@ -29,6 +29,7 @@ const props = withDefaults(
 		collection: string;
 		field: string;
 		width: string;
+		version: ContentVersion | null;
 		layout?: LAYOUTS;
 		tableSpacing?: 'compact' | 'cozy' | 'comfortable';
 		fields?: Array<string>;
@@ -64,7 +65,7 @@ const props = withDefaults(
 
 const emit = defineEmits(['input']);
 const { t, n } = useI18n();
-const { collection, field, primaryKey } = toRefs(props);
+const { collection, field, primaryKey, version } = toRefs(props);
 const { relationInfo } = useRelationM2M(collection, field);
 const fieldsStore = useFieldsStore();
 
@@ -177,7 +178,7 @@ const {
 	isItemSelected,
 	isLocalItem,
 	getItemEdits,
-} = useRelationMultiple(value, query, relationInfo, primaryKey);
+} = useRelationMultiple(value, query, relationInfo, primaryKey, version);
 
 const { createAllowed, updateAllowed, deleteAllowed, selectAllowed } = useRelationPermissionsM2M(relationInfo);
 
@@ -229,7 +230,7 @@ watch(
 				return {
 					text: field.name,
 					value: key,
-					width: contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
+					width: contentWidth[key] !== undefined && contentWidth[key] < 10 ? contentWidth[key] * 16 + 10 : 160,
 					sortable: !['json'].includes(field.type),
 				};
 			})
@@ -529,7 +530,6 @@ function getLinkForItem(item: DisplayItem) {
 				:items="displayItems"
 				:item-key="relationInfo.junctionPrimaryKeyField.field"
 				:row-height="tableRowHeight"
-				:disabled="disabled"
 				:show-manual-sort="allowDrag"
 				:manual-sort-key="relationInfo?.sortField"
 				:show-select="!disabled && updateAllowed ? 'multiple' : 'none'"
@@ -555,6 +555,7 @@ function getLinkForItem(item: DisplayItem) {
 							class="item-link"
 							:class="{ disabled: item.$type === 'created' }"
 							@click.stop
+							@keydown.stop
 						>
 							<v-icon name="launch" />
 						</router-link>
@@ -567,6 +568,7 @@ function getLinkForItem(item: DisplayItem) {
 							:item-is-local="isLocalItem(item)"
 							:item-edits="getItemEdits(item)"
 							@action="deleteItem(item)"
+							@keydown.stop
 						/>
 					</div>
 				</template>
@@ -619,7 +621,6 @@ function getLinkForItem(item: DisplayItem) {
 									v-tooltip="t('navigate_to_item')"
 									:to="getLinkForItem(element)!"
 									class="item-link"
-									:disabled="element.$type === 'created'"
 									@click.stop
 								>
 									<v-icon name="launch" />
@@ -714,15 +715,15 @@ function getLinkForItem(item: DisplayItem) {
 
 		.no-last-border {
 			tr.table-row:last-child td {
-				border-bottom: none;
+				border-block-end: none;
 			}
 		}
 
 		tr.table-row {
 			.append {
 				position: sticky;
-				right: 0;
-				border-left: var(--theme--border-width) solid var(--theme--border-color-subdued);
+				inset-inline-end: 0;
+				border-inline-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 			}
 		}
 	}
@@ -753,8 +754,11 @@ function getLinkForItem(item: DisplayItem) {
 .actions {
 	@include mixins.list-interface-actions($pagination: true);
 
+	position: relative;
+	z-index: 1;
+
 	&.top {
-		margin-top: 0px;
+		margin-block-start: 0;
 	}
 
 	.spacer {
@@ -776,12 +780,12 @@ function getLinkForItem(item: DisplayItem) {
 		flex-wrap: wrap;
 
 		.search {
-			width: 100%;
+			inline-size: 100%;
 			order: -1;
 
 			:deep(.search-input),
 			:deep(.search-badge) {
-				width: 100% !important;
+				inline-size: 100% !important;
 			}
 		}
 	}
@@ -791,14 +795,14 @@ function getLinkForItem(item: DisplayItem) {
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
-	width: 120px;
+	inline-size: 120px;
 	padding: 10px 0;
-	margin-right: 2px;
+	margin-inline-end: 2px;
 	color: var(--theme--form--field--input--foreground-subdued);
 
 	span {
-		width: auto;
-		margin-right: 8px;
+		inline-size: auto;
+		margin-inline-end: 8px;
 	}
 
 	.v-select {

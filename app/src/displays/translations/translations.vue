@@ -96,7 +96,15 @@ const translations = computed(() => {
 		/>
 		<v-menu class="menu" show-arrow :disabled="value.length === 0">
 			<template #activator="{ toggle, deactivate, active }">
-				<v-icon small class="icon" :class="{ active }" name="info" @click.stop="toggle" @focusout="deactivate"></v-icon>
+				<v-icon
+					small
+					class="icon"
+					:class="{ active }"
+					name="info"
+					clickable
+					@click.stop="toggle"
+					@focusout="deactivate"
+				></v-icon>
 			</template>
 
 			<v-list class="links">
@@ -123,20 +131,23 @@ const translations = computed(() => {
 
 <style lang="scss" scoped>
 .v-list {
-	width: 300px;
+	inline-size: 300px;
 }
 
 .display-translations {
 	display: inline-flex;
-	max-width: 100%;
+	max-inline-size: 100%;
 	align-items: center;
 
 	.icon {
+		--focus-ring-offset: 0;
+
 		color: var(--theme--foreground-subdued);
 		opacity: 0;
 		transition: opacity var(--fast) var(--transition);
 	}
 
+	.icon:focus-visible,
 	&:hover .icon,
 	.icon.active {
 		opacity: 1;
@@ -156,26 +167,25 @@ const translations = computed(() => {
 	}
 
 	.v-icon {
-		margin-right: 4px;
+		margin-inline-end: 4px;
 	}
 
 	.v-progress-linear {
 		flex: 1;
-		width: unset;
-		max-width: 100px;
+		inline-size: unset;
+		max-inline-size: 100px;
 		border-radius: 4px;
 	}
 }
 
 .v-list-item-content {
-	padding-top: 4px;
-	padding-bottom: 2px;
+	padding-block: 4px 2px;
 }
 
 .v-list-item:not(:first-child) {
 	.header {
-		padding-top: 8px;
-		border-top: var(--theme--border-width) solid var(--theme--border-color-subdued);
+		padding-block-start: 8px;
+		border-block-start: var(--theme--border-width) solid var(--theme--border-color-subdued);
 	}
 }
 </style>

@@ -206,7 +206,7 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	}
 
 	async function remove() {
-		if (!shareToDelete.value) return;
+		if (!shareToDelete.value || deleting.value) return;
 
 		deleting.value = true;
 
@@ -222,7 +222,7 @@ function useShares(collection: Ref<string>, primaryKey: Ref<PrimaryKey>) {
 	}
 
 	async function send() {
-		if (!shareToSend.value) return;
+		if (!shareToSend.value || loading.value) return;
 
 		sending.value = true;
 
@@ -286,7 +286,12 @@ async function copy(id: string) {
 			@input="input"
 		/>
 
-		<v-dialog :model-value="!!shareToDelete" @update:model-value="shareToDelete = null" @esc="shareToDelete = null">
+		<v-dialog
+			:model-value="!!shareToDelete"
+			@update:model-value="shareToDelete = null"
+			@esc="shareToDelete = null"
+			@apply="remove"
+		>
 			<v-card>
 				<v-card-title>{{ t('delete_share') }}</v-card-title>
 				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
@@ -302,7 +307,12 @@ async function copy(id: string) {
 			</v-card>
 		</v-dialog>
 
-		<v-dialog :model-value="!!shareToSend" @update:model-value="shareToSend = null" @esc="shareToSend = null">
+		<v-dialog
+			:model-value="!!shareToSend"
+			@update:model-value="shareToSend = null"
+			@esc="shareToSend = null"
+			@apply="send"
+		>
 			<v-card>
 				<v-card-title>{{ t('share_send_link') }}</v-card-title>
 				<v-card-text>
@@ -344,20 +354,17 @@ async function copy(id: string) {
 
 .v-divider {
 	position: sticky;
-	top: 0;
+	inset-block-start: 0;
 	z-index: 2;
-	margin-top: 8px;
-	margin-bottom: 8px;
-	padding-top: 8px;
-	padding-bottom: 8px;
+	margin-block: 8px;
+	padding-block: 8px;
 	background-color: var(--theme--background-normal);
 	box-shadow: 0 0 4px 2px var(--theme--background-normal);
 }
 
 .empty {
-	margin-top: 16px;
-	margin-bottom: 16px;
-	margin-left: 2px;
+	margin-block: 16px;
+	margin-inline-start: 2px;
 	color: var(--theme--foreground-subdued);
 	font-style: italic;
 }

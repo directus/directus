@@ -11,5 +11,9 @@ defineEmits<OverlayItemEmits>();
 		overlay="drawer"
 		@update:active="$emit('update:active', $event)"
 		@input="$emit('input', $event)"
-	/>
+	>
+		<template #actions>
+			<slot name="actions" />
+		</template>
+	</overlay-item>
 </template>

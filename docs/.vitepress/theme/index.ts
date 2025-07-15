@@ -1,3 +1,4 @@
+/* eslint-disable vue/multi-word-component-names */
 /* eslint-disable vue/no-reserved-component-names */
 import type { Theme } from 'vitepress';
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client';

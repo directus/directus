@@ -82,6 +82,6 @@ const fieldWarnings = computed(() => {
 
 <style lang="scss" scoped>
 .v-notice {
-	margin-bottom: 36px;
+	margin-block-end: 36px;
 }
 </style>

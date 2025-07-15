@@ -27,6 +27,7 @@ const props = withDefaults(
 		batchActiveFields: () => [],
 		validationErrors: () => [],
 		start: 'open',
+		headerColor: 'var(--theme--foreground-accent)',
 	},
 );
 
@@ -90,29 +91,23 @@ watch(validationMessages, (newVal, oldVal) => {
 <template>
 	<v-detail v-model="detailOpen" :start-open="start === 'open'" class="group-detail">
 		<template #activator="{ toggle, active }">
-			<v-divider
-				:style="{
-					'--v-divider-label-color': headerColor,
-				}"
-				:class="{ active, edited }"
-				:inline-title="false"
-				large
-				@click="toggle"
-			>
-				<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
-				<template v-if="field.name">
-					<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
-					<span class="title">{{ field.name }}</span>
-				</template>
-				<v-icon
-					v-if="!active && validationMessages!.length > 0"
-					v-tooltip="validationMessages!.join('\n')"
-					class="warning"
-					name="error"
-					small
-				/>
-				<v-icon class="expand-icon" name="expand_more" />
-			</v-divider>
+			<button class="toggle-btn" type="button" @click="toggle">
+				<v-divider :class="{ active, edited }" :inline-title="false" large>
+					<template v-if="headerIcon" #icon><v-icon :name="headerIcon" class="header-icon" /></template>
+					<template v-if="field.name">
+						<span v-if="edited" v-tooltip="t('edited')" class="edit-dot"></span>
+						<span class="title">{{ field.name }}</span>
+					</template>
+					<v-icon
+						v-if="!active && validationMessages!.length > 0"
+						v-tooltip="validationMessages!.join('\n')"
+						class="warning"
+						name="error"
+						small
+					/>
+					<v-icon class="expand-icon" name="expand_more" />
+				</v-divider>
+			</button>
 		</template>
 
 		<v-form
@@ -136,15 +131,25 @@ watch(validationMessages, (newVal, oldVal) => {
 
 <style scoped>
 .v-form {
-	padding-top: calc(var(--theme--form--row-gap) / 2);
+	padding-block-start: calc(var(--theme--form--row-gap) / 2);
+}
+
+.toggle-btn {
+	display: block;
+	inline-size: 100%;
+	text-align: start;
+
+	&:focus-visible :deep(hr) {
+		opacity: 0;
+	}
 }
 
 .v-divider {
-	cursor: pointer;
+	--v-divider-label-color: v-bind(headerColor);
 }
 
 .v-divider .expand-icon {
-	float: right;
+	float: inline-end;
 	transform: rotate(90deg) !important;
 	transition: transform var(--fast) var(--transition);
 }
@@ -159,22 +164,22 @@ watch(validationMessages, (newVal, oldVal) => {
 
 .v-divider.edited:not(.active) .edit-dot {
 	position: absolute;
-	top: 7px;
-	left: -7px;
+	inset-block-start: 7px;
+	inset-inline-start: -7px;
 	display: block;
-	width: 4px;
-	height: 4px;
+	inline-size: 4px;
+	block-size: 4px;
 	background-color: var(--theme--form--field--input--foreground-subdued);
 	border-radius: 4px;
 	content: '';
 }
 
 .header-icon {
-	margin-right: 12px !important;
+	margin-inline-end: 12px !important;
 }
 
 .warning {
-	margin-left: 8px;
+	margin-inline-start: 8px;
 	color: var(--theme--danger);
 }
 </style>

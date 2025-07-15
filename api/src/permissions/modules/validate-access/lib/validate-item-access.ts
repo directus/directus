@@ -28,7 +28,9 @@ export async function validateItemAccess(options: ValidateItemAccessOptions, con
 		name: options.collection,
 		query: { limit: options.primaryKeys.length },
 		// Act as if every field was a "normal" field
-		children: options.fields?.map((field) => ({ type: 'field', name: field, fieldKey: field, whenCase: [] })) ?? [],
+		children:
+			options.fields?.map((field) => ({ type: 'field', name: field, fieldKey: field, whenCase: [], alias: false })) ??
+			[],
 		cases: [],
 	};
 

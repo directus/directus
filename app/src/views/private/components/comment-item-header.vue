@@ -44,6 +44,8 @@ function useDelete() {
 	return { confirmDelete, deleting, remove };
 
 	async function remove() {
+		if (deleting.value) return;
+
 		deleting.value = true;
 
 		try {
@@ -99,7 +101,7 @@ function useDelete() {
 			</v-menu>
 		</div>
 
-		<v-dialog v-model="confirmDelete" @esc="confirmDelete = false">
+		<v-dialog v-model="confirmDelete" @esc="confirmDelete = false" @apply="remove">
 			<v-card>
 				<v-card-title>{{ t('delete_comment') }}</v-card-title>
 				<v-card-text>{{ t('delete_are_you_sure') }}</v-card-text>
@@ -122,13 +124,13 @@ function useDelete() {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: 8px;
+	margin-block-end: 8px;
 
 	.v-avatar {
 		--v-avatar-color: var(--theme--background-accent);
 
 		flex-basis: 24px;
-		margin-right: 8px;
+		margin-inline-end: 8px;
 
 		.v-icon {
 			--v-icon-color: var(--theme--foreground-subdued);
@@ -137,7 +139,7 @@ function useDelete() {
 
 	.name {
 		flex-grow: 1;
-		margin-right: 8px;
+		margin-inline-end: 8px;
 		font-weight: 600;
 	}
 
@@ -162,13 +164,13 @@ function useDelete() {
 
 		.time {
 			position: absolute;
-			top: 0;
-			right: 0;
+			inset-block-start: 0;
+			inset-inline-end: 0;
 			display: flex;
 			align-items: center;
 			font-size: 12px;
 			white-space: nowrap;
-			text-align: right;
+			text-align: end;
 			text-transform: lowercase;
 			opacity: 1;
 			transition: opacity var(--slow) var(--transition);
@@ -190,9 +192,9 @@ function useDelete() {
 
 .dot {
 	display: inline-block;
-	width: 6px;
-	height: 6px;
-	margin-right: 4px;
+	inline-size: 6px;
+	block-size: 6px;
+	margin-inline-end: 4px;
 	vertical-align: middle;
 	background-color: var(--theme--warning);
 	border-radius: 3px;
