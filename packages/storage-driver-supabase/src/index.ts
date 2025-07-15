@@ -1,5 +1,6 @@
 import { DEFAULT_CHUNK_SIZE } from '@directus/constants';
-import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
+import type { TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import { StorageClient } from '@supabase/storage-js';
 import { join } from 'node:path';

@@ -1689,6 +1689,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@ngneat/falso':
         specifier: 7.3.0
         version: 7.3.0
@@ -1723,6 +1726,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@ngneat/falso':
         specifier: 7.3.0
         version: 7.3.0
@@ -1757,6 +1763,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@ngneat/falso':
         specifier: 7.3.0
         version: 7.3.0
@@ -1782,6 +1791,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@ngneat/falso':
         specifier: 7.3.0
         version: 7.3.0
@@ -1831,6 +1843,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@ngneat/falso':
         specifier: 7.3.0
         version: 7.3.0
@@ -1874,6 +1889,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@ngneat/falso':
         specifier: 7.3.0
         version: 7.3.0
