@@ -42,7 +42,10 @@ export default function getMailer(overrides?: EmailOptionsOverrides): Transporte
 	const env = useEnv();
 	const logger = useLogger();
 
-	const transportName = overrides && overrides.transport ? overrides.transport.toLowerCase() : (env['EMAIL_TRANSPORT'] as string).toLowerCase();
+	const transportName =
+		overrides && overrides.transport
+			? overrides.transport.toLowerCase()
+			: (env['EMAIL_TRANSPORT'] as string).toLowerCase();
 
 	if (transportName === 'sendmail') {
 		transporter = nodemailer.createTransport({
@@ -63,10 +66,14 @@ export default function getMailer(overrides?: EmailOptionsOverrides): Transporte
 	} else if (transportName === 'smtp') {
 		let auth: boolean | { user?: string; pass?: string } = false;
 
-		if (env['EMAIL_SMTP_USER'] || env['EMAIL_SMTP_PASSWORD'] || (overrides && overrides.smtp && (overrides.smtp.user || overrides.smtp.pass))) {
+		if (
+			env['EMAIL_SMTP_USER'] ||
+			env['EMAIL_SMTP_PASSWORD'] ||
+			(overrides && overrides.smtp && (overrides.smtp.user || overrides.smtp.pass))
+		) {
 			auth = {
-				user: overrides?.smtp?.user || env['EMAIL_SMTP_USER'] as string,
-				pass: overrides?.smtp?.pass || env['EMAIL_SMTP_PASSWORD'] as string,
+				user: overrides?.smtp?.user || (env['EMAIL_SMTP_USER'] as string),
+				pass: overrides?.smtp?.pass || (env['EMAIL_SMTP_PASSWORD'] as string),
 			};
 		}
 
