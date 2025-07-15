@@ -59,13 +59,13 @@
 		"vue": "3.5.13"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"@types/fs-extra": "11.0.4",
 		"@types/inquirer": "9.0.7",
 		"@types/semver": "7.5.8",
-		"@vitest/coverage-v8": "2.1.9",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9"
+		"@vitest/coverage-v8": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"engines": {
 		"node": ">=12.20.0"
