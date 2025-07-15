@@ -29,11 +29,11 @@
 	},
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"esbuild-plugin-replace": "1.4.0",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9"
+		"tsup": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"engines": {
 		"node": ">=22"

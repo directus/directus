@@ -26,18 +26,18 @@
 		"test": "vitest --watch=false"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"@types/lodash-es": "4.17.12",
-		"@types/node": "22.13.8",
-		"@vitest/coverage-v8": "2.1.9",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9"
+		"@directus/tsconfig": "catalog:",
+		"@types/lodash-es": "catalog:",
+		"@types/node": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	},
 	"dependencies": {
 		"@directus/constants": "workspace:*",
 		"@directus/utils": "workspace:*",
 		"dotenv": "16.4.7",
-		"lodash-es": "4.17.21"
+		"lodash-es": "catalog:"
 	}
 }
