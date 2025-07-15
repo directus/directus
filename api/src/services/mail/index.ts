@@ -33,41 +33,39 @@ export type EmailOptions = Omit<SendMailOptions, 'from'> & {
 };
 
 // Add an override object when creating a new MailService (within your extension) to override the default email options coming from the environment variables
-export type EmailOptionsOverrides =
-	| {
-			from?: {
-				name: string;
-				address: string;
-			};
-			transport?: string;
-			sendmail?: {
-				newline?: string;
-				path?: string;
-			};
-			smtp?: {
-				user?: string;
-				pass?: string;
-				name?: string;
-				pool?: boolean;
-				host?: string;
-				port?: number;
-				secure?: boolean;
-				ignoreTLS?: boolean;
-			};
-			mailgun?: {
-				apiKey?: string;
-				domain?: string;
-				host?: string;
-			};
-	  }
-	| undefined;
+export type EmailOptionsOverrides = {
+	from?: {
+		name: string;
+		address: string;
+	};
+	transport?: string;
+	sendmail?: {
+		newline?: string;
+		path?: string;
+	};
+	smtp?: {
+		user?: string;
+		pass?: string;
+		name?: string;
+		pool?: boolean;
+		host?: string;
+		port?: number;
+		secure?: boolean;
+		ignoreTLS?: boolean;
+	};
+	mailgun?: {
+		apiKey?: string;
+		domain?: string;
+		host?: string;
+	};
+};
 
 export class MailService {
 	schema: SchemaOverview;
 	accountability: Accountability | null;
 	knex: Knex;
 	mailer: Transporter;
-	overrides: EmailOptionsOverrides;
+	overrides: EmailOptionsOverrides | undefined;
 
 	constructor(opts: AbstractServiceOptions & { overrides?: EmailOptionsOverrides }) {
 		this.schema = opts.schema;
