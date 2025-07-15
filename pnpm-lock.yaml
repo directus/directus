@@ -2028,15 +2028,39 @@ importers:
       '@directus/schema':
         specifier: workspace:*
         version: link:../schema
+      '@types/express':
+        specifier: 4.17.21
+        version: 4.17.21
       '@types/geojson':
         specifier: 7946.0.16
         version: 7946.0.16
+      '@types/nodemailer':
+        specifier: 6.4.17
+        version: 6.4.17
+      '@types/ws':
+        specifier: 8.5.14
+        version: 8.5.14
       deep-diff:
         specifier: 1.0.2
         version: 1.0.2
+      express:
+        specifier: 4.21.2
+        version: 4.21.2
+      graphql:
+        specifier: 16.10.0
+        version: 16.10.0
+      nodemailer:
+        specifier: 6.10.0
+        version: 6.10.0
+      openapi3-ts:
+        specifier: 4.4.0
+        version: 4.4.0
       sharp:
         specifier: 0.33.5
         version: 0.33.5
+      ws:
+        specifier: 8.18.1
+        version: 8.18.1
     devDependencies:
       '@directus/tsconfig':
         specifier: 'catalog:'
@@ -2053,6 +2077,9 @@ importers:
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.8.3)
+      zod:
+        specifier: 3.24.2
+        version: 3.24.2
 
   packages/update-check:
     dependencies:
@@ -11958,6 +11985,7 @@ packages:
   source-map@0.8.0-beta.0:
     resolution: {integrity: sha512-2ymg6oRBpebeZi9UUNsgQ89bhx01TcTkmNTGnNO88imTmbSgy4nfujrgVEFKWpMTEGA11EDkTt7mqObTPdigIA==}
     engines: {node: '>= 8'}
+    deprecated: The work that was done in this beta branch won't be included in future versions
 
   sourcemap-codec@1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}

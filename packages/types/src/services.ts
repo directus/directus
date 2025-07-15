@@ -1,19 +1,25 @@
 import type { Readable } from 'node:stream';
 import type { Knex } from 'knex';
 import type { Column, ForeignKey } from '@directus/schema';
+import type { OpenAPIObject } from 'openapi3-ts/oas30';
+import type { GraphQLSchema } from 'graphql';
+import type { Transporter } from 'nodemailer';
 
 import type { Accountability } from './accountability.js';
 import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
 import type { RawSchemaCollection, RawCollection } from './collection.js';
+import type { ActionHandler } from './events.js';
 import type { Field, Type, RawField } from './fields.js';
 import type { BusboyFileStream, File } from './files.js';
 import type { FlowRaw } from './flows.js';
+import type { GQLScope, GraphQLParams } from './graphql.js';
 import type { ExportFormat } from './import-export.js';
+import type { Item, PrimaryKey, MutationOptions, QueryOptions } from './items.js';
 import type { SchemaOverview } from './schema.js';
 import type { ItemPermissions } from './permissions.js';
 import type { Policy } from './policies.js';
-import type { Item, PrimaryKey, MutationOptions, QueryOptions } from './items.js';
+import type { EmailOptions } from './mail.js';
 import type { Notification } from './notifications.js';
 import type { PayloadAction, PayloadServiceProcessRelationResult } from './payload.js';
 import type { Aggregate, Query } from './query.js';
@@ -24,6 +30,7 @@ import type { Relation } from './relations.js';
 import type { RegisterUserInput } from './users.js';
 import type { Snapshot, SnapshotDiffWithHash, SnapshotDiff, SnapshotWithHash } from './snapshot.js';
 import type { Webhook } from './webhooks.js';
+import type { WebSocketClient, WebSocketMessage } from './websockets.js';
 
 export type AbstractServiceOptions = {
 	knex?: Knex | undefined;
@@ -182,9 +189,30 @@ interface FileService<T = File> {
 }
 
 /**
+ * The GraphQLService
+ */
+interface GraphQLService {
+	accountability: Accountability | null;
+	knex: Knex;
+	schema: SchemaOverview;
+	scope: GQLScope;
+	execute: (params: GraphQLParams) => Promise<any>;
+	getSchema: {
+		(): Promise<GraphQLSchema>;
+		(type: 'schema'): Promise<GraphQLSchema>;
+		(type: 'sdl'): Promise<string | GraphQLSchema>;
+	};
+	read: (collection: string, query: Query) => Promise<Partial<Item>>;
+	upsertSingleton: (
+		collection: string,
+		body: Record<string, any> | Record<string, any>[],
+		query: Query,
+	) => Promise<boolean | Partial<Item>>;
+}
+
+/**
  * The ImportService
  */
-
 interface ImportService {
 	import(collection: string, mimetype: string, stream: Readable): Promise<void>;
 	importJSON(collection: string, stream: Readable): Promise<void>;
@@ -196,6 +224,17 @@ interface ImportService {
  */
 interface NotificationsService {
 	sendEmail(data: Partial<Notification>): Promise<void>;
+}
+
+/**
+ * The MetaService
+ */
+interface MailService {
+	schema: SchemaOverview;
+	accountability: Accountability | null;
+	knex: Knex;
+	mailer: Transporter;
+	send: (options: EmailOptions) => Promise<any>;
 }
 
 /**
@@ -336,6 +375,33 @@ interface SharesService {
 }
 
 /**
+ * The SpecificationService
+ */
+interface OASSpecsService {
+	accountability: Accountability | null;
+	knex: Knex;
+	schema: SchemaOverview;
+	generate: (host?: string) => Promise<OpenAPIObject>;
+}
+
+interface GraphQLSpecsService {
+	accountability: Accountability | null;
+	knex: Knex;
+	schema: SchemaOverview;
+	items: GraphQLService;
+	system: GraphQLService;
+	generate: (scope: 'items' | 'system') => Promise<string | GraphQLSchema | null>;
+}
+
+interface SpecificationService {
+	accountability: Accountability | null;
+	knex: Knex;
+	schema: SchemaOverview;
+	oas: OASSpecsService;
+	graphql: GraphQLSpecsService;
+}
+
+/**
  * The TFAService
  */
 interface TFAService {
@@ -374,6 +440,16 @@ interface VersionsService {
 	getVersionSaves(key: string, collection: string, item: string | undefined): Promise<Partial<Item>[] | null>;
 	save(key: PrimaryKey, data: Partial<Item>): Promise<Partial<Item>>;
 	promote(version: PrimaryKey, mainHash: string, fields?: string[]): Promise<PrimaryKey>;
+}
+
+/**
+ * The WebSocketService
+ */
+interface WebSocketService {
+	on: (event: 'connect' | 'message' | 'error' | 'close', callback: ActionHandler) => void;
+	off: (event: 'connect' | 'message' | 'error' | 'close', callback: ActionHandler) => void;
+	broadcast: (message: string | WebSocketMessage, filter?: { user?: string; role?: string }) => void;
+	clients: () => Set<WebSocketClient>;
 }
 
 export interface AbstractService<T extends Item = Item> {
@@ -525,7 +601,7 @@ export interface ExtensionsServices {
 	/**
 	 * The GraphQLService
 	 */
-	// GraphQLService: new (options: AbstractServiceOptions) => any;
+	GraphQLService: new (options: AbstractServiceOptions & { scope: GQLScope }) => GraphQLService;
 	/**
 	 * The ImportService
 	 */
@@ -540,7 +616,7 @@ export interface ExtensionsServices {
 	/**
 	 * The MailService
 	 */
-	// MailService: new (options: AbstractServiceOptions) => any;
+	MailService: new (options: AbstractServiceOptions) => MailService;
 	/**
 	 * The MetaService
 	 */
@@ -604,7 +680,7 @@ export interface ExtensionsServices {
 	/**
 	 * The SpecificationService
 	 */
-	// SpecificationService: new (options: AbstractServiceOptions) => any;
+	SpecificationService: new (options: AbstractServiceOptions) => SpecificationService;
 	/**
 	 * The TFAService
 	 */
@@ -632,5 +708,5 @@ export interface ExtensionsServices {
 	/**
 	 * The WebSocketService
 	 */
-	// WebSocketService: new () => any;
+	WebSocketService: new () => WebSocketService;
 }

@@ -1,5 +1,5 @@
 import { useEnv } from '@directus/env';
-import type { AbstractServiceOptions, Accountability, Item, Query, SchemaOverview } from '@directus/types';
+import type { AbstractServiceOptions, Accountability, GQLScope, Item, Query, SchemaOverview } from '@directus/types';
 import type { ExecutionResult, FormattedExecutionResult, GraphQLSchema } from 'graphql';
 import { NoSchemaIntrospectionCustomRule, execute, specifiedRules, validate } from 'graphql';
 import type { Knex } from 'knex';
@@ -11,8 +11,6 @@ import { GraphQLExecutionError, GraphQLValidationError } from './errors/index.js
 import { generateSchema } from './schema/index.js';
 import { addPathToValidationError } from './utils/add-path-to-validation-error.js';
 import processError from './utils/process-error.js';
-
-export type GQLScope = 'items' | 'system';
 
 const env = useEnv();
 
