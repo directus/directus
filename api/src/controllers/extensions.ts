@@ -1,6 +1,6 @@
 import { useEnv } from '@directus/env';
 import { ErrorCode, ForbiddenError, isDirectusError, RouteNotFoundError } from '@directus/errors';
-import { EXTENSION_TYPES } from '@directus/extensions';
+import { EXTENSION_TYPES } from '@directus/constants';
 import {
 	account,
 	describe,

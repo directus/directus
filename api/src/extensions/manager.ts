@@ -1,15 +1,6 @@
 import { useEnv } from '@directus/env';
-import type {
-	ApiExtension,
-	BundleExtension,
-	EndpointConfig,
-	Extension,
-	ExtensionSettings,
-	HookConfig,
-	HybridExtension,
-	OperationApiConfig,
-} from '@directus/extensions';
-import { APP_SHARED_DEPS, HYBRID_EXTENSION_TYPES } from '@directus/extensions';
+import { APP_SHARED_DEPS } from '@directus/extensions';
+import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import { generateExtensionsEntrypoint } from '@directus/extensions/node';
 import type {
 	ActionHandler,
@@ -18,6 +9,16 @@ import type {
 	InitHandler,
 	PromiseCallback,
 	ScheduleHandler,
+	ApiExtension,
+	BundleExtension,
+	EndpointConfig,
+	Extension,
+	ExtensionSettings,
+	HookConfig,
+	HybridExtension,
+	OperationApiConfig,
+	BundleConfig,
+	ExtensionManagerOptions,
 } from '@directus/types';
 import { isTypeIn, toBoolean } from '@directus/utils';
 import { pathToRelativeUrl, processId } from '@directus/utils/node';
@@ -56,7 +57,6 @@ import { generateApiExtensionsSandboxEntrypoint } from './lib/sandbox/generate-a
 import { instantiateSandboxSdk } from './lib/sandbox/sdk/instantiate.js';
 import { syncExtensions } from './lib/sync-extensions.js';
 import { wrapEmbeds } from './lib/wrap-embeds.js';
-import type { BundleConfig, ExtensionManagerOptions } from './types.js';
 
 // Workaround for https://github.com/rollup/plugins/issues/1329
 const virtual = virtualDefault as unknown as typeof virtualDefault.default;
