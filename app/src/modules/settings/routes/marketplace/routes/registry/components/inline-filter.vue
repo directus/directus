@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatItemsCountPaginated } from '@/utils/format-items-count';
-import { EXTENSION_TYPES } from '@directus/extensions';
+import { EXTENSION_TYPES } from '@directus/constants';
 import { watchDebounced } from '@vueuse/core';
 import { computed, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
