@@ -1,4 +1,4 @@
-import type { DirectusError } from '../types/error.js';
+import type { DirectusError } from '@directus/types';
 
 /**
  * A type guard to check if an error is a Directus API error
