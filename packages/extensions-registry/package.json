@@ -27,12 +27,14 @@
 		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
+		"@directus/constants": "workspace:*",
 		"@directus/errors": "workspace:*",
 		"@directus/extensions": "workspace:*",
 		"ky": "1.7.5",
 		"zod": "3.24.2"
 	},
 	"devDependencies": {
+		"@directus/types": "workspace:*",
 		"@directus/tsconfig": "catalog:",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",
