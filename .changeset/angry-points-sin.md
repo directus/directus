@@ -2,4 +2,4 @@
 '@directus/api': patch
 ---
 
-Fixed `directus_comments` and `directus_extensions` missing from websocket subscriptions
+Added `directus_comments` and `directus_extensions` to websocket subscriptions
