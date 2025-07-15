@@ -15,6 +15,11 @@ import { defaultAdminPolicy, defaultAdminRole, defaultAdminUser } from '../../ut
 import { drivers, getDriverForClient } from '../../utils/drivers.js';
 import { databaseQuestions } from './questions.js';
 
+/**
+ * Initializes and configures a new project with a database and admin user.
+ *
+ * Guides the user through selecting and installing a database driver, setting up database credentials, running migrations and seed scripts, creating an environment configuration file, and registering the first admin user with validated credentials. On completion, outputs instructions for starting the project.
+ */
 export default async function init(): Promise<void> {
 	const rootPath = process.cwd();
 
