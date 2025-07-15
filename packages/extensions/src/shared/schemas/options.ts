@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../constants/index.js';
+import { API_EXTENSION_TYPES, APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
 
 export const SplitEntrypoint = z.object({
 	app: z.string(),

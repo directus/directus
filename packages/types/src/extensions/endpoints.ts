@@ -9,7 +9,6 @@ type EndpointConfigFunction = (router: Router, context: EndpointExtensionContext
 
 type EndpointConfigObject = {
 	id: string;
-
 	handler: EndpointConfigFunction;
 };
 

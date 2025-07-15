@@ -1,10 +1,11 @@
 import { isTypeIn, listFolders, resolvePackage } from '@directus/utils/node';
+import { HYBRID_EXTENSION_TYPES } from '@directus/constants';
 import fse from 'fs-extra';
 import { pick } from 'lodash-es';
 import { join, resolve } from 'path';
-import { EXTENSION_PKG_KEY, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
+import { EXTENSION_PKG_KEY } from '../../shared/constants/index.js';
 import { ExtensionManifest } from '../../shared/schemas/index.js';
-import type { Extension } from '../../shared/types/index.js';
+import type { Extension } from '@directus/types';
 
 export function getExtensionDefinition(manifest: ExtensionManifest, meta: { path: string; local: boolean }): Extension {
 	const { name, version } = manifest;

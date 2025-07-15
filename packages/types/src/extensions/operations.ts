@@ -1,5 +1,7 @@
-import type { Accountability, DeepPartial, FlowRaw } from '@directus/types';
 import type { ComponentOptions } from 'vue';
+import type { Accountability } from '../accountability.js';
+import type { DeepPartial } from '../misc.js';
+import type { FlowRaw } from '../flows.js';
 import type { ApiExtensionContext } from './api-extension-context.js';
 import type { AppField } from './index.js';
 
