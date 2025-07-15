@@ -27,7 +27,7 @@
 		"stylelint-config-standard-scss": "15.0.1",
 		"stylelint-config-standard-vue": "1.0.0",
 		"stylelint-use-logical": "2.1.2",
-		"typescript": "5.8.2",
+		"typescript": "catalog:",
 		"typescript-eslint": "8.25.0"
 	},
 	"packageManager": "pnpm@10.13.1",
