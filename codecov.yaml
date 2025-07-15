@@ -13,6 +13,8 @@ component_management:
     statuses:
       - type: project
         target: auto
+        branches:
+          - "!main"
 
 individual_components:
   - component_id: api
@@ -95,4 +97,8 @@ individual_components:
       - packages/validation/**
 
 comment:
+<<<<<<< HEAD
   layout: 'header, diff, components'
+=======
+  layout: "header, diff, components"
+>>>>>>> a326adcf84 (Add codecov config)
