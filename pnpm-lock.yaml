@@ -1334,6 +1334,9 @@ importers:
 
   packages/extensions-registry:
     dependencies:
+      '@directus/constants':
+        specifier: workspace:*
+        version: link:../constants
       '@directus/errors':
         specifier: workspace:*
         version: link:../errors
@@ -1350,6 +1353,9 @@ importers:
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
+      '@directus/types':
+        specifier: workspace:*
+        version: link:../types
       '@vitest/coverage-v8':
         specifier: 'catalog:'
         version: 3.2.4(vitest@3.2.4(@types/debug@4.1.12)(@types/node@24.1.0)(happy-dom@17.1.8)(jiti@1.21.7)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)(tsx@4.19.3)(yaml@2.7.0))
@@ -1970,9 +1976,6 @@ importers:
       '@directus/utils':
         specifier: workspace:*
         version: link:../utils
-      '@sinclair/typebox':
-        specifier: 0.34.28
-        version: 0.34.28
       decamelize:
         specifier: 6.0.0
         version: 6.0.0
@@ -2028,6 +2031,9 @@ importers:
       '@directus/schema':
         specifier: workspace:*
         version: link:../schema
+      '@sinclair/typebox':
+        specifier: 0.34.28
+        version: 0.34.28
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
@@ -2055,13 +2061,25 @@ importers:
       openapi3-ts:
         specifier: 4.4.0
         version: 4.4.0
+      pino:
+        specifier: 9.6.0
+        version: 9.6.0
       sharp:
         specifier: 0.33.5
         version: 0.33.5
+      vue-router:
+        specifier: 4.5.0
+        version: 4.5.0(vue@3.5.13(typescript@5.8.2))
       ws:
         specifier: 8.18.1
         version: 8.18.1
     devDependencies:
+      '@directus/extensions':
+        specifier: workspace:*
+        version: link:../extensions
+      '@directus/themes':
+        specifier: workspace:*
+        version: link:../themes
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0

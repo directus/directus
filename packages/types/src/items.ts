@@ -1,6 +1,7 @@
 import type { EventContext } from './events.js';
 import type { UserIntegrityCheckFlag } from './users.js';
 import type { PermissionsAction } from './permissions.js';
+import type { DirectusExtensionsError } from './error.js';
 
 export type Item = Record<string, any>;
 
@@ -22,13 +23,6 @@ export type MutationTracker = {
 	trackMutations: (count: number) => void;
 	getCount: () => number;
 };
-
-// TODO: figure out a way to make this generic to be used within @directus/errors
-interface DirectusError<Extensions = void> extends Error {
-	extensions: Extensions;
-	code: string;
-	status: number;
-}
 
 export type QueryOptions = {
 	stripNonRequested?: boolean;
@@ -76,7 +70,7 @@ export type MutationOptions = {
 	/*
 	 * The validation error to throw right before the mutation takes place
 	 */
-	preMutationError?: DirectusError | undefined;
+	preMutationError?: DirectusExtensionsError | undefined;
 
 	bypassAutoIncrementSequenceReset?: boolean;
 

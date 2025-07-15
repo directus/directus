@@ -10,6 +10,7 @@ import type { TransformationSet } from './assets.js';
 import type { LoginResult } from './authentication.js';
 import type { RawSchemaCollection, RawCollection } from './collection.js';
 import type { ActionHandler } from './events.js';
+import type { ExtensionsApiOutput, ExtensionManager, ExtensionSettings } from './extensions/index.js';
 import type { Field, Type, RawField } from './fields.js';
 import type { BusboyFileStream, File } from './files.js';
 import type { FlowRaw } from './flows.js';
@@ -20,6 +21,7 @@ import type { SchemaOverview } from './schema.js';
 import type { ItemPermissions } from './permissions.js';
 import type { Policy } from './policies.js';
 import type { EmailOptions } from './mail.js';
+import type { DeepPartial } from './misc.js';
 import type { Notification } from './notifications.js';
 import type { PayloadAction, PayloadServiceProcessRelationResult } from './payload.js';
 import type { Aggregate, Query } from './query.js';
@@ -148,6 +150,24 @@ interface ExportService {
 			fields?: string[] | null;
 		},
 	): string;
+}
+
+/**
+ * The ExtensionsService
+ */
+interface ExtensionsService {
+	knex: Knex;
+	accountability: Accountability | null;
+	schema: SchemaOverview;
+	extensionsItemService: AbstractService<ExtensionSettings>;
+	extensionsManager: ExtensionManager;
+	install: (extensionId: string, versionId: string) => Promise<void>;
+	uninstall: (id: string) => Promise<void>;
+	reinstall: (id: string) => Promise<void>;
+	readAll: () => Promise<ExtensionsApiOutput[]>;
+	readOne: (id: string) => Promise<ExtensionsApiOutput>;
+	updateOne: (id: string, data: DeepPartial<ExtensionsApiOutput>) => Promise<ExtensionsApiOutput>;
+	deleteOne: (id: string) => Promise<void>;
 }
 
 /**
@@ -581,7 +601,7 @@ export interface ExtensionsServices {
 	/**
 	 * The ExtensionsService
 	 */
-	// ExtensionsService: new (options: AbstractServiceOptions) => any;
+	ExtensionsService: new (options: AbstractServiceOptions) => ExtensionsService;
 	/**
 	 * The FieldsService
 	 */
