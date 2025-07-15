@@ -97,22 +97,13 @@ export class MailService {
 
 		const defaultTemplateData = await this.getDefaultTemplateData();
 
-		const from = (() => {
-			if (
-				this.overrides &&
-				this.overrides.from &&
-				typeof this.overrides.from === 'object' &&
-				this.overrides.from.name &&
-				this.overrides.from.address
-			) {
-				return this.overrides.from;
-			}
-
-			return {
-				name: defaultTemplateData.projectName,
-				address: options.from || (env['EMAIL_FROM'] as string),
-			};
-		})();
+		const from =
+			this.overrides?.from?.name && this.overrides?.from?.address
+				? this.overrides.from
+				: {
+						name: defaultTemplateData.projectName,
+						address: options.from || (env['EMAIL_FROM'] as string),
+				  };
 
 		if (template) {
 			let templateData = template.data;
