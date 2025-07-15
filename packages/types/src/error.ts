@@ -12,3 +12,9 @@ export interface DirectusError<R = Response> {
 	response: R;
 	data?: any;
 }
+
+export interface DirectusExtensionsError<Extensions = void> extends Error {
+	extensions: Extensions;
+	code: string;
+	status: number;
+}
