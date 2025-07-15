@@ -24,7 +24,8 @@ import {
 	UploadPartCommand,
 } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
-import type { ChunkedUploadContext, ReadOptions, TusDriver } from '@directus/storage';
+import type { TusDriver } from '@directus/storage';
+import type { ChunkedUploadContext, ReadOptions } from '@directus/types';
 import { normalizePath } from '@directus/utils';
 import { isReadableStream } from '@directus/utils/node';
 import { Permit, Semaphore } from '@shopify/semaphore';

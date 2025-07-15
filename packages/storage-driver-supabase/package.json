@@ -36,6 +36,7 @@
 	},
 	"devDependencies": {
 		"@directus/tsconfig": "catalog:",
+		"@directus/types": "workspace:*",
 		"@ngneat/falso": "7.3.0",
 		"@vitest/coverage-v8": "catalog:",
 		"tsup": "catalog:",
