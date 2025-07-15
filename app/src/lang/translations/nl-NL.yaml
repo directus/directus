@@ -83,9 +83,9 @@ extension_hooks: Hooks
 extension_endpoints: Endpoints
 extension_operations: Operaties
 extension_bundles: Bundels
-extension_missing: Ontbrekend
-extension_reload_required: Pagina Herladen Vereist
-extension_reload_required_copy: Pagina herladen vereist om wijzigingen te zien na het in-/uitschakelen van app-extensies.
+extension_missing: Ontbreekt
+extension_reload_required: Pagina opnieuw laden vereist
+extension_reload_required_copy: Pagina opnieuw laden vereist om wijzigingen te zien na het in- of uitschakelen van app-extensies.
 extension_reload_now: Nu herladen
 published_relative: Gepubliceerd {relativeTime}
 compatible_with_your_project: Compatibel met jouw Project
@@ -195,9 +195,9 @@ logoutReason:
 public_label: Openbaar
 public_description: Bepaalt welke data beschikbaar is in de API zonder in te loggen.
 public_role_info: >-
-  De publieke rol bepaalt welke API-gegevens beschikbaar zijn voor niet-geverifieerde gebruikers of gebruikers zonder rol. API verzoeken met de publieke rol kunnen geen app- of beheerderstoegang hebben. Als app- of beheerderstoegang wordt gegeven aan een policy dat is toegewezen aan de publieke rol, worden deze genegeerd.
+  De publieke rol bepaalt welke API-gegevens beschikbaar zijn voor niet-geverifieerde gebruikers of gebruikers zonder rol. API-verzoeken met de publieke rol kunnen geen app- of beheerderstoegang hebben. Als app- of beheerderstoegang wordt gegeven aan een policy die is toegewezen aan de publieke rol, worden deze genegeerd.
 admin_description: Initiële administratieve rol met onbeperkte App/API toegang.
-admin_policy_description: Initiële beheerder policy met onbeperkte App/API-toegang.
+admin_policy_description: Initiële beheerder-policy met onbeperkte app/API-toegang.
 no_description: Geen beschrijving...
 reached_maximum_number_of_extensions: Je hebt het maximum aantal extensies voor dit project bereikt ({n}). Neem contact op met de systeembeheerder voor meer informatie.
 not_allowed: Niet toegestaan
@@ -320,7 +320,7 @@ field_in_collection: '{field} ({collection})'
 reset_page_preferences: Pagina-voorkeuren resetten
 hidden_field: Verborgen veld
 hidden_on_detail: Verborgen op het detail scherm
-readonly_field_label: Veld uitschakelen in de app
+readonly_field_label: Veld uitschakelen (alleen-lezen) in de app
 required_readonly_field_warning: Het inschakelen van zowel alleen-lezen als vereist op een veld voorkomt het opslaan van een item als de waarde leeg is.
 key: Key
 alias: Alias
@@ -739,7 +739,7 @@ errors:
   FAILED_VALIDATION: Validatie mislukt
   FIELD_NOT_FOUND: Veld niet gevonden
   FORBIDDEN: Verboden
-  GRAPHQL_VALIDATION: GraphQL Validatie
+  GRAPHQL_VALIDATION: GraphQL-validatie
   ILLEGAL_ASSET_TRANSFORMATION: Afbeeldingsbron te groot om een voorbeeld van te bekijken
   INTERNAL_SERVER_ERROR: Onverwachte fout
   INVALID_CONFIG: Ongeldige configuratie
@@ -1920,22 +1920,40 @@ interfaces:
     invalid_options: Ongeldige opties
     invalid_format: Ongeldig formaat ({format})
     unexpected_geometry: Verwachtte {expected}, kreeg {got}.
+    fit_bounds: Pas weergave aan data aan
+    native: Native
     geojson: GeoJSON
     lnglat: Lengtegraad, breedtegraad
     wkt: WKT
     wkb: WKB
+    click_to_select: Klik om {geometry} te selecteren
   presentation-notice:
     notice: Melding
     description: Een korte melding weergeven
+    text: Voer hier de melding in...
+    no_text: Geen tekst geconfigureerd...
   list-o2m:
+    one-to-many: Één op veel
+    description: Selecteer meerdere gerelateerde items
     no_collection: Deze collectie is niet vindbaar
+  system-folder:
+    folder: Hoofdmap
+    description: Selecteer een map
+    field_hint: Standaardmap voor geüploade bestanden zonder opgegeven map. Heeft geen invloed op bestaande bestanden.
+    root_name: Bibliotheek hoofdmap
+    system_default: Systeemstandaard
   select-radio:
     radio-buttons: Keuzerondjes
+    description: Selecteer één van meerdere keuzes
   list:
     repeater: Herhaler
+    description: Maak meerdere items met dezelfde structuur
     edit_fields: Velden bewerken
+    add_label: '"Nieuwe aanmaken" label'
     sort: Sorteren
     sort_placeholder: Handmatig
+    field_note_placeholder: Veldnotitie invoeren...
+    incompatible_data: De huidige gegevens zijn niet compatibel met de repeaterinterface en zullen worden overschreven bij het toevoegen van items aan de repeater
     interface_group: Interface-opties
     display_group: Weergave Opties
   slider:
@@ -1955,19 +1973,32 @@ interfaces:
     auto_formatter: Automatische titel formatter gebruiken
     alphabetize: Alfabetische volgorde
     alphabetize_label: Alfabetische volgorde forceren
+    add_tags: Voeg een tag toe en druk op Enter...
   input:
     input: Invoer
+    description: Voer handmatig een waarde in
+    trim: Trim
+    trim_label: Begin en einde trimmen
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
+    clear: Gewiste waarde
     clear_label: Opslaan als lege tekst
     minimum_value: Minimale waarde
     maximum_value: Maximale waarde
+    step_interval: Stap Interval
     slug: Slug maken
+    slug_label: Maak ingevoerde waarde URL veilig
+  input-multiline:
+    textarea: Tekstvlak
+    description: Voer multiline tekst in
   input-translated-string:
     input-translated-string: Vertaalde tekenreeksen
+    description: Selecteer of voeg aangepaste vertaling toe
     search_placeholder: Zoeken...
+    new_custom_translation: Nieuwe Aangepaste Vertaling
   boolean:
     toggle: Schakel
+    description: Schakel tussen aan en uit
     color_on: Kleur Aan
     color_off: Kleur uit
     label_placeholder: Voer een label in...
@@ -1975,8 +2006,16 @@ interfaces:
   translations:
     display_template: Weergavesjabloon
     no_collection: Geen collectie
+    toggle_split_view: Gesplitste weergave in-/uitschakelen
     enable: Inschakelen
+    default_split_view_state: Standaard gesplitste weergavestatus
+    user_language: Gebruik taal van huidige gebruiker
     default_language: Standaardtaal
+    language_field: Taalindicator veld
+    language_direction_field: Taalrichting veld
+  list-o2m-tree-view:
+    description: Boomweergave voor geneste recursieve één-op-veel items
+    recursive_only: De boomweergave werkt alleen voor recursieve relaties.
   user:
     user: Gebruiker
     description: Selecteer een bestaande Directus gebruiker
@@ -1987,28 +2026,78 @@ interfaces:
       modal: Modal
   input-rich-text-html:
     wysiwyg: WYSIWYG
+    description: Een rich-text editor voor HTML-inhoud
     toolbar: Werkbalk
     custom_formats: Aangepaste vorm
+    custom_formats_note: Lijst van TinyMCE inhoud formaten. Zie de TinyMCE documentatie over [Content Formatting](https://www.tiny.cloud/docs/tinymce/latest/content-formatting/) voor meer informatie.
     options_override: Overschrijf opties
+    options_override_note: De TinyMCE gebruikers opmaaksleutels en hun waarden. Zie de TinyMCE documentatie over [Gebruiker Formatting](https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/) voor meer informatie.
+    folder_note: Map voor geüploade bestanden. Heeft geen invloed op bestaande bestanden.
     imageToken: Statische toegangstoken
     imageToken_label: Statisch toegangstoken wordt toegevoegd aan de assets URL
   input-block-editor:
+    input-block-editor: Blok Editor
+    description: Blok-styled editor voor rich-media verhalen, exporteert schone data in JSON met behulp van Editor.js
     tools: Werkbalk
     tools_options:
       header: Header
       nestedlist: Lijst
       embed: Insluiten
+      paragraph: Paragraaf
       code: Code
       image: Afbeelding
+      attaches: Bijlagen
       table: Tabel
+      quote: Citaat
       underline: Onderstreept
+      inlinecode: Inline Code
+      delimiter: Scheidingsteken
+      checklist: Checklist
+      toggle: Schakel blok in/uit
+      alignment: Uitlijning
+      raw: Ruwe HTML
+  input-autocomplete-api:
+    input-autocomplete-api: Automatisch aanvullen invoer (API)
+    description: Een zoek typeahead voor externe API-waarden.
+    results_path: Resultaten pad
+    value_path: Waarde pad
+    text_path: Tekst pad
+    trigger: Trigger
+    rate: Beoordeling
+  group-raw:
+    name: Ruwe Groep
+    description: Toon veld as-is
+  group-detail:
+    name: Detail Groep
+    description: Toon veld als inklapbare sectie
+    show_header: Toon Groep Koptekst
+    header_icon: Koptekst Icoon
+    header_color: Koptekst Kleur
+    start_open: Start geopend
+    start_closed: Start gesloten
   system-token:
     system-token: Token
+    description: Beheer statisch toegangstoken
+    placeholder: Klik op "Genereer Token" om een nieuw statisch toegangstoken aan te maken
+    value_securely_saved: Waarde veilig opgeslagen
+    generate: Genereer Token
+    regenerate: Token opnieuw genereren
+    generate_success_copy: Zorg ervoor dat je de token hierboven back-upt en kopieert. Om veiligheidsredenen kun je de token niet meer bekijken na het opslaan en verlaten van deze pagina.
+    remove_token: Verwijder Token
+  system-raw-editor:
+    system-raw-editor: Ruwe Editor
+    description: Sta invoer van ruwe of mustache sjabloonwaarden toe
+  input-password:
+    input-password: Wachtwoord invoer
+    description: Wachtwoord invoer met schakelaar om waarde te verbergen
 displays:
   translations:
     translations: Vertalingen
+    description: Voorvertoning vertaling
     enable: Inschakelen
+    user_language: Gebruik taal van huidige gebruiker
     default_language: Standaardtaal
+    language_field: Taalindicator veld
   boolean:
     boolean: Boolean
     description: Toon aan/uit status
@@ -2039,6 +2128,16 @@ displays:
     relative: Relatief
     relative_label: 'Relatieve tijd tonen, bijvoorbeeld 5 minuten geleden'
     suffix: Achtervoegsel
+    suffix_label: Relatieve indicator weergeven
+    suffix_note: Gebruikt woorden als 'in' en 'geleden'
+    strict: Strikt
+    strict_label: Gebruik strikte eenheden
+    strict_note: Verwijdert woorden als 'bijna', 'over', 'minder dan'
+    round: Afronden
+    round_note: Kies een afrondingsfunctie om te gebruiken
+    down: Omlaag
+    nearest: Dichtstbijzijnde
+    up: Omhoog
   file:
     file: Bestand
     description: Bestanden weergeven
@@ -2049,14 +2148,19 @@ displays:
     formatted-value: Opgemaakte waarde
     description: Een geformatteerde versie van de tekst weergeven
     format: Format
+    format_label: Automatisch formatteren
     font: Lettertype
+    font_sans_serif: Sans serif
     font_serif: Serif
     font_monospace: Monospace
     bold: Vetgedrukt
     bold_label: Gebruik bold
     italic: Cursief
+    italic_label: Gebruik cursieve stijl
     prefix: Voorvoegsel
+    prefix_label: Tekst voorvoegen
     suffix: Achtervoegsel
+    suffix_label: Tekst toevoegen
     color: Kleur
     background: Achtergrond
     icon: Icoon
@@ -2065,11 +2169,13 @@ displays:
     mask: Gemaskeerd
     mask_label: Verberg de werkelijke waarde
     text: Tekst
+    text_placeholder: Optionele waarde overschrijven...
   formatted-json-value:
     formatted-json-value: Geformatteerde JSON waarde
     description: Een geformatteerde versie van het object weergeven
   hash:
     hash: Hash
+    description: Toon een gecensureerde versie van de waarde
   icon:
     icon: Icoon
     description: Toon een icoon
@@ -2129,35 +2235,68 @@ layouts:
     cozy: Knus
   calendar:
     calendar: Kalender
+    start_date_field: Start datumveld
+    end_date_field: Eind datumveld
     optional: Optioneel
     first_day: Eerste dag van de week
   map:
     map: Kaart
+    basemap: Basiskaart
     layers: Lagen
+    cluster_options: Clusteringsopties
+    cluster: Cluster nabije data
+    cluster_radius: Cluster radius
+    cluster_minpoints: Minimale cluster grootte
+    cluster_maxzoom: Maximale zoom voor clustering
+    field: Georuimtelijk veld
+    invalid_geometry: Ongeldige geometrie
+    find_location: Zoek locatie...
+    default_template: Gebruik Collectie Standaard...
+    no_compatible_fields: Geen compatibele velden
   kanban:
     name: Kanban
     group_field: Groeperen op
+    group_field_placeholder: Veld om op te groeperen...
     group_title: Groepstitel
+    group_title_placeholder: Veld voor groepstitels...
     title: Kaarttitel
+    title_placeholder: Optioneel titelveld...
     text: Kaarttekst
+    text_placeholder: Optioneel tekstveld...
     date: Kaartdatum
+    date_placeholder: Optioneel datumveld ...
+    tags: Kaart tags
+    tags_placeholder: Optioneel tagsveld...
+    user: Kaartgebruiker
+    user_placeholder: Optioneel gebruikersveld...
+    image: Kaartafbeelding
+    image_placeholder: Optioneel afbeeldingsveld...
+    image_fit: Kaartafbeelding Passend
     crop: Bijsnijden
     advanced: Geavanceerd
     edit_group: Groep bewerken
     delete_group: Groep verwijderen
     add_group: Groep toevoegen
+    add_group_placeholder: Voer een nieuwe groepstitel in...
+    show_ungrouped: Toon ongegroepeerd
+    show: Tonen
     no_group: Geen groep
 horizontal: Horizontaal
 vertical: Verticaal
+axis: As
 x_axis: X-as
 y_axis: Y-as
 y_axis_function: Y-asfunctie
 show_x_only: Alleen X-as tonen
 show_y_only: Alleen Y-as tonen
+show_data_label: Toon  Gegevens Label
 both: Beiden
+show_axis_labels: Toon As Labels
 function: Functie
 half_circle: Halve cirkel
 full_circle: Volle cirkel
+stroke_width: Lijndikte
+rounded_stroke: Afgeronde lijn
 thin: Dun
 medium: Middel
 broad: Breed
@@ -2165,70 +2304,256 @@ show_labels: Labels tonen
 show_legend: Legenda tonen
 right: Rechts
 left: Links
+start: Start
+end: Einde
+donut: Donut
+continuous: Doorlopend
+gap: Tussenruimte
 panels:
   metric:
+    name: Metrisch
+    description: Toon een enkele waarde gebaseerd op een query
     field: Veld
+  metric_list:
+    name: Metrische Lijst
+    description: Lijst en visualiseer geaggregeerde metrieken van een collectie
+  time_series:
+    name: Tijdreeks
+    description: Een lijndiagram weergeven gebaseerd op waarden over tijd
+    date_field: Datumveld
+    value_field: Waarde veld
+    fill_type: Vultype
+    curve_type: Lijntype
+    missing_data: Ontbrekende data
   label:
     name: Label
+    description: Toon wat tekst
   list:
     name: Lijst
+    description: Filter en lijst velden van een collectie
   barchart:
+    name: Staafdiagram
+    description: Staaf- of kolomdiagrammen voor het vergelijken van groepen waarden
     horizontal: Horizontaal
+    select_collection: Je moet een collectie selecteren.
   linechart:
+    name: Lijndiagram
+    description: Lijndiagram voor het vergelijken van verandering van een veld
+    disabled_grouping: Uitgeschakeld wanneer groeperen is geselecteerd.
+    disabled_no_grouping: Uitgeschakeld wanneer er geen groepering is geselecteerd.
+    show_marker: Toon tooltipmarkering
+    curve_type: Lijntype
+    smooth: Vloeiend
     straight: Recht
+    step_line: Stap lijn
     show_legend: Legenda tonen
+  meter:
+    name: Meter
+    description: Meter voor het volgen van waarden
+  piechart:
+    name: Cirkel- of donutdiagram
+    description: Cirkeldiagram dat de verhoudingen van groepen op een kolom toont
+  variable:
+    name: Globale variabele
+    description: Stel een globale waarde in voor gebruik in filters van andere panelen
+    variable_key: Variabele sleutel
+  relational-variable:
+    name: Globale relationele variabele
+    description: Stel een globale relationele waarde in voor gebruik in filters van andere panelen
+    variable_key: Variabele sleutel
+    multiple: MEerdere
+    multiple-label: Selecteer meerdere items
 triggers:
+  common:
+    response_body: Antwoord inhoud
+    response_body_all: Alle data
+    response_body_last: Data van laatste Operatie
+  event:
+    name: Event Hook
+    description: Triggert op platform of data-events
+    action: 'Actie (Niet-blokkerend)'
+    filter: 'Filter (Blokkerend)'
   webhook:
     name: Webhook
+    error_on_reject: Fout bij afwijzing
+    description: Triggert bij een inkomend HTTP-verzoek
     method: Methode
     async: Asynchroon
+  operation:
+    name: Andere Flow
+    description: Triggert door een andere flow, voor aaneenschakeling
+    preview: Triggert door een Operatie in een andere flow
+  schedule:
+    name: Inplannen (CRON)
+    description: Triggert op regelmatige basis
+    cron: Interval
   manual:
     name: Handmatig
+    description: Triggert op handmatige uitvoering binnen de geselecteerde collectie(s)
+    collection_and_item: Collectie & itempagina's
+    collection_only: Alleen Collectie Pagina
+    item_only: Alleen Item Pagina
+    collection_page: Collectie Pagina
+    require_selection: Vereist selectie
+a_flow_uuid: Selecteer een Flow om te triggeren...
+any_string_or_json: Elke string of JSON...
+item_payload_placeholder: Dit is de JSON die wordt gebruikt om de veldwaarden van het item bij te werken...
+operation_variables_note: Je kunt flow-data benaderen met variabelen zoals **{'{'}{'{'}$last{'}'}{'}'}**, **{'{'}{'{'}$trigger{'}'}{'}'}** en **{'{'}{'{'}$accountability{'}'}{'}'}**, of verwijs naar vorige bewerkingen met **{'{'}{'{'}operation_key{'}'}{'}'}**.'
 operations:
   condition:
     name: Conditie
+    description: Route een flow gebaseerd op If / Else logica
+  exec:
+    name: Script uitvoeren
+    description: Voer willekeurige code uit om de payload te wijzigen
+    modules: 'De volgende **Node modules** kunnen worden gebruikt:'
   item-create:
+    name: Gegevens aanmaken
+    description: Items in de database aanmaken
     payload: Payload
+    emit_events: Events verzenden
   item-delete:
     name: Data verwijderen
+    description: Items in de database verwijderen
+    emit_events: Events verzenden
+    key: ID's
+    query: Query
+  item-read:
+    name: Data lezen
+    description: Lees items uit de database
+    key: ID's
+    query: Query
+    emit_events: Events verzenden
   item-update:
+    name: Data bijwerken
+    description: Items bijwerken in de database
+    emit_events: Events verzenden
+    key: ID's
     payload: Payload
+    query: Query
   json-web-token:
+    name: JSON Web Token (JWT)
+    description: Onderteken en verifieer JSON Web Tokens
+    operation: Operatie
+    secret: Sleutel
+    secret_placeholder: Voer een sleutel in...
     payload: Payload
     token: Token
+    token_placeholder: eyJhbGciOi......
     options: Opties
+    options_placeholder: 'Zie https://www.npmjs.com/package/jsonwebtoken#usage voor de beschikbare opties'
+    sign: Teken Token
+    verify: Verifieer Token
+    decode: Decodeer Token
   log:
+    name: Log naar de console
+    description: Stuur iets naar de console
     message: Bericht
+    message_placeholder: Voer een bericht in om te tonen in de console...
   mail:
+    name: E-mail versturen
+    description: Stuur een e-mail naar een of meer personen
     to: Aan
+    to_placeholder: Voeg e-mailadressen toe en druk op enter...
+    body: Body
     template: Sjabloon
     data: Data
+    cc: CC
+    cc_placeholder: Voeg CC e-mailadressen toe en druk op enter...
+    bcc: BCC
+    bcc_placeholder: Voeg BCC e-mailadressen toe en druk op enter...
+    reply_to: Antwoorden aan
+    reply_to_placeholder: Voeg Antwoorden-aan e-mailadressen toe en druk op enter...
   notification:
+    name: Verstuur Notificatie
+    description: Stuur een in-app melding naar één of meer gebruikers
     recipient: Gebruiker
+    recipient_placeholder: Voer een UUID in...
+    recipient_note: Voer een gebruikers-UUID in en druk op enter...
+    item_note: Item sleutel of relatieve URL
     message: Bericht
     subject: Onderwerp
   request:
+    name: Webhook / URL-verzoek
+    description: 'Doe een verzoek naar een URL'
     url: URL
     url_placeholder: https://example.com/voorbeeld
     method: Methode
     data: Data
     headers: Headers
     header: Header
+    header_placeholder: Autorisatie...
     value_placeholder: Bearer eyJhbGciOi...
+  sleep:
+    name: Slaap
+    description: Wacht een opgegeven aantal milliseconden
+    milliseconds: Milliseconden
   transform:
     name: Payload transformeren
+    description: Wijzig de JSON payload van de Flow
   trigger:
+    name: Activeer Flow
+    description: Geef deze data door aan een andere flow
     flows: Flows
     flow: Flow
     data: Data
+    iteration_mode: Iteratie Modus
+    iteration_mode_note: Modus voor het itereren over arrays.
+    serial: Serieel
+    parallel: Parallel
+    batch: Batch
+    batch_size: Batchgrootte
+    cache: Cache
+unit: Eenheid
 standard: Standaard
+scientific: Wetenschappelijk
+engineering: Engineering
 compact: Compact
+currency: Valuta
+notation: Notatie
 style: Stijl
 fonts:
   thin: Dun
+  extra_light: Extra licht
+  light: Licht
   normal: Normaal
   medium: Middel
+  semi_bold: Half Vet
   bold: Vetgedrukt
+  extra_bold: Extra Vet
   black: Zwart
   italic: Cursief
+  oblique: Schuin
+  small: Klein
+  large: Groot
   auto: Automatisch
+text_wrap: Tekstomloop
+center: Centreren
+justify: Uitvullen
+text_align: Tekst uitlijning
+font_weight: Letterdikte
+font_style: Letterstijl
+font_size: Lettergrootte
+minimum_fraction_digits: Minimaal aantal decimalen
+maximum_fraction_digits: Maximaal aantal decimalen
+show_percentage: Percentage tonen
+aggregation: Aggregatie
+series_grouping: Serie groeperen
+date_precision: Datum precisie
+export_dashboard: Exporteer Dashboard
+duplicate_dashboard: Dupliceer Dashboard
+search_dashboard: Zoek Dashboard...
+search_flow: Zoek Flow...
+percent: Procent
+show_password: Toon wachtwoord
+hide_password: Verberg wachtwoord
+bsl_banner:
+  welcome_to_directus: Welkom bij Directus!
+  directus_free_use: Directus is gratis te gebruiken voor entiteiten met een jaarlijkse omzet, financiering of operationeel budget onder $5 miljoen.
+  organization_threshold: Entiteiten boven deze drempel hebben een betaalde licentie nodig.
+  license_agreement: Door op "Accepteren" te klikken, ga je akkoord met de {directusBsl} en {privacyPolicy}.
+  directus_bsl: Directus BSL 1.1
+  privacy_policy: Privacy beleid
+  accept_terms: Accepteren
+  get_license: Licentie verkrijgen
+accepted: Geaccepteerd
