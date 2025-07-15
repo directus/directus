@@ -33,7 +33,8 @@
 	"scripts": {
 		"build": "pnpm run '/^bundle|typecheck$/'",
 		"bundle": "tsup src/index.ts --format=esm --dts",
-		"test": "vitest --watch=false",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
 		"typecheck": "tsc --noEmit"
 	},
 	"devDependencies": {

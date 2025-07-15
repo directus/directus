@@ -22,7 +22,8 @@
 	"scripts": {
 		"build": "tsc --project tsconfig.prod.json",
 		"dev": "tsc --watch",
-		"test": "vitest --watch=false"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"dependencies": {
 		"@changesets/get-github-info": "0.6.0",

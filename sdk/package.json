@@ -25,7 +25,8 @@
 	"scripts": {
 		"build": "NODE_ENV=production tsup",
 		"dev": "NODE_ENV=development tsup",
-		"test": "vitest --typecheck --watch=false"
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
 		"@directus/system-data": "workspace:*",
