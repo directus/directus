@@ -1,23 +1,59 @@
 ---
+## Be aware:
+#Due to the way this is imported, JavaScript reserved words, including "delete", "private",
+#"void", etc are stripped out. See
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/pluginutils/src/makeLegalIdentifier.ts#L4
+#and
+#https://github.com/rollup/plugins/blob/8748b8cd3bbab3c5ac6190556930219f19060e63/packages/yaml/src/index.js#L45
+#Illegal words:
+#'break', 'case', 'class', 'catch', 'const', 'continue', 'debugger', 'default', 'delete', 'do',
+#'else', 'export', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof',
+#'let', 'new', 'return', 'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void',
+#'while', 'with', 'yield', 'enum', 'await', 'implements', 'package', 'protected', 'static',
+#'interface', 'private', 'public', 'arguments', 'Infinity', 'NaN', 'undefined', 'null', 'true',
+#'false', 'eval', 'uneval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'decodeURI',
+#'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape', 'unescape', 'Object',
+#'Function', 'Boolean', 'Symbol', 'Error', 'EvalError', 'InternalError', 'RangeError',
+#'ReferenceError', 'SyntaxError', 'TypeError', 'URIError', 'Number', 'Math', 'Date', 'String',
+#'RegExp', 'Array', 'Int8Array', 'Uint8Array', 'Uint8ClampedArray', 'Int16Array', 'Uint16Array',
+#'Int32Array', 'Uint32Array', 'Float32Array', 'Float64Array', 'Map', 'Set', 'WeakMap', 'WeakSet',
+#'SIMD', 'ArrayBuffer', 'DataView', 'JSON', 'Promise', 'Generator', 'GeneratorFunction', 'Reflect',
+#'Proxy', 'Intl'
+about: შესახებ
 identifier: იდენტიფიკატორი
 avatar: პროფილის ფოტო
 application: აპლიკაცია
+default_provider: ნაგულისხმები
 method: მეთოდი
 published: გამოქვეყნებული
+draft: მონახაზი
 archived: არქივი
 marketplace: მარკეტი
+extensions: გაფართოებები
+skip_link_nav: ნავიგაციაზე გადასვლა
+skip_link_module_nav: ნავიგაციის მოდულში გადასვლა
+skip_link_main: ძირითად კონტენტზე გადასვლა
+skip_link_sidebar: გვერდით პანელზე გადასვლა
 modules: მოდულები
+module_bar: მოდულის პანელი
 logs: ლოგები
 unknown: უცნობი
+reset_width: სიგანის დაბრუნება
+tile_size: ფილის ზომა
 edit_field: ველის ცვლილება
 conditions: პირობები
 location: მდებარეობა
+collection_names_are_case_sensitive: კოლექციების სახელები რეგისტრის მიმართ მგრძნობიარეა
+condition_rules: პირობითი წესები
+input: შეყვანა
 maps: რუკა
 switch_user: მომხმარებლის ცვლილება
 item_creation: ელემენტის შექმნა
 item_revision: ელემენტზე გადახედვა
 enter_a_name: შეიყვანე სახელი...
 duplicate_field: დუბლირებული ველი
+half_width: სრული სიგანის ნახევარი
+full_width: სრული სიგანე
 group: ჯგუფი
 popular: პოპულარული
 recent: უახლესი
@@ -25,8 +61,11 @@ export_items: ელემენტების ექსპორტი
 and: და
 or: ან
 init: ინიცირება
+dataset_too_large_currently_showing_n_items: მონაცემები ზედმეტად დიდია. ნაჩვენებია პირველი {n} ჩანაწერი.
 modifier: მოდიფიკატორი
 extension_interface: ინტერფეისი
+extension_display: ჩვენება
+extension_layout: განლაგება
 extension_module: მოდული
 extension_panel: პანელი
 extension_theme: თემა
@@ -35,6 +74,8 @@ extension_endpoint: ენდპოინტი
 extension_operation: ოპერაცია
 extension_bundle: ნაკრები
 extension_interfaces: ინტერფეისი
+extension_displays: ჩვენებები
+extension_layouts: განლაგებები
 extension_modules: მოდულები
 extension_panels: პანელები
 extension_themes: თემები
@@ -44,34 +85,73 @@ extension_operations: ოპერაციები
 extension_bundles: ნაკრებები
 extension_missing: გამოტოვებული
 extension_reload_required: საჭიროა გვერდის ხელმეორედ ჩატვირთვა
+extension_reload_required_copy: აპლიკაციის გაფართოებების ჩართვის ან გამორთვის შემდეგ, ცვლილებების სანახავად აუცილებელია გვერდის განახლება.
 extension_reload_now: ხელმეორედ ჩატვირთვა
 published_relative: გამოქვეყნებულია {relativeTime}
 compatible_with_your_project: თავსებადია თქვენს პროექტთან
+compatible_with_your_project_copy: ავტორის მითითებით, ამ გაფართოების თავსებადი ვერსიაა {hostVersion}, რაც ემთხვევა თქვენი პროექტის ვერსიას ({currentVersion}).
 last_updated_relative: ბოლოს განახლებულია {relativeTime}
 n_files: '{n} ფაილი'
 verified: დადასტურებულია
 homepage: მთავარი გვერდი
 repository: საცავი
 reload_page: გვერდის ხელმეორედ ჩატვირთვა
+reload_required: საჭიროა გვერდის განახლება
+report_an_issue: შეტყობინება ხარვეზის შესახებ
 website: ვებგვერდი
 github: გითჰაბი
 beta: ბეტა
+n_downloads: '{n} ჩამოტვირთვა'
+downloads: ჩამოტვირთვები
+compatibility_not_guaranteed: თავსებადობა არ არის გარანტირებული.
+compatibility_not_guaranteed_copy: ავტორის მითითებით, ამ გაფართოების თავსებადი ვერსიაა {hostVersion}, რაც არ ემთხვევა თქვენი პროექტის ვერსიას ({currentVersion}).
+enable: ჩართვა
+disable: გამორთვა
+custom: მორგებული
+hook: ჰუკი
+fill_width: სიგანის შევსება
+field_name_translations: ველის სახელების თარგმანი
+enter_password_to_enable_tfa: შეიყვანეთ თქვენი პაროლი ორფაქტორიანი ავთენტიფიკაციის ჩასართავად.
+add_field: ველის დამატება
+role_name: როლის სახელი
+policy_name: პოლიტიკის სახელი
+branch: ტოტი
+leaf: ფოთოლი
+indeterminate: განუსაზღვრელი
+edit_collection: კოლექციის რედაქტირება
+exclusive: ექსკლუზიური
+children: შვილობილები
+db_only_click_to_configure: 'მხოლოდ მონაცემთა ბაზა: დასაკონფიგურებლად დააკლიკეთ'
+show_active_items: აქტიური ჩანაწერების ჩვენება
+show_archived_items: დაარქივებული ჩანაწერების ჩვენება
+show_all_items: ყველა ჩანაწერის ჩვენება
+edited: მნიშვნელობა რედაქტირდა
 required: აუცილებელი
 required_for_app_access: აუცილებელია აპლიკაციაზე წვდომისთვის
+requires_value: მოითხოვს მნიშვნელობას
+create_preset: პრესეტის შექმნა
 create_panel: პანელის შექმნა
 create_role: შექმენით როლი
+create_policy: პოლიტიკის შექმნა
 create_user: მომხმარებლის შექმნა
 message: შეტყობინება
 delete_panel: პანელის წაშლა
 create_webhook: ვებჰუკის შექმნა
+create_custom_translation: მორგებული თარგმანის შექმნა
+edit_custom_translation: მორგებული თარგმანის რედაქტირება
+no_custom_translations: მორგებული თარგმანები არ არის
+no_custom_translations_copy: მორგებული თარგმანები ჯერ არ არის.
 invite_users: მოიწვიე მომხმარებელი
 invite: მოწვევა
+email_already_invited: ელფოსტა "{email}" უკვე მოწვეულია.
 subject: საგანი
 inbox: შემოსული
 emails: ელ. ფოსტები
 connection_excellent: იდეალური კავშირი
 connection_good: კარგი კავშირი
+connection_fair: საშუალო კავშირი
 connection_poor: ცუდი კავშირი
+primary: პირველადი
 rename_folder: საქაღალდის გადარქმევა
 delete_folder: საქაღალდის წაშლა
 prefix: პრეფიქსი
@@ -82,15 +162,63 @@ version_key: ვერსიის გასაღები
 version_name: ვერსიის სახელი
 main_version: მთავარი
 switch_version: ვერსიის ცვლილება
+switch_version_copy: დარწმუნებული ხართ, რომ გსურთ "{version}" ვერსიაზე გადართვა? შეუნახავი ცვლილებები დაიკარგება.
 create_version: ვერსიის შექმნა
 rename_version: ვერსიის სახელის გადარქმევა
 compare_version: შეადარე ვერსიები
 save_version: ვერსიის შენახვა
+promote_version: ვერსიის დაწინაურება
 promote_version_disabled: ცვლილებების გარეშე
+promote_version_drawer_title: '"{version}"-ის დაწინაურება მთავარში'
 promote_version_changes: ცვლილებები
 promote_version_preview: გადახედვა
+outdated_notice: >-
+  მთავარი ჩანაწერი ამ ვერსიის შექმნის შემდეგ განახლდა. გთხოვთ, გადახედეთ ქვემოთ მოცემულ ყველა ველს და დაადასტურეთ, რომელი ვერსია უნდა იქნას გამოყენებული მთავარ ჩანაწერში დაწინაურებისას.
+promote_notice: >-
+  გთხოვთ, გადახედეთ ქვემოთ მოცემულ ყველა ველს და დაადასტურეთ, რომელი ვერსია უნდა იქნას გამოყენებული მთავარ ჩანაწერში დაწინაურებისას.
 delete_version: ვერსიის წაშლა
+delete_version_copy: >-
+  დარწმუნებული ხართ, რომ გსურთ წაშალოთ "{version}" ვერსია? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
+delete_on_promote_copy: >-
+  დაწინაურების შემდეგ გსურთ წაშალოთ თუ დაიტოვოთ "{version}" ვერსია?
+reset_bookmark: სანიშნის აღდგენა
+update_bookmark: სანიშნის განახლება
+delete_bookmark: სანიშნის წაშლა
+delete_bookmark_copy: >-
+  დარწმუნებული ხართ, რომ გსურთ წაშალოთ სანიშნი "{bookmark}"? ამ მოქმედების გაუქმება შეუძლებელი იქნება.
+delete_personal_bookmark: პირადი სანიშნის წაშლა
+delete_role_bookmark: როლის სანიშნის წაშლა
+delete_global_bookmark: გლობალური სანიშნის წაშლა
+logoutReason:
+  SIGN_OUT: სისტემიდან გასვლა
+  SESSION_EXPIRED: სესიას ვადა გაუვიდა
+public_label: საჯარო
+public_description: განსაზღვრავს, რომელი API მონაცემებია ხელმისაწვდომი ავთენტიფიკაციის გარეშე.
+public_role_info: >-
+  საჯარო როლი განსაზღვრავს, რომელი API მონაცემებია ხელმისაწვდომი არაავთენტიფიცირებული ან უროლო მომხმარებლებისთვის. საჯარო როლით გაკეთებულ მოთხოვნებს არ ექნებათ წვდომა აპლიკაციასა და ადმინისტრაციულ ნაწილზე. თუ საჯარო როლისთვის განკუთვნილ პოლიტიკას მიენიჭება აპლიკაციაზე ან ადმინისტრატორზე წვდომა, ეს პარამეტრები იგნორირებული იქნება.
+admin_description: საწყისი ადმინისტრაციული როლი, აპლიკაციასა და API-ზე შეუზღუდავი წვდომით.
+admin_policy_description: საწყისი ადმინისტრაციული პოლიტიკა, აპლიკაციასა და API-ზე შეუზღუდავი წვდომით.
+no_description: აღწერის გარეშე...
+reached_maximum_number_of_extensions: თქვენ მიაღწიეთ გაფართოებების მაქსიმალურ რაოდენობას ამ პროექტისთვის ({n}). დამატებითი ინფორმაციისთვის დაუკავშირდით სისტემის ადმინისტრატორს.
+not_allowed: დაუშვებელია
+archive: დაარქივება
+archive_confirm: დარწმუნებული ხართ, რომ გსურთ ამ ჩანაწერის დაარქივება?
+archive_confirm_count: >-
+  ჩანაწერი არ გაქვთ არჩეული | დარწმუნებული ხართ, რომ გსურთ ამ ჩანაწერის დაარქივება? | დარწმუნებული ხართ, რომ გსურთ ამ {count} ჩანაწერის დაარქივება?
+reset_system_permissions_to: 'სისტემის უფლებების აღდგენა:'
+reset_system_permissions_copy: ეს მოქმედება გადააწერს სისტემურ კოლექციებზე თქვენ მიერ მინიჭებულ ნებისმიერ მორგებულ უფლებას. დარწმუნებული ხართ?
+the_following_are_minimum_permissions: '„აპლიკაციაზე წვდომის“ ჩართვისას, ქვემოთ მოცემული მინიმალური უფლებები ავტომატურად მიენიჭება. საჭიროებისამებრ შეგიძლიათ დამატებითი უფლებების მინიჭება, თუმცა მათი შემცირება არ შეგიძლიათ...'
+app_access_minimum: მინიმალური წვდომა აპლიკაციაზე
+recommended_defaults: რეკომენდებული ნაგულისხმევი პარამეტრები
+unarchive: არქივიდან აღდგენა
+unarchive_confirm: დარწმუნებული ხართ, რომ გსურთ ამ ჩანაწერის არქივიდან აღდგენა?
+nested_files_folders_will_be_moved: ჩადგმული ფაილები და საქაღალდეები ერთი დონით ზემოთ იქნება გადატანილი.
+validation_errors_notice: 'ქვემოთ მოცემულ ველებს არასწორი მნიშვნელობები აქვთ:'
 validationError:
+  eq: მნიშვნელობა უნდა იყოს {valid}
+  neq: მნიშვნელობა არ შეიძლება იყოს {invalid}
+  in: 'მნიშვნელობა უნდა იყოს ერთ-ერთი ჩამონათვალიდან: {valid}'
+  nin: 'მნიშვნელობა არ შეიძლება იყოს ერთ-ერთი ჩამონათვალიდან: {invalid}'
   contains: მნიშვნელობა უნდა შეიცავდეს {substring} - ს
   ncontains: მნიშვნელობა არ უნდა შეიცავდეს {substring} - ს
   gt: მნიშვნელობა უნა აღემატებოდეს {valid} - ს
@@ -109,6 +237,41 @@ validationError:
   istarts_with: მნიშვნელობა უნდა იწყებოდეს {substring} - ით
   nstarts_with: მნიშვნელობა არუნდა იწყებოდეს {substring} - ით
   nistarts_with: მნიშვნელობა არუნდა იწყებოდეს {substring} - ით
+  ends_with: მნიშვნელობა უნდა მთავრდებოდეს {substring} - ით
+  iends_with: მნიშვნელობა უნდა მთავრდებოდეს {substring} - ით
+  nends_with: მნიშვნელობა არუნდა მთავრდებოდეს {substring} - ით
+  niends_with: მნიშვნელობა არუნდა მთავრდებოდეს {substring} - ით
+all_access: სრული წვდომა
+no_access: წვდომის გარეშე
+use_custom: მორგებულის გამოყენება
+nullable: NULL-ის დაშვება
+allow_null_value: NULL მნიშვნელობის დაშვება
+allow_multiple: მრავლობითის დაშვება
+allow_multiple_to_be_open: ერთდროულად რამდენიმეს გახსნის დაშვება
+enter_value_to_replace_nulls: გთხოვთ, შეიყვანეთ ახალი მნიშვნელობა ამ ველში არსებული NULL-ების ჩასანაცვლებლად.
+field_standard: სტანდარტული
+field_presentation: წარმოდგენა და ალიასები
+field_file: ერთი ფაილი
+field_files: მრავალი ფაილი
+field_m2o: M2O კავშირი
+field_m2a: M2A კავშირი
+field_o2m: O2M კავშირი
+field_m2m: M2M კავშირი
+field_translations: თარგმანები
+field_group: ველების ჯგუფი
+item_permissions: ჩანაწერის უფლებები
+field_permissions: ველის უფლებები
+field_validation: ველის ვალიდაცია
+field_presets: ველის პრესეტები
+permissions_for_role: '{role} როლს შეუძლია ჩანაწერების {action}'
+permissions_for_policy: '{policy} პოლიტიკას შეუძლია ჩანაწერების {action}'
+fields_for_role: '{role} როლს შეუძლია ველების {action}'
+fields_for_policy: '{policy} პოლიტიკას შეუძლია ველების {action}'
+validation_for_role: 'ველის {action} წესები, რომელსაც {role} როლი უნდა დაემორჩილოს'
+validation_for_policy: 'ველის {action} წესები, რომელსაც {policy} პოლიტიკა უნდა დაემორჩილოს'
+presets_for_role: 'ველის მნიშვნელობის ნაგულისხმევი პარამეტრები {role} როლისთვის'
+presets_for_policy: 'ველის მნიშვნელობის ნაგულისხმევი პარამეტრები {policy} პოლიტიკისთვის'
+presets_field_warning: '"{field}" ველის დამოკიდებულების პრესეტები უნდა დაკონფიგურდეს "დეტალური" სინტაქსით.'
 create_field: შექმენით ველი
 auto_generate: ავტო-გენერირება
 title: სათაური
@@ -166,18 +329,26 @@ fields:
     tfa_secret: ორფაქტორიანი იდენტიფიკაცია
     status: სტატუსი
     role: როლი
+  directus_settings:
+    module_bar: მოდულის პანელი
   directus_shares:
     role: როლი
     password: პაროლი
+  directus_fields:
+    translation: ველის სახელების თარგმანი
   directus_roles:
+    name: როლის სახელი
     description: აღწერა
   directus_policies:
+    name: პოლიტიკის სახელი
     description: აღწერა
   directus_webhooks:
     status: სტატუსი
 field_options:
   directus_activity:
     create: შექმნა
+  directus_collections:
+    archive_divider: დაარქივება
   directus_webhooks:
     actions_create: შექმნა
 comment: კომენტარი
@@ -187,6 +358,8 @@ password: პაროლი
 interfaces:
   filter:
     all: ყველა
+  presentation-links:
+    primary: პირველადი
   system-collection:
     collection: კოლექცია
   files:
@@ -217,4 +390,5 @@ operations:
   notification:
     message: შეტყობინება
     subject: საგანი
+standard: სტანდარტული
 compact: კომპაქტური
