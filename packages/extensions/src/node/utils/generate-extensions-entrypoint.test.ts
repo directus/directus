@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Extension, ExtensionSettings } from '@directus/types';
+import type { Extension, ExtensionSettings } from '../../shared/types/index.js';
 import { generateExtensionsEntrypoint } from './generate-extensions-entrypoint.js';
 
 describe('generateExtensionsEntrypoint', () => {

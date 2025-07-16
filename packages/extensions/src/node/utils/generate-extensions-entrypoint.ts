@@ -1,7 +1,13 @@
 import { isIn, isTypeIn, pathToRelativeUrl, pluralize } from '@directus/utils/node';
 import path from 'path';
-import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '@directus/constants';
-import type { AppExtension, BundleExtension, Extension, ExtensionSettings, HybridExtension } from '@directus/types';
+import { APP_EXTENSION_TYPES, HYBRID_EXTENSION_TYPES } from '../../shared/constants/index.js';
+import type {
+	AppExtension,
+	BundleExtension,
+	Extension,
+	ExtensionSettings,
+	HybridExtension,
+} from '../../shared/types/index.js';
 
 export function generateExtensionsEntrypoint(
 	extensionMaps: { local: Map<string, Extension>; registry: Map<string, Extension>; module: Map<string, Extension> },
