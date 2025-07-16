@@ -1,5 +1,5 @@
+import type { Prettify } from '@directus/types';
 import type {
-	Prettify,
 	DisplayConfig,
 	EndpointConfig,
 	HookConfig,
@@ -9,7 +9,7 @@ import type {
 	OperationApiConfig,
 	OperationAppConfig,
 	PanelConfig,
-} from '@directus/types';
+} from '../types/index.js';
 
 type CustomConfig<T extends object> = { [K in string]: K extends keyof T ? never : unknown };
 

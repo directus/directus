@@ -1,3 +1,4 @@
+// Also defined in packages/types/src/error.ts
 export interface DirectusApiError {
 	message: string;
 	extensions: {
