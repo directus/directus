@@ -27,7 +27,7 @@ default_provider: ნაგულისხმები
 method: მეთოდი
 published: გამოქვეყნებული
 draft: მონახაზი
-archived: არქივი
+archived: დაარქივებული
 marketplace: მარკეტი
 extensions: გაფართოებები
 skip_link_nav: ნავიგაციაზე გადასვლა
