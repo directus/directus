@@ -6,3 +6,27 @@ packages:
   - sdk
   - packages/*
   - tests/*
+
+onlyBuiltDependencies:
+  - '@fortawesome/fontawesome-common-types'
+  - '@fortawesome/fontawesome-svg-core'
+  - '@fortawesome/free-regular-svg-icons'
+  - '@fortawesome/free-solid-svg-icons'
+  - '@parcel/watcher'
+  - argon2
+  - esbuild
+  - isolated-vm
+  - oracledb
+  - sharp
+  - sqlite3
+  - vue-demi
+
+catalog:
+  '@directus/tsconfig': 3.0.0
+  '@types/lodash-es': 4.17.12
+  '@types/node': 22.13.8
+  '@vitest/coverage-v8': 2.1.9
+  lodash-es: 4.17.21
+  tsup: 8.4.0
+  typescript: 5.8.2
+  vitest: 2.1.9

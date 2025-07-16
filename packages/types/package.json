@@ -30,9 +30,9 @@
 		"@types/geojson": "7946.0.16"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"knex": "3.1.0",
-		"typescript": "5.8.2",
+		"typescript": "catalog:",
 		"vue": "3.5.13"
 	},
 	"peerDependencies": {

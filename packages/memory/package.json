@@ -33,11 +33,11 @@
 		"rate-limiter-flexible": "5.0.5"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
-		"@types/node": "22.13.8",
-		"@vitest/coverage-v8": "2.1.9",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
-		"vitest": "2.1.9"
+		"@directus/tsconfig": "catalog:",
+		"@types/node": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
 	}
 }
