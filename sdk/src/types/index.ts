@@ -2,6 +2,7 @@ export * from './aggregate.js';
 export * from './assets.js';
 export * from './client.js';
 export * from './deep.js';
+export * from './error.js';
 export * from './fields.js';
 export * from './filters.js';
 export * from './functions.js';
