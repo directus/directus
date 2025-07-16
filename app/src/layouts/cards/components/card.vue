@@ -3,6 +3,8 @@ import { getAssetUrl } from '@/utils/get-asset-url';
 import { readableMimeType } from '@/utils/readable-mime-type';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useClipboard } from '@/composables/use-clipboard';
+import { useI18n } from 'vue-i18n';
 
 type File = {
 	[key: string]: any;
@@ -34,8 +36,10 @@ const props = withDefaults(
 const emit = defineEmits(['update:modelValue']);
 
 const router = useRouter();
-
+const { copyToClipboard } = useClipboard();
 const imgError = ref(false);
+
+const { t } = useI18n();
 
 const type = computed(() => {
 	if (!props.file || !props.file.type) return null;
@@ -93,6 +97,15 @@ function handleClick() {
 		router.push(props.to);
 	}
 }
+
+async function copyCardId() {
+	if (!props.item?.id) return;
+
+	await copyToClipboard(props.item.id, {
+		success: t('copy_id_success'),
+		fail: t('copy_id_fail'),
+	});
+}
 </script>
 
 <template>
@@ -124,6 +137,10 @@ function handleClick() {
 		<template v-else>
 			<div v-if="$slots.title" class="title"><slot name="title" /></div>
 			<div v-if="$slots.subtitle" class="subtitle"><slot name="subtitle" /></div>
+			<div v-if="item?.id" class="copy-id-row">
+				<v-icon name="content_copy" small class="copy-id-icon" :aria-label="$t('copy_id')" @click.stop="copyCardId" />
+				<span class="copy-id-text" :title="item.id">{{ item.id }}</span>
+			</div>
 		</template>
 	</div>
 </template>
@@ -324,6 +341,26 @@ function handleClick() {
 
 .subtitle {
 	margin-block-start: 0;
+	color: var(--theme--foreground-subdued);
+}
+
+.copy-id-row {
+	display: flex;
+	align-items: center;
+	margin-block-start: 4px;
+	gap: 6px;
+}
+
+.copy-id-icon {
+	cursor: pointer;
+	color: var(--theme--primary);
+}
+
+.copy-id-text {
+	max-inline-size: 120px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	color: var(--theme--foreground-subdued);
 }
 </style>
