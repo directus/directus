@@ -9,7 +9,7 @@
 		"lint": "eslint --cache .",
 		"lint:style": "stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore --cache",
 		"test": "pnpm --recursive --filter '!tests-blackbox' test",
-		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --legacy --prod dist && pnpm --filter tests-blackbox test"
+		"test:blackbox": "rimraf ./dist && pnpm --filter directus deploy --prod dist && pnpm --filter tests-blackbox test"
 	},
 	"devDependencies": {
 		"@changesets/cli": "2.28.1",
