@@ -136,6 +136,10 @@ function activateColorPicker() {
 	htmlColorInput.value?.$el.getElementsByTagName('input')[0]?.click();
 }
 
+function onClickInput(e: InputEvent, toggle: () => void) {
+	if ((e.target as HTMLInputElement).tagName === 'INPUT') toggle();
+}
+
 function onKeydownInput(e: KeyboardEvent, activate: () => void) {
 	const systemKeys = e.metaKey || e.altKey || e.ctrlKey || e.shiftKey || e.key === 'Tab';
 
@@ -304,7 +308,7 @@ function useColor() {
 				class="color-input"
 				:maxlength="opacity ? 9 : 7"
 				@change="onChanged"
-				@focus="toggle"
+				@click="onClickInput($event, toggle)"
 				@keydown="onKeydownInput($event, activate)"
 			>
 				<template #prepend>
@@ -336,7 +340,7 @@ function useColor() {
 					<div class="item-actions">
 						<v-remove v-if="isValidColor" deselect @action="unsetColor" />
 
-						<v-icon v-else name="palette" clickable @click.stop="toggle" />
+						<v-icon v-else name="palette" clickable @click="toggle" />
 					</div>
 				</template>
 			</v-input>
