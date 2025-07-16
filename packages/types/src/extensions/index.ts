@@ -9,6 +9,7 @@ export * from './layouts.js';
 export * from './manager.js';
 export * from './modules.js';
 export * from './operations.js';
+export * from './options.js';
 export * from './panels.js';
 export * from './themes.js';
 
