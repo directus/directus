@@ -262,7 +262,7 @@ function setContent() {
 
 				return `<button type="button" contenteditable="false" data-field="${fieldKey}" ${
 					props.disabled ? 'disabled' : ''
-				}>${field.name}</button>`;
+				} class="selected-field">${field.name}</button>`;
 			})
 			.join('');
 
