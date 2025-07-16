@@ -65,7 +65,7 @@
 		"@types/semver": "7.5.8",
 		"@vitest/coverage-v8": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "2.1.9"
 	},
 	"engines": {
 		"node": ">=12.20.0"

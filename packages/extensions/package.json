@@ -50,7 +50,7 @@
 		"pino": "9.6.0",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:",
+		"vitest": "2.1.9",
 		"vue": "3.5.13",
 		"vue-router": "4.5.0"
 	},

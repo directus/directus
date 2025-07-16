@@ -43,6 +43,6 @@
 		"strip-ansi": "7.1.0",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:"
+		"vitest": "2.1.9"
 	}
 }

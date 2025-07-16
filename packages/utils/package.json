@@ -54,7 +54,7 @@
 		"tmp": "0.2.3",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "catalog:",
+		"vitest": "2.1.9",
 		"vue": "3.5.13"
 	},
 	"peerDependencies": {

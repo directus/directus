@@ -39,7 +39,7 @@
 		"typescript": "catalog:",
 		"vite": "5.4.19",
 		"vite-plugin-dts": "4.5.1",
-		"vitest": "catalog:",
+		"vitest": "2.1.9",
 		"vue": "3.5.13",
 		"vue-i18n": "11.1.2",
 		"vue-router": "4.5.0"
