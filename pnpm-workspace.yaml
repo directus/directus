@@ -7,8 +7,6 @@ packages:
   - packages/*
   - tests/*
 
-injectWorkspacePackages: true
-
 onlyBuiltDependencies:
   - '@fortawesome/fontawesome-common-types'
   - '@fortawesome/fontawesome-svg-core'
