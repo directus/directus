@@ -26,7 +26,7 @@ export async function handleVersion(self: ItemsServiceType, key: PrimaryKey, que
 
 		const versionData = await versionsService.getVersionSaves(queryWithKey.version!, self.collection, key as string);
 
-		if (!versionData || versionData.length === 0) return [];
+		if (!versionData || versionData.length === 0) return [originalData[0]];
 
 		return [mergeVersionsRaw(originalData[0]!, versionData)];
 	}
