@@ -23,6 +23,8 @@ import type { AuthenticationState, UpgradeContext, WebSocketAuthentication, WebS
 import { getExpiresAtForToken } from '../utils/get-expires-at-for-token.js';
 import { getMessageType } from '../utils/message.js';
 import { waitForAnyMessage, waitForMessageType } from '../utils/wait-for-message.js';
+import getDatabase from '../../database/index.js';
+import { isEqual } from 'lodash-es';
 
 const TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
 
@@ -180,7 +182,26 @@ export default abstract class SocketController {
 
 		if (token) {
 			try {
-				accountability = await getAccountabilityForToken(token);
+				const database = getDatabase();
+				const defaultAccountability = createDefaultAccountability(accountabilityOverrides);
+
+				const customAccountability = await emitter.emitFilter(
+					'websocket.authenticate',
+					defaultAccountability,
+					{ message: { access_token: token } },
+					{
+						database,
+						schema: null,
+						accountability: null,
+					},
+				);
+
+				if (customAccountability && isEqual(customAccountability, defaultAccountability) === false) {
+					accountability = customAccountability;
+				} else {
+					accountability = await getAccountabilityForToken(token);
+				}
+
 				expires_at = getExpiresAtForToken(token);
 			} catch {
 				accountability = null;
