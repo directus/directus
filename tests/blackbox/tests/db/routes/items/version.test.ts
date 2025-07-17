@@ -5,50 +5,54 @@ import { c } from './version.seed';
 import request from 'supertest';
 import { getUrl } from '@common/config';
 import { USER } from '@common/variables';
+import { sleep } from '@utils/sleep';
+import autocannon from 'autocannon';
+
+const item = {
+	title: 'Article 1',
+	author: {
+		name: 'Author 1',
+	},
+	links: [
+		{
+			link: 'Link A',
+		},
+		{
+			link: 'Link B',
+		},
+	],
+	tags: [
+		{
+			[`${c.tags}_id`]: {
+				tag: 'Tag A',
+			},
+		},
+		{
+			[`${c.tags}_id`]: {
+				tag: 'Tag B',
+			},
+		},
+	],
+	sections: [
+		{
+			collection: c.sec_text,
+			item: {
+				text: 'Text A',
+			},
+		},
+		{
+			collection: c.sec_num,
+			item: {
+				num: 2,
+			},
+		},
+	],
+} as const;
 
 it.each(vendors)('%s', async (vendor) => {
 	const result = await CreateItem(vendor, {
 		collection: c.articles,
-		item: {
-			title: 'Article 1',
-			author: {
-				name: 'Author 1',
-			},
-			links: [
-				{
-					link: 'Link A',
-				},
-				{
-					link: 'Link B',
-				},
-			],
-			tags: [
-				{
-					[`${c.tags}_id`]: {
-						tag: 'Tag A',
-					},
-				},
-				{
-					[`${c.tags}_id`]: {
-						tag: 'Tag B',
-					},
-				},
-			],
-			sections: [
-				{
-					collection: c.sec_text,
-					item: {
-						text: 'Text A',
-					},
-				},
-				{
-					collection: c.sec_num,
-					item: {
-						num: 2,
-					},
-				},
-			],
-		},
+		item,
 	});
 
 	const versionResult = await CreateVersion(vendor, {
@@ -257,3 +261,117 @@ it.each(vendors)('%s', async (vendor) => {
 		},
 	});
 });
+
+it.each(vendors)(
+	'%s',
+	async (vendor) => {
+		const result = await CreateItem(vendor, {
+			collection: c.articles,
+			item,
+		});
+
+		const versionResult = await CreateVersion(vendor, {
+			collection: c.articles,
+			item: String(result.id),
+			key: 'test',
+			name: 'test',
+		});
+
+		await SaveVersion(vendor, {
+			id: versionResult.id,
+			delta: {
+				links: {
+					create: [
+						{
+							link: 'Link C',
+						},
+					],
+					update: [
+						{
+							id: 2,
+							link: 'Link B Changed',
+						},
+					],
+					delete: [1],
+				},
+				tags: {
+					create: [
+						{
+							[`${c.tags}_id`]: {
+								tag: 'Tag C',
+							},
+						},
+					],
+					update: [
+						{
+							id: 2,
+							[`${c.tags}_id`]: {
+								id: 2,
+								tag: 'Tag B Changed',
+							},
+						},
+					],
+					delete: [1],
+				},
+				sections: {
+					create: [
+						{
+							collection: c.sec_num,
+							item: {
+								num: 3,
+							},
+						},
+					],
+					update: [
+						{
+							id: 1,
+							collection: c.sec_text,
+							item: {
+								id: 1,
+								text: 'Text B Changed',
+							},
+						},
+					],
+					delete: [2],
+				},
+			},
+		});
+
+		// Setup
+		let hasErrors = false;
+		let isSpawnRunning = false;
+
+		spawnAutoCannon();
+
+		while (isSpawnRunning) {
+			console.log('running');
+
+			request(getUrl(vendor))
+				.get(`/items/${c.articles}/${result.id}?version=test&fields=*.*.*`)
+				.set('Authorization', `Bearer ${USER.ADMIN.TOKEN}`);
+
+			await sleep(500);
+		}
+
+		// Assert
+		expect(hasErrors).toBe(false);
+
+		async function spawnAutoCannon() {
+			isSpawnRunning = true;
+
+			const tracker = await autocannon({
+				url: `${getUrl(vendor)}/items/${c.articles}/${result.id}?fields=*.*.*&access_token=${USER.ADMIN.TOKEN}`,
+				connections: 100,
+			});
+
+			console.log(response);
+
+			hasErrors = response.errors > 0;
+
+			isSpawnRunning = false;
+
+			console.log('finished');
+		}
+	},
+	20_000,
+);

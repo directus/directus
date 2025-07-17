@@ -2217,6 +2217,33 @@ importers:
         specifier: 8.18.1
         version: 8.18.1
 
+  tests/loadtests:
+    devDependencies:
+      '@directus/tsconfig':
+        specifier: 3.0.0
+        version: 3.0.0
+      '@types/blessed':
+        specifier: 0.1.25
+        version: 0.1.25
+      '@types/k6':
+        specifier: 1.1.1
+        version: 1.1.1
+      blessed:
+        specifier: 0.1.81
+        version: 0.1.81
+      k6:
+        specifier: 0.0.0
+        version: 0.0.0
+      rimraf:
+        specifier: 6.0.1
+        version: 6.0.1
+      tsx:
+        specifier: 4.19.3
+        version: 4.19.3
+      typescript:
+        specifier: 5.8.2
+        version: 5.8.2
+
 packages:
 
   '@akryum/tinypool@0.3.1':
@@ -4879,6 +4906,9 @@ packages:
   '@types/base-64@1.0.2':
     resolution: {integrity: sha512-uPgKMmM9fmn7I+Zi6YBqctOye4SlJsHKcisjHIMWpb2YKZRc36GpKyNuQ03JcT+oNXg1m7Uv4wU94EVltn8/cw==}
 
+  '@types/blessed@0.1.25':
+    resolution: {integrity: sha512-kQsjBgtsbJLmG6CJA+Z6Nujj+tq1fcSE3UIowbDvzQI4wWmoTV7djUDhSo5lDjgwpIN0oRvks0SA5mMdKE5eFg==}
+
   '@types/body-parser@1.19.6':
     resolution: {integrity: sha512-HLFeCYgz89uk22N5Qg3dvGvsv46B8GLvKKo1zKG4NybA8U2DiEO3w9lqGg29t/tfLRJpJ6iQxnVw4OnB7MoM9g==}
 
@@ -4995,6 +5025,9 @@ packages:
 
   '@types/jsonwebtoken@9.0.9':
     resolution: {integrity: sha512-uoe+GxEuHbvy12OUQct2X9JenKM3qAscquYymuQN4fMWG9DBQtykrQEFcAbVACF7qaLw9BePSodUL0kquqBJpQ==}
+
+  '@types/k6@1.1.1':
+    resolution: {integrity: sha512-ioNtKGb59VEBfmM8iJIRp1OpE4y8sfEBHBy55VXYzoicIQAWWVae+RYDstCoVAIqyFA1bfaLwAWKKEUxp0SwnA==}
 
   '@types/keyv@3.1.4':
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
@@ -8380,6 +8413,9 @@ packages:
 
   jws@4.0.0:
     resolution: {integrity: sha512-KDncfTmOZoOMTFG4mBlG0qUIOlc03fmzH+ru6RgYVZhPkyiy/92Owlt/8UEN+a4TXR1FQetfIpJE8ApdvdVxTg==}
+
+  k6@0.0.0:
+    resolution: {integrity: sha512-GAQSWayS2+LjbH5bkRi+pMPYyP1JSp7o+4j58ANZ762N/RH/SdlAT3CHHztnn8s/xgg8kYNM24Gd2IPo9b5W+g==}
 
   kdbush@3.0.0:
     resolution: {integrity: sha512-hRkd6/XW4HTsA9vjVpY9tuXJYLSlelnkTmVFu4M9/7MIYQtFcHpbugAU7UbOfjOiVSVYl2fqgBuJ32JUmRo5Ew==}
@@ -15836,6 +15872,10 @@ snapshots:
 
   '@types/base-64@1.0.2': {}
 
+  '@types/blessed@0.1.25':
+    dependencies:
+      '@types/node': 22.13.8
+
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
@@ -15964,6 +16004,8 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
       '@types/node': 22.13.8
+
+  '@types/k6@1.1.1': {}
 
   '@types/keyv@3.1.4':
     dependencies:
@@ -19663,6 +19705,8 @@ snapshots:
     dependencies:
       jwa: 2.0.1
       safe-buffer: 5.2.1
+
+  k6@0.0.0: {}
 
   kdbush@3.0.0: {}
 
