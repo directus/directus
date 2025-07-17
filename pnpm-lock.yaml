@@ -2071,9 +2071,6 @@ importers:
         specifier: 8.18.1
         version: 8.18.1
     devDependencies:
-      '@directus/extensions':
-        specifier: workspace:*
-        version: link:../extensions
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
