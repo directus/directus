@@ -4,7 +4,10 @@ on:
   pull_request:
     branches:
       - main
-      - v11-rc
+
+  push:
+    branches:
+      - main
 
 concurrency:
   group: check-${{ github.ref }}
@@ -18,6 +21,9 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v45
@@ -37,24 +43,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
           build: false
 
       - name: Run Stylelinter
-        run: pnpm exec stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore
+        run: pnpm exec stylelint ${{ steps.changed-files.outputs.all_changed_files }} --ignore-pattern='!*.{scss,css,vue}'
 
   format:
     name: Format
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v45
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       - name: Prepare
         uses: ./.github/actions/prepare
@@ -70,10 +80,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          # Vitest uses `git diff` under the hood to find the changed files in it's `--changed`
-          # option, which in turn means we need to fetch the full git history so git is able to diff
-          fetch-depth: 0
 
         # This currently builds all packages in the repo. Ideally we add build: false here as well
         # to save minutes building the repo, but that'd require us refactoring the tests to stop
