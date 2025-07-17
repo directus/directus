@@ -24,21 +24,6 @@ jobs:
         with:
           build: false
 
-  build:
-    name: Build dependencies
-    runs-on: ubuntu-latest
-    needs: prepare
-    steps:
-      - name: Prepare
-        uses: ./.github/actions/prepare
-        with:
-          build: false
-
-      - name: Prepare
-        uses: ./.github/actions/prepare
-        with:
-          install: false
-
   lint:
     name: Lint
     needs: prepare

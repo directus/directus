@@ -31,6 +31,10 @@ runs:
       run: pnpm install
       shell: bash
 
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v45
+
     - name: Build
       if: inputs.build == 'true'
       shell: bash
