@@ -8,7 +8,6 @@ export interface ModuleConfig {
 	id: string;
 	name: string;
 	icon: string;
-
 	routes: RouteRecordRaw[];
 	hidden?: boolean;
 	preRegisterCheck?: (user: AppUser, permissions: CollectionAccess) => Promise<boolean> | boolean;

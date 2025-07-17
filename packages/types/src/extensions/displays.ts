@@ -1,7 +1,6 @@
 import type { Component, ComponentOptions } from 'vue';
 import type { ExtensionOptionsContext } from './options.js';
-import type { AppField } from './index.js';
-import type { Field, LocalType, Type } from '../fields.js';
+import type { AppField, Field, LocalType, Type } from '../fields.js';
 import type { DeepPartial } from '../misc.js';
 
 export type DisplayFieldsFunction = (
