@@ -1256,9 +1256,6 @@ importers:
       '@directus/constants':
         specifier: workspace:*
         version: link:../constants
-      '@directus/themes':
-        specifier: workspace:*
-        version: link:../themes
       '@directus/types':
         specifier: workspace:*
         version: link:../types
