@@ -33,6 +33,16 @@ jobs:
         id: changed-files
         uses: tj-actions/changed-files@v45
 
+  build:
+    name: Build dependencies
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          install: false
+
   lint:
     name: Lint
     needs: setup
@@ -60,18 +70,18 @@ jobs:
   unit:
     name: Unit Tests
     runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        shardIndex: [1, 2, 3, 4, 5]
+        shardTotal: [5]
     steps:
-      - name: Prepare
-        uses: ./.github/actions/prepare
-        with:
-          install: false
-
       - name: Run Tests
         run: |
           if [ "${GITHUB_REF##*/}" != "main" ]; then
-            pnpm test:coverage --changed origin/${{ github.base_ref }} --passWithNoTests
+            pnpm test:coverage --changed origin/${{ github.base_ref }} --passWithNoTests --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
           else
-            pnpm test:coverage --passWithNoTests
+            pnpm test:coverage --passWithNoTests --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
           fi
 
       - name: Upload coverage to Codecov
