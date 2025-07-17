@@ -23,9 +23,7 @@ export type ExtensionOptionsContext = {
 		junctionRelated: DeepPartial<Field> | undefined;
 		sort: DeepPartial<Field> | undefined;
 	};
-
 	items: Record<string, Record<string, any>[]>;
-
 	localType: (typeof LOCAL_TYPES)[number];
 	autoGenerateJunctionRelation: boolean;
 	saving: boolean;
