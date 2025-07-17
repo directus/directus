@@ -8,6 +8,10 @@ inputs:
   registry:
     description: NPM registry to set up for auth
     required: false
+  package-filter:
+    description: Ignore certain packages from being built when build is true
+    required: false
+    default: "!docs"
 
 runs:
   using: composite
@@ -28,14 +32,10 @@ runs:
       run: pnpm install
       shell: bash
 
-    - name: Get changed files
-      id: changed-files
-      uses: tj-actions/changed-files@v45
-
     - name: Build
       if: inputs.build == 'true'
       shell: bash
       env:
         npm_config_workspace_concurrency: 1
         NODE_OPTIONS: --max_old_space_size=6144
-      run: pnpm run build
+      run: pnpm --recursive --filter '${{ inputs.package-filter }}' run build
