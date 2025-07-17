@@ -53,11 +53,7 @@ jobs:
           build: false
 
       - name: Run Stylelinter
-        # Stylelint crashes if you only feed it non-css files, so we'll give it one known scss file
-        # to prevent that
-        run:
-          pnpm exec stylelint app/src/styles/main.scss ${{ steps.changed-files.outputs.all_changed_files }}
-          --ignore-pattern='!*.{scss,css,vue}'
+        run: pnpm exec stylelint ${{ steps.changed-files.outputs.all_changed_files }} --allow-empty-input
 
   format:
     name: Format
