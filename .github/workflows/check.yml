@@ -75,6 +75,8 @@ jobs:
         # but that's a PR for another day
       - name: Prepare
         uses: ./.github/actions/prepare
+        with:
+          fetch-depth: 0
 
       - name: Run Tests
         run: |
