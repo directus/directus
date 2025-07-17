@@ -28,10 +28,10 @@
 		"@vueuse/core": "12.7.0"
 	},
 	"devDependencies": {
-		"@directus/tsconfig": "3.0.0",
+		"@directus/tsconfig": "catalog:",
 		"pinia": "2.3.1",
-		"tsup": "8.4.0",
-		"typescript": "5.8.2",
+		"tsup": "catalog:",
+		"typescript": "catalog:",
 		"vue": "3.5.13"
 	},
 	"peerDependencies": {
