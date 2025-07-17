@@ -2074,9 +2074,6 @@ importers:
       '@directus/extensions':
         specifier: workspace:*
         version: link:../extensions
-      '@directus/themes':
-        specifier: workspace:*
-        version: link:../themes
       '@directus/tsconfig':
         specifier: 'catalog:'
         version: 3.0.0
