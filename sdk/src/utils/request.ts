@@ -22,7 +22,7 @@ export const request = async <Output = any>(
 	return fetcher(url, options).then((response) => {
 		return extractData(response).catch((reason) => {
 			const result: DirectusError = {
-				message: 'Unknown api error',
+				message: '',
 				errors: reason && typeof reason === 'object' && 'errors' in reason ? reason.errors : reason,
 				response: response as Response,
 			};
@@ -30,7 +30,6 @@ export const request = async <Output = any>(
 			if (reason && typeof reason === 'object' && 'data' in reason) result.data = reason.data;
 
 			if (result.errors[0] && result.errors[0].message) {
-				// TODO first or last error?
 				result.message = result.errors[0].message;
 			}
 
