@@ -24,7 +24,7 @@ export const request = async <Output = any>(
 			const result: DirectusError = {
 				message: 'Unknown api error',
 				errors: reason && typeof reason === 'object' && 'errors' in reason ? reason.errors : reason,
-				response,
+				response: response as Response,
 			};
 
 			if (reason && typeof reason === 'object' && 'data' in reason) result.data = reason.data;
