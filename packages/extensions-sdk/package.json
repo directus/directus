@@ -68,6 +68,6 @@
 		"vitest": "catalog:"
 	},
 	"engines": {
-		"node": ">=12.20.0"
+		"node": ">=16.14.0"
 	}
 }
