@@ -88,6 +88,8 @@ jobs:
         # but that's a PR for another day
       - name: Prepare
         uses: ./.github/actions/prepare
+        with:
+          package-filter: '!docs,!app,!api,!sdk'
 
       - name: Run Tests
         run: |
