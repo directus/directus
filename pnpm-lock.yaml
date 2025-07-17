@@ -27,6 +27,9 @@ catalogs:
     typescript:
       specifier: 5.8.2
       version: 5.8.2
+    vitest:
+      specifier: 2.1.9
+      version: 2.1.9
 
 importers:
 
@@ -568,7 +571,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
     optionalDependencies:
       '@keyv/redis':
@@ -938,7 +941,7 @@ importers:
         specifier: 7.7.2
         version: 7.7.2(rollup@4.34.9)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))(vue@3.5.13(typescript@5.8.2))
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
         specifier: 3.5.13
@@ -1062,7 +1065,7 @@ importers:
         specifier: 4.5.1
         version: 4.5.1(@types/node@22.13.8)(rollup@4.34.9)(typescript@5.8.2)(vite@5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0))
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
         specifier: 3.5.13
@@ -1120,7 +1123,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
         specifier: 3.5.13
@@ -1208,7 +1211,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/errors:
@@ -1239,7 +1242,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/extensions:
@@ -1297,7 +1300,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
         specifier: 3.5.13
@@ -1334,7 +1337,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/extensions-sdk:
@@ -1437,7 +1440,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/format-title:
@@ -1452,7 +1455,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/memory:
@@ -1489,7 +1492,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/pressure:
@@ -1517,7 +1520,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/random:
@@ -1538,7 +1541,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/release-notes-generator:
@@ -1575,7 +1578,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/schema:
@@ -1616,7 +1619,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/specs:
@@ -1653,7 +1656,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/storage-driver-azure:
@@ -1684,7 +1687,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/storage-driver-cloudinary:
@@ -1718,7 +1721,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/storage-driver-gcs:
@@ -1752,7 +1755,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/storage-driver-local:
@@ -1780,7 +1783,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/storage-driver-s3:
@@ -1829,7 +1832,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/storage-driver-supabase:
@@ -1869,7 +1872,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/stores:
@@ -2035,7 +2038,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   packages/utils:
@@ -2102,7 +2105,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
       vue:
         specifier: 3.5.13
@@ -2136,7 +2139,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   sdk:
@@ -2157,7 +2160,7 @@ importers:
         specifier: 'catalog:'
         version: 5.8.2
       vitest:
-        specifier: 2.1.9
+        specifier: 'catalog:'
         version: 2.1.9(@types/node@22.13.8)(happy-dom@17.1.8)(jsdom@20.0.3)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
 
   tests/blackbox:
@@ -19909,8 +19912,8 @@ snapshots:
 
   local-pkg@0.5.1:
     dependencies:
-      mlly: 1.7.4
-      pkg-types: 1.3.1
+      mlly: 1.7.3
+      pkg-types: 1.3.0
 
   local-pkg@1.1.0:
     dependencies:
@@ -24067,7 +24070,7 @@ snapshots:
   vite-node@1.6.1(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0):
     dependencies:
       cac: 6.7.14
-      debug: 4.4.1
+      debug: 4.4.0(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.1.1
       vite: 5.4.19(@types/node@22.13.8)(sass-embedded@1.85.1)(sass@1.83.4)(terser@5.37.0)
@@ -24256,7 +24259,7 @@ snapshots:
       '@vitest/utils': 1.6.1
       acorn-walk: 8.3.4
       chai: 4.5.0
-      debug: 4.4.1
+      debug: 4.4.0(supports-color@5.5.0)
       execa: 8.0.1
       local-pkg: 0.5.1
       magic-string: 0.30.17

@@ -40,6 +40,6 @@
 		"@directus/tsconfig": "catalog:",
 		"tsup": "catalog:",
 		"typescript": "catalog:",
-		"vitest": "2.1.9"
+		"vitest": "catalog:"
 	}
 }

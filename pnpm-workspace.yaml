@@ -29,3 +29,4 @@ catalog:
   lodash-es: 4.17.21
   tsup: 8.4.0
   typescript: 5.8.2
+  vitest: 2.1.9
