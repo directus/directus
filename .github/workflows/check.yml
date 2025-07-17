@@ -15,29 +15,25 @@ env:
   NODE_OPTIONS: --max_old_space_size=6144
 
 jobs:
-  setup:
-    name: Setup runner
+  prepare:
+    name: Prepare caches
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
           build: false
 
-      - name: Get changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v45
-
   build:
     name: Build dependencies
     runs-on: ubuntu-latest
-    needs: setup
+    needs: prepare
     steps:
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
@@ -45,37 +41,52 @@ jobs:
 
   lint:
     name: Lint
-    needs: setup
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
       - name: Run Linter
         run: pnpm exec eslint ${{ steps.changed-files.outputs.all_changed_files }}
 
   stylelint:
     name: Stylelint
-    needs: setup
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
       - name: Run Stylelinter
         run: pnpm exec stylelint '**/*.{css,scss,vue}' --ignore-path .gitignore
 
   format:
     name: Format
-    needs: setup
+    needs: prepare
     runs-on: ubuntu-latest
     steps:
+      - name: Prepare
+        uses: ./.github/actions/prepare
+        with:
+          build: false
+
       - name: Run Formatter
         run: pnpm exec prettier --check --ignore-unknown ${{ steps.changed-files.outputs.all_changed_files }}
 
   unit:
     name: Unit Tests
     runs-on: ubuntu-latest
-    needs: build
-    strategy:
-      matrix:
-        shardIndex: [1, 2, 3, 4, 5]
-        shardTotal: [5]
+    needs: prepare
     steps:
+      - name: Prepare
+        uses: ./.github/actions/prepare
+          # This builds the full suite of packages as some of them are used within test files
+
       - name: Run Tests
         run: |
           if [ "${GITHUB_REF##*/}" != "main" ]; then
