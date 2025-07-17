@@ -34,7 +34,7 @@ jobs:
         run: |
           # remove dist/ from gitignore
           mv .gitignore .gitignore.bak
-          grep -v 'dist/' .gitignore.bak > .gitignore 
+          grep -v 'dist/' .gitignore.bak > .gitignore
           # cat .gitignore
 
           git add '**/dist/**'

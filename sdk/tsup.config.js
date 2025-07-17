@@ -21,7 +21,7 @@ export default defineConfig(() => ({
 	clean: true, // clean dist before build
 	dts: true, // generate dts file for main module
 	format: ['cjs', 'esm'], // generate cjs and esm files
-	minify: env === 'production',
+	minify: false,
 	watch: env === 'development',
 	bundle: true,
 	target: 'es2022',
