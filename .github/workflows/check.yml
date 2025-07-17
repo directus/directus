@@ -85,7 +85,7 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
-          package-filter: "!docs,!app,!api,!sdk"
+          package-filter: '!docs,!@directus/app,!@directus/api,!@directus/sdk'
 
       - name: Run Tests
         run: |
