@@ -412,6 +412,11 @@ const reorderGroupsDisabled = computed(() => !props.canReorderGroups || props.se
 					}
 				}
 
+				.text {
+					display: flex;
+					white-space: nowrap;
+				}
+
 				.image {
 					inline-size: 100%;
 					border-radius: var(--theme--border-radius);
