@@ -68,16 +68,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare
     steps:
+        # This builds the full suite of packages as some of them are used within test files
+        #
+        # Ideally we drop reliance on any workspace packages in tests so we don't have to build
+        # the repo altogether which saves _a lot_ of time, and allows us to shard the tests,
+        # but that's a PR for another day
       - name: Prepare
         uses: ./.github/actions/prepare
-          # This builds the full suite of packages as some of them are used within test files
 
       - name: Run Tests
         run: |
           if [ "${GITHUB_REF##*/}" != "main" ]; then
-            pnpm test:coverage --changed origin/${{ github.base_ref }} --passWithNoTests --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+            pnpm test:coverage --changed origin/${{ github.base_ref }} --passWithNoTests
           else
-            pnpm test:coverage --passWithNoTests --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+            pnpm test:coverage --passWithNoTests
           fi
 
       - name: Upload coverage to Codecov
