@@ -1,5 +1,5 @@
 ---
-'@directus/extensions-sdk': patch
+'@directus/extensions-sdk': major
 ---
 
 Upgraded all dependencies of @directus/extensions-sdk. This upgrades to the latest major versions of
