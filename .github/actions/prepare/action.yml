@@ -25,6 +25,7 @@ runs:
       with:
         node-version-file: package.json
         registry-url: ${{ inputs.registry }}
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: pnpm install
