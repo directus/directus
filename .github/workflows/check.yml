@@ -53,7 +53,8 @@ jobs:
           build: false
 
       - name: Run Stylelinter
-        run: pnpm exec stylelint ${{ steps.changed-files.outputs.all_changed_files }} --ignore-pattern='!*.{scss,css,vue}'
+        run:
+          pnpm exec stylelint ${{ steps.changed-files.outputs.all_changed_files }} --ignore-pattern='!*.{scss,css,vue}'
 
   format:
     name: Format
