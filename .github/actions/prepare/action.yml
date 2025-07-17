@@ -8,10 +8,10 @@ inputs:
   registry:
     description: NPM registry to set up for auth
     required: false
-  package-filter:
-    description: Ignore certain packages from being built when build is true
+  build-args:
+    description: Additional args to pass to pnpm build
     required: false
-    default: '!docs'
+    default: "--filter='!docs'"
 
 runs:
   using: composite
@@ -38,4 +38,4 @@ runs:
       env:
         npm_config_workspace_concurrency: 1
         NODE_OPTIONS: --max_old_space_size=6144
-      run: pnpm --recursive --filter '${{ inputs.package-filter }}' run build
+      run: pnpm --recursive ${{ inputs.build-args }} run build
