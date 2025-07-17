@@ -17,7 +17,6 @@ env:
 jobs:
   lint:
     name: Lint
-    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,7 +36,6 @@ jobs:
 
   stylelint:
     name: Stylelint
-    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -53,7 +51,6 @@ jobs:
 
   format:
     name: Format
-    needs: prepare
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -74,7 +71,6 @@ jobs:
   unit:
     name: Unit Tests
     runs-on: ubuntu-latest
-    needs: prepare
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -89,7 +85,7 @@ jobs:
       - name: Prepare
         uses: ./.github/actions/prepare
         with:
-          package-filter: '!docs,!app,!api,!sdk'
+          package-filter: "!docs,!app,!api,!sdk"
 
       - name: Run Tests
         run: |
